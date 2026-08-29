@@ -1,0 +1,150 @@
+{
+  "part_id": "MCP1700T-3302E-TT",
+  "mpn": "MCP1700T-3302E/TT",
+  "manufacturer": "Microchip Technology",
+  "category": "regulator_linear",
+  "description": "250 mA fixed 3.3 V LDO with very low quiescent current, SOT-23-3.",
+  "is_generic": false,
+  "lifecycle": "active",
+  "packages": [
+    {
+      "name": "SOT-23-3",
+      "pin_count": 3,
+      "hand_solderable": true,
+      "kicad_footprint": "Package_TO_SOT_SMD:SOT-23"
+    }
+  ],
+  "pins": [
+    {
+      "number": "1",
+      "name": "VOUT",
+      "roles": [
+        "power"
+      ],
+      "electrical_type": "power_out",
+      "evidence": []
+    },
+    {
+      "number": "2",
+      "name": "GND",
+      "roles": [
+        "ground"
+      ],
+      "electrical_type": "power_in",
+      "evidence": []
+    },
+    {
+      "number": "3",
+      "name": "VIN",
+      "roles": [
+        "power"
+      ],
+      "electrical_type": "power_in",
+      "supply_rail": "VIN",
+      "evidence": []
+    }
+  ],
+  "supply_rails": [
+    {
+      "name": "VIN",
+      "operating": {
+        "minimum": {
+          "value": 2.3,
+          "unit": "V"
+        },
+        "maximum": {
+          "value": 6.0,
+          "unit": "V"
+        }
+      },
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "MCP1700 input voltage range",
+          "source_id": "mcp1700-datasheet",
+          "document": {
+            "document_id": "mcp1700-datasheet",
+            "title": "MCP1700 Low Quiescent Current LDO",
+            "manufacturer": "Microchip Technology",
+            "part_number": "MCP1700T-3302E/TT"
+          },
+          "page": 3,
+          "text_value": "Input voltage 2.3 V to 6.0 V",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-08-29T16:03:35.821938Z"
+        }
+      ]
+    }
+  ],
+  "interfaces": [],
+  "i2c_addresses": [],
+  "regulator": {
+    "output_voltage": {
+      "minimum": {
+        "value": 3.234,
+        "unit": "V"
+      },
+      "typical": {
+        "value": 3.3,
+        "unit": "V"
+      },
+      "maximum": {
+        "value": 3.366,
+        "unit": "V"
+      }
+    },
+    "output_current_max": {
+      "value": 0.25,
+      "unit": "A"
+    },
+    "input_voltage": {
+      "minimum": {
+        "value": 2.3,
+        "unit": "V"
+      },
+      "maximum": {
+        "value": 6.0,
+        "unit": "V"
+      }
+    },
+    "dropout_at_max_current": {
+      "value": 0.178,
+      "unit": "V"
+    },
+    "quiescent_current": {
+      "value": 1.6e-06,
+      "unit": "A"
+    },
+    "fixed_output": true,
+    "evidence": [
+      {
+        "kind": "catalog",
+        "label": "MCP1700 output current capability",
+        "source_id": "mcp1700-datasheet",
+        "document": {
+          "document_id": "mcp1700-datasheet",
+          "title": "MCP1700 Low Quiescent Current LDO",
+          "manufacturer": "Microchip Technology",
+          "part_number": "MCP1700T-3302E/TT"
+        },
+        "page": 3,
+        "quantity": {
+          "value": 0.25,
+          "unit": "A"
+        },
+        "text_value": "250 mA maximum output current",
+        "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+        "recorded_at": "2026-08-29T16:03:35.821956Z"
+      }
+    ]
+  },
+  "decoupling_rules": [],
+  "design_rules": [],
+  "datasheet": {
+    "document_id": "mcp1700-datasheet",
+    "title": "MCP1700 Low Quiescent Current LDO",
+    "manufacturer": "Microchip Technology",
+    "part_number": "MCP1700T-3302E/TT"
+  },
+  "evidence": []
+}

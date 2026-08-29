@@ -1,0 +1,296 @@
+{
+  "part_id": "BME280",
+  "mpn": "BME280",
+  "manufacturer": "Bosch Sensortec",
+  "category": "sensor",
+  "description": "Combined humidity, pressure and temperature sensor with I2C and SPI.",
+  "is_generic": false,
+  "lifecycle": "active",
+  "packages": [
+    {
+      "name": "LGA-8",
+      "pin_count": 8,
+      "hand_solderable": false,
+      "kicad_footprint": "Sensor:Bosch_LGA-8_2.5x2.5mm_P0.65mm_ClearanceHoles",
+      "notes": "2.5 x 2.5 x 0.93 mm LGA. Bottom-terminated: needs hot air or reflow. A hobbyist with an iron should use a breakout module instead."
+    }
+  ],
+  "pins": [
+    {
+      "number": "1",
+      "name": "GND",
+      "roles": [
+        "ground"
+      ],
+      "electrical_type": "power_in",
+      "evidence": []
+    },
+    {
+      "number": "2",
+      "name": "CSB",
+      "roles": [
+        "spi_cs"
+      ],
+      "electrical_type": "input",
+      "supply_rail": "VDDIO",
+      "must_not_float": true,
+      "notes": "Tie high to select I2C mode. Floating leaves the interface undefined.",
+      "evidence": []
+    },
+    {
+      "number": "3",
+      "name": "SDI",
+      "roles": [
+        "i2c_sda",
+        "spi_mosi"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDDIO",
+      "evidence": []
+    },
+    {
+      "number": "4",
+      "name": "SCK",
+      "roles": [
+        "i2c_scl",
+        "spi_sck"
+      ],
+      "electrical_type": "input",
+      "supply_rail": "VDDIO",
+      "evidence": []
+    },
+    {
+      "number": "5",
+      "name": "SDO",
+      "roles": [
+        "i2c_address_select",
+        "spi_miso"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDDIO",
+      "must_not_float": true,
+      "notes": "In I2C mode this pin selects the address and must be tied high or low.",
+      "evidence": []
+    },
+    {
+      "number": "6",
+      "name": "VDDIO",
+      "roles": [
+        "power"
+      ],
+      "electrical_type": "power_in",
+      "supply_rail": "VDDIO",
+      "evidence": []
+    },
+    {
+      "number": "7",
+      "name": "GND",
+      "roles": [
+        "ground"
+      ],
+      "electrical_type": "power_in",
+      "evidence": []
+    },
+    {
+      "number": "8",
+      "name": "VDD",
+      "roles": [
+        "power"
+      ],
+      "electrical_type": "power_in",
+      "supply_rail": "VDD",
+      "evidence": []
+    }
+  ],
+  "supply_rails": [
+    {
+      "name": "VDD",
+      "operating": {
+        "minimum": {
+          "value": 1.71,
+          "unit": "V"
+        },
+        "typical": {
+          "value": 1.8,
+          "unit": "V"
+        },
+        "maximum": {
+          "value": 3.6,
+          "unit": "V"
+        }
+      },
+      "absolute_max": {
+        "value": 4.3,
+        "unit": "V"
+      },
+      "current_max": {
+        "value": 0.001,
+        "unit": "A"
+      },
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "BME280 VDD recommended operating range",
+          "source_id": "bme280-datasheet",
+          "document": {
+            "document_id": "bme280-datasheet",
+            "title": "BME280 Combined humidity and pressure sensor",
+            "manufacturer": "Bosch Sensortec",
+            "part_number": "BME280"
+          },
+          "page": 10,
+          "text_value": "VDD supply voltage 1.71 V to 3.6 V",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-08-29T16:03:35.822335Z"
+        },
+        {
+          "kind": "catalog",
+          "label": "BME280 VDD absolute maximum rating",
+          "source_id": "bme280-datasheet",
+          "document": {
+            "document_id": "bme280-datasheet",
+            "title": "BME280 Combined humidity and pressure sensor",
+            "manufacturer": "Bosch Sensortec",
+            "part_number": "BME280"
+          },
+          "page": 12,
+          "quantity": {
+            "value": 4.3,
+            "unit": "V"
+          },
+          "text_value": "Voltage at supply pin VDD, maximum 4.3 V",
+          "detail": "Absolute maximum, not an operating target. Exceeding it risks permanent damage. Recorded separately from the operating range so the two can never be confused.",
+          "recorded_at": "2026-08-29T16:03:35.822339Z"
+        },
+        {
+          "kind": "assumption",
+          "label": "BME280 worst-case supply current",
+          "quantity": {
+            "value": 0.001,
+            "unit": "A"
+          },
+          "detail": "Conservative upper bound of 1 mA entered by hand for regulator sizing. The datasheet figures for all documented measurement modes are well below this. Marked ASSUMED, not a manufacturer figure.",
+          "recorded_at": "2026-08-29T16:03:35.822343Z"
+        }
+      ]
+    },
+    {
+      "name": "VDDIO",
+      "operating": {
+        "minimum": {
+          "value": 1.2,
+          "unit": "V"
+        },
+        "typical": {
+          "value": 1.8,
+          "unit": "V"
+        },
+        "maximum": {
+          "value": 3.6,
+          "unit": "V"
+        }
+      },
+      "absolute_max": {
+        "value": 4.3,
+        "unit": "V"
+      },
+      "current_max": {
+        "value": 0.001,
+        "unit": "A"
+      },
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "BME280 VDDIO recommended operating range",
+          "source_id": "bme280-datasheet",
+          "document": {
+            "document_id": "bme280-datasheet",
+            "title": "BME280 Combined humidity and pressure sensor",
+            "manufacturer": "Bosch Sensortec",
+            "part_number": "BME280"
+          },
+          "page": 10,
+          "text_value": "VDDIO interface supply voltage 1.2 V to 3.6 V",
+          "detail": "A second, independent supply domain. This is the case the specification's flat supply_voltage_min_v/max_v fields could not represent.",
+          "recorded_at": "2026-08-29T16:03:35.822355Z"
+        },
+        {
+          "kind": "assumption",
+          "label": "BME280 worst-case interface supply current",
+          "quantity": {
+            "value": 0.001,
+            "unit": "A"
+          },
+          "detail": "Conservative upper bound of 1 mA entered by hand, as for VDD.",
+          "recorded_at": "2026-08-29T16:03:35.822359Z"
+        }
+      ]
+    }
+  ],
+  "interfaces": [
+    "i2c",
+    "spi"
+  ],
+  "i2c_addresses": [
+    {
+      "address": 118,
+      "selected_by": "SDO tied to GND",
+      "strap_pin": "5",
+      "strap_level": "low",
+      "is_default": true
+    },
+    {
+      "address": 119,
+      "selected_by": "SDO tied to VDDIO",
+      "strap_pin": "5",
+      "strap_level": "high",
+      "is_default": false
+    }
+  ],
+  "decoupling_rules": [
+    {
+      "rail": "VDD",
+      "per_pin_capacitance": {
+        "value": 1e-07,
+        "unit": "F"
+      },
+      "max_distance_mm": 2.0,
+      "note": "100 nF close to VDD.",
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "BME280 recommended supply decoupling",
+          "source_id": "bme280-datasheet",
+          "document": {
+            "document_id": "bme280-datasheet",
+            "title": "BME280 Combined humidity and pressure sensor",
+            "manufacturer": "Bosch Sensortec",
+            "part_number": "BME280"
+          },
+          "page": 38,
+          "text_value": "100 nF decoupling capacitor close to the VDD pin",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-08-29T16:03:35.822370Z"
+        }
+      ]
+    },
+    {
+      "rail": "VDDIO",
+      "per_pin_capacitance": {
+        "value": 1e-07,
+        "unit": "F"
+      },
+      "max_distance_mm": 2.0,
+      "note": "100 nF close to VDDIO.",
+      "evidence": []
+    }
+  ],
+  "design_rules": [],
+  "datasheet": {
+    "document_id": "bme280-datasheet",
+    "title": "BME280 Combined humidity and pressure sensor",
+    "manufacturer": "Bosch Sensortec",
+    "part_number": "BME280"
+  },
+  "evidence": []
+}

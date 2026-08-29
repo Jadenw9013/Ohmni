@@ -1,0 +1,82 @@
+{
+  "part_id": "GENERIC_LED_GREEN",
+  "category": "led",
+  "description": "Generic green indicator LED.",
+  "is_generic": true,
+  "lifecycle": "unknown",
+  "packages": [
+    {
+      "name": "0603",
+      "pin_count": 2,
+      "hand_solderable": true
+    },
+    {
+      "name": "0805",
+      "pin_count": 2,
+      "hand_solderable": true
+    }
+  ],
+  "pins": [
+    {
+      "number": "1",
+      "name": "A",
+      "roles": [
+        "anode"
+      ],
+      "electrical_type": "passive",
+      "evidence": []
+    },
+    {
+      "number": "2",
+      "name": "K",
+      "roles": [
+        "cathode"
+      ],
+      "electrical_type": "passive",
+      "evidence": []
+    }
+  ],
+  "supply_rails": [],
+  "interfaces": [],
+  "i2c_addresses": [],
+  "led": {
+    "forward_voltage": {
+      "minimum": {
+        "value": 1.8,
+        "unit": "V"
+      },
+      "typical": {
+        "value": 2.1,
+        "unit": "V"
+      },
+      "maximum": {
+        "value": 2.4,
+        "unit": "V"
+      }
+    },
+    "max_forward_current": {
+      "value": 0.02,
+      "unit": "A"
+    },
+    "test_current": {
+      "value": 0.005,
+      "unit": "A"
+    },
+    "colour": "green",
+    "evidence": [
+      {
+        "kind": "assumption",
+        "label": "Generic green LED forward voltage",
+        "quantity": {
+          "value": 2.1,
+          "unit": "V"
+        },
+        "detail": "Class-typical figures for a green indicator LED, not a specific part. Marked ASSUMED. Selecting a real MPN replaces these with catalog or datasheet evidence, and the LED current calculation inherits the stronger status automatically.",
+        "recorded_at": "2026-08-29T16:03:35.823430Z"
+      }
+    ]
+  },
+  "decoupling_rules": [],
+  "design_rules": [],
+  "evidence": []
+}

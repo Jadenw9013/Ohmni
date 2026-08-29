@@ -1,0 +1,567 @@
+{
+  "part_id": "ESP32-WROOM-32E",
+  "mpn": "ESP32-WROOM-32E",
+  "manufacturer": "Espressif Systems",
+  "category": "mcu_module",
+  "description": "Wi-Fi + Bluetooth module with an integrated ESP32-D0WD-V3 SoC and 4 MB flash.",
+  "is_generic": false,
+  "lifecycle": "active",
+  "packages": [
+    {
+      "name": "Module-SMD-38",
+      "pin_count": 39,
+      "hand_solderable": true,
+      "kicad_footprint": "RF_Module:ESP32-WROOM-32",
+      "notes": "Castellated edge pads plus a central ground pad. Hand-solderable."
+    }
+  ],
+  "pins": [
+    {
+      "number": "1",
+      "name": "GND",
+      "roles": [
+        "ground"
+      ],
+      "electrical_type": "power_in",
+      "evidence": []
+    },
+    {
+      "number": "2",
+      "name": "3V3",
+      "roles": [
+        "power"
+      ],
+      "electrical_type": "power_in",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "3",
+      "name": "EN",
+      "roles": [
+        "enable"
+      ],
+      "electrical_type": "input",
+      "supply_rail": "VDD",
+      "must_not_float": true,
+      "notes": "No internal pull. Espressif's reference design uses a 10 kohm pull-up to 3V3 with a 100 nF capacitor to ground, so the module leaves reset only once the supply is stable.",
+      "evidence": []
+    },
+    {
+      "number": "4",
+      "name": "SENSOR_VP",
+      "roles": [
+        "analog_in"
+      ],
+      "electrical_type": "input",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "5",
+      "name": "SENSOR_VN",
+      "roles": [
+        "analog_in"
+      ],
+      "electrical_type": "input",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "6",
+      "name": "IO34",
+      "roles": [
+        "analog_in"
+      ],
+      "electrical_type": "input",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "7",
+      "name": "IO35",
+      "roles": [
+        "analog_in"
+      ],
+      "electrical_type": "input",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "8",
+      "name": "IO32",
+      "roles": [
+        "gpio"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "9",
+      "name": "IO33",
+      "roles": [
+        "gpio"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "10",
+      "name": "IO25",
+      "roles": [
+        "gpio"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "11",
+      "name": "IO26",
+      "roles": [
+        "gpio"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "12",
+      "name": "IO27",
+      "roles": [
+        "gpio"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "13",
+      "name": "IO14",
+      "roles": [
+        "gpio"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "14",
+      "name": "IO12",
+      "roles": [
+        "gpio",
+        "boot_strap"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDD",
+      "internal_pull": "down",
+      "evidence": []
+    },
+    {
+      "number": "15",
+      "name": "GND",
+      "roles": [
+        "ground"
+      ],
+      "electrical_type": "power_in",
+      "evidence": []
+    },
+    {
+      "number": "16",
+      "name": "IO13",
+      "roles": [
+        "gpio"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "17",
+      "name": "SHD/SD2",
+      "roles": [
+        "other"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "18",
+      "name": "SWP/SD3",
+      "roles": [
+        "other"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "19",
+      "name": "SCS/CMD",
+      "roles": [
+        "other"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "20",
+      "name": "SCK/CLK",
+      "roles": [
+        "other"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "21",
+      "name": "SDO/SD0",
+      "roles": [
+        "other"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "22",
+      "name": "SDI/SD1",
+      "roles": [
+        "other"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "23",
+      "name": "IO15",
+      "roles": [
+        "gpio",
+        "boot_strap"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDD",
+      "internal_pull": "up",
+      "evidence": []
+    },
+    {
+      "number": "24",
+      "name": "IO2",
+      "roles": [
+        "gpio",
+        "boot_strap"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDD",
+      "internal_pull": "down",
+      "evidence": []
+    },
+    {
+      "number": "25",
+      "name": "IO0",
+      "roles": [
+        "gpio",
+        "boot_strap"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDD",
+      "internal_pull": "up",
+      "evidence": []
+    },
+    {
+      "number": "26",
+      "name": "IO4",
+      "roles": [
+        "gpio"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "27",
+      "name": "IO16",
+      "roles": [
+        "gpio"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "28",
+      "name": "IO17",
+      "roles": [
+        "gpio"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "29",
+      "name": "IO5",
+      "roles": [
+        "gpio",
+        "boot_strap"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDD",
+      "internal_pull": "up",
+      "evidence": []
+    },
+    {
+      "number": "30",
+      "name": "IO18",
+      "roles": [
+        "gpio"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "31",
+      "name": "IO19",
+      "roles": [
+        "gpio"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "32",
+      "name": "NC",
+      "roles": [
+        "not_connected"
+      ],
+      "electrical_type": "no_connect",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "33",
+      "name": "IO21",
+      "roles": [
+        "gpio"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "34",
+      "name": "RXD0",
+      "roles": [
+        "uart_rx",
+        "gpio"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "35",
+      "name": "TXD0",
+      "roles": [
+        "uart_tx",
+        "gpio"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "36",
+      "name": "IO22",
+      "roles": [
+        "gpio"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "37",
+      "name": "IO23",
+      "roles": [
+        "gpio"
+      ],
+      "electrical_type": "bidirectional",
+      "supply_rail": "VDD",
+      "evidence": []
+    },
+    {
+      "number": "38",
+      "name": "GND",
+      "roles": [
+        "ground"
+      ],
+      "electrical_type": "power_in",
+      "evidence": []
+    },
+    {
+      "number": "39",
+      "name": "GND_PAD",
+      "roles": [
+        "ground"
+      ],
+      "electrical_type": "power_in",
+      "evidence": []
+    }
+  ],
+  "supply_rails": [
+    {
+      "name": "VDD",
+      "operating": {
+        "minimum": {
+          "value": 3.0,
+          "unit": "V"
+        },
+        "typical": {
+          "value": 3.3,
+          "unit": "V"
+        },
+        "maximum": {
+          "value": 3.6,
+          "unit": "V"
+        }
+      },
+      "absolute_max": {
+        "value": 3.6,
+        "unit": "V"
+      },
+      "current_max": {
+        "value": 0.5,
+        "unit": "A"
+      },
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "ESP32-WROOM-32E recommended operating supply voltage",
+          "source_id": "esp32-wroom-32e-datasheet",
+          "document": {
+            "document_id": "esp32-wroom-32e-datasheet",
+            "title": "ESP32-WROOM-32E / ESP32-WROOM-32UE Datasheet",
+            "manufacturer": "Espressif Systems",
+            "part_number": "ESP32-WROOM-32E",
+            "revision": "v1.6"
+          },
+          "page": 17,
+          "text_value": "VDD 3.0 V min, 3.3 V typical, 3.6 V max",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-08-29T16:03:35.820596Z"
+        },
+        {
+          "kind": "catalog",
+          "label": "ESP32-WROOM-32E recommended power supply current",
+          "source_id": "esp32-wroom-32e-datasheet",
+          "document": {
+            "document_id": "esp32-wroom-32e-datasheet",
+            "title": "ESP32-WROOM-32E / ESP32-WROOM-32UE Datasheet",
+            "manufacturer": "Espressif Systems",
+            "part_number": "ESP32-WROOM-32E",
+            "revision": "v1.6"
+          },
+          "page": 17,
+          "quantity": {
+            "value": 0.5,
+            "unit": "A"
+          },
+          "text_value": "Recommended output current of the power supply: 500 mA",
+          "detail": "This is the figure that makes regulator sizing a real check: the module's RF transmit bursts are what set it, not its average draw.",
+          "recorded_at": "2026-08-29T16:03:35.820605Z"
+        }
+      ],
+      "notes": "Single 3.3 V domain. The module has no internal regulator."
+    }
+  ],
+  "interfaces": [
+    "i2c",
+    "spi",
+    "uart",
+    "gpio",
+    "adc",
+    "pwm"
+  ],
+  "i2c_addresses": [],
+  "decoupling_rules": [
+    {
+      "rail": "VDD",
+      "per_pin_capacitance": {
+        "value": 1e-07,
+        "unit": "F"
+      },
+      "bulk_capacitance": {
+        "value": 2.2e-05,
+        "unit": "F"
+      },
+      "max_distance_mm": 5.0,
+      "note": "Espressif hardware design guidelines recommend bulk plus local decoupling.",
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "ESP32 recommended power supply decoupling",
+          "source_id": "esp32-wroom-32e-datasheet",
+          "document": {
+            "document_id": "esp32-wroom-32e-datasheet",
+            "title": "ESP32-WROOM-32E / ESP32-WROOM-32UE Datasheet",
+            "manufacturer": "Espressif Systems",
+            "part_number": "ESP32-WROOM-32E",
+            "revision": "v1.6"
+          },
+          "page": 17,
+          "text_value": "100 nF local decoupling with 22 uF bulk on the 3V3 rail",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-08-29T16:03:35.820621Z"
+        }
+      ]
+    }
+  ],
+  "design_rules": [
+    {
+      "rule_id": "esp32.en_rc_delay",
+      "description": "EN needs a pull-up to 3V3 and an RC delay capacitor to ground so the module releases reset only after the supply is stable.",
+      "category": "layout",
+      "evidence": []
+    },
+    {
+      "rule_id": "esp32.antenna_keepout",
+      "description": "Keep copper and components clear of the PCB antenna area. RF layout is explicitly out of MVP scope and is NOT verified by this system.",
+      "category": "layout",
+      "evidence": []
+    }
+  ],
+  "datasheet": {
+    "document_id": "esp32-wroom-32e-datasheet",
+    "title": "ESP32-WROOM-32E / ESP32-WROOM-32UE Datasheet",
+    "manufacturer": "Espressif Systems",
+    "part_number": "ESP32-WROOM-32E",
+    "revision": "v1.6"
+  },
+  "evidence": [
+    {
+      "kind": "catalog",
+      "label": "ESP32-WROOM-32E package and pin count",
+      "source_id": "esp32-wroom-32e-datasheet",
+      "document": {
+        "document_id": "esp32-wroom-32e-datasheet",
+        "title": "ESP32-WROOM-32E / ESP32-WROOM-32UE Datasheet",
+        "manufacturer": "Espressif Systems",
+        "part_number": "ESP32-WROOM-32E",
+        "revision": "v1.6"
+      },
+      "page": 6,
+      "text_value": "38-pin castellated SMD module with a central ground pad",
+      "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+      "recorded_at": "2026-08-29T16:03:35.820632Z"
+    }
+  ]
+}

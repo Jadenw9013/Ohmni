@@ -1,0 +1,202 @@
+{
+  "part_id": "USB_C_RECEPTACLE_16P",
+  "category": "connector",
+  "description": "USB Type-C 16-pin receptacle, USB 2.0, power sink.",
+  "is_generic": true,
+  "lifecycle": "unknown",
+  "packages": [
+    {
+      "name": "USB-C-16P-SMD",
+      "pin_count": 16,
+      "hand_solderable": true,
+      "kicad_footprint": "Connector_USB:USB_C_Receptacle_HRO_TYPE-C-31-M-12"
+    }
+  ],
+  "pins": [
+    {
+      "number": "A1",
+      "name": "GND",
+      "roles": [
+        "ground"
+      ],
+      "electrical_type": "passive",
+      "evidence": []
+    },
+    {
+      "number": "A12",
+      "name": "GND",
+      "roles": [
+        "ground"
+      ],
+      "electrical_type": "passive",
+      "evidence": []
+    },
+    {
+      "number": "B1",
+      "name": "GND",
+      "roles": [
+        "ground"
+      ],
+      "electrical_type": "passive",
+      "evidence": []
+    },
+    {
+      "number": "B12",
+      "name": "GND",
+      "roles": [
+        "ground"
+      ],
+      "electrical_type": "passive",
+      "evidence": []
+    },
+    {
+      "number": "A4",
+      "name": "VBUS",
+      "roles": [
+        "usb_vbus",
+        "power"
+      ],
+      "electrical_type": "passive",
+      "evidence": []
+    },
+    {
+      "number": "A9",
+      "name": "VBUS",
+      "roles": [
+        "usb_vbus",
+        "power"
+      ],
+      "electrical_type": "passive",
+      "evidence": []
+    },
+    {
+      "number": "B4",
+      "name": "VBUS",
+      "roles": [
+        "usb_vbus",
+        "power"
+      ],
+      "electrical_type": "passive",
+      "evidence": []
+    },
+    {
+      "number": "B9",
+      "name": "VBUS",
+      "roles": [
+        "usb_vbus",
+        "power"
+      ],
+      "electrical_type": "passive",
+      "evidence": []
+    },
+    {
+      "number": "A5",
+      "name": "CC1",
+      "roles": [
+        "usb_cc"
+      ],
+      "electrical_type": "bidirectional",
+      "must_not_float": true,
+      "notes": "A sink must present Rd (5.1 kohm to GND) here or no source will supply VBUS.",
+      "evidence": []
+    },
+    {
+      "number": "B5",
+      "name": "CC2",
+      "roles": [
+        "usb_cc"
+      ],
+      "electrical_type": "bidirectional",
+      "must_not_float": true,
+      "notes": "A sink must present Rd (5.1 kohm to GND) here or no source will supply VBUS.",
+      "evidence": []
+    },
+    {
+      "number": "A8",
+      "name": "SBU1",
+      "roles": [
+        "other"
+      ],
+      "electrical_type": "passive",
+      "notes": "Sideband use. Unused on a power-and-USB2.0 sink.",
+      "evidence": []
+    },
+    {
+      "number": "B8",
+      "name": "SBU2",
+      "roles": [
+        "other"
+      ],
+      "electrical_type": "passive",
+      "notes": "Sideband use. Unused on a power-and-USB2.0 sink.",
+      "evidence": []
+    },
+    {
+      "number": "A6",
+      "name": "DP1",
+      "roles": [
+        "usb_dp"
+      ],
+      "electrical_type": "bidirectional",
+      "evidence": []
+    },
+    {
+      "number": "A7",
+      "name": "DN1",
+      "roles": [
+        "usb_dm"
+      ],
+      "electrical_type": "bidirectional",
+      "evidence": []
+    },
+    {
+      "number": "B6",
+      "name": "DP2",
+      "roles": [
+        "usb_dp"
+      ],
+      "electrical_type": "bidirectional",
+      "evidence": []
+    },
+    {
+      "number": "B7",
+      "name": "DN2",
+      "roles": [
+        "usb_dm"
+      ],
+      "electrical_type": "bidirectional",
+      "evidence": []
+    }
+  ],
+  "supply_rails": [],
+  "interfaces": [
+    "usb_power_sink",
+    "usb_device"
+  ],
+  "i2c_addresses": [],
+  "decoupling_rules": [],
+  "design_rules": [
+    {
+      "rule_id": "usbc.rd_required",
+      "description": "A USB-C sink must pull each of CC1 and CC2 to ground through its own 5.1 kohm resistor. Sharing one resistor between them, or omitting them, leaves the port dead on a Type-C to Type-C cable.",
+      "category": "other",
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "USB Type-C sink CC termination",
+          "source_id": "usb-type-c-spec",
+          "document": {
+            "document_id": "usb-type-c-spec",
+            "title": "USB Type-C Cable and Connector Specification",
+            "manufacturer": "USB Implementers Forum",
+            "part_number": "USB Type-C receptacle (generic)"
+          },
+          "text_value": "Rd = 5.1 kohm +/- 20% on each CC pin for a sink",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-08-29T16:03:35.823787Z"
+        }
+      ]
+    }
+  ],
+  "evidence": []
+}

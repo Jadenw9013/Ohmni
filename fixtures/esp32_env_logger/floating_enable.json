@@ -1,0 +1,598 @@
+{
+  "ir_id": "esp32-env-logger-floating-enable",
+  "name": "ESP32 environmental logger (floating-enable)",
+  "revision": 2,
+  "parent_hash": "0df857195980947b63f5ffcdeb0ac465ee2bf2ebb834d51ad27d005151549eb8",
+  "components": [
+    {
+      "ref": "J1",
+      "part_id": "USB_C_RECEPTACLE_16P",
+      "package": "USB-C-16P-SMD",
+      "placeholder": false,
+      "evidence": []
+    },
+    {
+      "ref": "R1",
+      "part_id": "GENERIC_RESISTOR",
+      "package": "0805",
+      "value": {
+        "value": 5100.0,
+        "unit": "ohm"
+      },
+      "placeholder": false,
+      "notes": "Rd for CC1. Type-C sinks need one per CC pin.",
+      "evidence": []
+    },
+    {
+      "ref": "R2",
+      "part_id": "GENERIC_RESISTOR",
+      "package": "0805",
+      "value": {
+        "value": 5100.0,
+        "unit": "ohm"
+      },
+      "placeholder": false,
+      "notes": "Rd for CC2.",
+      "evidence": []
+    },
+    {
+      "ref": "U2",
+      "part_id": "AP2112K-3.3TRG1",
+      "package": "SOT-23-5",
+      "placeholder": false,
+      "evidence": []
+    },
+    {
+      "ref": "C1",
+      "part_id": "GENERIC_CAPACITOR",
+      "package": "0805",
+      "value": {
+        "value": 1e-06,
+        "unit": "F"
+      },
+      "placeholder": false,
+      "notes": "Regulator input capacitor.",
+      "evidence": []
+    },
+    {
+      "ref": "C2",
+      "part_id": "GENERIC_CAPACITOR",
+      "package": "0805",
+      "value": {
+        "value": 1e-06,
+        "unit": "F"
+      },
+      "placeholder": false,
+      "notes": "Regulator output capacitor.",
+      "evidence": []
+    },
+    {
+      "ref": "U1",
+      "part_id": "ESP32-WROOM-32E",
+      "package": "Module-SMD-38",
+      "placeholder": false,
+      "evidence": []
+    },
+    {
+      "ref": "C3",
+      "part_id": "GENERIC_CAPACITOR",
+      "package": "0805",
+      "value": {
+        "value": 1e-07,
+        "unit": "F"
+      },
+      "placeholder": false,
+      "notes": "Local decoupling for the module.",
+      "evidence": []
+    },
+    {
+      "ref": "C4",
+      "part_id": "GENERIC_CAPACITOR",
+      "package": "0805",
+      "value": {
+        "value": 2.2e-05,
+        "unit": "F"
+      },
+      "placeholder": false,
+      "notes": "Bulk capacitance for RF transmit bursts.",
+      "evidence": []
+    },
+    {
+      "ref": "U3",
+      "part_id": "BME280",
+      "package": "LGA-8",
+      "selected_i2c_address": 118,
+      "placeholder": false,
+      "evidence": []
+    },
+    {
+      "ref": "C6",
+      "part_id": "GENERIC_CAPACITOR",
+      "package": "0805",
+      "value": {
+        "value": 1e-07,
+        "unit": "F"
+      },
+      "placeholder": false,
+      "notes": "Sensor VDD decoupling.",
+      "evidence": []
+    },
+    {
+      "ref": "C7",
+      "part_id": "GENERIC_CAPACITOR",
+      "package": "0805",
+      "value": {
+        "value": 1e-07,
+        "unit": "F"
+      },
+      "placeholder": false,
+      "notes": "Sensor VDDIO decoupling.",
+      "evidence": []
+    },
+    {
+      "ref": "R4",
+      "part_id": "GENERIC_RESISTOR",
+      "package": "0805",
+      "value": {
+        "value": 4700.0,
+        "unit": "ohm"
+      },
+      "placeholder": false,
+      "notes": "I2C SDA pull-up.",
+      "evidence": []
+    },
+    {
+      "ref": "R5",
+      "part_id": "GENERIC_RESISTOR",
+      "package": "0805",
+      "value": {
+        "value": 4700.0,
+        "unit": "ohm"
+      },
+      "placeholder": false,
+      "notes": "I2C SCL pull-up.",
+      "evidence": []
+    },
+    {
+      "ref": "D1",
+      "part_id": "GENERIC_LED_GREEN",
+      "package": "0805",
+      "placeholder": false,
+      "evidence": []
+    },
+    {
+      "ref": "R6",
+      "part_id": "GENERIC_RESISTOR",
+      "package": "0805",
+      "value": {
+        "value": 330.0,
+        "unit": "ohm"
+      },
+      "placeholder": false,
+      "notes": "LED current limiting.",
+      "evidence": []
+    },
+    {
+      "ref": "J2",
+      "part_id": "HEADER_1X6_254",
+      "package": "1x6-2.54mm-THT",
+      "placeholder": false,
+      "evidence": []
+    }
+  ],
+  "nets": [
+    {
+      "name": "VBUS",
+      "kind": "power",
+      "connections": [
+        {
+          "component": "J1",
+          "pin": "A4"
+        },
+        {
+          "component": "J1",
+          "pin": "A9"
+        },
+        {
+          "component": "J1",
+          "pin": "B4"
+        },
+        {
+          "component": "J1",
+          "pin": "B9"
+        },
+        {
+          "component": "U2",
+          "pin": "1"
+        },
+        {
+          "component": "U2",
+          "pin": "3"
+        },
+        {
+          "component": "C1",
+          "pin": "1"
+        }
+      ],
+      "external_source": {
+        "kind": "usb_vbus",
+        "voltage": {
+          "minimum": {
+            "value": 4.75,
+            "unit": "V"
+          },
+          "typical": {
+            "value": 5.0,
+            "unit": "V"
+          },
+          "maximum": {
+            "value": 5.25,
+            "unit": "V"
+          }
+        },
+        "current_limit": {
+          "value": 0.5,
+          "unit": "A"
+        },
+        "description": "Bus power from a USB-C source, no PD negotiation.",
+        "evidence": [
+          {
+            "kind": "catalog",
+            "label": "USB VBUS voltage at a downstream port",
+            "source_id": "usb-2.0-spec",
+            "document": {
+              "document_id": "usb-2.0-spec",
+              "title": "Universal Serial Bus Specification Revision 2.0",
+              "manufacturer": "USB Implementers Forum",
+              "part_number": "VBUS"
+            },
+            "page": 171,
+            "text_value": "4.75 V to 5.25 V",
+            "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+            "recorded_at": "2026-08-29T16:05:06.460546Z"
+          }
+        ]
+      },
+      "notes": "5 V input rail."
+    },
+    {
+      "name": "GND",
+      "kind": "ground",
+      "connections": [
+        {
+          "component": "J1",
+          "pin": "A1"
+        },
+        {
+          "component": "J1",
+          "pin": "A12"
+        },
+        {
+          "component": "J1",
+          "pin": "B1"
+        },
+        {
+          "component": "J1",
+          "pin": "B12"
+        },
+        {
+          "component": "R1",
+          "pin": "2"
+        },
+        {
+          "component": "R2",
+          "pin": "2"
+        },
+        {
+          "component": "U2",
+          "pin": "2"
+        },
+        {
+          "component": "C1",
+          "pin": "2"
+        },
+        {
+          "component": "C2",
+          "pin": "2"
+        },
+        {
+          "component": "U1",
+          "pin": "1"
+        },
+        {
+          "component": "U1",
+          "pin": "15"
+        },
+        {
+          "component": "U1",
+          "pin": "38"
+        },
+        {
+          "component": "U1",
+          "pin": "39"
+        },
+        {
+          "component": "C3",
+          "pin": "2"
+        },
+        {
+          "component": "C4",
+          "pin": "2"
+        },
+        {
+          "component": "U3",
+          "pin": "1"
+        },
+        {
+          "component": "U3",
+          "pin": "7"
+        },
+        {
+          "component": "U3",
+          "pin": "5"
+        },
+        {
+          "component": "C6",
+          "pin": "2"
+        },
+        {
+          "component": "C7",
+          "pin": "2"
+        },
+        {
+          "component": "D1",
+          "pin": "2"
+        },
+        {
+          "component": "J2",
+          "pin": "2"
+        }
+      ],
+      "notes": "Single ground plane on the bottom layer."
+    },
+    {
+      "name": "CC1",
+      "kind": "signal",
+      "connections": [
+        {
+          "component": "J1",
+          "pin": "A5"
+        },
+        {
+          "component": "R1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "CC2",
+      "kind": "signal",
+      "connections": [
+        {
+          "component": "J1",
+          "pin": "B5"
+        },
+        {
+          "component": "R2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "3V3",
+      "kind": "power",
+      "connections": [
+        {
+          "component": "U2",
+          "pin": "5"
+        },
+        {
+          "component": "C2",
+          "pin": "1"
+        },
+        {
+          "component": "U1",
+          "pin": "2"
+        },
+        {
+          "component": "C3",
+          "pin": "1"
+        },
+        {
+          "component": "C4",
+          "pin": "1"
+        },
+        {
+          "component": "U3",
+          "pin": "6"
+        },
+        {
+          "component": "U3",
+          "pin": "8"
+        },
+        {
+          "component": "U3",
+          "pin": "2"
+        },
+        {
+          "component": "C6",
+          "pin": "1"
+        },
+        {
+          "component": "C7",
+          "pin": "1"
+        },
+        {
+          "component": "R4",
+          "pin": "2"
+        },
+        {
+          "component": "R5",
+          "pin": "2"
+        },
+        {
+          "component": "J2",
+          "pin": "1"
+        }
+      ],
+      "notes": "Regulated logic rail. U3 CSB is tied here to select I2C mode."
+    },
+    {
+      "name": "EN",
+      "kind": "signal",
+      "connections": [
+        {
+          "component": "U1",
+          "pin": "3"
+        },
+        {
+          "component": "J2",
+          "pin": "5"
+        }
+      ],
+      "notes": "Module enable, pulled up with an RC delay so reset releases after the rail."
+    },
+    {
+      "name": "SDA",
+      "kind": "signal",
+      "connections": [
+        {
+          "component": "U1",
+          "pin": "33"
+        },
+        {
+          "component": "U3",
+          "pin": "3"
+        },
+        {
+          "component": "R4",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "SCL",
+      "kind": "signal",
+      "connections": [
+        {
+          "component": "U1",
+          "pin": "36"
+        },
+        {
+          "component": "U3",
+          "pin": "4"
+        },
+        {
+          "component": "R5",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "UART_TX",
+      "kind": "signal",
+      "connections": [
+        {
+          "component": "U1",
+          "pin": "35"
+        },
+        {
+          "component": "J2",
+          "pin": "3"
+        }
+      ]
+    },
+    {
+      "name": "UART_RX",
+      "kind": "signal",
+      "connections": [
+        {
+          "component": "U1",
+          "pin": "34"
+        },
+        {
+          "component": "J2",
+          "pin": "4"
+        }
+      ]
+    },
+    {
+      "name": "IO0",
+      "kind": "signal",
+      "connections": [
+        {
+          "component": "U1",
+          "pin": "25"
+        },
+        {
+          "component": "J2",
+          "pin": "6"
+        }
+      ]
+    },
+    {
+      "name": "LED_DRIVE",
+      "kind": "signal",
+      "connections": [
+        {
+          "component": "U1",
+          "pin": "24"
+        },
+        {
+          "component": "R6",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "LED_A",
+      "kind": "signal",
+      "connections": [
+        {
+          "component": "R6",
+          "pin": "2"
+        },
+        {
+          "component": "D1",
+          "pin": "1"
+        }
+      ],
+      "notes": "Private node between the series resistor and the LED anode."
+    }
+  ],
+  "constraints": [
+    {
+      "constraint_id": "C-1",
+      "kind": "voltage",
+      "description": "All logic runs from a single 3.3 V rail.",
+      "hard": true,
+      "applies_to": [
+        "3V3"
+      ],
+      "source_requirement_id": "FR-2",
+      "evidence": []
+    },
+    {
+      "constraint_id": "C-2",
+      "kind": "assembly",
+      "description": "Prefer packages a hobbyist can solder with an iron.",
+      "hard": false,
+      "applies_to": [],
+      "evidence": []
+    },
+    {
+      "constraint_id": "C-3",
+      "kind": "cost",
+      "description": "Keep the assembled board under about $20 in single quantities.",
+      "hard": false,
+      "applies_to": [],
+      "evidence": []
+    }
+  ],
+  "design_assumptions": [
+    "The USB-C port is power-sink only; D+/D- are left unconnected because programming goes through the serial header rather than a USB bridge.",
+    "The sensor is read at a low rate, so its supply current is negligible next to the module's RF bursts."
+  ],
+  "notes": "R3 and C5 removed, leaving EN floating.",
+  "_content_hash": "abf01c7cff5fb4d22c085d4016d545986019ab6573f4342fb5b67ac3913f7299"
+}

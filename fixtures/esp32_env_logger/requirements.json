@@ -1,0 +1,61 @@
+{
+  "project_name": "ESP32 environmental logger",
+  "description": "A small battery-free logger that reads temperature, humidity and pressure over I2C and reports over Wi-Fi. Powered from USB-C, programmed over a serial header.",
+  "max_input_voltage": {
+    "value": 5.0,
+    "unit": "V"
+  },
+  "target_logic_voltage": {
+    "value": 3.3,
+    "unit": "V"
+  },
+  "budget_usd": 20.0,
+  "max_board_layers": 2,
+  "hand_solderable": true,
+  "interfaces": [
+    "i2c",
+    "uart",
+    "usb_power_sink",
+    "gpio"
+  ],
+  "functional_requirements": [
+    {
+      "requirement_id": "FR-1",
+      "description": "Accept 5 V from a USB-C receptacle.",
+      "mandatory": true
+    },
+    {
+      "requirement_id": "FR-2",
+      "description": "Provide a regulated 3.3 V rail.",
+      "mandatory": true
+    },
+    {
+      "requirement_id": "FR-3",
+      "description": "Run an ESP32 with Wi-Fi.",
+      "mandatory": true
+    },
+    {
+      "requirement_id": "FR-4",
+      "description": "Read an I2C environmental sensor on the 3.3 V bus.",
+      "mandatory": true
+    },
+    {
+      "requirement_id": "FR-5",
+      "description": "Show status on a single LED.",
+      "mandatory": true
+    },
+    {
+      "requirement_id": "FR-6",
+      "description": "Expose a serial programming and debug header.",
+      "mandatory": true
+    }
+  ],
+  "required_part_ids": [],
+  "prohibited_part_ids": [],
+  "safety_domains": [],
+  "assumptions": [
+    "Powered from a standard USB-C source; no USB Power Delivery negotiation.",
+    "Indoor use at room temperature; no environmental sealing."
+  ],
+  "evidence": []
+}

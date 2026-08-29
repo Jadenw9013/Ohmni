@@ -1,0 +1,212 @@
+{
+  "part_id": "AP2112K-3.3TRG1",
+  "mpn": "AP2112K-3.3TRG1",
+  "manufacturer": "Diodes Incorporated",
+  "category": "regulator_linear",
+  "description": "600 mA fixed 3.3 V CMOS LDO regulator with enable, SOT-23-5.",
+  "is_generic": false,
+  "lifecycle": "active",
+  "packages": [
+    {
+      "name": "SOT-23-5",
+      "pin_count": 5,
+      "hand_solderable": true,
+      "kicad_footprint": "Package_TO_SOT_SMD:SOT-23-5"
+    }
+  ],
+  "pins": [
+    {
+      "number": "1",
+      "name": "VIN",
+      "roles": [
+        "power"
+      ],
+      "electrical_type": "power_in",
+      "supply_rail": "VIN",
+      "evidence": []
+    },
+    {
+      "number": "2",
+      "name": "GND",
+      "roles": [
+        "ground"
+      ],
+      "electrical_type": "power_in",
+      "evidence": []
+    },
+    {
+      "number": "3",
+      "name": "EN",
+      "roles": [
+        "enable"
+      ],
+      "electrical_type": "input",
+      "supply_rail": "VIN",
+      "must_not_float": true,
+      "notes": "Tie to VIN for always-on operation. Must not be left floating.",
+      "evidence": []
+    },
+    {
+      "number": "4",
+      "name": "NC",
+      "roles": [
+        "not_connected"
+      ],
+      "electrical_type": "no_connect",
+      "evidence": []
+    },
+    {
+      "number": "5",
+      "name": "VOUT",
+      "roles": [
+        "power"
+      ],
+      "electrical_type": "power_out",
+      "evidence": []
+    }
+  ],
+  "supply_rails": [
+    {
+      "name": "VIN",
+      "operating": {
+        "minimum": {
+          "value": 2.5,
+          "unit": "V"
+        },
+        "maximum": {
+          "value": 6.0,
+          "unit": "V"
+        }
+      },
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "AP2112 input voltage range",
+          "source_id": "ap2112-datasheet",
+          "document": {
+            "document_id": "ap2112-datasheet",
+            "title": "AP2112 600mA CMOS LDO Regulator With Enable",
+            "manufacturer": "Diodes Incorporated",
+            "part_number": "AP2112K-3.3TRG1"
+          },
+          "page": 4,
+          "text_value": "VIN operating range 2.5 V to 6.0 V",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-08-29T16:03:35.821438Z"
+        }
+      ]
+    }
+  ],
+  "interfaces": [],
+  "i2c_addresses": [],
+  "regulator": {
+    "output_voltage": {
+      "minimum": {
+        "value": 3.25,
+        "unit": "V"
+      },
+      "typical": {
+        "value": 3.3,
+        "unit": "V"
+      },
+      "maximum": {
+        "value": 3.35,
+        "unit": "V"
+      }
+    },
+    "output_current_max": {
+      "value": 0.6,
+      "unit": "A"
+    },
+    "input_voltage": {
+      "minimum": {
+        "value": 2.5,
+        "unit": "V"
+      },
+      "maximum": {
+        "value": 6.0,
+        "unit": "V"
+      }
+    },
+    "dropout_at_max_current": {
+      "value": 0.25,
+      "unit": "V"
+    },
+    "quiescent_current": {
+      "value": 5.5e-05,
+      "unit": "A"
+    },
+    "fixed_output": true,
+    "evidence": [
+      {
+        "kind": "catalog",
+        "label": "AP2112K-3.3 output voltage and current capability",
+        "source_id": "ap2112-datasheet",
+        "document": {
+          "document_id": "ap2112-datasheet",
+          "title": "AP2112 600mA CMOS LDO Regulator With Enable",
+          "manufacturer": "Diodes Incorporated",
+          "part_number": "AP2112K-3.3TRG1"
+        },
+        "page": 4,
+        "text_value": "3.3 V fixed output, +/-1.5% accuracy, 600 mA maximum output current",
+        "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+        "recorded_at": "2026-08-29T16:03:35.821460Z"
+      },
+      {
+        "kind": "catalog",
+        "label": "AP2112 dropout voltage",
+        "source_id": "ap2112-datasheet",
+        "document": {
+          "document_id": "ap2112-datasheet",
+          "title": "AP2112 600mA CMOS LDO Regulator With Enable",
+          "manufacturer": "Diodes Incorporated",
+          "part_number": "AP2112K-3.3TRG1"
+        },
+        "page": 4,
+        "quantity": {
+          "value": 0.25,
+          "unit": "V"
+        },
+        "text_value": "Typical dropout 250 mV at 600 mA",
+        "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+        "recorded_at": "2026-08-29T16:03:35.821464Z"
+      }
+    ]
+  },
+  "decoupling_rules": [
+    {
+      "rail": "VIN",
+      "per_pin_capacitance": {
+        "value": 1e-06,
+        "unit": "F"
+      },
+      "note": "1 uF ceramic minimum on the input.",
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "AP2112 recommended input capacitor",
+          "source_id": "ap2112-datasheet",
+          "document": {
+            "document_id": "ap2112-datasheet",
+            "title": "AP2112 600mA CMOS LDO Regulator With Enable",
+            "manufacturer": "Diodes Incorporated",
+            "part_number": "AP2112K-3.3TRG1"
+          },
+          "page": 8,
+          "text_value": "A 1 uF ceramic capacitor is recommended on VIN",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-08-29T16:03:35.821474Z"
+        }
+      ]
+    }
+  ],
+  "design_rules": [],
+  "datasheet": {
+    "document_id": "ap2112-datasheet",
+    "title": "AP2112 600mA CMOS LDO Regulator With Enable",
+    "manufacturer": "Diodes Incorporated",
+    "part_number": "AP2112K-3.3TRG1"
+  },
+  "evidence": []
+}

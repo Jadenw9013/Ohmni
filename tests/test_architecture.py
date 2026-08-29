@@ -1,0 +1,154 @@
+"""Dependency direction, enforced mechanically.
+
+REPO_STRUCTURE.md states the rule and nothing checked it. An architecture
+constraint that is only written down is a suggestion; these tests make it real.
+
+The two claims being defended:
+
+* The domain layer is pure data and pure functions. If it could import a vendor
+  SDK or open a socket, "testable without external tools" would be aspiration.
+* No verification rule can consult a language model. The product's entire claim
+  is that its checks are deterministic and reproducible, and one `import
+  anthropic` inside a rule would quietly make that false.
+"""
+
+from __future__ import annotations
+
+import ast
+import importlib
+import pkgutil
+from pathlib import Path
+
+import pytest
+
+import proofboard
+from proofboard.verifier.registry import all_rules
+
+SRC = Path(proofboard.__file__).parent
+
+#: Modules the domain layer may never reach for.
+FORBIDDEN_IN_DOMAIN = {
+    "anthropic", "openai", "httpx", "requests", "urllib", "urllib3", "socket",
+    "subprocess", "fitz", "pymupdf", "pdfplumber", "pypdfium2", "sqlite3",
+    "fastapi", "flask", "boto3", "networkx",
+}
+
+#: Additional modules a deterministic rule may never reach for. File and clock
+#: access are excluded too: a rule whose verdict depends on the wall clock or
+#: on a file outside the catalog is not reproducible.
+FORBIDDEN_IN_RULES = FORBIDDEN_IN_DOMAIN | {"random", "time", "datetime", "os", "pathlib"}
+
+
+def _iter_modules(package_path: Path, prefix: str):
+    for info in pkgutil.walk_packages([str(package_path)], prefix=f"{prefix}."):
+        yield info.name
+
+
+def _imported_top_level_modules(path: Path) -> set[str]:
+    tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    found: set[str] = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                found.add(alias.name.split(".")[0])
+        elif isinstance(node, ast.ImportFrom):
+            if node.level == 0 and node.module:
+                found.add(node.module.split(".")[0])
+    return found
+
+
+def _python_files(directory: Path) -> list[Path]:
+    return sorted(p for p in directory.rglob("*.py") if "__pycache__" not in p.parts)
+
+
+class TestDomainPurity:
+    @pytest.mark.parametrize(
+        "path", _python_files(SRC / "domain"), ids=lambda p: p.name
+    )
+    def test_domain_imports_no_infrastructure(self, path: Path):
+        offenders = _imported_top_level_modules(path) & FORBIDDEN_IN_DOMAIN
+        assert not offenders, (
+            f"{path.relative_to(SRC)} imports infrastructure: {sorted(offenders)}. "
+            "The domain layer must stay pure data and pure functions."
+        )
+
+    @pytest.mark.parametrize(
+        "path", _python_files(SRC / "domain"), ids=lambda p: p.name
+    )
+    def test_domain_does_not_import_sibling_packages(self, path: Path):
+        source = path.read_text(encoding="utf-8")
+        for sibling in ("verifier", "catalog", "adapters", "fixtures", "orchestration"):
+            assert f"from ..{sibling}" not in source, (
+                f"{path.relative_to(SRC)} imports proofboard.{sibling}; "
+                "dependencies point at the domain, never out of it."
+            )
+
+
+class TestVerifierDeterminism:
+    @pytest.mark.parametrize(
+        "path", _python_files(SRC / "verifier" / "rules"), ids=lambda p: p.name
+    )
+    def test_rules_import_nothing_nondeterministic(self, path: Path):
+        offenders = _imported_top_level_modules(path) & FORBIDDEN_IN_RULES
+        assert not offenders, (
+            f"{path.relative_to(SRC)} imports {sorted(offenders)}. A verification rule "
+            "must be a pure function of the circuit and the catalog."
+        )
+
+    def test_verifier_package_imports_no_llm_or_network(self):
+        for path in _python_files(SRC / "verifier"):
+            offenders = _imported_top_level_modules(path) & {
+                "anthropic", "openai", "httpx", "requests", "socket", "subprocess"
+            }
+            assert not offenders, f"{path.relative_to(SRC)} imports {sorted(offenders)}"
+
+    def test_verification_is_reproducible(self, golden, catalog, requirements):
+        from proofboard.verifier import verify
+
+        first = verify(golden, catalog, requirements)
+        second = verify(golden, catalog, requirements)
+        assert first.report_id == second.report_id
+        assert first.finding_ids() == second.finding_ids()
+        assert first.coverage == second.coverage
+        assert [r.outcome for r in first.results] == [r.outcome for r in second.results]
+
+
+class TestRuleRegistry:
+    def test_every_rule_has_an_id_title_and_description(self):
+        for registered in all_rules():
+            assert registered.rule_id.startswith("PB-"), registered.rule_id
+            assert registered.title
+            assert registered.description
+
+    def test_rule_ids_are_unique(self):
+        ids = [r.rule_id for r in all_rules()]
+        assert len(ids) == len(set(ids))
+
+    def test_the_specified_rule_families_all_exist(self):
+        """Every check named in VERIFICATION.md and the brief is implemented."""
+        ids = {r.rule_id for r in all_rules()}
+        required = {
+            "PB-ID-001",    # MPN / part identity
+            "PB-ID-003",    # package and footprint consistency
+            "PB-CONN-002",  # ground connectivity
+            "PB-CONN-003",  # required power pins
+            "PB-PWR-001",   # operating range and absolute maximum
+            "PB-PWR-003",   # voltage-domain compatibility
+            "PB-PWR-004",   # required decoupling
+            "PB-PIN-001",   # output contention
+            "PB-PIN-002",   # floating critical control pins
+            "PB-I2C-001",   # I2C pull-ups
+            "PB-I2C-003",   # duplicate I2C addresses
+            "PB-LED-001",   # LED current limiting
+            "PB-REG-001",   # regulator voltage compatibility
+            "PB-REG-002",   # regulator current capacity
+            "PB-UART-001",  # UART orientation
+            "PB-USB-001",   # USB-C sink termination
+        }
+        assert required <= ids, f"missing rules: {sorted(required - ids)}"
+
+
+class TestPackageImports:
+    def test_every_module_imports_cleanly(self):
+        for name in _iter_modules(SRC, "proofboard"):
+            importlib.import_module(name)
