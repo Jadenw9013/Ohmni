@@ -178,3 +178,22 @@ class TestDatasheetBoundaries:
         forbidden = {"anthropic", "openai", "httpx", "requests", "urllib", "socket"}
         for path in _python_files(SRC / "datasheet"):
             assert not (_imported_top_level_modules(path) & forbidden), path.name
+
+
+class TestEdaBoundaries:
+    def test_domain_and_verifier_do_not_import_eda(self):
+        for directory in (SRC / "domain", SRC / "verifier"):
+            for path in _python_files(directory):
+                source = path.read_text(encoding="utf-8")
+                assert "from ..eda" not in source
+                assert "import ohmni.eda" not in source
+
+    def test_only_kicad_cli_adapter_can_spawn_processes(self):
+        for path in _python_files(SRC / "eda"):
+            if path.name != "erc.py":
+                assert "subprocess" not in _imported_top_level_modules(path), path
+
+    def test_eda_compiler_has_no_model_or_network_dependency(self):
+        forbidden = {"anthropic", "openai", "httpx", "requests", "socket"}
+        for path in _python_files(SRC / "eda"):
+            assert not (_imported_top_level_modules(path) & forbidden), path

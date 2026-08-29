@@ -59,8 +59,15 @@ whose correctness depends on a model would not be a verifier.
 
 Milestone 2 adds local PDF normalization, bounded candidate extraction,
 independent citation and claim verification, and controlled evidence upgrades.
-KiCad emission and ERC, LLM-proposed circuits, SPICE, costing and UI remain
-future work. See `IMPLEMENTATION_PLAN.md` for the status table.
+Deterministic KiCad 10 schematic emission and typed ERC ingestion are implemented.
+LLM-proposed circuits, SPICE, PCB layout/routing, costing and UI remain future work.
+See `IMPLEMENTATION_PLAN.md` for the status table.
+
+```powershell
+python -m ohmni compile-schematic golden
+python -m ohmni erc golden
+python -m ohmni verify golden --eda
+```
 
 ---
 

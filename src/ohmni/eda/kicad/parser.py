@@ -1,0 +1,68 @@
+"""Typed parser for KiCad ERC JSON v1."""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+from ...adapters import ToolStatus
+from ..models import ArtifactFingerprint, ErcFinding, ErcItem, ErcReport, ErcStatus
+
+
+class ErcReportParseError(ValueError):
+    pass
+
+
+def parse_erc_json(
+    path: Path, *, artifact_fingerprint: ArtifactFingerprint, run_id: str,
+    command: list[str], return_code: int, stdout: str = "", stderr: str = "",
+) -> ErcReport:
+    try:
+        raw = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ErcReportParseError(f"cannot read KiCad ERC JSON: {exc}") from exc
+    if not isinstance(raw, dict) or not isinstance(raw.get("sheets"), list):
+        raise ErcReportParseError("KiCad ERC JSON must contain a sheets array")
+    version = raw.get("kicad_version")
+    if not isinstance(version, str):
+        raise ErcReportParseError("KiCad ERC JSON is missing kicad_version")
+    findings: list[ErcFinding] = []
+    for sheet in raw["sheets"]:
+        if not isinstance(sheet, dict) or not isinstance(sheet.get("violations", []), list):
+            raise ErcReportParseError("invalid sheet entry in KiCad ERC JSON")
+        for violation in sheet.get("violations", []):
+            if not isinstance(violation, dict):
+                raise ErcReportParseError("invalid violation entry in KiCad ERC JSON")
+            severity = str(violation.get("severity", "unknown")).lower()
+            items = []
+            for item in violation.get("items", []):
+                pos = item.get("pos") if isinstance(item, dict) else None
+                items.append(ErcItem(
+                    description=str(item.get("description", "")),
+                    uuid=item.get("uuid"),
+                    x=pos.get("x") if isinstance(pos, dict) else None,
+                    y=pos.get("y") if isinstance(pos, dict) else None,
+                ))
+            findings.append(ErcFinding(
+                type=str(violation.get("type", "unknown")),
+                severity=severity,
+                description=str(violation.get("description", "")),
+                excluded=severity == "exclusion",
+                sheet_path=str(sheet.get("path", "/")),
+                items=items,
+                raw=violation,
+            ))
+    active = [f for f in findings if not f.excluded]
+    if any(f.severity == "error" for f in active):
+        status = ErcStatus.FAIL
+    elif any(f.severity == "warning" for f in active):
+        status = ErcStatus.PASS_WITH_WARNINGS
+    else:
+        status = ErcStatus.PASS
+    return ErcReport(
+        status=status, tool_status=ToolStatus.OK, run_id=run_id,
+        kicad_version=version, artifact_fingerprint=artifact_fingerprint,
+        report_path=path.resolve(), command=command, return_code=return_code,
+        stdout=stdout, stderr=stderr, findings=findings,
+        ignored_checks=raw.get("ignored_checks", []),
+    )

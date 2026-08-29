@@ -186,9 +186,13 @@ reporting a false pass. **`UNKNOWN` is a successful answer.**
 
 ### Layers 5 and 6 — EDA and simulation
 
-Not yet implemented. `KicadCli` and `NgspiceCli` detect what is installed and
-report it (`python -m ohmni doctor`); both return `UNAVAILABLE` for actual
-runs, and their subsystems read `UNSUPPORTED`. An empty finding list from a check
+KiCad schematic ERC is implemented as an independent external verifier. The
+compiler emits a fingerprinted KiCad 10 schematic, the bounded CLI adapter runs
+`kicad-cli sch erc` with JSON output, and a typed parser maps the result into an
+additional `KICAD-ERC` rule result without replacing semantic verification.
+Unavailable, malformed, crashed, or stale-artifact runs never become PASS.
+
+SPICE remains unimplemented; its subsystem reads `UNSUPPORTED`. An empty finding list from a check
 that never ran must never look like a clean result.
 
 ---

@@ -38,6 +38,8 @@ ohmni/
 │   │   └── tools.py            # real availability probes for kicad-cli and ngspice
 │   ├── fixtures/
 │   │   └── esp32_env_logger.py # the golden circuit and its broken variants
+│   ├── eda/                     # typed artifacts and external-verifier aggregation
+│   │   └── kicad/               # deterministic emitter, ERC adapter and JSON parser
 │   ├── cli.py                  # python -m ohmni
 │   └── __main__.py
 ├── fixtures/esp32_env_logger/  # exported fixture JSON: the regression corpus

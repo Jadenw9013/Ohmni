@@ -1,8 +1,7 @@
-"""Real availability probes for the external tools.
+"""Real availability probes for external tools.
 
-Detection only. Emission, ERC and simulation are Phase 5 and 6 work behind
-spikes S1 and S2; until those land, these adapters report what is actually on
-the machine and return ``UNAVAILABLE`` for everything else.
+KiCad emission/ERC is implemented in :mod:`ohmni.eda.kicad`; simulation remains
+behind spike S2.
 
 That is the whole point of having them now: the difference between "ERC found
 no violations" and "ERC never ran" has to be visible from the very first
@@ -69,12 +68,11 @@ def find_kicad_cli() -> str | None:
 
 
 class KicadCli:
-    """Detects kicad-cli. Emission and ERC are not implemented yet.
+    """Legacy availability facade retained for the original adapter protocol.
 
-    ``run_erc`` returns ``UNAVAILABLE`` rather than an empty pass even when the
-    executable *is* present, because we have nothing to hand it yet. Reporting
-    "no violations" for a check that never ran is the exact failure this
-    product exists to prevent.
+    Fingerprinted compilation and ERC use ``ohmni.eda.kicad``. The older path-only
+    protocol cannot establish artifact integrity, so it deliberately remains
+    unavailable rather than reporting an unsafe result.
     """
 
     name = "kicad-cli"
@@ -106,14 +104,14 @@ class KicadCli:
             version=text,
             executable=self.executable,
             detail=(
-                "Supports `sch erc --format json` and `pcb drc --format json`. "
-                "Schematic emission is not implemented yet (spike S1)."
+                "Supports JSON schematic ERC and PCB DRC. Ohmni schematic emission "
+                "and ERC are available through `compile-schematic`, `erc`, and `verify --eda`."
             ),
         )
 
     def emit_project(self, circuit, catalog, out_dir: Path) -> Path:  # noqa: ANN001
         raise NotImplementedError(
-            "Schematic emission is Phase 5 work; see spike S1 in PRE_IMPLEMENTATION_REVIEW.md"
+            "use KiCadSchematicCompiler.compile(), which returns a fingerprinted artifact"
         )
 
     def run_erc(self, schematic_path: Path) -> ErcRun:
@@ -124,9 +122,8 @@ class KicadCli:
             findings=[],
             tool_version=available.version,
             detail=(
-                "ERC has not been wired up yet, so it did not run. An empty finding list "
-                "here means 'not checked', not 'no violations'. The EDA subsystem stays "
-                "UNSUPPORTED until spike S1 lands."
+                "the legacy path-only API cannot bind ERC to an artifact fingerprint; "
+                "use ohmni.eda.kicad.KiCadCliAdapter with SchematicArtifact"
             ),
         )
 

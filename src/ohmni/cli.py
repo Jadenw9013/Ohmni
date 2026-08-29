@@ -21,11 +21,14 @@ from pathlib import Path
 
 from .adapters.tools import probe_all
 from .catalog import default_catalog
-from .domain import CircuitIR, RuleOutcome
-from .fixtures.esp32_env_logger import BROKEN_VARIANTS, BUILDERS, requirements
-from .verifier import all_rules, format_report, verify
 from .datasheet import BoundedTextExtractor, DatasheetPipeline, PdfIngestError, PyMuPdfExtractor
 from .datasheet.pipeline import format_ingestion_report
+from .domain import CircuitIR, RuleOutcome
+from .eda.kicad import KiCadCliAdapter, KiCadSchematicCompiler, SchematicCompilationError
+from .eda.models import EdaVerificationBundle, ErcStatus
+from .eda.verification import aggregate_eda
+from .fixtures.esp32_env_logger import BROKEN_VARIANTS, BUILDERS, requirements
+from .verifier import all_rules, format_report, verify
 
 EXIT_OK = 0
 EXIT_BLOCKED = 1
@@ -48,12 +51,88 @@ def cmd_verify(args: argparse.Namespace) -> int:
     circuit = _load_circuit(args.fixture, args.file)
     report = verify(circuit, default_catalog(), requirements() if args.requirements else None)
 
+    if args.eda:
+        destination = Path("out") / "eda" / circuit.ir_id / f"{circuit.ir_id}.kicad_sch"
+        try:
+            artifact = KiCadSchematicCompiler(default_catalog()).compile(circuit, destination)
+        except SchematicCompilationError as exc:
+            print(f"schematic compilation failed: {exc}", file=sys.stderr)
+            return EXIT_BLOCKED
+        erc = KiCadCliAdapter().run_erc(artifact)
+        if args.json:
+            print(EdaVerificationBundle(
+                semantic=report, aggregated=aggregate_eda(report, erc),
+                artifact=artifact, erc=erc,
+            ).model_dump_json(indent=2))
+        else:
+            print(format_report(report, verbose=args.verbose))
+            print("\n" + format_erc_summary(artifact, erc))
+        return EXIT_BLOCKED if report.export_blocked or erc.status in {
+            ErcStatus.FAIL, ErcStatus.ERROR, ErcStatus.UNAVAILABLE, ErcStatus.STALE_ARTIFACT,
+        } else EXIT_OK
+
     if args.json:
         print(report.model_dump_json(indent=2))
     else:
         print(format_report(report, verbose=args.verbose))
 
     return EXIT_BLOCKED if report.export_blocked else EXIT_OK
+
+
+def format_compilation_summary(artifact) -> str:
+    lines = [
+        "Compiled schematic", "", f"Circuit hash: {artifact.circuit_content_hash}",
+        f"Artifact: {artifact.path}",
+        f"Components: {len(artifact.compilation.symbol_bindings)}",
+        f"Nets: {len(artifact.compilation.net_mapping)}",
+        f"Artifact SHA-256: {artifact.fingerprint.digest}",
+        f"Compilation warnings: {len(artifact.compilation.warnings)}",
+    ]
+    lines.extend(f"  - {w.code}: {w.message}" for w in artifact.compilation.warnings)
+    return "\n".join(lines)
+
+
+def format_erc_summary(artifact, erc) -> str:
+    counts = {"error": 0, "warning": 0, "exclusion": 0}
+    for finding in erc.findings:
+        counts[finding.severity] = counts.get(finding.severity, 0) + 1
+    return "\n".join([
+        f"KiCad {erc.kicad_version or 'UNAVAILABLE'} ERC",
+        f"Artifact: {artifact.path}",
+        f"Artifact SHA-256: {erc.artifact_fingerprint.digest}",
+        f"Violations: {counts['error']} errors, {counts['warning']} warnings, {counts['exclusion']} exclusions",
+        f"Status: {erc.status.value.upper()}",
+        "Limitation: ERC validates only configured KiCad electrical checks on this exact artifact.",
+    ])
+
+
+def _compile_named(args):
+    circuit = _load_circuit(args.fixture, None)
+    destination = args.output or Path("out") / "eda" / args.fixture / f"{args.fixture}.kicad_sch"
+    return circuit, KiCadSchematicCompiler(default_catalog()).compile(circuit, destination)
+
+
+def cmd_compile_schematic(args: argparse.Namespace) -> int:
+    try:
+        _, artifact = _compile_named(args)
+    except SchematicCompilationError as exc:
+        print(f"schematic compilation failed: {exc}", file=sys.stderr)
+        return EXIT_BLOCKED
+    print(artifact.model_dump_json(indent=2) if args.json else format_compilation_summary(artifact))
+    return EXIT_OK
+
+
+def cmd_erc(args: argparse.Namespace) -> int:
+    try:
+        _, artifact = _compile_named(args)
+    except SchematicCompilationError as exc:
+        print(f"schematic compilation failed: {exc}", file=sys.stderr)
+        return EXIT_BLOCKED
+    erc = KiCadCliAdapter().run_erc(artifact)
+    print(erc.model_dump_json(indent=2) if args.json else format_erc_summary(artifact, erc))
+    return EXIT_BLOCKED if erc.status in {
+        ErcStatus.FAIL, ErcStatus.ERROR, ErcStatus.UNAVAILABLE, ErcStatus.STALE_ARTIFACT,
+    } else EXIT_OK
 
 
 def cmd_verify_all(args: argparse.Namespace) -> int:
@@ -185,6 +264,7 @@ def build_parser() -> argparse.ArgumentParser:
     verify_parser.add_argument("--file", type=Path, help="verify a CircuitIR JSON file instead")
     verify_parser.add_argument("--verbose", "-v", action="store_true", help="list every rule")
     verify_parser.add_argument("--json", action="store_true", help="emit the report as JSON")
+    verify_parser.add_argument("--eda", action="store_true", help="also compile and run real KiCad ERC")
     verify_parser.add_argument(
         "--no-requirements",
         dest="requirements",
@@ -213,6 +293,18 @@ def build_parser() -> argparse.ArgumentParser:
     ingest_parser.add_argument("--part", help="catalog part_id to review for evidence upgrades")
     ingest_parser.add_argument("--json", action="store_true", help="emit serializable report JSON")
     ingest_parser.set_defaults(func=cmd_ingest_datasheet)
+
+    compile_parser = sub.add_parser("compile-schematic", help="compile a fixture to KiCad")
+    compile_parser.add_argument("fixture", help=f"one of: {', '.join(sorted(BUILDERS))}")
+    compile_parser.add_argument("--output", type=Path)
+    compile_parser.add_argument("--json", action="store_true")
+    compile_parser.set_defaults(func=cmd_compile_schematic)
+
+    erc_parser = sub.add_parser("erc", help="compile a fixture and run KiCad ERC")
+    erc_parser.add_argument("fixture", help=f"one of: {', '.join(sorted(BUILDERS))}")
+    erc_parser.add_argument("--output", type=Path)
+    erc_parser.add_argument("--json", action="store_true")
+    erc_parser.set_defaults(func=cmd_erc)
 
     return parser
 

@@ -349,11 +349,13 @@ Out of MVP scope per the brief. Java 25 is present, so it stays viable later. No
 
 ## 9. Technical spikes required
 
-- **S1 — KiCad CLI** (blocking Phase 5, not Phase 1). **Half done.**
-  *Confirmed:* `kicad-cli` 10.0.5 is installed and supports `sch erc --format json`,
-  `pcb drc --format json` and `--exit-code-violations`. `python -m ohmni doctor`
-  reports it. *Still open:* whether a hand-emitted `.kicad_sch` with inline `lib_symbols`
-  and global-label connectivity is accepted and ERC-checked.
+- **S1 — KiCad CLI** (blocking Phase 5, not Phase 1). **Closed in Milestone 3.**
+  KiCad 10.0.5 accepts and ERC-checks the deterministic Ohmni schematic. Inline
+  symbols make the artifact parse independently of symbol lookup, although KiCad
+  still reports that the `ohmni` namespace is absent from the configured library
+  table. Label-based connectivity works, with one important correction: identical
+  label coordinates electrically join nets, so deterministic layout must guarantee
+  non-overlapping pin endpoints even though graphics do not define semantic intent.
 - **S2 — ngspice** (blocking Phase 6). **Diagnosed, not resolved.** Confirmed that no
   standalone `ngspice` exists on this machine, that winget has no package for it, and that
   KiCad ships it as `ngspice.dll` — a shared library for its internal simulator, not a CLI.

@@ -12,7 +12,7 @@
 > | 2. Datasheet ingestion | done - local PDF parsing, bounded extraction, independent evidence verification |
 > | 3. Deterministic verifier | done - 24 rules, golden + 13 broken fixtures |
 > | 4. Circuit generation (LLM) | not started - deliberately last |
-> | 5. KiCad integration | not started - `kicad-cli` 10.0.5 confirmed, spike S1 open |
+> | 5. KiCad integration | **schematic emission + ERC complete** - PCB work remains deferred |
 > | 6. Simulation | not started - **[changed]** target is now a DC operating point |
 > | 7. BOM and cost | not started |
 > | 8. Teaching UI | not started |
@@ -90,8 +90,9 @@ Add:
 
 Confirmed on the development machine: `kicad-cli` 10.0.5 supports
 `sch erc --format json`, `pcb drc --format json` and `--exit-code-violations`.
-Spike S1 remains: whether a hand-emitted `.kicad_sch` using inline `lib_symbols`
-and global-label connectivity is accepted and ERC-checked.
+Spike S1 is closed: KiCad 10.0.5 accepts and ERC-checks Ohmni-emitted `.kicad_sch`
+files using inline `lib_symbols` and global-label connectivity. The adapter preserves
+KiCad's library/footprint-configuration warnings instead of suppressing them.
 
 ## Phase 6: simulation **[changed]**
 
