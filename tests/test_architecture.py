@@ -102,6 +102,13 @@ class TestVerifierDeterminism:
             }
             assert not offenders, f"{path.relative_to(SRC)} imports {sorted(offenders)}"
 
+    def test_verifier_knows_nothing_about_pdf_ingestion(self):
+        for path in _python_files(SRC / "verifier"):
+            source = path.read_text(encoding="utf-8")
+            assert "datasheet" not in _imported_top_level_modules(path)
+            assert "from ..datasheet" not in source
+            assert "import ohmni.datasheet" not in source
+
     def test_verification_is_reproducible(self, golden, catalog, requirements):
         from ohmni.verifier import verify
 
@@ -152,3 +159,22 @@ class TestPackageImports:
     def test_every_module_imports_cleanly(self):
         for name in _iter_modules(SRC, "ohmni"):
             importlib.import_module(name)
+
+
+class TestDatasheetBoundaries:
+    def test_datasheet_pipeline_does_not_depend_on_electrical_verifier(self):
+        for path in _python_files(SRC / "datasheet"):
+            source = path.read_text(encoding="utf-8")
+            assert "from ..verifier" not in source
+            assert "import ohmni.verifier" not in source
+
+    def test_only_pdf_adapter_imports_parser_library(self):
+        for path in _python_files(SRC / "datasheet"):
+            imports = _imported_top_level_modules(path)
+            if path.name != "pdf.py":
+                assert not ({"fitz", "pymupdf"} & imports), path.name
+
+    def test_datasheet_pipeline_has_no_network_or_model_sdk(self):
+        forbidden = {"anthropic", "openai", "httpx", "requests", "urllib", "socket"}
+        for path in _python_files(SRC / "datasheet"):
+            assert not (_imported_top_level_modules(path) & forbidden), path.name

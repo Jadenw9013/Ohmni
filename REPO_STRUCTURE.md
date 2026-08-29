@@ -30,6 +30,7 @@ ohmni/
 │   ├── catalog/
 │   │   ├── loader.py           # JsonPartCatalog
 │   │   └── data/parts/*.json   # the part catalog; facts carry provenance
+│   ├── datasheet/               # PDF adapter, bounded extraction, claim verification, merge
 │   ├── adapters/
 │   │   ├── __init__.py         # Protocols: PartCatalog, LlmProvider, DatasheetExtractor,
 │   │   │                       #            KicadTool, SpiceTool, Router

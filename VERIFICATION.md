@@ -19,6 +19,10 @@ enforced by `tests/test_architecture.py`, not left to convention: the product's
 claim is that its checks are deterministic and reproducible, and one
 `import anthropic` inside a rule would quietly make that false.
 
+Datasheet ingestion is upstream of this boundary. It may parse files and attach
+machine-verified `Evidence` to `ComponentSpec`; electrical rules remain ignorant
+of PDFs and consume only the same typed catalog contract as before.
+
 ## Rule outcomes
 
 Every rule reports one of five outcomes. This is the most important addition to

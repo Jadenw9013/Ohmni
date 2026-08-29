@@ -475,3 +475,15 @@ reaches for infrastructure, or if any verification rule imports a model SDK, the
 the filesystem or the clock. It also asserts that verifying the same circuit twice produces
 an identical report, and that every rule named in `VERIFICATION.md` and
 `MASTER_BUILD_PROMPT.md` is actually registered.
+
+---
+
+## 14. Milestone 2 evidence re-verification finding
+
+Ingesting Bosch Sensortec's BME280 data sheet revision 1.24 exposed a real seed
+catalog discrepancy: the checked document states a 4.25 V absolute maximum for
+VDD and VDDIO, while the hand-entered catalog records 4.3 V. The ingestion
+pipeline deliberately does not overwrite either value. It emits an
+`EvidenceConflict` carrying both sources and requires review of the applicable
+revision. This confirms risk R4 and the decision to label seed facts
+`CATALOG_REPORTED` rather than prematurely claiming datasheet support.

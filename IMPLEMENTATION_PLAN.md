@@ -9,7 +9,7 @@
 > |---|---|
 > | 0. Lock the demo | done - ESP32-WROOM-32E environmental logger |
 > | 1. Domain foundation | done - `src/ohmni/domain/`, 314 tests |
-> | 2. Datasheet ingestion | not started - blocked on spike S3 |
+> | 2. Datasheet ingestion | done - local PDF parsing, bounded extraction, independent evidence verification |
 > | 3. Deterministic verifier | done - 24 rules, golden + 13 broken fixtures |
 > | 4. Circuit generation (LLM) | not started - deliberately last |
 > | 5. KiCad integration | not started - `kicad-cli` 10.0.5 confirmed, spike S1 open |
@@ -47,6 +47,11 @@ Added beyond the plan, because everything else depended on it: a units layer.
 No engineering quantity anywhere is a bare string or a bare float.
 
 ## Phase 2: datasheet ingestion
+
+Status: **DONE.** Implemented as separate parsing, candidate extraction,
+source-relocation, semantic-support and catalog-merge stages. The initial
+extractor is deterministic and deliberately bounded; no LLM or network is
+required. Scanned PDFs report unsupported rather than invoking OCR.
 
 Build:
 - PDF upload

@@ -50,6 +50,15 @@ from .events import (
     EventKind,
     Lesson,
 )
+from .document import (
+    DatasheetDocument,
+    DatasheetIdentity,
+    DocumentFingerprint,
+    DocumentMetadata,
+    DocumentPage,
+    DocumentRegion,
+    DocumentSpan,
+)
 from .evidence import (
     Claim,
     ClaimStatus,
@@ -107,10 +116,17 @@ __all__ = [
     "ComponentSpec",
     "ConstraintKind",
     "DecisionRecord",
+    "DatasheetDocument",
+    "DatasheetIdentity",
     "DecouplingRule",
     "DesignConstraint",
     "DesignRule",
     "DocumentRef",
+    "DocumentFingerprint",
+    "DocumentMetadata",
+    "DocumentPage",
+    "DocumentRegion",
+    "DocumentSpan",
     "EngineeringEvent",
     "EngineeringNotebook",
     "EventKind",

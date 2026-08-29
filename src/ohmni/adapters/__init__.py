@@ -22,7 +22,8 @@ from pydantic import BaseModel, Field
 
 from ..domain.circuit import CircuitIR
 from ..domain.component import ComponentSpec
-from ..domain.evidence import DocumentRef, Evidence
+from ..domain.evidence import Evidence
+from ..domain.document import DatasheetDocument
 from ..domain.units import Quantity
 from ..domain.verification import VerificationFinding
 
@@ -65,27 +66,6 @@ class PartCatalog(Protocol):
     def require(self, part_id: str) -> ComponentSpec: ...
 
     def all_parts(self) -> list[ComponentSpec]: ...
-
-
-class ExtractedPage(BaseModel):
-    """One page of a document, as text, with its page number preserved."""
-
-    page: int = Field(ge=1)
-    text: str
-
-
-class DatasheetDocument(BaseModel):
-    """An ingested document. Content is untrusted data, never instructions."""
-
-    ref: DocumentRef
-    pages: list[ExtractedPage] = Field(default_factory=list)
-    source_path: str | None = None
-
-    def page_text(self, page: int) -> str | None:
-        for p in self.pages:
-            if p.page == page:
-                return p.text
-        return None
 
 
 @runtime_checkable
@@ -195,7 +175,6 @@ __all__ = [
     "DatasheetDocument",
     "DatasheetExtractor",
     "ErcRun",
-    "ExtractedPage",
     "KicadTool",
     "LlmProvider",
     "OperatingPoint",

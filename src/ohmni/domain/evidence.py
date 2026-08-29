@@ -145,6 +145,11 @@ class Evidence(BaseModel):
             "False means the check ran and failed, which downgrades the claim to UNKNOWN."
         ),
     )
+    source_start: int | None = Field(default=None, ge=0)
+    source_end: int | None = Field(default=None, ge=0)
+    source_region: tuple[float, float, float, float] | None = Field(
+        default=None, description="PDF page coordinates (x0, y0, x1, y1) when available."
+    )
 
     # What it says.
     quantity: Quantity | None = None
@@ -173,6 +178,10 @@ class Evidence(BaseModel):
                     "datasheet evidence requires " + ", ".join(missing) + "; "
                     "an uncited datasheet claim is not datasheet-supported"
                 )
+            if (self.source_start is None) != (self.source_end is None):
+                raise ValueError("datasheet evidence source span requires both start and end")
+            if self.source_start is not None and self.source_end <= self.source_start:
+                raise ValueError("datasheet evidence source_end must be greater than source_start")
         elif self.kind is EvidenceKind.CALCULATION:
             if not self.detail:
                 raise ValueError(

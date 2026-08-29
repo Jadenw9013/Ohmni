@@ -20,11 +20,13 @@ from pydantic import BaseModel
 
 from ..domain.circuit import CircuitIR
 from ..domain.component import ComponentSpec
+from ..domain.document import (
+    DatasheetDocument, DatasheetIdentity, DocumentFingerprint, DocumentMetadata,
+    DocumentPage, DocumentSpan,
+)
 from ..domain.evidence import DocumentRef
 from . import (
-    DatasheetDocument,
     ErcRun,
-    ExtractedPage,
     PartCatalog,
     PartNotFoundError,
     SimulationRun,
@@ -66,10 +68,24 @@ class StaticDatasheetExtractor:
         self._documents = documents or {}
 
     def add(self, name: str, ref: DocumentRef, pages: dict[int, str]) -> DatasheetDocument:
+        import hashlib
+        digest = hashlib.sha256("\n".join(pages.values()).encode()).hexdigest()
         doc = DatasheetDocument(
-            ref=ref,
-            pages=[ExtractedPage(page=n, text=t) for n, t in sorted(pages.items())],
-            source_path=name,
+            metadata=DocumentMetadata(
+                document_id=ref.document_id,
+                fingerprint=DocumentFingerprint(digest=digest),
+                title=ref.title,
+                page_count=len(pages),
+                identity=DatasheetIdentity(
+                    manufacturer=ref.manufacturer,
+                    detected_parts=[ref.part_number] if ref.part_number else [],
+                    revision=ref.revision,
+                ),
+            ),
+            pages=[DocumentPage(
+                number=n, text=t,
+                spans=[DocumentSpan(start=0, end=len(t), text=t)] if t else [],
+            ) for n, t in sorted(pages.items())],
         )
         self._documents[name] = doc
         return doc

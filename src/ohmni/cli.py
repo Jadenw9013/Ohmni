@@ -24,6 +24,8 @@ from .catalog import default_catalog
 from .domain import CircuitIR, RuleOutcome
 from .fixtures.esp32_env_logger import BROKEN_VARIANTS, BUILDERS, requirements
 from .verifier import all_rules, format_report, verify
+from .datasheet import BoundedTextExtractor, DatasheetPipeline, PdfIngestError, PyMuPdfExtractor
+from .datasheet.pipeline import format_ingestion_report
 
 EXIT_OK = 0
 EXIT_BLOCKED = 1
@@ -155,6 +157,20 @@ def cmd_doctor(args: argparse.Namespace) -> int:
     return EXIT_OK
 
 
+def cmd_ingest_datasheet(args: argparse.Namespace) -> int:
+    catalog = default_catalog()
+    component = catalog.get(args.part) if args.part else None
+    try:
+        report, _ = DatasheetPipeline(PyMuPdfExtractor(), BoundedTextExtractor()).ingest(
+            args.path, component
+        )
+    except PdfIngestError as exc:
+        print(f"datasheet ingestion failed [{exc.status.value}]: {exc}", file=sys.stderr)
+        return EXIT_BLOCKED
+    print(report.model_dump_json(indent=2) if args.json else format_ingestion_report(report))
+    return EXIT_OK
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="ohmni",
@@ -189,6 +205,14 @@ def build_parser() -> argparse.ArgumentParser:
 
     doctor_parser = sub.add_parser("doctor", help="report external tool availability")
     doctor_parser.set_defaults(func=cmd_doctor)
+
+    ingest_parser = sub.add_parser(
+        "ingest-datasheet", help="extract and independently verify bounded datasheet facts"
+    )
+    ingest_parser.add_argument("path", type=Path)
+    ingest_parser.add_argument("--part", help="catalog part_id to review for evidence upgrades")
+    ingest_parser.add_argument("--json", action="store_true", help="emit serializable report JSON")
+    ingest_parser.set_defaults(func=cmd_ingest_datasheet)
 
     return parser
 

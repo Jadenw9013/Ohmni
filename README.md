@@ -57,9 +57,10 @@ whose correctness depends on a model would not be a verifier.
 | Golden circuit | no blocking findings, **100% rule coverage** |
 | Broken variants | each caught by exactly the rule and severity it was built to trip |
 
-Not yet built, in the order they come next: datasheet ingestion, KiCad emission
-and ERC, LLM-proposed circuits behind schema validation, SPICE, costing, UI. See
-`IMPLEMENTATION_PLAN.md` for the status table.
+Milestone 2 adds local PDF normalization, bounded candidate extraction,
+independent citation and claim verification, and controlled evidence upgrades.
+KiCad emission and ERC, LLM-proposed circuits, SPICE, costing and UI remain
+future work. See `IMPLEMENTATION_PLAN.md` for the status table.
 
 ---
 
@@ -80,6 +81,7 @@ python -m ohmni verify-all # the whole fixture corpus, one line per case
 python -m ohmni doctor              # what external tools are actually present
 python -m ohmni rules               # the 24 deterministic rules
 python -m ohmni parts               # the part catalog
+python -m ohmni ingest-datasheet sensor.pdf --part BME280
 python -m ohmni verify golden       # the reference circuit
 python -m ohmni verify golden -v    # ...listing every rule's outcome
 python -m ohmni verify sensor_on_5v # a circuit with the sensor on 5 V
