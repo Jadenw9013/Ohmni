@@ -11,9 +11,9 @@ from pathlib import Path
 
 import pytest
 
-from proofboard.domain import CircuitIR, RuleOutcome, Severity
-from proofboard.fixtures.esp32_env_logger import BROKEN_VARIANTS, BUILDERS
-from proofboard.verifier import format_report, verify
+from ohmni.domain import CircuitIR, RuleOutcome, Severity
+from ohmni.fixtures.esp32_env_logger import BROKEN_VARIANTS, BUILDERS
+from ohmni.verifier import format_report, verify
 
 FIXTURE_JSON_DIR = (
     Path(__file__).resolve().parents[1] / "fixtures" / "esp32_env_logger"

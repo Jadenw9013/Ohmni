@@ -1,6 +1,6 @@
 """Typed physical quantities.
 
-No electrical value anywhere in ProofBoard is a bare string or a bare float.
+No electrical value anywhere in Ohmni is a bare string or a bare float.
 Every quantity carries its unit, and every quantity is stored in the canonical
 SI base unit for that dimension (volts, amperes, ohms, farads, ...). Engineering
 notation is a *presentation* and *parsing* concern only.

@@ -10,8 +10,8 @@ import json
 
 import pytest
 
-from proofboard.cli import EXIT_BLOCKED, EXIT_OK, main
-from proofboard.fixtures.esp32_env_logger import BROKEN_VARIANTS
+from ohmni.cli import EXIT_BLOCKED, EXIT_OK, main
+from ohmni.fixtures.esp32_env_logger import BROKEN_VARIANTS
 
 
 class TestExitCodes:
@@ -84,5 +84,5 @@ class TestEntryPointDoesNotRunOnImport:
         """
         import importlib
 
-        module = importlib.import_module("proofboard.__main__")
+        module = importlib.import_module("ohmni.__main__")
         assert hasattr(module, "main")

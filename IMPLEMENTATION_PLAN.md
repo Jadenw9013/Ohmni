@@ -8,7 +8,7 @@
 > | Phase | Status |
 > |---|---|
 > | 0. Lock the demo | done - ESP32-WROOM-32E environmental logger |
-> | 1. Domain foundation | done - `src/proofboard/domain/`, 314 tests |
+> | 1. Domain foundation | done - `src/ohmni/domain/`, 314 tests |
 > | 2. Datasheet ingestion | not started - blocked on spike S3 |
 > | 3. Deterministic verifier | done - 24 rules, golden + 13 broken fixtures |
 > | 4. Circuit generation (LLM) | not started - deliberately last |
@@ -37,7 +37,7 @@ Recommended:
 ## Phase 1: domain foundation - DONE
 
 Built:
-- Pydantic v2 models under `src/proofboard/domain/`
+- Pydantic v2 models under `src/ohmni/domain/`
 - typed units (`Quantity`, `ValueRange`, engineering-notation parsing)
 - evidence model with per-kind provenance validation and derived claim status
 - circuit IR with content hashing for repair-loop cycle detection
@@ -65,7 +65,7 @@ covered by a fixture; see `VERIFICATION.md` for the full table.
 
 Proven against a golden ESP32 circuit (no blocking findings, 100% coverage) and
 13 broken variants, each caught by exactly the rule and severity it was built to
-trip. `python -m proofboard verify-all`.
+trip. `python -m ohmni verify-all`.
 
 This is higher priority than layout, and was also pulled ahead of Phase 2.
 

@@ -2,7 +2,7 @@
 
 A :class:`ComponentSpec` is what the *part* is, as stated by its datasheet.
 It is not what a particular instance on a board is doing -- that lives in
-:mod:`proofboard.domain.circuit`. Keeping them apart is what makes the package
+:mod:`ohmni.domain.circuit`. Keeping them apart is what makes the package
 consistency rule and the passive-value rules expressible at all
 (PRE_IMPLEMENTATION_REVIEW.md 5.3).
 """

@@ -13,7 +13,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from proofboard.fixtures.esp32_env_logger import BUILDERS, requirements
+from ohmni.fixtures.esp32_env_logger import BUILDERS, requirements
 
 OUT_DIR = Path(__file__).resolve().parents[1] / "fixtures" / "esp32_env_logger"
 

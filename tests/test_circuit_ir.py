@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 from pydantic import ValidationError
 
-from proofboard.domain import (
+from ohmni.domain import (
     CircuitComponent,
     CircuitIR,
     Net,
@@ -142,7 +142,7 @@ class TestContentHash:
     def test_hash_supports_oscillation_detection(self, golden):
         # The repair loop needs to notice when a patch lands on a state it has
         # already been in. That only works if a round trip collides.
-        from proofboard.fixtures.esp32_env_logger import broken_missing_i2c_pullups
+        from ohmni.fixtures.esp32_env_logger import broken_missing_i2c_pullups
 
         seen = {golden.content_hash}
         broken = broken_missing_i2c_pullups()

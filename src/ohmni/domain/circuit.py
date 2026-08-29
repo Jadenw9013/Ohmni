@@ -11,7 +11,7 @@ Two deliberate choices:
   of bug where a pin's idea of its net and the net's idea of its members
   disagree.
 * Voltage is **not** declared per pin. It is derived from what drives each net
-  (see :mod:`proofboard.verifier.analysis`). A declared voltage is a fact a
+  (see :mod:`ohmni.verifier.analysis`). A declared voltage is a fact a
   language model can assert; a derived one is a fact about the actual topology
   (PRE_IMPLEMENTATION_REVIEW.md 4.1).
 """

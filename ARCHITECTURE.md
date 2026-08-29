@@ -1,5 +1,11 @@
 # Architecture
 
+Ohmni is an evidence-first AI electronics engineering mentor. The architecture
+supports a path from idea and requirements through evidence-grounded circuit
+design, verification, simulation, EDA artifacts, prototyping and learning. The
+current MVP remains the low-voltage PCB vertical slice; this broader positioning
+does not expand its implementation scope.
+
 ## High-level design
 
 Frontend -> API -> Orchestrator -> Typed domain services -> EDA / simulation / verification tools

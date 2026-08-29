@@ -1,8 +1,8 @@
 # Verification Strategy
 
 > **Status: implemented.** 24 deterministic rules, in
-> `src/proofboard/verifier/rules/`. Run `python -m proofboard rules` to list
-> them and `python -m proofboard verify golden -v` to see them execute.
+> `src/ohmni/verifier/rules/`. Run `python -m ohmni rules` to list
+> them and `python -m ohmni verify golden -v` to see them execute.
 
 ## Principle
 
@@ -71,7 +71,7 @@ labelled verified, would violate the hard target "unsupported claims marked
 verified: 0". A user may still export the artifacts clearly marked unresolved —
 that is a UI decision, not a change to this policy.
 
-`python -m proofboard verify <fixture>` exits non-zero exactly when export is
+`python -m ohmni verify <fixture>` exits non-zero exactly when export is
 blocked, so this is usable in CI on its own.
 
 ---
@@ -183,7 +183,7 @@ reporting a false pass. **`UNKNOWN` is a successful answer.**
 ### Layers 5 and 6 — EDA and simulation
 
 Not yet implemented. `KicadCli` and `NgspiceCli` detect what is installed and
-report it (`python -m proofboard doctor`); both return `UNAVAILABLE` for actual
+report it (`python -m ohmni doctor`); both return `UNAVAILABLE` for actual
 runs, and their subsystems read `UNSUPPORTED`. An empty finding list from a check
 that never ran must never look like a clean result.
 
@@ -208,6 +208,6 @@ does not represent it as validated.
 ## Regression policy
 
 Every electrical bug found becomes a permanent fixture variant in
-`src/proofboard/fixtures/` and a case in `tests/test_fixtures.py`, asserting the
-specific rule and severity that should catch it. `python -m proofboard verify-all`
+`src/ohmni/fixtures/` and a case in `tests/test_fixtures.py`, asserting the
+specific rule and severity that should catch it. `python -m ohmni verify-all`
 runs the whole corpus in one line of output per case.

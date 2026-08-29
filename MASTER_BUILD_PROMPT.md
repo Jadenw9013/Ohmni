@@ -1,6 +1,6 @@
 # Master Greenfield Build Prompt
 
-You are the lead engineer responsible for building **ProofBoard**, an evidence-first AI PCB mentor for hobbyists.
+You are the lead engineer responsible for building **Ohmni**, an evidence-first AI electronics engineering mentor for people building hardware.
 
 Your goal is not to build a generic AI PCB generator.
 
@@ -208,7 +208,7 @@ The system must:
 - run ERC
 - simulate the power subsystem
 - generate a BOM
-- produce an engineering notebook
+- produce an Engineering Notebook
 
 ## Development order
 

@@ -322,7 +322,7 @@ Out of MVP scope per the brief. Java 25 is present, so it stays viable later. No
 
 - **`packages/` with bare modules and no packaging metadata** (`REPO_STRUCTURE.md`) causes
   `sys.path` problems on Windows and cannot be installed or imported cleanly.
-  **Correction:** one installable package at `src/proofboard/` with a single
+  **Correction:** one installable package at `src/ohmni/` with a single
   `pyproject.toml`. Subpackages preserve the document's dependency-direction rule
   (`domain` imports nothing from infrastructure), and the rule is now *enforceable by an
   import test* rather than aspirational. `apps/web/` is retained for Next.js.
@@ -351,7 +351,7 @@ Out of MVP scope per the brief. Java 25 is present, so it stays viable later. No
 
 - **S1 — KiCad CLI** (blocking Phase 5, not Phase 1). **Half done.**
   *Confirmed:* `kicad-cli` 10.0.5 is installed and supports `sch erc --format json`,
-  `pcb drc --format json` and `--exit-code-violations`. `python -m proofboard doctor`
+  `pcb drc --format json` and `--exit-code-violations`. `python -m ohmni doctor`
   reports it. *Still open:* whether a hand-emitted `.kicad_sch` with inline `lib_symbols`
   and global-label connectivity is accepted and ERC-checked.
 - **S2 — ngspice** (blocking Phase 6). **Diagnosed, not resolved.** Confirmed that no
@@ -430,12 +430,12 @@ Added after implementation, so this document records outcomes as well as intenti
 
 | | |
 |---|---|
-| Domain models | `src/proofboard/domain/` — units, evidence, component, requirements, circuit, verification, events |
+| Domain models | `src/ohmni/domain/` — units, evidence, component, requirements, circuit, verification, events |
 | Verification rules | 24, deterministic, in five of the six layers `VERIFICATION.md` names |
 | Part catalog | 9 parts, every fact carrying provenance and a page reference |
 | Fixtures | 1 golden circuit, 13 broken variants, exported to JSON as the regression corpus |
 | Tests | 314, running in under a second, with no external tool or network access |
-| CLI | `python -m proofboard {verify, verify-all, rules, parts, doctor}` |
+| CLI | `python -m ohmni {verify, verify-all, rules, parts, doctor}` |
 
 Results: the golden circuit reaches **100% rule coverage with no blocking findings**; each
 of the 13 broken variants is caught by **exactly** the rule and severity it was built to

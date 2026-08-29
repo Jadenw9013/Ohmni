@@ -1,4 +1,4 @@
-"""ProofBoard: an evidence-first PCB mentor.
+"""Ohmni: an evidence-first AI electronics engineering mentor.
 
 LLM proposes. Datasheets ground. Deterministic rules verify.
 Simulation tests. Hardware decides. The user learns.

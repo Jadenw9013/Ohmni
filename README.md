@@ -1,6 +1,17 @@
-# ProofBoard — an evidence-first PCB mentor
+# Ohmni
 
-An AI-assisted PCB design and learning platform for hobbyists.
+**Build circuits. Understand why.**
+
+Ohmni is an evidence-first AI electronics engineering mentor for people
+building hardware. Instead of simply generating a finished circuit, it helps
+users move from an idea through requirements, datasheets, component selection,
+circuit design, verification, simulation, PCB design and physical prototyping,
+while explaining the engineering behind important decisions.
+
+The current MVP remains focused on low-voltage hobbyist MCU and sensor boards.
+The broader product journey is:
+
+`Idea -> Requirements -> Datasheets -> Circuit -> Verification -> Simulation -> PCB -> Prototype -> Learning`
 
 ## Core thesis
 
@@ -16,6 +27,10 @@ prose. It should behave like an engineering mentor and compiler:
 7. Explain every important decision using traceable evidence.
 8. Export usable EDA artifacts.
 9. Guide the user through prototype testing.
+
+The Engineering Notebook records requirements, decisions, evidence,
+calculations, simulations, verification results, alternatives, uncertainty and
+lessons throughout that journey.
 
 ### Architectural rule
 
@@ -34,7 +49,7 @@ whose correctness depends on a model would not be a verifier.
 
 | | |
 |---|---|
-| Domain models | Pydantic v2, strict typing, `src/proofboard/domain/` |
+| Domain models | Pydantic v2, strict typing, `src/ohmni/domain/` |
 | Verification rules | **24**, deterministic, independently testable |
 | Part catalog | 9 parts, every fact carrying provenance |
 | Fixtures | 1 golden circuit + **13** broken variants |
@@ -56,19 +71,19 @@ python -m venv .venv
 pip install -e ".[dev]"
 
 pytest                          # 314 tests
-python -m proofboard verify-all # the whole fixture corpus, one line per case
+python -m ohmni verify-all # the whole fixture corpus, one line per case
 ```
 
 ### Try it
 
 ```bash
-python -m proofboard doctor              # what external tools are actually present
-python -m proofboard rules               # the 24 deterministic rules
-python -m proofboard parts               # the part catalog
-python -m proofboard verify golden       # the reference circuit
-python -m proofboard verify golden -v    # ...listing every rule's outcome
-python -m proofboard verify sensor_on_5v # a circuit with the sensor on 5 V
-python -m proofboard verify golden --json
+python -m ohmni doctor              # what external tools are actually present
+python -m ohmni rules               # the 24 deterministic rules
+python -m ohmni parts               # the part catalog
+python -m ohmni verify golden       # the reference circuit
+python -m ohmni verify golden -v    # ...listing every rule's outcome
+python -m ohmni verify sensor_on_5v # a circuit with the sensor on 5 V
+python -m ohmni verify golden --json
 ```
 
 `verify` exits non-zero exactly when the design cannot be exported as verified,
@@ -81,7 +96,7 @@ so it is usable in CI as-is.
 Move the environmental sensor from the 3.3 V rail to 5 V and ask:
 
 ```
-$ python -m proofboard verify sensor_on_5v
+$ python -m ohmni verify sensor_on_5v
 
 summary : 11 findings (2 critical, 6 error, 1 warning, 2 info); coverage 100%; export BLOCKED
 

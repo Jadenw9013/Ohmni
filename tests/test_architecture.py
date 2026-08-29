@@ -21,10 +21,10 @@ from pathlib import Path
 
 import pytest
 
-import proofboard
-from proofboard.verifier.registry import all_rules
+import ohmni
+from ohmni.verifier.registry import all_rules
 
-SRC = Path(proofboard.__file__).parent
+SRC = Path(ohmni.__file__).parent
 
 #: Modules the domain layer may never reach for.
 FORBIDDEN_IN_DOMAIN = {
@@ -79,7 +79,7 @@ class TestDomainPurity:
         source = path.read_text(encoding="utf-8")
         for sibling in ("verifier", "catalog", "adapters", "fixtures", "orchestration"):
             assert f"from ..{sibling}" not in source, (
-                f"{path.relative_to(SRC)} imports proofboard.{sibling}; "
+                f"{path.relative_to(SRC)} imports ohmni.{sibling}; "
                 "dependencies point at the domain, never out of it."
             )
 
@@ -103,7 +103,7 @@ class TestVerifierDeterminism:
             assert not offenders, f"{path.relative_to(SRC)} imports {sorted(offenders)}"
 
     def test_verification_is_reproducible(self, golden, catalog, requirements):
-        from proofboard.verifier import verify
+        from ohmni.verifier import verify
 
         first = verify(golden, catalog, requirements)
         second = verify(golden, catalog, requirements)
@@ -150,5 +150,5 @@ class TestRuleRegistry:
 
 class TestPackageImports:
     def test_every_module_imports_cleanly(self):
-        for name in _iter_modules(SRC, "proofboard"):
+        for name in _iter_modules(SRC, "ohmni"):
             importlib.import_module(name)

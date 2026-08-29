@@ -1,12 +1,12 @@
 """Command line interface.
 
-    python -m proofboard verify golden
-    python -m proofboard verify sensor_on_5v --verbose
-    python -m proofboard verify --file path/to/circuit.json
-    python -m proofboard verify-all
-    python -m proofboard rules
-    python -m proofboard parts
-    python -m proofboard doctor
+    python -m ohmni verify golden
+    python -m ohmni verify sensor_on_5v --verbose
+    python -m ohmni verify --file path/to/circuit.json
+    python -m ohmni verify-all
+    python -m ohmni rules
+    python -m ohmni parts
+    python -m ohmni doctor
 
 `verify` exits non-zero when the design cannot be exported as verified, so this
 is usable in CI without anything else being built.
@@ -157,8 +157,8 @@ def cmd_doctor(args: argparse.Namespace) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="proofboard",
-        description="Evidence-first PCB mentor: deterministic circuit verification.",
+        prog="ohmni",
+        description="Ohmni: evidence-first electronics engineering mentor and deterministic circuit verifier.",
     )
     sub = parser.add_subparsers(dest="command", required=True)
 

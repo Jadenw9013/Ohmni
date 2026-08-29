@@ -8,14 +8,14 @@ from __future__ import annotations
 
 import pytest
 
-from proofboard.adapters import ToolStatus
-from proofboard.adapters.fakes import (
+from ohmni.adapters import ToolStatus
+from ohmni.adapters.fakes import (
     InMemoryPartCatalog,
     RecordingLlmProvider,
     UnavailableKicad,
     UnavailableSpice,
 )
-from proofboard.domain import (
+from ohmni.domain import (
     BLOCKING_SEVERITIES,
     CircuitComponent,
     CircuitIR,
@@ -37,8 +37,8 @@ from proofboard.domain import (
     ValueRange,
     VerificationReport,
 )
-from proofboard.verifier import verify
-from proofboard.verifier.registry import RegisteredRule, ResultBuilder
+from ohmni.verifier import verify
+from ohmni.verifier.registry import RegisteredRule, ResultBuilder
 
 V = Quantity.volts
 
@@ -134,7 +134,7 @@ class TestOutcomeSemantics:
 
 class TestCoverageMath:
     def _report(self, outcomes: list[RuleOutcome]) -> VerificationReport:
-        from proofboard.domain import RuleResult
+        from ohmni.domain import RuleResult
 
         return VerificationReport(
             report_id="r",
@@ -175,7 +175,7 @@ class TestCoverageMath:
 
 class TestExportGate:
     def _report_with(self, severity: Severity) -> VerificationReport:
-        from proofboard.domain import RuleResult, VerificationFinding
+        from ohmni.domain import RuleResult, VerificationFinding
 
         return VerificationReport(
             report_id="r",
@@ -217,7 +217,7 @@ class TestVoltageIsDerivedNotDeclared:
     """
 
     def test_net_name_does_not_determine_voltage(self, golden, catalog):
-        from proofboard.verifier.context import VerificationContext
+        from ohmni.verifier.context import VerificationContext
 
         ctx = VerificationContext(golden, catalog)
         assert ctx.net_voltage("3V3").nominal == V(3.3)
@@ -236,7 +236,7 @@ class TestVoltageIsDerivedNotDeclared:
 
     def test_a_reassuring_net_name_cannot_hide_a_5v_rail(self, catalog):
         """Call the 5 V rail "3V3" and the sensor is still on 5 V."""
-        from proofboard.fixtures.esp32_env_logger import broken_sensor_on_5v
+        from ohmni.fixtures.esp32_env_logger import broken_sensor_on_5v
 
         circuit = broken_sensor_on_5v()
         for net in circuit.nets:
@@ -366,7 +366,7 @@ class TestAbsoluteMaximumVsOperatingRange:
 class TestRegulatorSizingHonesty:
     def test_a_known_overload_is_definitive_even_with_unknown_loads(self, catalog):
         """A lower bound above the rating is conclusive: unknowns only add."""
-        from proofboard.fixtures.esp32_env_logger import broken_undersized_regulator
+        from ohmni.fixtures.esp32_env_logger import broken_undersized_regulator
 
         result = verify(broken_undersized_regulator(), catalog).rule("PB-REG-002")
         assert result.outcome is RuleOutcome.FAIL
@@ -374,7 +374,7 @@ class TestRegulatorSizingHonesty:
 
     def test_unknown_loads_under_the_rating_are_not_a_pass(self, golden, catalog):
         """Silently summing only the known parts would understate the load."""
-        from proofboard.catalog import JsonPartCatalog
+        from ohmni.catalog import JsonPartCatalog
 
         stripped = JsonPartCatalog()
         sensor = stripped.require("BME280")
@@ -388,7 +388,7 @@ class TestRegulatorSizingHonesty:
 
 class TestSubsystemRollup:
     def test_a_failure_makes_a_subsystem_not_verified(self, catalog, requirements):
-        from proofboard.fixtures.esp32_env_logger import broken_sensor_on_5v
+        from ohmni.fixtures.esp32_env_logger import broken_sensor_on_5v
 
         report = verify(broken_sensor_on_5v(), catalog, requirements)
         assert report.subsystem_status["electrical"] is SubsystemStatus.NOT_VERIFIED
@@ -445,7 +445,7 @@ class TestLlmOutputIsSchemaValidated:
         assert provider.calls[0]["schema"] == "CircuitIR"
 
     def test_there_is_no_free_text_path(self):
-        from proofboard.adapters import LlmProvider
+        from ohmni.adapters import LlmProvider
 
         methods = {m for m in dir(LlmProvider) if not m.startswith("_")}
         assert methods == {"complete_structured"}

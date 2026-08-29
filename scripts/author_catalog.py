@@ -27,7 +27,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from proofboard.domain import (
+from ohmni.domain import (
     ComponentCategory,
     ComponentSpec,
     DecouplingRule,
@@ -49,7 +49,7 @@ from proofboard.domain import (
     catalog_evidence,
 )
 
-OUT_DIR = Path(__file__).resolve().parents[1] / "src" / "proofboard" / "catalog" / "data" / "parts"
+OUT_DIR = Path(__file__).resolve().parents[1] / "src" / "ohmni" / "catalog" / "data" / "parts"
 
 V = Quantity.volts
 A = Quantity.amps

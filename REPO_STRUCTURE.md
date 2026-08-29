@@ -5,8 +5,8 @@
 > of loose modules under `packages/`. Reasoning in `docs/DECISIONS.md` §4.
 
 ```text
-proofboard/
-├── src/proofboard/
+ohmni/
+├── src/ohmni/
 │   ├── domain/                 # pure data and pure functions; imports no infrastructure
 │   │   ├── units.py            # Unit, Quantity, ValueRange, engineering-notation parsing
 │   │   ├── evidence.py         # EvidenceKind, ClaimStatus, Evidence, Claim, DocumentRef
@@ -37,7 +37,7 @@ proofboard/
 │   │   └── tools.py            # real availability probes for kicad-cli and ngspice
 │   ├── fixtures/
 │   │   └── esp32_env_logger.py # the golden circuit and its broken variants
-│   ├── cli.py                  # python -m proofboard
+│   ├── cli.py                  # python -m ohmni
 │   └── __main__.py
 ├── fixtures/esp32_env_logger/  # exported fixture JSON: the regression corpus
 ├── tests/

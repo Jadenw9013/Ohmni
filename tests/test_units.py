@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from proofboard.domain import (
+from ohmni.domain import (
     Quantity,
     QuantityParseError,
     Unit,
@@ -180,7 +180,7 @@ class TestValueRange:
         # These two types expose the same names. When one was a method and the
         # other a property, two rules silently compared a bound method against
         # a float. Keep them symmetric.
-        from proofboard.verifier.context import NetVoltage
+        from ohmni.verifier.context import NetVoltage
 
         r = ValueRange(minimum=Quantity.volts(1.0), maximum=Quantity.volts(2.0))
         nv = NetVoltage(net_name="X", voltage=r)

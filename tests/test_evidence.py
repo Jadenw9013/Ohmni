@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 from pydantic import ValidationError
 
-from proofboard.domain import (
+from ohmni.domain import (
     Claim,
     ClaimStatus,
     DocumentRef,

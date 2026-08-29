@@ -1,4 +1,4 @@
-"""ProofBoard domain layer.
+"""Ohmni domain layer.
 
 This package must not import infrastructure. No HTTP clients, no subprocess
 calls, no file formats belonging to external tools, no LLM SDKs. Everything here

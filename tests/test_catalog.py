@@ -5,8 +5,8 @@ from __future__ import annotations
 import pytest
 from pydantic import ValidationError
 
-from proofboard.adapters import PartNotFoundError
-from proofboard.domain import (
+from ohmni.adapters import PartNotFoundError
+from ohmni.domain import (
     ClaimStatus,
     ComponentCategory,
     ComponentSpec,
@@ -147,7 +147,7 @@ class TestSpecInvariants:
             )
 
     def test_a_regulator_spec_on_a_non_regulator_is_rejected(self):
-        from proofboard.domain import RegulatorSpec
+        from ohmni.domain import RegulatorSpec
 
         with pytest.raises(ValidationError, match="not a regulator"):
             ComponentSpec(
@@ -164,7 +164,7 @@ class TestSpecInvariants:
             )
 
     def test_duplicate_i2c_addresses_on_one_part_are_rejected(self):
-        from proofboard.domain import I2CAddressOption
+        from ohmni.domain import I2CAddressOption
 
         with pytest.raises(ValidationError, match="same I2C address twice"):
             ComponentSpec(

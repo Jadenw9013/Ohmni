@@ -167,7 +167,7 @@ directory and not another, and no way to `pip install` the project.
 
 ### Decision
 
-One installable package at `src/proofboard/`, with a single `pyproject.toml`.
+One installable package at `src/ohmni/`, with a single `pyproject.toml`.
 The document's boundaries are preserved as Python subpackages: `domain`,
 `verifier`, `catalog`, `adapters`, `fixtures`. `apps/web/` is retained for the
 Next.js frontend when it arrives.
@@ -226,7 +226,7 @@ lossy translation.
 
 `kicad-cli` 10.0.5 is installed and confirmed to support `sch erc --format
 json`, `pcb drc --format json` and `--exit-code-violations`.
-`python -m proofboard doctor` reports this.
+`python -m ohmni doctor` reports this.
 
 ### Still open (spike S1)
 
@@ -271,7 +271,7 @@ with values `vendor_model`, `behavioural_approximation` or `ideal_components`.
 
 There is no standalone `ngspice` on this machine and no winget package for it.
 KiCad ships ngspice as `ngspice.dll` — a shared library for its internal
-simulator, not a CLI. `python -m proofboard doctor` reports the library path it
+simulator, not a CLI. `python -m ohmni doctor` reports the library path it
 found.
 
 ### Still open (spike S2)

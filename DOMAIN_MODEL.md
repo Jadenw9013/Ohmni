@@ -1,7 +1,7 @@
 # Domain Model
 
 > **Status: implemented.** This document describes the model as built, in
-> `src/proofboard/domain/`. It replaces the original sketch, which could not
+> `src/ohmni/domain/`. It replaces the original sketch, which could not
 > express several of the checks `VERIFICATION.md` requires. The reasoning behind
 > each change is in `PRE_IMPLEMENTATION_REVIEW.md` §3–§5 and `docs/DECISIONS.md`.
 

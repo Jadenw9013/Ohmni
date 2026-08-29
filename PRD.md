@@ -2,14 +2,15 @@
 
 ## Product name
 
-Working name: **ProofBoard**
+**Ohmni**
 
-Alternative names:
-- TracePCB
-- GroundedPCB
-- BenchMentor
-- BoardTutor
-- CircuitProof
+Tagline: **Build circuits. Understand why.**
+
+Category: **Evidence-first AI electronics engineering mentor**
+
+The name combines *Ohm* and *Omni*: electronics fundamentals with a broader
+environment for understanding, designing, verifying and eventually testing
+hardware.
 
 ## Problem
 
@@ -58,9 +59,10 @@ Users should be able to:
 
 ## Differentiator
 
-The product is not primarily an AI PCB generator.
+The product is not primarily an AI PCB generator. PCB generation is one major
+capability in a larger hardware engineering and learning workflow.
 
-It is an **evidence-first PCB mentor**.
+It is an **evidence-first AI electronics engineering mentor**.
 
 Every engineering claim should be labeled as one of:
 

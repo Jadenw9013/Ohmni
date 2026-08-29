@@ -122,7 +122,7 @@ def _roll_up_subsystems(report: VerificationReport) -> dict[str, SubsystemStatus
 def format_report(report: VerificationReport, *, verbose: bool = False) -> str:
     """A plain-text rendering, for the CLI and for test failure output."""
     lines: list[str] = [
-        f"Verification report {report.report_id}",
+        f"Ohmni verification report {report.report_id}",
         f"  circuit : {report.circuit_ir_id} rev {report.circuit_revision}",
         f"  hash    : {report.circuit_content_hash[:16]}",
         f"  summary : {report.summary_line()}",
