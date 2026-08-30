@@ -53,7 +53,7 @@ whose correctness depends on a model would not be a verifier.
 | Verification rules | **24**, deterministic, independently testable |
 | Part catalog | 9 parts, every fact carrying provenance |
 | Fixtures | 1 golden circuit + **13** broken variants |
-| Tests | **408**, including pure PCB geometry and optional real-KiCad ERC/DRC integration |
+| Tests | **416**, including deterministic routing and optional real-KiCad ERC/DRC integration |
 | Golden circuit | no blocking findings, **100% rule coverage** |
 | Broken variants | each caught by exactly the rule and severity it was built to trip |
 
@@ -73,6 +73,7 @@ python -m ohmni verify golden --eda
 python -m ohmni design-fixture golden_request
 python -m ohmni compile-pcb golden
 python -m ohmni drc golden
+python -m ohmni route golden
 ```
 
 ---

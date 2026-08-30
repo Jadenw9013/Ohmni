@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import math
 import uuid
 from pathlib import Path
 from typing import Protocol, runtime_checkable
@@ -12,6 +13,8 @@ from ...domain import CircuitIR, EngineeringEvent, EventKind, Lesson
 from ...physical.footprints import footprint
 from ...physical.models import BoardConstraints, FootprintBinding, PadBinding
 from ...physical.rules import verify_physical
+from ...routing.models import RoutingPlan
+from ...routing.verifier import verify_routing
 from ..models import ArtifactFingerprint, SchematicArtifact
 from ..pcb_models import PcbArtifact, PcbCompilationReport
 from .sexpr import number, quote
@@ -26,7 +29,7 @@ class PcbCompilationError(ValueError): pass
 
 @runtime_checkable
 class PcbCompiler(Protocol):
-    def compile(self,circuit:CircuitIR,schematic:SchematicArtifact,constraints:BoardConstraints,destination:Path)->PcbArtifact: ...
+    def compile(self,circuit:CircuitIR,schematic:SchematicArtifact,constraints:BoardConstraints,destination:Path,routing_plan:RoutingPlan|None=None)->PcbArtifact: ...
 
 
 def _uuid(seed: str, identity: str) -> str:
@@ -36,7 +39,7 @@ def _uuid(seed: str, identity: str) -> str:
 class KiCadPcbCompiler:
     def __init__(self,catalog:PartCatalog): self.catalog=catalog
 
-    def compile(self,circuit,schematic,constraints,destination):
+    def compile(self,circuit,schematic,constraints,destination,routing_plan=None):
         if not schematic.is_current: raise PcbCompilationError("source schematic artifact is stale")
         if schematic.circuit_content_hash != circuit.content_hash: raise PcbCompilationError("schematic and CircuitIR fingerprints disagree")
         placements={p.component_ref:p for p in constraints.placements}
@@ -79,6 +82,36 @@ class KiCadPcbCompiler:
         w,h=constraints.outline.width_mm,constraints.outline.height_mm
         for i,(a,b) in enumerate([((0,0),(w,0)),((w,0),(w,h)),((w,h),(0,h)),((0,h),(0,0))]):
             lines.append(f'  (gr_line (start {number(a[0])} {number(a[1])}) (end {number(b[0])} {number(b[1])}) (stroke (width 0.1) (type default)) (layer "Edge.Cuts") (uuid "{_uuid(seed,f"edge:{i}")}"))')
+        routing_verification=None
+        source_placed=None
+        if routing_plan is not None:
+            if routing_plan.circuit_content_hash != circuit.content_hash or routing_plan.source_constraints_hash != constraints.content_hash:
+                raise PcbCompilationError("routing plan lineage differs from CircuitIR or placement constraints")
+            source_placed=ArtifactFingerprint(digest=routing_plan.source_pcb_fingerprint)
+            placed_stub=PcbArtifact(path=destination,fingerprint=source_placed,circuit_content_hash=circuit.content_hash,schematic_fingerprint=schematic.fingerprint,source_schematic_path=schematic.path,constraints_hash=constraints.content_hash,compiler_version=PCB_COMPILER_VERSION,compilation=PcbCompilationReport(circuit_content_hash=circuit.content_hash,schematic_fingerprint=schematic.fingerprint,source_schematic_path=schematic.path,constraints_hash=constraints.content_hash,footprint_bindings=footprint_bindings,pad_bindings=pad_bindings,net_mapping=nets,physical_verification=physical))
+            routing_verification=verify_routing(circuit,placed_stub,constraints,routing_plan)
+            if not routing_verification.passed:
+                raise PcbCompilationError("routing plan failed independent Ohmni verification")
+            for track in routing_plan.tracks:
+                lines.append(f'  (segment (start {number(track.start.x_mm)} {number(track.start.y_mm)}) (end {number(track.end.x_mm)} {number(track.end.y_mm)}) (width {number(track.width_mm)}) (layer "{track.layer}") (net {nets[track.net_name]}) (uuid "{_uuid(seed,"track:"+track.segment_id)}"))')
+            unique_vias={(via.net_name,via.position.x_mm,via.position.y_mm):via for via in routing_plan.vias}
+            for via in unique_vias.values():
+                # A plated through-hole pad already provides the requested
+                # F.Cu/B.Cu transition; emitting a coincident drilled via would
+                # create a duplicate hole without adding connectivity.
+                reuse_pth=False
+                for binding in footprint_bindings:
+                    fp=footprint(binding.footprint_id);place=placements[binding.component_ref]
+                    for pad in fp.pads:
+                        if pad.kind!="thru_hole" or connected.get((binding.component_ref,pad.number))!=via.net_name:continue
+                        angle=math.radians(place.rotation_deg)
+                        px=place.x_mm+pad.x_mm*math.cos(angle)-pad.y_mm*math.sin(angle)
+                        py=place.y_mm+pad.x_mm*math.sin(angle)+pad.y_mm*math.cos(angle)
+                        if ((px-via.position.x_mm)**2+(py-via.position.y_mm)**2)**.5 <= min(pad.width_mm,pad.height_mm)/2:
+                            reuse_pth=True;break
+                    if reuse_pth:break
+                if reuse_pth:continue
+                lines.append(f'  (via (at {number(via.position.x_mm)} {number(via.position.y_mm)}) (size {number(via.diameter_mm)}) (drill {number(via.drill_mm)}) (layers "F.Cu" "B.Cu") (net {nets[via.net_name]}) (uuid "{_uuid(seed,"via:"+via.via_id)}"))')
         lines += [")",""]
         payload="\n".join(lines);destination=destination.resolve();destination.parent.mkdir(parents=True,exist_ok=True);destination.write_text(payload,encoding="utf-8",newline="\n")
         digest=hashlib.sha256(payload.encode()).hexdigest();events.append(self._event(circuit,EventKind.PCB_ARTIFACT_COMPILED,"PCB artifact compiled",{"sha256":digest}))
@@ -87,8 +120,8 @@ class KiCadPcbCompiler:
         lessons=[]
         if decoupling_ids: lessons.append(Lesson(topic="Decoupling placement",body="A decoupling capacitor needs both the correct electrical net and a short physical path to its target supply. Ohmni measured the configured capacitor-to-IC distances.",derived_from_event_ids=decoupling_ids))
         if edge_ids: lessons.append(Lesson(topic="Connector placement",body="USB-C and programming connectors are constrained near a board edge for physical access; this is a placement constraint, not an electrical claim.",derived_from_event_ids=edge_ids))
-        report=PcbCompilationReport(circuit_content_hash=circuit.content_hash,schematic_fingerprint=schematic.fingerprint,source_schematic_path=schematic.path,constraints_hash=constraints.content_hash,footprint_bindings=footprint_bindings,pad_bindings=pad_bindings,net_mapping=nets,physical_verification=physical,lessons=lessons)
-        return PcbArtifact(path=destination,fingerprint=ArtifactFingerprint(digest=digest),circuit_content_hash=circuit.content_hash,schematic_fingerprint=schematic.fingerprint,source_schematic_path=schematic.path,constraints_hash=constraints.content_hash,compiler_version=PCB_COMPILER_VERSION,compilation=report,events=events)
+        report=PcbCompilationReport(circuit_content_hash=circuit.content_hash,schematic_fingerprint=schematic.fingerprint,source_schematic_path=schematic.path,constraints_hash=constraints.content_hash,footprint_bindings=footprint_bindings,pad_bindings=pad_bindings,net_mapping=nets,physical_verification=physical,lessons=lessons,routing_plan_fingerprint=routing_plan.content_hash if routing_plan else None,routing_verification=routing_verification)
+        return PcbArtifact(path=destination,fingerprint=ArtifactFingerprint(digest=digest),circuit_content_hash=circuit.content_hash,schematic_fingerprint=schematic.fingerprint,source_schematic_path=schematic.path,constraints_hash=constraints.content_hash,compiler_version=PCB_COMPILER_VERSION,compilation=report,events=events,source_placed_pcb_fingerprint=source_placed,source_placed_pcb_path=routing_plan.source_pcb_path if routing_plan else None,routing_plan_fingerprint=routing_plan.content_hash if routing_plan else None)
 
     def _validate_consistency(self,circuit,schematic,footprints,pads):
         schematic_refs={b.component_ref for b in schematic.compilation.symbol_bindings}

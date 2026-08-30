@@ -232,3 +232,12 @@ Every electrical bug found becomes a permanent fixture variant in
 `src/ohmni/fixtures/` and a case in `tests/test_fixtures.py`, asserting the
 specific rule and severity that should catch it. `python -m ohmni verify-all`
 runs the whole corpus in one line of output per case.
+
+## Routing verification
+
+`PB-ROUTE-001` through `PB-ROUTE-008` check complete pad connectivity,
+cross-net shorts, net/lineage validity, board bounds, widths, via geometry,
+obstacles, and bounded via use. The golden routed artifact passes these rules
+and KiCad 10.0.5 DRC with zero findings and zero unrouted items. This does not
+establish signal integrity, thermal behavior, EMC, RF behavior,
+manufacturability, or bench operation.

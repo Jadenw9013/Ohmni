@@ -12,8 +12,9 @@
 > | 2. Datasheet ingestion | done - local PDF parsing, bounded extraction, independent evidence verification |
 > | 3. Deterministic verifier | done - 24 rules, golden + 13 broken fixtures |
 > | 4. Circuit generation (LLM) | **scripted structured proposal + bounded repair complete**; real providers optional later |
-> | 5. KiCad integration | **schematic/ERC and placed PCB/DRC complete** - routing remains deferred |
-> | 5b. PCB integration | **deterministic placed board + DRC complete** - routing remains deferred |
+> | 5. KiCad integration | **schematic/ERC, PCB, bounded routing, and DRC closure complete** |
+> | 5b. PCB integration | **deterministic placed board + DRC complete** |
+> | 5c. Bounded routing | **complete** - internal copper verification + real DRC closure |
 > | 6. Simulation | not started - **[changed]** target is now a DC operating point |
 > | 7. BOM and cost | not started |
 > | 8. Teaching UI | not started |

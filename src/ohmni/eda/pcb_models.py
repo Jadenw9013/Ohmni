@@ -11,6 +11,7 @@ from pydantic import BaseModel, Field
 from ..adapters import ToolStatus
 from ..domain import EngineeringEvent, Evidence, Lesson
 from ..physical.models import FootprintBinding, PadBinding, PhysicalVerificationReport
+from ..routing.models import RoutingVerificationReport
 from .models import ArtifactFingerprint, ErcReport, SchematicArtifact
 
 
@@ -24,6 +25,8 @@ class PcbCompilationReport(BaseModel):
     net_mapping: dict[str, int]
     physical_verification: PhysicalVerificationReport
     lessons: list[Lesson] = Field(default_factory=list)
+    routing_plan_fingerprint: str | None = None
+    routing_verification: RoutingVerificationReport | None = None
 
 
 class PcbArtifact(BaseModel):
@@ -36,6 +39,9 @@ class PcbArtifact(BaseModel):
     compiler_version: str
     compilation: PcbCompilationReport
     events: list[EngineeringEvent] = Field(default_factory=list)
+    source_placed_pcb_fingerprint: ArtifactFingerprint | None = None
+    source_placed_pcb_path: Path | None = None
+    routing_plan_fingerprint: str | None = None
 
     def current_fingerprint(self) -> ArtifactFingerprint:
         return ArtifactFingerprint(digest=hashlib.sha256(self.path.read_bytes()).hexdigest())
@@ -46,12 +52,17 @@ class PcbArtifact(BaseModel):
 
     @property
     def lineage_is_current(self) -> bool:
-        return (
+        base = (
             self.is_current
             and self.source_schematic_path.is_file()
             and hashlib.sha256(self.source_schematic_path.read_bytes()).hexdigest()
             == self.schematic_fingerprint.digest
         )
+        if not base:
+            return False
+        if self.source_placed_pcb_fingerprint is None:
+            return True
+        return self.source_placed_pcb_path is not None and self.source_placed_pcb_path.is_file() and hashlib.sha256(self.source_placed_pcb_path.read_bytes()).hexdigest() == self.source_placed_pcb_fingerprint.digest
 
 
 class DrcStatus(StrEnum):

@@ -123,3 +123,11 @@ Every extracted fact should store:
 - source text snippet or structured region reference
 - extraction confidence
 - verifier status
+
+## Deterministic routing boundary
+
+Routing is separate from electrical and placement intent. `CircuitIR` remains
+the netlist, `BoardConstraints` owns placement, and `RoutingPlan` owns tracks and
+through-vias. A bounded deterministic A* router proposes copper and an
+independent connectivity verifier checks it before KiCad emission. KiCad DRC is
+a separate external verifier. Routing has no LLM, network, or randomness path.

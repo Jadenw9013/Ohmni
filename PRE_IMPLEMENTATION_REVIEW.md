@@ -528,3 +528,17 @@ KiCad to resolve a machine-global library link.
 The milestone deliberately stops before routing. KiCad accepts the golden board,
 then correctly returns 51 unconnected items. This establishes the DRC boundary
 without pretending a placed board is routed.
+
+## 17. Milestone 6 routing-boundary corrections
+
+Routing is an explicit layer rather than part of `CircuitIR` or placement. The
+router uses a bounded 0.25 mm two-layer A* grid, reserves pad breakouts, and
+treats other-net pads, tracks, vias, board edges, and unconnected mechanical
+pads as obstacles. Power prefers B.Cu and signals prefer F.Cu; this is a
+prototype policy, not a signal-integrity claim.
+
+Initial internal checks missed via-to-track and via-to-via clearance. Real KiCad
+exposed that defect, so the obstacle model and independent verifier were
+corrected. Plated through-hole pads are reused as layer transitions rather than
+receiving duplicate drilled vias. The final golden artifact has zero KiCad DRC
+findings and zero unrouted items.

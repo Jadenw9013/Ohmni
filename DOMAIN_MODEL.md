@@ -341,3 +341,10 @@ Resolved as: `DesignConstraint` (the build prompt's name wins), `DesignRule` and
 `DecouplingRule` for datasheet-stated guidance, `CircuitComponent` and `Net` as
 above. `EvidenceLink` was dropped — evidence is attached directly to the thing it
 supports, so a separate link type had nothing to do.
+
+## Routing model
+
+`RoutingProfile` records two-layer prototype defaults and provenance.
+`RoutingPlan` is fingerprinted from placed-PCB lineage, profile, ordered nets,
+tracks, and vias. Routing cannot mutate `CircuitIR`, placement, or schematic
+connectivity.

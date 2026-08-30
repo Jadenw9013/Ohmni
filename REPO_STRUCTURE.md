@@ -42,6 +42,7 @@ ohmni/
 │   │   └── kicad/               # deterministic emitter, ERC adapter and JSON parser
 │   ├── generation/              # strict schemas, requirements, resolver, typed repairs
 │   ├── physical/                # pure board constraints, footprint provenance and geometry rules
+│   ├── routing/                 # typed route plans, bounded A*, independent copper checks
 │   ├── cli.py                  # python -m ohmni
 │   └── __main__.py
 ├── fixtures/esp32_env_logger/  # exported fixture JSON: the regression corpus

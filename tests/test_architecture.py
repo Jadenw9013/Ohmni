@@ -224,3 +224,12 @@ class TestPhysicalBoundaries:
             source=path.read_text(encoding="utf-8")
             assert "LlmProvider" not in source
             assert "openai" not in source and "anthropic" not in source
+
+
+class TestRoutingBoundaries:
+    def test_routing_has_no_llm_network_random_or_generation_dependency(self):
+        forbidden={"openai","anthropic","requests","httpx","socket","random"}
+        for path in _python_files(SRC / "routing"):
+            source=path.read_text(encoding="utf-8")
+            assert not (_imported_top_level_modules(path)&forbidden),path
+            assert "ohmni.generation" not in source

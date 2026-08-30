@@ -38,6 +38,8 @@ from .eda.verification import aggregate_eda
 from .fixtures.esp32_env_logger import BROKEN_VARIANTS, BUILDERS, requirements
 from .generation import DesignOrchestrator
 from .generation.fixtures import GOLDEN_REQUEST, flawed_logger_provider
+from .routing.router import DeterministicRouter
+from .routing.verifier import verify_routing
 from .verifier import all_rules, format_report, verify
 
 EXIT_OK = 0
@@ -211,6 +213,33 @@ def cmd_drc(args):
     if args.json: print(PcbVerificationBundle(schematic=schematic,erc=erc,pcb=pcb,drc=drc).model_dump_json(indent=2))
     else: print(format_pcb_summary(pcb,drc))
     return EXIT_BLOCKED if drc.status in {DrcStatus.FAIL,DrcStatus.ERROR,DrcStatus.UNAVAILABLE,DrcStatus.STALE_ARTIFACT} else EXIT_OK
+
+
+def cmd_route(args):
+    try:
+        circuit=_load_circuit(args.fixture,None);catalog=default_catalog();board=golden_board_constraints()
+        if verify(circuit,catalog,requirements()).export_blocked: raise PcbCompilationError("semantic verification blocks routing")
+        base=args.output or Path("out")/"route"/args.fixture/f"{args.fixture}.kicad_pcb"
+        schematic=KiCadSchematicCompiler(catalog).compile(circuit,base.with_suffix(".kicad_sch"))
+        placed=KiCadPcbCompiler(catalog).compile(circuit,schematic,board,base.with_name(base.stem+".placed.kicad_pcb"))
+        plan=DeterministicRouter().route(circuit,placed,board);routing=verify_routing(circuit,placed,board,plan)
+        if not routing.passed: raise PcbCompilationError("independent routing verification failed")
+        routed=KiCadPcbCompiler(catalog).compile(circuit,schematic,board,base,plan);drc=KiCadCliAdapter().run_drc(routed)
+    except (PcbCompilationError,SchematicCompilationError,ValueError) as exc:
+        print(f"routing failed: {exc}",file=sys.stderr);return EXIT_BLOCKED
+    if args.json:
+        print(json.dumps({"routing_plan":json.loads(plan.model_dump_json()),"routing_verification":json.loads(routing.model_dump_json()),"pcb":json.loads(routed.model_dump_json()),"drc":json.loads(drc.model_dump_json())},indent=2))
+    else:
+        s=plan.statistics
+        print("OHMNI ROUTING\n")
+        print(f"Board: {args.fixture}\nRouting profile: {plan.profile.name}")
+        print(f"Required connections: {s.required_connections}\nNets routed: {s.routed_net_count} / {s.routed_net_count+s.unresolved_net_count}")
+        print(f"Track segments: {s.track_segment_count}\nModeled layer transitions: {s.via_count}\nTotal track length: {s.total_track_length_mm:.3f} mm")
+        print(f"Expanded nodes: {s.expanded_nodes}\nRouting attempts: {s.routing_attempts}")
+        print(f"Ohmni routing verification: {'PASS' if routing.passed else 'FAIL'}")
+        print(f"KiCad {drc.kicad_version or 'UNAVAILABLE'} DRC: {drc.status.value.upper()}\nDRC violations: {len(drc.findings)}\nUnrouted connections: {len(drc.unconnected_items)}")
+        print("Final PCB status: "+("VERIFIED WITHIN IMPLEMENTED CHECKS" if routing.passed and not drc.findings and not drc.unconnected_items else "FAIL"))
+    return EXIT_OK if routing.passed and drc.status in {DrcStatus.PASS,DrcStatus.PASS_WITH_WARNINGS} and not drc.findings and not drc.unconnected_items else EXIT_BLOCKED
 
 
 def cmd_verify_all(args: argparse.Namespace) -> int:
@@ -395,6 +424,8 @@ def build_parser() -> argparse.ArgumentParser:
     compile_pcb.add_argument("fixture",choices=["golden"]);compile_pcb.add_argument("--output",type=Path);compile_pcb.add_argument("--json",action="store_true");compile_pcb.set_defaults(func=cmd_compile_pcb)
     drc=sub.add_parser("drc",help="compile a PCB and run real KiCad DRC")
     drc.add_argument("fixture",choices=["golden"]);drc.add_argument("--output",type=Path);drc.add_argument("--json",action="store_true");drc.set_defaults(func=cmd_drc)
+    route=sub.add_parser("route",help="deterministically route a placed PCB and run KiCad DRC")
+    route.add_argument("fixture",choices=["golden"]);route.add_argument("--output",type=Path);route.add_argument("--json",action="store_true");route.set_defaults(func=cmd_route)
 
     return parser
 
