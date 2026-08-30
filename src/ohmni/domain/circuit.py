@@ -25,6 +25,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from .component import Interface
 from .evidence import Evidence
 from .units import Quantity, Unit, ValueRange
 
@@ -125,12 +126,21 @@ class CircuitComponent(BaseModel):
     selected_i2c_address: int | None = Field(
         default=None, ge=0x00, le=0x7F, description="7-bit address as strapped on this board."
     )
+    selected_interfaces: list[Interface] = Field(default_factory=list)
     placeholder: bool = Field(
         default=False,
         description="True when the part is a stand-in that has not been resolved to a real part.",
     )
     notes: str | None = None
     evidence: list[Evidence] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def _configuration_is_explicit(self) -> CircuitComponent:
+        if len(self.selected_interfaces) != len(set(self.selected_interfaces)):
+            raise ValueError("selected interfaces must be unique")
+        if self.selected_i2c_address is not None and Interface.I2C not in self.selected_interfaces:
+            raise ValueError("selected_i2c_address requires selected interface i2c")
+        return self
 
 
 class ConstraintKind(StrEnum):
@@ -236,6 +246,7 @@ class CircuitIR(BaseModel):
                         "package": c.package,
                         "value": None if c.value is None else [c.value.value, c.value.unit.value],
                         "i2c_address": c.selected_i2c_address,
+                        "selected_interfaces": sorted(i.value for i in c.selected_interfaces),
                         "placeholder": c.placeholder,
                     }
                     for c in self.components

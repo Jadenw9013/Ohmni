@@ -48,6 +48,11 @@ structured-output adapter may propose requirements, architecture, `CircuitIR`, a
 typed repair operations. Catalog/pin validation and the deterministic verifier remain
 the authority. Only an export-eligible semantic circuit reaches the KiCad compiler.
 
+Physical intent is a separate pure layer: `BoardConstraints`, placements, footprint
+and pad bindings never enter `CircuitIR`. The deterministic PCB adapter consumes the
+verified circuit plus the exact schematic fingerprint, emits a fingerprinted two-layer
+board, runs pure geometry rules, and then invokes KiCad DRC as an independent verifier.
+
 ## Recommended stack
 
 Frontend:

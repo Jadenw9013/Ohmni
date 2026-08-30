@@ -117,7 +117,7 @@ def _components() -> list[CircuitComponent]:
         CircuitComponent(ref="C5", part_id="GENERIC_CAPACITOR", package="0805", value=F(100e-9),
                          notes="EN RC delay capacitor."),
         CircuitComponent(ref="U3", part_id="BME280", package="LGA-8",
-                         selected_i2c_address=0x76),
+                         selected_i2c_address=0x76, selected_interfaces=[Interface.I2C]),
         CircuitComponent(ref="C6", part_id="GENERIC_CAPACITOR", package="0805", value=F(100e-9),
                          notes="Sensor VDD decoupling."),
         CircuitComponent(ref="C7", part_id="GENERIC_CAPACITOR", package="0805", value=F(100e-9),
@@ -335,7 +335,8 @@ def broken_duplicate_i2c_address() -> CircuitIR:
         "A second BME280 added on the same bus, also strapped to 0x76.",
     )
     circuit.components.append(
-        CircuitComponent(ref="U4", part_id="BME280", package="LGA-8", selected_i2c_address=0x76)
+        CircuitComponent(ref="U4", part_id="BME280", package="LGA-8",
+                         selected_i2c_address=0x76, selected_interfaces=[Interface.I2C])
     )
     circuit.components.append(
         CircuitComponent(ref="C8", part_id="GENERIC_CAPACITOR", package="0805", value=F(100e-9))

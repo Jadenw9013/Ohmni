@@ -24,8 +24,16 @@ from .catalog import default_catalog
 from .datasheet import BoundedTextExtractor, DatasheetPipeline, PdfIngestError, PyMuPdfExtractor
 from .datasheet.pipeline import format_ingestion_report
 from .domain import CircuitIR, RuleOutcome
-from .eda.kicad import KiCadCliAdapter, KiCadSchematicCompiler, SchematicCompilationError
+from .eda.kicad import (
+    KiCadCliAdapter,
+    KiCadPcbCompiler,
+    KiCadSchematicCompiler,
+    PcbCompilationError,
+    SchematicCompilationError,
+)
+from .eda.kicad.placement import golden_board_constraints
 from .eda.models import EdaVerificationBundle, ErcStatus
+from .eda.pcb_models import DrcStatus, PcbVerificationBundle
 from .eda.verification import aggregate_eda
 from .fixtures.esp32_env_logger import BROKEN_VARIANTS, BUILDERS, requirements
 from .generation import DesignOrchestrator
@@ -166,6 +174,43 @@ def cmd_design_fixture(args: argparse.Namespace) -> int:
         print(f"Notebook events: {len(report.notebook.events) if report.notebook else 0}")
         print(f"Final status: {report.state.value.upper()}")
     return EXIT_OK if report.state.value == "complete" else EXIT_BLOCKED
+
+
+def _compile_pcb_named(args):
+    circuit = _load_circuit(args.fixture, None)
+    semantic = verify(circuit, default_catalog(), requirements())
+    if semantic.export_blocked:
+        raise PcbCompilationError("semantic verification blocks PCB compilation")
+    base = args.output or Path("out") / "pcb" / args.fixture / f"{args.fixture}.kicad_pcb"
+    schematic = KiCadSchematicCompiler(default_catalog()).compile(circuit, base.with_suffix(".kicad_sch"))
+    erc = KiCadCliAdapter().run_erc(schematic)
+    pcb = KiCadPcbCompiler(default_catalog()).compile(circuit, schematic, golden_board_constraints(), base)
+    return semantic, schematic, erc, pcb
+
+
+def format_pcb_summary(pcb, drc=None):
+    physical=pcb.compilation.physical_verification
+    lines=["OHMNI PCB VERIFICATION","",f"Artifact: {pcb.path}",f"PCB SHA-256: {pcb.fingerprint.digest}",f"Source schematic SHA-256: {pcb.schematic_fingerprint.digest}",f"Footprints: {len(pcb.compilation.footprint_bindings)}",f"Pad bindings: {len(pcb.compilation.pad_bindings)}","Layers: 2",f"Physical checks: {'PASS' if physical.passed else 'FAIL'}"]
+    if drc: lines += [f"KiCad {drc.kicad_version or 'UNAVAILABLE'} DRC: {drc.status.value.upper()}",f"DRC violations: {len(drc.findings)}",f"Unrouted connections: {len(drc.unconnected_items)}","Limitation: DRC covers configured physical rules on this exact PCB, not functional correctness."]
+    return "\n".join(lines)
+
+
+def cmd_compile_pcb(args):
+    try: _,_,_,pcb=_compile_pcb_named(args)
+    except (PcbCompilationError,SchematicCompilationError) as exc:
+        print(f"PCB compilation failed: {exc}",file=sys.stderr);return EXIT_BLOCKED
+    print(pcb.model_dump_json(indent=2) if args.json else format_pcb_summary(pcb))
+    return EXIT_OK if pcb.compilation.physical_verification.passed else EXIT_BLOCKED
+
+
+def cmd_drc(args):
+    try: _,schematic,erc,pcb=_compile_pcb_named(args)
+    except (PcbCompilationError,SchematicCompilationError) as exc:
+        print(f"PCB compilation failed: {exc}",file=sys.stderr);return EXIT_BLOCKED
+    drc=KiCadCliAdapter().run_drc(pcb)
+    if args.json: print(PcbVerificationBundle(schematic=schematic,erc=erc,pcb=pcb,drc=drc).model_dump_json(indent=2))
+    else: print(format_pcb_summary(pcb,drc))
+    return EXIT_BLOCKED if drc.status in {DrcStatus.FAIL,DrcStatus.ERROR,DrcStatus.UNAVAILABLE,DrcStatus.STALE_ARTIFACT} else EXIT_OK
 
 
 def cmd_verify_all(args: argparse.Namespace) -> int:
@@ -345,6 +390,11 @@ def build_parser() -> argparse.ArgumentParser:
     design_fixture.add_argument("--no-eda", action="store_true")
     design_fixture.add_argument("--json", action="store_true")
     design_fixture.set_defaults(func=cmd_design_fixture)
+
+    compile_pcb=sub.add_parser("compile-pcb",help="compile the deterministic placed PCB")
+    compile_pcb.add_argument("fixture",choices=["golden"]);compile_pcb.add_argument("--output",type=Path);compile_pcb.add_argument("--json",action="store_true");compile_pcb.set_defaults(func=cmd_compile_pcb)
+    drc=sub.add_parser("drc",help="compile a PCB and run real KiCad DRC")
+    drc.add_argument("fixture",choices=["golden"]);drc.add_argument("--output",type=Path);drc.add_argument("--json",action="store_true");drc.set_defaults(func=cmd_drc)
 
     return parser
 

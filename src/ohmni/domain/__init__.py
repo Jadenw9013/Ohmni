@@ -40,7 +40,9 @@ from .component import (
     PinRole,
     PinSpec,
     RegulatorSpec,
+    ResolvedPinBehavior,
     SupplyRail,
+    resolve_pin_behavior,
 )
 from .events import (
     Alternative,
@@ -150,6 +152,7 @@ __all__ = [
     "Quantity",
     "QuantityParseError",
     "RegulatorSpec",
+    "ResolvedPinBehavior",
     "RequirementsSpec",
     "RuleCategory",
     "RuleOutcome",
@@ -158,6 +161,7 @@ __all__ = [
     "Severity",
     "SubsystemStatus",
     "SupplyRail",
+    "resolve_pin_behavior",
     "Unit",
     "UnitMismatchError",
     "ValueRange",

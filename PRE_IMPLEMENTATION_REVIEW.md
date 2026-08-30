@@ -507,3 +507,24 @@ when that multi-mode pad is strapped to the ground network containing power-inpu
 external-return intent. Eliminating it correctly requires an explicit per-instance
 active-interface model; guessing I2C mode inside the emitter would hide semantics, so
 the classified electrical warning is retained.
+
+---
+
+## 16. Milestone 5 physical-boundary corrections
+
+The retained SDO warning could be resolved only after adding explicit
+`selected_interfaces` to component instances. BME280's catalog SDO remains
+tri-state-capable for SPI; the golden I2C instance resolves it as an address
+configuration input. Real KiCad ERC consequently falls from 27 to 21 warnings,
+all caused by the embedded `ohmni` symbol namespace and none electrical.
+
+The catalog's BME280 footprint identifier was also stale: KiCad 10 ships the
+matching 2.5 mm package under `Package_LGA`, not `Sensor`. PCB generation now
+uses project-local pad-geometry subsets with pinned upstream hashes. Board-file
+footprints have local identities, eliminating runtime footprint-table warnings.
+The schematic retains the source footprint as an Ohmni property without asking
+KiCad to resolve a machine-global library link.
+
+The milestone deliberately stops before routing. KiCad accepts the golden board,
+then correctly returns 51 unconnected items. This establishes the DRC boundary
+without pretending a placed board is routed.

@@ -41,6 +41,7 @@ ohmni/
 │   ├── eda/                     # typed artifacts and external-verifier aggregation
 │   │   └── kicad/               # deterministic emitter, ERC adapter and JSON parser
 │   ├── generation/              # strict schemas, requirements, resolver, typed repairs
+│   ├── physical/                # pure board constraints, footprint provenance and geometry rules
 │   ├── cli.py                  # python -m ohmni
 │   └── __main__.py
 ├── fixtures/esp32_env_logger/  # exported fixture JSON: the regression corpus

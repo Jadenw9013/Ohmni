@@ -192,8 +192,21 @@ compiler emits a fingerprinted KiCad 10 schematic, the bounded CLI adapter runs
 additional `KICAD-ERC` rule result without replacing semantic verification.
 Unavailable, malformed, crashed, or stale-artifact runs never become PASS.
 
-SPICE remains unimplemented; its subsystem reads `UNSUPPORTED`. An empty finding list from a check
-that never ran must never look like a clean result.
+SPICE remains unimplemented; its subsystem reads `UNSUPPORTED`. An empty finding
+list from a check that never ran must never look like a clean result.
+
+## PCB verification
+
+Ohmni's initial physical layer implements seven bounded rule IDs: footprint
+overlap, outline containment, edge clearance, measured decoupling distance,
+connector edge accessibility, complete pin-to-pad binding, and routed-copper
+reference integrity. The current compiler intentionally emits no tracks, so
+PB-PCB-007 reports that unknown routed references are impossible rather than
+claiming routing adequacy.
+
+KiCad DRC is a separate typed external report tied to the exact PCB SHA-256 and
+source schematic SHA-256. The golden placed board currently reports 51 real
+unrouted connections. This is a truthful DRC failure, not a disguised pass.
 
 ---
 

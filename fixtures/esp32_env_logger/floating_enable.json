@@ -2,12 +2,13 @@
   "ir_id": "esp32-env-logger-floating-enable",
   "name": "ESP32 environmental logger (floating-enable)",
   "revision": 2,
-  "parent_hash": "0df857195980947b63f5ffcdeb0ac465ee2bf2ebb834d51ad27d005151549eb8",
+  "parent_hash": "e5bbe5e0ee6efdab4f44c6b594f305d2216d557aea553a3241f0ba1c637adfc8",
   "components": [
     {
       "ref": "J1",
       "part_id": "USB_C_RECEPTACLE_16P",
       "package": "USB-C-16P-SMD",
+      "selected_interfaces": [],
       "placeholder": false,
       "evidence": []
     },
@@ -19,6 +20,7 @@
         "value": 5100.0,
         "unit": "ohm"
       },
+      "selected_interfaces": [],
       "placeholder": false,
       "notes": "Rd for CC1. Type-C sinks need one per CC pin.",
       "evidence": []
@@ -31,6 +33,7 @@
         "value": 5100.0,
         "unit": "ohm"
       },
+      "selected_interfaces": [],
       "placeholder": false,
       "notes": "Rd for CC2.",
       "evidence": []
@@ -39,6 +42,7 @@
       "ref": "U2",
       "part_id": "AP2112K-3.3TRG1",
       "package": "SOT-23-5",
+      "selected_interfaces": [],
       "placeholder": false,
       "evidence": []
     },
@@ -50,6 +54,7 @@
         "value": 1e-06,
         "unit": "F"
       },
+      "selected_interfaces": [],
       "placeholder": false,
       "notes": "Regulator input capacitor.",
       "evidence": []
@@ -62,6 +67,7 @@
         "value": 1e-06,
         "unit": "F"
       },
+      "selected_interfaces": [],
       "placeholder": false,
       "notes": "Regulator output capacitor.",
       "evidence": []
@@ -70,6 +76,7 @@
       "ref": "U1",
       "part_id": "ESP32-WROOM-32E",
       "package": "Module-SMD-38",
+      "selected_interfaces": [],
       "placeholder": false,
       "evidence": []
     },
@@ -81,6 +88,7 @@
         "value": 1e-07,
         "unit": "F"
       },
+      "selected_interfaces": [],
       "placeholder": false,
       "notes": "Local decoupling for the module.",
       "evidence": []
@@ -93,6 +101,7 @@
         "value": 2.2e-05,
         "unit": "F"
       },
+      "selected_interfaces": [],
       "placeholder": false,
       "notes": "Bulk capacitance for RF transmit bursts.",
       "evidence": []
@@ -102,6 +111,9 @@
       "part_id": "BME280",
       "package": "LGA-8",
       "selected_i2c_address": 118,
+      "selected_interfaces": [
+        "i2c"
+      ],
       "placeholder": false,
       "evidence": []
     },
@@ -113,6 +125,7 @@
         "value": 1e-07,
         "unit": "F"
       },
+      "selected_interfaces": [],
       "placeholder": false,
       "notes": "Sensor VDD decoupling.",
       "evidence": []
@@ -125,6 +138,7 @@
         "value": 1e-07,
         "unit": "F"
       },
+      "selected_interfaces": [],
       "placeholder": false,
       "notes": "Sensor VDDIO decoupling.",
       "evidence": []
@@ -137,6 +151,7 @@
         "value": 4700.0,
         "unit": "ohm"
       },
+      "selected_interfaces": [],
       "placeholder": false,
       "notes": "I2C SDA pull-up.",
       "evidence": []
@@ -149,6 +164,7 @@
         "value": 4700.0,
         "unit": "ohm"
       },
+      "selected_interfaces": [],
       "placeholder": false,
       "notes": "I2C SCL pull-up.",
       "evidence": []
@@ -157,6 +173,7 @@
       "ref": "D1",
       "part_id": "GENERIC_LED_GREEN",
       "package": "0805",
+      "selected_interfaces": [],
       "placeholder": false,
       "evidence": []
     },
@@ -168,6 +185,7 @@
         "value": 330.0,
         "unit": "ohm"
       },
+      "selected_interfaces": [],
       "placeholder": false,
       "notes": "LED current limiting.",
       "evidence": []
@@ -176,6 +194,7 @@
       "ref": "J2",
       "part_id": "HEADER_1X6_254",
       "package": "1x6-2.54mm-THT",
+      "selected_interfaces": [],
       "placeholder": false,
       "evidence": []
     }
@@ -249,7 +268,7 @@
             "page": 171,
             "text_value": "4.75 V to 5.25 V",
             "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
-            "recorded_at": "2026-08-29T16:05:06.460546Z"
+            "recorded_at": "2026-08-30T07:37:37.271689Z"
           }
         ]
       },
@@ -594,5 +613,5 @@
     "The sensor is read at a low rate, so its supply current is negligible next to the module's RF bursts."
   ],
   "notes": "R3 and C5 removed, leaving EN floating.",
-  "_content_hash": "abf01c7cff5fb4d22c085d4016d545986019ab6573f4342fb5b67ac3913f7299"
+  "_content_hash": "688f107ccdc0a3db393cff0e540c43474c8cfd121a3d41b05570ad8a4d16c961"
 }

@@ -16,6 +16,11 @@
    resistance belongs to the instance; its package options belong to the part.
 4. **Electrical properties are derived from topology, not declared.** Nothing
    can assert what voltage a net sits at.
+5. **Configured interface mode belongs to the component instance.** Catalog pins
+   retain their possible behavior; `ResolvedPinBehavior` derives the effective
+   type from catalog roles plus `CircuitComponent.selected_interfaces`.
+6. **Physical intent is not electrical intent.** Board constraints, footprints,
+   pad bindings and placements live in `ohmni.physical`, outside `CircuitIR`.
 
 ---
 

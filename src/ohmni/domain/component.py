@@ -57,6 +57,16 @@ class PinElectricalType(StrEnum):
     FREE = "free"
 
 
+class ResolvedPinBehavior(BaseModel):
+    """Effective behavior after applying an instance's selected interface."""
+
+    component_ref: str
+    pin_number: str
+    selected_interface: Interface | None = None
+    electrical_type: PinElectricalType
+    derivation: str
+
+
 #: Types that actively drive a net high and low, and therefore cannot share a
 #: net with another such driver. Open-drain types are excluded on purpose: two
 #: open-drain outputs with a pull-up is a normal, correct I2C bus.
@@ -116,6 +126,27 @@ MUST_NOT_FLOAT_ROLES: frozenset[PinRole] = frozenset(
 )
 
 I2C_BUS_ROLES: frozenset[PinRole] = frozenset({PinRole.I2C_SDA, PinRole.I2C_SCL})
+
+
+def resolve_pin_behavior(
+    component_ref: str, pin: "PinSpec", selected: list[Interface]
+) -> ResolvedPinBehavior:
+    """Derive documented mode behavior without changing catalog possibilities."""
+    if Interface.I2C in selected and PinRole.I2C_ADDRESS_SELECT in pin.roles:
+        return ResolvedPinBehavior(
+            component_ref=component_ref,
+            pin_number=pin.number,
+            selected_interface=Interface.I2C,
+            electrical_type=PinElectricalType.INPUT,
+            derivation="I2C address-select role plus instance-selected I2C mode",
+        )
+    return ResolvedPinBehavior(
+        component_ref=component_ref,
+        pin_number=pin.number,
+        selected_interface=selected[0] if len(selected) == 1 else None,
+        electrical_type=pin.electrical_type,
+        derivation="catalog electrical type; no mode override applies",
+    )
 
 
 class ComponentCategory(StrEnum):

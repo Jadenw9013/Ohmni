@@ -210,3 +210,17 @@ class TestGenerationBoundaries:
             source = path.read_text(encoding="utf-8")
             assert ".write_text(" not in source
             assert ".write_bytes(" not in source
+
+
+class TestPhysicalBoundaries:
+    def test_physical_domain_is_pure_and_knows_no_kicad(self):
+        forbidden={"subprocess","socket","requests","httpx","openai","anthropic"}
+        for path in _python_files(SRC / "physical"):
+            assert not (_imported_top_level_modules(path) & forbidden), path
+            assert "from ..eda" not in path.read_text(encoding="utf-8")
+
+    def test_pcb_compiler_and_geometry_have_no_llm_dependency(self):
+        for path in [SRC / "eda" / "kicad" / "pcb_compiler.py", SRC / "eda" / "kicad" / "placement.py"]:
+            source=path.read_text(encoding="utf-8")
+            assert "LlmProvider" not in source
+            assert "openai" not in source and "anthropic" not in source

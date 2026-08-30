@@ -12,6 +12,7 @@ from ...domain import (
     ComponentSpec,
     EngineeringEvent,
     EventKind,
+    resolve_pin_behavior,
 )
 from ..models import (
     ArtifactFingerprint,
@@ -97,10 +98,11 @@ class KiCadSchematicCompiler:
             f'  (generator_version "{COMPILER_VERSION}")', f'  (uuid "{root_uuid}")',
             '  (paper "A4")', "  (lib_symbols",
         ]
-        part_ids = sorted({spec.part_id for spec in specs.values()})
-        for part_id in part_ids:
-            spec = next(spec for spec in specs.values() if spec.part_id == part_id)
-            lines.extend(self._library_symbol(spec))
+        for instance in sorted(circuit.components, key=lambda c: c.ref):
+            spec = specs[instance.ref]
+            lines.extend(self._library_symbol(
+                spec, f"ohmni:{identifier(spec.part_id)}_{instance.ref}", instance,
+            ))
         if any(net.external_source for net in circuit.nets):
             lines.extend(self._driver_library_symbol())
         lines.append("  )")
@@ -185,8 +187,7 @@ class KiCadSchematicCompiler:
             events=[started, completed],
         )
 
-    def _library_symbol(self, spec: ComponentSpec) -> list[str]:
-        lib_id = f"ohmni:{identifier(spec.part_id)}"
+    def _library_symbol(self, spec: ComponentSpec, lib_id: str, instance) -> list[str]:
         height = _symbol_height(len(spec.pins))
         ref_prefix = {"resistor": "R", "capacitor": "C", "led": "D", "connector": "J", "header": "J"}.get(spec.category.value, "U")
         out = [
@@ -197,13 +198,16 @@ class KiCadSchematicCompiler:
             f"      {_property('Footprint', '', 0, 0, hide=True)}",
             f"      {_property('Datasheet', spec.datasheet.url if spec.datasheet and spec.datasheet.url else '', 0, 0, hide=True)}",
             f"      {_property('Description', spec.description, 0, 0, hide=True)}",
-            f'      (symbol {quote(identifier(spec.part_id) + "_0_1")}',
+            f'      (symbol {quote(lib_id.split(":", 1)[1] + "_0_1")}',
             f"        (rectangle (start -5.08 -1.27) (end 5.08 {number(height)}) (stroke (width 0) (type default)) (fill (type background)))",
         ]
         for index, pin in enumerate(spec.pins):
             x, y, angle = _pin_position(index)
+            electrical_type = resolve_pin_behavior(
+                instance.ref, pin, instance.selected_interfaces
+            ).electrical_type
             out.append(
-                f"        (pin {pin.electrical_type.value} line (at {number(x)} {number(y)} {angle}) "
+                f"        (pin {electrical_type.value} line (at {number(x)} {number(y)} {angle}) "
                 f"(length 2.54) (name {quote(pin.name)} {_effects()}) "
                 f"(number {quote(pin.number)} {_effects()}))"
             )
@@ -226,9 +230,13 @@ class KiCadSchematicCompiler:
 
     def _instance(self, circuit, instance, spec, x, y, root_uuid, project):
         symbol_uuid = _uuid(circuit.content_hash, f"symbol:{instance.ref}")
-        lib_id = f"ohmni:{identifier(spec.part_id)}"
+        lib_id = f"ohmni:{identifier(spec.part_id)}_{instance.ref}"
         package = spec.package(instance.package) if instance.package else None
-        footprint = package.kicad_footprint if package and package.kicad_footprint else ""
+        # The real, provenance-bound footprint identity lives in the PCB
+        # compilation report. A colon-qualified library link here makes KiCad
+        # consult machine-global tables even though Ohmni emits project-local
+        # footprint geometry, so use the deterministic local artifact identity.
+        source_footprint = package.kicad_footprint if package and package.kicad_footprint else ""
         value = instance.value.engineering() if instance.value else spec.display_name
         out = [
             "  (symbol", f"    (lib_id {quote(lib_id)})", f"    (at {number(x)} {number(y)} 0)",
@@ -236,7 +244,8 @@ class KiCadSchematicCompiler:
             "    (dnp no)", f'    (uuid "{symbol_uuid}")',
             f"    {_property('Reference', instance.ref, x, y - 5.08)}",
             f"    {_property('Value', value, x, y - 2.54)}",
-            f"    {_property('Footprint', footprint, x, y, hide=True)}",
+            f"    {_property('Footprint', '', x, y, hide=True)}",
+            f"    {_property('OhmniFootprintSource', source_footprint, x, y, hide=True)}",
             f"    {_property('Datasheet', '', x, y, hide=True)}",
             f"    {_property('Description', spec.description, x, y, hide=True)}",
         ]
