@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "id": "M8-T04",
+  "commit": "ff4309a",
+  "commands": [
+    {"command": "python scripts/verify.py fast", "result": "PASS", "tests": 439, "deselected": 8, "runtime_seconds": 2.66},
+    {"command": "python scripts/verify.py integration", "result": "PASS", "tests": 7, "deselected": 440, "runtime_seconds": 2.33},
+    {"command": "python scripts/verify.py slow", "result": "PASS", "tests": 1, "deselected": 446, "runtime_seconds": 112.74},
+    {"command": "pytest tests/test_demo_application.py", "result": "PASS", "tests": 2, "runtime_seconds": 0.14},
+    {"command": "ruff check changed Milestone 8 Python files", "result": "PASS"}
+  ],
+  "manual_demo": {
+    "result": "PASS",
+    "output": "out/m8-acceptance/report.json",
+    "semantic_repair": "PB-PWR-001 failed then passed",
+    "erc": "PASS",
+    "drc_violations": 0,
+    "unrouted": 0,
+    "bom_unique_lines": 13,
+    "pricing_coverage": 0.9230769230769231,
+    "release_status": "READY_FOR_MANUFACTURING_REVIEW"
+  },
+  "review": {"status": "SELF_REVIEW_PASSED", "independent": false},
+  "limitations": ["Independent milestone review is handled by M8-T05."]
+}

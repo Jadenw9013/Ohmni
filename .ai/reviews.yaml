@@ -23,7 +23,39 @@
       "status": "PASSED",
       "commit": "7f73d2a",
       "notes": "Self-review checked scope, diff, command truthfulness, approval boundaries, failure behavior, and product isolation. This is an additional gate, not independent review."
+    },
+    {
+      "id": "M8-REV-SELF",
+      "scope": "M8",
+      "reviewer": "implementation-agent",
+      "independent": false,
+      "status": "PASSED",
+      "commit": "ff4309a",
+      "notes": "Self-review covered truthfulness, stale artifacts, scope, security, accessibility structure, tests, and documentation. Not independent approval."
+    },
+    {
+      "id": "M8-REV-INDEPENDENT",
+      "scope": "M8",
+      "reviewer": null,
+      "independent": true,
+      "status": "UNAVAILABLE",
+      "commit": "ff4309a",
+      "notes": "No independent reviewer was available in this session; repository policy prevents formal milestone completion."
     }
   ],
-  "findings": []
+  "findings": [
+    {
+      "id": "M8-R01",
+      "scope": "M8",
+      "severity": "HIGH",
+      "status": "FIXED",
+      "title": "Artifact download did not revalidate displayed fingerprint",
+      "description": "A generated schematic or PCB modified after report creation could be downloaded under the stale report fingerprint.",
+      "affected_files": ["scripts/demo_server.py"],
+      "found_at_commit": "58ef9b2",
+      "resolution_commit": "ff4309a",
+      "resolution": "Download handler now hashes exact artifacts and rejects stale/mismatched files.",
+      "verification": "tests/test_demo_application.py::test_artifact_download_freshness_is_hash_bound"
+    }
+  ]
 }

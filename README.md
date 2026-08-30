@@ -53,7 +53,7 @@ whose correctness depends on a model would not be a verifier.
 | Verification rules | **24**, deterministic, independently testable |
 | Part catalog | 9 parts, every fact carrying provenance |
 | Fixtures | 1 golden circuit + **13** broken variants |
-| Tests | **447**, tiered into fast, KiCad integration, and slow golden demo/release checks |
+| Tests | **448**, tiered into fast, KiCad integration, and slow golden demo/release checks |
 | Golden circuit | no blocking findings, **100% rule coverage** |
 | Broken variants | each caught by exactly the rule and severity it was built to trip |
 

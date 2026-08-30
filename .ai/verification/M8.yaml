@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "id": "M8",
+  "status": "VERIFIED_AWAITING_INDEPENDENT_REVIEW",
+  "commit": "ff4309a",
+  "commands": [
+    {"command": "python scripts/verify.py full", "result": "PASS", "tests": 448, "runtime_seconds": 117.57},
+    {"command": "python scripts/verify.py integration", "result": "PASS", "tests": 7, "runtime_seconds": 2.33},
+    {"command": "node --test apps/web/tests/view-model.test.mjs", "result": "PASS", "tests": 4},
+    {"command": "ruff check changed Milestone 8 Python files", "result": "PASS"},
+    {"command": "HTTP GET http://127.0.0.1:8766/", "result": "PASS", "status_code": 200, "response_bytes": 3116}
+  ],
+  "real_demo": {
+    "mode": "deterministic_scripted_demo",
+    "live_llm_required": false,
+    "network_required_for_core_results": false,
+    "initial_failure": "PB-PWR-001 BME280 supplies on VBUS",
+    "repair": "U3.6 and U3.8 moved from VBUS to 3V3",
+    "post_repair_semantic": "PASS",
+    "erc": "PASS",
+    "physical": "PASS",
+    "routing": "PASS",
+    "drc_violations": 0,
+    "unrouted": 0,
+    "manufacturing": "PASS_WITH_STATED_SYNTHETIC_PROFILE",
+    "bom_unique_lines": 13,
+    "pricing_coverage": 0.9230769230769231,
+    "unknown_costs": ["BME280 fixture price", "fabrication", "shipping", "tooling"],
+    "release": "READY_FOR_MANUFACTURING_REVIEW"
+  },
+  "review": {
+    "self_review": "PASSED",
+    "independent_review": "UNAVAILABLE",
+    "open_blocker_or_high_findings": 0
+  },
+  "limitations": ["Formal M8 COMPLETE is blocked pending independent or human review approval.", "No Milestone 9 is proposed or approved."]
+}

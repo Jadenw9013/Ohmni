@@ -14,7 +14,7 @@
       "id": "M8",
       "type": "product_milestone",
       "title": "Ohmni End-User Experience and Demo",
-      "status": "IN_PROGRESS",
+      "status": "REVIEW",
       "approved_by": "human",
       "approval_evidence": "Human instruction: 'Human approval: create and execute Milestone 8.'",
       "review_policy": "independent review required for COMPLETE; unavailable permits VERIFIED only"
@@ -83,23 +83,24 @@
     },
     {
       "id": "M8-T04", "scope": "M8", "milestone": "M8",
-      "title": "Verify and harden the complete demo journey", "status": "IN_PROGRESS", "priority": 70,
+      "title": "Verify and harden the complete demo journey", "status": "COMPLETE", "priority": 70,
       "dependencies": ["M8-T02", "M8-T03"],
       "goal": "Exercise the real flawed-proposal-to-release journey, protect artifact freshness, update documentation, and collect milestone evidence.",
       "acceptance_criteria": ["Major user journey consumes real structured results", "0 DRC violations and 0 unrouted reproduced", "Existing backend gates pass", "Demo run instructions are documented"],
-      "verification": {"required": ["fast_tests", "integration_tests", "full_tests", "manual_ui_review"], "record": null},
-      "implementation": {"started_at_commit": "0453db4", "completed_at_commit": null},
+      "verification": {"required": ["fast_tests", "integration_tests", "full_tests", "manual_ui_review"], "record": ".ai/verification/M8-T04.yaml"},
+      "implementation": {"started_at_commit": "0453db4", "completed_at_commit": "ff4309a"},
       "review": {"required": false, "status": "SELF_REVIEW_PASSED", "independent": false}, "blockers": []
     },
     {
       "id": "M8-T05", "scope": "M8", "milestone": "M8",
-      "title": "Review and close Milestone 8", "status": "APPROVED", "priority": 60,
+      "title": "Review and close Milestone 8", "status": "BLOCKED", "priority": 60,
       "dependencies": ["M8-T04"],
       "goal": "Run repository-backed review and completion gates, resolve blocking findings, and record the accepted Milestone 8 baseline.",
       "acceptance_criteria": ["Review state is honest", "No open BLOCKER/HIGH findings", "Task and milestone ledgers match commits", "No Milestone 9 is approved"],
-      "verification": {"required": ["state_validation", "review_gate"], "record": null},
-      "implementation": {"started_at_commit": null, "completed_at_commit": null},
-      "review": {"required": false, "status": "PENDING", "independent": false}, "blockers": []
+      "verification": {"required": ["state_validation", "review_gate"], "record": ".ai/verification/M8.yaml"},
+      "implementation": {"started_at_commit": "ff4309a", "completed_at_commit": null},
+      "review": {"required": true, "status": "UNAVAILABLE", "independent": false},
+      "blockers": ["Independent reviewer unavailable. Policy permits VERIFIED but not formal COMPLETE; human or independent review approval is required."]
     }
   ]
 }
