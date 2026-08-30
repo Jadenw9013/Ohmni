@@ -20,6 +20,7 @@ from ..models import (
     CompilationWarning,
     PinBinding,
     SchematicArtifact,
+    SchematicDriverBinding,
     SymbolBinding,
 )
 from .sexpr import identifier, number, quote
@@ -108,7 +109,7 @@ class KiCadSchematicCompiler:
         lines.append("  )")
 
         bindings: list[SymbolBinding] = []
-        occupied: dict[str, tuple[float, float, ComponentSpec]] = {}
+        connected = {(ref.component, ref.pin): net for net in circuit.nets for ref in net.connections}
         sorted_instances = sorted(circuit.components, key=lambda c: c.ref)
         for idx, instance in enumerate(sorted_instances):
             spec = specs[instance.ref]
@@ -117,41 +118,47 @@ class KiCadSchematicCompiler:
             # KiCad, so cells must never overlap even for the 39-pin ESP32 module.
             x = 50.8 + (idx % self.layout_columns) * 50.8
             y = 76.2 + (idx // self.layout_columns) * 76.2
-            occupied[instance.ref] = (x, y, spec)
-            rendered, binding = self._instance(circuit, instance, spec, x, y, root_uuid, project)
+            rendered, binding = self._instance(
+                circuit, instance, spec, x, y, root_uuid, project, connected,
+            )
             lines.extend(rendered)
             bindings.append(binding)
 
         net_mapping = {net.name: net.name for net in sorted(circuit.nets, key=lambda n: n.name)}
-        connected = {(ref.component, ref.pin): net for net in circuit.nets for ref in net.connections}
-        for ref, (x, y, spec) in occupied.items():
-            for index, pin in enumerate(spec.pins):
-                px, py, angle = _pin_position(index)
-                # KiCad's symbol-local positive Y axis maps upward on the sheet.
-                at_x, at_y = x + px, y - py
-                net = connected.get((ref, pin.number))
-                marker_uuid = _uuid(circuit.content_hash, f"endpoint:{ref}:{pin.number}")
-                if net is None:
-                    lines.append(f'  (no_connect (at {number(at_x)} {number(at_y)}) (uuid "{marker_uuid}"))')
+        for binding in bindings:
+            for pin in binding.pins:
+                if pin.net_name is None:
+                    lines.append(
+                        f'  (no_connect (at {number(pin.x_mm)} {number(pin.y_mm)}) '
+                        f'(uuid "{pin.endpoint_uuid}"))'
+                    )
                 else:
-                    lines.extend(self._global_label(net.name, at_x, at_y, angle, marker_uuid))
+                    lines.extend(self._global_label(
+                        pin.net_name, pin.x_mm, pin.y_mm,
+                        pin.angle_degrees, pin.endpoint_uuid,
+                    ))
 
         source_index = 0
+        driver_bindings: list[SchematicDriverBinding] = []
         for net in sorted(circuit.nets, key=lambda n: n.name):
             if net.external_source is None:
                 continue
             source_index += 1
             x, y = 25.4, 25.4 + source_index * 10.16
-            lines.extend(self._driver_instance(
+            rendered, driver = self._driver_instance(
                 circuit, root_uuid, project, f"#SRC{source_index}", net.name, x, y,
-                f"external-source:{net.name}",
-            ))
+                f"external-source:{net.name}", "external_source",
+            )
+            lines.extend(rendered)
+            driver_bindings.append(driver)
         if source_index and circuit.ground_nets:
             ground = min(circuit.ground_nets, key=lambda n: n.name)
-            lines.extend(self._driver_instance(
+            rendered, driver = self._driver_instance(
                 circuit, root_uuid, project, "#RET1", ground.name, 25.4, 25.4,
-                f"external-return:{ground.name}",
-            ))
+                f"external-return:{ground.name}", "external_return",
+            )
+            lines.extend(rendered)
+            driver_bindings.append(driver)
             warnings.append(CompilationWarning(
                 code="EXTERNAL_RETURN_INTENT",
                 message=("A KiCad power-output marker represents the external source return on "
@@ -167,9 +174,11 @@ class KiCadSchematicCompiler:
         digest = hashlib.sha256(payload.encode("utf-8")).hexdigest()
         report = CompilationReport(
             circuit_content_hash=circuit.content_hash,
+            source_artifact_fingerprint=ArtifactFingerprint(digest=digest),
             compiler_version=COMPILER_VERSION,
             target="KiCad 10 schematic 20250114",
             symbol_bindings=bindings,
+            driver_bindings=driver_bindings,
             net_mapping=net_mapping,
             warnings=warnings,
         )
@@ -228,7 +237,7 @@ class KiCadSchematicCompiler:
             '      )', '    )',
         ]
 
-    def _instance(self, circuit, instance, spec, x, y, root_uuid, project):
+    def _instance(self, circuit, instance, spec, x, y, root_uuid, project, connected):
         symbol_uuid = _uuid(circuit.content_hash, f"symbol:{instance.ref}")
         lib_id = f"ohmni:{identifier(spec.part_id)}_{instance.ref}"
         package = spec.package(instance.package) if instance.package else None
@@ -250,12 +259,18 @@ class KiCadSchematicCompiler:
             f"    {_property('Description', spec.description, x, y, hide=True)}",
         ]
         pin_bindings = []
-        for pin in spec.pins:
+        for index, pin in enumerate(spec.pins):
             pin_uuid = _uuid(circuit.content_hash, f"pin:{instance.ref}:{pin.number}")
             out.append(f'    (pin {quote(pin.number)} (uuid "{pin_uuid}"))')
+            pin_x, pin_y, angle = _pin_position(index)
+            net = connected.get((instance.ref, pin.number))
             pin_bindings.append(PinBinding(
                 component_ref=instance.ref, circuit_pin=pin.number,
                 kicad_pin=pin.number, pin_uuid=pin_uuid,
+                pin_name=pin.name, x_mm=x + pin_x, y_mm=y - pin_y,
+                angle_degrees=angle,
+                endpoint_uuid=_uuid(circuit.content_hash, f"endpoint:{instance.ref}:{pin.number}"),
+                net_name=net.name if net is not None else None,
             ))
         out.extend([
             f"    (instances (project {quote(project)} (path {quote('/' + root_uuid)} (reference {quote(instance.ref)}) (unit 1))))",
@@ -263,7 +278,8 @@ class KiCadSchematicCompiler:
         ])
         return out, SymbolBinding(
             component_ref=instance.ref, part_id=spec.part_id, library_id=lib_id,
-            symbol_uuid=symbol_uuid, pins=pin_bindings,
+            symbol_uuid=symbol_uuid, x_mm=x, y_mm=y, width_mm=10.16,
+            height_mm=_symbol_height(len(spec.pins)) + 1.27, pins=pin_bindings,
         )
 
     def _global_label(self, name: str, x: float, y: float, angle: int, item_uuid: str) -> list[str]:
@@ -273,11 +289,11 @@ class KiCadSchematicCompiler:
             "  )",
         ]
 
-    def _driver_instance(self, circuit, root_uuid, project, ref, net_name, x, y, seed):
+    def _driver_instance(self, circuit, root_uuid, project, ref, net_name, x, y, seed, role):
         symbol_uuid = _uuid(circuit.content_hash, f"driver:{seed}")
         pin_uuid = _uuid(circuit.content_hash, f"driver-pin:{seed}")
         label_uuid = _uuid(circuit.content_hash, f"driver-label:{seed}")
-        return [
+        rendered = [
             "  (symbol", '    (lib_id "ohmni:ExternalPowerDriver")',
             f"    (at {number(x)} {number(y)} 0)", "    (unit 1)",
             "    (exclude_from_sim yes)", "    (in_bom no)", "    (on_board no)", "    (dnp no)",
@@ -292,6 +308,11 @@ class KiCadSchematicCompiler:
             "  )",
             *self._global_label(net_name, x, y, 0, label_uuid),
         ]
+        return rendered, SchematicDriverBinding(
+            reference=ref, net_name=net_name, role=role,
+            symbol_uuid=symbol_uuid, pin_uuid=pin_uuid,
+            endpoint_uuid=label_uuid, x_mm=x, y_mm=y,
+        )
 
     @staticmethod
     def _event(circuit: CircuitIR, kind: EventKind, summary: str, payload=None) -> EngineeringEvent:

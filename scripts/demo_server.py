@@ -6,16 +6,22 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import logging
+import re
 import threading
 import uuid
 from http import HTTPStatus
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
+from urllib.parse import unquote, urlsplit
 
 from ohmni.application import DEMO_REQUEST, DemoPipeline
 
 ROOT=Path(__file__).resolve().parents[1];WEB_ROOT=ROOT/"apps"/"web";OUTPUT_ROOT=ROOT/"out"/"demo-jobs"
+ARTIFACT_SECTIONS={"golden.kicad_sch":"schematic","golden.kicad_pcb":"pcb"}
+JOB_ID_PATTERN=re.compile(r"^[0-9a-f]{12}$")
+LOGGER=logging.getLogger(__name__)
 
 
 class JobStore:
@@ -31,15 +37,73 @@ class JobStore:
             report=self.pipeline_factory(progress).run(self.output_root/job_id,request)
             with self.lock:self.jobs[job_id].update(status="complete",report=report.model_dump(mode="json"))
         except (OSError, RuntimeError, ValueError) as exc:
-            with self.lock:self.jobs[job_id].update(status="failed",error=str(exc))
-    def get(self,job_id):
+            with self.lock:
+                self.jobs[job_id].update(status="failed",error=str(exc))
+        except Exception as exc:
+            LOGGER.exception("unexpected demo pipeline failure for job %s", job_id)
+            with self.lock:
+                self.jobs[job_id].update(
+                    status="failed",
+                    error=f"Unexpected demo pipeline failure ({type(exc).__name__})",
+                )
+    def _snapshot(self,job_id):
         with self.lock:return json.loads(json.dumps(self.jobs.get(job_id))) if job_id in self.jobs else None
-    def artifact_is_current(self,job_id,name,path):
-        job=self.get(job_id)
-        if not job or job["status"]!="complete" or not path.is_file():return False
-        expected={"golden.kicad_sch":job["report"]["schematic"]["fingerprint"],"golden.kicad_pcb":job["report"]["pcb"]["fingerprint"]}.get(name)
-        return bool(expected) and hashlib.sha256(path.read_bytes()).hexdigest()==expected
-
+    def _job_directory(self,job_id):
+        if not JOB_ID_PATTERN.fullmatch(job_id):return None
+        root=self.output_root.resolve();directory=(root/job_id).resolve()
+        return directory if directory.parent==root and directory.name==job_id else None
+    @staticmethod
+    def _expected_digest(job,name):
+        try:expected=job["report"][ARTIFACT_SECTIONS[name]]["fingerprint"]
+        except (KeyError,TypeError):return None
+        return expected if isinstance(expected,str) and re.fullmatch(r"[0-9a-f]{64}",expected) else None
+    @staticmethod
+    def _read_matching(path,expected,parent):
+        try:
+            if path.is_symlink():return "unavailable",None
+            resolved=path.resolve()
+            if resolved.parent!=parent or not resolved.is_file():return "missing",None
+            data=resolved.read_bytes()
+        except OSError:return "missing",None
+        return ("current",data) if hashlib.sha256(data).hexdigest()==expected else ("stale",None)
+    def _read_artifact_snapshot(self,job_id,name,job):
+        if name not in ARTIFACT_SECTIONS or not job or job.get("status")!="complete":return "unavailable",None
+        directory=self._job_directory(job_id);expected=self._expected_digest(job,name)
+        if directory is None or expected is None:return "unavailable",None
+        return self._read_matching(directory/name,expected,directory)
+    def read_artifact(self,job_id,name):
+        return self._read_artifact_snapshot(job_id,name,self._snapshot(job_id))
+    def get(self,job_id):
+        job=self._snapshot(job_id)
+        if not job or job.get("status")!="complete":return job
+        report=job.get("report")
+        if not isinstance(report,dict):return job
+        schematic_state,_=self._read_artifact_snapshot(job_id,"golden.kicad_sch",job)
+        pcb_state,_=self._read_artifact_snapshot(job_id,"golden.kicad_pcb",job)
+        schematic_current=schematic_state=="current";pcb_file_current=pcb_state=="current"
+        schematic=report.get("schematic");pcb=report.get("pcb")
+        if isinstance(schematic,dict):schematic["current"]=schematic_current
+        placed_expected=pcb.get("source_placed_pcb_fingerprint") if isinstance(pcb,dict) else None
+        placed_current=True
+        directory=self._job_directory(job_id)
+        if placed_expected is not None and directory is not None:
+            placed_current=self._read_matching(
+                directory/"golden.placed.kicad_pcb",placed_expected,directory,
+            )[0]=="current"
+        pcb_current=pcb_file_current and schematic_current and placed_current
+        if isinstance(pcb,dict):pcb["current"]=pcb_current
+        files_current=True
+        fabrication=directory/"fabrication" if directory is not None else None
+        release=report.get("release")
+        for item in release.get("files",[]) if isinstance(release,dict) else []:
+            relative=item.get("relative_path");expected=item.get("sha256")
+            if not fabrication or not isinstance(relative,str) or Path(relative).name!=relative or not isinstance(expected,str):
+                files_current=False;break
+            if self._read_matching(fabrication/relative,expected,fabrication)[0]!="current":
+                files_current=False;break
+        if isinstance(release,dict) and "current" in release:
+            release["current"]=pcb_current and files_current
+        return job
 
 class DemoHandler(SimpleHTTPRequestHandler):
     store:JobStore
@@ -54,17 +118,18 @@ class DemoHandler(SimpleHTTPRequestHandler):
         except (ValueError,json.JSONDecodeError) as exc:return self._json({"error":str(exc)},HTTPStatus.BAD_REQUEST)
         self._json({"job_id":self.store.start(request),"status":"queued"},HTTPStatus.ACCEPTED)
     def do_GET(self):
-        if self.path.startswith("/api/jobs/"):
-            job=self.store.get(self.path.removeprefix("/api/jobs/"));return self._json(job if job else {"error":"job not found"},HTTPStatus.OK if job else HTTPStatus.NOT_FOUND)
-        if self.path.startswith("/api/artifacts/"):
-            parts=self.path.split("/")
+        request_path=unquote(urlsplit(self.path).path)
+        if request_path.startswith("/api/jobs/"):
+            job_id=request_path.removeprefix("/api/jobs/")
+            if "/" in job_id:return self._json({"error":"invalid job path"},HTTPStatus.BAD_REQUEST)
+            job=self.store.get(job_id);return self._json(job if job else {"error":"job not found"},HTTPStatus.OK if job else HTTPStatus.NOT_FOUND)
+        if request_path.startswith("/api/artifacts/"):
+            parts=request_path.split("/")
             if len(parts)!=5:return self._json({"error":"invalid artifact path"},HTTPStatus.BAD_REQUEST)
-            job_id,name=parts[3],parts[4];job=self.store.get(job_id)
-            if not job or job["status"]!="complete":return self._json({"error":"artifact unavailable"},HTTPStatus.NOT_FOUND)
-            base=(self.store.output_root/job_id).resolve();path=(base/name).resolve()
-            if path.parent!=base or not path.is_file():return self._json({"error":"artifact not found"},HTTPStatus.NOT_FOUND)
-            if not self.store.artifact_is_current(job_id,name,path):return self._json({"error":"artifact is stale or not associated with this report"},HTTPStatus.CONFLICT)
-            data=path.read_bytes();self.send_response(HTTPStatus.OK);self.send_header("content-type","application/octet-stream");self.send_header("content-disposition",f'attachment; filename="{path.name}"');self.send_header("content-length",str(len(data)));self.end_headers();self.wfile.write(data);return
+            job_id,name=parts[3],parts[4];state,data=self.store.read_artifact(job_id,name)
+            if state in {"unavailable","missing"}:return self._json({"error":"artifact unavailable"},HTTPStatus.NOT_FOUND)
+            if state!="current" or data is None:return self._json({"error":"artifact is stale or not associated with this report"},HTTPStatus.CONFLICT)
+            self.send_response(HTTPStatus.OK);self.send_header("content-type","application/octet-stream");self.send_header("x-content-type-options","nosniff");self.send_header("cache-control","no-store");self.send_header("content-disposition",f'attachment; filename="{name}"');self.send_header("content-length",str(len(data)));self.end_headers();self.wfile.write(data);return
         super().do_GET()
 
 

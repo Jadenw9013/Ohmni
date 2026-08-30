@@ -22,6 +22,12 @@ class PinBinding(BaseModel):
     circuit_pin: str
     kicad_pin: str
     pin_uuid: str
+    pin_name: str
+    x_mm: float
+    y_mm: float
+    angle_degrees: int
+    endpoint_uuid: str
+    net_name: str | None = None
 
 
 class SymbolBinding(BaseModel):
@@ -29,7 +35,22 @@ class SymbolBinding(BaseModel):
     part_id: str
     library_id: str
     symbol_uuid: str
+    x_mm: float
+    y_mm: float
+    width_mm: float
+    height_mm: float
     pins: list[PinBinding]
+
+
+class SchematicDriverBinding(BaseModel):
+    reference: str
+    net_name: str
+    role: str
+    symbol_uuid: str
+    pin_uuid: str
+    endpoint_uuid: str
+    x_mm: float
+    y_mm: float
 
 
 class CompilationWarning(BaseModel):
@@ -40,9 +61,12 @@ class CompilationWarning(BaseModel):
 
 class CompilationReport(BaseModel):
     circuit_content_hash: str
+    source_artifact_fingerprint: ArtifactFingerprint
     compiler_version: str
     target: str
+    connection_method: str = "global_labels"
     symbol_bindings: list[SymbolBinding]
+    driver_bindings: list[SchematicDriverBinding]
     net_mapping: dict[str, str]
     warnings: list[CompilationWarning] = Field(default_factory=list)
 

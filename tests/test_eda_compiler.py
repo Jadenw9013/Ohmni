@@ -21,6 +21,27 @@ def test_bindings_are_sorted_and_cover_every_catalog_pin(tmp_path, golden, catal
     for binding in artifact.compilation.symbol_bindings:
         assert len(binding.pins) == len(catalog.get(binding.part_id).pins)
         assert len({p.pin_uuid for p in binding.pins}) == len(binding.pins)
+        assert binding.x_mm > 0 and binding.y_mm > 0
+        assert all(pin.endpoint_uuid and pin.x_mm > 0 and pin.y_mm > 0 for pin in binding.pins)
+    expected_connections = {
+        (net.name, ref.component, ref.pin) for net in golden.nets for ref in net.connections
+    }
+    projected_connections = {
+        (pin.net_name, pin.component_ref, pin.circuit_pin)
+        for binding in artifact.compilation.symbol_bindings
+        for pin in binding.pins if pin.net_name
+    }
+    assert projected_connections == expected_connections
+    assert artifact.compilation.source_artifact_fingerprint == artifact.fingerprint
+    assert artifact.compilation.connection_method == "global_labels"
+    text=artifact.path.read_text(encoding="utf-8")
+    for binding in artifact.compilation.symbol_bindings:
+        assert binding.symbol_uuid in text
+        for pin in binding.pins:
+            assert pin.endpoint_uuid in text
+    assert {driver.reference for driver in artifact.compilation.driver_bindings}=={"#SRC1","#RET1"}
+    for driver in artifact.compilation.driver_bindings:
+        assert driver.symbol_uuid in text and driver.endpoint_uuid in text
 
 
 def test_multi_rail_sensor_pins_remain_distinct(tmp_path, golden, catalog):
@@ -35,7 +56,12 @@ def test_layout_changes_graphics_not_connectivity(tmp_path, golden, catalog):
     a = KiCadSchematicCompiler(catalog, layout_columns=3).compile(golden, tmp_path / "a.kicad_sch")
     b = KiCadSchematicCompiler(catalog, layout_columns=5).compile(golden, tmp_path / "b.kicad_sch")
     assert a.compilation.net_mapping == b.compilation.net_mapping
-    assert a.compilation.symbol_bindings == b.compilation.symbol_bindings
+    topology = lambda artifact: {
+        (pin.net_name, pin.component_ref, pin.circuit_pin)
+        for binding in artifact.compilation.symbol_bindings for pin in binding.pins
+    }
+    assert topology(a) == topology(b)
+    assert a.compilation.symbol_bindings != b.compilation.symbol_bindings
     assert a.path.read_bytes() != b.path.read_bytes()
 
 

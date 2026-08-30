@@ -151,8 +151,31 @@ def project_demo_report(**values) -> DemoReport:
     first,last=design.semantic_attempts[0],design.semantic_attempts[-1]
     blocking=[finding for finding in first.findings if finding.severity.value in {"critical","error"}]
     repair=design.repairs[0]
-    all_events=list(design.notebook.events)+list(routed.events)+list(plan.events)+list(drc.events)+list(manufacturing.events)+list(bom.events)+list(costs.events)+list(package.events)
-    notebook=[{"id":event.event_id,"kind":event.kind.value,"summary":event.summary,"status":"FAIL" if "failed" in event.kind.value else "RECORDED","finding_ids":event.related_finding_ids,"circuit_hash":event.circuit_content_hash} for event in all_events]
+    event_groups = [
+        ("design", design.notebook.events),
+        ("placed_pcb_compilation", values["placed"].events),
+        ("routing", plan.events),
+        ("routed_pcb_compilation", routed.events),
+        ("drc", drc.events),
+        ("manufacturing", manufacturing.events),
+        ("bom", bom.events),
+        ("cost", costs.events),
+        ("assembly", assembly.events),
+        ("fabrication_release", package.events),
+    ]
+    notebook = []
+    for phase, events in event_groups:
+        for event in events:
+            notebook.append({
+                "id": event.event_id,
+                "sequence": len(notebook) + 1,
+                "phase": phase,
+                "kind": event.kind.value,
+                "summary": event.summary,
+                "status": "FAIL" if "failed" in event.kind.value else "RECORDED",
+                "finding_ids": event.related_finding_ids,
+                "circuit_hash": event.circuit_content_hash,
+            })
     evidence=_evidence_rows(catalog)
     ladder=[
         {"stage":"Requirements","status":"PASS","detail":f"{len(requirements)} provenance-labeled statements"},
@@ -178,12 +201,12 @@ def project_demo_report(**values) -> DemoReport:
         failure_and_repair={"status":"REPAIRED","rule":"PB-PWR-001","original":"BME280 VDD and VDDIO connected to 5 V VBUS","operating_range":"1.71 V to 3.6 V","findings":[{"severity":f.severity.value.upper(),"title":f.title,"description":f.description} for f in blocking if f.rule_id=="PB-PWR-001"],"operations":[op.model_dump(mode="json") for op in repair.patch.operations],"result":"Both sensor supply pins moved to 3V3; PB-PWR-001 passed after deterministic re-verification."},
         verification_ladder=ladder,notebook=notebook,
         lessons=[lesson.model_dump(mode="json") for lesson in design.lessons],
-        schematic={"path":str(design.artifact.path),"fingerprint":design.artifact.fingerprint.digest,"current":design.artifact.is_current,"erc_status":design.erc.status.value.upper(),"erc_findings":len(design.erc.findings),"svg":schematic_svg(design.final_circuit,design.artifact)},
-        pcb={"path":str(routed.path),"fingerprint":routed.fingerprint.digest,"current":routed.lineage_is_current,"drc_status":drc.status.value.upper(),"violations":len(drc.findings),"unrouted":len(drc.unconnected_items),"statistics":plan.statistics.model_dump(mode="json"),"svg":pcb_svg(board,plan)},
+        schematic={"path":str(design.artifact.path),"fingerprint":design.artifact.fingerprint.digest,"current":design.artifact.is_current,"erc_status":design.erc.status.value.upper(),"erc_findings":len(design.erc.findings),"svg":schematic_svg(design.artifact)},
+        pcb={"path":str(routed.path),"fingerprint":routed.fingerprint.digest,"source_schematic_fingerprint":routed.schematic_fingerprint.digest,"source_placed_pcb_fingerprint":routed.source_placed_pcb_fingerprint.digest if routed.source_placed_pcb_fingerprint else None,"current":routed.lineage_is_current,"drc_status":drc.status.value.upper(),"violations":len(drc.findings),"unrouted":len(drc.unconnected_items),"statistics":plan.statistics.model_dump(mode="json"),"svg":pcb_svg(board,plan)},
         manufacturing={"profile":manufacturing.profile.display_name,"provenance":manufacturing.profile.provenance.value,"findings":[finding.model_dump(mode="json") for finding in manufacturing.findings]},
         bom={"references":bom.reference_count,"unique_lines":len(bom.lines),"lines":bom_rows},
         economics={"scenario_boards":1,"pricing_coverage":costs.pricing_coverage,"known_consumption_cost":str(costs.known_consumption_cost),"known_purchase_requirement":str(costs.known_purchase_requirement),"fabrication":costs.fabrication.value.upper(),"shipping":costs.shipping.value.upper(),"tooling":costs.tooling.value.upper(),"pricing_source":"SYNTHETIC FIXTURE - NOT LIVE SUPPLIER DATA"},
         assembly={"hand_solder_requirement_satisfied":assembly.hand_solder_requirement_satisfied,"risks":[risk.model_dump(mode="json") for risk in assembly.risks],"limitations":assembly.limitations},
-        release={"status":package.status.value.upper(),"package_fingerprint":package.package_fingerprint,"pcb_fingerprint":package.source_pcb_fingerprint,"current":package.is_valid_for(routed.fingerprint.digest,manufacturing.profile.content_hash),"files":[file.model_dump(mode="json") for file in package.files]},
+        release={"status":package.status.value.upper(),"package_fingerprint":package.package_fingerprint,"pcb_fingerprint":package.source_pcb_fingerprint,"current":routed.lineage_is_current and package.is_valid_for(routed.fingerprint.digest,manufacturing.profile.content_hash),"files":[file.model_dump(mode="json") for file in package.files]},
         limitations=["Supported deterministic demo: ESP32/BME280 logger, not arbitrary hardware.","Not simulation verified.","Not thermal, EMC, RF, or signal-integrity verified.","Not bench verified.","Manufacturing profile is synthetic and requires human review.","No guarantee of successful fabrication or assembly."],
     )

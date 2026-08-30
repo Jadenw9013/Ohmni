@@ -2,9 +2,12 @@
 
 from types import SimpleNamespace
 
+import pytest
+
 from ohmni.application.demo import _evidence_rows
 from ohmni.application.visuals import pcb_svg, schematic_svg
 from ohmni.catalog import default_catalog
+from ohmni.eda.kicad import KiCadSchematicCompiler
 from ohmni.generation import DesignOrchestrator
 from ohmni.generation.fixtures import GOLDEN_REQUEST, flawed_logger_provider
 
@@ -29,10 +32,23 @@ def test_evidence_projection_keeps_catalog_strength_truthful():
     assert all(row["source"] and row["page"] for row in rows)
 
 
-def test_visuals_are_tied_to_artifact_and_exact_route_geometry(golden):
-    artifact=SimpleNamespace(fingerprint=SimpleNamespace(digest="a"*64))
-    schematic=schematic_svg(golden,artifact)
-    assert "aaaaaaaaaaaa" in schematic and "U3" in schematic and "BME280" in schematic
+def test_visuals_are_tied_to_compiled_artifact_and_exact_route_geometry(tmp_path,golden,catalog):
+    artifact=KiCadSchematicCompiler(catalog).compile(golden,tmp_path/"golden.kicad_sch")
+    schematic=schematic_svg(artifact)
+    assert artifact.fingerprint.digest in schematic and "U3" in schematic and "BME280" in schematic
+    assert {binding.component_ref for binding in artifact.compilation.symbol_bindings}=={item.ref for item in golden.components}
+    for binding in artifact.compilation.symbol_bindings:
+        assert f'data-component-ref="{binding.component_ref}"' in schematic
+        for pin in binding.pins:
+            assert f'data-endpoint-uuid="{pin.endpoint_uuid}"' in schematic
+    for net in golden.nets:
+        assert f'data-net="{net.name}"' in schematic
+    for driver in artifact.compilation.driver_bindings:
+        assert f'data-compiler-driver="{driver.reference}"' in schematic
+    mismatched=artifact.model_copy(deep=True)
+    mismatched.compilation.source_artifact_fingerprint.digest="b"*64
+    with pytest.raises(ValueError,match="fingerprint"):
+        schematic_svg(mismatched)
     board=SimpleNamespace(outline=SimpleNamespace(width_mm=10,height_mm=8),placements=[])
     track=SimpleNamespace(start=SimpleNamespace(x_mm=1,y_mm=1),end=SimpleNamespace(x_mm=9,y_mm=7),layer="F.Cu",width_mm=.25,net_name="SDA")
     plan=SimpleNamespace(tracks=[track],vias=[])

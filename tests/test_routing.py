@@ -2,11 +2,12 @@ import pytest
 
 from ohmni.application.demo import DEMO_REQUEST, project_demo_report
 from ohmni.bom import calculate_cost, classify_assembly, generate_bom, synthetic_fixture_supplier
-from ohmni.generation import DesignOrchestrator
-from ohmni.generation.fixtures import flawed_logger_provider
 from ohmni.eda.kicad import KiCadCliAdapter, KiCadPcbCompiler, KiCadSchematicCompiler
 from ohmni.eda.kicad.placement import golden_board_constraints
 from ohmni.eda.pcb_models import DrcStatus
+from ohmni.generation import DesignOrchestrator
+from ohmni.generation.fixtures import flawed_logger_provider
+from ohmni.manufacturing import KiCadFabricationExporter, prototype_profile, verify_manufacturing
 from ohmni.physical.models import BoardConstraints, BoardOutline
 from ohmni.routing.models import (
     Point,
@@ -18,7 +19,6 @@ from ohmni.routing.models import (
 )
 from ohmni.routing.router import DeterministicRouter
 from ohmni.routing.verifier import verify_routing
-from ohmni.manufacturing import KiCadFabricationExporter,prototype_profile,verify_manufacturing
 
 
 def empty_board():
@@ -104,6 +104,17 @@ def test_golden_routing_closes_real_kicad_drc_and_stales_on_change(tmp_path,gold
     assert demo.pcb["violations"]==0 and demo.pcb["unrouted"]==0
     assert demo.release["status"]=="READY_FOR_MANUFACTURING_REVIEW"
     assert demo.economics["fabrication"]=="UNKNOWN"
+    assert [row["sequence"] for row in demo.notebook]==list(range(1,len(demo.notebook)+1))
+    kinds=[row["kind"] for row in demo.notebook]
+    first_pcb_started=kinds.index("pcb_compilation_started")
+    first_pcb_compiled=kinds.index("pcb_artifact_compiled",first_pcb_started)
+    routing_started=kinds.index("routing_started")
+    routing_completed=kinds.index("routing_completed")
+    second_pcb_started=kinds.index("pcb_compilation_started",routing_completed)
+    second_pcb_compiled=kinds.index("pcb_artifact_compiled",second_pcb_started)
+    drc_started=kinds.index("drc_started")
+    assert first_pcb_started<first_pcb_compiled<routing_started<routing_completed<second_pcb_started<second_pcb_compiled<drc_started
+    assert any(row["phase"]=="assembly" and row["kind"]=="assembly_risk_identified" for row in demo.notebook)
     victim=package.directory/package.files[0].relative_path;victim.unlink();assert not package.files_current()
     placed_text=placed.path.read_text();placed.path.write_text(placed_text+"\n;changed")
     assert KiCadCliAdapter(executable="never-run").run_drc(routed).status is DrcStatus.STALE_ARTIFACT
