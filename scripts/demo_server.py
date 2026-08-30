@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import threading
 import uuid
@@ -33,6 +34,11 @@ class JobStore:
             with self.lock:self.jobs[job_id].update(status="failed",error=str(exc))
     def get(self,job_id):
         with self.lock:return json.loads(json.dumps(self.jobs.get(job_id))) if job_id in self.jobs else None
+    def artifact_is_current(self,job_id,name,path):
+        job=self.get(job_id)
+        if not job or job["status"]!="complete" or not path.is_file():return False
+        expected={"golden.kicad_sch":job["report"]["schematic"]["fingerprint"],"golden.kicad_pcb":job["report"]["pcb"]["fingerprint"]}.get(name)
+        return bool(expected) and hashlib.sha256(path.read_bytes()).hexdigest()==expected
 
 
 class DemoHandler(SimpleHTTPRequestHandler):
@@ -57,6 +63,7 @@ class DemoHandler(SimpleHTTPRequestHandler):
             if not job or job["status"]!="complete":return self._json({"error":"artifact unavailable"},HTTPStatus.NOT_FOUND)
             base=(self.store.output_root/job_id).resolve();path=(base/name).resolve()
             if path.parent!=base or not path.is_file():return self._json({"error":"artifact not found"},HTTPStatus.NOT_FOUND)
+            if not self.store.artifact_is_current(job_id,name,path):return self._json({"error":"artifact is stale or not associated with this report"},HTTPStatus.CONFLICT)
             data=path.read_bytes();self.send_response(HTTPStatus.OK);self.send_header("content-type","application/octet-stream");self.send_header("content-disposition",f'attachment; filename="{path.name}"');self.send_header("content-length",str(len(data)));self.end_headers();self.wfile.write(data);return
         super().do_GET()
 

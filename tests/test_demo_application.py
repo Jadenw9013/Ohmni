@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import threading
 from types import SimpleNamespace
 
@@ -26,3 +27,12 @@ def test_async_job_store_reports_actual_progress_without_premature_completion(tm
     assert job["status"]=="complete"
     assert job["progress"][0]["status"]=="RUNNING"
     assert job["report"]["release"]["status"]=="READY_FOR_MANUFACTURING_REVIEW"
+
+
+def test_artifact_download_freshness_is_hash_bound(tmp_path):
+    path=tmp_path/"job"/"golden.kicad_sch";path.parent.mkdir();path.write_text("exact")
+    digest=hashlib.sha256(path.read_bytes()).hexdigest();store=JobStore(tmp_path)
+    store.jobs["job"]={"status":"complete","report":{"schematic":{"fingerprint":digest},"pcb":{"fingerprint":"b"*64}}}
+    assert store.artifact_is_current("job","golden.kicad_sch",path)
+    path.write_text("changed")
+    assert not store.artifact_is_current("job","golden.kicad_sch",path)
