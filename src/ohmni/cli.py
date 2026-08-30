@@ -20,6 +20,7 @@ import sys
 from pathlib import Path
 
 from .adapters.tools import probe_all
+from .bom import calculate_cost, classify_assembly, generate_bom, synthetic_fixture_supplier
 from .catalog import default_catalog
 from .datasheet import BoundedTextExtractor, DatasheetPipeline, PdfIngestError, PyMuPdfExtractor
 from .datasheet.pipeline import format_ingestion_report
@@ -38,6 +39,12 @@ from .eda.verification import aggregate_eda
 from .fixtures.esp32_env_logger import BROKEN_VARIANTS, BUILDERS, requirements
 from .generation import DesignOrchestrator
 from .generation.fixtures import GOLDEN_REQUEST, flawed_logger_provider
+from .manufacturing import (
+    FabricationExportError,
+    KiCadFabricationExporter,
+    prototype_profile,
+    verify_manufacturing,
+)
 from .routing.router import DeterministicRouter
 from .routing.verifier import verify_routing
 from .verifier import all_rules, format_report, verify
@@ -241,6 +248,59 @@ def cmd_route(args):
         print("Final PCB status: "+("VERIFIED WITHIN IMPLEMENTED CHECKS" if routing.passed and not drc.findings and not drc.unconnected_items else "FAIL"))
     return EXIT_OK if routing.passed and drc.status in {DrcStatus.PASS,DrcStatus.PASS_WITH_WARNINGS} and not drc.findings and not drc.unconnected_items else EXIT_BLOCKED
 
+def _release_inputs(fixture,output):
+    circuit=_load_circuit(fixture,None);catalog=default_catalog();board=golden_board_constraints();base=output
+    semantic=verify(circuit,catalog,requirements())
+    if semantic.export_blocked:raise ValueError("semantic verification blocks release")
+    schematic=KiCadSchematicCompiler(catalog).compile(circuit,base.with_suffix(".kicad_sch"));erc=KiCadCliAdapter().run_erc(schematic)
+    if erc.status not in {ErcStatus.PASS,ErcStatus.PASS_WITH_WARNINGS}:raise ValueError("KiCad ERC blocks release")
+    placed=KiCadPcbCompiler(catalog).compile(circuit,schematic,board,base.with_name(base.stem+".placed.kicad_pcb"));plan=DeterministicRouter().route(circuit,placed,board);routing=verify_routing(circuit,placed,board,plan)
+    if not routing.passed:raise ValueError("independent routing verification blocks release")
+    routed=KiCadPcbCompiler(catalog).compile(circuit,schematic,board,base,plan);drc=KiCadCliAdapter().run_drc(routed);profile=prototype_profile();mfg=verify_manufacturing(routed,board,plan,profile)
+    if drc.status not in {DrcStatus.PASS,DrcStatus.PASS_WITH_WARNINGS} or drc.findings or drc.unconnected_items:raise ValueError("KiCad DRC blocks release")
+    if not mfg.passed:raise ValueError("manufacturing profile blocks release")
+    return circuit,catalog,schematic,erc,plan,routing,routed,drc,profile,mfg
+
+def cmd_bom(args):
+    circuit=_load_circuit(args.fixture,None);bom=generate_bom(circuit,default_catalog())
+    if args.json:print(bom.model_dump_json(indent=2))
+    else:
+        print(f"OHMNI BOM\n\nDesign references: {bom.reference_count}\nUnique purchase lines: {len(bom.lines)}")
+        for line in bom.lines:print(f"{', '.join(line.references):<24} {line.quantity_per_board} x {line.identity.mpn or line.identity.part_id} [{line.identity.package}]")
+    return EXIT_OK
+
+def cmd_cost(args):
+    circuit=_load_circuit(args.fixture,None);bom=generate_bom(circuit,default_catalog());report=calculate_cost(bom,synthetic_fixture_supplier(bom),args.quantity)
+    if args.json:print(report.model_dump_json(indent=2))
+    else:print(f"OHMNI PROTOTYPE COST\n\nScenario: {args.quantity} board(s)\nPricing source: SYNTHETIC FIXTURE - NOT LIVE SUPPLIER DATA\nPricing coverage: {report.pricing_coverage:.1%}\nKnown component consumption: ${report.known_consumption_cost}\nKnown purchase requirement: ${report.known_purchase_requirement}\nPCB fabrication: UNKNOWN\nShipping: UNKNOWN\nTools/consumables: UNKNOWN")
+    return EXIT_OK
+
+def cmd_manufacture(args):
+    base=args.output or Path("out")/"release"/args.fixture/f"{args.fixture}.kicad_pcb"
+    try:*_,mfg=_release_inputs(args.fixture,base)
+    except (OSError,RuntimeError,ValueError) as exc:print(f"manufacturing check failed: {exc}",file=sys.stderr);return EXIT_BLOCKED
+    if args.json:print(mfg.model_dump_json(indent=2))
+    else:
+        print("OHMNI MANUFACTURING PROFILE CHECK\n")
+        for f in mfg.findings:print(f"{'PASS' if f.status.value=='pass' else 'FAIL'} {f.rule_id} {f.subject}: {f.detail}")
+    return EXIT_OK if mfg.passed else EXIT_BLOCKED
+
+def cmd_release(args):
+    base=args.output or Path("out")/"release"/args.fixture/f"{args.fixture}.kicad_pcb"
+    try:
+        circuit,catalog,_schematic,_erc,_plan,_routing,pcb,drc,profile,mfg=_release_inputs(args.fixture,base)
+        package=KiCadFabricationExporter().export(pcb,drc,mfg,profile,base.parent/"fabrication")
+    except (FabricationExportError,OSError,RuntimeError,ValueError) as exc:print(f"release blocked: {exc}",file=sys.stderr);return EXIT_BLOCKED
+    bom=generate_bom(circuit,catalog);cost=calculate_cost(bom,synthetic_fixture_supplier(bom),args.quantity);assembly=classify_assembly(bom)
+    if args.json:print(json.dumps({"manufacturing":json.loads(mfg.model_dump_json()),"bom":json.loads(bom.model_dump_json()),"cost":json.loads(cost.model_dump_json()),"assembly":json.loads(assembly.model_dump_json()),"fabrication":json.loads(package.model_dump_json())},indent=2))
+    else:
+        print("OHMNI HARDWARE RELEASE\n\nElectrical\nPASS Semantic verification\nPASS KiCad ERC: 0 electrical errors\n\nPhysical\nPASS Placement verification\nPASS Routing verification\nPASS KiCad DRC: 0 violations, 0 unrouted")
+        print(f"\nManufacturing profile\nPASS {profile.display_name}\nPASS {len(mfg.findings)} deterministic checks")
+        print(f"\nAssembly\n{'WARN' if not assembly.hand_solder_requirement_satisfied else 'PASS'} BME280 LGA requires reflow/hot-air; package risk remains visible")
+        print(f"\nBOM\n{bom.reference_count} references\n{len(bom.lines)} unique lines\nPricing coverage: {cost.pricing_coverage:.1%}\nKnown consumption: ${cost.known_consumption_cost}\nKnown purchase requirement: ${cost.known_purchase_requirement}\nFabrication price: UNKNOWN\nShipping: UNKNOWN")
+        print(f"\nFabrication package\nPASS {len(package.files)} generated files\nPackage SHA-256: {package.package_fingerprint}\n\nSTATUS\nREADY_FOR_MANUFACTURING_REVIEW\n\nNot simulation, thermal, EMC/RF, or bench verified. No guarantee of fabrication or assembly success.")
+    return EXIT_OK
+
 
 def cmd_verify_all(args: argparse.Namespace) -> int:
     """Verify every fixture and report whether each behaved as intended.
@@ -426,6 +486,10 @@ def build_parser() -> argparse.ArgumentParser:
     drc.add_argument("fixture",choices=["golden"]);drc.add_argument("--output",type=Path);drc.add_argument("--json",action="store_true");drc.set_defaults(func=cmd_drc)
     route=sub.add_parser("route",help="deterministically route a placed PCB and run KiCad DRC")
     route.add_argument("fixture",choices=["golden"]);route.add_argument("--output",type=Path);route.add_argument("--json",action="store_true");route.set_defaults(func=cmd_route)
+    bom=sub.add_parser("bom",help="generate an identity-safe BOM");bom.add_argument("fixture",choices=["golden"]);bom.add_argument("--json",action="store_true");bom.set_defaults(func=cmd_bom)
+    cost=sub.add_parser("cost",help="calculate evidenced prototype purchase economics");cost.add_argument("fixture",choices=["golden"]);cost.add_argument("--quantity",type=int,choices=[1,5,10],default=1);cost.add_argument("--json",action="store_true");cost.set_defaults(func=cmd_cost)
+    manufacture=sub.add_parser("manufacture-check",help="route and check a manufacturing profile");manufacture.add_argument("fixture",choices=["golden"]);manufacture.add_argument("--output",type=Path);manufacture.add_argument("--json",action="store_true");manufacture.set_defaults(func=cmd_manufacture)
+    release=sub.add_parser("release",help="generate the reviewed fabrication release bundle");release.add_argument("fixture",choices=["golden"]);release.add_argument("--quantity",type=int,choices=[1,5,10],default=1);release.add_argument("--output",type=Path);release.add_argument("--json",action="store_true");release.set_defaults(func=cmd_release)
 
     return parser
 

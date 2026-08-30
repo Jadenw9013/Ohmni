@@ -16,7 +16,7 @@
 > | 5b. PCB integration | **deterministic placed board + DRC complete** |
 > | 5c. Bounded routing | **complete** - internal copper verification + real DRC closure |
 > | 6. Simulation | not started - **[changed]** target is now a DC operating point |
-> | 7. BOM and cost | not started |
+> | 7. BOM, manufacturing, and cost | **complete** - profile checks, assembly risk, fixture economics, KiCad fab release |
 > | 8. Teaching UI | not started |
 > | 9. Demo hardening | not started |
 >

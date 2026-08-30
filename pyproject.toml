@@ -23,8 +23,12 @@ ohmni = ["catalog/data/parts/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-q --strict-markers"
-markers = ["kicad: integration tests requiring an installed KiCad CLI"]
+addopts = "-q --strict-markers -m 'not integration and not slow_integration'"
+markers = [
+    "kicad: tests requiring an installed KiCad CLI",
+    "integration: bounded external-tool integration tests",
+    "slow_integration: full golden routing/fabrication integration tests",
+]
 
 [tool.ruff]
 line-length = 100

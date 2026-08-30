@@ -348,3 +348,13 @@ supports, so a separate link type had nothing to do.
 `RoutingPlan` is fingerprinted from placed-PCB lineage, profile, ordered nets,
 tracks, and vias. Routing cannot mutate `CircuitIR`, placement, or schematic
 connectivity.
+## Manufacturing, BOM, and release
+
+`ManufacturingProfile` carries dimensional capabilities and their provenance;
+project routing defaults remain separate. `ManufacturingReport` records each
+designed value, profile limit, and margin. `BomLine` aggregates only exact
+`ManufacturerPartIdentity` keys while preserving references and value/package
+differences. `SupplierOffer` records exact returned identity, MOQ, increments,
+price breaks, currency, freshness, and provenance. Unknown pricing is `UNKNOWN`,
+never zero. `FabricationPackage` binds portable file hashes to the routed PCB,
+DRC, routing plan, schematic, and manufacturing profile.

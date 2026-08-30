@@ -14,6 +14,7 @@ from ohmni.routing.models import (
 )
 from ohmni.routing.router import DeterministicRouter
 from ohmni.routing.verifier import verify_routing
+from ohmni.manufacturing import KiCadFabricationExporter,prototype_profile,verify_manufacturing
 
 
 def empty_board():
@@ -83,6 +84,16 @@ def test_golden_routing_closes_real_kicad_drc_and_stales_on_change(tmp_path,gold
     routed=compiler.compile(golden,schematic,board,tmp_path/"routed.kicad_pcb",plan)
     drc=KiCadCliAdapter().run_drc(routed)
     assert drc.status is DrcStatus.PASS and not drc.findings and not drc.unconnected_items
+    profile=prototype_profile();manufacturing=verify_manufacturing(routed,board,plan,profile)
+    assert manufacturing.passed
+    package=KiCadFabricationExporter().export(routed,drc,manufacturing,profile,tmp_path/"fab")
+    assert {"F.Cu","B.Cu","F.Mask","B.Mask","F.Silkscreen","B.Silkscreen","Edge.Cuts","Drill"}<={x.kind for x in package.files}
+    assert {finding.rule_id for finding in package.verification_findings}=={"PB-MFG-009","PB-MFG-010"}
+    assert package.events
+    assert package.files_current() and package.is_valid_for(routed.fingerprint.digest,profile.content_hash)
+    changed_profile=profile.model_copy(update={"source_version":"2.0"})
+    assert not package.is_valid_for(routed.fingerprint.digest,changed_profile.content_hash)
+    victim=package.directory/package.files[0].relative_path;victim.unlink();assert not package.files_current()
     placed_text=placed.path.read_text();placed.path.write_text(placed_text+"\n;changed")
     assert KiCadCliAdapter(executable="never-run").run_drc(routed).status is DrcStatus.STALE_ARTIFACT
     placed.path.write_text(placed_text)

@@ -131,3 +131,15 @@ the netlist, `BoardConstraints` owns placement, and `RoutingPlan` owns tracks an
 through-vias. A bounded deterministic A* router proposes copper and an
 independent connectivity verifier checks it before KiCad emission. KiCad DRC is
 a separate external verifier. Routing has no LLM, network, or randomness path.
+## Manufacturing and release boundary
+
+`ohmni.manufacturing` evaluates an immutable routed `PcbArtifact` against one
+provenance-bearing `ManufacturingProfile`. It cannot change electrical or
+physical intent. The bounded KiCad exporter is the only manufacturing module
+allowed to spawn a process. BOM aggregation, supplier identity checking, cost
+arithmetic, assembly classification, manufacturing rules, and release gating
+are deterministic and have no LLM or network dependency.
+
+Release lineage is `CircuitIR -> schematic -> placed PCB -> RoutingPlan ->
+routed PCB -> DRC -> ManufacturingProfile -> fabrication package`. A changed
+PCB, profile, missing output, or mismatched hash makes the release stale.

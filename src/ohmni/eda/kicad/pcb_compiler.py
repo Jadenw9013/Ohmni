@@ -72,7 +72,7 @@ class KiCadPcbCompiler:
         self._validate_consistency(circuit,schematic,footprint_bindings,pad_bindings)
         nets={name:i+1 for i,name in enumerate(sorted(n.name for n in circuit.nets))}
         seed=hashlib.sha256(f"{circuit.content_hash}:{schematic.fingerprint.digest}:{constraints.content_hash}".encode()).hexdigest()
-        lines=["(kicad_pcb",f"  (version {PCB_FORMAT_VERSION})",'  (generator "ohmni")',f'  (generator_version "{PCB_COMPILER_VERSION}")',"  (general (thickness 1.6))",'  (paper "A4")',"  (layers",'    (0 "F.Cu" signal)','    (31 "B.Cu" signal)','    (36 "B.SilkS" user "b.silkscreen")','    (37 "F.SilkS" user "f.silkscreen")','    (44 "Edge.Cuts" user)',"  )","  (setup (pad_to_mask_clearance 0))"]
+        lines=["(kicad_pcb",f"  (version {PCB_FORMAT_VERSION})",'  (generator "ohmni")',f'  (generator_version "{PCB_COMPILER_VERSION}")',"  (general (thickness 1.6))",'  (paper "A4")',"  (layers",'    (0 "F.Cu" signal)','    (31 "B.Cu" signal)','    (34 "B.Paste" user "b.paste")','    (35 "F.Paste" user "f.paste")','    (36 "B.SilkS" user "b.silkscreen")','    (37 "F.SilkS" user "f.silkscreen")','    (38 "B.Mask" user)','    (39 "F.Mask" user)','    (44 "Edge.Cuts" user)',"  )","  (setup (pad_to_mask_clearance 0))"]
         for name,index in sorted(nets.items(),key=lambda x:x[1]): lines.append(f"  (net {index} {quote(name)})")
         binding_by_ref={b.component_ref:b for b in footprint_bindings}
         for instance in sorted(circuit.components,key=lambda c:c.ref):

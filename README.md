@@ -53,7 +53,7 @@ whose correctness depends on a model would not be a verifier.
 | Verification rules | **24**, deterministic, independently testable |
 | Part catalog | 9 parts, every fact carrying provenance |
 | Fixtures | 1 golden circuit + **13** broken variants |
-| Tests | **416**, including deterministic routing and optional real-KiCad ERC/DRC integration |
+| Tests | **430**, tiered into fast, KiCad integration, and slow golden release checks |
 | Golden circuit | no blocking findings, **100% rule coverage** |
 | Broken variants | each caught by exactly the rule and severity it was built to trip |
 
@@ -62,8 +62,9 @@ independent citation and claim verification, and controlled evidence upgrades.
 Deterministic KiCad 10 schematic emission and typed ERC ingestion are implemented.
 Evidence-grounded structured circuit proposals and bounded semantic repair are implemented
 with a deterministic scripted provider. Deterministic placed PCB emission and typed
-KiCad DRC ingestion are implemented; routing remains explicitly deferred. SPICE,
-costing and UI remain future work.
+KiCad DRC ingestion, bounded routing, manufacturability checks, identity-safe BOM
+economics, assembly-risk classification, and KiCad fabrication release are implemented.
+SPICE, live supplier pricing, ordering, and UI remain future work.
 See `IMPLEMENTATION_PLAN.md` for the status table.
 
 ```powershell
@@ -74,6 +75,10 @@ python -m ohmni design-fixture golden_request
 python -m ohmni compile-pcb golden
 python -m ohmni drc golden
 python -m ohmni route golden
+python -m ohmni manufacture-check golden
+python -m ohmni bom golden
+python -m ohmni cost golden --quantity 1
+python -m ohmni release golden
 ```
 
 ---
@@ -85,7 +90,10 @@ python -m venv .venv
 .venv/Scripts/activate          # Windows;  source .venv/bin/activate elsewhere
 pip install -e ".[dev]"
 
-pytest                          # complete suite; KiCad tests skip when unavailable
+pytest                          # fast/core tier
+pytest -m integration           # bounded real-KiCad tests
+pytest -m slow_integration      # full golden route/fabrication pipeline
+pytest -o addopts="-q --strict-markers" # every tier
 python -m ohmni verify-all # the whole fixture corpus, one line per case
 ```
 

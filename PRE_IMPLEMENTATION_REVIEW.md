@@ -542,3 +542,19 @@ exposed that defect, so the obstacle model and independent verifier were
 corrected. Plated through-hole pads are reused as layer transitions rather than
 receiving duplicate drilled vias. The final golden artifact has zero KiCad DRC
 findings and zero unrouted items.
+
+## 18. Milestone 7 fabrication-boundary correction
+
+KiCad fabrication export revealed that the otherwise valid PCB emitter's layer
+table omitted paste and solder-mask layer declarations. KiCad could route and
+DRC the board, but could not emit the required mask Gerbers. The compiler now
+declares the standard KiCad 10 paste/mask layers. This changes serialization and
+therefore the PCB fingerprint, but does not change components, nets, placement,
+or copper routing.
+
+Manufacturing capabilities are modeled as a provenance-bearing profile rather
+than universal rules. The built-in demo profile is explicitly synthetic and is
+not a manufacturer quote. Supplier prices are likewise deterministic fixtures;
+missing prices remain UNKNOWN and fabrication/shipping are never treated as
+zero. Fabrication export is gated by current semantic/EDA/routing/manufacturing
+lineage and produces a portable hash manifest for human manufacturing review.

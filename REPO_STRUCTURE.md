@@ -107,3 +107,11 @@ Also deliberately absent for now: no database (files on disk are enough for the
 vertical slice), no `docker-compose.yml`, and no NetworkX — the graph operations
 needed are a few dozen lines against our own IR and avoid an infrastructure
 import in the layer that must not have one.
+## Milestone 7 packages
+
+- `src/ohmni/manufacturing/`: provenance-aware manufacturing profiles,
+  PB-MFG rules, release models, and the bounded KiCad fabrication exporter.
+- `src/ohmni/bom/`: identity-safe BOM aggregation, provider-neutral supplier
+  offers, prototype cost scenarios, and package-based assembly risk.
+- `tests/test_manufacturing.py`: pure manufacturing, BOM, supplier, pricing,
+  assembly, and adversarial tests.

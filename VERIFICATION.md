@@ -241,3 +241,12 @@ obstacles, and bounded via use. The golden routed artifact passes these rules
 and KiCad 10.0.5 DRC with zero findings and zero unrouted items. This does not
 establish signal integrity, thermal behavior, EMC, RF behavior,
 manufacturability, or bench operation.
+## Manufacturing verification
+
+PB-MFG-001 through PB-MFG-008 check track width, clearance, via/drill geometry,
+board dimensions, layer count, edge clearance, footprint provenance, and the
+supported feature subset against a selected profile. PB-MFG-009 and PB-MFG-010
+verify exact release lineage and required nonempty fabrication outputs.
+Manufacturing PASS means the board fits the stated profile within implemented
+checks; it does not prove fabrication, assembly, thermal, EMC/RF, or bench
+success. Dimensional findings report their explicit margin.

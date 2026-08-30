@@ -233,3 +233,20 @@ class TestRoutingBoundaries:
             source=path.read_text(encoding="utf-8")
             assert not (_imported_top_level_modules(path)&forbidden),path
             assert "ohmni.generation" not in source
+
+
+class TestManufacturingBoundaries:
+    def test_deterministic_manufacturing_and_bom_have_no_llm_or_network_dependency(self):
+        forbidden = {"openai", "anthropic", "requests", "httpx", "urllib", "socket", "random"}
+        for directory in (SRC / "manufacturing", SRC / "bom"):
+            for path in _python_files(directory):
+                imports = _imported_top_level_modules(path)
+                assert not (imports & forbidden), path
+                source = path.read_text(encoding="utf-8")
+                assert "ohmni.generation" not in source
+
+    def test_only_fabrication_adapter_can_spawn_processes(self):
+        for directory in (SRC / "manufacturing", SRC / "bom"):
+            for path in _python_files(directory):
+                if path.name != "exporter.py":
+                    assert "subprocess" not in _imported_top_level_modules(path), path

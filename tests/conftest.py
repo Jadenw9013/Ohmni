@@ -27,3 +27,14 @@ def requirements() -> RequirementsSpec:
 @pytest.fixture
 def golden() -> CircuitIR:
     return esp32_env_logger.golden()
+
+
+def pytest_collection_modifyitems(items):
+    """Keep external-tool tiers explicit without duplicating every marker."""
+    for item in items:
+        if item.get_closest_marker("kicad") is None:
+            continue
+        if "test_golden_routing" in item.name:
+            item.add_marker(pytest.mark.slow_integration)
+        else:
+            item.add_marker(pytest.mark.integration)
