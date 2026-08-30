@@ -97,10 +97,11 @@
       "dependencies": ["M8-T04"],
       "goal": "Run repository-backed review and completion gates, resolve blocking findings, and record the accepted Milestone 8 baseline.",
       "acceptance_criteria": ["Review state is honest", "No open BLOCKER/HIGH findings", "Task and milestone ledgers match commits", "No Milestone 9 is approved"],
-      "verification": {"required": ["state_validation", "review_gate"], "record": ".ai/verification/M8.yaml"},
-      "implementation": {"started_at_commit": "ff4309a", "completed_at_commit": null},
-      "review": {"required": true, "status": "FINDINGS_OPEN", "independent": true},
-      "blockers": ["Independent review found open HIGH findings M8-R02 and M8-R03; repository policy prevents formal completion until fixed and independently verified."]
+      "verification": {"required": ["state_validation", "review_gate"], "record": ".ai/verification/M8-R02-R05.yaml"},
+      "implementation": {"started_at_commit": "ff4309a", "remediation_commit": "371e0a4", "completed_at_commit": null},
+      "review": {"required": true, "status": "PENDING", "independent": true},
+      "remediation_authorization": "Human authorization: unblock M8-T05 only for remediation of open Milestone 8 review findings M8-R02 through M8-R05. Fix them, re-run required verification, update repository state, and return Milestone 8 to independent review.",
+      "blockers": ["M8-R02 through M8-R05 are fixed and verified at 371e0a4; independent re-review is required before M8-T05 and Milestone 8 can complete."]
     }
   ]
 }
