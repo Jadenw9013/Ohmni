@@ -97,6 +97,23 @@ pytest -o addopts="-q --strict-markers" # every tier
 python -m ohmni verify-all # the whole fixture corpus, one line per case
 ```
 
+## AI-assisted development operations
+
+Fresh coding-agent sessions start with [AGENTS.md](AGENTS.md), then run:
+
+```text
+python scripts/project_status.py
+python scripts/ai_state.py validate
+python scripts/ai_state.py next
+```
+
+The `.ai/` control plane records approved work, task/review state, verification
+evidence, and recovery checkpoints. Product milestones require explicit human
+approval; agents may propose future work but cannot approve or begin it. See
+[docs/AI_WORKFLOW.md](docs/AI_WORKFLOW.md) and the
+[independent review protocol](docs/AI_REVIEW_PROTOCOL.md).
+
+
 ### Try it
 
 ```bash

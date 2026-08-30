@@ -366,3 +366,31 @@ arithmetic.
   `worst_case_low` as **properties on both**. They were briefly a method on one
   and a property on the other, and two rules silently compared a bound method
   against a float. `tests/test_units.py` now asserts the symmetry.
+
+---
+
+## 9. Repository state coordinates coding agents; it is not product runtime
+
+**Status:** Accepted
+
+### Context
+
+Fresh coding-agent sessions need durable task, verification, review, and recovery
+state. Putting this into `src/ohmni` would add a product dependency and confuse
+development orchestration with the Engineering Notebook's hardware evidence.
+Separate agent-specific manuals would also drift.
+
+### Decision
+
+- `AGENTS.md` is the single short operating manual.
+- JSON-compatible YAML under `.ai/` owns development control-plane state.
+- Dependency-free scripts validate/query it; pytest enforces approval and gates.
+- Product milestones become executable only with recorded human approval.
+- Product documents and Git history remain authoritative; `.ai/state.yaml` is a
+  session summary rather than a parallel PRD or architecture.
+
+### Consequences
+
+No runtime dependency enters Ohmni. Agents can propose but cannot approve future
+product scope. Interrupted sessions recover from repository state without chat
+history, while historical milestone evidence remains tied to its original commit.
