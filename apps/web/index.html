@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Ohmni evidence-first electronics engineering demo">
+  <title>Ohmni · Build circuits. Understand why.</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="masthead">
+    <a class="brand" href="#top" aria-label="Ohmni home"><span class="mark">Ω</span><span>OHMNI</span></a>
+    <p class="tagline">Build circuits. Understand why.</p>
+    <span class="mode">DETERMINISTIC DEMO</span>
+  </header>
+  <main id="top">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Evidence-first electronics engineering</p>
+        <h1>See the engineering,<br>not just the output.</h1>
+        <p class="lede">Ohmni turns an idea into traceable requirements, grounded decisions,
+          independently checked artifacts, and lessons you can use at the bench.</p>
+      </div>
+      <form id="request-form" class="request-panel">
+        <label for="request">What do you want to build?</label>
+        <textarea id="request" rows="5">Build an ESP32 environmental logger using the BME280. Power it from USB-C, keep it around $20, use a 2-layer PCB, and prefer parts I can hand solder.</textarea>
+        <div class="support-note"><span>Supported demo</span> ESP32 + BME280 environmental logger</div>
+        <button id="run-button" type="submit">Run engineering workflow <span>→</span></button>
+        <p class="fineprint">Runs the scripted proposal, deterministic repair, KiCad ERC/DRC,
+          routing, and release pipeline. No live AI or supplier network required.</p>
+      </form>
+    </section>
+
+    <section id="progress-section" class="progress-shell" hidden aria-live="polite">
+      <div class="section-heading"><div><p class="eyebrow">Pipeline</p><h2>Engineering in progress</h2></div><span id="progress-percent">0%</span></div>
+      <div class="progress-track"><div id="progress-bar"></div></div>
+      <ol id="progress-list" class="progress-list"></ol>
+    </section>
+
+    <section id="workspace" hidden>
+      <nav class="rail" aria-label="Report sections">
+        <a href="#overview">Overview</a><a href="#repair">Repair</a><a href="#evidence">Evidence</a>
+        <a href="#notebook">Notebook</a><a href="#artifacts">Artifacts</a><a href="#bom">BOM & cost</a><a href="#release">Release</a>
+      </nav>
+      <div class="report">
+        <section id="overview" class="report-section"></section>
+        <section id="repair" class="report-section"></section>
+        <section id="evidence" class="report-section"></section>
+        <section id="notebook" class="report-section"></section>
+        <section id="artifacts" class="report-section"></section>
+        <section id="bom" class="report-section"></section>
+        <section id="release" class="report-section"></section>
+      </div>
+    </section>
+  </main>
+  <footer>Ohmni verifies what it can, labels what it cannot, and leaves hardware as the final authority.</footer>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
