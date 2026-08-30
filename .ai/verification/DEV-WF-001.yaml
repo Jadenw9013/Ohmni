@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "id": "DEV-WF-001",
+  "kind": "repository_infrastructure_task",
+  "commit": "7f73d2a",
+  "evaluated_at": "2026-08-30T14:52:31-07:00",
+  "commands": [
+    {"command": "python scripts/verify.py workflow", "result": "PASS", "tests": 11, "runtime_seconds": 0.12},
+    {"command": "python scripts/verify.py fast", "result": "PASS", "tests": 433, "deselected": 8, "runtime_seconds": 2.34},
+    {"command": "python scripts/verify.py integration", "result": "PASS", "tests": 7, "deselected": 434, "runtime_seconds": 2.18},
+    {"command": "python scripts/verify.py full", "result": "PASS", "tests": 441, "runtime_seconds": 102.88},
+    {"command": "ruff check scripts/ai_state.py scripts/project_status.py scripts/verify.py tests/test_ai_workflow.py", "result": "PASS"}
+  ],
+  "architecture_tests": {"result": "PASS", "included_in": "fast and full"},
+  "external_tools": [{"tool": "kicad-cli", "version": "10.0.5", "exercised": true}],
+  "type_check": {"result": "NOT_CONFIGURED"},
+  "build": {"result": "NOT_REQUIRED", "note": "Development-only scripts and repository state; no product build changed."},
+  "known_skips": [],
+  "independent_review": {"status": "UNAVAILABLE", "independent": false},
+  "self_review": {"status": "PASSED", "independent": false, "record": ".ai/reviews.yaml"},
+  "limitations": ["Independent review was unavailable and is not claimed.", "The subsequent metadata-only bootstrap commit does not change evaluated product or workflow code."]
+}
