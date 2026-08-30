@@ -489,3 +489,21 @@ pipeline deliberately does not overwrite either value. It emits an
 `EvidenceConflict` carrying both sources and requires review of the applicable
 revision. This confirms risk R4 and the decision to label seed facts
 `CATALOG_REPORTED` rather than prematurely claiming datasheet support.
+
+---
+
+## 15. Milestone 4 warning triage and generation findings
+
+The 27-warning KiCad 10.0.5 baseline separates into 26 library-configuration
+findings and one electrical finding. Embedded symbols parse correctly, but KiCad still
+reports the unregistered `ohmni` namespace; configured footprint tables similarly
+produce five warnings. These remain visible because they describe local tool
+configuration even though they are not circuit failures.
+
+The BME280 SDO warning exposed an overly broad catalog type. Bosch documents SDO as
+an SPI output that becomes high-impedance outside active reads, while I2C uses it as an
+address strap. The catalog now uses `tri_state`, not `bidirectional`. KiCad still warns
+when that multi-mode pad is strapped to the ground network containing power-input and
+external-return intent. Eliminating it correctly requires an explicit per-instance
+active-interface model; guessing I2C mode inside the emitter would hide semantics, so
+the classified electrical warning is retained.

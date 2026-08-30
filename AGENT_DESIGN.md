@@ -1,5 +1,17 @@
 # Agent Design
 
+## Implemented generation boundary
+
+The generation orchestrator is a finite state machine. Model responses are strict
+Pydantic schemas with unknown fields rejected. It permits only catalog part IDs and
+pins, and repair is limited to typed circuit operations rather than source edits or
+arbitrary JSON Patch. Every candidate is independently verified; repairs are capped at
+three attempts and stop when a previous circuit content hash reappears.
+
+Requirements are immutable inputs to repair. The patch schema has no requirements or
+evidence fields, so attempts to change budget, waive rules, attach evidence, or declare
+PASS fail schema validation.
+
 ## Do not build an agent swarm
 
 Use one orchestrator with specialized deterministic services.

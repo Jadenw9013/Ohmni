@@ -18,6 +18,15 @@ from .evidence import ClaimStatus, Evidence, status_rank
 
 
 class EventKind(StrEnum):
+    USER_REQUEST_RECEIVED = "user_request_received"
+    REQUIREMENTS_INTERPRETED = "requirements_interpreted"
+    REQUIREMENT_ASSUMPTION_INTRODUCED = "requirement_assumption_introduced"
+    DATASHEET_EVIDENCE_LOADED = "datasheet_evidence_loaded"
+    COMPONENT_CANDIDATE_SELECTED = "component_candidate_selected"
+    ARCHITECTURE_PROPOSED = "architecture_proposed"
+    CIRCUIT_PROPOSED = "circuit_proposed"
+    VERIFICATION_FAILED = "verification_failed"
+    VERIFICATION_PASSED = "verification_passed"
     REQUIREMENTS_CAPTURED = "requirements_captured"
     SCOPE_REJECTED = "scope_rejected"
     DATASHEET_INGESTED = "datasheet_ingested"

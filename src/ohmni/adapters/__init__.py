@@ -16,7 +16,7 @@ from __future__ import annotations
 
 from enum import StrEnum
 from pathlib import Path
-from typing import Protocol, runtime_checkable
+from typing import Protocol, TypeVar, runtime_checkable
 
 from pydantic import BaseModel, Field
 
@@ -81,6 +81,15 @@ class DatasheetExtractor(Protocol):
     def load(self, path: Path) -> DatasheetDocument: ...
 
 
+TStructured = TypeVar("TStructured", bound=BaseModel)
+
+
+class StructuredGenerationRequest(BaseModel):
+    request_type: str
+    instructions: str
+    data: dict[str, object] = Field(default_factory=dict)
+
+
 @runtime_checkable
 class LlmProvider(Protocol):
     """A schema-constrained structured-output interface.
@@ -98,6 +107,10 @@ class LlmProvider(Protocol):
         schema: type[BaseModel],
         max_tokens: int = 4096,
     ) -> BaseModel: ...
+
+    def generate_structured(
+        self, request: StructuredGenerationRequest, response_model: type[TStructured]
+    ) -> TStructured: ...
 
 
 class ErcRun(BaseModel):
@@ -177,6 +190,7 @@ __all__ = [
     "ErcRun",
     "KicadTool",
     "LlmProvider",
+    "StructuredGenerationRequest",
     "OperatingPoint",
     "PartCatalog",
     "PartNotFoundError",

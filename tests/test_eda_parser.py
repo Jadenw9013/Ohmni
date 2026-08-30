@@ -19,6 +19,13 @@ def test_parser_preserves_finding_and_unknown_fields(tmp_path):
     assert report.status is ErcStatus.PASS_WITH_WARNINGS
     assert report.findings[0].raw["future_field"] == 2
     assert report.findings[0].items[0].x == 1.0
+    assert report.findings[0].classification.value == "electrical"
+
+
+def test_library_warnings_are_classified_not_suppressed(tmp_path):
+    report = parse(tmp_path, {"kicad_version": "10", "sheets": [{"violations": [{"type": "lib_symbol_issues", "severity": "warning", "description": "missing table"}]}]})
+    assert report.findings[0].classification.value == "library_configuration"
+    assert report.status is ErcStatus.PASS_WITH_WARNINGS
 
 
 @pytest.mark.parametrize("payload", [{}, {"kicad_version": "10", "sheets": {}}, {"kicad_version": "10", "sheets": ["bad"]}])

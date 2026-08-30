@@ -40,6 +40,7 @@ ohmni/
 │   │   └── esp32_env_logger.py # the golden circuit and its broken variants
 │   ├── eda/                     # typed artifacts and external-verifier aggregation
 │   │   └── kicad/               # deterministic emitter, ERC adapter and JSON parser
+│   ├── generation/              # strict schemas, requirements, resolver, typed repairs
 │   ├── cli.py                  # python -m ohmni
 │   └── __main__.py
 ├── fixtures/esp32_env_logger/  # exported fixture JSON: the regression corpus

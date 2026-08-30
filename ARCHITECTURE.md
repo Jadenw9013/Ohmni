@@ -43,6 +43,11 @@ Example flow:
 -> `ArtifactBundle`
 -> `EngineeringNotebook`
 
+Milestone 4 implements the first bounded generation slice. A provider-neutral
+structured-output adapter may propose requirements, architecture, `CircuitIR`, and
+typed repair operations. Catalog/pin validation and the deterministic verifier remain
+the authority. Only an export-eligible semantic circuit reaches the KiCad compiler.
+
 ## Recommended stack
 
 Frontend:

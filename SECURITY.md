@@ -1,5 +1,13 @@
 # Security and Safety
 
+## Model proposal boundary
+
+Model output is untrusted data validated against strict schemas. It cannot create
+evidence, verification status, tool results, rule waivers, requirement changes, or EDA
+file edits. Datasheet snippets are not placed into instruction text; planning uses
+bounded structured facts with status and source identifiers. Repair operations target
+only semantic circuit objects and are fingerprint-bound.
+
 ## Threat model
 
 ### Untrusted datasheets

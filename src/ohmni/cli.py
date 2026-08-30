@@ -28,6 +28,8 @@ from .eda.kicad import KiCadCliAdapter, KiCadSchematicCompiler, SchematicCompila
 from .eda.models import EdaVerificationBundle, ErcStatus
 from .eda.verification import aggregate_eda
 from .fixtures.esp32_env_logger import BROKEN_VARIANTS, BUILDERS, requirements
+from .generation import DesignOrchestrator
+from .generation.fixtures import GOLDEN_REQUEST, flawed_logger_provider
 from .verifier import all_rules, format_report, verify
 
 EXIT_OK = 0
@@ -96,12 +98,16 @@ def format_erc_summary(artifact, erc) -> str:
     counts = {"error": 0, "warning": 0, "exclusion": 0}
     for finding in erc.findings:
         counts[finding.severity] = counts.get(finding.severity, 0) + 1
+    classes: dict[str, int] = {}
+    for finding in erc.findings:
+        classes[finding.classification.value] = classes.get(finding.classification.value, 0) + 1
     return "\n".join([
         f"KiCad {erc.kicad_version or 'UNAVAILABLE'} ERC",
         f"Artifact: {artifact.path}",
         f"Artifact SHA-256: {erc.artifact_fingerprint.digest}",
         f"Violations: {counts['error']} errors, {counts['warning']} warnings, {counts['exclusion']} exclusions",
         f"Status: {erc.status.value.upper()}",
+        "Warning classes: " + ", ".join(f"{name}={count}" for name, count in sorted(classes.items())),
         "Limitation: ERC validates only configured KiCad electrical checks on this exact artifact.",
     ])
 
@@ -133,6 +139,33 @@ def cmd_erc(args: argparse.Namespace) -> int:
     return EXIT_BLOCKED if erc.status in {
         ErcStatus.FAIL, ErcStatus.ERROR, ErcStatus.UNAVAILABLE, ErcStatus.STALE_ARTIFACT,
     } else EXIT_OK
+
+
+def cmd_design_fixture(args: argparse.Namespace) -> int:
+    report = DesignOrchestrator(flawed_logger_provider(), default_catalog()).design(
+        GOLDEN_REQUEST, output=args.output, run_eda=not args.no_eda,
+    )
+    if args.json:
+        print(report.model_dump_json(indent=2))
+    else:
+        first, last = report.semantic_attempts[0], report.semantic_attempts[-1]
+        print("OHMNI DESIGN\n")
+        print(f"Requirements: {'READY' if report.requirements else 'FAILED'}")
+        print(f"Architecture: {'READY' if report.architecture else 'FAILED'}")
+        print(f"Circuit proposal: {report.initial_circuit_hash or 'FAILED'}")
+        print(f"Ohmni attempt 1: {'BLOCKED' if first.export_blocked else 'PASS'}")
+        for finding in first.findings:
+            if finding.severity.value in {"critical", "error"}:
+                print(f"  {finding.severity.value.upper()} {finding.rule_id}: {finding.title}")
+        print(f"Repair: {'APPLIED' if report.repairs else 'NOT APPLIED'}")
+        print(f"Ohmni final: {'BLOCKED' if last.export_blocked else 'EXPORT ELIGIBLE'}")
+        if report.erc:
+            print(f"KiCad ERC: {report.erc.status.value.upper()} ({len(report.erc.findings)} findings)")
+        else:
+            print("KiCad ERC: NOT RUN")
+        print(f"Notebook events: {len(report.notebook.events) if report.notebook else 0}")
+        print(f"Final status: {report.state.value.upper()}")
+    return EXIT_OK if report.state.value == "complete" else EXIT_BLOCKED
 
 
 def cmd_verify_all(args: argparse.Namespace) -> int:
@@ -305,6 +338,13 @@ def build_parser() -> argparse.ArgumentParser:
     erc_parser.add_argument("--output", type=Path)
     erc_parser.add_argument("--json", action="store_true")
     erc_parser.set_defaults(func=cmd_erc)
+
+    design_fixture = sub.add_parser("design-fixture", help="run the scripted flawed-design and repair demo")
+    design_fixture.add_argument("fixture", choices=["golden_request"])
+    design_fixture.add_argument("--output", type=Path)
+    design_fixture.add_argument("--no-eda", action="store_true")
+    design_fixture.add_argument("--json", action="store_true")
+    design_fixture.set_defaults(func=cmd_design_fixture)
 
     return parser
 

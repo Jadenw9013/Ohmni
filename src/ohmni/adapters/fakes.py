@@ -30,6 +30,7 @@ from . import (
     PartCatalog,
     PartNotFoundError,
     SimulationRun,
+    StructuredGenerationRequest,
     ToolAvailability,
     ToolStatus,
 )
@@ -140,6 +141,17 @@ class RecordingLlmProvider:
         # Validating here is the point: a model's output reaches project state
         # only if it satisfies the schema, in the fake exactly as in production.
         return schema.model_validate(self._queue.pop(0))
+
+    def generate_structured(self, request: StructuredGenerationRequest, response_model):
+        self.calls.append({
+            "request_type": request.request_type,
+            "instructions": request.instructions,
+            "data": request.data,
+            "schema": response_model.__name__,
+        })
+        if not self._queue:
+            raise AssertionError(f"RecordingLlmProvider had no queued response for {response_model.__name__}")
+        return response_model.model_validate(self._queue.pop(0))
 
 
 class UnavailableKicad:

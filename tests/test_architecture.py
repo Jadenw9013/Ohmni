@@ -197,3 +197,16 @@ class TestEdaBoundaries:
         forbidden = {"anthropic", "openai", "httpx", "requests", "socket"}
         for path in _python_files(SRC / "eda"):
             assert not (_imported_top_level_modules(path) & forbidden), path
+
+
+class TestGenerationBoundaries:
+    def test_generation_has_no_vendor_sdk_or_network_dependency(self):
+        forbidden = {"anthropic", "openai", "httpx", "requests", "urllib", "socket"}
+        for path in _python_files(SRC / "generation"):
+            assert not (_imported_top_level_modules(path) & forbidden), path
+
+    def test_generation_never_edits_eda_artifacts(self):
+        for path in _python_files(SRC / "generation"):
+            source = path.read_text(encoding="utf-8")
+            assert ".write_text(" not in source
+            assert ".write_bytes(" not in source

@@ -17,6 +17,11 @@ def test_golden_is_parsed_and_checked_by_real_kicad(tmp_path, golden, catalog):
     assert not [f for f in report.findings if not f.excluded and f.severity == "error"]
     assert report.artifact_fingerprint == artifact.fingerprint
     assert report.report_path.is_file()
+    classes = [f.classification.value for f in report.findings]
+    assert classes.count("library_configuration") == 26
+    electrical = [f for f in report.findings if f.classification.value == "electrical"]
+    assert len(electrical) == 1
+    assert "Tri-state and Power input" in electrical[0].description
 
 
 def test_real_kicad_catches_missing_power_driver(tmp_path, golden, catalog):

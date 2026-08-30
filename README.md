@@ -53,20 +53,22 @@ whose correctness depends on a model would not be a verifier.
 | Verification rules | **24**, deterministic, independently testable |
 | Part catalog | 9 parts, every fact carrying provenance |
 | Fixtures | 1 golden circuit + **13** broken variants |
-| Tests | **314**, running in under a second |
+| Tests | **386**, including pure generation/repair and optional real-KiCad integration |
 | Golden circuit | no blocking findings, **100% rule coverage** |
 | Broken variants | each caught by exactly the rule and severity it was built to trip |
 
 Milestone 2 adds local PDF normalization, bounded candidate extraction,
 independent citation and claim verification, and controlled evidence upgrades.
 Deterministic KiCad 10 schematic emission and typed ERC ingestion are implemented.
-LLM-proposed circuits, SPICE, PCB layout/routing, costing and UI remain future work.
+Evidence-grounded structured circuit proposals and bounded semantic repair are implemented
+with a deterministic scripted provider. SPICE, PCB layout/routing, costing and UI remain future work.
 See `IMPLEMENTATION_PLAN.md` for the status table.
 
 ```powershell
 python -m ohmni compile-schematic golden
 python -m ohmni erc golden
 python -m ohmni verify golden --eda
+python -m ohmni design-fixture golden_request
 ```
 
 ---
@@ -78,7 +80,7 @@ python -m venv .venv
 .venv/Scripts/activate          # Windows;  source .venv/bin/activate elsewhere
 pip install -e ".[dev]"
 
-pytest                          # 314 tests
+pytest                          # complete suite; KiCad tests skip when unavailable
 python -m ohmni verify-all # the whole fixture corpus, one line per case
 ```
 

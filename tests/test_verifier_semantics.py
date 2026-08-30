@@ -448,4 +448,4 @@ class TestLlmOutputIsSchemaValidated:
         from ohmni.adapters import LlmProvider
 
         methods = {m for m in dir(LlmProvider) if not m.startswith("_")}
-        assert methods == {"complete_structured"}
+        assert methods == {"complete_structured", "generate_structured"}

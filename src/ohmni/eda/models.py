@@ -79,6 +79,15 @@ class ErcStatus(StrEnum):
     STALE_ARTIFACT = "stale_artifact"
 
 
+class ErcWarningClass(StrEnum):
+    TOOL_CONFIGURATION = "tool_configuration"
+    LIBRARY_CONFIGURATION = "library_configuration"
+    ELECTRICAL = "electrical"
+    ARTIFACT_STRUCTURE = "artifact_structure"
+    UNSUPPORTED = "unsupported"
+    UNKNOWN = "unknown"
+
+
 class ErcItem(BaseModel):
     description: str
     uuid: str | None = None
@@ -91,6 +100,7 @@ class ErcFinding(BaseModel):
     severity: str
     description: str
     excluded: bool = False
+    classification: ErcWarningClass = ErcWarningClass.UNKNOWN
     sheet_path: str = "/"
     items: list[ErcItem] = Field(default_factory=list)
     raw: dict[str, object] = Field(default_factory=dict)

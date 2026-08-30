@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 
 from ...adapters import ToolStatus
-from ..models import ArtifactFingerprint, ErcFinding, ErcItem, ErcReport, ErcStatus
+from ..models import ArtifactFingerprint, ErcFinding, ErcItem, ErcReport, ErcStatus, ErcWarningClass
 
 
 class ErcReportParseError(ValueError):
@@ -48,6 +48,7 @@ def parse_erc_json(
                 severity=severity,
                 description=str(violation.get("description", "")),
                 excluded=severity == "exclusion",
+                classification=_classify(str(violation.get("type", "unknown"))),
                 sheet_path=str(sheet.get("path", "/")),
                 items=items,
                 raw=violation,
@@ -66,3 +67,13 @@ def parse_erc_json(
         stdout=stdout, stderr=stderr, findings=findings,
         ignored_checks=raw.get("ignored_checks", []),
     )
+
+
+def _classify(finding_type: str) -> ErcWarningClass:
+    if finding_type in {"lib_symbol_issues", "footprint_link_issues"}:
+        return ErcWarningClass.LIBRARY_CONFIGURATION
+    if finding_type in {"pin_to_pin", "power_pin_not_driven", "input_pin_not_driven", "unconnected_wire_endpoint"}:
+        return ErcWarningClass.ELECTRICAL
+    if finding_type in {"duplicate_reference", "missing_symbol", "different_unit_footprint"}:
+        return ErcWarningClass.ARTIFACT_STRUCTURE
+    return ErcWarningClass.UNKNOWN
