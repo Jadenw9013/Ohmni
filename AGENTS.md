@@ -16,6 +16,7 @@ and release artifacts. Start with [README.md](README.md),
 - `src/ohmni/eda`: KiCad schematic/PCB compilers and ERC/DRC adapters
 - `src/ohmni/physical`, `routing`: placement and deterministic copper routing
 - `src/ohmni/manufacturing`, `bom`: fabrication release and prototype economics
+- `src/ohmni/application`, `apps/web`: truthful end-user projection and local demo UI
 - `tests`: pure, integration, slow-integration, and architecture tests
 - `.ai`: development state, tasks, reviews, checkpoints, verification evidence
 - `scripts`: repository-development and authoring helpers
@@ -72,4 +73,3 @@ For “Read the repository state and continue implementation”: inspect Git, ru
 `ai_state.py validate`, recover any `IN_PROGRESS` task/checkpoint, then run
 `ai_state.py next`. Continue approved work until exhausted or a documented stop
 condition occurs. Never infer authorization from a proposed backlog.
-

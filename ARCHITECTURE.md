@@ -143,3 +143,12 @@ are deterministic and have no LLM or network dependency.
 Release lineage is `CircuitIR -> schematic -> placed PCB -> RoutingPlan ->
 routed PCB -> DRC -> ManufacturingProfile -> fabrication package`. A changed
 PCB, profile, missing output, or mismatched hash makes the release stale.
+
+## End-user application boundary
+
+`ohmni.application` projects existing typed reports into a frontend-safe demo
+contract. It orchestrates existing services but contains no electrical,
+physical, routing, manufacturing, or pricing verdict logic. The static web
+client formats statuses and artifact-derived SVG; it never computes PASS/FAIL.
+The local threaded demo server exposes real progress and completed artifacts,
+while the deterministic scripted provider keeps the core journey offline.

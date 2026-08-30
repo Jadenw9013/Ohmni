@@ -73,23 +73,23 @@
     },
     {
       "id": "M8-T03", "scope": "M8", "milestone": "M8",
-      "title": "Add asynchronous deterministic demo execution", "status": "IN_PROGRESS", "priority": 80,
+      "title": "Add asynchronous deterministic demo execution", "status": "COMPLETE", "priority": 80,
       "dependencies": ["M8-T01"],
       "goal": "Expose a local asynchronous application boundary that executes the real scripted repair and engineering pipeline without live AI or network dependencies.",
       "acceptance_criteria": ["UI initiation starts a real job", "Progress never claims uncompleted stages", "Core demo is network-independent", "Artifact download and exact fingerprints are exposed"],
-      "verification": {"required": ["api_tests", "integration_tests"], "record": null},
-      "implementation": {"started_at_commit": "0ea4762", "completed_at_commit": null},
+      "verification": {"required": ["api_tests", "integration_tests"], "record": ".ai/verification/M8-T03.yaml"},
+      "implementation": {"started_at_commit": "0ea4762", "completed_at_commit": "0453db4"},
       "review": {"required": false, "status": "SELF_REVIEW_PASSED", "independent": false}, "blockers": []
     },
     {
       "id": "M8-T04", "scope": "M8", "milestone": "M8",
-      "title": "Verify and harden the complete demo journey", "status": "APPROVED", "priority": 70,
+      "title": "Verify and harden the complete demo journey", "status": "IN_PROGRESS", "priority": 70,
       "dependencies": ["M8-T02", "M8-T03"],
       "goal": "Exercise the real flawed-proposal-to-release journey, protect artifact freshness, update documentation, and collect milestone evidence.",
       "acceptance_criteria": ["Major user journey consumes real structured results", "0 DRC violations and 0 unrouted reproduced", "Existing backend gates pass", "Demo run instructions are documented"],
       "verification": {"required": ["fast_tests", "integration_tests", "full_tests", "manual_ui_review"], "record": null},
-      "implementation": {"started_at_commit": null, "completed_at_commit": null},
-      "review": {"required": true, "status": "PENDING", "independent": false}, "blockers": []
+      "implementation": {"started_at_commit": "0453db4", "completed_at_commit": null},
+      "review": {"required": false, "status": "SELF_REVIEW_PASSED", "independent": false}, "blockers": []
     },
     {
       "id": "M8-T05", "scope": "M8", "milestone": "M8",

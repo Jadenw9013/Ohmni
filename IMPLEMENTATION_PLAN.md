@@ -17,7 +17,7 @@
 > | 5c. Bounded routing | **complete** - internal copper verification + real DRC closure |
 > | 6. Simulation | not started - **[changed]** target is now a DC operating point |
 > | 7. BOM, manufacturing, and cost | **complete** - profile checks, assembly risk, fixture economics, KiCad fab release |
-> | 8. Teaching UI | not started |
+> | 8. Teaching UI | **complete** - deterministic end-user demo, notebook, verification ladder, artifacts, economics |
 > | 9. Demo hardening | not started |
 >
 > Phase 3 was pulled ahead of Phase 2 on purpose: the verifier is the product's

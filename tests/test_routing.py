@@ -1,5 +1,9 @@
 import pytest
 
+from ohmni.application.demo import DEMO_REQUEST, project_demo_report
+from ohmni.bom import calculate_cost, classify_assembly, generate_bom, synthetic_fixture_supplier
+from ohmni.generation import DesignOrchestrator
+from ohmni.generation.fixtures import flawed_logger_provider
 from ohmni.eda.kicad import KiCadCliAdapter, KiCadPcbCompiler, KiCadSchematicCompiler
 from ohmni.eda.kicad.placement import golden_board_constraints
 from ohmni.eda.pcb_models import DrcStatus
@@ -93,6 +97,13 @@ def test_golden_routing_closes_real_kicad_drc_and_stales_on_change(tmp_path,gold
     assert package.files_current() and package.is_valid_for(routed.fingerprint.digest,profile.content_hash)
     changed_profile=profile.model_copy(update={"source_version":"2.0"})
     assert not package.is_valid_for(routed.fingerprint.digest,changed_profile.content_hash)
+    design=DesignOrchestrator(flawed_logger_provider(),catalog).design(DEMO_REQUEST,output=tmp_path/"demo.kicad_sch",run_eda=True)
+    bom=generate_bom(golden,catalog);costs=calculate_cost(bom,synthetic_fixture_supplier(bom),1);assembly=classify_assembly(bom)
+    demo=project_demo_report(request=DEMO_REQUEST,design=design,catalog=catalog,board=board,placed=placed,plan=plan,route_report=report,routed=routed,drc=drc,manufacturing=manufacturing,bom=bom,costs=costs,assembly=assembly,package=package)
+    assert demo.failure_and_repair["rule"]=="PB-PWR-001"
+    assert demo.pcb["violations"]==0 and demo.pcb["unrouted"]==0
+    assert demo.release["status"]=="READY_FOR_MANUFACTURING_REVIEW"
+    assert demo.economics["fabrication"]=="UNKNOWN"
     victim=package.directory/package.files[0].relative_path;victim.unlink();assert not package.files_current()
     placed_text=placed.path.read_text();placed.path.write_text(placed_text+"\n;changed")
     assert KiCadCliAdapter(executable="never-run").run_drc(routed).status is DrcStatus.STALE_ARTIFACT

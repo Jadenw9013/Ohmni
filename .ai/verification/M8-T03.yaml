@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "id": "M8-T03",
+  "commit": "0453db4",
+  "commands": [
+    {"command": "pytest tests/test_demo_application.py", "result": "PASS", "tests": 1, "runtime_seconds": 0.14},
+    {"command": "ruff check scripts/demo_server.py tests/test_demo_application.py", "result": "PASS"}
+  ],
+  "manual_structural_checks": ["Pipeline runs in background thread", "Progress is appended only after real stage transitions", "Artifact paths are constrained to completed job directory"],
+  "review": {"status": "SELF_REVIEW_PASSED", "independent": false},
+  "limitations": ["Real KiCad/routing execution is exercised by M8-T04."]
+}

@@ -53,7 +53,7 @@ whose correctness depends on a model would not be a verifier.
 | Verification rules | **24**, deterministic, independently testable |
 | Part catalog | 9 parts, every fact carrying provenance |
 | Fixtures | 1 golden circuit + **13** broken variants |
-| Tests | **430**, tiered into fast, KiCad integration, and slow golden release checks |
+| Tests | **447**, tiered into fast, KiCad integration, and slow golden demo/release checks |
 | Golden circuit | no blocking findings, **100% rule coverage** |
 | Broken variants | each caught by exactly the rule and severity it was built to trip |
 
@@ -64,7 +64,9 @@ Evidence-grounded structured circuit proposals and bounded semantic repair are i
 with a deterministic scripted provider. Deterministic placed PCB emission and typed
 KiCad DRC ingestion, bounded routing, manufacturability checks, identity-safe BOM
 economics, assembly-risk classification, and KiCad fabrication release are implemented.
-SPICE, live supplier pricing, ordering, and UI remain future work.
+The deterministic end-user demo exposes the full engineering notebook, repair,
+verification ladder, artifacts, BOM economics, assembly risk, and release status.
+SPICE, live supplier pricing, ordering, and arbitrary-hardware UI remain future work.
 See `IMPLEMENTATION_PLAN.md` for the status table.
 
 ```powershell
@@ -79,7 +81,14 @@ python -m ohmni manufacture-check golden
 python -m ohmni bom golden
 python -m ohmni cost golden --quantity 1
 python -m ohmni release golden
+python scripts/demo_server.py
 ```
+
+Open `http://127.0.0.1:8765` to run the deterministic environmental-logger
+journey. The server executes the real scripted proposal, semantic repair,
+KiCad ERC, placement, routing, DRC, manufacturing, BOM, and fabrication-release
+pipeline asynchronously. Core results require no live LLM, supplier API, or
+internet connection. KiCad 10 is required for the full EDA stages.
 
 ---
 

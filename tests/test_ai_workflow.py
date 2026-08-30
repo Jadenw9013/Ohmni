@@ -113,9 +113,12 @@ def test_stale_in_progress_detects_resume_reconcile_and_inconsistency(tmp_path):
     assert recovery_state(cp)[0]=="INCONSISTENT"
 
 
-def test_repository_bootstrap_has_no_approved_product_work():
+def test_repository_product_scope_matches_human_approval():
     root=Path(__file__).resolve().parents[1]
     state=json.loads((root/".ai"/"state.yaml").read_text())
+    tasks=json.loads((root/".ai"/"tasks.yaml").read_text())
     assert state["latest_product_milestone"]["id"]=="M7"
     assert state["latest_product_milestone"]["commit"]=="43ffac5"
-    assert state["approved_product_scope"] is None
+    assert state["approved_product_scope"]=="M8"
+    scope=next(scope for scope in tasks["scopes"] if scope["id"]=="M8")
+    assert scope["approved_by"]=="human" and scope["approval_evidence"]

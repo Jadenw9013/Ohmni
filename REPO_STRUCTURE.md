@@ -115,3 +115,10 @@ import in the layer that must not have one.
   offers, prototype cost scenarios, and package-based assembly risk.
 - `tests/test_manufacturing.py`: pure manufacturing, BOM, supplier, pricing,
   assembly, and adversarial tests.
+
+## Milestone 8 demo application
+
+- `src/ohmni/application/`: frontend-safe projection and artifact-derived SVG views.
+- `apps/web/`: dependency-light responsive engineering-instrument interface.
+- `scripts/demo_server.py`: local asynchronous HTTP boundary for real demo jobs.
+- `tests/test_demo_*`: projection, UI behavior, job progress, and integrated journey.
