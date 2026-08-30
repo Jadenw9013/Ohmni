@@ -36,11 +36,11 @@
     {
       "id": "M8-REV-INDEPENDENT",
       "scope": "M8",
-      "reviewer": null,
+      "reviewer": "independent-reviewer-codex",
       "independent": true,
-      "status": "UNAVAILABLE",
+      "status": "FINDINGS_OPEN",
       "commit": "ff4309a",
-      "notes": "No independent reviewer was available in this session; repository policy prevents formal milestone completion."
+      "notes": "Independent repository review inspected the full M7-to-M8 range, ran workflow, fast, frontend, integration, full, Ruff, and live HTTP/demo checks. Open HIGH findings prevent completion."
     }
   ],
   "findings": [
@@ -56,6 +56,62 @@
       "resolution_commit": "ff4309a",
       "resolution": "Download handler now hashes exact artifacts and rejects stale/mismatched files.",
       "verification": "tests/test_demo_application.py::test_artifact_download_freshness_is_hash_bound"
+    },
+    {
+      "id": "M8-R02",
+      "scope": "M8",
+      "severity": "HIGH",
+      "status": "OPEN",
+      "title": "Artifact freshness remains inconsistent and non-atomic",
+      "description": "After an artifact changes, the download route returns 409 but the completed job report still returns current=true, so a refreshed UI labels the stale artifact CURRENT. The handler also hashes the path and then reads it again for the response, leaving a check/use gap in which served bytes need not match the verified fingerprint.",
+      "affected_files": ["scripts/demo_server.py", "src/ohmni/application/demo.py", "apps/web/app.js"],
+      "found_at_commit": "ff4309a",
+      "resolution_commit": null,
+      "resolution": null,
+      "verification": "Live job ef3d8dd1d379: mutate golden.kicad_sch; artifact GET returned 409 while /api/jobs report retained schematic.current=true. Code inspection: artifact_is_current() reads bytes at line 41 and do_GET() separately reads response bytes at line 67.",
+      "recommended_correction": "Revalidate freshness when projecting/serving job state and read artifact bytes once, hash those exact bytes, then serve that same immutable buffer; add HTTP-level stale, race, missing, and alternate-path tests."
+    },
+    {
+      "id": "M8-R03",
+      "scope": "M8",
+      "severity": "HIGH",
+      "status": "OPEN",
+      "title": "Schematic view is not derived from compiled artifact topology or geometry",
+      "description": "The view labeled Compiled schematic topology lays out independent component boxes and net dots but renders no component-to-net connections and does not parse or project compiled KiCad geometry. It can therefore omit topology visually and disagree with the downloadable verified schematic, contrary to M8-T02's artifact-geometry acceptance criterion.",
+      "affected_files": ["src/ohmni/application/visuals.py", "src/ohmni/application/demo.py", "apps/web/app.js"],
+      "found_at_commit": "ff4309a",
+      "resolution_commit": null,
+      "resolution": null,
+      "verification": "Code inspection of schematic_svg(): component rectangles and separately positioned net circles are emitted with no edges/pins/connections; only the artifact fingerprint is consumed. tests/test_demo_projection.py asserts SVG presence/fingerprint, not topology equivalence.",
+      "recommended_correction": "Render from the exact compiled schematic artifact or a compiler-owned structured geometry/topology projection with lineage, label abstraction honestly, and test all components/nets/connections against the downloadable artifact."
+    },
+    {
+      "id": "M8-R04",
+      "scope": "M8",
+      "severity": "MEDIUM",
+      "status": "OPEN",
+      "title": "Engineering Notebook timeline reorders routing and compilation history",
+      "description": "The projection concatenates routed compilation events before routing-plan events even though routing occurred first, and it drops the placed-artifact event stream. The UI presents this list as a factual timeline, so its order changes the meaning of actual structured events.",
+      "affected_files": ["src/ohmni/application/demo.py", "apps/web/app.js"],
+      "found_at_commit": "ff4309a",
+      "resolution_commit": null,
+      "resolution": null,
+      "verification": "Fresh live report placed pcb_artifact_compiled at event 189, followed by routing_started at 190 and routing_completed at 322; project_demo_report concatenates routed.events before plan.events and does not consume placed.events.",
+      "recommended_correction": "Preserve pipeline event emission order (including placed events) or add a trustworthy sequence/timestamp and sort by it; add an integrated chronology assertion."
+    },
+    {
+      "id": "M8-R05",
+      "scope": "M8",
+      "severity": "MEDIUM",
+      "status": "OPEN",
+      "title": "Unexpected worker exceptions leave jobs polling forever",
+      "description": "JobStore catches only OSError, RuntimeError, and ValueError. Other pipeline failures terminate the daemon thread without transitioning the job to failed, leaving queued/running state permanently visible to clients.",
+      "affected_files": ["scripts/demo_server.py", "tests/test_demo_application.py", "apps/web/app.js"],
+      "found_at_commit": "ff4309a",
+      "resolution_commit": null,
+      "resolution": null,
+      "verification": "Reviewer pipeline raising KeyError produced an uncaught thread traceback and JobStore.get() remained {'status':'queued','report':None,'error':None}.",
+      "recommended_correction": "At the worker boundary, convert unexpected Exception failures into a terminal failed job while retaining safe diagnostic detail; test unexpected exceptions and client polling termination."
     }
   ]
 }
