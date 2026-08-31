@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "id": "M8-R02-R05",
-  "status": "VERIFIED_AWAITING_INDEPENDENT_REREVIEW",
+  "status": "VERIFIED_REREVIEW_FINDINGS_OPEN",
   "commit": "371e0a4",
   "commands": [
     {"command": "python scripts/verify.py workflow", "result": "PASS", "tests": 11, "runtime_seconds": 0.32},
@@ -29,6 +29,21 @@
     "after_placed_pcb_mutation": {"schematic": true, "pcb": false, "release": false},
     "traversal_status": 400
   },
-  "review": {"independent_rereview": "PENDING", "open_blocker_or_high_findings": 0},
-  "limitations": ["Implementation verification does not replace independent re-review.", "No Milestone 9 work was authorized or performed."]
+  "independent_review_evidence": {
+    "target_commit": "371e0a4",
+    "commands": [
+      {"command": "python -m pytest -q tests/test_demo_application.py tests/test_demo_projection.py tests/test_eda_compiler.py", "result": "PASS", "tests": 15},
+      {"command": "python scripts/verify.py workflow", "result": "PASS", "tests": 11},
+      {"command": "node --test apps/web/tests/view-model.test.mjs", "result": "PASS", "tests": 4},
+      {"command": "python -m ruff check remediation files", "result": "PASS"},
+      {"command": "python scripts/verify.py full", "result": "PASS", "tests": 450, "runtime_seconds": 121.26},
+      {"command": "python -m ohmni verify-all", "result": "PASS", "fixtures": 14, "coverage": "100%"},
+      {"command": "adversarial JobStore freshness and exception-formatting probes", "result": "FINDINGS_REPRODUCED"}
+    ],
+    "confirmed_fixed": ["M8-R03", "M8-R04"],
+    "reopened": ["M8-R02", "M8-R05"],
+    "accepted_risks": ["M8-R06"]
+  },
+  "review": {"independent_rereview": "FINDINGS_OPEN", "open_blocker_or_high_findings": 1, "open_medium_findings": 1},
+  "limitations": ["Formal M8 completion remains blocked by M8-R02 and the independent review cannot pass while M8-R05 is unresolved.", "No Milestone 9 work was authorized or performed."]
 }

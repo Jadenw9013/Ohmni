@@ -3,10 +3,10 @@
   "active_task": null,
   "last_known_commit": "371e0a4",
   "modified_files": [],
-  "completed_substeps": ["Human authorized remediation of M8-R02 through M8-R05 only", "M8-R02 through M8-R05 fixed at 371e0a4", "Required verification passed"],
-  "remaining_work": ["Obtain independent re-review of 371e0a4, then complete M8-T05 and Milestone 8 only if the review passes"],
-  "last_command": "python scripts/verify.py full (450 passed in 118.15s)",
-  "last_failure": null,
-  "recommended_resume_action": "Independent reviewer inspects 371e0a4 against M8-R02 through M8-R05 and records a new review outcome; do not begin M9.",
-  "updated_at": "2026-08-30T17:00:00-07:00"
+  "completed_substeps": ["Human authorized remediation of M8-R02 through M8-R05 only", "Remediation candidate recorded at 371e0a4", "Independent re-review confirmed M8-R03 and M8-R04 fixed", "Independent full gate passed: 450 tests; verifier corpus passed: 14 fixtures at 100% coverage"],
+  "remaining_work": ["Remediate reopened M8-R02 release freshness/manifest integrity and M8-R05 failure-safe exception formatting, re-run required verification, then obtain another independent re-review"],
+  "last_command": "python scripts/ai_state.py validate (VALID) and python scripts/verify.py workflow (11 passed)",
+  "last_failure": "Open HIGH finding M8-R02 and open MEDIUM finding M8-R05 prevent the independent review from passing",
+  "recommended_resume_action": "Implementation agent fixes only M8-R02 and M8-R05 within the existing remediation authorization, binds verification to the fix commit, and returns M8 to independent re-review; do not begin M9.",
+  "updated_at": "2026-08-30T18:30:27-07:00"
 }
