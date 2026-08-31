@@ -117,8 +117,11 @@ def test_repository_product_scope_matches_human_approval():
     root=Path(__file__).resolve().parents[1]
     state=json.loads((root/".ai"/"state.yaml").read_text())
     tasks=json.loads((root/".ai"/"tasks.yaml").read_text())
-    assert state["latest_product_milestone"]["id"]=="M7"
-    assert state["latest_product_milestone"]["commit"]=="43ffac5"
-    assert state["approved_product_scope"]=="M8"
+    assert state["latest_product_milestone"]=={
+        "id":"M8","title":"Ohmni End-User Experience and Demo",
+        "commit":"3a6f9d3","status":"COMPLETE",
+    }
+    assert state["approved_product_scope"] is None and state["active_task"] is None
     scope=next(scope for scope in tasks["scopes"] if scope["id"]=="M8")
-    assert scope["approved_by"]=="human" and scope["approval_evidence"]
+    assert scope["status"]=="COMPLETE" and scope["approved_by"]=="human" and scope["approval_evidence"]
+    assert all(item["id"]!="M9" for item in tasks["scopes"]+tasks["tasks"])

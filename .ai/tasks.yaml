@@ -14,7 +14,7 @@
       "id": "M8",
       "type": "product_milestone",
       "title": "Ohmni End-User Experience and Demo",
-      "status": "VERIFIED",
+      "status": "COMPLETE",
       "approved_by": "human",
       "approval_evidence": "Human instruction: 'Human approval: create and execute Milestone 8.'",
       "review_policy": "independent review required for COMPLETE; unavailable permits VERIFIED only"
@@ -93,12 +93,12 @@
     },
     {
       "id": "M8-T05", "scope": "M8", "milestone": "M8",
-      "title": "Review and close Milestone 8", "status": "VERIFIED", "priority": 60,
+      "title": "Review and close Milestone 8", "status": "COMPLETE", "priority": 60,
       "dependencies": ["M8-T04"],
       "goal": "Run repository-backed review and completion gates, resolve blocking findings, and record the accepted Milestone 8 baseline.",
       "acceptance_criteria": ["Review state is honest", "No open BLOCKER/HIGH findings", "Task and milestone ledgers match commits", "No Milestone 9 is approved"],
       "verification": {"required": ["state_validation", "review_gate"], "record": ".ai/verification/M8-R07-R15.yaml"},
-      "implementation": {"started_at_commit": "ff4309a", "remediation_commit": "371e0a4", "prior_remediation_starts": ["fd4352b", "6bef107", "61e5f4e", "9318005"], "latest_remediation_started_at_commit": "db1cca2", "latest_remediation_commit": "3a6f9d3", "remediation_commits": ["371e0a4", "93a0a10", "450a0df", "0fa74d4", "e178b0d", "3a6f9d3"], "completed_at_commit": null},
+      "implementation": {"started_at_commit": "ff4309a", "remediation_commit": "371e0a4", "prior_remediation_starts": ["fd4352b", "6bef107", "61e5f4e", "9318005"], "latest_remediation_started_at_commit": "db1cca2", "latest_remediation_commit": "3a6f9d3", "remediation_commits": ["371e0a4", "93a0a10", "450a0df", "0fa74d4", "e178b0d", "3a6f9d3"], "completed_at_commit": "db4e6dc"},
       "review": {"required": true, "status": "PASSED", "independent": true},
       "remediation_authorization": "Standing human authorization plus bounded-review correction: remediate current in-scope M8-R07 and M8-R13 HIGH findings; fix directly related small M8-R14 MEDIUM and M8-R15 LOW; run the canonical full suite once; then launch exactly one focused final independent reviewer. Previously confirmed findings stay closed absent a reproduced regression. No further parallel/broad M8 panels. Do not begin or approve M9.",
       "blockers": []
