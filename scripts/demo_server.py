@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import unquote, urlsplit
 
-from ohmni.application import DEMO_REQUEST, DemoPipeline
+from ohmni.application import DemoPipeline, require_demo_request
 
 ROOT=Path(__file__).resolve().parents[1];WEB_ROOT=ROOT/"apps"/"web";OUTPUT_ROOT=ROOT/"out"/"demo-jobs"
 ARTIFACT_SECTIONS={"golden.kicad_sch":"schematic","golden.kicad_pcb":"pcb"}
@@ -31,7 +31,7 @@ class JobStore:
         job_id=uuid.uuid4().hex[:12]
         with self.lock:self.jobs[job_id]={"job_id":job_id,"status":"queued","progress":[],"report":None,"error":None}
         try:threading.Thread(target=self._run,args=(job_id,request),daemon=True).start()
-        except Exception:  # noqa: BLE001 - the launch boundary must always terminalize the job
+        except BaseException:  # noqa: BLE001 - the launch boundary must always terminalize the job
             self._fail(job_id)
         return job_id
     def _fail(self,job_id):
@@ -44,15 +44,15 @@ class JobStore:
             with self.lock:
                 job=self.jobs[job_id]
                 if job["status"] not in TERMINAL_JOB_STATUSES:job["progress"].append(value);job["status"]="running"
-        with self.lock:
-            if self.jobs[job_id]["status"] in TERMINAL_JOB_STATUSES:return
         try:
+            with self.lock:
+                if self.jobs[job_id]["status"] in TERMINAL_JOB_STATUSES:return
             report=self.pipeline_factory(progress).run(self.output_root/job_id,request)
             value=report.model_dump(mode="json")
             with self.lock:
                 job=self.jobs[job_id]
                 if job["status"] not in TERMINAL_JOB_STATUSES:job.update(status="complete",report=value)
-        except Exception:  # noqa: BLE001 - the worker boundary must always terminalize the job
+        except BaseException:  # noqa: BLE001 - the worker boundary must always terminalize the job
             self._fail(job_id)
     def _snapshot(self,job_id):
         with self.lock:return json.loads(json.dumps(self.jobs.get(job_id))) if job_id in self.jobs else None
@@ -138,11 +138,8 @@ class DemoHandler(SimpleHTTPRequestHandler):
             if length<0 or length>16_384:raise ValueError
             payload=json.loads(self.rfile.read(length) or b"{}")
             if not isinstance(payload,dict):raise TypeError
-            raw_request=payload.get("request",DEMO_REQUEST)
-            if not isinstance(raw_request,str):raise TypeError
-            request=raw_request.strip()
+            request=require_demo_request(payload.get("request"))
         except (TypeError,ValueError):return self._json({"error":INVALID_REQUEST_MESSAGE},HTTPStatus.BAD_REQUEST)
-        if not request or len(request)>4000:return self._json({"error":"request must contain 1 to 4000 characters"},HTTPStatus.BAD_REQUEST)
         self._json({"job_id":self.store.start(request),"status":"queued"},HTTPStatus.ACCEPTED)
     def do_GET(self):
         request_path=unquote(urlsplit(self.path).path)

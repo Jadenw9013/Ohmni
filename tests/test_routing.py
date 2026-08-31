@@ -104,6 +104,10 @@ def test_golden_routing_closes_real_kicad_drc_and_stales_on_change(tmp_path,gold
     design=DesignOrchestrator(flawed_logger_provider(),catalog).design(DEMO_REQUEST,output=tmp_path/"demo.kicad_sch",run_eda=True)
     bom=generate_bom(golden,catalog);costs=calculate_cost(bom,synthetic_fixture_supplier(bom),1);assembly=classify_assembly(bom)
     demo=project_demo_report(request=DEMO_REQUEST,design=design,catalog=catalog,board=board,placed=placed,plan=plan,route_report=report,routed=routed,drc=drc,manufacturing=manufacturing,bom=bom,costs=costs,assembly=assembly,package=package)
+    with pytest.raises(ValueError,match="displayed deterministic"):
+        project_demo_report(request="Build a motor controller with a $30 budget",design=design,catalog=catalog,board=board,placed=placed,plan=plan,route_report=report,routed=routed,drc=drc,manufacturing=manufacturing,bom=bom,costs=costs,assembly=assembly,package=package)
+    assert demo.project["request"]==DEMO_REQUEST
+    assert {row["source_text"] for row in demo.requirements if row["origin"]=="explicit"}=={DEMO_REQUEST}
     assert demo.failure_and_repair["rule"]=="PB-PWR-001"
     assert demo.pcb["violations"]==0 and demo.pcb["unrouted"]==0
     assert demo.release["status"]=="READY_FOR_MANUFACTURING_REVIEW"

@@ -28,6 +28,14 @@ from ..routing.verifier import verify_routing
 from .visuals import pcb_svg, schematic_svg
 
 DEMO_REQUEST = GOLDEN_REQUEST
+UNSUPPORTED_DEMO_REQUEST = "Only the displayed deterministic ESP32 + BME280 request is supported"
+
+
+def require_demo_request(value: object) -> str:
+    """Return the one scripted request or reject without interpreting caller text."""
+    if not isinstance(value, str) or value != DEMO_REQUEST:
+        raise ValueError(UNSUPPORTED_DEMO_REQUEST)
+    return DEMO_REQUEST
 
 
 class DemoProgress(BaseModel):
@@ -72,6 +80,7 @@ class DemoPipeline:
         self.progress(DemoProgress(stage=stage, label=label, status=status, percent=percent, detail=detail))
 
     def run(self, destination: Path, request: str = DEMO_REQUEST) -> DemoReport:
+        request = require_demo_request(request)
         destination = destination.resolve()
         destination.mkdir(parents=True, exist_ok=True)
         catalog = default_catalog()
@@ -148,7 +157,7 @@ def _evidence_rows(catalog) -> list[dict[str, object]]:
 
 def project_demo_report(**values) -> DemoReport:
     """Pure presentation projection; inputs are already verified subsystem reports."""
-    request=values["request"];design=values["design"];catalog=values["catalog"]
+    request=require_demo_request(values["request"]);design=values["design"];catalog=values["catalog"]
     board=values["board"];plan=values["plan"];route_report=values["route_report"]
     routed=values["routed"];drc=values["drc"];manufacturing=values["manufacturing"]
     bom=values["bom"];costs=values["costs"];assembly=values["assembly"];package=values["package"]

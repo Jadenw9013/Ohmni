@@ -1,10 +1,13 @@
 """Frontend structure and dependency-free component behavior."""
 
+import re
 import shutil
 import subprocess
 from pathlib import Path
 
 import pytest
+
+from ohmni.application import DEMO_REQUEST
 
 
 def test_ui_contains_every_major_truth_surface():
@@ -13,6 +16,9 @@ def test_ui_contains_every_major_truth_surface():
         assert f'id="{section}"' in html
     text=html.lower()
     assert "deterministic demo" in text and "no live ai" in text
+    assert '<textarea id="request" rows="5" readonly' in text and "fixed offline fixture" in text
+    displayed=re.search(r'<textarea[^>]*id="request"[^>]*>(.*?)</textarea>',html,re.DOTALL)
+    assert displayed and displayed.group(1).strip()==DEMO_REQUEST
     assert "production ready" not in text and "guaranteed manufacturable" not in text
 
 

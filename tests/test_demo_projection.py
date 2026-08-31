@@ -4,7 +4,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from ohmni.application.demo import _evidence_rows
+from ohmni.application.demo import DemoPipeline, _evidence_rows
 from ohmni.application.visuals import pcb_svg, schematic_svg
 from ohmni.catalog import default_catalog
 from ohmni.eda.kicad import KiCadSchematicCompiler
@@ -12,7 +12,7 @@ from ohmni.generation import DesignOrchestrator
 from ohmni.generation.fixtures import GOLDEN_REQUEST, flawed_logger_provider
 
 
-def test_scripted_demo_exposes_real_failure_repair_and_notebook():
+def test_scripted_demo_exposes_real_failure_repair_and_notebook(tmp_path):
     report=DesignOrchestrator(flawed_logger_provider(),default_catalog()).design(GOLDEN_REQUEST,run_eda=False)
     assert report.state.value=="complete"
     assert report.semantic_attempts[0].export_blocked
@@ -22,6 +22,10 @@ def test_scripted_demo_exposes_real_failure_repair_and_notebook():
     kinds={event.kind.value for event in report.notebook.events}
     assert {"verification_failed","repair_applied","verification_passed"}<=kinds
     assert report.lessons[0].derived_from_event_ids
+    unsupported=tmp_path/"unsupported"
+    with pytest.raises(ValueError,match="displayed deterministic"):
+        DemoPipeline().run(unsupported,"Build a motor controller with a $30 budget")
+    assert not unsupported.exists()
 
 
 def test_evidence_projection_keeps_catalog_strength_truthful():

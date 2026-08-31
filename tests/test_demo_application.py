@@ -11,6 +11,7 @@ from types import SimpleNamespace
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
+from ohmni.application import DEMO_REQUEST
 from scripts.demo_server import DemoHandler, JobStore
 
 
@@ -109,22 +110,25 @@ def test_expected_worker_exception_never_discloses_local_path(tmp_path,caplog):
     assert private_path not in caplog.text and private_path not in json.dumps(job)
 
 
-def test_exception_string_failure_still_becomes_terminal(tmp_path):
+def test_exception_string_failure_still_becomes_terminal(tmp_path,capsys,monkeypatch):
+    secret=r"API_KEY=base-secret C:\Users\reviewer\private-board.kicad_pcb";hook_calls=[]
+    monkeypatch.setattr(threading,"excepthook",lambda args:hook_calls.append(args))
     touched=[]
-    class BrokenString(ValueError):
+    class BrokenString(BaseException):
         def __str__(self):touched.append("str");raise SystemExit("format-failed")
         def __repr__(self):touched.append("repr");raise SystemExit("repr-failed")
     class Pipeline:
         def __init__(self,progress):pass
-        def run(self,destination,request):raise BrokenString()
+        def run(self,destination,request):raise BrokenString(secret)
     store=JobStore(tmp_path,Pipeline);job=_await_terminal(store,store.start("supported request"))
     assert job["status"]=="failed" and job["report"] is None
     assert job["error"]=="Demo pipeline failed"
-    assert not touched
+    assert not touched and not hook_calls and secret not in json.dumps(job)
+    captured=capsys.readouterr();assert "Traceback" not in captured.err and "format-failed" not in captured.err
 
 
 def test_worker_launch_failures_create_pollable_terminal_jobs(tmp_path,monkeypatch,caplog):
-    class BrokenLaunch(RuntimeError):
+    class BrokenLaunch(BaseException):
         def __str__(self):raise SystemExit("launch formatter escaped")
         def __repr__(self):raise SystemExit("launch repr escaped")
     class ConstructionFailure:
@@ -162,7 +166,12 @@ def test_launch_failure_is_absorbing_if_worker_already_started(tmp_path,monkeypa
 
 
 def test_malformed_post_body_never_echoes_input(tmp_path):
-    DemoHandler.store=JobStore(tmp_path);server=ThreadingHTTPServer(("127.0.0.1",0),DemoHandler)
+    class Report:
+        def model_dump(self,mode=None):return {"result":"canonical request accepted"}
+    class Pipeline:
+        def __init__(self,progress):pass
+        def run(self,destination,request):assert request==DEMO_REQUEST;return Report()
+    DemoHandler.store=JobStore(tmp_path,Pipeline);server=ThreadingHTTPServer(("127.0.0.1",0),DemoHandler)
     thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start();base=f"http://127.0.0.1:{server.server_address[1]}"
     secret=r"API_KEY=review-secret C:\Users\reviewer\private.kicad_pcb"
     try:
@@ -173,6 +182,18 @@ def test_malformed_post_body_never_echoes_input(tmp_path):
             body=exc.read().decode();assert exc.code==400 and json.loads(body)=={"error":"invalid request"}
         else:raise AssertionError("malformed request unexpectedly accepted")
         assert secret not in body
+        for payload in ({"request":secret},{"request":DEMO_REQUEST+" "},{},{"request":30}):
+            unsupported=Request(f"{base}/api/demo",data=json.dumps(payload).encode(),headers={"content-type":"application/json"},method="POST")
+            try:urlopen(unsupported)
+            except HTTPError as exc:
+                body=exc.read().decode();assert exc.code==400 and json.loads(body)=={"error":"invalid request"}
+            else:raise AssertionError("unsupported request unexpectedly accepted")
+            assert secret not in body and not DemoHandler.store.jobs
+        canonical=Request(f"{base}/api/demo",data=json.dumps({"request":DEMO_REQUEST}).encode(),headers={"content-type":"application/json"},method="POST")
+        with urlopen(canonical) as response:
+            accepted=json.loads(response.read());assert response.status==202
+        job=_await_terminal(DemoHandler.store,accepted["job_id"])
+        assert job["status"]=="complete" and job["report"]=={"result":"canonical request accepted"}
     finally:
         server.shutdown();server.server_close();thread.join(timeout=2)
 
