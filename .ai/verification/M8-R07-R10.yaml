@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "id": "M8-R07-R10",
+  "status": "VERIFIED_AWAITING_INDEPENDENT_REREVIEW",
+  "commit": "0fa74d4",
+  "commands": [
+    {"command": "python scripts/ai_state.py validate", "result": "PASS", "detail": "VALID AI DEVELOPMENT STATE; active committed remediation recoverable"},
+    {"command": "python scripts/verify.py workflow", "result": "PASS", "tests": 11, "runtime_seconds": 0.09},
+    {"command": "python scripts/verify.py fast", "result": "PASS", "tests": 447, "deselected": 8, "runtime_seconds": 8.97},
+    {"command": "python -m pytest -q tests/test_demo_application.py tests/test_demo_projection.py tests/test_demo_ui.py tests/test_manufacturing.py", "result": "PASS", "tests": 26},
+    {"command": "node --test apps/web/tests/view-model.test.mjs", "result": "PASS", "tests": 5},
+    {"command": "python scripts/verify.py integration", "result": "PASS", "tests": 7, "deselected": 448, "runtime_seconds": 8.76},
+    {"command": "python scripts/verify.py slow", "result": "PASS", "tests": 1, "deselected": 454, "runtime_seconds": 111.55},
+    {"command": "python scripts/verify.py full", "result": "PASS", "tests": 455, "runtime_seconds": 120.92},
+    {"command": "python -m ohmni verify-all", "result": "PASS", "fixtures": 14, "coverage": "100%"},
+    {"command": "python -m ruff check changed M8-R07/M8-R10 Python files", "result": "PASS"}
+  ],
+  "remediation": {
+    "M8-R07": "BaseException-safe launch and full daemon-worker boundaries with no binding, diagnostics, formatter access, thread hook, traceback, or nonterminal state",
+    "M8-R10": "One exact canonical request validator shared by pipeline, pure projection, and HTTP; read-only fixed-fixture UI and non-echoing rejection"
+  },
+  "review": {"independent_rereview": "PENDING", "open_blocker_or_high_findings": 0, "open_medium_findings": 0, "accepted_low_risks": ["M8-R06"]},
+  "limitations": ["Implementation verification does not replace another fresh independent rereview.", "M8-R06 remains an explicitly accepted LOW risk with corrected 150-of-151 duplication evidence.", "No Milestone 9 work was authorized or performed."]
+}

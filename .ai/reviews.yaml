@@ -68,6 +68,15 @@
       "status": "FINDINGS_OPEN",
       "commit": "450a0df",
       "notes": "Fresh isolated reviewers inspected exact product candidate 450a0df. M8-R05, M8-R08, M8-R09, ordinary failure sanitization, malformed POST handling, full 455-test evidence, corrected M8-R06 evidence, and the no-M9 boundary passed. Rereview reopened M8-R07 HIGH because a pipeline BaseException escapes to threading.excepthook and leaves the job queued, and opened M8-R10 MEDIUM because editable requests can contradict the fixed scripted requirements while remaining labeled EXPLICIT."
+    },
+    {
+      "id": "M8-REV-INDEPENDENT-REREVIEW-4",
+      "scope": "M8",
+      "reviewer": null,
+      "independent": true,
+      "status": "PENDING",
+      "commit": "0fa74d4",
+      "notes": "Fourth remediation candidate for reopened M8-R07 and M8-R10 is commit-bound verified at 0fa74d4 and requires another fresh independent review. All earlier review rounds remain historical."
     }
   ],
   "findings": [
@@ -162,14 +171,14 @@
       "id": "M8-R07",
       "scope": "M8",
       "severity": "HIGH",
-      "status": "OPEN",
+      "status": "FIXED",
       "title": "Demo worker diagnostics disclose exception secrets and local paths",
       "description": "Unexpected failures use LOGGER.exception, which records the raw exception value and traceback, while broad OSError, RuntimeError, and ValueError strings are copied into the client-visible job error. Adversarial probes exposed a secret in logs and a private local path in the API response, contrary to SECURITY.md.",
       "affected_files": ["scripts/demo_server.py", "tests/test_demo_application.py", "SECURITY.md"],
       "found_at_commit": "93a0a10",
-      "resolution_commit": "450a0df",
-      "resolution": "Partial remediation at 450a0df: ordinary Exception failures and malformed POST input use constant public errors with no exception-derived diagnostics. Fresh rereview reopened the finding because non-Exception BaseException instances still escape the daemon worker.",
-      "verification": "Fresh independent rereview raised a benign BaseException carrying a sentinel path. The job remained queued with null error/report while threading.excepthook emitted the traceback and sentinel to stderr. Existing regressions covered only Exception subclasses and caplog.",
+      "resolution_commit": "0fa74d4",
+      "resolution": "Launch and complete daemon-worker boundaries now terminalize BaseException without binding, formatting, logging, traceback capture, or rethrow. The full worker body is inside the boundary and existing absorbing terminal-state guards remain intact.",
+      "verification": "Commit-bound regressions raise BaseException instances with hostile formatters and sentinel paths from the pipeline and thread constructor/start. Jobs become pollable failed records, formatters and threading.excepthook are untouched, stderr/job JSON contain no sentinel or traceback, and the starts-then-raises race remains terminal.",
       "prior_remediation_attempt": {"commit": "450a0df", "outcome": "Partial; ordinary exception/API disclosure closed, but BaseException still bypassed the worker and launch boundaries."},
       "recommended_correction": "Use a constant public failure message, never log raw exception values or traceback data, keep diagnostics failure-safe, and add API/log capture regressions."
     },
@@ -205,14 +214,14 @@
       "id": "M8-R10",
       "scope": "M8",
       "severity": "MEDIUM",
-      "status": "OPEN",
+      "status": "FIXED",
       "title": "Editable demo request can contradict fixed requirements labeled explicit",
       "description": "The UI and server accept arbitrary request text, but the deterministic provider always returns the fixed ESP32/BME280 interpretation. A changed budget or unrelated board request therefore completes with fixed values labeled EXPLICIT and attributes them to contradictory source text.",
       "affected_files": ["apps/web/index.html", "scripts/demo_server.py", "src/ohmni/application/demo.py", "tests/test_demo_application.py", "tests/test_demo_projection.py", "tests/test_demo_ui.py"],
       "found_at_commit": "450a0df",
-      "resolution_commit": null,
-      "resolution": null,
-      "verification": "Independent rereview submitted a $30 logger request and received budget 20.0 labeled explicit with the $30 source text; an unrelated motor-controller request likewise completed as the ESP32/BME280 fixture.",
+      "resolution_commit": "0fa74d4",
+      "resolution": "One shared exact-request validator now gates the application pipeline, pure report projection, and HTTP boundary before any work. The UI identifies and renders a read-only fixed offline fixture; every mismatch gets one non-echoing 400 and creates no job.",
+      "verification": "Commit-bound tests reject unrelated, changed-budget, whitespace-variant, missing, and non-string requests; accept only the canonical request; prove rejection precedes output creation; bind the UI literal to DEMO_REQUEST; and assert project.request plus every explicit source_text equal DEMO_REQUEST. Full 455 tests passed.",
       "recommended_correction": "Enforce the exact scripted fixture request at the application and HTTP boundaries, make the displayed request non-editable, and add rejection/provenance regressions."
     }
   ]
