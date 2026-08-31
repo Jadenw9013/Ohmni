@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "id": "M8-R07-R09",
-  "status": "VERIFIED_AWAITING_INDEPENDENT_REREVIEW",
+  "status": "VERIFIED_REVIEW_FINDINGS_OPEN",
   "commit": "450a0df",
   "commands": [
     {"command": "python scripts/ai_state.py validate", "result": "PASS", "detail": "VALID AI DEVELOPMENT STATE; active committed remediation recoverable"},
@@ -20,6 +20,6 @@
     "M8-R08": "Pollable terminal launch failures plus lock-protected absorbing terminal job states",
     "M8-R09": "README inventory updated to the exact 455-test candidate"
   },
-  "review": {"independent_rereview": "PENDING", "open_blocker_or_high_findings": 0, "open_medium_findings": 0, "accepted_low_risks": ["M8-R06"]},
-  "limitations": ["Implementation verification does not replace another fresh independent rereview.", "M8-R06 remains an explicitly accepted LOW risk with corrected 150-of-151 duplication evidence.", "No Milestone 9 work was authorized or performed."]
+  "review": {"independent_rereview": "FINDINGS_OPEN", "reviewer": "independent-review-panel-codex-r3", "open_blocker_or_high_findings": ["M8-R07"], "open_medium_findings": ["M8-R10"], "accepted_low_risks": ["M8-R06"]},
+  "limitations": ["M8-R07 ordinary exception disclosure, M8-R08, and M8-R09 passed, but BaseException liveness/disclosure remains open under M8-R07 and M8-R10 requires scripted-request enforcement.", "M8-R06 remains an explicitly accepted LOW risk with corrected 150-of-151 duplication evidence.", "No Milestone 9 work was authorized or performed."]
 }

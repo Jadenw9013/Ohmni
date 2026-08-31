@@ -63,11 +63,11 @@
     {
       "id": "M8-REV-INDEPENDENT-REREVIEW-3",
       "scope": "M8",
-      "reviewer": null,
+      "reviewer": "independent-review-panel-codex-r3",
       "independent": true,
-      "status": "PENDING",
+      "status": "FINDINGS_OPEN",
       "commit": "450a0df",
-      "notes": "Third remediation candidate for M8-R07, M8-R08, and M8-R09 is commit-bound verified at 450a0df and requires another fresh independent review. All earlier review rounds remain historical."
+      "notes": "Fresh isolated reviewers inspected exact product candidate 450a0df. M8-R05, M8-R08, M8-R09, ordinary failure sanitization, malformed POST handling, full 455-test evidence, corrected M8-R06 evidence, and the no-M9 boundary passed. Rereview reopened M8-R07 HIGH because a pipeline BaseException escapes to threading.excepthook and leaves the job queued, and opened M8-R10 MEDIUM because editable requests can contradict the fixed scripted requirements while remaining labeled EXPLICIT."
     }
   ],
   "findings": [
@@ -161,15 +161,16 @@
     {
       "id": "M8-R07",
       "scope": "M8",
-      "severity": "MEDIUM",
-      "status": "FIXED",
+      "severity": "HIGH",
+      "status": "OPEN",
       "title": "Demo worker diagnostics disclose exception secrets and local paths",
       "description": "Unexpected failures use LOGGER.exception, which records the raw exception value and traceback, while broad OSError, RuntimeError, and ValueError strings are copied into the client-visible job error. Adversarial probes exposed a secret in logs and a private local path in the API response, contrary to SECURITY.md.",
       "affected_files": ["scripts/demo_server.py", "tests/test_demo_application.py", "SECURITY.md"],
       "found_at_commit": "93a0a10",
       "resolution_commit": "450a0df",
-      "resolution": "All async worker failures now expose one constant public error and never stringify, format, serialize, or log exception objects, values, tracebacks, or paths. Malformed POST input also returns a fixed validation error, and SECURITY.md records the invariant.",
-      "verification": "Commit-bound adversarial tests cover secret-bearing unexpected exceptions, private-path FileNotFoundError, broken __str__/__repr__, malformed HTTP bodies, and zero captured diagnostic records. Focused 26 and full 455 tests passed.",
+      "resolution": "Partial remediation at 450a0df: ordinary Exception failures and malformed POST input use constant public errors with no exception-derived diagnostics. Fresh rereview reopened the finding because non-Exception BaseException instances still escape the daemon worker.",
+      "verification": "Fresh independent rereview raised a benign BaseException carrying a sentinel path. The job remained queued with null error/report while threading.excepthook emitted the traceback and sentinel to stderr. Existing regressions covered only Exception subclasses and caplog.",
+      "prior_remediation_attempt": {"commit": "450a0df", "outcome": "Partial; ordinary exception/API disclosure closed, but BaseException still bypassed the worker and launch boundaries."},
       "recommended_correction": "Use a constant public failure message, never log raw exception values or traceback data, keep diagnostics failure-safe, and add API/log capture regressions."
     },
     {
@@ -199,6 +200,20 @@
       "resolution": "README.md now reports the exact 455-test inventory of the third remediation candidate.",
       "verification": "Commit-bound full verification reproduced 455 passing tests in 106.73 seconds.",
       "recommended_correction": "Update the documented test inventory at the next verified candidate."
+    },
+    {
+      "id": "M8-R10",
+      "scope": "M8",
+      "severity": "MEDIUM",
+      "status": "OPEN",
+      "title": "Editable demo request can contradict fixed requirements labeled explicit",
+      "description": "The UI and server accept arbitrary request text, but the deterministic provider always returns the fixed ESP32/BME280 interpretation. A changed budget or unrelated board request therefore completes with fixed values labeled EXPLICIT and attributes them to contradictory source text.",
+      "affected_files": ["apps/web/index.html", "scripts/demo_server.py", "src/ohmni/application/demo.py", "tests/test_demo_application.py", "tests/test_demo_projection.py", "tests/test_demo_ui.py"],
+      "found_at_commit": "450a0df",
+      "resolution_commit": null,
+      "resolution": null,
+      "verification": "Independent rereview submitted a $30 logger request and received budget 20.0 labeled explicit with the $30 source text; an unrelated motor-controller request likewise completed as the ESP32/BME280 fixture.",
+      "recommended_correction": "Enforce the exact scripted fixture request at the application and HTTP boundaries, make the displayed request non-editable, and add rejection/provenance regressions."
     }
   ]
 }
