@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "id": "M8-R07-R15",
+  "status": "VERIFIED_AWAITING_BOUNDED_FINAL_REVIEW",
+  "commit": "3a6f9d3",
+  "commands": [
+    {"command": "python scripts/ai_state.py validate", "result": "PASS", "detail": "VALID AI DEVELOPMENT STATE; committed remediation recoverable before review handoff"},
+    {"command": "python scripts/verify.py workflow", "result": "PASS", "tests": 11, "runtime_seconds": 0.12},
+    {"command": "python scripts/verify.py full", "result": "PASS", "tests": 455, "runtime_seconds": 128.00, "detail": "The single canonical full regression run required by the human bounded-review gate"},
+    {"command": "node --check apps/web/app.js", "result": "PASS"},
+    {"command": "node --test apps/web/tests/*.test.mjs", "result": "PASS", "tests": 5, "runtime_seconds": 1.47},
+    {"command": "python -m ohmni verify-all", "result": "PASS", "fixtures": 14, "coverage": "100%"},
+    {"command": "python -m ruff check changed M8-R07/R13 Python files and affected tests", "result": "PASS"},
+    {"command": "focused pre-candidate demo/projection/UI and exact real-KiCad PCB geometry checks", "result": "PASS", "detail": "14 combined demo/projection/UI tests; 35 focused PCB tests; exact slow routing journey passed; product code was unchanged before candidate commit"}
+  ],
+  "remediation": {
+    "M8-R07": "Exact owned job-envelope validation precedes every status use; invalid records atomically become fresh constant terminal failures; nonfinite JSON, malformed request targets, access logs, and request-thread exception diagnostics fail closed",
+    "M8-R13": "The PCB compiler now owns a target-artifact-fingerprint-bound emitted copper projection; artifact bytes, SVG geometry, and UI statistics agree at 296 emitted track segments and 41 emitted via entities, while separately accounting for all 66 modeled transitions as 41 emitted, 23 coalesced, and 2 PTH-realized",
+    "M8-R14": "Polling accepts only queued/running/complete/failed states and terminates safely on non-2xx, malformed, unknown, failed, or thrown responses without echoing backend bodies",
+    "M8-R15": "The repository map now identifies the implemented dependency-light local demo frontend"
+  },
+  "review": {
+    "independent_final_review": "PENDING",
+    "review_id": "M8-REV-INDEPENDENT-FINAL-BOUNDED",
+    "open_blocker_or_high_findings": 0,
+    "open_medium_findings": 0,
+    "open_low_findings": 0,
+    "accepted_low_risks": ["M8-R06"],
+    "scope": "Inspect the remediation diff, regression-check prior fixed blocking findings, validate approved M8 acceptance criteria, and check remediation regressions; no unrestricted historical audit absent concrete regression evidence"
+  },
+  "limitations": [
+    "Implementation verification does not replace the one pending bounded final independent review.",
+    "Repository-wide Ruff retains 41 pre-existing findings that reproduce at M7 and are outside every M8 change; the changed Python surface is clean.",
+    "M8-R06 remains an explicitly accepted nonblocking LOW risk with corrected 150-of-151 duplication evidence.",
+    "No Milestone 9 work was authorized or performed."
+  ]
+}
