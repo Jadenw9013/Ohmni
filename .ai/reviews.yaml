@@ -50,6 +50,15 @@
       "status": "FINDINGS_OPEN",
       "commit": "371e0a4",
       "notes": "Independent re-review inspected the focused remediation diff and full affected code, ran targeted Python/frontend/workflow tests, Ruff, the 450-test full gate, the 14-fixture verifier corpus, and adversarial freshness/failure probes. M8-R03 and M8-R04 are closed. M8-R02 remains HIGH and M8-R05 remains MEDIUM, so Milestone 8 cannot complete; M8-R06 is a documented LOW accepted risk."
+    },
+    {
+      "id": "M8-REV-INDEPENDENT-REREVIEW-2",
+      "scope": "M8",
+      "reviewer": null,
+      "independent": true,
+      "status": "PENDING",
+      "commit": "93a0a10",
+      "notes": "Second remediation round for M8-R02 and M8-R05 is commit-bound verified at 93a0a10 and requires a fresh independent review. Prior failed review rounds remain historical."
     }
   ],
   "findings": [
@@ -70,14 +79,15 @@
       "id": "M8-R02",
       "scope": "M8",
       "severity": "HIGH",
-      "status": "OPEN",
+      "status": "FIXED",
       "title": "Artifact freshness remains inconsistent and non-atomic",
       "description": "The remediation fixes schematic/PCB response freshness and exact-buffer downloads, but fabrication release freshness remains inconsistent: a changed listed file sets release.current=false without changing the READY status consumed by the UI, while the fabrication manifest is omitted from the projected and revalidated file set entirely.",
       "affected_files": ["scripts/demo_server.py", "src/ohmni/application/demo.py", "apps/web/app.js", "src/ohmni/manufacturing/exporter.py", "src/ohmni/manufacturing/models.py", "tests/test_demo_application.py", "apps/web/tests/view-model.test.mjs"],
       "found_at_commit": "ff4309a",
-      "resolution_commit": "371e0a4",
-      "resolution": "Partial remediation: schematic/PCB job state is recomputed, downloads serve the exact verified buffer, and paths are allowlisted and confined. Independent re-review reopened the finding because fabrication release freshness is not carried through truthfully and manifest integrity is not tracked.",
-      "verification": "Independent re-review at 371e0a4 reproduced two remaining failures: tampering with a listed Gerber yields release.current=false while release.status and the UI still say READY_FOR_MANUFACTURING_REVIEW; tampering with or deleting ohmni-fabrication-manifest.json leaves release.current=true. Existing frontend tests never consume release.current.",
+      "resolution_commit": "93a0a10",
+      "resolution": "FabricationPackage now carries a byte-exact typed manifest identity and validates every fabrication output plus the manifest. Initial and dynamic projections force release/project status to STALE when any lineage file is missing, malformed, changed, or unsafe, and the frontend fails closed on contradictory freshness instead of rendering an unconditional readiness claim.",
+      "verification": "Commit-bound tests cover changed/deleted Gerbers and manifests, missing manifest metadata, stale PCB lineage, package-level manifest integrity, dynamic STALE status, project status, and frontend contradictory-state handling. Full gate: 452 passed; focused: 23 passed; frontend: 5 passed.",
+      "prior_remediation_attempt": {"commit": "371e0a4", "outcome": "Partial; independent rereview at fd4352b reopened release presentation and manifest-integrity gaps."},
       "recommended_correction": "Project an effective stale release status (or render release.current explicitly) so the UI cannot claim readiness for a stale package; include the fabrication manifest identity/hash in the release contract and dynamic freshness checks; add server and frontend regression tests for both cases."
     },
     {
@@ -114,14 +124,15 @@
       "id": "M8-R05",
       "scope": "M8",
       "severity": "MEDIUM",
-      "status": "OPEN",
+      "status": "FIXED",
       "title": "Unexpected worker exceptions leave jobs polling forever",
       "description": "The general Exception handler fixes ordinary unexpected failures, but the expected-error branch formats str(exc) outside any fallback. If exception formatting raises, the daemon thread still terminates without transitioning the job to failed, leaving queued/running state permanently visible.",
       "affected_files": ["scripts/demo_server.py", "tests/test_demo_application.py", "apps/web/app.js"],
       "found_at_commit": "ff4309a",
-      "resolution_commit": "371e0a4",
-      "resolution": "Partial remediation: ordinary unexpected Exception instances now become safe terminal failures. Independent re-review reopened the finding because formatting an expected exception can itself raise outside the protected try block.",
-      "verification": "Independent re-review at 371e0a4 used a ValueError subclass whose __str__ raised KeyError; JobStore._run terminated with an uncaught thread exception and the job remained queued with report=None and error=None. The existing regression covers only a directly raised KeyError.",
+      "resolution_commit": "93a0a10",
+      "resolution": "The worker now has one Exception boundary, a constant-safe fallback, guarded diagnostic formatting/logging that suppresses even BaseException failures raised during diagnostics, and one terminal failed-state update with report cleared.",
+      "verification": "Commit-bound regressions prove ordinary unexpected exceptions, a ValueError whose __str__ raises SystemExit, and a logger that raises all terminate as failed without leaking the sensitive exception value or remaining queued/running. Full gate: 452 passed.",
+      "prior_remediation_attempt": {"commit": "371e0a4", "outcome": "Partial; independent rereview at fd4352b reproduced a formatter exception escaping the handler."},
       "recommended_correction": "Make the entire exception-to-terminal-state path failure-safe, including exception formatting and logging, and add a regression whose exception formatter raises so every Exception path reaches failed state."
     },
     {

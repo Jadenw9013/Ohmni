@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
-  "active_task": "M8-T05",
-  "last_known_commit": "fd4352b",
-  "modified_files": ["src/ohmni/manufacturing/models.py", "src/ohmni/manufacturing/exporter.py", "src/ohmni/application/demo.py", "scripts/demo_server.py", "apps/web/view-model.js", "apps/web/app.js", "apps/web/tests/view-model.test.mjs", "tests/test_demo_application.py", "tests/test_demo_ui.py", "tests/test_routing.py", ".ai/tasks.yaml", ".ai/milestones.yaml", ".ai/state.yaml", ".ai/checkpoint.yaml"],
-  "completed_substeps": ["Standing human authorization recorded for in-scope review remediation", "M8-T05 activated for M8-R02 and M8-R05 only", "M8-R02 release status, fabrication-output freshness, and manifest integrity fixed with backend/frontend regressions", "M8-R05 failure handling made terminal even when exception formatting or logging fails", "Pre-commit verification passed: workflow 11, fast 444, integration 7, slow 1, full 452, frontend 5, verifier corpus 14 at 100%, Ruff clean"],
-  "remaining_work": ["Commit the remediation candidate", "Re-run commit-bound verification, record evidence, and return M8 to fresh independent re-review"],
-  "last_command": "python -m ohmni verify-all (14 fixtures behaved as intended at 100% coverage)",
+  "active_task": null,
+  "last_known_commit": "93a0a10",
+  "modified_files": [],
+  "completed_substeps": ["Standing human authorization recorded for in-scope review remediation", "M8-R02 and M8-R05 fixed at 93a0a10", "Commit-bound verification passed: workflow 11, fast 444, integration 7, slow 1, full 452, focused 23, frontend 5, verifier corpus 14 at 100%, Ruff clean"],
+  "remaining_work": ["Obtain fresh independent re-review of 93a0a10, then complete M8-T05 and Milestone 8 only if the review passes"],
+  "last_command": "python -m pytest focused M8 remediation tests (23 passed); full gate at the same commit passed 452 tests in 103.15s",
   "last_failure": null,
-  "recommended_resume_action": "Continue M8-T05 remediation for M8-R02 and M8-R05, verify and commit, then return M8 to fresh independent review; do not begin M9.",
-  "updated_at": "2026-08-30T18:49:45-07:00"
+  "recommended_resume_action": "Independent reviewer inspects 93a0a10 against M8-R02 and M8-R05 plus regression risk, records a new outcome, and completes M8 only if the gate passes; do not begin M9.",
+  "updated_at": "2026-08-30T18:54:41-07:00"
 }
