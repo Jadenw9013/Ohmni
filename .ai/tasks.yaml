@@ -27,6 +27,15 @@
       "approved_by": "human",
       "approval_evidence": "Human instruction reporting the real local Run scripted engineering workflow failure and explicitly authorizing a post-M8 regression fix without beginning Milestone 9.",
       "review_policy": "focused regression review required; accepted M8 product history remains unchanged"
+    },
+    {
+      "id": "M8-REGRESSION-2",
+      "type": "post_milestone_regression",
+      "title": "Milestone 8 demo lifecycle identity and actionable startup diagnostics",
+      "status": "IN_PROGRESS",
+      "approved_by": "human",
+      "approval_evidence": "Human instruction reporting the repeated real Windows start failure after M8-RG01 and explicitly authorizing reproduction, remediation, independent verification, commit, and safe push without beginning Milestone 9.",
+      "review_policy": "one focused independent regression review required; accepted M8 product history remains unchanged"
     }
   ],
   "tasks": [
@@ -122,6 +131,18 @@
       "implementation": {"started_at_commit": "52a0eeb", "remediation_commit": "1b2d0b9", "completed_at_commit": "5033189"},
       "review": {"required": true, "status": "PASSED", "independent": true},
       "remediation_authorization": "Direct human authorization to diagnose and fix this post-M8 operability regression; do not begin or approve M9.",
+      "blockers": []
+    },
+    {
+      "id": "M8-RG02", "scope": "M8-REGRESSION-2", "milestone": "M8",
+      "title": "Bind the local demo UI, API, and jobs to one live server generation", "status": "IN_PROGRESS", "priority": 100,
+      "dependencies": [],
+      "goal": "Make retained, refreshed, restarted, and mismatched local demo states detectable and actionable while proving the exact Windows browser workflow still completes truthfully.",
+      "acceptance_criteria": ["The documented Windows command leaves exactly one usable listener", "The real form submission creates a server-owned job and progresses beyond zero", "UI/API/job envelopes are bound to one API contract and server generation", "Retained or refreshed pages cannot present a stale previous job as current after backend loss or restart", "Backend-unavailable, contract-mismatch, fixture-rejection, and worker-start failures have distinct fixed safe guidance and server diagnostics", "A second server fails safely without split state", "The exact fresh-browser golden journey completes to 100% with existing verified results", "Artifact freshness, lineage, release, and file-serving protections remain unchanged", "One focused independent review passes", "No Milestone 9 work is begun or approved"],
+      "verification": {"required": ["state_validation", "focused_server_tests", "frontend_tests", "windows_subprocess_lifecycle", "real_browser_smoke", "fast_tests", "integration_tests", "full_tests_if_appropriate"], "record": ".ai/verification/M8-REGRESSION-2.yaml"},
+      "implementation": {"started_at_commit": "0ecd162", "completed_at_commit": null},
+      "review": {"required": true, "status": "PENDING", "independent": false},
+      "remediation_authorization": "Direct human authorization for the repeated post-M8 Windows operability regression; do not begin or approve M9.",
       "blockers": []
     }
   ]
