@@ -81,11 +81,11 @@
     {
       "id": "M8-REV-INDEPENDENT-REREVIEW-5",
       "scope": "M8",
-      "reviewer": null,
+      "reviewer": "independent-review-panel-codex-r5",
       "independent": true,
-      "status": "PENDING",
+      "status": "FINDINGS_OPEN",
       "commit": "e178b0d",
-      "notes": "Fifth remediation candidate for M8-R07, M8-R10, M8-R11, and M8-R12 is commit-bound verified at e178b0d and requires another fresh independent review. All earlier review rounds remain historical."
+      "notes": "Three fresh reviewers inspected exact product candidate e178b0d. M8-R10/R11/R12 and previously fixed product findings passed, including full 455-test runs. M8-R07 is reopened HIGH for invalid stored envelopes and remaining request-thread/access diagnostics; M8-R13 is a new HIGH because the PCB view renders 66 planned vias while the downloadable artifact contains 41; M8-R14 is a MEDIUM non-2xx polling loop; M8-R15 is LOW documentation drift. Human bounded-review correction now permits one remediation, one canonical full run, and exactly one focused final reviewer."
     }
   ],
   "findings": [
@@ -180,16 +180,16 @@
       "id": "M8-R07",
       "scope": "M8",
       "severity": "HIGH",
-      "status": "FIXED",
+      "status": "OPEN",
       "title": "Demo worker diagnostics disclose exception secrets and local paths",
-      "description": "The direct worker and launch BaseException boundaries are safe, but progress/report model_dump values are published before strict JSON ownership. A hostile or non-serializable value can leave a nominally terminal job unpollable and make the HTTP request thread print a secret/path-bearing traceback. Separately, deeply nested valid JSON raises RecursionError outside the POST catch and prints a local-path traceback instead of the fixed 400 contract.",
+      "description": "Value-level JSON ownership is safe, but stored job envelopes are not schema-validated before status membership checks; malformed or hostile status values can remain nonterminal or escape to threading.excepthook. Malformed GET targets and client resets still reach the default request-thread traceback handler, inherited access logging echoes untrusted request targets, and JSON NaN/Infinity constants are accepted. These concrete paths disclose secrets/local paths or violate the fixed strict-request boundary.",
       "affected_files": ["scripts/demo_server.py", "tests/test_demo_application.py", "SECURITY.md"],
       "found_at_commit": "93a0a10",
-      "resolution_commit": "e178b0d",
-      "resolution": "Every progress/report payload is validated into detached, depth-bounded, finite, exact JSON builtins before publication. Any failure atomically installs a fresh constant terminal record; snapshots, polling, artifacts, response serialization, job start, and all POST parsing fail closed without binding or formatting exceptions. Terminal races remain absorbing.",
-      "verification": "Commit-bound adversarial tests cover root/custom/nested/cyclic/nonfinite payloads, hostile BaseException formatters at worker/progress/report/launch boundaries, mutable-source and returned-snapshot isolation, poisoned stored jobs, both terminal race directions, deep valid JSON over live HTTP, cyclic response fallback, fixed error bodies, zero traceback/thread hook/secret disclosure, and successful canonical polling. Focused 26, fast 447, integration 7, slow 1, and full 455 passed.",
-      "prior_remediation_attempts": [{"commit": "450a0df", "outcome": "Partial; ordinary exception/API disclosure closed, but BaseException still bypassed worker and launch boundaries."}, {"commit": "0fa74d4", "outcome": "Partial; direct BaseException handling closed, but unowned job payloads and recursive JSON can still escape through HTTP-thread diagnostics."}],
-      "recommended_correction": "Deep-own strict JSON objects before publication, fail into a fresh constant terminal record, make snapshots and HTTP serialization constant-safe, and absorb all request parsing/validation failures without formatting them."
+      "resolution_commit": null,
+      "resolution": "Fifth rereview reopened the remaining envelope and HTTP-server diagnostics boundaries at e178b0d. The strict value-ownership, worker, launch, progress, report, recursive POST, snapshot-copy, and terminal-race portions independently pass.",
+      "verification": "Independent probes reproduced a list status polling indefinitely then raising to threading.excepthook, a hostile status hash leaking a sentinel/path, malformed absolute-URI GET traceback, TCP-reset tracebacks during poll/artifact responses, access-log echo of an untrusted path, and acceptance of NaN-bearing JSON. Twenty-five adversarial payload cases and all ordinary worker/launch paths passed.",
+      "prior_remediation_attempts": [{"commit": "450a0df", "outcome": "Partial; ordinary exception/API disclosure closed, but BaseException still bypassed worker and launch boundaries."}, {"commit": "0fa74d4", "outcome": "Partial; direct BaseException handling closed, but unowned job payloads and recursive JSON could still escape through HTTP-thread diagnostics."}, {"commit": "e178b0d", "outcome": "Partial; strict payload ownership and recursive POST handling closed, but envelope schema, malformed GET, disconnect, access-log, and nonfinite parser boundaries remained."}],
+      "recommended_correction": "Validate the exact job envelope before every status use, replace invalid records without inspecting hostile values, reject nonfinite JSON constants, bound GET parsing, and disable exception/access diagnostics at the local server boundary."
     },
     {
       "id": "M8-R08",
@@ -261,6 +261,48 @@
       "resolution": "Completion scrolling now queries prefers-reduced-motion and uses instant behavior when reduction is requested while retaining smooth behavior otherwise.",
       "verification": "The real exported frontend helper is exercised with both media-query results and passes the five-test Node suite.",
       "recommended_correction": "Omit explicit smooth behavior or gate it with matchMedia and add a frontend regression."
+    },
+    {
+      "id": "M8-R13",
+      "scope": "M8",
+      "severity": "HIGH",
+      "status": "OPEN",
+      "title": "PCB view and via statistics are not exact compiled artifact geometry",
+      "description": "The SVG and displayed statistics consume RoutingPlan geometry. The PCB compiler omits planned vias where a plated through-hole pad already supplies the layer transition, so the canonical UI renders 66 via circles and reports 66 vias while the downloadable compiled KiCad PCB contains 41 via entities.",
+      "affected_files": ["src/ohmni/application/visuals.py", "src/ohmni/application/demo.py", "src/ohmni/eda/kicad/pcb_compiler.py", "apps/web/app.js", "tests/test_routing.py"],
+      "found_at_commit": "e178b0d",
+      "resolution_commit": null,
+      "resolution": null,
+      "verification": "A fresh canonical DemoPipeline run reproduced 296 plan/UI track segments and 66 plan/UI vias versus 296 segment entities and 41 via entities in the downloadable KiCad PCB.",
+      "recommended_correction": "Render PCB tracks/vias and displayed counts from compiler-owned, fingerprint-bound exact emitted geometry and assert one-to-one agreement with the artifact."
+    },
+    {
+      "id": "M8-R14",
+      "scope": "M8",
+      "severity": "MEDIUM",
+      "status": "OPEN",
+      "title": "Non-success polling responses loop indefinitely",
+      "description": "The frontend parses polling JSON without checking response.ok or validating the returned job status. A persistent HTTP 500 response schedules another poll, leaves the run button disabled, and shows no error.",
+      "affected_files": ["apps/web/app.js", "apps/web/tests/view-model.test.mjs"],
+      "found_at_commit": "e178b0d",
+      "resolution_commit": null,
+      "resolution": null,
+      "verification": "A Node harness returned a successful creation response followed by HTTP 500; the client made two fetches, scheduled another 900 ms poll, kept the button disabled, and rendered no error.",
+      "recommended_correction": "Check polling response.ok and accepted job statuses, stop scheduling on failures, surface one safe error, and re-enable the run button."
+    },
+    {
+      "id": "M8-R15",
+      "scope": "M8",
+      "severity": "LOW",
+      "status": "OPEN",
+      "title": "Repository map still describes the frontend as unstarted",
+      "description": "REPO_STRUCTURE.md calls apps/web a Next.js frontend that is not started, contradicting the implemented M8 static frontend and the document's own M8 section.",
+      "affected_files": ["REPO_STRUCTURE.md"],
+      "found_at_commit": "e178b0d",
+      "resolution_commit": null,
+      "resolution": null,
+      "verification": "Independent documentation inspection reproduced the stale line at REPO_STRUCTURE.md:62.",
+      "recommended_correction": "Update the repository-map entry to describe the implemented dependency-free static demo frontend."
     }
   ]
 }
