@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "id": "M8-REGRESSION-1",
+  "status": "INDEPENDENT_FOCUSED_REVIEW_PASSED",
+  "commit": "5033189",
+  "product_remediation_commit": "1b2d0b9",
+  "commands": [
+    {"command": "python scripts/ai_state.py validate", "result": "PASS", "detail": "Valid active remediation state before candidate verification"},
+    {"command": "python -m pytest tests/test_demo_application.py tests/test_demo_ui.py -q", "result": "PASS", "tests": 13},
+    {"command": "node --check apps/web/app.js", "result": "PASS"},
+    {"command": "node --test apps/web/tests/view-model.test.mjs", "result": "PASS", "tests": 5},
+    {"command": "python -m ruff check scripts/demo_server.py tests/test_demo_application.py", "result": "PASS"},
+    {"command": "python scripts/verify.py fast", "result": "PASS", "tests": 449, "deselected": 8, "detail": "Combined remediation working tree before product candidate commit"},
+    {"command": "python scripts/verify.py full", "result": "PASS", "tests": 457, "runtime_seconds": 108.15, "commit": "1b2d0b9", "detail": "Single canonical full regression run; 5033189 changes only the README count to match this result"},
+    {"command": "python -m ohmni verify-all", "result": "PASS", "fixtures": 14, "coverage": "100%"},
+    {"command": ".venv/Scripts/python.exe scripts/demo_server.py (second launch while first is live)", "result": "PASS", "detail": "Exited 1 with only the fixed actionable startup message; first server remained healthy with 200/no-store health response"},
+    {"command": ".venv/Scripts/python.exe scripts/demo_server.py + fresh isolated headless Chrome real-button journey", "result": "PASS", "detail": "Displayed canonical request; Run button reached 100%; workspace opened; KiCad DRC reported 0 violations and 0 unrouted; release rendered CURRENT and Ready for manufacturing review"},
+    {"command": "single focused independent final review", "result": "PASS", "commit": "5033189", "detail": "No BLOCKER, HIGH, MEDIUM, or LOW findings; M8-RG01 may complete"}
+  ],
+  "root_cause": "On Windows, ThreadingHTTPServer inherited address reuse and allowed a second live demo process to claim the same endpoint with an independent in-memory JobStore. A browser could therefore retain or receive a UI from one process while its start/status API owner disappeared or changed; cacheable static responses prolonged that stale client/server combination.",
+  "remediation": [
+    "Windows demo servers disable address reuse and set SO_EXCLUSIVEADDRUSE before binding; POSIX restart semantics remain unchanged.",
+    "Bind/start failures exit nonzero with one fixed actionable message and no exception, traceback, secret, or local-path detail.",
+    "The browser submits one fixed fixture identifier; the server maps both that identifier and the exact legacy displayed request to its own canonical DEMO_REQUEST and rejects all other envelopes.",
+    "Static UI assets, APIs, and artifact downloads all carry Cache-Control: no-store.",
+    "The real exported frontend start path and live server ownership/contracts have regression coverage; verification and artifact-integrity code was not weakened."
+  ],
+  "review": {
+    "id": "M8-RG01-REV-INDEPENDENT-FINAL",
+    "independent": true,
+    "status": "PASSED",
+    "open_blocker_or_high_findings": 0,
+    "open_medium_findings": 0,
+    "open_low_findings": 0,
+    "scope": "Remediation diff, reproduced startup regression, approved M8-RG01 acceptance criteria, and regressions introduced by the remediation; no unrestricted historical M8 audit"
+  },
+  "limitations": [
+    "Historical Milestone 8 remains COMPLETE at independently reviewed product baseline 3a6f9d3; this record closes only the authorized post-M8 regression scope.",
+    "The deterministic demo still supports only its documented ESP32/BME280 fixture and retains all existing product limitations.",
+    "No Milestone 9 work was authorized, approved, or performed."
+  ]
+}

@@ -121,9 +121,9 @@ def test_repository_product_scope_matches_human_approval():
         "id":"M8","title":"Ohmni End-User Experience and Demo",
         "commit":"3a6f9d3","status":"COMPLETE",
     }
-    assert state["approved_product_scope"]=="M8-REGRESSION-1" and state["active_task"]=="M8-RG01"
+    assert state["approved_product_scope"] is None and state["active_task"] is None
     scope=next(scope for scope in tasks["scopes"] if scope["id"]=="M8")
     assert scope["status"]=="COMPLETE" and scope["approved_by"]=="human" and scope["approval_evidence"]
     regression=next(scope for scope in tasks["scopes"] if scope["id"]=="M8-REGRESSION-1")
-    assert regression["status"]=="IN_PROGRESS" and regression["approved_by"]=="human" and regression["approval_evidence"]
+    assert regression["status"]=="COMPLETE" and regression["approved_by"]=="human" and regression["approval_evidence"]
     assert all(item["id"]!="M9" for item in tasks["scopes"]+tasks["tasks"])

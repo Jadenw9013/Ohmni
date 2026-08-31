@@ -23,7 +23,7 @@
       "id": "M8-REGRESSION-1",
       "type": "post_milestone_regression",
       "title": "Milestone 8 local demo startup operability",
-      "status": "IN_PROGRESS",
+      "status": "COMPLETE",
       "approved_by": "human",
       "approval_evidence": "Human instruction reporting the real local Run scripted engineering workflow failure and explicitly authorizing a post-M8 regression fix without beginning Milestone 9.",
       "review_policy": "focused regression review required; accepted M8 product history remains unchanged"
@@ -114,13 +114,13 @@
     },
     {
       "id": "M8-RG01", "scope": "M8-REGRESSION-1", "milestone": "M8",
-      "title": "Restore documented local demo startup and completion", "status": "IN_PROGRESS", "priority": 100,
+      "title": "Restore documented local demo startup and completion", "status": "COMPLETE", "priority": 100,
       "dependencies": [],
       "goal": "Make one documented local demo server own its endpoint exclusively and prove the real browser-to-server golden workflow starts and completes.",
       "acceptance_criteria": ["The documented command starts one exclusive local server", "The loaded UI starts the server-owned deterministic fixture", "A fresh browser run completes the existing verified golden pipeline", "Failure messages remain safe and actionable", "Artifact integrity and verification truth are unchanged", "No Milestone 9 work is begun or approved"],
       "verification": {"required": ["state_validation", "focused_server_tests", "frontend_tests", "fast_tests", "documented_command_browser_smoke"], "record": ".ai/verification/M8-REGRESSION-1.yaml"},
-      "implementation": {"started_at_commit": "52a0eeb", "completed_at_commit": null},
-      "review": {"required": true, "status": "PENDING", "independent": false},
+      "implementation": {"started_at_commit": "52a0eeb", "remediation_commit": "1b2d0b9", "completed_at_commit": "5033189"},
+      "review": {"required": true, "status": "PASSED", "independent": true},
       "remediation_authorization": "Direct human authorization to diagnose and fix this post-M8 operability regression; do not begin or approve M9.",
       "blockers": []
     }
