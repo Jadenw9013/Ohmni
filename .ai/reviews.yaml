@@ -54,11 +54,11 @@
     {
       "id": "M8-REV-INDEPENDENT-REREVIEW-2",
       "scope": "M8",
-      "reviewer": null,
+      "reviewer": "independent-review-panel-codex-r2",
       "independent": true,
-      "status": "PENDING",
+      "status": "FINDINGS_OPEN",
       "commit": "93a0a10",
-      "notes": "Second remediation round for M8-R02 and M8-R05 is commit-bound verified at 93a0a10 and requires a fresh independent review. Prior failed review rounds remain historical."
+      "notes": "Fresh isolated reviewers inspected exact product candidate 93a0a10, ran workflow, focused Python/frontend, fast, integration, slow/full KiCad, verifier-corpus, Ruff, and adversarial probes. M8-R02 and M8-R05 are resolved, but M8-R07 is a new MEDIUM diagnostics disclosure; M8-R08 and M8-R09 are LOW record/reliability findings. Milestone 8 remains open under standing remediation authorization."
     }
   ],
   "findings": [
@@ -131,7 +131,7 @@
       "found_at_commit": "ff4309a",
       "resolution_commit": "93a0a10",
       "resolution": "The worker now has one Exception boundary, a constant-safe fallback, guarded diagnostic formatting/logging that suppresses even BaseException failures raised during diagnostics, and one terminal failed-state update with report cleared.",
-      "verification": "Commit-bound regressions prove ordinary unexpected exceptions, a ValueError whose __str__ raises SystemExit, and a logger that raises all terminate as failed without leaking the sensitive exception value or remaining queued/running. Full gate: 452 passed.",
+      "verification": "Commit-bound regressions prove ordinary unexpected exceptions, a ValueError whose __str__ raises SystemExit, and a logger that raises all terminate as failed without remaining queued/running. Independent rereview confirmed the terminal-state invariant and recorded the adjacent diagnostics disclosure separately as M8-R07.",
       "prior_remediation_attempt": {"commit": "371e0a4", "outcome": "Partial; independent rereview at fd4352b reproduced a formatter exception escaping the handler."},
       "recommended_correction": "Make the entire exception-to-terminal-state path failure-safe, including exception formatting and logging, and add a regression whose exception formatter raises so every Exception path reaches failed state."
     },
@@ -146,8 +146,50 @@
       "found_at_commit": "371e0a4",
       "resolution_commit": null,
       "resolution": "Accepted as a nonblocking M8 risk because the user-facing timeline uses contiguous sequence numbers and explicit phases, no current consumer keys by event ID, and chronology remains truthful.",
-      "verification": "Independent re-review compiled the same circuit in placed and routed phases and found all 151 PCB compilation event IDs duplicated across the distinct runs; existing chronology assertions do not require ID uniqueness.",
+      "verification": "Independent re-review compiled the same circuit in placed and routed phases and found 150 of 151 PCB compilation event IDs duplicated across the distinct runs; the differing completion event includes the artifact digest, and existing chronology assertions do not require ID uniqueness.",
       "recommended_correction": "Before event IDs become an external identity contract, include compilation context or artifact identity in their derivation and add a uniqueness regression."
+    },
+    {
+      "id": "M8-R07",
+      "scope": "M8",
+      "severity": "MEDIUM",
+      "status": "OPEN",
+      "title": "Demo worker diagnostics disclose exception secrets and local paths",
+      "description": "Unexpected failures use LOGGER.exception, which records the raw exception value and traceback, while broad OSError, RuntimeError, and ValueError strings are copied into the client-visible job error. Adversarial probes exposed a secret in logs and a private local path in the API response, contrary to SECURITY.md.",
+      "affected_files": ["scripts/demo_server.py", "tests/test_demo_application.py", "SECURITY.md"],
+      "found_at_commit": "93a0a10",
+      "resolution_commit": null,
+      "resolution": null,
+      "verification": "Two independent reviewers reproduced raw KeyError secret text in captured logs; one also reproduced a FileNotFoundError path in job.error. Terminal state still completed correctly.",
+      "recommended_correction": "Use a constant public failure message, never log raw exception values or traceback data, keep diagnostics failure-safe, and add API/log capture regressions."
+    },
+    {
+      "id": "M8-R08",
+      "scope": "M8",
+      "severity": "LOW",
+      "status": "OPEN",
+      "title": "Thread launch failure leaves an orphaned queued job",
+      "description": "JobStore.start publishes a queued record before Thread.start. If thread launch raises, the caller receives no job ID but the stored record remains permanently queued.",
+      "affected_files": ["scripts/demo_server.py", "tests/test_demo_application.py"],
+      "found_at_commit": "93a0a10",
+      "resolution_commit": null,
+      "resolution": null,
+      "verification": "Two independent reviewers mocked Thread.start to raise RuntimeError and observed one stored queued job with no terminal transition.",
+      "recommended_correction": "Convert thread-construction or launch failures into the same constant-safe terminal failed record and return its job ID."
+    },
+    {
+      "id": "M8-R09",
+      "scope": "M8",
+      "severity": "LOW",
+      "status": "OPEN",
+      "title": "README test inventory is stale",
+      "description": "README.md reports 448 tests while the exact candidate full gate contains 452 tests.",
+      "affected_files": ["README.md"],
+      "found_at_commit": "93a0a10",
+      "resolution_commit": null,
+      "resolution": null,
+      "verification": "Independent full verification reproduced 452 passing tests.",
+      "recommended_correction": "Update the documented test inventory at the next verified candidate."
     }
   ]
 }

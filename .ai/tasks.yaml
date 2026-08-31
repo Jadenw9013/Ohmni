@@ -99,9 +99,9 @@
       "acceptance_criteria": ["Review state is honest", "No open BLOCKER/HIGH findings", "Task and milestone ledgers match commits", "No Milestone 9 is approved"],
       "verification": {"required": ["state_validation", "review_gate"], "record": ".ai/verification/M8-R02-R05-R2.yaml"},
       "implementation": {"started_at_commit": "ff4309a", "remediation_commit": "371e0a4", "latest_remediation_started_at_commit": "fd4352b", "latest_remediation_commit": "93a0a10", "remediation_commits": ["371e0a4", "93a0a10"], "completed_at_commit": null},
-      "review": {"required": true, "status": "PENDING", "independent": true},
-      "remediation_authorization": "Standing human authorization: automatically remediate current BLOCKER/HIGH/MEDIUM independent-review findings inside any human-approved milestone, verify, and repeat independent re-review until clear. Current M8 scope is limited to M8-R02 and M8-R05; do not begin or approve M9.",
-      "blockers": ["M8-R02 and M8-R05 are fixed and commit-bound verified at 93a0a10; fresh independent re-review is required before M8-T05 and Milestone 8 can complete."]
+      "review": {"required": true, "status": "FINDINGS_OPEN", "independent": true},
+      "remediation_authorization": "Standing human authorization: automatically remediate current BLOCKER/HIGH/MEDIUM independent-review findings inside any human-approved milestone, verify, and repeat independent re-review until clear. M8-R07 is automatically authorized; M8-R08 directly closes the already-authorized terminal-job invariant and M8-R09 corrects in-scope milestone documentation. Do not begin or approve M9.",
+      "blockers": ["Independent rereview of 93a0a10 passed M8-R02 and M8-R05 but opened M8-R07 MEDIUM; M8-R08 and M8-R09 are LOW. Authorized remediation and another fresh independent rereview are required."]
     }
   ]
 }

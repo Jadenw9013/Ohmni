@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "id": "M8-R02-R05-R2",
-  "status": "VERIFIED_AWAITING_INDEPENDENT_REREVIEW",
+  "status": "VERIFIED_REVIEW_FINDINGS_OPEN",
   "commit": "93a0a10",
   "commands": [
     {"command": "python scripts/ai_state.py validate", "result": "PASS", "detail": "VALID AI DEVELOPMENT STATE; active remediation recoverable"},
@@ -19,6 +19,6 @@
     "M8-R02": "Byte-exact typed manifest identity; package, projection, dynamic server, project status, and frontend all fail closed on stale release lineage",
     "M8-R05": "One failure boundary with BaseException-safe diagnostics and one terminal failed-state update"
   },
-  "review": {"independent_rereview": "PENDING", "open_blocker_or_high_findings": 0, "accepted_low_risks": ["M8-R06"]},
-  "limitations": ["Implementation verification does not replace fresh independent re-review.", "M8-R06 remains an explicitly accepted LOW risk.", "No Milestone 9 work was authorized or performed."]
+  "review": {"independent_rereview": "FINDINGS_OPEN", "reviewer": "independent-review-panel-codex-r2", "open_blocker_or_high_findings": 0, "open_medium_findings": ["M8-R07"], "open_low_findings": ["M8-R08", "M8-R09"], "accepted_low_risks": ["M8-R06"]},
+  "limitations": ["M8-R02 and M8-R05 passed independent rereview, but new M8-R07 remediation and another fresh review are required.", "M8-R06 remains an explicitly accepted LOW risk.", "No Milestone 9 work was authorized or performed."]
 }
