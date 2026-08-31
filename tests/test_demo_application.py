@@ -14,10 +14,19 @@ from urllib.request import urlopen
 from scripts.demo_server import DemoHandler, JobStore
 
 
+def _await_terminal(store,job_id):
+    deadline=time.monotonic()+2
+    while time.monotonic()<deadline:
+        job=store.get(job_id)
+        if job["status"] in {"complete","failed"}:return job
+        time.sleep(.01)
+    return store.get(job_id)
+
+
 def test_async_job_store_reports_actual_progress_without_premature_completion(tmp_path):
     finished=threading.Event()
     class Report:
-        def model_dump(self,mode=None):return {"release":{"status":"READY_FOR_MANUFACTURING_REVIEW"}}
+        def model_dump(self,mode=None):return {"result":"complete"}
     class Pipeline:
         def __init__(self,progress):self.progress=progress
         def run(self,destination,request):
@@ -31,7 +40,7 @@ def test_async_job_store_reports_actual_progress_without_premature_completion(tm
         finished.wait(.01)
     assert job["status"]=="complete"
     assert job["progress"][0]["status"]=="RUNNING"
-    assert job["report"]["release"]["status"]=="READY_FOR_MANUFACTURING_REVIEW"
+    assert job["report"]["result"]=="complete"
 
 
 def test_artifact_download_freshness_is_hash_bound(tmp_path):
@@ -39,15 +48,31 @@ def test_artifact_download_freshness_is_hash_bound(tmp_path):
     pcb=path.parent/"golden.kicad_pcb";pcb.write_text("pcb")
     placed=path.parent/"golden.placed.kicad_pcb";placed.write_text("placed")
     fabrication=path.parent/"fabrication";fabrication.mkdir();gerber=fabrication/"golden-F_Cu.gtl";gerber.write_text("gerber")
+    manifest=fabrication/"ohmni-fabrication-manifest.json";manifest.write_text("manifest")
     digest=hashlib.sha256(path.read_bytes()).hexdigest();store=JobStore(tmp_path)
-    store.jobs[job_id]={"status":"complete","report":{"schematic":{"fingerprint":digest,"current":True},"pcb":{"fingerprint":hashlib.sha256(pcb.read_bytes()).hexdigest(),"source_placed_pcb_fingerprint":hashlib.sha256(placed.read_bytes()).hexdigest(),"current":True},"release":{"files":[{"relative_path":gerber.name,"sha256":hashlib.sha256(gerber.read_bytes()).hexdigest()}],"current":True}}}
+    manifest_record={"relative_path":manifest.name,"sha256":hashlib.sha256(manifest.read_bytes()).hexdigest()}
+    store.jobs[job_id]={"status":"complete","report":{"project":{"status":"READY_FOR_MANUFACTURING_REVIEW"},"schematic":{"fingerprint":digest,"current":True},"pcb":{"fingerprint":hashlib.sha256(pcb.read_bytes()).hexdigest(),"source_placed_pcb_fingerprint":hashlib.sha256(placed.read_bytes()).hexdigest(),"current":True},"release":{"status":"READY_FOR_MANUFACTURING_REVIEW","files":[{"relative_path":gerber.name,"sha256":hashlib.sha256(gerber.read_bytes()).hexdigest()}],"manifest":manifest_record,"current":True}}}
     state,data=store.read_artifact(job_id,"golden.kicad_sch")
     assert state=="current" and data==b"exact"
     fresh=store.get(job_id)
     assert fresh["report"]["pcb"]["current"] and fresh["report"]["release"]["current"]
+    assert fresh["report"]["release"]["status"]=="READY_FOR_MANUFACTURING_REVIEW"
     gerber.write_text("changed gerber")
-    assert not store.get(job_id)["report"]["release"]["current"]
+    stale=store.get(job_id)["report"]
+    assert not stale["release"]["current"] and stale["release"]["status"]=="STALE"
+    assert stale["project"]["status"]=="STALE"
     gerber.write_text("gerber")
+    assert store.get(job_id)["report"]["release"]["status"]=="READY_FOR_MANUFACTURING_REVIEW"
+    manifest.write_text("changed manifest")
+    stale=store.get(job_id)["report"]
+    assert not stale["release"]["current"] and stale["release"]["status"]=="STALE"
+    manifest.write_text("manifest")
+    manifest.unlink()
+    assert store.get(job_id)["report"]["release"]["status"]=="STALE"
+    manifest.write_text("manifest")
+    store.jobs[job_id]["report"]["release"].pop("manifest")
+    assert store.get(job_id)["report"]["release"]["status"]=="STALE"
+    store.jobs[job_id]["report"]["release"]["manifest"]=manifest_record
     placed.write_text("changed placed")
     assert not store.get(job_id)["report"]["pcb"]["current"]
     placed.write_text("placed")
@@ -66,13 +91,31 @@ def test_unexpected_worker_exception_becomes_safe_terminal_failure(tmp_path):
         def __init__(self,progress):pass
         def run(self,destination,request):raise KeyError("sensitive-test-value")
     store=JobStore(tmp_path,Pipeline);job_id=store.start("supported request")
-    deadline=time.monotonic()+2
-    while time.monotonic()<deadline:
-        job=store.get(job_id)
-        if job["status"]=="failed":break
-        time.sleep(.01)
+    job=_await_terminal(store,job_id)
     assert job["status"]=="failed" and job["report"] is None and not job["progress"]
     assert "KeyError" in job["error"] and "sensitive-test-value" not in job["error"]
+
+
+def test_exception_string_failure_still_becomes_terminal(tmp_path):
+    class BrokenString(ValueError):
+        def __str__(self):raise SystemExit("format-failed")
+    class Pipeline:
+        def __init__(self,progress):pass
+        def run(self,destination,request):raise BrokenString()
+    store=JobStore(tmp_path,Pipeline);job=_await_terminal(store,store.start("supported request"))
+    assert job["status"]=="failed" and job["report"] is None
+    assert job["error"]=="Demo pipeline failed"
+
+
+def test_logging_failure_still_becomes_terminal(tmp_path,monkeypatch):
+    class Pipeline:
+        def __init__(self,progress):pass
+        def run(self,destination,request):raise KeyError("sensitive-test-value")
+    logger=SimpleNamespace(exception=lambda *args,**kwargs:(_ for _ in ()).throw(RuntimeError("logging failed")))
+    monkeypatch.setattr("scripts.demo_server.LOGGER",logger)
+    store=JobStore(tmp_path,Pipeline);job=_await_terminal(store,store.start("supported request"))
+    assert job["status"]=="failed" and job["report"] is None
+    assert job["error"]=="Unexpected demo pipeline failure (KeyError)"
 
 
 def test_http_download_serves_verified_buffer_and_rejects_alternate_paths(tmp_path):
@@ -80,11 +123,15 @@ def test_http_download_serves_verified_buffer_and_rejects_alternate_paths(tmp_pa
     schematic=directory/"golden.kicad_sch";schematic.write_bytes(b"verified schematic")
     pcb=directory/"golden.kicad_pcb";pcb.write_bytes(b"verified pcb")
     placed=directory/"golden.placed.kicad_pcb";placed.write_bytes(b"verified placed")
+    fabrication=directory/"fabrication";fabrication.mkdir()
+    gerber=fabrication/"golden-F_Cu.gtl";gerber.write_bytes(b"verified gerber")
+    manifest=fabrication/"ohmni-fabrication-manifest.json";manifest.write_bytes(b"verified manifest")
     store=JobStore(tmp_path)
     store.jobs[job_id]={"status":"complete","report":{
+        "project":{"status":"READY_FOR_MANUFACTURING_REVIEW"},
         "schematic":{"fingerprint":hashlib.sha256(schematic.read_bytes()).hexdigest(),"current":True},
         "pcb":{"fingerprint":hashlib.sha256(pcb.read_bytes()).hexdigest(),"source_placed_pcb_fingerprint":hashlib.sha256(placed.read_bytes()).hexdigest(),"current":True},
-        "release":{"files":[],"current":True},
+        "release":{"status":"READY_FOR_MANUFACTURING_REVIEW","files":[{"relative_path":gerber.name,"sha256":hashlib.sha256(gerber.read_bytes()).hexdigest()}],"manifest":{"relative_path":manifest.name,"sha256":hashlib.sha256(manifest.read_bytes()).hexdigest()},"current":True},
     }}
     original_read=store.read_artifact
     def mutate_after_verified_read(request_job_id,name):
@@ -104,6 +151,8 @@ def test_http_download_serves_verified_buffer_and_rejects_alternate_paths(tmp_pa
             refreshed=json.loads(response.read())
         assert not refreshed["report"]["schematic"]["current"]
         assert not refreshed["report"]["pcb"]["current"]
+        assert not refreshed["report"]["release"]["current"]
+        assert refreshed["report"]["release"]["status"]=="STALE"
         for path in (
             f"/api/artifacts/{job_id}/missing.txt",
             f"/api/artifacts/{job_id}/%2e%2e%2fgolden.kicad_sch",

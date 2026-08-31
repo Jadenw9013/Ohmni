@@ -45,14 +45,34 @@ class FabricationFile(BaseModel): relative_path:str; sha256:str; size_bytes:int;
 class ReleaseStatus(StrEnum): NOT_READY="not_ready"; READY_FOR_MANUFACTURING_REVIEW="ready_for_manufacturing_review"; BLOCKED="blocked"; STALE="stale"
 class FabricationPackage(BaseModel):
     directory:Path; source_pcb_path:Path; source_pcb_fingerprint:str; source_schematic_fingerprint:str; routing_plan_fingerprint:str
-    drc_fingerprint:str; manufacturing_profile_fingerprint:str; files:list[FabricationFile]; manifest_path:Path; package_fingerprint:str; status:ReleaseStatus
+    drc_fingerprint:str; manufacturing_profile_fingerprint:str; files:list[FabricationFile]; manifest_path:Path; manifest:FabricationFile; package_fingerprint:str; status:ReleaseStatus
     limitations:list[str]=Field(default_factory=lambda:["Generated files are ready for human manufacturing review, not guaranteed fabrication success.","Not simulation, thermal, EMC/RF, assembly, or bench verified."])
     verification_findings:list[ManufacturingFinding]=Field(default_factory=list)
     events:list[EngineeringEvent]=Field(default_factory=list)
     @property
     def is_current(self):
-        return self.source_pcb_path.is_file() and hashlib.sha256(self.source_pcb_path.read_bytes()).hexdigest()==self.source_pcb_fingerprint
+        try:
+            return self.source_pcb_path.is_file() and hashlib.sha256(self.source_pcb_path.read_bytes()).hexdigest()==self.source_pcb_fingerprint
+        except (OSError,RuntimeError):
+            return False
+    def _file_current(self,item:FabricationFile):
+        try:
+            root=self.directory.resolve()
+            if Path(item.relative_path).name!=item.relative_path:return False
+            path=root/item.relative_path
+            if path.is_symlink():return False
+            resolved=path.resolve()
+            if resolved.parent!=root or not resolved.is_file():return False
+            data=resolved.read_bytes()
+        except (OSError,RuntimeError):
+            return False
+        return bool(data) and len(data)==item.size_bytes and hashlib.sha256(data).hexdigest()==item.sha256
     def files_current(self):
-        return all((self.directory/x.relative_path).is_file() and (self.directory/x.relative_path).stat().st_size>0 and hashlib.sha256((self.directory/x.relative_path).read_bytes()).hexdigest()==x.sha256 for x in self.files)
+        try:
+            expected_manifest=(self.directory/self.manifest.relative_path).resolve()
+            if self.manifest_path.resolve()!=expected_manifest:return False
+        except (OSError,RuntimeError):
+            return False
+        return bool(self.files) and all(self._file_current(item) for item in self.files) and self._file_current(self.manifest)
     def is_valid_for(self,pcb_fingerprint:str,profile_fingerprint:str):
         return self.is_current and self.files_current() and self.source_pcb_fingerprint==pcb_fingerprint and self.manufacturing_profile_fingerprint==profile_fingerprint

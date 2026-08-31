@@ -17,7 +17,12 @@ from ..eda.kicad import KiCadCliAdapter, KiCadPcbCompiler
 from ..eda.kicad.placement import golden_board_constraints
 from ..generation import DesignOrchestrator
 from ..generation.fixtures import GOLDEN_REQUEST, flawed_logger_provider
-from ..manufacturing import KiCadFabricationExporter, prototype_profile, verify_manufacturing
+from ..manufacturing import (
+    KiCadFabricationExporter,
+    ReleaseStatus,
+    prototype_profile,
+    verify_manufacturing,
+)
 from ..routing.router import DeterministicRouter
 from ..routing.verifier import verify_routing
 from .visuals import pcb_svg, schematic_svg
@@ -194,8 +199,10 @@ def project_demo_report(**values) -> DemoReport:
     for line in bom.lines:
         cost=cost_by_key[line.identity.key]
         bom_rows.append({"references":line.references,"part":line.identity.mpn or line.identity.part_id,"description":line.description,"package":line.identity.package,"quantity":line.quantity_per_board,"evidence_status":line.evidence_status,"unit_price":str(cost.unit_price) if cost.unit_price is not None else None,"knowledge":cost.knowledge.value.upper(),"purchase_quantity":cost.purchase_quantity,"purchase_cost":str(cost.purchase_cost) if cost.purchase_cost is not None else None})
+    release_current=routed.lineage_is_current and package.is_valid_for(routed.fingerprint.digest,manufacturing.profile.content_hash)
+    release_status=package.status if release_current else ReleaseStatus.STALE
     return DemoReport(
-        project={"name":design.requirements.requirements.project_name,"request":request,"supported_fixture":"ESP32 + BME280 environmental logger","status":"READY_FOR_MANUFACTURING_REVIEW"},
+        project={"name":design.requirements.requirements.project_name,"request":request,"supported_fixture":"ESP32 + BME280 environmental logger","status":release_status.value.upper()},
         requirements=requirements,evidence=evidence,
         architecture=[block.model_dump(mode="json") for block in design.architecture.blocks],
         failure_and_repair={"status":"REPAIRED","rule":"PB-PWR-001","original":"BME280 VDD and VDDIO connected to 5 V VBUS","operating_range":"1.71 V to 3.6 V","findings":[{"severity":f.severity.value.upper(),"title":f.title,"description":f.description} for f in blocking if f.rule_id=="PB-PWR-001"],"operations":[op.model_dump(mode="json") for op in repair.patch.operations],"result":"Both sensor supply pins moved to 3V3; PB-PWR-001 passed after deterministic re-verification."},
@@ -207,6 +214,6 @@ def project_demo_report(**values) -> DemoReport:
         bom={"references":bom.reference_count,"unique_lines":len(bom.lines),"lines":bom_rows},
         economics={"scenario_boards":1,"pricing_coverage":costs.pricing_coverage,"known_consumption_cost":str(costs.known_consumption_cost),"known_purchase_requirement":str(costs.known_purchase_requirement),"fabrication":costs.fabrication.value.upper(),"shipping":costs.shipping.value.upper(),"tooling":costs.tooling.value.upper(),"pricing_source":"SYNTHETIC FIXTURE - NOT LIVE SUPPLIER DATA"},
         assembly={"hand_solder_requirement_satisfied":assembly.hand_solder_requirement_satisfied,"risks":[risk.model_dump(mode="json") for risk in assembly.risks],"limitations":assembly.limitations},
-        release={"status":package.status.value.upper(),"package_fingerprint":package.package_fingerprint,"pcb_fingerprint":package.source_pcb_fingerprint,"current":routed.lineage_is_current and package.is_valid_for(routed.fingerprint.digest,manufacturing.profile.content_hash),"files":[file.model_dump(mode="json") for file in package.files]},
+        release={"status":release_status.value.upper(),"package_fingerprint":package.package_fingerprint,"pcb_fingerprint":package.source_pcb_fingerprint,"current":release_current,"files":[file.model_dump(mode="json") for file in package.files],"manifest":package.manifest.model_dump(mode="json")},
         limitations=["Supported deterministic demo: ESP32/BME280 logger, not arbitrary hardware.","Not simulation verified.","Not thermal, EMC, RF, or signal-integrity verified.","Not bench verified.","Manufacturing profile is synthetic and requires human review.","No guarantee of successful fabrication or assembly."],
     )

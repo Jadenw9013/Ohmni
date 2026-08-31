@@ -20,5 +20,4 @@ def test_ui_contains_every_major_truth_surface():
 def test_frontend_view_model_behavior():
     result=subprocess.run(["node","--test","apps/web/tests/view-model.test.mjs"],cwd=Path(__file__).parents[1],capture_output=True,text=True,check=False,shell=False)
     assert result.returncode==0,result.stdout+result.stderr
-    assert "# pass 4" in result.stdout
-
+    assert "# pass 5" in result.stdout

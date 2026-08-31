@@ -10,6 +10,7 @@ import logging
 import re
 import threading
 import uuid
+from contextlib import suppress
 from http import HTTPStatus
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -36,21 +37,26 @@ class JobStore:
         try:
             report=self.pipeline_factory(progress).run(self.output_root/job_id,request)
             with self.lock:self.jobs[job_id].update(status="complete",report=report.model_dump(mode="json"))
-        except (OSError, RuntimeError, ValueError) as exc:
-            with self.lock:
-                self.jobs[job_id].update(status="failed",error=str(exc))
         except Exception as exc:
-            LOGGER.exception("unexpected demo pipeline failure for job %s", job_id)
+            error="Demo pipeline failed"
+            with suppress(BaseException):
+                if isinstance(exc,(OSError,RuntimeError,ValueError)):
+                    error=str(exc)
+                else:
+                    error=f"Unexpected demo pipeline failure ({type(exc).__name__})"
+                    LOGGER.exception("unexpected demo pipeline failure for job %s",job_id)
             with self.lock:
                 self.jobs[job_id].update(
                     status="failed",
-                    error=f"Unexpected demo pipeline failure ({type(exc).__name__})",
+                    report=None,
+                    error=error,
                 )
     def _snapshot(self,job_id):
         with self.lock:return json.loads(json.dumps(self.jobs.get(job_id))) if job_id in self.jobs else None
     def _job_directory(self,job_id):
         if not JOB_ID_PATTERN.fullmatch(job_id):return None
-        root=self.output_root.resolve();directory=(root/job_id).resolve()
+        try:root=self.output_root.resolve();directory=(root/job_id).resolve()
+        except (OSError,RuntimeError):return None
         return directory if directory.parent==root and directory.name==job_id else None
     @staticmethod
     def _expected_digest(job,name):
@@ -64,7 +70,7 @@ class JobStore:
             resolved=path.resolve()
             if resolved.parent!=parent or not resolved.is_file():return "missing",None
             data=resolved.read_bytes()
-        except OSError:return "missing",None
+        except (OSError,RuntimeError):return "missing",None
         return ("current",data) if hashlib.sha256(data).hexdigest()==expected else ("stale",None)
     def _read_artifact_snapshot(self,job_id,name,job):
         if name not in ARTIFACT_SECTIONS or not job or job.get("status")!="complete":return "unavailable",None
@@ -73,6 +79,13 @@ class JobStore:
         return self._read_matching(directory/name,expected,directory)
     def read_artifact(self,job_id,name):
         return self._read_artifact_snapshot(job_id,name,self._snapshot(job_id))
+    def _release_file_current(self,parent,item,expected_name=None):
+        if parent is None or not isinstance(item,dict):return False
+        relative=item.get("relative_path");expected=item.get("sha256")
+        if not isinstance(relative,str) or Path(relative).name!=relative:return False
+        if expected_name is not None and relative!=expected_name:return False
+        if not isinstance(expected,str) or not re.fullmatch(r"[0-9a-f]{64}",expected):return False
+        return self._read_matching(parent/relative,expected,parent)[0]=="current"
     def get(self,job_id):
         job=self._snapshot(job_id)
         if not job or job.get("status")!="complete":return job
@@ -92,17 +105,22 @@ class JobStore:
             )[0]=="current"
         pcb_current=pcb_file_current and schematic_current and placed_current
         if isinstance(pcb,dict):pcb["current"]=pcb_current
-        files_current=True
         fabrication=directory/"fabrication" if directory is not None else None
         release=report.get("release")
-        for item in release.get("files",[]) if isinstance(release,dict) else []:
-            relative=item.get("relative_path");expected=item.get("sha256")
-            if not fabrication or not isinstance(relative,str) or Path(relative).name!=relative or not isinstance(expected,str):
-                files_current=False;break
-            if self._read_matching(fabrication/relative,expected,fabrication)[0]!="current":
-                files_current=False;break
-        if isinstance(release,dict) and "current" in release:
-            release["current"]=pcb_current and files_current
+        if isinstance(release,dict):
+            files=release.get("files")
+            files_current=isinstance(files,list) and bool(files) and all(
+                self._release_file_current(fabrication,item) for item in files
+            )
+            manifest_current=self._release_file_current(
+                fabrication,release.get("manifest"),"ohmni-fabrication-manifest.json",
+            )
+            release_current=pcb_current and files_current and manifest_current
+            release["current"]=release_current
+            if not release_current:
+                release["status"]="STALE"
+                project=report.get("project")
+                if isinstance(project,dict):project["status"]="STALE"
         return job
 
 class DemoHandler(SimpleHTTPRequestHandler):

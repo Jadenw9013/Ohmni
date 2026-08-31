@@ -1,3 +1,5 @@
+import hashlib
+
 import pytest
 
 from ohmni.application.demo import DEMO_REQUEST, project_demo_report
@@ -94,6 +96,8 @@ def test_golden_routing_closes_real_kicad_drc_and_stales_on_change(tmp_path,gold
     assert {"F.Cu","B.Cu","F.Mask","B.Mask","F.Silkscreen","B.Silkscreen","Edge.Cuts","Drill"}<={x.kind for x in package.files}
     assert {finding.rule_id for finding in package.verification_findings}=={"PB-MFG-009","PB-MFG-010"}
     assert package.events
+    assert package.manifest.kind=="Manifest"
+    assert package.manifest.sha256==hashlib.sha256(package.manifest_path.read_bytes()).hexdigest()
     assert package.files_current() and package.is_valid_for(routed.fingerprint.digest,profile.content_hash)
     changed_profile=profile.model_copy(update={"source_version":"2.0"})
     assert not package.is_valid_for(routed.fingerprint.digest,changed_profile.content_hash)
@@ -103,6 +107,7 @@ def test_golden_routing_closes_real_kicad_drc_and_stales_on_change(tmp_path,gold
     assert demo.failure_and_repair["rule"]=="PB-PWR-001"
     assert demo.pcb["violations"]==0 and demo.pcb["unrouted"]==0
     assert demo.release["status"]=="READY_FOR_MANUFACTURING_REVIEW"
+    assert demo.release["manifest"]["sha256"]==package.manifest.sha256
     assert demo.economics["fabrication"]=="UNKNOWN"
     assert [row["sequence"] for row in demo.notebook]==list(range(1,len(demo.notebook)+1))
     kinds=[row["kind"] for row in demo.notebook]
@@ -115,6 +120,13 @@ def test_golden_routing_closes_real_kicad_drc_and_stales_on_change(tmp_path,gold
     drc_started=kinds.index("drc_started")
     assert first_pcb_started<first_pcb_compiled<routing_started<routing_completed<second_pcb_started<second_pcb_compiled<drc_started
     assert any(row["phase"]=="assembly" and row["kind"]=="assembly_risk_identified" for row in demo.notebook)
+    manifest_bytes=package.manifest_path.read_bytes();package.manifest_path.write_bytes(b"changed manifest")
+    assert not package.files_current() and not package.is_valid_for(routed.fingerprint.digest,profile.content_hash)
+    stale_demo=project_demo_report(request=DEMO_REQUEST,design=design,catalog=catalog,board=board,placed=placed,plan=plan,route_report=report,routed=routed,drc=drc,manufacturing=manufacturing,bom=bom,costs=costs,assembly=assembly,package=package)
+    assert not stale_demo.release["current"] and stale_demo.release["status"]=="STALE" and stale_demo.project["status"]=="STALE"
+    package.manifest_path.write_bytes(manifest_bytes);assert package.files_current()
+    package.manifest_path.unlink();assert not package.files_current()
+    package.manifest_path.write_bytes(manifest_bytes);assert package.files_current()
     victim=package.directory/package.files[0].relative_path;victim.unlink();assert not package.files_current()
     placed_text=placed.path.read_text();placed.path.write_text(placed_text+"\n;changed")
     assert KiCadCliAdapter(executable="never-run").run_drc(routed).status is DrcStatus.STALE_ARTIFACT
