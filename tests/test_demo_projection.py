@@ -8,6 +8,8 @@ from ohmni.application.demo import DemoPipeline, _evidence_rows, project_demo_re
 from ohmni.application.visuals import pcb_svg, schematic_svg
 from ohmni.catalog import default_catalog
 from ohmni.eda.kicad import KiCadSchematicCompiler
+from ohmni.eda.models import ArtifactFingerprint
+from ohmni.eda.pcb_models import CompiledTrackGeometry, CompiledViaGeometry
 from ohmni.generation import DesignOrchestrator
 from ohmni.generation.fixtures import GOLDEN_REQUEST, flawed_logger_provider
 
@@ -64,8 +66,15 @@ def test_visuals_are_tied_to_compiled_artifact_and_exact_route_geometry(tmp_path
     mismatched.compilation.source_artifact_fingerprint.digest="b"*64
     with pytest.raises(ValueError,match="fingerprint"):
         schematic_svg(mismatched)
-    board=SimpleNamespace(outline=SimpleNamespace(width_mm=10,height_mm=8),placements=[])
-    track=SimpleNamespace(start=SimpleNamespace(x_mm=1,y_mm=1),end=SimpleNamespace(x_mm=9,y_mm=7),layer="F.Cu",width_mm=.25,net_name="SDA")
-    plan=SimpleNamespace(tracks=[track],vias=[])
-    rendered=pcb_svg(board,plan)
-    assert "SDA" in rendered and "F.Cu" in rendered and "<line" in rendered
+    pcb_fingerprint=ArtifactFingerprint(digest="c"*64);routing_fingerprint="d"*64
+    board=SimpleNamespace(content_hash="e"*64,outline=SimpleNamespace(width_mm=10,height_mm=8),placements=[])
+    track=CompiledTrackGeometry(source_segment_id="route-track",emitted_uuid="track-uuid",net_name="SDA",net_number=1,layer="F.Cu",start_x_mm=1,start_y_mm=1,end_x_mm=9,end_y_mm=7,width_mm=.25)
+    via=CompiledViaGeometry(source_via_id="route-via",emitted_uuid="via-uuid",net_name="SDA",net_number=1,x_mm=9,y_mm=7,diameter_mm=.8,drill_mm=.4)
+    compilation=SimpleNamespace(artifact_fingerprint=pcb_fingerprint,constraints_hash=board.content_hash,routing_plan_fingerprint=routing_fingerprint,emitted_tracks=[track],emitted_vias=[via])
+    pcb=SimpleNamespace(fingerprint=pcb_fingerprint,constraints_hash=board.content_hash,routing_plan_fingerprint=routing_fingerprint,compilation=compilation)
+    rendered=pcb_svg(board,pcb)
+    assert "SDA" in rendered and "F.Cu" in rendered and 'data-track-uuid="track-uuid"' in rendered
+    assert 'data-via-uuid="via-uuid"' in rendered and pcb_fingerprint.digest in rendered
+    compilation.artifact_fingerprint=ArtifactFingerprint(digest="f"*64)
+    with pytest.raises(ValueError,match="fingerprint"):
+        pcb_svg(board,pcb)

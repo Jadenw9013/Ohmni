@@ -1,8 +1,11 @@
 import hashlib
+import re
+from xml.etree import ElementTree
 
 import pytest
 
 from ohmni.application.demo import DEMO_REQUEST, project_demo_report
+from ohmni.application.visuals import pcb_svg
 from ohmni.bom import calculate_cost, classify_assembly, generate_bom, synthetic_fixture_supplier
 from ohmni.eda.kicad import KiCadCliAdapter, KiCadPcbCompiler, KiCadSchematicCompiler
 from ohmni.eda.kicad.placement import golden_board_constraints
@@ -88,6 +91,38 @@ def test_golden_routing_closes_real_kicad_drc_and_stales_on_change(tmp_path,gold
     outside=plan.model_copy(deep=True);outside.routed_nets[0].paths[0].tracks[0]=outside.routed_nets[0].paths[0].tracks[0].model_copy(update={"start":Point(x_mm=-1,y_mm=-1)})
     assert any(f.rule_id=="PB-ROUTE-004" and f.status.value=="fail" for f in verify_routing(golden,placed,board,outside).findings)
     routed=compiler.compile(golden,schematic,board,tmp_path/"routed.kicad_pcb",plan)
+    compiled=routed.compilation;statistics=compiled.copper_statistics;pcb_text=routed.path.read_text()
+    assert compiled.artifact_fingerprint==routed.fingerprint
+    assert compiled.routing_plan_fingerprint==routed.routing_plan_fingerprint==plan.content_hash==report.plan_fingerprint
+    assert compiled.constraints_hash==routed.constraints_hash==board.content_hash
+    assert (plan.statistics.track_segment_count,plan.statistics.via_count)==(296,66)
+    assert (statistics.modeled_track_segment_count,statistics.modeled_layer_transition_count)==(296,66)
+    assert (statistics.track_segment_count,statistics.via_count)==(296,41)
+    assert statistics.coalesced_layer_transition_count==23
+    assert statistics.plated_through_hole_transition_count==2
+    assert statistics.total_track_length_mm==1083.765652
+    assert statistics.total_track_length_mm!=plan.statistics.total_track_length_mm
+    segment_pattern=re.compile(r'^  \(segment \(start ([^ ]+) ([^)]+)\) \(end ([^ ]+) ([^)]+)\) \(width ([^)]+)\) \(layer "([^"]+)"\) \(net ([^)]+)\) \(uuid "([^"]+)"\)\)$',re.MULTILINE)
+    via_pattern=re.compile(r'^  \(via \(at ([^ ]+) ([^)]+)\) \(size ([^)]+)\) \(drill ([^)]+)\) \(layers "([^"]+)" "([^"]+)"\) \(net ([^)]+)\) \(uuid "([^"]+)"\)\)$',re.MULTILINE)
+    net_names={number:name for name,number in compiled.net_mapping.items()}
+    artifact_tracks={match[7]:(float(match[0]),float(match[1]),float(match[2]),float(match[3]),float(match[4]),match[5],int(match[6]),net_names[int(match[6])]) for match in segment_pattern.findall(pcb_text)}
+    artifact_vias={match[7]:(float(match[0]),float(match[1]),float(match[2]),float(match[3]),(match[4],match[5]),int(match[6]),net_names[int(match[6])]) for match in via_pattern.findall(pcb_text)}
+    projected_tracks={track.emitted_uuid:(track.start_x_mm,track.start_y_mm,track.end_x_mm,track.end_y_mm,track.width_mm,track.layer,track.net_number,track.net_name) for track in compiled.emitted_tracks}
+    projected_vias={via.emitted_uuid:(via.x_mm,via.y_mm,via.diameter_mm,via.drill_mm,via.layers,via.net_number,via.net_name) for via in compiled.emitted_vias}
+    assert artifact_tracks==projected_tracks and artifact_vias==projected_vias
+    rendered=pcb_svg(board,routed);svg=ElementTree.fromstring(rendered);scale=7;pad=24
+    svg_tracks={node.attrib["data-track-uuid"]:(round((float(node.attrib["x1"])-pad)/scale,6),round((float(node.attrib["y1"])-pad)/scale,6),round((float(node.attrib["x2"])-pad)/scale,6),round((float(node.attrib["y2"])-pad)/scale,6),round(float(node.attrib["stroke-width"])/scale,6),node.attrib["data-layer"],int(node.attrib["data-net-number"]),node.attrib["data-net"]) for node in svg.findall(".//line") if "data-track-uuid" in node.attrib}
+    svg_vias={}
+    for node in (item for item in svg.findall(".//g") if "data-via-uuid" in item.attrib):
+        copper,hole=node.findall("circle");x=(float(copper.attrib["cx"])-pad)/scale;y=(float(copper.attrib["cy"])-pad)/scale
+        svg_vias[node.attrib["data-via-uuid"]]=(round(x,6),round(y,6),round(float(copper.attrib["r"])*2/scale,6),round(float(hole.attrib["r"])*2/scale,6),tuple(node.attrib["data-layers"].split("/")),int(node.attrib["data-net-number"]),node.attrib["data-net"])
+    assert svg_tracks==artifact_tracks and svg_vias==artifact_vias
+    wrong_fingerprint=routed.model_copy(deep=True);wrong_fingerprint.compilation.artifact_fingerprint=wrong_fingerprint.fingerprint.model_copy(update={"digest":"a"*64})
+    with pytest.raises(ValueError,match="fingerprint"):pcb_svg(board,wrong_fingerprint)
+    wrong_constraints=routed.model_copy(deep=True);wrong_constraints.compilation.constraints_hash="a"*64
+    with pytest.raises(ValueError,match="constraints"):pcb_svg(board,wrong_constraints)
+    wrong_routing=routed.model_copy(deep=True);wrong_routing.compilation.routing_plan_fingerprint="a"*64
+    with pytest.raises(ValueError,match="routing"):pcb_svg(board,wrong_routing)
     drc=KiCadCliAdapter().run_drc(routed)
     assert drc.status is DrcStatus.PASS and not drc.findings and not drc.unconnected_items
     profile=prototype_profile();manufacturing=verify_manufacturing(routed,board,plan,profile)
@@ -117,6 +152,10 @@ def test_golden_routing_closes_real_kicad_drc_and_stales_on_change(tmp_path,gold
     assert semantic_rows["identity"]["status"]!="PASS"
     assert demo.failure_and_repair["rule"]=="PB-PWR-001"
     assert demo.pcb["violations"]==0 and demo.pcb["unrouted"]==0
+    assert demo.pcb["statistics"]==statistics.model_dump(mode="json") and demo.pcb["svg"]==rendered
+    mismatched_plan=plan.model_copy(update={"source_pcb_fingerprint":"a"*64})
+    with pytest.raises(ValueError,match="PCB projection lineage"):
+        project_demo_report(request=DEMO_REQUEST,design=design,catalog=catalog,board=board,placed=placed,plan=mismatched_plan,route_report=report,routed=routed,drc=drc,manufacturing=manufacturing,bom=bom,costs=costs,assembly=assembly,package=package)
     assert demo.release["status"]=="READY_FOR_MANUFACTURING_REVIEW"
     assert demo.release["manifest"]["sha256"]==package.manifest.sha256
     assert demo.economics["fabrication"]=="UNKNOWN"

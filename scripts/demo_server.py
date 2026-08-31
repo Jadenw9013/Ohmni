@@ -23,7 +23,10 @@ ARTIFACT_SECTIONS={"golden.kicad_sch":"schematic","golden.kicad_pcb":"pcb"}
 JOB_ID_PATTERN=re.compile(r"^[0-9a-f]{12}$")
 DEMO_FAILURE_MESSAGE="Demo pipeline failed"
 INVALID_REQUEST_MESSAGE="invalid request"
+INVALID_PATH_MESSAGE="invalid path"
 UNAVAILABLE_RESPONSE_MESSAGE="response unavailable"
+JOB_RECORD_FIELDS={"job_id","status","progress","report","error"}
+JOB_STATUSES={"queued","running","complete","failed"}
 TERMINAL_JOB_STATUSES={"complete","failed"}
 MAX_JSON_DEPTH=64
 
@@ -57,6 +60,27 @@ def _owned_json_object(value):
     return result
 
 
+def _owned_job_record(value,job_id):
+    job=_owned_json_object(value)
+    if set(job)!=JOB_RECORD_FIELDS:raise ValueError
+    if type(job["job_id"]) is not str or job["job_id"]!=job_id:raise ValueError
+    status=job["status"]
+    if type(status) is not str or status not in JOB_STATUSES:raise ValueError
+    progress=job["progress"];report=job["report"];error=job["error"]
+    if type(progress) is not list or any(type(item) is not dict for item in progress):raise ValueError
+    if status in {"queued","running"}:
+        if report is not None or error is not None:raise ValueError
+    elif status=="complete":
+        if type(report) is not dict or error is not None:raise ValueError
+    elif progress or report is not None or type(error) is not str or error!=DEMO_FAILURE_MESSAGE:
+        raise ValueError
+    return job
+
+
+def _reject_json_constant(_value):
+    raise ValueError
+
+
 class JobStore:
     def __init__(self,output_root:Path=OUTPUT_ROOT,pipeline_factory=DemoPipeline):self.output_root=output_root;self.pipeline_factory=pipeline_factory;self.jobs={};self.lock=threading.Lock()
     def start(self,request:str)->str:
@@ -69,38 +93,41 @@ class JobStore:
     @staticmethod
     def _failure_record(job_id):
         return {"job_id":job_id,"status":"failed","progress":[],"report":None,"error":DEMO_FAILURE_MESSAGE}
+    def _validated_job_locked(self,job_id):
+        try:job=_owned_job_record(self.jobs[job_id],job_id)
+        except BaseException:job=self._failure_record(job_id)  # noqa: BLE001 - never inspect an invalid envelope
+        self.jobs[job_id]=job
+        return job
     def _fail(self,job_id):
         with self.lock:
-            job=self.jobs.get(job_id)
-            if type(job) is dict and job.get("status") in TERMINAL_JOB_STATUSES:return
+            job=self._validated_job_locked(job_id)
+            if job["status"] in TERMINAL_JOB_STATUSES:return
             self.jobs[job_id]=self._failure_record(job_id)
     def _run(self,job_id,request):
         def progress(event):
             try:
                 value=_owned_json_object(event.model_dump(mode="json"))
                 with self.lock:
-                    job=self.jobs[job_id]
+                    job=self._validated_job_locked(job_id)
                     if job["status"] not in TERMINAL_JOB_STATUSES:job["progress"].append(value);job["status"]="running"
             except BaseException:  # noqa: BLE001 - progress is an untrusted publication boundary
                 self._fail(job_id)
         try:
             with self.lock:
-                if self.jobs[job_id]["status"] in TERMINAL_JOB_STATUSES:return
+                if self._validated_job_locked(job_id)["status"] in TERMINAL_JOB_STATUSES:return
             report=self.pipeline_factory(progress).run(self.output_root/job_id,request)
             with self.lock:
-                if self.jobs[job_id]["status"] in TERMINAL_JOB_STATUSES:return
+                if self._validated_job_locked(job_id)["status"] in TERMINAL_JOB_STATUSES:return
             value=_owned_json_object(report.model_dump(mode="json"))
             with self.lock:
-                job=self.jobs[job_id]
+                job=self._validated_job_locked(job_id)
                 if job["status"] not in TERMINAL_JOB_STATUSES:job.update(status="complete",report=value)
         except BaseException:  # noqa: BLE001 - the worker boundary must always terminalize the job
             self._fail(job_id)
     def _snapshot(self,job_id):
         with self.lock:
             if job_id not in self.jobs:return None
-            try:return _owned_json_object(self.jobs[job_id])
-            except BaseException:  # noqa: BLE001 - a poisoned record must remain safely pollable
-                self.jobs[job_id]=self._failure_record(job_id);return self._failure_record(job_id)
+            return _owned_json_object(self._validated_job_locked(job_id))
     def _job_directory(self,job_id):
         if not JOB_ID_PATTERN.fullmatch(job_id):return None
         try:root=self.output_root.resolve();directory=(root/job_id).resolve()
@@ -174,9 +201,14 @@ class JobStore:
             return job
         except BaseException:return self._failure_record(job_id)  # noqa: BLE001 - polling must fail closed
 
+class DemoHTTPServer(ThreadingHTTPServer):
+    def handle_error(self,_request,_client_address):return
+
+
 class DemoHandler(SimpleHTTPRequestHandler):
     store:JobStore
     def __init__(self,*args,**kwargs):super().__init__(*args,directory=str(WEB_ROOT),**kwargs)
+    def log_message(self,_format,*_args):return
     def _json(self,value:Any,status=HTTPStatus.OK):
         try:body=json.dumps(_owned_json_object(value),allow_nan=False).encode()
         except BaseException:  # noqa: BLE001 - response values are another untrusted serialization boundary
@@ -187,15 +219,16 @@ class DemoHandler(SimpleHTTPRequestHandler):
         try:
             length=int(self.headers.get("content-length","0"))
             if length<0 or length>16_384:raise ValueError
-            payload=json.loads(self.rfile.read(length) or b"{}")
-            if not isinstance(payload,dict):raise TypeError
+            payload=json.loads(self.rfile.read(length) or b"{}",parse_constant=_reject_json_constant)
+            payload=_owned_json_object(payload)
             request=require_demo_request(payload.get("request"))
         except BaseException:return self._json({"error":INVALID_REQUEST_MESSAGE},HTTPStatus.BAD_REQUEST)  # noqa: BLE001 - JSON decoding must fail closed
         try:job_id=self.store.start(request)
         except BaseException:return self._json({"error":UNAVAILABLE_RESPONSE_MESSAGE},HTTPStatus.INTERNAL_SERVER_ERROR)  # noqa: BLE001 - request threads must not leak failures
         self._json({"job_id":job_id,"status":"queued"},HTTPStatus.ACCEPTED)
     def do_GET(self):
-        request_path=unquote(urlsplit(self.path).path)
+        try:request_path=unquote(urlsplit(self.path).path,errors="strict")
+        except BaseException:return self._json({"error":INVALID_PATH_MESSAGE},HTTPStatus.BAD_REQUEST)  # noqa: BLE001 - request targets must fail closed
         if request_path.startswith("/api/jobs/"):
             job_id=request_path.removeprefix("/api/jobs/")
             if "/" in job_id:return self._json({"error":"invalid job path"},HTTPStatus.BAD_REQUEST)
@@ -214,7 +247,7 @@ class DemoHandler(SimpleHTTPRequestHandler):
 
 def main(argv=None):
     parser=argparse.ArgumentParser();parser.add_argument("--host",default="127.0.0.1");parser.add_argument("--port",type=int,default=8765);args=parser.parse_args(argv)
-    OUTPUT_ROOT.mkdir(parents=True,exist_ok=True);DemoHandler.store=JobStore();server=ThreadingHTTPServer((args.host,args.port),DemoHandler);print(f"Ohmni demo: http://{args.host}:{args.port}")
+    OUTPUT_ROOT.mkdir(parents=True,exist_ok=True);DemoHandler.store=JobStore();server=DemoHTTPServer((args.host,args.port),DemoHandler);print(f"Ohmni demo: http://{args.host}:{args.port}")
     try:server.serve_forever()
     except KeyboardInterrupt:pass
     finally:server.server_close()

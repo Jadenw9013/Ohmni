@@ -66,6 +66,31 @@ def _semantic_ladder(report: VerificationReport, initial_blocking: int) -> list[
     ]
 
 
+def _require_pcb_projection_lineage(board, plan, route_report, routed):
+    """Bind displayed PCB copper and routing status to one compiled artifact."""
+    compilation=routed.compilation
+    plan_fingerprint=plan.content_hash
+    compiled_route_report=compilation.routing_verification
+    fingerprints={
+        plan_fingerprint,
+        route_report.plan_fingerprint,
+        routed.routing_plan_fingerprint,
+        compilation.routing_plan_fingerprint,
+        compiled_route_report.plan_fingerprint if compiled_route_report else None,
+    }
+    constraints={board.content_hash,routed.constraints_hash,compilation.constraints_hash}
+    statistics=compilation.copper_statistics
+    if (
+        fingerprints != {plan_fingerprint}
+        or constraints != {board.content_hash}
+        or compilation.artifact_fingerprint != routed.fingerprint
+        or statistics.modeled_track_segment_count != plan.statistics.track_segment_count
+        or statistics.modeled_layer_transition_count != plan.statistics.via_count
+    ):
+        raise ValueError("PCB projection lineage does not match routed artifact")
+    return routed
+
+
 class DemoProgress(BaseModel):
     stage: str
     label: str
@@ -191,6 +216,7 @@ def project_demo_report(**values) -> DemoReport:
     board=values["board"];plan=values["plan"];route_report=values["route_report"]
     routed=values["routed"];drc=values["drc"];manufacturing=values["manufacturing"]
     bom=values["bom"];costs=values["costs"];assembly=values["assembly"];package=values["package"]
+    routed=_require_pcb_projection_lineage(board,plan,route_report,routed)
     requirements=[statement.model_dump(mode="json") for statement in design.requirements.provenance]
     first,last=design.semantic_attempts[0],design.semantic_attempts[-1]
     blocking=[finding for finding in first.findings if finding.severity.value in {"critical","error"}]
@@ -248,7 +274,7 @@ def project_demo_report(**values) -> DemoReport:
         verification_ladder=ladder,notebook=notebook,
         lessons=[lesson.model_dump(mode="json") for lesson in design.lessons],
         schematic={"path":str(design.artifact.path),"fingerprint":design.artifact.fingerprint.digest,"current":design.artifact.is_current,"erc_status":design.erc.status.value.upper(),"erc_findings":len(design.erc.findings),"svg":schematic_svg(design.artifact)},
-        pcb={"path":str(routed.path),"fingerprint":routed.fingerprint.digest,"source_schematic_fingerprint":routed.schematic_fingerprint.digest,"source_placed_pcb_fingerprint":routed.source_placed_pcb_fingerprint.digest if routed.source_placed_pcb_fingerprint else None,"current":routed.lineage_is_current,"drc_status":drc.status.value.upper(),"violations":len(drc.findings),"unrouted":len(drc.unconnected_items),"statistics":plan.statistics.model_dump(mode="json"),"svg":pcb_svg(board,plan)},
+        pcb={"path":str(routed.path),"fingerprint":routed.fingerprint.digest,"source_schematic_fingerprint":routed.schematic_fingerprint.digest,"source_placed_pcb_fingerprint":routed.source_placed_pcb_fingerprint.digest if routed.source_placed_pcb_fingerprint else None,"current":routed.lineage_is_current,"drc_status":drc.status.value.upper(),"violations":len(drc.findings),"unrouted":len(drc.unconnected_items),"statistics":routed.compilation.copper_statistics.model_dump(mode="json"),"svg":pcb_svg(board,routed)},
         manufacturing={"profile":manufacturing.profile.display_name,"provenance":manufacturing.profile.provenance.value,"findings":[finding.model_dump(mode="json") for finding in manufacturing.findings]},
         bom={"references":bom.reference_count,"unique_lines":len(bom.lines),"lines":bom_rows},
         economics={"scenario_boards":1,"pricing_coverage":costs.pricing_coverage,"known_consumption_cost":str(costs.known_consumption_cost),"known_purchase_requirement":str(costs.known_purchase_requirement),"fabrication":costs.fabrication.value.upper(),"shipping":costs.shipping.value.upper(),"tooling":costs.tooling.value.upper(),"pricing_source":"SYNTHETIC FIXTURE - NOT LIVE SUPPLIER DATA"},

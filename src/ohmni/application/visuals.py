@@ -76,14 +76,23 @@ def schematic_svg(artifact) -> str:
     return "".join(lines)
 
 
-def pcb_svg(board, plan) -> str:
+def pcb_svg(board, artifact) -> str:
+    """Render only the compiler-owned copper projection for this PCB artifact."""
+    compilation=artifact.compilation
+    if compilation.artifact_fingerprint != artifact.fingerprint:
+        raise ValueError("PCB projection fingerprint does not match artifact")
+    if compilation.constraints_hash != artifact.constraints_hash or board.content_hash != artifact.constraints_hash:
+        raise ValueError("PCB projection constraints lineage does not match artifact")
+    if artifact.routing_plan_fingerprint is None or compilation.routing_plan_fingerprint != artifact.routing_plan_fingerprint:
+        raise ValueError("PCB projection routing lineage does not match artifact")
     scale=7;pad=24;width=board.outline.width_mm*scale+pad*2;height=board.outline.height_mm*scale+pad*2
-    lines=[f'<svg viewBox="0 0 {width} {height}" role="img" aria-label="Exact routed PCB geometry">','<rect width="100%" height="100%" fill="#08100e"/>',f'<rect x="{pad}" y="{pad}" width="{board.outline.width_mm*scale}" height="{board.outline.height_mm*scale}" rx="8" fill="#12372d" stroke="#62b592" stroke-width="2"/>']
-    for track in plan.tracks:
+    lines=[f'<svg viewBox="0 0 {width} {height}" role="img" aria-label="Compiler-emitted routed PCB copper geometry" data-artifact-fingerprint="{escape(artifact.fingerprint.digest)}" data-routing-plan-fingerprint="{escape(artifact.routing_plan_fingerprint)}" data-constraints-hash="{escape(artifact.constraints_hash)}">','<rect width="100%" height="100%" fill="#08100e"/>',f'<rect x="{pad}" y="{pad}" width="{board.outline.width_mm*scale}" height="{board.outline.height_mm*scale}" rx="8" fill="#12372d" stroke="#62b592" stroke-width="2"/>']
+    for track in compilation.emitted_tracks:
         color="#f1bd55" if track.layer=="F.Cu" else "#65a9d8"
-        lines.append(f'<line x1="{pad+track.start.x_mm*scale:.2f}" y1="{pad+track.start.y_mm*scale:.2f}" x2="{pad+track.end.x_mm*scale:.2f}" y2="{pad+track.end.y_mm*scale:.2f}" stroke="{color}" stroke-width="{max(1.2,track.width_mm*scale):.2f}" stroke-linecap="round"><title>{escape(track.net_name)} · {track.layer}</title></line>')
-    for via in plan.vias:
-        lines.append(f'<circle cx="{pad+via.position.x_mm*scale:.2f}" cy="{pad+via.position.y_mm*scale:.2f}" r="3.2" fill="#0b1110" stroke="#e8d7a7"><title>{escape(via.net_name)} via</title></circle>')
+        lines.append(f'<line data-track-uuid="{escape(track.emitted_uuid)}" data-source-segment-id="{escape(track.source_segment_id)}" data-net="{escape(track.net_name)}" data-net-number="{track.net_number}" data-layer="{escape(track.layer)}" x1="{pad+track.start_x_mm*scale:.6f}" y1="{pad+track.start_y_mm*scale:.6f}" x2="{pad+track.end_x_mm*scale:.6f}" y2="{pad+track.end_y_mm*scale:.6f}" stroke="{color}" stroke-width="{track.width_mm*scale:.6f}" stroke-linecap="round"><title>{escape(track.net_name)} · {escape(track.layer)}</title></line>')
+    for via in compilation.emitted_vias:
+        x=pad+via.x_mm*scale;y=pad+via.y_mm*scale
+        lines.append(f'<g data-via-uuid="{escape(via.emitted_uuid)}" data-source-via-id="{escape(via.source_via_id)}" data-net="{escape(via.net_name)}" data-net-number="{via.net_number}" data-layers="{escape("/".join(via.layers))}"><circle cx="{x:.6f}" cy="{y:.6f}" r="{via.diameter_mm*scale/2:.6f}" fill="#e8d7a7"/><circle cx="{x:.6f}" cy="{y:.6f}" r="{via.drill_mm*scale/2:.6f}" fill="#0b1110"/><title>{escape(via.net_name)} via</title></g>')
     for placement in board.placements:
         x=pad+placement.x_mm*scale;y=pad+placement.y_mm*scale
         lines.append(f'<rect x="{x-12}" y="{y-8}" width="24" height="16" rx="2" fill="#d9e5de" fill-opacity=".9"/><text x="{x}" y="{y+3}" text-anchor="middle" font-size="7" fill="#07100d">{escape(placement.component_ref)}</text><title>{escape(placement.reason)}</title>')

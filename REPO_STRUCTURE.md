@@ -59,7 +59,7 @@ ohmni/
 │   ├── author_catalog.py       # authors the catalog in typed Python, emits JSON
 │   └── export_fixtures.py      # emits the fixture circuits to JSON
 ├── docs/DECISIONS.md
-├── apps/web/                   # Next.js frontend (not started)
+├── apps/web/                   # dependency-light local demo frontend (implemented)
 └── pyproject.toml
 ```
 

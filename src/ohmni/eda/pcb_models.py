@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 import hashlib
+import math
 from enum import StrEnum
 from pathlib import Path
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 from ..adapters import ToolStatus
 from ..domain import EngineeringEvent, Evidence, Lesson
@@ -15,8 +16,54 @@ from ..routing.models import RoutingVerificationReport
 from .models import ArtifactFingerprint, ErcReport, SchematicArtifact
 
 
+class CompiledTrackGeometry(BaseModel):
+    """One exact track segment emitted into a fingerprinted KiCad PCB."""
+
+    source_segment_id: str
+    emitted_uuid: str
+    net_name: str
+    net_number: int = Field(gt=0)
+    layer: str
+    start_x_mm: float
+    start_y_mm: float
+    end_x_mm: float
+    end_y_mm: float
+    width_mm: float = Field(gt=0)
+
+    @property
+    def length_mm(self) -> float:
+        return math.hypot(self.end_x_mm-self.start_x_mm,self.end_y_mm-self.start_y_mm)
+
+
+class CompiledViaGeometry(BaseModel):
+    """One exact drilled via entity emitted into a fingerprinted KiCad PCB."""
+
+    source_via_id: str
+    emitted_uuid: str
+    net_name: str
+    net_number: int = Field(gt=0)
+    x_mm: float
+    y_mm: float
+    diameter_mm: float = Field(gt=0)
+    drill_mm: float = Field(gt=0)
+    layers: tuple[str, str] = ("F.Cu", "B.Cu")
+
+
+class PcbCopperStatistics(BaseModel):
+    """Counts for exact emitted copper, distinct from routing-plan intent."""
+
+    modeled_track_segment_count: int = Field(ge=0)
+    modeled_layer_transition_count: int = Field(ge=0)
+    track_segment_count: int = Field(ge=0)
+    via_count: int = Field(ge=0)
+    coalesced_layer_transition_count: int = Field(ge=0)
+    plated_through_hole_transition_count: int = Field(ge=0)
+    total_track_length_mm: float = Field(ge=0)
+
+
 class PcbCompilationReport(BaseModel):
     circuit_content_hash: str
+    artifact_fingerprint: ArtifactFingerprint
     schematic_fingerprint: ArtifactFingerprint
     source_schematic_path: Path
     constraints_hash: str
@@ -27,6 +74,26 @@ class PcbCompilationReport(BaseModel):
     lessons: list[Lesson] = Field(default_factory=list)
     routing_plan_fingerprint: str | None = None
     routing_verification: RoutingVerificationReport | None = None
+    emitted_tracks: list[CompiledTrackGeometry] = Field(default_factory=list)
+    emitted_vias: list[CompiledViaGeometry] = Field(default_factory=list)
+    copper_statistics: PcbCopperStatistics
+
+    @model_validator(mode="after")
+    def _compiled_copper_is_self_consistent(self) -> PcbCompilationReport:
+        statistics=self.copper_statistics
+        if statistics.track_segment_count != len(self.emitted_tracks):
+            raise ValueError("compiled track statistics differ from emitted geometry")
+        if statistics.via_count != len(self.emitted_vias):
+            raise ValueError("compiled via statistics differ from emitted geometry")
+        length=round(sum(track.length_mm for track in self.emitted_tracks),6)
+        if not math.isclose(statistics.total_track_length_mm,length,abs_tol=1e-9):
+            raise ValueError("compiled track length differs from emitted geometry")
+        if statistics.modeled_track_segment_count != statistics.track_segment_count:
+            raise ValueError("compiled tracks do not account for routing intent")
+        accounted=(statistics.via_count+statistics.coalesced_layer_transition_count+statistics.plated_through_hole_transition_count)
+        if statistics.modeled_layer_transition_count != accounted:
+            raise ValueError("compiled layer transitions do not account for routing intent")
+        return self
 
 
 class PcbArtifact(BaseModel):

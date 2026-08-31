@@ -16,7 +16,13 @@ from ...physical.rules import verify_physical
 from ...routing.models import RoutingPlan
 from ...routing.verifier import verify_routing
 from ..models import ArtifactFingerprint, SchematicArtifact
-from ..pcb_models import PcbArtifact, PcbCompilationReport
+from ..pcb_models import (
+    CompiledTrackGeometry,
+    CompiledViaGeometry,
+    PcbArtifact,
+    PcbCompilationReport,
+    PcbCopperStatistics,
+)
 from .sexpr import number, quote
 
 PCB_COMPILER_VERSION="0.1.0"
@@ -34,6 +40,11 @@ class PcbCompiler(Protocol):
 
 def _uuid(seed: str, identity: str) -> str:
     return str(uuid.uuid5(PCB_UUID_NAMESPACE,f"{seed}:{identity}"))
+
+
+def _normalized_number(value: float) -> float:
+    """Round exactly as the KiCad serializer does before binding geometry."""
+    return float(number(value))
 
 
 class KiCadPcbCompiler:
@@ -84,17 +95,24 @@ class KiCadPcbCompiler:
             lines.append(f'  (gr_line (start {number(a[0])} {number(a[1])}) (end {number(b[0])} {number(b[1])}) (stroke (width 0.1) (type default)) (layer "Edge.Cuts") (uuid "{_uuid(seed,f"edge:{i}")}"))')
         routing_verification=None
         source_placed=None
+        emitted_tracks=[]
+        emitted_vias=[]
+        coalesced_layer_transitions=0
+        reused_plated_through_hole_transitions=0
         if routing_plan is not None:
             if routing_plan.circuit_content_hash != circuit.content_hash or routing_plan.source_constraints_hash != constraints.content_hash:
                 raise PcbCompilationError("routing plan lineage differs from CircuitIR or placement constraints")
             source_placed=ArtifactFingerprint(digest=routing_plan.source_pcb_fingerprint)
-            placed_stub=PcbArtifact(path=destination,fingerprint=source_placed,circuit_content_hash=circuit.content_hash,schematic_fingerprint=schematic.fingerprint,source_schematic_path=schematic.path,constraints_hash=constraints.content_hash,compiler_version=PCB_COMPILER_VERSION,compilation=PcbCompilationReport(circuit_content_hash=circuit.content_hash,schematic_fingerprint=schematic.fingerprint,source_schematic_path=schematic.path,constraints_hash=constraints.content_hash,footprint_bindings=footprint_bindings,pad_bindings=pad_bindings,net_mapping=nets,physical_verification=physical))
+            placed_stub=PcbArtifact(path=destination,fingerprint=source_placed,circuit_content_hash=circuit.content_hash,schematic_fingerprint=schematic.fingerprint,source_schematic_path=schematic.path,constraints_hash=constraints.content_hash,compiler_version=PCB_COMPILER_VERSION,compilation=PcbCompilationReport(circuit_content_hash=circuit.content_hash,artifact_fingerprint=source_placed,schematic_fingerprint=schematic.fingerprint,source_schematic_path=schematic.path,constraints_hash=constraints.content_hash,footprint_bindings=footprint_bindings,pad_bindings=pad_bindings,net_mapping=nets,physical_verification=physical,copper_statistics=PcbCopperStatistics(modeled_track_segment_count=0,modeled_layer_transition_count=0,track_segment_count=0,via_count=0,coalesced_layer_transition_count=0,plated_through_hole_transition_count=0,total_track_length_mm=0)))
             routing_verification=verify_routing(circuit,placed_stub,constraints,routing_plan)
             if not routing_verification.passed:
                 raise PcbCompilationError("routing plan failed independent Ohmni verification")
             for track in routing_plan.tracks:
-                lines.append(f'  (segment (start {number(track.start.x_mm)} {number(track.start.y_mm)}) (end {number(track.end.x_mm)} {number(track.end.y_mm)}) (width {number(track.width_mm)}) (layer "{track.layer}") (net {nets[track.net_name]}) (uuid "{_uuid(seed,"track:"+track.segment_id)}"))')
+                binding=CompiledTrackGeometry(source_segment_id=track.segment_id,emitted_uuid=_uuid(seed,"track:"+track.segment_id),net_name=track.net_name,net_number=nets[track.net_name],layer=track.layer,start_x_mm=_normalized_number(track.start.x_mm),start_y_mm=_normalized_number(track.start.y_mm),end_x_mm=_normalized_number(track.end.x_mm),end_y_mm=_normalized_number(track.end.y_mm),width_mm=_normalized_number(track.width_mm))
+                emitted_tracks.append(binding)
+                lines.append(self._render_track(binding))
             unique_vias={(via.net_name,via.position.x_mm,via.position.y_mm):via for via in routing_plan.vias}
+            coalesced_layer_transitions=len(routing_plan.vias)-len(unique_vias)
             for via in unique_vias.values():
                 # A plated through-hole pad already provides the requested
                 # F.Cu/B.Cu transition; emitting a coincident drilled via would
@@ -110,8 +128,12 @@ class KiCadPcbCompiler:
                         if ((px-via.position.x_mm)**2+(py-via.position.y_mm)**2)**.5 <= min(pad.width_mm,pad.height_mm)/2:
                             reuse_pth=True;break
                     if reuse_pth:break
-                if reuse_pth:continue
-                lines.append(f'  (via (at {number(via.position.x_mm)} {number(via.position.y_mm)}) (size {number(via.diameter_mm)}) (drill {number(via.drill_mm)}) (layers "F.Cu" "B.Cu") (net {nets[via.net_name]}) (uuid "{_uuid(seed,"via:"+via.via_id)}"))')
+                if reuse_pth:
+                    reused_plated_through_hole_transitions+=1
+                    continue
+                binding=CompiledViaGeometry(source_via_id=via.via_id,emitted_uuid=_uuid(seed,"via:"+via.via_id),net_name=via.net_name,net_number=nets[via.net_name],x_mm=_normalized_number(via.position.x_mm),y_mm=_normalized_number(via.position.y_mm),diameter_mm=_normalized_number(via.diameter_mm),drill_mm=_normalized_number(via.drill_mm))
+                emitted_vias.append(binding)
+                lines.append(self._render_via(binding))
         lines += [")",""]
         payload="\n".join(lines);destination=destination.resolve();destination.parent.mkdir(parents=True,exist_ok=True);destination.write_text(payload,encoding="utf-8",newline="\n")
         digest=hashlib.sha256(payload.encode()).hexdigest();events.append(self._event(circuit,EventKind.PCB_ARTIFACT_COMPILED,"PCB artifact compiled",{"sha256":digest}))
@@ -120,8 +142,17 @@ class KiCadPcbCompiler:
         lessons=[]
         if decoupling_ids: lessons.append(Lesson(topic="Decoupling placement",body="A decoupling capacitor needs both the correct electrical net and a short physical path to its target supply. Ohmni measured the configured capacitor-to-IC distances.",derived_from_event_ids=decoupling_ids))
         if edge_ids: lessons.append(Lesson(topic="Connector placement",body="USB-C and programming connectors are constrained near a board edge for physical access; this is a placement constraint, not an electrical claim.",derived_from_event_ids=edge_ids))
-        report=PcbCompilationReport(circuit_content_hash=circuit.content_hash,schematic_fingerprint=schematic.fingerprint,source_schematic_path=schematic.path,constraints_hash=constraints.content_hash,footprint_bindings=footprint_bindings,pad_bindings=pad_bindings,net_mapping=nets,physical_verification=physical,lessons=lessons,routing_plan_fingerprint=routing_plan.content_hash if routing_plan else None,routing_verification=routing_verification)
+        copper_statistics=PcbCopperStatistics(modeled_track_segment_count=len(routing_plan.tracks) if routing_plan else 0,modeled_layer_transition_count=len(routing_plan.vias) if routing_plan else 0,track_segment_count=len(emitted_tracks),via_count=len(emitted_vias),coalesced_layer_transition_count=coalesced_layer_transitions,plated_through_hole_transition_count=reused_plated_through_hole_transitions,total_track_length_mm=round(sum(track.length_mm for track in emitted_tracks),6))
+        report=PcbCompilationReport(circuit_content_hash=circuit.content_hash,artifact_fingerprint=ArtifactFingerprint(digest=digest),schematic_fingerprint=schematic.fingerprint,source_schematic_path=schematic.path,constraints_hash=constraints.content_hash,footprint_bindings=footprint_bindings,pad_bindings=pad_bindings,net_mapping=nets,physical_verification=physical,lessons=lessons,routing_plan_fingerprint=routing_plan.content_hash if routing_plan else None,routing_verification=routing_verification,emitted_tracks=emitted_tracks,emitted_vias=emitted_vias,copper_statistics=copper_statistics)
         return PcbArtifact(path=destination,fingerprint=ArtifactFingerprint(digest=digest),circuit_content_hash=circuit.content_hash,schematic_fingerprint=schematic.fingerprint,source_schematic_path=schematic.path,constraints_hash=constraints.content_hash,compiler_version=PCB_COMPILER_VERSION,compilation=report,events=events,source_placed_pcb_fingerprint=source_placed,source_placed_pcb_path=routing_plan.source_pcb_path if routing_plan else None,routing_plan_fingerprint=routing_plan.content_hash if routing_plan else None)
+
+    @staticmethod
+    def _render_track(track):
+        return f'  (segment (start {number(track.start_x_mm)} {number(track.start_y_mm)}) (end {number(track.end_x_mm)} {number(track.end_y_mm)}) (width {number(track.width_mm)}) (layer "{track.layer}") (net {track.net_number}) (uuid "{track.emitted_uuid}"))'
+
+    @staticmethod
+    def _render_via(via):
+        return f'  (via (at {number(via.x_mm)} {number(via.y_mm)}) (size {number(via.diameter_mm)}) (drill {number(via.drill_mm)}) (layers "{via.layers[0]}" "{via.layers[1]}") (net {via.net_number}) (uuid "{via.emitted_uuid}"))'
 
     def _validate_consistency(self,circuit,schematic,footprints,pads):
         schematic_refs={b.component_ref for b in schematic.compilation.symbol_bindings}

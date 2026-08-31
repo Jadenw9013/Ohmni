@@ -46,6 +46,8 @@ Use argument arrays, not shell strings.
 - redact third-party responses when needed
 - async demo failures expose a fixed public error, never exception-derived text
 - demo diagnostics never serialize or log exception objects, values, tracebacks, or local paths
+- demo jobs use exact owned envelopes; malformed state becomes a fixed terminal failure before status evaluation
+- the local demo rejects non-finite JSON and emits neither access logs nor request-thread exception diagnostics
 
 ## Electrical safety policy for MVP
 

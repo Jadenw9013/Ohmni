@@ -4,15 +4,16 @@ from __future__ import annotations
 
 import hashlib
 import json
+import socket
+import struct
 import threading
 import time
-from http.server import ThreadingHTTPServer
 from types import SimpleNamespace
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
 from ohmni.application import DEMO_REQUEST
-from scripts.demo_server import DemoHandler, JobStore
+from scripts.demo_server import DemoHandler, DemoHTTPServer, JobStore
 
 
 def _await_terminal(store,job_id):
@@ -63,7 +64,7 @@ def test_artifact_download_freshness_is_hash_bound(tmp_path):
     manifest=fabrication/"ohmni-fabrication-manifest.json";manifest.write_text("manifest")
     digest=hashlib.sha256(path.read_bytes()).hexdigest();store=JobStore(tmp_path)
     manifest_record={"relative_path":manifest.name,"sha256":hashlib.sha256(manifest.read_bytes()).hexdigest()}
-    store.jobs[job_id]={"status":"complete","report":{"project":{"status":"READY_FOR_MANUFACTURING_REVIEW"},"schematic":{"fingerprint":digest,"current":True},"pcb":{"fingerprint":hashlib.sha256(pcb.read_bytes()).hexdigest(),"source_placed_pcb_fingerprint":hashlib.sha256(placed.read_bytes()).hexdigest(),"current":True},"release":{"status":"READY_FOR_MANUFACTURING_REVIEW","files":[{"relative_path":gerber.name,"sha256":hashlib.sha256(gerber.read_bytes()).hexdigest()}],"manifest":manifest_record,"current":True}}}
+    store.jobs[job_id]={"job_id":job_id,"status":"complete","progress":[],"report":{"project":{"status":"READY_FOR_MANUFACTURING_REVIEW"},"schematic":{"fingerprint":digest,"current":True},"pcb":{"fingerprint":hashlib.sha256(pcb.read_bytes()).hexdigest(),"source_placed_pcb_fingerprint":hashlib.sha256(placed.read_bytes()).hexdigest(),"current":True},"release":{"status":"READY_FOR_MANUFACTURING_REVIEW","files":[{"relative_path":gerber.name,"sha256":hashlib.sha256(gerber.read_bytes()).hexdigest()}],"manifest":manifest_record,"current":True}},"error":None}
     state,data=store.read_artifact(job_id,"golden.kicad_sch")
     assert state=="current" and data==b"exact"
     fresh=store.get(job_id)
@@ -98,7 +99,7 @@ def test_artifact_download_freshness_is_hash_bound(tmp_path):
     assert store.read_artifact(job_id,"missing.txt")==('unavailable',None)
 
 
-def test_unexpected_worker_exception_becomes_safe_terminal_failure(tmp_path,caplog):
+def test_unexpected_worker_exception_becomes_safe_terminal_failure(tmp_path,caplog,monkeypatch,capsys):
     touched=[]
     class Hostile:
         def __str__(self):touched.append("str");raise SystemExit("sensitive-test-value")
@@ -145,7 +146,44 @@ def test_unexpected_worker_exception_becomes_safe_terminal_failure(tmp_path,capl
     recovered["progress"].append({"unsafe":"snapshot mutation"})
     assert store.jobs[poisoned_id]["progress"]==[]
     assert store.get(poisoned_id)["progress"]==[]
-    assert not touched and "sensitive-test-value" not in caplog.text
+    secret=r"API_KEY=status-secret C:\Users\reviewer\private-board.kicad_pcb";hook_calls=[]
+    monkeypatch.setattr(threading,"excepthook",lambda args:hook_calls.append(args))
+    class HostileStatus:
+        def __hash__(self):touched.append("status-hash");raise SystemExit(secret)
+        def __eq__(self,other):touched.append("status-eq");raise SystemExit(secret)
+        def __str__(self):touched.append("status-str");raise SystemExit(secret)
+        def __repr__(self):touched.append("status-repr");raise SystemExit(secret)
+    envelope_store=JobStore(tmp_path)
+    job_id="d"*12
+    invalid_records=(
+        {"job_id":job_id,"status":[],"progress":[],"report":None,"error":None},
+        {"job_id":job_id,"status":HostileStatus(),"progress":[],"report":None,"error":None},
+        {"job_id":"e"*12,"status":"running","progress":[],"report":None,"error":None},
+        {"job_id":job_id,"status":"complete","progress":[],"report":None,"error":None},
+        {"job_id":job_id,"status":"failed","progress":[],"report":None,"error":secret},
+        {"job_id":job_id,"status":"running","progress":[],"report":None,"error":None,"extra":"unsafe"},
+    )
+    expected={"job_id":job_id,"status":"failed","progress":[],"report":None,"error":"Demo pipeline failed"}
+    for invalid in invalid_records:
+        envelope_store.jobs[job_id]=invalid
+        envelope_store._fail(job_id)
+        stored=envelope_store.jobs[job_id];recovered=envelope_store.get(job_id)
+        assert stored==expected and recovered==expected and stored is not invalid and recovered is not stored
+        assert recovered["progress"] is not stored["progress"]
+        assert envelope_store.read_artifact(job_id,"golden.kicad_sch")==('unavailable',None)
+        assert envelope_store.get(job_id)==expected
+    class PoisonPipeline:
+        def __init__(self,progress):pass
+        def run(self,destination,request):
+            with envelope_store.lock:envelope_store.jobs[next(iter(envelope_store.jobs))]["status"]=HostileStatus()
+            return SafeReport()
+    envelope_store=JobStore(tmp_path,PoisonPipeline)
+    assert _await_terminal(envelope_store,envelope_store.start("supported request"))=={
+        "job_id":next(iter(envelope_store.jobs)),"status":"failed","progress":[],"report":None,
+        "error":"Demo pipeline failed",
+    }
+    assert not touched and not hook_calls and "sensitive-test-value" not in caplog.text and secret not in caplog.text
+    captured=capsys.readouterr();assert "Traceback" not in captured.err and secret not in captured.err
 
 
 def test_expected_worker_exception_never_discloses_local_path(tmp_path,caplog):
@@ -233,7 +271,7 @@ def test_malformed_post_body_never_echoes_input(tmp_path,capsys):
     class Pipeline:
         def __init__(self,progress):pass
         def run(self,destination,request):assert request==DEMO_REQUEST;return Report()
-    DemoHandler.store=JobStore(tmp_path,Pipeline);server=ThreadingHTTPServer(("127.0.0.1",0),DemoHandler)
+    DemoHandler.store=JobStore(tmp_path,Pipeline);server=DemoHTTPServer(("127.0.0.1",0),DemoHandler)
     thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start();base=f"http://127.0.0.1:{server.server_address[1]}"
     secret=r"API_KEY=review-secret C:\Users\reviewer\private.kicad_pcb"
     try:
@@ -258,6 +296,14 @@ def test_malformed_post_body_never_echoes_input(tmp_path,capsys):
                 body=exc.read().decode();assert exc.code==400 and json.loads(body)=={"error":"invalid request"}
             else:raise AssertionError("unsupported request unexpectedly accepted")
             assert secret not in body and not DemoHandler.store.jobs
+        prefix=json.dumps({"request":DEMO_REQUEST})[:-1]
+        for constant in ("NaN","Infinity","-Infinity","1e999"):
+            nonfinite=Request(f"{base}/api/demo",data=(prefix+f',"extra":{constant}'+'}').encode(),headers={"content-type":"application/json"},method="POST")
+            try:urlopen(nonfinite)
+            except HTTPError as exc:
+                body=exc.read().decode();assert exc.code==400 and json.loads(body)=={"error":"invalid request"}
+            else:raise AssertionError("nonfinite JSON unexpectedly accepted")
+            assert not DemoHandler.store.jobs
         original_get=DemoHandler.store.get;cycle={};cycle["self"]=cycle
         DemoHandler.store.get=lambda job_id:{"job_id":job_id,"unsafe":cycle}
         try:urlopen(f"{base}/api/jobs/{'d'*12}")
@@ -265,6 +311,26 @@ def test_malformed_post_body_never_echoes_input(tmp_path,capsys):
             body=exc.read().decode();assert exc.code==500 and json.loads(body)=={"error":"response unavailable"}
         else:raise AssertionError("unsafe response unexpectedly serialized")
         finally:DemoHandler.store.get=original_get
+        target_secret="API_KEY=request-target-secret-C-Users-reviewer-private.kicad_pcb"
+        target=f"http://[::1/?{target_secret}"
+        with socket.create_connection(server.server_address) as client:
+            client.sendall(f"GET {target} HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n".encode())
+            response=b""
+            while chunk:=client.recv(4096):response+=chunk
+        headers,body=response.split(b"\r\n\r\n",1)
+        assert b" 400 " in headers.splitlines()[0]
+        assert json.loads(body)=={"error":"invalid path"} and target_secret.encode() not in body
+        entered=threading.Event();release=threading.Event();handled=threading.Event()
+        original_handle_error=server.handle_error
+        def delayed_get(job_id):entered.set();release.wait(2);return original_get(job_id)
+        def observed_handle_error(request,address):handled.set();return original_handle_error(request,address)
+        DemoHandler.store.get=delayed_get;server.handle_error=observed_handle_error
+        client=socket.create_connection(server.server_address)
+        client.sendall(b"GET /api/jobs/ffffffffffff HTTP/1.1\r\nHost: localhost\r\n\r\n")
+        assert entered.wait(2)
+        client.setsockopt(socket.SOL_SOCKET,socket.SO_LINGER,struct.pack("hh",1,0));client.close();release.set()
+        assert handled.wait(2)
+        DemoHandler.store.get=original_get;server.handle_error=original_handle_error
         canonical=Request(f"{base}/api/demo",data=json.dumps({"request":DEMO_REQUEST}).encode(),headers={"content-type":"application/json"},method="POST")
         with urlopen(canonical) as response:
             accepted=json.loads(response.read());assert response.status==202
@@ -274,6 +340,8 @@ def test_malformed_post_body_never_echoes_input(tmp_path,capsys):
         server.shutdown();server.server_close();thread.join(timeout=2)
     captured=capsys.readouterr()
     assert "Traceback" not in captured.err and "RecursionError" not in captured.err
+    assert "ConnectionResetError" not in captured.err and "BrokenPipeError" not in captured.err
+    assert secret not in captured.err and target_secret not in captured.err
 
 
 def test_http_download_serves_verified_buffer_and_rejects_alternate_paths(tmp_path):
@@ -285,19 +353,19 @@ def test_http_download_serves_verified_buffer_and_rejects_alternate_paths(tmp_pa
     gerber=fabrication/"golden-F_Cu.gtl";gerber.write_bytes(b"verified gerber")
     manifest=fabrication/"ohmni-fabrication-manifest.json";manifest.write_bytes(b"verified manifest")
     store=JobStore(tmp_path)
-    store.jobs[job_id]={"status":"complete","report":{
+    store.jobs[job_id]={"job_id":job_id,"status":"complete","progress":[],"report":{
         "project":{"status":"READY_FOR_MANUFACTURING_REVIEW"},
         "schematic":{"fingerprint":hashlib.sha256(schematic.read_bytes()).hexdigest(),"current":True},
         "pcb":{"fingerprint":hashlib.sha256(pcb.read_bytes()).hexdigest(),"source_placed_pcb_fingerprint":hashlib.sha256(placed.read_bytes()).hexdigest(),"current":True},
         "release":{"status":"READY_FOR_MANUFACTURING_REVIEW","files":[{"relative_path":gerber.name,"sha256":hashlib.sha256(gerber.read_bytes()).hexdigest()}],"manifest":{"relative_path":manifest.name,"sha256":hashlib.sha256(manifest.read_bytes()).hexdigest()},"current":True},
-    }}
+    },"error":None}
     original_read=store.read_artifact
     def mutate_after_verified_read(request_job_id,name):
         state,data=original_read(request_job_id,name)
         if name=="golden.kicad_sch":schematic.write_bytes(b"changed after verified read")
         return state,data
     store.read_artifact=mutate_after_verified_read
-    DemoHandler.store=store;server=ThreadingHTTPServer(("127.0.0.1",0),DemoHandler)
+    DemoHandler.store=store;server=DemoHTTPServer(("127.0.0.1",0),DemoHandler)
     thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start()
     base=f"http://127.0.0.1:{server.server_port}"
     try:
