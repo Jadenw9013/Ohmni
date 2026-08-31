@@ -72,11 +72,11 @@
     {
       "id": "M8-REV-INDEPENDENT-REREVIEW-4",
       "scope": "M8",
-      "reviewer": null,
+      "reviewer": "independent-review-panel-codex-r4",
       "independent": true,
-      "status": "PENDING",
+      "status": "FINDINGS_OPEN",
       "commit": "0fa74d4",
-      "notes": "Fourth remediation candidate for reopened M8-R07 and M8-R10 is commit-bound verified at 0fa74d4 and requires another fresh independent review. All earlier review rounds remain historical."
+      "notes": "Three fresh isolated reviewers inspected exact product candidate 0fa74d4 and independently ran adversarial probes plus workflow, focused, frontend, fast/full, Ruff, fixture-corpus, and integrated KiCad checks. The worker/launch and normal canonical-request fixes pass, but M8-R07 is reopened HIGH for unowned job payloads and a recursive-JSON traceback, M8-R10 is reopened MEDIUM for an unbound projection provenance input, M8-R11 is a new HIGH semantic-warning status distortion, and M8-R12 is a new LOW reduced-motion defect."
     }
   ],
   "findings": [
@@ -171,16 +171,16 @@
       "id": "M8-R07",
       "scope": "M8",
       "severity": "HIGH",
-      "status": "FIXED",
+      "status": "OPEN",
       "title": "Demo worker diagnostics disclose exception secrets and local paths",
-      "description": "Unexpected failures use LOGGER.exception, which records the raw exception value and traceback, while broad OSError, RuntimeError, and ValueError strings are copied into the client-visible job error. Adversarial probes exposed a secret in logs and a private local path in the API response, contrary to SECURITY.md.",
+      "description": "The direct worker and launch BaseException boundaries are safe, but progress/report model_dump values are published before strict JSON ownership. A hostile or non-serializable value can leave a nominally terminal job unpollable and make the HTTP request thread print a secret/path-bearing traceback. Separately, deeply nested valid JSON raises RecursionError outside the POST catch and prints a local-path traceback instead of the fixed 400 contract.",
       "affected_files": ["scripts/demo_server.py", "tests/test_demo_application.py", "SECURITY.md"],
       "found_at_commit": "93a0a10",
-      "resolution_commit": "0fa74d4",
-      "resolution": "Launch and complete daemon-worker boundaries now terminalize BaseException without binding, formatting, logging, traceback capture, or rethrow. The full worker body is inside the boundary and existing absorbing terminal-state guards remain intact.",
-      "verification": "Commit-bound regressions raise BaseException instances with hostile formatters and sentinel paths from the pipeline and thread constructor/start. Jobs become pollable failed records, formatters and threading.excepthook are untouched, stderr/job JSON contain no sentinel or traceback, and the starts-then-raises race remains terminal.",
-      "prior_remediation_attempt": {"commit": "450a0df", "outcome": "Partial; ordinary exception/API disclosure closed, but BaseException still bypassed the worker and launch boundaries."},
-      "recommended_correction": "Use a constant public failure message, never log raw exception values or traceback data, keep diagnostics failure-safe, and add API/log capture regressions."
+      "resolution_commit": null,
+      "resolution": "Fourth independent rereview reopened the finding at 0fa74d4; direct exception handling is fixed, but publication, polling, and recursive request parsing are not yet fail-safe.",
+      "verification": "Independent probes stored hostile/non-serializable progress and report payloads, reproduced unpollable complete/failed jobs, invoked threading.excepthook, and observed HTTP tracebacks. A nested 8-10 KB JSON request independently reproduced RemoteDisconnected plus a local-path RecursionError traceback with no job created.",
+      "prior_remediation_attempts": [{"commit": "450a0df", "outcome": "Partial; ordinary exception/API disclosure closed, but BaseException still bypassed worker and launch boundaries."}, {"commit": "0fa74d4", "outcome": "Partial; direct BaseException handling closed, but unowned job payloads and recursive JSON can still escape through HTTP-thread diagnostics."}],
+      "recommended_correction": "Deep-own strict JSON objects before publication, fail into a fresh constant terminal record, make snapshots and HTTP serialization constant-safe, and absorb all request parsing/validation failures without formatting them."
     },
     {
       "id": "M8-R08",
@@ -214,15 +214,44 @@
       "id": "M8-R10",
       "scope": "M8",
       "severity": "MEDIUM",
-      "status": "FIXED",
+      "status": "OPEN",
       "title": "Editable demo request can contradict fixed requirements labeled explicit",
-      "description": "The UI and server accept arbitrary request text, but the deterministic provider always returns the fixed ESP32/BME280 interpretation. A changed budget or unrelated board request therefore completes with fixed values labeled EXPLICIT and attributes them to contradictory source text.",
+      "description": "The UI, HTTP boundary, and pipeline now enforce the exact fixed request, but the public pure projection validates only its separate top-level request. It accepts a canonical request paired with a fully typed DesignReport whose explicit provenance came from a contradictory motor/$30 request, then publishes the contradictory source text under the canonical project request.",
       "affected_files": ["apps/web/index.html", "scripts/demo_server.py", "src/ohmni/application/demo.py", "tests/test_demo_application.py", "tests/test_demo_projection.py", "tests/test_demo_ui.py"],
       "found_at_commit": "450a0df",
-      "resolution_commit": "0fa74d4",
-      "resolution": "One shared exact-request validator now gates the application pipeline, pure report projection, and HTTP boundary before any work. The UI identifies and renders a read-only fixed offline fixture; every mismatch gets one non-echoing 400 and creates no job.",
-      "verification": "Commit-bound tests reject unrelated, changed-budget, whitespace-variant, missing, and non-string requests; accept only the canonical request; prove rejection precedes output creation; bind the UI literal to DEMO_REQUEST; and assert project.request plus every explicit source_text equal DEMO_REQUEST. Full 455 tests passed.",
-      "recommended_correction": "Enforce the exact scripted fixture request at the application and HTTP boundaries, make the displayed request non-editable, and add rejection/provenance regressions."
+      "resolution_commit": null,
+      "resolution": "Fourth independent rereview reopened the projection half of the finding at 0fa74d4; normal end-to-end input gating passes, but independently supplied typed provenance is not bound to the canonical request.",
+      "verification": "A real typed motor-request DesignReport combined with canonical request and valid PCB/DRC/manufacturing/BOM/package inputs produced a report whose project request was canonical while explicit source_text remained the contradictory motor/$30 request.",
+      "prior_remediation_attempt": {"commit": "0fa74d4", "outcome": "Partial; UI, HTTP, pipeline, and direct top-level projection request are fixed, but projection does not validate explicit provenance inside DesignReport."},
+      "recommended_correction": "Before consuming other projection inputs, require every EXPLICIT provenance source_text to equal the validated canonical request and reject any contradictory typed design."
+    },
+    {
+      "id": "M8-R11",
+      "scope": "M8",
+      "severity": "HIGH",
+      "status": "OPEN",
+      "title": "Semantic verification warning is projected as PASS",
+      "description": "The demo projection derives semantic status only from export_blocked. The golden design contains a hand-solderability warning and typed PARTIALLY_VERIFIED subsystem status with export_blocked false, yet the application contract and frontend render PASS.",
+      "affected_files": ["src/ohmni/application/demo.py", "apps/web/app.js", "tests/test_demo_projection.py", "tests/test_routing.py"],
+      "found_at_commit": "0fa74d4",
+      "resolution_commit": null,
+      "resolution": null,
+      "verification": "Independent reproduction found PB-ID-005 FAIL/warning, identity subsystem PARTIALLY_VERIFIED, export_blocked false, and projected semantic status PASS.",
+      "recommended_correction": "Project the deterministic typed subsystem status without recomputing it; preserve the warning state in the frontend contract and add an integrated regression."
+    },
+    {
+      "id": "M8-R12",
+      "scope": "M8",
+      "severity": "LOW",
+      "status": "OPEN",
+      "title": "Reduced-motion preference is overridden by forced smooth scrolling",
+      "description": "Completion unconditionally requests JavaScript smooth scrolling, which CSS reduced-motion rules cannot override.",
+      "affected_files": ["apps/web/app.js", "apps/web/tests/view-model.test.mjs"],
+      "found_at_commit": "0fa74d4",
+      "resolution_commit": null,
+      "resolution": null,
+      "verification": "Independent static/runtime inspection confirmed scrollIntoView always receives behavior smooth under prefers-reduced-motion: reduce.",
+      "recommended_correction": "Omit explicit smooth behavior or gate it with matchMedia and add a frontend regression."
     }
   ]
 }
