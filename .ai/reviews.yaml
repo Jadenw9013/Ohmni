@@ -59,6 +59,15 @@
       "status": "FINDINGS_OPEN",
       "commit": "93a0a10",
       "notes": "Fresh isolated reviewers inspected exact product candidate 93a0a10, ran workflow, focused Python/frontend, fast, integration, slow/full KiCad, verifier-corpus, Ruff, and adversarial probes. M8-R02 and M8-R05 are resolved, but M8-R07 is a new MEDIUM diagnostics disclosure; M8-R08 and M8-R09 are LOW record/reliability findings. Milestone 8 remains open under standing remediation authorization."
+    },
+    {
+      "id": "M8-REV-INDEPENDENT-REREVIEW-3",
+      "scope": "M8",
+      "reviewer": null,
+      "independent": true,
+      "status": "PENDING",
+      "commit": "450a0df",
+      "notes": "Third remediation candidate for M8-R07, M8-R08, and M8-R09 is commit-bound verified at 450a0df and requires another fresh independent review. All earlier review rounds remain historical."
     }
   ],
   "findings": [
@@ -153,42 +162,42 @@
       "id": "M8-R07",
       "scope": "M8",
       "severity": "MEDIUM",
-      "status": "OPEN",
+      "status": "FIXED",
       "title": "Demo worker diagnostics disclose exception secrets and local paths",
       "description": "Unexpected failures use LOGGER.exception, which records the raw exception value and traceback, while broad OSError, RuntimeError, and ValueError strings are copied into the client-visible job error. Adversarial probes exposed a secret in logs and a private local path in the API response, contrary to SECURITY.md.",
       "affected_files": ["scripts/demo_server.py", "tests/test_demo_application.py", "SECURITY.md"],
       "found_at_commit": "93a0a10",
-      "resolution_commit": null,
-      "resolution": null,
-      "verification": "Two independent reviewers reproduced raw KeyError secret text in captured logs; one also reproduced a FileNotFoundError path in job.error. Terminal state still completed correctly.",
+      "resolution_commit": "450a0df",
+      "resolution": "All async worker failures now expose one constant public error and never stringify, format, serialize, or log exception objects, values, tracebacks, or paths. Malformed POST input also returns a fixed validation error, and SECURITY.md records the invariant.",
+      "verification": "Commit-bound adversarial tests cover secret-bearing unexpected exceptions, private-path FileNotFoundError, broken __str__/__repr__, malformed HTTP bodies, and zero captured diagnostic records. Focused 26 and full 455 tests passed.",
       "recommended_correction": "Use a constant public failure message, never log raw exception values or traceback data, keep diagnostics failure-safe, and add API/log capture regressions."
     },
     {
       "id": "M8-R08",
       "scope": "M8",
       "severity": "LOW",
-      "status": "OPEN",
+      "status": "FIXED",
       "title": "Thread launch failure leaves an orphaned queued job",
       "description": "JobStore.start publishes a queued record before Thread.start. If thread launch raises, the caller receives no job ID but the stored record remains permanently queued.",
       "affected_files": ["scripts/demo_server.py", "tests/test_demo_application.py"],
       "found_at_commit": "93a0a10",
-      "resolution_commit": null,
-      "resolution": null,
-      "verification": "Two independent reviewers mocked Thread.start to raise RuntimeError and observed one stored queued job with no terminal transition.",
+      "resolution_commit": "450a0df",
+      "resolution": "Thread construction and start failures now return the generated pollable job ID after applying the same constant-safe terminal failed state. Complete and failed states are absorbing under the store lock so a starts-then-raises race cannot revert a terminal job.",
+      "verification": "Commit-bound tests cover constructor failure, start failure, exception formatters that raise, and a synchronized worker-starts-then-launch-raises race while retaining normal async completion behavior.",
       "recommended_correction": "Convert thread-construction or launch failures into the same constant-safe terminal failed record and return its job ID."
     },
     {
       "id": "M8-R09",
       "scope": "M8",
       "severity": "LOW",
-      "status": "OPEN",
+      "status": "FIXED",
       "title": "README test inventory is stale",
       "description": "README.md reports 448 tests while the exact candidate full gate contains 452 tests.",
       "affected_files": ["README.md"],
       "found_at_commit": "93a0a10",
-      "resolution_commit": null,
-      "resolution": null,
-      "verification": "Independent full verification reproduced 452 passing tests.",
+      "resolution_commit": "450a0df",
+      "resolution": "README.md now reports the exact 455-test inventory of the third remediation candidate.",
+      "verification": "Commit-bound full verification reproduced 455 passing tests in 106.73 seconds.",
       "recommended_correction": "Update the documented test inventory at the next verified candidate."
     }
   ]
