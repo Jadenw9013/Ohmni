@@ -18,6 +18,15 @@
       "approved_by": "human",
       "approval_evidence": "Human instruction: 'Human approval: create and execute Milestone 8.'",
       "review_policy": "independent review required for COMPLETE; unavailable permits VERIFIED only"
+    },
+    {
+      "id": "M8-REGRESSION-1",
+      "type": "post_milestone_regression",
+      "title": "Milestone 8 local demo startup operability",
+      "status": "IN_PROGRESS",
+      "approved_by": "human",
+      "approval_evidence": "Human instruction reporting the real local Run scripted engineering workflow failure and explicitly authorizing a post-M8 regression fix without beginning Milestone 9.",
+      "review_policy": "focused regression review required; accepted M8 product history remains unchanged"
     }
   ],
   "tasks": [
@@ -101,6 +110,18 @@
       "implementation": {"started_at_commit": "ff4309a", "remediation_commit": "371e0a4", "prior_remediation_starts": ["fd4352b", "6bef107", "61e5f4e", "9318005"], "latest_remediation_started_at_commit": "db1cca2", "latest_remediation_commit": "3a6f9d3", "remediation_commits": ["371e0a4", "93a0a10", "450a0df", "0fa74d4", "e178b0d", "3a6f9d3"], "completed_at_commit": "db4e6dc"},
       "review": {"required": true, "status": "PASSED", "independent": true},
       "remediation_authorization": "Standing human authorization plus bounded-review correction: remediate current in-scope M8-R07 and M8-R13 HIGH findings; fix directly related small M8-R14 MEDIUM and M8-R15 LOW; run the canonical full suite once; then launch exactly one focused final independent reviewer. Previously confirmed findings stay closed absent a reproduced regression. No further parallel/broad M8 panels. Do not begin or approve M9.",
+      "blockers": []
+    },
+    {
+      "id": "M8-RG01", "scope": "M8-REGRESSION-1", "milestone": "M8",
+      "title": "Restore documented local demo startup and completion", "status": "IN_PROGRESS", "priority": 100,
+      "dependencies": [],
+      "goal": "Make one documented local demo server own its endpoint exclusively and prove the real browser-to-server golden workflow starts and completes.",
+      "acceptance_criteria": ["The documented command starts one exclusive local server", "The loaded UI starts the server-owned deterministic fixture", "A fresh browser run completes the existing verified golden pipeline", "Failure messages remain safe and actionable", "Artifact integrity and verification truth are unchanged", "No Milestone 9 work is begun or approved"],
+      "verification": {"required": ["state_validation", "focused_server_tests", "frontend_tests", "fast_tests", "documented_command_browser_smoke"], "record": ".ai/verification/M8-REGRESSION-1.yaml"},
+      "implementation": {"started_at_commit": "52a0eeb", "completed_at_commit": null},
+      "review": {"required": true, "status": "PENDING", "independent": false},
+      "remediation_authorization": "Direct human authorization to diagnose and fix this post-M8 operability regression; do not begin or approve M9.",
       "blockers": []
     }
   ]
