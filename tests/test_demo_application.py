@@ -26,12 +26,14 @@ def _await_terminal(store,job_id):
 
 def test_async_job_store_reports_actual_progress_without_premature_completion(tmp_path):
     finished=threading.Event()
+    progress_value={"stage":"semantic","status":"RUNNING","percent":20,"label":"Checking","detail":{"checks":["original"]}}
+    report_value={"result":{"status":"complete","checks":["original"]}}
     class Report:
-        def model_dump(self,mode=None):return {"result":"complete"}
+        def model_dump(self,mode=None):return report_value
     class Pipeline:
         def __init__(self,progress):self.progress=progress
         def run(self,destination,request):
-            self.progress(SimpleNamespace(model_dump=lambda mode=None:{"stage":"semantic","status":"RUNNING","percent":20,"label":"Checking","detail":""}))
+            self.progress(SimpleNamespace(model_dump=lambda mode=None:progress_value))
             finished.set();return Report()
     store=JobStore(tmp_path,Pipeline);job_id=store.start("supported request")
     assert finished.wait(timeout=2)
@@ -41,7 +43,16 @@ def test_async_job_store_reports_actual_progress_without_premature_completion(tm
         finished.wait(.01)
     assert job["status"]=="complete"
     assert job["progress"][0]["status"]=="RUNNING"
-    assert job["report"]["result"]=="complete"
+    assert job["report"]["result"]["status"]=="complete"
+    progress_value["detail"]["checks"].append("source mutation")
+    report_value["result"]["checks"].append("source mutation")
+    job["progress"][0]["detail"]["checks"].append("snapshot mutation")
+    job["report"]["result"]["checks"].append("snapshot mutation")
+    fresh=store.get(job_id)
+    assert fresh["progress"][0]["detail"]["checks"]==["original"]
+    assert fresh["report"]["result"]["checks"]==["original"]
+    store._fail(job_id)
+    assert store.get(job_id)["status"]=="complete"
 
 
 def test_artifact_download_freshness_is_hash_bound(tmp_path):
@@ -88,24 +99,65 @@ def test_artifact_download_freshness_is_hash_bound(tmp_path):
 
 
 def test_unexpected_worker_exception_becomes_safe_terminal_failure(tmp_path,caplog):
-    class Pipeline:
-        def __init__(self,progress):pass
-        def run(self,destination,request):raise KeyError("sensitive-test-value")
-    store=JobStore(tmp_path,Pipeline)
-    job=_await_terminal(store,store.start("supported request"))
-    assert job["status"]=="failed" and job["report"] is None and not job["progress"]
-    assert job["error"]=="Demo pipeline failed"
-    assert "sensitive-test-value" not in caplog.text
+    touched=[]
+    class Hostile:
+        def __str__(self):touched.append("str");raise SystemExit("sensitive-test-value")
+        def __repr__(self):touched.append("repr");raise SystemExit("sensitive-test-value")
+    class CustomDict(dict):
+        def items(self):touched.append("items");raise SystemExit("sensitive-test-value")
+    class CustomList(list):pass
+    cycle={};cycle["cycle"]=cycle
+    invalid_values=(
+        [],
+        CustomDict(result="unsafe"),
+        {"nested":Hostile()},
+        {"nested":CustomList(["unsafe"])},
+        cycle,
+        {"number":float("nan")},
+        {"number":float("inf")},
+    )
+    class SafeReport:
+        def model_dump(self,mode=None):return {"result":"must not publish"}
+    def pipeline_for(boundary,value):
+        class Pipeline:
+            def __init__(self,progress):self.progress=progress
+            def run(self,destination,request):
+                if boundary=="progress":
+                    self.progress(SimpleNamespace(model_dump=lambda mode=None:value));return SafeReport()
+                self.progress(SimpleNamespace(model_dump=lambda mode=None:{"stage":"semantic","status":"RUNNING"}))
+                return SimpleNamespace(model_dump=lambda mode=None:value)
+        return Pipeline
+    for boundary in ("progress","report"):
+        for value in invalid_values:
+            store=JobStore(tmp_path,pipeline_for(boundary,value))
+            job=_await_terminal(store,store.start("supported request"))
+            assert job=={
+                "job_id":job["job_id"],"status":"failed","progress":[],"report":None,
+                "error":"Demo pipeline failed",
+            }
+    poisoned_id="c"*12;poisoned={};poisoned["self"]=poisoned
+    store.jobs[poisoned_id]={"job_id":poisoned_id,"status":"running","progress":[poisoned],"report":None,"error":None}
+    recovered=store.get(poisoned_id)
+    assert recovered=={
+        "job_id":poisoned_id,"status":"failed","progress":[],"report":None,
+        "error":"Demo pipeline failed",
+    }
+    recovered["progress"].append({"unsafe":"snapshot mutation"})
+    assert store.jobs[poisoned_id]["progress"]==[]
+    assert store.get(poisoned_id)["progress"]==[]
+    assert not touched and "sensitive-test-value" not in caplog.text
 
 
 def test_expected_worker_exception_never_discloses_local_path(tmp_path,caplog):
     private_path=r"C:\Users\reviewer\private-board.kicad_pcb"
     class Pipeline:
-        def __init__(self,progress):pass
-        def run(self,destination,request):raise FileNotFoundError(private_path)
+        def __init__(self,progress):self.progress=progress
+        def run(self,destination,request):
+            self.progress(SimpleNamespace(model_dump=lambda mode=None:{"stage":"semantic","status":"RUNNING"}))
+            raise FileNotFoundError(private_path)
     store=JobStore(tmp_path,Pipeline)
     job=_await_terminal(store,store.start("supported request"))
-    assert job["status"]=="failed" and job["report"] is None
+    assert job["status"]=="failed" and job["report"] is None and not job["progress"]
     assert job["error"]=="Demo pipeline failed"
     assert private_path not in caplog.text and private_path not in json.dumps(job)
 
@@ -117,12 +169,21 @@ def test_exception_string_failure_still_becomes_terminal(tmp_path,capsys,monkeyp
     class BrokenString(BaseException):
         def __str__(self):touched.append("str");raise SystemExit("format-failed")
         def __repr__(self):touched.append("repr");raise SystemExit("repr-failed")
-    class Pipeline:
-        def __init__(self,progress):pass
-        def run(self,destination,request):raise BrokenString(secret)
-    store=JobStore(tmp_path,Pipeline);job=_await_terminal(store,store.start("supported request"))
-    assert job["status"]=="failed" and job["report"] is None
-    assert job["error"]=="Demo pipeline failed"
+    def pipeline_for(boundary):
+        class Pipeline:
+            def __init__(self,progress):self.progress=progress
+            def run(self,destination,request):
+                if boundary=="worker":raise BrokenString(secret)
+                if boundary=="progress":
+                    self.progress(SimpleNamespace(model_dump=lambda mode=None:(_ for _ in ()).throw(BrokenString(secret))))
+                    return SimpleNamespace(model_dump=lambda mode=None:{"result":"must not publish"})
+                self.progress(SimpleNamespace(model_dump=lambda mode=None:{"stage":"semantic","status":"RUNNING"}))
+                return SimpleNamespace(model_dump=lambda mode=None:(_ for _ in ()).throw(BrokenString(secret)))
+        return Pipeline
+    for boundary in ("worker","progress","report"):
+        store=JobStore(tmp_path,pipeline_for(boundary));job=_await_terminal(store,store.start("supported request"))
+        assert job["status"]=="failed" and job["report"] is None and not job["progress"]
+        assert job["error"]=="Demo pipeline failed"
     assert not touched and not hook_calls and secret not in json.dumps(job)
     captured=capsys.readouterr();assert "Traceback" not in captured.err and "format-failed" not in captured.err
 
@@ -146,26 +207,27 @@ def test_worker_launch_failures_create_pollable_terminal_jobs(tmp_path,monkeypat
 
 
 def test_launch_failure_is_absorbing_if_worker_already_started(tmp_path,monkeypatch):
-    entered=threading.Event();release=threading.Event();finished=threading.Event();real_thread=threading.Thread
+    entered=threading.Event();release=threading.Event();returned=threading.Event();dumped=threading.Event();real_thread=threading.Thread
     class Report:
-        def model_dump(self,mode=None):finished.set();return {"result":"should not publish"}
+        def model_dump(self,mode=None):dumped.set();return {"result":"should not publish"}
     class Pipeline:
         def __init__(self,progress):self.progress=progress
         def run(self,destination,request):
             self.progress(SimpleNamespace(model_dump=lambda mode=None:{"stage":"semantic","status":"RUNNING"}))
-            entered.set();release.wait(2);return Report()
+            entered.set();release.wait(2);returned.set();return Report()
     class StartsThenRaises:
         def __init__(self,*args,**kwargs):self.worker=real_thread(*args,**kwargs)
         def start(self):self.worker.start();assert entered.wait(2);raise RuntimeError("launch failed after start")
     monkeypatch.setattr("scripts.demo_server.threading.Thread",StartsThenRaises)
     store=JobStore(tmp_path,Pipeline);job_id=store.start("supported request")
     assert store.get(job_id)["status"]=="failed"
-    release.set();assert finished.wait(2)
+    release.set();assert returned.wait(2) and not dumped.is_set()
     job=store.get(job_id)
-    assert job["status"]=="failed" and job["report"] is None and job["error"]=="Demo pipeline failed"
+    assert job["status"]=="failed" and not job["progress"] and job["report"] is None
+    assert job["error"]=="Demo pipeline failed"
 
 
-def test_malformed_post_body_never_echoes_input(tmp_path):
+def test_malformed_post_body_never_echoes_input(tmp_path,capsys):
     class Report:
         def model_dump(self,mode=None):return {"result":"canonical request accepted"}
     class Pipeline:
@@ -182,6 +244,13 @@ def test_malformed_post_body_never_echoes_input(tmp_path):
             body=exc.read().decode();assert exc.code==400 and json.loads(body)=={"error":"invalid request"}
         else:raise AssertionError("malformed request unexpectedly accepted")
         assert secret not in body
+        deep=b'{"request":'+(b'['*1200)+b'0'+(b']'*1200)+b'}'
+        request=Request(f"{base}/api/demo",data=deep,headers={"content-type":"application/json"},method="POST")
+        try:urlopen(request)
+        except HTTPError as exc:
+            body=exc.read().decode();assert exc.code==400 and json.loads(body)=={"error":"invalid request"}
+        else:raise AssertionError("deep request unexpectedly accepted")
+        assert not DemoHandler.store.jobs
         for payload in ({"request":secret},{"request":DEMO_REQUEST+" "},{},{"request":30}):
             unsupported=Request(f"{base}/api/demo",data=json.dumps(payload).encode(),headers={"content-type":"application/json"},method="POST")
             try:urlopen(unsupported)
@@ -189,6 +258,13 @@ def test_malformed_post_body_never_echoes_input(tmp_path):
                 body=exc.read().decode();assert exc.code==400 and json.loads(body)=={"error":"invalid request"}
             else:raise AssertionError("unsupported request unexpectedly accepted")
             assert secret not in body and not DemoHandler.store.jobs
+        original_get=DemoHandler.store.get;cycle={};cycle["self"]=cycle
+        DemoHandler.store.get=lambda job_id:{"job_id":job_id,"unsafe":cycle}
+        try:urlopen(f"{base}/api/jobs/{'d'*12}")
+        except HTTPError as exc:
+            body=exc.read().decode();assert exc.code==500 and json.loads(body)=={"error":"response unavailable"}
+        else:raise AssertionError("unsafe response unexpectedly serialized")
+        finally:DemoHandler.store.get=original_get
         canonical=Request(f"{base}/api/demo",data=json.dumps({"request":DEMO_REQUEST}).encode(),headers={"content-type":"application/json"},method="POST")
         with urlopen(canonical) as response:
             accepted=json.loads(response.read());assert response.status==202
@@ -196,6 +272,8 @@ def test_malformed_post_body_never_echoes_input(tmp_path):
         assert job["status"]=="complete" and job["report"]=={"result":"canonical request accepted"}
     finally:
         server.shutdown();server.server_close();thread.join(timeout=2)
+    captured=capsys.readouterr()
+    assert "Traceback" not in captured.err and "RecursionError" not in captured.err
 
 
 def test_http_download_serves_verified_buffer_and_rejects_alternate_paths(tmp_path):

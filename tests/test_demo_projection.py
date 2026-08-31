@@ -4,7 +4,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from ohmni.application.demo import DemoPipeline, _evidence_rows
+from ohmni.application.demo import DemoPipeline, _evidence_rows, project_demo_report
 from ohmni.application.visuals import pcb_svg, schematic_svg
 from ohmni.catalog import default_catalog
 from ohmni.eda.kicad import KiCadSchematicCompiler
@@ -26,6 +26,17 @@ def test_scripted_demo_exposes_real_failure_repair_and_notebook(tmp_path):
     with pytest.raises(ValueError,match="displayed deterministic"):
         DemoPipeline().run(unsupported,"Build a motor controller with a $30 budget")
     assert not unsupported.exists()
+    contradictory_request="Build a motor controller with a $30 budget"
+    contradictory=DesignOrchestrator(flawed_logger_provider(),default_catalog()).design(
+        contradictory_request,run_eda=False,
+    )
+    assert {
+        statement.source_text
+        for statement in contradictory.requirements.provenance
+        if statement.origin.value=="explicit"
+    }=={contradictory_request}
+    with pytest.raises(ValueError,match="displayed deterministic"):
+        project_demo_report(request=GOLDEN_REQUEST,design=contradictory)
 
 
 def test_evidence_projection_keeps_catalog_strength_truthful():

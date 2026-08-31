@@ -14,7 +14,7 @@
       "id": "M8",
       "type": "product_milestone",
       "title": "Ohmni End-User Experience and Demo",
-      "status": "REVIEW",
+      "status": "IN_PROGRESS",
       "approved_by": "human",
       "approval_evidence": "Human instruction: 'Human approval: create and execute Milestone 8.'",
       "review_policy": "independent review required for COMPLETE; unavailable permits VERIFIED only"
@@ -93,15 +93,15 @@
     },
     {
       "id": "M8-T05", "scope": "M8", "milestone": "M8",
-      "title": "Review and close Milestone 8", "status": "BLOCKED", "priority": 60,
+      "title": "Review and close Milestone 8", "status": "IN_PROGRESS", "priority": 60,
       "dependencies": ["M8-T04"],
       "goal": "Run repository-backed review and completion gates, resolve blocking findings, and record the accepted Milestone 8 baseline.",
       "acceptance_criteria": ["Review state is honest", "No open BLOCKER/HIGH findings", "Task and milestone ledgers match commits", "No Milestone 9 is approved"],
       "verification": {"required": ["state_validation", "review_gate"], "record": ".ai/verification/M8-R07-R10.yaml"},
-      "implementation": {"started_at_commit": "ff4309a", "remediation_commit": "371e0a4", "prior_remediation_starts": ["fd4352b", "6bef107"], "latest_remediation_started_at_commit": "61e5f4e", "latest_remediation_commit": "0fa74d4", "remediation_commits": ["371e0a4", "93a0a10", "450a0df", "0fa74d4"], "completed_at_commit": null},
-      "review": {"required": true, "status": "PENDING", "independent": true},
-      "remediation_authorization": "Standing human authorization: automatically remediate current BLOCKER/HIGH/MEDIUM independent-review findings inside any human-approved milestone, verify, and repeat independent re-review until clear. Reopened M8-R07 HIGH and M8-R10 MEDIUM are automatically authorized inside approved M8. Do not begin or approve M9.",
-      "blockers": ["Fourth independent rereview at 0fa74d4 reopened M8-R07 HIGH and M8-R10 MEDIUM and opened M8-R11 HIGH plus M8-R12 LOW. Standing human authorization permits in-scope remediation, but M8 cannot complete until fixes are commit-bound verified and freshly independently rereviewed."]
+      "implementation": {"started_at_commit": "ff4309a", "remediation_commit": "371e0a4", "prior_remediation_starts": ["fd4352b", "6bef107", "61e5f4e"], "latest_remediation_started_at_commit": "9318005", "latest_remediation_commit": "0fa74d4", "remediation_commits": ["371e0a4", "93a0a10", "450a0df", "0fa74d4"], "completed_at_commit": null},
+      "review": {"required": true, "status": "FINDINGS_OPEN", "independent": true},
+      "remediation_authorization": "Standing human authorization: automatically remediate current BLOCKER/HIGH/MEDIUM independent-review findings inside any human-approved milestone, verify, and repeat independent re-review until clear. Current M8-R07 HIGH, M8-R10 MEDIUM, and M8-R11 HIGH are automatically authorized inside approved M8; M8-R12 LOW is a bounded accessibility correction inside M8-T02/T05 acceptance. Do not begin or approve M9.",
+      "blockers": []
     }
   ]
 }

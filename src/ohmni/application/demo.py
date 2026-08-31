@@ -13,9 +13,10 @@ from pydantic import BaseModel, Field
 
 from ..bom import calculate_cost, classify_assembly, generate_bom, synthetic_fixture_supplier
 from ..catalog import default_catalog
+from ..domain import VerificationReport
 from ..eda.kicad import KiCadCliAdapter, KiCadPcbCompiler
 from ..eda.kicad.placement import golden_board_constraints
-from ..generation import DesignOrchestrator
+from ..generation import DesignOrchestrator, DesignReport, RequirementOrigin
 from ..generation.fixtures import GOLDEN_REQUEST, flawed_logger_provider
 from ..manufacturing import (
     KiCadFabricationExporter,
@@ -36,6 +37,33 @@ def require_demo_request(value: object) -> str:
     if not isinstance(value, str) or value != DEMO_REQUEST:
         raise ValueError(UNSUPPORTED_DEMO_REQUEST)
     return DEMO_REQUEST
+
+
+def _require_demo_design_provenance(design: DesignReport, request: str) -> DesignReport:
+    """Bind every explicit typed requirement statement to the scripted request."""
+    provenance = design.requirements.provenance if design.requirements is not None else []
+    if any(
+        statement.origin is RequirementOrigin.EXPLICIT and statement.source_text != request
+        for statement in provenance
+    ):
+        raise ValueError(UNSUPPORTED_DEMO_REQUEST)
+    return design
+
+
+def _semantic_ladder(report: VerificationReport, initial_blocking: int) -> list[dict[str, object]]:
+    """Project report-owned subsystem roll-ups without inventing an overall verdict."""
+    return [
+        {
+            "stage": f"Ohmni semantic verification — {name.replace('_', ' ').title()}",
+            "subsystem": name,
+            "status": status.value,
+            "detail": (
+                "Deterministic subsystem roll-up from 24 rules; "
+                f"initial proposal had {initial_blocking} blocking findings"
+            ),
+        }
+        for name, status in report.subsystem_status.items()
+    ]
 
 
 class DemoProgress(BaseModel):
@@ -157,7 +185,9 @@ def _evidence_rows(catalog) -> list[dict[str, object]]:
 
 def project_demo_report(**values) -> DemoReport:
     """Pure presentation projection; inputs are already verified subsystem reports."""
-    request=require_demo_request(values["request"]);design=values["design"];catalog=values["catalog"]
+    request = require_demo_request(values["request"])
+    design = _require_demo_design_provenance(values["design"], request)
+    catalog=values["catalog"]
     board=values["board"];plan=values["plan"];route_report=values["route_report"]
     routed=values["routed"];drc=values["drc"];manufacturing=values["manufacturing"]
     bom=values["bom"];costs=values["costs"];assembly=values["assembly"];package=values["package"]
@@ -194,7 +224,7 @@ def project_demo_report(**values) -> DemoReport:
     ladder=[
         {"stage":"Requirements","status":"PASS","detail":f"{len(requirements)} provenance-labeled statements"},
         {"stage":"Datasheet evidence","status":"PASS_WITH_WARNINGS","detail":"Electrical claims retain catalog/datasheet provenance; seed citations are not overstated"},
-        {"stage":"Ohmni semantic verification","status":_status(not last.export_blocked),"detail":f"24 deterministic rules; initial proposal had {len(blocking)} blocking findings"},
+        *_semantic_ladder(last, len(blocking)),
         {"stage":"KiCad ERC","status":design.erc.status.value.upper(),"detail":f"{len(design.erc.findings)} findings on exact schematic"},
         {"stage":"Ohmni physical verification","status":_status(routed.compilation.physical_verification.passed),"detail":f"{len(routed.compilation.physical_verification.findings)} geometry checks"},
         {"stage":"Ohmni routing verification","status":_status(route_report.passed),"detail":f"{plan.statistics.required_connections} required connections"},

@@ -108,6 +108,13 @@ def test_golden_routing_closes_real_kicad_drc_and_stales_on_change(tmp_path,gold
         project_demo_report(request="Build a motor controller with a $30 budget",design=design,catalog=catalog,board=board,placed=placed,plan=plan,route_report=report,routed=routed,drc=drc,manufacturing=manufacturing,bom=bom,costs=costs,assembly=assembly,package=package)
     assert demo.project["request"]==DEMO_REQUEST
     assert {row["source_text"] for row in demo.requirements if row["origin"]=="explicit"}=={DEMO_REQUEST}
+    semantic_rows={row["subsystem"]:row for row in demo.verification_ladder if "subsystem" in row}
+    assert {name:row["status"] for name,row in semantic_rows.items()}=={
+        name:status.value for name,status in design.semantic_attempts[-1].subsystem_status.items()
+    }
+    assert any(f.rule_id=="PB-ID-005" and f.severity.value=="warning" for f in design.semantic_attempts[-1].findings)
+    assert semantic_rows["identity"]["status"]=="PARTIALLY_VERIFIED"
+    assert semantic_rows["identity"]["status"]!="PASS"
     assert demo.failure_and_repair["rule"]=="PB-PWR-001"
     assert demo.pcb["violations"]==0 and demo.pcb["unrouted"]==0
     assert demo.release["status"]=="READY_FOR_MANUFACTURING_REVIEW"
