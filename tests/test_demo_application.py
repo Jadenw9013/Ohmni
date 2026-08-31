@@ -13,7 +13,14 @@ from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
 from ohmni.application import DEMO_REQUEST
-from scripts.demo_server import DemoHandler, DemoHTTPServer, JobStore
+from scripts import demo_server as demo_server_module
+from scripts.demo_server import (
+    DEMO_FIXTURE_ID,
+    STARTUP_FAILURE_MESSAGE,
+    DemoHandler,
+    DemoHTTPServer,
+    JobStore,
+)
 
 
 def _await_terminal(store,job_id):
@@ -23,6 +30,32 @@ def _await_terminal(store,job_id):
         if job["status"] in {"complete","failed"}:return job
         time.sleep(.01)
     return store.get(job_id)
+
+
+def test_live_demo_endpoint_has_one_owner():
+    first=DemoHTTPServer(("127.0.0.1",0),DemoHandler);port=first.server_port;second=None
+    try:
+        if hasattr(socket,"SO_EXCLUSIVEADDRUSE"):
+            assert not first.allow_reuse_address
+            assert first.socket.getsockopt(socket.SOL_SOCKET,socket.SO_EXCLUSIVEADDRUSE)==1
+        try:second=DemoHTTPServer(("127.0.0.1",port),DemoHandler)
+        except OSError:pass
+        else:raise AssertionError("a second demo server unexpectedly claimed the live endpoint")
+    finally:
+        if second is not None:second.server_close()
+        first.server_close()
+
+
+def test_main_bind_failure_is_fixed_actionable_and_sanitized(monkeypatch,capsys):
+    secret=r"API_KEY=bind-secret C:\Users\reviewer\private-endpoint"
+    class BindFailure:
+        def __init__(self,*_args,**_kwargs):raise OSError(secret)
+    monkeypatch.setattr(demo_server_module,"DemoHTTPServer",BindFailure)
+    assert demo_server_module.main(["--host","127.0.0.1","--port","8765"])==1
+    captured=capsys.readouterr()
+    assert captured.out==""
+    assert captured.err==STARTUP_FAILURE_MESSAGE+"\n"
+    assert secret not in captured.err and "Traceback" not in captured.err
 
 
 def test_async_job_store_reports_actual_progress_without_premature_completion(tmp_path):
@@ -266,15 +299,23 @@ def test_launch_failure_is_absorbing_if_worker_already_started(tmp_path,monkeypa
 
 
 def test_malformed_post_body_never_echoes_input(tmp_path,capsys):
+    requests_seen=[]
     class Report:
         def model_dump(self,mode=None):return {"result":"canonical request accepted"}
     class Pipeline:
         def __init__(self,progress):pass
-        def run(self,destination,request):assert request==DEMO_REQUEST;return Report()
+        def run(self,destination,request):requests_seen.append(request);assert request==DEMO_REQUEST;return Report()
     DemoHandler.store=JobStore(tmp_path,Pipeline);server=DemoHTTPServer(("127.0.0.1",0),DemoHandler)
     thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start();base=f"http://127.0.0.1:{server.server_address[1]}"
     secret=r"API_KEY=review-secret C:\Users\reviewer\private.kicad_pcb"
     try:
+        with urlopen(f"{base}/api/health") as response:
+            assert response.status==200
+            assert json.loads(response.read())=={"status":"ready","fixture_id":DEMO_FIXTURE_ID}
+            assert response.headers["cache-control"]=="no-store"
+        with urlopen(f"{base}/") as response:
+            assert response.status==200 and b"Ohmni" in response.read()
+            assert response.headers["cache-control"]=="no-store"
         malformed=f'{{"request":"{secret}'.encode()
         request=Request(f"{base}/api/demo",data=malformed,headers={"content-type":"application/json"},method="POST")
         try:urlopen(request)
@@ -289,7 +330,13 @@ def test_malformed_post_body_never_echoes_input(tmp_path,capsys):
             body=exc.read().decode();assert exc.code==400 and json.loads(body)=={"error":"invalid request"}
         else:raise AssertionError("deep request unexpectedly accepted")
         assert not DemoHandler.store.jobs
-        for payload in ({"request":secret},{"request":DEMO_REQUEST+" "},{},{"request":30}):
+        for payload in (
+            {"request":secret},{"request":DEMO_REQUEST+" "},{},{"request":30},
+            {"fixture_id":DEMO_FIXTURE_ID+"-mutated"},
+            {"fixture_id":DEMO_FIXTURE_ID,"extra":"not allowed"},
+            {"fixture_id":DEMO_FIXTURE_ID,"request":DEMO_REQUEST},
+            {"request":DEMO_REQUEST,"extra":"not allowed"},
+        ):
             unsupported=Request(f"{base}/api/demo",data=json.dumps(payload).encode(),headers={"content-type":"application/json"},method="POST")
             try:urlopen(unsupported)
             except HTTPError as exc:
@@ -331,11 +378,14 @@ def test_malformed_post_body_never_echoes_input(tmp_path,capsys):
         client.setsockopt(socket.SOL_SOCKET,socket.SO_LINGER,struct.pack("hh",1,0));client.close();release.set()
         assert handled.wait(2)
         DemoHandler.store.get=original_get;server.handle_error=original_handle_error
-        canonical=Request(f"{base}/api/demo",data=json.dumps({"request":DEMO_REQUEST}).encode(),headers={"content-type":"application/json"},method="POST")
-        with urlopen(canonical) as response:
-            accepted=json.loads(response.read());assert response.status==202
-        job=_await_terminal(DemoHandler.store,accepted["job_id"])
-        assert job["status"]=="complete" and job["report"]=={"result":"canonical request accepted"}
+        for payload in ({"fixture_id":DEMO_FIXTURE_ID},{"request":DEMO_REQUEST}):
+            canonical=Request(f"{base}/api/demo",data=json.dumps(payload).encode(),headers={"content-type":"application/json"},method="POST")
+            with urlopen(canonical) as response:
+                accepted=json.loads(response.read());assert response.status==202
+                assert response.headers["cache-control"]=="no-store"
+            job=_await_terminal(DemoHandler.store,accepted["job_id"])
+            assert job["status"]=="complete" and job["report"]=={"result":"canonical request accepted"}
+        assert requests_seen==[DEMO_REQUEST,DEMO_REQUEST]
     finally:
         server.shutdown();server.server_close();thread.join(timeout=2)
     captured=capsys.readouterr()
@@ -372,6 +422,7 @@ def test_http_download_serves_verified_buffer_and_rejects_alternate_paths(tmp_pa
         with urlopen(f"{base}/api/artifacts/{job_id}/golden.kicad_sch") as response:
             assert response.status==200 and response.read()==b"verified schematic"
             assert response.headers["x-content-type-options"]=="nosniff"
+            assert response.headers["cache-control"]=="no-store"
         store.read_artifact=original_read
         with urlopen(f"{base}/api/jobs/{job_id}") as response:
             refreshed=json.loads(response.read())

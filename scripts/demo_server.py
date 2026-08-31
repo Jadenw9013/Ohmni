@@ -7,7 +7,10 @@ import argparse
 import hashlib
 import json
 import math
+import os
 import re
+import socket
+import sys
 import threading
 import uuid
 from http import HTTPStatus
@@ -16,15 +19,17 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import unquote, urlsplit
 
-from ohmni.application import DemoPipeline, require_demo_request
+from ohmni.application import DEMO_REQUEST, DemoPipeline
 
 ROOT=Path(__file__).resolve().parents[1];WEB_ROOT=ROOT/"apps"/"web";OUTPUT_ROOT=ROOT/"out"/"demo-jobs"
 ARTIFACT_SECTIONS={"golden.kicad_sch":"schematic","golden.kicad_pcb":"pcb"}
 JOB_ID_PATTERN=re.compile(r"^[0-9a-f]{12}$")
 DEMO_FAILURE_MESSAGE="Demo pipeline failed"
+DEMO_FIXTURE_ID="esp32-bme280-environmental-logger"
 INVALID_REQUEST_MESSAGE="invalid request"
 INVALID_PATH_MESSAGE="invalid path"
 UNAVAILABLE_RESPONSE_MESSAGE="response unavailable"
+STARTUP_FAILURE_MESSAGE="Ohmni demo could not start. Stop any existing demo server or retry with a different --port."
 JOB_RECORD_FIELDS={"job_id","status","progress","report","error"}
 JOB_STATUSES={"queued","running","complete","failed"}
 TERMINAL_JOB_STATUSES={"complete","failed"}
@@ -202,6 +207,11 @@ class JobStore:
         except BaseException:return self._failure_record(job_id)  # noqa: BLE001 - polling must fail closed
 
 class DemoHTTPServer(ThreadingHTTPServer):
+    def server_bind(self):
+        if os.name=="nt":
+            self.allow_reuse_address=False
+            self.socket.setsockopt(socket.SOL_SOCKET,socket.SO_EXCLUSIVEADDRUSE,1)
+        super().server_bind()
     def handle_error(self,_request,_client_address):return
 
 
@@ -209,11 +219,14 @@ class DemoHandler(SimpleHTTPRequestHandler):
     store:JobStore
     def __init__(self,*args,**kwargs):super().__init__(*args,directory=str(WEB_ROOT),**kwargs)
     def log_message(self,_format,*_args):return
+    def end_headers(self):
+        self.send_header("cache-control","no-store")
+        super().end_headers()
     def _json(self,value:Any,status=HTTPStatus.OK):
         try:body=json.dumps(_owned_json_object(value),allow_nan=False).encode()
         except BaseException:  # noqa: BLE001 - response values are another untrusted serialization boundary
             body=b'{"error": "response unavailable"}';status=HTTPStatus.INTERNAL_SERVER_ERROR
-        self.send_response(status);self.send_header("content-type","application/json");self.send_header("content-length",str(len(body)));self.send_header("cache-control","no-store");self.end_headers();self.wfile.write(body)
+        self.send_response(status);self.send_header("content-type","application/json");self.send_header("content-length",str(len(body)));self.end_headers();self.wfile.write(body)
     def do_POST(self):
         if self.path!="/api/demo":return self._json({"error":"not found"},HTTPStatus.NOT_FOUND)
         try:
@@ -221,14 +234,18 @@ class DemoHandler(SimpleHTTPRequestHandler):
             if length<0 or length>16_384:raise ValueError
             payload=json.loads(self.rfile.read(length) or b"{}",parse_constant=_reject_json_constant)
             payload=_owned_json_object(payload)
-            request=require_demo_request(payload.get("request"))
+            current=payload=={"fixture_id":DEMO_FIXTURE_ID}
+            legacy=payload=={"request":DEMO_REQUEST}
+            if not (current or legacy):raise ValueError
         except BaseException:return self._json({"error":INVALID_REQUEST_MESSAGE},HTTPStatus.BAD_REQUEST)  # noqa: BLE001 - JSON decoding must fail closed
-        try:job_id=self.store.start(request)
+        try:job_id=self.store.start(DEMO_REQUEST)
         except BaseException:return self._json({"error":UNAVAILABLE_RESPONSE_MESSAGE},HTTPStatus.INTERNAL_SERVER_ERROR)  # noqa: BLE001 - request threads must not leak failures
         self._json({"job_id":job_id,"status":"queued"},HTTPStatus.ACCEPTED)
     def do_GET(self):
         try:request_path=unquote(urlsplit(self.path).path,errors="strict")
         except BaseException:return self._json({"error":INVALID_PATH_MESSAGE},HTTPStatus.BAD_REQUEST)  # noqa: BLE001 - request targets must fail closed
+        if request_path=="/api/health":
+            return self._json({"status":"ready","fixture_id":DEMO_FIXTURE_ID})
         if request_path.startswith("/api/jobs/"):
             job_id=request_path.removeprefix("/api/jobs/")
             if "/" in job_id:return self._json({"error":"invalid job path"},HTTPStatus.BAD_REQUEST)
@@ -241,15 +258,23 @@ class DemoHandler(SimpleHTTPRequestHandler):
             job_id,name=parts[3],parts[4];state,data=self.store.read_artifact(job_id,name)
             if state in {"unavailable","missing"}:return self._json({"error":"artifact unavailable"},HTTPStatus.NOT_FOUND)
             if state!="current" or data is None:return self._json({"error":"artifact is stale or not associated with this report"},HTTPStatus.CONFLICT)
-            self.send_response(HTTPStatus.OK);self.send_header("content-type","application/octet-stream");self.send_header("x-content-type-options","nosniff");self.send_header("cache-control","no-store");self.send_header("content-disposition",f'attachment; filename="{name}"');self.send_header("content-length",str(len(data)));self.end_headers();self.wfile.write(data);return
+            self.send_response(HTTPStatus.OK);self.send_header("content-type","application/octet-stream");self.send_header("x-content-type-options","nosniff");self.send_header("content-disposition",f'attachment; filename="{name}"');self.send_header("content-length",str(len(data)));self.end_headers();self.wfile.write(data);return
         super().do_GET()
 
 
 def main(argv=None):
     parser=argparse.ArgumentParser();parser.add_argument("--host",default="127.0.0.1");parser.add_argument("--port",type=int,default=8765);args=parser.parse_args(argv)
-    OUTPUT_ROOT.mkdir(parents=True,exist_ok=True);DemoHandler.store=JobStore();server=DemoHTTPServer((args.host,args.port),DemoHandler);print(f"Ohmni demo: http://{args.host}:{args.port}")
-    try:server.serve_forever()
+    server=None
+    try:
+        OUTPUT_ROOT.mkdir(parents=True,exist_ok=True);DemoHandler.store=JobStore();server=DemoHTTPServer((args.host,args.port),DemoHandler);print(f"Ohmni demo: http://{args.host}:{args.port}")
+        server.serve_forever()
     except KeyboardInterrupt:pass
-    finally:server.server_close()
+    except OSError:
+        print(STARTUP_FAILURE_MESSAGE,file=sys.stderr)
+        return 1
+    finally:
+        if server is not None:
+            try:server.server_close()
+            except OSError:pass
     return 0
 if __name__=="__main__":raise SystemExit(main())

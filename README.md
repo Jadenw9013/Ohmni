@@ -90,6 +90,11 @@ KiCad ERC, placement, routing, DRC, manufacturing, BOM, and fabrication-release
 pipeline asynchronously. Core results require no live LLM, supplier API, or
 internet connection. KiCad 10 is required for the full EDA stages.
 
+Keep the server terminal open while using the page. The demo claims its local
+endpoint exclusively: if another process already owns port 8765, startup exits
+with an actionable error instead of sharing state with the older process. Stop
+that process or choose another port with `--port`, then open the matching URL.
+
 ---
 
 ## Quick start
