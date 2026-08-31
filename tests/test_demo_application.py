@@ -9,7 +9,7 @@ import time
 from http.server import ThreadingHTTPServer
 from types import SimpleNamespace
 from urllib.error import HTTPError
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
 
 from scripts.demo_server import DemoHandler, JobStore
 
@@ -86,36 +86,95 @@ def test_artifact_download_freshness_is_hash_bound(tmp_path):
     assert store.read_artifact(job_id,"missing.txt")==('unavailable',None)
 
 
-def test_unexpected_worker_exception_becomes_safe_terminal_failure(tmp_path):
+def test_unexpected_worker_exception_becomes_safe_terminal_failure(tmp_path,caplog):
     class Pipeline:
         def __init__(self,progress):pass
         def run(self,destination,request):raise KeyError("sensitive-test-value")
-    store=JobStore(tmp_path,Pipeline);job_id=store.start("supported request")
-    job=_await_terminal(store,job_id)
+    store=JobStore(tmp_path,Pipeline)
+    job=_await_terminal(store,store.start("supported request"))
     assert job["status"]=="failed" and job["report"] is None and not job["progress"]
-    assert "KeyError" in job["error"] and "sensitive-test-value" not in job["error"]
+    assert job["error"]=="Demo pipeline failed"
+    assert "sensitive-test-value" not in caplog.text
+
+
+def test_expected_worker_exception_never_discloses_local_path(tmp_path,caplog):
+    private_path=r"C:\Users\reviewer\private-board.kicad_pcb"
+    class Pipeline:
+        def __init__(self,progress):pass
+        def run(self,destination,request):raise FileNotFoundError(private_path)
+    store=JobStore(tmp_path,Pipeline)
+    job=_await_terminal(store,store.start("supported request"))
+    assert job["status"]=="failed" and job["report"] is None
+    assert job["error"]=="Demo pipeline failed"
+    assert private_path not in caplog.text and private_path not in json.dumps(job)
 
 
 def test_exception_string_failure_still_becomes_terminal(tmp_path):
+    touched=[]
     class BrokenString(ValueError):
-        def __str__(self):raise SystemExit("format-failed")
+        def __str__(self):touched.append("str");raise SystemExit("format-failed")
+        def __repr__(self):touched.append("repr");raise SystemExit("repr-failed")
     class Pipeline:
         def __init__(self,progress):pass
         def run(self,destination,request):raise BrokenString()
     store=JobStore(tmp_path,Pipeline);job=_await_terminal(store,store.start("supported request"))
     assert job["status"]=="failed" and job["report"] is None
     assert job["error"]=="Demo pipeline failed"
+    assert not touched
 
 
-def test_logging_failure_still_becomes_terminal(tmp_path,monkeypatch):
+def test_worker_launch_failures_create_pollable_terminal_jobs(tmp_path,monkeypatch,caplog):
+    class BrokenLaunch(RuntimeError):
+        def __str__(self):raise SystemExit("launch formatter escaped")
+        def __repr__(self):raise SystemExit("launch repr escaped")
+    class ConstructionFailure:
+        def __init__(self,*args,**kwargs):raise BrokenLaunch()
+    class StartFailure:
+        def __init__(self,*args,**kwargs):pass
+        def start(self):raise BrokenLaunch()
+    store=JobStore(tmp_path)
+    for worker in (ConstructionFailure,StartFailure):
+        monkeypatch.setattr("scripts.demo_server.threading.Thread",worker)
+        job_id=store.start("supported request");job=store.get(job_id)
+        assert job["job_id"]==job_id and job["status"]=="failed" and job["report"] is None
+        assert job["error"]=="Demo pipeline failed"
+    assert not caplog.records
+
+
+def test_launch_failure_is_absorbing_if_worker_already_started(tmp_path,monkeypatch):
+    entered=threading.Event();release=threading.Event();finished=threading.Event();real_thread=threading.Thread
+    class Report:
+        def model_dump(self,mode=None):finished.set();return {"result":"should not publish"}
     class Pipeline:
-        def __init__(self,progress):pass
-        def run(self,destination,request):raise KeyError("sensitive-test-value")
-    logger=SimpleNamespace(exception=lambda *args,**kwargs:(_ for _ in ()).throw(RuntimeError("logging failed")))
-    monkeypatch.setattr("scripts.demo_server.LOGGER",logger)
-    store=JobStore(tmp_path,Pipeline);job=_await_terminal(store,store.start("supported request"))
-    assert job["status"]=="failed" and job["report"] is None
-    assert job["error"]=="Unexpected demo pipeline failure (KeyError)"
+        def __init__(self,progress):self.progress=progress
+        def run(self,destination,request):
+            self.progress(SimpleNamespace(model_dump=lambda mode=None:{"stage":"semantic","status":"RUNNING"}))
+            entered.set();release.wait(2);return Report()
+    class StartsThenRaises:
+        def __init__(self,*args,**kwargs):self.worker=real_thread(*args,**kwargs)
+        def start(self):self.worker.start();assert entered.wait(2);raise RuntimeError("launch failed after start")
+    monkeypatch.setattr("scripts.demo_server.threading.Thread",StartsThenRaises)
+    store=JobStore(tmp_path,Pipeline);job_id=store.start("supported request")
+    assert store.get(job_id)["status"]=="failed"
+    release.set();assert finished.wait(2)
+    job=store.get(job_id)
+    assert job["status"]=="failed" and job["report"] is None and job["error"]=="Demo pipeline failed"
+
+
+def test_malformed_post_body_never_echoes_input(tmp_path):
+    DemoHandler.store=JobStore(tmp_path);server=ThreadingHTTPServer(("127.0.0.1",0),DemoHandler)
+    thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start();base=f"http://127.0.0.1:{server.server_address[1]}"
+    secret=r"API_KEY=review-secret C:\Users\reviewer\private.kicad_pcb"
+    try:
+        malformed=f'{{"request":"{secret}'.encode()
+        request=Request(f"{base}/api/demo",data=malformed,headers={"content-type":"application/json"},method="POST")
+        try:urlopen(request)
+        except HTTPError as exc:
+            body=exc.read().decode();assert exc.code==400 and json.loads(body)=={"error":"invalid request"}
+        else:raise AssertionError("malformed request unexpectedly accepted")
+        assert secret not in body
+    finally:
+        server.shutdown();server.server_close();thread.join(timeout=2)
 
 
 def test_http_download_serves_verified_buffer_and_rejects_alternate_paths(tmp_path):

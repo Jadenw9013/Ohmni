@@ -6,11 +6,9 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import logging
 import re
 import threading
 import uuid
-from contextlib import suppress
 from http import HTTPStatus
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -22,7 +20,9 @@ from ohmni.application import DEMO_REQUEST, DemoPipeline
 ROOT=Path(__file__).resolve().parents[1];WEB_ROOT=ROOT/"apps"/"web";OUTPUT_ROOT=ROOT/"out"/"demo-jobs"
 ARTIFACT_SECTIONS={"golden.kicad_sch":"schematic","golden.kicad_pcb":"pcb"}
 JOB_ID_PATTERN=re.compile(r"^[0-9a-f]{12}$")
-LOGGER=logging.getLogger(__name__)
+DEMO_FAILURE_MESSAGE="Demo pipeline failed"
+INVALID_REQUEST_MESSAGE="invalid request"
+TERMINAL_JOB_STATUSES={"complete","failed"}
 
 
 class JobStore:
@@ -30,27 +30,30 @@ class JobStore:
     def start(self,request:str)->str:
         job_id=uuid.uuid4().hex[:12]
         with self.lock:self.jobs[job_id]={"job_id":job_id,"status":"queued","progress":[],"report":None,"error":None}
-        threading.Thread(target=self._run,args=(job_id,request),daemon=True).start();return job_id
+        try:threading.Thread(target=self._run,args=(job_id,request),daemon=True).start()
+        except Exception:  # noqa: BLE001 - the launch boundary must always terminalize the job
+            self._fail(job_id)
+        return job_id
+    def _fail(self,job_id):
+        with self.lock:
+            job=self.jobs[job_id]
+            if job["status"] not in TERMINAL_JOB_STATUSES:job.update(status="failed",report=None,error=DEMO_FAILURE_MESSAGE)
     def _run(self,job_id,request):
         def progress(event):
-            with self.lock:self.jobs[job_id]["progress"].append(event.model_dump(mode="json"));self.jobs[job_id]["status"]="running"
+            value=event.model_dump(mode="json")
+            with self.lock:
+                job=self.jobs[job_id]
+                if job["status"] not in TERMINAL_JOB_STATUSES:job["progress"].append(value);job["status"]="running"
+        with self.lock:
+            if self.jobs[job_id]["status"] in TERMINAL_JOB_STATUSES:return
         try:
             report=self.pipeline_factory(progress).run(self.output_root/job_id,request)
-            with self.lock:self.jobs[job_id].update(status="complete",report=report.model_dump(mode="json"))
-        except Exception as exc:
-            error="Demo pipeline failed"
-            with suppress(BaseException):
-                if isinstance(exc,(OSError,RuntimeError,ValueError)):
-                    error=str(exc)
-                else:
-                    error=f"Unexpected demo pipeline failure ({type(exc).__name__})"
-                    LOGGER.exception("unexpected demo pipeline failure for job %s",job_id)
+            value=report.model_dump(mode="json")
             with self.lock:
-                self.jobs[job_id].update(
-                    status="failed",
-                    report=None,
-                    error=error,
-                )
+                job=self.jobs[job_id]
+                if job["status"] not in TERMINAL_JOB_STATUSES:job.update(status="complete",report=value)
+        except Exception:  # noqa: BLE001 - the worker boundary must always terminalize the job
+            self._fail(job_id)
     def _snapshot(self,job_id):
         with self.lock:return json.loads(json.dumps(self.jobs.get(job_id))) if job_id in self.jobs else None
     def _job_directory(self,job_id):
@@ -131,9 +134,15 @@ class DemoHandler(SimpleHTTPRequestHandler):
     def do_POST(self):
         if self.path!="/api/demo":return self._json({"error":"not found"},HTTPStatus.NOT_FOUND)
         try:
-            length=int(self.headers.get("content-length","0"));payload=json.loads(self.rfile.read(min(length,16_384)) or b"{}");request=str(payload.get("request",DEMO_REQUEST)).strip()
-            if not request or len(request)>4000:raise ValueError("request must contain 1 to 4000 characters")
-        except (ValueError,json.JSONDecodeError) as exc:return self._json({"error":str(exc)},HTTPStatus.BAD_REQUEST)
+            length=int(self.headers.get("content-length","0"))
+            if length<0 or length>16_384:raise ValueError
+            payload=json.loads(self.rfile.read(length) or b"{}")
+            if not isinstance(payload,dict):raise TypeError
+            raw_request=payload.get("request",DEMO_REQUEST)
+            if not isinstance(raw_request,str):raise TypeError
+            request=raw_request.strip()
+        except (TypeError,ValueError):return self._json({"error":INVALID_REQUEST_MESSAGE},HTTPStatus.BAD_REQUEST)
+        if not request or len(request)>4000:return self._json({"error":"request must contain 1 to 4000 characters"},HTTPStatus.BAD_REQUEST)
         self._json({"job_id":self.store.start(request),"status":"queued"},HTTPStatus.ACCEPTED)
     def do_GET(self):
         request_path=unquote(urlsplit(self.path).path)

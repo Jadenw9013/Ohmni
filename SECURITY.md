@@ -44,6 +44,8 @@ Use argument arrays, not shell strings.
 - never store secrets in generated KiCad project
 - never place secrets in logs
 - redact third-party responses when needed
+- async demo failures expose a fixed public error, never exception-derived text
+- demo diagnostics never serialize or log exception objects, values, tracebacks, or local paths
 
 ## Electrical safety policy for MVP
 
