@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "id": "M8-REGRESSION-2",
+  "status": "VERIFIED_PENDING_FOCUSED_INDEPENDENT_REVIEW",
+  "commit": "PENDING_CANDIDATE_COMMIT",
+  "baseline_commit": "d7b836e",
+  "commands": [
+    {
+      "command": "python scripts/ai_state.py validate",
+      "result": "PASS",
+      "detail": "VALID / Recovery RESUME before candidate verification"
+    },
+    {
+      "command": "python scripts/verify.py workflow",
+      "result": "PASS",
+      "tests": 11
+    },
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "PASS",
+      "tests": 453,
+      "deselected": 10
+    },
+    {
+      "command": "python scripts/verify.py integration",
+      "result": "PASS",
+      "tests": 9,
+      "deselected": 454
+    },
+    {
+      "command": "python scripts/verify.py full",
+      "result": "PASS",
+      "tests": 463,
+      "runtime_seconds": 116.1,
+      "detail": "Single canonical full run over the complete remediation working tree"
+    },
+    {
+      "command": "python -m pytest tests/test_demo_operability.py -o addopts='-q --strict-markers'",
+      "result": "PASS",
+      "tests": 2,
+      "detail": "Windows subprocess endpoint-ownership/restart-identity test and the real headless-browser click test both executed on win32; neither was skipped"
+    },
+    {
+      "command": "node --test apps/web/tests/*.test.mjs",
+      "result": "PASS",
+      "tests": 9
+    },
+    {
+      "command": "node --check apps/web/app.js apps/web/view-model.js scripts/demo_browser_smoke.mjs",
+      "result": "PASS"
+    },
+    {
+      "command": "python -m ruff check scripts/demo_server.py tests/test_demo_application.py tests/test_demo_ui.py tests/test_demo_operability.py",
+      "result": "PASS",
+      "detail": "All checks passed on every file this scope changed"
+    },
+    {
+      "command": "python -m ruff check .",
+      "result": "PRE_EXISTING_FINDINGS",
+      "findings": 41,
+      "detail": "Identical 41 findings with this scope's working tree stashed at d7b836e; this scope introduces no new lint finding and repairs none"
+    },
+    {
+      "command": "python -m ohmni verify-all",
+      "result": "PASS",
+      "fixtures": 14,
+      "coverage": "100%"
+    }
+  ],
+  "root_cause": "A retained browser page could keep presenting a completed job from a demo-server process that had exited or restarted. Static assets, API envelopes, and the in-memory JobStore had no shared identity, so a new server generation could serve a page bound to a vanished one, and every client-visible failure collapsed into a single blanket error.",
+  "remediation": [
+    "Every demo-server process generates a distinct random 16-hex instance identity and owns an isolated JobStore; job polling is generation-bound so a restarted server cannot adopt an old job identifier.",
+    "The four executable UI assets are read once into an immutable startup snapshot whose SHA-256 becomes the ui_version carried through health, job creation, polling, and response headers.",
+    "Clients bind job creation to the exact API version, server instance, and UI snapshot; the exact fixed-fixture and canonical-request payloads remain narrowly supported for pre-versioned local clients.",
+    "Backend-unavailable, API/UI contract mismatch, server-generation mismatch, fixture rejection, worker-start failure, lost job, and pipeline failure now have distinct fixed frontend guidance instead of one blanket message.",
+    "Server diagnostics are allowlisted structured JSON events on stderr containing no request bodies, exception strings, tracebacks, or filesystem paths; initialization, bind, worker-launch, pipeline, and runtime failures stay distinct boundaries.",
+    "A completed workspace polls health and invalidates itself when the server identity changes or disappears, so a stale completed run cannot look current.",
+    "Coverage added for the real exported form path, Windows subprocess lifecycle and endpoint ownership, restart/stale-job behaviour, the asset snapshot, and a real headless-browser click."
+  ],
+  "review": {
+    "id": "M8-RG02-REV-INDEPENDENT-FINAL",
+    "independent": true,
+    "status": "PENDING",
+    "scope": "The M8-RG02 remediation diff, the approved acceptance criteria, regressions introduced by the remediation, and the no-M9 boundary; not an unrestricted historical M8 audit"
+  },
+  "limitations": [
+    "Milestone 8 remains COMPLETE at independently reviewed product baseline 3a6f9d3; this record closes only the authorized post-M8 regression scope.",
+    "The deterministic demo still supports only its documented ESP32/BME280 fixture and retains every existing product limitation.",
+    "Pre-existing repository-wide ruff findings are unchanged and out of this scope.",
+    "No Milestone 9 work is included in this record; M9 was approved separately and after this scope."
+  ]
+}

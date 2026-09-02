@@ -51,6 +51,11 @@ Use argument arrays, not shell strings.
 - the local demo maps one fixed fixture identifier (plus its exact legacy request) to a server-owned canonical request
 - Windows demo servers claim their endpoint exclusively; bind failures emit only a fixed actionable startup message
 - demo APIs, artifacts, and static UI assets are served with `Cache-Control: no-store`
+- every demo-server process owns a distinct random instance identity and an isolated in-memory job store; job polling is generation-bound and a restarted server cannot adopt an old job identifier
+- the four executable UI assets are read once into an immutable startup snapshot whose SHA-256 version is carried through health, job creation, polling, and response headers
+- current clients bind job creation to the exact API, server instance, and UI snapshot; exact fixed-fixture and canonical-request payloads remain narrowly supported for pre-versioned local clients
+- local API errors and job failures expose only allowlisted fixed codes; stderr diagnostics are flushed structured events containing no request bodies, exception strings, tracebacks, or filesystem paths
+- demo initialization, endpoint binding, worker launch, pipeline execution, and server runtime failures remain distinct fixed diagnostic boundaries
 
 ## Electrical safety policy for MVP
 

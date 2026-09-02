@@ -12,13 +12,20 @@ from types import SimpleNamespace
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
+import pytest
+
 from ohmni.application import DEMO_REQUEST
 from scripts import demo_server as demo_server_module
 from scripts.demo_server import (
+    API_VERSION,
     DEMO_FIXTURE_ID,
+    INITIALIZATION_FAILURE_MESSAGE,
+    RUNTIME_FAILURE_MESSAGE,
     STARTUP_FAILURE_MESSAGE,
+    STATIC_ASSETS,
     DemoHandler,
     DemoHTTPServer,
+    DemoInitializationError,
     JobStore,
 )
 
@@ -54,8 +61,64 @@ def test_main_bind_failure_is_fixed_actionable_and_sanitized(monkeypatch,capsys)
     assert demo_server_module.main(["--host","127.0.0.1","--port","8765"])==1
     captured=capsys.readouterr()
     assert captured.out==""
-    assert captured.err==STARTUP_FAILURE_MESSAGE+"\n"
+    lines=captured.err.splitlines()
+    assert json.loads(lines[0])=={
+        "api_version":API_VERSION,"component":"ohmni_demo","event":"server_bind_failed",
+    }
+    assert lines[1]==STARTUP_FAILURE_MESSAGE
     assert secret not in captured.err and "Traceback" not in captured.err
+
+
+def test_main_separates_initialization_and_runtime_failures(monkeypatch,capsys):
+    secret=r"API_KEY=lifecycle-secret C:\Users\reviewer\private-assets"
+    class InitFailure:
+        def __init__(self,*_args,**_kwargs):raise DemoInitializationError
+    monkeypatch.setattr(demo_server_module,"DemoHTTPServer",InitFailure)
+    assert demo_server_module.main([])==1
+    captured=capsys.readouterr();lines=captured.err.splitlines()
+    assert json.loads(lines[0])["event"]=="server_init_failed"
+    assert lines[1]==INITIALIZATION_FAILURE_MESSAGE
+    class RuntimeFailure:
+        server_instance_id="1"*16;ui_version="2"*64
+        def __init__(self,*_args,**_kwargs):self.closed=False
+        def _job_diagnostic(self,event,**values):
+            demo_server_module._diagnostic(
+                event,api_version=API_VERSION,server_instance_id=self.server_instance_id,
+                ui_version=self.ui_version,**values,
+            )
+        def serve_forever(self):raise OSError(secret)
+        def server_close(self):self.closed=True
+    monkeypatch.setattr(demo_server_module,"DemoHTTPServer",RuntimeFailure)
+    assert demo_server_module.main([])==1
+    captured=capsys.readouterr();lines=captured.err.splitlines()
+    assert [json.loads(line)["event"] for line in lines[:-1]]==["server_ready","server_runtime_failed"]
+    assert lines[-1]==RUNTIME_FAILURE_MESSAGE
+    assert secret not in captured.err and "Traceback" not in captured.err
+
+
+def test_server_snapshot_is_immutable_and_generation_specific(tmp_path):
+    web_root=tmp_path/"web";web_root.mkdir()
+    for name in STATIC_ASSETS:
+        (web_root/name).write_bytes((demo_server_module.WEB_ROOT/name).read_bytes())
+    first=DemoHTTPServer(("127.0.0.1",0),DemoHandler,web_root=web_root)
+    original=first.static_assets["/app.js"];first_version=first.ui_version
+    thread=threading.Thread(target=first.serve_forever,daemon=True);thread.start()
+    base=f"http://127.0.0.1:{first.server_port}"
+    try:
+        (web_root/"app.js").write_bytes(b"// changed after server initialization")
+        with urlopen(base+"/app.js") as response:
+            assert response.read()==original
+            assert response.headers["x-ohmni-ui-version"]==first_version
+        with pytest.raises(TypeError):first.static_assets["/app.js"]=b"mutated"
+        second=DemoHTTPServer(("127.0.0.1",0),DemoHandler,web_root=web_root)
+        try:
+            assert second.ui_version!=first_version
+            assert second.static_assets["/app.js"]==b"// changed after server initialization"
+            assert second.server_instance_id!=first.server_instance_id
+            assert second.store is not first.store
+        finally:second.server_close()
+    finally:
+        first.shutdown();first.server_close();thread.join(timeout=2)
 
 
 def test_async_job_store_reports_actual_progress_without_premature_completion(tmp_path):
@@ -97,7 +160,7 @@ def test_artifact_download_freshness_is_hash_bound(tmp_path):
     manifest=fabrication/"ohmni-fabrication-manifest.json";manifest.write_text("manifest")
     digest=hashlib.sha256(path.read_bytes()).hexdigest();store=JobStore(tmp_path)
     manifest_record={"relative_path":manifest.name,"sha256":hashlib.sha256(manifest.read_bytes()).hexdigest()}
-    store.jobs[job_id]={"job_id":job_id,"status":"complete","progress":[],"report":{"project":{"status":"READY_FOR_MANUFACTURING_REVIEW"},"schematic":{"fingerprint":digest,"current":True},"pcb":{"fingerprint":hashlib.sha256(pcb.read_bytes()).hexdigest(),"source_placed_pcb_fingerprint":hashlib.sha256(placed.read_bytes()).hexdigest(),"current":True},"release":{"status":"READY_FOR_MANUFACTURING_REVIEW","files":[{"relative_path":gerber.name,"sha256":hashlib.sha256(gerber.read_bytes()).hexdigest()}],"manifest":manifest_record,"current":True}},"error":None}
+    store.jobs[job_id]={"job_id":job_id,"status":"complete","progress":[],"report":{"project":{"status":"READY_FOR_MANUFACTURING_REVIEW"},"schematic":{"fingerprint":digest,"current":True},"pcb":{"fingerprint":hashlib.sha256(pcb.read_bytes()).hexdigest(),"source_placed_pcb_fingerprint":hashlib.sha256(placed.read_bytes()).hexdigest(),"current":True},"release":{"status":"READY_FOR_MANUFACTURING_REVIEW","files":[{"relative_path":gerber.name,"sha256":hashlib.sha256(gerber.read_bytes()).hexdigest()}],"manifest":manifest_record,"current":True}},"error":None,"error_code":None}
     state,data=store.read_artifact(job_id,"golden.kicad_sch")
     assert state=="current" and data==b"exact"
     fresh=store.get(job_id)
@@ -167,14 +230,14 @@ def test_unexpected_worker_exception_becomes_safe_terminal_failure(tmp_path,capl
             job=_await_terminal(store,store.start("supported request"))
             assert job=={
                 "job_id":job["job_id"],"status":"failed","progress":[],"report":None,
-                "error":"Demo pipeline failed",
+                "error":"Demo pipeline failed","error_code":f"{boundary}_publication_failed" if boundary=="progress" else "pipeline_failed",
             }
     poisoned_id="c"*12;poisoned={};poisoned["self"]=poisoned
-    store.jobs[poisoned_id]={"job_id":poisoned_id,"status":"running","progress":[poisoned],"report":None,"error":None}
+    store.jobs[poisoned_id]={"job_id":poisoned_id,"status":"running","progress":[poisoned],"report":None,"error":None,"error_code":None}
     recovered=store.get(poisoned_id)
     assert recovered=={
         "job_id":poisoned_id,"status":"failed","progress":[],"report":None,
-        "error":"Demo pipeline failed",
+        "error":"Demo pipeline failed","error_code":"job_state_invalid",
     }
     recovered["progress"].append({"unsafe":"snapshot mutation"})
     assert store.jobs[poisoned_id]["progress"]==[]
@@ -189,14 +252,15 @@ def test_unexpected_worker_exception_becomes_safe_terminal_failure(tmp_path,capl
     envelope_store=JobStore(tmp_path)
     job_id="d"*12
     invalid_records=(
-        {"job_id":job_id,"status":[],"progress":[],"report":None,"error":None},
-        {"job_id":job_id,"status":HostileStatus(),"progress":[],"report":None,"error":None},
-        {"job_id":"e"*12,"status":"running","progress":[],"report":None,"error":None},
-        {"job_id":job_id,"status":"complete","progress":[],"report":None,"error":None},
-        {"job_id":job_id,"status":"failed","progress":[],"report":None,"error":secret},
-        {"job_id":job_id,"status":"running","progress":[],"report":None,"error":None,"extra":"unsafe"},
+        {"job_id":job_id,"status":[],"progress":[],"report":None,"error":None,"error_code":None},
+        {"job_id":job_id,"status":HostileStatus(),"progress":[],"report":None,"error":None,"error_code":None},
+        {"job_id":"e"*12,"status":"running","progress":[],"report":None,"error":None,"error_code":None},
+        {"job_id":job_id,"status":"complete","progress":[],"report":None,"error":None,"error_code":None},
+        {"job_id":job_id,"status":"failed","progress":[],"report":None,"error":secret,"error_code":"pipeline_failed"},
+        {"job_id":job_id,"status":"running","progress":[],"report":None,"error":None,"error_code":None,"extra":"unsafe"},
+        {"job_id":job_id,"status":"failed","progress":[],"report":None,"error":"Demo pipeline failed","error_code":secret},
     )
-    expected={"job_id":job_id,"status":"failed","progress":[],"report":None,"error":"Demo pipeline failed"}
+    expected={"job_id":job_id,"status":"failed","progress":[],"report":None,"error":"Demo pipeline failed","error_code":"job_state_invalid"}
     for invalid in invalid_records:
         envelope_store.jobs[job_id]=invalid
         envelope_store._fail(job_id)
@@ -213,7 +277,7 @@ def test_unexpected_worker_exception_becomes_safe_terminal_failure(tmp_path,capl
     envelope_store=JobStore(tmp_path,PoisonPipeline)
     assert _await_terminal(envelope_store,envelope_store.start("supported request"))=={
         "job_id":next(iter(envelope_store.jobs)),"status":"failed","progress":[],"report":None,
-        "error":"Demo pipeline failed",
+        "error":"Demo pipeline failed","error_code":"job_state_invalid",
     }
     assert not touched and not hook_calls and "sensitive-test-value" not in caplog.text and secret not in caplog.text
     captured=capsys.readouterr();assert "Traceback" not in captured.err and secret not in captured.err
@@ -230,6 +294,7 @@ def test_expected_worker_exception_never_discloses_local_path(tmp_path,caplog):
     job=_await_terminal(store,store.start("supported request"))
     assert job["status"]=="failed" and job["report"] is None and not job["progress"]
     assert job["error"]=="Demo pipeline failed"
+    assert job["error_code"]=="pipeline_failed"
     assert private_path not in caplog.text and private_path not in json.dumps(job)
 
 
@@ -255,6 +320,9 @@ def test_exception_string_failure_still_becomes_terminal(tmp_path,capsys,monkeyp
         store=JobStore(tmp_path,pipeline_for(boundary));job=_await_terminal(store,store.start("supported request"))
         assert job["status"]=="failed" and job["report"] is None and not job["progress"]
         assert job["error"]=="Demo pipeline failed"
+        assert job["error_code"]==(
+            "progress_publication_failed" if boundary=="progress" else "pipeline_failed"
+        )
     assert not touched and not hook_calls and secret not in json.dumps(job)
     captured=capsys.readouterr();assert "Traceback" not in captured.err and "format-failed" not in captured.err
 
@@ -274,6 +342,7 @@ def test_worker_launch_failures_create_pollable_terminal_jobs(tmp_path,monkeypat
         job_id=store.start("supported request");job=store.get(job_id)
         assert job["job_id"]==job_id and job["status"]=="failed" and job["report"] is None
         assert job["error"]=="Demo pipeline failed"
+        assert job["error_code"]=="worker_start_failed"
     assert not caplog.records
 
 
@@ -296,68 +365,72 @@ def test_launch_failure_is_absorbing_if_worker_already_started(tmp_path,monkeypa
     job=store.get(job_id)
     assert job["status"]=="failed" and not job["progress"] and job["report"] is None
     assert job["error"]=="Demo pipeline failed"
+    assert job["error_code"]=="worker_start_failed"
 
 
-def test_malformed_post_body_never_echoes_input(tmp_path,capsys):
+def test_http_contract_binds_job_to_server_and_never_echoes_input(tmp_path,capsys):
     requests_seen=[]
     class Report:
         def model_dump(self,mode=None):return {"result":"canonical request accepted"}
     class Pipeline:
         def __init__(self,progress):pass
         def run(self,destination,request):requests_seen.append(request);assert request==DEMO_REQUEST;return Report()
-    DemoHandler.store=JobStore(tmp_path,Pipeline);server=DemoHTTPServer(("127.0.0.1",0),DemoHandler)
+    store=JobStore(tmp_path,Pipeline);server=DemoHTTPServer(("127.0.0.1",0),DemoHandler,store=store)
     thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start();base=f"http://127.0.0.1:{server.server_address[1]}"
+    identity={
+        "api_version":API_VERSION,"server_instance_id":server.server_instance_id,
+        "ui_version":server.ui_version,
+    }
+    poll_headers={
+        "x-ohmni-api-version":str(API_VERSION),
+        "x-ohmni-server-instance":server.server_instance_id,
+        "x-ohmni-ui-version":server.ui_version,
+    }
     secret=r"API_KEY=review-secret C:\Users\reviewer\private.kicad_pcb"
+    def post(payload):
+        data=payload if isinstance(payload,bytes) else json.dumps(payload).encode()
+        return urlopen(Request(f"{base}/api/demo",data=data,headers={"content-type":"application/json"},method="POST"))
+    def rejected(payload,status,error):
+        try:post(payload)
+        except HTTPError as exc:
+            body=exc.read().decode();assert exc.code==status and json.loads(body)=={"error":error}
+            return body
+        raise AssertionError("unsupported request unexpectedly accepted")
     try:
         with urlopen(f"{base}/api/health") as response:
             assert response.status==200
-            assert json.loads(response.read())=={"status":"ready","fixture_id":DEMO_FIXTURE_ID}
+            assert json.loads(response.read())=={"status":"ready","fixture_id":DEMO_FIXTURE_ID,**identity}
             assert response.headers["cache-control"]=="no-store"
+            assert response.headers["x-ohmni-api-version"]==str(API_VERSION)
+            assert response.headers["x-ohmni-server-instance"]==server.server_instance_id
+            assert response.headers["x-ohmni-ui-version"]==server.ui_version
         with urlopen(f"{base}/") as response:
-            assert response.status==200 and b"Ohmni" in response.read()
+            assert response.status==200 and response.read()==server.static_assets["/index.html"]
             assert response.headers["cache-control"]=="no-store"
-        malformed=f'{{"request":"{secret}'.encode()
-        request=Request(f"{base}/api/demo",data=malformed,headers={"content-type":"application/json"},method="POST")
-        try:urlopen(request)
-        except HTTPError as exc:
-            body=exc.read().decode();assert exc.code==400 and json.loads(body)=={"error":"invalid request"}
-        else:raise AssertionError("malformed request unexpectedly accepted")
-        assert secret not in body
+        assert secret not in rejected(f'{{"request":"{secret}'.encode(),400,"fixture_rejected")
         deep=b'{"request":'+(b'['*1200)+b'0'+(b']'*1200)+b'}'
-        request=Request(f"{base}/api/demo",data=deep,headers={"content-type":"application/json"},method="POST")
-        try:urlopen(request)
-        except HTTPError as exc:
-            body=exc.read().decode();assert exc.code==400 and json.loads(body)=={"error":"invalid request"}
-        else:raise AssertionError("deep request unexpectedly accepted")
-        assert not DemoHandler.store.jobs
+        rejected(deep,400,"fixture_rejected")
         for payload in (
             {"request":secret},{"request":DEMO_REQUEST+" "},{},{"request":30},
             {"fixture_id":DEMO_FIXTURE_ID+"-mutated"},
             {"fixture_id":DEMO_FIXTURE_ID,"extra":"not allowed"},
             {"fixture_id":DEMO_FIXTURE_ID,"request":DEMO_REQUEST},
             {"request":DEMO_REQUEST,"extra":"not allowed"},
-        ):
-            unsupported=Request(f"{base}/api/demo",data=json.dumps(payload).encode(),headers={"content-type":"application/json"},method="POST")
-            try:urlopen(unsupported)
-            except HTTPError as exc:
-                body=exc.read().decode();assert exc.code==400 and json.loads(body)=={"error":"invalid request"}
-            else:raise AssertionError("unsupported request unexpectedly accepted")
-            assert secret not in body and not DemoHandler.store.jobs
+        ):rejected(payload,400,"fixture_rejected")
+        rejected({**identity,"fixture_id":DEMO_FIXTURE_ID,"api_version":3},409,"api_version_mismatch")
+        rejected({**identity,"fixture_id":DEMO_FIXTURE_ID,"server_instance_id":"0"*16},409,"server_instance_mismatch")
+        rejected({**identity,"fixture_id":DEMO_FIXTURE_ID,"ui_version":"0"*64},409,"ui_version_mismatch")
         prefix=json.dumps({"request":DEMO_REQUEST})[:-1]
         for constant in ("NaN","Infinity","-Infinity","1e999"):
-            nonfinite=Request(f"{base}/api/demo",data=(prefix+f',"extra":{constant}'+'}').encode(),headers={"content-type":"application/json"},method="POST")
-            try:urlopen(nonfinite)
-            except HTTPError as exc:
-                body=exc.read().decode();assert exc.code==400 and json.loads(body)=={"error":"invalid request"}
-            else:raise AssertionError("nonfinite JSON unexpectedly accepted")
-            assert not DemoHandler.store.jobs
-        original_get=DemoHandler.store.get;cycle={};cycle["self"]=cycle
-        DemoHandler.store.get=lambda job_id:{"job_id":job_id,"unsafe":cycle}
-        try:urlopen(f"{base}/api/jobs/{'d'*12}")
+            rejected((prefix+f',"extra":{constant}'+'}').encode(),400,"fixture_rejected")
+        assert not store.jobs
+        original_get=store.get;cycle={};cycle["self"]=cycle
+        store.get=lambda job_id:{"job_id":job_id,"unsafe":cycle}
+        try:urlopen(Request(f"{base}/api/jobs/{'d'*12}",headers=poll_headers))
         except HTTPError as exc:
-            body=exc.read().decode();assert exc.code==500 and json.loads(body)=={"error":"response unavailable"}
+            body=exc.read().decode();assert exc.code==500 and json.loads(body)=={"error":"response_unavailable"}
         else:raise AssertionError("unsafe response unexpectedly serialized")
-        finally:DemoHandler.store.get=original_get
+        finally:store.get=original_get
         target_secret="API_KEY=request-target-secret-C-Users-reviewer-private.kicad_pcb"
         target=f"http://[::1/?{target_secret}"
         with socket.create_connection(server.server_address) as client:
@@ -371,27 +444,125 @@ def test_malformed_post_body_never_echoes_input(tmp_path,capsys):
         original_handle_error=server.handle_error
         def delayed_get(job_id):entered.set();release.wait(2);return original_get(job_id)
         def observed_handle_error(request,address):handled.set();return original_handle_error(request,address)
-        DemoHandler.store.get=delayed_get;server.handle_error=observed_handle_error
+        store.get=delayed_get;server.handle_error=observed_handle_error
         client=socket.create_connection(server.server_address)
         client.sendall(b"GET /api/jobs/ffffffffffff HTTP/1.1\r\nHost: localhost\r\n\r\n")
         assert entered.wait(2)
         client.setsockopt(socket.SOL_SOCKET,socket.SO_LINGER,struct.pack("hh",1,0));client.close();release.set()
         assert handled.wait(2)
-        DemoHandler.store.get=original_get;server.handle_error=original_handle_error
-        for payload in ({"fixture_id":DEMO_FIXTURE_ID},{"request":DEMO_REQUEST}):
-            canonical=Request(f"{base}/api/demo",data=json.dumps(payload).encode(),headers={"content-type":"application/json"},method="POST")
-            with urlopen(canonical) as response:
+        store.get=original_get;server.handle_error=original_handle_error
+        payloads=({"fixture_id":DEMO_FIXTURE_ID,**identity},{"fixture_id":DEMO_FIXTURE_ID},{"request":DEMO_REQUEST})
+        for payload in payloads:
+            with post(payload) as response:
                 accepted=json.loads(response.read());assert response.status==202
-                assert response.headers["cache-control"]=="no-store"
-            job=_await_terminal(DemoHandler.store,accepted["job_id"])
+                assert accepted.keys()=={"job_id","status","api_version","server_instance_id","ui_version"}
+                assert accepted["status"]=="queued" and {key:accepted[key] for key in identity}==identity
+            job=_await_terminal(store,accepted["job_id"])
             assert job["status"]=="complete" and job["report"]=={"result":"canonical request accepted"}
-        assert requests_seen==[DEMO_REQUEST,DEMO_REQUEST]
+            with urlopen(Request(f"{base}/api/jobs/{accepted['job_id']}",headers=poll_headers)) as response:
+                published=json.loads(response.read())
+            assert published["status"]=="complete" and {key:published[key] for key in identity}==identity
+        assert requests_seen==[DEMO_REQUEST]*3
     finally:
         server.shutdown();server.server_close();thread.join(timeout=2)
     captured=capsys.readouterr()
     assert "Traceback" not in captured.err and "RecursionError" not in captured.err
     assert "ConnectionResetError" not in captured.err and "BrokenPipeError" not in captured.err
     assert secret not in captured.err and target_secret not in captured.err
+
+
+def test_server_restart_rejects_stale_generation_and_old_job(tmp_path):
+    class Report:
+        def model_dump(self,mode=None):return {"result":"complete"}
+    class Pipeline:
+        def __init__(self,progress):pass
+        def run(self,destination,request):return Report()
+    first_store=JobStore(tmp_path/"first",Pipeline)
+    first=DemoHTTPServer(("127.0.0.1",0),DemoHandler,store=first_store)
+    port=first.server_port
+    first_thread=threading.Thread(target=first.serve_forever,daemon=True);first_thread.start()
+    first_base=f"http://127.0.0.1:{port}"
+    first_identity={
+        "fixture_id":DEMO_FIXTURE_ID,"api_version":API_VERSION,
+        "server_instance_id":first.server_instance_id,"ui_version":first.ui_version,
+    }
+    request=Request(
+        first_base+"/api/demo",data=json.dumps(first_identity).encode(),
+        headers={"content-type":"application/json"},method="POST",
+    )
+    with urlopen(request) as response:job_id=json.loads(response.read())["job_id"]
+    assert job_id in first_store.jobs
+    old_headers={
+        "x-ohmni-api-version":str(API_VERSION),
+        "x-ohmni-server-instance":first.server_instance_id,
+        "x-ohmni-ui-version":first.ui_version,
+    }
+    first.shutdown();first.server_close();first_thread.join(timeout=2)
+    second_store=JobStore(tmp_path/"second",Pipeline)
+    second=DemoHTTPServer(("127.0.0.1",port),DemoHandler,store=second_store)
+    second_thread=threading.Thread(target=second.serve_forever,daemon=True);second_thread.start()
+    second_base=f"http://127.0.0.1:{port}"
+    try:
+        assert second.server_instance_id!=first.server_instance_id
+        assert not second_store.jobs and job_id not in second_store.jobs
+        try:urlopen(Request(f"{second_base}/api/jobs/{job_id}",headers=old_headers))
+        except HTTPError as exc:
+            assert exc.code==409 and json.loads(exc.read())=={"error":"server_instance_mismatch"}
+        else:raise AssertionError("stale server generation unexpectedly polled an old job")
+        new_headers={
+            "x-ohmni-api-version":str(API_VERSION),
+            "x-ohmni-server-instance":second.server_instance_id,
+            "x-ohmni-ui-version":second.ui_version,
+        }
+        try:urlopen(Request(f"{second_base}/api/jobs/{job_id}",headers=new_headers))
+        except HTTPError as exc:
+            assert exc.code==404 and json.loads(exc.read())=={"error":"job_not_found"}
+        else:raise AssertionError("a restarted server unexpectedly retained an old job")
+        for header,value,error in (
+            ("x-ohmni-api-version","3","api_version_mismatch"),
+            ("x-ohmni-server-instance","0"*16,"server_instance_mismatch"),
+            ("x-ohmni-ui-version","0"*64,"ui_version_mismatch"),
+        ):
+            headers={**new_headers,header:value}
+            try:urlopen(Request(f"{second_base}/api/jobs/{job_id}",headers=headers))
+            except HTTPError as exc:
+                assert exc.code==409 and json.loads(exc.read())=={"error":error}
+            else:raise AssertionError(f"mismatched {header} unexpectedly reached the job store")
+        with urlopen(second_base+"/") as response:
+            assert response.headers["x-ohmni-server-instance"]==second.server_instance_id
+            assert response.read()==second.static_assets["/index.html"]
+    finally:
+        second.shutdown();second.server_close();second_thread.join(timeout=2)
+
+
+def test_job_start_unavailable_is_fixed_and_diagnostics_fail_safe(tmp_path,capsys,monkeypatch):
+    secret=r"API_KEY=start-secret C:\Users\reviewer\private-worker"
+    class BrokenStore(JobStore):
+        def start(self,request):raise OSError(secret)
+    store=BrokenStore(tmp_path);server=DemoHTTPServer(("127.0.0.1",0),DemoHandler,store=store)
+    thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start()
+    base=f"http://127.0.0.1:{server.server_port}"
+    payload={
+        "fixture_id":DEMO_FIXTURE_ID,"api_version":API_VERSION,
+        "server_instance_id":server.server_instance_id,"ui_version":server.ui_version,
+    }
+    try:
+        request=Request(base+"/api/demo",data=json.dumps(payload).encode(),headers={"content-type":"application/json"},method="POST")
+        try:urlopen(request)
+        except HTTPError as exc:
+            assert exc.code==503 and json.loads(exc.read())=={"error":"job_start_unavailable"}
+        else:raise AssertionError("failed store unexpectedly started a job")
+    finally:
+        server.shutdown();server.server_close();thread.join(timeout=2)
+    captured=capsys.readouterr()
+    records=[json.loads(line) for line in captured.err.splitlines()]
+    assert records[-1]["event"]=="job_start_unavailable"
+    assert secret not in captured.err and "Traceback" not in captured.err
+    class BrokenStderr:
+        def write(self,_value):raise SystemExit(secret)
+        def flush(self):raise SystemExit(secret)
+    monkeypatch.setattr(demo_server_module.sys,"stderr",BrokenStderr())
+    demo_server_module._diagnostic("server_runtime_failed",api_version=API_VERSION)
 
 
 def test_http_download_serves_verified_buffer_and_rejects_alternate_paths(tmp_path):
@@ -408,14 +579,14 @@ def test_http_download_serves_verified_buffer_and_rejects_alternate_paths(tmp_pa
         "schematic":{"fingerprint":hashlib.sha256(schematic.read_bytes()).hexdigest(),"current":True},
         "pcb":{"fingerprint":hashlib.sha256(pcb.read_bytes()).hexdigest(),"source_placed_pcb_fingerprint":hashlib.sha256(placed.read_bytes()).hexdigest(),"current":True},
         "release":{"status":"READY_FOR_MANUFACTURING_REVIEW","files":[{"relative_path":gerber.name,"sha256":hashlib.sha256(gerber.read_bytes()).hexdigest()}],"manifest":{"relative_path":manifest.name,"sha256":hashlib.sha256(manifest.read_bytes()).hexdigest()},"current":True},
-    },"error":None}
+    },"error":None,"error_code":None}
     original_read=store.read_artifact
     def mutate_after_verified_read(request_job_id,name):
         state,data=original_read(request_job_id,name)
         if name=="golden.kicad_sch":schematic.write_bytes(b"changed after verified read")
         return state,data
     store.read_artifact=mutate_after_verified_read
-    DemoHandler.store=store;server=DemoHTTPServer(("127.0.0.1",0),DemoHandler)
+    server=DemoHTTPServer(("127.0.0.1",0),DemoHandler,store=store)
     thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start()
     base=f"http://127.0.0.1:{server.server_port}"
     try:
