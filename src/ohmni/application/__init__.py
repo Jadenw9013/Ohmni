@@ -6,7 +6,18 @@ from .demo import (
     DemoPipeline,
     DemoProgress,
     DemoReport,
+    preview_brief,
     require_demo_request,
 )
+from .product import ProductExperience
 
-__all__ = ["DEMO_REQUEST", "UNSUPPORTED_DEMO_REQUEST", "DemoPipeline", "DemoProgress", "DemoReport", "require_demo_request"]
+__all__ = [
+    "DEMO_REQUEST",
+    "UNSUPPORTED_DEMO_REQUEST",
+    "DemoPipeline",
+    "DemoProgress",
+    "DemoReport",
+    "ProductExperience",
+    "preview_brief",
+    "require_demo_request",
+]

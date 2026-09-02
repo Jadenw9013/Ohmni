@@ -1,131 +1,360 @@
-import test from"node:test";
-import assert from"node:assert/strict";
-import{artifactCurrent,badge,money,releaseReadiness,tone}from"../view-model.js";
+import assert from "node:assert/strict";
+import test from "node:test";
 
-const FIXTURE_ID="esp32-bme280-environmental-logger",INSTANCE="0123456789abcdef",OTHER_INSTANCE="fedcba9876543210",UI_VERSION="a".repeat(64),OTHER_UI_VERSION="b".repeat(64),JOB_ID="012345abcdef";
-const response=(status,payload)=>({ok:status>=200&&status<300,status,json:async()=>payload});
-const health=(values={})=>({status:"ready",fixture_id:FIXTURE_ID,api_version:2,server_instance_id:INSTANCE,ui_version:UI_VERSION,...values});
-const identity={api_version:2,server_instance_id:INSTANCE,ui_version:UI_VERSION};
-const startEnvelope=(values={})=>({job_id:JOB_ID,status:"queued",api_version:2,server_instance_id:INSTANCE,ui_version:UI_VERSION,...values});
-const jobEnvelope=(values={})=>({job_id:JOB_ID,status:"running",progress:[],report:null,error:null,error_code:null,api_version:2,server_instance_id:INSTANCE,ui_version:UI_VERSION,...values});
+import { artifactCurrent, badge, money, releaseReadiness, tone } from "../view-model.js";
 
-function createDom(){
-    const handlers={},windowHandlers={},documentHandlers={};
-    const nodes={
-        "#request-form":{addEventListener:(type,handler)=>{handlers[type]=handler}},
-        "#request":{value:"SECRET contradictory mutable display text"},
-        "#run-button":{disabled:false},
-        "#progress-section":{hidden:true},
-        "#workspace":{hidden:true,scrollIntoView:options=>nodes["#workspace"].scrollCalls.push(options),scrollCalls:[]},
-        "#progress-list":{innerHTML:""},"#progress-percent":{textContent:"not reset"},"#progress-bar":{style:{width:"not reset"}},
-    };
-    for(const selector of["#overview","#repair","#evidence","#notebook","#artifacts","#bom","#release"])nodes[selector]={innerHTML:""};
-    const document={hidden:false,querySelector:selector=>nodes[selector],addEventListener:(type,handler)=>{documentHandlers[type]=handler},removeEventListener:(type,handler)=>{if(documentHandlers[type]===handler)delete documentHandlers[type]}};
-    const window={addEventListener:(type,handler)=>{windowHandlers[type]=handler},removeEventListener:(type,handler)=>{if(windowHandlers[type]===handler)delete windowHandlers[type]}};
-    return{document,window,nodes,handlers,windowHandlers,documentHandlers};
-}
+const FIXTURE_ID = "esp32-bme280-environmental-logger";
+const INSTANCE = "0123456789abcdef";
+const OTHER_INSTANCE = "fedcba9876543210";
+const UI_VERSION = "a".repeat(64);
+const OTHER_UI_VERSION = "b".repeat(64);
+const JOB_ID = "012345abcdef";
 
-let importSequence=0;
-async function withApp(run){
-    const originalDocument=globalThis.document,originalWindow=globalThis.window,originalFetch=globalThis.fetch;
-    const dom=createDom();globalThis.document=dom.document;globalThis.window=dom.window;
-    const app=await import(`../app.js?frontend-regression=${++importSequence}`);
-    try{return await run(app,dom)}finally{app.stopCompletedMonitor();if(originalDocument===undefined)delete globalThis.document;else globalThis.document=originalDocument;if(originalWindow===undefined)delete globalThis.window;else globalThis.window=originalWindow;if(originalFetch===undefined)delete globalThis.fetch;else globalThis.fetch=originalFetch}
-}
+const response = (status, payload) => ({ ok: status >= 200 && status < 300, status, json: async () => payload });
+const health = (values = {}) => ({ status: "ready", fixture_id: FIXTURE_ID, api_version: 2, server_instance_id: INSTANCE, ui_version: UI_VERSION, ...values });
+const identity = { api_version: 2, server_instance_id: INSTANCE, ui_version: UI_VERSION };
+const briefEnvelope = (values = {}) => ({ brief: brief(), api_version: 2, server_instance_id: INSTANCE, ui_version: UI_VERSION, ...values });
+const startEnvelope = (values = {}) => ({ job_id: JOB_ID, status: "queued", api_version: 2, server_instance_id: INSTANCE, ui_version: UI_VERSION, ...values });
+const jobEnvelope = (values = {}) => ({ job_id: JOB_ID, status: "running", progress: [], report: null, error: null, error_code: null, api_version: 2, server_instance_id: INSTANCE, ui_version: UI_VERSION, ...values });
 
-test("truthful status tones remain distinct",()=>{assert.equal(tone("PASS"),"pass");assert.equal(tone("VERIFIED"),"pass");assert.equal(tone("PASS_WITH_WARNINGS"),"warn");assert.equal(tone("PARTIALLY_VERIFIED"),"warn");assert.equal(tone("NOT_VERIFIED"),"fail");assert.equal(tone("FAIL"),"fail");assert.equal(tone("UNKNOWN"),"warn");assert.equal(tone("NOT_YET_VERIFIED"),"notyet")});
-test("unknown money never renders as zero",()=>{assert.equal(money(null,"UNKNOWN"),"UNKNOWN");assert.equal(money("0","KNOWN"),"$0.00")});
-test("artifact freshness is explicit",()=>{assert.equal(artifactCurrent({current:true}),"CURRENT");assert.equal(artifactCurrent({current:false}),"STALE")});
-test("badges escape untrusted labels",()=>{assert.match(badge("<script>"),/&lt;script&gt;/)});
-
-test("release readiness, completion motion, and polling states remain truthful",async()=>{
-    assert.deepEqual(releaseReadiness({status:"READY_FOR_MANUFACTURING_REVIEW",current:true}),{status:"READY_FOR_MANUFACTURING_REVIEW",label:"Ready for manufacturing review"});
-    assert.deepEqual(releaseReadiness({status:"READY_FOR_MANUFACTURING_REVIEW",current:false}),{status:"STALE",label:"Release is stale or not ready"});
-    await withApp(async app=>{
-        const calls=[],target={scrollIntoView:options=>calls.push(options)},queries=[];
-        app.scrollWorkspaceIntoView(target,query=>{queries.push(query);return{matches:true}});
-        app.scrollWorkspaceIntoView(target,query=>{queries.push(query);return{matches:false}});
-        assert.deepEqual(queries,["(prefers-reduced-motion: reduce)","(prefers-reduced-motion: reduce)"]);
-        assert.deepEqual(calls,[{behavior:"instant"},{behavior:"smooth"}]);
-        assert.deepEqual(["queued","running","complete","failed","paused"].map(app.pollDisposition),["continue","continue","complete","failed","invalid"]);
-    });
+const brief = () => ({
+    project_name: "ESP32 environmental logger",
+    request: "SECRET request text",
+    asked_for: [{ field: "budget_usd", label: "Budget", value: "about $20", origin: "explicit", source_text: "SECRET request text" }],
+    assumed: [{ field: "assumption", label: "Ohmni assumed", value: "USB-C is a 5 V sink", origin: "assumption", source_text: null }],
+    needs_clarification: [],
 });
 
-test("the registered submit handler performs health, POST, and owned job polling",async()=>withApp(async(_app,dom)=>{
-    assert.equal(typeof dom.handlers.submit,"function");let prevented=false;const calls=[],scheduled=[];
-    globalThis.fetch=async(url,options)=>{
-        calls.push({url,options});
-        if(url==="/api/health")return response(200,health());
-        if(url==="/api/demo")return response(202,startEnvelope());
-        if(url===`/api/jobs/${JOB_ID}`)return response(200,jobEnvelope({progress:[{stage:"requirements",label:"Interpreting request",status:"RUNNING",detail:"Owned progress",percent:5}]}));
-        assert.fail(`unexpected URL ${url}`);
+// A minimal completed report. Only the shape app.js reads, with statuses that
+// must survive rendering unchanged.
+const experience = () => ({
+    headline: "ESP32 environmental logger",
+    subhead: "19 parts on a 100 x 70 mm board",
+    brief: brief(),
+    stages: [{ stage: "check", label: "Checking the electrical design", detail: "d", status: "FOUND_PROBLEM", outcome: "8 blocking problem(s)" }],
+    systems: [{ system: "power", label: "Power", summary: "s", component_refs: ["J1", "U2"], anchor_refs: ["J1", "U2"] }],
+    grouping: [{ component_ref: "U2", part_id: "AP2112K-3.3TRG1", system: "power", anchor: true, attached_to: null, basis: "regulator" }],
+    flows: [{ flow_id: "power", label: "Power", question: "Where does it go?", summary: "sum", basis: "declared external source", net_names: ["VBUS"], component_refs: ["J1"], stages: [{ title: "Power arrives", detail: "d", net_names: ["VBUS"], component_refs: ["J1"], pin_labels: [] }] }],
+    board: {
+        artifact_fingerprint: "f".repeat(64), routing_plan_fingerprint: "e".repeat(64), constraints_hash: "d".repeat(64),
+        width_mm: 100, height_mm: 70, layer_count: 2, display_thickness_mm: 1.6, thickness_is_display_only: true,
+        layers: ["F.Cu", "B.Cu"], net_names: ["VBUS"], tracks: [], vias: [],
+        components: [{ ref: "U2", part_id: "AP2112K-3.3TRG1", package: "SOT-23-5", footprint_id: "fp", system: "power", x_mm: 20, y_mm: 58, rotation_deg: 0, side: "F.Cu", width_mm: 3, height_mm: 3.2, placement_reason: "near power input", pads: [], net_names: ["VBUS"] }],
+    },
+    schematic: { artifact_fingerprint: "c".repeat(64), connection_method: "global_labels", net_names: ["VBUS"], symbols: [{ ref: "U2", part_id: "AP2112K-3.3TRG1", system: "power", x_mm: 10, y_mm: 10, width_mm: 20, height_mm: 12, pins: [{ pin: "1", net_name: "VBUS", x_mm: 10, y_mm: 14 }] }] },
+    components: [{ ref: "U2", part_id: "AP2112K-3.3TRG1", display_name: "AP2112K", package: "SOT-23-5", system: "power", purpose: "The voltage regulator.", grouping_basis: "regulator", quantity_on_board: 1, value: null, assembly_difficulty: "moderate", assembly_detail: null, orientation_sensitive: false, price_knowledge: "UNKNOWN", unit_price: null, evidence_status: "catalog_reported" }],
+    checks: [{ group: "simulation", label: "Simulation", question: "q", status: "UNSUPPORTED", rule_count: 0, rules: [] }],
+    repair: { happened: false, headline: "Ohmni found nothing that needed fixing.", steps: [], moved_pins: [], evidence: [] },
+    confidence: {
+        checked: [{ label: "The electrical design", status: "CHECKED", detail: "24 rules" }],
+        not_verified: [{ label: "Does it actually work?", status: "NOT_YET_VERIFIED", detail: "No physical board has been built." }],
+    },
+    tour: { narration_source: "deterministic_projection_not_a_language_model", steps: [{ step_id: "overview", title: "What you built", narration: "n", focus: "board", system: null, flow_id: null, component_refs: [], net_names: [], facts: ["board 100 x 70 mm"] }] },
+});
+
+const completedReport = () => ({
+    experience: experience(),
+    release: { status: "READY_FOR_MANUFACTURING_REVIEW", current: true, package_fingerprint: "9".repeat(64), files: [{ relative_path: "golden-F_Cu.gtl", sha256: "1".repeat(64), size_bytes: 10, kind: "F.Cu" }] },
+    economics: { known_consumption_cost: "5.68", known_purchase_requirement: "23.00", fabrication: "UNKNOWN", shipping: "UNKNOWN", pricing_source: "SYNTHETIC FIXTURE - NOT LIVE SUPPLIER DATA" },
+});
+
+// ── fake DOM ────────────────────────────────────────────────────────────
+
+function createNode(selector) {
+    const node = {
+        selector, innerHTML: "", textContent: "", hidden: false, disabled: false, value: "",
+        style: {}, dataset: {}, children: [],
+        classList: {
+            set: new Set(),
+            add(name) { this.set.add(name); },
+            remove(name) { this.set.delete(name); },
+            contains(name) { return this.set.has(name); },
+            toggle(name, force) { const on = force === undefined ? !this.set.has(name) : force; if (on) this.set.add(name); else this.set.delete(name); return on; },
+        },
+        listeners: {},
+        addEventListener(type, handler) { this.listeners[type] = handler; },
+        removeEventListener(type) { delete this.listeners[type]; },
+        scrollIntoView(options) { node.scrollCalls.push(options); },
+        scrollCalls: [],
+        querySelector: () => null,
+        closest: () => null,
+        clientWidth: 520, clientHeight: 260,
+        // A canvas whose 2D context is unavailable, so the board view takes its
+        // declared no-canvas path and no rendering happens under test.
+        getContext: () => null,
     };
-    const originalSetTimeout=globalThis.setTimeout;globalThis.setTimeout=(callback,delay)=>{scheduled.push({callback,delay});return 1};
-    try{await dom.handlers.submit({preventDefault:()=>{prevented=true}})}finally{globalThis.setTimeout=originalSetTimeout}
-    assert.equal(prevented,true);assert.equal(calls.length,3);
-    assert.deepEqual(calls[0],{url:"/api/health",options:{cache:"no-store"}});
-    assert.equal(calls[1].url,"/api/demo");assert.equal(calls[1].options.method,"POST");assert.equal(calls[1].options.cache,"no-store");
-    assert.deepEqual(JSON.parse(calls[1].options.body),{fixture_id:FIXTURE_ID,api_version:2,server_instance_id:INSTANCE,ui_version:UI_VERSION});
-    assert.doesNotMatch(calls[1].options.body,/SECRET|contradictory|mutable/);
-    assert.equal(calls[2].url,`/api/jobs/${JOB_ID}`);assert.equal(calls[2].options.cache,"no-store");
-    assert.deepEqual(calls[2].options.headers,{"X-Ohmni-Server-Instance":INSTANCE,"X-Ohmni-API-Version":"2","X-Ohmni-UI-Version":UI_VERSION});
-    assert.equal(dom.nodes["#progress-percent"].textContent,"5%");assert.equal(dom.nodes["#progress-bar"].style.width,"5%");assert.match(dom.nodes["#progress-list"].innerHTML,/Owned progress/);
-    assert.equal(dom.nodes["#workspace"].hidden,true);assert.equal(dom.nodes["#run-button"].disabled,true);assert.equal(scheduled.length,1);assert.equal(scheduled[0].delay,900);
-}));
+    return node;
+}
 
-test("start failures map only allowlisted backend conditions to actionable copy",async()=>withApp(async(app,dom)=>{
-    const scenarios=[
-        {fetcher:async()=>{throw new Error("SECRET network detail")},message:/backend is unavailable/},
-        {fetcher:async()=>response(200,health({api_version:1})),message:/does not match the running Ohmni demo server/},
-        {fetcher:async()=>response(200,health({fixture_id:"wrong-fixture"})),message:/rejected the deterministic demo fixture/},
-        {responses:[response(200,health()),response(409,{error:"server_instance_mismatch"})],message:/server restarted or changed/},
-        {responses:[response(200,health()),response(409,{error:"ui_version_mismatch"})],message:/server restarted or changed/},
-        {responses:[response(200,health()),response(400,{error:"fixture_rejected"})],message:/rejected the deterministic demo fixture/},
-        {responses:[response(200,health()),response(503,{error:"job_start_unavailable"})],message:/could not initialize the deterministic demo job/},
-        {responses:[response(200,health()),response(202,startEnvelope({server_instance_id:OTHER_INSTANCE}))],message:/server restarted or changed/},
-        {responses:[response(200,health()),response(202,{...startEnvelope(),extra:"SECRET backend detail"})],message:/does not match the running Ohmni demo server/},
-        {responses:[response(500,{error:"SECRET backend detail"})],message:/backend is unavailable/},
-    ];
-    for(const scenario of scenarios){
-        dom.nodes["#progress-list"].innerHTML="";dom.nodes["#progress-percent"].textContent="99%";dom.nodes["#progress-bar"].style.width="99%";dom.nodes["#workspace"].hidden=false;dom.nodes["#run-button"].disabled=true;
-        let index=0,polled=false;const fetcher=scenario.fetcher||(async()=>scenario.responses[index++]);
-        await app.startDemo({fetcher,poller:async()=>{polled=true}});
-        assert.equal(polled,false);assert.equal(dom.nodes["#progress-percent"].textContent,"0%");assert.equal(dom.nodes["#progress-bar"].style.width,"0%");assert.equal(dom.nodes["#workspace"].hidden,true);assert.equal(dom.nodes["#run-button"].disabled,false);
-        assert.match(dom.nodes["#progress-list"].innerHTML,scenario.message);assert.doesNotMatch(dom.nodes["#progress-list"].innerHTML,/SECRET|network detail|backend detail/);
+function createDom() {
+    const nodes = new Map();
+    const windowHandlers = {};
+    const documentHandlers = {};
+    const get = (selector) => {
+        if (!nodes.has(selector)) nodes.set(selector, createNode(selector));
+        return nodes.get(selector);
+    };
+    const document = {
+        hidden: false,
+        querySelector: get,
+        querySelectorAll: () => [],
+        getElementById: (id) => get(`#${id}`),
+        addEventListener: (type, handler) => { documentHandlers[type] = handler; },
+        removeEventListener: (type, handler) => { if (documentHandlers[type] === handler) delete documentHandlers[type]; },
+    };
+    const window = {
+        addEventListener: (type, handler) => { windowHandlers[type] = handler; },
+        removeEventListener: (type, handler) => { if (windowHandlers[type] === handler) delete windowHandlers[type]; },
+    };
+    return { document, window, get, nodes, windowHandlers, documentHandlers };
+}
+
+let importSequence = 0;
+async function withApp(run) {
+    const originals = {
+        document: globalThis.document, window: globalThis.window, fetch: globalThis.fetch,
+        matchMedia: globalThis.matchMedia, CSS: globalThis.CSS,
+    };
+    const dom = createDom();
+    globalThis.document = dom.document;
+    globalThis.window = dom.window;
+    // Reduced motion is the deterministic path: no timers start under test.
+    globalThis.matchMedia = () => ({ matches: true });
+    globalThis.CSS = { escape: (value) => value };
+    const app = await import(`../app.js?frontend-regression=${++importSequence}`);
+    try { return await run(app, dom); } finally {
+        app.stopCompletionMonitor();
+        for (const [key, value] of Object.entries(originals)) {
+            if (value === undefined) delete globalThis[key]; else globalThis[key] = value;
+        }
     }
+}
+
+// ── pure view-model ─────────────────────────────────────────────────────
+
+test("truthful status tones remain distinct", () => {
+    assert.equal(tone("PASS"), "pass");
+    assert.equal(tone("VERIFIED"), "pass");
+    assert.equal(tone("PASS_WITH_WARNINGS"), "warn");
+    assert.equal(tone("PARTIALLY_VERIFIED"), "warn");
+    assert.equal(tone("NOT_VERIFIED"), "fail");
+    assert.equal(tone("FAIL"), "fail");
+    assert.equal(tone("UNKNOWN"), "warn");
+    assert.equal(tone("NOT_YET_VERIFIED"), "notyet");
+    assert.equal(tone("UNSUPPORTED"), "notyet");
+});
+
+test("unknown money never renders as zero", () => {
+    assert.equal(money(null, "UNKNOWN"), "UNKNOWN");
+    assert.equal(money("0", "KNOWN"), "$0.00");
+});
+
+test("artifact freshness is explicit", () => {
+    assert.equal(artifactCurrent({ current: true }), "CURRENT");
+    assert.equal(artifactCurrent({ current: false }), "STALE");
+});
+
+test("badges escape untrusted labels", () => {
+    assert.match(badge("<script>"), /&lt;script&gt;/);
+});
+
+test("release readiness stays truthful about staleness", () => {
+    assert.deepEqual(releaseReadiness({ status: "READY_FOR_MANUFACTURING_REVIEW", current: true }),
+        { status: "READY_FOR_MANUFACTURING_REVIEW", label: "Ready for manufacturing review" });
+    assert.deepEqual(releaseReadiness({ status: "READY_FOR_MANUFACTURING_REVIEW", current: false }),
+        { status: "STALE", label: "Release is stale or not ready" });
+});
+
+// ── envelope parsing ────────────────────────────────────────────────────
+
+test("polling dispositions are exhaustive and fail closed", async () => withApp(async (app) => {
+    assert.deepEqual(["queued", "running", "complete", "failed", "paused"].map(app.pollDisposition),
+        ["continue", "continue", "complete", "failed", "invalid"]);
 }));
 
-test("polling distinguishes restart, lost job, worker start, and pipeline failures",async()=>withApp(async(app,dom)=>{
-    const scenarios=[
-        {result:response(404,{error:"job_not_found"}),message:/no longer available from the server that created it/},
-        {result:response(409,{error:"server_instance_mismatch"}),message:/server restarted or changed/},
-        {result:response(409,{error:"api_version_mismatch"}),message:/does not match the running Ohmni demo server/},
-        {result:response(200,jobEnvelope({server_instance_id:OTHER_INSTANCE})),message:/server restarted or changed/},
-        {result:response(200,jobEnvelope({status:"failed",error:"Demo pipeline failed",error_code:"worker_start_failed"})),message:/worker failed before progress began/},
-        {result:response(200,jobEnvelope({status:"failed",error:"Demo pipeline failed",error_code:"pipeline_failed"})),message:/engineering pipeline failed/},
-        {result:response(200,jobEnvelope({status:"failed",error:"Demo pipeline failed",error_code:"progress_publication_failed"})),message:/engineering pipeline failed/},
-        {result:response(200,jobEnvelope({progress:[{stage:"x",label:"x",status:"RUNNING",detail:"SECRET backend detail",percent:"not-a-percent"}]})),message:/does not match the running Ohmni demo server/},
-        {result:response(200,{...jobEnvelope(),extra:"SECRET backend detail"}),message:/does not match the running Ohmni demo server/},
-        {error:new Error("SECRET fetch failure"),message:/backend is unavailable/},
+test("health, brief, start and job envelopes are bound to one server generation", async () => withApp(async (app) => {
+    assert.deepEqual(app.parseHealth(health()), identity);
+    assert.throws(() => app.parseHealth(health({ fixture_id: "other" })), /fixture_rejected/);
+    assert.throws(() => app.parseHealth(health({ api_version: 1 })), /api_ui_mismatch/);
+    assert.throws(() => app.parseHealth({ ...health(), extra: 1 }), /api_ui_mismatch/);
+
+    assert.equal(app.parseBrief(briefEnvelope(), identity).project_name, "ESP32 environmental logger");
+    assert.throws(() => app.parseBrief(briefEnvelope({ server_instance_id: OTHER_INSTANCE }), identity), /generation_mismatch/);
+    assert.throws(() => app.parseBrief(briefEnvelope({ ui_version: OTHER_UI_VERSION }), identity), /generation_mismatch/);
+    assert.throws(() => app.parseBrief({ ...briefEnvelope(), brief: { asked_for: [] } }, identity), /api_ui_mismatch/);
+
+    assert.equal(app.parseStart(startEnvelope(), identity), JOB_ID);
+    assert.throws(() => app.parseStart(startEnvelope({ job_id: "nope" }), identity), /api_ui_mismatch/);
+    assert.throws(() => app.parseStart(startEnvelope({ server_instance_id: OTHER_INSTANCE }), identity), /generation_mismatch/);
+
+    assert.equal(app.parseJob(jobEnvelope(), JOB_ID, identity).status, "running");
+    assert.throws(() => app.parseJob(jobEnvelope({ status: "running", report: {} }), JOB_ID, identity), /api_ui_mismatch/);
+    assert.throws(() => app.parseJob(jobEnvelope({ status: "complete", report: {} }), JOB_ID, identity), /api_ui_mismatch/,
+        "a completed job without an experience projection is rejected");
+    assert.throws(() => app.parseJob(jobEnvelope({ status: "failed", report: null, error: "other", error_code: "pipeline_failed" }), JOB_ID, identity), /api_ui_mismatch/);
+    assert.throws(() => app.parseJob(jobEnvelope({ status: "failed", error: "Demo pipeline failed", error_code: "made_up" }), JOB_ID, identity), /api_ui_mismatch/);
+}));
+
+// ── journey ─────────────────────────────────────────────────────────────
+
+test("opening the brief performs health then a generation-bound brief request", async () => withApp(async (app, dom) => {
+    const calls = [];
+    globalThis.fetch = async (url, options) => {
+        calls.push({ url, options });
+        if (url === "/api/health") return response(200, health());
+        if (url === "/api/brief") return response(200, briefEnvelope());
+        throw new Error(`unexpected ${url}`);
+    };
+    await app.openBrief();
+    assert.deepEqual(calls.map((call) => call.url), ["/api/health", "/api/brief"]);
+    assert.deepEqual(JSON.parse(calls[1].options.body), {
+        fixture_id: FIXTURE_ID, api_version: 2, server_instance_id: INSTANCE, ui_version: UI_VERSION,
+    });
+    const rendered = dom.get("#brief").innerHTML;
+    assert.match(rendered, /You asked for/);
+    assert.match(rendered, /Ohmni assumed/);
+    assert.match(rendered, /Needs your confirmation/);
+    assert.match(rendered, /everything above came from what you wrote/,
+        "an empty clarification list states the outcome rather than vanishing");
+    assert.equal(dom.get("#agree").hidden, false);
+    assert.equal(dom.get("#describe").hidden, true);
+}));
+
+test("assumptions are rendered in their own group, never merged into what you asked for", async () => withApp(async (app, dom) => {
+    app.renderBrief({
+        project_name: "P", request: "r",
+        asked_for: [{ field: "budget_usd", label: "Budget", value: "about $20", origin: "explicit" }],
+        assumed: [{ field: "assumption", label: "Ohmni assumed", value: "USB-C is a 5 V sink", origin: "assumption" }],
+        needs_clarification: [{ field: "max_board_layers", label: "Board complexity", value: "2 layers", origin: "default" }],
+    });
+    const html = dom.get("#brief").innerHTML;
+    const asked = html.slice(html.indexOf("brief-group asked"), html.indexOf("brief-group assumed"));
+    const assumed = html.slice(html.indexOf("brief-group assumed"), html.indexOf("brief-group unclear"));
+    assert.match(asked, /about \$20/);
+    assert.doesNotMatch(asked, /USB-C is a 5 V sink/);
+    assert.match(assumed, /USB-C is a 5 V sink/);
+    assert.match(html.slice(html.indexOf("brief-group unclear")), /2 layers/);
+}));
+
+test("start failures map only allowlisted backend conditions to actionable copy", async () => {
+    const cases = [
+        [async () => { throw new Error("offline"); }, /demo backend is unavailable/],
+        [async () => response(500, {}), /demo backend is unavailable/],
+        [async () => response(409, { error: "server_instance_mismatch" }), /restarted or changed/],
+        [async () => response(409, { error: "ui_version_mismatch" }), /restarted or changed/],
+        [async () => response(400, { error: "fixture_rejected" }), /rejected the deterministic demo fixture/],
+        [async () => response(503, { error: "brief_unavailable" }), /could not interpret the request/],
+        [async () => response(418, { error: "not_in_the_allowlist" }), /does not match the running Ohmni demo server/],
     ];
-    for(const scenario of scenarios){
-        dom.nodes["#progress-list"].innerHTML="";dom.nodes["#run-button"].disabled=true;let scheduled=false;
-        await app.poll(JOB_ID,identity,{fetcher:async()=>{if(scenario.error)throw scenario.error;return scenario.result},schedule:()=>{scheduled=true},monitorer:()=>assert.fail("failed jobs must not be monitored")});
-        assert.equal(scheduled,false);assert.equal(dom.nodes["#run-button"].disabled,false);assert.match(dom.nodes["#progress-list"].innerHTML,scenario.message);assert.doesNotMatch(dom.nodes["#progress-list"].innerHTML,/SECRET|fetch failure|backend detail/);
+    for (const [handler, expected] of cases) {
+        await withApp(async (app, dom) => {
+            globalThis.fetch = async (url) => (url === "/api/health" ? response(200, health()) : handler());
+            await app.openBrief();
+            assert.match(dom.get("#run-error").textContent, expected);
+            assert.equal(dom.get("#run-error").hidden, false);
+            assert.doesNotMatch(dom.get("#run-error").textContent, /SECRET|Traceback|Error:/);
+        });
     }
+});
+
+test("confirming the brief starts a generation-bound job and polls it", async () => withApp(async (app, dom) => {
+    const calls = [];
+    globalThis.fetch = async (url, options) => {
+        calls.push({ url, options });
+        if (url === "/api/health") return response(200, health());
+        if (url === "/api/brief") return response(200, briefEnvelope());
+        if (url === "/api/demo") return response(202, startEnvelope());
+        if (url === `/api/jobs/${JOB_ID}`) {
+            return response(200, jobEnvelope({ progress: [{ stage: "routing", label: "Drawing the copper", status: "RUNNING", detail: "d", percent: 40 }] }));
+        }
+        throw new Error(`unexpected ${url}`);
+    };
+    await app.openBrief();
+    const scheduled = [];
+    await app.startRun({ pollDependencies: { schedule: (fn, delay) => scheduled.push(delay) } });
+    const poll = calls.find((call) => call.url === `/api/jobs/${JOB_ID}`);
+    assert.deepEqual(poll.options.headers, {
+        "X-Ohmni-Server-Instance": INSTANCE, "X-Ohmni-API-Version": "2", "X-Ohmni-UI-Version": UI_VERSION,
+    });
+    assert.deepEqual(scheduled, [900], "an in-flight job schedules exactly one continuation");
+    assert.equal(dom.get("#progress-percent").textContent, "40%");
+    assert.equal(dom.get("#design").hidden, false);
 }));
 
-test("completed-workspace monitoring invalidates unavailable or changed servers without runaway timers",async()=>withApp(async(app,dom)=>{
-    const intervals=[],cleared=[],added=[],removed=[];let current=health();
-    const setIntervalFn=(callback,delay)=>{const timer={callback,delay,unref:()=>{timer.unrefCalled=true}};intervals.push(timer);return timer};
-    const clearIntervalFn=timer=>cleared.push(timer);
-    const windowTarget={addEventListener:(type,handler)=>added.push({target:"window",type,handler}),removeEventListener:(type,handler)=>removed.push({target:"window",type,handler})};
-    const documentTarget={hidden:false,addEventListener:(type,handler)=>added.push({target:"document",type,handler}),removeEventListener:(type,handler)=>removed.push({target:"document",type,handler})};
-    dom.nodes["#workspace"].hidden=false;
-    let check=app.beginCompletedMonitor(identity,{fetcher:async()=>response(200,current),setIntervalFn,clearIntervalFn,windowTarget,documentTarget});
-    assert.equal(intervals.length,1);assert.equal(intervals[0].delay,3000);assert.equal(intervals[0].unrefCalled,true);assert.equal(added.length,2);assert.equal(await check(),true);assert.equal(dom.nodes["#workspace"].hidden,false);
-    current=health({server_instance_id:OTHER_INSTANCE,ui_version:OTHER_UI_VERSION});assert.equal(await intervals[0].callback(),false);assert.equal(dom.nodes["#workspace"].hidden,true);assert.match(dom.nodes["#progress-list"].innerHTML,/server restarted or changed/);assert.equal(cleared.length,1);assert.equal(removed.length,2);
-    dom.nodes["#workspace"].hidden=false;dom.nodes["#progress-list"].innerHTML="";
-    check=app.beginCompletedMonitor(identity,{fetcher:async()=>{throw new Error("SECRET monitor failure")},setIntervalFn,clearIntervalFn,windowTarget,documentTarget});
-    assert.equal(await check(),false);assert.equal(dom.nodes["#workspace"].hidden,true);assert.match(dom.nodes["#progress-list"].innerHTML,/backend is unavailable/);assert.doesNotMatch(dom.nodes["#progress-list"].innerHTML,/SECRET|monitor failure/);
+test("polling distinguishes restart, lost job, worker start, and pipeline failures", async () => {
+    const cases = [
+        [() => response(404, { error: "job_not_found" }), /no longer available/],
+        [() => response(409, { error: "server_instance_mismatch" }), /restarted or changed/],
+        [() => response(200, jobEnvelope({ status: "failed", error: "Demo pipeline failed", error_code: "worker_start_failed" })), /worker failed before progress began/],
+        [() => response(200, jobEnvelope({ status: "failed", error: "Demo pipeline failed", error_code: "pipeline_failed" })), /engineering pipeline failed/],
+    ];
+    for (const [handler, expected] of cases) {
+        await withApp(async (app, dom) => {
+            globalThis.fetch = async () => handler();
+            await app.poll(JOB_ID, identity, { schedule: () => { throw new Error("must not continue polling"); } });
+            assert.match(dom.get("#run-error").textContent, expected);
+        });
+    }
+});
+
+test("a completed run renders settled stages with no running affordance", async () => withApp(async (app, dom) => {
+    globalThis.fetch = async () => response(200, jobEnvelope({ status: "complete", progress: [], report: completedReport() }));
+    await app.poll(JOB_ID, identity, { monitorer: () => {} });
+    const stages = dom.get("#stage-list").innerHTML;
+    assert.match(stages, /Checking the electrical design/);
+    assert.match(stages, /FOUND PROBLEM/);
+    assert.doesNotMatch(stages, /RUNNING/, "a finished project shows no RUNNING status");
+    assert.doesNotMatch(stages, /class="pending"/);
+    assert.equal(dom.get("#progress-percent").textContent, "100%");
+    assert.equal(dom.get("#progress-now").textContent, "Finished");
+    assert.equal(dom.get("#review").hidden, false);
+    assert.equal(dom.get("#build").hidden, false);
+}));
+
+test("a completed run preserves unsupported and not-yet-verified statuses verbatim", async () => withApp(async (app, dom) => {
+    globalThis.fetch = async () => response(200, jobEnvelope({ status: "complete", progress: [], report: completedReport() }));
+    await app.poll(JOB_ID, identity, { monitorer: () => {} });
+    const confidence = dom.get("#confidence-panel").innerHTML;
+    assert.match(confidence, /NOT YET VERIFIED/);
+    assert.match(confidence, /No physical board has been built/);
+    assert.match(dom.get("#checks").innerHTML, /UNSUPPORTED/);
+    assert.match(dom.get("#checks").innerHTML, /No rules exist for this area/,
+        "an area with no rules explains itself rather than disappearing");
+    assert.match(dom.get("#parts").innerHTML, /price UNKNOWN/, "an unknown price never becomes a number");
+    assert.match(dom.get("#tour-panel").innerHTML, /deterministic_projection_not_a_language_model/,
+        "the tour never claims to be a live model");
+}));
+
+test("completed-workspace monitoring invalidates unavailable or changed servers without runaway timers", async () => {
+    for (const [payload, expected] of [
+        [health({ server_instance_id: OTHER_INSTANCE }), /restarted or changed/],
+        [health({ ui_version: OTHER_UI_VERSION }), /restarted or changed/],
+    ]) {
+        await withApp(async (app, dom) => {
+            globalThis.fetch = async () => response(200, payload);
+            const cleared = [];
+            const check = app.beginCompletionMonitor(identity, {
+                setIntervalFn: () => 7, clearIntervalFn: (id) => cleared.push(id),
+                windowTarget: dom.window, documentTarget: dom.document,
+            });
+            assert.equal(await check(), false);
+            assert.match(dom.get("#run-error").textContent, expected);
+            assert.equal(dom.get("#review").hidden, true, "a stale result is hidden, not left on screen");
+            app.stopCompletionMonitor();
+            assert.deepEqual(cleared, [7]);
+            assert.deepEqual(Object.keys(dom.windowHandlers), []);
+            assert.deepEqual(Object.keys(dom.documentHandlers), []);
+        });
+    }
+});
+
+test("a backend that disappears after completion invalidates the result", async () => withApp(async (app, dom) => {
+    globalThis.fetch = async () => { throw new Error("gone"); };
+    const check = app.beginCompletionMonitor(identity, {
+        setIntervalFn: () => 1, clearIntervalFn: () => {},
+        windowTarget: dom.window, documentTarget: dom.document,
+    });
+    assert.equal(await check(), false);
+    assert.match(dom.get("#run-error").textContent, /demo backend is unavailable/);
+    assert.equal(dom.get("#review").hidden, true);
 }));

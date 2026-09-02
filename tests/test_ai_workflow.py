@@ -121,11 +121,19 @@ def test_repository_product_scope_matches_human_approval():
         "id":"M8","title":"Ohmni End-User Experience and Demo",
         "commit":"3a6f9d3","status":"COMPLETE",
     }
-    assert state["approved_product_scope"]=="M8-REGRESSION-2" and state["active_task"]=="M8-RG02"
-    scope=next(scope for scope in tasks["scopes"] if scope["id"]=="M8")
-    assert scope["status"]=="COMPLETE" and scope["approved_by"]=="human" and scope["approval_evidence"]
-    regression=next(scope for scope in tasks["scopes"] if scope["id"]=="M8-REGRESSION-1")
-    assert regression["status"]=="COMPLETE" and regression["approved_by"]=="human" and regression["approval_evidence"]
-    repeat=next(scope for scope in tasks["scopes"] if scope["id"]=="M8-REGRESSION-2")
-    assert repeat["status"]=="IN_PROGRESS" and repeat["approved_by"]=="human" and repeat["approval_evidence"]
-    assert all(item["id"]!="M9" for item in tasks["scopes"]+tasks["tasks"])
+    assert state["approved_product_scope"]=="M9"
+    for closed in ("M8","M8-REGRESSION-1","M8-REGRESSION-2"):
+        scope=next(scope for scope in tasks["scopes"] if scope["id"]==closed)
+        assert scope["status"]=="COMPLETE" and scope["approved_by"]=="human" and scope["approval_evidence"]
+    current=next(scope for scope in tasks["scopes"] if scope["id"]=="M9")
+    assert current["status"]=="IN_PROGRESS" and current["approved_by"]=="human"
+    assert "MILESTONE 9" in current["approval_evidence"]
+    # M9 was approved on its own. Everything after it stays unapproved, and the
+    # milestone index must not carry an approver for any of them.
+    later={f"M{n}" for n in range(10,16)}
+    assert all(item["id"] not in later for item in tasks["scopes"]+tasks["tasks"])
+    milestones=json.loads((root/".ai"/"milestones.yaml").read_text())
+    assert milestones["active_product_milestone"]["id"]=="M9"
+    proposed=milestones["proposed_product_milestones"]
+    assert {item["id"] for item in proposed}==later
+    assert all(item["status"]=="PROPOSED" and item["approved_by"] is None for item in proposed)

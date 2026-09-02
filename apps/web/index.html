@@ -3,56 +3,186 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Ohmni evidence-first electronics engineering demo">
+  <meta name="description" content="Ohmni turns an idea for something electronic into a real circuit board, checks its own work, and explains what it did.">
   <title>Ohmni · Build circuits. Understand why.</title>
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
   <header class="masthead">
     <a class="brand" href="#top" aria-label="Ohmni home"><span class="mark">Ω</span><span>OHMNI</span></a>
+    <nav class="journey" aria-label="Where you are">
+      <ol id="journey">
+        <li data-stage="describe" class="here"><span>1</span>Describe</li>
+        <li data-stage="agree"><span>2</span>Agree</li>
+        <li data-stage="design"><span>3</span>Design</li>
+        <li data-stage="review"><span>4</span>Review</li>
+        <li data-stage="build"><span>5</span>Build</li>
+      </ol>
+    </nav>
     <p class="tagline">Build circuits. Understand why.</p>
-    <span class="mode">DETERMINISTIC DEMO</span>
   </header>
+
   <main id="top">
-    <section class="hero">
-      <div>
-        <p class="eyebrow">Evidence-first electronics engineering</p>
-        <h1>See the engineering,<br>not just the output.</h1>
-        <p class="lede">Ohmni turns an idea into traceable requirements, grounded decisions,
-          independently checked artifacts, and lessons you can use at the bench.</p>
+    <!-- 1 ─ DESCRIBE ------------------------------------------------------ -->
+    <section id="describe" class="stage" aria-labelledby="describe-title">
+      <div class="describe-grid">
+        <div>
+          <p class="eyebrow">Describe something you want to build</p>
+          <h1 id="describe-title">What do you want to build?</h1>
+          <p class="lede">
+            Tell Ohmni what your device should do. It works out which parts you need,
+            wires them together, <strong>checks its own work against the manufacturers'
+            datasheets</strong>, fixes what it finds, and hands you files a factory can
+            build from — explaining each decision as it goes.
+          </p>
+          <ul class="promise">
+            <li><b>You get</b> a schematic, a circuit board, a parts list, and manufacturing files.</li>
+            <li><b>You do not need</b> to know any electronics vocabulary. Ohmni explains as it goes.</li>
+            <li><b>Different from a chatbot:</b> a chatbot describes a circuit. Ohmni builds one,
+              then runs 24 deterministic checks plus KiCad's own independent checker over it,
+              and shows you every result — including what it could not check.</li>
+          </ul>
+        </div>
+        <div class="picker">
+          <h2>Pick a project</h2>
+          <p class="picker-note">This prototype builds one real project end to end. The others
+            show the direction, and are honestly marked as not built yet.</p>
+          <ul class="examples" id="examples">
+            <li>
+              <button type="button" id="start-supported" class="example ready" data-fixture="esp32-bme280-environmental-logger">
+                <span class="example-status">Available now</span>
+                <strong>A room temperature and humidity monitor</strong>
+                <span>USB-powered, senses the air around it, and shows a status light.</span>
+              </button>
+            </li>
+            <li><div class="example soon"><span class="example-status">Not built yet</span><strong>A desk occupancy sensor</strong><span>Needs a motion sensor Ohmni does not have evidence for.</span></div></li>
+            <li><div class="example soon"><span class="example-status">Not built yet</span><strong>A USB-powered LED controller</strong><span>Needs the design to be generated rather than replayed.</span></div></li>
+            <li><div class="example soon"><span class="example-status">Not built yet</span><strong>A battery-powered Wi-Fi sensor</strong><span>Battery charging is deliberately out of scope: it is a safety-relevant design.</span></div></li>
+          </ul>
+        </div>
       </div>
-      <form id="request-form" class="request-panel">
-        <label for="request">Supported deterministic request</label>
-        <textarea id="request" rows="5" readonly aria-readonly="true">Build an ESP32 environmental logger using the BME280. Power it from USB-C, keep it around $20, use a 2-layer PCB, and prefer parts I can hand solder.</textarea>
-        <div class="support-note"><span>Fixed offline fixture</span> ESP32 + BME280 environmental logger</div>
-        <button id="run-button" type="submit">Run scripted engineering workflow <span>→</span></button>
-        <p class="fineprint">Runs one fixed scripted request so explicit requirement provenance stays exact,
-          followed by deterministic repair, KiCad ERC/DRC, routing, and release. No live AI or supplier network required.</p>
-      </form>
     </section>
 
-    <section id="progress-section" class="progress-shell" hidden aria-live="polite">
-      <div class="section-heading"><div><p class="eyebrow">Pipeline</p><h2>Engineering in progress</h2></div><span id="progress-percent">0%</span></div>
-      <div class="progress-track"><div id="progress-bar"></div></div>
-      <ol id="progress-list" class="progress-list"></ol>
+    <!-- 2 ─ AGREE --------------------------------------------------------- -->
+    <section id="agree" class="stage" hidden aria-labelledby="agree-title">
+      <div class="section-head">
+        <p class="eyebrow">Step 2 of 5 · nothing has been built yet</p>
+        <h2 id="agree-title">Here is what Ohmni understood</h2>
+        <p class="lede">Check this before it starts. Getting it right here is far cheaper
+          than getting a board you did not want.</p>
+      </div>
+      <div id="brief" class="brief"></div>
+      <div class="agree-actions">
+        <button type="button" id="confirm-brief" class="primary">This is right — design it <span aria-hidden="true">→</span></button>
+        <button type="button" id="back-to-describe" class="ghost">Back</button>
+        <p class="fineprint" id="agree-note"></p>
+      </div>
     </section>
 
-    <section id="workspace" hidden>
-      <nav class="rail" aria-label="Report sections">
-        <a href="#overview">Overview</a><a href="#repair">Repair</a><a href="#evidence">Evidence</a>
-        <a href="#notebook">Notebook</a><a href="#artifacts">Artifacts</a><a href="#bom">BOM & cost</a><a href="#release">Release</a>
-      </nav>
-      <div class="report">
-        <section id="overview" class="report-section"></section>
-        <section id="repair" class="report-section"></section>
-        <section id="evidence" class="report-section"></section>
-        <section id="notebook" class="report-section"></section>
-        <section id="artifacts" class="report-section"></section>
-        <section id="bom" class="report-section"></section>
-        <section id="release" class="report-section"></section>
+    <!-- 3 ─ DESIGN -------------------------------------------------------- -->
+    <section id="design" class="stage" hidden aria-labelledby="design-title">
+      <div class="section-head">
+        <p class="eyebrow">Step 3 of 5</p>
+        <h2 id="design-title">Ohmni is building your board</h2>
       </div>
+      <div class="progress-track" id="progress-track"><div id="progress-bar"></div></div>
+      <p class="progress-caption"><span id="progress-percent">0%</span> <span id="progress-now"></span></p>
+      <ol id="stage-list" class="stage-list" aria-live="polite"></ol>
+      <div id="run-error" class="run-error" hidden role="alert"></div>
+    </section>
+
+    <!-- 4 ─ REVIEW -------------------------------------------------------- -->
+    <section id="review" class="stage" hidden aria-labelledby="review-title">
+      <div class="section-head result-head">
+        <div>
+          <p class="eyebrow" id="review-eyebrow">Step 4 of 5 · finished</p>
+          <h2 id="review-title"></h2>
+          <p class="lede" id="review-subhead"></p>
+        </div>
+        <div id="release-badge" class="release-badge"></div>
+      </div>
+
+      <div class="board-shell">
+        <div class="board-stage">
+          <canvas id="board-canvas" tabindex="0" aria-label="Your circuit board. Drag to rotate, scroll to zoom, click a part to inspect it."></canvas>
+          <div id="board-empty" class="board-empty" hidden>The board view needs a canvas this browser did not provide.</div>
+          <p class="board-hint">Drag to rotate · scroll to zoom · shift-drag to pan · click a part</p>
+        </div>
+        <aside class="board-panel">
+          <div class="board-tools">
+            <div class="tool-row" role="group" aria-label="View">
+              <button type="button" data-view="front" class="chip on">Front</button>
+              <button type="button" data-view="back" class="chip">Back</button>
+              <button type="button" data-view="reset" class="chip">Reset</button>
+            </div>
+            <div class="tool-row" role="group" aria-label="Show">
+              <button type="button" data-toggle="showComponents" class="chip on">Parts</button>
+              <button type="button" data-toggle="showCopper" class="chip on">Copper</button>
+            </div>
+            <label class="slider">Separate the systems
+              <input type="range" id="explode" min="0" max="100" value="0" aria-describedby="explode-note">
+            </label>
+            <p class="fineprint" id="explode-note">A board looks like one object. It is really a few
+              groups of parts, each doing one job.</p>
+          </div>
+          <div id="systems" class="systems"></div>
+          <div id="selection" class="selection" aria-live="polite"></div>
+        </aside>
+      </div>
+
+      <div class="explore">
+        <div class="explore-head">
+          <h3>Show me how this works</h3>
+          <p>Pick something and Ohmni will light up the parts and the copper that carry it.</p>
+        </div>
+        <div id="flow-tabs" class="flow-tabs" role="tablist" aria-label="Flows"></div>
+        <div id="flow-detail" class="flow-detail"></div>
+      </div>
+
+      <div class="two-up">
+        <article class="panel repair" id="repair-panel"></article>
+        <article class="panel transform">
+          <h3>From drawing to object</h3>
+          <p class="panel-note">A schematic says <em>what connects to what</em>. A board says
+            <em>where everything physically is</em>. Same circuit, two different questions.</p>
+          <div id="transform-stage" class="transform-stage"></div>
+          <div class="transform-controls">
+            <button type="button" id="transform-play" class="secondary">Turn this circuit into a board</button>
+            <input type="range" id="transform-scrub" min="0" max="100" value="0" aria-label="Schematic to board">
+            <span id="transform-label" class="transform-label">Schematic</span>
+          </div>
+          <details class="disclose">
+            <summary>Show the real schematic sheet</summary>
+            <div id="schematic-holder" class="schematic-holder"></div>
+          </details>
+        </article>
+      </div>
+
+      <article class="panel tour" id="tour-panel"></article>
+
+      <article class="panel checks">
+        <h3>What Ohmni checked</h3>
+        <p class="panel-note">Every line is a result from a check that actually ran. Open one to
+          see the individual rules, including what a pass does <em>not</em> establish.</p>
+        <div id="checks" class="checks"></div>
+      </article>
+
+      <article class="panel confidence" id="confidence-panel"></article>
+    </section>
+
+    <!-- 5 ─ BUILD --------------------------------------------------------- -->
+    <section id="build" class="stage" hidden aria-labelledby="build-title">
+      <div class="section-head">
+        <p class="eyebrow">Step 5 of 5</p>
+        <h2 id="build-title">Build it</h2>
+        <p class="lede">Everything you need to have this made, and what to check when it arrives.</p>
+      </div>
+      <div id="parts" class="parts"></div>
+      <article class="panel files" id="files-panel"></article>
+      <article class="panel bringup" id="bringup-panel"></article>
     </section>
   </main>
+
   <footer>Ohmni verifies what it can, labels what it cannot, and leaves hardware as the final authority.</footer>
   <script type="module" src="/app.js"></script>
 </body>

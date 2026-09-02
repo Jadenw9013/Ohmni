@@ -155,8 +155,8 @@ async function waitForPage(call, deadline) {
       const state = await evaluate(call, `(() => ({
         ready: document.readyState,
         href: location.href,
-        hasForm: Boolean(document.querySelector("#request-form")),
-        hasButton: Boolean(document.querySelector("#run-button"))
+        hasForm: Boolean(document.querySelector("#describe")),
+        hasButton: Boolean(document.querySelector("#start-supported"))
       }))()`);
       if (state.ready === "complete" && state.hasForm && state.hasButton) return state;
     } catch (error) {
@@ -285,17 +285,23 @@ function validateApi(exchanges, pageOrigin, stopAfterProgress) {
 }
 
 function validateGoldenUi(state) {
+  // The same engineering truths the M8 surface asserted, in the product
+  // language that replaced it. Each entry is a claim a beginner must still be
+  // able to read off the finished page.
   const required = [
-    "BME280 VDD and VDDIO connected to 5 V VBUS",
-    "BOUNDED REPAIR",
-    "Both sensor supply pins moved to 3V3",
-    "Ohmni semantic verification",
-    "KiCad ERC",
-    "Ohmni physical verification",
-    "Ohmni routing verification",
-    "KiCad DRC",
-    "0 violations / 0 unrouted",
+    "Ohmni caught a problem",
+    "was connected to VBUS",
+    "moved 2 supply connection(s)",
+    "Then it checked again",
+    "Voltages and currents",
+    "KiCad checked the schematic",
+    "The physical layout",
+    "KiCad checked the board",
+    "0 KiCad DRC violation(s), 0 unrouted",
     "Ready for manufacturing review",
+    "NOT YET VERIFIED",
+    "No physical board has been built",
+    "SYNTHETIC FIXTURE - NOT LIVE SUPPLIER DATA",
   ];
   const missing = required.filter(text => !state.bodyText.includes(text));
   requireValue(missing.length === 0, `completed UI omitted: ${missing.join(", ")}`);
@@ -351,14 +357,28 @@ async function run(options) {
     if (options.reload) await call("Page.reload", {ignoreCache: true});
     const ready = await waitForPage(call, deadline);
     requireValue(samePage(ready.href, options.pageUrl), `browser loaded unexpected page ${ready.href}`);
+    const picked = await evaluate(call, `(() => {
+      const element = document.querySelector("#start-supported");
+      if (!element) return false;
+      element.click();
+      return true;
+    })()`);
+    requireValue(picked, "project picker was not clickable");
+    let briefShown = false;
+    while (Date.now() < deadline) {
+      briefShown = await evaluate(call, `document.querySelector("#agree")?.hidden === false`) === true;
+      if (briefShown) break;
+      await sleep(150);
+    }
+    requireValue(briefShown, "the brief never appeared after picking the project");
     const clicked = await evaluate(call, `(() => {
-      const element = document.querySelector("#run-button");
+      const element = document.querySelector("#confirm-brief");
       if (!element || element.disabled) return false;
       element.scrollIntoView({block: "center", inline: "center"});
       element.click();
       return true;
     })()`);
-    requireValue(clicked, "Run button was not clickable");
+    requireValue(clicked, "brief confirmation was not clickable");
 
     let state;
     while (Date.now() < deadline) {
@@ -367,14 +387,15 @@ async function run(options) {
         return {
           progressText,
           progress: Number.parseInt(progressText, 10) || 0,
-          progressList: document.querySelector("#progress-list")?.innerText || "",
-          workspaceHidden: document.querySelector("#workspace")?.hidden !== false,
-          releaseText: document.querySelector("#release")?.innerText || "",
+          progressList: document.querySelector("#stage-list")?.innerText || "",
+          runError: document.querySelector("#run-error")?.hidden === false ? (document.querySelector("#run-error")?.innerText || "error") : "",
+          workspaceHidden: document.querySelector("#review")?.hidden !== false,
+          releaseText: document.querySelector("#release-badge")?.innerText || "",
           bodyText: document.body?.innerText || ""
         };
       })()`);
-      if (state.progressList.includes("Pipeline stopped")) {
-        throw new Error(`UI reported Pipeline stopped: ${state.progressList.replace(/\s+/g, " ").trim()}`);
+      if (state.runError) {
+        throw new Error(`UI reported a run error: ${state.runError.replace(/\s+/g, " ").trim()}`);
       }
       if (options.stopAfterProgress && state.progress > 0) break;
       if (!options.stopAfterProgress && state.progress === 100 && !state.workspaceHidden) break;

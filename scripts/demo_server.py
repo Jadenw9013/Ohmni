@@ -20,7 +20,7 @@ from types import MappingProxyType
 from typing import Any
 from urllib.parse import unquote, urlsplit
 
-from ohmni.application import DEMO_REQUEST, DemoPipeline
+from ohmni.application import DEMO_REQUEST, DemoPipeline, preview_brief
 
 ROOT=Path(__file__).resolve().parents[1];WEB_ROOT=ROOT/"apps"/"web";OUTPUT_ROOT=ROOT/"out"/"demo-jobs"
 ARTIFACT_SECTIONS={"golden.kicad_sch":"schematic","golden.kicad_pcb":"pcb"}
@@ -32,6 +32,7 @@ DEMO_FAILURE_MESSAGE="Demo pipeline failed"
 DEMO_FIXTURE_ID="esp32-bme280-environmental-logger"
 INVALID_PATH_MESSAGE="invalid path"
 UNAVAILABLE_RESPONSE_MESSAGE="response_unavailable"
+BRIEF_UNAVAILABLE_MESSAGE="brief_unavailable"
 STARTUP_FAILURE_MESSAGE="Ohmni demo could not start. Stop any existing demo server or retry with a different --port."
 INITIALIZATION_FAILURE_MESSAGE="Ohmni demo could not initialize its fixed local assets. Restore the repository files and retry."
 RUNTIME_FAILURE_MESSAGE="Ohmni demo stopped unexpectedly. Restart the server and reload the browser."
@@ -39,17 +40,17 @@ JOB_RECORD_FIELDS={"job_id","status","progress","report","error","error_code"}
 JOB_STATUSES={"queued","running","complete","failed"}
 TERMINAL_JOB_STATUSES={"complete","failed"}
 JOB_FAILURE_CODES={"worker_start_failed","pipeline_failed","progress_publication_failed","job_state_invalid"}
-STATIC_ASSETS=("index.html","app.js","view-model.js","styles.css")
+STATIC_ASSETS=("index.html","app.js","view-model.js","board-model.js","board-view.js",
+               "schematic-view.js","styles.css")
 STATIC_CONTENT_TYPES={
     "index.html":"text/html; charset=utf-8",
-    "app.js":"text/javascript; charset=utf-8",
-    "view-model.js":"text/javascript; charset=utf-8",
     "styles.css":"text/css; charset=utf-8",
+    **{name:"text/javascript; charset=utf-8" for name in STATIC_ASSETS if name.endswith(".js")},
 }
 DIAGNOSTIC_EVENTS={
     "server_ready","server_bind_failed","server_init_failed","server_runtime_failed",
     "request_runtime_failed","request_rejected","job_queued","worker_started","job_running",
-    "job_completed","job_failed","job_start_unavailable",
+    "job_completed","job_failed","job_start_unavailable","brief_unavailable",
 }
 REJECTION_CODES={
     "fixture_rejected","api_version_mismatch","server_instance_mismatch",
@@ -371,13 +372,16 @@ class DemoHandler(SimpleHTTPRequestHandler):
         ui_version=self.headers.get("x-ohmni-ui-version")
         if ui_version is not None and ui_version!=self.server.ui_version:return "ui_version_mismatch"
         return None
+    def _owned_request_payload(self):
+        """Decode a request body into an owned value, or fail closed."""
+        length=int(self.headers.get("content-length","0"))
+        if length<0 or length>16_384:raise ValueError
+        return _owned_json_object(json.loads(self.rfile.read(length) or b"{}",parse_constant=_reject_json_constant))
+
     def do_POST(self):
+        if self.path=="/api/brief":return self._post_brief()
         if self.path!="/api/demo":return self._json({"error":"not found"},HTTPStatus.NOT_FOUND)
-        try:
-            length=int(self.headers.get("content-length","0"))
-            if length<0 or length>16_384:raise ValueError
-            payload=json.loads(self.rfile.read(length) or b"{}",parse_constant=_reject_json_constant)
-            payload=_owned_json_object(payload)
+        try:payload=self._owned_request_payload()
         except BaseException:return self._reject("fixture_rejected",HTTPStatus.BAD_REQUEST)  # noqa: BLE001 - JSON decoding must fail closed
         error=self._request_contract_error(payload)
         if error is not None:return self._reject(error,HTTPStatus.BAD_REQUEST if error=="fixture_rejected" else HTTPStatus.CONFLICT)
@@ -388,6 +392,22 @@ class DemoHandler(SimpleHTTPRequestHandler):
             self.server._job_diagnostic("job_start_unavailable")
             return self._json({"error":"job_start_unavailable"},HTTPStatus.SERVICE_UNAVAILABLE)
         self._json({"job_id":job_id,"status":"queued",**self.server._identity()},HTTPStatus.ACCEPTED)
+    def _post_brief(self):
+        """Interpret the supported request into a brief, before any engineering.
+
+        Bound to the same fixture, API, instance and UI contract as job
+        creation, so a stale page cannot show a brief from another generation.
+        """
+        try:payload=self._owned_request_payload()
+        except BaseException:return self._reject("fixture_rejected",HTTPStatus.BAD_REQUEST)  # noqa: BLE001 - JSON decoding must fail closed
+        error=self._request_contract_error(payload)
+        if error is not None:return self._reject(error,HTTPStatus.BAD_REQUEST if error=="fixture_rejected" else HTTPStatus.CONFLICT)
+        try:brief=_owned_json_object(preview_brief(DEMO_REQUEST).model_dump(mode="json"))
+        except BaseException:  # noqa: BLE001 - request threads must not leak failures
+            self.server._job_diagnostic("brief_unavailable")
+            return self._json({"error":BRIEF_UNAVAILABLE_MESSAGE},HTTPStatus.SERVICE_UNAVAILABLE)
+        return self._json({"brief":brief,**self.server._identity()})
+
     def do_GET(self):
         try:request_path=unquote(urlsplit(self.path).path,errors="strict")
         except BaseException:return self._json({"error":INVALID_PATH_MESSAGE},HTTPStatus.BAD_REQUEST)  # noqa: BLE001 - request targets must fail closed

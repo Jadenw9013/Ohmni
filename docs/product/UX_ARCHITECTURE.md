@@ -1,11 +1,31 @@
 # Ohmni user journey and experience architecture
 
-**Status:** PROPOSED. No milestone is approved by this document.
+**Status:** the journey, information architecture, disclosure model and
+interaction model in this document were **implemented in Milestone 9** for the
+supported deterministic project. Sections describing capability that M9 did not
+build (component onboarding, model-written narration, editable briefs) remain
+PROPOSED and are marked where they appear.
 **Owns:** the user journey, information architecture, disclosure strategy,
 interaction model, component-onboarding experience, and the learning product.
 **Assumes:** the contract and envelope in [PRODUCT_V1.md](PRODUCT_V1.md).
 
 ---
+
+## 0. What Milestone 9 actually built
+
+| This document says | M9 shipped |
+|---|---|
+| Five stages, Learn as a layer | Describe / Agree / Design / Review / Build, with the journey rail in the masthead |
+| Agree is the load-bearing stage | `POST /api/brief` runs the *same* interpretation the pipeline runs and returns it before any engineering; the three-way split is the existing `RequirementOrigin` enum |
+| Progressive disclosure, no modes | `<details>` disclosures on every panel; no mode switch exists |
+| The board is the hero | A dependency-free interactive 3D board, first thing under the result headline |
+| Flows grounded in real nets | Five flows derived from topology, each step highlighting only its own refs and nets |
+| The repair is a hero interaction | A four-step replay with a voltage scale whose four marks are all projected values |
+| Terminal state | The completed projection emits no `RUNNING` status at all |
+
+Still PROPOSED, not built: editing the brief, conversational change proposals,
+component onboarding, model-written narration, and the 32-lesson content plan.
+The interaction model below is what those will plug into.
 
 ## 1. The problem this document solves
 

@@ -62,7 +62,7 @@ def verify(
 
 #: Which rule categories speak for which subsystem. Kept explicit rather than
 #: inferred, so a new rule cannot silently change what a subsystem's label means.
-_SUBSYSTEM_CATEGORIES: dict[str, tuple[RuleCategory, ...]] = {
+SUBSYSTEM_CATEGORIES: dict[str, tuple[RuleCategory, ...]] = {
     "identity": (RuleCategory.IDENTITY,),
     "connectivity": (RuleCategory.CONNECTIVITY,),
     "pin_semantics": (RuleCategory.PIN_SEMANTICS,),
@@ -84,7 +84,7 @@ def _roll_up_subsystems(report: VerificationReport) -> dict[str, SubsystemStatus
     """
     out: dict[str, SubsystemStatus] = {}
 
-    for name, categories in _SUBSYSTEM_CATEGORIES.items():
+    for name, categories in SUBSYSTEM_CATEGORIES.items():
         results = [r for r in report.results if r.category in categories]
         if not results:
             out[name] = SubsystemStatus.UNSUPPORTED

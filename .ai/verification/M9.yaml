@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "id": "M9",
+  "status": "VERIFIED_PENDING_INDEPENDENT_REVIEW",
+  "commit": "PENDING_CANDIDATE_COMMIT",
+  "baseline_commit": "3cb31ba",
+  "commands": [
+    {
+      "command": "python scripts/ai_state.py validate",
+      "result": "PASS"
+    },
+    {
+      "command": "python scripts/verify.py workflow",
+      "result": "PASS",
+      "tests": 11
+    },
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "PASS",
+      "tests": 471,
+      "deselected": 10
+    },
+    {
+      "command": "python scripts/verify.py full",
+      "result": "PASS",
+      "tests": 481,
+      "runtime_seconds": 123.78,
+      "detail": "Single canonical full run over the complete M9 working tree"
+    },
+    {
+      "command": "python -m pytest tests/test_demo_operability.py -o addopts='-q --strict-markers'",
+      "result": "PASS",
+      "tests": 2,
+      "detail": "Windows endpoint-ownership and real headless-browser tests ran on win32; neither skipped"
+    },
+    {
+      "command": "node --test apps/web/tests/*.test.mjs",
+      "result": "PASS",
+      "tests": 33,
+      "detail": "18 view-model/journey tests plus 15 scene, camera and transition tests"
+    },
+    {
+      "command": "node --check on every executable frontend asset",
+      "result": "PASS"
+    },
+    {
+      "command": "python -m ruff check on every file this milestone changed",
+      "result": "PASS",
+      "detail": "src/ohmni/application, scripts/demo_server.py, tests/test_product_projection.py, tests/test_demo_ui.py, tests/test_ai_workflow.py"
+    },
+    {
+      "command": "python -m ruff check .",
+      "result": "PRE_EXISTING_FINDINGS",
+      "findings": 35,
+      "detail": "src/ohmni/verifier/engine.py I001 pre-exists at HEAD and was confirmed by stashing this milestone's change; no new finding is introduced"
+    },
+    {
+      "command": "python -m ohmni verify-all",
+      "result": "PASS",
+      "fixtures": 14,
+      "coverage": "100%"
+    },
+    {
+      "command": "real headless Chrome full journey against a live server",
+      "result": "PASS",
+      "detail": "Pick project -> POST /api/brief 200 -> confirm -> POST /api/demo 202 -> job polling -> 100% -> review and build revealed. All 13 required truth strings present, including '0 KiCad DRC violation(s), 0 unrouted', 'NOT YET VERIFIED', 'No physical board has been built', and 'SYNTHETIC FIXTURE - NOT LIVE SUPPLIER DATA'."
+    }
+  ],
+  "delivered": [
+    "ohmni.application.systems derives functional grouping and five signal flows from net membership, part category, declared external sources, and generated placement, each carrying the basis it was derived from.",
+    "ohmni.application.product projects a ProductExperience: brief, eight terminal stage cards, systems, flows, structured board and schematic geometry, component cards, grouped checks, repair replay, confidence, and a deterministic guided tour.",
+    "Board and schematic geometry fail closed on any artifact, constraints, or routing-plan fingerprint mismatch, and on any copper count that disagrees with the compiled statistics.",
+    "POST /api/brief runs the same requirements interpretation the pipeline runs and returns it before any engineering, bound to the same fixture, API, instance and UI contract as job creation.",
+    "apps/web rebuilt on Describe / Agree / Design / Review / Build with progressive disclosure and no mode switch.",
+    "A dependency-free interactive 3D board: rotate, zoom, pan, flip, per-part selection, layer visibility, system explode, and flow highlighting, all from projected geometry.",
+    "The BME280 repair is a four-step replay with a voltage scale whose safe range, absolute maximum, applied voltage, and repaired voltage are all projected values.",
+    "A schematic-to-board transition that tweens between two real layouts rather than implying a geometric morph."
+  ],
+  "truthfulness": [
+    "The completed projection emits no RUNNING status, so a finished project cannot visually imply it is still executing.",
+    "UNKNOWN prices, UNSUPPORTED subsystems, SYNTHETIC pricing and profile, and NOT_YET_VERIFIED bench status all reach the screen unchanged and are asserted by tests.",
+    "A check group with no rules explains why it is UNSUPPORTED rather than being omitted.",
+    "Board thickness is the only non-derived geometric value; it is a labelled display constant and component height is not modelled at all.",
+    "The guided tour states its narration source is a deterministic projection and not a language model.",
+    "The frontend renders statuses from the projection and computes no PASS/FAIL, voltage, or net membership."
+  ],
+  "limitations": [
+    "M9 is a product-experience milestone. The engineering pipeline, catalog, placement, pricing and manufacturing profile are unchanged, and the supported project remains the single deterministic ESP32/BME280 fixture.",
+    "Editing the brief, conversational change proposals, component onboarding, and model-written narration are designed but not built.",
+    "No Milestone 10 work was begun or approved."
+  ],
+  "review": {
+    "id": "M9-REV-INDEPENDENT-FINAL",
+    "independent": true,
+    "status": "PENDING",
+    "scope": "The M9 diff, the approved acceptance criteria, visualization truthfulness, engineering-evidence preservation, misleading visual claims, regression risk, and the no-M10 boundary"
+  }
+}
