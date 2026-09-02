@@ -1,3 +1,9 @@
+> **Superseded as the product contract.** This document is the hackathon-era
+> PRD and is retained as a historical record. The canonical v1 product
+> definition is [docs/product/PRODUCT_V1.md](docs/product/PRODUCT_V1.md);
+> see [docs/product/](docs/product/README.md) for the full package. Where the
+> two disagree, `docs/product/` wins.
+
 # Product Requirements Document
 
 ## Product name

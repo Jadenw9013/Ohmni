@@ -1,16 +1,165 @@
 {
   "schema_version": 1,
   "historical_product_milestones": [
-    {"id": "M1", "status": "COMPLETE", "commit": "0939471", "title": "Deterministic verification foundation", "evidence_note": "Git baseline; detailed workflow evidence was not historically persisted."},
-    {"id": "IDENTITY", "status": "COMPLETE", "commit": "8115d4e", "title": "Rename ProofBoard to Ohmni", "evidence_note": "Git baseline; detailed workflow evidence was not historically persisted."},
-    {"id": "M2", "status": "COMPLETE", "commit": "de16578", "title": "Datasheet ingestion and evidence re-verification", "evidence_note": "Git baseline; detailed workflow evidence was not historically persisted."},
-    {"id": "M3", "status": "COMPLETE", "commit": "47fd329", "title": "Deterministic KiCad schematic emission and ERC", "evidence_note": "Git baseline; detailed workflow evidence was not historically persisted."},
-    {"id": "M4", "status": "COMPLETE", "commit": "db0e05c", "title": "Evidence-grounded circuit generation and repair", "evidence_note": "Git baseline; detailed workflow evidence was not historically persisted."},
-    {"id": "M5", "status": "COMPLETE", "commit": "dbb26ea", "title": "Deterministic PCB generation and DRC", "evidence_note": "Git baseline; detailed workflow evidence was not historically persisted."},
-    {"id": "M6", "status": "COMPLETE", "commit": "6305d8e", "title": "Bounded deterministic routing and DRC closure", "evidence_note": "Git baseline; detailed workflow evidence was not historically persisted."},
-    {"id": "M7", "status": "COMPLETE", "commit": "43ffac5", "title": "Manufacturability, BOM economics, and fabrication release", "evidence_note": "Git baseline plus .ai/verification/M7.yaml; no retroactive task history invented."},
-    {"id": "M8", "status": "COMPLETE", "commit": "3a6f9d3", "title": "Ohmni End-User Experience and Demo", "evidence_note": "Commit-bound verification and the single bounded final independent review are recorded in .ai/verification/M8-R07-R15.yaml and .ai/reviews.yaml; M8-R06 remains an accepted LOW risk."}
+    {
+      "id": "M1",
+      "status": "COMPLETE",
+      "commit": "0939471",
+      "title": "Deterministic verification foundation",
+      "evidence_note": "Git baseline; detailed workflow evidence was not historically persisted."
+    },
+    {
+      "id": "IDENTITY",
+      "status": "COMPLETE",
+      "commit": "8115d4e",
+      "title": "Rename ProofBoard to Ohmni",
+      "evidence_note": "Git baseline; detailed workflow evidence was not historically persisted."
+    },
+    {
+      "id": "M2",
+      "status": "COMPLETE",
+      "commit": "de16578",
+      "title": "Datasheet ingestion and evidence re-verification",
+      "evidence_note": "Git baseline; detailed workflow evidence was not historically persisted."
+    },
+    {
+      "id": "M3",
+      "status": "COMPLETE",
+      "commit": "47fd329",
+      "title": "Deterministic KiCad schematic emission and ERC",
+      "evidence_note": "Git baseline; detailed workflow evidence was not historically persisted."
+    },
+    {
+      "id": "M4",
+      "status": "COMPLETE",
+      "commit": "db0e05c",
+      "title": "Evidence-grounded circuit generation and repair",
+      "evidence_note": "Git baseline; detailed workflow evidence was not historically persisted."
+    },
+    {
+      "id": "M5",
+      "status": "COMPLETE",
+      "commit": "dbb26ea",
+      "title": "Deterministic PCB generation and DRC",
+      "evidence_note": "Git baseline; detailed workflow evidence was not historically persisted."
+    },
+    {
+      "id": "M6",
+      "status": "COMPLETE",
+      "commit": "6305d8e",
+      "title": "Bounded deterministic routing and DRC closure",
+      "evidence_note": "Git baseline; detailed workflow evidence was not historically persisted."
+    },
+    {
+      "id": "M7",
+      "status": "COMPLETE",
+      "commit": "43ffac5",
+      "title": "Manufacturability, BOM economics, and fabrication release",
+      "evidence_note": "Git baseline plus .ai/verification/M7.yaml; no retroactive task history invented."
+    },
+    {
+      "id": "M8",
+      "status": "COMPLETE",
+      "commit": "3a6f9d3",
+      "title": "Ohmni End-User Experience and Demo",
+      "evidence_note": "Commit-bound verification and the single bounded final independent review are recorded in .ai/verification/M8-R07-R15.yaml and .ai/reviews.yaml; M8-R06 remains an accepted LOW risk."
+    }
   ],
   "active_product_milestone": null,
-  "proposed_product_milestones": []
+  "proposed_product_milestones": [
+    {
+      "id": "M9",
+      "status": "PROPOSED",
+      "approved_by": null,
+      "title": "Product contract and experience architecture",
+      "objective": "Replace the pipeline-shaped demo with a project-shaped experience over the existing single archetype; no new engineering capability.",
+      "dependencies": [
+        "M8-REGRESSION-2"
+      ],
+      "required_before_closed_beta": true,
+      "source": "docs/product/ROADMAP.md"
+    },
+    {
+      "id": "M10",
+      "status": "PROPOSED",
+      "approved_by": null,
+      "title": "Deterministic bounded design synthesis",
+      "objective": "User intent -> typed brief -> archetype + slots -> derived CircuitIR across three archetypes, with the scripted provider removed from the product path. Includes the placement engine.",
+      "dependencies": [
+        "M9"
+      ],
+      "required_before_closed_beta": true,
+      "source": "docs/product/ROADMAP.md",
+      "note": "Placement is the largest unbuilt technical risk in the plan."
+    },
+    {
+      "id": "M11",
+      "status": "PROPOSED",
+      "approved_by": null,
+      "title": "Bring-your-own component",
+      "objective": "Make the unknown-part workflow a real user flow: upload, isolated parse, broadened extraction, ambiguity review, project-scoped catalog overlay.",
+      "dependencies": [
+        "M12"
+      ],
+      "required_before_closed_beta": false,
+      "source": "docs/product/ROADMAP.md",
+      "note": "Deliberately NOT required before beta; cut this first under schedule pressure. Footprints, not datasheet parsing, are the bottleneck."
+    },
+    {
+      "id": "M12",
+      "status": "PROPOSED",
+      "approved_by": null,
+      "title": "Cloud project platform",
+      "objective": "Multiple users, multiple projects, durable history, isolated execution: API, PostgreSQL, Postgres-backed queue, pinned-KiCad worker, object storage, invite-only auth.",
+      "dependencies": [
+        "M10"
+      ],
+      "required_before_closed_beta": true,
+      "source": "docs/product/ROADMAP.md",
+      "note": "HARD BLOCKER: the PyMuPDF AGPL-3.0 licensing decision must be resolved first (owner/legal)."
+    },
+    {
+      "id": "M13",
+      "status": "PROPOSED",
+      "approved_by": null,
+      "title": "Production model integration and product evaluation",
+      "objective": "Real natural language in, strictly bounded; plus the 120-case product benchmark, acceptance thresholds, and the blind human intent rubric.",
+      "dependencies": [
+        "M10",
+        "M12"
+      ],
+      "required_before_closed_beta": true,
+      "source": "docs/product/ROADMAP.md"
+    },
+    {
+      "id": "M14",
+      "status": "PROPOSED",
+      "approved_by": null,
+      "title": "Physical hardware validation",
+      "objective": "Fabricate, assemble, and bench-test 3 designs x 5 boards; publish the predicted-vs-measured table; root-cause every defect.",
+      "dependencies": [
+        "M10"
+      ],
+      "required_before_closed_beta": true,
+      "source": "docs/product/ROADMAP.md",
+      "note": "Starts in parallel with M12 because fabrication lead times are weeks. Gates every reliability claim."
+    },
+    {
+      "id": "M15",
+      "status": "PROPOSED",
+      "approved_by": null,
+      "title": "Closed beta",
+      "objective": "25-50 invited users building real boards, with onboarding, feedback capture, support, terms, and metric review.",
+      "dependencies": [
+        "M9",
+        "M10",
+        "M12",
+        "M13",
+        "M14"
+      ],
+      "required_before_closed_beta": true,
+      "source": "docs/product/ROADMAP.md"
+    }
+  ],
+  "proposed_milestones_note": "PROPOSED only. Recorded by a planning session on 2026-09-01 against commit d7b836e. No approval is implied or granted; per docs/AI_WORKFLOW.md only a human may transition a scope from PROPOSED to APPROVED, and no scope has been created for any of these. Rationale, deliverables, non-goals, acceptance criteria, and risks are in docs/product/ROADMAP.md."
 }

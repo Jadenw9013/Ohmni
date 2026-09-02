@@ -248,11 +248,18 @@ support every PCB.
 
 ## Project docs
 
-Start with `PRE_IMPLEMENTATION_REVIEW.md` — it records what was wrong or missing
-in the original specification and what changed as a result.
+For **product** questions — what Ohmni v1 is, who it is for, what it does and
+does not promise, and what must be true before a closed beta — start with
+[docs/product/](docs/product/README.md). It also records an evidence-backed
+audit of what is real today versus what is a fixture.
+
+For **engineering history**, start with `PRE_IMPLEMENTATION_REVIEW.md` — it
+records what was wrong or missing in the original specification and what
+changed as a result.
 
 | Document | |
 |---|---|
+| **`docs/product/`** | **The v1 product contract, UX architecture, deployment, evaluation and roadmap. Start here for product questions.** |
 | `PRE_IMPLEMENTATION_REVIEW.md` | Findings, corrections, open risks, spikes |
 | `docs/DECISIONS.md` | Decision records for the choices that had alternatives |
 | `PRD.md` | Product requirements |

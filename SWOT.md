@@ -1,3 +1,8 @@
+> **Superseded by the grounded product SWOT** in
+> [docs/product/ROADMAP.md](docs/product/ROADMAP.md), which reasons from the
+> capabilities the repository actually has. This early version is retained as
+> a historical record.
+
 # SWOT Analysis
 
 ## Strengths

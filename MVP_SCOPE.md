@@ -1,3 +1,8 @@
+> **Superseded as the product contract.** This is the hackathon-era MVP scope.
+> The v1 design envelope, supported archetypes, and unsupported use cases are
+> defined in [docs/product/PRODUCT_V1.md](docs/product/PRODUCT_V1.md). This
+> document is retained as a historical record.
+
 # MVP Scope
 
 ## Supported request profile

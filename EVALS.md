@@ -1,3 +1,10 @@
+> **Component-level evals.** This document remains valid for per-subsystem
+> extraction, generation, EDA and cost metrics, and its hard targets still
+> hold. The **product** benchmark that gates closed beta - 120 user requests,
+> acceptance thresholds, the blind human intent rubric, and physical hardware
+> validation - lives in
+> [docs/product/EVALUATION_PLAN.md](docs/product/EVALUATION_PLAN.md).
+
 # Evaluation Plan
 
 ## Build evals before expanding scope

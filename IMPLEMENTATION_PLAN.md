@@ -1,3 +1,9 @@
+> **Phases 0-8 are engineering history.** Work after Phase 8 is planned as
+> product milestones M9-M15 in
+> [docs/product/ROADMAP.md](docs/product/ROADMAP.md), not as further numbered
+> phases here. Phase 9 ("demo hardening") is superseded: M9 replaces the demo
+> surface rather than hardening it.
+
 # Implementation Plan
 
 > **Progress.** Phases 0, 1 and 3 are complete, plus the adapter interfaces from

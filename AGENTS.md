@@ -5,7 +5,9 @@ Understand why.** The product turns typed requirements and verified component
 evidence into deterministic semantic, schematic, PCB, routing, manufacturing,
 and release artifacts. Start with [README.md](README.md),
 [ARCHITECTURE.md](ARCHITECTURE.md), [VERIFICATION.md](VERIFICATION.md), and
-[docs/DECISIONS.md](docs/DECISIONS.md); do not duplicate them here.
+[docs/DECISIONS.md](docs/DECISIONS.md); do not duplicate them here. The
+PROPOSED v1 product definition lives in [docs/product/](docs/product/README.md)
+and supersedes `PRD.md`/`MVP_SCOPE.md` as the product contract.
 
 ## Repository map
 
@@ -20,6 +22,9 @@ and release artifacts. Start with [README.md](README.md),
 - `tests`: pure, integration, slow-integration, and architecture tests
 - `.ai`: development state, tasks, reviews, checkpoints, verification evidence
 - `scripts`: repository-development and authoring helpers
+- `docs/product`: the PROPOSED v1 product contract, UX architecture,
+  deployment plan, evaluation plan, and M9-M15 roadmap. Read it before
+  proposing product work; nothing in it is approved.
 
 ## Canonical commands
 
