@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "id": "M8-REGRESSION-2",
-  "status": "VERIFIED_PENDING_FOCUSED_INDEPENDENT_REVIEW",
-  "commit": "PENDING_CANDIDATE_COMMIT",
+  "status": "INDEPENDENT_FOCUSED_REVIEW_PASSED",
+  "commit": "784c257",
   "baseline_commit": "d7b836e",
   "commands": [
     {
@@ -80,13 +80,24 @@
   "review": {
     "id": "M8-RG02-REV-INDEPENDENT-FINAL",
     "independent": true,
-    "status": "PENDING",
-    "scope": "The M8-RG02 remediation diff, the approved acceptance criteria, regressions introduced by the remediation, and the no-M9 boundary; not an unrestricted historical M8 audit"
+    "status": "PASSED",
+    "open_blocker_or_high_findings": 0,
+    "open_medium_findings": 0,
+    "open_low_findings": 0,
+    "scope": "The M8-RG02 remediation diff read from the committed blob, the approved acceptance criteria, regressions introduced by the remediation, and the no-M9 boundary; not an unrestricted historical M8 audit",
+    "reviewer_gates": [
+      "ai_state validate PASS",
+      "pytest tests/test_demo_application.py tests/test_demo_ui.py PASS (17)",
+      "pytest tests/test_demo_operability.py -o addopts='-q --strict-markers' PASS (2 run, 0 skipped, win32)",
+      "ruff check on all changed files PASS"
+    ],
+    "adversarial_probe": "Live server on port 8791: started, created a job through the legacy bare-fixture payload, killed the process, restarted on the same port, then polled the old job id. Without headers the new generation returned 404 job_not_found (store isolation); with the stale first-generation identity headers it returned 409 server_instance_mismatch (generation binding). Both stderr streams contained only allowlisted JSON diagnostics with no bodies, paths, or exception text."
   },
   "limitations": [
     "Milestone 8 remains COMPLETE at independently reviewed product baseline 3a6f9d3; this record closes only the authorized post-M8 regression scope.",
     "The deterministic demo still supports only its documented ESP32/BME280 fixture and retains every existing product limitation.",
     "Pre-existing repository-wide ruff findings are unchanged and out of this scope.",
     "No Milestone 9 work is included in this record; M9 was approved separately and after this scope."
-  ]
+  ],
+  "product_remediation_commit": "784c257"
 }

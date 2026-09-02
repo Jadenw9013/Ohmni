@@ -32,10 +32,30 @@
       "id": "M8-REGRESSION-2",
       "type": "post_milestone_regression",
       "title": "Milestone 8 demo lifecycle identity and actionable startup diagnostics",
-      "status": "IN_PROGRESS",
+      "status": "COMPLETE",
       "approved_by": "human",
       "approval_evidence": "Human instruction reporting the repeated real Windows start failure after M8-RG01 and explicitly authorizing reproduction, remediation, independent verification, commit, and safe push without beginning Milestone 9.",
       "review_policy": "one focused independent regression review required; accepted M8 product history remains unchanged"
+    },
+    {
+      "id": "M9",
+      "type": "product_milestone",
+      "title": "Ohmni Product Experience and Interactive Design Prototype",
+      "status": "IN_PROGRESS",
+      "approved_by": "human",
+      "approval_evidence": "Human instruction 'HUMAN APPROVAL: MILESTONE 9 - Ohmni Product Experience + Interactive Design Prototype', which explicitly approves M9 only and states that M10 and later remain unapproved.",
+      "review_policy": "one bounded independent final review required for COMPLETE; unavailable permits VERIFIED only",
+      "non_goals": [
+        "dynamic circuit synthesis or arbitrary project generation",
+        "production LLM narration",
+        "cloud deployment",
+        "user accounts",
+        "supplier integration",
+        "bring-your-own components",
+        "simulation",
+        "new MCU families",
+        "photorealistic STEP component models"
+      ]
     }
   ],
   "tasks": [
@@ -55,7 +75,12 @@
         "Existing product tests remain passing"
       ],
       "verification": {
-        "required": ["workflow_tests", "fast_tests", "integration_tests", "full_tests"],
+        "required": [
+          "workflow_tests",
+          "fast_tests",
+          "integration_tests",
+          "full_tests"
+        ],
         "record": ".ai/verification/DEV-WF-001.yaml"
       },
       "implementation": {
@@ -70,79 +95,430 @@
       "blockers": []
     },
     {
-      "id": "M8-T01", "scope": "M8", "milestone": "M8",
-      "title": "Create truthful demo application projection", "status": "COMPLETE", "priority": 100,
+      "id": "M8-T01",
+      "scope": "M8",
+      "milestone": "M8",
+      "title": "Create truthful demo application projection",
+      "status": "COMPLETE",
+      "priority": 100,
       "dependencies": [],
       "goal": "Project existing structured design, evidence, verification, physical, manufacturing, BOM, and release results into one frontend-safe contract without duplicating engineering decisions.",
-      "acceptance_criteria": ["Contract distinguishes every verification layer", "Requirements/evidence/repair/notebook/cost unknowns are preserved", "Artifact lineage and stale state are explicit"],
-      "verification": {"required": ["unit_tests", "architecture_tests"], "record": ".ai/verification/M8-T01.yaml"},
-      "implementation": {"started_at_commit": "69d883b", "completed_at_commit": "a852502"},
-      "review": {"required": false, "status": "SELF_REVIEW_PASSED", "independent": false}, "blockers": []
+      "acceptance_criteria": [
+        "Contract distinguishes every verification layer",
+        "Requirements/evidence/repair/notebook/cost unknowns are preserved",
+        "Artifact lineage and stale state are explicit"
+      ],
+      "verification": {
+        "required": [
+          "unit_tests",
+          "architecture_tests"
+        ],
+        "record": ".ai/verification/M8-T01.yaml"
+      },
+      "implementation": {
+        "started_at_commit": "69d883b",
+        "completed_at_commit": "a852502"
+      },
+      "review": {
+        "required": false,
+        "status": "SELF_REVIEW_PASSED",
+        "independent": false
+      },
+      "blockers": []
     },
     {
-      "id": "M8-T02", "scope": "M8", "milestone": "M8",
-      "title": "Build engineering-instrument web experience", "status": "COMPLETE", "priority": 90,
-      "dependencies": ["M8-T01"],
+      "id": "M8-T02",
+      "scope": "M8",
+      "milestone": "M8",
+      "title": "Build engineering-instrument web experience",
+      "status": "COMPLETE",
+      "priority": 90,
+      "dependencies": [
+        "M8-T01"
+      ],
       "goal": "Build the responsive request, requirements, evidence, repair, notebook, verification ladder, artifact, BOM, assembly, and release surfaces following the brand guide.",
-      "acceptance_criteria": ["All core UX surfaces render truthful statuses", "UNKNOWN and warnings remain visible", "Schematic and PCB views derive from actual artifact geometry", "No verification logic exists in the frontend"],
-      "verification": {"required": ["frontend_tests", "accessibility_structural_tests"], "record": ".ai/verification/M8-T02.yaml"},
-      "implementation": {"started_at_commit": "bb611fe", "completed_at_commit": "0ea4762"},
-      "review": {"required": false, "status": "SELF_REVIEW_PASSED", "independent": false}, "blockers": []
+      "acceptance_criteria": [
+        "All core UX surfaces render truthful statuses",
+        "UNKNOWN and warnings remain visible",
+        "Schematic and PCB views derive from actual artifact geometry",
+        "No verification logic exists in the frontend"
+      ],
+      "verification": {
+        "required": [
+          "frontend_tests",
+          "accessibility_structural_tests"
+        ],
+        "record": ".ai/verification/M8-T02.yaml"
+      },
+      "implementation": {
+        "started_at_commit": "bb611fe",
+        "completed_at_commit": "0ea4762"
+      },
+      "review": {
+        "required": false,
+        "status": "SELF_REVIEW_PASSED",
+        "independent": false
+      },
+      "blockers": []
     },
     {
-      "id": "M8-T03", "scope": "M8", "milestone": "M8",
-      "title": "Add asynchronous deterministic demo execution", "status": "COMPLETE", "priority": 80,
-      "dependencies": ["M8-T01"],
+      "id": "M8-T03",
+      "scope": "M8",
+      "milestone": "M8",
+      "title": "Add asynchronous deterministic demo execution",
+      "status": "COMPLETE",
+      "priority": 80,
+      "dependencies": [
+        "M8-T01"
+      ],
       "goal": "Expose a local asynchronous application boundary that executes the real scripted repair and engineering pipeline without live AI or network dependencies.",
-      "acceptance_criteria": ["UI initiation starts a real job", "Progress never claims uncompleted stages", "Core demo is network-independent", "Artifact download and exact fingerprints are exposed"],
-      "verification": {"required": ["api_tests", "integration_tests"], "record": ".ai/verification/M8-T03.yaml"},
-      "implementation": {"started_at_commit": "0ea4762", "completed_at_commit": "0453db4"},
-      "review": {"required": false, "status": "SELF_REVIEW_PASSED", "independent": false}, "blockers": []
+      "acceptance_criteria": [
+        "UI initiation starts a real job",
+        "Progress never claims uncompleted stages",
+        "Core demo is network-independent",
+        "Artifact download and exact fingerprints are exposed"
+      ],
+      "verification": {
+        "required": [
+          "api_tests",
+          "integration_tests"
+        ],
+        "record": ".ai/verification/M8-T03.yaml"
+      },
+      "implementation": {
+        "started_at_commit": "0ea4762",
+        "completed_at_commit": "0453db4"
+      },
+      "review": {
+        "required": false,
+        "status": "SELF_REVIEW_PASSED",
+        "independent": false
+      },
+      "blockers": []
     },
     {
-      "id": "M8-T04", "scope": "M8", "milestone": "M8",
-      "title": "Verify and harden the complete demo journey", "status": "COMPLETE", "priority": 70,
-      "dependencies": ["M8-T02", "M8-T03"],
+      "id": "M8-T04",
+      "scope": "M8",
+      "milestone": "M8",
+      "title": "Verify and harden the complete demo journey",
+      "status": "COMPLETE",
+      "priority": 70,
+      "dependencies": [
+        "M8-T02",
+        "M8-T03"
+      ],
       "goal": "Exercise the real flawed-proposal-to-release journey, protect artifact freshness, update documentation, and collect milestone evidence.",
-      "acceptance_criteria": ["Major user journey consumes real structured results", "0 DRC violations and 0 unrouted reproduced", "Existing backend gates pass", "Demo run instructions are documented"],
-      "verification": {"required": ["fast_tests", "integration_tests", "full_tests", "manual_ui_review"], "record": ".ai/verification/M8-T04.yaml"},
-      "implementation": {"started_at_commit": "0453db4", "completed_at_commit": "ff4309a"},
-      "review": {"required": false, "status": "SELF_REVIEW_PASSED", "independent": false}, "blockers": []
+      "acceptance_criteria": [
+        "Major user journey consumes real structured results",
+        "0 DRC violations and 0 unrouted reproduced",
+        "Existing backend gates pass",
+        "Demo run instructions are documented"
+      ],
+      "verification": {
+        "required": [
+          "fast_tests",
+          "integration_tests",
+          "full_tests",
+          "manual_ui_review"
+        ],
+        "record": ".ai/verification/M8-T04.yaml"
+      },
+      "implementation": {
+        "started_at_commit": "0453db4",
+        "completed_at_commit": "ff4309a"
+      },
+      "review": {
+        "required": false,
+        "status": "SELF_REVIEW_PASSED",
+        "independent": false
+      },
+      "blockers": []
     },
     {
-      "id": "M8-T05", "scope": "M8", "milestone": "M8",
-      "title": "Review and close Milestone 8", "status": "COMPLETE", "priority": 60,
-      "dependencies": ["M8-T04"],
+      "id": "M8-T05",
+      "scope": "M8",
+      "milestone": "M8",
+      "title": "Review and close Milestone 8",
+      "status": "COMPLETE",
+      "priority": 60,
+      "dependencies": [
+        "M8-T04"
+      ],
       "goal": "Run repository-backed review and completion gates, resolve blocking findings, and record the accepted Milestone 8 baseline.",
-      "acceptance_criteria": ["Review state is honest", "No open BLOCKER/HIGH findings", "Task and milestone ledgers match commits", "No Milestone 9 is approved"],
-      "verification": {"required": ["state_validation", "review_gate"], "record": ".ai/verification/M8-R07-R15.yaml"},
-      "implementation": {"started_at_commit": "ff4309a", "remediation_commit": "371e0a4", "prior_remediation_starts": ["fd4352b", "6bef107", "61e5f4e", "9318005"], "latest_remediation_started_at_commit": "db1cca2", "latest_remediation_commit": "3a6f9d3", "remediation_commits": ["371e0a4", "93a0a10", "450a0df", "0fa74d4", "e178b0d", "3a6f9d3"], "completed_at_commit": "db4e6dc"},
-      "review": {"required": true, "status": "PASSED", "independent": true},
+      "acceptance_criteria": [
+        "Review state is honest",
+        "No open BLOCKER/HIGH findings",
+        "Task and milestone ledgers match commits",
+        "No Milestone 9 is approved"
+      ],
+      "verification": {
+        "required": [
+          "state_validation",
+          "review_gate"
+        ],
+        "record": ".ai/verification/M8-R07-R15.yaml"
+      },
+      "implementation": {
+        "started_at_commit": "ff4309a",
+        "remediation_commit": "371e0a4",
+        "prior_remediation_starts": [
+          "fd4352b",
+          "6bef107",
+          "61e5f4e",
+          "9318005"
+        ],
+        "latest_remediation_started_at_commit": "db1cca2",
+        "latest_remediation_commit": "3a6f9d3",
+        "remediation_commits": [
+          "371e0a4",
+          "93a0a10",
+          "450a0df",
+          "0fa74d4",
+          "e178b0d",
+          "3a6f9d3"
+        ],
+        "completed_at_commit": "db4e6dc"
+      },
+      "review": {
+        "required": true,
+        "status": "PASSED",
+        "independent": true
+      },
       "remediation_authorization": "Standing human authorization plus bounded-review correction: remediate current in-scope M8-R07 and M8-R13 HIGH findings; fix directly related small M8-R14 MEDIUM and M8-R15 LOW; run the canonical full suite once; then launch exactly one focused final independent reviewer. Previously confirmed findings stay closed absent a reproduced regression. No further parallel/broad M8 panels. Do not begin or approve M9.",
       "blockers": []
     },
     {
-      "id": "M8-RG01", "scope": "M8-REGRESSION-1", "milestone": "M8",
-      "title": "Restore documented local demo startup and completion", "status": "COMPLETE", "priority": 100,
+      "id": "M8-RG01",
+      "scope": "M8-REGRESSION-1",
+      "milestone": "M8",
+      "title": "Restore documented local demo startup and completion",
+      "status": "COMPLETE",
+      "priority": 100,
       "dependencies": [],
       "goal": "Make one documented local demo server own its endpoint exclusively and prove the real browser-to-server golden workflow starts and completes.",
-      "acceptance_criteria": ["The documented command starts one exclusive local server", "The loaded UI starts the server-owned deterministic fixture", "A fresh browser run completes the existing verified golden pipeline", "Failure messages remain safe and actionable", "Artifact integrity and verification truth are unchanged", "No Milestone 9 work is begun or approved"],
-      "verification": {"required": ["state_validation", "focused_server_tests", "frontend_tests", "fast_tests", "documented_command_browser_smoke"], "record": ".ai/verification/M8-REGRESSION-1.yaml"},
-      "implementation": {"started_at_commit": "52a0eeb", "remediation_commit": "1b2d0b9", "completed_at_commit": "5033189"},
-      "review": {"required": true, "status": "PASSED", "independent": true},
+      "acceptance_criteria": [
+        "The documented command starts one exclusive local server",
+        "The loaded UI starts the server-owned deterministic fixture",
+        "A fresh browser run completes the existing verified golden pipeline",
+        "Failure messages remain safe and actionable",
+        "Artifact integrity and verification truth are unchanged",
+        "No Milestone 9 work is begun or approved"
+      ],
+      "verification": {
+        "required": [
+          "state_validation",
+          "focused_server_tests",
+          "frontend_tests",
+          "fast_tests",
+          "documented_command_browser_smoke"
+        ],
+        "record": ".ai/verification/M8-REGRESSION-1.yaml"
+      },
+      "implementation": {
+        "started_at_commit": "52a0eeb",
+        "remediation_commit": "1b2d0b9",
+        "completed_at_commit": "5033189"
+      },
+      "review": {
+        "required": true,
+        "status": "PASSED",
+        "independent": true
+      },
       "remediation_authorization": "Direct human authorization to diagnose and fix this post-M8 operability regression; do not begin or approve M9.",
       "blockers": []
     },
     {
-      "id": "M8-RG02", "scope": "M8-REGRESSION-2", "milestone": "M8",
-      "title": "Bind the local demo UI, API, and jobs to one live server generation", "status": "IN_PROGRESS", "priority": 100,
+      "id": "M8-RG02",
+      "scope": "M8-REGRESSION-2",
+      "milestone": "M8",
+      "title": "Bind the local demo UI, API, and jobs to one live server generation",
+      "status": "COMPLETE",
+      "priority": 100,
       "dependencies": [],
       "goal": "Make retained, refreshed, restarted, and mismatched local demo states detectable and actionable while proving the exact Windows browser workflow still completes truthfully.",
-      "acceptance_criteria": ["The documented Windows command leaves exactly one usable listener", "The real form submission creates a server-owned job and progresses beyond zero", "UI/API/job envelopes are bound to one API contract and server generation", "Retained or refreshed pages cannot present a stale previous job as current after backend loss or restart", "Backend-unavailable, contract-mismatch, fixture-rejection, and worker-start failures have distinct fixed safe guidance and server diagnostics", "A second server fails safely without split state", "The exact fresh-browser golden journey completes to 100% with existing verified results", "Artifact freshness, lineage, release, and file-serving protections remain unchanged", "One focused independent review passes", "No Milestone 9 work is begun or approved"],
-      "verification": {"required": ["state_validation", "focused_server_tests", "frontend_tests", "windows_subprocess_lifecycle", "real_browser_smoke", "fast_tests", "integration_tests", "full_tests_if_appropriate"], "record": ".ai/verification/M8-REGRESSION-2.yaml"},
-      "implementation": {"started_at_commit": "0ecd162", "completed_at_commit": null},
-      "review": {"required": true, "status": "PENDING", "independent": false},
+      "acceptance_criteria": [
+        "The documented Windows command leaves exactly one usable listener",
+        "The real form submission creates a server-owned job and progresses beyond zero",
+        "UI/API/job envelopes are bound to one API contract and server generation",
+        "Retained or refreshed pages cannot present a stale previous job as current after backend loss or restart",
+        "Backend-unavailable, contract-mismatch, fixture-rejection, and worker-start failures have distinct fixed safe guidance and server diagnostics",
+        "A second server fails safely without split state",
+        "The exact fresh-browser golden journey completes to 100% with existing verified results",
+        "Artifact freshness, lineage, release, and file-serving protections remain unchanged",
+        "One focused independent review passes",
+        "No Milestone 9 work is begun or approved"
+      ],
+      "verification": {
+        "required": [
+          "state_validation",
+          "focused_server_tests",
+          "frontend_tests",
+          "windows_subprocess_lifecycle",
+          "real_browser_smoke",
+          "fast_tests",
+          "integration_tests",
+          "full_tests_if_appropriate"
+        ],
+        "record": ".ai/verification/M8-REGRESSION-2.yaml"
+      },
+      "implementation": {
+        "started_at_commit": "0ecd162",
+        "completed_at_commit": "784c257"
+      },
+      "review": {
+        "required": true,
+        "status": "PASSED",
+        "independent": true,
+        "record": "M8-RG02-REV-INDEPENDENT-FINAL"
+      },
       "remediation_authorization": "Direct human authorization for the repeated post-M8 Windows operability regression; do not begin or approve M9.",
+      "blockers": []
+    },
+    {
+      "id": "M9-T01",
+      "scope": "M9",
+      "milestone": "M9",
+      "title": "Project the product experience from verified reports",
+      "status": "APPROVED",
+      "priority": 100,
+      "dependencies": [],
+      "goal": "Add a product-shaped projection beside the pipeline projection, deriving functional systems and signal flows from authoritative topology without deciding any engineering truth.",
+      "acceptance_criteria": [
+        "Every component is grouped into exactly one functional system with a stated basis",
+        "Flows name only nets, pins and refs that exist in CircuitIR",
+        "Board and schematic geometry are copied from fingerprinted artifacts and fail closed on mismatch",
+        "UNKNOWN, UNSUPPORTED and NOT_YET_VERIFIED survive the projection unchanged",
+        "No PASS/FAIL is computed in the projection layer"
+      ],
+      "verification": {
+        "required": [
+          "state_validation",
+          "fast_tests",
+          "frontend_tests"
+        ],
+        "record": ".ai/verification/M9.yaml"
+      },
+      "implementation": {
+        "started_at_commit": "784c257",
+        "completed_at_commit": null
+      },
+      "review": {
+        "required": false,
+        "status": "NOT_REQUIRED",
+        "independent": false
+      },
+      "blockers": []
+    },
+    {
+      "id": "M9-T02",
+      "scope": "M9",
+      "milestone": "M9",
+      "title": "Build the interactive board and schematic visualization",
+      "status": "APPROVED",
+      "priority": 90,
+      "dependencies": [
+        "M9-T01"
+      ],
+      "goal": "Implement a dependency-free 3D board renderer, schematic rendering, and the schematic-to-board transition, architected so a WebGL backend can replace the rasterizer later.",
+      "acceptance_criteria": [
+        "Rotate, zoom, pan, flip, select, and layer visibility all work from projected geometry",
+        "No coordinate is invented; board thickness is labelled display-only",
+        "Scene construction and camera projection are pure and unit tested",
+        "Highlighting is set membership over backend-supplied refs and nets"
+      ],
+      "verification": {
+        "required": [
+          "state_validation",
+          "fast_tests",
+          "frontend_tests"
+        ],
+        "record": ".ai/verification/M9.yaml"
+      },
+      "implementation": {
+        "started_at_commit": "784c257",
+        "completed_at_commit": null
+      },
+      "review": {
+        "required": false,
+        "status": "NOT_REQUIRED",
+        "independent": false
+      },
+      "blockers": []
+    },
+    {
+      "id": "M9-T03",
+      "scope": "M9",
+      "milestone": "M9",
+      "title": "Rebuild the web experience around the user's idea",
+      "status": "APPROVED",
+      "priority": 80,
+      "dependencies": [
+        "M9-T02"
+      ],
+      "goal": "Replace the pipeline-shaped page with the Describe/Agree/Design/Review/Build journey, progressive disclosure, the repair replay, flows, exploded systems and the guided tour.",
+      "acceptance_criteria": [
+        "A new visitor can state what Ohmni does from the first screen",
+        "Assumptions are visually distinct from stated requirements",
+        "The BME280 repair is understandable without knowing what PB-PWR-001 means",
+        "A completed run has an unmistakable terminal state and no RUNNING affordance",
+        "The PCB is the central artifact of the result screen",
+        "Advanced evidence remains reachable without dominating the beginner path",
+        "The frontend generates no engineering verdicts"
+      ],
+      "verification": {
+        "required": [
+          "state_validation",
+          "fast_tests",
+          "frontend_tests"
+        ],
+        "record": ".ai/verification/M9.yaml"
+      },
+      "implementation": {
+        "started_at_commit": "784c257",
+        "completed_at_commit": null
+      },
+      "review": {
+        "required": false,
+        "status": "NOT_REQUIRED",
+        "independent": false
+      },
+      "blockers": []
+    },
+    {
+      "id": "M9-T04",
+      "scope": "M9",
+      "milestone": "M9",
+      "title": "Verify and review Milestone 9",
+      "status": "APPROVED",
+      "priority": 70,
+      "dependencies": [
+        "M9-T03"
+      ],
+      "goal": "Run every gate, record commit-bound evidence, and obtain one bounded independent final review.",
+      "acceptance_criteria": [
+        "Backend fast, integration and full tiers pass",
+        "Frontend tests pass",
+        "The deterministic golden workflow still completes end to end",
+        "One bounded independent review passes with no open BLOCKER or HIGH findings",
+        "No Milestone 10 work is begun or approved"
+      ],
+      "verification": {
+        "required": [
+          "state_validation",
+          "fast_tests",
+          "frontend_tests"
+        ],
+        "record": ".ai/verification/M9.yaml"
+      },
+      "implementation": {
+        "started_at_commit": "784c257",
+        "completed_at_commit": null
+      },
+      "review": {
+        "required": false,
+        "status": "NOT_REQUIRED",
+        "independent": false
+      },
       "blockers": []
     }
   ]

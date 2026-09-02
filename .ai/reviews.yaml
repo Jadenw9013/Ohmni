@@ -3,7 +3,10 @@
   "independent_review_policy": {
     "product_milestones_required": true,
     "unavailable_allows": "VERIFIED_NOT_COMPLETE",
-    "blocking_severities": ["BLOCKER", "HIGH"]
+    "blocking_severities": [
+      "BLOCKER",
+      "HIGH"
+    ]
   },
   "reviews": [
     {
@@ -104,6 +107,15 @@
       "status": "PASSED",
       "commit": "5033189",
       "notes": "VERDICT PASS. The single fresh bounded reviewer inspected the post-M8 remediation through exact candidate 5033189, regression-checked exclusive Windows endpoint ownership, fixed canonical-fixture mapping, exact legacy compatibility, no-store delivery, safe startup failure, and unchanged verification/artifact-integrity boundaries. The reviewer accepted the recorded real-browser 100%/DRC 0/0/current-release proof and single 457-test full gate, independently passed focused state/Python/frontend/Ruff/diff checks, found no BLOCKER/HIGH/MEDIUM/LOW issue, and confirmed no M9 work was introduced."
+    },
+    {
+      "id": "M8-RG02-REV-INDEPENDENT-FINAL",
+      "scope": "M8-REGRESSION-2",
+      "reviewer": "independent-reviewer-regression-final",
+      "independent": true,
+      "status": "PASSED",
+      "commit": "784c257",
+      "notes": "VERDICT PASS, zero findings at any severity. A fresh reviewer with no prior context read the committed blob of 784c257 rather than the working tree, inspected server-generation identity binding, restart and stale-job protection, client error mapping, diagnostic allowlisting, JobStore locking and terminal transitions, artifact freshness, frontend verdict neutrality, test quality and Windows skip behaviour, and SECURITY.md truthfulness. It independently ran state validation, focused demo tests, the two Windows operability tests (confirmed run, not skipped), and Ruff, then executed a live restart probe on port 8791 confirming both the store isolation and generation-mismatch defenses. An earlier reviewer attempt terminated on a provider session limit before reaching a verdict and produced no findings."
     }
   ],
   "findings": [
@@ -114,7 +126,9 @@
       "status": "FIXED",
       "title": "Artifact download did not revalidate displayed fingerprint",
       "description": "A generated schematic or PCB modified after report creation could be downloaded under the stale report fingerprint.",
-      "affected_files": ["scripts/demo_server.py"],
+      "affected_files": [
+        "scripts/demo_server.py"
+      ],
       "found_at_commit": "58ef9b2",
       "resolution_commit": "ff4309a",
       "resolution": "Download handler now hashes exact artifacts and rejects stale/mismatched files.",
@@ -127,12 +141,23 @@
       "status": "FIXED",
       "title": "Artifact freshness remains inconsistent and non-atomic",
       "description": "The remediation fixes schematic/PCB response freshness and exact-buffer downloads, but fabrication release freshness remains inconsistent: a changed listed file sets release.current=false without changing the READY status consumed by the UI, while the fabrication manifest is omitted from the projected and revalidated file set entirely.",
-      "affected_files": ["scripts/demo_server.py", "src/ohmni/application/demo.py", "apps/web/app.js", "src/ohmni/manufacturing/exporter.py", "src/ohmni/manufacturing/models.py", "tests/test_demo_application.py", "apps/web/tests/view-model.test.mjs"],
+      "affected_files": [
+        "scripts/demo_server.py",
+        "src/ohmni/application/demo.py",
+        "apps/web/app.js",
+        "src/ohmni/manufacturing/exporter.py",
+        "src/ohmni/manufacturing/models.py",
+        "tests/test_demo_application.py",
+        "apps/web/tests/view-model.test.mjs"
+      ],
       "found_at_commit": "ff4309a",
       "resolution_commit": "93a0a10",
       "resolution": "FabricationPackage now carries a byte-exact typed manifest identity and validates every fabrication output plus the manifest. Initial and dynamic projections force release/project status to STALE when any lineage file is missing, malformed, changed, or unsafe, and the frontend fails closed on contradictory freshness instead of rendering an unconditional readiness claim.",
       "verification": "Commit-bound tests cover changed/deleted Gerbers and manifests, missing manifest metadata, stale PCB lineage, package-level manifest integrity, dynamic STALE status, project status, and frontend contradictory-state handling. Full gate: 452 passed; focused: 23 passed; frontend: 5 passed.",
-      "prior_remediation_attempt": {"commit": "371e0a4", "outcome": "Partial; independent rereview at fd4352b reopened release presentation and manifest-integrity gaps."},
+      "prior_remediation_attempt": {
+        "commit": "371e0a4",
+        "outcome": "Partial; independent rereview at fd4352b reopened release presentation and manifest-integrity gaps."
+      },
       "recommended_correction": "Project an effective stale release status (or render release.current explicitly) so the UI cannot claim readiness for a stale package; include the fabrication manifest identity/hash in the release contract and dynamic freshness checks; add server and frontend regression tests for both cases."
     },
     {
@@ -142,7 +167,11 @@
       "status": "FIXED",
       "title": "Schematic view is not derived from compiled artifact topology or geometry",
       "description": "The view labeled Compiled schematic topology lays out independent component boxes and net dots but renders no component-to-net connections and does not parse or project compiled KiCad geometry. It can therefore omit topology visually and disagree with the downloadable verified schematic, contrary to M8-T02's artifact-geometry acceptance criterion.",
-      "affected_files": ["src/ohmni/application/visuals.py", "src/ohmni/application/demo.py", "apps/web/app.js"],
+      "affected_files": [
+        "src/ohmni/application/visuals.py",
+        "src/ohmni/application/demo.py",
+        "apps/web/app.js"
+      ],
       "found_at_commit": "ff4309a",
       "resolution_commit": "371e0a4",
       "resolution": "The KiCad compiler now emits a fingerprint-bound typed projection of exact symbol origins, 102 endpoint markers, global-label topology, and two compiler power drivers; the renderer consumes only that artifact projection and labels its abstraction.",
@@ -157,7 +186,10 @@
       "status": "FIXED",
       "title": "Engineering Notebook timeline reorders routing and compilation history",
       "description": "The projection concatenates routed compilation events before routing-plan events even though routing occurred first, and it drops the placed-artifact event stream. The UI presents this list as a factual timeline, so its order changes the meaning of actual structured events.",
-      "affected_files": ["src/ohmni/application/demo.py", "apps/web/app.js"],
+      "affected_files": [
+        "src/ohmni/application/demo.py",
+        "apps/web/app.js"
+      ],
       "found_at_commit": "ff4309a",
       "resolution_commit": "371e0a4",
       "resolution": "Notebook projection now preserves explicit design, placed compilation, routing, routed compilation, DRC, manufacturing, BOM, cost, assembly, and release phases with monotonic sequence numbers.",
@@ -172,12 +204,19 @@
       "status": "FIXED",
       "title": "Unexpected worker exceptions leave jobs polling forever",
       "description": "The general Exception handler fixes ordinary unexpected failures, but the expected-error branch formats str(exc) outside any fallback. If exception formatting raises, the daemon thread still terminates without transitioning the job to failed, leaving queued/running state permanently visible.",
-      "affected_files": ["scripts/demo_server.py", "tests/test_demo_application.py", "apps/web/app.js"],
+      "affected_files": [
+        "scripts/demo_server.py",
+        "tests/test_demo_application.py",
+        "apps/web/app.js"
+      ],
       "found_at_commit": "ff4309a",
       "resolution_commit": "93a0a10",
       "resolution": "The worker now has one Exception boundary, a constant-safe fallback, guarded diagnostic formatting/logging that suppresses even BaseException failures raised during diagnostics, and one terminal failed-state update with report cleared.",
       "verification": "Commit-bound regressions prove ordinary unexpected exceptions, a ValueError whose __str__ raises SystemExit, and a logger that raises all terminate as failed without remaining queued/running. Independent rereview confirmed the terminal-state invariant and recorded the adjacent diagnostics disclosure separately as M8-R07.",
-      "prior_remediation_attempt": {"commit": "371e0a4", "outcome": "Partial; independent rereview at fd4352b reproduced a formatter exception escaping the handler."},
+      "prior_remediation_attempt": {
+        "commit": "371e0a4",
+        "outcome": "Partial; independent rereview at fd4352b reproduced a formatter exception escaping the handler."
+      },
       "recommended_correction": "Make the entire exception-to-terminal-state path failure-safe, including exception formatting and logging, and add a regression whose exception formatter raises so every Exception path reaches failed state."
     },
     {
@@ -187,7 +226,11 @@
       "status": "ACCEPTED_RISK",
       "title": "Placed and routed PCB compilation events reuse event IDs",
       "description": "The two distinct PCB compilation passes generate identical event IDs because event identity omits artifact path and compilation phase. Sequence and phase keep the current UI chronology unambiguous, but API consumers cannot safely assume notebook event IDs are unique.",
-      "affected_files": ["src/ohmni/eda/kicad/pcb_compiler.py", "src/ohmni/application/demo.py", "tests/test_routing.py"],
+      "affected_files": [
+        "src/ohmni/eda/kicad/pcb_compiler.py",
+        "src/ohmni/application/demo.py",
+        "tests/test_routing.py"
+      ],
       "found_at_commit": "371e0a4",
       "resolution_commit": null,
       "resolution": "Accepted as a nonblocking M8 risk because the user-facing timeline uses contiguous sequence numbers and explicit phases, no current consumer keys by event ID, and chronology remains truthful.",
@@ -201,12 +244,29 @@
       "status": "FIXED",
       "title": "Demo worker diagnostics disclose exception secrets and local paths",
       "description": "Value-level JSON ownership is safe, but stored job envelopes are not schema-validated before status membership checks; malformed or hostile status values can remain nonterminal or escape to threading.excepthook. Malformed GET targets and client resets still reach the default request-thread traceback handler, inherited access logging echoes untrusted request targets, and JSON NaN/Infinity constants are accepted. These concrete paths disclose secrets/local paths or violate the fixed strict-request boundary.",
-      "affected_files": ["scripts/demo_server.py", "tests/test_demo_application.py", "SECURITY.md"],
+      "affected_files": [
+        "scripts/demo_server.py",
+        "tests/test_demo_application.py",
+        "SECURITY.md"
+      ],
       "found_at_commit": "93a0a10",
       "resolution_commit": "3a6f9d3",
       "resolution": "Every job state is deep-owned and exact-envelope validated before status evaluation. Invalid or hostile records atomically become a fresh constant failed record without inspecting unsafe values; worker, progress, completion, failure, snapshot, polling, and artifact paths all use this boundary. The local HTTP server rejects nonfinite JSON and malformed targets and suppresses inherited access and request-thread exception diagnostics.",
       "verification": "Commit-bound full verification passed 455 tests. Focused hostile-envelope cases cover list and exception-raising statuses, wrong IDs, incoherent terminal records, extra fields, absorbing terminal races, and zero threading.excepthook disclosure. Live HTTP cases reject NaN/Infinity/overflow JSON, return fixed 400 for malformed absolute URIs, absorb TCP resets, and emit no access log, traceback, secret, or local path.",
-      "prior_remediation_attempts": [{"commit": "450a0df", "outcome": "Partial; ordinary exception/API disclosure closed, but BaseException still bypassed worker and launch boundaries."}, {"commit": "0fa74d4", "outcome": "Partial; direct BaseException handling closed, but unowned job payloads and recursive JSON could still escape through HTTP-thread diagnostics."}, {"commit": "e178b0d", "outcome": "Partial; strict payload ownership and recursive POST handling closed, but envelope schema, malformed GET, disconnect, access-log, and nonfinite parser boundaries remained."}],
+      "prior_remediation_attempts": [
+        {
+          "commit": "450a0df",
+          "outcome": "Partial; ordinary exception/API disclosure closed, but BaseException still bypassed worker and launch boundaries."
+        },
+        {
+          "commit": "0fa74d4",
+          "outcome": "Partial; direct BaseException handling closed, but unowned job payloads and recursive JSON could still escape through HTTP-thread diagnostics."
+        },
+        {
+          "commit": "e178b0d",
+          "outcome": "Partial; strict payload ownership and recursive POST handling closed, but envelope schema, malformed GET, disconnect, access-log, and nonfinite parser boundaries remained."
+        }
+      ],
       "recommended_correction": "Validate the exact job envelope before every status use, replace invalid records without inspecting hostile values, reject nonfinite JSON constants, bound GET parsing, and disable exception/access diagnostics at the local server boundary."
     },
     {
@@ -216,7 +276,10 @@
       "status": "FIXED",
       "title": "Thread launch failure leaves an orphaned queued job",
       "description": "JobStore.start publishes a queued record before Thread.start. If thread launch raises, the caller receives no job ID but the stored record remains permanently queued.",
-      "affected_files": ["scripts/demo_server.py", "tests/test_demo_application.py"],
+      "affected_files": [
+        "scripts/demo_server.py",
+        "tests/test_demo_application.py"
+      ],
       "found_at_commit": "93a0a10",
       "resolution_commit": "450a0df",
       "resolution": "Thread construction and start failures now return the generated pollable job ID after applying the same constant-safe terminal failed state. Complete and failed states are absorbing under the store lock so a starts-then-raises race cannot revert a terminal job.",
@@ -230,7 +293,9 @@
       "status": "FIXED",
       "title": "README test inventory is stale",
       "description": "README.md reports 448 tests while the exact candidate full gate contains 452 tests.",
-      "affected_files": ["README.md"],
+      "affected_files": [
+        "README.md"
+      ],
       "found_at_commit": "93a0a10",
       "resolution_commit": "450a0df",
       "resolution": "README.md now reports the exact 455-test inventory of the third remediation candidate.",
@@ -244,12 +309,22 @@
       "status": "FIXED",
       "title": "Editable demo request can contradict fixed requirements labeled explicit",
       "description": "The UI, HTTP boundary, and pipeline now enforce the exact fixed request, but the public pure projection validates only its separate top-level request. It accepts a canonical request paired with a fully typed DesignReport whose explicit provenance came from a contradictory motor/$30 request, then publishes the contradictory source text under the canonical project request.",
-      "affected_files": ["apps/web/index.html", "scripts/demo_server.py", "src/ohmni/application/demo.py", "tests/test_demo_application.py", "tests/test_demo_projection.py", "tests/test_demo_ui.py"],
+      "affected_files": [
+        "apps/web/index.html",
+        "scripts/demo_server.py",
+        "src/ohmni/application/demo.py",
+        "tests/test_demo_application.py",
+        "tests/test_demo_projection.py",
+        "tests/test_demo_ui.py"
+      ],
       "found_at_commit": "450a0df",
       "resolution_commit": "e178b0d",
       "resolution": "The pure projection now binds every typed EXPLICIT requirement statement to the already validated canonical request before it reads any other projection input; contradictory typed designs are rejected with the same fixed unsupported-request boundary.",
       "verification": "A real contradictory motor/$30 DesignReport is rejected when paired with the canonical request before missing downstream inputs can be consumed; the integrated golden journey still proves every explicit source_text and project.request equal DEMO_REQUEST.",
-      "prior_remediation_attempt": {"commit": "0fa74d4", "outcome": "Partial; UI, HTTP, pipeline, and direct top-level projection request are fixed, but projection does not validate explicit provenance inside DesignReport."},
+      "prior_remediation_attempt": {
+        "commit": "0fa74d4",
+        "outcome": "Partial; UI, HTTP, pipeline, and direct top-level projection request are fixed, but projection does not validate explicit provenance inside DesignReport."
+      },
       "recommended_correction": "Before consuming other projection inputs, require every EXPLICIT provenance source_text to equal the validated canonical request and reject any contradictory typed design."
     },
     {
@@ -259,7 +334,14 @@
       "status": "FIXED",
       "title": "Semantic verification warning is projected as PASS",
       "description": "The demo projection derives semantic status only from export_blocked. The golden design contains a hand-solderability warning and typed PARTIALLY_VERIFIED subsystem status with export_blocked false, yet the application contract and frontend render PASS.",
-      "affected_files": ["src/ohmni/application/demo.py", "apps/web/app.js", "apps/web/view-model.js", "apps/web/tests/view-model.test.mjs", "tests/test_demo_projection.py", "tests/test_routing.py"],
+      "affected_files": [
+        "src/ohmni/application/demo.py",
+        "apps/web/app.js",
+        "apps/web/view-model.js",
+        "apps/web/tests/view-model.test.mjs",
+        "tests/test_demo_projection.py",
+        "tests/test_routing.py"
+      ],
       "found_at_commit": "0fa74d4",
       "resolution_commit": "e178b0d",
       "resolution": "The semantic ladder no longer invents one aggregate PASS. It projects one row per deterministic verifier-owned subsystem with the exact SubsystemStatus value; the frontend maps VERIFIED, PARTIALLY_VERIFIED, NOT_VERIFIED, and unsupported states distinctly.",
@@ -273,7 +355,10 @@
       "status": "FIXED",
       "title": "Reduced-motion preference is overridden by forced smooth scrolling",
       "description": "Completion unconditionally requests JavaScript smooth scrolling, which CSS reduced-motion rules cannot override.",
-      "affected_files": ["apps/web/app.js", "apps/web/tests/view-model.test.mjs"],
+      "affected_files": [
+        "apps/web/app.js",
+        "apps/web/tests/view-model.test.mjs"
+      ],
       "found_at_commit": "0fa74d4",
       "resolution_commit": "e178b0d",
       "resolution": "Completion scrolling now queries prefers-reduced-motion and uses instant behavior when reduction is requested while retaining smooth behavior otherwise.",
@@ -287,7 +372,13 @@
       "status": "FIXED",
       "title": "PCB view and via statistics are not exact compiled artifact geometry",
       "description": "The SVG and displayed statistics consume RoutingPlan geometry. The PCB compiler omits planned vias where a plated through-hole pad already supplies the layer transition, so the canonical UI renders 66 via circles and reports 66 vias while the downloadable compiled KiCad PCB contains 41 via entities.",
-      "affected_files": ["src/ohmni/application/visuals.py", "src/ohmni/application/demo.py", "src/ohmni/eda/kicad/pcb_compiler.py", "apps/web/app.js", "tests/test_routing.py"],
+      "affected_files": [
+        "src/ohmni/application/visuals.py",
+        "src/ohmni/application/demo.py",
+        "src/ohmni/eda/kicad/pcb_compiler.py",
+        "apps/web/app.js",
+        "tests/test_routing.py"
+      ],
       "found_at_commit": "e178b0d",
       "resolution_commit": "3a6f9d3",
       "resolution": "The PCB compiler now emits a typed copper projection bound to the target artifact, placement constraints, and routing-plan fingerprints. The SVG and displayed statistics consume only that emitted projection, distinguish modeled transitions from emitted via entities, and label the displayed counts accordingly.",
@@ -301,7 +392,10 @@
       "status": "FIXED",
       "title": "Non-success polling responses loop indefinitely",
       "description": "The frontend parses polling JSON without checking response.ok or validating the returned job status. A persistent HTTP 500 response schedules another poll, leaves the run button disabled, and shows no error.",
-      "affected_files": ["apps/web/app.js", "apps/web/tests/view-model.test.mjs"],
+      "affected_files": [
+        "apps/web/app.js",
+        "apps/web/tests/view-model.test.mjs"
+      ],
       "found_at_commit": "e178b0d",
       "resolution_commit": "3a6f9d3",
       "resolution": "The frontend now checks response.ok, validates the response object and exact accepted job statuses, schedules only queued/running states, stops on all failure states, renders a fixed public message, and re-enables the run button without consuming or echoing non-success bodies.",
@@ -315,7 +409,9 @@
       "status": "FIXED",
       "title": "Repository map still describes the frontend as unstarted",
       "description": "REPO_STRUCTURE.md calls apps/web a Next.js frontend that is not started, contradicting the implemented M8 static frontend and the document's own M8 section.",
-      "affected_files": ["REPO_STRUCTURE.md"],
+      "affected_files": [
+        "REPO_STRUCTURE.md"
+      ],
       "found_at_commit": "e178b0d",
       "resolution_commit": "3a6f9d3",
       "resolution": "The repository map now identifies apps/web as the implemented dependency-light local demo frontend.",
