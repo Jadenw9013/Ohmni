@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "id": "M9-REMEDIATION-1",
-  "status": "VERIFIED_PENDING_FOCUSED_INDEPENDENT_REVIEW",
-  "commit": "PENDING_CANDIDATE_COMMIT",
+  "status": "VERIFIED_AFTER_FOCUSED_REVIEW",
+  "commit": "d9f2176",
   "baseline_commit": "d8909b1",
   "commands": [
     {
@@ -28,8 +28,9 @@
     {
       "command": "python scripts/verify.py full",
       "result": "PASS",
-      "tests": 492,
-      "runtime_seconds": 120.99
+      "tests": 493,
+      "runtime_seconds": 1957.81,
+      "detail": "re-run after the focused review's findings were closed"
     },
     {
       "command": "python -m pytest tests/test_demo_operability.py -o addopts='-q --strict-markers'",
@@ -40,7 +41,7 @@
     {
       "command": "node --test apps/web/tests/*.test.mjs",
       "result": "PASS",
-      "tests": 40,
+      "tests": 41,
       "detail": "up from 33; 8 new tests target the specific defects this scope fixed"
     },
     {
@@ -102,7 +103,15 @@
     ],
     "accepted": [
       "M9-F15 partially: SYSTEM_LABELS summaries remain generic prose per SystemId, and the voltage-scale axis extent is a presentational bound computed from projected values rather than an engineering claim."
-    ]
+    ],
+    "remediation_review": {
+      "M9-RM01-F01": "MEDIUM. A bench step was offered for hardware the board lacks, because a NOT_APPLICABLE rule carries its reason as notes[0]. The step is now gated on the rule having run and on exactly one LED existing.",
+      "M9-RM01-F02": "MEDIUM. The LED current was recovered by positional string-splitting of prose under no format contract. The extracted token must now match a number-with-unit pattern or no prediction is shown at all.",
+      "M9-RM01-F03": "LOW. _grounding used naked substring search, so the 2 of 'I2C' could mark a two-layer board as the user's own words, and the model's description was unconditionally quoted. Matching is now word-boundary anchored and the description must equal the request.",
+      "M9-RM01-F04": "LOW. Passive role names asserted purposes topology does not establish. _private_partners now ignores power and ground nets, and a capacitor that is not across the supply is named a capacitor rather than a timing capacitor.",
+      "M9-RM01-F05": "LOW. The I2C bench step claimed the address was derived from wiring. It now says it is the declared address, and mentions the cross-check only when PB-I2C-003 actually passed.",
+      "observations": "DemoProgress.detail was projected but never rendered, so the routing explanation this scope added was invisible; it is now shown. The part card's difficulty styling keys off the typed enum rather than prose."
+    }
   },
   "limitations": [
     "This is a UX remediation. No engineering verdict logic, evidence semantics, fingerprint behaviour or verification rule changed.",
@@ -112,6 +121,15 @@
   "review": {
     "id": "M9-RM01-REV-INDEPENDENT-FINAL",
     "independent": true,
-    "status": "PENDING"
-  }
+    "status": "FINDINGS_OPEN_THEN_CLOSED",
+    "commit": "d9f2176",
+    "counts": {
+      "blocker": 0,
+      "high": 0,
+      "medium": 2,
+      "low": 3
+    },
+    "detail": "The reviewer ran validate, fast 482, frontend 40, verify-all 14, Ruff, and a live journey at 1440x900. It confirmed positively that the naming derivations degrade honestly under variant circuits, that all 60 Term instances carry an identifier, that no unit-bearing numeric literal remains in apps/web, that the emitted KiCad artifacts still carry U1..C7 and the original net names, that the M9-F05 grouping fix leaves golden grouping identical, and that no M10 work exists. All five findings were fixed rather than accepted."
+  },
+  "follow_up_commit": "PENDING"
 }

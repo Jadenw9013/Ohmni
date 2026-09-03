@@ -107,9 +107,15 @@ def _category(circuit: CircuitIR, catalog, ref: str) -> ComponentCategory | None
 
 
 def _private_partners(circuit: CircuitIR, catalog, ref: str) -> set[ComponentCategory]:
-    """Categories reachable through a net small enough to be a private link."""
+    """Categories reachable through a signal net small enough to be a private link.
+
+    Power and ground nets are excluded: two parts sharing a rail are not wired
+    to each other in any sense that would justify naming one after the other.
+    """
     partners: set[ComponentCategory] = set()
     for net in circuit.nets:
+        if net.kind is not NetKind.SIGNAL:
+            continue
         if ref not in net.components() or len(net.connections) > 3:
             continue
         for pin in net.connections:
@@ -190,17 +196,22 @@ def component_term(circuit: CircuitIR, catalog, ref: str) -> Term:
     if category is ComponentCategory.SWITCH:
         return term("Button")
     if category is ComponentCategory.CAPACITOR:
+        # Only the across-the-supply shape is unambiguous from topology. Every
+        # other arrangement -- filtering, coupling, timing -- looks the same in
+        # a netlist, so the name says what it is and not what it is for.
         if NetKind.POWER in kinds and NetKind.GROUND in kinds:
             return term(f"{value} power smoothing capacitor".strip())
-        return term(f"{value} timing capacitor".strip())
+        return term(f"{value} capacitor".strip())
     if category is ComponentCategory.RESISTOR:
         partners = _private_partners(circuit, catalog, ref)
         if ComponentCategory.LED in partners:
             return term(f"{value} current-limiting resistor".strip())
-        if ComponentCategory.CONNECTOR in partners:
-            return term(f"{value} connector configuration resistor".strip())
         if NetKind.POWER in kinds and any(net.kind is NetKind.SIGNAL for net in nets):
             return term(f"{value} pull-up resistor".strip())
+        if ComponentCategory.CONNECTOR in partners and NetKind.GROUND in kinds:
+            # A resistor from a connector pin to ground is a termination; one
+            # passing a signal through is not, and is left unnamed.
+            return term(f"{value} connector configuration resistor".strip())
         return term(f"{value} resistor".strip())
     return term(category.value.replace("_", " ").capitalize())
 
@@ -257,7 +268,7 @@ def net_term(circuit: CircuitIR, catalog, name: str,
         return term("Indicator connection")
     if ComponentCategory.HEADER in categories:
         return term("Programming connection")
-    if ComponentCategory.CONNECTOR in categories:
+    if ComponentCategory.CONNECTOR in categories and len(net.connections) <= 2:
         return term("Connector configuration line")
     # Fall back to the functional system this net lives in, which is itself
     # derived from topology rather than from the net's name.

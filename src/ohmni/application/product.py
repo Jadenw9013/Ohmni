@@ -16,13 +16,14 @@ an unverified claim.
 
 from __future__ import annotations
 
+import re
 from enum import StrEnum
 
 from pydantic import BaseModel, Field
 
 from ..domain.circuit import CircuitIR, NetKind
 from ..domain.component import ComponentCategory
-from ..domain.verification import RuleCategory, VerificationReport
+from ..domain.verification import RuleCategory, RuleOutcome, VerificationReport
 from ..physical.footprints import footprint
 from ..verifier.engine import SUBSYSTEM_CATEGORIES
 from .naming import Term, component_term, humanise_refs, net_driver_voltage, net_term, phrase
@@ -444,29 +445,31 @@ def _grounding(statement, value: str) -> str:
     The generation layer marks an interpreted field EXPLICIT with the whole
     request as its source text, which is correct provenance but becomes a false
     claim once an interface renders it as "taken straight from what you wrote".
-    A value is only reported as quoted when it can be found in the user's own
-    words.
+    A value is only reported as quoted when it appears in the user's own words
+    as a whole token: a naked substring search would find the 2 of "I2C" and
+    call a two-layer board something the user asked for.
     """
     origin = statement.origin.value
     if origin != "explicit":
         return origin
-    source = (statement.source_text or "").lower()
+    source = statement.source_text or ""
     if not source:
         return "interpreted"
+    raw = str(statement.value).strip()
     if statement.field == "description":
-        return "quoted"
-    raw = str(statement.value).strip().lower()
-    candidates = {raw, raw.replace(" ", ""), value.strip().lower()}
-    # A number the user wrote as "$20" arrives here as "20.0".
+        # This is the model's description of the request, not the request. It
+        # is only the user's words if it actually matches them.
+        return "quoted" if raw.casefold() == source.strip().casefold() else "interpreted"
+    candidates = {raw.casefold(), value.strip().casefold()}
     try:
-        number = float(raw.rstrip(" v"))
+        number = float(raw.rstrip(" vV"))
     except ValueError:
         pass
     else:
         candidates.add(f"{number:g}")
-    flat = source.replace(" ", "")
     for candidate in candidates:
-        if candidate and (candidate in source or candidate in flat):
+        if candidate and re.search(rf"(?<![\w.]){re.escape(candidate)}(?![\w.])",
+                                   source, re.IGNORECASE):
             return "quoted"
     return "interpreted"
 
@@ -990,21 +993,46 @@ def _repair(design, circuit: CircuitIR, catalog) -> RepairReplay:
     )
 
 
+#: A prediction must look like a measurement. The rule notes it is recovered
+#: from are prose written for a human reader, under no format contract, so a
+#: token that is not a quantity is discarded rather than shown as one.
+_QUANTITY = re.compile(r"^-?\d+(?:\.\d+)?\s*[a-zA-ZΩμµ°]+$")
+
+
+def _quantity_from_note(note: str) -> str | None:
+    """Recover a measured quantity from a rule's prose note, or nothing.
+
+    The verifier owns these strings and does not promise a shape. Anything that
+    does not read as a number with a unit is dropped: a wrong number presented
+    as a prediction is worse than no prediction at all.
+    """
+    if "=" not in note:
+        return None
+    candidate = note.split("=")[-1].split(",")[0].strip()
+    return candidate if _QUANTITY.match(candidate) else None
+
+
 def _bring_up(design, circuit: CircuitIR, catalog, repair: RepairReplay) -> list[BringUpStep]:
     """Bench checks, each carrying the value Ohmni actually derived for it.
 
-    A step whose value Ohmni did not compute carries no prediction. Filling one
-    in with a plausible number would be inventing an engineering claim on the
-    last screen the user reads before touching hardware.
+    A step whose value Ohmni did not compute carries no prediction, and a step
+    for hardware this board does not have is not offered at all. Filling either
+    in would be inventing an engineering claim on the last screen a user reads
+    before touching hardware.
     """
     report = design.semantic_attempts[-1]
-    notes: dict[str, list[str]] = {}
-    for result in report.results:
-        notes.setdefault(result.rule_id, []).extend(result.notes)
+    results = {result.rule_id: result for result in report.results}
 
-    def note(rule_id: str) -> str | None:
-        found = notes.get(rule_id) or []
-        return found[0] if found else None
+    def note_of(rule_id: str) -> str | None:
+        """The first note of a rule that actually ran.
+
+        A NOT_APPLICABLE result carries its reason as the first note, so a
+        truthiness check alone would treat "circuit has no LEDs" as a finding.
+        """
+        result = results.get(rule_id)
+        if result is None or result.outcome is RuleOutcome.NOT_APPLICABLE:
+            return None
+        return result.notes[0] if result.notes else None
 
     steps: list[BringUpStep] = [
         BringUpStep(
@@ -1021,10 +1049,8 @@ def _bring_up(design, circuit: CircuitIR, catalog, repair: RepairReplay) -> list
         ),
     ]
 
-    rail = None
-    if repair.to_net is not None:
-        rail = repair.to_net
-    else:
+    rail = repair.to_net
+    if rail is None:
         for net in circuit.nets:
             if net.kind is NetKind.POWER and net.external_source is None:
                 rail = net_term(circuit, catalog, net.name)
@@ -1038,24 +1064,31 @@ def _bring_up(design, circuit: CircuitIR, catalog, repair: RepairReplay) -> list
                    if volts is not None else None),
         ))
 
-    led_note = note("PB-LED-001")
-    if led_note:
+    # Offer the LED step only when there is exactly one indicator to measure.
+    leds = [instance.ref for instance in circuit.components
+            if (catalog.get(instance.part_id) and
+                catalog.get(instance.part_id).category is ComponentCategory.LED)]
+    if len(leds) == 1:
+        led_note = note_of("PB-LED-001")
         steps.append(BringUpStep(
-            action="Measure the current through the indicator light.",
-            prediction=led_note.split("=")[-1].split(",")[0].strip() if "=" in led_note else None,
+            action=f"Measure the current through the {phrase(component_term(circuit, catalog, leds[0]))}.",
+            prediction=_quantity_from_note(led_note) if led_note else None,
             basis=led_note, rule_id="PB-LED-001",
         ))
 
-    addresses = [
-        (instance.ref, instance.selected_i2c_address)
-        for instance in circuit.components if instance.selected_i2c_address is not None
-    ]
+    addresses = sorted(
+        (instance.ref, instance.selected_i2c_address) for instance in circuit.components
+        if instance.selected_i2c_address is not None
+    )
     if addresses:
-        listed = ", ".join(f"0x{value:02X}" for _, value in sorted(addresses, key=lambda x: x[0]))
+        listed = ", ".join(f"0x{value:02X}" for _, value in addresses)
+        checked = results.get("PB-I2C-003")
         steps.append(BringUpStep(
             action="Scan the sensor bus for devices.",
             prediction=listed,
-            basis="The address is derived from how the part's address pin is actually wired.",
+            basis=("The address each part is set to. Ohmni cross-checked it against how the "
+                   "address pin is wired." if checked and checked.outcome is RuleOutcome.PASS
+                   else "The address each part is declared to use."),
             rule_id="PB-I2C-003",
         ))
         steps.append(BringUpStep(
@@ -1064,8 +1097,7 @@ def _bring_up(design, circuit: CircuitIR, catalog, repair: RepairReplay) -> list
             basis="Ohmni cannot predict what your room is like.",
         ))
 
-    unsettled = unsettled_topics(report)
-    for topic in unsettled:
+    for topic in unsettled_topics(report):
         steps.append(BringUpStep(
             action=f"Confirm this by hand: {topic}",
             prediction=None,

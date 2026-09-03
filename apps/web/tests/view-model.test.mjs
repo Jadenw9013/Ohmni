@@ -457,3 +457,21 @@ test("a backend that disappears after completion invalidates the result", async 
     assert.match(dom.get("#run-error").textContent, /demo backend is unavailable/);
     assert.equal(dom.get("#review").hidden, true);
 }));
+
+test("live progress shows the job's own explanation of the slow stage", async () =>
+    withApp(async (app, dom) => {
+        globalThis.fetch = async (url) => {
+            if (url === "/api/health") return response(200, health());
+            if (url === "/api/demo") return response(202, startEnvelope());
+            return response(200, jobEnvelope({ progress: [{
+                stage: "routing", label: "Drawing the copper connections", status: "RUNNING",
+                detail: "This is the slow part. Copper paths replace what would be wires.",
+                percent: 40,
+            }] }));
+        };
+        await app.startRun({ pollDependencies: { schedule: () => {} } });
+        assert.equal(dom.get("#progress-now").textContent, "Drawing the copper connections");
+        assert.match(dom.get("#progress-detail").textContent, /slow part/,
+            "the detail the job publishes is rendered, not discarded");
+        assert.equal(dom.get("#progress-percent").textContent, "40%");
+    }));

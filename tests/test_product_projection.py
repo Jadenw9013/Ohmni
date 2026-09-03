@@ -150,6 +150,23 @@ def test_net_driver_voltage_follows_the_driver_not_the_net_name(golden, catalog)
 # Human-facing vocabulary
 # ---------------------------------------------------------------------------
 
+def test_a_passive_is_only_given_a_role_the_topology_establishes(golden, catalog):
+    """A capacitor across the supply is unambiguous; every other shape is not.
+
+    Filtering, coupling and timing capacitors are indistinguishable in a
+    netlist, so the name states what the part is rather than guessing at what
+    it is for.
+    """
+    from ohmni.application.naming import component_term
+
+    assert component_term(golden, catalog, "C3").human == "100 nF power smoothing capacitor"
+    assert component_term(golden, catalog, "C5").human == "100 nF capacitor"
+    # A resistor passing a signal through from a connector is not a
+    # termination, and must not be named as one.
+    assert "configuration" in component_term(golden, catalog, "R1").human
+    assert component_term(golden, catalog, "R6").human == "330 ohm current-limiting resistor"
+
+
 def test_components_are_named_from_what_they_do_not_from_a_lookup_table(golden, catalog):
     from ohmni.application.naming import component_term
 
@@ -164,7 +181,7 @@ def test_components_are_named_from_what_they_do_not_from_a_lookup_table(golden, 
         "R4": "4.7 kohm pull-up resistor",
         "R1": "5.1 kohm connector configuration resistor",
         "C3": "100 nF power smoothing capacitor",
-        "C5": "100 nF timing capacitor",
+        "C5": "100 nF capacitor",
     }
     for ref, human in expected.items():
         assert component_term(golden, catalog, ref).human == human, ref

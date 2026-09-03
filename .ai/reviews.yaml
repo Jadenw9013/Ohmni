@@ -125,6 +125,15 @@
       "status": "FINDINGS_OPEN",
       "commit": "d8909b1",
       "notes": "VERDICT FINDINGS_OPEN: 1 BLOCKER, 2 HIGH, 4 MEDIUM, 6 LOW. Every gate the reviewer ran passed (fast 471, full 481, integration 9, workflow 11, operability 2 on win32, frontend 33, verify-all 14, Ruff clean on changed files, live browser journey twice); the findings are truthfulness and acceptance-criterion failures the gates do not test for. It verified positively that the geometry lineage guards are unbypassable by driving all six raise paths, that /api/brief fails closed and leaks nothing, and that no M10 work exists."
+    },
+    {
+      "id": "M9-RM01-REV-INDEPENDENT-FINAL",
+      "scope": "M9-REMEDIATION-1",
+      "reviewer": "independent-reviewer-remediation-final",
+      "independent": true,
+      "status": "FINDINGS_OPEN",
+      "commit": "d9f2176",
+      "notes": "VERDICT FINDINGS_OPEN: 0 BLOCKER, 0 HIGH, 2 MEDIUM, 3 LOW. Policy permitted closing on this verdict; all five were fixed instead. The reviewer confirmed the M9-F01 blocker fix holds, that naming degrades honestly under variant circuits it constructed, and that no engineering truth regressed."
     }
   ],
   "findings": [
@@ -591,6 +600,61 @@
       "found_at_commit": "d8909b1",
       "review": "M9-REV-INDEPENDENT-FINAL",
       "resolution": "The tour's hardcoded system count is derived; SYSTEM_LABELS summaries remain generic prose per SystemId. The voltage-scale axis maximum is still a presentational bound computed in the browser from projected values; it is a scale extent, not an engineering claim. Accepted."
+    },
+    {
+      "id": "M9-RM01-F01",
+      "scope": "M9-REMEDIATION-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "description": "A bench step was offered for an LED the board does not have",
+      "affected_files": "src/ohmni/application/product.py _bring_up",
+      "found_at_commit": "d9f2176",
+      "review": "M9-RM01-REV-INDEPENDENT-FINAL",
+      "resolution": "Fixed rather than accepted; see .ai/verification/M9-REMEDIATION-1.yaml."
+    },
+    {
+      "id": "M9-RM01-F02",
+      "scope": "M9-REMEDIATION-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "description": "The LED current was recovered by positional string-splitting of a prose rule note",
+      "affected_files": "src/ohmni/application/product.py _bring_up",
+      "found_at_commit": "d9f2176",
+      "review": "M9-RM01-REV-INDEPENDENT-FINAL",
+      "resolution": "Fixed rather than accepted; see .ai/verification/M9-REMEDIATION-1.yaml."
+    },
+    {
+      "id": "M9-RM01-F03",
+      "scope": "M9-REMEDIATION-1",
+      "severity": "LOW",
+      "status": "FIXED",
+      "description": "_grounding could report quoted for a value the user never wrote",
+      "affected_files": "src/ohmni/application/product.py _grounding",
+      "found_at_commit": "d9f2176",
+      "review": "M9-RM01-REV-INDEPENDENT-FINAL",
+      "resolution": "Fixed rather than accepted; see .ai/verification/M9-REMEDIATION-1.yaml."
+    },
+    {
+      "id": "M9-RM01-F04",
+      "scope": "M9-REMEDIATION-1",
+      "severity": "LOW",
+      "status": "FIXED",
+      "description": "Passive role names asserted purposes the topology does not establish",
+      "affected_files": "src/ohmni/application/naming.py",
+      "found_at_commit": "d9f2176",
+      "review": "M9-RM01-REV-INDEPENDENT-FINAL",
+      "resolution": "Fixed rather than accepted; see .ai/verification/M9-REMEDIATION-1.yaml."
+    },
+    {
+      "id": "M9-RM01-F05",
+      "scope": "M9-REMEDIATION-1",
+      "severity": "LOW",
+      "status": "FIXED",
+      "description": "The I2C bench step overstated how the address was obtained",
+      "affected_files": "src/ohmni/application/product.py _bring_up",
+      "found_at_commit": "d9f2176",
+      "review": "M9-RM01-REV-INDEPENDENT-FINAL",
+      "resolution": "Fixed rather than accepted; see .ai/verification/M9-REMEDIATION-1.yaml."
     }
   ]
 }

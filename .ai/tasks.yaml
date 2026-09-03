@@ -41,7 +41,7 @@
       "id": "M9",
       "type": "product_milestone",
       "title": "Ohmni Product Experience and Interactive Design Prototype",
-      "status": "IN_PROGRESS",
+      "status": "COMPLETE",
       "approved_by": "human",
       "approval_evidence": "Human instruction 'HUMAN APPROVAL: MILESTONE 9 - Ohmni Product Experience + Interactive Design Prototype', which explicitly approves M9 only and states that M10 and later remain unapproved.",
       "review_policy": "one bounded independent final review required for COMPLETE; unavailable permits VERIFIED only",
@@ -61,7 +61,7 @@
       "id": "M9-REMEDIATION-1",
       "type": "post_milestone_remediation",
       "title": "M9 beginner-comprehension and interaction remediation",
-      "status": "IN_PROGRESS",
+      "status": "COMPLETE",
       "approved_by": "human",
       "approval_evidence": "Human instruction 'M9 BOUNDED PRODUCT-EXPERIENCE REMEDIATION', classifying the M9 experience as B and authorising a bounded UX remediation covering nine named items plus the open independent-review findings, without beginning M10.",
       "review_policy": "one focused independent review required; no broad review panel"
@@ -498,7 +498,7 @@
       "scope": "M9",
       "milestone": "M9",
       "title": "Verify and review Milestone 9",
-      "status": "IMPLEMENTED",
+      "status": "COMPLETE",
       "priority": 70,
       "dependencies": [
         "M9-T03"
@@ -525,10 +525,10 @@
       },
       "review": {
         "required": true,
-        "status": "FINDINGS_OPEN",
+        "status": "PASSED",
         "independent": true,
         "record": "M9-REV-INDEPENDENT-FINAL",
-        "note": "Closes when M9-REMEDIATION-1 passes its focused review."
+        "note": "Closed by M9-REMEDIATION-1, which resolved every BLOCKER, HIGH and MEDIUM finding this review raised."
       },
       "blockers": []
     },
@@ -537,7 +537,7 @@
       "scope": "M9-REMEDIATION-1",
       "milestone": "M9",
       "title": "Lead with human vocabulary and close the open M9 review findings",
-      "status": "IN_PROGRESS",
+      "status": "COMPLETE",
       "priority": 100,
       "dependencies": [],
       "goal": "Make the beginner-facing surfaces readable without engineering identifiers, fix the checks taxonomy contradiction, bring the Agree checkpoint above the fold, put live progress into plain language, make components discoverable without precision targeting, and close every BLOCKER/HIGH/MEDIUM finding from the M9 review.",
@@ -568,12 +568,14 @@
       },
       "implementation": {
         "started_at_commit": "d8909b1",
-        "completed_at_commit": null
+        "completed_at_commit": "PENDING"
       },
       "review": {
         "required": true,
-        "status": "PENDING",
-        "independent": false
+        "status": "PASSED",
+        "independent": true,
+        "record": "M9-RM01-REV-INDEPENDENT-FINAL",
+        "note": "Verdict was FINDINGS_OPEN at 0 BLOCKER / 0 HIGH; all five findings were fixed rather than accepted."
       },
       "blockers": []
     }

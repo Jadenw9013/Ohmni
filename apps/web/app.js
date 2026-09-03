@@ -327,6 +327,8 @@ const PENDING_STAGES = [
 ];
 
 function renderPendingStages() {
+    const detail = $("#progress-detail");
+    if (detail) detail.textContent = "";
     $("#stage-list").innerHTML = PENDING_STAGES.map((label, i) =>
         `<li class="pending"><span class="num">${i + 1}</span>
          <span><span class="what">${escapeHtml(label)}</span></span><span></span></li>`).join("");
@@ -342,6 +344,10 @@ function renderProgress(events) {
     $("#progress-bar").style.width = `${percent}%`;
     $("#progress-percent").textContent = `${percent}%`;
     $("#progress-now").textContent = last ? last.label : "";
+    // The explanation of what the slow stage is doing. Copied verbatim from the
+    // job's own progress event; the long routing wait is the reason it exists.
+    const detail = $("#progress-detail");
+    if (detail) detail.textContent = last ? last.detail : "";
     const items = $$("#stage-list li");
     const reached = Math.min(items.length, events.length);
     items.forEach((item, i) => item.classList.toggle("pending", i >= reached));
@@ -845,7 +851,8 @@ function renderParts(components) {
         <p class="purpose">${escapeHtml(card.purpose)}</p>
         <div class="meta">
           ${card.assembly_reason ? `<span class="tag ${
-              /reflow|not realistic|does not recognise/.test(card.assembly_reason) ? "hard" : ""
+              ["reflow_recommended", "unsupported_for_hand_assembly", "unknown"]
+                  .includes(card.assembly_difficulty) ? "hard" : ""
           }">${escapeHtml(card.assembly_reason)}</span>` : ""}
           <span class="tag">${escapeHtml(card.price_knowledge === "UNKNOWN" ? "price UNKNOWN"
               : money(card.unit_price, card.price_knowledge))}</span>

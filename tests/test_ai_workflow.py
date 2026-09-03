@@ -117,29 +117,23 @@ def test_repository_product_scope_matches_human_approval():
     root=Path(__file__).resolve().parents[1]
     state=json.loads((root/".ai"/"state.yaml").read_text())
     tasks=json.loads((root/".ai"/"tasks.yaml").read_text())
-    assert state["latest_product_milestone"]=={
-        "id":"M8","title":"Ohmni End-User Experience and Demo",
-        "commit":"3a6f9d3","status":"COMPLETE",
-    }
-    assert state["approved_product_scope"]=="M9-REMEDIATION-1"
-    for closed in ("M8","M8-REGRESSION-1","M8-REGRESSION-2"):
-        scope=next(scope for scope in tasks["scopes"] if scope["id"]==closed)
-        assert scope["status"]=="COMPLETE" and scope["approved_by"]=="human" and scope["approval_evidence"]
-    milestone=next(scope for scope in tasks["scopes"] if scope["id"]=="M9")
-    assert milestone["status"]=="IN_PROGRESS" and milestone["approved_by"]=="human"
-    assert "MILESTONE 9" in milestone["approval_evidence"]
-    current=next(scope for scope in tasks["scopes"] if scope["id"]=="M9-REMEDIATION-1")
-    assert current["status"]=="IN_PROGRESS" and current["approved_by"]=="human"
-    assert current["approval_evidence"]
-    # M9 stays open while its own review has blocking findings outstanding.
-    closing=next(task for task in tasks["tasks"] if task["id"]=="M9-T04")
-    assert closing["status"]!="COMPLETE" or closing["review"]["status"]=="PASSED"
-    # M9 was approved on its own. Everything after it stays unapproved, and the
-    # milestone index must not carry an approver for any of them.
+    milestones=json.loads((root/".ai"/"milestones.yaml").read_text())
+    assert state["latest_product_milestone"]["id"]=="M9"
+    assert state["latest_product_milestone"]["status"]=="COMPLETE"
+    # Every scope that has been opened is closed, and nothing is approved now.
+    for scope in tasks["scopes"]:
+        assert scope["status"]=="COMPLETE", scope["id"]
+        assert scope["approved_by"]=="human" and scope["approval_evidence"]
+    assert state["approved_product_scope"] is None
+    assert state["active_task"] is None
+    assert milestones["active_product_milestone"] is None
+    # A completed task whose review was required must carry a passed review.
+    for task in tasks["tasks"]:
+        if task["status"]=="COMPLETE" and task.get("review",{}).get("required"):
+            assert task["review"]["status"]=="PASSED", task["id"]
+    # M10 onwards stay proposed and unapproved until a human says otherwise.
     later={f"M{n}" for n in range(10,16)}
     assert all(item["id"] not in later for item in tasks["scopes"]+tasks["tasks"])
-    milestones=json.loads((root/".ai"/"milestones.yaml").read_text())
-    assert milestones["active_product_milestone"]["id"]=="M9"
     proposed=milestones["proposed_product_milestones"]
     assert {item["id"] for item in proposed}==later
     assert all(item["status"]=="PROPOSED" and item["approved_by"] is None for item in proposed)
