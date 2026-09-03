@@ -56,6 +56,15 @@
         "new MCU families",
         "photorealistic STEP component models"
       ]
+    },
+    {
+      "id": "M9-REMEDIATION-1",
+      "type": "post_milestone_remediation",
+      "title": "M9 beginner-comprehension and interaction remediation",
+      "status": "IN_PROGRESS",
+      "approved_by": "human",
+      "approval_evidence": "Human instruction 'M9 BOUNDED PRODUCT-EXPERIENCE REMEDIATION', classifying the M9 experience as B and authorising a bounded UX remediation covering nine named items plus the open independent-review findings, without beginning M10.",
+      "review_policy": "one focused independent review required; no broad review panel"
     }
   ],
   "tasks": [
@@ -379,7 +388,7 @@
       "scope": "M9",
       "milestone": "M9",
       "title": "Project the product experience from verified reports",
-      "status": "APPROVED",
+      "status": "COMPLETE",
       "priority": 100,
       "dependencies": [],
       "goal": "Add a product-shaped projection beside the pipeline projection, deriving functional systems and signal flows from authoritative topology without deciding any engineering truth.",
@@ -400,7 +409,7 @@
       },
       "implementation": {
         "started_at_commit": "784c257",
-        "completed_at_commit": null
+        "completed_at_commit": "d8909b1"
       },
       "review": {
         "required": false,
@@ -414,7 +423,7 @@
       "scope": "M9",
       "milestone": "M9",
       "title": "Build the interactive board and schematic visualization",
-      "status": "APPROVED",
+      "status": "COMPLETE",
       "priority": 90,
       "dependencies": [
         "M9-T01"
@@ -436,7 +445,7 @@
       },
       "implementation": {
         "started_at_commit": "784c257",
-        "completed_at_commit": null
+        "completed_at_commit": "d8909b1"
       },
       "review": {
         "required": false,
@@ -450,7 +459,7 @@
       "scope": "M9",
       "milestone": "M9",
       "title": "Rebuild the web experience around the user's idea",
-      "status": "APPROVED",
+      "status": "COMPLETE",
       "priority": 80,
       "dependencies": [
         "M9-T02"
@@ -475,7 +484,7 @@
       },
       "implementation": {
         "started_at_commit": "784c257",
-        "completed_at_commit": null
+        "completed_at_commit": "d8909b1"
       },
       "review": {
         "required": false,
@@ -489,7 +498,7 @@
       "scope": "M9",
       "milestone": "M9",
       "title": "Verify and review Milestone 9",
-      "status": "APPROVED",
+      "status": "IMPLEMENTED",
       "priority": 70,
       "dependencies": [
         "M9-T03"
@@ -512,11 +521,58 @@
       },
       "implementation": {
         "started_at_commit": "784c257",
+        "completed_at_commit": "d8909b1"
+      },
+      "review": {
+        "required": true,
+        "status": "FINDINGS_OPEN",
+        "independent": true,
+        "record": "M9-REV-INDEPENDENT-FINAL",
+        "note": "Closes when M9-REMEDIATION-1 passes its focused review."
+      },
+      "blockers": []
+    },
+    {
+      "id": "M9-RM01",
+      "scope": "M9-REMEDIATION-1",
+      "milestone": "M9",
+      "title": "Lead with human vocabulary and close the open M9 review findings",
+      "status": "IN_PROGRESS",
+      "priority": 100,
+      "dependencies": [],
+      "goal": "Make the beginner-facing surfaces readable without engineering identifiers, fix the checks taxonomy contradiction, bring the Agree checkpoint above the fold, put live progress into plain language, make components discoverable without precision targeting, and close every BLOCKER/HIGH/MEDIUM finding from the M9 review.",
+      "acceptance_criteria": [
+        "Component, net and system names are derived from authoritative metadata, never tabulated",
+        "Engineering identifiers remain reachable through progressive disclosure",
+        "Bench predictions come from the projection; a step with no derived value says so",
+        "The Agree stage never claims the user wrote a value Ohmni interpreted",
+        "No visible contradiction between unsupported Ohmni checks and passing KiCad checks",
+        "The Agree confirmation is visible without scrolling on a 900px viewport",
+        "Live progress language is beginner-facing and still derived from real job progress",
+        "Components are selectable from a list as well as from the board",
+        "No implementation language reaches a part card",
+        "All 14 terminal truthfulness checks still pass",
+        "One focused independent review passes with no open BLOCKER or HIGH findings",
+        "No Milestone 10 work is begun or approved"
+      ],
+      "verification": {
+        "required": [
+          "state_validation",
+          "fast_tests",
+          "frontend_tests",
+          "integration_tests",
+          "full_tests",
+          "browser_journey"
+        ],
+        "record": ".ai/verification/M9-REMEDIATION-1.yaml"
+      },
+      "implementation": {
+        "started_at_commit": "d8909b1",
         "completed_at_commit": null
       },
       "review": {
-        "required": false,
-        "status": "NOT_REQUIRED",
+        "required": true,
+        "status": "PENDING",
         "independent": false
       },
       "blockers": []

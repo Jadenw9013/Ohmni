@@ -20,10 +20,12 @@ const jobEnvelope = (values = {}) => ({ job_id: JOB_ID, status: "running", progr
 const brief = () => ({
     project_name: "ESP32 environmental logger",
     request: "SECRET request text",
-    asked_for: [{ field: "budget_usd", label: "Budget", value: "about $20", origin: "explicit", source_text: "SECRET request text" }],
-    assumed: [{ field: "assumption", label: "Ohmni assumed", value: "USB-C is a 5 V sink", origin: "assumption", source_text: null }],
-    needs_clarification: [],
+    asked_for: [{ field: "budget_usd", label: "Budget", value: "about $20", origin: "explicit", grounding: "quoted", source_text: "SECRET request text" }],
+    assumed: [{ field: "assumption", label: "Ohmni assumed", value: "USB-C is a 5 V sink", origin: "assumption", grounding: "assumption", source_text: null }],
+    needs_clarification: [{ field: "target_logic_voltage", label: "Voltage the chips run at", value: "3.3 V", origin: "explicit", grounding: "interpreted", source_text: "SECRET request text" }],
 });
+
+const term = (human, technical, detail = null) => ({ human, technical, detail });
 
 // A minimal completed report. Only the shape app.js reads, with statuses that
 // must survive rendering unchanged.
@@ -38,13 +40,23 @@ const experience = () => ({
     board: {
         artifact_fingerprint: "f".repeat(64), routing_plan_fingerprint: "e".repeat(64), constraints_hash: "d".repeat(64),
         width_mm: 100, height_mm: 70, layer_count: 2, display_thickness_mm: 1.6, thickness_is_display_only: true,
+        thickness_note: "Board thickness is a display value. Ohmni does not model the layer stack-up.",
         layers: ["F.Cu", "B.Cu"], net_names: ["VBUS"], tracks: [], vias: [],
-        components: [{ ref: "U2", part_id: "AP2112K-3.3TRG1", package: "SOT-23-5", footprint_id: "fp", system: "power", x_mm: 20, y_mm: 58, rotation_deg: 0, side: "F.Cu", width_mm: 3, height_mm: 3.2, placement_reason: "near power input", pads: [], net_names: ["VBUS"] }],
+        components: [{ ref: "U2", part_id: "AP2112K-3.3TRG1", name: term("3.3 V voltage regulator", "AP2112K-3.3TRG1 U2"), package: "SOT-23-5", footprint_id: "fp", system: "power", x_mm: 20, y_mm: 58, rotation_deg: 0, side: "F.Cu", width_mm: 3, height_mm: 3.2, placement_reason: "near power input", pads: [], net_names: ["VBUS"] }],
     },
-    schematic: { artifact_fingerprint: "c".repeat(64), connection_method: "global_labels", net_names: ["VBUS"], symbols: [{ ref: "U2", part_id: "AP2112K-3.3TRG1", system: "power", x_mm: 10, y_mm: 10, width_mm: 20, height_mm: 12, pins: [{ pin: "1", net_name: "VBUS", x_mm: 10, y_mm: 14 }] }] },
-    components: [{ ref: "U2", part_id: "AP2112K-3.3TRG1", display_name: "AP2112K", package: "SOT-23-5", system: "power", purpose: "The voltage regulator.", grouping_basis: "regulator", quantity_on_board: 1, value: null, assembly_difficulty: "moderate", assembly_detail: null, orientation_sensitive: false, price_knowledge: "UNKNOWN", unit_price: null, evidence_status: "catalog_reported" }],
-    checks: [{ group: "simulation", label: "Simulation", question: "q", status: "UNSUPPORTED", rule_count: 0, rules: [] }],
-    repair: { happened: false, headline: "Ohmni found nothing that needed fixing.", steps: [], moved_pins: [], evidence: [] },
+    schematic: { artifact_fingerprint: "c".repeat(64), connection_method: "global_labels", net_names: ["VBUS"], symbols: [{ ref: "U2", part_id: "AP2112K-3.3TRG1", name: term("3.3 V voltage regulator", "AP2112K-3.3TRG1 U2"), system: "power", x_mm: 10, y_mm: 10, width_mm: 20, height_mm: 12, pins: [{ pin: "1", net_name: "VBUS", x_mm: 10, y_mm: 14 }] }] },
+    components: [{ ref: "U2", part_id: "AP2112K-3.3TRG1", name: term("3.3 V voltage regulator", "AP2112K-3.3TRG1 U2", "600 mA LDO"), display_name: "AP2112K", package: "SOT-23-5", system: "power", purpose: "Turns the incoming supply into a steady lower voltage.", grouping_basis: "regulator", quantity_on_board: 1, line_quantity: 1, value: null, assembly_difficulty: "moderate", assembly_reason: "Small surface-mount package. Fiddly by hand but doable.", assembly_basis: "Assembly difficulty is an Ohmni estimate from the package shape, not a manufacturer figure.", orientation_sensitive: false, price_knowledge: "UNKNOWN", unit_price: null, evidence_status: "catalog_reported" }],
+    checks: [],
+    check_sections: [
+        { family: "ohmni", label: "Ohmni's own checks", summary: "Rules Ohmni ran.", groups: [{ group: "electrical", family: "ohmni", label: "Voltages and currents", question: "q", status: "VERIFIED", rule_count: 1, rules: [{ rule_id: "PB-PWR-001", title: "Supply rail in range", outcome: "PASS", findings: 0, limitations: ["placement is not checked"], missing_data: [] }] }] },
+        { family: "external", label: "Checked independently by KiCad", summary: "Other software.", groups: [{ group: "kicad_erc", family: "external", label: "Schematic connection check", question: "q", status: "PASS_WITH_WARNINGS", rule_count: 1, rules: [{ rule_id: "KICAD-ERC", title: "KiCad electrical rule check (ERC)", outcome: "PASS_WITH_WARNINGS", findings: 21, limitations: [], missing_data: [] }] }] },
+        { family: "not_analysed", label: "Not analysed", summary: "No rules exist.", groups: [{ group: "simulation", family: "not_analysed", label: "Simulation", question: "q", status: "UNSUPPORTED", rule_count: 0, rules: [] }] },
+    ],
+    bring_up: [
+        { action: "Measure the 3.3 V power.", prediction: "3.3 V", basis: "Derived from the regulator datasheet.", rule_id: null },
+        { action: "Power it from a current-limited bench supply.", prediction: null, basis: "Ohmni has no start-up current figure.", rule_id: null },
+    ],
+    repair: { happened: false, headline: "Ohmni found nothing that needed fixing.", plain_summary: null, part: null, from_net: null, to_net: null, operating_min_v: null, steps: [], moved_pins: [], evidence: [] },
     confidence: {
         checked: [{ label: "The electrical design", status: "CHECKED", detail: "24 rules" }],
         not_verified: [{ label: "Does it actually work?", status: "NOT_YET_VERIFIED", detail: "No physical board has been built." }],
@@ -211,29 +223,13 @@ test("opening the brief performs health then a generation-bound brief request", 
         fixture_id: FIXTURE_ID, api_version: 2, server_instance_id: INSTANCE, ui_version: UI_VERSION,
     });
     const rendered = dom.get("#brief").innerHTML;
-    assert.match(rendered, /You asked for/);
+    assert.match(rendered, /Check these/, "values Ohmni worked out lead the brief");
     assert.match(rendered, /Ohmni assumed/);
-    assert.match(rendered, /Needs your confirmation/);
-    assert.match(rendered, /everything above came from what you wrote/,
-        "an empty clarification list states the outcome rather than vanishing");
+    assert.match(rendered, /Straight from what you wrote/);
+    assert.match(dom.get("#agree-note").textContent, /worked out 2 things you did not say/,
+        "the decision panel says how much Ohmni decided");
     assert.equal(dom.get("#agree").hidden, false);
     assert.equal(dom.get("#describe").hidden, true);
-}));
-
-test("assumptions are rendered in their own group, never merged into what you asked for", async () => withApp(async (app, dom) => {
-    app.renderBrief({
-        project_name: "P", request: "r",
-        asked_for: [{ field: "budget_usd", label: "Budget", value: "about $20", origin: "explicit" }],
-        assumed: [{ field: "assumption", label: "Ohmni assumed", value: "USB-C is a 5 V sink", origin: "assumption" }],
-        needs_clarification: [{ field: "max_board_layers", label: "Board complexity", value: "2 layers", origin: "default" }],
-    });
-    const html = dom.get("#brief").innerHTML;
-    const asked = html.slice(html.indexOf("brief-group asked"), html.indexOf("brief-group assumed"));
-    const assumed = html.slice(html.indexOf("brief-group assumed"), html.indexOf("brief-group unclear"));
-    assert.match(asked, /about \$20/);
-    assert.doesNotMatch(asked, /USB-C is a 5 V sink/);
-    assert.match(assumed, /USB-C is a 5 V sink/);
-    assert.match(html.slice(html.indexOf("brief-group unclear")), /2 layers/);
 }));
 
 test("start failures map only allowlisted backend conditions to actionable copy", async () => {
@@ -318,12 +314,115 @@ test("a completed run preserves unsupported and not-yet-verified statuses verbat
     assert.match(confidence, /NOT YET VERIFIED/);
     assert.match(confidence, /No physical board has been built/);
     assert.match(dom.get("#checks").innerHTML, /UNSUPPORTED/);
-    assert.match(dom.get("#checks").innerHTML, /No rules exist for this area/,
-        "an area with no rules explains itself rather than disappearing");
+    assert.match(dom.get("#checks").innerHTML, /Ohmni has no rules here/,
+        "an unanalysed area explains itself rather than disappearing");
     assert.match(dom.get("#parts").innerHTML, /price UNKNOWN/, "an unknown price never becomes a number");
     assert.match(dom.get("#tour-panel").innerHTML, /deterministic_projection_not_a_language_model/,
         "the tour never claims to be a live model");
 }));
+
+test("the brief never claims the user wrote a value Ohmni worked out", async () => withApp(async (app, dom) => {
+    app.renderBrief({
+        project_name: "P", request: "make me a sensor",
+        asked_for: [{ field: "budget_usd", label: "Budget", value: "about $20", origin: "explicit", grounding: "quoted" }],
+        assumed: [{ field: "assumption", label: "Ohmni assumed", value: "USB-C is a 5 V sink", origin: "assumption", grounding: "assumption" }],
+        needs_clarification: [{ field: "target_logic_voltage", label: "Voltage the chips run at", value: "3.3 V", origin: "explicit", grounding: "interpreted" }],
+    });
+    const html = dom.get("#brief").innerHTML;
+    const quoted = html.slice(html.indexOf("brief-group asked"));
+    const worked = html.slice(html.indexOf("brief-group unclear"), html.indexOf("brief-group assumed"));
+    // The regression: an interpreted value shown under "straight from what you
+    // wrote", beside an all-clear saying nothing needs confirming.
+    assert.match(worked, /3\.3 V/, "an interpreted value goes where the user is asked to check it");
+    assert.doesNotMatch(quoted, /3\.3 V/);
+    assert.match(quoted, /about \$20/, "a value the user really wrote stays quoted");
+    assert.doesNotMatch(html, /everything above came from what you wrote/i);
+}));
+
+test("an empty clarification column never contradicts the columns beside it", async () =>
+    withApp(async (app, dom) => {
+        app.renderBrief({
+            project_name: "P", request: "r",
+            asked_for: [{ field: "budget_usd", label: "Budget", value: "about $20", origin: "explicit", grounding: "quoted" }],
+            assumed: [], needs_clarification: [],
+        });
+        assert.match(dom.get("#brief").innerHTML, /straight from your own words/i);
+    }));
+
+test("checks are grouped by who ran them, so verdicts cannot read as contradictions", async () =>
+    withApp(async (app, dom) => {
+        globalThis.fetch = async () => response(200, jobEnvelope({ status: "complete", progress: [], report: completedReport() }));
+        await app.poll(JOB_ID, identity, { monitorer: () => {} });
+        const html = dom.get("#checks").innerHTML;
+        const ohmni = html.indexOf("own checks");
+        const external = html.indexOf("Checked independently by KiCad");
+        const none = html.indexOf("Not analysed");
+        assert.ok(ohmni >= 0 && external > ohmni && none > external, "three families, in order");
+        // The regression: an empty Ohmni category labelled after the external
+        // tool, sitting beside that tool's passing result.
+        assert.doesNotMatch(html, /own opinion/);
+        assert.doesNotMatch(html.slice(none), /KiCad/,
+            "nothing in the unanalysed family is attributed to KiCad");
+    }));
+
+test("bench steps show only values Ohmni derived, and say so when it derived none", async () =>
+    withApp(async (app, dom) => {
+        globalThis.fetch = async () => response(200, jobEnvelope({ status: "complete", progress: [], report: completedReport() }));
+        await app.poll(JOB_ID, identity, { monitorer: () => {} });
+        const html = dom.get("#bringup-panel").innerHTML;
+        assert.match(html, /3\.3 V/);
+        assert.match(html, /Ohmni has no prediction/,
+            "a step with no derived value says so rather than inventing one");
+        // The BLOCKER: engineering values hardcoded in the browser and
+        // presented as things Ohmni worked out.
+        assert.doesNotMatch(html, /4\.7 mA/,
+            "predictions come from the projection, never from this file");
+    }));
+
+test("part cards lead with a readable name and keep the identifier disclosed", async () =>
+    withApp(async (app, dom) => {
+        globalThis.fetch = async () => response(200, jobEnvelope({ status: "complete", progress: [], report: completedReport() }));
+        await app.poll(JOB_ID, identity, { monitorer: () => {} });
+        const html = dom.get("#parts").innerHTML;
+        assert.match(html, /3\.3 V voltage regulator/, "the human name leads");
+        assert.match(html, /AP2112K-3\.3TRG1/, "the identifier is still available");
+        assert.doesNotMatch(html, /package-based deterministic classification/,
+            "implementation language never reaches a part card");
+        assert.match(html, /Small surface-mount package/, "difficulty is explained in words");
+        assert.match(html, /Ohmni estimate/, "and is not passed off as a manufacturer figure");
+    }));
+
+test("system cards list named components that select on the board", async () =>
+    withApp(async (app, dom) => {
+        globalThis.fetch = async () => response(200, jobEnvelope({ status: "complete", progress: [], report: completedReport() }));
+        await app.poll(JOB_ID, identity, { monitorer: () => {} });
+        const html = dom.get("#systems").innerHTML;
+        assert.match(html, /part-pick/, "components are individually pickable");
+        assert.match(html, /data-ref="U2"/);
+        assert.match(html, /3\.3 V voltage regulator/, "listed by readable name");
+        assert.match(html, /class="ident">U2/, "with the reference designator beside it");
+    }));
+
+test("selecting a component shows its purpose and discloses identifiers", async () =>
+    withApp(async (app, dom) => {
+        globalThis.fetch = async () => response(200, jobEnvelope({ status: "complete", progress: [], report: completedReport() }));
+        await app.poll(JOB_ID, identity, { monitorer: () => {} });
+        app.renderSelection("U2");
+        const html = dom.get("#selection").innerHTML;
+        assert.match(html, /3\.3 V voltage regulator/);
+        assert.match(html, /Turns the incoming supply/);
+        const details = html.slice(html.indexOf("<details"));
+        assert.match(details, /SOT-23-5/, "package is disclosed, not led with");
+        assert.match(details, /near power input/, "and so is why it sits there");
+    }));
+
+test("the board view states that its thickness is a display value", async () =>
+    withApp(async (app, dom) => {
+        globalThis.fetch = async () => response(200, jobEnvelope({ status: "complete", progress: [], report: completedReport() }));
+        await app.poll(JOB_ID, identity, { monitorer: () => {} });
+        assert.match(dom.get("#board-thickness-note").textContent, /does not model the layer stack-up/,
+            "the one non-derived geometric value is labelled where it is shown");
+    }));
 
 test("completed-workspace monitoring invalidates unavailable or changed servers without runaway timers", async () => {
     for (const [payload, expected] of [

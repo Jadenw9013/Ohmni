@@ -171,43 +171,54 @@ class DemoPipeline:
         destination = destination.resolve()
         destination.mkdir(parents=True, exist_ok=True)
         catalog = default_catalog()
-        self._progress("requirements", "Interpreting supported project request", "RUNNING", 5)
+        self._progress("requirements", "Reading what you asked for", "RUNNING", 5,
+                       "Turning your description into a specification.")
         design = DesignOrchestrator(flawed_logger_provider(), catalog).design(
             request, output=destination / "golden.kicad_sch", run_eda=True,
         )
         if not design.final_circuit or not design.artifact or not design.erc:
             raise RuntimeError(f"design pipeline failed: {[issue.message for issue in design.issues]}")
         circuit = design.final_circuit
-        self._progress("repair", "Semantic violation repaired and re-verified", "PASS", 25)
+        self._progress("repair", "Found an electrical problem and fixed it", "PASS", 25,
+                       "Then re-ran every check from the beginning.")
 
         board = golden_board_constraints()
         compiler = KiCadPcbCompiler(catalog)
         placed = compiler.compile(circuit, design.artifact, board, destination / "golden.placed.kicad_pcb")
-        self._progress("placement", "Deterministic component placement verified", "PASS", 35)
-        self._progress("routing", "Routing 51 required connections", "RUNNING", 40)
+        self._progress("placement", "Placing the components on the board", "PASS", 35,
+                       "Each part goes where its job needs it to be.")
+        self._progress("routing", "Drawing the copper connections", "RUNNING", 40,
+                       "This is the slow part. Copper paths on the board replace what would "
+                       "be wires on a breadboard, and every one has to reach its destination "
+                       "without crossing another.")
         plan = DeterministicRouter().route(circuit, placed, board)
         route_report = verify_routing(circuit, placed, board, plan)
         if not route_report.passed:
             raise RuntimeError("independent routing verification failed")
         routed = compiler.compile(circuit, design.artifact, board, destination / "golden.kicad_pcb", plan)
-        self._progress("routing", "Independent copper connectivity verified", "PASS", 75)
+        self._progress("routing", "Checked every copper path separately", "PASS", 75,
+                       f"A different checker confirmed all {plan.statistics.required_connections} "
+                       "connections actually join up.")
         drc = KiCadCliAdapter().run_drc(routed)
         if drc.findings or drc.unconnected_items or drc.status.value not in {"pass", "pass_with_warnings"}:
             raise RuntimeError("KiCad DRC did not close cleanly")
-        self._progress("drc", "KiCad DRC: 0 violations, 0 unrouted", "PASS", 82)
+        self._progress("drc", "KiCad checked the finished board", "PASS", 82,
+                       f"{len(drc.findings)} problems, {len(drc.unconnected_items)} missing connections.")
 
         profile = prototype_profile()
         manufacturing = verify_manufacturing(routed, board, plan, profile)
         if not manufacturing.passed:
             raise RuntimeError("manufacturing profile verification failed")
-        self._progress("manufacturing", "Prototype manufacturing profile checked", "PASS", 87)
+        self._progress("manufacturing", "Checked it can actually be made", "PASS", 87,
+                       "Compared against what a fabricator can produce.")
         bom = generate_bom(circuit, catalog)
         costs = calculate_cost(bom, synthetic_fixture_supplier(bom), 1)
         assembly = classify_assembly(bom)
         package = KiCadFabricationExporter().export(
             routed, drc, manufacturing, profile, destination / "fabrication",
         )
-        self._progress("release", "Fabrication package ready for human review", "PASS_WITH_WARNINGS", 100)
+        self._progress("release", "Your board is ready to review", "PASS_WITH_WARNINGS", 100,
+                       "Files packaged. Nothing has been built or measured yet.")
         return project_demo_report(
             request=request, design=design, catalog=catalog, board=board, placed=placed,
             plan=plan, route_report=route_report, routed=routed, drc=drc,

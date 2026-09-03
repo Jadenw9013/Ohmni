@@ -71,11 +71,16 @@
         <p class="lede">Check this before it starts. Getting it right here is far cheaper
           than getting a board you did not want.</p>
       </div>
-      <div id="brief" class="brief"></div>
-      <div class="agree-actions">
-        <button type="button" id="confirm-brief" class="primary">This is right — design it <span aria-hidden="true">→</span></button>
-        <button type="button" id="back-to-describe" class="ghost">Back</button>
-        <p class="fineprint" id="agree-note"></p>
+      <div class="agree-layout">
+        <div id="brief" class="brief"></div>
+        <aside class="agree-decide">
+          <h3>Did Ohmni understand you?</h3>
+          <p id="agree-note" class="fineprint"></p>
+          <button type="button" id="confirm-brief" class="primary">Yes — design it <span aria-hidden="true">→</span></button>
+          <button type="button" id="back-to-describe" class="ghost">Back</button>
+          <p class="fineprint">Nothing has been built yet. This is the cheapest moment to catch a
+            misunderstanding.</p>
+        </aside>
       </div>
     </section>
 
@@ -107,6 +112,7 @@
           <canvas id="board-canvas" tabindex="0" aria-label="Your circuit board. Drag to rotate, scroll to zoom, click a part to inspect it."></canvas>
           <div id="board-empty" class="board-empty" hidden>The board view needs a canvas this browser did not provide.</div>
           <p class="board-hint">Drag to rotate · scroll to zoom · shift-drag to pan · click a part</p>
+          <p class="board-hint" id="board-thickness-note"></p>
         </div>
         <aside class="board-panel">
           <div class="board-tools">

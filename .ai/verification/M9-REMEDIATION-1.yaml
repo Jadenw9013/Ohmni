@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "id": "M9-REMEDIATION-1",
+  "status": "VERIFIED_PENDING_FOCUSED_INDEPENDENT_REVIEW",
+  "commit": "PENDING_CANDIDATE_COMMIT",
+  "baseline_commit": "d8909b1",
+  "commands": [
+    {
+      "command": "python scripts/ai_state.py validate",
+      "result": "PASS"
+    },
+    {
+      "command": "python scripts/verify.py workflow",
+      "result": "PASS",
+      "tests": 11
+    },
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "PASS",
+      "tests": 482,
+      "deselected": 10
+    },
+    {
+      "command": "python scripts/verify.py integration",
+      "result": "PASS",
+      "tests": 9
+    },
+    {
+      "command": "python scripts/verify.py full",
+      "result": "PASS",
+      "tests": 492,
+      "runtime_seconds": 120.99
+    },
+    {
+      "command": "python -m pytest tests/test_demo_operability.py -o addopts='-q --strict-markers'",
+      "result": "PASS",
+      "tests": 2,
+      "detail": "Both Windows tests ran on win32; neither skipped"
+    },
+    {
+      "command": "node --test apps/web/tests/*.test.mjs",
+      "result": "PASS",
+      "tests": 40,
+      "detail": "up from 33; 8 new tests target the specific defects this scope fixed"
+    },
+    {
+      "command": "python -m ohmni verify-all",
+      "result": "PASS",
+      "fixtures": 14,
+      "coverage": "100%"
+    },
+    {
+      "command": "python -m ruff check on every changed file",
+      "result": "PASS"
+    },
+    {
+      "command": "python -m ruff check .",
+      "result": "PRE_EXISTING_FINDINGS",
+      "findings": 41,
+      "fixable": 35,
+      "detail": "unchanged from d8909b1; no new lint introduced"
+    },
+    {
+      "command": "real headless Chrome journey against a live server",
+      "result": "PASS",
+      "detail": "Documented startup command on the default port. Describe fits one 900px viewport (861px). Agree confirmation at y=474, visible without scrolling, was y=1172. Live progress reads 'Drawing the copper connections'. Completion 100%/Finished. 14/14 terminal truthfulness checks pass. Default-view jargon reduced from 12 terms to 2, both intentional: the UNSUPPORTED status, and 'reflow' explained in place."
+    }
+  ],
+  "remediation": [
+    "A derived naming layer (ohmni.application.naming) gives every component, net and system a readable name from part category, the regulator's datasheet output voltage, declared external sources and published pin names. No table is keyed on this project's identifiers.",
+    "The repair story leads with 'Your sensor was going to get too much voltage.' and names no identifier by default; U3, VBUS, 3V3, VDD, VDDIO and PB-PWR-001 are all behind Technical details.",
+    "Flows and the guided tour read in concepts; the tour no longer emits refdes or net names in its narration.",
+    "Checks are grouped into Ohmni's own checks, checked independently by KiCad, and not analysed. The empty Ohmni EDA category is named after Ohmni instead of after KiCad.",
+    "The Agree stage leads with what Ohmni worked out, pins the decision panel beside the brief, and only reports a value as the user's words when it appears in them.",
+    "Live progress labels are beginner-facing and still derived from real job progress; the routing wait explains what routing is.",
+    "ERC, DRC, unrouted and raw provenance enums are gone from the default view.",
+    "Every component is selectable from its system card as well as from the board, giving a non-spatial exploration path.",
+    "Part cards carry a readable name and an explained assembly difficulty, labelled as an Ohmni estimate rather than a manufacturer figure."
+  ],
+  "review_findings_closed": {
+    "blocker": [
+      "M9-F01"
+    ],
+    "high": [
+      "M9-F02",
+      "M9-F03"
+    ],
+    "medium": [
+      "M9-F04",
+      "M9-F05",
+      "M9-F06",
+      "M9-F07"
+    ],
+    "low": [
+      "M9-F08",
+      "M9-F09",
+      "M9-F10",
+      "M9-F11",
+      "M9-F12",
+      "M9-F13",
+      "M9-F14"
+    ],
+    "accepted": [
+      "M9-F15 partially: SYSTEM_LABELS summaries remain generic prose per SystemId, and the voltage-scale axis extent is a presentational bound computed from projected values rather than an engineering claim."
+    ]
+  },
+  "limitations": [
+    "This is a UX remediation. No engineering verdict logic, evidence semantics, fingerprint behaviour or verification rule changed.",
+    "The supported project remains the single deterministic ESP32/BME280 fixture.",
+    "No Milestone 10 work was begun or approved."
+  ],
+  "review": {
+    "id": "M9-RM01-REV-INDEPENDENT-FINAL",
+    "independent": true,
+    "status": "PENDING"
+  }
+}

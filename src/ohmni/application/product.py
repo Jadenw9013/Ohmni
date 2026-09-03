@@ -16,6 +16,8 @@ an unverified claim.
 
 from __future__ import annotations
 
+from enum import StrEnum
+
 from pydantic import BaseModel, Field
 
 from ..domain.circuit import CircuitIR, NetKind
@@ -23,6 +25,7 @@ from ..domain.component import ComponentCategory
 from ..domain.verification import RuleCategory, VerificationReport
 from ..physical.footprints import footprint
 from ..verifier.engine import SUBSYSTEM_CATEGORIES
+from .naming import Term, component_term, humanise_refs, net_driver_voltage, net_term, phrase
 from .systems import (
     ComponentGrouping,
     Flow,
@@ -31,6 +34,7 @@ from .systems import (
     build_flows,
     build_systems,
     group_components,
+    system_name,
 )
 
 #: Display-only board thickness. Ohmni does not model stack-up, so this is a
@@ -57,7 +61,12 @@ STAGE_SEQUENCE: list[tuple[str, str, str]] = [
 ]
 
 #: Plain-language names for the verification layers, so a beginner reads
-#: "The power supply" rather than "electrical".
+#: "Voltages and currents" rather than "electrical".
+#:
+#: The EDA entry names *Ohmni's own* schematic-file rule set, of which there are
+#: none. It must not be called "KiCad's own opinion": KiCad's checker does run,
+#: reports separately, and passes -- labelling the empty Ohmni category after
+#: the external tool told the reader KiCad had both checked and not checked.
 CHECK_GROUPS: dict[RuleCategory, tuple[str, str]] = {
     RuleCategory.IDENTITY: (
         "The parts themselves",
@@ -74,9 +83,36 @@ CHECK_GROUPS: dict[RuleCategory, tuple[str, str]] = {
     RuleCategory.INTERFACE: (
         "The communication buses",
         "Are the shared wires between chips set up the way those chips need?"),
-    RuleCategory.THERMAL: ("Heat", "Not analysed."),
-    RuleCategory.EDA: ("KiCad's own opinion", "An independent second check by different software."),
-    RuleCategory.SIMULATION: ("Simulation", "Not implemented."),
+    RuleCategory.THERMAL: (
+        "Heat",
+        "Ohmni has no thermal rules. Nothing here was analysed."),
+    RuleCategory.EDA: (
+        "Ohmni's own schematic-file checks",
+        "Ohmni does not inspect the schematic file itself yet. KiCad's checker does, and reports below."),
+    RuleCategory.SIMULATION: (
+        "Simulation",
+        "Ohmni does not simulate circuits. Nothing here was simulated."),
+}
+
+#: Which of the three families a check group belongs to. Keeping Ohmni's own
+#: rules, an external tool's independent opinion, and areas nobody analysed in
+#: separate sections is what stops them reading as contradictions.
+class CheckFamily(StrEnum):
+    OHMNI = "ohmni"
+    EXTERNAL = "external"
+    NOT_ANALYSED = "not_analysed"
+
+
+CHECK_FAMILY_LABELS: dict[CheckFamily, tuple[str, str]] = {
+    CheckFamily.OHMNI: (
+        "Ohmni's own checks",
+        "Deterministic rules Ohmni ran over your design."),
+    CheckFamily.EXTERNAL: (
+        "Checked independently by KiCad",
+        "Different software, written by other people, inspecting the same files."),
+    CheckFamily.NOT_ANALYSED: (
+        "Not analysed",
+        "Areas Ohmni has no rules for. These are not passes."),
 }
 
 _PASSIVE_ROLE_HINTS = {
@@ -101,6 +137,7 @@ class BoardComponent(BaseModel):
 
     ref: str
     part_id: str
+    name: Term
     package: str
     footprint_id: str
     system: SystemId
@@ -145,6 +182,10 @@ class BoardGeometry(BaseModel):
     display_thickness_mm: float = DISPLAY_BOARD_THICKNESS_MM
     thickness_is_display_only: bool = True
     layers: list[str]
+    #: How the board edge is described where the interface shows its thickness.
+    thickness_note: str = (
+        "Board thickness is a display value. Ohmni does not model the layer stack-up."
+    )
     components: list[BoardComponent]
     tracks: list[BoardTrack]
     vias: list[BoardVia]
@@ -161,6 +202,7 @@ class SchematicPin(BaseModel):
 class SchematicSymbol(BaseModel):
     ref: str
     part_id: str
+    name: Term
     system: SystemId
     x_mm: float
     y_mm: float
@@ -181,6 +223,11 @@ class BriefLine(BaseModel):
     label: str
     value: str
     origin: str
+    #: How this value relates to what the user actually typed. `quoted` means
+    #: the value appears in their words; `interpreted` means Ohmni read it out
+    #: of their description; `assumed`/`default` mean Ohmni supplied it. The
+    #: Agree stage must not tell someone they wrote a value they never wrote.
+    grounding: str = "interpreted"
     source_text: str | None = None
 
 
@@ -197,15 +244,20 @@ class Brief(BaseModel):
 class ComponentCard(BaseModel):
     ref: str
     part_id: str
+    name: Term
     display_name: str
     package: str
     system: SystemId
     purpose: str
     grouping_basis: str
     quantity_on_board: int
+    line_quantity: int = 1
     value: str | None = None
     assembly_difficulty: str | None = None
-    assembly_detail: str | None = None
+    assembly_reason: str | None = None
+    assembly_basis: str = (
+        "Assembly difficulty is an Ohmni estimate from the package shape, not a manufacturer figure."
+    )
     orientation_sensitive: bool = False
     price_knowledge: str = "UNKNOWN"
     unit_price: str | None = None
@@ -231,11 +283,21 @@ class CheckRule(BaseModel):
 
 class CheckGroup(BaseModel):
     group: str
+    family: CheckFamily
     label: str
     question: str
     status: str
     rule_count: int
     rules: list[CheckRule]
+
+
+class CheckSection(BaseModel):
+    """One family of checks, so unrelated verdicts never sit side by side."""
+
+    family: CheckFamily
+    label: str
+    summary: str
+    groups: list[CheckGroup]
 
 
 class RepairStep(BaseModel):
@@ -251,6 +313,12 @@ class RepairReplay(BaseModel):
 
     happened: bool
     headline: str
+    #: One sentence a beginner can read without knowing any identifier.
+    plain_summary: str | None = None
+    part: Term | None = None
+    from_net: Term | None = None
+    to_net: Term | None = None
+    operating_min_v: float | None = None
     component_ref: str | None = None
     part_id: str | None = None
     rule_id: str | None = None
@@ -260,8 +328,6 @@ class RepairReplay(BaseModel):
     absolute_max_v: float | None = None
     repaired_v: float | None = None
     supported_range: str | None = None
-    from_net: str | None = None
-    to_net: str | None = None
     steps: list[RepairStep] = Field(default_factory=list)
     moved_pins: list[dict[str, str]] = Field(default_factory=list)
     evidence: list[dict[str, object]] = Field(default_factory=list)
@@ -303,6 +369,20 @@ class GuidedTour(BaseModel):
     steps: list[TourStep]
 
 
+class BringUpStep(BaseModel):
+    """One bench check, with the value Ohmni actually derived for it.
+
+    `prediction` is None when Ohmni computed nothing for that step. It is never
+    filled with a plausible number: an unmeasured expectation presented as a
+    prediction is exactly the failure the rest of this projection prevents.
+    """
+
+    action: str
+    prediction: str | None = None
+    basis: str | None = None
+    rule_id: str | None = None
+
+
 class ProductExperience(BaseModel):
     """Everything the product interface renders, and nothing it decides."""
 
@@ -318,6 +398,8 @@ class ProductExperience(BaseModel):
     schematic: SchematicGeometry
     components: list[ComponentCard]
     checks: list[CheckGroup]
+    check_sections: list[CheckSection]
+    bring_up: list[BringUpStep]
     repair: RepairReplay
     confidence: Confidence
     tour: GuidedTour
@@ -356,6 +438,39 @@ def _readable(field: str, value: str) -> str:
     return value
 
 
+def _grounding(statement, value: str) -> str:
+    """Distinguish what the user wrote from what Ohmni read into it.
+
+    The generation layer marks an interpreted field EXPLICIT with the whole
+    request as its source text, which is correct provenance but becomes a false
+    claim once an interface renders it as "taken straight from what you wrote".
+    A value is only reported as quoted when it can be found in the user's own
+    words.
+    """
+    origin = statement.origin.value
+    if origin != "explicit":
+        return origin
+    source = (statement.source_text or "").lower()
+    if not source:
+        return "interpreted"
+    if statement.field == "description":
+        return "quoted"
+    raw = str(statement.value).strip().lower()
+    candidates = {raw, raw.replace(" ", ""), value.strip().lower()}
+    # A number the user wrote as "$20" arrives here as "20.0".
+    try:
+        number = float(raw.rstrip(" v"))
+    except ValueError:
+        pass
+    else:
+        candidates.add(f"{number:g}")
+    flat = source.replace(" ", "")
+    for candidate in candidates:
+        if candidate and (candidate in source or candidate in flat):
+            return "quoted"
+    return "interpreted"
+
+
 def build_brief(compiled, unsettled: list[str] | None = None) -> Brief:
     """Split the compiled requirements by where each statement came from.
 
@@ -368,10 +483,12 @@ def build_brief(compiled, unsettled: list[str] | None = None) -> Brief:
     asked, assumed, unclear = [], [], []
 
     def line(statement):
+        value = _readable(statement.field, statement.value)
         return BriefLine(
             field=statement.field,
             label=_BRIEF_LABELS.get(statement.field, statement.field.replace("_", " ")),
-            value=_readable(statement.field, statement.value), origin=statement.origin.value,
+            value=value, origin=statement.origin.value,
+            grounding=_grounding(statement, value),
             source_text=statement.source_text,
         )
 
@@ -383,10 +500,15 @@ def build_brief(compiled, unsettled: list[str] | None = None) -> Brief:
             assumed.append(line(statement))
         else:
             unclear.append(line(statement))
+    # Anything Ohmni read into the request rather than lifting from it belongs
+    # in the column the user is asked to check, not under "you asked for".
+    interpreted = [item for item in asked if item.grounding == "interpreted"]
+    asked = [item for item in asked if item.grounding != "interpreted"]
+    unclear.extend(interpreted)
     for topic in unsettled or []:
         unclear.append(BriefLine(
             field="needs_confirmation", label="Ohmni could not settle this",
-            value=topic, origin="needs_confirmation",
+            value=topic, origin="needs_confirmation", grounding="unsettled",
         ))
     return Brief(
         project_name=compiled.requirements.project_name,
@@ -412,7 +534,7 @@ def unsettled_topics(report: VerificationReport) -> list[str]:
 # --------------------------------------------------------------------------
 
 def _board_geometry(board, routed, grouping: dict[str, ComponentGrouping],
-                    circuit: CircuitIR) -> BoardGeometry:
+                    circuit: CircuitIR, catalog) -> BoardGeometry:
     compilation = routed.compilation
     if compilation.artifact_fingerprint != routed.fingerprint:
         raise ValueError("board geometry projection does not match the compiled artifact")
@@ -442,7 +564,8 @@ def _board_geometry(board, routed, grouping: dict[str, ComponentGrouping],
             width_mm=pad.width_mm, height_mm=pad.height_mm, kind=pad.kind, shape=pad.shape,
         ) for pad in definition.pads]
         components.append(BoardComponent(
-            ref=ref, part_id=binding.part_id, package=binding.package,
+            ref=ref, part_id=binding.part_id,
+            name=component_term(circuit, catalog, ref), package=binding.package,
             footprint_id=binding.footprint_id,
             system=grouping[ref].system, x_mm=placement.x_mm, y_mm=placement.y_mm,
             rotation_deg=placement.rotation_deg, side=placement.side,
@@ -476,12 +599,15 @@ def _board_geometry(board, routed, grouping: dict[str, ComponentGrouping],
     )
 
 
-def _schematic_geometry(artifact, grouping: dict[str, ComponentGrouping]) -> SchematicGeometry:
+def _schematic_geometry(artifact, grouping: dict[str, ComponentGrouping],
+                        circuit: CircuitIR, catalog) -> SchematicGeometry:
     compilation = artifact.compilation
     if compilation.source_artifact_fingerprint != artifact.fingerprint:
         raise ValueError("schematic geometry projection does not match the compiled artifact")
     symbols = [SchematicSymbol(
-        ref=b.component_ref, part_id=b.part_id, system=grouping[b.component_ref].system,
+        ref=b.component_ref, part_id=b.part_id,
+        name=component_term(circuit, catalog, b.component_ref),
+        system=grouping[b.component_ref].system,
         x_mm=b.x_mm, y_mm=b.y_mm, width_mm=b.width_mm, height_mm=b.height_mm,
         pins=[SchematicPin(pin=p.circuit_pin, net_name=p.net_name, x_mm=p.x_mm, y_mm=p.y_mm)
               for p in b.pins],
@@ -503,39 +629,58 @@ def _purpose(circuit: CircuitIR, catalog, ref: str, grouping: ComponentGrouping)
     spec = catalog.get(instance.part_id)
     category = spec.category if spec else None
     nets = [n for n in circuit.nets if ref in n.components()]
-    net_names = {n.name for n in nets}
     kinds = {n.kind for n in nets}
     anchor = grouping.attached_to
+    anchor_name = phrase(component_term(circuit, catalog, anchor)) if anchor else None
     value = instance.value.engineering() if instance.value else None
 
     if category in {ComponentCategory.MCU, ComponentCategory.MCU_MODULE}:
         return "The processor. It runs your program, reads the sensor and drives the outputs."
     if category is ComponentCategory.SENSOR:
-        return f"The sensor. It performs the measurement and reports it over {', '.join(sorted(net_names & {'SDA', 'SCL'})) or 'its data pins'}."
+        bus = sorted({n.name for n in nets if n.kind is NetKind.SIGNAL})
+        readable = humanise_refs(circuit, catalog, [
+            p.component for name in bus for p in circuit.net(name).connections
+            if p.component != ref
+        ])
+        return (f"Does the measuring, and reports it to the {readable} over two wires."
+                if bus else "Does the measuring.")
     if category in {ComponentCategory.REGULATOR_LINEAR, ComponentCategory.REGULATOR_SWITCHING}:
-        return "The voltage regulator. It converts the incoming supply into the steady lower voltage everything else needs."
+        return ("Turns the incoming supply into the steady lower voltage everything else "
+                "on the board needs.")
     if category is ComponentCategory.CONNECTOR:
         return "Where power comes into the board."
     if category is ComponentCategory.HEADER:
-        return "The header you connect to in order to load code onto the board."
+        return "The pins you connect to in order to load your program onto the board."
     if category is ComponentCategory.LED:
-        return "The indicator light."
+        return "The light that shows you what the board is doing."
     if category is ComponentCategory.CAPACITOR:
         if NetKind.POWER in kinds and NetKind.GROUND in kinds:
-            target = f" for {anchor}" if anchor else ""
-            return (f"A {value} capacitor sitting across the supply{target}. It supplies the "
-                    "quick bursts of current a chip needs faster than the regulator can react.")
-        return f"A {value} capacitor on {', '.join(sorted(net_names))}."
+            target = f" next to the {anchor_name}" if anchor_name else ""
+            return (f"Steadies the power supply{target}. It hands over quick bursts of current "
+                    "faster than the regulator can react to.")
+        return f"A {value} capacitor that sets a timing delay." if value else "A timing capacitor."
     if category is ComponentCategory.RESISTOR:
-        signal_nets = sorted(n.name for n in nets if n.kind is NetKind.SIGNAL)
-        if NetKind.POWER in kinds and signal_nets:
-            return (f"A {value} resistor holding {', '.join(signal_nets)} up towards the supply "
-                    "when nothing else is driving it.")
-        if signal_nets:
-            return f"A {value} resistor in series on {', '.join(signal_nets)}, limiting how much current can flow."
-        return f"A {value} resistor on {', '.join(sorted(net_names))}."
-    hint = _PASSIVE_ROLE_HINTS.get(category, "component")
-    return f"A {hint} on {', '.join(sorted(net_names))}."
+        signal = sorted(n.name for n in nets if n.kind is NetKind.SIGNAL)
+        if NetKind.POWER in kinds and signal:
+            return ("Holds the connection up towards the supply when nothing else is driving "
+                    "it, so it never floats at an undefined level.")
+        if signal:
+            return ("Limits how much current can flow, so the part after it is not asked to "
+                    "carry more than it can.")
+        return f"A {value} resistor." if value else "A resistor."
+    return f"Part of the {system_name(grouping.system).lower()}."
+
+
+#: How a package shape translates into what a person has to do at the bench.
+_ASSEMBLY_REASONS: dict[str, str] = {
+    "easy": "Through-hole or large pads. Straightforward with a soldering iron.",
+    "moderate": "Small surface-mount package. Fiddly by hand but doable.",
+    "reflow_recommended": "Pads sit under the part where an iron cannot reach. "
+                          "You will want hot air or a reflow plate.",
+    "unsupported_for_hand_assembly": "Pads are entirely under the part. Not realistic to "
+                                     "solder by hand.",
+    "unknown": "Ohmni does not recognise this package shape well enough to judge.",
+}
 
 
 def _components(circuit: CircuitIR, catalog, grouping: dict[str, ComponentGrouping],
@@ -550,17 +695,23 @@ def _components(circuit: CircuitIR, catalog, grouping: dict[str, ComponentGroupi
         bom_line = bom_by_ref.get(ref)
         cost = cost_by_key.get(bom_line.identity.key) if bom_line else None
         risk = risk_by_ref.get(ref)
+        difficulty = risk.difficulty.value if risk else None
         cards.append(ComponentCard(
             ref=ref, part_id=instance.part_id,
+            name=component_term(circuit, catalog, ref),
             display_name=spec.display_name if spec else instance.part_id,
             package=instance.package or "unknown",
             system=grouping[ref].system,
             purpose=_purpose(circuit, catalog, ref, grouping[ref]),
             grouping_basis=grouping[ref].basis,
-            quantity_on_board=bom_line.quantity_per_board if bom_line else 1,
+            # One board carries one of this reference designator. The BOM line
+            # quantity counts every identical part and belongs beside the line,
+            # not on each component that happens to share it.
+            quantity_on_board=1,
+            line_quantity=bom_line.quantity_per_board if bom_line else 1,
             value=instance.value.engineering() if instance.value else None,
-            assembly_difficulty=risk.difficulty.value if risk else None,
-            assembly_detail=risk.detail if risk else None,
+            assembly_difficulty=difficulty,
+            assembly_reason=_ASSEMBLY_REASONS.get(difficulty or "", None),
             orientation_sensitive=bool(risk and risk.orientation_sensitive),
             price_knowledge=cost.knowledge.value.upper() if cost else "UNKNOWN",
             unit_price=str(cost.unit_price) if cost and cost.unit_price is not None else None,
@@ -592,11 +743,12 @@ def _stages(design, routed, drc, manufacturing, package, route_report) -> list[S
     repair_detail = (
         f"{sum(len(r.patch.operations) for r in design.repairs)} change(s) applied, then re-checked"
         if design.repairs else "nothing needed fixing")
-    routing_detail = (f"{copper.track_segment_count} copper segments, "
-                      f"{copper.via_count} layer crossings")
-    manufacture_detail = (f"{len(drc.findings)} KiCad DRC violation(s), "
-                          f"{len(drc.unconnected_items)} unrouted, "
-                          f"{len(package.files)} fabrication files")
+    routing_detail = (f"{copper.track_segment_count} copper paths drawn, "
+                      f"{copper.via_count} crossing between the two sides")
+    manufacture_detail = (
+        f"{len(drc.findings)} layout problems and "
+        f"{'no missing connections' if not drc.unconnected_items else str(len(drc.unconnected_items)) + ' missing connections'}"
+        f"; {len(package.files)} manufacturing files ready")
     outcomes = {
         "brief": ("DONE", brief_detail),
         "design": ("DONE", design_detail),
@@ -604,13 +756,14 @@ def _stages(design, routed, drc, manufacturing, package, route_report) -> list[S
                   f"{len(blocking)} blocking problem(s) in the first proposal"),
         "repair": ("FIXED" if design.repairs else "NOT_NEEDED", repair_detail),
         "schematic": (erc.status.value.upper() if erc else "UNSUPPORTED",
-                      f"{len(erc.findings)} KiCad ERC finding(s)" if erc else "KiCad did not run"),
+                      f"KiCad's schematic checker raised {len(erc.findings)} notes"
+                      if erc else "KiCad was not available, so nothing was checked"),
         "placement": ("DONE" if physical.passed else "PROBLEM",
-                      f"{len(physical.findings)} layout measurement(s)"),
+                      f"{len(physical.findings)} measurements taken"),
         "routing": ("DONE" if route_report.passed else "PROBLEM", routing_detail),
-        "manufacture": (drc.status.value.upper(), manufacture_detail),
+        "manufacture": ("PASS" if manufacturing.passed else "PROBLEM", manufacture_detail),
     }
-    del last, manufacturing
+    del last
     return [StageCard(stage=key, label=label, detail=detail,
                       status=outcomes[key][0], outcome=outcomes[key][1])
             for key, label, detail in STAGE_SEQUENCE]
@@ -632,52 +785,34 @@ def _checks(report: VerificationReport, erc, routed, drc, manufacturing) -> list
         results = [r for r in report.results if r.category is category]
         label, question = CHECK_GROUPS[category]
         subsystem = _SUBSYSTEM_OF_CATEGORY.get(category)
-        status = report.subsystem_status.get(subsystem) if subsystem else None
-        if not results:
-            # A subsystem with no rules is not silently dropped: UNSUPPORTED has
-            # to stay visible, because an absent row reads as "fine".
-            if status is not None:
-                groups.append(CheckGroup(
-                    group=category.value, label=label, question=question,
-                    status=status.value.upper(), rule_count=0, rules=[],
-                ))
-            continue
+        if subsystem is None:
+            raise ValueError(f"no subsystem owns rule category {category.value}")
+        status = report.subsystem_status.get(subsystem)
+        if status is None:
+            # The verifier owns this map. A category it does not roll up is a
+            # drift bug, and must not become a quietly missing row.
+            raise ValueError(f"verifier reported no status for subsystem {subsystem!r}")
+        family = CheckFamily.OHMNI if results else CheckFamily.NOT_ANALYSED
         groups.append(CheckGroup(
-            group=category.value, label=label, question=question,
-            status=status.value.upper() if status else "UNKNOWN",
-            rule_count=len(results),
+            group=category.value, family=family, label=label, question=question,
+            status=status.value.upper(), rule_count=len(results),
             rules=[CheckRule(
                 rule_id=r.rule_id, title=r.title, outcome=r.outcome.value.upper(),
                 findings=len(r.findings), limitations=r.limitations, missing_data=r.missing_data,
             ) for r in sorted(results, key=lambda item: item.rule_id)],
         ))
-    if erc is not None:
-        groups.append(CheckGroup(
-            group="kicad_erc", label="KiCad checked the schematic",
-            question="Does different software, written by other people, agree?",
-            status=erc.status.value.upper(), rule_count=1,
-            rules=[CheckRule(rule_id="KICAD-ERC", title="KiCad electrical rule check",
-                             outcome=erc.status.value.upper(), findings=len(erc.findings))],
-        ))
     physical = routed.compilation.physical_verification
     groups.append(CheckGroup(
-        group="layout", label="The physical layout",
+        group="layout", family=CheckFamily.OHMNI, label="The physical layout",
         question="Do the parts fit, stay inside the board, and sit where they need to?",
         status="PASS" if physical.passed else "FAIL", rule_count=len(physical.findings),
         rules=[CheckRule(rule_id=f.rule_id, title=f.description,
-                         outcome=f.status.value.upper(), findings=0 if f.status.value == "pass" else 1)
+                         outcome=f.status.value.upper(),
+                         findings=0 if f.status.value == "pass" else 1)
                for f in physical.findings],
     ))
     groups.append(CheckGroup(
-        group="kicad_drc", label="KiCad checked the board",
-        question="Would this board actually be manufacturable copper?",
-        status=drc.status.value.upper(), rule_count=1,
-        rules=[CheckRule(rule_id="KICAD-DRC", title="KiCad design rule check",
-                         outcome=drc.status.value.upper(),
-                         findings=len(drc.findings) + len(drc.unconnected_items))],
-    ))
-    groups.append(CheckGroup(
-        group="manufacturing", label="Can it be made?",
+        group="manufacturing", family=CheckFamily.OHMNI, label="Can it be made?",
         question="Does the board fit what a fabricator can actually produce?",
         status="PASS" if manufacturing.passed else "FAIL",
         rule_count=len(manufacturing.findings),
@@ -686,7 +821,36 @@ def _checks(report: VerificationReport, erc, routed, drc, manufacturing) -> list
                          findings=0 if f.status.value == "pass" else 1)
                for f in manufacturing.findings],
     ))
+    if erc is not None:
+        groups.append(CheckGroup(
+            group="kicad_erc", family=CheckFamily.EXTERNAL,
+            label="Schematic connection check",
+            question="Does KiCad agree the schematic is wired sensibly?",
+            status=erc.status.value.upper(), rule_count=1,
+            rules=[CheckRule(rule_id="KICAD-ERC", title="KiCad electrical rule check (ERC)",
+                             outcome=erc.status.value.upper(), findings=len(erc.findings))],
+        ))
+    groups.append(CheckGroup(
+        group="kicad_drc", family=CheckFamily.EXTERNAL, label="PCB layout check",
+        question="Would this board actually be manufacturable copper?",
+        status=drc.status.value.upper(), rule_count=1,
+        rules=[CheckRule(rule_id="KICAD-DRC", title="KiCad design rule check (DRC)",
+                         outcome=drc.status.value.upper(),
+                         findings=len(drc.findings) + len(drc.unconnected_items))],
+    ))
     return groups
+
+
+def _check_sections(groups: list[CheckGroup]) -> list[CheckSection]:
+    """Group the checks by who ran them, so verdicts cannot read as conflicting."""
+    sections: list[CheckSection] = []
+    for family in (CheckFamily.OHMNI, CheckFamily.EXTERNAL, CheckFamily.NOT_ANALYSED):
+        members = [group for group in groups if group.family is family]
+        if not members:
+            continue
+        label, summary = CHECK_FAMILY_LABELS[family]
+        sections.append(CheckSection(family=family, label=label, summary=summary, groups=members))
+    return sections
 
 
 def _confidence(report: VerificationReport, erc, routed, route_report, drc,
@@ -696,16 +860,16 @@ def _confidence(report: VerificationReport, erc, routed, route_report, drc,
                        detail=f"{len(report.results)} deterministic rules ran; "
                               f"{report.coverage:.0%} of the applicable ones reached a verdict"),
         ConfidenceLine(label="The schematic", status=erc.status.value.upper() if erc else "UNSUPPORTED",
-                       detail=f"KiCad's own checker reported {len(erc.findings)} findings"
+                       detail=f"KiCad's own checker raised {len(erc.findings)} notes on it"
                               if erc else "KiCad was not available, so nothing was checked"),
         ConfidenceLine(label="The layout", status="CHECKED" if routed.compilation.physical_verification.passed else "PROBLEM",
                        detail=f"{len(routed.compilation.physical_verification.findings)} geometry measurements"),
         ConfidenceLine(label="The copper", status="CHECKED" if route_report.passed else "PROBLEM",
                        detail=f"every one of {routed.compilation.copper_statistics.track_segment_count} "
                               "emitted segments was re-checked by a separate verifier"),
-        ConfidenceLine(label="Manufacturability", status=drc.status.value.upper(),
-                       detail=f"KiCad DRC: {len(drc.findings)} violations, "
-                              f"{len(drc.unconnected_items)} unrouted; profile "
+        ConfidenceLine(label="Can it be made", status=drc.status.value.upper(),
+                       detail=f"KiCad's layout checker found {len(drc.findings)} problems and "
+                              f"{len(drc.unconnected_items)} missing connections, against the "
                               f"{manufacturing.profile.display_name}"),
     ]
     not_verified = [
@@ -722,8 +886,9 @@ def _confidence(report: VerificationReport, erc, routed, route_report, drc,
                        if not assembly.hand_solder_requirement_satisfied else "PASS",
                        detail="; ".join(assembly.limitations) or "no recorded limitations"),
         ConfidenceLine(label="The manufacturing profile", status="SYNTHETIC",
-                       detail=f"{manufacturing.profile.display_name}, provenance "
-                              f"{manufacturing.profile.provenance.value}; a human must review it"),
+                       detail=f"{manufacturing.profile.display_name}. It is a stand-in, not a "
+                              "real factory's published capabilities, and a person has to "
+                              "review it before anything is ordered."),
     ]
     return Confidence(checked=checked, not_verified=not_verified)
 
@@ -732,31 +897,16 @@ def _confidence(report: VerificationReport, erc, routed, route_report, drc,
 # Repair replay
 # --------------------------------------------------------------------------
 
-def _net_driver_voltage(circuit: CircuitIR, catalog, net_name: str) -> float | None:
-    """The voltage a net sits at, taken from whatever drives it.
-
-    Mirrors the verifier's own derivation order rather than reading a label: a
-    declared external source, else a regulator's datasheet output voltage.
-    """
-    net = circuit.net(net_name)
-    if net is None:
-        return None
-    if net.external_source is not None:
-        nominal = net.external_source.voltage.nominal
-        return nominal.value if nominal else None
-    for pin in net.connections:
-        instance = circuit.component(pin.component)
-        spec = catalog.get(instance.part_id) if instance else None
-        if spec is None or spec.regulator is None:
-            continue
-        pin_spec = spec.pin(pin.pin)
-        if pin_spec is not None and pin_spec.electrical_type.value == "power_out":
-            nominal = spec.regulator.output_voltage.nominal
-            return nominal.value if nominal else None
-    return None
+def _format_v(value: float | None) -> str:
+    return "an unknown voltage" if value is None else f"{value:g} V"
 
 
 def _repair(design, circuit: CircuitIR, catalog) -> RepairReplay:
+    """Tell the caught problem as a story, with identifiers kept underneath.
+
+    Every number here is read back from the report that produced it. The
+    language around them is the only thing this function decides.
+    """
     if not design.repairs:
         return RepairReplay(happened=False, headline="Ohmni found nothing that needed fixing.")
     first = design.semantic_attempts[0]
@@ -771,61 +921,63 @@ def _repair(design, circuit: CircuitIR, catalog) -> RepairReplay:
     instance = circuit.component(ref)
     spec = catalog.get(instance.part_id) if instance else None
     rail = next((r for r in (spec.supply_rails if spec else []) if r.evidence), None)
-    applied = limit = absolute_max = repaired = None
+    applied = limit = minimum = absolute_max = None
     supported = None
     if rail is not None:
         supported = str(rail.operating)
-        limit = rail.operating.worst_case_high.value if rail.operating.worst_case_high else None
+        if rail.operating.worst_case_high is not None:
+            limit = rail.operating.worst_case_high.value
+        if rail.operating.worst_case_low is not None:
+            minimum = rail.operating.worst_case_low.value
         absolute_max = rail.absolute_max.value if rail.absolute_max else None
-    # The voltage that was actually applied is a CALCULATION the rule already
-    # made. It is read back, never re-derived here.
     for evidence in worst.evidence:
         if evidence.kind.value == "calculation" and evidence.quantity is not None:
             applied = evidence.quantity.value
-    from_net = operations[0].from_net
-    to_net = operations[0].to_net
-    # What the repaired rail actually sits at comes from the datasheet of the
-    # part that drives it. If nothing drives it, the mark is omitted rather
-    # than guessed.
-    repaired = _net_driver_voltage(circuit, catalog, to_net)
+
+    from_net, to_net = operations[0].from_net, operations[0].to_net
+    part = component_term(circuit, catalog, ref)
+    from_term = net_term(circuit, catalog, from_net)
+    to_term = net_term(circuit, catalog, to_net)
+    repaired = net_driver_voltage(circuit, catalog, to_net)
+    thing = phrase(part)
+
+    plain = (f"Your {thing} was going to get too much voltage."
+             if applied is not None and limit is not None and applied > limit
+             else f"Your {thing} was connected to the wrong supply.")
+
+    problem = (f"The {thing} was wired to {phrase(from_term)}. Its manufacturer only "
+               f"specifies it to work up to {_format_v(limit)}."
+               if limit is not None else worst.description)
+    fix = (f"It moved the {thing}'s power over to {phrase(to_term)}"
+           + (f", which sits at {_format_v(repaired)}." if repaired is not None else ".")
+           + " Nothing else about the design was touched.")
 
     steps = [
-        RepairStep(
-            key="problem", headline="Problem found",
-            body=(f"{ref} ({instance.part_id if instance else 'the part'}) was connected to "
-                  f"{from_net}. The manufacturer's datasheet says it is only specified to work "
-                  f"between {supported}." if supported else worst.description),
-            component_refs=[ref], net_names=[from_net],
-        ),
-        RepairStep(
-            key="why", headline="Why that matters",
-            body=("Above the maximum, the part is not merely out of specification - it can be "
-                  "permanently damaged. That is a different kind of problem from 'it might not "
-                  "work well', which is why Ohmni refuses to export a design in this state."),
-            component_refs=[ref],
-        ),
-        RepairStep(
-            key="fix", headline="What Ohmni changed",
-            body=(f"It moved {len(operations)} supply connection(s) on {ref} from {from_net} to "
-                  f"{to_net}. Nothing else about the design was touched - the change is one of a "
-                  "small number of operations Ohmni is allowed to make."),
-            component_refs=[ref], net_names=[from_net, to_net],
-        ),
-        RepairStep(
-            key="recheck", headline="Then it checked again",
-            body=("Every rule ran again from the beginning on the changed circuit. The problem is "
-                  "gone, and nothing new appeared. Ohmni does not assume a fix worked."),
-            component_refs=[ref], net_names=[to_net],
-        ),
+        RepairStep(key="problem", headline="What was wrong", body=problem,
+                   component_refs=[ref], net_names=[from_net]),
+        RepairStep(key="why", headline="Why that matters",
+                   body=("Too much voltage does not just make a part behave badly. Past the "
+                         "manufacturer's limit it can be damaged for good. That is why Ohmni "
+                         "refuses to hand over a design in this state."),
+                   component_refs=[ref]),
+        RepairStep(key="fix", headline="What Ohmni changed", body=fix,
+                   component_refs=[ref], net_names=[from_net, to_net]),
+        RepairStep(key="recheck", headline="Then it checked again",
+                   body=("Every check ran again from the beginning on the changed design. The "
+                         "problem is gone and nothing new appeared. Ohmni does not assume a fix "
+                         "worked."),
+                   component_refs=[ref], net_names=[to_net]),
     ]
     return RepairReplay(
         happened=True,
         headline=f"Ohmni caught {len(triggering)} problem(s) before anything was drawn.",
+        plain_summary=plain,
+        part=part, from_net=from_term, to_net=to_term,
         component_ref=ref, part_id=instance.part_id if instance else None,
         rule_id=worst.rule_id, severity=worst.severity.value.upper(),
-        applied_v=applied, limit_v=limit, absolute_max_v=absolute_max,
-        repaired_v=repaired, supported_range=supported,
-        from_net=from_net, to_net=to_net, steps=steps,
+        applied_v=applied, limit_v=limit, operating_min_v=minimum,
+        absolute_max_v=absolute_max, repaired_v=repaired, supported_range=supported,
+        steps=steps,
         moved_pins=[{"component": op.component_ref, "pin": op.pin,
                      "from_net": op.from_net, "to_net": op.to_net} for op in operations],
         evidence=[{
@@ -838,6 +990,91 @@ def _repair(design, circuit: CircuitIR, catalog) -> RepairReplay:
     )
 
 
+def _bring_up(design, circuit: CircuitIR, catalog, repair: RepairReplay) -> list[BringUpStep]:
+    """Bench checks, each carrying the value Ohmni actually derived for it.
+
+    A step whose value Ohmni did not compute carries no prediction. Filling one
+    in with a plausible number would be inventing an engineering claim on the
+    last screen the user reads before touching hardware.
+    """
+    report = design.semantic_attempts[-1]
+    notes: dict[str, list[str]] = {}
+    for result in report.results:
+        notes.setdefault(result.rule_id, []).extend(result.notes)
+
+    def note(rule_id: str) -> str | None:
+        found = notes.get(rule_id) or []
+        return found[0] if found else None
+
+    steps: list[BringUpStep] = [
+        BringUpStep(
+            action="Look it over, then check for a short between the power pins before "
+                   "plugging anything in.",
+            prediction="No connection between them",
+            basis="A short across the supply is the one fault that damages things instantly.",
+        ),
+        BringUpStep(
+            action="Power it from a current-limited bench supply.",
+            prediction=None,
+            basis="Ohmni has no start-up current figure for this board, so it will not "
+                  "predict one. Start low and watch.",
+        ),
+    ]
+
+    rail = None
+    if repair.to_net is not None:
+        rail = repair.to_net
+    else:
+        for net in circuit.nets:
+            if net.kind is NetKind.POWER and net.external_source is None:
+                rail = net_term(circuit, catalog, net.name)
+                break
+    if rail is not None:
+        volts = net_driver_voltage(circuit, catalog, rail.technical)
+        steps.append(BringUpStep(
+            action=f"Measure the {phrase(rail)}.",
+            prediction=_format_v(volts) if volts is not None else None,
+            basis=("Worked out from the datasheet of the part that produces it."
+                   if volts is not None else None),
+        ))
+
+    led_note = note("PB-LED-001")
+    if led_note:
+        steps.append(BringUpStep(
+            action="Measure the current through the indicator light.",
+            prediction=led_note.split("=")[-1].split(",")[0].strip() if "=" in led_note else None,
+            basis=led_note, rule_id="PB-LED-001",
+        ))
+
+    addresses = [
+        (instance.ref, instance.selected_i2c_address)
+        for instance in circuit.components if instance.selected_i2c_address is not None
+    ]
+    if addresses:
+        listed = ", ".join(f"0x{value:02X}" for _, value in sorted(addresses, key=lambda x: x[0]))
+        steps.append(BringUpStep(
+            action="Scan the sensor bus for devices.",
+            prediction=listed,
+            basis="The address is derived from how the part's address pin is actually wired.",
+            rule_id="PB-I2C-003",
+        ))
+        steps.append(BringUpStep(
+            action="Read the sensor and sanity-check the numbers.",
+            prediction=None,
+            basis="Ohmni cannot predict what your room is like.",
+        ))
+
+    unsettled = unsettled_topics(report)
+    for topic in unsettled:
+        steps.append(BringUpStep(
+            action=f"Confirm this by hand: {topic}",
+            prediction=None,
+            basis="Ohmni could not settle this from the design alone and says so rather "
+                  "than guessing.",
+        ))
+    return steps
+
+
 # --------------------------------------------------------------------------
 # Tour
 # --------------------------------------------------------------------------
@@ -847,15 +1084,14 @@ def _tour(brief: Brief, systems: list[FunctionalSystem], flows: list[Flow],
     """A deterministic walkthrough assembled from authoritative facts.
 
     Every step carries the `facts` an LLM would be given if narration were
-    generated. Today the narration is written from those same facts by this
-    function, which is why `narration_source` says so plainly.
+    generated. They are emitted even though the current narration is written
+    here, so the contract does not change when narration becomes generated.
     """
-    by_system = {s.system: s for s in systems}
     steps = [TourStep(
         step_id="overview", title="What you built",
         narration=(f"This is {brief.project_name}. It is a {board.width_mm:.0f} by "
-                   f"{board.height_mm:.0f} millimetre, {board.layer_count}-layer board with "
-                   f"{len(board.components)} parts on it. Everything on it exists because "
+                   f"{board.height_mm:.0f} millimetre board with "
+                   f"{len(board.components)} parts on it. Everything on it is there because "
                    "something you asked for needed it."),
         focus="board",
         facts=[f"board {board.width_mm} x {board.height_mm} mm",
@@ -870,29 +1106,32 @@ def _tour(brief: Brief, systems: list[FunctionalSystem], flows: list[Flow],
                   "status_led": SystemId.IO, "programming": SystemId.IO}.get(flow.flow_id)
         steps.append(TourStep(
             step_id=f"flow-{flow.flow_id}", title=flow.label,
-            narration=flow.summary + " " + flow.stages[0].detail,
+            narration=" ".join(stage.detail for stage in flow.stages[:2]),
             focus="flow", flow_id=flow.flow_id, system=system,
             component_refs=flow.component_refs, net_names=flow.net_names,
             facts=[stage.detail for stage in flow.stages],
         ))
     if repair.happened and repair.component_ref:
+        part = phrase(repair.part) if repair.part else "a part"
+        source = phrase(repair.from_net) if repair.from_net else "the wrong supply"
+        target = phrase(repair.to_net) if repair.to_net else "the right supply"
         steps.append(TourStep(
             step_id="repair", title="The thing Ohmni caught",
-            narration=(f"Before any of this was drawn, {repair.component_ref} was wired to "
-                       f"{repair.from_net}. Its datasheet supports {repair.supported_range}. "
-                       f"Ohmni moved it to {repair.to_net} and re-ran every check."),
+            narration=(f"Before any of this was drawn, the {part} was wired to {source}. "
+                       f"Its manufacturer only specifies it up to "
+                       f"{_format_v(repair.limit_v)}. Ohmni moved it to {target} and re-ran "
+                       "every check."),
             focus="repair", component_refs=[repair.component_ref],
-            net_names=[n for n in (repair.from_net, repair.to_net) if n],
+            net_names=[n.technical for n in (repair.from_net, repair.to_net) if n],
             facts=[f"rule {repair.rule_id}", f"severity {repair.severity}",
-                   f"supported range {repair.supported_range}"],
+                   f"specified range {repair.supported_range}"],
         ))
-    compute = by_system.get(SystemId.COMPUTE)
-    if compute:
+    if systems:
         steps.append(TourStep(
-            step_id="systems", title="It is really four smaller systems",
-            narration=("A board looks like one object, but it is a few groups of parts that each "
-                       "do one job. " + "; ".join(f"{s.label}: {', '.join(s.component_refs)}"
-                                                  for s in systems) + "."),
+            step_id="systems", title=f"It is really {len(systems)} smaller systems",
+            narration=("A board looks like one object. It is really a few groups of parts that "
+                       "each do one job: "
+                       + "; ".join(f"{s.label.lower()}" for s in systems) + "."),
             focus="systems",
             component_refs=[ref for s in systems for ref in s.component_refs],
             facts=[f"{s.label} = {', '.join(s.component_refs)}" for s in systems],
@@ -900,8 +1139,8 @@ def _tour(brief: Brief, systems: list[FunctionalSystem], flows: list[Flow],
     steps.append(TourStep(
         step_id="limits", title="What has not been tested",
         narration=("Everything you just saw was checked by rules and by KiCad. None of it has "
-                   "been built. No Ohmni board has ever been fabricated and measured, so treat "
-                   "this as a carefully checked design, not a proven one."),
+                   "been built. No Ohmni board has ever been made and measured, so treat this "
+                   "as a carefully checked design, not a proven one."),
         focus="confidence",
         facts=["bench verification NOT_YET_VERIFIED", "simulation UNSUPPORTED",
                "thermal, EMC, RF UNSUPPORTED", "pricing SYNTHETIC"],
@@ -924,11 +1163,12 @@ def project_product_experience(*, design, catalog, board, routed, route_report, 
     by_ref = {g.component_ref: g for g in groupings}
     systems = build_systems(groupings)
     flows = build_flows(circuit, catalog, groupings)
-    geometry = _board_geometry(board, routed, by_ref, circuit)
+    geometry = _board_geometry(board, routed, by_ref, circuit, catalog)
     brief = build_brief(design.requirements,
                         unsettled_topics(design.semantic_attempts[-1]))
     repair = _repair(design, circuit, catalog)
     last = design.semantic_attempts[-1]
+    checks = _checks(last, design.erc, routed, drc, manufacturing)
     return ProductExperience(
         headline=brief.project_name,
         subhead=(f"{len(geometry.components)} parts on a {geometry.width_mm:.0f} x "
@@ -937,9 +1177,10 @@ def project_product_experience(*, design, catalog, board, routed, route_report, 
         stages=_stages(design, routed, drc, manufacturing, package, route_report),
         systems=systems, grouping=groupings, flows=flows,
         board=geometry,
-        schematic=_schematic_geometry(design.artifact, by_ref),
+        schematic=_schematic_geometry(design.artifact, by_ref, circuit, catalog),
         components=_components(circuit, catalog, by_ref, bom, costs, assembly),
-        checks=_checks(last, design.erc, routed, drc, manufacturing),
+        checks=checks, check_sections=_check_sections(checks),
+        bring_up=_bring_up(design, circuit, catalog, repair),
         repair=repair,
         confidence=_confidence(last, design.erc, routed, route_report, drc, manufacturing,
                                costs, assembly),

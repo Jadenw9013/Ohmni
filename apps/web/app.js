@@ -11,6 +11,20 @@ import { BoardView } from "./board-view.js";
 import { schematicSvg, transitionFrame, transitionTracks } from "./schematic-view.js";
 
 const $ = (selector) => document.querySelector(selector);
+
+/** A projected Term: lead with the readable name, keep the identifier beside it. */
+const human = (term, fallback = "") =>
+    escapeHtml(term && typeof term === "object" ? term.human : (term ?? fallback));
+/** A term as it reads mid-sentence: lowercase an ordinary leading word only. */
+const phrase = (term, fallback = "") => {
+    const text = term && typeof term === "object" ? term.human : (term ?? fallback);
+    const value = String(text);
+    return escapeHtml(value.length > 1 && value[0] !== value[0].toLowerCase()
+        && value[1] === value[1].toLowerCase() ? value[0].toLowerCase() + value.slice(1) : value);
+};
+const technical = (term) =>
+    term && typeof term === "object" && term.technical
+        ? `<span class="ident">${escapeHtml(term.technical)}</span>` : "";
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 
 const API_VERSION = 2;
@@ -249,18 +263,26 @@ function briefGroup(kind, title, note, lines, emptyText) {
 
 export function renderBrief(brief) {
     $("#brief").innerHTML = [
-        briefGroup("asked", "You asked for", "Taken straight from what you wrote.",
-                   brief.asked_for, "You did not state anything specific."),
-        briefGroup("assumed", "Ohmni assumed",
-                   "Ohmni filled these in and is telling you so. Change any of them.",
-                   brief.assumed, "Ohmni assumed nothing."),
-        briefGroup("unclear", "Needs your confirmation",
-                   "Values nobody stated, and things a netlist cannot settle.",
+        // Ordered by how much attention each deserves: the things Ohmni decided
+        // come first, because those are what a user is here to catch.
+        briefGroup("unclear", "Check these — Ohmni worked them out",
+                   "You did not say these. Ohmni read them out of your description or filled "
+                   + "them in. If any are wrong, go back and say so.",
                    brief.needs_clarification,
-                   "Nothing — everything above came from what you wrote or is flagged as an assumption."),
+                   "Nothing. Everything below came straight from your own words."),
+        briefGroup("assumed", "Ohmni assumed",
+                   "Assumptions Ohmni made on your behalf, stated so you can disagree.",
+                   brief.assumed, "Ohmni assumed nothing."),
+        briefGroup("asked", "Straight from what you wrote",
+                   "These appear in your own words.",
+                   brief.asked_for, "You did not state anything specific."),
     ].join("");
+    const decided = brief.needs_clarification.length + brief.assumed.length;
     $("#agree-note").textContent =
-        `Designing "${brief.project_name}" takes about 90 seconds and runs the real engineering pipeline.`;
+        `Ohmni worked out ${decided} thing${decided === 1 ? "" : "s"} you did not say. `
+        + `If they look right, it will spend about 90 seconds designing `
+        + `"${brief.project_name}" — choosing parts, wiring them, checking the design, `
+        + `laying out the board and packaging the files.`;
 }
 
 // ── agree → design ──────────────────────────────────────────────────────
@@ -436,7 +458,7 @@ function renderResult(report, jobId) {
     renderFlows(exp.flows);
     renderRepair(exp.repair);
     renderTour(exp.tour);
-    renderChecks(exp.checks);
+    renderChecks(exp.check_sections);
     renderConfidence(exp.confidence);
     renderParts(exp.components);
     renderFiles(report, jobId);
@@ -449,6 +471,8 @@ function renderResult(report, jobId) {
 }
 
 function setupBoard(board) {
+    const note = $("#board-thickness-note");
+    if (note) note.textContent = board.thickness_note;
     const canvas = $("#board-canvas");
     if (!canvas || typeof canvas.getContext !== "function" || !canvas.getContext("2d")) {
         $("#board-empty").hidden = false;
@@ -462,42 +486,63 @@ function setupBoard(board) {
     renderSelection(null);
 }
 
-function renderSelection(ref) {
+export function renderSelection(ref) {
     const box = $("#selection");
     const exp = state.experience;
     if (!ref) {
         box.innerHTML = `<h4>Nothing selected</h4>
-            <p>Click any part on the board to see what it is and why Ohmni put it there.</p>`;
+            <p>Pick any part — on the board, or from a system on the right — to see what it
+               is and why Ohmni put it there.</p>`;
         return;
     }
     const card = exp.components.find((c) => c.ref === ref);
     const placed = exp.board.components.find((c) => c.ref === ref);
     const grouping = exp.grouping.find((g) => g.component_ref === ref);
+    const system = exp.systems.find((s) => s.system === card?.system);
     if (!card || !placed) return;
-    box.innerHTML = `<h4>${escapeHtml(card.ref)} · ${escapeHtml(card.display_name)}</h4>
-        <div class="part-id">${escapeHtml(card.part_id)}</div>
+    const nets = placed.net_names.map((name) => {
+        const match = exp.flows.flatMap((f) => f.stages).find((s) => s.net_names.includes(name));
+        return match ? name : name;
+    });
+    box.innerHTML = `<h4>${human(card.name, card.ref)}</h4>
+        <div class="part-id">${escapeHtml(card.ref)} · ${escapeHtml(card.part_id)}</div>
         <p>${escapeHtml(card.purpose)}</p>
         <dl>
-          <dt>System</dt><dd>${escapeHtml(card.system)}</dd>
-          <dt>Package</dt><dd>${escapeHtml(card.package)}</dd>
+          <dt>Part of</dt><dd>${escapeHtml(system ? system.label : card.system)}</dd>
           ${card.value ? `<dt>Value</dt><dd>${escapeHtml(card.value)}</dd>` : ""}
-          <dt>Connects</dt><dd class="nets">${escapeHtml(placed.net_names.join(" · ") || "nothing")}</dd>
+          <dt>Difficulty</dt><dd>${escapeHtml(
+              card.assembly_reason || card.assembly_difficulty || "not assessed")}</dd>
         </dl>
-        <details class="disclose"><summary>Why is it here, and why there?</summary>
+        <details class="disclose"><summary>Technical details</summary>
+          <p class="fineprint">Reference <code>${escapeHtml(card.ref)}</code>,
+             part <code>${escapeHtml(card.part_id)}</code>,
+             package <code>${escapeHtml(card.package)}</code>.</p>
+          <p class="fineprint">Connects to: <span class="nets">${
+              escapeHtml(nets.join(" · ") || "nothing")}</span></p>
+          ${card.name?.detail ? `<p class="fineprint">${escapeHtml(card.name.detail)}</p>` : ""}
           <p class="fineprint">Grouped because: ${escapeHtml(grouping ? grouping.basis : "unknown")}.</p>
           <p class="fineprint">Placed because: ${escapeHtml(placed.placement_reason)}.</p>
-          <p class="fineprint">Assembly: ${escapeHtml(card.assembly_difficulty || "unknown")}
-             · price knowledge ${escapeHtml(card.price_knowledge)}
+          <p class="fineprint">${escapeHtml(card.assembly_basis)}</p>
+          <p class="fineprint">Price knowledge ${escapeHtml(card.price_knowledge)}
              · ${escapeHtml(card.unit_price ? `unit ${money(card.unit_price)}` : "unit price UNKNOWN")}</p>
         </details>`;
 }
 
 function renderSystems(systems) {
-    $("#systems").innerHTML = systems.map((system) => `<button type="button" class="system"
+    const byRef = new Map(state.experience.components.map((c) => [c.ref, c]));
+    $("#systems").innerHTML = systems.map((system) => `<section class="system"
         data-system="${escapeHtml(system.system)}">
-        <span class="system-name"><span class="dot ${escapeHtml(system.system)}"></span>${escapeHtml(system.label)}</span>
-        <p>${escapeHtml(system.summary)}</p>
-        <span class="refs">${escapeHtml(system.component_refs.join(" "))}</span></button>`).join("");
+        <button type="button" class="system-head" data-system-select="${escapeHtml(system.system)}">
+          <span class="system-name"><span class="dot ${escapeHtml(system.system)}"></span>${escapeHtml(system.label)}</span>
+          <p>${escapeHtml(system.summary)}</p>
+        </button>
+        <ul class="system-parts">${system.component_refs.map((ref) => {
+            const card = byRef.get(ref);
+            return `<li><button type="button" class="part-pick" data-ref="${escapeHtml(ref)}">
+              <span>${human(card?.name, ref)}</span>
+              <span class="ident">${escapeHtml(ref)}</span></button></li>`;
+        }).join("")}</ul>
+      </section>`).join("");
 }
 
 function renderFlows(flows) {
@@ -518,6 +563,7 @@ function selectFlow(flowId) {
         chip.setAttribute("aria-selected", String(on));
     });
     $$(".system").forEach((item) => item.classList.remove("on"));
+    $$("#systems .part-pick").forEach((button) => button.classList.remove("on"));
     if (!flowId) {
         $("#flow-detail").innerHTML = `<p class="flow-summary">Showing the whole board.</p>`;
         state.boardView?.setHighlight({});
@@ -559,6 +605,7 @@ function selectSystem(systemId) {
     state.systemId = systemId;
     state.flowId = null;
     $$(".system").forEach((item) => item.classList.toggle("on", item.dataset.system === systemId));
+    $$("#systems .part-pick").forEach((button) => button.classList.remove("on"));
     $$("#flow-tabs .chip").forEach((chip) => { chip.classList.remove("on"); chip.setAttribute("aria-selected", "false"); });
     $("#flow-detail").innerHTML = `<p class="flow-summary"><strong>${escapeHtml(system.label)}.</strong>
         ${escapeHtml(system.summary)}</p>
@@ -576,42 +623,43 @@ function renderRepair(repair) {
     }
     // Every number on this scale comes from the projection. A value the
     // backend did not supply is left off rather than drawn at zero.
-    const { applied_v: applied, limit_v: limit, absolute_max_v: absMax, repaired_v: repaired } = repair;
+    const { applied_v: applied, limit_v: limit, absolute_max_v: absMax,
+            repaired_v: repaired, operating_min_v: minimum } = repair;
     const span = Math.max(applied || 0, limit || 0, absMax || 0) * 1.15 || 1;
     const pct = (value) => `${Math.min(100, Math.max(0, (value / span) * 100)).toFixed(1)}%`;
     const mark = (value, kind, label) => (typeof value === "number"
         ? `<div class="scale-mark ${kind}" style="left:${pct(value)}" title="${escapeHtml(label)}"></div>`
         : "");
     panel.innerHTML = `
-      <h3>Ohmni caught a problem</h3>
-      <p class="panel-note">This happened before anything was drawn. It is the part of Ohmni that
+      <h3>${escapeHtml(repair.plain_summary || "Ohmni caught a problem")}</h3>
+      <p class="panel-note">Ohmni found this before anything was drawn. It is the part that
         makes the rest worth trusting.</p>
       <div class="voltage-scale">
         <div class="scale-bar">
-          ${typeof limit === "number" ? `<div class="scale-ok" style="width:${pct(limit)}"></div>` : ""}
-          ${mark(absMax, "absmax", "absolute maximum")}
+          ${typeof minimum === "number" && typeof limit === "number"
+            ? `<div class="scale-ok" style="left:${pct(minimum)};width:${
+                (Math.min(100, Math.max(0, ((limit - minimum) / span) * 100)).toFixed(1))}%"></div>` : ""}
+          ${mark(absMax, "absmax", "can be damaged above this")}
           ${mark(applied, "applied", "what it was connected to")}
           ${mark(repaired, "fixed", "what Ohmni moved it to")}
         </div>
         <div class="scale-legend"><span>0 V</span><span>${span.toFixed(1)} V</span></div>
         <ul class="scale-keys">
-          <li class="key ok">${escapeHtml(repair.part_id || "part")} is specified for
-            ${escapeHtml(repair.supported_range || "an unknown range")}</li>
+          <li class="key ok">The ${phrase(repair.part, "part")} works between
+            ${escapeHtml(minimum ?? "?")} V and ${escapeHtml(limit ?? "?")} V</li>
           ${typeof absMax === "number"
-            ? `<li class="key absmax">above ${escapeHtml(absMax)} V it can be permanently damaged</li>` : ""}
+            ? `<li class="key absmax">Above ${escapeHtml(absMax)} V it can be permanently damaged</li>` : ""}
           <li class="key applied">${typeof applied === "number"
-            ? `was on ${escapeHtml(repair.from_net || "")} at ${escapeHtml(applied)} V`
-            : "the applied voltage is UNKNOWN"}</li>
+            ? `It was going to get ${phrase(repair.from_net, `${applied} V`)}`
+            : "The applied voltage is UNKNOWN"}</li>
           ${typeof repaired === "number"
-            ? `<li class="key fixed">now on ${escapeHtml(repair.to_net || "")} at ${escapeHtml(repaired)} V</li>` : ""}
+            ? `<li class="key fixed">Ohmni moved it to ${phrase(repair.to_net, "another supply")}</li>` : ""}
         </ul>
       </div>
       <ol class="repair-steps">${repair.steps.map((step) => `<li class="key-${escapeHtml(step.key)}">
           <strong>${escapeHtml(step.headline)}</strong><p>${escapeHtml(step.body)}</p></li>`).join("")}</ol>
       <div class="repair-controls">
         <button type="button" id="repair-play" class="secondary">Replay what happened</button>
-        <span class="fineprint">${escapeHtml(repair.moved_pins.length)} pin(s) moved from
-          ${escapeHtml(repair.from_net || "")} to ${escapeHtml(repair.to_net || "")}</span>
       </div>
       <details class="disclose"><summary>Show the manufacturer evidence</summary>
         ${repair.evidence.map((item) => `<p class="fineprint">
@@ -620,8 +668,14 @@ function renderRepair(repair) {
           ${item.source ? ` · ${escapeHtml(item.source)}${item.page ? ` p.${escapeHtml(item.page)}` : ""}` : ""}
           <br>${escapeHtml(item.detail || "")}</p>`).join("")}</details>
       <details class="disclose"><summary>Technical details</summary>
+        <p class="fineprint">Part <code>${escapeHtml(repair.component_ref || "")}</code>
+          (<code>${escapeHtml(repair.part_id || "")}</code>) moved from
+          <code>${escapeHtml(repair.from_net?.technical || "")}</code> to
+          <code>${escapeHtml(repair.to_net?.technical || "")}</code>
+          — ${escapeHtml(repair.moved_pins.length)} pin(s).</p>
         <p class="fineprint">Rule <code>${escapeHtml(repair.rule_id || "")}</code>,
-          severity ${escapeHtml(repair.severity || "")}.</p>
+          severity ${escapeHtml(repair.severity || "")}.
+          Specified range ${escapeHtml(repair.supported_range || "unknown")}.</p>
         <p class="fineprint">${escapeHtml(repair.technical_description || "")}</p></details>`;
     $("#repair-play")?.addEventListener("click", () => playRepair(repair));
     playRepair(repair);
@@ -746,21 +800,25 @@ function showTourStep(index) {
 
 // ── checks and confidence ───────────────────────────────────────────────
 
-function renderChecks(checks) {
-    $("#checks").innerHTML = checks.map((group) => `<details class="check">
-        <summary><span>${badge(group.status)}</span>
-          <span><span class="check-label">${escapeHtml(group.label)}</span><br>
-                <span class="check-q">${escapeHtml(group.question)}</span></span></summary>
-        <div class="check-rules">${group.rules.length ? group.rules.map((rule) => `
-            <div class="rule"><code>${escapeHtml(rule.rule_id)}</code>
-              <span>${escapeHtml(rule.title)}</span>${badge(rule.outcome)}
-              ${rule.limitations.length ? `<span class="limits">A pass here does not establish:
-                 ${escapeHtml(rule.limitations.join("; "))}</span>` : ""}
-              ${rule.missing_data.length ? `<span class="limits">Missing data:
-                 ${escapeHtml(rule.missing_data.join("; "))}</span>` : ""}
-            </div>`).join("")
-        : `<p class="fineprint">No rules exist for this area. That is why it reads
-             ${escapeHtml(group.status)} rather than passing.</p>`}</div></details>`).join("");
+function renderChecks(sections) {
+    $("#checks").innerHTML = sections.map((section) => `<section class="check-family">
+        <h4>${escapeHtml(section.label)}</h4>
+        <p class="fineprint">${escapeHtml(section.summary)}</p>
+        ${section.groups.map((group) => `<details class="check">
+          <summary><span>${badge(group.status)}</span>
+            <span><span class="check-label">${escapeHtml(group.label)}</span><br>
+                  <span class="check-q">${escapeHtml(group.question)}</span></span></summary>
+          <div class="check-rules">${group.rules.length ? group.rules.map((rule) => `
+              <div class="rule"><code>${escapeHtml(rule.rule_id)}</code>
+                <span>${escapeHtml(rule.title)}</span>${badge(rule.outcome)}
+                ${rule.limitations.length ? `<span class="limits">A pass here does not establish:
+                   ${escapeHtml(rule.limitations.join("; "))}</span>` : ""}
+                ${rule.missing_data.length ? `<span class="limits">Missing data:
+                   ${escapeHtml(rule.missing_data.join("; "))}</span>` : ""}
+              </div>`).join("")
+          : `<p class="fineprint">Ohmni has no rules here, so it reports
+               ${escapeHtml(group.status)} rather than a pass.</p>`}</div></details>`).join("")}
+      </section>`).join("");
 }
 
 function renderConfidence(confidence) {
@@ -782,19 +840,23 @@ function renderConfidence(confidence) {
 
 function renderParts(components) {
     $("#parts").innerHTML = components.map((card) => `<article class="part-card">
-        <header><span class="ref">${escapeHtml(card.ref)}</span>
-          <span class="fineprint">${escapeHtml(card.part_id)}</span></header>
+        <header><span class="ref">${human(card.name, card.ref)}</span>
+          <span class="ident">${escapeHtml(card.ref)}</span></header>
         <p class="purpose">${escapeHtml(card.purpose)}</p>
         <div class="meta">
-          <span class="tag">${escapeHtml(card.package)}</span>
-          <span class="tag">x${escapeHtml(card.quantity_on_board)}</span>
-          ${card.assembly_difficulty ? `<span class="tag ${
-              /reflow|unsupported|unknown/.test(card.assembly_difficulty) ? "hard" : ""
-          }">${escapeHtml(card.assembly_difficulty.replaceAll("_", " "))}</span>` : ""}
+          ${card.assembly_reason ? `<span class="tag ${
+              /reflow|not realistic|does not recognise/.test(card.assembly_reason) ? "hard" : ""
+          }">${escapeHtml(card.assembly_reason)}</span>` : ""}
           <span class="tag">${escapeHtml(card.price_knowledge === "UNKNOWN" ? "price UNKNOWN"
               : money(card.unit_price, card.price_knowledge))}</span>
         </div>
-        ${card.assembly_detail ? `<p class="fineprint">${escapeHtml(card.assembly_detail)}</p>` : ""}
+        <details class="disclose"><summary>Technical details</summary>
+          <p class="fineprint">${escapeHtml(card.part_id)} · package
+            ${escapeHtml(card.package)}${card.value ? ` · ${escapeHtml(card.value)}` : ""}
+            · ${escapeHtml(card.line_quantity)} of this part on the board</p>
+          ${card.name?.detail ? `<p class="fineprint">${escapeHtml(card.name.detail)}</p>` : ""}
+          <p class="fineprint">${escapeHtml(card.assembly_basis)}</p>
+        </details>
       </article>`).join("");
 }
 
@@ -816,25 +878,19 @@ function renderFiles(report, jobId) {
         ${escapeHtml(economics.pricing_source)}.</p>`;
 }
 
-/** Predictions Ohmni already computed, turned into things you can measure. */
+/** Bench steps, each carrying only what Ohmni actually derived. */
 function renderBringUp(exp) {
-    const checked = exp.confidence.not_verified.find((item) => item.status === "NOT_YET_VERIFIED");
-    const steps = [
-        ["Look at it, then check for a short between the power pins before plugging anything in.", "no short"],
-        ["Power it from a current-limited supply at 100 mA.", "it should not trip"],
-        ["Measure the regulated rail.", "about 3.3 V"],
-        ["Measure the current through the indicator LED.", "about 4.7 mA"],
-        ["Scan the sensor bus for devices.", "one device answers"],
-        ["Read the sensor and sanity-check the numbers.", "plausible room conditions"],
-        ["Check which way round the programming header is.", "Ohmni refused to guess"],
-    ];
+    const bench = exp.confidence.not_verified.find((item) => item.status === "NOT_YET_VERIFIED");
     $("#bringup-panel").innerHTML = `<h3>When the board arrives</h3>
-      <p class="panel-note">${escapeHtml(checked ? checked.detail : "")} Each step below has a number
-        Ohmni already worked out, so you can compare what it predicted against what the hardware does.</p>
-      <ol class="bringup-list">${steps.map(([what, predicted]) => `<li>
-          <span>${escapeHtml(what)}</span>
-          <span class="predicted">${escapeHtml(predicted)}</span></li>`).join("")}</ol>
-      <p class="fineprint">If a measurement disagrees with the prediction, the hardware is right.</p>`;
+      <p class="panel-note">${escapeHtml(bench ? bench.detail : "")} Where Ohmni worked a value
+        out, it is shown so you can compare it against what the hardware actually does.</p>
+      <ol class="bringup-list">${exp.bring_up.map((step) => `<li>
+          <span>${escapeHtml(step.action)}
+            ${step.basis ? `<span class="fineprint">${escapeHtml(step.basis)}</span>` : ""}</span>
+          <span class="predicted ${step.prediction ? "" : "none"}">${
+            step.prediction ? escapeHtml(step.prediction) : "Ohmni has no prediction"}</span></li>`).join("")}</ol>
+      <p class="fineprint">If a measurement disagrees with a value Ohmni worked out, the hardware
+        is right. Where Ohmni has no prediction it says so rather than guessing.</p>`;
 }
 
 // ── wiring ──────────────────────────────────────────────────────────────
@@ -853,8 +909,18 @@ function attach() {
         if (button) focusFlowStage(Number(button.dataset.stage));
     });
     $("#systems")?.addEventListener("click", (event) => {
-        const item = event.target.closest("[data-system]");
-        if (item) selectSystem(item.dataset.system);
+        const part = event.target.closest("[data-ref]");
+        if (part) {
+            // A non-spatial route to any component: the board follows the list.
+            state.boardView?.select(part.dataset.ref);
+            state.boardView?.setHighlight({ refs: [part.dataset.ref] });
+            renderSelection(part.dataset.ref);
+            $$("#systems .part-pick").forEach((button) =>
+                button.classList.toggle("on", button.dataset.ref === part.dataset.ref));
+            return;
+        }
+        const head = event.target.closest("[data-system-select]");
+        if (head) selectSystem(head.dataset.systemSelect);
     });
     $("#tour-panel")?.addEventListener("click", (event) => {
         const button = event.target.closest("[data-tour]");

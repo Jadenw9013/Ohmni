@@ -121,13 +121,19 @@ def test_repository_product_scope_matches_human_approval():
         "id":"M8","title":"Ohmni End-User Experience and Demo",
         "commit":"3a6f9d3","status":"COMPLETE",
     }
-    assert state["approved_product_scope"]=="M9"
+    assert state["approved_product_scope"]=="M9-REMEDIATION-1"
     for closed in ("M8","M8-REGRESSION-1","M8-REGRESSION-2"):
         scope=next(scope for scope in tasks["scopes"] if scope["id"]==closed)
         assert scope["status"]=="COMPLETE" and scope["approved_by"]=="human" and scope["approval_evidence"]
-    current=next(scope for scope in tasks["scopes"] if scope["id"]=="M9")
+    milestone=next(scope for scope in tasks["scopes"] if scope["id"]=="M9")
+    assert milestone["status"]=="IN_PROGRESS" and milestone["approved_by"]=="human"
+    assert "MILESTONE 9" in milestone["approval_evidence"]
+    current=next(scope for scope in tasks["scopes"] if scope["id"]=="M9-REMEDIATION-1")
     assert current["status"]=="IN_PROGRESS" and current["approved_by"]=="human"
-    assert "MILESTONE 9" in current["approval_evidence"]
+    assert current["approval_evidence"]
+    # M9 stays open while its own review has blocking findings outstanding.
+    closing=next(task for task in tasks["tasks"] if task["id"]=="M9-T04")
+    assert closing["status"]!="COMPLETE" or closing["review"]["status"]=="PASSED"
     # M9 was approved on its own. Everything after it stays unapproved, and the
     # milestone index must not carry an approver for any of them.
     later={f"M{n}" for n in range(10,16)}

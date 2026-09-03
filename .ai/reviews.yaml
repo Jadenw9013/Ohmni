@@ -116,6 +116,15 @@
       "status": "PASSED",
       "commit": "784c257",
       "notes": "VERDICT PASS, zero findings at any severity. A fresh reviewer with no prior context read the committed blob of 784c257 rather than the working tree, inspected server-generation identity binding, restart and stale-job protection, client error mapping, diagnostic allowlisting, JobStore locking and terminal transitions, artifact freshness, frontend verdict neutrality, test quality and Windows skip behaviour, and SECURITY.md truthfulness. It independently ran state validation, focused demo tests, the two Windows operability tests (confirmed run, not skipped), and Ruff, then executed a live restart probe on port 8791 confirming both the store isolation and generation-mismatch defenses. An earlier reviewer attempt terminated on a provider session limit before reaching a verdict and produced no findings."
+    },
+    {
+      "id": "M9-REV-INDEPENDENT-FINAL",
+      "scope": "M9",
+      "reviewer": "independent-reviewer-m9-final",
+      "independent": true,
+      "status": "FINDINGS_OPEN",
+      "commit": "d8909b1",
+      "notes": "VERDICT FINDINGS_OPEN: 1 BLOCKER, 2 HIGH, 4 MEDIUM, 6 LOW. Every gate the reviewer ran passed (fast 471, full 481, integration 9, workflow 11, operability 2 on win32, frontend 33, verify-all 14, Ruff clean on changed files, live browser journey twice); the findings are truthfulness and acceptance-criterion failures the gates do not test for. It verified positively that the geometry lineage guards are unbypassable by driving all six raise paths, that /api/brief fails closed and leaks nothing, and that no M10 work exists."
     }
   ],
   "findings": [
@@ -417,6 +426,171 @@
       "resolution": "The repository map now identifies apps/web as the implemented dependency-light local demo frontend.",
       "verification": "The stale Next.js/not-started description is absent from the 3a6f9d3 candidate.",
       "recommended_correction": "Update the repository-map entry to describe the implemented dependency-free static demo frontend."
+    },
+    {
+      "id": "M9-F01",
+      "scope": "M9",
+      "severity": "BLOCKER",
+      "status": "FIXED",
+      "description": "The Build screen hardcoded bench predictions in the browser and claimed Ohmni computed them",
+      "affected_files": "apps/web/app.js renderBringUp",
+      "found_at_commit": "d8909b1",
+      "review": "M9-REV-INDEPENDENT-FINAL",
+      "resolution": "Bench steps are now projected as ProductExperience.bring_up. Each carries the value Ohmni actually derived - the LED current from PB-LED-001's own rule note, the rail voltage from the regulator's datasheet, the I2C address from the strap wiring - and a step Ohmni cannot predict renders 'Ohmni has no prediction' instead of a plausible number."
+    },
+    {
+      "id": "M9-F02",
+      "scope": "M9",
+      "severity": "HIGH",
+      "status": "FIXED",
+      "description": "The Agree stage claimed the user wrote values Ohmni had interpreted, then said nothing needed confirming",
+      "affected_files": "src/ohmni/application/product.py build_brief",
+      "found_at_commit": "d8909b1",
+      "review": "M9-REV-INDEPENDENT-FINAL",
+      "resolution": "BriefLine gains a derived `grounding`: a value is only reported as quoted when it can be found in the user's own words. Interpreted values move into the column the user is asked to check, which now leads the stage. Requirement provenance in the generation layer is unchanged."
+    },
+    {
+      "id": "M9-F03",
+      "scope": "M9",
+      "severity": "HIGH",
+      "status": "FIXED",
+      "description": "Board thickness was never labelled display-only anywhere in the interface",
+      "affected_files": "apps/web/app.js, index.html",
+      "found_at_commit": "d8909b1",
+      "review": "M9-REV-INDEPENDENT-FINAL",
+      "resolution": "BoardGeometry.thickness_note is projected and rendered beneath the board view, and asserted by a frontend test."
+    },
+    {
+      "id": "M9-F04",
+      "scope": "M9",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "description": "The repair voltage scale drew the specified band starting at 0 V",
+      "affected_files": "apps/web/app.js renderRepair",
+      "found_at_commit": "d8909b1",
+      "review": "M9-REV-INDEPENDENT-FINAL",
+      "resolution": "operating_min_v is projected and the green band now starts there, matching the evidence."
+    },
+    {
+      "id": "M9-F05",
+      "scope": "M9",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "description": "Grouping could assign a component to io with a demonstrably false basis",
+      "affected_files": "src/ohmni/application/systems.py",
+      "found_at_commit": "d8909b1",
+      "review": "M9-REV-INDEPENDENT-FINAL",
+      "resolution": "The local-net pool now falls back to shared rails when no local net reaches an anchor. Verified against the reviewer's own reproduction."
+    },
+    {
+      "id": "M9-F06",
+      "scope": "M9",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "description": "'Change any of them' offered an affordance that does not exist",
+      "affected_files": "apps/web/app.js renderBrief",
+      "found_at_commit": "d8909b1",
+      "review": "M9-REV-INDEPENDENT-FINAL",
+      "resolution": "Copy now says assumptions are stated so the user can disagree and go back, which is what the milestone actually built."
+    },
+    {
+      "id": "M9-F07",
+      "scope": "M9",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "description": "The development ledger was never advanced; ai_state next pointed at M9-T01",
+      "affected_files": ".ai/state.yaml, .ai/tasks.yaml, .ai/checkpoint.yaml",
+      "found_at_commit": "d8909b1",
+      "review": "M9-REV-INDEPENDENT-FINAL",
+      "resolution": "M9-T01..T04 are COMPLETE with their implementation commits, and state/checkpoint advanced."
+    },
+    {
+      "id": "M9-F08",
+      "scope": "M9",
+      "severity": "LOW",
+      "status": "FIXED",
+      "description": "Two adjacent check rows gave KiCad contradictory verdicts",
+      "affected_files": "src/ohmni/application/product.py CHECK_GROUPS",
+      "found_at_commit": "d8909b1",
+      "review": "M9-REV-INDEPENDENT-FINAL",
+      "resolution": "The empty Ohmni EDA category is renamed after Ohmni and says where the external check reports. Checks are grouped into Ohmni's own / external / not analysed families."
+    },
+    {
+      "id": "M9-F09",
+      "scope": "M9",
+      "severity": "LOW",
+      "status": "FIXED",
+      "description": "_checks failed open on subsystem-map drift",
+      "affected_files": "src/ohmni/application/product.py _checks",
+      "found_at_commit": "d8909b1",
+      "review": "M9-REV-INDEPENDENT-FINAL",
+      "resolution": "A missing subsystem now raises instead of silently omitting the row."
+    },
+    {
+      "id": "M9-F10",
+      "scope": "M9",
+      "severity": "LOW",
+      "status": "FIXED",
+      "description": "The 'can it be made' stage card reported the DRC status, not the manufacturing verdict",
+      "affected_files": "src/ohmni/application/product.py _stages",
+      "found_at_commit": "d8909b1",
+      "review": "M9-REV-INDEPENDENT-FINAL",
+      "resolution": "The card now reports manufacturing.passed; the dead `manufacturing` discard is gone."
+    },
+    {
+      "id": "M9-F11",
+      "scope": "M9",
+      "severity": "LOW",
+      "status": "FIXED",
+      "description": "The verification record was not commit-bound and misreported the Ruff count",
+      "affected_files": ".ai/verification/M9.yaml",
+      "found_at_commit": "d8909b1",
+      "review": "M9-REV-INDEPENDENT-FINAL",
+      "resolution": "Record is bound to its commit, the Ruff line reports 41 errors / 35 fixable, and the review is recorded in .ai/reviews.yaml."
+    },
+    {
+      "id": "M9-F12",
+      "scope": "M9",
+      "severity": "LOW",
+      "status": "FIXED",
+      "description": "The rewritten frontend suite dropped secret-non-leakage assertions on two failure paths",
+      "affected_files": "apps/web/tests/view-model.test.mjs",
+      "found_at_commit": "d8909b1",
+      "review": "M9-REV-INDEPENDENT-FINAL",
+      "resolution": "Polling-failure and completion-monitor cases assert again that no secret or exception text reaches the UI."
+    },
+    {
+      "id": "M9-F13",
+      "scope": "M9",
+      "severity": "LOW",
+      "status": "FIXED",
+      "description": "Part cards showed the BOM line quantity as a per-component count",
+      "affected_files": "apps/web/app.js renderParts",
+      "found_at_commit": "d8909b1",
+      "review": "M9-REV-INDEPENDENT-FINAL",
+      "resolution": "Cards state one component; the shared line quantity moves into technical details."
+    },
+    {
+      "id": "M9-F14",
+      "scope": "M9",
+      "severity": "LOW",
+      "status": "FIXED",
+      "description": "unsettled_topics was a text heuristic whose output never reached the screen",
+      "affected_files": "src/ohmni/application/product.py",
+      "found_at_commit": "d8909b1",
+      "review": "M9-REV-INDEPENDENT-FINAL",
+      "resolution": "Its output now reaches the user twice: in the brief's confirmation column and as a bench step."
+    },
+    {
+      "id": "M9-F15",
+      "scope": "M9",
+      "severity": "LOW",
+      "status": "PARTIALLY_FIXED",
+      "description": "Minor browser-side and hardcoded values on the result screen",
+      "affected_files": "apps/web/app.js, src/ohmni/application/product.py",
+      "found_at_commit": "d8909b1",
+      "review": "M9-REV-INDEPENDENT-FINAL",
+      "resolution": "The tour's hardcoded system count is derived; SYSTEM_LABELS summaries remain generic prose per SystemId. The voltage-scale axis maximum is still a presentational bound computed in the browser from projected values; it is a scale extent, not an engineering claim. Accepted."
     }
   ]
 }

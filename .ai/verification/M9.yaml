@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "id": "M9",
-  "status": "VERIFIED_PENDING_INDEPENDENT_REVIEW",
-  "commit": "PENDING_CANDIDATE_COMMIT",
+  "status": "VERIFIED_PENDING_FOCUSED_REMEDIATION_REVIEW",
+  "commit": "d8909b1",
   "baseline_commit": "3cb31ba",
   "commands": [
     {
@@ -51,8 +51,9 @@
     {
       "command": "python -m ruff check .",
       "result": "PRE_EXISTING_FINDINGS",
-      "findings": 35,
-      "detail": "src/ohmni/verifier/engine.py I001 pre-exists at HEAD and was confirmed by stashing this milestone's change; no new finding is introduced"
+      "findings": 41,
+      "detail": "41 errors / 35 fixable, identical at d8909b1^ (verified by extracting the parent tree); this milestone introduces no new lint finding",
+      "fixable": 35
     },
     {
       "command": "python -m ohmni verify-all",
@@ -92,7 +93,15 @@
   "review": {
     "id": "M9-REV-INDEPENDENT-FINAL",
     "independent": true,
-    "status": "PENDING",
-    "scope": "The M9 diff, the approved acceptance criteria, visualization truthfulness, engineering-evidence preservation, misleading visual claims, regression risk, and the no-M10 boundary"
-  }
+    "status": "FINDINGS_OPEN",
+    "commit": "d8909b1",
+    "counts": {
+      "blocker": 1,
+      "high": 2,
+      "medium": 4,
+      "low": 6
+    },
+    "detail": "All findings are recorded in .ai/reviews.yaml and remediated under M9-REMEDIATION-1."
+  },
+  "remediation_commit": "PENDING"
 }

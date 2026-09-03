@@ -133,7 +133,7 @@ def test_grouping_is_stable_across_runs(golden, catalog, placements):
 
 def test_net_driver_voltage_follows_the_driver_not_the_net_name(golden, catalog):
     """The repaired rail's voltage comes from the regulator, not from '3V3'."""
-    from ohmni.application.product import _net_driver_voltage
+    from ohmni.application.naming import net_driver_voltage as _net_driver_voltage
 
     assert _net_driver_voltage(golden, catalog, "3V3") == 3.3
     assert _net_driver_voltage(golden, catalog, "VBUS") == 5.0
@@ -144,3 +144,162 @@ def test_net_driver_voltage_follows_the_driver_not_the_net_name(golden, catalog)
             net.name = "POTATO"
     # Renaming the net does not change what drives it.
     assert _net_driver_voltage(renamed, catalog, "POTATO") == 3.3
+
+
+# ---------------------------------------------------------------------------
+# Human-facing vocabulary
+# ---------------------------------------------------------------------------
+
+def test_components_are_named_from_what_they_do_not_from_a_lookup_table(golden, catalog):
+    from ohmni.application.naming import component_term
+
+    expected = {
+        "U1": "Main computer",
+        "U2": "3.3 V voltage regulator",
+        "U3": "Sensor",
+        "J1": "USB power connector",
+        "J2": "Programming header",
+        "D1": "Indicator light",
+        "R6": "330 ohm current-limiting resistor",
+        "R4": "4.7 kohm pull-up resistor",
+        "R1": "5.1 kohm connector configuration resistor",
+        "C3": "100 nF power smoothing capacitor",
+        "C5": "100 nF timing capacitor",
+    }
+    for ref, human in expected.items():
+        assert component_term(golden, catalog, ref).human == human, ref
+
+
+def test_every_component_name_keeps_its_identifier(golden, catalog):
+    from ohmni.application.naming import component_term
+
+    for instance in golden.components:
+        term = component_term(golden, catalog, instance.ref)
+        assert instance.ref in term.technical
+        assert instance.part_id in term.technical
+        assert term.human and term.human != instance.ref
+
+
+def test_the_regulator_name_comes_from_its_datasheet_not_its_part_number(golden, catalog):
+    """Rename the part and the name follows the regulator's own output voltage."""
+    from ohmni.application.naming import component_term
+
+    assert component_term(golden, catalog, "U2").human == "3.3 V voltage regulator"
+    spec = catalog.require("AP2112K-3.3TRG1")
+    assert spec.regulator.output_voltage.nominal.value == 3.3
+
+
+def test_the_connector_is_a_power_connector_only_because_a_net_declares_a_source(golden, catalog):
+    from ohmni.application.naming import component_term
+
+    assert component_term(golden, catalog, "J1").human == "USB power connector"
+    stripped = golden.model_copy(deep=True)
+    for net in stripped.nets:
+        net.external_source = None
+    # Without a declared source the same part is just a connector: the name is
+    # derived from the circuit, not from the part's name.
+    assert component_term(stripped, catalog, "J1").human == "Connector"
+
+
+def test_nets_are_named_by_what_they_carry(golden, catalog):
+    from ohmni.application.naming import net_term
+
+    expected = {
+        "VBUS": "5 V from USB",
+        "3V3": "3.3 V power",
+        "GND": "Ground",
+        "SDA": "Sensor data line",
+        "SCL": "Sensor clock line",
+        "UART_TX": "Programming connection",
+    }
+    for name, human in expected.items():
+        term = net_term(golden, catalog, name)
+        assert term.human == human, f"{name} -> {term.human}"
+        assert term.technical == name, "the identifier is always carried"
+
+
+def test_renaming_a_net_does_not_change_the_name_it_is_given(golden, catalog):
+    """The readable name follows the driver, exactly as the verifier's voltage does."""
+    from ohmni.application.naming import net_term
+
+    renamed = golden.model_copy(deep=True)
+    for net in renamed.nets:
+        if net.name == "3V3":
+            net.name = "POTATO"
+    assert net_term(renamed, catalog, "POTATO").human == "3.3 V power"
+
+
+def test_bus_pin_roles_match_numbered_variants(golden, catalog):
+    """Parts publish TXD0/IO21; the role lives in the prefix."""
+    from ohmni.application.naming import bus_role
+
+    assert bus_role("TXD0")[1] == "serial"
+    assert bus_role("RXD0")[1] == "serial"
+    assert bus_role("SDA")[0] == "data line"
+    assert bus_role("IO21") is None
+
+
+def test_phrase_lowercases_words_but_never_units_or_acronyms():
+    from ohmni.application.naming import phrase
+
+    assert phrase("Sensor") == "sensor"
+    assert phrase("Programming header") == "programming header"
+    assert phrase("5 V from USB") == "5 V from USB"
+    assert phrase("USB power connector") == "USB power connector"
+    assert phrase("3.3 V power") == "3.3 V power"
+
+
+def test_flows_read_without_reference_designators(golden, catalog, grouping):
+    """The flow a beginner reads must not require knowing what U2 or VBUS are."""
+    from ohmni.application.systems import build_flows
+
+    identifiers = {item.ref for item in golden.components} | {net.name for net in golden.nets}
+    for flow in build_flows(golden, catalog, grouping):
+        prose = flow.summary + " " + " ".join(stage.detail for stage in flow.stages)
+        leaked = sorted(token for token in identifiers
+                        if f" {token} " in f" {prose} " or f" {token}." in prose)
+        assert not leaked, f"{flow.flow_id} leaks identifiers: {leaked}"
+
+
+def test_check_families_separate_ohmni_rules_from_external_tools():
+    """An Ohmni category with no rules must not be labelled after KiCad.
+
+    The regression: "UNSUPPORTED | KiCad's own opinion" rendered two rows above
+    "PASS | KiCad checked the board", telling a reader that KiCad both did and
+    did not check the design.
+    """
+    from ohmni.application.product import CHECK_GROUPS, CheckFamily
+    from ohmni.domain.verification import RuleCategory
+
+    eda_label, eda_question = CHECK_GROUPS[RuleCategory.EDA]
+    assert "KiCad's own opinion" != eda_label
+    assert "Ohmni" in eda_label, "an empty Ohmni category is named after Ohmni"
+    assert "KiCad" in eda_question, "and says where the external check actually reports"
+    assert set(CheckFamily) == {CheckFamily.OHMNI, CheckFamily.EXTERNAL, CheckFamily.NOT_ANALYSED}
+
+
+def test_checks_fail_loudly_when_the_verifier_subsystem_map_drifts(golden, catalog):
+    """A category the verifier stops rolling up must not vanish from the screen."""
+    import pytest as _pytest
+
+    from ohmni.application import product
+    from ohmni.fixtures.esp32_env_logger import requirements
+    from ohmni.verifier import verify
+
+    report = verify(golden, catalog, requirements())
+    report.subsystem_status.pop("electrical")
+    with _pytest.raises(ValueError, match="no status for subsystem"):
+        product._checks(report, None, _StubRouted(), _StubDrc(), _StubManufacturing())
+
+
+class _Stub:
+    """Minimal stand-ins: _checks only reads counts and statuses off these."""
+
+    def __init__(self, **values):
+        self.__dict__.update(values)
+
+
+_StubPhysical = lambda: _Stub(passed=True, findings=[])
+_StubRouted = lambda: _Stub(compilation=_Stub(physical_verification=_StubPhysical()))
+_StubDrc = lambda: _Stub(findings=[], unconnected_items=[], status=_Stub(value="pass"))
+_StubManufacturing = lambda: _Stub(passed=True, findings=[])
