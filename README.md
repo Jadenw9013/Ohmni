@@ -2,16 +2,101 @@
 
 **Build circuits. Understand why.**
 
-Ohmni is an evidence-first AI electronics engineering mentor for people
-building hardware. Instead of simply generating a finished circuit, it helps
-users move from an idea through requirements, datasheets, component selection,
-circuit design, verification, simulation, PCB design and physical prototyping,
-while explaining the engineering behind important decisions.
+Ohmni helps you understand electronics by exploring a circuit, following its
+connections, and seeing the evidence behind its design. The local prototype
+walks through a **USB-powered ESP32 + BME280 room sensor**, from its project
+brief to real KiCad schematic and PCB files.
 
-The current MVP remains focused on low-voltage hobbyist MCU and sensor boards.
-The broader product journey is:
+**Start exploring immediately in the interactive 3D circuit lab, or run the
+engineering pipeline to generate and inspect a fresh design.** No electronics
+vocabulary, API key, or live language model is required for this demo.
 
-`Idea -> Requirements -> Datasheets -> Circuit -> Verification -> Simulation -> PCB -> Prototype -> Learning`
+The current interface runs one pre-authored reference project. Custom circuit
+requests, editable designs, electrical simulation, and firmware generation are
+future work. The design files and engineering checks are real; no physical
+board has been built or bench-tested by this demo.
+
+## Run it locally
+
+You need **Python 3.12 or later** and a modern browser. Install **KiCad 10** for
+the full schematic, routing, board-checking, and fabrication pipeline. The saved
+3D reference lab can be explored without running those stages.
+
+From the repository root on Windows PowerShell:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -e ".[dev]"
+.\.venv\Scripts\python.exe scripts/demo_server.py
+```
+
+On macOS or Linux:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -e ".[dev]"
+python scripts/demo_server.py
+```
+
+Open **[http://127.0.0.1:8765](http://127.0.0.1:8765)**. Keep the server terminal
+open while using the page. There is no frontend build step, npm install,
+external font service, or runtime CDN dependency. After installing the
+dependencies and tools, the demo runs offline. Use `python -m ohmni doctor`
+from an activated virtual environment to check whether KiCad is available.
+
+If the port is already in use, stop the older server or choose another one:
+
+```powershell
+.\.venv\Scripts\python.exe scripts/demo_server.py --port 8876
+```
+
+Then open [http://127.0.0.1:8876](http://127.0.0.1:8876). Each server owns its
+jobs and snapshots its UI assets at startup, so **restart the server after
+changing frontend files** and reload the page. The interface marks older
+results as stale instead of treating another server's artifacts as current.
+
+## Your first few minutes
+
+1. Choose **Open the 3D circuit lab** on the homepage. It opens a clearly marked
+   saved reference immediately; no engineering run is needed.
+2. Try **Watch assembly**, drag the board to rotate it, and scroll to zoom.
+   **X-ray** reveals both copper layers. Use the separation slider to see the
+   groups of parts that perform different jobs.
+3. Take the **4-stop tour** through power, the processor, sensing, and external
+   connections. Select a highlighted part, use **Inspect this part** for a
+   close-up, and pick a connected net to highlight its copper.
+4. Return to the homepage and choose **Start this project**. Review the fixed
+   example brief, then select **Run the design checks**. Allow about 90 seconds;
+   duration depends on the machine and the EDA tools.
+5. Explore the completed board, the explanation of its repair, and **Checks &
+   evidence**. **Build & export** provides the schematic and PCB downloads,
+   manufacturing-file inventory, parts information, and bring-up guidance.
+
+Generated artifacts are also written to `out/demo-jobs/<job-id>/`. The current
+UI exposes the schematic and PCB downloads; it does not yet offer a complete
+manufacturing-package download.
+
+### A PCB you can explore
+
+- Native WebGL renders teal solder mask, metallic connectors, beveled component
+  bodies, solder details, surface reference labels, and lighting that changes
+  as you orbit. A canvas compatibility renderer is available when WebGL is not.
+- Assembly reveals and camera transitions make the board easier to inspect.
+  Connection pulses highlight recorded copper; they do not simulate electricity.
+- The homepage and lab use larger text, clear starting actions, responsive
+  layouts, keyboard controls, and reduced-motion support.
+- On a focused board, arrow keys rotate, `+` / `-` zoom, `[` / `]` select parts,
+  `Enter` inspects, and `Home` fits the board. In the lab, `Escape` clears a
+  selected part; a second press closes the dialog. Text buttons provide another
+  route to every lesson part.
+
+**Visualization boundary:** assembled footprint positions, pads, and copper
+come from the compiled PCB artifact. Component bodies, heights, surface
+finishes, and board thickness are illustrative, not manufacturer CAD or
+mechanical measurements. System separation is a learning view, not a placement
+change or an assembly procedure. Saved geometry never becomes a current run's
+engineering result.
 
 ## Core thesis
 
@@ -22,19 +107,19 @@ prose. It should behave like an engineering mentor and compiler:
 2. Ingest datasheets and extract structured component facts.
 3. Build a semantic circuit representation.
 4. Generate candidate designs.
-5. Verify those designs with deterministic rules and simulation.
+5. Verify those designs with deterministic rules and independent EDA checks.
 6. Optimize for hobbyist affordability, not just BOM price.
 7. Explain every important decision using traceable evidence.
 8. Export usable EDA artifacts.
 9. Guide the user through prototype testing.
 
 The Engineering Notebook records requirements, decisions, evidence,
-calculations, simulations, verification results, alternatives, uncertainty and
-lessons throughout that journey.
+calculations, verification results, uncertainty, and explanations throughout
+the implemented journey. Simulation remains planned.
 
 ### Architectural rule
 
-**LLM proposes. Datasheets ground. Deterministic rules verify. Simulation tests.
+**LLM proposes. Datasheets ground. Deterministic rules verify.
 Hardware decides. The user learns.**
 
 An LLM is never the electrical source of truth.
@@ -43,9 +128,10 @@ An LLM is never the electrical source of truth.
 
 ## Current status
 
-The **deterministic foundation is built and proven**. No language model and no
-external EDA tool is involved in anything below — that is the point. A verifier
-whose correctness depends on a model would not be a verifier.
+The core electrical verifier is deterministic and runs without a language model
+or an external EDA tool. The full demo additionally invokes **KiCad 10** for
+independent schematic/PCB checks and fabrication artifacts. Its proposal and
+repair sequence uses a scripted provider, not a live model.
 
 | | |
 |---|---|
@@ -53,7 +139,7 @@ whose correctness depends on a model would not be a verifier.
 | Verification rules | **24**, deterministic, independently testable |
 | Part catalog | 9 parts, every fact carrying provenance |
 | Fixtures | 1 golden circuit + **13** broken variants |
-| Tests | **457**, tiered into fast, KiCad integration, and slow golden demo/release checks |
+| Tests | Python core, KiCad integration, and slow golden demo/release tiers; **87 frontend module tests** |
 | Golden circuit | no blocking findings, **100% rule coverage** |
 | Broken variants | each caught by exactly the rule and severity it was built to trip |
 
@@ -64,8 +150,9 @@ Evidence-grounded structured circuit proposals and bounded semantic repair are i
 with a deterministic scripted provider. Deterministic placed PCB emission and typed
 KiCad DRC ingestion, bounded routing, manufacturability checks, identity-safe BOM
 economics, assembly-risk classification, and KiCad fabrication release are implemented.
-The deterministic end-user demo exposes the full engineering notebook, repair,
-verification ladder, artifacts, BOM economics, assembly risk, and release status.
+The redesigned workbench exposes the engineering notebook, repair,
+verification ladder, interactive PCB learning lab, artifacts, BOM economics,
+assembly risk, and release status.
 SPICE, live supplier pricing, ordering, and arbitrary-hardware UI remain future work.
 See `IMPLEMENTATION_PLAN.md` for the status table.
 
@@ -81,35 +168,41 @@ python -m ohmni manufacture-check golden
 python -m ohmni bom golden
 python -m ohmni cost golden --quantity 1
 python -m ohmni release golden
-python scripts/demo_server.py
 ```
 
-Open `http://127.0.0.1:8765` to run the deterministic environmental-logger
-journey. The server executes the real scripted proposal, semantic repair,
-KiCad ERC, placement, routing, DRC, manufacturing, BOM, and fabrication-release
-pipeline asynchronously. Core results require no live LLM, supplier API, or
-internet connection. KiCad 10 is required for the full EDA stages.
-
-Keep the server terminal open while using the page. The demo claims its local
-endpoint exclusively: if another process already owns port 8765, startup exits
-with an actionable error instead of sharing state with the older process. Stop
-that process or choose another port with `--port`, then open the matching URL.
+The last verified reference run produced **19 components, 296 copper segments,
+and 9 manufacturing files**, with zero reported KiCad DRC violations or
+unconnected items. Its **21 schematic warnings remained visible**. These are
+results for this fixture and its synthetic manufacturing profile, not a
+guarantee that fabricated hardware will work.
 
 ---
 
-## Quick start
+## Development checks
+
+With the project virtual environment activated:
 
 ```bash
-python -m venv .venv
-.venv/Scripts/activate          # Windows;  source .venv/bin/activate elsewhere
-pip install -e ".[dev]"
-
 pytest                          # fast/core tier
 pytest -m integration           # bounded real-KiCad tests
 pytest -m slow_integration      # full golden route/fabrication pipeline
 pytest -o addopts="-q --strict-markers" # every tier
 python -m ohmni verify-all # the whole fixture corpus, one line per case
 ```
+
+Node.js is only needed to run the frontend module tests; it is not required to
+serve or use the application:
+
+```bash
+node --test apps/web/tests/*.test.mjs
+```
+
+The tests cover engineering status preservation, server identity and stale
+downloads, navigation, authoritative geometry boundaries, learning feedback,
+selection, camera/assembly animation, reduced motion, and renderer cleanup.
+See [the frontend redesign notes](docs/product/FRONTEND_REDESIGN.md) and
+[the PCB lab verification record](docs/product/PCB_LEARNING_LAB.md) for the
+implementation and browser checks.
 
 ## AI-assisted development operations
 
@@ -194,8 +287,9 @@ that checked and passed — which is the failure this product exists to prevent.
 
 **A pass says what it did not establish.** The decoupling rule can prove a
 100 nF capacitor exists between VDD and ground. It cannot prove the capacitor is
-2 mm from the pin, and placement is what makes decoupling work. So it says so,
-and placement stays `NOT_VERIFIED`.
+2 mm from the pin, and placement is what makes decoupling work. That semantic
+check says so instead of claiming a placement result. The later physical-layout
+stage checks placement separately against the compiled board geometry.
 
 **Claim status is derived from evidence, not set.** Nothing — including a model —
 can declare a value "datasheet supported". It can only attach an `Evidence`, and
@@ -233,9 +327,16 @@ not exist.
 
 ## Scope
 
-Low-voltage hobbyist MCU and sensor boards: ≤ 12 V DC, ESP32 / RP2040 / selected
-STM32, I2C / SPI / UART / GPIO, USB-C 5 V sink, simple LDO and buck supplies,
-2-layer, hand-solderable.
+The current UI supports the fixed ESP32/BME280 example described above. The
+broader proposed product targets low-voltage hobbyist MCU and sensor boards:
+≤ 12 V DC, ESP32 / RP2040 / selected STM32, I2C / SPI / UART / GPIO, USB-C 5 V
+sink, simple LDO and buck supplies, and two-layer boards. This is a product
+direction, not a list of available UI templates.
+
+Live supplier prices, ordering, firmware, SPICE, manufacturer STEP models, and
+bench measurements are not provided. Prices and the manufacturing profile are
+synthetic fixtures, and unknown costs remain unknown. Package-based assembly
+guidance does not guarantee that every part is suitable for hand soldering.
 
 Explicitly out of scope, and refused rather than guessed at: mains, lithium
 charging and protection, medical, automotive safety, RF-critical layout,
@@ -248,8 +349,8 @@ support every PCB.
 
 ## Project docs
 
-For **product** questions — what Ohmni v1 is, who it is for, what it does and
-does not promise, and what must be true before a closed beta — start with
+For **product** questions — what the proposed Ohmni v1 would include, who it is
+for, and what must be true before a closed beta — start with
 [docs/product/](docs/product/README.md). It also records an evidence-backed
 audit of what is real today versus what is a fixture.
 
@@ -260,6 +361,8 @@ changed as a result.
 | Document | |
 |---|---|
 | **`docs/product/`** | **The v1 product contract, UX architecture, deployment, evaluation and roadmap. Start here for product questions.** |
+| [Frontend redesign](docs/product/FRONTEND_REDESIGN.md) | Workbench flow, readability, accessibility, and verification |
+| [Interactive PCB learning lab](docs/product/PCB_LEARNING_LAB.md) | 3D rendering, learning interactions, display limits, and tests |
 | `PRE_IMPLEMENTATION_REVIEW.md` | Findings, corrections, open risks, spikes |
 | `docs/DECISIONS.md` | Decision records for the choices that had alternatives |
 | `PRD.md` | Product requirements |

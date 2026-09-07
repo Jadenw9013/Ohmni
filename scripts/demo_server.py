@@ -41,10 +41,14 @@ JOB_STATUSES={"queued","running","complete","failed"}
 TERMINAL_JOB_STATUSES={"complete","failed"}
 JOB_FAILURE_CODES={"worker_start_failed","pipeline_failed","progress_publication_failed","job_state_invalid"}
 STATIC_ASSETS=("index.html","app.js","view-model.js","board-model.js","board-view.js",
-               "schematic-view.js","styles.css")
+               "schematic-view.js","client-contract.js","reference-preview.js",
+               "board-renderer-geometry.js","board-renderer-webgl.js","board-controls.js",
+               "learning-model.js","circuit-lessons.js","circuit-lab.js",
+               "reference-board.json","styles.css")
 STATIC_CONTENT_TYPES={
     "index.html":"text/html; charset=utf-8",
     "styles.css":"text/css; charset=utf-8",
+    "reference-board.json":"application/json; charset=utf-8",
     **{name:"text/javascript; charset=utf-8" for name in STATIC_ASSETS if name.endswith(".js")},
 }
 DIAGNOSTIC_EVENTS={

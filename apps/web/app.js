@@ -7,8 +7,14 @@
 // decided, a voltage computed, or a net membership inferred.
 
 import { artifactCurrent, badge, escapeHtml, money, releaseReadiness } from "./view-model.js";
-import { BoardView } from "./board-view.js";
+import { BoardView, createCamera } from "./board-view.js";
 import { schematicSvg, transitionFrame, transitionTracks } from "./schematic-view.js";
+import { initializeReferencePreview } from "./reference-preview.js";
+import { mountBoardControls } from "./board-controls.js";
+import { mountCircuitLessons } from "./circuit-lessons.js";
+
+import { errorKind, fetchHealth, identityBody, pollHeaders, sameIdentity, fail, serverErrorKind, parseBrief, parseStart, parseJob, pollDisposition } from "./client-contract.js";
+export { parseHealth, parseBrief, parseStart, parseJob, pollDisposition } from "./client-contract.js";
 
 const $ = (selector) => document.querySelector(selector);
 
@@ -27,43 +33,35 @@ const technical = (term) =>
         ? `<span class="ident">${escapeHtml(term.technical)}</span>` : "";
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 
-const API_VERSION = 2;
-const DEMO_FIXTURE_ID = "esp32-bme280-environmental-logger";
-const JOB_ID_PATTERN = /^[0-9a-f]{12}$/;
-const INSTANCE_PATTERN = /^[0-9a-f]{16}$/;
-const UI_VERSION_PATTERN = /^[0-9a-f]{64}$/;
-
 const MESSAGES = Object.freeze({
-    backend_unavailable: "The Ohmni demo backend is unavailable. From the repository root, run .\\.venv\\Scripts\\python.exe .\\scripts\\demo_server.py, keep that terminal open, then reload this page.",
-    api_ui_mismatch: "This page does not match the running Ohmni demo server. Stop any older demo server, restart it with .\\.venv\\Scripts\\python.exe .\\scripts\\demo_server.py, then reload this page.",
-    generation_mismatch: "The Ohmni demo server restarted or changed. Reload this page before starting again.",
-    fixture_rejected: "The running Ohmni server rejected the deterministic demo fixture. Restart the demo server from this repository, then reload this page.",
-    brief_unavailable: "The backend could not interpret the request. Check the server terminal, then retry.",
-    job_initialization_failed: "The backend could not initialize the deterministic demo job. Check the server terminal, then retry.",
-    worker_start_failed: "The demo worker failed before progress began. Check the server terminal, then retry.",
-    lost_job: "This run is no longer available from the server that created it. Reload this page and start again.",
-    pipeline_failed: "The deterministic engineering pipeline failed. Check the server terminal for the fixed diagnostic code, then retry.",
+    backend_unavailable: "The demo backend is unavailable. Your page is still here. Check that the local Ohmni server is running, then try again.",
+    api_ui_mismatch: "This page does not match the running Ohmni demo server. Reload the page to use the current version.",
+    generation_mismatch: "The Ohmni server restarted or changed. This run belongs to the earlier server. Start a new example to continue.",
+    fixture_rejected: "The server rejected the deterministic demo fixture. This page needs the matching Ohmni server; reload after restarting it.",
+    brief_unavailable: "The server could not prepare the example brief. Nothing has been built. Try again when the server is ready.",
+    job_initialization_failed: "The server could not start this example. Nothing has been built. Try again.",
+    worker_start_failed: "The demo worker failed before progress began. Check the local server setup, then start a fresh run.",
+    lost_job: "This run is no longer available from the server that created it. Start a new example to continue.",
+    pipeline_failed: "The engineering pipeline failed before a completed result was available. Start a fresh run after checking the local server setup.",
 });
-const SERVER_ERROR_KINDS = Object.freeze({
-    fixture_rejected: "fixture_rejected",
-    api_version_mismatch: "api_ui_mismatch",
-    server_instance_mismatch: "generation_mismatch",
-    ui_version_mismatch: "generation_mismatch",
-    job_start_unavailable: "job_initialization_failed",
-    brief_unavailable: "brief_unavailable",
-    job_not_found: "lost_job",
-});
-const FAILED_JOB_CODES = new Set([
-    "worker_start_failed", "pipeline_failed", "progress_publication_failed", "job_state_invalid",
-]);
 const STAGES = ["describe", "agree", "design", "review", "build"];
 
 const state = {
+    stage: "describe",
+    panel: "board",
+    brief: null,
+    runStatus: "idle",
+    connection: "unchecked",
+    retryAction: null,
+    reconnect: null,
+    pollVersion: 0,
     identity: null,
     jobId: null,
     experience: null,
     report: null,
     boardView: null,
+    boardControls: null,
+    boardLessons: null,
     flowId: null,
     systemId: null,
     selected: null,
@@ -73,160 +71,157 @@ const state = {
     completionMonitor: null,
 };
 
-class DemoClientError extends Error {
-    constructor(kind) { super(kind); this.kind = kind; }
-}
-const fail = (kind) => { throw new DemoClientError(kind); };
-const errorKind = (error, fallback) => (error instanceof DemoClientError ? error.kind : fallback);
-
-function exactObject(value, fields) {
-    return value !== null && typeof value === "object" && !Array.isArray(value)
-        && Object.keys(value).length === fields.length
-        && fields.every((field) => Object.hasOwn(value, field));
-}
-
-async function serverErrorKind(response, fallback) {
-    try {
-        const payload = await response.json();
-        if (exactObject(payload, ["error"]) && typeof payload.error === "string"
-            && Object.hasOwn(SERVER_ERROR_KINDS, payload.error)) {
-            return SERVER_ERROR_KINDS[payload.error];
-        }
-    } catch { /* a body we do not own tells us nothing */ }
-    return fallback;
-}
-
-const sameIdentity = (a, b) => a.api_version === b.api_version
-    && a.server_instance_id === b.server_instance_id && a.ui_version === b.ui_version;
-
-export function parseHealth(payload) {
-    if (!exactObject(payload, ["status", "fixture_id", "api_version", "server_instance_id", "ui_version"])) fail("api_ui_mismatch");
-    if (payload.api_version !== API_VERSION || payload.status !== "ready"
-        || typeof payload.server_instance_id !== "string" || !INSTANCE_PATTERN.test(payload.server_instance_id)
-        || typeof payload.ui_version !== "string" || !UI_VERSION_PATTERN.test(payload.ui_version)) fail("api_ui_mismatch");
-    if (payload.fixture_id !== DEMO_FIXTURE_ID) fail("fixture_rejected");
-    return {
-        api_version: payload.api_version,
-        server_instance_id: payload.server_instance_id,
-        ui_version: payload.ui_version,
-    };
-}
-
-async function fetchHealth(fetcher) {
-    let response;
-    try { response = await fetcher("/api/health", { cache: "no-store" }); }
-    catch { fail("backend_unavailable"); }
-    if (!response.ok) fail(await serverErrorKind(response, response.status >= 500 ? "backend_unavailable" : "api_ui_mismatch"));
-    let payload;
-    try { payload = await response.json(); } catch { fail("api_ui_mismatch"); }
-    return parseHealth(payload);
-}
-
-const identityBody = (identity) => JSON.stringify({
-    fixture_id: DEMO_FIXTURE_ID,
-    api_version: API_VERSION,
-    server_instance_id: identity.server_instance_id,
-    ui_version: identity.ui_version,
-});
-const pollHeaders = (identity) => ({
-    "X-Ohmni-Server-Instance": identity.server_instance_id,
-    "X-Ohmni-API-Version": String(API_VERSION),
-    "X-Ohmni-UI-Version": identity.ui_version,
-});
-
-export function parseBrief(payload, identity) {
-    if (!exactObject(payload, ["brief", "api_version", "server_instance_id", "ui_version"])) fail("api_ui_mismatch");
-    if (payload.api_version !== API_VERSION) fail("api_ui_mismatch");
-    if (payload.server_instance_id !== identity.server_instance_id
-        || payload.ui_version !== identity.ui_version) fail("generation_mismatch");
-    const brief = payload.brief;
-    if (!brief || typeof brief !== "object"
-        || !Array.isArray(brief.asked_for) || !Array.isArray(brief.assumed)
-        || !Array.isArray(brief.needs_clarification)) fail("api_ui_mismatch");
-    return brief;
-}
-
-export function parseStart(payload, identity) {
-    if (!exactObject(payload, ["job_id", "status", "api_version", "server_instance_id", "ui_version"])) fail("api_ui_mismatch");
-    if (payload.api_version !== API_VERSION) fail("api_ui_mismatch");
-    if (payload.server_instance_id !== identity.server_instance_id
-        || payload.ui_version !== identity.ui_version) fail("generation_mismatch");
-    if (typeof payload.job_id !== "string" || !JOB_ID_PATTERN.test(payload.job_id)
-        || payload.status !== "queued") fail("api_ui_mismatch");
-    return payload.job_id;
-}
-
-const validProgressEvent = (event) =>
-    exactObject(event, ["stage", "label", "status", "detail", "percent"])
-    && [event.stage, event.label, event.status, event.detail].every((v) => typeof v === "string")
-    && Number.isInteger(event.percent) && event.percent >= 0 && event.percent <= 100;
-
-export function parseJob(payload, id, identity) {
-    const fields = ["job_id", "status", "progress", "report", "error", "error_code",
-                    "api_version", "server_instance_id", "ui_version"];
-    if (!exactObject(payload, fields) || payload.api_version !== API_VERSION) fail("api_ui_mismatch");
-    if (payload.server_instance_id !== identity.server_instance_id
-        || payload.ui_version !== identity.ui_version) fail("generation_mismatch");
-    if (payload.job_id !== id || !Array.isArray(payload.progress)
-        || !payload.progress.every(validProgressEvent)) fail("api_ui_mismatch");
-    if (payload.status === "queued" || payload.status === "running") {
-        if (payload.report !== null || payload.error !== null || payload.error_code !== null) fail("api_ui_mismatch");
-    } else if (payload.status === "complete") {
-        if (payload.report === null || typeof payload.report !== "object" || Array.isArray(payload.report)
-            || payload.error !== null || payload.error_code !== null) fail("api_ui_mismatch");
-        if (!payload.report.experience || typeof payload.report.experience !== "object") fail("api_ui_mismatch");
-    } else if (payload.status === "failed") {
-        if (payload.report !== null || payload.error !== "Demo pipeline failed"
-            || typeof payload.error_code !== "string" || !FAILED_JOB_CODES.has(payload.error_code)) fail("api_ui_mismatch");
-    } else fail("api_ui_mismatch");
-    return payload;
-}
-
-export function pollDisposition(status) {
-    if (status === "queued" || status === "running") return "continue";
-    if (status === "complete" || status === "failed") return status;
-    return "invalid";
-}
-
 // ── journey ─────────────────────────────────────────────────────────────
 
-// Once a run finishes, the record of what happened, the result, and the files
-// are read together. Hiding the Design stage at that point would delete the
-// account of what Ohmni actually did, which is most of the point.
-const VISIBLE = Object.freeze({
-    describe: ["describe"],
-    agree: ["agree"],
-    design: ["design"],
-    review: ["design", "review", "build"],
-    build: ["design", "review", "build"],
+const STAGE_TITLES = Object.freeze({
+    describe: "Your next little invention",
+    agree: "Meet your project",
+    design: "Inside the workshop",
+    review: "Explore your board",
+    build: "From design to device",
 });
 
-function show(stage) {
-    const visible = VISIBLE[stage] || [stage];
-    for (const name of STAGES) $(`#${name}`).hidden = !visible.includes(name);
+const setText = (selector, value) => { const node = $(selector); if (node) node.textContent = value; };
+const setHidden = (selector, hidden) => { const node = $(selector); if (node) node.hidden = hidden; };
+
+export function canNavigate(stage) {
+    if (stage === "describe") return true;
+    if (stage === "agree") return Boolean(state.brief);
+    if (stage === "design") return state.runStatus !== "idle";
+    if (stage === "review" || stage === "build") return Boolean(state.report);
+    return false;
+}
+
+function updateShell() {
+    const status = state.runStatus === "running" || state.runStatus === "starting" ? "Building your example"
+        : state.runStatus === "paused" ? "Connection interrupted"
+        : state.runStatus === "failed" ? "Run needs attention"
+        : state.report ? "Completed example · hardware not yet tested"
+        : state.brief ? "Example brief · ready to explore" : "A guided electronics workspace";
+    setText("#workspace-title", STAGE_TITLES[state.stage]);
+    setText("#workspace-status", status);
+    setText("#project-label", state.brief?.project_name || state.experience?.headline || "Room sensor example");
+    $$('[data-navigate]').forEach((button) => {
+        const active = button.dataset.navigate === state.stage;
+        button.disabled = !canNavigate(button.dataset.navigate);
+        button.classList.toggle("active", active);
+        if (active) button.setAttribute("aria-current", "step");
+        else button.removeAttribute("aria-current");
+    });
+}
+
+function show(stage, { focus = true } = {}) {
+    if (stage !== "review") stopLearningAnimations();
+    state.stage = stage;
+    for (const name of STAGES) setHidden(`#${name}`, name !== stage);
     const index = STAGES.indexOf(stage);
     $$("#journey li").forEach((item, i) => {
         item.classList.toggle("here", i === index);
         item.classList.toggle("done", i < index);
     });
-    $(`#${stage}`).scrollIntoView({ behavior: prefersReducedMotion() ? "instant" : "smooth", block: "start" });
+    updateShell();
+    if (focus) {
+        $(`#${stage}`)?.scrollIntoView({ behavior: "instant", block: "start" });
+        const heading = $(`#${stage}-title`);
+        heading?.setAttribute("tabindex", "-1");
+        heading?.focus?.({ preventScroll: true });
+    }
+    if (stage === "review" && state.panel === "board") state.boardView?.frame();
+}
+
+export function navigate(stage) {
+    if (!canNavigate(stage)) return false;
+    show(stage);
+    return true;
+}
+
+export function selectResultPanel(panel) {
+    if (!["board", "learn", "checks"].includes(panel)) return false;
+    if (panel !== "learn") stopLearningAnimations();
+    state.panel = panel;
+    $$('[data-panel]').forEach((button) => {
+        const active = button.dataset.panel === panel;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-selected", String(active));
+        button.setAttribute("tabindex", active ? "0" : "-1");
+    });
+    $$('[data-result-panel]').forEach((section) => { section.hidden = section.dataset.resultPanel !== panel; });
+    if (panel === "board" && $("#board-canvas")?.clientWidth > 0) state.boardView?.frame();
+    if (panel === "learn" && state.transitionTracks.length) drawTransform(Number($("#transform-scrub").value) / 100);
+    return true;
 }
 const prefersReducedMotion = () =>
     typeof globalThis.matchMedia === "function"
     && globalThis.matchMedia("(prefers-reduced-motion: reduce)").matches === true;
 
-function showError(kind) {
+function clearError() {
+    setHidden("#run-error", true);
+    setHidden("#error-retry", true);
+    setHidden("#error-back", true);
+    state.retryAction = null;
+}
+
+function showError(kind, retryAction = null, retryLabel = "Try again") {
     const box = $("#run-error");
     box.hidden = false;
     box.textContent = MESSAGES[kind] || MESSAGES.backend_unavailable;
-    $("#design").hidden = false;
+    state.retryAction = retryAction;
+    setHidden("#error-retry", !retryAction);
+    setText("#error-retry", retryLabel);
+    setHidden("#error-back", false);
+    if (!state.report) show("design");
+    updateShell();
+}
+
+export async function retryLastAction() { return state.retryAction?.(); }
+
+function setConnection(status) {
+    state.connection = status;
+    setText("#connection-status", { connected: "Connected", disconnected: "Connection lost", changed: "Server changed", unchecked: "Local workspace" }[status]);
+    setHidden("#connection-banner", status === "connected" || status === "unchecked");
+    setText("#connection-message", status === "changed"
+        ? "This result is from an earlier server. You can keep exploring it. Downloads are paused; start a new example to create current files."
+        : "Connection lost. Your completed result remains available to explore. Downloads will return when the same server reconnects.");
+    $$('[data-reconnect]').forEach((button) => { button.hidden = status !== "disconnected"; });
+    $$('[data-restart]').forEach((button) => { button.hidden = status !== "changed"; });
+    $$('[data-artifact-download]').forEach((link) => {
+        const enabled = status === "connected" && link.dataset.current === "true";
+        link.setAttribute("aria-disabled", String(!enabled));
+        if (enabled) {
+            link.setAttribute("href", link.dataset.downloadUrl);
+            link.removeAttribute("tabindex");
+        } else {
+            link.removeAttribute("href");
+            link.setAttribute("tabindex", "-1");
+        }
+    });
+}
+
+export async function restartExample({ fetcher = globalThis.fetch } = {}) {
+    state.pollVersion += 1;
+    stopCompletionMonitor();
+    stopTransformTimer();
+    if (state.repairTimer) clearInterval(state.repairTimer);
+    state.repairTimer = null;
+    state.identity = null;
+    state.jobId = null;
+    state.brief = null;
+    state.report = null;
+    state.experience = null;
+    state.runStatus = "idle";
+    clearError();
+    setConnection("unchecked");
+    show("describe");
+    return openBrief({ fetcher });
 }
 
 // ── describe → agree ────────────────────────────────────────────────────
 
 export async function openBrief({ fetcher = globalThis.fetch } = {}) {
+    if (["running", "starting", "paused"].includes(state.runStatus)) { show("design"); return; }
     const button = $("#start-supported");
     button.disabled = true;
+    clearError();
     try {
         state.identity = await fetchHealth(fetcher);
         let response;
@@ -240,19 +235,22 @@ export async function openBrief({ fetcher = globalThis.fetch } = {}) {
         if (!response.ok) fail(await serverErrorKind(response, response.status >= 500 ? "backend_unavailable" : "api_ui_mismatch"));
         let payload;
         try { payload = await response.json(); } catch { fail("api_ui_mismatch"); }
-        renderBrief(parseBrief(payload, state.identity));
+        state.brief = parseBrief(payload, state.identity);
+        renderBrief(state.brief);
+        setConnection("connected");
         show("agree");
     } catch (error) {
-        showError(errorKind(error, "backend_unavailable"));
+        showError(errorKind(error, "backend_unavailable"), () => openBrief({ fetcher }));
     } finally {
         button.disabled = false;
     }
 }
 
 function briefGroup(kind, title, note, lines, emptyText) {
+    const exampleLabels = { "What you described": "Example request", "Part you named": "Requested part", "You want to solder it yourself": "Prefer hand soldering" };
     const body = lines.length
         ? lines.map((line) => `<div class="brief-line">
-             <div class="brief-label">${escapeHtml(line.label)}</div>
+             <div class="brief-label">${escapeHtml(exampleLabels[line.label] || line.label)}</div>
              <div class="brief-value">${escapeHtml(line.value)}</div>
            </div>`).join("")
         : `<p class="brief-empty">${escapeHtml(emptyText)}</p>`;
@@ -265,31 +263,37 @@ export function renderBrief(brief) {
     $("#brief").innerHTML = [
         // Ordered by how much attention each deserves: the things Ohmni decided
         // come first, because those are what a user is here to catch.
-        briefGroup("unclear", "Check these — Ohmni worked them out",
-                   "You did not say these. Ohmni read them out of your description or filled "
-                   + "them in. If any are wrong, go back and say so.",
+        briefGroup("unclear", "Design choices",
+                   "Values filled in when the example brief was prepared.",
                    brief.needs_clarification,
-                   "Nothing. Everything below came straight from your own words."),
-        briefGroup("assumed", "Ohmni assumed",
-                   "Assumptions Ohmni made on your behalf, stated so you can disagree.",
-                   brief.assumed, "Ohmni assumed nothing."),
-        briefGroup("asked", "Straight from what you wrote",
-                   "These appear in your own words.",
-                   brief.asked_for, "You did not state anything specific."),
+                   "No additional choices were recorded."),
+        briefGroup("assumed", "Assumptions to know",
+                   "These assumptions are part of this example, not facts you supplied.",
+                   brief.assumed, "No additional assumptions were recorded."),
+        briefGroup("asked", "From the example brief",
+                   "The starting requirements for the room sensor you selected.",
+                   brief.asked_for, "No explicit requirements were recorded."),
     ].join("");
     const decided = brief.needs_clarification.length + brief.assumed.length;
     $("#agree-note").textContent =
-        `Ohmni worked out ${decided} thing${decided === 1 ? "" : "s"} you did not say. `
-        + `If they look right, it will spend about 90 seconds designing `
-        + `"${brief.project_name}" — choosing parts, wiring them, checking the design, `
-        + `laying out the board and packaging the files.`;
+        `This example includes ${decided} design choice${decided === 1 ? "" : "s"} and assumption${decided === 1 ? "" : "s"}. `
+        + `Continue to run the actual checks and generate its board files. `
+        + `Allow about 90 seconds. Editing this example is not available yet.`;
 }
 
 // ── agree → design ──────────────────────────────────────────────────────
 
 export async function startRun({ fetcher = globalThis.fetch, poller = poll, pollDependencies = {} } = {}) {
+    if (state.runStatus === "running" || state.runStatus === "starting") { show("design"); return; }
+    state.pollVersion += 1;
     stopCompletionMonitor();
-    $("#run-error").hidden = true;
+    stopTransformTimer();
+    if (state.repairTimer) clearInterval(state.repairTimer);
+    state.repairTimer = null;
+    state.report = null;
+    state.experience = null;
+    state.runStatus = "starting";
+    clearError();
     $("#confirm-brief").disabled = true;
     renderPendingStages();
     show("design");
@@ -312,15 +316,19 @@ export async function startRun({ fetcher = globalThis.fetch, poller = poll, poll
         try { payload = await response.json(); } catch { fail("api_ui_mismatch"); }
         jobId = parseStart(payload, identity);
         state.jobId = jobId;
+        state.runStatus = "running";
+        setConnection("connected");
+        updateShell();
     } catch (error) {
+        state.runStatus = "failed";
         $("#confirm-brief").disabled = false;
-        return showError(errorKind(error, "backend_unavailable"));
+        return showError(errorKind(error, "backend_unavailable"), () => restartExample({ fetcher }), "Start a new example");
     }
     return poller(jobId, state.identity, { fetcher, ...pollDependencies });
 }
 
 const PENDING_STAGES = [
-    "Understanding what you asked for", "Choosing parts and wiring them up",
+    "Loading the example brief", "Preparing its parts and connections",
     "Checking the electrical design", "Fixing what it found",
     "Drawing the schematic", "Arranging parts on the board",
     "Drawing the copper", "Checking it can be made",
@@ -349,8 +357,11 @@ function renderProgress(events) {
     const detail = $("#progress-detail");
     if (detail) detail.textContent = last ? last.detail : "";
     const items = $$("#stage-list li");
-    const reached = Math.min(items.length, events.length);
-    items.forEach((item, i) => item.classList.toggle("pending", i >= reached));
+    const current = { requirements: 0, repair: 3, placement: 5, routing: 6, drc: 7, manufacturing: 7, release: 7 }[last?.stage] ?? 0;
+    items.forEach((item, i) => {
+        item.classList.toggle("pending", i > current);
+        item.classList.toggle("running", i === current);
+    });
 }
 
 /**
@@ -371,6 +382,9 @@ function renderSettledStages(stages) {
 }
 
 export async function poll(id, identity, { fetcher = globalThis.fetch, schedule = globalThis.setTimeout, monitorer = beginCompletionMonitor } = {}) {
+    const version = state.pollVersion;
+    state.jobId = id;
+    state.identity = identity;
     try {
         let response;
         try { response = await fetcher(`/api/jobs/${id}`, { cache: "no-store", headers: pollHeaders(identity) }); }
@@ -381,30 +395,44 @@ export async function poll(id, identity, { fetcher = globalThis.fetch, schedule 
         }
         let payload;
         try { payload = await response.json(); } catch { fail("api_ui_mismatch"); }
+        if (version !== state.pollVersion) return;
         const job = parseJob(payload, id, identity);
         const disposition = pollDisposition(job.status);
         if (disposition === "complete") {
+            clearError();
+            state.runStatus = "complete";
             $("#confirm-brief").disabled = false;
             renderResult(job.report, id);
             monitorer(identity, { fetcher });
             return;
         }
         if (disposition === "failed") {
+            state.runStatus = "failed";
             $("#confirm-brief").disabled = false;
-            return showError(job.error_code === "worker_start_failed" ? "worker_start_failed" : "pipeline_failed");
+            return showError(job.error_code === "worker_start_failed" ? "worker_start_failed" : "pipeline_failed",
+                () => restartExample({ fetcher }), "Start a new example");
         }
+        clearError();
+        state.runStatus = "running";
+        updateShell();
         renderProgress(job.progress);
         const dependencies = { fetcher, schedule, monitorer };
-        schedule(() => void poll(id, identity, dependencies), 900);
+        schedule(() => { if (version === state.pollVersion) void poll(id, identity, dependencies); }, 900);
     } catch (error) {
+        if (version !== state.pollVersion) return;
+        const kind = errorKind(error, "backend_unavailable");
+        state.runStatus = kind === "backend_unavailable" ? "paused" : "failed";
         $("#confirm-brief").disabled = false;
-        return showError(errorKind(error, "backend_unavailable"));
+        return showError(kind, kind === "backend_unavailable"
+            ? () => poll(id, identity, { fetcher, schedule, monitorer })
+            : () => restartExample({ fetcher }), kind === "backend_unavailable" ? "Reconnect to this run" : "Start a new example");
     }
 }
 
 export function stopCompletionMonitor() {
     const cleanup = state.completionMonitor;
     state.completionMonitor = null;
+    state.reconnect = null;
     if (cleanup) cleanup();
 }
 
@@ -412,21 +440,17 @@ export function beginCompletionMonitor(identity, { fetcher = globalThis.fetch, s
     stopCompletionMonitor();
     let stopped = false;
     let busy = false;
-    const invalidate = (kind) => {
-        if (stopped) return;
-        $("#review").hidden = true;
-        $("#build").hidden = true;
-        showError(kind);
-    };
     const check = async () => {
         if (stopped || busy) return true;
         busy = true;
         try {
             const current = await fetchHealth(fetcher);
-            if (!sameIdentity(identity, current)) { invalidate("generation_mismatch"); return false; }
+            if (stopped) return false;
+            if (!sameIdentity(identity, current)) { setConnection("changed"); return false; }
+            setConnection("connected");
             return true;
         } catch (error) {
-            invalidate(errorKind(error, "backend_unavailable"));
+            if (!stopped) setConnection(errorKind(error, "backend_unavailable") === "backend_unavailable" ? "disconnected" : "changed");
             return false;
         } finally { busy = false; }
     };
@@ -442,6 +466,7 @@ export function beginCompletionMonitor(identity, { fetcher = globalThis.fetch, s
         windowTarget?.removeEventListener?.("focus", focus);
         documentTarget?.removeEventListener?.("visibilitychange", visible);
     };
+    state.reconnect = check;
     return check;
 }
 
@@ -451,6 +476,8 @@ function renderResult(report, jobId) {
     state.report = report;
     state.experience = report.experience;
     const exp = state.experience;
+    state.brief = exp.brief;
+    state.runStatus = "complete";
 
     renderSettledStages(exp.stages);
     $("#review-title").textContent = exp.headline;
@@ -472,33 +499,77 @@ function renderResult(report, jobId) {
     setupTransform(exp);
     $("#schematic-holder").innerHTML = schematicSvg(exp.schematic, {});
 
+    selectResultPanel("board");
     show("review");
     setupBoard(exp.board);
+    setConnection("connected");
 }
 
 function setupBoard(board) {
     const note = $("#board-thickness-note");
-    if (note) note.textContent = board.thickness_note;
+    if (note) note.textContent = `${board.thickness_note} Component bodies, heights, and materials are illustrative. Light pulses highlight connections; they do not simulate electricity.`;
     const canvas = $("#board-canvas");
-    if (!canvas || typeof canvas.getContext !== "function" || !canvas.getContext("2d")) {
+    if (!canvas || typeof canvas.getContext !== "function") {
         $("#board-empty").hidden = false;
         return;
     }
-    state.boardView = new BoardView(canvas, {
-        onSelect: (ref) => { state.selected = ref; renderSelection(ref); },
-    });
+    if (!state.boardView) {
+        state.boardView = new BoardView(canvas, {
+            onSelect: (ref) => renderSelection(ref),
+            onHover: (ref) => {
+                const part = state.experience?.components.find((item) => item.ref === ref);
+                setText("#board-hover-label", part ? `${part.name?.human || ref} · ${ref}` : "");
+                setHidden("#board-hover-label", !part);
+            },
+        });
+        globalThis.addEventListener?.("resize", () => {
+            if (canvas.clientWidth > 0) state.boardView?.frame();
+            if (state.stage === "review" && state.panel === "learn") drawTransform(Number($("#transform-scrub").value) / 100);
+        });
+    }
+    if (state.boardView.available === false) { $("#board-empty").hidden = false; return; }
+    $("#board-empty").hidden = true;
+    state.flowId = null;
+    state.systemId = null;
     state.boardView.setBoard(board);
-    globalThis.addEventListener?.("resize", () => state.boardView?.render());
-    renderSelection(null);
+    resetBoardView();
+    state.boardControls?.dispose();
+    state.boardLessons?.dispose();
+    state.boardControls = mountBoardControls($("#board-visual-controls"), state.boardView, { stage: canvas.closest?.(".board-stage"), fullscreen: true, explodeControl: $("#explode") });
+    state.boardLessons = mountCircuitLessons($("#board-lessons"), state.experience, state.boardView, { onViewChange: () => state.boardControls?.sync() });
+}
+
+function resetBoardView() {
+    if (!state.boardView) return;
+    state.boardView.camera = createCamera();
+    state.boardView.setOptions({ explode: 0, showCopper: true, showComponents: true, showBack: false });
+    state.boardView.setOptions({ autoRotate: false, animateFlow: false, xray: false, showLabels: true });
+    state.boardView.select(null);
+    selectFlow(null);
+    state.boardView.frame();
+    $("#explode").value = "0";
+    $$("[data-view]").forEach((button) => {
+        const active = button.dataset.view === "front";
+        button.classList.toggle("on", active);
+        if (button.dataset.view !== "reset") button.setAttribute("aria-pressed", String(active));
+    });
+    $$("[data-toggle]").forEach((button) => { button.classList.add("on"); button.setAttribute("aria-pressed", "true"); });
+    state.boardControls?.sync();
 }
 
 export function renderSelection(ref) {
     const box = $("#selection");
     const exp = state.experience;
+    state.selected = ref;
+    state.boardLessons?.select(ref);
+    $$("#schematic-holder .sym").forEach((symbol) => {
+        const selected = symbol.dataset.ref === ref;
+        symbol.classList.toggle("sel", selected);
+        symbol.setAttribute("aria-pressed", String(selected));
+    });
     if (!ref) {
-        box.innerHTML = `<h4>Nothing selected</h4>
-            <p>Pick any part — on the board, or from a system on the right — to see what it
-               is and why Ohmni put it there.</p>`;
+        box.innerHTML = `<p class="eyebrow">A board, explained</p><h4>Every part has a purpose.</h4>
+            <p>Select a part on the board or in the list to learn what it does.</p>`;
         return;
     }
     const card = exp.components.find((c) => c.ref === ref);
@@ -538,11 +609,11 @@ function renderSystems(systems) {
     const byRef = new Map(state.experience.components.map((c) => [c.ref, c]));
     $("#systems").innerHTML = systems.map((system) => `<section class="system"
         data-system="${escapeHtml(system.system)}">
-        <button type="button" class="system-head" data-system-select="${escapeHtml(system.system)}">
+        <button type="button" class="system-head" data-system-select="${escapeHtml(system.system)}" aria-expanded="false" aria-controls="system-parts-${escapeHtml(system.system)}">
           <span class="system-name"><span class="dot ${escapeHtml(system.system)}"></span>${escapeHtml(system.label)}</span>
           <p>${escapeHtml(system.summary)}</p>
         </button>
-        <ul class="system-parts">${system.component_refs.map((ref) => {
+        <ul class="system-parts" id="system-parts-${escapeHtml(system.system)}" hidden>${system.component_refs.map((ref) => {
             const card = byRef.get(ref);
             return `<li><button type="button" class="part-pick" data-ref="${escapeHtml(ref)}">
               <span>${human(card?.name, ref)}</span>
@@ -553,22 +624,25 @@ function renderSystems(systems) {
 
 function renderFlows(flows) {
     $("#flow-tabs").innerHTML = flows.map((flow) =>
-        `<button type="button" class="chip" role="tab" data-flow="${escapeHtml(flow.flow_id)}"
-          aria-selected="false">${escapeHtml(flow.label)}</button>`).join("")
-        + `<button type="button" class="chip" data-flow="" aria-selected="false">Show everything</button>`;
+        `<button type="button" class="chip" data-flow="${escapeHtml(flow.flow_id)}"
+          aria-pressed="false">${escapeHtml(flow.label)}</button>`).join("")
+        + `<button type="button" class="chip" data-flow="" aria-pressed="false">Show everything</button>`;
     $("#flow-detail").innerHTML = `<p class="flow-summary">Pick one above.</p>`;
 }
 
 function selectFlow(flowId) {
     const exp = state.experience;
+    state.boardLessons?.pause();
     state.flowId = flowId || null;
     state.systemId = null;
     $$("#flow-tabs .chip").forEach((chip) => {
         const on = chip.dataset.flow === (flowId || "");
         chip.classList.toggle("on", on);
-        chip.setAttribute("aria-selected", String(on));
+        chip.setAttribute("aria-pressed", String(on));
     });
     $$(".system").forEach((item) => item.classList.remove("on"));
+    $$(".system-head").forEach((button) => button.setAttribute("aria-expanded", "false"));
+    $$(".system-parts").forEach((list) => { list.hidden = true; });
     $$("#systems .part-pick").forEach((button) => button.classList.remove("on"));
     if (!flowId) {
         $("#flow-detail").innerHTML = `<p class="flow-summary">Showing the whole board.</p>`;
@@ -606,13 +680,17 @@ export function focusFlowStage(index) {
 
 function selectSystem(systemId) {
     const exp = state.experience;
+    state.boardLessons?.pause();
     const system = exp.systems.find((s) => s.system === systemId);
     if (!system) return;
+    if (state.systemId === systemId) { selectFlow(null); return; }
     state.systemId = systemId;
     state.flowId = null;
     $$(".system").forEach((item) => item.classList.toggle("on", item.dataset.system === systemId));
+    $$(".system-head").forEach((button) => button.setAttribute("aria-expanded", String(button.dataset.systemSelect === systemId)));
+    $$(".system-parts").forEach((list) => { list.hidden = list.id !== `system-parts-${systemId}`; });
     $$("#systems .part-pick").forEach((button) => button.classList.remove("on"));
-    $$("#flow-tabs .chip").forEach((chip) => { chip.classList.remove("on"); chip.setAttribute("aria-selected", "false"); });
+    $$("#flow-tabs .chip").forEach((chip) => { chip.classList.remove("on"); chip.setAttribute("aria-pressed", "false"); });
     $("#flow-detail").innerHTML = `<p class="flow-summary"><strong>${escapeHtml(system.label)}.</strong>
         ${escapeHtml(system.summary)}</p>
         <p class="nets">${escapeHtml(system.component_refs.join(" · "))}</p>`;
@@ -684,7 +762,14 @@ function renderRepair(repair) {
           Specified range ${escapeHtml(repair.supported_range || "unknown")}.</p>
         <p class="fineprint">${escapeHtml(repair.technical_description || "")}</p></details>`;
     $("#repair-play")?.addEventListener("click", () => playRepair(repair));
-    playRepair(repair);
+    $$("#repair-panel .repair-steps li").forEach((item) => item.classList.add("shown"));
+}
+
+function stopLearningAnimations() {
+    stopTransformTimer();
+    if (state.repairTimer) clearInterval(state.repairTimer);
+    state.repairTimer = null;
+    $$("#repair-panel .repair-steps li").forEach((item) => item.classList.add("shown"));
 }
 
 function playRepair(repair) {
@@ -720,11 +805,11 @@ function setupTransform(exp) {
            <span class="sym">${escapeHtml(track.ref)}</span>
            <span class="fp">${escapeHtml(track.ref)}</span></div>`).join("");
     drawTransform(0);
-    $("#transform-scrub").addEventListener("input", (event) => {
+    $("#transform-scrub").oninput = (event) => {
         stopTransformTimer();
         drawTransform(Number(event.target.value) / 100);
-    });
-    $("#transform-play").addEventListener("click", () => playTransform());
+    };
+    $("#transform-play").onclick = () => playTransform();
 }
 
 function stopTransformTimer() {
@@ -739,8 +824,8 @@ function drawTransform(t) {
     for (const frame of frames) {
         const element = stage.querySelector(`[data-ref="${CSS.escape(frame.ref)}"]`);
         if (!element) continue;
-        element.style.left = `${8 + frame.x * (width - 16)}px`;
-        element.style.top = `${14 + frame.y * (height - 28)}px`;
+        element.style.left = `${36 + frame.x * (width - 72)}px`;
+        element.style.top = `${36 + frame.y * (height - 72)}px`;
         const scale = Math.max(14, Math.min(64, frame.w * 2.6));
         element.style.width = `${scale}px`;
         element.style.height = `${Math.max(12, Math.min(64, frame.h * 2.6))}px`;
@@ -869,16 +954,24 @@ function renderParts(components) {
 
 function renderFiles(report, jobId) {
     const economics = report.economics;
-    $("#files-panel").innerHTML = `<h3>Files</h3>
-      <p class="panel-note">These open in KiCad 10 and are what a fabricator needs. Ohmni checked
-        them; nobody has built them.</p>
+    const download = (name, label, section) => {
+        const url = `/api/artifacts/${escapeHtml(jobId)}/${name}`;
+        const current = section?.current ?? report.release.current;
+        return `<a href="${url}" data-artifact-download data-download-url="${url}" data-current="${current === true}">${label}<span aria-hidden="true"> ↗</span></a>`;
+    };
+    $("#files-panel").innerHTML = `<p class="eyebrow">Take your design with you</p><h3>Your board files</h3>
+      <p class="panel-note">Open these in KiCad 10 to inspect the design and prepare a manufacturing
+        handoff. The checks ran on these files; no physical board has been tested.</p>
       <div class="download-row">
-        <a href="/api/artifacts/${escapeHtml(jobId)}/golden.kicad_sch">Schematic (.kicad_sch)</a>
-        <a href="/api/artifacts/${escapeHtml(jobId)}/golden.kicad_pcb">Board (.kicad_pcb)</a>
+        ${download("golden.kicad_sch", "Download schematic", report.schematic)}
+        ${download("golden.kicad_pcb", "Download board", report.pcb)}
       </div>
+      <details class="disclose"><summary>Generated manufacturing inventory · ${report.release.files.length} files</summary>
+      <p class="fineprint">These were generated on the local server. This prototype does not yet offer
+        a complete manufacturing-package download.</p>
       <ul class="file-list">${report.release.files.map((file) => `<li>
           <span>${escapeHtml(file.relative_path)} <span class="fineprint">${escapeHtml(file.kind)}</span></span>
-          <span class="hash">${escapeHtml(String(file.sha256).slice(0, 16))}…</span></li>`).join("")}</ul>
+          <span class="hash">${escapeHtml(String(file.sha256).slice(0, 16))}…</span></li>`).join("")}</ul></details>
       <p class="fineprint">Prototype economics: ${escapeHtml(money(economics.known_consumption_cost))}
         of known parts on one board, ${escapeHtml(money(economics.known_purchase_requirement))} to actually
         buy them. Fabrication ${escapeHtml(economics.fabrication)}, shipping ${escapeHtml(economics.shipping)}.
@@ -903,6 +996,45 @@ function renderBringUp(exp) {
 // ── wiring ──────────────────────────────────────────────────────────────
 
 function attach() {
+    initializeReferencePreview();
+    $$('[data-navigate]').forEach((button) => button.addEventListener("click", () => navigate(button.dataset.navigate)));
+    $$('[data-panel]').forEach((button) => {
+        button.addEventListener("click", () => selectResultPanel(button.dataset.panel));
+        button.addEventListener("keydown", (event) => {
+            const tabs = $$('[data-panel]');
+            const index = tabs.indexOf(button);
+            const target = event.key === "ArrowRight" ? (index + 1) % tabs.length
+                : event.key === "ArrowLeft" ? (index + tabs.length - 1) % tabs.length
+                : event.key === "Home" ? 0 : event.key === "End" ? tabs.length - 1 : -1;
+            if (target < 0) return;
+            event.preventDefault();
+            selectResultPanel(tabs[target].dataset.panel);
+            tabs[target].focus();
+        });
+    });
+    $("#error-retry")?.addEventListener("click", () => void retryLastAction());
+    $("#error-back")?.addEventListener("click", () => { clearError(); navigate("describe"); });
+    $$('[data-reconnect]').forEach((button) => button.addEventListener("click", () => void state.reconnect?.()));
+    $$('[data-restart]').forEach((button) => button.addEventListener("click", () => void restartExample()));
+    $("#files-panel")?.addEventListener("click", (event) => {
+        const link = event.target.closest?.('[data-artifact-download]');
+        if (link?.getAttribute("aria-disabled") === "true") event.preventDefault();
+    });
+    const activateSchematic = (event) => {
+        if (event.type === "keydown" && !["Enter", " "].includes(event.key)) return;
+        const symbol = event.target.closest?.('.sym[data-ref]');
+        if (!symbol || !state.experience?.components.some((card) => card.ref === symbol.dataset.ref)) return;
+        event.preventDefault();
+        selectResultPanel("board");
+        navigate("review");
+        state.boardView?.select(symbol.dataset.ref);
+        state.boardView?.setHighlight({ refs: [symbol.dataset.ref] });
+        renderSelection(symbol.dataset.ref);
+        $("#selection")?.setAttribute("tabindex", "-1");
+        $("#selection")?.focus?.({ preventScroll: true });
+    };
+    $("#schematic-holder")?.addEventListener("click", activateSchematic);
+    $("#schematic-holder")?.addEventListener("keydown", activateSchematic);
     $("#start-supported")?.addEventListener("click", () => void openBrief());
     $("#confirm-brief")?.addEventListener("click", () => void startRun());
     $("#back-to-describe")?.addEventListener("click", () => show("describe"));
@@ -935,19 +1067,27 @@ function attach() {
     });
     $$("[data-view]").forEach((button) => button.addEventListener("click", () => {
         const view = button.dataset.view;
-        $$("[data-view]").forEach((other) => other.classList.toggle("on", other === button && view !== "reset"));
-        if (view === "reset") { state.boardView?.setOptions({}); state.boardView?.frame(); return; }
-        state.boardView?.setOptions({ showBack: view === "back" });
+        if (view === "reset") { resetBoardView(); return; }
+        $$("[data-view]").forEach((other) => {
+            other.classList.toggle("on", other === button);
+            if (other.dataset.view !== "reset") other.setAttribute("aria-pressed", String(other === button));
+        });
+        state.boardView?.setCameraPreset(view);
     }));
     $$("[data-toggle]").forEach((button) => button.addEventListener("click", () => {
         const key = button.dataset.toggle;
-        const on = !button.classList.contains("on");
+        const on = !state.boardView?.options[key];
         button.classList.toggle("on", on);
+        button.setAttribute("aria-pressed", String(on));
         state.boardView?.setOptions({ [key]: on });
     }));
     $("#explode")?.addEventListener("input", (event) => {
         state.boardView?.setOptions({ explode: Number(event.target.value) / 100 });
     });
+    setConnection("unchecked");
+    clearError();
+    selectResultPanel("board");
+    show("describe", { focus: false });
 }
 
 if (typeof document !== "undefined" && document.getElementById("start-supported")) attach();

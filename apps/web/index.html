@@ -3,194 +3,148 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Ohmni turns an idea for something electronic into a real circuit board, checks its own work, and explains what it did.">
-  <title>Ohmni · Build circuits. Understand why.</title>
+  <meta name="description" content="Explore how a room sensor becomes a circuit board. Ohmni shows the parts, checks the connections, and explains its work.">
+  <meta name="theme-color" content="#2159e8">
+  <title>Ohmni — Your electronics workbench</title>
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <header class="masthead">
-    <a class="brand" href="#top" aria-label="Ohmni home"><span class="mark">Ω</span><span>OHMNI</span></a>
-    <nav class="journey" aria-label="Where you are">
-      <ol id="journey">
-        <li data-stage="describe" class="here"><span>1</span>Describe</li>
-        <li data-stage="agree"><span>2</span>Agree</li>
-        <li data-stage="design"><span>3</span>Design</li>
-        <li data-stage="review"><span>4</span>Review</li>
-        <li data-stage="build"><span>5</span>Build</li>
-      </ol>
-    </nav>
-    <p class="tagline">Build circuits. Understand why.</p>
-  </header>
-
-  <main id="top">
-    <!-- 1 ─ DESCRIBE ------------------------------------------------------ -->
-    <section id="describe" class="stage" aria-labelledby="describe-title">
-      <div class="describe-grid">
-        <div>
-          <p class="eyebrow">Describe something you want to build</p>
-          <h1 id="describe-title">What do you want to build?</h1>
-          <p class="lede">
-            Tell Ohmni what your device should do. It works out which parts you need,
-            wires them together, <strong>checks its own work against the manufacturers'
-            datasheets</strong>, fixes what it finds, and hands you files a factory can
-            build from — explaining each decision as it goes.
-          </p>
-          <ul class="promise">
-            <li><b>You get</b> a schematic, a circuit board, a parts list, and manufacturing files.</li>
-            <li><b>You do not need</b> to know any electronics vocabulary. Ohmni explains as it goes.</li>
-            <li><b>Different from a chatbot:</b> a chatbot describes a circuit. Ohmni builds one,
-              then runs 24 deterministic checks plus KiCad's own independent checker over it,
-              and shows you every result — including what it could not check.</li>
-          </ul>
-        </div>
-        <div class="picker">
-          <h2>Pick a project</h2>
-          <p class="picker-note">This prototype builds one real project end to end. The others
-            show the direction, and are honestly marked as not built yet.</p>
-          <ul class="examples" id="examples">
-            <li>
-              <button type="button" id="start-supported" class="example ready" data-fixture="esp32-bme280-environmental-logger">
-                <span class="example-status">Available now</span>
-                <strong>A room temperature and humidity monitor</strong>
-                <span>USB-powered, senses the air around it, and shows a status light.</span>
-              </button>
-            </li>
-            <li><div class="example soon"><span class="example-status">Not built yet</span><strong>A desk occupancy sensor</strong><span>Needs a motion sensor Ohmni does not have evidence for.</span></div></li>
-            <li><div class="example soon"><span class="example-status">Not built yet</span><strong>A USB-powered LED controller</strong><span>Needs the design to be generated rather than replayed.</span></div></li>
-            <li><div class="example soon"><span class="example-status">Not built yet</span><strong>A battery-powered Wi-Fi sensor</strong><span>Battery charging is deliberately out of scope: it is a safety-relevant design.</span></div></li>
-          </ul>
-        </div>
+  <a class="skip-link" href="#main-content">Skip to workbench</a>
+  <div class="app-layout">
+    <aside class="sidebar" aria-label="Project navigation">
+      <a class="brand" href="#top" aria-label="Ohmni home">
+        <span class="brand-mark" aria-hidden="true">Ω</span><span>ohmni<span class="brand-period">.</span></span>
+      </a>
+      <div class="sidebar-project">
+        <span class="project-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="4"/><path d="M9 9h6v6H9zM9 2v3m6-3v3M9 19v3m6-3v3M2 9h3m-3 6h3m14-6h3m-3 6h3"/></svg></span>
+        <div><strong id="project-label">Your first circuit</strong><span>A guided project</span></div>
       </div>
-    </section>
-
-    <!-- 2 ─ AGREE --------------------------------------------------------- -->
-    <section id="agree" class="stage" hidden aria-labelledby="agree-title">
-      <div class="section-head">
-        <p class="eyebrow">Step 2 of 5 · nothing has been built yet</p>
-        <h2 id="agree-title">Here is what Ohmni understood</h2>
-        <p class="lede">Check this before it starts. Getting it right here is far cheaper
-          than getting a board you did not want.</p>
+      <nav class="journey" aria-label="Where you are">
+        <p class="nav-label">Your workbench</p>
+        <ol id="journey">
+          <li data-stage="describe" class="here"><button type="button" data-navigate="describe" aria-label="Start a project" aria-current="step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10H3zM9 20v-7h6v7"/></svg><span>Start a project</span><span class="nav-check" aria-hidden="true">✓</span></button></li>
+          <li data-stage="agree"><button type="button" data-navigate="agree" aria-label="Project brief" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2h6v2M9 9h6m-6 4h6m-6 4h3"/></svg><span>Project brief</span><span class="nav-check" aria-hidden="true">✓</span></button></li>
+          <li data-stage="design"><button type="button" data-navigate="design" aria-label="Design activity" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg><span>Design activity</span><span class="nav-check" aria-hidden="true">✓</span></button></li>
+          <li data-stage="review"><button type="button" data-navigate="review" aria-label="Explore the board" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5zM3 12l9 5 9-5M3 16l9 5 9-5"/></svg><span>Explore the board</span><span class="nav-check" aria-hidden="true">✓</span></button></li>
+          <li data-stage="build"><button type="button" data-navigate="build" aria-label="Build &amp; export" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 15v6h16v-6"/></svg><span>Build &amp; export</span><span class="nav-check" aria-hidden="true">✓</span></button></li>
+        </ol>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="mentor-note"><span class="mentor-symbol" aria-hidden="true">✳</span><p>You don't have to know it all.<br><strong>Just bring your curiosity.</strong></p></div>
+        <details class="sidebar-help"><summary><span aria-hidden="true">?</span> First time here?</summary><p>A schematic is a map of connections. A circuit board makes those connections physical. Ohmni helps you explore both, one part at a time.</p></details>
+        <div class="local-status"><span class="status-dot" aria-hidden="true"></span><span id="connection-status">Local workbench</span><span class="version">Prototype</span></div>
       </div>
-      <div class="agree-layout">
-        <div id="brief" class="brief"></div>
-        <aside class="agree-decide">
-          <h3>Did Ohmni understand you?</h3>
-          <p id="agree-note" class="fineprint"></p>
-          <button type="button" id="confirm-brief" class="primary">Yes — design it <span aria-hidden="true">→</span></button>
-          <button type="button" id="back-to-describe" class="ghost">Back</button>
-          <p class="fineprint">Nothing has been built yet. This is the cheapest moment to catch a
-            misunderstanding.</p>
-        </aside>
-      </div>
-    </section>
+    </aside>
 
-    <!-- 3 ─ DESIGN -------------------------------------------------------- -->
-    <section id="design" class="stage" hidden aria-labelledby="design-title">
-      <div class="section-head">
-        <p class="eyebrow">Step 3 of 5</p>
-        <h2 id="design-title">Ohmni is building your board</h2>
-      </div>
-      <div class="progress-track" id="progress-track"><div id="progress-bar"></div></div>
-      <p class="progress-caption"><span id="progress-percent">0%</span> <span id="progress-now"></span></p>
-      <p class="progress-detail" id="progress-detail"></p>
-      <ol id="stage-list" class="stage-list" aria-live="polite"></ol>
-      <div id="run-error" class="run-error" hidden role="alert"></div>
-    </section>
+    <div class="main-shell" id="top">
+      <header class="workspace-header">
+        <div class="workspace-crumb"><span class="crumb-mark" aria-hidden="true">⌘</span><span id="workspace-title">Let's build something</span></div>
+        <div class="header-actions"><span id="workspace-status" class="workspace-status">Guided reference project</span><details class="header-help"><summary aria-label="How Ohmni works">How it works <span aria-hidden="true">↗</span></summary><div><strong>An idea, made understandable.</strong><p>Start with the room-sensor example. Review its brief, run the real engineering checks, then explore the board and download its design files.</p><p>Making a working device also takes assembly, programming, and testing. We'll show you what remains.</p></div></details></div>
+      </header>
 
-    <!-- 4 ─ REVIEW -------------------------------------------------------- -->
-    <section id="review" class="stage" hidden aria-labelledby="review-title">
-      <div class="section-head result-head">
-        <div>
-          <p class="eyebrow" id="review-eyebrow">Step 4 of 5 · finished</p>
-          <h2 id="review-title"></h2>
-          <p class="lede" id="review-subhead"></p>
-        </div>
-        <div id="release-badge" class="release-badge"></div>
-      </div>
+      <div id="connection-banner" class="connection-banner" hidden role="status"><span id="connection-message"></span><button type="button" data-reconnect hidden>Reconnect</button><button type="button" data-restart hidden>Start a new example</button></div>
 
-      <div class="board-shell">
-        <div class="board-stage">
-          <canvas id="board-canvas" tabindex="0" aria-label="Your circuit board. Drag to rotate, scroll to zoom, click a part to inspect it."></canvas>
-          <div id="board-empty" class="board-empty" hidden>The board view needs a canvas this browser did not provide.</div>
-          <p class="board-hint">Drag to rotate · scroll to zoom · shift-drag to pan · click a part</p>
-          <p class="board-hint" id="board-thickness-note"></p>
-        </div>
-        <aside class="board-panel">
-          <div class="board-tools">
-            <div class="tool-row" role="group" aria-label="View">
-              <button type="button" data-view="front" class="chip on">Front</button>
-              <button type="button" data-view="back" class="chip">Back</button>
-              <button type="button" data-view="reset" class="chip">Reset</button>
-            </div>
-            <div class="tool-row" role="group" aria-label="Show">
-              <button type="button" data-toggle="showComponents" class="chip on">Parts</button>
-              <button type="button" data-toggle="showCopper" class="chip on">Copper</button>
-            </div>
-            <label class="slider">Separate the systems
-              <input type="range" id="explode" min="0" max="100" value="0" aria-describedby="explode-note">
-            </label>
-            <p class="fineprint" id="explode-note">A board looks like one object. It is really a few
-              groups of parts, each doing one job.</p>
+      <main id="main-content" tabindex="-1">
+        <section id="describe" class="stage welcome" aria-labelledby="describe-title">
+          <div class="welcome-heading">
+            <h1 id="describe-title">Build a real circuit.<br>Understand every part.</h1>
+            <p class="welcome-lede">Get hands-on with a room sensor. Explore its parts in 3D, follow the connections, then run the checks and make the design files yourself.</p>
           </div>
-          <div id="systems" class="systems"></div>
-          <div id="selection" class="selection" aria-live="polite"></div>
-        </aside>
-      </div>
+          <div class="welcome-grid">
+            <div class="reference-column">
+              <div class="reference-stage pcb-stage">
+                <div class="reference-topline"><span><span class="reference-dot" aria-hidden="true"></span>Meet the room sensor</span><span class="reference-provenance">Saved reference</span></div>
+                <button type="button" id="open-reference-lab" class="open-lab-button" disabled><span>Open the 3D circuit lab<small>Explore now. No engineering run needed.</small></span><span aria-hidden="true">↗</span></button>
+                <canvas id="reference-canvas" tabindex="0" aria-label="Interactive reference circuit board. Drag to rotate. Use the system buttons below to explore."></canvas>
+                <div class="reference-caption" id="reference-caption">A previously generated board. Drag to rotate, or select a system below.</div>
+                <div class="reference-controls" id="reference-focus" role="group" aria-label="Explore a board system">
+                  <button type="button" data-reference-system="all" class="on">Whole board</button>
+                  <button type="button" data-reference-system="power"><span class="system-pin power"></span>Power</button>
+                  <button type="button" data-reference-system="compute"><span class="system-pin compute"></span>Processor</button>
+                  <button type="button" data-reference-system="sense"><span class="system-pin sense"></span>Sensor</button>
+                  <button type="button" data-reference-system="io"><span class="system-pin io"></span>Connections</button>
+                </div>
+              </div>
+              <div class="reference-inspector" aria-live="polite"><span class="inspector-spark" aria-hidden="true">↳</span><div><h3 id="reference-part-name">Every part has a purpose.</h3><p id="reference-part-description">Select a part on the board or choose a system above to discover its job.</p></div></div>
+            </div>
 
-      <div class="explore">
-        <div class="explore-head">
-          <h3>Show me how this works</h3>
-          <p>Pick something and Ohmni will light up the parts and the copper that carry it.</p>
-        </div>
-        <div id="flow-tabs" class="flow-tabs" role="tablist" aria-label="Flows"></div>
-        <div id="flow-detail" class="flow-detail"></div>
-      </div>
-
-      <div class="two-up">
-        <article class="panel repair" id="repair-panel"></article>
-        <article class="panel transform">
-          <h3>From drawing to object</h3>
-          <p class="panel-note">A schematic says <em>what connects to what</em>. A board says
-            <em>where everything physically is</em>. Same circuit, two different questions.</p>
-          <div id="transform-stage" class="transform-stage"></div>
-          <div class="transform-controls">
-            <button type="button" id="transform-play" class="secondary">Turn this circuit into a board</button>
-            <input type="range" id="transform-scrub" min="0" max="100" value="0" aria-label="Schematic to board">
-            <span id="transform-label" class="transform-label">Schematic</span>
+            <div class="welcome-copy">
+              <div class="project-starter">
+                <div class="starter-heading"><div class="climate-icon" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M17 9a4 4 0 0 1 8 0v14a7 7 0 1 1-8 0z"/><path d="M21 13v15m-4 0h8M30 9h4m-4 6h4"/></svg></div><div><span class="available-label">Your first guided project</span><h2>Room climate monitor</h2></div></div>
+                <p>Turn this example into a fresh set of board files, with the reasoning explained along the way.</p>
+                <dl class="starter-specs">
+                  <div><dt>The processor</dt><dd>ESP32</dd></div>
+                  <div><dt>The sensor</dt><dd>BME280</dd></div>
+                  <div><dt>The power</dt><dd>USB-C</dd></div>
+                </dl>
+                <button type="button" id="start-supported" class="primary start-button" data-fixture="esp32-bme280-environmental-logger">Start this project <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+                <p class="starter-footnote">Review the brief first.<br>Then allow about 90 seconds for the checks.</p>
+              </div>
+              <div class="prototype-note"><strong>A real engineering run. A guided example.</strong><p class="scope-note" id="scope-note">This prototype runs one reference project: a USB-powered ESP32 + BME280 board. The design and repair are pre-authored; the checks and generated files are real.</p></div>
+            </div>
           </div>
-          <details class="disclose">
-            <summary>Show the real schematic sheet</summary>
-            <div id="schematic-holder" class="schematic-holder"></div>
-          </details>
-        </article>
+
+          <div class="welcome-bottom" id="how-it-works">
+            <h2>From curiosity to circuit.</h2>
+            <ol class="welcome-path">
+              <li><span aria-hidden="true">1</span><div><h3>Explore the design</h3><p>Meet the components and see what connects.</p></div></li>
+              <li><span aria-hidden="true">2</span><div><h3>Understand the checks</h3><p>See the problem, the repair, and the evidence.</p></div></li>
+              <li><span aria-hidden="true">3</span><div><h3>Make it your next build</h3><p>Download KiCad files, then assemble, program, and test.</p></div></li>
+            </ol>
+          </div>
+        </section>
+
+        <section id="agree" class="stage brief-stage" hidden aria-labelledby="agree-title">
+          <div class="section-head"><p class="step-label">Project brief</p><h1 id="agree-title">Let's agree on<br>what we're building.</h1><p class="lede">Here's the plan for the room-sensor reference project. Explore the choices before the engineering run starts.</p></div>
+          <div class="agree-layout"><div id="brief" class="brief"></div><aside class="agree-decide"><span class="plan-symbol" aria-hidden="true">Ω</span><h2>A little clarity now.<br>A better board later.</h2><p id="agree-note"></p><div class="brief-boundary"><strong>This is a guided example.</strong><p>The brief is fixed for this prototype. You can inspect every choice; custom design changes aren't available in this flow yet.</p></div><button type="button" id="confirm-brief" class="primary">Run the design checks <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button><button type="button" id="back-to-describe" class="ghost">Back to the project</button></aside></div>
+        </section>
+
+        <section id="design" class="stage activity-stage" hidden aria-labelledby="design-title">
+          <div class="section-head"><p class="step-label">Design activity</p><h1 id="design-title">From connections<br>to copper.</h1><p class="lede">The engine runs the reference design through its electrical checks and builds real board files. Every result comes from a check that actually ran.</p></div>
+          <div class="activity-layout"><div class="activity-main"><div class="progress-heading"><span id="progress-now">Getting the workbench ready</span><span id="progress-percent">0%</span></div><div class="progress-track" id="progress-track"><div id="progress-bar"></div></div><p class="progress-detail" id="progress-detail"></p><ol id="stage-list" class="stage-list" aria-live="polite"></ol><div id="run-error" class="run-error" hidden role="alert"></div><div class="error-actions"><button type="button" id="error-retry" class="secondary" hidden>Try again</button><button type="button" id="error-back" class="ghost" hidden>Back to project</button></div></div><aside class="activity-aside"><div class="activity-glyph" aria-hidden="true"><span>Ω</span><i></i><i></i><i></i></div><h2>Good engineering<br>shows its work.</h2><p>A connection can look right and still be wrong. Ohmni checks the circuit, applies its bounded repair, and runs the checks again.</p><details class="disclose"><summary>What is happening behind the scenes?</summary><p>Deterministic rules check the electrical design. KiCad independently checks the schematic and board. Copper routing can take most of the run time.</p></details><button type="button" data-navigate="review" class="secondary activity-review" disabled>Explore completed board</button></aside></div>
+        </section>
+
+        <section id="review" class="stage review-stage" hidden aria-labelledby="review-title">
+          <div class="section-head result-head"><div><p class="step-label" id="review-eyebrow">Your design, explained</p><h1 id="review-title"></h1><p class="lede" id="review-subhead"></p></div><div id="release-badge" class="release-badge"></div></div>
+          <div class="result-navigation"><div class="result-tabs" role="tablist" aria-label="Explore your design"><button type="button" id="tab-board" data-panel="board" role="tab" aria-selected="true" aria-controls="panel-board">The board</button><button type="button" id="tab-learn" data-panel="learn" role="tab" aria-selected="false" aria-controls="panel-learn">How it works</button><button type="button" id="tab-checks" data-panel="checks" role="tab" aria-selected="false" aria-controls="panel-checks">Checks &amp; evidence</button></div><button type="button" id="open-build" data-navigate="build" aria-label="Build &amp; export" class="primary compact">Build &amp; export <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/></svg></button></div>
+
+          <div id="panel-board" data-result-panel="board" role="tabpanel" aria-labelledby="tab-board">
+            <div class="board-shell"><div class="board-stage pcb-stage"><div class="board-stage-heading"><span>Your generated circuit board</span><div class="tool-row" role="group" aria-label="View"><button type="button" data-view="front" class="chip on">Front</button><button type="button" data-view="back" class="chip">Back</button><button type="button" data-view="reset" class="chip">Reset</button></div></div><canvas id="board-canvas" tabindex="0" aria-label="Your circuit board. Drag to rotate, scroll to zoom, click a part to inspect it."></canvas><div id="board-hover-label" class="pcb-hover-label" hidden aria-hidden="true"></div><div id="board-visual-controls" class="board-visual-controls"></div><div id="board-empty" class="board-empty" hidden>The board view needs a canvas this browser did not provide. Explore the same parts in the system list.</div><div class="board-stage-footer"><p class="board-hint">Drag to rotate · scroll to zoom · shift-drag to pan</p><div class="tool-row" role="group" aria-label="Show"><button type="button" data-toggle="showComponents" class="chip on">Parts</button><button type="button" data-toggle="showCopper" class="chip on">Copper</button></div></div><p class="board-hint thickness-note" id="board-thickness-note"></p></div><aside class="board-panel"><div class="board-tools"><label class="slider">Pull the systems apart<input type="range" id="explode" min="0" max="100" value="0" aria-describedby="explode-note"></label><p class="fineprint" id="explode-note">One board. A few groups of parts, each with a different job.</p></div><div id="systems" class="systems"></div><div id="selection" class="selection" aria-live="polite"></div><div id="board-lessons" class="circuit-lessons compact-lessons" aria-label="Discover your circuit"></div></aside></div>
+            <div class="explore"><div class="explore-head"><span class="little-spark" aria-hidden="true">✳</span><div><h2>Follow a connection.</h2><p>Pick a flow to light up the parts and copper that carry it.</p></div></div><div id="flow-tabs" class="flow-tabs" role="group" aria-label="Flows"></div><div id="flow-detail" class="flow-detail"></div></div>
+          </div>
+
+          <div id="panel-learn" data-result-panel="learn" role="tabpanel" aria-labelledby="tab-learn" hidden>
+            <div class="learning-heading"><h2>There's a reason for every part.</h2><p>Start with the problem Ohmni caught, then explore how the drawing becomes a physical board.</p></div>
+            <div class="two-up"><article class="panel repair" id="repair-panel"></article><article class="panel transform"><h3>From drawing to object</h3><p class="panel-note">The schematic shows what connects. The board shows where it goes. Two views of the same circuit.</p><div id="transform-stage" class="transform-stage"></div><div class="transform-controls"><button type="button" id="transform-play" class="secondary">Turn the circuit into a board</button><input type="range" id="transform-scrub" min="0" max="100" value="0" aria-label="Schematic to board"><span id="transform-label" class="transform-label">Schematic</span></div><details class="disclose"><summary>Explore the real schematic sheet</summary><div id="schematic-holder" class="schematic-holder"></div></details></article></div><article class="panel tour" id="tour-panel"></article>
+          </div>
+
+          <div id="panel-checks" data-result-panel="checks" role="tabpanel" aria-labelledby="tab-checks" hidden><article class="panel checks"><div class="checks-intro"><div><h2>Confidence, with the evidence.</h2><p class="panel-note">Open a check to see the rules, the result, and the limits of what it establishes.</p></div><span class="check-symbol" aria-hidden="true">✓</span></div><div id="checks" class="checks"></div></article><article class="panel confidence" id="confidence-panel"></article></div>
+        </section>
+
+        <section id="build" class="stage build-stage" hidden aria-labelledby="build-title">
+          <div class="section-head result-head"><div><p class="step-label">Build &amp; export</p><h1 id="build-title">From your screen<br>to your workbench.</h1><p class="lede">Take the design files with you. Review the parts and assembly needs, then follow the checks for your first physical board.</p></div><button type="button" id="back-to-board" data-navigate="review" class="secondary">Back to the board</button></div>
+          <div class="build-reality"><span aria-hidden="true">↳</span><div><strong>A design is the start of a working device.</strong><p>You'll still need to have the board made, assemble it, and add firmware. This prototype provides hardware design files and a bring-up guide; it hasn't bench-tested the board.</p></div></div>
+          <article class="panel files" id="files-panel"></article>
+          <div class="parts-heading"><h2>The parts that make it work.</h2><p>Know what each component does, and what it will take to assemble.</p></div><div id="parts" class="parts"></div>
+          <article class="panel bringup" id="bringup-panel"></article>
+        </section>
+      </main>
+      <footer class="workspace-footer"><span>Made for curious minds.</span><span>Ohmni checks what it can. Hardware has the final say.</span></footer>
+    </div>
+  </div>
+  <dialog id="circuit-lab" class="circuit-lab" aria-labelledby="circuit-lab-title">
+    <div class="lab-header"><div class="lab-brand"><span class="lab-mark" aria-hidden="true">Ω</span><div><span class="lab-eyebrow">Ohmni / Interactive learning</span><h2 id="circuit-lab-title">The circuit lab.</h2></div></div><div class="lab-header-actions"><span class="reference-provenance">Saved reference</span><button type="button" id="close-circuit-lab" aria-label="Close circuit lab">Close <span aria-hidden="true">×</span></button></div></div>
+    <div class="lab-body">
+      <div class="lab-viewport pcb-stage">
+        <div class="lab-stage-top"><span><i aria-hidden="true"></i> Room sensor / ESP32 + BME280</span><span>Drag to orbit · scroll to zoom</span></div>
+        <div class="lab-canvas-wrap"><canvas id="lab-canvas" tabindex="0" aria-label="Interactive circuit lab. Arrow keys rotate, plus and minus zoom. Select a part or use the learning panel."></canvas><div id="lab-hover-label" class="pcb-hover-label" hidden aria-hidden="true"></div><div class="lab-board-specs"><span id="lab-part-count"></span><span id="lab-layer-count"></span><span id="lab-board-size"></span></div></div>
+        <p id="lab-unavailable" class="lab-tour-note" hidden>The 3D renderer is unavailable in this browser. You can still inspect the recorded parts in the project workspace.</p>
+        <div id="lab-visual-controls" class="board-visual-controls"></div>
+        <div class="lab-stage-bottom"><label>Separate the systems<input type="range" id="lab-explode" min="0" max="100" value="0"></label><p>Illustrative bodies &amp; heights.<br>Real footprint and copper positions.</p></div>
       </div>
-
-      <article class="panel tour" id="tour-panel"></article>
-
-      <article class="panel checks">
-        <h3>What Ohmni checked</h3>
-        <p class="panel-note">Every line is a result from a check that actually ran. Open one to
-          see the individual rules, including what a pass does <em>not</em> establish.</p>
-        <div id="checks" class="checks"></div>
-      </article>
-
-      <article class="panel confidence" id="confidence-panel"></article>
-    </section>
-
-    <!-- 5 ─ BUILD --------------------------------------------------------- -->
-    <section id="build" class="stage" hidden aria-labelledby="build-title">
-      <div class="section-head">
-        <p class="eyebrow">Step 5 of 5</p>
-        <h2 id="build-title">Build it</h2>
-        <p class="lede">Everything you need to have this made, and what to check when it arrives.</p>
-      </div>
-      <div id="parts" class="parts"></div>
-      <article class="panel files" id="files-panel"></article>
-      <article class="panel bringup" id="bringup-panel"></article>
-    </section>
-  </main>
-
-  <footer>Ohmni verifies what it can, labels what it cannot, and leaves hardware as the final authority.</footer>
+      <aside id="lab-lessons" class="circuit-lessons" aria-label="Learn about this circuit"></aside>
+    </div>
+  </dialog>
   <script type="module" src="/app.js"></script>
 </body>
 </html>

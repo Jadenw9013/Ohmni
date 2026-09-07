@@ -284,30 +284,94 @@ function validateApi(exchanges, pageOrigin, stopAfterProgress) {
   return {accepted, latest, records};
 }
 
-function validateGoldenUi(state) {
-  // The same engineering truths the M8 surface asserted, in the product
-  // language that replaced it. Each entry is a claim a beginner must still be
-  // able to read off the finished page.
+function validateGoldenUi(state, report) {
+  // Assert the backend's actual explanation reaches a user who opens the
+  // relevant panels. Humanized copy may change; the engineering facts may not.
+  const experience = report.experience;
+  requireValue(experience?.repair?.happened === true, "repair explanation was absent");
+  requireValue(experience.repair.steps?.length >= 4, "repair explanation omitted its reasoning sequence");
+  requireValue(experience.check_sections?.length > 0, "grouped check projection was absent");
+  requireValue(experience.confidence?.not_verified?.length > 0, "verification limits were absent");
   const required = [
-    "Ohmni caught a problem",
-    "was connected to VBUS",
-    "moved 2 supply connection(s)",
-    "Then it checked again",
-    "Voltages and currents",
-    "KiCad checked the schematic",
-    "The physical layout",
-    "KiCad checked the board",
-    "0 KiCad DRC violation(s), 0 unrouted",
+    experience.repair.plain_summary || experience.repair.headline,
+    ...experience.repair.steps.flatMap(step => [step.headline, step.body]),
+    ...experience.check_sections.flatMap(section => section.groups.map(group => group.label)),
+    ...[...experience.confidence.checked, ...experience.confidence.not_verified]
+      .flatMap(item => [item.label, item.status.replaceAll("_", " "), item.detail]),
     "Ready for manufacturing review",
     "NOT YET VERIFIED",
     "No physical board has been built",
-    "SYNTHETIC FIXTURE - NOT LIVE SUPPLIER DATA",
+    report.economics.pricing_source,
   ];
-  const missing = required.filter(text => !state.bodyText.includes(text));
+  const normalize = value => String(value).replace(/\s+/g, " ").trim();
+  const visible = normalize(state.bodyText);
+  const missing = required.filter(text => !text || !visible.includes(normalize(text)));
   requireValue(missing.length === 0, `completed UI omitted: ${missing.join(", ")}`);
   requireValue(state.releaseText.includes("CURRENT"), "release UI did not present current artifacts");
   requireValue(!state.releaseText.includes("STALE"), "release UI presented a stale release");
   return required;
+}
+
+async function clickVisible(call, selector) {
+  return evaluate(call, `(() => {
+    const element = Array.from(document.querySelectorAll(${JSON.stringify(selector)}))
+      .find(item => !item.disabled && item.getClientRects().length > 0);
+    if (!element) return false;
+    element.scrollIntoView({block: "center", inline: "center"});
+    element.click();
+    return true;
+  })()`);
+}
+
+async function assertFocusedStage(call, expected) {
+  const visible = await evaluate(call, `["describe", "agree", "design", "review", "build"]
+    .filter(id => {
+      const element = document.getElementById(id);
+      return element && !element.hidden && element.getClientRects().length > 0;
+    })`);
+  requireValue(JSON.stringify(visible) === JSON.stringify([expected]),
+    `expected only ${expected} stage, found ${JSON.stringify(visible)}`);
+}
+
+async function captureVisibleResults(call) {
+  // Exercise the real navigation and disclosure controls. Reading textContent
+  // from hidden panes would hide a navigation regression from this smoke test.
+  let bodyText = "";
+  let releaseText = "";
+  const visited = [];
+  for (const panel of ["board", "learn", "checks"]) {
+    requireValue(await clickVisible(call, `[data-panel="${panel}"]`), `${panel} tab was not reachable`);
+    await assertFocusedStage(call, "review");
+    const snapshot = await evaluate(call, `(() => {
+      const visiblePanels = Array.from(document.querySelectorAll("[data-result-panel]"))
+        .filter(item => !item.hidden && item.getClientRects().length > 0)
+        .map(item => item.dataset.resultPanel);
+      const tab = document.querySelector('[data-panel="${panel}"]');
+      for (const details of document.querySelectorAll('#review details')) {
+        const summary = details.querySelector('summary');
+        if (!details.open && summary?.getClientRects().length > 0) summary.click();
+      }
+      return {
+        visiblePanels, selected: tab?.getAttribute("aria-selected"),
+        bodyText: document.body.innerText,
+        releaseText: document.querySelector("#release-badge")?.innerText || ""
+      };
+    })()`);
+    requireValue(JSON.stringify(snapshot.visiblePanels) === JSON.stringify([panel]),
+      `${panel} did not become the only visible result pane`);
+    requireValue(snapshot.selected === "true", `${panel} tab did not announce its selected state`);
+    bodyText += `\n${snapshot.bodyText}`;
+    releaseText = snapshot.releaseText;
+    visited.push(panel);
+  }
+  requireValue(await clickVisible(call, "#open-build"), "build step was not reachable");
+  await assertFocusedStage(call, "build");
+  bodyText += `\n${await evaluate(call, "document.body.innerText")}`;
+  visited.push("build");
+  requireValue(await clickVisible(call, "#back-to-board"), "return to review was not reachable");
+  await assertFocusedStage(call, "review");
+  requireValue(await clickVisible(call, '[data-panel="board"]'), "board tab was not reachable after returning");
+  return {bodyText, releaseText, visited};
 }
 
 function safeExchange(exchange, pageOrigin) {
@@ -357,12 +421,8 @@ async function run(options) {
     if (options.reload) await call("Page.reload", {ignoreCache: true});
     const ready = await waitForPage(call, deadline);
     requireValue(samePage(ready.href, options.pageUrl), `browser loaded unexpected page ${ready.href}`);
-    const picked = await evaluate(call, `(() => {
-      const element = document.querySelector("#start-supported");
-      if (!element) return false;
-      element.click();
-      return true;
-    })()`);
+    await assertFocusedStage(call, "describe");
+    const picked = await clickVisible(call, "#start-supported");
     requireValue(picked, "project picker was not clickable");
     let briefShown = false;
     while (Date.now() < deadline) {
@@ -371,13 +431,8 @@ async function run(options) {
       await sleep(150);
     }
     requireValue(briefShown, "the brief never appeared after picking the project");
-    const clicked = await evaluate(call, `(() => {
-      const element = document.querySelector("#confirm-brief");
-      if (!element || element.disabled) return false;
-      element.scrollIntoView({block: "center", inline: "center"});
-      element.click();
-      return true;
-    })()`);
+    await assertFocusedStage(call, "agree");
+    const clicked = await clickVisible(call, "#confirm-brief");
     requireValue(clicked, "brief confirmation was not clickable");
 
     let state;
@@ -402,15 +457,20 @@ async function run(options) {
       await sleep(200);
     }
     requireValue(state, "browser returned no workflow state");
-    if (options.stopAfterProgress) requireValue(state.progress > 0, "UI did not advance beyond 0%");
+    if (options.stopAfterProgress) {
+      requireValue(state.progress > 0, "UI did not advance beyond 0%");
+      await assertFocusedStage(call, state.workspaceHidden ? "design" : "review");
+    }
     else {
       requireValue(state.progress === 100, `UI stopped at ${state.progress}%`);
       requireValue(!state.workspaceHidden, "completed workspace stayed hidden");
+      await assertFocusedStage(call, "review");
+      Object.assign(state, await captureVisibleResults(call));
     }
     await sleep(100);
     await responseBodies(call, exchanges);
     const api = validateApi(exchanges, pageOrigin, options.stopAfterProgress);
-    const requiredResults = options.stopAfterProgress ? [] : validateGoldenUi(state);
+    const requiredResults = options.stopAfterProgress ? [] : validateGoldenUi(state, api.latest.report);
     return {
       mode: options.stopAfterProgress ? "progress" : "complete",
       page_url: options.pageUrl,
@@ -420,6 +480,7 @@ async function run(options) {
       ui_version: api.accepted.ui_version,
       api: api.records.map(item => safeExchange(item, pageOrigin)),
       required_results: requiredResults,
+      visited_result_panels: state.visited || [],
     };
   } finally {
     close();

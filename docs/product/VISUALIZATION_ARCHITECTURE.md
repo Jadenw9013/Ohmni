@@ -4,6 +4,12 @@
 **Owns:** how authoritative engineering state reaches the screen, what the
 renderer is allowed to draw, and the migration path to richer 3D.
 
+**2026-09-06 display evolution:** the user has authorized richer 3D and interactive
+learning. See [PCB_LEARNING_LAB.md](PCB_LEARNING_LAB.md) for the new renderer and
+explicitly labelled illustrative component bodies/heights. The M9 choices below
+record the original implementation; the engineering projection and membership
+boundaries remain unchanged.
+
 The governing rule, and the reason this document exists:
 
 > **The frontend visualizes state. It never derives engineering truth.**

@@ -75,7 +75,11 @@ const completedReport = () => ({
 function createNode(selector) {
     const node = {
         selector, innerHTML: "", textContent: "", hidden: false, disabled: false, value: "",
-        style: {}, dataset: {}, children: [],
+        style: {}, dataset: {}, children: [], attributes: {},
+        setAttribute(name, value) { this.attributes[name] = value; },
+        getAttribute(name) { return this.attributes[name] ?? null; },
+        removeAttribute(name) { delete this.attributes[name]; },
+        focus() { this.focused = true; },
         classList: {
             set: new Set(),
             add(name) { this.set.add(name); },
@@ -106,10 +110,28 @@ function createDom() {
         if (!nodes.has(selector)) nodes.set(selector, createNode(selector));
         return nodes.get(selector);
     };
+    const groups = new Map();
+    const group = (selector, values, field) => {
+        const items = values.map((value) => {
+            const node = get(`${selector}:${value}`);
+            node.dataset[field] = value;
+            return node;
+        });
+        groups.set(selector, items);
+        return items;
+    };
+    group('[data-navigate]', ["describe", "agree", "design", "review", "build"], "navigate");
+    group('[data-panel]', ["board", "learn", "checks"], "panel");
+    group('[data-result-panel]', ["board", "learn", "checks"], "resultPanel");
+    const downloads = group('[data-artifact-download]', ["schematic", "board"], "artifactDownload");
+    for (const link of downloads) {
+        link.dataset.current = "true";
+        link.dataset.downloadUrl = `/api/artifacts/${JOB_ID}/golden.kicad_${link.dataset.artifactDownload === "board" ? "pcb" : "sch"}`;
+    }
     const document = {
         hidden: false,
         querySelector: get,
-        querySelectorAll: () => [],
+        querySelectorAll: (selector) => groups.get(selector) || [],
         getElementById: (id) => get(`#${id}`),
         addEventListener: (type, handler) => { documentHandlers[type] = handler; },
         removeEventListener: (type, handler) => { if (documentHandlers[type] === handler) delete documentHandlers[type]; },
@@ -118,7 +140,7 @@ function createDom() {
         addEventListener: (type, handler) => { windowHandlers[type] = handler; },
         removeEventListener: (type, handler) => { if (windowHandlers[type] === handler) delete windowHandlers[type]; },
     };
-    return { document, window, get, nodes, windowHandlers, documentHandlers };
+    return { document, window, get, nodes, groups, windowHandlers, documentHandlers };
 }
 
 let importSequence = 0;
@@ -223,11 +245,12 @@ test("opening the brief performs health then a generation-bound brief request", 
         fixture_id: FIXTURE_ID, api_version: 2, server_instance_id: INSTANCE, ui_version: UI_VERSION,
     });
     const rendered = dom.get("#brief").innerHTML;
-    assert.match(rendered, /Check these/, "values Ohmni worked out lead the brief");
-    assert.match(rendered, /Ohmni assumed/);
-    assert.match(rendered, /Straight from what you wrote/);
-    assert.match(dom.get("#agree-note").textContent, /worked out 2 things you did not say/,
-        "the decision panel says how much Ohmni decided");
+    assert.match(rendered, /Design choices/, "derived values lead the brief");
+    assert.match(rendered, /Assumptions to know/);
+    assert.match(rendered, /From the example brief/);
+    assert.doesNotMatch(rendered, /your own words|what you wrote|go back and say so/);
+    assert.match(dom.get("#agree-note").textContent, /2 design choices and assumptions/);
+    assert.match(dom.get("#agree-note").textContent, /Editing this example is not available/);
     assert.equal(dom.get("#agree").hidden, false);
     assert.equal(dom.get("#describe").hidden, true);
 }));
@@ -239,7 +262,7 @@ test("start failures map only allowlisted backend conditions to actionable copy"
         [async () => response(409, { error: "server_instance_mismatch" }), /restarted or changed/],
         [async () => response(409, { error: "ui_version_mismatch" }), /restarted or changed/],
         [async () => response(400, { error: "fixture_rejected" }), /rejected the deterministic demo fixture/],
-        [async () => response(503, { error: "brief_unavailable" }), /could not interpret the request/],
+        [async () => response(503, { error: "brief_unavailable" }), /could not prepare the example brief/],
         [async () => response(418, { error: "not_in_the_allowlist" }), /does not match the running Ohmni demo server/],
     ];
     for (const [handler, expected] of cases) {
@@ -304,7 +327,8 @@ test("a completed run renders settled stages with no running affordance", async 
     assert.equal(dom.get("#progress-percent").textContent, "100%");
     assert.equal(dom.get("#progress-now").textContent, "Finished");
     assert.equal(dom.get("#review").hidden, false);
-    assert.equal(dom.get("#build").hidden, false);
+    assert.equal(dom.get("#build").hidden, true, "the completed board is the focused stage");
+    assert.equal(dom.get("#design").hidden, true, "the stage record remains accessible through navigation");
 }));
 
 test("a completed run preserves unsupported and not-yet-verified statuses verbatim", async () => withApp(async (app, dom) => {
@@ -346,7 +370,8 @@ test("an empty clarification column never contradicts the columns beside it", as
             asked_for: [{ field: "budget_usd", label: "Budget", value: "about $20", origin: "explicit", grounding: "quoted" }],
             assumed: [], needs_clarification: [],
         });
-        assert.match(dom.get("#brief").innerHTML, /straight from your own words/i);
+        assert.match(dom.get("#brief").innerHTML, /No additional choices were recorded/);
+        assert.doesNotMatch(dom.get("#brief").innerHTML, /your own words|what you wrote/);
     }));
 
 test("checks are grouped by who ran them, so verdicts cannot read as contradictions", async () =>
@@ -424,12 +449,11 @@ test("the board view states that its thickness is a display value", async () =>
             "the one non-derived geometric value is labelled where it is shown");
     }));
 
-test("completed-workspace monitoring invalidates unavailable or changed servers without runaway timers", async () => {
-    for (const [payload, expected] of [
-        [health({ server_instance_id: OTHER_INSTANCE }), /restarted or changed/],
-        [health({ ui_version: OTHER_UI_VERSION }), /restarted or changed/],
-    ]) {
+test("changed servers preserve the completed workspace but disable downloads and clean up monitoring", async () => {
+    for (const payload of [health({ server_instance_id: OTHER_INSTANCE }), health({ ui_version: OTHER_UI_VERSION })]) {
         await withApp(async (app, dom) => {
+            globalThis.fetch = async () => response(200, jobEnvelope({ status: "complete", report: completedReport() }));
+            await app.poll(JOB_ID, identity, { monitorer: () => {} });
             globalThis.fetch = async () => response(200, payload);
             const cleared = [];
             const check = app.beginCompletionMonitor(identity, {
@@ -437,8 +461,13 @@ test("completed-workspace monitoring invalidates unavailable or changed servers 
                 windowTarget: dom.window, documentTarget: dom.document,
             });
             assert.equal(await check(), false);
-            assert.match(dom.get("#run-error").textContent, expected);
-            assert.equal(dom.get("#review").hidden, true, "a stale result is hidden, not left on screen");
+            assert.equal(dom.get("#connection-banner").hidden, false);
+            assert.match(dom.get("#connection-message").textContent, /earlier server/);
+            assert.equal(dom.get("#review").hidden, false, "the previously completed result remains available to read");
+            for (const link of dom.groups.get('[data-artifact-download]')) {
+                assert.equal(link.getAttribute("href"), null);
+                assert.equal(link.getAttribute("aria-disabled"), "true");
+            }
             app.stopCompletionMonitor();
             assert.deepEqual(cleared, [7]);
             assert.deepEqual(Object.keys(dom.windowHandlers), []);
@@ -447,15 +476,58 @@ test("completed-workspace monitoring invalidates unavailable or changed servers 
     }
 });
 
-test("a backend that disappears after completion invalidates the result", async () => withApp(async (app, dom) => {
-    globalThis.fetch = async () => { throw new Error("gone"); };
+test("a disconnected result stays readable and current downloads recover only with the same server", async () => withApp(async (app, dom) => {
+    globalThis.fetch = async () => response(200, jobEnvelope({ status: "complete", report: completedReport() }));
+    await app.poll(JOB_ID, identity, { monitorer: () => {} });
+    let online = false;
+    globalThis.fetch = async () => { if (!online) throw new Error("gone"); return response(200, health()); };
     const check = app.beginCompletionMonitor(identity, {
         setIntervalFn: () => 1, clearIntervalFn: () => {},
         windowTarget: dom.window, documentTarget: dom.document,
     });
     assert.equal(await check(), false);
-    assert.match(dom.get("#run-error").textContent, /demo backend is unavailable/);
-    assert.equal(dom.get("#review").hidden, true);
+    assert.match(dom.get("#connection-message").textContent, /Connection lost/);
+    assert.equal(dom.get("#review").hidden, false);
+    const [current, stale] = dom.groups.get('[data-artifact-download]');
+    stale.dataset.current = "false";
+    assert.equal(current.getAttribute("href"), null);
+    online = true;
+    assert.equal(await check(), true);
+    assert.equal(dom.get("#connection-banner").hidden, true);
+    assert.equal(current.getAttribute("href"), current.dataset.downloadUrl);
+    assert.equal(stale.getAttribute("href"), null, "reconnecting never revives a stale artifact");
+}));
+
+test("navigation unlocks only available stages and shows one workspace at a time", async () => withApp(async (app, dom) => {
+    assert.equal(app.navigate("review"), false);
+    assert.equal(app.navigate("build"), false);
+    globalThis.fetch = async (url) => response(200, url === "/api/health" ? health() : briefEnvelope());
+    await app.openBrief();
+    assert.equal(app.navigate("agree"), true);
+    assert.equal(app.navigate("build"), false);
+    globalThis.fetch = async () => response(200, jobEnvelope({ status: "complete", report: completedReport() }));
+    await app.poll(JOB_ID, identity, { monitorer: () => {} });
+    for (const stage of ["build", "design", "agree", "review", "describe"]) {
+        assert.equal(app.navigate(stage), true);
+        for (const other of ["describe", "agree", "design", "review", "build"]) {
+            assert.equal(dom.get(`#${other}`).hidden, other !== stage);
+        }
+    }
+}));
+
+test("result tabs expose one panel and keep one keyboard tab stop", async () => withApp(async (app, dom) => {
+    for (const panel of ["learn", "checks", "board"]) {
+        assert.equal(app.selectResultPanel(panel), true);
+        for (const tab of dom.groups.get('[data-panel]')) {
+            const active = tab.dataset.panel === panel;
+            assert.equal(tab.getAttribute("aria-selected"), String(active));
+            assert.equal(tab.getAttribute("tabindex"), active ? "0" : "-1");
+        }
+        for (const section of dom.groups.get('[data-result-panel]')) {
+            assert.equal(section.hidden, section.dataset.resultPanel !== panel);
+        }
+    }
+    assert.equal(app.selectResultPanel("missing"), false);
 }));
 
 test("live progress shows the job's own explanation of the slow stage", async () =>
