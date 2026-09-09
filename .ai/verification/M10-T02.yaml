@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "id": "M10-T02",
+  "status": "VERIFIED",
+  "commit": "42caa004c0c3464ec3b957a080b8daab0b6c8589",
+  "commands": [
+    {
+      "command": "pytest -m \"not integration and not slow_integration\" --basetemp build/pytest-t02-fast-final -p no:cacheprovider",
+      "result": "PASS",
+      "tests": 695,
+      "deselected": 35,
+      "runtime_seconds": 38.65
+    },
+    {
+      "command": "pytest tests/test_synthesis_families.py --basetemp build/pytest-t02-address-final -p no:cacheprovider",
+      "result": "PASS",
+      "tests": 37,
+      "detail": "Final unsupported TMP102 strap refusal fix; includes automatic-address reservation and optional requirement regressions."
+    },
+    {
+      "command": "pytest tests/test_synthesis_a2.py",
+      "result": "PASS",
+      "tests": 33,
+      "detail": "16 combinations,100% semanticcoverage, real schematicbindings andtypedrefusals."
+    },
+    {
+      "command": "pytest tests/test_synthesis_eda.py -m integration",
+      "result": "PASS",
+      "tests": 4,
+      "detail": "KiCad10.0.5,min/maxA2 zeroerrors17/26warnings;min/maxA3 zeroerrors16/27warnings. Warningsretained."
+    },
+    {
+      "command": "pytest tests/test_catalog_extensions.py and catalog/PCB focused tests",
+      "result": "PASS",
+      "tests": 78,
+      "detail": "All19 offeredpackagescompile."
+    },
+    {
+      "command": "pytest tests/test_catalog_extensions.py -m integration",
+      "result": "PASS",
+      "tests": 11,
+      "detail": "Sourcehashes and coordinates rederivedfrominstalledKiCad10.0.5."
+    },
+    {
+      "command": "pytest focusedSPI/CLI/architecture/verifier regression suite",
+      "result": "PASS",
+      "tests": 139
+    },
+    {
+      "command": "ruff check all changed Pythonfiles",
+      "result": "PASS"
+    },
+    {
+      "command": "ai_state.py validate",
+      "result": "PASS"
+    }
+  ],
+  "review": {
+    "status": "SCOPED_CROSS_REVIEW_PASSED",
+    "reviewer": "correctness_fixes siblingagent",
+    "independent": true,
+    "scope": "root-owned familycomposition and inputcompatibility",
+    "resolved_findings": [
+      "ReserveexplicitI2Caddresses beforeautomaticassignment",
+      "Recordallrequestedoptionalfunctions inRequirementsSpec",
+      "DeclareextendedA1controllerinterfaces"
+    ],
+    "additional_evidence": "All8 legacybrief/circuit hashesmatch43d7b38 exactly."
+  },
+  "limitations": [
+    "No3D/UIintegrationorcomputedphysicalplacementclaimedbyT02; thosearenextapprovedtasks.",
+    "Catalog facts remainCATALOG_REPORTED orASSUMED; nopdfingestionupgrade.",
+    "Firmware,timing,GPIOcurrentcapability andphysicalhardware remainunverified.",
+    "12catalogparts/19packagescoversofferedfamilyenvelope,notarbitrarycomponentselection.",
+    "Fullfastgateranbeforelastfocusedaddressrefusalfix;37focusedtestscoverfinalfix. Finalmilestonegatewillrerunalltiers."
+  ]
+}
