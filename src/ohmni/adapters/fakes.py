@@ -21,8 +21,12 @@ from pydantic import BaseModel
 from ..domain.circuit import CircuitIR
 from ..domain.component import ComponentSpec
 from ..domain.document import (
-    DatasheetDocument, DatasheetIdentity, DocumentFingerprint, DocumentMetadata,
-    DocumentPage, DocumentSpan,
+    DatasheetDocument,
+    DatasheetIdentity,
+    DocumentFingerprint,
+    DocumentMetadata,
+    DocumentPage,
+    DocumentSpan,
 )
 from ..domain.evidence import DocumentRef
 from . import (

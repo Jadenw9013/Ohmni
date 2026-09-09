@@ -188,11 +188,12 @@ python -m ohmni cost golden --quantity 1
 python -m ohmni release golden
 ```
 
-The last verified reference run produced **19 components, 296 copper segments,
-and 9 manufacturing files**, with zero reported KiCad DRC violations or
-unconnected items. Its **21 schematic warnings remained visible**. These are
-results for this fixture and its synthetic manufacturing profile, not a
-guarantee that fabricated hardware will work.
+The corrected reference placement has **19 components, 297 copper segments,
+40 emitted vias and 1,068.87 mm of copper**, with zero reported KiCad DRC
+violations or unconnected items in its current routing check. Earlier release
+records describe the previous layout and retain their original results.
+Schematic warnings remain visible. Fixture checks and the synthetic
+manufacturing profile do not establish that fabricated hardware will work.
 
 ---
 

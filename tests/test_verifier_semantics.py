@@ -116,7 +116,7 @@ class TestOutcomeSemantics:
         assert result.missing_data == ["something else was unknown"]
 
     def test_a_crashing_rule_reports_error_not_pass(self):
-        def explode(ctx, out):  # noqa: ANN001, ARG001
+        def explode(ctx, out):
             raise ZeroDivisionError("boom")
 
         registered = RegisteredRule(

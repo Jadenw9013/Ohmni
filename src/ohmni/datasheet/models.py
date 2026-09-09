@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from enum import StrEnum
-from typing import Literal
 
 from pydantic import BaseModel, Field, computed_field, model_validator
 
@@ -43,7 +42,7 @@ class CandidateClaim(BaseModel):
     ambiguity: list[str] = Field(default_factory=list)
 
     @model_validator(mode="after")
-    def _one_value(self) -> "CandidateClaim":
+    def _one_value(self) -> CandidateClaim:
         if sum(v is not None for v in (self.quantity, self.text_value, self.integer_value)) != 1:
             raise ValueError("candidate must propose exactly one typed value")
         quantity_types = {

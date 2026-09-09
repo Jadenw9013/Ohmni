@@ -359,9 +359,7 @@ class ValueRange(BaseModel):
             raise UnitMismatchError(f"cannot test {quantity.unit} against {self.unit} range")
         if self.minimum is not None and not quantity.at_least(self.minimum, rel_tol):
             return False
-        if self.maximum is not None and not quantity.at_most(self.maximum, rel_tol):
-            return False
-        return True
+        return self.maximum is None or quantity.at_most(self.maximum, rel_tol)
 
     @property
     def worst_case_high(self) -> Quantity | None:

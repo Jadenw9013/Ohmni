@@ -300,12 +300,13 @@ test("confirming the brief starts a generation-bound job and polls it", async ()
     assert.equal(dom.get("#design").hidden, false);
 }));
 
-test("polling distinguishes restart, lost job, worker start, and pipeline failures", async () => {
+test("polling distinguishes restart, lost job, worker start, pipeline failure, and incomplete routing", async () => {
     const cases = [
         [() => response(404, { error: "job_not_found" }), /no longer available/],
         [() => response(409, { error: "server_instance_mismatch" }), /restarted or changed/],
         [() => response(200, jobEnvelope({ status: "failed", error: "Demo pipeline failed", error_code: "worker_start_failed" })), /worker failed before progress began/],
         [() => response(200, jobEnvelope({ status: "failed", error: "Demo pipeline failed", error_code: "pipeline_failed" })), /engineering pipeline failed/],
+        [() => response(200, jobEnvelope({ status: "failed", error: "Demo pipeline failed", error_code: "routing_incomplete" })), /could not finish all copper connections.*No build package.*Retry/],
     ];
     for (const [handler, expected] of cases) {
         await withApp(async (app, dom) => {

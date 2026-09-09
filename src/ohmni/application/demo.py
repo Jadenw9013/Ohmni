@@ -6,6 +6,7 @@ Every badge comes from a typed report produced by an existing subsystem.
 
 from __future__ import annotations
 
+import math
 from collections.abc import Callable
 from pathlib import Path
 
@@ -34,6 +35,11 @@ from .visuals import pcb_svg, schematic_svg
 
 DEMO_REQUEST = GOLDEN_REQUEST
 UNSUPPORTED_DEMO_REQUEST = "Only the displayed deterministic ESP32 + BME280 request is supported"
+PRODUCT_ROUTING_TIME_BUDGET_SECONDS = 180.0
+
+
+class RoutingIncompleteError(RuntimeError):
+    """Typed boundary: a partial routing plan cannot become a released board."""
 
 
 def require_demo_request(value: object) -> str:
@@ -89,7 +95,7 @@ def _semantic_ladder(report: VerificationReport, initial_blocking: int) -> list[
             "subsystem": name,
             "status": status.value,
             "detail": (
-                "Deterministic subsystem roll-up from 24 rules; "
+                f"Deterministic subsystem roll-up from {len(report.results)} rule results; "
                 f"initial proposal had {initial_blocking} blocking findings"
             ),
         }
@@ -120,6 +126,32 @@ def _require_pcb_projection_lineage(board, plan, route_report, routed):
     ):
         raise ValueError("PCB projection lineage does not match routed artifact")
     return routed
+
+
+def _pcb_quality_metrics(board, routed) -> dict[str, object]:
+    """Project geometric measurements from emitted copper, never A* path estimates."""
+    compilation = routed.compilation
+    copper = compilation.copper_statistics
+    emitted_length = round(sum(track.length_mm for track in compilation.emitted_tracks), 6)
+    if (
+        routed.constraints_hash != board.content_hash
+        or compilation.constraints_hash != board.content_hash
+        or compilation.artifact_fingerprint != routed.fingerprint
+        or copper.track_segment_count != len(compilation.emitted_tracks)
+        or copper.via_count != len(compilation.emitted_vias)
+        or not math.isclose(copper.total_track_length_mm, emitted_length, rel_tol=0, abs_tol=1e-6)
+    ):
+        raise ValueError("PCB quality measurements do not match the emitted artifact")
+    return {
+        "board_area_mm2": round(board.outline.width_mm * board.outline.height_mm, 6),
+        "track_length_mm": emitted_length,
+        "track_segment_count": len(compilation.emitted_tracks),
+        "via_count": len(compilation.emitted_vias),
+        "source_pcb_fingerprint": routed.fingerprint.digest,
+        "constraints_hash": board.content_hash,
+        "basis": "Rectangular board outline and actual emitted PCB copper geometry.",
+        "limitation": "Geometric measurements describe this result; they do not prove optimal routing, signal integrity, or RF performance.",
+    }
 
 
 class DemoProgress(BaseModel):
@@ -184,8 +216,13 @@ class DemoPipeline:
         board = golden_board_constraints()
         return self.finish_design(destination, request, design, catalog, board)
 
-    def finish_design(self, destination, request, design, catalog, board, *, scripted=True):
+    def finish_design(self, destination, request, design, catalog, board, *, scripted=True,
+                      routing_time_budget_seconds=PRODUCT_ROUTING_TIME_BUDGET_SECONDS):
         """Compile and verify one supplied design; shared by demo and project runs."""
+        if (isinstance(routing_time_budget_seconds, bool)
+                or not isinstance(routing_time_budget_seconds, (int, float))
+                or not math.isfinite(routing_time_budget_seconds) or routing_time_budget_seconds < 0):
+            raise ValueError("Product routing requires a finite, nonnegative time budget")
         circuit = design.final_circuit
         compiler = KiCadPcbCompiler(catalog)
         placed = compiler.compile(circuit, design.artifact, board, destination / "golden.placed.kicad_pcb")
@@ -199,9 +236,22 @@ class DemoPipeline:
                        "This is the slow part. Copper paths on the board replace what would "
                        "be wires on a breadboard, and every one has to reach its destination "
                        "without crossing another.")
-        plan = DeterministicRouter().route(circuit, placed, board)
+        plan = DeterministicRouter().route(circuit, placed, board,
+                                           time_budget_seconds=routing_time_budget_seconds)
+        (destination / "routing-plan.json").write_text(plan.model_dump_json(indent=2), encoding="utf-8")
         route_report = verify_routing(circuit, placed, board, plan)
+        (destination / "routing-verification.json").write_text(
+            route_report.model_dump_json(indent=2), encoding="utf-8",
+        )
+        if plan.failures:
+            unresolved = sorted({failure.net_name for failure in plan.failures})
+            details = "; ".join(dict.fromkeys(failure.detail for failure in plan.failures))
+            message = f"Routing incomplete: {len(unresolved)} unresolved nets ({', '.join(unresolved)}). {details}"
+            self._progress("routing", "Copper routing is incomplete", "FAIL", 40, message)
+            raise RoutingIncompleteError(message)
         if not route_report.passed:
+            self._progress("routing", "The copper checks found a problem", "FAIL", 40,
+                           "Independent routing verification did not pass; diagnostics were retained.")
             raise RuntimeError("independent routing verification failed")
         routed = compiler.compile(circuit, design.artifact, board, destination / "golden.kicad_pcb", plan)
         if not routed.compilation.physical_verification.passed or any(
@@ -339,11 +389,11 @@ def project_demo_report(**values) -> DemoReport:
         verification_ladder=ladder,notebook=notebook,
         lessons=[lesson.model_dump(mode="json") for lesson in design.lessons],
         schematic={"path":str(design.artifact.path),"fingerprint":design.artifact.fingerprint.digest,"current":design.artifact.is_current,"erc_status":design.erc.status.value.upper(),"erc_findings":len(design.erc.findings),"svg":schematic_svg(design.artifact)},
-        pcb={"path":str(routed.path),"fingerprint":routed.fingerprint.digest,"source_schematic_fingerprint":routed.schematic_fingerprint.digest,"source_placed_pcb_fingerprint":routed.source_placed_pcb_fingerprint.digest if routed.source_placed_pcb_fingerprint else None,"current":routed.lineage_is_current,"drc_status":drc.status.value.upper(),"violations":len(drc.findings),"unrouted":len(drc.unconnected_items),"statistics":routed.compilation.copper_statistics.model_dump(mode="json"),"svg":pcb_svg(board,routed)},
+        pcb={"path":str(routed.path),"fingerprint":routed.fingerprint.digest,"source_schematic_fingerprint":routed.schematic_fingerprint.digest,"source_placed_pcb_fingerprint":routed.source_placed_pcb_fingerprint.digest if routed.source_placed_pcb_fingerprint else None,"current":routed.lineage_is_current,"drc_status":drc.status.value.upper(),"violations":len(drc.findings),"unrouted":len(drc.unconnected_items),"statistics":routed.compilation.copper_statistics.model_dump(mode="json"),"quality_metrics":_pcb_quality_metrics(board,routed),"svg":pcb_svg(board,routed)},
         manufacturing={"profile":manufacturing.profile.display_name,"provenance":manufacturing.profile.provenance.value,"findings":[finding.model_dump(mode="json") for finding in manufacturing.findings]},
         bom={"references":bom.reference_count,"unique_lines":len(bom.lines),"lines":bom_rows},
         economics={"scenario_boards":1,"pricing_coverage":costs.pricing_coverage,"known_consumption_cost":str(costs.known_consumption_cost),"known_purchase_requirement":str(costs.known_purchase_requirement),"fabrication":costs.fabrication.value.upper(),"shipping":costs.shipping.value.upper(),"tooling":costs.tooling.value.upper(),"pricing_source":"SYNTHETIC FIXTURE - NOT LIVE SUPPLIER DATA"},
         assembly={"hand_solder_requirement_satisfied":assembly.hand_solder_requirement_satisfied,"risks":[risk.model_dump(mode="json") for risk in assembly.risks],"limitations":assembly.limitations},
         release={"status":release_status.value.upper(),"package_fingerprint":package.package_fingerprint,"pcb_fingerprint":package.source_pcb_fingerprint,"current":release_current,"files":[file.model_dump(mode="json") for file in package.files],"manifest":package.manifest.model_dump(mode="json")},
-        limitations=[("Supported deterministic demo: ESP32/BME280 logger, not arbitrary hardware." if scripted else "Bounded USB ESP32/BME280 synthesis; only the offered options are supported. Placement follows an authored archetype policy, not a general placement optimizer."),"Not simulation verified.","Not thermal, EMC, RF, or signal-integrity verified.","Not bench verified.","Manufacturing profile is synthetic and requires human review.","No guarantee of successful fabrication or assembly."],
+        limitations=[("Supported deterministic demo: ESP32/BME280 logger, not arbitrary hardware." if scripted else "Bounded USB ESP32/BME280 synthesis; only the offered options are supported. Placement is generated from authored blocks and geometric constraints, not guaranteed globally optimal."),"Not simulation verified.","Not thermal, EMC, RF, or signal-integrity verified.","Not bench verified.","Manufacturing profile is synthetic and requires human review.","No guarantee of successful fabrication or assembly."],
     )

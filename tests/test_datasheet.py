@@ -8,21 +8,20 @@ import pymupdf
 import pytest
 from pydantic import ValidationError
 
-from ohmni.catalog import default_catalog
 from ohmni.adapters.fakes import InMemoryPartCatalog
+from ohmni.catalog import default_catalog
 from ohmni.cli import main
 from ohmni.datasheet import BoundedTextExtractor, DatasheetPipeline, PyMuPdfExtractor
-from ohmni.datasheet.merge import apply_verified_claims
 from ohmni.datasheet.models import (
-    CandidateClaim, ClaimVerificationStatus, FactType,
+    CandidateClaim,
+    ClaimVerificationStatus,
+    FactType,
 )
 from ohmni.datasheet.pdf import PdfIngestError, PdfIngestStatus
 from ohmni.datasheet.verify import verify_candidate
-from ohmni.domain import ClaimStatus, EvidenceKind, Quantity, Unit
-from ohmni.domain import ValueRange
+from ohmni.domain import ClaimStatus, EvidenceKind, Quantity, Unit, ValueRange
 from ohmni.fixtures.esp32_env_logger import golden, requirements
 from ohmni.verifier import verify
-
 
 GOLDEN_LINES = [
     "Bosch Sensortec BME280 Datasheet Revision 1.0 Document release date August 2026",
@@ -32,8 +31,8 @@ GOLDEN_LINES = [
     "Absolute maximum ratings: VDDIO 4.3 V",
     "The BME280 supports I2C interface with addresses 0x76 and 0x77.",
     "Decoupling capacitor: connect 100 nF between VDD and ground.",
-    "Pin table: 1 GND ground; 2 CSB mode select; 3 SDI data; 4 SCK clock; "
-    "5 SDO address select; 6 VDDIO supply; 7 GND ground; 8 VDD supply.",
+    ("Pin table: 1 GND ground; 2 CSB mode select; 3 SDI data; 4 SCK clock; "
+     "5 SDO address select; 6 VDDIO supply; 7 GND ground; 8 VDD supply."),
 ]
 
 
@@ -245,7 +244,7 @@ class TestPipelineAndUpgrade:
 
     def test_existing_verifier_consumes_upgraded_component_without_pdf_dependency(self, golden_pdf: Path):
         bundled = default_catalog()
-        report, upgraded = DatasheetPipeline(
+        _report, upgraded = DatasheetPipeline(
             PyMuPdfExtractor(), BoundedTextExtractor()
         ).ingest(golden_pdf, bundled.require("BME280"))
         parts = [upgraded if part.part_id == "BME280" else part for part in bundled.all_parts()]

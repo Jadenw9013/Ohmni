@@ -23,7 +23,7 @@ def sensor_board_constraints(circuit: CircuitIR) -> BoardConstraints:
         "C1": (16, 58, "Regulator input bypass"), "C2": (24, 58, "Regulator output bypass"),
         "U1": (45, 35, "Processor block"),
         "C3": (32, 35, "Processor local decoupling"), "C4": (58, 35, "Processor bulk capacitance"),
-        "C5": (45, 22, "Processor enable capacitor"), "R3": (14, 10, "Processor enable pull-up"),
+        "C5": (32, 27, "Processor enable capacitor beside the full module body"), "R3": (14, 10, "Processor enable pull-up"),
         "U3": (80, 50, "Sensor block"),
         "C6": (76, 50, "Sensor VDD decoupling"), "C7": (84, 50, "Sensor VDDIO decoupling"),
         # Keep the data/clock pull-ups on the sensor's data-pin side. A data

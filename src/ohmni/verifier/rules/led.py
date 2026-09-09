@@ -177,7 +177,7 @@ def led_current_limiting(ctx: VerificationContext, out: ResultBuilder) -> None:
     )
 
 
-def _pin_net(ctx: VerificationContext, ref: str, spec, role: PinRole) -> str | None:  # noqa: ANN001
+def _pin_net(ctx: VerificationContext, ref: str, spec, role: PinRole) -> str | None:
     for pin in spec.pins_with_role(role):
         net = ctx.circuit.net_of(ref, pin.number)
         if net is not None:
@@ -185,7 +185,7 @@ def _pin_net(ctx: VerificationContext, ref: str, spec, role: PinRole) -> str | N
     return None
 
 
-def _series_resistor(ctx: VerificationContext, led_ref: str, net_name: str):  # noqa: ANN201
+def _series_resistor(ctx: VerificationContext, led_ref: str, net_name: str):
     """Find a resistor forming a private two-pin node with this LED.
 
     Exactly two connections on the net, one of them the LED and the other a

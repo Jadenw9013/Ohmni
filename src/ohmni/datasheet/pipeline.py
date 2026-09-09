@@ -31,7 +31,7 @@ class DatasheetPipeline:
             FactType.I2C_ADDRESS, FactType.DECOUPLING_CAPACITANCE,
         }
         verified_types = {r.candidate.fact_type for r in results if r.claim_supported}
-        unknown = sorted((kind.value for kind in required - verified_types))
+        unknown = sorted(kind.value for kind in required - verified_types)
         report = DatasheetIngestionReport(
             document=document, candidates=candidates, results=results,
             unknown_required_fields=unknown,

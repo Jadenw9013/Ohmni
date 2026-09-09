@@ -9,8 +9,13 @@ from pathlib import Path
 import pymupdf
 
 from ..domain import (
-    DatasheetDocument, DatasheetIdentity, DocumentFingerprint, DocumentMetadata,
-    DocumentPage, DocumentRegion, DocumentSpan,
+    DatasheetDocument,
+    DatasheetIdentity,
+    DocumentFingerprint,
+    DocumentMetadata,
+    DocumentPage,
+    DocumentRegion,
+    DocumentSpan,
 )
 
 
@@ -115,10 +120,10 @@ def _detect_identity(pages: list[DocumentPage], metadata: dict) -> DatasheetIden
     known = [part for part in ("BME280", "BMP280") if part in cover]
     revision = None
     import re
-    match = re.search(r"(?:revision|rev\.?|document revision)\s*[: ]\s*([A-Z0-9.\-]+)", head, re.I)
+    match = re.search(r"(?:revision|rev\.?|document revision)\s*[: ]\s*([A-Z0-9.\-]+)", head, re.IGNORECASE)
     if match:
         revision = match.group(1)
-    date_match = re.search(r"document release date\s+([^\n]+)", head, re.I)
+    date_match = re.search(r"document release date\s+([^\n]+)", head, re.IGNORECASE)
     date = date_match.group(1).strip() if date_match else (
         metadata.get("modDate") or metadata.get("creationDate") or None
     )

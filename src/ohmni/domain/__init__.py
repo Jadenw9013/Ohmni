@@ -44,14 +44,6 @@ from .component import (
     SupplyRail,
     resolve_pin_behavior,
 )
-from .events import (
-    Alternative,
-    DecisionRecord,
-    EngineeringEvent,
-    EngineeringNotebook,
-    EventKind,
-    Lesson,
-)
 from .document import (
     DatasheetDocument,
     DatasheetIdentity,
@@ -60,6 +52,14 @@ from .document import (
     DocumentPage,
     DocumentRegion,
     DocumentSpan,
+)
+from .events import (
+    Alternative,
+    DecisionRecord,
+    EngineeringEvent,
+    EngineeringNotebook,
+    EventKind,
+    Lesson,
 )
 from .evidence import (
     Claim,
@@ -117,16 +117,16 @@ __all__ = [
     "ComponentCategory",
     "ComponentSpec",
     "ConstraintKind",
-    "DecisionRecord",
     "DatasheetDocument",
     "DatasheetIdentity",
+    "DecisionRecord",
     "DecouplingRule",
     "DesignConstraint",
     "DesignRule",
-    "DocumentRef",
     "DocumentFingerprint",
     "DocumentMetadata",
     "DocumentPage",
+    "DocumentRef",
     "DocumentRegion",
     "DocumentSpan",
     "EngineeringEvent",
@@ -152,8 +152,8 @@ __all__ = [
     "Quantity",
     "QuantityParseError",
     "RegulatorSpec",
-    "ResolvedPinBehavior",
     "RequirementsSpec",
+    "ResolvedPinBehavior",
     "RuleCategory",
     "RuleOutcome",
     "RuleResult",
@@ -161,7 +161,6 @@ __all__ = [
     "Severity",
     "SubsystemStatus",
     "SupplyRail",
-    "resolve_pin_behavior",
     "Unit",
     "UnitMismatchError",
     "ValueRange",
@@ -172,6 +171,7 @@ __all__ = [
     "catalog_evidence",
     "datasheet_evidence",
     "parse_quantity",
+    "resolve_pin_behavior",
     "severity_rank",
     "status_rank",
 ]

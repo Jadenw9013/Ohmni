@@ -20,6 +20,7 @@ class ConstraintProvenance(StrEnum):
 
 
 class ProfileValue(BaseModel):
+    model_config = ConfigDict(allow_inf_nan=False)
     value: float | int
     provenance: ConstraintProvenance
     rationale: str
@@ -44,6 +45,16 @@ class RoutingProfile(BaseModel):
             raise ValueError("only F.Cu/B.Cu routing is supported")
         if float(self.via_drill_mm.value) >= float(self.via_diameter_mm.value):
             raise ValueError("via drill must be smaller than via diameter")
+        for name in ("signal_width_mm", "power_width_mm", "via_diameter_mm", "via_drill_mm", "grid_mm"):
+            if not math.isfinite(float(getattr(self, name).value)) or float(getattr(self, name).value) <= 0:
+                raise ValueError(f"{name} must be finite and positive")
+        for name in ("clearance_mm", "edge_clearance_mm"):
+            if not math.isfinite(float(getattr(self, name).value)) or float(getattr(self, name).value) < 0:
+                raise ValueError(f"{name} must be finite and nonnegative")
+        for name, minimum in (("maximum_vias_per_connection", 0), ("maximum_expanded_nodes", 1)):
+            value = float(getattr(self, name).value)
+            if not math.isfinite(value) or not value.is_integer() or value < minimum:
+                raise ValueError(f"{name} must be an integer at least {minimum}")
         return self
 
     @property
@@ -52,16 +63,32 @@ class RoutingProfile(BaseModel):
 
 
 class NetRoutingConstraint(BaseModel):
-    net_name: str
+    model_config = ConfigDict(allow_inf_nan=False)
+    net_name: str = Field(min_length=1)
     preferred_layer: str | None = None
-    width_mm: float | None = None
+    width_mm: float | None = Field(default=None, gt=0)
     provenance: ConstraintProvenance = ConstraintProvenance.DERIVED
     rationale: str = "derived from net role"
+
+    @model_validator(mode="after")
+    def _supported(self) -> NetRoutingConstraint:
+        if self.preferred_layer not in (None, "F.Cu", "B.Cu"):
+            raise ValueError("preferred layer must be F.Cu or B.Cu")
+        return self
 
 
 class RoutingConstraints(BaseModel):
     profile: RoutingProfile = Field(default_factory=RoutingProfile)
     nets: list[NetRoutingConstraint] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def _consistent(self) -> RoutingConstraints:
+        if len({net.net_name for net in self.nets}) != len(self.nets):
+            raise ValueError("duplicate per-net routing constraints")
+        if any(net.width_mm is not None and net.width_mm < self.profile.signal_width_mm.value
+               for net in self.nets):
+            raise ValueError("net width cannot be below the profile minimum signal width")
+        return self
 
 
 class Point(BaseModel):
@@ -112,6 +139,8 @@ class Via(BaseModel):
 
 
 class RoutePath(BaseModel):
+    """Copper between physical lands; duplicate lands use pin#ordinal IDs."""
+
     source_pad: str
     target_pad: str
     tracks: list[TrackSegment]
@@ -166,10 +195,12 @@ class RoutingPlan(BaseModel):
     failures: list[RoutingFailure] = Field(default_factory=list)
     statistics: RoutingStatistics
     events: list[EngineeringEvent] = Field(default_factory=list)
+    net_constraints: list[NetRoutingConstraint] = Field(default_factory=list)
 
     @property
     def content_hash(self) -> str:
-        return hashlib.sha256(self.model_dump_json(exclude={"events"}).encode()).hexdigest()
+        excluded = {"events"} if self.net_constraints else {"events", "net_constraints"}
+        return hashlib.sha256(self.model_dump_json(exclude=excluded).encode()).hexdigest()
 
     @property
     def tracks(self) -> list[TrackSegment]:

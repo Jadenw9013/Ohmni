@@ -11,6 +11,7 @@ from .a1 import (
     _pin_named,
     _pins,
 )
+from .placement import PlacementIntentBuilder, rail_evidence
 
 SUPPORTED_I2C_PARTS = frozenset({"BME280", "TMP102AIDRLR"})
 
@@ -28,7 +29,8 @@ def address_option(spec: ComponentSpec, requested: int | None, used=()):
     return option
 
 
-def add_i2c_bus(components, nets, catalog, prefer_hand, *, resistor_refs=("R6", "R7")):
+def add_i2c_bus(components, nets, catalog, prefer_hand, *, resistor_refs=("R6", "R7"),
+                placement: PlacementIntentBuilder | None = None):
     """Add one 3.3 V bus with explicit authored 4.7k pull-up policy."""
     mcu = catalog.require("ESP32-WROOM-32E")
     logic = next(net for net in nets if net.name == "3V3")
@@ -40,9 +42,12 @@ def add_i2c_bus(components, nets, catalog, prefer_hand, *, resistor_refs=("R6", 
         ))
         logic.connections.extend(_pins((ref, "2")))
         nets.append(Net(name=name, connections=_pins(("U1", _pin_named(mcu, pin_name)), (ref, "1"))))
+    if placement is not None:
+        placement.join("U1", resistor_refs)
 
 
-def add_i2c_sensor(components, nets, catalog, slot, prefer_hand, *, ref, cap_refs, used_addresses=()):
+def add_i2c_sensor(components, nets, catalog, slot, prefer_hand, *, ref, cap_refs, used_addresses=(),
+                   placement: PlacementIntentBuilder | None = None):
     """Resolve one supported sensor, supply decoupling, mode, and address straps."""
     if slot.part_id not in SUPPORTED_I2C_PARTS:
         raise _CatalogCapabilityError(f"Unsupported I2C sensor topology: {slot.part_id}")
@@ -81,4 +86,13 @@ def add_i2c_sensor(components, nets, catalog, slot, prefer_hand, *, ref, cap_ref
         ))
         logic.connections.extend(_pins((cap_ref, "1")))
         ground.connections.extend(_pins((cap_ref, "2")))
+        if placement is not None:
+            power_pins = [pin.number for pin in spec.pins_with_role(PinRole.POWER)
+                          if pin.supply_rail == rail.name]
+            if len(power_pins) != 1:
+                raise _CatalogCapabilityError(f"{slot.part_id} requires one physical supply owner for {rail.name}")
+            placement.capacitor(cap_ref, ref, power_pins[0], evidence=rail_evidence(spec, rail.name))
+    if placement is not None:
+        placement.group("sensor", ref, (ref, *cap_refs[:len(spec.supply_rails)]),
+                        "I2C sensor and the capacitors authored for its individual supply pins.")
     return option.address

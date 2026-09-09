@@ -181,7 +181,7 @@ def no_floating_control_pins(ctx: VerificationContext, out: ResultBuilder) -> No
         out.not_applicable("no resolved part declares a pin that must not float")
 
 
-def _report_floating(  # noqa: ANN001, PLR0913
+def _report_floating(
     out: ResultBuilder,
     ref: str,
     part_name: str,

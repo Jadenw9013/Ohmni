@@ -247,10 +247,10 @@ def golden() -> CircuitIR:
         nets=_nets(),
         constraints=_constraints(),
         design_assumptions=[
-            "The USB-C port is power-sink only; D+/D- are left unconnected because "
-            "programming goes through the serial header rather than a USB bridge.",
-            "The sensor is read at a low rate, so its supply current is negligible next to "
-            "the module's RF bursts.",
+            ("The USB-C port is power-sink only; D+/D- are left unconnected because "
+             "programming goes through the serial header rather than a USB bridge."),
+            ("The sensor is read at a low rate, so its supply current is negligible next to "
+             "the module's RF bursts."),
         ],
         notes="Golden reference. Any ERROR or CRITICAL finding here is a regression.",
     )

@@ -16,14 +16,16 @@ import sys
 import threading
 import uuid
 import zipfile
+from functools import lru_cache
 from http import HTTPStatus
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from types import MappingProxyType
-from typing import Any
+from typing import Any, NamedTuple
 from urllib.parse import unquote, urlsplit
 
 from ohmni.application import DEMO_REQUEST, DemoPipeline, preview_brief
+from ohmni.application.demo import RoutingIncompleteError
 from ohmni.application.project_store import (
     PROJECT_ID_PATTERN,
     ProjectStore,
@@ -49,7 +51,7 @@ WORKSPACE_IN_USE_MESSAGE="Ohmni workspace is already in use. Stop its local serv
 JOB_RECORD_FIELDS={"job_id","status","progress","report","error","error_code"}
 JOB_STATUSES={"queued","running","complete","failed"}
 TERMINAL_JOB_STATUSES={"complete","failed"}
-JOB_FAILURE_CODES={"worker_start_failed","pipeline_failed","progress_publication_failed","job_state_invalid","server_restarted"}
+JOB_FAILURE_CODES={"worker_start_failed","pipeline_failed","progress_publication_failed","job_state_invalid","server_restarted","routing_incomplete"}
 STATIC_ASSETS=("index.html","app.js","view-model.js","board-model.js","board-view.js",
                "schematic-view.js","client-contract.js","reference-preview.js",
                "board-renderer-geometry.js","board-renderer-webgl.js","board-controls.js",
@@ -178,10 +180,42 @@ def _reject_json_constant(_value):
     raise ValueError
 
 
+class _ExpectedProjectGeometry(NamedTuple):
+    circuit_hash: str
+    request_fingerprint: str
+    constraints_hash: str
+    algorithm: str
+    request_bytes: bytes
+    placement_bytes: bytes
+
+
+def _derive_project_geometry(brief_json):
+    """Return immutable current-policy data, without routing or an EDA process."""
+    from ohmni.catalog import default_catalog
+    from ohmni.physical.placement import generate_placement
+    from ohmni.synthesis import SynthesisBrief, synthesize
+
+    brief=SynthesisBrief.model_validate_json(brief_json)
+    catalog=default_catalog()
+    result=synthesize(brief,catalog)
+    if not result.accepted or result.placement_request is None:
+        raise ValueError("saved input has no supported current placement intent")
+    generated=generate_placement(result.circuit,result.placement_request,catalog)
+    return _ExpectedProjectGeometry(
+        result.circuit.content_hash,result.placement_request.content_hash,
+        generated.board.content_hash,generated.algorithm,
+        result.placement_request.model_dump_json(indent=2).encode("utf-8"),
+        generated.model_dump_json(indent=2).encode("utf-8"),
+    )
+
+
 class JobStore:
     def __init__(self,output_root:Path=OUTPUT_ROOT,pipeline_factory=DemoPipeline,*,max_active_jobs=2):
         self.output_root=output_root;self.pipeline_factory=pipeline_factory;self.jobs={};self.lock=threading.Lock();self._diagnostic=None
         self.project_store=None;self.max_active_jobs=max_active_jobs
+        # A server/store restart gets a fresh cache. Cached values are immutable
+        # hashes and bytes, so callers cannot rewrite another job's expectation.
+        self._expected_project_geometry=lru_cache(maxsize=128)(_derive_project_geometry)
     def enable_persistence(self):
         """Attach local persistence once, recovering interrupted jobs explicitly."""
         with self.lock:
@@ -241,6 +275,11 @@ class JobStore:
             if previous_job_id is not None:
                 if previous_job_id not in self.jobs:raise ValueError("stored revision job unavailable")
                 previous=self._validated_job_locked(previous_job_id)
+                if previous["status"]=="complete":
+                    try:self._project_lineage(previous_job_id,previous["report"])
+                    except (ValueError,KeyError,TypeError,OSError):
+                        previous=self._failure_record(previous_job_id)
+                        self.jobs[previous_job_id]=previous
                 if previous["status"]!="failed":return previous_job_id
                 if not self._persist_locked(previous_job_id):raise RuntimeError("local job persistence unavailable")
             brief=SynthesisBrief.model_validate(revision["brief"])
@@ -308,6 +347,9 @@ class JobStore:
                     job.update(status="complete",report=value);completed=self._persist_locked(job_id)
                 else:completed=False
             if completed:self._emit("job_completed",job_id)
+        except RoutingIncompleteError:
+            # Preserve one owned actionable code, never exception text or paths.
+            self._fail(job_id,"routing_incomplete")
         except BaseException:  # noqa: BLE001 - the worker boundary must always terminalize the job
             self._fail(job_id,"pipeline_failed")
     def _snapshot(self,job_id):
@@ -339,14 +381,19 @@ class JobStore:
         if directory is None or expected is None:return "unavailable",None
         return self._read_matching(directory/name,expected,directory)
     def read_artifact(self,job_id,name):
-        try:return self._read_artifact_snapshot(job_id,name,self._snapshot(job_id))
+        try:
+            job=self.get(job_id)
+            if (job and job.get("status")=="complete" and name in ARTIFACT_SECTIONS
+                    and job["report"].get(ARTIFACT_SECTIONS[name],{}).get("current") is not True):
+                return "stale",None
+            return self._read_artifact_snapshot(job_id,name,job)
         except BaseException:return "unavailable",None  # noqa: BLE001 - never expose artifact-boundary failures
     def read_build_package(self,job_id):
         """Zip only captured, hash-matching bytes from one current release."""
         try:return self._build_package_snapshot(job_id)
         except BaseException:return "unavailable",None  # noqa: BLE001 - never disclose disk or report failures
     def _project_lineage(self,job_id,report,manifest=None):
-        from ohmni.synthesis import SynthesisBrief, synthesize_a1
+        from ohmni.synthesis import SynthesisBrief
 
         lineage=self.project_store.job_revision(job_id) if self.project_store is not None else None
         if lineage is None:
@@ -361,9 +408,22 @@ class JobStore:
             raise ValueError("project report does not match saved revision")
         circuit_hash=project.get("circuit_hash")
         if not isinstance(circuit_hash,str) or not UI_VERSION_PATTERN.fullmatch(circuit_hash):raise ValueError
-        synthesis=synthesize_a1(brief)
-        if not synthesis.accepted or synthesis.circuit.content_hash!=circuit_hash:
+        expected=self._expected_project_geometry(brief.model_dump_json())
+        if expected.circuit_hash!=circuit_hash:
             raise ValueError("project circuit does not match saved input")
+        pcb=report["pcb"]
+        placement=pcb.get("placement")
+        if (not isinstance(placement,dict)
+                or project.get("placement_request_fingerprint")!=expected.request_fingerprint
+                or placement.get("request_fingerprint")!=expected.request_fingerprint
+                or placement.get("constraints_hash")!=expected.constraints_hash
+                or placement.get("algorithm")!=expected.algorithm):
+            raise ValueError("project placement does not match the current generated geometry")
+        quality=pcb.get("quality_metrics")
+        if quality is not None and (not isinstance(quality,dict)
+                or quality.get("constraints_hash")!=expected.constraints_hash
+                or quality.get("source_pcb_fingerprint")!=pcb.get("fingerprint")):
+            raise ValueError("project geometry measurements do not match placement lineage")
         if manifest is None:
             directory=self._job_directory(job_id)
             item=report["release"]["manifest"]
@@ -420,10 +480,22 @@ class JobStore:
             return "stale",None
         captured["report.json"]=(json.dumps(report,indent=2,allow_nan=False)+"\n").encode("utf-8")
         if lineage is not None:
+            from ohmni.synthesis import SynthesisBrief
+
+            expected=self._expected_project_geometry(SynthesisBrief.model_validate(lineage["brief"]).model_dump_json())
+            # These canonical documents come from the current deterministic
+            # policy only after its hashes match this report's exact lineage.
+            captured["placement-request.json"]=expected.request_bytes
+            captured["placement.json"]=expected.placement_bytes
             captured["confirmed-brief.json"]=(json.dumps(lineage["brief"],indent=2,sort_keys=True)+"\n").encode("utf-8")
             revision={key:value for key,value in lineage.items() if key!="brief"}
             revision.update(job_id=job_id,circuit_fingerprint=report["project"]["circuit_hash"],
-                            package_fingerprint=package_fingerprint)
+                            package_fingerprint=package_fingerprint,
+                            placement_request_fingerprint=expected.request_fingerprint,
+                            board_constraints_hash=expected.constraints_hash,
+                            placement_algorithm=expected.algorithm,
+                            placement_documents={name:hashlib.sha256(captured[name]).hexdigest()
+                                                 for name in ("placement-request.json","placement.json")})
             captured["project-revision.json"]=(json.dumps(revision,indent=2,sort_keys=True)+"\n").encode("utf-8")
         captured["bom.csv"]=_build_bom_csv(report).encode("utf-8-sig")
         captured["ASSEMBLY-AND-BRINGUP.md"]=_build_guide(report).encode("utf-8")
@@ -459,6 +531,16 @@ class JobStore:
             project_current=True
             try:self._project_lineage(job_id,report)
             except (ValueError,KeyError,TypeError,OSError):project_current=False
+            if not project_current:
+                # A historical policy result cannot remain a completed reusable
+                # attempt. Preserve its artifact files but retire publication,
+                # enabling the existing failed-attempt retry path.
+                with self.lock:
+                    current=self._validated_job_locked(job_id)
+                    if current["status"]=="complete":
+                        self.jobs[job_id]=self._failure_record(job_id)
+                        self._persist_locked(job_id)
+                    return _owned_json_object(self.jobs[job_id])
             pcb_current=pcb_file_current and schematic_current and placed_current and project_current
             if isinstance(pcb,dict):pcb["current"]=pcb_current
             fabrication=directory/"fabrication" if directory is not None else None

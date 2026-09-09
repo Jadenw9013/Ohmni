@@ -27,6 +27,7 @@ from .a1 import (
 from .base import build_usb_esp32_base, common_preflight
 from .models import ArchetypeId, RefusalCode, SynthesisBrief, SynthesisResult
 from .peripherals import SUPPORTED_I2C_PARTS, add_i2c_bus, add_i2c_sensor, address_option
+from .placement import PlacementIntentBuilder, rail_evidence
 
 SPI_MEMORY_PART_ID = "25LC256-I/SN"
 SPI_PIN_POLICY = (("SPI_SCK", "IO18", PinRole.SPI_SCK),
@@ -63,7 +64,8 @@ def synthesize_a3(brief: SynthesisBrief, catalog=None) -> SynthesisResult:
     if brief.status_led_count and catalog.get(LED_PART_ID) is None:
         return _refuse(brief, RefusalCode.PART_UNAVAILABLE, "The status LED is absent from the catalog.", "status_led_count")
     try:
-        base = build_usb_esp32_base(brief, catalog)
+        placement = PlacementIntentBuilder()
+        base = build_usb_esp32_base(brief, catalog, placement=placement)
         components, nets = base.components, base.nets
         controller = next(part for part in components if part.ref == "U1")
         controller.selected_interfaces = [Interface.SPI]
@@ -92,6 +94,9 @@ def synthesize_a3(brief: SynthesisBrief, catalog=None) -> SynthesisResult:
                 CircuitComponent(ref=pull, part_id=RESISTOR_PART_ID, package=_package(catalog, RESISTOR_PART_ID, prefer),
                                  value=Quantity.ohms(10_000), notes="Authored 10k pull-up keeps EEPROM deselected while MCU resets."),
             ])
+            placement.group("spi", ref, (ref, cap, pull), "SPI peripheral with its own bypass capacitor and chip-select pull-up.")
+            placement.capacitor(cap, ref, _one_pin_with_role(spec, PinRole.POWER),
+                                evidence=rail_evidence(spec, "VCC"))
             logic.connections.extend(_pins((ref, _one_pin_with_role(spec, PinRole.POWER)),
                                            (ref, "3"), (ref, "7"), (cap, "1"), (pull, "2")))
             ground.connections.extend(_pins((ref, _one_pin_with_role(spec, PinRole.GROUND)), (cap, "2")))
@@ -102,9 +107,9 @@ def synthesize_a3(brief: SynthesisBrief, catalog=None) -> SynthesisResult:
                 (ref, _one_pin_with_role(spec, PinRole.SPI_CS)), (pull, "1"),
             )))
         if brief.sensors:
-            add_i2c_bus(components, nets, catalog, prefer)
+            add_i2c_bus(components, nets, catalog, prefer, placement=placement)
             add_i2c_sensor(components, nets, catalog, brief.sensors[0], prefer,
-                           ref="U5", cap_refs=("C8", "C9"))
+                           ref="U5", cap_refs=("C8", "C9"), placement=placement)
         if brief.status_led_count:
             led = catalog.require(LED_PART_ID)
             components.extend([
@@ -112,6 +117,7 @@ def synthesize_a3(brief: SynthesisBrief, catalog=None) -> SynthesisResult:
                 CircuitComponent(ref="R8", part_id=RESISTOR_PART_ID, package=_package(catalog, RESISTOR_PART_ID, prefer),
                                  value=_led_resistance(catalog.require(REGULATOR_PART_ID), led)),
             ])
+            placement.group("gpio", "D1", ("D1", "R8"), "Indicator LED with its own series resistor.")
             ground.connections.extend(_pins(("D1", _one_pin_with_role(led, PinRole.CATHODE))))
             nets.extend([
                 Net(name="LED_DRIVE", connections=_pins(("U1", _pin_named(mcu, "IO27")), ("R8", "1"))),
@@ -154,6 +160,7 @@ def synthesize_a3(brief: SynthesisBrief, catalog=None) -> SynthesisResult:
             functional_requirements=functions,
             assumptions=assumptions,
         )
-        return SynthesisResult(brief_fingerprint=brief.fingerprint, requirements=requirements, circuit=circuit)
+        return SynthesisResult(brief_fingerprint=brief.fingerprint, requirements=requirements, circuit=circuit,
+                               placement_request=placement.finish(circuit))
     except (_CatalogCapabilityError, KeyError) as exc:
         return _refuse(brief, RefusalCode.CATALOG_CAPABILITY_MISSING, str(exc))

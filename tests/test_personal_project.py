@@ -16,8 +16,9 @@ from ohmni.application.projects import (
 )
 from ohmni.catalog import default_catalog
 from ohmni.eda.kicad import KiCadPcbCompiler, KiCadSchematicCompiler
+from ohmni.physical.placement import generate_placement
 from ohmni.physical.sensor_layout import sensor_board_constraints
-from ohmni.synthesis import I2cSensorSlot, SynthesisBrief
+from ohmni.synthesis import I2cSensorSlot, SynthesisBrief, synthesize_a1
 from ohmni.verifier import verify
 
 
@@ -29,7 +30,7 @@ def test_every_offered_configuration_has_matching_geometry_and_checked_topology(
     catalog = default_catalog()
     report = verify(circuit, catalog, requirements.requirements)
     assert report.coverage == 1 and not report.export_blocked
-    board = sensor_board_constraints(circuit)
+    board = generate_placement(circuit, synthesize_a1(brief).placement_request, catalog).board
     assert {p.component_ref for p in board.placements} == {p.ref for p in circuit.components}
     assert all(p.component_ref in {part.ref for part in circuit.components}
                for p in board.placement_constraints)

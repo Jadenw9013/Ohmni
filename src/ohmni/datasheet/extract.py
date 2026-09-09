@@ -45,7 +45,7 @@ class BoundedTextExtractor:
                 lower = text.lower()
                 for rail, lo, hi in re.findall(
                     r"\b(VDDIO|VDD)\b[^\n]{0,80}?(1(?:\.\d+)?)\s*(?:V|volt)[^\n]{0,30}?(\d(?:\.\d+)?)\s*(?:V|volt)",
-                    text, re.I,
+                    text, re.IGNORECASE,
                 ):
                     if "operat" in lower or "recommended" in lower:
                         claims.extend([
@@ -53,7 +53,7 @@ class BoundedTextExtractor:
                             self._q(page.number, text, FactType.SUPPLY_OPERATING_MAX, rail.upper(), float(hi)),
                         ])
                 for rail, value in re.findall(
-                    r"\b(VDDIO|VDD)\b[^\n]{0,60}?(\d(?:\.\d+)?)\s*(?:V|volt)", text, re.I
+                    r"\b(VDDIO|VDD)\b[^\n]{0,60}?(\d(?:\.\d+)?)\s*(?:V|volt)", text, re.IGNORECASE
                 ):
                     if "absolute maximum" in lower or "absolute ratings" in lower:
                         claims.append(self._q(
@@ -71,11 +71,11 @@ class BoundedTextExtractor:
                     claims.append(self._text(
                         page.number, text, FactType.CONTROL_CONDITION, "CSB"
                     ))
-                package = re.search(r"\b(LGA(?:-?8)?)\b", text, re.I)
+                package = re.search(r"\b(LGA(?:-?8)?)\b", text, re.IGNORECASE)
                 if package and ("package" in lower or "metal lid" in lower):
                     claims.append(self._text(page.number, text, FactType.PACKAGE, package.group(1).upper()))
                 pin = re.match(
-                    r"^([1-9][0-9]*)\s+(GND|CSB|SDI|SCK|SDO|VDDIO|VDD)\s+(.+)$", text, re.I
+                    r"^([1-9][0-9]*)\s+(GND|CSB|SDI|SCK|SDO|VDDIO|VDD)\s+(.+)$", text, re.IGNORECASE
                 )
                 if pin and not text.lower().startswith("pin "):
                     claims.append(CandidateClaim(
@@ -84,7 +84,7 @@ class BoundedTextExtractor:
                         pin_number=pin.group(1), text_value=pin.group(2).upper(),
                         pin_function=pin.group(3),
                     ))
-                cap = re.search(r"\b(VDDIO|VDD)\b[^\n]{0,80}?\b(\d+(?:\.\d+)?\s*(?:pF|nF|uF|µF))\b", text, re.I)
+                cap = re.search(r"\b(VDDIO|VDD)\b[^\n]{0,80}?\b(\d+(?:\.\d+)?\s*(?:pF|nF|uF|µF))\b", text, re.IGNORECASE)
                 if cap and ("decoupl" in lower or "capacitor" in lower):
                     claims.append(CandidateClaim(
                         candidate_id=f"p{page.number}-decoupling-{len(claims)}",
@@ -93,7 +93,7 @@ class BoundedTextExtractor:
                         quantity=parse_quantity(cap.group(2), unit=Unit.FARAD),
                     ))
                 elif "recommended value" in lower and ("capacitor" in lower or "c1" in lower):
-                    cap_value = re.search(r"(\d+(?:\.\d+)?\s*(?:pF|nF|uF|µF))\b", text, re.I)
+                    cap_value = re.search(r"(\d+(?:\.\d+)?\s*(?:pF|nF|uF|µF))\b", text, re.IGNORECASE)
                     if cap_value:
                         claims.append(CandidateClaim(
                             candidate_id=f"p{page.number}-decoupling-{len(claims)}",
@@ -101,7 +101,7 @@ class BoundedTextExtractor:
                             page=page.number, supporting_text=text,
                             quantity=parse_quantity(cap_value.group(1), unit=Unit.FARAD),
                         ))
-                for address in re.findall(r"0x([0-9a-f]{2})", text, re.I):
+                for address in re.findall(r"0x([0-9a-f]{2})", text, re.IGNORECASE):
                     if int(address, 16) <= 0x7F and ("i2c" in lower or "address" in lower):
                         claims.append(CandidateClaim(
                             candidate_id=f"p{page.number}-address-{address}-{len(claims)}",
@@ -112,7 +112,7 @@ class BoundedTextExtractor:
                 for span in page.spans:
                     match = re.search(
                         r"supply pin\s+VDD\s+and\s+VDDIO[^\n]*?(-?\d+(?:\.\d+)?)\s*V\b",
-                        span.text, re.I,
+                        span.text, re.IGNORECASE,
                     )
                     if match:
                         value = float(match.group(1))

@@ -2,7 +2,7 @@
 
 from .extract import BoundedTextExtractor, CandidateExtractor
 from .merge import apply_verified_claims
-from .models import *  # noqa: F403
+from .models import *
 from .pdf import PdfIngestError, PdfIngestStatus, PyMuPdfExtractor
 from .pipeline import DatasheetPipeline
 from .verify import verify_candidate

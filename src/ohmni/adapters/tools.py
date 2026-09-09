@@ -36,7 +36,7 @@ def _run_version(executable: str) -> tuple[bool, str]:
     this function (SECURITY.md: no shell interpolation, argument arrays only).
     """
     try:
-        completed = subprocess.run(  # noqa: S603 -- fixed argv, no shell
+        completed = subprocess.run(
             [executable, "--version"],
             capture_output=True,
             text=True,
@@ -109,7 +109,7 @@ class KicadCli:
             ),
         )
 
-    def emit_project(self, circuit, catalog, out_dir: Path) -> Path:  # noqa: ANN001
+    def emit_project(self, circuit, catalog, out_dir: Path) -> Path:
         raise NotImplementedError(
             "use KiCadSchematicCompiler.compile(), which returns a fingerprinted artifact"
         )
@@ -188,7 +188,7 @@ class NgspiceCli:
             detail="Simulation is not implemented yet (spike S2).",
         )
 
-    def operating_point(self, netlist: str, run_id: str):  # noqa: ANN201
+    def operating_point(self, netlist: str, run_id: str):
         from .fakes import UnavailableSpice
 
         return UnavailableSpice().operating_point(netlist, run_id)

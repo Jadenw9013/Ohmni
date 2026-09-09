@@ -36,6 +36,7 @@ from .a1 import (
 )
 from .base import build_usb_esp32_base, common_preflight
 from .models import ArchetypeId, RefusalCode, SynthesisBrief, SynthesisResult
+from .placement import PlacementIntentBuilder
 
 BUTTON_PART_ID = "GENERIC_MOMENTARY_BUTTON"
 LED_GPIO_NAMES = ("IO25", "IO26", "IO27", "IO32")
@@ -82,8 +83,9 @@ def _requirements(brief: SynthesisBrief) -> RequirementsSpec:
     )
 
 
-def _build(brief: SynthesisBrief, catalog: PartCatalog) -> CircuitIR:
-    base = build_usb_esp32_base(brief, catalog)
+def _build(brief: SynthesisBrief, catalog: PartCatalog,
+           *, placement: PlacementIntentBuilder | None = None) -> CircuitIR:
+    base = build_usb_esp32_base(brief, catalog, placement=placement)
     components = list(base.components)
     nets = [net.model_copy(deep=True) for net in base.nets]
     ground = next(net for net in nets if net.name == "GND")
@@ -126,6 +128,8 @@ def _build(brief: SynthesisBrief, catalog: PartCatalog) -> CircuitIR:
             Net(name=f"LED{index + 1}_A", connections=_pins((resistor, "2"), (ref, _one_pin_with_role(led, PinRole.ANODE)))),
         ])
         ground.connections.extend(_pins((ref, _one_pin_with_role(led, PinRole.CATHODE))))
+        if placement is not None:
+            placement.group("gpio", ref, (ref, resistor), "Indicator output with its own series resistor.")
     for index in range(brief.button_count):
         ref, resistor = f"SW{index + 1}", f"R{20 + index}"
         gpio = BUTTON_GPIO_NAMES[index]
@@ -143,6 +147,8 @@ def _build(brief: SynthesisBrief, catalog: PartCatalog) -> CircuitIR:
             notes="External pull-up defines idle high; the normally-open switch grounds it when pressed."))
         logic.connections.extend(_pins((resistor, "2")))
         ground.connections.extend(_pins((ref, "2")))
+        if placement is not None:
+            placement.group("gpio", ref, (ref, resistor), "Momentary button with its own idle-level pull-up.")
     return CircuitIR(ir_id=f"a2-{brief.fingerprint[:16]}", name=brief.project_name,
                      components=components, nets=nets, constraints=base.constraints,
                      design_assumptions=[*base.design_assumptions, *_requirements(brief).assumptions],
@@ -172,10 +178,12 @@ def synthesize_a2(brief: SynthesisBrief, catalog: PartCatalog | None = None) -> 
         return _refuse(brief, RefusalCode.PART_UNAVAILABLE, "Required GPIO catalog parts are missing.",
                        context={"missing": ",".join(missing)})
     try:
-        circuit = _build(brief, resolved)
+        placement = PlacementIntentBuilder()
+        circuit = _build(brief, resolved, placement=placement)
     except _CatalogCapabilityError as exc:
         return _refuse(brief, RefusalCode.CATALOG_CAPABILITY_MISSING, str(exc), context={"reason": str(exc)})
-    return SynthesisResult(brief_fingerprint=brief.fingerprint, circuit=circuit, requirements=_requirements(brief))
+    return SynthesisResult(brief_fingerprint=brief.fingerprint, circuit=circuit, requirements=_requirements(brief),
+                           placement_request=placement.finish(circuit))
 
 
 __all__ = ["synthesize_a2"]

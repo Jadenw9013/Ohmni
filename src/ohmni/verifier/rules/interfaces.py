@@ -274,7 +274,7 @@ def i2c_addresses(ctx: VerificationContext, out: ResultBuilder) -> None:
                 )
 
 
-def _address_from_strap(ctx: VerificationContext, ref: str, spec) -> int | None:  # noqa: ANN001
+def _address_from_strap(ctx: VerificationContext, ref: str, spec) -> int | None:
     """Work out the I2C address from how the address-select pin is wired."""
     for pin in spec.pins_with_role(PinRole.I2C_ADDRESS_SELECT):
         net = ctx.circuit.net_of(ref, pin.number)

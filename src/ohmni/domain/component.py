@@ -129,7 +129,7 @@ I2C_BUS_ROLES: frozenset[PinRole] = frozenset({PinRole.I2C_SDA, PinRole.I2C_SCL}
 
 
 def resolve_pin_behavior(
-    component_ref: str, pin: "PinSpec", selected: list[Interface]
+    component_ref: str, pin: PinSpec, selected: list[Interface]
 ) -> ResolvedPinBehavior:
     """Derive documented mode behavior without changing catalog possibilities."""
     if Interface.I2C in selected and PinRole.I2C_ADDRESS_SELECT in pin.roles:

@@ -22,8 +22,8 @@ from pydantic import BaseModel, Field
 
 from ..domain.circuit import CircuitIR
 from ..domain.component import ComponentSpec
-from ..domain.evidence import Evidence
 from ..domain.document import DatasheetDocument
+from ..domain.evidence import Evidence
 from ..domain.units import Quantity
 from ..domain.verification import VerificationFinding
 
@@ -190,13 +190,13 @@ __all__ = [
     "ErcRun",
     "KicadTool",
     "LlmProvider",
-    "StructuredGenerationRequest",
     "OperatingPoint",
     "PartCatalog",
     "PartNotFoundError",
     "Router",
     "SimulationRun",
     "SpiceTool",
+    "StructuredGenerationRequest",
     "ToolAvailability",
     "ToolStatus",
 ]

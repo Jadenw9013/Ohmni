@@ -127,10 +127,26 @@ Every extracted fact should store:
 ## Deterministic routing boundary
 
 Routing is separate from electrical and placement intent. `CircuitIR` remains
-the netlist, `BoardConstraints` owns placement, and `RoutingPlan` owns tracks and
+the netlist. A fingerprint-bound `PlacementRequest` records functional groups,
+exact capacitor ownership, edge preferences, and antenna exclusion. The bounded
+functional placement search generates `BoardConstraints`; it does not select
+coordinates from a reference-designator table. `RoutingPlan` owns tracks and
 through-vias. A bounded deterministic A* router proposes copper and an
 independent connectivity verifier checks it before KiCad emission. KiCad DRC is
 a separate external verifier. Routing has no LLM, network, or randomness path.
+
+Physical verification evaluates every requested constraint, including rotated
+body/pad envelopes and exact capacitor-pad proximity. The separately pinned
+ESP32 body envelope includes the antenna extension omitted by the original pad
+subset. A geometric antenna exclusion does not establish RF performance. An
+unrecognized or malformed constraint returns ERROR and blocks release.
+
+Product routing has a finite wall-clock budget. Exhaustion preserves diagnostics,
+marks every unfinished net `ROUTING_INCOMPLETE`, and prevents DRC/release from
+proceeding. Successful geometry is deterministic; elapsed time is not part of
+its fingerprint. Repeated physical lands for one electrical pin each require
+copper connectivity. Quality projections use emitted copper length/vias, while
+unrouted net-span estimates are labeled separately.
 ## Manufacturing and release boundary
 
 `ohmni.manufacturing` evaluates an immutable routed `PcbArtifact` against one
@@ -153,10 +169,11 @@ client formats statuses and artifact-derived geometry; it never computes
 engineering PASS/FAIL. The separate learning exercise calls the electrical
 verifier on a controlled practice circuit and projects its findings.
 
-`ohmni.synthesis` compiles a validated A1 sensor brief into electrical intent
-without a model or fixture import. `application.projects` orchestrates that
-result through the shared engineering pipeline. The A1 layout is an explicitly
-authored policy in `physical.sensor_layout`, not a general placement optimizer.
+`ohmni.synthesis` compiles validated A1 sensor, A2 GPIO and A3 SPI briefs into
+electrical and separate physical intent without a model or fixture import.
+`application.projects` currently exposes the original A1 choices and orchestrates
+that result through generated placement and the shared engineering pipeline.
+The broader family editor/API integration follows in M10-T04.
 The fixed reference demonstration retains its separate scripted provider.
 
 The local threaded server persists projects, immutable revision inputs, and job

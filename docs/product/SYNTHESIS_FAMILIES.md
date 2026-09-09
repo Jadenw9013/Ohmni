@@ -1,9 +1,10 @@
-# Bounded circuit families — M10-T02
+# Bounded circuit families
 
 The deterministic compiler now supports three families through
-`ohmni.synthesis.synthesize(brief)`. This unit adds compiler capability;
-constraint-driven placement and the full frontend integration follow in
-M10-T03 and M10-T04. The existing personal-project UI remains its original
+`ohmni.synthesis.synthesize(brief)`. Each accepted result includes electrical
+intent and a separate fingerprint-bound placement request. M10-T03 adds
+constraint-driven placement; full frontend integration follows in M10-T04.
+The existing personal-project UI remains its original
 eight-configuration sensor workspace until that integration is complete.
 
 | Family | Supported composition |
@@ -23,6 +24,27 @@ does not represent those connections.
 New empty brief fields preserve schema-v1 fingerprints. The original eight
 A1 circuits retain exactly their previous hashes and 0805 package choices.
 New families use a shared USB/processor compiler, not a reference fixture.
+Physical artifact fingerprints can change when geometry is corrected; preserving
+the electrical circuit hash does not mean preserving an obsolete PCB layout.
+
+`ohmni.physical.placement.generate_placement(circuit, placement_request, catalog)`
+generates front-side, zero-degree placements on the requested board. Functional
+groups and exact capacitor owners are recorded when the circuit is assembled,
+instead of being guessed from shared power nets. Search considers complete pad
+and body extents, edge access, proximity, orientation and antenna exclusions.
+Local and bulk capacitor distances are authored policy, explicitly marked
+ASSUMED. Impossible or unsupported requests receive a typed placement failure.
+
+The original ESP32 envelope omitted its antenna body. The physical verifier now
+includes a separately source-pinned F.Fab envelope, and the current reference
+policy moves the overlapping enable capacitor. Historical verification records
+remain historical evidence, not verification of this corrected layout.
+
+Product routing stops at its configured 180-second budget and preserves an
+explicit incomplete result for unfinished nets. A placement PASS is followed by
+independent copper connectivity, real KiCad DRC and manufacturing checks; it
+does not predict those results. The board-area, emitted track-length and emitted
+via-count metrics come from the actual result, not illustration geometry.
 
 The SPI verifier checks static bus topology and reset-state chip-select pull-ups.
 Firmware still controls pin setup, mutually exclusive chip selection, timing,
@@ -37,5 +59,5 @@ all 19 catalog-offered packages compile with complete pin bindings. Generic
 switch geometry has no invented manufacturer or part rating.
 
 The exact commands, counts, sources, and review resolutions are recorded in
-[M10-T02.yaml](../../.ai/verification/M10-T02.yaml). Full physical routing,
-production deployment, firmware and hardware validation are separate work.
+[M10-T02.yaml](../../.ai/verification/M10-T02.yaml). Family-wide routing benchmark,
+production deployment, firmware and hardware validation remain separate gates.

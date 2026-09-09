@@ -95,12 +95,12 @@ def test_golden_routing_closes_real_kicad_drc_and_stales_on_change(tmp_path,gold
     assert compiled.artifact_fingerprint==routed.fingerprint
     assert compiled.routing_plan_fingerprint==routed.routing_plan_fingerprint==plan.content_hash==report.plan_fingerprint
     assert compiled.constraints_hash==routed.constraints_hash==board.content_hash
-    assert (plan.statistics.track_segment_count,plan.statistics.via_count)==(296,66)
-    assert (statistics.modeled_track_segment_count,statistics.modeled_layer_transition_count)==(296,66)
-    assert (statistics.track_segment_count,statistics.via_count)==(296,41)
-    assert statistics.coalesced_layer_transition_count==23
+    assert (plan.statistics.track_segment_count,plan.statistics.via_count)==(297,64)
+    assert (statistics.modeled_track_segment_count,statistics.modeled_layer_transition_count)==(297,64)
+    assert (statistics.track_segment_count,statistics.via_count)==(297,40)
+    assert statistics.coalesced_layer_transition_count==22
     assert statistics.plated_through_hole_transition_count==2
-    assert statistics.total_track_length_mm==1083.765652
+    assert statistics.total_track_length_mm==1068.865652
     assert statistics.total_track_length_mm!=plan.statistics.total_track_length_mm
     segment_pattern=re.compile(r'^  \(segment \(start ([^ ]+) ([^)]+)\) \(end ([^ ]+) ([^)]+)\) \(width ([^)]+)\) \(layer "([^"]+)"\) \(net ([^)]+)\) \(uuid "([^"]+)"\)\)$',re.MULTILINE)
     via_pattern=re.compile(r'^  \(via \(at ([^ ]+) ([^)]+)\) \(size ([^)]+)\) \(drill ([^)]+)\) \(layers "([^"]+)" "([^"]+)"\) \(net ([^)]+)\) \(uuid "([^"]+)"\)\)$',re.MULTILINE)

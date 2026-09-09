@@ -46,6 +46,7 @@ from .a1 import (
     _refuse,
 )
 from .models import InputPower, RefusalCode, SynthesisBrief, SynthesisResult
+from .placement import PlacementIntentBuilder, record_usb_core
 
 
 def common_preflight(brief: SynthesisBrief, catalog: PartCatalog) -> SynthesisResult | None:
@@ -81,7 +82,8 @@ def common_preflight(brief: SynthesisBrief, catalog: PartCatalog) -> SynthesisRe
     return None
 
 
-def build_usb_esp32_base(brief: SynthesisBrief, catalog: PartCatalog) -> CircuitIR:
+def build_usb_esp32_base(brief: SynthesisBrief, catalog: PartCatalog,
+                       *, placement: PlacementIntentBuilder | None = None) -> CircuitIR:
     """Build core topology after ``common_preflight`` has accepted the brief.
 
     Missing pin/package/numeric catalog capabilities raise the existing typed
@@ -115,6 +117,15 @@ def build_usb_esp32_base(brief: SynthesisBrief, catalog: PartCatalog) -> Circuit
     ]
     if brief.include_programming_header:
         components.append(part("J2", HEADER_PART_ID))
+    if placement is not None:
+        record_usb_core(
+            placement, usb_ref="J1", cc_refs=("R1", "R2"), regulator_ref="U2",
+            regulator_spec=regulator, input_cap="C1", input_pin=_pin_named(regulator, "VIN"),
+            output_cap="C2", output_pin=_pin_named(regulator, "VOUT"), mcu_ref="U1", mcu_spec=mcu,
+            supply_pin=_pin_named(mcu, "3V3"), local_cap="C3", bulk_cap="C4", enable_cap="C5",
+            enable_pin=_pin_named(mcu, "EN"), enable_pullup="R3",
+            header_ref="J2" if brief.include_programming_header else None,
+        )
 
     usb_cc = _pins_with_role(usb, PinRole.USB_CC)
     if len(usb_cc) != 2:

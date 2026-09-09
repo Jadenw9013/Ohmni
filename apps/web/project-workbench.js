@@ -98,7 +98,7 @@ export function mountProjectWorkbench(root, {
         $("#project-run").disabled = busy || dirty || !revision;
         $("#project-run").textContent = revision?.job_id ? "Open this revision's run" : "Generate my board";
         $("#project-action-note").textContent = dirty ? "Save your choices first. Existing revisions keep their original design and files."
-            : `Revision ${revision.number} is saved. ${revision.job_id ? "Reopen its engineering run." : "Generate its board and run the real checks. Allow a few minutes."}`;
+            : `Revision ${revision.number} is saved. ${revision.job_id ? "Reopen its engineering run." : "Generate its board and run the real checks. Allow a few minutes; copper routing has a three-minute limit."}`;
         root.querySelectorAll("#project-form input, #project-form select, #project-revision").forEach((input) => { input.disabled = busy; });
     }
 

@@ -10,6 +10,11 @@ This document is **evidence**, not recommendation. It exists so the rest of
 `docs/product/` argues from measured facts rather than from the demo's
 impression. Every claim below names the file or command that establishes it.
 
+This is a historical baseline. Subsequent circuit-family and generated-placement
+work is described in [SYNTHESIS_FAMILIES.md](SYNTHESIS_FAMILIES.md), with current
+rule coverage in [VERIFICATION.md](../../VERIFICATION.md). The measured results
+below have not been rewritten to describe later code.
+
 ---
 
 ## 1. What is real and general

@@ -16,7 +16,7 @@ def golden_board_constraints() -> BoardConstraints:
         "U2": (20, 58, "regulator near power input"), "C1": (16, 58, "input bypass near regulator"),
         "C2": (24, 58, "output bypass near regulator"),
         "U1": (45, 35, "ESP32 central functional block"), "C3": (32, 35, "ESP32 local decoupling"),
-        "C4": (58, 35, "ESP32 local decoupling"), "C5": (45, 22, "enable timing capacitor"),
+        "C4": (58, 35, "ESP32 local decoupling"), "C5": (32, 27, "enable timing capacitor beside the full module body"),
         "U3": (80, 50, "sensor separated from regulator heat"), "C6": (76, 50, "BME280 VDD decoupling"),
         "C7": (84, 50, "BME280 VDDIO decoupling"), "R4": (76, 44, "I2C SDA pull-up near sensor bus"),
         "R5": (84, 44, "I2C SCL pull-up near sensor bus"),
@@ -31,4 +31,3 @@ def golden_board_constraints() -> BoardConstraints:
     for cap,target in [("C1","U2"),("C2","U2"),("C3","U1"),("C4","U1"),("C6","U3"),("C7","U3")]:
         constraints.append(PlacementConstraint(constraint_id=f"DECOUPLE-{cap}",kind=PlacementConstraintKind.NEAR_COMPONENT,component_ref=cap,target_ref=target,maximum_distance_mm=14 if target=="U1" else 6,reason=f"{cap} must provide a short local path near {target}"))
     return BoardConstraints(outline=BoardOutline(width_mm=100,height_mm=70),placements=placements,placement_constraints=constraints)
-

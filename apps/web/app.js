@@ -45,6 +45,7 @@ const MESSAGES = Object.freeze({
     worker_start_failed: "The demo worker failed before progress began. Check the local server setup, then start a fresh run.",
     lost_job: "This run is no longer available from the server that created it. Start a new example to continue.",
     pipeline_failed: "The engineering pipeline failed before a completed result was available. Start a fresh run after checking the local server setup.",
+    routing_incomplete: "Ohmni could not finish all copper connections. No build package was released. Routing has a three-minute time limit and bounded search. Retry with fewer builds running, or simplify your project and try again.",
 });
 const STAGES = ["describe", "agree", "design", "review", "build"];
 
@@ -291,7 +292,7 @@ export function renderBrief(brief) {
     $("#agree-note").textContent =
         `This example includes ${decided} design choice${decided === 1 ? "" : "s"} and assumption${decided === 1 ? "" : "s"}. `
         + `Continue to run the actual checks and generate its board files. `
-        + `Allow about 90 seconds. Editing this example is not available yet.`;
+        + `Allow a few minutes. Copper routing has a three-minute limit; the other checks add time. Editing this example is not available yet.`;
 }
 
 // ── agree → design ──────────────────────────────────────────────────────
@@ -500,7 +501,9 @@ export async function poll(id, identity, { fetcher = globalThis.fetch, schedule 
         if (disposition === "failed") {
             state.runStatus = "failed";
             $("#confirm-brief").disabled = false;
-            return showError(job.error_code === "worker_start_failed" ? "worker_start_failed" : "pipeline_failed",
+            const kind = ["worker_start_failed", "routing_incomplete"].includes(job.error_code)
+                ? job.error_code : "pipeline_failed";
+            return showError(kind,
                 () => freshRun(fetcher), state.customProject ? "Retry this revision" : "Start a new example");
         }
         clearError();

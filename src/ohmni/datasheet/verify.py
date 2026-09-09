@@ -5,7 +5,14 @@ from __future__ import annotations
 import re
 from difflib import SequenceMatcher
 
-from ..domain import DatasheetDocument, DocumentSpan, Evidence, EvidenceKind, Quantity, Unit, parse_quantity
+from ..domain import (
+    DatasheetDocument,
+    DocumentSpan,
+    Evidence,
+    EvidenceKind,
+    Quantity,
+    parse_quantity,
+)
 from .models import CandidateClaim, ClaimVerificationStatus, FactType, VerifiedCandidate
 
 

@@ -16,11 +16,11 @@ from ..domain.verification import (
     Severity,
     VerificationReport,
 )
-from .context import VerificationContext
-from .registry import RegisteredRule, all_rules
 
 # Importing the rules package is what registers the rules.
 from . import rules as _rules  # noqa: F401  (side-effecting import, intentional)
+from .context import VerificationContext
+from .registry import RegisteredRule, all_rules
 
 
 def verify(

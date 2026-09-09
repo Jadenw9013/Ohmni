@@ -10,6 +10,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from ..domain import CircuitIR, RequirementsSpec, SafetyDomain
+from ..physical.models import PlacementRequest
 
 
 class ArchetypeId(StrEnum):
@@ -131,6 +132,7 @@ class SynthesisResult(BaseModel):
     requirements: RequirementsSpec | None = None
     circuit: CircuitIR | None = None
     refusal: SynthesisRefusal | None = None
+    placement_request: PlacementRequest | None = None
 
     @model_validator(mode="after")
     def _accepted_or_refused(self) -> SynthesisResult:
@@ -140,6 +142,10 @@ class SynthesisResult(BaseModel):
             raise ValueError("result must contain either requirements+circuit or a refusal")
         if not accepted and (self.requirements is not None or self.circuit is not None):
             raise ValueError("partial synthesis results are not allowed")
+        if self.placement_request is not None and (
+            self.circuit is None or self.placement_request.circuit_content_hash != self.circuit.content_hash
+        ):
+            raise ValueError("placement request must bind the accepted circuit fingerprint")
         return self
 
     @property

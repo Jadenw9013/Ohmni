@@ -38,6 +38,7 @@ from .models import (
     SynthesisRefusal,
     SynthesisResult,
 )
+from .placement import PlacementIntentBuilder, rail_evidence, record_usb_core
 
 # A1 board-template policies. These are visible here because the bundled
 # catalog does not yet encode them as machine-readable numeric rules.
@@ -363,7 +364,8 @@ def _requirements(brief: SynthesisBrief) -> RequirementsSpec:
     )
 
 
-def _build(brief: SynthesisBrief, catalog: PartCatalog) -> CircuitIR:
+def _build(brief: SynthesisBrief, catalog: PartCatalog,
+           *, placement: PlacementIntentBuilder | None = None) -> CircuitIR:
     prefer_hand = brief.hand_solderable_preferred
     usb = catalog.require(USB_PART_ID)
     regulator = catalog.require(REGULATOR_PART_ID)
@@ -472,6 +474,19 @@ def _build(brief: SynthesisBrief, catalog: PartCatalog) -> CircuitIR:
             value=Quantity.ohms(I2C_PULLUP_OHM), notes="A1 policy: I2C SCL pull-up."
         ),
     ]
+    if placement is not None:
+        record_usb_core(
+            placement, usb_ref="J1", cc_refs=("R1", "R2"), regulator_ref="U2",
+            regulator_spec=regulator, input_cap="C1", input_pin=_pin_named(regulator, "VIN"),
+            output_cap="C2", output_pin=_pin_named(regulator, "VOUT"), mcu_ref="U1", mcu_spec=mcu,
+            supply_pin=_pin_named(mcu, "3V3"), local_cap="C3", bulk_cap="C4", enable_cap="C5",
+            enable_pin=_pin_named(mcu, "EN"), enable_pullup="R3",
+            header_ref="J2" if brief.include_programming_header else None,
+        )
+        placement.join("U1", ("R4", "R5"))
+        placement.group("sensor", "U3", ("U3", "C6", "C7"), "I2C sensor with separate VDD and VDDIO support.")
+        placement.capacitor("C6", "U3", _pin_named(sensor, "VDD"), evidence=rail_evidence(sensor, "VDD"))
+        placement.capacitor("C7", "U3", _pin_named(sensor, "VDDIO"), evidence=rail_evidence(sensor, "VDDIO"))
     if brief.status_led_count:
         led = catalog.require(LED_PART_ID)
         components.extend(
@@ -484,6 +499,8 @@ def _build(brief: SynthesisBrief, catalog: PartCatalog) -> CircuitIR:
                 ),
             ]
         )
+        if placement is not None:
+            placement.group("gpio", "D1", ("D1", "R6"), "Indicator LED with its own series resistor.")
     if brief.include_programming_header:
         components.append(
             CircuitComponent(ref="J2", part_id=HEADER_PART_ID, package=packages[HEADER_PART_ID])
@@ -647,7 +664,8 @@ def synthesize_a1(
         return refusal
     try:
         requirements = _requirements(brief)
-        circuit = _build(brief, resolved_catalog)
+        placement = PlacementIntentBuilder()
+        circuit = _build(brief, resolved_catalog, placement=placement)
     except _CatalogCapabilityError as exc:
         return _refuse(
             brief,
@@ -659,6 +677,7 @@ def synthesize_a1(
         brief_fingerprint=brief.fingerprint,
         requirements=requirements,
         circuit=circuit,
+        placement_request=placement.finish(circuit),
     )
 
 

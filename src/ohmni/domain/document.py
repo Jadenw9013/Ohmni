@@ -29,7 +29,7 @@ class DocumentSpan(BaseModel):
     region: DocumentRegion | None = None
 
     @model_validator(mode="after")
-    def _ordered(self) -> "DocumentSpan":
+    def _ordered(self) -> DocumentSpan:
         if self.end <= self.start:
             raise ValueError("span end must be greater than start")
         return self

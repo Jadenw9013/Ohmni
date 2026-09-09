@@ -203,16 +203,24 @@ list from a check that never ran must never look like a clean result.
 
 ## PCB verification
 
-Ohmni's initial physical layer implements seven bounded rule IDs: footprint
-overlap, outline containment, edge clearance, measured decoupling distance,
-connector edge accessibility, complete pin-to-pad binding, and routed-copper
-reference integrity. The current compiler intentionally emits no tracks, so
-PB-PCB-007 reports that unknown routed references are impossible rather than
-claiming routing adequacy.
+Physical verification checks footprint/pad overlap, outline containment, edge
+clearance, measured capacitor distance, connector edge accessibility and complete
+pin-to-pad/net binding (`PB-PCB-001` through `006`). Bounds include rotated pads,
+asymmetric footprint origins and the separately pinned full ESP32 body.
+Proximity constraints can measure actual pad-to-pad distance; they do not infer
+capacitor ownership from a shared power net.
+
+`PB-PCB-008` reports malformed or unsupported geometry/constraints as ERROR.
+`009` through `013` evaluate envelope separation, fixed poses, allowed regions,
+orientation and component exclusion from declared keepouts. Every requested
+constraint produces a finding with its ID. ERROR, FAIL and empty reports cannot
+pass. Antenna exclusion is a geometric policy with explicit source/compatibility
+assumptions, not an RF result. Copper validity belongs to the routing verifier;
+the physical checker no longer reports a fictitious no-copper PASS after routing.
 
 KiCad DRC is a separate typed external report tied to the exact PCB SHA-256 and
-source schematic SHA-256. The golden placed board currently reports 51 real
-unrouted connections. This is a truthful DRC failure, not a disguised pass.
+source schematic SHA-256. A placed board is still unrouted and cannot be released
+as connected. Only the separately routed artifact is eligible for routing DRC.
 
 ---
 
@@ -241,9 +249,15 @@ runs the whole corpus in one line of output per case.
 
 ## Routing verification
 
-`PB-ROUTE-001` through `PB-ROUTE-008` check complete pad connectivity,
+`PB-ROUTE-001` through `PB-ROUTE-008` check complete physical-pad connectivity,
 cross-net shorts, net/lineage validity, board bounds, widths, via geometry,
-obstacles, and bounded via use. The golden routed artifact passes these rules
+obstacles, and bounded via use. Repeated lands with the same electrical pin
+number each require a connection; terminal names in a proposed plan cannot hide
+an unconnected switch leg. Per-net widths are verified alongside the profile.
+`009` rejects unresolved routing failures, and `010` checks declared copper
+keepouts on both layers. Deadline/cancellation failure preserves an incomplete
+plan and blocks release; the verifier has no clock dependency.
+The corrected golden routed artifact passes these rules
 and KiCad 10.0.5 DRC with zero findings and zero unrouted items. This does not
 establish signal integrity, thermal behavior, EMC, RF behavior,
 manufacturability, or bench operation.

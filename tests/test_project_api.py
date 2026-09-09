@@ -16,6 +16,9 @@ from urllib.request import ProxyHandler, Request, build_opener
 import pytest
 
 from ohmni.application.project_store import ProjectStore, ProjectWorkspaceInUseError
+from ohmni.catalog import default_catalog
+from ohmni.physical.models import PlacementRequest
+from ohmni.physical.placement import GeneratedPlacement, generate_placement
 from ohmni.synthesis import SynthesisBrief, synthesize_a1
 from scripts.demo_server import DemoHandler, DemoHTTPServer, JobStore
 
@@ -167,6 +170,52 @@ def test_interrupted_job_fails_explicitly_and_admission_is_bounded(tmp_path, mon
     assert job["report"] is None and job["progress"] == []
 
 
+@pytest.mark.parametrize("typed", [True, False])
+def test_routing_incomplete_code_is_owned_persistent_and_retryable(tmp_path, monkeypatch, capsys, typed):
+    from ohmni.application import projects
+    from ohmni.application.demo import RoutingIncompleteError
+
+    class Incomplete(RoutingIncompleteError):
+        def __str__(self):
+            raise AssertionError("The API must never format a routing exception")
+
+    class Pipeline:
+        def __init__(self, progress):
+            pass
+
+        def run(self, destination, brief):
+            if typed:
+                raise Incomplete("SECRET C:/private/path")
+            error = RuntimeError("SECRET routing_incomplete C:/private/path")
+            error.code = "routing_incomplete"
+            raise error
+
+    monkeypatch.setattr(projects, "ProjectPipeline", Pipeline)
+    expected_code = "routing_incomplete" if typed else "pipeline_failed"
+    with _server(tmp_path) as (server, base):
+        project = _request(base, "/api/projects", {**server._identity(), "brief": {}})[1]["project"]
+        project_id = project["project_id"]
+        revision_id = project["revisions"][0]["revision_id"]
+        run_path = f"/api/projects/{project_id}/revisions/{revision_id}/run"
+        job_id = _request(base, run_path, server._identity())[1]["job_id"]
+        assert _wait(server.store, job_id)["status"] == "failed"
+        status, failure = _request(base, f"/api/jobs/{job_id}")
+        assert status == 200 and failure["error_code"] == expected_code
+        assert failure["error"] == "Demo pipeline failed"
+        assert failure["report"] is None and failure["progress"] == []
+    with _server(tmp_path) as (server, base):
+        status, failure = _request(base, f"/api/jobs/{job_id}")
+        assert status == 200 and failure["error_code"] == expected_code
+        assert failure["status"] == "failed"
+        retry = _request(base, run_path, server._identity())[1]["job_id"]
+        assert retry != job_id
+        assert _wait(server.store, retry)["error_code"] == expected_code
+        assert server.store.get(job_id)["error_code"] == expected_code
+    captured = capsys.readouterr()
+    assert "SECRET" not in captured.out + captured.err + json.dumps(failure)
+    assert "C:/private" not in captured.out + captured.err + json.dumps(failure)
+
+
 def test_live_workspace_cannot_be_recovered_by_another_server_and_failed_attempt_can_retry(tmp_path, monkeypatch):
     from ohmni.application import projects
 
@@ -250,7 +299,9 @@ def _seed_package(tmp_path, job_id="a" * 12, brief=None):
                 "schematic_fingerprint": fingerprints["golden.kicad_sch"],
                 "files": files, "release_status": "ready_for_manufacturing_review"}
     if brief is not None:
-        manifest["circuit_fingerprint"] = synthesize_a1(brief).circuit.content_hash
+        result = synthesize_a1(brief)
+        placement = generate_placement(result.circuit, result.placement_request, default_catalog())
+        manifest["circuit_fingerprint"] = result.circuit.content_hash
     package_hash = hashlib.sha256(json.dumps(manifest, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
     manifest["package_fingerprint"] = package_hash
     data = json.dumps(manifest).encode()
@@ -275,7 +326,17 @@ def _seed_package(tmp_path, job_id="a" * 12, brief=None):
     if brief is not None:
         report["mode"] = "bounded_synthesis"
         report["project"].update(name=brief.project_name, brief_fingerprint=brief.fingerprint,
-                                 circuit_hash=manifest["circuit_fingerprint"])
+                                 circuit_hash=manifest["circuit_fingerprint"],
+                                 placement_request_fingerprint=placement.request_fingerprint)
+        report["pcb"]["placement"] = {
+            "algorithm": placement.algorithm, "request_fingerprint": placement.request_fingerprint,
+            "constraints_hash": placement.board.content_hash,
+            "metrics": placement.metrics.model_dump(mode="json"), "limitations": list(placement.limitations),
+        }
+        report["pcb"]["quality_metrics"] = {
+            "constraints_hash": placement.board.content_hash,
+            "source_pcb_fingerprint": fingerprints["golden.kicad_pcb"],
+        }
     store = JobStore(tmp_path)
     store.jobs[job_id] = {"job_id": job_id, "status": "complete", "progress": [], "report": report,
                           "error": None, "error_code": None}
@@ -342,15 +403,117 @@ def test_personal_build_package_includes_saved_input_and_refuses_changed_revisio
         assert revision["revision_id"] == revision_id and revision["job_id"] == job_id
         assert revision["brief_fingerprint"] == SynthesisBrief.model_validate(saved).fingerprint
         assert revision["circuit_fingerprint"] == synthesize_a1(brief).circuit.content_hash
+        request_bytes = archive.read("placement-request.json")
+        placement_bytes = archive.read("placement.json")
+        request = PlacementRequest.model_validate_json(request_bytes)
+        placement = GeneratedPlacement.model_validate_json(placement_bytes)
+        assert request.content_hash == placement.request_fingerprint == revision["placement_request_fingerprint"]
+        assert request.circuit_content_hash == placement.circuit_content_hash == revision["circuit_fingerprint"]
+        assert placement.board.content_hash == revision["board_constraints_hash"]
+        assert placement.algorithm == revision["placement_algorithm"]
+        assert revision["placement_documents"] == {
+            "placement-request.json": hashlib.sha256(request_bytes).hexdigest(),
+            "placement.json": hashlib.sha256(placement_bytes).hexdigest(),
+        }
     report = store.jobs[job_id]["report"]
     report["project"]["brief_fingerprint"] = "0" * 64
-    assert store.read_build_package(job_id) == ("stale", None)
-    report["project"]["brief_fingerprint"] = brief.fingerprint
-    report["project"]["circuit_hash"] = "0" * 64
-    assert store.read_build_package(job_id) == ("stale", None)
+    assert store.read_build_package(job_id) == ("unavailable", None)
+    assert store.get(job_id)["status"] == "failed"
 
 
-@pytest.mark.parametrize("wrong_field", ["brief_fingerprint", "circuit_hash"])
+def _personal_package(tmp_path):
+    brief = SynthesisBrief(project_name="Geometry-bound revision")
+    store, job_id, directory = _seed_package(tmp_path, brief=brief)
+    durable = ProjectStore(tmp_path)
+    project = durable.save_revision(brief.model_dump(mode="json"), brief.fingerprint, {})
+    revision_id = project["revisions"][0]["revision_id"]
+    durable.claim_job(project["project_id"], revision_id, JobStore._queued_record(job_id))
+    durable.save_job(store.jobs[job_id])
+    store.project_store = durable
+    return store, job_id, directory, project["project_id"], revision_id
+
+
+@pytest.mark.parametrize("field,missing", [
+    (("project", "placement_request_fingerprint"), True),
+    (("project", "placement_request_fingerprint"), False),
+    (("pcb", "placement"), True),
+    (("pcb", "placement", "request_fingerprint"), False),
+    (("pcb", "placement", "constraints_hash"), False),
+    (("pcb", "placement", "algorithm"), False),
+    (("pcb", "quality_metrics", "constraints_hash"), False),
+    (("pcb", "quality_metrics", "source_pcb_fingerprint"), False),
+])
+def test_old_or_mismatched_personal_geometry_retires_publication_and_every_download(tmp_path, field, missing):
+    store, job_id, directory, _, _ = _personal_package(tmp_path)
+    report = store.jobs[job_id]["report"]
+    target = report
+    for key in field[:-1]:
+        target = target[key]
+    if missing:
+        del target[field[-1]]
+    else:
+        target[field[-1]] = "0" * 64
+    before = (directory / "golden.kicad_pcb").read_bytes()
+    job = store.get(job_id)
+    assert job["status"] == "failed" and job["error_code"] == "job_state_invalid"
+    assert job["report"] is None and job["progress"] == []
+    assert store.read_artifact(job_id, "golden.kicad_pcb")[1] is None
+    assert store.read_artifact(job_id, "golden.kicad_sch")[1] is None
+    assert store.read_build_package(job_id)[1] is None
+    # Retiring publication does not rewrite historical copper or invent fresh
+    # report metadata. The failure survives recovery as a retryable attempt.
+    assert (directory / "golden.kicad_pcb").read_bytes() == before
+    restored = JobStore(tmp_path)
+    restored.enable_persistence()
+    assert restored.get(job_id) == job
+
+
+def test_stale_completed_geometry_can_retry_without_first_polling(tmp_path, monkeypatch):
+    store, job_id, _, project_id, revision_id = _personal_package(tmp_path)
+    del store.jobs[job_id]["report"]["pcb"]["placement"]
+    store.project_store.save_job(store.jobs[job_id])
+    launched = []
+    monkeypatch.setattr(store, "_launch", lambda *args: launched.append(args))
+    next_job = store.start_revision(project_id, revision_id)
+    assert next_job != job_id and len(launched) == 1
+    assert store.get(job_id)["status"] == "failed"
+    assert store.get(next_job)["status"] == "queued"
+    assert store.project_store.revision(project_id, revision_id)["job_id"] == next_job
+    with store.project_store._connection() as db:
+        attempts = db.execute("SELECT job_id FROM revision_jobs ORDER BY attempt").fetchall()
+    assert [attempt["job_id"] for attempt in attempts] == [job_id, next_job]
+
+
+def test_current_geometry_is_cached_immutably_and_recomputed_after_store_restart(tmp_path, monkeypatch):
+    from scripts import demo_server
+
+    derive = demo_server._derive_project_geometry
+    calls = []
+    def counted(brief_json):
+        calls.append(brief_json)
+        return derive(brief_json)
+    monkeypatch.setattr(demo_server, "_derive_project_geometry", counted)
+    store, job_id, _, _, _ = _personal_package(tmp_path)
+    assert store.get(job_id)["status"] == "complete"
+    assert store.get(job_id)["report"]["pcb"]["current"] is True
+    assert store.read_artifact(job_id, "golden.kicad_pcb")[0] == "current"
+    assert store.read_build_package(job_id)[0] == "current"
+    assert len(calls) == 1 and store._expected_project_geometry.cache_info().hits >= 3
+    assert store._expected_project_geometry.cache_info().maxsize == 128
+    expected = store._expected_project_geometry(calls[0])
+    assert isinstance(expected, tuple) and isinstance(expected.request_bytes, bytes)
+    with pytest.raises(AttributeError):
+        expected.constraints_hash = "0" * 64
+    restored = JobStore(tmp_path)
+    restored.enable_persistence()
+    assert restored.get(job_id)["status"] == "complete" and len(calls) == 2
+
+
+@pytest.mark.parametrize("wrong_field", [
+    ("project", "brief_fingerprint"), ("project", "circuit_hash"),
+    ("project", "placement_request_fingerprint"), ("pcb", "placement", "constraints_hash"),
+    ("pcb", "placement", "algorithm"), ("pcb", "placement"),
+])
 def test_project_worker_cannot_publish_report_for_different_input(tmp_path, monkeypatch, wrong_field):
     from ohmni.application import projects
 
@@ -368,7 +531,10 @@ def test_project_worker_cannot_publish_report_for_different_input(tmp_path, monk
         def run(self, destination, brief):
             prepared, job_id, _ = _seed_package(destination.parent, destination.name, brief)
             report = prepared.jobs[job_id]["report"]
-            report["project"][wrong_field] = "0" * 64
+            target = report
+            for key in wrong_field[:-1]:
+                target = target[key]
+            target[wrong_field[-1]] = "0" * 64
             return Report(report)
 
     monkeypatch.setattr(projects, "ProjectPipeline", Pipeline)

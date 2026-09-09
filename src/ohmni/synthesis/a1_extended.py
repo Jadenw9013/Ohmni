@@ -25,6 +25,7 @@ from .a1 import (
 from .base import build_usb_esp32_base, common_preflight
 from .models import ArchetypeId, RefusalCode, SynthesisResult
 from .peripherals import SUPPORTED_I2C_PARTS, add_i2c_bus, add_i2c_sensor, address_option
+from .placement import PlacementIntentBuilder
 
 
 def synthesize_extended_a1(brief, catalog=None):
@@ -65,18 +66,20 @@ def synthesize_extended_a1(brief, catalog=None):
             code = RefusalCode.SENSOR_ADDRESS_UNAVAILABLE if slot.address is not None else RefusalCode.SENSOR_ADDRESS_CONFLICT
             return _refuse(brief, code, str(exc), f"sensors.{index}.address")
     try:
-        base = build_usb_esp32_base(brief, catalog)
+        placement = PlacementIntentBuilder()
+        base = build_usb_esp32_base(brief, catalog, placement=placement)
         components, nets = base.components, base.nets
         controller = next(part for part in components if part.ref == "U1")
         controller.selected_interfaces = [Interface.I2C]
         if brief.status_led_count:
             controller.selected_interfaces.append(Interface.GPIO)
         prefer = brief.hand_solderable_preferred
-        add_i2c_bus(components, nets, catalog, prefer, resistor_refs=("R4", "R5"))
+        add_i2c_bus(components, nets, catalog, prefer, resistor_refs=("R4", "R5"), placement=placement)
         used = []
         for index, slot in enumerate(resolved_slots):
             used.append(add_i2c_sensor(components, nets, catalog, slot, prefer,
-                ref=f"U{3+index}", cap_refs=(f"C{6+2*index}", f"C{7+2*index}"), used_addresses=used))
+                ref=f"U{3+index}", cap_refs=(f"C{6+2*index}", f"C{7+2*index}"), used_addresses=used,
+                placement=placement))
         if brief.status_led_count:
             led = catalog.require(LED_PART_ID)
             components.extend([
@@ -84,6 +87,7 @@ def synthesize_extended_a1(brief, catalog=None):
                 CircuitComponent(ref="R6", part_id=RESISTOR_PART_ID, package=_package(catalog, RESISTOR_PART_ID, prefer),
                                  value=_led_resistance(catalog.require(REGULATOR_PART_ID), led)),
             ])
+            placement.group("gpio", "D1", ("D1", "R6"), "Indicator LED and its own series resistor.")
             next(net for net in nets if net.name == "GND").connections.extend(_pins(("D1", _one_pin_with_role(led, PinRole.CATHODE))))
             nets.extend([
                 Net(name="LED_DRIVE", connections=_pins(("U1", _pin_named(catalog.require(brief.mcu_part_id), "IO27")), ("R6", "1"))),
@@ -118,6 +122,7 @@ def synthesize_extended_a1(brief, catalog=None):
             required_part_ids=sorted({brief.mcu_part_id, *[slot.part_id for slot in brief.sensors]}),
             functional_requirements=functions, assumptions=assumptions,
         )
-        return SynthesisResult(brief_fingerprint=brief.fingerprint, requirements=requirements, circuit=circuit)
+        return SynthesisResult(brief_fingerprint=brief.fingerprint, requirements=requirements, circuit=circuit,
+                               placement_request=placement.finish(circuit))
     except _CatalogCapabilityError as exc:
         return _refuse(brief, RefusalCode.CATALOG_CAPABILITY_MISSING, str(exc))
