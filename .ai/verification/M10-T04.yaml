@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "id": "M10-T04",
+  "status": "VERIFIED",
+  "commit": "cf9f04c8888ee5ab54df81e89740dd853f449f67",
+  "scope": "All three bounded project families in the UI/API/CLI, complete requirement outcomes, topology-based learning, catalog assembly guidance, and noninteractive native KiCad failure handling.",
+  "tool_versions": {
+    "python": "3.13.3",
+    "kicad": "10.0.5",
+    "ruff": "0.16.5"
+  },
+  "commands": [
+    {
+      "command": "pytest --basetemp build/pytest-t04-fast-final -p no:cacheprovider -q",
+      "result": "PASS",
+      "tests": 1049,
+      "deselected": 43,
+      "detail": "Default fast marker filter; final touched native/assembly paths rerun below after source freeze."
+    },
+    {
+      "command": "pytest -m integration --basetemp build/pytest-t04-integration-final -p no:cacheprovider -q",
+      "result": "PASS",
+      "tests": 26
+    },
+    {
+      "command": "pytest -m slow_integration --basetemp build/pytest-t04-slow-final -p no:cacheprovider -o addopts=--strict-markers -q",
+      "result": "PASS",
+      "tests": 17,
+      "deselected": 1075,
+      "runtime_seconds": 64.91
+    },
+    {
+      "command": "pytest tests/test_native_process.py tests/test_assembly_catalog.py tests/test_family_learning.py tests/test_kicad_crash_boundary.py tests/test_fabrication_native_failure.py --basetemp build/pytest-t04-final-deltas -p no:cacheprovider -o addopts=--strict-markers -q",
+      "result": "PASS",
+      "tests": 86,
+      "runtime_seconds": 5.38
+    },
+    {
+      "command": "node --test apps/web/tests/*.test.mjs",
+      "result": "PASS",
+      "tests": 120,
+      "skipped": 0
+    },
+    {
+      "command": "pytest tests/test_demo_ui.py",
+      "result": "PASS",
+      "tests": 9,
+      "detail": "Agent final focused UI gate, no EDA."
+    },
+    {
+      "command": "python -m ruff check .",
+      "result": "PASS"
+    },
+    {
+      "command": "python -m ohmni verify-all",
+      "result": "PASS",
+      "fixtures": 14,
+      "coverage": "100%"
+    },
+    {
+      "command": "python scripts/ai_state.py validate",
+      "result": "PASS"
+    }
+  ],
+  "browser": {
+    "server": "http://127.0.0.1:8880",
+    "final_instance": "790605b002394854",
+    "final_ui_version": "b78c0d4d20c827f14ab883bf97997f9a65d32b5a64ce0932b9eea8e7fcc45968",
+    "passed": [
+      "Three-purpose editor, meaningful count/part/address controls and confirmed brief",
+      "Memory create/save/build/explore; actual SPI memory flow and requirement panel",
+      "Controller4LEDs2buttons create/save/build; four separate LED flows and button lesson",
+      "Controller complete build download; no browser error/warning logs",
+      "Server restart reopens saved projects/revisions and completed controller run",
+      "390x844 editor fits width; memory count edit immediately disables previous run and saves revision2",
+      "Impossible three-BME address configuration is refused before save; replacing one with TMP102 saves valid brief",
+      "Verifer-graded challenge remains usable after changing LED count; old build invalidated"
+    ],
+    "bounded_failure": {
+      "job_id": "9f2f15c4f068",
+      "brief": "A1 two BME280 + one TMP102, automatic addresses, LED and header included",
+      "result": "ROUTING_INCOMPLETE; no release",
+      "detail": "Corrected brief saved but routing found four NO_PATH connections after about8seconds; not a wall-clock timeout. Retained as a T05 benchmark case. No claim that every accepted configuration routes."
+    }
+  },
+  "native_failure": {
+    "diagnosis": "Restricted environment timed out on --version; normal execution returned10.0.5/exit0. Retained sandbox files had ACLs inaccessible to normal user. No exact native faulting module established.",
+    "resolution": "All product native calls inherit Windows noninteractive error mode; parent mode restored immediately after process creation; timeout kill/reap; failed ERC/DRC cannot reuse old JSON or assert successful evidence; failures retain typed diagnostics and safe eda_tool_failed recovery.",
+    "proof": "Actual child inheritance, concurrent launch, cleanup and mocked crash/stale JSON tests pass. All3 API create/build/export/restart native cases and17 final slow tests pass with normal filesystem access."
+  },
+  "review": {
+    "status": "SCOPED_CROSS_REVIEWS_PASSED",
+    "independent": true,
+    "resolved_findings": [
+      "Async challenge redraw/revision race",
+      "Malformed requirement status arrays/objects crashing result renderer",
+      "Assembly catalog versus package heuristic contradiction",
+      "Native subprocess lock held across process lifetime",
+      "Native timeout test assumed sub-200ms Python startup"
+    ],
+    "additional_evidence": [
+      "88 accepted family learning combinations reviewed independently;8 expected address-capacity refusals",
+      "26 requirement/slot/header/preference combinations reviewed independently"
+    ],
+    "remaining_blocker_or_high": 0
+  },
+  "limitations": [
+    "M10-T05 benchmark remains unfinished; specific in-envelope routing failure retained for improvement.",
+    "Generated geometry remains illustrative in3D for body heights/materials.",
+    "Firmware, simulation, physical hardware, live supplier prices and real fabrication profile remain unverified or absent.",
+    "Existing reports are immutable historical snapshots; their older prose is not retroactively rewritten."
+  ]
+}
