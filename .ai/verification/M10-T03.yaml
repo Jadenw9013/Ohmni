@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "id": "M10-T03",
+  "status": "VERIFIED",
+  "commit": "b49209e16f96e2ea7c1fd0549e3c7c03f1418cc6",
+  "scope": "Generated constraint-driven placement, bounded and accelerated routing, complete physical-land verification, current-placement project publication and geometry metrics.",
+  "tool_versions": {"python": "3.13.3", "kicad": "10.0.5", "ruff": "0.16.5"},
+  "commands": [
+    {"command": "pytest -m 'not integration and not slow_integration' -o 'addopts=--strict-markers' --basetemp build/pytest-t03-fast-freeze -p no:cacheprovider -q", "result": "PASS", "tests": 935, "deselected": 40, "runtime_seconds": 72.75},
+    {"command": "pytest -m integration -o 'addopts=--strict-markers' --basetemp build/pytest-t03-integration-freeze -p no:cacheprovider -q", "result": "PASS", "tests": 26, "deselected": 949, "runtime_seconds": 19.31},
+    {"command": "pytest -m slow_integration -o 'addopts=--strict-markers' --basetemp build/pytest-t03-slow-final -p no:cacheprovider -q", "result": "PASS", "tests": 14, "deselected": 961, "runtime_seconds": 49.49, "detail": "Includes all eight existing personal configurations, two full personal releases, corrected reference release, and three generated family acceptance cases."},
+    {"command": "node --test apps/web/tests/*.test.mjs", "result": "PASS", "tests": 102, "skipped": 0},
+    {"command": "python -m ruff check .", "result": "PASS", "detail": "Also resolved 40 pre-existing repository lint findings without changing fixture content."},
+    {"command": "python -m ohmni verify-all", "result": "PASS", "fixtures": 14, "coverage": "100%"},
+    {"command": "python scripts/ai_state.py validate", "result": "PASS"}
+  ],
+  "generated_board_evidence": {
+    "directory": "build/pytest-generated-routing-acceptance-t03",
+    "a1_default": {"connections": 51, "segments": 324, "emitted_vias": 30, "track_length_mm": 1031.764761, "routing_seconds": 2.07, "drc_violations": 0, "unconnected_items": 0, "manufacturing": "PASS"},
+    "a2_minimum": {"connections": 35, "segments": 181, "emitted_vias": 25, "track_length_mm": 457.819759, "routing_seconds": 0.60, "drc_violations": 0, "unconnected_items": 0, "manufacturing": "PASS"},
+    "a3_maximum": {"connections": 75, "segments": 468, "emitted_vias": 68, "track_length_mm": 1376.854780, "routing_seconds": 3.47, "drc_violations": 0, "unconnected_items": 0, "manufacturing": "PASS"},
+    "detail": "Routing runtimes are local measured examples, not universal service guarantees. These cases were rerun successfully in the final slow tier after independent-verifier hardening."
+  },
+  "review": {
+    "status": "SCOPED_CROSS_REVIEWS_PASSED",
+    "independent": true,
+    "scopes": ["Generated placement reviewed by correctness_fixes", "Physical/routing integrity reviewed by project_api", "Application and server migration reviewed by correctness_fixes", "Generated real-KiCad acceptance independently executed by learning_ui"],
+    "resolved_findings": ["Complete ESP32 body envelope and corrected reference capacitor overlap", "Bounded proximity search and consistent envelope separation", "Typed invalid intent refusal and revalidation", "Every duplicated physical switch land requires copper", "Copper net ownership and physical terminal membership", "Copper radius and actual board-edge clearance", "Independent foreign/unassigned/mechanical pad clearance", "Historical personal placement retirement and retry", "Current editor refuses compiler configurations it cannot reopen"]
+  },
+  "performance_evidence": {
+    "directory": "build/routing-profile-agent",
+    "detail": "Spatial indexing, per-search collision caching and early cost pruning preserve exact successful geometry. Corrected golden matches all pre-optimization paths, tracks, vias and statistics; it completes in 2.10 seconds. Profiled A3 minimum completed in 3.40 seconds where the prior implementation exhausted a 90-second budget.",
+    "product_budget_seconds": 180
+  },
+  "limitations": [
+    "Generated placement is a bounded functional policy, not a global optimum; front-side zero-degree placement only.",
+    "Antenna policy has source-derived geometry and explicit module compatibility assumptions; no RF, signal-integrity, thermal or bench verification is claimed.",
+    "Manufacturing profile and prices remain synthetic. The 60-case milestone benchmark is still M10-T05 work.",
+    "Personal UI remains the original one-BME280 choices until M10-T04; broader deterministic compiler families are already available.",
+    "Server publication binds regenerated placement policy and trusted-worker artifact/manifest hashes; it does not independently recompile every downloaded PCB. Broader compiler/catalog version invalidation remains future work.",
+    "Historical verification records were not rewritten; the current reference capacitor position and copper counts differ from the earlier accepted layout."
+  ]
+}
