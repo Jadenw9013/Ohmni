@@ -88,6 +88,10 @@ def _select_package(spec: ComponentSpec, prefer_hand_solderable: bool) -> str:
     return min(
         compileable,
         key=lambda package: (
+            # Preserve the authored 0805 passive policy as other footprint
+            # sizes become available; catalog expansion must not silently
+            # change an existing saved brief's circuit.
+            package.name != "0805",
             prefer_hand_solderable and not package.hand_solderable,
             package.name,
         ),
@@ -241,6 +245,12 @@ def _preflight(brief: SynthesisBrief, catalog: PartCatalog) -> SynthesisResult |
             "M10-T01 supports exactly one I2C sensor; multi-sensor composition follows in T02.",
             "sensors",
             context={"requested": str(len(brief.sensors))},
+        )
+    if brief.button_count or brief.spi_devices:
+        return _refuse(
+            brief, RefusalCode.PERIPHERAL_SLOTS_UNSUPPORTED,
+            "The A1 sensor family does not accept button or SPI slots.",
+            "button_count", "spi_devices",
         )
     if brief.status_led_count not in (0, 1):
         return _refuse(
@@ -627,6 +637,12 @@ def synthesize_a1(
     """Compile a typed A1 brief or return a stable, typed refusal."""
 
     resolved_catalog = catalog or default_catalog()
+    if brief.archetype is ArchetypeId.A1_USB_I2C_SENSOR and (
+        len(brief.sensors) != 1 or brief.sensors[0].part_id != "BME280"
+    ):
+        from .a1_extended import synthesize_extended_a1
+
+        return synthesize_extended_a1(brief, resolved_catalog)
     if refusal := _preflight(brief, resolved_catalog):
         return refusal
     try:

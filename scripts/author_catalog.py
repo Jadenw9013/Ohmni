@@ -490,7 +490,7 @@ def bme280() -> ComponentSpec:
                 name="LGA-8",
                 pin_count=8,
                 hand_solderable=False,
-                kicad_footprint="Sensor:Bosch_LGA-8_2.5x2.5mm_P0.65mm_ClearanceHoles",
+                kicad_footprint="Package_LGA:Bosch_LGA-8_2.5x2.5mm_P0.65mm_ClockwisePinNumbering",
                 notes=(
                     "2.5 x 2.5 x 0.93 mm LGA. Bottom-terminated: needs hot air or reflow. "
                     "A hobbyist with an iron should use a breakout module instead."
@@ -531,10 +531,10 @@ def bme280() -> ComponentSpec:
                 number="5",
                 name="SDO",
                 roles=[PinRole.I2C_ADDRESS_SELECT, PinRole.SPI_MISO],
-                electrical_type=PinElectricalType.BIDIRECTIONAL,
+                electrical_type=PinElectricalType.TRI_STATE,
                 supply_rail="VDDIO",
                 must_not_float=True,
-                notes="In I2C mode this pin selects the address and must be tied high or low.",
+                notes="In I2C mode this pin selects the address and must be tied high or low. In SPI mode it is a serial output and is high-impedance outside active reads.",
             ),
             PinSpec(
                 number="6",
@@ -680,12 +680,12 @@ def _two_terminal_pins() -> list[PinSpec]:
     ]
 
 
-def _chip_packages() -> list[PackageOption]:
+def _chip_packages(family: str, prefix: str) -> list[PackageOption]:
     return [
-        PackageOption(name="0402", pin_count=2, hand_solderable=False),
-        PackageOption(name="0603", pin_count=2, hand_solderable=True),
-        PackageOption(name="0805", pin_count=2, hand_solderable=True),
-        PackageOption(name="1206", pin_count=2, hand_solderable=True),
+        PackageOption(name=name, pin_count=2, hand_solderable=name != "0402",
+                      kicad_footprint=f"{family}_SMD:{prefix}_{name}_{metric}Metric")
+        for name, metric in (("0402", "1005"), ("0603", "1608"),
+                             ("0805", "2012"), ("1206", "3216"))
     ]
 
 
@@ -696,7 +696,7 @@ def generic_resistor() -> ComponentSpec:
         is_generic=True,
         category=ComponentCategory.RESISTOR,
         description="Generic chip resistor. Resistance is an instance value, not a part fact.",
-        packages=_chip_packages(),
+        packages=_chip_packages("Resistor", "R"),
         pins=_two_terminal_pins(),
     )
 
@@ -708,7 +708,7 @@ def generic_capacitor() -> ComponentSpec:
         is_generic=True,
         category=ComponentCategory.CAPACITOR,
         description="Generic MLCC. Capacitance is an instance value, not a part fact.",
-        packages=_chip_packages(),
+        packages=_chip_packages("Capacitor", "C"),
         pins=_two_terminal_pins(),
     )
 
@@ -721,8 +721,10 @@ def generic_led_green() -> ComponentSpec:
         category=ComponentCategory.LED,
         description="Generic green indicator LED.",
         packages=[
-            PackageOption(name="0603", pin_count=2, hand_solderable=True),
-            PackageOption(name="0805", pin_count=2, hand_solderable=True),
+            PackageOption(name="0603", pin_count=2, hand_solderable=True,
+                          kicad_footprint="LED_SMD:LED_0603_1608Metric"),
+            PackageOption(name="0805", pin_count=2, hand_solderable=True,
+                          kicad_footprint="LED_SMD:LED_0805_2012Metric"),
         ],
         pins=[
             PinSpec(

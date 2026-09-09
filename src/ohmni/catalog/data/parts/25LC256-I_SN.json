@@ -1,0 +1,589 @@
+{
+  "part_id": "25LC256-I/SN",
+  "mpn": "25LC256-I/SN",
+  "manufacturer": "Microchip Technology",
+  "category": "memory",
+  "description": "256-kbit SPI EEPROM, 32 KiB, in the industrial-temperature SOIC-8 package.",
+  "is_generic": false,
+  "lifecycle": "active",
+  "packages": [
+    {
+      "name": "SOIC-8",
+      "pin_count": 8,
+      "hand_solderable": true,
+      "kicad_footprint": "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm",
+      "notes": "SN narrow SOIC package; order-code mapping is in DS20001822H page 29."
+    }
+  ],
+  "pins": [
+    {
+      "number": "1",
+      "name": "CS",
+      "roles": [
+        "spi_cs"
+      ],
+      "electrical_type": "input",
+      "supply_rail": "VCC",
+      "absolute_max_above_supply": {
+        "value": 1.0,
+        "unit": "V"
+      },
+      "must_not_float": true,
+      "notes": "Active-low control; provide a defined idle level.",
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "25LC256 pin 1 (CS)",
+          "source_id": "microchip-25lc256-ds20001822h",
+          "document": {
+            "document_id": "microchip-25lc256-ds20001822h",
+            "title": "25AA256/25LC256 Data Sheet",
+            "manufacturer": "Microchip Technology",
+            "part_number": "25LC256",
+            "revision": "DS20001822H (2019)",
+            "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/25AA256-25LC256-256K-SPI-Bus-Serial-EEPROM-20001822H.pdf"
+          },
+          "page": 1,
+          "text_value": "SOIC pin 1: CS",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.725364Z"
+        },
+        {
+          "kind": "catalog",
+          "label": "25LC256 I/O absolute limit relative to VCC",
+          "source_id": "microchip-25lc256-ds20001822h",
+          "document": {
+            "document_id": "microchip-25lc256-ds20001822h",
+            "title": "25AA256/25LC256 Data Sheet",
+            "manufacturer": "Microchip Technology",
+            "part_number": "25LC256",
+            "revision": "DS20001822H (2019)",
+            "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/25AA256-25LC256-256K-SPI-Bus-Serial-EEPROM-20001822H.pdf"
+          },
+          "page": 2,
+          "text_value": "All inputs and outputs: -0.6 V to VCC + 1.0 V",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.725377Z"
+        }
+      ]
+    },
+    {
+      "number": "2",
+      "name": "SO",
+      "roles": [
+        "spi_miso"
+      ],
+      "electrical_type": "tri_state",
+      "supply_rail": "VCC",
+      "absolute_max_above_supply": {
+        "value": 1.0,
+        "unit": "V"
+      },
+      "notes": "SO is high impedance while CS is high; firmware must deselect other bus devices.",
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "25LC256 pin 2 (SO)",
+          "source_id": "microchip-25lc256-ds20001822h",
+          "document": {
+            "document_id": "microchip-25lc256-ds20001822h",
+            "title": "25AA256/25LC256 Data Sheet",
+            "manufacturer": "Microchip Technology",
+            "part_number": "25LC256",
+            "revision": "DS20001822H (2019)",
+            "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/25AA256-25LC256-256K-SPI-Bus-Serial-EEPROM-20001822H.pdf"
+          },
+          "page": 1,
+          "text_value": "SOIC pin 2: SO",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.725394Z"
+        },
+        {
+          "kind": "catalog",
+          "label": "SO deselected high-impedance behavior",
+          "source_id": "microchip-25lc256-ds20001822h",
+          "document": {
+            "document_id": "microchip-25lc256-ds20001822h",
+            "title": "25AA256/25LC256 Data Sheet",
+            "manufacturer": "Microchip Technology",
+            "part_number": "25LC256",
+            "revision": "DS20001822H (2019)",
+            "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/25AA256-25LC256-256K-SPI-Bus-Serial-EEPROM-20001822H.pdf"
+          },
+          "page": 13,
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.725397Z"
+        },
+        {
+          "kind": "catalog",
+          "label": "25LC256 I/O absolute limit relative to VCC",
+          "source_id": "microchip-25lc256-ds20001822h",
+          "document": {
+            "document_id": "microchip-25lc256-ds20001822h",
+            "title": "25AA256/25LC256 Data Sheet",
+            "manufacturer": "Microchip Technology",
+            "part_number": "25LC256",
+            "revision": "DS20001822H (2019)",
+            "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/25AA256-25LC256-256K-SPI-Bus-Serial-EEPROM-20001822H.pdf"
+          },
+          "page": 2,
+          "text_value": "All inputs and outputs: -0.6 V to VCC + 1.0 V",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.725402Z"
+        }
+      ]
+    },
+    {
+      "number": "3",
+      "name": "WP",
+      "roles": [
+        "other"
+      ],
+      "electrical_type": "input",
+      "supply_rail": "VCC",
+      "absolute_max_above_supply": {
+        "value": 1.0,
+        "unit": "V"
+      },
+      "must_not_float": true,
+      "notes": "Active-low control; provide a defined idle level.",
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "25LC256 pin 3 (WP)",
+          "source_id": "microchip-25lc256-ds20001822h",
+          "document": {
+            "document_id": "microchip-25lc256-ds20001822h",
+            "title": "25AA256/25LC256 Data Sheet",
+            "manufacturer": "Microchip Technology",
+            "part_number": "25LC256",
+            "revision": "DS20001822H (2019)",
+            "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/25AA256-25LC256-256K-SPI-Bus-Serial-EEPROM-20001822H.pdf"
+          },
+          "page": 1,
+          "text_value": "SOIC pin 3: WP",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.725409Z"
+        },
+        {
+          "kind": "catalog",
+          "label": "25LC256 I/O absolute limit relative to VCC",
+          "source_id": "microchip-25lc256-ds20001822h",
+          "document": {
+            "document_id": "microchip-25lc256-ds20001822h",
+            "title": "25AA256/25LC256 Data Sheet",
+            "manufacturer": "Microchip Technology",
+            "part_number": "25LC256",
+            "revision": "DS20001822H (2019)",
+            "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/25AA256-25LC256-256K-SPI-Bus-Serial-EEPROM-20001822H.pdf"
+          },
+          "page": 2,
+          "text_value": "All inputs and outputs: -0.6 V to VCC + 1.0 V",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.725411Z"
+        }
+      ]
+    },
+    {
+      "number": "4",
+      "name": "VSS",
+      "roles": [
+        "ground"
+      ],
+      "electrical_type": "power_in",
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "25LC256 pin 4 (VSS)",
+          "source_id": "microchip-25lc256-ds20001822h",
+          "document": {
+            "document_id": "microchip-25lc256-ds20001822h",
+            "title": "25AA256/25LC256 Data Sheet",
+            "manufacturer": "Microchip Technology",
+            "part_number": "25LC256",
+            "revision": "DS20001822H (2019)",
+            "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/25AA256-25LC256-256K-SPI-Bus-Serial-EEPROM-20001822H.pdf"
+          },
+          "page": 1,
+          "text_value": "SOIC pin 4: VSS",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.725416Z"
+        }
+      ]
+    },
+    {
+      "number": "5",
+      "name": "SI",
+      "roles": [
+        "spi_mosi"
+      ],
+      "electrical_type": "input",
+      "supply_rail": "VCC",
+      "absolute_max_above_supply": {
+        "value": 1.0,
+        "unit": "V"
+      },
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "25LC256 pin 5 (SI)",
+          "source_id": "microchip-25lc256-ds20001822h",
+          "document": {
+            "document_id": "microchip-25lc256-ds20001822h",
+            "title": "25AA256/25LC256 Data Sheet",
+            "manufacturer": "Microchip Technology",
+            "part_number": "25LC256",
+            "revision": "DS20001822H (2019)",
+            "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/25AA256-25LC256-256K-SPI-Bus-Serial-EEPROM-20001822H.pdf"
+          },
+          "page": 1,
+          "text_value": "SOIC pin 5: SI",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.725423Z"
+        },
+        {
+          "kind": "catalog",
+          "label": "25LC256 I/O absolute limit relative to VCC",
+          "source_id": "microchip-25lc256-ds20001822h",
+          "document": {
+            "document_id": "microchip-25lc256-ds20001822h",
+            "title": "25AA256/25LC256 Data Sheet",
+            "manufacturer": "Microchip Technology",
+            "part_number": "25LC256",
+            "revision": "DS20001822H (2019)",
+            "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/25AA256-25LC256-256K-SPI-Bus-Serial-EEPROM-20001822H.pdf"
+          },
+          "page": 2,
+          "text_value": "All inputs and outputs: -0.6 V to VCC + 1.0 V",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.725426Z"
+        }
+      ]
+    },
+    {
+      "number": "6",
+      "name": "SCK",
+      "roles": [
+        "spi_sck"
+      ],
+      "electrical_type": "input",
+      "supply_rail": "VCC",
+      "absolute_max_above_supply": {
+        "value": 1.0,
+        "unit": "V"
+      },
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "25LC256 pin 6 (SCK)",
+          "source_id": "microchip-25lc256-ds20001822h",
+          "document": {
+            "document_id": "microchip-25lc256-ds20001822h",
+            "title": "25AA256/25LC256 Data Sheet",
+            "manufacturer": "Microchip Technology",
+            "part_number": "25LC256",
+            "revision": "DS20001822H (2019)",
+            "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/25AA256-25LC256-256K-SPI-Bus-Serial-EEPROM-20001822H.pdf"
+          },
+          "page": 1,
+          "text_value": "SOIC pin 6: SCK",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.725433Z"
+        },
+        {
+          "kind": "catalog",
+          "label": "25LC256 I/O absolute limit relative to VCC",
+          "source_id": "microchip-25lc256-ds20001822h",
+          "document": {
+            "document_id": "microchip-25lc256-ds20001822h",
+            "title": "25AA256/25LC256 Data Sheet",
+            "manufacturer": "Microchip Technology",
+            "part_number": "25LC256",
+            "revision": "DS20001822H (2019)",
+            "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/25AA256-25LC256-256K-SPI-Bus-Serial-EEPROM-20001822H.pdf"
+          },
+          "page": 2,
+          "text_value": "All inputs and outputs: -0.6 V to VCC + 1.0 V",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.725435Z"
+        }
+      ]
+    },
+    {
+      "number": "7",
+      "name": "HOLD",
+      "roles": [
+        "other"
+      ],
+      "electrical_type": "input",
+      "supply_rail": "VCC",
+      "absolute_max_above_supply": {
+        "value": 1.0,
+        "unit": "V"
+      },
+      "must_not_float": true,
+      "notes": "Active-low control; provide a defined idle level.",
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "25LC256 pin 7 (HOLD)",
+          "source_id": "microchip-25lc256-ds20001822h",
+          "document": {
+            "document_id": "microchip-25lc256-ds20001822h",
+            "title": "25AA256/25LC256 Data Sheet",
+            "manufacturer": "Microchip Technology",
+            "part_number": "25LC256",
+            "revision": "DS20001822H (2019)",
+            "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/25AA256-25LC256-256K-SPI-Bus-Serial-EEPROM-20001822H.pdf"
+          },
+          "page": 1,
+          "text_value": "SOIC pin 7: HOLD",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.725441Z"
+        },
+        {
+          "kind": "catalog",
+          "label": "25LC256 I/O absolute limit relative to VCC",
+          "source_id": "microchip-25lc256-ds20001822h",
+          "document": {
+            "document_id": "microchip-25lc256-ds20001822h",
+            "title": "25AA256/25LC256 Data Sheet",
+            "manufacturer": "Microchip Technology",
+            "part_number": "25LC256",
+            "revision": "DS20001822H (2019)",
+            "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/25AA256-25LC256-256K-SPI-Bus-Serial-EEPROM-20001822H.pdf"
+          },
+          "page": 2,
+          "text_value": "All inputs and outputs: -0.6 V to VCC + 1.0 V",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.725443Z"
+        }
+      ]
+    },
+    {
+      "number": "8",
+      "name": "VCC",
+      "roles": [
+        "power"
+      ],
+      "electrical_type": "power_in",
+      "supply_rail": "VCC",
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "25LC256 pin 8 (VCC)",
+          "source_id": "microchip-25lc256-ds20001822h",
+          "document": {
+            "document_id": "microchip-25lc256-ds20001822h",
+            "title": "25AA256/25LC256 Data Sheet",
+            "manufacturer": "Microchip Technology",
+            "part_number": "25LC256",
+            "revision": "DS20001822H (2019)",
+            "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/25AA256-25LC256-256K-SPI-Bus-Serial-EEPROM-20001822H.pdf"
+          },
+          "page": 1,
+          "text_value": "SOIC pin 8: VCC",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.725448Z"
+        }
+      ]
+    }
+  ],
+  "supply_rails": [
+    {
+      "name": "VCC",
+      "operating": {
+        "minimum": {
+          "value": 2.5,
+          "unit": "V"
+        },
+        "maximum": {
+          "value": 5.5,
+          "unit": "V"
+        }
+      },
+      "absolute_max": {
+        "value": 6.5,
+        "unit": "V"
+      },
+      "current_max": {
+        "value": 0.006,
+        "unit": "A"
+      },
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "25LC256 operating supply",
+          "source_id": "microchip-25lc256-ds20001822h",
+          "document": {
+            "document_id": "microchip-25lc256-ds20001822h",
+            "title": "25AA256/25LC256 Data Sheet",
+            "manufacturer": "Microchip Technology",
+            "part_number": "25LC256",
+            "revision": "DS20001822H (2019)",
+            "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/25AA256-25LC256-256K-SPI-Bus-Serial-EEPROM-20001822H.pdf"
+          },
+          "page": 1,
+          "text_value": "VCC operating range: 2.5 to 5.5 V",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.725472Z"
+        },
+        {
+          "kind": "catalog",
+          "label": "25LC256 absolute supply limit",
+          "source_id": "microchip-25lc256-ds20001822h",
+          "document": {
+            "document_id": "microchip-25lc256-ds20001822h",
+            "title": "25AA256/25LC256 Data Sheet",
+            "manufacturer": "Microchip Technology",
+            "part_number": "25LC256",
+            "revision": "DS20001822H (2019)",
+            "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/25AA256-25LC256-256K-SPI-Bus-Serial-EEPROM-20001822H.pdf"
+          },
+          "page": 2,
+          "quantity": {
+            "value": 6.5,
+            "unit": "V"
+          },
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.725476Z"
+        },
+        {
+          "kind": "assumption",
+          "label": "EEPROM current allowance for the 3.3 V archetype",
+          "quantity": {
+            "value": 0.006,
+            "unit": "A"
+          },
+          "detail": "The 6 mA read maximum is specified at 5.5 V and 10 MHz in DS20001822H page 2. Using it as an allowance at 3.3 V is an explicit design assumption, not a measured or manufacturer-guaranteed 3.3 V peak. Output-load current is separate.",
+          "recorded_at": "2026-09-09T05:40:27.725480Z"
+        }
+      ]
+    }
+  ],
+  "interfaces": [
+    "spi"
+  ],
+  "i2c_addresses": [],
+  "decoupling_rules": [
+    {
+      "rail": "VCC",
+      "per_pin_capacitance": {
+        "value": 1e-07,
+        "unit": "F"
+      },
+      "note": "Manufacturer application-note recommendation; no numeric placement distance is specified.",
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "SPI EEPROM bypass recommendation",
+          "source_id": "microchip-an1040",
+          "document": {
+            "document_id": "microchip-an1040",
+            "title": "Recommended Usage of Microchip SPI Serial EEPROM Devices",
+            "manufacturer": "Microchip Technology",
+            "revision": "DS01040A (2006)",
+            "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/OTH/ApplicationNotes/ApplicationNotes/01040A.pdf"
+          },
+          "page": 1,
+          "quantity": {
+            "value": 1e-07,
+            "unit": "F"
+          },
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.725497Z"
+        }
+      ]
+    }
+  ],
+  "design_rules": [
+    {
+      "rule_id": "25lc256.control_idle",
+      "description": "Provide a CS pull-up for startup and hold unused active-low HOLD/WP controls high.",
+      "category": "other",
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "SPI EEPROM control-pin guidance",
+          "source_id": "microchip-an1040",
+          "document": {
+            "document_id": "microchip-an1040",
+            "title": "Recommended Usage of Microchip SPI Serial EEPROM Devices",
+            "manufacturer": "Microchip Technology",
+            "revision": "DS01040A (2006)",
+            "url": "https://ww1.microchip.com/downloads/aemDocuments/documents/OTH/ApplicationNotes/ApplicationNotes/01040A.pdf"
+          },
+          "page": 2,
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.725505Z"
+        }
+      ]
+    },
+    {
+      "rule_id": "25lc256.firmware",
+      "description": "At 3.3 V use an SPI clock no greater than 5 MHz; issue write-enable and poll write-in-progress. A page write is limited to 64 bytes. Static wiring checks do not execute these operations.",
+      "category": "firmware",
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "SPI clock ceiling at 2.5 to below 4.5 V",
+          "source_id": "microchip-25lc256-ds20001822h",
+          "document": {
+            "document_id": "microchip-25lc256-ds20001822h",
+            "title": "25AA256/25LC256 Data Sheet",
+            "manufacturer": "Microchip Technology",
+            "part_number": "25LC256",
+            "revision": "DS20001822H (2019)",
+            "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/25AA256-25LC256-256K-SPI-Bus-Serial-EEPROM-20001822H.pdf"
+          },
+          "page": 3,
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.725511Z"
+        },
+        {
+          "kind": "catalog",
+          "label": "EEPROM page-write protocol",
+          "source_id": "microchip-25lc256-ds20001822h",
+          "document": {
+            "document_id": "microchip-25lc256-ds20001822h",
+            "title": "25AA256/25LC256 Data Sheet",
+            "manufacturer": "Microchip Technology",
+            "part_number": "25LC256",
+            "revision": "DS20001822H (2019)",
+            "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/25AA256-25LC256-256K-SPI-Bus-Serial-EEPROM-20001822H.pdf"
+          },
+          "page": 6,
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.725513Z"
+        }
+      ]
+    }
+  ],
+  "datasheet": {
+    "document_id": "microchip-25lc256-ds20001822h",
+    "title": "25AA256/25LC256 Data Sheet",
+    "manufacturer": "Microchip Technology",
+    "part_number": "25LC256",
+    "revision": "DS20001822H (2019)",
+    "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/25AA256-25LC256-256K-SPI-Bus-Serial-EEPROM-20001822H.pdf"
+  },
+  "evidence": [
+    {
+      "kind": "catalog",
+      "label": "Industrial SN order-code selection",
+      "source_id": "microchip-25lc256-ds20001822h",
+      "document": {
+        "document_id": "microchip-25lc256-ds20001822h",
+        "title": "25AA256/25LC256 Data Sheet",
+        "manufacturer": "Microchip Technology",
+        "part_number": "25LC256",
+        "revision": "DS20001822H (2019)",
+        "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/25AA256-25LC256-256K-SPI-Bus-Serial-EEPROM-20001822H.pdf"
+      },
+      "page": 29,
+      "text_value": "25LC256-I/SN: industrial temperature, narrow SOIC-8",
+      "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+      "recorded_at": "2026-09-09T05:40:27.725517Z"
+    }
+  ]
+}

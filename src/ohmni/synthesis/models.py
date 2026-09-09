@@ -38,6 +38,14 @@ class I2cSensorSlot(BaseModel):
     address: int | None = Field(default=None, ge=0x00, le=0x7F)
 
 
+class SpiPeripheralSlot(BaseModel):
+    """One catalog peripheral; synthesis assigns a distinct chip-select pin."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    part_id: str = Field(min_length=1)
+
+
 class SynthesisBrief(BaseModel):
     """A strict, versioned brief that can be synthesized without prose inference."""
 
@@ -57,6 +65,8 @@ class SynthesisBrief(BaseModel):
         default_factory=lambda: (I2cSensorSlot(part_id="BME280"),)
     )
     status_led_count: int = Field(default=1, ge=0)
+    button_count: int = Field(default=0, ge=0)
+    spi_devices: tuple[SpiPeripheralSlot, ...] = Field(default_factory=tuple)
     include_programming_header: bool = True
     max_board_layers: int = Field(default=2, ge=1, le=8)
     hand_solderable_preferred: bool = True
@@ -67,9 +77,13 @@ class SynthesisBrief(BaseModel):
     def fingerprint(self) -> str:
         """Stable identity for the complete input brief."""
 
-        payload = json.dumps(
-            self.model_dump(mode="json"), sort_keys=True, separators=(",", ":")
-        )
+        values = self.model_dump(mode="json")
+        # Schema-v1 saved A1 inputs predate these optional slots. Empty new
+        # slots preserve their existing fingerprint and artifact lineage.
+        for name in ("button_count", "spi_devices"):
+            if not values[name]:
+                del values[name]
+        payload = json.dumps(values, sort_keys=True, separators=(",", ":"))
         return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
@@ -88,6 +102,11 @@ class RefusalCode(StrEnum):
     SENSOR_INTERFACE_UNSUPPORTED = "sensor_interface_unsupported"
     SENSOR_ADDRESS_UNAVAILABLE = "sensor_address_unavailable"
     STATUS_LED_COUNT_UNSUPPORTED = "status_led_count_unsupported"
+    BUTTON_COUNT_UNSUPPORTED = "button_count_unsupported"
+    PERIPHERAL_SLOTS_UNSUPPORTED = "peripheral_slots_unsupported"
+    SPI_COUNT_UNSUPPORTED = "spi_count_unsupported"
+    SPI_UNAVAILABLE = "spi_unavailable"
+    SENSOR_ADDRESS_CONFLICT = "sensor_address_conflict"
     PART_UNAVAILABLE = "part_unavailable"
     CATALOG_CAPABILITY_MISSING = "catalog_capability_missing"
 
@@ -133,6 +152,7 @@ __all__ = [
     "I2cSensorSlot",
     "InputPower",
     "RefusalCode",
+    "SpiPeripheralSlot",
     "SynthesisBrief",
     "SynthesisRefusal",
     "SynthesisResult",

@@ -1,0 +1,467 @@
+{
+  "part_id": "TMP102AIDRLR",
+  "mpn": "TMP102AIDRLR",
+  "manufacturer": "Texas Instruments",
+  "category": "sensor",
+  "description": "Low-power I2C temperature sensor in the six-pin SOT-563 DRL package.",
+  "is_generic": false,
+  "lifecycle": "active",
+  "packages": [
+    {
+      "name": "SOT-563",
+      "pin_count": 6,
+      "hand_solderable": false,
+      "kicad_footprint": "Package_TO_SOT_SMD:SOT-563",
+      "notes": "Fine-pitch package: assembly guidance requires surface-mount equipment and review."
+    }
+  ],
+  "pins": [
+    {
+      "number": "1",
+      "name": "SCL",
+      "roles": [
+        "i2c_scl"
+      ],
+      "electrical_type": "input",
+      "supply_rail": "V+",
+      "absolute_max": {
+        "value": 4.0,
+        "unit": "V"
+      },
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "TMP102 pin 1 (SCL)",
+          "source_id": "ti-tmp102-sbos397i",
+          "document": {
+            "document_id": "ti-tmp102-sbos397i",
+            "title": "TMP102 Low-Power Digital Temperature Sensor",
+            "manufacturer": "Texas Instruments",
+            "part_number": "TMP102",
+            "revision": "SBOS397I (June 2024)",
+            "url": "https://www.ti.com/lit/ds/symlink/tmp102.pdf"
+          },
+          "page": 3,
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.726153Z"
+        },
+        {
+          "kind": "catalog",
+          "label": "TMP102 signal absolute limits",
+          "source_id": "ti-tmp102-sbos397i",
+          "document": {
+            "document_id": "ti-tmp102-sbos397i",
+            "title": "TMP102 Low-Power Digital Temperature Sensor",
+            "manufacturer": "Texas Instruments",
+            "part_number": "TMP102",
+            "revision": "SBOS397I (June 2024)",
+            "url": "https://www.ti.com/lit/ds/symlink/tmp102.pdf"
+          },
+          "page": 4,
+          "text_value": "SCL/SDA/ADD0: 4 V; ALERT: V+ + 0.3 V, at most 4 V",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.726159Z"
+        }
+      ]
+    },
+    {
+      "number": "2",
+      "name": "GND",
+      "roles": [
+        "ground"
+      ],
+      "electrical_type": "power_in",
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "TMP102 pin 2 (GND)",
+          "source_id": "ti-tmp102-sbos397i",
+          "document": {
+            "document_id": "ti-tmp102-sbos397i",
+            "title": "TMP102 Low-Power Digital Temperature Sensor",
+            "manufacturer": "Texas Instruments",
+            "part_number": "TMP102",
+            "revision": "SBOS397I (June 2024)",
+            "url": "https://www.ti.com/lit/ds/symlink/tmp102.pdf"
+          },
+          "page": 3,
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.726169Z"
+        }
+      ]
+    },
+    {
+      "number": "3",
+      "name": "ALERT",
+      "roles": [
+        "other"
+      ],
+      "electrical_type": "open_collector",
+      "supply_rail": "V+",
+      "absolute_max_above_supply": {
+        "value": 0.3,
+        "unit": "V"
+      },
+      "notes": "Open-drain output; requires an external pull-up when used.",
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "TMP102 pin 3 (ALERT)",
+          "source_id": "ti-tmp102-sbos397i",
+          "document": {
+            "document_id": "ti-tmp102-sbos397i",
+            "title": "TMP102 Low-Power Digital Temperature Sensor",
+            "manufacturer": "Texas Instruments",
+            "part_number": "TMP102",
+            "revision": "SBOS397I (June 2024)",
+            "url": "https://www.ti.com/lit/ds/symlink/tmp102.pdf"
+          },
+          "page": 3,
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.726177Z"
+        },
+        {
+          "kind": "catalog",
+          "label": "TMP102 signal absolute limits",
+          "source_id": "ti-tmp102-sbos397i",
+          "document": {
+            "document_id": "ti-tmp102-sbos397i",
+            "title": "TMP102 Low-Power Digital Temperature Sensor",
+            "manufacturer": "Texas Instruments",
+            "part_number": "TMP102",
+            "revision": "SBOS397I (June 2024)",
+            "url": "https://www.ti.com/lit/ds/symlink/tmp102.pdf"
+          },
+          "page": 4,
+          "text_value": "SCL/SDA/ADD0: 4 V; ALERT: V+ + 0.3 V, at most 4 V",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.726179Z"
+        }
+      ]
+    },
+    {
+      "number": "4",
+      "name": "ADD0",
+      "roles": [
+        "i2c_address_select"
+      ],
+      "electrical_type": "input",
+      "supply_rail": "V+",
+      "absolute_max": {
+        "value": 4.0,
+        "unit": "V"
+      },
+      "must_not_float": true,
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "TMP102 pin 4 (ADD0)",
+          "source_id": "ti-tmp102-sbos397i",
+          "document": {
+            "document_id": "ti-tmp102-sbos397i",
+            "title": "TMP102 Low-Power Digital Temperature Sensor",
+            "manufacturer": "Texas Instruments",
+            "part_number": "TMP102",
+            "revision": "SBOS397I (June 2024)",
+            "url": "https://www.ti.com/lit/ds/symlink/tmp102.pdf"
+          },
+          "page": 3,
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.726186Z"
+        },
+        {
+          "kind": "catalog",
+          "label": "TMP102 signal absolute limits",
+          "source_id": "ti-tmp102-sbos397i",
+          "document": {
+            "document_id": "ti-tmp102-sbos397i",
+            "title": "TMP102 Low-Power Digital Temperature Sensor",
+            "manufacturer": "Texas Instruments",
+            "part_number": "TMP102",
+            "revision": "SBOS397I (June 2024)",
+            "url": "https://www.ti.com/lit/ds/symlink/tmp102.pdf"
+          },
+          "page": 4,
+          "text_value": "SCL/SDA/ADD0: 4 V; ALERT: V+ + 0.3 V, at most 4 V",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.726189Z"
+        }
+      ]
+    },
+    {
+      "number": "5",
+      "name": "V+",
+      "roles": [
+        "power"
+      ],
+      "electrical_type": "power_in",
+      "supply_rail": "V+",
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "TMP102 pin 5 (V+)",
+          "source_id": "ti-tmp102-sbos397i",
+          "document": {
+            "document_id": "ti-tmp102-sbos397i",
+            "title": "TMP102 Low-Power Digital Temperature Sensor",
+            "manufacturer": "Texas Instruments",
+            "part_number": "TMP102",
+            "revision": "SBOS397I (June 2024)",
+            "url": "https://www.ti.com/lit/ds/symlink/tmp102.pdf"
+          },
+          "page": 3,
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.726195Z"
+        }
+      ]
+    },
+    {
+      "number": "6",
+      "name": "SDA",
+      "roles": [
+        "i2c_sda"
+      ],
+      "electrical_type": "open_collector",
+      "supply_rail": "V+",
+      "absolute_max": {
+        "value": 4.0,
+        "unit": "V"
+      },
+      "notes": "Open-drain output; requires an external pull-up when used.",
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "TMP102 pin 6 (SDA)",
+          "source_id": "ti-tmp102-sbos397i",
+          "document": {
+            "document_id": "ti-tmp102-sbos397i",
+            "title": "TMP102 Low-Power Digital Temperature Sensor",
+            "manufacturer": "Texas Instruments",
+            "part_number": "TMP102",
+            "revision": "SBOS397I (June 2024)",
+            "url": "https://www.ti.com/lit/ds/symlink/tmp102.pdf"
+          },
+          "page": 3,
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.726200Z"
+        },
+        {
+          "kind": "catalog",
+          "label": "TMP102 signal absolute limits",
+          "source_id": "ti-tmp102-sbos397i",
+          "document": {
+            "document_id": "ti-tmp102-sbos397i",
+            "title": "TMP102 Low-Power Digital Temperature Sensor",
+            "manufacturer": "Texas Instruments",
+            "part_number": "TMP102",
+            "revision": "SBOS397I (June 2024)",
+            "url": "https://www.ti.com/lit/ds/symlink/tmp102.pdf"
+          },
+          "page": 4,
+          "text_value": "SCL/SDA/ADD0: 4 V; ALERT: V+ + 0.3 V, at most 4 V",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.726202Z"
+        }
+      ]
+    }
+  ],
+  "supply_rails": [
+    {
+      "name": "V+",
+      "operating": {
+        "minimum": {
+          "value": 1.4,
+          "unit": "V"
+        },
+        "typical": {
+          "value": 3.3,
+          "unit": "V"
+        },
+        "maximum": {
+          "value": 3.6,
+          "unit": "V"
+        }
+      },
+      "absolute_max": {
+        "value": 4.0,
+        "unit": "V"
+      },
+      "current_max": {
+        "value": 0.0001,
+        "unit": "A"
+      },
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "TMP102 operating and absolute supply ratings",
+          "source_id": "ti-tmp102-sbos397i",
+          "document": {
+            "document_id": "ti-tmp102-sbos397i",
+            "title": "TMP102 Low-Power Digital Temperature Sensor",
+            "manufacturer": "Texas Instruments",
+            "part_number": "TMP102",
+            "revision": "SBOS397I (June 2024)",
+            "url": "https://www.ti.com/lit/ds/symlink/tmp102.pdf"
+          },
+          "page": 4,
+          "text_value": "Operating 1.4 to 3.6 V; absolute maximum 4 V",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.726221Z"
+        },
+        {
+          "kind": "assumption",
+          "label": "TMP102 supply-current allowance",
+          "quantity": {
+            "value": 0.0001,
+            "unit": "A"
+          },
+          "detail": "100 uA is an authored allowance, not a manufacturer peak-current specification. SBOS397I page 5 gives mode-dependent average currents: 7.5 uA maximum with an inactive bus at the default rate, and 40 uA typical at a 2.85 MHz active bus. Output pull-up currents and transient peaks need separate review.",
+          "recorded_at": "2026-09-09T05:40:27.726224Z"
+        }
+      ]
+    }
+  ],
+  "interfaces": [
+    "i2c"
+  ],
+  "i2c_addresses": [
+    {
+      "address": 72,
+      "selected_by": "ADD0 connected to GND",
+      "strap_pin": "4",
+      "strap_level": "low",
+      "is_default": true
+    },
+    {
+      "address": 73,
+      "selected_by": "ADD0 connected to V+",
+      "strap_pin": "4",
+      "strap_level": "high",
+      "is_default": false
+    },
+    {
+      "address": 74,
+      "selected_by": "ADD0 connected to SDA; not supported by the low/high strap compiler",
+      "strap_pin": "4",
+      "is_default": false
+    },
+    {
+      "address": 75,
+      "selected_by": "ADD0 connected to SCL; not supported by the low/high strap compiler",
+      "strap_pin": "4",
+      "is_default": false
+    }
+  ],
+  "decoupling_rules": [
+    {
+      "rail": "V+",
+      "per_pin_capacitance": {
+        "value": 1e-08,
+        "unit": "F"
+      },
+      "note": "Place near the supply/ground pins; manufacturer gives no numeric maximum distance.",
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "TMP102 supply bypass recommendation",
+          "source_id": "ti-tmp102-sbos397i",
+          "document": {
+            "document_id": "ti-tmp102-sbos397i",
+            "title": "TMP102 Low-Power Digital Temperature Sensor",
+            "manufacturer": "Texas Instruments",
+            "part_number": "TMP102",
+            "revision": "SBOS397I (June 2024)",
+            "url": "https://www.ti.com/lit/ds/symlink/tmp102.pdf"
+          },
+          "page": 21,
+          "quantity": {
+            "value": 1e-08,
+            "unit": "F"
+          },
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.726244Z"
+        }
+      ]
+    }
+  ],
+  "design_rules": [
+    {
+      "rule_id": "tmp102.address",
+      "description": "ADD0 selects one of four addresses. The current strap compiler can represent only GND and V+ choices.",
+      "category": "other",
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "TMP102 address selection",
+          "source_id": "ti-tmp102-sbos397i",
+          "document": {
+            "document_id": "ti-tmp102-sbos397i",
+            "title": "TMP102 Low-Power Digital Temperature Sensor",
+            "manufacturer": "Texas Instruments",
+            "part_number": "TMP102",
+            "revision": "SBOS397I (June 2024)",
+            "url": "https://www.ti.com/lit/ds/symlink/tmp102.pdf"
+          },
+          "page": 11,
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.726250Z"
+        }
+      ]
+    },
+    {
+      "rule_id": "tmp102.pullups",
+      "description": "Used SDA/ALERT open-drain outputs need pull-ups. Review bus capacitance and timing; keep pull-up sink current within 3 mA.",
+      "category": "other",
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "TMP102 pull-up guidance",
+          "source_id": "ti-tmp102-sbos397i",
+          "document": {
+            "document_id": "ti-tmp102-sbos397i",
+            "title": "TMP102 Low-Power Digital Temperature Sensor",
+            "manufacturer": "Texas Instruments",
+            "part_number": "TMP102",
+            "revision": "SBOS397I (June 2024)",
+            "url": "https://www.ti.com/lit/ds/symlink/tmp102.pdf"
+          },
+          "page": 20,
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.726254Z"
+        }
+      ]
+    },
+    {
+      "rule_id": "tmp102.thermal",
+      "description": "Measured temperature depends on package/board thermal coupling. Position away from unwanted heat sources for ambient measurements.",
+      "category": "layout",
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "TMP102 thermal and layout guidance",
+          "source_id": "ti-tmp102-sbos397i",
+          "document": {
+            "document_id": "ti-tmp102-sbos397i",
+            "title": "TMP102 Low-Power Digital Temperature Sensor",
+            "manufacturer": "Texas Instruments",
+            "part_number": "TMP102",
+            "revision": "SBOS397I (June 2024)",
+            "url": "https://www.ti.com/lit/ds/symlink/tmp102.pdf"
+          },
+          "page": 22,
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-09-09T05:40:27.726258Z"
+        }
+      ]
+    }
+  ],
+  "datasheet": {
+    "document_id": "ti-tmp102-sbos397i",
+    "title": "TMP102 Low-Power Digital Temperature Sensor",
+    "manufacturer": "Texas Instruments",
+    "part_number": "TMP102",
+    "revision": "SBOS397I (June 2024)",
+    "url": "https://www.ti.com/lit/ds/symlink/tmp102.pdf"
+  },
+  "evidence": []
+}

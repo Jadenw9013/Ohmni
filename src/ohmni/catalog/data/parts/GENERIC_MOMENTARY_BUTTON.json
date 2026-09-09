@@ -1,0 +1,56 @@
+{
+  "part_id": "GENERIC_MOMENTARY_BUTTON",
+  "category": "switch",
+  "description": "Generic normally-open momentary pushbutton with two electrical terminals.",
+  "is_generic": true,
+  "lifecycle": "unknown",
+  "packages": [
+    {
+      "name": "6mm-THT",
+      "pin_count": 2,
+      "hand_solderable": true,
+      "kicad_footprint": "Button_Switch_THT:SW_PUSH_6mm",
+      "notes": "Four physical legs form two permanently joined pairs. Confirm the chosen switch matches this land pattern."
+    }
+  ],
+  "pins": [
+    {
+      "number": "1",
+      "name": "T1",
+      "roles": [
+        "terminal"
+      ],
+      "electrical_type": "passive",
+      "evidence": []
+    },
+    {
+      "number": "2",
+      "name": "T2",
+      "roles": [
+        "terminal"
+      ],
+      "electrical_type": "passive",
+      "evidence": []
+    }
+  ],
+  "supply_rails": [],
+  "interfaces": [],
+  "i2c_addresses": [],
+  "decoupling_rules": [],
+  "design_rules": [
+    {
+      "rule_id": "button.debounce",
+      "description": "Mechanical contacts can bounce. Firmware must debounce the input; static checks do not simulate button presses.",
+      "category": "firmware",
+      "evidence": []
+    }
+  ],
+  "evidence": [
+    {
+      "kind": "assumption",
+      "label": "Generic momentary contact behavior",
+      "detail": "The chosen switch is assumed normally open and closed only while pressed. There is no selected manufacturer part, contact rating, debounce model, or life rating.",
+      "recorded_at": "2026-09-09T05:40:27.726812Z"
+    }
+  ]
+}

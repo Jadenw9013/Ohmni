@@ -153,8 +153,8 @@ a scripted proposal and repair provider. Neither flow invokes a live model.
 | | |
 |---|---|
 | Domain models | Pydantic v2, strict typing, `src/ohmni/domain/` |
-| Verification rules | **24**, deterministic, independently testable |
-| Part catalog | 9 parts, every fact carrying provenance |
+| Verification rules | **25**, deterministic, independently testable |
+| Part catalog | 12 parts, all 19 offered packages have local footprint geometry; facts carry provenance |
 | Fixtures | 1 golden circuit + **13** broken variants |
 | Tests | Python core, KiCad integration, slow routing/release tiers, and frontend module tests |
 | Personal projects | 8 supported sensor configurations, immutable local revisions, verifier-graded exercise, integrity-checked build ZIP |

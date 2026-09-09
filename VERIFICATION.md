@@ -1,6 +1,6 @@
 # Verification Strategy
 
-> **Status: implemented.** 24 deterministic rules, in
+> **Status: implemented.** 25 deterministic rules, in
 > `src/ohmni/verifier/rules/`. Run `python -m ohmni rules` to list
 > them and `python -m ohmni verify golden -v` to see them execute.
 
@@ -53,6 +53,12 @@ are asserted at 100% coverage, so a change that quietly stops a rule checking is
 a test failure.
 
 ## Limitations
+
+`PB-SPI-001` checks the bounded SPI topology: complete and correctly matched
+clock/data connections, one controller, separate chip selects, high-impedance
+peripheral MISO, and EEPROM deselection pull-ups. The ESP32 pin assignment is
+an explicit supported synthesis policy. A pass does not verify firmware pin
+configuration, timing, bus arbitration at runtime, or signal integrity.
 
 Each rule records what a **pass from it does not establish**, and the report
 aggregates them. The decoupling rule is the clearest case: a netlist can prove a
