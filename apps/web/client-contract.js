@@ -17,7 +17,7 @@ const SERVER_ERROR_KINDS = Object.freeze({
     job_not_found: "lost_job",
 });
 const FAILED_JOB_CODES = new Set([
-    "worker_start_failed", "pipeline_failed", "progress_publication_failed", "job_state_invalid",
+    "worker_start_failed", "pipeline_failed", "progress_publication_failed", "job_state_invalid", "server_restarted",
 ]);
 class DemoClientError extends Error {
     constructor(kind) { super(kind); this.kind = kind; }

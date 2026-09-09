@@ -39,13 +39,13 @@ def _await_terminal(store,job_id):
     return store.get(job_id)
 
 
-def test_live_demo_endpoint_has_one_owner():
-    first=DemoHTTPServer(("127.0.0.1",0),DemoHandler);port=first.server_port;second=None
+def test_live_demo_endpoint_has_one_owner(tmp_path):
+    first=DemoHTTPServer(("127.0.0.1",0),DemoHandler,store=JobStore(tmp_path/"first"));port=first.server_port;second=None
     try:
         if hasattr(socket,"SO_EXCLUSIVEADDRUSE"):
             assert not first.allow_reuse_address
             assert first.socket.getsockopt(socket.SOL_SOCKET,socket.SO_EXCLUSIVEADDRUSE)==1
-        try:second=DemoHTTPServer(("127.0.0.1",port),DemoHandler)
+        try:second=DemoHTTPServer(("127.0.0.1",port),DemoHandler,store=JobStore(tmp_path/"second"))
         except OSError:pass
         else:raise AssertionError("a second demo server unexpectedly claimed the live endpoint")
     finally:
@@ -100,7 +100,7 @@ def test_server_snapshot_is_immutable_and_generation_specific(tmp_path):
     web_root=tmp_path/"web";web_root.mkdir()
     for name in STATIC_ASSETS:
         (web_root/name).write_bytes((demo_server_module.WEB_ROOT/name).read_bytes())
-    first=DemoHTTPServer(("127.0.0.1",0),DemoHandler,web_root=web_root)
+    first=DemoHTTPServer(("127.0.0.1",0),DemoHandler,web_root=web_root,store=JobStore(tmp_path/"first"))
     original=first.static_assets["/app.js"];first_version=first.ui_version
     thread=threading.Thread(target=first.serve_forever,daemon=True);thread.start()
     base=f"http://127.0.0.1:{first.server_port}"
@@ -110,7 +110,7 @@ def test_server_snapshot_is_immutable_and_generation_specific(tmp_path):
             assert response.read()==original
             assert response.headers["x-ohmni-ui-version"]==first_version
         with pytest.raises(TypeError):first.static_assets["/app.js"]=b"mutated"
-        second=DemoHTTPServer(("127.0.0.1",0),DemoHandler,web_root=web_root)
+        second=DemoHTTPServer(("127.0.0.1",0),DemoHandler,web_root=web_root,store=JobStore(tmp_path/"second"))
         try:
             assert second.ui_version!=first_version
             assert second.static_assets["/app.js"]==b"// changed after server initialization"

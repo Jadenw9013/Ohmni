@@ -61,6 +61,15 @@ test("validating a projected learning source preserves its identity", () => {
     assert.strictEqual(validateLearningSource(reference, { reference: true }), reference);
 });
 
+test("a revision with an omitted optional system offers only populated learning stops", () => {
+    const source = fixture();
+    source.systems.push({ system: "io", label: "Optional connections", summary: "No optional parts selected.", component_refs: [], anchor_refs: [] });
+    const lessons = createLessons(source);
+    assert.equal(lessons.length, 2);
+    assert.equal(lessons.some((lesson) => lesson.id === "io"), false);
+    assert.ok(lessons.every((lesson) => lesson.parts.length > 0));
+});
+
 test("saved references require both artifact and routing lineage", () => {
     for (const field of ["artifact_fingerprint", "routing_plan_fingerprint"]) {
         const source = fixture({ reference: true });

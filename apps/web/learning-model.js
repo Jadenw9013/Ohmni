@@ -50,7 +50,7 @@ export function validateLearningSource(value, { reference = false } = {}) {
 export function createLessons(source) {
     validateLearningSource(source, { reference: Boolean(source?.source) });
     const cards = new Map(source.components.map((part) => [part.ref, part]));
-    return source.systems.map((system) => ({
+    return source.systems.filter((system) => system.component_refs.length > 0).map((system) => ({
         id: system.system,
         title: system.label,
         description: system.summary,

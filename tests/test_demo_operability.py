@@ -128,9 +128,10 @@ def _await_listener_count(port: int, count: int, timeout: float = 8) -> list[int
     raise AssertionError(f"port {port} had listener PIDs {owners}, expected {count}")
 
 
-def _start_server(port: int) -> tuple[subprocess.Popen[str], _PipeLines, _PipeLines]:
+def _start_server(port: int, output_root: Path) -> tuple[subprocess.Popen[str], _PipeLines, _PipeLines]:
     process = subprocess.Popen(
-        [sys.executable, str(SERVER_SCRIPT), "--host", "127.0.0.1", "--port", str(port)],
+        [sys.executable, str(SERVER_SCRIPT), "--host", "127.0.0.1", "--port", str(port),
+         "--output-root", str(output_root)],
         cwd=ROOT,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -208,13 +209,13 @@ def _wait_for_health(base: str, process: subprocess.Popen[str]) -> dict[str, obj
 
 @pytest.mark.integration
 @pytest.mark.skipif(os.name != "nt", reason="Windows endpoint ownership regression")
-def test_windows_demo_subprocess_has_one_owner_and_restart_identity():
+def test_windows_demo_subprocess_has_one_owner_and_restart_identity(tmp_path):
     port = _available_port()
     base = f"http://127.0.0.1:{port}"
+    output_root = tmp_path / "isolated-demo-workspace"
     first = second = restarted = None
-    old_job_id = None
     try:
-        first, _, first_stderr = _start_server(port)
+        first, _, first_stderr = _start_server(port, output_root)
         first_health = _wait_for_health(base, first)
         assert first_health["status"] == "ready"
         assert first_health["fixture_id"] == DEMO_FIXTURE_ID
@@ -224,7 +225,8 @@ def test_windows_demo_subprocess_has_one_owner_and_restart_identity():
         assert owners[0] > 0  # The listener may be the venv launcher's child process.
 
         second = subprocess.Popen(
-            [sys.executable, str(SERVER_SCRIPT), "--host", "127.0.0.1", "--port", str(port)],
+            [sys.executable, str(SERVER_SCRIPT), "--host", "127.0.0.1", "--port", str(port),
+             "--output-root", str(output_root)],
             cwd=ROOT,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -257,10 +259,15 @@ def test_windows_demo_subprocess_has_one_owner_and_restart_identity():
         _assert_identity(accepted)
         assert accepted["server_instance_id"] == first_health["server_instance_id"]
         old_job_id = str(accepted["job_id"])
+        before_status, before_stop = _json_request(
+            base, f"/api/jobs/{old_job_id}", headers=_identity_headers(first_health),
+        )
+        assert before_status == 200
+        assert before_stop["status"] in {"queued", "running", "complete"}
 
         _stop_server(first, port)
         first = None
-        restarted, _, restart_stderr = _start_server(port)
+        restarted, _, restart_stderr = _start_server(port, output_root)
         restarted_health = _wait_for_health(base, restarted)
         _assert_identity(restarted_health)
         assert restarted_health["server_instance_id"] != first_health["server_instance_id"]
@@ -275,13 +282,29 @@ def test_windows_demo_subprocess_has_one_owner_and_restart_identity():
         assert stale_status == 409
         assert stale_body == {"error": "server_instance_mismatch"}
 
-        missing_status, missing_body = _json_request(
+        restored_status, restored = _json_request(
             base,
             f"/api/jobs/{old_job_id}",
             headers=_identity_headers(restarted_health),
         )
-        assert missing_status == 404
-        assert missing_body == {"error": "job_not_found"}
+        assert restored_status == 200
+        _assert_identity(restored)
+        assert restored["server_instance_id"] == restarted_health["server_instance_id"]
+        assert restored["ui_version"] == restarted_health["ui_version"]
+        assert restored["job_id"] == old_job_id
+        if restored["status"] == "complete":
+            # A completed attempt is durable even if it won the race with the
+            # stop signal. The normal case interrupts the much longer EDA run.
+            assert isinstance(restored["report"], dict)
+            assert restored["error"] is None and restored["error_code"] is None
+            if before_stop["status"] == "complete":
+                assert restored["report"] == before_stop["report"]
+        else:
+            assert before_stop["status"] in {"queued", "running"}
+            assert restored["status"] == "failed"
+            assert restored["error_code"] == "server_restarted"
+            assert restored["progress"] == [] and restored["report"] is None
+            assert restored["error"] == "Demo pipeline failed"
         assert "Traceback" not in first_stderr.text + restart_stderr.text
     finally:
         if second is not None and second.poll() is None:
@@ -290,9 +313,6 @@ def test_windows_demo_subprocess_has_one_owner_and_restart_identity():
             _stop_server(first, port)
         if restarted is not None:
             _stop_server(restarted, port)
-        if old_job_id is not None and JOB_ID_PATTERN.fullmatch(old_job_id):
-            job_directory = ROOT / "out" / "demo-jobs" / old_job_id
-            shutil.rmtree(job_directory, ignore_errors=True)
 
 
 def _find_chromium() -> Path | None:

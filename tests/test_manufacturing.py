@@ -59,6 +59,40 @@ def test_layer_dimension_and_footprint_provenance_failures():
     report=verify_manufacturing(fake_pcb(False),board(),minimal_plan(),profile)
     assert {x.rule_id for x in report.findings if x.status is ManufacturingStatus.FAIL}>={"PB-MFG-005","PB-MFG-007"}
 
+def test_single_layer_routes_without_vias_have_no_applicable_via_dimensions():
+    plan = minimal_plan()
+    plan.routed_nets[0].paths[0].vias = []
+    plan.statistics.via_count = 0
+    report = verify_manufacturing(fake_pcb(), board(), plan, prototype_profile())
+    assert report.passed
+    finding, = [item for item in report.findings if item.rule_id == "PB-MFG-003"]
+    assert finding.designed == "not applicable: no vias"
+    assert finding.margin is None and finding.unit is None
+    assert "does not assess through-hole component drills" in finding.detail
+    event = next(item for item in report.events if item.payload.get("rule_id") == "PB-MFG-003")
+    assert event.payload["designed"] == finding.designed
+
+
+def test_missing_via_geometry_is_unknown_when_statistics_report_vias():
+    plan = minimal_plan()
+    plan.routed_nets[0].paths[0].vias = []
+    report = verify_manufacturing(fake_pcb(), board(), plan, prototype_profile())
+    assert not report.passed
+    finding, = [item for item in report.findings if item.rule_id == "PB-MFG-003"]
+    assert finding.status is ManufacturingStatus.UNKNOWN
+    assert finding.designed is None and finding.margin is None
+
+
+def test_via_free_design_still_fails_other_manufacturing_constraints():
+    plan = minimal_plan(track=.1)
+    plan.routed_nets[0].paths[0].vias = []
+    plan.statistics.via_count = 0
+    report = verify_manufacturing(fake_pcb(), board(), plan, prototype_profile())
+    assert not report.passed
+    assert any(item.rule_id == "PB-MFG-001" and item.status is ManufacturingStatus.FAIL
+               for item in report.findings)
+
+
 def test_golden_bom_aggregation_is_identity_safe(golden,catalog):
     bom=generate_bom(golden,catalog);assert bom.reference_count==19 and len(bom.lines)==13
     pullups=next(x for x in bom.lines if x.references==["R4","R5"]);assert pullups.quantity_per_board==2

@@ -20,8 +20,25 @@ def verify_manufacturing(pcb:PcbArtifact,board:BoardConstraints,plan:RoutingPlan
         out.append(ManufacturingFinding(rule_id=rule,status=ManufacturingStatus.PASS if ok else ManufacturingStatus.FAIL,subject=subject,designed=designed,limit=limit,margin=round(margin,6),unit="mm",detail=f"{subject} {'meets' if ok else 'violates'} selected profile by {margin:+.3f} mm"))
     dimensional("PB-MFG-001","minimum track width",min(t.width_mm for t in plan.tracks),profile.minimum_track_width.value)
     dimensional("PB-MFG-002","copper clearance",float(plan.profile.clearance_mm.value),profile.minimum_clearance.value)
-    dimensional("PB-MFG-003","minimum via drill",min(v.drill_mm for v in plan.vias),profile.minimum_drill.value)
-    dimensional("PB-MFG-003","minimum via diameter",min(v.diameter_mm for v in plan.vias),profile.minimum_via_diameter.value)
+    if plan.vias:
+        dimensional("PB-MFG-003","minimum via drill",min(v.drill_mm for v in plan.vias),profile.minimum_drill.value)
+        dimensional("PB-MFG-003","minimum via diameter",min(v.diameter_mm for v in plan.vias),profile.minimum_via_diameter.value)
+    elif plan.statistics.via_count:
+        out.append(ManufacturingFinding(
+            rule_id="PB-MFG-003", status=ManufacturingStatus.UNKNOWN,
+            subject="via requirements",
+            detail="Routing statistics report vias but the plan contains no via geometry. "
+                   "Via drill and diameter limits cannot be assessed.",
+        ))
+    else:
+        # A known empty via set is not a zero-size drill or missing evidence.
+        # These limits impose no constraint when the design contains no vias.
+        out.append(ManufacturingFinding(
+            rule_id="PB-MFG-003", status=ManufacturingStatus.PASS,
+            subject="via requirements", designed="not applicable: no vias",
+            detail="No vias are present, so via drill and diameter limits do not apply. "
+                   "This check does not assess through-hole component drills.",
+        ))
     dimensions_ok=profile.minimum_board_width_mm<=board.outline.width_mm<=profile.maximum_board_width_mm and profile.minimum_board_height_mm<=board.outline.height_mm<=profile.maximum_board_height_mm
     out.append(ManufacturingFinding(rule_id="PB-MFG-004",status=ManufacturingStatus.PASS if dimensions_ok else ManufacturingStatus.FAIL,subject="board dimensions",designed=f"{board.outline.width_mm} x {board.outline.height_mm}",limit=f"{profile.minimum_board_width_mm}-{profile.maximum_board_width_mm} x {profile.minimum_board_height_mm}-{profile.maximum_board_height_mm}",detail="board dimensions are supported" if dimensions_ok else "board dimensions are outside profile"))
     layers_ok=board.layer_count in profile.supported_layer_counts

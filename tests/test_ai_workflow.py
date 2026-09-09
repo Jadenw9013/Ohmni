@@ -120,19 +120,26 @@ def test_repository_product_scope_matches_human_approval():
     milestones=json.loads((root/".ai"/"milestones.yaml").read_text())
     assert state["latest_product_milestone"]["id"]=="M9"
     assert state["latest_product_milestone"]["status"]=="COMPLETE"
-    # Every scope that has been opened is closed, and nothing is approved now.
+    # Earlier scopes are closed; M10 is the one human-approved active scope.
     for scope in tasks["scopes"]:
-        assert scope["status"]=="COMPLETE", scope["id"]
         assert scope["approved_by"]=="human" and scope["approval_evidence"]
-    assert state["approved_product_scope"] is None
-    assert state["active_task"] is None
-    assert milestones["active_product_milestone"] is None
+        expected="IN_PROGRESS" if scope["id"]=="M10" else "COMPLETE"
+        assert scope["status"]==expected, scope["id"]
+    assert state["approved_product_scope"]=="M10"
+    # A session may be between completed units; any active task must belong to
+    # the approved scope rather than pinning this approval test to one task.
+    if state["active_task"] is not None:
+        current=next(task for task in tasks["tasks"] if task["id"]==state["active_task"])
+        assert current["scope"]=="M10" and current["status"]=="IN_PROGRESS"
+    active=milestones["active_product_milestone"]
+    assert active["id"]=="M10" and active["status"]=="IN_PROGRESS"
+    assert active["approved_by"]=="human" and active["approval_evidence"]
     # A completed task whose review was required must carry a passed review.
     for task in tasks["tasks"]:
         if task["status"]=="COMPLETE" and task.get("review",{}).get("required"):
             assert task["review"]["status"]=="PASSED", task["id"]
-    # M10 onwards stay proposed and unapproved until a human says otherwise.
-    later={f"M{n}" for n in range(10,16)}
+    # M11 onwards stay proposed and unapproved until a human says otherwise.
+    later={f"M{n}" for n in range(11,16)}
     assert all(item["id"] not in later for item in tasks["scopes"]+tasks["tasks"])
     proposed=milestones["proposed_product_milestones"]
     assert {item["id"] for item in proposed}==later

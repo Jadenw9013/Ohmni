@@ -547,3 +547,38 @@ test("live progress shows the job's own explanation of the slow stage", async ()
             "the detail the job publishes is rendered, not discarded");
         assert.equal(dom.get("#progress-percent").textContent, "40%");
     }));
+
+test("personal project runs use the saved revision endpoint and can reopen completed jobs", async () => withApp(async (app, dom) => {
+    const calls = [];
+    const fetcher = async (url, options) => {
+        calls.push([url, options]);
+        return response(202, startEnvelope({ status: "complete" }));
+    };
+    let polled;
+    await app.startProjectRun({ projectId: "1".repeat(16), revisionId: "2".repeat(16), identity,
+        preview: brief(), fetcher, poller: (id, generation) => { polled = { id, generation }; } });
+    assert.equal(calls[0][0], `/api/projects/${"1".repeat(16)}/revisions/${"2".repeat(16)}/run`);
+    assert.deepEqual(JSON.parse(calls[0][1].body), identity);
+    assert.deepEqual(polled, { id: JOB_ID, generation: identity });
+    assert.doesNotMatch(dom.get("#stage-list").innerHTML, /Fixing what it found/);
+    assert.match(dom.get("#stage-list").innerHTML, /saved revision/);
+}));
+
+test("a persisted interrupted job is parsed as failed with no fabricated result", async () => withApp(async (app) => {
+    const job = app.parseJob(jobEnvelope({ status: "failed", error: "Demo pipeline failed", error_code: "server_restarted" }), JOB_ID, identity);
+    assert.equal(job.status, "failed");
+    assert.equal(job.report, null);
+}));
+
+test("editing a project immediately clears result navigation and disables old artifact links", async () => withApp(async (app, dom) => {
+    await app.poll(JOB_ID, identity, { fetcher: async () => response(200, jobEnvelope({ status: "complete", report: completedReport() })), monitorer: () => {} });
+    assert.equal(app.canNavigate("build"), true);
+    app.invalidateProjectResult();
+    assert.equal(app.canNavigate("build"), false);
+    assert.equal(app.canNavigate("review"), false);
+    for (const link of dom.groups.get('[data-artifact-download]')) {
+        assert.equal(link.getAttribute("href"), null);
+        assert.equal(link.getAttribute("aria-disabled"), "true");
+        assert.equal(link.dataset.current, "false");
+    }
+}));

@@ -22,7 +22,7 @@ from enum import StrEnum
 from pydantic import BaseModel, Field
 
 from ..domain.circuit import CircuitIR, NetKind
-from ..domain.component import ComponentCategory
+from ..domain.component import ComponentCategory, Interface, PinRole
 from ..domain.verification import RuleCategory, RuleOutcome, VerificationReport
 from ..physical.footprints import footprint
 from ..verifier.engine import SUBSYSTEM_CATEGORIES
@@ -627,7 +627,7 @@ def _schematic_geometry(artifact, grouping: dict[str, ComponentGrouping],
 # --------------------------------------------------------------------------
 
 def _purpose(circuit: CircuitIR, catalog, ref: str, grouping: ComponentGrouping) -> str:
-    """Plain language derived from part category and this board's topology."""
+    """Explain observed connections without claiming they work or guessing intent."""
     instance = circuit.component(ref)
     spec = catalog.get(instance.part_id)
     category = spec.category if spec else None
@@ -637,39 +637,100 @@ def _purpose(circuit: CircuitIR, catalog, ref: str, grouping: ComponentGrouping)
     anchor_name = phrase(component_term(circuit, catalog, anchor)) if anchor else None
     value = instance.value.engineering() if instance.value else None
 
+    def peers(net):
+        for connection in net.connections:
+            if connection.component == ref:
+                continue
+            other = circuit.component(connection.component)
+            other_spec = catalog.get(other.part_id) if other else None
+            pin = other_spec.pin(connection.pin) if other_spec else None
+            if other_spec and pin:
+                yield connection.component, other_spec, pin
+
+    processors = {ComponentCategory.MCU, ComponentCategory.MCU_MODULE}
+    signal_nets = [net for net in nets if net.kind is NetKind.SIGNAL]
+
     if category in {ComponentCategory.MCU, ComponentCategory.MCU_MODULE}:
         return "The processor. It runs your program, reads the sensor and drives the outputs."
     if category is ComponentCategory.SENSOR:
-        bus = sorted({n.name for n in nets if n.kind is NetKind.SIGNAL})
-        readable = humanise_refs(circuit, catalog, [
-            p.component for name in bus for p in circuit.net(name).connections
-            if p.component != ref
-        ])
-        return (f"Does the measuring, and reports it to the {readable} over two wires."
-                if bus else "Does the measuring.")
+        # A bus resistor participates electrically but does not receive readings.
+        # Require both documented I2C roles to reach the same processor before
+        # describing a complete data-and-clock connection.
+        controllers_by_role = {PinRole.I2C_SDA: set(), PinRole.I2C_SCL: set()}
+        nets_by_role = {role: set() for role in controllers_by_role}
+        controllers = set()
+        for net in signal_nets:
+            connected = {other_ref for other_ref, other_spec, _ in peers(net)
+                         if other_spec.category in processors}
+            controllers.update(connected)
+            for pin_number in net.pins_of(ref):
+                pin = spec.pin(pin_number)
+                for role, connected_controllers in controllers_by_role.items():
+                    if pin and role in pin.roles:
+                        connected_controllers.update(connected)
+                        nets_by_role[role].add(net.name)
+        bus_controllers = controllers_by_role[PinRole.I2C_SDA] & controllers_by_role[PinRole.I2C_SCL]
+        distinct_bus_lines = (all(len(names) == 1 for names in nets_by_role.values())
+                              and not nets_by_role[PinRole.I2C_SDA] & nets_by_role[PinRole.I2C_SCL])
+        if Interface.I2C in instance.selected_interfaces and distinct_bus_lines and bus_controllers:
+            readable = humanise_refs(circuit, catalog, sorted(bus_controllers))
+            return (f"Takes measurements. Its I2C data and clock connections link it to the "
+                    f"{readable}, which can request readings with a program.")
+        if controllers:
+            readable = humanise_refs(circuit, catalog, sorted(controllers))
+            return f"Takes measurements. Its signal pins connect to the {readable}."
+        return "Takes measurements. Its catalog describes how to read them."
     if category in {ComponentCategory.REGULATOR_LINEAR, ComponentCategory.REGULATOR_SWITCHING}:
-        return ("Turns the incoming supply into the steady lower voltage everything else "
-                "on the board needs.")
+        return "Produces a regulated supply for the components connected to its output."
     if category is ComponentCategory.CONNECTOR:
-        return "Where power comes into the board."
+        if any(net.external_source is not None for net in nets):
+            return "Connects the board to the external power source declared in this design."
+        return "Connects the circuit to an external cable or accessory."
     if category is ComponentCategory.HEADER:
-        return "The pins you connect to in order to load your program onto the board."
+        roles_by_processor = {}
+        for net in signal_nets:
+            for other_ref, other_spec, pin in peers(net):
+                if other_spec.category in processors:
+                    roles_by_processor.setdefault(other_ref, set()).update(pin.roles)
+        programming_roles = {PinRole.UART_TX, PinRole.UART_RX, PinRole.BOOT_STRAP}
+        if any(programming_roles <= roles for roles in roles_by_processor.values()):
+            return ("Brings the processor's serial and boot-control pins out to an external "
+                    "programming adapter. The adapter is separate from the USB power cable.")
+        return "Exposes circuit connections for an external cable or accessory."
     if category is ComponentCategory.LED:
-        return "The light that shows you what the board is doing."
+        return "An indicator light. It lights when current flows through it in the forward direction."
     if category is ComponentCategory.CAPACITOR:
         if NetKind.POWER in kinds and NetKind.GROUND in kinds:
             target = f" next to the {anchor_name}" if anchor_name else ""
             return (f"Steadies the power supply{target}. It hands over quick bursts of current "
                     "faster than the regulator can react to.")
-        return f"A {value} capacitor that sets a timing delay." if value else "A timing capacitor."
+        return (f"A {value} capacitor. It stores electrical charge; its role depends on the circuit."
+                if value else "Stores electrical charge; its role depends on the circuit.")
     if category is ComponentCategory.RESISTOR:
-        signal = sorted(n.name for n in nets if n.kind is NetKind.SIGNAL)
-        if NetKind.POWER in kinds and signal:
-            return ("Holds the connection up towards the supply when nothing else is driving "
-                    "it, so it never floats at an undefined level.")
-        if signal:
-            return ("Limits how much current can flow, so the part after it is not asked to "
-                    "carry more than it can.")
+        two_terminals = (len(nets) == 2 and all(len(net.pins_of(ref)) == 1 for net in nets)
+                         and len({pin for net in nets for pin in net.pins_of(ref)}) == 2)
+        if two_terminals:
+            # An exclusive two-pin link establishes a series connection. Merely
+            # sharing a bus or supply with an LED does not.
+            for net in signal_nets:
+                if len(net.connections) != 2:
+                    continue
+                for _, other_spec, pin in peers(net):
+                    if (other_spec.category is ComponentCategory.LED
+                            and {PinRole.ANODE, PinRole.CATHODE} & set(pin.roles)):
+                        return ("Sits in series with the indicator light to limit its current. "
+                                "The resistance and supply voltage determine how much flows.")
+                    if (other_spec.category is ComponentCategory.CONNECTOR
+                            and PinRole.USB_CC in pin.roles and NetKind.GROUND in kinds):
+                        return ("Pulls a USB-C configuration pin toward ground. This is the "
+                                "sink-identification connection a USB-C source checks before "
+                                "supplying power.")
+            if NetKind.POWER in kinds and signal_nets:
+                return ("A pull-up: biases this signal toward the supply through a resistor "
+                        "when nothing is actively driving it.")
+            if NetKind.GROUND in kinds and signal_nets:
+                return ("A pull-down: biases this signal toward ground through a resistor "
+                        "when nothing is actively driving it.")
         return f"A {value} resistor." if value else "A resistor."
     return f"Part of the {system_name(grouping.system).lower()}."
 
@@ -885,9 +946,11 @@ def _confidence(report: VerificationReport, erc, routed, route_report, drc,
         ConfidenceLine(label="What it costs", status="SYNTHETIC",
                        detail=f"Prices are a fixture, not live supplier data. "
                               f"{costs.pricing_coverage:.0%} of lines have any price at all."),
-        ConfidenceLine(label="Assembly by hand", status="PASS_WITH_WARNINGS"
+        ConfidenceLine(label="Assembly by hand", status="NEEDS_REVIEW"
                        if not assembly.hand_solder_requirement_satisfied else "PASS",
-                       detail="; ".join(assembly.limitations) or "no recorded limitations"),
+                       detail=(("The hand-soldering preference is not met by the selected packages. "
+                                if not assembly.hand_solder_requirement_satisfied else "")
+                               + ("; ".join(assembly.limitations) or "no recorded limitations"))),
         ConfidenceLine(label="The manufacturing profile", status="SYNTHETIC",
                        detail=f"{manufacturing.profile.display_name}. It is a stand-in, not a "
                               "real factory's published capabilities, and a person has to "
@@ -1036,10 +1099,11 @@ def _bring_up(design, circuit: CircuitIR, catalog, repair: RepairReplay) -> list
 
     steps: list[BringUpStep] = [
         BringUpStep(
-            action="Look it over, then check for a short between the power pins before "
-                   "plugging anything in.",
-            prediction="No connection between them",
-            basis="A short across the supply is the one fault that damages things instantly.",
+            action="Inspect the assembly and check for an unintended short between power "
+                   "and ground before applying power.",
+            prediction="No unintended short between power and ground",
+            basis="A supply short can damage components. Capacitors and other components "
+                  "can affect an unpowered resistance reading.",
         ),
         BringUpStep(
             action="Power it from a current-limited bench supply.",

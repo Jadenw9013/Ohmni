@@ -2,19 +2,21 @@
 
 **Build circuits. Understand why.**
 
-Ohmni helps you understand electronics by exploring a circuit, following its
-connections, and seeing the evidence behind its design. The local prototype
-walks through a **USB-powered ESP32 + BME280 room sensor**, from its project
-brief to real KiCad schematic and PCB files.
+Ohmni helps you understand electronics by making a circuit, following its
+connections, and seeing the evidence behind its design. Build your own version
+of a **USB-powered ESP32 + BME280 room sensor**, save revisions, and generate
+real KiCad schematic, PCB, and fabrication files.
 
-**Start exploring immediately in the interactive 3D circuit lab, or run the
-engineering pipeline to generate and inspect a fresh design.** No electronics
-vocabulary, API key, or live language model is required for this demo.
+**Choose “Make it my project” to customize a sensor board, or explore the saved
+reference immediately in the interactive 3D circuit lab.** No electronics
+vocabulary, API key, or live language model is required.
 
-The current interface runs one pre-authored reference project. Custom circuit
-requests, editable designs, electrical simulation, and firmware generation are
-future work. The design files and engineering checks are real; no physical
-board has been built or bench-tested by this demo.
+The supported family offers a status LED, a programming header, and either
+BME280 address (0x76 or 0x77): eight configurations. Your choices change the
+electrical circuit and generated board. This is bounded deterministic synthesis
+with an authored layout, not arbitrary circuit generation. Electrical simulation
+and firmware generation remain future work. No physical board has been built
+or bench-tested by this prototype.
 
 ## Run it locally
 
@@ -51,31 +53,45 @@ If the port is already in use, stop the older server or choose another one:
 .\.venv\Scripts\python.exe scripts/demo_server.py --port 8876
 ```
 
-Then open [http://127.0.0.1:8876](http://127.0.0.1:8876). Each server owns its
-jobs and snapshots its UI assets at startup, so **restart the server after
-changing frontend files** and reload the page. The interface marks older
-results as stale instead of treating another server's artifacts as current.
+Then open [http://127.0.0.1:8876](http://127.0.0.1:8876). Projects, immutable
+revisions, and run records persist in `out/demo-jobs/project-state.sqlite3`.
+Only one server may own that output workspace at a time; using another port
+does not bypass the workspace lock. Interrupted runs become failed attempts
+that can be retried. Completed records and files remain available.
+For an independent local workspace, pass `--output-root out/my-workspace`.
+
+The server snapshots its UI assets at startup, so **restart after changing
+frontend files** and reload the page. This is a local workspace; it has no
+accounts, tenant isolation, or hosted-service deployment configuration.
 
 ## Your first few minutes
 
-1. Choose **Open the 3D circuit lab** on the homepage. It opens a clearly marked
-   saved reference immediately; no engineering run is needed.
-2. Try **Watch assembly**, drag the board to rotate it, and scroll to zoom.
-   **X-ray** reveals both copper layers. Use the separation slider to see the
-   groups of parts that perform different jobs.
-3. Take the **4-stop tour** through power, the processor, sensing, and external
-   connections. Select a highlighted part, use **Inspect this part** for a
-   close-up, and pick a connected net to highlight its copper.
-4. Return to the homepage and choose **Start this project**. Review the fixed
-   example brief, then select **Run the design checks**. Allow about 90 seconds;
-   duration depends on the machine and the EDA tools.
-5. Explore the completed board, the explanation of its repair, and **Checks &
-   evidence**. **Build & export** provides the schematic and PCB downloads,
-   manufacturing-file inventory, parts information, and bring-up guidance.
+1. Choose **Make it my project**. Name your sensor, choose whether to include
+   its status light and programming header, then **Save first revision**.
+   USB-C supplies power; programming needs a separate 3.3 V serial adapter.
+2. Try the **sensor challenge**. Predict a repair for an incorrect supply
+   connection, then check it. The backend electrical verifier grades a separate
+   practice circuit and explains the remaining fault or successful repair.
+3. Select **Generate my board**. The saved revision runs through electrical
+   verification, schematic ERC, placement, routing, PCB DRC, and release checks.
+   Allow a few minutes, depending on the machine and EDA tools.
+4. Explore your resulting board in 3D. Try **Watch assembly**, **X-ray**, the
+   guided tour, and **Inspect this part**. Learn what a component does and
+   highlight the copper belonging to its connections.
+5. Open **Build & export** and download the complete **build package**. It
+   includes CAD and fabrication files, the report, a parts list, and assembly
+   and bring-up guidance. The server checks artifact integrity before download.
+6. Change a choice and save another revision. Earlier versions keep their
+   original inputs and results; reopen one to compare or build it again.
 
-Generated artifacts are also written to `out/demo-jobs/<job-id>/`. The current
-UI exposes the schematic and PCB downloads; it does not yet offer a complete
-manufacturing-package download.
+Generated artifacts are also written to `out/demo-jobs/<job-id>/`. The saved
+reference lab and its fixed proposal/repair demonstration remain available
+separately. Your personal project does not replay that scripted repair.
+
+**Before ordering or assembling:** fabrication checks use a synthetic example
+profile; confirm your fabricator's actual limits. Prices and stock are example
+data. The BME280 package needs suitable assembly equipment, and the download
+does not include firmware. Passing checks is not proof of working hardware.
 
 ### A PCB you can explore
 
@@ -130,8 +146,9 @@ An LLM is never the electrical source of truth.
 
 The core electrical verifier is deterministic and runs without a language model
 or an external EDA tool. The full demo additionally invokes **KiCad 10** for
-independent schematic/PCB checks and fabrication artifacts. Its proposal and
-repair sequence uses a scripted provider, not a live model.
+independent schematic/PCB checks and fabrication artifacts. Personal projects
+use a deterministic archetype compiler. The separate fixed demonstration uses
+a scripted proposal and repair provider. Neither flow invokes a live model.
 
 | | |
 |---|---|
@@ -139,7 +156,8 @@ repair sequence uses a scripted provider, not a live model.
 | Verification rules | **24**, deterministic, independently testable |
 | Part catalog | 9 parts, every fact carrying provenance |
 | Fixtures | 1 golden circuit + **13** broken variants |
-| Tests | Python core, KiCad integration, and slow golden demo/release tiers; **87 frontend module tests** |
+| Tests | Python core, KiCad integration, slow routing/release tiers, and frontend module tests |
+| Personal projects | 8 supported sensor configurations, immutable local revisions, verifier-graded exercise, integrity-checked build ZIP |
 | Golden circuit | no blocking findings, **100% rule coverage** |
 | Broken variants | each caught by exactly the rule and severity it was built to trip |
 
@@ -153,7 +171,7 @@ economics, assembly-risk classification, and KiCad fabrication release are imple
 The redesigned workbench exposes the engineering notebook, repair,
 verification ladder, interactive PCB learning lab, artifacts, BOM economics,
 assembly risk, and release status.
-SPICE, live supplier pricing, ordering, and arbitrary-hardware UI remain future work.
+SPICE, firmware, live supplier pricing, ordering, and arbitrary-hardware UI remain future work.
 See `IMPLEMENTATION_PLAN.md` for the status table.
 
 ```powershell

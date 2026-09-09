@@ -39,7 +39,7 @@
     <div class="main-shell" id="top">
       <header class="workspace-header">
         <div class="workspace-crumb"><span class="crumb-mark" aria-hidden="true">⌘</span><span id="workspace-title">Let's build something</span></div>
-        <div class="header-actions"><span id="workspace-status" class="workspace-status">Guided reference project</span><details class="header-help"><summary aria-label="How Ohmni works">How it works <span aria-hidden="true">↗</span></summary><div><strong>An idea, made understandable.</strong><p>Start with the room-sensor example. Review its brief, run the real engineering checks, then explore the board and download its design files.</p><p>Making a working device also takes assembly, programming, and testing. We'll show you what remains.</p></div></details></div>
+        <div class="header-actions"><span id="workspace-status" class="workspace-status">Guided reference project</span><details class="header-help"><summary aria-label="How Ohmni works">How it works <span aria-hidden="true">↗</span></summary><div><strong>An idea, made understandable.</strong><p>Start with the room sensor. Choose its features, save a revision, run the engineering checks, then explore your board and download its build package.</p><p>Making a working device also takes assembly, programming, and testing. We'll show you what remains.</p></div></details></div>
       </header>
 
       <div id="connection-banner" class="connection-banner" hidden role="status"><span id="connection-message"></span><button type="button" data-reconnect hidden>Reconnect</button><button type="button" data-restart hidden>Start a new example</button></div>
@@ -71,37 +71,40 @@
             <div class="welcome-copy">
               <div class="project-starter">
                 <div class="starter-heading"><div class="climate-icon" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M17 9a4 4 0 0 1 8 0v14a7 7 0 1 1-8 0z"/><path d="M21 13v15m-4 0h8M30 9h4m-4 6h4"/></svg></div><div><span class="available-label">Your first guided project</span><h2>Room climate monitor</h2></div></div>
-                <p>Turn this example into a fresh set of board files, with the reasoning explained along the way.</p>
+                <p>Make this sensor your own. Choose its status light and programming connections, save your design, and generate real board files.</p>
                 <dl class="starter-specs">
                   <div><dt>The processor</dt><dd>ESP32</dd></div>
                   <div><dt>The sensor</dt><dd>BME280</dd></div>
                   <div><dt>The power</dt><dd>USB-C</dd></div>
                 </dl>
-                <button type="button" id="start-supported" class="primary start-button" data-fixture="esp32-bme280-environmental-logger">Start this project <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
-                <p class="starter-footnote">Review the brief first.<br>Then allow about 90 seconds for the checks.</p>
+                <button type="button" id="create-project" class="primary start-button">Make it my project <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+                <p class="starter-footnote">A few choices. Your own saved revisions.<br>No electronics experience needed to explore.</p>
+                <button type="button" id="start-supported" class="ghost reference-demo-link" data-fixture="esp32-bme280-environmental-logger">Or run the fixed reference example</button>
               </div>
-              <div class="prototype-note"><strong>A real engineering run. A guided example.</strong><p class="scope-note" id="scope-note">This prototype runs one reference project: a USB-powered ESP32 + BME280 board. The design and repair are pre-authored; the checks and generated files are real.</p></div>
+              <div class="prototype-note"><strong>Small choices. Real changes to the circuit.</strong><p class="scope-note" id="scope-note">Start with the supported USB-powered ESP32 + BME280 family. The engine builds your selected configuration and runs actual checks. Assembly, programming, and hardware testing come next.</p></div>
             </div>
           </div>
 
+          <section class="saved-project-shelf" aria-labelledby="saved-projects-title"><div><h2 id="saved-projects-title">Pick up where you left off.</h2><p>Projects saved on this local server, ready for your next idea.</p></div><div id="saved-projects" class="saved-projects"></div></section>
           <div class="welcome-bottom" id="how-it-works">
             <h2>From curiosity to circuit.</h2>
             <ol class="welcome-path">
-              <li><span aria-hidden="true">1</span><div><h3>Explore the design</h3><p>Meet the components and see what connects.</p></div></li>
-              <li><span aria-hidden="true">2</span><div><h3>Understand the checks</h3><p>See the problem, the repair, and the evidence.</p></div></li>
+              <li><span aria-hidden="true">1</span><div><h3>Make a few choices</h3><p>Meet the components, then save your own configuration.</p></div></li>
+              <li><span aria-hidden="true">2</span><div><h3>Understand the checks</h3><p>Try a sensor challenge and inspect your design's evidence.</p></div></li>
               <li><span aria-hidden="true">3</span><div><h3>Make it your next build</h3><p>Download KiCad files, then assemble, program, and test.</p></div></li>
             </ol>
           </div>
         </section>
 
         <section id="agree" class="stage brief-stage" hidden aria-labelledby="agree-title">
-          <div class="section-head"><p class="step-label">Project brief</p><h1 id="agree-title">Let's agree on<br>what we're building.</h1><p class="lede">Here's the plan for the room-sensor reference project. Explore the choices before the engineering run starts.</p></div>
-          <div class="agree-layout"><div id="brief" class="brief"></div><aside class="agree-decide"><span class="plan-symbol" aria-hidden="true">Ω</span><h2>A little clarity now.<br>A better board later.</h2><p id="agree-note"></p><div class="brief-boundary"><strong>This is a guided example.</strong><p>The brief is fixed for this prototype. You can inspect every choice; custom design changes aren't available in this flow yet.</p></div><button type="button" id="confirm-brief" class="primary">Run the design checks <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button><button type="button" id="back-to-describe" class="ghost">Back to the project</button></aside></div>
+          <div class="section-head"><p class="step-label">Your project workbench</p><h1 id="agree-title">Make room for your ideas.</h1><p class="lede" id="agree-description">Choose what goes on your room sensor. Save a revision, then turn that exact design into a board.</p></div>
+          <div id="project-workbench" data-project-workbench="true" hidden></div>
+          <div id="reference-brief" class="agree-layout"><div id="brief" class="brief"></div><aside class="agree-decide"><span class="plan-symbol" aria-hidden="true">Ω</span><h2>A little clarity now.<br>A better board later.</h2><p id="agree-note"></p><div class="brief-boundary"><strong>This is the fixed reference example.</strong><p>Its design and repair are pre-authored. To choose your own configuration, return home and select “Make it my project.”</p></div><button type="button" id="confirm-brief" class="primary">Run the design checks <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button><button type="button" id="back-to-describe" class="ghost">Back to the project</button></aside></div>
         </section>
 
         <section id="design" class="stage activity-stage" hidden aria-labelledby="design-title">
-          <div class="section-head"><p class="step-label">Design activity</p><h1 id="design-title">From connections<br>to copper.</h1><p class="lede">The engine runs the reference design through its electrical checks and builds real board files. Every result comes from a check that actually ran.</p></div>
-          <div class="activity-layout"><div class="activity-main"><div class="progress-heading"><span id="progress-now">Getting the workbench ready</span><span id="progress-percent">0%</span></div><div class="progress-track" id="progress-track"><div id="progress-bar"></div></div><p class="progress-detail" id="progress-detail"></p><ol id="stage-list" class="stage-list" aria-live="polite"></ol><div id="run-error" class="run-error" hidden role="alert"></div><div class="error-actions"><button type="button" id="error-retry" class="secondary" hidden>Try again</button><button type="button" id="error-back" class="ghost" hidden>Back to project</button></div></div><aside class="activity-aside"><div class="activity-glyph" aria-hidden="true"><span>Ω</span><i></i><i></i><i></i></div><h2>Good engineering<br>shows its work.</h2><p>A connection can look right and still be wrong. Ohmni checks the circuit, applies its bounded repair, and runs the checks again.</p><details class="disclose"><summary>What is happening behind the scenes?</summary><p>Deterministic rules check the electrical design. KiCad independently checks the schematic and board. Copper routing can take most of the run time.</p></details><button type="button" data-navigate="review" class="secondary activity-review" disabled>Explore completed board</button></aside></div>
+          <div class="section-head"><p class="step-label">Design activity</p><h1 id="design-title">From connections<br>to copper.</h1><p class="lede">The engine checks your design and builds real board files. Every result comes from a check that actually ran.</p></div>
+          <div class="activity-layout"><div class="activity-main"><div class="progress-heading"><span id="progress-now">Getting the workbench ready</span><span id="progress-percent">0%</span></div><div class="progress-track" id="progress-track"><div id="progress-bar"></div></div><p class="progress-detail" id="progress-detail"></p><ol id="stage-list" class="stage-list" aria-live="polite"></ol><div id="run-error" class="run-error" hidden role="alert"></div><div class="error-actions"><button type="button" id="error-retry" class="secondary" hidden>Try again</button><button type="button" id="error-back" class="ghost" hidden>Back to project</button></div></div><aside class="activity-aside"><div class="activity-glyph" aria-hidden="true"><span>Ω</span><i></i><i></i><i></i></div><h2>Good engineering<br>shows its work.</h2><p id="activity-explanation">A connection can look right and still be wrong. Ohmni checks the circuit, applies its bounded repair, and runs the checks again.</p><details class="disclose"><summary>What is happening behind the scenes?</summary><p>Deterministic rules check the electrical design. KiCad independently checks the schematic and board. Copper routing can take most of the run time.</p></details><button type="button" data-navigate="review" class="secondary activity-review" disabled>Explore completed board</button></aside></div>
         </section>
 
         <section id="review" class="stage review-stage" hidden aria-labelledby="review-title">

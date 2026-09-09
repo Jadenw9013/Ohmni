@@ -12,6 +12,8 @@ import { schematicSvg, transitionFrame, transitionTracks } from "./schematic-vie
 import { initializeReferencePreview } from "./reference-preview.js";
 import { mountBoardControls } from "./board-controls.js";
 import { mountCircuitLessons } from "./circuit-lessons.js";
+import { mountProjectWorkbench } from "./project-workbench.js";
+import { projectRequest, parseProjectStart } from "./project-contract.js";
 
 import { errorKind, fetchHealth, identityBody, pollHeaders, sameIdentity, fail, serverErrorKind, parseBrief, parseStart, parseJob, pollDisposition } from "./client-contract.js";
 export { parseHealth, parseBrief, parseStart, parseJob, pollDisposition } from "./client-contract.js";
@@ -69,6 +71,10 @@ const state = {
     transitionTimer: null,
     repairTimer: null,
     completionMonitor: null,
+    customProject: false,
+    workbench: null,
+    revisionContext: null,
+    projectName: null,
 };
 
 // ── journey ─────────────────────────────────────────────────────────────
@@ -86,21 +92,22 @@ const setHidden = (selector, hidden) => { const node = $(selector); if (node) no
 
 export function canNavigate(stage) {
     if (stage === "describe") return true;
-    if (stage === "agree") return Boolean(state.brief);
+    if (stage === "agree") return Boolean(state.brief) || state.customProject;
     if (stage === "design") return state.runStatus !== "idle";
     if (stage === "review" || stage === "build") return Boolean(state.report);
     return false;
 }
 
 function updateShell() {
-    const status = state.runStatus === "running" || state.runStatus === "starting" ? "Building your example"
+    const status = state.runStatus === "running" || state.runStatus === "starting" ? "Building your board"
         : state.runStatus === "paused" ? "Connection interrupted"
         : state.runStatus === "failed" ? "Run needs attention"
-        : state.report ? "Completed example · hardware not yet tested"
+        : state.report ? "Completed design · hardware not yet tested"
+        : state.customProject ? "Your saved project workspace"
         : state.brief ? "Example brief · ready to explore" : "A guided electronics workspace";
     setText("#workspace-title", STAGE_TITLES[state.stage]);
     setText("#workspace-status", status);
-    setText("#project-label", state.brief?.project_name || state.experience?.headline || "Room sensor example");
+    setText("#project-label", state.brief?.project_name || state.experience?.headline || (state.customProject && state.projectName) || "Room sensor example");
     $$('[data-navigate]').forEach((button) => {
         const active = button.dataset.navigate === state.stage;
         button.disabled = !canNavigate(button.dataset.navigate);
@@ -219,6 +226,12 @@ export async function restartExample({ fetcher = globalThis.fetch } = {}) {
 
 export async function openBrief({ fetcher = globalThis.fetch } = {}) {
     if (["running", "starting", "paused"].includes(state.runStatus)) { show("design"); return; }
+    state.customProject = false;
+    state.revisionContext = null;
+    setHidden("#project-workbench", true);
+    setHidden("#reference-brief", false);
+    setText("#agree-title", "Meet the reference project.");
+    setText("#agree-description", "Explore the fixed room-sensor example before its engineering run starts.");
     const button = $("#start-supported");
     button.disabled = true;
     clearError();
@@ -296,6 +309,7 @@ export async function startRun({ fetcher = globalThis.fetch, poller = poll, poll
     clearError();
     $("#confirm-brief").disabled = true;
     renderPendingStages();
+    setText("#activity-explanation", "A connection can look right and still be wrong. This fixed reference example checks a pre-authored circuit, applies its bounded repair, and runs the checks again.");
     show("design");
     let jobId;
     try {
@@ -327,6 +341,82 @@ export async function startRun({ fetcher = globalThis.fetch, poller = poll, poll
     return poller(jobId, state.identity, { fetcher, ...pollDependencies });
 }
 
+/** Editing or selecting another saved revision invalidates the current result view. */
+export function invalidateProjectResult() {
+    state.pollVersion += 1;
+    stopCompletionMonitor();
+    stopLearningAnimations();
+    state.report = null;
+    state.experience = null;
+    state.brief = null;
+    state.jobId = null;
+    state.revisionContext = null;
+    state.runStatus = "idle";
+    setConnection("unchecked");
+    $$('[data-artifact-download]').forEach((link) => {
+        link.dataset.current = "false";
+        link.removeAttribute("href");
+        link.setAttribute("aria-disabled", "true");
+        link.setAttribute("tabindex", "-1");
+    });
+    updateShell();
+}
+
+function openProjectWorkspace(name) {
+    state.customProject = true;
+    state.projectName = name;
+    setHidden("#project-workbench", false);
+    setHidden("#reference-brief", true);
+    setText("#agree-title", "Make room for your ideas.");
+    setText("#agree-description", "Choose what goes on your room sensor. Save a revision, then turn that exact design into a board.");
+    show("agree", { focus: false });
+    setText("#project-label", name);
+}
+
+export async function startProjectRun({ projectId, revisionId, identity, preview, fetcher = globalThis.fetch,
+    poller = poll, pollDependencies = {} } = {}) {
+    invalidateProjectResult();
+    state.customProject = true;
+    state.revisionContext = { projectId, revisionId, preview };
+    state.identity = identity;
+    state.brief = preview;
+    state.runStatus = "starting";
+    clearError();
+    renderPendingStages(true);
+    setText("#activity-explanation", "Ohmni builds the parts and connections from your saved choices, then checks the circuit and generated board. This flow does not apply a scripted repair.");
+    show("design");
+    const version = state.pollVersion;
+    try {
+        const { payload } = await projectRequest(`/api/projects/${encodeURIComponent(projectId)}/revisions/${encodeURIComponent(revisionId)}/run`, {
+            fetcher, identity, method: "POST",
+        });
+        if (version !== state.pollVersion) return;
+        const jobId = parseProjectStart(payload, identity);
+        state.jobId = jobId;
+        state.runStatus = "running";
+        setConnection("connected");
+        updateShell();
+        return poller(jobId, identity, { fetcher, ...pollDependencies });
+    } catch (error) {
+        if (version !== state.pollVersion) return;
+        state.runStatus = "failed";
+        showError(errorKind(error, "job_initialization_failed"), () => retryProjectRun({ fetcher }), "Retry this revision");
+    }
+}
+
+async function retryProjectRun({ fetcher = globalThis.fetch } = {}) {
+    const context = state.revisionContext;
+    if (!context) return openProjectWorkspace("Your project");
+    try {
+        const identity = await fetchHealth(fetcher);
+        return startProjectRun({ ...context, identity, fetcher });
+    } catch (error) {
+        showError(errorKind(error, "backend_unavailable"), () => retryProjectRun({ fetcher }), "Retry this revision");
+    }
+}
+
+const freshRun = (fetcher) => state.customProject ? retryProjectRun({ fetcher }) : restartExample({ fetcher });
+
 const PENDING_STAGES = [
     "Loading the example brief", "Preparing its parts and connections",
     "Checking the electrical design", "Fixing what it found",
@@ -334,10 +424,11 @@ const PENDING_STAGES = [
     "Drawing the copper", "Checking it can be made",
 ];
 
-function renderPendingStages() {
+function renderPendingStages(custom = false) {
     const detail = $("#progress-detail");
     if (detail) detail.textContent = "";
-    $("#stage-list").innerHTML = PENDING_STAGES.map((label, i) =>
+    const labels = custom ? ["Loading your saved revision", "Building its parts and connections", "Checking the electrical design", "Recording the check results", "Drawing the schematic", "Arranging parts on the board", "Drawing the copper", "Checking it can be made"] : PENDING_STAGES;
+    $("#stage-list").innerHTML = labels.map((label, i) =>
         `<li class="pending"><span class="num">${i + 1}</span>
          <span><span class="what">${escapeHtml(label)}</span></span><span></span></li>`).join("");
     $("#progress-bar").style.width = "0%";
@@ -357,7 +448,7 @@ function renderProgress(events) {
     const detail = $("#progress-detail");
     if (detail) detail.textContent = last ? last.detail : "";
     const items = $$("#stage-list li");
-    const current = { requirements: 0, repair: 3, placement: 5, routing: 6, drc: 7, manufacturing: 7, release: 7 }[last?.stage] ?? 0;
+    const current = { requirements: 0, check: 2, repair: 3, schematic: 4, placement: 5, routing: 6, drc: 7, manufacturing: 7, release: 7 }[last?.stage] ?? 0;
     items.forEach((item, i) => {
         item.classList.toggle("pending", i > current);
         item.classList.toggle("running", i === current);
@@ -410,7 +501,7 @@ export async function poll(id, identity, { fetcher = globalThis.fetch, schedule 
             state.runStatus = "failed";
             $("#confirm-brief").disabled = false;
             return showError(job.error_code === "worker_start_failed" ? "worker_start_failed" : "pipeline_failed",
-                () => restartExample({ fetcher }), "Start a new example");
+                () => freshRun(fetcher), state.customProject ? "Retry this revision" : "Start a new example");
         }
         clearError();
         state.runStatus = "running";
@@ -425,7 +516,7 @@ export async function poll(id, identity, { fetcher = globalThis.fetch, schedule 
         $("#confirm-brief").disabled = false;
         return showError(kind, kind === "backend_unavailable"
             ? () => poll(id, identity, { fetcher, schedule, monitorer })
-            : () => restartExample({ fetcher }), kind === "backend_unavailable" ? "Reconnect to this run" : "Start a new example");
+            : () => freshRun(fetcher), kind === "backend_unavailable" ? "Reconnect to this run" : state.customProject ? "Retry this revision" : "Start a new example");
     }
 }
 
@@ -960,15 +1051,15 @@ function renderFiles(report, jobId) {
         return `<a href="${url}" data-artifact-download data-download-url="${url}" data-current="${current === true}">${label}<span aria-hidden="true"> ↗</span></a>`;
     };
     $("#files-panel").innerHTML = `<p class="eyebrow">Take your design with you</p><h3>Your board files</h3>
-      <p class="panel-note">Open these in KiCad 10 to inspect the design and prepare a manufacturing
-        handoff. The checks ran on these files; no physical board has been tested.</p>
+      <p class="panel-note">Take the schematic, board, manufacturing outputs, parts list, and bring-up guide together.
+        The package includes the check results and their limitations. No physical board has been tested.</p>
       <div class="download-row">
+        ${download("build-package.zip", "Download complete build package", report.release)}
         ${download("golden.kicad_sch", "Download schematic", report.schematic)}
         ${download("golden.kicad_pcb", "Download board", report.pcb)}
       </div>
       <details class="disclose"><summary>Generated manufacturing inventory · ${report.release.files.length} files</summary>
-      <p class="fineprint">These were generated on the local server. This prototype does not yet offer
-        a complete manufacturing-package download.</p>
+      <p class="fineprint">These files are included in the build package. Review the check results and assembly requirements before ordering a board.</p>
       <ul class="file-list">${report.release.files.map((file) => `<li>
           <span>${escapeHtml(file.relative_path)} <span class="fineprint">${escapeHtml(file.kind)}</span></span>
           <span class="hash">${escapeHtml(String(file.sha256).slice(0, 16))}…</span></li>`).join("")}</ul></details>
@@ -997,6 +1088,13 @@ function renderBringUp(exp) {
 
 function attach() {
     initializeReferencePreview();
+    if ($("#project-workbench")?.dataset.projectWorkbench === "true") {
+        state.workbench = mountProjectWorkbench($("#project-workbench"), {
+            shelf: $("#saved-projects"), onOpen: openProjectWorkspace,
+            onInvalidate: invalidateProjectResult, onRun: startProjectRun,
+        });
+        $("#create-project")?.addEventListener("click", () => state.workbench?.openNew());
+    }
     $$('[data-navigate]').forEach((button) => button.addEventListener("click", () => navigate(button.dataset.navigate)));
     $$('[data-panel]').forEach((button) => {
         button.addEventListener("click", () => selectResultPanel(button.dataset.panel));
@@ -1015,7 +1113,7 @@ function attach() {
     $("#error-retry")?.addEventListener("click", () => void retryLastAction());
     $("#error-back")?.addEventListener("click", () => { clearError(); navigate("describe"); });
     $$('[data-reconnect]').forEach((button) => button.addEventListener("click", () => void state.reconnect?.()));
-    $$('[data-restart]').forEach((button) => button.addEventListener("click", () => void restartExample()));
+    $$('[data-restart]').forEach((button) => button.addEventListener("click", () => void freshRun(globalThis.fetch)));
     $("#files-panel")?.addEventListener("click", (event) => {
         const link = event.target.closest?.('[data-artifact-download]');
         if (link?.getAttribute("aria-disabled") === "true") event.preventDefault();

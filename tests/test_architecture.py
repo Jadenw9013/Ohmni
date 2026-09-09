@@ -51,9 +51,8 @@ def _imported_top_level_modules(path: Path) -> set[str]:
         if isinstance(node, ast.Import):
             for alias in node.names:
                 found.add(alias.name.split(".")[0])
-        elif isinstance(node, ast.ImportFrom):
-            if node.level == 0 and node.module:
-                found.add(node.module.split(".")[0])
+        elif isinstance(node, ast.ImportFrom) and node.level == 0 and node.module:
+            found.add(node.module.split(".")[0])
     return found
 
 
@@ -210,6 +209,18 @@ class TestGenerationBoundaries:
             source = path.read_text(encoding="utf-8")
             assert ".write_text(" not in source
             assert ".write_bytes(" not in source
+
+
+class TestSynthesisBoundaries:
+    def test_synthesis_has_no_model_network_random_or_fixture_dependency(self):
+        forbidden = {"anthropic", "openai", "httpx", "requests", "urllib", "socket", "random"}
+        for path in _python_files(SRC / "synthesis"):
+            imports = _imported_top_level_modules(path)
+            source = path.read_text(encoding="utf-8")
+            assert not (imports & forbidden), path
+            assert "ohmni.fixtures" not in source
+            assert "..fixtures" not in source
+            assert "generation.fixtures" not in source
 
 
 class TestPhysicalBoundaries:

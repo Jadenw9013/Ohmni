@@ -149,6 +149,19 @@ PCB, profile, missing output, or mismatched hash makes the release stale.
 `ohmni.application` projects existing typed reports into a frontend-safe demo
 contract. It orchestrates existing services but contains no electrical,
 physical, routing, manufacturing, or pricing verdict logic. The static web
-client formats statuses and artifact-derived SVG; it never computes PASS/FAIL.
-The local threaded demo server exposes real progress and completed artifacts,
-while the deterministic scripted provider keeps the core journey offline.
+client formats statuses and artifact-derived geometry; it never computes
+engineering PASS/FAIL. The separate learning exercise calls the electrical
+verifier on a controlled practice circuit and projects its findings.
+
+`ohmni.synthesis` compiles a validated A1 sensor brief into electrical intent
+without a model or fixture import. `application.projects` orchestrates that
+result through the shared engineering pipeline. The A1 layout is an explicitly
+authored policy in `physical.sensor_layout`, not a general placement optimizer.
+The fixed reference demonstration retains its separate scripted provider.
+
+The local threaded server persists projects, immutable revision inputs, and job
+attempts through SQLite in `application.project_store`. One OS file lock owns
+each output workspace; interrupted jobs fail explicitly on recovery. This is a
+local single-workspace boundary, not multi-user authorization. Publication and
+download checks bind saved brief, derived circuit, report, and fabrication
+lineage. Build ZIPs contain verified buffers and authoritative revision metadata.

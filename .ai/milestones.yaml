@@ -72,21 +72,22 @@
       "evidence_note": "Commit-bound verification in .ai/verification/M9.yaml and .ai/verification/M9-REMEDIATION-1.yaml. The M9 review raised 1 BLOCKER, 2 HIGH, 4 MEDIUM and 6 LOW findings; the bounded remediation closed every BLOCKER, HIGH and MEDIUM, and its own focused review raised 0 BLOCKER and 0 HIGH. M9-F15 is a recorded partial acceptance."
     }
   ],
-  "active_product_milestone": null,
+  "active_product_milestone": {
+    "id": "M10",
+    "status": "IN_PROGRESS",
+    "approved_by": "human",
+    "title": "Deterministic bounded design synthesis",
+    "objective": "User intent -> typed brief -> archetype + slots -> derived CircuitIR across three archetypes, with the scripted provider removed from the product path. Includes the placement engine.",
+    "dependencies": [
+      "M9"
+    ],
+    "required_before_closed_beta": true,
+    "source": "docs/product/ROADMAP.md",
+    "approval_evidence": "Human instruction on 2026-09-04: 'ok begin implementation now', given immediately after accepting docs/product/HACKATHON_IMPROVEMENT_AUDIT.md and the assistant's stated selection of the highest-priority bounded deterministic synthesis scope. Human instruction on 2026-09-08: 'ok proceed with implementation then', in response to COMPETITIVE_RESEARCH_AND_PRODUCT_STRATEGY.md and the recommended first unit: one editable sensor project, accurate explanations, guided diagnosis, saved revisions, and complete build handoff. This authorizes finishing and integrating A1 first; it does not mark A2/A3, general placement, cloud hosting, simulation, firmware, or physical validation complete.",
+    "scope": "M10",
+    "note": "Placement is the largest unbuilt technical risk in the plan."
+  },
   "proposed_product_milestones": [
-    {
-      "id": "M10",
-      "status": "PROPOSED",
-      "approved_by": null,
-      "title": "Deterministic bounded design synthesis",
-      "objective": "User intent -> typed brief -> archetype + slots -> derived CircuitIR across three archetypes, with the scripted provider removed from the product path. Includes the placement engine.",
-      "dependencies": [
-        "M9"
-      ],
-      "required_before_closed_beta": true,
-      "source": "docs/product/ROADMAP.md",
-      "note": "Placement is the largest unbuilt technical risk in the plan."
-    },
     {
       "id": "M11",
       "status": "PROPOSED",
@@ -156,5 +157,5 @@
       "source": "docs/product/ROADMAP.md"
     }
   ],
-  "proposed_milestones_note": "PROPOSED only. Recorded by a planning session on 2026-09-01 against commit d7b836e. No approval is implied or granted; per docs/AI_WORKFLOW.md only a human may transition a scope from PROPOSED to APPROVED, and no scope has been created for any of these. Rationale, deliverables, non-goals, acceptance criteria, and risks are in docs/product/ROADMAP.md."
+  "proposed_milestones_note": "M11-M15 remain PROPOSED only. Recorded by a planning session on 2026-09-01 against commit d7b836e. No approval is implied or granted for them; per docs/AI_WORKFLOW.md only a human may transition a scope from PROPOSED to APPROVED. Rationale, deliverables, non-goals, acceptance criteria, and risks are in docs/product/ROADMAP.md."
 }

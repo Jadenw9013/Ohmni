@@ -65,6 +65,26 @@
       "approved_by": "human",
       "approval_evidence": "Human instruction 'M9 BOUNDED PRODUCT-EXPERIENCE REMEDIATION', classifying the M9 experience as B and authorising a bounded UX remediation covering nine named items plus the open independent-review findings, without beginning M10.",
       "review_policy": "one focused independent review required; no broad review panel"
+    },
+    {
+      "id": "M10",
+      "type": "product_milestone",
+      "title": "Deterministic bounded design synthesis",
+      "status": "IN_PROGRESS",
+      "approved_by": "human",
+      "approval_evidence": "Human instruction on 2026-09-04: 'ok begin implementation now', given immediately after accepting docs/product/HACKATHON_IMPROVEMENT_AUDIT.md and the assistant's stated selection of the highest-priority bounded deterministic synthesis scope. Human instruction on 2026-09-08: 'ok proceed with implementation then', in response to COMPETITIVE_RESEARCH_AND_PRODUCT_STRATEGY.md and the recommended first unit: one editable sensor project, accurate explanations, guided diagnosis, saved revisions, and complete build handoff. This authorizes finishing and integrating A1 first; it does not mark A2/A3, general placement, cloud hosting, simulation, firmware, or physical validation complete.",
+      "review_policy": "one focused independent final review required for COMPLETE; unavailable permits VERIFIED only",
+      "non_goals": [
+        "production LLM integration",
+        "cloud deployment",
+        "user accounts",
+        "user-supplied components",
+        "new MCU families",
+        "simulation",
+        "live supplier APIs",
+        "firmware generation",
+        "arbitrary hardware generation"
+      ]
     }
   ],
   "tasks": [
@@ -576,6 +596,194 @@
         "independent": true,
         "record": "M9-RM01-REV-INDEPENDENT-FINAL",
         "note": "Verdict was FINDINGS_OPEN at 0 BLOCKER / 0 HIGH; all five findings were fixed rather than accepted."
+      },
+      "blockers": []
+    },
+    {
+      "id": "M10-T01",
+      "scope": "M10",
+      "milestone": "M10",
+      "title": "Finish A1 synthesis and deliver the personal sensor-project learning unit",
+      "status": "IN_PROGRESS",
+      "priority": 100,
+      "dependencies": [],
+      "goal": "Turn a structured, validated USB I2C sensor-node brief into a derived CircuitIR without importing the golden fixture or scripted model responses. Integrate the approved A1-first product unit with local durable revisions, a real diagnostic exercise, and a manifest-checked complete build download.",
+      "acceptance_criteria": [
+        "A strict typed synthesis brief represents the A1 USB I2C sensor-node envelope and distinguishes supported input from a typed refusal",
+        "A deterministic synthesizer derives the ESP32, USB-C power path, regulator, one supported I2C sensor, optional status LED, programming header, required passives, and their connections from the brief and catalog facts",
+        "The synthesis implementation does not import the golden circuit fixture or the scripted LLM provider",
+        "Identical briefs produce identical CircuitIR content hashes and a meaningful supported brief change produces a different hash",
+        "The synthesized A1 circuit is accepted by the existing semantic verifier with no blocking findings",
+        "Out-of-envelope and safety-domain inputs are refused with stable reason codes rather than schema errors",
+        "Focused synthesis tests, workflow validation, fast tests, and Ruff pass",
+        "Supported LED, header, and sensor-address choices produce real revision-specific circuits and artifacts; unsupported requests are refused before EDA",
+        "A1 placement uses an explicitly labeled authored archetype policy; no general placement optimizer is claimed",
+        "Personal projects and immutable revisions survive local server restart; interrupted jobs are explicitly failed rather than falsely completed",
+        "The diagnostic exercise grades actual verifier results and never changes a saved project",
+        "Resistor and sensor explanations are topology-grounded, and no-via manufacturing checks return a truthful result",
+        "A complete current build bundle is downloadable with artifact integrity checks and explicit synthetic-pricing, synthetic-profile, no-firmware and untested-hardware limitations",
+        "Frontend tests, relevant real KiCad integration, and desktop/mobile browser journeys pass"
+      ],
+      "verification": {
+        "required": [
+          "focused_synthesis_tests",
+          "workflow_tests",
+          "fast_tests",
+          "frontend_tests",
+          "integration_tests",
+          "personal_pipeline_tests",
+          "eight_configuration_drc",
+          "browser_journey",
+          "ruff"
+        ],
+        "record": ".ai/verification/M10-T01.yaml"
+      },
+      "implementation": {
+        "started_at_commit": "df41225",
+        "approval_evidence": "Human instruction on 2026-09-08: 'ok proceed with implementation then', in response to COMPETITIVE_RESEARCH_AND_PRODUCT_STRATEGY.md and the recommended first unit: one editable sensor project, accurate explanations, guided diagnosis, saved revisions, and complete build handoff. This authorizes finishing and integrating A1 first; it does not mark A2/A3, general placement, cloud hosting, simulation, firmware, or physical validation complete.",
+        "resumed_at_commit": "04531cd2dd829e2bd31954362aa97f8094b41caa"
+      },
+      "review": {
+        "required": false,
+        "status": "NOT_REQUIRED",
+        "independent": false
+      },
+      "blockers": []
+    },
+    {
+      "id": "M10-T02",
+      "scope": "M10",
+      "milestone": "M10",
+      "title": "Add A2/A3 synthesis and complete supported catalog coverage",
+      "status": "APPROVED",
+      "priority": 90,
+      "dependencies": [
+        "M10-T01"
+      ],
+      "goal": "Extend deterministic synthesis across the USB GPIO controller and USB SPI peripheral archetypes with complete catalog and footprint support.",
+      "acceptance_criteria": [
+        "A2 derives one to four LED channels, one to two buttons, and an optional programming header",
+        "A3 derives one to two supported SPI devices and an optional I2C sensor with distinct chip selects",
+        "Every package offered inside the supported synthesis envelope has compileable footprint geometry",
+        "Synthesis selects only evidence-bearing catalog parts and reports unavailable slot choices without guessing",
+        "Identical briefs remain byte-deterministic across all three archetypes"
+      ],
+      "verification": {
+        "required": [
+          "focused_synthesis_tests",
+          "fast_tests",
+          "pcb_compilation_tests"
+        ],
+        "record": ".ai/verification/M10-T02.yaml"
+      },
+      "review": {
+        "required": false,
+        "status": "NOT_REQUIRED",
+        "independent": false
+      },
+      "blockers": []
+    },
+    {
+      "id": "M10-T03",
+      "scope": "M10",
+      "milestone": "M10",
+      "title": "Generate placement and bound routing",
+      "status": "APPROVED",
+      "priority": 80,
+      "dependencies": [
+        "M10-T02"
+      ],
+      "goal": "Replace fixture coordinates with deterministic constraint-driven placement and give routing a truthful wall-clock failure mode.",
+      "acceptance_criteria": [
+        "The golden A1-equivalent brief is placed without a reference-designator coordinate table and remains routable",
+        "Edge, proximity, orientation, antenna, and board-boundary constraints are evaluated deterministically",
+        "Routing has a configured wall-clock budget and produces ROUTING_INCOMPLETE rather than running without a product-level bound",
+        "Placement and routing quality metrics include board area, total route length, and via count"
+      ],
+      "verification": {
+        "required": [
+          "placement_tests",
+          "routing_tests",
+          "integration_tests",
+          "slow_tests"
+        ],
+        "record": ".ai/verification/M10-T03.yaml"
+      },
+      "review": {
+        "required": false,
+        "status": "NOT_REQUIRED",
+        "independent": false
+      },
+      "blockers": []
+    },
+    {
+      "id": "M10-T04",
+      "scope": "M10",
+      "milestone": "M10",
+      "title": "Integrate structured briefs into the product path",
+      "status": "APPROVED",
+      "priority": 70,
+      "dependencies": [
+        "M10-T03"
+      ],
+      "goal": "Replace the fixture-only application path with user-confirmed structured briefs and project the real synthesized result through the existing truthful experience.",
+      "acceptance_criteria": [
+        "The product can create and run a validated brief for each supported archetype without a scripted provider",
+        "Every confirmed requirement is projected as met, violated, or unknown",
+        "Out-of-envelope briefs are refused before EDA with a specific reason",
+        "Fixture-specific application and CLI choices are removed from the product path while regression fixtures remain available to tests",
+        "The frontend continues to derive no engineering verdicts"
+      ],
+      "verification": {
+        "required": [
+          "application_tests",
+          "frontend_tests",
+          "fast_tests",
+          "browser_journey"
+        ],
+        "record": ".ai/verification/M10-T04.yaml"
+      },
+      "review": {
+        "required": false,
+        "status": "NOT_REQUIRED",
+        "independent": false
+      },
+      "blockers": []
+    },
+    {
+      "id": "M10-T05",
+      "scope": "M10",
+      "milestone": "M10",
+      "title": "Benchmark, verify, and review deterministic synthesis",
+      "status": "APPROVED",
+      "priority": 60,
+      "dependencies": [
+        "M10-T04"
+      ],
+      "goal": "Demonstrate that bounded synthesis is deterministic, rejects unsafe requests, and meets the milestone's end-to-end success thresholds.",
+      "acceptance_criteria": [
+        "At least 90 percent of the agreed 60 in-envelope benchmark cases reach DRC 0/0 and a passing manufacturing profile without manual edits",
+        "All 20 agreed out-of-envelope cases are refused with a stable specific reason",
+        "Every canonical brief has a reproducible CircuitIR and artifact fingerprint",
+        "All canonical verification tiers and frontend tests pass",
+        "One focused independent final review passes with no open BLOCKER or HIGH finding"
+      ],
+      "verification": {
+        "required": [
+          "benchmark",
+          "workflow_tests",
+          "fast_tests",
+          "integration_tests",
+          "slow_tests",
+          "full_tests",
+          "frontend_tests"
+        ],
+        "record": ".ai/verification/M10.yaml"
+      },
+      "review": {
+        "required": true,
+        "status": "PENDING",
+        "independent": true
       },
       "blockers": []
     }

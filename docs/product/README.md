@@ -3,9 +3,14 @@
 The canonical product layer for Ohmni v1. Created 2026-09-01 against commit
 `d7b836e`, after M8 completed and before any M9 scope exists.
 
-**Everything here is PROPOSED.** No milestone is approved by these documents.
+**The v1 contract and roadmap below remain PROPOSED.** No milestone is approved by these documents.
 Per `docs/AI_WORKFLOW.md`, only a human may move a scope from `PROPOSED` to
 `APPROVED`.
+
+Later implementation notes record separately authorized work. See
+[Personal sensor projects](PERSONAL_PROJECTS.md) for the implemented A1 unit
+and its limits; it does not mark the broader roadmap complete. The audit and
+market research documents retain the dates and baselines they evaluated.
 
 | Document | Owns | Read it when |
 |---|---|---|

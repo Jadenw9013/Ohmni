@@ -50,8 +50,7 @@ SYSTEM_LABELS: dict[SystemId, tuple[str, str]] = {
     ),
     SystemId.COMPUTE: (
         "Main computer",
-        ("The processor. It reads the sensor, decides what to do, and drives "
-         "the indicator."),
+        "The processor runs a program to coordinate connected devices.",
     ),
     SystemId.SENSE: (
         "Sensing",
@@ -60,8 +59,7 @@ SYSTEM_LABELS: dict[SystemId, tuple[str, str]] = {
     ),
     SystemId.IO: (
         "User controls and connections",
-        ("The parts you see and touch: the indicator light and the header used "
-         "to program the board."),
+        "The interface components and their supporting parts.",
     ),
 }
 
@@ -92,6 +90,7 @@ class ComponentGrouping(BaseModel):
     anchor: bool
     attached_to: str | None = None
     basis: str
+    category: ComponentCategory | None = None
 
 
 class FunctionalSystem(BaseModel):
@@ -178,7 +177,7 @@ def group_components(
         if ref in anchors:
             groupings.append(ComponentGrouping(
                 component_ref=ref, part_id=instance.part_id, system=anchors[ref],
-                anchor=True,
+                anchor=True, category=_category(circuit, catalog, ref),
                 basis=f"{instance.part_id} is a {_category(circuit, catalog, ref).value.replace('_', ' ')}",
             ))
             continue
@@ -205,7 +204,7 @@ def group_components(
         if not candidates:
             groupings.append(ComponentGrouping(
                 component_ref=ref, part_id=instance.part_id, system=SystemId.IO, anchor=False,
-                basis="shares no net with a system anchor",
+                basis="shares no net with a system anchor", category=_category(circuit, catalog, ref),
             ))
             continue
         candidates.sort(key=lambda item: (item[0], item[1], item[2]))
@@ -219,18 +218,38 @@ def group_components(
             )
         groupings.append(ComponentGrouping(
             component_ref=ref, part_id=instance.part_id, system=anchors[anchor_ref],
-            anchor=False, attached_to=anchor_ref, basis=basis,
+            anchor=False, attached_to=anchor_ref, basis=basis, category=_category(circuit, catalog, ref),
         ))
     return groupings
 
 
 def build_systems(groupings: list[ComponentGrouping]) -> list[FunctionalSystem]:
     systems: list[FunctionalSystem] = []
+    categories = {item.category for item in groupings if item.anchor}
     for system in SystemId:
         members = [g for g in groupings if g.system is system]
         if not members:
             continue
         label, summary = SYSTEM_LABELS[system]
+        if system is SystemId.COMPUTE:
+            tasks = []
+            if ComponentCategory.SENSOR in categories:
+                tasks.append("request sensor readings")
+            if ComponentCategory.LED in categories:
+                tasks.append("control the indicator light")
+            if tasks:
+                summary = "A program on the processor can " + " and ".join(tasks) + "."
+        elif system is SystemId.IO:
+            member_categories = {item.category for item in members if item.anchor}
+            interfaces = [name for category, name in (
+                (ComponentCategory.LED, "indicator light"),
+                (ComponentCategory.HEADER, "connector header"),
+                (ComponentCategory.SWITCH, "switch"),
+                (ComponentCategory.CONNECTOR, "external connector"),
+            ) if category in member_categories]
+            if interfaces:
+                names = ", ".join(interfaces[:-1]) + " and " + interfaces[-1] if len(interfaces) > 1 else interfaces[0]
+                summary = f"The {names}, with supporting parts."
         systems.append(FunctionalSystem(
             system=system, label=label, summary=summary,
             component_refs=[g.component_ref for g in members],

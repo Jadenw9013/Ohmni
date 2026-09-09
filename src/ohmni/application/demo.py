@@ -178,13 +178,21 @@ class DemoPipeline:
         )
         if not design.final_circuit or not design.artifact or not design.erc:
             raise RuntimeError(f"design pipeline failed: {[issue.message for issue in design.issues]}")
-        circuit = design.final_circuit
         self._progress("repair", "Found an electrical problem and fixed it", "PASS", 25,
                        "Then re-ran every check from the beginning.")
 
         board = golden_board_constraints()
+        return self.finish_design(destination, request, design, catalog, board)
+
+    def finish_design(self, destination, request, design, catalog, board, *, scripted=True):
+        """Compile and verify one supplied design; shared by demo and project runs."""
+        circuit = design.final_circuit
         compiler = KiCadPcbCompiler(catalog)
         placed = compiler.compile(circuit, design.artifact, board, destination / "golden.placed.kicad_pcb")
+        if not placed.compilation.physical_verification.passed or any(
+            finding.status.value != "pass" for finding in placed.compilation.physical_verification.findings
+        ):
+            raise RuntimeError("physical placement constraints did not pass")
         self._progress("placement", "Placing the components on the board", "PASS", 35,
                        "Each part goes where its job needs it to be.")
         self._progress("routing", "Drawing the copper connections", "RUNNING", 40,
@@ -196,6 +204,10 @@ class DemoPipeline:
         if not route_report.passed:
             raise RuntimeError("independent routing verification failed")
         routed = compiler.compile(circuit, design.artifact, board, destination / "golden.kicad_pcb", plan)
+        if not routed.compilation.physical_verification.passed or any(
+            finding.status.value != "pass" for finding in routed.compilation.physical_verification.findings
+        ):
+            raise RuntimeError("routed physical constraints did not pass")
         self._progress("routing", "Checked every copper path separately", "PASS", 75,
                        f"A different checker confirmed all {plan.statistics.required_connections} "
                        "connections actually join up.")
@@ -209,8 +221,8 @@ class DemoPipeline:
         manufacturing = verify_manufacturing(routed, board, plan, profile)
         if not manufacturing.passed:
             raise RuntimeError("manufacturing profile verification failed")
-        self._progress("manufacturing", "Checked it can actually be made", "PASS", 87,
-                       "Compared against what a fabricator can produce.")
+        self._progress("manufacturing", "Checked the example manufacturing limits", "PASS", 87,
+                       "This profile is synthetic; a fabricator must confirm its actual capabilities.")
         bom = generate_bom(circuit, catalog)
         costs = calculate_cost(bom, synthetic_fixture_supplier(bom), 1)
         assembly = classify_assembly(bom)
@@ -223,7 +235,7 @@ class DemoPipeline:
             request=request, design=design, catalog=catalog, board=board, placed=placed,
             plan=plan, route_report=route_report, routed=routed, drc=drc,
             manufacturing=manufacturing, bom=bom, costs=costs, assembly=assembly,
-            package=package,
+            package=package, scripted=scripted,
         )
 
 
@@ -255,8 +267,10 @@ def _evidence_rows(catalog) -> list[dict[str, object]]:
 
 def project_demo_report(**values) -> DemoReport:
     """Pure presentation projection; inputs are already verified subsystem reports."""
-    request = require_demo_request(values["request"])
-    design = _require_demo_design_provenance(values["design"], request)
+    scripted = values.get("scripted", True)
+    request = require_demo_request(values["request"]) if scripted else values["request"]
+    design = (_require_demo_design_provenance(values["design"], request)
+              if scripted else values["design"])
     catalog=values["catalog"]
     board=values["board"];plan=values["plan"];route_report=values["route_report"]
     routed=values["routed"];drc=values["drc"];manufacturing=values["manufacturing"]
@@ -265,7 +279,7 @@ def project_demo_report(**values) -> DemoReport:
     requirements=[statement.model_dump(mode="json") for statement in design.requirements.provenance]
     first,last=design.semantic_attempts[0],design.semantic_attempts[-1]
     blocking=[finding for finding in first.findings if finding.severity.value in {"critical","error"}]
-    repair=design.repairs[0]
+    repair=design.repairs[0] if design.repairs else None
     event_groups = [
         ("design", design.notebook.events),
         ("placed_pcb_compilation", values["placed"].events),
@@ -316,11 +330,12 @@ def project_demo_report(**values) -> DemoReport:
         drc=drc,manufacturing=manufacturing,bom=bom,costs=costs,assembly=assembly,package=package,
     )
     return DemoReport(
+        mode="deterministic_scripted_demo" if scripted else "bounded_synthesis",
         experience=experience,
         project={"name":design.requirements.requirements.project_name,"request":request,"supported_fixture":"ESP32 + BME280 environmental logger","status":release_status.value.upper()},
         requirements=requirements,evidence=evidence,
         architecture=[block.model_dump(mode="json") for block in design.architecture.blocks],
-        failure_and_repair={"status":"REPAIRED","rule":"PB-PWR-001","original":"BME280 VDD and VDDIO connected to 5 V VBUS","operating_range":"1.71 V to 3.6 V","findings":[{"severity":f.severity.value.upper(),"title":f.title,"description":f.description} for f in blocking if f.rule_id=="PB-PWR-001"],"operations":[op.model_dump(mode="json") for op in repair.patch.operations],"result":"Both sensor supply pins moved to 3V3; PB-PWR-001 passed after deterministic re-verification."},
+        failure_and_repair=({"status":"REPAIRED","rule":"PB-PWR-001","original":"BME280 VDD and VDDIO connected to 5 V VBUS","operating_range":"1.71 V to 3.6 V","findings":[{"severity":f.severity.value.upper(),"title":f.title,"description":f.description} for f in blocking if f.rule_id=="PB-PWR-001"],"operations":[op.model_dump(mode="json") for op in repair.patch.operations],"result":"Both sensor supply pins moved to 3V3; PB-PWR-001 passed after deterministic re-verification."} if repair else {"status":"NOT_NEEDED","findings":[],"operations":[],"result":"The derived circuit needed no electrical repair."}),
         verification_ladder=ladder,notebook=notebook,
         lessons=[lesson.model_dump(mode="json") for lesson in design.lessons],
         schematic={"path":str(design.artifact.path),"fingerprint":design.artifact.fingerprint.digest,"current":design.artifact.is_current,"erc_status":design.erc.status.value.upper(),"erc_findings":len(design.erc.findings),"svg":schematic_svg(design.artifact)},
@@ -330,5 +345,5 @@ def project_demo_report(**values) -> DemoReport:
         economics={"scenario_boards":1,"pricing_coverage":costs.pricing_coverage,"known_consumption_cost":str(costs.known_consumption_cost),"known_purchase_requirement":str(costs.known_purchase_requirement),"fabrication":costs.fabrication.value.upper(),"shipping":costs.shipping.value.upper(),"tooling":costs.tooling.value.upper(),"pricing_source":"SYNTHETIC FIXTURE - NOT LIVE SUPPLIER DATA"},
         assembly={"hand_solder_requirement_satisfied":assembly.hand_solder_requirement_satisfied,"risks":[risk.model_dump(mode="json") for risk in assembly.risks],"limitations":assembly.limitations},
         release={"status":release_status.value.upper(),"package_fingerprint":package.package_fingerprint,"pcb_fingerprint":package.source_pcb_fingerprint,"current":release_current,"files":[file.model_dump(mode="json") for file in package.files],"manifest":package.manifest.model_dump(mode="json")},
-        limitations=["Supported deterministic demo: ESP32/BME280 logger, not arbitrary hardware.","Not simulation verified.","Not thermal, EMC, RF, or signal-integrity verified.","Not bench verified.","Manufacturing profile is synthetic and requires human review.","No guarantee of successful fabrication or assembly."],
+        limitations=[("Supported deterministic demo: ESP32/BME280 logger, not arbitrary hardware." if scripted else "Bounded USB ESP32/BME280 synthesis; only the offered options are supported. Placement follows an authored archetype policy, not a general placement optimizer."),"Not simulation verified.","Not thermal, EMC, RF, or signal-integrity verified.","Not bench verified.","Manufacturing profile is synthetic and requires human review.","No guarantee of successful fabrication or assembly."],
     )
