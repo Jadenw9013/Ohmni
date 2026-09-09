@@ -1,0 +1,4963 @@
+{
+  "schema_version": 1,
+  "corpus_id": "m10-structured-synthesis-v1",
+  "authorship": "Agent-authored structured briefs and independent explicit expected compositions, frozen before execution. Not natural-language interpretation or blind human validation.",
+  "denominators": {
+    "in_envelope": 60,
+    "typed_refusals": 20,
+    "per_family": 20
+  },
+  "limitations": [
+    "Firmware and hardware performance are not measured.",
+    "Manufacturing profile and prices are synthetic.",
+    "Hand preference varies; passive 0805 selection is deliberately preserved. Package coverage comes from BME280 LGA, TMP102 SOT, EEPROM SOIC and THT controls.",
+    "No failed case may be dropped or changed to improve the denominator. New sources require a new run directory."
+  ],
+  "cases": [
+    {
+      "case_id": "A1-01",
+      "tags": [
+        "sensor-count-1",
+        "automatic",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A1-01",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration A1-01; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "22c350b69ea0695195ea4e138ce8ac389b9fb113efbb97895b69099859154d35",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 6,
+          "GENERIC_CAPACITOR": 7,
+          "GENERIC_LED_GREEN": 1,
+          "HEADER_1X6_254": 1,
+          "BME280": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "BME280": "LGA-8"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U3",
+            "part_id": "BME280",
+            "address": 118
+          }
+        ],
+        "spi_slots": [],
+        "status_led_count": 1,
+        "button_count": 0,
+        "programming_header": true
+      },
+      "expectation_sha256": "6dde1dbb36383be95c52cfff39208d52dd3a29ea42a6216cbe116bbce883f756"
+    },
+    {
+      "case_id": "A1-02",
+      "tags": [
+        "sensor-count-1",
+        "explicit",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A1-02",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration A1-02; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": 118
+          }
+        ],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "bbc643ec7afa5814100258caff6bd95631f3893e17434990516955eaec6a4075",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 5,
+          "GENERIC_CAPACITOR": 7,
+          "BME280": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "BME280": "LGA-8"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U3",
+            "part_id": "BME280",
+            "address": 118
+          }
+        ],
+        "spi_slots": [],
+        "status_led_count": 0,
+        "button_count": 0,
+        "programming_header": false
+      },
+      "expectation_sha256": "78609691c75f74c644920f6905b3c8759756d82a166b914fab3f2a22b91828b9"
+    },
+    {
+      "case_id": "A1-03",
+      "tags": [
+        "sensor-count-1",
+        "explicit",
+        "hand-preference-false"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A1-03",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration A1-03; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": 119
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": false,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "8a1383889dec97d385be875baba1aad4e8abebebfda29d470ade9ccd66308da4",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 6,
+          "GENERIC_CAPACITOR": 7,
+          "GENERIC_LED_GREEN": 1,
+          "BME280": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "BME280": "LGA-8"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U3",
+            "part_id": "BME280",
+            "address": 119
+          }
+        ],
+        "spi_slots": [],
+        "status_led_count": 1,
+        "button_count": 0,
+        "programming_header": false
+      },
+      "expectation_sha256": "e4e4a453b5cc88a95be0384a6a742c4581a1ffd1d83eae7993e0deb1a5db627a"
+    },
+    {
+      "case_id": "A1-04",
+      "tags": [
+        "sensor-count-1",
+        "automatic",
+        "hand-preference-false"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A1-04",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration A1-04; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          }
+        ],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": false,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "f00a61f9ecace82c776b5741653b9fd81f03b3f3d2f57a74223b24054863c208",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 5,
+          "GENERIC_CAPACITOR": 7,
+          "HEADER_1X6_254": 1,
+          "BME280": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "BME280": "LGA-8"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U3",
+            "part_id": "BME280",
+            "address": 118
+          }
+        ],
+        "spi_slots": [],
+        "status_led_count": 0,
+        "button_count": 0,
+        "programming_header": true
+      },
+      "expectation_sha256": "abceb1b7acc5deb295dc455dca74aa7eaf503b9271bce3053b4fca4e7edc1858"
+    },
+    {
+      "case_id": "A1-05",
+      "tags": [
+        "sensor-count-1",
+        "automatic",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A1-05",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration A1-05; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "TMP102AIDRLR",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "3079ba927b0b6142904f3da39944119b88d010f010b5ebeb78374619555d7187",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 6,
+          "GENERIC_CAPACITOR": 6,
+          "GENERIC_LED_GREEN": 1,
+          "HEADER_1X6_254": 1,
+          "TMP102AIDRLR": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "TMP102AIDRLR": "SOT-563"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U3",
+            "part_id": "TMP102AIDRLR",
+            "address": 72
+          }
+        ],
+        "spi_slots": [],
+        "status_led_count": 1,
+        "button_count": 0,
+        "programming_header": true
+      },
+      "expectation_sha256": "6b274c399ff74b725d5339464627f8bb906b05b04e6804dcfa5954fc3f19fa53"
+    },
+    {
+      "case_id": "A1-06",
+      "tags": [
+        "sensor-count-1",
+        "explicit",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A1-06",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration A1-06; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "TMP102AIDRLR",
+            "address": 72
+          }
+        ],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "7fe85d60f0679eef0808e055705687e77aecb43495bfcb5ef45c6e42e539f8cd",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 5,
+          "GENERIC_CAPACITOR": 6,
+          "TMP102AIDRLR": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "TMP102AIDRLR": "SOT-563"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U3",
+            "part_id": "TMP102AIDRLR",
+            "address": 72
+          }
+        ],
+        "spi_slots": [],
+        "status_led_count": 0,
+        "button_count": 0,
+        "programming_header": false
+      },
+      "expectation_sha256": "2716ea6101beb1bf461c4b9568c6912e42392c754596610232aaf018abfa7685"
+    },
+    {
+      "case_id": "A1-07",
+      "tags": [
+        "sensor-count-1",
+        "explicit",
+        "hand-preference-false"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A1-07",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration A1-07; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "TMP102AIDRLR",
+            "address": 73
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": false,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "28baca3a45535dd9be2c64b8481f9fe0609a30be8159c8d5cd9ecdc9ce231d0a",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 6,
+          "GENERIC_CAPACITOR": 6,
+          "GENERIC_LED_GREEN": 1,
+          "TMP102AIDRLR": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "TMP102AIDRLR": "SOT-563"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U3",
+            "part_id": "TMP102AIDRLR",
+            "address": 73
+          }
+        ],
+        "spi_slots": [],
+        "status_led_count": 1,
+        "button_count": 0,
+        "programming_header": false
+      },
+      "expectation_sha256": "31e7fc8d5f70fd054894963006ef1da7a213ec92248fdaaae4fcaa001ff6cf54"
+    },
+    {
+      "case_id": "A1-08",
+      "tags": [
+        "sensor-count-1",
+        "automatic",
+        "hand-preference-false"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A1-08",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration A1-08; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "TMP102AIDRLR",
+            "address": null
+          }
+        ],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": false,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "973e4e028de41967e63e0315070090558c9def5fde6ac1a45f0167cdadf40e0c",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 5,
+          "GENERIC_CAPACITOR": 6,
+          "HEADER_1X6_254": 1,
+          "TMP102AIDRLR": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "TMP102AIDRLR": "SOT-563"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U3",
+            "part_id": "TMP102AIDRLR",
+            "address": 72
+          }
+        ],
+        "spi_slots": [],
+        "status_led_count": 0,
+        "button_count": 0,
+        "programming_header": true
+      },
+      "expectation_sha256": "e0a3de6e7d7cc7abb99e772c24a37ac3299dd313bd2a13c81cc0eef1aa50a56b"
+    },
+    {
+      "case_id": "A1-09",
+      "tags": [
+        "sensor-count-2",
+        "automatic",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A1-09",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration A1-09; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          },
+          {
+            "part_id": "BME280",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "bbfa5e0a3ede2f947ce5b4a3f2b998bc99ebff51583182766552e5653423c7f5",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 6,
+          "GENERIC_CAPACITOR": 9,
+          "GENERIC_LED_GREEN": 1,
+          "HEADER_1X6_254": 1,
+          "BME280": 2
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "BME280": "LGA-8"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U3",
+            "part_id": "BME280",
+            "address": 118
+          },
+          {
+            "ref": "U4",
+            "part_id": "BME280",
+            "address": 119
+          }
+        ],
+        "spi_slots": [],
+        "status_led_count": 1,
+        "button_count": 0,
+        "programming_header": true
+      },
+      "expectation_sha256": "c33ecac1083de0ce2b4dae4580f238e11291ca968e7bbfd5438323608642f434"
+    },
+    {
+      "case_id": "A1-10",
+      "tags": [
+        "sensor-count-2",
+        "automatic",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A1-10",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration A1-10; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          },
+          {
+            "part_id": "BME280",
+            "address": 118
+          }
+        ],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "0f09af01c6ee0f9f44938904527119d8a9a47eb5e4a817dca47260fb5c54ed02",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 5,
+          "GENERIC_CAPACITOR": 9,
+          "BME280": 2
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "BME280": "LGA-8"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U3",
+            "part_id": "BME280",
+            "address": 119
+          },
+          {
+            "ref": "U4",
+            "part_id": "BME280",
+            "address": 118
+          }
+        ],
+        "spi_slots": [],
+        "status_led_count": 0,
+        "button_count": 0,
+        "programming_header": false
+      },
+      "expectation_sha256": "8cebf413fd9b0cbb67c5e58594eed8937a6a2d30f919ac41ddc8b5b39c0261c4"
+    },
+    {
+      "case_id": "A1-11",
+      "tags": [
+        "sensor-count-2",
+        "automatic",
+        "hand-preference-false"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A1-11",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration A1-11; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": 119
+          },
+          {
+            "part_id": "BME280",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": false,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "20c6f5386523396aacfd73375390c261a37261a13ddd47b524a996aae78fadf8",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 6,
+          "GENERIC_CAPACITOR": 9,
+          "GENERIC_LED_GREEN": 1,
+          "BME280": 2
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "BME280": "LGA-8"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U3",
+            "part_id": "BME280",
+            "address": 119
+          },
+          {
+            "ref": "U4",
+            "part_id": "BME280",
+            "address": 118
+          }
+        ],
+        "spi_slots": [],
+        "status_led_count": 1,
+        "button_count": 0,
+        "programming_header": false
+      },
+      "expectation_sha256": "621afac6b132640579591a994776f0088889c283f95004b7c775b646df85a32e"
+    },
+    {
+      "case_id": "A1-12",
+      "tags": [
+        "sensor-count-2",
+        "automatic",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A1-12",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration A1-12; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "TMP102AIDRLR",
+            "address": null
+          },
+          {
+            "part_id": "TMP102AIDRLR",
+            "address": null
+          }
+        ],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "c70563e56950ad7b7940af2fe97dfc4ebe5f07875cc660d5b06c4a3b556a4524",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 5,
+          "GENERIC_CAPACITOR": 7,
+          "HEADER_1X6_254": 1,
+          "TMP102AIDRLR": 2
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "TMP102AIDRLR": "SOT-563"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U3",
+            "part_id": "TMP102AIDRLR",
+            "address": 72
+          },
+          {
+            "ref": "U4",
+            "part_id": "TMP102AIDRLR",
+            "address": 73
+          }
+        ],
+        "spi_slots": [],
+        "status_led_count": 0,
+        "button_count": 0,
+        "programming_header": true
+      },
+      "expectation_sha256": "233abff42717a2b5cedf00e6ca0e9d684eeff8f42a893fb62d20f9105c809113"
+    },
+    {
+      "case_id": "A1-13",
+      "tags": [
+        "sensor-count-2",
+        "automatic",
+        "hand-preference-false"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A1-13",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration A1-13; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "TMP102AIDRLR",
+            "address": null
+          },
+          {
+            "part_id": "TMP102AIDRLR",
+            "address": 72
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": false,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "1e8cb26d28284d6100fd03f3cb5e71b9d67f21f60d0507aa7a828c553d55c5d7",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 6,
+          "GENERIC_CAPACITOR": 7,
+          "GENERIC_LED_GREEN": 1,
+          "TMP102AIDRLR": 2
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "TMP102AIDRLR": "SOT-563"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U3",
+            "part_id": "TMP102AIDRLR",
+            "address": 73
+          },
+          {
+            "ref": "U4",
+            "part_id": "TMP102AIDRLR",
+            "address": 72
+          }
+        ],
+        "spi_slots": [],
+        "status_led_count": 1,
+        "button_count": 0,
+        "programming_header": false
+      },
+      "expectation_sha256": "8452f39145d404456a6707ed382280ec5ef66ed719695631b58cff802aea0f8b"
+    },
+    {
+      "case_id": "A1-14",
+      "tags": [
+        "sensor-count-2",
+        "automatic",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A1-14",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration A1-14; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          },
+          {
+            "part_id": "TMP102AIDRLR",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "d1c66d67eeb3f88b3eae0e1c77e9d197faa54b142601c3fd78ce7ef26ebd90cd",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 6,
+          "GENERIC_CAPACITOR": 8,
+          "GENERIC_LED_GREEN": 1,
+          "HEADER_1X6_254": 1,
+          "BME280": 1,
+          "TMP102AIDRLR": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "BME280": "LGA-8",
+          "TMP102AIDRLR": "SOT-563"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U3",
+            "part_id": "BME280",
+            "address": 118
+          },
+          {
+            "ref": "U4",
+            "part_id": "TMP102AIDRLR",
+            "address": 72
+          }
+        ],
+        "spi_slots": [],
+        "status_led_count": 1,
+        "button_count": 0,
+        "programming_header": true
+      },
+      "expectation_sha256": "8b683252648b02f6db955b8331a2cf0416f11cd1fcceed974238d27037e1b873"
+    },
+    {
+      "case_id": "A1-15",
+      "tags": [
+        "sensor-count-2",
+        "explicit",
+        "hand-preference-false"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A1-15",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration A1-15; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "TMP102AIDRLR",
+            "address": 73
+          },
+          {
+            "part_id": "BME280",
+            "address": 119
+          }
+        ],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": false,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "7434c0e17fcf296af7b8c85aa5c8d619c2d953532a4af1cb7e6f76f9f0c25a03",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 5,
+          "GENERIC_CAPACITOR": 8,
+          "BME280": 1,
+          "TMP102AIDRLR": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "BME280": "LGA-8",
+          "TMP102AIDRLR": "SOT-563"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U3",
+            "part_id": "TMP102AIDRLR",
+            "address": 73
+          },
+          {
+            "ref": "U4",
+            "part_id": "BME280",
+            "address": 119
+          }
+        ],
+        "spi_slots": [],
+        "status_led_count": 0,
+        "button_count": 0,
+        "programming_header": false
+      },
+      "expectation_sha256": "70926f2b54c78a5b70efe3f958b055605abcb0ef7a5b1224eed6638b2f619d71"
+    },
+    {
+      "case_id": "A1-16",
+      "tags": [
+        "sensor-count-3",
+        "automatic",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A1-16",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration A1-16; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          },
+          {
+            "part_id": "TMP102AIDRLR",
+            "address": null
+          },
+          {
+            "part_id": "TMP102AIDRLR",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "e4357236e252a074f5f6a2f641d327d61e1abfa46408fef78b1ea2c018a6ee32",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 6,
+          "GENERIC_CAPACITOR": 9,
+          "GENERIC_LED_GREEN": 1,
+          "HEADER_1X6_254": 1,
+          "BME280": 1,
+          "TMP102AIDRLR": 2
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "BME280": "LGA-8",
+          "TMP102AIDRLR": "SOT-563"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U3",
+            "part_id": "BME280",
+            "address": 118
+          },
+          {
+            "ref": "U4",
+            "part_id": "TMP102AIDRLR",
+            "address": 72
+          },
+          {
+            "ref": "U5",
+            "part_id": "TMP102AIDRLR",
+            "address": 73
+          }
+        ],
+        "spi_slots": [],
+        "status_led_count": 1,
+        "button_count": 0,
+        "programming_header": true
+      },
+      "expectation_sha256": "d2a424f15c08a14b79088316de6f0f1350d996cd49494ffad6d1a9a3d1e72ca3"
+    },
+    {
+      "case_id": "A1-17",
+      "tags": [
+        "sensor-count-3",
+        "automatic",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A1-17",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration A1-17; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "TMP102AIDRLR",
+            "address": null
+          },
+          {
+            "part_id": "BME280",
+            "address": 118
+          },
+          {
+            "part_id": "TMP102AIDRLR",
+            "address": 72
+          }
+        ],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "fd1ce316f430c66248ccaa87ba13c7b24d860fdc0f9f60ea28c23ee0cf368a2b",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 5,
+          "GENERIC_CAPACITOR": 9,
+          "BME280": 1,
+          "TMP102AIDRLR": 2
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "BME280": "LGA-8",
+          "TMP102AIDRLR": "SOT-563"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U3",
+            "part_id": "TMP102AIDRLR",
+            "address": 73
+          },
+          {
+            "ref": "U4",
+            "part_id": "BME280",
+            "address": 118
+          },
+          {
+            "ref": "U5",
+            "part_id": "TMP102AIDRLR",
+            "address": 72
+          }
+        ],
+        "spi_slots": [],
+        "status_led_count": 0,
+        "button_count": 0,
+        "programming_header": false
+      },
+      "expectation_sha256": "f11891ea3ee5f118514b0b236dfc9c6dc824ffa944f371f2faed2003f3f926ba"
+    },
+    {
+      "case_id": "A1-18",
+      "tags": [
+        "sensor-count-3",
+        "explicit",
+        "hand-preference-false"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A1-18",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration A1-18; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": 119
+          },
+          {
+            "part_id": "TMP102AIDRLR",
+            "address": 73
+          },
+          {
+            "part_id": "BME280",
+            "address": 118
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": false,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "d2d4c56a30c017f60ecdfa2401f054b8f7bb5c73de446fae9a082f85dcfc378f",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 6,
+          "GENERIC_CAPACITOR": 10,
+          "GENERIC_LED_GREEN": 1,
+          "BME280": 2,
+          "TMP102AIDRLR": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "BME280": "LGA-8",
+          "TMP102AIDRLR": "SOT-563"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U3",
+            "part_id": "BME280",
+            "address": 119
+          },
+          {
+            "ref": "U4",
+            "part_id": "TMP102AIDRLR",
+            "address": 73
+          },
+          {
+            "ref": "U5",
+            "part_id": "BME280",
+            "address": 118
+          }
+        ],
+        "spi_slots": [],
+        "status_led_count": 1,
+        "button_count": 0,
+        "programming_header": false
+      },
+      "expectation_sha256": "3cac113392124e35cb1417fbe639268641bc44c1d5b9315dc0578a0087b6390d"
+    },
+    {
+      "case_id": "A1-19",
+      "tags": [
+        "sensor-count-3",
+        "automatic",
+        "hand-preference-false"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A1-19",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration A1-19; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "TMP102AIDRLR",
+            "address": null
+          },
+          {
+            "part_id": "BME280",
+            "address": null
+          },
+          {
+            "part_id": "BME280",
+            "address": null
+          }
+        ],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": false,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "b66de3b681c14bf1755f78d6b150526ab940c571dd4847d330cbe551351de3cd",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 5,
+          "GENERIC_CAPACITOR": 10,
+          "HEADER_1X6_254": 1,
+          "BME280": 2,
+          "TMP102AIDRLR": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "BME280": "LGA-8",
+          "TMP102AIDRLR": "SOT-563"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U3",
+            "part_id": "TMP102AIDRLR",
+            "address": 72
+          },
+          {
+            "ref": "U4",
+            "part_id": "BME280",
+            "address": 118
+          },
+          {
+            "ref": "U5",
+            "part_id": "BME280",
+            "address": 119
+          }
+        ],
+        "spi_slots": [],
+        "status_led_count": 0,
+        "button_count": 0,
+        "programming_header": true
+      },
+      "expectation_sha256": "a72d7e7368fd9124cd7cc438bb949502f757bf6426fa06c005c43ce66b78812a"
+    },
+    {
+      "case_id": "A1-20",
+      "tags": [
+        "sensor-count-3",
+        "automatic",
+        "hand-preference-true",
+        "browser-reported-routing-failure"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A1-20",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration A1-20; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          },
+          {
+            "part_id": "BME280",
+            "address": null
+          },
+          {
+            "part_id": "TMP102AIDRLR",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "d7f4587c19a437561fb232ba497aea1e6af8ff7166b0559690826bad2d745857",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 6,
+          "GENERIC_CAPACITOR": 10,
+          "GENERIC_LED_GREEN": 1,
+          "HEADER_1X6_254": 1,
+          "BME280": 2,
+          "TMP102AIDRLR": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "BME280": "LGA-8",
+          "TMP102AIDRLR": "SOT-563"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U3",
+            "part_id": "BME280",
+            "address": 118
+          },
+          {
+            "ref": "U4",
+            "part_id": "BME280",
+            "address": 119
+          },
+          {
+            "ref": "U5",
+            "part_id": "TMP102AIDRLR",
+            "address": 72
+          }
+        ],
+        "spi_slots": [],
+        "status_led_count": 1,
+        "button_count": 0,
+        "programming_header": true
+      },
+      "expectation_sha256": "bc78810bebbe47dee7e8bae18c09069dcbc9baddfaf6c5b2e1a015fa74e22a8f"
+    },
+    {
+      "case_id": "A2-01",
+      "tags": [
+        "led-count-1",
+        "button-count-1",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A2-01",
+        "description": "Structured a2_usb_gpio_controller benchmark configuration A2-01; firmware behavior is not measured.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 1,
+        "button_count": 1,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "9d83909c07167fc6a8a435caea36951ecf51cd4831ace27094407589e58b6f2e",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 5,
+          "GENERIC_CAPACITOR": 5,
+          "GENERIC_LED_GREEN": 1,
+          "GENERIC_MOMENTARY_BUTTON": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "GENERIC_MOMENTARY_BUTTON": "6mm-THT"
+        },
+        "sensor_slots": [],
+        "spi_slots": [],
+        "status_led_count": 1,
+        "button_count": 1,
+        "programming_header": false
+      },
+      "expectation_sha256": "b759fababc47937c94164cc8c10d4fc1f6263fde50ccebb6274fdf0fe1caf442"
+    },
+    {
+      "case_id": "A2-02",
+      "tags": [
+        "led-count-1",
+        "button-count-1",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A2-02",
+        "description": "Structured a2_usb_gpio_controller benchmark configuration A2-02; firmware behavior is not measured.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 1,
+        "button_count": 1,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "a2bfbc003493f933d72eef8350999ca1035afb6f12c2cefdaa7f0fa87a81d456",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 5,
+          "GENERIC_CAPACITOR": 5,
+          "GENERIC_LED_GREEN": 1,
+          "HEADER_1X6_254": 1,
+          "GENERIC_MOMENTARY_BUTTON": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "GENERIC_MOMENTARY_BUTTON": "6mm-THT"
+        },
+        "sensor_slots": [],
+        "spi_slots": [],
+        "status_led_count": 1,
+        "button_count": 1,
+        "programming_header": true
+      },
+      "expectation_sha256": "3bdb45a62ff913f921959b55f9f98c5f2dce6624a025babcb037049c30bd4f6e"
+    },
+    {
+      "case_id": "A2-03",
+      "tags": [
+        "led-count-1",
+        "button-count-2",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A2-03",
+        "description": "Structured a2_usb_gpio_controller benchmark configuration A2-03; firmware behavior is not measured.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 1,
+        "button_count": 2,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "5806cf6a986c18ea6aaa8e7eeeda732351430e694563a6d64cee0433572ae2ca",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 6,
+          "GENERIC_CAPACITOR": 5,
+          "GENERIC_LED_GREEN": 1,
+          "GENERIC_MOMENTARY_BUTTON": 2
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "GENERIC_MOMENTARY_BUTTON": "6mm-THT"
+        },
+        "sensor_slots": [],
+        "spi_slots": [],
+        "status_led_count": 1,
+        "button_count": 2,
+        "programming_header": false
+      },
+      "expectation_sha256": "b1a1670036282f7989bb9e12a880114a729a7038542171a922bdc15e064faa92"
+    },
+    {
+      "case_id": "A2-04",
+      "tags": [
+        "led-count-1",
+        "button-count-2",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A2-04",
+        "description": "Structured a2_usb_gpio_controller benchmark configuration A2-04; firmware behavior is not measured.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 1,
+        "button_count": 2,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "c45650e40dd6c2eca9802e90ba4fdffbe61eb5d8eecd98ccd667af596dd8431d",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 6,
+          "GENERIC_CAPACITOR": 5,
+          "GENERIC_LED_GREEN": 1,
+          "HEADER_1X6_254": 1,
+          "GENERIC_MOMENTARY_BUTTON": 2
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "GENERIC_MOMENTARY_BUTTON": "6mm-THT"
+        },
+        "sensor_slots": [],
+        "spi_slots": [],
+        "status_led_count": 1,
+        "button_count": 2,
+        "programming_header": true
+      },
+      "expectation_sha256": "184630aed96cbde07e0b0a67599713ec5740b6372636711df977990895b9920e"
+    },
+    {
+      "case_id": "A2-05",
+      "tags": [
+        "led-count-2",
+        "button-count-1",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A2-05",
+        "description": "Structured a2_usb_gpio_controller benchmark configuration A2-05; firmware behavior is not measured.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 2,
+        "button_count": 1,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "bff87ea62d425ea544e08534f5caa3a5717b8237bfd5b28024ed57c668cd3c25",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 6,
+          "GENERIC_CAPACITOR": 5,
+          "GENERIC_LED_GREEN": 2,
+          "GENERIC_MOMENTARY_BUTTON": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "GENERIC_MOMENTARY_BUTTON": "6mm-THT"
+        },
+        "sensor_slots": [],
+        "spi_slots": [],
+        "status_led_count": 2,
+        "button_count": 1,
+        "programming_header": false
+      },
+      "expectation_sha256": "0cc1d94bd1c92084125e72424956afe5e4d45984183e59e60d3e686adbee6ec3"
+    },
+    {
+      "case_id": "A2-06",
+      "tags": [
+        "led-count-2",
+        "button-count-1",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A2-06",
+        "description": "Structured a2_usb_gpio_controller benchmark configuration A2-06; firmware behavior is not measured.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 2,
+        "button_count": 1,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "e4366c1776b5fd15f351493ce156a3732cd19e3d3a68592c30459e93dcbd8d56",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 6,
+          "GENERIC_CAPACITOR": 5,
+          "GENERIC_LED_GREEN": 2,
+          "HEADER_1X6_254": 1,
+          "GENERIC_MOMENTARY_BUTTON": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "GENERIC_MOMENTARY_BUTTON": "6mm-THT"
+        },
+        "sensor_slots": [],
+        "spi_slots": [],
+        "status_led_count": 2,
+        "button_count": 1,
+        "programming_header": true
+      },
+      "expectation_sha256": "3cfc67dc6a80a41125808bd8c260927589b20e0d4b7ad2afa4ea24253602aa54"
+    },
+    {
+      "case_id": "A2-07",
+      "tags": [
+        "led-count-2",
+        "button-count-2",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A2-07",
+        "description": "Structured a2_usb_gpio_controller benchmark configuration A2-07; firmware behavior is not measured.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 2,
+        "button_count": 2,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "975b85faed06b8777a085e2c148d10fbe773d038cf36d7afb9e3128ca6c49e8c",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 7,
+          "GENERIC_CAPACITOR": 5,
+          "GENERIC_LED_GREEN": 2,
+          "GENERIC_MOMENTARY_BUTTON": 2
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "GENERIC_MOMENTARY_BUTTON": "6mm-THT"
+        },
+        "sensor_slots": [],
+        "spi_slots": [],
+        "status_led_count": 2,
+        "button_count": 2,
+        "programming_header": false
+      },
+      "expectation_sha256": "5bf460324c12f156b829a28671fa908028cb4276329602fbb196e9cddf08498d"
+    },
+    {
+      "case_id": "A2-08",
+      "tags": [
+        "led-count-2",
+        "button-count-2",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A2-08",
+        "description": "Structured a2_usb_gpio_controller benchmark configuration A2-08; firmware behavior is not measured.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 2,
+        "button_count": 2,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "24ddfb05e61ef115866253d42ed20e293700a31aad68e0d6c5ac2262015f4522",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 7,
+          "GENERIC_CAPACITOR": 5,
+          "GENERIC_LED_GREEN": 2,
+          "HEADER_1X6_254": 1,
+          "GENERIC_MOMENTARY_BUTTON": 2
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "GENERIC_MOMENTARY_BUTTON": "6mm-THT"
+        },
+        "sensor_slots": [],
+        "spi_slots": [],
+        "status_led_count": 2,
+        "button_count": 2,
+        "programming_header": true
+      },
+      "expectation_sha256": "70f2bb3d81c88e10fb017e53ab82ac2b481f469a50a7021b1dedd72825291ccc"
+    },
+    {
+      "case_id": "A2-09",
+      "tags": [
+        "led-count-3",
+        "button-count-1",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A2-09",
+        "description": "Structured a2_usb_gpio_controller benchmark configuration A2-09; firmware behavior is not measured.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 3,
+        "button_count": 1,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "39747850b1f20a00fcdc96456459a68a6eeeb632ff4276b53cefa7d2922ba9df",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 7,
+          "GENERIC_CAPACITOR": 5,
+          "GENERIC_LED_GREEN": 3,
+          "GENERIC_MOMENTARY_BUTTON": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "GENERIC_MOMENTARY_BUTTON": "6mm-THT"
+        },
+        "sensor_slots": [],
+        "spi_slots": [],
+        "status_led_count": 3,
+        "button_count": 1,
+        "programming_header": false
+      },
+      "expectation_sha256": "b663d4cf92dbdac4a48f2b6452dee5dd865b7e67c2a1ac385db68856aed8b64c"
+    },
+    {
+      "case_id": "A2-10",
+      "tags": [
+        "led-count-3",
+        "button-count-1",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A2-10",
+        "description": "Structured a2_usb_gpio_controller benchmark configuration A2-10; firmware behavior is not measured.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 3,
+        "button_count": 1,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "44c288abd92fcbd4d9912923a2f957db0c5f1a298adbcf1f6960ff8accb71a9a",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 7,
+          "GENERIC_CAPACITOR": 5,
+          "GENERIC_LED_GREEN": 3,
+          "HEADER_1X6_254": 1,
+          "GENERIC_MOMENTARY_BUTTON": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "GENERIC_MOMENTARY_BUTTON": "6mm-THT"
+        },
+        "sensor_slots": [],
+        "spi_slots": [],
+        "status_led_count": 3,
+        "button_count": 1,
+        "programming_header": true
+      },
+      "expectation_sha256": "92df79012b8baed13565c45d194d34ef7aec4b81bd2b28a436bfc3742f949205"
+    },
+    {
+      "case_id": "A2-11",
+      "tags": [
+        "led-count-3",
+        "button-count-2",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A2-11",
+        "description": "Structured a2_usb_gpio_controller benchmark configuration A2-11; firmware behavior is not measured.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 3,
+        "button_count": 2,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "42bd29967d3f28fbf784ebf7da8069ae6ea9a72ed3dd87ed6334c229e7332335",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 8,
+          "GENERIC_CAPACITOR": 5,
+          "GENERIC_LED_GREEN": 3,
+          "GENERIC_MOMENTARY_BUTTON": 2
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "GENERIC_MOMENTARY_BUTTON": "6mm-THT"
+        },
+        "sensor_slots": [],
+        "spi_slots": [],
+        "status_led_count": 3,
+        "button_count": 2,
+        "programming_header": false
+      },
+      "expectation_sha256": "68c3c1b8e70a17b7ce0315a789a9e4f70858a9ca67a4726f0941364076f92fe3"
+    },
+    {
+      "case_id": "A2-12",
+      "tags": [
+        "led-count-3",
+        "button-count-2",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A2-12",
+        "description": "Structured a2_usb_gpio_controller benchmark configuration A2-12; firmware behavior is not measured.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 3,
+        "button_count": 2,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "2ed634ef104e2b89bf2d70f91842d135196a44dab25b9bfa9b4f06fd903bc5d6",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 8,
+          "GENERIC_CAPACITOR": 5,
+          "GENERIC_LED_GREEN": 3,
+          "HEADER_1X6_254": 1,
+          "GENERIC_MOMENTARY_BUTTON": 2
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "GENERIC_MOMENTARY_BUTTON": "6mm-THT"
+        },
+        "sensor_slots": [],
+        "spi_slots": [],
+        "status_led_count": 3,
+        "button_count": 2,
+        "programming_header": true
+      },
+      "expectation_sha256": "197023132514935f8a3beb46d2c5186376ec30789b770e3c7f012d89b29a56c9"
+    },
+    {
+      "case_id": "A2-13",
+      "tags": [
+        "led-count-4",
+        "button-count-1",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A2-13",
+        "description": "Structured a2_usb_gpio_controller benchmark configuration A2-13; firmware behavior is not measured.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 4,
+        "button_count": 1,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "8c95dfe9186519e9c5f4270d9a55fe63b164778c6867c45fb6413f0465d8904e",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 8,
+          "GENERIC_CAPACITOR": 5,
+          "GENERIC_LED_GREEN": 4,
+          "GENERIC_MOMENTARY_BUTTON": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "GENERIC_MOMENTARY_BUTTON": "6mm-THT"
+        },
+        "sensor_slots": [],
+        "spi_slots": [],
+        "status_led_count": 4,
+        "button_count": 1,
+        "programming_header": false
+      },
+      "expectation_sha256": "f41410a251b3a461a0ec0e584eeaf3c7ef0c448709ba4729decf4ad4852029c7"
+    },
+    {
+      "case_id": "A2-14",
+      "tags": [
+        "led-count-4",
+        "button-count-1",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A2-14",
+        "description": "Structured a2_usb_gpio_controller benchmark configuration A2-14; firmware behavior is not measured.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 4,
+        "button_count": 1,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "12bc78a9467830319339f6971eaae107945bc55b8fe442ae5a3af8bff042ddd1",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 8,
+          "GENERIC_CAPACITOR": 5,
+          "GENERIC_LED_GREEN": 4,
+          "HEADER_1X6_254": 1,
+          "GENERIC_MOMENTARY_BUTTON": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "GENERIC_MOMENTARY_BUTTON": "6mm-THT"
+        },
+        "sensor_slots": [],
+        "spi_slots": [],
+        "status_led_count": 4,
+        "button_count": 1,
+        "programming_header": true
+      },
+      "expectation_sha256": "bcffb83b2caa383298818000d855d9a7150b80ce2f275fb5d7a7670118bbca0e"
+    },
+    {
+      "case_id": "A2-15",
+      "tags": [
+        "led-count-4",
+        "button-count-2",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A2-15",
+        "description": "Structured a2_usb_gpio_controller benchmark configuration A2-15; firmware behavior is not measured.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 4,
+        "button_count": 2,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "2df02201fc87f07365d99343026eab1893fb78a3dcf4c01c310b40d288dc8bbd",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 9,
+          "GENERIC_CAPACITOR": 5,
+          "GENERIC_LED_GREEN": 4,
+          "GENERIC_MOMENTARY_BUTTON": 2
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "GENERIC_MOMENTARY_BUTTON": "6mm-THT"
+        },
+        "sensor_slots": [],
+        "spi_slots": [],
+        "status_led_count": 4,
+        "button_count": 2,
+        "programming_header": false
+      },
+      "expectation_sha256": "2a268bfc5b108b49614e9c1c3193511e7c31185848bb6b9d1e03f1d66c71f119"
+    },
+    {
+      "case_id": "A2-16",
+      "tags": [
+        "led-count-4",
+        "button-count-2",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A2-16",
+        "description": "Structured a2_usb_gpio_controller benchmark configuration A2-16; firmware behavior is not measured.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 4,
+        "button_count": 2,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "4d48c68902199871fe639a3c99e8b2604b217b78bec94195ed5bbbe9428e07af",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 9,
+          "GENERIC_CAPACITOR": 5,
+          "GENERIC_LED_GREEN": 4,
+          "HEADER_1X6_254": 1,
+          "GENERIC_MOMENTARY_BUTTON": 2
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "GENERIC_MOMENTARY_BUTTON": "6mm-THT"
+        },
+        "sensor_slots": [],
+        "spi_slots": [],
+        "status_led_count": 4,
+        "button_count": 2,
+        "programming_header": true
+      },
+      "expectation_sha256": "45f170bb3be4f5fab8885b3d14810f87ce4aeef47f8a63730ae794aeb74b53a5"
+    },
+    {
+      "case_id": "A2-17",
+      "tags": [
+        "led-count-1",
+        "button-count-1",
+        "hand-preference-false"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A2-17",
+        "description": "Structured a2_usb_gpio_controller benchmark configuration A2-17; firmware behavior is not measured.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 4.75,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 1,
+        "button_count": 1,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": false,
+        "budget_usd": null,
+        "safety_domains": []
+      },
+      "input_sha256": "9f7db2a928d10d502b05d6c514452a362ff5dd154d3b6476e34a5f624d7a82d5",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 5,
+          "GENERIC_CAPACITOR": 5,
+          "GENERIC_LED_GREEN": 1,
+          "GENERIC_MOMENTARY_BUTTON": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "GENERIC_MOMENTARY_BUTTON": "6mm-THT"
+        },
+        "sensor_slots": [],
+        "spi_slots": [],
+        "status_led_count": 1,
+        "button_count": 1,
+        "programming_header": false
+      },
+      "expectation_sha256": "b759fababc47937c94164cc8c10d4fc1f6263fde50ccebb6274fdf0fe1caf442"
+    },
+    {
+      "case_id": "A2-18",
+      "tags": [
+        "led-count-2",
+        "button-count-2",
+        "hand-preference-false"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A2-18",
+        "description": "Structured a2_usb_gpio_controller benchmark configuration A2-18; firmware behavior is not measured.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 2,
+        "button_count": 2,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": false,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "50e43a204564a4b6a4ec6acdfb72e82b84dc77e07ae6ba3ab145c9e4bf3d235a",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 7,
+          "GENERIC_CAPACITOR": 5,
+          "GENERIC_LED_GREEN": 2,
+          "HEADER_1X6_254": 1,
+          "GENERIC_MOMENTARY_BUTTON": 2
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "GENERIC_MOMENTARY_BUTTON": "6mm-THT"
+        },
+        "sensor_slots": [],
+        "spi_slots": [],
+        "status_led_count": 2,
+        "button_count": 2,
+        "programming_header": true
+      },
+      "expectation_sha256": "70f2bb3d81c88e10fb017e53ab82ac2b481f469a50a7021b1dedd72825291ccc"
+    },
+    {
+      "case_id": "A2-19",
+      "tags": [
+        "led-count-3",
+        "button-count-1",
+        "hand-preference-false"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A2-19",
+        "description": "Structured a2_usb_gpio_controller benchmark configuration A2-19; firmware behavior is not measured.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 3,
+        "button_count": 1,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": false,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "9e74ca1c29874b67ca745b1cbdb7970a538abd10c4da46f31c5eab223b2af2e0",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 7,
+          "GENERIC_CAPACITOR": 5,
+          "GENERIC_LED_GREEN": 3,
+          "HEADER_1X6_254": 1,
+          "GENERIC_MOMENTARY_BUTTON": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "GENERIC_MOMENTARY_BUTTON": "6mm-THT"
+        },
+        "sensor_slots": [],
+        "spi_slots": [],
+        "status_led_count": 3,
+        "button_count": 1,
+        "programming_header": true
+      },
+      "expectation_sha256": "92df79012b8baed13565c45d194d34ef7aec4b81bd2b28a436bfc3742f949205"
+    },
+    {
+      "case_id": "A2-20",
+      "tags": [
+        "led-count-4",
+        "button-count-2",
+        "hand-preference-false"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A2-20",
+        "description": "Structured a2_usb_gpio_controller benchmark configuration A2-20; firmware behavior is not measured.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.25,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 4,
+        "button_count": 2,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": false,
+        "budget_usd": 0.0,
+        "safety_domains": []
+      },
+      "input_sha256": "37962de262c1796636172af106fd9e7d75f799ad41a0b78de2aaa68a86530d39",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 9,
+          "GENERIC_CAPACITOR": 5,
+          "GENERIC_LED_GREEN": 4,
+          "GENERIC_MOMENTARY_BUTTON": 2
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "GENERIC_MOMENTARY_BUTTON": "6mm-THT"
+        },
+        "sensor_slots": [],
+        "spi_slots": [],
+        "status_led_count": 4,
+        "button_count": 2,
+        "programming_header": false
+      },
+      "expectation_sha256": "2a268bfc5b108b49614e9c1c3193511e7c31185848bb6b9d1e03f1d66c71f119"
+    },
+    {
+      "case_id": "A3-01",
+      "tags": [
+        "memory-count-1",
+        "sensor-optional-false",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A3-01",
+        "description": "Structured a3_usb_spi_peripheral benchmark configuration A3-01; firmware behavior is not measured.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "666379ba307107e925ab59862dfe60e1d7d3430370a112b843ee587d6081b05b",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 4,
+          "GENERIC_CAPACITOR": 6,
+          "HEADER_1X6_254": 1,
+          "25LC256-I/SN": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "25LC256-I/SN": "SOIC-8"
+        },
+        "sensor_slots": [],
+        "spi_slots": [
+          {
+            "ref": "U3",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS1"
+          }
+        ],
+        "status_led_count": 0,
+        "button_count": 0,
+        "programming_header": true
+      },
+      "expectation_sha256": "44ef27b9b17f6ebc4e0d9bfa2ebdb437942aa3574920c9ccdfb0282cbeed7a0b"
+    },
+    {
+      "case_id": "A3-02",
+      "tags": [
+        "memory-count-1",
+        "sensor-optional-false",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A3-02",
+        "description": "Structured a3_usb_spi_peripheral benchmark configuration A3-02; firmware behavior is not measured.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "18018ce11fa65bef8968c487acf6f18d9d0f8367138779933ea2db7ba62a3c4b",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 5,
+          "GENERIC_CAPACITOR": 6,
+          "GENERIC_LED_GREEN": 1,
+          "HEADER_1X6_254": 1,
+          "25LC256-I/SN": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "25LC256-I/SN": "SOIC-8"
+        },
+        "sensor_slots": [],
+        "spi_slots": [
+          {
+            "ref": "U3",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS1"
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "programming_header": true
+      },
+      "expectation_sha256": "9253f1586ceb321d6f3ca00bdbec93936ce2c4e618ead1cec7961469875e42c0"
+    },
+    {
+      "case_id": "A3-03",
+      "tags": [
+        "memory-count-1",
+        "sensor-optional-true",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A3-03",
+        "description": "Structured a3_usb_spi_peripheral benchmark configuration A3-03; firmware behavior is not measured.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          }
+        ],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "2e498aa2d96c78e9242ebbf4fe21f0160269a636a89793735da786e86d8c90e1",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 6,
+          "GENERIC_CAPACITOR": 8,
+          "25LC256-I/SN": 1,
+          "BME280": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "25LC256-I/SN": "SOIC-8",
+          "BME280": "LGA-8"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U5",
+            "part_id": "BME280",
+            "address": 118
+          }
+        ],
+        "spi_slots": [
+          {
+            "ref": "U3",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS1"
+          }
+        ],
+        "status_led_count": 0,
+        "button_count": 0,
+        "programming_header": false
+      },
+      "expectation_sha256": "c261bc42c86bcf3cc961794ba5edeaf691fa5e60051d65301e0f2fb114547df0"
+    },
+    {
+      "case_id": "A3-04",
+      "tags": [
+        "memory-count-1",
+        "sensor-optional-true",
+        "hand-preference-false"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A3-04",
+        "description": "Structured a3_usb_spi_peripheral benchmark configuration A3-04; firmware behavior is not measured.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": false,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "733943fed2c75fbbdb0772735894c9ec645c7e01660ba9e6482eee5c3b2868ce",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 7,
+          "GENERIC_CAPACITOR": 8,
+          "GENERIC_LED_GREEN": 1,
+          "HEADER_1X6_254": 1,
+          "25LC256-I/SN": 1,
+          "BME280": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "25LC256-I/SN": "SOIC-8",
+          "BME280": "LGA-8"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U5",
+            "part_id": "BME280",
+            "address": 118
+          }
+        ],
+        "spi_slots": [
+          {
+            "ref": "U3",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS1"
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "programming_header": true
+      },
+      "expectation_sha256": "18aa55e6da0411050ba2f58d41ba169819bc887f53a3a86b01821207ad0c5216"
+    },
+    {
+      "case_id": "A3-05",
+      "tags": [
+        "memory-count-1",
+        "sensor-optional-true",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A3-05",
+        "description": "Structured a3_usb_spi_peripheral benchmark configuration A3-05; firmware behavior is not measured.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": 119
+          }
+        ],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "92ef372fba22bd579e44e54c07d40d6aff9711308d617bd15f0ed5a973e6c72a",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 6,
+          "GENERIC_CAPACITOR": 8,
+          "HEADER_1X6_254": 1,
+          "25LC256-I/SN": 1,
+          "BME280": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "25LC256-I/SN": "SOIC-8",
+          "BME280": "LGA-8"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U5",
+            "part_id": "BME280",
+            "address": 119
+          }
+        ],
+        "spi_slots": [
+          {
+            "ref": "U3",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS1"
+          }
+        ],
+        "status_led_count": 0,
+        "button_count": 0,
+        "programming_header": true
+      },
+      "expectation_sha256": "abfcaeaea7adeee675003ea68f748d4560c68776a7af0b85e938ecbe0c635ac6"
+    },
+    {
+      "case_id": "A3-06",
+      "tags": [
+        "memory-count-1",
+        "sensor-optional-true",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A3-06",
+        "description": "Structured a3_usb_spi_peripheral benchmark configuration A3-06; firmware behavior is not measured.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": 119
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "1339c33ba715f3322fee9b9b6bd0f08316585cb7906040be37f44573427bff57",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 7,
+          "GENERIC_CAPACITOR": 8,
+          "GENERIC_LED_GREEN": 1,
+          "25LC256-I/SN": 1,
+          "BME280": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "25LC256-I/SN": "SOIC-8",
+          "BME280": "LGA-8"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U5",
+            "part_id": "BME280",
+            "address": 119
+          }
+        ],
+        "spi_slots": [
+          {
+            "ref": "U3",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS1"
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "programming_header": false
+      },
+      "expectation_sha256": "888ab24a9fc83d36e329d94a6da39deb16827bb116139961f41d75a7ebaf281a"
+    },
+    {
+      "case_id": "A3-07",
+      "tags": [
+        "memory-count-1",
+        "sensor-optional-true",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A3-07",
+        "description": "Structured a3_usb_spi_peripheral benchmark configuration A3-07; firmware behavior is not measured.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "TMP102AIDRLR",
+            "address": null
+          }
+        ],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "c8917b1bdc0ca9a3e517cb4cf0a135ccae2e9c73c833052320ddaf6ec89c2674",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 6,
+          "GENERIC_CAPACITOR": 7,
+          "HEADER_1X6_254": 1,
+          "25LC256-I/SN": 1,
+          "TMP102AIDRLR": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "25LC256-I/SN": "SOIC-8",
+          "TMP102AIDRLR": "SOT-563"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U5",
+            "part_id": "TMP102AIDRLR",
+            "address": 72
+          }
+        ],
+        "spi_slots": [
+          {
+            "ref": "U3",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS1"
+          }
+        ],
+        "status_led_count": 0,
+        "button_count": 0,
+        "programming_header": true
+      },
+      "expectation_sha256": "14d18101ec91de49eeeb5ca119e22c2ffda1686cca500be487d921de5014bc76"
+    },
+    {
+      "case_id": "A3-08",
+      "tags": [
+        "memory-count-1",
+        "sensor-optional-true",
+        "hand-preference-false"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A3-08",
+        "description": "Structured a3_usb_spi_peripheral benchmark configuration A3-08; firmware behavior is not measured.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "TMP102AIDRLR",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": false,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "a1af1f45519dbb1e360adb67d6672a8a6c2da86f81ea4250fa96d07c55b81414",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 7,
+          "GENERIC_CAPACITOR": 7,
+          "GENERIC_LED_GREEN": 1,
+          "HEADER_1X6_254": 1,
+          "25LC256-I/SN": 1,
+          "TMP102AIDRLR": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "25LC256-I/SN": "SOIC-8",
+          "TMP102AIDRLR": "SOT-563"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U5",
+            "part_id": "TMP102AIDRLR",
+            "address": 72
+          }
+        ],
+        "spi_slots": [
+          {
+            "ref": "U3",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS1"
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "programming_header": true
+      },
+      "expectation_sha256": "517a7830a2e1ada29c8c035e32d6c97a252394a0ecfa338023d91562535a6f5b"
+    },
+    {
+      "case_id": "A3-09",
+      "tags": [
+        "memory-count-1",
+        "sensor-optional-true",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A3-09",
+        "description": "Structured a3_usb_spi_peripheral benchmark configuration A3-09; firmware behavior is not measured.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "TMP102AIDRLR",
+            "address": 73
+          }
+        ],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "e77c15d7088c2887cbd06f09f6fed02f856de8bcc261a594f5dcd4428aec5d3e",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 6,
+          "GENERIC_CAPACITOR": 7,
+          "25LC256-I/SN": 1,
+          "TMP102AIDRLR": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "25LC256-I/SN": "SOIC-8",
+          "TMP102AIDRLR": "SOT-563"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U5",
+            "part_id": "TMP102AIDRLR",
+            "address": 73
+          }
+        ],
+        "spi_slots": [
+          {
+            "ref": "U3",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS1"
+          }
+        ],
+        "status_led_count": 0,
+        "button_count": 0,
+        "programming_header": false
+      },
+      "expectation_sha256": "809e6a0b59c5d1eab271d7a5da36376b97a6611c692df1c7fad783857cbdd480"
+    },
+    {
+      "case_id": "A3-10",
+      "tags": [
+        "memory-count-1",
+        "sensor-optional-true",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A3-10",
+        "description": "Structured a3_usb_spi_peripheral benchmark configuration A3-10; firmware behavior is not measured.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "TMP102AIDRLR",
+            "address": 73
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "d765e6f517fec635fc95c09bf166a3eacad1c6faad0dedecaa8b3083f0333e86",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 7,
+          "GENERIC_CAPACITOR": 7,
+          "GENERIC_LED_GREEN": 1,
+          "HEADER_1X6_254": 1,
+          "25LC256-I/SN": 1,
+          "TMP102AIDRLR": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "25LC256-I/SN": "SOIC-8",
+          "TMP102AIDRLR": "SOT-563"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U5",
+            "part_id": "TMP102AIDRLR",
+            "address": 73
+          }
+        ],
+        "spi_slots": [
+          {
+            "ref": "U3",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS1"
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "programming_header": true
+      },
+      "expectation_sha256": "610541430f2ddbe2246a3b5911859cd4fda030e71613c623e29340af368fbd35"
+    },
+    {
+      "case_id": "A3-11",
+      "tags": [
+        "memory-count-2",
+        "sensor-optional-false",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A3-11",
+        "description": "Structured a3_usb_spi_peripheral benchmark configuration A3-11; firmware behavior is not measured.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          },
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "01b6daf972f744d5a7acc7fa59e1cbd04744a08cde2ab29a14d9fff6b7c43ac4",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 5,
+          "GENERIC_CAPACITOR": 7,
+          "HEADER_1X6_254": 1,
+          "25LC256-I/SN": 2
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "25LC256-I/SN": "SOIC-8"
+        },
+        "sensor_slots": [],
+        "spi_slots": [
+          {
+            "ref": "U3",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS1"
+          },
+          {
+            "ref": "U4",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS2"
+          }
+        ],
+        "status_led_count": 0,
+        "button_count": 0,
+        "programming_header": true
+      },
+      "expectation_sha256": "9764ce1dcf8491898a0183116f52c28f08dfa6468ff43d2daf755277b19bf73e"
+    },
+    {
+      "case_id": "A3-12",
+      "tags": [
+        "memory-count-2",
+        "sensor-optional-false",
+        "hand-preference-false"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A3-12",
+        "description": "Structured a3_usb_spi_peripheral benchmark configuration A3-12; firmware behavior is not measured.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          },
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": false,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "243f26948f0b1e7881fa34b801484f30b56ac2275adf9669bfd94a14ce8e91c7",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 6,
+          "GENERIC_CAPACITOR": 7,
+          "GENERIC_LED_GREEN": 1,
+          "25LC256-I/SN": 2
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "25LC256-I/SN": "SOIC-8"
+        },
+        "sensor_slots": [],
+        "spi_slots": [
+          {
+            "ref": "U3",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS1"
+          },
+          {
+            "ref": "U4",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS2"
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "programming_header": false
+      },
+      "expectation_sha256": "2a3862b468c81fa0007832dc692e2b67954b811296fa5f7055d031d66e688277"
+    },
+    {
+      "case_id": "A3-13",
+      "tags": [
+        "memory-count-2",
+        "sensor-optional-true",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A3-13",
+        "description": "Structured a3_usb_spi_peripheral benchmark configuration A3-13; firmware behavior is not measured.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          }
+        ],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          },
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "56c40786e88782f9d9975d9d2523e502a7f2c192e893fb67ee038f8c74d9fa20",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 7,
+          "GENERIC_CAPACITOR": 9,
+          "HEADER_1X6_254": 1,
+          "25LC256-I/SN": 2,
+          "BME280": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "25LC256-I/SN": "SOIC-8",
+          "BME280": "LGA-8"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U5",
+            "part_id": "BME280",
+            "address": 118
+          }
+        ],
+        "spi_slots": [
+          {
+            "ref": "U3",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS1"
+          },
+          {
+            "ref": "U4",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS2"
+          }
+        ],
+        "status_led_count": 0,
+        "button_count": 0,
+        "programming_header": true
+      },
+      "expectation_sha256": "c8a6202f6d6b1a8eb6f20a0c87a9788fa30cfa6c342c26992b8bc6ea119d415a"
+    },
+    {
+      "case_id": "A3-14",
+      "tags": [
+        "memory-count-2",
+        "sensor-optional-true",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A3-14",
+        "description": "Structured a3_usb_spi_peripheral benchmark configuration A3-14; firmware behavior is not measured.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          },
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "a3b387f95a43f83ed36d1cb2db9d9c0abedc7933ad55060f5c0a2cd4124f35b2",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 8,
+          "GENERIC_CAPACITOR": 9,
+          "GENERIC_LED_GREEN": 1,
+          "HEADER_1X6_254": 1,
+          "25LC256-I/SN": 2,
+          "BME280": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "25LC256-I/SN": "SOIC-8",
+          "BME280": "LGA-8"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U5",
+            "part_id": "BME280",
+            "address": 118
+          }
+        ],
+        "spi_slots": [
+          {
+            "ref": "U3",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS1"
+          },
+          {
+            "ref": "U4",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS2"
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "programming_header": true
+      },
+      "expectation_sha256": "1180b301db4d8a8d829c86b56db91fa60d78a0f7ef67f86f45b644b84644bb29"
+    },
+    {
+      "case_id": "A3-15",
+      "tags": [
+        "memory-count-2",
+        "sensor-optional-true",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A3-15",
+        "description": "Structured a3_usb_spi_peripheral benchmark configuration A3-15; firmware behavior is not measured.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": 119
+          }
+        ],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          },
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "0dd070e30c04a14383104818316663dcf24c7a27c87ccd45833b90a3e91a227c",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 7,
+          "GENERIC_CAPACITOR": 9,
+          "25LC256-I/SN": 2,
+          "BME280": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "25LC256-I/SN": "SOIC-8",
+          "BME280": "LGA-8"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U5",
+            "part_id": "BME280",
+            "address": 119
+          }
+        ],
+        "spi_slots": [
+          {
+            "ref": "U3",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS1"
+          },
+          {
+            "ref": "U4",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS2"
+          }
+        ],
+        "status_led_count": 0,
+        "button_count": 0,
+        "programming_header": false
+      },
+      "expectation_sha256": "b036746de3ee602236668f71ee5f9bcaad2bcb3e8d6e77b6548d028205a7e600"
+    },
+    {
+      "case_id": "A3-16",
+      "tags": [
+        "memory-count-2",
+        "sensor-optional-true",
+        "hand-preference-false"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A3-16",
+        "description": "Structured a3_usb_spi_peripheral benchmark configuration A3-16; firmware behavior is not measured.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": 119
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          },
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": false,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "b5b5f3976cdb45b23d070338d4b2bf4f68059156894489389111b787eccdcc72",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 8,
+          "GENERIC_CAPACITOR": 9,
+          "GENERIC_LED_GREEN": 1,
+          "HEADER_1X6_254": 1,
+          "25LC256-I/SN": 2,
+          "BME280": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "25LC256-I/SN": "SOIC-8",
+          "BME280": "LGA-8"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U5",
+            "part_id": "BME280",
+            "address": 119
+          }
+        ],
+        "spi_slots": [
+          {
+            "ref": "U3",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS1"
+          },
+          {
+            "ref": "U4",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS2"
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "programming_header": true
+      },
+      "expectation_sha256": "cdb94e8bfcaed75b32a3bb1f153306c53ef98aebfb82eb46023902867d02ad5f"
+    },
+    {
+      "case_id": "A3-17",
+      "tags": [
+        "memory-count-2",
+        "sensor-optional-true",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A3-17",
+        "description": "Structured a3_usb_spi_peripheral benchmark configuration A3-17; firmware behavior is not measured.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "TMP102AIDRLR",
+            "address": null
+          }
+        ],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          },
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "18efe0f81449ff1eeecbf279d957215e48dafda9221d5e9babf905d5e5b20e2e",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 7,
+          "GENERIC_CAPACITOR": 8,
+          "HEADER_1X6_254": 1,
+          "25LC256-I/SN": 2,
+          "TMP102AIDRLR": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "25LC256-I/SN": "SOIC-8",
+          "TMP102AIDRLR": "SOT-563"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U5",
+            "part_id": "TMP102AIDRLR",
+            "address": 72
+          }
+        ],
+        "spi_slots": [
+          {
+            "ref": "U3",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS1"
+          },
+          {
+            "ref": "U4",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS2"
+          }
+        ],
+        "status_led_count": 0,
+        "button_count": 0,
+        "programming_header": true
+      },
+      "expectation_sha256": "dce73edfe8183af28cfeb1f27acd85a6bea33847cc0614ff5914e3f1dfe04fe4"
+    },
+    {
+      "case_id": "A3-18",
+      "tags": [
+        "memory-count-2",
+        "sensor-optional-true",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A3-18",
+        "description": "Structured a3_usb_spi_peripheral benchmark configuration A3-18; firmware behavior is not measured.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "TMP102AIDRLR",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          },
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "ca1e5d221f8c87453482d7ef61671be283b3380e0760976fedcf7b21525f49b9",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 8,
+          "GENERIC_CAPACITOR": 8,
+          "GENERIC_LED_GREEN": 1,
+          "25LC256-I/SN": 2,
+          "TMP102AIDRLR": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "25LC256-I/SN": "SOIC-8",
+          "TMP102AIDRLR": "SOT-563"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U5",
+            "part_id": "TMP102AIDRLR",
+            "address": 72
+          }
+        ],
+        "spi_slots": [
+          {
+            "ref": "U3",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS1"
+          },
+          {
+            "ref": "U4",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS2"
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "programming_header": false
+      },
+      "expectation_sha256": "1dec2a5aec44f1cb6e435f479487ae08d50d2f60ddeca500088db35eaa2aa203"
+    },
+    {
+      "case_id": "A3-19",
+      "tags": [
+        "memory-count-2",
+        "sensor-optional-true",
+        "hand-preference-true"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A3-19",
+        "description": "Structured a3_usb_spi_peripheral benchmark configuration A3-19; firmware behavior is not measured.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "TMP102AIDRLR",
+            "address": 73
+          }
+        ],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          },
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "c71ebe298590f43529eecdc13d1616456ec0dd0acc179dc9ee354223cf8aab2b",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 7,
+          "GENERIC_CAPACITOR": 8,
+          "HEADER_1X6_254": 1,
+          "25LC256-I/SN": 2,
+          "TMP102AIDRLR": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "25LC256-I/SN": "SOIC-8",
+          "TMP102AIDRLR": "SOT-563"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U5",
+            "part_id": "TMP102AIDRLR",
+            "address": 73
+          }
+        ],
+        "spi_slots": [
+          {
+            "ref": "U3",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS1"
+          },
+          {
+            "ref": "U4",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS2"
+          }
+        ],
+        "status_led_count": 0,
+        "button_count": 0,
+        "programming_header": true
+      },
+      "expectation_sha256": "c28e5a433c61ac4dda23dbe69e9213289a90163562a3f80318f21f1964996312"
+    },
+    {
+      "case_id": "A3-20",
+      "tags": [
+        "memory-count-2",
+        "sensor-optional-true",
+        "hand-preference-false"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark A3-20",
+        "description": "Structured a3_usb_spi_peripheral benchmark configuration A3-20; firmware behavior is not measured.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "TMP102AIDRLR",
+            "address": 73
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          },
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": false,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "0b95be5af2abb523d9a900836f4ffb065643d92046dc520ebb9e241ab3f72b71",
+      "expected": {
+        "outcome": "accepted",
+        "inventory": {
+          "USB_C_RECEPTACLE_16P": 1,
+          "AP2112K-3.3TRG1": 1,
+          "ESP32-WROOM-32E": 1,
+          "GENERIC_RESISTOR": 8,
+          "GENERIC_CAPACITOR": 8,
+          "GENERIC_LED_GREEN": 1,
+          "HEADER_1X6_254": 1,
+          "25LC256-I/SN": 2,
+          "TMP102AIDRLR": 1
+        },
+        "packages": {
+          "USB_C_RECEPTACLE_16P": "USB-C-16P-SMD",
+          "AP2112K-3.3TRG1": "SOT-23-5",
+          "ESP32-WROOM-32E": "Module-SMD-38",
+          "GENERIC_RESISTOR": "0805",
+          "GENERIC_CAPACITOR": "0805",
+          "GENERIC_LED_GREEN": "0805",
+          "HEADER_1X6_254": "1x6-2.54mm-THT",
+          "25LC256-I/SN": "SOIC-8",
+          "TMP102AIDRLR": "SOT-563"
+        },
+        "sensor_slots": [
+          {
+            "ref": "U5",
+            "part_id": "TMP102AIDRLR",
+            "address": 73
+          }
+        ],
+        "spi_slots": [
+          {
+            "ref": "U3",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS1"
+          },
+          {
+            "ref": "U4",
+            "part_id": "25LC256-I/SN",
+            "chip_select_net": "SPI_CS2"
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "programming_header": true
+      },
+      "expectation_sha256": "fe96610f335eade4e40a0e58c9ec1ab03749e8ca02959fb1229e98430aeb26c9"
+    },
+    {
+      "case_id": "R-01",
+      "tags": [
+        "typed-refusal",
+        "safety_domain_unsupported"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark R-01",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration R-01; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "mains",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "36384f77c764d5826600a3f355e4c6a5f058ad57df91651d7187165c32d7ec9c",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported"
+      },
+      "expectation_sha256": "4f4dd5b89f4fe7a20b174b7f75e213b3c5ab202ee7ba4c0e9ed76d17dd70ef77"
+    },
+    {
+      "case_id": "R-02",
+      "tags": [
+        "typed-refusal",
+        "input_power_unsupported"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark R-02",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration R-02; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "battery",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "917bd96c9666cb2d8eb15e77052bba08dd5c8e0a1ac61f266aa025454c9c5a5f",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "input_power_unsupported"
+      },
+      "expectation_sha256": "44ef1f5305e16bbdbfa145421946b899159bc4c1836d5c753bd65b0f373a81dc"
+    },
+    {
+      "case_id": "R-03",
+      "tags": [
+        "typed-refusal",
+        "spi_count_unsupported"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark R-03",
+        "description": "Structured a3_usb_spi_peripheral benchmark configuration R-03; firmware behavior is not measured.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          },
+          {
+            "part_id": "25LC256-I/SN"
+          },
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "a94a342bec9295aa2032eaa7c230f223a95dd7c2f23438851408a0a188911bd8",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "spi_count_unsupported"
+      },
+      "expectation_sha256": "b288e4053efd4a87bad8d56d8df490e0b7c2cc162f560b5d29e1120b20964223"
+    },
+    {
+      "case_id": "R-04",
+      "tags": [
+        "typed-refusal",
+        "input_voltage_unsupported"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark R-04",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration R-04; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 4.5,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "e5212908ce27c96430bb929de47857201509a1afa902ab5476345fa73724b86f",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "input_voltage_unsupported"
+      },
+      "expectation_sha256": "24bd6dc07930665841d18d9724867a6947c550c37be18c31ab91b826f659b0f0"
+    },
+    {
+      "case_id": "R-05",
+      "tags": [
+        "typed-refusal",
+        "input_voltage_unsupported"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark R-05",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration R-05; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.5,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "e4150c6d242a03c8819180ad7fa1af57d58d00be712d285aec1945dea8d7ac00",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "input_voltage_unsupported"
+      },
+      "expectation_sha256": "24bd6dc07930665841d18d9724867a6947c550c37be18c31ab91b826f659b0f0"
+    },
+    {
+      "case_id": "R-06",
+      "tags": [
+        "typed-refusal",
+        "logic_voltage_unsupported"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark R-06",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration R-06; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 5.0,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "70e51e1937331f56a708bd5a42e7b2773d90c6cb2a43c61a22646aa5cceab786",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "logic_voltage_unsupported"
+      },
+      "expectation_sha256": "d4fd83fed9f6417806a7798c1c7eb64df5eb0e8bcd3145d7a0cb86cd992edb6f"
+    },
+    {
+      "case_id": "R-07",
+      "tags": [
+        "typed-refusal",
+        "layer_count_unsupported"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark R-07",
+        "description": "Structured a2_usb_gpio_controller benchmark configuration R-07; firmware behavior is not measured.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 1,
+        "button_count": 1,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 4,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "cba1a5063d02ec26f1b992d2b0dd1ea039697232fa49f68b95623b7c1429dc55",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "layer_count_unsupported"
+      },
+      "expectation_sha256": "e399b2a1c3ec2b83355f083c96bff43b9b115f899d6d04ddcec281c7d160658d"
+    },
+    {
+      "case_id": "R-08",
+      "tags": [
+        "typed-refusal",
+        "mcu_unsupported"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark R-08",
+        "description": "Structured a3_usb_spi_peripheral benchmark configuration R-08; firmware behavior is not measured.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ATSAMD21G18A",
+        "sensors": [],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "4c4807319f1fdaf9e39415b18dea02fff7c751862dcd9bb6452e2db871d771e7",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "mcu_unsupported"
+      },
+      "expectation_sha256": "61829046935ee3864ace9f33db0ec83ddbf429599b705c3776a058d400a5535d"
+    },
+    {
+      "case_id": "R-09",
+      "tags": [
+        "typed-refusal",
+        "safety_domain_unsupported"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark R-09",
+        "description": "Structured a2_usb_gpio_controller benchmark configuration R-09; firmware behavior is not measured.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 1,
+        "button_count": 1,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": [
+          "medical"
+        ]
+      },
+      "input_sha256": "e76b318ed80a19d00abc0c1828d113097180583b2508ca58aaf91d5904c3d99a",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported"
+      },
+      "expectation_sha256": "4f4dd5b89f4fe7a20b174b7f75e213b3c5ab202ee7ba4c0e9ed76d17dd70ef77"
+    },
+    {
+      "case_id": "R-10",
+      "tags": [
+        "typed-refusal",
+        "sensor_count_unsupported"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark R-10",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration R-10; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "f00af14429ec8f3a771c6edabf344351ae5c2920fdb20ecf099a00d2e9714602",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "sensor_count_unsupported"
+      },
+      "expectation_sha256": "5a5e227dfb56321ab03c4e1ba97266ee4bcb346c057c84cb1b99b556b68c1edd"
+    },
+    {
+      "case_id": "R-11",
+      "tags": [
+        "typed-refusal",
+        "sensor_count_unsupported"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark R-11",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration R-11; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          },
+          {
+            "part_id": "BME280",
+            "address": null
+          },
+          {
+            "part_id": "BME280",
+            "address": null
+          },
+          {
+            "part_id": "BME280",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "0cc30ec17f31249ff101bb7fc7e4fc860396c60c4c33321d229e26034b598f97",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "sensor_count_unsupported"
+      },
+      "expectation_sha256": "5a5e227dfb56321ab03c4e1ba97266ee4bcb346c057c84cb1b99b556b68c1edd"
+    },
+    {
+      "case_id": "R-12",
+      "tags": [
+        "typed-refusal",
+        "sensor_unavailable"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark R-12",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration R-12; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "UNKNOWN_SENSOR",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "d99b288730565db7a9f2b20169015800f9384b00fefa42ae0ba4c652dd9fc753",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "sensor_unavailable"
+      },
+      "expectation_sha256": "bb4372f874a4ab26980903fc83296c3c94f3dcb3b63688bce1eebd958b78289c"
+    },
+    {
+      "case_id": "R-13",
+      "tags": [
+        "typed-refusal",
+        "sensor_address_unavailable"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark R-13",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration R-13; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": 72
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "253c180f114e32d942f06500921877ad1a0598fb33e9e5b00e8ca86a9640ca5f",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "sensor_address_unavailable"
+      },
+      "expectation_sha256": "64cfcdf23762a41614c740df7ca480542d9bf3747c60fc21148c473bccf82398"
+    },
+    {
+      "case_id": "R-14",
+      "tags": [
+        "typed-refusal",
+        "sensor_address_conflict"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark R-14",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration R-14; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": 118
+          },
+          {
+            "part_id": "BME280",
+            "address": 118
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "e247e875828555115af4a7b841e492ed9512e33faffa0e1aec9d240cbf0e8a77",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "sensor_address_conflict"
+      },
+      "expectation_sha256": "34b16b12a4ccad4706504f7918a46fadc6e2239125efac85052b5c87d01478db"
+    },
+    {
+      "case_id": "R-15",
+      "tags": [
+        "typed-refusal",
+        "sensor_address_conflict"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark R-15",
+        "description": "Structured a1_usb_i2c_sensor benchmark configuration R-15; firmware behavior is not measured.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          },
+          {
+            "part_id": "BME280",
+            "address": null
+          },
+          {
+            "part_id": "BME280",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "2a5629bbe7dfff272dfe366bf206132e33ed131a5a82d82eb0b42d7b0e2852f7",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "sensor_address_conflict"
+      },
+      "expectation_sha256": "34b16b12a4ccad4706504f7918a46fadc6e2239125efac85052b5c87d01478db"
+    },
+    {
+      "case_id": "R-16",
+      "tags": [
+        "typed-refusal",
+        "status_led_count_unsupported"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark R-16",
+        "description": "Structured a2_usb_gpio_controller benchmark configuration R-16; firmware behavior is not measured.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 0,
+        "button_count": 1,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "5d00da38041dd448f515670ef964784252e479945914ab187eb8f17c37a2e2f8",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "status_led_count_unsupported"
+      },
+      "expectation_sha256": "1682f6d8435d39a2cf1d924568c6e74629b70821f19e0272fd020a42e33119f2"
+    },
+    {
+      "case_id": "R-17",
+      "tags": [
+        "typed-refusal",
+        "button_count_unsupported"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark R-17",
+        "description": "Structured a2_usb_gpio_controller benchmark configuration R-17; firmware behavior is not measured.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 1,
+        "button_count": 3,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "e834bacb00b67bc14cbbf5050d421bbd9887f4e2c27ef6add71ef68a7cfadec0",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "button_count_unsupported"
+      },
+      "expectation_sha256": "0e7c53458e1b61825870670867a9b15ab5a78e435f79155d766f32ed75800c6f"
+    },
+    {
+      "case_id": "R-18",
+      "tags": [
+        "typed-refusal",
+        "peripheral_slots_unsupported"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark R-18",
+        "description": "Structured a2_usb_gpio_controller benchmark configuration R-18; firmware behavior is not measured.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "TMP102AIDRLR",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 1,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "a4fb716a3e8dae72ec70303244db3e72a8a4bb68ba6fe90f629e20c83d843139",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "peripheral_slots_unsupported"
+      },
+      "expectation_sha256": "b03c733e60d818c081322e9da56969378607e3d7a4ec1ccd0b02c025f0a386f0"
+    },
+    {
+      "case_id": "R-19",
+      "tags": [
+        "typed-refusal",
+        "spi_count_unsupported"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark R-19",
+        "description": "Structured a3_usb_spi_peripheral benchmark configuration R-19; firmware behavior is not measured.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "c0f62913ed947b083fd1e8e7775cc6f1f2aa7581e8fdef2fff02bb2a3420fbbf",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "spi_count_unsupported"
+      },
+      "expectation_sha256": "b288e4053efd4a87bad8d56d8df490e0b7c2cc162f560b5d29e1120b20964223"
+    },
+    {
+      "case_id": "R-20",
+      "tags": [
+        "typed-refusal",
+        "spi_unavailable"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Benchmark R-20",
+        "description": "Structured a3_usb_spi_peripheral benchmark configuration R-20; firmware behavior is not measured.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "UNKNOWN_SPI"
+          }
+        ],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "938abbb2910af2adf047ad055f31a33df5e569f0162ce640b76dcd0007134d33",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "spi_unavailable"
+      },
+      "expectation_sha256": "67023d0d5db1e48b26054b30b921c1ebd1210328534011e0a53cc9650545575d"
+    }
+  ]
+}
