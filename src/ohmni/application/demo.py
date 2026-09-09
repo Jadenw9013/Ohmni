@@ -42,6 +42,20 @@ class RoutingIncompleteError(RuntimeError):
     """Typed boundary: a partial routing plan cannot become a released board."""
 
 
+class EdaToolFailedError(RuntimeError):
+    """The external checker could not complete; no circuit verdict is inferred."""
+
+
+def require_eda_check(report,label):
+    """Separate native/tool failure from a completed check finding violations."""
+    if report.status.value in {"error","unavailable"} or (
+        getattr(report.tool_status,"value",None)=="failed" and report.status.value!="fail"
+    ):
+        raise EdaToolFailedError(f"KiCad {label} could not complete; local diagnostics were retained")
+    if report.status.value not in {"pass","pass_with_warnings"}:
+        raise RuntimeError(f"KiCad {label} checks did not pass")
+
+
 def require_demo_request(value: object) -> str:
     """Return the one scripted request or reject without interpreting caller text."""
     if not isinstance(value, str) or value != DEMO_REQUEST:
@@ -208,6 +222,9 @@ class DemoPipeline:
         design = DesignOrchestrator(flawed_logger_provider(), catalog).design(
             request, output=destination / "golden.kicad_sch", run_eda=True,
         )
+        if design.erc is not None:
+            (destination / "erc-report.json").write_text(design.erc.model_dump_json(indent=2),encoding="utf-8")
+            require_eda_check(design.erc,"ERC")
         if not design.final_circuit or not design.artifact or not design.erc:
             raise RuntimeError(f"design pipeline failed: {[issue.message for issue in design.issues]}")
         self._progress("repair", "Found an electrical problem and fixed it", "PASS", 25,
@@ -217,7 +234,8 @@ class DemoPipeline:
         return self.finish_design(destination, request, design, catalog, board)
 
     def finish_design(self, destination, request, design, catalog, board, *, scripted=True,
-                      routing_time_budget_seconds=PRODUCT_ROUTING_TIME_BUDGET_SECONDS):
+                      routing_time_budget_seconds=PRODUCT_ROUTING_TIME_BUDGET_SECONDS,
+                      placement_request=None,confirmed_brief=None):
         """Compile and verify one supplied design; shared by demo and project runs."""
         if (isinstance(routing_time_budget_seconds, bool)
                 or not isinstance(routing_time_budget_seconds, (int, float))
@@ -262,6 +280,8 @@ class DemoPipeline:
                        f"A different checker confirmed all {plan.statistics.required_connections} "
                        "connections actually join up.")
         drc = KiCadCliAdapter().run_drc(routed)
+        (destination / "drc-report.json").write_text(drc.model_dump_json(indent=2),encoding="utf-8")
+        require_eda_check(drc,"DRC")
         if drc.findings or drc.unconnected_items or drc.status.value not in {"pass", "pass_with_warnings"}:
             raise RuntimeError("KiCad DRC did not close cleanly")
         self._progress("drc", "KiCad checked the finished board", "PASS", 82,
@@ -275,7 +295,7 @@ class DemoPipeline:
                        "This profile is synthetic; a fabricator must confirm its actual capabilities.")
         bom = generate_bom(circuit, catalog)
         costs = calculate_cost(bom, synthetic_fixture_supplier(bom), 1)
-        assembly = classify_assembly(bom)
+        assembly = classify_assembly(bom,catalog=catalog)
         package = KiCadFabricationExporter().export(
             routed, drc, manufacturing, profile, destination / "fabrication",
         )
@@ -285,7 +305,8 @@ class DemoPipeline:
             request=request, design=design, catalog=catalog, board=board, placed=placed,
             plan=plan, route_report=route_report, routed=routed, drc=drc,
             manufacturing=manufacturing, bom=bom, costs=costs, assembly=assembly,
-            package=package, scripted=scripted,
+            package=package, scripted=scripted,placement_request=placement_request,
+            confirmed_brief=confirmed_brief,
         )
 
 
@@ -293,25 +314,25 @@ def _status(value: bool, warning: bool = False) -> str:
     return "PASS_WITH_WARNINGS" if value and warning else "PASS" if value else "FAIL"
 
 
-def _evidence_rows(catalog) -> list[dict[str, object]]:
-    sensor = catalog.require("BME280")
+def _evidence_rows(catalog,circuit=None) -> list[dict[str, object]]:
+    part_ids=sorted({part.part_id for part in circuit.components}) if circuit is not None else ["BME280"]
     rows: list[dict[str, object]] = []
-    for rail in sensor.supply_rails:
-        for label, quantity in (
-            ("recommended operating minimum", rail.operating.minimum),
-            ("recommended operating maximum", rail.operating.maximum),
-            ("absolute maximum", rail.absolute_max),
-        ):
-            evidence = rail.evidence[0] if rail.evidence else None
-            rows.append({
-                "component": "BME280", "claim": f"{rail.name} {label}",
-                "value": quantity.engineering() if quantity else "UNKNOWN",
-                "status": evidence.status.value.upper() if evidence else "UNKNOWN",
-                "source": evidence.source_id if evidence else None,
-                "page": evidence.page if evidence else None,
-                "snippet": evidence.snippet if evidence else None,
-                "limitation": "Seed catalog citation; machine re-verification status is shown truthfully.",
-            })
+    for part_id in part_ids:
+        spec=catalog.require(part_id)
+        claims=[(f"{rail.name} {label}",quantity.engineering() if quantity else "UNKNOWN",rail.evidence)
+                for rail in spec.supply_rails for label,quantity in (
+                    ("recommended operating minimum",rail.operating.minimum),
+                    ("recommended operating maximum",rail.operating.maximum),("absolute maximum",rail.absolute_max))]
+        if not claims:
+            claims=[("Catalog component record",spec.description,spec.evidence)]
+        for claim,value,evidences in claims:
+            evidence=evidences[0] if evidences else None
+            rows.append({"component":part_id,"claim":claim,"value":value,
+                         "status":evidence.status.value.upper() if evidence else "UNKNOWN",
+                         "source":evidence.source_id if evidence else None,
+                         "page":evidence.page if evidence else None,
+                         "snippet":evidence.snippet if evidence else None,
+                         "limitation":"Catalog citation; evidence status is retained without claiming new datasheet ingestion."})
     return rows
 
 
@@ -328,6 +349,10 @@ def project_demo_report(**values) -> DemoReport:
     routed=_require_pcb_projection_lineage(board,plan,route_report,routed)
     requirements=[statement.model_dump(mode="json") for statement in design.requirements.provenance]
     first,last=design.semantic_attempts[0],design.semantic_attempts[-1]
+    if not scripted and values.get("confirmed_brief") is not None:
+        from .project_requirements import project_requirement_results
+        requirements=project_requirement_results(values["confirmed_brief"],design.requirements,
+            design.final_circuit,last,board,catalog)
     blocking=[finding for finding in first.findings if finding.severity.value in {"critical","error"}]
     repair=design.repairs[0] if design.repairs else None
     event_groups = [
@@ -355,7 +380,7 @@ def project_demo_report(**values) -> DemoReport:
                 "finding_ids": event.related_finding_ids,
                 "circuit_hash": event.circuit_content_hash,
             })
-    evidence=_evidence_rows(catalog)
+    evidence=_evidence_rows(catalog,None if scripted else design.final_circuit)
     ladder=[
         {"stage":"Requirements","status":"PASS","detail":f"{len(requirements)} provenance-labeled statements"},
         {"stage":"Datasheet evidence","status":"PASS_WITH_WARNINGS","detail":"Electrical claims retain catalog/datasheet provenance; seed citations are not overstated"},
@@ -378,11 +403,12 @@ def project_demo_report(**values) -> DemoReport:
     experience=project_product_experience(
         design=design,catalog=catalog,board=board,routed=routed,route_report=route_report,
         drc=drc,manufacturing=manufacturing,bom=bom,costs=costs,assembly=assembly,package=package,
+        placement_request=values.get("placement_request"),
     )
     return DemoReport(
         mode="deterministic_scripted_demo" if scripted else "bounded_synthesis",
         experience=experience,
-        project={"name":design.requirements.requirements.project_name,"request":request,"supported_fixture":"ESP32 + BME280 environmental logger","status":release_status.value.upper()},
+        project={"name":design.requirements.requirements.project_name,"request":request,"supported_fixture":"ESP32 + BME280 environmental logger" if scripted else "Bounded USB ESP32 project","status":release_status.value.upper()},
         requirements=requirements,evidence=evidence,
         architecture=[block.model_dump(mode="json") for block in design.architecture.blocks],
         failure_and_repair=({"status":"REPAIRED","rule":"PB-PWR-001","original":"BME280 VDD and VDDIO connected to 5 V VBUS","operating_range":"1.71 V to 3.6 V","findings":[{"severity":f.severity.value.upper(),"title":f.title,"description":f.description} for f in blocking if f.rule_id=="PB-PWR-001"],"operations":[op.model_dump(mode="json") for op in repair.patch.operations],"result":"Both sensor supply pins moved to 3V3; PB-PWR-001 passed after deterministic re-verification."} if repair else {"status":"NOT_NEEDED","findings":[],"operations":[],"result":"The derived circuit needed no electrical repair."}),
@@ -395,5 +421,5 @@ def project_demo_report(**values) -> DemoReport:
         economics={"scenario_boards":1,"pricing_coverage":costs.pricing_coverage,"known_consumption_cost":str(costs.known_consumption_cost),"known_purchase_requirement":str(costs.known_purchase_requirement),"fabrication":costs.fabrication.value.upper(),"shipping":costs.shipping.value.upper(),"tooling":costs.tooling.value.upper(),"pricing_source":"SYNTHETIC FIXTURE - NOT LIVE SUPPLIER DATA"},
         assembly={"hand_solder_requirement_satisfied":assembly.hand_solder_requirement_satisfied,"risks":[risk.model_dump(mode="json") for risk in assembly.risks],"limitations":assembly.limitations},
         release={"status":release_status.value.upper(),"package_fingerprint":package.package_fingerprint,"pcb_fingerprint":package.source_pcb_fingerprint,"current":release_current,"files":[file.model_dump(mode="json") for file in package.files],"manifest":package.manifest.model_dump(mode="json")},
-        limitations=[("Supported deterministic demo: ESP32/BME280 logger, not arbitrary hardware." if scripted else "Bounded USB ESP32/BME280 synthesis; only the offered options are supported. Placement is generated from authored blocks and geometric constraints, not guaranteed globally optimal."),"Not simulation verified.","Not thermal, EMC, RF, or signal-integrity verified.","Not bench verified.","Manufacturing profile is synthetic and requires human review.","No guarantee of successful fabrication or assembly."],
+        limitations=[("Supported deterministic demo: ESP32/BME280 logger, not arbitrary hardware." if scripted else "Bounded USB ESP32 synthesis for the confirmed sensor, GPIO, or SPI family. Placement is generated from authored blocks and geometric constraints, not guaranteed globally optimal."),"Firmware is not included; static wiring does not prove runtime behavior.","Not simulation verified.","Not thermal, EMC, RF, or signal-integrity verified.","Not bench verified.","Manufacturing profile and prices are synthetic and require human review.","No guarantee of successful fabrication or assembly."],
     )

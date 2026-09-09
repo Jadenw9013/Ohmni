@@ -58,14 +58,16 @@ def test_the_entry_screen_identifies_the_bounded_project_and_saved_reference_sco
     scope = re.search(r'<[^>]+id="scope-note"[^>]*>(.*?)</[^>]+>', html, re.DOTALL)
     assert scope, "the entry screen needs its visible scope disclosure"
     text = re.sub(r"<[^>]+>", " ", scope.group(1)).lower()
-    for boundary in ("supported", "usb-powered", "esp32", "bme280", "selected configuration"):
+    for boundary in ("supported", "usb-powered", "esp32", "sensors", "buttons", "lights", "spi", "configuration"):
         assert boundary in text
     assert "actual checks" in text
     assert "assembly, programming, and hardware testing come next" in text
     tag, action = page.by_id("create-project")
     assert tag == "button" and action.get("type") == "button"
     assert "disabled" not in action
-    assert "status light and programming connections" in html.lower()
+    assert "measure your space" in html.lower()
+    assert "buttons &amp; lights" in html.lower()
+    assert "store data" in html.lower()
     assert re.search(r'class="reference-provenance">Saved reference<', html)
     assert "Or run the fixed reference example" in html
 

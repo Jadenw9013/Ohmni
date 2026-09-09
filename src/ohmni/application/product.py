@@ -21,6 +21,7 @@ from enum import StrEnum
 
 from pydantic import BaseModel, Field
 
+from ..bom.models import AssemblyDifficulty
 from ..domain.circuit import CircuitIR, NetKind
 from ..domain.component import ComponentCategory, Interface, PinRole
 from ..domain.verification import RuleCategory, RuleOutcome, VerificationReport
@@ -411,6 +412,19 @@ class ProductExperience(BaseModel):
 # --------------------------------------------------------------------------
 
 _BRIEF_LABELS = {
+    "project_name": "Project name",
+    "archetype": "What your board does",
+    "input_power": "Power connection",
+    "input_voltage_v": "Input voltage",
+    "logic_voltage_v": "Chip supply voltage",
+    "mcu_part_id": "Processor",
+    "sensor_count": "Number of sensors",
+    "status_led_count": "Indicator lights",
+    "button_count": "Buttons",
+    "spi_count": "Memory chips",
+    "include_programming_header": "Programming connector",
+    "hand_solderable_preferred": "Prefer assembly with a soldering iron",
+    "safety_domains": "Special operating conditions",
     "description": "What you described",
     "max_input_voltage": "Power coming in",
     "target_logic_voltage": "Voltage the chips run at",
@@ -423,17 +437,36 @@ _BRIEF_LABELS = {
 }
 
 
+def _brief_label(field: str) -> str:
+    slot = re.fullmatch(r"(sensors|spi_devices)\.(\d+)\.(part_id|address)", field)
+    if slot:
+        kind, index, attribute = slot.groups()
+        label = "Sensor" if kind == "sensors" else "Memory chip"
+        return f"{label} {int(index) + 1}" + (" bus address" if attribute == "address" else "")
+    return _BRIEF_LABELS.get(field, field.replace("_", " "))
+
+
 def _readable(field: str, value: str) -> str:
     """Present a requirement value in words. The value itself is unchanged."""
-    if field == "hand_solderable":
+    if field in {"hand_solderable", "hand_solderable_preferred", "include_programming_header"}:
         return "Yes" if value == "True" else "No"
     if field == "max_board_layers":
         return f"{value} layers"
     if field == "budget_usd":
-        return f"about ${float(value):.0f}"
+        try:
+            return f"${float(value):g}"
+        except ValueError:
+            return value
+    if field in {"input_voltage_v", "logic_voltage_v"}:
+        return f"{value} V"
+    if field == "archetype":
+        return {"a1_usb_i2c_sensor": "Measure your space", "a2_usb_gpio_controller": "Buttons and lights",
+                "a3_usb_spi_peripheral": "Store data"}.get(value, value)
+    if field == "input_power":
+        return {"usb_c_5v": "USB-C power, 5 V"}.get(value, value)
     if field == "interface":
         return {"i2c": "I2C (a two-wire sensor bus)",
-                "spi": "SPI (a faster four-wire bus)",
+                "spi": "SPI (clock, send, receive and chip-select connections)",
                 "uart": "UART (a serial connection for programming and logs)",
                 "usb_power_sink": "USB-C, used only to take in power"}.get(value, value.upper())
     return value
@@ -489,7 +522,7 @@ def build_brief(compiled, unsettled: list[str] | None = None) -> Brief:
         value = _readable(statement.field, statement.value)
         return BriefLine(
             field=statement.field,
-            label=_BRIEF_LABELS.get(statement.field, statement.field.replace("_", " ")),
+            label=_brief_label(statement.field),
             value=value, origin=statement.origin.value,
             grounding=_grounding(statement, value),
             source_text=statement.source_text,
@@ -651,7 +684,13 @@ def _purpose(circuit: CircuitIR, catalog, ref: str, grouping: ComponentGrouping)
     signal_nets = [net for net in nets if net.kind is NetKind.SIGNAL]
 
     if category in {ComponentCategory.MCU, ComponentCategory.MCU_MODULE}:
-        return "The processor. It runs your program, reads the sensor and drives the outputs."
+        return "The processor runs a program to coordinate the devices wired to it. The circuit provides connections; firmware supplies the behavior."
+    if category is ComponentCategory.MEMORY:
+        if Interface.SPI in instance.selected_interfaces:
+            return "Stores data for the processor. Its selected SPI interface uses a clock, send/receive lines and chip select; firmware must implement the device's commands."
+        return "Stores data. Its catalog describes the interface, capacity and retention requirements."
+    if category is ComponentCategory.SWITCH:
+        return "A button changes the connection between its terminals when pressed. The processor needs firmware to read the input and filter mechanical contact bounce."
     if category is ComponentCategory.SENSOR:
         # A bus resistor participates electrically but does not receive readings.
         # Require both documented I2C roles to reach the same processor before
@@ -739,11 +778,13 @@ def _purpose(circuit: CircuitIR, catalog, ref: str, grouping: ComponentGrouping)
 _ASSEMBLY_REASONS: dict[str, str] = {
     "easy": "Through-hole or large pads. Straightforward with a soldering iron.",
     "moderate": "Small surface-mount package. Fiddly by hand but doable.",
+    "difficult": "The recorded package is not suitable for the hand-soldering preference. "
+                 "Review its lead spacing and recommended assembly process.",
     "reflow_recommended": "Pads sit under the part where an iron cannot reach. "
                           "You will want hot air or a reflow plate.",
     "unsupported_for_hand_assembly": "Pads are entirely under the part. Not realistic to "
                                      "solder by hand.",
-    "unknown": "Ohmni does not recognise this package shape well enough to judge.",
+    "unknown": "Ohmni has insufficient package assembly information to judge suitability.",
 }
 
 
@@ -917,6 +958,23 @@ def _check_sections(groups: list[CheckGroup]) -> list[CheckSection]:
     return sections
 
 
+def _assembly_confidence(assembly) -> ConfidenceLine:
+    if assembly.hand_solder_requirement_satisfied:
+        status, detail = "PASS", "The selected packages meet the recorded hand-assembly criteria. "
+    elif any(risk.difficulty in {
+        AssemblyDifficulty.DIFFICULT,
+        AssemblyDifficulty.REFLOW_RECOMMENDED,
+        AssemblyDifficulty.UNSUPPORTED_FOR_HAND_ASSEMBLY,
+    } for risk in assembly.risks):
+        status, detail = "NEEDS_REVIEW", "Some selected packages need assembly methods beyond a soldering iron. "
+    else:
+        status, detail = "UNKNOWN", "Hand-assembly suitability is not established for every selected package. "
+    return ConfidenceLine(
+        label="Assembly by hand", status=status,
+        detail=detail + ("; ".join(assembly.limitations) or "Review package assembly requirements before building."),
+    )
+
+
 def _confidence(report: VerificationReport, erc, routed, route_report, drc,
                 manufacturing, costs, assembly) -> Confidence:
     checked = [
@@ -946,11 +1004,7 @@ def _confidence(report: VerificationReport, erc, routed, route_report, drc,
         ConfidenceLine(label="What it costs", status="SYNTHETIC",
                        detail=f"Prices are a fixture, not live supplier data. "
                               f"{costs.pricing_coverage:.0%} of lines have any price at all."),
-        ConfidenceLine(label="Assembly by hand", status="NEEDS_REVIEW"
-                       if not assembly.hand_solder_requirement_satisfied else "PASS",
-                       detail=(("The hand-soldering preference is not met by the selected packages. "
-                                if not assembly.hand_solder_requirement_satisfied else "")
-                               + ("; ".join(assembly.limitations) or "no recorded limitations"))),
+        _assembly_confidence(assembly),
         ConfidenceLine(label="The manufacturing profile", status="SYNTHETIC",
                        detail=f"{manufacturing.profile.display_name}. It is a stand-in, not a "
                               "real factory's published capabilities, and a person has to "
@@ -1156,9 +1210,31 @@ def _bring_up(design, circuit: CircuitIR, catalog, repair: RepairReplay) -> list
             rule_id="PB-I2C-003",
         ))
         steps.append(BringUpStep(
-            action="Read the sensor and sanity-check the numbers.",
+            action="Read each included sensor and sanity-check its numbers.",
             prediction=None,
             basis="Ohmni cannot predict what your room is like.",
+        ))
+
+    if len(leds) > 1:
+        steps.append(BringUpStep(
+            action="Test each indicator separately with appropriate firmware and measure its current.",
+            prediction=None,
+            basis="The board has multiple LED channels. Check each channel against its own circuit and resistor; a single aggregate current is not supplied.",
+            rule_id="PB-LED-001",
+        ))
+    if any(catalog.require(part.part_id).category is ComponentCategory.SWITCH for part in circuit.components):
+        steps.append(BringUpStep(
+            action="With input-reading firmware installed, test each button in its released and pressed states.",
+            prediction=None,
+            basis="The circuit includes button inputs. Firmware configuration, contact bounce and physical switches have not been tested.",
+        ))
+    if any(catalog.require(part.part_id).category is ComponentCategory.MEMORY and Interface.SPI in part.selected_interfaces
+           for part in circuit.components):
+        steps.append(BringUpStep(
+            action="On a reserved test address, write a known pattern to each memory device and read it back using suitable firmware.",
+            prediction=None,
+            basis="SPI topology is checked separately; commands, timing, stored contents and memory operation have not been exercised. Use a test location without valuable data.",
+            rule_id="PB-SPI-001",
         ))
 
     for topic in unsettled_topics(report):
@@ -1198,8 +1274,10 @@ def _tour(brief: Brief, systems: list[FunctionalSystem], flows: list[Flow],
     for flow in flows:
         if flow.flow_id == "ground":
             continue
-        system = {"power": SystemId.POWER, "sensor_data": SystemId.SENSE,
-                  "status_led": SystemId.IO, "programming": SystemId.IO}.get(flow.flow_id)
+        system = {"power": SystemId.POWER, "sensor_data": SystemId.SENSE, "spi_data": SystemId.SENSE,
+                  "status_led": SystemId.IO, "buttons": SystemId.IO, "programming": SystemId.IO}.get(flow.flow_id)
+        if flow.flow_id.startswith("led_"):
+            system = SystemId.IO
         steps.append(TourStep(
             step_id=f"flow-{flow.flow_id}", title=flow.label,
             narration=" ".join(stage.detail for stage in flow.stages[:2]),
@@ -1251,11 +1329,12 @@ def _tour(brief: Brief, systems: list[FunctionalSystem], flows: list[Flow],
 # --------------------------------------------------------------------------
 
 def project_product_experience(*, design, catalog, board, routed, route_report, drc,
-                               manufacturing, bom, costs, assembly, package) -> ProductExperience:
+                               manufacturing, bom, costs, assembly, package,
+                               placement_request=None) -> ProductExperience:
     """Assemble the product projection from already-verified subsystem reports."""
     circuit = design.final_circuit
     placements = {p.component_ref: (p.x_mm, p.y_mm) for p in board.placements}
-    groupings = group_components(circuit, catalog, placements)
+    groupings = group_components(circuit, catalog, placements, placement_request)
     by_ref = {g.component_ref: g for g in groupings}
     systems = build_systems(groupings)
     flows = build_flows(circuit, catalog, groupings)

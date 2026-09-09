@@ -7,6 +7,7 @@ import subprocess
 from pathlib import Path
 from typing import ClassVar, Protocol, runtime_checkable
 
+from ..adapters.process import describe_exit, run_tool
 from ..adapters.tools import find_kicad_cli
 from ..domain import EngineeringEvent, EventKind
 from ..eda.pcb_models import DrcReport, DrcStatus, PcbArtifact
@@ -39,8 +40,15 @@ class KiCadFabricationExporter:
         destination=destination.resolve();destination.mkdir(parents=True,exist_ok=True)
         commands=[[self.executable,"pcb","export","gerbers","--output",str(destination),"--layers","F.Cu,B.Cu,F.Mask,B.Mask,F.Silkscreen,B.Silkscreen,Edge.Cuts",str(pcb.path)],[self.executable,"pcb","export","drill","--output",str(destination),"--format","excellon","--excellon-units","mm",str(pcb.path)]]
         for command in commands:
-            result=subprocess.run(command,capture_output=True,text=True,check=False,shell=False,timeout=self.timeout_seconds)
-            if result.returncode:raise FabricationExportError(f"KiCad fabrication export failed: {result.stderr}")
+            try:
+                result = run_tool(command, timeout=self.timeout_seconds)
+            except (OSError, subprocess.SubprocessError) as exc:
+                raise FabricationExportError(f"KiCad fabrication export could not finish: {exc}") from exc
+            if result.returncode:
+                raise FabricationExportError(
+                    f"KiCad fabrication export failed ({describe_exit(result.returncode)}): "
+                    f"{result.stderr or result.stdout}"
+                )
         files=[]
         for path in sorted(destination.iterdir(),key=lambda p:p.name):
             if path.is_file() and path.name!="ohmni-fabrication-manifest.json":files.append(FabricationFile(relative_path=path.name,sha256=hashlib.sha256(path.read_bytes()).hexdigest(),size_bytes=path.stat().st_size,kind=_kind(path.name)))

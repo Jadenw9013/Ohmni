@@ -28,7 +28,7 @@
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 html { scroll-behavior: smooth; }
-body { margin: 0; color: var(--ink); background: var(--canvas); font: 17px/1.6 var(--sans); }
+body { margin: 0; color: var(--ink); background: var(--canvas); font: 18px/1.6 var(--sans); }
 button, input { font: inherit; }
 button, a, summary { -webkit-tap-highlight-color: transparent; }
 button { cursor: pointer; }
@@ -896,6 +896,11 @@ main { max-width: 1800px; padding: 0 32px; }
 
 /* Personal projects: an editable bench sheet with a separate teaching circuit. */
 .reference-demo-link { width: 100%; margin-top: 12px; font-size: 14px; }
+.starter-families { list-style: none; padding: 0; margin: 20px 0; }
+.starter-families li { padding: 13px 0; border-bottom: 1px solid var(--line); }
+.starter-families li:last-child { border: 0; }
+.starter-families strong { display: block; font-size: 20px; font-weight: 600; }
+.starter-families span { display: block; font-size: 16px; line-height: 1.6; color: var(--ink-soft); margin-top: 5px; }
 .saved-project-shelf { margin-top: 42px; padding-top: 30px; border-top: 1px solid var(--line); display: grid; grid-template-columns: minmax(220px, .85fr) minmax(0, 1.6fr); gap: 30px; }
 .saved-project-shelf h2 { font-size: 27px; line-height: 1.25; letter-spacing: -.6px; margin-bottom: 10px; }
 .saved-project-shelf p { color: var(--ink-soft); font-size: 16px; margin: 0; max-width: 48ch; }
@@ -906,101 +911,154 @@ main { max-width: 1800px; padding: 0 32px; }
 .saved-project small { font-size: 14px; color: var(--ink-soft); margin-top: 3px; }
 .saved-project:hover { border-color: var(--accent); }
 .project-empty { padding: 16px 0; color: var(--ink-soft); font-size: 15px; }
-.project-edit-layout { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(290px, 1fr); gap: 36px; align-items: start; }
-.project-editor { min-width: 0; padding: 30px; background: var(--paper); border: 1px solid var(--line); border-radius: 18px; }
-.project-editor-heading { display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 12px; margin-bottom: 23px; }
-.project-editor h2 { font-size: 27px; line-height: 1.2; letter-spacing: -.7px; margin-bottom: 9px; }
-.project-editor-heading p { font-size: 16px; color: var(--ink-soft); margin: 0; }
-.project-save-state { flex-shrink: 0; font-size: 13px; color: var(--ink-soft); border: 1px solid var(--line); border-radius: 5px; padding: 5px 8px; }
-.project-name-label { display: block; font-size: 16px; font-weight: 600; margin-bottom: 8px; }
-#project-name { width: 100%; background: var(--canvas); border: 1px solid var(--line-bright); border-radius: 8px; min-height: 50px; padding: 11px 14px; color: var(--ink); font-size: 18px; }
-.project-circuit-strip { display: flex; align-items: center; margin: 26px -4px 12px; }
-.project-circuit-strip > span { min-width: 0; flex: 1; font-weight: 600; font-size: 17px; text-align: center; color: var(--accent-deep); }
-.project-circuit-strip small { display: block; color: var(--ink-soft); font-size: 12px; font-weight: 400; line-height: 1.5; margin-top: 3px; }
-.project-circuit-strip i { width: 15px; height: 2px; background: var(--copper); flex-shrink: 0; }
-.project-envelope { font-size: 14px; line-height: 1.65; color: var(--ink-soft); margin: 0 0 30px; }
-.project-choice { border: 0; border-top: 1px solid var(--line); padding: 23px 0 25px; margin: 0; min-width: 0; }
-.project-choice legend { font-size: 20px; font-weight: 600; padding: 0 9px 0 0; letter-spacing: -.3px; }
-.project-choice > p { margin: -4px 0 15px; font-size: 15px; line-height: 1.65; color: var(--ink-soft); }
-.project-choice-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.project-choice-options label { display: flex; align-items: start; gap: 10px; padding: 15px 12px; cursor: pointer; border: 1px solid var(--line); border-radius: 8px; }
-.project-choice-options label:has(input:checked) { border-color: var(--accent); background: var(--lavender); }
-.project-choice-options input, .exercise-option input { accent-color: var(--accent); width: 17px; height: 17px; flex-shrink: 0; margin: 4px 0 0; }
-.project-choice-options strong { display: block; font-size: 15px; line-height: 1.45; font-weight: 600; }
-.project-choice-options small { display: block; font-size: 14px; line-height: 1.55; color: var(--ink-soft); margin-top: 7px; }
-.project-address { border-top: 1px solid var(--line); padding-top: 17px; margin: 0 0 25px; }
-.project-address summary { display: flex; align-items: center; justify-content: space-between; cursor: pointer; font-size: 16px; font-weight: 600; min-height: 38px; }
-.project-address summary span { color: var(--accent); font-weight: 500; }
-.project-address label { display: block; font-size: 15px; color: var(--ink-soft); margin: 12px 0; }
-.project-address select, .project-history select { display: block; width: 100%; font: inherit; font-size: 15px; color: var(--ink); background: var(--paper); border: 1px solid var(--line-bright); border-radius: 7px; padding: 11px; min-height: 45px; }
-.project-address p { font-size: 14px; color: var(--ink-soft); margin: 10px 0; }
-.project-editor-actions { display: flex; flex-wrap: wrap; gap: 10px; }
-.project-editor-actions button { flex: 1; min-height: 50px; white-space: normal; font-size: 16px; }
-.project-action-note { margin: 13px 0 0; color: var(--ink-soft); font-size: 14px; line-height: 1.65; }
-.project-history { border-top: 1px solid var(--line); margin-top: 28px; padding-top: 24px; }
-.project-history h3 { margin: 0 0 7px; font-size: 20px; }
-.project-history p { font-size: 14px; color: var(--ink-soft); }
-.project-history label { display: block; font-size: 14px; margin: 15px 0 7px; color: var(--ink-soft); }
-.revision-changes { margin-top: 15px; font-size: 15px; }
-.revision-changes p { margin-bottom: 7px; }
+/* Configurable family workbench: quiet controls around the physical board. */
+.family-workbench { min-width: 0; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+.project-editor-heading { display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; gap: 16px; margin-bottom: 25px; }
+.project-editor-heading h2 { font-size: 34px; line-height: 1.2; letter-spacing: -.7px; margin: 0 0 9px; }
+.project-editor-heading p { font-size: 18px; color: var(--ink-soft); margin: 0; }
+.project-save-state { font-size: 14px; color: var(--ink-soft); padding: 8px 0; }
+.family-picker { border: 0; border-bottom: 1px solid var(--line); padding: 0 0 28px; margin: 0 0 32px; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; min-width: 0; }
+.family-option { display: grid; grid-template-columns: 18px 34px minmax(0,1fr); gap: 12px; align-items: center; padding: 23px 16px; cursor: pointer; border-bottom: 3px solid transparent; border-radius: 10px 10px 0 0; min-height: 106px; }
+.family-option:has(input:checked) { background: var(--paper); border-bottom-color: var(--accent); }
+.family-option input, .project-choice-options input, .exercise-option input { accent-color: var(--accent); width: 18px; height: 18px; margin: 0; flex-shrink: 0; }
+.family-option svg { width: 34px; height: 34px; fill: none; stroke: var(--copper); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.family-option strong { font: 600 24px/1.2 var(--display); letter-spacing: -.3px; display: block; }
+.family-option small { display: block; font-size: 15px; line-height: 1.5; color: var(--ink-soft); margin-top: 8px; }
+.project-options-loading { margin: 20px 0; padding: 22px; border-left: 3px solid var(--accent); background: var(--paper); }
+.project-edit-layout { display: grid; grid-template-columns: minmax(0,1.2fr) minmax(310px,.85fr); gap: 44px; align-items: start; }
+.project-editor { min-width: 0; padding: 30px; background: var(--paper); border: 1px solid var(--line); border-radius: 16px; }
+.project-name-label { display: block; font-size: 16px; font-weight: 600; margin-bottom: 10px; }
+#project-name { width: 100%; background: var(--canvas); border: 1px solid var(--line-bright); border-radius: 8px; min-height: 54px; padding: 12px 14px; color: var(--ink); font-size: 18px; }
+.project-circuit-strip { display: flex; align-items: center; margin: 30px 0 15px; }
+.project-circuit-strip > span { min-width: 0; flex: 1; font-weight: 600; font-size: 20px; text-align: center; color: var(--accent-deep); }
+.project-circuit-strip small { display: block; color: var(--ink-soft); font-size: 14px; font-weight: 400; line-height: 1.45; margin-top: 5px; }
+.project-circuit-strip i { width: 24px; height: 2px; background: var(--copper); flex-shrink: 0; }
+.project-envelope { font-size: 16px; line-height: 1.65; color: var(--ink-soft); margin: 0 0 30px; }
+.project-choice { border: 0; border-top: 1px solid var(--line); padding: 26px 0 30px; margin: 0; min-width: 0; }
+.project-choice legend { font: 600 25px/1.25 var(--display); padding: 0 12px 0 0; letter-spacing: -.4px; max-width: 100%; }
+.project-choice > p { margin: -3px 0 18px; font-size: 18px; line-height: 1.65; color: var(--ink-soft); }
+.family-workbench select { display: block; min-width: 0; max-width: 100%; font: 16px/1.5 var(--sans); color: var(--ink); background: var(--paper); border: 1px solid var(--line-bright); border-radius: 7px; padding: 12px 32px 12px 12px; min-height: 49px; }
+.feature-count { display: flex; align-items: center; justify-content: space-between; gap: 18px; font-size: 16px; font-weight: 600; margin: 12px 0 18px; }
+.feature-count select { min-width: 100px; }
+.sensor-slot, .memory-slot { padding: 19px 0 16px; border-top: 1px solid var(--line); }
+.sensor-slot > label, .memory-slot > label { display: block; font-size: 16px; font-weight: 600; margin-bottom: 9px; }
+.sensor-slot > select, .memory-slot > select { width: 100%; }
+.sensor-slot p, .memory-slot p { color: var(--ink-soft); font-size: 15px; line-height: 1.65; margin: 12px 0 18px; }
+.sensor-slot .sensor-address { display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: 14px; font-weight: 400; color: var(--ink-soft); margin: 0; }
+.sensor-address select { width: 140px; flex-shrink: 0; }
+.project-choice .feature-help { font-size: 14px; margin: 8px 0 0; }
+.project-choice-options { display: grid; gap: 0; }
+.project-choice-options label { display: flex; align-items: start; gap: 13px; padding: 16px 0; cursor: pointer; }
+.project-choice-options input { margin-top: 4px; }
+.project-choice-options strong { display: block; font-size: 16px; line-height: 1.45; font-weight: 600; }
+.project-choice-options small { display: block; font-size: 14px; line-height: 1.55; color: var(--ink-soft); margin-top: 5px; }
+.saved-details { border-top: 1px solid var(--line); padding-top: 18px; font-size: 15px; }
+.saved-details summary, .project-build-boundary summary { cursor: pointer; min-height: 36px; font-size: 16px; font-weight: 600; }
+.saved-details p { color: var(--ink-soft); font-size: 14px; }
+.saved-details label { display: block; font-size: 16px; }
+.saved-details textarea { display: block; width: 100%; resize: vertical; margin-top: 10px; font: 16px/1.55 var(--sans); color: var(--ink); padding: 12px; border: 1px solid var(--line-bright); border-radius: 7px; }
+.saved-details dl > div { display: flex; justify-content: space-between; gap: 16px; padding: 7px 0; }
+.saved-details dt { color: var(--ink-soft); }
+.saved-details dd { margin: 0; text-align: right; }
+.project-confirmation { min-width: 0; padding: 8px 0; }
+.confirmation-heading { display: flex; gap: 15px; align-items: start; }
+.confirmation-heading > span { font-size: 35px; color: var(--copper); line-height: 1; }
+.confirmation-heading h2 { font-size: 29px; line-height: 1.2; margin: 0 0 13px; letter-spacing: -.7px; }
+.confirmation-heading p { color: var(--ink-soft); font-size: 16px; line-height: 1.65; margin: 0; }
+.unconfirmed-brief { margin: 28px 0; padding: 20px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.unconfirmed-brief p { font-size: 17px; line-height: 1.7; color: var(--ink-soft); margin: 0 0 12px; }
+.unconfirmed-brief p:last-child { margin: 0; }
+.confirmed-choices { margin: 24px 0 12px; }
+.confirmed-choices > div { display: grid; grid-template-columns: minmax(110px,.85fr) minmax(0,1.2fr); gap: 18px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.confirmed-choices dt { font-size: 16px; color: var(--ink-soft); }
+.confirmed-choices dd { margin: 0; font-size: 16px; overflow-wrap: anywhere; }
+.project-confirmation .disclose { font-size: 15px; margin: 18px 0 25px; }
+.project-editor-actions { display: grid; gap: 12px; }
+.project-editor-actions button { width: 100%; min-height: 53px; white-space: normal; font-size: 17px; }
+.project-action-note { margin: 14px 0 0; color: var(--ink-soft); font-size: 14px; line-height: 1.7; }
+.project-build-boundary { margin: 30px 0 0; border-top: 1px solid var(--line); padding-top: 24px; }
+.project-build-boundary strong { font-size: 18px; }
+.project-build-boundary p { color: var(--ink-soft); font-size: 16px; line-height: 1.7; margin: 9px 0 20px; }
+.project-build-boundary details p { font-size: 14px; }
+.project-secondary { display: grid; grid-template-columns: minmax(0,1.2fr) minmax(0,.85fr); gap: 44px; border-top: 1px solid var(--line); margin-top: 44px; padding-top: 34px; }
+.project-history h2 { font-size: 28px; margin: 0 0 12px; }
+.project-history > p { font-size: 16px; color: var(--ink-soft); }
+.project-history label { display: block; font-size: 16px; margin: 22px 0 10px; }
+.project-history select { width: 100%; font: 16px/1.5 var(--sans); padding: 13px; color: var(--ink); background: var(--paper); border: 1px solid var(--line-bright); border-radius: 7px; min-height: 50px; }
+.revision-changes { margin-top: 22px; font-size: 16px; }
+.revision-changes p { margin-bottom: 9px; color: var(--ink-soft); }
 .revision-changes ul { margin: 0; padding-left: 20px; }
-.revision-changes li { padding: 3px 0; }
+.revision-changes li { padding: 5px 0; }
 .project-learning { min-width: 0; }
-.project-learning-intro { display: flex; align-items: start; gap: 15px; margin: 13px 0 22px; }
+.project-learning-intro { display: flex; align-items: start; gap: 15px; margin: 0 0 23px; }
 .project-learning-intro > span { color: var(--copper); font-size: 37px; line-height: 1; }
 .project-learning-intro h2 { font-size: 28px; line-height: 1.18; letter-spacing: -.7px; margin-bottom: 13px; }
 .project-learning-intro p { font-size: 16px; line-height: 1.65; color: var(--ink-soft); margin: 0; }
-#sensor-exercise { border: 1px solid var(--line); background: #edf4f8; padding: 24px; border-radius: 13px; }
-#sensor-exercise > h3 { font-size: 22px; line-height: 1.25; margin-bottom: 14px; }
-#sensor-exercise p { font-size: 15px; line-height: 1.7; color: var(--ink-soft); }
-.exercise-reflection { font-size: 15px; display: block; font-weight: 600; margin: 24px 0; line-height: 1.65; }
+#sensor-exercise { background: #edf4f8; padding: 25px; border-radius: 12px; }
+#sensor-exercise > h3 { font-size: 24px; line-height: 1.25; margin-bottom: 14px; }
+#sensor-exercise p { font-size: 16px; line-height: 1.7; color: var(--ink-soft); }
+.exercise-reflection { font-size: 16px; display: block; font-weight: 600; margin: 24px 0; line-height: 1.65; }
 .exercise-reflection textarea { resize: vertical; display: block; width: 100%; min-height: 90px; padding: 12px; font: inherit; font-weight: 400; color: var(--ink); border: 1px solid var(--line-bright); background: var(--paper); border-radius: 7px; margin-top: 10px; }
-.exercise-reflection > span { display: block; font-size: 13px; font-weight: 400; color: var(--ink-soft); margin-top: 6px; }
+.exercise-reflection > span { display: block; font-size: 14px; font-weight: 400; color: var(--ink-soft); margin-top: 6px; }
 #sensor-choice-form fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
-#sensor-choice-form legend { font-size: 17px; font-weight: 600; margin-bottom: 12px; }
-.exercise-option { display: flex; align-items: start; gap: 11px; padding: 13px 0; border-top: 1px solid #d3e0e8; cursor: pointer; font-size: 15px; line-height: 1.6; }
-#sensor-choice-form button { margin-top: 15px; min-height: 46px; }
-.exercise-limit { font-size: 13px !important; margin-top: 17px; }
+#sensor-choice-form legend { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
+.exercise-option { display: flex; align-items: start; gap: 11px; padding: 15px 0; border-top: 1px solid #d3e0e8; cursor: pointer; font-size: 16px; line-height: 1.6; }
+.exercise-option input { margin-top: 4px; }
+#sensor-choice-form button { margin-top: 15px; min-height: 48px; }
+.exercise-limit { font-size: 14px !important; margin-top: 17px; }
 .exercise-feedback { border-top: 3px solid var(--copper); padding-top: 18px; margin-top: 24px; }
 .exercise-feedback.exercise-resolved { border-color: var(--pass); }
-.exercise-feedback h4 { font-size: 21px; line-height: 1.3; margin-bottom: 12px; }
-.exercise-feedback details { font-size: 14px; overflow-wrap: anywhere; }
+.exercise-feedback h4 { font-size: 23px; line-height: 1.3; margin-bottom: 12px; }
+.exercise-feedback details { font-size: 15px; overflow-wrap: anywhere; }
 .exercise-feedback summary { cursor: pointer; }
 .exercise-checks { display: flex; gap: 25px; padding: 13px 0; }
-.exercise-checks dt { font-size: 13px; color: var(--ink-soft); }
-.exercise-checks dd { font-size: 16px; font-weight: 600; margin: 3px 0 0; }
-.project-build-boundary { margin: 26px 3px 0; border-top: 1px solid var(--line); padding-top: 23px; }
-.project-build-boundary strong { font-size: 16px; }
-.project-build-boundary p { color: var(--ink-soft); font-size: 15px; line-height: 1.7; margin: 7px 0 20px; }
-.project-editor :focus-visible, .project-learning :focus-visible, .saved-projects :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
-.project-editor button:disabled { opacity: .55; }
+.exercise-checks dt { font-size: 14px; color: var(--ink-soft); }
+.exercise-checks dd { font-size: 17px; font-weight: 600; margin: 3px 0 0; }
+.family-workbench :focus-visible, .project-secondary :focus-visible, .saved-projects :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.family-workbench button:disabled { opacity: .55; }
 .download-row a:first-child { background: var(--accent); color: white; border-color: var(--accent); }
+.choices-checked { margin-bottom: 24px; }
+.choices-checked > p { color: var(--ink-soft); max-width: 70ch; font-size: 17px; }
+.requirement-result { border-top: 1px solid var(--line); padding: 17px 0; display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 7px 22px; }
+.requirement-result h3 { font-size: 19px; margin: 0; }
+.requirement-result p { grid-column: 1; font-size: 16px; line-height: 1.65; color: var(--ink-soft); margin: 0; }
+.requirement-result .badge { grid-column: 2; grid-row: 1; align-self: start; }
+.requirement-result small { grid-column: 1; color: var(--ink-soft); font-size: 14px; }
+.requirement-assumptions { border-top: 1px solid var(--line); margin-top: 8px; }
+.requirement-assumptions > summary { cursor: pointer; padding: 16px 0; font-size: 18px; font-weight: 600; }
+.requirement-assumptions > summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 @media (max-width: 1180px) {
-  .project-edit-layout { grid-template-columns: minmax(0, 1.4fr) minmax(275px, 1fr); gap: 22px; }
-  .project-editor { padding: 23px; }
-  .project-choice-options { grid-template-columns: 1fr; }
-  .project-editor-actions { flex-direction: column; }
+  .family-option { grid-template-columns: 17px minmax(0,1fr); padding: 20px 10px; gap: 10px; }
+  .family-option svg { display: none; }
+  .family-option strong { font-size: 23px; }
+  .project-edit-layout, .project-secondary { gap: 28px; }
+  .project-editor { padding: 25px; }
 }
 @media (max-width: 900px) {
-  .project-edit-layout { grid-template-columns: 1fr; }
-  .project-choice-options { grid-template-columns: 1fr 1fr; }
-  .project-editor-actions { flex-direction: row; }
-  .project-learning { display: grid; grid-template-columns: 1fr 1.5fr; gap: 15px 25px; }
-  .project-learning-intro { grid-column: 1; }
-  #sensor-exercise { grid-column: 2; grid-row: 1 / span 2; }
-  .project-build-boundary { grid-column: 1; }
+  .project-edit-layout, .project-secondary { grid-template-columns: minmax(0,1fr); }
+  .project-confirmation { padding-top: 12px; }
+  .family-option strong { font-size: 22px; }
+  .confirmed-choices > div { grid-template-columns: minmax(0,1fr) minmax(0,1.5fr); }
+  .project-editor-actions { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 600px) {
   .saved-project-shelf { grid-template-columns: 1fr; gap: 15px; }
-  .project-editor { padding: 22px 18px; border-radius: 12px; }
-  .project-editor h2 { font-size: 25px; }
-  .project-choice-options { grid-template-columns: 1fr; }
-  .project-editor-actions { flex-direction: column; }
-  .project-circuit-strip { flex-wrap: wrap; gap: 17px 0; }
-  .project-circuit-strip > span { min-width: 40%; }
-  .project-circuit-strip > i:nth-child(4) { display: none; }
-  .project-learning { display: block; }
-  .project-learning-intro { margin-top: 10px; }
-  #sensor-exercise { padding: 23px 20px; }
-  .project-save-state { font-size: 14px; }
+  .project-editor-heading h2 { font-size: 30px; }
+  .family-picker { grid-template-columns: 1fr; gap: 4px; padding-bottom: 20px; }
+  .family-option { grid-template-columns: 18px 34px minmax(0,1fr); min-height: 88px; padding: 16px 12px; }
+  .family-option svg { display: block; }
+  .family-option small { margin-top: 5px; }
+  .project-editor { padding: 24px 18px; border-radius: 12px; }
+  .project-choice legend { font-size: 24px; }
+  .project-editor-actions { grid-template-columns: 1fr; }
+  .project-circuit-strip i { width: 14px; }
+  .project-circuit-strip > span { font-size: 19px; }
+  .project-circuit-strip small { font-size: 14px; }
+  .sensor-slot .sensor-address { display: block; }
+  .sensor-address select { width: 100%; margin-top: 8px; }
+  .confirmation-heading h2 { font-size: 27px; }
+  .confirmed-choices > div { grid-template-columns: 1fr; gap: 4px; }
+  .project-secondary { gap: 35px; }
+  #sensor-exercise { padding: 23px 18px; }
 }

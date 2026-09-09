@@ -1,0 +1,200 @@
+{
+  "schema_version": 1,
+  "families": [
+    {
+      "id": "a1_usb_i2c_sensor",
+      "title": "Sensor station",
+      "description": "Read temperature and environmental sensors over a shared I2C bus.",
+      "sensor_count": {
+        "min": 1,
+        "max": 3
+      },
+      "status_led_count": {
+        "min": 0,
+        "max": 1
+      },
+      "button_count": {
+        "min": 0,
+        "max": 0
+      },
+      "spi_count": {
+        "min": 0,
+        "max": 0
+      },
+      "defaults": {
+        "schema_version": 1,
+        "project_name": "ESP32 sensor node",
+        "description": "USB-C powered ESP32 I2C sensor node.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "sensor_slot_defaults": [
+        {
+          "part_id": "BME280",
+          "address": null
+        },
+        {
+          "part_id": "TMP102AIDRLR",
+          "address": null
+        },
+        {
+          "part_id": "TMP102AIDRLR",
+          "address": null
+        }
+      ]
+    },
+    {
+      "id": "a2_usb_gpio_controller",
+      "title": "Buttons & lights",
+      "description": "Connect physical buttons and indicator LEDs to an ESP32.",
+      "sensor_count": {
+        "min": 0,
+        "max": 0
+      },
+      "status_led_count": {
+        "min": 1,
+        "max": 4
+      },
+      "button_count": {
+        "min": 1,
+        "max": 2
+      },
+      "spi_count": {
+        "min": 0,
+        "max": 0
+      },
+      "defaults": {
+        "schema_version": 1,
+        "project_name": "Button and light controller",
+        "description": "USB-C powered ESP32 with buttons and indicator LEDs.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 1,
+        "button_count": 1,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "sensor_slot_defaults": []
+    },
+    {
+      "id": "a3_usb_spi_peripheral",
+      "title": "Memory & data",
+      "description": "Connect SPI EEPROM memory, with an optional environmental sensor.",
+      "sensor_count": {
+        "min": 0,
+        "max": 1
+      },
+      "status_led_count": {
+        "min": 0,
+        "max": 1
+      },
+      "button_count": {
+        "min": 0,
+        "max": 0
+      },
+      "spi_count": {
+        "min": 1,
+        "max": 2
+      },
+      "defaults": {
+        "schema_version": 1,
+        "project_name": "SPI memory board",
+        "description": "USB-C powered ESP32 with SPI EEPROM memory.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "sensor_slot_defaults": [
+        {
+          "part_id": "BME280",
+          "address": null
+        }
+      ]
+    }
+  ],
+  "sensors": [
+    {
+      "part_id": "BME280",
+      "label": "BME280",
+      "description": "Combined humidity, pressure and temperature sensor with I2C and SPI.",
+      "addresses": [
+        118,
+        119
+      ]
+    },
+    {
+      "part_id": "TMP102AIDRLR",
+      "label": "TMP102AIDRLR",
+      "description": "Low-power I2C temperature sensor in the six-pin SOT-563 DRL package.",
+      "addresses": [
+        72,
+        73
+      ]
+    }
+  ],
+  "spi_devices": [
+    {
+      "part_id": "25LC256-I/SN",
+      "label": "25LC256-I/SN",
+      "description": "256-kbit SPI EEPROM, 32 KiB, in the industrial-temperature SOIC-8 package."
+    }
+  ],
+  "automatic_sensor_address": null,
+  "fixed": {
+    "input_power": "usb_c_5v",
+    "input_voltage_v": {
+      "min": 4.75,
+      "max": 5.25
+    },
+    "logic_voltage_v": 3.3,
+    "mcu_part_id": "ESP32-WROOM-32E",
+    "max_board_layers": 2,
+    "safety_domains": []
+  },
+  "limitations": [
+    "USB-C supplies power only; programming needs an external 3.3 V serial adapter.",
+    "Firmware, simulation, and hardware measurements are not included.",
+    "Catalog evidence and synthetic prices have explicit limitations; total build cost is unknown.",
+    "Address collisions and unsupported combinations are refused before a revision is saved."
+  ]
+}

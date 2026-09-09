@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Explore how a room sensor becomes a circuit board. Ohmni shows the parts, checks the connections, and explains its work.">
+  <meta name="description" content="Design a sensor station, button controller, or memory board. Explore it in 3D, understand the connections, and download checked circuit files.">
   <meta name="theme-color" content="#2159e8">
   <title>Ohmni — Your electronics workbench</title>
   <link rel="stylesheet" href="/styles.css">
@@ -39,7 +39,7 @@
     <div class="main-shell" id="top">
       <header class="workspace-header">
         <div class="workspace-crumb"><span class="crumb-mark" aria-hidden="true">⌘</span><span id="workspace-title">Let's build something</span></div>
-        <div class="header-actions"><span id="workspace-status" class="workspace-status">Guided reference project</span><details class="header-help"><summary aria-label="How Ohmni works">How it works <span aria-hidden="true">↗</span></summary><div><strong>An idea, made understandable.</strong><p>Start with the room sensor. Choose its features, save a revision, run the engineering checks, then explore your board and download its build package.</p><p>Making a working device also takes assembly, programming, and testing. We'll show you what remains.</p></div></details></div>
+        <div class="header-actions"><span id="workspace-status" class="workspace-status">A guided electronics workspace</span><details class="header-help"><summary aria-label="How Ohmni works">How it works <span aria-hidden="true">↗</span></summary><div><strong>An idea, made understandable.</strong><p>Choose a sensor station, buttons and lights, or a memory board. Pick its features, save a revision, then generate and explore your checked design.</p><p>Making a working device also takes assembly, programming, and testing. We'll show you what remains.</p></div></details></div>
       </header>
 
       <div id="connection-banner" class="connection-banner" hidden role="status"><span id="connection-message"></span><button type="button" data-reconnect hidden>Reconnect</button><button type="button" data-restart hidden>Start a new example</button></div>
@@ -48,7 +48,7 @@
         <section id="describe" class="stage welcome" aria-labelledby="describe-title">
           <div class="welcome-heading">
             <h1 id="describe-title">Build a real circuit.<br>Understand every part.</h1>
-            <p class="welcome-lede">Get hands-on with a room sensor. Explore its parts in 3D, follow the connections, then run the checks and make the design files yourself.</p>
+            <p class="welcome-lede">Make a sensor station, a button controller, or a board that stores data. Explore the parts in 3D and see the checks behind your own design.</p>
           </div>
           <div class="welcome-grid">
             <div class="reference-column">
@@ -70,18 +70,18 @@
 
             <div class="welcome-copy">
               <div class="project-starter">
-                <div class="starter-heading"><div class="climate-icon" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M17 9a4 4 0 0 1 8 0v14a7 7 0 1 1-8 0z"/><path d="M21 13v15m-4 0h8M30 9h4m-4 6h4"/></svg></div><div><span class="available-label">Your first guided project</span><h2>Room climate monitor</h2></div></div>
-                <p>Make this sensor your own. Choose its status light and programming connections, save your design, and generate real board files.</p>
+                <div class="starter-heading"><div class="climate-icon" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M17 9a4 4 0 0 1 8 0v14a7 7 0 1 1-8 0z"/><path d="M21 13v15m-4 0h8M30 9h4m-4 6h4"/></svg></div><div><span class="available-label">Start with something useful</span><h2>A board for your next idea.</h2></div></div>
+                <ul class="starter-families"><li><strong>Measure your space</strong><span>Read the world with environmental sensors.</span></li><li><strong>Buttons &amp; lights</strong><span>Give your program physical inputs and indicators.</span></li><li><strong>Store data</strong><span>Add memory for information you want to keep.</span></li></ul>
                 <dl class="starter-specs">
                   <div><dt>The processor</dt><dd>ESP32</dd></div>
-                  <div><dt>The sensor</dt><dd>BME280</dd></div>
+                  <div><dt>The board</dt><dd>2 layers</dd></div>
                   <div><dt>The power</dt><dd>USB-C</dd></div>
                 </dl>
-                <button type="button" id="create-project" class="primary start-button">Make it my project <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+                <button type="button" id="create-project" class="primary start-button">Choose my board <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
                 <p class="starter-footnote">A few choices. Your own saved revisions.<br>No electronics experience needed to explore.</p>
                 <button type="button" id="start-supported" class="ghost reference-demo-link" data-fixture="esp32-bme280-environmental-logger">Or run the fixed reference example</button>
               </div>
-              <div class="prototype-note"><strong>Small choices. Real changes to the circuit.</strong><p class="scope-note" id="scope-note">Start with the supported USB-powered ESP32 + BME280 family. The engine builds your selected configuration and runs actual checks. Assembly, programming, and hardware testing come next.</p></div>
+              <div class="prototype-note"><strong>Small choices. Real changes to the circuit.</strong><p class="scope-note" id="scope-note">Three supported USB-powered ESP32 families: sensors, buttons and lights, or SPI memory. Choose real parts and counts; the engine generates your configuration and runs actual checks. Assembly, programming, and hardware testing come next.</p></div>
             </div>
           </div>
 
@@ -89,17 +89,17 @@
           <div class="welcome-bottom" id="how-it-works">
             <h2>From curiosity to circuit.</h2>
             <ol class="welcome-path">
-              <li><span aria-hidden="true">1</span><div><h3>Make a few choices</h3><p>Meet the components, then save your own configuration.</p></div></li>
-              <li><span aria-hidden="true">2</span><div><h3>Understand the checks</h3><p>Try a sensor challenge and inspect your design's evidence.</p></div></li>
+              <li><span aria-hidden="true">1</span><div><h3>Choose what to make</h3><p>Pick your parts and save a revision of your own design.</p></div></li>
+              <li><span aria-hidden="true">2</span><div><h3>See how it works</h3><p>Generate the board, explore its connections, and read the actual checks.</p></div></li>
               <li><span aria-hidden="true">3</span><div><h3>Make it your next build</h3><p>Download KiCad files, then assemble, program, and test.</p></div></li>
             </ol>
           </div>
         </section>
 
         <section id="agree" class="stage brief-stage" hidden aria-labelledby="agree-title">
-          <div class="section-head"><p class="step-label">Your project workbench</p><h1 id="agree-title">Make room for your ideas.</h1><p class="lede" id="agree-description">Choose what goes on your room sensor. Save a revision, then turn that exact design into a board.</p></div>
+          <div class="section-head"><p class="step-label">Your project workbench</p><h1 id="agree-title">Make room for your ideas.</h1><p class="lede" id="agree-description">Choose a purpose and the parts to match. Save a revision, then turn that exact design into a board.</p></div>
           <div id="project-workbench" data-project-workbench="true" hidden></div>
-          <div id="reference-brief" class="agree-layout"><div id="brief" class="brief"></div><aside class="agree-decide"><span class="plan-symbol" aria-hidden="true">Ω</span><h2>A little clarity now.<br>A better board later.</h2><p id="agree-note"></p><div class="brief-boundary"><strong>This is the fixed reference example.</strong><p>Its design and repair are pre-authored. To choose your own configuration, return home and select “Make it my project.”</p></div><button type="button" id="confirm-brief" class="primary">Run the design checks <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button><button type="button" id="back-to-describe" class="ghost">Back to the project</button></aside></div>
+          <div id="reference-brief" class="agree-layout"><div id="brief" class="brief"></div><aside class="agree-decide"><span class="plan-symbol" aria-hidden="true">Ω</span><h2>A little clarity now.<br>A better board later.</h2><p id="agree-note"></p><div class="brief-boundary"><strong>This is the fixed reference example.</strong><p>Its design and repair are pre-authored. To choose your own configuration, return home and select “Choose my board.”</p></div><button type="button" id="confirm-brief" class="primary">Run the design checks <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button><button type="button" id="back-to-describe" class="ghost">Back to the project</button></aside></div>
         </section>
 
         <section id="design" class="stage activity-stage" hidden aria-labelledby="design-title">
@@ -121,7 +121,7 @@
             <div class="two-up"><article class="panel repair" id="repair-panel"></article><article class="panel transform"><h3>From drawing to object</h3><p class="panel-note">The schematic shows what connects. The board shows where it goes. Two views of the same circuit.</p><div id="transform-stage" class="transform-stage"></div><div class="transform-controls"><button type="button" id="transform-play" class="secondary">Turn the circuit into a board</button><input type="range" id="transform-scrub" min="0" max="100" value="0" aria-label="Schematic to board"><span id="transform-label" class="transform-label">Schematic</span></div><details class="disclose"><summary>Explore the real schematic sheet</summary><div id="schematic-holder" class="schematic-holder"></div></details></article></div><article class="panel tour" id="tour-panel"></article>
           </div>
 
-          <div id="panel-checks" data-result-panel="checks" role="tabpanel" aria-labelledby="tab-checks" hidden><article class="panel checks"><div class="checks-intro"><div><h2>Confidence, with the evidence.</h2><p class="panel-note">Open a check to see the rules, the result, and the limits of what it establishes.</p></div><span class="check-symbol" aria-hidden="true">✓</span></div><div id="checks" class="checks"></div></article><article class="panel confidence" id="confidence-panel"></article></div>
+          <div id="panel-checks" data-result-panel="checks" role="tabpanel" aria-labelledby="tab-checks" hidden><article class="panel choices-checked" id="choices-checked" hidden></article><article class="panel checks"><div class="checks-intro"><div><h2>Confidence, with the evidence.</h2><p class="panel-note">Open a check to see the rules, the result, and the limits of what it establishes.</p></div><span class="check-symbol" aria-hidden="true">✓</span></div><div id="checks" class="checks"></div></article><article class="panel confidence" id="confidence-panel"></article></div>
         </section>
 
         <section id="build" class="stage build-stage" hidden aria-labelledby="build-title">

@@ -7,6 +7,8 @@
     python -m ohmni rules
     python -m ohmni parts
     python -m ohmni doctor
+    python -m ohmni generate --brief project.json --preview
+    python -m ohmni generate --brief project.json --output out/my-project
 
 `verify` exits non-zero when the design cannot be exported as verified, so this
 is usable in CI without anything else being built.
@@ -16,10 +18,15 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 import sys
 from pathlib import Path
 
+from pydantic import ValidationError
+
 from .adapters.tools import probe_all
+from .application.demo import RoutingIncompleteError
+from .application.projects import ProjectPipeline, ProjectRefusalError, preview_project
 from .bom import calculate_cost, classify_assembly, generate_bom, synthetic_fixture_supplier
 from .catalog import default_catalog
 from .datasheet import BoundedTextExtractor, DatasheetPipeline, PdfIngestError, PyMuPdfExtractor
@@ -47,11 +54,103 @@ from .manufacturing import (
 )
 from .routing.router import DeterministicRouter
 from .routing.verifier import verify_routing
+from .synthesis import SynthesisBrief
 from .verifier import all_rules, format_report, verify
 
 EXIT_OK = 0
 EXIT_BLOCKED = 1
 EXIT_USAGE = 2
+
+
+def _project_error(args, code, message, exit_code, *, refusal=None):
+    payload = {"error": code, "message": message}
+    if refusal is not None:
+        payload["refusal"] = refusal.model_dump(mode="json")
+    if args.json:
+        print(json.dumps(payload, indent=2, allow_nan=False))
+    else:
+        print(f"Project blocked [{code}]: {message}", file=sys.stderr)
+    return exit_code
+
+
+def cmd_generate(args: argparse.Namespace) -> int:
+    """Run one confirmed typed brief through the personal-project pipeline."""
+    if args.preview and args.output is not None:
+        return _project_error(args, "invalid_arguments", "Preview does not write artifacts; omit --output.", EXIT_USAGE)
+    if not args.preview and args.output is None:
+        return _project_error(args, "invalid_arguments", "A build requires --output pointing to a new or empty directory.", EXIT_USAGE)
+    try:
+        # utf-8-sig accepts both ordinary UTF-8 and PowerShell-authored UTF-8 BOM
+        # files. Strict JSON validation preserves typed enum/array support and
+        # rejects coercions such as string booleans and numeric strings.
+        brief = SynthesisBrief.model_validate_json(args.brief.read_text(encoding="utf-8-sig"), strict=True)
+    except (OSError, UnicodeError):
+        return _project_error(args, "brief_unreadable", f"Cannot read a UTF-8 brief from {args.brief}.", EXIT_USAGE)
+    except ValidationError as error:
+        fields = ", ".join(dict.fromkeys(".".join(map(str, item["loc"])) or "document" for item in error.errors()))
+        return _project_error(args, "invalid_brief", f"Invalid project brief JSON or field values: {fields}.", EXIT_USAGE)
+    try:
+        preview = preview_project(brief)
+    except ProjectRefusalError as error:
+        return _project_error(args, "project_refused", str(error), EXIT_BLOCKED, refusal=error.refusal)
+    except (OSError, RuntimeError, ValueError) as error:
+        return _project_error(args, "preview_failed", str(error), EXIT_BLOCKED)
+    preview_payload = {
+        "mode": "project_preview", "verification_status": "NOT_RUN",
+        "brief_fingerprint": brief.fingerprint, "archetype": brief.archetype.value,
+        "confirmed_brief": brief.model_dump(mode="json"), "preview": preview.model_dump(mode="json"),
+        "limitation": "Preview resolves supported choices and assumptions. Electrical checks, EDA, routing, and release have not run.",
+    }
+    if args.preview:
+        if args.json:
+            print(json.dumps(preview_payload, indent=2, allow_nan=False))
+        else:
+            print(f"OHMNI PROJECT PREVIEW\n\nProject: {brief.project_name}\nFamily: {brief.archetype.value}")
+            for label, lines in (("Confirmed choices", preview.asked_for), ("Assumptions", preview.assumed),
+                                 ("Needs clarification", preview.needs_clarification)):
+                if lines:
+                    print(f"\n{label}")
+                    for line in lines:
+                        print(f"  {line.label}: {line.value}")
+            print(f"\nVerification: NOT_RUN\n{preview_payload['limitation']}")
+        return EXIT_OK
+    destination = args.output
+    try:
+        destination = destination.resolve()
+        if destination.exists() and (not destination.is_dir() or any(destination.iterdir())):
+            return _project_error(args, "output_not_empty", "Choose a new or empty output directory so previous build artifacts cannot be mistaken for this run.", EXIT_USAGE)
+        destination.mkdir(parents=True, exist_ok=True)
+        # An exclusive first file also prevents concurrent CLI invocations
+        # that observed the same empty directory from sharing a build.
+        with (destination / "confirmed-brief.json").open("x", encoding="utf-8") as confirmed:
+            confirmed.write(brief.model_dump_json(indent=2))
+        (destination / "preview.json").write_text(json.dumps(preview_payload, indent=2, allow_nan=False), encoding="utf-8")
+    except OSError:
+        return _project_error(args, "output_unavailable", f"Cannot prepare output directory {destination}.", EXIT_USAGE)
+
+    def progress(event):
+        print(f"{event.percent:3d}% {event.label}: {event.status}", file=sys.stderr)
+
+    try:
+        report = ProjectPipeline(progress=progress).run(destination, brief)
+        serialized = report.model_dump_json(indent=2)
+        (destination / "report.json").write_text(serialized, encoding="utf-8")
+    except (OSError, RuntimeError, ValueError, subprocess.SubprocessError) as error:
+        code = "routing_incomplete" if isinstance(error, RoutingIncompleteError) else "project_failed"
+        failure = {"error": code, "message": str(error), "brief_fingerprint": brief.fingerprint}
+        try:
+            (destination / "failure.json").write_text(json.dumps(failure, indent=2, allow_nan=False), encoding="utf-8")
+        except OSError:
+            pass  # The original failure still determines the unsuccessful exit.
+        return _project_error(args, code, str(error), EXIT_BLOCKED)
+    if args.json:
+        print(serialized)
+    else:
+        print(f"OHMNI PROJECT BUILD\n\nProject: {brief.project_name}\nFamily: {brief.archetype.value}")
+        print(f"Release: {report.release.get('status', 'UNKNOWN')}\nCurrent artifacts: {report.release.get('current', 'UNKNOWN')}\nReport: {destination / 'report.json'}")
+        for limitation in report.limitations:
+            print(f"  - {limitation}")
+    return EXIT_OK if report.release.get("current") is True and report.release.get("status") == "READY_FOR_MANUFACTURING_REVIEW" else EXIT_BLOCKED
 
 
 def _load_circuit(name: str | None, path: Path | None) -> CircuitIR:
@@ -423,6 +522,13 @@ def build_parser() -> argparse.ArgumentParser:
         description="Ohmni: evidence-first electronics engineering mentor and deterministic circuit verifier.",
     )
     sub = parser.add_subparsers(dest="command", required=True)
+
+    generate_parser = sub.add_parser("generate", help="preview or build a confirmed A1, A2, or A3 project brief")
+    generate_parser.add_argument("--brief", type=Path, required=True, help="strict SynthesisBrief JSON file")
+    generate_parser.add_argument("--output", type=Path, help="new or empty build directory (required unless --preview)")
+    generate_parser.add_argument("--preview", action="store_true", help="resolve the brief and assumptions without EDA or artifact creation")
+    generate_parser.add_argument("--json", action="store_true", help="emit the preview, final report, or error as JSON")
+    generate_parser.set_defaults(func=cmd_generate)
 
     verify_parser = sub.add_parser("verify", help="verify one circuit")
     verify_parser.add_argument(

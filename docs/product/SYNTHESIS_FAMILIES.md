@@ -3,9 +3,8 @@
 The deterministic compiler now supports three families through
 `ohmni.synthesis.synthesize(brief)`. Each accepted result includes electrical
 intent and a separate fingerprint-bound placement request. M10-T03 adds
-constraint-driven placement; full frontend integration follows in M10-T04.
-The existing personal-project UI remains its original
-eight-configuration sensor workspace until that integration is complete.
+constraint-driven placement. M10-T04 connects all three families to the local
+project editor, revision API, command-line generation and learning experience.
 
 | Family | Supported composition |
 | --- | --- |
@@ -26,6 +25,19 @@ A1 circuits retain exactly their previous hashes and 0805 package choices.
 New families use a shared USB/processor compiler, not a reference fixture.
 Physical artifact fingerprints can change when geometry is corrected; preserving
 the electrical circuit hash does not mean preserving an obsolete PCB layout.
+
+The editor loads its supported parts, counts, addresses and defaults from
+`/api/project-options`. Saved inputs retain all fields, including choices not
+exposed by the beginner controls. Every confirmed statement appears in the
+result as MET, VIOLATED or UNKNOWN with its basis. Free-text behavior and budget
+remain UNKNOWN where no corresponding deterministic evidence exists. SPI memory
+and buttons have their own topology-based lessons; each included LED has a flow.
+
+Use `python -m ohmni generate --brief project.json --preview` to inspect a strict
+JSON brief without EDA or file writes. Use `--output out/my-project` instead of
+`--preview` to build into a new or empty directory. The CLI preserves the
+confirmed brief, preview and final report; failures return a nonzero exit and
+retain diagnostic artifacts. A preview is explicitly NOT_RUN verification.
 
 `ohmni.physical.placement.generate_placement(circuit, placement_request, catalog)`
 generates front-side, zero-degree placements on the requested board. Functional
@@ -58,6 +70,9 @@ footprint pads and hashes were checked against installed KiCad 10.0.5 files;
 all 19 catalog-offered packages compile with complete pin bindings. Generic
 switch geometry has no invented manufacturer or part rating.
 
-The exact commands, counts, sources, and review resolutions are recorded in
-[M10-T02.yaml](../../.ai/verification/M10-T02.yaml). Family-wide routing benchmark,
-production deployment, firmware and hardware validation remain separate gates.
+Catalog/compiler evidence is recorded in [M10-T02.yaml](../../.ai/verification/M10-T02.yaml),
+and placement/routing evidence in [M10-T03.yaml](../../.ai/verification/M10-T03.yaml).
+Family-wide routing benchmark, production deployment, firmware and hardware
+validation remain separate gates. An accepted brief is not a promise that the
+bounded router will find a complete path; a failed run retains its diagnostics
+and cannot publish a build package.

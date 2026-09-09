@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 from ...adapters import ToolStatus
+from ...adapters.process import describe_exit
 from ..models import ArtifactFingerprint
 from ..pcb_models import DrcFinding, DrcFindingClass, DrcItem, DrcReport, DrcStatus
 
@@ -35,16 +36,24 @@ def _finding(value) -> DrcFinding:
         pos=item.get("pos")
         items.append(DrcItem(description=str(item.get("description","")),uuid=item.get("uuid"),x=pos.get("x") if isinstance(pos,dict) else None,y=pos.get("y") if isinstance(pos,dict) else None))
     severity=str(value.get("severity","unknown")).lower();kind=str(value.get("type","unknown"))
+    if severity not in {"error","warning","exclusion"}:
+        raise DrcReportParseError(f"unsupported KiCad DRC severity: {severity}")
     return DrcFinding(type=kind,severity=severity,description=str(value.get("description","")),classification=_classify(kind),excluded=severity=="exclusion",items=items,raw=value)
 
 
 def parse_drc_json(path:Path,*,pcb_fingerprint:ArtifactFingerprint,schematic_fingerprint:ArtifactFingerprint,run_id:str,command:list[str],return_code:int,stdout:str="",stderr:str="")->DrcReport:
+    if type(return_code) is not int:
+        raise DrcReportParseError("KiCad DRC returned no valid integer exit code")
+    if return_code not in {0,5}:
+        raise DrcReportParseError(f"KiCad DRC did not complete: {describe_exit(return_code)}. No report is accepted.")
     try: raw=json.loads(path.read_text(encoding="utf-8"))
     except (OSError,json.JSONDecodeError) as exc: raise DrcReportParseError(f"cannot read KiCad DRC JSON: {exc}") from exc
     if not isinstance(raw,dict) or not isinstance(raw.get("violations"),list) or not isinstance(raw.get("unconnected_items"),list): raise DrcReportParseError("KiCad DRC JSON must contain violations and unconnected_items arrays")
     version=raw.get("kicad_version")
     if not isinstance(version,str): raise DrcReportParseError("KiCad DRC JSON missing kicad_version")
     violations=[_finding(x) for x in raw["violations"]];unconnected=[_finding(x) for x in raw["unconnected_items"]];active=[x for x in violations+unconnected if not x.excluded]
+    if (return_code==5 and not violations+unconnected) or (return_code==0 and active and "--exit-code-violations" in command):
+        raise DrcReportParseError("KiCad DRC exit code contradicts the reported violations")
     if any(x.severity=="error" for x in active): status=DrcStatus.FAIL
     elif any(x.severity=="warning" for x in active): status=DrcStatus.PASS_WITH_WARNINGS
     else: status=DrcStatus.PASS

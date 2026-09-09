@@ -25,7 +25,7 @@ from typing import Any, NamedTuple
 from urllib.parse import unquote, urlsplit
 
 from ohmni.application import DEMO_REQUEST, DemoPipeline, preview_brief
-from ohmni.application.demo import RoutingIncompleteError
+from ohmni.application.demo import EdaToolFailedError, RoutingIncompleteError
 from ohmni.application.project_store import (
     PROJECT_ID_PATTERN,
     ProjectStore,
@@ -51,7 +51,7 @@ WORKSPACE_IN_USE_MESSAGE="Ohmni workspace is already in use. Stop its local serv
 JOB_RECORD_FIELDS={"job_id","status","progress","report","error","error_code"}
 JOB_STATUSES={"queued","running","complete","failed"}
 TERMINAL_JOB_STATUSES={"complete","failed"}
-JOB_FAILURE_CODES={"worker_start_failed","pipeline_failed","progress_publication_failed","job_state_invalid","server_restarted","routing_incomplete"}
+JOB_FAILURE_CODES={"worker_start_failed","pipeline_failed","progress_publication_failed","job_state_invalid","server_restarted","routing_incomplete","eda_tool_failed"}
 STATIC_ASSETS=("index.html","app.js","view-model.js","board-model.js","board-view.js",
                "schematic-view.js","client-contract.js","reference-preview.js",
                "board-renderer-geometry.js","board-renderer-webgl.js","board-controls.js",
@@ -350,6 +350,8 @@ class JobStore:
         except RoutingIncompleteError:
             # Preserve one owned actionable code, never exception text or paths.
             self._fail(job_id,"routing_incomplete")
+        except EdaToolFailedError:
+            self._fail(job_id,"eda_tool_failed")
         except BaseException:  # noqa: BLE001 - the worker boundary must always terminalize the job
             self._fail(job_id,"pipeline_failed")
     def _snapshot(self,job_id):
@@ -820,6 +822,13 @@ class DemoHandler(SimpleHTTPRequestHandler):
         except BaseException:return self._json({"error":INVALID_PATH_MESSAGE},HTTPStatus.BAD_REQUEST)  # noqa: BLE001 - request targets must fail closed
         if request_path=="/api/health":
             return self._json({"status":"ready","fixture_id":DEMO_FIXTURE_ID,**self.server._identity()})
+        if request_path=="/api/project-options":
+            from ohmni.application.projects import project_options
+            error=self._poll_contract_error()
+            if error is not None:return self._reject(error,HTTPStatus.CONFLICT)
+            try:return self._json({"options":project_options(),**self.server._identity()})
+            except BaseException:  # noqa: BLE001 - unavailable catalog choices fail closed
+                return self._json({"error":"project_unavailable"},HTTPStatus.SERVICE_UNAVAILABLE)
         if request_path=="/api/projects" or request_path.startswith("/api/projects/"):
             error=self._poll_contract_error()
             if error is not None:return self._reject(error,HTTPStatus.CONFLICT)

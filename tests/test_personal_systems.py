@@ -55,11 +55,12 @@ def test_a_failed_hand_soldering_preference_is_not_projected_as_a_pass():
         SimpleNamespace(profile=SimpleNamespace(display_name="Synthetic test profile")),
         SimpleNamespace(pricing_coverage=0),
         SimpleNamespace(hand_solder_requirement_satisfied=False,
+                        risks=[SimpleNamespace(difficulty="reflow_recommended")],
                         limitations=["The sensor requires reflow equipment."]),
     )
     item = next(line for line in confidence.not_verified if line.label == "Assembly by hand")
     assert item.status == "NEEDS_REVIEW"
-    assert "not met" in item.detail and "reflow equipment" in item.detail
+    assert "beyond a soldering iron" in item.detail and "reflow equipment" in item.detail
 
 
 def test_bring_up_does_not_predict_an_open_circuit_between_populated_supply_rails(golden, catalog):

@@ -50,9 +50,9 @@ def test_preview_preserves_explicit_choices_and_names_missing_programming_path()
     preview = preview_project(brief)
     assert preview.project_name == "Desk monitor"
     explicit = {line.field: line.value for line in preview.asked_for}
-    assert explicit["status_light"] == "Omitted"
-    assert explicit["programming_header"] == "Omitted"
-    assert explicit["sensor_address"] == "0x77"
+    assert explicit["status_led_count"] == "0"
+    assert explicit["include_programming_header"] == "No"
+    assert explicit["sensors.0.address"] == "0x77"
     assert any("no supplied programming connector" in line.value for line in preview.assumed)
 
 

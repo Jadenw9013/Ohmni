@@ -6,7 +6,7 @@
 // typed reports. There is no place in this file where a PASS or FAIL is
 // decided, a voltage computed, or a net membership inferred.
 
-import { artifactCurrent, badge, escapeHtml, money, releaseReadiness } from "./view-model.js";
+import { artifactCurrent, badge, escapeHtml, money, releaseReadiness, requirementResultsHtml } from "./view-model.js";
 import { BoardView, createCamera } from "./board-view.js";
 import { schematicSvg, transitionFrame, transitionTracks } from "./schematic-view.js";
 import { initializeReferencePreview } from "./reference-preview.js";
@@ -46,6 +46,7 @@ const MESSAGES = Object.freeze({
     lost_job: "This run is no longer available from the server that created it. Start a new example to continue.",
     pipeline_failed: "The engineering pipeline failed before a completed result was available. Start a fresh run after checking the local server setup.",
     routing_incomplete: "Ohmni could not finish all copper connections. No build package was released. Routing has a three-minute time limit and bounded search. Retry with fewer builds running, or simplify your project and try again.",
+    eda_tool_failed: "KiCad could not complete the hardware checks. No build package was released. Check that KiCad can run on this computer, then retry this revision. Your saved choices are safe.",
 });
 const STAGES = ["describe", "agree", "design", "review", "build"];
 
@@ -369,7 +370,7 @@ function openProjectWorkspace(name) {
     setHidden("#project-workbench", false);
     setHidden("#reference-brief", true);
     setText("#agree-title", "Make room for your ideas.");
-    setText("#agree-description", "Choose what goes on your room sensor. Save a revision, then turn that exact design into a board.");
+    setText("#agree-description", "Choose a purpose and the parts to match. Save a revision, then turn that exact design into a board.");
     show("agree", { focus: false });
     setText("#project-label", name);
 }
@@ -501,7 +502,7 @@ export async function poll(id, identity, { fetcher = globalThis.fetch, schedule 
         if (disposition === "failed") {
             state.runStatus = "failed";
             $("#confirm-brief").disabled = false;
-            const kind = ["worker_start_failed", "routing_incomplete"].includes(job.error_code)
+            const kind = ["worker_start_failed", "routing_incomplete", "eda_tool_failed"].includes(job.error_code)
                 ? job.error_code : "pipeline_failed";
             return showError(kind,
                 () => freshRun(fetcher), state.customProject ? "Retry this revision" : "Start a new example");
@@ -586,6 +587,12 @@ function renderResult(report, jobId) {
     renderRepair(exp.repair);
     renderTour(exp.tour);
     renderChecks(exp.check_sections);
+    const requirements = requirementResultsHtml(report.requirements);
+    const choices = $("#choices-checked");
+    if (choices) {
+        choices.hidden = report.mode !== "bounded_synthesis";
+        choices.innerHTML = `<h2>Your choices checked</h2><p>See which requested choices are present in this design and what still needs proof. These checks do not establish working firmware or tested hardware.</p>${requirements || `<p>No usable per-choice results were supplied by this run.</p>`}`;
+    }
     renderConfidence(exp.confidence);
     renderParts(exp.components);
     renderFiles(report, jobId);

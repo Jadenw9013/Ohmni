@@ -3,20 +3,21 @@
 **Build circuits. Understand why.**
 
 Ohmni helps you understand electronics by making a circuit, following its
-connections, and seeing the evidence behind its design. Build your own version
-of a **USB-powered ESP32 + BME280 room sensor**, save revisions, and generate
-real KiCad schematic, PCB, and fabrication files.
+connections, and seeing the evidence behind its design. Choose a **sensor
+station, buttons-and-lights controller, or SPI memory board**, save revisions,
+and generate real KiCad schematic, PCB, and fabrication files.
 
-**Choose “Make it my project” to customize a sensor board, or explore the saved
+**Choose “Choose my board” to customize a board, or explore the saved
 reference immediately in the interactive 3D circuit lab.** No electronics
 vocabulary, API key, or live language model is required.
 
-The supported family offers a status LED, a programming header, and either
-BME280 address (0x76 or 0x77): eight configurations. Your choices change the
-electrical circuit and generated board. This is bounded deterministic synthesis
-with an authored layout, not arbitrary circuit generation. Electrical simulation
-and firmware generation remain future work. No physical board has been built
-or bench-tested by this prototype.
+Three bounded families share USB-C power and an ESP32 processor: one to three
+BME280/TMP102 sensors; one to four LEDs with one to two buttons; or one to two
+25LC256 memory chips with an optional sensor. Your choices change the electrical
+circuit and the generated placement and copper. Supported counts, parts and
+address choices come from the backend. Unsupported requests receive a specific
+refusal. Electrical simulation and firmware generation remain future work.
+No physical board has been built or bench-tested by this prototype.
 
 ## Run it locally
 
@@ -66,8 +67,9 @@ accounts, tenant isolation, or hosted-service deployment configuration.
 
 ## Your first few minutes
 
-1. Choose **Make it my project**. Name your sensor, choose whether to include
-   its status light and programming header, then **Save first revision**.
+1. Select **Choose my board**, then **Measure your space**, **Buttons &
+   lights**, or **Store data**. Name the project, choose its parts and features,
+   then **Save first revision**.
    USB-C supplies power; programming needs a separate 3.3 V serial adapter.
 2. Try the **sensor challenge**. Predict a repair for an incorrect supply
    connection, then check it. The backend electrical verifier grades a separate
@@ -78,6 +80,8 @@ accounts, tenant isolation, or hosted-service deployment configuration.
 4. Explore your resulting board in 3D. Try **Watch assembly**, **X-ray**, the
    guided tour, and **Inspect this part**. Learn what a component does and
    highlight the copper belonging to its connections.
+   **Your choices checked** reports each confirmed requirement as met, violated,
+   or unknown. A static circuit check does not establish firmware behavior.
 5. Open **Build & export** and download the complete **build package**. It
    includes CAD and fabrication files, the report, a parts list, and assembly
    and bring-up guidance. The server checks artifact integrity before download.
@@ -87,6 +91,26 @@ accounts, tenant isolation, or hosted-service deployment configuration.
 Generated artifacts are also written to `out/demo-jobs/<job-id>/`. The saved
 reference lab and its fixed proposal/repair demonstration remain available
 separately. Your personal project does not replay that scripted repair.
+
+### Build from a saved brief
+
+Start with an editable JSON example: [sensor station](examples/projects/sensor-station.json),
+[buttons and lights](examples/projects/buttons-and-lights.json), or
+[memory board](examples/projects/memory-board.json).
+
+```powershell
+python -m ohmni generate --brief examples/projects/memory-board.json --preview
+python -m ohmni generate --brief examples/projects/memory-board.json --output out/my-memory-board
+```
+
+Preview lists confirmed choices and assumptions without running EDA or writing
+files. A build requires a new or empty output directory and returns a nonzero
+exit code on failure. Add `--json` for structured output. The build retains its
+confirmed brief, report and diagnostic artifacts.
+
+If Windows shows a native KiCad error during development, see
+[KiCad diagnostics](docs/KICAD_WINDOWS_DIAGNOSTICS.md). Native tool failures
+remain failed checks; they never become a verified release.
 
 **Before ordering or assembling:** fabrication checks use a synthetic example
 profile; confirm your fabricator's actual limits. Prices and stock are example
@@ -157,7 +181,7 @@ a scripted proposal and repair provider. Neither flow invokes a live model.
 | Part catalog | 12 parts, all 19 offered packages have local footprint geometry; facts carry provenance |
 | Fixtures | 1 golden circuit + **13** broken variants |
 | Tests | Python core, KiCad integration, slow routing/release tiers, and frontend module tests |
-| Personal projects | 8 supported sensor configurations, immutable local revisions, verifier-graded exercise, integrity-checked build ZIP |
+| Personal projects | Three bounded families, generated placement and routing, immutable local revisions, requirement results, verifier-graded exercise, integrity-checked build ZIP |
 | Golden circuit | no blocking findings, **100% rule coverage** |
 | Broken variants | each caught by exactly the rule and severity it was built to trip |
 

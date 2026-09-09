@@ -4,9 +4,14 @@ import { fail, sameIdentity, pollHeaders, fetchHealth } from "./client-contract.
 const object = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
 const text = (value) => typeof value === "string" && value.length > 0;
 const id = (value) => typeof value === "string" && /^[0-9a-f]{16}$/.test(value);
-export const briefAddress = (brief) => brief.sensors[0].address ?? 118;
+export const briefAddress = (brief) => brief.sensors[0]?.address ?? 118; // Legacy single-sensor callers.
+export const FAMILY_IDS = ["a1_usb_i2c_sensor", "a2_usb_gpio_controller", "a3_usb_spi_peripheral"];
+const integer = (value) => Number.isInteger(value) && value >= 0;
+const finite = (value) => typeof value === "number" && Number.isFinite(value);
 
-export const defaultProjectBrief = () => ({
+export const defaultProjectBrief = (options, familyId = FAMILY_IDS[0]) => options
+    ? structuredClone(options.families.find((family) => family.id === familyId)?.defaults
+        || options.families[0].defaults) : ({
     schema_version: 1, project_name: "My room climate monitor",
     description: "USB-C powered ESP32 room temperature and humidity monitor.",
     archetype: "a1_usb_i2c_sensor", input_power: "usb_c_5v", input_voltage_v: 5,
@@ -17,14 +22,66 @@ export const defaultProjectBrief = () => ({
 });
 
 export function supportedBrief(brief) {
+    // This validates the editable transport, not whether a circuit is safe or
+    // satisfiable. Capability ranges and defaults come from project-options;
+    // actual address conflicts and engineering refusals belong to the server.
     return object(brief) && text(brief.project_name) && brief.project_name.trim().length > 0
         && brief.project_name.length <= 120 && brief.schema_version === 1
-        && brief.archetype === "a1_usb_i2c_sensor" && brief.input_power === "usb_c_5v"
-        && brief.input_voltage_v === 5 && brief.logic_voltage_v === 3.3
+        && text(brief.description) && brief.description.length <= 1000
+        && FAMILY_IDS.includes(brief.archetype) && brief.input_power === "usb_c_5v"
+        && finite(brief.input_voltage_v) && brief.input_voltage_v >= 4.75 && brief.input_voltage_v <= 5.25
+        && finite(brief.logic_voltage_v) && Math.abs(brief.logic_voltage_v - 3.3) <= 1e-9
         && brief.mcu_part_id === "ESP32-WROOM-32E" && brief.max_board_layers === 2
-        && [0, 1].includes(brief.status_led_count) && typeof brief.include_programming_header === "boolean"
-        && Array.isArray(brief.sensors) && brief.sensors.length === 1
-        && brief.sensors[0]?.part_id === "BME280" && [null, 118, 119].includes(brief.sensors[0]?.address);
+        && integer(brief.status_led_count) && integer(brief.button_count ?? 0)
+        && typeof brief.include_programming_header === "boolean"
+        && typeof brief.hand_solderable_preferred === "boolean"
+        && (brief.budget_usd === null || finite(brief.budget_usd) && brief.budget_usd >= 0)
+        && Array.isArray(brief.safety_domains) && brief.safety_domains.every(text)
+        && Array.isArray(brief.sensors) && brief.sensors.every((sensor) => object(sensor) && text(sensor.part_id)
+            && (sensor.address == null || integer(sensor.address) && sensor.address <= 127))
+        && (brief.spi_devices === undefined || Array.isArray(brief.spi_devices)
+            && brief.spi_devices.every((device) => object(device) && text(device.part_id)));
+}
+
+export function parseProjectOptions(payload, identity) {
+    checkIdentity(payload, identity);
+    const options = payload.options;
+    const range = (value) => object(value) && integer(value.min) && integer(value.max)
+        && value.max >= value.min && value.max <= 16;
+    if (!object(options) || options.schema_version !== 1 || !Array.isArray(options.families)
+        || options.families.length !== FAMILY_IDS.length
+        || new Set(options.families.map((family) => family?.id)).size !== FAMILY_IDS.length
+        || !options.families.every((family) => object(family) && FAMILY_IDS.includes(family.id)
+            && text(family.title) && text(family.description)
+            && ["sensor_count", "status_led_count", "button_count", "spi_count"].every((field) => range(family[field]))
+            && Array.isArray(family.sensor_slot_defaults) && family.sensor_slot_defaults.length === family.sensor_count.max
+            && family.sensor_slot_defaults.every((sensor) => object(sensor) && text(sensor.part_id) && sensor.address === null)
+            && supportedBrief(family.defaults) && family.defaults.archetype === family.id)
+        || !Array.isArray(options.sensors) || !options.sensors.length
+        || !options.sensors.every((sensor) => object(sensor) && text(sensor.part_id) && text(sensor.label)
+            && text(sensor.description) && Array.isArray(sensor.addresses) && sensor.addresses.length > 0
+            && sensor.addresses.every((address) => integer(address) && address <= 127)
+            && new Set(sensor.addresses).size === sensor.addresses.length)
+        || new Set(options.sensors.map((sensor) => sensor.part_id)).size !== options.sensors.length
+        || !Array.isArray(options.spi_devices) || !options.spi_devices.length
+        || !options.spi_devices.every((device) => object(device) && text(device.part_id) && text(device.label) && text(device.description))
+        || new Set(options.spi_devices.map((device) => device.part_id)).size !== options.spi_devices.length
+        || !object(options.fixed) || !Array.isArray(options.limitations) || !options.limitations.every(text)) fail("api_ui_mismatch");
+    if (!options.families.every((family) => briefFitsOptions(family.defaults, options)
+        && family.sensor_slot_defaults.every((slot) => options.sensors.some((sensor) => sensor.part_id === slot.part_id)))) fail("api_ui_mismatch");
+    return options;
+}
+
+export function briefFitsOptions(brief, options) {
+    if (!supportedBrief(brief)) return false;
+    const family = options.families.find((item) => item.id === brief.archetype);
+    if (!family) return false;
+    const inRange = (count, field) => count >= family[field].min && count <= family[field].max;
+    return inRange(brief.sensors.length, "sensor_count") && inRange(brief.status_led_count, "status_led_count")
+        && inRange(brief.button_count ?? 0, "button_count") && inRange(brief.spi_devices?.length ?? 0, "spi_count")
+        && brief.sensors.every((sensor) => options.sensors.some((item) => item.part_id === sensor.part_id
+            && (sensor.address == null || item.addresses.includes(sensor.address))))
+        && (brief.spi_devices || []).every((device) => options.spi_devices.some((item) => item.part_id === device.part_id));
 }
 
 export function parseProjectEnvelope(payload, identity) {
@@ -59,20 +116,30 @@ export function checkIdentity(payload, identity) {
 }
 
 export function sameBrief(a, b) {
-    return Boolean(a && b) && a.project_name === b.project_name
-        && a.status_led_count === b.status_led_count
-        && a.include_programming_header === b.include_programming_header
-        && briefAddress(a) === briefAddress(b);
+    const ordered = (value) => Array.isArray(value) ? value.map(ordered)
+        : object(value) ? Object.fromEntries(Object.keys(value).sort().map((key) => [key, ordered(value[key])])) : value;
+    const normalized = (brief) => ({ ...brief, button_count: brief.button_count ?? 0,
+        spi_devices: brief.spi_devices ?? [], sensors: brief.sensors.map((sensor) => ({ ...sensor, address: sensor.address ?? null })) });
+    return Boolean(a && b) && JSON.stringify(ordered(normalized(a))) === JSON.stringify(ordered(normalized(b)));
 }
 
 export function briefChanges(previous, current) {
     if (!previous) return ["First saved configuration"];
     const changes = [];
     if (previous.project_name !== current.project_name) changes.push(`Renamed to ${current.project_name}`);
-    if (previous.status_led_count !== current.status_led_count) changes.push(current.status_led_count ? "Added the status LED and its resistor" : "Omitted the status LED and its resistor");
+    if (previous.archetype !== current.archetype) changes.push("Changed the kind of board");
+    if (previous.status_led_count !== current.status_led_count) changes.push(`Status lights: ${previous.status_led_count} → ${current.status_led_count}`);
+    if ((previous.button_count ?? 0) !== (current.button_count ?? 0)) changes.push(`Buttons: ${previous.button_count ?? 0} → ${current.button_count ?? 0}`);
     if (previous.include_programming_header !== current.include_programming_header) changes.push(current.include_programming_header ? "Added the programming header" : "Omitted the programming header");
-    if (briefAddress(previous) !== briefAddress(current)) changes.push(`Changed the sensor address to ${briefAddress(current) === 118 ? "0x76" : "0x77"}`);
-    return changes.length ? changes : ["The visible choices match the previous revision"];
+    const sensors = (brief) => brief.sensors.map((sensor) => `${sensor.part_id} (${sensor.address == null ? "automatic address" : `0x${sensor.address.toString(16).toUpperCase()}`})`).join(", ") || "none";
+    if (sensors(previous) !== sensors(current)) changes.push(`Sensors: ${sensors(current)}`);
+    const memories = (brief) => (brief.spi_devices || []).map((device) => device.part_id).join(", ") || "none";
+    if (memories(previous) !== memories(current)) changes.push(`Memory devices: ${memories(current)}`);
+    const visible = ["project_name", "archetype", "status_led_count", "button_count", "include_programming_header", "sensors", "spi_devices"];
+    const remaining = { ...previous };
+    for (const field of visible) remaining[field] = current[field];
+    if (!sameBrief(remaining, current)) changes.push("Updated additional saved requirements");
+    return changes.length ? changes : ["The complete configuration matches the previous revision"];
 }
 
 export function parseProjectStart(payload, identity) {

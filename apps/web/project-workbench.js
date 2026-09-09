@@ -1,10 +1,29 @@
 import { escapeHtml } from "./view-model.js";
 import { errorKind, fetchHealth } from "./client-contract.js";
-import { defaultProjectBrief, parseProjectEnvelope, parseProjectList, projectRequest, sameBrief, supportedBrief, checkIdentity, briefAddress, briefChanges, ProjectRequestError } from "./project-contract.js";
+import { defaultProjectBrief, parseProjectEnvelope, parseProjectList, parseProjectOptions, projectRequest, sameBrief, supportedBrief, briefFitsOptions, checkIdentity, briefChanges, ProjectRequestError } from "./project-contract.js";
 
 const e = escapeHtml;
 const object = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
 const hasText = (value) => typeof value === "string" && value.length > 0;
+const familyCopy = {
+    a1_usb_i2c_sensor: { title: "Measure your space", outcome: "Build a sensor station", icon: "M11 5a3 3 0 0 1 6 0v10a5 5 0 1 1-6 0ZM14 8v11M21 6h3m-3 5h3" },
+    a2_usb_gpio_controller: { title: "Buttons & lights", outcome: "Build a controller", icon: "M3 14h10v9H3zM5 11h6v3M18 8a4 4 0 1 1 8 0v5h-8ZM20 13v7m4-7v7M17 3l-2-2m12 2 2-2" },
+    a3_usb_spi_peripheral: { title: "Store data", outcome: "Build a memory board", icon: "M7 6h16v18H7zM11 10h8v10h-8zM3 9h4m-4 6h4m-4 6h4m16-12h4m-4 6h4m-4 6h4" },
+};
+const addressLabel = (value) => value == null ? "Automatic" : `0x${value.toString(16).toUpperCase()}`;
+const exerciseStartHtml = () => `<button type="button" class="secondary" data-load-exercise>Try the sensor challenge</button><p class="fineprint">A separate teaching circuit. Your project stays as you chose it.</p>`;
+
+export function switchFamilyDraft(current, familyId, options, previousDrafts = new Map()) {
+    previousDrafts.set(current.archetype, structuredClone(current));
+    const previousDefault = options.families.find((family) => family.id === current.archetype)?.defaults;
+    const targetDefault = defaultProjectBrief(options, familyId);
+    const target = structuredClone(previousDrafts.get(familyId) || targetDefault);
+    const specific = new Set(["archetype", "sensors", "spi_devices", "button_count", "status_led_count", "include_programming_header"]);
+    for (const [key, value] of Object.entries(current)) if (!specific.has(key)) target[key] = structuredClone(value);
+    if (current.project_name === previousDefault?.project_name) target.project_name = targetDefault.project_name;
+    if (current.description === previousDefault?.description) target.description = targetDefault.description;
+    return target;
+}
 
 export function parseExercise(payload, identity) {
     checkIdentity(payload, identity);
@@ -45,8 +64,14 @@ export function mountProjectWorkbench(root, {
     if (!root) return null;
     let project = null;
     let revision = null;
+    let pendingProjectId = null;
     let draft = defaultProjectBrief();
     let busy = false;
+    let options = null;
+    let optionsPromise = null;
+    const familyDrafts = new Map();
+    const sensorDrafts = new Map();
+    const memoryDrafts = new Map();
     let exercise = null;
     let exerciseIdentity = null;
     let exerciseVersion = 0;
@@ -54,59 +79,98 @@ export function mountProjectWorkbench(root, {
     let disposed = false;
     const $ = (selector) => root.querySelector(selector);
 
+    function countSelect(field, label, count, range) {
+        return `<label class="feature-count" for="project-${field}"><span>${e(label)}</span><select id="project-${field}" name="${field}">${Array.from({ length: range.max - range.min + 1 }, (_, i) => range.min + i).map((value) => `<option value="${value}" ${value === count ? "selected" : ""}>${value === 0 ? "None" : value}</option>`).join("")}</select></label>`;
+    }
+
+    function sensorControls(family) {
+        if (!family.sensor_count.max) return "";
+        return `<fieldset class="project-choice"><legend>Sensors that read your surroundings</legend><p>Choose what your board can measure. A program will read the sensors and decide what to do with the values.</p>${countSelect("sensor-count", "Number of sensors", draft.sensors.length, family.sensor_count)}<div class="sensor-slots">${draft.sensors.map((sensor, i) => {
+            const part = options.sensors.find((item) => item.part_id === sensor.part_id);
+            return `<div class="sensor-slot"><label for="project-sensor-${i}">Sensor ${i + 1}</label><select id="project-sensor-${i}" data-sensor-part="${i}">${options.sensors.map((item) => `<option value="${e(item.part_id)}" ${item.part_id === sensor.part_id ? "selected" : ""}>${e(item.label)}</option>`).join("")}</select><p>${e(part?.description || "This saved part is not offered by the current server.")}</p><label class="sensor-address" for="project-address-${i}"><span>Address on the shared connection</span><select id="project-address-${i}" data-sensor-address="${i}"><option value="auto" ${sensor.address == null ? "selected" : ""}>Automatic</option>${(part?.addresses || []).map((address) => `<option value="${address}" ${sensor.address === address ? "selected" : ""}>${addressLabel(address)}</option>`).join("")}</select></label></div>`;
+        }).join("")}</div><p class="feature-help">Each sensor needs its own address. Automatic lets the server choose when you save; any conflict comes back with an explanation.</p></fieldset>`;
+    }
+
+    function memoryControls(family) {
+        if (!family.spi_count.max) return "";
+        return `<fieldset class="project-choice"><legend>A place to keep data</legend><p>EEPROM can retain stored values without power. Your firmware will control what gets written and read.</p>${countSelect("memory-count", "Memory devices", draft.spi_devices?.length || 0, family.spi_count)}${(draft.spi_devices || []).map((device, i) => `<div class="memory-slot"><label for="project-memory-${i}">Memory ${i + 1}</label><select id="project-memory-${i}" data-memory-part="${i}">${options.spi_devices.map((part) => `<option value="${e(part.part_id)}" ${part.part_id === device.part_id ? "selected" : ""}>${e(part.label)}</option>`).join("")}</select><p>${e(options.spi_devices.find((part) => part.part_id === device.part_id)?.description || "")}</p></div>`).join("")}</fieldset>`;
+    }
+
     function render() {
-        const address = briefAddress(draft);
-        root.innerHTML = `<div class="project-edit-layout">
-          <div class="project-editor">
-            <div class="project-editor-heading"><div><h2>Your room sensor, your choices.</h2><p>Keep the essentials. Decide what belongs on your board.</p></div><span class="project-save-state" id="project-save-state" role="status"></span></div>
-            <form id="project-form">
-              <label class="project-name-label" for="project-name">Give your project a name</label>
-              <input id="project-name" name="project_name" type="text" required maxlength="120" value="${e(draft.project_name)}" autocomplete="off">
-              <div class="project-circuit-strip" aria-label="Supported circuit: USB-C power, 3.3 volt regulator, ESP32 processor, BME280 sensor"><span>USB-C<small>5 V power</small></span><i aria-hidden="true"></i><span>3.3 V<small>Regulated supply</small></span><i aria-hidden="true"></i><span>ESP32<small>Your processor</small></span><i aria-hidden="true"></i><span>BME280<small>Your sensor</small></span></div>
-              <p class="project-envelope">This first project supports one BME280 temperature, humidity, and pressure sensor on a two-layer ESP32 board.</p>
-              <fieldset class="project-choice"><legend>A little signal you can see</legend><p>An LED gives firmware a way to show status. It does not light up automatically without a program.</p><div class="project-choice-options">
-                <label><input type="radio" name="led" value="1" ${draft.status_led_count === 1 ? "checked" : ""}><span><strong>Include a status light</strong><small>LED and its current-limiting resistor</small></span></label>
-                <label><input type="radio" name="led" value="0" ${draft.status_led_count === 0 ? "checked" : ""}><span><strong>Keep it minimal</strong><small>Leave the light and its resistor out</small></span></label>
+        // Keep the actual form: an in-flight check must re-enable the same
+        // controls after the surrounding feature editor is redrawn.
+        const retainedExercise = $("#sensor-exercise");
+        const family = options?.families.find((item) => item.id === draft.archetype);
+        root.innerHTML = `<form id="project-form" class="family-workbench">
+          <div class="project-editor-heading"><div><h2>What would you like to make?</h2><p>Start with a purpose. Make the details yours.</p></div><span class="project-save-state" id="project-save-state" role="status"></span></div>
+          <fieldset class="family-picker"><legend class="sr-only">Choose the kind of board</legend>${Object.entries(familyCopy).map(([id, copy]) => `<label class="family-option"><input type="radio" name="family" value="${id}" ${id === draft.archetype ? "checked" : ""}><svg viewBox="0 0 32 28" aria-hidden="true"><path d="${copy.icon}"/></svg><span><strong>${copy.title}</strong><small>${copy.outcome}</small></span></label>`).join("")}</fieldset>
+          <div id="project-error" class="run-error" role="alert" hidden></div>
+          <div id="project-load-retry" hidden><button type="button" class="secondary" data-load-project>Retry opening saved project</button></div>
+          ${!options ? `<div class="project-options-loading"><p>Loading the available parts and board choices from your server…</p><button type="button" class="secondary" data-load-options>Retry loading choices</button></div>` : ""}
+          <div class="project-edit-layout">
+            <section class="project-editor" aria-label="Your board features">
+              <label class="project-name-label" for="project-name">Give your project a name</label><input id="project-name" name="project_name" type="text" required maxlength="120" value="${e(draft.project_name)}" autocomplete="off">
+              <div class="project-circuit-strip" aria-label="USB-C power, regulated supply, ESP32 processor and your chosen features"><span>USB-C<small>5 V power</small></span><i aria-hidden="true"></i><span>3.3 V<small>Regulated supply</small></span><i aria-hidden="true"></i><span>ESP32<small>Your processor</small></span></div>
+              <p class="project-envelope">${e(family?.description || "Your server provides the supported combinations.")}</p>
+              ${family ? memoryControls(family) + sensorControls(family) : ""}
+              ${family?.button_count.max ? `<fieldset class="project-choice"><legend>Give your program an input</legend><p>Physical buttons give you a simple way to interact with your device. Firmware decides how it responds.</p>${countSelect("button-count", "Push buttons", draft.button_count || 0, family.button_count)}</fieldset>` : ""}
+              ${family ? `<fieldset class="project-choice"><legend>A signal you can see</legend><p>A light can show what your program is doing. Each selected LED comes with its current-limiting resistor.</p>${countSelect("led", "Status lights", draft.status_led_count, family.status_led_count)}</fieldset>` : ""}
+              <fieldset class="project-choice"><legend>How you will program it</legend><p>USB-C supplies power. Programming needs a separate 3.3 V USB-to-serial adapter.</p><div class="project-choice-options">
+                <label><input type="radio" name="header" value="yes" ${draft.include_programming_header ? "checked" : ""}><span><strong>Include the programming header</strong><small>A connection for your external adapter</small></span></label>
+                <label><input type="radio" name="header" value="no" ${!draft.include_programming_header ? "checked" : ""}><span><strong>Leave the header out</strong><small>You will need to provide programming access</small></span></label>
               </div></fieldset>
-              <fieldset class="project-choice"><legend>How you will program it</legend><p>USB-C supplies power. Programming uses a separate USB-to-serial adapter and the board's programming connections.</p><div class="project-choice-options">
-                <label><input type="radio" name="header" value="yes" ${draft.include_programming_header ? "checked" : ""}><span><strong>Include the programming header</strong><small>Recommended for your first board</small></span></label>
-                <label><input type="radio" name="header" value="no" ${!draft.include_programming_header ? "checked" : ""}><span><strong>Leave the header out</strong><small>Requires your own programming access</small></span></label>
-              </div></fieldset>
-              <details class="project-address"><summary>Sensor address <span id="project-address-summary">${address === 118 ? "0x76" : "0x77"}</span></summary><label for="project-address">The address tells firmware which device to talk to.</label><select id="project-address" name="address"><option value="118" ${address === 118 ? "selected" : ""}>0x76 — address pin tied to ground</option><option value="119" ${address === 119 ? "selected" : ""}>0x77 — address pin tied to 3.3 V</option></select><p>Saving changes the sensor's address connection in the actual design.</p></details>
-              <div id="project-error" class="run-error" role="alert" hidden></div>
-              <div class="project-editor-actions"><button type="submit" id="project-save" class="secondary">Save first revision</button><button type="button" id="project-run" class="primary" disabled>Generate my board</button></div>
-              <p id="project-action-note" class="project-action-note" aria-live="polite"></p>
-            </form>
-            <section class="project-history" aria-labelledby="project-history-title"><div><h3 id="project-history-title">Your saved revisions</h3><p>Every save keeps a separate version on this server. Reopen one to compare or build it.</p></div><div id="project-history-options"></div><div id="project-preview"></div></section>
+              <details class="saved-details"><summary>Additional saved requirements</summary><p>These stay with your revision when you edit the features above.</p><label for="project-description">What this project is for<textarea id="project-description" rows="3" maxlength="1000">${e(draft.description)}</textarea></label><dl><div><dt>Input supply</dt><dd>${e(draft.input_voltage_v)} V</dd></div><div><dt>Logic supply</dt><dd>${e(draft.logic_voltage_v)} V</dd></div><div><dt>Board layers</dt><dd>${e(draft.max_board_layers)}</dd></div><div><dt>Budget preference</dt><dd>${draft.budget_usd == null ? "Not specified" : `$${e(draft.budget_usd)} (total cost is unknown)`}</dd></div><div><dt>Hand soldering preferred</dt><dd>${draft.hand_solderable_preferred ? "Yes" : "No"}</dd></div></dl></details>
+            </section>
+            <aside class="project-confirmation" aria-labelledby="confirmed-brief-title"><div class="confirmation-heading"><span aria-hidden="true">↳</span><div><h2 id="confirmed-brief-title">Your confirmed brief</h2><p id="project-preview-note">Save your choices to see what the server will build.</p></div></div><div class="project-editor-actions"><button type="submit" id="project-save" class="secondary">Save first revision</button><button type="button" id="project-run" class="primary" disabled>Generate my board</button></div><p id="project-action-note" class="project-action-note" aria-live="polite"></p><div id="project-preview"></div><div class="project-build-boundary"><strong>A board is the beginning.</strong><p>You get a schematic, PCB, recorded engineering checks, and build files. Assembly, firmware, and testing turn it into a working device.</p><details><summary>Know the limits before building</summary>${(options?.limitations || []).map((limit) => `<p>${e(limit)}</p>`).join("")}</details></div></aside>
           </div>
-          <aside class="project-learning">
-            <div class="project-learning-intro"><span aria-hidden="true">↳</span><div><h2>Before you build,<br>follow the power.</h2><p>A short challenge to understand the most important connection on your board.</p></div></div>
-            <div id="sensor-exercise" aria-live="polite"><button type="button" class="secondary" data-load-exercise>Try the sensor challenge</button><p class="fineprint">A separate teaching circuit. Your saved design stays as you chose it.</p></div>
-            <div class="project-build-boundary"><strong>What you get</strong><p>A generated schematic and PCB, actual engineering check results, and a downloadable build package.</p><strong>What still needs your work</strong><p>Physical assembly, a program, and bench testing. Component models and animations do not simulate a working device.</p></div>
-          </aside>
-        </div>`;
-        renderHistory();
-        sync();
+        </form>
+        <div class="project-secondary"><section class="project-history" aria-labelledby="project-history-title"><h2 id="project-history-title">Your saved revisions</h2><p>Every save keeps a separate version on this server. Reopen one to compare or build it.</p><div id="project-history-options"></div><div id="project-revision-changes"></div></section><aside class="project-learning"><div class="project-learning-intro"><span aria-hidden="true">↳</span><div><h2>Follow the power.</h2><p>Try a short sensor challenge while your own design takes shape.</p></div></div><div id="sensor-exercise" aria-live="polite">${exerciseStartHtml()}</div></aside></div>`;
+        if (retainedExercise) $("#sensor-exercise").replaceWith(retainedExercise);
+        renderHistory(); sync();
+    }
+
+    async function ensureOptions() {
+        if (options) return options;
+        if (optionsPromise) return optionsPromise;
+        optionsPromise = (async () => {
+            const result = await projectRequest("/api/project-options", { fetcher });
+            const next = parseProjectOptions(result.payload, result.identity);
+            if (disposed) return null;
+            options = next;
+            if (!project && !revision) draft = defaultProjectBrief(options);
+            render();
+            return options;
+        })();
+        try { return await optionsPromise; }
+        catch (error) { if (!disposed) showError(error); return null; }
+        finally { optionsPromise = null; sync(); }
     }
 
     function sync() {
         if (!$("#project-form")) return;
         const dirty = !revision || !sameBrief(draft, revision.brief);
-        $("#project-save-state").textContent = busy ? "Working…" : dirty ? "Unsaved changes" : `Revision ${revision.number} saved`;
+        $("#project-save-state").textContent = busy ? "Working…" : pendingProjectId ? "Saved project unavailable" : !options ? "Choices unavailable" : dirty ? "Unsaved changes" : `Revision ${revision.number} saved`;
         $("#project-save").textContent = busy ? "Working…" : project ? "Save new revision" : "Save first revision";
-        $("#project-save").disabled = busy || !dirty;
-        $("#project-run").disabled = busy || dirty || !revision;
+        $("#project-save").disabled = busy || !options || !!pendingProjectId || !dirty;
+        $("#project-run").disabled = busy || !options || !!pendingProjectId || dirty || !revision;
         $("#project-run").textContent = revision?.job_id ? "Open this revision's run" : "Generate my board";
-        $("#project-action-note").textContent = dirty ? "Save your choices first. Existing revisions keep their original design and files."
-            : `Revision ${revision.number} is saved. ${revision.job_id ? "Reopen its engineering run." : "Generate its board and run the real checks. Allow a few minutes; copper routing has a three-minute limit."}`;
-        root.querySelectorAll("#project-form input, #project-form select, #project-revision").forEach((input) => { input.disabled = busy; });
+        $("#project-action-note").textContent = pendingProjectId ? "Retry opening this saved project to recover its choices and revisions."
+            : dirty ? "Save your choices first. Existing revisions keep their original design and files."
+            : `Revision ${revision.number} is saved. ${revision.job_id ? "Reopen its engineering run." : "Generate its board and run the real checks. This usually takes a short wait; a difficult route can take up to three minutes."}`;
+        $("#project-preview-note").textContent = !revision ? "Save your choices to see what the server will build."
+            : dirty ? `These are revision ${revision.number}'s saved choices. Save your changes to confirm a new brief.`
+                : `Revision ${revision.number} is confirmed. Its engineering checks begin when you generate the board.`;
+        $("#project-load-retry").hidden = !pendingProjectId || !options || busy;
+        root.querySelectorAll("[data-load-options], [data-load-project]").forEach((button) => { button.disabled = busy; });
+        root.querySelectorAll("#project-form input, #project-form select, #project-form textarea, #project-revision").forEach((input) => { input.disabled = busy || !options || !!pendingProjectId; });
     }
 
     function renderHistory() {
         $("#project-history-options").innerHTML = project ? `<label for="project-revision">Open a saved version</label><select id="project-revision">${project.revisions.toReversed().map((item) => `<option value="${e(item.revision_id)}" ${item.revision_id === revision?.revision_id ? "selected" : ""}>Revision ${item.number} — ${e(item.brief.project_name)}</option>`).join("")}</select>` : `<p class="project-empty">Your first saved revision will appear here.</p>`;
         const preview = revision?.preview;
         const previous = project?.revisions.find((item) => item.number === revision?.number - 1);
-        $("#project-preview").innerHTML = preview ? `<div class="revision-changes"><p>${previous ? `Changes from revision ${previous.number}` : "Your starting point"}</p><ul>${briefChanges(previous?.brief, revision.brief).map((change) => `<li>${e(change)}</li>`).join("")}</ul></div><details class="disclose"><summary>What the server recorded for revision ${revision.number}</summary>${[...preview.asked_for || [], ...preview.assumed || [], ...preview.needs_clarification || []].map((line) => `<p><strong>${e(line.label)}</strong><br>${e(line.value)}</p>`).join("")}<p class="fineprint">This is the saved brief. Engineering results appear only after its run completes.</p></details>` : "";
+        $("#project-revision-changes").innerHTML = preview ? `<div class="revision-changes"><p>${previous ? `Changes from revision ${previous.number}` : "Your starting point"}</p><ul>${briefChanges(previous?.brief, revision.brief).map((change) => `<li>${e(change)}</li>`).join("")}</ul></div>` : "";
+        $("#project-preview").innerHTML = preview ? `<dl class="confirmed-choices">${(preview.asked_for || []).map((line) => `<div><dt>${e(line.label)}</dt><dd>${e(line.value)}</dd></div>`).join("")}</dl><details class="disclose"><summary>Assumptions and things to check</summary>${[...preview.assumed || [], ...preview.needs_clarification || []].map((line) => `<p><strong>${e(line.label)}</strong><br>${e(line.value)}</p>`).join("")}<p class="fineprint">This is the saved brief. Engineering results appear after its run completes.</p></details>` : `<div class="unconfirmed-brief"><p>Choose your parts on the left, then save a revision.</p><p>The server will record the exact configuration and explain any choices it cannot support.</p></div>`;
     }
 
     function showError(error) {
@@ -114,11 +178,13 @@ export function mountProjectWorkbench(root, {
         $("#project-error").hidden = false;
     }
 
-    function openNew() {
+    async function openNew() {
         if (busy) return;
-        exerciseVersion += 1;
-        project = null; revision = null; draft = defaultProjectBrief();
+        resetExercise();
+        project = null; revision = null; pendingProjectId = null; draft = defaultProjectBrief(options);
+        familyDrafts.clear(); sensorDrafts.clear(); memoryDrafts.clear();
         onInvalidate(); render(); onOpen(draft.project_name);
+        await ensureOptions();
         $("#project-name")?.focus();
     }
 
@@ -140,22 +206,36 @@ export function mountProjectWorkbench(root, {
     async function openProject(projectId) {
         if (busy) return;
         busy = true;
-        exerciseVersion += 1;
+        pendingProjectId = projectId;
+        resetExercise();
         project = null; revision = null; draft = defaultProjectBrief();
         onInvalidate(); onOpen("Your saved project"); render(); sync();
         try {
+            if (!await ensureOptions()) return;
             const { payload, identity } = await projectRequest(`/api/projects/${encodeURIComponent(projectId)}`, { fetcher });
             const next = parseProjectEnvelope(payload, identity);
             if (next.project_id !== projectId) throw new Error("Project identity mismatch");
+            if (!next.revisions.every((item) => briefFitsOptions(item.brief, options))) throw new ProjectRequestError("This project contains choices that the current editor cannot display. Reload after updating the app and server together.");
             project = next; revision = next.revisions.at(-1); draft = structuredClone(revision.brief);
+            pendingProjectId = null;
+            familyDrafts.clear(); sensorDrafts.clear(); memoryDrafts.clear();
             render(); onOpen(draft.project_name);
         } catch (error) { showError(error); }
         finally { busy = false; sync(); }
     }
 
     async function save() {
-        if (busy) return;
-        if (!supportedBrief(draft)) return showError(new ProjectRequestError("Give your project a name before saving. Use between 1 and 120 characters."));
+        if (busy || !options || pendingProjectId) return;
+        if (!draft.project_name.trim() || draft.project_name.length > 120) return showError(new ProjectRequestError("Give your project a name before saving. Use between 1 and 120 characters."));
+        if (!draft.description.length || draft.description.length > 1000) {
+            const description = $("#project-description");
+            const details = description?.closest?.("details");
+            if (details) details.open = true;
+            description?.focus();
+            return showError(new ProjectRequestError("Add a short project purpose under Additional saved requirements. Use between 1 and 1,000 characters."));
+        }
+        if (!supportedBrief(draft)) return showError(new ProjectRequestError("Some saved requirements cannot be read by this editor. Reload after updating the app and server together."));
+        if (!briefFitsOptions(draft, options)) return showError(new ProjectRequestError("Some saved choices are not offered by this server. Review the parts and counts before saving."));
         busy = true; sync(); $("#project-error").hidden = true;
         try {
             const path = project ? `/api/projects/${project.project_id}/revisions` : "/api/projects";
@@ -171,7 +251,7 @@ export function mountProjectWorkbench(root, {
     }
 
     async function run() {
-        if (busy || !revision || !sameBrief(draft, revision.brief)) return;
+        if (busy || !options || !revision || !sameBrief(draft, revision.brief)) return;
         const projectId = project.project_id;
         const revisionId = revision.revision_id;
         busy = true; sync(); $("#project-error").hidden = true;
@@ -196,8 +276,18 @@ export function mountProjectWorkbench(root, {
         $("#sensor-exercise").innerHTML = `<h3>${e(exercise.title)}</h3><p>${e(exercise.prompt)}</p><label class="exercise-reflection" for="sensor-prediction">${e(exercise.prediction_prompt || "What do you expect to happen? Explain it in your own words.")}<textarea id="sensor-prediction" rows="3" placeholder="My prediction…"></textarea><span>This reflection stays in this page and is not graded.</span></label><form id="sensor-choice-form"><fieldset><legend>Choose the repair you would make</legend>${exercise.choices.map((choice) => `<label class="exercise-option"><input type="radio" name="repair" value="${e(choice.id)}" required><span>${e(choice.label)}</span></label>`).join("")}</fieldset><button type="submit" class="secondary">Check my repair</button></form><div id="sensor-result" role="status"></div><p class="exercise-limit">${e(exercise.limitation)}</p>`;
     }
 
+    function resetExercise() {
+        exerciseVersion += 1;
+        exercise = null;
+        exerciseIdentity = null;
+        const container = $("#sensor-exercise");
+        if (container) container.innerHTML = `<p>The teaching challenge has been reset for this project.</p>${exerciseStartHtml()}`;
+    }
+
     async function loadExercise() {
         const version = ++exerciseVersion;
+        exercise = null;
+        exerciseIdentity = null;
         $("#sensor-exercise").innerHTML = `<p>Loading the teaching circuit…</p>`;
         try {
             const { payload, identity } = await projectRequest("/api/exercises/sensor-rail", { fetcher });
@@ -229,25 +319,67 @@ export function mountProjectWorkbench(root, {
         }
     }
 
+    function rememberSlots() {
+        const sensors = sensorDrafts.get(draft.archetype) || [];
+        draft.sensors.forEach((sensor, i) => { sensors[i] = structuredClone(sensor); });
+        sensorDrafts.set(draft.archetype, sensors);
+        const memories = memoryDrafts.get(draft.archetype) || [];
+        (draft.spi_devices || []).forEach((device, i) => { memories[i] = structuredClone(device); });
+        memoryDrafts.set(draft.archetype, memories);
+    }
+
     function input(event) {
         if (event.target.closest?.("#sensor-choice-form")) {
             exerciseVersion += 1;
             $("#sensor-result").innerHTML = "";
         }
-        if (!event.target.closest?.("#project-form")) return;
-        const next = structuredClone(draft);
-        next.project_name = $("#project-name").value;
-        next.status_led_count = Number($("input[name=led]:checked").value);
-        next.include_programming_header = $("input[name=header]:checked").value === "yes";
-        next.sensors[0].address = Number($("#project-address").value);
-        if (!sameBrief(next, draft)) { draft = next; onInvalidate(); }
-        $("#project-address-summary").textContent = draft.sensors[0].address === 118 ? "0x76" : "0x77";
+        if (!event.target.closest?.("#project-form") || busy || !options || pendingProjectId) return;
+        const target = event.target;
+        let next = structuredClone(draft);
+        let redraw = false;
+        const family = options.families.find((item) => item.id === draft.archetype);
+        if (target.name === "family" && target.value !== draft.archetype) {
+            rememberSlots();
+            next = switchFamilyDraft(draft, target.value, options, familyDrafts);
+            redraw = true;
+        } else if (target.id === "project-name") next.project_name = target.value;
+        else if (target.id === "project-description") next.description = target.value;
+        else if (target.id === "project-led") next.status_led_count = Number(target.value);
+        else if (target.id === "project-button-count") next.button_count = Number(target.value);
+        else if (target.name === "header") next.include_programming_header = target.value === "yes";
+        else if (target.id === "project-sensor-count") {
+            rememberSlots();
+            next.sensors = Array.from({ length: Number(target.value) }, (_, i) => structuredClone(
+                sensorDrafts.get(draft.archetype)?.[i] || family.sensor_slot_defaults[i]));
+            redraw = true;
+        } else if (target.id === "project-memory-count") {
+            rememberSlots();
+            next.spi_devices = Array.from({ length: Number(target.value) }, (_, i) => structuredClone(
+                memoryDrafts.get(draft.archetype)?.[i] || family.defaults.spi_devices?.[0] || { part_id: options.spi_devices[0].part_id }));
+            redraw = true;
+        } else if (target.dataset?.sensorPart !== undefined) {
+            next.sensors[Number(target.dataset.sensorPart)] = { part_id: target.value, address: null };
+            redraw = true;
+        } else if (target.dataset?.sensorAddress !== undefined) {
+            next.sensors[Number(target.dataset.sensorAddress)].address = target.value === "auto" ? null : Number(target.value);
+        } else if (target.dataset?.memoryPart !== undefined) {
+            next.spi_devices[Number(target.dataset.memoryPart)].part_id = target.value;
+        }
+        if (!sameBrief(next, draft)) {
+            draft = next; onInvalidate();
+            $("#project-error").hidden = true;
+            if (redraw) {
+                render();
+                const selector = target.name === "family" ? `input[name="family"][value="${draft.archetype}"]` : `#${target.id}`;
+                $(selector)?.focus();
+            }
+        }
         sync();
     }
     function change(event) {
         if (event.target.id === "project-revision") {
             const next = project?.revisions.find((item) => item.revision_id === event.target.value);
-            if (next) { exerciseVersion += 1; revision = next; draft = structuredClone(next.brief); onInvalidate(); render(); onOpen(draft.project_name); }
+            if (next && !busy) { resetExercise(); revision = next; draft = structuredClone(next.brief); familyDrafts.clear(); sensorDrafts.clear(); memoryDrafts.clear(); onInvalidate(); render(); onOpen(draft.project_name); }
         }
     }
     function submit(event) {
@@ -256,6 +388,8 @@ export function mountProjectWorkbench(root, {
     }
     function click(event) {
         if (event.target.closest?.("#project-run")) void run();
+        if (event.target.closest?.("[data-load-options]")) void (pendingProjectId ? openProject(pendingProjectId) : ensureOptions());
+        if (event.target.closest?.("[data-load-project]") && pendingProjectId) void openProject(pendingProjectId);
         if (event.target.closest?.("[data-load-exercise]")) void loadExercise();
     }
     function shelfClick(event) {
@@ -266,7 +400,7 @@ export function mountProjectWorkbench(root, {
     root.addEventListener("input", input); root.addEventListener("change", change);
     root.addEventListener("submit", submit); root.addEventListener("click", click);
     shelf?.addEventListener("click", shelfClick);
-    render(); void refreshShelf();
+    render(); void ensureOptions(); void refreshShelf();
     return { openNew, openProject, refreshShelf, dispose() {
         disposed = true; exerciseVersion += 1; shelfVersion += 1;
         root.removeEventListener("input", input); root.removeEventListener("change", change);

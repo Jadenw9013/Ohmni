@@ -26,8 +26,10 @@ def test_personal_pipeline_passes_generated_board_and_persists_placement_lineage
     captured = []
 
     class CapturePipeline(ProjectPipeline):
-        def finish_design(self, destination, request, design, catalog, board, *, scripted):
+        def finish_design(self, destination, request, design, catalog, board, *, scripted,
+                          placement_request=None,confirmed_brief=None):
             assert scripted is False
+            assert placement_request==expected.placement_request and confirmed_brief==brief
             captured.append(board)
             assert design.final_circuit.content_hash == expected.circuit.content_hash
             return SimpleNamespace(project={}, pcb={})

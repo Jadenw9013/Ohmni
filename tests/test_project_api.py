@@ -171,11 +171,13 @@ def test_interrupted_job_fails_explicitly_and_admission_is_bounded(tmp_path, mon
 
 
 @pytest.mark.parametrize("typed", [True, False])
-def test_routing_incomplete_code_is_owned_persistent_and_retryable(tmp_path, monkeypatch, capsys, typed):
+@pytest.mark.parametrize("failure_code", ["routing_incomplete", "eda_tool_failed"])
+def test_pipeline_failure_code_is_owned_persistent_and_retryable(tmp_path, monkeypatch, capsys, typed, failure_code):
     from ohmni.application import projects
-    from ohmni.application.demo import RoutingIncompleteError
+    from ohmni.application.demo import EdaToolFailedError, RoutingIncompleteError
 
-    class Incomplete(RoutingIncompleteError):
+    base_error=RoutingIncompleteError if failure_code=="routing_incomplete" else EdaToolFailedError
+    class Incomplete(base_error):
         def __str__(self):
             raise AssertionError("The API must never format a routing exception")
 
@@ -186,12 +188,12 @@ def test_routing_incomplete_code_is_owned_persistent_and_retryable(tmp_path, mon
         def run(self, destination, brief):
             if typed:
                 raise Incomplete("SECRET C:/private/path")
-            error = RuntimeError("SECRET routing_incomplete C:/private/path")
-            error.code = "routing_incomplete"
+            error = RuntimeError("SECRET C:/private/path")
+            error.code = failure_code
             raise error
 
     monkeypatch.setattr(projects, "ProjectPipeline", Pipeline)
-    expected_code = "routing_incomplete" if typed else "pipeline_failed"
+    expected_code = failure_code if typed else "pipeline_failed"
     with _server(tmp_path) as (server, base):
         project = _request(base, "/api/projects", {**server._identity(), "brief": {}})[1]["project"]
         project_id = project["project_id"]

@@ -21,7 +21,7 @@ from __future__ import annotations
 from pydantic import BaseModel
 
 from ..domain.circuit import CircuitIR, NetKind
-from ..domain.component import ComponentCategory
+from ..domain.component import ComponentCategory, Interface, PinRole
 
 #: Standard bus pin names, and what a wire carrying them does. These are an
 #: industry vocabulary published by parts themselves, not identifiers from this
@@ -227,7 +227,7 @@ def net_term(circuit: CircuitIR, catalog, name: str,
         return Term(human=human, technical=name, detail=detail)
 
     if net.kind is NetKind.GROUND:
-        return term("Ground", "The common return path every part connects to.")
+        return term("Ground", "The common return path and voltage reference for the connected pins.")
 
     volts = _format_volts(net_driver_voltage(circuit, catalog, name))
     if net.kind is NetKind.POWER:
@@ -248,6 +248,11 @@ def net_term(circuit: CircuitIR, catalog, name: str,
         pin_spec = spec.pin(pin.pin)
         if pin_spec is None:
             continue
+        if Interface.SPI in instance.selected_interfaces and spec.category not in {ComponentCategory.MCU, ComponentCategory.MCU_MODULE}:
+            for role, label in ((PinRole.SPI_MOSI, "Data sent to device"), (PinRole.SPI_MISO, "Data returned by device"),
+                                (PinRole.SPI_SCK, "SPI clock"), (PinRole.SPI_CS, "Device select")):
+                if role in pin_spec.roles:
+                    return term(label, "Named from the selected peripheral interface and documented pin role.")
         role = bus_role(pin_spec.name)
         if role is None:
             continue
@@ -266,6 +271,8 @@ def net_term(circuit: CircuitIR, catalog, name: str,
                              for pin in net.connections) if c is not None}
     if ComponentCategory.LED in categories:
         return term("Indicator connection")
+    if ComponentCategory.SWITCH in categories:
+        return term("Button input")
     if ComponentCategory.HEADER in categories:
         return term("Programming connection")
     if ComponentCategory.CONNECTOR in categories and len(net.connections) <= 2:
@@ -278,9 +285,9 @@ def net_term(circuit: CircuitIR, catalog, name: str,
         if len(non_compute) == 1:
             only = next(iter(non_compute))
             if only == "io":
-                return term("Indicator connection")
+                return term("Control or connector signal")
             if only == "sense":
-                return term("Sensor connection")
+                return term("Peripheral connection")
     return term("Signal connection")
 
 

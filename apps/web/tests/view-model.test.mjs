@@ -307,6 +307,7 @@ test("polling distinguishes restart, lost job, worker start, pipeline failure, a
         [() => response(200, jobEnvelope({ status: "failed", error: "Demo pipeline failed", error_code: "worker_start_failed" })), /worker failed before progress began/],
         [() => response(200, jobEnvelope({ status: "failed", error: "Demo pipeline failed", error_code: "pipeline_failed" })), /engineering pipeline failed/],
         [() => response(200, jobEnvelope({ status: "failed", error: "Demo pipeline failed", error_code: "routing_incomplete" })), /could not finish all copper connections.*No build package.*Retry/],
+        [() => response(200, jobEnvelope({ status: "failed", error: "Demo pipeline failed", error_code: "eda_tool_failed" })), /KiCad could not complete.*No build package.*retry this revision.*Your saved choices are safe/],
     ];
     for (const [handler, expected] of cases) {
         await withApp(async (app, dom) => {

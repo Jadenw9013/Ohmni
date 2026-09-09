@@ -16,6 +16,7 @@ import subprocess
 from pathlib import Path
 
 from . import ErcRun, ToolAvailability, ToolStatus
+from .process import describe_exit, run_tool
 
 #: Where KiCad puts kicad-cli on each platform. Checked after PATH.
 _KICAD_FALLBACK_DIRS = (
@@ -36,18 +37,16 @@ def _run_version(executable: str) -> tuple[bool, str]:
     this function (SECURITY.md: no shell interpolation, argument arrays only).
     """
     try:
-        completed = subprocess.run(
-            [executable, "--version"],
-            capture_output=True,
-            text=True,
-            timeout=_PROBE_TIMEOUT_SECONDS,
-            check=False,
-        )
+        completed = run_tool([executable, "--version"], timeout=_PROBE_TIMEOUT_SECONDS)
     except (OSError, subprocess.SubprocessError) as exc:
         return False, f"{type(exc).__name__}: {exc}"
     if completed.returncode != 0:
-        return False, (completed.stderr or completed.stdout).strip()[:200]
-    return True, (completed.stdout or completed.stderr).strip().splitlines()[0][:100]
+        detail = (completed.stderr or completed.stdout).strip()
+        return False, f"{describe_exit(completed.returncode)}: {detail}"[:200]
+    lines = (completed.stdout or completed.stderr).strip().splitlines()
+    if not lines:
+        return False, "Tool returned no version information."
+    return True, lines[0][:100]
 
 
 def find_kicad_cli() -> str | None:
