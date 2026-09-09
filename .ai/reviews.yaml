@@ -134,6 +134,26 @@
       "status": "FINDINGS_OPEN",
       "commit": "d9f2176",
       "notes": "VERDICT FINDINGS_OPEN: 0 BLOCKER, 0 HIGH, 2 MEDIUM, 3 LOW. Policy permitted closing on this verdict; all five were fixed instead. The reviewer confirmed the M9-F01 blocker fix holds, that naming degrades honestly under variant circuits it constructed, and that no engineering truth regressed."
+    },
+    {
+      "id": "M10-T01-APPLICATION-CROSSREVIEW",
+      "scope": "M10",
+      "task": "M10-T01",
+      "reviewer": "project_api sibling agent",
+      "independent": true,
+      "status": "PASSED",
+      "commit": "dd62691adf50f9cdd00ce7bde3cd2f30d521d21d",
+      "notes": "Read-only cross-review of root-owned synthesis, personal pipeline, shared demo pipeline, and diagnostic exercise. No blocking regression in the offered options. Does not represent independent review of this reviewer's own API/store implementation."
+    },
+    {
+      "id": "M10-T01-PERSISTENCE-CROSSREVIEW",
+      "scope": "M10",
+      "task": "M10-T01",
+      "reviewer": "correctness_fixes sibling agent",
+      "independent": true,
+      "status": "PASSED",
+      "commit": "dd62691adf50f9cdd00ce7bde3cd2f30d521d21d",
+      "notes": "Read-only cross-review of other-agent server/store changes: transactional revision and attempt claims, retry/recovery, workspace locking, paths, publication lineage, verified ZIP buffers. No blocking issue. Limited to trusted single-user local workspace, not auth/multi-tenant/cloud security."
     }
   ],
   "findings": [

@@ -1,0 +1,245 @@
+{
+  "schema_version": 1,
+  "id": "M10-T01",
+  "status": "VERIFIED",
+  "commit": "dd62691adf50f9cdd00ce7bde3cd2f30d521d21d",
+  "baseline_commit": "04531cd2dd829e2bd31954362aa97f8094b41caa",
+  "scope": "A1-first personal sensor projects, diagnostic learning, local revisions, and verified build handoff; broader M10 remains in progress.",
+  "tool_versions": {
+    "python": "3.13.3",
+    "kicad": "10.0.5",
+    "ruff": "0.16.5"
+  },
+  "commands": [
+    {
+      "command": "python -m pytest -m \"not integration and not slow_integration\" --basetemp build/pytest-personal-commit-fast -p no:cacheprovider",
+      "result": "PASS",
+      "tests": 560,
+      "deselected": 20,
+      "runtime_seconds": 36.01,
+      "detail": "Run on the committed implementation; includes synthesis, workflow, API, projection, and UI structure tests."
+    },
+    {
+      "command": "node --test apps/web/tests/*.test.mjs",
+      "result": "PASS",
+      "tests": 102,
+      "skipped": 0,
+      "detail": "Run on committed implementation with bundled Node; includes stale run metadata refresh regression."
+    },
+    {
+      "command": "python -m pytest -m integration --basetemp build/pytest-personal-release-integration -p no:cacheprovider",
+      "result": "PASS",
+      "tests": 9,
+      "deselected": 571,
+      "runtime_seconds": 15.08
+    },
+    {
+      "command": "python -m pytest tests/test_personal_project.py -m slow_integration --basetemp build/pytest-personal-final-slow -p no:cacheprovider",
+      "result": "PASS",
+      "tests": 2,
+      "runtime_seconds": 134.09,
+      "detail": "Fresh default and minimal 0x77 full pipelines with final authored layout; real ERC, DRC, and fabrication release. Scripted provider and golden placement forbidden."
+    },
+    {
+      "command": "python -m pytest tests/test_routing.py -m slow_integration --basetemp build/pytest-personal-legacy-routing -p no:cacheprovider",
+      "result": "PASS",
+      "tests": 1,
+      "runtime_seconds": 87.49
+    },
+    {
+      "command": "Eight-case final-layout compile/route/independent-verification harness, followed by kicad-cli pcb drc on each artifact",
+      "result": "PASS",
+      "cases": 8,
+      "detail": "Equivalent operations to the newly added slow matrix were run in a diagnostic harness. The pytest matrix itself was collected, not redundantly executed. Each board has zero reported violations and unconnected items."
+    },
+    {
+      "command": "python -m ohmni verify-all",
+      "result": "PASS",
+      "fixtures": 14,
+      "coverage": "100%"
+    },
+    {
+      "command": "python -m ruff check all changed Python application, synthesis, layout, manufacturing, server, verification-script and test files",
+      "result": "PASS",
+      "detail": "Scoped Ruff gate; no static type checker or formatter is configured or claimed."
+    },
+    {
+      "command": "python scripts/ai_state.py validate",
+      "result": "PASS"
+    },
+    {
+      "command": "CUA browser journey at 1440x1000 and 390x844 plus localhost ZIP inspection",
+      "result": "PASS",
+      "detail": "Create/save project, preserve two revisions across restart, compare omission, restore first revision, actual generation, diagnostic partial FAIL and complete PASS, disable old result on edit, download and reopen completed run after final restart. No page overflow or logged browser errors. ZIP has 18 distinct readable files, matches saved brief/circuit/revision, exact generated PCB, and every fabrication file hash."
+    }
+  ],
+  "eight_configuration_drc": [
+    {
+      "case": "matrix-0-0-76",
+      "led": 0,
+      "header": false,
+      "address": "0x76",
+      "pcb_sha256": "a6ab0c8a363b999f54a2823b5b5d9cbbc2a42d4bfc1328a4d185aa5d37e9925f",
+      "report_sha256": "face59cde57370c87334def7f33b8c427f1aa4250bbfb12a5dcbcf0678846269",
+      "artifact_unchanged": true,
+      "return_code": 0,
+      "violations": 0,
+      "unconnected_items": 0,
+      "passed": true
+    },
+    {
+      "case": "minimal-pullups-above",
+      "led": 0,
+      "header": false,
+      "address": "0x77",
+      "pcb_sha256": "7c9f95951232d3af122366192a9abeb53153a1c6457e53ddff88c72c1777a530",
+      "report_sha256": "face59cde57370c87334def7f33b8c427f1aa4250bbfb12a5dcbcf0678846269",
+      "artifact_unchanged": true,
+      "return_code": 0,
+      "violations": 0,
+      "unconnected_items": 0,
+      "passed": true
+    },
+    {
+      "case": "matrix-0-1-76",
+      "led": 0,
+      "header": true,
+      "address": "0x76",
+      "pcb_sha256": "96bdee9c7ec7559ab908abcf6c1b12408186059529424ca6e07f0ef7a0156dc7",
+      "report_sha256": "eb829a76377aee4b8b5d9fe96eb7ab987a6999cfe80026b6853320260e89715f",
+      "artifact_unchanged": true,
+      "return_code": 0,
+      "violations": 0,
+      "unconnected_items": 0,
+      "passed": true
+    },
+    {
+      "case": "matrix-0-1-77",
+      "led": 0,
+      "header": true,
+      "address": "0x77",
+      "pcb_sha256": "5e9d39cdc8ca3fef6e2feab351c59d38a04850f55e52ea48d3a85f4e2fbab4c3",
+      "report_sha256": "eb829a76377aee4b8b5d9fe96eb7ab987a6999cfe80026b6853320260e89715f",
+      "artifact_unchanged": true,
+      "return_code": 0,
+      "violations": 0,
+      "unconnected_items": 0,
+      "passed": true
+    },
+    {
+      "case": "matrix-1-0-76",
+      "led": 1,
+      "header": false,
+      "address": "0x76",
+      "pcb_sha256": "f00faf433da3e9f1c78bd25b0a70a92b6419e9960f08dffd957c9df94715cdc4",
+      "report_sha256": "eb829a76377aee4b8b5d9fe96eb7ab987a6999cfe80026b6853320260e89715f",
+      "artifact_unchanged": true,
+      "return_code": 0,
+      "violations": 0,
+      "unconnected_items": 0,
+      "passed": true
+    },
+    {
+      "case": "matrix-1-0-77",
+      "led": 1,
+      "header": false,
+      "address": "0x77",
+      "pcb_sha256": "525ca337e6f966dd584994d0bab9b8826d4329534811cf1a3ebc31074840b6df",
+      "report_sha256": "eb829a76377aee4b8b5d9fe96eb7ab987a6999cfe80026b6853320260e89715f",
+      "artifact_unchanged": true,
+      "return_code": 0,
+      "violations": 0,
+      "unconnected_items": 0,
+      "passed": true
+    },
+    {
+      "case": "matrix-1-1-76",
+      "led": 1,
+      "header": true,
+      "address": "0x76",
+      "pcb_sha256": "fba939985aa0647c138d267d75e0758eddb26d5bcea3547792ac35b7824a2dd8",
+      "report_sha256": "011c77e19fb14c657f14628cc1f6086c6ca9ef13e9e08a89d45a910f282d8f2c",
+      "artifact_unchanged": true,
+      "return_code": 0,
+      "violations": 0,
+      "unconnected_items": 0,
+      "passed": true
+    },
+    {
+      "case": "matrix-1-1-77",
+      "led": 1,
+      "header": true,
+      "address": "0x77",
+      "pcb_sha256": "619852affff27fdc7b4891d9852b4e073e1f7d10db8f305c8892497cc42c4439",
+      "report_sha256": "011c77e19fb14c657f14628cc1f6086c6ca9ef13e9e08a89d45a910f282d8f2c",
+      "artifact_unchanged": true,
+      "return_code": 0,
+      "violations": 0,
+      "unconnected_items": 0,
+      "passed": true
+    }
+  ],
+  "drc_ignored_categories": [
+    "missing_courtyard",
+    "track_not_centered_on_via",
+    "tuning_profile_track_geometries",
+    "footprint_filters_mismatch",
+    "footprint_type_mismatch"
+  ],
+  "artifact_notes": [
+    "Minimal 0x77 matrix candidate has final geometry but earlier placement-reason metadata. The separate fresh final-policy minimal end-to-end test passed and closes that lineage distinction.",
+    "Integration and EDA checks were run on identical relevant source before the implementation commit; subsequent changes were UI metadata refresh and documentation. Full fast and frontend gates were rerun at the commit."
+  ],
+  "browser_build": {
+    "job_id": "e725d3a26c6e",
+    "revision": {
+      "attempt": 1,
+      "brief_fingerprint": "f68a23bc499d3e2a30721e7074d438b1e06f0e446b3c5a8b46c1b5298c9a2f44",
+      "circuit_fingerprint": "e5bbe5e0ee6efdab4f44c6b594f305d2216d557aea553a3241f0ba1c637adfc8",
+      "created_at": "2026-09-09T04:41:25.860893+00:00",
+      "job_id": "e725d3a26c6e",
+      "number": 1,
+      "package_fingerprint": "040984663c5a81feaef873dc47a8834fb5d37adf0d17c6d42e5a5c9ae0e0c735",
+      "project_id": "71a6ff91ae6a44fd",
+      "revision_id": "1525798eea604c6e"
+    },
+    "zip_bytes": 114244,
+    "zip_sha256": "7cfae79a3fedc64ab36657429ee2fe92bd196fa27b30460359278d5afcfac5cf",
+    "files": [
+      "golden.kicad_sch",
+      "golden.kicad_pcb",
+      "golden.placed.kicad_pcb",
+      "fabrication/golden-B_Cu.gbl",
+      "fabrication/golden-B_Mask.gbs",
+      "fabrication/golden-Edge_Cuts.gm1",
+      "fabrication/golden-F_Cu.gtl",
+      "fabrication/golden-F_Mask.gts",
+      "fabrication/golden-b_silkscreen.gbo",
+      "fabrication/golden-f_silkscreen.gto",
+      "fabrication/golden-job.gbrjob",
+      "fabrication/golden.drl",
+      "fabrication/ohmni-fabrication-manifest.json",
+      "report.json",
+      "confirmed-brief.json",
+      "project-revision.json",
+      "bom.csv",
+      "ASSEMBLY-AND-BRINGUP.md"
+    ]
+  },
+  "review": {
+    "status": "SCOPED_CROSS_REVIEWS_PASSED",
+    "records": [
+      "M10-T01-APPLICATION-CROSSREVIEW",
+      "M10-T01-PERSISTENCE-CROSSREVIEW"
+    ],
+    "detail": "Sibling agents reviewed modules implemented by other agents. No blocking findings remain. This is not the formal whole-M10 final review."
+  },
+  "limitations": [
+    "Single-user local workspace; no accounts, tenant isolation, cloud deployment, live supplier data, firmware or simulation.",
+    "Authored placement for eight configurations, not general placement optimization or broad archetype support.",
+    "Seed catalog citations are not machine-reverified; manufacturing profile/pricing/inventory are synthetic examples.",
+    "No physical board, assembly, bench testing, RF/mechanical sign-off, or novice usability study.",
+    "A full all-tier pytest invocation was not run; fast, integration, relevant slow pipelines, legacy routing, and the separate eight-case routing/DRC matrix were run.",
+    "KiCad required the installed user-profile runtime outside the filesystem sandbox; initial sandbox timeout was resolved without bypassing any engineering check."
+  ]
+}
