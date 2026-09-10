@@ -11,7 +11,7 @@ from typing import Protocol, runtime_checkable
 from ...adapters import PartCatalog
 from ...domain import CircuitIR, EngineeringEvent, EventKind, Lesson
 from ...physical.footprints import footprint
-from ...physical.models import BoardConstraints, FootprintBinding, PadBinding
+from ...physical.models import BoardConstraints, FootprintBinding, FootprintDefinition, PadBinding
 from ...physical.rules import verify_physical
 from ...routing.models import RoutingPlan
 from ...routing.verifier import verify_routing
@@ -25,7 +25,7 @@ from ..pcb_models import (
 )
 from .sexpr import number, quote
 
-PCB_COMPILER_VERSION="0.1.0"
+PCB_COMPILER_VERSION="0.2.0"
 PCB_FORMAT_VERSION="20240108"
 PCB_UUID_NAMESPACE=uuid.UUID("63af3592-6efd-5c14-9430-a5b827559c49")
 
@@ -63,11 +63,17 @@ class KiCadPcbCompiler:
             if not spec or not package or not package.kicad_footprint: raise PcbCompilationError(f"{instance.ref}: explicit footprint unavailable")
             fp=footprint(package.kicad_footprint)
             if fp is None: raise PcbCompilationError(f"{instance.ref}: project-local footprint geometry unavailable for {package.kicad_footprint}")
+            try:
+                fp = FootprintDefinition.model_validate(fp.model_dump())
+            except ValueError as exc:
+                raise PcbCompilationError(f"{instance.ref}: invalid project-local footprint geometry: {exc}") from exc
             available={p.number for p in fp.pads if not p.mechanical}
             required={p.number for p in spec.pins}
             if not required <= available: raise PcbCompilationError(f"{instance.ref}: missing physical pads {sorted(required-available)}")
             fp_ids[instance.ref]=fp.footprint_id
-            footprint_bindings.append(FootprintBinding(component_ref=instance.ref,part_id=instance.part_id,package=instance.package,footprint_id=fp.footprint_id,source=fp.source))
+            footprint_bindings.append(FootprintBinding(component_ref=instance.ref,part_id=instance.part_id,package=instance.package,
+                                                       footprint_id=fp.footprint_id,source=fp.source,
+                                                       geometry_fingerprint=fp.content_hash))
             events.append(self._event(circuit,EventKind.FOOTPRINT_RESOLVED,f"{instance.ref} footprint resolved"))
             for pin in spec.pins:
                 pad_bindings.append(PadBinding(component_ref=instance.ref,pin_number=pin.number,pad_number=pin.number,net_name=connected.get((instance.ref,pin.number))))
@@ -171,8 +177,12 @@ class KiCadPcbCompiler:
         out.append(f'    (fp_rect (start {number(-fp.width_mm/2)} {number(-fp.height_mm/2)}) (end {number(fp.width_mm/2)} {number(fp.height_mm/2)}) (stroke (width 0.05) (type default)) (fill none) (layer "F.CrtYd"))')
         for i,pad in enumerate(fp.pads):
             net_name=connected.get((instance.ref,pad.number));net=f' (net {nets[net_name]} {quote(net_name)})' if net_name else ""
-            if pad.kind=="thru_hole":
-                out.append(f'    (pad {quote(pad.number)} thru_hole {pad.shape} (at {number(pad.x_mm)} {number(pad.y_mm)}) (size {number(pad.width_mm)} {number(pad.height_mm)}) (drill {number(min(pad.width_mm,pad.height_mm)*.55)}) (layers "*.Cu" "*.Mask"){net} (uuid "{_uuid(seed,f"pad:{instance.ref}:{i}")}"))')
+            if pad.kind in {"thru_hole", "np_thru_hole"}:
+                if pad.drill is None:
+                    raise PcbCompilationError(f"{instance.ref}.{pad.number}: explicit drill geometry is required")
+                drill = (f'oval {number(pad.drill.width_mm)} {number(pad.drill.height_mm)}'
+                         if pad.drill.shape == "oval" else number(pad.drill.width_mm))
+                out.append(f'    (pad {quote(pad.number)} {pad.kind} {pad.shape} (at {number(pad.x_mm)} {number(pad.y_mm)}) (size {number(pad.width_mm)} {number(pad.height_mm)}) (drill {drill}) (layers "*.Cu" "*.Mask"){net} (uuid "{_uuid(seed,f"pad:{instance.ref}:{i}")}"))')
             else:
                 rr=" (roundrect_rratio 0.2)" if pad.shape=="roundrect" else ""
                 out.append(f'    (pad {quote(pad.number)} smd {pad.shape} (at {number(pad.x_mm)} {number(pad.y_mm)}) (size {number(pad.width_mm)} {number(pad.height_mm)}) (layers "F.Cu" "F.Paste" "F.Mask"){rr}{net} (uuid "{_uuid(seed,f"pad:{instance.ref}:{i}")}"))')

@@ -26,6 +26,7 @@ from ..domain.circuit import CircuitIR, NetKind
 from ..domain.component import ComponentCategory, Interface, PinRole
 from ..domain.verification import RuleCategory, RuleOutcome, VerificationReport
 from ..physical.footprints import footprint
+from ..physical.models import FootprintDrill
 from ..verifier.engine import SUBSYSTEM_CATEGORIES
 from .naming import Term, component_term, humanise_refs, net_driver_voltage, net_term, phrase
 from .systems import (
@@ -132,6 +133,7 @@ class BoardPad(BaseModel):
     height_mm: float
     kind: str
     shape: str
+    drill: FootprintDrill | None = None
 
 
 class BoardComponent(BaseModel):
@@ -594,10 +596,13 @@ def _board_geometry(board, routed, grouping: dict[str, ComponentGrouping],
         definition = footprint(binding.footprint_id)
         if definition is None:
             raise ValueError(f"no footprint geometry for {ref}")
+        if binding.geometry_fingerprint != definition.content_hash:
+            raise ValueError(f"local footprint geometry differs from the compiled artifact for {ref}")
         nets = pads_by_ref.get(ref, {})
         pads = [BoardPad(
             number=pad.number, net_name=nets.get(pad.number), x_mm=pad.x_mm, y_mm=pad.y_mm,
             width_mm=pad.width_mm, height_mm=pad.height_mm, kind=pad.kind, shape=pad.shape,
+            drill=pad.drill,
         ) for pad in definition.pads]
         components.append(BoardComponent(
             ref=ref, part_id=binding.part_id,

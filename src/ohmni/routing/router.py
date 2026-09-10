@@ -52,15 +52,51 @@ class DeterministicRouter:
               time_budget_seconds: float | None = None,
               clock: Callable[[], float] = monotonic,
               cancelled: Callable[[], bool] | None = None) -> RoutingPlan:
+        if time_budget_seconds is not None and (isinstance(time_budget_seconds, bool)
+                or not math.isfinite(time_budget_seconds) or time_budget_seconds < 0):
+            raise ValueError("routing time budget must be finite and nonnegative")
+        deadline = None if time_budget_seconds is None else clock() + time_budget_seconds
+        first = self._route_attempt(circuit, pcb, board, constraints, deadline=deadline,
+                                    clock=clock, cancelled=cancelled)
+        retryable = {RoutingFailureReason.NO_PATH, RoutingFailureReason.PAD_ACCESS_BLOCKED,
+                     RoutingFailureReason.SEARCH_LIMIT_REACHED}
+        if not first.failures or any(failure.reason not in retryable for failure in first.failures):
+            return first
+        if ((deadline is not None and clock() >= deadline)
+                or (cancelled is not None and cancelled())):
+            return first
+        # One full rip-up preserves legal first-pass geometry when it succeeds.
+        # The retry protects short local connections before longer crossings;
+        # it shares the original deadline and never relaxes the routing profile.
+        second = self._route_attempt(circuit, pcb, board, constraints, deadline=deadline,
+                                     clock=clock, cancelled=cancelled, shortest_first=True)
+        def quality(plan):
+            return (-len(plan.failures), sum(len(net.paths) for net in plan.routed_nets))
+        selected = second if quality(second) > quality(first) else first
+        stats = selected.statistics.model_copy(update={
+            "expanded_nodes": first.statistics.expanded_nodes + second.statistics.expanded_nodes,
+            "routing_attempts": first.statistics.routing_attempts + second.statistics.routing_attempts,
+            "reroute_count": 1,
+        })
+        retry_event = _event(circuit, EventKind.REROUTE_ATTEMPTED,
+                            "Retried once with shortest connections first and unchanged design rules",
+                            {"strategy": "shortest_connections_first", "selected_attempt": 2 if selected is second else 1,
+                             "first_failures": [failure.model_dump(mode="json") for failure in first.failures],
+                             "retry_failures": [failure.model_dump(mode="json") for failure in second.failures]})
+        second_events = [event.model_copy(update={
+            "event_id": _id("routing-retry-1", event.event_id),
+            "payload": {**event.payload, "routing_attempt": 2},
+        }) for event in second.events]
+        return selected.model_copy(update={"statistics": stats,
+                                           "events": [*first.events, *second_events, retry_event]})
+
+    def _route_attempt(self, circuit, pcb, board, constraints, *, deadline, clock, cancelled,
+                       shortest_first=False):
         if not pcb.lineage_is_current:
             raise ValueError("placed PCB lineage is stale")
         if pcb.circuit_content_hash != circuit.content_hash or pcb.constraints_hash != board.content_hash:
             raise ValueError("routing inputs do not match placed PCB lineage")
         constraints = RoutingConstraints.model_validate((constraints or RoutingConstraints()).model_dump())
-        if time_budget_seconds is not None and (isinstance(time_budget_seconds, bool)
-                or not math.isfinite(time_budget_seconds) or time_budget_seconds < 0):
-            raise ValueError("routing time budget must be finite and nonnegative")
-        deadline = None if time_budget_seconds is None else clock() + time_budget_seconds
         def checkpoint():
             if cancelled is not None and cancelled():
                 raise _RoutingInterrupted("routing cancelled before all connections were completed")
@@ -83,7 +119,9 @@ class DeterministicRouter:
                          else profile.power_width_mm.value if self._power(name) else profile.signal_width_mm.value)
         events=[_event(circuit,EventKind.ROUTING_STARTED,"Deterministic routing started"),_event(circuit,EventKind.ROUTING_PROFILE_SELECTED,f"Routing profile selected: {profile.name}",{"profile_hash":profile.content_hash})]
         pads = self._pad_centres(pcb, board)
-        access = self._pad_access(pcb, board, pads, profile)
+        blocked_access = []
+        access = self._pad_access(pcb, board, pads, profile, width_for=width_for,
+                                  on_blocked=blocked_access.append)
         terminal_keys = self._terminal_keys(pcb)
         net_pads = {}
         for net in circuit.nets:
@@ -111,84 +149,95 @@ class DeterministicRouter:
                 for key in terminal_keys[(pin.component, pin.pin)]:
                     actual=pads[key];entry=access[key]
                     if actual != entry: occupied.setdefault(net.name,[]).append((actual,entry,"F.Cu",width_for(net.name)))
-        routed: list[RoutedNet] = []
-        failures: list[RoutingFailure] = []
+        connections = self._connections(net_pads, route_order, shortest_first=shortest_first)
+        if shortest_first:
+            route_order = list(dict.fromkeys([name for name, _, _ in connections] + route_order))
+        paths_by_net: dict[str, list[RoutePath]] = {name: [] for name in route_order}
+        failures: dict[str, RoutingFailure] = {}
+        for key in blocked_access:
+            binding = next(binding for physical_key, binding, _ in self._physical_pads(pcb) if physical_key == key)
+            if binding.net_name is not None and len(net_pads[binding.net_name]) > 1:
+                failures[binding.net_name] = RoutingFailure(net_name=binding.net_name,
+                    reason=RoutingFailureReason.PAD_ACCESS_BLOCKED,
+                    detail=f"no clearance-safe outward pad access within the bounded search for {key[0]}.{key[1]}")
         expanded_total = attempts = 0
         interrupted = None
-        for net_name in route_order:
-            terminals = net_pads[net_name]
+        started_nets = set()
+        for net_name, source, target in connections:
+            if net_name in failures:
+                continue
             try:
                 if interrupted is None and check is not None: check()
             except _RoutingInterrupted as exc:
                 interrupted = str(exc)
             if interrupted is not None:
-                failures.append(RoutingFailure(net_name=net_name, reason=RoutingFailureReason.ROUTING_INCOMPLETE,
-                                               detail=interrupted))
-                routed.append(RoutedNet(net_name=net_name, terminal_pads=[p[0] for p in terminals], paths=[]))
+                failures[net_name] = RoutingFailure(net_name=net_name, reason=RoutingFailureReason.ROUTING_INCOMPLETE,
+                                                   detail=interrupted)
                 continue
-            events.append(_event(circuit,EventKind.NET_ROUTING_STARTED,f"Routing net {net_name}",{"net_name":net_name}))
-            if len(terminals) < 2:
-                routed.append(RoutedNet(net_name=net_name, terminal_pads=[p[0] for p in terminals], paths=[]))
+            if net_name not in started_nets:
+                started_nets.add(net_name)
+                events.append(_event(circuit,EventKind.NET_ROUTING_STARTED,f"Routing net {net_name}",{"net_name":net_name}))
+            search_failure = []
+            try:
+                if check is not None: check()
+                attempts += 1
+                preferred = per_net.get(net_name)
+                result = self._find(net_name, source[2], target[2], board, profile, all_pad_obstacles, occupied,
+                                    check=check, width_mm=width_for(net_name),
+                                    preferred_layer=preferred.preferred_layer if preferred else None,
+                                    on_failure=lambda reason, expanded, captured=search_failure: captured.append((reason, expanded)))
+            except _RoutingInterrupted as exc:
+                expanded_total += exc.expanded_nodes
+                interrupted = str(exc)
+                failures[net_name] = RoutingFailure(net_name=net_name, reason=RoutingFailureReason.ROUTING_INCOMPLETE,
+                                                   detail=interrupted)
                 continue
-            connected = [terminals[0]]
-            remaining = terminals[1:]
-            paths: list[RoutePath] = []
-            while remaining:
-                target = min(remaining, key=lambda p: min((self._distance(p[1], q[1]), q[0]) for q in connected))
-                source = min(connected, key=lambda p: (self._distance(p[1], target[1]), p[0]))
-                try:
-                    if check is not None: check()
-                    attempts += 1
-                    preferred = per_net.get(net_name)
-                    result = self._find(net_name, source[2], target[2], board, profile, all_pad_obstacles, occupied,
-                                        check=check, width_mm=width_for(net_name),
-                                        preferred_layer=preferred.preferred_layer if preferred else None)
-                except _RoutingInterrupted as exc:
-                    expanded_total += exc.expanded_nodes
-                    interrupted = str(exc)
-                    failures.append(RoutingFailure(net_name=net_name, reason=RoutingFailureReason.ROUTING_INCOMPLETE,
-                                                   detail=interrupted))
-                    break
-                if result is None:
-                    failures.append(RoutingFailure(net_name=net_name, reason=RoutingFailureReason.NO_PATH,
-                                                   detail=f"no bounded path from {source[0]} to {target[0]}"))
-                    events.append(_event(circuit,EventKind.ROUTE_SEARCH_FAILED,f"Route search failed for {net_name}",{"source":source[0],"target":target[0]}))
-                    break
-                states, expanded = result
+            if result is None:
+                reason, expanded = search_failure[-1] if search_failure else (RoutingFailureReason.NO_PATH, 0)
                 expanded_total += expanded
-                path = self._to_path(net_name, source, target, states, profile, attempts, width_mm=width_for(net_name))
-                if _path_crosses_keepout(path, board):
-                    failures.append(RoutingFailure(net_name=net_name, reason=RoutingFailureReason.BOARD_CONSTRAINT_VIOLATION,
-                                                   detail="pad access or emitted copper enters a declared copper keepout"))
-                    break
-                paths.append(path)
-                events.append(_event(circuit,EventKind.ROUTE_FOUND,f"Route found for {net_name}",{"source":source[0],"target":target[0],"tracks":len(path.tracks),"vias":len(path.vias)}))
-                for via in path.vias: events.append(_event(circuit,EventKind.VIA_INSERTED,f"Through-via inserted for {net_name}",{"via_id":via.via_id,"x_mm":via.position.x_mm,"y_mm":via.position.y_mm}))
-                for track in path.tracks:
-                    occupied.setdefault(net_name, []).append((track.start, track.end, track.layer, track.width_mm))
-                for via in path.vias:
-                    occupied.setdefault(net_name, []).append((via.position,via.position,"F.Cu",via.diameter_mm))
-                    occupied.setdefault(net_name, []).append((via.position,via.position,"B.Cu",via.diameter_mm))
-                connected.append(target)
-                remaining.remove(target)
-            routed.append(RoutedNet(net_name=net_name, terminal_pads=[p[0] for p in terminals], paths=paths))
+                detail = {RoutingFailureReason.SEARCH_LIMIT_REACHED: "expanded-node budget exhausted",
+                          RoutingFailureReason.PAD_ACCESS_BLOCKED: "pad entry blocked by the active copper geometry",
+                          RoutingFailureReason.BOARD_CONSTRAINT_VIOLATION: "pad entry violates the copper edge inset",
+                          RoutingFailureReason.NO_PATH: "no path within the grid and via-count policy"}[reason]
+                failures[net_name] = RoutingFailure(net_name=net_name, reason=reason,
+                                                   detail=f"{detail}: {source[0]} to {target[0]}")
+                events.append(_event(circuit,EventKind.ROUTE_SEARCH_FAILED,f"Route search failed for {net_name}",
+                                     {"source":source[0],"target":target[0],"reason":reason.value,"expanded_nodes":expanded}))
+                continue
+            states, expanded = result
+            expanded_total += expanded
+            path = self._to_path(net_name, source, target, states, profile, attempts, width_mm=width_for(net_name))
+            if _path_crosses_keepout(path, board):
+                failures[net_name] = RoutingFailure(net_name=net_name, reason=RoutingFailureReason.BOARD_CONSTRAINT_VIOLATION,
+                                                   detail="pad access or emitted copper enters a declared copper keepout")
+                continue
+            paths_by_net[net_name].append(path)
+            events.append(_event(circuit,EventKind.ROUTE_FOUND,f"Route found for {net_name}",{"source":source[0],"target":target[0],"tracks":len(path.tracks),"vias":len(path.vias)}))
+            for via in path.vias: events.append(_event(circuit,EventKind.VIA_INSERTED,f"Through-via inserted for {net_name}",{"via_id":via.via_id,"x_mm":via.position.x_mm,"y_mm":via.position.y_mm}))
+            for track in path.tracks:
+                occupied.setdefault(net_name, []).append((track.start, track.end, track.layer, track.width_mm))
+            for via in path.vias:
+                occupied.setdefault(net_name, []).append((via.position,via.position,"F.Cu",via.diameter_mm))
+                occupied.setdefault(net_name, []).append((via.position,via.position,"B.Cu",via.diameter_mm))
+        routed = [RoutedNet(net_name=name, terminal_pads=[pad[0] for pad in net_pads[name]], paths=paths_by_net[name])
+                  for name in route_order]
         tracks = [t for n in routed for p in n.paths for t in p.tracks]
         vias = [v for n in routed for p in n.paths for v in p.vias]
         stats = RoutingStatistics(
             required_connections=sum(max(0, len(p)-1) for p in net_pads.values()),
             routed_net_count=sum(1 for n in routed if len(n.paths) == max(0, len(n.terminal_pads)-1)
-                                 and n.net_name not in {failure.net_name for failure in failures}),
+                                 and n.net_name not in failures),
             unresolved_net_count=len(failures), track_segment_count=len(tracks), via_count=len(vias),
             total_track_length_mm=round(sum(t.length_mm for t in tracks), 6), expanded_nodes=expanded_total,
             routing_attempts=attempts, route_order=route_order,
         )
         events.append(_event(circuit,EventKind.ROUTING_COMPLETED,
-                             "Routing stopped before completion" if interrupted else "Deterministic routing completed",
+                             "Routing stopped with unresolved connections" if failures else "Deterministic routing completed",
                              {"routed_nets":stats.routed_net_count,"unresolved_nets":stats.unresolved_net_count}))
         return RoutingPlan(source_pcb_fingerprint=pcb.fingerprint.digest,source_pcb_path=pcb.path,
                            source_constraints_hash=board.content_hash,
                            circuit_content_hash=circuit.content_hash, profile=profile,
-                           routed_nets=routed, failures=failures, statistics=stats,events=events,
+                           routed_nets=routed, failures=list(failures.values()), statistics=stats,events=events,
                            net_constraints=constraints.nets)
 
     @staticmethod
@@ -213,6 +262,40 @@ class DeterministicRouter:
     @staticmethod
     def _distance(a: Point, b: Point) -> float:
         return abs(a.x_mm-b.x_mm)+abs(a.y_mm-b.y_mm)
+
+    @staticmethod
+    def _connections(net_pads, route_order, *, shortest_first):
+        """Plan spanning edges independently of search success and copper state."""
+        connections = []
+        for name in route_order:
+            terminals = net_pads[name]
+            if not shortest_first:
+                connected, remaining = terminals[:1], terminals[1:]
+                while remaining:
+                    target = min(remaining, key=lambda p: min((DeterministicRouter._distance(p[1], q[1]), q[0]) for q in connected))
+                    source = min(connected, key=lambda p: (DeterministicRouter._distance(p[1], target[1]), p[0]))
+                    connections.append((name, source, target))
+                    connected.append(target)
+                    remaining.remove(target)
+                continue
+            # Kruskal's tree gives local links priority without creating cycles
+            # or using an electrical component's internal ties as PCB copper.
+            parent = {terminal[0]: terminal[0] for terminal in terminals}
+            def root(key, parent=parent):
+                while parent[key] != key:
+                    key = parent[key]
+                return key
+            pairs = sorted((DeterministicRouter._distance(a[1], b[1]), a[0], b[0], a, b)
+                           for index, a in enumerate(terminals) for b in terminals[index+1:])
+            for _, _, _, source, target in pairs:
+                left, right = root(source[0]), root(target[0])
+                if left != right:
+                    parent[left] = right
+                    connections.append((name, source, target))
+        if shortest_first:
+            connections.sort(key=lambda item: (DeterministicRouter._distance(item[1][1], item[2][1]),
+                                                item[0], item[1][0], item[2][0]))
+        return connections
 
     @staticmethod
     def _physical_pads(pcb):
@@ -263,7 +346,7 @@ class DeterministicRouter:
                 x=place.x_mm+pad.x_mm*math.cos(angle)-pad.y_mm*math.sin(angle)
                 y=place.y_mm+pad.x_mm*math.sin(angle)+pad.y_mm*math.cos(angle)
                 point=Point(x_mm=round(x,6),y_mm=round(y,6))
-                layers=("F.Cu","B.Cu") if pad.kind=="thru_hole" else ("F.Cu",)
+                layers=("F.Cu","B.Cu") if pad.kind in {"thru_hole", "np_thru_hole"} else ("F.Cu",)
                 rotated = round(place.rotation_deg / 90) % 2
                 width, height = (pad.height_mm, pad.width_mm) if rotated else (pad.width_mm, pad.height_mm)
                 result.append((net_by_pad.get((ref,pad.number)),point,width,height,layers))
@@ -275,9 +358,13 @@ class DeterministicRouter:
         return result
 
     @staticmethod
-    def _pad_access(pcb, board, centres, profile):
+    def _pad_access(pcb, board, centres, profile, *, width_for=None, on_blocked=None):
+        from .spatial import RoutingObstacles
+
         placements = {place.component_ref: place for place in board.placements}
         grid=float(profile.grid_mm.value);result={}
+        pads = DeterministicRouter._pad_obstacles(pcb, board, centres)
+        obstacles_by_net = {}
         for key, binding, pad in DeterministicRouter._physical_pads(pcb):
             centre=centres[key]
             if pad.kind=="thru_hole":result[key]=centre;continue
@@ -288,11 +375,43 @@ class DeterministicRouter:
             turn = round(placements[binding.component_ref].rotation_deg / 90) % 4
             dx, dy = ((dx,dy),(-dy,dx),(-dx,-dy),(dy,-dx))[turn]
             x=centre.x_mm+dx;y=centre.y_mm+dy
-            result[key]=Point(x_mm=round(x/grid)*grid,y_mm=round(y/grid)*grid)
+            original = Point(x_mm=round(x/grid)*grid,y_mm=round(y/grid)*grid)
+            result[key] = original
+            if binding.net_name is None:
+                continue
+            net = binding.net_name
+            width = float(width_for(net) if width_for else profile.power_width_mm.value
+                          if DeterministicRouter._power(net) else profile.signal_width_mm.value)
+            if net not in obstacles_by_net:
+                obstacles_by_net[net] = RoutingObstacles(net, profile, pads, {})
+            obstacles = obstacles_by_net[net]
+            clearance = float(profile.clearance_mm.value) + width/2
+            inset = float(profile.edge_clearance_mm.value) + width/2
+            direction = ((1 if dx > 0 else -1) if dx else 0,
+                         (1 if dy > 0 else -1) if dy else 0)
+            # Keep a legal historical access node. Otherwise step outward on
+            # the existing grid, checking the whole stub as well as its end.
+            # This is bounded fan-out, not permission to reduce pad clearance.
+            for step in range(33):
+                candidate = Point(x_mm=original.x_mm+direction[0]*grid*step,
+                                  y_mm=original.y_mm+direction[1]*grid*step)
+                if not (inset <= candidate.x_mm <= board.outline.width_mm-inset
+                        and inset <= candidate.y_mm <= board.outline.height_mm-inset):
+                    continue
+                if obstacles.blocked(candidate, 0, width/2):
+                    continue
+                if any(_segment_pad_distance(centre, candidate, point, w, h) < clearance-1e-6
+                       for other, point, w, h, layers in pads if other != net and "F.Cu" in layers):
+                    continue
+                result[key] = candidate
+                break
+            else:
+                if on_blocked is not None:
+                    on_blocked(key)
         return result
 
     def _find(self, net, start, goal, board, profile, pads, occupied, *, check=None,
-              width_mm=None, preferred_layer=None):
+              width_mm=None, preferred_layer=None, on_failure=None):
         from .spatial import RoutingObstacles
 
         grid = float(profile.grid_mm.value)
@@ -301,12 +420,15 @@ class DeterministicRouter:
         max_vias = int(profile.maximum_vias_per_connection.value)
         width = float(width_mm if width_mm is not None else profile.power_width_mm.value if self._power(net) else profile.signal_width_mm.value)
         preferred = (1 if self._power(net) else 0) if preferred_layer is None else ("F.Cu", "B.Cu").index(preferred_layer)
+        def failed(reason, expanded=0):
+            if on_failure is not None:
+                on_failure(reason, expanded)
         def inside(x,y,radius):
             inset=edge+radius
             return (inset-1e-6<=x<=board.outline.width_mm-inset+1e-6
                     and inset-1e-6<=y<=board.outline.height_mm-inset+1e-6)
         if not all(inside(point.x_mm,point.y_mm,width/2) for point in (start,goal)):
-            return None
+            return failed(RoutingFailureReason.BOARD_CONSTRAINT_VIOLATION)
         obstacles = RoutingObstacles(net, profile, pads, occupied)
         blocked_cache: dict[tuple[int, int, int, float], bool] = {}
 
@@ -321,9 +443,11 @@ class DeterministicRouter:
         sx, sy = round(start.x_mm/grid), round(start.y_mm/grid)
         gx, gy = round(goal.x_mm/grid), round(goal.y_mm/grid)
         if not all(inside(x*grid,y*grid,width/2) for x,y in ((sx,sy),(gx,gy))):
-            return None
+            return failed(RoutingFailureReason.BOARD_CONSTRAINT_VIOLATION)
         starts = [_State(sx, sy, 0)]
         targets = {_State(gx, gy, 0)}
+        if any(blocked(state, 0, width/2) for state in [*starts, *targets]):
+            return failed(RoutingFailureReason.PAD_ACCESS_BLOCKED)
         queue = []
         serial = 0
         for state in starts:
@@ -362,7 +486,8 @@ class DeterministicRouter:
                 cost[nxt]=new;came[nxt]=current;via_counts[nxt]=via_count
                 heuristic=abs(nxt.x-gx)+abs(nxt.y-gy)+(0 if nxt.layer==0 else 2)
                 heapq.heappush(queue,(new+heuristic,new,nxt.x,nxt.y,nxt.layer,serial,nxt));serial+=1
-        return None
+        return failed(RoutingFailureReason.SEARCH_LIMIT_REACHED if queue and expanded >= max_nodes
+                      else RoutingFailureReason.NO_PATH, expanded)
 
     @staticmethod
     def _blocked(net, point, layer_index, profile, pads, occupied, start, goal, candidate_radius):
@@ -448,3 +573,30 @@ def _point_segment_distance(p,a,b):
     if dx==dy==0:return math.hypot(p.x_mm-a.x_mm,p.y_mm-a.y_mm)
     t=max(0,min(1,((p.x_mm-a.x_mm)*dx+(p.y_mm-a.y_mm)*dy)/(dx*dx+dy*dy)))
     return math.hypot(p.x_mm-(a.x_mm+t*dx),p.y_mm-(a.y_mm+t*dy))
+
+
+def _segment_pad_distance(start, end, centre, width, height):
+    """Distance to an axis-aligned pad envelope, including segment interiors."""
+    xmin, xmax = centre.x_mm-width/2, centre.x_mm+width/2
+    ymin, ymax = centre.y_mm-height/2, centre.y_mm+height/2
+    low, high = 0.0, 1.0
+    intersects = True
+    for a, b, minimum, maximum in ((start.x_mm,end.x_mm,xmin,xmax), (start.y_mm,end.y_mm,ymin,ymax)):
+        delta = b-a
+        if abs(delta) < 1e-12:
+            if a < minimum or a > maximum:
+                intersects = False
+                break
+        else:
+            first, last = sorted(((minimum-a)/delta, (maximum-a)/delta))
+            low, high = max(low,first), min(high,last)
+            if low > high:
+                intersects = False
+                break
+    if intersects:
+        return 0.0
+    endpoints = [math.hypot(max(xmin-point.x_mm,0,point.x_mm-xmax),
+                            max(ymin-point.y_mm,0,point.y_mm-ymax)) for point in (start,end)]
+    corners = [_point_segment_distance(Point(x_mm=x,y_mm=y),start,end)
+               for x,y in ((xmin,ymin),(xmin,ymax),(xmax,ymin),(xmax,ymax))]
+    return min(*endpoints, *corners)

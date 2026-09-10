@@ -163,7 +163,9 @@ def _pad_clearance_violations(pcb,board,plan,clearance):
         angle=math.radians(place.rotation_deg);cos=math.cos(angle);sin=math.sin(angle)
         for pad in footprint(binding.footprint_id).pads:
             net=net_by_pad.get((ref,pad.number))
-            layers={"F.Cu","B.Cu"} if pad.kind=="thru_hole" else {"F.Cu"}
+            # Non-plated holes have no copper, but tracks on either layer and
+            # through-vias must still remain clear of the drilled opening.
+            layers={"F.Cu","B.Cu"} if pad.kind in {"thru_hole","np_thru_hole"} else {"F.Cu"}
             label=f"{ref}.{pad.number}"
             def local(point,place=place,pad=pad,cos=cos,sin=sin):
                 x=point.x_mm-place.x_mm;y=point.y_mm-place.y_mm

@@ -11,6 +11,7 @@ from .models import (
     ManufacturingReport,
     ManufacturingStatus,
 )
+from .pad_geometry import measure_pads
 
 
 def verify_manufacturing(pcb:PcbArtifact,board:BoardConstraints,plan:RoutingPlan,profile:ManufacturingProfile)->ManufacturingReport:
@@ -19,7 +20,44 @@ def verify_manufacturing(pcb:PcbArtifact,board:BoardConstraints,plan:RoutingPlan
         margin=designed-limit if minimum else limit-designed;ok=margin>=-1e-9
         out.append(ManufacturingFinding(rule_id=rule,status=ManufacturingStatus.PASS if ok else ManufacturingStatus.FAIL,subject=subject,designed=designed,limit=limit,margin=round(margin,6),unit="mm",detail=f"{subject} {'meets' if ok else 'violates'} selected profile by {margin:+.3f} mm"))
     dimensional("PB-MFG-001","minimum track width",min(t.width_mm for t in plan.tracks),profile.minimum_track_width.value)
-    dimensional("PB-MFG-002","copper clearance",float(plan.profile.clearance_mm.value),profile.minimum_clearance.value)
+    dimensional("PB-MFG-002","required route clearance",float(plan.profile.clearance_mm.value),profile.minimum_clearance.value)
+    pad_geometry = None
+    try:
+        pad_geometry = measure_pads(pcb, board)
+    except (AttributeError, KeyError, TypeError, ValueError) as error:
+        out.append(ManufacturingFinding(rule_id="PB-MFG-011",status=ManufacturingStatus.UNKNOWN,
+            subject="footprint copper and drills",detail=f"Emitted pad geometry could not be measured: {error}"))
+    else:
+        if pad_geometry.minimum_gap_mm is not None:
+            dimensional("PB-MFG-011",f"pad clearance between {' and '.join(pad_geometry.closest_pair)}",
+                        pad_geometry.minimum_gap_mm,profile.minimum_clearance.value)
+        else:
+            out.append(ManufacturingFinding(rule_id="PB-MFG-011",status=ManufacturingStatus.PASS,
+                subject="footprint copper clearance",designed="not applicable: no distinct-net pad pair",
+                detail=f"Measured {pad_geometry.copper_pad_count} lands; no pair requires mutual electrical clearance."))
+        if pad_geometry.minimum_drill_mm is not None:
+            dimensional("PB-MFG-012","minimum component hole width",pad_geometry.minimum_drill_mm,
+                        profile.minimum_drill.value)
+        else:
+            out.append(ManufacturingFinding(rule_id="PB-MFG-012",status=ManufacturingStatus.PASS,
+                subject="component holes",designed="not applicable: no component drills",
+                detail="All measured footprint lands are surface mount."))
+        if pad_geometry.slot_count:
+            if not profile.supports_slots:
+                out.append(ManufacturingFinding(rule_id="PB-MFG-013",status=ManufacturingStatus.FAIL,
+                    subject="component slots",designed=pad_geometry.slot_count,
+                    detail="This design contains slots, which the selected profile does not support."))
+            elif profile.minimum_slot_width is None:
+                out.append(ManufacturingFinding(rule_id="PB-MFG-013",status=ManufacturingStatus.UNKNOWN,
+                    subject="component slots",designed=pad_geometry.slot_count,
+                    detail="The selected profile supplies no minimum slot width."))
+            else:
+                dimensional("PB-MFG-013","minimum component slot width",pad_geometry.minimum_slot_width_mm,
+                            profile.minimum_slot_width.value)
+        else:
+            out.append(ManufacturingFinding(rule_id="PB-MFG-013",status=ManufacturingStatus.PASS,
+                subject="component slots",designed="not applicable: no slots",
+                detail="No component slot geometry is present."))
     if plan.vias:
         dimensional("PB-MFG-003","minimum via drill",min(v.drill_mm for v in plan.vias),profile.minimum_drill.value)
         dimensional("PB-MFG-003","minimum via diameter",min(v.diameter_mm for v in plan.vias),profile.minimum_via_diameter.value)
@@ -46,7 +84,13 @@ def verify_manufacturing(pcb:PcbArtifact,board:BoardConstraints,plan:RoutingPlan
     dimensional("PB-MFG-006","copper-to-edge clearance",float(plan.profile.edge_clearance_mm.value),profile.minimum_edge_clearance.value)
     footprints_ok=all(x.footprint_id and x.source.upstream_file_sha256 for x in pcb.compilation.footprint_bindings)
     out.append(ManufacturingFinding(rule_id="PB-MFG-007",status=ManufacturingStatus.PASS if footprints_ok else ManufacturingStatus.FAIL,subject="footprint provenance",detail="all populated footprints resolved with provenance" if footprints_ok else "footprint provenance unresolved"))
-    out.append(ManufacturingFinding(rule_id="PB-MFG-008",status=ManufacturingStatus.PASS,subject="fabrication features",detail="only supported 2-layer tracks, through-vias, round drills, and rectangular outline are present"))
+    out.append(ManufacturingFinding(rule_id="PB-MFG-008",
+        status=ManufacturingStatus.PASS if pad_geometry is not None else ManufacturingStatus.UNKNOWN,
+        subject="fabrication features",
+        detail=(f"Two-layer tracks, through-vias, rectangular outline, round holes, "
+                f"{pad_geometry.slot_count} component slots and {pad_geometry.nonplated_hole_count} nonplated holes; "
+                "dimensional and slot support are checked separately."
+                if pad_geometry is not None else "Component fabrication features could not be measured.")))
     events=[_event(pcb,EventKind.MANUFACTURING_PROFILE_SELECTED,f"Manufacturing profile selected: {profile.profile_id}",{"profile_hash":profile.content_hash})]
     for finding in out:events.append(_event(pcb,EventKind.MANUFACTURING_CONSTRAINT_CHECKED if finding.status is ManufacturingStatus.PASS else EventKind.MANUFACTURING_CONSTRAINT_FAILED,f"{finding.rule_id}: {finding.subject}",finding.model_dump(mode="json")))
     return ManufacturingReport(profile=profile,routed_pcb_fingerprint=pcb.fingerprint.digest,routing_plan_fingerprint=plan.content_hash,findings=out,events=events)

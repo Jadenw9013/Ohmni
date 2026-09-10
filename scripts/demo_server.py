@@ -25,7 +25,7 @@ from typing import Any, NamedTuple
 from urllib.parse import unquote, urlsplit
 
 from ohmni.application import DEMO_REQUEST, DemoPipeline, preview_brief
-from ohmni.application.demo import EdaToolFailedError, RoutingIncompleteError
+from ohmni.application.demo import EdaToolFailedError, RoutingIncompleteError, current_pcb_policy
 from ohmni.application.project_store import (
     PROJECT_ID_PATTERN,
     ProjectStore,
@@ -336,6 +336,7 @@ class JobStore:
             with self.lock:
                 if self._validated_job_locked(job_id)["status"] in TERMINAL_JOB_STATUSES:return
             value=_owned_json_object(report.model_dump(mode="json"))
+            self._pcb_policy(value)
             if pipeline_factory is not None:
                 # Project workers cannot publish a report for another input,
                 # even if the returned envelope otherwise looks well-formed.
@@ -397,6 +398,9 @@ class JobStore:
     def _project_lineage(self,job_id,report,manifest=None):
         from ohmni.synthesis import SynthesisBrief
 
+        # This must precede the legacy-demo early return: old local geometry is
+        # obsolete for every generated PCB, not only saved personal projects.
+        self._pcb_policy(report)
         lineage=self.project_store.job_revision(job_id) if self.project_store is not None else None
         if lineage is None:
             if report.get("mode")=="bounded_synthesis":raise ValueError("project revision unavailable")
@@ -438,6 +442,12 @@ class JobStore:
                 or manifest.get("schematic_fingerprint")!=report["schematic"]["fingerprint"]):
             raise ValueError("project fabrication does not match report")
         return lineage
+    @staticmethod
+    def _pcb_policy(report):
+        pcb=report.get("pcb")
+        expected=current_pcb_policy()
+        if not isinstance(pcb,dict) or any(pcb.get(key)!=value for key,value in expected.items()):
+            raise ValueError("PCB compiler or local footprint geometry policy has changed")
     def _build_package_snapshot(self,job_id):
         job=self.get(job_id)
         if not job or job["status"]!="complete":return "unavailable",None
@@ -496,6 +506,8 @@ class JobStore:
                             placement_request_fingerprint=expected.request_fingerprint,
                             board_constraints_hash=expected.constraints_hash,
                             placement_algorithm=expected.algorithm,
+                            pcb_compiler_version=pcb["compiler_version"],
+                            footprint_geometry_fingerprint=pcb["footprint_geometry_fingerprint"],
                             placement_documents={name:hashlib.sha256(captured[name]).hexdigest()
                                                  for name in ("placement-request.json","placement.json")})
             captured["project-revision.json"]=(json.dumps(revision,indent=2,sort_keys=True)+"\n").encode("utf-8")

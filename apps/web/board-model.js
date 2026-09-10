@@ -114,6 +114,8 @@ export function buildScene(board, options = {}) {
                     net: pad.net_name,
                     system: component.system,
                     through: pad.kind !== "smd",
+                    nonPlated: pad.kind === "np_thru_hole",
+                    drill: pad.drill ? { ...pad.drill } : null,
                     points: quad(cx + r.x, cy + r.y, z, pad.width_mm, pad.height_mm,
                                  component.rotation_deg),
                 });

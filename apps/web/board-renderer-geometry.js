@@ -134,6 +134,30 @@ function solderFillet(buffer, pad, material) {
     face(buffer, rings[2], material, { flip: sign < 0 });
 }
 
+/** Source-sized circular/slot openings; depth and dark finish are illustrative. */
+export function padHoleContour(pad, height = 0.145) {
+    if (!pad.drill) return [];
+    const part = { points: pad.points, side: pad.points[0].z < 0 ? "B.Cu" : "F.Cu" };
+    const size = footprintSize(part);
+    const w = pad.drill.width_mm, h = pad.drill.height_mm;
+    if (!(w > 0 && h > 0 && w <= size.width + 1e-6 && h <= size.height + 1e-6)) return [];
+    const r = Math.min(w, h) / 2;
+    const horizontal = w > h;
+    const straight = Math.abs(w - h) / 2;
+    const points = [];
+    for (let end = 0; end < 2; end += 1) {
+        const start = horizontal ? -Math.PI / 2 + end * Math.PI : end * Math.PI;
+        const cx = horizontal ? (end === 0 ? straight : -straight) : 0;
+        const cy = horizontal ? 0 : (end === 0 ? straight : -straight);
+        for (let step = 0; step <= 12; step += 1) {
+            const angle = start + step * Math.PI / 12;
+            points.push(pointOnFootprint(part, 0.5 + (cx + r * Math.cos(angle)) / size.width,
+                0.5 + (cy + r * Math.sin(angle)) / size.height, height));
+        }
+    }
+    return points;
+}
+
 function tint(material, item, matcher, selected) {
     if (item.ref && item.ref === selected) return [
         material[0] * 0.9 + 0.025, material[1] * 0.9 + 0.055, material[2] * 0.9 + 0.06, ...material.slice(3)];
@@ -298,8 +322,12 @@ export function buildRenderGeometry(scene, { matcher, selected = null, xray = fa
         const sign = pad.points[0].z < 0 ? -1 : 1;
         const bottom = pad.points.map((p) => ({ ...p, z: p.z + sign * 0.055 }));
         const top = pad.points.map((p) => ({ ...p, z: p.z + sign * 0.13 }));
-        prism(objects, bottom, top, tint(MAT.gold, pad, matcher, selected));
-        solderFillet(objects, pad, tint(MAT.solder, pad, matcher, selected));
+        if (!pad.nonPlated) {
+            prism(objects, bottom, top, tint(MAT.gold, pad, matcher, selected));
+            if (!pad.drill) solderFillet(objects, pad, tint(MAT.solder, pad, matcher, selected));
+        }
+        const opening = padHoleContour(pad);
+        if (opening.length) face(objects, opening, MAT.black, { flip: sign < 0 });
     }
     for (const via of scene.vias) {
         const material = tint(MAT.gold, via, matcher, selected);
@@ -311,6 +339,7 @@ export function buildRenderGeometry(scene, { matcher, selected = null, xray = fa
     }
     const padsByRef = new Map();
     for (const pad of scene.pads) {
+        if (pad.nonPlated) continue;
         if (!padsByRef.has(pad.ref)) padsByRef.set(pad.ref, []);
         padsByRef.get(pad.ref).push(pad);
     }

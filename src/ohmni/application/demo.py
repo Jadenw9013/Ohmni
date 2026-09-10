@@ -38,6 +38,36 @@ UNSUPPORTED_DEMO_REQUEST = "Only the displayed deterministic ESP32 + BME280 requ
 PRODUCT_ROUTING_TIME_BUDGET_SECONDS = 180.0
 
 
+def current_pcb_policy() -> dict[str, str]:
+    """Current local emission/geometry policy; no EDA or model call is needed.
+
+    The full registry is deliberately conservative: any local footprint policy
+    change retires older generated builds, even if that part was not populated.
+    """
+    from ..eda.kicad import pcb_compiler
+    from ..physical.footprints import footprint_geometry_fingerprint
+
+    return {"compiler_version": pcb_compiler.PCB_COMPILER_VERSION,
+            "footprint_geometry_fingerprint": footprint_geometry_fingerprint(),
+            "footprint_geometry_scope": "local_registry"}
+
+
+def pcb_artifact_policy(artifact) -> dict[str, str]:
+    """Do not relabel an older compiled artifact with today's geometry facts."""
+    from ..physical.footprints import footprint
+
+    policy = current_pcb_policy()
+    if artifact.compiler_version != policy["compiler_version"]:
+        raise ValueError("The PCB compiler policy changed after artifact compilation")
+    if not artifact.compilation.footprint_bindings or any(
+        (definition := footprint(binding.footprint_id)) is None
+        or binding.geometry_fingerprint != definition.content_hash
+        for binding in artifact.compilation.footprint_bindings
+    ):
+        raise ValueError("The local footprint geometry changed after artifact compilation")
+    return policy
+
+
 class RoutingIncompleteError(RuntimeError):
     """Typed boundary: a partial routing plan cannot become a released board."""
 
@@ -415,7 +445,7 @@ def project_demo_report(**values) -> DemoReport:
         verification_ladder=ladder,notebook=notebook,
         lessons=[lesson.model_dump(mode="json") for lesson in design.lessons],
         schematic={"path":str(design.artifact.path),"fingerprint":design.artifact.fingerprint.digest,"current":design.artifact.is_current,"erc_status":design.erc.status.value.upper(),"erc_findings":len(design.erc.findings),"svg":schematic_svg(design.artifact)},
-        pcb={"path":str(routed.path),"fingerprint":routed.fingerprint.digest,"source_schematic_fingerprint":routed.schematic_fingerprint.digest,"source_placed_pcb_fingerprint":routed.source_placed_pcb_fingerprint.digest if routed.source_placed_pcb_fingerprint else None,"current":routed.lineage_is_current,"drc_status":drc.status.value.upper(),"violations":len(drc.findings),"unrouted":len(drc.unconnected_items),"statistics":routed.compilation.copper_statistics.model_dump(mode="json"),"quality_metrics":_pcb_quality_metrics(board,routed),"svg":pcb_svg(board,routed)},
+        pcb={**pcb_artifact_policy(routed),"path":str(routed.path),"fingerprint":routed.fingerprint.digest,"source_schematic_fingerprint":routed.schematic_fingerprint.digest,"source_placed_pcb_fingerprint":routed.source_placed_pcb_fingerprint.digest if routed.source_placed_pcb_fingerprint else None,"current":routed.lineage_is_current,"drc_status":drc.status.value.upper(),"violations":len(drc.findings),"unrouted":len(drc.unconnected_items),"statistics":routed.compilation.copper_statistics.model_dump(mode="json"),"quality_metrics":_pcb_quality_metrics(board,routed),"svg":pcb_svg(board,routed)},
         manufacturing={"profile":manufacturing.profile.display_name,"provenance":manufacturing.profile.provenance.value,"findings":[finding.model_dump(mode="json") for finding in manufacturing.findings]},
         bom={"references":bom.reference_count,"unique_lines":len(bom.lines),"lines":bom_rows},
         economics={"scenario_boards":1,"pricing_coverage":costs.pricing_coverage,"known_consumption_cost":str(costs.known_consumption_cost),"known_purchase_requirement":str(costs.known_purchase_requirement),"fabrication":costs.fabrication.value.upper(),"shipping":costs.shipping.value.upper(),"tooling":costs.tooling.value.upper(),"pricing_source":"SYNTHETIC FIXTURE - NOT LIVE SUPPLIER DATA"},

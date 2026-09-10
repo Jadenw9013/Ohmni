@@ -18,7 +18,8 @@ from ohmni.bom import (
     synthetic_fixture_supplier,
 )
 from ohmni.manufacturing import ManufacturingStatus, prototype_profile, verify_manufacturing
-from ohmni.physical.models import BoardConstraints, BoardOutline
+from ohmni.physical.footprints import footprint
+from ohmni.physical.models import BoardConstraints, BoardOutline, ComponentPlacement
 from ohmni.routing.models import (
     Point,
     RoutedNet,
@@ -40,10 +41,17 @@ def minimal_plan(track=.25,drill=.4,diameter=.8,clearance=.2,edge=.5):
     return RoutingPlan(source_pcb_fingerprint="a"*64,source_pcb_path="p.kicad_pcb",source_constraints_hash="b"*64,circuit_content_hash="c"*64,profile=profile,routed_nets=[net],statistics=stats)
 
 def fake_pcb(provenance=True):
-    source=SimpleNamespace(upstream_file_sha256="hash" if provenance else "")
-    return SimpleNamespace(fingerprint=SimpleNamespace(digest="a"*64),compilation=SimpleNamespace(footprint_bindings=[SimpleNamespace(footprint_id="FP",source=source)]))
+    fp=footprint("Resistor_SMD:R_0805_2012Metric")
+    source=SimpleNamespace(upstream_file_sha256=fp.source.upstream_file_sha256 if provenance else "")
+    return SimpleNamespace(fingerprint=SimpleNamespace(digest="a"*64),lineage_is_current=True,
+        constraints_hash=board().content_hash,compilation=SimpleNamespace(constraints_hash=board().content_hash,
+        footprint_bindings=[SimpleNamespace(component_ref="R1",footprint_id=fp.footprint_id,source=source,
+                                           geometry_fingerprint=fp.content_hash)],
+        pad_bindings=[SimpleNamespace(component_ref="R1",pad_number="1",net_name="N"),
+                      SimpleNamespace(component_ref="R1",pad_number="2",net_name="M")]))
 
-def board(layers=2):return BoardConstraints(outline=BoardOutline(width_mm=100,height_mm=70),layer_count=layers,placements=[])
+def board(layers=2):return BoardConstraints(outline=BoardOutline(width_mm=100,height_mm=70),layer_count=layers,
+    placements=[ComponentPlacement(component_ref="R1",x_mm=10,y_mm=10,reason="Isolated manufacturing rule fixture")])
 
 def test_profile_is_provenance_aware_and_fingerprinted():
     p=prototype_profile();assert p.provenance.value=="synthetic_profile" and "not a fab quote" in p.source_name

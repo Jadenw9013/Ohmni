@@ -15,6 +15,7 @@ from urllib.request import Request, urlopen
 import pytest
 
 from ohmni.application import DEMO_REQUEST
+from ohmni.application.demo import current_pcb_policy
 from scripts import demo_server as demo_server_module
 from scripts.demo_server import (
     API_VERSION,
@@ -124,7 +125,7 @@ def test_server_snapshot_is_immutable_and_generation_specific(tmp_path):
 def test_async_job_store_reports_actual_progress_without_premature_completion(tmp_path):
     finished=threading.Event()
     progress_value={"stage":"semantic","status":"RUNNING","percent":20,"label":"Checking","detail":{"checks":["original"]}}
-    report_value={"result":{"status":"complete","checks":["original"]}}
+    report_value={"result":{"status":"complete","checks":["original"]},"pcb":current_pcb_policy()}
     class Report:
         def model_dump(self,mode=None):return report_value
     class Pipeline:
@@ -160,7 +161,7 @@ def test_artifact_download_freshness_is_hash_bound(tmp_path):
     manifest=fabrication/"ohmni-fabrication-manifest.json";manifest.write_text("manifest")
     digest=hashlib.sha256(path.read_bytes()).hexdigest();store=JobStore(tmp_path)
     manifest_record={"relative_path":manifest.name,"sha256":hashlib.sha256(manifest.read_bytes()).hexdigest()}
-    store.jobs[job_id]={"job_id":job_id,"status":"complete","progress":[],"report":{"project":{"status":"READY_FOR_MANUFACTURING_REVIEW"},"schematic":{"fingerprint":digest,"current":True},"pcb":{"fingerprint":hashlib.sha256(pcb.read_bytes()).hexdigest(),"source_placed_pcb_fingerprint":hashlib.sha256(placed.read_bytes()).hexdigest(),"current":True},"release":{"status":"READY_FOR_MANUFACTURING_REVIEW","files":[{"relative_path":gerber.name,"sha256":hashlib.sha256(gerber.read_bytes()).hexdigest()}],"manifest":manifest_record,"current":True}},"error":None,"error_code":None}
+    store.jobs[job_id]={"job_id":job_id,"status":"complete","progress":[],"report":{"project":{"status":"READY_FOR_MANUFACTURING_REVIEW"},"schematic":{"fingerprint":digest,"current":True},"pcb":{**current_pcb_policy(),"fingerprint":hashlib.sha256(pcb.read_bytes()).hexdigest(),"source_placed_pcb_fingerprint":hashlib.sha256(placed.read_bytes()).hexdigest(),"current":True},"release":{"status":"READY_FOR_MANUFACTURING_REVIEW","files":[{"relative_path":gerber.name,"sha256":hashlib.sha256(gerber.read_bytes()).hexdigest()}],"manifest":manifest_record,"current":True}},"error":None,"error_code":None}
     state,data=store.read_artifact(job_id,"golden.kicad_sch")
     assert state=="current" and data==b"exact"
     fresh=store.get(job_id)
@@ -371,7 +372,7 @@ def test_launch_failure_is_absorbing_if_worker_already_started(tmp_path,monkeypa
 def test_http_contract_binds_job_to_server_and_never_echoes_input(tmp_path,capsys):
     requests_seen=[]
     class Report:
-        def model_dump(self,mode=None):return {"result":"canonical request accepted"}
+        def model_dump(self,mode=None):return {"result":"canonical request accepted","pcb":current_pcb_policy()}
     class Pipeline:
         def __init__(self,progress):pass
         def run(self,destination,request):requests_seen.append(request);assert request==DEMO_REQUEST;return Report()
@@ -458,7 +459,8 @@ def test_http_contract_binds_job_to_server_and_never_echoes_input(tmp_path,capsy
                 assert accepted.keys()=={"job_id","status","api_version","server_instance_id","ui_version"}
                 assert accepted["status"]=="queued" and {key:accepted[key] for key in identity}==identity
             job=_await_terminal(store,accepted["job_id"])
-            assert job["status"]=="complete" and job["report"]=={"result":"canonical request accepted"}
+            assert job["status"]=="complete" and job["report"]=={
+                "result":"canonical request accepted","pcb":{**current_pcb_policy(),"current":False}}
             with urlopen(Request(f"{base}/api/jobs/{accepted['job_id']}",headers=poll_headers)) as response:
                 published=json.loads(response.read())
             assert published["status"]=="complete" and {key:published[key] for key in identity}==identity
@@ -473,7 +475,7 @@ def test_http_contract_binds_job_to_server_and_never_echoes_input(tmp_path,capsy
 
 def test_server_restart_rejects_stale_generation_and_old_job(tmp_path):
     class Report:
-        def model_dump(self,mode=None):return {"result":"complete"}
+        def model_dump(self,mode=None):return {"result":"complete","pcb":current_pcb_policy()}
     class Pipeline:
         def __init__(self,progress):pass
         def run(self,destination,request):return Report()
@@ -577,7 +579,7 @@ def test_http_download_serves_verified_buffer_and_rejects_alternate_paths(tmp_pa
     store.jobs[job_id]={"job_id":job_id,"status":"complete","progress":[],"report":{
         "project":{"status":"READY_FOR_MANUFACTURING_REVIEW"},
         "schematic":{"fingerprint":hashlib.sha256(schematic.read_bytes()).hexdigest(),"current":True},
-        "pcb":{"fingerprint":hashlib.sha256(pcb.read_bytes()).hexdigest(),"source_placed_pcb_fingerprint":hashlib.sha256(placed.read_bytes()).hexdigest(),"current":True},
+        "pcb":{**current_pcb_policy(),"fingerprint":hashlib.sha256(pcb.read_bytes()).hexdigest(),"source_placed_pcb_fingerprint":hashlib.sha256(placed.read_bytes()).hexdigest(),"current":True},
         "release":{"status":"READY_FOR_MANUFACTURING_REVIEW","files":[{"relative_path":gerber.name,"sha256":hashlib.sha256(gerber.read_bytes()).hexdigest()}],"manifest":{"relative_path":manifest.name,"sha256":hashlib.sha256(manifest.read_bytes()).hexdigest()},"current":True},
     },"error":None,"error_code":None}
     original_read=store.read_artifact

@@ -5,7 +5,11 @@ each subset to the inspected upstream KiCad 10 footprint file; no runtime global
 library lookup is performed.
 """
 
-from .models import FootprintDefinition, FootprintPad, FootprintSource
+import hashlib
+import json
+from collections.abc import Iterable
+
+from .models import FootprintDefinition, FootprintDrill, FootprintPad, FootprintSource
 
 LICENSE = "KiCad footprint libraries, CC-BY-SA-4.0 with KiCad library exception"
 
@@ -51,13 +55,23 @@ _register(FootprintDefinition(footprint_id="RF_Module:ESP32-WROOM-32", width_mm=
     source=_src("RF_Module:ESP32-WROOM-32", "af11e3ded30556624b02dbdb6b72e7ee6ec829fa0c549365b154eb273f7dbf7c"), pads=_esp_pads))
 
 _register(FootprintDefinition(footprint_id="Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical", width_mm=2.54, height_mm=15.24,
-    source=_src("Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical", "5f2993c50dbd5024384bf6fa972fcd10d40d0837039e1e371b326a27d9f5b8b7"),
-    pads=[FootprintPad(number=str(i), x_mm=0, y_mm=(i-1)*2.54, width_mm=1.7, height_mm=1.7, kind="thru_hole", shape="circle") for i in range(1,7)]))
+    source=_src("Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical", "e3c3501f520fc1fc39eeb5d72137e680e509c0df2348ca77fef1b9db6ab974f0"),
+    pads=[FootprintPad(number=str(i), x_mm=0, y_mm=(i-1)*2.54, width_mm=1.7, height_mm=1.7,
+                       kind="thru_hole", shape="rect" if i == 1 else "circle",
+                       drill=FootprintDrill(shape="circle", width_mm=1, height_mm=1)) for i in range(1,7)]))
 
 _usb_xy={"A1":(-3.25,-4.045),"A4":(-2.45,-4.045),"A5":(-1.25,-4.045),"A6":(-.25,-4.045),"A7":(.25,-4.045),"A8":(1.25,-4.045),"A9":(2.45,-4.045),"A12":(3.25,-4.045),"B1":(3.25,-4.045),"B4":(2.45,-4.045),"B5":(1.75,-4.045),"B6":(.75,-4.045),"B7":(-.75,-4.045),"B8":(-1.75,-4.045),"B9":(-2.45,-4.045),"B12":(-3.25,-4.045)}
 _register(FootprintDefinition(footprint_id="Connector_USB:USB_C_Receptacle_HRO_TYPE-C-31-M-12", width_mm=10, height_mm=8,
-    source=_src("Connector_USB:USB_C_Receptacle_HRO_TYPE-C-31-M-12", "c562a7f9713a8b754c4d2305a2ea15453469a1c8c48a9b17973383e8993fc750"),
-    pads=[FootprintPad(number=n,x_mm=x,y_mm=y,width_mm=.6 if n[1:] in {"1","4","9","12"} else .3,height_mm=1.45) for n,(x,y) in _usb_xy.items()] + [FootprintPad(number="SH",x_mm=x,y_mm=y,width_mm=1,height_mm=2,kind="thru_hole",shape="oval",mechanical=True) for x,y in [(-4.32,-3.13),(-4.32,1.05),(4.32,-3.13),(4.32,1.05)] ]))
+    source=_src("Connector_USB:USB_C_Receptacle_HRO_TYPE-C-31-M-12", "8d292db4e16dbd391bfc6c79366047ce1799e687d970810736a41426e88619b3"),
+    pads=[FootprintPad(number=n,x_mm=x,y_mm=y,width_mm=.6 if n[1:] in {"1","4","9","12"} else .3,height_mm=1.45) for n,(x,y) in _usb_xy.items()]
+         + [FootprintPad(number="SH",x_mm=x,y_mm=y,width_mm=1,height_mm=height,
+                         kind="thru_hole",shape="oval",mechanical=True,
+                         drill=FootprintDrill(shape="oval",width_mm=.6,height_mm=drill_height))
+            for x,y,height,drill_height in [(-4.32,-3.13,2.1,1.7),(-4.32,1.05,1.6,1.2),
+                                           (4.32,-3.13,2.1,1.7),(4.32,1.05,1.6,1.2)]]
+         + [FootprintPad(number="",x_mm=x,y_mm=-2.6,width_mm=.65,height_mm=.65,
+                         kind="np_thru_hole",shape="circle",mechanical=True,
+                         drill=FootprintDrill(shape="circle",width_mm=.65,height_mm=.65)) for x in (-2.89,2.89)]))
 
 
 def _chip(footprint_id, digest, x, pad_width, pad_height, width, height):
@@ -118,7 +132,8 @@ _register(FootprintDefinition(
     footprint_id="Button_Switch_THT:SW_PUSH_6mm", width_mm=9.5, height_mm=7.5,
     source=_button_source,
     pads=[FootprintPad(number=n, x_mm=x, y_mm=y, width_mm=2, height_mm=2,
-                       kind="thru_hole", shape="circle")
+                       kind="thru_hole", shape="circle",
+                       drill=FootprintDrill(shape="circle",width_mm=1.1,height_mm=1.1))
           for n, x, y in (("1", -3.25, -2.25), ("1", 3.25, -2.25),
                           ("2", -3.25, 2.25), ("2", 3.25, 2.25))],
 ))
@@ -126,3 +141,13 @@ _register(FootprintDefinition(
 
 def footprint(footprint_id: str) -> FootprintDefinition | None:
     return FOOTPRINTS.get(footprint_id)
+
+
+def footprint_geometry_fingerprint(footprint_ids: Iterable[str] | None = None) -> str:
+    """Bind a compiled set of footprints to its current complete local geometry."""
+    identifiers = sorted(FOOTPRINTS if footprint_ids is None else set(footprint_ids))
+    unknown = set(identifiers) - FOOTPRINTS.keys()
+    if unknown:
+        raise ValueError(f"unknown footprint geometry: {sorted(unknown)}")
+    geometry = {identifier: FOOTPRINTS[identifier].content_hash for identifier in identifiers}
+    return hashlib.sha256(json.dumps(geometry,sort_keys=True,separators=(",", ":")).encode()).hexdigest()

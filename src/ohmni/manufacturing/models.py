@@ -20,12 +20,13 @@ class ManufacturingProfile(BaseModel):
     maximum_board_width_mm: float; maximum_board_height_mm: float; board_thickness_options_mm:list[float]=Field(default_factory=lambda:[1.6])
     copper_weight_options_oz:list[float]=Field(default_factory=lambda:[1.0]); supported_finishes:list[str]=Field(default_factory=lambda:["HASL","ENIG"])
     supports_slots: bool=False
+    minimum_slot_width: ManufacturingLimit | None=None
     @property
     def content_hash(self):return hashlib.sha256(self.model_dump_json().encode()).hexdigest()
 
 def prototype_profile():
     def limit(value,rationale):return ManufacturingLimit(value=value,source=ConstraintSource.SYNTHETIC_PROFILE,rationale=rationale)
-    return ManufacturingProfile(profile_id="generic-prototype-2l-v1",display_name="Generic synthetic 2-layer prototype profile",source_name="Ohmni synthetic test/demo profile — not a fab quote",source_version="1.0",provenance=ConstraintSource.SYNTHETIC_PROFILE,minimum_track_width=limit(.15,"synthetic capability for deterministic evaluation"),minimum_clearance=limit(.15,"synthetic capability for deterministic evaluation"),minimum_drill=limit(.30,"synthetic capability for deterministic evaluation"),minimum_via_diameter=limit(.60,"synthetic capability for deterministic evaluation"),minimum_edge_clearance=limit(.30,"synthetic capability for deterministic evaluation"),supported_layer_counts=[2],minimum_board_width_mm=5,minimum_board_height_mm=5,maximum_board_width_mm=500,maximum_board_height_mm=500)
+    return ManufacturingProfile(profile_id="generic-prototype-2l-v2",display_name="Generic synthetic 2-layer prototype profile",source_name="Ohmni synthetic test/demo profile — not a fab quote",source_version="2.0",provenance=ConstraintSource.SYNTHETIC_PROFILE,minimum_track_width=limit(.15,"synthetic capability for deterministic evaluation"),minimum_clearance=limit(.15,"synthetic capability for deterministic evaluation"),minimum_drill=limit(.30,"synthetic capability for deterministic evaluation"),minimum_via_diameter=limit(.60,"synthetic capability for deterministic evaluation"),minimum_edge_clearance=limit(.30,"synthetic capability for deterministic evaluation"),supported_layer_counts=[2],minimum_board_width_mm=5,minimum_board_height_mm=5,maximum_board_width_mm=500,maximum_board_height_mm=500,supports_slots=True,minimum_slot_width=limit(.60,"synthetic slot capability; actual fabricator acceptance requires human review"))
 
 class ManufacturingStatus(StrEnum): PASS="pass"; FAIL="fail"; UNKNOWN="unknown"
 class ManufacturingFinding(BaseModel): rule_id:str; status:ManufacturingStatus; subject:str; designed:float|str|None=None; limit:float|str|None=None; margin:float|None=None; unit:str|None=None; detail:str

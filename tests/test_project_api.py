@@ -15,6 +15,7 @@ from urllib.request import ProxyHandler, Request, build_opener
 
 import pytest
 
+from ohmni.application.demo import current_pcb_policy
 from ohmni.application.project_store import ProjectStore, ProjectWorkspaceInUseError
 from ohmni.catalog import default_catalog
 from ohmni.physical.models import PlacementRequest
@@ -312,7 +313,7 @@ def _seed_package(tmp_path, job_id="a" * 12, brief=None):
     report = {
         "project": {"name": "A reviewable board", "status": "READY_FOR_MANUFACTURING_REVIEW"},
         "schematic": {"fingerprint": fingerprints["golden.kicad_sch"], "current": True},
-        "pcb": {"fingerprint": fingerprints["golden.kicad_pcb"], "current": True,
+        "pcb": {**current_pcb_policy(),"fingerprint": fingerprints["golden.kicad_pcb"], "current": True,
                 "source_schematic_fingerprint": fingerprints["golden.kicad_sch"],
                 "source_placed_pcb_fingerprint": fingerprints["golden.placed.kicad_pcb"]},
         "release": {"status": "READY_FOR_MANUFACTURING_REVIEW", "current": True, "files": files,

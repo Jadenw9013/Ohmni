@@ -209,16 +209,50 @@ class FootprintSource(BaseModel):
     derivation: str
 
 
+class FootprintDrill(BaseModel):
+    """Source-recorded, centered round hole or oval slot in pad coordinates."""
+
+    model_config = ConfigDict(frozen=True, allow_inf_nan=False, extra="forbid")
+    shape: Literal["circle", "oval"]
+    width_mm: float = Field(gt=0)
+    height_mm: float = Field(gt=0)
+
+    @model_validator(mode="after")
+    def _supported(self) -> FootprintDrill:
+        if (self.shape == "circle") != (self.width_mm == self.height_mm):
+            raise ValueError("circle drills require equal dimensions; oval slots require unequal dimensions")
+        return self
+
+
 class FootprintPad(BaseModel):
-    model_config = ConfigDict(allow_inf_nan=False)
+    model_config = ConfigDict(allow_inf_nan=False, extra="forbid")
     number: str
     x_mm: float
     y_mm: float
     width_mm: float = Field(gt=0)
     height_mm: float = Field(gt=0)
-    kind: str = "smd"
-    shape: str = "roundrect"
+    kind: Literal["smd", "thru_hole", "np_thru_hole"] = "smd"
+    shape: Literal["rect", "roundrect", "circle", "oval"] = "roundrect"
     mechanical: bool = False
+    drill: FootprintDrill | None = None
+
+    @model_validator(mode="after")
+    def _supported(self) -> FootprintPad:
+        if self.shape == "circle" and self.width_mm != self.height_mm:
+            raise ValueError("circular pads require equal dimensions")
+        if self.kind == "smd":
+            if self.drill is not None:
+                raise ValueError("SMD pads cannot have a drill")
+        elif self.drill is None:
+            raise ValueError("through-hole pads require explicit source-recorded drill dimensions")
+        elif self.kind == "np_thru_hole":
+            if not self.mechanical or self.number:
+                raise ValueError("non-plated holes must be unnumbered mechanical features")
+            if (self.width_mm, self.height_mm, self.shape) != (self.drill.width_mm, self.drill.height_mm, self.drill.shape):
+                raise ValueError("non-plated hole envelope must equal the drill; it has no copper land")
+        elif self.drill.width_mm >= self.width_mm or self.drill.height_mm >= self.height_mm:
+            raise ValueError("plated drill must fit strictly inside its copper land")
+        return self
 
 
 class FootprintDefinition(BaseModel):
@@ -229,6 +263,11 @@ class FootprintDefinition(BaseModel):
     pads: list[FootprintPad]
     source: FootprintSource
 
+    @property
+    def content_hash(self) -> str:
+        payload = json.dumps(self.model_dump(mode="json"), sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+        return hashlib.sha256(payload.encode()).hexdigest()
+
 
 class FootprintBinding(BaseModel):
     component_ref: str
@@ -236,6 +275,9 @@ class FootprintBinding(BaseModel):
     package: str
     footprint_id: str
     source: FootprintSource
+    # Absent on older PCB artifacts; measurements must not silently apply
+    # revised local geometry to a PCB compiled before this binding existed.
+    geometry_fingerprint: str | None = None
 
 
 class PadBinding(BaseModel):

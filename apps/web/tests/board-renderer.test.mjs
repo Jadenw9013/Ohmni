@@ -3,12 +3,38 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import { buildScene, highlightMatcher } from "../board-model.js";
 import { BoardView, createCamera, project } from "../board-view.js";
-import { buildRenderGeometry, displayPackageKind, pointOnFootprint,
+import { buildRenderGeometry, displayPackageKind, padHoleContour, pointOnFootprint,
     trackRibbon, VERTEX_STRIDE } from "../board-renderer-geometry.js";
 import { WebGLBoardRenderer } from "../board-renderer-webgl.js";
 
 const reference = JSON.parse(readFileSync(new URL("../reference-board.json", import.meta.url))).board;
 const near = (a, b, tolerance = 1e-6) => assert.ok(Math.abs(a - b) < tolerance, `${a} != ${b}`);
+
+test("source-sized slots rotate with the footprint and locating holes carry no copper finish", () => {
+    const board = structuredClone(reference);
+    board.components = [{ ...board.components[0], rotation_deg: 90, pads: [{
+        number: "", net_name: null, kind: "np_thru_hole", shape: "oval",
+        x_mm: 0, y_mm: 0, width_mm: 0.6, height_mm: 1.7,
+        drill: { shape: "oval", width_mm: 0.6, height_mm: 1.7 },
+    }] }];
+    board.tracks = []; board.vias = [];
+    const scene = buildScene(board);
+    const pad = scene.pads[0];
+    assert.equal(pad.nonPlated, true);
+    assert.equal(pad.net, null);
+    assert.deepEqual(pad.drill, board.components[0].pads[0].drill);
+    const contour = padHoleContour(pad);
+    const xs = contour.map(p => p.x), ys = contour.map(p => p.y);
+    near(Math.max(...xs) - Math.min(...xs), 1.7);
+    near(Math.max(...ys) - Math.min(...ys), 0.6);
+    scene.parts = [];
+    const mesh = buildRenderGeometry(scene).objects;
+    assert.ok(mesh.length > 0);
+    for (let i = 0; i < mesh.length; i += VERTEX_STRIDE) {
+        near(mesh[i + 6], 0.012); near(mesh[i + 7], 0.018); near(mesh[i + 8], 0.022);
+    }
+    assert.deepEqual(padHoleContour({ ...pad, drill: null }), []);
+});
 function freeze(value) {
     Object.values(value).forEach((item) => { if (item && typeof item === "object") freeze(item); });
     return Object.freeze(value);
