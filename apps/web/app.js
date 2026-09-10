@@ -15,7 +15,7 @@ import { mountCircuitLessons } from "./circuit-lessons.js";
 import { mountProjectWorkbench } from "./project-workbench.js";
 import { projectRequest, parseProjectStart } from "./project-contract.js";
 
-import { errorKind, fetchHealth, identityBody, pollHeaders, sameIdentity, fail, serverErrorKind, parseBrief, parseStart, parseJob, pollDisposition } from "./client-contract.js";
+import { errorKind, fetchHealth, identityBody, pollHeaders, sameIdentity, fail, serverErrorKind, parseBrief, parseStart, parseJob, pollDisposition, API_BASE } from "./client-contract.js";
 export { parseHealth, parseBrief, parseStart, parseJob, pollDisposition } from "./client-contract.js";
 
 const $ = (selector) => document.querySelector(selector);
@@ -241,7 +241,7 @@ export async function openBrief({ fetcher = globalThis.fetch } = {}) {
         state.identity = await fetchHealth(fetcher);
         let response;
         try {
-            response = await fetcher("/api/brief", {
+            response = await fetcher(API_BASE + "/api/brief", {
                 method: "POST", cache: "no-store",
                 headers: { "content-type": "application/json" },
                 body: identityBody(state.identity),
@@ -319,7 +319,7 @@ export async function startRun({ fetcher = globalThis.fetch, poller = poll, poll
         state.identity = identity;
         let response;
         try {
-            response = await fetcher("/api/demo", {
+            response = await fetcher(API_BASE + "/api/demo", {
                 method: "POST", cache: "no-store",
                 headers: { "content-type": "application/json" },
                 body: identityBody(identity),
@@ -480,7 +480,7 @@ export async function poll(id, identity, { fetcher = globalThis.fetch, schedule 
     state.identity = identity;
     try {
         let response;
-        try { response = await fetcher(`/api/jobs/${id}`, { cache: "no-store", headers: pollHeaders(identity) }); }
+        try { response = await fetcher(API_BASE + `/api/jobs/${id}`, { cache: "no-store", headers: pollHeaders(identity) }); }
         catch { fail("backend_unavailable"); }
         if (!response.ok) {
             fail(await serverErrorKind(response, response.status === 404 ? "lost_job"

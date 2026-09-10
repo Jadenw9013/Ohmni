@@ -6,6 +6,10 @@ const DEMO_FIXTURE_ID = "esp32-bme280-environmental-logger";
 const JOB_ID_PATTERN = /^[0-9a-f]{12}$/;
 const INSTANCE_PATTERN = /^[0-9a-f]{16}$/;
 const UI_VERSION_PATTERN = /^[0-9a-f]{64}$/;
+// Allow hosted deployments to point the frontend at a remote backend.
+// Set window.OHMNI_API_BASE to the Fly.io URL in a script tag before module load.
+// Defaults to empty string (same-origin) for local dev.
+export const API_BASE = (typeof globalThis !== "undefined" && globalThis.OHMNI_API_BASE) || "";
 
 const SERVER_ERROR_KINDS = Object.freeze({
     fixture_rejected: "fixture_rejected",
@@ -60,7 +64,7 @@ export function parseHealth(payload) {
 
 export async function fetchHealth(fetcher) {
     let response;
-    try { response = await fetcher("/api/health", { cache: "no-store" }); }
+    try { response = await fetcher(API_BASE + "/api/health", { cache: "no-store" }); }
     catch { fail("backend_unavailable"); }
     if (!response.ok) fail(await serverErrorKind(response, response.status >= 500 ? "backend_unavailable" : "api_ui_mismatch"));
     let payload;

@@ -33,7 +33,9 @@ from ohmni.application.project_store import (
     ProjectWorkspaceLock,
 )
 
-ROOT=Path(__file__).resolve().parents[1];WEB_ROOT=ROOT/"apps"/"web";OUTPUT_ROOT=ROOT/"out"/"demo-jobs"
+ROOT=Path(__file__).resolve().parents[1];WEB_ROOT=ROOT/"apps"/"web"
+_env_output=os.environ.get("OHMNI_OUTPUT_DIR")
+OUTPUT_ROOT=Path(_env_output) if _env_output else ROOT/"out"/"demo-jobs"
 ARTIFACT_SECTIONS={"golden.kicad_sch":"schematic","golden.kicad_pcb":"pcb"}
 JOB_ID_PATTERN=re.compile(r"^[0-9a-f]{12}$")
 INSTANCE_ID_PATTERN=re.compile(r"^[0-9a-f]{16}$")
@@ -679,6 +681,7 @@ class DemoHTTPServer(ThreadingHTTPServer):
 
 
 class DemoHandler(SimpleHTTPRequestHandler):
+    _ALLOWED_ORIGINS=frozenset(filter(None,(o.strip() for o in os.environ.get("ALLOWED_ORIGINS","").split(","))))
     def __init__(self,*args,**kwargs):super().__init__(*args,directory=str(WEB_ROOT),**kwargs)
     def log_message(self,_format,*_args):return
     def end_headers(self):
@@ -686,7 +689,15 @@ class DemoHandler(SimpleHTTPRequestHandler):
         self.send_header("x-ohmni-api-version",str(API_VERSION))
         self.send_header("x-ohmni-server-instance",self.server.server_instance_id)
         self.send_header("x-ohmni-ui-version",self.server.ui_version)
+        origin=self.headers.get("origin","")
+        if origin and (not self._ALLOWED_ORIGINS or origin in self._ALLOWED_ORIGINS):
+            self.send_header("access-control-allow-origin",origin)
+            self.send_header("access-control-allow-methods","GET,POST,OPTIONS")
+            self.send_header("access-control-allow-headers","content-type,x-ohmni-api-version,x-ohmni-server-instance,x-ohmni-ui-version")
+            self.send_header("vary","origin")
         super().end_headers()
+    def do_OPTIONS(self):
+        self.send_response(204);self.end_headers()
     def _json(self,value:Any,status=HTTPStatus.OK):
         try:body=json.dumps(_owned_json_object(value),allow_nan=False).encode()
         except BaseException:  # noqa: BLE001 - response values are another untrusted serialization boundary
@@ -832,7 +843,7 @@ class DemoHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
         try:request_path=unquote(urlsplit(self.path).path,errors="strict")
         except BaseException:return self._json({"error":INVALID_PATH_MESSAGE},HTTPStatus.BAD_REQUEST)  # noqa: BLE001 - request targets must fail closed
-        if request_path=="/api/health":
+        if request_path in {"/health","/api/health"}:
             return self._json({"status":"ready","fixture_id":DEMO_FIXTURE_ID,**self.server._identity()})
         if request_path=="/api/project-options":
             from ohmni.application.projects import project_options
@@ -922,6 +933,10 @@ def main(argv=None):
     try:
         print(f"Ohmni demo: http://{args.host}:{args.port}",flush=True)
         server._job_diagnostic("server_ready")
+        import signal as _signal
+        def _sigterm(_signum,_frame):server.shutdown()
+        try:_signal.signal(_signal.SIGTERM,_sigterm)
+        except (OSError,ValueError):pass  # not supported on all platforms / threads
         server.serve_forever()
     except KeyboardInterrupt:pass
     except BaseException:  # noqa: BLE001 - runtime diagnostics cannot inspect failures

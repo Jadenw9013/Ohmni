@@ -1,5 +1,5 @@
 // Transport validation for saved projects. No engineering verdicts are computed here.
-import { fail, sameIdentity, pollHeaders, fetchHealth } from "./client-contract.js";
+import { fail, sameIdentity, pollHeaders, fetchHealth, API_BASE } from "./client-contract.js";
 
 const object = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
 const text = (value) => typeof value === "string" && value.length > 0;
@@ -157,7 +157,7 @@ export async function projectRequest(path, { fetcher = globalThis.fetch, identit
     const current = identity || await fetchHealth(fetcher);
     let response;
     try {
-        response = await fetcher(path, { method, cache: "no-store", headers: {
+        response = await fetcher(API_BASE + path, { method, cache: "no-store", headers: {
             ...pollHeaders(current), ...(method === "GET" ? {} : { "content-type": "application/json" }),
         }, ...(method === "GET" ? {} : { body: JSON.stringify({ ...current, ...data }) }) });
     } catch { throw new ProjectRequestError("The server is unreachable. Check the local Ohmni server, then try again. Your edits are still here."); }

@@ -1,0 +1,20 @@
+﻿{
+  "version": 2,
+  "buildCommand": null,
+  "outputDirectory": "apps/web",
+  "installCommand": null,
+  "framework": null,
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "https://ohmni-demo.fly.dev/api/$1" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    }
+  ]
+}

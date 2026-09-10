@@ -1,0 +1,45 @@
+﻿# fly.toml - Ohmni demo backend on Fly.io
+# Deploy: fly deploy
+# First-time: fly launch --no-deploy, then fly volumes create ohmni_data --size 1, then fly deploy
+
+app = "ohmni-demo"
+primary_region = "sjc"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  OHMNI_OUTPUT_DIR = "/data/demo-jobs"
+  # Set ALLOWED_ORIGINS to your Vercel URL via: fly secrets set ALLOWED_ORIGINS=https://your-app.vercel.app
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [http_service.concurrency]
+    type = "requests"
+    hard_limit = 25
+    soft_limit = 20
+
+[[vm]]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1
+
+[[mounts]]
+  source = "ohmni_data"
+  destination = "/data"
+  initial_size = "1gb"
+
+[checks]
+  [checks.health]
+    grace_period = "15s"
+    interval = "30s"
+    method = "GET"
+    path = "/health"
+    port = 8080
+    timeout = "5s"
+    type = "http"
