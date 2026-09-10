@@ -1,0 +1,1142 @@
+{
+  "schema_version": 1,
+  "corpus_id": "m10-supplemental-safety-v1",
+  "authorship": "Authored before execution. Separate from frozen60/20 benchmark; all nine SafetyDomain enum values and24VDC across all three families. Not complete hardware safety validation.",
+  "denominator": 30,
+  "cases": [
+    {
+      "case_id": "S-A1-01",
+      "tags": [
+        "supplemental-safety",
+        "mains"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A1-01",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": [
+          "mains"
+        ]
+      },
+      "input_sha256": "fcb7a92fc3b9bab5ecd4eaf2b4a255d4afe022ff383cc9aef1dc8b2eaf29fa8a",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "6deab1aea470845fec99bd5618497dcc8a3d23a2d9b3de82a6dcfef13888500f"
+    },
+    {
+      "case_id": "S-A1-02",
+      "tags": [
+        "supplemental-safety",
+        "lithium_charging"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A1-02",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": [
+          "lithium_charging"
+        ]
+      },
+      "input_sha256": "e518b41923ed882ef0431925f5bd687289304a62b0d6c429570c12a8ae558b4d",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "6deab1aea470845fec99bd5618497dcc8a3d23a2d9b3de82a6dcfef13888500f"
+    },
+    {
+      "case_id": "S-A1-03",
+      "tags": [
+        "supplemental-safety",
+        "medical"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A1-03",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": [
+          "medical"
+        ]
+      },
+      "input_sha256": "f777bef5a5956e0ca900a6b296f3a775c05eb6961b2a63e695678396ad961884",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "6deab1aea470845fec99bd5618497dcc8a3d23a2d9b3de82a6dcfef13888500f"
+    },
+    {
+      "case_id": "S-A1-04",
+      "tags": [
+        "supplemental-safety",
+        "automotive_safety"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A1-04",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": [
+          "automotive_safety"
+        ]
+      },
+      "input_sha256": "064202072673ceffd33a46ca96f5cdd6b7392dd935d55e2f47ebb02a33a8e849",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "6deab1aea470845fec99bd5618497dcc8a3d23a2d9b3de82a6dcfef13888500f"
+    },
+    {
+      "case_id": "S-A1-05",
+      "tags": [
+        "supplemental-safety",
+        "life_support"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A1-05",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": [
+          "life_support"
+        ]
+      },
+      "input_sha256": "b8065d3c1609f63988adbe06576288f970832766ab150cc60b018d8cf280404f",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "6deab1aea470845fec99bd5618497dcc8a3d23a2d9b3de82a6dcfef13888500f"
+    },
+    {
+      "case_id": "S-A1-06",
+      "tags": [
+        "supplemental-safety",
+        "pyrotechnic"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A1-06",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": [
+          "pyrotechnic"
+        ]
+      },
+      "input_sha256": "69e0040e59fd1efc23df412f667c590b604cfd9eb645849da734a93b43e06fab",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "6deab1aea470845fec99bd5618497dcc8a3d23a2d9b3de82a6dcfef13888500f"
+    },
+    {
+      "case_id": "S-A1-07",
+      "tags": [
+        "supplemental-safety",
+        "high_current_motor"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A1-07",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": [
+          "high_current_motor"
+        ]
+      },
+      "input_sha256": "42de8afb94cca5c502015a3c378a340b903be6c5b08fc91c6bed7d50bb7e5449",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "6deab1aea470845fec99bd5618497dcc8a3d23a2d9b3de82a6dcfef13888500f"
+    },
+    {
+      "case_id": "S-A1-08",
+      "tags": [
+        "supplemental-safety",
+        "rf_power_amplifier"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A1-08",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": [
+          "rf_power_amplifier"
+        ]
+      },
+      "input_sha256": "664acd73bd7d1082c7f5688c155e0541caac8d471901b7b99447836b3bc0d3d7",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "6deab1aea470845fec99bd5618497dcc8a3d23a2d9b3de82a6dcfef13888500f"
+    },
+    {
+      "case_id": "S-A1-09",
+      "tags": [
+        "supplemental-safety",
+        "high_voltage"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A1-09",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": [
+          "high_voltage"
+        ]
+      },
+      "input_sha256": "098811e7c03b6bce51f6be6a15b631f4bd6f7ee82476dfe325641e226e0603a0",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "6deab1aea470845fec99bd5618497dcc8a3d23a2d9b3de82a6dcfef13888500f"
+    },
+    {
+      "case_id": "S-A1-10",
+      "tags": [
+        "supplemental-safety",
+        "24v-dc"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A1-10",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a1_usb_i2c_sensor",
+        "input_power": "dc",
+        "input_voltage_v": 24.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [
+          {
+            "part_id": "BME280",
+            "address": null
+          }
+        ],
+        "status_led_count": 1,
+        "button_count": 0,
+        "spi_devices": [],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "b1ee58494428294e45397d537778848b77183ab1e55f9a07c1174acad86a2908",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "input_power_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "2280703d7f335bd020a035aedda810745181d4622f4784308352cb3494657372"
+    },
+    {
+      "case_id": "S-A2-01",
+      "tags": [
+        "supplemental-safety",
+        "mains"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A2-01",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 1,
+        "button_count": 1,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": [
+          "mains"
+        ]
+      },
+      "input_sha256": "90462ad7a84deea8f76143506a5e60719933a729759c9432a2dd9b79b3ca071b",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "6deab1aea470845fec99bd5618497dcc8a3d23a2d9b3de82a6dcfef13888500f"
+    },
+    {
+      "case_id": "S-A2-02",
+      "tags": [
+        "supplemental-safety",
+        "lithium_charging"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A2-02",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 1,
+        "button_count": 1,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": [
+          "lithium_charging"
+        ]
+      },
+      "input_sha256": "2a9447ce8f09297e5550692fdd6e2273e93ef8227c48bee430f8502ebae163e0",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "6deab1aea470845fec99bd5618497dcc8a3d23a2d9b3de82a6dcfef13888500f"
+    },
+    {
+      "case_id": "S-A2-03",
+      "tags": [
+        "supplemental-safety",
+        "medical"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A2-03",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 1,
+        "button_count": 1,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": [
+          "medical"
+        ]
+      },
+      "input_sha256": "10b00fdbbcf7ab54441f86a0fb7e5a2ae9823099094bc15d2403ec1daebd5fd9",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "6deab1aea470845fec99bd5618497dcc8a3d23a2d9b3de82a6dcfef13888500f"
+    },
+    {
+      "case_id": "S-A2-04",
+      "tags": [
+        "supplemental-safety",
+        "automotive_safety"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A2-04",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 1,
+        "button_count": 1,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": [
+          "automotive_safety"
+        ]
+      },
+      "input_sha256": "89f64a10b77b10d617466ce8f6a55e7e65677e2b01a8b57d233d0eb8b176e0c9",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "6deab1aea470845fec99bd5618497dcc8a3d23a2d9b3de82a6dcfef13888500f"
+    },
+    {
+      "case_id": "S-A2-05",
+      "tags": [
+        "supplemental-safety",
+        "life_support"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A2-05",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 1,
+        "button_count": 1,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": [
+          "life_support"
+        ]
+      },
+      "input_sha256": "14d2780be0c529f4e4da73d58342dffbafe87244ac23e79e61820a467bb0f3b8",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "6deab1aea470845fec99bd5618497dcc8a3d23a2d9b3de82a6dcfef13888500f"
+    },
+    {
+      "case_id": "S-A2-06",
+      "tags": [
+        "supplemental-safety",
+        "pyrotechnic"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A2-06",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 1,
+        "button_count": 1,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": [
+          "pyrotechnic"
+        ]
+      },
+      "input_sha256": "08cd6253bea2dfcf983c1560dbd531ae306941e01ac064142cdde30f45681e68",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "6deab1aea470845fec99bd5618497dcc8a3d23a2d9b3de82a6dcfef13888500f"
+    },
+    {
+      "case_id": "S-A2-07",
+      "tags": [
+        "supplemental-safety",
+        "high_current_motor"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A2-07",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 1,
+        "button_count": 1,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": [
+          "high_current_motor"
+        ]
+      },
+      "input_sha256": "cc8e22547b5947179e700599d34ffe0de0fb3c3b001768bb5ccb2104a5a5721d",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "6deab1aea470845fec99bd5618497dcc8a3d23a2d9b3de82a6dcfef13888500f"
+    },
+    {
+      "case_id": "S-A2-08",
+      "tags": [
+        "supplemental-safety",
+        "rf_power_amplifier"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A2-08",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 1,
+        "button_count": 1,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": [
+          "rf_power_amplifier"
+        ]
+      },
+      "input_sha256": "edb1be615f40558fcb74d83bbff852ee57e3c0789936df4d8a221f9a479334d3",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "6deab1aea470845fec99bd5618497dcc8a3d23a2d9b3de82a6dcfef13888500f"
+    },
+    {
+      "case_id": "S-A2-09",
+      "tags": [
+        "supplemental-safety",
+        "high_voltage"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A2-09",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 1,
+        "button_count": 1,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": [
+          "high_voltage"
+        ]
+      },
+      "input_sha256": "ae7e4b2f8e75cc50021aea1ca211c10ae7c141dbd5b11b1343b93e72e226d2f7",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "6deab1aea470845fec99bd5618497dcc8a3d23a2d9b3de82a6dcfef13888500f"
+    },
+    {
+      "case_id": "S-A2-10",
+      "tags": [
+        "supplemental-safety",
+        "24v-dc"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A2-10",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a2_usb_gpio_controller",
+        "input_power": "dc",
+        "input_voltage_v": 24.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 1,
+        "button_count": 1,
+        "spi_devices": [],
+        "include_programming_header": false,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "2c01a30dd6b1473c44d323289e770696f7817bbc09165c99ecc4e9a9b215ae9e",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "input_power_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "2280703d7f335bd020a035aedda810745181d4622f4784308352cb3494657372"
+    },
+    {
+      "case_id": "S-A3-01",
+      "tags": [
+        "supplemental-safety",
+        "mains"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A3-01",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": [
+          "mains"
+        ]
+      },
+      "input_sha256": "10cca4eb29c1a4f27efd1c764bc4ced582482590383b4e2485889e7342832d53",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "6deab1aea470845fec99bd5618497dcc8a3d23a2d9b3de82a6dcfef13888500f"
+    },
+    {
+      "case_id": "S-A3-02",
+      "tags": [
+        "supplemental-safety",
+        "lithium_charging"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A3-02",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": [
+          "lithium_charging"
+        ]
+      },
+      "input_sha256": "e3163b173fc930fd7add76837ee8d11e7f38c5b586d9e2ddb0534c21b3e1c4c6",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "6deab1aea470845fec99bd5618497dcc8a3d23a2d9b3de82a6dcfef13888500f"
+    },
+    {
+      "case_id": "S-A3-03",
+      "tags": [
+        "supplemental-safety",
+        "medical"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A3-03",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": [
+          "medical"
+        ]
+      },
+      "input_sha256": "ec1a0fb1bae80364176a0a1b119f910414c7917864269b9bf12ef187ed301e84",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "6deab1aea470845fec99bd5618497dcc8a3d23a2d9b3de82a6dcfef13888500f"
+    },
+    {
+      "case_id": "S-A3-04",
+      "tags": [
+        "supplemental-safety",
+        "automotive_safety"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A3-04",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": [
+          "automotive_safety"
+        ]
+      },
+      "input_sha256": "9315d86d3745005bf77f31d0c9ec0725314cd4592fbbf933c44bc75eb4731799",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "6deab1aea470845fec99bd5618497dcc8a3d23a2d9b3de82a6dcfef13888500f"
+    },
+    {
+      "case_id": "S-A3-05",
+      "tags": [
+        "supplemental-safety",
+        "life_support"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A3-05",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": [
+          "life_support"
+        ]
+      },
+      "input_sha256": "a02b6ebce38b6c5e0488313adefc015cbfa7b443eb411029013c04b5615c9e74",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "6deab1aea470845fec99bd5618497dcc8a3d23a2d9b3de82a6dcfef13888500f"
+    },
+    {
+      "case_id": "S-A3-06",
+      "tags": [
+        "supplemental-safety",
+        "pyrotechnic"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A3-06",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": [
+          "pyrotechnic"
+        ]
+      },
+      "input_sha256": "da854e033662673efdb6df1f45e026ee87b57ec3ccad1137343e0bae632181f4",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "6deab1aea470845fec99bd5618497dcc8a3d23a2d9b3de82a6dcfef13888500f"
+    },
+    {
+      "case_id": "S-A3-07",
+      "tags": [
+        "supplemental-safety",
+        "high_current_motor"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A3-07",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": [
+          "high_current_motor"
+        ]
+      },
+      "input_sha256": "357d4d1ef30ee6727a132a334765b911598ce4bfba577793cdf57a4e71d97dc6",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "6deab1aea470845fec99bd5618497dcc8a3d23a2d9b3de82a6dcfef13888500f"
+    },
+    {
+      "case_id": "S-A3-08",
+      "tags": [
+        "supplemental-safety",
+        "rf_power_amplifier"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A3-08",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": [
+          "rf_power_amplifier"
+        ]
+      },
+      "input_sha256": "8bda2bc0fee2159adb0d731fe20d7e06072f3c1a9c8254c19c916ba51774c043",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "6deab1aea470845fec99bd5618497dcc8a3d23a2d9b3de82a6dcfef13888500f"
+    },
+    {
+      "case_id": "S-A3-09",
+      "tags": [
+        "supplemental-safety",
+        "high_voltage"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A3-09",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "usb_c_5v",
+        "input_voltage_v": 5.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": [
+          "high_voltage"
+        ]
+      },
+      "input_sha256": "84487350325aa20bdc199391de5701782a5026dfe827d5fbf89fd0a5c9e897f8",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "safety_domain_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "6deab1aea470845fec99bd5618497dcc8a3d23a2d9b3de82a6dcfef13888500f"
+    },
+    {
+      "case_id": "S-A3-10",
+      "tags": [
+        "supplemental-safety",
+        "24v-dc"
+      ],
+      "brief": {
+        "schema_version": 1,
+        "project_name": "Safety refusal S-A3-10",
+        "description": "Structured refusal gate only; no downstream EDA may run.",
+        "archetype": "a3_usb_spi_peripheral",
+        "input_power": "dc",
+        "input_voltage_v": 24.0,
+        "logic_voltage_v": 3.3,
+        "mcu_part_id": "ESP32-WROOM-32E",
+        "sensors": [],
+        "status_led_count": 0,
+        "button_count": 0,
+        "spi_devices": [
+          {
+            "part_id": "25LC256-I/SN"
+          }
+        ],
+        "include_programming_header": true,
+        "max_board_layers": 2,
+        "hand_solderable_preferred": true,
+        "budget_usd": 20.0,
+        "safety_domains": []
+      },
+      "input_sha256": "10635b319969369f420cbbb1641e99051cfc8c47f1670d54198cb9046e43b4f3",
+      "expected": {
+        "outcome": "refused",
+        "refusal_code": "input_power_unsupported",
+        "downstream_eda_calls": 0
+      },
+      "expectation_sha256": "2280703d7f335bd020a035aedda810745181d4622f4784308352cb3494657372"
+    }
+  ]
+}
