@@ -45,3 +45,8 @@ The current SQLite and synchronous HTTP requests will not scale to hundreds of e
 
 **Final Instruction for the AI:** 
 Do not attempt to build all of this in one prompt. Begin by reading `ARCHITECTURE.md` and the existing verification pipeline. Tackle **Section 2 (Firmware Co-Design)** and **Section 1 (Supply Chain)** first, as they provide the most immediate commercial value.
+
+### 6. Model Context Protocol (MCP) Integration
+Ohmni's ultimate commercial form is not just a standalone web app, but a backend verification engine for native AI agents. The industry standard for AI-EDA orchestration is MCP.
+*   **MCP Server Implementation:** Package Ohmni's deterministic pipeline (semantic math checks, SPICE physics simulation, and headless KiCad routing) as a standard MCP Server.
+*   **Native GPT-6 Astra Integration:** This allows advanced agents like GPT-6 Astra to natively connect to Ohmni. Astra can orchestrate the high-level hardware design locally, while strictly calling Ohmni's MCP tools to verify the physics and generate the final Gerbers, thereby preventing hardware hallucinations and matching the community's 'predictable tools' strategy.
