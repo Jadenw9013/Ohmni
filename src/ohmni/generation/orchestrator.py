@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import time
 from pathlib import Path
 
 from pydantic import ValidationError
@@ -190,17 +191,43 @@ class DesignOrchestrator:
                             issues=issues, notebook=notebook, lessons=lessons, llm_calls=self.calls)
 
     def _call(self, request_type, model, data):
+        started = time.perf_counter()
         try:
             value = self.provider.generate_structured(StructuredGenerationRequest(
                 request_type=request_type,
                 instructions="Return only the requested schema. Propose; never assert evidence, verification, tool results, or requirement changes.",
                 data=data,
             ), model)
-            self.calls.append(LlmCallRecord(provider=type(self.provider).__name__, request_type=request_type, response_schema=model.__name__, success=True))
+            self.calls.append(self._record(request_type, model, started, success=True))
             return value
         except Exception as exc:
-            self.calls.append(LlmCallRecord(provider=type(self.provider).__name__, request_type=request_type, response_schema=model.__name__, success=False, error=str(exc)))
+            # A failed call still spent whatever it spent, retries included, so
+            # the accounting is read on this path too.
+            self.calls.append(self._record(request_type, model, started, success=False, error=str(exc)))
             raise
+
+    def _record(self, request_type, model, started, *, success, error=None):
+        """Describe one provider call, with whatever accounting it can report.
+
+        A provider is only required to return validated objects, so the cost
+        fields stay None for one that reports nothing -- the offline fixture
+        provider spends no tokens and claims none.
+        """
+        usage = None
+        reader = getattr(self.provider, "last_call_usage", None)
+        if callable(reader):
+            usage = reader()
+        return LlmCallRecord(
+            provider=type(self.provider).__name__,
+            model_id=getattr(usage, "model", None) or getattr(self.provider, "model", None),
+            request_type=request_type, response_schema=model.__name__, success=success,
+            attempts=getattr(usage, "attempts", None),
+            input_tokens=getattr(usage, "input_tokens", None),
+            output_tokens=getattr(usage, "output_tokens", None),
+            token_usage=getattr(usage, "total_tokens", None),
+            latency_ms=round((time.perf_counter() - started) * 1000, 3),
+            error=error,
+        )
 
     def _validate_architecture(self, architecture):
         known = {p.part_id for p in self.catalog.all_parts()}

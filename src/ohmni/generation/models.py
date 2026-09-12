@@ -199,11 +199,23 @@ class RepairRecord(StrictModel):
 
 
 class LlmCallRecord(StrictModel):
+    """One structured proposal call, and what it cost to get it.
+
+    The counts are per *call*, summed over every attempt that call took, so a
+    request that needed two re-asks reports the tokens all three attempts spent.
+    ``attempts`` is what makes that visible: without it a retried call and a
+    first-time success look identical in the record, and a retry loop is only a
+    cost control if someone can see it run.
+    """
+
     provider: str
     model_id: str | None = None
     request_type: str
     response_schema: str
     success: bool
+    attempts: int | None = None
+    input_tokens: int | None = None
+    output_tokens: int | None = None
     token_usage: int | None = None
     latency_ms: float | None = None
     error: str | None = None
