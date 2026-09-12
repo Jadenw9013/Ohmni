@@ -16,6 +16,8 @@ from contextlib import contextmanager
 from datetime import UTC, datetime
 from pathlib import Path
 
+from . import database
+
 PROJECT_ID_PATTERN = re.compile(r"^[0-9a-f]{16}$")
 
 
@@ -66,59 +68,34 @@ def _json(value: object) -> str:
 
 
 class ProjectStore:
-    """SQLite transactions keep revision allocation and job association atomic."""
+    """SQLite transactions keep revision allocation and job association atomic.
 
-    def __init__(self, output_root: Path):
+    Schema, connections and identity belong to :mod:`ohmni.application.database`;
+    this class owns what the application means by a project, a revision and a
+    job. Every write records the owner, which is attribution and not access
+    control: there is no sign-in, so nothing here authorizes anything.
+    """
+
+    def __init__(self, output_root: Path, path: Path | None = None):
         self.root = output_root.resolve()
         self.root.mkdir(parents=True, exist_ok=True)
-        self.path = self.root / "project-state.sqlite3"
+        self.path = (path or database.resolve_database_path(self.root)).expanduser()
         if self.path.is_symlink():
             raise ValueError("local project database cannot be a symlink")
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        # A database named by OHMNI_DB_PATH may sit outside the workspace -- on
+        # Fly it does, one level up on the volume -- so the parent check only
+        # applies to one that lives in the workspace it describes.
+        self._parent = self.path.parent.resolve()
+        self.owner_user_id = database.LOCAL_USER_ID
         with self._connection() as db:
-            db.execute("PRAGMA journal_mode=WAL")
-            db.executescript("""
-                CREATE TABLE IF NOT EXISTS projects (
-                    project_id TEXT PRIMARY KEY,
-                    created_at TEXT NOT NULL,
-                    updated_at TEXT NOT NULL
-                );
-                CREATE TABLE IF NOT EXISTS revisions (
-                    revision_id TEXT PRIMARY KEY,
-                    project_id TEXT NOT NULL REFERENCES projects(project_id),
-                    number INTEGER NOT NULL,
-                    created_at TEXT NOT NULL,
-                    brief TEXT NOT NULL,
-                    brief_fingerprint TEXT NOT NULL,
-                    preview TEXT NOT NULL,
-                    job_id TEXT,
-                    UNIQUE(project_id, number),
-                    UNIQUE(job_id)
-                );
-                CREATE TABLE IF NOT EXISTS jobs (
-                    job_id TEXT PRIMARY KEY,
-                    record TEXT NOT NULL
-                );
-                CREATE TABLE IF NOT EXISTS revision_jobs (
-                    job_id TEXT PRIMARY KEY REFERENCES jobs(job_id),
-                    project_id TEXT NOT NULL REFERENCES projects(project_id),
-                    revision_id TEXT NOT NULL REFERENCES revisions(revision_id),
-                    attempt INTEGER NOT NULL,
-                    UNIQUE(revision_id, attempt)
-                );
-            """)
+            database.initialize(db)
+            database.ensure_project(db, database.DEMO_PROJECT_ID, self.owner_user_id)
 
     @contextmanager
     def _connection(self):
-        if self.path.is_symlink() or self.path.resolve().parent != self.root:
-            raise ValueError("local project database path changed")
-        db = sqlite3.connect(self.path, timeout=10)
-        db.row_factory = sqlite3.Row
-        db.execute("PRAGMA foreign_keys=ON")
-        try:
-            with db:
-                yield db
-        finally:
-            db.close()
+        with database.connect(self.path, parent=self._parent) as db:
+            yield db
 
     @staticmethod
     def _revision(row: sqlite3.Row) -> dict:
@@ -177,7 +154,11 @@ class ProjectStore:
             db.execute("BEGIN IMMEDIATE")
             if project_id is None:
                 project_id = uuid.uuid4().hex[:16]
-                db.execute("INSERT INTO projects VALUES (?, ?, ?)", (project_id, now, now))
+                db.execute(
+                    "INSERT INTO projects (project_id, created_at, updated_at, owner_user_id) "
+                    "VALUES (?, ?, ?, ?)",
+                    (project_id, now, now, self.owner_user_id),
+                )
                 number = 1
             else:
                 project = self._project(db, project_id)
@@ -186,7 +167,8 @@ class ProjectStore:
                 number = len(project["revisions"]) + 1
                 db.execute("UPDATE projects SET updated_at=? WHERE project_id=?", (now, project_id))
             db.execute(
-                "INSERT INTO revisions VALUES (?, ?, ?, ?, ?, ?, ?, NULL)",
+                "INSERT INTO revisions (revision_id, project_id, number, created_at, brief, "
+                "brief_fingerprint, preview, job_id) VALUES (?, ?, ?, ?, ?, ?, ?, NULL)",
                 (uuid.uuid4().hex[:16], project_id, number, now,
                  _json(brief), fingerprint, _json(preview)),
             )
@@ -223,7 +205,7 @@ class ProjectStore:
                 previous = db.execute("SELECT record FROM jobs WHERE job_id=?", (previous_job_id,)).fetchone()
                 if previous is None or json.loads(previous["record"]).get("status") != "failed":
                     return row["job_id"]
-            db.execute("INSERT INTO jobs VALUES (?, ?)", (record["job_id"], _json(record)))
+            self._insert_job(db, record, project_id=project_id)
             attempt = db.execute(
                 "SELECT COALESCE(MAX(attempt), 0)+1 FROM revision_jobs WHERE revision_id=?", (revision_id,)
             ).fetchone()[0]
@@ -235,12 +217,51 @@ class ProjectStore:
             )
             return record["job_id"]
 
+    def _insert_job(self, db, record: dict, *, project_id: str | None) -> None:
+        """Record a job with who it belongs to and what it belongs to."""
+        timestamp = database.now()
+        db.execute(
+            "INSERT INTO jobs (job_id, record, owner_user_id, project_id, created_at, updated_at) "
+            "VALUES (?, ?, ?, ?, ?, ?)",
+            (record["job_id"], _json(record), self.owner_user_id, project_id,
+             timestamp, timestamp),
+        )
+
+    def claim_demo_job(self, record: dict) -> str:
+        """Claim a job for a run of the reference fixture.
+
+        The demo has no saved brief to revise, so it is attributed to the
+        workspace's own demo project rather than left belonging to nothing.
+        """
+        with self._connection() as db:
+            self._insert_job(db, record, project_id=database.DEMO_PROJECT_ID)
+        return record["job_id"]
+
     def save_job(self, record: dict) -> None:
+        """Write a job's current envelope, leaving its ownership as recorded."""
         with self._connection() as db:
             db.execute(
-                "INSERT INTO jobs VALUES (?, ?) ON CONFLICT(job_id) DO UPDATE SET record=excluded.record",
-                (record["job_id"], _json(record)),
+                "INSERT INTO jobs (job_id, record, owner_user_id, created_at, updated_at) "
+                "VALUES (?, ?, ?, ?, ?) ON CONFLICT(job_id) DO UPDATE SET "
+                "record=excluded.record, updated_at=excluded.updated_at",
+                (record["job_id"], _json(record), self.owner_user_id,
+                 database.now(), database.now()),
             )
+
+    def job(self, job_id: str) -> dict | None:
+        """One job envelope, read back from the database that persisted it."""
+        with self._connection() as db:
+            row = db.execute("SELECT record FROM jobs WHERE job_id=?", (job_id,)).fetchone()
+        return None if row is None else json.loads(row["record"])
+
+    def job_owner(self, job_id: str) -> dict | None:
+        """Who a job is attributed to, and what project it ran for."""
+        with self._connection() as db:
+            row = db.execute(
+                "SELECT job_id, owner_user_id, project_id, created_at, updated_at "
+                "FROM jobs WHERE job_id=?", (job_id,),
+            ).fetchone()
+        return None if row is None else dict(row)
 
     def job_revision(self, job_id: str) -> dict | None:
         """Return the immutable input of an attempt, including superseded retries."""

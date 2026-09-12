@@ -22,6 +22,10 @@ primary_region = "sjc"
 
 [env]
   OHMNI_OUTPUT_DIR = "/data/demo-jobs"
+  # The database sits beside the job artifacts it describes, not inside them,
+  # so the artifact directory can be cleared without discarding the projects
+  # and jobs that reference it.
+  OHMNI_DB_PATH = "/data/ohmni.sqlite3"
   # ALLOWED_ORIGINS and ANTHROPIC_API_KEY are secrets, not env: see above.
   # With the Vercel rewrite in front, browser requests are same-origin and
   # ALLOWED_ORIGINS only matters if the Fly URL is opened directly.

@@ -728,3 +728,79 @@ def test_the_brief_endpoint_accepts_free_text_on_the_same_terms_as_a_run(tmp_pat
         assert len(provider.calls)==1
     finally:
         server.shutdown();server.server_close();thread.join(timeout=2)
+
+
+def test_a_demo_job_is_recorded_in_the_database_with_an_owner(tmp_path):
+    """/api/demo used to leave its job belonging to nothing."""
+    from ohmni.application import database
+
+    class Report:
+        def model_dump(self,mode=None):return {"result":"complete","pcb":current_pcb_policy()}
+    class Pipeline:
+        def __init__(self,progress):pass
+        def run(self,destination,request):return Report()
+    store=JobStore(tmp_path,Pipeline)
+    store.enable_persistence()
+    job_id=store.start(DEMO_REQUEST)
+    _await_terminal(store,job_id)
+
+    owner=store.project_store.job_owner(job_id)
+    assert owner["owner_user_id"]==database.LOCAL_USER_ID
+    assert owner["project_id"]==database.DEMO_PROJECT_ID
+    # The durable copy is the completed one, not the queued envelope it started as.
+    assert store.project_store.job(job_id)["status"]=="complete"
+
+
+def test_polling_serves_the_record_the_database_holds(tmp_path):
+    class Report:
+        def model_dump(self,mode=None):return {"result":"complete","pcb":current_pcb_policy()}
+    class Pipeline:
+        def __init__(self,progress):pass
+        def run(self,destination,request):return Report()
+    store=JobStore(tmp_path,Pipeline)
+    store.enable_persistence()
+    job_id=store.start(DEMO_REQUEST)
+    assert _await_terminal(store,job_id)["status"]=="complete"
+
+    # Nothing is served from memory that the database does not also hold: drop
+    # the row and the poll falls back to the live record rather than inventing
+    # a status, which is what a store with no persistence does anyway.
+    with store.project_store._connection() as db:
+        db.execute("DELETE FROM jobs WHERE job_id=?",(job_id,))
+    assert store.get(job_id)["status"]=="complete"
+
+
+def test_a_job_whose_two_copies_disagree_is_retired_rather_than_served(tmp_path):
+    """Neither copy can be trusted once they differ, so neither is published."""
+    class Report:
+        def model_dump(self,mode=None):return {"result":"complete","pcb":current_pcb_policy()}
+    class Pipeline:
+        def __init__(self,progress):pass
+        def run(self,destination,request):return Report()
+    store=JobStore(tmp_path,Pipeline)
+    store.enable_persistence()
+    job_id=store.start(DEMO_REQUEST)
+    _await_terminal(store,job_id)
+
+    tampered={**store.project_store.job(job_id),"report":{"result":"not what ran"}}
+    store.project_store.save_job(tampered)
+    job=store.get(job_id)
+    assert job["status"]=="failed" and job["error_code"]=="job_state_invalid"
+    assert job["report"] is None and job["progress"]==[]
+    # The retirement is durable: a restart does not resurrect the disagreement.
+    restored=JobStore(tmp_path,Pipeline)
+    restored.enable_persistence()
+    assert restored.get(job_id)["status"]=="failed"
+
+
+def test_a_store_without_persistence_still_serves_from_memory(tmp_path):
+    """The pure tests and a store before enable_persistence run this path."""
+    class Report:
+        def model_dump(self,mode=None):return {"result":"complete","pcb":current_pcb_policy()}
+    class Pipeline:
+        def __init__(self,progress):pass
+        def run(self,destination,request):return Report()
+    store=JobStore(tmp_path,Pipeline)
+    job_id=store.start(DEMO_REQUEST)
+    assert store.project_store is None
+    assert _await_terminal(store,job_id)["status"]=="complete"

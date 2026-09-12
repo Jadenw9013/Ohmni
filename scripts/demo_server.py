@@ -13,15 +13,6 @@ import os
 import re
 import socket
 import sys
-
-import os
-from pathlib import Path
-_env_file = Path(__file__).resolve().parents[1] / ".env"
-if _env_file.is_file():
-    for _line in _env_file.read_text(encoding="utf-8").splitlines():
-        if "=" in _line and not _line.strip().startswith("#"):
-            _k, _v = _line.strip().split("=", 1)
-            os.environ.setdefault(_k.strip(), _v.strip())
 import threading
 import uuid
 import zipfile
@@ -43,6 +34,27 @@ from ohmni.application.project_store import (
 )
 
 ROOT=Path(__file__).resolve().parents[1];WEB_ROOT=ROOT/"apps"/"web"
+
+
+def _load_local_env(path):
+    """Read a local .env, for keys and paths a developer keeps off the shell.
+
+    Runs before this module reads any variable of its own. Anything already in
+    the environment wins -- `setdefault`, not assignment -- so a shell export or
+    a Fly secret is never overridden by a file that happens to be lying around.
+    The file is gitignored; nothing here writes one or reports its contents.
+    """
+    try:
+        if not path.is_file():return
+        for line in path.read_text(encoding="utf-8").splitlines():
+            entry=line.strip()
+            if not entry or entry.startswith("#") or "=" not in entry:continue
+            name,value=entry.split("=",1)
+            os.environ.setdefault(name.strip(),value.strip())
+    except OSError:return  # an unreadable .env is simply no .env
+
+
+_load_local_env(ROOT/".env")
 _env_output=os.environ.get("OHMNI_OUTPUT_DIR")
 OUTPUT_ROOT=Path(_env_output) if _env_output else ROOT/"out"/"demo-jobs"
 ARTIFACT_SECTIONS={"golden.kicad_sch":"schematic","golden.kicad_pcb":"pcb"}
@@ -301,9 +313,22 @@ class JobStore:
         with self.lock:
             self._admit_locked()
             self.jobs[job_id]=self._queued_record(job_id)
-            if not self._persist_locked(job_id):raise RuntimeError("local job persistence unavailable")
+            if not self._claim_locked(job_id):raise RuntimeError("local job persistence unavailable")
         self._launch(job_id,request)
         return job_id
+    def _claim_locked(self,job_id):
+        """Insert a demo job owned by this workspace and its demo project.
+
+        A revision run claims through the revision (see start_revision); this is
+        the same act for a run that has no saved brief to belong to, so no job
+        reaches the database without an owner.
+        """
+        if self.project_store is None:return self._persist_locked(job_id)
+        try:self.project_store.claim_demo_job(_owned_job_record(self.jobs[job_id],job_id));return True
+        except BaseException:  # noqa: BLE001 - a job that cannot be recorded never starts
+            self.jobs[job_id]=self._failure_record(job_id)
+            self._persist_locked(job_id)
+            return False
     def start_revision(self,project_id,revision_id):
         """Reuse active/complete attempts; a failed attempt can be retried."""
         from ohmni.application.projects import ProjectPipeline
@@ -400,9 +425,32 @@ class JobStore:
         except BaseException:  # noqa: BLE001 - the worker boundary must always terminalize the job
             self._fail(job_id,"pipeline_failed")
     def _snapshot(self,job_id):
+        """Serve the record the database holds, and require it to match memory.
+
+        The database is what survives a restart, so a poll reads it. Memory
+        still decides whether a job exists at all -- recovery loads every stored
+        job into it -- and still answers when there is no persistence, which is
+        how the pure tests and a fresh store run.
+
+        Both reads happen under one lock because every write also happens under
+        it: outside, a running job appending progress between the two reads
+        would look exactly like corruption. Inside, a disagreement is one, and
+        a job whose two copies disagree is retired rather than served, because
+        there is no way to tell which of them is the design that ran.
+        """
         with self.lock:
             if job_id not in self.jobs:return None
-            return _owned_json_object(self._validated_job_locked(job_id))
+            live=_owned_json_object(self._validated_job_locked(job_id))
+            if self.project_store is None:return live
+            try:stored=self.project_store.job(job_id)
+            except BaseException:return live  # noqa: BLE001 - a read failure never invents a status
+            if stored is None:return live
+            try:durable=_owned_json_object(_owned_job_record(stored,job_id))
+            except BaseException:durable=None  # noqa: BLE001 - an unreadable envelope is a disagreement
+            if durable==live:return durable
+            self.jobs[job_id]=self._failure_record(job_id)
+            self._persist_locked(job_id)
+            return _owned_json_object(self.jobs[job_id])
     def _job_directory(self,job_id):
         if not JOB_ID_PATTERN.fullmatch(job_id):return None
         try:root=self.output_root.resolve();directory=(root/job_id).resolve()

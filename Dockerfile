@@ -45,6 +45,7 @@ RUN chmod +x scripts/docker-entrypoint.sh && chown -R kicad:kicad /app
 # account the entrypoint drops to, whose KiCad configuration and library tables
 # the base image prepared for this KiCad version.
 ENV OHMNI_OUTPUT_DIR=/data/demo-jobs \
+    OHMNI_DB_PATH=/data/ohmni.sqlite3 \
     HOME=/home/kicad
 
 EXPOSE 8080
