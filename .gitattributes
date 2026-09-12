@@ -1,0 +1,11 @@
+# The frozen benchmark corpora are content-addressed. Keeping them LF in
+# every working tree means a Windows checkout and a Linux CI runner hold
+# the same bytes, which is one less way for the freeze to disagree with
+# itself. scripts/benchmark_synthesis.py normalizes newlines as well, so
+# neither half depends on the other being in place.
+tests/fixtures/*.json text eol=lf
+
+# Pinned upstream KiCad footprint files are compared byte for byte against
+# the sha256 of the file as its library publishes it, which is LF. A CRLF
+# checkout would silently be a different file to that check.
+fixtures/footprint_sources/*.kicad_mod text eol=lf

@@ -63,11 +63,31 @@ not required — a Docker inside WSL works, building from `/mnt/c/...`.
 
 ## Frontend, on Vercel
 
-Import the repository and keep **Root Directory at the repository root** —
-Vercel reads `vercel.json` from the root directory, and the rewrite lives
-there. `outputDirectory: "apps/web"` is what makes the site serve from
-`apps/web`; the page references `/styles.css` and `/app.js` at the origin root,
-so serving any other directory yields a 404 page with no CSS.
+Import the repository. Vercel reads `vercel.json` **from whatever directory the
+project's Root Directory setting points at**, which is the one setting that
+quietly changes which config file is in force:
+
+- Root Directory = repository root → `vercel.json` applies, and its
+  `outputDirectory: "apps/web"` is what makes the site serve from `apps/web`.
+- Root Directory = `apps/web` → the root file is ignored entirely and
+  `apps/web/vercel.json` applies instead.
+
+Both files exist, and they carry the same rewrite and the same headers, so the
+deployment works either way. Keep them in step if you change one; the only
+intended difference is `outputDirectory`, which means nothing when `apps/web` is
+already the root. The page references `/styles.css` and `/app.js` at the origin
+root, so a project serving any other directory yields a 404 page with no CSS.
+
+To tell which config is live, look for the security headers on the deployed
+page — they only appear when a `vercel.json` is being read:
+
+```sh
+curl -sI https://<your-app>.vercel.app/ | grep -i x-frame-options
+```
+
+A `/api/*` request that returns `X-Vercel-Error: NOT_FOUND` is a static 404,
+which means no rewrite matched — the config in force is not the one with the
+rewrite in it.
 
 - Framework preset: **Other**
 - Build command: none (there is no root `package.json`; nothing is bundled)

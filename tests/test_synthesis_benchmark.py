@@ -25,8 +25,27 @@ ACCEPTED = [case for case in CORPUS["cases"] if case["expected"]["outcome"] == "
 REFUSED = [case for case in CORPUS["cases"] if case["expected"]["outcome"] == "refused"] + SAFETY["cases"]
 
 
+def test_the_freeze_is_about_content_not_about_line_endings():
+    """A CRLF checkout is the same corpus, and must be seen as the same corpus.
+
+    Hashing the raw bytes made this repository's own CI fail on every commit it
+    ever ran while passing on the machine that authored the constant: git stores
+    these fixtures with LF, a Windows checkout materializes CRLF, and only one of
+    those two byte strings could match.
+    """
+    lf = benchmark.DEFAULT_CORPUS.read_bytes().replace(b"\r\n", b"\n")
+    crlf = lf.replace(b"\n", b"\r\n")
+    assert benchmark.corpus_digest(lf) == benchmark.corpus_digest(crlf) == benchmark.CORPUS_SHA256
+    assert json.loads(lf.decode("utf-8")) == json.loads(crlf.decode("utf-8"))
+    # Generated artifacts keep their byte-exact digests: only the authored
+    # corpora normalize, because there the content is the claim.
+    assert benchmark.digest_bytes(b"a\r\nb") != benchmark.digest_bytes(b"a\nb")
+
+
 def test_corpus_remains_frozen_and_contains_reported_failure():
-    assert benchmark.digest_bytes(benchmark.DEFAULT_CORPUS.read_bytes()) == benchmark.CORPUS_SHA256
+    assert benchmark.corpus_digest(benchmark.DEFAULT_CORPUS.read_bytes()) == benchmark.CORPUS_SHA256
+    assert (benchmark.corpus_digest(benchmark.DEFAULT_SAFETY_CORPUS.read_bytes())
+            == benchmark.SAFETY_CORPUS_SHA256)
     assert len(ACCEPTED) == 60
     assert len(REFUSED) == 50
     case = next(case for case in ACCEPTED if case["case_id"] == "A1-20")

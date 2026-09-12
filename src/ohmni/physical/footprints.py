@@ -55,14 +55,14 @@ _register(FootprintDefinition(footprint_id="RF_Module:ESP32-WROOM-32", width_mm=
     source=_src("RF_Module:ESP32-WROOM-32", "af11e3ded30556624b02dbdb6b72e7ee6ec829fa0c549365b154eb273f7dbf7c"), pads=_esp_pads))
 
 _register(FootprintDefinition(footprint_id="Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical", width_mm=2.54, height_mm=15.24,
-    source=_src("Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical", "e3c3501f520fc1fc39eeb5d72137e680e509c0df2348ca77fef1b9db6ab974f0"),
+    source=_src("Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical", "5f2993c50dbd5024384bf6fa972fcd10d40d0837039e1e371b326a27d9f5b8b7"),
     pads=[FootprintPad(number=str(i), x_mm=0, y_mm=(i-1)*2.54, width_mm=1.7, height_mm=1.7,
                        kind="thru_hole", shape="rect" if i == 1 else "circle",
                        drill=FootprintDrill(shape="circle", width_mm=1, height_mm=1)) for i in range(1,7)]))
 
 _usb_xy={"A1":(-3.25,-4.045),"A4":(-2.45,-4.045),"A5":(-1.25,-4.045),"A6":(-.25,-4.045),"A7":(.25,-4.045),"A8":(1.25,-4.045),"A9":(2.45,-4.045),"A12":(3.25,-4.045),"B1":(3.25,-4.045),"B4":(2.45,-4.045),"B5":(1.75,-4.045),"B6":(.75,-4.045),"B7":(-.75,-4.045),"B8":(-1.75,-4.045),"B9":(-2.45,-4.045),"B12":(-3.25,-4.045)}
 _register(FootprintDefinition(footprint_id="Connector_USB:USB_C_Receptacle_HRO_TYPE-C-31-M-12", width_mm=10, height_mm=8,
-    source=_src("Connector_USB:USB_C_Receptacle_HRO_TYPE-C-31-M-12", "8d292db4e16dbd391bfc6c79366047ce1799e687d970810736a41426e88619b3"),
+    source=_src("Connector_USB:USB_C_Receptacle_HRO_TYPE-C-31-M-12", "c562a7f9713a8b754c4d2305a2ea15453469a1c8c48a9b17973383e8993fc750"),
     pads=[FootprintPad(number=n,x_mm=x,y_mm=y,width_mm=.6 if n[1:] in {"1","4","9","12"} else .3,height_mm=1.45) for n,(x,y) in _usb_xy.items()]
          + [FootprintPad(number="SH",x_mm=x,y_mm=y,width_mm=1,height_mm=height,
                          kind="thru_hole",shape="oval",mechanical=True,
@@ -123,7 +123,7 @@ _register(FootprintDefinition(
                           (4, .7125, .5), (5, .7125, 0), (6, .7125, -.5))],
 ))
 
-_button_source = _src("Button_Switch_THT:SW_PUSH_6mm", "e284d5bbfb435ef0ad577512ffc7da06ea7cf5c87753287922d89e84c7f4a2a7")
+_button_source = _src("Button_Switch_THT:SW_PUSH_6mm", "45f5bc8d06f716115e6f50d19634a72a8aeffbb24ae6b28a12a958f2d4519d86")
 _button_source.derivation += (
     "; all coordinates translated by (-3.25, -2.25) mm to center the courtyard; "
     "the four 2 mm circular lands retain duplicate terminal numbers and 1.1 mm drills"

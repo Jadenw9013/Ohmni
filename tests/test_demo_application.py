@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import socket
 import struct
 import threading
@@ -30,6 +31,15 @@ from scripts.demo_server import (
     DemoInitializationError,
     JobStore,
 )
+
+
+def _abortive_linger():
+    """A zero-timeout SO_LINGER value in this platform's own struct layout.
+
+    `struct linger` is two u_shorts on Windows and two ints everywhere else.
+    Sending the wrong width is EINVAL, not a smaller option.
+    """
+    return struct.pack("hh" if os.name == "nt" else "ii", 1, 0)
 
 
 def _await_terminal(store,job_id):
@@ -453,7 +463,7 @@ def test_http_contract_binds_job_to_server_and_never_echoes_input(tmp_path,capsy
         client=socket.create_connection(server.server_address)
         client.sendall(b"GET /api/jobs/ffffffffffff HTTP/1.1\r\nHost: localhost\r\n\r\n")
         assert entered.wait(2)
-        client.setsockopt(socket.SOL_SOCKET,socket.SO_LINGER,struct.pack("hh",1,0));client.close();release.set()
+        client.setsockopt(socket.SOL_SOCKET,socket.SO_LINGER,_abortive_linger());client.close();release.set()
         assert handled.wait(2)
         store.get=original_get;server.handle_error=original_handle_error
         payloads=({"fixture_id":DEMO_FIXTURE_ID,**identity},{"fixture_id":DEMO_FIXTURE_ID},{"request":DEMO_REQUEST})

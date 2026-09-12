@@ -38,9 +38,13 @@ from ohmni.verifier import verify
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CORPUS = ROOT / "tests/fixtures/synthesis_benchmark.json"
-CORPUS_SHA256 = "59509e67a669d21b989c17f186c2070318e41b8827ec88c2ab478a39b2ca848e"
+#: Digests of the frozen corpora, over line-ending-normalized bytes. What the
+#: freeze protects is the corpus *content*: a checkout with CRLF line endings is
+#: the same benchmark, and hashing the raw bytes made the check pass on the
+#: machine that authored it and fail on every other platform.
+CORPUS_SHA256 = "17a9483b6d41afb05b47f6786b1635221f2ac2cc42f882791894ec45dc0f010f"
 DEFAULT_SAFETY_CORPUS = ROOT / "tests/fixtures/synthesis_safety_benchmark.json"
-SAFETY_CORPUS_SHA256 = "ba7de58e1674cfbce62c1bb5e1cce76cd5010b6aedc746016a325de7ad80a69c"
+SAFETY_CORPUS_SHA256 = "46deb2959ccd16b24068692fe2edb7d37f439d72296eb1dc2764fb4d5ffe855f"
 CANONICAL_KEYS = (
     "circuit", "schematic", "placed_pcb", "pcb", "placement_request", "placement", "routing",
 )
@@ -48,6 +52,16 @@ CANONICAL_KEYS = (
 
 def digest_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def corpus_digest(data: bytes) -> str:
+    """Digest a frozen corpus independently of how the platform stores newlines.
+
+    Only for the authored corpora, never for generated artifacts: an emitted
+    KiCad or fabrication file is checked byte for byte, because there the exact
+    bytes are the thing being claimed.
+    """
+    return digest_bytes(data.replace(b"\r\n", b"\n"))
 
 
 def canonical_hash(value) -> str:
@@ -73,7 +87,7 @@ def now() -> str:
 
 def load_corpus(path: Path = DEFAULT_CORPUS) -> dict:
     raw = path.read_bytes()
-    if digest_bytes(raw) != CORPUS_SHA256:
+    if corpus_digest(raw) != CORPUS_SHA256:
         raise ValueError("Corpus differs from the frozen benchmark; author a new version explicitly")
     corpus = json.loads(raw)
     cases = corpus["cases"]
@@ -111,7 +125,7 @@ def source_snapshot(root: Path = ROOT) -> dict:
 
 
 def load_safety_corpus(path: Path = DEFAULT_SAFETY_CORPUS) -> dict:
-    if digest_bytes(path.read_bytes()) != SAFETY_CORPUS_SHA256:
+    if corpus_digest(path.read_bytes()) != SAFETY_CORPUS_SHA256:
         raise ValueError("Supplemental safety corpus differs from its frozen version")
     corpus = read_json(path)
     if len(corpus["cases"]) != 30 or len({case["case_id"] for case in corpus["cases"]}) != 30:
