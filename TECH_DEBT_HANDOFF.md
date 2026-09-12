@@ -28,3 +28,8 @@ This document tracks the temporary patches, architectural shortcuts, and deferre
 **The Patch:** The AI adapter heavily leans on `claude-sonnet-5` for all requests. 
 **The Reason:** Sonnet is fast and cheap for structured JSON responses.
 **The Proper Fix:** `docs/product/DEPLOYMENT_PLAN.md` dictates a multi-model strategy where cheap models handle proposals, but heavy models (like Opus) handle datasheet PDF extraction and verification. The provider layer should be refactored to dynamically route requests to different models based on the task complexity.
+
+## 6. SPICE Transients and Unmodeled Devices
+**The Patch:** Transient simulation graphs are built in the frontend UI, and .tran stimulus code exists, but it silently skips generating the graph for the default demo.
+**The Reason:** The generated netlist contains unmodeled devices (e.g. the 3V3 voltage regulator). Ngspice correctly rejects this. We cannot simply strip the regulator, or the 3V3 rail will float, rendering the simulation mathematically meaningless.
+**The Proper Fix:** Ohmni needs to dynamically inject behavioural SPICE models (.model or .subckt) for voltage regulators and other complex ICs before running the transient analysis. This guarantees the SPICE simulation represents real electrical behaviour rather than a flat line.
