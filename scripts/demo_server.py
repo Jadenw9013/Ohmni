@@ -13,6 +13,15 @@ import os
 import re
 import socket
 import sys
+
+import os
+from pathlib import Path
+_env_file = Path(__file__).resolve().parents[1] / ".env"
+if _env_file.is_file():
+    for _line in _env_file.read_text(encoding="utf-8").splitlines():
+        if "=" in _line and not _line.strip().startswith("#"):
+            _k, _v = _line.strip().split("=", 1)
+            os.environ.setdefault(_k.strip(), _v.strip())
 import threading
 import uuid
 import zipfile
