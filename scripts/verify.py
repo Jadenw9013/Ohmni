@@ -27,11 +27,25 @@ def _writable_basetemp() -> Path:
         return Path(tempfile.mkdtemp(prefix="ohmni-pytest-"))
 
 
+def _writable_cache() -> Path:
+    """Return build/pytest-cache if writable; fall back to a temp dir."""
+    preferred = ROOT / "build" / "pytest-cache"
+    try:
+        preferred.mkdir(parents=True, exist_ok=True)
+        probe = preferred / ".write_probe"
+        probe.write_text("ok")
+        probe.unlink()
+        return preferred
+    except OSError:
+        return Path(tempfile.mkdtemp(prefix="ohmni-pytest-cache-"))
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("tier", choices=("workflow", "fast", "integration", "slow", "full"))
     args = parser.parse_args(argv)
     basetemp = _writable_basetemp()
+    cache_dir = _writable_cache()
     (ROOT / "build").mkdir(parents=True, exist_ok=True)
     pytest = [
         sys.executable,
@@ -40,7 +54,7 @@ def main(argv: list[str] | None = None) -> int:
         "--basetemp",
         str(basetemp),
         "-o",
-        f"cache_dir={PYTEST_CACHE}",
+        f"cache_dir={cache_dir}",
     ]
     commands = {
         "workflow": pytest
