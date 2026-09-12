@@ -17,7 +17,7 @@ USER root
 # managed (PEP 668), so the application gets its own virtual environment
 # instead of fighting the distribution's packages.
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends python3 python3-venv ca-certificates \
+    && apt-get install -y --no-install-recommends python3 python3-venv ca-certificates ngspice \
     && rm -rf /var/lib/apt/lists/*
 
 ENV VIRTUAL_ENV=/opt/venv
