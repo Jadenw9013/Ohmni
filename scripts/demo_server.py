@@ -50,6 +50,12 @@ STARTUP_FAILURE_MESSAGE="Ohmni demo could not start. Stop any existing demo serv
 INITIALIZATION_FAILURE_MESSAGE="Ohmni demo could not initialize its fixed local assets. Restore the repository files and retry."
 RUNTIME_FAILURE_MESSAGE="Ohmni demo stopped unexpectedly. Restart the server and reload the browser."
 WORKSPACE_IN_USE_MESSAGE="Ohmni workspace is already in use. Stop its local server before opening the same workspace again."
+PROVIDER_READY_MESSAGE="Ohmni demo: model-proposed designs are enabled for free-text requests."
+PROVIDER_UNAVAILABLE_MESSAGE="Ohmni demo could not configure a model provider; only the deterministic fixture is available."
+#: Bounds on free design text. Long enough to describe a board, short enough
+#: that nothing resembling a pasted document reaches a proposal prompt.
+MIN_MODEL_REQUEST_CHARS=10
+MAX_MODEL_REQUEST_CHARS=2000
 JOB_RECORD_FIELDS={"job_id","status","progress","report","error","error_code"}
 JOB_STATUSES={"queued","running","complete","failed"}
 TERMINAL_JOB_STATUSES={"complete","failed"}
@@ -80,6 +86,27 @@ MAX_JSON_DEPTH=64
 
 class DemoInitializationError(RuntimeError):
     """Fixed marker for local fixture initialization failures."""
+
+
+def _configured_provider():
+    """Build the real model provider when a key is present, otherwise ``None``.
+
+    With no ``ANTHROPIC_API_KEY`` -- the default everywhere, CI included -- the
+    server is exactly what it has always been: the deterministic fixture and
+    nothing else. A key that cannot be used disables model-proposed design
+    rather than taking the demo down with it, and neither the key nor any
+    vendor detail is printed (SECURITY.md).
+    """
+    if not os.environ.get("ANTHROPIC_API_KEY","").strip():return None
+    try:
+        from ohmni.adapters.anthropic_provider import AnthropicProvider
+
+        provider=AnthropicProvider()
+    except BaseException:  # noqa: BLE001 - startup must never surface key or vendor detail
+        print(PROVIDER_UNAVAILABLE_MESSAGE,file=sys.stderr,flush=True)
+        return None
+    print(PROVIDER_READY_MESSAGE,flush=True)
+    return provider
 
 
 def _diagnostic(event,**values):
@@ -212,9 +239,13 @@ def _derive_project_geometry(brief_json):
 
 
 class JobStore:
-    def __init__(self,output_root:Path=OUTPUT_ROOT,pipeline_factory=DemoPipeline,*,max_active_jobs=2):
+    def __init__(self,output_root:Path=OUTPUT_ROOT,pipeline_factory=DemoPipeline,*,max_active_jobs=2,
+                 provider=None):
         self.output_root=output_root;self.pipeline_factory=pipeline_factory;self.jobs={};self.lock=threading.Lock();self._diagnostic=None
         self.project_store=None;self.max_active_jobs=max_active_jobs
+        # None keeps every existing path scripted-only; a provider adds the
+        # free-text branch inside the pipeline and nothing else here.
+        self.provider=provider
         # A server/store restart gets a fresh cache. Cached values are immutable
         # hashes and bytes, so callers cannot rewrite another job's expectation.
         self._expected_project_geometry=lru_cache(maxsize=128)(_derive_project_geometry)
@@ -334,7 +365,9 @@ class JobStore:
         try:
             with self.lock:
                 if self._validated_job_locked(job_id)["status"] in TERMINAL_JOB_STATUSES:return
-            report=(pipeline_factory or self.pipeline_factory)(progress).run(self.output_root/job_id,request)
+            factory=pipeline_factory or self.pipeline_factory
+            pipeline=factory(progress) if self.provider is None else factory(progress,provider=self.provider)
+            report=pipeline.run(self.output_root/job_id,request)
             with self.lock:
                 if self._validated_job_locked(job_id)["status"] in TERMINAL_JOB_STATUSES:return
             value=_owned_json_object(report.model_dump(mode="json"))
@@ -721,6 +754,28 @@ class DemoHandler(SimpleHTTPRequestHandler):
         ui_version=payload["ui_version"]
         if type(ui_version) is not str or ui_version!=self.server.ui_version:return "ui_version_mismatch"
         return None
+    def _model_request(self,payload,fallback):
+        """Free design text, accepted only when a real model provider is configured.
+
+        With no provider nothing exists that could answer arbitrary text, so the
+        request contract stays exactly as strict as it has always been and the
+        caller's original rejection stands. The text is bounded and checked
+        here; it reaches the pipeline as data and is never formatted into a
+        diagnostic or an error body.
+        """
+        if self.server.store.provider is None:return None,fallback
+        if set(payload)!={"request","api_version","server_instance_id","ui_version"}:return None,fallback
+        for field,code in (("api_version","api_version_mismatch"),
+                           ("server_instance_id","server_instance_mismatch"),
+                           ("ui_version","ui_version_mismatch")):
+            actual=payload[field];expected=self.server._identity()[field]
+            if type(actual) is not type(expected) or actual!=expected:return None,code
+        request=payload["request"]
+        if type(request) is not str:return None,fallback
+        request=request.strip()
+        if not MIN_MODEL_REQUEST_CHARS<=len(request)<=MAX_MODEL_REQUEST_CHARS:return None,fallback
+        if not request.isprintable():return None,fallback
+        return request,None
     def _poll_contract_error(self):
         api_version=self.headers.get("x-ohmni-api-version")
         if api_version is not None and api_version!=str(API_VERSION):return "api_version_mismatch"
@@ -816,9 +871,11 @@ class DemoHandler(SimpleHTTPRequestHandler):
         try:payload=self._owned_request_payload()
         except BaseException:return self._reject("fixture_rejected",HTTPStatus.BAD_REQUEST)  # noqa: BLE001 - JSON decoding must fail closed
         error=self._request_contract_error(payload)
+        request=DEMO_REQUEST
+        if error is not None:request,error=self._model_request(payload,error)
         if error is not None:return self._reject(error,HTTPStatus.BAD_REQUEST if error=="fixture_rejected" else HTTPStatus.CONFLICT)
         try:
-            job_id=self.server.store.start(DEMO_REQUEST)
+            job_id=self.server.store.start(request)
             if type(job_id) is not str or not JOB_ID_PATTERN.fullmatch(job_id):raise ValueError
         except BaseException:  # noqa: BLE001 - request threads must not leak failures
             self.server._job_diagnostic("job_start_unavailable")
@@ -913,7 +970,8 @@ def main(argv=None):
         print(INITIALIZATION_FAILURE_MESSAGE,file=sys.stderr,flush=True)
         return 1
     try:
-        server=DemoHTTPServer((args.host,args.port),DemoHandler,store=JobStore(args.output_root))
+        server=DemoHTTPServer((args.host,args.port),DemoHandler,
+                              store=JobStore(args.output_root,provider=_configured_provider()))
     except ProjectWorkspaceInUseError:
         _diagnostic("server_init_failed",api_version=API_VERSION)
         print(WORKSPACE_IN_USE_MESSAGE,file=sys.stderr,flush=True)

@@ -4,7 +4,13 @@ from types import SimpleNamespace
 
 import pytest
 
-from ohmni.application.demo import DemoPipeline, _evidence_rows, project_demo_report
+from ohmni.application import demo
+from ohmni.application.demo import (
+    DEMO_REQUEST,
+    DemoPipeline,
+    _evidence_rows,
+    project_demo_report,
+)
 from ohmni.application.visuals import pcb_svg, schematic_svg
 from ohmni.catalog import default_catalog
 from ohmni.eda.kicad import KiCadSchematicCompiler
@@ -78,3 +84,65 @@ def test_visuals_are_tied_to_compiled_artifact_and_exact_route_geometry(tmp_path
     compilation.artifact_fingerprint=ArtifactFingerprint(digest="f"*64)
     with pytest.raises(ValueError,match="fingerprint"):
         pcb_svg(board,pcb)
+
+
+class _StopBeforeEngineering(RuntimeError):
+    """Marks which branch reached the orchestrator without running one."""
+
+
+def test_a_provider_adds_the_free_text_branch_without_diverting_the_fixture(tmp_path,monkeypatch):
+    """Who proposes a circuit is decided by the request, not by the configuration.
+
+    The scripted fixture must keep using its scripted responses even when a real
+    provider is available -- it is the regression and offline path -- and free
+    text must reach the configured provider rather than the fixture.
+    """
+    providers=[]
+    class StopOrchestrator:
+        def __init__(self,provider,catalog,**kwargs):providers.append(provider)
+        def design(self,request,**kwargs):raise _StopBeforeEngineering(request)
+    monkeypatch.setattr(demo,"DesignOrchestrator",StopOrchestrator)
+    configured=flawed_logger_provider()
+    pipeline=DemoPipeline(provider=configured)
+    with pytest.raises(_StopBeforeEngineering,match="ESP32 environmental logger"):
+        pipeline.run(tmp_path/"scripted",DEMO_REQUEST)
+    with pytest.raises(_StopBeforeEngineering,match="motor controller"):
+        pipeline.run(tmp_path/"free","Build a motor controller with a $30 budget")
+    assert providers[0] is not configured and providers[1] is configured
+    unsupported=tmp_path/"unsupported"
+    with pytest.raises(ValueError,match="displayed deterministic"):
+        DemoPipeline().run(unsupported,"Build a motor controller with a $30 budget")
+    assert not unsupported.exists()
+    with pytest.raises(ValueError,match="text describing what to build"):
+        pipeline.run_proposed(tmp_path/"blank","   ")
+
+
+def test_a_proposed_design_is_placed_from_its_own_circuit_and_labelled_as_proposed(tmp_path,golden):
+    """The proposed circuit decides the board, and the report says a model proposed it."""
+    erc=SimpleNamespace(status=SimpleNamespace(value="pass"),tool_status=None,findings=[],
+                        model_dump_json=lambda indent=None:"{}")
+    design=SimpleNamespace(final_circuit=golden,artifact=SimpleNamespace(),erc=erc,
+                           semantic_attempts=[SimpleNamespace()],repairs=[],issues=[])
+    captured={}
+    class ProposingOrchestrator:
+        def __init__(self,provider,catalog,**kwargs):pass
+        def design(self,request,**kwargs):return design
+    class Pipeline(DemoPipeline):
+        def finish_design(self,destination,request,supplied,catalog,board,**kwargs):
+            captured.update(destination=destination,request=request,design=supplied,
+                            board=board,**kwargs)
+            return "projected"
+    pipeline=Pipeline(provider=flawed_logger_provider())
+    original=demo.DesignOrchestrator
+    demo.DesignOrchestrator=ProposingOrchestrator
+    try:
+        assert pipeline.run(tmp_path/"proposed","Build a USB environmental logger")=="projected"
+    finally:
+        demo.DesignOrchestrator=original
+    assert captured["design"] is design
+    assert captured["scripted"] is False and captured["mode"]==demo.MODEL_PROPOSED_MODE
+    assert {placement.component_ref for placement in captured["board"].placements}=={
+        component.ref for component in golden.components}
+    assert (tmp_path/"proposed"/"erc-report.json").read_text(encoding="utf-8")=="{}"
+    label,limitation=demo.MODE_PRESENTATION[demo.MODEL_PROPOSED_MODE]
+    assert "Model-proposed" in label and "deterministic checks" in limitation

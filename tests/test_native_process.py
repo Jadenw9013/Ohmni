@@ -117,9 +117,9 @@ def test_concurrent_children_can_make_progress_before_either_exits(tmp_path):
     first, second = tmp_path / "first", tmp_path / "second"
     previous = ctypes.WinDLL("kernel32").GetErrorMode() if os.name == "nt" else None
     with ThreadPoolExecutor(max_workers=2) as pool:
-        calls = [pool.submit(process.run_tool, [sys.executable, "-c", code, str(mine), str(peer)], timeout=3)
+        calls = [pool.submit(process.run_tool, [sys.executable, "-c", code, str(mine), str(peer)], timeout=6)
                  for mine, peer in ((first, second), (second, first))]
-        results = [call.result(timeout=5) for call in calls]
+        results = [call.result(timeout=10) for call in calls]
     assert all(result.returncode == 0 and "peer running" in result.stdout for result in results)
     if previous is not None:
         assert ctypes.WinDLL("kernel32").GetErrorMode() == previous

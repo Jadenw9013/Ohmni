@@ -21,6 +21,7 @@ from scripts.demo_server import (
     API_VERSION,
     DEMO_FIXTURE_ID,
     INITIALIZATION_FAILURE_MESSAGE,
+    MAX_MODEL_REQUEST_CHARS,
     RUNTIME_FAILURE_MESSAGE,
     STARTUP_FAILURE_MESSAGE,
     STATIC_ASSETS,
@@ -614,3 +615,66 @@ def test_http_download_serves_verified_buffer_and_rejects_alternate_paths(tmp_pa
             else:raise AssertionError(f"unsafe path unexpectedly served: {path}")
     finally:
         server.shutdown();server.server_close();thread.join(timeout=2)
+
+
+def test_free_text_is_engineered_only_when_a_model_provider_is_configured(tmp_path):
+    """Arbitrary text is a capability, not a contract loosening.
+
+    With no provider configured there is nothing that could answer a request
+    nobody scripted, so the fixture contract stays exactly as strict as it has
+    always been. A configured provider adds one accepted payload shape; every
+    identity check and bound still applies to it.
+    """
+    requests_seen=[]
+    class Report:
+        def model_dump(self,mode=None):return {"result":"accepted","pcb":current_pcb_policy()}
+    class Pipeline:
+        def __init__(self,progress,provider=None):self.provider=provider
+        def run(self,destination,request):requests_seen.append((request,self.provider));return Report()
+    def post(server,payload):
+        return urlopen(Request(
+            f"http://127.0.0.1:{server.server_address[1]}/api/demo",
+            data=json.dumps(payload).encode(),
+            headers={"content-type":"application/json"},method="POST",
+        ))
+    free_text="Build a USB-powered CO2 logger with a status light."
+    provider=SimpleNamespace(name="configured provider")
+    for name,configured in (("strict",None),("open",provider)):
+        root=tmp_path/name;root.mkdir()
+        store=JobStore(root,Pipeline,provider=configured)
+        server=DemoHTTPServer(("127.0.0.1",0),DemoHandler,store=store)
+        thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start()
+        payload={"request":free_text,"api_version":API_VERSION,
+                 "server_instance_id":server.server_instance_id,"ui_version":server.ui_version}
+        try:
+            if configured is None:
+                with pytest.raises(HTTPError) as excinfo:post(server,payload)
+                assert excinfo.value.code==400
+                assert json.loads(excinfo.value.read())=={"error":"fixture_rejected"}
+                assert not store.jobs
+                continue
+            with post(server,payload) as response:
+                assert response.status==202
+                job_id=json.loads(response.read())["job_id"]
+            assert _await_terminal(store,job_id)["status"]=="complete"
+            for refused in ("   ","short","x"*(MAX_MODEL_REQUEST_CHARS+1),"drop\ttabs",30):
+                with pytest.raises(HTTPError) as excinfo:post(server,{**payload,"request":refused})
+                assert excinfo.value.code==400
+                assert json.loads(excinfo.value.read())=={"error":"fixture_rejected"}
+            with pytest.raises(HTTPError) as excinfo:post(server,{**payload,"ui_version":"0"*64})
+            assert excinfo.value.code==409
+            assert json.loads(excinfo.value.read())=={"error":"ui_version_mismatch"}
+            with pytest.raises(HTTPError) as excinfo:post(server,{**payload,"extra":"not allowed"})
+            assert excinfo.value.code==400
+        finally:
+            server.shutdown();server.server_close();thread.join(timeout=2)
+    # The scripted fixture never became a model call, and the free-text job was
+    # handed the exact text with the configured provider.
+    assert requests_seen==[(free_text,provider)]
+
+
+def test_a_missing_or_blank_key_configures_no_provider(monkeypatch):
+    monkeypatch.delenv("ANTHROPIC_API_KEY",raising=False)
+    assert demo_server_module._configured_provider() is None
+    monkeypatch.setenv("ANTHROPIC_API_KEY","   ")
+    assert demo_server_module._configured_provider() is None

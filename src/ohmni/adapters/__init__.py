@@ -10,6 +10,11 @@ Two of these tools are known to be absent or partial on the development machine
 Protocols therefore model *unavailability as a normal result*, not an exception:
 :class:`ToolStatus` lets an adapter say UNAVAILABLE and let the report record
 `SubsystemStatus.UNSUPPORTED` honestly, rather than a caller inventing a pass.
+
+One vendor SDK is used anywhere in the package, and it is confined to
+:mod:`ohmni.adapters.anthropic_provider`, which imports it lazily so that every
+other subsystem -- and the whole offline test corpus -- runs with nothing
+installed.
 """
 
 from __future__ import annotations
@@ -26,6 +31,7 @@ from ..domain.document import DatasheetDocument
 from ..domain.evidence import Evidence
 from ..domain.units import Quantity
 from ..domain.verification import VerificationFinding
+from .anthropic_provider import AnthropicProvider, StructuredGenerationError
 
 
 class ToolStatus(StrEnum):
@@ -185,6 +191,7 @@ class Router(Protocol):
 
 
 __all__ = [
+    "AnthropicProvider",
     "DatasheetDocument",
     "DatasheetExtractor",
     "ErcRun",
@@ -196,6 +203,7 @@ __all__ = [
     "Router",
     "SimulationRun",
     "SpiceTool",
+    "StructuredGenerationError",
     "StructuredGenerationRequest",
     "ToolAvailability",
     "ToolStatus",

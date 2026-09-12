@@ -12,7 +12,7 @@ from pathlib import Path
 
 from pydantic import BaseModel, Field
 
-from ..adapters import StructuredGenerationRequest
+from ..adapters import LlmProvider, StructuredGenerationRequest
 from ..bom import calculate_cost, classify_assembly, generate_bom, synthetic_fixture_supplier
 from ..catalog import default_catalog
 from ..domain import VerificationReport
@@ -28,6 +28,7 @@ from ..manufacturing import (
     prototype_profile,
     verify_manufacturing,
 )
+from ..physical.sensor_layout import sensor_board_constraints
 from ..routing.router import DeterministicRouter
 from ..routing.verifier import verify_routing
 from .product import Brief, ProductExperience, build_brief, project_product_experience
@@ -36,6 +37,35 @@ from .visuals import pcb_svg, schematic_svg
 DEMO_REQUEST = GOLDEN_REQUEST
 UNSUPPORTED_DEMO_REQUEST = "Only the displayed deterministic ESP32 + BME280 request is supported"
 PRODUCT_ROUTING_TIME_BUDGET_SECONDS = 180.0
+
+SCRIPTED_DEMO_MODE = "deterministic_scripted_demo"
+BOUNDED_SYNTHESIS_MODE = "bounded_synthesis"
+#: A run whose circuit a language model proposed. Named separately from the two
+#: deterministic modes because how a circuit was *proposed* is a fact about the
+#: report, and a reader must never have to infer it from the request text.
+MODEL_PROPOSED_MODE = "model_proposed_design"
+
+#: (supported_fixture label, scope limitation) per mode. Presentation only: the
+#: verdicts in every other field come from the same subsystems in all modes.
+MODE_PRESENTATION = {
+    SCRIPTED_DEMO_MODE: (
+        "ESP32 + BME280 environmental logger",
+        "Supported deterministic demo: ESP32/BME280 logger, not arbitrary hardware.",
+    ),
+    BOUNDED_SYNTHESIS_MODE: (
+        "Bounded USB ESP32 project",
+        ("Bounded USB ESP32 synthesis for the confirmed sensor, GPIO, or SPI family. "
+         "Placement is generated from authored blocks and geometric constraints, not "
+         "guaranteed globally optimal."),
+    ),
+    MODEL_PROPOSED_MODE: (
+        "Model-proposed design",
+        ("A language model proposed this circuit from your text. Every verdict shown "
+         "was decided afterwards by the same deterministic checks, and placement stayed "
+         "inside the authored sensor-board layout policy; the model never supplied "
+         "evidence, a check result, or a price."),
+    ),
+}
 
 
 def current_pcb_policy() -> dict[str, str]:
@@ -208,7 +238,7 @@ class DemoProgress(BaseModel):
 
 class DemoReport(BaseModel):
     schema_version: int = 1
-    mode: str = "deterministic_scripted_demo"
+    mode: str = SCRIPTED_DEMO_MODE
     project: dict[str, object]
     requirements: list[dict[str, object]]
     evidence: list[dict[str, object]]
@@ -234,15 +264,27 @@ ProgressCallback = Callable[[DemoProgress], None]
 
 
 class DemoPipeline:
-    """Run the supported logger journey without network or live model access."""
+    """Run the supported logger journey without network or live model access.
 
-    def __init__(self, progress: ProgressCallback | None = None) -> None:
+    With no ``provider`` this is exactly what it has always been: the scripted
+    fixture and nothing else, which is what CI and the offline demo depend on.
+    A supplied provider adds one branch -- :meth:`run_proposed` -- for requests
+    nobody scripted. It changes who *proposes* a circuit and nothing else: the
+    verification, routing, manufacturing and BOM subsystems downstream of it are
+    the same deterministic code, reached the same way, in both modes.
+    """
+
+    def __init__(self, progress: ProgressCallback | None = None, *,
+                 provider: LlmProvider | None = None) -> None:
         self.progress = progress or (lambda _event: None)
+        self.provider = provider
 
     def _progress(self, stage: str, label: str, status: str, percent: int, detail: str = "") -> None:
         self.progress(DemoProgress(stage=stage, label=label, status=status, percent=percent, detail=detail))
 
     def run(self, destination: Path, request: str = DEMO_REQUEST) -> DemoReport:
+        if self.provider is not None and request != DEMO_REQUEST:
+            return self.run_proposed(destination, request)
         request = require_demo_request(request)
         destination = destination.resolve()
         destination.mkdir(parents=True, exist_ok=True)
@@ -263,7 +305,42 @@ class DemoPipeline:
         board = golden_board_constraints()
         return self.finish_design(destination, request, design, catalog, board)
 
+    def run_proposed(self, destination: Path, request: str) -> DemoReport:
+        """Engineer a model-proposed design for a request nobody scripted.
+
+        The provider proposes typed requirements, an architecture and a circuit;
+        every verdict after that is decided by the same deterministic subsystems
+        the fixture demo uses. Two refusals are deliberate rather than papered
+        over: a failed or incomplete design report raises instead of publishing a
+        partial one, and a circuit outside the authored sensor-board layout
+        policy is refused rather than placed by guesswork.
+        """
+        if self.provider is None:
+            raise ValueError(UNSUPPORTED_DEMO_REQUEST)
+        if not isinstance(request, str) or not request.strip():
+            raise ValueError("A design request must be text describing what to build")
+        destination = destination.resolve()
+        destination.mkdir(parents=True, exist_ok=True)
+        catalog = default_catalog()
+        self._progress("requirements", "Reading what you asked for", "RUNNING", 5,
+                       "Turning your description into a specification.")
+        design = DesignOrchestrator(self.provider, catalog).design(
+            request, output=destination / "golden.kicad_sch", run_eda=True,
+        )
+        if design.erc is not None:
+            (destination / "erc-report.json").write_text(design.erc.model_dump_json(indent=2),encoding="utf-8")
+            require_eda_check(design.erc,"ERC")
+        if not design.final_circuit or not design.artifact or not design.erc:
+            raise RuntimeError(f"design pipeline failed: {[issue.message for issue in design.issues]}")
+        self._progress("repair", "Checked the proposed circuit", "PASS", 25,
+                       f"Deterministic verification ran {len(design.semantic_attempts)} time(s) and "
+                       f"applied {len(design.repairs)} typed repair(s).")
+        board = sensor_board_constraints(design.final_circuit)
+        return self.finish_design(destination, request, design, catalog, board,
+                                  scripted=False, mode=MODEL_PROPOSED_MODE)
+
     def finish_design(self, destination, request, design, catalog, board, *, scripted=True,
+                      mode=None,
                       routing_time_budget_seconds=PRODUCT_ROUTING_TIME_BUDGET_SECONDS,
                       placement_request=None,confirmed_brief=None):
         """Compile and verify one supplied design; shared by demo and project runs."""
@@ -335,7 +412,7 @@ class DemoPipeline:
             request=request, design=design, catalog=catalog, board=board, placed=placed,
             plan=plan, route_report=route_report, routed=routed, drc=drc,
             manufacturing=manufacturing, bom=bom, costs=costs, assembly=assembly,
-            package=package, scripted=scripted,placement_request=placement_request,
+            package=package, scripted=scripted,mode=mode,placement_request=placement_request,
             confirmed_brief=confirmed_brief,
         )
 
@@ -369,6 +446,8 @@ def _evidence_rows(catalog,circuit=None) -> list[dict[str, object]]:
 def project_demo_report(**values) -> DemoReport:
     """Pure presentation projection; inputs are already verified subsystem reports."""
     scripted = values.get("scripted", True)
+    mode = values.get("mode") or (SCRIPTED_DEMO_MODE if scripted else BOUNDED_SYNTHESIS_MODE)
+    fixture_label, scope_limitation = MODE_PRESENTATION[mode]
     request = require_demo_request(values["request"]) if scripted else values["request"]
     design = (_require_demo_design_provenance(values["design"], request)
               if scripted else values["design"])
@@ -436,9 +515,9 @@ def project_demo_report(**values) -> DemoReport:
         placement_request=values.get("placement_request"),
     )
     return DemoReport(
-        mode="deterministic_scripted_demo" if scripted else "bounded_synthesis",
+        mode=mode,
         experience=experience,
-        project={"name":design.requirements.requirements.project_name,"request":request,"supported_fixture":"ESP32 + BME280 environmental logger" if scripted else "Bounded USB ESP32 project","status":release_status.value.upper()},
+        project={"name":design.requirements.requirements.project_name,"request":request,"supported_fixture":fixture_label,"status":release_status.value.upper()},
         requirements=requirements,evidence=evidence,
         architecture=[block.model_dump(mode="json") for block in design.architecture.blocks],
         failure_and_repair=({"status":"REPAIRED","rule":"PB-PWR-001","original":"BME280 VDD and VDDIO connected to 5 V VBUS","operating_range":"1.71 V to 3.6 V","findings":[{"severity":f.severity.value.upper(),"title":f.title,"description":f.description} for f in blocking if f.rule_id=="PB-PWR-001"],"operations":[op.model_dump(mode="json") for op in repair.patch.operations],"result":"Both sensor supply pins moved to 3V3; PB-PWR-001 passed after deterministic re-verification."} if repair else {"status":"NOT_NEEDED","findings":[],"operations":[],"result":"The derived circuit needed no electrical repair."}),
@@ -451,5 +530,5 @@ def project_demo_report(**values) -> DemoReport:
         economics={"scenario_boards":1,"pricing_coverage":costs.pricing_coverage,"known_consumption_cost":str(costs.known_consumption_cost),"known_purchase_requirement":str(costs.known_purchase_requirement),"fabrication":costs.fabrication.value.upper(),"shipping":costs.shipping.value.upper(),"tooling":costs.tooling.value.upper(),"pricing_source":"SYNTHETIC FIXTURE - NOT LIVE SUPPLIER DATA"},
         assembly={"hand_solder_requirement_satisfied":assembly.hand_solder_requirement_satisfied,"risks":[risk.model_dump(mode="json") for risk in assembly.risks],"limitations":assembly.limitations},
         release={"status":release_status.value.upper(),"package_fingerprint":package.package_fingerprint,"pcb_fingerprint":package.source_pcb_fingerprint,"current":release_current,"files":[file.model_dump(mode="json") for file in package.files],"manifest":package.manifest.model_dump(mode="json")},
-        limitations=[("Supported deterministic demo: ESP32/BME280 logger, not arbitrary hardware." if scripted else "Bounded USB ESP32 synthesis for the confirmed sensor, GPIO, or SPI family. Placement is generated from authored blocks and geometric constraints, not guaranteed globally optimal."),"Firmware is not included; static wiring does not prove runtime behavior.","Not simulation verified.","Not thermal, EMC, RF, or signal-integrity verified.","Not bench verified.","Manufacturing profile and prices are synthetic and require human review.","No guarantee of successful fabrication or assembly."],
+        limitations=[scope_limitation,"Firmware is not included; static wiring does not prove runtime behavior.","Not simulation verified.","Not thermal, EMC, RF, or signal-integrity verified.","Not bench verified.","Manufacturing profile and prices are synthetic and require human review.","No guarantee of successful fabrication or assembly."],
     )
