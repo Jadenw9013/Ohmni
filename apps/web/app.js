@@ -13,6 +13,7 @@ import { initializeReferencePreview } from "./reference-preview.js";
 import { mountBoardControls } from "./board-controls.js";
 import { mountCircuitLessons } from "./circuit-lessons.js";
 import { mountProjectWorkbench } from "./project-workbench.js";
+import { scopeHtml } from "./scope-view.js";
 import { projectRequest, parseProjectStart } from "./project-contract.js";
 
 import { errorKind, fetchHealth, identityBody, requestBody, freeTextProblem, pollHeaders, sameIdentity, fail, serverErrorKind, parseBrief, parseStart, parseJob, pollDisposition, API_BASE } from "./client-contract.js";
@@ -640,6 +641,7 @@ function renderResult(report, jobId) {
     renderSystems(exp.systems);
     renderFlows(exp.flows);
     renderRepair(exp.repair);
+    renderScope(report.simulation);
     renderTour(exp.tour);
     renderChecks(exp.check_sections);
     const requirements = requirementResultsHtml(report.requirements);
@@ -854,6 +856,17 @@ function selectSystem(systemId) {
 }
 
 // ── repair replay ───────────────────────────────────────────────────────
+
+export function renderScope(simulation) {
+    // The panel is hidden only when the backend offered nothing at all. A run
+    // that failed or never ran still says so here, because "no plot" and "no
+    // simulation" are different things and one of them is a result.
+    const panel = $("#scope-panel");
+    if (!panel) return;
+    panel.hidden = simulation === undefined;
+    panel.innerHTML = simulation === undefined ? "" : scopeHtml(simulation);
+}
+
 
 function renderRepair(repair) {
     const panel = $("#repair-panel");

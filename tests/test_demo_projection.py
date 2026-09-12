@@ -172,3 +172,58 @@ def test_the_brief_preview_answers_free_text_only_through_a_provider():
     assert not scripted.calls
     with pytest.raises(ValueError,match="text describing what to build"):
         preview_brief("   ",provider=RecordingLlmProvider())
+
+
+def test_the_report_carries_the_simulation_without_interpreting_it():
+    """The plot is drawn from these numbers, so this layer must not adjust them."""
+    from ohmni.adapters import SimulationRun, ToolStatus, TransientData, TransientSeries
+    from ohmni.application.demo import _simulation_projection
+    from ohmni.domain.units import Unit
+
+    curve = TransientData(
+        analysis=".tran 10us 1ms", time_s=[0.0, 1e-05, 2e-05], decimated_from=5000,
+        series=[TransientSeries(name="v(3v3)", unit=Unit.VOLT, values=[0.0, 0.475, 0.906])],
+    )
+    run = SimulationRun(status=ToolStatus.OK, run_id="r", analysis="op",
+                        model_fidelity="ideal_components", transient_data=curve,
+                        detail="2 signals")
+    projected = _simulation_projection(run)
+    assert projected["status"] == "OK" and projected["model_fidelity"] == "ideal_components"
+    assert projected["transient"]["time_s"] == [0.0, 1e-05, 2e-05]
+    assert projected["transient"]["series"][0] == {
+        "name": "v(3v3)", "unit": "V", "values": [0.0, 0.475, 0.906]}
+    assert projected["transient"]["sample_count"] == 3
+    assert projected["transient"]["decimated_from"] == 5000
+    # The sentence that has to travel with any curve drawn from this.
+    assert "not a measurement of a physical board" in projected["limitation"]
+
+
+def test_a_simulation_that_produced_nothing_carries_no_curve():
+    from ohmni.adapters import SimulationRun, ToolStatus
+    from ohmni.application.demo import _simulation_projection
+
+    run = SimulationRun(status=ToolStatus.UNAVAILABLE, run_id="r", analysis="op",
+                        model_fidelity="ideal_components", detail="ngspice was not found")
+    projected = _simulation_projection(run)
+    assert projected["status"] == "UNAVAILABLE" and projected["transient"] is None
+    assert "ngspice was not found" in projected["detail"]
+    # None means no attempt at all, which the page words differently again.
+    assert _simulation_projection(None) is None
+
+
+def test_the_projection_is_json_serialisable_for_the_job_envelope():
+    """It rides to the browser inside a job record stored in SQLite."""
+    import json
+
+    from ohmni.adapters import SimulationRun, ToolStatus, TransientData, TransientSeries
+    from ohmni.application.demo import _simulation_projection
+    from ohmni.domain.units import Unit
+
+    run = SimulationRun(
+        status=ToolStatus.OK, run_id="r", analysis="op", model_fidelity="ideal_components",
+        transient_data=TransientData(
+            analysis=".tran 10us 1ms", time_s=[0.0, 1e-05],
+            series=[TransientSeries(name="v(a)", unit=Unit.VOLT, values=[0.0, 3.3])]),
+    )
+    encoded = json.dumps(_simulation_projection(run), allow_nan=False)
+    assert json.loads(encoded)["transient"]["series"][0]["values"] == [0.0, 3.3]

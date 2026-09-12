@@ -280,6 +280,54 @@ def netlist_nodes(netlist: str, limit: int = MAX_TRANSIENT_SIGNALS) -> list[str]
     return seen[:limit]
 
 
+#: The reference for the supply ramp this module can add. SPICE reads the first
+#: letter as the device type, so an independent voltage source must start with V.
+STIMULUS_REFERENCE = "Vohmni_stimulus"
+STIMULUS_NET = "VBUS"
+STIMULUS_VOLTS = 5.0
+STIMULUS_RISE = "1u"
+
+
+def with_power_on_stimulus(netlist: str, net: str = STIMULUS_NET, *,
+                           volts: float = STIMULUS_VOLTS,
+                           rise: str = STIMULUS_RISE) -> tuple[str, str | None]:
+    """Add an assumed supply ramp to a deck that nothing drives.
+
+    Returns the deck and a sentence describing what was assumed, or the deck
+    unchanged and ``None`` when nothing was added. The sentence is the point: a
+    ramp is a *stimulus Ohmni invented*, not a measured or specified supply
+    behaviour, and a curve produced from it means "if the rail came up like
+    this" -- never "the rail comes up like this". Anything that displays the
+    result has to be able to say so, which it cannot do if the assumption is
+    silent.
+
+    Nothing is added when the deck already has a source (two sources on one net
+    is a short, not a better simulation) or when the named net is not in the
+    deck (driving a node nothing connects to simulates a different circuit).
+    """
+    if has_independent_source(netlist):
+        return netlist, None
+    target = (net or "").strip()
+    if not target or target.lower() not in netlist_nodes(netlist, limit=10 ** 6):
+        return netlist, None
+    lines = (netlist or "").splitlines()
+    stripped = [line.strip() for line in lines]
+    source = f"{STIMULUS_REFERENCE} {target} 0 PULSE(0 {volts} 0 {rise} {rise} 1 2)"
+    note = (
+        f"Supply ramp assumed, not measured: {target} driven from 0 to {volts} V with a "
+        f"{rise}s rise. Ohmni added this source because the exported netlist has none; the "
+        "result shows what would happen under that assumption."
+    )
+    end = next(
+        (index for index in range(len(stripped) - 1, -1, -1)
+         if re.fullmatch(r"\.end", stripped[index], re.IGNORECASE)),
+        None,
+    )
+    if end is None:
+        return "\n".join([*lines, source, ".end"]) + "\n", note
+    return "\n".join([*lines[:end], source, *lines[end:]]) + "\n", note
+
+
 def transient_deck(netlist: str, tstep: str, tstop: str, signals: list[str]) -> str:
     """Add the transient command and the signals to print, and nothing else.
 
@@ -622,13 +670,20 @@ class NgspiceAdapter:
 
 
 def _with_transient(run: SimulationRun, netlist: str, spice, run_id: str,
-                    work_dir: Path | None, wanted: bool, tstep: str, tstop: str) -> SimulationRun:
+                    work_dir: Path | None, wanted: bool, tstep: str, tstop: str,
+                    stimulus: bool = False) -> SimulationRun:
     """Attach a time-domain result to a successful operating point, if one is owed."""
     analyse = getattr(spice, "transient_analysis", None)
-    if (not wanted or run.status is not ToolStatus.OK or not callable(analyse)
-            or not has_independent_source(netlist)):
+    if not wanted or run.status is not ToolStatus.OK or not callable(analyse):
         return run
-    result = analyse(netlist, run_id, tstep, tstop, work_dir=work_dir)
+    deck, assumption = (with_power_on_stimulus(netlist) if stimulus else (netlist, None))
+    if not has_independent_source(deck):
+        return run
+    result = analyse(deck, run_id, tstep, tstop, work_dir=work_dir)
+    if assumption is not None and result.transient_data is not None:
+        result = result.model_copy(update={
+            "detail": _clip(f"{assumption} {result.detail or ''}"),
+        })
     if result.status is not ToolStatus.OK or result.transient_data is None:
         # Said plainly rather than passed over: a reader comparing two reports
         # should be able to see that one of them tried and did not get a curve.
@@ -651,8 +706,8 @@ def simulation_run_id(artifact: SchematicArtifact) -> str:
 def operating_point_for(artifact: SchematicArtifact, *, exporter: KiCadNetlistExporter | None = None,
                         spice: NgspiceAdapter | None = None,
                         work_dir: Path | None = None, transient: bool = True,
-                        tstep: str = DEFAULT_TSTEP,
-                        tstop: str = DEFAULT_TSTOP) -> SimulationRun:
+                        tstep: str = DEFAULT_TSTEP, tstop: str = DEFAULT_TSTOP,
+                        stimulus: bool = False) -> SimulationRun:
     """Export and simulate one compiled schematic, degrading instead of raising.
 
     Availability is checked before anything is exported. Without ngspice there
@@ -688,9 +743,12 @@ def operating_point_for(artifact: SchematicArtifact, *, exporter: KiCadNetlistEx
                 IDEAL_COMPONENTS,
                 _clip(export.detail or "no SPICE netlist was exported"),
             )
+        # The operating point always uses the netlist as exported. A stimulus
+        # may only ever reach the transient: a DC solution computed from a deck
+        # Ohmni altered would be a solution to a circuit nobody drew.
         run = spice.operating_point(export.text, run_id, work_dir=work_dir)
         return _with_transient(run, export.text, spice, run_id, work_dir,
-                               transient, tstep, tstop)
+                               transient, tstep, tstop, stimulus)
     except Exception as exc:  # noqa: BLE001 - corroboration never fails a design
         # The deterministic verdict already stands without this. An unexpected
         # failure in an optional external tool is recorded, not propagated.
@@ -706,6 +764,8 @@ __all__ = [
     "MAX_TRANSIENT_SAMPLES",
     "MAX_TRANSIENT_SIGNALS",
     "OPERATING_POINT",
+    "STIMULUS_NET",
+    "STIMULUS_REFERENCE",
     "KiCadNetlistExporter",
     "NgspiceAdapter",
     "SpiceNetlist",
@@ -719,4 +779,5 @@ __all__ = [
     "parse_transient",
     "simulation_run_id",
     "transient_deck",
+    "with_power_on_stimulus",
 ]

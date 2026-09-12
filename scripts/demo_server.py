@@ -85,7 +85,7 @@ STATIC_ASSETS=("index.html","app.js","view-model.js","board-model.js","board-vie
                "schematic-view.js","client-contract.js","reference-preview.js",
                "board-renderer-geometry.js","board-renderer-webgl.js","board-controls.js",
                "learning-model.js","circuit-lessons.js","circuit-lab.js",
-               "project-workbench.js","project-contract.js",
+               "project-workbench.js","project-contract.js","scope-view.js",
                "reference-board.json","styles.css")
 STATIC_CONTENT_TYPES={
     "index.html":"text/html; charset=utf-8",

@@ -261,6 +261,10 @@ class DemoReport(BaseModel):
     economics: dict[str, object]
     assembly: dict[str, object]
     release: dict[str, object]
+    #: What SPICE was able to say, if anything. None means no attempt was made;
+    #: a status of UNAVAILABLE or FAILED means one was made and produced nothing.
+    #: Neither is a pass, and the projection never turns either into a curve.
+    simulation: dict[str, object] | None = None
     limitations: list[str]
     #: The product-shaped projection of this same run. Built from the same
     #: verified reports; see ohmni.application.product.
@@ -424,6 +428,40 @@ class DemoPipeline:
         )
 
 
+def _simulation_projection(run) -> dict[str, object] | None:
+    """Project a SPICE run for display, curve included, claim excluded.
+
+    The numbers are copied, never computed here: a plot drawn from a series this
+    layer adjusted would be a picture of the projection rather than of the
+    simulation. What this does add is the sentence that has to travel with the
+    curve -- ideal components are not a measured board.
+    """
+    if run is None:
+        return None
+    data = run.transient_data
+    return {
+        "status": run.status.value.upper(),
+        "analysis": run.analysis,
+        "model_fidelity": run.model_fidelity,
+        "detail": run.detail,
+        "limitation": (
+            "Simulated from the exported netlist with "
+            f"{run.model_fidelity.replace('_', ' ')}. It is not a measurement of a "
+            "physical board, and it does not establish timing, stability or margin."
+        ),
+        "transient": None if data is None else {
+            "analysis": data.analysis,
+            "time_s": list(data.time_s),
+            "sample_count": data.sample_count,
+            "decimated_from": data.decimated_from,
+            "series": [
+                {"name": series.name, "unit": series.unit.value, "values": list(series.values)}
+                for series in data.series
+            ],
+        },
+    }
+
+
 def _status(value: bool, warning: bool = False) -> str:
     return "PASS_WITH_WARNINGS" if value and warning else "PASS" if value else "FAIL"
 
@@ -536,6 +574,7 @@ def project_demo_report(**values) -> DemoReport:
         bom={"references":bom.reference_count,"unique_lines":len(bom.lines),"lines":bom_rows},
         economics={"scenario_boards":1,"pricing_coverage":costs.pricing_coverage,"known_consumption_cost":str(costs.known_consumption_cost),"known_purchase_requirement":str(costs.known_purchase_requirement),"fabrication":costs.fabrication.value.upper(),"shipping":costs.shipping.value.upper(),"tooling":costs.tooling.value.upper(),"pricing_source":"SYNTHETIC FIXTURE - NOT LIVE SUPPLIER DATA"},
         assembly={"hand_solder_requirement_satisfied":assembly.hand_solder_requirement_satisfied,"risks":[risk.model_dump(mode="json") for risk in assembly.risks],"limitations":assembly.limitations},
+        simulation=_simulation_projection(design.simulation),
         release={"status":release_status.value.upper(),"package_fingerprint":package.package_fingerprint,"pcb_fingerprint":package.source_pcb_fingerprint,"current":release_current,"files":[file.model_dump(mode="json") for file in package.files],"manifest":package.manifest.model_dump(mode="json")},
         limitations=[scope_limitation,"Firmware is not included; static wiring does not prove runtime behavior.","Not simulation verified.","Not thermal, EMC, RF, or signal-integrity verified.","Not bench verified.","Manufacturing profile and prices are synthetic and require human review.","No guarantee of successful fabrication or assembly."],
     )

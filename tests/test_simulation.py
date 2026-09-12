@@ -622,3 +622,65 @@ class TestTransientInThePipeline:
 
         run = UnavailableSpice().transient_analysis("V1 a 0 5", "run-1", "10us", "1ms")
         assert run.status is ToolStatus.UNAVAILABLE and run.transient_data is None
+
+
+class TestPowerOnStimulus:
+    UNDRIVEN = ".title t\nC1 VBUS GND 1u\nR1 VBUS 3V3 100\nU1 __U1\n.end\n"
+
+    def test_an_undriven_deck_gets_a_ramp_and_a_sentence_about_it(self):
+        deck, note = simulation.with_power_on_stimulus(self.UNDRIVEN)
+        assert simulation.has_independent_source(deck)
+        lines = deck.splitlines()
+        assert lines[-2].startswith(simulation.STIMULUS_REFERENCE)
+        assert "PULSE(0 5.0 0 1u 1u 1 2)" in lines[-2]
+        assert lines[-1] == ".end" and lines[0] == ".title t"
+        # The assumption is stated, because a curve drawn from it means "if the
+        # rail came up like this", never "the rail comes up like this".
+        assert "assumed, not measured" in note
+
+    def test_a_deck_that_is_already_driven_is_left_alone(self):
+        """Two sources on one net is a short, not a better simulation."""
+        driven = "V1 VBUS 0 5\nC1 VBUS GND 1u\n.end\n"
+        deck, note = simulation.with_power_on_stimulus(driven)
+        assert deck == driven and note is None
+
+    def test_a_net_the_deck_does_not_have_is_not_driven(self):
+        """Driving a node nothing connects to simulates a different circuit."""
+        deck, note = simulation.with_power_on_stimulus("R1 a b 1k\n.end\n", "VBUS")
+        assert note is None and not simulation.has_independent_source(deck)
+
+    def test_the_ramp_can_name_another_net(self):
+        deck, note = simulation.with_power_on_stimulus(self.UNDRIVEN, "3V3", volts=3.3)
+        assert "3V3 0 PULSE(0 3.3" in deck and "3V3" in note
+
+    def test_a_deck_without_end_still_gets_one(self):
+        deck, _ = simulation.with_power_on_stimulus("C1 VBUS GND 1u\n")
+        assert deck.splitlines()[-1] == ".end"
+
+    def test_the_operating_point_is_never_computed_from_an_altered_deck(self, tmp_path, monkeypatch):
+        """A DC solution of a deck Ohmni changed is a solution to another circuit."""
+        seen = {}
+        spice = FakeSpice()
+        spice.operating_point = lambda netlist, run_id, **kwargs: seen.setdefault(
+            "op", netlist) and None or _not_run(run_id, ToolStatus.OK, IDEAL_COMPONENTS, "ok")
+        spice.transient_analysis = lambda netlist, run_id, tstep, tstop, **kwargs: seen.setdefault(
+            "tran", netlist) and None or _not_run(
+                run_id, ToolStatus.FAILED, IDEAL_COMPONENTS, "stub",
+                analysis=f".tran {tstep} {tstop}")
+        monkeypatch.setattr(simulation, "run_tool",
+                            lambda command, *, timeout: _write_netlist(tmp_path, self.UNDRIVEN))
+        operating_point_for(artifact(tmp_path),
+                            exporter=KiCadNetlistExporter(executable="kicad-cli"),
+                            spice=spice, work_dir=tmp_path, stimulus=True)
+        assert simulation.STIMULUS_REFERENCE not in seen["op"]
+        assert simulation.STIMULUS_REFERENCE in seen["tran"]
+
+    def test_without_the_opt_in_nothing_is_added_and_no_transient_runs(self, tmp_path, monkeypatch):
+        spice = FakeSpice()
+        spice.transient_analysis = lambda *args, **kwargs: pytest.fail("must not be called")
+        monkeypatch.setattr(simulation, "run_tool",
+                            lambda command, *, timeout: _write_netlist(tmp_path, self.UNDRIVEN))
+        run = operating_point_for(artifact(tmp_path),
+                                  exporter=KiCadNetlistExporter(executable="kicad-cli"),
+                                  spice=spice, work_dir=tmp_path)
+        assert run.transient_data is None
