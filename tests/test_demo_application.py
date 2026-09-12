@@ -401,7 +401,10 @@ def test_http_contract_binds_job_to_server_and_never_echoes_input(tmp_path,capsy
     try:
         with urlopen(f"{base}/api/health") as response:
             assert response.status==200
-            assert json.loads(response.read())=={"status":"ready","fixture_id":DEMO_FIXTURE_ID,**identity}
+            # free_text advertises the capability, and says no on a server with
+            # no model provider -- which this one is.
+            assert json.loads(response.read())=={
+                "status":"ready","fixture_id":DEMO_FIXTURE_ID,"free_text":False,**identity}
             assert response.headers["cache-control"]=="no-store"
             assert response.headers["x-ohmni-api-version"]==str(API_VERSION)
             assert response.headers["x-ohmni-server-instance"]==server.server_instance_id
@@ -647,6 +650,10 @@ def test_free_text_is_engineered_only_when_a_model_provider_is_configured(tmp_pa
         payload={"request":free_text,"api_version":API_VERSION,
                  "server_instance_id":server.server_instance_id,"ui_version":server.ui_version}
         try:
+            # The page offers a request box only where one can be answered, so
+            # health has to say which kind of server this is.
+            with urlopen(f"http://127.0.0.1:{server.server_address[1]}/api/health") as response:
+                assert json.loads(response.read())["free_text"] is (configured is not None)
             if configured is None:
                 with pytest.raises(HTTPError) as excinfo:post(server,payload)
                 assert excinfo.value.code==400
@@ -678,3 +685,36 @@ def test_a_missing_or_blank_key_configures_no_provider(monkeypatch):
     assert demo_server_module._configured_provider() is None
     monkeypatch.setenv("ANTHROPIC_API_KEY","   ")
     assert demo_server_module._configured_provider() is None
+
+
+def test_the_brief_endpoint_accepts_free_text_on_the_same_terms_as_a_run(tmp_path):
+    """Same gate as /api/demo: a provider, or the fixture contract unchanged."""
+    from ohmni.adapters.fakes import RecordingLlmProvider
+
+    free_text="Build a USB-powered CO2 logger with a status light"
+    provider=RecordingLlmProvider()
+    provider.queue({"project_name":"CO2 logger","description":free_text,
+                    "max_input_voltage_v":5.25,"target_logic_voltage_v":3.3})
+    root=tmp_path/"brief";root.mkdir()
+    store=JobStore(root,provider=provider)
+    server=DemoHTTPServer(("127.0.0.1",0),DemoHandler,store=store)
+    thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start()
+    base=f"http://127.0.0.1:{server.server_address[1]}"
+    identity={"api_version":API_VERSION,"server_instance_id":server.server_instance_id,
+              "ui_version":server.ui_version}
+    def post(payload):
+        return urlopen(Request(base+"/api/brief",data=json.dumps(payload).encode(),
+                               headers={"content-type":"application/json"},method="POST"))
+    try:
+        with post({"request":free_text,**identity}) as response:
+            payload=json.loads(response.read())
+        assert response.status==200 and payload.keys()=={"brief","api_version","server_instance_id","ui_version"}
+        assert any(free_text in line["value"] or line["value"]=="CO2 logger"
+                   for line in payload["brief"]["asked_for"])
+        assert not provider._queue
+        # The scripted fixture still answers from the scripted responses.
+        with post({"fixture_id":DEMO_FIXTURE_ID,**identity}) as response:
+            assert json.loads(response.read())["brief"]["asked_for"]
+        assert len(provider.calls)==1
+    finally:
+        server.shutdown();server.server_close();thread.join(timeout=2)

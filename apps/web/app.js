@@ -15,8 +15,8 @@ import { mountCircuitLessons } from "./circuit-lessons.js";
 import { mountProjectWorkbench } from "./project-workbench.js";
 import { projectRequest, parseProjectStart } from "./project-contract.js";
 
-import { errorKind, fetchHealth, identityBody, pollHeaders, sameIdentity, fail, serverErrorKind, parseBrief, parseStart, parseJob, pollDisposition, API_BASE } from "./client-contract.js";
-export { parseHealth, parseBrief, parseStart, parseJob, pollDisposition } from "./client-contract.js";
+import { errorKind, fetchHealth, identityBody, requestBody, freeTextProblem, pollHeaders, sameIdentity, fail, serverErrorKind, parseBrief, parseStart, parseJob, pollDisposition, API_BASE } from "./client-contract.js";
+export { parseHealth, parseBrief, parseStart, parseJob, pollDisposition, requestBody, freeTextProblem } from "./client-contract.js";
 
 const $ = (selector) => document.querySelector(selector);
 
@@ -54,6 +54,9 @@ const state = {
     stage: "describe",
     panel: "board",
     brief: null,
+    // The free-text request this session is running, or null for the scripted
+    // fixture. It decides which payload shape every later call sends.
+    request: null,
     runStatus: "idle",
     connection: "unchecked",
     retryAction: null,
@@ -221,21 +224,52 @@ export async function restartExample({ fetcher = globalThis.fetch } = {}) {
     clearError();
     setConnection("unchecked");
     show("describe");
-    return openBrief({ fetcher });
+    return openBrief({ fetcher, request: state.request });
 }
 
 // ── describe → agree ────────────────────────────────────────────────────
 
-export async function openBrief({ fetcher = globalThis.fetch } = {}) {
+// Offer the request box only where the server says it can answer one. A server
+// with no model provider rejects free text, so an input there would be a
+// placeholder that lies about what the page can do.
+export async function revealFreeText({ fetcher = globalThis.fetch } = {}) {
+    try {
+        const identity = await fetchHealth(fetcher);
+        state.identity = identity;
+        setHidden("#free-text-starter", !identity.free_text);
+        return identity.free_text;
+    } catch {
+        // A health check that fails tells us nothing about the capability, and
+        // the describe stage still works: leave the input hidden and stay quiet.
+        setHidden("#free-text-starter", true);
+        return false;
+    }
+}
+
+export function showFreeTextProblem(message) {
+    const slot = $("#free-text-problem");
+    if (!slot) return;
+    slot.textContent = message || "";
+    setHidden("#free-text-problem", !message);
+}
+
+export async function openBrief({ fetcher = globalThis.fetch, request = null } = {}) {
     if (["running", "starting", "paused"].includes(state.runStatus)) { show("design"); return; }
+    const problem = request === null ? null : freeTextProblem(request);
+    if (problem) { showFreeTextProblem(problem); return; }
+    showFreeTextProblem(null);
+    state.request = request === null ? null : String(request).trim();
     state.customProject = false;
     state.revisionContext = null;
     setHidden("#project-workbench", true);
     setHidden("#reference-brief", false);
-    setText("#agree-title", "Meet the reference project.");
-    setText("#agree-description", "Explore the fixed room-sensor example before its engineering run starts.");
-    const button = $("#start-supported");
-    button.disabled = true;
+    setText("#agree-title", state.request ? "Here is what Ohmni understood." : "Meet the reference project.");
+    setText("#agree-description", state.request
+        ? "A model read your description and proposed these requirements. Nothing has been checked yet."
+        : "Explore the fixed room-sensor example before its engineering run starts.");
+    setBriefBoundary(Boolean(state.request));
+    const button = $(state.request ? "#start-free-text" : "#start-supported");
+    if (button) button.disabled = true;
     clearError();
     try {
         state.identity = await fetchHealth(fetcher);
@@ -244,7 +278,7 @@ export async function openBrief({ fetcher = globalThis.fetch } = {}) {
             response = await fetcher(API_BASE + "/api/brief", {
                 method: "POST", cache: "no-store",
                 headers: { "content-type": "application/json" },
-                body: identityBody(state.identity),
+                body: state.request ? requestBody(state.identity, state.request) : identityBody(state.identity),
             });
         } catch { fail("backend_unavailable"); }
         if (!response.ok) fail(await serverErrorKind(response, response.status >= 500 ? "backend_unavailable" : "api_ui_mismatch"));
@@ -255,10 +289,25 @@ export async function openBrief({ fetcher = globalThis.fetch } = {}) {
         setConnection("connected");
         show("agree");
     } catch (error) {
-        showError(errorKind(error, "backend_unavailable"), () => openBrief({ fetcher }));
+        showError(errorKind(error, "backend_unavailable"), () => openBrief({ fetcher, request }));
     } finally {
-        button.disabled = false;
+        if (button) button.disabled = false;
     }
+}
+
+// Static copy only: the two modes say different true things about where the
+// brief came from, and neither ever interpolates what the user typed.
+function setBriefBoundary(proposed) {
+    const slot = $("#brief-boundary");
+    if (!slot) return;
+    slot.innerHTML = proposed
+        ? `<strong>A model proposed this from your description.</strong>
+           <p>Requirements a model wrote are a proposal, not a verdict. Every check
+              that follows is the same deterministic verification the reference
+              example runs, and it can still refuse this design.</p>`
+        : `<strong>This is the fixed reference example.</strong>
+           <p>Its design and repair are pre-authored. To choose your own configuration,
+              return home and select “Choose my board.”</p>`;
 }
 
 function briefGroup(kind, title, note, lines, emptyText) {
@@ -274,26 +323,32 @@ function briefGroup(kind, title, note, lines, emptyText) {
         <p class="fineprint">${escapeHtml(note)}</p>${body}</section>`;
 }
 
-export function renderBrief(brief) {
+export function renderBrief(brief, proposed = Boolean(state.request)) {
     $("#brief").innerHTML = [
         // Ordered by how much attention each deserves: the things Ohmni decided
         // come first, because those are what a user is here to catch.
         briefGroup("unclear", "Design choices",
-                   "Values filled in when the example brief was prepared.",
+                   proposed ? "Values nobody stated. Ohmni filled these in."
+                            : "Values filled in when the example brief was prepared.",
                    brief.needs_clarification,
                    "No additional choices were recorded."),
         briefGroup("assumed", "Assumptions to know",
-                   "These assumptions are part of this example, not facts you supplied.",
+                   proposed ? "Assumptions Ohmni supplied, not facts you gave it."
+                            : "These assumptions are part of this example, not facts you supplied.",
                    brief.assumed, "No additional assumptions were recorded."),
-        briefGroup("asked", "From the example brief",
-                   "The starting requirements for the room sensor you selected.",
+        briefGroup("asked", proposed ? "From your description" : "From the example brief",
+                   proposed ? "What the model read out of the words you wrote."
+                            : "The starting requirements for the room sensor you selected.",
                    brief.asked_for, "No explicit requirements were recorded."),
     ].join("");
     const decided = brief.needs_clarification.length + brief.assumed.length;
     $("#agree-note").textContent =
-        `This example includes ${decided} design choice${decided === 1 ? "" : "s"} and assumption${decided === 1 ? "" : "s"}. `
+        (proposed
+            ? `Ohmni decided ${decided} thing${decided === 1 ? "" : "s"} your description did not settle. Read them before spending the run. `
+            : `This example includes ${decided} design choice${decided === 1 ? "" : "s"} and assumption${decided === 1 ? "" : "s"}. `)
         + `Continue to run the actual checks and generate its board files. `
-        + `Allow a few minutes. Copper routing has a three-minute limit; the other checks add time. Editing this example is not available yet.`;
+        + `Allow a few minutes. Copper routing has a three-minute limit; the other checks add time.`
+        + (proposed ? " A proposal that fails a check is reported, not quietly fixed." : " Editing this example is not available yet.");
 }
 
 // ── agree → design ──────────────────────────────────────────────────────
@@ -322,7 +377,7 @@ export async function startRun({ fetcher = globalThis.fetch, poller = poll, poll
             response = await fetcher(API_BASE + "/api/demo", {
                 method: "POST", cache: "no-store",
                 headers: { "content-type": "application/json" },
-                body: identityBody(identity),
+                body: state.request ? requestBody(identity, state.request) : identityBody(identity),
             });
         } catch { fail("backend_unavailable"); }
         if (!response.ok || response.status !== 202) {
@@ -1144,6 +1199,10 @@ function attach() {
     $("#schematic-holder")?.addEventListener("click", activateSchematic);
     $("#schematic-holder")?.addEventListener("keydown", activateSchematic);
     $("#start-supported")?.addEventListener("click", () => void openBrief());
+    $("#start-free-text")?.addEventListener("click", () =>
+        void openBrief({ request: $("#free-text-request")?.value ?? "" }));
+    $("#free-text-request")?.addEventListener("input", () => showFreeTextProblem(null));
+    void revealFreeText();
     $("#confirm-brief")?.addEventListener("click", () => void startRun());
     $("#back-to-describe")?.addEventListener("click", () => show("describe"));
 

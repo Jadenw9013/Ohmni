@@ -146,3 +146,29 @@ def test_a_proposed_design_is_placed_from_its_own_circuit_and_labelled_as_propos
     assert (tmp_path/"proposed"/"erc-report.json").read_text(encoding="utf-8")=="{}"
     label,limitation=demo.MODE_PRESENTATION[demo.MODEL_PROPOSED_MODE]
     assert "Model-proposed" in label and "deterministic checks" in limitation
+
+
+def test_the_brief_preview_answers_free_text_only_through_a_provider():
+    """The Agree stage exists for a proposed design too, and never fakes one.
+
+    The scripted request stays scripted even with a provider configured: it is
+    the regression fixture, so a model call would quietly make it something else.
+    """
+    from ohmni.adapters.fakes import RecordingLlmProvider
+    from ohmni.application.demo import preview_brief
+
+    free_text="Build a USB-powered CO2 logger with a status light"
+    with pytest.raises(ValueError,match="displayed deterministic"):
+        preview_brief(free_text)
+    provider=RecordingLlmProvider()
+    provider.queue({"project_name":"CO2 logger","description":free_text,
+                    "max_input_voltage_v":5.25,"target_logic_voltage_v":3.3,
+                    "assumptions":["USB-C is used as a 5 V sink without Power Delivery"]})
+    brief=preview_brief(free_text,provider=provider)
+    assert not provider._queue and len(provider.calls)==1
+    assert any(free_text in line.value or line.value=="CO2 logger" for line in brief.asked_for)
+    scripted=RecordingLlmProvider()
+    assert preview_brief(DEMO_REQUEST,provider=scripted).asked_for
+    assert not scripted.calls
+    with pytest.raises(ValueError,match="text describing what to build"):
+        preview_brief("   ",provider=RecordingLlmProvider())

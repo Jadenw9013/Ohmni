@@ -1,26 +1,38 @@
-﻿# Python
+# The whole build context is uploaded on every `fly deploy`, so keep it to what
+# the image installs. build/ alone holds thousands of pytest run directories --
+# and at least one of them is owned by another account and is unreadable, which
+# fails the upload rather than merely slowing it down.
+#
+# Root *.md files are deliberately NOT excluded: they are 168 KB in total, and
+# a pyproject that later declares `readme = "README.md"` would otherwise fail
+# `pip install .` inside the image for no useful saving.
+
+# Python
 __pycache__/
+**/__pycache__/
 *.pyc
 *.pyo
-.venv/
 *.egg-info/
+.venv/
 
 # Dev + test artifacts
 tests/
+fixtures/
 .pytest_cache/
 .ruff_cache/
 .ai/
 .git/
+.gitignore
 .github/
 
-# Job output (goes on Fly volume, not in image)
+# Generated output: job artifacts live on the Fly volume, never in the image
 out/
-
-# Docs (not needed at runtime)
-docs/
-*.md
-examples/
 build/
+
+# Not needed at runtime
+docs/
+examples/
+node_modules/
 
 # Windows
 Thumbs.db

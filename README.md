@@ -404,6 +404,7 @@ changed as a result.
 | Document | |
 |---|---|
 | **`docs/product/`** | **The v1 product contract, UX architecture, deployment, evaluation and roadmap. Start here for product questions.** |
+| [DEPLOY.md](DEPLOY.md) | Running the demo for real: what goes on Vercel, what goes on Fly, and why |
 | [Frontend redesign](docs/product/FRONTEND_REDESIGN.md) | Workbench flow, readability, accessibility, and verification |
 | [Interactive PCB learning lab](docs/product/PCB_LEARNING_LAB.md) | 3D rendering, learning interactions, display limits, and tests |
 | `PRE_IMPLEMENTATION_REVIEW.md` | Findings, corrections, open risks, spikes |

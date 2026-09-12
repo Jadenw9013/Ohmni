@@ -207,7 +207,12 @@ test("polling dispositions are exhaustive and fail closed", async () => withApp(
 }));
 
 test("health, brief, start and job envelopes are bound to one server generation", async () => withApp(async (app) => {
-    assert.deepEqual(app.parseHealth(health()), identity);
+    // A server that never heard of free text is a server without the capability,
+    // not a broken one: the two hosts can be a commit apart.
+    assert.deepEqual(app.parseHealth(health()), { ...identity, free_text: false });
+    assert.deepEqual(app.parseHealth(health({ free_text: true })), { ...identity, free_text: true });
+    assert.deepEqual(app.parseHealth(health({ free_text: false })), { ...identity, free_text: false });
+    assert.throws(() => app.parseHealth(health({ free_text: "yes" })), /api_ui_mismatch/);
     assert.throws(() => app.parseHealth(health({ fixture_id: "other" })), /fixture_rejected/);
     assert.throws(() => app.parseHealth(health({ api_version: 1 })), /api_ui_mismatch/);
     assert.throws(() => app.parseHealth({ ...health(), extra: 1 }), /api_ui_mismatch/);
@@ -583,4 +588,63 @@ test("editing a project immediately clears result navigation and disables old ar
         assert.equal(link.getAttribute("aria-disabled"), "true");
         assert.equal(link.dataset.current, "false");
     }
+}));
+
+test("a free-text request is bounded before it is sent, and carries only identity", async () => withApp(async (app) => {
+    // The page checks the same bounds the server enforces, so an obviously
+    // unusable request costs a keystroke rather than a round trip.
+    assert.equal(app.freeTextProblem("Build a USB-powered CO2 logger"), null);
+    assert.match(app.freeTextProblem("too short"), /sentence or two/);
+    assert.match(app.freeTextProblem("   "), /sentence or two/);
+    assert.match(app.freeTextProblem("x".repeat(2001)), /under 2000/);
+    assert.equal(app.freeTextProblem(null), "Describe what to build in a sentence or two.");
+
+    // The body names its fields: a capability from /api/health must never ride
+    // along into a request the server checks for an exact key set.
+    const body = JSON.parse(app.requestBody({ ...identity, free_text: true }, "  Build a CO2 logger  "));
+    assert.deepEqual(Object.keys(body).sort(),
+        ["api_version", "request", "server_instance_id", "ui_version"]);
+    assert.equal(body.request, "Build a CO2 logger");
+    assert.equal(body.server_instance_id, INSTANCE);
+}));
+
+test("the request box appears only where a request can be answered, and carries the words typed", async () => withApp(async (app, dom) => {
+    const calls = [];
+    const fetcher = async (path, options) => {
+        calls.push([path, options]);
+        if (path === "/api/health") return response(200, health({ free_text: true }));
+        if (path === "/api/brief") return response(200, briefEnvelope());
+        throw new Error(`unexpected request to ${path}`);
+    };
+    assert.equal(await app.revealFreeText({ fetcher }), true);
+    assert.equal(dom.get("#free-text-starter").hidden, false);
+
+    const request = "Build a USB-powered CO2 logger with a status light";
+    await app.openBrief({ fetcher, request });
+    assert.deepEqual(JSON.parse(calls.find(([path]) => path === "/api/brief")[1].body), {
+        request, api_version: 2, server_instance_id: INSTANCE, ui_version: UI_VERSION,
+    });
+
+    // The reference example is still the reference example: same session, and
+    // it goes back to the fixture payload rather than the words typed above.
+    await app.openBrief({ fetcher });
+    const fixtureBody = JSON.parse(calls.filter(([path]) => path === "/api/brief").at(-1)[1].body);
+    assert.equal(fixtureBody.fixture_id, FIXTURE_ID);
+    assert.equal(fixtureBody.request, undefined);
+}));
+
+test("a server without a provider offers no request box, and a short request never leaves the page", async () => withApp(async (app, dom) => {
+    const calls = [];
+    const fetcher = async (path) => {
+        calls.push(path);
+        if (path === "/api/health") return response(200, health({ free_text: false }));
+        throw new Error(`unexpected request to ${path}`);
+    };
+    assert.equal(await app.revealFreeText({ fetcher }), false);
+    assert.equal(dom.get("#free-text-starter").hidden, true);
+
+    await app.openBrief({ fetcher, request: "too short" });
+    assert.match(dom.get("#free-text-problem").textContent, /sentence or two/);
+    assert.equal(dom.get("#free-text-problem").hidden, false);
+    assert.deepEqual(calls, ["/api/health"]);
 }));

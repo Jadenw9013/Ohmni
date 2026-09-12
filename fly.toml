@@ -1,6 +1,18 @@
-﻿# fly.toml - Ohmni demo backend on Fly.io
-# Deploy: fly deploy
-# First-time: fly launch --no-deploy, then fly volumes create ohmni_data --size 1, then fly deploy
+# fly.toml - Ohmni demo backend on Fly.io
+#
+# The backend cannot run on Vercel: it is a long-lived HTTP server with
+# in-memory job state, worker threads that run for minutes per design, a
+# workspace lock, a persistent volume, and kicad-cli subprocesses. Vercel
+# serves apps/web and rewrites /api/* here (see vercel.json), so the app name
+# below and that rewrite destination must stay in agreement.
+#
+# First deploy:
+#   fly launch --no-deploy --copy-config --name ohmni-demo
+#   fly volumes create ohmni_data --size 1 --region sjc
+#   fly secrets set ALLOWED_ORIGINS=https://<your-app>.vercel.app
+#   fly secrets set ANTHROPIC_API_KEY=sk-ant-...   # optional; enables free-text design
+#   fly deploy
+# Afterwards: fly deploy
 
 app = "ohmni-demo"
 primary_region = "sjc"
@@ -10,14 +22,21 @@ primary_region = "sjc"
 
 [env]
   OHMNI_OUTPUT_DIR = "/data/demo-jobs"
-  # Set ALLOWED_ORIGINS to your Vercel URL via: fly secrets set ALLOWED_ORIGINS=https://your-app.vercel.app
+  # ALLOWED_ORIGINS and ANTHROPIC_API_KEY are secrets, not env: see above.
+  # With the Vercel rewrite in front, browser requests are same-origin and
+  # ALLOWED_ORIGINS only matters if the Fly URL is opened directly.
 
 [http_service]
   internal_port = 8080
   force_https = true
-  auto_stop_machines = true
   auto_start_machines = true
-  min_machines_running = 0
+  auto_stop_machines = true
+  # Kept at one running machine on purpose. A cold start is a new process, and
+  # a new process means a new server_instance_id, which the client contract
+  # correctly treats as a stale generation (409) and shows as a forced reload.
+  # A stop also kills any design running in a worker thread. One warm machine
+  # costs a few dollars a month and removes both failure modes from a demo.
+  min_machines_running = 1
 
   [http_service.concurrency]
     type = "requests"
@@ -25,7 +44,9 @@ primary_region = "sjc"
     soft_limit = 20
 
 [[vm]]
-  memory = "512mb"
+  # KiCad DRC and the deterministic router are the memory-hungry steps; 512 MB
+  # is not enough headroom for them next to the Python runtime.
+  memory = "2gb"
   cpu_kind = "shared"
   cpus = 1
 
@@ -36,7 +57,7 @@ primary_region = "sjc"
 
 [checks]
   [checks.health]
-    grace_period = "15s"
+    grace_period = "20s"
     interval = "30s"
     method = "GET"
     path = "/health"

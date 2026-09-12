@@ -187,10 +187,24 @@ class TestEdaBoundaries:
                 assert "from ..eda" not in source
                 assert "import ohmni.eda" not in source
 
-    def test_only_kicad_cli_adapter_can_spawn_processes(self):
+    def test_process_spawning_stays_inside_the_bounded_runner(self):
+        """Two modules start native tools; neither one invents how.
+
+        `erc.py` owns the raw `subprocess` import, for the exception types it
+        must catch. Everything else that starts a child -- `simulation.py` runs
+        kicad-cli and ngspice -- goes through `adapters.process.run_tool`, which
+        is what supplies the fixed argument vector, the absent shell and the
+        bounded wait. The guard is that nobody writes their own process call,
+        not that exactly one file may ever have one.
+        """
+        spawning = {"erc.py", "simulation.py"}
         for path in _python_files(SRC / "eda"):
+            source = path.read_text(encoding="utf-8")
             if path.name != "erc.py":
                 assert "subprocess" not in _imported_top_level_modules(path), path
+            if "run_tool(" in source:
+                assert path.name in spawning, f"{path.name} starts native tools unexpectedly"
+            assert "shell=True" not in source, path
 
     def test_eda_compiler_has_no_model_or_network_dependency(self):
         forbidden = {"anthropic", "openai", "httpx", "requests", "socket"}

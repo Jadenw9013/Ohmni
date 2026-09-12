@@ -18,6 +18,11 @@ from contextlib import contextmanager
 from threading import RLock
 from time import monotonic
 
+#: This wrapper's own name for a bounded run that ran out of time. Callers work
+#: in terms of run_tool, not of the module it happens to be built on, so they
+#: catch this rather than importing subprocess to name one exception type.
+ToolTimeoutError = subprocess.TimeoutExpired
+
 _WINDOWS = os.name == "nt"
 _ERROR_MODE_LOCK = RLock()
 _NONINTERACTIVE_ERRORS = 0x0001 | 0x0002 | 0x8000

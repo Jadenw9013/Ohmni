@@ -885,13 +885,18 @@ class DemoHandler(SimpleHTTPRequestHandler):
         """Interpret the supported request into a brief, before any engineering.
 
         Bound to the same fixture, API, instance and UI contract as job
-        creation, so a stale page cannot show a brief from another generation.
+        creation, so a stale page cannot show a brief from another generation,
+        and accepting free text on exactly the same terms: only with a provider
+        configured, so the Agree stage exists for a model-proposed design too.
         """
         try:payload=self._owned_request_payload()
         except BaseException:return self._reject("fixture_rejected",HTTPStatus.BAD_REQUEST)  # noqa: BLE001 - JSON decoding must fail closed
         error=self._request_contract_error(payload)
+        request=DEMO_REQUEST
+        if error is not None:request,error=self._model_request(payload,error)
         if error is not None:return self._reject(error,HTTPStatus.BAD_REQUEST if error=="fixture_rejected" else HTTPStatus.CONFLICT)
-        try:brief=_owned_json_object(preview_brief(DEMO_REQUEST).model_dump(mode="json"))
+        try:brief=_owned_json_object(
+            preview_brief(request,provider=self.server.store.provider).model_dump(mode="json"))
         except BaseException:  # noqa: BLE001 - request threads must not leak failures
             self.server._job_diagnostic("brief_unavailable")
             return self._json({"error":BRIEF_UNAVAILABLE_MESSAGE},HTTPStatus.SERVICE_UNAVAILABLE)
@@ -901,7 +906,12 @@ class DemoHandler(SimpleHTTPRequestHandler):
         try:request_path=unquote(urlsplit(self.path).path,errors="strict")
         except BaseException:return self._json({"error":INVALID_PATH_MESSAGE},HTTPStatus.BAD_REQUEST)  # noqa: BLE001 - request targets must fail closed
         if request_path in {"/health","/api/health"}:
-            return self._json({"status":"ready","fixture_id":DEMO_FIXTURE_ID,**self.server._identity()})
+            # free_text is a capability, not identity: it says whether this
+            # server can answer a request nobody scripted, so the page can offer
+            # the input only where it would actually work.
+            return self._json({"status":"ready","fixture_id":DEMO_FIXTURE_ID,
+                               "free_text":self.server.store.provider is not None,
+                               **self.server._identity()})
         if request_path=="/api/project-options":
             from ohmni.application.projects import project_options
             error=self._poll_contract_error()

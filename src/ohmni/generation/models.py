@@ -6,6 +6,7 @@ from enum import StrEnum
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
+from ..adapters import SimulationRun
 from ..domain import (
     CircuitIR,
     EngineeringNotebook,
@@ -218,6 +219,10 @@ class DesignReport(StrictModel):
     repairs: list[RepairRecord] = Field(default_factory=list)
     artifact: SchematicArtifact | None = None
     erc: ErcReport | None = None
+    #: Corroboration, never a verdict. None means no attempt was made at all
+    #: (no EDA stage ran); a run with status UNAVAILABLE or FAILED means one was
+    #: attempted and did not produce an operating point. Neither is a pass.
+    simulation: SimulationRun | None = None
     issues: list[GenerationIssue] = Field(default_factory=list)
     notebook: EngineeringNotebook | None = None
     lessons: list[Lesson] = Field(default_factory=list)

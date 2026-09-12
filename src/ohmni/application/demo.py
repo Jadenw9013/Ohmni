@@ -134,16 +134,23 @@ def _require_demo_design_provenance(design: DesignReport, request: str) -> Desig
     return design
 
 
-def preview_brief(request: str = DEMO_REQUEST) -> Brief:
+def preview_brief(request: str = DEMO_REQUEST, *, provider: LlmProvider | None = None) -> Brief:
     """Interpret the request into a brief without running the engineering.
 
     The Agree stage needs the brief before anything expensive happens. This runs
     the *same* interpretation and compilation the full pipeline runs -- it is not
     a second, friendlier copy of the requirements -- and stops there. Nothing is
     verified at this point, so the brief carries no verification-derived items.
+
+    A provider is what makes a request nobody scripted answerable at all. The
+    scripted request stays scripted even when one is configured: it is the
+    regression fixture, and a model call would make it a different thing.
     """
-    request = require_demo_request(request)
-    provider = flawed_logger_provider()
+    if provider is None or request == DEMO_REQUEST:
+        request = require_demo_request(request)
+        provider = flawed_logger_provider()
+    elif not isinstance(request, str) or not request.strip():
+        raise ValueError("A design request must be text describing what to build")
     interpreted = provider.generate_structured(
         StructuredGenerationRequest(
             request_type="requirements",

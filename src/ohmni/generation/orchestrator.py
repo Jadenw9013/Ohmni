@@ -7,10 +7,11 @@ from pathlib import Path
 
 from pydantic import ValidationError
 
-from ..adapters import LlmProvider, PartCatalog, StructuredGenerationRequest
+from ..adapters import LlmProvider, PartCatalog, StructuredGenerationRequest, ToolStatus
 from ..domain import EngineeringEvent, EngineeringNotebook, EventKind, Lesson, Severity
 from ..eda.kicad import KiCadCliAdapter, KiCadSchematicCompiler, SchematicCompilationError
 from ..eda.models import ErcStatus
+from ..eda.simulation import operating_point_for
 from ..verifier import verify
 from .models import (
     ArchitectureProposal,
@@ -155,7 +156,7 @@ class DesignOrchestrator:
         else:
             raise AssertionError("unreachable")
 
-        artifact = erc = None
+        artifact = erc = simulation = None
         if run_eda:
             try:
                 artifact = KiCadSchematicCompiler(self.catalog).compile(circuit, output or Path("out/design") / f"{circuit.ir_id}.kicad_sch")
@@ -170,11 +171,22 @@ class DesignOrchestrator:
             if erc.status is ErcStatus.UNAVAILABLE:
                 issues.append(GenerationIssue(code=GenerationIssueCode.INFRASTRUCTURE_UNAVAILABLE, message="KiCad unavailable; ERC did not run"))
             machine.transition(GenerationState.ERC_COMPLETE)
+            # SPICE corroborates; it never decides. A missing or failing ngspice
+            # is recorded and the design continues, exactly as a missing KiCad
+            # leaves the EDA subsystem UNSUPPORTED rather than passed.
+            simulation = operating_point_for(artifact, work_dir=artifact.path.parent)
+            self._event(EventKind.TOOL_UNAVAILABLE if simulation.status is ToolStatus.UNAVAILABLE
+                        else EventKind.SIMULATION_RUN,
+                        f"ngspice operating point {simulation.status.value}", circuit)
+            if simulation.status is ToolStatus.UNAVAILABLE:
+                issues.append(GenerationIssue(code=GenerationIssueCode.INFRASTRUCTURE_UNAVAILABLE,
+                                              message="ngspice unavailable; no operating point was computed"))
         machine.transition(GenerationState.COMPLETE)
         notebook = EngineeringNotebook(notebook_id=hashlib.sha256(request.encode()).hexdigest()[:16], project_name=compiled.requirements.project_name, events=self.events, lessons=lessons)
         return DesignReport(state=machine.state, requirements=compiled, architecture=architecture,
                             initial_circuit_hash=initial_hash, final_circuit=circuit,
                             semantic_attempts=attempts, repairs=repairs, artifact=artifact, erc=erc,
+                            simulation=simulation,
                             issues=issues, notebook=notebook, lessons=lessons, llm_calls=self.calls)
 
     def _call(self, request_type, model, data):

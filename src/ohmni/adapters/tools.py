@@ -184,7 +184,10 @@ class NgspiceCli:
             status=ToolStatus.OK,
             version=text,
             executable=self.executable,
-            detail="Simulation is not implemented yet (spike S2).",
+            detail=(
+                "Supports batch operating-point analysis through "
+                "ohmni.eda.simulation.NgspiceAdapter."
+            ),
         )
 
     def operating_point(self, netlist: str, run_id: str):

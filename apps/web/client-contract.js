@@ -50,8 +50,16 @@ export const sameIdentity = (a, b) => a.api_version === b.api_version
     && a.server_instance_id === b.server_instance_id && a.ui_version === b.ui_version;
 
 export function parseHealth(payload) {
-    if (!exactObject(payload, ["status", "fixture_id", "api_version", "server_instance_id", "ui_version"])) fail("api_ui_mismatch");
+    const fields = ["status", "fixture_id", "api_version", "server_instance_id", "ui_version"];
+    // free_text is the one optional field, and deliberately so. The page and the
+    // server are deployed to different hosts, so one can be a commit ahead of
+    // the other; a capability the page does not use is no reason to refuse a
+    // server. Absent means absent: no input is offered. Generation skew that
+    // actually matters is still caught by server_instance_id and ui_version.
+    if (!exactObject(payload, fields) && !exactObject(payload, [...fields, "free_text"])) fail("api_ui_mismatch");
+    const freeText = Object.hasOwn(payload, "free_text") ? payload.free_text : false;
     if (payload.api_version !== API_VERSION || payload.status !== "ready"
+        || typeof freeText !== "boolean"
         || typeof payload.server_instance_id !== "string" || !INSTANCE_PATTERN.test(payload.server_instance_id)
         || typeof payload.ui_version !== "string" || !UI_VERSION_PATTERN.test(payload.ui_version)) fail("api_ui_mismatch");
     if (payload.fixture_id !== DEMO_FIXTURE_ID) fail("fixture_rejected");
@@ -59,6 +67,7 @@ export function parseHealth(payload) {
         api_version: payload.api_version,
         server_instance_id: payload.server_instance_id,
         ui_version: payload.ui_version,
+        free_text: freeText,
     };
 }
 
@@ -74,6 +83,26 @@ export async function fetchHealth(fetcher) {
 
 export const identityBody = (identity) => JSON.stringify({
     fixture_id: DEMO_FIXTURE_ID,
+    api_version: API_VERSION,
+    server_instance_id: identity.server_instance_id,
+    ui_version: identity.ui_version,
+});
+
+// Bounds mirrored from the server so the page can say what is wrong before
+// spending a request. The server enforces them regardless; this is courtesy.
+export const FREE_TEXT_MIN = 10;
+export const FREE_TEXT_MAX = 2000;
+export const freeTextProblem = (request) => {
+    const text = typeof request === "string" ? request.trim() : "";
+    if (text.length < FREE_TEXT_MIN) return "Describe what to build in a sentence or two.";
+    if (text.length > FREE_TEXT_MAX) return `Keep it under ${FREE_TEXT_MAX} characters.`;
+    return null;
+};
+// The free-text payload carries a request in place of a fixture id. The server
+// accepts it only when it has a provider configured; everywhere else this shape
+// is rejected exactly as it always was.
+export const requestBody = (identity, request) => JSON.stringify({
+    request: String(request).trim(),
     api_version: API_VERSION,
     server_instance_id: identity.server_instance_id,
     ui_version: identity.ui_version,

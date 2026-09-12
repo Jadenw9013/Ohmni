@@ -159,7 +159,16 @@ export async function projectRequest(path, { fetcher = globalThis.fetch, identit
     try {
         response = await fetcher(API_BASE + path, { method, cache: "no-store", headers: {
             ...pollHeaders(current), ...(method === "GET" ? {} : { "content-type": "application/json" }),
-        }, ...(method === "GET" ? {} : { body: JSON.stringify({ ...current, ...data }) }) });
+        // Identity fields are named, never spread. The parsed health object also
+        // carries capabilities, and the server checks request bodies for an exact
+        // key set -- so spreading it would turn a new capability into a rejected
+        // request for every project write.
+        }, ...(method === "GET" ? {} : { body: JSON.stringify({
+            api_version: current.api_version,
+            server_instance_id: current.server_instance_id,
+            ui_version: current.ui_version,
+            ...data,
+        }) }) });
     } catch { throw new ProjectRequestError("The server is unreachable. Check the local Ohmni server, then try again. Your edits are still here."); }
     let payload;
     try { payload = await response.json(); } catch { fail("api_ui_mismatch"); }
