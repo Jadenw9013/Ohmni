@@ -205,6 +205,11 @@ class UnavailableSpice:
             ),
         )
 
+    def transient_analysis(self, netlist: str, run_id: str, tstep: str,
+                           tstop: str) -> SimulationRun:
+        run = self.operating_point(netlist, run_id)
+        return run.model_copy(update={"analysis": f"tran {tstep} {tstop}"})
+
     def operating_point(self, netlist: str, run_id: str) -> SimulationRun:
         return SimulationRun(
             status=ToolStatus.UNAVAILABLE,

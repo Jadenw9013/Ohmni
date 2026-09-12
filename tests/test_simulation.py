@@ -15,7 +15,13 @@ from types import SimpleNamespace
 
 import pytest
 
-from ohmni.adapters import ToolAvailability, ToolStatus
+from ohmni.adapters import (
+    SimulationRun,
+    ToolAvailability,
+    ToolStatus,
+    TransientData,
+    TransientSeries,
+)
 from ohmni.adapters.process import ToolTimeoutError
 from ohmni.domain.evidence import EvidenceKind
 from ohmni.domain.units import Unit
@@ -25,6 +31,7 @@ from ohmni.eda.simulation import (
     IDEAL_COMPONENTS,
     KiCadNetlistExporter,
     NgspiceAdapter,
+    _not_run,
     describe_netlist,
     model_fidelity,
     operating_point_deck,
@@ -82,6 +89,13 @@ class FakeSpice:
     def operating_point(self, netlist, run_id, *, work_dir=None):
         self.calls.append((netlist, run_id, work_dir))
         return simulation._not_run(run_id, ToolStatus.OK, IDEAL_COMPONENTS, "stub run")
+
+
+def _write_netlist(tmp_path: Path, text: str):
+    """Stand in for kicad-cli: write the netlist the exporter will read back."""
+    run_id = simulation.simulation_run_id(artifact(tmp_path))
+    (tmp_path / f"{run_id}.cir").write_text(text, encoding="utf-8")
+    return completed(0)
 
 
 def artifact(tmp_path: Path, *, current: bool = True) -> SimpleNamespace:
@@ -386,3 +400,225 @@ class TestOrchestratorIntegration:
         assert any("ngspice unavailable" in issue.message for issue in report.issues)
         assert any(event.kind.value == "tool_unavailable" for event in report.notebook.events)
         assert isinstance(KiCadSchematicCompiler(default_catalog()), KiCadSchematicCompiler)
+
+
+DRIVEN_NETLIST = """.title driven
+V1 vbus 0 5
+R1 vbus 3v3 100
+C1 3v3 0 1u
+.end
+"""
+
+TRAN_STDOUT = """
+Circuit: .title driven
+
+Doing analysis at TEMP = 27.000000 and TNOM = 27.000000
+
+Index   time            v(vbus)         v(3v3)
+--------------------------------------------------------
+0\t0.000000e+00\t5.000000e+00\t0.000000e+00
+1\t1.000000e-05\t5.000000e+00\t4.750000e-01
+2\t2.000000e-05\t5.000000e+00\t9.060000e-01
+
+Index   time            v(vbus)         v(3v3)
+--------------------------------------------------------
+3\t3.000000e-05\t5.000000e+00\t1.296000e+00
+"""
+
+
+class TestTransientDeck:
+    def test_the_nodes_to_print_come_from_the_element_lines(self):
+        assert simulation.netlist_nodes(DRIVEN_NETLIST) == ["vbus", "3v3"]
+
+    def test_ground_is_never_printed(self):
+        """It is zero by definition; a graph of it teaches nothing."""
+        assert "0" not in simulation.netlist_nodes("V1 a 0 5\nR1 a gnd 1k\n")
+
+    def test_a_value_is_never_mistaken_for_a_node(self):
+        """`v(4.7k)` would make ngspice reject the whole deck."""
+        assert simulation.netlist_nodes("R1 sda 3v3 4.7k\n") == ["sda", "3v3"]
+
+    def test_a_device_of_unknown_shape_is_skipped_rather_than_guessed(self):
+        assert simulation.netlist_nodes("U1 __U1\nX1 a b amp\nR1 a b 1k\n") == ["a", "b"]
+
+    def test_the_signal_list_is_bounded(self):
+        netlist = "\n".join(f"R{index} n{index} n{index + 1} 1k" for index in range(40))
+        assert len(simulation.netlist_nodes(netlist)) == simulation.MAX_TRANSIENT_SIGNALS
+
+    def test_the_analysis_and_print_go_in_before_end(self):
+        deck = simulation.transient_deck(DRIVEN_NETLIST, "10us", "1ms", ["vbus", "3v3"])
+        lines = deck.splitlines()
+        assert lines[0] == ".title driven" and lines[-1] == ".end"
+        assert lines[-3] == ".tran 10us 1ms"
+        assert lines[-2] == ".print tran v(vbus) v(3v3)"
+
+    def test_existing_commands_are_not_duplicated(self):
+        deck = simulation.transient_deck(
+            ".title t\n.tran 1us 2ms\n.print tran v(a)\nR1 a 0 1k\n.end\n", "10us", "1ms", ["a"])
+        assert deck.lower().count(".tran") == 1 and deck.lower().count(".print tran") == 1
+
+
+class TestTransientParser:
+    def test_columns_become_a_time_axis_and_one_series_each(self):
+        data = simulation.parse_transient(TRAN_STDOUT, analysis=".tran 10us 1ms")
+        assert data.analysis == ".tran 10us 1ms"
+        assert data.time_s == [0.0, 1e-05, 2e-05, 3e-05]
+        assert [series.name for series in data.series] == ["v(vbus)", "v(3v3)"]
+        assert data.series[0].values == [5.0, 5.0, 5.0, 5.0]
+        assert data.series[1].values == [0.0, 0.475, 0.906, 1.296]
+        assert data.sample_count == 4
+
+    def test_a_repeated_page_header_is_not_parsed_as_data(self):
+        """ngspice pages the table; the fourth row arrives under a second header."""
+        data = simulation.parse_transient(TRAN_STDOUT, analysis="t")
+        assert len(data.time_s) == 4
+        assert all(len(series.values) == 4 for series in data.series)
+
+    def test_a_current_column_is_amperes_and_a_voltage_column_is_volts(self):
+        stdout = "Index   time   v(a)   i(v1)\n----\n0\t0.0\t1.0\t-0.002\n"
+        data = simulation.parse_transient(stdout, analysis="t")
+        assert [series.unit for series in data.series] == [Unit.VOLT, Unit.AMPERE]
+
+    def test_a_partial_row_is_dropped_rather_than_padded(self):
+        stdout = "Index   time   v(a)   v(b)\n----\n0\t0.0\t1.0\t2.0\n1\t1e-05\t1.5\n"
+        data = simulation.parse_transient(stdout, analysis="t")
+        assert data.time_s == [0.0]
+
+    def test_output_with_no_table_is_an_empty_result_not_a_crash(self):
+        for text in ("", None, "total elapsed time: 0.01 seconds\n"):
+            data = simulation.parse_transient(text, analysis="t")
+            assert not data.time_s and not data.series
+
+    def test_a_long_run_is_thinned_and_says_so(self):
+        rows = "\n".join(f"{index}\t{index * 1e-06:.6e}\t{index * 0.01:.6e}"
+                         for index in range(5000))
+        data = simulation.parse_transient(
+            f"Index   time   v(a)\n----\n{rows}\n", analysis="t")
+        assert data.decimated_from == 5000
+        assert data.sample_count <= simulation.MAX_TRANSIENT_SAMPLES + 1
+        # The end of the curve survives the thinning: a settling waveform whose
+        # last sample was dropped would look like it never arrived.
+        assert data.time_s[0] == 0.0
+        assert data.series[0].values[-1] == pytest.approx(4999 * 0.01)
+
+    def test_a_short_run_is_not_marked_as_thinned(self):
+        data = simulation.parse_transient(TRAN_STDOUT, analysis="t")
+        assert data.decimated_from is None
+
+
+class TestTransientAnalysis:
+    def _adapter(self, monkeypatch, result):
+        def fake_run_tool(command, *, timeout):
+            if isinstance(result, BaseException):
+                raise result
+            return result
+
+        monkeypatch.setattr(simulation, "run_tool", fake_run_tool)
+        return NgspiceAdapter(executable="ngspice")
+
+    def test_a_successful_run_returns_curves_and_evidence(self, monkeypatch, tmp_path):
+        adapter = self._adapter(monkeypatch, completed(0, TRAN_STDOUT))
+        run = adapter.transient_analysis(DRIVEN_NETLIST, "run-1", "10us", "1ms",
+                                         work_dir=tmp_path)
+        assert run.status is ToolStatus.OK
+        assert run.analysis == ".tran 10us 1ms"
+        assert run.transient_data.sample_count == 4
+        assert run.operating_point is None
+        assert run.evidence[0].kind is EvidenceKind.SIMULATION
+        assert run.evidence[0].source_id == "run-1"
+        assert Path(run.netlist_path).read_text().count(".tran 10us 1ms") == 1
+
+    def test_without_ngspice_no_curve_is_reported(self, monkeypatch, tmp_path):
+        monkeypatch.setattr(simulation, "find_ngspice", lambda: None)
+        run = NgspiceAdapter().transient_analysis(DRIVEN_NETLIST, "run-1", work_dir=tmp_path)
+        assert run.status is ToolStatus.UNAVAILABLE
+        assert run.transient_data is None and run.analysis == ".tran 10us 1ms"
+        assert not list(tmp_path.iterdir())
+
+    def test_a_clean_exit_with_no_table_is_not_an_empty_graph(self, monkeypatch):
+        """An empty plot of a real circuit is the most misleading result here."""
+        adapter = self._adapter(monkeypatch, completed(0, "total elapsed time: 0.01\n"))
+        run = adapter.transient_analysis(DRIVEN_NETLIST, "run-1")
+        assert run.status is ToolStatus.FAILED and run.transient_data is None
+        assert "without reporting a transient" in run.detail
+
+    def test_a_nonzero_exit_is_a_failure(self, monkeypatch):
+        adapter = self._adapter(monkeypatch, completed(1, "", "Error: no such node\n"))
+        run = adapter.transient_analysis(DRIVEN_NETLIST, "run-1")
+        assert run.status is ToolStatus.FAILED and "no such node" in run.detail
+
+    def test_a_timeout_is_reported_as_a_timeout(self, monkeypatch):
+        adapter = self._adapter(monkeypatch, ToolTimeoutError(["ngspice"], 60))
+        run = adapter.transient_analysis(DRIVEN_NETLIST, "run-1")
+        assert run.status is ToolStatus.TIMED_OUT and run.transient_data is None
+
+    def test_a_netlist_with_nothing_to_print_is_refused_before_running(self, monkeypatch):
+        called = []
+        monkeypatch.setattr(simulation, "run_tool",
+                            lambda command, *, timeout: called.append(command))
+        run = NgspiceAdapter(executable="ngspice").transient_analysis("U1 __U1\n.end\n", "run-1")
+        assert run.status is ToolStatus.FAILED and "nothing to plot" in run.detail
+        assert not called
+
+
+class TestTransientInThePipeline:
+    def test_an_undriven_netlist_never_spends_a_transient(self, tmp_path, monkeypatch):
+        """Every netlist KiCad exports from an Ohmni schematic is this one."""
+        spice = FakeSpice()
+        spice.transient_calls = []
+        spice.transient_analysis = lambda *args, **kwargs: spice.transient_calls.append(args)
+        monkeypatch.setattr(simulation, "run_tool",
+                            lambda command, *, timeout: _write_netlist(tmp_path, GOLDEN_NETLIST))
+        run = operating_point_for(
+            artifact(tmp_path), exporter=KiCadNetlistExporter(executable="kicad-cli"),
+            spice=spice, work_dir=tmp_path)
+        assert run.status is ToolStatus.OK
+        assert run.transient_data is None
+        assert spice.transient_calls == []
+
+    def test_a_driven_netlist_gets_its_curve_attached_to_the_operating_point(
+            self, tmp_path, monkeypatch):
+        spice = FakeSpice()
+        curve = TransientData(analysis=".tran 10us 1ms", time_s=[0.0, 1e-05],
+                              series=[TransientSeries(name="v(vbus)", unit=Unit.VOLT,
+                                                      values=[0.0, 5.0])])
+        spice.transient_analysis = lambda netlist, run_id, tstep, tstop, **kwargs: SimulationRun(
+            status=ToolStatus.OK, run_id=run_id, analysis=f".tran {tstep} {tstop}",
+            model_fidelity=IDEAL_COMPONENTS, transient_data=curve, detail="2 samples")
+        monkeypatch.setattr(simulation, "run_tool",
+                            lambda command, *, timeout: _write_netlist(tmp_path, DRIVEN_NETLIST))
+        run = operating_point_for(
+            artifact(tmp_path), exporter=KiCadNetlistExporter(executable="kicad-cli"),
+            spice=spice, work_dir=tmp_path)
+        assert run.analysis == "op" and run.status is ToolStatus.OK
+        assert run.transient_data.sample_count == 2
+        assert "transient" in run.detail
+
+    def test_a_failed_transient_leaves_the_operating_point_standing(self, tmp_path, monkeypatch):
+        spice = FakeSpice()
+        spice.transient_analysis = lambda netlist, run_id, tstep, tstop, **kwargs: _not_run(
+            run_id, ToolStatus.FAILED, IDEAL_COMPONENTS, "ngspice failed",
+            analysis=f".tran {tstep} {tstop}")
+        monkeypatch.setattr(simulation, "run_tool",
+                            lambda command, *, timeout: _write_netlist(tmp_path, DRIVEN_NETLIST))
+        run = operating_point_for(
+            artifact(tmp_path), exporter=KiCadNetlistExporter(executable="kicad-cli"),
+            spice=spice, work_dir=tmp_path)
+        assert run.status is ToolStatus.OK and run.transient_data is None
+        assert "transient failed" in run.detail
+
+    def test_the_transient_can_be_turned_off(self, tmp_path, monkeypatch):
+        spice = FakeSpice()
+        spice.transient_analysis = lambda *args, **kwargs: pytest.fail("must not be called")
+        monkeypatch.setattr(simulation, "run_tool",
+                            lambda command, *, timeout: _write_netlist(tmp_path, DRIVEN_NETLIST))
+        run = operating_point_for(
+            artifact(tmp_path), exporter=KiCadNetlistExporter(executable="kicad-cli"),
+            spice=spice, work_dir=tmp_path, transient=False)
+        assert run.status is ToolStatus.OK and run.transient_data is None
+
+    def test_the_offline_fake_answers_the_new_question_the_same_way(self):
+        from ohmni.adapters.fakes import UnavailableSpice
+
+        run = UnavailableSpice().transient_analysis("V1 a 0 5", "run-1", "10us", "1ms")
+        assert run.status is ToolStatus.UNAVAILABLE and run.transient_data is None

@@ -29,7 +29,7 @@ from ..domain.circuit import CircuitIR
 from ..domain.component import ComponentSpec
 from ..domain.document import DatasheetDocument
 from ..domain.evidence import Evidence
-from ..domain.units import Quantity
+from ..domain.units import Quantity, Unit
 from ..domain.verification import VerificationFinding
 from .anthropic_provider import AnthropicProvider, StructuredGenerationError
 
@@ -152,6 +152,40 @@ class OperatingPoint(BaseModel):
     branch_currents: dict[str, Quantity] = Field(default_factory=dict)
 
 
+class TransientSeries(BaseModel):
+    """One signal sampled over time, in the same order as :attr:`TransientData.time_s`."""
+
+    name: str = Field(description="The node or branch as the simulator named it.")
+    unit: Unit
+    values: list[float]
+
+
+class TransientData(BaseModel):
+    """A time-domain result: one time axis and the signals measured against it.
+
+    Carries its own ``analysis`` descriptor because this travels attached to a
+    :class:`SimulationRun` whose ``analysis`` names a different one -- a run can
+    report a DC operating point and a transient beside it, and neither may be
+    read as the other.
+
+    ``decimated_from`` is not decoration. A transient can produce far more rows
+    than belong in a report, so a long result is thinned to a bounded number of
+    samples; saying how many there were keeps a curve drawn from 400 points from
+    being mistaken for one drawn from every step the simulator took.
+    """
+
+    analysis: str = Field(description="The command that produced this, e.g. '.tran 10us 1ms'.")
+    time_s: list[float] = Field(default_factory=list)
+    series: list[TransientSeries] = Field(default_factory=list)
+    decimated_from: int | None = Field(
+        default=None, description="Row count before thinning, when the result was thinned."
+    )
+
+    @property
+    def sample_count(self) -> int:
+        return len(self.time_s)
+
+
 class SimulationRun(BaseModel):
     """Result of a SPICE run.
 
@@ -167,6 +201,9 @@ class SimulationRun(BaseModel):
         description="'vendor_model', 'behavioural_approximation', or 'ideal_components'."
     )
     operating_point: OperatingPoint | None = None
+    #: A time-domain result computed beside the operating point, when one was.
+    #: Absent means no transient ran, never that one ran and found nothing.
+    transient_data: TransientData | None = None
     evidence: list[Evidence] = Field(default_factory=list)
     netlist_path: str | None = None
     detail: str | None = None
@@ -179,6 +216,9 @@ class SpiceTool(Protocol):
     def availability(self) -> ToolAvailability: ...
 
     def operating_point(self, netlist: str, run_id: str) -> SimulationRun: ...
+
+    def transient_analysis(self, netlist: str, run_id: str, tstep: str,
+                           tstop: str) -> SimulationRun: ...
 
 
 @runtime_checkable
@@ -207,4 +247,6 @@ __all__ = [
     "StructuredGenerationRequest",
     "ToolAvailability",
     "ToolStatus",
+    "TransientData",
+    "TransientSeries",
 ]
