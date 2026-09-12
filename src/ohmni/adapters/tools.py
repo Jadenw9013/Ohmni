@@ -131,6 +131,77 @@ def find_ngspice() -> str | None:
     return shutil.which("ngspice")
 
 
+#: An explicit path to the Freerouting executable or its jar. Freerouting ships
+#: as a Java application with no standard install location, so discovery cannot
+#: be as simple as the other two tools.
+FREEROUTING_ENV_VAR = "OHMNI_FREEROUTING"
+
+
+def find_freerouting() -> str | None:
+    """Locate Freerouting: a configured path, then PATH, then usual installs."""
+    configured = os.environ.get(FREEROUTING_ENV_VAR, "").strip()
+    if configured:
+        candidate = Path(configured).expanduser()
+        return str(candidate) if candidate.is_file() else None
+    if found := shutil.which("freerouting"):
+        return found
+    for base in _FREEROUTING_FALLBACK_DIRS:
+        if not base.is_dir():
+            continue
+        for pattern in ("freerouting.jar", "freerouting.exe", "freerouting"):
+            for candidate in sorted(base.glob(pattern), reverse=True):
+                if candidate.is_file():
+                    return str(candidate)
+    return None
+
+
+_FREEROUTING_FALLBACK_DIRS = (
+    Path(os.environ.get("LOCALAPPDATA", "")) / "Programs" / "freerouting",
+    Path("C:/Program Files/freerouting"),
+    Path("/usr/local/share/freerouting"),
+    Path("/opt/freerouting"),
+)
+
+
+class FreeroutingCli:
+    """Availability of the Freerouting autorouter.
+
+    Deliberately does not execute the tool to answer. Freerouting is a Java
+    application whose start-up is slow and whose version flag is not stable
+    across releases, so a probe that ran it would be both expensive and prone
+    to reporting FAILED for a working install. The detail says exactly that, so
+    an OK here is never read as "this has been shown to run".
+    """
+
+    name = "freerouting"
+
+    def __init__(self, executable: str | None = None) -> None:
+        self.executable = executable if executable is not None else find_freerouting()
+
+    def availability(self) -> ToolAvailability:
+        if self.executable is None:
+            return ToolAvailability(
+                name=self.name,
+                status=ToolStatus.UNAVAILABLE,
+                detail=(
+                    "Freerouting was not found on PATH or in the usual install locations. "
+                    f"Set {FREEROUTING_ENV_VAR} to its executable or jar. Ohmni routes with "
+                    "its own deterministic router; this tool is not required."
+                ),
+            )
+        needs_java = self.executable.lower().endswith(".jar")
+        if needs_java and shutil.which("java") is None:
+            return ToolAvailability(
+                name=self.name, status=ToolStatus.UNAVAILABLE, executable=self.executable,
+                detail="Freerouting is a jar and no java runtime was found to run it.",
+            )
+        return ToolAvailability(
+            name=self.name, status=ToolStatus.OK, executable=self.executable,
+            detail=("Found but not executed at probe time; Freerouting consumes a Specctra "
+                    "DSN, which Ohmni does not export today."),
+        )
+
+
 def find_kicad_ngspice_library() -> str | None:
     """KiCad bundles ngspice as a shared library rather than a CLI.
 
@@ -198,12 +269,16 @@ class NgspiceCli:
 
 def probe_all() -> list[ToolAvailability]:
     """Everything the system would like to use, and whether it can."""
-    return [KicadCli().availability(), NgspiceCli().availability()]
+    return [KicadCli().availability(), NgspiceCli().availability(),
+            FreeroutingCli().availability()]
 
 
 __all__ = [
+    "FREEROUTING_ENV_VAR",
+    "FreeroutingCli",
     "KicadCli",
     "NgspiceCli",
+    "find_freerouting",
     "find_kicad_cli",
     "find_kicad_ngspice_library",
     "find_ngspice",
