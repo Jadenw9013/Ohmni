@@ -154,6 +154,15 @@
       "status": "PASSED",
       "commit": "dd62691adf50f9cdd00ce7bde3cd2f30d521d21d",
       "notes": "Read-only cross-review of other-agent server/store changes: transactional revision and attempt claims, retry/recovery, workspace locking, paths, publication lineage, verified ZIP buffers. No blocking issue. Limited to trusted single-user local workspace, not auth/multi-tenant/cloud security."
+    },
+    {
+      "id": "MCP-T01-INDEPENDENT",
+      "scope": "MCP-SEMANTIC-1",
+      "reviewer": "independent-subagent: backend_mcp_surface",
+      "independent": true,
+      "status": "PASSED",
+      "commit": "596e8c787f4dec7af726c3dd8008c2d05c0e4836",
+      "notes": "Scoped source review and targeted probes. Initial P1 traceback disclosure through rule limitations and P2 quantity shorthand/schema mismatch were fixed and independently re-reviewed. Final candidate was committed unchanged as this commit. No remaining actionable findings; full-suite execution belongs to the implementation agent."
     }
   ],
   "findings": [
@@ -675,6 +684,24 @@
       "found_at_commit": "d9f2176",
       "review": "M9-RM01-REV-INDEPENDENT-FINAL",
       "resolution": "Fixed rather than accepted; see .ai/verification/M9-REMEDIATION-1.yaml."
+    },
+    {
+      "id": "MCP-T01-R01",
+      "scope": "MCP-SEMANTIC-1",
+      "severity": "HIGH",
+      "status": "FIXED",
+      "title": "Rule traceback in limitations bypassed error_text redaction",
+      "resolution": "ERROR rule limitations and error_text now use fixed diagnostics while preserving outcome, missing data and coverage. Regression invokes a real failing RegisteredRule and inspects the entire MCP payload.",
+      "resolved_at_commit": "596e8c787f4dec7af726c3dd8008c2d05c0e4836"
+    },
+    {
+      "id": "MCP-T01-R02",
+      "scope": "MCP-SEMANTIC-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "Inherited Quantity shorthand violated the advertised object schema",
+      "resolution": "Proposal-specific validator rejects strings before domain shorthand parsing; real stdio regression verifies rejection at requirements and component quantities.",
+      "resolved_at_commit": "596e8c787f4dec7af726c3dd8008c2d05c0e4836"
     }
   ]
 }

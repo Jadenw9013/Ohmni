@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "id": "MCP-T01",
+  "status": "VERIFIED",
+  "commit": "01d17386f5ce904f32f4564cb04b0f55208f521f",
+  "implementation_commit": "596e8c787f4dec7af726c3dd8008c2d05c0e4836",
+  "verified_at": "2026-09-13",
+  "scope": "Local stdio MCP capabilities, bundled catalog discovery, strict semantic verification and client/report-parity tests only.",
+  "tool_versions": {
+    "python": "3.13.3",
+    "mcp": "2.2.0",
+    "pydantic": "2.13.5",
+    "pytest": "9.1.1",
+    "ruff": "0.16.5"
+  },
+  "commands": [
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "PASS",
+      "tests": 1422,
+      "deselected": 44,
+      "runtime_seconds": 207.76,
+      "detail": "Final canonical fast gate at 01d1738, including all 32 MCP client/boundary tests and the test-only publication-wait correction."
+    },
+    {
+      "command": "python -m pytest tests/test_mcp_server.py -o addopts=--strict-markers -q --basetemp build/pytest-mcp-final -o cache_dir=build/pytest-mcp-final-cache",
+      "result": "PASS",
+      "tests": 32,
+      "runtime_seconds": 56.67,
+      "detail": "Real stdio client discovery, 14 corpus report comparisons, catalog parity, evidence/extra-field/type/size rejection, installed executable outside repository, optional imports, exception privacy and review regressions."
+    },
+    {
+      "command": "python -m pytest tests/test_demo_application.py -o addopts=--strict-markers -q --basetemp build/pytest-demo-race-fix -o cache_dir=build/pytest-demo-race-cache",
+      "result": "PASS",
+      "tests": 22,
+      "runtime_seconds": 5.69,
+      "detail": "Isolated test-only synchronization repair; no application production source changed."
+    },
+    {
+      "command": "python -m ruff check .",
+      "result": "PASS"
+    },
+    {
+      "command": "python -m ohmni verify-all",
+      "result": "PASS",
+      "fixtures": 14,
+      "coverage": "100%"
+    },
+    {
+      "command": "python scripts/verify.py workflow",
+      "result": "PASS",
+      "tests": 11,
+      "runtime_seconds": 0.37,
+      "detail": "Final COMPLETE ledger and preserved parked task"
+    },
+    {
+      "command": "python scripts/ai_state.py validate",
+      "result": "PASS",
+      "detail": "Recovery NONE; no interrupted task"
+    },
+    {
+      "command": "python scripts/ai_state.py next",
+      "result": "PASS",
+      "detail": "No executable task; approved semantic scope exhausted"
+    }
+  ],
+  "report_parity": {
+    "fixtures": 14,
+    "normalization": [
+      "generated_at",
+      "recorded_at"
+    ],
+    "engineering_report": "Matches direct verify() over identical evidence-free proposals and the server-owned catalog.",
+    "scope_projection": "requirements_supported uses existing RequirementsSpec.is_supported_scope; the core report is not rewritten to implement that gate.",
+    "exception_projection": "ERROR remains ERROR with missing data and coverage intact; exception text and traceback-bearing limitations use fixed public diagnostics."
+  },
+  "review": {
+    "record": ".ai/reviews.yaml#MCP-T01-INDEPENDENT",
+    "status": "PASSED",
+    "independent": true,
+    "reviewed_implementation_commit": "596e8c787f4dec7af726c3dd8008c2d05c0e4836",
+    "resolved_findings": [
+      "MCP-T01-R01",
+      "MCP-T01-R02"
+    ],
+    "remaining_actionable": 0
+  },
+  "observed_failures": [
+    {
+      "stage": "Initial MCP test",
+      "detail": "The test incorrectly expected electrical verify() to enforce unsupported requirements. Preserved report parity and separately exposed the existing deterministic requirements scope predicate; regression passed."
+    },
+    {
+      "stage": "Independent boundary review",
+      "detail": "Fixed ERROR rule traceback disclosure in limitations and inherited quantity shorthand accepting input outside the published schema."
+    },
+    {
+      "stage": "Final candidate fast gate",
+      "command": "python scripts/verify.py fast",
+      "result": "FAIL",
+      "tests_passed": 1421,
+      "tests_failed": 1,
+      "deselected": 44,
+      "runtime_seconds": 205.65,
+      "detail": "Existing test_async_job_store_reports_actual_progress_without_premature_completion spun on an already-set Event and observed running before publication. Repaired its polling wait in isolated test-only commit 01d1738; all 22 module tests passed."
+    }
+  ],
+  "limitations": [
+    "Only local semantic MCP tools are implemented; no EDA, SPICE, routing, fabrication or remote hosting tools were added.",
+    "M10-T05's four NO_PATH connections and unfinished benchmark/review work remain parked with the original checkpoint preserved.",
+    "Runtime verified on Windows with Python 3.13.3. Other supported Python/platform combinations were not exercised.",
+    "Input byte admission occurs after SDK JSON parsing; this local stdio adapter is not hostile-client isolation or a tenant authorization boundary.",
+    "Catalog-reported evidence is not upgraded to machine-verified datasheet evidence or live supplier data.",
+    "Native EDA/SPICE integration and slow tiers were not run for this semantic-only scope."
+  ]
+}

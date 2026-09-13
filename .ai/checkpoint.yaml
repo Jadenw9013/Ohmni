@@ -1,20 +1,8 @@
 {
   "schema_version": 1,
-  "active_task": "MCP-T01",
-  "last_known_commit": "51bc35df85a655bf72a10b12b2a2225081f47828",
-  "modified_files": [
-    ".ai/tasks.yaml",
-    ".ai/state.yaml",
-    ".ai/checkpoint.yaml",
-    ".ai/approvals/MCP-SEMANTIC-1.yaml",
-    "pyproject.toml",
-    "README.md",
-    "docs/MCP_SERVER.md",
-    "src/ohmni/mcp_server/",
-    "tests/test_mcp_server.py",
-    "tests/test_architecture.py",
-    "tests/test_ai_workflow.py"
-  ],
+  "active_task": null,
+  "last_known_commit": "01d17386f5ce904f32f4564cb04b0f55208f521f",
+  "modified_files": [],
   "completed_substeps": [
     "Read the workflow and validator; inspected clean Git status at task start",
     "Recorded the exact human-approved MCP semantic scope and parked M10-T05 with its original checkpoint preserved",
@@ -25,13 +13,12 @@
     "Ruff and all 14 direct product fixtures passed",
     "Canonical fast suite: 1420 passed, 44 deselected",
     "Final MCP boundary suite after review fixes: 32 passed",
-    "Independent re-review passed: traceback limitation redaction and strict quantity-object regressions verified"
+    "Independent re-review passed: traceback limitation redaction and strict quantity-object regressions verified",
+    "Final committed-tree fast gate: 1422 passed, 44 deselected",
+    "MCP-T01 verification and independent review recorded; bounded approved scope complete"
   ],
-  "remaining_work": [
-    "Commit verified source and record commit-bound verification/review evidence",
-    "Close MCP-T01 ledger without resuming parked M10 or adding EDA/SPICE tools"
-  ],
-  "last_command": "pytest tests/test_mcp_server.py: 32 passed; ruff check .: passed",
+  "remaining_work": [],
+  "last_command": "python scripts/verify.py fast: 1422 passed, 44 deselected in 207.76 seconds",
   "last_failure": null,
   "parked_tasks": [
     {
@@ -39,6 +26,7 @@
       "checkpoint": ".ai/approvals/MCP-SEMANTIC-1.yaml#preserved_m10_t05_checkpoint"
     }
   ],
-  "recommended_resume_action": "Continue MCP-T01 only. Preserve AI-proposes/deterministic-verifies authority. Do not implement EDA or SPICE MCP tools. Preserve the parked routing failure and all M10 acceptance criteria.",
-  "updated_at": "2026-09-13"
+  "recommended_resume_action": "Approved semantic MCP scope is complete. Stop here; do not begin EDA/SPICE. M10-T05 remains parked with its preserved checkpoint and unresolved four-NO_PATH routing failure.",
+  "updated_at": "2026-09-13",
+  "completed_task": "MCP-T01"
 }

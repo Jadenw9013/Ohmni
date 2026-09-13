@@ -90,7 +90,7 @@
       "id": "MCP-SEMANTIC-1",
       "type": "repository_infrastructure",
       "title": "Local MCP semantic verification boundary",
-      "status": "IN_PROGRESS",
+      "status": "COMPLETE",
       "approved_by": "human",
       "approval_evidence": ".ai/approvals/MCP-SEMANTIC-1.yaml",
       "review_policy": "Focused boundary review; self review allowed for this bounded infrastructure slice, with independent review availability recorded honestly",
@@ -99,7 +99,8 @@
         "SPICE integration",
         "Approval or execution of the rest of V2 commercialization",
         "Remote hosting, authentication, and tenant isolation"
-      ]
+      ],
+      "completed_at_commit": "01d17386f5ce904f32f4564cb04b0f55208f521f"
     }
   ],
   "tasks": [
@@ -833,7 +834,7 @@
       "scope": "MCP-SEMANTIC-1",
       "milestone": null,
       "title": "Expose local MCP capabilities, catalog discovery, and semantic verification",
-      "status": "IN_PROGRESS",
+      "status": "COMPLETE",
       "priority": 100,
       "dependencies": [],
       "goal": "Wrap the existing deterministic Python semantic verifier with a strict local stdio MCP adapter that accepts circuit proposals and returns authoritative reports without accepting client-supplied evidence or verification authority.",
@@ -866,12 +867,16 @@
           "Human approval recorded for bounded MCP-SEMANTIC-1 scope",
           "MCP-T01 selected READY with no dependencies or blockers",
           "MCP-T01 transitioned to IN_PROGRESS after parking M10-T05"
-        ]
+        ],
+        "completed_at_commit": "01d17386f5ce904f32f4564cb04b0f55208f521f",
+        "completed_at": "2026-09-13",
+        "source_commit": "596e8c787f4dec7af726c3dd8008c2d05c0e4836"
       },
       "review": {
         "required": false,
-        "status": "PENDING",
-        "independent": false
+        "status": "PASSED",
+        "independent": true,
+        "record": ".ai/reviews.yaml#MCP-T01-INDEPENDENT"
       },
       "blockers": []
     }
