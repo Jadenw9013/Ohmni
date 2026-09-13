@@ -149,7 +149,9 @@ def test_async_job_store_reports_actual_progress_without_premature_completion(tm
     for _ in range(100):
         job=store.get(job_id)
         if job["status"]=="complete":break
-        finished.wait(.01)
+        # The pipeline already set finished; waiting on it again never yields
+        # time for the worker to publish the completed report.
+        time.sleep(.01)
     assert job["status"]=="complete"
     assert job["progress"][0]["status"]=="RUNNING"
     assert job["report"]["result"]["status"]=="complete"
