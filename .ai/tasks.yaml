@@ -85,6 +85,21 @@
         "firmware generation",
         "arbitrary hardware generation"
       ]
+    },
+    {
+      "id": "MCP-SEMANTIC-1",
+      "type": "repository_infrastructure",
+      "title": "Local MCP semantic verification boundary",
+      "status": "IN_PROGRESS",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/MCP-SEMANTIC-1.yaml",
+      "review_policy": "Focused boundary review; self review allowed for this bounded infrastructure slice, with independent review availability recorded honestly",
+      "non_goals": [
+        "Gated schematic, PCB, routing, ERC, DRC, and fabrication MCP tools",
+        "SPICE integration",
+        "Approval or execution of the rest of V2 commercialization",
+        "Remote hosting, authentication, and tenant isolation"
+      ]
     }
   ],
   "tasks": [
@@ -771,7 +786,7 @@
       "scope": "M10",
       "milestone": "M10",
       "title": "Benchmark, verify, and review deterministic synthesis",
-      "status": "IN_PROGRESS",
+      "status": "BLOCKED",
       "priority": 60,
       "dependencies": [
         "M10-T04"
@@ -801,11 +816,64 @@
         "status": "PENDING",
         "independent": true
       },
-      "blockers": [],
+      "blockers": [
+        "Human-priority deferral: park M10-T05 while MCP-T01 implements and verifies the initial semantic MCP slice; approval and preserved checkpoint: .ai/approvals/MCP-SEMANTIC-1.yaml",
+        "Known bounded routing failure remains unresolved: job9f2f15c4f068 has four NO_PATH connections; benchmark cases, determinism evidence, full tiers, and independent final review remain incomplete"
+      ],
       "implementation": {
         "started_at_commit": "cf9f04c8888ee5ab54df81e89740dd853f449f67",
-        "approval_evidence": "Continuing the human instruction to finish unfinished work without stopping unless unable to unblock. T04 is verified complete; proceed with approved benchmark and independent final review."
+        "approval_evidence": "Continuing the human instruction to finish unfinished work without stopping unless unable to unblock. T04 is verified complete; proceed with approved benchmark and independent final review.",
+        "parked_at_commit": "51bc35df85a655bf72a10b12b2a2225081f47828",
+        "parked_at": "2026-09-11",
+        "parked_checkpoint": ".ai/approvals/MCP-SEMANTIC-1.yaml#preserved_m10_t05_checkpoint"
       }
+    },
+    {
+      "id": "MCP-T01",
+      "scope": "MCP-SEMANTIC-1",
+      "milestone": null,
+      "title": "Expose local MCP capabilities, catalog discovery, and semantic verification",
+      "status": "IN_PROGRESS",
+      "priority": 100,
+      "dependencies": [],
+      "goal": "Wrap the existing deterministic Python semantic verifier with a strict local stdio MCP adapter that accepts circuit proposals and returns authoritative reports without accepting client-supplied evidence or verification authority.",
+      "acceptance_criteria": [
+        "M10-T05 is parked with its unresolved four-NO_PATH routing failure and original benchmark/review work preserved in a durable recovery record",
+        "An independently launchable src/ohmni/mcp_server package uses the official Python MCP SDK over local stdio",
+        "get_capabilities truthfully reports the bounded supported surface and unsupported EDA/SPICE stages",
+        "Catalog discovery exposes server-owned parts and provenance without accepting client-supplied catalog truth",
+        "verify_circuit calls the existing deterministic semantic verifier and preserves full findings, missing data, coverage, subsystem statuses, limitations, and export eligibility",
+        "Strict input schemas reject extra client-supplied verification/evidence authority; reports identify the circuit, requirements, catalog snapshot, and verifier version used",
+        "Real MCP-client tests cover discovery, schemas, safe/unsafe circuit report parity, and rejection of forged authority or invalid inputs",
+        "Focused MCP boundary tests, workflow validation, existing fast tests, and Ruff pass or any unavailable gate is explicitly recorded without a success claim",
+        "No gated EDA tools, SPICE integration, remote hosting, or later V2 scope is implemented in this unit"
+      ],
+      "verification": {
+        "required": [
+          "mcp_client_tests",
+          "deterministic_report_parity",
+          "workflow_tests",
+          "fast_tests",
+          "ruff"
+        ],
+        "record": ".ai/verification/MCP-T01.yaml"
+      },
+      "implementation": {
+        "started_at_commit": "51bc35df85a655bf72a10b12b2a2225081f47828",
+        "started_at": "2026-09-11",
+        "approval_evidence": ".ai/approvals/MCP-SEMANTIC-1.yaml",
+        "lifecycle": [
+          "Human approval recorded for bounded MCP-SEMANTIC-1 scope",
+          "MCP-T01 selected READY with no dependencies or blockers",
+          "MCP-T01 transitioned to IN_PROGRESS after parking M10-T05"
+        ]
+      },
+      "review": {
+        "required": false,
+        "status": "PENDING",
+        "independent": false
+      },
+      "blockers": []
     }
   ]
 }

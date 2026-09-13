@@ -30,7 +30,7 @@ SRC = Path(ohmni.__file__).parent
 FORBIDDEN_IN_DOMAIN = {
     "anthropic", "openai", "httpx", "requests", "urllib", "urllib3", "socket",
     "subprocess", "fitz", "pymupdf", "pdfplumber", "pypdfium2", "sqlite3",
-    "fastapi", "flask", "boto3", "networkx",
+    "fastapi", "flask", "boto3", "networkx", "mcp", "mcp_types",
 }
 
 #: Additional modules a deterministic rule may never reach for. File and clock
@@ -158,6 +158,33 @@ class TestPackageImports:
     def test_every_module_imports_cleanly(self):
         for name in _iter_modules(SRC, "ohmni"):
             importlib.import_module(name)
+
+
+class TestMcpBoundary:
+    def test_core_cannot_depend_on_mcp_transport(self):
+        for directory in ("domain", "verifier", "catalog", "datasheet", "physical",
+                          "routing", "manufacturing", "bom", "eda"):
+            for path in _python_files(SRC / directory):
+                assert not (_imported_top_level_modules(path) & {"mcp", "mcp_types"}), path
+                tree = ast.parse(path.read_text(encoding="utf-8"))
+                for node in ast.walk(tree):
+                    if isinstance(node, ast.Import):
+                        names = [alias.name for alias in node.names]
+                    elif isinstance(node, ast.ImportFrom):
+                        names = [node.module or "", *(alias.name for alias in node.names)]
+                    else:
+                        continue
+                    assert all("mcp_server" not in name.split(".") for name in names), path
+
+    def test_semantic_adapter_has_no_generation_or_eda_execution_path(self):
+        for path in _python_files(SRC / "mcp_server"):
+            assert not (_imported_top_level_modules(path) & {
+                "anthropic", "openai", "subprocess", "requests", "httpx", "socket",
+            }), path
+            for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"))):
+                if isinstance(node, ast.ImportFrom):
+                    assert not ({"eda", "generation", "routing", "manufacturing", "application"}
+                                & set((node.module or "").split("."))), path
 
 
 class TestDatasheetBoundaries:

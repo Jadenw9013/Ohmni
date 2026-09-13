@@ -58,4 +58,8 @@ To verify your system has all the required EDA tools installed, you can run:
 `python -m ohmni doctor`
 
 ## 🧠 Future Roadmap (V2)
+The local [semantic MCP server](docs/MCP_SERVER.md) exposes capabilities, catalog
+discovery and deterministic circuit verification to MCP clients. Install with
+`pip install -e ".[mcp]"` and launch `python -m ohmni.mcp_server`.
+
 See `docs/product/V2_COMMERCIALIZATION_HANDOFF.md` for the roadmap on parametric 3D enclosure generation, automated firmware co-design, and real-time supply chain BOM optimization.

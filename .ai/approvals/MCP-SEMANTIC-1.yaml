@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "id": "MCP-SEMANTIC-1-APPROVAL",
+  "recorded_at": "2026-09-11",
+  "approved_by": "human",
+  "source": "Explicit user instruction in the current Codex session",
+  "instruction": "Plan approved.\n\nPlease proceed with the following exact execution steps:\n\n1. Reconcile the `M10-T05` checkpoint in the development ledger to park the unresolved routing work and record the MCP-first direction.\n2. Initialize the independently launchable MCP package in `src/ohmni/mcp_server/` using the official Python SDK (local stdio).\n3. Implement the first deliverable slice: expose `get_capabilities`, catalog discovery, and the `verify_circuit` semantic verification tool.\n4. Write and run the MCP-client tests for this initial boundary.\n\nDo not proceed to the gated EDA tools or SPICE integration until this first semantic verification slice is fully implemented, tested, and verified against the existing deterministic reports. Run your tests and provide a status update when complete.",
+  "scope": "MCP-SEMANTIC-1",
+  "task": "MCP-T01",
+  "authorized_work": [
+    "Park unresolved M10-T05 routing and benchmark work without claiming completion",
+    "Independently launchable local stdio MCP server using the official Python SDK",
+    "get_capabilities, catalog discovery, and verify_circuit semantic verification only",
+    "MCP-client boundary tests and parity with existing deterministic reports"
+  ],
+  "excluded_work": [
+    "Gated schematic, PCB, routing, ERC, DRC, and fabrication MCP tools",
+    "SPICE integration",
+    "Approval or execution of the rest of V2 commercialization",
+    "Remote hosting, authentication, and tenant isolation"
+  ],
+  "reconciliation": {
+    "observed_head": "51bc35df85a655bf72a10b12b2a2225081f47828",
+    "observed_worktree": "Clean before this task; historical checkpoint modified-file entries are preserved below, not asserted to remain uncommitted",
+    "parked_task": "M10-T05",
+    "parked_status": "BLOCKED",
+    "reason": "Human-priority deferral to the first MCP semantic verification slice; the known four-NO_PATH routing failure and benchmark/review acceptance remain unresolved",
+    "resume_action": "After the MCP semantic slice, explicitly select the remaining approved M10 work, restore its checkpoint, reproduce job9f2f15c4f068 four-NO_PATH failure, and finish unchanged benchmark and final-review acceptance before claiming M10 complete"
+  },
+  "preserved_m10_t05_checkpoint": {
+    "schema_version": 1,
+    "active_task": "M10-T05",
+    "last_known_commit": "cf9f04c8888ee5ab54df81e89740dd853f449f67",
+    "modified_files": [
+      "docs/product/HACKATHON_IMPROVEMENT_AUDIT.md",
+      "docs/product/HACKATHON_TRUST_AND_UX_AUDIT.md"
+    ],
+    "completed_substeps": [
+      "T04 integrated and committed;1049fast,26integration,17slow,120frontend pass; final86 touched-path tests pass",
+      "Native KiCad dialog failure contained and working normal-execution EDA verified",
+      "Independent frontend lifecycle/status findings fixed and reviewed"
+    ],
+    "remaining_work": [
+      "Freeze60in-envelope/20refusal benchmark cases, including failed browser sensor trio",
+      "Improve demonstrated routing failures without changing or dropping benchmark cases",
+      "Run benchmark determinism/full tiers/final independent review; record evidence"
+    ],
+    "last_command": "T04 source commit cf9f04c",
+    "last_failure": "Known bounded routing failure: job9f2f15c4f068 has4NO_PATH connections; diagnose during T05. No native crash remains active.",
+    "recommended_resume_action": "Continue approved T05. Keep user informed; normal-access KiCad only with guarded runner; preserve unrelated audit documents.",
+    "updated_at": "2026-09-09"
+  }
+}

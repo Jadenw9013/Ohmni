@@ -120,17 +120,24 @@ def test_repository_product_scope_matches_human_approval():
     milestones=json.loads((root/".ai"/"milestones.yaml").read_text())
     assert state["latest_product_milestone"]["id"]=="M9"
     assert state["latest_product_milestone"]["status"]=="COMPLETE"
-    # Earlier scopes are closed; M10 is the one human-approved active scope.
+    # The human parked M10-T05 and selected the bounded semantic MCP scope.
     for scope in tasks["scopes"]:
         assert scope["approved_by"]=="human" and scope["approval_evidence"]
-        expected="IN_PROGRESS" if scope["id"]=="M10" else "COMPLETE"
-        assert scope["status"]==expected, scope["id"]
-    assert state["approved_product_scope"]=="M10"
+        if scope["id"] == "MCP-SEMANTIC-1":
+            assert scope["status"] in {"IN_PROGRESS", "VERIFIED", "COMPLETE"}
+        else:
+            expected="IN_PROGRESS" if scope["id"]=="M10" else "COMPLETE"
+            assert scope["status"]==expected, scope["id"]
+    assert state["approved_product_scope"]=="MCP-SEMANTIC-1"
+    parked=next(task for task in tasks["tasks"] if task["id"]=="M10-T05")
+    assert parked["status"]=="BLOCKED" and parked["blockers"]
+    approval=json.loads((root/".ai/approvals/MCP-SEMANTIC-1.yaml").read_text())
+    assert "NO_PATH" in json.dumps(approval["preserved_m10_t05_checkpoint"])
     # A session may be between completed units; any active task must belong to
     # the approved scope rather than pinning this approval test to one task.
     if state["active_task"] is not None:
         current=next(task for task in tasks["tasks"] if task["id"]==state["active_task"])
-        assert current["scope"]=="M10" and current["status"]=="IN_PROGRESS"
+        assert current["scope"]=="MCP-SEMANTIC-1" and current["status"]=="IN_PROGRESS"
     active=milestones["active_product_milestone"]
     assert active["id"]=="M10" and active["status"]=="IN_PROGRESS"
     assert active["approved_by"]=="human" and active["approval_evidence"]
