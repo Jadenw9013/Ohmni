@@ -1,4 +1,4 @@
-﻿# Ohmni: AI-Driven Electronics Engineering Mentor
+# Ohmni: AI-Driven Electronics Engineering Mentor
 
 **Build circuits. Understand why.**
 
@@ -57,9 +57,34 @@ Open **[http://127.0.0.1:8765](http://127.0.0.1:8765)** in your browser to start
 To verify your system has all the required EDA tools installed, you can run:
 `python -m ohmni doctor`
 
-## 🧠 Future Roadmap (V2)
-The local [semantic MCP server](docs/MCP_SERVER.md) exposes capabilities, catalog
-discovery and deterministic circuit verification to MCP clients. Install with
-`pip install -e ".[mcp]"` and launch `python -m ohmni.mcp_server`.
+## 🤖 Using with AI Agents (MCP Server)
+Ohmni includes a native Model Context Protocol (MCP) server. This allows AI agents (like Claude Desktop or Claude Code) to directly connect to Ohmni's safe, deterministic physics engine. This forces the AI to check its work against real physics, preventing hallucinations!
 
+For detailed architecture, see [docs/MCP_SERVER.md](docs/MCP_SERVER.md).
+
+**To connect Claude Code (CLI):**
+From within your cloned Ohmni directory, simply run:
+```bash
+# Windows
+claude mcp add ohmni -- ".venv\Scripts\python.exe" -m ohmni.mcp_server
+
+# macOS / Linux
+claude mcp add ohmni -- ".venv/bin/python" -m ohmni.mcp_server
+```
+
+**To connect Claude Desktop:**
+Add the following to your Claude Desktop configuration file (`claude_desktop_config.json`):
+```json
+{
+  "mcpServers": {
+    "ohmni": {
+      "command": "/absolute/path/to/Ohmni/.venv/bin/python",
+      "args": ["-m", "ohmni.mcp_server"]
+    }
+  }
+}
+```
+*(Note: Ensure you provide the absolute path to the `.venv` python executable inside your Ohmni folder).*
+
+## 🧠 Future Roadmap (V2)
 See `docs/product/V2_COMMERCIALIZATION_HANDOFF.md` for the roadmap on parametric 3D enclosure generation, automated firmware co-design, and real-time supply chain BOM optimization.
