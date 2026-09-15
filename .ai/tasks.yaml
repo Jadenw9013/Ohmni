@@ -116,6 +116,20 @@
         "Gated MCP EDA tools, SPICE, cloud hosting or the rest of V2",
         "Resuming or marking the parked M10-T05 benchmark complete"
       ]
+    },
+    {
+      "id": "VIS-REF-001",
+      "type": "product_enhancement",
+      "title": "Reference-grade visualization and distinct dense educational explorer",
+      "status": "APPROVED",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/VIS-REF-001.yaml",
+      "review_policy": "One focused independent final review; human visual acceptance remains explicit",
+      "non_goals": [
+        "Electrical design changes",
+        "Unrelated milestones, cloud, purchasing, model integration",
+        "Publishing private reference image"
+      ]
     }
   ],
   "tasks": [
@@ -942,6 +956,51 @@
         "completed_at_commit": "03c5679bd0bd72a05ba770e382f1098b2f07e785",
         "completed_at": "2026-09-14",
         "source_commit": "b3b6bb0"
+      }
+    },
+    {
+      "id": "VIS-T01",
+      "scope": "VIS-REF-001",
+      "milestone": null,
+      "title": "Implement reference-grade rendering W0-W7",
+      "status": "IN_PROGRESS",
+      "priority": 100,
+      "dependencies": [],
+      "goal": "Improve actual board rendering and integrate separately labeled dense educational sample with all158 inventory dispositions.",
+      "acceptance_criteria": [
+        "Five-object browser proof before completing library",
+        "All158 entries mapped; complete compound asset families",
+        "Actual component/pad/copper identities and source hashes unchanged",
+        "Dense sample isolated from verification and manufacturing",
+        "Integrated list/selection/layers/cameras/explode/fallback/reduced motion",
+        "Browser comparison and macros, measured performance, required tests and focused independent review"
+      ],
+      "verification": {
+        "required": [
+          "fast_tests",
+          "frontend_tests",
+          "browser_checks",
+          "source_hash_invariance",
+          "ruff"
+        ],
+        "record": ".ai/verification/VIS-T01.yaml"
+      },
+      "review": {
+        "required": true,
+        "status": "PENDING",
+        "independent": true,
+        "record": ".ai/reviews.yaml#VIS-T01-FINAL"
+      },
+      "blockers": [],
+      "implementation": {
+        "started_at_commit": "3cefca72be2a69e75df440e7bc7c715657dd9be9",
+        "started_at": "2026-09-14",
+        "approval_evidence": ".ai/approvals/VIS-REF-001.yaml",
+        "lifecycle": [
+          "Human W0-W7 approval recorded",
+          "READY selected by ai_state.py next",
+          "IN_PROGRESS; five-object proof precedes full library"
+        ]
       }
     }
   ]

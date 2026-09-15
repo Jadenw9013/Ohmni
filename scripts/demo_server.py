@@ -86,10 +86,13 @@ STATIC_ASSETS=("index.html","app.js","view-model.js","board-model.js","board-vie
                "board-renderer-geometry.js","board-renderer-webgl.js","board-controls.js",
                "learning-model.js","circuit-lessons.js","circuit-lab.js",
                "project-workbench.js","project-contract.js","scope-view.js",
-               "reference-board.json","styles.css")
+               "reference-board.json","styles.css","visual-explorer.css",
+               "visual-assets.js","visual-renderer.js","visual-explorer.js","visual-layers.js","visual-board-scene.js","visual-inventory.js","visual-version.js",
+               "vendor/three.module.js","vendor/three.core.min.js")
 STATIC_CONTENT_TYPES={
     "index.html":"text/html; charset=utf-8",
     "styles.css":"text/css; charset=utf-8",
+    "visual-explorer.css":"text/css; charset=utf-8",
     "reference-board.json":"application/json; charset=utf-8",
     **{name:"text/javascript; charset=utf-8" for name in STATIC_ASSETS if name.endswith(".js")},
 }
@@ -167,7 +170,8 @@ def _load_web_snapshot(web_root):
             path=root/name
             if path.is_symlink():raise OSError
             resolved=path.resolve()
-            if resolved.parent!=root or not resolved.is_file():raise OSError
+            if not resolved.is_relative_to(root) or not resolved.is_file():raise OSError
+            if any(parent.is_symlink() for parent in path.parents if parent != root and parent.is_relative_to(root)):raise OSError
             data=resolved.read_bytes()
             assets["/"+name]=data
             encoded=name.encode("ascii")
@@ -958,6 +962,14 @@ class DemoHandler(SimpleHTTPRequestHandler):
             self.server._job_diagnostic("brief_unavailable")
             return self._json({"error":BRIEF_UNAVAILABLE_MESSAGE},HTTPStatus.SERVICE_UNAVAILABLE)
         return self._json({"brief":brief,**self.server._identity()})
+
+    def do_HEAD(self):
+        # SimpleHTTPRequestHandler's default would bypass the fixed snapshot
+        # and inspect live files. This local API does not support HEAD.
+        self.send_response(HTTPStatus.METHOD_NOT_ALLOWED)
+        self.send_header("allow","GET, POST, OPTIONS")
+        self.send_header("content-length","0")
+        self.end_headers()
 
     def do_GET(self):
         try:request_path=unquote(urlsplit(self.path).path,errors="strict")

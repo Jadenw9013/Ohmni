@@ -9,9 +9,13 @@ export function mountBoardControls(container, view, { stage = null, fullscreen =
         <button type="button" data-lab-option="showLabels" aria-pressed="false"><span aria-hidden="true">Aa</span> Labels</button>
         <button type="button" data-lab-option="animateFlow" aria-pressed="false" ${reduced ? 'disabled title="Your device requests reduced motion"' : ""}><span aria-hidden="true">⌁</span> Pulse traces</button>
         <button type="button" data-lab-camera="top"><span aria-hidden="true">⊞</span> Top view</button>
+        <button type="button" data-lab-camera="back">Underside</button>
+        <button type="button" data-lab-option="showMask" aria-pressed="true">Solder mask</button>
+        <button type="button" data-lab-option="showCopper" aria-pressed="true">Copper</button>
+        <button type="button" data-lab-option="showComponents" aria-pressed="true">Components</button>
         <button type="button" data-lab-camera="reset"><span aria-hidden="true">⟲</span> Reset view</button>
         ${fullscreen && stage?.requestFullscreen ? '<button type="button" data-lab-fullscreen><span aria-hidden="true">⛶</span> Focus mode</button>' : ""}
-      </div><span class="visual-mode-note" role="status">${view.rendererKind === "webgl" ? "Interactive 3D · drag to explore" : "Compatibility view · learning tools available"}</span>
+      </div><span class="visual-mode-note" role="status">${["webgl", "three"].includes(view.rendererKind) ? "Interactive 3D · drag to explore" : "Compatibility view · learning tools available"}</span>
       <details class="board-keyboard-help"><summary>Keyboard controls</summary><p>Focus the board, then use arrow keys to rotate and + / − to zoom. [ and ] select parts; Enter inspects a part; Home fits the board. Escape clears your selection, then closes the lab.</p></details>`;
     const sync = () => {
         const assembly = container.querySelector("[data-lab-assembly]");
@@ -48,7 +52,7 @@ export function mountBoardControls(container, view, { stage = null, fullscreen =
             ? "Pulses paused · select a net with the board assembled"
             : view.options.animateFlow ? "Connection highlight · not electrical simulation"
             : view.options.xray ? "Both copper layers revealed"
-            : view.rendererKind === "webgl" ? "Interactive 3D · drag to explore" : "Compatibility view · learning tools available";
+            : ["webgl", "three"].includes(view.rendererKind) ? "Interactive 3D · drag to explore" : "Compatibility view · learning tools available";
     };
     const click = async (event) => {
         const option = event.target.closest?.("[data-lab-option]");

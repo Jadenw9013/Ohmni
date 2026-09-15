@@ -7,6 +7,7 @@
   <meta name="theme-color" content="#2159e8">
   <title>Ohmni — Your electronics workbench</title>
   <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/visual-explorer.css">
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to workbench</a>
@@ -56,6 +57,7 @@
                 <div class="reference-topline"><span><span class="reference-dot" aria-hidden="true"></span><span id="reference-title">Explore this circuit</span></span><span class="reference-provenance">Saved design</span></div>
                 <p id="reference-stats" class="reference-stats"></p>
                 <button type="button" id="open-reference-lab" class="open-lab-button" disabled><span>Open the 3D circuit lab<small>Explore now. No engineering run needed.</small></span><span aria-hidden="true">↗</span></button>
+                <button type="button" id="open-sample-board" class="open-sample-button"><span>Explore sample board<small>A dense educational component atlas · illustrative only</small></span><span aria-hidden="true">↗</span></button>
                 <canvas id="reference-canvas" tabindex="0" aria-label="Interactive reference circuit board. Drag to rotate. Use the system buttons below to explore."></canvas>
                 <div class="reference-caption" id="reference-caption">A previously generated board. Drag to rotate, or select a system below.</div>
                 <div class="reference-controls" id="reference-focus" role="group" aria-label="Explore a board system"></div>
@@ -155,5 +157,7 @@
     </div>
   </dialog>
   <script type="module" src="/app.js"></script>
+  <section id="visual-explorer" hidden role="dialog" aria-modal="true" aria-label="Educational component explorer"></section>
+  <script type="module">import { initializeVisualExplorer } from '/visual-explorer.js'; initializeVisualExplorer();</script>
 </body>
 </html>

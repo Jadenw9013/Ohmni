@@ -1,0 +1,47 @@
+.visual-open { overflow: hidden; }
+#visual-explorer { position: fixed; inset: 0; z-index: 120; overflow: auto; background: #eaf0ec; color: #173c33; padding: 22px 28px; }
+#visual-explorer[hidden] { display: none; }
+.visual-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.visual-heading h2 { margin: 4px 0 14px; font-size: clamp(24px,3vw,40px); letter-spacing: -1.5px; }
+.visual-heading .eyebrow { font-size: 11px; letter-spacing: 2px; margin: 0; }
+.visual-status { position: sticky; top: 0; z-index: 5; background: #fff8df; border: 1px solid #beaa70; padding: 10px 14px; border-radius: 8px; margin: 0 0 15px; color: #564a28; font-size: 13px; max-width: none; }
+.visual-layout { display: grid; grid-template-columns: minmax(0,1fr) 300px; gap: 18px; }
+.visual-stage { position: relative; background: #3f464b; border-radius: 12px; overflow: hidden; }
+.visual-stage canvas { width: 100%; height: calc(100vh - 250px); min-height: 420px; display: block; }
+.visual-toolbar { position: relative; display: flex; gap: 6px; flex-wrap: wrap; padding: 12px; background: #30393c; }
+#visual-explorer button { border: 1px solid #9fb4aa; background: #f5f9f5; color: #15372d; border-radius: 6px; padding: 9px 12px; cursor: pointer; }
+#visual-explorer button:hover, #visual-explorer button:focus-visible { background: #cce8d8; outline-color: #24845a; }
+.visual-help { color: #cbd8d6; font-size: 12px; margin: 0; padding: 0 12px 12px; }
+.visual-inspector { background: #fff; padding: 18px; border-radius: 12px; border: 1px solid #ccdad1; }
+.visual-inspector label { font-size: 12px; font-weight: 600; }
+.visual-inspector input { display: block; width: 100%; box-sizing: border-box; margin: 8px 0 12px; padding: 10px; border: 1px solid #b8c9bd; border-radius: 6px; }
+.visual-list { display: grid; gap: 6px; max-height: 28vh; overflow-y: auto; }
+.visual-list button { font-size: 12px; text-align: left; }
+.visual-patches { margin-top: 12px; font-size: 12px; }
+.visual-patches > div { display: grid; gap: 6px; max-height: 160px; overflow-y: auto; margin-top: 8px; }
+.visual-patches button { font-size: 12px; text-align: left; }
+.visual-detail { border-top: 1px solid #d1ded5; margin-top: 18px; padding-top: 12px; font-size: 13px; line-height: 1.5; }
+.visual-detail h3 { font-size: 22px; line-height: 1.2; margin: 0 0 14px; }
+.visual-detail small { display: block; margin: 12px 0; }
+.visual-heading-actions { display: flex; gap: 8px; }
+.visual-layout[hidden], .visual-library[hidden] { display: none; }
+.visual-count { font-size: 11px; color: #627e71; }
+.visual-family-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 14px; }
+.visual-family-tile { display: grid; gap: 12px; text-align: left; }
+.visual-family-tile canvas { width: 100%; height: auto; border-radius: 5px; }
+.open-sample-button { display: flex; width: 100%; justify-content: space-between; text-align: left; padding: 12px 18px; border: 1px solid #86b4a5; border-radius: 8px; background: #d7ebe3; color: #133d31; cursor: pointer; margin-top: 10px; }
+.open-sample-button small { display: block; font-size: 12px; font-weight: 400; margin-top: 4px; }
+@media(min-width: 1000px) {
+  .circuit-lab .lab-header { height: 70px; padding-top: 12px; padding-bottom: 12px; min-height: 70px; box-sizing: border-box; }
+  .circuit-lab .lab-body { height: calc(100% - 70px); }
+  .circuit-lab .board-visual-controls { padding: 8px 16px; }
+  .circuit-lab .visual-control-group { gap: 5px; }
+  .circuit-lab .visual-control-group button { min-height: 32px; padding: 6px 8px; font-size: 12px; }
+  .circuit-lab .board-keyboard-help { display: inline-block; margin: 4px 10px 0; }
+  .circuit-lab .visual-mode-note { display: inline; font-size: 11px; }
+  .circuit-lab .lab-stage-bottom { padding: 6px 16px 12px; gap: 12px; }
+  .circuit-lab .lab-stage-bottom label, .circuit-lab .lab-stage-bottom p { font-size: 11px; line-height: 1.4; }
+  .circuit-lab .lab-stage-bottom input { margin-top: 3px; }
+  .circuit-lab .lab-stage-bottom p br { display: none; }
+}
+@media(max-width:760px) { #visual-explorer { padding: 12px; } .visual-layout { grid-template-columns: 1fr; } .visual-stage canvas { height: 50vh; min-height: 280px; } .visual-inspector { padding: 12px; } .visual-list { max-height: 160px; } .visual-heading h2 { letter-spacing: -.5px; } .visual-status { font-size: 11px; } }

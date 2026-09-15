@@ -60,6 +60,21 @@ test("assembly reaches the exact assembled scene, stops work, and preserves the 
     assert.equal(JSON.stringify(view.scene), assembled);
 });
 
+test("focusing a non-component detail changes only the camera and respects reduced motion", (t) => {
+    const { view, tick } = fixture(t);
+    const before = JSON.stringify(view.scene), selected = view.selected;
+    const geometry = view.geometry.parts.map(part => part.ref);
+    view.reducedMotion = true;
+    view.focusPoints([{x:12,y:8,z:1},{x:16,y:8,z:1},{x:16,y:11,z:1},{x:12,y:11,z:1}]);
+    assert.equal(view.targetCamera, null);
+    assert.ok(view.camera.zoom > 1);
+    assert.notEqual(view.camera.panX, 0);
+    tick(2);
+    assert.equal(view.selected, selected);
+    assert.equal(JSON.stringify(view.scene), before);
+    assert.deepEqual(view.geometry.parts.map(part => part.ref), geometry);
+});
+
 test("manual navigation and scrubbing interrupt assembly without snapping the layout", (t) => {
     const { view, tick, key, frames } = fixture(t);
     view.animateAssembly(); tick(20);

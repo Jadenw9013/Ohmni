@@ -120,16 +120,19 @@ def test_repository_product_scope_matches_human_approval():
     milestones=json.loads((root/".ai"/"milestones.yaml").read_text())
     assert state["latest_product_milestone"]["id"]=="M9"
     assert state["latest_product_milestone"]["status"]=="COMPLETE"
-    # The semantic MCP slice is complete. The human selected a generated
-    # sensor/controller explorer; this does not resume the parked M10 benchmark.
+    # Visual W0-W7 approval preserves the real board and the parked M10 benchmark.
     for scope in tasks["scopes"]:
         assert scope["approved_by"]=="human" and scope["approval_evidence"]
-        if scope["id"] == "PCB-EXPLORER-1":
-            assert scope["status"] in {"IN_PROGRESS", "VERIFIED", "COMPLETE"}
+        if scope["id"] == "VIS-REF-001":
+            assert scope["status"] in {"APPROVED", "IN_PROGRESS", "REVIEW", "VERIFIED", "COMPLETE"}
         else:
             expected="IN_PROGRESS" if scope["id"]=="M10" else "COMPLETE"
             assert scope["status"]==expected, scope["id"]
-    assert state["approved_product_scope"]=="PCB-EXPLORER-1"
+    assert state["approved_product_scope"]=="VIS-REF-001"
+    visual=json.loads((root/".ai/approvals/VIS-REF-001.yaml").read_text())
+    assert visual["approved_by"]=="human" and visual["approved_implementation"]=="W0-W7"
+    assert visual["planning_only"]=="W8" and visual["plan_sha256"]
+    assert "HUMAN APPROVAL: VIS-REF-001" in visual["instruction"]
     explorer=json.loads((root/".ai/approvals/PCB-EXPLORER-1.yaml").read_text())
     assert explorer["approved_by"]=="human"
     assert explorer["functional_choice"]=="ESP32 sensor-and-controller board"
@@ -141,7 +144,7 @@ def test_repository_product_scope_matches_human_approval():
     # the approved scope rather than pinning this approval test to one task.
     if state["active_task"] is not None:
         current=next(task for task in tasks["tasks"] if task["id"]==state["active_task"])
-        assert current["scope"]=="PCB-EXPLORER-1" and current["status"]=="IN_PROGRESS"
+        assert current["scope"]=="VIS-REF-001" and current["status"]=="IN_PROGRESS"
     active=milestones["active_product_milestone"]
     assert active["id"]=="M10" and active["status"]=="IN_PROGRESS"
     assert active["approved_by"]=="human" and active["approval_evidence"]

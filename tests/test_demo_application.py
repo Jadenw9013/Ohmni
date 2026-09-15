@@ -111,6 +111,7 @@ def test_main_separates_initialization_and_runtime_failures(monkeypatch,capsys):
 def test_server_snapshot_is_immutable_and_generation_specific(tmp_path):
     web_root=tmp_path/"web";web_root.mkdir()
     for name in STATIC_ASSETS:
+        (web_root/name).parent.mkdir(parents=True,exist_ok=True)
         (web_root/name).write_bytes((demo_server_module.WEB_ROOT/name).read_bytes())
     first=DemoHTTPServer(("127.0.0.1",0),DemoHandler,web_root=web_root,store=JobStore(tmp_path/"first"))
     original=first.static_assets["/app.js"];first_version=first.ui_version

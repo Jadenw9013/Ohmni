@@ -3,7 +3,8 @@
 // They never supply electrical, simulation, clearance or fabrication facts.
 import { buildScene, highlightMatcher, sceneBounds } from "./board-model.js";
 import { buildRenderGeometry, VERTEX_STRIDE } from "./board-renderer-geometry.js";
-import { WebGLBoardRenderer } from "./board-renderer-webgl.js";
+import { VisualRenderer } from "./visual-renderer.js";
+import { actualSceneManifest } from "./visual-board-scene.js";
 
 const DEG = Math.PI / 180;
 const MIN_PITCH = -88 * DEG;
@@ -83,11 +84,11 @@ function path(ctx, points) {
 }
 
 export class BoardView {
-    constructor(canvas, { onSelect = () => {}, onHover = () => {} } = {}) {
+    constructor(canvas, { onSelect = () => {}, onHover = () => {}, rendererFactory = node => new VisualRenderer(node) } = {}) {
         this.canvas = canvas;
         this.camera = createCamera();
         this.options = { explode: 0, showCopper: true, showComponents: true, showBack: false,
-            autoRotate: false, animateFlow: false, xray: false, showLabels: true };
+            autoRotate: false, animateFlow: false, xray: false, showLabels: true, showMask: true };
         this.highlight = { refs: [], nets: [], systems: [] };
         this.matcher = highlightMatcher(this.highlight);
         this.selected = null;
@@ -113,10 +114,12 @@ export class BoardView {
         this.motionQuery = globalThis.matchMedia?.("(prefers-reduced-motion: reduce)");
         this.reducedMotion = Boolean(this.motionQuery?.matches);
         try {
-            this.renderer = new WebGLBoardRenderer(canvas);
-            this.rendererKind = "webgl";
+            this.rendererFactory = rendererFactory;
+            this.renderer = rendererFactory(canvas);
+            this.rendererKind = "three";
         } catch {
             try { this.context = canvas.getContext("2d"); } catch { this.context = null; }
+            if (!this.context) this.createFallbackCanvas();
             this.rendererKind = "canvas";
         }
         this.available = Boolean(this.renderer || this.context);
@@ -139,6 +142,16 @@ export class BoardView {
     listen(target, name, callback, options) {
         target?.addEventListener?.(name, callback, options);
         this.cleanups.push(() => target?.removeEventListener?.(name, callback, options));
+    }
+
+    createFallbackCanvas() {
+        if (!this.canvas.ownerDocument?.createElement || !this.canvas.parentElement) return;
+        this.fallbackCanvas = this.canvas.ownerDocument.createElement('canvas');
+        this.fallbackCanvas.setAttribute('aria-hidden', 'true');
+        Object.assign(this.fallbackCanvas.style, { position: 'absolute', pointerEvents: 'none', zIndex: '1' });
+        this.canvas.parentElement.appendChild(this.fallbackCanvas);
+        this.context = this.fallbackCanvas.getContext('2d');
+        this.canvas.style.opacity = '0';
     }
 
     interacted() {
@@ -273,12 +286,20 @@ export class BoardView {
         });
         this.listen(canvas, "webglcontextlost", (event) => {
             event.preventDefault(); this.contextLost = true; this.stopAnimation();
+            this.lostRenderer = this.renderer; this.renderer = null; this.rendererKind = 'canvas';
+            this.createFallbackCanvas(); this.available = Boolean(this.context);
+            this.contextLost = false; canvas.dataset.renderer = 'canvas';
+            this.rebuild(); this.render(); this.notifyViewChange();
         });
         this.listen(canvas, "webglcontextrestored", () => {
             if (this.disposed) return;
             try {
                 this.renderer?.dispose();
-                this.renderer = new WebGLBoardRenderer(canvas);
+                this.lostRenderer?.dispose(); this.lostRenderer = null;
+                this.renderer = this.rendererFactory(canvas);
+                this.rendererKind = 'three'; canvas.dataset.renderer = 'three';
+                this.fallbackCanvas?.remove(); this.fallbackCanvas = null; this.context = null;
+                canvas.style.opacity = '1'; this.available = true;
                 this.contextLost = false;
                 this.rebuild(); this.render();
             } catch { this.available = false; }
@@ -293,7 +314,11 @@ export class BoardView {
         if (typeof globalThis.ResizeObserver === "function") {
             this.resizeObserver = new ResizeObserver(() => {
                 const rect = canvas.getBoundingClientRect();
-                if (rect.width > 0 && rect.height > 0) this.render();
+                if (rect.width <= 0 || rect.height <= 0) return;
+                const previous = this.lastViewportSize;
+                this.lastViewportSize = [rect.width, rect.height];
+                if (previous && (Math.abs(previous[0] - rect.width) > 1 || Math.abs(previous[1] - rect.height) > 1)) this.frame();
+                else this.render();
             });
             this.resizeObserver.observe(canvas);
         }
@@ -316,7 +341,11 @@ export class BoardView {
         if (!this.scene) return;
         this.geometry = buildRenderGeometry(this.scene, { matcher: this.matcher,
             selected: this.selected, xray: this.options.xray });
-        if (!this.contextLost) this.renderer?.setGeometry(this.geometry);
+        if (!this.contextLost) {
+            this.renderer?.setGeometry?.(this.geometry);
+            if (this.renderer?.setScene) this.renderer.setScene(this.board.visual_manifest ?? actualSceneManifest(this.board));
+            if (this.renderer?.boundingParts) this.geometry.parts = this.renderer.boundingParts(this.scene, this.options);
+        }
     }
 
     setOptions(options) {
@@ -425,7 +454,7 @@ export class BoardView {
             .concat((this.geometry?.parts || []).flatMap((part) => [...part.top, ...part.bottom]));
         const projected = screenBounds(points.map((point) => project(point, this.camera, viewport)));
         this.camera.zoom = clamp(Math.min(viewport.width * 0.84 / projected.width,
-            viewport.height * 0.82 / projected.height), 0.35, 6);
+            viewport.height * (this.options.frameHeightFraction ?? 0.82) / projected.height), 0.35, 6);
         this.camera.panX = (viewport.cx - projected.cx) * this.camera.zoom;
         this.camera.panY = (viewport.cy - projected.cy) * this.camera.zoom;
         this.render();
@@ -437,14 +466,18 @@ export class BoardView {
         const refs = new Set(Array.isArray(refOrRefs) ? refOrRefs : [refOrRefs]);
         const parts = (this.geometry?.parts || []).filter((part) => refs.has(part.ref));
         if (!parts.length) return;
+        this.focusPoints(parts.flatMap((part) => [...part.top, ...part.bottom]), Math.sign(parts[0].centre.z) || 1);
+    }
+
+    /** Focus display geometry without assigning it a component identity. */
+    focusPoints(points, side = 1) {
+        if (this.disposed || !this.available || !points.length) return;
         this.interacted();
-        const side = Math.sign(parts[0].centre.z) || 1;
         const pitch = this.options.xray ? this.camera.pitch
             : side * Math.max(Math.abs(this.camera.pitch), 35 * DEG);
         const focusCamera = { ...this.camera, pitch };
         const viewport = this.viewport();
-        const bounds = screenBounds(parts.flatMap((part) => [...part.top, ...part.bottom])
-            .map((point) => project(point, focusCamera, viewport)));
+        const bounds = screenBounds(points.map((point) => project(point, focusCamera, viewport)));
         const zoom = clamp(this.camera.zoom * Math.min(viewport.width * 0.6 / bounds.width,
             viewport.height * 0.56 / bounds.height), 0.35, 6);
         const ratio = zoom / this.camera.zoom;
@@ -469,15 +502,24 @@ export class BoardView {
             Object.assign(this.overlay.style, { left: `${this.canvas.offsetLeft}px`, top: `${this.canvas.offsetTop}px`,
                 width: `${width}px`, height: `${height}px`, display: this.canvas.hidden ? "none" : "block" });
         }
+        if (this.fallbackCanvas) {
+            this.fallbackCanvas.width = pixelWidth; this.fallbackCanvas.height = pixelHeight;
+            Object.assign(this.fallbackCanvas.style, { left: `${this.canvas.offsetLeft}px`, top: `${this.canvas.offsetTop}px`, width: `${width}px`, height: `${height}px` });
+        }
         return { width, height, cx: width / 2, cy: height / 2, ratio };
     }
 
     pick(event) {
+        if (this.renderer?.pick) {
+            const exact = this.renderer.pick(event);
+            if (exact) return exact;
+        }
         const rect = this.canvas.getBoundingClientRect();
         const x = event.clientX - rect.left, y = event.clientY - rect.top;
-        for (const region of this.hitRegions) if (polygonContains(region.polygon, x, y)) return region;
+        for (const region of this.hitRegions) if (this.renderer?.owners?.get(region.ref)?.visible !== false && polygonContains(region.polygon, x, y)) return region;
         // Small passives get modest screen-space targets; exact silhouettes win.
         for (const region of this.hitRegions) {
+            if (this.renderer?.owners?.get(region.ref)?.visible === false) continue;
             if (Math.hypot(x - region.centre.x, y - region.centre.y) < 7) return region;
         }
         return null;
@@ -498,9 +540,10 @@ export class BoardView {
 
     render() {
         if (!this.scene || !this.available || this.disposed || this.contextLost) return;
+        this.canvas.dataset.motion = this.reducedMotion ? 'reduced' : 'standard';
         const viewport = this.viewport();
         this.updateHitRegions(viewport);
-        if (this.renderer) this.renderer.render(this.camera, viewport, this.options);
+        if (this.renderer) this.renderer.render(this.camera, viewport, { ...this.options, highlight: this.highlight });
         else this.renderFallback(viewport);
         this.renderOverlay(viewport);
         this.ensureAnimation();
@@ -527,7 +570,7 @@ export class BoardView {
                 ctx.strokeStyle = selected || hovered ? "#9af2ff" : "#ffe2a2";
                 ctx.lineWidth = selected ? 2 : 1.1;
                 ctx.shadowColor = selected || hovered ? "#30d5f4" : "#ffc36b";
-                ctx.shadowBlur = selected ? 17 : 7;
+                ctx.shadowBlur = this.rendererKind === 'three' ? 0 : selected ? 17 : 7;
                 ctx.globalAlpha = selected || hovered ? 1 : 0.7;
                 ctx.stroke(); ctx.restore();
             }
@@ -675,7 +718,7 @@ export class BoardView {
         this.assemblyAnimation = null; this.targetCamera = null;
         this.cleanups.forEach((cleanup) => cleanup()); this.cleanups = [];
         this.visibilityObserver?.disconnect(); this.resizeObserver?.disconnect();
-        this.renderer?.dispose(); this.overlay?.remove(); this.pointers.clear();
+        this.renderer?.dispose(); this.lostRenderer?.dispose(); this.overlay?.remove(); this.fallbackCanvas?.remove(); this.pointers.clear();
         this.hitRegions = []; this.geometry = null; this.scene = null; this.board = null;
     }
 }
