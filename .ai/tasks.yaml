@@ -137,7 +137,7 @@
       "id": "DEPLOY-1",
       "type": "release",
       "title": "Publish the verified Ohmni update",
-      "status": "IN_PROGRESS",
+      "status": "COMPLETE",
       "approved_by": "human",
       "approval_evidence": ".ai/approvals/DEPLOY-1.yaml",
       "non_goals": [
@@ -1078,7 +1078,7 @@
       "scope": "DEPLOY-1",
       "milestone": null,
       "title": "Push and deploy the verified homepage and board explorer",
-      "status": "IN_PROGRESS",
+      "status": "COMPLETE",
       "priority": 120,
       "dependencies": [],
       "goal": "Current verified code is on GitHub and the existing public hosts; live assets, API and viewer agree.",
@@ -1098,14 +1098,23 @@
       },
       "review": {
         "required": true,
-        "status": "PENDING",
+        "status": "PASSED",
         "independent": true,
         "record": ".ai/reviews.yaml#DEPLOY-T01-PACKAGING"
       },
       "blockers": [],
       "implementation": {
         "approval_evidence": ".ai/approvals/DEPLOY-1.yaml",
-        "started_at_commit": "38c1df4"
+        "started_at_commit": "38c1df4",
+        "completed_at_commit": "a619cbaf08f4eab1255f99d0d3028675a3ebe33b",
+        "completed_at": "2026-09-14",
+        "lifecycle": [
+          "Human push/deploy approval recorded and READY task selected",
+          "IN_PROGRESS: reviewed packaging and prepared clean release",
+          "IMPLEMENTED: pushed release and deployed existing Vercel/Fly hosts",
+          "VERIFIED: public browser/API/file checks, live29-part pipeline/download and GitHubCI passed",
+          "COMPLETE: independent packaging/live review passed; current deployment and limits recorded"
+        ]
       }
     }
   ]
