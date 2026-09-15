@@ -230,3 +230,5 @@ The task remains VERIFIED pending the owner's screenshot comparison; no agent
 has marked the visual result human-accepted.
 
 Implementation commit: `c80315fdae46386c9fbc54b2055ed23c4a15a30c`. Final ledger/evidence reconciliation is a separate documentation commit. Tracked implementation changes are committed; only the three preserved untracked input paths above remain.
+
+Responsive follow-up commit: 480b40c0359b72641790bac7b82f190156a48906. The final app-panel check at849px exposed a cramped two-column layout; the sample switches to one column up to1000px. Verified849/390/1500px, with no horizontal overflow, and independently reviewed. Additional capture: out/visual-reference/screenshots/52-normal-narrow-panel.png.

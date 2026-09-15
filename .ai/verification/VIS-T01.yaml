@@ -4,7 +4,7 @@
   "status": "PASSED",
   "task": "VIS-T01",
   "scope": "VIS-REF-001",
-  "commit": "c80315fdae46386c9fbc54b2055ed23c4a15a30c",
+  "commit": "480b40c0359b72641790bac7b82f190156a48906",
   "verified_at": "2026-09-14",
   "tool_versions": {
     "python": "3.13.3",
@@ -79,6 +79,16 @@
       "command": "python scripts/ai_state.py next",
       "result": "PASS",
       "detail": "No executable task"
+    },
+    {
+      "command": "node out/visual-reference/narrow-smoke.cjs",
+      "result": "PASS",
+      "viewports": [
+        849,
+        390,
+        1500
+      ],
+      "note": "One scoped-selector ambiguity in the initial check was corrected; final browser assertions passed."
     }
   ],
   "browser_checks": {
@@ -548,5 +558,30 @@
     "GPU timer-query duration not measured; measured RAF and CPU timings are machine-specific. Server serves raw bytes; gzip figures are local compression measurements.",
     "Original procedural asset license unspecified; Three MIT preserved. Private source reference images are neither served nor committed.",
     "W8 planning only; M10-T05 remains parked. No push/deploy/purchase/live model/firmware/electrical additions."
-  ]
+  ],
+  "implementation_commit": "c80315fdae46386c9fbc54b2055ed23c4a15a30c",
+  "responsive_followup": {
+    "commit": "480b40c0359b72641790bac7b82f190156a48906",
+    "change": "Educational one-column breakpoint760 to1000",
+    "review": "PASSED independently; only this correction and screenshot reviewed",
+    "browser_checks": [
+      {
+        "width": 849,
+        "columns": 1,
+        "overflow": false
+      },
+      {
+        "width": 390,
+        "columns": 1,
+        "overflow": false
+      },
+      {
+        "width": 1500,
+        "columns": 2,
+        "overflow": false
+      }
+    ],
+    "screenshot": "52-normal-narrow-panel.png",
+    "screenshot_sha256": "45a0e3c62181b30d9934a0f22167b0e7689ba088ed6d8d06fbbf373236a956d9"
+  }
 }
