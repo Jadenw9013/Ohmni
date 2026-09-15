@@ -34,7 +34,7 @@ class ProjectRefusalError(ValueError):
 
 FAMILY_COPY = {
     ArchetypeId.A1_USB_I2C_SENSOR: ("Sensor station", "Read temperature and environmental sensors over a shared I2C bus."),
-    ArchetypeId.A2_USB_GPIO_CONTROLLER: ("Buttons & lights", "Connect physical buttons and indicator LEDs to an ESP32."),
+    ArchetypeId.A2_USB_GPIO_CONTROLLER: ("Sensor & controls", "Connect buttons, indicator LEDs and an optional environmental sensor to an ESP32."),
     ArchetypeId.A3_USB_SPI_PERIPHERAL: ("Memory & data", "Connect SPI EEPROM memory, with an optional environmental sensor."),
 }
 
@@ -51,7 +51,7 @@ def project_options() -> dict:
         sensors=(),button_count=1),SynthesisBrief(archetype=ArchetypeId.A3_USB_SPI_PERIPHERAL,
         project_name="SPI memory board",description="USB-C powered ESP32 with SPI EEPROM memory.",
         sensors=(),spi_devices=(SpiPeripheralSlot(part_id="25LC256-I/SN"),))]
-    bounds=[((1,3),(0,1),(0,0),(0,0)),((0,0),(1,4),(1,2),(0,0)),((0,1),(0,1),(0,0),(1,2))]
+    bounds=[((1,3),(0,1),(0,0),(0,0)),((0,1),(1,4),(1,2),(0,0)),((0,1),(0,1),(0,0),(1,2))]
     families=[]
     for brief,limits in zip(defaults,bounds,strict=True):
         title,description=FAMILY_COPY[brief.archetype]
@@ -71,6 +71,8 @@ def project_options() -> dict:
         "spi_devices":[{"part_id":"25LC256-I/SN","label":catalog.require("25LC256-I/SN").display_name,
                         "description":catalog.require("25LC256-I/SN").description}],
         "automatic_sensor_address":None,
+        "board_dimensions":{"board_width_mm":{"min":40,"max":100,"default":100},
+                            "board_height_mm":{"min":40,"max":70,"default":70}},
         "fixed":{"input_power":"usb_c_5v","input_voltage_v":{"min":4.75,"max":5.25},
                  "logic_voltage_v":3.3,"mcu_part_id":"ESP32-WROOM-32E","max_board_layers":2,
                  "safety_domains":[]},
@@ -100,6 +102,8 @@ def _prepare_project(brief: SynthesisBrief):
         ("spi_count", str(len(brief.spi_devices))),
         ("include_programming_header", str(brief.include_programming_header)),
         ("max_board_layers", str(brief.max_board_layers)),
+        ("board_width_mm", str(brief.board_width_mm)),
+        ("board_height_mm", str(brief.board_height_mm)),
         ("hand_solderable_preferred", str(brief.hand_solderable_preferred)),
         ("budget_usd", str(brief.budget_usd) if brief.budget_usd is not None else "Not specified"),
         ("safety_domains", ", ".join(domain.value for domain in brief.safety_domains) or "None requested"),
@@ -107,7 +111,7 @@ def _prepare_project(brief: SynthesisBrief):
     assumptions = [
         "USB-C supplies power only; USB data and programming over USB-C are not provided.",
         "Firmware is not included. The board needs a program before its selected functions can operate.",
-        "Placement is generated on a 100 x 70 mm, two-layer board from circuit blocks, capacitor ownership, and geometric constraints.",
+        f"Placement is generated on a {brief.board_width_mm:g} x {brief.board_height_mm:g} mm, two-layer board from circuit blocks, capacitor ownership, and geometric constraints.",
         "Placement policies and antenna exclusion require hardware review; generated geometry does not establish RF performance.",
     ]
     for part in result.circuit.components:

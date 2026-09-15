@@ -4,7 +4,7 @@
 // a copy of a millimetre value the Python projection derived from a compiled
 // KiCad artifact. Nothing is inferred, and nothing is invented -- in
 // particular component height is not modelled, because Ohmni has no data for
-// it, so parts are flat bodies at their true footprint outline.
+// it. The renderer adds explicitly illustrative package bodies separately.
 //
 // A second renderer (WebGL, Three.js) would consume this same output. See
 // docs/product/VISUALIZATION_ARCHITECTURE.md.
@@ -98,6 +98,8 @@ export function buildScene(board, options = {}) {
                 kind: "part",
                 ref: component.ref,
                 partId: component.part_id,
+                package: component.package,
+                footprintId: component.footprint_id,
                 system: component.system,
                 side: component.side,
                 nets: component.net_names,
@@ -111,6 +113,8 @@ export function buildScene(board, options = {}) {
                 pads.push({
                     kind: "pad",
                     ref: component.ref,
+                    number: pad.number,
+                    shape: pad.shape,
                     net: pad.net_name,
                     system: component.system,
                     through: pad.kind !== "smd",

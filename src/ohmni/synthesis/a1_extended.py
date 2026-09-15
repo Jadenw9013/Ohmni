@@ -66,7 +66,7 @@ def synthesize_extended_a1(brief, catalog=None):
             code = RefusalCode.SENSOR_ADDRESS_UNAVAILABLE if slot.address is not None else RefusalCode.SENSOR_ADDRESS_CONFLICT
             return _refuse(brief, code, str(exc), f"sensors.{index}.address")
     try:
-        placement = PlacementIntentBuilder()
+        placement = PlacementIntentBuilder(width_mm=brief.board_width_mm, height_mm=brief.board_height_mm)
         base = build_usb_esp32_base(brief, catalog, placement=placement)
         components, nets = base.components, base.nets
         controller = next(part for part in components if part.ref == "U1")

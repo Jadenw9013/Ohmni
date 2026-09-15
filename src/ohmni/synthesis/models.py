@@ -70,6 +70,8 @@ class SynthesisBrief(BaseModel):
     spi_devices: tuple[SpiPeripheralSlot, ...] = Field(default_factory=tuple)
     include_programming_header: bool = True
     max_board_layers: int = Field(default=2, ge=1, le=8)
+    board_width_mm: float = Field(default=100.0, ge=40, le=100)
+    board_height_mm: float = Field(default=70.0, ge=40, le=70)
     hand_solderable_preferred: bool = True
     budget_usd: float | None = Field(default=20.0, ge=0)
     safety_domains: tuple[SafetyDomain, ...] = Field(default_factory=tuple)
@@ -83,6 +85,11 @@ class SynthesisBrief(BaseModel):
         # slots preserve their existing fingerprint and artifact lineage.
         for name in ("button_count", "spi_devices"):
             if not values[name]:
+                del values[name]
+        # Board dimensions extend the input contract without changing the
+        # identity of older briefs that used the original 100 x 70 mm policy.
+        for name, default in (("board_width_mm", 100.0), ("board_height_mm", 70.0)):
+            if values[name] == default:
                 del values[name]
         payload = json.dumps(values, sort_keys=True, separators=(",", ":"))
         return hashlib.sha256(payload.encode("utf-8")).hexdigest()

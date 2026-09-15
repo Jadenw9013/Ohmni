@@ -69,6 +69,16 @@ def test_frozen_composition_oracle_matches_typed_synthesis(case):
 @pytest.mark.parametrize("case", REFUSED, ids=lambda case: case["case_id"])
 def test_frozen_refusals_stop_compiler_and_application_before_eda(case, tmp_path):
     result = benchmark.execute_attempt(case, tmp_path / case["case_id"], lambda _event: None)
+    if case["case_id"] == "R-18":
+        # PCB-EXPLORER-1 deliberately adds the formerly refused optional A2
+        # sensor. Preserve the frozen oracle and denominator: its runner must
+        # report contract drift, never silently turn the old benchmark green.
+        assert case["expected"] == {"outcome": "refused", "refusal_code": "peripheral_slots_unsupported"}
+        assert result["status"] == "FAIL"
+        assert result["issues"] == ["Out-of-envelope request was accepted"]
+        assert "application_refusal" not in result
+        assert not list(tmp_path.rglob("*.kicad_sch"))
+        return
     assert result["status"] == "PASS", result
     assert result["application_refusal"]["refusal"]["code"] == case["expected"]["refusal_code"]
     assert result["application_refusal"]["downstream_eda_calls"] == 0

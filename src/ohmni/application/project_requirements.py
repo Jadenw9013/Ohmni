@@ -88,6 +88,11 @@ def project_requirement_results(brief,compiled,circuit,semantic,board,catalog):
         if field=="max_board_layers":
             return configured(board.layer_count<=brief.max_board_layers,
                               f"The generated board has {board.layer_count} copper layers against a limit of {brief.max_board_layers}.")
+        if field in {"board_width_mm", "board_height_mm"}:
+            actual = board.outline.width_mm if field == "board_width_mm" else board.outline.height_mm
+            wanted = getattr(brief, field)
+            return configured(actual == wanted,
+                              f"The generated outline measures {actual:g} mm against the requested {wanted:g} mm; enclosure fit is unverified.")
         if field=="hand_solderable_preferred":
             if not brief.hand_solderable_preferred:return "MET","Hand-solderability was not required; package assembly risks still apply.",[]
             return checked(("PB-ID-005",),"Catalog package suitability was checked against the hand-soldering preference.")

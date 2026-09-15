@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import { buildScene, highlightMatcher } from "../board-model.js";
 import { BoardView, createCamera, project } from "../board-view.js";
-import { buildRenderGeometry, displayPackageKind, padHoleContour, pointOnFootprint,
+import { buildRenderGeometry, displayPackageKind, packageContacts, padContour, padHoleContour, pointOnFootprint,
     trackRibbon, VERTEX_STRIDE } from "../board-renderer-geometry.js";
 import { WebGLBoardRenderer } from "../board-renderer-webgl.js";
 
@@ -65,6 +65,72 @@ test("package silhouettes use explicit identifiers with a generic fallback", () 
     assert.equal(geometry.parts.find((p) => p.ref === "J2").displayKind, "header");
     assert.equal(geometry.parts.find((p) => p.ref === "U3").displayKind, "sensor");
     assert.equal(displayPackageKind({ partId: "UNKNOWN_PART", ref: "U1", system: "compute" }), "chip");
+    assert.equal(displayPackageKind({ partId: "VENDOR_42", footprintId: "Button_Switch_THT:SW_PUSH_6mm" }), "button");
+    assert.equal(displayPackageKind({ partId: "VENDOR_42", footprintId: "Capacitor_SMD:C_0603" }), "capacitor");
+    assert.equal(displayPackageKind({ partId: "VENDOR_42", package: "Module-SMD-38" }), "module");
+    assert.equal(displayPackageKind({ partId: "VENDOR_42", package: "USB-C-16P-SMD" }), "usb");
+    assert.equal(displayPackageKind({ partId: "UNKNOWN_PART", ref: "SW1", system: "button" }), "chip",
+        "reference designators and functional grouping do not invent a package");
+});
+
+test("rotated circle and oval pads retain source perimeters instead of square corners", () => {
+    for (const [shape, width, height] of [["circle", 2, 2], ["oval", 1.2, 2.8], ["oval", 2.8, 1.2]]) {
+        for (const side of ["F.Cu", "B.Cu"]) {
+            const board = { ...reference, tracks: [], vias: [], components: [{ ...reference.components[0],
+                side, rotation_deg: 37, pads: [{ number: "A17", shape, kind: "smd", x_mm: 0, y_mm: 0,
+                    width_mm: width, height_mm: height, net_name: "GND" }] }] };
+            const scene = buildScene(board);
+            const pad = scene.pads[0];
+            const [a, b, , d] = pad.points;
+            const toLocal = ({ x, y }) => ({
+                x: ((x - a.x) * (b.x - a.x) + (y - a.y) * (b.y - a.y)) / width - width / 2,
+                y: ((x - a.x) * (d.x - a.x) + (y - a.y) * (d.y - a.y)) / height - height / 2,
+            });
+            const contour = padContour(pad).map(toLocal);
+            near(Math.max(...contour.map((p) => p.x)) - Math.min(...contour.map((p) => p.x)), width);
+            near(Math.max(...contour.map((p) => p.y)) - Math.min(...contour.map((p) => p.y)), height);
+            const radius = Math.min(width, height) / 2;
+            const straight = Math.abs(width - height) / 2;
+            const radialDistance = ({ x, y }) => width > height
+                ? Math.hypot(Math.max(0, Math.abs(x) - straight), y)
+                : Math.hypot(x, Math.max(0, Math.abs(y) - straight));
+            for (const point of contour) near(radialDistance(point), radius);
+            const objects = buildRenderGeometry({ ...scene, parts: [] }).objects;
+            for (let i = 0; i < objects.length; i += VERTEX_STRIDE) {
+                const local = toLocal({ x: objects[i], y: objects[i + 1] });
+                assert.ok(radialDistance(local) <= radius + 1e-5, "solder and copper stay within the true rounded pad");
+                near(Math.hypot(...objects.slice(i + 3, i + 6)), 1, 2e-6);
+                assert.equal(Math.sign(objects[i + 2]), side === "F.Cu" ? 1 : -1);
+            }
+        }
+    }
+});
+
+test("button terminals follow every real pad including repeated terminal numbers", () => {
+    const button = { ...reference.components[0], ref: "K93", part_id: "UNFAMILIAR_BUTTON_VENDOR",
+        package: "6mm-THT", footprint_id: "Button_Switch_THT:SW_PUSH_6mm", width_mm: 9.5, height_mm: 7.5,
+        rotation_deg: 73, side: "B.Cu", pads: [["1", -3.25, -2.25], ["1", 3.25, -2.25],
+            ["2", -3.25, 2.25], ["2", 3.25, 2.25]].map(([number, x_mm, y_mm]) => ({
+            number, x_mm, y_mm, width_mm: 2, height_mm: 2, shape: "circle", kind: "thru_hole",
+            net_name: number === "1" ? "BUTTON_INPUT" : "GND", drill: { shape: "circle", width_mm: 1.1, height_mm: 1.1 },
+        })) };
+    const scene = buildScene({ ...reference, components: [button], tracks: [], vias: [] });
+    const contacts = packageContacts(scene.parts[0], scene.pads);
+    assert.equal(contacts.length, 4, "two named terminals can have four real lands");
+    assert.deepEqual(contacts.map((contact) => contact.number), ["1", "1", "2", "2"]);
+    for (const [index, contact] of contacts.entries()) {
+        const centre = pointOnFootprint({ points: scene.pads[index].points, side: "B.Cu" }, 0.5, 0.5);
+        near(contact.a.x, centre.x); near(contact.a.y, centre.y);
+        assert.equal(contact.net, scene.pads[index].net);
+        assert.ok(contact.a.z < scene.parts[0].centre.z && contact.b.z < contact.a.z);
+    }
+    assert.equal(packageContacts(scene.parts[0], scene.pads.slice(0, 1)).length, 1,
+        "missing source pads cannot become extra decorative terminals");
+    const geometry = buildRenderGeometry(scene);
+    assert.equal(geometry.parts[0].displayKind, "button");
+    assert.deepEqual(geometry.parts[0].displayContacts, contacts);
+    assert.ok(geometry.objects.every(Number.isFinite));
+    for (let i = 0; i < geometry.objects.length; i += VERTEX_STRIDE) near(Math.hypot(...geometry.objects.slice(i + 3, i + 6)), 1, 2e-6);
 });
 
 test("rotated and back-side display bodies preserve footprint XY and extrude outward", () => {
@@ -114,8 +180,11 @@ test("highlighting and X-ray change materials, never mesh positions or normals",
 
 test("reference board geometry is finite, has unit normals and a bounded GPU budget", () => {
     for (const explode of [0, 1]) {
-        const geometry = buildRenderGeometry(buildScene(reference, { explode }));
-        assert.ok(geometry.vertexCount < 60000, "keep beveled packages, pad fillets and source labels below 60k vertices");
+        const scene = buildScene(reference, { explode });
+        const geometry = buildRenderGeometry(scene);
+        const budget = 1200 * scene.parts.length + 300 * scene.pads.length + 90 * scene.tracks.length + 250 * scene.vias.length;
+        assert.ok(geometry.vertexCount < budget,
+            "mesh budget scales with actual components, pads and copper, never decorative filler");
         for (const group of ["substrate", "objects", "shadows"]) {
             assert.equal(geometry[group].length % (VERTEX_STRIDE * 3), 0);
             assert.ok(geometry[group].every(Number.isFinite));
@@ -126,7 +195,7 @@ test("reference board geometry is finite, has unit normals and a bounded GPU bud
     }
 });
 
-test("solder fillets add sloped metal surfaces inside each authoritative pad", () => {
+test("pad finishes stay within source bounds and only undrilled lands receive solder fillets", () => {
     const scene = buildScene(reference);
     for (const pad of scene.pads) {
         const geometry = buildRenderGeometry({ ...scene, parts: [], tracks: [], vias: [], pads: [pad] });
@@ -135,6 +204,7 @@ test("solder fillets add sloped metal surfaces inside each authoritative pad", (
         const vx = d.x - a.x, vy = d.y - a.y;
         let raised = false;
         let slopedMetal = false;
+        let hasMetal = false;
         for (let index = 0; index < geometry.objects.length; index += VERTEX_STRIDE) {
             const dx = geometry.objects[index] - a.x, dy = geometry.objects[index + 1] - a.y;
             const u = (dx * ux + dy * uy) / (ux * ux + uy * uy);
@@ -143,9 +213,13 @@ test("solder fillets add sloped metal surfaces inside each authoritative pad", (
             if (Math.abs(geometry.objects[index + 2] - a.z) > 0.15) raised = true;
             const nz = Math.abs(geometry.objects[index + 5]);
             const metallic = Math.floor((geometry.objects[index + 9] % 4) / 2);
+            if (metallic === 1) hasMetal = true;
             if (metallic === 1 && nz > 0.01 && nz < 0.99) slopedMetal = true;
         }
-        assert.ok(raised && slopedMetal, `${pad.ref}: solder has a real beveled surface`);
+        const identity = `${pad.ref}.${pad.number || "locating hole"}`;
+        assert.equal(hasMetal, !pad.nonPlated, `${identity}: locating holes must not acquire copper`);
+        assert.equal(raised && slopedMetal, !pad.drill && !pad.nonPlated,
+            `${identity}: solder fillets belong only on undrilled lands; drilled openings remain open`);
     }
 });
 

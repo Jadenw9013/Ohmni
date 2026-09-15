@@ -65,6 +65,8 @@ export function mountProjectWorkbench(root, {
     let project = null;
     let revision = null;
     let pendingProjectId = null;
+    let pendingNewSeed = null;
+    let editorVersion = 0;
     let draft = defaultProjectBrief();
     let busy = false;
     let options = null;
@@ -113,6 +115,10 @@ export function mountProjectWorkbench(root, {
               <div class="project-circuit-strip" aria-label="USB-C power, regulated supply, ESP32 processor and your chosen features"><span>USB-C<small>5 V power</small></span><i aria-hidden="true"></i><span>3.3 V<small>Regulated supply</small></span><i aria-hidden="true"></i><span>ESP32<small>Your processor</small></span></div>
               <p class="project-envelope">${e(family?.description || "Your server provides the supported combinations.")}</p>
               ${family ? memoryControls(family) + sensorControls(family) : ""}
+              ${options?.board_dimensions ? `<fieldset class="project-choice"><legend>Make space for your circuit</legend><p>A smaller board brings the parts closer. The placement and routing checks determine whether your choices fit.</p><div class="board-dimensions">${[["board_width_mm", "Width"], ["board_height_mm", "Height"]].map(([field, label]) => {
+                  const size = options.board_dimensions[field];
+                  return `<label for="project-${field}">${label} (mm)<input id="project-${field}" type="number" min="${size.min}" max="${size.max}" step="any" required value="${draft[field] ?? size.default}"></label>`;
+              }).join("")}</div></fieldset>` : ""}
               ${family?.button_count.max ? `<fieldset class="project-choice"><legend>Give your program an input</legend><p>Physical buttons give you a simple way to interact with your device. Firmware decides how it responds.</p>${countSelect("button-count", "Push buttons", draft.button_count || 0, family.button_count)}</fieldset>` : ""}
               ${family ? `<fieldset class="project-choice"><legend>A signal you can see</legend><p>A light can show what your program is doing. Each selected LED comes with its current-limiting resistor.</p>${countSelect("led", "Status lights", draft.status_led_count, family.status_led_count)}</fieldset>` : ""}
               <fieldset class="project-choice"><legend>How you will program it</legend><p>USB-C supplies power. Programming needs a separate 3.3 V USB-to-serial adapter.</p><div class="project-choice-options">
@@ -129,21 +135,34 @@ export function mountProjectWorkbench(root, {
         renderHistory(); sync();
     }
 
+    function applyNewDraft() {
+        const seed = pendingNewSeed;
+        const valid = seed && briefFitsOptions(seed, options);
+        draft = valid ? structuredClone(seed) : defaultProjectBrief(options);
+        pendingNewSeed = null;
+        render();
+        if (seed) {
+            onOpen(draft.project_name);
+            if (!valid) showError(new ProjectRequestError("This saved board uses choices the current server does not offer. Choose an available configuration below."));
+        }
+    }
+
     async function ensureOptions() {
         if (options) return options;
         if (optionsPromise) return optionsPromise;
         optionsPromise = (async () => {
-            const result = await projectRequest("/api/project-options", { fetcher });
-            const next = parseProjectOptions(result.payload, result.identity);
-            if (disposed) return null;
-            options = next;
-            if (!project && !revision) draft = defaultProjectBrief(options);
-            render();
-            return options;
+            try {
+                const result = await projectRequest("/api/project-options", { fetcher });
+                const next = parseProjectOptions(result.payload, result.identity);
+                if (disposed) return null;
+                options = next;
+                if (!project && !revision && !pendingProjectId) applyNewDraft();
+                else render();
+                return options;
+            } catch (error) { if (!disposed) showError(error); return null; }
+            finally { optionsPromise = null; sync(); }
         })();
-        try { return await optionsPromise; }
-        catch (error) { if (!disposed) showError(error); return null; }
-        finally { optionsPromise = null; sync(); }
+        return optionsPromise;
     }
 
     function sync() {
@@ -178,14 +197,17 @@ export function mountProjectWorkbench(root, {
         $("#project-error").hidden = false;
     }
 
-    async function openNew() {
+    async function openNew(seed = null) {
         if (busy) return;
+        const version = ++editorVersion;
+        pendingNewSeed = seed ? structuredClone(seed) : null;
         resetExercise();
         project = null; revision = null; pendingProjectId = null; draft = defaultProjectBrief(options);
         familyDrafts.clear(); sensorDrafts.clear(); memoryDrafts.clear();
         onInvalidate(); render(); onOpen(draft.project_name);
+        if (options) applyNewDraft();
         await ensureOptions();
-        $("#project-name")?.focus();
+        if (version === editorVersion && !disposed) $("#project-name")?.focus();
     }
 
     async function refreshShelf() {
@@ -205,6 +227,8 @@ export function mountProjectWorkbench(root, {
 
     async function openProject(projectId) {
         if (busy) return;
+        editorVersion += 1;
+        pendingNewSeed = null;
         busy = true;
         pendingProjectId = projectId;
         resetExercise();
@@ -346,6 +370,8 @@ export function mountProjectWorkbench(root, {
         else if (target.id === "project-description") next.description = target.value;
         else if (target.id === "project-led") next.status_led_count = Number(target.value);
         else if (target.id === "project-button-count") next.button_count = Number(target.value);
+        else if (target.id === "project-board_width_mm") next.board_width_mm = Number(target.value);
+        else if (target.id === "project-board_height_mm") next.board_height_mm = Number(target.value);
         else if (target.name === "header") next.include_programming_header = target.value === "yes";
         else if (target.id === "project-sensor-count") {
             rememberSlots();

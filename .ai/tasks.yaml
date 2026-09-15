@@ -101,6 +101,21 @@
         "Remote hosting, authentication, and tenant isolation"
       ],
       "completed_at_commit": "01d17386f5ce904f32f4564cb04b0f55208f521f"
+    },
+    {
+      "id": "PCB-EXPLORER-1",
+      "type": "bounded_product_enhancement",
+      "title": "Generated ESP32 sensor-and-controller board explorer",
+      "status": "IN_PROGRESS",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/PCB-EXPLORER-1.yaml",
+      "review_policy": "One focused independent review required for COMPLETE; otherwise VERIFIED only",
+      "non_goals": [
+        "Claims of bench-tested hardware or simulated operation",
+        "Decorative electrical parts, invented copper, mounting holes or evidence",
+        "Gated MCP EDA tools, SPICE, cloud hosting or the rest of V2",
+        "Resuming or marking the parked M10-T05 benchmark complete"
+      ]
     }
   ],
   "tasks": [
@@ -879,6 +894,48 @@
         "record": ".ai/reviews.yaml#MCP-T01-INDEPENDENT"
       },
       "blockers": []
+    },
+    {
+      "id": "PCB-T01",
+      "scope": "PCB-EXPLORER-1",
+      "milestone": null,
+      "title": "Generate and explain a richer sensor-and-controller showcase",
+      "status": "IN_PROGRESS",
+      "priority": 100,
+      "dependencies": [],
+      "goal": "A visually richer real circuit with reusable rendering and generated component-level learning, backed by deterministic design reports.",
+      "acceptance_criteria": [
+        "Compose a bounded ESP32 sensor-and-controller design from catalog-backed sensor, LED and button circuitry; expose editable parameters and regenerate it through existing deterministic gates",
+        "Create a reproducible saved showcase from actual generated artifacts with honest check and lineage information",
+        "Improve reusable PCB package, pad and copper rendering without inventing electrical geometry",
+        "Make every displayed part and connection discoverable and teachable from recorded circuit data",
+        "Run deterministic, frontend and browser checks and a focused independent review"
+      ],
+      "verification": {
+        "required": [
+          "fast_tests",
+          "frontend_tests",
+          "generated_design_checks",
+          "browser_checks",
+          "ruff"
+        ],
+        "record": ".ai/verification/PCB-T01.yaml"
+      },
+      "review": {
+        "required": true,
+        "status": "PENDING",
+        "independent": true
+      },
+      "blockers": [],
+      "implementation": {
+        "started_at_commit": "cba96e076baf2538d08a151e3dd6d18258f88d40",
+        "started_at": "2026-09-14",
+        "approval_evidence": ".ai/approvals/PCB-EXPLORER-1.yaml",
+        "lifecycle": [
+          "Explicit human request recorded; PCB-T01 selected READY without dependencies or blockers",
+          "Transitioned to IN_PROGRESS; prior MCP scope remains complete and M10-T05 remains parked"
+        ]
+      }
     }
   ]
 }

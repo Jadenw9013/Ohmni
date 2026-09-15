@@ -432,6 +432,8 @@ _BRIEF_LABELS = {
     "target_logic_voltage": "Voltage the chips run at",
     "budget_usd": "Budget",
     "max_board_layers": "Board complexity",
+    "board_width_mm": "Board width",
+    "board_height_mm": "Board height",
     "hand_solderable": "You want to solder it yourself",
     "interface": "Connection type",
     "required_part_id": "Part you named",
@@ -461,8 +463,10 @@ def _readable(field: str, value: str) -> str:
             return value
     if field in {"input_voltage_v", "logic_voltage_v"}:
         return f"{value} V"
+    if field in {"board_width_mm", "board_height_mm"}:
+        return f"{value} mm"
     if field == "archetype":
-        return {"a1_usb_i2c_sensor": "Measure your space", "a2_usb_gpio_controller": "Buttons and lights",
+        return {"a1_usb_i2c_sensor": "Measure your space", "a2_usb_gpio_controller": "Sensor and controls",
                 "a3_usb_spi_peripheral": "Store data"}.get(value, value)
     if field == "input_power":
         return {"usb_c_5v": "USB-C power, 5 V"}.get(value, value)

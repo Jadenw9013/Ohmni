@@ -16,6 +16,11 @@ Ohmni is an evidence-first AI electronics mentor that turns a typed product idea
 *   **Cost-Aware & Stateful:** Tracks LLM token usage/costs internally, auto-recovers from JSON schema failures, and uses a local SQLite database for persistent user projects.
 
 ## 🛠 Tech Stack
+
+The landing-page sensor-and-controller board is generated from editable inputs.
+See [the PCB explorer guide](docs/PCB_EXPLORER.md) for its exact scope, learning
+interactions, recorded checks, limitations, and reproduction commands.
+
 *   **Backend Engine:** Python 3.12+, Pydantic, SQLite3, `ngspice`
 *   **EDA / Hardware:** KiCad 10 (CLI headless automation)
 *   **AI Provider:** Anthropic API (`claude-sonnet-5`)

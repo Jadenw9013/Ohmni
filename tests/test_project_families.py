@@ -108,7 +108,7 @@ def test_options_identity_and_all_family_revisions_survive_restart(tmp_path):
 def test_invalid_family_combinations_are_refused_without_a_saved_revision(tmp_path):
     a1,a2,a3=_briefs()
     invalid=[a1.model_copy(update={"sensors":(I2cSensorSlot(part_id="BME280",address=0x76),)*2}),
-             a2.model_copy(update={"sensors":a1.sensors}),
+             a2.model_copy(update={"sensors":a1.sensors*2}),
              a3.model_copy(update={"spi_devices":a3.spi_devices*3})]
     with _server(tmp_path) as (server,base):
         for brief in invalid:

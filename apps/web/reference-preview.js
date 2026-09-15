@@ -2,9 +2,10 @@
 // It is deliberately separate from the current run and carries no live verdict.
 import { BoardView } from "./board-view.js";
 import { initializeCircuitLab } from "./circuit-lab.js";
-import { validateLearningSource } from "./learning-model.js";
+import { validateLearningSource, recordedCheckRows } from "./learning-model.js";
+import { escapeHtml as esc } from "./view-model.js";
 
-export async function initializeReferencePreview({ fetcher = globalThis.fetch } = {}) {
+export async function initializeReferencePreview({ fetcher = globalThis.fetch, onCustomize = () => {} } = {}) {
     const canvas = document.querySelector("#reference-canvas");
     if (!canvas || typeof canvas.getContext !== "function") return null;
     const text = (id, value) => {
@@ -16,6 +17,29 @@ export async function initializeReferencePreview({ fetcher = globalThis.fetch } 
         if (!response.ok) throw new Error("reference unavailable");
         const reference = await response.json();
         validateLearningSource(reference, { reference: true });
+        const controls = document.querySelector("#reference-focus");
+        if (controls) {
+            controls.replaceChildren();
+            for (const system of [{ system: "all", label: "Whole board" }, ...reference.systems.filter((item) => item.component_refs.length)]) {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.dataset.referenceSystem = system.system;
+                button.textContent = system.label;
+                controls.append(button);
+            }
+        }
+        text("#reference-title", reference.confirmed_brief?.project_name || "Explore this circuit");
+        text("#reference-stats", `${reference.board.components.length} parts · ${reference.board.net_names.length} nets · ${reference.board.layer_count} layers · ${reference.board.width_mm} × ${reference.board.height_mm} mm`);
+        const evidence = document.querySelector("#reference-evidence");
+        if (evidence && reference.checks) {
+            evidence.hidden = false;
+            evidence.innerHTML = `<summary>Design checks and limits</summary><p>Recorded with this saved design on ${esc(reference.source.captured_on || "an unspecified date")}.</p><dl>${recordedCheckRows(reference).map(({ label, value }) => `<div><dt>${esc(label)}</dt><dd>${esc(value)}</dd></div>`).join("")}</dl>${(reference.limitations || []).map((limit) => `<p>${esc(limit)}</p>`).join("")}<p>Inspect the exact <a href="/reference-board.json" target="_blank" rel="noopener">design data and source fingerprints</a>.</p>`;
+        }
+        const customize = document.querySelector("#customize-reference");
+        if (customize && reference.confirmed_brief) {
+            customize.hidden = false;
+            customize.addEventListener("click", () => onCustomize(structuredClone(reference.confirmed_brief)));
+        }
         const buttons = Array.from(document.querySelectorAll("[data-reference-system]"));
         const showSystem = (systemId) => {
             const system = reference.systems.find((item) => item.system === systemId);
@@ -28,7 +52,7 @@ export async function initializeReferencePreview({ fetcher = globalThis.fetch } 
             });
             text("#reference-part-name", system?.label || "Every part has a purpose.");
             text("#reference-part-description", system?.summary
-                || "Explore the power, the brain, and the sensor. Select a part on the board to discover its job.");
+                || "Select any component to learn its job, then open the lab to follow its pins and connections. Customize this board to generate your own version.");
         };
         const view = new BoardView(canvas, {
             onSelect: (ref) => {
@@ -36,13 +60,13 @@ export async function initializeReferencePreview({ fetcher = globalThis.fetch } 
                 if (!part) { showSystem("all"); return; }
                 view.setHighlight({ refs: [ref] });
                 text("#reference-part-name", part.name?.human || part.ref);
-                text("#reference-part-description", reference.systems.find((system) => system.system === part.system)?.summary || part.name?.detail || "");
+                text("#reference-part-description", part.purpose || part.name?.detail || "No component explanation was recorded.");
             },
         });
         if (view.available === false) throw new Error("renderer unavailable");
         view.setBoard(reference.board);
-        view.camera.yaw = -28 * Math.PI / 180;
-        view.camera.pitch = 56 * Math.PI / 180;
+        view.camera.yaw = -22 * Math.PI / 180;
+        view.camera.pitch = 50 * Math.PI / 180;
         view.frame();
         view.render();
         buttons.forEach((button) => button.addEventListener("click", () => {
@@ -67,7 +91,7 @@ export async function initializeReferencePreview({ fetcher = globalThis.fetch } 
         };
         if (typeof ResizeObserver !== "undefined") new ResizeObserver(resize).observe(canvas);
         else { resize(); globalThis.addEventListener?.("resize", resize); }
-        text("#reference-caption", "Saved PCB · illustrative component bodies and heights");
+        text("#reference-caption", "Generated PCB · saved design · illustrative bodies and heights");
         showSystem("all");
         initializeCircuitLab(reference);
         return view;

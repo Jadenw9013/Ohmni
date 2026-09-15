@@ -64,7 +64,7 @@ def synthesize_a3(brief: SynthesisBrief, catalog=None) -> SynthesisResult:
     if brief.status_led_count and catalog.get(LED_PART_ID) is None:
         return _refuse(brief, RefusalCode.PART_UNAVAILABLE, "The status LED is absent from the catalog.", "status_led_count")
     try:
-        placement = PlacementIntentBuilder()
+        placement = PlacementIntentBuilder(width_mm=brief.board_width_mm, height_mm=brief.board_height_mm)
         base = build_usb_esp32_base(brief, catalog, placement=placement)
         components, nets = base.components, base.nets
         controller = next(part for part in components if part.ref == "U1")

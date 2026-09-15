@@ -41,6 +41,8 @@
         "spi_devices": [],
         "include_programming_header": true,
         "max_board_layers": 2,
+        "board_width_mm": 100.0,
+        "board_height_mm": 70.0,
         "hand_solderable_preferred": true,
         "budget_usd": 20.0,
         "safety_domains": []
@@ -62,11 +64,11 @@
     },
     {
       "id": "a2_usb_gpio_controller",
-      "title": "Buttons & lights",
-      "description": "Connect physical buttons and indicator LEDs to an ESP32.",
+      "title": "Sensor & controls",
+      "description": "Connect buttons, indicator LEDs and an optional environmental sensor to an ESP32.",
       "sensor_count": {
         "min": 0,
-        "max": 0
+        "max": 1
       },
       "status_led_count": {
         "min": 1,
@@ -95,11 +97,18 @@
         "spi_devices": [],
         "include_programming_header": true,
         "max_board_layers": 2,
+        "board_width_mm": 100.0,
+        "board_height_mm": 70.0,
         "hand_solderable_preferred": true,
         "budget_usd": 20.0,
         "safety_domains": []
       },
-      "sensor_slot_defaults": []
+      "sensor_slot_defaults": [
+        {
+          "part_id": "BME280",
+          "address": null
+        }
+      ]
     },
     {
       "id": "a3_usb_spi_peripheral",
@@ -140,6 +149,8 @@
         ],
         "include_programming_header": true,
         "max_board_layers": 2,
+        "board_width_mm": 100.0,
+        "board_height_mm": 70.0,
         "hand_solderable_preferred": true,
         "budget_usd": 20.0,
         "safety_domains": []
@@ -180,6 +191,18 @@
     }
   ],
   "automatic_sensor_address": null,
+  "board_dimensions": {
+    "board_width_mm": {
+      "min": 40,
+      "max": 100,
+      "default": 100
+    },
+    "board_height_mm": {
+      "min": 40,
+      "max": 70,
+      "default": 70
+    }
+  },
   "fixed": {
     "input_power": "usb_c_5v",
     "input_voltage_v": {

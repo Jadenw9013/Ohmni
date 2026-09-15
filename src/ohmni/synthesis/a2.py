@@ -1,4 +1,4 @@
-"""A2: a bounded USB-powered ESP32 controller with indicator LEDs and buttons.
+"""A2: USB ESP32 controls, with one optional catalog-backed I2C sensor.
 
 This compiler describes static wiring. Firmware direction/debounce and physical
 switch operation are not simulated or verified by its construction.
@@ -36,6 +36,7 @@ from .a1 import (
 )
 from .base import build_usb_esp32_base, common_preflight
 from .models import ArchetypeId, RefusalCode, SynthesisBrief, SynthesisResult
+from .peripherals import SUPPORTED_I2C_PARTS, add_i2c_bus, add_i2c_sensor, address_option
 from .placement import PlacementIntentBuilder
 
 BUTTON_PART_ID = "GENERIC_MOMENTARY_BUTTON"
@@ -68,18 +69,27 @@ def _requirements(brief: SynthesisBrief) -> RequirementsSpec:
     if brief.include_programming_header:
         interfaces.append(Interface.UART)
         functions.append(FunctionalRequirement(requirement_id="FR-6", description="Expose a serial programming header."))
+    if brief.sensors:
+        interfaces.append(Interface.I2C)
+        functions.append(FunctionalRequirement(
+            requirement_id="FR-I2C", description=f"Read one {brief.sensors[0].part_id} sensor over I2C.",
+        ))
     return RequirementsSpec(
         project_name=brief.project_name, description=brief.description,
         max_input_voltage=Quantity.volts(USB_VBUS_MAX_V), target_logic_voltage=Quantity.volts(brief.logic_voltage_v),
         budget_usd=brief.budget_usd, max_board_layers=brief.max_board_layers,
         hand_solderable=brief.hand_solderable_preferred, interfaces=interfaces,
-        functional_requirements=functions, required_part_ids=[brief.mcu_part_id, LED_PART_ID, BUTTON_PART_ID],
+        functional_requirements=functions,
+        required_part_ids=[brief.mcu_part_id, LED_PART_ID, BUTTON_PART_ID, *[slot.part_id for slot in brief.sensors]],
         safety_domains=list(brief.safety_domains), assumptions=[
             "USB-C is a power sink only; programming needs the separate serial connections.",
             "Buttons are normally open and connect their GPIO input to ground when pressed.",
             "Firmware must configure button pins as inputs and handle switch bounce; neither is simulated.",
             "GPIO source/sink and aggregate current ratings are absent from the seed catalog and are not verified.",
-        ],
+        ] + ([
+            "Firmware must configure I2C on GPIO21/GPIO22, separately from the button and LED pins.",
+            "I2C bus timing, capacitance and physical sensor behavior are not simulated or measured.",
+        ] if brief.sensors else []),
     )
 
 
@@ -149,6 +159,21 @@ def _build(brief: SynthesisBrief, catalog: PartCatalog,
         ground.connections.extend(_pins((ref, "2")))
         if placement is not None:
             placement.group("gpio", ref, (ref, resistor), "Momentary button with its own idle-level pull-up.")
+    if brief.sensors:
+        # Resolve pin capabilities before composing the shared I2C block. A
+        # changed GPIO allocation must fail rather than put one pin on two nets.
+        occupied = {pin.pin for net in nets for pin in net.connections if pin.component == "U1"}
+        for name in ("IO21", "IO22"):
+            number = _safe_gpio(mcu, name, output=True)
+            _safe_gpio(mcu, name)  # I2C needs bidirectional pins, not output-only pins.
+            if number in occupied:
+                raise _CatalogCapabilityError(f"{mcu.part_id} {name} is already allocated to another net")
+            occupied.add(number)
+        next(part for part in components if part.ref == "U1").selected_interfaces = [Interface.GPIO, Interface.I2C]
+        add_i2c_bus(components, nets, catalog, brief.hand_solderable_preferred,
+                    resistor_refs=("R4", "R5"), placement=placement)
+        add_i2c_sensor(components, nets, catalog, brief.sensors[0], brief.hand_solderable_preferred,
+                       ref="U3", cap_refs=("C6", "C7"), placement=placement)
     return CircuitIR(ir_id=f"a2-{brief.fingerprint[:16]}", name=brief.project_name,
                      components=components, nets=nets, constraints=base.constraints,
                      design_assumptions=[*base.design_assumptions, *_requirements(brief).assumptions],
@@ -156,17 +181,29 @@ def _build(brief: SynthesisBrief, catalog: PartCatalog,
 
 
 def synthesize_a2(brief: SynthesisBrief, catalog: PartCatalog | None = None) -> SynthesisResult:
-    """Compile one to four LED outputs and one to two normally-open button inputs."""
+    """Compile LEDs/buttons and optionally one supported I2C sensor."""
     resolved = default_catalog() if catalog is None else catalog
     if refusal := common_preflight(brief, resolved):
         return refusal
     if brief.archetype is not ArchetypeId.A2_USB_GPIO_CONTROLLER:
         return _refuse(brief, RefusalCode.ARCHETYPE_NOT_IMPLEMENTED,
                        "The A2 compiler accepts the USB GPIO controller archetype only.", "archetype")
-    if brief.sensors or brief.spi_devices:
+    if brief.spi_devices:
         return _refuse(brief, RefusalCode.PERIPHERAL_SLOTS_UNSUPPORTED,
-                       "The GPIO controller supports LEDs and buttons without I2C or SPI peripherals.",
-                       "sensors", "spi_devices")
+                       "The GPIO controller supports LEDs, buttons and an optional I2C sensor, without SPI peripherals.",
+                       "spi_devices")
+    if len(brief.sensors) > 1:
+        return _refuse(brief, RefusalCode.SENSOR_COUNT_UNSUPPORTED,
+                       "The GPIO controller supports at most one I2C sensor.", "sensors")
+    for slot in brief.sensors:
+        spec = resolved.get(slot.part_id)
+        if slot.part_id not in SUPPORTED_I2C_PARTS or spec is None:
+            return _refuse(brief, RefusalCode.SENSOR_UNAVAILABLE,
+                           "Choose a supported catalog I2C sensor.", "sensors.0.part_id")
+        try:
+            address_option(spec, slot.address)
+        except _CatalogCapabilityError as exc:
+            return _refuse(brief, RefusalCode.SENSOR_ADDRESS_UNAVAILABLE, str(exc), "sensors.0.address")
     if not 1 <= brief.status_led_count <= len(LED_GPIO_NAMES):
         return _refuse(brief, RefusalCode.STATUS_LED_COUNT_UNSUPPORTED,
                        "The GPIO controller supports one to four status LEDs.", "status_led_count")
@@ -178,7 +215,7 @@ def synthesize_a2(brief: SynthesisBrief, catalog: PartCatalog | None = None) -> 
         return _refuse(brief, RefusalCode.PART_UNAVAILABLE, "Required GPIO catalog parts are missing.",
                        context={"missing": ",".join(missing)})
     try:
-        placement = PlacementIntentBuilder()
+        placement = PlacementIntentBuilder(width_mm=brief.board_width_mm, height_mm=brief.board_height_mm)
         circuit = _build(brief, resolved, placement=placement)
     except _CatalogCapabilityError as exc:
         return _refuse(brief, RefusalCode.CATALOG_CAPABILITY_MISSING, str(exc), context={"reason": str(exc)})

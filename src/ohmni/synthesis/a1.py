@@ -664,7 +664,7 @@ def synthesize_a1(
         return refusal
     try:
         requirements = _requirements(brief)
-        placement = PlacementIntentBuilder()
+        placement = PlacementIntentBuilder(width_mm=brief.board_width_mm, height_mm=brief.board_height_mm)
         circuit = _build(brief, resolved_catalog, placement=placement)
     except _CatalogCapabilityError as exc:
         return _refuse(

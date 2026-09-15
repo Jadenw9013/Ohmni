@@ -4,14 +4,14 @@
 
 export const VERTEX_STRIDE = 12;
 export const DISPLAY_HEIGHTS = Object.freeze({ module: 2.8, usb: 3.4, header: 5.5,
-    sensor: 1.1, capacitor: 0.65, resistor: 0.48, led: 0.8, chip: 1.15 });
+    sensor: 1.1, capacitor: 0.65, resistor: 0.48, led: 0.8, chip: 1.15, button: 3.8 });
 
 const MAT = Object.freeze({
     // RGB, roughness, metal (0/1), finish (plain/brushed/mask/lens/laminate).
     // Finishes are display styles. No physical material specification is known.
-    board: [0.045, 0.32, 0.32, 0.55, 0, 2], edge: [0.37, 0.35, 0.23, 0.86, 0, 4],
-    reverse: [0.035, 0.25, 0.285, 0.58, 0, 2], gold: [0.91, 0.66, 0.28, 0.26, 1],
-    copper: [0.13, 0.40, 0.375, 0.52, 0, 2], backCopper: [0.10, 0.33, 0.37, 0.55, 0, 2],
+    board: [0.035, 0.30, 0.18, 0.55, 0, 2], edge: [0.37, 0.35, 0.23, 0.86, 0, 4],
+    reverse: [0.025, 0.235, 0.155, 0.58, 0, 2], gold: [0.91, 0.66, 0.28, 0.26, 1],
+    copper: [0.30, 0.54, 0.31, 0.48, 0, 2], backCopper: [0.22, 0.43, 0.38, 0.51, 0, 2],
     silver: [0.61, 0.65, 0.67, 0.42, 1, 1], rim: [0.76, 0.80, 0.82, 0.24, 1],
     solder: [0.64, 0.68, 0.71, 0.29, 1], darkMetal: [0.22, 0.26, 0.29, 0.41, 1, 1],
     charcoal: [0.055, 0.065, 0.07, 0.72], black: [0.012, 0.018, 0.022, 0.88],
@@ -23,13 +23,15 @@ const MAT = Object.freeze({
 /** Choosing a drawing style from an explicit part identifier changes no facts. */
 export function displayPackageKind(part) {
     const id = String(part.partId || "").toUpperCase();
-    if (/WROOM|MODULE/.test(id)) return "module";
-    if (/USB.*RECEPTACLE|USB.*CONNECTOR/.test(id)) return "usb";
-    if (/HEADER/.test(id)) return "header";
+    const specification = `${part.package || ""} ${part.footprintId || ""}`.toUpperCase();
+    if (/BUTTON|MOMENTARY/.test(id) || /SW_PUSH|TACTILE/.test(specification)) return "button";
+    if (/WROOM|MODULE/.test(id) || /MODULE-SMD|RF_MODULE/.test(specification)) return "module";
+    if (/USB.*RECEPTACLE|USB.*CONNECTOR/.test(id) || /USB.*RECEPTACLE|USB-C/.test(specification)) return "usb";
+    if (/HEADER/.test(id) || /PINHEADER/.test(specification)) return "header";
     if (/BME280|BMP280/.test(id)) return "sensor";
-    if (/CAPACITOR/.test(id)) return "capacitor";
-    if (/RESISTOR/.test(id)) return "resistor";
-    if (/LED/.test(id)) return "led";
+    if (/CAPACITOR/.test(id) || /CAPACITOR_/.test(specification)) return "capacitor";
+    if (/RESISTOR/.test(id) || /RESISTOR_/.test(specification)) return "resistor";
+    if (/LED/.test(id) || /LED_/.test(specification)) return "led";
     return "chip";
 }
 
@@ -127,11 +129,50 @@ function solderFillet(buffer, pad, material) {
     const size = footprintSize(part);
     const small = Math.min(size.width, size.height);
     const height = Math.min(0.21, small * 0.27);
-    const rings = [bevelRing(part, [0.04, 0.04, 0.96, 0.96], 0.135, 0, small * 0.16),
+    const rings = pad.shape === "circle" || pad.shape === "oval"
+        ? [[0.135, 0.94], [0.135 + height * 0.7, 0.8], [0.135 + height, 0.62]]
+            .map(([z, scale]) => padContour(pad, z).map((point) => {
+                const centre = pointOnFootprint(part, 0.5, 0.5, z);
+                return { x: centre.x + (point.x - centre.x) * scale,
+                    y: centre.y + (point.y - centre.y) * scale, z: point.z };
+            }))
+        : [bevelRing(part, [0.04, 0.04, 0.96, 0.96], 0.135, 0, small * 0.16),
         bevelRing(part, [0.04, 0.04, 0.96, 0.96], 0.135 + height * 0.7, small * 0.11, small * 0.19),
         bevelRing(part, [0.04, 0.04, 0.96, 0.96], 0.135 + height, small * 0.22, small * 0.16)];
     for (let index = 1; index < rings.length; index += 1) ringWalls(buffer, rings[index - 1], rings[index], material, sign < 0);
     face(buffer, rings[2], material, { flip: sign < 0 });
+}
+
+function capsuleContour(part, width, height, lift) {
+    const size = footprintSize(part);
+    const radius = Math.min(width, height) / 2;
+    const horizontal = width > height;
+    const straight = Math.abs(width - height) / 2;
+    const points = [];
+    for (let end = 0; end < 2; end += 1) {
+        const start = horizontal ? -Math.PI / 2 + end * Math.PI : end * Math.PI;
+        const cx = horizontal ? (end === 0 ? straight : -straight) : 0;
+        const cy = horizontal ? 0 : (end === 0 ? straight : -straight);
+        for (let step = 0; step <= 12; step += 1) {
+            // A circle has no straight wall between semicircles. Avoid a
+            // repeated vertex, which would generate zero-area prism faces.
+            if (straight < 1e-10 && step === 12) continue;
+            const angle = start + step * Math.PI / 12;
+            points.push(pointOnFootprint(part, 0.5 + (cx + radius * Math.cos(angle)) / size.width,
+                0.5 + (cy + radius * Math.sin(angle)) / size.height, lift));
+        }
+    }
+    return points;
+}
+
+/** Front or back pad perimeter from its emitted shape and dimensions. */
+export function padContour(pad, height = 0.13) {
+    const part = { points: pad.points, side: pad.points[0].z < 0 ? "B.Cu" : "F.Cu" };
+    const size = footprintSize(part);
+    if (pad.shape === "circle" || pad.shape === "oval") return capsuleContour(part, size.width, size.height, height);
+    // The current projection uses rect/circle/oval. Preserve the source box
+    // for older projections without shape metadata; invent no corner radius.
+    return rectangle(part, 0, 0, 1, 1, height);
 }
 
 /** Source-sized circular/slot openings; depth and dark finish are illustrative. */
@@ -141,21 +182,7 @@ export function padHoleContour(pad, height = 0.145) {
     const size = footprintSize(part);
     const w = pad.drill.width_mm, h = pad.drill.height_mm;
     if (!(w > 0 && h > 0 && w <= size.width + 1e-6 && h <= size.height + 1e-6)) return [];
-    const r = Math.min(w, h) / 2;
-    const horizontal = w > h;
-    const straight = Math.abs(w - h) / 2;
-    const points = [];
-    for (let end = 0; end < 2; end += 1) {
-        const start = horizontal ? -Math.PI / 2 + end * Math.PI : end * Math.PI;
-        const cx = horizontal ? (end === 0 ? straight : -straight) : 0;
-        const cy = horizontal ? 0 : (end === 0 ? straight : -straight);
-        for (let step = 0; step <= 12; step += 1) {
-            const angle = start + step * Math.PI / 12;
-            points.push(pointOnFootprint(part, 0.5 + (cx + r * Math.cos(angle)) / size.width,
-                0.5 + (cy + r * Math.sin(angle)) / size.height, height));
-        }
-    }
-    return points;
+    return capsuleContour(part, w, h, height);
 }
 
 function tint(material, item, matcher, selected) {
@@ -166,14 +193,14 @@ function tint(material, item, matcher, selected) {
         material[2] * 0.35 + 0.025, Math.min(0.95, material[3] + 0.22), ...material.slice(4)];
 }
 
-function disc(buffer, centre, radius, material, { inner = 0, alpha = 1, segments = 16, sign = 1 } = {}) {
+function disc(buffer, centre, radius, material, { inner = 0, alpha = 1, emission = 0, segments = 16, sign = 1 } = {}) {
     for (let i = 0; i < segments; i += 1) {
         const a = (i / segments) * Math.PI * 2;
         const b = ((i + 1) / segments) * Math.PI * 2;
         const at = (angle, r) => ({ x: centre.x + Math.cos(angle) * r,
             y: centre.y + Math.sin(angle) * r, z: centre.z });
-        if (inner > 0) face(buffer, [at(a, inner), at(a, radius), at(b, radius), at(b, inner)], material, { alpha, flip: sign < 0 });
-        else face(buffer, [centre, at(a, radius), at(b, radius)], material, { alpha, flip: sign < 0 });
+        if (inner > 0) face(buffer, [at(a, inner), at(a, radius), at(b, radius), at(b, inner)], material, { alpha, emission, flip: sign < 0 });
+        else face(buffer, [centre, at(a, radius), at(b, radius)], material, { alpha, emission, flip: sign < 0 });
     }
 }
 
@@ -238,12 +265,57 @@ function referenceInk(buffer, part, material) {
     }
 }
 
+/** One display lead per actual peripheral pad; terminal identity is retained. */
+export function packageContacts(part, pads, bounds = [0.20, 0.16, 0.80, 0.84]) {
+    const [origin, right, , upper] = part.points;
+    const ux = right.x - origin.x, uy = right.y - origin.y;
+    const vx = upper.x - origin.x, vy = upper.y - origin.y;
+    const result = [];
+    for (const pad of pads) {
+        if (pad.nonPlated) continue;
+        const centre = pointOnFootprint({ points: pad.points, side: part.side }, 0.5, 0.5);
+        const dx = centre.x - origin.x, dy = centre.y - origin.y;
+        const u = (dx * ux + dy * uy) / (ux * ux + uy * uy);
+        const v = (dx * vx + dy * vy) / (vx * vx + vy * vy);
+        const endU = Math.min(bounds[2], Math.max(bounds[0], u));
+        const endV = Math.min(bounds[3], Math.max(bounds[1], v));
+        // An exposed pad under a body is not an extra peripheral terminal.
+        if (Math.hypot(u - endU, v - endV) < 1e-6) continue;
+        const padSize = footprintSize({ points: pad.points });
+        result.push({ ref: part.ref, number: pad.number, net: pad.net,
+            a: pointOnFootprint(part, u, v, 0.22),
+            b: pointOnFootprint(part, endU, endV, 0.54),
+            width: Math.min(padSize.width, padSize.height) * 0.48,
+            side: part.side });
+    }
+    return result;
+}
+
+function contactGeometry(buffer, contact, material) {
+    const dx = contact.b.x - contact.a.x, dy = contact.b.y - contact.a.y;
+    const length = Math.hypot(dx, dy);
+    const ox = -dy / length * contact.width / 2, oy = dx / length * contact.width / 2;
+    const bottom = [{ ...contact.a, x: contact.a.x - ox, y: contact.a.y - oy },
+        { ...contact.b, x: contact.b.x - ox, y: contact.b.y - oy },
+        { ...contact.b, x: contact.b.x + ox, y: contact.b.y + oy },
+        { ...contact.a, x: contact.a.x + ox, y: contact.a.y + oy }];
+    const sign = contact.side === "B.Cu" ? -1 : 1;
+    prism(buffer, bottom, bottom.map((point) => ({ ...point, z: point.z + sign * 0.09 })), material);
+}
+
+function roundBody(buffer, part, radius, from, to, material) {
+    prism(buffer, capsuleContour(part, radius * 2, radius * 2, from),
+        capsuleContour(part, radius * 2, radius * 2, to), material);
+}
+
 function packageGeometry(buffer, part, pads, materialFor) {
     const kind = displayPackageKind(part);
     const h = DISPLAY_HEIGHTS[kind];
     const m = (name) => materialFor(MAT[name]);
     const b = (bounds, from, to, material, options) => beveledBox(buffer, part, bounds,
         from + 0.10, to + 0.10, m(material), options);
+    const contacts = ["chip", "button"].includes(kind) ? packageContacts(part, pads) : [];
+    for (const contact of contacts) contactGeometry(buffer, contact, m("silver"));
     if (kind === "module") {
         b([0, 0, 1, 1], 0, 0.45, "module", { bevel: 0.07 });
         b([0.038, 0.033, 0.962, 0.767], 0.45, 0.63, "darkMetal", { bevel: 0.045 });
@@ -275,18 +347,25 @@ function packageGeometry(buffer, part, pads, materialFor) {
         b([0, 0, 1, 1], 0, h * 0.3, "charcoal");
         b([0.06, 0.06, 0.94, 0.94], h * 0.3, h, "sensor", { bevel: 0.09, corner: 0.09 });
         b([0.18, 0.18, 0.82, 0.82], h - 0.035, h + 0.005, "silver", { bevel: 0.01 });
+    } else if (kind === "button") {
+        b([0.20, 0.16, 0.80, 0.84], 0, h * 0.47, "charcoal", { bevel: 0.16, corner: 0.12 });
+        b([0.21, 0.17, 0.79, 0.83], h * 0.46, h * 0.57, "silver", { bevel: 0.08, corner: 0.18 });
+        const size = footprintSize(part);
+        const radius = Math.min(size.width, size.height) * 0.18;
+        roundBody(buffer, part, radius * 1.13, h * 0.55, h * 0.61, m("darkMetal"));
+        roundBody(buffer, part, radius, h * 0.60, h, m("charcoal"));
     } else if (kind === "capacitor" || kind === "resistor" || kind === "led") {
         b([0.03, 0.06, 0.97, 0.94], 0, h * 0.82, kind === "capacitor" ? "ceramic" : kind === "led" ? "white" : "charcoal", { bevel: 0.10 });
         b([0, 0, 0.19, 1], 0, h * 0.9, "solder", { bevel: 0.06 });
         b([0.81, 0, 1, 1], 0, h * 0.9, "solder", { bevel: 0.06 });
         if (kind === "led") b([0.25, 0.22, 0.75, 0.78], h * 0.68, h, "green", { bevel: 0.095, corner: 0.09 });
     } else {
-        b([0.08, 0.12, 0.92, 0.88], 0, h, "charcoal", { bevel: 0.13, corner: 0.07 });
+        b([0.20, 0.16, 0.80, 0.84], 0, h, "charcoal", { bevel: 0.13, corner: 0.07 });
     }
     const bottom = part.points.map((p) => ({ ...p, z: p.z + (part.side === "B.Cu" ? -0.1 : 0.1) }));
     const top = part.points.map((p) => ({ ...p, z: p.z + (part.side === "B.Cu" ? -h - 0.13 : h + 0.13) }));
     const faces = [top, bottom, ...bottom.map((p, i) => [p, bottom[(i + 1) % 4], top[(i + 1) % 4], top[i]])];
-    return { ...part, displayKind: kind, displayHeight: h, geometryIsDisplayOnly: true,
+    return { ...part, displayKind: kind, displayHeight: h, displayContacts: contacts, geometryIsDisplayOnly: true,
         bottom, top, faces, labelPoint: pointOnFootprint(part, 0.5, kind === "module" ? 0.4 : 0.5, h + 0.25) };
 }
 
@@ -311,17 +390,27 @@ export function buildRenderGeometry(scene, { matcher, selected = null, xray = fa
             face(substrate, points, material, { flip: true, alpha });
         }
     }
+    const copperCaps = new Set();
     for (const track of scene.tracks) {
         const points = trackRibbon(track);
         if (!points.length) continue;
         const lit = matcher?.active && matcher.matches(track);
         const material = tint(lit ? MAT.gold : track.layer === "F.Cu" ? MAT.copper : MAT.backCopper, track, matcher, selected);
         face(objects, points, material, { flip: track.layer !== "F.Cu", emission: lit ? 0.35 : 0 });
+        // KiCad segment ends are round. Deduplicate shared endpoints without
+        // adding paths or enlarging the emitted segment width.
+        for (const endpoint of [track.a, track.b]) {
+            const key = [track.layer, track.net, track.width, endpoint.x, endpoint.y].join("|");
+            if (copperCaps.has(key)) continue;
+            copperCaps.add(key);
+            disc(objects, { ...endpoint, z: points[0].z }, track.width / 2, material,
+                { sign: track.layer === "F.Cu" ? 1 : -1, emission: lit ? 0.35 : 0, segments: 12 });
+        }
     }
     for (const pad of scene.pads) {
         const sign = pad.points[0].z < 0 ? -1 : 1;
-        const bottom = pad.points.map((p) => ({ ...p, z: p.z + sign * 0.055 }));
-        const top = pad.points.map((p) => ({ ...p, z: p.z + sign * 0.13 }));
+        const bottom = padContour(pad, 0.055);
+        const top = padContour(pad, 0.13);
         if (!pad.nonPlated) {
             prism(objects, bottom, top, tint(MAT.gold, pad, matcher, selected));
             if (!pad.drill) solderFillet(objects, pad, tint(MAT.solder, pad, matcher, selected));

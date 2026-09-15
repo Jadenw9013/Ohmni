@@ -113,7 +113,7 @@ function updateShell() {
         : state.brief ? "Example brief · ready to explore" : "A guided electronics workspace";
     setText("#workspace-title", STAGE_TITLES[state.stage]);
     setText("#workspace-status", status);
-    setText("#project-label", state.brief?.project_name || state.experience?.headline || (state.customProject && state.projectName) || "Room sensor example");
+    setText("#project-label", state.brief?.project_name || state.experience?.headline || (state.customProject && state.projectName) || "Your first circuit");
     $$('[data-navigate]').forEach((button) => {
         const active = button.dataset.navigate === state.stage;
         button.disabled = !canNavigate(button.dataset.navigate);
@@ -1165,7 +1165,7 @@ function renderBringUp(exp) {
 // ── wiring ──────────────────────────────────────────────────────────────
 
 function attach() {
-    initializeReferencePreview();
+    initializeReferencePreview({ onCustomize: (brief) => state.workbench?.openNew(brief) });
     if ($("#project-workbench")?.dataset.projectWorkbench === "true") {
         state.workbench = mountProjectWorkbench($("#project-workbench"), {
             shelf: $("#saved-projects"), onOpen: openProjectWorkspace,

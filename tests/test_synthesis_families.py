@@ -22,6 +22,7 @@ def test_existing_a1_input_fingerprint_survives_new_empty_slots():
     brief = SynthesisBrief()
     legacy = brief.model_dump(mode="json")
     del legacy["button_count"], legacy["spi_devices"]
+    del legacy["board_width_mm"], legacy["board_height_mm"]
     expected = hashlib.sha256(json.dumps(legacy, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
     assert brief.fingerprint == expected
     assert SynthesisBrief.model_validate(legacy).fingerprint == expected

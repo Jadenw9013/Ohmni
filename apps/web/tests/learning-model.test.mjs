@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-import { createLessons, discoveryOutcome, validateLearningSource } from "../learning-model.js";
+import { createLessons, discoveryOutcome, validateLearningSource, componentConnections, recordedCheckRows } from "../learning-model.js";
 
 // Different identifiers and systems from the saved room sensor protect against
 // a lesson sequence that accidentally encodes only the golden board.
@@ -237,4 +237,34 @@ test("the shipped saved board supports truthful lessons with its own provenance"
         assert.equal(lessons[index].description, source.systems[index].summary);
         assert.deepEqual(lessons[index].refs, source.systems[index].component_refs);
     }
+});
+
+test("pin and peer discovery follows arbitrary recorded nets without inventing terminals", () => {
+    const source = fixture();
+    source.board.components[1].pads = [
+        { number: "8", net_name: "INPUT_RAIL" },
+        { number: "3", net_name: "MEASUREMENT" },
+        { number: "3", net_name: "MEASUREMENT" },
+        { number: "7", net_name: null },
+    ];
+    const before = structuredClone(source);
+    deepFreeze(source);
+    assert.deepEqual(componentConnections(source, "A11"), [
+        { net: "INPUT_RAIL", pins: ["8"], peers: [{ ref: "J7", name: "Supply connector" }] },
+        { net: "MEASUREMENT", pins: ["3"], peers: [{ ref: "R42", name: "Helper resistor" }] },
+    ]);
+    assert.deepEqual(componentConnections(source, "GHOST"), []);
+    assert.deepEqual(componentConnections(source, "J7")[0].pins, [], "missing pin metadata remains unknown");
+    assert.deepEqual(source, before);
+});
+
+test("saved check display preserves warnings and cannot promote missing results", () => {
+    const rows = recordedCheckRows({ checks: { erc: { status: "pass_with_warnings", finding_count: 3 },
+        drc: { status: "error" }, routing: { passed: false }, simulation: "NOT_RUN", bench: "NOT_VERIFIED" } });
+    assert.equal(rows[0].value, "pass with warnings · 3 findings");
+    assert.match(rows[1].value, /error.*unknown findings.*unknown unrouted/);
+    assert.equal(rows[2].value, "Fail");
+    assert.equal(rows[3].value, "NOT RUN");
+    assert.equal(rows[4].value, "NOT VERIFIED");
+    assert.ok(recordedCheckRows({}).every((row) => row.value.includes("Unknown")));
 });

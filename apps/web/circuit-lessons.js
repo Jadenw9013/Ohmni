@@ -1,4 +1,4 @@
-import { createLessons, discoveryOutcome } from "./learning-model.js";
+import { createLessons, discoveryOutcome, componentConnections } from "./learning-model.js";
 import { escapeHtml as esc } from "./view-model.js";
 
 /** One learning controller shared by the instant reference lab and fresh results. */
@@ -55,7 +55,11 @@ export class CircuitLessons {
                 heading?.focus({ preventScroll: true });
             }
             if (name === "part") {
-                this.container.querySelector(`[data-lesson-action="part"][data-ref="${CSS.escape(action.dataset.ref)}"]`)?.focus({ preventScroll: true });
+                // Lists inside details are replaced during render. Put focus
+                // on the visible inspector, not a newly collapsed list item.
+                const heading = this.container.querySelector(".lab-part-detail h4");
+                heading?.setAttribute("tabindex", "-1");
+                heading?.focus({ preventScroll: true });
             }
         };
         container.addEventListener("click", this.handleClick);
@@ -100,7 +104,7 @@ export class CircuitLessons {
         const lesson = this.lessons[this.index];
         const card = this.source.components.find((part) => part.ref === this.selected);
         const placed = this.source.board.components.find((part) => part.ref === this.selected);
-        const system = this.lessons.find((item) => item.refs.includes(this.selected));
+        const connections = componentConnections(this.source, this.selected);
         const found = this.started && card && discoveryOutcome(lesson, card.ref) === "match";
         this.container.innerHTML = `
           <div class="lab-lesson-top"><span class="lab-eyebrow">A circuit, made understandable</span><span class="discovery-count">${this.visited.size}/${this.lessons.length} explored</span></div>
@@ -114,8 +118,12 @@ export class CircuitLessons {
             <div class="lesson-nav"><button type="button" data-lesson-action="previous" ${this.index === 0 ? "disabled" : ""} aria-label="Previous tour stop">←</button><button type="button" data-lesson-action="next">${this.index === this.lessons.length - 1 ? "Explore again" : "Next discovery"} <span aria-hidden="true">→</span></button></div>
             <button type="button" data-lesson-action="all" class="lab-free-explore">Return to free exploration</button>
           ` : `<h3>Big ideas.<br>Tiny components.</h3><p class="lesson-description">Every part has a job. Discover the systems in this circuit and see how their parts work together.</p><button type="button" data-lesson-action="start" class="lab-start-tour">Take the ${this.lessons.length}-stop tour <span aria-hidden="true">→</span></button><p class="lab-tour-note">Explore at your pace. No electronics knowledge needed.</p>`}
-          ${card ? `<section class="lab-part-detail"><div class="lab-part-heading"><span class="lab-eyebrow">Selected component</span><code>${esc(card.ref)}</code></div><h4>${esc(card.name?.human || card.ref)}</h4><button type="button" data-lesson-action="inspect" class="lab-free-explore" aria-label="Inspect ${esc(card.name?.human || card.ref)} on the board">Inspect this part</button><p>${esc(system?.description || "")}</p>${card.name?.detail ? `<details><summary>About this component</summary><p>${esc(card.name.detail)}</p></details>` : ""}
-              <div class="net-inspector"><h5>See its connections</h5><p>Each net is a set of electrically connected pins. Pick one to highlight its copper.</p><div>${(placed?.net_names || []).map((net) => `<button type="button" data-lesson-action="net" data-net="${esc(net)}" aria-pressed="false">${esc(net)}</button>`).join("")}</div><p class="connection-readout" role="status"></p></div></section>` : ""}
+          ${card ? `<section class="lab-part-detail"><div class="lab-part-heading"><span class="lab-eyebrow">Selected component</span><code>${esc(card.ref)}</code></div><h4>${esc(card.name?.human || card.ref)}</h4><p>${esc(card.purpose || card.name?.detail || "No component explanation was recorded.")}</p><button type="button" data-lesson-action="inspect" class="lab-free-explore" aria-label="Inspect ${esc(card.name?.human || card.ref)} on the board">Inspect this part</button>
+              <dl class="part-facts"><div><dt>Part</dt><dd>${esc(card.part_id || placed?.part_id || "Not recorded")}</dd></div><div><dt>Package</dt><dd>${esc(placed?.package || "Not recorded")}</dd></div></dl>
+              ${card.name?.detail || placed?.placement_reason ? `<details><summary>About this part and its placement</summary>${card.name?.detail ? `<p>${esc(card.name.detail)}</p>` : ""}${placed?.placement_reason ? `<p>${esc(placed.placement_reason)}</p>` : ""}</details>` : ""}
+              <div class="net-inspector"><h5>Follow its connections</h5><p>Choose a net to highlight its copper. Pin numbers and connected parts come from this board.</p><div>${connections.map(({ net, pins }) => `<button type="button" data-lesson-action="net" data-net="${esc(net)}" aria-pressed="false">${esc(net)}${pins.length ? `<small>Pin ${esc(pins.join(", "))}</small>` : ""}</button>`).join("")}</div><p class="connection-readout" role="status"></p>
+              <details class="connection-peers"><summary>Which parts share these connections?</summary>${connections.map(({ net, peers }) => `<div><h6>${esc(net)}</h6>${peers.length ? peers.map((peer) => `<button type="button" data-lesson-action="part" data-ref="${esc(peer.ref)}" aria-label="Explore ${esc(peer.name)} ${esc(peer.ref)}">${esc(peer.ref)} <span>${esc(peer.name)}</span></button>`).join("") : `<p>No other component is recorded on this net.</p>`}</div>`).join("")}</details></div></section>` : ""}
+          <details class="lab-component-index"><summary>Browse all ${this.source.components.length} parts</summary><div class="lesson-parts">${this.source.components.map((part) => `<button type="button" data-lesson-action="part" data-ref="${esc(part.ref)}" aria-pressed="${this.selected === part.ref}"><span>${esc(part.name?.human || part.ref)}</span><code>${esc(part.ref)}</code></button>`).join("")}</div></details>
           <button type="button" data-lesson-action="fit" class="lab-free-explore">Fit whole board</button>
           <details class="lab-visual-limits"><summary>What this view represents</summary><p>${this.source.source ? "A saved reference from an earlier generated design." : "Geometry from this completed design."} Footprints, pads, and copper follow the PCB artifact. Component bodies, heights, colors, and board thickness are illustrative. Light pulses highlight connections; they do not simulate electricity.</p><code>PCB ${esc(this.source.board.artifact_fingerprint.slice(0, 16))}…</code></details>`;
     }

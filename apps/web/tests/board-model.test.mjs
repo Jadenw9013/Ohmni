@@ -63,6 +63,18 @@ test("every primitive comes from projected data and none is invented", () => {
     assert.equal(scene.thicknessIsDisplayOnly, true);
 });
 
+test("package identity and per-pad shape and number survive the scene projection", () => {
+    const scene = buildScene(board);
+    for (const component of board.components) {
+        const part = scene.parts.find((item) => item.ref === component.ref);
+        assert.equal(part.package, component.package);
+        assert.equal(part.footprintId, component.footprint_id);
+        const pads = scene.pads.filter((item) => item.ref === component.ref);
+        assert.deepEqual(pads.map(({ number, shape }) => ({ number, shape })),
+            component.pads.map(({ number, shape }) => ({ number, shape })));
+    }
+});
+
 test("copper sits on the layer the compiler emitted it on", () => {
     const scene = buildScene(board);
     const front = scene.tracks.find((t) => t.net === "SDA");

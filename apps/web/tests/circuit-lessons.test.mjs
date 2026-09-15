@@ -9,7 +9,7 @@ function source() {
             artifact_fingerprint: "a".repeat(64), routing_plan_fingerprint: "b".repeat(64),
             net_names: ["SUPPLY"], tracks: [{ net_name: "SUPPLY" }],
             components: [
-                { ref: "P1", net_names: ["SUPPLY"] },
+                { ref: "P1", package: "CONNECTION-2", placement_reason: "Kept near the edge.", pads: [{ number: "4", net_name: "SUPPLY" }], net_names: ["SUPPLY"] },
                 { ref: "C1", net_names: ["SUPPLY"] },
             ],
         },
@@ -18,7 +18,7 @@ function source() {
             { system: "compute", label: "Compute", summary: "The compute group.", component_refs: ["C1"], anchor_refs: ["C1"] },
         ],
         components: [
-            { ref: "P1", system: "power", name: { human: "Power connector" } },
+            { ref: "P1", system: "power", name: { human: "Power connector" }, purpose: "The recorded job of this connector." },
             { ref: "C1", system: "compute", name: { human: "Controller" } },
         ],
     };
@@ -38,7 +38,7 @@ function harness() {
         addEventListener(type, handler) { listeners.set(type, handler); },
         removeEventListener(type, handler) { if (listeners.get(type) === handler) listeners.delete(type); },
         querySelector(selector) {
-            if (selector !== "h3" && selector !== '[data-lesson-action="start"]') return null;
+            if (selector !== "h3" && selector !== ".lab-part-detail h4" && selector !== '[data-lesson-action="start"]') return null;
             const element = { selector, revision, setAttribute() {}, focus() { focused = element; } };
             return element;
         },
@@ -93,6 +93,26 @@ test("clearing the board selection clears the lesson inspector too", () => {
     assert.doesNotMatch(container.innerHTML, /class="lab-part-detail"/);
     assert.doesNotMatch(container.innerHTML, /class="net-inspector"/);
     assert.deepEqual(view.highlight, { refs: ["P1"] }, "the tour remains ready for another choice");
+});
+
+test("free exploration teaches the selected component and its actual pins and peers", () => {
+    const { view, container } = harness();
+    view.select("P1");
+    assert.match(container.innerHTML, /The recorded job of this connector/);
+    assert.match(container.innerHTML, /CONNECTION-2/);
+    assert.match(container.innerHTML, /Kept near the edge/);
+    assert.match(container.innerHTML, /Pin 4/);
+    assert.match(container.innerHTML, /data-ref="C1"/);
+    assert.match(container.innerHTML, /Browse all 2 parts/);
+    assert.doesNotMatch(container.innerHTML, /The power group/);
+});
+
+test("choosing a part from a replaced disclosure list focuses the visible inspector", () => {
+    const h = harness();
+    h.click("part", { ref: "P1" });
+    assert.equal(h.lessons.selected, "P1");
+    assert.equal(h.focused.selector, ".lab-part-detail h4");
+    assert.equal(h.focused.revision, h.revision);
 });
 
 test("moving to the next stop clears renderer selection without callback recursion", () => {

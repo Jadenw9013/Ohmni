@@ -63,3 +63,31 @@ export function createLessons(source) {
 export function discoveryOutcome(lesson, ref) {
     return Array.isArray(lesson?.refs) && lesson.refs.includes(ref) ? "match" : "other";
 }
+
+/** Pin/net membership comes from the emitted PCB; it is not a simulated signal. */
+export function componentConnections(source, ref) {
+    const part = source.board.components.find((item) => item.ref === ref);
+    if (!part) return [];
+    return (part.net_names || []).map((net) => ({
+        net,
+        pins: [...new Set((part.pads || []).filter((pad) => pad.net_name === net)
+            .map((pad) => pad.number).filter((number) => typeof number === "string" && number.length))],
+        peers: source.board.components.filter((peer) => peer.ref !== ref && peer.net_names.includes(net))
+            .map((peer) => ({ ref: peer.ref,
+                name: source.components.find((card) => card.ref === peer.ref)?.name?.human || peer.ref })),
+    }));
+}
+
+/** Display recorded results only; missing results stay unknown. */
+export function recordedCheckRows(source) {
+    const checks = source.checks || {};
+    const status = (value) => typeof value === "string" ? value.replaceAll("_", " ") : "Unknown";
+    const count = (value) => Number.isInteger(value) && value >= 0 ? String(value) : "unknown";
+    return [
+        { label: "Schematic ERC", value: `${status(checks.erc?.status)} · ${count(checks.erc?.finding_count)} findings` },
+        { label: "PCB DRC", value: `${status(checks.drc?.status)} · ${count(checks.drc?.finding_count)} findings · ${count(checks.drc?.unconnected_count)} unrouted` },
+        { label: "Routing", value: checks.routing?.passed === true ? "Pass" : checks.routing?.passed === false ? "Fail" : "Unknown" },
+        { label: "Simulation", value: status(checks.simulation) },
+        { label: "Bench testing", value: status(checks.bench) },
+    ];
+}

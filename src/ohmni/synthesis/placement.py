@@ -36,7 +36,8 @@ def rail_evidence(spec: ComponentSpec, rail: str) -> tuple[Evidence, ...]:
 class PlacementIntentBuilder:
     """Mutable compiler accumulator; the published request is frozen and hash-bound."""
 
-    def __init__(self) -> None:
+    def __init__(self, *, width_mm: float = 100, height_mm: float = 70) -> None:
+        self.outline = BoardOutline(width_mm=width_mm, height_mm=height_mm)
         self.groups: list[PlacementGroup] = []
         self.decoupling: list[DecouplingTarget] = []
         self.constraints: list[PlacementConstraint] = []
@@ -105,7 +106,7 @@ class PlacementIntentBuilder:
 
     def finish(self, circuit: CircuitIR) -> PlacementRequest:
         request = PlacementRequest(
-            circuit_content_hash=circuit.content_hash, outline=BoardOutline(width_mm=100, height_mm=70),
+            circuit_content_hash=circuit.content_hash, outline=self.outline,
             groups=tuple(self.groups), decoupling=tuple(self.decoupling), constraints=tuple(self.constraints),
         )
         members = {ref for group in request.groups for ref in group.member_refs}

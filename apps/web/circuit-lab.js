@@ -10,6 +10,8 @@ export function initializeCircuitLab(source) {
     const launch = document.querySelector("#open-reference-lab");
     if (!dialog?.showModal || !canvas || !launch) return null;
     validateLearningSource(source, { reference: true });
+    const title = document.querySelector("#lab-board-title");
+    if (title) title.textContent = source.confirmed_brief?.project_name || "Explore this generated circuit";
     document.querySelector("#lab-part-count").textContent = `${source.board.components.length} components`;
     document.querySelector("#lab-layer-count").textContent = `${source.board.layer_count} copper layers`;
     document.querySelector("#lab-board-size").textContent = `${source.board.width_mm} × ${source.board.height_mm} mm`;

@@ -39,6 +39,10 @@ CASES = [
                    status_led_count=leds, button_count=buttons, include_programming_header=header)
     for leds in (1, 4) for buttons in (1, 2) for header in (False, True)
 ] + [
+    SynthesisBrief(archetype=ArchetypeId.A2_USB_GPIO_CONTROLLER, sensors=(I2cSensorSlot(part_id=sensor),),
+                   status_led_count=4, button_count=2)
+    for sensor in ("BME280", "TMP102AIDRLR")
+] + [
     SynthesisBrief(archetype=ArchetypeId.A3_USB_SPI_PERIPHERAL,
                    spi_devices=(SpiPeripheralSlot(part_id="25LC256-I/SN"),) * count,
                    sensors=sensors, status_led_count=0 if not sensors else 1)

@@ -120,15 +120,19 @@ def test_repository_product_scope_matches_human_approval():
     milestones=json.loads((root/".ai"/"milestones.yaml").read_text())
     assert state["latest_product_milestone"]["id"]=="M9"
     assert state["latest_product_milestone"]["status"]=="COMPLETE"
-    # The human parked M10-T05 and selected the bounded semantic MCP scope.
+    # The semantic MCP slice is complete. The human selected a generated
+    # sensor/controller explorer; this does not resume the parked M10 benchmark.
     for scope in tasks["scopes"]:
         assert scope["approved_by"]=="human" and scope["approval_evidence"]
-        if scope["id"] == "MCP-SEMANTIC-1":
+        if scope["id"] == "PCB-EXPLORER-1":
             assert scope["status"] in {"IN_PROGRESS", "VERIFIED", "COMPLETE"}
         else:
             expected="IN_PROGRESS" if scope["id"]=="M10" else "COMPLETE"
             assert scope["status"]==expected, scope["id"]
-    assert state["approved_product_scope"]=="MCP-SEMANTIC-1"
+    assert state["approved_product_scope"]=="PCB-EXPLORER-1"
+    explorer=json.loads((root/".ai/approvals/PCB-EXPLORER-1.yaml").read_text())
+    assert explorer["approved_by"]=="human"
+    assert explorer["functional_choice"]=="ESP32 sensor-and-controller board"
     parked=next(task for task in tasks["tasks"] if task["id"]=="M10-T05")
     assert parked["status"]=="BLOCKED" and parked["blockers"]
     approval=json.loads((root/".ai/approvals/MCP-SEMANTIC-1.yaml").read_text())
@@ -137,7 +141,7 @@ def test_repository_product_scope_matches_human_approval():
     # the approved scope rather than pinning this approval test to one task.
     if state["active_task"] is not None:
         current=next(task for task in tasks["tasks"] if task["id"]==state["active_task"])
-        assert current["scope"]=="MCP-SEMANTIC-1" and current["status"]=="IN_PROGRESS"
+        assert current["scope"]=="PCB-EXPLORER-1" and current["status"]=="IN_PROGRESS"
     active=milestones["active_product_milestone"]
     assert active["id"]=="M10" and active["status"]=="IN_PROGRESS"
     assert active["approved_by"]=="human" and active["approval_evidence"]

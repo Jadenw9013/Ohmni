@@ -714,7 +714,7 @@ main { max-width: 1800px; padding: 0 32px; }
 .open-lab-button > span:last-child { font-size: 29px; color: white; margin-left: 12px; }
 .open-lab-button:hover:not(:disabled) { background: #1744ba; transform: none; }
 .open-lab-button:disabled { opacity: .68; }
-.reference-stage.pcb-stage #reference-canvas { height: clamp(340px, 25vw, 440px); }
+.reference-stage.pcb-stage #reference-canvas { height: clamp(420px, 34vw, 600px); }
 .reference-stage.pcb-stage .reference-caption { font-size: 14px; color: #bfd6dd; padding: 0 22px 16px; line-height: 1.5; }
 .pcb-stage .reference-controls { gap: 7px; padding: 0 20px 22px; }
 .pcb-stage .reference-controls button { font-size: 15px; padding: 9px 13px; min-height: 41px; border-radius: 8px; color: #dbebee; border-color: #52717b; }
@@ -1081,3 +1081,31 @@ main { max-width: 1800px; padding: 0 32px; }
 .scope-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;font-size:.88rem}
 .scope-key{display:inline-flex;align-items:center;gap:6px}
 .scope-key i{width:12px;height:3px;border-radius:2px;display:inline-block}
+
+/* The showcase is one inspectable object; its detail comes from the PCB. */
+.reference-stats { margin: 9px 22px 0; color: #b5cfca; font: 13px/1.6 var(--mono); }
+.reference-evidence { margin: 0 22px 20px; color: #b5cfca; font-size: 13px; }
+.reference-evidence summary { cursor: pointer; }
+.reference-evidence dl > div { display: flex; gap: 16px; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #38554f; }
+.reference-evidence dd { text-align: right; margin: 0; }
+.reference-evidence p { line-height: 1.65; margin: 12px 0; }
+.customize-reference { margin: 5px 0 20px 32px; gap: 24px; }
+.customize-reference span { margin-left: 18px; }
+.part-facts { display: grid; gap: 9px; margin: 18px 0; font-size: 13px; }
+.part-facts > div { display: grid; grid-template-columns: 66px minmax(0, 1fr); gap: 10px; }
+.part-facts dt { color: var(--ink-soft); }
+.part-facts dd { margin: 0; overflow-wrap: anywhere; font-family: var(--mono); }
+.net-inspector button small { display: block; margin-top: 6px; font: 11px/1.3 var(--mono); opacity: .8; }
+.connection-peers h6 { font: 12px/1.5 var(--mono); margin: 16px 0 6px; }
+.connection-peers button { display: block; text-align: left; width: 100%; line-height: 1.5; margin: 5px 0; }
+.connection-peers button span { font-family: var(--sans, sans-serif); margin-left: 6px; }
+.lab-component-index { margin-top: 22px; font-size: 14px; line-height: 1.6; }
+.lab-component-index summary { cursor: pointer; font-weight: 550; }
+.lab-component-index .lesson-parts { margin-top: 12px; }
+.board-dimensions { display: flex; flex-wrap: wrap; gap: 16px; }
+.board-dimensions label { flex: 1 1 120px; }
+.board-dimensions input { width: 100%; margin-top: 8px; padding: 10px; border: 1px solid #9db7bd; border-radius: 6px; font: inherit; }
+@media (max-width: 600px) {
+  .reference-stats { margin-left: 16px; margin-right: 16px; font-size: 12px; }
+  .customize-reference { margin-left: 0; width: 100%; }
+}

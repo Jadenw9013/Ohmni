@@ -33,6 +33,8 @@ export function supportedBrief(brief) {
         && finite(brief.logic_voltage_v) && Math.abs(brief.logic_voltage_v - 3.3) <= 1e-9
         && brief.mcu_part_id === "ESP32-WROOM-32E" && brief.max_board_layers === 2
         && integer(brief.status_led_count) && integer(brief.button_count ?? 0)
+        && ["board_width_mm", "board_height_mm"].every((field) => brief[field] === undefined
+            || finite(brief[field]) && brief[field] > 0)
         && typeof brief.include_programming_header === "boolean"
         && typeof brief.hand_solderable_preferred === "boolean"
         && (brief.budget_usd === null || finite(brief.budget_usd) && brief.budget_usd >= 0)
@@ -67,6 +69,12 @@ export function parseProjectOptions(payload, identity) {
         || !options.spi_devices.every((device) => object(device) && text(device.part_id) && text(device.label) && text(device.description))
         || new Set(options.spi_devices.map((device) => device.part_id)).size !== options.spi_devices.length
         || !object(options.fixed) || !Array.isArray(options.limitations) || !options.limitations.every(text)) fail("api_ui_mismatch");
+    if (options.board_dimensions !== undefined && (!object(options.board_dimensions)
+        || !["board_width_mm", "board_height_mm"].every((field) => {
+            const size = options.board_dimensions[field];
+            return object(size) && [size.min, size.max, size.default].every(finite)
+                && size.min > 0 && size.max >= size.min && size.default >= size.min && size.default <= size.max;
+        }))) fail("api_ui_mismatch");
     if (!options.families.every((family) => briefFitsOptions(family.defaults, options)
         && family.sensor_slot_defaults.every((slot) => options.sensors.some((sensor) => sensor.part_id === slot.part_id)))) fail("api_ui_mismatch");
     return options;
@@ -79,6 +87,12 @@ export function briefFitsOptions(brief, options) {
     const inRange = (count, field) => count >= family[field].min && count <= family[field].max;
     return inRange(brief.sensors.length, "sensor_count") && inRange(brief.status_led_count, "status_led_count")
         && inRange(brief.button_count ?? 0, "button_count") && inRange(brief.spi_devices?.length ?? 0, "spi_count")
+        && ["board_width_mm", "board_height_mm"].every((field) => {
+            const range = options.board_dimensions?.[field];
+            const value = brief[field] ?? (field === "board_width_mm" ? 100 : 70);
+            return range ? value >= range.min && value <= range.max
+                : value === (field === "board_width_mm" ? 100 : 70);
+        })
         && brief.sensors.every((sensor) => options.sensors.some((item) => item.part_id === sensor.part_id
             && (sensor.address == null || item.addresses.includes(sensor.address))))
         && (brief.spi_devices || []).every((device) => options.spi_devices.some((item) => item.part_id === device.part_id));
@@ -119,6 +133,7 @@ export function sameBrief(a, b) {
     const ordered = (value) => Array.isArray(value) ? value.map(ordered)
         : object(value) ? Object.fromEntries(Object.keys(value).sort().map((key) => [key, ordered(value[key])])) : value;
     const normalized = (brief) => ({ ...brief, button_count: brief.button_count ?? 0,
+        board_width_mm: brief.board_width_mm ?? 100, board_height_mm: brief.board_height_mm ?? 70,
         spi_devices: brief.spi_devices ?? [], sensors: brief.sensors.map((sensor) => ({ ...sensor, address: sensor.address ?? null })) });
     return Boolean(a && b) && JSON.stringify(ordered(normalized(a))) === JSON.stringify(ordered(normalized(b)));
 }
@@ -128,6 +143,8 @@ export function briefChanges(previous, current) {
     const changes = [];
     if (previous.project_name !== current.project_name) changes.push(`Renamed to ${current.project_name}`);
     if (previous.archetype !== current.archetype) changes.push("Changed the kind of board");
+    if ((previous.board_width_mm ?? 100) !== (current.board_width_mm ?? 100)
+        || (previous.board_height_mm ?? 70) !== (current.board_height_mm ?? 70)) changes.push(`Board size: ${current.board_width_mm ?? 100} × ${current.board_height_mm ?? 70} mm`);
     if (previous.status_led_count !== current.status_led_count) changes.push(`Status lights: ${previous.status_led_count} → ${current.status_led_count}`);
     if ((previous.button_count ?? 0) !== (current.button_count ?? 0)) changes.push(`Buttons: ${previous.button_count ?? 0} → ${current.button_count ?? 0}`);
     if (previous.include_programming_header !== current.include_programming_header) changes.push(current.include_programming_header ? "Added the programming header" : "Omitted the programming header");
@@ -135,7 +152,7 @@ export function briefChanges(previous, current) {
     if (sensors(previous) !== sensors(current)) changes.push(`Sensors: ${sensors(current)}`);
     const memories = (brief) => (brief.spi_devices || []).map((device) => device.part_id).join(", ") || "none";
     if (memories(previous) !== memories(current)) changes.push(`Memory devices: ${memories(current)}`);
-    const visible = ["project_name", "archetype", "status_led_count", "button_count", "include_programming_header", "sensors", "spi_devices"];
+    const visible = ["project_name", "archetype", "status_led_count", "button_count", "include_programming_header", "sensors", "spi_devices", "board_width_mm", "board_height_mm"];
     const remaining = { ...previous };
     for (const field of visible) remaining[field] = current[field];
     if (!sameBrief(remaining, current)) changes.push("Updated additional saved requirements");

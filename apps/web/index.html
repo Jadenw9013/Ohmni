@@ -53,19 +53,16 @@
           <div class="welcome-grid">
             <div class="reference-column">
               <div class="reference-stage pcb-stage">
-                <div class="reference-topline"><span><span class="reference-dot" aria-hidden="true"></span>Meet the room sensor</span><span class="reference-provenance">Saved reference</span></div>
+                <div class="reference-topline"><span><span class="reference-dot" aria-hidden="true"></span><span id="reference-title">Explore this circuit</span></span><span class="reference-provenance">Saved design</span></div>
+                <p id="reference-stats" class="reference-stats"></p>
                 <button type="button" id="open-reference-lab" class="open-lab-button" disabled><span>Open the 3D circuit lab<small>Explore now. No engineering run needed.</small></span><span aria-hidden="true">↗</span></button>
                 <canvas id="reference-canvas" tabindex="0" aria-label="Interactive reference circuit board. Drag to rotate. Use the system buttons below to explore."></canvas>
                 <div class="reference-caption" id="reference-caption">A previously generated board. Drag to rotate, or select a system below.</div>
-                <div class="reference-controls" id="reference-focus" role="group" aria-label="Explore a board system">
-                  <button type="button" data-reference-system="all" class="on">Whole board</button>
-                  <button type="button" data-reference-system="power"><span class="system-pin power"></span>Power</button>
-                  <button type="button" data-reference-system="compute"><span class="system-pin compute"></span>Processor</button>
-                  <button type="button" data-reference-system="sense"><span class="system-pin sense"></span>Sensor</button>
-                  <button type="button" data-reference-system="io"><span class="system-pin io"></span>Connections</button>
-                </div>
+                <div class="reference-controls" id="reference-focus" role="group" aria-label="Explore a board system"></div>
+                <details id="reference-evidence" class="reference-evidence" hidden></details>
               </div>
               <div class="reference-inspector" aria-live="polite"><span class="inspector-spark" aria-hidden="true">↳</span><div><h3 id="reference-part-name">Every part has a purpose.</h3><p id="reference-part-description">Select a part on the board or choose a system above to discover its job.</p></div></div>
+              <button type="button" id="customize-reference" class="secondary customize-reference" hidden>Customize this board <span aria-hidden="true">↗</span></button>
             </div>
 
             <div class="welcome-copy">
@@ -148,7 +145,7 @@
     <div class="lab-header"><div class="lab-brand"><span class="lab-mark" aria-hidden="true">Ω</span><div><span class="lab-eyebrow">Ohmni / Interactive learning</span><h2 id="circuit-lab-title">The circuit lab.</h2></div></div><div class="lab-header-actions"><span class="reference-provenance">Saved reference</span><button type="button" id="close-circuit-lab" aria-label="Close circuit lab">Close <span aria-hidden="true">×</span></button></div></div>
     <div class="lab-body">
       <div class="lab-viewport pcb-stage">
-        <div class="lab-stage-top"><span><i aria-hidden="true"></i> Room sensor / ESP32 + BME280</span><span>Drag to orbit · scroll to zoom</span></div>
+        <div class="lab-stage-top"><span><i aria-hidden="true"></i> <span id="lab-board-title">Explore this circuit</span></span><span>Drag to orbit · scroll to zoom</span></div>
         <div class="lab-canvas-wrap"><canvas id="lab-canvas" tabindex="0" aria-label="Interactive circuit lab. Arrow keys rotate, plus and minus zoom. Select a part or use the learning panel."></canvas><div id="lab-hover-label" class="pcb-hover-label" hidden aria-hidden="true"></div><div class="lab-board-specs"><span id="lab-part-count"></span><span id="lab-layer-count"></span><span id="lab-board-size"></span></div></div>
         <p id="lab-unavailable" class="lab-tour-note" hidden>The 3D renderer is unavailable in this browser. You can still inspect the recorded parts in the project workspace.</p>
         <div id="lab-visual-controls" class="board-visual-controls"></div>

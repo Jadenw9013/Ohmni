@@ -35,6 +35,75 @@ test("all offered family defaults and legacy sensor briefs have an editable tran
     }
 });
 
+test("compact board dimensions preserve legacy defaults and follow server bounds", () => {
+    assert.equal(sameBrief(brief, { ...brief, board_width_mm: 100, board_height_mm: 70 }), true);
+    assert.equal(briefFitsOptions({ ...brief, board_width_mm: 90, board_height_mm: 55 }, options), true);
+    for (const width of [39, 101, NaN, "90"]) {
+        assert.equal(briefFitsOptions({ ...brief, board_width_mm: width }, options), false);
+    }
+    assert.deepEqual(briefChanges(brief, { ...brief, board_width_mm: 90, board_height_mm: 55 }), ["Board size: 90 × 55 mm"]);
+    const invalid = structuredClone(options);
+    invalid.board_dimensions.board_width_mm.default = 1000;
+    assert.throws(() => parseProjectOptions({ ...identity, options: invalid }, identity));
+});
+
+test("customizing a reference seeds an unsaved editable project with its exact choices", async () => {
+    const dom = workbenchDom();
+    const seed = { ...defaultProjectBrief(options, "a2_usb_gpio_controller"), project_name: "Custom controller",
+        sensors: [{ part_id: "TMP102AIDRLR", address: null }], button_count: 2, status_led_count: 3,
+        board_width_mm: 92, board_height_mm: 59 };
+    let saved;
+    const fetcher = async (path, request) => {
+        if (path === "/api/health") return response(200, { ...identity, status: "ready", fixture_id: "esp32-bme280-environmental-logger" });
+        if (path === "/api/project-options") return response(200, { ...identity, options });
+        assert.equal(request.method, "POST");
+        saved = JSON.parse(request.body).brief;
+        return response(200, envelope({ ...project, revisions: [{ ...revision, brief: saved }] }));
+    };
+    const controller = mountProjectWorkbench(dom.root, { fetcher });
+    await controller.openNew(seed);
+    assert.equal(dom.node("#project-run").disabled, true, "the saved preview is never treated as this project's run");
+    formInput(dom, { id: "project-led", value: "2" });
+    dom.handlers.get("submit")({ target: { id: "project-form" }, preventDefault() {} });
+    await new Promise(setImmediate);
+    assert.deepEqual(saved, { ...seed, status_led_count: 2 });
+    assert.equal(seed.status_led_count, 3, "the reference stays immutable");
+    controller.dispose();
+});
+
+test("customization survives failed options and a user retry", async () => {
+    const dom = workbenchDom();
+    const seed = { ...defaultProjectBrief(options, "a2_usb_gpio_controller"), project_name: "Keep my controller" };
+    let attempts = 0;
+    const fetcher = async (path) => path === "/api/health"
+        ? response(200, { ...identity, status: "ready", fixture_id: "esp32-bme280-environmental-logger" })
+        : ++attempts === 1 ? response(503, { ...identity }) : response(200, { ...identity, options });
+    const controller = mountProjectWorkbench(dom.root, { fetcher });
+    await controller.openNew(seed);
+    assert.equal(dom.node("#project-save").disabled, true);
+    workbenchClick(dom, "[data-load-options]");
+    await new Promise(setImmediate);
+    assert.match(dom.root.innerHTML, /value="Keep my controller"/);
+    assert.equal(dom.node("#project-save").disabled, false);
+    controller.dispose();
+});
+
+test("a later new-project action supersedes a pending customization", async () => {
+    const dom = workbenchDom();
+    let deliver;
+    const pending = new Promise((resolve) => { deliver = resolve; });
+    const fetcher = async (path) => path === "/api/health"
+        ? response(200, { ...identity, status: "ready", fixture_id: "esp32-bme280-environmental-logger" }) : pending;
+    const controller = mountProjectWorkbench(dom.root, { fetcher });
+    const older = controller.openNew({ ...defaultProjectBrief(options, "a2_usb_gpio_controller"), project_name: "Stale controller" });
+    const newer = controller.openNew();
+    deliver(response(200, { ...identity, options }));
+    await Promise.all([older, newer]);
+    assert.doesNotMatch(dom.root.innerHTML, /Stale controller/);
+    assert.ok(dom.root.innerHTML.includes(`value="${defaultProjectBrief(options).project_name}"`));
+    controller.dispose();
+});
+
 test("saved revision parsing rejects stale identity, duplicate ids, malformed previews and missing fingerprints", () => {
     assert.equal(parseProjectEnvelope(envelope(), identity), project);
     const alternate = { ...identity, server_instance_id: "f".repeat(16) };
