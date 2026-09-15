@@ -163,6 +163,15 @@
       "status": "PASSED",
       "commit": "596e8c787f4dec7af726c3dd8008c2d05c0e4836",
       "notes": "Scoped source review and targeted probes. Initial P1 traceback disclosure through rule limitations and P2 quantity shorthand/schema mismatch were fixed and independently re-reviewed. Final candidate was committed unchanged as this commit. No remaining actionable findings; full-suite execution belongs to the implementation agent."
+    },
+    {
+      "id": "PCB-T01-BACKEND-AND-UI",
+      "scope": "PCB-EXPLORER-1",
+      "reviewer": "board_visual_audit (backend by other authors) and richer_board_backend (frontend/exporter by other authors)",
+      "independent": true,
+      "status": "PASSED",
+      "commit": "03c5679bd0bd72a05ba770e382f1098b2f07e785",
+      "notes": "Backend review found no actionable synthesis/dimensions/evidence-lineage issue. Frontend review found two P2 interaction issues, both fixed and independently re-reviewed; focused79 tests passed. Final03c5679 label/CSS-only follow-up and unchanged geometry/check lineage reviewed without further findings. No reviewer claims independence on their own implementation files."
     }
   ],
   "findings": [
@@ -702,6 +711,24 @@
       "title": "Inherited Quantity shorthand violated the advertised object schema",
       "resolution": "Proposal-specific validator rejects strings before domain shorthand parsing; real stdio regression verifies rejection at requirements and component quantities.",
       "resolved_at_commit": "596e8c787f4dec7af726c3dd8008c2d05c0e4836"
+    },
+    {
+      "id": "PCB-T01-R01",
+      "scope": "PCB-EXPLORER-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "Customization seed lost on options retry or superseded by older request",
+      "resolution": "Persist pending seed across shared options failure; apply latest seed with editor version guard. Retry and concurrent new-action tests pass.",
+      "resolved_at_commit": "b3b6bb0"
+    },
+    {
+      "id": "PCB-T01-R02",
+      "scope": "PCB-EXPLORER-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "Collapsed component-list rerender lost keyboard focus",
+      "resolution": "Focus visible selected-component heading after rerender. Regression and CUA selection confirm current visible heading receives focus.",
+      "resolved_at_commit": "b3b6bb0"
     }
   ]
 }

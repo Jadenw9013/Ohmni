@@ -1,0 +1,228 @@
+{
+  "schema_version": 1,
+  "id": "PCB-T01",
+  "status": "PASSED",
+  "task": "PCB-T01",
+  "scope": "PCB-EXPLORER-1",
+  "commit": "03c5679bd0bd72a05ba770e382f1098b2f07e785",
+  "implementation_commit": "b3b6bb0",
+  "verified_at": "2026-09-14",
+  "tool_versions": {
+    "python": "3.13.3",
+    "pytest": "9.1.1",
+    "ruff": "0.16.5",
+    "kicad": "10.0.5"
+  },
+  "commands": [
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "PASS",
+      "log": "out/pcb-fast-verified.txt",
+      "tests": 1465,
+      "deselected": 44,
+      "runtime_seconds": 224.73
+    },
+    {
+      "command": "node --test --test-reporter=spec apps/web/tests/*.test.mjs",
+      "result": "PASS",
+      "tests": 148,
+      "runtime_seconds": 6.9164664,
+      "log": "out/pcb-frontend-verified.txt"
+    },
+    {
+      "command": "python -m ruff check .",
+      "result": "PASS"
+    },
+    {
+      "command": "python -m ohmni generate --brief examples/sensor-controller.json --output out/sensor-controller-90x55-local --json",
+      "result": "PASS_WITH_WARNINGS",
+      "detail": "Full actual generated circuit, schematic/ERC, physical placement, routing, routed PCB/DRC and synthetic manufacturing gates."
+    },
+    {
+      "command": "python -m ohmni.application.reference_preview --run-dir out/sensor-controller-90x55-local --output apps/web/reference-board.json --captured-on 2026-09-14",
+      "result": "PASS",
+      "detail": "Reconstructed byte-identical artifacts, checked release files and deterministic reports, reran guarded ERC/DRC before atomically replacing the preview."
+    },
+    {
+      "command": "python scripts/verify.py workflow",
+      "result": "PASS",
+      "tests": 11,
+      "runtime_seconds": 0.42,
+      "detail": "Final COMPLETE ledger"
+    },
+    {
+      "command": "python scripts/ai_state.py validate",
+      "result": "PASS",
+      "detail": "Recovery NONE"
+    },
+    {
+      "command": "python scripts/ai_state.py next",
+      "result": "PASS",
+      "detail": "No executable task in completed approved scope"
+    }
+  ],
+  "showcase": {
+    "components": 29,
+    "nets": 21,
+    "tracks": 452,
+    "vias": 55,
+    "width_mm": 90,
+    "height_mm": 55,
+    "checks": {
+      "basis": "Recomputed from the exact source artifacts at preview export time",
+      "bench": "NOT_VERIFIED",
+      "drc": {
+        "finding_count": 0,
+        "kicad_version": "10.0.5",
+        "limitations": [
+          "DRC proves only that this exact PCB passed the configured KiCad physical design rules.",
+          "DRC does not prove functional correctness, signal integrity, thermal or EMC performance, RF behavior, universal manufacturability, firmware behavior, or hardware operation."
+        ],
+        "status": "pass",
+        "tool_status": "ok",
+        "unconnected_count": 0
+      },
+      "erc": {
+        "finding_count": 31,
+        "kicad_version": "10.0.5",
+        "limitations": [
+          "A zero-violation ERC result establishes only that this exact generated schematic passed the configured KiCad electrical checks.",
+          "ERC does not establish functional or datasheet correctness, simulation behavior, PCB layout, manufacturability, firmware behavior, or hardware performance."
+        ],
+        "status": "pass_with_warnings",
+        "tool_status": "ok"
+      },
+      "manufacturing": {
+        "passed": true,
+        "profile": "Generic synthetic 2-layer prototype profile",
+        "provenance": "synthetic_profile"
+      },
+      "physical": {
+        "finding_count": 71,
+        "passed": true
+      },
+      "routing": {
+        "finding_count": 10,
+        "passed": true,
+        "plan_fingerprint": "5c2a2a808fbd99a96854c604c293d4e6b90ec916b174741f155f939d4a6aac2f"
+      },
+      "semantic": {
+        "coverage": 1.0,
+        "export_blocked": false,
+        "limitations": [
+          "PB-I2C-002: Pull-up resistance is range-checked against common practice, not calculated from bus capacitance and rise time. Actual rise time stays NOT_VERIFIED until layout is known.",
+          "PB-LED-001: The driving pin's own current rating is not checked: the catalog does not record per-pin source and sink limits, so an LED within its own rating could still exceed what the GPIO driving it can supply.",
+          "PB-PWR-004: Presence only. A netlist cannot show that a capacitor is physically close to the pin it decouples, and placement is what makes decoupling work. Capacitor placement stays NOT_VERIFIED until board layout is reviewed.",
+          "PB-PWR-004: Capacitors are counted per rail net, not attributed to individual supply pins. A part with several supply pins on one net may pass here while still lacking a capacitor at each pin.",
+          "PB-REG-002: Load is summed from published maxima, which are worst-case figures that rarely occur simultaneously. This is deliberately conservative and is not a thermal analysis: package power dissipation and rise above ambient are NOT_VERIFIED.",
+          "PB-UART-001: Orientation against an external programmer cannot be verified from connectivity. Where a UART reaches a bare header, the wiring stays HUMAN_CONFIRMED at best."
+        ],
+        "report_id": "51fcba20f582b5cb",
+        "rule_count": 25,
+        "subsystem_status": {
+          "connectivity": "VERIFIED",
+          "eda": "UNSUPPORTED",
+          "electrical": "VERIFIED",
+          "identity": "PARTIALLY_VERIFIED",
+          "interfaces": "VERIFIED",
+          "pin_semantics": "VERIFIED",
+          "simulation": "UNSUPPORTED",
+          "thermal": "UNSUPPORTED"
+        }
+      },
+      "simulation": "NOT_RUN"
+    },
+    "lineage": {
+      "artifact_fingerprint": "8ec92f595a26b5769e16186e32231332955db4411247973489abe6c9c9def4f8",
+      "brief_fingerprint": "437d28fc01dd44ba2ab390dad0c6f65bcf1c0f37e0b9a99bc13a04567f36087a",
+      "captured_on": "2026-09-14",
+      "circuit_fingerprint": "96245a408b92518aeb6f11d968c7bc4ba1000e735a0b99da1130fd8fc9afb80e",
+      "compiler_version": "0.2.0",
+      "constraints_hash": "a3ffcfcdbea66c7ab99ed275c53eef47a954f40b79f3f0fa2d491a3681164fe6",
+      "files": {
+        "circuit.json": "137155eff5c52e397e313e46517fa12761760edd4c154617645c486f4c254a4b",
+        "confirmed-brief.json": "9b1a0b31dcfbeb2a02973076048d16f28abeb623c1f6bb2a2f0275181a05d6b4",
+        "drc-report.json": "aa64c0d1338a3e669863dfc77de7d7d9b553b52492ff2ab92f4ddc1f1f4cb4e9",
+        "erc-report.json": "510b2dd327d8d4aab6f227bcee587b3dba9fc117513c30adab50190b74a71945",
+        "fabrication/golden-B_Cu.gbl": "6dc3d612b58e2d47c612f68296a9c24d8ba35feff66faa75fdb628a60bbf7048",
+        "fabrication/golden-B_Mask.gbs": "14284a574f7b703420c63cec1d52e31f17fa35c64af57eabc4207b02546c8b87",
+        "fabrication/golden-Edge_Cuts.gm1": "e7a45f1b0513e71c4f37e8e84a73c0d99176d9539cda2b54ebbffec36186171d",
+        "fabrication/golden-F_Cu.gtl": "938b1ab98b88670d8896113b87cfa692face8891467ba4f9576e2b4c7124e8c0",
+        "fabrication/golden-F_Mask.gts": "a374978f26af05015658fd4e10f77b1c00d1473558827870b1bdf88da49c1526",
+        "fabrication/golden-b_silkscreen.gbo": "429500dbccbf2d4c487a4403245d86f9efa4d9ffb44fc08c4369cf841e316d57",
+        "fabrication/golden-f_silkscreen.gto": "eb00804a23222e7cebf32e7e1ba8f42284ba6466d9305b354ec7797ba7c8232d",
+        "fabrication/golden-job.gbrjob": "92c5e9c7a2a02bfffd05dbb8d58b60d4cb577079b9bcd39896cbfdb23882cc9c",
+        "fabrication/golden.drl": "646cde2a5f61a0d8037bd8e68a874a29338bd4a83b274e2a8a4a4a361b13763d",
+        "fabrication/ohmni-fabrication-manifest.json": "838511304b5780ad7ab5fe8879ef8b13cd9e20056ece432c55b39c87ba9a9b64",
+        "golden.kicad_pcb": "8ec92f595a26b5769e16186e32231332955db4411247973489abe6c9c9def4f8",
+        "golden.kicad_sch": "ea77fa2f9eabea3ef53fd0b80ced8d4a1d64a3529adc7334b865257e573e18e2",
+        "golden.placed.kicad_pcb": "fd0bc1b4e63985381bbc07c0793f93c53e3fbc9aa6243557d5c710c28ffa05c8",
+        "placement-request.json": "ccb7d0aa068099ca58c71282661eb7911013fe8b9de192574e32d84824c09f34",
+        "placement.json": "21d9864d6e59faf7cc31022def7395c12edeb03450a4cf36ba8bff6572ce9c5e",
+        "report.json": "fd40fd529e6faaa7c187f3eb87e12f1988bff97167b041aaf7b1a3f18e39972b",
+        "routing-plan.json": "196be2294d6da59678fbe9d3c67538e003b261e461d531dbdb4b2284e91b3273",
+        "routing-verification.json": "ce7cc5edd3da122514b2a97b62c8075019e790b0826733caf98b7a3f18d2d371"
+      },
+      "footprint_geometry_fingerprint": "5c5aedda8119ae5dcac36b52ab0abbcb3684488ba9f210ec6d7ecf55987659f4",
+      "footprint_geometry_scope": "local_registry",
+      "job_id": "sensor-controller-90x55-local",
+      "kind": "previously_generated_reference_preview",
+      "label": "Sense & control",
+      "note": "A saved geometry preview reproduced from a completed local engineering run. Checks describe these exact source artifacts at export time, not current validation or physical performance. Colors and component bodies are illustrative; component height and the board stack-up are not modeled.",
+      "package_fingerprint": "0a90cbe5b83c4de7f477f073be1f37824f81e1e8f4490404273fc8153aaf3d6a",
+      "routing_plan_fingerprint": "5c2a2a808fbd99a96854c604c293d4e6b90ec916b174741f155f939d4a6aac2f",
+      "schematic_fingerprint": "ea77fa2f9eabea3ef53fd0b80ced8d4a1d64a3529adc7334b865257e573e18e2"
+    }
+  },
+  "browser_checks": {
+    "tool": "CUA in-app browser",
+    "url": "http://127.0.0.1:8766",
+    "result": "PASS",
+    "viewports": [
+      "390x844",
+      "1440x1000",
+      "normal responsive desktop/tablet"
+    ],
+    "checked": [
+      "Saved29-part showcase loads; title survives narrow breakpoints",
+      "Customize transfers exact confirmed sensor,4LED,2button,90x55 choices into an unsaved project",
+      "Changed4LEDs to3, saved and generated a fresh27-part design through real pipeline",
+      "All27 generated parts available through component index",
+      "Selected SW1 exposes specific purpose, package, pin1 BUTTON1 and pin2 GND",
+      "BUTTON1 highlights copper and lists actual peers R20 and U1",
+      "Selection from disclosure list focuses visible inspector heading",
+      "Saved29-part lab and controls render on phone and desktop; temporary viewport override reset"
+    ],
+    "variant_job_id": "3acfbc54335c",
+    "variant_components": 27,
+    "variant_artifact": "7d80ed1ab53c7278aca3303a0e54c84c4ecbfdef311e5275eb3562c35b2572f5",
+    "variant_routing": "de23264f48819c6836ca824cca5801fcd12127e8cc789a2b79ccbb8d41159cd1"
+  },
+  "review": {
+    "status": "PASSED",
+    "independent": true,
+    "record": ".ai/reviews.yaml#PCB-T01-BACKEND-AND-UI"
+  },
+  "resolved_failures": [
+    {
+      "gate": "Initial native generation in restricted sandbox",
+      "result": "ERC timed out at60seconds. Guarded normal-access rerun completed, followed by successful independent native exporter recheck."
+    },
+    {
+      "gate": "Initial full frontend suite",
+      "result": "Test incorrectly required SMD solder mounds on newly preserved drilled/nonplated USB holes. Test now retains coordinate checks and verifies holes remain uncapped;148 passed."
+    },
+    {
+      "gate": "Initial canonical fast suite at b3b6bb0",
+      "result": "1464 passed,1 failed,44 deselected in227.04s. Only failure was A2 presentation label regression; restored compatible label and passed21 targeted family-learning/workflow tests before rerunning canonical gate."
+    }
+  ],
+  "limitations": [
+    "Firmware and physical operation have not been verified; no simulation added.",
+    "31 ERC warnings remain; identity is PARTIALLY_VERIFIED from bundled catalog provenance.",
+    "Example manufacturing profile is synthetic and requires fabricator review.",
+    "Dedicated integration/slow/full suites were not rerun; real native end-to-end design and export checks are recorded above.",
+    "M10-T05 remains parked. Frozen historical R-18 A2-sensor refusal oracle now records intentional contract drift; no benchmark completion claimed.",
+    "Unrelated untracked .codex/ preserved."
+  ]
+}

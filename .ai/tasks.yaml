@@ -106,7 +106,7 @@
       "id": "PCB-EXPLORER-1",
       "type": "bounded_product_enhancement",
       "title": "Generated ESP32 sensor-and-controller board explorer",
-      "status": "IN_PROGRESS",
+      "status": "COMPLETE",
       "approved_by": "human",
       "approval_evidence": ".ai/approvals/PCB-EXPLORER-1.yaml",
       "review_policy": "One focused independent review required for COMPLETE; otherwise VERIFIED only",
@@ -900,7 +900,7 @@
       "scope": "PCB-EXPLORER-1",
       "milestone": null,
       "title": "Generate and explain a richer sensor-and-controller showcase",
-      "status": "IN_PROGRESS",
+      "status": "COMPLETE",
       "priority": 100,
       "dependencies": [],
       "goal": "A visually richer real circuit with reusable rendering and generated component-level learning, backed by deterministic design reports.",
@@ -923,8 +923,9 @@
       },
       "review": {
         "required": true,
-        "status": "PENDING",
-        "independent": true
+        "status": "PASSED",
+        "independent": true,
+        "record": ".ai/reviews.yaml#PCB-T01-BACKEND-AND-UI"
       },
       "blockers": [],
       "implementation": {
@@ -933,8 +934,14 @@
         "approval_evidence": ".ai/approvals/PCB-EXPLORER-1.yaml",
         "lifecycle": [
           "Explicit human request recorded; PCB-T01 selected READY without dependencies or blockers",
-          "Transitioned to IN_PROGRESS; prior MCP scope remains complete and M10-T05 remains parked"
-        ]
+          "Transitioned to IN_PROGRESS; prior MCP scope remains complete and M10-T05 remains parked",
+          "IMPLEMENTED: composed circuit, reusable renderer and artifact-derived learning/exporter",
+          "VERIFIED: final canonical fast1465, frontend148, native generated-design and export checks, browser altered-brief generation and Ruff passed",
+          "COMPLETE: two focused independent reviews cleared, including reviewed corrections"
+        ],
+        "completed_at_commit": "03c5679bd0bd72a05ba770e382f1098b2f07e785",
+        "completed_at": "2026-09-14",
+        "source_commit": "b3b6bb0"
       }
     }
   ]
