@@ -118,6 +118,30 @@ def test_i2c_flow_is_derived_from_the_peripheral_side(golden, catalog, grouping)
     assert {"R4", "R5"} <= set(bus.component_refs)
 
 
+def test_sensor_controller_flow_does_not_call_its_pullups_receivers(catalog):
+    """Compiler-owned compute groups include passive support, not only processors."""
+    from ohmni.synthesis import ArchetypeId, SynthesisBrief, synthesize
+
+    result = synthesize(SynthesisBrief(
+        archetype=ArchetypeId.A2_USB_GPIO_CONTROLLER,
+        status_led_count=4, button_count=2,
+        board_width_mm=90, board_height_mm=55,
+    ), catalog)
+    circuit = result.circuit
+    grouping = group_components(circuit, catalog, {}, result.placement_request)
+    by_ref = {item.component_ref: item for item in grouping}
+    assert all(by_ref[ref].system is SystemId.COMPUTE for ref in ("U1", "R4", "R5"))
+
+    bus = next(flow for flow in build_flows(circuit, catalog, grouping)
+               if flow.flow_id == "sensor_data")
+    receiver = next(stage for stage in bus.stages if stage.title == "The processor reads it")
+    pullups = next(stage for stage in bus.stages if stage.title == "Resistors hold the wires high")
+    assert receiver.component_refs == ["U1"]
+    assert set(pullups.component_refs) == {"R4", "R5"}
+    assert "main computer" in receiver.detail and "resistor" not in receiver.detail
+    assert "main computer" in bus.summary and "resistor" not in bus.summary
+
+
 def test_ground_flow_covers_the_declared_ground_net(golden, catalog, grouping):
     ground_net = next(n for n in golden.nets if n.kind is NetKind.GROUND)
     ground = next(f for f in build_flows(golden, catalog, grouping) if f.flow_id == "ground")

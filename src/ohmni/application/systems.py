@@ -404,7 +404,6 @@ def build_flows(circuit: CircuitIR, catalog, groupings: list[ComponentGrouping])
     A flow is emitted only when the topology it describes is actually present.
     Nothing here invents a path: every stage names nets and pins that exist.
     """
-    by_ref = {g.component_ref: g for g in groupings}
     flows: list[Flow] = []
 
     source_net = next((n for n in circuit.nets if n.external_source is not None), None)
@@ -502,7 +501,10 @@ def build_flows(circuit: CircuitIR, catalog, groupings: list[ComponentGrouping])
         measurement = all(_category(circuit, catalog, ref) is ComponentCategory.SENSOR for ref in peripherals)
         controllers = sorted({
             c.component for name in bus_nets for c in circuit.net(name).connections
-            if by_ref.get(c.component) and by_ref[c.component].system is SystemId.COMPUTE
+            # A compute group also owns passives. Only catalog-identified
+            # processors connected to this bus can receive its readings.
+            if _category(circuit, catalog, c.component)
+            in {ComponentCategory.MCU, ComponentCategory.MCU_MODULE}
         })
         pullups = sorted({
             c.component for name in bus_nets for c in circuit.net(name).connections

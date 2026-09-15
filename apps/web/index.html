@@ -30,6 +30,7 @@
           <li data-stage="build"><button type="button" data-navigate="build" aria-label="Build &amp; export" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 15v6h16v-6"/></svg><span>Build &amp; export</span><span class="nav-check" aria-hidden="true">✓</span></button></li>
         </ol>
       </nav>
+      <button type="button" class="sidebar-dense-board" data-open-sample>Explore the dense 3D board</button>
       <div class="sidebar-bottom">
         <div class="mentor-note"><span class="mentor-symbol" aria-hidden="true">✳</span><p>You don't have to know it all.<br><strong>Just bring your curiosity.</strong></p></div>
         <details class="sidebar-help"><summary><span aria-hidden="true">?</span> First time here?</summary><p>A schematic is a map of connections. A circuit board makes those connections physical. Ohmni helps you explore both, one part at a time.</p></details>
@@ -51,13 +52,27 @@
             <h1 id="describe-title">Build a real circuit.<br>Understand every part.</h1>
             <p class="welcome-lede">Make a sensor station, a button controller, or a board that stores data. Explore the parts in 3D and see the checks behind your own design.</p>
           </div>
+          <section class="home-atlas" aria-labelledby="home-atlas-title">
+            <div class="home-atlas-copy">
+              <h2 id="home-atlas-title">Explore the dense board.</h2>
+              <p>Get close to the chips, connectors and tiny details. Rotate the board or select a part to open its explanation.</p>
+              <p id="home-atlas-count" class="home-atlas-count">Interactive component atlas</p>
+              <button type="button" id="open-sample-board" class="primary" data-open-sample>Open the dense 3D board</button>
+              <p class="home-atlas-status">Reference-inspired educational model · not an electrically verified design</p>
+              <a href="#connected-design" class="home-atlas-connected">Looking for connected circuit files? Explore the checked design below.</a>
+            </div>
+            <div class="home-atlas-stage">
+              <canvas id="home-atlas-canvas" tabindex="0" aria-label="Dense educational board preview. Drag to rotate or select a body to inspect it."></canvas>
+              <p id="home-atlas-help">Drag to rotate · select a part to explore</p>
+            </div>
+          </section>
+          <h2 class="connected-design-title" id="connected-design">A connected design you can build from.</h2>
           <div class="welcome-grid">
             <div class="reference-column">
               <div class="reference-stage pcb-stage">
                 <div class="reference-topline"><span><span class="reference-dot" aria-hidden="true"></span><span id="reference-title">Explore this circuit</span></span><span class="reference-provenance">Saved design</span></div>
                 <p id="reference-stats" class="reference-stats"></p>
                 <button type="button" id="open-reference-lab" class="open-lab-button" disabled><span>Open the 3D circuit lab<small>Explore now. No engineering run needed.</small></span><span aria-hidden="true">↗</span></button>
-                <button type="button" id="open-sample-board" class="open-sample-button"><span>Explore sample board<small>A dense educational component atlas · illustrative only</small></span><span aria-hidden="true">↗</span></button>
                 <canvas id="reference-canvas" tabindex="0" aria-label="Interactive reference circuit board. Drag to rotate. Use the system buttons below to explore."></canvas>
                 <div class="reference-caption" id="reference-caption">A previously generated board. Drag to rotate, or select a system below.</div>
                 <div class="reference-controls" id="reference-focus" role="group" aria-label="Explore a board system"></div>

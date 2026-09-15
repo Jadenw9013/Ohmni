@@ -167,7 +167,31 @@ function mountFamilyCatalog(container, select) {
 export function initializeVisualExplorer() {
     const container = document.querySelector('#visual-explorer'); if (!container) return;
     document.querySelector('#open-visual-proof')?.addEventListener('click', () => mountVisualExplorer(container, PROOF));
-    document.querySelector('#open-sample-board')?.addEventListener('click', () => mountVisualExplorer(container));
+    const manifest = createIllustrativeSceneManifest();
+    const open = id => {
+        const view = mountVisualExplorer(container, manifest);
+        if (id) { view.select(id); view.focus(id); }
+        return view;
+    };
+    document.querySelectorAll('[data-open-sample]').forEach(button => button.addEventListener('click', () => open()));
+    const preview = document.querySelector('#home-atlas-canvas');
+    if (preview) {
+        preview._visualView?.dispose();
+        const view = new BoardView(preview, { onSelect: id => {
+            if (!id) return;
+            open(id);
+            // This preview launches an inspector; release its selection so
+            // Enter can launch again when Escape returns focus to the preview.
+            view.select(null);
+        } });
+        preview._visualView = view;
+        view.options.showLabels = false; view.options.showSilk = true;
+        view.options.frameHeightFraction = .92; view.options.quality = 'low';
+        view.setBoard(visualBoard(manifest));
+        view.camera.yaw = 25 * Math.PI / 180; view.camera.pitch = 43 * Math.PI / 180; view.frame();
+        document.querySelector('#home-atlas-count').textContent = `${manifest.instances.length} modeled bodies · ${getVisualFamilyCatalog().length} visual families`;
+        if (!view.available) document.querySelector('#home-atlas-help').textContent = 'Preview unavailable. Open the explorer to use its component list.';
+    }
     if (location.hash === '#visual-proof') mountVisualExplorer(container, PROOF);
-    if (location.hash === '#sample-board') mountVisualExplorer(container);
+    if (location.hash === '#sample-board') open();
 }
