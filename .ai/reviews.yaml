@@ -172,6 +172,24 @@
       "status": "PASSED",
       "commit": "03c5679bd0bd72a05ba770e382f1098b2f07e785",
       "notes": "Backend review found no actionable synthesis/dimensions/evidence-lineage issue. Frontend review found two P2 interaction issues, both fixed and independently re-reviewed; focused79 tests passed. Final03c5679 label/CSS-only follow-up and unchanged geometry/check lineage reviewed without further findings. No reviewer claims independence on their own implementation files."
+    },
+    {
+      "id": "VIS-T01-FINAL",
+      "scope": "VIS-REF-001",
+      "reviewer": "independent agent /root/visual_final_review",
+      "independent": true,
+      "status": "PASSED",
+      "commit": "c80315fdae46386c9fbc54b2055ed23c4a15a30c",
+      "notes": "One focused final review, then targeted re-review only of concrete findings, framing and LF preparation. No high/blocker/source-integrity findings. TwoP2 findings fixed. Independently ran10 correction tests and private browser staticpixel/X01 checks; compared working/indexed file hashes. Provisional22/24 art score; human visual acceptance pending.",
+      "visual_rubric": {
+        "score": 22,
+        "maximum": 24,
+        "partial_categories": [
+          "Pads/solder/silkscreen retain schematic detail",
+          "Lighting shadows comparatively hard"
+        ],
+        "human_acceptance": "PENDING"
+      }
     }
   ],
   "findings": [
@@ -729,6 +747,24 @@
       "title": "Collapsed component-list rerender lost keyboard focus",
       "resolution": "Focus visible selected-component heading after rerender. Regression and CUA selection confirm current visible heading receives focus.",
       "resolved_at_commit": "b3b6bb0"
+    },
+    {
+      "id": "VIS-T01-R01",
+      "scope": "VIS-REF-001",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "Static net highlighting lost in GPU batching",
+      "resolution": "Keep per-primitive source ranges in existing batches; apply static vertex colors from actual net/ref/system membership. Pixel change and exact clear independently reproduced.",
+      "resolved_at_commit": "c80315fdae46386c9fbc54b2055ed23c4a15a30c"
+    },
+    {
+      "id": "VIS-T01-R02",
+      "scope": "VIS-REF-001",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "Unresolved-detail gallery tile did not open a specimen",
+      "resolution": "Focus X region bounds without creating an owner, show explicit non-component explanation, expose8 patch entries and capture18th family macro.",
+      "resolved_at_commit": "c80315fdae46386c9fbc54b2055ed23c4a15a30c"
     }
   ]
 }

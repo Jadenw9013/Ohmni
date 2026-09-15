@@ -1,0 +1,552 @@
+{
+  "schema_version": 1,
+  "id": "VIS-T01",
+  "status": "PASSED",
+  "task": "VIS-T01",
+  "scope": "VIS-REF-001",
+  "commit": "c80315fdae46386c9fbc54b2055ed23c4a15a30c",
+  "verified_at": "2026-09-14",
+  "tool_versions": {
+    "python": "3.13.3",
+    "pytest": "9.1.1",
+    "ruff": "0.16.5",
+    "node": "22.16.0",
+    "three": "0.180.0",
+    "kicad": "10.0.5",
+    "browser": "153.0.4234.32"
+  },
+  "commands": [
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "PASS",
+      "tests": 1477,
+      "deselected": 44,
+      "runtime_seconds": 250.08,
+      "log": "out/visual-reference/fast-final.log",
+      "freshness": "Integration gate; later atlas framing and LF metadata preparation were independently reviewed and covered by final full frontend, browser, version-hash and boundary checks. No backend/EDA changes followed."
+    },
+    {
+      "command": "node --test apps/web/tests/*.test.mjs",
+      "result": "PASS",
+      "tests": 180,
+      "log": "out/visual-reference/frontend-final.log"
+    },
+    {
+      "command": "python -m pytest tests/test_visual_assets_server.py tests/test_ai_workflow.py -q --basetemp build/pytest-visual-final-boundary",
+      "result": "PASS",
+      "tests": 23,
+      "note": "Only pytest cache-write warning; tests passed. Canonical gates use the writable build cache."
+    },
+    {
+      "command": "python -m pytest tests/test_generated_routing.py::test_generated_family_copper_closes_real_drc_and_manufacturing[a1-default] -m slow_integration --basetemp build/pytest-visual-native -o cache_dir=build/pytest-visual-native-cache -q",
+      "result": "PASS",
+      "tests": 1,
+      "log": "out/visual-reference/native-check.log"
+    },
+    {
+      "command": "python -m ruff check .",
+      "result": "PASS"
+    },
+    {
+      "command": "node scripts/visual_acceptance.cjs http://127.0.0.1:8767 out/visual-reference",
+      "result": "PASS",
+      "log": "out/visual-reference/browser-check.log"
+    },
+    {
+      "command": "node out/visual-reference/capture-comparison.cjs",
+      "result": "PASS",
+      "detail": "Private comparison capture and missing-model copied-fixture browser probe"
+    },
+    {
+      "command": "git show :apps/web/<each hashed source> with SHA256 comparison",
+      "result": "PASS",
+      "files": 8,
+      "detail": "All indexed and working bytes equal declared visual manifest hashes after LF normalization"
+    },
+    {
+      "command": "python scripts/verify.py workflow",
+      "result": "PASS",
+      "tests": 11,
+      "runtime_seconds": 0.57,
+      "detail": "Final VERIFIED ledger; human visual acceptance pending"
+    },
+    {
+      "command": "python scripts/ai_state.py validate",
+      "result": "PASS",
+      "detail": "Recovery NONE"
+    },
+    {
+      "command": "python scripts/ai_state.py next",
+      "result": "PASS",
+      "detail": "No executable task"
+    }
+  ],
+  "browser_checks": {
+    "actual": {
+      "engine": "three.js r180",
+      "renderer": "three",
+      "motion": "standard",
+      "triangles": "37126",
+      "drawCalls": "77",
+      "width": 1068,
+      "height": 558,
+      "gpu": "ANGLE (AMD, AMD Radeon(TM) Graphics (0x000013C0) Direct3D11 vs_5_0 ps_5_0, D3D11)"
+    },
+    "staticNetHighlight": {
+      "changed": true,
+      "exactReset": true,
+      "source": "SDA from actual artifact",
+      "animated": false
+    },
+    "sample": {
+      "engine": "three.js r180",
+      "renderer": "three",
+      "motion": "standard",
+      "triangles": "235542",
+      "drawCalls": "648",
+      "width": 1126,
+      "height": 603,
+      "gpu": "ANGLE (AMD, AMD Radeon(TM) Graphics (0x000013C0) Direct3D11 vs_5_0 ps_5_0, D3D11)"
+    },
+    "meshOwnership": {
+      "owner": "IC01",
+      "original": "S08",
+      "instanceCount": 124
+    },
+    "familyCloseups": 18,
+    "performance": {
+      "frames": 90,
+      "rafMedianMs": 16.69999999999709,
+      "rafP95Ms": 16.80000000000291,
+      "cpuMedianMs": 5.5,
+      "cpuP95Ms": 6.399999976158142,
+      "gpuTimeMeasured": false
+    },
+    "sourcePreviewSha256": "951fc4724f3402d8d9b6a4418d6f90182447fb7c597ba18f20c2e966667cc98b",
+    "browser": "153.0.4234.32",
+    "errors": [],
+    "transfer": {
+      "visual-assets.js": {
+        "bytes": 44423,
+        "gzipBytes": 11096
+      },
+      "visual-inventory.js": {
+        "bytes": 96305,
+        "gzipBytes": 16601
+      },
+      "visual-renderer.js": {
+        "bytes": 11981,
+        "gzipBytes": 3880
+      },
+      "visual-layers.js": {
+        "bytes": 8867,
+        "gzipBytes": 2974
+      },
+      "visual-board-scene.js": {
+        "bytes": 4270,
+        "gzipBytes": 1662
+      },
+      "visual-explorer.js": {
+        "bytes": 14899,
+        "gzipBytes": 4643
+      },
+      "visual-version.js": {
+        "bytes": 994,
+        "gzipBytes": 623
+      },
+      "vendor/three.module.js": {
+        "bytes": 338908,
+        "gzipBytes": 79328
+      },
+      "vendor/three.core.min.js": {
+        "bytes": 381124,
+        "gzipBytes": 101305
+      }
+    }
+  },
+  "source_integrity": {
+    "after": {
+      "apps/web/reference-board.json": "951fc4724f3402d8d9b6a4418d6f90182447fb7c597ba18f20c2e966667cc98b",
+      "out/sensor-controller-90x55-local/circuit.json": "137155eff5c52e397e313e46517fa12761760edd4c154617645c486f4c254a4b",
+      "out/sensor-controller-90x55-local/confirmed-brief.json": "9b1a0b31dcfbeb2a02973076048d16f28abeb623c1f6bb2a2f0275181a05d6b4",
+      "out/sensor-controller-90x55-local/drc-report.json": "aa64c0d1338a3e669863dfc77de7d7d9b553b52492ff2ab92f4ddc1f1f4cb4e9",
+      "out/sensor-controller-90x55-local/erc-report.json": "510b2dd327d8d4aab6f227bcee587b3dba9fc117513c30adab50190b74a71945",
+      "out/sensor-controller-90x55-local/fabrication/golden-B_Cu.gbl": "6dc3d612b58e2d47c612f68296a9c24d8ba35feff66faa75fdb628a60bbf7048",
+      "out/sensor-controller-90x55-local/fabrication/golden-B_Mask.gbs": "14284a574f7b703420c63cec1d52e31f17fa35c64af57eabc4207b02546c8b87",
+      "out/sensor-controller-90x55-local/fabrication/golden-Edge_Cuts.gm1": "e7a45f1b0513e71c4f37e8e84a73c0d99176d9539cda2b54ebbffec36186171d",
+      "out/sensor-controller-90x55-local/fabrication/golden-F_Cu.gtl": "938b1ab98b88670d8896113b87cfa692face8891467ba4f9576e2b4c7124e8c0",
+      "out/sensor-controller-90x55-local/fabrication/golden-F_Mask.gts": "a374978f26af05015658fd4e10f77b1c00d1473558827870b1bdf88da49c1526",
+      "out/sensor-controller-90x55-local/fabrication/golden-b_silkscreen.gbo": "429500dbccbf2d4c487a4403245d86f9efa4d9ffb44fc08c4369cf841e316d57",
+      "out/sensor-controller-90x55-local/fabrication/golden-f_silkscreen.gto": "eb00804a23222e7cebf32e7e1ba8f42284ba6466d9305b354ec7797ba7c8232d",
+      "out/sensor-controller-90x55-local/fabrication/golden-job.gbrjob": "92c5e9c7a2a02bfffd05dbb8d58b60d4cb577079b9bcd39896cbfdb23882cc9c",
+      "out/sensor-controller-90x55-local/fabrication/golden.drl": "646cde2a5f61a0d8037bd8e68a874a29338bd4a83b274e2a8a4a4a361b13763d",
+      "out/sensor-controller-90x55-local/fabrication/ohmni-fabrication-manifest.json": "838511304b5780ad7ab5fe8879ef8b13cd9e20056ece432c55b39c87ba9a9b64",
+      "out/sensor-controller-90x55-local/golden.kicad_pcb": "8ec92f595a26b5769e16186e32231332955db4411247973489abe6c9c9def4f8",
+      "out/sensor-controller-90x55-local/golden.kicad_sch": "ea77fa2f9eabea3ef53fd0b80ced8d4a1d64a3529adc7334b865257e573e18e2",
+      "out/sensor-controller-90x55-local/golden.placed.kicad_pcb": "fd0bc1b4e63985381bbc07c0793f93c53e3fbc9aa6243557d5c710c28ffa05c8",
+      "out/sensor-controller-90x55-local/placement-request.json": "ccb7d0aa068099ca58c71282661eb7911013fe8b9de192574e32d84824c09f34",
+      "out/sensor-controller-90x55-local/placement.json": "21d9864d6e59faf7cc31022def7395c12edeb03450a4cf36ba8bff6572ce9c5e",
+      "out/sensor-controller-90x55-local/report.json": "fd40fd529e6faaa7c187f3eb87e12f1988bff97167b041aaf7b1a3f18e39972b",
+      "out/sensor-controller-90x55-local/routing-plan.json": "196be2294d6da59678fbe9d3c67538e003b261e461d531dbdb4b2284e91b3273",
+      "out/sensor-controller-90x55-local/routing-verification.json": "ce7cc5edd3da122514b2a97b62c8075019e790b0826733caf98b7a3f18d2d371"
+    },
+    "allMatch": true,
+    "audit_kind": "source_file_and_semantic_fingerprint_invariance",
+    "baseline": {
+      "note": "The ledger contains 22 source files. With reference-board.json against HEAD, this is 23 byte comparisons.",
+      "path": ".ai/verification/PCB-T01.yaml",
+      "sha256": "4d8a1f7d5d60657a087f2a7708c0d7639ad5341064fdefac881942e13a127fe0",
+      "source_file_count": 22
+    },
+    "before": {
+      "apps/web/reference-board.json": "951fc4724f3402d8d9b6a4418d6f90182447fb7c597ba18f20c2e966667cc98b",
+      "out/sensor-controller-90x55-local/circuit.json": "137155eff5c52e397e313e46517fa12761760edd4c154617645c486f4c254a4b",
+      "out/sensor-controller-90x55-local/confirmed-brief.json": "9b1a0b31dcfbeb2a02973076048d16f28abeb623c1f6bb2a2f0275181a05d6b4",
+      "out/sensor-controller-90x55-local/drc-report.json": "aa64c0d1338a3e669863dfc77de7d7d9b553b52492ff2ab92f4ddc1f1f4cb4e9",
+      "out/sensor-controller-90x55-local/erc-report.json": "510b2dd327d8d4aab6f227bcee587b3dba9fc117513c30adab50190b74a71945",
+      "out/sensor-controller-90x55-local/fabrication/golden-B_Cu.gbl": "6dc3d612b58e2d47c612f68296a9c24d8ba35feff66faa75fdb628a60bbf7048",
+      "out/sensor-controller-90x55-local/fabrication/golden-B_Mask.gbs": "14284a574f7b703420c63cec1d52e31f17fa35c64af57eabc4207b02546c8b87",
+      "out/sensor-controller-90x55-local/fabrication/golden-Edge_Cuts.gm1": "e7a45f1b0513e71c4f37e8e84a73c0d99176d9539cda2b54ebbffec36186171d",
+      "out/sensor-controller-90x55-local/fabrication/golden-F_Cu.gtl": "938b1ab98b88670d8896113b87cfa692face8891467ba4f9576e2b4c7124e8c0",
+      "out/sensor-controller-90x55-local/fabrication/golden-F_Mask.gts": "a374978f26af05015658fd4e10f77b1c00d1473558827870b1bdf88da49c1526",
+      "out/sensor-controller-90x55-local/fabrication/golden-b_silkscreen.gbo": "429500dbccbf2d4c487a4403245d86f9efa4d9ffb44fc08c4369cf841e316d57",
+      "out/sensor-controller-90x55-local/fabrication/golden-f_silkscreen.gto": "eb00804a23222e7cebf32e7e1ba8f42284ba6466d9305b354ec7797ba7c8232d",
+      "out/sensor-controller-90x55-local/fabrication/golden-job.gbrjob": "92c5e9c7a2a02bfffd05dbb8d58b60d4cb577079b9bcd39896cbfdb23882cc9c",
+      "out/sensor-controller-90x55-local/fabrication/golden.drl": "646cde2a5f61a0d8037bd8e68a874a29338bd4a83b274e2a8a4a4a361b13763d",
+      "out/sensor-controller-90x55-local/fabrication/ohmni-fabrication-manifest.json": "838511304b5780ad7ab5fe8879ef8b13cd9e20056ece432c55b39c87ba9a9b64",
+      "out/sensor-controller-90x55-local/golden.kicad_pcb": "8ec92f595a26b5769e16186e32231332955db4411247973489abe6c9c9def4f8",
+      "out/sensor-controller-90x55-local/golden.kicad_sch": "ea77fa2f9eabea3ef53fd0b80ced8d4a1d64a3529adc7334b865257e573e18e2",
+      "out/sensor-controller-90x55-local/golden.placed.kicad_pcb": "fd0bc1b4e63985381bbc07c0793f93c53e3fbc9aa6243557d5c710c28ffa05c8",
+      "out/sensor-controller-90x55-local/placement-request.json": "ccb7d0aa068099ca58c71282661eb7911013fe8b9de192574e32d84824c09f34",
+      "out/sensor-controller-90x55-local/placement.json": "21d9864d6e59faf7cc31022def7395c12edeb03450a4cf36ba8bff6572ce9c5e",
+      "out/sensor-controller-90x55-local/report.json": "fd40fd529e6faaa7c187f3eb87e12f1988bff97167b041aaf7b1a3f18e39972b",
+      "out/sensor-controller-90x55-local/routing-plan.json": "196be2294d6da59678fbe9d3c67538e003b261e461d531dbdb4b2284e91b3273",
+      "out/sensor-controller-90x55-local/routing-verification.json": "ce7cc5edd3da122514b2a97b62c8075019e790b0826733caf98b7a3f18d2d371"
+    },
+    "files": [
+      {
+        "after": "137155eff5c52e397e313e46517fa12761760edd4c154617645c486f4c254a4b",
+        "before": "137155eff5c52e397e313e46517fa12761760edd4c154617645c486f4c254a4b",
+        "bytes": 39163,
+        "match": true,
+        "path": "out/sensor-controller-90x55-local/circuit.json"
+      },
+      {
+        "after": "9b1a0b31dcfbeb2a02973076048d16f28abeb623c1f6bb2a2f0275181a05d6b4",
+        "before": "9b1a0b31dcfbeb2a02973076048d16f28abeb623c1f6bb2a2f0275181a05d6b4",
+        "bytes": 809,
+        "match": true,
+        "path": "out/sensor-controller-90x55-local/confirmed-brief.json"
+      },
+      {
+        "after": "aa64c0d1338a3e669863dfc77de7d7d9b553b52492ff2ab92f4ddc1f1f4cb4e9",
+        "before": "aa64c0d1338a3e669863dfc77de7d7d9b553b52492ff2ab92f4ddc1f1f4cb4e9",
+        "bytes": 3729,
+        "match": true,
+        "path": "out/sensor-controller-90x55-local/drc-report.json"
+      },
+      {
+        "after": "510b2dd327d8d4aab6f227bcee587b3dba9fc117513c30adab50190b74a71945",
+        "before": "510b2dd327d8d4aab6f227bcee587b3dba9fc117513c30adab50190b74a71945",
+        "bytes": 51222,
+        "match": true,
+        "path": "out/sensor-controller-90x55-local/erc-report.json"
+      },
+      {
+        "after": "6dc3d612b58e2d47c612f68296a9c24d8ba35feff66faa75fdb628a60bbf7048",
+        "before": "6dc3d612b58e2d47c612f68296a9c24d8ba35feff66faa75fdb628a60bbf7048",
+        "bytes": 7723,
+        "match": true,
+        "path": "out/sensor-controller-90x55-local/fabrication/golden-B_Cu.gbl"
+      },
+      {
+        "after": "14284a574f7b703420c63cec1d52e31f17fa35c64af57eabc4207b02546c8b87",
+        "before": "14284a574f7b703420c63cec1d52e31f17fa35c64af57eabc4207b02546c8b87",
+        "bytes": 1242,
+        "match": true,
+        "path": "out/sensor-controller-90x55-local/fabrication/golden-B_Mask.gbs"
+      },
+      {
+        "after": "e7a45f1b0513e71c4f37e8e84a73c0d99176d9539cda2b54ebbffec36186171d",
+        "before": "e7a45f1b0513e71c4f37e8e84a73c0d99176d9539cda2b54ebbffec36186171d",
+        "bytes": 639,
+        "match": true,
+        "path": "out/sensor-controller-90x55-local/fabrication/golden-Edge_Cuts.gm1"
+      },
+      {
+        "after": "938b1ab98b88670d8896113b87cfa692face8891467ba4f9576e2b4c7124e8c0",
+        "before": "938b1ab98b88670d8896113b87cfa692face8891467ba4f9576e2b4c7124e8c0",
+        "bytes": 29235,
+        "match": true,
+        "path": "out/sensor-controller-90x55-local/fabrication/golden-F_Cu.gtl"
+      },
+      {
+        "after": "a374978f26af05015658fd4e10f77b1c00d1473558827870b1bdf88da49c1526",
+        "before": "a374978f26af05015658fd4e10f77b1c00d1473558827870b1bdf88da49c1526",
+        "bytes": 5700,
+        "match": true,
+        "path": "out/sensor-controller-90x55-local/fabrication/golden-F_Mask.gts"
+      },
+      {
+        "after": "429500dbccbf2d4c487a4403245d86f9efa4d9ffb44fc08c4369cf841e316d57",
+        "before": "429500dbccbf2d4c487a4403245d86f9efa4d9ffb44fc08c4369cf841e316d57",
+        "bytes": 467,
+        "match": true,
+        "path": "out/sensor-controller-90x55-local/fabrication/golden-b_silkscreen.gbo"
+      },
+      {
+        "after": "eb00804a23222e7cebf32e7e1ba8f42284ba6466d9305b354ec7797ba7c8232d",
+        "before": "eb00804a23222e7cebf32e7e1ba8f42284ba6466d9305b354ec7797ba7c8232d",
+        "bytes": 467,
+        "match": true,
+        "path": "out/sensor-controller-90x55-local/fabrication/golden-f_silkscreen.gto"
+      },
+      {
+        "after": "92c5e9c7a2a02bfffd05dbb8d58b60d4cb577079b9bcd39896cbfdb23882cc9c",
+        "before": "92c5e9c7a2a02bfffd05dbb8d58b60d4cb577079b9bcd39896cbfdb23882cc9c",
+        "bytes": 2479,
+        "match": true,
+        "path": "out/sensor-controller-90x55-local/fabrication/golden-job.gbrjob"
+      },
+      {
+        "after": "646cde2a5f61a0d8037bd8e68a874a29338bd4a83b274e2a8a4a4a361b13763d",
+        "before": "646cde2a5f61a0d8037bd8e68a874a29338bd4a83b274e2a8a4a4a361b13763d",
+        "bytes": 1732,
+        "match": true,
+        "path": "out/sensor-controller-90x55-local/fabrication/golden.drl"
+      },
+      {
+        "after": "838511304b5780ad7ab5fe8879ef8b13cd9e20056ece432c55b39c87ba9a9b64",
+        "before": "838511304b5780ad7ab5fe8879ef8b13cd9e20056ece432c55b39c87ba9a9b64",
+        "bytes": 2626,
+        "match": true,
+        "path": "out/sensor-controller-90x55-local/fabrication/ohmni-fabrication-manifest.json"
+      },
+      {
+        "after": "8ec92f595a26b5769e16186e32231332955db4411247973489abe6c9c9def4f8",
+        "before": "8ec92f595a26b5769e16186e32231332955db4411247973489abe6c9c9def4f8",
+        "bytes": 105432,
+        "match": true,
+        "path": "out/sensor-controller-90x55-local/golden.kicad_pcb"
+      },
+      {
+        "after": "ea77fa2f9eabea3ef53fd0b80ced8d4a1d64a3529adc7334b865257e573e18e2",
+        "before": "ea77fa2f9eabea3ef53fd0b80ced8d4a1d64a3529adc7334b865257e573e18e2",
+        "bytes": 109240,
+        "match": true,
+        "path": "out/sensor-controller-90x55-local/golden.kicad_sch"
+      },
+      {
+        "after": "fd0bc1b4e63985381bbc07c0793f93c53e3fbc9aa6243557d5c710c28ffa05c8",
+        "before": "fd0bc1b4e63985381bbc07c0793f93c53e3fbc9aa6243557d5c710c28ffa05c8",
+        "bytes": 40666,
+        "match": true,
+        "path": "out/sensor-controller-90x55-local/golden.placed.kicad_pcb"
+      },
+      {
+        "after": "ccb7d0aa068099ca58c71282661eb7911013fe8b9de192574e32d84824c09f34",
+        "before": "ccb7d0aa068099ca58c71282661eb7911013fe8b9de192574e32d84824c09f34",
+        "bytes": 19025,
+        "match": true,
+        "path": "out/sensor-controller-90x55-local/placement-request.json"
+      },
+      {
+        "after": "21d9864d6e59faf7cc31022def7395c12edeb03450a4cf36ba8bff6572ce9c5e",
+        "before": "21d9864d6e59faf7cc31022def7395c12edeb03450a4cf36ba8bff6572ce9c5e",
+        "bytes": 27177,
+        "match": true,
+        "path": "out/sensor-controller-90x55-local/placement.json"
+      },
+      {
+        "after": "fd40fd529e6faaa7c187f3eb87e12f1988bff97167b041aaf7b1a3f18e39972b",
+        "before": "fd40fd529e6faaa7c187f3eb87e12f1988bff97167b041aaf7b1a3f18e39972b",
+        "bytes": 898743,
+        "match": true,
+        "path": "out/sensor-controller-90x55-local/report.json"
+      },
+      {
+        "after": "196be2294d6da59678fbe9d3c67538e003b261e461d531dbdb4b2284e91b3273",
+        "before": "196be2294d6da59678fbe9d3c67538e003b261e461d531dbdb4b2284e91b3273",
+        "bytes": 347503,
+        "match": true,
+        "path": "out/sensor-controller-90x55-local/routing-plan.json"
+      },
+      {
+        "after": "ce7cc5edd3da122514b2a97b62c8075019e790b0826733caf98b7a3f18d2d371",
+        "before": "ce7cc5edd3da122514b2a97b62c8075019e790b0826733caf98b7a3f18d2d371",
+        "bytes": 1967,
+        "match": true,
+        "path": "out/sensor-controller-90x55-local/routing-verification.json"
+      },
+      {
+        "after": "951fc4724f3402d8d9b6a4418d6f90182447fb7c597ba18f20c2e966667cc98b",
+        "baseline": "git HEAD:apps/web/reference-board.json",
+        "before": "951fc4724f3402d8d9b6a4418d6f90182447fb7c597ba18f20c2e966667cc98b",
+        "bytes": 127993,
+        "match": true,
+        "path": "apps/web/reference-board.json"
+      }
+    ],
+    "head_commit": "3cefca72be2a69e75df440e7bc7c715657dd9be9",
+    "manifestEmbeddedFingerprintMatches": true,
+    "native_tools_run": false,
+    "observed_at": "2026-09-15T01:54:52.986564+00:00",
+    "referencePreviewMatchesHead": true,
+    "reference_file_count": 1,
+    "schema_version": 1,
+    "scope": "VIS-REF-001",
+    "semanticFingerprintsAllMatch": true,
+    "semantic_fingerprints": {
+      "artifact_fingerprint": {
+        "after": "8ec92f595a26b5769e16186e32231332955db4411247973489abe6c9c9def4f8",
+        "before": "8ec92f595a26b5769e16186e32231332955db4411247973489abe6c9c9def4f8",
+        "match": true,
+        "preview": "8ec92f595a26b5769e16186e32231332955db4411247973489abe6c9c9def4f8"
+      },
+      "brief_fingerprint": {
+        "after": "437d28fc01dd44ba2ab390dad0c6f65bcf1c0f37e0b9a99bc13a04567f36087a",
+        "before": "437d28fc01dd44ba2ab390dad0c6f65bcf1c0f37e0b9a99bc13a04567f36087a",
+        "match": true,
+        "preview": "437d28fc01dd44ba2ab390dad0c6f65bcf1c0f37e0b9a99bc13a04567f36087a"
+      },
+      "circuit_fingerprint": {
+        "after": "96245a408b92518aeb6f11d968c7bc4ba1000e735a0b99da1130fd8fc9afb80e",
+        "before": "96245a408b92518aeb6f11d968c7bc4ba1000e735a0b99da1130fd8fc9afb80e",
+        "match": true,
+        "preview": "96245a408b92518aeb6f11d968c7bc4ba1000e735a0b99da1130fd8fc9afb80e"
+      },
+      "compiler_version": {
+        "after": "0.2.0",
+        "before": "0.2.0",
+        "match": true,
+        "preview": "0.2.0"
+      },
+      "constraints_hash": {
+        "after": "a3ffcfcdbea66c7ab99ed275c53eef47a954f40b79f3f0fa2d491a3681164fe6",
+        "before": "a3ffcfcdbea66c7ab99ed275c53eef47a954f40b79f3f0fa2d491a3681164fe6",
+        "match": true,
+        "preview": "a3ffcfcdbea66c7ab99ed275c53eef47a954f40b79f3f0fa2d491a3681164fe6"
+      },
+      "footprint_geometry_fingerprint": {
+        "after": "5c5aedda8119ae5dcac36b52ab0abbcb3684488ba9f210ec6d7ecf55987659f4",
+        "before": "5c5aedda8119ae5dcac36b52ab0abbcb3684488ba9f210ec6d7ecf55987659f4",
+        "match": true,
+        "preview": "5c5aedda8119ae5dcac36b52ab0abbcb3684488ba9f210ec6d7ecf55987659f4"
+      },
+      "package_fingerprint": {
+        "after": "0a90cbe5b83c4de7f477f073be1f37824f81e1e8f4490404273fc8153aaf3d6a",
+        "before": "0a90cbe5b83c4de7f477f073be1f37824f81e1e8f4490404273fc8153aaf3d6a",
+        "match": true,
+        "preview": "0a90cbe5b83c4de7f477f073be1f37824f81e1e8f4490404273fc8153aaf3d6a"
+      },
+      "routing_plan_fingerprint": {
+        "after": "5c2a2a808fbd99a96854c604c293d4e6b90ec916b174741f155f939d4a6aac2f",
+        "before": "5c2a2a808fbd99a96854c604c293d4e6b90ec916b174741f155f939d4a6aac2f",
+        "match": true,
+        "preview": "5c2a2a808fbd99a96854c604c293d4e6b90ec916b174741f155f939d4a6aac2f"
+      },
+      "schematic_fingerprint": {
+        "after": "ea77fa2f9eabea3ef53fd0b80ced8d4a1d64a3529adc7334b865257e573e18e2",
+        "before": "ea77fa2f9eabea3ef53fd0b80ced8d4a1d64a3529adc7334b865257e573e18e2",
+        "match": true,
+        "preview": "ea77fa2f9eabea3ef53fd0b80ced8d4a1d64a3529adc7334b865257e573e18e2"
+      }
+    },
+    "sourceFilesAllMatch": true,
+    "source_file_count": 22,
+    "srcOhmniUnchanged": true,
+    "src_ohmni_git_diff": [],
+    "src_ohmni_untracked": [],
+    "total_file_comparisons": 23
+  },
+  "screenshot_directory": "out/visual-reference/screenshots",
+  "screenshot_sha256": {
+    "00-actual-before.png": "eff151cccf5e6a0ca557eaaf4036a2b4bf08186bfd78553f264986e8c3250274",
+    "01-five-object-proof.png": "b7ff97003d7e322942aca2d1916dbad14a334da03544fcbb3a3211eb09bd4591",
+    "02-proof-leads.png": "7ee451af5dbae9504877c31bab16ce0a241c43e4caddb35fafe64e829e72970e",
+    "03-proof-holes.png": "e558f54f59f3103f8c9370b9a7a85b24c89dfbef51fb159e144ad1f63a0726ec",
+    "10-actual-after.png": "73882a1211485ebd7cbeee790cc19e639404178b1853407f9033a100745fa624",
+    "11-actual-underside.png": "caea19bd5378f86af2eb705e818b12b8a4ff506536492f149a71f891068e3f16",
+    "12-actual-copper-layer.png": "0d459a8ab71507e64446e9aa2402fad264c5d3642ea1247926fadcb89d26ec3f",
+    "13-actual-sda-highlight.png": "1e83c24978e57113f3a23d94fd23dac53089a68437276c880289046b6d952707",
+    "20-dense-sample.png": "0540dbdde1411a43e1ece866da6ecb0dfec8d3d42a42b974ac308698197579b2",
+    "30-ic-leads.png": "231b6259625951ddbb8b3265b1f640c24c9f4fb6e2e691456cc3d7f0ca3ab1f0",
+    "31-header-contacts.png": "1926ac0302b2e6fd48f9a46ce552e7b4cc985762147001318ed8e9d3cdf1c4b5",
+    "32-silver-can.png": "bb18c38d4057a791e8152b698a5cac0457885c32d82c0e8cb2d4987b499972b2",
+    "33-navy-capacitor.png": "51206fdd675b8c368b4a815f346017a1dba1f69d15ca67890d45358f55dce9f6",
+    "34-banded-passive.png": "6f8f72dac8a37c1e5eec04fc233d2ff97f25bd36b34dfdb04afcbc8c90cf3ca6",
+    "35-tan-passive.png": "1baa764b5564fdea9754c94ee69ed30bbbeb17b20a3c0184333ad2b4517f36a9",
+    "36-winding.png": "ab992a678d4a6d4a4a9ffa03784cbac2dd8142171d6cd1d0b0f187c3782cabb7",
+    "37-metal-shell.png": "556317f0c2e3f3c6940e00234d040f3c59550a5c1731f7d0f0cd0dafb8a22c75",
+    "38-small-part-list.png": "ead33b61909245c1b79ed375eeae270c2607b744b4fdef17ee0d9671e6cc1c11",
+    "39-exploded.png": "123e39b9c8f6d93a8d8fc8da3208ef2a9ffba7657cca7e77c8e18aea6eb20cc0",
+    "40-board-edge-holes.png": "8265830f93c4eb2b7ff1dced298a0de6bc255a6769886bf0f4fbdc2adfb7b6dd",
+    "41-sample-underside.png": "d87b9ca83d4f30333f6d08b9eec44d6516ebffb02780d2542902ac4a6243234e",
+    "42-asset-library.png": "197db0fc3c46f2c440b1dfa409d17b337fd9fc729a2f4ea333aa8f9185e58b83",
+    "43-complete-library.png": "e7708284831cf78ee8fb092c3bf00a82bcb577dca4ccfd67eff9b3fcdb5e4b97",
+    "50-compact-reduced-motion.png": "c005f50bf81c29149caac8e8d5c11f490604736d88579f4ae3b55f64b5ea3652",
+    "51-context-loss-fallback.png": "906cf9f8de65e23911f2284ce9d72989b6f7eff77ca5aa5bdcd8403ac07ebba3",
+    "actual-before-after.png": "cc8c493481d7ffeafad2863e39a16fb6f1b5455aba9a3477877ccd1d046bbd76",
+    "actual-J1-macro.png": "f1532e7f2ce0476719c0cbd69f09a03a90a3264a176f2de3c900e8010ee64eb8",
+    "actual-J2-macro.png": "9b585475fda39a17de88f4db8b78e452f4882a9fb1c133b43e465c9850482cb5",
+    "actual-SW1-macro.png": "c5d8feab0d099e21852d6e75346f61d6e26025b16c66699a9a6dba3d731513d2",
+    "actual-U1-macro.png": "71bfb2fc1d46febf7b437f15075ecf9e7b08439fa7093689b7b6803a46b05e6d",
+    "comparison.png": "571f5aec071af9b17ad962dab5ac9acb0feef343ccfbe7886bfabe92da772f35",
+    "family-aluminum_can.png": "64994ae63f00e9198a20dfae49ccd78b29bf35f08f743f38e4f8d8bd6935a75a",
+    "family-axial_resistor.png": "d705615a7194bc9665cad45f8f5ea2dd5dd64ea3f216dfef4be883d3a7446ba2",
+    "family-ceramic_chip.png": "74a6dc44e6083a31ea9819dd14a181f81559cd8cc13ded8d57623e0ed596c1e0",
+    "family-coated_axial.png": "be911d236b6aff8fea893ebb234b3dd702c2ea27d9a03775946afd582de1e729",
+    "family-coated_radial.png": "f1f4de3936a4638f3ced3ee30a349c176e7000e2bd970ccf40ca1262494096a0",
+    "family-coated_red.png": "acc9b76b153f13fd40e66345275815ef998724ab888a0a06c06c65b54ac5ca5d",
+    "family-electrolytic_can.png": "4ca8e3d7ffcc9b92123f2b688dcdd36190d80f1f1501c28c0392c9e92a2d4d6e",
+    "family-few_terminal.png": "85d1793724bdebca09ea98b58338a19db0492bc58972c0a87cbd893b7d7ad799",
+    "family-gold_post.png": "5b71971d91095b6bf81f2ad708c0b5f0b34683844cfd813ab6dc04fe8fcdae06",
+    "family-header.png": "d7f007072cd43080a5c44ec88689f67dc6bda911a67de8db206e2a6429037ab2",
+    "family-leadless_block.png": "dda5dc602573e6e9eb7d8dc4d551b13e1e9eef3614a92da92d0071f0ee665740",
+    "family-qfp.png": "8b1966c7e598700d98a1d5a15cf5824276367af758121ab0815ac1dc08e72a9a",
+    "family-rear_metal_block.png": "cce891d0eedd1b26de5a91dbbddd85db75368911fe774a8a605513c1cf0d2534",
+    "family-shielded_connector.png": "4f6136f9f7bf9226eb75d5233e09cf87931a5497eadbfe959e8f350b0c23bf39",
+    "family-small_outline.png": "7e994d7fab505c78c264019698bc6301e8b17160a0854868182c1cbb8fb17a37",
+    "family-unresolved_patch.png": "413891aeccb4d358c3cd9285f8bae0e4e489579844a7827cfeff16de882b9c03",
+    "family-white_connector.png": "5e7b4527fc79f6df01da60d74b97641a517c2178a6b980a0e5e5b611fb0de1c9",
+    "family-wound_inductor.png": "c7f77786bfde38d1e9aea1373b495e2c066da51892f2bcbd1982dc76e5c15c6d",
+    "reference-comparison.png": "51cbf830fb014c9ff6e980a41bc740fbf3a9b95af199c5e7f87b6bb609d7143b"
+  },
+  "missing_model_browser": {
+    "placeholder": true,
+    "ownerPreserved": true,
+    "sourceUnchanged": true,
+    "children": 1,
+    "status": "PACKAGE_APPROXIMATION",
+    "note": "Private copied fixture with one unsupported visual binding; no source or electrical result changed."
+  },
+  "review": {
+    "status": "PASSED",
+    "independent": true,
+    "record": ".ai/reviews.yaml#VIS-T01-FINAL",
+    "provisional_art_score": "22/24",
+    "human_visual_acceptance": "PENDING"
+  },
+  "coverage": {
+    "inventory_entries": 158,
+    "illustrative_bodies": 124,
+    "families_with_preview_and_closeup": 18,
+    "reusable_asset_factories": 26,
+    "unresolved_non_body_patches": 8
+  },
+  "resolved_failures": [
+    "Initial fast run:1474passed,3failed,44deselected. Old scope assertion, unavailable-WebGL constructor listener leak and snapshot taken before adding visual-version were fixed. Subsequent canonical gate1477 passed.",
+    "Independent P2: GPU ignored static net selection. Preserved source ranges in unchanged batches and added renderer-path regression; browser changes and exactly clears SDA.",
+    "Independent P2: unresolved_patch tile closed without inspection. Added non-component focus and all8 patch details, keeping124 body owners.",
+    "Staging exposed CRLF/LF visual hash drift. Preparation normalizes approved sources before hashing; reviewer independently matched all8 files against staged and working bytes."
+  ],
+  "limitations": [
+    "Human final visual acceptance pending; provisional art score is not owner acceptance.",
+    "Package appearances and sample dimensions/markings are approximate. Reference roles and unresolved objects stay UNKNOWN.",
+    "Actual circuit unchanged. Saved ERC warnings, partial identity and unsupported simulation/bench claims remain.",
+    "Dedicated integration/full/complete slow suite not run; canonical fast plus one real native golden route/manufacturing flow were run.",
+    "GPU timer-query duration not measured; measured RAF and CPU timings are machine-specific. Server serves raw bytes; gzip figures are local compression measurements.",
+    "Original procedural asset license unspecified; Three MIT preserved. Private source reference images are neither served nor committed.",
+    "W8 planning only; M10-T05 remains parked. No push/deploy/purchase/live model/firmware/electrical additions."
+  ]
+}

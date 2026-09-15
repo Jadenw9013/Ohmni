@@ -163,15 +163,15 @@ Machine: Edge 153.0.4234.32, ANGLE Direct3D11, AMD Radeon(TM) Graphics
 | Dense sample | 1126 × 603 | 235,542 | 648 |
 
 The 90-frame orbit measurement had a **16.7 ms median RAF interval** and
-**16.8 ms p95**. CPU submission/render was **5.4 ms median, 6.2 ms p95**.
+**16.8 ms p95**. CPU submission/render was **5.5 ms median, 6.4 ms p95**.
 Exact final timings are in
 `out/visual-reference/browser-evidence.json`; these are CPU timings, not GPU
 timer-query measurements. Performance on other GPUs is unmeasured. Low GPU
 load mode disables shadows and caps pixel ratio; unavailable/lost WebGL uses
 the existing simpler 2D view.
 
-The nine measured visual/runtime JS files total **902,333 raw bytes** and
-**222,158 bytes if gzip-compressed locally**. This includes 720,032 bytes of
+The nine measured visual/runtime JS files total **901,771 raw bytes** and
+**222,112 bytes if gzip-compressed locally**. This includes 720,032 bytes of
 Three.js. The demo currently serves raw bytes; the gzip number is a packaging
 measurement, not claimed HTTP compression. Existing application modules, CSS
 and the board projection are additional. No downloaded geometry or textures
@@ -228,3 +228,5 @@ Commit-bound gate/review records and final repository state are in
 `.ai/verification/VIS-T01.yaml`, `.ai/reviews.yaml`, and `.ai/state.yaml`.
 The task remains VERIFIED pending the owner's screenshot comparison; no agent
 has marked the visual result human-accepted.
+
+Implementation commit: `c80315fdae46386c9fbc54b2055ed23c4a15a30c`. Final ledger/evidence reconciliation is a separate documentation commit. Tracked implementation changes are committed; only the three preserved untracked input paths above remain.
