@@ -132,6 +132,18 @@
       ],
       "human_visual_acceptance": "PENDING",
       "followup_approval_evidence": ".ai/approvals/VIS-REF-001-FOLLOWUP.yaml"
+    },
+    {
+      "id": "DEPLOY-1",
+      "type": "release",
+      "title": "Publish the verified Ohmni update",
+      "status": "IN_PROGRESS",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/DEPLOY-1.yaml",
+      "non_goals": [
+        "New electrical functionality or verification claims",
+        "Unrelated product milestones or services"
+      ]
     }
   ],
   "tasks": [
@@ -1059,6 +1071,41 @@
         "verified_at": "2026-09-14",
         "human_visual_acceptance": "PENDING",
         "functional_expansion": "OPEN: dense124-body functional requirement unimplemented; documented supported29-part evidence and expansion limits."
+      }
+    },
+    {
+      "id": "DEPLOY-T01",
+      "scope": "DEPLOY-1",
+      "milestone": null,
+      "title": "Push and deploy the verified homepage and board explorer",
+      "status": "IN_PROGRESS",
+      "priority": 120,
+      "dependencies": [],
+      "goal": "Current verified code is on GitHub and the existing public hosts; live assets, API and viewer agree.",
+      "acceptance_criteria": [
+        "Exclude private inputs and credentials from upload contexts",
+        "Push current coherent commits without rewriting history",
+        "Deploy existing Vercel and Fly apps from the same release source",
+        "Verify public homepage, assets, API contract and board interactions"
+      ],
+      "verification": {
+        "required": [
+          "workflow",
+          "deployment_packaging",
+          "live_checks"
+        ],
+        "record": ".ai/verification/DEPLOY-T01.yaml"
+      },
+      "review": {
+        "required": true,
+        "status": "PENDING",
+        "independent": true,
+        "record": ".ai/reviews.yaml#DEPLOY-T01-PACKAGING"
+      },
+      "blockers": [],
+      "implementation": {
+        "approval_evidence": ".ai/approvals/DEPLOY-1.yaml",
+        "started_at_commit": "38c1df4"
       }
     }
   ]
