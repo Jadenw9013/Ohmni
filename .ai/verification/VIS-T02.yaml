@@ -1,0 +1,312 @@
+{
+  "schema_version": 1,
+  "id": "VIS-T02",
+  "status": "PASSED",
+  "task": "VIS-T02",
+  "scope": "VIS-REF-001",
+  "commit": "39d108dafd9c95b79f52f1c279ccbb121d931f85",
+  "verified_at": "2026-09-14",
+  "deliverable_status": {
+    "homepage_discovery": "IMPLEMENTED_AND_VERIFIED",
+    "actual_29_part_audit": "VERIFIED_WITH_RECORDED_LIMITS",
+    "dense_124_body_electrical_design": "NOT_IMPLEMENTED",
+    "human_visual_acceptance": "PENDING"
+  },
+  "commands": [
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "PASS",
+      "tests": 1478,
+      "deselected": 44,
+      "runtime_seconds": 218.56
+    },
+    {
+      "command": "node --test apps/web/tests/*.test.mjs",
+      "result": "PASS",
+      "tests": 180,
+      "log": "out/visual-reference/homepage-frontend-final.log"
+    },
+    {
+      "command": "python -m pytest tests/test_product_projection.py tests/test_visual_assets_server.py tests/test_ai_workflow.py -q --basetemp build/pytest-home-functional -o cache_dir=build/pytest-home-functional-cache",
+      "result": "PASS",
+      "tests": 48
+    },
+    {
+      "command": "python -m ohmni.application.reference_preview --run-dir out/sensor-controller-90x55-local --output apps/web/reference-board.json --captured-on 2026-09-14",
+      "result": "PASS",
+      "detail": "Guarded export rechecked source reports/artifacts and native ERC/DRC. Only flows changed in projection."
+    },
+    {
+      "command": "node scripts/homepage_acceptance.cjs http://127.0.0.1:8767 out/visual-reference",
+      "result": "PASS",
+      "record": "out/visual-reference/homepage-browser-check.json"
+    },
+    {
+      "command": "python out/visual-reference/audit-functional-board.py",
+      "result": "PASS_WITH_RECORDED_LIMITS",
+      "record": "out/visual-reference/functional-board-audit.json"
+    },
+    {
+      "command": "python -m ruff check .",
+      "result": "PASS"
+    },
+    {
+      "command": "git diff --cached --check",
+      "result": "PASS"
+    },
+    {
+      "command": "python scripts/verify.py workflow",
+      "result": "PASS",
+      "tests": 11,
+      "runtime_seconds": 0.06
+    },
+    {
+      "command": "python scripts/ai_state.py validate",
+      "result": "PASS",
+      "detail": "Recovery NONE"
+    },
+    {
+      "command": "python scripts/ai_state.py next",
+      "result": "PASS",
+      "detail": "No executable task; functional expansion remains open, not falsely marked implemented"
+    }
+  ],
+  "actual_board": {
+    "counts": {
+      "components": 29,
+      "nets": 21,
+      "catalog_types": 9,
+      "catalog_resolved": 29,
+      "registered_footprints": 29,
+      "parts_with_purpose": 29,
+      "parts_with_named_nets": 29,
+      "reachable_from_u1": 29,
+      "generic_instances": 26,
+      "exact_catalog_mpn_instances": 3,
+      "unresolved_catalog_ids": 0
+    },
+    "source_identity": {
+      "circuit_file_sha256": "137155eff5c52e397e313e46517fa12761760edd4c154617645c486f4c254a4b",
+      "circuit_canonical_content_hash": "96245a408b92518aeb6f11d968c7bc4ba1000e735a0b99da1130fd8fc9afb80e",
+      "pcb_file_sha256": "8ec92f595a26b5769e16186e32231332955db4411247973489abe6c9c9def4f8",
+      "projection_file_sha256": "c2d9787c5cc910041a693d0ea08f4bcec0ae8564e57a8d25511c1d7aa5b9a9fb",
+      "projection_circuit_fingerprint": "96245a408b92518aeb6f11d968c7bc4ba1000e735a0b99da1130fd8fc9afb80e",
+      "projection_pcb_fingerprint": "8ec92f595a26b5769e16186e32231332955db4411247973489abe6c9c9def4f8",
+      "source_files_match_recorded_projection_identity": true
+    },
+    "semantic": {
+      "report_id": "51fcba20f582b5cb",
+      "coverage": 1.0,
+      "export_blocked": false,
+      "finding_counts": {
+        "critical": 0,
+        "error": 0,
+        "warning": 1,
+        "info": 2
+      },
+      "rule_outcome_counts": {
+        "pass": 23,
+        "fail": 1,
+        "insufficient_data": 0,
+        "not_applicable": 1,
+        "error": 0
+      },
+      "subsystems": {
+        "identity": "PARTIALLY_VERIFIED",
+        "connectivity": "VERIFIED",
+        "pin_semantics": "VERIFIED",
+        "electrical": "VERIFIED",
+        "interfaces": "VERIFIED",
+        "thermal": "UNSUPPORTED",
+        "eda": "UNSUPPORTED",
+        "simulation": "UNSUPPORTED"
+      },
+      "findings": [
+        {
+          "rule_id": "PB-ID-005",
+          "severity": "warning",
+          "title": "U3 in LGA-8 is not hand-solderable",
+          "description": "The project asks for hand-solderable parts, but U3 (BME280) is in a LGA-8 package. 2.5 x 2.5 x 0.93 mm LGA. Bottom-terminated: needs hot air or reflow. A hobbyist with an iron should use a breakout module instead. The design is electrically fine; this is an assembly constraint.",
+          "affected_components": [
+            "U3"
+          ],
+          "affected_nets": [],
+          "evidence": [
+            {
+              "kind": "assumption",
+              "label": "LGA-8 hand-solderability",
+              "source_id": null,
+              "document": null,
+              "page": null,
+              "snippet": null,
+              "snippet_verified": null,
+              "source_start": null,
+              "source_end": null,
+              "source_region": null,
+              "quantity": null,
+              "text_value": null,
+              "detail": "Hand-solderability is recorded per package in the catalog and reflects a typical hobbyist with a soldering iron, not a hard manufacturing limit.",
+              "recorded_at": "2026-09-15T04:29:23.934367Z"
+            }
+          ],
+          "auto_fixable": false,
+          "suggested_fix": "Use a breakout module carrying this part, or accept that assembly needs hot air or a reflow plate.",
+          "lesson_topic": "hand-assembly",
+          "finding_id": "01ba81cf5c8f"
+        },
+        {
+          "rule_id": "PB-PIN-002",
+          "severity": "info",
+          "title": "U1 leaves 5 strapping pins on their internal defaults",
+          "description": "ESP32-WROOM-32E boot configuration is set by IO0 (internal pull-up, on net 'IO0'), IO12 (internal pull-down, unconnected), IO15 (internal pull-up, unconnected), IO2 (internal pull-down, unconnected), IO5 (internal pull-up, unconnected). Relying on the internal pulls is normal and gives the documented default boot mode, but it is worth knowing which pins these are: anything you attach to one of them -- an LED, a bus, a header -- is also pulling on it while the part boots. Add an external resistor wherever you need a level the internal pull does not give you.",
+          "affected_components": [
+            "U1"
+          ],
+          "affected_nets": [],
+          "evidence": [],
+          "auto_fixable": false,
+          "suggested_fix": null,
+          "lesson_topic": "strapping-pins",
+          "finding_id": "8e9d8c943c75"
+        },
+        {
+          "rule_id": "PB-UART-001",
+          "severity": "info",
+          "title": "UART pin orientation on 'UART_TX' needs human confirmation",
+          "description": "U1.35 (TXD0) goes to a connector pin (J2.3 (P3)) rather than to another UART device, so the correct wiring depends on how that header is labelled. Both conventions exist in shipping products: a header labelled from the board's point of view wants TX on the pin marked TX, one labelled from the programmer's point of view wants the opposite. This cannot be settled from the netlist. Confirm against the programmer you intend to use.",
+          "affected_components": [
+            "J2",
+            "U1"
+          ],
+          "affected_nets": [
+            "UART_TX"
+          ],
+          "evidence": [],
+          "auto_fixable": false,
+          "suggested_fix": null,
+          "lesson_topic": "uart-header-conventions",
+          "finding_id": "f80a2f7d5c4d"
+        }
+      ],
+      "undecided_rules": [],
+      "limitations": [
+        "PB-I2C-002: Pull-up resistance is range-checked against common practice, not calculated from bus capacitance and rise time. Actual rise time stays NOT_VERIFIED until layout is known.",
+        "PB-LED-001: The driving pin's own current rating is not checked: the catalog does not record per-pin source and sink limits, so an LED within its own rating could still exceed what the GPIO driving it can supply.",
+        "PB-PWR-004: Presence only. A netlist cannot show that a capacitor is physically close to the pin it decouples, and placement is what makes decoupling work. Capacitor placement stays NOT_VERIFIED until board layout is reviewed.",
+        "PB-PWR-004: Capacitors are counted per rail net, not attributed to individual supply pins. A part with several supply pins on one net may pass here while still lacking a capacitor at each pin.",
+        "PB-REG-002: Load is summed from published maxima, which are worst-case figures that rarely occur simultaneously. This is deliberately conservative and is not a thermal analysis: package power dissipation and rise above ambient are NOT_VERIFIED.",
+        "PB-UART-001: Orientation against an external programmer cannot be verified from connectivity. Where a UART reaches a bare header, the wiring stays HUMAN_CONFIRMED at best."
+      ]
+    },
+    "limits": [
+      "Shared-net graph reachability is a topology relationship, not a current-path, firmware, simulation or operating-hardware proof.",
+      "A generic catalog type has a known role and selected package/value where modeled; it is not an exact manufacturer or purchasable-part identification.",
+      "An exact catalog MPN identity does not mean every electrical property, supplier fact or 3D appearance is verified.",
+      "Fresh verification below is deterministic semantic verification only; this audit does not rerun KiCad ERC/DRC, routing or fabrication.",
+      "Firmware is absent. USB-C provides power only; programming uses an external 3.3 V serial adapter.",
+      "Seed catalog lacks GPIO source/sink and aggregate current ratings. I2C timing/capacitance and physical device behavior are not established.",
+      "Thermal, RF, EMC, assembly and bench behavior remain outside this audit. Existing unknowns are preserved."
+    ]
+  },
+  "source_integrity": {
+    "result": "PASS",
+    "baseline_commit": "e2d63077550f6d737e748d80df311d29f0e46cea",
+    "source_files": {
+      "before": {
+        "out/sensor-controller-90x55-local/circuit.json": "137155eff5c52e397e313e46517fa12761760edd4c154617645c486f4c254a4b",
+        "out/sensor-controller-90x55-local/confirmed-brief.json": "9b1a0b31dcfbeb2a02973076048d16f28abeb623c1f6bb2a2f0275181a05d6b4",
+        "out/sensor-controller-90x55-local/drc-report.json": "aa64c0d1338a3e669863dfc77de7d7d9b553b52492ff2ab92f4ddc1f1f4cb4e9",
+        "out/sensor-controller-90x55-local/erc-report.json": "510b2dd327d8d4aab6f227bcee587b3dba9fc117513c30adab50190b74a71945",
+        "out/sensor-controller-90x55-local/fabrication/golden-B_Cu.gbl": "6dc3d612b58e2d47c612f68296a9c24d8ba35feff66faa75fdb628a60bbf7048",
+        "out/sensor-controller-90x55-local/fabrication/golden-B_Mask.gbs": "14284a574f7b703420c63cec1d52e31f17fa35c64af57eabc4207b02546c8b87",
+        "out/sensor-controller-90x55-local/fabrication/golden-Edge_Cuts.gm1": "e7a45f1b0513e71c4f37e8e84a73c0d99176d9539cda2b54ebbffec36186171d",
+        "out/sensor-controller-90x55-local/fabrication/golden-F_Cu.gtl": "938b1ab98b88670d8896113b87cfa692face8891467ba4f9576e2b4c7124e8c0",
+        "out/sensor-controller-90x55-local/fabrication/golden-F_Mask.gts": "a374978f26af05015658fd4e10f77b1c00d1473558827870b1bdf88da49c1526",
+        "out/sensor-controller-90x55-local/fabrication/golden-b_silkscreen.gbo": "429500dbccbf2d4c487a4403245d86f9efa4d9ffb44fc08c4369cf841e316d57",
+        "out/sensor-controller-90x55-local/fabrication/golden-f_silkscreen.gto": "eb00804a23222e7cebf32e7e1ba8f42284ba6466d9305b354ec7797ba7c8232d",
+        "out/sensor-controller-90x55-local/fabrication/golden-job.gbrjob": "92c5e9c7a2a02bfffd05dbb8d58b60d4cb577079b9bcd39896cbfdb23882cc9c",
+        "out/sensor-controller-90x55-local/fabrication/golden.drl": "646cde2a5f61a0d8037bd8e68a874a29338bd4a83b274e2a8a4a4a361b13763d",
+        "out/sensor-controller-90x55-local/fabrication/ohmni-fabrication-manifest.json": "838511304b5780ad7ab5fe8879ef8b13cd9e20056ece432c55b39c87ba9a9b64",
+        "out/sensor-controller-90x55-local/golden.kicad_pcb": "8ec92f595a26b5769e16186e32231332955db4411247973489abe6c9c9def4f8",
+        "out/sensor-controller-90x55-local/golden.kicad_sch": "ea77fa2f9eabea3ef53fd0b80ced8d4a1d64a3529adc7334b865257e573e18e2",
+        "out/sensor-controller-90x55-local/golden.placed.kicad_pcb": "fd0bc1b4e63985381bbc07c0793f93c53e3fbc9aa6243557d5c710c28ffa05c8",
+        "out/sensor-controller-90x55-local/placement-request.json": "ccb7d0aa068099ca58c71282661eb7911013fe8b9de192574e32d84824c09f34",
+        "out/sensor-controller-90x55-local/placement.json": "21d9864d6e59faf7cc31022def7395c12edeb03450a4cf36ba8bff6572ce9c5e",
+        "out/sensor-controller-90x55-local/report.json": "fd40fd529e6faaa7c187f3eb87e12f1988bff97167b041aaf7b1a3f18e39972b",
+        "out/sensor-controller-90x55-local/routing-plan.json": "196be2294d6da59678fbe9d3c67538e003b261e461d531dbdb4b2284e91b3273",
+        "out/sensor-controller-90x55-local/routing-verification.json": "ce7cc5edd3da122514b2a97b62c8075019e790b0826733caf98b7a3f18d2d371"
+      },
+      "after": {
+        "out/sensor-controller-90x55-local/circuit.json": "137155eff5c52e397e313e46517fa12761760edd4c154617645c486f4c254a4b",
+        "out/sensor-controller-90x55-local/confirmed-brief.json": "9b1a0b31dcfbeb2a02973076048d16f28abeb623c1f6bb2a2f0275181a05d6b4",
+        "out/sensor-controller-90x55-local/drc-report.json": "aa64c0d1338a3e669863dfc77de7d7d9b553b52492ff2ab92f4ddc1f1f4cb4e9",
+        "out/sensor-controller-90x55-local/erc-report.json": "510b2dd327d8d4aab6f227bcee587b3dba9fc117513c30adab50190b74a71945",
+        "out/sensor-controller-90x55-local/fabrication/golden-B_Cu.gbl": "6dc3d612b58e2d47c612f68296a9c24d8ba35feff66faa75fdb628a60bbf7048",
+        "out/sensor-controller-90x55-local/fabrication/golden-B_Mask.gbs": "14284a574f7b703420c63cec1d52e31f17fa35c64af57eabc4207b02546c8b87",
+        "out/sensor-controller-90x55-local/fabrication/golden-Edge_Cuts.gm1": "e7a45f1b0513e71c4f37e8e84a73c0d99176d9539cda2b54ebbffec36186171d",
+        "out/sensor-controller-90x55-local/fabrication/golden-F_Cu.gtl": "938b1ab98b88670d8896113b87cfa692face8891467ba4f9576e2b4c7124e8c0",
+        "out/sensor-controller-90x55-local/fabrication/golden-F_Mask.gts": "a374978f26af05015658fd4e10f77b1c00d1473558827870b1bdf88da49c1526",
+        "out/sensor-controller-90x55-local/fabrication/golden-b_silkscreen.gbo": "429500dbccbf2d4c487a4403245d86f9efa4d9ffb44fc08c4369cf841e316d57",
+        "out/sensor-controller-90x55-local/fabrication/golden-f_silkscreen.gto": "eb00804a23222e7cebf32e7e1ba8f42284ba6466d9305b354ec7797ba7c8232d",
+        "out/sensor-controller-90x55-local/fabrication/golden-job.gbrjob": "92c5e9c7a2a02bfffd05dbb8d58b60d4cb577079b9bcd39896cbfdb23882cc9c",
+        "out/sensor-controller-90x55-local/fabrication/golden.drl": "646cde2a5f61a0d8037bd8e68a874a29338bd4a83b274e2a8a4a4a361b13763d",
+        "out/sensor-controller-90x55-local/fabrication/ohmni-fabrication-manifest.json": "838511304b5780ad7ab5fe8879ef8b13cd9e20056ece432c55b39c87ba9a9b64",
+        "out/sensor-controller-90x55-local/golden.kicad_pcb": "8ec92f595a26b5769e16186e32231332955db4411247973489abe6c9c9def4f8",
+        "out/sensor-controller-90x55-local/golden.kicad_sch": "ea77fa2f9eabea3ef53fd0b80ced8d4a1d64a3529adc7334b865257e573e18e2",
+        "out/sensor-controller-90x55-local/golden.placed.kicad_pcb": "fd0bc1b4e63985381bbc07c0793f93c53e3fbc9aa6243557d5c710c28ffa05c8",
+        "out/sensor-controller-90x55-local/placement-request.json": "ccb7d0aa068099ca58c71282661eb7911013fe8b9de192574e32d84824c09f34",
+        "out/sensor-controller-90x55-local/placement.json": "21d9864d6e59faf7cc31022def7395c12edeb03450a4cf36ba8bff6572ce9c5e",
+        "out/sensor-controller-90x55-local/report.json": "fd40fd529e6faaa7c187f3eb87e12f1988bff97167b041aaf7b1a3f18e39972b",
+        "out/sensor-controller-90x55-local/routing-plan.json": "196be2294d6da59678fbe9d3c67538e003b261e461d531dbdb4b2284e91b3273",
+        "out/sensor-controller-90x55-local/routing-verification.json": "ce7cc5edd3da122514b2a97b62c8075019e790b0826733caf98b7a3f18d2d371"
+      },
+      "all_match": true
+    },
+    "projection": {
+      "changed_top_level_keys": [
+        "flows"
+      ],
+      "board_unchanged": true,
+      "source_metadata_unchanged": true,
+      "sha256": "c2d9787c5cc910041a693d0ea08f4bcec0ae8564e57a8d25511c1d7aa5b9a9fb"
+    }
+  },
+  "browser": {
+    "result": "PASS",
+    "errors": [],
+    "viewports": [
+      1500,
+      849,
+      390
+    ],
+    "checks": [
+      "Homepage live 124-body preview with 18 families",
+      "Prominent CTA",
+      "Repeated preview keyboard entry opens matching inspector",
+      "Persistent sidebar entry",
+      "Escape closes and restores preview focus",
+      "Actual 29-part lab remains accessible",
+      "No horizontal overflow",
+      "Local-only network"
+    ]
+  },
+  "screenshots": {
+    "60-homepage-dense-entry.png": "bd954099b82ee6f80ab828f3bbd02af046910321251dba776b798cd439ba2d65",
+    "61-homepage-849.png": "37c357a42f54644c07152c5d010ecb3f16a49b2b3c16c2481932ed0337ee0d21",
+    "61-homepage-390.png": "2f55c29244f43c8f4e52f0390eb3c431363bbea0d31fe2e411743eff67df27ca"
+  },
+  "audit_sha256": "ca782ab28a9b2f9eeed062b7a836daaada8448a71b778d26af2955311044535f",
+  "review": {
+    "status": "PASSED",
+    "independent": true,
+    "record": ".ai/reviews.yaml#VIS-T02-FINAL"
+  },
+  "limitations": [
+    "The user request for all124 reference-inspired bodies to be electrically functional remains unimplemented. Unknown reference identities and illustrative paths are preserved.",
+    "Current actual29-part design has no unresolved catalog IDs; 26 instances are generic types and identity remains PARTIALLY_VERIFIED.",
+    "All29 share a connected net graph. This does not prove useful operation, current flow, firmware behavior or physical hardware function.",
+    "Optional preference question on supported functional density versus expanded component support has no recorded answer.",
+    "W8 remains a proposal. M10-T05 remains parked. No new electrical design or firmware was created.",
+    "Full/integration/complete slow suites were not rerun; the canonical fast suite, focused boundary checks and guarded native preview export were run."
+  ]
+}

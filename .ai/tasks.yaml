@@ -130,7 +130,8 @@
         "Unrelated milestones, cloud, purchasing, model integration",
         "Publishing private reference image"
       ],
-      "human_visual_acceptance": "PENDING"
+      "human_visual_acceptance": "PENDING",
+      "followup_approval_evidence": ".ai/approvals/VIS-REF-001-FOLLOWUP.yaml"
     }
   ],
   "tasks": [
@@ -1010,6 +1011,54 @@
         "verified_at": "2026-09-14",
         "human_visual_acceptance": "PENDING",
         "responsive_followup_commit": "480b40c0359b72641790bac7b82f190156a48906"
+      }
+    },
+    {
+      "id": "VIS-T02",
+      "scope": "VIS-REF-001",
+      "milestone": null,
+      "title": "Make the dense board discoverable and reconcile functional evidence",
+      "status": "VERIFIED",
+      "priority": 110,
+      "dependencies": [],
+      "goal": "Homepage visibly presents the dense board and opens it directly; electrical status and per-part connections derive from actual evidence.",
+      "acceptance_criteria": [
+        "Dense preview and prominent homepage entry; keyboard and compact access",
+        "Actualboard remains source-authenticated; unknown reference forms not silently renamed",
+        "Fresh audit identifies all actual component identities/connections and supported functional expansion constraints",
+        "Browser screenshots and focused checks; preserve source artifacts"
+      ],
+      "verification": {
+        "required": [
+          "fast_tests",
+          "frontend_tests",
+          "browser_checks",
+          "source_hash_invariance",
+          "ruff"
+        ],
+        "record": ".ai/verification/VIS-T02.yaml"
+      },
+      "review": {
+        "required": true,
+        "status": "PASSED",
+        "independent": true,
+        "record": ".ai/reviews.yaml#VIS-T02-FINAL"
+      },
+      "blockers": [],
+      "implementation": {
+        "started_at_commit": "e2d63077550f6d737e748d80df311d29f0e46cea",
+        "approval_evidence": ".ai/approvals/VIS-REF-001-FOLLOWUP.yaml",
+        "lifecycle": [
+          "Human followup authorizes homepage access and functional evidence work",
+          "READY selected by ai_state.py next; IN_PROGRESS",
+          "IMPLEMENTED: prominent live homepage preview, direct sidebar access and corrected actual I2C receiver explanation",
+          "VERIFIED: fast1478, frontend180, native guarded preview export, browser1500/849/390, source22 invariance and independent correction review passed",
+          "Functional expansion remains open; no unknown reference identities converted to verified parts"
+        ],
+        "verified_at_commit": "39d108dafd9c95b79f52f1c279ccbb121d931f85",
+        "verified_at": "2026-09-14",
+        "human_visual_acceptance": "PENDING",
+        "functional_expansion": "OPEN: dense124-body functional requirement unimplemented; documented supported29-part evidence and expansion limits."
       }
     }
   ]
