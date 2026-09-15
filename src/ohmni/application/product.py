@@ -466,7 +466,7 @@ def _readable(field: str, value: str) -> str:
     if field in {"board_width_mm", "board_height_mm"}:
         return f"{value} mm"
     if field == "archetype":
-        return {"a1_usb_i2c_sensor": "Measure your space", "a2_usb_gpio_controller": "Sensor and controls",
+        return {"a1_usb_i2c_sensor": "Measure your space", "a2_usb_gpio_controller": "Buttons and lights",
                 "a3_usb_spi_peripheral": "Store data"}.get(value, value)
     if field == "input_power":
         return {"usb_c_5v": "USB-C power, 5 V"}.get(value, value)
