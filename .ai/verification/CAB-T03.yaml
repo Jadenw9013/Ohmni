@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "id": "CAB-T03",
+  "task": "CAB-T03",
+  "scope": "COMPONENT-ATLAS-BUILDER-1",
+  "status": "PASSED",
+  "commit": "0f4c555",
+  "verified_at": "2026-09-30",
+  "source_sha256": {
+    "apps/web/component-stories.js": "640c66c411e36cfa1c1e710002bbec2dffebc868afafc5c7a96f374f36457ee1",
+    "apps/web/component-stories.css": "1e3566f525e05ec5b1cf6020339bbcf5e6043c46b87d814744d1e3535f5eb67f",
+    "apps/web/tests/component-stories.test.mjs": "4e3b2968cc14efaf2ae5d61e75d4eda888b2ee7fb92347d53c7161e0c7c197c1",
+    "apps/web/index.html": "a68f3b71101b4ceb7e547b4ef23376e65808083e2ffb479ebcdbb4e9eea4a5c4",
+    "scripts/demo_server.py": "615b0a3bba30338c2be939a5a146f85d8b0ace455e1e58b1294e6d5a995aec49"
+  },
+  "results": [
+    {
+      "command": "node --test --test-reporter=spec apps/web/tests/*.test.mjs",
+      "exit_code": 0,
+      "passed": 188,
+      "failed": 0,
+      "skipped": 0,
+      "seconds": 5.974
+    },
+    {
+      "command": "pytest tests/test_visual_assets_server.py tests/test_component_library.py -o \"addopts=-q --strict-markers\" -o cache_dir=build/pytest-cab-cache --basetemp build/pytest-cab-ui-final",
+      "exit_code": 0,
+      "passed": 40,
+      "seconds": 8.22
+    },
+    {
+      "command": "scripts/verify.py workflow",
+      "exit_code": 0,
+      "passed": 11,
+      "seconds": 0.07
+    },
+    {
+      "command": "python -m ruff check .",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    }
+  ],
+  "browser_observations": [
+    "Codex in-app browser at http://127.0.0.1:8766 using a provider-free JobStore in build/cab-ui-preview.",
+    "Opened header Components; 12 stories and package choices visible in accessibility tree.",
+    "ArrowRight changed Resistor to Capacitor; 0805 selection kept focus on the package selector.",
+    "TMP102 search showed explicit missing-model fallback and disabled Use in a project.",
+    "390x844 viewport: dialog bounds exactly 390x844; document scroll width 375; no horizontal overflow. Temporary viewport reset.",
+    "Final renderer reuse code: Next changed to Capacitor; isolated 3D model observed.",
+    "Escape closed dialog and restored focus to Components."
+  ],
+  "resolved_test_failures": [
+    "One frontend test expected lowercase HTTP header keys from pollHeaders, which uses title case. Corrected the assertion; final 188 passed."
+  ],
+  "limitations": [
+    "Physical phone touch and an actual screen-reader application were not exercised; touch gesture logic is unit-tested and accessible names/modal state were inspected in the browser. CAB-T10 owns device/user acceptance.",
+    "Reduced motion inherits existing tested BoardView policy; no automatic story timer or rotation added.",
+    "Three.js emitted existing environment-blur sample clipping warnings; no error observed.",
+    "Native KiCad and live models not invoked. No saved-project writes or verified package-geometry claim.",
+    "Task self-review only; independent scope acceptance remains pending."
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "id": "CAB-T04",
+  "task": "CAB-T04",
+  "scope": "COMPONENT-ATLAS-BUILDER-1",
+  "status": "PASSED",
+  "commit": "00fa538",
+  "verified_at": "2026-09-30",
+  "source_sha256": {
+    "apps/web/component-sandbox.js": "df270ade2f6e10f4781685afd20991a76a246bdeba1251521accc671ebf413a9",
+    "apps/web/sandbox-model.js": "f115258d81a1f33cb338f8d5ba889322db42d0d60202fc4183036b42f98987c8",
+    "apps/web/tests/sandbox-model.test.mjs": "dda38d19f49700eec4c9e24740f3ae36c84750c08dab7b2b330a14ff21da13cc",
+    "apps/web/component-stories.js": "1fa41bd050336eba8c00c0e370e0c90dbcc579059396dc5ca50d5a4fe3032d39",
+    "apps/web/component-stories.css": "c0996be33840d7cda63770b935ef77f13ce6a26c99869128a8a3ee7368a60a3c",
+    "apps/web/index.html": "1d3a0a3d423e5147931b8455aea394d3b3dc1efb9f39261d90a930d451b8f265",
+    "scripts/demo_server.py": "c0b973b7cf4760db982aa1c698d26e455512beaedb1f46f8d22499e6484c3e52"
+  },
+  "results": [
+    {
+      "command": "scripts/verify.py fast",
+      "exit_code": 0,
+      "passed": 1800,
+      "deselected": 49,
+      "seconds": 266.72
+    },
+    {
+      "command": "node --test --test-reporter=spec apps/web/tests/*.test.mjs",
+      "exit_code": 0,
+      "passed": 196,
+      "failed": 0,
+      "skipped": 0,
+      "seconds": 7.139
+    },
+    {
+      "command": "scripts/verify.py workflow",
+      "exit_code": 0,
+      "passed": 11,
+      "seconds": 0.43
+    },
+    {
+      "command": "python -m ruff check .",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    }
+  ],
+  "browser_observations": [
+    "Provider-free local demo using build/cab-ui-preview; no job generation requested.",
+    "Picked BME280, R rotated, ArrowRight nudged and Enter placed the illustration.",
+    "A second sensor at the occupied location reported overlap and disabled placement.",
+    "Actual keyboard entry of X=1 mm reported outside the scene boundary and kept placement disabled.",
+    "Pointer drag from the inventory to the map placed a second sensor; the scene list grew from one to two items.",
+    "Undo restored one item, redo restored two, discard removed both and disabled undo.",
+    "Final pointer/click fix: one click then F/Enter placed P1 exactly once on the back side.",
+    "Final 390x844 viewport: dialog width 390, scene count zero after reload, footer computed position static. Earlier measurements showed no horizontal overflow."
+  ],
+  "self_review_fixes": [
+    "Inventory pointerdown+click initially incremented the item ID twice. Both paths now share the pickup.",
+    "Long names caused horizontal inventory overflow; constrained grid sizing and wrapping fix it.",
+    "The mobile sticky footer covered the placement map; it now participates in normal document flow.",
+    "Invalid numeric input disables placement until corrected or an explicit manipulation restores visible valid coordinates."
+  ],
+  "limitations": [
+    "This is an artistic learning sandbox, not a project draft or KiCad component proof. Its boxes and dimensions are not source-verified.",
+    "Quarter-turn rotations only; overlap checks are sample-box tests on the same side, not keepout/clearance/through-hole checks.",
+    "No persistent scene save, electrical connections, artifact download or project mutation path exists.",
+    "Physical touch hardware, real screen-reader software and named-device frame-rate targets remain unobserved; final user/device evaluation is CAB-T10.",
+    "No native CAD or live model calls. No IPC or SPICE assertion.",
+    "Independent scope review remains pending. Full fast results cover the current working tree, including preserved unrelated synthesis changes."
+  ],
+  "final_ledger_validation": {
+    "commands": [
+      "scripts/verify.py workflow",
+      "scripts/ai_state.py validate",
+      "scripts/ai_state.py next"
+    ],
+    "workflow_passed": 11,
+    "workflow_seconds": 0.06,
+    "state": "VALID",
+    "next": "NO EXECUTABLE TASK: CAB-T05 requires CS-T04 COMPLETE"
+  }
+}

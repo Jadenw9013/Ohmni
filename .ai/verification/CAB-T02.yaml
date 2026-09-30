@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "id": "CAB-T02",
+  "task": "CAB-T02",
+  "scope": "COMPONENT-ATLAS-BUILDER-1",
+  "status": "PASSED",
+  "commit": "972800d",
+  "verified_at": "2026-09-30",
+  "source_sha256": {
+    "src/ohmni/application/component_library.py": "f4808057e883c896628506ce1ebb65a7269258a26d907021b25c3ea9c130954c",
+    "scripts/demo_server.py": "01d55ec6a71059c22320ab6a57944d50647e2d6d6a34b4ed3c45625342981cae",
+    "apps/web/component-visuals.json": "dd34d66c4b542d91fea4a1499e285c354844e26ab4d1650aca86e8daf7e05ced",
+    "tests/test_component_library.py": "ae7ee2895fbe3f85bd11da3a2752824dfaeb414dc7cea2f578dde19335171aac",
+    "apps/web/tests/component-library.test.mjs": "b68903b0a8a68e3e89e06b499c7bd275ac7d313f921aa9d092fe549c192b42ef"
+  },
+  "results": [
+    {
+      "command": "scripts/verify.py fast",
+      "exit_code": 0,
+      "passed": 1800,
+      "deselected": 49,
+      "seconds": 261.97
+    },
+    {
+      "command": "scripts/verify.py workflow",
+      "exit_code": 0,
+      "passed": 11,
+      "seconds": 0.42
+    },
+    {
+      "command": "pytest tests/test_component_library.py -o \"addopts=-q --strict-markers\" -o cache_dir=build/pytest-cab-cache --basetemp build/pytest-cab-library-final",
+      "exit_code": 0,
+      "passed": 28,
+      "seconds": 2.17
+    },
+    {
+      "command": "node --test apps/web/tests/*.test.mjs",
+      "exit_code": 0,
+      "passed": 182,
+      "failed": 0,
+      "skipped": 0,
+      "seconds": 5.939
+    },
+    {
+      "command": "python -m ruff check .",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    }
+  ],
+  "observed_library": {
+    "parts": 12,
+    "variants": 19,
+    "parts_with_illustration": 10,
+    "parts_with_missing_model": 2,
+    "snapshot_sha256": "62f74c59ad4f478f18e29d84f188533553bedd260b2a7a78d67fc3e8e0d29f85",
+    "projection_json_bytes": 36020,
+    "projection_gzip_bytes": 3361,
+    "size_note": "Locally serialized projection excludes HTTP identity/headers. Server compression is not enabled."
+  },
+  "limitations": [
+    "Full fast results include preserved uncommitted synthesis work, not a clean checkout.",
+    "No electrical admission, native CAD, live provider, project write or new UI interaction.",
+    "Source and pin-map verification remain absent; metadata counts are catalog-reported only.",
+    "Independent final review remains pending CAB-T10."
+  ]
+}

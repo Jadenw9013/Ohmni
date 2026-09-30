@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "id": "CAB-T01",
+  "task": "CAB-T01",
+  "scope": "COMPONENT-ATLAS-BUILDER-1",
+  "status": "PASSED",
+  "commit": "2c5e585",
+  "verified_at": "2026-09-30",
+  "summary": "Immutable visual/catalog contracts and fail-closed draft request preconditions. No runtime edit API.",
+  "tool_versions": {
+    "python": "3.13.3",
+    "pytest": "9.1.1",
+    "pydantic": "2.13.5",
+    "ruff": "0.16.5"
+  },
+  "source_sha256": {
+    "src/ohmni/domain/component_atlas.py": "383bbfc9456e02bcab54152bb325b4def8d58957cdd7782fea2d987153531982",
+    "tests/test_component_atlas_contracts.py": "35c9be8ac69a9d976b841aee615b194d9ce48037eb94c47357836b3e8ff80a92"
+  },
+  "results": [
+    {
+      "command": ".venv/Scripts/python.exe -m pytest tests/test_component_atlas_contracts.py tests/test_architecture.py -o \"addopts=-q --strict-markers\" -o cache_dir=build/pytest-cab-cache --basetemp build/pytest-cab-focused",
+      "exit_code": 0,
+      "passed": 145,
+      "seconds": 1.02
+    },
+    {
+      "command": ".venv/Scripts/python.exe -m pytest tests/test_component_atlas_contracts.py -o \"addopts=-q --strict-markers\" -o cache_dir=build/pytest-cab-cache --basetemp build/pytest-cab-final",
+      "exit_code": 0,
+      "passed": 77,
+      "seconds": 0.09
+    },
+    {
+      "command": ".venv/Scripts/python.exe -m ruff check .",
+      "exit_code": 0,
+      "result": "All checks passed"
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0,
+      "result": "Only line-ending warnings"
+    },
+    {
+      "command": ".venv/Scripts/python.exe scripts/verify.py fast",
+      "exit_code": 0,
+      "passed": 1772,
+      "deselected": 49,
+      "seconds": 262.69
+    },
+    {
+      "command": ".venv/Scripts/python.exe scripts/verify.py workflow",
+      "exit_code": 0,
+      "passed": 11,
+      "seconds": 0.43
+    }
+  ],
+  "discarded_runs": [
+    {
+      "command": "scripts/verify.py fast",
+      "exit_code": 1,
+      "passed": 1771,
+      "failed": 1,
+      "deselected": 49,
+      "seconds": 254.68,
+      "cause": "Implementer launched workflow concurrently; both canonical tiers reuse build/pytest. Workflow cleared fast test durable state, causing restarted job lookup to return 404. Not accepted as verification."
+    },
+    {
+      "command": "scripts/verify.py workflow",
+      "exit_code": 1,
+      "passed": 1,
+      "errors": 10,
+      "seconds": 0.47,
+      "cause": "Shared build/pytest cleanup collided with active fast tests and a locked project-state.lock. Re-run sequentially."
+    }
+  ],
+  "limitations": [
+    "The full tree includes existing uncommitted component-synthesis work; full-suite results describe that tree, not a clean HEAD checkout.",
+    "Native KiCad, corpus and live models not invoked for this pure contract task. No new geometry or electrical correctness claim.",
+    "Independent final acceptance is pending CAB-T10. Task-level self-review is not independent review."
+  ],
+  "evaluated_tree": "Exact source hashes on d7b1175, committed unchanged as 2c5e585. Full tests include preserved unrelated dirty files."
+}

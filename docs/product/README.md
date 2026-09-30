@@ -12,9 +12,18 @@ Later implementation notes record separately authorized work. See
 and its limits; it does not mark the broader roadmap complete. The audit and
 market research documents retain the dates and baselines they evaluated.
 
+For the current repository state, open gaps, verification results, and exact AI
+takeover instructions, read
+[CURRENT_STATE_DEEP_AUDIT_AND_HANDOFF.md](CURRENT_STATE_DEEP_AUDIT_AND_HANDOFF.md).
+It records the pre-atlas implementation baseline. For the subsequent approved
+atlas work, read [COMPONENT_ATLAS_IMPLEMENTATION.md](COMPONENT_ATLAS_IMPLEMENTATION.md).
+The development ledger under `.ai/` remains the execution authority.
+
 | Document | Owns | Read it when |
 |---|---|---|
-| [CAPABILITY_AUDIT.md](CAPABILITY_AUDIT.md) | What exists today, with file-level evidence: real vs fixture vs absent | You need to know what is actually true before believing anything else here |
+| [CURRENT_STATE_DEEP_AUDIT_AND_HANDOFF.md](CURRENT_STATE_DEEP_AUDIT_AND_HANDOFF.md) | Current as-built audit, open findings, priorities, and AI takeover procedure | Starting or resuming work in the current repository |
+| [THREE_D_COMPONENT_ATLAS_AND_BOARD_BUILDER_PLAN.md](THREE_D_COMPONENT_ATLAS_AND_BOARD_BUILDER_PLAN.md) | Approved component stories and board-builder plan; current progress in [implementation checkpoint](COMPONENT_ATLAS_IMPLEMENTATION.md) | Implementing the component library under its ledger gates |
+| [CAPABILITY_AUDIT.md](CAPABILITY_AUDIT.md) | Historical 2026-09-01 capability baseline: real vs fixture vs absent | Comparing the pre-M9 baseline with later implementation |
 | [PRODUCT_V1.md](PRODUCT_V1.md) | The v1 contract, personas, design envelope, archetypes, project model, model boundary | Deciding what we are shipping and to whom |
 | [UX_ARCHITECTURE.md](UX_ARCHITECTURE.md) | Journey, information architecture, disclosure, interaction model, component onboarding, the learning product | Designing or building any user-facing surface |
 | [DEPLOYMENT_PLAN.md](DEPLOYMENT_PLAN.md) | Runtime architecture, production model strategy, supply data, security/licensing/legal, observability | Making it run for real users, safely |
@@ -42,7 +51,10 @@ rather than SQLite, or a React SPA rather than Next.js SSR), it says so and
 gives the reason. Those changes take effect only when the corresponding
 milestone is approved and implemented.
 
-## The one-paragraph summary
+## Historical baseline summary
+
+The paragraph below describes the 2026-09-01 pre-M9 baseline. It is retained to
+explain the proposed v1 documents and is not a current capability statement.
 
 Ohmni today is an unusually rigorous **deterministic PCB verification and
 compilation engine**, wrapped in a one-button demo of a single pre-authored
