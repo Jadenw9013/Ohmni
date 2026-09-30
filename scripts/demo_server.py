@@ -88,6 +88,7 @@ STATIC_ASSETS=("index.html","app.js","view-model.js","board-model.js","board-vie
                "project-workbench.js","project-contract.js","scope-view.js",
                "reference-board.json","styles.css","visual-explorer.css",
                "component-visuals.json","component-stories.js","component-stories.css",
+               "component-sandbox.js","sandbox-model.js",
                "visual-assets.js","visual-renderer.js","visual-explorer.js","visual-layers.js","visual-board-scene.js","visual-inventory.js","visual-version.js",
                "vendor/three.module.js","vendor/three.core.min.js")
 STATIC_CONTENT_TYPES={

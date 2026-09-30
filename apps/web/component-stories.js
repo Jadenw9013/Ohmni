@@ -3,6 +3,7 @@ import { API_BASE, fetchHealth, pollHeaders, sameIdentity } from './client-contr
 import { ASSET_REGISTRY } from './visual-assets.js';
 import { BoardView } from './board-view.js';
 import { visualBoard } from './visual-explorer.js';
+import { openComponentSandbox } from './component-sandbox.js';
 
 const START_HERE = ['GENERIC_RESISTOR', 'GENERIC_CAPACITOR', 'GENERIC_LED_GREEN',
     'GENERIC_MOMENTARY_BUTTON', 'HEADER_1X6_254', 'USB_C_RECEPTACLE_16P',
@@ -173,6 +174,7 @@ export function initializeComponentStories() {
         const requestGeneration = ++generation;
         controller?.abort(); controller = new AbortController(); clearView();
         library = null; queue = [];
+        $('[data-story-sandbox]').disabled = true;
         $('[data-story-details]').replaceChildren(); $('[data-story-stage]').replaceChildren();
         $('[data-story-progress]').replaceChildren();
         $('[data-story-prev]').disabled = true; $('[data-story-next]').disabled = true;
@@ -182,6 +184,7 @@ export function initializeComponentStories() {
             library = await readComponentLibrary(globalThis.fetch, controller.signal);
             if (requestGeneration !== generation || !dialog.open) return;
             queue = storyQueue(library.items, $('[data-story-search]').value); select(0);
+            $('[data-story-sandbox]').disabled = false;
         } catch {
             if (requestGeneration !== generation || !dialog.open) return;
             $('[data-story-details]').replaceChildren(); $('[data-story-stage]').replaceChildren();
@@ -197,6 +200,17 @@ export function initializeComponentStories() {
     $('[data-story-close]').onclick = close;
     dialog.addEventListener('cancel', event => { event.preventDefault(); close(); });
     $('[data-story-retry]').onclick = load;
+    $('[data-story-sandbox]').onclick = event => {
+        if (!library) return;
+        const definitions = library.items.flatMap(item => item.variants.flatMap(variant => {
+            if (variant.eligibility.eligibility !== 'LEARN_ONLY') return [];
+            const specimen = storyManifest(item, variant)?.instances[0];
+            return specimen ? [{ id: `${item.part_id}/${variant.record.package_variant}`,
+                name: `${displayName(variant.record)} (${variant.record.package_variant})`,
+                family: specimen.family, options: specimen.options }] : [];
+        }));
+        openComponentSandbox(definitions, event.currentTarget);
+    };
     $('[data-story-prev]').onclick = () => select(index - 1);
     $('[data-story-next]').onclick = () => select(index + 1);
     $('[data-story-search]').oninput = event => { if (library) { queue = storyQueue(library.items, event.target.value); select(0); } };
