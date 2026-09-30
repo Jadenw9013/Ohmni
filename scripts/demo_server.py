@@ -87,7 +87,7 @@ STATIC_ASSETS=("index.html","app.js","view-model.js","board-model.js","board-vie
                "learning-model.js","circuit-lessons.js","circuit-lab.js",
                "project-workbench.js","project-contract.js","scope-view.js",
                "reference-board.json","styles.css","visual-explorer.css",
-               "component-visuals.json",
+               "component-visuals.json","component-stories.js","component-stories.css",
                "visual-assets.js","visual-renderer.js","visual-explorer.js","visual-layers.js","visual-board-scene.js","visual-inventory.js","visual-version.js",
                "vendor/three.module.js","vendor/three.core.min.js")
 STATIC_CONTENT_TYPES={
@@ -96,6 +96,7 @@ STATIC_CONTENT_TYPES={
     "visual-explorer.css":"text/css; charset=utf-8",
     "reference-board.json":"application/json; charset=utf-8",
     "component-visuals.json":"application/json; charset=utf-8",
+    "component-stories.css":"text/css; charset=utf-8",
     **{name:"text/javascript; charset=utf-8" for name in STATIC_ASSETS if name.endswith(".js")},
 }
 DIAGNOSTIC_EVENTS={

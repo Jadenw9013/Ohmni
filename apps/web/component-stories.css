@@ -1,0 +1,42 @@
+/* A specimen on the workbench, with source information beside it. */
+.component-stories { width: min(1060px, 96vw); max-width: none; max-height: 94dvh; padding: 24px; border: 1px solid var(--line); border-radius: 18px; color: var(--ink); background: var(--paper); }
+.component-stories::backdrop { background: rgb(20 44 58 / 58%); }
+.story-heading, .story-navigation { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.story-heading h2 { margin: 0 0 8px; font-size: clamp(24px, 4vw, 36px); letter-spacing: -.04em; }
+.story-heading p { margin: 0; color: var(--ink-soft); }
+.component-stories button { min-height: 44px; padding: 10px 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); color: var(--ink); cursor: pointer; }
+.component-stories button:disabled { opacity: .6; cursor: default; }
+.component-stories :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.story-search { display: block; margin: 20px 0 12px; }
+.story-search input { display: block; width: 100%; margin-top: 6px; padding: 10px; border: 1px solid var(--line); border-radius: 8px; font: inherit; }
+.story-progress { display: flex; gap: 5px; margin: 12px 0; }
+.story-progress button { flex: 1; min-width: 0; min-height: 24px; padding: 0; border: 0; border-radius: 0; background: linear-gradient(var(--line),var(--line)) center / 100% 5px no-repeat; }
+.story-progress button[aria-current] { background-image: linear-gradient(var(--accent),var(--accent)); }
+.story-layout { display: grid; grid-template-columns: minmax(0,1.15fr) minmax(0,1fr); gap: 28px; }
+.story-stage { min-height: 260px; position: relative; overflow: hidden; border-radius: 14px; background: #eaf0f5; }
+.story-stage canvas { display: block; width: 100%; height: clamp(220px, 43dvh, 400px); touch-action: none; }
+.story-model-note { padding: 12px; margin: 0; color: var(--ink-soft); background: var(--canvas); font-size: 13px; }
+.story-fallback { margin: 0; padding: 40px; font-size: 20px; line-height: 1.5; }
+.story-details { max-height: min(440px, 49dvh); overflow: auto; overflow-wrap: anywhere; padding: 4px 8px 12px 0; touch-action: pan-y; }
+.story-details h3 { font-size: 27px; margin: 0 0 12px; letter-spacing: -.03em; }
+.story-details h4 { font-size: 16px; margin: 20px 0 6px; }
+.story-details p, .story-details li { line-height: 1.5; }
+.story-details ul { padding-left: 21px; }
+.story-details select { margin-left: 8px; padding: 7px; font: inherit; max-width: 100%; }
+.story-description { font-size: 17px; }
+.story-badge { font-weight: 650; color: var(--accent-deep); }
+.story-muted, .story-details details { font-size: 13px; color: var(--ink-soft); }
+.story-details details { margin-top: 16px; }
+.story-navigation { margin-top: 18px; position: sticky; bottom: -24px; background: var(--paper); padding: 12px 0; }
+.component-entry { margin: 14px 0; }
+@media (max-width: 700px) {
+    .component-stories { width: 100vw; max-height: 100dvh; padding: 16px; border-radius: 0; }
+    .story-layout { grid-template-columns: 1fr; gap: 16px; }
+    .story-stage { min-height: 220px; }
+    .story-stage canvas { height: 240px; }
+    .story-details { max-height: none; }
+    .story-navigation { position: sticky; bottom: -16px; background: var(--paper); padding: 12px 0; }
+    .story-heading { align-items: flex-start; }
+    .story-heading button { flex-shrink: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .component-stories * { scroll-behavior: auto; transition: none; animation: none; } }

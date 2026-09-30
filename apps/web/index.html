@@ -8,6 +8,7 @@
   <title>Ohmni — Your electronics workbench</title>
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/visual-explorer.css">
+  <link rel="stylesheet" href="/component-stories.css">
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to workbench</a>
@@ -40,6 +41,7 @@
 
     <div class="main-shell" id="top">
       <header class="workspace-header">
+        <button type="button" class="secondary" data-open-components>Components</button>
         <div class="workspace-crumb"><span class="crumb-mark" aria-hidden="true">⌘</span><span id="workspace-title">Let's build something</span></div>
         <div class="header-actions"><span id="workspace-status" class="workspace-status">A guided electronics workspace</span><details class="header-help"><summary aria-label="How Ohmni works">How it works <span aria-hidden="true">↗</span></summary><div><strong>An idea, made understandable.</strong><p>Choose a sensor station, buttons and lights, or a memory board. Pick its features, save a revision, then generate and explore your checked design.</p><p>Making a working device also takes assembly, programming, and testing. We'll show you what remains.</p></div></details></div>
       </header>
@@ -50,6 +52,7 @@
         <section id="describe" class="stage welcome" aria-labelledby="describe-title">
           <div class="welcome-heading">
             <h1 id="describe-title">Build a real circuit.<br>Understand every part.</h1>
+            <div class="component-entry"><button type="button" class="secondary" data-open-components>Explore components</button></div>
             <p class="welcome-lede">Make a sensor station, a button controller, or a board that stores data. Explore the parts in 3D and see the checks behind your own design.</p>
           </div>
           <section class="home-atlas" aria-labelledby="home-atlas-title">
@@ -172,6 +175,16 @@
     </div>
   </dialog>
   <script type="module" src="/app.js"></script>
+  <dialog id="component-stories" class="component-stories" aria-labelledby="component-stories-title">
+    <header class="story-heading"><div><h2 id="component-stories-title">Meet the parts.</h2><p>Explore a component, one detail at a time.</p></div><button type="button" data-story-close>Close</button></header>
+    <label class="story-search">Find a component<input type="search" data-story-search maxlength="120" placeholder="Name, category or package"></label>
+    <p role="status" aria-live="polite" data-story-status></p>
+    <button type="button" data-story-retry hidden>Reload library</button>
+    <nav class="story-progress" aria-label="Component stories" data-story-progress></nav>
+    <div class="story-layout"><div class="story-stage" data-story-stage></div><article class="story-details" aria-label="Component details" data-story-details></article></div>
+    <footer class="story-navigation"><button type="button" data-story-prev disabled>Previous component</button><button type="button" data-story-next disabled>Next component</button></footer>
+  </dialog>
+  <script type="module">import { initializeComponentStories } from '/component-stories.js'; initializeComponentStories();</script>
   <section id="visual-explorer" hidden role="dialog" aria-modal="true" aria-label="Educational component explorer"></section>
   <script type="module">import { initializeVisualExplorer } from '/visual-explorer.js'; initializeVisualExplorer();</script>
 </body>
