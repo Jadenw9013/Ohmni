@@ -87,6 +87,7 @@ STATIC_ASSETS=("index.html","app.js","view-model.js","board-model.js","board-vie
                "learning-model.js","circuit-lessons.js","circuit-lab.js",
                "project-workbench.js","project-contract.js","scope-view.js",
                "reference-board.json","styles.css","visual-explorer.css",
+               "component-visuals.json",
                "visual-assets.js","visual-renderer.js","visual-explorer.js","visual-layers.js","visual-board-scene.js","visual-inventory.js","visual-version.js",
                "vendor/three.module.js","vendor/three.core.min.js")
 STATIC_CONTENT_TYPES={
@@ -94,6 +95,7 @@ STATIC_CONTENT_TYPES={
     "styles.css":"text/css; charset=utf-8",
     "visual-explorer.css":"text/css; charset=utf-8",
     "reference-board.json":"application/json; charset=utf-8",
+    "component-visuals.json":"application/json; charset=utf-8",
     **{name:"text/javascript; charset=utf-8" for name in STATIC_ASSETS if name.endswith(".js")},
 }
 DIAGNOSTIC_EVENTS={
@@ -731,6 +733,13 @@ class DemoHTTPServer(ThreadingHTTPServer):
         try:
             self.server_instance_id=uuid.uuid4().hex[:16]
             self.static_assets,self.ui_version=_load_web_snapshot(web_root)
+            from ohmni.application.component_library import build_component_library
+            from ohmni.catalog.loader import default_catalog
+
+            self.component_library=build_component_library(default_catalog().all_parts(), {
+                name: self.static_assets["/"+name] for name in (
+                    "component-visuals.json", "visual-assets.js", "vendor/three.module.js", "vendor/three.core.min.js")
+            })
             self.store=store if store is not None else JobStore()
             self.store.set_diagnostic(self._job_diagnostic)
         except DemoInitializationError:raise
@@ -988,6 +997,25 @@ class DemoHandler(SimpleHTTPRequestHandler):
             try:return self._json({"options":project_options(),**self.server._identity()})
             except BaseException:  # noqa: BLE001 - unavailable catalog choices fail closed
                 return self._json({"error":"project_unavailable"},HTTPStatus.SERVICE_UNAVAILABLE)
+        if request_path=="/api/components":
+            from ohmni.application.component_library import (
+                LibraryQuery,
+                LibraryQueryError,
+                LibrarySnapshotConflict,
+            )
+
+            error=self._poll_contract_error()
+            if error is not None:return self._reject(error,HTTPStatus.CONFLICT)
+            try:
+                query=LibraryQuery.from_url(urlsplit(self.path).query)
+                page=self.server.component_library.page(query)
+                return self._json({**page,**self.server._identity()})
+            except LibraryQueryError:
+                return self._json({"error":"component_query_invalid"},HTTPStatus.BAD_REQUEST)
+            except LibrarySnapshotConflict:
+                return self._json({"error":"component_snapshot_conflict"},HTTPStatus.CONFLICT)
+            except BaseException:  # noqa: BLE001 - owned metadata failure, never disclose paths or data
+                return self._json({"error":"component_library_unavailable"},HTTPStatus.SERVICE_UNAVAILABLE)
         if request_path=="/api/projects" or request_path.startswith("/api/projects/"):
             error=self._poll_contract_error()
             if error is not None:return self._reject(error,HTTPStatus.CONFLICT)
