@@ -3,20 +3,22 @@
   "id": "REPO-T01",
   "task": "REPO-T01",
   "scope": "REPO-READY-1",
-  "status": "IN_PROGRESS",
-  "commit": "working tree on 4c3ccc5; source commit and clean-tree rerun pending",
+  "status": "PASSED",
+  "commit": "7efe78b94577103303df231bc84a30a2eede5be6",
   "verified_at": "2026-10-02",
   "commands": {
     "initial full": "2 failed, 1845 passed, 2 skipped in 297.77s; stale browser navigation and no-op profile mutation corrected",
     "second full": "1 failed, 1846 passed, 2 skipped in 232.26s; only approval-workflow test required update for REPO-READY-1",
-    "workflow after approval test update": "11 passed in 0.09s; canonical confirmation in build/release-prep-workflow-final.txt",
+    "workflow after approval test update": "11 passed in 0.10s; canonical runner",
     "corpus": "108 passed, 1741 deselected in 8.12s; pinned source present",
     "node": "203 passed, 0 failed, 0 skipped in 6277.603ms",
     "browser regression": "1 passed in 2.25s",
     "ruff": "All checks passed",
     "verify-all": "all 14 fixtures behaved as intended",
     "recording": "current (reconstructed)",
-    "component CAD proof": "exit 0; 36 asset checks, KiCad 10.0.5 symbol/footprint SVG exports and connected harness checks; ERC 5 isolated_pin_label warnings, no asset defects; DRC no violations"
+    "component CAD proof": "exit 0; 36 asset checks, KiCad 10.0.5 symbol/footprint SVG exports and connected harness checks; ERC 5 isolated_pin_label warnings, no asset defects; DRC no violations",
+    "committed full": "1847 passed, 2 skipped in 235.74s; exit 0",
+    "closure workflow": "11 passed in 0.10s; ledger VALID, no executable task"
   },
   "live_provider_calls": 0,
   "secret_scan": {
@@ -24,13 +26,55 @@
     "files": 445,
     "matches": 0
   },
-  "reference_package_integrity": "All manifest hashes and sizes match",
+  "reference_package_integrity": "All working-tree and staged manifest hashes/sizes, including the human-approved plan SHA-256, matched; Git preserves exact reference bytes.",
   "limitations": [
     "CS-T01..CS-T04 remain VERIFIED, not COMPLETE; CS-T05 and CAB-T05 held.",
     "Reconstructed fixture; live extraction fidelity UNEVALUATED.",
     "No independent review of NEW-1..NEW-7 fixes or final UX accessibility acceptance.",
     "Local Windows results do not establish POSIX behavior.",
     "In-process ingest-datasheet path remains outside isolated worker; worker is not a security sandbox.",
-    "No IPC, validated SPICE or hardware-operation claims; no deployment."
-  ]
+    "No IPC, validated SPICE or hardware-operation claims. No direct deployment commands or infrastructure provisioning; the existing Vercel Git integration reported success after push."
+  ],
+  "clean_tree_at_full_test_start": true,
+  "full_result": {
+    "passed": 1847,
+    "skipped": 2,
+    "seconds": 235.74,
+    "log": "build/release-prep-committed-full.txt"
+  },
+  "publication": {
+    "remote": "origin",
+    "branch": "main",
+    "source_commit": "7efe78b94577103303df231bc84a30a2eede5be6",
+    "method": "non-force fast-forward",
+    "direct_deployment_commands": 0,
+    "existing_integration_observed": {
+      "context": "Vercel",
+      "state": "success",
+      "commit": "7efe78b94577103303df231bc84a30a2eede5be6",
+      "target_url": "https://vercel.com/jadens-projects-4fcf8ff8/ohmni-yvnd/8Aq519e7AuHezPWycvgJvx4iK6Ws",
+      "note": "Reported by the existing GitHub integration after the authorized push; no deployment command or provisioning was performed by this task."
+    }
+  },
+  "skip_reasons": [
+    "SKIPPED [1] tests\\test_anthropic_provider.py:426: ANTHROPIC_API_KEY is not set",
+    "SKIPPED [1] tests\\test_catalog_extensions.py:172: Installed library revision differs from the pinned source"
+  ],
+  "evidence_artifacts": {
+    "build/release-prep-committed-full.txt": "0d038d36941872ea9f06fff84595db12863df73ce87d4c1f6a2d52f0fe154aac",
+    "build/release-prep-corpus.txt": "4b53eef94ba58b9e361910d7c5791aea1766c3843e1f5365992d11c68e5d2dd4",
+    "build/release-prep-component/CS-T04_evidence.json": "ce491bdc7379dacb499ed9b61c8f5fc43a0803a23febf092203ecb2c46a62735",
+    "build/release-prep-node.txt": "37b251919a00a64a4a2b7cd10b2e0eec95b601bdd0d6f0ef0c25e06d4b047f73"
+  },
+  "review": {
+    "independent": false,
+    "scope": "Publication preparation, regression fixes and source/input hygiene only. Existing CS independent re-review requirements remain open."
+  },
+  "remote_ci_observation": {
+    "commit": "7efe78b94577103303df231bc84a30a2eede5be6",
+    "run_url": "https://github.com/Jadenw9013/Ohmni/actions/runs/36987750443",
+    "corpus": "success",
+    "fast": "in_progress",
+    "note": "Status observed before the documentation closure commit; later CI results are separate from local test evidence."
+  }
 }

@@ -13,7 +13,7 @@
     "status": "COMPLETE"
   },
   "approved_product_scope": "REPO-READY-1",
-  "active_task": "REPO-T01",
+  "active_task": null,
   "next_ready_tasks": [],
   "blocked_tasks": [
     "CS-T01",
@@ -23,29 +23,31 @@
     "M10-T05"
   ],
   "last_verification": {
-    "id": "UX-T03",
-    "commit": "19ce9bf",
-    "record": ".ai/verification/UX-T03.yaml"
+    "id": "REPO-T01",
+    "commit": "7efe78b94577103303df231bc84a30a2eede5be6",
+    "record": ".ai/verification/REPO-T01.yaml"
   },
   "last_review": {
     "status": "PASSED",
-    "scope": "UX-CLARITY-1",
-    "task": "UX-T03",
-    "commit": "19ce9bf",
+    "scope": "REPO-READY-1",
+    "task": "REPO-T01",
+    "commit": "7efe78b94577103303df231bc84a30a2eede5be6",
     "independent": false,
-    "record": ".ai/reviews.yaml#UX-T03-SELF"
+    "record": ".ai/reviews.yaml#REPO-T01-SELF"
   },
   "repository_status": {
-    "expected_clean": false,
-    "tracked_changes_expected": true,
-    "preserved_untracked_inputs": [
+    "expected_clean": true,
+    "tracked_changes_expected": false,
+    "preserved_untracked_inputs": [],
+    "ignored_local_inputs": [
       ".codex/",
-      "COMPONENT_SYNTHESIS_PLAN.md",
-      "OHMNI_REFERENCE_IMPLEMENTATION_PLAN.md",
-      "ohmni_reference_visual_plan/"
+      "build/",
+      "out/",
+      ".env",
+      ".env.local"
     ]
   },
-  "status": "REPOSITORY_PREPARATION_IN_PROGRESS",
+  "status": "REPOSITORY_PUBLISHED_WITH_EXISTING_PRODUCT_HOLDS",
   "cs_t05_hold": "CS-T05 is not blocked by a blocker entry; it is held by the ledger itself. Its dependency CS-T04 is VERIFIED, not COMPLETE, so executable_tasks() excludes it. It must stay unstarted until the prerequisites actually complete.",
   "component_synthesis_review": {
     "status": "FINDINGS_ADDRESSED_AWAITING_RE_REVIEW",
@@ -53,7 +55,8 @@
     "commit": "uncommitted working tree on d7b1175",
     "independent": true,
     "record": ".ai/reviews.yaml#CS-T01-T04-REMEDIATION-2-VERIFICATION",
-    "note": "Two independent reviews. The first raised CS2-001..CS2-016; the second verified 13 of those fixes by measurement, proved three regressions still could not fail, and raised NEW-1..NEW-7. All 23 are addressed. The NEW-* fixes have not themselves been reviewed, so CS-T01..CS-T04 stay VERIFIED and nothing is COMPLETE."
+    "note": "Historical independent reviews remain as recorded. All 23 remediation findings are addressed and their implementation is now committed. NEW-1..NEW-7 still need independent re-review; CS-T01..CS-T04 remain VERIFIED. Publication adds no live-extraction evidence.",
+    "implementation_commit": "7efe78b94577103303df231bc84a30a2eede5be6"
   },
-  "atlas_hold": "CAB-T01 through CAB-T04 are committed and COMPLETE as task units. Scope is IN_PROGRESS, not COMPLETE. CAB-T05 depends on CS-T04 COMPLETE; CS-T04 remains VERIFIED with prior independent-review/commit holds. No real-project editing or imported-component activation is authorized by the learning scene."
+  "atlas_hold": "CAB-T01..CAB-T04 are COMPLETE as task units. CAB-T05 depends on CS-T04 COMPLETE; CS-T04 remains VERIFIED pending independent re-review and the recorded extraction gates. Publication does not activate imported parts or authorize later implementation."
 }

@@ -8,6 +8,18 @@ audit remediation, reference documentation and development ledger, alongside the
 already committed component library, disposable placement sandbox and UI redesign.
 Approval is recorded in `.ai/approvals/REPO-READY-1.yaml`.
 
+## Published source and local checks
+
+Source commit: `7efe78b94577103303df231bc84a30a2eede5be6`. Published to `origin/main` by non-force
+fast-forward. The final ledger/evidence commit follows this source snapshot.
+
+- Full committed-tree suite: **1847 passed, 2 skipped** in 235.74 s.
+- Corpus: **108 passed**, 1741 deselected.
+- Frontend: **203 passed**, no failures or skips.
+- Workflow: **11 passed**. Ruff and all **14** product fixtures passed.
+- KiCad component proof: **36** asset checks passed; native symbol/footprint
+  renders and connected ERC/DRC completed.
+
 ## Fixes during publication preparation
 
 - The real demo's earlier `pipeline_failed` was reproduced as a KiCad ERC timeout
@@ -76,8 +88,9 @@ The isolated PDF worker is opt-in; the existing `ohmni ingest-datasheet` CLI sti
 parses in-process. The worker bounds resources but is not a security sandbox.
 Independent accessibility and newcomer usability evaluation remain outstanding.
 The Windows run does not prove POSIX behavior. Remote CI results must be observed
-separately from local results. No deployment or infrastructure provisioning was
-performed.
+separately from local results. No direct deployment command or infrastructure
+provisioning was performed. The existing Vercel Git integration reported success
+for the pushed source commit; this task did not configure or invoke that integration.
 
 For the next session: read `AGENTS.md`, this checkpoint, `.ai/state.yaml`,
 `.ai/tasks.yaml`, the CS remediation records and the UX checkpoints. Validate

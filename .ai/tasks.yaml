@@ -183,7 +183,7 @@
       "id": "REPO-READY-1",
       "type": "repository_infrastructure",
       "title": "Verify and publish the existing local work",
-      "status": "IN_PROGRESS",
+      "status": "COMPLETE",
       "approved_by": "human",
       "approval_evidence": ".ai/approvals/REPO-READY-1.yaml",
       "review_policy": "self_review_allowed for repository preparation; existing product review gates remain unchanged"
@@ -1185,13 +1185,13 @@
       },
       "review": {
         "required": true,
-        "status": "FINDINGS_OPEN",
+        "status": "FINDINGS_ADDRESSED_AWAITING_RE_REVIEW",
         "independent": true,
-        "record": ".ai/reviews.yaml#CS-T01-T04-INDEPENDENT-AUDIT-20260915",
-        "note": "Independent review found actionable failures; earlier test-passing status is not checkpoint approval."
+        "record": ".ai/reviews.yaml#CS-T01-T04-REMEDIATION-2-VERIFICATION",
+        "note": "Earlier independent review and remediation history retained. Publication is not independent re-review of the final fixes."
       },
       "blockers": [
-        "Remediation pass 2 addressed every audit finding (CS-AUDIT-001..006 and the CS-AUDIT-006-RESIDUAL), and an independent review of that pass raised 16 further findings (CS2-001..CS2-016) which are also addressed. Those fixes have not themselves been independently reviewed, and all work is uncommitted. This task stays VERIFIED until both are resolved."
+        "Source and remediation are committed and locally verified. Independent re-review of NEW-1..NEW-7 remains outstanding; preserve the live-extraction evaluation limitation in CS-T02. VERIFIED is not COMPLETE."
       ],
       "implementation": {
         "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
@@ -1203,7 +1203,8 @@
           "VERIFIED: 49 contract tests, 62 architecture tests, Ruff clean at the recorded commit"
         ],
         "completed_at": "2026-09-14",
-        "uncommitted": true
+        "uncommitted": false,
+        "committed_at": "7efe78b94577103303df231bc84a30a2eede5be6"
       }
     },
     {
@@ -1233,13 +1234,13 @@
       },
       "review": {
         "required": true,
-        "status": "FINDINGS_OPEN",
+        "status": "FINDINGS_ADDRESSED_AWAITING_RE_REVIEW",
         "independent": true,
-        "record": ".ai/reviews.yaml#CS-T01-T04-INDEPENDENT-AUDIT-20260915",
-        "note": "Independent review found actionable failures; earlier test-passing status is not checkpoint approval."
+        "record": ".ai/reviews.yaml#CS-T01-T04-REMEDIATION-2-VERIFICATION",
+        "note": "Earlier independent review and remediation history retained. Publication is not independent re-review of the final fixes."
       },
       "blockers": [
-        "Remediation pass 2 addressed every audit finding (CS-AUDIT-001..006 and the CS-AUDIT-006-RESIDUAL), and an independent review of that pass raised 16 further findings (CS2-001..CS2-016) which are also addressed. Those fixes have not themselves been independently reviewed, and all work is uncommitted. This task stays VERIFIED until both are resolved."
+        "Source and remediation are committed and locally verified. Independent re-review of NEW-1..NEW-7 remains outstanding; preserve the live-extraction evaluation limitation in CS-T02. VERIFIED is not COMPLETE."
       ],
       "implementation": {
         "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
@@ -1251,7 +1252,8 @@
           "VERIFIED: 26 offline multimodal tests plus a corpus-backed recorded extraction; live provider evaluation NOT RUN (no credentials)"
         ],
         "completed_at": "2026-09-14",
-        "uncommitted": true
+        "uncommitted": false,
+        "committed_at": "7efe78b94577103303df231bc84a30a2eede5be6"
       }
     },
     {
@@ -1281,13 +1283,13 @@
       },
       "review": {
         "required": true,
-        "status": "FINDINGS_OPEN",
+        "status": "FINDINGS_ADDRESSED_AWAITING_RE_REVIEW",
         "independent": true,
-        "record": ".ai/reviews.yaml#CS-T01-T04-INDEPENDENT-AUDIT-20260915",
-        "note": "Independent review found actionable failures; earlier test-passing status is not checkpoint approval."
+        "record": ".ai/reviews.yaml#CS-T01-T04-REMEDIATION-2-VERIFICATION",
+        "note": "Earlier independent review and remediation history retained. Publication is not independent re-review of the final fixes."
       },
       "blockers": [
-        "Remediation pass 2 addressed every audit finding (CS-AUDIT-001..006 and the CS-AUDIT-006-RESIDUAL), and an independent review of that pass raised 16 further findings (CS2-001..CS2-016) which are also addressed. Those fixes have not themselves been independently reviewed, and all work is uncommitted. This task stays VERIFIED until both are resolved."
+        "Source and remediation are committed and locally verified. Independent re-review of NEW-1..NEW-7 remains outstanding; preserve the live-extraction evaluation limitation in CS-T02. VERIFIED is not COMPLETE."
       ],
       "implementation": {
         "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
@@ -1299,7 +1301,8 @@
           "VERIFIED: 30 corpus-backed tests including the full rejection corpus; go/no-go source-association checkpoint passed on a real datasheet"
         ],
         "completed_at": "2026-09-14",
-        "uncommitted": true
+        "uncommitted": false,
+        "committed_at": "7efe78b94577103303df231bc84a30a2eede5be6"
       }
     },
     {
@@ -1331,13 +1334,13 @@
       },
       "review": {
         "required": true,
-        "status": "FINDINGS_OPEN",
+        "status": "FINDINGS_ADDRESSED_AWAITING_RE_REVIEW",
         "independent": true,
-        "record": ".ai/reviews.yaml#CS-T01-T04-INDEPENDENT-AUDIT-20260915",
-        "note": "Independent review found actionable failures; earlier test-passing status is not checkpoint approval."
+        "record": ".ai/reviews.yaml#CS-T01-T04-REMEDIATION-2-VERIFICATION",
+        "note": "Earlier independent review and remediation history retained. Publication is not independent re-review of the final fixes."
       },
       "blockers": [
-        "Remediation pass 2 addressed every audit finding (CS-AUDIT-001..006 and the CS-AUDIT-006-RESIDUAL), and an independent review of that pass raised 16 further findings (CS2-001..CS2-016) which are also addressed. Those fixes have not themselves been independently reviewed, and all work is uncommitted. This task stays VERIFIED until both are resolved."
+        "Source and remediation are committed and locally verified. Independent re-review of NEW-1..NEW-7 remains outstanding; preserve the live-extraction evaluation limitation in CS-T02. VERIFIED is not COMPLETE."
       ],
       "implementation": {
         "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
@@ -1349,7 +1352,8 @@
           "VERIFIED: 38 asset tests including the mutation corpus, 31/31 CS-* checks pass on the real generated pair, KiCad 10.0.5 loaded and rendered both artifacts; no catalog admission occurred"
         ],
         "completed_at": "2026-09-14",
-        "uncommitted": true
+        "uncommitted": false,
+        "committed_at": "7efe78b94577103303df231bc84a30a2eede5be6"
       }
     },
     {
@@ -2055,7 +2059,7 @@
       "scope": "REPO-READY-1",
       "milestone": null,
       "title": "Prepare, verify, commit and push current work to main",
-      "status": "IN_PROGRESS",
+      "status": "COMPLETE",
       "priority": 230,
       "dependencies": [],
       "goal": "Publish a coherent verified source tree and truthful takeover state without beginning further product work.",
@@ -2079,13 +2083,14 @@
       },
       "review": {
         "required": false,
-        "status": "PENDING",
-        "independent": false
+        "status": "PASSED",
+        "independent": false,
+        "record": ".ai/reviews.yaml#REPO-T01-SELF"
       },
       "blockers": [],
       "implementation": {
         "started_at_commit": "4c3ccc5",
-        "completed_at_commit": null
+        "completed_at_commit": "7efe78b94577103303df231bc84a30a2eede5be6"
       }
     }
   ]
