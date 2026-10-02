@@ -25,10 +25,7 @@ export function chipDimensions(record) {
 export function validateRecord(record) {
     if (!/^OHM-\d{3}$/.test(record.id) || record.generator !== 'GEN-CHIP_2T'
         || record.package_family !== 'PKG-CHIP2T' || record.mounting !== 'smd') throw new RangeError('Unsupported component contract');
-    if (!['complete', 'partial'].includes(record.status)) throw new RangeError('Unresolved research placeholder');
-    if (record.library_metadata.provisional !== (record.status === 'partial')
-        || !Array.isArray(record.library_metadata.uncertain_values)
-        || (record.status === 'partial' && !record.library_metadata.uncertain_values.length)) throw new RangeError('Missing provisional metadata');
+    validateMetadata(record);
     if (record.orientation.origin !== 'FCO' || record.orientation.pcb_plane !== 'XY'
         || record.orientation.height_axis !== 'Z' || record.polarity !== 'none') throw new RangeError('Unsupported coordinate or polarity convention');
     if (!['R', 'C', 'L', 'CURRENT_SENSE'].includes(record.function)) throw new RangeError('Unsupported CHIP2T profile');
@@ -53,5 +50,19 @@ export function validateRecord(record) {
         if (!Object.hasOwn(MATERIAL_TOKENS, token)) throw new RangeError(`Undefined material: ${token}`);
     }
     if (H < 0.05 || !record.lod_supported.every(lod => LODS.includes(lod))) throw new RangeError('Invalid height/LOD');
+    return record;
+}
+
+export function validateMetadata(record) {
+    if (!['complete', 'partial'].includes(record.status)) throw new RangeError('Unresolved research placeholder');
+    const metadata = record.library_metadata;
+    if (typeof metadata?.provisional !== 'boolean' || !Array.isArray(metadata.uncertain_values)
+        || (record.status === 'partial' && !metadata.provisional)
+        || (metadata.provisional && !metadata.uncertain_values.length)) throw new RangeError('Missing provisional metadata');
+    if (record.orientation.origin !== 'FCO' || record.orientation.pcb_plane !== 'XY'
+        || record.orientation.height_axis !== 'Z') throw new RangeError('Unsupported coordinate convention');
+    for (const token of [record.body.material, record.terminals.material]) {
+        if (!Object.hasOwn(MATERIAL_TOKENS, token)) throw new RangeError(`Undefined material: ${token}`);
+    }
     return record;
 }

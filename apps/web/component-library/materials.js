@@ -7,6 +7,8 @@ export const MATERIAL_TOKENS = Object.freeze(Object.fromEntries(Object.entries({
     MAT_MLCC_BROWN: ['#8C6A45', 0.6, 0],
     MAT_MLCC_GRAY: ['#8F8F88', 0.6, 0],
     MAT_TIN_MATTE: ['#A9ACAF', 0.5, 1],
+    MAT_TIN_BRIGHT: ['#BFC1C4', 0.35, 1],
+    MAT_EPOXY_BLACK: ['#1B1B1D', 0.55, 0],
     MAT_FERRITE_DARK: ['#2B2B2D', 0.6, 0],
     MAT_SILKSCREEN_WHITE: ['#F2F2F0', 0.7, 0],
     MAT_ALLOY_MANGANIN: ['#8A6F55', 0.4, 1],

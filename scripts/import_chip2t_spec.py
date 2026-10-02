@@ -15,6 +15,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "build" / "spec-tools"))
 import yaml
+from component_spec_metadata import library_metadata
 
 IDS = [f"OHM-{n:03}" for n in [*range(1, 10), 14, *range(21, 28), 41, 42, 43]]
 
@@ -63,15 +64,9 @@ def extract(source: bytes) -> dict:
         if identifier == "OHM-043":
             uncertainties.append("terminal_length 0.50 mm is UNCERTAIN/L, borrowed from MLCC; not sourced for the inductor.")
         record["profile_id"] = key
-        record["library_metadata"] = {
-            "provisional": record["status"] != "complete",
-            "uncertain_values": uncertainties,
-            "appearance_confidence": record["confidence"]["materials_appearance"],
-            "electrical_admission": "NOT_EVALUATED",
-            "footprint_binding": None,
-            "supported_variant": "default_2_terminal",
-            "unsupported_variants": ["wirewound", "Kelvin_3_terminal", "Kelvin_4_terminal"],
-        }
+        record["library_metadata"] = library_metadata(record, uncertainties,
+            supported_variant="default_2_terminal",
+            unsupported_variants=["wirewound", "Kelvin_3_terminal", "Kelvin_4_terminal"])
         components.append(record)
     return {
         "schema_version": 1,

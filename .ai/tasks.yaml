@@ -192,11 +192,21 @@
       "id": "COMPONENT-3D-STAGE1",
       "type": "component_library",
       "title": "Reusable 3D library Stage 1",
-      "status": "REVIEW",
+      "status": "COMPLETE",
       "approved_by": "human",
       "approval_evidence": ".ai/approvals/COMPONENT-3D-STAGE1.yaml",
       "review_policy": "Self-review and rendered inspection; user stage acceptance pending before Stage 2.",
-      "human_visual_acceptance": "PENDING"
+      "human_visual_acceptance": "APPROVED",
+      "acceptance_evidence": ".ai/approvals/COMPONENT-3D-STAGE2.yaml"
+    },
+    {
+      "id": "COMPONENT-3D-STAGE2",
+      "type": "component_library",
+      "title": "Reusable 3D library Stage 2",
+      "status": "IN_PROGRESS",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/COMPONENT-3D-STAGE2.yaml",
+      "review_policy": "Self-review and rendered inspection; human stage acceptance before Stage 3."
     }
   ],
   "tasks": [
@@ -2107,7 +2117,7 @@
       "id": "C3D-T01",
       "scope": "COMPONENT-3D-STAGE1",
       "title": "Foundation and all 20 CHIP2T instances",
-      "status": "VERIFIED",
+      "status": "COMPLETE",
       "priority": 100,
       "dependencies": [],
       "acceptance_criteria": [
@@ -2134,6 +2144,41 @@
         "status": "PASSED",
         "independent": false,
         "record": ".ai/reviews.yaml#C3D-T01-SELF"
+      },
+      "blockers": []
+    },
+    {
+      "id": "C3D-T02",
+      "scope": "COMPONENT-3D-STAGE2",
+      "title": "Data-driven dual gull-wing, SOT23 and DIP models",
+      "status": "IN_PROGRESS",
+      "priority": 100,
+      "dependencies": [
+        "C3D-T01"
+      ],
+      "acceptance_criteria": [
+        "All listed IDs at LOD0/1/2",
+        "Exact per-entry terminal count, pin1 and numbering tests",
+        "Document dimensional conflicts and uncertainty",
+        "24 review views plus same-scale comparison and all-entry contact sheet",
+        "No Stage 3 work"
+      ],
+      "verification": {
+        "required": [
+          "node",
+          "fast",
+          "visual inspection"
+        ],
+        "record": null
+      },
+      "implementation": {
+        "started_at_commit": "f859571",
+        "completed_at_commit": null
+      },
+      "review": {
+        "required": true,
+        "status": "PENDING",
+        "independent": false
       },
       "blockers": []
     }
