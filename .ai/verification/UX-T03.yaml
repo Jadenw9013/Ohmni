@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "id": "UX-T03",
+  "task": "UX-T03",
+  "scope": "UX-CLARITY-1",
+  "status": "PASSED",
+  "commit": "19ce9bf",
+  "verified_at": "2026-10-02",
+  "tested_tree": "Presentation implementation plus preserved uncommitted CS and workflow changes; not an isolated clean checkout.",
+  "source_sha256": {
+    "apps/web/styles.css": "5832fa1fdbf31acacefc56580e68e69513b1d742ecfecc39df26e7cd07458603",
+    "apps/web/workbench-theme.css": "1efe69e15a03b098222dc2266018743598ccdf9e71fd3487abaf9670670928a1",
+    "apps/web/component-stories.css": "87406e88c4eaf6a8d7e055ff848855a6aa730479032e119988e15b9f9613cdf5",
+    "apps/web/visual-explorer.css": "e0189296e0101dfd82cec3f082c0859ec9d9df327a49d3ac2ce4dd486bdd25ee",
+    "apps/web/index.html": "f32c42e6b39041497ba559aad7894814aa27767cabf25fc9b921e490d66cc1bd",
+    "apps/web/project-workbench.js": "8dd01c196e7180f20a4ed0ee6f1b63568c082c367db243b1dda8554dfa561f5f",
+    "apps/web/visual-renderer.js": "7ef7eff17836d178d0277ff1416bd14984f01df434c87f645464d95dd052f153",
+    "apps/web/visual-version.js": "6d6394c8821180fbc99894fb69a636e4b25cee408995ae750ca29524d3c3ffc3",
+    "apps/web/tests/theme.test.mjs": "ff95cfdb7e8aaa7c52e122a82b33f9c9da7b6510ed8c08d49eeb8c10578ed0cb",
+    "scripts/demo_server.py": "989724e8be5e6edc8ae36e93c940466c0ecaa740e1ecc0e251fa2beb873362f9"
+  },
+  "results": [
+    {
+      "command": "python scripts/verify.py fast",
+      "exit_code": 0,
+      "passed": 1800,
+      "deselected": 49,
+      "seconds": 260.47,
+      "log": "build/ux-workbench-fast.txt",
+      "note": "Before final CSS lab reflow, decorative SVG and scene background refinements. Final Node, focused UI/server tests and browser checks cover these presentation-only changes."
+    },
+    {
+      "command": "node --test --test-reporter=spec apps/web/tests/*.test.mjs",
+      "exit_code": 0,
+      "passed": 203,
+      "failed": 0,
+      "skipped": 0,
+      "seconds": 6.549,
+      "log": "build/ux-workbench-node-final.txt"
+    },
+    {
+      "command": "python -m pytest tests/test_demo_ui.py tests/test_visual_assets_server.py tests/test_component_library.py -o addopts='' -q --basetemp=build/ux-workbench-final",
+      "exit_code": 0,
+      "passed": 49,
+      "warnings": 1,
+      "seconds": 16.27,
+      "log": "build/ux-workbench-focused-final.txt",
+      "note": "One pytest cache-write permission warning."
+    },
+    {
+      "command": "python scripts/verify.py workflow",
+      "exit_code": 0,
+      "passed": 11,
+      "seconds": 0.44,
+      "log": "build/ux-workbench-workflow.txt"
+    },
+    {
+      "command": "python -m ruff check .",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    },
+    {
+      "command": "python scripts/verify.py workflow (ledger closure)",
+      "exit_code": 0,
+      "passed": 11,
+      "seconds": 0.08,
+      "log": "build/ux-workbench-workflow-closure.txt"
+    }
+  ],
+  "browser_observations": [
+    "Inspected project form, start page, component library, actual activity/failure and saved circuit lab.",
+    "Save revision enabled generation; changing board width disabled it and showed Unsaved changes.",
+    "Result, explanation, evidence and export inspected on an explicitly labeled isolated UI fixture; stale release kept all download links disabled and without href.",
+    "At320px result/explanation/export client and scroll widths both305px.",
+    "At36px root font, form widths matched at320px (305) and1280px (1265). Library/practice dialogs both303px client/scroll at320px.",
+    "Enlarged lab exposed narrow lesson column and oversized logo; fixed by flex wrapping and auto header. Final1280px dialog client/scroll1238, stacked lesson width1223.",
+    "Final normal lab client/scroll1393, current navy renderer and logo inspected. No console errors observed."
+  ],
+  "initial_failures": [
+    "One Node visual-version test correctly failed after scene background change; regenerated manifest with scripts/prepare_visual_assets.py, then203passed.",
+    "Large-text lab was too narrow; corrected and re-inspected."
+  ],
+  "real_engineering_run": {
+    "status": "FAILED",
+    "error_code": "pipeline_failed",
+    "job_id": "19455a1ef861",
+    "artifact_directory": "build/ux-reference-preview/19455a1ef861",
+    "cause": "Not diagnosed in presentation task.",
+    "completed_result": false
+  },
+  "limitations": [
+    "No new successful KiCad or end-to-end engineering proof. Real local pipeline failure remains unresolved.",
+    "Results/export visual checks used existing unit-test data through a separate labeled fixture server, never installed in product code.",
+    "36px root copied-asset stress test is not native zoom or accessibility certification.",
+    "No independent UX, screen-reader, physical touch or low-end GPU evaluation.",
+    "Experimental atlas styled but not manually retested at every viewport.",
+    "No electrical authority, admission, deployment or infrastructure changes; CS/CAB holds preserved."
+  ],
+  "live_engineering_model_calls": 0,
+  "image_generation_calls": 0,
+  "self_review": {
+    "status": "PASSED",
+    "independent": false,
+    "record": ".ai/reviews.yaml#UX-T03-SELF"
+  },
+  "tool_versions": {
+    "python": "3.13.3",
+    "node": "22.16.0",
+    "pytest": "9.1.1",
+    "ruff": "0.16.5"
+  }
+}

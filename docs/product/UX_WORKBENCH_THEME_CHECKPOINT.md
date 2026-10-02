@@ -1,7 +1,7 @@
 # Unified Ohmni studio design
 
 Date: 2026-10-02. Task **UX-T03**, within human-approved `UX-CLARITY-1`.
-Approval: `.ai/approvals/UX-WORKBENCH-1.yaml`.
+Approval: `.ai/approvals/UX-WORKBENCH-1.yaml`. Implementation: `19ce9bf`.
 Predecessor: [reference-led landing](UX_REFERENCE_LANDING_CHECKPOINT.md), UX-T02,
 implementation commit `4bf53ef`.
 
@@ -69,7 +69,9 @@ uncommitted CS and workflow changes, not a clean isolated checkout.
 - Node: **203 passed, 0 failed, 0 skipped, 6.549s**, including the palette guard.
 - Workflow: **11 passed, 0.44s** before ledger closure; closure is recorded separately.
 - Ruff and `git diff --check`: passed.
-- Focused UI/static-server/library results: see the verification record.
+- Focused UI/static-server/library: **49 passed, 1 cache-write permission warning, 16.27s**.
+- Workflow after ledger closure: **11 passed, 0.08s**; `ai_state.py validate` passed;
+  `ai_state.py next` reported no executable task.
 
 Browser observations:
 
