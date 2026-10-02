@@ -1,22 +1,23 @@
 {
   "schema_version": 1,
-  "active_task": "C3D-T04",
-  "last_known_commit": "89fe29f",
+  "active_task": null,
+  "last_known_commit": "66c68596b9c820a5ca5a86237e177dfd2ced08f3",
   "previous_checkpoint": ".ai/approvals/COMPONENT-3D-STAGE1-previous-checkpoint.yaml",
   "completed_substeps": [
     "Human Stage 3 acceptance and Stage 4 combined scope recorded on codex/component-library-stage4.",
     "25 records / 22 shared profiles, all three LODs; SOT23 unchanged.",
     "85 Stage 4 geometry tests and 490 total frontend tests pass; source imports and Ruff pass.",
     "42 review PNGs captured, inspected and hashed; extra PowerPAK/LOD0/LOD2 spotchecks.",
-    "23 focused Python workflow/static boundary tests passed."
+    "23 focused Python workflow/static boundary tests passed.",
+    "Implementation committed; canonical fast passed (1718 passed, 82 source skips, 49 deselected); exact-commit verification and self-review recorded."
   ],
   "remaining_work": [
-    "Commit implementation, run canonical fast gate, record exact-commit evidence and stop before LEDs."
+    "Human Stage 4 acceptance. Stage 5 LEDs is not authorized."
   ],
   "last_failure": null,
-  "resume_action": "Finish Stage 4 verification and review closure only; LEDs require human approval.",
+  "resume_action": "Stop for human Stage 4 review; do not begin LEDs.",
   "modified_files": [],
-  "last_command": "node frontend suite; four source import --check commands; ruff; visual inspection",
-  "verification_record": ".ai/verification/C3D-T04-visual.json",
+  "last_command": "python scripts/verify.py fast (exit 0)",
+  "verification_record": ".ai/verification/C3D-T04.yaml",
   "artifact_directory": "out/component-library/stage-4/"
 }
