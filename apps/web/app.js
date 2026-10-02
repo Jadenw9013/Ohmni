@@ -10,6 +10,7 @@ import { artifactCurrent, badge, escapeHtml, money, releaseReadiness, requiremen
 import { BoardView, createCamera } from "./board-view.js";
 import { schematicSvg, transitionFrame, transitionTracks } from "./schematic-view.js";
 import { initializeReferencePreview } from "./reference-preview.js";
+import { initializeHome } from "./home.js";
 import { mountBoardControls } from "./board-controls.js";
 import { mountCircuitLessons } from "./circuit-lessons.js";
 import { mountProjectWorkbench } from "./project-workbench.js";
@@ -86,7 +87,7 @@ const state = {
 // ── journey ─────────────────────────────────────────────────────────────
 
 const STAGE_TITLES = Object.freeze({
-    describe: "Your next little invention",
+    describe: "Your projects",
     agree: "Meet your project",
     design: "Inside the workshop",
     review: "Explore your board",
@@ -425,7 +426,7 @@ function openProjectWorkspace(name) {
     state.projectName = name;
     setHidden("#project-workbench", false);
     setHidden("#reference-brief", true);
-    setText("#agree-title", "Make room for your ideas.");
+    setText("#agree-title", "Choose what your board does.");
     setText("#agree-description", "Choose a purpose and the parts to match. Save a revision, then turn that exact design into a board.");
     show("agree", { focus: false });
     setText("#project-label", name);
@@ -1165,7 +1166,12 @@ function renderBringUp(exp) {
 // ── wiring ──────────────────────────────────────────────────────────────
 
 function attach() {
-    initializeReferencePreview({ onCustomize: (brief) => state.workbench?.openNew(brief) });
+    let referenceInitialized = false;
+    document.querySelector('#saved-example')?.addEventListener('toggle', (event) => {
+        if (!event.target.open || referenceInitialized) return;
+        referenceInitialized = true;
+        void initializeReferencePreview({ onCustomize: (brief) => state.workbench?.openNew(brief) });
+    });
     if ($("#project-workbench")?.dataset.projectWorkbench === "true") {
         state.workbench = mountProjectWorkbench($("#project-workbench"), {
             shelf: $("#saved-projects"), onOpen: openProjectWorkspace,
@@ -1268,6 +1274,7 @@ function attach() {
     clearError();
     selectResultPanel("board");
     show("describe", { focus: false });
+    initializeHome({ onStart: () => state.workbench?.openNew() });
 }
 
 if (typeof document !== "undefined" && document.getElementById("start-supported")) attach();

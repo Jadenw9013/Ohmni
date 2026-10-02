@@ -107,6 +107,8 @@ function createDom() {
     const windowHandlers = {};
     const documentHandlers = {};
     const get = (selector) => {
+        // These tests mount only the workbench; the landing has its own harness.
+        if (selector === '#home') return null;
         if (!nodes.has(selector)) nodes.set(selector, createNode(selector));
         return nodes.get(selector);
     };

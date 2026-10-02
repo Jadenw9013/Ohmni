@@ -3,18 +3,56 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Design a sensor station, button controller, or memory board. Explore it in 3D, understand the connections, and download checked circuit files.">
+  <meta name="description" content="Learn electronics with guided USB-powered ESP32 projects. Choose components, explore circuits in 3D, and inspect electrical checks and their limits.">
   <meta name="theme-color" content="#2159e8">
   <title>Ohmni — Your electronics workbench</title>
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/visual-explorer.css">
   <link rel="stylesheet" href="/component-stories.css">
+  <link rel="stylesheet" href="/home.css">
 </head>
 <body>
-  <a class="skip-link" href="#main-content">Skip to workbench</a>
-  <div class="app-layout">
+  <a class="skip-link" href="#home-title">Skip to content</a>
+  <noscript><p>Enable JavaScript for the workbench and interactive models. Ohmni helps you explore small ESP32 circuits and their electrical checks.</p></noscript>
+  <section id="home" class="home-page" aria-label="Welcome to Ohmni">
+    <header class="home-nav">
+      <a class="brand" href="#home" aria-label="Ohmni home"><span class="brand-mark" aria-hidden="true">Ω</span><span>ohmni<span class="brand-period">.</span></span></a>
+      <nav class="home-links" aria-label="Main navigation"><a href="#workspace">Your workbench</a><button class="secondary" type="button" data-open-components>Learn components</button></nav>
+    </header>
+    <main class="home-content">
+      <section class="home-hero" aria-labelledby="home-title">
+        <div class="home-copy">
+          <h1 id="home-title" tabindex="-1">Build circuits.<br>Understand why.</h1>
+          <p class="home-intro">Turn an idea into a small circuit board, with help choosing the parts and understanding the connections.</p>
+          <p class="home-scope">For USB-powered ESP32 projects. Choose your features, explore the circuit and inspect its electrical checks.</p>
+          <a href="#workspace" class="primary home-start" data-home-start>Start a project</a>
+          <p class="home-start-note">New to electronics? Start with a sensor, buttons and lights, or a memory board.</p>
+        </div>
+        <figure class="home-specimen" aria-labelledby="home-part-title">
+          <div class="home-model">
+            <canvas id="home-model-canvas" hidden tabindex="-1" style="pointer-events:none" aria-label="Illustrative component model. Enable interaction, then drag or use arrow keys to orbit; plus and minus to zoom."></canvas>
+            <div id="home-model-placeholder" class="home-model-placeholder"><svg viewBox="0 0 100 100" aria-hidden="true"><rect x="25" y="25" width="50" height="50" rx="5"/><rect x="36" y="36" width="28" height="28" rx="2"/><path d="M35 15v10m15-10v10m15-10v10M35 75v10m15-10v10m15-10v10M15 35h10m-10 15h10m-10 15h10M75 35h10m-10 15h10m-10 15h10"/></svg><span>Get to know the parts.</span></div>
+          </div>
+          <div class="home-part-tabs" role="group" aria-label="Choose a component"><button type="button" data-home-part="processor" aria-pressed="true">Processor</button><button type="button" data-home-part="sensor" aria-pressed="false">Sensor</button><button type="button" data-home-part="power" aria-pressed="false">USB power</button></div>
+          <figcaption><h2 id="home-part-title">The processor</h2><p id="home-part-role">Runs the program you write. It reads inputs and decides what your circuit does next.</p><p id="home-part-id" class="home-part-id">ESP32-WROOM-32E</p></figcaption>
+          <p id="home-model-status" class="home-model-note" role="status">Illustrative model. Text explanations work without 3D.</p>
+          <div class="home-model-tools"><button type="button" class="secondary" id="home-orbit" aria-pressed="false" disabled>Interact with model</button><button type="button" class="secondary" id="home-spin" aria-pressed="false" disabled>Rotate model</button><button type="button" class="secondary" id="home-model-retry" hidden>Retry model</button></div>
+        </figure>
+      </section>
+      <section class="home-explanation" aria-labelledby="home-make-title">
+        <h2 id="home-make-title">Start small. Make something useful.</h2>
+        <div class="home-examples"><article><h3>Measure your space</h3><p>Choose environmental sensors for a board that reads the world around you.</p></article><article><h3>Give your code a button</h3><p>Add physical inputs and indicator lights to a small controller.</p></article><article><h3>Keep a little data</h3><p>Add memory that your program can use to store information.</p></article></div>
+      </section>
+      <section class="home-explanation home-checks" aria-labelledby="home-checks-title">
+        <div><h2 id="home-checks-title">See the reasoning.<br>Know the limits.</h2><p>Choose your project, save its configuration, then inspect the generated circuit and its checks. Ohmni explains the decisions along the way.</p></div>
+        <div><ul><li>Electrical checks report what passed, what failed and what could not be checked.</li><li>3D models help you learn. Their appearance does not prove a board will work.</li><li>Assembly, firmware and hardware testing are still part of your build. Ohmni boards have not been bench-tested.</li></ul></div>
+      </section>
+    </main>
+    <footer class="home-footer"><p>Local prototype. Project revisions are saved on this server; they do not sync to the cloud.</p></footer>
+  </section>
+  <div class="app-layout" hidden>
     <aside class="sidebar" aria-label="Project navigation">
-      <a class="brand" href="#top" aria-label="Ohmni home">
+      <a class="brand" href="#home" aria-label="Ohmni home">
         <span class="brand-mark" aria-hidden="true">Ω</span><span>ohmni<span class="brand-period">.</span></span>
       </a>
       <div class="sidebar-project">
@@ -31,7 +69,6 @@
           <li data-stage="build"><button type="button" data-navigate="build" aria-label="Build &amp; export" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M4 15v6h16v-6"/></svg><span>Build &amp; export</span><span class="nav-check" aria-hidden="true">✓</span></button></li>
         </ol>
       </nav>
-      <button type="button" class="sidebar-dense-board" data-open-sample>Explore the dense 3D board</button>
       <div class="sidebar-bottom">
         <div class="mentor-note"><span class="mentor-symbol" aria-hidden="true">✳</span><p>You don't have to know it all.<br><strong>Just bring your curiosity.</strong></p></div>
         <details class="sidebar-help"><summary><span aria-hidden="true">?</span> First time here?</summary><p>A schematic is a map of connections. A circuit board makes those connections physical. Ohmni helps you explore both, one part at a time.</p></details>
@@ -51,51 +88,21 @@
       <main id="main-content" tabindex="-1">
         <section id="describe" class="stage welcome" aria-labelledby="describe-title">
           <div class="welcome-heading">
-            <h1 id="describe-title">Build a real circuit.<br>Understand every part.</h1>
-            <div class="component-entry"><button type="button" class="secondary" data-open-components>Explore components</button></div>
-            <p class="welcome-lede">Make a sensor station, a button controller, or a board that stores data. Explore the parts in 3D and see the checks behind your own design.</p>
+            <h1 id="describe-title">What would you like to make?</h1>
+            <p class="welcome-lede">Start a guided project or continue one you saved. You can explore an example before making your own.</p>
           </div>
-          <section class="home-atlas" aria-labelledby="home-atlas-title">
-            <div class="home-atlas-copy">
-              <h2 id="home-atlas-title">Explore the dense board.</h2>
-              <p>Get close to the chips, connectors and tiny details. Rotate the board or select a part to open its explanation.</p>
-              <p id="home-atlas-count" class="home-atlas-count">Interactive component atlas</p>
-              <button type="button" id="open-sample-board" class="primary" data-open-sample>Open the dense 3D board</button>
-              <p class="home-atlas-status">Reference-inspired educational model · not an electrically verified design</p>
-              <a href="#connected-design" class="home-atlas-connected">Looking for connected circuit files? Explore the checked design below.</a>
-            </div>
-            <div class="home-atlas-stage">
-              <canvas id="home-atlas-canvas" tabindex="0" aria-label="Dense educational board preview. Drag to rotate or select a body to inspect it."></canvas>
-              <p id="home-atlas-help">Drag to rotate · select a part to explore</p>
-            </div>
-          </section>
-          <h2 class="connected-design-title" id="connected-design">A connected design you can build from.</h2>
           <div class="welcome-grid">
-            <div class="reference-column">
-              <div class="reference-stage pcb-stage">
-                <div class="reference-topline"><span><span class="reference-dot" aria-hidden="true"></span><span id="reference-title">Explore this circuit</span></span><span class="reference-provenance">Saved design</span></div>
-                <p id="reference-stats" class="reference-stats"></p>
-                <button type="button" id="open-reference-lab" class="open-lab-button" disabled><span>Open the 3D circuit lab<small>Explore now. No engineering run needed.</small></span><span aria-hidden="true">↗</span></button>
-                <canvas id="reference-canvas" tabindex="0" aria-label="Interactive reference circuit board. Drag to rotate. Use the system buttons below to explore."></canvas>
-                <div class="reference-caption" id="reference-caption">A previously generated board. Drag to rotate, or select a system below.</div>
-                <div class="reference-controls" id="reference-focus" role="group" aria-label="Explore a board system"></div>
-                <details id="reference-evidence" class="reference-evidence" hidden></details>
-              </div>
-              <div class="reference-inspector" aria-live="polite"><span class="inspector-spark" aria-hidden="true">↳</span><div><h3 id="reference-part-name">Every part has a purpose.</h3><p id="reference-part-description">Select a part on the board or choose a system above to discover its job.</p></div></div>
-              <button type="button" id="customize-reference" class="secondary customize-reference" hidden>Customize this board <span aria-hidden="true">↗</span></button>
-            </div>
-
             <div class="welcome-copy">
               <div class="project-starter">
-                <div class="starter-heading"><div class="climate-icon" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M17 9a4 4 0 0 1 8 0v14a7 7 0 1 1-8 0z"/><path d="M21 13v15m-4 0h8M30 9h4m-4 6h4"/></svg></div><div><span class="available-label">Start with something useful</span><h2>A board for your next idea.</h2></div></div>
+                <div class="starter-heading"><div class="climate-icon" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M17 9a4 4 0 0 1 8 0v14a7 7 0 1 1-8 0z"/><path d="M21 13v15m-4 0h8M30 9h4m-4 6h4"/></svg></div><div><span class="available-label">Start with something useful</span><h2>Choose your project.</h2></div></div>
                 <ul class="starter-families"><li><strong>Measure your space</strong><span>Read the world with environmental sensors.</span></li><li><strong>Buttons &amp; lights</strong><span>Give your program physical inputs and indicators.</span></li><li><strong>Store data</strong><span>Add memory for information you want to keep.</span></li></ul>
                 <dl class="starter-specs">
                   <div><dt>The processor</dt><dd>ESP32</dd></div>
                   <div><dt>The board</dt><dd>2 layers</dd></div>
                   <div><dt>The power</dt><dd>USB-C</dd></div>
                 </dl>
-                <button type="button" id="create-project" class="primary start-button">Choose my board <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
-                <p class="starter-footnote">A few choices. Your own saved revisions.<br>No electronics experience needed to explore.</p>
+                <button type="button" id="create-project" class="primary start-button">Start a project <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+                <p class="starter-footnote">Save project revisions on this server. No cloud sync.<br>Unsaved changes are lost if you reload the page.</p>
                 <button type="button" id="start-supported" class="ghost reference-demo-link" data-fixture="esp32-bme280-environmental-logger">Or run the fixed reference example</button>
                 <div class="free-text-starter" id="free-text-starter" hidden>
                   <label class="free-text-label" for="free-text-request">Or describe a board in your own words</label>
@@ -112,18 +119,34 @@
           </div>
 
           <section class="saved-project-shelf" aria-labelledby="saved-projects-title"><div><h2 id="saved-projects-title">Pick up where you left off.</h2><p>Projects saved on this local server, ready for your next idea.</p></div><div id="saved-projects" class="saved-projects"></div></section>
+<details class="workspace-examples" id="saved-example"><summary>Explore a saved example</summary><p class="reading-note">A previously generated circuit, separate from your project. Its recorded checks are not a verdict on your current design.</p>            <div class="reference-column">
+              <div class="reference-stage pcb-stage">
+                <div class="reference-topline"><span><span class="reference-dot" aria-hidden="true"></span><span id="reference-title">Explore this circuit</span></span><span class="reference-provenance">Saved design</span></div>
+                <p id="reference-stats" class="reference-stats"></p>
+                <button type="button" id="open-reference-lab" class="open-lab-button" disabled><span>Open the 3D circuit lab<small>Explore now. No engineering run needed.</small></span><span aria-hidden="true">↗</span></button>
+                <canvas id="reference-canvas" tabindex="0" aria-label="Interactive reference circuit board. Drag to rotate. Use the system buttons below to explore."></canvas>
+                <div class="reference-caption" id="reference-caption">A previously generated board. Drag to rotate, or select a system below.</div>
+                <div class="reference-controls" id="reference-focus" role="group" aria-label="Explore a board system"></div>
+                <details id="reference-evidence" class="reference-evidence" hidden></details>
+              </div>
+              <div class="reference-inspector" aria-live="polite"><span class="inspector-spark" aria-hidden="true">↳</span><div><h3 id="reference-part-name">Every part has a purpose.</h3><p id="reference-part-description">Select a part on the board or choose a system above to discover its job.</p></div></div>
+              <button type="button" id="customize-reference" class="secondary customize-reference" hidden>Customize this board <span aria-hidden="true">↗</span></button>
+            </div>
+
+</details>
+<details class="workspace-examples"><summary>Experimental 3D art</summary><p>This reference-inspired model contains unidentified shapes. It is an illustration, not a connected circuit or a source of component facts.</p><button type="button" class="secondary" data-open-sample>Open the experimental board</button></details>
           <div class="welcome-bottom" id="how-it-works">
             <h2>From curiosity to circuit.</h2>
             <ol class="welcome-path">
               <li><span aria-hidden="true">1</span><div><h3>Choose what to make</h3><p>Pick your parts and save a revision of your own design.</p></div></li>
               <li><span aria-hidden="true">2</span><div><h3>See how it works</h3><p>Generate the board, explore its connections, and read the actual checks.</p></div></li>
-              <li><span aria-hidden="true">3</span><div><h3>Make it your next build</h3><p>Download KiCad files, then assemble, program, and test.</p></div></li>
+              <li><span aria-hidden="true">3</span><div><h3>Make it your next build</h3><p>Inspect available files and their release limits before assembly, programming and testing.</p></div></li>
             </ol>
           </div>
         </section>
 
         <section id="agree" class="stage brief-stage" hidden aria-labelledby="agree-title">
-          <div class="section-head"><p class="step-label">Your project workbench</p><h1 id="agree-title">Make room for your ideas.</h1><p class="lede" id="agree-description">Choose a purpose and the parts to match. Save a revision, then turn that exact design into a board.</p></div>
+          <div class="section-head"><h1 id="agree-title">Choose what your board does.</h1><p class="lede" id="agree-description">Choose a purpose and the parts to match. Save a revision, then turn that exact design into a board.</p></div>
           <div id="project-workbench" data-project-workbench="true" hidden></div>
           <div id="reference-brief" class="agree-layout"><div id="brief" class="brief"></div><aside class="agree-decide"><span class="plan-symbol" aria-hidden="true">Ω</span><h2>A little clarity now.<br>A better board later.</h2><p id="agree-note"></p><div class="brief-boundary" id="brief-boundary"><strong>This is the fixed reference example.</strong><p>Its design and repair are pre-authored. To choose your own configuration, return home and select “Choose my board.”</p></div><button type="button" id="confirm-brief" class="primary">Run the design checks <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button><button type="button" id="back-to-describe" class="ghost">Back to the project</button></aside></div>
         </section>

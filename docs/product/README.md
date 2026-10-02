@@ -1,5 +1,14 @@
 # Ohmni product definition
 
+## Current UI/UX work
+
+- [UX audit and implementation direction](UX_CLARITY_AUDIT.md): six reported concerns
+  and eight additional findings, with evidence, solutions and acceptance criteria.
+- [UX implementation checkpoint](UX_CLARITY_CHECKPOINT.md): implemented changes,
+  verification results, limitations and takeover instructions.
+
+## Product contract
+
 The canonical product layer for Ohmni v1. Created 2026-09-01 against commit
 `d7b836e`, after M8 completed and before any M9 scope exists.
 

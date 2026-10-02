@@ -11,9 +11,24 @@ const START_HERE = ['GENERIC_RESISTOR', 'GENERIC_CAPACITOR', 'GENERIC_LED_GREEN'
 const hash = value => typeof value === 'string' && /^[0-9a-f]{64}$/.test(value);
 const text = (value, max = 500) => typeof value === 'string' && value.length > 0 && value.length <= max;
 const invalid = () => { throw new Error('Component library unavailable'); };
-const displayName = record => record.display_name.startsWith('GENERIC_')
+const LESSONS = Object.freeze({
+    GENERIC_RESISTOR: ['Resistor', 'Limits current or sets a voltage together with other parts. Its resistance must be chosen for the circuit.'],
+    GENERIC_CAPACITOR: ['Capacitor', 'Stores a small amount of charge. Near a chip, it can help smooth changes in its power supply.'],
+    GENERIC_LED_GREEN: ['Green indicator light', 'Turns electrical current into light. It needs a suitable current-limiting circuit.'],
+    GENERIC_MOMENTARY_BUTTON: ['Push button', 'Connects contacts while pressed, giving your program a physical input.'],
+    HEADER_1X6_254: ['Pin header', 'Provides a row of connections for wires or another board. The circuit determines what each pin does.'],
+    USB_C_RECEPTACLE_16P: ['USB-C connector', 'Connects a USB cable. Supporting circuitry determines how the board uses power and signals.'],
+    'AP2112K-3.3TRG1': ['Voltage regulator', 'Provides a regulated supply within its operating limits. Check those limits before choosing an input or load.'],
+    'MCP1700T-3302E-TT': ['Voltage regulator', 'Provides a regulated supply within its operating limits. The package illustration is not an electrical specification.'],
+    'ESP32-WROOM-32E': ['ESP32 processor module', 'Runs your firmware and connects to sensors, buttons and other parts. Ohmni does not write or test that firmware.'],
+    BME280: ['Environment sensor', 'Measures temperature, humidity and air pressure for your program to read.'],
+    TMP102AIDRLR: ['Temperature sensor', 'Measures temperature and reports a reading to your program.'],
+    '25LC256-I/SN': ['Memory chip', 'Keeps stored data when power is removed. Your firmware controls what gets written and read.'],
+});
+export const componentLesson = id => LESSONS[id] ?? null;
+const displayName = record => componentLesson(record.catalog_part.id)?.[0] ?? (record.display_name.startsWith('GENERIC_')
     ? record.display_name.replace('GENERIC_', '').toLowerCase().replaceAll('_', ' ').replace(/^./, c => c.toUpperCase())
-    : record.display_name;
+    : record.display_name);
 
 export function storyQueue(items, query = '') {
     const rank = id => START_HERE.includes(id) ? START_HERE.indexOf(id) : START_HERE.length;
@@ -128,20 +143,20 @@ export function initializeComponentStories() {
             button.onclick = () => select(i);
         });
         element('h3', displayName(r), card);
-        element('p', item.description, card).className = 'story-description';
+        element('p', componentLesson(item.part_id)?.[1] ?? item.description, card).className = 'story-description';
+        element('p', item.part_id, card).className = 'story-muted';
         const label = element('label', 'Package ', card), choice = document.createElement('select'); label.append(choice);
         item.variants.forEach((v, i) => { const option = element('option', v.record.package_variant, choice); option.value = String(i); });
         choice.value = String(packageIndex); choice.onchange = () => { packageIndex = Number(choice.value); render(); $('[data-story-details] select').focus(); };
-        element('h4', 'What we know', card);
-        element('p', 'Catalog-reported information', card).className = 'story-badge';
-        const evidence = element('ul', '', card);
-        r.evidence_summary.forEach(value => element('li', value, evidence));
-        element('h4', 'What remains unknown', card);
+        element('h4', 'About this model', card);
         element('p', variant.visual_note, card);
         element('p', 'Appearance does not verify dimensions, pad positions, connections or electrical behavior.', card);
-        const action = element('button', 'Use in a project', card); action.type = 'button'; action.disabled = true;
-        element('p', 'Adding parts to saved boards is not available yet. Explore the catalog here while that capability is being built.', card).className = 'story-muted';
+        element('p', 'Try a layout to practice arranging parts. Practice layouts are temporary and cannot change a saved project.', card).className = 'story-muted';
         const source = element('details', '', card); element('summary', 'Source and model details', source);
+        element('p', item.description, source);
+        element('p', 'Catalog-reported information; not reverified by this library.', source);
+        const evidence = element('ul', '', source);
+        r.evidence_summary.forEach(value => element('li', value, evidence));
         element('p', `Catalog revision: ${r.catalog_part.sha256}`, source);
         if (r.visual) {
             for (const value of [r.visual.provenance?.source, r.visual.provenance?.license,
