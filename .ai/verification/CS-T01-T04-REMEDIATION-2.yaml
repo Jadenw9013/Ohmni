@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "id": "CS-T01-T04-REMEDIATION-2",
+  "task": "CS-T01..CS-T04",
+  "scope": "COMPONENT-SYNTHESIS-1",
+  "status": "PASSED",
+  "commit": "uncommitted working tree on d7b1175",
+  "verified_at": "2026-09-15",
+  "responds_to": [
+    ".ai/verification/CS-T01-T04-AUDIT.yaml",
+    ".ai/verification/CS-T01-T04-REMEDIATION.yaml",
+    ".ai/reviews.yaml#CS-T01-T04-REMEDIATION-2-REVIEW",
+    ".ai/reviews.yaml#CS-T01-T04-REMEDIATION-2-VERIFICATION"
+  ],
+  "summary": "Closes the two items the first remediation left open: CS-AUDIT-006-RESIDUAL (in-process PDF extraction with no external bound) and the reconstructed-request provenance defect in the CS-AUDIT-005 fix. Two independent reviews were obtained. The first raised 16 findings (CS2-001..CS2-016); the second verified 13 of those fixes by measurement, found three regressions still not falsifiable, and raised seven further findings (NEW-1..NEW-7). All 23 are addressed.",
+  "method": "Regressions were written before the production code, per the audit's instruction. Falsifiability was then established by execution rather than assertion: for each claimed fix the production change was reverted in a scratch copy and the corresponding test observed to fail. Verified this way: CS2-001, CS2-002, CS2-003, CS2-005, CS2-006, CS2-009, CS2-012, CS2-014, CS2-016 (by the second reviewer), and NEW-1, NEW-2, NEW-5 (by the author, after the second review proved the original versions of those three regressions passed with their production change reverted).",
+  "commands": {
+    "python scripts/verify.py fast": "1693 passed, 49 deselected",
+    "python scripts/verify.py corpus": "108 passed, 1634 deselected; pinned sources present",
+    "python scripts/verify.py integration": "30 passed, 2 skipped, 1710 deselected",
+    "python scripts/verify.py workflow": "11 passed",
+    "python -m ruff check .": "All checks passed",
+    "python -m ohmni verify-all": "all 14 fixtures behaved as intended",
+    "python scripts/component_cad_proof.py": "36 CS-* checks OK, 0 FAIL; exit 0",
+    "python scripts/record_component_extraction.py --check": "current (reconstructed)",
+    "python scripts/ai_state.py validate": "VALID",
+    "python out/component-synthesis-audit/reproduce.py": "exit 1. The baseline probe passes, then the first adversarial probe (wrong_dimension_semantics) fails with 'required dimension land_pad_length unsupported' -- the intended outcome; the false positive stays closed"
+  },
+  "counts": {
+    "isolation_regressions": 20,
+    "recording_provenance_regressions": 9,
+    "audit_regressions": 24,
+    "fast_tier": "1693 passed, 49 deselected",
+    "corpus_tier": "108 passed, 1634 deselected",
+    "integration_tier": "30 passed, 2 skipped, 1710 deselected",
+    "workflow_tier": "11 passed",
+    "cs_checks_run": 36,
+    "cs_checks_passed": 36,
+    "ruff_errors": 0
+  },
+  "evidence_unchanged_by_isolation": {
+    "note": "The evidence path now reads the manufacturer PDF through the bounded child. The artifacts are byte-identical to the first remediation's, which is what establishes that isolation did not perturb the observations. Confirmed independently by the reviewer.",
+    "footprint_sha256": "7aad8863834cb260d77634642a4531a1afbfaa17108fe25a8a7c1875d67de3e7",
+    "symbol_sha256": "efdbe443a11cf3c49737adcf1aa777d96f6158e3a8e8f08ef920756063ca7dd6",
+    "verified_constraint_hash": "b2305fac8b943d54f3aec53622bcf1975d2addbc59d5297e62554356f4cb4040",
+    "observation_digest": "3ba9bc4b2bf2895fdd0d030580323ac09c03bf7cf46d00471947f80dbb02358a"
+  },
+  "connected_design_runs": [
+    {
+      "name": "kicad-cli sch erc",
+      "status": "ok",
+      "tool_version": "10.0.5",
+      "violations": {
+        "isolated_pin_label": 5
+      },
+      "asset_defects": [],
+      "corroborated": true
+    },
+    {
+      "name": "kicad-cli pcb drc",
+      "status": "ok",
+      "tool_version": "10.0.5",
+      "violations": {},
+      "asset_defects": [],
+      "corroborated": true
+    }
+  ],
+  "measured_behaviour": {
+    "memory_cap": "windows-job-object:process-memory. A 2 GiB allocation under a 256 MiB cap raises MemoryError; the same allocation without the cap succeeds. The cap survives CloseHandle, is inherited by grandchildren, and applies inside an outer job. Struct layout measured at 144 bytes with ProcessMemoryLimit at offset 112, matching the Win32 headers.",
+    "parent_allocation_refusing_an_oversize_file": "0 MiB peak for a 384 MiB file (was 384 MiB before CS2-003 was fixed)",
+    "posix_path": "NOT OBSERVED in this environment; exercised only by CI on ubuntu-latest"
+  },
+  "limitations": [
+    "The NEW-1..NEW-7 fixes have NOT themselves been independently reviewed. The CS2-001..CS2-016 fixes were reviewed; three were found wanting and corrected.",
+    "CS-T01..CS-T04 stay VERIFIED, never COMPLETE. CS-T05 stays unstarted.",
+    "Results are recorded against an uncommitted working tree, not a commit.",
+    "The isolated extractor is opt-in. scripts/component_cad_proof.py is its only caller; record_component_extraction.py, component_cad_evidence_images.py and the test fixtures still parse in process.",
+    "ohmni ingest-datasheet (cli.py:cmd_ingest_datasheet) parses untrusted PDFs in process with no address-space cap, no wall clock and none of the observation preflights. Bringing it under these bounds is outside CS-T01..CS-T04.",
+    "The worker is a resource bound, not a security sandbox: no filesystem or network confinement, no seccomp/AppContainer, and no CPU or disk bound. The document digest is computed inside the child, so the substitution check defends against the wrong file, not against a subverted worker.",
+    "Windows and POSIX bound different quantities under one byte count (committed process memory vs virtual address-space reservation). Only Windows was observed; the POSIX path runs in CI on ubuntu-latest but is not reported here. test_the_applied_limit_is_read_from_the_kernel_not_remembered SKIPS on POSIX, so the read-back is pinned by execution on Windows only.",
+    "Live Anthropic vision remains untested. CS-T02-R01 is unchanged and still OPEN, so no fixture in this repository can carry a captured_at_call_time identity and the pinned proposal is labelled 'reconstructed'.",
+    "Extraction fidelity against a live provider is UNEVALUATED. No gate refuses a non-'recorded' fixture, because the offline suite is built on one.",
+    "The connected harness establishes that KiCad loaded the assets in a design and reported no asset-defect violation. It does not establish that any design works."
+  ],
+  "reviewed_snapshot": {
+    "src/ohmni/adapters/resource_limits.py": "b19eb18e1e066ddaa82373bdad46e85902922062a95a3f9bfea29467408cd640",
+    "src/ohmni/adapters/vision.py": "e9fbbaff35d7d31cc6461c7382a306afd6c3537a6aa45106cc548498d9bd6e15",
+    "src/ohmni/datasheet/observation_worker.py": "66c44ff209ea41958c8b280f1dcd24d88e917113cdc49a4fd1fcc3c45afd3862",
+    "src/ohmni/datasheet/isolated_observations.py": "67902bc1e9531b13de644ba16dc053b26097804f77a46a9485d67edfc7c64e1a",
+    "scripts/record_component_extraction.py": "c909503a6323293e9e1f3831ff024249ddaf5c4d192ed4cf5c3dbef4f3414df7",
+    "scripts/component_cad_proof.py": "b40207124baebca30e98fed12c931b10a1335f368c2e7a361040bf73b6b9865a",
+    "tests/test_datasheet_isolation.py": "ddb3785c920feef400178255992fd8849be41c7b2630cad89d8ed1e65c98c2c4",
+    "tests/test_recording_provenance.py": "f8200e5deef8e5639211e66563ab02fda727336d966b692cbe2ba4aa885fc00c",
+    "tests/test_component_synthesis_audit_regressions.py": "13f30602542266841b309100d88f81dd58807693670b8a4a520a91d25b6fd02f",
+    "tests/test_architecture.py": "9cb85f18d4f65f9143c2ce4c8cceab583223edfc8027732a183d3eee85d768cb",
+    "tests/corpus/__init__.py": "61dabfadb87b288ca1555d09855b69a80ab0021137a7668c22e528b29b0def4e",
+    "tests/corpus/recordings/MCP73831_SOT23-5_accepted.proposal.json": "0686d47b8ac1d9bbe21e3c2ea31f15aeb64805b194db6c1ddd078b1dba895c13",
+    "ARCHITECTURE.md": "3293a5e37a1483d3f68016083d3015364a55b981a4d1835ecad09c6a88be5d1b",
+    "VERIFICATION.md": "c11f4e3dafd7f695d7592a68c043ed06e13eb8126c07cdbf2f3cf875773caf3c"
+  },
+  "snapshot_sha256": "2e6813db36bac37ee3aa8fc9d492589a951a1f0143c61316b00deee1d689fcae"
+}

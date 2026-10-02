@@ -17,3 +17,11 @@ apps/web/vendor/THREE-LICENSE.txt text eol=lf
 
 # Linux container entrypoints must remain executable shell text in Windows archives.
 scripts/docker-entrypoint.sh text eol=lf
+
+# Preserve the supplied reference archive byte-for-byte: its manifest and
+# human approval bind exact hashes. Markdown double-space line breaks are
+# intentional in these original plans, so retain them as authored.
+ohmni_reference_visual_plan/** -text
+OHMNI_REFERENCE_IMPLEMENTATION_PLAN.md -text whitespace=-blank-at-eol
+ohmni_reference_visual_plan/*.md whitespace=-blank-at-eol
+COMPONENT_SYNTHESIS_PLAN.md whitespace=-blank-at-eol

@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "id": "CS-T04",
+  "task": "CS-T04",
+  "scope": "COMPONENT-SYNTHESIS-1",
+  "status": "PASSED",
+  "commit": "uncommitted working tree on d7b1175",
+  "verified_at": "2026-09-15",
+  "summary": "One parameterised package compiled from verified constraints into a real KiCad symbol and footprint, measured back out of the emitted bytes, checked by the CS-* families, and corroborated by KiCad 10.0.5.",
+  "tool_versions": {
+    "python": "3.13.3 (.venv/Scripts/python.exe)",
+    "pytest": "8.x via scripts/verify.py",
+    "ruff": "python -m ruff check .",
+    "kicad-cli": "10.0.5",
+    "pymupdf": "1.28.2"
+  },
+  "commands": [
+    "python -m pytest tests/test_component_assets.py -q",
+    "python -m pytest -m integration -q",
+    "python scripts/component_cad_proof.py",
+    "python scripts/component_cad_evidence_images.py",
+    "python scripts/verify.py fast",
+    "python scripts/verify.py integration",
+    "python -m ohmni verify-all",
+    "python -m ruff check ."
+  ],
+  "counts": {
+    "asset_tests_passed": 42,
+    "mutation_corpus_cases": 13,
+    "cs_checks_run": 36,
+    "cs_checks_passed": 36,
+    "fast_tier": "1655 passed, 49 deselected",
+    "integration_tier": "27 passed, 2 skipped, 1650 deselected",
+    "verify_all_fixtures": "14 of 14 behaved as intended",
+    "ruff_errors": 0
+  },
+  "artifacts": {
+    "footprint": {
+      "path": "build\\component_synthesis\\Ohmni_ComponentSynthesis.pretty\\Ohmni_MCP73831_OT_5.kicad_mod",
+      "sha256": "5f815f1712b765c404f37ca8b02cd7941c1765c21b1c0bb31cf2d21e854d47da",
+      "format_version": "20260206"
+    },
+    "symbol": {
+      "path": "build\\component_synthesis\\Ohmni_MCP73831_OT.kicad_sym",
+      "sha256": "ac1285317968b43b5856ea6aca7c4711082fc37cff23bdeaf4bd3ca7f1cf1212",
+      "format_version": "20251024"
+    },
+    "land_pattern_hash": "c1d258e16b4ef4ba7d2c9aaed8aff9522ba5a09c84d5a9188821705ee8c8c7be",
+    "symbol_hash": "1479995071dc22b88bdb916ef11e4039140914023c61a9ad76900757ea810674",
+    "evidence_json": "build/component_synthesis/CS-T04_evidence.json",
+    "side_by_side_images": [
+      "build/component_synthesis/evidence/01_footprint_vs_land_table.png",
+      "build/component_synthesis/evidence/02_footprint_vs_drawing.png",
+      "build/component_synthesis/evidence/03_symbol_vs_pin_table.png"
+    ],
+    "kicad_renders": [
+      [
+        "build\\component_synthesis\\renders\\footprint\\Ohmni_MCP73831_OT_5.svg"
+      ],
+      [
+        "build\\component_synthesis\\renders\\symbol\\Ohmni_MCP73831_OT_unit1.svg"
+      ]
+    ]
+  },
+  "limitations": [
+    "No catalog admission occurred: CS-T07 owns that gate and has not run.",
+    "No independent review has been performed for this scope; tasks stand at VERIFIED, not COMPLETE.",
+    "Results are recorded against an uncommitted working tree, not a commit.",
+    "Datasheet and land-pattern geometric conformance within the implemented subset only. IPC-7351 and IPC-7352 compliance are NOT established.",
+    "Solder joint reliability, paste volume, stencil design, thermal performance and bench operation are NOT established.",
+    "Every symbol pin is emitted with electrical type 'unspecified'; no electrical behaviour, operating limit or absolute maximum rating is established.",
+    "No package body or silkscreen outline is emitted: body dimensions were not read.",
+    "The courtyard is the verified land extent plus a declared 0.25 mm policy margin, not a standards-derived courtyard excess.",
+    "KiCad rendering is corroboration that the artifacts load and plot; it is not evidence that the geometry matches the datasheet.",
+    "Simulation is UNSUPPORTED for this part; no model was ingested."
+  ],
+  "native_tool_runs": [
+    {
+      "name": "kicad-cli fp export svg",
+      "status": "ok",
+      "artifact_sha256": "5f815f1712b765c404f37ca8b02cd7941c1765c21b1c0bb31cf2d21e854d47da",
+      "tool_version": "10.0.5",
+      "outputs": [
+        "build\\component_synthesis\\renders\\footprint\\Ohmni_MCP73831_OT_5.svg"
+      ],
+      "output_sha256": [
+        "302357f15974953fd7f9ac2277a999339c9738ae2ec0b2544e2292659c957b79"
+      ],
+      "detail": "Plotting footprint 'Ohmni_MCP73831_OT_5' to 'C:\\Dev\\hackathon\\build\\component_synthesis\\renders\\footprint\\Ohmni_MCP73831_OT_5.svg'\nPlotted to 'C:\\Dev\\hackathon\\build\\component_synthesis\\renders\\footpr"
+    },
+    {
+      "name": "kicad-cli sym export svg",
+      "status": "ok",
+      "artifact_sha256": "ac1285317968b43b5856ea6aca7c4711082fc37cff23bdeaf4bd3ca7f1cf1212",
+      "tool_version": "10.0.5",
+      "outputs": [
+        "build\\component_synthesis\\renders\\symbol\\Ohmni_MCP73831_OT_unit1.svg"
+      ],
+      "output_sha256": [
+        "1be2aea30fb7e2e84a49df77ee4fb5feae90bd99c9d0b5e572b74787a02cdc17"
+      ],
+      "detail": "Plotting symbol 'Ohmni_MCP73831_OT' unit 1 to 'C:\\Dev\\hackathon\\build\\component_synthesis\\renders\\symbol\\Ohmni_MCP73831_OT_unit1.svg'"
+    }
+  ],
+  "capabilities": {
+    "results": [
+      {
+        "capability": "identity_supported",
+        "state": "supported",
+        "reasons": [
+          "exact orderable part MCP73831T-2ACI/OT"
+        ],
+        "limitations": []
+      },
+      {
+        "capability": "footprint_supported",
+        "state": "supported",
+        "reasons": [],
+        "limitations": [
+          "Datasheet land conformance only; not IPC compliance."
+        ]
+      },
+      {
+        "capability": "symbol_supported",
+        "state": "supported",
+        "reasons": [],
+        "limitations": [
+          "Pin electrical types are unspecified until the electrical gate."
+        ]
+      },
+      {
+        "capability": "electrical_profile_supported",
+        "state": "not_evaluated",
+        "reasons": [
+          "the electrical profile gate is CS-T07 and has not run"
+        ],
+        "limitations": []
+      },
+      {
+        "capability": "routing_supported",
+        "state": "not_evaluated",
+        "reasons": [
+          "board integration is CS-T08 and has not run"
+        ],
+        "limitations": []
+      },
+      {
+        "capability": "simulation_supported",
+        "state": "unsupported",
+        "reasons": [
+          "no model was ingested; the SPICE boundary is CS-T09"
+        ],
+        "limitations": []
+      }
+    ]
+  },
+  "defects_found_by_the_independent_checks": [
+    "CS-DIMENSION-006 initially compared lands two pitches apart against the printed distance-between-pads figure; the check now requires exactly one pitch and a separate CS-DIMENSION-007 checks the row gap.",
+    "CS-ORIENTATION-003 initially indexed emitted rows by ascending Y, which is an emitter convention rather than the source's own row 0; it now anchors on the row containing pin 1, and CS-ORIENTATION-006 was added to catch a mirrored footprint by the signed area of the numbering polygon."
+  ],
+  "session_started": "2026-09-14",
+  "superseded_by": ".ai/verification/CS-T01-T04-REMEDIATION.yaml",
+  "audit": {
+    "record": ".ai/verification/CS-T01-T04-AUDIT.yaml",
+    "status": "FINDINGS_ADDRESSED",
+    "note": "An independent audit found false-positive verification paths in this work. They are fixed and regression-tested; see the remediation record."
+  }
+}

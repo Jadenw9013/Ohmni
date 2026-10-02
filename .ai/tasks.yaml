@@ -144,6 +144,49 @@
         "New electrical functionality or verification claims",
         "Unrelated product milestones or services"
       ]
+    },
+    {
+      "id": "COMPONENT-SYNTHESIS-1",
+      "type": "product_capability",
+      "title": "Dynamic multimodal component synthesis",
+      "status": "IN_PROGRESS",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
+      "plan_document": "COMPONENT_SYNTHESIS_PLAN.md",
+      "non_goals": [
+        "Claiming IPC compliance, validated SPICE behaviour, or arbitrary-chip correctness",
+        "Activating imported components in the design catalog before CS-T07 admission gates",
+        "Deployment, paid infrastructure provisioning, or hosting migration",
+        "Reactivating the parked M10-T05 benchmark or rewriting accepted milestones"
+      ]
+    },
+    {
+      "id": "COMPONENT-ATLAS-BUILDER-1",
+      "type": "product_capability",
+      "title": "3D component atlas and interactive board builder",
+      "status": "IN_PROGRESS",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/COMPONENT-ATLAS-BUILDER-1.yaml",
+      "plan_document": "docs/product/THREE_D_COMPONENT_ATLAS_AND_BOARD_BUILDER_PLAN.md",
+      "review_policy": "Task-level self review is recorded honestly; independent final acceptance is required by CAB-T10 before scope COMPLETE."
+    },
+    {
+      "id": "UX-CLARITY-1",
+      "type": "product_improvement",
+      "title": "Readable, purpose-led Ohmni experience",
+      "status": "VERIFIED",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/UX-WORKBENCH-1.yaml",
+      "review_policy": "Self review permitted for this presentation task; independent accessibility and user evaluation remain outstanding, no WCAG conformance claim."
+    },
+    {
+      "id": "REPO-READY-1",
+      "type": "repository_infrastructure",
+      "title": "Verify and publish the existing local work",
+      "status": "IN_PROGRESS",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/REPO-READY-1.yaml",
+      "review_policy": "self_review_allowed for repository preparation; existing product review gates remain unchanged"
     }
   ],
   "tasks": [
@@ -1115,6 +1158,934 @@
           "VERIFIED: public browser/API/file checks, live29-part pipeline/download and GitHubCI passed",
           "COMPLETE: independent packaging/live review passed; current deployment and limits recorded"
         ]
+      }
+    },
+    {
+      "id": "CS-T01",
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "milestone": null,
+      "title": "Contracts and trust gates",
+      "status": "VERIFIED",
+      "priority": 110,
+      "dependencies": [],
+      "goal": "Typed schemas, source/claim/asset identity, capability matrix, architecture tests, and an initial real source corpus with independent annotations.",
+      "acceptance_criteria": [
+        "Frozen strict contracts for import requests, locators, candidates, receipts, manifests and capabilities, rejecting model-supplied verdict or evidence fields",
+        "Exact decimal source values on a documented integer length grid with explicit unit conversion",
+        "Architecture tests keep domain purity and forbid provider or network access in pure checks",
+        "Pinned real manufacturer source corpus with acquisition provenance and independently transcribed expected values"
+      ],
+      "verification": {
+        "required": [
+          "fast_tests",
+          "architecture_tests",
+          "ruff"
+        ],
+        "record": ".ai/verification/CS-T01.yaml"
+      },
+      "review": {
+        "required": true,
+        "status": "FINDINGS_OPEN",
+        "independent": true,
+        "record": ".ai/reviews.yaml#CS-T01-T04-INDEPENDENT-AUDIT-20260915",
+        "note": "Independent review found actionable failures; earlier test-passing status is not checkpoint approval."
+      },
+      "blockers": [
+        "Remediation pass 2 addressed every audit finding (CS-AUDIT-001..006 and the CS-AUDIT-006-RESIDUAL), and an independent review of that pass raised 16 further findings (CS2-001..CS2-016) which are also addressed. Those fixes have not themselves been independently reviewed, and all work is uncommitted. This task stays VERIFIED until both are resolved."
+      ],
+      "implementation": {
+        "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
+        "started_at_commit": "d7b1175",
+        "completed_at_commit": null,
+        "lifecycle": [
+          "Human scope approval recorded in .ai/approvals/COMPONENT-SYNTHESIS-1.yaml; CS-T01 selected and started",
+          "IMPLEMENTED: frozen proposal/receipt/capability contracts, integer nanometre length grid, pinned real source corpus with independent annotations",
+          "VERIFIED: 49 contract tests, 62 architecture tests, Ruff clean at the recorded commit"
+        ],
+        "completed_at": "2026-09-14",
+        "uncommitted": true
+      }
+    },
+    {
+      "id": "CS-T02",
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "milestone": null,
+      "title": "Source and vision proof",
+      "status": "VERIFIED",
+      "priority": 109,
+      "dependencies": [
+        "CS-T01"
+      ],
+      "goal": "Bounded local PDF rendering plus a provider-neutral vision adapter whose candidate pins and dimensions carry source regions and never become evidence.",
+      "acceptance_criteria": [
+        "Bounded observation bundle records parser and renderer versions, page geometry, stable token IDs and render digests",
+        "Provider-neutral multimodal adapter enforces the strict schema and rejects malformed or out-of-document output",
+        "Recorded provider responses make the default suite offline; live evaluation is bounded and accounted for",
+        "Candidate pins and dimensions are shown with their source regions and remain unverified"
+      ],
+      "verification": {
+        "required": [
+          "fast_tests",
+          "recorded_provider_tests",
+          "ruff"
+        ],
+        "record": ".ai/verification/CS-T02.yaml"
+      },
+      "review": {
+        "required": true,
+        "status": "FINDINGS_OPEN",
+        "independent": true,
+        "record": ".ai/reviews.yaml#CS-T01-T04-INDEPENDENT-AUDIT-20260915",
+        "note": "Independent review found actionable failures; earlier test-passing status is not checkpoint approval."
+      },
+      "blockers": [
+        "Remediation pass 2 addressed every audit finding (CS-AUDIT-001..006 and the CS-AUDIT-006-RESIDUAL), and an independent review of that pass raised 16 further findings (CS2-001..CS2-016) which are also addressed. Those fixes have not themselves been independently reviewed, and all work is uncommitted. This task stays VERIFIED until both are resolved."
+      ],
+      "implementation": {
+        "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
+        "started_at_commit": "d7b1175",
+        "completed_at_commit": null,
+        "lifecycle": [
+          "IN_PROGRESS after CS-T01 verification",
+          "IMPLEMENTED: bounded observation bundle with printed rules and page renders, provider-neutral vision port, recorded and scripted providers, live Anthropic vision adapter",
+          "VERIFIED: 26 offline multimodal tests plus a corpus-backed recorded extraction; live provider evaluation NOT RUN (no credentials)"
+        ],
+        "completed_at": "2026-09-14",
+        "uncommitted": true
+      }
+    },
+    {
+      "id": "CS-T03",
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "milestone": null,
+      "title": "Independent source verification",
+      "status": "VERIFIED",
+      "priority": 108,
+      "dependencies": [
+        "CS-T02"
+      ],
+      "goal": "Exact supported table and drawing grammars, identity and variant checks, units and conditions, and a rejection corpus where wrong-but-consistent model output fails.",
+      "acceptance_criteria": [
+        "Deterministic grammars bind a value to its row, symbol, column, units and package applicability",
+        "Verification receipts are constructed only by deterministic checking, never by a provider",
+        "Rejection corpus covers wrong row, wrong column, wrong package column, detached number, wrong units and fabricated region",
+        "Unsupported image-only or unassociated sources stay quarantined rather than passing"
+      ],
+      "verification": {
+        "required": [
+          "fast_tests",
+          "rejection_corpus",
+          "ruff"
+        ],
+        "record": ".ai/verification/CS-T03.yaml"
+      },
+      "review": {
+        "required": true,
+        "status": "FINDINGS_OPEN",
+        "independent": true,
+        "record": ".ai/reviews.yaml#CS-T01-T04-INDEPENDENT-AUDIT-20260915",
+        "note": "Independent review found actionable failures; earlier test-passing status is not checkpoint approval."
+      },
+      "blockers": [
+        "Remediation pass 2 addressed every audit finding (CS-AUDIT-001..006 and the CS-AUDIT-006-RESIDUAL), and an independent review of that pass raised 16 further findings (CS2-001..CS2-016) which are also addressed. Those fixes have not themselves been independently reviewed, and all work is uncommitted. This task stays VERIFIED until both are resolved."
+      ],
+      "implementation": {
+        "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
+        "started_at_commit": "d7b1175",
+        "completed_at_commit": null,
+        "lifecycle": [
+          "IN_PROGRESS after CS-T02 verification",
+          "IMPLEMENTED: ruled-table grammars, identity/variant/package-legend checks, drawn-land topology, printed-arithmetic cross-checks, receipts",
+          "VERIFIED: 30 corpus-backed tests including the full rejection corpus; go/no-go source-association checkpoint passed on a real datasheet"
+        ],
+        "completed_at": "2026-09-14",
+        "uncommitted": true
+      }
+    },
+    {
+      "id": "CS-T04",
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "milestone": null,
+      "title": "One-package CAD proof",
+      "status": "VERIFIED",
+      "priority": 107,
+      "dependencies": [
+        "CS-T03"
+      ],
+      "goal": "One parameterized package compiled to a standalone symbol and footprint, independently parsed and measured from the emitted bytes, and corroborated by KiCad.",
+      "acceptance_criteria": [
+        "Deterministic symbol and footprint serialization from verified constraints only",
+        "Independent byte-level parse and measurement that never reads the generator geometry objects",
+        "CS-PIN, CS-DIMENSION, CS-ORIENTATION, CS-GEOMETRY and CS-LINEAGE checks with explicit failure on mutated geometry",
+        "Real KiCad CLI harness binds its reports to the exact artifact hashes",
+        "No catalog admission occurs"
+      ],
+      "verification": {
+        "required": [
+          "fast_tests",
+          "kicad_integration",
+          "asset_mutation_corpus",
+          "ruff"
+        ],
+        "record": ".ai/verification/CS-T04.yaml"
+      },
+      "review": {
+        "required": true,
+        "status": "FINDINGS_OPEN",
+        "independent": true,
+        "record": ".ai/reviews.yaml#CS-T01-T04-INDEPENDENT-AUDIT-20260915",
+        "note": "Independent review found actionable failures; earlier test-passing status is not checkpoint approval."
+      },
+      "blockers": [
+        "Remediation pass 2 addressed every audit finding (CS-AUDIT-001..006 and the CS-AUDIT-006-RESIDUAL), and an independent review of that pass raised 16 further findings (CS2-001..CS2-016) which are also addressed. Those fixes have not themselves been independently reviewed, and all work is uncommitted. This task stays VERIFIED until both are resolved."
+      ],
+      "implementation": {
+        "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
+        "started_at_commit": "d7b1175",
+        "completed_at_commit": null,
+        "lifecycle": [
+          "IN_PROGRESS after CS-T03 verification",
+          "IMPLEMENTED: deterministic land pattern and symbol, byte-exact KiCad serialisation, independent asset parser and measurements, CS-* asset checks, bounded KiCad harness",
+          "VERIFIED: 38 asset tests including the mutation corpus, 31/31 CS-* checks pass on the real generated pair, KiCad 10.0.5 loaded and rendered both artifacts; no catalog admission occurred"
+        ],
+        "completed_at": "2026-09-14",
+        "uncommitted": true
+      }
+    },
+    {
+      "id": "CS-T05",
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "milestone": null,
+      "title": "Reusable asset library",
+      "status": "APPROVED",
+      "priority": 106,
+      "dependencies": [
+        "CS-T04"
+      ],
+      "goal": "A second initial package family, bounded QFN and QFP exposed-pad cases, portable exports and an immutable asset resolver.",
+      "acceptance_criteria": [
+        "Second family needs no per-MPN source edits",
+        "Pad, orientation and geometry mutations are rejected",
+        "Unsupported paste or thermal policy blocks the affected packages",
+        "Portable export never modifies global KiCad libraries"
+      ],
+      "verification": {
+        "required": [
+          "fast_tests",
+          "kicad_integration",
+          "ruff"
+        ],
+        "record": ".ai/verification/CS-T05.yaml"
+      },
+      "review": {
+        "required": true,
+        "status": "PENDING",
+        "independent": false
+      },
+      "blockers": [],
+      "implementation": {
+        "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
+        "started_at_commit": null,
+        "completed_at_commit": null
+      }
+    },
+    {
+      "id": "CS-T06",
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "milestone": null,
+      "title": "Persistent admission infrastructure",
+      "status": "APPROVED",
+      "priority": 105,
+      "dependencies": [
+        "CS-T05"
+      ],
+      "goal": "SQLite migrations, immutable revisions, snapshots, report lineage and restart, idempotency and revocation behaviour.",
+      "acceptance_criteria": [
+        "Versioned, rollback-tested migrations",
+        "Blobs committed before the referencing transaction publishes",
+        "Duplicate concurrent imports and interrupted sequences resolve explicitly",
+        "Quarantine is never active discovery; real activation stays disabled until CS-T07"
+      ],
+      "verification": {
+        "required": [
+          "fast_tests",
+          "persistence_tests",
+          "ruff"
+        ],
+        "record": ".ai/verification/CS-T06.yaml"
+      },
+      "review": {
+        "required": true,
+        "status": "PENDING",
+        "independent": false
+      },
+      "blockers": [],
+      "implementation": {
+        "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
+        "started_at_commit": null,
+        "completed_at_commit": null
+      }
+    },
+    {
+      "id": "CS-T07",
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "milestone": null,
+      "title": "Electrical profile and admission gates",
+      "status": "APPROVED",
+      "priority": 104,
+      "dependencies": [
+        "CS-T03",
+        "CS-T06"
+      ],
+      "goal": "ComponentSpec construction from checked claims, required-fact and profile coverage gates, and refusal of unsupported functions.",
+      "acceptance_criteria": [
+        "Required-fact matrix and applicable-rule outcomes are evaluated explicitly, not through export_blocked alone",
+        "Unsupported electrical behaviour blocks the requested capability",
+        "Existing catalog fixtures retain their truthful status",
+        "Real admission is enabled only after these gates pass"
+      ],
+      "verification": {
+        "required": [
+          "fast_tests",
+          "admission_gate_tests",
+          "ruff"
+        ],
+        "record": ".ai/verification/CS-T07.yaml"
+      },
+      "review": {
+        "required": true,
+        "status": "PENDING",
+        "independent": false
+      },
+      "blockers": [],
+      "implementation": {
+        "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
+        "started_at_commit": null,
+        "completed_at_commit": null
+      }
+    },
+    {
+      "id": "CS-T08",
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "milestone": null,
+      "title": "Resume and real board integration",
+      "status": "APPROVED",
+      "priority": 103,
+      "dependencies": [
+        "CS-T07"
+      ],
+      "goal": "Missing-part pause, import and resume through an explicit dynamic project path with supported functional placement and MCP snapshot parity.",
+      "acceptance_criteria": [
+        "Typed component-resolution request precedes architecture generation",
+        "Functional placement replaces reference-designator positions",
+        "One new supported part traverses semantic, ERC, placement, routing, DRC and download with exact lineage",
+        "Negative requests cannot bypass import"
+      ],
+      "verification": {
+        "required": [
+          "fast_tests",
+          "integration",
+          "slow_integration",
+          "ruff"
+        ],
+        "record": ".ai/verification/CS-T08.yaml"
+      },
+      "review": {
+        "required": true,
+        "status": "PENDING",
+        "independent": false
+      },
+      "blockers": [],
+      "implementation": {
+        "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
+        "started_at_commit": null,
+        "completed_at_commit": null
+      }
+    },
+    {
+      "id": "CS-T09",
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "milestone": null,
+      "title": "SPICE model boundary",
+      "status": "APPROVED",
+      "priority": 102,
+      "dependencies": [
+        "CS-T07"
+      ],
+      "goal": "Model provenance, pin maps, deck restrictions, vendor and approximation harnesses, and actual design-deck model bindings.",
+      "acceptance_criteria": [
+        "Restricted directives, includes and transitive files resolve only manifest-listed hashes",
+        "Independent measured assertions are defined before the run",
+        "Unsupported dialects, nonconvergence and empty results stay explicit",
+        "CAD-only support remains distinguishable from simulation support"
+      ],
+      "verification": {
+        "required": [
+          "fast_tests",
+          "simulation_integration",
+          "ruff"
+        ],
+        "record": ".ai/verification/CS-T09.yaml"
+      },
+      "review": {
+        "required": true,
+        "status": "PENDING",
+        "independent": false
+      },
+      "blockers": [],
+      "implementation": {
+        "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
+        "started_at_commit": null,
+        "completed_at_commit": null
+      }
+    },
+    {
+      "id": "CS-T10",
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "milestone": null,
+      "title": "LM317 end-to-end",
+      "status": "APPROVED",
+      "priority": 101,
+      "dependencies": [
+        "CS-T08",
+        "CS-T09"
+      ],
+      "goal": "Independently checked SOT-223 package and tab extension plus adjustable-feedback and conditional-limit rules with a real vendor-model compatibility result.",
+      "acceptance_criteria": [
+        "Package and tab mapping verified from the source, never guessed",
+        "Adjustable feedback network derived and checked deterministically",
+        "Incorrect divider, tab and limit negative cases fail",
+        "Vendor-model ngspice compatibility is measured, not assumed"
+      ],
+      "verification": {
+        "required": [
+          "fast_tests",
+          "integration",
+          "simulation_integration",
+          "ruff"
+        ],
+        "record": ".ai/verification/CS-T10.yaml"
+      },
+      "review": {
+        "required": true,
+        "status": "PENDING",
+        "independent": false
+      },
+      "blockers": [],
+      "implementation": {
+        "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
+        "started_at_commit": null,
+        "completed_at_commit": null
+      }
+    },
+    {
+      "id": "CS-T11",
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "milestone": null,
+      "title": "Acceptance and documentation",
+      "status": "APPROVED",
+      "priority": 100,
+      "dependencies": [
+        "CS-T10"
+      ],
+      "goal": "Full regression, held-out datasheet corpus, independent review, real source, asset and UI evidence and complete limitations.",
+      "acceptance_criteria": [
+        "Zero false admission across the defined negative corpus",
+        "Complete required-fact coverage for admitted parts",
+        "Real tool runs for every claimed supported operation",
+        "Portable output and restart verification recorded with limitations"
+      ],
+      "verification": {
+        "required": [
+          "full",
+          "integration",
+          "slow_integration",
+          "verify_all",
+          "ruff"
+        ],
+        "record": ".ai/verification/CS-T11.yaml"
+      },
+      "review": {
+        "required": true,
+        "status": "PENDING",
+        "independent": false
+      },
+      "blockers": [],
+      "implementation": {
+        "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
+        "started_at_commit": null,
+        "completed_at_commit": null
+      }
+    },
+    {
+      "id": "CAB-T01",
+      "scope": "COMPONENT-ATLAS-BUILDER-1",
+      "milestone": null,
+      "title": "Freeze contracts and eligibility states",
+      "status": "COMPLETE",
+      "priority": 209,
+      "dependencies": [],
+      "goal": "define immutable visual records, exact catalog bindings, draft commands, invalidation rules, and user-visible statuses.",
+      "acceptance_criteria": [
+        "architecture tests prove visual data cannot grant design eligibility; `LEARN_ONLY` and quarantined assets fail closed; records carry source/license/hash/limitations; integer coordinate rules are fixed."
+      ],
+      "verification": {
+        "required": [
+          "contract_tests",
+          "architecture_tests",
+          "workflow",
+          "fast",
+          "ruff"
+        ],
+        "record": ".ai/verification/CAB-T01.yaml"
+      },
+      "review": {
+        "required": false,
+        "status": "PASSED",
+        "independent": false,
+        "record": ".ai/reviews.yaml#CAB-T01-SELF"
+      },
+      "blockers": [],
+      "implementation": {
+        "started_at_commit": "d7b1175",
+        "completed_at_commit": "2c5e585"
+      }
+    },
+    {
+      "id": "CAB-T02",
+      "scope": "COMPONENT-ATLAS-BUILDER-1",
+      "milestone": null,
+      "title": "Backend component-library projection",
+      "status": "COMPLETE",
+      "priority": 208,
+      "dependencies": [
+        "CAB-T01"
+      ],
+      "goal": "expose a read-only API joining the existing visual registry with server-owned catalog snapshots and evidence summaries.",
+      "acceptance_criteria": [
+        "deterministic pagination/search/filtering; exact snapshot hash; no client-supplied evidence; twelve current catalog records represented; missing visuals use an explicit fallback; revoked/quarantined items remain visible only under appropriate filters and cannot be added."
+      ],
+      "verification": {
+        "required": [
+          "task_acceptance_checks"
+        ],
+        "record": ".ai/verification/CAB-T02.yaml"
+      },
+      "review": {
+        "required": false,
+        "status": "PASSED",
+        "independent": false,
+        "record": ".ai/reviews.yaml#CAB-T02-SELF"
+      },
+      "blockers": [],
+      "implementation": {
+        "started_at_commit": "2c5e585",
+        "completed_at_commit": "972800d"
+      }
+    },
+    {
+      "id": "CAB-T03",
+      "scope": "COMPONENT-ATLAS-BUILDER-1",
+      "milestone": null,
+      "title": "Story discovery experience",
+      "status": "COMPLETE",
+      "priority": 207,
+      "dependencies": [
+        "CAB-T02"
+      ],
+      "goal": "make the atlas a first-class home/header experience with deterministic story queues and accessible navigation.",
+      "acceptance_criteria": [
+        "desktop, touch, keyboard, screen-reader, reduced-motion, and renderer-fallback paths; story facts match backend records; every unknown and illustrative limitation is visible; no project mutation occurs."
+      ],
+      "verification": {
+        "required": [
+          "task_acceptance_checks"
+        ],
+        "record": ".ai/verification/CAB-T03.yaml"
+      },
+      "review": {
+        "required": false,
+        "status": "PASSED",
+        "independent": false,
+        "record": ".ai/reviews.yaml#CAB-T03-SELF"
+      },
+      "blockers": [],
+      "implementation": {
+        "started_at_commit": "972800d",
+        "completed_at_commit": "0f4c555"
+      }
+    },
+    {
+      "id": "CAB-T04",
+      "scope": "COMPONENT-ATLAS-BUILDER-1",
+      "milestone": null,
+      "title": "Disposable placement sandbox",
+      "status": "COMPLETE",
+      "priority": 206,
+      "dependencies": [
+        "CAB-T03"
+      ],
+      "goal": "implement drag/tap/keyboard placement on a non-project sandbox using the existing procedural assets.",
+      "acceptance_criteria": [
+        "snapping, rotate, side preview, collision/out-of-bounds states, undo/redo/reset/discard, mobile controls, and zero saved-project writes. Reload or discard destroys the sandbox unless the user explicitly saves a learning scene separate from engineering projects."
+      ],
+      "verification": {
+        "required": [
+          "task_acceptance_checks"
+        ],
+        "record": ".ai/verification/CAB-T04.yaml"
+      },
+      "review": {
+        "required": false,
+        "status": "PASSED",
+        "independent": false,
+        "record": ".ai/reviews.yaml#CAB-T04-SELF"
+      },
+      "blockers": [],
+      "implementation": {
+        "started_at_commit": "0f4c555",
+        "completed_at_commit": "00fa538"
+      }
+    },
+    {
+      "id": "CAB-T05",
+      "scope": "COMPONENT-ATLAS-BUILDER-1",
+      "milestone": null,
+      "title": "Existing-component layout drafts",
+      "status": "APPROVED",
+      "priority": 205,
+      "dependencies": [
+        "CAB-T04",
+        "CS-T04"
+      ],
+      "goal": "move and rotate components already present in an immutable project revision.",
+      "acceptance_criteria": [
+        "server-owned `BoardDraft`; stale-base conflicts; complete physical invalidation; no changed nets/pads/parts; deterministic command replay; discard leaves source bytes unchanged; committing creates a new revision."
+      ],
+      "verification": {
+        "required": [
+          "task_acceptance_checks"
+        ],
+        "record": null
+      },
+      "review": {
+        "required": false,
+        "status": "PENDING",
+        "independent": false
+      },
+      "blockers": [],
+      "implementation": {
+        "started_at_commit": null,
+        "completed_at_commit": null
+      }
+    },
+    {
+      "id": "CAB-T06",
+      "scope": "COMPONENT-ATLAS-BUILDER-1",
+      "milestone": null,
+      "title": "Authoritative placement validation and reroute",
+      "status": "APPROVED",
+      "priority": 204,
+      "dependencies": [
+        "CAB-T05"
+      ],
+      "goal": "validate a settled layout draft through placement, routing, parsed artifact checks, ERC/DRC where applicable, manufacturing profile, and lineage.",
+      "acceptance_criteria": [
+        "deliberately overlapping/out-of-bounds/keepout/antenna-edge placements fail; unavailable KiCad remains unavailable; routing failures remain explicit; generated artifacts bind the draft and base fingerprints; no old download remains enabled after an edit."
+      ],
+      "verification": {
+        "required": [
+          "task_acceptance_checks"
+        ],
+        "record": null
+      },
+      "review": {
+        "required": false,
+        "status": "PENDING",
+        "independent": false
+      },
+      "blockers": [],
+      "implementation": {
+        "started_at_commit": null,
+        "completed_at_commit": null
+      }
+    },
+    {
+      "id": "CAB-T07",
+      "scope": "COMPONENT-ATLAS-BUILDER-1",
+      "milestone": null,
+      "title": "Supported component addition",
+      "status": "APPROVED",
+      "priority": 203,
+      "dependencies": [
+        "CAB-T06",
+        "CS-T07",
+        "CS-T08"
+      ],
+      "goal": "let users drag a `DESIGN_ELIGIBLE` part into a supported project role.",
+      "acceptance_criteria": [
+        "drop creates a candidate; role resolution precedes electrical addition; one admitted component traverses semantic, schematic, ERC, placement, routing, DRC, manufacturing, learning projection, restart, and download with exact lineage; unsupported roles and negative requests cannot bypass admission."
+      ],
+      "verification": {
+        "required": [
+          "task_acceptance_checks"
+        ],
+        "record": null
+      },
+      "review": {
+        "required": false,
+        "status": "PENDING",
+        "independent": false
+      },
+      "blockers": [],
+      "implementation": {
+        "started_at_commit": null,
+        "completed_at_commit": null
+      }
+    },
+    {
+      "id": "CAB-T08",
+      "scope": "COMPONENT-ATLAS-BUILDER-1",
+      "milestone": null,
+      "title": "Mechanical board features",
+      "status": "APPROVED",
+      "priority": 202,
+      "dependencies": [
+        "CAB-T07"
+      ],
+      "goal": "add typed mounting holes, test points, fiducials, and keepouts.",
+      "acceptance_criteria": [
+        "each feature has a source/profile basis, exact fabrication semantics, independent parsed-byte checks, and mutation tests. Decorative models cannot create fabrication features."
+      ],
+      "verification": {
+        "required": [
+          "task_acceptance_checks"
+        ],
+        "record": null
+      },
+      "review": {
+        "required": false,
+        "status": "PENDING",
+        "independent": false
+      },
+      "blockers": [],
+      "implementation": {
+        "started_at_commit": null,
+        "completed_at_commit": null
+      }
+    },
+    {
+      "id": "CAB-T09",
+      "scope": "COMPONENT-ATLAS-BUILDER-1",
+      "milestone": null,
+      "title": "Vetted external 3D assets and LOD",
+      "status": "APPROVED",
+      "priority": 201,
+      "dependencies": [
+        "CAB-T08"
+      ],
+      "goal": "add manufacturer or upstream models only where identity, transform, license, and redistribution are resolved.",
+      "acceptance_criteria": [
+        "bounded offline conversion, exact hashes, no external runtime fetches, origin/pad alignment tests, top/bottom/rotation/repeated-instance tests, license manifest, procedural fallback, and measured browser memory/load budgets."
+      ],
+      "verification": {
+        "required": [
+          "task_acceptance_checks"
+        ],
+        "record": null
+      },
+      "review": {
+        "required": false,
+        "status": "PENDING",
+        "independent": false
+      },
+      "blockers": [],
+      "implementation": {
+        "started_at_commit": null,
+        "completed_at_commit": null
+      }
+    },
+    {
+      "id": "CAB-T10",
+      "scope": "COMPONENT-ATLAS-BUILDER-1",
+      "milestone": null,
+      "title": "Acceptance and product evaluation",
+      "status": "APPROVED",
+      "priority": 200,
+      "dependencies": [
+        "CAB-T09"
+      ],
+      "goal": "complete usability, accessibility, performance, safety, and independent review gates.",
+      "acceptance_criteria": [
+        "held-out user tasks cover discovery, placement, cancellation, conflict recovery, invalid geometry, supported addition, and exact revision history; independent review has no open blocker/high finding; all canonical tiers pass with current KiCad; documentation and UI state all limits."
+      ],
+      "verification": {
+        "required": [
+          "task_acceptance_checks"
+        ],
+        "record": null
+      },
+      "review": {
+        "required": true,
+        "status": "PENDING",
+        "independent": true
+      },
+      "blockers": [],
+      "implementation": {
+        "started_at_commit": null,
+        "completed_at_commit": null
+      }
+    },
+    {
+      "id": "UX-T01",
+      "scope": "UX-CLARITY-1",
+      "milestone": null,
+      "title": "Audit and implement purpose-led landing and accessible presentation",
+      "status": "COMPLETE",
+      "priority": 220,
+      "dependencies": [],
+      "goal": "Document six reported concerns and eight additional evidence-backed findings, implement readability, navigation and component-led landing improvements without engineering authority changes.",
+      "acceptance_criteria": [
+        "Audit names user, purpose, evidence, priority, solution, tests and remaining work for all 14 findings.",
+        "Landing explains bounded capability and provides primary project action and optional component learning.",
+        "Text, mobile layout, focus, motion and no-model fallback remain usable.",
+        "Existing project, library and disposable sandbox workflows retain truthful boundaries.",
+        "Node, relevant Python, workflow and browser checks recorded; no live provider calls."
+      ],
+      "verification": {
+        "required": [
+          "node",
+          "fast",
+          "workflow",
+          "browser",
+          "ruff"
+        ],
+        "record": ".ai/verification/UX-T01.yaml"
+      },
+      "review": {
+        "required": false,
+        "status": "PASSED",
+        "independent": false,
+        "record": ".ai/reviews.yaml#UX-T01-SELF"
+      },
+      "blockers": [],
+      "implementation": {
+        "started_at_commit": "61d3832",
+        "completed_at_commit": "6fa487c"
+      }
+    },
+    {
+      "id": "UX-T02",
+      "scope": "UX-CLARITY-1",
+      "milestone": null,
+      "title": "Rebuild landing to supplied dark PCB reference",
+      "status": "COMPLETE",
+      "priority": 220,
+      "dependencies": [
+        "UX-T01"
+      ],
+      "goal": "Match reference composition, dark cyan/violet palette, PCB artwork, callouts and feature cards while retaining readable and truthful functional flows.",
+      "acceptance_criteria": [
+        "Reference-led responsive landing with functional build, learn, docs and demo actions.",
+        "Artwork explicitly illustrative; no engineering status fabricated.",
+        "No workbench regression; keyboard, mobile and reduced-motion checks.",
+        "Tests and takeover notes recorded."
+      ],
+      "verification": {
+        "required": [
+          "node",
+          "fast",
+          "workflow",
+          "browser"
+        ],
+        "record": ".ai/verification/UX-T02.yaml"
+      },
+      "review": {
+        "required": false,
+        "status": "PASSED",
+        "independent": false,
+        "record": ".ai/reviews.yaml#UX-T02-SELF"
+      },
+      "blockers": [],
+      "implementation": {
+        "started_at_commit": "c15373c",
+        "completed_at_commit": "4bf53ef"
+      }
+    },
+    {
+      "id": "UX-T03",
+      "scope": "UX-CLARITY-1",
+      "milestone": null,
+      "title": "Unify all existing pages with the reference-led dark design",
+      "status": "COMPLETE",
+      "priority": 220,
+      "dependencies": [
+        "UX-T02"
+      ],
+      "goal": "Consistent readable workbench, project form, activity, results, build, library and dialogs without engineering behavior changes.",
+      "acceptance_criteria": [
+        "Shared dark semantic tokens and consistent controls/status styling.",
+        "Project form follows supplied reference with real disabled/save states.",
+        "Desktop/mobile, large-text and keyboard flows checked.",
+        "Regression tests and handoff documented."
+      ],
+      "verification": {
+        "required": [
+          "node",
+          "fast",
+          "workflow",
+          "browser"
+        ],
+        "record": ".ai/verification/UX-T03.yaml"
+      },
+      "review": {
+        "required": false,
+        "status": "PASSED",
+        "independent": false,
+        "record": ".ai/reviews.yaml#UX-T03-SELF"
+      },
+      "blockers": [],
+      "implementation": {
+        "started_at_commit": "4bf53ef",
+        "completed_at_commit": "19ce9bf"
+      }
+    },
+    {
+      "id": "REPO-T01",
+      "scope": "REPO-READY-1",
+      "milestone": null,
+      "title": "Prepare, verify, commit and push current work to main",
+      "status": "IN_PROGRESS",
+      "priority": 230,
+      "dependencies": [],
+      "goal": "Publish a coherent verified source tree and truthful takeover state without beginning further product work.",
+      "acceptance_criteria": [
+        "Investigate local demo failure and run actual KiCad checks.",
+        "Run full Python, corpus, frontend, lint and workflow gates; resolve failures before publication.",
+        "Review tracked and untracked inputs, exclude local configuration and secrets, preserve existing product gates.",
+        "Commit source and evidence, verify remote ancestry and push to main without force."
+      ],
+      "verification": {
+        "required": [
+          "full",
+          "corpus",
+          "node",
+          "workflow",
+          "ruff",
+          "kicad",
+          "git"
+        ],
+        "record": ".ai/verification/REPO-T01.yaml"
+      },
+      "review": {
+        "required": false,
+        "status": "PENDING",
+        "independent": false
+      },
+      "blockers": [],
+      "implementation": {
+        "started_at_commit": "4c3ccc5",
+        "completed_at_commit": null
       }
     }
   ]

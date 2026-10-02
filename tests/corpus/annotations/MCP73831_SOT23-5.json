@@ -1,0 +1,227 @@
+{
+  "schema_version": 1,
+  "document_id": "MCP73831-DS20001984H",
+  "document_sha256": "75297f2a5235599368381adfb63df2652cc22d757f171f388147b2ab3d32776f",
+  "selected_variant": {
+    "manufacturer": "Microchip Technology",
+    "base_device": "MCP73831",
+    "orderable_part_number": "MCP73831T-2ACI/OT",
+    "package_code": "OT",
+    "package_description": "5-Lead Plastic Small Outline Transistor (OT) [SOT23]",
+    "pin_count": 5,
+    "document_revision": "H",
+    "drawing_number": "C04-2091-OT Rev F"
+  },
+  "transcription": {
+    "by": "Ohmni maintainer, reading the acquired PDF text layer and vector geometry directly",
+    "method": "Independent of any model proposal and independent of the generated CAD. Values were read from the page-24 dimension table and the page-11 pin function table, then cross-checked against the internal arithmetic relations printed on the same drawing.",
+    "recorded_at": "2026-09-14"
+  },
+  "land_pattern_table": {
+    "page": 24,
+    "table_label": "RECOMMENDED LAND PATTERN",
+    "units": "MILLIMETERS",
+    "drawing_number": "C04-2091-OT Rev F",
+    "rows": [
+      {
+        "row_label": "Contact Pitch",
+        "symbol": "E",
+        "limit": "basic",
+        "value": "0.95",
+        "basic_dimension": true,
+        "kind": "land_contact_pitch",
+        "column_note": "Printed across MIN/NOM/MAX as a basic dimension; the vertical column rules are absent in this row."
+      },
+      {
+        "row_label": "Contact Pad Spacing",
+        "symbol": "C",
+        "limit": "nom",
+        "value": "2.80",
+        "basic_dimension": false,
+        "kind": "land_row_spacing"
+      },
+      {
+        "row_label": "Contact Pad Width (X5)",
+        "symbol": "X",
+        "limit": "max",
+        "value": "0.60",
+        "basic_dimension": false,
+        "kind": "land_pad_width"
+      },
+      {
+        "row_label": "Contact Pad Length (X5)",
+        "symbol": "Y",
+        "limit": "max",
+        "value": "1.10",
+        "basic_dimension": false,
+        "kind": "land_pad_length"
+      },
+      {
+        "row_label": "Distance Between Pads",
+        "symbol": "G",
+        "limit": "min",
+        "value": "1.70",
+        "basic_dimension": false,
+        "kind": "land_row_gap"
+      },
+      {
+        "row_label": "Distance Between Pads",
+        "symbol": "GX",
+        "limit": "min",
+        "value": "0.35",
+        "basic_dimension": false,
+        "kind": "land_adjacent_gap"
+      },
+      {
+        "row_label": "Overall Width",
+        "symbol": "Z",
+        "limit": "max",
+        "value": "3.90",
+        "basic_dimension": false,
+        "kind": "land_overall_width"
+      }
+    ],
+    "printed_consistency_relations": [
+      {
+        "relation": "Z = C + Y",
+        "check": "3.90 = 2.80 + 1.10"
+      },
+      {
+        "relation": "G = C - Y",
+        "check": "1.70 = 2.80 - 1.10"
+      },
+      {
+        "relation": "GX = E - X",
+        "check": "0.35 = 0.95 - 0.60"
+      }
+    ]
+  },
+  "pad_ordering": {
+    "page": 24,
+    "source": "Five stroked pad rectangles in the RECOMMENDED LAND PATTERN drawing, with printed pin-number labels 1, 2 and 5",
+    "traversal": "counter_clockwise_from_pin_1",
+    "first_pin_corner": "bottom_left",
+    "labelled_pins": [
+      "1",
+      "2",
+      "5"
+    ],
+    "row_occupancy": [
+      [
+        "1",
+        "2",
+        "3"
+      ],
+      [
+        "5",
+        "4"
+      ]
+    ],
+    "note": "Row occupancy is drawing topology only. Every dimension comes from the table; drawing distances are never used as engineering dimensions."
+  },
+  "pin_function_table": {
+    "page": 11,
+    "table_label": "TABLE 3-1: PIN FUNCTION TABLES",
+    "package_column": "SOT-23-5",
+    "other_package_columns": [
+      "DFN"
+    ],
+    "rows": [
+      {
+        "pin_number": "1",
+        "symbol": "STAT",
+        "function": "Charge Status Output",
+        "kind": "electrical",
+        "dfn_pin": "5"
+      },
+      {
+        "pin_number": "2",
+        "symbol": "VSS",
+        "function": "Battery Management 0V Reference",
+        "kind": "electrical",
+        "dfn_pin": "6"
+      },
+      {
+        "pin_number": "3",
+        "symbol": "VBAT",
+        "function": "Battery Charge Control Output",
+        "kind": "electrical",
+        "dfn_pin": "3"
+      },
+      {
+        "pin_number": "4",
+        "symbol": "VDD",
+        "function": "Battery Management Input Supply",
+        "kind": "electrical",
+        "dfn_pin": "1"
+      },
+      {
+        "pin_number": "5",
+        "symbol": "PROG",
+        "function": "Current Regulation Set and Charge Control Enable",
+        "kind": "electrical",
+        "dfn_pin": "8"
+      }
+    ],
+    "dfn_only_rows": [
+      {
+        "dfn_pin": "2",
+        "symbol": "VDD"
+      },
+      {
+        "dfn_pin": "4",
+        "symbol": "VBAT"
+      },
+      {
+        "dfn_pin": "7",
+        "symbol": "NC"
+      },
+      {
+        "dfn_pin": "9",
+        "symbol": "EP"
+      }
+    ],
+    "note": "The SOT-23-5 column contains an em dash for every DFN-only row. A value read from the DFN column must not be accepted as a SOT-23-5 pin."
+  },
+  "expected_land_geometry_mm": {
+    "derivation": "Deterministic consequence of the verified table under the manufacturer_recommended_table policy, stated here so an independent reader can check the generated footprint without running Ohmni.",
+    "pad_width_x_mm": 0.6,
+    "pad_length_y_mm": 1.1,
+    "pitch_mm": 0.95,
+    "row_spacing_mm": 2.8,
+    "pads": [
+      {
+        "number": "1",
+        "x_mm": -0.95,
+        "y_mm": 1.4
+      },
+      {
+        "number": "2",
+        "x_mm": 0.0,
+        "y_mm": 1.4
+      },
+      {
+        "number": "3",
+        "x_mm": 0.95,
+        "y_mm": 1.4
+      },
+      {
+        "number": "4",
+        "x_mm": 0.95,
+        "y_mm": -1.4
+      },
+      {
+        "number": "5",
+        "x_mm": -0.95,
+        "y_mm": -1.4
+      }
+    ],
+    "frame_note": "KiCad footprint coordinates use Y increasing downward. Pins 1-3 occupy the drawing row that carries the printed pin-1 label; +Y here is that row."
+  },
+  "explicitly_not_established": [
+    "IPC-7351 or IPC-7352 compliance",
+    "Solder joint reliability, paste volume, stencil design or thermal adequacy",
+    "Any electrical behaviour, absolute maximum rating or SPICE model of the MCP73831",
+    "Catalog admission or design eligibility of this part"
+  ]
+}

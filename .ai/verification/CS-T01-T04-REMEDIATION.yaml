@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "id": "CS-T01-T04-REMEDIATION",
+  "task": "CS-T01..CS-T04",
+  "scope": "COMPONENT-SYNTHESIS-1",
+  "status": "PASSED",
+  "commit": "uncommitted working tree on d7b1175",
+  "verified_at": "2026-09-15",
+  "responds_to": ".ai/verification/CS-T01-T04-AUDIT.yaml",
+  "summary": "Every finding of the independent audit was reproduced, encoded as a failing regression, and fixed. Three HIGH false-positive paths are closed, two MEDIUM findings are closed, one is partially closed with a recorded residual, and the plan's connected ERC/DRC criterion is now implemented.",
+  "method": "The audit's counterexamples were added as failing tests BEFORE any product code changed, per its instruction. The audit's own reproduce.py was rerun afterwards and now fails at its first probe, which is the intended outcome.",
+  "commands": [
+    "python out/component-synthesis-audit/reproduce.py  (before and after)",
+    "python -m pytest tests/test_component_synthesis_audit_regressions.py -q",
+    "python scripts/verify.py fast",
+    "python scripts/verify.py corpus",
+    "python scripts/verify.py integration",
+    "python scripts/verify.py workflow",
+    "python scripts/component_cad_proof.py",
+    "python -m ohmni verify-all",
+    "python -m ruff check ."
+  ],
+  "counts": {
+    "audit_regressions_passed": 19,
+    "audit_regressions_failing_before_fixes": 17,
+    "fast_tier": "1655 passed, 49 deselected",
+    "corpus_tier": "94 passed, 1610 deselected",
+    "integration_tier": "30 passed, 2 skipped, 1672 deselected",
+    "workflow_tier": "11 passed",
+    "cs_checks_run": 36,
+    "cs_checks_passed": 36,
+    "ruff_errors": 0
+  },
+  "new_checks": [
+    "CS-SOURCE-000 recomputes every receipt binding at the point of use",
+    "CS-GEOMETRY-007 rejects copper drawn outside the lands",
+    "CS-GEOMETRY-008 rejects a rotated land",
+    "kicad-cli sch erc over a generated schematic using the symbol",
+    "kicad-cli pcb drc over a generated board using the footprint"
+  ],
+  "connected_design_runs": [
+    {
+      "name": "kicad-cli sch erc",
+      "status": "ok",
+      "design_sha256": "d138d1a27d63d4f76a3dbc03653ff8c6d7fce70b341bfe50d56355b8763f8272",
+      "asset_sha256": "efdbe443a11cf3c49737adcf1aa777d96f6158e3a8e8f08ef920756063ca7dd6",
+      "tool_version": "10.0.5",
+      "report_sha256": "316e4e1256bd9417e1d717631fd1b30a112424b9e87fbb7dff72b27a59279dd2",
+      "violations": {
+        "isolated_pin_label": 5
+      },
+      "asset_defects": [],
+      "corroborated": true,
+      "detail": null
+    },
+    {
+      "name": "kicad-cli pcb drc",
+      "status": "ok",
+      "design_sha256": "e7e6d5853ba5124949e0cd8178c75ca7169fa63eb3724907845d032e7ff4c7e4",
+      "asset_sha256": "7aad8863834cb260d77634642a4531a1afbfaa17108fe25a8a7c1875d67de3e7",
+      "tool_version": "10.0.5",
+      "report_sha256": "8a7c7df2b2a08b6862a8bcb594a6f1fa6d453807f0ee6fc3c5b0f51eb50b2d1f",
+      "violations": {},
+      "asset_defects": [],
+      "corroborated": true,
+      "detail": null
+    }
+  ],
+  "artifacts": {
+    "footprint": {
+      "path": "build\\component_synthesis\\Ohmni_ComponentSynthesis.pretty\\Ohmni_MCP73831_OT_5.kicad_mod",
+      "sha256": "7aad8863834cb260d77634642a4531a1afbfaa17108fe25a8a7c1875d67de3e7",
+      "format_version": "20260206"
+    },
+    "symbol": {
+      "path": "build\\component_synthesis\\Ohmni_MCP73831_OT.kicad_sym",
+      "sha256": "efdbe443a11cf3c49737adcf1aa777d96f6158e3a8e8f08ef920756063ca7dd6",
+      "format_version": "20251024"
+    },
+    "verified_constraint_hash": "b2305fac8b943d54f3aec53622bcf1975d2addbc59d5297e62554356f4cb4040",
+    "evidence_json": "build/component_synthesis/CS-T04_evidence.json"
+  },
+  "limitations": [
+    "CS-AUDIT-006 is only partially closed: extraction still runs in-process. See CS-AUDIT-006-RESIDUAL.",
+    "Live Anthropic vision remains untested; CS-T02-R01 is unchanged and still OPEN.",
+    "This remediation has not been independently reviewed. CS-T01..CS-T04 stay VERIFIED, never COMPLETE, and CS-T05 stays unstarted.",
+    "Results are recorded against an uncommitted working tree, not a commit.",
+    "The connected harness establishes that KiCad loaded the assets in a design and reported no asset-defect violation. It does not establish that any design works."
+  ]
+}

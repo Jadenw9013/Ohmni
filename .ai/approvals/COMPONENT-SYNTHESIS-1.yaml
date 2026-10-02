@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "id": "COMPONENT-SYNTHESIS-1-APPROVAL",
+  "recorded_at": "2026-09-14",
+  "approved_by": "human",
+  "source": "Explicit user instruction in the Claude Code session that read AGENTS.md, ARCHITECTURE.md, VERIFICATION.md, docs/AI_WORKFLOW.md and COMPONENT_SYNTHESIS_PLAN.md",
+  "instruction": "HUMAN APPROVAL: I approve COMPONENT-SYNTHESIS-1 and its proposed CS-T01 through CS-T11 tasks, subject to every support boundary and verification gate in COMPONENT_SYNTHESIS_PLAN.md. Record this approval durably using the repository workflow.",
+  "scope": "COMPONENT-SYNTHESIS-1",
+  "plan_document": "COMPONENT_SYNTHESIS_PLAN.md",
+  "observed_head": "d7b1175",
+  "authorized_tasks": [
+    "CS-T01", "CS-T02", "CS-T03", "CS-T04", "CS-T05", "CS-T06",
+    "CS-T07", "CS-T08", "CS-T09", "CS-T10", "CS-T11"
+  ],
+  "execution_instruction": {
+    "recorded_at": "2026-09-14",
+    "text": "Begin implementation sequentially. For this initial execution, complete CS-T01 through CS-T04 only: contracts, multimodal extraction, independent source verification, and the first real KiCad component proof. Stop after reporting that checkpoint, or earlier if a prerequisite fails.",
+    "session_stop_after": "CS-T04"
+  },
+  "binding_constraints": [
+    "Every support boundary and verification gate stated in COMPONENT_SYNTHESIS_PLAN.md applies unchanged",
+    "LLMs propose; evidence grounds; deterministic systems verify",
+    "Comparing generated CAD with the model's own JSON does not establish datasheet correctness; independent source association is verified first",
+    "UNKNOWN, missing evidence, unsupported behaviour and unavailable tools never become PASS",
+    "Existing architectural isolation and unrelated working-tree changes are preserved",
+    "Imported components are not activated in the catalog before the later electrical admission gates (CS-T07)",
+    "No IPC compliance or validated SPICE behaviour is claimed from geometry checks",
+    "No deployment or paid infrastructure provisioning",
+    "Routine tests use recorded or scripted provider responses; live model evaluation is explicitly bounded and accounted for"
+  ],
+  "not_authorized": [
+    "Claiming arbitrary-chip correctness or broad IPC compliance",
+    "Bypassing source evidence or mandatory automated gates through human approval clicks",
+    "Reactivating the parked M10-T05 benchmark or rewriting accepted milestone history",
+    "Unrelated roadmap or product work outside COMPONENT_SYNTHESIS_PLAN.md"
+  ]
+}

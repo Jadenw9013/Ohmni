@@ -18,3 +18,19 @@ jobs:
       - run: python scripts/ai_state.py validate
       - run: python scripts/verify.py fast
 
+  # A separate, required evidence gate. `fast` runs offline and skips every
+  # source-dependent test when the pinned manufacturer PDFs are absent, so a
+  # green `fast` run must never be mistaken for "the source checks ran against
+  # the real document". This job acquires the pinned sources and fails if they
+  # cannot be obtained or no longer match their digests.
+  corpus:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python -m pip install -e ".[dev]"
+      - run: python scripts/acquire_corpus.py
+      - run: python scripts/record_component_extraction.py --check
+      - run: python scripts/verify.py corpus

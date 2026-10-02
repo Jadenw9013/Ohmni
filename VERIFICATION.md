@@ -270,3 +270,140 @@ verify exact release lineage and required nonempty fabrication outputs.
 Manufacturing PASS means the board fits the stated profile within implemented
 checks; it does not prove fabrication, assembly, thermal, EMC/RF, or bench
 success. Dimensional findings report their explicit margin.
+
+## Component synthesis verification
+
+Imported-component checks run in a fixed order, and the order is the claim.
+
+**Source first.** `CS-SOURCE` relocates every proposed claim in the document
+itself, using the tables' own printed column rules: a value is supported only
+when it is printed in the claimed row, under the claimed dimension symbol, in
+the claimed MIN/NOM/MAX column, under the units the table declares, on the
+recommended land pattern page for the selected package. Finding the same number
+elsewhere fails.
+
+*What a row means comes from the grammar, never from the proposal.* Reading the
+right number out of the right row says nothing about whether that row denotes
+the feature the proposal called it, and an independent audit demonstrated the
+gap: a candidate citing the genuine "Contact Pad Width (X5) / X / 0.60" row and
+labelling it `land_pad_length` passed every value check and produced 0.60 by
+0.60 mm lands from a document that prints 1.10 mm. `LAND_ROW_MEANINGS` maps each
+supported printed row to the feature it denotes, a mismatch is rejected, and a
+row the grammar does not map has no established meaning at all. Terminal kinds
+are derived the same way, from the printed symbol and function text.
+
+*A receipt is bound to the value it describes.* Every accepted value recomputes
+a canonical claim payload and must match the hash its receipt recorded, and
+every receipt must carry the current checker version. Without this, a verified
+set could be serialised, edited, and revalidated with the original receipts
+still attached -- which the same audit demonstrated. Arithmetic cross-checks
+additionally bind the claim hashes of all three operands, so a relation cannot
+outlive a change to any value it related. The binding is recomputed at the point
+of use, not inherited from whoever constructed the object. A pin is supported only inside its own package column; an em
+dash means that package has no such pin and the number is not inherited from a
+neighbouring column. `CS-SOURCE-CONSISTENCY` additionally checks the arithmetic
+the drawing prints about itself, so a single misread digit breaks a relation.
+`CS-ORIENTATION` derives pad topology from the drawn lands and requires at least
+two printed pin labels to confirm the traversal, because one label cannot
+distinguish a clockwise sequence from a counter-clockwise one.
+
+**Then CAD, measured independently.** `CS-PIN`, `CS-DIMENSION`, `CS-ORIENTATION`,
+`CS-GEOMETRY` and `CS-LINEAGE` compare measurements parsed out of the emitted
+`.kicad_mod` and `.kicad_sym` bytes against the verified source constraints, not
+against the generator's own objects and not against the model's JSON. A mutation
+that changes the model's claim and the generated footprint together still fails,
+because the source check consults neither.
+
+The parser is an *allowlist*. Silently ignoring a construct is indistinguishable
+from reading it and finding nothing wrong, so anything the parser does not model
+makes the file invalid rather than measured as if it were absent. Concretely: a
+`solder_mask_margin` override is refused rather than dropped while the report
+goes on calling mask openings explicit; a rotated pad is refused because every
+dimension and clearance check measures an axis-aligned envelope, and rotating a
+0.60 by 1.10 mm land by 90 degrees puts 1.10 mm of copper across a 0.95 mm
+pitch; and a graphic on a copper layer is refused because copper outside the
+lands is not modelled. All three passed every check before an audit found them.
+
+`CS-KICAD` asks KiCad to load and render the artifacts, *and* to run ERC on a
+generated schematic that uses the symbol and DRC on a generated board that uses
+the footprint. Reports bind to the exact artifact and design SHA-256. An
+unavailable, crashed or empty run is not a pass, and neither is an existing SVG
+found in the output directory: the destination must be empty before the run, the
+output must be named for the artifact requested, it must parse as a drawn SVG,
+and the input must hash the same afterwards. The connected harness is one
+component with labelled pins on a rectangular outline, so a violation is
+attributable to the asset; the isolated-pin-label violations such a harness
+necessarily produces are recorded rather than hidden.
+
+An empty asset report is never a pass, and neither is a report with any
+non-pass finding.
+
+### What a passing component-synthesis result does not establish
+
+- **Not IPC compliance.** The result is datasheet and land-pattern geometric
+  conformance within the implemented subset. IPC-7351 is no longer maintained
+  and IPC-7352 is a design guideline; matching a pitch establishes neither.
+  The emitted courtyard is the verified land extent plus a declared policy
+  margin, not a standards-derived courtyard excess.
+- **Not manufacturability.** Solder joint reliability, paste volume, stencil
+  design, thermal performance and assembly yield are outside these checks.
+- **Not electrical behaviour.** Symbol pins are emitted with electrical type
+  `unspecified`. A checked pin table row establishes the printed name and
+  function; it establishes no operating limit, absolute maximum rating, internal
+  connection or behaviour. Electrical profiles are a separate later gate.
+- **Not a package body.** When only the recommended land table was read, no
+  silkscreen body or fabrication outline is emitted, and the artifact says so.
+- **Not simulation.** No model is ingested by these checks; simulation reads
+  `UNSUPPORTED` until its own separate gate.
+- **Not catalog admission.** Geometric conformance does not make a part eligible
+  for a design. Admission evaluates the required-fact matrix separately, and
+  `not report.export_blocked` alone is never sufficient.
+- **Not a zero error rate on arbitrary PDFs.** Two layout grammars are
+  implemented. Any other page shape returns `UNSUPPORTED_SOURCE` and quarantines
+  the import rather than degrading to a fuzzy text search.
+- **Not a recorded provider response.** The pinned proposal fixture is labelled
+  `reconstructed`, not `recorded`. Its request identity was rebuilt from the
+  current code and the pinned source the day *after* the provider call, so it
+  cannot witness what the model was sent — the argument that the inputs are
+  byte-identical is recorded with it, but an argument is not a capture. A
+  `recorded` label requires a `captured_at_call_time` identity written during a
+  live invocation, which needs the live path in CS-T02-R01. The fixture is a
+  valid offline input; extraction fidelity against a live provider is
+  UNEVALUATED. The label is carried to the caller by
+  `RecordedVisionProvider.replayed_fidelity`, asserted by the corpus tests, and
+  written into `CS-T04_evidence.json`, so the durable record states what the
+  replayed proposal is. No gate refuses a non-`recorded` fixture, because the
+  offline suite is built on one.
+- **Resource isolation is bounded, not sandboxed, and it is opt-in.**
+  Observation extraction preflights page dimensions, render pixels and
+  content-stream size before anything expensive is allocated, and rejects an
+  over-long token rather than truncating it. It *can* run in an isolated child
+  (`datasheet/isolated_observations.py`) that the parent bounds by wall clock
+  and that caps its own address space — read back from the kernel, not echoed
+  from the request — before the parser is imported. A worker that times out,
+  crashes, returns nothing, returns a bundle for another document, omits a
+  requested page, or returns an image that does not match the digest the bundle
+  records is an error, never an empty observation.
+
+  What this does **not** establish:
+  - It is a resource bound, not a security sandbox. The child keeps the parent's
+    filesystem and network access, there is no seccomp/AppContainer confinement,
+    and the cap bounds memory rather than CPU or disk. It bounds a decompression
+    bomb; it does not contain a parser exploit. The document digest is computed
+    inside the child, so the substitution check defends against the wrong file
+    being read, not against a subverted worker.
+  - **The isolated path has one caller.** `scripts/component_cad_proof.py` is
+    the only one. `scripts/record_component_extraction.py`,
+    `scripts/component_cad_evidence_images.py` and every test fixture still use
+    `BoundedObservationExtractor` in process. Isolation is available, not the
+    default.
+  - **`ohmni ingest-datasheet` is not covered at all.** The user-facing command
+    (`cli.py:cmd_ingest_datasheet`) runs `DatasheetPipeline(PyMuPdfExtractor(),
+    …)` in process, with no address-space cap, no wall clock, and none of the
+    observation preflights. That is the command a user points at an untrusted
+    PDF, and bringing it under these bounds is not in CS-T01–CS-T04.
+  - The two mechanisms bound different quantities under the same byte count: a
+    Windows job object caps committed process memory, POSIX `RLIMIT_AS` caps
+    virtual address-space reservation. Only the Windows behaviour has been
+    observed here; the POSIX path runs in CI on `ubuntu-latest` but is not
+    reported in this record.

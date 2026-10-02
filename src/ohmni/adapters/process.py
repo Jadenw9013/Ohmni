@@ -22,6 +22,10 @@ from time import monotonic
 #: in terms of run_tool, not of the module it happens to be built on, so they
 #: catch this rather than importing subprocess to name one exception type.
 ToolTimeoutError = subprocess.TimeoutExpired
+#: Likewise for a child that could not be started or failed while running. Both
+#: names exist so that "only this module knows we use subprocess" stays true for
+#: every caller, not only for the ones that happen not to need the exceptions.
+ToolProcessError = subprocess.SubprocessError
 
 _WINDOWS = os.name == "nt"
 _ERROR_MODE_LOCK = RLock()

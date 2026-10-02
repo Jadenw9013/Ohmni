@@ -134,7 +134,8 @@ def test_golden_routing_closes_real_kicad_drc_and_stales_on_change(tmp_path,gold
     assert package.manifest.kind=="Manifest"
     assert package.manifest.sha256==hashlib.sha256(package.manifest_path.read_bytes()).hexdigest()
     assert package.files_current() and package.is_valid_for(routed.fingerprint.digest,profile.content_hash)
-    changed_profile=profile.model_copy(update={"source_version":"2.0"})
+    changed_profile=profile.model_copy(update={"source_version":f"{profile.source_version}-modified"})
+    assert changed_profile.content_hash != profile.content_hash
     assert not package.is_valid_for(routed.fingerprint.digest,changed_profile.content_hash)
     design=DesignOrchestrator(flawed_logger_provider(),catalog).design(DEMO_REQUEST,output=tmp_path/"demo.kicad_sch",run_eda=True)
     bom=generate_bom(golden,catalog);costs=calculate_cost(bom,synthetic_fixture_supplier(bom),1);assembly=classify_assembly(bom)

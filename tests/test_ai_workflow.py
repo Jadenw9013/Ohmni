@@ -123,12 +123,35 @@ def test_repository_product_scope_matches_human_approval():
     # Visual and release approval preserve the real board and parked M10 benchmark.
     for scope in tasks["scopes"]:
         assert scope["approved_by"]=="human" and scope["approval_evidence"]
-        if scope["id"] in {"VIS-REF-001", "DEPLOY-1"}:
+        if scope["id"] in {"VIS-REF-001", "DEPLOY-1", "COMPONENT-SYNTHESIS-1", "COMPONENT-ATLAS-BUILDER-1", "UX-CLARITY-1", "REPO-READY-1"}:
             assert scope["status"] in {"APPROVED", "IN_PROGRESS", "REVIEW", "VERIFIED", "COMPLETE"}
         else:
             expected="IN_PROGRESS" if scope["id"]=="M10" else "COMPLETE"
             assert scope["status"]==expected, scope["id"]
-    assert state["approved_product_scope"]=="DEPLOY-1"
+    assert state["approved_product_scope"]=="REPO-READY-1"
+    publication=json.loads((root/".ai/approvals/REPO-READY-1.yaml").read_text())
+    assert publication["approved_by"]=="human"
+    assert "if its clean push to main" in publication["instructions"]
+    assert any("do not begin CS-T05 or CAB-T05" in item for item in publication["boundaries"])
+    ux=json.loads((root/".ai/approvals/UX-CLARITY-1.yaml").read_text())
+    assert ux["approved_by"]=="human"
+    assert "UI/UX" in ux["instruction"]
+    assert ux["preserved_previous_checkpoint"]["active_task"] is None
+    atlas=json.loads((root/".ai/approvals/COMPONENT-ATLAS-BUILDER-1.yaml").read_text())
+    assert atlas["approved_by"]=="human"
+    assert atlas["instruction"]=="ok begin implementing"
+    assert atlas["plan_document"]=="docs/product/THREE_D_COMPONENT_ATLAS_AND_BOARD_BUILDER_PLAN.md"
+    assert atlas["preserved_previous_checkpoint"]["active_task"] is None
+    addition=next(task for task in tasks["tasks"] if task["id"]=="CAB-T07")
+    assert {"CS-T07", "CS-T08"} <= set(addition["dependencies"])
+    synthesis=json.loads((root/".ai/approvals/COMPONENT-SYNTHESIS-1.yaml").read_text())
+    assert synthesis["approved_by"]=="human"
+    assert "HUMAN APPROVAL: I approve COMPONENT-SYNTHESIS-1" in synthesis["instruction"]
+    assert synthesis["plan_document"]=="COMPONENT_SYNTHESIS_PLAN.md"
+    # The approval binds every stated support boundary; none of them is optional.
+    assert any("never become PASS" in item for item in synthesis["binding_constraints"])
+    assert any("CS-T07" in item for item in synthesis["binding_constraints"])
+    assert synthesis["execution_instruction"]["session_stop_after"]=="CS-T04"
     deployment=json.loads((root/".ai/approvals/DEPLOY-1.yaml").read_text())
     assert deployment["approved_by"]=="human"
     assert deployment["instruction"]=="go a head push deploy"
@@ -147,7 +170,8 @@ def test_repository_product_scope_matches_human_approval():
     # the approved scope rather than pinning this approval test to one task.
     if state["active_task"] is not None:
         current=next(task for task in tasks["tasks"] if task["id"]==state["active_task"])
-        assert current["scope"]=="DEPLOY-1" and current["status"]=="IN_PROGRESS"
+        assert current["scope"]==state["approved_product_scope"]
+        assert current["status"]=="IN_PROGRESS"
     active=milestones["active_product_milestone"]
     assert active["id"]=="M10" and active["status"]=="IN_PROGRESS"
     assert active["approved_by"]=="human" and active["approval_evidence"]

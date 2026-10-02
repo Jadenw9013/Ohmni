@@ -421,6 +421,21 @@ async function run(options) {
     if (options.reload) await call("Page.reload", {ignoreCache: true});
     const ready = await waitForPage(call, deadline);
     requireValue(samePage(ready.href, options.pageUrl), `browser loaded unexpected page ${ready.href}`);
+    // The landing page now owns the root URL. Follow its visible Build link
+    // before testing the existing reference-run form; a hidden workspace is
+    // not an operable form, even though its controls exist in the DOM.
+    const atHome = await evaluate(call, `document.querySelector("#home")?.hidden === false`);
+    if (atHome) {
+      requireValue(await clickVisible(call, '.home-links a[href="#workspace"]'),
+        "landing Build navigation was not clickable");
+      let workspaceShown = false;
+      while (Date.now() < deadline) {
+        workspaceShown = await evaluate(call, `document.querySelector(".app-layout")?.hidden === false`);
+        if (workspaceShown) break;
+        await sleep(50);
+      }
+      requireValue(workspaceShown, "landing Build navigation did not reveal the workspace");
+    }
     await assertFocusedStage(call, "describe");
     const picked = await clickVisible(call, "#start-supported");
     requireValue(picked, "project picker was not clickable");

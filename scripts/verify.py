@@ -41,7 +41,9 @@ def _writable_cache() -> Path:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("tier", choices=("workflow", "fast", "integration", "slow", "full"))
+    parser.add_argument(
+        "tier", choices=("workflow", "fast", "integration", "corpus", "slow", "full")
+    )
     args = parser.parse_args(argv)
     basetemp = _writable_basetemp()
     cache_dir = _writable_cache()
@@ -60,10 +62,34 @@ def main(argv: list[str] | None = None) -> int:
         + ["tests/test_ai_workflow.py", "-o", "addopts=-q --strict-markers"],
         "fast": pytest,
         "integration": pytest + ["-m", "integration"],
+        # The corpus tier is a separate evidence gate on purpose. `fast` runs
+        # offline and skips every source-dependent test when the pinned
+        # manufacturer PDFs are absent, so a green `fast` run must never be able
+        # to stand in for "the checks were exercised against the real document".
+        # This tier fails when they are absent instead of skipping.
+        "corpus": pytest + ["-m", "corpus", "-o", "addopts=-q --strict-markers -p no:randomly"],
         "slow": pytest + ["-m", "slow_integration"],
         "full": pytest + ["-o", "addopts=-q --strict-markers"],
     }
+    if args.tier == "corpus":
+        # A skip is honest but it is not evidence. This gate requires the pinned
+        # sources to be present, so "the corpus tests passed" can never mean
+        # "the corpus tests did not run".
+        presence = subprocess.run(
+            [sys.executable, str(ROOT / "scripts" / "acquire_corpus.py"), "--check"],
+            cwd=ROOT, check=False, shell=False,
+        )
+        if presence.returncode != 0:
+            print(
+                "corpus gate: the pinned manufacturer sources are absent.\n"
+                "  Run: python scripts/acquire_corpus.py\n"
+                "This gate fails rather than skipping, because a skipped source check is "
+                "not evidence that the source was checked."
+            )
+            return presence.returncode
     result = subprocess.run(commands[args.tier], cwd=ROOT, check=False, shell=False)
+    if args.tier == "corpus" and result.returncode == 0:
+        print("corpus gate: the pinned sources were present and every corpus test ran.")
     return result.returncode
 
 

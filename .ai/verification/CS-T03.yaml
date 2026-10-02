@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "id": "CS-T03",
+  "task": "CS-T03",
+  "scope": "COMPONENT-SYNTHESIS-1",
+  "status": "PASSED",
+  "commit": "uncommitted working tree on d7b1175",
+  "verified_at": "2026-09-15",
+  "summary": "Independent deterministic source verification against a real manufacturer datasheet, using the tables' own printed column rules, plus a rejection corpus in which every schema-valid, addressable, self-consistent but wrong proposal fails.",
+  "tool_versions": {
+    "python": "3.13.3 (.venv/Scripts/python.exe)",
+    "pytest": "8.x via scripts/verify.py",
+    "ruff": "python -m ruff check .",
+    "kicad-cli": "10.0.5",
+    "pymupdf": "1.28.2"
+  },
+  "commands": [
+    "python -m pytest tests/test_component_source_verification.py -q",
+    "python -m ruff check ."
+  ],
+  "counts": {
+    "source_verification_tests_passed": 30,
+    "rejection_corpus_cases": 21,
+    "receipts_on_the_real_document": 22,
+    "unsupported_receipts": 0,
+    "printed_consistency_relations_checked": 3,
+    "fast_tier": "1655 passed, 49 deselected"
+  },
+  "artifacts": {
+    "checker": "src/ohmni/datasheet/constraint_verifier.py",
+    "grammars": "microchip_land_pattern_v1, microchip_pin_function_v1",
+    "verified_constraint_hash": "db520cdf427ca378f662abec1f1a0d300d786c41216c6391ddacac555e37b6e6"
+  },
+  "limitations": [
+    "No catalog admission occurred: CS-T07 owns that gate and has not run.",
+    "No independent review has been performed for this scope; tasks stand at VERIFIED, not COMPLETE.",
+    "Results are recorded against an uncommitted working tree, not a commit.",
+    "Two layout grammars are implemented. Any other page shape returns UNSUPPORTED_SOURCE and quarantines the import; it never degrades to a fuzzy text search.",
+    "Source support establishes what the document prints. It establishes no electrical behaviour, no operating limit, no absolute maximum rating and no IPC compliance.",
+    "This does not establish a zero error rate on arbitrary unseen PDFs."
+  ],
+  "go_no_go": "PASSED - independent source association was implemented and demonstrated on a real datasheet, so CS-T04 was allowed to start.",
+  "checked_claims": {
+    "identity_fields": 6,
+    "land_dimensions": 7,
+    "pin_rows": 5,
+    "pad_ordering": 1,
+    "printed_relations": 3
+  },
+  "session_started": "2026-09-14",
+  "superseded_by": ".ai/verification/CS-T01-T04-REMEDIATION.yaml",
+  "audit": {
+    "record": ".ai/verification/CS-T01-T04-AUDIT.yaml",
+    "status": "FINDINGS_ADDRESSED",
+    "note": "An independent audit found false-positive verification paths in this work. They are fixed and regression-tested; see the remediation record."
+  }
+}

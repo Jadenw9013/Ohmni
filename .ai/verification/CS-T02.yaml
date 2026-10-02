@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "id": "CS-T02",
+  "task": "CS-T02",
+  "scope": "COMPONENT-SYNTHESIS-1",
+  "status": "PASSED_WITH_UNAVAILABLE_GATE",
+  "commit": "uncommitted working tree on d7b1175",
+  "verified_at": "2026-09-15",
+  "summary": "Bounded observation bundles carrying tokens, printed rules, drawn shapes and page renders, plus a provider-neutral multimodal port whose proposals are checked for addressability and confer no support.",
+  "tool_versions": {
+    "python": "3.13.3 (.venv/Scripts/python.exe)",
+    "pytest": "8.x via scripts/verify.py",
+    "ruff": "python -m ruff check .",
+    "kicad-cli": "10.0.5",
+    "pymupdf": "1.28.2"
+  },
+  "commands": [
+    "python -m pytest tests/test_multimodal_datasheet.py -q",
+    "python scripts/record_component_extraction.py --check",
+    "python -m ruff check ."
+  ],
+  "counts": {
+    "multimodal_tests_passed": 26,
+    "offline_provider_tests": 24,
+    "corpus_backed_tests": 2,
+    "live_provider_calls": 0,
+    "fast_tier": "1655 passed, 49 deselected"
+  },
+  "artifacts": {
+    "observations": "src/ohmni/datasheet/observations.py",
+    "observation_extractor": "src/ohmni/datasheet/pdf.py::BoundedObservationExtractor",
+    "vision_port": "src/ohmni/datasheet/multimodal.py",
+    "offline_providers": "src/ohmni/adapters/vision.py",
+    "live_adapter": "src/ohmni/adapters/anthropic_vision.py",
+    "recorded_proposal": "tests/corpus/recordings/MCP73831_SOT23-5_accepted.proposal.json",
+    "rendered_pages": "build/component_synthesis/source_pages/"
+  },
+  "limitations": [
+    "No catalog admission occurred: CS-T07 owns that gate and has not run.",
+    "No independent review has been performed for this scope; tasks stand at VERIFIED, not COMPLETE.",
+    "Results are recorded against an uncommitted working tree, not a commit.",
+    "LIVE MODEL EVALUATION NOT RUN. ANTHROPIC_API_KEY is not set in this environment, so src/ohmni/adapters/anthropic_vision.py has never been exercised against the real API. It is UNAVAILABLE, not passing.",
+    "The recorded proposal was produced by a multimodal model reading the rendered page images and then frozen as a fixture; it is a proposal, not evidence, and every candidate in it is re-checked by the deterministic source verifier.",
+    "Locator addressability proves a citation points at a real place. It does not prove the claim that cites it."
+  ],
+  "recorded_provider_response": {
+    "produced_by": "Claude Opus 5 (claude-opus-5) viewing the locally rendered pages",
+    "render_dpi": 200,
+    "observed_pages": [
+      11,
+      24,
+      26
+    ],
+    "observation_digest": "3ba9bc4b2bf2895fdd0d030580323ac09c03bf7cf46d00471947f80dbb02358a"
+  },
+  "session_started": "2026-09-14",
+  "superseded_by": ".ai/verification/CS-T01-T04-REMEDIATION.yaml",
+  "audit": {
+    "record": ".ai/verification/CS-T01-T04-AUDIT.yaml",
+    "status": "FINDINGS_ADDRESSED",
+    "note": "An independent audit found false-positive verification paths in this work. They are fixed and regression-tested; see the remediation record."
+  }
+}
