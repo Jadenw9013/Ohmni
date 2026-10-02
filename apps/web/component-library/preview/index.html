@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ohmni · Component library / Stage 1</title><link rel="stylesheet" href="./preview.css"></head>
+<body><main>
+<header><a href="/">OHMNI</a><p>COMPONENT LIBRARY · STAGE 1</p><h1>One family. Twenty components.</h1>
+<p>Parametric package models from the supplied specification. Dimensions are spec-reported; footprint fit and electrical admission are not verified.</p></header>
+<section class="controls" aria-label="Preview controls">
+<label>Component <select id="component"></select></label>
+<label>Detail <select id="lod"><option>LOD0</option><option selected>LOD1</option><option>LOD2</option></select></label>
+<label>View <select id="view"><option value="three-quarter">Three-quarter</option><option value="top">Top · +X right, +Y up</option><option value="underside">Underside</option><option value="side">Side</option></select></label>
+</section>
+<section id="review" class="panel"><div class="caption"><h2 id="name">Loading local library…</h2><p id="dimensions"></p></div>
+<canvas id="model" aria-label="Selected component 3D preview" width="1000" height="500"></canvas>
+<p id="status" role="status"></p><details><summary>Sources and unresolved details</summary><pre id="notes"></pre></details></section>
+<section id="comparison" class="panel"><div class="caption"><h2>0603 comparison · same scale</h2><p>OHM-004 resistor · OHM-023 MLCC · OHM-041 inductor / LOD1</p></div><img id="comparison-image" alt="Three 0603 components rendered at the same scale"><p>Left to right: resistor 0.45 mm high; MLCC and inductor 0.80 mm high. Each is 1.60 × 0.80 mm.</p></section>
+<section id="sheet"><div class="caption"><h2>PKG-CHIP2T · all 20 entries</h2><p>LOD1 · each tile individually framed for inspection; tile sizes do not indicate physical scale.</p></div><div id="tiles"></div></section>
+<footer>GEN-CHIP_2T · millimetres · FCO origin · Z up · two terminals · no pads or solder</footer>
+</main><script type="module" src="./preview.js"></script></body></html>

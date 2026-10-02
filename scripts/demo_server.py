@@ -90,13 +90,21 @@ STATIC_ASSETS=("index.html","app.js","view-model.js","board-model.js","board-vie
                "component-visuals.json","component-stories.js","component-stories.css",
                "component-sandbox.js","sandbox-model.js","home.js","home.css","landing.css","landing-board.png","workbench-theme.css",
                "visual-assets.js","visual-renderer.js","visual-explorer.js","visual-layers.js","visual-board-scene.js","visual-inventory.js","visual-version.js",
-               "vendor/three.module.js","vendor/three.core.min.js")
+               "vendor/three.module.js","vendor/three.core.min.js",
+               "component-library/data/chip2t.json","component-library/materials.js",
+               "component-library/validate.js","component-library/registry.js",
+               "component-library/generators/chip-2t.js","component-library/transforms.js",
+               "component-library/preview/index.html","component-library/preview/preview.css",
+               "component-library/preview/preview.js","component-library/preview/model-preview.js")
 STATIC_CONTENT_TYPES={
     "index.html":"text/html; charset=utf-8",
     "styles.css":"text/css; charset=utf-8",
     "visual-explorer.css":"text/css; charset=utf-8",
     "reference-board.json":"application/json; charset=utf-8",
     "component-visuals.json":"application/json; charset=utf-8",
+    "component-library/data/chip2t.json":"application/json; charset=utf-8",
+    "component-library/preview/index.html":"text/html; charset=utf-8",
+    "component-library/preview/preview.css":"text/css; charset=utf-8",
     "component-stories.css":"text/css; charset=utf-8",
     "home.css":"text/css; charset=utf-8",
     "landing.css":"text/css; charset=utf-8",

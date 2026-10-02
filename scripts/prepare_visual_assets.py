@@ -1,6 +1,7 @@
 """Refresh local pinned Three modules and deterministic visual-source fingerprints."""
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -10,8 +11,11 @@ WEB = ROOT / "apps" / "web"
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--source-only", action="store_true", help="Reuse already pinned vendor files")
+    args = parser.parse_args()
     package = WEB / "node_modules" / "three"
-    version = json.loads((package / "package.json").read_text(encoding="utf-8"))["version"]
+    version = "0.180.0" if args.source_only else json.loads((package / "package.json").read_text(encoding="utf-8"))["version"]
     if version != "0.180.0":
         raise ValueError("Install the locked Three.js 0.180.0 dependency first")
     vendor = WEB / "vendor"
@@ -19,9 +23,12 @@ def main() -> None:
     for source, target in [("build/three.module.min.js", "three.module.js"),
                            ("build/three.core.min.js", "three.core.min.js"),
                            ("LICENSE", "THREE-LICENSE.txt")]:
-        (vendor / target).write_bytes((package / source).read_bytes())
+        if not args.source_only:
+            (vendor / target).write_bytes((package / source).read_bytes())
     files = ["visual-assets.js", "visual-inventory.js", "visual-renderer.js", "visual-layers.js", "visual-board-scene.js",
              "vendor/three.module.js", "vendor/three.core.min.js", "vendor/THREE-LICENSE.txt"]
+    files += [path.relative_to(WEB).as_posix() for path in sorted((WEB / "component-library").rglob("*"))
+              if path.is_file() and path.suffix in {".js", ".json", ".html", ".css"}]
     # Match the scoped Git LF policy before hashing, including existing Windows
     # working copies created before that policy was added.
     for name in files:

@@ -23,6 +23,8 @@ IMPORT_REFERENCE = re.compile(r'(?:\bfrom\s*|\bimport\s*(?:\(\s*)?)[\'"]([^\'"]+
 VISUAL_ASSETS = {
     "visual-assets.js", "visual-renderer.js", "visual-explorer.js",
     "visual-explorer.css", "vendor/three.module.js", "vendor/three.core.min.js",
+    "component-library/registry.js", "component-library/transforms.js",
+    "component-library/preview/preview.js",
 }
 
 
@@ -75,13 +77,16 @@ def _local_asset(importer: str, reference: str) -> str:
 
 def test_nested_visual_runtime_dependency_graph_is_in_the_fixed_snapshot():
     """Follow nested ES imports, stylesheets, and local JSON references."""
-    html = (server_module.WEB_ROOT / "index.html").read_text(encoding="utf-8")
-    scripts = re.findall(r'<script\b[^>]*\bsrc=[\'"]([^\'"]+)[\'"]', html)
-    for inline in re.findall(r'<script\b[^>]*>(.*?)</script>', html, flags=re.DOTALL):
-        scripts += IMPORT_REFERENCE.findall(inline)
-    styles = re.findall(r'<link\b[^>]*\bhref=[\'"]([^\'"]+\.css)[\'"]', html)
-    assert scripts and styles
-    pending = {_local_asset("index.html", value) for value in scripts + styles}
+    # The model adapter is a public module; the preview is a separate entrypoint.
+    pending = {"component-library/transforms.js"}
+    for entry in ("index.html", "component-library/preview/index.html"):
+        html = (server_module.WEB_ROOT / entry).read_text(encoding="utf-8")
+        scripts = re.findall(r'<script\b[^>]*\bsrc=[\'"]([^\'"]+)[\'"]', html)
+        for inline in re.findall(r'<script\b[^>]*>(.*?)</script>', html, flags=re.DOTALL):
+            scripts += IMPORT_REFERENCE.findall(inline)
+        styles = re.findall(r'<link\b[^>]*\bhref=[\'"]([^\'"]+\.css)[\'"]', html)
+        assert scripts and styles
+        pending.update(_local_asset(entry, value) for value in scripts + styles)
     discovered = set()
     while pending:
         name = pending.pop()
@@ -127,7 +132,8 @@ def test_visual_model_and_vendor_edits_change_only_a_new_server_snapshot(tmp_pat
     with _server(tmp_path / "first", web_root) as (first, base):
         original = dict(first.static_assets)
         initial_version = first.ui_version
-        changed_names = ["visual-assets.js", "vendor/three.module.js"]
+        changed_names = ["visual-assets.js", "vendor/three.module.js",
+                         "component-library/generators/chip-2t.js"]
         for name in changed_names:
             path = web_root / name
             path.write_bytes(path.read_bytes() + b"\n// visual snapshot regression\n")

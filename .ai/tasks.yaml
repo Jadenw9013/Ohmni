@@ -187,6 +187,15 @@
       "approved_by": "human",
       "approval_evidence": ".ai/approvals/REPO-READY-1.yaml",
       "review_policy": "self_review_allowed for repository preparation; existing product review gates remain unchanged"
+    },
+    {
+      "id": "COMPONENT-3D-STAGE1",
+      "type": "component_library",
+      "title": "Reusable 3D library Stage 1",
+      "status": "IN_PROGRESS",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/COMPONENT-3D-STAGE1.yaml",
+      "review_policy": "Self-review and rendered inspection; user stage acceptance pending before Stage 2."
     }
   ],
   "tasks": [
@@ -2092,6 +2101,39 @@
         "started_at_commit": "4c3ccc5",
         "completed_at_commit": "7efe78b94577103303df231bc84a30a2eede5be6"
       }
+    },
+    {
+      "id": "C3D-T01",
+      "scope": "COMPONENT-3D-STAGE1",
+      "title": "Foundation and all 20 CHIP2T instances",
+      "status": "IN_PROGRESS",
+      "priority": 100,
+      "dependencies": [],
+      "acceptance_criteria": [
+        "20 spec-driven instances across LOD0/1/2",
+        "Deterministic geometry, contact, bounds, material and transform checks",
+        "12 review-set LOD1 views, same-scale comparison, all-20 contact sheet",
+        "Partial records provisional with source status retained",
+        "No Stage 2 implementation"
+      ],
+      "verification": {
+        "required": [
+          "node",
+          "fast",
+          "visual inspection"
+        ],
+        "record": null
+      },
+      "implementation": {
+        "started_at_commit": "ab1a8e4",
+        "completed_at_commit": null
+      },
+      "review": {
+        "required": true,
+        "status": "PENDING",
+        "independent": false
+      },
+      "blockers": []
     }
   ]
 }

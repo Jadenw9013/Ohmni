@@ -123,12 +123,17 @@ def test_repository_product_scope_matches_human_approval():
     # Visual and release approval preserve the real board and parked M10 benchmark.
     for scope in tasks["scopes"]:
         assert scope["approved_by"]=="human" and scope["approval_evidence"]
-        if scope["id"] in {"VIS-REF-001", "DEPLOY-1", "COMPONENT-SYNTHESIS-1", "COMPONENT-ATLAS-BUILDER-1", "UX-CLARITY-1", "REPO-READY-1"}:
+        if scope["id"] in {"VIS-REF-001", "DEPLOY-1", "COMPONENT-SYNTHESIS-1", "COMPONENT-ATLAS-BUILDER-1", "UX-CLARITY-1", "REPO-READY-1", "COMPONENT-3D-STAGE1"}:
             assert scope["status"] in {"APPROVED", "IN_PROGRESS", "REVIEW", "VERIFIED", "COMPLETE"}
         else:
             expected="IN_PROGRESS" if scope["id"]=="M10" else "COMPLETE"
             assert scope["status"]==expected, scope["id"]
-    assert state["approved_product_scope"]=="REPO-READY-1"
+    assert state["approved_product_scope"]=="COMPONENT-3D-STAGE1"
+    stage1=json.loads((root/".ai/approvals/COMPONENT-3D-STAGE1.yaml").read_text())
+    assert stage1["approved_by"]=="human"
+    assert len(stage1["component_ids"])==20
+    assert {"OHM-004", "OHM-014", "OHM-023", "OHM-041", "OHM-043"} <= set(stage1["component_ids"])
+    assert "Stage 2" in stage1["non_goals"]
     publication=json.loads((root/".ai/approvals/REPO-READY-1.yaml").read_text())
     assert publication["approved_by"]=="human"
     assert "if its clean push to main" in publication["instructions"]
