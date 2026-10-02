@@ -210,7 +210,7 @@ export function initializeComponentStories() {
         }
     }
     document.querySelectorAll('[data-open-components]').forEach(button => button.addEventListener('click', () => {
-        opener = button; dialog.showModal(); $('[data-story-search]').value = ''; void load();
+        opener = button; dialog.showModal(); $('[data-story-search]').value = button.dataset.componentQuery ?? ''; void load();
     }));
     $('[data-story-close]').onclick = close;
     dialog.addEventListener('cancel', event => { event.preventDefault(); close(); });

@@ -71,7 +71,8 @@ test('model mismatch falls back without creating footprints or pads', () => {
 test('story markup exposes a modal, labelled controls, status, and persistent entry points', () => {
     const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
     assert.match(html, /<dialog id="component-stories"[^>]*aria-labelledby="component-stories-title"/);
-    assert.equal((html.match(/data-open-components/g) ?? []).length, 2);
+    assert.ok((html.match(/data-open-components/g) ?? []).length >= 2);
+    for (const query of ['BME280', 'ESP32', 'USB_C']) assert.ok(html.includes(`data-component-query="${query}"`));
     assert.match(html, /role="status" aria-live="polite" data-story-status/);
     assert.match(html, /aria-label="Component stories" data-story-progress/);
     assert.match(html, /<label class="story-search">Find a component<input/);

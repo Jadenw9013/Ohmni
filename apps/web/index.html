@@ -10,45 +10,43 @@
   <link rel="stylesheet" href="/visual-explorer.css">
   <link rel="stylesheet" href="/component-stories.css">
   <link rel="stylesheet" href="/home.css">
+  <link rel="stylesheet" href="/landing.css">
 </head>
 <body>
   <a class="skip-link" href="#home-title">Skip to content</a>
   <noscript><p>Enable JavaScript for the workbench and interactive models. Ohmni helps you explore small ESP32 circuits and their electrical checks.</p></noscript>
   <section id="home" class="home-page" aria-label="Welcome to Ohmni">
     <header class="home-nav">
-      <a class="brand" href="#home" aria-label="Ohmni home"><span class="brand-mark" aria-hidden="true">Ω</span><span>ohmni<span class="brand-period">.</span></span></a>
-      <nav class="home-links" aria-label="Main navigation"><a href="#workspace">Your workbench</a><button class="secondary" type="button" data-open-components>Learn components</button></nav>
+      <a class="home-brand" href="#home" aria-label="Ohmni home"><svg viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="brand-glow" x2="1" y2="1"><stop stop-color="#39c8fa"/><stop offset="1" stop-color="#ad80ff"/></linearGradient></defs><circle cx="20" cy="20" r="13" fill="none" stroke="url(#brand-glow)" stroke-width="8"/><path d="M20 2v14M4 20h12" stroke="#030810" stroke-width="4"/><circle cx="20" cy="20" r="3" fill="#98a9ff"/></svg><span>ohmni</span></a>
+      <nav class="home-links" aria-label="Main navigation"><a href="#workspace">Build</a><button type="button" data-open-components>Learn</button><button type="button" data-home-info="docs">Docs</button></nav>
+      <a href="#workspace" class="home-get-started" data-home-start>Get started <span aria-hidden="true">→</span></a>
     </header>
     <main class="home-content">
       <section class="home-hero" aria-labelledby="home-title">
         <div class="home-copy">
-          <h1 id="home-title" tabindex="-1">Build circuits.<br>Understand why.</h1>
-          <p class="home-intro">Turn an idea into a small circuit board, with help choosing the parts and understanding the connections.</p>
-          <p class="home-scope">For USB-powered ESP32 projects. Choose your features, explore the circuit and inspect its electrical checks.</p>
-          <a href="#workspace" class="primary home-start" data-home-start>Start a project</a>
-          <p class="home-start-note">New to electronics? Start with a sensor, buttons and lights, or a memory board.</p>
+          <p class="home-eyebrow">Ideas to real electronics</p>
+          <h1 id="home-title" tabindex="-1">Design.<br>Understand.<br><span>Build the real thing.</span></h1>
+          <p class="home-intro">Turn your ideas into circuits you can inspect and understand—with guided design, clear explanations and real engineering checks.</p>
+          <div class="home-actions"><a href="#workspace" class="home-start" data-home-start>Start building <span aria-hidden="true">→</span></a><button type="button" class="home-demo" data-home-demo><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 4 12 8-12 8z"/></svg>Explore demo</button></div>
         </div>
-        <figure class="home-specimen" aria-labelledby="home-part-title">
-          <div class="home-model">
-            <canvas id="home-model-canvas" hidden tabindex="-1" style="pointer-events:none" aria-label="Illustrative component model. Enable interaction, then drag or use arrow keys to orbit; plus and minus to zoom."></canvas>
-            <div id="home-model-placeholder" class="home-model-placeholder"><svg viewBox="0 0 100 100" aria-hidden="true"><rect x="25" y="25" width="50" height="50" rx="5"/><rect x="36" y="36" width="28" height="28" rx="2"/><path d="M35 15v10m15-10v10m15-10v10M35 75v10m15-10v10m15-10v10M15 35h10m-10 15h10m-10 15h10M75 35h10m-10 15h10m-10 15h10"/></svg><span>Get to know the parts.</span></div>
-          </div>
-          <div class="home-part-tabs" role="group" aria-label="Choose a component"><button type="button" data-home-part="processor" aria-pressed="true">Processor</button><button type="button" data-home-part="sensor" aria-pressed="false">Sensor</button><button type="button" data-home-part="power" aria-pressed="false">USB power</button></div>
-          <figcaption><h2 id="home-part-title">The processor</h2><p id="home-part-role">Runs the program you write. It reads inputs and decides what your circuit does next.</p><p id="home-part-id" class="home-part-id">ESP32-WROOM-32E</p></figcaption>
-          <p id="home-model-status" class="home-model-note" role="status">Illustrative model. Text explanations work without 3D.</p>
-          <div class="home-model-tools"><button type="button" class="secondary" id="home-orbit" aria-pressed="false" disabled>Interact with model</button><button type="button" class="secondary" id="home-spin" aria-pressed="false" disabled>Rotate model</button><button type="button" class="secondary" id="home-model-retry" hidden>Retry model</button></div>
+        <figure class="home-board" aria-label="Illustrative circuit board concept">
+          <div class="home-board-halo" aria-hidden="true"></div>
+          <img id="home-board-art" src="/landing-board.png" width="1536" height="1024" fetchpriority="high" alt="Illustrative layered circuit board with a processor module, sensors, gold pin headers and a USB connector, lit in cyan and violet.">
+          <svg class="home-leaders" viewBox="0 0 900 600" fill="none" aria-hidden="true"><path d="M185 95H295L366 194"/><path class="violet" d="M669 83H566L486 224"/><path d="M811 248H770L713 403"/><circle cx="366" cy="194" r="4"/><circle class="violet" cx="486" cy="224" r="4"/><circle cx="713" cy="403" r="4"/></svg>
+          <button type="button" class="board-callout callout-sensor" data-open-components data-component-query="BME280"><svg viewBox="0 0 28 28" aria-hidden="true"><path d="M22 5C9 3 3 9 7 18c9 5 17-1 15-13ZM4 25 18 10"/></svg><span><strong>Environmental sensor</strong><small>Temperature · Humidity · Pressure</small></span></button>
+          <button type="button" class="board-callout callout-compute" data-open-components data-component-query="ESP32"><svg viewBox="0 0 28 28" aria-hidden="true"><rect x="7" y="7" width="14" height="14" rx="1"/><path d="M10 3v4m4-4v4m4-4v4M10 21v4m4-4v4m4-4v4M3 10h4m-4 4h4m-4 4h4M21 10h4m-4 4h4m-4 4h4"/></svg><span><strong>Compute</strong><small>Meet the ESP32<br>Your programmable processor</small></span></button>
+          <button type="button" class="board-callout callout-power" data-open-components data-component-query="USB_C"><svg viewBox="0 0 28 28" aria-hidden="true"><path d="m16 2-11 15h8l-1 9 11-15h-8z"/></svg><span><strong>Power</strong><small>USB-C connection<br>Follow the power path</small></span></button>
+          <figcaption>Concept illustration · explore the saved circuit in the demo</figcaption>
         </figure>
       </section>
-      <section class="home-explanation" aria-labelledby="home-make-title">
-        <h2 id="home-make-title">Start small. Make something useful.</h2>
-        <div class="home-examples"><article><h3>Measure your space</h3><p>Choose environmental sensors for a board that reads the world around you.</p></article><article><h3>Give your code a button</h3><p>Add physical inputs and indicator lights to a small controller.</p></article><article><h3>Keep a little data</h3><p>Add memory that your program can use to store information.</p></article></div>
-      </section>
-      <section class="home-explanation home-checks" aria-labelledby="home-checks-title">
-        <div><h2 id="home-checks-title">See the reasoning.<br>Know the limits.</h2><p>Choose your project, save its configuration, then inspect the generated circuit and its checks. Ohmni explains the decisions along the way.</p></div>
-        <div><ul><li>Electrical checks report what passed, what failed and what could not be checked.</li><li>3D models help you learn. Their appearance does not prove a board will work.</li><li>Assembly, firmware and hardware testing are still part of your build. Ohmni boards have not been bench-tested.</li></ul></div>
+      <section class="home-features" aria-label="Explore Ohmni">
+        <button type="button" class="home-feature" data-home-demo><span class="feature-icon blue"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="m20 4 15 8v17l-15 8-15-8V12Zm0 16 15-8M20 20 5 12m15 8v17"/></svg></span><span><strong>Interactive 3D design</strong><span>Explore the parts and connections in a saved circuit.</span></span><span class="feature-arrow" aria-hidden="true">›</span></button>
+        <button type="button" class="home-feature" data-open-components><span class="feature-icon violet"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 4c1 10 6 15 16 16-10 1-15 6-16 16C19 26 14 21 4 20 14 19 19 14 20 4Z"/><path d="M32 4v8m-4-4h8"/></svg></span><span><strong>Guidance as you learn</strong><span>Understand what each component does and why it matters.</span></span><span class="feature-arrow" aria-hidden="true">›</span></button>
+        <button type="button" class="home-feature" data-home-info="checks"><span class="feature-icon mint"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="m20 3 13 6v12c0 8-13 16-13 16S7 29 7 21V9Z"/><path d="m13 19 5 5 10-11"/></svg></span><span><strong>Real engineering checks</strong><span>See what passed, what failed and what still needs testing.</span></span><span class="feature-arrow" aria-hidden="true">›</span></button>
       </section>
     </main>
-    <footer class="home-footer"><p>Local prototype. Project revisions are saved on this server; they do not sync to the cloud.</p></footer>
+    <footer class="home-footer"><span>USB-powered ESP32 sensor, controller and memory projects.</span><button type="button" data-home-info="limits">Local prototype · Know the limits</button></footer>
+    <dialog id="home-info" class="home-info" aria-labelledby="home-info-title"><header><h2 id="home-info-title">How Ohmni works</h2><button type="button" data-home-info-close>Close</button></header><div id="home-info-content"></div></dialog>
   </section>
   <div class="app-layout" hidden>
     <aside class="sidebar" aria-label="Project navigation">

@@ -1166,11 +1166,15 @@ function renderBringUp(exp) {
 // ── wiring ──────────────────────────────────────────────────────────────
 
 function attach() {
-    let referenceInitialized = false;
+    let referencePromise = null;
+    const loadReference = () => {
+        if (!referencePromise) referencePromise = initializeReferencePreview({
+            onCustomize: (brief) => state.workbench?.openNew(brief),
+        }).then(view => { if (!view) referencePromise = null; return view; });
+        return referencePromise;
+    };
     document.querySelector('#saved-example')?.addEventListener('toggle', (event) => {
-        if (!event.target.open || referenceInitialized) return;
-        referenceInitialized = true;
-        void initializeReferencePreview({ onCustomize: (brief) => state.workbench?.openNew(brief) });
+        if (event.target.open) void loadReference();
     });
     if ($("#project-workbench")?.dataset.projectWorkbench === "true") {
         state.workbench = mountProjectWorkbench($("#project-workbench"), {
@@ -1274,7 +1278,14 @@ function attach() {
     clearError();
     selectResultPanel("board");
     show("describe", { focus: false });
-    initializeHome({ onStart: () => state.workbench?.openNew() });
+    initializeHome({ onStart: () => state.workbench?.openNew(), onDemo: () => {
+        show('describe');
+        const example = document.querySelector('#saved-example');
+        if (example) { example.open = true; example.scrollIntoView({ block: 'start', behavior: 'instant' }); }
+        void loadReference().then(view => {
+            if (view && !document.querySelector('.app-layout').hidden) document.querySelector('#open-reference-lab')?.click();
+        });
+    } });
 }
 
 if (typeof document !== "undefined" && document.getElementById("start-supported")) attach();

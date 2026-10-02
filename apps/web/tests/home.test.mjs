@@ -1,138 +1,78 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFileSync } from 'node:fs';
-import { HOME_PARTS, homeRoute, homeSpecimen, initializeHome } from '../home.js';
-import { componentLesson } from '../component-stories.js';
-import { ASSET_REGISTRY } from '../visual-assets.js';
+import { homeRoute, HOME_GUIDES, initializeHome } from '../home.js';
 
-const item = (eligibility = 'LEARN_ONLY') => ({ part_id: 'ESP32-WROOM-32E', variants: [{
-    eligibility: { eligibility }, visual_status: 'ILLUSTRATIVE', record: { package_variant: 'Module-SMD-38',
-        visual: { family: 'esp32_module', asset: { id: ASSET_REGISTRY.esp32_module.modelAssetId, sha256: 'a'.repeat(64) },
-            representation_grade: 'ILLUSTRATIVE_FAMILY', units: 'mm', up_axis: 'z', contact_plane_nm: 0,
-            footprint: null, dimensions: { basis: 'ARTISTIC_SAMPLE', width_nm: 19500000, depth_nm: 20500000, height_nm: 2800000 } } },
-}] });
-
-test('home is a navigation surface, and sample links retain an explicit workspace route', () => {
-    assert.equal(homeRoute(''), 'home'); assert.equal(homeRoute('#home'), 'home');
-    assert.equal(homeRoute('#workspace'), 'workspace'); assert.equal(homeRoute('#sample-board'), 'workspace');
-    assert.equal(homeRoute('#visual-proof'), 'workspace');
-});
-
-test('specimens fail closed for missing, restricted and unbound catalog models', () => {
-    const valid = homeSpecimen({items:[item()]}, 'ESP32-WROOM-32E');
-    assert.equal(valid.manifest.provenance, 'ILLUSTRATIVE_ONLY');
-    assert.deepEqual(valid.manifest.pads, []); assert.deepEqual(valid.manifest.tracks, []);
-    assert.equal(homeSpecimen(null, 'ESP32-WROOM-32E'), null);
-    assert.equal(homeSpecimen({items: []}, 'invented'), null);
-    for (const state of ['QUARANTINED', 'REVOKED', 'UNSUPPORTED', 'DESIGN_ELIGIBLE'])
-        assert.equal(homeSpecimen({items: [item(state)]}, 'ESP32-WROOM-32E'), null);
-    const invalid = item(); invalid.variants[0].record.visual.footprint = {id: 'claimed-footprint'};
-    assert.equal(homeSpecimen({items: [invalid]}, 'ESP32-WROOM-32E'), null);
-});
-
-test('human-readable lessons retain explicit catalog identities and do not invent unknown facts', () => {
-    for (const part of HOME_PARTS) assert.ok(componentLesson(part.id));
-    assert.match(componentLesson('GENERIC_RESISTOR')[1], /Limits current/);
-    assert.equal(componentLesson('unidentified-image-body'), null);
-});
-
-function harness() {
-    const nodes = new Map(), listeners = {}, motion = { matches: false, addEventListener(type, fn) { this.change = fn; } };
+function harness(hash = '') {
+    const nodes = new Map(), listeners = {};
     function node(selector) {
-        if (!nodes.has(selector)) nodes.set(selector, { hidden: false, textContent: '', style: {}, dataset: {}, attrs: {}, handlers: {},
-            setAttribute(k,v) { this.attrs[k] = v; }, focus() { this.focused = true; },
-            addEventListener(k,fn) { this.handlers[k] = fn; } });
+        if (!nodes.has(selector)) nodes.set(selector, { hidden:false, open:false, textContent:'', children:[], dataset:{}, handlers:{},
+            setAttribute(k,v){this[k]=v;}, focus(){this.focused=true;},
+            replaceChildren(){this.children=[];}, append(...children){this.children.push(...children);},
+            showModal(){this.open=true;}, close(){this.open=false; this.handlers.close?.();},
+            addEventListener(k,fn){this.handlers[k]=fn;} });
         return nodes.get(selector);
     }
-    const parts = HOME_PARTS.map((_,i) => node(`part${i}`)), start = node('start');
-    const home = node('#home'); home.querySelector = node;
-    home.querySelectorAll = selector => selector === '[data-home-part]' ? parts : [start];
-    const originals = Object.fromEntries(['document','window','location','history','matchMedia'].map(k=>[k,globalThis[k]]));
-    Object.assign(globalThis, {
-        document: { querySelector: node, title: '' },
-        window: { addEventListener: (k,fn) => {listeners[k]=fn;}, scrollTo() {} },
-        location: { hash: '' }, history: { pushState: (_,__,hash) => {globalThis.location.hash=hash;} },
-        matchMedia: () => motion,
-    });
-    return { node, parts, start, listeners, motion, restore() { for (const [k,v] of Object.entries(originals)) {
-        if (v === undefined) delete globalThis[k]; else globalThis[k]=v;
-    } } };
+    const groups = {'[data-home-start]':[node('start'),node('get-started')], '[data-home-demo]':[node('demo')],
+        '[data-home-info]':Object.keys(HOME_GUIDES).map(kind=>{const n=node(kind); n.dataset.homeInfo=kind; return n;})};
+    node('#home').querySelectorAll=selector=>groups[selector]??[];
+    node('#home').querySelector=node;
+    const originals=Object.fromEntries(['document','window','location','history'].map(k=>[k,globalThis[k]]));
+    Object.assign(globalThis,{document:{querySelector:node,createElement:tag=>({tag,textContent:''}),title:''},
+        window:{addEventListener:(k,fn)=>{listeners[k]=fn;},scrollTo(){}}, location:{hash},
+        history:{pushState:(_,__,next)=>{location.hash=next;}}});
+    return {node,groups,listeners,restore(){for(const[k,v]of Object.entries(originals)){if(v===undefined)delete globalThis[k];else globalThis[k]=v;}}};
 }
-const settle = () => new Promise(resolve => setImmediate(resolve));
 
-test('failed library has local retry; navigation alone never starts a new project', async () => {
-    const h = harness(); let attempts=0, starts=0;
-    try {
-        initializeHome({ onStart: () => starts++, readLibrary: async () => { attempts++; throw new Error('offline'); } });
-        await settle();
-        assert.match(h.node('#home-model-status').textContent, /could not load/);
-        assert.equal(h.node('#home-model-retry').hidden, false);
-        h.node('#home-model-retry').handlers.click(); await settle(); assert.equal(attempts,2);
-        location.hash='#workspace'; h.listeners.hashchange();
-        assert.equal(h.node('#home').hidden,true); assert.equal(starts,0);
-        location.hash='#home'; h.listeners.hashchange(); await settle(); assert.equal(starts,0);
-        h.start.handlers.click({preventDefault(){}}); assert.equal(starts,1);
-        assert.equal(location.hash,'#workspace');
-    } finally { h.restore(); }
+test('home routes separate workspace and historical demo URLs without guessing a project',()=>{
+    for(const hash of ['', '#home', '#unrecognized'])assert.equal(homeRoute(hash),'home');
+    for(const hash of ['#workspace','#sample-board','#visual-proof'])assert.equal(homeRoute(hash),'workspace');
 });
 
-test('leaving home aborts pending load and ignores a late successful response', async () => {
-    const h = harness(); let resolve, signal, renders=0;
-    try {
-        initializeHome({ readLibrary: (_, s) => { signal=s; return new Promise(r=>{resolve=r;}); }, createView:()=>{renders++;} });
-        location.hash='#workspace'; h.listeners.hashchange(); assert.equal(signal.aborted,true);
-        resolve({items:[item()]}); await settle();
-        assert.equal(renders,0); assert.equal(h.node('#home').hidden,true);
-    } finally { h.restore(); }
+test('loading a landing or workspace URL never creates a project or starts a demo',()=>{
+    for(const hash of ['', '#workspace']){
+        const h=harness(hash);let starts=0,demos=0;
+        try{initializeHome({onStart:()=>starts++,onDemo:()=>demos++});assert.equal(starts,0);assert.equal(demos,0);
+            assert.equal(h.node('#home').hidden,hash==='#workspace');
+        }finally{h.restore();}
+    }
 });
 
-test('missing models leave the lesson usable without enabling graphics controls', async () => {
-    const h = harness();
-    try {
-        initializeHome({readLibrary: async()=>({items:[]})}); await settle();
-        assert.match(h.node('#home-model-status').textContent,/No model/);
-        assert.equal(h.node('#home-spin').disabled,true);
-        h.parts[1].handlers.click(); assert.equal(h.node('#home-part-title').textContent,'The sensor');
-    } finally { h.restore(); }
+test('both build entries invoke the project flow while demo invokes only its own callback',()=>{
+    const h=harness();let starts=0,demos=0;
+    try{initializeHome({onStart:()=>starts++,onDemo:()=>demos++});
+        for(const n of h.groups['[data-home-start]'])n.handlers.click({preventDefault(){}});
+        assert.equal(starts,2);assert.equal(demos,0);assert.equal(location.hash,'#workspace');
+        h.node('demo').handlers.click({preventDefault(){}});assert.equal(starts,2);assert.equal(demos,1);
+    }finally{h.restore();}
 });
 
-test('rotation respects reduced motion, interaction is opt-in and leaving disposes the view', async () => {
-    const h = harness(); let disposed = 0, renders = 0;
-    const view = { canvas: h.node('#home-model-canvas'), options: {}, renderer: {scene:{background:{set(){}}}},
-        setBoard() { renders++; }, setOptions(options) {Object.assign(this.options,options);}, focus(){}, dispose(){disposed++;} };
-    try {
-        initializeHome({readLibrary:async()=>({items:[item()]}), createView:()=>view}); await settle();
-        assert.equal(renders,1); assert.equal(view.options.autoRotate,false);
-        h.node('#home-spin').handlers.click(); assert.equal(view.options.autoRotate,true);
-        h.motion.matches=true; h.motion.change(); assert.equal(view.options.autoRotate,false);
-        assert.equal(h.node('#home-spin').disabled,true);
-        h.node('#home-orbit').handlers.click();
-        assert.equal(view.canvas.tabIndex,0); assert.equal(view.canvas.style.touchAction,'none');
-        h.node('#home-orbit').handlers.click();
-        assert.equal(view.canvas.tabIndex,-1); assert.equal(view.canvas.style.touchAction,'pan-y');
-        location.hash='#workspace'; h.listeners.hashchange(); assert.equal(disposed,1);
-    } finally {h.restore();}
+test('guide opens with actual explanatory text and close restores its initiating control',()=>{
+    const h=harness();
+    try{initializeHome();h.node('checks').handlers.click();assert.equal(h.node('#home-info').open,true);
+        const text=h.node('#home-info-content').children.map(n=>n.textContent).join(' ');
+        assert.match(text,/Missing evidence never counts as a pass/);assert.match(text,/have not been bench-tested/);
+        h.node('[data-home-info-close]').handlers.click();assert.equal(h.node('#home-info').open,false);assert.equal(h.node('checks').focused,true);
+        h.node('limits').handlers.click();assert.match(h.node('#home-info-content').children.map(n=>n.textContent).join(' '),/generated concept illustration/);
+    }finally{h.restore();}
 });
 
-test('renderer failure preserves text and shows a device fallback without enabling orbit', async () => {
-    const h = harness();
-    try {
-        initializeHome({readLibrary:async()=>({items:[item()]}), createView:()=>{throw new Error('WebGL unavailable');}});
-        await settle();
-        assert.match(h.node('#home-model-status').textContent,/3D is unavailable/);
-        assert.equal(h.node('#home-model-placeholder').hidden,false);
-        assert.equal(h.node('#home-orbit').disabled,true);
-        assert.equal(h.node('#home-part-title').textContent,'The processor');
-    } finally {h.restore();}
+test('history navigation closes guides, changes focus and leaves the mounted workbench alone',()=>{
+    const h=harness();const retained=h.node('.app-layout');retained.draft='unsaved draft';
+    try{initializeHome();h.node('docs').handlers.click();location.hash='#workspace';h.listeners.hashchange();
+        assert.equal(h.node('#home-info').open,false);assert.equal(h.node('.app-layout'),retained);assert.equal(retained.draft,'unsaved draft');
+        assert.equal(h.node('.stage:not([hidden]) h1').focused,true);location.hash='#home';h.listeners.hashchange();
+        assert.equal(h.node('#home-title').focused,true);assert.equal(retained.draft,'unsaved draft');
+    }finally{h.restore();}
 });
 
-test('markup keeps one dominant project action on home, named models and truthful limits', () => {
-    const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
-    const landing = html.slice(html.indexOf('<section id="home"'),html.indexOf('<div class="app-layout"'));
-    assert.equal((landing.match(/data-home-start/g)||[]).length,1);
-    assert.equal((landing.match(/data-home-part=/g)||[]).length,3);
-    assert.match(landing,/have not been bench-tested/);
-    assert.match(html,/<details class="workspace-examples" id="saved-example">/);
-    assert.doesNotMatch(html,/id="home-atlas-canvas"/);
-    assert.match(html,/Unsaved changes are lost/);
+test('reference artwork is local, explicitly illustrative, and every visible action has a handler',()=>{
+    const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+    const home=html.slice(html.indexOf('<section id="home"'),html.indexOf('<div class="app-layout"'));
+    assert.match(home,/src="\/landing-board.png"/);assert.match(home,/Concept illustration/);
+    assert.equal((home.match(/data-home-start/g)||[]).length,2);
+    assert.equal((home.match(/data-home-demo/g)||[]).length,2);
+    for(const query of ['BME280','ESP32','USB_C'])assert.ok(home.includes(`data-component-query="${query}"`));
+    const png=readFileSync(new URL('../landing-board.png',import.meta.url));assert.equal(png.subarray(1,4).toString(),'PNG');
+    assert.ok(HOME_GUIDES.docs.sections.some(([,body])=>body.includes('Unsaved changes')));
 });
