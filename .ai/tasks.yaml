@@ -214,11 +214,21 @@
       "id": "COMPONENT-3D-STAGE3",
       "type": "component_library",
       "title": "Reusable 3D library Stage 3",
-      "status": "REVIEW",
+      "status": "COMPLETE",
       "approved_by": "human",
       "approval_evidence": ".ai/approvals/COMPONENT-3D-STAGE3.yaml",
       "review_policy": "Self-review and rendered inspection; human stage acceptance before Stage 4.",
-      "human_visual_acceptance": "PENDING"
+      "human_visual_acceptance": "APPROVED",
+      "acceptance_evidence": ".ai/approvals/COMPONENT-3D-STAGE4.yaml"
+    },
+    {
+      "id": "COMPONENT-3D-STAGE4",
+      "type": "component_library",
+      "title": "Reusable 3D library Stage 4: diodes and power packages",
+      "status": "IN_PROGRESS",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/COMPONENT-3D-STAGE4.yaml",
+      "review_policy": "Self-review and rendered inspection; human acceptance before LEDs."
     }
   ],
   "tasks": [
@@ -2199,7 +2209,7 @@
       "id": "C3D-T03",
       "scope": "COMPONENT-3D-STAGE3",
       "title": "Quad, leadless, J-lead and grid-array component library",
-      "status": "VERIFIED",
+      "status": "COMPLETE",
       "priority": 100,
       "dependencies": [
         "C3D-T02"
@@ -2229,6 +2239,43 @@
         "status": "PASSED",
         "independent": false,
         "record": ".ai/reviews.yaml#C3D-T03-SELF"
+      },
+      "blockers": []
+    },
+    {
+      "id": "C3D-T04",
+      "scope": "COMPONENT-3D-STAGE4",
+      "title": "Data-driven diodes, bridges and transistor/power packages",
+      "status": "IN_PROGRESS",
+      "priority": 100,
+      "dependencies": [
+        "C3D-T03"
+      ],
+      "acceptance_criteria": [
+        "25 scoped entries at all three LODs; existing SOT23 reused unchanged",
+        "Cathode at -X, terminal1/band tests; bidirectional TVS no band",
+        "Shared axial helper, correct tab orientations and holes, embedded tab geometry",
+        "TO247 AD/AC parameters, Vishay PowerPAK eight leads",
+        "Provisional fields/source statuses/conflicts preserved",
+        "36 review views, same-scale comparison and all-25 sheet",
+        "Stop before LEDs"
+      ],
+      "verification": {
+        "required": [
+          "node",
+          "fast",
+          "visual inspection"
+        ],
+        "record": null
+      },
+      "implementation": {
+        "started_at_commit": "89fe29f",
+        "completed_at_commit": null
+      },
+      "review": {
+        "required": true,
+        "status": "PENDING",
+        "independent": false
       },
       "blockers": []
     }

@@ -8,10 +8,11 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const { chromium } = require(process.env.OHMNI_PLAYWRIGHT_MODULE || 'playwright');
 const base = process.argv[2] || 'http://127.0.0.1:8773';
+const stage4 = process.argv.includes('--stage4');
 const stage3 = process.argv.includes('--stage3');
 const stage2 = process.argv.includes('--stage2');
-const count = stage3 ? 19 : stage2 ? 21 : 20;
-const reviewIds = stage3 ? ['OHM-123','OHM-130','OHM-133','OHM-135','OHM-137','OHM-140'] : stage2 ? ['OHM-104','OHM-110','OHM-116','OHM-119','OHM-094','OHM-120'] : ['OHM-004','OHM-023','OHM-041'];
+const count = stage4 ? 25 : stage3 ? 19 : stage2 ? 21 : 20;
+const reviewIds = stage4 ? ['OHM-057','OHM-059','OHM-061','OHM-065','OHM-093','OHM-098','OHM-100','OHM-096','OHM-071'] : stage3 ? ['OHM-123','OHM-130','OHM-133','OHM-135','OHM-137','OHM-140'] : stage2 ? ['OHM-104','OHM-110','OHM-116','OHM-119','OHM-094','OHM-120'] : ['OHM-004','OHM-023','OHM-041'];
 const output = path.resolve(process.argv[3] || 'out/component-library/stage-1');
 fs.mkdirSync(output, { recursive: true });
 (async () => {
@@ -20,7 +21,7 @@ fs.mkdirSync(output, { recursive: true });
         const page = await browser.newPage({ viewport: { width: 1320, height: 1100 }, deviceScaleFactor: 1 });
         const errors = []; page.on('pageerror', e => errors.push(e.message));
         await page.route('**/*', route => new URL(route.request().url()).origin === new URL(base).origin ? route.continue() : route.abort());
-        const response = await page.goto(`${base}/component-library/preview/index.html${stage3 ? "?stage=3" : stage2 ? "?stage=2" : ""}`);
+        const response = await page.goto(`${base}/component-library/preview/index.html${stage4 ? "?stage=4" : stage3 ? "?stage=3" : stage2 ? "?stage=2" : ""}`);
         await page.locator('body[data-ready="true"]').waitFor();
         const report = await page.evaluate(() => ({ source_spec_sha256: window.componentLibraryPreview.source_spec_sha256,
             model_source_sha256: window.componentLibraryPreview.model_source_sha256,
@@ -42,13 +43,20 @@ fs.mkdirSync(output, { recursive: true });
             report.captures.push({...stats,file:name});
             assert.ok(report.contact_sheet.every(s=>s.draw_calls<=8));
         }
-        await page.locator('#comparison').screenshot({ path: path.join(output, stage3 ? 'stage3-same-scale-LOD1.png' : stage2 ? 'stage2-same-scale-LOD1.png' : '0603-same-scale-LOD1.png') });
+        if (stage4) {
+            for (const [id,view,options,label] of [['OHM-069','three-quarter',{bidirectional:true},'bidirectional'],['OHM-099','side',{outline:'AD'},'AD'],['OHM-099','side',{outline:'AC'},'AC'],['OHM-101','underside',{},'embedded-tab']]) {
+                const stats=await page.evaluate(({id,view,options})=>window.componentLibraryPreview.show(id,'LOD1',view,options),{id,view,options});
+                const name=`${id}-${view}-LOD1-${label}.png`;
+                await page.locator('#review').screenshot({path:path.join(output,name)});report.captures.push({...stats,file:name});
+            }
+        }
+        await page.locator('#comparison').screenshot({ path: path.join(output, stage4 ? 'stage4-same-scale-LOD1.png' : stage3 ? 'stage3-same-scale-LOD1.png' : stage2 ? 'stage2-same-scale-LOD1.png' : '0603-same-scale-LOD1.png') });
         await page.locator('#sheet').screenshot({ path: path.join(output, `all-${count}-contact-sheet-LOD1.png`) });
         // Exercise explicit LOD, selection, material distinction and repeated scene disposal.
-        await page.selectOption('#component', stage3 ? 'OHM-134' : stage2 ? 'OHM-119' : 'OHM-014');
+        await page.selectOption('#component', stage4 ? 'OHM-071' : stage3 ? 'OHM-134' : stage2 ? 'OHM-119' : 'OHM-014');
         await page.selectOption('#lod', 'LOD2');
         assert.match(await page.locator('#status').innerText(), /PROVISIONAL/);
-        await page.selectOption('#component', stage3 ? 'OHM-135' : stage2 ? 'OHM-108' : 'OHM-043');
+        await page.selectOption('#component', stage4 ? 'OHM-093' : stage3 ? 'OHM-135' : stage2 ? 'OHM-108' : 'OHM-043');
         await page.locator('#review summary').click();
         assert.match(await page.locator('#notes').innerText(), /UNCERTAIN/);
         await page.locator('#review summary').click();

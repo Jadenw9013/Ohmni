@@ -12,6 +12,10 @@ export const MATERIAL_TOKENS = Object.freeze(Object.fromEntries(Object.entries({
     MAT_EPOXY_DARKGRAY: ['#2E2F33', 0.55, 0],
     MAT_SOLDER_BALL: ['#B7B9BC', 0.35, 1],
     MAT_COPPER: ['#B87333', 0.4, 1],
+    MAT_NICKEL: ['#A8A9AD', 0.3, 1],
+    MAT_DIODE_GLASS_AMBER: ['#A5561E', 0.12, 0],
+    MAT_DIODE_BAND_SILVER: ['#D2D2CE', 0.5, 0],
+    MAT_DIODE_BAND_BLACK: ['#0B0B0C', 0.5, 0],
     MAT_BGA_SUBSTRATE: ['#2F4F3A', 0.5, 0],
     MAT_FERRITE_DARK: ['#2B2B2D', 0.6, 0],
     MAT_SILKSCREEN_WHITE: ['#F2F2F0', 0.7, 0],
@@ -22,6 +26,7 @@ export const MATERIAL_TOKENS = Object.freeze(Object.fromEntries(Object.entries({
 export function createLibraryMaterials() {
     return Object.fromEntries(Object.entries(MATERIAL_TOKENS).map(([name, [color, roughness, metalness]]) => {
         const material = new THREE.MeshStandardMaterial({ name, color, roughness, metalness });
+        if (name === 'MAT_DIODE_GLASS_AMBER') { material.transparent = true; material.opacity = 0.85; }
         material.userData = { token: name, appearanceBasis: 'OHMNI_DEFAULT',
             provisional: ['MAT_ALLOY_MANGANIN','MAT_BGA_SUBSTRATE'].includes(name) };
         return [name, material];
