@@ -1,0 +1,161 @@
+{
+  "schema_version": 1,
+  "id": "C3D-T02",
+  "task": "C3D-T02",
+  "scope": "COMPONENT-3D-STAGE2",
+  "status": "PASSED",
+  "commit": "81598d3b565680b6380da12b603c596930b4aadf",
+  "verified_at": "2026-10-02",
+  "component_ids": [
+    "OHM-070",
+    "OHM-094",
+    "OHM-103",
+    "OHM-104",
+    "OHM-105",
+    "OHM-106",
+    "OHM-107",
+    "OHM-108",
+    "OHM-109",
+    "OHM-110",
+    "OHM-111",
+    "OHM-112",
+    "OHM-113",
+    "OHM-114",
+    "OHM-115",
+    "OHM-116",
+    "OHM-117",
+    "OHM-118",
+    "OHM-119",
+    "OHM-120",
+    "OHM-121"
+  ],
+  "commands": {
+    "node": "340 passed, 0 failed, 0 skipped; includes 69 Stage 2 tests",
+    "focused_python": "23 passed; workflow and static asset boundary (workspace basetemp)",
+    "ruff": "All checks passed",
+    "source_imports": "20 Stage 1 and 21 Stage 2 records match supplied spec",
+    "browser": "26 PNGs, all 21 tiles, no browser errors; all requested LOD1 images visually inspected",
+    "fast": "1718 passed, 82 skipped, 49 deselected in 257.21s; exit 0"
+  },
+  "versions": {
+    "python": "3.13.3",
+    "node": "v22.16.0",
+    "browser": "154.0.4258.48",
+    "three": "0.180.0"
+  },
+  "source_spec_sha256": "c140887db02b0d7bfb25a45a4154f6c4ee58d0ddb493ba502eee53b7e3d38639",
+  "model_source_sha256": "d1b17b95e991e331e2c5e24cfdb1c5267d9b1b7092f72668c43977ded909c5a4",
+  "visual_record": ".ai/verification/C3D-T02-visual.json",
+  "artifact_directory": "out/component-library/stage-2/",
+  "preview_url": "http://127.0.0.1:8774/component-library/preview/index.html?stage=2",
+  "spec_findings": {
+    "component_count": 21,
+    "count_discrepancy": "User contact-sheet target says 22; every explicit scope/spec ID is included: 10 dual gull-wing + 4 SOT23 + 7 DIP = 21. No extra component invented.",
+    "source_spec_sha256": "c140887db02b0d7bfb25a45a4154f6c4ee58d0ddb493ba502eee53b7e3d38639",
+    "provisional": {
+      "OHM-108": [
+        "overall_length: 37.4 mm (UNCERTAIN/L)",
+        "Wide DIP length/width defaults are derived midpoints, not manufacturer nominal values."
+      ],
+      "OHM-109": [
+        "overall_length: 51.75 mm (UNCERTAIN/L)",
+        "Wide DIP length/width defaults are derived midpoints, not manufacturer nominal values."
+      ],
+      "OHM-119": [
+        "body_thickness 0.85 mm is RESEARCH_REQUIRED in the family and entry narrative; overall 0.95 = 0.10 + 0.85."
+      ]
+    },
+    "conflicts": {
+      "OHM-070": [
+        {
+          "code": "CONTACT_REFERENCE_VS_FOOT_CENTER",
+          "spec_contact_abs_mm": 1.0,
+          "geometric_foot_center_abs_mm": 1.025,
+          "delta_mm": 0.025,
+          "policy": "Preserve mandated contact reference and physical lead span/foot length separately. Reference lies on foot; no exact footprint fit claimed."
+        },
+        {
+          "code": "INHERITED_SOT23_STANDOFF",
+          "entry_standoff_mm": 0,
+          "family_standoff_mm": 0.05,
+          "policy": "Use owner PKG-SOT23 standoff 0.05 and overall A=1.0, per entry inheritance instruction; preserve raw YAML body_height/standoff."
+        }
+      ],
+      "OHM-094": [
+        {
+          "code": "CONTACT_REFERENCE_VS_FOOT_CENTER",
+          "spec_contact_abs_mm": 1.0,
+          "geometric_foot_center_abs_mm": 1.025,
+          "delta_mm": 0.025,
+          "policy": "Preserve mandated contact reference and physical lead span/foot length separately. Reference lies on foot; no exact footprint fit claimed."
+        }
+      ],
+      "OHM-120": [
+        {
+          "code": "CONTACT_REFERENCE_VS_FOOT_CENTER",
+          "spec_contact_abs_mm": 1.2,
+          "geometric_foot_center_abs_mm": 1.3,
+          "delta_mm": 0.1,
+          "policy": "Preserve mandated contact reference and physical lead span/foot length separately. Reference lies on foot; no exact footprint fit claimed."
+        }
+      ],
+      "OHM-121": [
+        {
+          "code": "CONTACT_REFERENCE_VS_FOOT_CENTER",
+          "spec_contact_abs_mm": 1.2,
+          "geometric_foot_center_abs_mm": 1.3,
+          "delta_mm": 0.1,
+          "policy": "Preserve mandated contact reference and physical lead span/foot length separately. Reference lies on foot; no exact footprint fit claimed."
+        }
+      ]
+    },
+    "notes": [
+      "All 21 source statuses are complete; status is retained verbatim even for library-provisional dimensions.",
+      "DIP tails use -2.6 mm installed/trimmed default per the entry geometry and PCB interface. The 3.3 mm untrimmed drawing length is separately retained and supported as a tail_length option.",
+      "DIP16 length 19.30 mm equals pin span 17.78 plus shoulder 1.52: zero longitudinal margin, as explicitly accepted by the spec. No resizing performed.",
+      "No default body length, pitch/count or body-width/span contradiction beyond the reported SOT contact-reference mismatch.",
+      "SOT family also suggests a cosmetic 40-60 degree lead bend. Mid-height exits combined with the specified short lateral run produce steeper LOD1 slopes (about 77 degrees for 3 leads and 66 for 5/6). Geometry retains the numeric body/span/foot/standoff values; exit location and lead radii are appearance defaults.",
+      "Pin-1 dimples use separate ring decals per the user Stage 2 instruction; DIP notch remains recessed geometry.",
+      "No exposed-pad geometry: every supplied Stage 2 entry says thermal_pad false; EP mentions are unresearched options/proposals."
+    ]
+  },
+  "architecture": [
+    "Shared Stage 1 material registry, metadata helper/validation, FCO/XY/Z contract, LOD enumeration and viewer adapter.",
+    "No stage-specific package dimensions in the mesh generators. YAML source records are retained; profiles normalize dimensions and explicitly transcribe narrative-only defaults/variants.",
+    "Reusable gull-wing lead builder in generators/gull-wing-lead.js, radial +X local frame, Z-up, rotated by the family generator; slope stock thickness uses perpendicular offset.",
+    "GEN-SMD_POWER is implemented only for the approved PKG-SOT23 slice. No other power packages or Stage 3 models are started.",
+    "DIP generator keeps wide shoulders, narrow tails and recessed pin1-end notch. Pin1 and laser markings are separate decals.",
+    "LOD0 merges dual-row SMD feet into two bars with full numbered terminal metadata. SOT23 retains its population mask. LOD1 uses individual leads. LOD2 adds draft, lead rounding and DIP shoulder taper; optional details remain cosmetic.",
+    "Named variants: SOIC16 wide, TSSOP8 body_width 3.0, SSOP16 qsop150. Generic parameter overrides are validated, flagged provisional, and reflected in model identity.",
+    "No exposed pads inferred from proposal mentions; every scoped source record says thermal_pad false.",
+    "Geometry/material/metadata signatures exclude UUIDs. Tests assert count, pin1, numbering, actual metal contact/tails, bounds, finite normals and deterministic output for every entry and LOD."
+  ],
+  "limitations": [
+    "Source statuses and confidence remain spec-reported, not independent source verification.",
+    "No exact footprint is bound; no land pattern or electrical admission claim.",
+    "Pin-1 dimple is a ring decal per Stage 2 instruction, not a machined recess.",
+    "Source-complete OHM-108, OHM-109 and OHM-119 remain library-provisional due to uncertain dimensions.",
+    "All requested review images are LOD1; LOD0/2 receive automated checks.",
+    "Self-review only; human acceptance is pending.",
+    "No integration/slow tier or physical hardware test claimed."
+  ],
+  "reproduce": {
+    "import": "python scripts/import_leaded_spec.py --check",
+    "node": "node --test apps/web/tests/*.test.mjs",
+    "fast": "python scripts/verify.py fast",
+    "server": "python scripts/demo_server.py --port 8774 --output-root out/component-library/stage-2/server",
+    "capture": "node scripts/component_library_acceptance.cjs http://127.0.0.1:8774 out/component-library/stage-2 --stage2 (OHMNI_PLAYWRIGHT_MODULE points to installed Playwright)"
+  },
+  "next_stage": "Stop. Stage 3 requires new human approval.",
+  "skips": {
+    "count": 82,
+    "reason": "Pinned MCP73831-DS20001984H.pdf absent from isolated worktree build/corpus; skipped source checks are not passing evidence.",
+    "deselected": 49,
+    "deselection_reason": "Canonical fast gate excludes integration/slow tiers."
+  },
+  "logs": [
+    "out/component-library/stage-2/node-tests.txt",
+    "out/component-library/stage-2/fast-tests.txt",
+    "out/component-library/stage-2/focused-python.txt"
+  ]
+}
