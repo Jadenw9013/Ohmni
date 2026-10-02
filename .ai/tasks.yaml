@@ -203,11 +203,21 @@
       "id": "COMPONENT-3D-STAGE2",
       "type": "component_library",
       "title": "Reusable 3D library Stage 2",
-      "status": "REVIEW",
+      "status": "COMPLETE",
       "approved_by": "human",
       "approval_evidence": ".ai/approvals/COMPONENT-3D-STAGE2.yaml",
       "review_policy": "Self-review and rendered inspection; human stage acceptance before Stage 3.",
-      "human_visual_acceptance": "PENDING"
+      "human_visual_acceptance": "APPROVED",
+      "acceptance_evidence": ".ai/approvals/COMPONENT-3D-STAGE3.yaml"
+    },
+    {
+      "id": "COMPONENT-3D-STAGE3",
+      "type": "component_library",
+      "title": "Reusable 3D library Stage 3",
+      "status": "IN_PROGRESS",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/COMPONENT-3D-STAGE3.yaml",
+      "review_policy": "Self-review and rendered inspection; human stage acceptance before Stage 4."
     }
   ],
   "tasks": [
@@ -2152,7 +2162,7 @@
       "id": "C3D-T02",
       "scope": "COMPONENT-3D-STAGE2",
       "title": "Data-driven dual gull-wing, SOT23 and DIP models",
-      "status": "VERIFIED",
+      "status": "COMPLETE",
       "priority": 100,
       "dependencies": [
         "C3D-T01"
@@ -2181,6 +2191,42 @@
         "status": "PASSED",
         "independent": false,
         "record": ".ai/reviews.yaml#C3D-T02-SELF"
+      },
+      "blockers": []
+    },
+    {
+      "id": "C3D-T03",
+      "scope": "COMPONENT-3D-STAGE3",
+      "title": "Quad, leadless, J-lead and grid-array component library",
+      "status": "IN_PROGRESS",
+      "priority": 100,
+      "dependencies": [
+        "C3D-T02"
+      ],
+      "acceptance_criteria": [
+        "19 data-driven entries at LOD0/1/2",
+        "Numbering, side and terminal counts tested per entry",
+        "Instanced repeated leads/balls and simplified LOD0 with recognition retained",
+        "All specified provisional fields and numeric conflicts explicit",
+        "24 review views, same-scale comparison and all-19 sheet; underside every family",
+        "Stop before Stage 4"
+      ],
+      "verification": {
+        "required": [
+          "node",
+          "fast",
+          "visual inspection"
+        ],
+        "record": null
+      },
+      "implementation": {
+        "started_at_commit": "d50ab3e",
+        "completed_at_commit": null
+      },
+      "review": {
+        "required": true,
+        "status": "PENDING",
+        "independent": false
       },
       "blockers": []
     }

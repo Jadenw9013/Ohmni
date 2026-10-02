@@ -1,21 +1,21 @@
 {
   "schema_version": 1,
-  "active_task": null,
-  "last_known_commit": "81598d3b565680b6380da12b603c596930b4aadf",
+  "active_task": "C3D-T03",
+  "last_known_commit": "d50ab3e",
   "previous_checkpoint": ".ai/approvals/COMPONENT-3D-STAGE1-previous-checkpoint.yaml",
   "completed_substeps": [
-    "All 21 explicitly scoped IDs implemented with data profiles, documented width/class variants, shared gull-wing builder and DIP generator.",
-    "69 new geometry/metadata tests plus 271 existing frontend tests passed; 23 focused Python tests passed.",
-    "All 26 LOD1 review images captured and inspected; provisional and conflicting source fields recorded.",
-    "Committed implementation verified: 1718 Python tests and 340 frontend tests passed; 82 missing-corpus skips and 49 deselected recorded. Source checks and Ruff passed."
+    "Stage 2 accepted; Stage 3 isolated branch and approval recorded.",
+    "19 data-driven models, instancing, numbering, parameter and geometry validation implemented.",
+    "405 frontend tests, 23 focused Python checks, Ruff and all three source imports passed.",
+    "27 review PNGs captured and visually inspected; spec conflicts and provisional metadata retained."
   ],
   "remaining_work": [
-    "Human acceptance of Stage 2; explicit approval required before Stage 3."
+    "Commit implementation; run canonical fast gate; record closure and stop before Stage 4."
   ],
   "last_failure": null,
-  "resume_action": "Stop. Do not begin Stage 3 without human approval.",
+  "resume_action": "Continue C3D-T03; stop before Stage 4.",
   "modified_files": [],
-  "last_command": "python scripts/verify.py fast (exit 0)",
-  "verification_record": ".ai/verification/C3D-T02.yaml",
-  "artifact_directory": "out/component-library/stage-2/"
+  "last_command": "node scripts/component_library_acceptance.cjs http://127.0.0.1:8775 out/component-library/stage-3 --stage3",
+  "verification_record": null,
+  "artifact_directory": "out/component-library/stage-3/"
 }
