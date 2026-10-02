@@ -88,7 +88,7 @@ STATIC_ASSETS=("index.html","app.js","view-model.js","board-model.js","board-vie
                "project-workbench.js","project-contract.js","scope-view.js",
                "reference-board.json","styles.css","visual-explorer.css",
                "component-visuals.json","component-stories.js","component-stories.css",
-               "component-sandbox.js","sandbox-model.js","home.js","home.css","landing.css","landing-board.png",
+               "component-sandbox.js","sandbox-model.js","home.js","home.css","landing.css","landing-board.png","workbench-theme.css",
                "visual-assets.js","visual-renderer.js","visual-explorer.js","visual-layers.js","visual-board-scene.js","visual-inventory.js","visual-version.js",
                "vendor/three.module.js","vendor/three.core.min.js")
 STATIC_CONTENT_TYPES={
@@ -100,6 +100,7 @@ STATIC_CONTENT_TYPES={
     "component-stories.css":"text/css; charset=utf-8",
     "home.css":"text/css; charset=utf-8",
     "landing.css":"text/css; charset=utf-8",
+    "workbench-theme.css":"text/css; charset=utf-8",
     "landing-board.png":"image/png",
     **{name:"text/javascript; charset=utf-8" for name in STATIC_ASSETS if name.endswith(".js")},
 }

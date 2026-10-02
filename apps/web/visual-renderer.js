@@ -71,7 +71,7 @@ export class VisualRenderer {
         this.renderer.toneMappingExposure = 0.96;
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        this.scene = new THREE.Scene(); this.scene.background = new THREE.Color('#3f464b');
+        this.scene = new THREE.Scene(); this.scene.background = new THREE.Color('#0b1728');
         this.environment = environment(this.renderer); this.scene.environment = this.environment.texture;
         this.scene.environmentIntensity = 0.55;
         this.scene.add(new THREE.HemisphereLight('#e4f0ff', '#595340', 0.7));

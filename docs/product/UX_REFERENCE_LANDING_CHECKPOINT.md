@@ -83,7 +83,18 @@ Observed in the browser:
 - At 320px, Docs dialog client/scroll width both 246px; Escape restored Docs focus.
 - Sensor callout yielded `BME280`, then `1 of 1: Environment sensor`.
 - Explore demo opened the real circuit-lab dialog with `#workspace` and saved-example open.
+- Start building opened the project editor; Home/Build retained its unsaved name.
+- Doubled root text exposed hero/callout overlap. Flexible wrapping fixed it:
+  client/scroll widths both1265px at1280px and305px at320px. The test used copied
+  assets with a36px root, not native browser zoom. Final mobile labels use full-width rows.
 - No runtime console errors observed during the inspected flows.
+
+Implementation commit: `4bf53ef`. Gates:202 Node tests;1800 fast tests,49 deselected
+(259.51s);40 focused server/library tests (8.99s);11 workflow tests (0.39s);Ruff and
+diff checks passed. Fast ran before final CSS-only refinements, which were covered
+by subsequent browser/static-server checks. Focused pytest emitted one cache-write
+permission warning. The subsequent matching workbench is documented in
+[UX-T03](UX_WORKBENCH_THEME_CHECKPOINT.md).
 
 Tests and screenshots do not constitute independent UX acceptance or physical-device
 accessibility certification. The artwork is an aesthetic reference; no CAD, electrical,

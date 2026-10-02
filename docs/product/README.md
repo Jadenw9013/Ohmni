@@ -2,6 +2,8 @@
 
 ## Current UI/UX work
 
+- [Unified studio design](UX_WORKBENCH_THEME_CHECKPOINT.md): matching workbench,
+  forms, results, library and dialogs; current verification and takeover notes.
 - [Reference-led landing rebuild](UX_REFERENCE_LANDING_CHECKPOINT.md): current dark
   PCB landing, matching the user's supplied reference; supersedes the light landing.
 

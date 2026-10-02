@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "id": "UX-T02",
+  "task": "UX-T02",
+  "scope": "UX-CLARITY-1",
+  "status": "PASSED",
+  "commit": "4bf53ef",
+  "verified_at": "2026-10-02",
+  "tested_tree": "Implementation plus preserved uncommitted CS and workflow changes.",
+  "source_sha256": {
+    "apps/web/app.js": "3ca797c566e60aa678519fe37e97cfcb15d6ea58bb3985967ccdc7be20bd3968",
+    "apps/web/component-stories.js": "fd041e168c1c21c3141449c6b506eef52b87c9af895eb9723dc4864bee8b3e9a",
+    "apps/web/home.css": "1ba019af26abb383577865e2b6f35d1dc8d5f883e4f13f2f245dc0e669542ff9",
+    "apps/web/home.js": "0c822ed970c0266801ca81d1495fac878a4bc6483cf8e7ac3de790da8d31103f",
+    "apps/web/index.html": "035958379c6bf6e0fcc1df674a1b9a8efc8eeef1ffb54b9dcea471dec8db283a",
+    "apps/web/landing.css": "72be30773f0e078c298dce8e483e12abf91fadf7f246906798dac5e5b8cd837b",
+    "apps/web/landing-board.png": "a93761b6c589b5636730c83c77026eae96a60bc9db6e839009460fe817bf974d",
+    "apps/web/tests/home.test.mjs": "264e38c9e4ca40a3037ed33ec5b2adf8d175379c0eef0e5504841856795cbcb6",
+    "apps/web/tests/component-stories.test.mjs": "534e637e7e2c73c952d7b09f4c1949aa6f70db462740efa3c8a7aa0af3c3e405",
+    "scripts/demo_server.py": "cc04618f41ffe1670f5d22c5d65e440e66ccd636e91bddd20a04a2a32c8f6e4e"
+  },
+  "results": [
+    {
+      "command": "python scripts/verify.py fast",
+      "exit_code": 0,
+      "passed": 1800,
+      "deselected": 49,
+      "seconds": 259.51,
+      "log": "build/ux-reference-fast.txt",
+      "note": "Before final CSS-only reflow; subsequent browser and static-server checks cover refinements."
+    },
+    {
+      "command": "node --test --test-reporter=spec apps/web/tests/*.test.mjs",
+      "exit_code": 0,
+      "passed": 202,
+      "failed": 0,
+      "skipped": 0,
+      "seconds": 5.504,
+      "log": "build/ux-reference-node-final.txt"
+    },
+    {
+      "command": "python -m pytest tests/test_visual_assets_server.py tests/test_component_library.py -o addopts='' -q --basetemp=build/ux-reference-server-final",
+      "exit_code": 0,
+      "passed": 40,
+      "warnings": 1,
+      "seconds": 8.99,
+      "log": "build/ux-reference-server-final.txt",
+      "note": "pytest cache permission warning"
+    },
+    {
+      "command": "python scripts/verify.py workflow",
+      "exit_code": 0,
+      "passed": 11,
+      "seconds": 0.39,
+      "log": "build/ux-reference-workflow-final.txt"
+    },
+    {
+      "command": "python -m ruff check .",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    }
+  ],
+  "browser_observations": [
+    "Reference-sized desktop 1435x780 composition inspected.",
+    "320px final mobile client/scroll width both305px; callouts full-width rows.",
+    "Docs Escape restored focus; BME280 filter returned1of1; demo opened actual circuit lab.",
+    "Start building opened project editor; Home/Build retained unsaved project name.",
+    "Doubled root36px exposed overlap, fixed via flexible hero and bounded callouts; 1280px client/scroll1265 and320px client/scroll305.",
+    "No runtime console errors observed."
+  ],
+  "limitations": [
+    "Doubled-root copied-asset stress test is not browser zoom certification.",
+    "No independent UX, screen-reader or physical-device evaluation.",
+    "One generated raster illustration; no sourced CAD geometry or electrical authority.",
+    "No new KiCad run, engineering provider calls or deployment."
+  ],
+  "live_engineering_model_calls": 0,
+  "image_generation_calls": 1,
+  "self_review": {
+    "status": "PASSED",
+    "independent": false,
+    "record": ".ai/reviews.yaml#UX-T02-SELF"
+  }
+}
