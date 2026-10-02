@@ -1,29 +1,24 @@
 {
   "schema_version": 1,
-  "active_task": "C3D-T01",
-  "last_known_commit": "ab1a8e4",
+  "active_task": null,
+  "last_known_commit": "e0018a473ccfb75900dbe2a43ff21bb2d695b9ce",
   "previous_checkpoint": ".ai/approvals/COMPONENT-3D-STAGE1-previous-checkpoint.yaml",
   "completed_substeps": [
     "All 20 spec records imported; source status and uncertain metadata preserved.",
     "GEN-CHIP_2T implements explicit LOD0/1/2; registry, material tokens, contact metadata and board/footprint transforms implemented.",
     "271 Node tests and 23 focused workflow/static-server tests passed.",
-    "Captured and visually inspected 12 LOD1 review views, same-scale comparison and all-20 contact sheet."
+    "Captured and visually inspected 12 LOD1 review views, same-scale comparison and all-20 contact sheet.",
+    "Implementation committed on codex/component-library-stage1 in an isolated worktree; original production-repair changes untouched.",
+    "Final canonical fast gate passed: 1718 passed, 82 missing-corpus skips, 49 deselected. Ruff, source import and deterministic asset checks passed.",
+    "Commit-bound verification and self-review recorded; all approved Stage 1 implementation work exhausted."
   ],
   "remaining_work": [
-    "Commit implementation; rerun full fast gate after test-harness corrections; record results and stop before Stage 2."
+    "Human visual acceptance of Stage 1; explicit approval required before any Stage 2 implementation."
   ],
   "last_failure": null,
-  "resume_action": "Continue C3D-T01 only; stop before Stage 2.",
-  "modified_files": [
-    "apps/web/component-library/",
-    "apps/web/tests/component-3d-library.test.mjs",
-    "scripts/import_chip2t_spec.py",
-    "scripts/component_library_acceptance.cjs",
-    "scripts/demo_server.py",
-    "scripts/prepare_visual_assets.py",
-    "tests/test_visual_assets_server.py",
-    "tests/test_ai_workflow.py",
-    ".gitattributes"
-  ],
-  "last_command": "Node suite, browser capture, focused pytest, Ruff"
+  "resume_action": "Stop. Do not begin Stage 2 without a new human approval.",
+  "modified_files": [],
+  "last_command": "python scripts/verify.py fast (exit 0)",
+  "verification_record": ".ai/verification/C3D-T01.yaml",
+  "artifact_directory": "out/component-library/stage-1/"
 }

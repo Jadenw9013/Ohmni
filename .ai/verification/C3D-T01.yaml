@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "id": "C3D-T01",
+  "task": "C3D-T01",
+  "scope": "COMPONENT-3D-STAGE1",
+  "status": "PASSED",
+  "commit": "e0018a473ccfb75900dbe2a43ff21bb2d695b9ce",
+  "verified_at": "2026-10-02",
+  "component_ids": [
+    "OHM-001",
+    "OHM-002",
+    "OHM-003",
+    "OHM-004",
+    "OHM-005",
+    "OHM-006",
+    "OHM-007",
+    "OHM-008",
+    "OHM-009",
+    "OHM-014",
+    "OHM-021",
+    "OHM-022",
+    "OHM-023",
+    "OHM-024",
+    "OHM-025",
+    "OHM-026",
+    "OHM-027",
+    "OHM-041",
+    "OHM-042",
+    "OHM-043"
+  ],
+  "package_family": "PKG-CHIP2T",
+  "generator": "GEN-CHIP_2T",
+  "commands": {
+    "node": "271 passed, 0 failed, 0 skipped; includes 68 focused library tests",
+    "focused_python": "23 passed (workflow and static-server boundary)",
+    "ruff": "All checks passed",
+    "spec_import_check": "20 records match the supplied source",
+    "browser": "14 PNGs, 20 LOD1 tiles, no browser errors",
+    "initial_fast": "2 failed, 1716 passed, 82 skipped, 49 deselected; stale approved-scope test and preview dependency traversal corrected",
+    "final_fast": "1718 passed, 82 skipped, 49 deselected in 251.11s; exit 0; evaluated implementation commit e0018a473ccfb75900dbe2a43ff21bb2d695b9ce"
+  },
+  "visual_record": ".ai/verification/C3D-T01-visual.json",
+  "preview_url": "http://127.0.0.1:8773/component-library/preview/index.html",
+  "artifact_directory": "out/component-library/stage-1/",
+  "architecture_decisions": [
+    "Three.js ES modules; no CAD service or framework migration.",
+    "JSON family profiles own dimensions; records retain source IDs/status/confidence and source narratives.",
+    "One GEN-CHIP_2T generator supports resistor, ceramic, ferrite and metal-strip profiles.",
+    "Surface partitions represent five-face caps without overlapping slabs or invented plating thickness.",
+    "LOD2 upper-edge rounding preserves flat contact geometry; optional proudness omitted under spec simplification rules.",
+    "Materials use exact spec tokens and scene-owned PBR instances; markings remain separate.",
+    "Canonical FCO/Z-up coordinates are adapted with explicit X/Z bottom-side flips; current board renderer remains unchanged.",
+    "Source-spec and renderer-bundle hashes identify assets, not verified evidence.",
+    "Footprint bindings require explicit pad names, frames, transforms and exact revisions; all 20 start unbound."
+  ],
+  "provisional": {
+    "OHM-014": [
+      "Height and terminal length depend on resistance range.",
+      "Proposed alloy appearance token and unresolved Kelvin terminal layouts."
+    ],
+    "OHM-043": [
+      "0.50 mm terminal length is borrowed and UNCERTAIN/L."
+    ]
+  },
+  "limitations": [
+    "Source status complete is not independent dimensional verification.",
+    "Appearance defaults remain confidence L, including source-complete components.",
+    "Only default 2-terminal entries implemented; unresolved wirewound/Kelvin variants rejected.",
+    "LOD1 visually inspected; LOD0 and LOD2 checked automatically.",
+    "No sourced land patterns added, no exact footprint-fit result, no electrical admission.",
+    "THT tail convention helper tested; no THT component belongs to Stage 1.",
+    "Self-review only; human stage acceptance pending."
+  ],
+  "reproduce": {
+    "authoring_parser": "python -m pip install --target build/spec-tools PyYAML==6.0.3",
+    "source_check": "python scripts/import_chip2t_spec.py --check",
+    "geometry_and_frontend": "node --test apps/web/tests/*.test.mjs",
+    "static_fingerprints": "python scripts/prepare_visual_assets.py --source-only",
+    "preview_server": "python scripts/demo_server.py --port 8773 --output-root out/component-library/stage-1/server",
+    "captures": "node scripts/component_library_acceptance.cjs http://127.0.0.1:8773 (set OHMNI_PLAYWRIGHT_MODULE to local Playwright)",
+    "fast": "python scripts/verify.py fast"
+  },
+  "next_stage": "Stop. Stage 2 requires a new human approval.",
+  "skips": {
+    "count": 82,
+    "reason": "Pinned source MCP73831-DS20001984H.pdf is absent from the isolated worktree corpus; no missing-source test is represented as passed.",
+    "deselected": 49,
+    "deselection_reason": "Integration/slow tiers excluded by the canonical fast gate."
+  },
+  "logs": [
+    "out/component-library/stage-1/fast-final.txt",
+    "out/component-library/stage-1/node-tests.txt"
+  ]
+}
