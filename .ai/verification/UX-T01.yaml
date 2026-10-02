@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "id": "UX-T01",
+  "task": "UX-T01",
+  "scope": "UX-CLARITY-1",
+  "status": "PASSED",
+  "commit": "6fa487c",
+  "verified_at": "2026-10-01",
+  "tested_tree": "Implementation commit plus the preserved uncommitted CS, workflow and ledger changes. The 1800-test count describes this working tree, not an isolated clean checkout.",
+  "source_sha256": {
+    "apps/web/app.js": "3bd231c2c6f7f38d479c92b176bef2585bb1898efb6306d7f9aad7a6a6079ae6",
+    "apps/web/component-stories.css": "f6a3e7be5dcbdecb0795ec699e7fe90f3fbe189b802111b61f4ef2475bf34cc3",
+    "apps/web/component-stories.js": "ccf523f4075334a39cb7e5b362c4c0495fa18ba10e354d0d88b3057fc016a0a4",
+    "apps/web/home.css": "91031e24449817363319b95fc2abd569bb0e5e3245a87090c0f1d05db6ab1e69",
+    "apps/web/home.js": "e72a94d6c663d6e34e1ca5675fd5917ad90bb3eb2b592ac7cfcb886820d96fd0",
+    "apps/web/index.html": "a9b4111d72f328b392d6d1a3ba4b3421487709cd7c8e6622f5693ac7653268ae",
+    "apps/web/project-workbench.js": "4913fdb9a36af0245ce947dddf005e2910d818142675a5f198106d51b5cc5468",
+    "apps/web/styles.css": "91add0ae59d4c212aebdf2233aaf41b4aedcbe5d3dc5f6a1242971064a3e8c29",
+    "apps/web/tests/home.test.mjs": "e134d08a3c36ea7b854f4fceedab3190a344c4faf9473715893367d7ce885d74",
+    "apps/web/tests/view-model.test.mjs": "9f057f5e27e15caadc183cc23da4e618e5ad598db1def5a95bc5ec649835bc70",
+    "apps/web/visual-explorer.css": "88e780e6d527c0a3e0f04a059852aef1e39e3aa33876f73a9a2a3aa03c91b16f",
+    "scripts/demo_server.py": "d9d191b59cd9ebaea295b2776615259a0c71076db86353e03856d9fb345c5176"
+  },
+  "results": [
+    {
+      "command": "python scripts/verify.py fast",
+      "exit_code": 0,
+      "passed": 1800,
+      "deselected": 49,
+      "seconds": 268.63,
+      "log": "build/ux-fast-final.txt"
+    },
+    {
+      "command": "node --test --test-reporter=spec apps/web/tests/*.test.mjs",
+      "exit_code": 0,
+      "passed": 205,
+      "failed": 0,
+      "skipped": 0,
+      "seconds": 6.782,
+      "log": "build/ux-node-final.txt"
+    },
+    {
+      "command": "python scripts/verify.py workflow",
+      "exit_code": 0,
+      "passed": 11,
+      "seconds": 0.4,
+      "log": "build/ux-workflow-final.txt"
+    },
+    {
+      "command": "python -m ruff check .",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    },
+    {
+      "command": "python scripts/verify.py workflow (ledger closure)",
+      "exit_code": 0,
+      "passed": 11,
+      "seconds": 0.06,
+      "log": "build/ux-workflow-closure.txt"
+    }
+  ],
+  "browser_observations": [
+    "Desktop and 320px home/project layouts had no horizontal reading overflow.",
+    "Home/workbench and browser Back/Forward preserved the unsaved project-name value.",
+    "Component selectors measured 44x44 CSS pixels at 320px; dialog text no longer has its own scrolling panel.",
+    "Catalog-bound models switched correctly; rotation/pause state changed; Enter on Interact focused home-model-canvas.",
+    "Saved reference had no renderer before disclosure and a Three renderer afterwards.",
+    "Isolated preview at doubled root font (18 to 36px) exposed overflow, then home and project editor measured 305px document width inside a 320px viewport; desktop also fit.",
+    "Main home contrast ratios: intro14.47, secondary6.55, model note6.14, primary action5.74."
+  ],
+  "initial_failures": [
+    "First Node run failed 27 workbench tests because its fake DOM manufactured an incomplete home element. Corrected fixture separation and added nine executable home tests.",
+    "Enlarged-text narrow layout overflow fixed in headline, circuit strip, summary and long text wrapping."
+  ],
+  "limitations": [
+    "No independent accessibility review, screen reader, physical touch/low-end GPU evaluation or newcomer user study.",
+    "Text stress test used a separately copied asset tree with root225%; native in-app browser zoom shortcut had no effect.",
+    "Existing artistic models remain approximate, with no new source-verified geometry or electrical admission.",
+    "Deep project URLs and refresh recovery are not implemented; unsaved work is explicitly lost on reload.",
+    "No new native KiCad, live provider, deployment or paid infrastructure action.",
+    "Pre-existing CS and CAB engineering holds unchanged."
+  ],
+  "live_model_calls": 0,
+  "self_review": {
+    "status": "PASSED",
+    "independent": false,
+    "record": ".ai/reviews.yaml#UX-T01-SELF"
+  }
+}

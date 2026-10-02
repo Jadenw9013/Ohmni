@@ -4,6 +4,11 @@ Scope: **UX-CLARITY-1 / UX-T01**. Human approval is preserved in
 `.ai/approvals/UX-CLARITY-1.yaml`, along with the prior atlas checkpoint.
 Read [the audit](UX_CLARITY_AUDIT.md) for all fourteen findings and their reasoning.
 
+Implementation commit: **`6fa487c`**. UX-T01 is COMPLETE as a self-reviewed task;
+the scope is VERIFIED and has not received independent UX acceptance. Verification
+counts describe that commit plus the preserved CS/workflow working tree, not a clean
+checkout of the commit alone. The mixed ledger files remain uncommitted deliberately.
+
 ## What changed
 
 - A dedicated landing page explains the purpose, intended user and supported projects.
@@ -52,7 +57,7 @@ not a portable handoff artifact). Do not treat the initial failed harness run as
 |---|---|
 | `python scripts/verify.py fast` | 1,800 passed; 49 deselected; 268.63s |
 | `node --test --test-reporter=spec apps/web/tests/*.test.mjs` | 205 passed; 0 failed/skipped; 6.782s |
-| `python scripts/verify.py workflow` | 11 passed; 0.40s (rerun after ledger closure separately recorded) |
+| `python scripts/verify.py workflow` | 11 passed; 0.40s; final ledger closure rerun 11 passed in 0.06s |
 | `python -m ruff check .` | All checks passed |
 | `git diff --check` | Passed; existing CRLF conversion warnings only |
 
