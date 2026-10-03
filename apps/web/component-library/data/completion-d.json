@@ -1,0 +1,3627 @@
+{
+  "schema_version": 1,
+  "group": "D",
+  "source_spec_sha256": "c140887db02b0d7bfb25a45a4154f6c4ee58d0ddb493ba502eee53b7e3d38639",
+  "components": [
+    {
+      "id": "OHM-044",
+      "slug": "smd_wirewound_inductor",
+      "canonical_name": "SMD wirewound inductor",
+      "category": "passive",
+      "subcategory": "chip_wirewound_ceramic",
+      "class": "A",
+      "priority": "P1",
+      "complexity": 3,
+      "package_family": "PKG-SMD_IND_WW",
+      "package_member": "0603CS",
+      "generator": "GEN-SMD_INDUCTOR",
+      "mounting": "smd",
+      "names": {
+        "imperial": 387,
+        "metric": 1608,
+        "aliases": [
+          "0603CS",
+          "ceramic chip inductor"
+        ]
+      },
+      "dimensions_mm": {
+        "body_length": {
+          "default": 1.8,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "body_width": {
+          "default": 1.12,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "overall_height": {
+          "default": 1.02,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "pitch": {
+          "default": 1.42,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "standoff": {
+          "default": 0.0,
+          "basis": "UNCERTAIN",
+          "confidence": "L"
+        }
+      },
+      "body": {
+        "shape": "rect_box",
+        "material": "MAT_CERAMIC_CORE_BEIGE"
+      },
+      "terminals": {
+        "count": 2,
+        "type": "wraparound_cap",
+        "material": "MAT_TIN_MATTE",
+        "pitch_mm": 1.42,
+        "pin1_xy_mm": [
+          -0.71,
+          0
+        ]
+      },
+      "pcb_interface": {
+        "footprint_type": "smd_pads",
+        "standoff_mm": 0.0,
+        "body_offset_mm": [
+          0,
+          0
+        ]
+      },
+      "orientation": {
+        "pcb_plane": "XY",
+        "height_axis": "Z",
+        "origin": "FCO"
+      },
+      "polarity": "none",
+      "pin1_indicator": "color dot near terminal 1 (OHMNI default; not specified by datasheet)",
+      "lod_supported": [
+        "LOD0",
+        "LOD1",
+        "LOD2"
+      ],
+      "confidence": {
+        "dimensions": "H",
+        "geometry": "M",
+        "materials_appearance": "L"
+      },
+      "status": "complete",
+      "source": {
+        "document": "PCB_COMPONENT_3D_LIBRARY_SPEC.md",
+        "line": 7211,
+        "yaml_sha256": "de441ddf321cdadb98e215f227aefc00aac2079720dc536cf9fc2379efa931df",
+        "sections": {
+          "Identity": "Canonical: SMD wirewound inductor (ceramic-core chip). Package: 0603 imperial / 1608 metric, Coilcraft 0603CS representative. Aliases: ceramic chip inductor, RF chip inductor, 0603CS. Variants: 0805CS 2.29 x 1.73 x 1.52, 1008CS 2.92 x 2.79 x 2.03 (Coilcraft product pages, max values; terminal length and land pattern not extracted). Class A, priority P1, complexity 3, mounting smd. Family PKG-SMD_IND_WW member 0603CS.",
+          "Physical Dimensions": "L 1.80 max, W 1.12 max, H 1.02 max (+0.152 if solder counted). Terminal length 0.38 (DEFAULT, Coilcraft D ref, mapping unverified, L). Basis MFR_DATASHEET, confidence H for L/W/H, L for terminal length.",
+          "Geometry": "Rectangular ceramic core with square-ish profile; two wraparound end caps; winding visible between caps (general construction, wire visibility not verified). Top is flat. No chamfers at LOD1.",
+          "Leads / Pins / Terminals": "2 terminals, matte tin over nickel over silver-glass frit (from datasheet). Terminal 1 at -X, terminal 2 at +X. Centers at x = +-0.71 (DERIVED: 0.90 - 0.38/2).",
+          "PCB Interface": "Land pattern values E/G etc. exist in the datasheet but their mapping was not verified: RESEARCH_REQUIRED. Underside at Z=0. Body centered on pad pattern; body_offset 0.",
+          "Materials": "Body MAT_CERAMIC_CORE_BEIGE (proposed); terminals MAT_TIN_MATTE; dot decal color varies.",
+          "Appearance": "Beige/tan to white ceramic; single color dot (red, black, yellow, blue etc.) on top marks value group, not unique (opened datasheet). OHMNI default dot color: red.",
+          "Orientation Markings": "Dot is on the top face; datasheet does not state which end. OHMNI default: dot near terminal 1 (-X). Part is non-polarized.",
+          "Recognition Features": "Beige ceramic body; two bright tin end caps; single color dot; very small chip.",
+          "Parametric Variants": "length, width, height, term_len, dot_color. Coupled: term_len < L/3.",
+          "Recommended Base Geometry": "Box + two end-cap boxes (clipped U shape) + optional dot disc decal.",
+          "Modeling Procedure": "1 Box L x W x H centered, Z from 0. 2 Add caps at each end of length term_len wrapping 4 faces (thickness 0.03 over body). 3 Add dot decal 0.2 dia on top. 4 Assign materials.",
+          "LOD Strategy": "LOD0: body box/cylinder + terminal boxes. LOD1: all terminals, top chamfers, dot/pin-1 marks as decals, winding as band. LOD2: fillets, winding turns, wire exits, lead bends.",
+          "Simplification Rules": "May omit: winding turns, dot decal at LOD0. Never omit: end caps contrast, size ratio.",
+          "Sources": "Coilcraft 0603CS product page and datasheet (see PKG-SMD_IND_WW sources, both opened). Variant sizes: Coilcraft 0805CS and 1008CS product pages (opened second pass).",
+          "Research Confidence": "Dimensions H / Geometry M / Materials-appearance L. Validation: pitch and pin positions checked against body length where available (pins lie inside body envelope); pin count matches geometry; pin-1 follows 00_architecture Section 6; unresolved items are marked RESEARCH_REQUIRED above. Mechanical drawings were not visually inspected (text extraction only)."
+        },
+        "evidence_level": "SPEC_REPORTED; not independently reverified"
+      },
+      "cosmetic_defaults": [
+        {
+          "feature": "pad_stock",
+          "value": 0.051000000000000004,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_diameter",
+          "value": 0.2,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "winding_turns",
+          "value": 8,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_size",
+          "value": [
+            0.9,
+            0.28
+          ],
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Optional separate label decal occupies half X and quarter Y of top face.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "library_metadata": {
+        "provisional": true,
+        "uncertain_values": [
+          "standoff: 0.0 (UNCERTAIN/L)",
+          "Land pattern values E/G etc. exist in the datasheet but their mapping was not verified: RESEARCH_REQUIRED. Underside at Z=0. Body centered on pad pattern; body_offset 0.",
+          "Dimensions H / Geometry M / Materials-appearance L. Validation: pitch and pin positions checked against body length where available (pins lie inside body envelope); pin count matches geometry; pin-1 follows 00_architecture Section 6; unresolved items are marked RESEARCH_REQUIRED above. Mechanical drawings were not visually inspected (text extraction only).",
+          "COSMETIC_PROVISIONAL pad_stock=0.051000000000000004: Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "COSMETIC_PROVISIONAL marker_diameter=0.2: OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "COSMETIC_PROVISIONAL winding_turns=8: Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "COSMETIC_PROVISIONAL label_size=[0.9, 0.28]: Optional separate label decal occupies half X and quarter Y of top face.",
+          "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+        ],
+        "appearance_confidence": "L",
+        "electrical_admission": "NOT_EVALUATED",
+        "footprint_binding": null,
+        "conflicts": [],
+        "implementation_status": "IMPLEMENTED",
+        "implementation_group": "D"
+      },
+      "profile_id": "OHM-044"
+    },
+    {
+      "id": "OHM-045",
+      "slug": "shielded_power_inductor",
+      "canonical_name": "Shielded power inductor",
+      "category": "passive",
+      "subcategory": "power_inductor_molded",
+      "class": "A",
+      "priority": "P0",
+      "complexity": 2,
+      "package_family": "PKG-SMD_POWER_IND",
+      "package_member": "SRP7028A",
+      "generator": "GEN-SMD_INDUCTOR",
+      "mounting": "smd",
+      "names": {
+        "aliases": [
+          "SRP7028A",
+          "molded power inductor",
+          "XAL"
+        ]
+      },
+      "dimensions_mm": {
+        "body_length": {
+          "default": 7.3,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "body_width": {
+          "default": 6.7,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "overall_height": {
+          "default": 2.8,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "pitch": {
+          "default": 5.9,
+          "basis": "DERIVED",
+          "confidence": "M"
+        },
+        "standoff": {
+          "default": 0.0,
+          "basis": "UNCERTAIN",
+          "confidence": "L"
+        }
+      },
+      "body": {
+        "shape": "rect_box_chamfer",
+        "material": "MAT_MOLDED_COMPOSITE_DARK"
+      },
+      "terminals": {
+        "count": 2,
+        "type": "lead_frame_bent",
+        "material": "MAT_TIN_BRIGHT",
+        "pitch_mm": 5.9,
+        "pin1_xy_mm": [
+          -2.95,
+          0
+        ]
+      },
+      "pcb_interface": {
+        "footprint_type": "smd_pads",
+        "standoff_mm": 0.0,
+        "body_offset_mm": [
+          0,
+          0
+        ]
+      },
+      "orientation": {
+        "pcb_plane": "XY",
+        "height_axis": "Z",
+        "origin": "FCO"
+      },
+      "polarity": "none",
+      "pin1_indicator": "none documented",
+      "lod_supported": [
+        "LOD0",
+        "LOD1",
+        "LOD2"
+      ],
+      "confidence": {
+        "dimensions": "M",
+        "geometry": "M",
+        "materials_appearance": "L"
+      },
+      "status": "partial",
+      "source": {
+        "document": "PCB_COMPONENT_3D_LIBRARY_SPEC.md",
+        "line": 7296,
+        "yaml_sha256": "3e39d15a70b14343242272de7337de10d73405647340429c388482a4bd79194a",
+        "sections": {
+          "Identity": "Canonical: shielded power inductor, molded lead-frame type. Representative Bourns SRP7028A (7.3 x 6.7 x 2.8). Aliases: molded power choke, SRP, XAL-style. Variants: SRN6045 semi-shielded 6.0 x 6.0 x 4.5, SRR1260 12.5 x 12.5 x 6.0; Coilcraft XAL molded classes 4.3 x 4.3 x 2.1 (XAL40xx), 5.68 x 5.48 x 3.1 (XAL50xx), 11.8 x 10.5 x 6.0 (XAL1060). Class A, priority P0, complexity 2, mounting smd. Family PKG-SMD_POWER_IND member SRP7028A.",
+          "Physical Dimensions": "L 7.3 +-0.3, W 6.7 +-0.3 (ADOPTED; the second-pass datasheet read gives 6.7 with .264 in = 6.71 mm; the first pass had read 6.6 once, kept as a conflict note), H 2.8 +-0.2 (first pass; a second-pass label C = 1.8 +-0.3 under lead-frame terminal is probably the terminal length, unresolved). Recommended layout: 8.4 overall, 2.5 pad length, 3.5 (pad width or gap, UNCERTAIN). Basis MFR_DATASHEET, confidence M (H and terminal dims lower).",
+          "Geometry": "Rectangular molded block, flat top with 0.2 top-edge chamfer (DEFAULT). Two tin lead-frame terminals exit at the short (X) ends and fold under; visible as thin plates on the end faces and bottom.",
+          "Leads / Pins / Terminals": "2 terminals, flat lead-frame, tin (Sn). Terminal width default 2.5 (UNCERTAIN, from layout ref), thickness 0.3 (UNCERTAIN). Pin 1 at -X. Centers x = +-2.95 (DERIVED from 8.4 overall minus 2.5 pad over 2).",
+          "PCB Interface": "Pads outer span 8.4 (ref), pad length 2.5 (ref). Body flush at Z=0. body_offset 0.",
+          "Materials": "Body MAT_MOLDED_COMPOSITE_DARK; terminals MAT_TIN_BRIGHT.",
+          "Appearance": "Dark gray/black matte top with ink/laser mark (inductance code); general practice, specific color not read from document. Date code marking mentioned in datasheet.",
+          "Orientation Markings": "Non-polarized electrically; some parts have a dot or stripe mark near terminal 1: not documented in opened docs. OHMNI default: no dot.",
+          "Recognition Features": "Square-ish dark block; two tin ends; flat top; low profile.",
+          "Parametric Variants": "length, width, height, term_w, chamfer. Coupled: pad_span >= length + 1.0.",
+          "Recommended Base Geometry": "Rounded box + two bent plate terminals.",
+          "Modeling Procedure": "1 Box L x W x H with top chamfer. 2 Add two terminal plates on end faces (0.3 thick) extending 1.0 under body. 3 Decal mark on top. 4 Materials.",
+          "LOD Strategy": "LOD0: body box/cylinder + terminal boxes. LOD1: all terminals, top chamfers, dot/pin-1 marks as decals, winding as band. LOD2: fillets, winding turns, wire exits, lead bends.",
+          "Simplification Rules": "May omit: chamfer, marks. Never omit: both terminals, size.",
+          "Sources": "Bourns SRP7028A datasheet https://www.bourns.com/docs/Product-Datasheets/SRP7028A.pdf (S3, opened twice; dims A 7.3 / B 6.7 / C 1.8 labels, layout 8.4/2.5/3.5, lead frame Sn, carbonyl core). Coilcraft XAL family table https://www.coilcraft.com/en-us/products/power/shielded-inductors/molded-inductor/xal/ (S2, opened second pass; class sizes only). See PKG-SMD_POWER_IND for SRN6045 and SRR1260.",
+          "Research Confidence": "Dimensions M / Geometry M / Materials-appearance L. Validation: pitch 5.9 = 8.4 - 2.5 (outer span minus pad length); pads inside body envelope (outer pad span 8.4 > body 7.3, i.e. land extends past body, as expected for a land pattern); width conflict 6.6 vs 6.7 resolved to 6.7 by the inch value. Unresolved: height label (2.8 vs C 1.8), terminal width/thickness, XAL land patterns, drawings not visually inspected."
+        },
+        "evidence_level": "SPEC_REPORTED; not independently reverified"
+      },
+      "cosmetic_defaults": [
+        {
+          "feature": "pad_stock",
+          "value": 0.13999999999999999,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_diameter",
+          "value": 0.44666666666666666,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "winding_turns",
+          "value": 8,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_size",
+          "value": [
+            3.65,
+            1.675
+          ],
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Optional separate label decal occupies half X and quarter Y of top face.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "library_metadata": {
+        "provisional": true,
+        "uncertain_values": [
+          "standoff: 0.0 (UNCERTAIN/L)",
+          "L 7.3 +-0.3, W 6.7 +-0.3 (ADOPTED; the second-pass datasheet read gives 6.7 with .264 in = 6.71 mm; the first pass had read 6.6 once, kept as a conflict note), H 2.8 +-0.2 (first pass; a second-pass label C = 1.8 +-0.3 under lead-frame terminal is probably the terminal length, unresolved). Recommended layout: 8.4 overall, 2.5 pad length, 3.5 (pad width or gap, UNCERTAIN). Basis MFR_DATASHEET, confidence M (H and terminal dims lower).",
+          "2 terminals, flat lead-frame, tin (Sn). Terminal width default 2.5 (UNCERTAIN, from layout ref), thickness 0.3 (UNCERTAIN). Pin 1 at -X. Centers x = +-2.95 (DERIVED from 8.4 overall minus 2.5 pad over 2).",
+          "Dimensions M / Geometry M / Materials-appearance L. Validation: pitch 5.9 = 8.4 - 2.5 (outer span minus pad length); pads inside body envelope (outer pad span 8.4 > body 7.3, i.e. land extends past body, as expected for a land pattern); width conflict 6.6 vs 6.7 resolved to 6.7 by the inch value. Unresolved: height label (2.8 vs C 1.8), terminal width/thickness, XAL land patterns, drawings not visually inspected.",
+          "COSMETIC_PROVISIONAL pad_stock=0.13999999999999999: Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "COSMETIC_PROVISIONAL marker_diameter=0.44666666666666666: OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "COSMETIC_PROVISIONAL winding_turns=8: Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "COSMETIC_PROVISIONAL label_size=[3.65, 1.675]: Optional separate label decal occupies half X and quarter Y of top face.",
+          "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+        ],
+        "appearance_confidence": "L",
+        "electrical_admission": "NOT_EVALUATED",
+        "footprint_binding": null,
+        "conflicts": [
+          {
+            "code": "POWER_INDUCTOR_TERMINALS",
+            "geometry_choice": "Keep 7.3 x 6.7 x 2.8 body; bottom contact plates 2.5 long centered +/-2.95 span 8.4, beyond body. Procedure 1.0 underfold and second-pass 1.8 terminal callout are unresolved."
+          }
+        ],
+        "implementation_status": "IMPLEMENTED",
+        "implementation_group": "D"
+      },
+      "profile_id": "OHM-045"
+    },
+    {
+      "id": "OHM-046",
+      "slug": "unshielded_power_inductor",
+      "canonical_name": "Unshielded power inductor",
+      "category": "passive",
+      "subcategory": "power_inductor_open_drum",
+      "class": "C",
+      "priority": "P2",
+      "complexity": 3,
+      "package_family": "PKG-SMD_POWER_IND",
+      "package_member": "SDR0604",
+      "generator": "GEN-SMD_INDUCTOR",
+      "mounting": "smd",
+      "names": {
+        "aliases": [
+          "SDR0604",
+          "open drum inductor"
+        ]
+      },
+      "dimensions_mm": {
+        "body_length": {
+          "default": 5.8,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "body_width": {
+          "default": 5.8,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "overall_height": {
+          "default": 4.8,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "pitch": {
+          "default": 5.0,
+          "basis": "UNCERTAIN",
+          "confidence": "L"
+        },
+        "standoff": {
+          "default": 0.0,
+          "basis": "UNCERTAIN",
+          "confidence": "L"
+        }
+      },
+      "body": {
+        "shape": "cylinder_on_baseplate",
+        "material": "MAT_FERRITE_DARK"
+      },
+      "terminals": {
+        "count": 2,
+        "type": "flat_pad",
+        "material": "MAT_TIN_BRIGHT",
+        "pitch_mm": 5.0,
+        "pin1_xy_mm": [
+          -2.5,
+          0
+        ]
+      },
+      "pcb_interface": {
+        "footprint_type": "smd_pads",
+        "standoff_mm": 0.0,
+        "body_offset_mm": [
+          0,
+          0
+        ]
+      },
+      "orientation": {
+        "pcb_plane": "XY",
+        "height_axis": "Z",
+        "origin": "FCO"
+      },
+      "polarity": "none",
+      "pin1_indicator": "none documented",
+      "lod_supported": [
+        "LOD0",
+        "LOD1",
+        "LOD2"
+      ],
+      "confidence": {
+        "dimensions": "M",
+        "geometry": "L",
+        "materials_appearance": "L"
+      },
+      "status": "partial",
+      "source": {
+        "document": "PCB_COMPONENT_3D_LIBRARY_SPEC.md",
+        "line": 7379,
+        "yaml_sha256": "90d36c303e029caf8a2782bd8b0a29065535dbf2bceb999de2989423c5751604",
+        "sections": {
+          "Identity": "Canonical: unshielded power inductor, open ferrite drum. Representative Bourns SDR0604 (5.8 mm diameter x 4.8 mm). Aliases: CD54 style, CDRH style, SDR. Class C variant of the power-inductor generator (drum_open mode). Class C, priority P2, complexity 3, mounting smd. Family PKG-SMD_POWER_IND member SDR0604.",
+          "Physical Dimensions": "Round drum: diameter 5.8 max, height 4.8 max (Bourns SDR0604 datasheet text via two hosted copies; RS listing \"5.8 Dia. x 4.8mm\"). A Farnell-hosted copy also lists terminal feature 1.8 and 6.0 overall (meaning unclear). The first pass assumed a square footprint; the sources call it a diameter, so the body is cylindrical (base plate may be square-ish, not documented). Pad pitch not given: DEFAULT 5.0 centre (UNCERTAIN; candidate 4.0 = 5.8 - 1.8). Basis MFR_DATASHEET, confidence M (body), L (pads).",
+          "Geometry": "Round-ish ferrite drum seen as a square-footprint with round upper flange (drum flange dia 5.8) on a base plate; visible winding wire turns on the barrel; two terminals at the bottom.",
+          "Leads / Pins / Terminals": "2 bottom terminals, SnAgCu finish (datasheet); width 2.0 (UNCERTAIN). Pin 1 at -X, centers x = +-2.5 (DEFAULT).",
+          "PCB Interface": "Pad centres +-2.5 (UNCERTAIN). Underside Z=0.",
+          "Materials": "Body MAT_FERRITE_DARK; winding MAT_WIRE_ENAMEL_COPPER; terminals MAT_TIN_BRIGHT.",
+          "Appearance": "Dark ferrite drum, possibly with black paint; copper winding glimpsed through slots. Marking: part number suffix, not detailed.",
+          "Orientation Markings": "Non-polarized. Start-of-winding dot not documented.",
+          "Recognition Features": "Exposed ferrite drum cylinder; exposed winding; two bottom terminals.",
+          "Parametric Variants": "diameter, height, pad_pitch, term_w.",
+          "Recommended Base Geometry": "Cylinder (flange) + smaller cylinder barrel + torus-like winding band + two box terminals + base plate.",
+          "Modeling Procedure": "1 Base plate box. 2 Lower flange cylinder. 3 Barrel with winding band. 4 Top flange. 5 Terminals.",
+          "LOD Strategy": "LOD0: body box/cylinder + terminal boxes. LOD1: all terminals, top chamfers, dot/pin-1 marks as decals, winding as band. LOD2: fillets, winding turns, wire exits, lead bends.",
+          "Simplification Rules": "May omit: individual turns. Never omit: drum silhouette, two terminals.",
+          "Sources": "Bourns SDR0604 https://www.bourns.com/docs/Product-Datasheets/SDR0604.pdf (S3, opened first pass; ferrite DR core, enameled copper, terminals Ag/Ni/Sn (L suffix) or Ag/Ni/SnPb in the second-pass copies; first pass read SnAgCu). Second pass: mikrocontroller.net copy https://www.mikrocontroller.net/attachment/11761/SDR0604-SMD-Power-Inductors.pdf and Farnell copy https://www.farnell.com/datasheets/2608395.pdf (S4, opened; 5.8 dia, 4.8 height), RS https://uk.rs-online.com/web/p/surface-mount-inductors/1728405 (S4, \"5.8 Dia. x 4.8mm\"). SDR1105 opened, not used. Sumida CDRH6D28 (pccomponents copy) reads 7.0 x 7.0 x 3.0 max, pads 2.65 x 2.0 on a 7.3 pattern but is described as magnetically shielded, so not used here.",
+          "Research Confidence": "Dimensions M (body) / L (pad pitch) ; Geometry L / Materials-appearance L. Validation: diameter and height confirmed by three S3/S4 documents; pads inside the body envelope; pitch 5.0 stays an OHMNI default. Unresolved: land pattern, terminal width, flange/winding proportions, drawings not visually inspected."
+        },
+        "evidence_level": "SPEC_REPORTED; not independently reverified"
+      },
+      "cosmetic_defaults": [
+        {
+          "feature": "visual_terminal_size",
+          "value": [
+            2,
+            2
+          ],
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Use stated width (2.0, 1.25 or 0.30); remaining visual extent uses square width for drum/CMC or twice width for LAN foot. Contact centers unchanged; no land-pattern claim.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "flange_height",
+          "value": 0.7999999999999999,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Each flange occupies one sixth sourced height.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "barrel_diameter",
+          "value": 3.77,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "65 percent sourced flange diameter, inside envelope.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "winding_diameter",
+          "value": 4.93,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "85 percent flange diameter, inside sourced cylinder.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "pad_stock",
+          "value": 0.2,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_diameter",
+          "value": 0.38666666666666666,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "winding_turns",
+          "value": 8,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_size",
+          "value": [
+            2.9,
+            1.45
+          ],
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Optional separate label decal occupies half X and quarter Y of top face.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "library_metadata": {
+        "provisional": true,
+        "uncertain_values": [
+          "pitch: 5.0 (UNCERTAIN/L)",
+          "standoff: 0.0 (UNCERTAIN/L)",
+          "Round drum: diameter 5.8 max, height 4.8 max (Bourns SDR0604 datasheet text via two hosted copies; RS listing \"5.8 Dia. x 4.8mm\"). A Farnell-hosted copy also lists terminal feature 1.8 and 6.0 overall (meaning unclear). The first pass assumed a square footprint; the sources call it a diameter, so the body is cylindrical (base plate may be square-ish, not documented). Pad pitch not given: DEFAULT 5.0 centre (UNCERTAIN; candidate 4.0 = 5.8 - 1.8). Basis MFR_DATASHEET, confidence M (body), L (pads).",
+          "2 bottom terminals, SnAgCu finish (datasheet); width 2.0 (UNCERTAIN). Pin 1 at -X, centers x = +-2.5 (DEFAULT).",
+          "Pad centres +-2.5 (UNCERTAIN). Underside Z=0.",
+          "Dimensions M (body) / L (pad pitch) ; Geometry L / Materials-appearance L. Validation: diameter and height confirmed by three S3/S4 documents; pads inside the body envelope; pitch 5.0 stays an OHMNI default. Unresolved: land pattern, terminal width, flange/winding proportions, drawings not visually inspected.",
+          "COSMETIC_PROVISIONAL visual_terminal_size=[2, 2]: Use stated width (2.0, 1.25 or 0.30); remaining visual extent uses square width for drum/CMC or twice width for LAN foot. Contact centers unchanged; no land-pattern claim.",
+          "COSMETIC_PROVISIONAL flange_height=0.7999999999999999: Each flange occupies one sixth sourced height.",
+          "COSMETIC_PROVISIONAL barrel_diameter=3.77: 65 percent sourced flange diameter, inside envelope.",
+          "COSMETIC_PROVISIONAL winding_diameter=4.93: 85 percent flange diameter, inside sourced cylinder.",
+          "COSMETIC_PROVISIONAL pad_stock=0.2: Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "COSMETIC_PROVISIONAL marker_diameter=0.38666666666666666: OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "COSMETIC_PROVISIONAL winding_turns=8: Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "COSMETIC_PROVISIONAL label_size=[2.9, 1.45]: Optional separate label decal occupies half X and quarter Y of top face.",
+          "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+        ],
+        "appearance_confidence": "L",
+        "electrical_admission": "NOT_EVALUATED",
+        "footprint_binding": null,
+        "conflicts": [
+          {
+            "code": "DRUM_PAD_SPAN",
+            "geometry_choice": "Stated provisional centers +/-2.5 and visual 2 mm terminals span 7 mm, beyond 5.8 mm drum diameter. Keep stated centers, report metal overhang."
+          }
+        ],
+        "implementation_status": "IMPLEMENTED",
+        "implementation_group": "D"
+      },
+      "profile_id": "OHM-046"
+    },
+    {
+      "id": "OHM-048",
+      "slug": "radial_drum_inductor",
+      "canonical_name": "Radial drum-core inductor",
+      "category": "passive",
+      "subcategory": "radial_drum",
+      "class": "A",
+      "priority": "P2",
+      "complexity": 3,
+      "package_family": "PKG-DRUM_IND",
+      "package_member": "RLB0914",
+      "generator": "GEN-SMD_INDUCTOR",
+      "mounting": "tht",
+      "names": {
+        "aliases": [
+          "RLB0914",
+          "RLB1014",
+          "WE-TI"
+        ]
+      },
+      "dimensions_mm": {
+        "body_length": {
+          "default": 8.7,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "body_width": {
+          "default": 8.7,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "overall_height": {
+          "default": 12.0,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "pitch": {
+          "default": 5.0,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "standoff": {
+          "default": 0.0,
+          "basis": "UNCERTAIN",
+          "confidence": "L"
+        }
+      },
+      "body": {
+        "shape": "cylinder",
+        "material": "MAT_HEATSHRINK_BLACK"
+      },
+      "terminals": {
+        "count": 2,
+        "type": "round_lead",
+        "material": "MAT_TIN_BRIGHT",
+        "pitch_mm": 5.0,
+        "pin1_xy_mm": [
+          -2.5,
+          0
+        ]
+      },
+      "pcb_interface": {
+        "footprint_type": "tht_holes",
+        "standoff_mm": 0.0,
+        "hole_diameter_mm": 1.0,
+        "body_offset_mm": [
+          0,
+          0
+        ]
+      },
+      "orientation": {
+        "pcb_plane": "XY",
+        "height_axis": "Z",
+        "origin": "FCO"
+      },
+      "polarity": "none",
+      "pin1_indicator": "none documented",
+      "lod_supported": [
+        "LOD0",
+        "LOD1",
+        "LOD2"
+      ],
+      "confidence": {
+        "dimensions": "M",
+        "geometry": "M",
+        "materials_appearance": "L"
+      },
+      "status": "complete",
+      "source": {
+        "document": "PCB_COMPONENT_3D_LIBRARY_SPEC.md",
+        "line": 7546,
+        "yaml_sha256": "432a53c562e25c258f6df7bbf505cf4ff5b668d0b34889b3228040f44472cfa2",
+        "sections": {
+          "Identity": "Canonical: radial drum-core inductor. Representative Bourns RLB0914 (also Wurth WE-TI 1018). Aliases: radial choke, bobbin inductor. Class A, priority P2, complexity 3, mounting tht. Family PKG-DRUM_IND member RLB0914.",
+          "Physical Dimensions": "Diameter 8.7 +-0.5, height 12.0 +-1.0, lead spacing 5.0 +-0.8, lead dia 0.65 (Bourns RLB datasheet REV. 11/17, RLB0914 row; RS, ozdisan and Conrad agree). The part name 0914 does not give the size (RLB1014 has the same 8.7 x 12.0), so the earlier name-vs-listing conflict is resolved to 8.7 x 12.0. Uncut lead lengths 25 +-5 / 18 +-5 (not modeled). Confidence M-H.",
+          "Geometry": "Upright cylinder with slightly domed top, ferrite drum with winding covered by sleeve/coating, two vertical leads out of the bottom.",
+          "Leads / Pins / Terminals": "2 round leads dia 0.65 along X, at (-2.5,0) and (+2.5,0). Tails to Z=-2.6 default.",
+          "PCB Interface": "Holes dia 1.0 default (UNCERTAIN), pitch 5.0. Body seated on board with optional 0.5 standoff default 0.",
+          "Materials": "Body MAT_HEATSHRINK_BLACK or MAT_COIL_COAT; leads MAT_TIN_BRIGHT.",
+          "Appearance": "Shrinkable sleeve (125 C, 600 V per datasheet), color not stated in the opened text (commonly dark/black or colored with printed value; RESEARCH_REQUIRED). Wurth WE-TI 7447231471 is a different, 4-pin-or-2-pin sleeved drum; its second-pass datasheet read (dia 11 max, pin 0.8) did not match a 10 x 18 case and is not used for dimensions.",
+          "Orientation Markings": "Non-polarized; pin 1 at -X; start-lead marker not documented.",
+          "Recognition Features": "Tall cylinder with two leads, sleeve print.",
+          "Parametric Variants": "diameter, height, spacing, lead_dia, sleeve_color.",
+          "Recommended Base Geometry": "Cylinder + dome + two lead cylinders.",
+          "Modeling Procedure": "1 Cylinder. 2 Dome top. 3 Leads. 4 Print decal.",
+          "LOD Strategy": "LOD0: body box/cylinder + terminal boxes. LOD1: all terminals, top chamfers, dot/pin-1 marks as decals, winding as band. LOD2: fillets, winding turns, wire exits, lead bends.",
+          "Simplification Rules": "May omit: dome. Never omit: height/diameter ratio, two leads.",
+          "Sources": "Bourns RLB Series Radial Lead Inductors, REV. 11/17, https://static.chipdip.ru/lib/620/DOC011620559.pdf and https://store.comet.bg/download-file.php?id=25642 (S4-hosted S3, opened: dimensions table, ferrite DR core, enameled copper, Cu/Sn terminals, shrinkable tube 125 C 600 V); Conrad https://www.conrad.com/p/bourns-rlb0914-100kl-choke-radial-lead-rlb0914-contact-spacing-5-mm-10-h-0048-27-a-1-pcs-447209 (S4: 8.7 x 12, contact spacing 5); RS Bourns RLB0914-100KL https://uk.rs-online.com/web/p/leaded-inductors/8118799 (S4); Wurth 7447231471 datasheet (opened, not used for dims).",
+          "Research Confidence": "Dimensions M / Geometry M / Materials-appearance L. Validation: body dia 8.7 < lead spacing + margins (leads at +-2.5 inside the footprint); datasheet and three distributor sources agree on 8.7 x 12.0 and 5.0; letters C, D, E of the datasheet not mapped (not needed). Sleeve color and dome shape undocumented but not key dimensions. Status complete for the key dimensions."
+        },
+        "evidence_level": "SPEC_REPORTED; not independently reverified"
+      },
+      "cosmetic_defaults": [
+        {
+          "feature": "dome_height",
+          "value": 0.6,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Shallow rounded cap inside final 12 mm height, one twentieth height.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "pad_stock",
+          "value": 0.2,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_diameter",
+          "value": 0.58,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "winding_turns",
+          "value": 8,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_size",
+          "value": [
+            4.35,
+            2.175
+          ],
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Optional separate label decal occupies half X and quarter Y of top face.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "library_metadata": {
+        "provisional": true,
+        "uncertain_values": [
+          "standoff: 0.0 (UNCERTAIN/L)",
+          "Holes dia 1.0 default (UNCERTAIN), pitch 5.0. Body seated on board with optional 0.5 standoff default 0.",
+          "Shrinkable sleeve (125 C, 600 V per datasheet), color not stated in the opened text (commonly dark/black or colored with printed value; RESEARCH_REQUIRED). Wurth WE-TI 7447231471 is a different, 4-pin-or-2-pin sleeved drum; its second-pass datasheet read (dia 11 max, pin 0.8) did not match a 10 x 18 case and is not used for dimensions.",
+          "Dimensions M / Geometry M / Materials-appearance L. Validation: body dia 8.7 < lead spacing + margins (leads at +-2.5 inside the footprint); datasheet and three distributor sources agree on 8.7 x 12.0 and 5.0; letters C, D, E of the datasheet not mapped (not needed). Sleeve color and dome shape undocumented but not key dimensions. Status complete for the key dimensions.",
+          "COSMETIC_PROVISIONAL dome_height=0.6: Shallow rounded cap inside final 12 mm height, one twentieth height.",
+          "COSMETIC_PROVISIONAL pad_stock=0.2: Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "COSMETIC_PROVISIONAL marker_diameter=0.58: OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "COSMETIC_PROVISIONAL winding_turns=8: Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "COSMETIC_PROVISIONAL label_size=[4.35, 2.175]: Optional separate label decal occupies half X and quarter Y of top face.",
+          "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+        ],
+        "appearance_confidence": "L",
+        "electrical_admission": "NOT_EVALUATED",
+        "footprint_binding": null,
+        "conflicts": [],
+        "implementation_status": "IMPLEMENTED",
+        "implementation_group": "D"
+      },
+      "profile_id": "OHM-048"
+    },
+    {
+      "id": "OHM-049",
+      "slug": "toroidal_inductor",
+      "canonical_name": "Toroidal inductor",
+      "category": "passive",
+      "subcategory": "toroid_leaded",
+      "class": "A",
+      "priority": "P2",
+      "complexity": 3,
+      "package_family": "PKG-TOROID",
+      "package_member": "2107",
+      "generator": "GEN-SMD_INDUCTOR",
+      "mounting": "tht",
+      "names": {
+        "aliases": [
+          "2107-V-RC",
+          "toroid"
+        ]
+      },
+      "dimensions_mm": {
+        "body_length": {
+          "default": 21.84,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "body_width": {
+          "default": 21.84,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "overall_height": {
+          "default": 11.43,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "pitch": {
+          "default": 8.128,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "standoff": {
+          "default": 1.57,
+          "basis": "DERIVED",
+          "confidence": "L"
+        }
+      },
+      "body": {
+        "shape": "torus",
+        "material": "MAT_COIL_COAT"
+      },
+      "terminals": {
+        "count": 2,
+        "type": "round_lead",
+        "material": "MAT_TIN_BRIGHT",
+        "pitch_mm": 8.128,
+        "pin1_xy_mm": [
+          -4.064,
+          0
+        ]
+      },
+      "pcb_interface": {
+        "footprint_type": "tht_holes",
+        "standoff_mm": 1.57,
+        "hole_diameter_mm": 1.1,
+        "body_offset_mm": [
+          0,
+          0
+        ]
+      },
+      "orientation": {
+        "pcb_plane": "XY",
+        "height_axis": "Z",
+        "origin": "FCO"
+      },
+      "polarity": "none",
+      "pin1_indicator": "none documented",
+      "lod_supported": [
+        "LOD0",
+        "LOD1",
+        "LOD2"
+      ],
+      "confidence": {
+        "dimensions": "M",
+        "geometry": "L",
+        "materials_appearance": "L"
+      },
+      "status": "partial",
+      "source": {
+        "document": "PCB_COMPONENT_3D_LIBRARY_SPEC.md",
+        "line": 7630,
+        "yaml_sha256": "dfcc3c822140878f13fabb33aa01951cc5bb39c35cc001a9f8212dcc025322d5",
+        "sections": {
+          "Identity": "Canonical: toroidal inductor, leaded. Representative Bourns 2107-V-RC (2100 series). Aliases: toroid choke. Class A, priority P2, complexity 3, mounting tht. Family PKG-TOROID member 2107.",
+          "Physical Dimensions": "OD 21.84 (0.86 in max), thickness 11.43 (0.45 in max), lead spacing 8.128 (0.32 in), lead dia 0.8636 (0.034 in), lead length 12.7 (0.5 in uncut), leads tinned to within 1.57 (0.062 in) of the mounting plane (Bourns 2100 series datasheet REV. 07/09, drawing callouts and table, plus RS/Octopart). ID default 12.0 = 0.55 OD (UNCERTAIN, not sourced). Dim B 0.75 in (19.05) unresolved. Confidence M.",
+          "Geometry": "Torus with rounded-rectangular section, coated; copper turns possibly visible through the coat. The datasheet drawing shows both vertical and horizontal mounting; OHMNI default is the disc flat on the board (vertical axis Z) with two straight leads down. Exit geometry of leads otherwise RESEARCH_REQUIRED.",
+          "Leads / Pins / Terminals": "2 round leads dia 0.8636 at (-4.064,0) and (+4.064,0). Lead exit height RESEARCH_REQUIRED; default straight down from bottom.",
+          "PCB Interface": "Holes dia 1.1 default; pitch 8.128. Disc axis vertical, standoff 1.57 (DERIVED from the tinned-lead callout, L-M; first pass default 1.0 replaced).",
+          "Materials": "Body MAT_COIL_COAT (param); leads MAT_TIN_BRIGHT.",
+          "Appearance": "Coating color parameter (green, yellow, gray, black common, unverified for this series).",
+          "Orientation Markings": "Non-polarized; lead 1 at -X.",
+          "Recognition Features": "Round donut; two thick leads.",
+          "Parametric Variants": "od, id, thickness, coat_color, axis, lead_pitch.",
+          "Recommended Base Geometry": "Torus (sweep rounded rectangle) + two cylinders.",
+          "Modeling Procedure": "1 Torus. 2 Leads. 3 Optional winding band.",
+          "LOD Strategy": "LOD0: body box/cylinder + terminal boxes. LOD1: all terminals, top chamfers, dot/pin-1 marks as decals, winding as band. LOD2: fillets, winding turns, wire exits, lead bends.",
+          "Simplification Rules": "May omit: turns. Never omit: hole in center, two leads.",
+          "Sources": "Bourns 2100 series High Current Toroid Inductors, REV. 07/09, https://www.farnell.com/datasheets/2907663.pdf (S4-hosted S3, opened: 0.86 max, 0.45 max, 0.5 in leads, 0.062 in tinned height, A/B/C table in inches); RS Bourns 2107-V-RC https://uk.rs-online.com/web/p/leaded-inductors/7360936 (S4); Octopart https://octopart.com/part/bourns/2107-V-RC (S4); Novapart https://novapart.co/products/2107-V-RC/toroidal-inductor-33uh-5a-15/ (S4: A .32, B .75, C .034).",
+          "Research Confidence": "Dimensions M / Geometry L / Materials-appearance L. Validation: 0.32 in = 8.128 and 0.034 in = 0.8636 exactly match the RS values, 0.86/0.45 max match 21.84/11.43; leads (+-4.064) lie inside the OD. Unresolved: toroid ID, coat color, dim B 0.75 in meaning, whether leads exit radially/tangentially. A real toroid example: the 2100 series is a toroid; WE-TI is NOT (it is a sleeved drum, PKG-DRUM_IND)."
+        },
+        "evidence_level": "SPEC_REPORTED; not independently reverified"
+      },
+      "cosmetic_defaults": [
+        {
+          "feature": "pad_stock",
+          "value": 0.2,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_diameter",
+          "value": 1.456,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "winding_turns",
+          "value": 8,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_size",
+          "value": [
+            10.92,
+            5.46
+          ],
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Optional separate label decal occupies half X and quarter Y of top face.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "library_metadata": {
+        "provisional": true,
+        "uncertain_values": [
+          "standoff: 1.57 (DERIVED/L)",
+          "OD 21.84 (0.86 in max), thickness 11.43 (0.45 in max), lead spacing 8.128 (0.32 in), lead dia 0.8636 (0.034 in), lead length 12.7 (0.5 in uncut), leads tinned to within 1.57 (0.062 in) of the mounting plane (Bourns 2100 series datasheet REV. 07/09, drawing callouts and table, plus RS/Octopart). ID default 12.0 = 0.55 OD (UNCERTAIN, not sourced). Dim B 0.75 in (19.05) unresolved. Confidence M.",
+          "Torus with rounded-rectangular section, coated; copper turns possibly visible through the coat. The datasheet drawing shows both vertical and horizontal mounting; OHMNI default is the disc flat on the board (vertical axis Z) with two straight leads down. Exit geometry of leads otherwise RESEARCH_REQUIRED.",
+          "2 round leads dia 0.8636 at (-4.064,0) and (+4.064,0). Lead exit height RESEARCH_REQUIRED; default straight down from bottom.",
+          "Dimensions M / Geometry L / Materials-appearance L. Validation: 0.32 in = 8.128 and 0.034 in = 0.8636 exactly match the RS values, 0.86/0.45 max match 21.84/11.43; leads (+-4.064) lie inside the OD. Unresolved: toroid ID, coat color, dim B 0.75 in meaning, whether leads exit radially/tangentially. A real toroid example: the 2100 series is a toroid; WE-TI is NOT (it is a sleeved drum, PKG-DRUM_IND).",
+          "COSMETIC_PROVISIONAL pad_stock=0.2: Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "COSMETIC_PROVISIONAL marker_diameter=1.456: OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "COSMETIC_PROVISIONAL winding_turns=8: Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "COSMETIC_PROVISIONAL label_size=[10.92, 5.46]: Optional separate label decal occupies half X and quarter Y of top face.",
+          "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+        ],
+        "appearance_confidence": "L",
+        "electrical_admission": "NOT_EVALUATED",
+        "footprint_binding": null,
+        "conflicts": [
+          {
+            "code": "TOROID_INNER_DIAMETER",
+            "geometry_choice": "Use stated 12.0 mm ID default (rounded 0.55*21.84=12.012); OD21.84/body thickness11.43, add stated1.57 standoff. Leads +/-4.064 lie inside aperture; render stated straight-down exit default without inventing unsourced attachment routes."
+          }
+        ],
+        "implementation_status": "IMPLEMENTED",
+        "implementation_group": "D"
+      },
+      "profile_id": "OHM-049"
+    },
+    {
+      "id": "OHM-050",
+      "slug": "smd_common_mode_choke",
+      "canonical_name": "SMD common-mode choke",
+      "category": "passive",
+      "subcategory": "cmc_smd",
+      "class": "A",
+      "priority": "P2",
+      "complexity": 3,
+      "package_family": "PKG-CMC_SMD",
+      "package_member": "WE-SL5",
+      "generator": "GEN-SMD_INDUCTOR",
+      "mounting": "smd",
+      "names": {
+        "aliases": [
+          "744272222",
+          "WE-SL5",
+          "ACM4520"
+        ]
+      },
+      "dimensions_mm": {
+        "body_length": {
+          "default": 10.0,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "body_width": {
+          "default": 8.7,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "overall_height": {
+          "default": 6.5,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "pitch": {
+          "default": 6.22,
+          "basis": "DERIVED",
+          "confidence": "M"
+        },
+        "standoff": {
+          "default": 0.0,
+          "basis": "UNCERTAIN",
+          "confidence": "L"
+        }
+      },
+      "body": {
+        "shape": "rect_box",
+        "material": "MAT_PLASTIC_BLACK"
+      },
+      "terminals": {
+        "count": 4,
+        "type": "flat_pad",
+        "material": "MAT_TIN_BRIGHT",
+        "pitch_mm": 6.22,
+        "pin1_xy_mm": [
+          -3.81,
+          3.11
+        ]
+      },
+      "pcb_interface": {
+        "footprint_type": "smd_pads",
+        "standoff_mm": 0.0,
+        "body_offset_mm": [
+          0,
+          0
+        ]
+      },
+      "orientation": {
+        "pcb_plane": "XY",
+        "height_axis": "Z",
+        "origin": "FCO"
+      },
+      "polarity": "none",
+      "pin1_indicator": "dot at corner of pin 1 (OHMNI default)",
+      "lod_supported": [
+        "LOD0",
+        "LOD1",
+        "LOD2"
+      ],
+      "confidence": {
+        "dimensions": "M",
+        "geometry": "L",
+        "materials_appearance": "L"
+      },
+      "status": "partial",
+      "source": {
+        "document": "PCB_COMPONENT_3D_LIBRARY_SPEC.md",
+        "line": 7714,
+        "yaml_sha256": "3b9384a875aa6189852e91b6b4e00bea5724c20942ae88ff6f3b9f89205eaed5",
+        "sections": {
+          "Identity": "Canonical: SMD common-mode choke, 4-pad. Representative now Wurth WE-SL5 744272222 (10.0 x 8.7 x 6.5 max), with TDK ACM4520-142-2P-T000 (4.7 x 4.5 x 2.0) as the small variant (package member: ACM4520 keeps the entry slug). Aliases: CMC, line filter. Class A, priority P2, complexity 3, mounting smd. Family PKG-CMC_SMD members ACM4520 and WE-SL5.",
+          "Physical Dimensions": "WE-SL5 (adopted as default, S3): L 10.0 +-0.3, W 8.70 +-0.3, H 6.50 max; pad centres +-3.81 (E 7.62) by +-3.11 (D 6.22), land pads 2.7 x 2.7 (DERIVED from land 10.32 / 8.92), terminal width G 1.25. TDK ACM4520 (variant): 4.7 x 4.5 x 2.0 (lioncircuits + LCSC agree on 4.7 x 4.5; H single source), pad dims RESEARCH_REQUIRED. Confidence M (WE-SL5), L-M (ACM4520).",
+          "Geometry": "WE-SL5: rectangular housing (UL94-V0 per datasheet) with flat top and four terminal clips at the corners wrapping to the underside; ACM4520: small flat-top molded block with 4 pads at corners.",
+          "Leads / Pins / Terminals": "4 pads, CCW numbering from top-left. WE-SL5 centres: pin 1 (-3.81,+3.11), 2 (-3.81,-3.11), 3 (+3.81,-3.11), 4 (+3.81,+3.11); winding L1-2 and L4-3 (datasheet electrical table) so each winding sits on one side. Pad 2.7 x 2.7 land; component terminal width 1.25 (G), thickness UNCERTAIN. ACM4520 default pad 1.0 x 0.9 (UNCERTAIN).",
+          "PCB Interface": "WE-SL5 land pattern 10.32 x 8.92 outer, pads 2.7 x 2.7 (DERIVED mapping, letters not visually confirmed). Body offset 0, underside Z=0.",
+          "Materials": "Body MAT_FERRITE_DARK or MAT_MOLDED_COMPOSITE_DARK; terminals MAT_TIN_BRIGHT.",
+          "Appearance": "Dark gray ferrite/resin, matte; pin-1 dot.",
+          "Orientation Markings": "Pin 1 dot at top-left corner (OHMNI default; datasheet marking not extracted). Winding map: pins 1-2 and 4-3 per Wurth electrical table.",
+          "Recognition Features": "Small dark rectangle with 4 corner pads and dot.",
+          "Parametric Variants": "length, width, height, pad_size.",
+          "Recommended Base Geometry": "Box + four pad boxes.",
+          "Modeling Procedure": "1 Box. 2 Pads. 3 Dot.",
+          "LOD Strategy": "LOD0: body box/cylinder + terminal boxes. LOD1: all terminals, top chamfers, dot/pin-1 marks as decals, winding as band. LOD2: fillets, winding turns, wire exits, lead bends.",
+          "Simplification Rules": "May omit: edge chamfers. Never omit: 4 pads, pin-1 dot.",
+          "Sources": "Wurth WE-SL5 744272222 https://static.chipdip.ru/lib/031/DOC044031463.pdf (S4-hosted S3, opened: A-G table, land 10.32/2.7/8.92, L1-2;4-3); TDK ACM4520: lioncircuits https://www.lioncircuits.com/parts/ACM4520-142-2P-T000 (S4/S5), LCSC https://www.lcsc.com/product-detail/C404373.html (S4, 4.7x4.5, 4 pads); RS WE-SL5 https://uk.rs-online.com/web/p/surface-mount-inductors/5003284 (S4). Murata DLW5: not obtained (Murata PDF 500 error).",
+          "Research Confidence": "Dimensions M / Geometry L / Materials-appearance L. Validation: land numbers decompose exactly into E + 2.7 = 10.32 and D + 2.7 = 8.92, supporting pads of 2.7 x 2.7 at the E/D centres; pad centres lie within the 10.0 x 8.7 body footprint region (pads partly overhang as in a land pattern); 4 pins CCW. Unresolved: letter-to-feature mapping not visually verified, ACM4520 pad geometry and height (single source), dot position. Default material changed to MAT_PLASTIC_BLACK for the WE-SL5 housing (datasheet says UL94-V0 housing)."
+        },
+        "evidence_level": "SPEC_REPORTED; not independently reverified"
+      },
+      "cosmetic_defaults": [
+        {
+          "feature": "visual_terminal_size",
+          "value": [
+            1.25,
+            1.25
+          ],
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Use stated width (2.0, 1.25 or 0.30); remaining visual extent uses square width for drum/CMC or twice width for LAN foot. Contact centers unchanged; no land-pattern claim.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "pad_stock",
+          "value": 0.2,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_diameter",
+          "value": 0.58,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "winding_turns",
+          "value": 8,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_size",
+          "value": [
+            5.0,
+            2.175
+          ],
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Optional separate label decal occupies half X and quarter Y of top face.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "library_metadata": {
+        "provisional": true,
+        "uncertain_values": [
+          "standoff: 0.0 (UNCERTAIN/L)",
+          "WE-SL5 (adopted as default, S3): L 10.0 +-0.3, W 8.70 +-0.3, H 6.50 max; pad centres +-3.81 (E 7.62) by +-3.11 (D 6.22), land pads 2.7 x 2.7 (DERIVED from land 10.32 / 8.92), terminal width G 1.25. TDK ACM4520 (variant): 4.7 x 4.5 x 2.0 (lioncircuits + LCSC agree on 4.7 x 4.5; H single source), pad dims RESEARCH_REQUIRED. Confidence M (WE-SL5), L-M (ACM4520).",
+          "4 pads, CCW numbering from top-left. WE-SL5 centres: pin 1 (-3.81,+3.11), 2 (-3.81,-3.11), 3 (+3.81,-3.11), 4 (+3.81,+3.11); winding L1-2 and L4-3 (datasheet electrical table) so each winding sits on one side. Pad 2.7 x 2.7 land; component terminal width 1.25 (G), thickness UNCERTAIN. ACM4520 default pad 1.0 x 0.9 (UNCERTAIN).",
+          "Dimensions M / Geometry L / Materials-appearance L. Validation: land numbers decompose exactly into E + 2.7 = 10.32 and D + 2.7 = 8.92, supporting pads of 2.7 x 2.7 at the E/D centres; pad centres lie within the 10.0 x 8.7 body footprint region (pads partly overhang as in a land pattern); 4 pins CCW. Unresolved: letter-to-feature mapping not visually verified, ACM4520 pad geometry and height (single source), dot position. Default material changed to MAT_PLASTIC_BLACK for the WE-SL5 housing (datasheet says UL94-V0 housing).",
+          "COSMETIC_PROVISIONAL visual_terminal_size=[1.25, 1.25]: Use stated width (2.0, 1.25 or 0.30); remaining visual extent uses square width for drum/CMC or twice width for LAN foot. Contact centers unchanged; no land-pattern claim.",
+          "COSMETIC_PROVISIONAL pad_stock=0.2: Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "COSMETIC_PROVISIONAL marker_diameter=0.58: OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "COSMETIC_PROVISIONAL winding_turns=8: Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "COSMETIC_PROVISIONAL label_size=[5.0, 2.175]: Optional separate label decal occupies half X and quarter Y of top face.",
+          "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+        ],
+        "appearance_confidence": "L",
+        "electrical_admission": "NOT_EVALUATED",
+        "footprint_binding": null,
+        "conflicts": [],
+        "implementation_status": "IMPLEMENTED",
+        "implementation_group": "D"
+      },
+      "profile_id": "OHM-050"
+    },
+    {
+      "id": "OHM-051",
+      "slug": "tht_common_mode_choke",
+      "canonical_name": "THT common-mode choke",
+      "category": "passive",
+      "subcategory": "cmc_tht",
+      "class": "A",
+      "priority": "P2",
+      "complexity": 3,
+      "package_family": "PKG-CMC_THT",
+      "package_member": "744821240",
+      "generator": "GEN-SMD_INDUCTOR",
+      "mounting": "tht",
+      "names": {
+        "aliases": [
+          "744821240",
+          "WE-CMB"
+        ]
+      },
+      "dimensions_mm": {
+        "body_length": {
+          "default": 15.8,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "body_width": {
+          "default": 7.8,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "overall_height": {
+          "default": 18.0,
+          "basis": "MFR_DATASHEET",
+          "confidence": "L"
+        },
+        "pitch": {
+          "default": 4.5,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "standoff": {
+          "default": 0.0,
+          "basis": "UNCERTAIN",
+          "confidence": "L"
+        }
+      },
+      "body": {
+        "shape": "rect_box",
+        "material": "MAT_PLASTIC_BLACK"
+      },
+      "terminals": {
+        "count": 4,
+        "type": "round_lead",
+        "material": "MAT_TIN_BRIGHT",
+        "pitch_mm": 4.5,
+        "pin1_xy_mm": [
+          -5.0,
+          2.25
+        ]
+      },
+      "pcb_interface": {
+        "footprint_type": "tht_holes",
+        "standoff_mm": 0.0,
+        "hole_diameter_mm": 1.1,
+        "body_offset_mm": [
+          0,
+          0
+        ]
+      },
+      "orientation": {
+        "pcb_plane": "XY",
+        "height_axis": "Z",
+        "origin": "FCO"
+      },
+      "polarity": "none",
+      "pin1_indicator": "dot (OHMNI default)",
+      "lod_supported": [
+        "LOD0",
+        "LOD1",
+        "LOD2"
+      ],
+      "confidence": {
+        "dimensions": "L",
+        "geometry": "L",
+        "materials_appearance": "L"
+      },
+      "status": "partial",
+      "source": {
+        "document": "PCB_COMPONENT_3D_LIBRARY_SPEC.md",
+        "line": 7797,
+        "yaml_sha256": "7ab220f109bb64dc8a9fb077dbbdead447355a981d7c951fadbee6b61076eaec",
+        "sections": {
+          "Identity": "Canonical: THT radial common-mode choke. Representative Wurth 744821240. Aliases: line filter choke, mains choke. Class A, priority P2, complexity 3, mounting tht. Family PKG-CMC_THT member 744821240.",
+          "Physical Dimensions": "L 15.8, W 7.8, H 18 (Wurth description \"15.8 x 7.8 x 18mm\" quoted by lioncircuits; the Wurth datasheet extraction shows 18.0 max / 15.8 max / 10.0 +-0.5 callouts with unclear axes: conflict kept, 18 adopted as height). Pin pitch 4.5 +-0.5, row spacing 10.0 (datasheet recommended hole pattern 10.0 x 4.5), hole dia 1.1, pin length 2.5. Confidence M-L.",
+          "Geometry": "Rectangular case (plastic/potted) with 4 round pins in two rows from the bottom.",
+          "Leads / Pins / Terminals": "4 round pins dia 0.8 default (UNCERTAIN; hole 1.1 per datasheet). Pin 1 (-5.0,+2.25), 2 (-5.0,-2.25), 3 (+5.0,-2.25), 4 (+5.0,+2.25) (rows 10.0 apart in X, pitch 4.5 in Y; Wurth pin numbering 1-4 in a rectangle, order not visually confirmed).",
+          "PCB Interface": "Holes 1.1 (Wurth recommended; first pass default 1.2 replaced); pitch 4.5 along Y, rows 10.0 along X. Seating on case feet default 0.",
+          "Materials": "Case MAT_PLASTIC_BLACK; pins MAT_TIN_BRIGHT.",
+          "Appearance": "Case color black/blue; RESEARCH_REQUIRED.",
+          "Orientation Markings": "Pin 1 corner marked by dot (OHMNI default).",
+          "Recognition Features": "Tall rectangular case; 4 pins.",
+          "Parametric Variants": "length, width, height, pitch, row_spacing.",
+          "Recommended Base Geometry": "Box + 4 cylinders.",
+          "Modeling Procedure": "1 Box. 2 Pins. 3 Marking.",
+          "LOD Strategy": "LOD0: body box/cylinder + terminal boxes. LOD1: all terminals, top chamfers, dot/pin-1 marks as decals, winding as band. LOD2: fillets, winding turns, wire exits, lead bends.",
+          "Simplification Rules": "May omit: texture. Never omit: pin pattern, height.",
+          "Sources": "lioncircuits 744821240 https://www.lioncircuits.com/parts/744821240 (S4/S5: Wurth description 15.8 x 7.8 x 18, pitch 4.5, pin length 2.5); Wurth 744821240 datasheet https://www.we-online.com/components/products/datasheet/744821240.pdf (S3, opened second pass; hole pattern 10.0 x 4.5, hole 1.1; jumbled extraction).",
+          "Research Confidence": "Dimensions L-M / Geometry L / Materials-appearance L. Validation: pin rows (10.0) fit within the 15.8 body length and pitch 4.5 within width 7.8 (rows may overhang if the 18.0 axis is the long one: unresolved); pin count 4. Unresolved: axis assignment of 15.8/18.0/10.0, pin diameter, case color/shape, pin numbering order."
+        },
+        "evidence_level": "SPEC_REPORTED; not independently reverified"
+      },
+      "cosmetic_defaults": [
+        {
+          "feature": "pad_stock",
+          "value": 0.2,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_diameter",
+          "value": 0.52,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "winding_turns",
+          "value": 8,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_size",
+          "value": [
+            7.9,
+            1.95
+          ],
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Optional separate label decal occupies half X and quarter Y of top face.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "library_metadata": {
+        "provisional": true,
+        "uncertain_values": [
+          "overall_height: 18.0 (MFR_DATASHEET/L)",
+          "standoff: 0.0 (UNCERTAIN/L)",
+          "4 round pins dia 0.8 default (UNCERTAIN; hole 1.1 per datasheet). Pin 1 (-5.0,+2.25), 2 (-5.0,-2.25), 3 (+5.0,-2.25), 4 (+5.0,+2.25) (rows 10.0 apart in X, pitch 4.5 in Y; Wurth pin numbering 1-4 in a rectangle, order not visually confirmed).",
+          "Case color black/blue; RESEARCH_REQUIRED.",
+          "Dimensions L-M / Geometry L / Materials-appearance L. Validation: pin rows (10.0) fit within the 15.8 body length and pitch 4.5 within width 7.8 (rows may overhang if the 18.0 axis is the long one: unresolved); pin count 4. Unresolved: axis assignment of 15.8/18.0/10.0, pin diameter, case color/shape, pin numbering order.",
+          "COSMETIC_PROVISIONAL pad_stock=0.2: Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "COSMETIC_PROVISIONAL marker_diameter=0.52: OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "COSMETIC_PROVISIONAL winding_turns=8: Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "COSMETIC_PROVISIONAL label_size=[7.9, 1.95]: Optional separate label decal occupies half X and quarter Y of top face.",
+          "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+        ],
+        "appearance_confidence": "L",
+        "electrical_admission": "NOT_EVALUATED",
+        "footprint_binding": null,
+        "conflicts": [
+          {
+            "code": "CMC_AXES",
+            "geometry_choice": "Use YAML body X15.8/Y7.8/H18 and explicit10x4.5 pin rectangle; 10/18 drawing labels remain unresolved."
+          }
+        ],
+        "implementation_status": "IMPLEMENTED",
+        "implementation_group": "D"
+      },
+      "profile_id": "OHM-051"
+    },
+    {
+      "id": "OHM-052",
+      "slug": "small_signal_transformer",
+      "canonical_name": "Small signal transformer",
+      "category": "passive",
+      "subcategory": "bobbin_audio",
+      "class": "A",
+      "priority": "P3",
+      "complexity": 3,
+      "package_family": "PKG-XFMR_SIGNAL",
+      "package_member": "TY-145P",
+      "generator": "GEN-TRANSFORMER",
+      "mounting": "tht",
+      "names": {
+        "aliases": [
+          "TY-145P"
+        ]
+      },
+      "dimensions_mm": {
+        "body_length": {
+          "default": 17.8,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "body_width": {
+          "default": 20.6,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "overall_height": {
+          "default": 18.8,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "pitch": {
+          "default": 4.75,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "standoff": {
+          "default": 0.0,
+          "basis": "UNCERTAIN",
+          "confidence": "L"
+        }
+      },
+      "body": {
+        "shape": "rect_box",
+        "material": "MAT_PLASTIC_BLACK"
+      },
+      "terminals": {
+        "count": 6,
+        "type": "square_pin",
+        "material": "MAT_TIN_BRIGHT",
+        "pitch_mm": 4.75,
+        "pin1_xy_mm": [
+          -5.335,
+          4.75
+        ]
+      },
+      "pcb_interface": {
+        "footprint_type": "tht_holes",
+        "standoff_mm": 0.0,
+        "hole_diameter_mm": 1.0,
+        "body_offset_mm": [
+          0,
+          0
+        ]
+      },
+      "orientation": {
+        "pcb_plane": "XY",
+        "height_axis": "Z",
+        "origin": "FCO"
+      },
+      "polarity": "none",
+      "pin1_indicator": "OHMNI convention",
+      "lod_supported": [
+        "LOD0",
+        "LOD1",
+        "LOD2"
+      ],
+      "confidence": {
+        "dimensions": "M",
+        "geometry": "L",
+        "materials_appearance": "L"
+      },
+      "status": "partial",
+      "source": {
+        "document": "PCB_COMPONENT_3D_LIBRARY_SPEC.md",
+        "line": 7881,
+        "yaml_sha256": "9318099b8f8a718b7fb99bea1e3fbaad6037d4b751a3a73b345f042209988cd5",
+        "sections": {
+          "Identity": "Canonical: small PCB audio/signal transformer. Representative Triad TY-145P. Aliases: audio transformer. Class A, priority P3, complexity 3, mounting tht. Family PKG-XFMR_SIGNAL member TY-145P.",
+          "Physical Dimensions": "Height max 18.8 (0.740 in), width 20.6 (0.812 in), base 17.8 (0.700 in). Pins 4.75 pitch, rows 10.67. Basis MFR_DATASHEET, M-L.",
+          "Geometry": "Box-shaped transformer with bobbin plug-in terminals; body base along X 17.8, width along Y 20.6.",
+          "Leads / Pins / Terminals": "6 square pins (0.0375 x 0.020 in vs .042 sq conflict) in two rows of 3. Pin 1 (-5.335,+4.75), 2 (-5.335,0), 3 (-5.335,-4.75), 4 (+5.335,-4.75), 5 (+5.335,0), 6 (+5.335,+4.75).",
+          "PCB Interface": "Holes 1.0 default; mounting holes 0.060 in (1.5) noted. body offset 0.",
+          "Materials": "Body MAT_PLASTIC_BLACK (RESEARCH_REQUIRED); pins MAT_TIN_BRIGHT.",
+          "Appearance": "Case/color not in datasheet: RESEARCH_REQUIRED.",
+          "Orientation Markings": "Pin 1 at +Y end of -X row per OHMNI convention; Triad numbering 1-3 and 4-6 by rows.",
+          "Recognition Features": "Rectangular block; 2x3 pins.",
+          "Parametric Variants": "base, width, height, pin_pitch, row_pitch.",
+          "Recommended Base Geometry": "Box + 6 boxes.",
+          "Modeling Procedure": "1 Box. 2 Pins. 3 Label decal.",
+          "LOD Strategy": "LOD0: body box/cylinder + terminal boxes. LOD1: all terminals, top chamfers, dot/pin-1 marks as decals, winding as band. LOD2: fillets, winding turns, wire exits, lead bends.",
+          "Simplification Rules": "May omit: label. Never omit: pin grid.",
+          "Sources": "Triad TY-145P https://www.triadmagnetics.com/Asset/TY-145P.pdf (S3, opened).",
+          "Research Confidence": "Second pass: no new source found (Triad TY-145P not re-opened; pin cross-section 0.0375 x 0.020 in vs .042 sq conflict still open; case color not documented), so status stays partial. YAML basis upgraded from UNCERTAIN to MFR_DATASHEET to match the already opened Triad datasheet. Dimensions M / Geometry L / Materials-appearance L. Validation: pitch and pin positions checked against body length where available (pins lie inside body envelope); pin count matches geometry; pin-1 follows 00_architecture Section 6; unresolved items are marked RESEARCH_REQUIRED above. Mechanical drawings were not visually inspected (text extraction only)."
+        },
+        "evidence_level": "SPEC_REPORTED; not independently reverified"
+      },
+      "cosmetic_defaults": [
+        {
+          "feature": "pad_stock",
+          "value": 0.2,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_diameter",
+          "value": 1.1866666666666668,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "winding_turns",
+          "value": 8,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_size",
+          "value": [
+            8.9,
+            5.15
+          ],
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Optional separate label decal occupies half X and quarter Y of top face.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "library_metadata": {
+        "provisional": true,
+        "uncertain_values": [
+          "standoff: 0.0 (UNCERTAIN/L)",
+          "Body MAT_PLASTIC_BLACK (RESEARCH_REQUIRED); pins MAT_TIN_BRIGHT.",
+          "Case/color not in datasheet: RESEARCH_REQUIRED.",
+          "Second pass: no new source found (Triad TY-145P not re-opened; pin cross-section 0.0375 x 0.020 in vs .042 sq conflict still open; case color not documented), so status stays partial. YAML basis upgraded from UNCERTAIN to MFR_DATASHEET to match the already opened Triad datasheet. Dimensions M / Geometry L / Materials-appearance L. Validation: pitch and pin positions checked against body length where available (pins lie inside body envelope); pin count matches geometry; pin-1 follows 00_architecture Section 6; unresolved items are marked RESEARCH_REQUIRED above. Mechanical drawings were not visually inspected (text extraction only).",
+          "COSMETIC_PROVISIONAL pad_stock=0.2: Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "COSMETIC_PROVISIONAL marker_diameter=1.1866666666666668: OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "COSMETIC_PROVISIONAL winding_turns=8: Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "COSMETIC_PROVISIONAL label_size=[8.9, 5.15]: Optional separate label decal occupies half X and quarter Y of top face.",
+          "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+        ],
+        "appearance_confidence": "L",
+        "electrical_admission": "NOT_EVALUATED",
+        "footprint_binding": null,
+        "conflicts": [
+          {
+            "code": "SIGNAL_PIN_STOCK",
+            "geometry_choice": "Use stated 0.0375x0.020 inch rectangular stock (0.9525x0.508); alternate .042 square and 1.5 mounting-hole positions remain unresolved; no unknown mounting holes created."
+          }
+        ],
+        "implementation_status": "IMPLEMENTED",
+        "implementation_group": "D"
+      },
+      "profile_id": "OHM-052"
+    },
+    {
+      "id": "OHM-053",
+      "slug": "flyback_transformer",
+      "canonical_name": "Flyback transformer",
+      "category": "passive",
+      "subcategory": "ee_bobbin",
+      "class": "A",
+      "priority": "P3",
+      "complexity": 4,
+      "package_family": "PKG-XFMR_EE",
+      "package_member": "EFD25_WE-FB",
+      "generator": "GEN-TRANSFORMER",
+      "mounting": "tht",
+      "names": {
+        "aliases": [
+          "750311595",
+          "WE-FB",
+          "750871111",
+          "EE20/10/6"
+        ]
+      },
+      "dimensions_mm": {
+        "body_length": {
+          "default": 32.31,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "body_width": {
+          "default": 27.03,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "overall_height": {
+          "default": 13.69,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "pitch": {
+          "default": 2.5,
+          "basis": "UNCERTAIN",
+          "confidence": "L"
+        },
+        "row_spacing": {
+          "default": 29.24,
+          "basis": "UNCERTAIN",
+          "confidence": "L"
+        },
+        "standoff": {
+          "default": 0.0,
+          "basis": "UNCERTAIN",
+          "confidence": "L"
+        }
+      },
+      "body": {
+        "shape": "ee_core_on_bobbin",
+        "material": "MAT_FERRITE_DARK"
+      },
+      "terminals": {
+        "count": 12,
+        "type": "round_pin",
+        "material": "MAT_TIN_BRIGHT",
+        "pitch_mm": 2.5,
+        "pin1_xy_mm": "RESEARCH_REQUIRED"
+      },
+      "pcb_interface": {
+        "footprint_type": "tht_holes",
+        "standoff_mm": 0.0,
+        "body_offset_mm": [
+          0,
+          0
+        ]
+      },
+      "orientation": {
+        "pcb_plane": "XY",
+        "height_axis": "Z",
+        "origin": "FCO"
+      },
+      "polarity": "none",
+      "pin1_indicator": "dot on part (drawing); pin 1 marked on bobbin",
+      "lod_supported": [
+        "LOD0",
+        "LOD1",
+        "LOD2"
+      ],
+      "confidence": {
+        "dimensions": "L",
+        "geometry": "L",
+        "materials_appearance": "L"
+      },
+      "status": "partial",
+      "source": {
+        "document": "PCB_COMPONENT_3D_LIBRARY_SPEC.md",
+        "line": 7965,
+        "yaml_sha256": "b309827bfb5e420a39325bba45fe9bc9792417e3cf5e25ab3c39f4b9613ce45c",
+        "sections": {
+          "Identity": "Canonical: flyback transformer on EE/EFD core. Representative now Wurth WE-FB 750311595 (EFD25, 12 pins) because its drawing yields more dimensions; also Wurth WE-OLSTM 750871111 (EE20/10/6, 14 pin positions, 8 populated). Class A, priority P3, complexity 4, mounting tht. Family PKG-XFMR_EE member EFD25 (WE-FB).",
+          "Physical Dimensions": "WE-FB 750311595: overall max 32.31 x 27.03 x 13.69 (S3, drawing callouts; 13.69 = height; 32.31 is the finished-part plan envelope, not the 25 mm EFD25 core length, which resolves the first-pass oddity). Top-view typ values 29.24 +-0.05 and 28.0; land pattern callouts 30.38, 3.76, 2.5, 1.52 (mapping to row spacing / pin pitch NOT confirmed; candidate row spacing 29.24, pitch 2.5; UNCERTAIN, L). WE-OLSTM 750871111: 25.0 / 21.0 / 16.0 max (axes unresolved). Confidence L-M.",
+          "Geometry": "Two ferrite E halves clamped on a bobbin with flanges; pins along two sides; yellow tape wrap.",
+          "Leads / Pins / Terminals": "WE-FB 750311595: 12 pins, pins 1-6 on one side, 7-12 on the other; pin 1 marked with a dot; windings N1 (pin 1...), N2 (6,7...), N3 (12,1...) per the extraction (exact pin lists unreliable). Pin diameter RESEARCH_REQUIRED. WE-OLSTM 750871111: pin positions 1..14 (windings on pins 1,3,4 / 6 / 7,9,12,14), which contradicts the first-pass 6 pins.",
+          "PCB Interface": "Candidate only: two rows, 12 holes, row spacing about 29.24 (or 28.0), pitch 2.5 (UNCERTAIN, from unlabelled land-pattern callouts 30.38 / 3.76 / 2.5 / 1.52). Hole diameter RESEARCH_REQUIRED. Body offset 0.",
+          "Materials": "Core MAT_FERRITE_DARK; bobbin MAT_PLASTIC_BLACK; pins MAT_TIN_BRIGHT; tape proposed.",
+          "Appearance": "Dark gray core, black bobbin, yellow tape.",
+          "Orientation Markings": "Pin 1 marked on bobbin flange.",
+          "Recognition Features": "Two E halves; bobbin flanges; pins.",
+          "Parametric Variants": "core_type, pin_count, pitch, row_spacing.",
+          "Recommended Base Geometry": "Boxes for core + bobbin; pins.",
+          "Modeling Procedure": "1 Core as two E/EFD blocks (envelope within 32.31 x 27.03 x 13.69, EFD25 core nominal 25 mm long, from EFD25 designation, not read from drawing) on a bobbin box with flanges. 2 Pins in two rows of 6. 3 Tape wrap. Dimensions are envelope-level only; pin pitch/row spacing carry UNCERTAIN tags.",
+          "LOD Strategy": "LOD0: body box/cylinder + terminal boxes. LOD1: all terminals, top chamfers, dot/pin-1 marks as decals, winding as band. LOD2: fillets, winding turns, wire exits, lead bends.",
+          "Simplification Rules": "Never omit: core legs, bobbin flange.",
+          "Sources": "Wurth 750311595 https://www.farnell.com/datasheets/4154212.pdf (S3, opened twice; drawing callouts 32.31/27.03/13.69, 29.24, 28.0, land 30.38/3.76/2.5/1.52, 12 pins); Wurth 750871111 https://www.we-online.com/components/products/datasheet/750871111_valid_from_2026-11-12.pdf (S3, reopened: 25/21/16 max, EE20/10/6, pins up to 14); Wurth 750342585 (WE-OLTI, ETD29); Wurth EFD20 bobbin 070-5982 https://www.we-online.com/catalog/datasheet/070-5982.pdf (S3, bobbin only: 21.5 x 29 x 12, G 3.6).",
+          "Research Confidence": "Dimensions L-M (envelope M, pin layout L) / Geometry L / Materials-appearance L. Validation: 12 pins = 2 rows x 6; envelope 32.31 exceeds the 29.24 candidate row spacing, consistent with pins lying inside the envelope; EFD25 oddity explained as envelope vs core designation. Still unresolved: pin pitch and row spacing (text extraction could not read the drawing), pin diameter, hole size, pin 1 coordinates, tape color (yellow is de facto). Status moved research_required to partial because envelope dimensions are sourced."
+        },
+        "evidence_level": "SPEC_REPORTED; not independently reverified"
+      },
+      "cosmetic_defaults": [
+        {
+          "feature": "visual_pin_diameter",
+          "value": 0.5,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One fifth of stated provisional 2.5 mm pitch, visual stock only; no hole diameter or footprint claim. Within body XY envelope.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "bobbin_base",
+          "value": 1.71125,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Lower eighth of sourced height; full sourced plan envelope.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "flange_stock",
+          "value": 1.6155000000000002,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One twentieth sourced X envelope; two inner flanges, do not move pin rows.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "core_width",
+          "value": 24.2325,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "75 percent X envelope, bounded by bobbin flanges; no EFD core datasheet dimension asserted.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "core_length",
+          "value": 24.327,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "90 percent Y envelope, inside sourced envelope.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "core_stock",
+          "value": 2.738,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Core rails and center leg stock one fifth overall height.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "tape_width",
+          "value": 12.1635,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Tape winding band 45 percent body Y span, inside core window.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "pad_stock",
+          "value": 0.2,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_diameter",
+          "value": 1.802,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "winding_turns",
+          "value": 8,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_size",
+          "value": [
+            16.155,
+            6.7575
+          ],
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Optional separate label decal occupies half X and quarter Y of top face.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "library_metadata": {
+        "provisional": true,
+        "uncertain_values": [
+          "pitch: 2.5 (UNCERTAIN/L)",
+          "row_spacing: 29.24 (UNCERTAIN/L)",
+          "standoff: 0.0 (UNCERTAIN/L)",
+          "WE-FB 750311595: overall max 32.31 x 27.03 x 13.69 (S3, drawing callouts; 13.69 = height; 32.31 is the finished-part plan envelope, not the 25 mm EFD25 core length, which resolves the first-pass oddity). Top-view typ values 29.24 +-0.05 and 28.0; land pattern callouts 30.38, 3.76, 2.5, 1.52 (mapping to row spacing / pin pitch NOT confirmed; candidate row spacing 29.24, pitch 2.5; UNCERTAIN, L). WE-OLSTM 750871111: 25.0 / 21.0 / 16.0 max (axes unresolved). Confidence L-M.",
+          "WE-FB 750311595: 12 pins, pins 1-6 on one side, 7-12 on the other; pin 1 marked with a dot; windings N1 (pin 1...), N2 (6,7...), N3 (12,1...) per the extraction (exact pin lists unreliable). Pin diameter RESEARCH_REQUIRED. WE-OLSTM 750871111: pin positions 1..14 (windings on pins 1,3,4 / 6 / 7,9,12,14), which contradicts the first-pass 6 pins.",
+          "Candidate only: two rows, 12 holes, row spacing about 29.24 (or 28.0), pitch 2.5 (UNCERTAIN, from unlabelled land-pattern callouts 30.38 / 3.76 / 2.5 / 1.52). Hole diameter RESEARCH_REQUIRED. Body offset 0.",
+          "1 Core as two E/EFD blocks (envelope within 32.31 x 27.03 x 13.69, EFD25 core nominal 25 mm long, from EFD25 designation, not read from drawing) on a bobbin box with flanges. 2 Pins in two rows of 6. 3 Tape wrap. Dimensions are envelope-level only; pin pitch/row spacing carry UNCERTAIN tags.",
+          "Dimensions L-M (envelope M, pin layout L) / Geometry L / Materials-appearance L. Validation: 12 pins = 2 rows x 6; envelope 32.31 exceeds the 29.24 candidate row spacing, consistent with pins lying inside the envelope; EFD25 oddity explained as envelope vs core designation. Still unresolved: pin pitch and row spacing (text extraction could not read the drawing), pin diameter, hole size, pin 1 coordinates, tape color (yellow is de facto). Status moved research_required to partial because envelope dimensions are sourced.",
+          "COSMETIC_PROVISIONAL visual_pin_diameter=0.5: One fifth of stated provisional 2.5 mm pitch, visual stock only; no hole diameter or footprint claim. Within body XY envelope.",
+          "COSMETIC_PROVISIONAL bobbin_base=1.71125: Lower eighth of sourced height; full sourced plan envelope.",
+          "COSMETIC_PROVISIONAL flange_stock=1.6155000000000002: One twentieth sourced X envelope; two inner flanges, do not move pin rows.",
+          "COSMETIC_PROVISIONAL core_width=24.2325: 75 percent X envelope, bounded by bobbin flanges; no EFD core datasheet dimension asserted.",
+          "COSMETIC_PROVISIONAL core_length=24.327: 90 percent Y envelope, inside sourced envelope.",
+          "COSMETIC_PROVISIONAL core_stock=2.738: Core rails and center leg stock one fifth overall height.",
+          "COSMETIC_PROVISIONAL tape_width=12.1635: Tape winding band 45 percent body Y span, inside core window.",
+          "COSMETIC_PROVISIONAL pad_stock=0.2: Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "COSMETIC_PROVISIONAL marker_diameter=1.802: OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "COSMETIC_PROVISIONAL winding_turns=8: Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "COSMETIC_PROVISIONAL label_size=[16.155, 6.7575]: Optional separate label decal occupies half X and quarter Y of top face.",
+          "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+        ],
+        "appearance_confidence": "L",
+        "electrical_admission": "NOT_EVALUATED",
+        "footprint_binding": null,
+        "conflicts": [
+          {
+            "code": "FLYBACK_PIN1_DERIVATION",
+            "geometry_choice": "Raw pin1_xy_mm remains RESEARCH_REQUIRED. Apply Section 17.4 long-side-terminal / Section 6 dual-row convention to stated candidate row spacing 29.24 and pitch 2.5: pin1=(-14.62,+6.25), CCW, 6 per side. Entire placement remains provisional, not manufacturer-verified."
+          }
+        ],
+        "implementation_status": "IMPLEMENTED",
+        "implementation_group": "D"
+      },
+      "profile_id": "OHM-053"
+    },
+    {
+      "id": "OHM-054",
+      "slug": "current_transformer",
+      "canonical_name": "Current transformer",
+      "category": "passive",
+      "subcategory": "ct_pcb",
+      "class": "A",
+      "priority": "P3",
+      "complexity": 3,
+      "package_family": "PKG-XFMR_CT",
+      "package_member": "AS",
+      "generator": "GEN-TRANSFORMER",
+      "mounting": "tht",
+      "names": {
+        "aliases": [
+          "AS-103",
+          "Talema AS"
+        ]
+      },
+      "dimensions_mm": {
+        "body_length": {
+          "default": 17.2,
+          "basis": "UNCERTAIN",
+          "confidence": "L"
+        },
+        "body_width": {
+          "default": 9.53,
+          "basis": "UNCERTAIN",
+          "confidence": "L"
+        },
+        "overall_height": {
+          "default": 20.4,
+          "basis": "UNCERTAIN",
+          "confidence": "L"
+        },
+        "pitch": {
+          "default": 6.35,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "standoff": {
+          "default": 0.0,
+          "basis": "UNCERTAIN",
+          "confidence": "L"
+        }
+      },
+      "body": {
+        "shape": "rect_box",
+        "material": "MAT_PLASTIC_BLACK"
+      },
+      "terminals": {
+        "count": 3,
+        "type": "rect_pin_0p66x0p45",
+        "material": "MAT_TIN_BRIGHT",
+        "pitch_mm": 6.35,
+        "pin1_xy_mm": [
+          -6.35,
+          0
+        ]
+      },
+      "pcb_interface": {
+        "footprint_type": "tht_holes",
+        "standoff_mm": 0.0,
+        "hole_diameter_mm": 1.4,
+        "body_offset_mm": [
+          0,
+          0
+        ]
+      },
+      "orientation": {
+        "pcb_plane": "XY",
+        "height_axis": "Z",
+        "origin": "FCO"
+      },
+      "polarity": "none",
+      "pin1_indicator": "OHMNI convention",
+      "lod_supported": [
+        "LOD0",
+        "LOD1",
+        "LOD2"
+      ],
+      "confidence": {
+        "dimensions": "L",
+        "geometry": "L",
+        "materials_appearance": "L"
+      },
+      "status": "partial",
+      "source": {
+        "document": "PCB_COMPONENT_3D_LIBRARY_SPEC.md",
+        "line": 8049,
+        "yaml_sha256": "422b2922bb7d5e3edc17b3087a58f9ebca2e086bd4526aafa483535bdb943bfd",
+        "sections": {
+          "Identity": "Canonical: PCB current-sense transformer. Representative Talema AS-103 (AS series). Aliases: CT. Class A, priority P3, complexity 3, mounting tht. Family PKG-XFMR_CT member AS.",
+          "Physical Dimensions": "17.2 L x 9.53 W x 20.4 H (TME reading, kept as default); pin pitch 6.35 (0.250 in on the datasheet, span 12.7). A second reading of the Talema AS datasheet labels 20.4 width and 12.7 height and 9.53 a primary spacing; the assignment is unresolved. Confidence M-L.",
+          "Geometry": "Encapsulated box with 3 pins in a row.",
+          "Leads / Pins / Terminals": "3 in-line pins labeled 1, 2, 3; pin 2 exists on center-tapped versions only (AS series datasheet). Centres (-6.35,0), (0,0), (+6.35,0) (pitch 0.250 in, span 12.7). Pin cross-section RECTANGULAR 0.66 x 0.45 mm (two copies of the datasheet agree), replacing the first-pass round 1.0 default. Primary/secondary assignment not confirmed.",
+          "PCB Interface": "Holes for 0.66 x 0.45 pins: DEFAULT 1.0 round or 0.9 x 0.7 slot (UNCERTAIN, not sourced); body offset 0. A 5.0 mm mounting hole is mentioned in the AS drawing (function unresolved).",
+          "Materials": "Body MAT_PLASTIC_BLACK; pins MAT_TIN_BRIGHT.",
+          "Appearance": "RESEARCH_REQUIRED.",
+          "Orientation Markings": "Pin 1 at -X.",
+          "Recognition Features": "Box with 3 in-line pins.",
+          "Parametric Variants": "length, width, height, pitch.",
+          "Recommended Base Geometry": "Box + 3 cylinders.",
+          "Modeling Procedure": "1 Box. 2 Pins.",
+          "LOD Strategy": "LOD0: body box/cylinder + terminal boxes. LOD1: all terminals, top chamfers, dot/pin-1 marks as decals, winding as band. LOD2: fillets, winding turns, wire exits, lead bends.",
+          "Simplification Rules": "Never omit: 3 pins.",
+          "Sources": "Talema AS series datasheet (07/18) https://sy-dep-epc-lpc.web.cern.ch/components/datasheets/epc-lpc%20(converters)/AS%20series-Hall%20effect%20current%20sensor-Talemagroup.pdf (S4-hosted S3, opened second pass: 3 pins, CT pin 2, pin 0.66 x 0.45, 6.35, 12.7, 9.53, 17.2, 20.4, 5.0 hole); TME https://www.tme.eu/html/EN/transformer-current-solid-as-talema/ramka_7521_EN_pelny.html (S4); jiepei https://pdf.jiepei.com/as-103-13781511.html (S4/S5).",
+          "Research Confidence": "Second pass: pin cross-section and pitch now from the Talema datasheet; body axis assignment (9.53, 12.7, 20.4) still conflicting between readings, so status stays partial. Dimensions L-M / Geometry L / Materials-appearance L. Validation: pitch and pin positions checked against body length where available (pins lie inside body envelope); pin count matches geometry; pin-1 follows 00_architecture Section 6; unresolved items are marked RESEARCH_REQUIRED above. Mechanical drawings were not visually inspected (text extraction only)."
+        },
+        "evidence_level": "SPEC_REPORTED; not independently reverified"
+      },
+      "cosmetic_defaults": [
+        {
+          "feature": "pad_stock",
+          "value": 0.2,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_diameter",
+          "value": 0.6353333333333333,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "winding_turns",
+          "value": 8,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_size",
+          "value": [
+            8.6,
+            2.3825
+          ],
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Optional separate label decal occupies half X and quarter Y of top face.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "library_metadata": {
+        "provisional": true,
+        "uncertain_values": [
+          "body_length: 17.2 (UNCERTAIN/L)",
+          "body_width: 9.53 (UNCERTAIN/L)",
+          "overall_height: 20.4 (UNCERTAIN/L)",
+          "standoff: 0.0 (UNCERTAIN/L)",
+          "3 in-line pins labeled 1, 2, 3; pin 2 exists on center-tapped versions only (AS series datasheet). Centres (-6.35,0), (0,0), (+6.35,0) (pitch 0.250 in, span 12.7). Pin cross-section RECTANGULAR 0.66 x 0.45 mm (two copies of the datasheet agree), replacing the first-pass round 1.0 default. Primary/secondary assignment not confirmed.",
+          "Holes for 0.66 x 0.45 pins: DEFAULT 1.0 round or 0.9 x 0.7 slot (UNCERTAIN, not sourced); body offset 0. A 5.0 mm mounting hole is mentioned in the AS drawing (function unresolved).",
+          "RESEARCH_REQUIRED.",
+          "Second pass: pin cross-section and pitch now from the Talema datasheet; body axis assignment (9.53, 12.7, 20.4) still conflicting between readings, so status stays partial. Dimensions L-M / Geometry L / Materials-appearance L. Validation: pitch and pin positions checked against body length where available (pins lie inside body envelope); pin count matches geometry; pin-1 follows 00_architecture Section 6; unresolved items are marked RESEARCH_REQUIRED above. Mechanical drawings were not visually inspected (text extraction only).",
+          "COSMETIC_PROVISIONAL pad_stock=0.2: Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "COSMETIC_PROVISIONAL marker_diameter=0.6353333333333333: OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "COSMETIC_PROVISIONAL winding_turns=8: Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "COSMETIC_PROVISIONAL label_size=[8.6, 2.3825]: Optional separate label decal occupies half X and quarter Y of top face.",
+          "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+        ],
+        "appearance_confidence": "L",
+        "electrical_admission": "NOT_EVALUATED",
+        "footprint_binding": null,
+        "conflicts": [
+          {
+            "code": "CT_BODY_AND_HOLE",
+            "geometry_choice": "Use stated default17.2x9.53x20.4 and 3 rectangular0.66x0.45 pins. Alternate dimensions and PCB YAML1.4 vs prose1.0 hole remain uncertain; hole metadata never drives pin size."
+          }
+        ],
+        "implementation_status": "IMPLEMENTED",
+        "implementation_group": "D"
+      },
+      "profile_id": "OHM-054"
+    },
+    {
+      "id": "OHM-055",
+      "slug": "ethernet_magnetics_transformer",
+      "canonical_name": "Ethernet magnetics transformer",
+      "category": "passive",
+      "subcategory": "lan_magnetics_smd",
+      "class": "A",
+      "priority": "P2",
+      "complexity": 3,
+      "package_family": "PKG-MAGNETICS_SMD",
+      "package_member": "H1102",
+      "generator": "GEN-TRANSFORMER",
+      "mounting": "smd",
+      "names": {
+        "aliases": [
+          "H1102NL"
+        ]
+      },
+      "dimensions_mm": {
+        "body_length": {
+          "default": 9.53,
+          "basis": "MFR_DATASHEET",
+          "confidence": "L"
+        },
+        "body_width": {
+          "default": 12.7,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "overall_height": {
+          "default": 6.8,
+          "basis": "MFR_DATASHEET",
+          "confidence": "L"
+        },
+        "pitch": {
+          "default": 1.27,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "standoff": {
+          "default": 0.0,
+          "basis": "UNCERTAIN",
+          "confidence": "L"
+        }
+      },
+      "body": {
+        "shape": "rect_box",
+        "material": "MAT_PLASTIC_BLACK"
+      },
+      "terminals": {
+        "count": 16,
+        "type": "flat_pad",
+        "material": "MAT_TIN_BRIGHT",
+        "pitch_mm": 1.27,
+        "pin1_xy_mm": [
+          -5.08,
+          4.445
+        ]
+      },
+      "pcb_interface": {
+        "footprint_type": "smd_pads",
+        "standoff_mm": 0.0,
+        "body_offset_mm": [
+          0,
+          0
+        ]
+      },
+      "orientation": {
+        "pcb_plane": "XY",
+        "height_axis": "Z",
+        "origin": "FCO"
+      },
+      "polarity": "none",
+      "pin1_indicator": "dot at pin 1 corner",
+      "lod_supported": [
+        "LOD0",
+        "LOD1",
+        "LOD2"
+      ],
+      "confidence": {
+        "dimensions": "M",
+        "geometry": "L",
+        "materials_appearance": "L"
+      },
+      "status": "partial",
+      "source": {
+        "document": "PCB_COMPONENT_3D_LIBRARY_SPEC.md",
+        "line": 8133,
+        "yaml_sha256": "0df2b28b3c2c2a080cac73acc8ce6fea3024cfe851ac3e6a7dd0767eedda29ba",
+        "sections": {
+          "Identity": "Canonical: Ethernet 10/100 magnetics, 16-terminal SMD. Representative Pulse H1102NL family. Aliases: LAN transformer. Class A, priority P2, complexity 3, mounting smd. Family PKG-MAGNETICS_SMD member H1102.",
+          "Physical Dimensions": "L 12.70 +-0.15 (along rows), W 9.53, H 6.80 (H1183NL 5.59), pitch 1.27. Row spacing default 10.16 (UNCERTAIN). Basis MFR_DATASHEET, M for L and pitch. Second-pass re-read of the same Pulse sheet conflicts for W/H: width .268 (6.80) and height .240 (6.09) with land callouts .236 (6.00) and .380; first-pass W 9.53 / H 6.80 retained as default, conflict flagged (W/H confidence L-M).",
+          "Geometry": "Wide rectangular case with 8 terminals per long side, flat top.",
+          "Leads / Pins / Terminals": "16 terminals, flat/gull pads, tin. Pin 1 (-5.08,+4.445) ... 8 (-5.08,-4.445), 9 (+5.08,-4.445) ... 16 (+5.08,+4.445). Pad width 0.30 (extracted).",
+          "PCB Interface": "Rows span 10.16 default (UNCERTAIN). Body offset 0.",
+          "Materials": "Case MAT_PLASTIC_BLACK; terminals MAT_TIN_BRIGHT.",
+          "Appearance": "Black plastic with white print; pin-1 dot RESEARCH_REQUIRED.",
+          "Orientation Markings": "Pin 1 at top-left (-X,+Y), counter-clockwise numbering.",
+          "Recognition Features": "Wide black 16-pin outline.",
+          "Parametric Variants": "length, width, height, row_spacing.",
+          "Recommended Base Geometry": "Box + 16 pads.",
+          "Modeling Procedure": "1 Box. 2 Terminals. 3 Dot.",
+          "LOD Strategy": "LOD0: body box/cylinder + terminal boxes. LOD1: all terminals, top chamfers, dot/pin-1 marks as decals, winding as band. LOD2: fillets, winding turns, wire exits, lead bends.",
+          "Simplification Rules": "Never omit: 16 terminals, pin-1 mark.",
+          "Sources": "Pulse PLEIS04511 via Mouser https://www.mouser.com/datasheet/2/336/pulse_pleis04511-1-1742341.pdf (S4); Desy copy https://www.zeuthen.desy.de/~sulanke/Projects/ICECUBE/mDOM/mainboard/datasheets/transformer_eth_H1102NL_+.pdf (S4/S5).",
+          "Research Confidence": "Second pass: length and pitch confirmed by two reads; W/H conflict and row spacing (land callouts 6.00 / 9.53-9.65) unresolved; 24-pin members not found; status stays partial. YAML axes note: pin coordinates place the 8-pin rows along Y, so body_length (X) = 9.53 and body_width (Y) = 12.7 is the consistent assignment; the entry text calls 12.70 the length along the rows. Dimensions M / Geometry L / Materials-appearance L. Validation: pitch and pin positions checked against body length where available (pins lie inside body envelope); pin count matches geometry; pin-1 follows 00_architecture Section 6; unresolved items are marked RESEARCH_REQUIRED above. Mechanical drawings were not visually inspected (text extraction only)."
+        },
+        "evidence_level": "SPEC_REPORTED; not independently reverified"
+      },
+      "cosmetic_defaults": [
+        {
+          "feature": "visual_terminal_size",
+          "value": [
+            0.6,
+            0.3
+          ],
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Use stated width (2.0, 1.25 or 0.30); remaining visual extent uses square width for drum/CMC or twice width for LAN foot. Contact centers unchanged; no land-pattern claim.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "pad_stock",
+          "value": 0.2,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_diameter",
+          "value": 0.6353333333333333,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "winding_turns",
+          "value": 8,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_size",
+          "value": [
+            4.765,
+            3.175
+          ],
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Optional separate label decal occupies half X and quarter Y of top face.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "library_metadata": {
+        "provisional": true,
+        "uncertain_values": [
+          "body_length: 9.53 (MFR_DATASHEET/L)",
+          "overall_height: 6.8 (MFR_DATASHEET/L)",
+          "standoff: 0.0 (UNCERTAIN/L)",
+          "L 12.70 +-0.15 (along rows), W 9.53, H 6.80 (H1183NL 5.59), pitch 1.27. Row spacing default 10.16 (UNCERTAIN). Basis MFR_DATASHEET, M for L and pitch. Second-pass re-read of the same Pulse sheet conflicts for W/H: width .268 (6.80) and height .240 (6.09) with land callouts .236 (6.00) and .380; first-pass W 9.53 / H 6.80 retained as default, conflict flagged (W/H confidence L-M).",
+          "Rows span 10.16 default (UNCERTAIN). Body offset 0.",
+          "Black plastic with white print; pin-1 dot RESEARCH_REQUIRED.",
+          "Second pass: length and pitch confirmed by two reads; W/H conflict and row spacing (land callouts 6.00 / 9.53-9.65) unresolved; 24-pin members not found; status stays partial. YAML axes note: pin coordinates place the 8-pin rows along Y, so body_length (X) = 9.53 and body_width (Y) = 12.7 is the consistent assignment; the entry text calls 12.70 the length along the rows. Dimensions M / Geometry L / Materials-appearance L. Validation: pitch and pin positions checked against body length where available (pins lie inside body envelope); pin count matches geometry; pin-1 follows 00_architecture Section 6; unresolved items are marked RESEARCH_REQUIRED above. Mechanical drawings were not visually inspected (text extraction only).",
+          "COSMETIC_PROVISIONAL visual_terminal_size=[0.6, 0.3]: Use stated width (2.0, 1.25 or 0.30); remaining visual extent uses square width for drum/CMC or twice width for LAN foot. Contact centers unchanged; no land-pattern claim.",
+          "COSMETIC_PROVISIONAL pad_stock=0.2: Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "COSMETIC_PROVISIONAL marker_diameter=0.6353333333333333: OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "COSMETIC_PROVISIONAL winding_turns=8: Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "COSMETIC_PROVISIONAL label_size=[4.765, 3.175]: Optional separate label decal occupies half X and quarter Y of top face.",
+          "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+        ],
+        "appearance_confidence": "L",
+        "electrical_admission": "NOT_EVALUATED",
+        "footprint_binding": null,
+        "conflicts": [
+          {
+            "code": "LAN_WIDTH_HEIGHT",
+            "geometry_choice": "Keep first-pass body X9.53/Y12.7/H6.8 and explicit10.16 contact-row spacing; alternate6.80 width/6.09 height not silently substituted."
+          }
+        ],
+        "implementation_status": "IMPLEMENTED",
+        "implementation_group": "D"
+      },
+      "profile_id": "OHM-055"
+    }
+  ],
+  "profiles": {
+    "OHM-044": {
+      "kind": "magnetic",
+      "layout": "explicit",
+      "family": "PKG-SMD_IND_WW",
+      "width": 1.8,
+      "length": 1.12,
+      "height": 1.02,
+      "standoff": 0.0,
+      "body_material": "MAT_CERAMIC_CORE_BEIGE",
+      "lead_material": "MAT_TIN_MATTE",
+      "count": 2,
+      "pitch": 1.42,
+      "source_parameters": [],
+      "source_pin1": [
+        -0.71,
+        0
+      ],
+      "tail": 2.6,
+      "tht": false,
+      "segments": {
+        "LOD0": 12,
+        "LOD1": 32,
+        "LOD2": 64
+      },
+      "contacts": [
+        {
+          "terminal": "1",
+          "center_mm": [
+            -0.71,
+            0,
+            0
+          ],
+          "size": [
+            0.38,
+            1.12
+          ],
+          "type": "smd"
+        },
+        {
+          "terminal": "2",
+          "center_mm": [
+            0.71,
+            0,
+            0
+          ],
+          "size": [
+            0.38,
+            1.12
+          ],
+          "type": "smd"
+        }
+      ],
+      "shape": "chip",
+      "round_pin": false,
+      "mark_pin1": true,
+      "band": 0.38,
+      "cap_stock": 0.03,
+      "pad_stock": 0.051000000000000004,
+      "cosmetic_defaults": [
+        {
+          "feature": "pad_stock",
+          "value": 0.051000000000000004,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_diameter",
+          "value": 0.2,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "winding_turns",
+          "value": 8,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_size",
+          "value": [
+            0.9,
+            0.28
+          ],
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Optional separate label decal occupies half X and quarter Y of top face.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "marker_diameter": 0.2,
+      "winding_turns": 8,
+      "label_size": [
+        0.9,
+        0.28
+      ]
+    },
+    "OHM-045": {
+      "kind": "magnetic",
+      "layout": "explicit",
+      "family": "PKG-SMD_POWER_IND",
+      "width": 7.3,
+      "length": 6.7,
+      "height": 2.8,
+      "standoff": 0.0,
+      "body_material": "MAT_MOLDED_COMPOSITE_DARK",
+      "lead_material": "MAT_TIN_BRIGHT",
+      "count": 2,
+      "pitch": 5.9,
+      "source_parameters": [],
+      "source_pin1": [
+        -2.95,
+        0
+      ],
+      "tail": 2.6,
+      "tht": false,
+      "segments": {
+        "LOD0": 12,
+        "LOD1": 32,
+        "LOD2": 64
+      },
+      "contacts": [
+        {
+          "terminal": "1",
+          "center_mm": [
+            -2.95,
+            0,
+            0
+          ],
+          "size": [
+            2.5,
+            2.5
+          ],
+          "type": "smd"
+        },
+        {
+          "terminal": "2",
+          "center_mm": [
+            2.95,
+            0,
+            0
+          ],
+          "size": [
+            2.5,
+            2.5
+          ],
+          "type": "smd"
+        }
+      ],
+      "shape": "box",
+      "round_pin": false,
+      "mark_pin1": false,
+      "chamfer": 0.2,
+      "pad_stock": 0.13999999999999999,
+      "cosmetic_defaults": [
+        {
+          "feature": "pad_stock",
+          "value": 0.13999999999999999,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_diameter",
+          "value": 0.44666666666666666,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "winding_turns",
+          "value": 8,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_size",
+          "value": [
+            3.65,
+            1.675
+          ],
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Optional separate label decal occupies half X and quarter Y of top face.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "marker_diameter": 0.44666666666666666,
+      "winding_turns": 8,
+      "label_size": [
+        3.65,
+        1.675
+      ]
+    },
+    "OHM-046": {
+      "kind": "magnetic",
+      "layout": "explicit",
+      "family": "PKG-SMD_POWER_IND",
+      "width": 5.8,
+      "length": 5.8,
+      "height": 4.8,
+      "standoff": 0.0,
+      "body_material": "MAT_FERRITE_DARK",
+      "lead_material": "MAT_TIN_BRIGHT",
+      "count": 2,
+      "pitch": 5.0,
+      "source_parameters": [],
+      "source_pin1": [
+        -2.5,
+        0
+      ],
+      "tail": 2.6,
+      "tht": false,
+      "segments": {
+        "LOD0": 12,
+        "LOD1": 32,
+        "LOD2": 64
+      },
+      "contacts": [
+        {
+          "terminal": "1",
+          "center_mm": [
+            -2.5,
+            0,
+            0
+          ],
+          "size": [
+            2,
+            2
+          ],
+          "type": "smd"
+        },
+        {
+          "terminal": "2",
+          "center_mm": [
+            2.5,
+            0,
+            0
+          ],
+          "size": [
+            2,
+            2
+          ],
+          "type": "smd"
+        }
+      ],
+      "shape": "drum",
+      "visual_terminal_size": [
+        2,
+        2
+      ],
+      "cosmetic_defaults": [
+        {
+          "feature": "visual_terminal_size",
+          "value": [
+            2,
+            2
+          ],
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Use stated width (2.0, 1.25 or 0.30); remaining visual extent uses square width for drum/CMC or twice width for LAN foot. Contact centers unchanged; no land-pattern claim.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "flange_height",
+          "value": 0.7999999999999999,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Each flange occupies one sixth sourced height.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "barrel_diameter",
+          "value": 3.77,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "65 percent sourced flange diameter, inside envelope.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "winding_diameter",
+          "value": 4.93,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "85 percent flange diameter, inside sourced cylinder.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "pad_stock",
+          "value": 0.2,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_diameter",
+          "value": 0.38666666666666666,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "winding_turns",
+          "value": 8,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_size",
+          "value": [
+            2.9,
+            1.45
+          ],
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Optional separate label decal occupies half X and quarter Y of top face.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "round_pin": false,
+      "mark_pin1": false,
+      "flange_height": 0.7999999999999999,
+      "barrel_diameter": 3.77,
+      "winding_diameter": 4.93,
+      "pad_stock": 0.2,
+      "marker_diameter": 0.38666666666666666,
+      "winding_turns": 8,
+      "label_size": [
+        2.9,
+        1.45
+      ]
+    },
+    "OHM-048": {
+      "kind": "magnetic",
+      "layout": "explicit",
+      "family": "PKG-DRUM_IND",
+      "width": 8.7,
+      "length": 8.7,
+      "height": 12.0,
+      "standoff": 0.0,
+      "body_material": "MAT_HEATSHRINK_BLACK",
+      "lead_material": "MAT_TIN_BRIGHT",
+      "count": 2,
+      "pitch": 5.0,
+      "source_parameters": [],
+      "source_pin1": [
+        -2.5,
+        0
+      ],
+      "tail": 2.6,
+      "tht": true,
+      "segments": {
+        "LOD0": 12,
+        "LOD1": 32,
+        "LOD2": 64
+      },
+      "contacts": [
+        {
+          "terminal": "1",
+          "center_mm": [
+            -2.5,
+            0,
+            0
+          ],
+          "size": [
+            0.65,
+            0.65
+          ],
+          "type": "tht"
+        },
+        {
+          "terminal": "2",
+          "center_mm": [
+            2.5,
+            0,
+            0
+          ],
+          "size": [
+            0.65,
+            0.65
+          ],
+          "type": "tht"
+        }
+      ],
+      "shape": "cylinder",
+      "round_pin": true,
+      "mark_pin1": false,
+      "dome_height": 0.6,
+      "cosmetic_defaults": [
+        {
+          "feature": "dome_height",
+          "value": 0.6,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Shallow rounded cap inside final 12 mm height, one twentieth height.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "pad_stock",
+          "value": 0.2,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_diameter",
+          "value": 0.58,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "winding_turns",
+          "value": 8,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_size",
+          "value": [
+            4.35,
+            2.175
+          ],
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Optional separate label decal occupies half X and quarter Y of top face.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "pad_stock": 0.2,
+      "marker_diameter": 0.58,
+      "winding_turns": 8,
+      "label_size": [
+        4.35,
+        2.175
+      ]
+    },
+    "OHM-049": {
+      "kind": "magnetic",
+      "layout": "explicit",
+      "family": "PKG-TOROID",
+      "width": 21.84,
+      "length": 21.84,
+      "height": 11.43,
+      "standoff": 1.57,
+      "body_material": "MAT_COIL_COAT",
+      "lead_material": "MAT_TIN_BRIGHT",
+      "count": 2,
+      "pitch": 8.128,
+      "source_parameters": [],
+      "source_pin1": [
+        -4.064,
+        0
+      ],
+      "tail": 2.6,
+      "tht": true,
+      "segments": {
+        "LOD0": 12,
+        "LOD1": 32,
+        "LOD2": 64
+      },
+      "contacts": [
+        {
+          "terminal": "1",
+          "center_mm": [
+            -4.064,
+            0,
+            0
+          ],
+          "size": [
+            0.8636,
+            0.8636
+          ],
+          "type": "tht"
+        },
+        {
+          "terminal": "2",
+          "center_mm": [
+            4.064,
+            0,
+            0
+          ],
+          "size": [
+            0.8636,
+            0.8636
+          ],
+          "type": "tht"
+        }
+      ],
+      "shape": "toroid",
+      "round_pin": true,
+      "mark_pin1": false,
+      "inner_diameter": 12,
+      "pad_stock": 0.2,
+      "cosmetic_defaults": [
+        {
+          "feature": "pad_stock",
+          "value": 0.2,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_diameter",
+          "value": 1.456,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "winding_turns",
+          "value": 8,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_size",
+          "value": [
+            10.92,
+            5.46
+          ],
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Optional separate label decal occupies half X and quarter Y of top face.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "marker_diameter": 1.456,
+      "winding_turns": 8,
+      "label_size": [
+        10.92,
+        5.46
+      ]
+    },
+    "OHM-050": {
+      "kind": "magnetic",
+      "layout": "explicit",
+      "family": "PKG-CMC_SMD",
+      "width": 10.0,
+      "length": 8.7,
+      "height": 6.5,
+      "standoff": 0.0,
+      "body_material": "MAT_PLASTIC_BLACK",
+      "lead_material": "MAT_TIN_BRIGHT",
+      "count": 4,
+      "pitch": 6.22,
+      "source_parameters": [],
+      "source_pin1": [
+        -3.81,
+        3.11
+      ],
+      "tail": 2.6,
+      "tht": false,
+      "segments": {
+        "LOD0": 12,
+        "LOD1": 32,
+        "LOD2": 64
+      },
+      "contacts": [
+        {
+          "terminal": "1",
+          "center_mm": [
+            -3.81,
+            3.11,
+            0
+          ],
+          "size": [
+            1.25,
+            1.25
+          ],
+          "type": "smd"
+        },
+        {
+          "terminal": "2",
+          "center_mm": [
+            -3.81,
+            -3.11,
+            0
+          ],
+          "size": [
+            1.25,
+            1.25
+          ],
+          "type": "smd"
+        },
+        {
+          "terminal": "3",
+          "center_mm": [
+            3.81,
+            -3.11,
+            0
+          ],
+          "size": [
+            1.25,
+            1.25
+          ],
+          "type": "smd"
+        },
+        {
+          "terminal": "4",
+          "center_mm": [
+            3.81,
+            3.11,
+            0
+          ],
+          "size": [
+            1.25,
+            1.25
+          ],
+          "type": "smd"
+        }
+      ],
+      "shape": "box",
+      "visual_terminal_size": [
+        1.25,
+        1.25
+      ],
+      "cosmetic_defaults": [
+        {
+          "feature": "visual_terminal_size",
+          "value": [
+            1.25,
+            1.25
+          ],
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Use stated width (2.0, 1.25 or 0.30); remaining visual extent uses square width for drum/CMC or twice width for LAN foot. Contact centers unchanged; no land-pattern claim.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "pad_stock",
+          "value": 0.2,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_diameter",
+          "value": 0.58,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "winding_turns",
+          "value": 8,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_size",
+          "value": [
+            5.0,
+            2.175
+          ],
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Optional separate label decal occupies half X and quarter Y of top face.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "round_pin": false,
+      "mark_pin1": true,
+      "pad_stock": 0.2,
+      "marker_diameter": 0.58,
+      "winding_turns": 8,
+      "label_size": [
+        5.0,
+        2.175
+      ]
+    },
+    "OHM-051": {
+      "kind": "magnetic",
+      "layout": "explicit",
+      "family": "PKG-CMC_THT",
+      "width": 15.8,
+      "length": 7.8,
+      "height": 18.0,
+      "standoff": 0.0,
+      "body_material": "MAT_PLASTIC_BLACK",
+      "lead_material": "MAT_TIN_BRIGHT",
+      "count": 4,
+      "pitch": 4.5,
+      "source_parameters": [],
+      "source_pin1": [
+        -5.0,
+        2.25
+      ],
+      "tail": 2.5,
+      "tht": true,
+      "segments": {
+        "LOD0": 12,
+        "LOD1": 32,
+        "LOD2": 64
+      },
+      "contacts": [
+        {
+          "terminal": "1",
+          "center_mm": [
+            -5,
+            2.25,
+            0
+          ],
+          "size": [
+            0.8,
+            0.8
+          ],
+          "type": "tht"
+        },
+        {
+          "terminal": "2",
+          "center_mm": [
+            -5,
+            -2.25,
+            0
+          ],
+          "size": [
+            0.8,
+            0.8
+          ],
+          "type": "tht"
+        },
+        {
+          "terminal": "3",
+          "center_mm": [
+            5,
+            -2.25,
+            0
+          ],
+          "size": [
+            0.8,
+            0.8
+          ],
+          "type": "tht"
+        },
+        {
+          "terminal": "4",
+          "center_mm": [
+            5,
+            2.25,
+            0
+          ],
+          "size": [
+            0.8,
+            0.8
+          ],
+          "type": "tht"
+        }
+      ],
+      "shape": "box",
+      "round_pin": true,
+      "mark_pin1": true,
+      "pad_stock": 0.2,
+      "cosmetic_defaults": [
+        {
+          "feature": "pad_stock",
+          "value": 0.2,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_diameter",
+          "value": 0.52,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "winding_turns",
+          "value": 8,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_size",
+          "value": [
+            7.9,
+            1.95
+          ],
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Optional separate label decal occupies half X and quarter Y of top face.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "marker_diameter": 0.52,
+      "winding_turns": 8,
+      "label_size": [
+        7.9,
+        1.95
+      ]
+    },
+    "OHM-052": {
+      "kind": "magnetic",
+      "layout": "explicit",
+      "family": "PKG-XFMR_SIGNAL",
+      "width": 17.8,
+      "length": 20.6,
+      "height": 18.8,
+      "standoff": 0.0,
+      "body_material": "MAT_PLASTIC_BLACK",
+      "lead_material": "MAT_TIN_BRIGHT",
+      "count": 6,
+      "pitch": 4.75,
+      "source_parameters": [],
+      "source_pin1": [
+        -5.335,
+        4.75
+      ],
+      "tail": 2.6,
+      "tht": true,
+      "segments": {
+        "LOD0": 12,
+        "LOD1": 32,
+        "LOD2": 64
+      },
+      "contacts": [
+        {
+          "terminal": "1",
+          "center_mm": [
+            -5.335,
+            4.75,
+            0
+          ],
+          "size": [
+            0.9525,
+            0.508
+          ],
+          "type": "tht"
+        },
+        {
+          "terminal": "2",
+          "center_mm": [
+            -5.335,
+            0.0,
+            0
+          ],
+          "size": [
+            0.9525,
+            0.508
+          ],
+          "type": "tht"
+        },
+        {
+          "terminal": "3",
+          "center_mm": [
+            -5.335,
+            -4.75,
+            0
+          ],
+          "size": [
+            0.9525,
+            0.508
+          ],
+          "type": "tht"
+        },
+        {
+          "terminal": "4",
+          "center_mm": [
+            5.335,
+            -4.75,
+            0
+          ],
+          "size": [
+            0.9525,
+            0.508
+          ],
+          "type": "tht"
+        },
+        {
+          "terminal": "5",
+          "center_mm": [
+            5.335,
+            0.0,
+            0
+          ],
+          "size": [
+            0.9525,
+            0.508
+          ],
+          "type": "tht"
+        },
+        {
+          "terminal": "6",
+          "center_mm": [
+            5.335,
+            4.75,
+            0
+          ],
+          "size": [
+            0.9525,
+            0.508
+          ],
+          "type": "tht"
+        }
+      ],
+      "shape": "box",
+      "round_pin": false,
+      "mark_pin1": true,
+      "pad_stock": 0.2,
+      "cosmetic_defaults": [
+        {
+          "feature": "pad_stock",
+          "value": 0.2,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_diameter",
+          "value": 1.1866666666666668,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "winding_turns",
+          "value": 8,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_size",
+          "value": [
+            8.9,
+            5.15
+          ],
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Optional separate label decal occupies half X and quarter Y of top face.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "marker_diameter": 1.1866666666666668,
+      "winding_turns": 8,
+      "label_size": [
+        8.9,
+        5.15
+      ]
+    },
+    "OHM-053": {
+      "kind": "magnetic",
+      "layout": "explicit",
+      "family": "PKG-XFMR_EE",
+      "width": 32.31,
+      "length": 27.03,
+      "height": 13.69,
+      "standoff": 0.0,
+      "body_material": "MAT_FERRITE_DARK",
+      "lead_material": "MAT_TIN_BRIGHT",
+      "count": 12,
+      "pitch": 2.5,
+      "source_parameters": [],
+      "source_pin1": "RESEARCH_REQUIRED",
+      "tail": 2.6,
+      "tht": true,
+      "segments": {
+        "LOD0": 12,
+        "LOD1": 32,
+        "LOD2": 64
+      },
+      "contacts": [
+        {
+          "terminal": "1",
+          "center_mm": [
+            -14.62,
+            6.25,
+            0
+          ],
+          "size": [
+            0.5,
+            0.5
+          ],
+          "type": "tht"
+        },
+        {
+          "terminal": "2",
+          "center_mm": [
+            -14.62,
+            3.75,
+            0
+          ],
+          "size": [
+            0.5,
+            0.5
+          ],
+          "type": "tht"
+        },
+        {
+          "terminal": "3",
+          "center_mm": [
+            -14.62,
+            1.25,
+            0
+          ],
+          "size": [
+            0.5,
+            0.5
+          ],
+          "type": "tht"
+        },
+        {
+          "terminal": "4",
+          "center_mm": [
+            -14.62,
+            -1.25,
+            0
+          ],
+          "size": [
+            0.5,
+            0.5
+          ],
+          "type": "tht"
+        },
+        {
+          "terminal": "5",
+          "center_mm": [
+            -14.62,
+            -3.75,
+            0
+          ],
+          "size": [
+            0.5,
+            0.5
+          ],
+          "type": "tht"
+        },
+        {
+          "terminal": "6",
+          "center_mm": [
+            -14.62,
+            -6.25,
+            0
+          ],
+          "size": [
+            0.5,
+            0.5
+          ],
+          "type": "tht"
+        },
+        {
+          "terminal": "7",
+          "center_mm": [
+            14.62,
+            -6.25,
+            0
+          ],
+          "size": [
+            0.5,
+            0.5
+          ],
+          "type": "tht"
+        },
+        {
+          "terminal": "8",
+          "center_mm": [
+            14.62,
+            -3.75,
+            0
+          ],
+          "size": [
+            0.5,
+            0.5
+          ],
+          "type": "tht"
+        },
+        {
+          "terminal": "9",
+          "center_mm": [
+            14.62,
+            -1.25,
+            0
+          ],
+          "size": [
+            0.5,
+            0.5
+          ],
+          "type": "tht"
+        },
+        {
+          "terminal": "10",
+          "center_mm": [
+            14.62,
+            1.25,
+            0
+          ],
+          "size": [
+            0.5,
+            0.5
+          ],
+          "type": "tht"
+        },
+        {
+          "terminal": "11",
+          "center_mm": [
+            14.62,
+            3.75,
+            0
+          ],
+          "size": [
+            0.5,
+            0.5
+          ],
+          "type": "tht"
+        },
+        {
+          "terminal": "12",
+          "center_mm": [
+            14.62,
+            6.25,
+            0
+          ],
+          "size": [
+            0.5,
+            0.5
+          ],
+          "type": "tht"
+        }
+      ],
+      "shape": "ee",
+      "visual_pin_diameter": 0.5,
+      "cosmetic_defaults": [
+        {
+          "feature": "visual_pin_diameter",
+          "value": 0.5,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One fifth of stated provisional 2.5 mm pitch, visual stock only; no hole diameter or footprint claim. Within body XY envelope.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "bobbin_base",
+          "value": 1.71125,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Lower eighth of sourced height; full sourced plan envelope.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "flange_stock",
+          "value": 1.6155000000000002,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One twentieth sourced X envelope; two inner flanges, do not move pin rows.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "core_width",
+          "value": 24.2325,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "75 percent X envelope, bounded by bobbin flanges; no EFD core datasheet dimension asserted.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "core_length",
+          "value": 24.327,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "90 percent Y envelope, inside sourced envelope.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "core_stock",
+          "value": 2.738,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Core rails and center leg stock one fifth overall height.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "tape_width",
+          "value": 12.1635,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Tape winding band 45 percent body Y span, inside core window.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "pad_stock",
+          "value": 0.2,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_diameter",
+          "value": 1.802,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "winding_turns",
+          "value": 8,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_size",
+          "value": [
+            16.155,
+            6.7575
+          ],
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Optional separate label decal occupies half X and quarter Y of top face.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "round_pin": true,
+      "mark_pin1": true,
+      "bobbin_base": 1.71125,
+      "flange_stock": 1.6155000000000002,
+      "core_width": 24.2325,
+      "core_length": 24.327,
+      "core_stock": 2.738,
+      "tape_width": 12.1635,
+      "pad_stock": 0.2,
+      "marker_diameter": 1.802,
+      "winding_turns": 8,
+      "label_size": [
+        16.155,
+        6.7575
+      ]
+    },
+    "OHM-054": {
+      "kind": "magnetic",
+      "layout": "explicit",
+      "family": "PKG-XFMR_CT",
+      "width": 17.2,
+      "length": 9.53,
+      "height": 20.4,
+      "standoff": 0.0,
+      "body_material": "MAT_PLASTIC_BLACK",
+      "lead_material": "MAT_TIN_BRIGHT",
+      "count": 3,
+      "pitch": 6.35,
+      "source_parameters": [],
+      "source_pin1": [
+        -6.35,
+        0
+      ],
+      "tail": 2.6,
+      "tht": true,
+      "segments": {
+        "LOD0": 12,
+        "LOD1": 32,
+        "LOD2": 64
+      },
+      "contacts": [
+        {
+          "terminal": "1",
+          "center_mm": [
+            -6.35,
+            0,
+            0
+          ],
+          "size": [
+            0.66,
+            0.45
+          ],
+          "type": "tht"
+        },
+        {
+          "terminal": "2",
+          "center_mm": [
+            0.0,
+            0,
+            0
+          ],
+          "size": [
+            0.66,
+            0.45
+          ],
+          "type": "tht"
+        },
+        {
+          "terminal": "3",
+          "center_mm": [
+            6.35,
+            0,
+            0
+          ],
+          "size": [
+            0.66,
+            0.45
+          ],
+          "type": "tht"
+        }
+      ],
+      "shape": "box",
+      "round_pin": false,
+      "mark_pin1": true,
+      "pad_stock": 0.2,
+      "cosmetic_defaults": [
+        {
+          "feature": "pad_stock",
+          "value": 0.2,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_diameter",
+          "value": 0.6353333333333333,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "winding_turns",
+          "value": 8,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_size",
+          "value": [
+            8.6,
+            2.3825
+          ],
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Optional separate label decal occupies half X and quarter Y of top face.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "marker_diameter": 0.6353333333333333,
+      "winding_turns": 8,
+      "label_size": [
+        8.6,
+        2.3825
+      ]
+    },
+    "OHM-055": {
+      "kind": "magnetic",
+      "layout": "explicit",
+      "family": "PKG-MAGNETICS_SMD",
+      "width": 9.53,
+      "length": 12.7,
+      "height": 6.8,
+      "standoff": 0.0,
+      "body_material": "MAT_PLASTIC_BLACK",
+      "lead_material": "MAT_TIN_BRIGHT",
+      "count": 16,
+      "pitch": 1.27,
+      "source_parameters": [],
+      "source_pin1": [
+        -5.08,
+        4.445
+      ],
+      "tail": 2.6,
+      "tht": false,
+      "segments": {
+        "LOD0": 12,
+        "LOD1": 32,
+        "LOD2": 64
+      },
+      "contacts": [
+        {
+          "terminal": "1",
+          "center_mm": [
+            -5.08,
+            4.445,
+            0
+          ],
+          "size": [
+            0.6,
+            0.3
+          ],
+          "type": "smd"
+        },
+        {
+          "terminal": "2",
+          "center_mm": [
+            -5.08,
+            3.1750000000000003,
+            0
+          ],
+          "size": [
+            0.6,
+            0.3
+          ],
+          "type": "smd"
+        },
+        {
+          "terminal": "3",
+          "center_mm": [
+            -5.08,
+            1.9050000000000002,
+            0
+          ],
+          "size": [
+            0.6,
+            0.3
+          ],
+          "type": "smd"
+        },
+        {
+          "terminal": "4",
+          "center_mm": [
+            -5.08,
+            0.6350000000000002,
+            0
+          ],
+          "size": [
+            0.6,
+            0.3
+          ],
+          "type": "smd"
+        },
+        {
+          "terminal": "5",
+          "center_mm": [
+            -5.08,
+            -0.6349999999999998,
+            0
+          ],
+          "size": [
+            0.6,
+            0.3
+          ],
+          "type": "smd"
+        },
+        {
+          "terminal": "6",
+          "center_mm": [
+            -5.08,
+            -1.9049999999999994,
+            0
+          ],
+          "size": [
+            0.6,
+            0.3
+          ],
+          "type": "smd"
+        },
+        {
+          "terminal": "7",
+          "center_mm": [
+            -5.08,
+            -3.175,
+            0
+          ],
+          "size": [
+            0.6,
+            0.3
+          ],
+          "type": "smd"
+        },
+        {
+          "terminal": "8",
+          "center_mm": [
+            -5.08,
+            -4.445,
+            0
+          ],
+          "size": [
+            0.6,
+            0.3
+          ],
+          "type": "smd"
+        },
+        {
+          "terminal": "9",
+          "center_mm": [
+            5.08,
+            -4.445,
+            0
+          ],
+          "size": [
+            0.6,
+            0.3
+          ],
+          "type": "smd"
+        },
+        {
+          "terminal": "10",
+          "center_mm": [
+            5.08,
+            -3.1750000000000003,
+            0
+          ],
+          "size": [
+            0.6,
+            0.3
+          ],
+          "type": "smd"
+        },
+        {
+          "terminal": "11",
+          "center_mm": [
+            5.08,
+            -1.9050000000000002,
+            0
+          ],
+          "size": [
+            0.6,
+            0.3
+          ],
+          "type": "smd"
+        },
+        {
+          "terminal": "12",
+          "center_mm": [
+            5.08,
+            -0.6350000000000002,
+            0
+          ],
+          "size": [
+            0.6,
+            0.3
+          ],
+          "type": "smd"
+        },
+        {
+          "terminal": "13",
+          "center_mm": [
+            5.08,
+            0.6349999999999998,
+            0
+          ],
+          "size": [
+            0.6,
+            0.3
+          ],
+          "type": "smd"
+        },
+        {
+          "terminal": "14",
+          "center_mm": [
+            5.08,
+            1.9049999999999994,
+            0
+          ],
+          "size": [
+            0.6,
+            0.3
+          ],
+          "type": "smd"
+        },
+        {
+          "terminal": "15",
+          "center_mm": [
+            5.08,
+            3.175,
+            0
+          ],
+          "size": [
+            0.6,
+            0.3
+          ],
+          "type": "smd"
+        },
+        {
+          "terminal": "16",
+          "center_mm": [
+            5.08,
+            4.445,
+            0
+          ],
+          "size": [
+            0.6,
+            0.3
+          ],
+          "type": "smd"
+        }
+      ],
+      "shape": "box",
+      "visual_terminal_size": [
+        0.6,
+        0.3
+      ],
+      "cosmetic_defaults": [
+        {
+          "feature": "visual_terminal_size",
+          "value": [
+            0.6,
+            0.3
+          ],
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Use stated width (2.0, 1.25 or 0.30); remaining visual extent uses square width for drum/CMC or twice width for LAN foot. Contact centers unchanged; no land-pattern claim.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "pad_stock",
+          "value": 0.2,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Metal visual stock one twentieth height capped0.2, contact plane unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_diameter",
+          "value": 0.6353333333333333,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "OHM-044 stated0.2; otherwise one fifteenth smaller face dimension for library pin1 decal.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "winding_turns",
+          "value": 8,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Eight purely visual winding stripes within existing winding envelope; no electrical turn-count claim.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_size",
+          "value": [
+            4.765,
+            3.175
+          ],
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Optional separate label decal occupies half X and quarter Y of top face.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "round_pin": false,
+      "mark_pin1": true,
+      "pad_stock": 0.2,
+      "marker_diameter": 0.6353333333333333,
+      "winding_turns": 8,
+      "label_size": [
+        4.765,
+        3.175
+      ]
+    }
+  }
+}

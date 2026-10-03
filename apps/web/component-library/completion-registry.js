@@ -5,6 +5,7 @@ import { generateHeaderConnector, HEADER_CONNECTOR_FAMILIES } from './generators
 import { VISUAL_SOURCE_HASH } from '../visual-version.js';
 import { generateFrequency, frequencyContacts, FREQUENCY_FAMILIES } from './generators/frequency.js';
 import { generateIO, ioContacts, IO_FAMILIES } from './generators/io-connectors.js';
+import { generateMagnetic, MAGNETIC_FAMILIES } from './generators/magnetics.js';
 
 export function completionContacts(p){
     if(p.layout==='explicit')return ioContacts(p);
@@ -18,7 +19,7 @@ export function createCompletionLibrary(data){
     const d=structuredClone(data),records=Object.create(null);
     if(d.schema_version!==1||!/^[a-f0-9]{64}$/.test(d.source_spec_sha256))throw new RangeError('Invalid completion data');
     for(const r of d.components){
-        const p=d.profiles[r.profile_id];if(Object.hasOwn(records,r.id)||!p||![...HEADER_CONNECTOR_FAMILIES,...FREQUENCY_FAMILIES,...IO_FAMILIES].includes(p.family)||r.status==='research_required')throw new RangeError('Invalid/unimplemented record');
+        const p=d.profiles[r.profile_id];if(Object.hasOwn(records,r.id)||!p||![...HEADER_CONNECTOR_FAMILIES,...FREQUENCY_FAMILIES,...IO_FAMILIES,...MAGNETIC_FAMILIES].includes(p.family)||r.status==='research_required')throw new RangeError('Invalid/unimplemented record');
         if(!LODS.every(l=>r.lod_supported.includes(l)))throw new RangeError('Missing explicit LOD');
         records[r.id]=r;
     }
@@ -58,7 +59,7 @@ export function createCompletionComponent(library,id,options={},materials=create
     }
     const lod=options.lod??'LOD1';if(!LODS.includes(lod))throw new RangeError('Invalid explicit LOD');
     const marking=options.marking_text??'';if(typeof marking!=='string'||!/^[A-Z0-9]{0,12}$/.test(marking))throw new RangeError('Invalid marking');
-    const cs=completionContacts(p),g=p.kind==='io'?generateIO(p,lod,cs,materials):p.kind==='frequency'?generateFrequency(p,lod,cs,materials,marking):generateHeaderConnector(p,lod,cs,materials);
+    const cs=completionContacts(p),g=p.kind==='magnetic'?generateMagnetic(p,lod,cs,materials,marking):p.kind==='io'?generateIO(p,lod,cs,materials):p.kind==='frequency'?generateFrequency(p,lod,cs,materials,marking):generateHeaderConnector(p,lod,cs,materials);
     g.updateMatrixWorld(true);const b=new THREE.Box3().setFromObject(g),size=b.getSize(new THREE.Vector3());
     if([...b.min.toArray(),...b.max.toArray()].some(v=>!Number.isFinite(v)))throw new RangeError('Nonfinite bounds');
     const metadata=structuredClone(r.library_metadata);if(Object.keys(options).some(k=>k!=='lod'))metadata.uncertain_values.push('Caller parameter variant; no independent source verification.');

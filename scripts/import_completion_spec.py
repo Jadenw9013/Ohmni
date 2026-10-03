@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'build/spec-tools'))
 import yaml
 from component_io_profiles import group_c
+from component_magnetic_profiles import group_d
 from component_spec_metadata import library_metadata
 
 GROUPS = {'A': list(range(150, 162)), 'B': list(range(141, 150)),
@@ -138,7 +139,7 @@ def extract(source, group):
         sections=dict(re.findall(r'^## ([^\n]+)\n(.*?)(?=^## |\Z)',m[0],re.MULTILINE|re.DOTALL))
         r['source']={'document':'PCB_COMPONENT_3D_LIBRARY_SPEC.md','line':text[:m.start()].count('\n')+1,'yaml_sha256':hashlib.sha256(raw.encode()).hexdigest(),'sections':{k:v.strip() for k,v in sections.items() if k!='Structured Specification'},'evidence_level':'SPEC_REPORTED; not independently reverified'}
         d={k:v['default'] for k,v in r['dimensions_mm'].items() if 'default' in v}
-        p,conflicts=group_c(r,d,cosmetic) if group=='C' else {'A':group_a,'B':group_b}[group](r,d)
+        p,conflicts={'C':group_c,'D':group_d}[group](r,d,cosmetic) if group in ['C','D'] else {'A':group_a,'B':group_b}[group](r,d)
         if p is None:raise ValueError('Group not yet implemented')
         uncertain=[f'{k}: {v.get("default",v)} ({v.get("basis")}/{v.get("confidence")})' for k,v in r['dimensions_mm'].items() if v.get('confidence')=='L' or v.get('basis') in ['UNCERTAIN','RECALLED_UNVERIFIED','RESEARCH_REQUIRED']]
         uncertain += [line.strip() for line in m[0].splitlines() if re.search(r'UNCERTAIN|RECALLED_UNVERIFIED|RESEARCH_REQUIRED|placeholder|not confirmed|not sourced|unsourced',line,re.IGNORECASE) and not line.startswith('  ')]
