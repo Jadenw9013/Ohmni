@@ -123,12 +123,12 @@ def test_repository_product_scope_matches_human_approval():
     # Visual and release approval preserve the real board and parked M10 benchmark.
     for scope in tasks["scopes"]:
         assert scope["approved_by"]=="human" and scope["approval_evidence"]
-        if scope["id"] in {"VIS-REF-001", "DEPLOY-1", "COMPONENT-SYNTHESIS-1", "COMPONENT-ATLAS-BUILDER-1", "UX-CLARITY-1", "REPO-READY-1", "COMPONENT-3D-STAGE1", "COMPONENT-3D-STAGE2", "COMPONENT-3D-STAGE3", "COMPONENT-3D-STAGE4"}:
+        if scope["id"] in {"VIS-REF-001", "DEPLOY-1", "COMPONENT-SYNTHESIS-1", "COMPONENT-ATLAS-BUILDER-1", "UX-CLARITY-1", "REPO-READY-1", "COMPONENT-3D-STAGE1", "COMPONENT-3D-STAGE2", "COMPONENT-3D-STAGE3", "COMPONENT-3D-STAGE4", "COMPONENT-3D-STAGE5"}:
             assert scope["status"] in {"APPROVED", "IN_PROGRESS", "REVIEW", "VERIFIED", "COMPLETE"}
         else:
             expected="IN_PROGRESS" if scope["id"]=="M10" else "COMPLETE"
             assert scope["status"]==expected, scope["id"]
-    assert state["approved_product_scope"]=="COMPONENT-3D-STAGE4"
+    assert state["approved_product_scope"]=="COMPONENT-3D-STAGE5"
     stage1=json.loads((root/".ai/approvals/COMPONENT-3D-STAGE1.yaml").read_text())
     assert stage1["approved_by"]=="human"
     assert len(stage1["component_ids"])==20
@@ -147,6 +147,10 @@ def test_repository_product_scope_matches_human_approval():
     assert len(stage4["component_ids"])==25
     assert not {"OHM-070", "OHM-094"}.intersection(stage4["component_ids"])
     assert "Stage 5 (LEDs)" in stage4["non_goals"]
+    stage5=json.loads((root/".ai/approvals/COMPONENT-3D-STAGE5.yaml").read_text())
+    assert stage5["approved_by"]=="human"
+    assert len(stage5["component_ids"])==32
+    assert "Stage 6 connectors" in stage5["non_goals"]
     publication=json.loads((root/".ai/approvals/REPO-READY-1.yaml").read_text())
     assert publication["approved_by"]=="human"
     assert "if its clean push to main" in publication["instructions"]

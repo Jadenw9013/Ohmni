@@ -1,23 +1,28 @@
 {
   "schema_version": 1,
-  "active_task": null,
-  "last_known_commit": "66c68596b9c820a5ca5a86237e177dfd2ced08f3",
+  "active_task": "C3D-T05",
+  "last_known_commit": "740db92",
   "previous_checkpoint": ".ai/approvals/COMPONENT-3D-STAGE1-previous-checkpoint.yaml",
   "completed_substeps": [
-    "Human Stage 3 acceptance and Stage 4 combined scope recorded on codex/component-library-stage4.",
-    "25 records / 22 shared profiles, all three LODs; SOT23 unchanged.",
-    "85 Stage 4 geometry tests and 490 total frontend tests pass; source imports and Ruff pass.",
-    "42 review PNGs captured, inspected and hashed; extra PowerPAK/LOD0/LOD2 spotchecks.",
-    "23 focused Python workflow/static boundary tests passed.",
-    "Implementation committed; canonical fast passed (1718 passed, 82 source skips, 49 deselected); exact-commit verification and self-review recorded."
+    "Stage 4 accepted; Stage 5 approval recorded on isolated codex/component-library-stage5.",
+    "Implemented all 32 data records, shared helpers, materials, terminal metadata and explicit LODs.",
+    "599 frontend tests passed including 109 Stage 5 tests; 20 focused Python tests passed.",
+    "All five source imports, repository Ruff and diff checks passed; 42 PNGs visually self-reviewed."
   ],
   "remaining_work": [
-    "Human Stage 4 acceptance. Stage 5 LEDs is not authorized."
+    "Commit implementation, run canonical fast gate, finalize verification and stop for human acceptance before Stage 6."
   ],
   "last_failure": null,
-  "resume_action": "Stop for human Stage 4 review; do not begin LEDs.",
-  "modified_files": [],
-  "last_command": "python scripts/verify.py fast (exit 0)",
-  "verification_record": ".ai/verification/C3D-T04.yaml",
-  "artifact_directory": "out/component-library/stage-4/"
+  "resume_action": "Continue C3D-T05; stop before connectors.",
+  "modified_files": [
+    "apps/web/component-library/",
+    "scripts/import_led_passive_spec.py",
+    "scripts/component_library_acceptance.cjs",
+    "scripts/demo_server.py",
+    "tests/test_ai_workflow.py",
+    ".ai/"
+  ],
+  "last_command": "visual self-review, source checks, Ruff, ai_state validate",
+  "verification_record": null,
+  "artifact_directory": "out/component-library/stage-5/"
 }

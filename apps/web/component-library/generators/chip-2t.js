@@ -4,15 +4,18 @@ import { chipDimensions } from '../validate.js';
 
 const sorted = values => [...new Set(values)].sort((a, b) => a - b);
 
+// Reusable partitioned body/terminal-band builder; LED callers supply LED data.
+export { surface as chipSurface };
+
 // A partitioned outer surface: no overlapping slabs, hidden plating thickness,
 // coplanar overlays or boolean dependency. Bands may differ on top and bottom.
-function surface(group, materials, { L, W, H, xCuts = [], zCuts = [], radius = 0,
+function surface(group, materials, { L, W, H, xCuts = [], yCuts = [], zCuts = [], radius = 0,
     chamfer = false, offset = [0, 0, 0], classify }) {
     const half = [L / 2, W / 2];
     const edgeCuts = size => radius ? [-size / 2 + radius / 2, -size / 2 + radius,
         size / 2 - radius, size / 2 - radius / 2] : [];
     const axes = [sorted([-L / 2, ...edgeCuts(L), ...xCuts, L / 2]),
-        sorted([-W / 2, ...edgeCuts(W), W / 2]),
+        sorted([-W / 2, ...edgeCuts(W), ...yCuts, W / 2]),
         sorted([0, ...zCuts, ...(radius ? [H - radius, H - radius / 2] : []), H])];
     const buckets = new Map();
     const add = (key, token, vertices, normal) => {

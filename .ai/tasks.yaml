@@ -225,11 +225,21 @@
       "id": "COMPONENT-3D-STAGE4",
       "type": "component_library",
       "title": "Reusable 3D library Stage 4: diodes and power packages",
-      "status": "REVIEW",
+      "status": "COMPLETE",
       "approved_by": "human",
       "approval_evidence": ".ai/approvals/COMPONENT-3D-STAGE4.yaml",
       "review_policy": "Self-review and rendered inspection; human acceptance before LEDs.",
-      "human_visual_acceptance": "PENDING"
+      "human_visual_acceptance": "APPROVED",
+      "acceptance_evidence": ".ai/approvals/COMPONENT-3D-STAGE5.yaml"
+    },
+    {
+      "id": "COMPONENT-3D-STAGE5",
+      "type": "component_library",
+      "title": "Reusable 3D library Stage 5: LEDs and leaded passives/cans",
+      "status": "IN_PROGRESS",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/COMPONENT-3D-STAGE5.yaml",
+      "review_policy": "Self-review and rendered inspection; human acceptance before connectors."
     }
   ],
   "tasks": [
@@ -2247,7 +2257,7 @@
       "id": "C3D-T04",
       "scope": "COMPONENT-3D-STAGE4",
       "title": "Data-driven diodes, bridges and transistor/power packages",
-      "status": "VERIFIED",
+      "status": "COMPLETE",
       "priority": 100,
       "dependencies": [
         "C3D-T03"
@@ -2278,6 +2288,43 @@
         "status": "PASSED",
         "independent": false,
         "record": ".ai/reviews.yaml#C3D-T04-SELF"
+      },
+      "blockers": []
+    },
+    {
+      "id": "C3D-T05",
+      "scope": "COMPONENT-3D-STAGE5",
+      "title": "Data-driven LED, leaded passive and can packages",
+      "status": "IN_PROGRESS",
+      "priority": 100,
+      "dependencies": [
+        "C3D-T04"
+      ],
+      "acceptance_criteria": [
+        "32 scoped records at explicit LOD0/1/2",
+        "LED cathode and capacitor plus at -X with correct opposite markings",
+        "Shared chip2T builder and axial bend helper; separate lens and decals; LED color parameter",
+        "32 per-entry uncertainties and source statuses preserved; all numeric conflicts reported",
+        "Snapin 4 mm tails, can vent/seal, positive SMD chamfer and tantalum underterminals",
+        "36 review views, same-scale comparison and all-32 contact sheet",
+        "Stop before Stage 6 connectors"
+      ],
+      "verification": {
+        "required": [
+          "node",
+          "fast",
+          "visual inspection"
+        ],
+        "record": null
+      },
+      "implementation": {
+        "started_at_commit": "740db92",
+        "completed_at_commit": null
+      },
+      "review": {
+        "required": true,
+        "status": "PENDING",
+        "independent": false
       },
       "blockers": []
     }
