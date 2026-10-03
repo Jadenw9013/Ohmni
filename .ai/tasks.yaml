@@ -2533,6 +2533,38 @@
         "record": ".ai/reviews.yaml#C3D-INTEGRATION-SELF"
       },
       "blockers": []
+    },
+    {
+      "id": "C3D-CATALOG-UI",
+      "scope": "COMPONENT-3D-COMPLETION",
+      "title": "Expose all 180 models in the Components catalog",
+      "status": "COMPLETE",
+      "priority": 100,
+      "dependencies": [
+        "C3D-INTEGRATION"
+      ],
+      "acceptance_criteria": [
+        "All 180 models are visually browsable, searchable and filterable in the Components modal with selected-model views, LOD controls, model facts, pins and source status; desktop and mobile are usable"
+      ],
+      "verification": {
+        "required": [
+          "node",
+          "python UI/static boundary",
+          "browser visual inspection"
+        ],
+        "record": ".ai/verification/C3D-CATALOG-UI.yaml"
+      },
+      "implementation": {
+        "started_at_commit": "81721c4",
+        "completed_at_commit": "878eacf4dd4449fc971f686cc068a541e7ede2e1"
+      },
+      "review": {
+        "required": true,
+        "status": "PASSED",
+        "independent": false,
+        "record": ".ai/reviews.yaml#C3D-CATALOG-UI-SELF"
+      },
+      "blockers": []
     }
   ]
 }
