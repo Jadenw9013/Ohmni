@@ -4,8 +4,10 @@ import { createCompletionMaterials } from './completion-materials.js';
 import { generateHeaderConnector, HEADER_CONNECTOR_FAMILIES } from './generators/header-connectors.js';
 import { VISUAL_SOURCE_HASH } from '../visual-version.js';
 import { generateFrequency, frequencyContacts, FREQUENCY_FAMILIES } from './generators/frequency.js';
+import { generateIO, ioContacts, IO_FAMILIES } from './generators/io-connectors.js';
 
 export function completionContacts(p){
+    if(p.layout==='explicit')return ioContacts(p);
     if(p.layout==='frequency')return frequencyContacts(p);
     return Array.from({length:p.N*p.rows},(_,i)=>{
         const row=Math.floor(i/p.rows),column=i%p.rows,x=p.kind==='sh'?p.pin_x:(column-(p.rows-1)/2)*p.pitch;
@@ -16,7 +18,7 @@ export function createCompletionLibrary(data){
     const d=structuredClone(data),records=Object.create(null);
     if(d.schema_version!==1||!/^[a-f0-9]{64}$/.test(d.source_spec_sha256))throw new RangeError('Invalid completion data');
     for(const r of d.components){
-        const p=d.profiles[r.profile_id];if(Object.hasOwn(records,r.id)||!p||![...HEADER_CONNECTOR_FAMILIES,...FREQUENCY_FAMILIES].includes(p.family)||r.status==='research_required')throw new RangeError('Invalid/unimplemented record');
+        const p=d.profiles[r.profile_id];if(Object.hasOwn(records,r.id)||!p||![...HEADER_CONNECTOR_FAMILIES,...FREQUENCY_FAMILIES,...IO_FAMILIES].includes(p.family)||r.status==='research_required')throw new RangeError('Invalid/unimplemented record');
         if(!LODS.every(l=>r.lod_supported.includes(l)))throw new RangeError('Missing explicit LOD');
         records[r.id]=r;
     }
@@ -29,6 +31,10 @@ export function createCompletionComponent(library,id,options={},materials=create
     if(Object.keys(options).some(k=>!allowed.includes(k)))throw new RangeError('Unsupported completion parameter');
     for(const [key,value] of Object.entries(options)){
         if(['lod','marking_text'].includes(key))continue;
+        if(p.kind==='io'){
+            if(key==='N'&&p.shape==='zif'&&Number.isInteger(value)&&value>=4&&value<=60){p.N=value;p.count=value;p.width=.5*value+3.1;p.contacts=Array.from({length:value},(_,i)=>({terminal:String(i+1),center_mm:[-.25*(value-1)+.5*i,1.85,0],size:[.3,1.3],type:'smd'}));p.mounts.forEach((q,i)=>q.center_mm[0]=(i?1:-1)*(p.width/2+.1));continue;}
+            throw new RangeError('I/O alternate is not a safely parameterized source pattern');
+        }
         if(p.kind==='frequency'){
             if(key==='pin1_corner'){if(p.family!=='PKG-XTAL_SMD'||!['TL','BL'].includes(value))throw new RangeError('No sourced pin1 variant');p.pin1_corner=value;continue;}
             if(!p.source_parameters.includes(key)||typeof value!=='number'||!Number.isFinite(value)||value<0||value>100)throw new RangeError('Unsupported frequency parameter');
@@ -52,7 +58,7 @@ export function createCompletionComponent(library,id,options={},materials=create
     }
     const lod=options.lod??'LOD1';if(!LODS.includes(lod))throw new RangeError('Invalid explicit LOD');
     const marking=options.marking_text??'';if(typeof marking!=='string'||!/^[A-Z0-9]{0,12}$/.test(marking))throw new RangeError('Invalid marking');
-    const cs=completionContacts(p),g=p.kind==='frequency'?generateFrequency(p,lod,cs,materials,marking):generateHeaderConnector(p,lod,cs,materials);
+    const cs=completionContacts(p),g=p.kind==='io'?generateIO(p,lod,cs,materials):p.kind==='frequency'?generateFrequency(p,lod,cs,materials,marking):generateHeaderConnector(p,lod,cs,materials);
     g.updateMatrixWorld(true);const b=new THREE.Box3().setFromObject(g),size=b.getSize(new THREE.Vector3());
     if([...b.min.toArray(),...b.max.toArray()].some(v=>!Number.isFinite(v)))throw new RangeError('Nonfinite bounds');
     const metadata=structuredClone(r.library_metadata);if(Object.keys(options).some(k=>k!=='lod'))metadata.uncertain_values.push('Caller parameter variant; no independent source verification.');

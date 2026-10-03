@@ -83,7 +83,7 @@ try {
         const model = build(library, id, { ...options, lod, ...((stage2 || stage3 || stage4 || stage5) ? { marking_text: id.replace('-','') } : !completion && id === 'OHM-004' ? { marking_text: '100' } : {}) });
         preview.setModel(model);
         if(stage5){const led=model.userData.parameters.kind.startsWith('led');for(const key of ['led-color','lens'])$(key).disabled=!led;if(led){$('led-color').value=model.userData.parameters.led_color;$('lens').value=model.userData.parameters.lens;}}
-        const stats = preview.renderView(view, { width: 1000, height: 500, sideAxis: record.package_family === 'PKG-SOT23' ? 'X' : 'Y' });
+        const stats = preview.renderView(view, { width: 1000, height: 500, sideAxis: record.package_family === 'PKG-SOT23' ? 'X' : 'Y', sideSign: completion==='c'?1:-1 });
         $('component').value = id; $('lod').value = lod; $('view').value = view;
         $('name').textContent = `${id} · ${record.canonical_name}${options.terminal_pullback ? ' · DEMO: 0.05 mm pullback' : options.outline ? ' · outline '+options.outline : options.bidirectional ? ' · bidirectional (no band)' : ''}`;
         $('dimensions').textContent = `${model.userData.expected_dimensions_mm.map(n => +n.toFixed(4)).join(' × ')} mm · ${lod} · ${view} · ${stats.triangles} triangles`;
@@ -108,7 +108,7 @@ try {
     const sheetStats = [];
     for (const id of ids) {
         const model = build(library, id, { lod: 'LOD1' }); scratch.setModel(model);
-        sheetStats.push({ id, ...scratch.renderView('three-quarter', { width: 500, height: 300 }) });
+        sheetStats.push({ id, ...scratch.renderView('three-quarter', { width: 500, height: 300, sideSign:completion==='c'?1:-1 }) });
         const record = library.records[id], tile = document.createElement('article'); tile.className = 'tile';
         tile.tabIndex = 0; tile.setAttribute('role', 'button'); tile.setAttribute('aria-label', `Inspect ${id}`);
         const img = new Image(); img.src = scratch.canvas.toDataURL('image/png'); img.alt = `${id} LOD1`;

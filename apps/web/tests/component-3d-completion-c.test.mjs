@@ -1,0 +1,26 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import * as THREE from '../vendor/three.module.js';
+import {createCompletionLibrary,createCompletionComponent} from '../component-library/completion-registry.js';
+const data=JSON.parse(readFileSync(new URL('../component-library/data/completion-c.json',import.meta.url))),lib=createCompletionLibrary(data);
+const row=(xs,y)=>xs.map(x=>[x,y,0]),pad=(x,y,z=0)=>[x,y,z];
+const expected={162:row([3.5,1,-1,-3.5],-1.355),163:[pad(-1.25,-2.43),pad(1.25,-2.43),pad(1.25,-.43),pad(-1.25,-.43)],164:row([1.3,.65,0,-.65,-1.3],-1.35),165:[...row([2.75,2.25,1.75,1.25,.75,.25,-.25,-.75,-1.25,-1.75,-2.25,-2.75],-3.93),...row([-2.5,-2,-1.5,-1,-.5,0,.5,1,1.5,2,2.5,3],-2.23)],166:row([1.6,.8,0,-.8,-1.6],-2.75),167:Array.from({length:19},(_,i)=>[4.5-.5*i,-.05,i%2?-1.6:0]),168:row([3.6,3.2,2.8,2.4,2,1.6,1.2,.8,.4,0,-.4,-.8,-1.2,-1.6,-2,-2.4,-2.8,-3.2,-3.6],0),169:[pad(4.445,-1.905),pad(3.175,-4.445),pad(1.905,-1.905),pad(.635,-4.445),pad(-.635,-1.905),pad(-1.905,-4.445),pad(-3.175,-1.905),pad(-4.445,-4.445)],170:[pad(1.53,-1.5),pad(.51,-3.5),pad(-.51,-1.5),pad(-1.53,-3.5)],171:[pad(-4.9,1.7),pad(-4.4,-5.6),pad(2.2,-1.2),pad(4.9,-2.4),pad(-.3,5.6)],172:[pad(2.35,-3),pad(2.35,3),pad(-2.35,0)],173:row([-2.5,2.5],-4.825),174:row([-3.6,3.6],0),175:[pad(-1.05,0),pad(.475,1.475),pad(.475,-1.475)],176:[pad(0,0),pad(-2.54,2.54),pad(-2.54,-2.54),pad(2.54,-2.54),pad(2.54,2.54)],177:[pad(0,.6875),pad(-3.4925,.6875),pad(3.4925,.6875),pad(-3.4925,.6875,-1.57),pad(3.4925,.6875,-1.57)],178:row([-2.25,-1.75,-1.25,-.75,-.25,.25,.75,1.25,1.75,2.25],1.85),179:row([-7.065,-4.565,-1.265,.435,2.935,5.435,7.865,9.565,-9.565],0),180:row([3.105,2.005,.905,-.195,-1.295,-2.395,-3.495,-4.545],-4.9)};
+const names={165:[...Array.from({length:12},(_,i)=>`A${i+1}`),...Array.from({length:12},(_,i)=>`B${i+1}`)],171:['T','TN','RN','R','S'],175:['SIG','GND1','GND2'],177:['SIG','GND1','GND2','GND3','GND4']};
+const near=(a,b)=>assert.ok(Math.abs(a-b)<2e-5,`${a} != ${b}`);
+function signature(g){const a=[];g.traverse(m=>{if(m.isMesh)a.push([m.name,Array.from(m.geometry.attributes.position.array),m.position.toArray(),m.rotation.toArray(),m.material.name,m.isInstancedMesh?Array.from(m.instanceMatrix.array):null,m.userData]);});return createHash('sha256').update(JSON.stringify([a,g.userData])).digest('hex');}
+for(let n=162;n<=180;n++)for(const lod of ['LOD0','LOD1','LOD2'])test(`OHM-${n} ${lod}: contact positions, order, pin1, mating, finite geometry and determinism`,()=>{
+ const g=createCompletionComponent(lib,`OHM-${n}`,{lod}),u=g.userData;
+ assert.equal(u.terminal_count,expected[n].length);u.contacts.forEach((c,i)=>{assert.equal(c.terminal,names[n]?.[i]??String(i+1));c.center_mm.forEach((v,a)=>near(v,expected[n][i][a]));});assert.deepEqual(u.mating_direction,[175,176].includes(n)?[0,0,1]:[0,1,0]);
+ g.updateMatrixWorld(true);const b=new THREE.Box3().setFromObject(g);assert.ok(b.max.z>0&&b.max.x>b.min.x&&b.max.y>b.min.y);
+ g.traverse(m=>{if(m.isMesh){assert.ok(m.material.name.startsWith('MAT_'));for(const a of Object.values(m.geometry.attributes))assert.ok(Array.from(a.array).every(Number.isFinite));}});assert.equal(signature(g),signature(createCompletionComponent(lib,`OHM-${n}`,{lod})));
+ for(const c of u.contacts){let found=false;g.traverse(m=>{if(m.userData.terminal===c.terminal||m.userData.instance_terminals?.includes(c.terminal))found=true;});assert.ok(found,`missing terminal geometry ${c.terminal}`);}
+});
+test('Group C source status and raw source hashes remain untouched',()=>{
+ const source=readFileSync(new URL('../../../PCB_COMPONENT_3D_LIBRARY_SPEC.md',import.meta.url));assert.equal(data.source_spec_sha256,createHash('sha256').update(source).digest('hex'));assert.equal(data.components.length,19);
+ for(const r of data.components){const raw=source.toString().split(`# [${r.id}]`)[1].split(/\n# \[|\n## PROPOSED ADDITIONS/)[0].match(/```yaml\s*\n([\s\S]*?)\n```/)[1];assert.equal(r.status,raw.match(/^status: (\w+)/m)[1]);assert.equal(r.source.yaml_sha256,createHash('sha256').update(raw).digest('hex'));assert.equal(r.library_metadata.implementation_status,'IMPLEMENTED');assert.ok(r.library_metadata.provisional);for(const c of r.cosmetic_defaults)assert.equal(c.tag,'COSMETIC_PROVISIONAL');}
+});
+test('USB-C shell length and cavity stay sourced while conflicting tails stay explicit',()=>{const g=createCompletionComponent(lib,'OHM-165'),b=new THREE.Box3().setFromObject(g.getObjectByName('shell'));near(b.min.x,-4.47);near(b.max.x,4.47);near(b.max.y,4.775);near(b.max.z,3.26);assert.ok(lib.records['OHM-165'].library_metadata.conflicts.length);});
+test('ZIF N changes length and contact row by the stated formulas',()=>{const g=createCompletionComponent(lib,'OHM-178',{N:20});assert.equal(g.userData.terminal_count,20);near(g.userData.contacts[0].center_mm[0],-4.75);near(g.userData.parameters.width,13.1);assert.throws(()=>createCompletionComponent(lib,'OHM-178',{N:2}));});
+test('Unspecified alternate connector footprints cannot be silently selected',()=>{assert.throws(()=>createCompletionComponent(lib,'OHM-169',{N:12}));assert.throws(()=>createCompletionComponent(lib,'OHM-171',{variant:'PJ307'}));});

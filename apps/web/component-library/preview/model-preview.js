@@ -14,12 +14,12 @@ export class ModelPreview extends VisualRenderer {
         if (this.root) { this.scene.remove(this.root); disposeTree(this.root); }
         this.root = root; this.scene.add(root); root.updateMatrixWorld(true);
     }
-    renderView(view = 'three-quarter', { width = 800, height = 480, span, sideAxis = 'Y' } = {}) {
+    renderView(view = 'three-quarter', { width = 800, height = 480, span, sideAxis = 'Y', sideSign = -1 } = {}) {
         const bounds = new THREE.Box3().setFromObject(this.root);
         const center = bounds.getCenter(new THREE.Vector3()), size = bounds.getSize(new THREE.Vector3());
         const extent = Math.max(size.x, size.y, size.z);
-        const direction = { top: [0, 0, 1], underside: [0, 0, -1], side: sideAxis === 'X' ? [-1, 0, 0] : [0, -1, 0],
-            'three-quarter': [0.8, -1.3, 0.9] }[view];
+        const direction = { top: [0, 0, 1], underside: [0, 0, -1], side: sideAxis === 'X' ? [-1, 0, 0] : [0, sideSign, 0],
+            'three-quarter': [0.8, sideSign*1.3, 0.9] }[view];
         if (!direction) throw new RangeError('Unknown view');
         const verticalSpan = span ?? extent * 1.45;
         this.renderer.setPixelRatio(1); this.renderer.setSize(width, height, false);
