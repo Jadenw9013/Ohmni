@@ -1,0 +1,58 @@
+{
+  "task": "C3D-A",
+  "status": "RESOLVED_BY_HUMAN_POLICY",
+  "branch": "codex/component-library-completion",
+  "component": "OHM-161",
+  "source": "PCB_COMPONENT_3D_LIBRARY_SPEC.md",
+  "source_sections": [
+    "OHM-161 Geometry",
+    "OHM-161 Modeling Procedure steps 1, 4",
+    "OHM-161 LOD Strategy"
+  ],
+  "constraint": "Do not invent dimensions; recognition features must survive every LOD.",
+  "available_dimensions": {
+    "header_xyz": [
+      12,
+      12.16,
+      8.6
+    ],
+    "plug_xyz": [
+      18.3,
+      10.16,
+      15
+    ],
+    "plug_x_extent": [
+      0.7,
+      19
+    ],
+    "pin_pitch": 5.08,
+    "mating_direction": "+X",
+    "screw": "M3"
+  },
+  "missing_values": [
+    "Plug screw-center X (row positions can follow the stated pin pitch)",
+    "Plug screw-pocket/head heights and visible slot dimensions",
+    "Plug wire-window size and Z center on +X entry face",
+    "Header shroud wall stock and internal pin horizontal axis Z"
+  ],
+  "why_sections_17_18_do_not_resolve": "They settle axes, mating direction and precedence, but supply no dimensions for these features. M3 identifies the screw thread, not head/pocket placement or wire aperture size.",
+  "options": [
+    "Authorize explicitly provisional cosmetic defaults derived from the stated envelope/pitch",
+    "Accept omission of the unspecified features as a documented deviation",
+    "Supply the missing dimensions"
+  ],
+  "work_preserved": [
+    "Human approval including Stage 5 materials recorded; ordered A-E/integration tasks created.",
+    "12 Group A raw source records imported with uncertainties and unchanged statuses.",
+    "Draft family generators, shared connector shape helpers, instanced pins, two new material tokens and registry preserved uncommitted.",
+    "41 Group A source/pin/numbering/mating/determinism tests and 11 workflow tests pass; focused Ruff and source-import check pass."
+  ],
+  "unfinished": [
+    "Group A visual review, missing OHM-161 recognition geometry, further detailed geometry review and complete group verification/commit.",
+    "Groups B-E and all-180 final integration."
+  ],
+  "new_commits": [],
+  "production_changes": "Untouched",
+  "draft_warning": "No Group A completion or visual acceptance claimed; 41 geometry tests alone do not verify omitted recognition features.",
+  "resolution_evidence": ".ai/approvals/COMPONENT-3D-COSMETIC-POLICY.yaml"
+}

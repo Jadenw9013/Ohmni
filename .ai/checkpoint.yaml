@@ -1,22 +1,33 @@
 {
   "schema_version": 1,
-  "active_task": null,
-  "last_known_commit": "86542c7ca443bf8013512a0d964c23be5bfc81b0",
+  "active_task": "C3D-A",
+  "last_known_commit": "250fecb",
   "previous_checkpoint": ".ai/approvals/COMPONENT-3D-STAGE1-previous-checkpoint.yaml",
   "completed_substeps": [
-    "Stage 4 accepted; Stage 5 approval recorded on isolated codex/component-library-stage5.",
-    "Implemented all 32 data records, shared helpers, materials, terminal metadata and explicit LODs.",
-    "599 frontend tests passed including 109 Stage 5 tests; 20 focused Python tests passed.",
-    "All five source imports, repository Ruff and diff checks passed; 42 PNGs visually self-reviewed.",
-    "Implementation committed; canonical fast gate passed, exact-commit evidence and self-review recorded."
+    "Human approval including Stage 5 materials recorded; ordered A-E/integration tasks created.",
+    "12 Group A raw source records imported with uncertainties and unchanged statuses.",
+    "Draft family generators, shared connector shape helpers, instanced pins, two new material tokens and registry preserved uncommitted.",
+    "41 Group A source/pin/numbering/mating/determinism tests and 11 workflow tests pass; focused Ruff and source-import check pass.",
+    "Cosmetic policy approved and OHM-161 blocker resolved.",
+    "Group A: 641 total frontend tests including 42 A tests; 20 focused Python tests, Ruff/source import pass; 10 PNGs self-reviewed."
   ],
   "remaining_work": [
-    "Human Stage 5 acceptance and added-material approval. Stage 6 connectors is not authorized."
+    "Commit Group A; implement/test/render/commit B-E then all-180 integration."
   ],
   "last_failure": null,
-  "resume_action": "Stop for human Stage 5 review; do not begin Stage 6 connectors.",
-  "modified_files": [],
-  "last_command": "python scripts/verify.py fast (exit 0)",
-  "verification_record": ".ai/verification/C3D-T05.yaml",
-  "artifact_directory": "out/component-library/stage-5/"
+  "resume_action": "Apply approved cosmetic policy, finish/commit A then B-E and integration without intervening approval.",
+  "modified_files": [
+    ".ai/",
+    "tests/test_ai_workflow.py",
+    "scripts/import_completion_spec.py",
+    "apps/web/component-library/completion-materials.js",
+    "apps/web/component-library/completion-registry.js",
+    "apps/web/component-library/data/completion-a.json",
+    "apps/web/component-library/generators/connector-shapes.js",
+    "apps/web/component-library/generators/header-connectors.js",
+    "apps/web/tests/component-3d-completion-a.test.mjs"
+  ],
+  "last_command": "Group A final source import, Ruff, full frontend and visual review passed",
+  "verification_record": null,
+  "artifact_directory": "out/component-library/completion/"
 }

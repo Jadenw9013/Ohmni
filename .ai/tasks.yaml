@@ -236,11 +236,21 @@
       "id": "COMPONENT-3D-STAGE5",
       "type": "component_library",
       "title": "Reusable 3D library Stage 5: LEDs and leaded passives/cans",
-      "status": "REVIEW",
+      "status": "COMPLETE",
       "approved_by": "human",
       "approval_evidence": ".ai/approvals/COMPONENT-3D-STAGE5.yaml",
       "review_policy": "Self-review and rendered inspection; human acceptance before connectors.",
-      "human_visual_acceptance": "PENDING"
+      "human_visual_acceptance": "APPROVED",
+      "acceptance_evidence": ".ai/approvals/COMPONENT-3D-COMPLETION.yaml"
+    },
+    {
+      "id": "COMPONENT-3D-COMPLETION",
+      "type": "component_library",
+      "title": "Complete remaining 63 entries and integrate all 180",
+      "status": "IN_PROGRESS",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/COMPONENT-3D-COMPLETION.yaml",
+      "review_policy": "Tests and commit after every ordered group; no intervening human gate. Final human library review."
     }
   ],
   "tasks": [
@@ -2296,7 +2306,7 @@
       "id": "C3D-T05",
       "scope": "COMPONENT-3D-STAGE5",
       "title": "Data-driven LED, leaded passive and can packages",
-      "status": "VERIFIED",
+      "status": "COMPLETE",
       "priority": 100,
       "dependencies": [
         "C3D-T04"
@@ -2327,6 +2337,192 @@
         "status": "PASSED",
         "independent": false,
         "record": ".ai/reviews.yaml#C3D-T05-SELF"
+      },
+      "blockers": []
+    },
+    {
+      "id": "C3D-A",
+      "scope": "COMPONENT-3D-COMPLETION",
+      "title": "Library completion A",
+      "status": "IN_PROGRESS",
+      "priority": 100,
+      "dependencies": [
+        "C3D-T05"
+      ],
+      "acceptance_criteria": [
+        "Data-driven family generators, source statuses and uncertainties preserved, all LODs, terminal/mating tests and contact sheet; commit separately"
+      ],
+      "verification": {
+        "required": [
+          "node",
+          "source imports",
+          "visual inspection"
+        ],
+        "record": null
+      },
+      "implementation": {
+        "started_at_commit": "250fecb",
+        "completed_at_commit": null
+      },
+      "review": {
+        "required": true,
+        "status": "PENDING",
+        "independent": false
+      },
+      "blockers": []
+    },
+    {
+      "id": "C3D-B",
+      "scope": "COMPONENT-3D-COMPLETION",
+      "title": "Library completion B",
+      "status": "APPROVED",
+      "priority": 100,
+      "dependencies": [
+        "C3D-A"
+      ],
+      "acceptance_criteria": [
+        "Data-driven family generators, source statuses and uncertainties preserved, all LODs, terminal/mating tests and contact sheet; commit separately"
+      ],
+      "verification": {
+        "required": [
+          "node",
+          "source imports",
+          "visual inspection"
+        ],
+        "record": null
+      },
+      "implementation": {
+        "started_at_commit": null,
+        "completed_at_commit": null
+      },
+      "review": {
+        "required": true,
+        "status": "PENDING",
+        "independent": false
+      },
+      "blockers": []
+    },
+    {
+      "id": "C3D-C",
+      "scope": "COMPONENT-3D-COMPLETION",
+      "title": "Library completion C",
+      "status": "APPROVED",
+      "priority": 100,
+      "dependencies": [
+        "C3D-B"
+      ],
+      "acceptance_criteria": [
+        "Data-driven family generators, source statuses and uncertainties preserved, all LODs, terminal/mating tests and contact sheet; commit separately"
+      ],
+      "verification": {
+        "required": [
+          "node",
+          "source imports",
+          "visual inspection"
+        ],
+        "record": null
+      },
+      "implementation": {
+        "started_at_commit": null,
+        "completed_at_commit": null
+      },
+      "review": {
+        "required": true,
+        "status": "PENDING",
+        "independent": false
+      },
+      "blockers": []
+    },
+    {
+      "id": "C3D-D",
+      "scope": "COMPONENT-3D-COMPLETION",
+      "title": "Library completion D",
+      "status": "APPROVED",
+      "priority": 100,
+      "dependencies": [
+        "C3D-C"
+      ],
+      "acceptance_criteria": [
+        "Data-driven family generators, source statuses and uncertainties preserved, all LODs, terminal/mating tests and contact sheet; commit separately"
+      ],
+      "verification": {
+        "required": [
+          "node",
+          "source imports",
+          "visual inspection"
+        ],
+        "record": null
+      },
+      "implementation": {
+        "started_at_commit": null,
+        "completed_at_commit": null
+      },
+      "review": {
+        "required": true,
+        "status": "PENDING",
+        "independent": false
+      },
+      "blockers": []
+    },
+    {
+      "id": "C3D-E",
+      "scope": "COMPONENT-3D-COMPLETION",
+      "title": "Library completion E",
+      "status": "APPROVED",
+      "priority": 100,
+      "dependencies": [
+        "C3D-D"
+      ],
+      "acceptance_criteria": [
+        "Data-driven family generators, source statuses and uncertainties preserved, all LODs, terminal/mating tests and contact sheet; commit separately"
+      ],
+      "verification": {
+        "required": [
+          "node",
+          "source imports",
+          "visual inspection"
+        ],
+        "record": null
+      },
+      "implementation": {
+        "started_at_commit": null,
+        "completed_at_commit": null
+      },
+      "review": {
+        "required": true,
+        "status": "PENDING",
+        "independent": false
+      },
+      "blockers": []
+    },
+    {
+      "id": "C3D-INTEGRATION",
+      "scope": "COMPONENT-3D-COMPLETION",
+      "title": "Library completion INTEGRATION",
+      "status": "APPROVED",
+      "priority": 100,
+      "dependencies": [
+        "C3D-E"
+      ],
+      "acceptance_criteria": [
+        "All 180 IDs, no extras or duplicate; source partial preserved; coverage table, all-180 sheet, README, frontend/Python/lint/source gates and complete report"
+      ],
+      "verification": {
+        "required": [
+          "node",
+          "source imports",
+          "visual inspection"
+        ],
+        "record": null
+      },
+      "implementation": {
+        "started_at_commit": null,
+        "completed_at_commit": null
+      },
+      "review": {
+        "required": true,
+        "status": "PENDING",
+        "independent": false
       },
       "blockers": []
     }

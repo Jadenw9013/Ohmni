@@ -1,0 +1,88 @@
+{
+  "scope": "COMPONENT-3D-COMPLETION",
+  "approved_by": "human",
+  "approved_on": "2026-10-02",
+  "instruction": "Stage 5 approved, including the added materials tokens in C3D-T05-materials.json. Finish the library now: build all remaining entries in one run, working through the groups below in order, without stopping for approval between groups. Stop early only for a blocker, such as a spec conflict you cannot resolve with Sections 17 and 18, or a test failure you cannot fix. In that case report it and wait.\n\nUse the same branch or a new one, and keep the production-repair changes untouched. Commit after each group, each with its own tests, so I can review them separately.\n\nRemaining entries (63). Everything not listed is already built.\n\nGroup A, headers, terminals and wire-to-board connectors (12)\nOHM-150..154 pin headers and sockets (PKG-HDR_PIN, PKG-HDR_SOCKET, including right-angle), 155 JST-PH, 156 JST-XH, 157 JST-SH, 158 Molex KK, 159 and 160 screw terminals, 161 pluggable terminal block (right-angle MSTBA header plus plug, class D).\n\nGroup B, frequency control (9)\nOHM-141..145 crystals (HC-49/U, HC-49/S, 3225, 2520, 2016), 146 7050 oscillator, 147 TCXO, 148 ceramic resonator, 149 SAW filter.\n\nGroup C, I/O connectors (19)\nOHM-162..171 USB-A, USB-B, Micro-USB, USB-C, Mini-USB, HDMI, Mini-HDMI, RJ45, RJ11, 3.5 mm audio jack; OHM-172..180 DC jack, XT30, XT60, U.FL, vertical SMA, edge-launch SMA, FFC/FPC ZIF, SD socket, microSD socket.\n\nGroup D, magnetics (11)\nOHM-044..046, 048..055: SMD wirewound, shielded and unshielded power inductors, drum-core, toroid, SMD and THT common-mode chokes, signal transformer, flyback transformer, current transformer, Ethernet magnetics.\n\nGroup E, pots, networks, shunts and modules (12)\nOHM-015 shunt, 016 SIP network, 017 SMD resistor array, 018 THT trimmer, 019 SMD trimmer, 020 rotary pot; OHM-087..089 seven-segment displays, 090 8x8 LED matrix, 091 16x2 LCD module, 092 OLED module. Modules are class D assemblies with separate sub-bodies.\n\nRules that still apply\n1. Follow the spec's conventions and the orientation and mating rules in Section 18 exactly: side-entry and edge connectors mate toward +Y, top-entry parts toward +Z, right-angle pin headers toward +X, FFC/ZIF with the contact row along X and insertion toward +Y, pin 1 for 4-pad SMD parts per entry (follow the datasheet where the entry says so), and displays viewed from +Z with text along +X. Each entry's explicit coordinates win over a general rule.\n2. Terminal count, terminal position, pin-1 location and numbering order must be asserted by an automated test for every entry, as in earlier stages. Add mating-direction tests for every connector.\n3. Many of these entries are partial and some dimensions are placeholders, tagged UNCERTAIN, RECALLED_UNVERIFIED or RESEARCH_REQUIRED. Build from the stated OHMNI defaults, keep every uncertain value listed in the entry's provisional metadata, and never present an unsourced value as verified. Do not invent dimensions. Where an entry offers alternates (for example the SD, microSD or LCD variants), implement the stated default and expose the alternates as parameters only if the entry says they are safe parameters.\n4. One generator per package family, reusing earlier helpers (lead helpers, shell and housing builders, instancing). Connector shells should share a bent-sheet-metal shell helper across USB, HDMI, RJ, audio and SD families where the geometry is the same kind of thing.\n5. Pin counts as parameters where the entry provides a rule (N-position headers, JST, KK, screw terminals, ZIF connectors, 7-segment digits).\n6. LOD0/1/2 for every entry. Recognition features must survive at every LOD. Keep terminal metadata at LOD0.\n7. Materials: add only the tokens these entries need, with values from the spec or group file headers. Keep a running list and include every added token with its value in the final report. Do not edit shared materials already approved.\n8. Do not build the proposed additions (OHM-201 and up). They are not part of the 180.\n9. Conflicts between the spec's numbers and the generated geometry go in the verification report with the geometry choice used. Do not silently adjust.\n\nVisuals\nPer group, produce a contact sheet of all its components at LOD1. For the hardest parts, produce the full view set (top, underside, side, three-quarter) at LOD1: USB-C, RJ45, 16x2 LCD, SD socket, pluggable terminal block, flyback transformer and 2x5 pin header.\n\nFinal integration pass, after Group E\n1. Add a registry-completeness test that asserts all 180 OHM-IDs (001..180) resolve to a generator and a package-family member, with no duplicates and no extras, and that each has LOD0, LOD1 and LOD2.\n2. Produce one full contact sheet of all 180 at LOD1 and a coverage table: entry, family, generator, LOD support, source status, provisional yes/no.\n3. Run the full frontend, Python and lint gates and the source-import checks.\n4. Check that an implementation flag exists for every entry whose source status was partial, and that no entry that was partial is now labeled complete.\n5. Write a short README for the library covering the directory layout, how to add a component from a data record, how LOD and materials work, and the board-side and viewer adapters.\n\nFinal report\nList the commits, the test results, the total entry count, every provisional entry with its uncertain values, all spec conflicts, all added material tokens, and any entries where you had to stop or deviate. Then stop for my review of the whole library.",
+  "groups": {
+    "A": [
+      "OHM-150",
+      "OHM-151",
+      "OHM-152",
+      "OHM-153",
+      "OHM-154",
+      "OHM-155",
+      "OHM-156",
+      "OHM-157",
+      "OHM-158",
+      "OHM-159",
+      "OHM-160",
+      "OHM-161"
+    ],
+    "B": [
+      "OHM-141",
+      "OHM-142",
+      "OHM-143",
+      "OHM-144",
+      "OHM-145",
+      "OHM-146",
+      "OHM-147",
+      "OHM-148",
+      "OHM-149"
+    ],
+    "C": [
+      "OHM-162",
+      "OHM-163",
+      "OHM-164",
+      "OHM-165",
+      "OHM-166",
+      "OHM-167",
+      "OHM-168",
+      "OHM-169",
+      "OHM-170",
+      "OHM-171",
+      "OHM-172",
+      "OHM-173",
+      "OHM-174",
+      "OHM-175",
+      "OHM-176",
+      "OHM-177",
+      "OHM-178",
+      "OHM-179",
+      "OHM-180"
+    ],
+    "D": [
+      "OHM-044",
+      "OHM-045",
+      "OHM-046",
+      "OHM-048",
+      "OHM-049",
+      "OHM-050",
+      "OHM-051",
+      "OHM-052",
+      "OHM-053",
+      "OHM-054",
+      "OHM-055"
+    ],
+    "E": [
+      "OHM-015",
+      "OHM-016",
+      "OHM-017",
+      "OHM-018",
+      "OHM-019",
+      "OHM-020",
+      "OHM-087",
+      "OHM-088",
+      "OHM-089",
+      "OHM-090",
+      "OHM-091",
+      "OHM-092"
+    ]
+  },
+  "component_count": 63,
+  "stage5_acceptance": "APPROVED including all C3D-T05-materials.json additions",
+  "branch": "codex/component-library-completion",
+  "non_goals": [
+    "OHM-201 and up",
+    "production repair changes"
+  ]
+}
