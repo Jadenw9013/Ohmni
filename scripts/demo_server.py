@@ -95,6 +95,7 @@ STATIC_ASSETS=("index.html","app.js","view-model.js","board-model.js","board-vie
                "component-library/generators/io-connectors.js","component-library/generators/bent-sheet-shell.js",
                "component-library/generators/magnetics.js","component-library/data/completion-d.json",
                "component-library/generators/display-passives.js","component-library/data/completion-e.json",
+               "component-library/full-registry.js",
                "component-library/generators/frequency.js","component-library/completion-registry.js",
                "component-library/completion-materials.js","component-library/generators/header-connectors.js",
                "component-library/generators/connector-shapes.js",

@@ -1,0 +1,152 @@
+{
+  "results": {
+    "status": "PASSED",
+    "review_status": "AWAITING_HUMAN_LIBRARY_REVIEW",
+    "entry_count": 180,
+    "lod_model_builds": 540,
+    "frontend": {
+      "passed": 994,
+      "failed": 0,
+      "log": "frontend-final.txt"
+    },
+    "python_full": {
+      "passed": 1760,
+      "skipped": 89,
+      "failed": 0,
+      "log": "python-full-native.txt",
+      "note": "Completed with native-tool access after a sandboxed run was interrupted due to native-tool failures. Skipped tests are not counted as passed; no independent source-corpus certification is claimed."
+    },
+    "source_imports": {
+      "datasets": 10,
+      "entries": 180,
+      "status": "PASSED"
+    },
+    "lint": "python -m ruff check .: PASSED",
+    "raw_partial_preserved": 84,
+    "provisional_entries": 134,
+    "added_material_tokens": 18,
+    "cosmetic_provisional_values": 283,
+    "visual_review": {
+      "status": "PASSED_SELF_REVIEW",
+      "independent": false,
+      "all_180_inspected": true,
+      "browser_errors": 0,
+      "record": ".ai/verification/C3D-INTEGRATION-visual.json"
+    },
+    "production_repair_changes": "untouched in original checkout",
+    "deviations": "See scope/deviations and per-entry conflicts below; no unresolved blocker."
+  },
+  "source_and_lint_commands": [
+    {
+      "command": [
+        "C:\\Dev\\hackathon\\.venv\\Scripts\\python.exe",
+        "scripts/import_chip2t_spec.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "output": "20 CHIP2T records checked; source c140887db02b0d7bfb25a45a4154f6c4ee58d0ddb493ba502eee53b7e3d38639\n"
+    },
+    {
+      "command": [
+        "C:\\Dev\\hackathon\\.venv\\Scripts\\python.exe",
+        "scripts/import_leaded_spec.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "output": "21 Stage 2 records checked\n"
+    },
+    {
+      "command": [
+        "C:\\Dev\\hackathon\\.venv\\Scripts\\python.exe",
+        "scripts/import_quad_grid_spec.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "output": "19 Stage 3 records checked\n"
+    },
+    {
+      "command": [
+        "C:\\Dev\\hackathon\\.venv\\Scripts\\python.exe",
+        "scripts/import_discrete_spec.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "output": "25 Stage 4 records checked; 22 package profiles\n"
+    },
+    {
+      "command": [
+        "C:\\Dev\\hackathon\\.venv\\Scripts\\python.exe",
+        "scripts/import_led_passive_spec.py",
+        "--check"
+      ],
+      "exit_code": 0,
+      "output": "32 Stage 5 records checked\n"
+    },
+    {
+      "command": [
+        "C:\\Dev\\hackathon\\.venv\\Scripts\\python.exe",
+        "scripts/import_completion_spec.py",
+        "--group",
+        "A",
+        "--check"
+      ],
+      "exit_code": 0,
+      "output": "12 Group A records checked\n"
+    },
+    {
+      "command": [
+        "C:\\Dev\\hackathon\\.venv\\Scripts\\python.exe",
+        "scripts/import_completion_spec.py",
+        "--group",
+        "B",
+        "--check"
+      ],
+      "exit_code": 0,
+      "output": "9 Group B records checked\n"
+    },
+    {
+      "command": [
+        "C:\\Dev\\hackathon\\.venv\\Scripts\\python.exe",
+        "scripts/import_completion_spec.py",
+        "--group",
+        "C",
+        "--check"
+      ],
+      "exit_code": 0,
+      "output": "19 Group C records checked\n"
+    },
+    {
+      "command": [
+        "C:\\Dev\\hackathon\\.venv\\Scripts\\python.exe",
+        "scripts/import_completion_spec.py",
+        "--group",
+        "D",
+        "--check"
+      ],
+      "exit_code": 0,
+      "output": "11 Group D records checked\n"
+    },
+    {
+      "command": [
+        "C:\\Dev\\hackathon\\.venv\\Scripts\\python.exe",
+        "scripts/import_completion_spec.py",
+        "--group",
+        "E",
+        "--check"
+      ],
+      "exit_code": 0,
+      "output": "12 Group E records checked\n"
+    },
+    {
+      "command": [
+        "C:\\Dev\\hackathon\\.venv\\Scripts\\python.exe",
+        "-m",
+        "ruff",
+        "check",
+        "."
+      ],
+      "exit_code": 0,
+      "output": "All checks passed!\n"
+    }
+  ]
+}

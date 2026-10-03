@@ -44,6 +44,8 @@ def group_c(r, d, cosmetic):
                 for y in [-2.75,2.75]:mount(x,y,2,2.5)
             for x in [-2.2,2.2]:mount(x,-.15,.9,.9,'locator')
             p.update(profile='bottom-chamfer',tongue_side='upper')
+            p['omit_locator_geometry']=True
+            conflict('MINI_USB_LOCATOR_DEPTH','NPTH positions and diameter are stated, but locating-peg protrusion is not. Retain hole metadata and omit peg solids to avoid inventing a below-board bounding-box dimension.')
         elif n==167:
             contacts([[4.5-i*.5,-.05,0 if i%2==0 else -1.6] for i in range(19)],[.5,2.8])
             for x in [-6.775,6.775]:
@@ -92,6 +94,7 @@ def group_c(r, d, cosmetic):
     elif n in [175,176,177]:
         p.update(shape='rf',vertical=n!=177)
         if n==175:
+            p.update(width=d['overall_length'],length=d['overall_width'])
             contacts([[-1.05,0]],[1.05,1],names=['SIG']);contacts([[.475,1.475],[.475,-1.475]],[2.2,1.05],names=['GND1','GND2']);p['diameter']=2
         elif n==176:
             contacts([[0,0],[-2.54,2.54],[-2.54,-2.54],[2.54,-2.54],[2.54,2.54]],[1,1],'tht');p.update(diameter=6.35,hex_flats=7.87)

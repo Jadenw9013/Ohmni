@@ -1,0 +1,631 @@
+{
+  "schema_version": 1,
+  "id": "C3D-E",
+  "task": "C3D-E",
+  "scope": "COMPONENT-3D-COMPLETION",
+  "status": "PASSED",
+  "commit": "a5dd8825083dbf5ae0b27daeab40bfcdee5ac2c4",
+  "verified_at": "2026-10-02",
+  "commands": {
+    "node": "810 passed; 41 dedicated tests",
+    "python": "20 focused workflow/static boundary tests passed",
+    "ruff": "All checks passed",
+    "source_imports": "12 records match spec",
+    "visual": "5 images self-reviewed; no browser errors"
+  },
+  "component_ids": [
+    "OHM-015",
+    "OHM-016",
+    "OHM-017",
+    "OHM-018",
+    "OHM-019",
+    "OHM-020",
+    "OHM-087",
+    "OHM-088",
+    "OHM-089",
+    "OHM-090",
+    "OHM-091",
+    "OHM-092"
+  ],
+  "source_spec_sha256": "c140887db02b0d7bfb25a45a4154f6c4ee58d0ddb493ba502eee53b7e3d38639",
+  "model_source_sha256": "2912a06b2db93aad26159b49bfb4133c52e08678b2ae343ce217822d5454e8bc",
+  "visual_record": ".ai/verification/C3D-E-visual.json",
+  "findings": {
+    "OHM-015": {
+      "provisional": true,
+      "uncertain_values": [
+        "hole_center_spacing: 60 (MFR_DATASHEET/L)",
+        "Default style: bolt-on (Vishay WSBS8518...35 reference, gap-fill corrected, see PKG-SHUNT): overall length 85 +/-0.41 (M; the first-pass value 60 was the hole spacing), width 18 +/-0.20 (M), thickness 3.00 +/-0.05 (M), bolt hole dia 7 +/-0.10 (M), hole center spacing 60 (M-L, from sibling sheet 30134 only; positions X = +/-30), element length A 15.62 for 500 micro-ohm (B 17.65; A/B vary with resistance), sense pin spacing 9 +/-0.25 (M, axis unresolved). Blocks: copper, (85 - 17.65)/2 = 33.7 long each; chamfer 1.98 x 45 deg typ. OHMNI placeholders: sense pin dia 1.0 (L), sense pin length below strip 3.0 (L). RESEARCH_REQUIRED: sense pin axis/offset and length. Alternate SMD style (Isabellenhutte BVS 3920): L 10 (+0.3), W 5.2 (+0.3/-0.2), H 0.5 +/-0.1, land: l 11, w 6.2, a 2.7, x 5.6 (roles unresolved).",
+        "4 connection features: pins 1 and 2 = bolt holes dia 7 (terminal blocks, at X = -30 and +30, Y=0; c-c 60); pins 3 and 4 = sense pins at (-4.5, 0) and (+4.5, 0) going down (THT, dia 1.0, length 3.0, UNCERTAIN). Numbering: 1 at -X, 2 at +X, 3 at -X sense, 4 at +X sense. Terminal material copper (tinned/ nickel plated per brand, unverified).",
+        "Sense pins THT holes dia 1.4 at (+/-4.5, 0); bolt holes through-board only if mounted to busbar (not modeled; the model has holes in the terminal blocks only). FCO origin: bbox of holes = X extent +/-30 (bolt holes) with pins inside, so origin at strip center. Body overhangs the hole pattern by 12.5 each end. Standoff default 0 (strip bottom at Z=0); real mounting heights UNCERTAIN.",
+        "Dimensions M (length 85, width 18, thickness 3.0, hole dia 7 from a Vishay sheet; hole c-c 60 from the sibling sheet only), Geometry L, Materials/appearance L. Gap-fill resolved strip width and hole spacing; first-pass length 60 and width 15.62 were wrong readings and are superseded. Unresolved: sense pin axis/offset/length, plating colors, BVS 3920 land-pattern letter roles. Validation: holes at +/-30 with dia 7 leave 12.5 to the strip end (hole edge 9 mm from end, >= hole dia margin); element length 17.65 < hole spacing 60; 85 matches part name WSBS8518. status partial.\n\n---",
+        "COSMETIC_PROVISIONAL pad_stock=0.15: Visual metal stock no more than 5 percent height or0.15; contact planes unchanged.",
+        "COSMETIC_PROVISIONAL mark_diameter=1.2: Optional pin1 dot one fifteenth smaller body dimension, within face.",
+        "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+      ],
+      "appearance_confidence": "L",
+      "electrical_admission": "NOT_EVALUATED",
+      "footprint_binding": null,
+      "conflicts": [
+        {
+          "code": "SHUNT_BLOCK_LENGTH",
+          "geometry_choice": "Use element A=15.62 and overall85, deriving each copper block34.69. Prose33.7 uses B=17.65; no gap or overlap introduced. Sense positions remain stated uncertain +/-4.5, not manufacturer-verified."
+        }
+      ],
+      "implementation_status": "IMPLEMENTED",
+      "implementation_group": "E"
+    },
+    "OHM-016": {
+      "provisional": true,
+      "uncertain_values": [
+        "lead_thickness: 0.3 (UNCERTAIN/L)",
+        "OHMNI default: 8 pins, bussed (4608X-101 style). Body length 20.27 max (2.54*8 - 0.05), body height (Z) 5.08 max (DERIVED from Vishay MSP A-profile 4.95 cross-check, M), body thickness (X) 3.3 (+0.5/-0.3) (MFR_DATASHEET, label association inferred, M), pitch 2.54 +/-0.07 (H), lead cross-section default 0.30 x 0.30 (UNCERTAIN), exposed lead length below body 2.29 max (Vishay MSP, M/L). Table by N in PKG-SIP_NET.",
+        "N holes at pitch 2.54 in a line (hole dia 0.8 default, footprint choice). FCO origin = center of the pin row = body center. Standoff 0 (UNCERTAIN, real bodies sit up to ~0.5 above board). body_offset (0,0).",
+        "Pin 1 marked by a dot or notch near the pin-1 end on the front face (datasheets show an identification on the drawing, form unspecified: RESEARCH_REQUIRED). For bussed networks pin 1 is the common pin.",
+        "pin1_indicator: \"dot near pin 1 end (style RESEARCH_REQUIRED)\"",
+        "Dimensions M, Geometry M, Materials/appearance L. Unresolved: lead cross-section and which of 3.3/5.08 is height; pin-1 mark style; standoff. Validation: body_length formula reproduces the 4 tabulated lengths; pin span (N-1)*2.54 = 17.78 < 20.27 body length (margin 1.245 each end); pin-1 at +Y by analogy with single-row rule (convention gap).\n\n---",
+        "COSMETIC_PROVISIONAL mark_height_fraction=0.65: Front-face pin1 dot at 65 percent of body height, within sourced envelope.",
+        "COSMETIC_PROVISIONAL pad_stock=0.15: Visual metal stock no more than 5 percent height or0.15; contact planes unchanged.",
+        "COSMETIC_PROVISIONAL mark_diameter=0.22: Optional pin1 dot one fifteenth smaller body dimension, within face.",
+        "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+      ],
+      "appearance_confidence": "L",
+      "electrical_admission": "NOT_EVALUATED",
+      "footprint_binding": null,
+      "conflicts": [],
+      "implementation_status": "IMPLEMENTED",
+      "implementation_group": "E"
+    },
+    "OHM-017": {
+      "provisional": true,
+      "uncertain_values": [
+        "Dimensions M (column roles now confirmed by Panasonic EXB-38V A1/A2/B/G and Vishay CRA06P; 3 manufacturers agree on 3.2 x 1.6, P 0.80), Geometry M, Materials/appearance L. status complete (gap-fill): remaining unknowns are cosmetic: terminal count per type derived not stated (Vishay CRA06P and Panasonic confirm 4/8 terminal variants), no manufacturer pin-1 mark found (decal default). Validation: (4-1)*0.8 + 0.3 = 2.7 <= 3.2; 2*0.65 + 0.30 = 1.60 = W; pin counts CCW per architecture.\n\n---",
+        "COSMETIC_PROVISIONAL pad_stock=0.03: Visual metal stock no more than 5 percent height or0.15; contact planes unchanged.",
+        "COSMETIC_PROVISIONAL mark_diameter=0.10666666666666667: Optional pin1 dot one fifteenth smaller body dimension, within face.",
+        "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+      ],
+      "appearance_confidence": "L",
+      "electrical_admission": "NOT_EVALUATED",
+      "footprint_binding": null,
+      "conflicts": [],
+      "implementation_status": "IMPLEMENTED",
+      "implementation_group": "E"
+    },
+    "OHM-018": {
+      "provisional": true,
+      "uncertain_values": [
+        "pin_tail_length: 3.81 (UNCERTAIN/L)",
+        "Default 3296W: body length (along row, Y) 9.53 (M, \"3/8 in\" naming plus callout plus KiCad Bourns_3296W body 9.53 x 4.83, two independent documents), thickness (X) 4.83 +/-0.13 (M), height above board 10.03 (M), 3 pins in line at 2.54 pitch (H), pin dia 0.51 +/-0.03 (H), pin tail below body 3.81 default (L, candidates 3.81 +/-0.71 and 6.4 +/-1.32), 25 turns nominal (H). Adjust screw boss/recess dia 2.19 (L). Slot width ~0.56 and depth ~0.76 (L, labels uncertain).",
+        "Rectangular housing, flat top. Top adjust (W): a circular screw recess on the top face with a brass screw head and screwdriver slot; the screw center from the KiCad 3296W fab drawing (S5) is at Y = +3.495 (toward pin 1), X offset +1.15 from the body center, dia 2.19 (M-L; replaces the first-pass default Y = -2.54). Side adjust (X): screw head in the side/end face (position RESEARCH_REQUIRED). Pins exit the bottom face centered across the thickness.",
+        "3 holes (dia 0.9 default) at pitch 2.54 along Y. Origin FCO = center pin (pin 2) = body center along Y; body center offset 0 (KiCad 3296W footprint: pin row centered along the body and centered across the 4.83 thickness within 0.01, so offset (0,0) confirmed, M). KiCad pad 1.44 dia / drill 0.8 for reference (the 0.9 hole default stays an OHMNI choice). standoff: UNCERTAIN, 0 default (real trimmers often sit on molded standoffs ~0.5; not read).",
+        "Dimensions M (body 9.53 x 4.83, pin pitch, pin row centering now confirmed by the KiCad 3296W footprint; height 10.03 and pin tail unchanged from first pass, L-M), Geometry M, Materials/appearance L. Gap-fill resolved: screw position (M-L), body offset (0,0), pin row centering, 3386P footprint pattern (in family section). Unresolved: pin tail length, standoff, 3296X side-adjust geometry, 3296Y/P/Z, 3386 height by style, housing color. Validation: KiCad 3296W pads 2.54 apart on a 9.53 body (span 5.08 < 9.53); pin span 5.08 fits within 9.53 body; 9.53 = 0.375 in matches \"3/8 in\"; callouts for tape/reel (12.70, 18) excluded. status partial.\n\n---",
+        "COSMETIC_PROVISIONAL rotor_depth=0.73: Recess within upper fifth of housing, limited by rotor diameter/3.",
+        "COSMETIC_PROVISIONAL pad_stock=0.15: Visual metal stock no more than 5 percent height or0.15; contact planes unchanged.",
+        "COSMETIC_PROVISIONAL mark_diameter=0.322: Optional pin1 dot one fifteenth smaller body dimension, within face.",
+        "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+      ],
+      "appearance_confidence": "L",
+      "electrical_admission": "NOT_EVALUATED",
+      "footprint_binding": null,
+      "conflicts": [],
+      "implementation_status": "IMPLEMENTED",
+      "implementation_group": "E"
+    },
+    "OHM-019": {
+      "provisional": true,
+      "uncertain_values": [
+        "slot_length: 2.45 (MFR_DATASHEET/L)",
+        "slot_width: 0.51 (MFR_DATASHEET/L)",
+        "Low square block with a circular rotor on top: a flat-top round rotor (dia about 3.2, UNCERTAIN) with a screwdriver slot 2.45 x 0.51 across its diameter; thin plastic housing; terminal pads on the underside edges.",
+        "Dimensions M (body 4.5 x 4.5 x 2.55 from Bourns datasheet re-read + element14 + KiCad body outline), Geometry M-L (pad centers from KiCad, S5; tab shape and rotor diameter not sourced), Materials/appearance L. Gap-fill resolved: 3314 height conflict (2.55 for G/J/H, 1.30 for R/S/Z), pad coordinates, FCO centering. Unresolved: actual terminal tab geometry (only land pattern known), rotor diameter (KiCad Fab marker 2.0 vs first-pass 3.2 guess; slot 2.45 callout exceeds a 2.0 rotor, so 3.2 kept), housing colors, 3224 pad association. Validation: pad bbox 3.6 x 6.8 is centered on the 4.5 square body; KiCad 3314G and 3314J agree on X pitch 2.30 and center; adopted height matches two sources. status partial (tab geometry and rotor diameter still unsourced).",
+        "Dimensions M (body 4.5 x 4.5 x 2.55 from Bourns datasheet re-read + element14 + KiCad body outline), Geometry M-L (pad centers from KiCad, S5; tab shape and rotor diameter not sourced), Materials/appearance L. Gap-fill resolved: 3314 height conflict (2.55 for G/J/H, 1.30 for R/S/Z), pad coordinates, FCO centering. Unresolved: actual terminal tab geometry (only land pattern known), rotor diameter (KiCad Fab marker 2.0 vs first-pass 3.2 guess; slot 2.45 callout exceeds a 2.0 rotor, so 3.2 kept), housing colors, 3224 pad association. Validation: pad bbox 3.6 x 6.8 is centered on the 4.5 square body; KiCad 3314G and 3314J agree on X pitch 2.30 and center; adopted height matches two sources. status partial (tab geometry and rotor diameter still unsourced).\n\n---",
+        "COSMETIC_PROVISIONAL rotor_depth=0.51: Recess within upper fifth of housing, limited by rotor diameter/3.",
+        "COSMETIC_PROVISIONAL slot_depth=0.255: One tenth housing height; inward rotor slot only.",
+        "COSMETIC_PROVISIONAL pad_stock=0.1275: Visual metal stock no more than 5 percent height or0.15; contact planes unchanged.",
+        "COSMETIC_PROVISIONAL mark_diameter=0.3: Optional pin1 dot one fifteenth smaller body dimension, within face.",
+        "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+      ],
+      "appearance_confidence": "L",
+      "electrical_admission": "NOT_EVALUATED",
+      "footprint_binding": null,
+      "conflicts": [],
+      "implementation_status": "IMPLEMENTED",
+      "implementation_group": "E"
+    },
+    "OHM-020": {
+      "provisional": true,
+      "uncertain_values": [
+        "overall_height: 9.0 (UNCERTAIN/L)",
+        "shaft_diameter: 6.0 (UNCERTAIN/L)",
+        "RV16 (Taiwan Alpha catalog): thread options M6x0.75, M7x0.75, M8x0.75, M3/8x0.75; bushing length options 5.0, 6.5, 7.0, 8.0; shaft lengths 10, 15, 20, 25; angle 300 +/-5 deg. OHMNI defaults (all L unless noted): body diameter 16 (from the \"16 mm\" name, DERIVED, M-L), body height above PCB 9.0 (UNCERTAIN placeholder), bushing M7 x 0.75 (dia 7.0; Alps RK163 bushing width 7), bushing length 7.0, shaft dia 6.0 (L-M: Alps RK163 shaft width 6 corroborates; the Alpha sheet read gave 5, 6.5, 8), shaft length (from bushing top) 15. PTV09 alternate: bushing M9 x 0.75, plastic bushing length 11.4 +0/-0.5, shaft length options 15/20/25/30, mechanical angle 280 +/-10 deg, pin dia 1.0 +0.2/-0, pin spacing numbers 1.8 and 2.2 (+0.2/-0) as read; body dims about 10.0 x 5.5 x 6.8 as read, assignment unclear. Gap-fill: RV16 pin spacing 5.0 / drill 1.3 corroborated (M-L) only by the Alps RK163 (another manufacturer) footprint in the KiCad library; Alpha RV16 itself not opened beyond the first pass. 9 mm class (PTV09A-1, Alpha RD901F): pin pitch 2.5, shaft 7.5 from the pin row, mounting holes 8.8 to 9.6 apart (KiCad, M-L), see PKG-POT_ROTARY.",
+        "3 pins (1, 2 wiper, 3), flat or round, placeholder dia 1.0, spacing 5.0 along Y (M-L: Alps RK163 pitch 5.0, drill 1.3), tails to Z = -2.6 default. 9 mm alternate (PTV09/Alpha RD901F): pitch 2.5, drill 1.0, shaft on the pin-2 line 7.5 from the pin row. Pin 1 at +Y: (0, +5.0). Pin tail material MAT_TIN_BRIGHT.",
+        "3 holes dia 1.3 (placeholder), plus mounting tabs if present (not read). FCO origin = pin pattern center; shaft axis at body center; body_offset (0, 0) UNCERTAIN. Standoff 0.",
+        "Dimensions L-M, Geometry M, Materials/appearance L. Gap-fill (search budget exhausted mid-pass; KiCad S5 used): pin pitch and drill of RV16 corroborated by an Alps 16 mm part (5.0 / 1.3); 9 mm footprints (PTV09A-1, Alpha RD901F: pitch 2.5, shaft offset 7.5, posts) added; PTV09 shaft styles F/S/U. Unresolved: RV16 body height, shaft tip type meanings for Alpha codes, PTV09 shaft diameter (KiCad marker 6.0 only), bushing nut/washer, mounting lugs of RV16. Validation: shaft_length options and bushing lengths taken from the sheet; angle 300 vs 280 deg per series; shaft dia 6.0 conflicts with read values 5/6.5/8 (flagged). status partial.\n\n---",
+        "COSMETIC_PROVISIONAL pad_stock=0.15: Visual metal stock no more than 5 percent height or0.15; contact planes unchanged.",
+        "COSMETIC_PROVISIONAL mark_diameter=1.0666666666666667: Optional pin1 dot one fifteenth smaller body dimension, within face.",
+        "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+      ],
+      "appearance_confidence": "L",
+      "electrical_admission": "NOT_EVALUATED",
+      "footprint_binding": null,
+      "conflicts": [
+        {
+          "code": "ROTARY_SHAFT_CLEARANCE",
+          "geometry_choice": "Stated shaft6 and bushing7 yield equality in diameter <= bushing-1, while coupled prose says strict <; keep explicit defaults unchanged."
+        }
+      ],
+      "implementation_status": "IMPLEMENTED",
+      "implementation_group": "E"
+    },
+    "OHM-087": {
+      "provisional": true,
+      "uncertain_values": [
+        "Box housing 19.05 x 12.7 x 8.0 mm with square-cut edges. The top face carries a flat face plate (gray default) with 1 digit window(s); each digit is 7 white bar segments plus a right-hand DP in a figure-8 arrangement (DERIVED proportions from PKG-7SEG generator notes: bar stroke 0.14 h, digit width 0.62 h, DP dia 0.15 h). Segments are slightly recessed (~0.1, UNCERTAIN) below the face plate; face plate is flush with the housing top. Digit UP direction = +X at rotation 0. The DP sits at the digit's lower-right, i.e. at the -X (bottom) and -Y (right) corner of each digit window (PKG-7SEG orientation note).",
+        "10 pins, 2.54 mm pitch, rows parallel to Y at X = -7.62 and +7.62, pin Y positions [5.08, 2.54, 0.0, -2.54, -5.08]. Pin 1 at (-7.62, 5.08); pins 1..5 down the -X row; pins 6..10 up the +X row (pin 6 at (+7.62, -5.08)). Shape: flat/square pin 0.5 x 0.25 (UNCERTAIN; not legible in any drawing), tin-plated (MAT_TIN_BRIGHT). Tail bottom -2.6 (default); body standoff 0 (UNCERTAIN). Functional pin map (segment to pin) depends on common anode/cathode and vendor and is RESEARCH_REQUIRED (not legible).",
+        "Through-hole footprint, hole 0.9-1.0 recommended (OHMNI default 1.0, UNCERTAIN), pads 1.6-1.8. FCO origin at the center of the pin bounding box: X +/-7.62, Y +/-5.08; body_offset = (0, 0) (pins assumed centered on body; RESEARCH_REQUIRED for the 4-digit part). Pin 1 at (-7.62, 5.08).",
+        "Dimensions M; Geometry M (segment proportions DERIVED); Materials/appearance M. Unresolved: pin cross-section and hole sizes, segment dimensions, pin-to-segment map, face-plate recess, standoff, 0.28/0.36 classes. Validation: pitch 2.54 x (5-1) = 10.16 vs listed body Y 12.7 (fits); pin count 10 = 2 x 5; pin 1 follows dual-row rule; row spacing 15.24 < body X 19.05.\n\n\n---",
+        "COSMETIC_PROVISIONAL face_depth=0.1: Entry approximate 0.1 recess; plate partition within sourced body height.",
+        "COSMETIC_PROVISIONAL digit_layout={'horizontal_bias': -0.06, 'dp_x': 0.38, 'dp_y': -0.43, 'bar_y': 0.43, 'vertical_x': 0.24, 'vertical_y': 0.215, 'bar_length': 0.48, 'vertical_length': 0.32}: Dimensionless proportions of sourced digit height, inside digit cell; preserves entry UP=+X and lower-right DP. Bias leaves room for DP inside 12.7 mm single-digit face.",
+        "COSMETIC_PROVISIONAL pad_stock=0.15: Visual metal stock no more than 5 percent height or0.15; contact planes unchanged.",
+        "COSMETIC_PROVISIONAL mark_diameter=0.8466666666666666: Optional pin1 dot one fifteenth smaller body dimension, within face.",
+        "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+      ],
+      "appearance_confidence": "M",
+      "electrical_admission": "NOT_EVALUATED",
+      "footprint_binding": null,
+      "conflicts": [],
+      "implementation_status": "IMPLEMENTED",
+      "implementation_group": "E"
+    },
+    "OHM-088": {
+      "provisional": true,
+      "uncertain_values": [
+        "Box housing 19.05 x 25.0 x 8.0 mm with square-cut edges. The top face carries a flat face plate (gray default) with 2 digit window(s); each digit is 7 white bar segments plus a right-hand DP in a figure-8 arrangement (DERIVED proportions from PKG-7SEG generator notes: bar stroke 0.14 h, digit width 0.62 h, DP dia 0.15 h). Segments are slightly recessed (~0.1, UNCERTAIN) below the face plate; face plate is flush with the housing top. Digit UP direction = +X at rotation 0. The DP sits at the digit's lower-right, i.e. at the -X (bottom) and -Y (right) corner of each digit window (PKG-7SEG orientation note).",
+        "18 pins, 2.54 mm pitch, rows parallel to Y at X = -7.62 and +7.62, pin Y positions [10.16, 7.62, 5.08, 2.54, 0.0, -2.54, -5.08, -7.62, -10.16]. Pin 1 at (-7.62, 10.16); pins 1..9 down the -X row; pins 10..18 up the +X row (pin 10 at (+7.62, -10.16)). Shape: flat/square pin 0.5 x 0.25 (UNCERTAIN; not legible in any drawing), tin-plated (MAT_TIN_BRIGHT). Tail bottom -2.6 (default); body standoff 0 (UNCERTAIN). Functional pin map (segment to pin) depends on common anode/cathode and vendor and is RESEARCH_REQUIRED (not legible).",
+        "Through-hole footprint, hole 0.9-1.0 recommended (OHMNI default 1.0, UNCERTAIN), pads 1.6-1.8. FCO origin at the center of the pin bounding box: X +/-7.62, Y +/-10.16; body_offset = (0, 0) (pins assumed centered on body; RESEARCH_REQUIRED for the 4-digit part). Pin 1 at (-7.62, 10.16).",
+        "Dimensions M; Geometry M (segment proportions DERIVED); Materials/appearance M. Unresolved: pin cross-section and hole sizes, segment dimensions, pin-to-segment map, face-plate recess, standoff, 0.28/0.36 classes. Validation: pitch 2.54 x (9-1) = 20.32 vs listed body Y 25.0 (fits); pin count 18 = 2 x 9; pin 1 follows dual-row rule; row spacing 15.24 < body X 19.05.\n\n\n---",
+        "COSMETIC_PROVISIONAL face_depth=0.1: Entry approximate 0.1 recess; plate partition within sourced body height.",
+        "COSMETIC_PROVISIONAL digit_layout={'horizontal_bias': -0.06, 'dp_x': 0.38, 'dp_y': -0.43, 'bar_y': 0.43, 'vertical_x': 0.24, 'vertical_y': 0.215, 'bar_length': 0.48, 'vertical_length': 0.32}: Dimensionless proportions of sourced digit height, inside digit cell; preserves entry UP=+X and lower-right DP. Bias leaves room for DP inside 12.7 mm single-digit face.",
+        "COSMETIC_PROVISIONAL pad_stock=0.15: Visual metal stock no more than 5 percent height or0.15; contact planes unchanged.",
+        "COSMETIC_PROVISIONAL mark_diameter=1.27: Optional pin1 dot one fifteenth smaller body dimension, within face.",
+        "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+      ],
+      "appearance_confidence": "M",
+      "electrical_admission": "NOT_EVALUATED",
+      "footprint_binding": null,
+      "conflicts": [],
+      "implementation_status": "IMPLEMENTED",
+      "implementation_group": "E"
+    },
+    "OHM-089": {
+      "provisional": true,
+      "uncertain_values": [
+        "Box housing 19.0 x 50.3 x 8.35 mm with square-cut edges. The top face carries a flat face plate (gray default) with 4 digit window(s); each digit is 7 white bar segments plus a right-hand DP in a figure-8 arrangement (DERIVED proportions from PKG-7SEG generator notes: bar stroke 0.14 h, digit width 0.62 h, DP dia 0.15 h). Segments are slightly recessed (~0.1, UNCERTAIN) below the face plate; face plate is flush with the housing top. Digit UP direction = +X at rotation 0. The DP sits at the digit's lower-right, i.e. at the -X (bottom) and -Y (right) corner of each digit window (PKG-7SEG orientation note).",
+        "12 pins, 2.54 mm pitch, rows parallel to Y at X = -7.62 and +7.62, pin Y positions [6.35, 3.81, 1.27, -1.27, -3.81, -6.35]. Pin 1 at (-7.62, 6.35); pins 1..6 down the -X row; pins 7..12 up the +X row (pin 7 at (+7.62, -6.35)). Shape: flat/square pin 0.5 x 0.25 (UNCERTAIN; not legible in any drawing), tin-plated (MAT_TIN_BRIGHT). Tail bottom -2.6 (default); body standoff 0 (UNCERTAIN). Functional pin map (segment to pin) depends on common anode/cathode and vendor and is RESEARCH_REQUIRED (not legible).",
+        "Through-hole footprint, hole 0.9-1.0 recommended (OHMNI default 1.0, UNCERTAIN), pads 1.6-1.8. FCO origin at the center of the pin bounding box: X +/-7.62, Y +/-6.35; body_offset = (0, 0) (pins assumed centered on body; RESEARCH_REQUIRED for the 4-digit part). Pin 1 at (-7.62, 6.35).",
+        "Dimensions M; Geometry M (segment proportions DERIVED); Materials/appearance M. Unresolved: pin cross-section and hole sizes, segment dimensions, pin-to-segment map, face-plate recess, standoff, 0.28/0.36 classes. Validation: pitch 2.54 x (6-1) = 12.7 vs listed body Y 50.3 (fits); pin count 12 = 2 x 6; pin 1 follows dual-row rule; row spacing 15.24 < body X 19.0.\n\n\n---",
+        "COSMETIC_PROVISIONAL face_depth=0.1: Entry approximate 0.1 recess; plate partition within sourced body height.",
+        "COSMETIC_PROVISIONAL digit_layout={'horizontal_bias': -0.06, 'dp_x': 0.38, 'dp_y': -0.43, 'bar_y': 0.43, 'vertical_x': 0.24, 'vertical_y': 0.215, 'bar_length': 0.48, 'vertical_length': 0.32}: Dimensionless proportions of sourced digit height, inside digit cell; preserves entry UP=+X and lower-right DP. Bias leaves room for DP inside 12.7 mm single-digit face.",
+        "COSMETIC_PROVISIONAL pad_stock=0.15: Visual metal stock no more than 5 percent height or0.15; contact planes unchanged.",
+        "COSMETIC_PROVISIONAL mark_diameter=1.2666666666666666: Optional pin1 dot one fifteenth smaller body dimension, within face.",
+        "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+      ],
+      "appearance_confidence": "M",
+      "electrical_admission": "NOT_EVALUATED",
+      "footprint_binding": null,
+      "conflicts": [],
+      "implementation_status": "IMPLEMENTED",
+      "implementation_group": "E"
+    },
+    "OHM-090": {
+      "provisional": true,
+      "uncertain_values": [
+        "overall_length: 32.0 (UNCERTAIN/L)",
+        "overall_width: 32.0 (UNCERTAIN/L)",
+        "overall_height: 8.0 (UNCERTAIN/L)",
+        "row_spacing: 25.4 (UNCERTAIN/L)",
+        "- Class A, priority P2, complexity 3. STATUS partial (gap-fill pass): pin count (16), pin span, dot pitch 4.00 and dot dia 1.9 now come from a 1.2 in 8x8 datasheet; body Z, row spacing, face plate details remain placeholders.",
+        "Body 32.0 x 32.0 x 8.0 (32 mm: LightKey LM12088 1.20 in class and retailer listing, M-L; Z 8.0 UNCERTAIN); alt 20.0 x 20.0 x 8.0 (unsourced). Pins 16 (8/row), pitch 2.54 (LightKey LM12088, M), pin Y span 17.78 (7 x 2.54, matches the sheet), row spacing 25.4 (UNCERTAIN placeholder, RESEARCH_REQUIRED). Dot pitch 4.00 and dot dia 1.9 (LightKey LM12088; first-pass 3.75 / 3.0 placeholders superseded; note TinyTronics gives 3 mm LED pitch and a seller listing for 1588BS gives 3.75 mm dots on a 38 mm body, so real 8x8 parts vary by size class; adopt sourced LightKey values). RESEARCH_REQUIRED: row spacing, height, face plate recess; Kingbright TC23-11 (58 mm, 5 mm dots) numerics did not extract.",
+        "16 round/flat pins (0.5 x 0.25 UNCERTAIN) in two rows of 8 at X = +/-12.7 (row spacing 25.4 placeholder), Y = +8.89, 6.35, 3.81, 1.27, -1.27, -3.81, -6.35, -8.89. Pin 1 at (-12.7, +8.89); pins 1-8 down the -X row; 9-16 up the +X row. Pin-to-row/column mapping RESEARCH_REQUIRED. Tails to -2.6.",
+        "Through-hole, hole 1.0 (UNCERTAIN), pad 1.8; FCO origin at the pin-pattern center; body_offset (0,0) assumed.",
+        "Dimensions L-M (pins, pitch, dot pitch/dia M from one 1.2 in datasheet; body Z and row spacing L); Geometry M (generic); Materials/appearance L. RESEARCH_REQUIRED: height, row spacing, pin-to-row/column map, a real 58 mm Kingbright TC23-11 drawing (numerics did not extract). Conflict kept: first-pass 24 pins / 3.75 / 3.0 placeholders replaced by 16 / 4.00 / 1.9 because the latter come from a datasheet. Validation: 8 x 2.54 span 17.78 < 32.0 body; pin count 16 = 2 x 8; 7 x 4.00 + 1.9 = 29.9 < 32.",
+        "Dimensions L-M (pins, pitch, dot pitch/dia M from one 1.2 in datasheet; body Z and row spacing L); Geometry M (generic); Materials/appearance L. RESEARCH_REQUIRED: height, row spacing, pin-to-row/column map, a real 58 mm Kingbright TC23-11 drawing (numerics did not extract). Conflict kept: first-pass 24 pins / 3.75 / 3.0 placeholders replaced by 16 / 4.00 / 1.9 because the latter come from a datasheet. Validation: 8 x 2.54 span 17.78 < 32.0 body; pin count 16 = 2 x 8; 7 x 4.00 + 1.9 = 29.9 < 32.\n\n\n---",
+        "COSMETIC_PROVISIONAL face_depth=0.1: Entry approximate 0.1 recess; plate partition within sourced body height.",
+        "COSMETIC_PROVISIONAL pad_stock=0.15: Visual metal stock no more than 5 percent height or0.15; contact planes unchanged.",
+        "COSMETIC_PROVISIONAL mark_diameter=2.1333333333333333: Optional pin1 dot one fifteenth smaller body dimension, within face.",
+        "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+      ],
+      "appearance_confidence": "L",
+      "electrical_admission": "NOT_EVALUATED",
+      "footprint_binding": null,
+      "conflicts": [],
+      "implementation_status": "IMPLEMENTED",
+      "implementation_group": "E"
+    },
+    "OHM-091": {
+      "provisional": true,
+      "uncertain_values": [
+        "pcb_thickness: 1.6 (UNCERTAIN/L)",
+        "All from PKG-LCD_CHARACTER (Winstar WH1602 series, Vishay LCD-016N001A): PCB 80.0 x 36.0 (tol +/-0.3), module thickness 13.2 max (default; 10.0 and 13.5 variants), view area 66.0 x 16.0, active area 56.20 x 11.5, character 2.95 x 5.55 mm, character pitch 3.55 x 5.95, dot 0.55 x 0.65, dot pitch 0.60 x 0.70, 16 pins 1.0 PTH on 1.8 pads, pitch 2.54 (15 x 2.54 = 38.1), 4 holes 2.5 PTH on 5.0 pads at 75.0 x 31.0 centers. PCB thickness 1.6 (UNCERTAIN, RESEARCH_REQUIRED). Basis MFR_DATASHEET; confidence H for outline/view/active/holes (several Winstar sheets plus Vishay agree), M for thickness, L for PCB thickness, bezel, header X position.",
+        "Sub-bodies (Z up from PCB underside = module Z0): (1) PCB 80.0 x 36.0 x 1.6, square corners (UNCERTAIN). (2) LCD glass+polarizer+backlight stack: footprint ~71 x 25 (DERIVED, UNCERTAIN), from PCB top to 13.2 total (stack height = 13.2 - 1.6; the H2 callouts 8.6-8.9 in Vishay/Raystar sheets are unresolved). (3) Metal bezel frame, outer 70.0 x 26.0 centered (DERIVED, UNCERTAIN), window 66.0 x 16.0 centered (view area), top at 13.2; bent tabs optional (LOD2). (4) Polarizer inside the window showing 2 rows x 16 characters of 5x8 dots (decal: 2.95 x 5.55 characters, pitch 3.55 x 5.95; active area 56.20 x 11.5 centered in the window). (5) Header: 16 round pins on a single row. (6) Backlight: LED at the edge or back (pins 15, 16 = A, K); not modeled externally for the default. Reading orientation: header along the top (+Y) edge, pin 1 at the left (-X).",
+        "16 round pins (1.0 PTH hole per the sheets; pin dia 0.64 UNCERTAIN), pitch 2.54 along X. Pin 1 at (-19.05, 15.5) from the pin/hole bbox center, pin 16 at (+19.05, 15.5): pin row Y aligned with the mounting-hole row (hole row at +/-15.5 from center; DERIVED from the 2.5 mm callout), pin X centered (RESEARCH_REQUIRED; pin-1 offset callouts of 2.0 / 2.5 / 4.95 conflict). DEVIATION from the single-row header rule (Section 6, row along Y): the module stays in display-upright orientation with the header along X; the coordinator may rotate the footprint 90 deg if the editor requires. Pin function (VSS, VDD, V0, RS, RW, E, D0-D7, A, K) is marking only. Tail below host board -2.6 default if inserted; real tail length RESEARCH_REQUIRED.",
+        "FCO origin: center of the bbox of hole pattern (75.0 x 31.0 outer hole centers) and pins (inside it) = module PCB center (0,0). Mounting holes at (+/-37.5, +/-15.5), 2.5 PTH with 5.0 pads. Header holes 1.0 PTH, pads 1.8, pitch 2.54. Module standoff: default 0 (RESEARCH_REQUIRED; real installs use spacers or a socket); parameter standoff_mm. Body offset (0,0). Pin 1 (-19.05, +15.5).",
+        "Dimensions M (outline H; PCB thickness, bezel, header X offset L); Geometry M; Materials/appearance M. Unresolved after the gap-fill pass (drawing numerics of Winstar/Newhaven/Vishay still not text-extractable; qeda community footprint offered a pin-1 offset that is not adopted, see family note): bezel outline, PCB thickness, header X offset, standoff, glass-stack height vs H2 8.6-8.9 callout; an 85 mm Crystalfontz variant exists. Validation: 15 x 2.54 = 38.1 < 80 (pin 16 at +19.05 inside hole bbox +/-37.5); holes 2.5 mm from each edge ((80-75)/2, (36-31)/2); view 66.0 < bezel 70.0 < 75.0; active 56.2 < view 66.\n\n\n---",
+        "COSMETIC_PROVISIONAL bezel_stock=0.32999999999999996: Inward bezel stock one fortieth total height, top remains13.2.",
+        "COSMETIC_PROVISIONAL polarizer_inset=0.132: Polarizer recessed one hundredth total height below bezel.",
+        "COSMETIC_PROVISIONAL pcb_color=#2F4F3A: Section7 FR4 color is variable; borrow supplied BGA substrate green / supplied plastic blue hue, keeping FR4 roughness0.5. Appearance default only.",
+        "COSMETIC_PROVISIONAL pad_stock=0.15: Visual metal stock no more than 5 percent height or0.15; contact planes unchanged.",
+        "COSMETIC_PROVISIONAL mark_diameter=2.4: Optional pin1 dot one fifteenth smaller body dimension, within face.",
+        "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+      ],
+      "appearance_confidence": "M",
+      "electrical_admission": "NOT_EVALUATED",
+      "footprint_binding": null,
+      "conflicts": [
+        {
+          "code": "LCD_BEZEL_STACK",
+          "geometry_choice": "Use explicit70x26 bezel and71x25 stack; coupled strict bezel<70x26 conflicts with explicit default. Header centered X remains stated provisional; no vendor pin offset inferred."
+        }
+      ],
+      "implementation_status": "IMPLEMENTED",
+      "implementation_group": "E"
+    },
+    "OHM-092": {
+      "provisional": true,
+      "uncertain_values": [
+        "overall_height: 4.1 (MFR_DATASHEET/L)",
+        "pcb_thickness: 1.0 (UNCERTAIN/L)",
+        "hole_diameter: 2.8 (UNCERTAIN/L)",
+        "OHMNI default module: PCB 27.0 x 27.0 (Ozdisan-hosted sheet: \"27.0MM * 27.0MM * 4.1MM\"), panel 26.70 x 19.26 x 1.85, active area 21.74 x 11.2, pixel 0.15 x 0.15, total thickness 4.1 (all S4, vendor not identified; M/L). PCB thickness 1.0 (UNCERTAIN). Header: 4 pins 2.54 pitch (7.62 span), row at Y = -12.0 (qeda, S5, L). Holes: dia 2.8 at (+/-10.25 or +/-11.15, +/-11.5) per the qeda library (its file says set 2 was measured on a real module; UNCERTAIN, RESEARCH_REQUIRED). Conflicts: PCB 26 (Waveshare) / 27 / 30 (DFRobot); active height 10.864 (DFRobot) / 11.18 (Waveshare) / 11.2; hole dia 2.0 (DFRobot) / 2.8 (qeda).",
+        "Sub-bodies: PCB 27.0 x 27.0 x 1.0 with 4 corner holes; OLED panel 26.70 x 19.26 x 1.85 glass (black when off) on a spacer/tape 1.25 high (DERIVED so total = 1.0 + 1.25 + 1.85 = 4.1), panel centered in X and flush to the PCB top edge (UNCERTAIN offset), active-area rectangle 21.74 x 11.2 centered on the panel as a decal; flex-tail fold ignored. Header: black plastic housing 10.16 x 2.54 x 2.5 on the underside, 4 pins at 2.54 pitch.",
+        "4 round pins 0.64 (UNCERTAIN) on pitch 2.54 along X at Y = -12.0, X = -3.81, -1.27, +1.27, +3.81 relative to the module center. Pin 1 at (-3.81, -12.0) (the single-row header rule says along Y, but the module is kept display-upright with the header along X; DEVIATION recorded). Pin order commonly GND/VCC/SCL/SDA but VCC/GND swaps exist (DFRobot: VCC, GND, SCL, SDA, D/C, CS); RESEARCH_REQUIRED per module. Tail 2.6 below host board top; housing underside at Z = standoff.",
+        "Dimensions L-M (PCB size/panel M; holes, header offset, thickness L); Geometry M; Materials/appearance M. Unresolved after gap-fill (no Adafruit/Waveshare/Midas vendor drawing numerics extractable; Adafruit text gives PCB 29.2 x 26.7, hole spacing 24 mm, total 6.2 for its own board only): hole positions, header Y offset, panel Y offset, PCB thickness, pin order per vendor. A cited vendor drawing for the 27 mm default module is still missing. Validation: 4 pins x 2.54 = 7.62 span < 27; panel 26.70 < 27.0 PCB; stack 1.0 + 1.25 + 1.85 = 4.1 total (DERIVED to match sheet); active 21.74 < panel 26.70.\n\n\n---",
+        "COSMETIC_PROVISIONAL pcb_color=#1E5AA8: Section7 FR4 color is variable; borrow supplied BGA substrate green / supplied plastic blue hue, keeping FR4 roughness0.5. Appearance default only.",
+        "COSMETIC_PROVISIONAL pad_stock=0.15: Visual metal stock no more than 5 percent height or0.15; contact planes unchanged.",
+        "COSMETIC_PROVISIONAL mark_diameter=1.8: Optional pin1 dot one fifteenth smaller body dimension, within face.",
+        "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+      ],
+      "appearance_confidence": "M",
+      "electrical_admission": "NOT_EVALUATED",
+      "footprint_binding": null,
+      "conflicts": [
+        {
+          "code": "OLED_FCO_COORDINATES",
+          "geometry_choice": "Keep explicit YAML header Y=-12, hole centersY=+/-11.5 and body_offsetY=+0.25 without moving pins/holes. Center-based bbox of stated coordinates is Y=-0.25; source claims these form centered FCO. Remains provisional; no silent +0.25 correction to contacts."
+        },
+        {
+          "code": "OLED_HEADER_ENVELOPE",
+          "geometry_choice": "Stated header Y=-12 and depth2.54 reaches -13.27; PCB with stated offset+0.25 reaches -13.25. Keep both dimensions; assembled outline is27.02 alongY, not silently trimmed to27."
+        }
+      ],
+      "implementation_status": "IMPLEMENTED",
+      "implementation_group": "E"
+    }
+  },
+  "cosmetic_defaults": {
+    "OHM-015": [
+      {
+        "feature": "pad_stock",
+        "value": 0.15,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Visual metal stock no more than 5 percent height or0.15; contact planes unchanged.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "mark_diameter",
+        "value": 1.2,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Optional pin1 dot one fifteenth smaller body dimension, within face.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      }
+    ],
+    "OHM-016": [
+      {
+        "feature": "mark_height_fraction",
+        "value": 0.65,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Front-face pin1 dot at 65 percent of body height, within sourced envelope.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "pad_stock",
+        "value": 0.15,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Visual metal stock no more than 5 percent height or0.15; contact planes unchanged.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "mark_diameter",
+        "value": 0.22,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Optional pin1 dot one fifteenth smaller body dimension, within face.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      }
+    ],
+    "OHM-017": [
+      {
+        "feature": "pad_stock",
+        "value": 0.03,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Visual metal stock no more than 5 percent height or0.15; contact planes unchanged.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "mark_diameter",
+        "value": 0.10666666666666667,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Optional pin1 dot one fifteenth smaller body dimension, within face.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      }
+    ],
+    "OHM-018": [
+      {
+        "feature": "rotor_depth",
+        "value": 0.73,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Recess within upper fifth of housing, limited by rotor diameter/3.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "pad_stock",
+        "value": 0.15,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Visual metal stock no more than 5 percent height or0.15; contact planes unchanged.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "mark_diameter",
+        "value": 0.322,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Optional pin1 dot one fifteenth smaller body dimension, within face.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      }
+    ],
+    "OHM-019": [
+      {
+        "feature": "rotor_depth",
+        "value": 0.51,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Recess within upper fifth of housing, limited by rotor diameter/3.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "slot_depth",
+        "value": 0.255,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "One tenth housing height; inward rotor slot only.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "pad_stock",
+        "value": 0.1275,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Visual metal stock no more than 5 percent height or0.15; contact planes unchanged.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "mark_diameter",
+        "value": 0.3,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Optional pin1 dot one fifteenth smaller body dimension, within face.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      }
+    ],
+    "OHM-020": [
+      {
+        "feature": "pad_stock",
+        "value": 0.15,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Visual metal stock no more than 5 percent height or0.15; contact planes unchanged.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "mark_diameter",
+        "value": 1.0666666666666667,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Optional pin1 dot one fifteenth smaller body dimension, within face.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      }
+    ],
+    "OHM-087": [
+      {
+        "feature": "face_depth",
+        "value": 0.1,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Entry approximate 0.1 recess; plate partition within sourced body height.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "digit_layout",
+        "value": {
+          "horizontal_bias": -0.06,
+          "dp_x": 0.38,
+          "dp_y": -0.43,
+          "bar_y": 0.43,
+          "vertical_x": 0.24,
+          "vertical_y": 0.215,
+          "bar_length": 0.48,
+          "vertical_length": 0.32
+        },
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Dimensionless proportions of sourced digit height, inside digit cell; preserves entry UP=+X and lower-right DP. Bias leaves room for DP inside 12.7 mm single-digit face.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "pad_stock",
+        "value": 0.15,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Visual metal stock no more than 5 percent height or0.15; contact planes unchanged.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "mark_diameter",
+        "value": 0.8466666666666666,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Optional pin1 dot one fifteenth smaller body dimension, within face.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      }
+    ],
+    "OHM-088": [
+      {
+        "feature": "face_depth",
+        "value": 0.1,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Entry approximate 0.1 recess; plate partition within sourced body height.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "digit_layout",
+        "value": {
+          "horizontal_bias": -0.06,
+          "dp_x": 0.38,
+          "dp_y": -0.43,
+          "bar_y": 0.43,
+          "vertical_x": 0.24,
+          "vertical_y": 0.215,
+          "bar_length": 0.48,
+          "vertical_length": 0.32
+        },
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Dimensionless proportions of sourced digit height, inside digit cell; preserves entry UP=+X and lower-right DP. Bias leaves room for DP inside 12.7 mm single-digit face.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "pad_stock",
+        "value": 0.15,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Visual metal stock no more than 5 percent height or0.15; contact planes unchanged.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "mark_diameter",
+        "value": 1.27,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Optional pin1 dot one fifteenth smaller body dimension, within face.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      }
+    ],
+    "OHM-089": [
+      {
+        "feature": "face_depth",
+        "value": 0.1,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Entry approximate 0.1 recess; plate partition within sourced body height.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "digit_layout",
+        "value": {
+          "horizontal_bias": -0.06,
+          "dp_x": 0.38,
+          "dp_y": -0.43,
+          "bar_y": 0.43,
+          "vertical_x": 0.24,
+          "vertical_y": 0.215,
+          "bar_length": 0.48,
+          "vertical_length": 0.32
+        },
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Dimensionless proportions of sourced digit height, inside digit cell; preserves entry UP=+X and lower-right DP. Bias leaves room for DP inside 12.7 mm single-digit face.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "pad_stock",
+        "value": 0.15,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Visual metal stock no more than 5 percent height or0.15; contact planes unchanged.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "mark_diameter",
+        "value": 1.2666666666666666,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Optional pin1 dot one fifteenth smaller body dimension, within face.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      }
+    ],
+    "OHM-090": [
+      {
+        "feature": "face_depth",
+        "value": 0.1,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Entry approximate 0.1 recess; plate partition within sourced body height.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "pad_stock",
+        "value": 0.15,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Visual metal stock no more than 5 percent height or0.15; contact planes unchanged.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "mark_diameter",
+        "value": 2.1333333333333333,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Optional pin1 dot one fifteenth smaller body dimension, within face.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      }
+    ],
+    "OHM-091": [
+      {
+        "feature": "bezel_stock",
+        "value": 0.32999999999999996,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Inward bezel stock one fortieth total height, top remains13.2.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "polarizer_inset",
+        "value": 0.132,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Polarizer recessed one hundredth total height below bezel.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "pcb_color",
+        "value": "#2F4F3A",
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Section7 FR4 color is variable; borrow supplied BGA substrate green / supplied plastic blue hue, keeping FR4 roughness0.5. Appearance default only.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "pad_stock",
+        "value": 0.15,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Visual metal stock no more than 5 percent height or0.15; contact planes unchanged.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "mark_diameter",
+        "value": 2.4,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Optional pin1 dot one fifteenth smaller body dimension, within face.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      }
+    ],
+    "OHM-092": [
+      {
+        "feature": "pcb_color",
+        "value": "#1E5AA8",
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Section7 FR4 color is variable; borrow supplied BGA substrate green / supplied plastic blue hue, keeping FR4 roughness0.5. Appearance default only.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "pad_stock",
+        "value": 0.15,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Visual metal stock no more than 5 percent height or0.15; contact planes unchanged.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "mark_diameter",
+        "value": 1.8,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Optional pin1 dot one fifteenth smaller body dimension, within face.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      }
+    ]
+  }
+}

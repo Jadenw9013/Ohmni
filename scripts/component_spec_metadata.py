@@ -8,5 +8,6 @@ def library_metadata(record, uncertainties, *, provisional_reasons=(), **extra):
         "appearance_confidence": record["confidence"]["materials_appearance"],
         "electrical_admission": "NOT_EVALUATED",
         "footprint_binding": None,
+        "implementation_status": "IMPLEMENTED",
         **extra,
     }

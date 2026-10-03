@@ -227,8 +227,8 @@
         "appearance_confidence": "M",
         "electrical_admission": "NOT_EVALUATED",
         "footprint_binding": null,
-        "conflicts": [],
         "implementation_status": "IMPLEMENTED",
+        "conflicts": [],
         "implementation_group": "C"
       },
       "profile_id": "OHM-162"
@@ -462,8 +462,8 @@
         "appearance_confidence": "M",
         "electrical_admission": "NOT_EVALUATED",
         "footprint_binding": null,
-        "conflicts": [],
         "implementation_status": "IMPLEMENTED",
+        "conflicts": [],
         "implementation_group": "C"
       },
       "profile_id": "OHM-163"
@@ -711,8 +711,8 @@
         "appearance_confidence": "M",
         "electrical_admission": "NOT_EVALUATED",
         "footprint_binding": null,
-        "conflicts": [],
         "implementation_status": "IMPLEMENTED",
+        "conflicts": [],
         "implementation_group": "C"
       },
       "profile_id": "OHM-164"
@@ -941,13 +941,13 @@
         "appearance_confidence": "M",
         "electrical_admission": "NOT_EVALUATED",
         "footprint_binding": null,
+        "implementation_status": "IMPLEMENTED",
         "conflicts": [
           {
             "code": "USB_C_DEPTH",
             "geometry_choice": "Use default L=7.35 at offset Y=1.1 (front 4.775); PCB prose fab depth 10.45/front 6.3 disagree. Keep explicit A/B tail and shield coordinates even outside shell."
           }
         ],
-        "implementation_status": "IMPLEMENTED",
         "implementation_group": "C"
       },
       "profile_id": "OHM-165"
@@ -1196,8 +1196,13 @@
         "appearance_confidence": "M",
         "electrical_admission": "NOT_EVALUATED",
         "footprint_binding": null,
-        "conflicts": [],
         "implementation_status": "IMPLEMENTED",
+        "conflicts": [
+          {
+            "code": "MINI_USB_LOCATOR_DEPTH",
+            "geometry_choice": "NPTH positions and diameter are stated, but locating-peg protrusion is not. Retain hole metadata and omit peg solids to avoid inventing a below-board bounding-box dimension."
+          }
+        ],
         "implementation_group": "C"
       },
       "profile_id": "OHM-166"
@@ -1431,6 +1436,7 @@
         "appearance_confidence": "M",
         "electrical_admission": "NOT_EVALUATED",
         "footprint_binding": null,
+        "implementation_status": "IMPLEMENTED",
         "conflicts": [
           {
             "code": "HDMI_HEIGHT_AND_SHIELD",
@@ -1441,7 +1447,6 @@
             "geometry_choice": "14 mm cavity equals 14 mm shell width; derive cosmetic cavity inside stated shell instead of a zero-wall cavity."
           }
         ],
-        "implementation_status": "IMPLEMENTED",
         "implementation_group": "C"
       },
       "profile_id": "OHM-167"
@@ -1652,13 +1657,13 @@
         "appearance_confidence": "M",
         "electrical_admission": "NOT_EVALUATED",
         "footprint_binding": null,
+        "implementation_status": "IMPLEMENTED",
         "conflicts": [
           {
             "code": "MINI_HDMI_MOUNT_COORDINATES",
             "geometry_choice": "Shield pad X=+/-5 is given without Y; omit unlocated shield pads. Keep explicit single-row placeholder 19 signal contacts; no footprint admission."
           }
         ],
-        "implementation_status": "IMPLEMENTED",
         "implementation_group": "C"
       },
       "profile_id": "OHM-168"
@@ -1893,8 +1898,8 @@
         "appearance_confidence": "M",
         "electrical_admission": "NOT_EVALUATED",
         "footprint_binding": null,
-        "conflicts": [],
         "implementation_status": "IMPLEMENTED",
+        "conflicts": [],
         "implementation_group": "C"
       },
       "profile_id": "OHM-169"
@@ -2088,13 +2093,13 @@
         "appearance_confidence": "M",
         "electrical_admission": "NOT_EVALUATED",
         "footprint_binding": null,
+        "implementation_status": "IMPLEMENTED",
         "conflicts": [
           {
             "code": "RJ11_UNSPECIFIED_DRILL",
             "geometry_choice": "NPTH centers +/-4,+3.5 are stated, diameter is absent; retain metadata only, omit pegs rather than infer fit."
           }
         ],
-        "implementation_status": "IMPLEMENTED",
         "implementation_group": "C"
       },
       "profile_id": "OHM-170"
@@ -2309,8 +2314,8 @@
         "appearance_confidence": "M",
         "electrical_admission": "NOT_EVALUATED",
         "footprint_binding": null,
-        "conflicts": [],
         "implementation_status": "IMPLEMENTED",
+        "conflicts": [],
         "implementation_group": "C"
       },
       "profile_id": "OHM-171"
@@ -2509,13 +2514,13 @@
         "appearance_confidence": "M",
         "electrical_admission": "NOT_EVALUATED",
         "footprint_binding": null,
+        "implementation_status": "IMPLEMENTED",
         "conflicts": [
           {
             "code": "DC_JACK_ENVELOPE",
             "geometry_choice": "Retain second-pass 10.7 width, 14.4 length and 11 height; 9.0-wide KiCad outline and 6.5 callout remain unresolved. Bore axis 5.5 is stated placeholder."
           }
         ],
-        "implementation_status": "IMPLEMENTED",
         "implementation_group": "C"
       },
       "profile_id": "OHM-172"
@@ -2732,13 +2737,13 @@
         "appearance_confidence": "L",
         "electrical_admission": "NOT_EVALUATED",
         "footprint_binding": null,
+        "implementation_status": "IMPLEMENTED",
         "conflicts": [
           {
             "code": "XT30_LENGTH_ARITHMETIC",
             "geometry_choice": "Use 13.95 length at stated +1.3 offset, giving -5.675..8.275. Prose front 9.275 implies 14.95 and is not used. Explicit peg centers lie outside 9.9 body; retain detached locator geometry and report missing attachment outline."
           }
         ],
-        "implementation_status": "IMPLEMENTED",
         "implementation_group": "C"
       },
       "profile_id": "OHM-173"
@@ -2938,8 +2943,8 @@
         "appearance_confidence": "L",
         "electrical_admission": "NOT_EVALUATED",
         "footprint_binding": null,
-        "conflicts": [],
         "implementation_status": "IMPLEMENTED",
+        "conflicts": [],
         "implementation_group": "C"
       },
       "profile_id": "OHM-174"
@@ -3136,8 +3141,8 @@
         "appearance_confidence": "M",
         "electrical_admission": "NOT_EVALUATED",
         "footprint_binding": null,
-        "conflicts": [],
         "implementation_status": "IMPLEMENTED",
+        "conflicts": [],
         "implementation_group": "C"
       },
       "profile_id": "OHM-175"
@@ -3341,8 +3346,8 @@
         "appearance_confidence": "M",
         "electrical_admission": "NOT_EVALUATED",
         "footprint_binding": null,
-        "conflicts": [],
         "implementation_status": "IMPLEMENTED",
+        "conflicts": [],
         "implementation_group": "C"
       },
       "profile_id": "OHM-176"
@@ -3556,13 +3561,13 @@
         "appearance_confidence": "M",
         "electrical_admission": "NOT_EVALUATED",
         "footprint_binding": null,
+        "implementation_status": "IMPLEMENTED",
         "conflicts": [
           {
             "code": "SMA_EDGE_WIDTH",
             "geometry_choice": "Hex across flats 7.87 implies wider than YAML 6.35 barrel diameter; model barrel diameter 6.35 and explicit 7.87 hex, report combined envelope. Axis Z=-0.785 remains stated provisional slot-center assumption."
           }
         ],
-        "implementation_status": "IMPLEMENTED",
         "implementation_group": "C"
       },
       "profile_id": "OHM-177"
@@ -3766,8 +3771,8 @@
         "appearance_confidence": "M",
         "electrical_admission": "NOT_EVALUATED",
         "footprint_binding": null,
-        "conflicts": [],
         "implementation_status": "IMPLEMENTED",
+        "conflicts": [],
         "implementation_group": "C"
       },
       "profile_id": "OHM-178"
@@ -3954,13 +3959,13 @@
         "appearance_confidence": "M",
         "electrical_admission": "NOT_EVALUATED",
         "footprint_binding": null,
+        "implementation_status": "IMPLEMENTED",
         "conflicts": [
           {
             "code": "SD_INCOMPLETE_FCO",
             "geometry_choice": "Use stated provisional body offset and exemplar signal row. Unknown shell tabs, locator posts and detect/write-protect contacts omitted; FCO remains signal-row-only provisional."
           }
         ],
-        "implementation_status": "IMPLEMENTED",
         "implementation_group": "C"
       },
       "profile_id": "OHM-179"
@@ -4158,8 +4163,8 @@
         "appearance_confidence": "M",
         "electrical_admission": "NOT_EVALUATED",
         "footprint_binding": null,
-        "conflicts": [],
         "implementation_status": "IMPLEMENTED",
+        "conflicts": [],
         "implementation_group": "C"
       },
       "profile_id": "OHM-180"
@@ -5557,6 +5562,7 @@
       "shell_material": "MAT_NICKEL",
       "profile": "bottom-chamfer",
       "tongue_side": "upper",
+      "omit_locator_geometry": true,
       "wall": 0.2,
       "cosmetic_defaults": [
         {
@@ -7539,8 +7545,8 @@
       "layout": "explicit",
       "family": "PKG-UFL",
       "count": 3,
-      "width": 2.6,
-      "length": 3.0,
+      "width": 3.0,
+      "length": 2.6,
       "height": 1.25,
       "offset": [
         0.475,

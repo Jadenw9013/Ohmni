@@ -18,8 +18,8 @@ function terminals(g,p,cs,m,lod){
         // Hole dimensions remain metadata; visible legs use inward cosmetic stock.
         if(q.type==='smd')box(g,'shield-tab',[w,d,p.pad_thickness],[x,y,z+(z<0?-1:1)*p.pad_thickness/2],m.MAT_NICKEL).userData.role='mounting';
         else if(q.type==='locator'){
-            if(lod!=='LOD0')cylinder(g,'locator',Math.min(w,d),p.tail/2,'Z',[x,y,-p.tail/4],m.MAT_PLASTIC_BLACK,p.segments[lod],{role:'mounting',hole:q});
-        }else box(g,'shield-leg',[Math.min(w,p.pad_thickness),d*.8,p.tail],[x,y,-p.tail/2],m.MAT_NICKEL).userData={role:'mounting',hole:q};
+            if(lod!=='LOD0'&&!p.omit_locator_geometry)cylinder(g,'locator',Math.min(w,d),p.tail*p.detail_ratios.locator_tail,'Z',[x,y,-p.tail*p.detail_ratios.locator_tail/2],m.MAT_PLASTIC_BLACK,p.segments[lod],{role:'mounting',hole:q});
+        }else box(g,'shield-leg',[Math.min(w,p.pad_thickness),d*p.detail_ratios.shield_stock,p.tail],[x,y,-p.tail/2],m.MAT_NICKEL).userData={role:'mounting',hole:q};
     }
 }
 function shell(g,p,lod,m){
@@ -33,9 +33,9 @@ function shell(g,p,lod,m){
     }
 }
 function jack(g,p,lod,m){
-    const [x,y]=p.offset,W=p.width,L=p.length,H=p.height,F=y+L/2,[cw,ch,depth]=p.cavity,cz=H*.55;
+    const [x,y]=p.offset,W=p.width,L=p.length,H=p.height,F=y+L/2,[cw,ch,depth]=p.cavity,cz=H*p.detail_ratios.jack_cavity_center;
     carvedBox(g,'jack-housing',[x-W/2,y-L/2,0],[x+W/2,F,H],[{min:[x-cw/2,F-depth,cz-ch/2],max:[x+cw/2,F,cz+ch/2]},{min:[x-p.latch[0]/2,F-depth,cz-ch/2-p.latch[1]],max:[x+p.latch[0]/2,F,cz-ch/2]}],m.MAT_PLASTIC_BLACK);
-    instances(g,'spring-contacts',new THREE.BoxGeometry(p.internal_contact[0],depth*.75,p.internal_contact[1]),m.MAT_GOLD,Array.from({length:p.count},(_,i)=>({terminal:String(i+1),position:[x+(i-(p.count-1)/2)*cw/(p.count+1),F-depth*.5,cz+ch/2-p.internal_contact[1]/2]})));
+    instances(g,'spring-contacts',new THREE.BoxGeometry(p.internal_contact[0],depth*p.detail_ratios.jack_strip_length,p.internal_contact[1]),m.MAT_GOLD,p.contacts.map(c=>({terminal:c.terminal,position:[c.center_mm[0],F-depth/2,cz+ch/2-p.internal_contact[1]/2]})));
 }
 function bore(g,p,lod,m){
     const [x,y]=p.offset,W=p.width,L=p.length,H=p.height,F=p.bore_front,B=y-L/2,shape=faceProfile(W,H);
@@ -48,7 +48,7 @@ function bore(g,p,lod,m){
 function xt(g,p,lod,m){
     bentSheetShell(g,'keyed-shroud',{...p,cavity:[p.width-2*p.wall,p.height-2*p.wall,p.recess_depth]},m[p.body_material],lod);
     const F=p.offset[1]+p.length/2;
-    for(const c of p.contacts)cylinder(g,'mating-pin',p.bullet_diameter,p.recess_depth*.8,'Y',[c.center_mm[0],F-p.recess_depth*.6,p.height/2],m.MAT_GOLD,p.segments[lod],{terminal:c.terminal});
+    for(const c of p.contacts)cylinder(g,'mating-pin',p.bullet_diameter,p.recess_depth*p.detail_ratios.bullet_length,'Y',[c.center_mm[0],F-p.recess_depth*p.detail_ratios.bullet_center,p.height/2],m.MAT_GOLD,p.segments[lod],{terminal:c.terminal});
 }
 function ring(g,name,outer,inner,depth,axis,pos,material,segments){
     const s=new THREE.Shape();s.absarc(0,0,outer/2,0,Math.PI*2,false);const hole=new THREE.Path();hole.absarc(0,0,inner/2,0,Math.PI*2,true);s.holes.push(hole);
@@ -73,8 +73,9 @@ function rf(g,p,lod,m){
 }
 function zif(g,p,lod,m){
     const [x,y]=p.offset,W=p.width,L=p.length,H=p.height,F=y+L/2;
-    carvedBox(g,'zif-housing',[x-W/2,y-L/2,0],[x+W/2,F,H],[{min:[x-W*.4,F-L/2,H/2-p.slot_height/2],max:[x+W*.4,F,H/2+p.slot_height/2]},{min:[x-W/2,y-L/2,H*.6],max:[x+W/2,y-L/2+p.actuator_depth,H]}],m.MAT_PLASTIC_BLACK);
-    box(g,'flip-actuator',[W,p.actuator_depth,H*.4],[x,y-L/2+p.actuator_depth/2,H*.8],m.MAT_PLASTIC_NATURAL).userData.role='actuator';
+    const r=p.detail_ratios;
+    carvedBox(g,'zif-housing',[x-W/2,y-L/2,0],[x+W/2,F,H],[{min:[x-W*r.zif_slot_width/2,F-L*r.zif_slot_depth,H/2-p.slot_height/2],max:[x+W*r.zif_slot_width/2,F,H/2+p.slot_height/2]},{min:[x-W/2,y-L/2,H*(1-r.actuator_height)],max:[x+W/2,y-L/2+p.actuator_depth,H]}],m.MAT_PLASTIC_BLACK);
+    box(g,'flip-actuator',[W,p.actuator_depth,H*r.actuator_height],[x,y-L/2+p.actuator_depth/2,H*(1-r.actuator_height/2)],m.MAT_PLASTIC_NATURAL).userData.role='actuator';
 }
 function card(g,p,lod,m){
     const W=p.width,L=p.length,H=p.height,[x,y]=p.offset,F=y+L/2,w=p.wall;

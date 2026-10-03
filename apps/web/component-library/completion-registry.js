@@ -72,5 +72,6 @@ export function createCompletionComponent(library,id,options={},materials=create
     if([...b.min.toArray(),...b.max.toArray()].some(v=>!Number.isFinite(v)))throw new RangeError('Nonfinite bounds');
     const metadata=structuredClone(r.library_metadata);if(Object.keys(options).some(k=>k!=='lod'))metadata.uncertain_values.push('Caller parameter variant; no independent source verification.');
     g.name=id;g.userData={component_id:id,owner:id,package_family:r.package_family,package_member:r.package_member,generator:r.generator,lod,units:'mm',up_axis:'Z',origin:'FCO',contact_plane_mm:0,status:r.status,library_metadata:metadata,source:r.source,confidence:r.confidence,parameters:p,contacts:cs,terminal_count:cs.length,mating_direction:p.mating,expected_bounds_mm:{min:b.min.toArray(),max:b.max.toArray(),size:size.toArray()},expected_dimensions_mm:size.toArray(),source_spec_sha256:library.source_spec_sha256,model_source_sha256:VISUAL_SOURCE_HASH,electrical_authority:false,footprint_binding:null,implementation_status:'IMPLEMENTED'};
+    g.userData.model_asset_id=`ohmni-component-library/${id}@completion-v1`;
     g.traverse(m=>{if(m.isMesh)m.userData.component_id=id;});return g;
 }

@@ -9,18 +9,20 @@ import { loadQuadGridLibrary, createQuadGridComponent } from '../quad-grid-regis
 
 import { loadCompletionLibrary, createCompletionComponent } from '../completion-registry.js';
 import { createCompletionMaterials } from '../completion-materials.js';
+import { loadFullLibrary, createFullComponent } from '../full-registry.js';
 
 const $ = id => document.getElementById(id);
 try {
     const completion = new URL(location.href).searchParams.get('group');
+    const all = new URL(location.href).searchParams.get('all') === '1';
     const completionReview = {a:['OHM-151','OHM-161'],b:['OHM-141','OHM-143','OHM-147'],c:['OHM-165','OHM-169','OHM-179'],d:['OHM-053'],e:['OHM-091']};
     const stage5 = new URL(location.href).searchParams.get('stage') === '5';
     const stage2 = new URL(location.href).searchParams.get('stage') === '2';
     const stage4 = new URL(location.href).searchParams.get('stage') === '4';
     const stage3 = new URL(location.href).searchParams.get('stage') === '3';
-    const library = await (completion ? loadCompletionLibrary(completion) : stage5 ? loadLedPassiveLibrary() : stage4 ? loadDiscreteLibrary() : stage3 ? loadQuadGridLibrary() : stage2 ? loadLeadedLibrary() : loadLibrary());
-    const build = completion ? createCompletionComponent : stage5 ? createLedPassiveComponent : stage4 ? createDiscreteComponent : stage3 ? createQuadGridComponent : stage2 ? createLeadedComponent : createComponent;
-    const reviewIds = completion ? completionReview[completion] : stage5 ? ['OHM-074','OHM-078','OHM-084','OHM-083','OHM-029','OHM-030','OHM-034','OHM-011','OHM-037'] : stage4 ? ['OHM-057','OHM-059','OHM-061','OHM-065','OHM-093','OHM-098','OHM-100','OHM-096','OHM-071'] : stage3 ? ['OHM-123','OHM-130','OHM-133','OHM-135','OHM-137','OHM-140'] : stage2 ? ['OHM-104','OHM-110','OHM-116','OHM-119','OHM-094','OHM-120'] : ['OHM-004','OHM-023','OHM-041'];
+    const library = await (all ? loadFullLibrary() : completion ? loadCompletionLibrary(completion) : stage5 ? loadLedPassiveLibrary() : stage4 ? loadDiscreteLibrary() : stage3 ? loadQuadGridLibrary() : stage2 ? loadLeadedLibrary() : loadLibrary());
+    const build = all ? createFullComponent : completion ? createCompletionComponent : stage5 ? createLedPassiveComponent : stage4 ? createDiscreteComponent : stage3 ? createQuadGridComponent : stage2 ? createLeadedComponent : createComponent;
+    const reviewIds = all ? ['OHM-165','OHM-053','OHM-091'] : completion ? completionReview[completion] : stage5 ? ['OHM-074','OHM-078','OHM-084','OHM-083','OHM-029','OHM-030','OHM-034','OHM-011','OHM-037'] : stage4 ? ['OHM-057','OHM-059','OHM-061','OHM-065','OHM-093','OHM-098','OHM-100','OHM-096','OHM-071'] : stage3 ? ['OHM-123','OHM-130','OHM-133','OHM-135','OHM-137','OHM-140'] : stage2 ? ['OHM-104','OHM-110','OHM-116','OHM-119','OHM-094','OHM-120'] : ['OHM-004','OHM-023','OHM-041'];
     if (stage2) {
         document.title = 'Ohmni · Component library / Stage 2';
         document.querySelector('header > p').textContent = 'COMPONENT LIBRARY · STAGE 2';
@@ -71,6 +73,7 @@ try {
     }
     if(completion){document.title=`Ohmni · Component library / Group ${completion.toUpperCase()}`;document.querySelector('header > p').textContent='COMPONENT LIBRARY · COMPLETION';document.querySelector('h1').textContent=`Group ${completion.toUpperCase()} · ${library.components.length} entries`;document.querySelector('#sheet h2').textContent=`Group ${completion.toUpperCase()} · all ${library.components.length} entries`;document.querySelector('#comparison h2').textContent='Review set · same scale';document.querySelector('#comparison .caption p').textContent=reviewIds.join(' · ');document.querySelector('footer').textContent='mm · FCO · Z up · source status unchanged · cosmetic defaults explicitly provisional';}
     const preview = new ModelPreview($('model'));
+    if(all){document.title='Ohmni · All 180 components';document.querySelector('h1').textContent='The complete 180-entry library';document.querySelector('#sheet h2').textContent='All 180 · LOD1';document.querySelector('#comparison h2').textContent='USB-C · flyback transformer · LCD / same scale';document.querySelector('#comparison .caption p').textContent=reviewIds.join(' · ');document.querySelector('footer').textContent='180 entries · mm · FCO · source statuses preserved · provisional defaults disclosed';}
     const scratch = new ModelPreview(document.createElement('canvas'));
     const ids = Object.keys(library.records);
     for (const id of ids) {
@@ -83,7 +86,7 @@ try {
         const model = build(library, id, { ...options, lod, ...((stage2 || stage3 || stage4 || stage5) ? { marking_text: id.replace('-','') } : !completion && id === 'OHM-004' ? { marking_text: '100' } : {}) });
         preview.setModel(model);
         if(stage5){const led=model.userData.parameters.kind.startsWith('led');for(const key of ['led-color','lens'])$(key).disabled=!led;if(led){$('led-color').value=model.userData.parameters.led_color;$('lens').value=model.userData.parameters.lens;}}
-        const stats = preview.renderView(view, { width: 1000, height: 500, sideAxis: record.package_family === 'PKG-SOT23' ? 'X' : 'Y', sideSign: completion==='c'?1:-1 });
+        const stats = preview.renderView(view, { width: 1000, height: 500, sideAxis: record.package_family === 'PKG-SOT23' ? 'X' : 'Y', sideSign: completion==='c'||all&&library.owners[id]==='completion-c'?1:-1 });
         $('component').value = id; $('lod').value = lod; $('view').value = view;
         $('name').textContent = `${id} · ${record.canonical_name}${options.terminal_pullback ? ' · DEMO: 0.05 mm pullback' : options.outline ? ' · outline '+options.outline : options.bidirectional ? ' · bidirectional (no band)' : ''}`;
         $('dimensions').textContent = `${model.userData.expected_dimensions_mm.map(n => +n.toFixed(4)).join(' × ')} mm · ${lod} · ${view} · ${stats.triangles} triangles`;
@@ -98,17 +101,17 @@ try {
         return { ...stats, component_id: id, bounds_mm: model.userData.expected_dimensions_mm,
             source_status: record.status, provisional: model.userData.library_metadata.provisional, parameters: options };
     }
-    const comparison = new THREE.Group(), materials = completion ? createCompletionMaterials() : createLibraryMaterials();
+    const comparison = new THREE.Group(), materials = completion||all ? createCompletionMaterials() : createLibraryMaterials();
     for (const [i, id] of reviewIds.entries()) {
-        const model = build(library, id, { lod: 'LOD1', ...((stage2 || stage3 || stage4 || stage5) ? {marking_text:id.replace('-','')} : !completion && i === 0 ? { marking_text: '100' } : {}) }, materials);
-        model.position.x = (i - (reviewIds.length - 1) / 2) * (completion ? 35 : stage5 ? 18 : stage4 ? 15 : stage3 ? 15 : stage2 ? 9 : 2.5); comparison.add(model);
+        const model = build(library, id, { lod: 'LOD1', ...((stage2 || stage3 || stage4 || stage5) ? {marking_text:id.replace('-','')} : !completion && !all && i === 0 ? { marking_text: '100' } : {}) }, materials);
+        model.position.x = (i - (reviewIds.length - 1) / 2) * (all?90:completion ? 35 : stage5 ? 18 : stage4 ? 15 : stage3 ? 15 : stage2 ? 9 : 2.5); comparison.add(model);
     }
-    scratch.setModel(comparison); scratch.renderView('three-quarter', { width: 1200, height: 420, span: completion ? 50 : stage5 ? 68 : stage4 ? 58 : stage3 ? 38 : stage2 ? 25 : 4.4 });
+    scratch.setModel(comparison); scratch.renderView('three-quarter', { width: 1200, height: 420, span: all?110:completion ? 50 : stage5 ? 68 : stage4 ? 58 : stage3 ? 38 : stage2 ? 25 : 4.4 });
     $('comparison-image').src = scratch.canvas.toDataURL('image/png');
     const sheetStats = [];
     for (const id of ids) {
         const model = build(library, id, { lod: 'LOD1' }); scratch.setModel(model);
-        sheetStats.push({ id, ...scratch.renderView('three-quarter', { width: 500, height: 300, sideSign:completion==='c'?1:-1 }) });
+        sheetStats.push({ id, ...scratch.renderView('three-quarter', { width: 500, height: 300, sideSign:completion==='c'||all&&library.owners[id]==='completion-c'?1:-1 }) });
         const record = library.records[id], tile = document.createElement('article'); tile.className = 'tile';
         tile.tabIndex = 0; tile.setAttribute('role', 'button'); tile.setAttribute('aria-label', `Inspect ${id}`);
         const img = new Image(); img.src = scratch.canvas.toDataURL('image/png'); img.alt = `${id} LOD1`;
