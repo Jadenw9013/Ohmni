@@ -1,28 +1,22 @@
 {
   "schema_version": 1,
-  "active_task": "C3D-T05",
-  "last_known_commit": "740db92",
+  "active_task": null,
+  "last_known_commit": "86542c7ca443bf8013512a0d964c23be5bfc81b0",
   "previous_checkpoint": ".ai/approvals/COMPONENT-3D-STAGE1-previous-checkpoint.yaml",
   "completed_substeps": [
     "Stage 4 accepted; Stage 5 approval recorded on isolated codex/component-library-stage5.",
     "Implemented all 32 data records, shared helpers, materials, terminal metadata and explicit LODs.",
     "599 frontend tests passed including 109 Stage 5 tests; 20 focused Python tests passed.",
-    "All five source imports, repository Ruff and diff checks passed; 42 PNGs visually self-reviewed."
+    "All five source imports, repository Ruff and diff checks passed; 42 PNGs visually self-reviewed.",
+    "Implementation committed; canonical fast gate passed, exact-commit evidence and self-review recorded."
   ],
   "remaining_work": [
-    "Commit implementation, run canonical fast gate, finalize verification and stop for human acceptance before Stage 6."
+    "Human Stage 5 acceptance and added-material approval. Stage 6 connectors is not authorized."
   ],
   "last_failure": null,
-  "resume_action": "Continue C3D-T05; stop before connectors.",
-  "modified_files": [
-    "apps/web/component-library/",
-    "scripts/import_led_passive_spec.py",
-    "scripts/component_library_acceptance.cjs",
-    "scripts/demo_server.py",
-    "tests/test_ai_workflow.py",
-    ".ai/"
-  ],
-  "last_command": "visual self-review, source checks, Ruff, ai_state validate",
-  "verification_record": null,
+  "resume_action": "Stop for human Stage 5 review; do not begin Stage 6 connectors.",
+  "modified_files": [],
+  "last_command": "python scripts/verify.py fast (exit 0)",
+  "verification_record": ".ai/verification/C3D-T05.yaml",
   "artifact_directory": "out/component-library/stage-5/"
 }
