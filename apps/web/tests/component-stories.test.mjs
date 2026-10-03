@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import { parseLibraryPage, readComponentLibrary, storyManifest, storyQueue, storySwipe } from '../component-stories.js';
+import { componentSearchText, filterComponentRecords, parseLibraryPage, readComponentLibrary,
+    storyManifest, storyQueue, storySwipe } from '../component-stories.js';
 
 const identity = { api_version: 2, server_instance_id: 'a'.repeat(16), ui_version: 'b'.repeat(64) };
 const ref = id => ({ id, sha256: 'c'.repeat(64) });
@@ -68,14 +69,31 @@ test('model mismatch falls back without creating footprints or pads', () => {
     }
 });
 
-test('story markup exposes a modal, labelled controls, status, and persistent entry points', () => {
+test('component catalog markup exposes a modal, accessible filters, model controls and persistent entry points', () => {
     const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
     assert.match(html, /<dialog id="component-stories"[^>]*aria-labelledby="component-stories-title"/);
     assert.ok((html.match(/data-open-components/g) ?? []).length >= 2);
     for (const query of ['BME280', 'ESP32', 'USB_C']) assert.ok(html.includes(`data-component-query="${query}"`));
     assert.match(html, /role="status" aria-live="polite" data-story-status/);
-    assert.match(html, /aria-label="Component stories" data-story-progress/);
-    assert.match(html, /<label class="story-search">Find a component<input/);
+    assert.match(html, /<label class="story-search"><span class="sr-only">Search components<\/span>/);
+    for (const control of ['category', 'package', 'mounting', 'source', 'sort']) assert.ok(html.includes(`data-story-${control}`));
+    for (const view of ['three-quarter', 'top', 'underside', 'side']) assert.ok(html.includes(`data-story-view="${view}"`));
+    for (const lod of ['LOD0', 'LOD1', 'LOD2']) assert.ok(html.includes(`data-story-lod="${lod}"`));
+    assert.match(html, /role="tablist" aria-label="Component information"/);
+});
+
+test('full-library filtering searches model identity fields and sorts without mutating records', () => {
+    const records = [
+        { id:'OHM-165', slug:'usb_c_receptacle', canonical_name:'USB-C receptacle', category:'connector', subcategory:'usb', package_family:'PKG-USB_C', package_member:'AMPH', generator:'GEN-USB', mounting:'mixed', status:'partial', names:{aliases:['Type-C socket']} },
+        { id:'OHM-004', slug:'res_0603', canonical_name:'0603 SMD resistor', category:'passive', subcategory:'resistor', package_family:'PKG-CHIP2T', package_member:'0603I', generator:'GEN-CHIP_2T', mounting:'smd', status:'complete', names:{aliases:['chip resistor']} },
+    ];
+    const before = structuredClone(records);
+    assert.match(componentSearchText(records[0]), /type-c socket/);
+    assert.deepEqual(filterComponentRecords(records, {query:'usb_c'}).map(record => record.id), ['OHM-165']);
+    assert.deepEqual(filterComponentRecords(records, {category:'passive', source:'complete'}).map(record => record.id), ['OHM-004']);
+    assert.deepEqual(filterComponentRecords(records).map(record => record.id), ['OHM-004','OHM-165']);
+    assert.deepEqual(filterComponentRecords(records, {sort:'name'}).map(record => record.id), ['OHM-004','OHM-165']);
+    assert.deepEqual(records, before);
 });
 
 test('touch story gestures separate horizontal swipes from scroll, mouse orbit and cancellation', () => {

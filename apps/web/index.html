@@ -19,7 +19,7 @@
   <section id="home" class="home-page" aria-label="Welcome to Ohmni">
     <header class="home-nav">
       <a class="home-brand" href="#home" aria-label="Ohmni home"><svg viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="brand-glow" x2="1" y2="1"><stop stop-color="#39c8fa"/><stop offset="1" stop-color="#ad80ff"/></linearGradient></defs><circle cx="20" cy="20" r="13" fill="none" stroke="url(#brand-glow)" stroke-width="8"/><path d="M20 2v14M4 20h12" stroke="#030810" stroke-width="4"/><circle cx="20" cy="20" r="3" fill="#98a9ff"/></svg><span>ohmni</span></a>
-      <nav class="home-links" aria-label="Main navigation"><a href="#workspace">Build</a><button type="button" data-open-components>Learn</button><button type="button" data-home-info="docs">Docs</button></nav>
+      <nav class="home-links" aria-label="Main navigation"><a href="#workspace">Build</a><button type="button" data-open-components>Components</button><button type="button" data-home-info="docs">Docs</button></nav>
       <a href="#workspace" class="home-get-started" data-home-start>Get started <span aria-hidden="true">→</span></a>
     </header>
     <main class="home-content">
@@ -198,14 +198,41 @@
   </dialog>
   <script type="module" src="/app.js"></script>
   <dialog id="component-stories" class="component-stories" aria-labelledby="component-stories-title">
-    <header class="story-heading"><div><h2 id="component-stories-title">Meet the parts.</h2><p>Explore a component, one detail at a time.</p></div><button type="button" data-story-close>Close</button></header>
-    <label class="story-search">Find a component<input type="search" data-story-search maxlength="120" placeholder="Name, category or package"></label>
-    <button type="button" data-story-sandbox disabled>Try a layout</button>
-    <p role="status" aria-live="polite" data-story-status></p>
+    <header class="story-heading">
+      <div><h2 id="component-stories-title">Component library</h2><p>Inspect all 180 package models and their recorded source status.</p></div>
+      <button type="button" class="story-close" data-story-close aria-label="Close component library">Close</button>
+    </header>
+    <div class="story-toolbar">
+      <label class="story-search"><span class="sr-only">Search components</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg><input type="search" data-story-search maxlength="120" placeholder="Search components, packages, or keywords…" autocomplete="off"><kbd aria-hidden="true">Ctrl K</kbd></label>
+      <div class="story-filters" aria-label="Filter component library">
+        <label><span>Category</span><select data-story-category><option value="">All categories</option></select></label>
+        <label><span>Package</span><select data-story-package><option value="">All packages</option></select></label>
+        <label><span>Mounting</span><select data-story-mounting><option value="">All mounting</option></select></label>
+        <label><span>Status</span><select data-story-source><option value="">All source states</option><option value="complete">Complete</option><option value="partial">Partial</option></select></label>
+        <label class="story-sort"><span>Sort</span><select data-story-sort><option value="featured">Featured first</option><option value="id">OHM ID</option><option value="name">Name</option><option value="family">Package family</option></select></label>
+      </div>
+    </div>
+    <p class="story-load-status" role="status" aria-live="polite" data-story-status>Loading component library…</p>
     <button type="button" data-story-retry hidden>Reload library</button>
-    <nav class="story-progress" aria-label="Component stories" data-story-progress></nav>
-    <div class="story-layout"><div class="story-stage" data-story-stage></div><article class="story-details" aria-label="Component details" data-story-details></article></div>
-    <footer class="story-navigation"><button type="button" data-story-prev disabled>Previous component</button><button type="button" data-story-next disabled>Next component</button></footer>
+    <div class="story-catalog-layout">
+      <section class="story-browser" aria-label="Component results" data-story-browser><div class="story-card-grid" data-story-grid></div><div class="story-empty" data-story-empty hidden><h3>No matching components</h3><p>Try another package name, category, or OHM ID.</p><button type="button" data-story-clear>Clear filters</button></div></section>
+      <section class="story-inspector" aria-label="Selected component">
+        <header class="story-component-heading"><div><h3 data-story-name>Select a component</h3><p data-story-identity></p></div><button type="button" class="story-copy" data-story-copy disabled>Copy ID</button></header>
+        <div class="story-inspector-layout">
+          <div class="story-visual-column">
+            <div class="story-stage" data-story-stage><canvas data-story-canvas tabindex="0" aria-label="Selected component 3D model"></canvas><p class="story-fallback" data-story-fallback hidden>3D rendering is unavailable. The component data remains available.</p></div>
+            <div class="story-view-strip" role="group" aria-label="Model view">
+              <button type="button" data-story-view="three-quarter" aria-pressed="true">Perspective</button><button type="button" data-story-view="top" aria-pressed="false">Top</button><button type="button" data-story-view="underside" aria-pressed="false">Bottom</button><button type="button" data-story-view="side" aria-pressed="false">Side</button>
+            </div>
+            <div class="story-model-controls"><span>Model detail</span><div role="group" aria-label="Model detail"><button type="button" data-story-lod="LOD0" aria-pressed="false">0</button><button type="button" data-story-lod="LOD1" aria-pressed="true">1</button><button type="button" data-story-lod="LOD2" aria-pressed="false">2</button></div><p data-story-render-note></p></div>
+          </div>
+          <div class="story-detail-column">
+            <div class="story-tabs" role="tablist" aria-label="Component information"><button type="button" role="tab" id="story-tab-overview" aria-controls="story-panel-overview" aria-selected="true" data-story-tab="overview">Overview</button><button type="button" role="tab" id="story-tab-dimensions" aria-controls="story-panel-dimensions" aria-selected="false" tabindex="-1" data-story-tab="dimensions">Dimensions</button><button type="button" role="tab" id="story-tab-pins" aria-controls="story-panel-pins" aria-selected="false" tabindex="-1" data-story-tab="pins">Pins</button><button type="button" role="tab" id="story-tab-source" aria-controls="story-panel-source" aria-selected="false" tabindex="-1" data-story-tab="source">Source</button></div>
+            <article class="story-details" data-story-details></article>
+          </div>
+        </div>
+      </section>
+    </div>
   </dialog>
   <script type="module">import { initializeComponentStories } from '/component-stories.js'; initializeComponentStories();</script>
   <section id="visual-explorer" hidden role="dialog" aria-modal="true" aria-label="Educational component explorer"></section>
