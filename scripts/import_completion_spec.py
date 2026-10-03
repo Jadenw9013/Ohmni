@@ -99,6 +99,36 @@ def group_a(r, d):
     return p, conflicts
 
 
+def group_b(r, d):
+    n=int(r['id'][4:]);t=r['terminals'];tht=r['mounting']=='tht'
+    p={'kind':'frequency','family':r['package_family'],'body_x':d['overall_length'],'body_y':d['overall_width'],'height':d['overall_height'],
+       'count':t['count'],'layout':'frequency','body_material':r['body']['material'],'lead_material':t['material'],
+       'source_pin1':t['pin1_xy_mm'],'standoff':r['pcb_interface']['standoff_mm'],'tail':t.get('tail_below_board_top_mm',0),
+       'tht':tht,'pin':t['width_mm'],'pitch':t.get('pitch_mm',0),'pad_x':t['width_mm'],'pad_y':t.get('length_mm',0),
+       'source_parameters':r['parametric']['parameters'],'segments':{'LOD0':16,'LOD1':32,'LOD2':64},'pin1_corner':'TL'}
+    conflicts=[]
+    if tht:
+        p['shape']='stadium' if n in [141,142] else 'resonator'
+        cosmetic(p,'radius',p['body_y']/2 if n in [141,142] else .8,'HC49 full-radius ends from half width; resonator 0.8 top radius stated in entry.')
+        cosmetic(p,'seal_diameter',p['pin']*3,'Three times stated lead diameter, inside bottom plate.')
+        cosmetic(p,'seam_width',p['body_y']/50,'One fiftieth of can width; surface seam inside top envelope.')
+        cosmetic(p,'label_width',p['body_x']*.55,'55 percent of sourced body length; optional identity decal.')
+        cosmetic(p,'label_height',min(p['body_y'],p['height'])/5,'One fifth of smaller face dimension.')
+        if n in [141,142]:conflicts.append({'code':'SUPPLIED_VS_TRIMMED_LEAD','geometry_choice':'Keep explicit 2.6 mm mounted tail rather than as-supplied 12.7 mm minimum.'})
+    else:
+        p['shape']='smd';p['lid_material']='MAT_STEEL_STAINLESS' if n!=149 else 'MAT_EPOXY_DARKGRAY'
+        cosmetic(p,'pad_thickness',t.get('thickness_mm',.02),'Use stated 0.02 mm on 143-145; same family cosmetic metal depth on remaining SMD entries. PCB-contact XY and Z=0 unchanged.')
+        cosmetic(p,'base_fraction',.7 if n<=145 else .65,'Entry ceramic/lid split: 70 percent for crystals, 65 percent for oscillators; SAW borrows oscillator construction within envelope.')
+        cosmetic(p,'lid_inset',.1 if n<=145 else .15,'Entry lid inset; SAW borrows oscillator seam inset.')
+        cosmetic(p,'marker_radius',min(p['body_x'],p['body_y'])/25,'One twenty-fifth of smaller body dimension; lid corner mark only.')
+        cosmetic(p,'lid_chamfer',min(p['body_x'],p['body_y'])/10,'One tenth of smaller dimension, removes material at marked corner only.')
+        cosmetic(p,'label_width',p['body_x']*.5,'Half of body length, inside lid.')
+        cosmetic(p,'label_height',p['body_y']/5,'One fifth of body width, inside lid.')
+        if n in [145,147]:conflicts.append({'code':'PROSE_HEIGHT_VS_YAML','geometry_choice':f'Use YAML overall height {p["height"]} mm; recompute stated fractional ceramic/lid split instead of older approximate prose heights.'})
+        if n==146:conflicts.append({'code':'PAD_OVERHANG_005','geometry_choice':'Keep explicit contacts Y=+/-1.905 and pad Y size=1.2. Metal spans 5.01 mm vs ceramic body width 5.0; do not shorten pads or move terminals to enforce the contradictory pads-inside-body sentence.'})
+    return p,conflicts
+
+
 def extract(source, group):
     text=source.decode('utf-8');records=[];profiles={}
     for m in re.finditer(r'^# \[(OHM-(\d+))\].*?(?=^# \[|^## PROPOSED ADDITIONS|\Z)',text,re.MULTILINE|re.DOTALL):
@@ -107,7 +137,7 @@ def extract(source, group):
         sections=dict(re.findall(r'^## ([^\n]+)\n(.*?)(?=^## |\Z)',m[0],re.MULTILINE|re.DOTALL))
         r['source']={'document':'PCB_COMPONENT_3D_LIBRARY_SPEC.md','line':text[:m.start()].count('\n')+1,'yaml_sha256':hashlib.sha256(raw.encode()).hexdigest(),'sections':{k:v.strip() for k,v in sections.items() if k!='Structured Specification'},'evidence_level':'SPEC_REPORTED; not independently reverified'}
         d={k:v['default'] for k,v in r['dimensions_mm'].items()}
-        p,conflicts=group_a(r,d) if group=='A' else (None,[])
+        p,conflicts={'A':group_a,'B':group_b}[group](r,d)
         if p is None:raise ValueError('Group not yet implemented')
         uncertain=[f'{k}: {v["default"]} ({v.get("basis")}/{v.get("confidence")})' for k,v in r['dimensions_mm'].items() if v.get('confidence')=='L' or v.get('basis') in ['UNCERTAIN','RECALLED_UNVERIFIED','RESEARCH_REQUIRED']]
         uncertain += [line.strip() for line in m[0].splitlines() if re.search(r'UNCERTAIN|RECALLED_UNVERIFIED|RESEARCH_REQUIRED|placeholder|not confirmed|not sourced|unsourced',line,re.IGNORECASE) and not line.startswith('  ')]
@@ -116,6 +146,7 @@ def extract(source, group):
         r['cosmetic_defaults']=p.get('cosmetic_defaults',[])
         r['library_metadata']=library_metadata(r,uncertain,provisional_reasons=['Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional.'],conflicts=conflicts,implementation_status='IMPLEMENTED',implementation_group=group)
         r['profile_id']=r['id'];profiles[r['id']]=p;records.append(r)
+    records.sort(key=lambda r:r['id'])
     return {'schema_version':1,'group':group,'source_spec_sha256':hashlib.sha256(source).hexdigest(),'components':records,'profiles':profiles}
 
 

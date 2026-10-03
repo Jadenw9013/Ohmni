@@ -1,0 +1,2707 @@
+{
+  "schema_version": 1,
+  "group": "B",
+  "source_spec_sha256": "c140887db02b0d7bfb25a45a4154f6c4ee58d0ddb493ba502eee53b7e3d38639",
+  "components": [
+    {
+      "id": "OHM-141",
+      "slug": "xtal_hc49u",
+      "canonical_name": "HC-49/U crystal",
+      "category": "frequency",
+      "subcategory": "through_hole_crystal",
+      "class": "A",
+      "priority": "P1",
+      "complexity": 3,
+      "package_family": "PKG-XTAL_HC49",
+      "package_member": "HC49.U",
+      "generator": "GEN-XTAL",
+      "mounting": "tht",
+      "names": {
+        "aliases": [
+          "HC-49/U"
+        ]
+      },
+      "dimensions_mm": {
+        "overall_length": {
+          "default": 10.8,
+          "max": 10.8,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "overall_width": {
+          "default": 4.65,
+          "max": 4.65,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "overall_height": {
+          "default": 13.5,
+          "min": 13.2,
+          "max": 13.5,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "lead_diameter": {
+          "default": 0.43,
+          "min": 0.4,
+          "max": 0.48,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "pitch": {
+          "default": 4.88,
+          "min": 4.68,
+          "max": 5.08,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "lead_length_supplied": {
+          "default": 12.7,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        }
+      },
+      "body": {
+        "shape": "stadium_can",
+        "material": "MAT_NICKEL",
+        "color": "bright silver",
+        "features": [
+          "end radius 2.325 (uncertain)",
+          "top crimp seam (LOD2)"
+        ]
+      },
+      "terminals": {
+        "count": 2,
+        "type": "round_lead",
+        "pitch_mm": 4.88,
+        "width_mm": 0.43,
+        "material": "MAT_TIN_BRIGHT",
+        "pin_numbering": "1 at -X, 2 at +X (convention)",
+        "pin1_xy_mm": [
+          -2.44,
+          0
+        ],
+        "tail_below_board_top_mm": 2.6
+      },
+      "pcb_interface": {
+        "footprint_type": "tht_holes",
+        "standoff_mm": 0,
+        "hole_diameter_mm": 0.9,
+        "thermal_pad": false,
+        "body_offset_mm": [
+          0,
+          0
+        ]
+      },
+      "orientation": {
+        "pcb_plane": "XY",
+        "height_axis": "Z",
+        "origin": "FCO",
+        "rotation0": "can long axis along X; leads on X axis"
+      },
+      "polarity": "none",
+      "pin1_indicator": "none",
+      "parametric": {
+        "parameters": [
+          "height",
+          "lead_length",
+          "lead_pitch",
+          "sleeve",
+          "standoff"
+        ],
+        "coupled": [
+          "height 3.5 to 13.5"
+        ]
+      },
+      "lod_supported": [
+        "LOD0",
+        "LOD1",
+        "LOD2"
+      ],
+      "confidence": {
+        "dimensions": "M",
+        "geometry": "M",
+        "materials_appearance": "M"
+      },
+      "status": "complete",
+      "source": {
+        "document": "PCB_COMPONENT_3D_LIBRARY_SPEC.md",
+        "line": 20901,
+        "yaml_sha256": "8a28fc8b1a61fb5b04635777382e7c1c10a038e69100015f6359bc2510ef129c",
+        "sections": {
+          "Identity": "- Canonical name: HC-49/U crystal; ID OHM-141; slug xtal_hc49u\n- Category: frequency; Subcategory: through-hole quartz crystal, metal can\n- Physical package: PKG-XTAL_HC49 member HC49.U; through-hole, 2 wire leads\n- Aliases: HC-49/U, HC49U. Variants: height, lead length, insulating sleeve, 3-pin (case ground) variants (not modeled).\n- Class A, priority P1, complexity 3.",
+          "Physical Dimensions": "Can length (X) 10.8 max, width (Y) 4.65 max, height above seating plane 13.5 max (13.46 in Crystek; 13.5 endrich HC-49/U sheet; Pletronics lists 13.21: kept 13.5, conflict recorded in PKG-XTAL_HC49). Lead pitch 4.88 +/-0.2, lead dia 0.43 (+0.05/-0.03), lead length 12.7 min as supplied (OHMNI models a trimmed tail). Superseded first-pass values: length 11.05 (no HC-49/U source), pitch/dia/height 'RESEARCH_REQUIRED, uncited' (now sourced). Basis MFR_DATASHEET (S3/S4 listed in the family); confidence M (drawing label mapping partly ambiguous in text extraction; three documents agree on 13.5/13.46, 4.88, 0.43).",
+          "Geometry": "Oval (\"stadium\") metal can: rectangle 10.8 x 4.65 with full-radius ends (r = 2.325, UNCERTAIN), height 13.5, flat top (slight crimped seam along the top center line at LOD2). Bottom seal plate at Z = standoff with two glass-bead/solder seals at the lead exits. Two round leads exit the bottom at X = -2.44 and +2.44 on the long axis, dia 0.43. Optional black plastic insulating pad/sleeve (not default).",
+          "Leads / Pins / Terminals": "2 round leads dia 0.43 (+0.05/-0.03; endrich, Pletronics), pitch 4.88 +/-0.2 along X. Terminal 1 at (-2.44, 0), terminal 2 at (+2.44, 0). Crystal is not polarized; pin 1 is a convention only. Material MAT_TIN_BRIGHT (tinned). Real lead length 12.7 min (Crystek, Pletronics); OHMNI tail default -2.6 (trimmed, modeling choice). No bends by default.",
+          "PCB Interface": "Through-hole, drill 0.8-1.0 (OHMNI default 0.9, UNCERTAIN), pads 1.6; body centered on the hole pair: body_offset (0,0); standoff 0 (UNCERTAIN; a seated can may sit 0-1 above the board); pin 1 at (-2.44, 0). Lying-flat mounting is a board-side variant (not modeled).",
+          "Materials": "Can MAT_NICKEL (bright) or MAT_STEEL_STAINLESS; leads MAT_TIN_BRIGHT; glass beads MAT_GLASS; optional sleeve MAT_PLASTIC_BLACK; print MAT_SILKSCREEN_WHITE or laser etch.",
+          "Appearance": "Shiny silver can with a printed/etched frequency and manufacturer code; plain or with a colored/black insulating sleeve; variation by vendor in print.",
+          "Orientation Markings": "None needed (non-polarized). Optional print orientation along +X.",
+          "Recognition Features": "1. Oval silver can about 13.5 mm tall. 2. Two wire leads 4.88 apart. 3. 10.8 x 4.65 can footprint. 4. Print on the top flat.",
+          "Parametric Variants": "Parameters: height (13.5 default; family range 3.5-13.5), lead_length, lead_pitch, sleeve, standoff. Coupled: can length >= lead pitch + 2 x lead radius + wall; Class A: unique geometry.",
+          "Recommended Base Geometry": "Extruded stadium; two cylinders; two small cylinder seals.",
+          "Modeling Procedure": "1. Stadium extrusion to height. 2. Bottom plate/seals. 3. Two leads to -2.6. 4. Optional top seam, print decal.",
+          "LOD Strategy": "LOD0: stadium + 2 lead cylinders. LOD1: seals, print decal. LOD2: crimp seam, rounded top edges, sleeve.",
+          "Simplification Rules": "May omit: seam, seals, print. NEVER omit: can outline, height class, two leads and pitch.",
+          "Sources": "See PKG-XTAL_HC49 sources: gap-fill endrich-hosted HC-49/U sheet, Pletronics MP49, Crystek HC49, SaRonix DS-112 (height, pitch, lead dia, lead length, can size) plus first-pass Abracon ABL context.",
+          "Research Confidence": "Dimensions M; Geometry M; Materials/appearance M. Remaining minor gaps (not key dimensions): can end radius (assumed full radius), standoff, drill size, sleeve. Validation: height 13.5 agrees across endrich (13.5 max) and Crystek (0.530 in = 13.46); pitch 4.88 agrees across endrich, Pletronics, Crystek, SaRonix; lead dia 0.43 agrees across endrich and Pletronics (Crystek 0.48, SaRonix 0.46 max noted); leads +/-2.44 fit inside 10.8 length with 2.96 margin each side; width 4.65 > lead dia. Contradiction kept: first-pass 11.05 length vs 10.8 sourced; adopted 10.8 because it appears in two HC-49/U sheets; 11.05 is retained for the /S member (SaRonix 49S max 11.18).\n\n\n---"
+        },
+        "evidence_level": "SPEC_REPORTED; not independently reverified"
+      },
+      "cosmetic_defaults": [
+        {
+          "feature": "radius",
+          "value": 2.325,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "HC49 full-radius ends from half width; resonator 0.8 top radius stated in entry.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "seal_diameter",
+          "value": 1.29,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Three times stated lead diameter, inside bottom plate.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "seam_width",
+          "value": 0.09300000000000001,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One fiftieth of can width; surface seam inside top envelope.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_width",
+          "value": 5.940000000000001,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "55 percent of sourced body length; optional identity decal.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_height",
+          "value": 0.93,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One fifth of smaller face dimension.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "library_metadata": {
+        "provisional": true,
+        "uncertain_values": [
+          "Can length (X) 10.8 max, width (Y) 4.65 max, height above seating plane 13.5 max (13.46 in Crystek; 13.5 endrich HC-49/U sheet; Pletronics lists 13.21: kept 13.5, conflict recorded in PKG-XTAL_HC49). Lead pitch 4.88 +/-0.2, lead dia 0.43 (+0.05/-0.03), lead length 12.7 min as supplied (OHMNI models a trimmed tail). Superseded first-pass values: length 11.05 (no HC-49/U source), pitch/dia/height 'RESEARCH_REQUIRED, uncited' (now sourced). Basis MFR_DATASHEET (S3/S4 listed in the family); confidence M (drawing label mapping partly ambiguous in text extraction; three documents agree on 13.5/13.46, 4.88, 0.43).",
+          "Oval (\"stadium\") metal can: rectangle 10.8 x 4.65 with full-radius ends (r = 2.325, UNCERTAIN), height 13.5, flat top (slight crimped seam along the top center line at LOD2). Bottom seal plate at Z = standoff with two glass-bead/solder seals at the lead exits. Two round leads exit the bottom at X = -2.44 and +2.44 on the long axis, dia 0.43. Optional black plastic insulating pad/sleeve (not default).",
+          "Through-hole, drill 0.8-1.0 (OHMNI default 0.9, UNCERTAIN), pads 1.6; body centered on the hole pair: body_offset (0,0); standoff 0 (UNCERTAIN; a seated can may sit 0-1 above the board); pin 1 at (-2.44, 0). Lying-flat mounting is a board-side variant (not modeled).",
+          "Dimensions M; Geometry M; Materials/appearance M. Remaining minor gaps (not key dimensions): can end radius (assumed full radius), standoff, drill size, sleeve. Validation: height 13.5 agrees across endrich (13.5 max) and Crystek (0.530 in = 13.46); pitch 4.88 agrees across endrich, Pletronics, Crystek, SaRonix; lead dia 0.43 agrees across endrich and Pletronics (Crystek 0.48, SaRonix 0.46 max noted); leads +/-2.44 fit inside 10.8 length with 2.96 margin each side; width 4.65 > lead dia. Contradiction kept: first-pass 11.05 length vs 10.8 sourced; adopted 10.8 because it appears in two HC-49/U sheets; 11.05 is retained for the /S member (SaRonix 49S max 11.18).\n\n\n---",
+          "COSMETIC_PROVISIONAL radius=2.325: HC49 full-radius ends from half width; resonator 0.8 top radius stated in entry.",
+          "COSMETIC_PROVISIONAL seal_diameter=1.29: Three times stated lead diameter, inside bottom plate.",
+          "COSMETIC_PROVISIONAL seam_width=0.09300000000000001: One fiftieth of can width; surface seam inside top envelope.",
+          "COSMETIC_PROVISIONAL label_width=5.940000000000001: 55 percent of sourced body length; optional identity decal.",
+          "COSMETIC_PROVISIONAL label_height=0.93: One fifth of smaller face dimension.",
+          "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+        ],
+        "appearance_confidence": "M",
+        "electrical_admission": "NOT_EVALUATED",
+        "footprint_binding": null,
+        "conflicts": [
+          {
+            "code": "SUPPLIED_VS_TRIMMED_LEAD",
+            "geometry_choice": "Keep explicit 2.6 mm mounted tail rather than as-supplied 12.7 mm minimum."
+          }
+        ],
+        "implementation_status": "IMPLEMENTED",
+        "implementation_group": "B"
+      },
+      "profile_id": "OHM-141"
+    },
+    {
+      "id": "OHM-142",
+      "slug": "xtal_hc49s",
+      "canonical_name": "Low-profile HC-49 crystal",
+      "category": "frequency",
+      "subcategory": "through_hole_crystal",
+      "class": "C",
+      "priority": "P1",
+      "complexity": 3,
+      "package_family": "PKG-XTAL_HC49",
+      "package_member": "HC49.S",
+      "generator": "GEN-XTAL",
+      "mounting": "tht",
+      "names": {
+        "aliases": [
+          "HC-49/S",
+          "HC-49/US"
+        ]
+      },
+      "dimensions_mm": {
+        "overall_length": {
+          "default": 11.05,
+          "max": 11.18,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "overall_width": {
+          "default": 4.65,
+          "max": 4.65,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "overall_height": {
+          "default": 3.5,
+          "max": 3.5,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "lead_diameter": {
+          "default": 0.43,
+          "max": 0.46,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "pitch": {
+          "default": 4.88,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "lead_length_supplied": {
+          "default": 12.7,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        }
+      },
+      "body": {
+        "shape": "stadium_can",
+        "material": "MAT_NICKEL",
+        "color": "bright silver",
+        "features": [
+          "end radius 2.325 (uncertain)",
+          "top crimp seam (LOD2)"
+        ]
+      },
+      "terminals": {
+        "count": 2,
+        "type": "round_lead",
+        "pitch_mm": 4.88,
+        "width_mm": 0.43,
+        "material": "MAT_TIN_BRIGHT",
+        "pin_numbering": "1 at -X, 2 at +X (convention)",
+        "pin1_xy_mm": [
+          -2.44,
+          0
+        ],
+        "tail_below_board_top_mm": 2.6
+      },
+      "pcb_interface": {
+        "footprint_type": "tht_holes",
+        "standoff_mm": 0,
+        "hole_diameter_mm": 0.9,
+        "thermal_pad": false,
+        "body_offset_mm": [
+          0,
+          0
+        ]
+      },
+      "orientation": {
+        "pcb_plane": "XY",
+        "height_axis": "Z",
+        "origin": "FCO",
+        "rotation0": "can long axis along X; leads on X axis"
+      },
+      "polarity": "none",
+      "pin1_indicator": "none",
+      "parametric": {
+        "parameters": [
+          "height",
+          "lead_length",
+          "lead_pitch",
+          "sleeve",
+          "standoff"
+        ],
+        "coupled": [
+          "height 3.5 to 13.5"
+        ]
+      },
+      "lod_supported": [
+        "LOD0",
+        "LOD1",
+        "LOD2"
+      ],
+      "confidence": {
+        "dimensions": "M",
+        "geometry": "M",
+        "materials_appearance": "M"
+      },
+      "status": "complete",
+      "source": {
+        "document": "PCB_COMPONENT_3D_LIBRARY_SPEC.md",
+        "line": 21015,
+        "yaml_sha256": "be73769d5169810680a9fe97ed2b4235f5e7f15c4d1b5ec034b3caf620b77bff",
+        "sections": {
+          "Identity": "- Canonical name: Low-profile HC-49 crystal; ID OHM-142; slug xtal_hc49s\n- Category: frequency; Subcategory: through-hole quartz crystal, metal can\n- Physical package: PKG-XTAL_HC49 member HC49.S; through-hole, 2 wire leads\n- Aliases: HC-49/S, HC-49/US, HC49S, AT49 low profile. Variants: height, lead length, insulating sleeve, 3-pin (case ground) variants (not modeled).\n- Class C, priority P1, complexity 3.",
+          "Physical Dimensions": "Can length (X) 11.05 default (SaRonix 49S: 11.18 max; Abracon ABL 11.5 max), width (Y) 4.65 max (SaRonix 49S), height 3.5 max (SaRonix DS-112 49S; Abracon ABL 3.5; also a 49L variant at 2.5 max). Lead pitch 4.88 (SaRonix 49S .192 in), lead dia 0.43 default (SaRonix lists 0.46 max; endrich HC-49/U sheet 0.43), lead length 12.7 min as supplied. Basis MFR_DATASHEET; confidence M. Note: the SaRonix extraction labelled the .500 in dimension 'body length min'; it is the lead length (12.7 min), consistent with Crystek and Pletronics.",
+          "Geometry": "Oval (\"stadium\") metal can: rectangle 11.05 x 4.65 with full-radius ends (r = 2.325, UNCERTAIN), height 3.5 (max), flat top (slight crimped seam along the top center line at LOD2). Bottom seal plate at Z = standoff with two glass-bead/solder seals at the lead exits. Two round leads exit the bottom at X = -2.44 and +2.44 on the long axis, dia 0.43. Optional black plastic insulating pad/sleeve (not default).",
+          "Leads / Pins / Terminals": "2 round leads dia 0.43 (SaRonix max 0.46), pitch 4.88 along X (SaRonix). Terminal 1 at (-2.44, 0), terminal 2 at (+2.44, 0). Crystal is not polarized; pin 1 is a convention only. Material MAT_TIN_BRIGHT (tinned). Real lead length 12.7 min; OHMNI tail default -2.6 (trimmed). No bends by default.",
+          "PCB Interface": "Through-hole, drill 0.8-1.0 (OHMNI default 0.9, UNCERTAIN), pads 1.6; body centered on the hole pair: body_offset (0,0); standoff 0 (UNCERTAIN; a seated can may sit 0-1 above the board); pin 1 at (-2.44, 0). Lying-flat mounting is a board-side variant (not modeled).",
+          "Materials": "Can MAT_NICKEL (bright) or MAT_STEEL_STAINLESS; leads MAT_TIN_BRIGHT; glass beads MAT_GLASS; optional sleeve MAT_PLASTIC_BLACK; print MAT_SILKSCREEN_WHITE or laser etch.",
+          "Appearance": "Shiny silver can with a printed/etched frequency and manufacturer code; plain or with a colored/black insulating sleeve; variation by vendor in print.",
+          "Orientation Markings": "None needed (non-polarized). Optional print orientation along +X.",
+          "Recognition Features": "1. Oval silver can low profile 3.5 mm tall. 2. Two wire leads 4.88 apart. 3. 11.05 x 4.65 footprint. 4. Print on the top flat.",
+          "Parametric Variants": "Parameters: height (3.5 default; family range 3.5-13.5), lead_length, lead_pitch, sleeve, standoff. Coupled: can length >= lead pitch + 2 x lead radius + wall; Class C: height-only variant of OHM-141.",
+          "Recommended Base Geometry": "Extruded stadium; two cylinders; two small cylinder seals.",
+          "Modeling Procedure": "1. Stadium extrusion to height. 2. Bottom plate/seals. 3. Two leads to -2.6. 4. Optional top seam, print decal.",
+          "LOD Strategy": "LOD0: stadium + 2 lead cylinders. LOD1: seals, print decal. LOD2: crimp seam, rounded top edges, sleeve.",
+          "Simplification Rules": "May omit: seam, seals, print. NEVER omit: can outline, height class, two leads and pitch.",
+          "Sources": "See PKG-XTAL_HC49 sources: SaRonix DS-112 Rev E 49S/49L (S3, https://www.mouser.com/datasheet/2/115/saros00598_1-2265710.pdf: 11.18 max, 4.65 max, 3.5 max, 4.88, lead 0.46 max, 12.7 min) cross-checked with Abracon ABL (3.5) and the endrich/Pletronics/Crystek sheets for pitch and lead dia.",
+          "Research Confidence": "Dimensions M; Geometry M; Materials/appearance M. Remaining minor gaps (not key dimensions): can end radius, standoff, drill. Validation: height 3.5 agrees between SaRonix 49S and Abracon ABL; pitch 4.88 agrees across four documents; leads +/-2.44 fit inside 11.05 with 3.1 margin; first-pass 11.05 x 4.65 sits within SaRonix maxima 11.18 x 4.65 and Abracon 11.5 x 5.0 (kept as default, no contradiction). OHM-142 length differs from OHM-141 (10.8) by sourced vendor data.\n\n\n---"
+        },
+        "evidence_level": "SPEC_REPORTED; not independently reverified"
+      },
+      "cosmetic_defaults": [
+        {
+          "feature": "radius",
+          "value": 2.325,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "HC49 full-radius ends from half width; resonator 0.8 top radius stated in entry.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "seal_diameter",
+          "value": 1.29,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Three times stated lead diameter, inside bottom plate.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "seam_width",
+          "value": 0.09300000000000001,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One fiftieth of can width; surface seam inside top envelope.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_width",
+          "value": 6.077500000000001,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "55 percent of sourced body length; optional identity decal.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_height",
+          "value": 0.7,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One fifth of smaller face dimension.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "library_metadata": {
+        "provisional": true,
+        "uncertain_values": [
+          "Oval (\"stadium\") metal can: rectangle 11.05 x 4.65 with full-radius ends (r = 2.325, UNCERTAIN), height 3.5 (max), flat top (slight crimped seam along the top center line at LOD2). Bottom seal plate at Z = standoff with two glass-bead/solder seals at the lead exits. Two round leads exit the bottom at X = -2.44 and +2.44 on the long axis, dia 0.43. Optional black plastic insulating pad/sleeve (not default).",
+          "Through-hole, drill 0.8-1.0 (OHMNI default 0.9, UNCERTAIN), pads 1.6; body centered on the hole pair: body_offset (0,0); standoff 0 (UNCERTAIN; a seated can may sit 0-1 above the board); pin 1 at (-2.44, 0). Lying-flat mounting is a board-side variant (not modeled).",
+          "Dimensions M; Geometry M; Materials/appearance M. Remaining minor gaps (not key dimensions): can end radius, standoff, drill. Validation: height 3.5 agrees between SaRonix 49S and Abracon ABL; pitch 4.88 agrees across four documents; leads +/-2.44 fit inside 11.05 with 3.1 margin; first-pass 11.05 x 4.65 sits within SaRonix maxima 11.18 x 4.65 and Abracon 11.5 x 5.0 (kept as default, no contradiction). OHM-142 length differs from OHM-141 (10.8) by sourced vendor data.\n\n\n---",
+          "COSMETIC_PROVISIONAL radius=2.325: HC49 full-radius ends from half width; resonator 0.8 top radius stated in entry.",
+          "COSMETIC_PROVISIONAL seal_diameter=1.29: Three times stated lead diameter, inside bottom plate.",
+          "COSMETIC_PROVISIONAL seam_width=0.09300000000000001: One fiftieth of can width; surface seam inside top envelope.",
+          "COSMETIC_PROVISIONAL label_width=6.077500000000001: 55 percent of sourced body length; optional identity decal.",
+          "COSMETIC_PROVISIONAL label_height=0.7: One fifth of smaller face dimension.",
+          "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+        ],
+        "appearance_confidence": "M",
+        "electrical_admission": "NOT_EVALUATED",
+        "footprint_binding": null,
+        "conflicts": [
+          {
+            "code": "SUPPLIED_VS_TRIMMED_LEAD",
+            "geometry_choice": "Keep explicit 2.6 mm mounted tail rather than as-supplied 12.7 mm minimum."
+          }
+        ],
+        "implementation_status": "IMPLEMENTED",
+        "implementation_group": "B"
+      },
+      "profile_id": "OHM-142"
+    },
+    {
+      "id": "OHM-143",
+      "slug": "xtal_3225",
+      "canonical_name": "3225 SMD crystal",
+      "category": "frequency",
+      "subcategory": "smd_crystal",
+      "class": "B",
+      "priority": "P0",
+      "complexity": 2,
+      "package_family": "PKG-XTAL_SMD",
+      "package_member": "3225",
+      "generator": "GEN-XTAL",
+      "mounting": "smd",
+      "names": {
+        "metric": "3225",
+        "aliases": [
+          "3225 crystal"
+        ]
+      },
+      "dimensions_mm": {
+        "overall_length": {
+          "default": 3.2,
+          "min": 3.1,
+          "max": 3.3,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "overall_width": {
+          "default": 2.5,
+          "min": 2.4,
+          "max": 2.6,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "overall_height": {
+          "default": 0.8,
+          "min": 0.6,
+          "max": 1.0,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "terminal_width": {
+          "default": 1.0,
+          "basis": "DERIVED",
+          "confidence": "L"
+        },
+        "terminal_length": {
+          "default": 0.9,
+          "basis": "DERIVED",
+          "confidence": "L"
+        }
+      },
+      "body": {
+        "shape": "ceramic_box_with_metal_lid",
+        "material": "MAT_CERAMIC_PKG_TAN",
+        "color": "metal lid over tan ceramic",
+        "features": [
+          "lid inset 0.1",
+          "pin-1 dot/chamfer"
+        ]
+      },
+      "terminals": {
+        "count": 4,
+        "type": "flat_pad",
+        "width_mm": 1.0,
+        "length_mm": 0.9,
+        "thickness_mm": 0.02,
+        "material": "MAT_GOLD",
+        "pin_numbering": "1 top-left per NDK/Epson/Addendum 17.2; 1 TL, 2 BL, 3 BR, 4 TR (Abracon variant: 1 BL)",
+        "pin1_xy_mm": [
+          -1.1,
+          0.8
+        ]
+      },
+      "pcb_interface": {
+        "footprint_type": "smd_pads",
+        "standoff_mm": 0,
+        "thermal_pad": false,
+        "body_offset_mm": [
+          0,
+          0
+        ]
+      },
+      "orientation": {
+        "pcb_plane": "XY",
+        "height_axis": "Z",
+        "origin": "FCO",
+        "rotation0": "lid print reads left to right; pin 1 at -X,+Y"
+      },
+      "polarity": "none (crystal not polarized; pin 1 mark for pad identity)",
+      "pin1_indicator": "dot/chamfer on lid corner (-X,+Y); lid print orientation",
+      "parametric": {
+        "parameters": [
+          "size",
+          "height",
+          "pad_count",
+          "lid_inset"
+        ],
+        "coupled": [
+          "pad_x_center + pad_x/2 <= L/2",
+          "height <= 1.0"
+        ]
+      },
+      "lod_supported": [
+        "LOD0",
+        "LOD1",
+        "LOD2"
+      ],
+      "confidence": {
+        "dimensions": "M",
+        "geometry": "M",
+        "materials_appearance": "M"
+      },
+      "status": "partial",
+      "source": {
+        "document": "PCB_COMPONENT_3D_LIBRARY_SPEC.md",
+        "line": 20333,
+        "yaml_sha256": "bbd92b165781c0e9d50ef8a9870bada00fbb6cb58d236d8d4f3806cdd1a15c10",
+        "sections": {
+          "Identity": "- Canonical name: 3225 SMD crystal; ID OHM-143; slug xtal_3225\n- Category: frequency; Subcategory: SMD quartz crystal, metal-lid ceramic package\n- Physical package: PKG-XTAL_SMD member XTAL_SMD.3225; surface mount\n- Names: metric code 3225 = 3.2 x 2.5 mm (00_architecture Section 12); imperial code not used in the industry for these, do not confuse with chip sizes.\n- Aliases: 3225 crystal, 3.2x2.5 SMD crystal. Variants: 2-pad vs 4-pad (see family note), height, load capacitance (electrical only).\n- Class B, priority P0, complexity 2.",
+          "Physical Dimensions": "Restated from PKG-XTAL_SMD: length (X) 3.2, width (Y) 2.5, height default 0.8, max 1.0 (NDK NX3225GD: 0.80 typ, max 1.0; Abracon ABM8G 1.0 max; Epson FA-238 0.7 and TSX-3225 0.6 are thinner vendor variants). Tolerance L/W +/-0.1 (NDK). Pads (OHMNI default, DERIVED/UNCERTAIN; real values RESEARCH_REQUIRED): 1.0 (X) x 0.9 (Y), centers X +/-1.1, Y +/-0.8. Basis MFR_DATASHEET for L/W/H max; confidence M for L/W/H, L for pads.",
+          "Geometry": "Ceramic base box 3.2 x 2.5 x ~0.56 (about 70 percent of height, DERIVED) topped by a metal lid 3.0 x 2.3 x ~0.24 (lid inset 0.1 per side, DERIVED, UNCERTAIN) that sits on the ceramic ring. Four metallized pads wrap the bottom corners and appear as small notches or wraparound strips on the side faces (castellation optional at LOD2). Lid has a small chamfer or corner mark; the part-number print reads left to right with pin 1 at the upper-left corner (NDK/Epson; Abracon prints pin 1 at lower-left).",
+          "Leads / Pins / Terminals": "4 flat pads: pad numbering (OHMNI default: pin 1 top-left per NDK/Epson, counter-clockwise; Abracon variant has pin 1 bottom-left): 1 = (-1.1, 0.8), 2 = (-1.1, -0.8), 3 = (1.1, -0.8), 4 = (1.1, 0.8) (counter-clockwise direction inferred; vendor texts fix only pin 1). Pads 1 and 3 are the crystal terminals, 2 and 4 are NC/ground (diagonal). Pad shape flat rectangle 1.0 x 0.9, thickness 0.02 (visual), MAT_GOLD. 2-pad variant (not default): pads at the two short ends, full width. DELTA vs Addendum 17.2 recorded in the family section.",
+          "PCB Interface": "SMD pads on the land pattern; body centered on the pad pattern: body_offset (0,0). Standoff 0 (underside at Z = 0). Pin 1 at (-1.1, 0.8) (center of the pad contact area).",
+          "Materials": "Base MAT_CERAMIC_PKG_TAN (proposed token; alt MAT_CERAMIC_ALUMINA_WHITE), lid MAT_STEEL_STAINLESS/MAT_NICKEL (brushed), pads MAT_GOLD, print MAT_SILKSCREEN_WHITE.",
+          "Appearance": "Silver-gray metal lid with a laser-printed frequency/code and a dot or chamfer on the pin-1 corner; the ceramic base is tan to light brown (visible as a thin band). Variation by vendor in print format; Abracon notes the chamfer may be at pin 1, 2 or 4, so the print orientation, not the chamfer, identifies pin 1.",
+          "Orientation Markings": "Pin 1 at the upper-left (-X,+Y) when the lid print reads left to right (NDK/Epson convention; Abracon parts: lower-left, parameter pin1_corner). Add a pin-1 dot on the lid near that corner (OHMNI convention) and a chamfered lid corner at LOD2.",
+          "Recognition Features": "1. Metal rectangular lid on ceramic base. 2. 3.2 x 2.5 footprint with four corner pads. 3. Very low height (1.0 max). 4. Pin-1 dot/chamfer.",
+          "Parametric Variants": "Parameters: size (3225), height, pad_count (2/4), lid_inset, mark. Coupled: pads inside the body outline; height >= 0.35 and <= 1.0; pad X center + pad_x/2 <= L/2.",
+          "Recommended Base Geometry": "Two stacked boxes (ceramic, lid); four thin pad boxes; optional corner chamfer.",
+          "Modeling Procedure": "1. Ceramic box at Z=0. 2. Lid on top, inset. 3. Four pad plates on the bottom corners (optionally wrapping 0.1 up the sides). 4. Chamfer/dot at pin 1. 5. Print decal.",
+          "LOD Strategy": "LOD0: single box. LOD1: ceramic + lid, four pads, pin-1 dot. LOD2: castellations, lid chamfer, seam, print.",
+          "Simplification Rules": "May omit: castellation, lid seam, print. NEVER omit: lid/ceramic two-tone, four pads, pin 1 mark, size.",
+          "Sources": "Abracon ABM8G datasheet https://abracon.com/Resonators/ABM8G.pdf (S3: 3.2 x 2.5 x 1.0 mm, pin 1 bottom-left note, chamfer note). See PKG-XTAL_SMD sources. Gap-fill: NDK NX3225GD (Digi-Key-hosted, S3: 3.2 +/-0.1 x 2.5 +/-0.1 x 0.80 typ / 1.0 max); Epson FA-238V / TSX-3225 (lcsc/chipdip-hosted, S4: 0.7 / 0.6, pin 1 upper-left); Epson TG3225CEN footprint numbers recorded in the family. Default 0.8 = NDK typical.",
+          "Research Confidence": "Dimensions M (L/W/H) / L (pads); Geometry M; Materials/appearance M. Unresolved: pad sizes and exact land pattern (no 3225 drawing text extracted with usable labels), lid inset, 2-pad variant dims, numbering direction. Contradiction kept: first-pass pin 1 bottom-left (Abracon) vs adopted top-left (NDK, Epson). Validation: pad edge = 1.1+1.0/2 = 1.6 <= 1.6; 0.8+0.9/2 = 1.25 <= 1.25; pin 1 now follows NDK/Epson and Addendum 17.2 (top-left); Abracon ABM8G bottom-left kept as a variant.\n\n\n---"
+        },
+        "evidence_level": "SPEC_REPORTED; not independently reverified"
+      },
+      "cosmetic_defaults": [
+        {
+          "feature": "pad_thickness",
+          "value": 0.02,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Use stated 0.02 mm on 143-145; same family cosmetic metal depth on remaining SMD entries. PCB-contact XY and Z=0 unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "base_fraction",
+          "value": 0.7,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Entry ceramic/lid split: 70 percent for crystals, 65 percent for oscillators; SAW borrows oscillator construction within envelope.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "lid_inset",
+          "value": 0.1,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Entry lid inset; SAW borrows oscillator seam inset.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_radius",
+          "value": 0.1,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One twenty-fifth of smaller body dimension; lid corner mark only.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "lid_chamfer",
+          "value": 0.25,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One tenth of smaller dimension, removes material at marked corner only.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_width",
+          "value": 1.6,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Half of body length, inside lid.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_height",
+          "value": 0.5,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One fifth of body width, inside lid.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "library_metadata": {
+        "provisional": true,
+        "uncertain_values": [
+          "terminal_width: 1.0 (DERIVED/L)",
+          "terminal_length: 0.9 (DERIVED/L)",
+          "Restated from PKG-XTAL_SMD: length (X) 3.2, width (Y) 2.5, height default 0.8, max 1.0 (NDK NX3225GD: 0.80 typ, max 1.0; Abracon ABM8G 1.0 max; Epson FA-238 0.7 and TSX-3225 0.6 are thinner vendor variants). Tolerance L/W +/-0.1 (NDK). Pads (OHMNI default, DERIVED/UNCERTAIN; real values RESEARCH_REQUIRED): 1.0 (X) x 0.9 (Y), centers X +/-1.1, Y +/-0.8. Basis MFR_DATASHEET for L/W/H max; confidence M for L/W/H, L for pads.",
+          "Ceramic base box 3.2 x 2.5 x ~0.56 (about 70 percent of height, DERIVED) topped by a metal lid 3.0 x 2.3 x ~0.24 (lid inset 0.1 per side, DERIVED, UNCERTAIN) that sits on the ceramic ring. Four metallized pads wrap the bottom corners and appear as small notches or wraparound strips on the side faces (castellation optional at LOD2). Lid has a small chamfer or corner mark; the part-number print reads left to right with pin 1 at the upper-left corner (NDK/Epson; Abracon prints pin 1 at lower-left).",
+          "Dimensions M (L/W/H) / L (pads); Geometry M; Materials/appearance M. Unresolved: pad sizes and exact land pattern (no 3225 drawing text extracted with usable labels), lid inset, 2-pad variant dims, numbering direction. Contradiction kept: first-pass pin 1 bottom-left (Abracon) vs adopted top-left (NDK, Epson). Validation: pad edge = 1.1+1.0/2 = 1.6 <= 1.6; 0.8+0.9/2 = 1.25 <= 1.25; pin 1 now follows NDK/Epson and Addendum 17.2 (top-left); Abracon ABM8G bottom-left kept as a variant.\n\n\n---",
+          "COSMETIC_PROVISIONAL pad_thickness=0.02: Use stated 0.02 mm on 143-145; same family cosmetic metal depth on remaining SMD entries. PCB-contact XY and Z=0 unchanged.",
+          "COSMETIC_PROVISIONAL base_fraction=0.7: Entry ceramic/lid split: 70 percent for crystals, 65 percent for oscillators; SAW borrows oscillator construction within envelope.",
+          "COSMETIC_PROVISIONAL lid_inset=0.1: Entry lid inset; SAW borrows oscillator seam inset.",
+          "COSMETIC_PROVISIONAL marker_radius=0.1: One twenty-fifth of smaller body dimension; lid corner mark only.",
+          "COSMETIC_PROVISIONAL lid_chamfer=0.25: One tenth of smaller dimension, removes material at marked corner only.",
+          "COSMETIC_PROVISIONAL label_width=1.6: Half of body length, inside lid.",
+          "COSMETIC_PROVISIONAL label_height=0.5: One fifth of body width, inside lid.",
+          "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+        ],
+        "appearance_confidence": "M",
+        "electrical_admission": "NOT_EVALUATED",
+        "footprint_binding": null,
+        "conflicts": [],
+        "implementation_status": "IMPLEMENTED",
+        "implementation_group": "B"
+      },
+      "profile_id": "OHM-143"
+    },
+    {
+      "id": "OHM-144",
+      "slug": "xtal_2520",
+      "canonical_name": "2520 SMD crystal",
+      "category": "frequency",
+      "subcategory": "smd_crystal",
+      "class": "B",
+      "priority": "P1",
+      "complexity": 2,
+      "package_family": "PKG-XTAL_SMD",
+      "package_member": "2520",
+      "generator": "GEN-XTAL",
+      "mounting": "smd",
+      "names": {
+        "metric": "2520",
+        "aliases": [
+          "2520 crystal"
+        ]
+      },
+      "dimensions_mm": {
+        "overall_length": {
+          "default": 2.5,
+          "min": 2.4,
+          "max": 2.6,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "overall_width": {
+          "default": 2.0,
+          "min": 1.9,
+          "max": 2.1,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "overall_height": {
+          "default": 0.5,
+          "min": 0.45,
+          "max": 0.6,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "terminal_width": {
+          "default": 0.8,
+          "basis": "DERIVED",
+          "confidence": "L"
+        },
+        "terminal_length": {
+          "default": 0.7,
+          "basis": "DERIVED",
+          "confidence": "L"
+        }
+      },
+      "body": {
+        "shape": "ceramic_box_with_metal_lid",
+        "material": "MAT_CERAMIC_PKG_TAN",
+        "color": "metal lid over tan ceramic",
+        "features": [
+          "lid inset 0.1",
+          "pin-1 dot/chamfer"
+        ]
+      },
+      "terminals": {
+        "count": 4,
+        "type": "flat_pad",
+        "width_mm": 0.8,
+        "length_mm": 0.7,
+        "thickness_mm": 0.02,
+        "material": "MAT_GOLD",
+        "pin_numbering": "1 top-left per NDK/Epson/Addendum 17.2; 1 TL, 2 BL, 3 BR, 4 TR (Abracon variant: 1 BL)",
+        "pin1_xy_mm": [
+          -0.85,
+          0.65
+        ]
+      },
+      "pcb_interface": {
+        "footprint_type": "smd_pads",
+        "standoff_mm": 0,
+        "thermal_pad": false,
+        "body_offset_mm": [
+          0,
+          0
+        ]
+      },
+      "orientation": {
+        "pcb_plane": "XY",
+        "height_axis": "Z",
+        "origin": "FCO",
+        "rotation0": "lid print reads left to right; pin 1 at -X,+Y"
+      },
+      "polarity": "none (crystal not polarized; pin 1 mark for pad identity)",
+      "pin1_indicator": "dot/chamfer on lid corner (-X,+Y); lid print orientation",
+      "parametric": {
+        "parameters": [
+          "size",
+          "height",
+          "pad_count",
+          "lid_inset"
+        ],
+        "coupled": [
+          "pad_x_center + pad_x/2 <= L/2",
+          "height <= 0.6"
+        ]
+      },
+      "lod_supported": [
+        "LOD0",
+        "LOD1",
+        "LOD2"
+      ],
+      "confidence": {
+        "dimensions": "M",
+        "geometry": "M",
+        "materials_appearance": "M"
+      },
+      "status": "partial",
+      "source": {
+        "document": "PCB_COMPONENT_3D_LIBRARY_SPEC.md",
+        "line": 20447,
+        "yaml_sha256": "d143c93af3198bc05d1b64fc12ccca8070900fcf3bcbc34ca8012caf7e6e2f2d",
+        "sections": {
+          "Identity": "- Canonical name: 2520 SMD crystal; ID OHM-144; slug xtal_2520\n- Category: frequency; Subcategory: SMD quartz crystal, metal-lid ceramic package\n- Physical package: PKG-XTAL_SMD member XTAL_SMD.2520; surface mount\n- Names: metric code 2520 = 2.5 x 2.0 mm (00_architecture Section 12); imperial code not used in the industry for these, do not confuse with chip sizes.\n- Aliases: 2520 crystal, 2.5x2.0 SMD crystal. Variants: 2-pad vs 4-pad (see family note), height, load capacitance (electrical only).\n- Class B, priority P1, complexity 2.",
+          "Physical Dimensions": "Restated from PKG-XTAL_SMD: length (X) 2.5, width (Y) 2.0, height default 0.5, max 0.6 (NDK NX2520SA 0.50 +/-0.05; Abracon ABM10W 0.6 max). Tolerance L/W +/-0.1 (NDK). Pads (OHMNI default, DERIVED/UNCERTAIN; real values RESEARCH_REQUIRED): 0.8 (X) x 0.7 (Y), centers X +/-0.85, Y +/-0.65. Basis MFR_DATASHEET for L/W/H max; confidence M for L/W/H, L for pads.",
+          "Geometry": "Ceramic base box 2.5 x 2.0 x ~0.35 (about 70 percent of height, DERIVED) topped by a metal lid 2.3 x 1.8 x ~0.15 (lid inset 0.1 per side, DERIVED, UNCERTAIN) that sits on the ceramic ring. Four metallized pads wrap the bottom corners and appear as small notches or wraparound strips on the side faces (castellation optional at LOD2). Lid has a small chamfer or corner mark; the part-number print reads left to right with pin 1 at the upper-left corner (NDK/Epson; Abracon prints pin 1 at lower-left).",
+          "Leads / Pins / Terminals": "4 flat pads: pad numbering (OHMNI default: pin 1 top-left per NDK/Epson, counter-clockwise; Abracon variant has pin 1 bottom-left): 1 = (-0.85, 0.65), 2 = (-0.85, -0.65), 3 = (0.85, -0.65), 4 = (0.85, 0.65) (counter-clockwise direction inferred; vendor texts fix only pin 1). Pads 1 and 3 are the crystal terminals, 2 and 4 are NC/ground (diagonal). Pad shape flat rectangle 0.8 x 0.7, thickness 0.02 (visual), MAT_GOLD. 2-pad variant (not default): pads at the two short ends, full width. DELTA vs Addendum 17.2 recorded in the family section.",
+          "PCB Interface": "SMD pads on the land pattern; body centered on the pad pattern: body_offset (0,0). Standoff 0 (underside at Z = 0). Pin 1 at (-0.85, 0.65) (center of the pad contact area).",
+          "Materials": "Base MAT_CERAMIC_PKG_TAN (proposed token; alt MAT_CERAMIC_ALUMINA_WHITE), lid MAT_STEEL_STAINLESS/MAT_NICKEL (brushed), pads MAT_GOLD, print MAT_SILKSCREEN_WHITE.",
+          "Appearance": "Silver-gray metal lid with a laser-printed frequency/code and a dot or chamfer on the pin-1 corner; the ceramic base is tan to light brown (visible as a thin band). Variation by vendor in print format; Abracon notes the chamfer may be at pin 1, 2 or 4, so the print orientation, not the chamfer, identifies pin 1.",
+          "Orientation Markings": "Pin 1 at the upper-left (-X,+Y) when the lid print reads left to right (NDK/Epson convention; Abracon parts: lower-left, parameter pin1_corner). Add a pin-1 dot on the lid near that corner (OHMNI convention) and a chamfered lid corner at LOD2.",
+          "Recognition Features": "1. Metal rectangular lid on ceramic base. 2. 2.5 x 2.0 footprint with four corner pads. 3. Very low height (0.6 max). 4. Pin-1 dot/chamfer.",
+          "Parametric Variants": "Parameters: size (2520), height, pad_count (2/4), lid_inset, mark. Coupled: pads inside the body outline; height >= 0.35 and <= 0.6; pad X center + pad_x/2 <= L/2.",
+          "Recommended Base Geometry": "Two stacked boxes (ceramic, lid); four thin pad boxes; optional corner chamfer.",
+          "Modeling Procedure": "1. Ceramic box at Z=0. 2. Lid on top, inset. 3. Four pad plates on the bottom corners (optionally wrapping 0.1 up the sides). 4. Chamfer/dot at pin 1. 5. Print decal.",
+          "LOD Strategy": "LOD0: single box. LOD1: ceramic + lid, four pads, pin-1 dot. LOD2: castellations, lid chamfer, seam, print.",
+          "Simplification Rules": "May omit: castellation, lid seam, print. NEVER omit: lid/ceramic two-tone, four pads, pin 1 mark, size.",
+          "Sources": "Abracon ABM10W datasheet https://abracon.com/Resonators/ABM10W.pdf (S3: 2.5 x 2.0 x 0.6 mm max; chamfer on pin 1, 2 or 4). Pin-1 rule borrowed from the Abracon ABM8G note (same vendor family), not stated in the ABM10W extraction.\nGap-fill: NDK NX2520SA datasheets (https://shop.richardsonrfpd.com/docs/rfpd/c_cu24_NX2520SA_e.pdf: 2.5 +/-0.1 x 2.0 +/-0.1 x 0.50 +/-0.05; https://www.promelec.ru/fs/sources/e4/1a/d8/bc/5ada22877a90c002b2b26516.pdf: pin 1 upper left, pins 2/4 tied to lid).",
+          "Research Confidence": "Dimensions M (L/W/H) / L (pads); Geometry M; Materials/appearance M. Unresolved: pad sizes and exact land pattern (NDK NX2520SA land numbers extracted as '0.8 x 1.7 / 0.65 / 1.3' without a usable label map), lid inset, 2-pad variant dims, numbering direction. Contradiction kept: first-pass pin 1 bottom-left (Abracon) vs adopted top-left (NDK NX2520SA). Validation: pad edge = 0.85+0.8/2 = 1.25 <= 1.25; 0.65+0.7/2 = 1.0 <= 1.0; pin 1 now follows NDK/Epson and Addendum 17.2 (top-left); Abracon ABM8G bottom-left kept as a variant.\n\n\n---"
+        },
+        "evidence_level": "SPEC_REPORTED; not independently reverified"
+      },
+      "cosmetic_defaults": [
+        {
+          "feature": "pad_thickness",
+          "value": 0.02,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Use stated 0.02 mm on 143-145; same family cosmetic metal depth on remaining SMD entries. PCB-contact XY and Z=0 unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "base_fraction",
+          "value": 0.7,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Entry ceramic/lid split: 70 percent for crystals, 65 percent for oscillators; SAW borrows oscillator construction within envelope.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "lid_inset",
+          "value": 0.1,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Entry lid inset; SAW borrows oscillator seam inset.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_radius",
+          "value": 0.08,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One twenty-fifth of smaller body dimension; lid corner mark only.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "lid_chamfer",
+          "value": 0.2,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One tenth of smaller dimension, removes material at marked corner only.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_width",
+          "value": 1.25,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Half of body length, inside lid.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_height",
+          "value": 0.4,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One fifth of body width, inside lid.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "library_metadata": {
+        "provisional": true,
+        "uncertain_values": [
+          "terminal_width: 0.8 (DERIVED/L)",
+          "terminal_length: 0.7 (DERIVED/L)",
+          "Restated from PKG-XTAL_SMD: length (X) 2.5, width (Y) 2.0, height default 0.5, max 0.6 (NDK NX2520SA 0.50 +/-0.05; Abracon ABM10W 0.6 max). Tolerance L/W +/-0.1 (NDK). Pads (OHMNI default, DERIVED/UNCERTAIN; real values RESEARCH_REQUIRED): 0.8 (X) x 0.7 (Y), centers X +/-0.85, Y +/-0.65. Basis MFR_DATASHEET for L/W/H max; confidence M for L/W/H, L for pads.",
+          "Ceramic base box 2.5 x 2.0 x ~0.35 (about 70 percent of height, DERIVED) topped by a metal lid 2.3 x 1.8 x ~0.15 (lid inset 0.1 per side, DERIVED, UNCERTAIN) that sits on the ceramic ring. Four metallized pads wrap the bottom corners and appear as small notches or wraparound strips on the side faces (castellation optional at LOD2). Lid has a small chamfer or corner mark; the part-number print reads left to right with pin 1 at the upper-left corner (NDK/Epson; Abracon prints pin 1 at lower-left).",
+          "Dimensions M (L/W/H) / L (pads); Geometry M; Materials/appearance M. Unresolved: pad sizes and exact land pattern (NDK NX2520SA land numbers extracted as '0.8 x 1.7 / 0.65 / 1.3' without a usable label map), lid inset, 2-pad variant dims, numbering direction. Contradiction kept: first-pass pin 1 bottom-left (Abracon) vs adopted top-left (NDK NX2520SA). Validation: pad edge = 0.85+0.8/2 = 1.25 <= 1.25; 0.65+0.7/2 = 1.0 <= 1.0; pin 1 now follows NDK/Epson and Addendum 17.2 (top-left); Abracon ABM8G bottom-left kept as a variant.\n\n\n---",
+          "COSMETIC_PROVISIONAL pad_thickness=0.02: Use stated 0.02 mm on 143-145; same family cosmetic metal depth on remaining SMD entries. PCB-contact XY and Z=0 unchanged.",
+          "COSMETIC_PROVISIONAL base_fraction=0.7: Entry ceramic/lid split: 70 percent for crystals, 65 percent for oscillators; SAW borrows oscillator construction within envelope.",
+          "COSMETIC_PROVISIONAL lid_inset=0.1: Entry lid inset; SAW borrows oscillator seam inset.",
+          "COSMETIC_PROVISIONAL marker_radius=0.08: One twenty-fifth of smaller body dimension; lid corner mark only.",
+          "COSMETIC_PROVISIONAL lid_chamfer=0.2: One tenth of smaller dimension, removes material at marked corner only.",
+          "COSMETIC_PROVISIONAL label_width=1.25: Half of body length, inside lid.",
+          "COSMETIC_PROVISIONAL label_height=0.4: One fifth of body width, inside lid.",
+          "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+        ],
+        "appearance_confidence": "M",
+        "electrical_admission": "NOT_EVALUATED",
+        "footprint_binding": null,
+        "conflicts": [],
+        "implementation_status": "IMPLEMENTED",
+        "implementation_group": "B"
+      },
+      "profile_id": "OHM-144"
+    },
+    {
+      "id": "OHM-145",
+      "slug": "xtal_2016",
+      "canonical_name": "2016 SMD crystal",
+      "category": "frequency",
+      "subcategory": "smd_crystal",
+      "class": "B",
+      "priority": "P1",
+      "complexity": 2,
+      "package_family": "PKG-XTAL_SMD",
+      "package_member": "2016",
+      "generator": "GEN-XTAL",
+      "mounting": "smd",
+      "names": {
+        "metric": "2016",
+        "aliases": [
+          "2016 crystal"
+        ]
+      },
+      "dimensions_mm": {
+        "overall_length": {
+          "default": 2.0,
+          "min": 1.9,
+          "max": 2.1,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "overall_width": {
+          "default": 1.6,
+          "min": 1.5,
+          "max": 1.7,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "overall_height": {
+          "default": 0.45,
+          "min": 0.4,
+          "max": 0.5,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "terminal_width": {
+          "default": 0.65,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "terminal_length": {
+          "default": 0.55,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        }
+      },
+      "body": {
+        "shape": "ceramic_box_with_metal_lid",
+        "material": "MAT_CERAMIC_PKG_TAN",
+        "color": "metal lid over tan ceramic",
+        "features": [
+          "lid inset 0.1",
+          "pin-1 dot/chamfer"
+        ]
+      },
+      "terminals": {
+        "count": 4,
+        "type": "flat_pad",
+        "width_mm": 0.65,
+        "length_mm": 0.55,
+        "thickness_mm": 0.02,
+        "material": "MAT_GOLD",
+        "pin_numbering": "1 top-left per NDK/Epson/Addendum 17.2; 1 TL, 2 BL, 3 BR, 4 TR (Abracon variant: 1 BL)",
+        "pin1_xy_mm": [
+          -0.675,
+          0.525
+        ]
+      },
+      "pcb_interface": {
+        "footprint_type": "smd_pads",
+        "standoff_mm": 0,
+        "thermal_pad": false,
+        "body_offset_mm": [
+          0,
+          0
+        ]
+      },
+      "orientation": {
+        "pcb_plane": "XY",
+        "height_axis": "Z",
+        "origin": "FCO",
+        "rotation0": "lid print reads left to right; pin 1 at -X,+Y"
+      },
+      "polarity": "none (crystal not polarized; pin 1 mark for pad identity)",
+      "pin1_indicator": "dot/chamfer on lid corner (-X,+Y); lid print orientation",
+      "parametric": {
+        "parameters": [
+          "size",
+          "height",
+          "pad_count",
+          "lid_inset"
+        ],
+        "coupled": [
+          "pad_x_center + pad_x/2 <= L/2",
+          "height <= 0.5"
+        ]
+      },
+      "lod_supported": [
+        "LOD0",
+        "LOD1",
+        "LOD2"
+      ],
+      "confidence": {
+        "dimensions": "M",
+        "geometry": "M",
+        "materials_appearance": "M"
+      },
+      "status": "partial",
+      "source": {
+        "document": "PCB_COMPONENT_3D_LIBRARY_SPEC.md",
+        "line": 20562,
+        "yaml_sha256": "96f81e2567b3ee0abdeb12d6c135b0a0af67b2bbe207838b0bc149cbb1ca67d2",
+        "sections": {
+          "Identity": "- Canonical name: 2016 SMD crystal; ID OHM-145; slug xtal_2016\n- Category: frequency; Subcategory: SMD quartz crystal, metal-lid ceramic package\n- Physical package: PKG-XTAL_SMD member XTAL_SMD.2016; surface mount\n- Names: metric code 2016 = 2.0 x 1.6 mm (00_architecture Section 12); imperial code not used in the industry for these, do not confuse with chip sizes.\n- Aliases: 2016 crystal, 2.0x1.6 SMD crystal. Variants: 2-pad vs 4-pad (see family note), height, load capacitance (electrical only).\n- Class B, priority P1, complexity 2.",
+          "Physical Dimensions": "Restated from PKG-XTAL_SMD: length (X) 2.0, width (Y) 1.6, height default 0.45, max 0.5 (NDK NX2016SA 0.45 +/-0.05; Abracon ABM11W 0.5 max; first-pass default 0.4 superseded). Tolerance L/W +/-0.1 (NDK). Pads (NDK NX2016SA: terminal pads 0.65 x 0.55, land pitch 1.35 (X) x 1.05 (Y), so centers X +/-0.675, Y +/-0.525; pads flush with the body edge; recommended land chamfer C0.2): 0.65 (X) x 0.55 (Y). Basis MFR_DATASHEET for L/W/H max; confidence M for L/W/H and pads (single NDK datasheet, internally consistent with the body size).",
+          "Geometry": "Ceramic base box 2.0 x 1.6 x ~0.28 (about 70 percent of height, DERIVED) topped by a metal lid 1.8 x 1.4 x ~0.12 (lid inset 0.1 per side, DERIVED, UNCERTAIN) that sits on the ceramic ring. Four metallized pads wrap the bottom corners and appear as small notches or wraparound strips on the side faces (castellation optional at LOD2). Lid has a small chamfer or corner mark; the part-number print reads left to right with pin 1 at the upper-left corner (NDK/Epson; Abracon prints pin 1 at lower-left).",
+          "Leads / Pins / Terminals": "4 flat pads: pad numbering (OHMNI default: pin 1 top-left per NDK/Epson, counter-clockwise; Abracon variant has pin 1 bottom-left): 1 = (-0.675, 0.525), 2 = (-0.675, -0.525), 3 = (0.675, -0.525), 4 = (0.675, 0.525) (counter-clockwise direction inferred; vendor texts fix only pin 1). Pads 1 and 3 are the crystal terminals, 2 and 4 are NC/ground (diagonal). Pad shape flat rectangle 0.65 x 0.55, thickness 0.02 (visual), MAT_GOLD. 2-pad variant (not default): pads at the two short ends, full width. DELTA vs Addendum 17.2 recorded in the family section.",
+          "PCB Interface": "SMD pads on the land pattern; body centered on the pad pattern: body_offset (0,0). Standoff 0 (underside at Z = 0). Pin 1 at (-0.675, 0.525) (center of the pad contact area).",
+          "Materials": "Base MAT_CERAMIC_PKG_TAN (proposed token; alt MAT_CERAMIC_ALUMINA_WHITE), lid MAT_STEEL_STAINLESS/MAT_NICKEL (brushed), pads MAT_GOLD, print MAT_SILKSCREEN_WHITE.",
+          "Appearance": "Silver-gray metal lid with a laser-printed frequency/code and a dot or chamfer on the pin-1 corner; the ceramic base is tan to light brown (visible as a thin band). Variation by vendor in print format; Abracon notes the chamfer may be at pin 1, 2 or 4, so the print orientation, not the chamfer, identifies pin 1.",
+          "Orientation Markings": "Pin 1 at the upper-left (-X,+Y) when the lid print reads left to right (NDK/Epson convention; Abracon parts: lower-left, parameter pin1_corner). Add a pin-1 dot on the lid near that corner (OHMNI convention) and a chamfered lid corner at LOD2.",
+          "Recognition Features": "1. Metal rectangular lid on ceramic base. 2. 2.0 x 1.6 footprint with four corner pads. 3. Very low height (0.5 max). 4. Pin-1 dot/chamfer.",
+          "Parametric Variants": "Parameters: size (2016), height, pad_count (2/4), lid_inset, mark. Coupled: pads inside the body outline; height >= 0.35 and <= 0.5 (default 0.45); pad X center + pad_x/2 <= L/2.",
+          "Recommended Base Geometry": "Two stacked boxes (ceramic, lid); four thin pad boxes; optional corner chamfer.",
+          "Modeling Procedure": "1. Ceramic box at Z=0. 2. Lid on top, inset. 3. Four pad plates on the bottom corners (optionally wrapping 0.1 up the sides). 4. Chamfer/dot at pin 1. 5. Print decal.",
+          "LOD Strategy": "LOD0: single box. LOD1: ceramic + lid, four pads, pin-1 dot. LOD2: castellations, lid chamfer, seam, print.",
+          "Simplification Rules": "May omit: castellation, lid seam, print. NEVER omit: lid/ceramic two-tone, four pads, pin 1 mark, size.",
+          "Sources": "Abracon ABM11W datasheet https://abracon.com/Resonators/ABM11W.pdf (S3, rev 10.06.2020: 2.0 x 1.6 x 0.5 mm max; chamfer on pin 1, 2 or 4). Pin-1 rule borrowed from the Abracon ABM8G note.\nGap-fill: NDK NX2016SA datasheet, https://www.mouser.com/datasheet/2/905/c_NX2016SA_2_e-1890600.pdf (S3: 2.0 +/-0.1 x 1.6 +/-0.1 x 0.45 +/-0.05, pads 0.65 x 0.55, land 1.35 x 1.05, #1 top-left, #2/#4 tied to lid).",
+          "Research Confidence": "Dimensions M (L/W/H; pads M-/L: single NDK datasheet, consistent with the body size but no second document); Geometry M; Materials/appearance M. Unresolved: lid inset, 2-pad variant dims, numbering direction, second-source pad check (Abracon ABM11W land pattern not extractable). Contradiction kept: first-pass pin 1 bottom-left (Abracon) vs adopted top-left (NDK NX2016SA, text only). Validation: NDK land pitch 1.35 + pad 0.65 = 2.0 = body L and 1.05 + 0.55 = 1.6 = body W; pad edge = 0.675+0.65/2 = 1.0 <= 1.0; 0.525+0.55/2 = 0.8 <= 0.8; pin 1 now follows NDK/Epson and Addendum 17.2 (top-left); Abracon ABM8G bottom-left kept as a variant.\n\n\n---"
+        },
+        "evidence_level": "SPEC_REPORTED; not independently reverified"
+      },
+      "cosmetic_defaults": [
+        {
+          "feature": "pad_thickness",
+          "value": 0.02,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Use stated 0.02 mm on 143-145; same family cosmetic metal depth on remaining SMD entries. PCB-contact XY and Z=0 unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "base_fraction",
+          "value": 0.7,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Entry ceramic/lid split: 70 percent for crystals, 65 percent for oscillators; SAW borrows oscillator construction within envelope.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "lid_inset",
+          "value": 0.1,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Entry lid inset; SAW borrows oscillator seam inset.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_radius",
+          "value": 0.064,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One twenty-fifth of smaller body dimension; lid corner mark only.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "lid_chamfer",
+          "value": 0.16,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One tenth of smaller dimension, removes material at marked corner only.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_width",
+          "value": 1.0,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Half of body length, inside lid.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_height",
+          "value": 0.32,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One fifth of body width, inside lid.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "library_metadata": {
+        "provisional": true,
+        "uncertain_values": [
+          "Ceramic base box 2.0 x 1.6 x ~0.28 (about 70 percent of height, DERIVED) topped by a metal lid 1.8 x 1.4 x ~0.12 (lid inset 0.1 per side, DERIVED, UNCERTAIN) that sits on the ceramic ring. Four metallized pads wrap the bottom corners and appear as small notches or wraparound strips on the side faces (castellation optional at LOD2). Lid has a small chamfer or corner mark; the part-number print reads left to right with pin 1 at the upper-left corner (NDK/Epson; Abracon prints pin 1 at lower-left).",
+          "Dimensions M (L/W/H; pads M-/L: single NDK datasheet, consistent with the body size but no second document); Geometry M; Materials/appearance M. Unresolved: lid inset, 2-pad variant dims, numbering direction, second-source pad check (Abracon ABM11W land pattern not extractable). Contradiction kept: first-pass pin 1 bottom-left (Abracon) vs adopted top-left (NDK NX2016SA, text only). Validation: NDK land pitch 1.35 + pad 0.65 = 2.0 = body L and 1.05 + 0.55 = 1.6 = body W; pad edge = 0.675+0.65/2 = 1.0 <= 1.0; 0.525+0.55/2 = 0.8 <= 0.8; pin 1 now follows NDK/Epson and Addendum 17.2 (top-left); Abracon ABM8G bottom-left kept as a variant.\n\n\n---",
+          "COSMETIC_PROVISIONAL pad_thickness=0.02: Use stated 0.02 mm on 143-145; same family cosmetic metal depth on remaining SMD entries. PCB-contact XY and Z=0 unchanged.",
+          "COSMETIC_PROVISIONAL base_fraction=0.7: Entry ceramic/lid split: 70 percent for crystals, 65 percent for oscillators; SAW borrows oscillator construction within envelope.",
+          "COSMETIC_PROVISIONAL lid_inset=0.1: Entry lid inset; SAW borrows oscillator seam inset.",
+          "COSMETIC_PROVISIONAL marker_radius=0.064: One twenty-fifth of smaller body dimension; lid corner mark only.",
+          "COSMETIC_PROVISIONAL lid_chamfer=0.16: One tenth of smaller dimension, removes material at marked corner only.",
+          "COSMETIC_PROVISIONAL label_width=1.0: Half of body length, inside lid.",
+          "COSMETIC_PROVISIONAL label_height=0.32: One fifth of body width, inside lid.",
+          "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+        ],
+        "appearance_confidence": "M",
+        "electrical_admission": "NOT_EVALUATED",
+        "footprint_binding": null,
+        "conflicts": [
+          {
+            "code": "PROSE_HEIGHT_VS_YAML",
+            "geometry_choice": "Use YAML overall height 0.45 mm; recompute stated fractional ceramic/lid split instead of older approximate prose heights."
+          }
+        ],
+        "implementation_status": "IMPLEMENTED",
+        "implementation_group": "B"
+      },
+      "profile_id": "OHM-145"
+    },
+    {
+      "id": "OHM-146",
+      "slug": "osc_7050",
+      "canonical_name": "7050 oscillator",
+      "category": "frequency",
+      "subcategory": "clock_oscillator",
+      "class": "A",
+      "priority": "P1",
+      "complexity": 2,
+      "package_family": "PKG-OSC_SMD",
+      "package_member": "7050",
+      "generator": "GEN-XTAL",
+      "mounting": "smd",
+      "names": {
+        "metric": "7050",
+        "aliases": [
+          "7050 oscillator",
+          "7x5 XO"
+        ]
+      },
+      "dimensions_mm": {
+        "overall_length": {
+          "default": 7.0,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "overall_width": {
+          "default": 5.0,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "overall_height": {
+          "default": 1.8,
+          "min": 0.9,
+          "max": 1.9,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "terminal_width": {
+          "default": 1.4,
+          "basis": "DERIVED",
+          "confidence": "L"
+        },
+        "terminal_length": {
+          "default": 1.2,
+          "basis": "DERIVED",
+          "confidence": "L"
+        }
+      },
+      "body": {
+        "shape": "ceramic_box_with_metal_lid",
+        "material": "MAT_CERAMIC_PKG_TAN",
+        "color": "metal lid over tan ceramic",
+        "features": [
+          "lid inset 0.15",
+          "pin-1 dot"
+        ]
+      },
+      "terminals": {
+        "count": 4,
+        "type": "flat_pad",
+        "width_mm": 1.4,
+        "length_mm": 1.2,
+        "material": "MAT_GOLD",
+        "pin_numbering": "1 TL, 2 BL, 3 BR, 4 TR (Addendum 17.2); 1=OE/NC 2=GND 3=OUT 4=VDD",
+        "pin1_xy_mm": [
+          -2.54,
+          1.905
+        ]
+      },
+      "pcb_interface": {
+        "footprint_type": "smd_pads",
+        "standoff_mm": 0,
+        "thermal_pad": false,
+        "body_offset_mm": [
+          0,
+          0
+        ]
+      },
+      "orientation": {
+        "pcb_plane": "XY",
+        "height_axis": "Z",
+        "origin": "FCO",
+        "rotation0": "pin 1 at -X,+Y"
+      },
+      "polarity": "polarized by pin function (pin 1 marked)",
+      "pin1_indicator": "dot/chamfer top-left",
+      "parametric": {
+        "parameters": [
+          "size",
+          "height",
+          "body_type"
+        ],
+        "coupled": [
+          "pads inside body",
+          "height between 0.9 and 1.9"
+        ]
+      },
+      "lod_supported": [
+        "LOD0",
+        "LOD1",
+        "LOD2"
+      ],
+      "confidence": {
+        "dimensions": "M",
+        "geometry": "M",
+        "materials_appearance": "M"
+      },
+      "status": "partial",
+      "source": {
+        "document": "PCB_COMPONENT_3D_LIBRARY_SPEC.md",
+        "line": 20677,
+        "yaml_sha256": "428a0ba8d31a0675e9f0952d3dd386fcfe020ac4da5301c8a363fd064d5eec3d",
+        "sections": {
+          "Identity": "- Canonical name: 7050 oscillator; ID OHM-146; slug osc_7050\n- Category: frequency; Subcategory: clock oscillator (XO), 4-pad SMD\n- Physical package: PKG-OSC_SMD member 7050 (7.0 x 5.0 mm metric code 7050)\n- Aliases: 7x5 oscillator, 7050 XO. Variants: ceramic/metal lid (default), SiTime MEMS molded.\n- Class A, priority P1, complexity 2.",
+          "Physical Dimensions": "7.0 x 5.0 mm (Abracon ASV \"7.0 x 5.08 x 1.8\" as printed, AST3TQ 7.0 x 5.0 x 1.9 with L 7.1 +/-0.2, W 5.0 +/-0.2, H 1.9 +/-0.2; SiTime SiT8008B 7.0 x 5.0 x 0.90). Conflict: width 5.0 vs 5.08 (ASV). Default L 7.0, W 5.0, H 1.8 (ASV ceramic; min 0.9 MEMS, max 1.9). Pad centers 5.08 x 3.81 (SiTime; Abracon AST3TQ land E 5.08, M 3.90). Pad size 1.4 x 1.2 DERIVED/UNCERTAIN (SiTime land pattern lists 2.2 and 2.0 but the mapping is ambiguous in the text extraction). Basis MFR_DATASHEET; confidence M for L/W/H, L for pads.",
+          "Geometry": "Ceramic base box 7.0 x 5.0 x ~1.17 with a metal lid 6.7 x 4.7 x ~0.63 (inset 0.15, DERIVED, UNCERTAIN) and four corner pads wrapping the underside; a lid-corner chamfer or print dot at pin 1. Package is plain rectangular (no rounded corners at LOD1).",
+          "Leads / Pins / Terminals": "4 flat pads 1.4 x 1.2 (UNCERTAIN) at pad centers 1 = (-2.54, 1.905), 2 = (-2.54, -1.905), 3 = (2.54, -1.905), 4 = (2.54, 1.905) per Addendum 17.2 (pin 1 top-left, counter-clockwise). Functions: 1 = OE/tri-state/NC, 2 = GND (case), 3 = OUT, 4 = VDD (Abracon ASV, AST3TQ, ASTX-H11; SiTime SiT8008). Material MAT_GOLD.",
+          "PCB Interface": "SMD pads; body centered on the pad pattern, body_offset (0,0); standoff 0. Pin 1 at (-2.54, 1.905). Pad centers 5.08 x 3.81 from SiTime/Abracon land patterns (Y 3.81 SiTime vs 3.90 Abracon, default 3.81).",
+          "Materials": "Ceramic MAT_CERAMIC_PKG_TAN (proposed), lid MAT_STEEL_STAINLESS, pads MAT_GOLD, print MAT_SILKSCREEN_WHITE. SiTime MEMS parts are plastic molded (MAT_EPOXY_BLACK) rather than ceramic/lid.",
+          "Appearance": "Silver lid with printed frequency code and a pin-1 dot at the top-left corner; tan ceramic edge band. MEMS variants are black molded.",
+          "Orientation Markings": "Pin 1 dot or chamfer at the top-left corner (-X,+Y); no official corner marking is stated in the opened Abracon/SiTime texts (RESEARCH_REQUIRED). Delta vs Abracon crystals (pin 1 bottom-left) recorded.",
+          "Recognition Features": "1. Rectangular 7.0 x 5.0 package with metal lid. 2. Four corner pads. 3. Pin-1 dot. 4. Height about 1.8 mm.",
+          "Parametric Variants": "Parameters: size (7050 / 5032 / 3225 / 2520), height, body_type (ceramic_lid | molded), tcxo flag (adds a stability print only). Coupled: pad extents inside body; height 0.9-1.9.",
+          "Recommended Base Geometry": "Two stacked boxes, four pad plates, dot decal.",
+          "Modeling Procedure": "1. Ceramic base. 2. Lid. 3. Pads. 4. Pin-1 dot. 5. Print decal.",
+          "LOD Strategy": "LOD0: single box. LOD1: base + lid, four pads, pin-1 dot. LOD2: castellations, lid chamfer, seam.",
+          "Simplification Rules": "May omit: seam, castellation. NEVER omit: four pads, pin-1 mark, lid/base distinction, size.",
+          "Sources": "Abracon ASV https://abracon.com/Oscillators/ASV.pdf (S3); Abracon AST3TQ https://abracon.com/Oscillators/AST3TQ.pdf (S3, rev 01.16.2020); SiTime SiT8008 https://www.sitime.com/datasheet/SiT8008 (S3). See PKG-OSC_SMD sources.",
+          "Research Confidence": "Dimensions M (outline) / L (pads); Geometry M; Materials/appearance M. Unresolved (gap-fill search for a second 7050 source, e.g. Epson SG-8002/SG7050, found only distributor listings, not opened): pad dimensions and pad-to-edge relations, pin-1 corner convention (not stated), lid inset, height variation 0.9-1.9 (still single-vendor values: Abracon ASV 1.8 as printed, AST3TQ 1.9 +/- 0.2, SiTime 0.90). Validation: 2.54 + 0.7 = 3.24 < 3.5 half-length; 1.905 + 0.6 = 2.505 = half-width 2.5 (flush, acceptable); pin function order identical across three vendors.\n\n\n---"
+        },
+        "evidence_level": "SPEC_REPORTED; not independently reverified"
+      },
+      "cosmetic_defaults": [
+        {
+          "feature": "pad_thickness",
+          "value": 0.02,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Use stated 0.02 mm on 143-145; same family cosmetic metal depth on remaining SMD entries. PCB-contact XY and Z=0 unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "base_fraction",
+          "value": 0.65,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Entry ceramic/lid split: 70 percent for crystals, 65 percent for oscillators; SAW borrows oscillator construction within envelope.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "lid_inset",
+          "value": 0.15,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Entry lid inset; SAW borrows oscillator seam inset.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_radius",
+          "value": 0.2,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One twenty-fifth of smaller body dimension; lid corner mark only.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "lid_chamfer",
+          "value": 0.5,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One tenth of smaller dimension, removes material at marked corner only.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_width",
+          "value": 3.5,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Half of body length, inside lid.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_height",
+          "value": 1.0,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One fifth of body width, inside lid.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "library_metadata": {
+        "provisional": true,
+        "uncertain_values": [
+          "terminal_width: 1.4 (DERIVED/L)",
+          "terminal_length: 1.2 (DERIVED/L)",
+          "7.0 x 5.0 mm (Abracon ASV \"7.0 x 5.08 x 1.8\" as printed, AST3TQ 7.0 x 5.0 x 1.9 with L 7.1 +/-0.2, W 5.0 +/-0.2, H 1.9 +/-0.2; SiTime SiT8008B 7.0 x 5.0 x 0.90). Conflict: width 5.0 vs 5.08 (ASV). Default L 7.0, W 5.0, H 1.8 (ASV ceramic; min 0.9 MEMS, max 1.9). Pad centers 5.08 x 3.81 (SiTime; Abracon AST3TQ land E 5.08, M 3.90). Pad size 1.4 x 1.2 DERIVED/UNCERTAIN (SiTime land pattern lists 2.2 and 2.0 but the mapping is ambiguous in the text extraction). Basis MFR_DATASHEET; confidence M for L/W/H, L for pads.",
+          "Ceramic base box 7.0 x 5.0 x ~1.17 with a metal lid 6.7 x 4.7 x ~0.63 (inset 0.15, DERIVED, UNCERTAIN) and four corner pads wrapping the underside; a lid-corner chamfer or print dot at pin 1. Package is plain rectangular (no rounded corners at LOD1).",
+          "4 flat pads 1.4 x 1.2 (UNCERTAIN) at pad centers 1 = (-2.54, 1.905), 2 = (-2.54, -1.905), 3 = (2.54, -1.905), 4 = (2.54, 1.905) per Addendum 17.2 (pin 1 top-left, counter-clockwise). Functions: 1 = OE/tri-state/NC, 2 = GND (case), 3 = OUT, 4 = VDD (Abracon ASV, AST3TQ, ASTX-H11; SiTime SiT8008). Material MAT_GOLD.",
+          "Pin 1 dot or chamfer at the top-left corner (-X,+Y); no official corner marking is stated in the opened Abracon/SiTime texts (RESEARCH_REQUIRED). Delta vs Abracon crystals (pin 1 bottom-left) recorded.",
+          "Dimensions M (outline) / L (pads); Geometry M; Materials/appearance M. Unresolved (gap-fill search for a second 7050 source, e.g. Epson SG-8002/SG7050, found only distributor listings, not opened): pad dimensions and pad-to-edge relations, pin-1 corner convention (not stated), lid inset, height variation 0.9-1.9 (still single-vendor values: Abracon ASV 1.8 as printed, AST3TQ 1.9 +/- 0.2, SiTime 0.90). Validation: 2.54 + 0.7 = 3.24 < 3.5 half-length; 1.905 + 0.6 = 2.505 = half-width 2.5 (flush, acceptable); pin function order identical across three vendors.\n\n\n---",
+          "COSMETIC_PROVISIONAL pad_thickness=0.02: Use stated 0.02 mm on 143-145; same family cosmetic metal depth on remaining SMD entries. PCB-contact XY and Z=0 unchanged.",
+          "COSMETIC_PROVISIONAL base_fraction=0.65: Entry ceramic/lid split: 70 percent for crystals, 65 percent for oscillators; SAW borrows oscillator construction within envelope.",
+          "COSMETIC_PROVISIONAL lid_inset=0.15: Entry lid inset; SAW borrows oscillator seam inset.",
+          "COSMETIC_PROVISIONAL marker_radius=0.2: One twenty-fifth of smaller body dimension; lid corner mark only.",
+          "COSMETIC_PROVISIONAL lid_chamfer=0.5: One tenth of smaller dimension, removes material at marked corner only.",
+          "COSMETIC_PROVISIONAL label_width=3.5: Half of body length, inside lid.",
+          "COSMETIC_PROVISIONAL label_height=1.0: One fifth of body width, inside lid.",
+          "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+        ],
+        "appearance_confidence": "M",
+        "electrical_admission": "NOT_EVALUATED",
+        "footprint_binding": null,
+        "conflicts": [
+          {
+            "code": "PAD_OVERHANG_005",
+            "geometry_choice": "Keep explicit contacts Y=+/-1.905 and pad Y size=1.2. Metal spans 5.01 mm vs ceramic body width 5.0; do not shorten pads or move terminals to enforce the contradictory pads-inside-body sentence."
+          }
+        ],
+        "implementation_status": "IMPLEMENTED",
+        "implementation_group": "B"
+      },
+      "profile_id": "OHM-146"
+    },
+    {
+      "id": "OHM-147",
+      "slug": "tcxo_3225",
+      "canonical_name": "TCXO",
+      "category": "frequency",
+      "subcategory": "tcxo",
+      "class": "C",
+      "priority": "P2",
+      "complexity": 2,
+      "package_family": "PKG-OSC_SMD",
+      "package_member": "3225",
+      "generator": "GEN-XTAL",
+      "mounting": "smd",
+      "names": {
+        "metric": "3225",
+        "aliases": [
+          "TCXO"
+        ]
+      },
+      "dimensions_mm": {
+        "overall_length": {
+          "default": 3.2,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "overall_width": {
+          "default": 2.5,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "overall_height": {
+          "default": 0.9,
+          "min": 0.8,
+          "max": 1.0,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "terminal_width": {
+          "default": 1.0,
+          "basis": "DERIVED",
+          "confidence": "L"
+        },
+        "terminal_length": {
+          "default": 0.9,
+          "basis": "DERIVED",
+          "confidence": "L"
+        }
+      },
+      "body": {
+        "shape": "ceramic_box_with_metal_lid",
+        "material": "MAT_CERAMIC_PKG_TAN",
+        "color": "metal lid over tan ceramic",
+        "features": [
+          "lid inset 0.15",
+          "pin-1 dot"
+        ]
+      },
+      "terminals": {
+        "count": 4,
+        "type": "flat_pad",
+        "width_mm": 1.0,
+        "length_mm": 0.9,
+        "material": "MAT_GOLD",
+        "pin_numbering": "1 TL, 2 BL, 3 BR, 4 TR (Addendum 17.2); 1=OE/NC 2=GND 3=OUT 4=VDD",
+        "pin1_xy_mm": [
+          -1.1,
+          0.8
+        ]
+      },
+      "pcb_interface": {
+        "footprint_type": "smd_pads",
+        "standoff_mm": 0,
+        "thermal_pad": false,
+        "body_offset_mm": [
+          0,
+          0
+        ]
+      },
+      "orientation": {
+        "pcb_plane": "XY",
+        "height_axis": "Z",
+        "origin": "FCO",
+        "rotation0": "pin 1 at -X,+Y"
+      },
+      "polarity": "polarized by pin function (pin 1 marked)",
+      "pin1_indicator": "dot/chamfer top-left",
+      "parametric": {
+        "parameters": [
+          "size",
+          "height",
+          "body_type"
+        ],
+        "coupled": [
+          "pads inside body",
+          "height between 0.73 and 1.0"
+        ]
+      },
+      "lod_supported": [
+        "LOD0",
+        "LOD1",
+        "LOD2"
+      ],
+      "confidence": {
+        "dimensions": "M",
+        "geometry": "M",
+        "materials_appearance": "M"
+      },
+      "status": "partial",
+      "source": {
+        "document": "PCB_COMPONENT_3D_LIBRARY_SPEC.md",
+        "line": 20789,
+        "yaml_sha256": "44f67d5694651c51bc11f953659b66041f0c6c53f6b40635aede7706be16b9e0",
+        "sections": {
+          "Identity": "- Canonical name: TCXO; ID OHM-147; slug tcxo_3225\n- Category: frequency; Subcategory: temperature-compensated crystal oscillator (function, mapped to a package)\n- Physical package: PKG-OSC_SMD member 3225 (OHMNI default for a TCXO: 3.2 x 2.5 mm; 7050 TCXO is available as a parameter via the 7050 member, evidenced by Abracon AST3TQ 7.0 x 5.0 x 1.9 mm)\n- Aliases: TCXO, temperature compensated oscillator. Variants: 7050, 5032, 3225, 2520; clipped-sine or CMOS output (electrical only).\n- Class C (parametric variant of the OSC_SMD generator), priority P2, complexity 2.",
+          "Physical Dimensions": "Default 3.2 x 2.5 x 0.9 (Epson TG3225CEN TCXO: 3.2 +/-0.2 x 2.5 +/-0.2 x 0.9 +/-0.1; first-pass 1.0 from Abracon ASTX-H11 retained as the max, ASTX-H11 not established as a TCXO; SiTime SiT8008 3225 is 0.75; smaller Epson TG2520CEN 2.5 x 2.0 x 0.8 +/-0.1 and TG2016SMN 2.0 x 1.6 x 0.73 exist). Alternative TCXO member 7050: 7.0 x 5.0 x 1.9 (Abracon AST3TQ, pad pitch F 1.27, land E 5.08 / M 3.90 / N 5.08). Pads for 3225: 1.0 x 0.9 at +/-1.1, +/-0.8 (DERIVED/UNCERTAIN). Basis MFR_DATASHEET (outline) / DERIVED (pads). Confidence M for the 3225 outline (Epson TG3225CEN; two hosted copies of one datasheet, plus Abracon ASTX-H11 as an independent 3.2 x 2.5 outline) and for the 7050 TCXO, L for pads.",
+          "Geometry": "Ceramic base box 3.2 x 2.5 x ~0.65 with a metal lid 2.9 x 2.2 x ~0.35 (inset 0.15, DERIVED, UNCERTAIN) and four corner pads wrapping the underside; a lid-corner chamfer or print dot at pin 1. Package is plain rectangular (no rounded corners at LOD1).",
+          "Leads / Pins / Terminals": "4 flat pads 1.0 x 0.9 (UNCERTAIN) at pad centers 1 = (-1.1, 0.8), 2 = (-1.1, -0.8), 3 = (1.1, -0.8), 4 = (1.1, 0.8) per Addendum 17.2 (pin 1 top-left, counter-clockwise). Functions: 1 = OE/tri-state/NC, 2 = GND (case), 3 = OUT, 4 = VDD (Abracon ASV, AST3TQ, ASTX-H11; SiTime SiT8008). Material MAT_GOLD.",
+          "PCB Interface": "SMD pads; body centered on the pad pattern, body_offset (0,0); standoff 0. Pin 1 at (-1.1, 0.8). Pad centers from the crystal-class rule (see PKG-XTAL_SMD); oscillator-specific land pattern RESEARCH_REQUIRED.",
+          "Materials": "Ceramic MAT_CERAMIC_PKG_TAN (proposed), lid MAT_STEEL_STAINLESS, pads MAT_GOLD, print MAT_SILKSCREEN_WHITE. SiTime MEMS parts are plastic molded (MAT_EPOXY_BLACK) rather than ceramic/lid.",
+          "Appearance": "Silver lid with printed frequency code and a pin-1 dot at the top-left corner; tan ceramic edge band. MEMS variants are black molded.",
+          "Orientation Markings": "Pin 1 dot or chamfer at the top-left corner (-X,+Y); no official corner marking is stated in the opened Abracon/SiTime texts (RESEARCH_REQUIRED). Delta vs Abracon crystals (pin 1 bottom-left) recorded.",
+          "Recognition Features": "1. Rectangular 3.2 x 2.5 package with metal lid. 2. Four corner pads. 3. Pin-1 dot. 4. Height about 0.9 mm.",
+          "Parametric Variants": "Parameters: size (7050 / 5032 / 3225 / 2520), height, body_type (ceramic_lid | molded), tcxo flag (adds a stability print only). Coupled: pad extents inside body; height 0.75-1.0.",
+          "Recommended Base Geometry": "Two stacked boxes, four pad plates, dot decal.",
+          "Modeling Procedure": "1. Ceramic base. 2. Lid. 3. Pads. 4. Pin-1 dot. 5. Print decal.",
+          "LOD Strategy": "LOD0: single box. LOD1: base + lid, four pads, pin-1 dot. LOD2: castellations, lid chamfer, seam.",
+          "Simplification Rules": "May omit: seam, castellation. NEVER omit: four pads, pin-1 mark, lid/base distinction, size.",
+          "Sources": "Epson TG3225CEN / TG2520CEN datasheet (S3/S4; https://www.mouser.com/datasheet/2/137/TG2520CEN_en-1649522.pdf and https://atta.szlcsc.com/upload/public/pdf/source/20210917/3B82CC32ED3EC7F2497BAE68AC283908.pdf: 3.2 +/-0.2 x 2.5 +/-0.2 x 0.9 +/-0.1; pins 1 N.C./Vc, 2 GND, 3 OUT, 4 VCC); Epson TG2016SMN (https://www.mouser.lt/datasheet/3/97/1/TG2016SMN_en.pdf: 2.0 x 1.6 x 0.73). Abracon ASTX-H11 https://abracon.com/Oscillators/ASTX-H11.pdf (S3: 3.2 x 2.5 x 1.0; pins 1 tri-state, 2 GND, 3 OUT, 4 VDD); Abracon AST3TQ https://abracon.com/Oscillators/AST3TQ.pdf (S3, rev 01.16.2020: 7.0 x 5.0 x 1.9 mm, pins 1 NC, 2 GND, 3 OUT, 4 VDD, MSL-3); SiTime SiT8008 (3.2 x 2.5 x 0.75).",
+          "Research Confidence": "Dimensions M (outline/height of 3225 and 7050); L (pads); Geometry M; Materials/appearance M. RESEARCH_REQUIRED: pad sizes/land pattern (Epson footprint letters A-D not mapped in extraction), pin-1 corner, lid material. Gap-fill closed: true 3225 TCXO datasheet found (Epson TG3225CEN). Contradiction kept: first-pass height 1.0 vs Epson 0.9 +/-0.1 (adopted 0.9; 1.0 stays the max). Validation: pad edge 1.1 + 0.5 = 1.6 = half-length; 0.8 + 0.45 = 1.25 = half-width; pin function order matches AST3TQ.\n\n\n---"
+        },
+        "evidence_level": "SPEC_REPORTED; not independently reverified"
+      },
+      "cosmetic_defaults": [
+        {
+          "feature": "pad_thickness",
+          "value": 0.02,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Use stated 0.02 mm on 143-145; same family cosmetic metal depth on remaining SMD entries. PCB-contact XY and Z=0 unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "base_fraction",
+          "value": 0.65,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Entry ceramic/lid split: 70 percent for crystals, 65 percent for oscillators; SAW borrows oscillator construction within envelope.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "lid_inset",
+          "value": 0.15,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Entry lid inset; SAW borrows oscillator seam inset.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_radius",
+          "value": 0.1,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One twenty-fifth of smaller body dimension; lid corner mark only.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "lid_chamfer",
+          "value": 0.25,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One tenth of smaller dimension, removes material at marked corner only.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_width",
+          "value": 1.6,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Half of body length, inside lid.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_height",
+          "value": 0.5,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One fifth of body width, inside lid.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "library_metadata": {
+        "provisional": true,
+        "uncertain_values": [
+          "terminal_width: 1.0 (DERIVED/L)",
+          "terminal_length: 0.9 (DERIVED/L)",
+          "Default 3.2 x 2.5 x 0.9 (Epson TG3225CEN TCXO: 3.2 +/-0.2 x 2.5 +/-0.2 x 0.9 +/-0.1; first-pass 1.0 from Abracon ASTX-H11 retained as the max, ASTX-H11 not established as a TCXO; SiTime SiT8008 3225 is 0.75; smaller Epson TG2520CEN 2.5 x 2.0 x 0.8 +/-0.1 and TG2016SMN 2.0 x 1.6 x 0.73 exist). Alternative TCXO member 7050: 7.0 x 5.0 x 1.9 (Abracon AST3TQ, pad pitch F 1.27, land E 5.08 / M 3.90 / N 5.08). Pads for 3225: 1.0 x 0.9 at +/-1.1, +/-0.8 (DERIVED/UNCERTAIN). Basis MFR_DATASHEET (outline) / DERIVED (pads). Confidence M for the 3225 outline (Epson TG3225CEN; two hosted copies of one datasheet, plus Abracon ASTX-H11 as an independent 3.2 x 2.5 outline) and for the 7050 TCXO, L for pads.",
+          "Ceramic base box 3.2 x 2.5 x ~0.65 with a metal lid 2.9 x 2.2 x ~0.35 (inset 0.15, DERIVED, UNCERTAIN) and four corner pads wrapping the underside; a lid-corner chamfer or print dot at pin 1. Package is plain rectangular (no rounded corners at LOD1).",
+          "4 flat pads 1.0 x 0.9 (UNCERTAIN) at pad centers 1 = (-1.1, 0.8), 2 = (-1.1, -0.8), 3 = (1.1, -0.8), 4 = (1.1, 0.8) per Addendum 17.2 (pin 1 top-left, counter-clockwise). Functions: 1 = OE/tri-state/NC, 2 = GND (case), 3 = OUT, 4 = VDD (Abracon ASV, AST3TQ, ASTX-H11; SiTime SiT8008). Material MAT_GOLD.",
+          "SMD pads; body centered on the pad pattern, body_offset (0,0); standoff 0. Pin 1 at (-1.1, 0.8). Pad centers from the crystal-class rule (see PKG-XTAL_SMD); oscillator-specific land pattern RESEARCH_REQUIRED.",
+          "Pin 1 dot or chamfer at the top-left corner (-X,+Y); no official corner marking is stated in the opened Abracon/SiTime texts (RESEARCH_REQUIRED). Delta vs Abracon crystals (pin 1 bottom-left) recorded.",
+          "Dimensions M (outline/height of 3225 and 7050); L (pads); Geometry M; Materials/appearance M. RESEARCH_REQUIRED: pad sizes/land pattern (Epson footprint letters A-D not mapped in extraction), pin-1 corner, lid material. Gap-fill closed: true 3225 TCXO datasheet found (Epson TG3225CEN). Contradiction kept: first-pass height 1.0 vs Epson 0.9 +/-0.1 (adopted 0.9; 1.0 stays the max). Validation: pad edge 1.1 + 0.5 = 1.6 = half-length; 0.8 + 0.45 = 1.25 = half-width; pin function order matches AST3TQ.",
+          "Dimensions M (outline/height of 3225 and 7050); L (pads); Geometry M; Materials/appearance M. RESEARCH_REQUIRED: pad sizes/land pattern (Epson footprint letters A-D not mapped in extraction), pin-1 corner, lid material. Gap-fill closed: true 3225 TCXO datasheet found (Epson TG3225CEN). Contradiction kept: first-pass height 1.0 vs Epson 0.9 +/-0.1 (adopted 0.9; 1.0 stays the max). Validation: pad edge 1.1 + 0.5 = 1.6 = half-length; 0.8 + 0.45 = 1.25 = half-width; pin function order matches AST3TQ.\n\n\n---",
+          "COSMETIC_PROVISIONAL pad_thickness=0.02: Use stated 0.02 mm on 143-145; same family cosmetic metal depth on remaining SMD entries. PCB-contact XY and Z=0 unchanged.",
+          "COSMETIC_PROVISIONAL base_fraction=0.65: Entry ceramic/lid split: 70 percent for crystals, 65 percent for oscillators; SAW borrows oscillator construction within envelope.",
+          "COSMETIC_PROVISIONAL lid_inset=0.15: Entry lid inset; SAW borrows oscillator seam inset.",
+          "COSMETIC_PROVISIONAL marker_radius=0.1: One twenty-fifth of smaller body dimension; lid corner mark only.",
+          "COSMETIC_PROVISIONAL lid_chamfer=0.25: One tenth of smaller dimension, removes material at marked corner only.",
+          "COSMETIC_PROVISIONAL label_width=1.6: Half of body length, inside lid.",
+          "COSMETIC_PROVISIONAL label_height=0.5: One fifth of body width, inside lid.",
+          "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+        ],
+        "appearance_confidence": "M",
+        "electrical_admission": "NOT_EVALUATED",
+        "footprint_binding": null,
+        "conflicts": [
+          {
+            "code": "PROSE_HEIGHT_VS_YAML",
+            "geometry_choice": "Use YAML overall height 0.9 mm; recompute stated fractional ceramic/lid split instead of older approximate prose heights."
+          }
+        ],
+        "implementation_status": "IMPLEMENTED",
+        "implementation_group": "B"
+      },
+      "profile_id": "OHM-147"
+    },
+    {
+      "id": "OHM-148",
+      "slug": "resonator_3pin",
+      "canonical_name": "Ceramic resonator",
+      "category": "frequency",
+      "subcategory": "ceramic_resonator",
+      "class": "A",
+      "priority": "P2",
+      "complexity": 2,
+      "package_family": "PKG-RESONATOR_3PIN",
+      "package_member": "CSTLS_G",
+      "generator": "GEN-XTAL",
+      "mounting": "tht",
+      "names": {
+        "aliases": [
+          "CSTLS",
+          "3-pin ceramic resonator"
+        ]
+      },
+      "dimensions_mm": {
+        "overall_length": {
+          "default": 8.0,
+          "min": 5.5,
+          "max": 9.0,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "overall_width": {
+          "default": 3.5,
+          "min": 3.2,
+          "max": 3.8,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "overall_height": {
+          "default": 5.5,
+          "min": 5.0,
+          "max": 7.0,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "pitch": {
+          "default": 2.5,
+          "min": 2.3,
+          "max": 2.7,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "lead_diameter": {
+          "default": 0.48,
+          "min": 0.43,
+          "max": 0.53,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        }
+      },
+      "body": {
+        "shape": "rounded_block",
+        "material": "MAT_RESONATOR_COAT_BLUE",
+        "color": "blue (unverified)",
+        "features": [
+          "top radius 0.8 (uncertain)"
+        ]
+      },
+      "terminals": {
+        "count": 3,
+        "type": "round_lead",
+        "pitch_mm": 2.5,
+        "width_mm": 0.48,
+        "material": "MAT_TIN_BRIGHT",
+        "pin_numbering": "in-line along X, pin 1 at -X (Addendum 17.3); pin 2 center = ground",
+        "pin1_xy_mm": [
+          -2.5,
+          0
+        ],
+        "tail_below_board_top_mm": 2.6
+      },
+      "pcb_interface": {
+        "footprint_type": "tht_holes",
+        "standoff_mm": 0,
+        "hole_diameter_mm": 0.8,
+        "body_offset_mm": [
+          0,
+          0
+        ]
+      },
+      "orientation": {
+        "pcb_plane": "XY",
+        "height_axis": "Z",
+        "origin": "FCO",
+        "rotation0": "leads in a row along X"
+      },
+      "polarity": "none (center pin ground, symmetric)",
+      "pin1_indicator": "none",
+      "parametric": {
+        "parameters": [
+          "body_x",
+          "body_y",
+          "body_z",
+          "lead_pitch",
+          "color"
+        ],
+        "coupled": [
+          "body_x >= 2*lead_pitch + 3.0"
+        ]
+      },
+      "lod_supported": [
+        "LOD0",
+        "LOD1",
+        "LOD2"
+      ],
+      "confidence": {
+        "dimensions": "M",
+        "geometry": "M",
+        "materials_appearance": "L"
+      },
+      "status": "complete",
+      "source": {
+        "document": "PCB_COMPONENT_3D_LIBRARY_SPEC.md",
+        "line": 21129,
+        "yaml_sha256": "035914fc0813a49e1d8f4be3e85d44e3821fe123884c15f497b266e56ee490e0",
+        "sections": {
+          "Identity": "- Canonical name: Ceramic resonator; ID OHM-148; slug resonator_3pin\n- Category: frequency; Subcategory: ceramic resonator with built-in capacitors, 3-pin radial\n- Physical package: PKG-RESONATOR_3PIN member CSTLS_G (Murata CSTLS-G53 class); through-hole\n- Aliases: CSTLS resonator, ceramic resonator 3-pin, CERALOCK. Variants: CSTLS_X (5.5 x 3.5 x 6.5), frequency ranges (electrical only).\n- Class A, priority P2, complexity 2.",
+          "Physical Dimensions": "Gap-fill (Murata CSTLS catalog page, S4 copy): CSTLS_G (3.40-10.00 MHz): L 8.0 +/-1.0 (in-line), height 5.5 +/-0.5 (Murata's 'W'), thickness T 3.5 +/-0.3 (varies with frequency and internal capacitors); CSTLS_X (16-70 MHz): L 5.5 +/-1.0, height 6.5 +/-0.5, T 3.5 +/-0.3. Lead pitch 2.5 +/-0.2, lead dia 0.48 +/-0.05 (both members). The RS listings (8 x 3 x 5.5 and 5.5 x 3.5 x 6.5) agree on L and height and give T = 3 (inside the 3.5 +/-0.3 tolerance). Default now L 8.0 (X), T 3.5 (Y, first pass 3.0), height 5.5 (Z). Murata's table also prints a 'lead length (ref.) 0.7' value that is not reliable in the extraction and is not used. Basis MFR_DATASHEET (S4 copy of the Murata catalog) cross-checked with RS listings; confidence M. Still conflicting: one RS title lists a CSTLS-B0 as '9 x 6 mm flat' (not adopted).",
+          "Geometry": "Rounded-top resin block 8.0 (X) x 3.5 (Y) wide, 5.5 tall (corner radius ~0.8 on top, UNCERTAIN), flat bottom, with a thin print area on the large face. Three round leads emerge from the bottom at X = -2.5, 0, +2.5 on the Y=0 line.",
+          "Leads / Pins / Terminals": "3 round leads dia 0.48 +/-0.05, pitch 2.5 +/-0.2 (Murata CSTLS catalog). In-line rule: Addendum 17.3 (in-line 3-pin THT run along X, pin 1 at -X). Pin 1 at (-2.5, 0), pin 2 (ground, center) at (0, 0), pin 3 at (+2.5, 0). Resonator terminals are pins 1 and 3; the electrode order is symmetric so polarity is none. MAT_TIN_BRIGHT. Tail -2.6.",
+          "PCB Interface": "Through-hole, 3 holes in a row, pitch 2.5, drill ~0.8 (UNCERTAIN); body_offset (0,0); standoff 0 (UNCERTAIN).",
+          "Materials": "Body MAT_RESONATOR_COAT_BLUE (proposed; actual Murata CSTLS color not verified, L), leads MAT_TIN_BRIGHT, print MAT_SILKSCREEN_WHITE.",
+          "Appearance": "Resin-dipped molded block with a printed part code/frequency; color varies by series (blue for the CSTLS class is unverified).",
+          "Orientation Markings": "None (symmetric); pin 2 center lead is ground. Optional print marking facing -Y.",
+          "Recognition Features": "1. Small three-leaded rounded block. 2. Leads in a row at 2.5 pitch. 3. About 8 x 3.5 x 5.5 mm. 4. Printed code.",
+          "Parametric Variants": "Parameters: body_x/y/z, lead_pitch, lead_length, color. Coupled: body_x >= 2 x lead_pitch + 3.0.",
+          "Recommended Base Geometry": "Box with filleted top edges; three cylinders.",
+          "Modeling Procedure": "1. Box with top fillets. 2. Three leads. 3. Print decal.",
+          "LOD Strategy": "LOD0: box + 3 cylinders. LOD1: top fillets, print. LOD2: lead bends/shoulder, resin edge softening.",
+          "Simplification Rules": "May omit: print, fillets. NEVER omit: three leads in a row, body size class.",
+          "Sources": "See PKG-RESONATOR_3PIN sources plus gap-fill: Murata CSTLS series catalog copy (L, T, height, pitch, lead dia with tolerances), https://datasheet.ciiva.com/14132/lacstls-data-en-14132773.pdf (S4, distributor-hosted copy of Murata 'lacstls' data).",
+          "Research Confidence": "Dimensions M; Geometry M; Materials/appearance L. Unresolved (not key): body color (blue unverified), exact lead length, top radius, drill. Validation: 2 x 2.5 + 3 = 8.0 equals the body length (fits with pitch 2.5 +/-0.2); Murata L/height match the RS listings for both G and X members; T 3.5 vs RS 3 within tolerance. Contradiction kept: first-pass T 3.0 / lead dia 0.5 / pitch 'unresolved' replaced by Murata 3.5 / 0.48 / 2.5.\n\n\n---"
+        },
+        "evidence_level": "SPEC_REPORTED; not independently reverified"
+      },
+      "cosmetic_defaults": [
+        {
+          "feature": "radius",
+          "value": 0.8,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "HC49 full-radius ends from half width; resonator 0.8 top radius stated in entry.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "seal_diameter",
+          "value": 1.44,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Three times stated lead diameter, inside bottom plate.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "seam_width",
+          "value": 0.07,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One fiftieth of can width; surface seam inside top envelope.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_width",
+          "value": 4.4,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "55 percent of sourced body length; optional identity decal.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_height",
+          "value": 0.7,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One fifth of smaller face dimension.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "library_metadata": {
+        "provisional": true,
+        "uncertain_values": [
+          "Rounded-top resin block 8.0 (X) x 3.5 (Y) wide, 5.5 tall (corner radius ~0.8 on top, UNCERTAIN), flat bottom, with a thin print area on the large face. Three round leads emerge from the bottom at X = -2.5, 0, +2.5 on the Y=0 line.",
+          "Through-hole, 3 holes in a row, pitch 2.5, drill ~0.8 (UNCERTAIN); body_offset (0,0); standoff 0 (UNCERTAIN).",
+          "Dimensions M; Geometry M; Materials/appearance L. Unresolved (not key): body color (blue unverified), exact lead length, top radius, drill. Validation: 2 x 2.5 + 3 = 8.0 equals the body length (fits with pitch 2.5 +/-0.2); Murata L/height match the RS listings for both G and X members; T 3.5 vs RS 3 within tolerance. Contradiction kept: first-pass T 3.0 / lead dia 0.5 / pitch 'unresolved' replaced by Murata 3.5 / 0.48 / 2.5.\n\n\n---",
+          "COSMETIC_PROVISIONAL radius=0.8: HC49 full-radius ends from half width; resonator 0.8 top radius stated in entry.",
+          "COSMETIC_PROVISIONAL seal_diameter=1.44: Three times stated lead diameter, inside bottom plate.",
+          "COSMETIC_PROVISIONAL seam_width=0.07: One fiftieth of can width; surface seam inside top envelope.",
+          "COSMETIC_PROVISIONAL label_width=4.4: 55 percent of sourced body length; optional identity decal.",
+          "COSMETIC_PROVISIONAL label_height=0.7: One fifth of smaller face dimension.",
+          "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+        ],
+        "appearance_confidence": "L",
+        "electrical_admission": "NOT_EVALUATED",
+        "footprint_binding": null,
+        "conflicts": [],
+        "implementation_status": "IMPLEMENTED",
+        "implementation_group": "B"
+      },
+      "profile_id": "OHM-148"
+    },
+    {
+      "id": "OHM-149",
+      "slug": "saw_filter_3030",
+      "canonical_name": "SAW filter",
+      "category": "frequency",
+      "subcategory": "saw_filter",
+      "class": "A",
+      "priority": "P3",
+      "complexity": 2,
+      "package_family": "PKG-SAW_SMD",
+      "package_member": "3838",
+      "generator": "GEN-XTAL",
+      "mounting": "smd",
+      "names": {
+        "aliases": [
+          "SAW filter"
+        ]
+      },
+      "dimensions_mm": {
+        "overall_length": {
+          "default": 3.8,
+          "min": 3.0,
+          "max": 5.0,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "overall_width": {
+          "default": 3.8,
+          "min": 3.0,
+          "max": 5.0,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        },
+        "overall_height": {
+          "default": 1.5,
+          "min": 1.2,
+          "max": 1.5,
+          "basis": "MFR_DATASHEET",
+          "confidence": "M"
+        }
+      },
+      "body": {
+        "shape": "box",
+        "material": "MAT_CERAMIC_PKG_TAN",
+        "color": "gray top",
+        "features": [
+          "pin-1 dot"
+        ]
+      },
+      "terminals": {
+        "count": 6,
+        "type": "flat_pad",
+        "pitch_mm": 1.1,
+        "width_mm": 0.8,
+        "length_mm": 0.6,
+        "material": "MAT_GOLD",
+        "pin_numbering": "dual-row CCW from top-left",
+        "pin1_xy_mm": [
+          -1.5,
+          1.1
+        ]
+      },
+      "pcb_interface": {
+        "footprint_type": "smd_pads",
+        "standoff_mm": 0,
+        "thermal_pad": false,
+        "body_offset_mm": [
+          0,
+          0
+        ]
+      },
+      "orientation": {
+        "pcb_plane": "XY",
+        "height_axis": "Z",
+        "origin": "FCO",
+        "rotation0": "rows parallel to Y"
+      },
+      "polarity": "none",
+      "pin1_indicator": "dot",
+      "parametric": {
+        "parameters": [
+          "size",
+          "height",
+          "pad_count",
+          "pad_pitch"
+        ],
+        "coupled": [
+          "pads inside body"
+        ]
+      },
+      "lod_supported": [
+        "LOD0",
+        "LOD1",
+        "LOD2"
+      ],
+      "confidence": {
+        "dimensions": "M",
+        "geometry": "L",
+        "materials_appearance": "L"
+      },
+      "status": "partial",
+      "source": {
+        "document": "PCB_COMPONENT_3D_LIBRARY_SPEC.md",
+        "line": 21241,
+        "yaml_sha256": "561f1f0ea5c78a8ca3e06a0a25bb638abd4d96f9bff28995516b5cd646a1b064",
+        "sections": {
+          "Identity": "- Canonical name: SAW filter; ID OHM-149; slug saw_filter_3030 (slug kept for ID stability; default size is now 3.8 x 3.8)\n- Category: frequency; Subcategory: SAW filter, ceramic SMD package\n- Physical package: PKG-SAW_SMD member 3838 (Abracon AFS869S3 class, 3.8 x 3.8 mm; 3030 placeholder and 1109 Murata variants in the family)\n- Aliases: SAW filter, IF/RF SAW. Variants: 3.8x3.8 (default), 3x3 placeholder, 5x5, 1109; 4 to 8 pads.\n- Class A, priority P3, complexity 2. STATUS partial (gap-fill: outline of one real part sourced; pads still placeholders).",
+          "Physical Dimensions": "3.8 x 3.8 x 1.5 (Abracon AFS869S3, S4, no tolerance stated; M-/L single source); first-pass placeholders 3.0 x 3.0 x 1.2 and 5.0 x 5.0 x 1.3 retained as unsourced alternates. Pads (placeholder): 0.8 x 0.6 on 1.1 pitch, rows at X +/-1.5. RESEARCH_REQUIRED: pad size, pitch, height tolerance, lid type (no Murata/TDK/Qorvo 3 mm or 5 mm drawing opened).",
+          "Geometry": "Flat ceramic box 3.8 x 3.8 x 1.5, plain top (metal lid or sealed ceramic, plain gray/black top with print), six castellated or flat bottom pads, small corner mark at pin 1.",
+          "Leads / Pins / Terminals": "6 flat pads (placeholder): dual-row rule, rows parallel to Y at X = +/-1.5, Y = +1.1, 0, -1.1; pin 1 at (-1.5, +1.1), pins 1-3 down the -X row, 4-6 up the +X row (pin 4 at (+1.5, -1.1)). Pad 0.8 x 0.6, MAT_GOLD (DERIVED placeholders). Functions per Abracon AFS869S3: pin 2 input, pin 5 output (the two center pads), pins 1, 3, 4, 6 ground; the 6-pin count is inferred (RESEARCH_REQUIRED).",
+          "PCB Interface": "SMD pads; body centered; standoff 0; pin 1 at (-1.5, +1.1).",
+          "Materials": "Body MAT_CERAMIC_PKG_TAN (top coated dark: MAT_EPOXY_DARKGRAY), pads MAT_GOLD.",
+          "Appearance": "Small gray/black or silver top with a laser code; color varies by vendor (UNVERIFIED).",
+          "Orientation Markings": "Pin 1 corner dot (convention, UNVERIFIED).",
+          "Recognition Features": "1. Small square flat package. 2. Edge pads. 3. Pin-1 dot.",
+          "Parametric Variants": "Parameters: size (3.0 / 5.0), height, pad_count (4-8), pad_pitch. Coupled: pad extents inside the body.",
+          "Recommended Base Geometry": "Box + pad plates + dot decal.",
+          "Modeling Procedure": "1. Body box. 2. Pads along two edges. 3. Pin-1 dot.",
+          "LOD Strategy": "LOD0: box. LOD1: box + pads + dot. LOD2: castellation, lid seam.",
+          "Simplification Rules": "May omit: seam, castellation. NEVER omit: pad count and rows, pin 1 mark, size.",
+          "Sources": "See PKG-SAW_SMD sources: Abracon AFS869S3 (outline 3.8 x 3.8 x 1.5, pin functions), Murata SAFFB 1109 sheets (alternate tiny size).",
+          "Research Confidence": "Dimensions M for the 3.8 x 3.8 x 1.5 outline (single Abracon sheet, no tolerance; SAW sizes are not standardized, so no cross-check); Geometry L (pads placeholders); Materials/appearance L. RESEARCH_REQUIRED: pad size/pitch, pad count confirmation, lid type, a TDK/Qorvo/Murata 3x3 or 5x5 drawing. Validation: 3 pads at 1.1 pitch span 2.2 < 3.8; pad extents 1.5 + 0.4 = 1.9 = half-length (flush). Contradiction kept: brief's 3.0 x 3.0 / 5.0 x 5.0 'de facto' sizes are unsourced; the one sourced ISM SAW part is 3.8 x 3.8.\n\n\n---"
+        },
+        "evidence_level": "SPEC_REPORTED; not independently reverified"
+      },
+      "cosmetic_defaults": [
+        {
+          "feature": "pad_thickness",
+          "value": 0.02,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Use stated 0.02 mm on 143-145; same family cosmetic metal depth on remaining SMD entries. PCB-contact XY and Z=0 unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "base_fraction",
+          "value": 0.65,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Entry ceramic/lid split: 70 percent for crystals, 65 percent for oscillators; SAW borrows oscillator construction within envelope.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "lid_inset",
+          "value": 0.15,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Entry lid inset; SAW borrows oscillator seam inset.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_radius",
+          "value": 0.152,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One twenty-fifth of smaller body dimension; lid corner mark only.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "lid_chamfer",
+          "value": 0.38,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One tenth of smaller dimension, removes material at marked corner only.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_width",
+          "value": 1.9,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Half of body length, inside lid.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_height",
+          "value": 0.76,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One fifth of body width, inside lid.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "library_metadata": {
+        "provisional": true,
+        "uncertain_values": [
+          "- Physical package: PKG-SAW_SMD member 3838 (Abracon AFS869S3 class, 3.8 x 3.8 mm; 3030 placeholder and 1109 Murata variants in the family)",
+          "- Aliases: SAW filter, IF/RF SAW. Variants: 3.8x3.8 (default), 3x3 placeholder, 5x5, 1109; 4 to 8 pads.",
+          "- Class A, priority P3, complexity 2. STATUS partial (gap-fill: outline of one real part sourced; pads still placeholders).",
+          "3.8 x 3.8 x 1.5 (Abracon AFS869S3, S4, no tolerance stated; M-/L single source); first-pass placeholders 3.0 x 3.0 x 1.2 and 5.0 x 5.0 x 1.3 retained as unsourced alternates. Pads (placeholder): 0.8 x 0.6 on 1.1 pitch, rows at X +/-1.5. RESEARCH_REQUIRED: pad size, pitch, height tolerance, lid type (no Murata/TDK/Qorvo 3 mm or 5 mm drawing opened).",
+          "6 flat pads (placeholder): dual-row rule, rows parallel to Y at X = +/-1.5, Y = +1.1, 0, -1.1; pin 1 at (-1.5, +1.1), pins 1-3 down the -X row, 4-6 up the +X row (pin 4 at (+1.5, -1.1)). Pad 0.8 x 0.6, MAT_GOLD (DERIVED placeholders). Functions per Abracon AFS869S3: pin 2 input, pin 5 output (the two center pads), pins 1, 3, 4, 6 ground; the 6-pin count is inferred (RESEARCH_REQUIRED).",
+          "Dimensions M for the 3.8 x 3.8 x 1.5 outline (single Abracon sheet, no tolerance; SAW sizes are not standardized, so no cross-check); Geometry L (pads placeholders); Materials/appearance L. RESEARCH_REQUIRED: pad size/pitch, pad count confirmation, lid type, a TDK/Qorvo/Murata 3x3 or 5x5 drawing. Validation: 3 pads at 1.1 pitch span 2.2 < 3.8; pad extents 1.5 + 0.4 = 1.9 = half-length (flush). Contradiction kept: brief's 3.0 x 3.0 / 5.0 x 5.0 'de facto' sizes are unsourced; the one sourced ISM SAW part is 3.8 x 3.8.",
+          "Dimensions M for the 3.8 x 3.8 x 1.5 outline (single Abracon sheet, no tolerance; SAW sizes are not standardized, so no cross-check); Geometry L (pads placeholders); Materials/appearance L. RESEARCH_REQUIRED: pad size/pitch, pad count confirmation, lid type, a TDK/Qorvo/Murata 3x3 or 5x5 drawing. Validation: 3 pads at 1.1 pitch span 2.2 < 3.8; pad extents 1.5 + 0.4 = 1.9 = half-length (flush). Contradiction kept: brief's 3.0 x 3.0 / 5.0 x 5.0 'de facto' sizes are unsourced; the one sourced ISM SAW part is 3.8 x 3.8.\n\n\n---",
+          "COSMETIC_PROVISIONAL pad_thickness=0.02: Use stated 0.02 mm on 143-145; same family cosmetic metal depth on remaining SMD entries. PCB-contact XY and Z=0 unchanged.",
+          "COSMETIC_PROVISIONAL base_fraction=0.65: Entry ceramic/lid split: 70 percent for crystals, 65 percent for oscillators; SAW borrows oscillator construction within envelope.",
+          "COSMETIC_PROVISIONAL lid_inset=0.15: Entry lid inset; SAW borrows oscillator seam inset.",
+          "COSMETIC_PROVISIONAL marker_radius=0.152: One twenty-fifth of smaller body dimension; lid corner mark only.",
+          "COSMETIC_PROVISIONAL lid_chamfer=0.38: One tenth of smaller dimension, removes material at marked corner only.",
+          "COSMETIC_PROVISIONAL label_width=1.9: Half of body length, inside lid.",
+          "COSMETIC_PROVISIONAL label_height=0.76: One fifth of body width, inside lid.",
+          "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+        ],
+        "appearance_confidence": "L",
+        "electrical_admission": "NOT_EVALUATED",
+        "footprint_binding": null,
+        "conflicts": [],
+        "implementation_status": "IMPLEMENTED",
+        "implementation_group": "B"
+      },
+      "profile_id": "OHM-149"
+    }
+  ],
+  "profiles": {
+    "OHM-143": {
+      "kind": "frequency",
+      "family": "PKG-XTAL_SMD",
+      "body_x": 3.2,
+      "body_y": 2.5,
+      "height": 0.8,
+      "count": 4,
+      "layout": "frequency",
+      "body_material": "MAT_CERAMIC_PKG_TAN",
+      "lead_material": "MAT_GOLD",
+      "source_pin1": [
+        -1.1,
+        0.8
+      ],
+      "standoff": 0,
+      "tail": 0,
+      "tht": false,
+      "pin": 1.0,
+      "pitch": 0,
+      "pad_x": 1.0,
+      "pad_y": 0.9,
+      "source_parameters": [
+        "size",
+        "height",
+        "pad_count",
+        "lid_inset"
+      ],
+      "segments": {
+        "LOD0": 16,
+        "LOD1": 32,
+        "LOD2": 64
+      },
+      "pin1_corner": "TL",
+      "shape": "smd",
+      "lid_material": "MAT_STEEL_STAINLESS",
+      "pad_thickness": 0.02,
+      "cosmetic_defaults": [
+        {
+          "feature": "pad_thickness",
+          "value": 0.02,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Use stated 0.02 mm on 143-145; same family cosmetic metal depth on remaining SMD entries. PCB-contact XY and Z=0 unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "base_fraction",
+          "value": 0.7,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Entry ceramic/lid split: 70 percent for crystals, 65 percent for oscillators; SAW borrows oscillator construction within envelope.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "lid_inset",
+          "value": 0.1,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Entry lid inset; SAW borrows oscillator seam inset.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_radius",
+          "value": 0.1,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One twenty-fifth of smaller body dimension; lid corner mark only.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "lid_chamfer",
+          "value": 0.25,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One tenth of smaller dimension, removes material at marked corner only.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_width",
+          "value": 1.6,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Half of body length, inside lid.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_height",
+          "value": 0.5,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One fifth of body width, inside lid.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "base_fraction": 0.7,
+      "lid_inset": 0.1,
+      "marker_radius": 0.1,
+      "lid_chamfer": 0.25,
+      "label_width": 1.6,
+      "label_height": 0.5
+    },
+    "OHM-144": {
+      "kind": "frequency",
+      "family": "PKG-XTAL_SMD",
+      "body_x": 2.5,
+      "body_y": 2.0,
+      "height": 0.5,
+      "count": 4,
+      "layout": "frequency",
+      "body_material": "MAT_CERAMIC_PKG_TAN",
+      "lead_material": "MAT_GOLD",
+      "source_pin1": [
+        -0.85,
+        0.65
+      ],
+      "standoff": 0,
+      "tail": 0,
+      "tht": false,
+      "pin": 0.8,
+      "pitch": 0,
+      "pad_x": 0.8,
+      "pad_y": 0.7,
+      "source_parameters": [
+        "size",
+        "height",
+        "pad_count",
+        "lid_inset"
+      ],
+      "segments": {
+        "LOD0": 16,
+        "LOD1": 32,
+        "LOD2": 64
+      },
+      "pin1_corner": "TL",
+      "shape": "smd",
+      "lid_material": "MAT_STEEL_STAINLESS",
+      "pad_thickness": 0.02,
+      "cosmetic_defaults": [
+        {
+          "feature": "pad_thickness",
+          "value": 0.02,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Use stated 0.02 mm on 143-145; same family cosmetic metal depth on remaining SMD entries. PCB-contact XY and Z=0 unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "base_fraction",
+          "value": 0.7,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Entry ceramic/lid split: 70 percent for crystals, 65 percent for oscillators; SAW borrows oscillator construction within envelope.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "lid_inset",
+          "value": 0.1,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Entry lid inset; SAW borrows oscillator seam inset.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_radius",
+          "value": 0.08,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One twenty-fifth of smaller body dimension; lid corner mark only.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "lid_chamfer",
+          "value": 0.2,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One tenth of smaller dimension, removes material at marked corner only.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_width",
+          "value": 1.25,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Half of body length, inside lid.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_height",
+          "value": 0.4,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One fifth of body width, inside lid.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "base_fraction": 0.7,
+      "lid_inset": 0.1,
+      "marker_radius": 0.08,
+      "lid_chamfer": 0.2,
+      "label_width": 1.25,
+      "label_height": 0.4
+    },
+    "OHM-145": {
+      "kind": "frequency",
+      "family": "PKG-XTAL_SMD",
+      "body_x": 2.0,
+      "body_y": 1.6,
+      "height": 0.45,
+      "count": 4,
+      "layout": "frequency",
+      "body_material": "MAT_CERAMIC_PKG_TAN",
+      "lead_material": "MAT_GOLD",
+      "source_pin1": [
+        -0.675,
+        0.525
+      ],
+      "standoff": 0,
+      "tail": 0,
+      "tht": false,
+      "pin": 0.65,
+      "pitch": 0,
+      "pad_x": 0.65,
+      "pad_y": 0.55,
+      "source_parameters": [
+        "size",
+        "height",
+        "pad_count",
+        "lid_inset"
+      ],
+      "segments": {
+        "LOD0": 16,
+        "LOD1": 32,
+        "LOD2": 64
+      },
+      "pin1_corner": "TL",
+      "shape": "smd",
+      "lid_material": "MAT_STEEL_STAINLESS",
+      "pad_thickness": 0.02,
+      "cosmetic_defaults": [
+        {
+          "feature": "pad_thickness",
+          "value": 0.02,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Use stated 0.02 mm on 143-145; same family cosmetic metal depth on remaining SMD entries. PCB-contact XY and Z=0 unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "base_fraction",
+          "value": 0.7,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Entry ceramic/lid split: 70 percent for crystals, 65 percent for oscillators; SAW borrows oscillator construction within envelope.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "lid_inset",
+          "value": 0.1,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Entry lid inset; SAW borrows oscillator seam inset.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_radius",
+          "value": 0.064,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One twenty-fifth of smaller body dimension; lid corner mark only.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "lid_chamfer",
+          "value": 0.16,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One tenth of smaller dimension, removes material at marked corner only.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_width",
+          "value": 1.0,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Half of body length, inside lid.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_height",
+          "value": 0.32,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One fifth of body width, inside lid.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "base_fraction": 0.7,
+      "lid_inset": 0.1,
+      "marker_radius": 0.064,
+      "lid_chamfer": 0.16,
+      "label_width": 1.0,
+      "label_height": 0.32
+    },
+    "OHM-146": {
+      "kind": "frequency",
+      "family": "PKG-OSC_SMD",
+      "body_x": 7.0,
+      "body_y": 5.0,
+      "height": 1.8,
+      "count": 4,
+      "layout": "frequency",
+      "body_material": "MAT_CERAMIC_PKG_TAN",
+      "lead_material": "MAT_GOLD",
+      "source_pin1": [
+        -2.54,
+        1.905
+      ],
+      "standoff": 0,
+      "tail": 0,
+      "tht": false,
+      "pin": 1.4,
+      "pitch": 0,
+      "pad_x": 1.4,
+      "pad_y": 1.2,
+      "source_parameters": [
+        "size",
+        "height",
+        "body_type"
+      ],
+      "segments": {
+        "LOD0": 16,
+        "LOD1": 32,
+        "LOD2": 64
+      },
+      "pin1_corner": "TL",
+      "shape": "smd",
+      "lid_material": "MAT_STEEL_STAINLESS",
+      "pad_thickness": 0.02,
+      "cosmetic_defaults": [
+        {
+          "feature": "pad_thickness",
+          "value": 0.02,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Use stated 0.02 mm on 143-145; same family cosmetic metal depth on remaining SMD entries. PCB-contact XY and Z=0 unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "base_fraction",
+          "value": 0.65,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Entry ceramic/lid split: 70 percent for crystals, 65 percent for oscillators; SAW borrows oscillator construction within envelope.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "lid_inset",
+          "value": 0.15,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Entry lid inset; SAW borrows oscillator seam inset.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_radius",
+          "value": 0.2,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One twenty-fifth of smaller body dimension; lid corner mark only.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "lid_chamfer",
+          "value": 0.5,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One tenth of smaller dimension, removes material at marked corner only.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_width",
+          "value": 3.5,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Half of body length, inside lid.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_height",
+          "value": 1.0,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One fifth of body width, inside lid.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "base_fraction": 0.65,
+      "lid_inset": 0.15,
+      "marker_radius": 0.2,
+      "lid_chamfer": 0.5,
+      "label_width": 3.5,
+      "label_height": 1.0
+    },
+    "OHM-147": {
+      "kind": "frequency",
+      "family": "PKG-OSC_SMD",
+      "body_x": 3.2,
+      "body_y": 2.5,
+      "height": 0.9,
+      "count": 4,
+      "layout": "frequency",
+      "body_material": "MAT_CERAMIC_PKG_TAN",
+      "lead_material": "MAT_GOLD",
+      "source_pin1": [
+        -1.1,
+        0.8
+      ],
+      "standoff": 0,
+      "tail": 0,
+      "tht": false,
+      "pin": 1.0,
+      "pitch": 0,
+      "pad_x": 1.0,
+      "pad_y": 0.9,
+      "source_parameters": [
+        "size",
+        "height",
+        "body_type"
+      ],
+      "segments": {
+        "LOD0": 16,
+        "LOD1": 32,
+        "LOD2": 64
+      },
+      "pin1_corner": "TL",
+      "shape": "smd",
+      "lid_material": "MAT_STEEL_STAINLESS",
+      "pad_thickness": 0.02,
+      "cosmetic_defaults": [
+        {
+          "feature": "pad_thickness",
+          "value": 0.02,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Use stated 0.02 mm on 143-145; same family cosmetic metal depth on remaining SMD entries. PCB-contact XY and Z=0 unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "base_fraction",
+          "value": 0.65,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Entry ceramic/lid split: 70 percent for crystals, 65 percent for oscillators; SAW borrows oscillator construction within envelope.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "lid_inset",
+          "value": 0.15,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Entry lid inset; SAW borrows oscillator seam inset.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_radius",
+          "value": 0.1,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One twenty-fifth of smaller body dimension; lid corner mark only.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "lid_chamfer",
+          "value": 0.25,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One tenth of smaller dimension, removes material at marked corner only.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_width",
+          "value": 1.6,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Half of body length, inside lid.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_height",
+          "value": 0.5,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One fifth of body width, inside lid.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "base_fraction": 0.65,
+      "lid_inset": 0.15,
+      "marker_radius": 0.1,
+      "lid_chamfer": 0.25,
+      "label_width": 1.6,
+      "label_height": 0.5
+    },
+    "OHM-141": {
+      "kind": "frequency",
+      "family": "PKG-XTAL_HC49",
+      "body_x": 10.8,
+      "body_y": 4.65,
+      "height": 13.5,
+      "count": 2,
+      "layout": "frequency",
+      "body_material": "MAT_NICKEL",
+      "lead_material": "MAT_TIN_BRIGHT",
+      "source_pin1": [
+        -2.44,
+        0
+      ],
+      "standoff": 0,
+      "tail": 2.6,
+      "tht": true,
+      "pin": 0.43,
+      "pitch": 4.88,
+      "pad_x": 0.43,
+      "pad_y": 0,
+      "source_parameters": [
+        "height",
+        "lead_length",
+        "lead_pitch",
+        "sleeve",
+        "standoff"
+      ],
+      "segments": {
+        "LOD0": 16,
+        "LOD1": 32,
+        "LOD2": 64
+      },
+      "pin1_corner": "TL",
+      "shape": "stadium",
+      "radius": 2.325,
+      "cosmetic_defaults": [
+        {
+          "feature": "radius",
+          "value": 2.325,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "HC49 full-radius ends from half width; resonator 0.8 top radius stated in entry.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "seal_diameter",
+          "value": 1.29,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Three times stated lead diameter, inside bottom plate.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "seam_width",
+          "value": 0.09300000000000001,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One fiftieth of can width; surface seam inside top envelope.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_width",
+          "value": 5.940000000000001,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "55 percent of sourced body length; optional identity decal.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_height",
+          "value": 0.93,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One fifth of smaller face dimension.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "seal_diameter": 1.29,
+      "seam_width": 0.09300000000000001,
+      "label_width": 5.940000000000001,
+      "label_height": 0.93
+    },
+    "OHM-142": {
+      "kind": "frequency",
+      "family": "PKG-XTAL_HC49",
+      "body_x": 11.05,
+      "body_y": 4.65,
+      "height": 3.5,
+      "count": 2,
+      "layout": "frequency",
+      "body_material": "MAT_NICKEL",
+      "lead_material": "MAT_TIN_BRIGHT",
+      "source_pin1": [
+        -2.44,
+        0
+      ],
+      "standoff": 0,
+      "tail": 2.6,
+      "tht": true,
+      "pin": 0.43,
+      "pitch": 4.88,
+      "pad_x": 0.43,
+      "pad_y": 0,
+      "source_parameters": [
+        "height",
+        "lead_length",
+        "lead_pitch",
+        "sleeve",
+        "standoff"
+      ],
+      "segments": {
+        "LOD0": 16,
+        "LOD1": 32,
+        "LOD2": 64
+      },
+      "pin1_corner": "TL",
+      "shape": "stadium",
+      "radius": 2.325,
+      "cosmetic_defaults": [
+        {
+          "feature": "radius",
+          "value": 2.325,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "HC49 full-radius ends from half width; resonator 0.8 top radius stated in entry.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "seal_diameter",
+          "value": 1.29,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Three times stated lead diameter, inside bottom plate.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "seam_width",
+          "value": 0.09300000000000001,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One fiftieth of can width; surface seam inside top envelope.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_width",
+          "value": 6.077500000000001,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "55 percent of sourced body length; optional identity decal.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_height",
+          "value": 0.7,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One fifth of smaller face dimension.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "seal_diameter": 1.29,
+      "seam_width": 0.09300000000000001,
+      "label_width": 6.077500000000001,
+      "label_height": 0.7
+    },
+    "OHM-148": {
+      "kind": "frequency",
+      "family": "PKG-RESONATOR_3PIN",
+      "body_x": 8.0,
+      "body_y": 3.5,
+      "height": 5.5,
+      "count": 3,
+      "layout": "frequency",
+      "body_material": "MAT_RESONATOR_COAT_BLUE",
+      "lead_material": "MAT_TIN_BRIGHT",
+      "source_pin1": [
+        -2.5,
+        0
+      ],
+      "standoff": 0,
+      "tail": 2.6,
+      "tht": true,
+      "pin": 0.48,
+      "pitch": 2.5,
+      "pad_x": 0.48,
+      "pad_y": 0,
+      "source_parameters": [
+        "body_x",
+        "body_y",
+        "body_z",
+        "lead_pitch",
+        "color"
+      ],
+      "segments": {
+        "LOD0": 16,
+        "LOD1": 32,
+        "LOD2": 64
+      },
+      "pin1_corner": "TL",
+      "shape": "resonator",
+      "radius": 0.8,
+      "cosmetic_defaults": [
+        {
+          "feature": "radius",
+          "value": 0.8,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "HC49 full-radius ends from half width; resonator 0.8 top radius stated in entry.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "seal_diameter",
+          "value": 1.44,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Three times stated lead diameter, inside bottom plate.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "seam_width",
+          "value": 0.07,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One fiftieth of can width; surface seam inside top envelope.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_width",
+          "value": 4.4,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "55 percent of sourced body length; optional identity decal.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_height",
+          "value": 0.7,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One fifth of smaller face dimension.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "seal_diameter": 1.44,
+      "seam_width": 0.07,
+      "label_width": 4.4,
+      "label_height": 0.7
+    },
+    "OHM-149": {
+      "kind": "frequency",
+      "family": "PKG-SAW_SMD",
+      "body_x": 3.8,
+      "body_y": 3.8,
+      "height": 1.5,
+      "count": 6,
+      "layout": "frequency",
+      "body_material": "MAT_CERAMIC_PKG_TAN",
+      "lead_material": "MAT_GOLD",
+      "source_pin1": [
+        -1.5,
+        1.1
+      ],
+      "standoff": 0,
+      "tail": 0,
+      "tht": false,
+      "pin": 0.8,
+      "pitch": 1.1,
+      "pad_x": 0.8,
+      "pad_y": 0.6,
+      "source_parameters": [
+        "size",
+        "height",
+        "pad_count",
+        "pad_pitch"
+      ],
+      "segments": {
+        "LOD0": 16,
+        "LOD1": 32,
+        "LOD2": 64
+      },
+      "pin1_corner": "TL",
+      "shape": "smd",
+      "lid_material": "MAT_EPOXY_DARKGRAY",
+      "pad_thickness": 0.02,
+      "cosmetic_defaults": [
+        {
+          "feature": "pad_thickness",
+          "value": 0.02,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Use stated 0.02 mm on 143-145; same family cosmetic metal depth on remaining SMD entries. PCB-contact XY and Z=0 unchanged.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "base_fraction",
+          "value": 0.65,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Entry ceramic/lid split: 70 percent for crystals, 65 percent for oscillators; SAW borrows oscillator construction within envelope.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "lid_inset",
+          "value": 0.15,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Entry lid inset; SAW borrows oscillator seam inset.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "marker_radius",
+          "value": 0.152,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One twenty-fifth of smaller body dimension; lid corner mark only.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "lid_chamfer",
+          "value": 0.38,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One tenth of smaller dimension, removes material at marked corner only.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_width",
+          "value": 1.9,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "Half of body length, inside lid.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        },
+        {
+          "feature": "label_height",
+          "value": 0.76,
+          "tag": "COSMETIC_PROVISIONAL",
+          "derivation": "One fifth of body width, inside lid.",
+          "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+        }
+      ],
+      "base_fraction": 0.65,
+      "lid_inset": 0.15,
+      "marker_radius": 0.152,
+      "lid_chamfer": 0.38,
+      "label_width": 1.9,
+      "label_height": 0.76
+    }
+  }
+}

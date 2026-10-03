@@ -1,0 +1,555 @@
+{
+  "schema_version": 1,
+  "id": "C3D-A",
+  "task": "C3D-A",
+  "scope": "COMPONENT-3D-COMPLETION",
+  "status": "PASSED",
+  "commit": "8ffc8fb3de3c8f03a12b760b6c2cbe53fdbc394c",
+  "verified_at": "2026-10-02",
+  "commands": {
+    "node": "641 passed, 0 failed, including 42 Group A tests",
+    "python": "20 passed; workflow/static boundary",
+    "ruff": "All checks passed",
+    "source_imports": "12 Group A records match supplied spec",
+    "visual": "10 PNGs reviewed; no browser errors"
+  },
+  "component_ids": [
+    "OHM-150",
+    "OHM-151",
+    "OHM-152",
+    "OHM-153",
+    "OHM-154",
+    "OHM-155",
+    "OHM-156",
+    "OHM-157",
+    "OHM-158",
+    "OHM-159",
+    "OHM-160",
+    "OHM-161"
+  ],
+  "source_spec_sha256": "c140887db02b0d7bfb25a45a4154f6c4ee58d0ddb493ba502eee53b7e3d38639",
+  "model_source_sha256": "6d6bf64a404c3f3855f26ee625cd59dbbb7c33dcbe05f1f95a17f63be6a82133",
+  "visual_record": ".ai/verification/C3D-A-visual.json",
+  "findings": {
+    "OHM-150": {
+      "provisional": true,
+      "uncertain_values": [
+        "- Common variants: pins per row N = 1..40; tail/mating length options; gold or tin plating; 2.0 mm and 1.27 mm pitch (RESEARCH_REQUIRED, not sourced)",
+        "- Optional LOD2 detail (unsourced common practice): shallow V-notch break grooves across the top face at the boundaries between positions; 0.2 mm base top-edge chamfer; slight draft on base sides is not modeled.",
+        "- Coupled: base length = N x pitch; total pin = pin_above + base_height + tail_below; if pitch changes, other dims are RESEARCH_REQUIRED.",
+        "- Dimensions M / Geometry M / Materials-appearance M.\n- Gap-fill: base width resolved at M (Harwin M20-9990245 1x2 overall 5.08 x 2.54 x 11.64; Harwin pin 6.1/total 11.64 vs Wurth 6.0/11.54 noted). Status stays complete.\n- Unresolved (cosmetic): grooves/chamfer size, pyramid tip size, 2.0 mm and 1.27 mm pitch variants, Amphenol/FCI drawings not opened.\n- Validation: 6.0 + 2.54 + 3.0 = 11.54 matches WE-PHD-PIN total; 2 x 2.54 = 5.08 matches L; yaml pin1 y = (N-1)/2 x 2.54 = 8.89 for N=8; Samtec .025 in = 0.635 agrees with 0.64; Harwin 2.54 + 6.1 + 3.0 = 11.64 matches its 11.64 overall.\n\n---",
+        "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+      ],
+      "appearance_confidence": "M",
+      "electrical_admission": "NOT_EVALUATED",
+      "footprint_binding": null,
+      "conflicts": [],
+      "implementation_status": "IMPLEMENTED",
+      "implementation_group": "A"
+    },
+    "OHM-151": {
+      "provisional": true,
+      "uncertain_values": [
+        "- Common variants: pins per row N = 1..40; tail/mating length options; gold or tin plating; 2.0 mm and 1.27 mm pitch (RESEARCH_REQUIRED, not sourced)",
+        "- Optional LOD2 detail (unsourced common practice): shallow V-notch break grooves across the top face at the boundaries between positions; 0.2 mm base top-edge chamfer; slight draft on base sides is not modeled.",
+        "- Coupled: base length = N x pitch; total pin = pin_above + base_height + tail_below; if pitch changes, other dims are RESEARCH_REQUIRED.",
+        "- Dimensions M / Geometry M / Materials-appearance M.\n- Gap-fill: 1-row base width verified (Harwin M20-9990245: 2.54); 2-row width 5.08 is derived from it (M). Status stays complete.\n- Unresolved (cosmetic): grooves/chamfer size, pyramid tip size, 2.0 mm and 1.27 mm pitch variants, Amphenol/FCI drawings not opened.\n- Validation: 6.0 + 2.54 + 3.0 = 11.54 matches WE-PHD-PIN total; 2 x 2.54 = 5.08 matches L; yaml pin1 y = (N-1)/2 x 2.54 = 5.08 for N=5; Samtec .025 in = 0.635 agrees with 0.64.\n\n---",
+        "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+      ],
+      "appearance_confidence": "M",
+      "electrical_admission": "NOT_EVALUATED",
+      "footprint_binding": null,
+      "conflicts": [],
+      "implementation_status": "IMPLEMENTED",
+      "implementation_group": "A"
+    },
+    "OHM-152": {
+      "provisional": true,
+      "uncertain_values": [
+        "- Common variants: N = 1..40, tail length 2.29 to 7.87 (Samtec), low-profile sockets (not sourced), right-angle (not specified)",
+        "- Break grooves between positions optional at LOD2 (unsourced).",
+        "- Count: 8 contacts (N); tails 0.64 square (UNCERTAIN), gold or tin.",
+        "- Dimensions M / Geometry M / Materials-appearance M.\n- Gap-fill resolved: width conflict (Samtec .100 and Harwin 2.50 agree; Wurth 3.1 treated as outlier), length end allowance 0.4 (Harwin, 2 parts) vs Wurth 0.5, tail 3.0 confirmed by Harwin.\n- Unresolved: 2-row width (4.95 vs 5.08), opening size and chamfer.\n- Validation: pitch and pin-1 checked against the architecture rules; body height three-source agreement (Samtec 8.51, Wurth 8.5, Harwin 8.5); Harwin lengths 8.02 and 51.20 both fit N x 2.54 + 0.40; hole 1.02 consistent with 0.64 tail.\n\n---",
+        "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+      ],
+      "appearance_confidence": "M",
+      "electrical_admission": "NOT_EVALUATED",
+      "footprint_binding": null,
+      "conflicts": [
+        {
+          "code": "SOCKET_LENGTH_RULE",
+          "geometry_choice": "Use second-pass N*pitch+0.4; older variant prose omits the end allowance."
+        }
+      ],
+      "implementation_status": "IMPLEMENTED",
+      "implementation_group": "A"
+    },
+    "OHM-153": {
+      "provisional": true,
+      "uncertain_values": [
+        "body_width: 5.08 (UNCERTAIN/L)",
+        "- Common variants: N = 1..40, tail length 2.29 to 7.87 (Samtec), low-profile sockets (not sourced), right-angle (not specified)",
+        "- Break grooves between positions optional at LOD2 (unsourced).",
+        "- Count: 10 contacts (2N); tails 0.64 square (UNCERTAIN), gold or tin.",
+        "- Dimensions M / Geometry M / Materials-appearance M.\n- Gap-fill: length end allowance 0.4 (Harwin) added; tail 3.0 confirmed by Harwin (single-row parts).\n- Unresolved: 2-row body width (4.95 Samtec vs 5.08 nominal; no 2-row Harwin/Wurth drawing opened), opening size and chamfer.\n- Validation: pitch and pin-1 checked against the architecture rules; body height two-source agreement; hole 1.02 consistent with 0.64 tail.\n\n---",
+        "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+      ],
+      "appearance_confidence": "M",
+      "electrical_admission": "NOT_EVALUATED",
+      "footprint_binding": null,
+      "conflicts": [
+        {
+          "code": "SOCKET_LENGTH_RULE",
+          "geometry_choice": "Use second-pass N*pitch+0.4; older variant prose omits the end allowance."
+        }
+      ],
+      "implementation_status": "IMPLEMENTED",
+      "implementation_group": "A"
+    },
+    "OHM-154": {
+      "provisional": true,
+      "uncertain_values": [
+        "base_height: 2.54 (UNCERTAIN/L)",
+        "pin_axis_height: 1.27 (UNCERTAIN/L)",
+        "- body height Z = rows x 2.54 (L, UNCERTAIN); horizontal pin axis Z = 1.27 + 2.54 r (L, UNCERTAIN)",
+        "- Black base block, Y length N x 2.54, X depth 2.54, Z height rows x 2.54 (UNCERTAIN), underside at Z = 0. The body is NOT centered on the holes: its rear face is 1.5 mm in front of the nearest tail column (+X side). body_offset X = +2.77 (1xN) or +4.04 (2xN).",
+        "- Bend: mitered elbow at LOD0/1, inner radius about 0.3 at LOD2 (UNCERTAIN, cosmetic).",
+        "- Dimensions M / Geometry M / Materials-appearance M. status: partial.\n- Resolved in gap-fill: mating length 6.0, tail 3.0, body depth 2.54, rear offset 1.5, 2xN tail-column/row assignment, body offset (the first pass centered the body on the tail pattern, which was wrong).\n- Unresolved: body height and pin axis height above the board (assumed 2.54 per row / 1.27 per row), Samtec RA callouts, Amphenol 10129378 (no source found).\n- Validation: pin 1 y for N=8 = 3.5 x 2.54 = 8.89; 2xN body center relative to the tail-pattern center = 5.31 - 1.27 = 4.04 (KiCad 2x02: body 4.04 to 6.58, tails at 0 and 2.54, pattern center 1.27); 1xN body center 2.77 (KiCad 1x02 body 1.5 to 4.04); numbering matches KiCad with Y flipped.\n\n---",
+        "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+      ],
+      "appearance_confidence": "M",
+      "electrical_admission": "NOT_EVALUATED",
+      "footprint_binding": null,
+      "conflicts": [],
+      "implementation_status": "IMPLEMENTED",
+      "implementation_group": "A"
+    },
+    "OHM-155": {
+      "provisional": true,
+      "uncertain_values": [
+        "wall_thickness: 0.5 (DERIVED/L)",
+        "post_square: 0.5 (DERIVED/L)",
+        "- Common variants: S2B-PH-K-S side entry (THT, dims RESEARCH_REQUIRED), B2B-PH-SM4-TB / S2B-PH-SM4-TB (SMT, not modeled), N = 2..16",
+        "- Boxed rectangular shroud (open top) of natural white PA, length B along Y, depth 4.5 along X, height 6.0, Z from 0. Cavity 4.9 (Y) x 3.5 (X) for N=2, walls 0.5 on all four sides (L), cavity floor top at Z = 1.0 (UNCERTAIN).",
+        "- Posts: 0.5 square at the pitch, from Z = -3.0 (tail, UNCERTAIN) to Z = 1.0 + 3.3 = 4.3, about 1.7 below the shroud rim.",
+        "- Polarization details (KICAD-FP silk, L): a 1.0-wide slot in the +X long wall centered on the row; 1.3-wide slots through both end walls centered at X = -0.15; a small 0.2 x 0.5 rib inside the -X wall at the row center. JST text confirms walls on all four sides and a mark for circuit No. 1. Slot depths not known: model them at LOD2 only, 2.0 deep (UNCERTAIN).",
+        "- Side-entry S2B-PH-K-S: same pin pattern, opening faces +X; geometry RESEARCH_REQUIRED.",
+        "- Count N; 0.5 square posts (UNCERTAIN), tin-plated copper alloy; tail below board 3.0 default (UNCERTAIN, override in YAML).",
+        "- RESEARCH_REQUIRED: tail length below the board, cavity floor height, slot depths, post size, S2B side-entry geometry, polarization shape confirmation from the JST drawing.",
+        "- Dimensions M / Geometry L / Materials-appearance M. status: partial.\n- Conflict kept: JST catalog text \"mounting height of 8 mm\" (first-pass height 8.0) vs Lion Circuits \"housing height 6\". Adopted 6.0 (distributor listing, plus the 8 mm phrase most likely describes the mated assembly); S2B side-entry extraction suggested about 9.6 (not used).\n- RESEARCH_REQUIRED: tail length below the board, cavity floor height, slot depths, post size, S2B side-entry geometry, polarization shape confirmation from the JST drawing.\n- Validation: A=2.0 and B=5.9 for N=2 from source and KiCad; B formula inferred from endpoints 5.9 and 33.9; KiCad outline x from -1.95 to 3.95 is B; hole 0.7 vs 0.5 post diagonal consistent; OHMNI transform keeps pin 1 at +Y.\n\n---",
+        "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+      ],
+      "appearance_confidence": "M",
+      "electrical_admission": "NOT_EVALUATED",
+      "footprint_binding": null,
+      "conflicts": [],
+      "implementation_status": "IMPLEMENTED",
+      "implementation_group": "A"
+    },
+    "OHM-156": {
+      "provisional": true,
+      "uncertain_values": [
+        "wall_thickness: 0.65 (DERIVED/L)",
+        "- Common variants: N = 2..16 (UNCERTAIN upper), side entry S2B-XH-A (partly read)",
+        "- Cavity floor top Z = 1.0 (UNCERTAIN); post tip at floor + 3.4 = 4.4 (JST-XH-DIST lists 3.4 \"mating pin length\", meaning not confirmed).",
+        "- Polarization: housing marked for circuit No. 1; the KiCad silk shows the long wall on the +X side broken into three segments with 1.5-wide windows centered at the pins (L). True keying shape not confirmed. LOD2 only.",
+        "- Count N; 0.64 square, tin-plated brass; tail 3.0 default (UNCERTAIN).",
+        "- RESEARCH_REQUIRED: floor height, tail length, polarization shape, max N, side-entry S2B-XH-A geometry (JST extraction hints depth 4.5 and height 6.1, labels unreliable).",
+        "- Dimensions M / Geometry L / Materials-appearance M. status: partial.\n- Conflicts: one extraction labeled 7.4 as height; 7.4 equals B for N=2, so height is 7.0. Depth 5.7 (first pass) vs 5.75 (JST second read and KiCad): 5.75 adopted.\n- RESEARCH_REQUIRED: floor height, tail length, polarization shape, max N, side-entry S2B-XH-A geometry (JST extraction hints depth 4.5 and height 6.1, labels unreliable).\n- Validation: 2.5 + 4.9 = 7.4 matches B for N=2 and the KiCad outline; pins at Y = +-1.25.\n\n---",
+        "COSMETIC_PROVISIONAL slot_depth=2.0: Borrow OHM-155 PH slot depth; remains inside 7 mm XH body.",
+        "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+      ],
+      "appearance_confidence": "M",
+      "electrical_admission": "NOT_EVALUATED",
+      "footprint_binding": null,
+      "conflicts": [
+        {
+          "code": "XH_WINDOW_SIDE",
+          "geometry_choice": "Entry Geometry +X wins over family -X description."
+        }
+      ],
+      "implementation_status": "IMPLEMENTED",
+      "implementation_group": "A"
+    },
+    "OHM-157": {
+      "provisional": true,
+      "uncertain_values": [
+        "pad_length: 1.55 (CONSENSUS/L)",
+        "tab_pad: [1.8, 1.2] (UNCERTAIN/L)",
+        "- Common variants: BM04B-SRSS-TB top entry (dims below, L), N = 2..16 (UNCERTAIN)",
+        "- Front cavity open on the -X face: UNCERTAIN size (default 2 mm tall slot, 4.2 wide, 3.0 deep, 0.4 floor), contacts run along the cavity floor and leave through the rear (+X) face as flat SMD tails.",
+        "- Contact tails: flat strips 0.6 (Y) x 1.55 (X) x 0.15 thick (UNCERTAIN) at Y = +1.5, +0.5, -0.5, -1.5; pad centers X = +2.0, so the tails span X 1.225 to 2.775 and protrude 1.1 beyond the housing rear face.",
+        "- Solder tabs (brass): footprint pads 1.8 (X) x 1.2 (Y) at X = -1.875, Y = +-2.8; the tab strap wraps the housing end face (it spans 0.4 beyond the housing end). Tab body geometry above the pad is UNCERTAIN: model a 1.2-wide, 0.2-thick strip along the housing end, 2.9 tall at LOD2 only.",
+        "- RESEARCH_REQUIRED: front cavity dimensions, contact thickness, tab strap geometry above the pad, max N, BM04B height confirmation.",
+        "- Dimensions M / Geometry L / Materials-appearance M. status: partial.\n- Conflicts kept: JST catalog read gives B = 4.25 (top entry) and 4.0 (side entry); KiCad and openpilot give 4.25 for the SM04B plan depth and 2.9 for the BM04B plan depth. Adopted the plan sizes from KiCad (two documents agree on 4.25 for SM). Height 2.9 (JST A, openpilot, Lion) vs 2.95 (Farnell). The earlier \"A = 6.0, B = 5.0\" mislabeling in one extraction is dismissed (B = 6.0 consistent across three).\n- Axis change: mating direction moved from +X to -X so that pin 1 at +Y is not a mirror image of the KiCad/JST pin-1 side (coordinator to confirm).\n- RESEARCH_REQUIRED: front cavity dimensions, contact thickness, tab strap geometry above the pad, max N, BM04B height confirmation.\n- Validation: A + 3.0 = 6.0 = B; KiCad fab outline x +-3.0; pads at 1.0 pitch symmetric about Y = 0; pad bounding box centered at X = 0 (-2.775 to +2.775).\n\n---",
+        "COSMETIC_PROVISIONAL end_wall=0.9: (6.0 mm default body length - 4.2 mm cavity)/2; fixed end allowance for N variants.",
+        "COSMETIC_PROVISIONAL top_wall=0.5: Borrow OHM-155 shroud wall; within BM04B 2.9 mm depth.",
+        "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+      ],
+      "appearance_confidence": "M",
+      "electrical_admission": "NOT_EVALUATED",
+      "footprint_binding": null,
+      "conflicts": [
+        {
+          "code": "SH_MATING_CONVENTION",
+          "geometry_choice": "Section 18.12 / entry -X supersedes general side-entry +Y; no mirror."
+        }
+      ],
+      "implementation_status": "IMPLEMENTED",
+      "implementation_group": "A"
+    },
+    "OHM-158": {
+      "provisional": true,
+      "uncertain_values": [
+        "housing_length: 5.08 (DERIVED/L)",
+        "housing_depth: 5.8 (DERIVED/L)",
+        "overall_height: 6.0 (UNCERTAIN/L)",
+        "- housing length N x 2.54 = 5.08 for N=2 (L, KiCad outline of sibling 22-27-2021); housing depth 5.8 (L); housing height 6.0 and post 0.64 square (UNCERTAIN placeholders, L)",
+        "- Partially shrouded nylon housing: OHMNI X from -2.88 to +2.92, Y from -N x 1.27 to +N x 1.27, Z from 0 to 6.0 (placeholder). A ramp-side back wall on the -X side, 1.0 thick (X -2.88 to -1.99), full length and height. The long +X side is open except for one wall stub per pin (0.6 thick X 2.32 to 2.92, 1.6 wide in Y, centered on the pin).",
+        "- Friction lock ramp (L): a block on the inside face of the back wall, protruding 0.53 (X -1.99 to -1.46), 2.54 wide at the wall tapering to 2.04 at its top, for a 2-circuit header; ramp height and vertical profile RESEARCH_REQUIRED (placeholder: wedge occupying the upper 2.0 mm of the wall). Ramp count for N > 2 not known.",
+        "- Posts 0.64 square (UNCERTAIN) at X = 0, Y = +-1.27 (N=2); post tip placeholder Z = 9.0.",
+        "- N brass posts, 0.64 square (UNCERTAIN), tin or gold; tail 3.56 below the board.",
+        "- tht_holes pitch 2.54, recommended PCB 1.6 (MOLEX-38006293, Farnell); hole diameter RESEARCH_REQUIRED (KiCad footprint drill 1.19 is a footprint-layer value); FCO hole center; body_offset (0, 0) (the housing is within 0.02 of centered on the pin row).",
+        "- Natural white or cream nylon with bright posts; some KK headers are black (not sourced).",
+        "- Resolved: tail 3.56 vs 10.00 (different part numbers); housing length rule N x 2.54 (first-pass placeholder N x 2.54 + 0.6 withdrawn); depth 5.8; ramp and stub plan layout (L).",
+        "- Dimensions L / Geometry L / Materials-appearance M. status: partial.\n- Resolved: tail 3.56 vs 10.00 (different part numbers); housing length rule N x 2.54 (first-pass placeholder N x 2.54 + 0.6 withdrawn); depth 5.8; ramp and stub plan layout (L).\n- Unresolved: 22-23-2021 (6373) vs 22-27-2021 (6410) envelope equivalence, housing height, ramp height/profile, post size, hole diameter, N range and ramp count.\n- Validation: pins at +-1.27 symmetric; outline x -1.27 to 3.81 = 2 x 2.54; tail four-source agreement.\n\n---",
+        "COSMETIC_PROVISIONAL floor=1.0: One sixth of the stated 6 mm housing height; connects walls without changing outer envelope.",
+        "COSMETIC_PROVISIONAL end_wall=0.6: Reuse the stated open-side stub thickness for end walls, inside row envelope.",
+        "COSMETIC_PROVISIONAL ramp_count=1: One centered ramp retained for N variants; source gives one for N=2 and no N>2 rule.",
+        "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+      ],
+      "appearance_confidence": "M",
+      "electrical_admission": "NOT_EVALUATED",
+      "footprint_binding": null,
+      "conflicts": [
+        {
+          "code": "KK_WALL_THICKNESS",
+          "geometry_choice": "Use explicit X=-2.88..-1.99 (0.89), rather than the rounded 1.0 wall prose."
+        },
+        {
+          "code": "KK_BODY_OFFSET",
+          "geometry_choice": "Use explicit outline -2.88..+2.92 (center +0.02); raw body_offset remains [0,0] as entry allows."
+        },
+        {
+          "code": "KK_STUB_POSITION",
+          "geometry_choice": "Entry +2.32..+2.92 wins over older family +2.43..+3.03."
+        }
+      ],
+      "implementation_status": "IMPLEMENTED",
+      "implementation_group": "A"
+    },
+    "OHM-159": {
+      "provisional": true,
+      "uncertain_values": [
+        "- Per position: a screw pocket on the top face centered on the pin axis (X = 0): round, about \u00d83.0 (L), with an M3 slotted screw head (slot orientation not confirmed); and a wire entry on a side face. Phoenix data: wire connection direction 0 deg (horizontal, parallel to the board). Entry face OHMNI +X (UNCERTAIN which long face). Entry window default 3.4 (Y) x 3.0 (Z) centered Z = 5.0 (UNCERTAIN, cosmetic).",
+        "- Top profile: RESEARCH_REQUIRED (no height data for steps). Default: flat top at 13.8 with the screw pockets 1.0 deep; the first-pass \"front deck 11.0\" step is withdrawn as unsupported.",
+        "- Green housing (Phoenix/most 5.08 blocks; blue for 5.0 mm alternatives not sourced), silver screws with a slot. Marking decals optional.",
+        "- Dimensions M / Geometry L / Materials-appearance M. status: partial.\n- Resolved: wire connection direction 0 deg (horizontal), pin 0.9 x 0.9 (three documents), tail 3.5, hole 1.3, body depth 9.8 (four documents).\n- Conflict kept: 13.8 total height. PXC-MKDS-BD lists 17.3 for the same family with 3.5 solder pin, which fits 13.8 + 3.5; if the 13.8 listings include the pin, body height would be 10.3 (the lower MKDSN series is 10.0 body). 13.8 adopted, 10.3 stored as min.\n- Unresolved: which long face is the wire entry, top profile and step heights, screw head diameter and slot orientation, entry window size, 5.0 mm pitch variants, Weidmuller/Camdenboss/Kuxin not opened.\n- Validation: pitch x N length; pin spacing 5.08 between outer pins; KiCad outline x -2.54 to 7.62 = 10.16.\n\n---",
+        "COSMETIC_PROVISIONAL window_depth=3.266666666666667: One third of stated housing depth; internal recess only.",
+        "COSMETIC_PROVISIONAL screw_head_height=0.5: Half the pocket depth; head stays recessed.",
+        "COSMETIC_PROVISIONAL slot_width=0.375: One eighth of specified/placeholder 3 mm head diameter.",
+        "COSMETIC_PROVISIONAL slot_length=2.4000000000000004: 80 percent of head diameter; slot stays inside head.",
+        "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+      ],
+      "appearance_confidence": "M",
+      "electrical_admission": "NOT_EVALUATED",
+      "footprint_binding": null,
+      "conflicts": [
+        {
+          "code": "SCREW_ENTRY_DIRECTION",
+          "geometry_choice": "Entry explicit +X wins over general Section 18 side-entry +Y."
+        },
+        {
+          "code": "SCREW_HEIGHT",
+          "geometry_choice": "Use adopted 13.8 above board with 3.5 tail; retain alternative 10.3 from ambiguous overall-height listings."
+        }
+      ],
+      "implementation_status": "IMPLEMENTED",
+      "implementation_group": "A"
+    },
+    "OHM-160": {
+      "provisional": true,
+      "uncertain_values": [
+        "- Per position: screw pocket on the top face centered on the pin axis (X = 0), round about \u00d83.0 (L), M3 slotted screw head; a wire entry on a side face (Phoenix: wire connection direction 0 deg, horizontal), OHMNI +X (UNCERTAIN which long face); entry window default 3.4 (Y) x 3.0 (Z) centered Z = 5.0 (UNCERTAIN, cosmetic).",
+        "- Top profile: RESEARCH_REQUIRED; default flat top at 13.8 with 1.0-deep screw pockets (first-pass front-deck step withdrawn).",
+        "- Dimensions M / Geometry L / Materials-appearance M. status: partial.\n- Same resolved items and open items as OHM-159 (height 13.8 vs 10.3 conflict, entry face, top profile).\n- Validation: pitch x N length; pin spacing 10.16 between outer pins; Farnell \"a\" for 3 positions = 15.24.\n\n---",
+        "COSMETIC_PROVISIONAL window_depth=3.266666666666667: One third of stated housing depth; internal recess only.",
+        "COSMETIC_PROVISIONAL screw_head_height=0.5: Half the pocket depth; head stays recessed.",
+        "COSMETIC_PROVISIONAL slot_width=0.375: One eighth of specified/placeholder 3 mm head diameter.",
+        "COSMETIC_PROVISIONAL slot_length=2.4000000000000004: 80 percent of head diameter; slot stays inside head.",
+        "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+      ],
+      "appearance_confidence": "M",
+      "electrical_admission": "NOT_EVALUATED",
+      "footprint_binding": null,
+      "conflicts": [
+        {
+          "code": "SCREW_ENTRY_DIRECTION",
+          "geometry_choice": "Entry explicit +X wins over general Section 18 side-entry +Y."
+        },
+        {
+          "code": "SCREW_HEIGHT",
+          "geometry_choice": "Use adopted 13.8 above board with 3.5 tail; retain alternative 10.3 from ambiguous overall-height listings."
+        }
+      ],
+      "implementation_status": "IMPLEMENTED",
+      "implementation_group": "A"
+    },
+    "OHM-161": {
+      "provisional": true,
+      "uncertain_values": [
+        "plug_length: 18.3 (UNCERTAIN/L)",
+        "plug_height: 15.0 (UNCERTAIN/L)",
+        "- Two sub-bodies: (1) header: green shroud 12.16 x 12.0 x 8.6 open on the +X face, with the contact pins inside and 1.0 square solder pins dropping to Z = -3.5 (the X position of the pin row inside the shroud is UNCERTAIN: placeholder row 3.0 mm from the rear face, so the shroud spans X from -3.0 to +9.0, body_offset X = +3.0); (2) plug: green body, screw heads on top and the wire entry on the +X rear end (in-line with the plug-in direction, screw M3, strip 7 mm), placeholder envelope X from +0.7 to +19.0 (18.3 long, seated about 8.3 inside the header), Y +-5.08, Z up to 15.0.",
+        "- Assembled state is the default; separated-state offset (along +X) is a parameter. The plug-to-shroud interlocking profile is not read, so the placeholder solids overlap; the LOD0 model uses the union.",
+        "- Vertical MSTBVA option: shroud 8.6 (X) x 12.16 (Y) x 12.0 (Z), plug inserted from +Z, wire entry then pointing +Z (UNCERTAIN). Coding feature: not read.",
+        "- tht_holes diameter 1.4 (PXC-MSTBA-2/10 and datasheet copies), pitch 5.08; FCO hole center; body_offset (+3.0, 0) (UNCERTAIN).",
+        "3. Plug box 18.3 x (N x 5.08) x 15.0 seated into the shroud (placeholder offset).",
+        "- Resolved in gap-fill: header shroud 12.16 x 12.0 x 8.6, solder pin 3.5 (3.9 vertical), both orientations consistent; first-pass placeholders 9.8 deep and 13.8 high for the assembly are withdrawn. The default header is now the right-angle MSTBA, so the plug direction is +X (the first pass said plug seats from +Z, which belongs to the vertical MSTBVA).",
+        "- Dimensions M (header) / L (plug) / Geometry L / Materials-appearance M. status: partial.\n- Resolved in gap-fill: header shroud 12.16 x 12.0 x 8.6, solder pin 3.5 (3.9 vertical), both orientations consistent; first-pass placeholders 9.8 deep and 13.8 high for the assembly are withdrawn. The default header is now the right-angle MSTBA, so the plug direction is +X (the first pass said plug seats from +Z, which belongs to the vertical MSTBVA).\n- Unresolved: plug dimensions per axis and seated depth, pin row position in the shroud, coding, plug-to-shroud profile, Wurth WR-TBL pluggable and Camdenboss not opened.\n- Validation: a = (N-1) x 5.08: 9 x 5.08 = 45.72 matches N=10; 12.16 = 10.16 + 2.0 consistent across MSTBA and MSTBVA; 12.1 - 3.5 = 8.6 and 15.9 - 3.9 = 12.0 total/body relations hold.\n\n\n---",
+        "COSMETIC_PROVISIONAL wall=0.5: Borrow OHM-155 0.5 mm shroud wall; keep header outer envelope fixed.",
+        "COSMETIC_PROVISIONAL internal_pin_z=4.3: Half of 8.6 mm header height; PCB pin axes unchanged.",
+        "COSMETIC_PROVISIONAL internal_pin_end=8.5: Header front X=9.0 minus cosmetic wall; inside header.",
+        "COSMETIC_PROVISIONAL screw_x=9.85: Center of specified plug X extent; Y positions follow pitch.",
+        "COSMETIC_PROVISIONAL pocket_depth=1.075: One eighth of header height, recessed into plug.",
+        "COSMETIC_PROVISIONAL window_width=3.3866666666666667: Two thirds of sourced contact pitch, centered on each row position.",
+        "COSMETIC_PROVISIONAL window_height=2.8666666666666667: One third of header height, inside 15 mm plug.",
+        "COSMETIC_PROVISIONAL window_z=5.0: One third of plug height; does not alter plug envelope.",
+        "COSMETIC_PROVISIONAL window_depth=3.0: One quarter of header depth, recessed from plug +X face.",
+        "COSMETIC_PROVISIONAL screw_head_height=0.5375: Half the pocket depth; head stays recessed.",
+        "COSMETIC_PROVISIONAL slot_width=0.375: One eighth of specified/placeholder 3 mm head diameter.",
+        "COSMETIC_PROVISIONAL slot_length=2.4000000000000004: 80 percent of head diameter; slot stays inside head.",
+        "Spec-only dimensional and appearance defaults; unsourced cosmetic details remain provisional."
+      ],
+      "appearance_confidence": "M",
+      "electrical_admission": "NOT_EVALUATED",
+      "footprint_binding": null,
+      "conflicts": [
+        {
+          "code": "PLUG_INTERLOCK_UNKNOWN",
+          "geometry_choice": "Use stated overlapping assembly envelopes with explicit provisional internal features; exact mating interlock/coding remains unknown."
+        },
+        {
+          "code": "PLUG_VERTICAL_LOCATION",
+          "geometry_choice": "Vertical shroud envelope is sourced but tail/body offset and plug placement are unspecified. Default right-angle supported; vertical assembly parameter rejected until coordinates are supplied."
+        }
+      ],
+      "implementation_status": "IMPLEMENTED",
+      "implementation_group": "A"
+    }
+  },
+  "cosmetic_defaults": {
+    "OHM-156": [
+      {
+        "feature": "slot_depth",
+        "value": 2.0,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Borrow OHM-155 PH slot depth; remains inside 7 mm XH body.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      }
+    ],
+    "OHM-157": [
+      {
+        "feature": "end_wall",
+        "value": 0.9,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "(6.0 mm default body length - 4.2 mm cavity)/2; fixed end allowance for N variants.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "top_wall",
+        "value": 0.5,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Borrow OHM-155 shroud wall; within BM04B 2.9 mm depth.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      }
+    ],
+    "OHM-158": [
+      {
+        "feature": "floor",
+        "value": 1.0,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "One sixth of the stated 6 mm housing height; connects walls without changing outer envelope.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "end_wall",
+        "value": 0.6,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Reuse the stated open-side stub thickness for end walls, inside row envelope.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "ramp_count",
+        "value": 1,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "One centered ramp retained for N variants; source gives one for N=2 and no N>2 rule.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      }
+    ],
+    "OHM-159": [
+      {
+        "feature": "window_depth",
+        "value": 3.266666666666667,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "One third of stated housing depth; internal recess only.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "screw_head_height",
+        "value": 0.5,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Half the pocket depth; head stays recessed.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "slot_width",
+        "value": 0.375,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "One eighth of specified/placeholder 3 mm head diameter.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "slot_length",
+        "value": 2.4000000000000004,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "80 percent of head diameter; slot stays inside head.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      }
+    ],
+    "OHM-160": [
+      {
+        "feature": "window_depth",
+        "value": 3.266666666666667,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "One third of stated housing depth; internal recess only.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "screw_head_height",
+        "value": 0.5,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Half the pocket depth; head stays recessed.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "slot_width",
+        "value": 0.375,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "One eighth of specified/placeholder 3 mm head diameter.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "slot_length",
+        "value": 2.4000000000000004,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "80 percent of head diameter; slot stays inside head.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      }
+    ],
+    "OHM-161": [
+      {
+        "feature": "wall",
+        "value": 0.5,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Borrow OHM-155 0.5 mm shroud wall; keep header outer envelope fixed.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "internal_pin_z",
+        "value": 4.3,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Half of 8.6 mm header height; PCB pin axes unchanged.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "internal_pin_end",
+        "value": 8.5,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Header front X=9.0 minus cosmetic wall; inside header.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "screw_x",
+        "value": 9.85,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Center of specified plug X extent; Y positions follow pitch.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "pocket_depth",
+        "value": 1.075,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "One eighth of header height, recessed into plug.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "window_width",
+        "value": 3.3866666666666667,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Two thirds of sourced contact pitch, centered on each row position.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "window_height",
+        "value": 2.8666666666666667,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "One third of header height, inside 15 mm plug.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "window_z",
+        "value": 5.0,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "One third of plug height; does not alter plug envelope.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "window_depth",
+        "value": 3.0,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "One quarter of header depth, recessed from plug +X face.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "screw_head_height",
+        "value": 0.5375,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "Half the pocket depth; head stays recessed.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "slot_width",
+        "value": 0.375,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "One eighth of specified/placeholder 3 mm head diameter.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      },
+      {
+        "feature": "slot_length",
+        "value": 2.4000000000000004,
+        "tag": "COSMETIC_PROVISIONAL",
+        "derivation": "80 percent of head diameter; slot stays inside head.",
+        "reason": "Noncritical appearance; does not alter contact coordinates, mating or outer envelope."
+      }
+    ]
+  },
+  "material_additions": {
+    "MAT_PLASTIC_NATURAL": [
+      "#DCCFB0",
+      0.5,
+      0
+    ],
+    "MAT_PLASTIC_GREEN_TERM": [
+      "#2E8B3E",
+      0.5,
+      0
+    ]
+  },
+  "limitations": [
+    "OHM-161 vertical assembly remains rejected because source gives no tail/body offset or plug placement. Default right-angle plus separated view implemented.",
+    "PH/XH side-entry variants remain unresolved and rejected; SH top/side variants supported.",
+    "No exact footprint binding or independent source re-verification.",
+    "LOD0 retains recognition/contact metadata and omits THT tails per entries. Optional base grooves and plating variation omitted."
+  ]
+}
