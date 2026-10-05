@@ -1,0 +1,3545 @@
+{
+  "attempts": {
+    "audit/AUD-BENCH-001": 1,
+    "audit/AUD-SOURCE-001": 1
+  },
+  "baseline_commit": "050507726684c120a942ae434088ba1a7e76579b",
+  "bench_contracts": {
+    "BEH-CAP-ALEL/B1": {
+      "expected": [
+        {
+          "basis": "sqrt(ESR^2+(1/wC)^2)",
+          "measure": "|Z| at 120 Hz (ohm)",
+          "tolerance": "0.1%",
+          "value": 13.2663
+        }
+      ],
+      "file": "docs/behavior/bench/cap-alel/B1.cir",
+      "netlist_sha256": "7236d5293ce14262533c0f178f931362aca669ee8240b442ccc76c5f2b0aa190"
+    },
+    "BEH-CAP-ALEL/B2": {
+      "expected": [
+        {
+          "basis": "Irms^2*ESR",
+          "measure": "P (W)",
+          "tolerance": "1%",
+          "value": 0.3
+        }
+      ],
+      "file": "docs/behavior/bench/cap-alel/B2.cir",
+      "netlist_sha256": "f320a0841da84a09de13885f3e456ea4a39f53ea62fd2e927a9d6b160775ded5"
+    },
+    "BEH-CAP-ALEL/B3": {
+      "expected": [
+        {
+          "basis": "bit 2",
+          "measure": "flag at -1.5 V",
+          "tolerance": "exact",
+          "value": 2
+        }
+      ],
+      "file": "docs/behavior/bench/cap-alel/B3.cir",
+      "netlist_sha256": "775206c79af3535d04d32b556c16ceef4f57dd4a44093d8fdcae7af1f4212688"
+    },
+    "BEH-CAP-ALEL/B4": {
+      "expected": [
+        {
+          "basis": "0.3*2^(50/20)",
+          "measure": "ESR at -25 C (ohm)",
+          "tolerance": "0.1%",
+          "value": 1.69706
+        }
+      ],
+      "file": "docs/behavior/bench/cap-alel/B4.cir",
+      "netlist_sha256": "7c62588503f10a6905efaaef81b95b8e24ab54a15c943a6ff5133d43897e598e"
+    },
+    "BEH-CAP-ALPOLY/B1": {
+      "expected": [
+        {
+          "basis": "1/(2*pi*sqrt(L*C))",
+          "measure": "f0 (kHz)",
+          "tolerance": "0.5%",
+          "value": 225.08
+        }
+      ],
+      "file": "docs/behavior/bench/cap-alpoly/B1.cir",
+      "netlist_sha256": "0475fc2562e76b8175f61bfa2da1acfe2b4e3e379e8c2ab018d3d3daca84bab7"
+    },
+    "BEH-CAP-ALPOLY/B2": {
+      "expected": [
+        {
+          "basis": "ramp-charge formula",
+          "measure": "peak current RS=0.1 (A)",
+          "tolerance": "2%",
+          "value": 39.97
+        }
+      ],
+      "file": "docs/behavior/bench/cap-alpoly/B2.cir",
+      "netlist_sha256": "ac38e08b2e1f8f0a0f85145a5040af5a002158cca94ade4f3aaad037543ebaab"
+    },
+    "BEH-CAP-CERAMIC/B1": {
+      "expected": [
+        {
+          "basis": "C0/(1+(V/V0)^2)",
+          "measure": "Ceff at 0/1/2/4 V (uF)",
+          "tolerance": "0.1%",
+          "value": "10/8/5/2"
+        }
+      ],
+      "file": "docs/behavior/bench/cap-ceramic/B1.cir",
+      "netlist_sha256": "dc08a97e4a74c490b22e7ca7d956d56f63e52f1d010464704b761913c0cdfdec"
+    },
+    "BEH-CAP-CERAMIC/B2": {
+      "expected": [
+        {
+          "basis": "1/(2*pi*sqrt(L*C))",
+          "measure": "SRF (MHz)",
+          "tolerance": "0.5%",
+          "value": 1.9023
+        },
+        {
+          "basis": "ESR",
+          "measure": "Zmin (mohm)",
+          "tolerance": "1%",
+          "value": 5
+        }
+      ],
+      "file": "docs/behavior/bench/cap-ceramic/B2.cir",
+      "netlist_sha256": "dc98551848e27467a3c18a6c802f568943327eac6399736b02cad5bd44dd2f44"
+    },
+    "BEH-CAP-CERAMIC/B3": {
+      "expected": [
+        {
+          "basis": "v0*exp(-1)",
+          "measure": "v(t0+tau) (V)",
+          "tolerance": "0.5%",
+          "value": 1.821
+        }
+      ],
+      "file": "docs/behavior/bench/cap-ceramic/B3.cir",
+      "netlist_sha256": "461a68a5d3f7a46c3a9cd9e03b4ecd6527edc300c9dc2cd1ddbe09e13de6cf67"
+    },
+    "BEH-CAP-CERAMIC/B4": {
+      "expected": [
+        {
+          "basis": "ramp 1 V/s, VR=10",
+          "measure": "flag edge (s)",
+          "tolerance": "0.05",
+          "value": 10.0
+        }
+      ],
+      "file": "docs/behavior/bench/cap-ceramic/B4.cir",
+      "netlist_sha256": "3307d9ef14e028edb4a74e8245a207fbde5c6f3bc7e591bd32a7113fdead739a"
+    },
+    "BEH-CAP-EDLC/B1": {
+      "expected": [
+        {
+          "basis": "V0*exp(-1)",
+          "measure": "v(tau) (V)",
+          "tolerance": "0.1%",
+          "value": 0.9197
+        }
+      ],
+      "file": "docs/behavior/bench/cap-edlc/B1.cir",
+      "netlist_sha256": "1c3cff19dd01609d5e77326cdcbff45d1ca67f2e0edb9574d7d03d1e9b85ce77"
+    },
+    "BEH-CAP-EDLC/B2": {
+      "expected": [
+        {
+          "basis": "leakage divider",
+          "measure": "v1/v2 (V)",
+          "tolerance": "0.1%",
+          "value": "1.6667/3.3333"
+        }
+      ],
+      "file": "docs/behavior/bench/cap-edlc/B2.cir",
+      "netlist_sha256": "d3f5630b8040671c836d79f11ecd83a8a43ef9d70e11df2f47cd95bec5dc2c88"
+    },
+    "BEH-CAP-EDLC/B3": {
+      "expected": [
+        {
+          "basis": "V0/(ESR+Rs)",
+          "measure": "Ipk (A)",
+          "tolerance": "1%",
+          "value": 119.05
+        },
+        {
+          "basis": "0.5*C*V0^2",
+          "measure": "E (J)",
+          "tolerance": "1%",
+          "value": 31.25
+        }
+      ],
+      "file": "docs/behavior/bench/cap-edlc/B3.cir",
+      "netlist_sha256": "21ef3f048e6839fc7ea6a892d6c2d387ef694b67496fcb979838d88b8a853e4d"
+    },
+    "BEH-CAP-FILM/B1": {
+      "expected": [
+        {
+          "basis": "ESR*w*C",
+          "measure": "tan delta at 1 kHz",
+          "tolerance": "0.1%",
+          "value": 0.002
+        }
+      ],
+      "file": "docs/behavior/bench/cap-film/B1.cir",
+      "netlist_sha256": "b98c113635abab21b6c6f464b09570ec152bdea1b5f90ac9e8288d89d8ed514d"
+    },
+    "BEH-CAP-FILM/B2": {
+      "expected": [
+        {
+          "basis": "1/(2*pi*sqrt(L*C))",
+          "measure": "f0 (MHz)",
+          "tolerance": "0.5%",
+          "value": 1.2995
+        }
+      ],
+      "file": "docs/behavior/bench/cap-film/B2.cir",
+      "netlist_sha256": "b6aa9769c99c1b78a13f767c2bf41161d11ebb971bec46ce55922f24b302aa7c"
+    },
+    "BEH-CAP-FILM/B3": {
+      "expected": [
+        {
+          "basis": "VRPK 388.9",
+          "measure": "flag at 400 V amplitude",
+          "tolerance": "exact",
+          "value": 1
+        }
+      ],
+      "file": "docs/behavior/bench/cap-film/B3.cir",
+      "netlist_sha256": "d6463df587515834a413d759048669d96e70108846b5cf7417b2e089b1be7e0b"
+    },
+    "BEH-CAP-MICA/B1": {
+      "expected": [
+        {
+          "basis": "C0*(1+TC*1e-6*100)",
+          "measure": "C at 125 C (pF)",
+          "tolerance": "0.1%",
+          "value": 100.7
+        }
+      ],
+      "file": "docs/behavior/bench/cap-mica/B1.cir",
+      "netlist_sha256": "bc5876847243641c38992ea159429696b3cb1c21dbfbf357320670af8dd035d8"
+    },
+    "BEH-CAP-MICA/B2": {
+      "expected": [
+        {
+          "basis": "1/(w*C*ESR)",
+          "measure": "Q at 1 MHz",
+          "tolerance": "0.5%",
+          "value": 1000
+        }
+      ],
+      "file": "docs/behavior/bench/cap-mica/B2.cir",
+      "netlist_sha256": "7a169031805ad593323026b1766a50186c0d7a1d4b8753415431a2ab0369d741"
+    },
+    "BEH-CAP-TANT/B1": {
+      "expected": [
+        {
+          "basis": "0.1*C_uF*V",
+          "measure": "leakage current (uA)",
+          "tolerance": "0.1%",
+          "value": 50
+        }
+      ],
+      "file": "docs/behavior/bench/cap-tant/B1.cir",
+      "netlist_sha256": "ca6d9adadb434bdbe2c959ed4a90ff650db9a469116eebcef4b3d020400b2d98"
+    },
+    "BEH-CAP-TANT/B2": {
+      "expected": [
+        {
+          "basis": "0.5*16",
+          "measure": "bit 1 edge (V)",
+          "tolerance": "0.05",
+          "value": 8.0
+        },
+        {
+          "basis": "1.32*16",
+          "measure": "bit 8 edge (V)",
+          "tolerance": "0.05",
+          "value": 21.12
+        }
+      ],
+      "file": "docs/behavior/bench/cap-tant/B2.cir",
+      "netlist_sha256": "4d523857c2cf0338ef8ff2bd50639dbd9aa4b0da7913cd6339a243aee3387b82"
+    },
+    "BEH-CAP-TANT/B3": {
+      "expected": [
+        {
+          "basis": "0.03*16",
+          "measure": "reverse flag edge (V)",
+          "tolerance": "0.02",
+          "value": -0.48
+        }
+      ],
+      "file": "docs/behavior/bench/cap-tant/B3.cir",
+      "netlist_sha256": "29bd8e2442ff8327f436356030c1d47300d5173b71f81e15b9dad8a073c7281e"
+    },
+    "BEH-CON-AUDIO/B1": {
+      "expected": [
+        {
+          "basis": "8/(8+10+0.03)",
+          "measure": "v_before",
+          "tolerance": "0.1%",
+          "value": 0.44371
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-audio/B1_switch.cir",
+      "netlist_sha256": "826310805e6ad83cf4fbbbfaf284b5832b5eaf00b07cf8b1008ac0504dae761a"
+    },
+    "BEH-CON-AUDIO/B2": {
+      "expected": [
+        {
+          "basis": "32/32.06",
+          "measure": "gain",
+          "tolerance": "0.1%",
+          "value": 0.998129
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-audio/B2_ring_switch_rc.cir",
+      "netlist_sha256": "e637e04c7865a66d0dac73fa04464a8fa51b9b0bb7dccd09d7447db051675ed4"
+    },
+    "BEH-CON-DCJACK/B1": {
+      "expected": [
+        {
+          "basis": "I*R",
+          "measure": "v_drop",
+          "tolerance": "0.1%",
+          "value": 0.075
+        },
+        {
+          "basis": "P Rth/(1-P alpha Rth)",
+          "measure": "dT",
+          "tolerance": "0.1%",
+          "value": 33.975
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-dcjack/B1.cir",
+      "netlist_sha256": "6e28c8e682239d9b55be925cfef03c81b4d430ebba08bcabed901243bb07d74d"
+    },
+    "BEH-CON-DCJACK/B2": {
+      "expected": [
+        {
+          "basis": "divider",
+          "measure": "vload_unplugged",
+          "tolerance": "0.01%",
+          "value": 8.9865
+        },
+        {
+          "basis": "divider",
+          "measure": "vload_plugged",
+          "tolerance": "0.01%",
+          "value": 11.9964
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-dcjack/B2.cir",
+      "netlist_sha256": "df6828307c99515b245c9ccc7f29f2f242d9382d18f0662cc3b8e19266d7495d"
+    },
+    "BEH-CON-FFC/B1": {
+      "expected": [
+        {
+          "basis": "I*R",
+          "measure": "v_drop",
+          "tolerance": "0.1%",
+          "value": 0.025
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-ffc/B1.cir",
+      "netlist_sha256": "589aabbebf38fe72b452231653ea45d2c04f6c9d315a2eebcfb78a9579ec78ac"
+    },
+    "BEH-CON-FFC/B2": {
+      "expected": [
+        {
+          "basis": "current divider",
+          "measure": "i_contact1",
+          "tolerance": "0.01%",
+          "value": 0.567714
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-ffc/B2.cir",
+      "netlist_sha256": "7e4bc18e6d30677353e1c29f50ba5eb06fc53cd77e638dc21ef86fb08b58a608"
+    },
+    "BEH-CON-HDMI/B1": {
+      "expected": [
+        {
+          "basis": "10mA*(50+0.02)",
+          "measure": "vdiff",
+          "tolerance": "0.1%",
+          "value": 0.5002
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-hdmi/B1_tmds_term.cir",
+      "netlist_sha256": "c00293ae77c2b4e96317d1cb3bbbd1138ed5075b0a7dfdba297a128d7efd2eb2"
+    },
+    "BEH-CON-HDMI/B2": {
+      "expected": [
+        {
+          "basis": "0.5*(1+gamma)",
+          "measure": "vload_first",
+          "tolerance": "0.5%",
+          "value": 0.45946
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-hdmi/B2_tline_mismatch.cir",
+      "netlist_sha256": "abd1d273e9bb32ae68d5023e71b43867db784429857b659b5ee9233217194313"
+    },
+    "BEH-CON-HEADER/B1": {
+      "expected": [
+        {
+          "basis": "divider",
+          "measure": "V_load",
+          "tolerance": "0.1%",
+          "value": 4.90196
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-header/B1.cir",
+      "netlist_sha256": "68e1f9ab9c5adf339a9e67249401f7174bb882e50c51369cb65b53e1706e9931"
+    },
+    "BEH-CON-HEADER/B2": {
+      "expected": [
+        {
+          "basis": "divider",
+          "measure": "v(b)",
+          "tolerance": "0.1%",
+          "value": 3.26732
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-header/B2.cir",
+      "netlist_sha256": "8e287892e0185bbf428d492c812e6c59b224ed79a36f12df327f6f2222d7557e"
+    },
+    "BEH-CON-HEADER/B3": {
+      "expected": [
+        {
+          "basis": "closed form",
+          "measure": "dT",
+          "tolerance": "0.1%",
+          "value": 33.975
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-header/B3.cir",
+      "netlist_sha256": "957325b848941c813c339e1fa2047421aa0da74272e3c5079748ed0dbc8c9fdc"
+    },
+    "BEH-CON-HEADER/B4": {
+      "expected": [
+        {
+          "basis": "R/(2 pi L)",
+          "measure": "f3db",
+          "tolerance": "1%",
+          "value": "1.9894e9"
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-header/B4.cir",
+      "netlist_sha256": "9420dea6e8cc6c84066a91e2bbefb10f3ae79b634b373a479bb5ff188de6cf25"
+    },
+    "BEH-CON-MODJACK/B1": {
+      "expected": [
+        {
+          "basis": "1.5*0.020",
+          "measure": "drop",
+          "tolerance": "0.1%",
+          "value": 0.03
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-modjack/B1_rc_drop.cir",
+      "netlist_sha256": "53d55fd25dd95639c8c79e2c1a74331d77529e4ed79dfc5d1c420cf644f973b4"
+    },
+    "BEH-CON-MODJACK/B2": {
+      "expected": [
+        {
+          "basis": "-48-90*sqrt(2)",
+          "measure": "vmin",
+          "tolerance": "0.1%",
+          "value": -175.279
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-modjack/B2_ring_peak.cir",
+      "netlist_sha256": "0eded63185ac7b79ba054b21b00a8b3cef1d2611742e4801252058b1e1472d77"
+    },
+    "BEH-CON-MODJACK/B3": {
+      "expected": [
+        {
+          "basis": "100/200.04",
+          "measure": "gain",
+          "tolerance": "0.1%",
+          "value": 0.4999
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-modjack/B3_pair_100ohm.cir",
+      "netlist_sha256": "18a91f79c1af24774bfe282834087f2b7fcc31c5e3ed81c18d2643b03ad535c9"
+    },
+    "BEH-CON-RF/B1": {
+      "expected": [
+        {
+          "basis": "(1+G)/(1-G)",
+          "measure": "vswr",
+          "tolerance": "0.01%",
+          "value": 2.0
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-rf/B1.cir",
+      "netlist_sha256": "3a92899082c1484b70a13df84ae5d209a98d54e174c8906749de9af3a41d2b54"
+    },
+    "BEH-CON-RF/B2": {
+      "expected": [
+        {
+          "basis": "x/sqrt(4+x^2)",
+          "measure": "gamma_C",
+          "tolerance": "0.01%",
+          "value": 0.093832
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-rf/B2.cir",
+      "netlist_sha256": "bc326dc16ca2e60f4f4690ab71b2b31a4d63bd817f15423890a6950169dbb4c0"
+    },
+    "BEH-CON-RF/B3": {
+      "expected": [
+        {
+          "basis": "(50-Zc^2/50)/(50+Zc^2/50)",
+          "measure": "gamma_step",
+          "tolerance": "0.01%",
+          "value": 0.219512
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-rf/B3.cir",
+      "netlist_sha256": "046fd0c7bf886405bf35cbdc925a3877b4fa90e8f96dea64df7bade78a4bee83"
+    },
+    "BEH-CON-SDSOCKET/B1": {
+      "expected": [
+        {
+          "basis": "divider",
+          "measure": "v_cd_open",
+          "tolerance": "0.01%",
+          "value": 3.299845
+        },
+        {
+          "basis": "divider",
+          "measure": "v_cd_closed",
+          "tolerance": "0.01%",
+          "value": 7.021e-06
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-sd/B1.cir",
+      "netlist_sha256": "78d4632f3a706a808cd403893f28fef2b4ecc89faa19d7362199ffd7799c9573"
+    },
+    "BEH-CON-SDSOCKET/B2": {
+      "expected": [
+        {
+          "basis": "3.3-I*Rout",
+          "measure": "vcc_loaded",
+          "tolerance": "0.1%",
+          "value": 3.2
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-sd/B2.cir",
+      "netlist_sha256": "d3f31fbc83e40f3ec9ecce8cecfb4d99f50a47c952b3dae3b56ca97853248392"
+    },
+    "BEH-CON-TERMINAL/B1": {
+      "expected": [
+        {
+          "basis": "10 A > 9.6 A",
+          "measure": "flag",
+          "tolerance": "exact",
+          "value": 1
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-terminal/B1.cir",
+      "netlist_sha256": "a69f9a396e788448c87e6b51e4bfb0dae7b7febdaa50e0771e506153103e15fd"
+    },
+    "BEH-CON-TERMINAL/B2": {
+      "expected": [
+        {
+          "basis": "closed form",
+          "measure": "dT",
+          "tolerance": "0.1%",
+          "value": 33.975
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-terminal/B2.cir",
+      "netlist_sha256": "ef01790982e42305f8d4b0d5bcab1a64dc9326c05fbe2563ca5ff42ef39f68f0"
+    },
+    "BEH-CON-USB/B1": {
+      "expected": [
+        {
+          "basis": "5 - I*Rc/4*2",
+          "measure": "v_load_5A",
+          "tolerance": "0.1%",
+          "value": 4.9
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-usb/B1_vbus_drop.cir",
+      "netlist_sha256": "5b186ed5b5f91b0a0ab7c56c98947cbc45a9ee4b77f94a8412bf94e8a75eb207"
+    },
+    "BEH-CON-USB/B2": {
+      "expected": [
+        {
+          "basis": "5*5.1/61.1",
+          "measure": "vcc_56k",
+          "tolerance": "0.1%",
+          "value": 0.41735
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-usb/B2_cc_rd_divider.cir",
+      "netlist_sha256": "7ad9e7e9628ac7ae671aaf914173d1e3b697050584da43809f99eb5d9b7c9a8e"
+    },
+    "BEH-CON-USB/B3": {
+      "expected": [
+        {
+          "basis": "1/(2 pi 22.5 1p)",
+          "measure": "f3dB",
+          "tolerance": "1%",
+          "value": "7.074e9"
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-usb/B3_pair_term.cir",
+      "netlist_sha256": "543800f478e4f6ef035dfde61ecf50e13d05ba1c10e3f7750cc1105a24e851b6"
+    },
+    "BEH-CON-USB/B4": {
+      "expected": [
+        {
+          "basis": "3.3*15/16.5",
+          "measure": "v_dp",
+          "tolerance": "0.1%",
+          "value": 3.0
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-usb/B4_fs_id.cir",
+      "netlist_sha256": "5fe6dee54629c99de36555004618b8466860570d54fd77b81946e8694fa6c913"
+    },
+    "BEH-CON-USB/B5": {
+      "expected": [
+        {
+          "basis": "5*100/100.01",
+          "measure": "vbus_on_load",
+          "tolerance": "0.1%",
+          "value": 4.9995
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-usb/B5_dfp_vbus_enable.cir",
+      "netlist_sha256": "98295c768735e15a0f912937cf5bbe875191dc775af71ee5fcec127c2a0a8d42"
+    },
+    "BEH-CON-WTB/B1": {
+      "expected": [
+        {
+          "basis": "diode drop 0.75 V",
+          "measure": "i_straight",
+          "tolerance": "5%",
+          "value": 0.0425
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-wtb/B1.cir",
+      "netlist_sha256": "af8a99d27d26287cdd84a7b259092f0f25b50d0134e001f0afcd44ca0f58bc20"
+    },
+    "BEH-CON-WTB/B2": {
+      "expected": [
+        {
+          "basis": "divider",
+          "measure": "V_load",
+          "tolerance": "0.1%",
+          "value": 4.55158
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-wtb/B2.cir",
+      "netlist_sha256": "fccf5ad4b611642054c9e114ae9578e2b386c013194ca5daab6c6971605ebb70"
+    },
+    "BEH-CON-XT/B1": {
+      "expected": [
+        {
+          "basis": "I^2 R",
+          "measure": "P_xt60",
+          "tolerance": "0.1%",
+          "value": 0.495
+        },
+        {
+          "basis": "P Rth/(1-P alpha Rth)",
+          "measure": "dT",
+          "tolerance": "0.1%",
+          "value": 33.975
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-xt/B1.cir",
+      "netlist_sha256": "c613a5896b2f9d9afa11f5e34bb56251159a945296634f5a750edaa039a48249"
+    },
+    "BEH-CON-XT/B2": {
+      "expected": [
+        {
+          "basis": "tau",
+          "measure": "t63",
+          "tolerance": "1%",
+          "value": 137.26
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-xt/B2.cir",
+      "netlist_sha256": "df676983e682ee3138cac9845f34f872cc4d2e116d82f7b1824df78160d2730f"
+    },
+    "BEH-DIO-BRIDGE/B1": {
+      "expected": [
+        {
+          "basis": "solve",
+          "measure": "Vpk",
+          "tolerance": "0.5%",
+          "value": 8.4253
+        },
+        {
+          "basis": "numerical integral",
+          "measure": "Vavg",
+          "tolerance": "0.5%",
+          "value": 4.9287
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-bridge/B1_fullwave_load.cir",
+      "netlist_sha256": "07a175ac644ca384e8b8a4cf187e0554f74b2510450bcbad6e2841d718dd1274"
+    },
+    "BEH-DIO-BRIDGE/B2": {
+      "expected": [
+        {
+          "basis": "I/(2fC)",
+          "measure": "ripple",
+          "tolerance": "bound",
+          "value": "<= 0.677 V"
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-bridge/B2_filtered.cir",
+      "netlist_sha256": "988e865a2be023d64a30d11030d1776f26034671d806fc506ffe2053d7a27f5c"
+    },
+    "BEH-DIO-BRIDGE/B3": {
+      "expected": [
+        {
+          "basis": "solve",
+          "measure": "reverse DC current",
+          "tolerance": "0.5%",
+          "value": 0.0357368
+        },
+        {
+          "basis": "leakage",
+          "measure": "blocked current",
+          "tolerance": "n/a",
+          "value": "< 1e-6"
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-bridge/B3_polarity.cir",
+      "netlist_sha256": "c33b30ad6132402bccf50d8a97a8365b984f445e3e53f5947bbd2a2ca02b07c2"
+    },
+    "BEH-DIO-PN/B1": {
+      "expected": [
+        {
+          "basis": "Shockley+RS",
+          "measure": "V at 10 mA",
+          "tolerance": "1 mV",
+          "value": 0.73039
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-pn/B1_fwd_iv.cir",
+      "netlist_sha256": "8dffd8f6985236af4d99116aa263af199cdcdb5fc7c245e50fe3f888153ca5ec"
+    },
+    "BEH-DIO-PN/B2": {
+      "expected": [
+        {
+          "basis": "TT*ln(1+IF/IRM)+RC tail",
+          "measure": "trr",
+          "tolerance": "20% of estimate",
+          "value": "<= 4 ns (datasheet); storage estimate 3.2 ns"
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-pn/B2_trr.cir",
+      "netlist_sha256": "9513063174434a820a207bb6f8a4aa43f7e7a8a9c0bd2bd54fe5c5c1838f7279"
+    },
+    "BEH-DIO-PN/B3": {
+      "expected": [
+        {
+          "basis": "solve 10=Vd(I)+100*I",
+          "measure": "Vpk",
+          "tolerance": "0.5%",
+          "value": 9.2083
+        },
+        {
+          "basis": "numerical integral",
+          "measure": "Vavg",
+          "tolerance": "0.5%",
+          "value": 2.8114
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-pn/B3_halfwave_1N4007.cir",
+      "netlist_sha256": "8cdba23dc5795e471d54176b0eb70efee64d4ba804c0fb99c05dd866d308f67f"
+    },
+    "BEH-DIO-PN/B4": {
+      "expected": [
+        {
+          "basis": "CJO/(1+VR/VJ)^M",
+          "measure": "CJ at 4 V",
+          "tolerance": "2%",
+          "value": 1.5e-11
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-pn/B4_cj_ac.cir",
+      "netlist_sha256": "6b6ca39ee892607314b73c505ecb7b9e11bf2e17734fd249322a6e5254f57e29"
+    },
+    "BEH-DIO-PN/B5": {
+      "expected": [
+        {
+          "basis": "BV at IBV",
+          "measure": "V at 100 uA reverse",
+          "tolerance": "1%",
+          "value": 100.0
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-pn/B5_breakdown.cir",
+      "netlist_sha256": "ca60d43378e4d4b97cbb974e48461a5e0cded28d9060e1c4e5f32757f479ad61"
+    },
+    "BEH-DIO-PN/B6": {
+      "expected": [
+        {
+          "basis": "solve",
+          "measure": "high clamp",
+          "tolerance": "5 mV",
+          "value": 5.6847
+        },
+        {
+          "basis": "solve",
+          "measure": "low clamp",
+          "tolerance": "5 mV",
+          "value": -0.7262
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-pn/B6_dual_clamp.cir",
+      "netlist_sha256": "e9f7cd6d87fc46c904546e35f20c371675e3aa23be5c773fc0c17f8da7affdf8"
+    },
+    "BEH-DIO-PN/B7": {
+      "expected": [
+        {
+          "basis": "ngspice IS(T) formula",
+          "measure": "VF at 100 C, 10 mA",
+          "tolerance": "1 mV",
+          "value": 0.615604
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-pn/B7_vf_temp.cir",
+      "netlist_sha256": "805c356fc03f568801e42d6b92b658d1ba940f00bdb7ec52eeba8c3d2ad6ece9"
+    },
+    "BEH-DIO-SCHOTTKY/B1": {
+      "expected": [
+        {
+          "basis": "fit anchor",
+          "measure": "V at 1 A",
+          "tolerance": "5 mV",
+          "value": 0.5
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-schottky/B1_fwd_iv.cir",
+      "netlist_sha256": "ce4f584cb70a767d35def3fb98def8557c50d2244ff6de925f26437489c0c99e"
+    },
+    "BEH-DIO-SCHOTTKY/B2": {
+      "expected": [
+        {
+          "basis": "datasheet",
+          "measure": "IR 25C",
+          "tolerance": "1%",
+          "value": 0.0002
+        },
+        {
+          "basis": "datasheet",
+          "measure": "IR 100C",
+          "tolerance": "1%",
+          "value": 0.005
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-schottky/B2_leak_temp.cir",
+      "netlist_sha256": "cbf6f9c5a3c5e010d7e139890763b96f31c6f3f62befaf11bd37a30f74031e66"
+    },
+    "BEH-DIO-SCHOTTKY/B3": {
+      "expected": [
+        {
+          "basis": "fixed point",
+          "measure": "Tj at Ta 60C",
+          "tolerance": "0.1 C",
+          "value": 63.7072
+        },
+        {
+          "basis": "threshold Ta 83.2 C",
+          "measure": "runaway at Ta 95C",
+          "tolerance": "n/a",
+          "value": "diverges"
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-schottky/B3_thermal_runaway.cir",
+      "netlist_sha256": "6cde22a07d52a005ce67231af572eb0ba595bc9bf24d9544c2776a5a6c2386b8"
+    },
+    "BEH-DIO-TVS/B1": {
+      "expected": [
+        {
+          "basis": "datasheet VC",
+          "measure": "V at 24.6 A",
+          "tolerance": "0.5%",
+          "value": 24.4
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-tvs/B1_vc_ipp.cir",
+      "netlist_sha256": "a1f44f588f3fefe33edb85ccd93c846f83e3b03ed62a332c25f0a8c9afc903da"
+    },
+    "BEH-DIO-TVS/B2": {
+      "expected": [
+        {
+          "basis": "VC*IPP at 24.0 A",
+          "measure": "Ppeak",
+          "tolerance": "2%",
+          "value": 582
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-tvs/B2_surge_clamp.cir",
+      "netlist_sha256": "1677fe2af05a855fec84078147a67c8d181c0d657f6a941c2263fb82f6a21115"
+    },
+    "BEH-DIO-TVS/B3": {
+      "expected": [
+        {
+          "basis": "symmetry",
+          "measure": "V at +/-24.6 A",
+          "tolerance": "0.5%",
+          "value": 24.4
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-tvs/B3_bidir.cir",
+      "netlist_sha256": "474a8a4069e97f3fe6cc187749622e2315fa9b89c4ec57ee771eadfd61fd7f95"
+    },
+    "BEH-DIO-ZENER/B1": {
+      "expected": [
+        {
+          "basis": "fit",
+          "measure": "VZ",
+          "tolerance": "10 mV",
+          "value": 5.1
+        },
+        {
+          "basis": "datasheet max",
+          "measure": "rZ",
+          "tolerance": "1 ohm",
+          "value": 35.0
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-zener/B1_vz_rz.cir",
+      "netlist_sha256": "bf8f3b0ae809d16e0779fc1ed9b16de5242820fb6740c4e08707f78442e51768"
+    },
+    "BEH-DIO-ZENER/B2": {
+      "expected": [
+        {
+          "basis": "linear rZ",
+          "measure": "Vout",
+          "tolerance": "1%",
+          "value": 5.2441
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-zener/B2_regulator.cir",
+      "netlist_sha256": "d569be201eb0add4a27836436fd3a8d0972b5a257f1914ba9ad594de1a11a381"
+    },
+    "BEH-DIO-ZENER/B3": {
+      "expected": [
+        {
+          "basis": "rZ(I) divider",
+          "measure": "dVout/dVin",
+          "tolerance": "5%",
+          "value": 0.0547
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-zener/B3_line_reg.cir",
+      "netlist_sha256": "3f8c2451e4b375087ff02d8e587c1bf047a67140f6634454dc270c70b711d422"
+    },
+    "BEH-DISP-LCD1602/B1": {
+      "expected": [
+        {
+          "basis": "(5-4.1)/9",
+          "measure": "I_backlight",
+          "tolerance": "1%",
+          "value": 0.1
+        }
+      ],
+      "file": "docs/behavior/bench/beh-lcd1602/B1_backlight_resistor.cir",
+      "netlist_sha256": "9e02cac4b7b46d934cd0fa9a240166018535e1dc6c9c6d5d486315d60e830328"
+    },
+    "BEH-DISP-LCD1602/B2": {
+      "expected": [
+        {
+          "basis": "VDD - V0 = 5 - 1.0 (divider 2k/10k)",
+          "measure": "VLCD",
+          "tolerance": "0.1%",
+          "value": 4.0
+        }
+      ],
+      "file": "docs/behavior/bench/beh-lcd1602/B2_contrast_divider.cir",
+      "netlist_sha256": "0e13e3b30509ab86a9c1de2f8605dd7952d72caf254e098408058fab6fb35857"
+    },
+    "BEH-DISP-LEDARRAY/B1": {
+      "expected": [
+        {
+          "basis": "0.124*Ion",
+          "measure": "I_led_avg",
+          "tolerance": "1%",
+          "value": 0.0024802
+        }
+      ],
+      "file": "docs/behavior/bench/beh-led-mux/B1_matrix_scan.cir",
+      "netlist_sha256": "534b0d4afb36093d9d17da1915e9a1e7b2a0b22b0fcc04c114d04329a3fce4b0"
+    },
+    "BEH-DISP-LEDARRAY/B2": {
+      "expected": [
+        {
+          "basis": "0.249*Ion",
+          "measure": "I_digit_avg",
+          "tolerance": "1%",
+          "value": 0.0047023
+        }
+      ],
+      "file": "docs/behavior/bench/beh-led-mux/B2_digit_mux4.cir",
+      "netlist_sha256": "4478d672ed320fdb30137e5e2c193700436e404cfa0689faff2b5dcb7ef7fa98"
+    },
+    "BEH-DISP-OLED-I2C/B1": {
+      "expected": [
+        {
+          "basis": "0.8473*R*C",
+          "measure": "tr 30-70",
+          "tolerance": "2%",
+          "value": 1.9912e-07
+        }
+      ],
+      "file": "docs/behavior/bench/beh-oled-ssd1306/B1_i2c_pullup_rise.cir",
+      "netlist_sha256": "b942eae26bfbdfbdbc80612fc49a91a239ea99c47184e8e35df4e27d9cea105e"
+    },
+    "BEH-DISP-OLED-I2C/B2": {
+      "expected": [
+        {
+          "basis": "3.3-R*I",
+          "measure": "Vdd",
+          "tolerance": "0.1%",
+          "value": 3.2895
+        }
+      ],
+      "file": "docs/behavior/bench/beh-oled-ssd1306/B2_supply_load_step.cir",
+      "netlist_sha256": "526d227c4c8058d04a2b77e2045b5b99c6ae29b4ce35ab422242f9c188d44363"
+    },
+    "BEH-FREQ-CERRES/B1": {
+      "expected": [
+        {
+          "basis": "fs*sqrt(1+C1/(C0+CL)), CL=9.5pF",
+          "measure": "f_Hz",
+          "tolerance": 2400,
+          "value": 7995760
+        }
+      ],
+      "file": "docs/behavior/bench/xtal-resonator/B1.cir",
+      "netlist_sha256": "4b65a6dc64ad8318a8fbab33d1e075d1c6abc9bdb5efeb400912a069a8cbbc6c"
+    },
+    "BEH-FREQ-SAW/B1": {
+      "expected": [
+        {
+          "basis": "datasheet IL",
+          "measure": "il_fc_dB",
+          "tolerance": 0.05,
+          "value": 4.5
+        },
+        {
+          "basis": "Chebyshev",
+          "measure": "bw3_Hz",
+          "tolerance": 100000,
+          "value": 9340000
+        }
+      ],
+      "file": "docs/behavior/bench/saw-bpf/B1.cir",
+      "netlist_sha256": "ef6e42b1f09b8a0a1135e4bcb30599c6c4ef994f8619c3f8f905b64998ea66e9"
+    },
+    "BEH-FREQ-SAW/B2": {
+      "expected": [
+        {
+          "basis": "pad into 100 ohm",
+          "measure": "il_100ohm_dB",
+          "tolerance": 0.01,
+          "value": 5.0115
+        }
+      ],
+      "file": "docs/behavior/bench/saw-bpf/B2.cir",
+      "netlist_sha256": "1199a028fda1da8d0cfdd82711e8ab9d9e5ba222f2f432f11906b4edfe1d60f7"
+    },
+    "BEH-FREQ-XO/B1": {
+      "expected": [
+        {
+          "basis": "f0*(1+ppm)",
+          "measure": "f_Hz",
+          "tolerance": 1,
+          "value": 10000250
+        }
+      ],
+      "file": "docs/behavior/bench/osc-clock/B1.cir",
+      "netlist_sha256": "7d645fb4434395e38af2da05ccafc1a563526b6c7c18e4ae410dd00ecf74fe8c"
+    },
+    "BEH-FREQ-XO/B2": {
+      "expected": [
+        {
+          "basis": "OE low",
+          "measure": "vout_max_V",
+          "tolerance": 0.001,
+          "value": 0
+        }
+      ],
+      "file": "docs/behavior/bench/osc-clock/B2.cir",
+      "netlist_sha256": "088c2f588251c07df0ab9c6df93f566ebfa2876b570b27d69f48e97b3657b54d"
+    },
+    "BEH-FREQ-XTAL/B1": {
+      "expected": [
+        {
+          "basis": "R1",
+          "measure": "zmin_ohm",
+          "tolerance": 0.5,
+          "value": 80
+        },
+        {
+          "basis": "fs*sqrt(1+C1/C0)",
+          "measure": "fa_Hz",
+          "tolerance": 100,
+          "value": 8010275
+        }
+      ],
+      "file": "docs/behavior/bench/xtal-bvd/B1.cir",
+      "netlist_sha256": "45d6ff753601a1461a0390129ce7151e2772b4e1f1915ba7643865e77210965b"
+    },
+    "BEH-FREQ-XTAL/B2": {
+      "expected": [
+        {
+          "basis": "fs*sqrt(1+C1/(C0+CL))",
+          "measure": "fL_18pF_Hz",
+          "tolerance": 10,
+          "value": 8000000
+        }
+      ],
+      "file": "docs/behavior/bench/xtal-bvd/B2.cir",
+      "netlist_sha256": "364999a825b6db1837d21acdd5f1de782496691d0544c0f4efec3eb292352cad"
+    },
+    "BEH-FREQ-XTAL/B3": {
+      "expected": [
+        {
+          "basis": "FC-135 values",
+          "measure": "fL_32k_Hz",
+          "tolerance": 0.1,
+          "value": 32768
+        }
+      ],
+      "file": "docs/behavior/bench/xtal-bvd/B3.cir",
+      "netlist_sha256": "3de5e95ded63a251262ad7b52c42265f441e25c947f6a7b556d8c9ac29137495"
+    },
+    "BEH-FREQ-XTAL/P1": {
+      "expected": [
+        {
+          "basis": "KCL estimate",
+          "measure": "DL_W",
+          "tolerance": "5e-6",
+          "value": 8.08e-05
+        }
+      ],
+      "file": "docs/behavior/bench/osc-pierce/B1.cir",
+      "netlist_sha256": "f2ffaac15a709ea6a599aeb4c1ef62d92da192bfe71bc7da2ae19bbee6a7bb27"
+    },
+    "BEH-FREQ-XTAL/P2": {
+      "expected": [
+        {
+          "basis": "loop Im(Z)=0",
+          "measure": "f_loop_Hz",
+          "tolerance": 800,
+          "value": 8000215
+        }
+      ],
+      "file": "docs/behavior/bench/osc-pierce/B2.cir",
+      "netlist_sha256": "b31ad10bc1518da9896609ae0000c3df72badada20ca82b8843ab69f8e38048b"
+    },
+    "BEH-FREQ-XTAL/P3": {
+      "expected": [
+        {
+          "basis": "B2 loop zero",
+          "measure": "f_tran_Hz",
+          "tolerance": 800,
+          "value": 8000215
+        }
+      ],
+      "file": "docs/behavior/bench/osc-pierce/B3.cir",
+      "netlist_sha256": "c807379ebf12b9d8292c4f268ad3733b9fce09de8e8ea0745fdf2f64373ab249"
+    },
+    "BEH-FREQ-XTAL/P5": {
+      "expected": [
+        {
+          "basis": "ST gm_crit 0.357 mS",
+          "measure": "envelope_ratio_at_gm_crit",
+          "tolerance": 0.05,
+          "value": 1.0
+        }
+      ],
+      "file": "docs/behavior/bench/osc-pierce/B5.cir",
+      "netlist_sha256": "f4b75bec24980e00851c5e804c6f2fb22632c2fe0652b424530484c392dd5388"
+    },
+    "BEH-FREQ-XTAL/P6": {
+      "expected": [
+        {
+          "basis": "ST gm_crit R1=500",
+          "measure": "gm_crit_S",
+          "tolerance": 0.0003,
+          "value": 0.00223
+        }
+      ],
+      "file": "docs/behavior/bench/osc-pierce/B6.cir",
+      "netlist_sha256": "070ced0e3f83c74bebb7920f85d76c385188a6028ff44aac5f2cefecad6a1817"
+    },
+    "BEH-IC-CHARGER-SOT235/B1": {
+      "expected": [
+        {
+          "basis": "1000/Rprog",
+          "measure": "Ibat_A",
+          "tolerance": "0.5 %",
+          "value": 0.1
+        }
+      ],
+      "file": "docs/behavior/bench/ic-charger/B1_cc.cir",
+      "netlist_sha256": "ca542822b05a00f935d8a9dbaf5c6e1cdfb6ad00e8109af0a8b51e437d80ec78"
+    },
+    "BEH-IC-CHARGER-SOT235/B2": {
+      "expected": [
+        {
+          "basis": "Ireg*tanh(dV/(rcv*Ireg))",
+          "measure": "I_4.19V_mA",
+          "tolerance": "1 %",
+          "value": 29.1
+        }
+      ],
+      "file": "docs/behavior/bench/ic-charger/B2_cv_taper.cir",
+      "netlist_sha256": "47548189b2952872f70f866809cb475bab76a0d07ba55857d56e1f1e50b25717"
+    },
+    "BEH-IC-CHARGER-SOT235/B3": {
+      "expected": [
+        {
+          "basis": "(150-25)/230/1.3",
+          "measure": "Ibat_A",
+          "tolerance": "2 %",
+          "value": 0.418
+        }
+      ],
+      "file": "docs/behavior/bench/ic-charger/B3_thermal.cir",
+      "netlist_sha256": "14c4534d9f663f5da27c347f56b418ad113c4375ac0c9184760ba466ed0ecd83"
+    },
+    "BEH-IC-COMPARATOR/B1": {
+      "expected": [
+        {
+          "basis": "Vref - Vos",
+          "measure": "trip voltage",
+          "tolerance": "0.5 mV",
+          "value": 2.498
+        }
+      ],
+      "file": "docs/behavior/bench/ic-comparator/B1_threshold_vol.cir",
+      "netlist_sha256": "4880bdd5955f5947e7ef53b8d71b308742cb730a5cedaa94849ea8ad4f7d684d"
+    },
+    "BEH-IC-COMPARATOR/B1b": {
+      "expected": [
+        {
+          "basis": "solve (5-V)/1100 = Isat tanh(V/(Ron Isat))",
+          "measure": "VOL",
+          "tolerance": "1 %",
+          "value": 0.1494
+        }
+      ],
+      "file": "docs/behavior/bench/ic-comparator/B1b_vol.cir",
+      "netlist_sha256": "b123b9fd647e291d9a0f20b254811a12c14ffeb6a4420c798b54159fd71a1f7c"
+    },
+    "BEH-IC-COMPARATOR/B2": {
+      "expected": [
+        {
+          "basis": "calibration to TI typ",
+          "measure": "t_5mV_us",
+          "tolerance": "5 %",
+          "value": 1.3
+        },
+        {
+          "basis": "calibration to TI typ",
+          "measure": "t_TTL_us",
+          "tolerance": "10 %",
+          "value": 0.3
+        }
+      ],
+      "file": "docs/behavior/bench/ic-comparator/B2_response.cir",
+      "netlist_sha256": "20a81be0c0dafc310409e6e348d7666a8a64e60e436edd920d9871bc539600b6"
+    },
+    "BEH-IC-DIGITAL-IF/D1": {
+      "expected": [
+        {
+          "basis": "Ron fit",
+          "measure": "VOL, VOH at 5 mA",
+          "tolerance": "0.1 percent",
+          "value": "0.100, 3.135"
+        }
+      ],
+      "file": "docs/behavior/bench/ic-digital-if/D1_gpio_drive.cir",
+      "netlist_sha256": "f8a6e1ecf463bd0a36be714ac1e55da44eba13f937cf19e5da6ea0696e9dd68f"
+    },
+    "BEH-IC-DIGITAL-IF/D2": {
+      "expected": [
+        {
+          "basis": "Shockley fixed point",
+          "measure": "I_inj mA, Vpin V",
+          "tolerance": "0.5 percent",
+          "value": "1.0438, 3.9562"
+        }
+      ],
+      "file": "docs/behavior/bench/ic-digital-if/D2_input_injection.cir",
+      "netlist_sha256": "9fea0393d0d44f917c764c84b99c9ca656563d63d37ebd4b301c135ba6ee4dc1"
+    },
+    "BEH-IC-DIGITAL-IF/D3": {
+      "expected": [
+        {
+          "basis": "Vtrip/ramp",
+          "measure": "t_release_us",
+          "tolerance": "1 percent",
+          "value": 650
+        }
+      ],
+      "file": "docs/behavior/bench/ic-digital-if/D3_por_ramp.cir",
+      "netlist_sha256": "841d897e1b7f91f0e08b850035bb35f6854e1342ebd62b47eb951257a9fc36a8"
+    },
+    "BEH-IC-DIGITAL-IF/D4": {
+      "expected": [
+        {
+          "basis": "Ceff*VDD*f",
+          "measure": "Idd mA at 1 and 18 MHz",
+          "tolerance": "0.5 percent",
+          "value": "1.389, 25.00"
+        }
+      ],
+      "file": "docs/behavior/bench/ic-digital-if/D4_supply_current_f.cir",
+      "netlist_sha256": "c0639148d39fc35f48046c4e23a02a5b384c49aa1fd9320bb7dcd51b30e8806a"
+    },
+    "BEH-IC-DIGITAL-IO/B1": {
+      "expected": [
+        {
+          "basis": "rol*I",
+          "measure": "VOL_20mA",
+          "tolerance": "1 %",
+          "value": 0.4
+        },
+        {
+          "basis": "5-roh*I",
+          "measure": "VOH_20mA",
+          "tolerance": "1 %",
+          "value": 4.2
+        }
+      ],
+      "file": "docs/behavior/bench/ic-digital-io/B1_output_drive.cir",
+      "netlist_sha256": "16b057e67a80d660dc21d3bf586ad4b7b1a28c6b971d888b53ffec00c0b24cbd"
+    },
+    "BEH-IC-DIGITAL-IO/B2": {
+      "expected": [
+        {
+          "basis": "5*1k/(35k+1k)",
+          "measure": "pullup_pad_V",
+          "tolerance": "1 %",
+          "value": 0.1389
+        }
+      ],
+      "file": "docs/behavior/bench/ic-digital-io/B2_input_pullup_hiz.cir",
+      "netlist_sha256": "dd6839f2d11fce1ac566a3b706a1dc3132d1227af21c636282f6cc2593253248"
+    },
+    "BEH-IC-DRIVER-DIP16/B1": {
+      "expected": [
+        {
+          "basis": "TI band",
+          "measure": "vce_100mA",
+          "tolerance": "band 0.9..1.1",
+          "value": 0.99
+        }
+      ],
+      "file": "docs/behavior/bench/ic-driver/B1_uln_vcesat.cir",
+      "netlist_sha256": "f381e7be4e9fbd0e6b5ec8e3ef443cf34e1d36c14fd690619432c023a211af67"
+    },
+    "BEH-IC-DRIVER-DIP16/B1b": {
+      "expected": [
+        {
+          "basis": "TI band",
+          "measure": "vf",
+          "tolerance": "band 1.7..2.0",
+          "value": 1.85
+        }
+      ],
+      "file": "docs/behavior/bench/ic-driver/B1b_uln_clamp_vf.cir",
+      "netlist_sha256": "f252a75e9429d6bab69dcb04ffeb6aac912692b328bf3c07d08e89a735694634"
+    },
+    "BEH-IC-DRIVER-DIP16/B3": {
+      "expected": [
+        {
+          "basis": "divider",
+          "measure": "vmotor",
+          "tolerance": "0.1 %",
+          "value": 10.63
+        }
+      ],
+      "file": "docs/behavior/bench/ic-driver/B3_l293d_hbridge.cir",
+      "netlist_sha256": "1285a69c8253266c33fa3180e569726ea3d63c4514cb831e689c46c53202af49"
+    },
+    "BEH-IC-LDO-SOT235/B1": {
+      "expected": [
+        {
+          "basis": "soft-knee solve",
+          "measure": "vout_vin3.0",
+          "tolerance": "0.5 %",
+          "value": 2.9115
+        }
+      ],
+      "file": "docs/behavior/bench/ic-ldo/B1_dropout.cir",
+      "netlist_sha256": "5212795a40276ee44ee87a50b464e30da852d897ff01fe4627e069ae3346a533"
+    },
+    "BEH-IC-LDO-SOT235/B2": {
+      "expected": [
+        {
+          "basis": "soft-knee solve",
+          "measure": "delta_mV",
+          "tolerance": "1 mV",
+          "value": 9.7
+        }
+      ],
+      "file": "docs/behavior/bench/ic-ldo/B2_load_reg.cir",
+      "netlist_sha256": "fdb85f0a173a3d4057f7cf10130405855a3ac9166320fdac1a714a7d4f7cdbc5"
+    },
+    "BEH-IC-LDO-SOT235/B3": {
+      "expected": [
+        {
+          "basis": "Ta+rth*Pd",
+          "measure": "Tj_C",
+          "tolerance": "0.1 C",
+          "value": 129.292
+        }
+      ],
+      "file": "docs/behavior/bench/ic-ldo/B3_thermal.cir",
+      "netlist_sha256": "c2e4af01491e0acfce1e778d7dcad63333ae8a5a9c2c38ff6792c75aadc2ae9d"
+    },
+    "BEH-IC-LOGIC-HC/B1": {
+      "expected": [
+        {
+          "basis": "4.5-50*4m",
+          "measure": "VOH_4mA",
+          "tolerance": "1 %",
+          "value": 4.3
+        },
+        {
+          "basis": "65*4m",
+          "measure": "VOL_4mA",
+          "tolerance": "1 %",
+          "value": 0.26
+        }
+      ],
+      "file": "docs/behavior/bench/ic-logic-hc/B1_dc_levels.cir",
+      "netlist_sha256": "3b970e632ef656218756a867fa24d8fdca5ee67744bdf1482d59b476091c3a84"
+    },
+    "BEH-IC-LOGIC-HC/B2": {
+      "expected": [
+        {
+          "basis": "calibration",
+          "measure": "tpd_ns",
+          "tolerance": "5 %",
+          "value": 18
+        }
+      ],
+      "file": "docs/behavior/bench/ic-logic-hc/B2_tpd.cir",
+      "netlist_sha256": "8f04b61ce964670b9cdfc46a0b6d65cd0e57ab6f6fd6fe6e823f9412b1a86887"
+    },
+    "BEH-IC-LOGIC-HC/B3": {
+      "expected": [
+        {
+          "basis": "icc0+(Cpd+CL)*VCC*f",
+          "measure": "icc_uA",
+          "tolerance": "2 %",
+          "value": 317
+        }
+      ],
+      "file": "docs/behavior/bench/ic-logic-hc/B3_icc_vs_f.cir",
+      "netlist_sha256": "cd167ba80b5f5fee3e3e7ad629b577a93991fd6f7afd08a43ac606560d33fa16"
+    },
+    "BEH-IC-LOGIC-HC/B4": {
+      "expected": [
+        {
+          "basis": "calibration",
+          "measure": "VT_plus",
+          "tolerance": "1 %",
+          "value": 2.5
+        },
+        {
+          "basis": "calibration",
+          "measure": "VT_minus",
+          "tolerance": "1 %",
+          "value": 1.6
+        }
+      ],
+      "file": "docs/behavior/bench/ic-logic-hc/B4_schmitt.cir",
+      "netlist_sha256": "4f85a3232692bdd8f039e521d848400918c5b52f963b29b536ffb5fc244ad6f5"
+    },
+    "BEH-IC-LOGIC-HC/B5": {
+      "expected": [
+        {
+          "basis": "diode fixed point",
+          "measure": "I_clamp_mA",
+          "tolerance": "1 %",
+          "value": 1.82
+        }
+      ],
+      "file": "docs/behavior/bench/ic-logic-hc/B5_clamp.cir",
+      "netlist_sha256": "88e78a1fce806de325df092c69a57da52685c75bacfa49a9161fbd88a09455ac"
+    },
+    "BEH-IC-LOGIC-SEQ/B1": {
+      "expected": [
+        {
+          "basis": "shift order",
+          "measure": "QA..QH",
+          "tolerance": "exact",
+          "value": "0,1,0,0,1,1,0,1"
+        }
+      ],
+      "file": "docs/behavior/bench/ic-logic-seq/B1_hc595.cir",
+      "netlist_sha256": "ce2d18c563baa9c6d4be5912bb5c4004a1deede44d69e3a624317b467ea46a46"
+    },
+    "BEH-IC-LOGIC-SEQ/B2": {
+      "expected": [
+        {
+          "basis": "decoder truth table",
+          "measure": "low_output_index",
+          "tolerance": "exact",
+          "value": "equals address"
+        }
+      ],
+      "file": "docs/behavior/bench/ic-logic-seq/B2_hc138.cir",
+      "netlist_sha256": "5c8c2579d81315948dc7f4f1a91b49cb0d0ab6dd63c6ea996041a02997ddc2eb"
+    },
+    "BEH-IC-OPAMP/B1": {
+      "expected": [
+        {
+          "basis": "GBW/G",
+          "measure": "f_-3dB",
+          "tolerance": "2 %",
+          "value": 70000
+        }
+      ],
+      "file": "docs/behavior/bench/ic-opamp/B1_gbw_gain10.cir",
+      "netlist_sha256": "b54106bb7d400dea9d2de2480c23e027851107649d764acb383a92806a844cf6"
+    },
+    "BEH-IC-OPAMP/B2": {
+      "expected": [
+        {
+          "basis": "datasheet typ",
+          "measure": "SR V/us",
+          "tolerance": "2 %",
+          "value": 0.3
+        }
+      ],
+      "file": "docs/behavior/bench/ic-opamp/B2_slew.cir",
+      "netlist_sha256": "cef3df6415ae5b0a6b35726ddffa7da8cf67294a7fc756e1dfdecefc137ac402"
+    },
+    "BEH-IC-OPAMP/B3": {
+      "expected": [
+        {
+          "basis": "Vin+Vos+Ib*Rs",
+          "measure": "Vout follower",
+          "tolerance": "1 %",
+          "value": 1.0051
+        }
+      ],
+      "file": "docs/behavior/bench/ic-opamp/B3_swing_offset.cir",
+      "netlist_sha256": "3ea617326412743acc916829bbc34d83cee0b93d60a52674ec34c706101b7e84"
+    },
+    "BEH-IC-OPAMP/B4": {
+      "expected": [
+        {
+          "basis": "GBW/10",
+          "measure": "f_-3dB",
+          "tolerance": "2 %",
+          "value": 100000
+        }
+      ],
+      "file": "docs/behavior/bench/ic-opamp/B4_rrio_mcp6001.cir",
+      "netlist_sha256": "9d9f8fb935b6bb40eee549c4bd468ff6aa547c28b1613ebd82ab10576a20fc86"
+    },
+    "BEH-IC-OPAMP/B5": {
+      "expected": [
+        {
+          "basis": "Iq+Iload",
+          "measure": "Icc mA",
+          "tolerance": "1 %",
+          "value": 2.35
+        }
+      ],
+      "file": "docs/behavior/bench/ic-opamp/B5_supply_current.cir",
+      "netlist_sha256": "17d66b52eb02c412221cec7a7072d9dabef8aeeff356bb8f5e2b6a101bbc04ed"
+    },
+    "BEH-IC-OPTO-DIP6/B1": {
+      "expected": [
+        {
+          "basis": "5-470*IF*CTR",
+          "measure": "Vc_2mA",
+          "tolerance": "1 %",
+          "value": 4.04
+        }
+      ],
+      "file": "docs/behavior/bench/ic-opto/B1_ctr_sat.cir",
+      "netlist_sha256": "7cfd93e21214436b84e4ab8d360358f93283734124772a25c3263bcca2e37c79"
+    },
+    "BEH-IC-OPTO-DIP6/B2": {
+      "expected": [
+        {
+          "basis": "CTR*IF",
+          "measure": "Ic_mA_at_IF5mA",
+          "tolerance": "0.1 %",
+          "value": 5.0
+        }
+      ],
+      "file": "docs/behavior/bench/ic-opto/B2_ctr_linear.cir",
+      "netlist_sha256": "de0d71801272396171e3b9c070c702b7764aec0b6f3615776262a75e82fe12fa"
+    },
+    "BEH-IC-PKGBIND/B1": {
+      "expected": [
+        {
+          "basis": "1/(2 pi sqrt(LC))",
+          "measure": "f0",
+          "tolerance": "1 %",
+          "value": "930.6e6"
+        }
+      ],
+      "file": "docs/behavior/bench/ic-pkgbind/B1_lead_resonance.cir",
+      "netlist_sha256": "b3f5f2e2239ec7de567a676fa7fda709137e76f9ecfcbfe8a3ef44d39fef8e7c"
+    },
+    "BEH-IC-PKGBIND/B2": {
+      "expected": [
+        {
+          "basis": "Ta+P*theta",
+          "measure": "Tj DIP/SOIC/TSSOP",
+          "tolerance": "0.1 %",
+          "value": "90.02/103.16/118.46"
+        }
+      ],
+      "file": "docs/behavior/bench/ic-pkgbind/B2_thermal_tj.cir",
+      "netlist_sha256": "918788e73d7e7a1042a3f56db8b7ddfe1038c6483699004d76ed4f564b1b0b01"
+    },
+    "BEH-IC-PKGBIND/B3": {
+      "expected": [
+        {
+          "basis": "L dI/dt",
+          "measure": "V bounce",
+          "tolerance": "1 %",
+          "value": "32.0/12.8 mV"
+        }
+      ],
+      "file": "docs/behavior/bench/ic-pkgbind/B3_ground_bounce.cir",
+      "netlist_sha256": "4dd8591c26f06cae627bc6bc7b4d8fda58dd0befb43d686cfdfaa80f95a5690f"
+    },
+    "BEH-IC-RS232-DIP16/B1": {
+      "expected": [
+        {
+          "basis": "divider with pump droop",
+          "measure": "v_out",
+          "tolerance": "0.5 %",
+          "value": 6.857
+        }
+      ],
+      "file": "docs/behavior/bench/ic-rs232/B1_driver_swing.cir",
+      "netlist_sha256": "396c9a6489ee22950f8e4ae5510d97d32acf76a7930f722b84bfa1ac914e2620"
+    },
+    "BEH-IC-RS232-DIP16/B2": {
+      "expected": [
+        {
+          "basis": "chosen mid range",
+          "measure": "vtp",
+          "tolerance": "1 %",
+          "value": 2.0
+        }
+      ],
+      "file": "docs/behavior/bench/ic-rs232/B2_receiver.cir",
+      "netlist_sha256": "e25f12bb37e2a82bd8900f2753a4f976558204e11d609b5931d0026fef22bc3d"
+    },
+    "BEH-IC-RS232-DIP16/B3": {
+      "expected": [
+        {
+          "basis": "datasheet nominal",
+          "measure": "sr_V_per_us",
+          "tolerance": "10 %",
+          "value": 30
+        }
+      ],
+      "file": "docs/behavior/bench/ic-rs232/B3_slew.cir",
+      "netlist_sha256": "28eefbb933d7709582350dcbbf3db8ebcaacb458f8e98ce86392b9898d029b01"
+    },
+    "BEH-IC-TIMER555/B1": {
+      "expected": [
+        {
+          "basis": "Ron-aware: tL=R2 C ln((Vh-Vd)/(Vl-Vd)), tH=ln2 (R1+R2) C",
+          "measure": "f_Hz",
+          "tolerance": "1 %",
+          "value": 6658
+        },
+        {
+          "basis": "1.44/((R1+2R2)C)",
+          "measure": "f_TI_formula",
+          "tolerance": "documented -2.9 %",
+          "value": 6857
+        }
+      ],
+      "file": "docs/behavior/bench/ic-timer555/B1_astable.cir",
+      "netlist_sha256": "6e3cdeb444819c93db3eec8d8cf4008379abf5efbd7e07d97df0269e6a89f168"
+    },
+    "BEH-IC-TIMER555/B1b": {
+      "expected": [
+        {
+          "basis": "TI formula",
+          "measure": "f_Hz",
+          "tolerance": "1 %",
+          "value": 6857
+        }
+      ],
+      "file": "docs/behavior/bench/ic-timer555/B1b_astable_largeR.cir",
+      "netlist_sha256": "c0ad962169272a274826e794949fedc600c52887a9980bdb7edf571add6dc62f"
+    },
+    "BEH-IC-TIMER555/B2": {
+      "expected": [
+        {
+          "basis": "RC ln3",
+          "measure": "width_ms",
+          "tolerance": "1 %",
+          "value": 1.0986
+        }
+      ],
+      "file": "docs/behavior/bench/ic-timer555/B2_monostable.cir",
+      "netlist_sha256": "8b1a56b9330907b01cc25ee80fe7291dd3a245c673d4188e4a5afcd522e6e335"
+    },
+    "BEH-IC-TIMER555/B3": {
+      "expected": [
+        {
+          "basis": "RC ln(5/3)",
+          "measure": "width_ms",
+          "tolerance": "1.5 %",
+          "value": 0.5108
+        }
+      ],
+      "file": "docs/behavior/bench/ic-timer555/B3_cont_pin.cir",
+      "netlist_sha256": "88f1b59727b9ce27a3a3ab53d7bfcf036e19a6ed4a043f1d753ddd8be3d9f808"
+    },
+    "BEH-IC-TIMER555/B4": {
+      "expected": [
+        {
+          "basis": "fit",
+          "measure": "VOH_100mA",
+          "tolerance": "TI band 12.75..13.3",
+          "value": 13.3
+        }
+      ],
+      "file": "docs/behavior/bench/ic-timer555/B4_output_levels.cir",
+      "netlist_sha256": "d31a1be7d2a108b9f691d4ec5e6ec48443f7ce187828d747ac674e6bbc564f8a"
+    },
+    "BEH-LED-ADDRESSABLE/B1": {
+      "expected": [
+        {
+          "basis": "datasheet",
+          "measure": "T0H",
+          "tolerance": 1.5e-07,
+          "value": 4e-07
+        }
+      ],
+      "file": "docs/behavior/bench/beh-led-ws2812/B1_data_timing_stimulus.cir",
+      "netlist_sha256": "e803a3f318cdcb41b46fdbf087450333a483225c78eeb3842a268cad6cd398a0"
+    },
+    "BEH-LED-ADDRESSABLE/B2": {
+      "expected": [
+        {
+          "basis": "5 - R*I*N(N+1)/2",
+          "measure": "V_end",
+          "tolerance": 0.001,
+          "value": 4.83225
+        }
+      ],
+      "file": "docs/behavior/bench/beh-led-ws2812/B2_chain_supply_droop.cir",
+      "netlist_sha256": "3fc3f479a262f7591af348c467a4bf4c2cfdcef714282832c67bb9d954b0a06f"
+    },
+    "BEH-LED-INDICATOR/B1": {
+      "expected": [
+        {
+          "basis": "fit input",
+          "measure": "Vred@20mA",
+          "tolerance": 0.05,
+          "value": 2.0
+        }
+      ],
+      "file": "docs/behavior/bench/beh-led-indicator/B1_iv_fit.cir",
+      "netlist_sha256": "29fe19065247098a3dacc078c2a5cdd90962fdcb06ac581925b4b9e212b0c159"
+    },
+    "BEH-LED-INDICATOR/B2": {
+      "expected": [
+        {
+          "basis": "brentq solve",
+          "measure": "I_red",
+          "tolerance": "0.1%",
+          "value": 0.0200017
+        }
+      ],
+      "file": "docs/behavior/bench/beh-led-indicator/B2_series_resistor.cir",
+      "netlist_sha256": "5a7ae87cab48c44037d23231ad67cbaadd6a5a3b1df6f3b6432c982eff396c86"
+    },
+    "BEH-LED-INDICATOR/B3": {
+      "expected": [
+        {
+          "basis": "D*Ion",
+          "measure": "Iavg",
+          "tolerance": "1%",
+          "value": 0.0050004
+        }
+      ],
+      "file": "docs/behavior/bench/beh-led-indicator/B3_pwm_average.cir",
+      "netlist_sha256": "767b5ec2cbe36105878fda1cc378daeaab07322dbf1c77f8dc82ee6cec5d64fb"
+    },
+    "BEH-LED-INDICATOR/B4": {
+      "expected": [
+        {
+          "basis": "IBV",
+          "measure": "IR at BV",
+          "tolerance": "1%",
+          "value": 1e-05
+        }
+      ],
+      "file": "docs/behavior/bench/beh-led-indicator/B4_reverse.cir",
+      "netlist_sha256": "f7b8280bb5cf5e9171d1cc75d0ef726f38aa52ecfd7fc56ad2dac2bed0583b3a"
+    },
+    "BEH-LED-INDICATOR/B5": {
+      "expected": [
+        {
+          "basis": "45*(1/20)^1.0416",
+          "measure": "Iv(1mA)",
+          "tolerance": "0.5%",
+          "value": 1.99
+        }
+      ],
+      "file": "docs/behavior/bench/beh-led-indicator/B5_temp_and_intensity.cir",
+      "netlist_sha256": "555e6df5332b703155542fbfe7146355f9b9587cda4228db652062b4bee92c8a"
+    },
+    "BEH-LED-INDICATOR/B6": {
+      "expected": [
+        {
+          "basis": "ASSUMPTION",
+          "measure": "dVF/dT red",
+          "tolerance": "4e-4",
+          "value": -0.002
+        }
+      ],
+      "file": "docs/behavior/bench/beh-led-indicator/B6_tempco_all.cir",
+      "netlist_sha256": "5cfaea5527df5dab5ac243fb6b7e381a0077c9a2e8b1306f1d2eaa00289c2cb8"
+    },
+    "BEH-LED-POWER/B1": {
+      "expected": [
+        {
+          "basis": "fixed-point solve",
+          "measure": "Tj",
+          "tolerance": 0.2,
+          "value": 83.378
+        }
+      ],
+      "file": "docs/behavior/bench/beh-led-power/B1_cc_selfheat.cir",
+      "netlist_sha256": "5ad1557a1cddbe4ece69140c5e70e66e7022d0a24e8b2be1858974eb27bff6a5"
+    },
+    "BEH-LED-POWER/B2": {
+      "expected": [
+        {
+          "basis": "0.003/(N*Vt)*dT",
+          "measure": "I_hot/I_cold",
+          "tolerance": "20%",
+          "value": 1.55
+        }
+      ],
+      "file": "docs/behavior/bench/beh-led-power/B2_voltage_drive_runaway.cir",
+      "netlist_sha256": "751c5e06f859d2d0c565104c6bab1f75b0deb33033a7e2cb08bf05285a32f0c5"
+    },
+    "BEH-LED-RGB/B7": {
+      "expected": [
+        {
+          "basis": "brentq",
+          "measure": "I_each",
+          "tolerance": "0.1%",
+          "value": 0.02
+        }
+      ],
+      "file": "docs/behavior/bench/beh-led-indicator/B7_rgb_common_anode.cir",
+      "netlist_sha256": "58b494ee035d64f70c44d08684eb57f1344e3658e9c7de7683c9ea90f4092add"
+    },
+    "BEH-MAG-CMC/B1": {
+      "expected": [
+        {
+          "basis": "L(1+k)/2",
+          "measure": "Lcm",
+          "tolerance": 0.005,
+          "value": 0.00219997
+        },
+        {
+          "basis": "2L(1-k)",
+          "measure": "Ldm",
+          "tolerance": 0.005,
+          "value": 1.30002e-07
+        }
+      ],
+      "file": "docs/behavior/bench/mag_cmc/B1_dm_cm_L.cir",
+      "netlist_sha256": "d1b09ee6beadfdf3c989d90b82f6b2fef41dfe2e08f2888ffbbaaf66b24a316e"
+    },
+    "BEH-MAG-CMC/B2": {
+      "expected": [
+        {
+          "basis": "datasheet",
+          "measure": "Z_2p5MHz",
+          "tolerance": 0.15,
+          "value": 7500
+        },
+        {
+          "basis": "datasheet",
+          "measure": "Z_10MHz",
+          "tolerance": 0.15,
+          "value": 4000
+        },
+        {
+          "basis": "datasheet",
+          "measure": "Z_100MHz",
+          "tolerance": 0.15,
+          "value": 400
+        }
+      ],
+      "file": "docs/behavior/bench/mag_cmc/B2_impedance_fit.cir",
+      "netlist_sha256": "2752871fe273ec6078597b222940cbbde54642e6e40a0ab453b87544448f0b04"
+    },
+    "BEH-MAG-CMC/B3": {
+      "expected": [
+        {
+          "basis": "formula",
+          "measure": "Lcm_at_1A",
+          "tolerance": 0.01,
+          "value": 0.00153999
+        }
+      ],
+      "file": "docs/behavior/bench/mag_cmc/B3_cm_saturation.cir",
+      "netlist_sha256": "4e2e0b5a1b638822131a14049da8125a5f319c670d792419fc71235ed55235a1"
+    },
+    "BEH-MAG-ETHMAG/B1": {
+      "expected": [
+        {
+          "basis": "20log((Rs+RL)/(Rs+RL+Rw))",
+          "measure": "IL_1MHz_dB",
+          "tolerance": 0.01,
+          "value": -0.052
+        }
+      ],
+      "file": "docs/behavior/bench/mag_ethmag/B1_insertion_loss.cir",
+      "netlist_sha256": "0712987ab31e9a5ddb1e8cb0e65d8b3d33afb09eacb3570ade89e0c52ec39d6f"
+    },
+    "BEH-MAG-ETHMAG/B2": {
+      "expected": [
+        {
+          "basis": "2 pi f Ciw",
+          "measure": "I_per_V_50Hz",
+          "tolerance": 0.01,
+          "value": 4.712e-09
+        }
+      ],
+      "file": "docs/behavior/bench/mag_ethmag/B2_isolation_leakage.cir",
+      "netlist_sha256": "1d5549ba5956162ff018b34a26d9bb57e713d68573931f2781dc5edfac10e299"
+    },
+    "BEH-MAG-ETHMAG/B3": {
+      "expected": [
+        {
+          "basis": "2*20mA*(49.9||50)",
+          "measure": "V_line_plateau",
+          "tolerance": 0.05,
+          "value": 0.9988
+        }
+      ],
+      "file": "docs/behavior/bench/mag_ethmag/B3_tx_drive.cir",
+      "netlist_sha256": "f7c1fe422c9d3b008532be8f03f354dc2960bdee07a82a7bb853aef59088d3c5"
+    },
+    "BEH-MAG-INDUCTOR/B1": {
+      "expected": [
+        {
+          "basis": "(1-drop)*L0",
+          "measure": "L_at_Isat_XAL4020",
+          "tolerance": 0.01,
+          "value": 1.54e-06
+        },
+        {
+          "basis": "(1-drop)*L0",
+          "measure": "L_at_Isat_SRP7028A",
+          "tolerance": 0.01,
+          "value": 1.44e-06
+        }
+      ],
+      "file": "docs/behavior/bench/mag_inductor/B1_L_vs_bias.cir",
+      "netlist_sha256": "53eb00596e90177e70ad59af265ad2cde6194d3b349b55e8b8f872f7ae019c3f"
+    },
+    "BEH-MAG-INDUCTOR/B2": {
+      "expected": [
+        {
+          "basis": "V*t=lambda(i)",
+          "measure": "i_at_8us",
+          "tolerance": 0.01,
+          "value": 9.48
+        }
+      ],
+      "file": "docs/behavior/bench/mag_inductor/B2_sat_step.cir",
+      "netlist_sha256": "f645755c77eebc5ae49837e0695a7338a1122fc0ce2eb78a7cb8fba4cf409917"
+    },
+    "BEH-MAG-INDUCTOR/B3": {
+      "expected": [
+        {
+          "basis": "1/(2 pi sqrt(L Cp))",
+          "measure": "f_peak",
+          "tolerance": 0.02,
+          "value": "4.5e9"
+        },
+        {
+          "basis": "Im/Re",
+          "measure": "Q_100MHz",
+          "tolerance": 0.03,
+          "value": 42
+        }
+      ],
+      "file": "docs/behavior/bench/mag_inductor/B3_srf_q.cir",
+      "netlist_sha256": "edb117a4016a2e4dc31b31436d067f6c5c60efea349a22afd4071fd42480ba41"
+    },
+    "BEH-MAG-INDUCTOR/B4": {
+      "expected": [
+        {
+          "basis": "a/(1-a TC)",
+          "measure": "dT_5p5A",
+          "tolerance": 0.005,
+          "value": 40.0
+        }
+      ],
+      "file": "docs/behavior/bench/mag_inductor/B4_thermal.cir",
+      "netlist_sha256": "0d9b7156f2469f0f31d2fc99a30f8c4d159cc218eadd43ca422437a086de7ee6"
+    },
+    "BEH-MAG-XFMR-CT/B1": {
+      "expected": [
+        {
+          "basis": "(Ip/N) Rb / sqrt(1+((Rs+Rb)/(w L))^2)",
+          "measure": "Vburden_pk",
+          "tolerance": 0.01,
+          "value": 2.4987
+        }
+      ],
+      "file": "docs/behavior/bench/mag_ct/B1_burden_ratio.cir",
+      "netlist_sha256": "ef63735e5d59ea745350d0bef133da31dd8b3c606e426c8acc096050dda108fb"
+    },
+    "BEH-MAG-XFMR-CT/B2": {
+      "expected": [
+        {
+          "basis": "(Rs+Rb)/(2 pi L)",
+          "measure": "fc",
+          "tolerance": 0.03,
+          "value": 1639.3
+        }
+      ],
+      "file": "docs/behavior/bench/mag_ct/B2_lf_corner.cir",
+      "netlist_sha256": "4e28f2dc2a96160bdab0eef1a249fb1065330a2b84c3ab8f77237d68ae90671d"
+    },
+    "BEH-MAG-XFMR-CT/B3": {
+      "expected": [
+        {
+          "basis": "Lsec w Is_pk",
+          "measure": "V_open_pk",
+          "tolerance": 0.05,
+          "value": 235.6
+        }
+      ],
+      "file": "docs/behavior/bench/mag_ct/B3_open_secondary.cir",
+      "netlist_sha256": "7d8bef592e896dbff62ca893f7305e293be257d26b75a17e4d6429973abe7064"
+    },
+    "BEH-MAG-XFMR-FLYBACK/B1": {
+      "expected": [
+        {
+          "basis": "Vin D sqrt(R/(2 Lp f))",
+          "measure": "Vout",
+          "tolerance": 0.03,
+          "value": 21.466
+        }
+      ],
+      "file": "docs/behavior/bench/mag_flyback/B1_dcm_flyback.cir",
+      "netlist_sha256": "a5ef9042ea161e9aac553498a34ff14ceb39865aeda7d0ff2306190b4b893c14"
+    },
+    "BEH-MAG-XFMR-FLYBACK/B2": {
+      "expected": [
+        {
+          "basis": "Vin+Vor+Ipk sqrt(Llk/C)",
+          "measure": "Vdrain_pk",
+          "tolerance": 0.05,
+          "value": 184.4
+        }
+      ],
+      "file": "docs/behavior/bench/mag_flyback/B2_leakage_spike_unclamped.cir",
+      "netlist_sha256": "adfdba5be4610f8667ec239fbe98e7dcf1d6782a6f3322f88ba65b26e31606e8"
+    },
+    "BEH-MAG-XFMR-FLYBACK/B3": {
+      "expected": [
+        {
+          "basis": "1/2 Llk Ipk^2 f Vc/(Vc-Vor)",
+          "measure": "P_clamp",
+          "tolerance": 0.15,
+          "value": 0.2529
+        }
+      ],
+      "file": "docs/behavior/bench/mag_flyback/B3_rcd_clamp_lowC.cir",
+      "netlist_sha256": "7e566889e253c6d73c674fa2043ec22b06ca35e61b25600a3e3392cfc7449997"
+    },
+    "BEH-MAG-XFMR-FLYBACK/B3b": {
+      "expected": [
+        {
+          "basis": "same formula, realistic parasitics",
+          "measure": "P_clamp",
+          "tolerance": 0.15,
+          "value": 0.3528
+        }
+      ],
+      "file": "docs/behavior/bench/mag_flyback/B3b_rcd_clamp_realC.cir",
+      "netlist_sha256": "f42760432b7b35e65e35fec22c7beb754d4d4f60f5800fce2f8bb5034cf573c4"
+    },
+    "BEH-MAG-XFMR-SIGNAL/B1": {
+      "expected": [
+        {
+          "basis": "RL/(Rs+RP+RS+RL)",
+          "measure": "gain_1kHz",
+          "tolerance": 0.01,
+          "value": 0.46875
+        }
+      ],
+      "file": "docs/behavior/bench/mag_xfmr/B1_midband_ratio.cir",
+      "netlist_sha256": "703e04c63ae3ac6fc2172c1fd40ccc6105f6ad19cc1f096ad77ecff2be0f4946"
+    },
+    "BEH-MAG-XFMR-SIGNAL/B2": {
+      "expected": [
+        {
+          "basis": "Req/(2 pi Lm)",
+          "measure": "fL",
+          "tolerance": 0.03,
+          "value": 51.2
+        }
+      ],
+      "file": "docs/behavior/bench/mag_xfmr/B2_lf_corner.cir",
+      "netlist_sha256": "22106cac46650816b790d285d2191ff073a2d4ac30b05ebcbb332b75dd325e1e"
+    },
+    "BEH-MAG-XFMR-SIGNAL/B3": {
+      "expected": [
+        {
+          "basis": "lambda(i)=V/w",
+          "measure": "i_pk",
+          "tolerance": 0.01,
+          "value": 0.85308
+        }
+      ],
+      "file": "docs/behavior/bench/mag_xfmr/B3_voltsecond_sat.cir",
+      "netlist_sha256": "5bf351c44afcaf50e153d6161863213a43d93692018d4dd7e1747be8eb178f1a"
+    },
+    "BEH-MEM-SPINOR/F1": {
+      "expected": [
+        {
+          "basis": "(8+24+8N)*Tck + 20 ns",
+          "measure": "tCSlow_us",
+          "tolerance": "0.1 percent",
+          "value": 83.22
+        }
+      ],
+      "file": "docs/behavior/bench/mem-spinor/F1_spi_read_timing.cir",
+      "netlist_sha256": "2ec0c44b9b78de9a335851b7a449586dd5ec6d0005d0e2b3e3258736381ff967"
+    },
+    "BEH-MEM-SPINOR/F2": {
+      "expected": [
+        {
+          "basis": "independent ODE solution",
+          "measure": "peak_droop_mV",
+          "tolerance": "3 percent",
+          "value": "5.508, 2.554"
+        }
+      ],
+      "file": "docs/behavior/bench/mem-spinor/F2_program_current_droop.cir",
+      "netlist_sha256": "370b86c373737ef90e50bec1356abaea694f5bd7a0a9b686065fbecfd072d100"
+    },
+    "BEH-PKG-IC-BINDING/P1": {
+      "expected": [
+        {
+          "basis": "Tj = Ta + Rth*P",
+          "measure": "Tj",
+          "tolerance": "0.1 percent",
+          "value": "70.0, 55.9, 106.26, 43.396, 89.5, 54.2"
+        }
+      ],
+      "file": "docs/behavior/bench/pkg-ic-binding/P1_tj_steady.cir",
+      "netlist_sha256": "3bdbce9351ae8117e14b70af7b598914e504620706e4aceb0d038b5cb281eed9"
+    },
+    "BEH-PKG-IC-BINDING/P2": {
+      "expected": [
+        {
+          "basis": "calibration of S27 Fig.16",
+          "measure": "theta_4vias",
+          "tolerance": "0.5 percent",
+          "value": 30.8
+        }
+      ],
+      "file": "docs/behavior/bench/pkg-ic-binding/P2_thermal_via_parallel.cir",
+      "netlist_sha256": "84342b1e1023eff43596817c1bc0b93574442d4f77f2ced9b9084839f8ff047f"
+    },
+    "BEH-PKG-IC-BINDING/P3": {
+      "expected": [
+        {
+          "basis": "1/(2 pi sqrt(LC))",
+          "measure": "f0_MHz",
+          "tolerance": "0.5 percent",
+          "value": "7.5026, 7.5874, 15.0454, 12.2066, 25.1646"
+        }
+      ],
+      "file": "docs/behavior/bench/pkg-ic-binding/P3_lead_resonance.cir",
+      "netlist_sha256": "4f06ad9e7589e379ca05ae2f7f226d595c2300d1699080692b88d8aaf36541be"
+    },
+    "BEH-PKG-IC-BINDING/P4": {
+      "expected": [
+        {
+          "basis": "dI*sqrt(L/C)",
+          "measure": "peak_droop_mV",
+          "tolerance": "2 percent",
+          "value": "42.43, 21.16, 12.65"
+        }
+      ],
+      "file": "docs/behavior/bench/pkg-ic-binding/P4_supply_droop.cir",
+      "netlist_sha256": "371fc4dfebcab7ecb2b47dc1852609cb11feb9679cb8339593f6924e030330b5"
+    },
+    "BEH-PWR-LOADSWITCH/L1": {
+      "expected": [
+        {
+          "basis": "I*RON",
+          "measure": "vdrop_V",
+          "tolerance": "2 percent",
+          "value": 0.237
+        }
+      ],
+      "file": "docs/behavior/bench/pwr-loadswitch/L1_ron_drop.cir",
+      "netlist_sha256": "6a4ffc24bc5b89c41b8b03f98c487fdc8f1c59fdbca87ed3f140d6993fafd462"
+    },
+    "BEH-PWR-LOADSWITCH/L2": {
+      "expected": [
+        {
+          "basis": "threshold",
+          "measure": "turn_on_V",
+          "tolerance": "15 mV",
+          "value": 2.54
+        }
+      ],
+      "file": "docs/behavior/bench/pwr-loadswitch/L2_uvlo.cir",
+      "netlist_sha256": "5cb644535a4dd648fd25f7953e44a2805f1b9d9e2f893497c3f6239c4fe4c18c"
+    },
+    "BEH-PWR-LOADSWITCH/L3": {
+      "expected": [
+        {
+          "basis": "ILIM",
+          "measure": "isc_A",
+          "tolerance": "1 percent",
+          "value": 1.5
+        }
+      ],
+      "file": "docs/behavior/bench/pwr-loadswitch/L3_current_limit.cir",
+      "netlist_sha256": "0a18700e9ed44192c0d6804304bb7c3c722fc0436f16de65e9c8b1263e7930d7"
+    },
+    "BEH-PWR-PKGTHERMAL/B1": {
+      "expected": [
+        {
+          "basis": "Ta + P(R1+R2)",
+          "measure": "Tj_inf",
+          "tolerance": "0.5%",
+          "value": 149.0
+        }
+      ],
+      "file": "docs/behavior/bench/pwr_pkgthermal/B1_foster_step.cir",
+      "netlist_sha256": "04e838ea0ff0d3d19b3c82c088659c979b8f5752662b367ed1f32cf45e78d6c8"
+    },
+    "BEH-PWR-PKGTHERMAL/B2": {
+      "expected": [
+        {
+          "basis": "(Tjmax-T)/Rth",
+          "measure": "pmax_12_rows",
+          "tolerance": "1.5%",
+          "value": "equal datasheet"
+        }
+      ],
+      "file": "docs/behavior/bench/pwr_pkgthermal/B2_pmax_datasheet_check.cir",
+      "netlist_sha256": "4c27cd00a5e44e95e59fc0cad8c85acda019e7d5aaf968a40a4bce59184442b2"
+    },
+    "BEH-REG-BUCK-DCS/B1": {
+      "expected": [
+        {
+          "basis": "1/K and loss-corrected D/tON",
+          "measure": "fsw_MHz",
+          "tolerance": "10 percent",
+          "value": "2.381 to 2.59"
+        },
+        {
+          "basis": "(Vin-Vo)*tON/L",
+          "measure": "dIL_A",
+          "tolerance": "15 percent",
+          "value": 0.457
+        }
+      ],
+      "file": "docs/behavior/bench/reg-buck-dcs/B1_steady_state.cir",
+      "netlist_sha256": "ece30ff0c1bc6e404350de3a4d06c181bc7902f2b2cf2cd022379abdeaaf1a62"
+    },
+    "BEH-REG-BUCK-DCS/B2": {
+      "expected": [
+        {
+          "basis": "I^2R loss estimate",
+          "measure": "eta_1A",
+          "tolerance": "1.5 point",
+          "value": "89.6 to 91.9 percent"
+        },
+        {
+          "basis": "Iout/Qpulse",
+          "measure": "fsw_10mA_kHz",
+          "tolerance": "20 percent",
+          "value": 104
+        }
+      ],
+      "file": "docs/behavior/bench/reg-buck-dcs/B2_efficiency.cir",
+      "netlist_sha256": "b2b5eaa7a6b6bd67ed92a89112579e7bad3c97d63b7a5c2de085599b2ea20d5c"
+    },
+    "BEH-REG-BUCK-DCS/B3": {
+      "expected": [
+        {
+          "basis": "charge deficit + ESR + RINJ*dI",
+          "measure": "deviation_mV",
+          "tolerance": "window",
+          "value": "5 to 30"
+        }
+      ],
+      "file": "docs/behavior/bench/reg-buck-dcs/B3_load_step.cir",
+      "netlist_sha256": "a0cdf5dce5d4c2bb25a71ea2efebc13eee3aff1a7c80024a414cbfe2aeec28eb"
+    },
+    "BEH-REG-BUCK-DCS/B4": {
+      "expected": [
+        {
+          "basis": "1/K",
+          "measure": "fsw_MHz",
+          "tolerance": "5 percent",
+          "value": 2.5
+        }
+      ],
+      "file": "docs/behavior/bench/reg-buck-dcs/B4_tps62130_variant.cir",
+      "netlist_sha256": "c92b953c9da9c25f266eaeea2908afe0354977b01263af4f251d7f73825939a1"
+    },
+    "BEH-REG-BUCK-DCS/B5": {
+      "expected": [
+        {
+          "basis": "regulation point",
+          "measure": "vout_V",
+          "tolerance": "window",
+          "value": "3.28 to 3.32"
+        }
+      ],
+      "file": "docs/behavior/bench/reg-buck-dcs/B5_line_regulation.cir",
+      "netlist_sha256": "3e69c5e66a55ae5e75e743295400be48450a4ede02b6335a1a5526a3215e43ae"
+    },
+    "BEH-REG-LINEAR/B1": {
+      "expected": [
+        {
+          "basis": "Vin - VDO",
+          "measure": "Vout_3p8V",
+          "tolerance": "3%",
+          "value": 2.7
+        }
+      ],
+      "file": "docs/behavior/bench/reg_linear/B1_dc_dropout.cir",
+      "netlist_sha256": "a7d1eb857393c4f1b92e7399bcc9e7db802318f596bdae496cc1709c217169fd"
+    },
+    "BEH-REG-LINEAR/B2": {
+      "expected": [
+        {
+          "basis": "datasheet",
+          "measure": "line_reg",
+          "tolerance": "5%",
+          "value": 0.05
+        },
+        {
+          "basis": "datasheet",
+          "measure": "load_reg",
+          "tolerance": "5%",
+          "value": 0.1
+        }
+      ],
+      "file": "docs/behavior/bench/reg_linear/B2_regulation.cir",
+      "netlist_sha256": "768a4ca846e9aa08285c886e9e963b803e1f3673309eb9e19a46fd3038096ed4"
+    },
+    "BEH-REG-LINEAR/B4": {
+      "expected": [
+        {
+          "basis": "Ta + Rth P",
+          "measure": "Tj",
+          "tolerance": "2%",
+          "value": 127.25
+        }
+      ],
+      "file": "docs/behavior/bench/reg_linear/B4_thermal.cir",
+      "netlist_sha256": "739c8da7aba486530cd099f4fbf99a5b1f29cc20d8469411f80b7f724507373e"
+    },
+    "BEH-RES-FIXED/B1": {
+      "expected": [
+        {
+          "basis": "5*10k/20k",
+          "measure": "v(out)",
+          "tolerance": "0.1%",
+          "value": 2.5
+        },
+        {
+          "basis": "R0*(1+100e-6*100)",
+          "measure": "R(125C)",
+          "tolerance": "0.1%",
+          "value": 1010
+        }
+      ],
+      "file": "docs/behavior/bench/res_fixed/B1.cir",
+      "netlist_sha256": "dffa43d06f37aade19e7898398dccc646141e28304fd575fc64c9c1906458ed8"
+    },
+    "BEH-RES-FIXED/B2": {
+      "expected": [
+        {
+          "basis": "(100+sqrt(14000))/2",
+          "measure": "R",
+          "tolerance": "0.1%",
+          "value": 109.16
+        }
+      ],
+      "file": "docs/behavior/bench/res_fixed/B2.cir",
+      "netlist_sha256": "cc00adcdf1b6c65d9ce216d3183bdb7ce659c7dc2780d3ecf16ecf74b4d92052"
+    },
+    "BEH-RES-FIXED/B3": {
+      "expected": [
+        {
+          "basis": "sqrt(R^2+(wL)^2)",
+          "measure": "Zmag",
+          "tolerance": "0.1%",
+          "value": 14.142
+        }
+      ],
+      "file": "docs/behavior/bench/res_fixed/B3.cir",
+      "netlist_sha256": "2e15cbf302f5d636258fd4286347fb5a7d6dc7eaff805ab800b2d024304435e0"
+    },
+    "BEH-RES-FIXED/B4": {
+      "expected": [
+        {
+          "basis": "derating formula",
+          "measure": "P_allowed",
+          "tolerance": "0.1%",
+          "value": 0.080882
+        }
+      ],
+      "file": "docs/behavior/bench/res_fixed/B4.cir",
+      "netlist_sha256": "175dcc76eccf12e898c2117f6a536ae2ac70f38c7a8d822f97ea57022635ad63"
+    },
+    "BEH-RES-FIXED/B5": {
+      "expected": [
+        {
+          "basis": "quadratic fixed point",
+          "measure": "R85",
+          "tolerance": "0.05%",
+          "value": 1006.993
+        }
+      ],
+      "file": "docs/behavior/bench/res_fixed/B5.cir",
+      "netlist_sha256": "dc37e2dab30b849267daa03edbe33a6ebba44e12417b396b28af88aaa5a250ee"
+    },
+    "BEH-RES-NETWORK/B1": {
+      "expected": [
+        {
+          "basis": "5*10k/20k",
+          "measure": "v(p2)",
+          "tolerance": "0.1%",
+          "value": 2.5
+        },
+        {
+          "basis": "5/10k",
+          "measure": "i(pin4)",
+          "tolerance": "0.1%",
+          "value": 0.0005
+        }
+      ],
+      "file": "docs/behavior/bench/res_network/B1.cir",
+      "netlist_sha256": "6a1168767729e6a8c9c8eb78704731030975b1d38100fbb7bb8131a923e84bd2"
+    },
+    "BEH-RES-NETWORK/B2": {
+      "expected": [
+        {
+          "basis": "4*5/1k",
+          "measure": "i_total",
+          "tolerance": "0.1%",
+          "value": 0.02
+        }
+      ],
+      "file": "docs/behavior/bench/res_network/B2.cir",
+      "netlist_sha256": "8fa6c319f64524d7d3f213d97460ee74158d0cd70dcf801b1f4a5031de4c32a3"
+    },
+    "BEH-RES-POT/B1": {
+      "expected": [
+        {
+          "basis": "10*0.3",
+          "measure": "v(w)",
+          "tolerance": "0.1%",
+          "value": 3.0
+        }
+      ],
+      "file": "docs/behavior/bench/pot/B1.cir",
+      "netlist_sha256": "8940f64f409247a3eb8c6d214d1ad5104d80fa4cee2bc9fc19c65d2e8beb8d8f"
+    },
+    "BEH-RES-POT/B2": {
+      "expected": [
+        {
+          "basis": "10*(5k||10k)/(5k+5k||10k)",
+          "measure": "v(w)",
+          "tolerance": "0.1%",
+          "value": 4.0
+        }
+      ],
+      "file": "docs/behavior/bench/pot/B2.cir",
+      "netlist_sha256": "da24f0d3ea399eeba6f8fa737fc37d89a655606610b05ced5851db93da94ffe5"
+    },
+    "BEH-RES-POT/B3": {
+      "expected": [
+        {
+          "basis": "10*(10^(k*0.5)-1)/(10^k-1), k=1.505",
+          "measure": "v(w)",
+          "tolerance": "0.1%",
+          "value": 1.50243
+        }
+      ],
+      "file": "docs/behavior/bench/pot/B3.cir",
+      "netlist_sha256": "f0bd4b2381c2f51ab4bb780b6f670453144be7ceb4c39823b4e0dae5763714dc"
+    },
+    "BEH-RES-POT/B4": {
+      "expected": [
+        {
+          "basis": "10*t/1ms",
+          "measure": "v(w)@0.25ms",
+          "tolerance": "0.1%",
+          "value": 2.5
+        },
+        {
+          "basis": "10*t/1ms",
+          "measure": "v(w)@0.75ms",
+          "tolerance": "0.1%",
+          "value": 7.5
+        }
+      ],
+      "file": "docs/behavior/bench/pot/B4.cir",
+      "netlist_sha256": "b0eb4cc463afe641a0fa3852af1693f4ead58dad3aa3aa832a7f0944453f209b"
+    },
+    "BEH-RES-SENSE/B1": {
+      "expected": [
+        {
+          "basis": "I*Rs",
+          "measure": "V_kelvin",
+          "tolerance": "0.1%",
+          "value": 0.01
+        },
+        {
+          "basis": "I*(Rs+6m+2u)",
+          "measure": "V_2wire",
+          "tolerance": "0.1%",
+          "value": 0.07002
+        }
+      ],
+      "file": "docs/behavior/bench/res_sense/B1.cir",
+      "netlist_sha256": "b25bde9e184f48fc4d20bd86358c2e094f446d0e029227a5348ef9d3fd8cdc73"
+    },
+    "BEH-RES-SENSE/B2": {
+      "expected": [
+        {
+          "basis": "sqrt(P*R)",
+          "measure": "V",
+          "tolerance": "0.1%",
+          "value": 0.031623
+        }
+      ],
+      "file": "docs/behavior/bench/res_sense/B2.cir",
+      "netlist_sha256": "0b0a78b1f032d49bd51c24c2d608be21adac74b212cf4cc113cb28c495c784b5"
+    },
+    "BEH-RES-SENSE/B3": {
+      "expected": [
+        {
+          "basis": "R*sqrt(2)",
+          "measure": "Zmag",
+          "tolerance": "0.1%",
+          "value": 0.0014142
+        }
+      ],
+      "file": "docs/behavior/bench/res_sense/B3.cir",
+      "netlist_sha256": "cd006528e6823b3cbeb9cbfbcec0722629abf38f9d4e71087e9e8e6dca615385"
+    },
+    "BEH-TRN-BJT/B1": {
+      "expected": [
+        {
+          "basis": "Ic=(Vcc-Vf-Vcesat)/R",
+          "measure": "Ic",
+          "tolerance": "5%",
+          "value": 0.0132
+        }
+      ],
+      "file": "docs/behavior/bench/trn_bjt/B1_led_switch.cir",
+      "netlist_sha256": "5e771a22f62e58c8529a1e75e4da648b02b14102c12f8089b2f1682f3e638a5b"
+    },
+    "BEH-TRN-BJT/B2": {
+      "expected": [
+        {
+          "basis": "Rc/(re+RE)*ro correction",
+          "measure": "gain",
+          "tolerance": "15%",
+          "value": 225
+        }
+      ],
+      "file": "docs/behavior/bench/trn_bjt/B2_ce_amp.cir",
+      "netlist_sha256": "f0b7dac1f81c7d9878245be0bbdc6a2b714162f97b6e778a0083c32e7b866a75"
+    },
+    "BEH-TRN-BJT/B6": {
+      "expected": [
+        {
+          "basis": "(Vbe-Eg)/T - XTI k/q",
+          "measure": "dVbe_dT",
+          "tolerance": "0.3e-3",
+          "value": -0.0018
+        }
+      ],
+      "file": "docs/behavior/bench/trn_bjt/B6_vbe_tempco.cir",
+      "netlist_sha256": "d8d3804a44b624b4881b7aac57bc0be6d725a4dd3078c2c4bd1089c5ca328ed0"
+    },
+    "BEH-TRN-BJT/B8": {
+      "expected": [
+        {
+          "basis": "Rth*Vce*dIc/dT",
+          "measure": "loop_gain_criterion",
+          "tolerance": "qualitative",
+          "value": "A diverges, B converges"
+        }
+      ],
+      "file": "docs/behavior/bench/trn_bjt/B8_thermal_runaway.cir",
+      "netlist_sha256": "1d3a6170a8d1c8c3bdea1434cbea6168ade1e2e9fee2fd74ebb231fce9f28be6"
+    },
+    "BEH-TRN-MOSFET/B1": {
+      "expected": [
+        {
+          "basis": "Id*Rds",
+          "measure": "Vds",
+          "tolerance": "3%",
+          "value": 0.1041
+        }
+      ],
+      "file": "docs/behavior/bench/trn_mosfet/B1_lowside_switch.cir",
+      "netlist_sha256": "c31895ab76cafe0b97d85e06df2f187db9eac46f931ae1873123d40cc1d3c621"
+    },
+    "BEH-TRN-MOSFET/B2": {
+      "expected": [
+        {
+          "basis": "datasheet",
+          "measure": "Rds_4p5V_L3",
+          "tolerance": "3%",
+          "value": 0.016
+        }
+      ],
+      "file": "docs/behavior/bench/trn_mosfet/B2_rdson_vs_vgs_L1_vs_L3.cir",
+      "netlist_sha256": "16563c40448af14b6ce263897531955873928be65968d4ddb82a7fd7e737e243"
+    },
+    "BEH-TRN-MOSFET/B3": {
+      "expected": [
+        {
+          "basis": "datasheet",
+          "measure": "Qgd",
+          "tolerance": "10%",
+          "value": "23e-9"
+        }
+      ],
+      "file": "docs/behavior/bench/trn_mosfet/B3_gate_charge.cir",
+      "netlist_sha256": "c22390a13cc1d3a2d1fdac5de91919b58e65c1302c5f3e264e688a7cbfcbd0ea"
+    },
+    "BEH-TRN-MOSFET/B8": {
+      "expected": [
+        {
+          "basis": "0.5 L I^2 BV/(BV-Vdd)",
+          "measure": "Eav",
+          "tolerance": "10%",
+          "value": 0.24
+        }
+      ],
+      "file": "docs/behavior/bench/trn_mosfet/B8_uis_avalanche.cir",
+      "netlist_sha256": "6aba1ec8b6b055edc8c2abf10222c9dc09c692107fcce7e6b8cb4ec37d3c3448"
+    }
+  },
+  "blocked_entries": {},
+  "canary_hashes": {
+    "invented_parameter.json": "08c53fcb2795e06ea65f7139e23217051e63880201875e0c4a062f4e025afca5",
+    "non_run_marked_pass.json": "8a29d76f73debe25a9113c2faf58dd7ca4bed4015ef6d8ca9ac80fe0a62e2892",
+    "swapped_led_permutation.json": "9b5a8c9bba95cba4656174ab0fae386ee53f8f654ff70969da36a6811b87f6ef",
+    "unledgered_source.json": "9f76ac4d0a68c3028ba6b761d8d871a34c7593b2aab6dfdde506b6371b99f7b3",
+    "upgrade_without_bench.json": "c454504f5638096b0162c13acc08ab0e48a03fa9e4b93f664274d2754b01a60e",
+    "vendor_model_without_file.json": "ffa93ef1e9de303d3453f5440803922f0f80ea676f81203da9629476e118dd71",
+    "wrong_bench_expected.json": "dc866f063e16767fb7e84913790b8221246bd1ad73fedf1ebc626f009ab2d5a1"
+  },
+  "completed_research_stages": [],
+  "completed_steps": [],
+  "current_stage": "audit",
+  "entry_status": {
+    "OHM-001": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-002": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-003": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-004": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-005": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-006": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-007": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-008": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-009": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-010": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-011": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-012": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-013": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-014": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-015": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-016": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-017": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-018": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-019": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-020": {
+      "before": "research_required",
+      "current": "research_required"
+    },
+    "OHM-021": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-022": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-023": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-024": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-025": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-026": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-027": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-028": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-029": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-030": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-031": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-032": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-033": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-034": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-035": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-036": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-037": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-038": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-039": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-040": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-041": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-042": {
+      "before": "research_required",
+      "current": "research_required"
+    },
+    "OHM-043": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-044": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-045": {
+      "before": "complete",
+      "current": "complete"
+    },
+    "OHM-046": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-047": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-048": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-049": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-050": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-051": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-052": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-053": {
+      "before": "research_required",
+      "current": "research_required"
+    },
+    "OHM-054": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-055": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-056": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-057": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-058": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-059": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-060": {
+      "before": "research_required",
+      "current": "research_required"
+    },
+    "OHM-061": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-062": {
+      "before": "research_required",
+      "current": "research_required"
+    },
+    "OHM-063": {
+      "before": "research_required",
+      "current": "research_required"
+    },
+    "OHM-064": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-065": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-066": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-067": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-068": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-069": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-070": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-071": {
+      "before": "research_required",
+      "current": "research_required"
+    },
+    "OHM-072": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-073": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-074": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-075": {
+      "before": "research_required",
+      "current": "research_required"
+    },
+    "OHM-076": {
+      "before": "research_required",
+      "current": "research_required"
+    },
+    "OHM-077": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-078": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-079": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-080": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-081": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-082": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-083": {
+      "before": "research_required",
+      "current": "research_required"
+    },
+    "OHM-084": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-085": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-086": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-087": {
+      "before": "research_required",
+      "current": "research_required"
+    },
+    "OHM-088": {
+      "before": "research_required",
+      "current": "research_required"
+    },
+    "OHM-089": {
+      "before": "research_required",
+      "current": "research_required"
+    },
+    "OHM-090": {
+      "before": "research_required",
+      "current": "research_required"
+    },
+    "OHM-091": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-092": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-093": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-094": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-095": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-096": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-097": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-098": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-099": {
+      "before": "research_required",
+      "current": "research_required"
+    },
+    "OHM-100": {
+      "before": "research_required",
+      "current": "research_required"
+    },
+    "OHM-101": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-102": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-103": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-104": {
+      "before": "complete",
+      "current": "complete"
+    },
+    "OHM-105": {
+      "before": "complete",
+      "current": "complete"
+    },
+    "OHM-106": {
+      "before": "complete",
+      "current": "complete"
+    },
+    "OHM-107": {
+      "before": "complete",
+      "current": "complete"
+    },
+    "OHM-108": {
+      "before": "research_required",
+      "current": "research_required"
+    },
+    "OHM-109": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-110": {
+      "before": "complete",
+      "current": "complete"
+    },
+    "OHM-111": {
+      "before": "complete",
+      "current": "complete"
+    },
+    "OHM-112": {
+      "before": "complete",
+      "current": "complete"
+    },
+    "OHM-113": {
+      "before": "complete",
+      "current": "complete"
+    },
+    "OHM-114": {
+      "before": "complete",
+      "current": "complete"
+    },
+    "OHM-115": {
+      "before": "complete",
+      "current": "complete"
+    },
+    "OHM-116": {
+      "before": "complete",
+      "current": "complete"
+    },
+    "OHM-117": {
+      "before": "complete",
+      "current": "complete"
+    },
+    "OHM-118": {
+      "before": "complete",
+      "current": "complete"
+    },
+    "OHM-119": {
+      "before": "complete",
+      "current": "complete"
+    },
+    "OHM-120": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-121": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-122": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-123": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-124": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-125": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-126": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-127": {
+      "before": "complete",
+      "current": "complete"
+    },
+    "OHM-128": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-129": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-130": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-131": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-132": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-133": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-134": {
+      "before": "complete",
+      "current": "complete"
+    },
+    "OHM-135": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-136": {
+      "before": "research_required",
+      "current": "research_required"
+    },
+    "OHM-137": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-138": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-139": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-140": {
+      "before": "complete",
+      "current": "complete"
+    },
+    "OHM-141": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-142": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-143": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-144": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-145": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-146": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-147": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-148": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-149": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-150": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-151": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-152": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-153": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-154": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-155": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-156": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-157": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-158": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-159": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-160": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-161": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-162": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-163": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-164": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-165": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-166": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-167": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-168": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-169": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-170": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-171": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-172": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-173": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-174": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-175": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-176": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-177": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-178": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-179": {
+      "before": "partial",
+      "current": "partial"
+    },
+    "OHM-180": {
+      "before": "partial",
+      "current": "partial"
+    }
+  },
+  "heartbeat_time": "2026-10-05T07:04:43Z",
+  "last_checkpoint": {
+    "entries_touched": [],
+    "number": 1,
+    "path": "out/component-behavior/run/checkpoints/001-audit.md",
+    "rule_hash": "730f651999bc31c7e9db55deb1beac59d05da9aa2d9d9a89ec6f1f20eb53a1c7",
+    "stage": "audit",
+    "status": "failed"
+  },
+  "protected_baseline": {
+    "main_ref": "ab1a8e48df406ef031894aad59bdd37f560d1bce",
+    "production_checkout": "C:\\Dev\\hackathon",
+    "production_content_sha256": "6bb2bb22edcccba8a2b07bbe89ced408ba00fb5b3c8b1cac40889c949bf49a66",
+    "production_head": "ab1a8e48df406ef031894aad59bdd37f560d1bce",
+    "production_index_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "production_status_entry_count": 10,
+    "production_status_sha256": "525dbc38d14d260df0418715caaa95dc41ea87d262035284ed46cb07c83f1b46",
+    "protected_files": {
+      "COMPONENT_BEHAVIOR_SPEC.md": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef"
+    },
+    "remote_refs_sha256": "4ee57aceb876fee1af034f8381ddfdceec78d1a096d93bbd9552c23e0057766e"
+  },
+  "rule_hash": "730f651999bc31c7e9db55deb1beac59d05da9aa2d9d9a89ec6f1f20eb53a1c7",
+  "rules_baseline": {
+    "allowed_fidelity": [
+      "ideal_components",
+      "behavioural_approximation",
+      "vendor_model"
+    ],
+    "allowed_statuses": [
+      "research_required",
+      "partial",
+      "complete"
+    ],
+    "allowed_work_branch_prefix": "codex/behavior-",
+    "compatible_vendor_model_licenses": [
+      "BSD-2-Clause",
+      "BSD-3-Clause",
+      "MIT",
+      "Apache-2.0",
+      "CC0-1.0",
+      "manufacturer-redistributable"
+    ],
+    "expected_entry_count": 180,
+    "maximum_repair_attempts": 3,
+    "protected_branches": [
+      "main"
+    ],
+    "protected_paths": [
+      "COMPONENT_BEHAVIOR_SPEC.md"
+    ],
+    "regression_commands": [
+      "python scripts/generate_behavior_records.py --check",
+      "python -m pytest tests/test_behavior_registry.py tests/test_ai_workflow.py tests/test_behavior_audit.py tests/test_simulation.py -q",
+      "node --test apps/web/tests/scope-view.test.mjs"
+    ],
+    "required_canaries": [
+      "invented_parameter",
+      "unledgered_source",
+      "upgrade_without_bench",
+      "vendor_model_without_file",
+      "wrong_bench_expected",
+      "swapped_led_permutation",
+      "non_run_marked_pass"
+    ],
+    "required_ngspice_major": 42,
+    "rules": [
+      {
+        "check": "rule_hash",
+        "description": "Rules remain hash-locked; an explicit non-loosening RULE_CHANGE is required for any change.",
+        "id": "AUD-RULE-001"
+      },
+      {
+        "check": "source_ledger",
+        "description": "Every external source in behavior records or gapfills has a successful content-hashed fetch ledger entry.",
+        "id": "AUD-SOURCE-001"
+      },
+      {
+        "check": "status_upgrades",
+        "description": "Status upgrades require field-level sources, basis, confidence, and a passing ngspice 42 bench.",
+        "id": "AUD-UPGRADE-001"
+      },
+      {
+        "check": "vendor_models",
+        "description": "vendor_model requires an attached model and compatible attached license.",
+        "id": "AUD-VENDOR-001"
+      },
+      {
+        "check": "spec_preservation",
+        "description": "Generated behavior data remains a current projection of spec plus gapfills.",
+        "id": "AUD-SPEC-001"
+      },
+      {
+        "check": "benches",
+        "description": "Every required bench ran through the product path and matched its expected value within its locked tolerance.",
+        "id": "AUD-BENCH-001"
+      },
+      {
+        "check": "honesty",
+        "description": "Non-runs and errors are not displayed as pass, and rating violations remain violations.",
+        "id": "AUD-HONESTY-001"
+      },
+      {
+        "check": "protected_state",
+        "description": "Main, the production checkout, remote refs, and protected source paths remain at their recorded baseline.",
+        "id": "AUD-PROTECT-001"
+      },
+      {
+        "check": "coverage",
+        "description": "Exactly 180 records and exactly one coverage row for every OHM-001 through OHM-180 exist.",
+        "id": "AUD-COVERAGE-001"
+      },
+      {
+        "check": "regression",
+        "description": "Every earlier completed stage gate is rerun at later checkpoints.",
+        "id": "AUD-REGRESSION-001"
+      },
+      {
+        "check": "canaries",
+        "description": "All seven deliberately invalid canaries are rejected by their intended rule.",
+        "id": "AUD-CANARY-001"
+      },
+      {
+        "check": "independent_verifier",
+        "description": "Research stages have a fresh-context K=max(5,ceil(10%)) primary-source re-derivation report.",
+        "id": "AUD-VERIFY-001"
+      },
+      {
+        "check": "state",
+        "description": "Run state is complete, current, atomic, and resumable.",
+        "id": "AUD-RESUME-001"
+      }
+    ],
+    "schema_version": 1,
+    "status_order": [
+      "research_required",
+      "partial",
+      "complete"
+    ]
+  },
+  "run_id": "behavior-20261005T065040Z",
+  "schema_version": 1,
+  "stage_status": "blocked_by_checkpoint"
+}

@@ -529,6 +529,40 @@ class NgspiceAdapter:
         # the same question.
         return NgspiceCli(self.executable).availability()
 
+    def behavior_bench(self, deck: str, *, work_dir: Path) -> dict:
+        """Execute an authored, fully inlined bench with version and raw output.
+
+        A successful process is only an observation. Analytical comparisons are
+        performed separately; this method never declares an electrical pass.
+        """
+        result = {"status": "not_run", "version_output": "", "stdout": "", "stderr": "",
+                  "returncode": None, "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_bench"}
+        if self.executable is None:
+            result["stderr"] = "ngspice executable unavailable"
+            return result
+        try:
+            version = run_tool([self.executable, "-v"], timeout=self.timeout_seconds)
+            result["version_output"] = version.stdout + version.stderr
+            if version.returncode != 0 or not re.search(r"\bngspice(?:[-\s]+version)?[-\s]+42(?:\D|$)", result["version_output"], re.IGNORECASE):
+                result["stderr"] = "ngspice 42 version gate failed"
+                return result
+            # This path accepts trusted authored decks, never file/shell control commands.
+            unsafe = re.compile(r"^\s*(?:\.(?:include|inc|lib)\b|(?:shell|source|cd|write|wrdata|hardcopy)\b)", re.IGNORECASE | re.MULTILINE)
+            if unsafe.search(deck):
+                result["stderr"] = "bench must be inlined and cannot issue file or shell commands"
+                return result
+            work_dir.mkdir(parents=True, exist_ok=True)
+            path = work_dir / "bench.cir"
+            path.write_text(deck, encoding="utf-8")
+            completed = run_tool([self.executable, "-b", str(path.resolve())], timeout=self.timeout_seconds)
+            result.update(stdout=completed.stdout, stderr=completed.stderr, returncode=completed.returncode)
+            result["status"] = "ran" if completed.returncode == 0 and not _error_summary(completed.stdout, completed.stderr) else "failed"
+        except ToolTimeoutError:
+            result.update(status="timed_out", stderr="ngspice timed out")
+        except OSError as exc:
+            result.update(status="failed", stderr=str(exc))
+        return result
+
     def operating_point(self, netlist: str, run_id: str, *,
                         work_dir: Path | None = None) -> SimulationRun:
         fidelity = model_fidelity(netlist)

@@ -625,6 +625,37 @@ class TestTransientInThePipeline:
 
 
 class TestPowerOnStimulus:
+    def test_behavior_bench_unavailable_produces_no_run(self, tmp_path, monkeypatch):
+        monkeypatch.setattr(simulation, "find_ngspice", lambda: None)
+        result = NgspiceAdapter().behavior_bench("R1 a 0 1k\n.end", work_dir=tmp_path)
+        assert result["status"] == "not_run"
+        assert not result["stdout"] and result["returncode"] is None
+
+    def test_behavior_bench_wrong_version_never_runs_the_deck(self, tmp_path, monkeypatch):
+        calls = []
+        def version_only(command, **kwargs):
+            calls.append(command)
+            return completed(0, "ngspice-43")
+        monkeypatch.setattr(simulation, "run_tool", version_only)
+        result = NgspiceAdapter(executable="ngspice").behavior_bench("R1 a 0 1k\n.end", work_dir=tmp_path)
+        assert result["status"] == "not_run"
+        assert calls == [["ngspice", "-v"]]
+
+    def test_behavior_bench_process_success_is_only_an_observation(self, tmp_path, monkeypatch):
+        def execute(command, **kwargs):
+            return completed(0, "ngspice-42" if command[-1] == "-v" else "v(out) = 2.5\n")
+        monkeypatch.setattr(simulation, "run_tool", execute)
+        result = NgspiceAdapter(executable="ngspice").behavior_bench("V1 out 0 2.5\n.end", work_dir=tmp_path)
+        assert result["status"] == "ran"
+        assert result["version_output"] == "ngspice-42"
+        assert result["stdout"] == "v(out) = 2.5\n"
+
+    def test_behavior_bench_refuses_file_or_shell_commands(self, tmp_path, monkeypatch):
+        monkeypatch.setattr(simulation, "run_tool", lambda *args, **kwargs: completed(0, "ngspice-42"))
+        for deck in (".include private.lib", ".control\nshell echo bad\n.endc"):
+            result = NgspiceAdapter(executable="ngspice").behavior_bench(deck, work_dir=tmp_path)
+            assert result["status"] == "not_run" and "cannot issue" in result["stderr"]
+
     UNDRIVEN = ".title t\nC1 VBUS GND 1u\nR1 VBUS 3V3 100\nU1 __U1\n.end\n"
 
     def test_an_undriven_deck_gets_a_ramp_and_a_sentence_about_it(self):

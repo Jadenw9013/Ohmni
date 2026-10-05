@@ -263,7 +263,17 @@
       "approval_evidence": ".ai/approvals/COMPONENT-BEHAVIOR-STAGE1.yaml",
       "review_policy": "Deterministic generation and validation plus focused self-review; stop at the Stage 1 human gate.",
       "implementation_complete": true,
-      "human_stage_gate": "PENDING"
+      "human_stage_gate": "APPROVED",
+      "acceptance_evidence": ".ai/approvals/COMPONENT-BEHAVIOR-COMPLETION.yaml"
+    },
+    {
+      "id": "COMPONENT-BEHAVIOR-COMPLETION",
+      "type": "component_behavior",
+      "title": "Audited component behavior Stages 2 through 7",
+      "status": "IN_PROGRESS",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/COMPONENT-BEHAVIOR-COMPLETION.yaml",
+      "review_policy": "Deterministic checkpoint audit at every boundary plus fresh-context verifier sampling after research stages; final human review of FINAL_REPORT.md."
     }
   ],
   "tasks": [
@@ -2613,6 +2623,116 @@
         "independent": false,
         "record": ".ai/reviews.yaml#CBH-T01-SELF"
       },
+      "blockers": []
+    },
+    {
+      "id": "CBH-AUDIT",
+      "scope": "COMPONENT-BEHAVIOR-COMPLETION",
+      "milestone": null,
+      "title": "Build the behavior self-audit system",
+      "status": "IN_PROGRESS",
+      "priority": 700,
+      "dependencies": ["CBH-T01"],
+      "goal": "Create a deterministic, resumable audit that rejects dishonest evidence and protects the accepted repository baseline.",
+      "acceptance_criteria": [
+        "Hash-locked machine rules, protected-path baselines, resumable state and checkpoint reports",
+        "Deterministic source, status-upgrade, vendor-model, spec-preservation, bench, honesty, coverage and regression checks",
+        "All seven deliberately invalid canaries are rejected by the intended rule",
+        "Audit system committed before Stage 2 begins"
+      ],
+      "verification": {"required": ["audit unit tests", "canary run", "AI workflow validation"], "record": null},
+      "implementation": {"started_at_commit": "0505077", "completed_at_commit": null},
+      "review": {"required": true, "status": "PENDING", "independent": false, "record": null},
+      "blockers": []
+    },
+    {
+      "id": "CBH-STAGE2",
+      "scope": "COMPONENT-BEHAVIOR-COMPLETION",
+      "milestone": null,
+      "title": "Gap research batch A",
+      "status": "APPROVED",
+      "priority": 600,
+      "dependencies": ["CBH-AUDIT"],
+      "goal": "Research and conservatively update OHM-001 through OHM-102 without fabricating evidence.",
+      "acceptance_criteria": ["Per-entry before/after table", "Primary-source fetch ledger", "Bench evidence or explicit blocked status", "Fresh-context verifier sample"],
+      "verification": {"required": ["audit checkpoints", "independent verifier"], "record": null},
+      "implementation": {"started_at_commit": null, "completed_at_commit": null},
+      "review": {"required": true, "status": "PENDING", "independent": true, "record": null},
+      "blockers": []
+    },
+    {
+      "id": "CBH-STAGE3",
+      "scope": "COMPONENT-BEHAVIOR-COMPLETION",
+      "milestone": null,
+      "title": "Behavior netlist generation",
+      "status": "APPROVED",
+      "priority": 500,
+      "dependencies": ["CBH-STAGE2"],
+      "goal": "Generate inline behavior netlists through the existing simulation path and rerun matching benches.",
+      "acceptance_criteria": ["Inline subcircuits", "Documented ngspice gotchas", "Product-path bench comparisons"],
+      "verification": {"required": ["audit checkpoints", "ngspice 42 benches", "regression"], "record": null},
+      "implementation": {"started_at_commit": null, "completed_at_commit": null},
+      "review": {"required": true, "status": "PENDING", "independent": false, "record": null},
+      "blockers": []
+    },
+    {
+      "id": "CBH-STAGE4",
+      "scope": "COMPONENT-BEHAVIOR-COMPLETION",
+      "milestone": null,
+      "title": "Gap research batch B and IC models",
+      "status": "APPROVED",
+      "priority": 400,
+      "dependencies": ["CBH-STAGE3"],
+      "goal": "Bind package references and build sourced IC, frequency and connector behavior models.",
+      "acceptance_criteria": ["Sourced reference bindings", "Conservative IC/frequency/interface models", "Fresh-context verifier sample", "Bench comparison"],
+      "verification": {"required": ["audit checkpoints", "independent verifier", "ngspice 42 benches"], "record": null},
+      "implementation": {"started_at_commit": null, "completed_at_commit": null},
+      "review": {"required": true, "status": "PENDING", "independent": true, "record": null},
+      "blockers": []
+    },
+    {
+      "id": "CBH-STAGE5",
+      "scope": "COMPONENT-BEHAVIOR-COMPLETION",
+      "milestone": null,
+      "title": "Ratings and failure checker",
+      "status": "APPROVED",
+      "priority": 300,
+      "dependencies": ["CBH-STAGE4"],
+      "goal": "Evaluate sourced ratings and failure responses without turning violations or unknowns into passes.",
+      "acceptance_criteria": ["Deterministic check expressions", "Violations remain violations", "Unknown or non-run remains non-pass"],
+      "verification": {"required": ["audit checkpoints", "canary regression", "fast verification"], "record": null},
+      "implementation": {"started_at_commit": null, "completed_at_commit": null},
+      "review": {"required": true, "status": "PENDING", "independent": false, "record": null},
+      "blockers": []
+    },
+    {
+      "id": "CBH-STAGE6",
+      "scope": "COMPONENT-BEHAVIOR-COMPLETION",
+      "milestone": null,
+      "title": "Behavior simulation UI",
+      "status": "APPROVED",
+      "priority": 200,
+      "dependencies": ["CBH-STAGE5"],
+      "goal": "Expose honest simulation controls, results, fidelity, status and confidence in the web UI.",
+      "acceptance_criteria": ["Run control and results", "Non-simulable reason", "Non-run is never pass", "Browser coverage"],
+      "verification": {"required": ["audit checkpoints", "Playwright", "fast verification"], "record": null},
+      "implementation": {"started_at_commit": null, "completed_at_commit": null},
+      "review": {"required": true, "status": "PENDING", "independent": false, "record": null},
+      "blockers": []
+    },
+    {
+      "id": "CBH-STAGE7",
+      "scope": "COMPONENT-BEHAVIOR-COMPLETION",
+      "milestone": null,
+      "title": "Final behavior coverage and audit report",
+      "status": "APPROVED",
+      "priority": 100,
+      "dependencies": ["CBH-STAGE6"],
+      "goal": "Publish exact 180-entry coverage and one script-generated final audit report.",
+      "acceptance_criteria": ["180-row COVERAGE.md", "Script-generated FINAL_REPORT.md", "All blockers, decisions, rule changes and verifier results listed"],
+      "verification": {"required": ["final audit checkpoint", "full coverage check"], "record": null},
+      "implementation": {"started_at_commit": null, "completed_at_commit": null},
+      "review": {"required": true, "status": "PENDING", "independent": false, "record": null},
       "blockers": []
     }
   ]

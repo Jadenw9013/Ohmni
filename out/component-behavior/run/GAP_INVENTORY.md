@@ -1,0 +1,3466 @@
+# Behavior gap inventory
+
+This is an inventory of source claims, not a verification or status upgrade.
+
+## OHM-001: 01005 SMD resistor
+
+Status retained: `partial`.
+
+- BEH-RES-FIXED /parameters/cp: basis=ASSUMPTION, confidence=L
+- BEH-RES-FIXED /parameters/ls: basis=ASSUMPTION, confidence=L
+- BEH-RES-FIXED /parameters/rth: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 1000.
+
+## [OHM-001] 01005 SMD resistor -> BEH-RES-FIXED
+Values from S2 (rev 28-Oct-13): P70 0.031 W, Umax 15 V, TCR +/-250 or -200/+600 ppm/K, tolerance 1, 2 or 5 %, 10 ohm to 1 Mohm (1 %), E24 and E96, -55 to +125 C. Defaults: value 10k, tolerance 1 %, tcr 250 ppm/K (use the worse bound), t_end 125 C (ASSUMPTION: the datasheet's film-temperature limit was not read; the operating range ends at 125 C). Pin map: A = terminal 1, B = terminal 2. No polarity, no body marking (3D spec). Checks: P <= 0.031 W derated, V <= 15 V. Note the per-size ratings are the lowest in the family; both limits are easy to exceed with a 5 V rail only at low values (P = 25/R: R < 806 ohm exceeds 31 mW at 5 V). Status: partial (L, C unsourced; derating end point assumed).
+
+## OHM-002: 0201 SMD resistor
+
+Status retained: `partial`.
+
+- BEH-RES-FIXED /parameters/cp: basis=ASSUMPTION, confidence=L
+- BEH-RES-FIXED /parameters/ls: basis=ASSUMPTION, confidence=L
+- BEH-RES-FIXED /parameters/rth: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 1003.
+
+## [OHM-002] 0201 SMD resistor -> BEH-RES-FIXED
+S3 (rev 21-Sep-2022): P70 0.05 W, 30 V, TCR +/-100, +/-200 or -200/+400 ppm/K, 1 or 5 %, 1 ohm to 10 Mohm, E24 and E96, -55 to +155 C; jumper 50 mohm, 1.0 A at 70 C. Yageo AC: 1/20 W, 25 V (S4). Defaults: value 10k, 1 %, 200 ppm/K, T_end 155 C. Pin map: A = 1, B = 2. Status: partial.
+
+## OHM-003: 0402 SMD resistor
+
+Status retained: `partial`.
+
+- BEH-RES-FIXED /parameters/cp: basis=ASSUMPTION, confidence=L
+- BEH-RES-FIXED /parameters/ls: basis=ASSUMPTION, confidence=L
+- BEH-RES-FIXED /parameters/rth: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 1006.
+
+## [OHM-003] 0402 SMD resistor -> BEH-RES-FIXED
+S1: 0.10 W, 75 V, TCR +/-200 or +/-100, 1 or 5 %, 1 ohm to 10 Mohm. S4: 1/16 W (or 1/8 W high-power), 50 V. Default conservative: 0.0625 W, 50 V unless a Vishay part is chosen. Pin map A = 1, B = 2. Status: partial.
+
+## OHM-004: 0603 SMD resistor
+
+Status retained: `partial`.
+
+- BEH-RES-FIXED /parameters/cp: basis=ASSUMPTION, confidence=L
+- BEH-RES-FIXED /parameters/ls: basis=ASSUMPTION, confidence=L
+- BEH-RES-FIXED /parameters/rth: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 1009.
+
+## [OHM-004] 0603 SMD resistor -> BEH-RES-FIXED
+S1: 0.125 W, 75 V; S4: 1/10 W (or 1/5 W), 75 V. Default conservative: 0.1 W, 75 V. Jumper 2.0 A. Pin map A = 1, B = 2. Existing OHMNI record GENERIC_RESISTOR lists 0402/0603/0805/1206 with pins 1, 2 passive: compatible. Status: partial.
+
+## OHM-005: 0805 SMD resistor
+
+Status retained: `partial`.
+
+- BEH-RES-FIXED /parameters/cp: basis=ASSUMPTION, confidence=L
+- BEH-RES-FIXED /parameters/ls: basis=ASSUMPTION, confidence=L
+- BEH-RES-FIXED /parameters/rth: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 1012.
+
+## [OHM-005] 0805 SMD resistor -> BEH-RES-FIXED
+S1: 0.25 W, 150 V; S4: 1/8 W (or 1/4 W), 150 V. Default conservative: 0.125 W, 150 V. Jumper 2.5 A. Pin map A = 1, B = 2. Status: partial.
+
+## OHM-006: 1206 SMD resistor
+
+Status retained: `partial`.
+
+- BEH-RES-FIXED /parameters/cp: basis=ASSUMPTION, confidence=L
+- BEH-RES-FIXED /parameters/ls: basis=ASSUMPTION, confidence=L
+- BEH-RES-FIXED /parameters/rth: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 1015.
+
+## [OHM-006] 1206 SMD resistor -> BEH-RES-FIXED
+S1: 0.25 W, 200 V; S4: 1/4 W (or 1/2 W), 200 V. Default 0.25 W, 200 V (both agree). Jumper 3.5 A. Pin map A = 1, B = 2. Status: partial.
+
+## OHM-007: 1210 SMD resistor
+
+Status retained: `partial`.
+
+- BEH-RES-FIXED /parameters/cp: basis=ASSUMPTION, confidence=L
+- BEH-RES-FIXED /parameters/ls: basis=ASSUMPTION, confidence=L
+- BEH-RES-FIXED /parameters/rth: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 1018.
+
+## [OHM-007] 1210 SMD resistor -> BEH-RES-FIXED
+S1: 0.5 W, 200 V; S4: 1/2 W (or 1 W), 200 V. Default 0.5 W, 200 V (agree). Jumper 5.0 A. Pin map A = 1, B = 2. Status: partial.
+
+## OHM-008: 2010 SMD resistor
+
+Status retained: `partial`.
+
+- BEH-RES-FIXED /parameters/cp: basis=ASSUMPTION, confidence=L
+- BEH-RES-FIXED /parameters/ls: basis=ASSUMPTION, confidence=L
+- BEH-RES-FIXED /parameters/rth: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 1021.
+
+## [OHM-008] 2010 SMD resistor -> BEH-RES-FIXED
+S1: 0.75 W, 400 V; S4: 3/4 W (or 1.25 W), 200 V (conflict on voltage). Default conservative: 0.75 W, 200 V. Jumper 6.0 A. Pin map A = 1, B = 2. Status: partial.
+
+## OHM-009: 2512 SMD resistor
+
+Status retained: `partial`.
+
+- BEH-RES-FIXED /parameters/cp: basis=ASSUMPTION, confidence=L
+- BEH-RES-FIXED /parameters/ls: basis=ASSUMPTION, confidence=L
+- BEH-RES-FIXED /parameters/rth: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 1024.
+
+## [OHM-009] 2512 SMD resistor -> BEH-RES-FIXED
+S1: 1.0 W, 500 V; S4: 1 W (or 2 W), 200 V (conflict on voltage). Default conservative: 1 W, 200 V. Jumper 7.0 A. Pin map A = 1, B = 2. Note: a 2512 thick film is not a current-sense part (OHM-014), its resistance is 1 ohm and above in S1. Status: partial.
+
+## OHM-010: Axial carbon-film resistor
+
+Status retained: `partial`.
+
+- BEH-RES-FIXED /parameters/cp: basis=ASSUMPTION, confidence=L
+- BEH-RES-FIXED /parameters/ls: basis=ASSUMPTION, confidence=L
+- BEH-RES-FIXED /parameters/rth: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 1027.
+
+## [OHM-010] Axial carbon-film resistor -> BEH-RES-FIXED
+Representative: Yageo CFR (S5, Apr 03, 2024 V.3): CFR-12 1/6 W, CFR-25 1/4 W, CFR-50 1/2 W, CFR-100 1 W, CFR-200 2 W at 70 C; working voltage 150 V (CFR-12) to 500 V (CFR-100, CFR-200); overload voltage 300 V to 1000 V; TCR from +/-350 to -500..0 ppm/K by value; 2 % (G) or 5 % (J), E24, 1 ohm to 10 Mohm; -55 to +155 C; knee 70 C, zero power near 155 C; short-time overload 2.5 x RCWV for 5 s, drift +/-(0.75 % + 0.05 ohm). KOA CF (S7): 0.25 W (CF1/4) and 0.5 W types, TCR +350..-450 up to 0..-1300 ppm/K, working voltage 300 to 700 V by type, CFP flame-retardant variant, knee about 70 C; its document header shows a date of October 28, 2030 beside a September 1, 2020 first page date, an obvious typo, so the revision is unreliable. Conflict shown: Yageo CFR TCR is much smaller in magnitude than KOA's for high values.
+Defaults (1/4 W): value 10k, tolerance 5 %, TCR -350 ppm/K (sign negative for carbon), p_rated 0.25 W, u_limit 250 V (ASSUMPTION L: per-type voltage for CFR-25 was not read, only the 150 to 500 V range), t_end 155 C, Rth 340 K/W (DERIVED; lead length and board dependent). The 3D spec lists 1/6, 1/4, 1/2, 1 and 2 W variants: use the S5 power list and set u_limit from the range (150 V for 1/6 W, 500 V for 1 and 2 W, interpolated for others, L).
+Pin map: A = pin 1 (-X, first band side), B = pin 2 (+X, tolerance band side). Non-polarized; the band orientation is only a reading convention. Noise: carbon film is the noisiest of the families here but S5 gives no number; not modeled. Status: partial.
+
+## OHM-011: Axial metal-film resistor
+
+Status retained: `partial`.
+
+- BEH-RES-FIXED /parameters/cp: basis=ASSUMPTION, confidence=L
+- BEH-RES-FIXED /parameters/ls: basis=ASSUMPTION, confidence=L
+- BEH-RES-FIXED /parameters/rth: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 1032.
+
+## [OHM-011] Axial metal-film resistor -> BEH-RES-FIXED
+Representative: Yageo MFR (S6, Apr 03, 2024 V.4): MFR-12 1/6 W, MFR-25 and MFR25S 1/4 W, MFR-50 1/2 W, MFR100 1 W, MFR200 2 W, MFR3WS 3 W at 70 C; working voltage 200 V (MFR-12, MFR-25S) to 500 V (MFR100, MFR2WS, MFR3WS); overload voltage 400 to 1000 V; TCR +/-50 or +/-100 ppm/K; +/-0.5, 1, 2, 5 %; E24, E96, E192; 1 ohm to 4.7 Mohm; -55 to +155 C; derating from 100 % at 70 C to about 20 % at 155 C (graph reading); short overload 2.5 x RCWV for 5 s, drift +/-(0.25 % + 0.05 ohm). Alternative thin-film leaded part (S8, Vishay MRS16/MRS25, rev 07-Mar-16): 0.4 W and 0.6 W, +/-50 ppm/K, 1 %, 200 V / 350 V, 1000 h drift +/-(0.5 % R + 0.05 ohm). Defaults (1/4 W): value 10k, 1 %, TCR 100 ppm/K (50 ppm/K when the +/-50 grade is chosen), p_rated 0.25 W, u_limit 200 V (conservative, the exact 25-size value was not read), power curve end 20 % at 155 C (use `P_allowed = P_rated*(1-0.8*(Tamb-70)/85)`), Rth 340 K/W (derived from the zero-at-155 reading, which is more conservative than 20 % at 155). Pin map: A = pin 1 (-X), B = pin 2 (+X). Status: partial.
+
+## OHM-012: Cement power resistor
+
+Status retained: `partial`.
+
+- BEH-RES-FIXED /parameters/cp: basis=ASSUMPTION, confidence=L
+- BEH-RES-FIXED /parameters/ls: basis=ASSUMPTION, confidence=L
+- BEH-RES-FIXED /parameters/rth: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 1035.
+
+## [OHM-012] Cement power resistor -> BEH-RES-FIXED
+Representative families: Vishay Dale CPR (S9, doc 30219, rev 21-Dec-10, radial terminals, ceramic case, inorganic potting) and Vishay Draloric Z300 axial cemented wirewound (S10, doc 21007, rev 25-Aug-10). CPR: 3, 5, 7, 10, 15, 20 W at 40 C ambient (CPR03 to CPR20), 0.1 ohm to 2.855 kohm, +/-5 % or +/-10 %, TCR +/-300 ppm/K for 1 ohm and above, +/-600 ppm/K below 1 ohm, -65 to +275 C, V = sqrt(P R), 5 x rated power for 5 s, derating from 40 C to 0 % at 275 C, and "can reliably function as a fuse and as a resistor". Z300: 1 to 10 W, TCR classes -10..-80 ppm/K (class 1) and 100..180 ppm/K (class 3), 10 x rated power for 5 s per IEC 60115-1 as read, non-flammable cement coating; its derating knee was read as about 150 C with a zero-power reference of -55 C, which is not a normal curve reading and is not used (RESEARCH_REQUIRED). Conflict shown: the rating reference temperature is 40 C for CPR (S9), 70 C for chips (S1), 25 C for RS (S11); do not mix them. Defaults (5 W): value 10 ohm, tolerance 5 %, TCR 300 ppm/K, p_rated 5 W with knee 40 C, T_end 275 C, V_max = sqrt(P R), inductance not specified in S9 or S10 (the cement wirewound is inductive: ls default 0 with a UI warning; ASSUMPTION), Rth derived (275 - 40)/5 = 47 K/W (DERIVED; the case becomes very hot, which is why 275 C is permitted). Flameproof / fusible: CPR is stated to function as a fuse; Z300 is not noted as fusible. Pin map: A = pin 1 (-P/2), B = pin 2 (+P/2); non-polar (3D spec). Size variants 2, 3, 5, 7, 10, 15 and 20 W in the 3D spec: 2 W is not in CPR (3 to 20 W) and Z300 offers 2 W. Status: partial.
+
+## OHM-013: Wirewound power resistor
+
+Status retained: `partial`.
+
+- BEH-RES-FIXED /parameters/cp: basis=ASSUMPTION, confidence=L
+- BEH-RES-FIXED /parameters/ls: basis=ASSUMPTION, confidence=L
+- BEH-RES-FIXED /parameters/rth: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 1038.
+
+## [OHM-013] Wirewound power resistor -> BEH-RES-FIXED
+Representative: Vishay Dale RS (S11, rev 27-Apr-2026): RS1/4 0.4 W, RS1/2 0.75 W, RS01A 1.0 W, RS002 4.0 W (U) or 5.5 W (V), RS02B 3.0 W (U) or 3.75 W (V), RS005 5.0 W (U) or 6.5 W (V), RS010 10 W (U) or 13 W (V), all at 25 C; 0.1 ohm to 273 kohm; tolerance +/-0.05 to +/-10 %; TCR +/-20 ppm/K at 10 ohm and above, +/-50 for 1 to 9.9 ohm, +/-90 for 0.5 to 0.99 ohm; 500 VRMS (RS1/4 to RS01A) or 1000 VRMS dielectric withstanding; V = sqrt(P R); -65 to +250 C (characteristic U) or -65 to +350 C (V); 5 x rated for 5 s (3.75 W and below) and 10 x for 5 s (4 W and above); non-inductive (Ayrton-Perry) winding available as an equivalent-spec part (the NS in the family title is read here as the non-inductive counterpart: inferred, M). Cross-reference RH/NH aluminum housed (S12, 14-Nov-17, ratings at 25 C, TCR +/-20 ppm/K at 10 ohm, 5 x for 5 s) shows the same pattern. The derating knee for RS was read ambiguously (knees at 120 C and 350 C) and is not used: conservative default is a straight line from rated power at 25 C to zero at 250 C (characteristic U). Defaults (RS005 U): value 10 ohm, tolerance 5 %, TCR 20 ppm/K, p_rated 5 W (25 C), ls default 0 with a warning (wirewound is an inductor; use the non-inductive flag to force ls = 0; any numeric ls is user-supplied, ASSUMPTION), V_max sqrt(P R), Rth derived (250 - 25)/5 = 45 K/W (DERIVED). Pin map: A = pin 1 (-P/2), B = pin 2 (+P/2); non-polar. Variants 1 to 10 W in 3D spec: RS1/4 to RS010 match. Status: partial.
+
+## OHM-014: SMD current-sense resistor
+
+Status retained: `partial`.
+
+- BEH-RES-SENSE /parameters/rc: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 1041.
+
+## [OHM-014] SMD current-sense resistor -> BEH-RES-SENSE
+Representative: Vishay WSL2512 (S13, rev 23-Nov-2023): 1.0 W at 70 C, 0.5 mohm to 0.5 ohm, TCR +/-75 (50 to 500 mohm) to +/-400 (0.5 to 0.99 mohm), 0.5 / 1 / 5 %, -65 to +170 C, L 0.5 to 5 nH, thermal EMF < 3 uV/C; sizes 0603 (0.1 W) to 2816 (2 W) in the same datasheet. Kelvin: WSK2512 (S14, rev 11-Dec-2023): 1.0 W at 70 C, 0.5 mohm to 0.2 ohm, TCR +/-350 (0.5 to 0.99 mohm), +/-250, +/-75, +/-35 ppm/K (5 mohm to 0.2 ohm), tolerance 0.1, 0.5, 1 %, E1/E2 voltage sense and I1/I2 current terminals. The selector guide (S16) lists WSK0612, WSK1206, WSK2512 as four-terminal types. Defaults: Rs 5 mohm, 1 %, tcr 75 ppm/K, 1 W, 170 C end, Rth 100 K/W (DERIVED). Pin map, 2-terminal (default, 3D spec): I1 = E1 = pin 1 (-X), I2 = E2 = pin 2 (+X), no polarity. 4-terminal: the datasheet names E1, E2, I1, I2 but the pin numbers and which pads they are were not established (3D spec also marks it RESEARCH_REQUIRED); do not emit a 4-terminal pin map until it is. Also unresolved: the 3-terminal variant (3D spec says OHMNI treats it as 4-terminal with two sense terminals merged). Status: partial.
+
+## OHM-015: Metal shunt resistor
+
+Status retained: `partial`.
+
+- BEH-RES-SENSE /parameters/rc: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 1044.
+
+## [OHM-015] Metal shunt resistor -> BEH-RES-SENSE
+Representative: Vishay WSBS8518 (S15, rev 26-May-2026): 50, 100, 125 and 250 uohm (range to 1000 uohm), 36 W at 70 C, TCR +/-200 (50 uohm), +/-175 (100 and 125 uohm), +/-110 (250 uohm) ppm/K, tolerance +/-5 % (J) or +/-10 % (K), -65 to +170 C, L < 5 nH, thermal EMF < 1 uV/C (50 uohm) or < 3 uV/C, I = sqrt(P/R), derating from 100 % at 70 C to about 10 % at 175 C (note: the 175 C figure is the datasheet's graph reading, versus +170 C operating limit; use the 170 C limit). Defaults: Rs 100 uohm, 5 %, tcr 175 ppm/K, 36 W, rated current sqrt(36/100e-6) = 600 A (125 uohm: 537 A; 250 uohm: 380 A; 50 uohm: 849 A). The 36 W rating holds for the datasheet mounting on a busbar; with no heatsink the real continuous rating is lower: RESEARCH_REQUIRED. Pin map (3D spec): pin 1 = I1 (bolt hole, -X), pin 2 = I2 (bolt hole, +X), pin 3 = E1 (sense pin at -X, nearest I1), pin 4 = E2 (sense pin at +X). Disagreement with the datasheet: S15 lists variants with two or three sense pins and tapped holes; the 3D spec models two sense pins on a 60 mm hole spacing. Status: partial.
+
+## OHM-016: SIP resistor network
+
+Status retained: `partial`.
+
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 1047.
+
+## [OHM-016] SIP resistor network -> BEH-RES-NETWORK
+Representative: Bourns 4600X (S17, REV. 10/1/20): bussed (4600X-101: 3 to 13 equal thick-film resistors each between the common bus on pin 1 and its own pin), isolated (-102: 2 to 7 isolated resistors each between two pins), dual terminator (-104). 0.20 W per resistor bussed, 0.30 W isolated, package 0.50 to 1.75 W, 10 ohm to 10 Mohm, +/-2 % (+/-1 % F), TCR +/-100 ppm/K (50 ohm to 2.2 Mohm) or +/-250, 100 V, -55 to +125 C, 4 to 14 pins. Defaults: bussed, 8 pins (7 resistors), 10k, 2 %, tcr 100 ppm/K, p_elem 0.20 W, v_max 100 V; the package power for a given pin count is a number in the 0.5 to 1.75 W range that was not extracted per model (RESEARCH_REQUIRED; use sum of element limits only). Pin map (3D spec, N round leads at 2.54 mm, pin 1 at +Y end marked by a dot or notch, bussed common = pin 1): bussed: pin 1 = common; resistor k between pin 1 and pin k+1 (k = 1..N-1). Isolated: resistors between consecutive pairs (pin 1-pin 2, pin 3-pin 4, ...) is ASSUMPTION, confidence L; the true Bourns isolated pairing was not seen and must be checked. Conflict: none between sources; the 3D spec says pin 1 marking form is unspecified. Failure and checks as the class. Status: partial.
+
+## OHM-017: SMD resistor array
+
+Status retained: `partial`.
+
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 1050.
+
+## [OHM-017] SMD resistor array -> BEH-RES-NETWORK
+Representative: Vishay CRA06P (S18, rev 09-Jan-07, third-party copy): 0.063 W per element at 70 C, 50 V, TCR +/-100 ppm/K, 1, 2, 5 %, 10 ohm to 1 Mohm, isolated resistors, 4 and 8 terminals, -55 to +125 C (155 C film), linear derating to about 0 at 155 C. Defaults: 4-resistor 8-terminal convex array, 10k, 5 %, tcr 100 ppm/K, p_elem 0.063 W, v_max 50 V. Pin map (3D spec dual-row: pins 1 to 4 down the -X side, pins 5 to 8 up the +X side): element k joins pin k and pin 9-k for k = 1..4 (1-8, 2-7, 3-6, 4-5) and, for the 2-element 4-terminal version, 1-4 and 2-3; basis CONSENSUS (opposite terminals of the body), confidence M, not seen in a drawing of the opened sources. No pin-1 mark exists on the real part per the 3D spec; any decal dot is an OHMNI convention. Status: partial.
+
+## OHM-018: THT trimmer potentiometer
+
+Status retained: `partial`.
+
+- BEH-RES-POT /parameters/pos: basis=ASSUMPTION, confidence=M
+- BEH-RES-POT /parameters/rw: basis=ASSUMPTION, confidence=L
+- BEH-RES-POT /parameters/taper: basis=MFR_DATASHEET, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 1053.
+
+## [OHM-018] THT trimmer potentiometer -> BEH-RES-POT
+Representative: Bourns 3296 (S19, REV. 02/26): 10 ohm to 2 Mohm, +/-10 %, TCR +/-100 ppm/K, 0.5 W at 70 C derating to 0 W at 125 C, 300 V maximum as printed in the rating, -55 to +125 C, 25 turns nominal, infinite resolution, contact resistance variation 1.0 % or 3 ohm max (greater of), absolute minimum resistance 1 % or 2 ohm (greater of), wiper = pin 2. Defaults: 10k, pos 0.5, Rend 2 ohm, Rw 0.1 ohm (ASSUMPTION), linear taper (trimmers are linear). Pin map (3D spec): pin 1 at +Y, pin 2 wiper at center, pin 3 at -Y; A = 1, W = 2, B = 3. No polarity; a printed arrow or "1" near pin 1 is unverified. Rotation direction vs end: not established; OHMNI convention x increases clockwise toward pin 1, to be verified. Wiper current limit: not given in S19. The 3D spec's 3386 (single turn 3/8 in) alias is not covered by S19 (only 3296); a separate datasheet is needed for it. Status: partial.
+
+## OHM-019: SMD trimmer potentiometer
+
+Status retained: `partial`.
+
+- BEH-RES-POT /parameters/pos: basis=ASSUMPTION, confidence=M
+- BEH-RES-POT /parameters/rw: basis=ASSUMPTION, confidence=L
+- BEH-RES-POT /parameters/taper: basis=MFR_DATASHEET, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 1056.
+
+## [OHM-019] SMD trimmer potentiometer -> BEH-RES-POT
+Representative: Bourns 3314 (S20, REV. 07/24): 10 ohm to 2 Mohm, +/-20 %, TCR +/-100 ppm/K, 0.25 W at 70 C derating to 0 W at 125 C, 300 V for styles G, J and H and 50 V for style R, -55 to +125 C, single turn, 210 degrees nominal, contact resistance variation 3 % or 3 ohm, factory wiper position 50 % (actual TR) +/-10 %, rotor within +/-22 degrees of the centerline of terminal 2. Defaults: 10k, pos 0.5, Rend not specified (use 2 ohm as a placeholder ASSUMPTION, L), Rw 0.1 ohm (ASSUMPTION), linear. Pin map (3D spec): pin 1 (+1.15, +2.75), pin 3 (-1.15, +2.75), pin 2 wiper (0, -2.75); A = 1, W = 2, B = 3; no polarity. Wiper current limit not given in S20. Status: partial.
+
+## OHM-020: Rotary potentiometer
+
+Status retained: `research_required`.
+
+- BEH-RES-POT /parameters/pos: basis=ASSUMPTION, confidence=M
+- BEH-RES-POT /parameters/rw: basis=ASSUMPTION, confidence=L
+- BEH-RES-POT /parameters/taper: basis=MFR_DATASHEET, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 1059.
+
+## [OHM-020] Rotary potentiometer -> BEH-RES-POT
+The 3D spec uses Taiwan Alpha RV16 (16 mm) as representative with Bourns PTV09 as the alternate. No RV16 datasheet was opened in this research, so RV16 ratings are RESEARCH_REQUIRED. Sourced alternate PTV09 (S21, REV. 01/25): 1 kohm to 1 Mohm, +/-20 %, linear and audio tapers with curve variants A1..A6, B0..B5, C1..C6, 20 VDC / 50 VAC maximum, 280 +/- 10 degrees rotation, -10 to +50 C, 10,000 rotations, sliding noise 100 mV max, residual resistance extracted as "500 ohm or +/-1 % max" (ambiguous); power rating about 0.05 W with a derating (extraction unclear). Defaults: 10k, pos 0.5, linear taper (default B); audio option uses the assumed curve k = 1.505; Rend 20 ohm placeholder (ASSUMPTION L), Rw 0.1 ohm (ASSUMPTION), p_rated 0.05 W (ASSUMPTION L, from PTV09), v_max 20 V DC. Pin map (3D spec): pin 1 at +Y, pin 2 wiper in the middle, pin 3 at -Y; A = 1, W = 2, B = 3. 3D spec pin pitch: 5.0 mm (RV16-style) or 2.5 mm (PTV09). No polarity. Rotation direction vs end unresolved. Status: partial (RV16 research_required).
+
+---
+
+# SOURCES (documents actually opened)
+
+All fetches returned a model-written extract of the PDF (see the honesty note at the top); numbers read from graphs are second-hand.
+
+- S1: Vishay Intertechnology, "D/CRCW e3 Thick Film Chip Resistors", https://www.vishay.com/docs/20035/dcrcwe3.pdf, revision 14-Apr-2026. Used for: P70, limiting element voltage, TCR, tolerance, E-series, jumper currents, derating (linear 70 to 155 C), 0402 to 2512.
+- S2: Vishay, "CRCW01005 e3", https://www.vishay.com/docs/20056/crcw01005e3.pdf, revision 28-Oct-13. Used for 01005 ratings.
+- S3: Vishay, "CRCW0201 e3", https://www.vishay.com/docs/20052/crcw0201e3.pdf, revision 21-Sep-2022. Used for 0201 ratings.
+- S4: Yageo, "Thick Film Chip Resistors Automotive Grade AC series (PYU-AC_51_ROHS_L)", https://yageogroup.com/content/datasheet/asset/file/PYU-AC_51_ROHS_L, V.11, 17 Nov 2023. Used for conflicting per-size ratings.
+- S5: Yageo, "CFR carbon film leaded resistors", https://www.yageogroup.com/content/Resource%20Library/Datasheet/YAGEO-CFR_DATASHEET.pdf, Apr. 03, 2024 V.3. Ratings, TCR, overload.
+- S6: Yageo, "MFR metal film leaded resistors", https://yageogroup.com/content/Resource%20Library/Datasheet/YAGEO-MFR_DATASHEET.pdf, Apr. 03, 2024 V.4. Ratings, TCR, derating.
+- S7: KOA Speer, "CF carbon film leaded resistors", https://www.koaspeer.com/pdfs/CF.pdf, header date unreliable (see OHM-010). TCR range, CFP flame-retardant variant.
+- S8: Vishay BCcomponents, "MRS16, MRS25 Professional Thin Film Leaded Resistors", https://static.chipdip.ru/lib/097/DOC014097860.pdf (copy of the Vishay document), 07-Mar-16. Thin-film leaded comparison.
+- S9: Vishay Dale, "Wirewound Resistors, Commercial Power, Radial Terminals CPR", document 30219, https://www.mouser.com/datasheet/2/427/VISHS73798_1-2566147.pdf, 21-Dec-10. Cement-class ratings and fusible statement.
+- S10: Vishay Draloric, "Z300 Axial Cemented Wirewound Resistors", document 21007, https://www.wts-electronic.de/download/z300.pdf?id=730, 25-Aug-10. Cemented axial ratings.
+- S11: Vishay Dale, "RS, NS wirewound resistors", https://www.vishay.com/docs/30204/rsns.pdf, revision 27-Apr-2026. Wirewound ratings, TCR, non-inductive option.
+- S12: Vishay Dale, "RH, NH wirewound, industrial power, aluminum housed", document 30201, https://docs.rs-online.com/43c6/A700000015372130.pdf, 14-Nov-17. Cross-reference only.
+- S13: Vishay Dale, "WSL Power Metal Strip Resistors", https://www.vishay.com/docs/30100/wsl.pdf, 23-Nov-2023. Ratings, TCR, L, derating.
+- S14: Vishay Dale, "WSK2512 Power Metal Strip Resistor, 4-terminal", document 30108, https://www.vishay.com/docs/30108/wsk2512.pdf, 11-Dec-2023. Kelvin terminals E1, E2, I1, I2; ratings.
+- S15: Vishay, "WSBS8518 Power Metal Strip battery shunt", document 30134, https://www.vishay.com/docs/30134/wsbs8518.pdf, 26-May-2026. Shunt ratings, TCR, L, thermal EMF.
+- S16: Vishay, "Power Metal Strip resistors selector guide", https://www.vishay.com/docs/49581/pl4667278-2604-powermetalstrip-resistors_v06.pdf (2026). Four-terminal type list.
+- S17: Bourns, "4600X Series Resistor Networks and Arrays", https://www.bourns.com/docs/Product-Datasheets/4600X.pdf, REV. 10/1/20. Bussed/isolated definitions, ratings.
+- S18: Vishay Dale, "CRA06P thick film resistor array", https://pccomponents.com/datasheets/vish-cra06p.pdf (third-party copy), revision 09-Jan-07. Array ratings.
+- S19: Bourns, "3296 Trimpot trimming potentiometer", https://www.bourns.com/docs/Product-Datasheets/3296.pdf, REV. 02/26.
+- S20: Bourns, "3314 Trimpot trimming potentiometer", https://www.bourns.com/docs/Product-Datasheets/3314.pdf, REV. 07/24.
+- S21: Bourns, "PTV09 potentiometer", https://www.bourns.com/docs/Product-Datasheets/ptv09.pdf, REV. 01/25.
+- S22: Vishay, "R.I.F.A.Q." resistor FAQ landing page, https://www.vishay.com/en/landingpage/rifaq/. Definitions of derating, VCR, noise, TCR of manganin and foil, pulse load, thermal-rise example.
+- S23: Vishay Foil Resistors, "Discrete Resistors vs. Networks: Making the Right Choice", article 105, https://xdevs.com/doc/VPG/apps105.pdf, May 29, 2012. Foil TCR, noise, VCR, thermal EMF figures (context only).
+- S24: Vishay Dale, "Thin / Thick Film Chip Resistors selector guide SG2168", https://www.vishay.com/docs/49188/_sg2168-2103-thin-thick_film_chip_resistors.pdf, 2021. Thin-film TCR, noise, VCR ranges.
+- S25: local ngspice-42 runs in /home/claude/behavior/bench (the ngspice manual was not opened; all ngspice behaviors stated above were confirmed by running).
+
+Also read for compatibility (not cited as a source): /home/claude/ohmni/src/ohmni/eda/simulation.py (fidelity derived from deck, .op parsing), /home/claude/ohmni/src/ohmni/catalog/data/parts/GENERIC_RESISTOR.json (pins "1", "2", electrical_type passive, value is an instance value). ARCHITECTURE.md was only searched for resistor mentions (none found), not read in full. IEC 60063 was not opened.
+
+<!-- END R1 -->
+
+
+---
+
+<!-- BEGIN R2 -->
+# R2: Capacitors (OHM-021 to OHM-040) behavior specification
+
+Group R2, 20 entries, 7 behavior classes. Simulator target: ngspice 42 (all benches run with `ngspice -b` here). Fidelity labels use the product vocabulary (`ideal_components`, `behavioural_approximation`, `vendor_model`). Every class in this file is `behavioural_approximation` in realistic mode and `ideal_components` when ESR, ESL, leakage, bias and flags are switched off. No vendor model is attached to any entry, and no class claims `vendor_model`.
+
+## OHM-021: 0201 MLCC capacitor
+
+Status retained: `partial`.
+
+- BEH-CAP-CERAMIC /parameters/esl: basis=ASSUMPTION, confidence=L
+- BEH-CAP-CERAMIC /parameters/esr: basis=ASSUMPTION, confidence=L
+- BEH-CAP-CERAMIC /parameters/v0_bias_knee: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 2093.
+
+## [OHM-021] 0201 MLCC capacitor
+- Class: BEH-CAP-CERAMIC. Terminals (3D spec OHM-021): terminal 1 at -X (pad center x = -0.225 mm), terminal 2 at +X (+0.225 mm); non-polarized, no marking. Pin map: pin "1" -> terminal 1, pin "2" -> terminal 2.
+- Defaults: 100 nF, 6.3 V, X5R, V0 = 3.15 V, ESR 50 mohm, ESL 0.3 nH (SRF about 29 MHz), RLK = 1e10 ohm.
+- Package notes: the smallest size has the thinnest dielectric layers and, per TDK (S6), the largest relative DC-bias loss; use a refit V0 from the datasheet curve for any bulk use. Disclaimer: this default does not describe a real 0201 part.
+- Status: partial (parasitics and bias knee assumed).
+
+## OHM-022: 0402 MLCC capacitor
+
+Status retained: `partial`.
+
+- BEH-CAP-CERAMIC /parameters/esl: basis=ASSUMPTION, confidence=L
+- BEH-CAP-CERAMIC /parameters/esr: basis=ASSUMPTION, confidence=L
+- BEH-CAP-CERAMIC /parameters/v0_bias_knee: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 2099.
+
+## [OHM-022] 0402 MLCC capacitor
+- Class: BEH-CAP-CERAMIC. Terminals (3D spec OHM-022): terminal 1 at -X (-0.375 mm), terminal 2 at +X; non-polarized. Pin map as OHM-021.
+- Defaults: 100 nF, 16 V, X7R, V0 = 8 V, ESR 30 mohm, ESL 0.4 nH (SRF about 25 MHz), RLK = 1e10 ohm.
+- Notes: product repo already carries a 0402 package in GENERIC_CAPACITOR (KiCad footprint C_0402_1005Metric, not hand-solderable).
+- Status: partial.
+
+## OHM-023: 0603 MLCC capacitor
+
+Status retained: `partial`.
+
+- BEH-CAP-CERAMIC /parameters/esl: basis=ASSUMPTION, confidence=L
+- BEH-CAP-CERAMIC /parameters/esr: basis=ASSUMPTION, confidence=L
+- BEH-CAP-CERAMIC /parameters/v0_bias_knee: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 2105.
+
+## [OHM-023] 0603 MLCC capacitor
+- Class: BEH-CAP-CERAMIC. Terminals (3D spec OHM-023): terminal 1 at -X (-0.625 mm), terminal 2 at +X. Pin map as OHM-021.
+- Defaults: 1 uF, 25 V, X7R, V0 = 12.5 V, ESR 15 mohm, ESL 0.55 nH (SRF about 6.8 MHz), RLK = 1e9 ohm.
+- Notes: the question of a 10 uF 0603 X5R part's bias curve is RESEARCH_REQUIRED (Murata GRM219R60J106KE19D and similar show up in searches but their curves were not opened); use the class refit instruction.
+- Status: partial.
+
+## OHM-024: 0805 MLCC capacitor
+
+Status retained: `partial`.
+
+- BEH-CAP-CERAMIC /parameters/esl: basis=ASSUMPTION, confidence=L
+- BEH-CAP-CERAMIC /parameters/esr: basis=ASSUMPTION, confidence=L
+- BEH-CAP-CERAMIC /parameters/v0_bias_knee: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 2111.
+
+## [OHM-024] 0805 MLCC capacitor
+- Class: BEH-CAP-CERAMIC. Terminals (3D spec OHM-024): terminal 1 at -X (-0.75 mm), terminal 2 at +X. Pin map as OHM-021.
+- Defaults: 10 uF, 10 V, X5R (the Murata GRM21BR61A106KE19 case, S4: 10 uF +/-10%, 10 V, X5R, +/-15% over -55 to 85 C), V0 = 5 V (assumed fit, 0.5*VR), ESR 5 mohm, ESL 0.7 nH (SRF 1.90 MHz), RLK = 1e8 ohm.
+- Sourced facts for this size: TDK C2012X5R1V106M085AC is a 10 uF +/-20%, 35 V 0805 X5R, 0.85 mm thick, DF 10% max, IR 50 Mohm min (S5); both datasheets list bias curves but the numbers were not extractable from the opened text, so the 0805 10 uF bias curve is RESEARCH_REQUIRED. For a bracketed expectation use the fits in the class: at half of VR a 6.3 V X5R part retains between 0.33 (S10) and 0.75 (S2), i.e. between 1/3 and 3/4 of nominal capacitance depending on part construction.
+- Status: partial.
+
+## OHM-025: 1206 MLCC capacitor
+
+Status retained: `partial`.
+
+- BEH-CAP-CERAMIC /parameters/esl: basis=ASSUMPTION, confidence=L
+- BEH-CAP-CERAMIC /parameters/esr: basis=ASSUMPTION, confidence=L
+- BEH-CAP-CERAMIC /parameters/v0_bias_knee: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 2117.
+
+## [OHM-025] 1206 MLCC capacitor
+- Class: BEH-CAP-CERAMIC. Terminals (3D spec OHM-025): terminal 1 at -X (-1.35 mm), terminal 2 at +X. Pin map as OHM-021.
+- Defaults: 10 uF, 25 V, X7R, V0 = 12.5 V, ESR 5 mohm, ESL 1.0 nH (SRF about 1.6 MHz), RLK = 1e8 ohm.
+- Status: partial.
+
+## OHM-026: 1210 MLCC capacitor
+
+Status retained: `partial`.
+
+- BEH-CAP-CERAMIC /parameters/esl: basis=ASSUMPTION, confidence=L
+- BEH-CAP-CERAMIC /parameters/esr: basis=ASSUMPTION, confidence=L
+- BEH-CAP-CERAMIC /parameters/v0_bias_knee: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 2122.
+
+## [OHM-026] 1210 MLCC capacitor
+- Class: BEH-CAP-CERAMIC. Terminals (3D spec OHM-026): terminal 1 at -X (-1.35 mm), terminal 2 at +X. Pin map as OHM-021. Note: pad centers of 1206 and 1210 coincide in the 3D spec (both +/-1.35 mm), the width differs (1.6 vs 2.5 mm).
+- Defaults: 22 uF, 25 V, X7R, V0 = 12.5 V, ESR 4 mohm, ESL 1.0 nH (SRF about 1.07 MHz), RLK = 5e7 ohm (floor).
+- Status: partial.
+
+## OHM-027: 1812 MLCC capacitor
+
+Status retained: `partial`.
+
+- BEH-CAP-CERAMIC /parameters/esl: basis=ASSUMPTION, confidence=L
+- BEH-CAP-CERAMIC /parameters/esr: basis=ASSUMPTION, confidence=L
+- BEH-CAP-CERAMIC /parameters/v0_bias_knee: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 2127.
+
+## [OHM-027] 1812 MLCC capacitor
+- Class: BEH-CAP-CERAMIC. Terminals (3D spec OHM-027): terminal 1 at -X (-1.95 mm), terminal 2 at +X. Pin map as OHM-021.
+- Defaults: 1 uF, 100 V, X7R, V0 = 50 V, ESR 20 mohm, ESL 1.5 nH (SRF about 4.1 MHz), RLK = 1e9 ohm.
+- Notes: the 1812 envelope is used for high-voltage and high-ripple parts; ripple power rating is RESEARCH_REQUIRED. Parts with VR above a few hundred volts are a creepage and arc concern on the PCB (not modeled).
+- Status: partial.
+
+## OHM-028: Ceramic disc capacitor
+
+Status retained: `partial`.
+
+- BEH-CAP-CERAMIC /parameters/esl: basis=ASSUMPTION, confidence=L
+- BEH-CAP-CERAMIC /parameters/esr: basis=ASSUMPTION, confidence=L
+- BEH-CAP-CERAMIC /parameters/v0_bias_knee: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 2133.
+
+## [OHM-028] Ceramic disc capacitor
+- Class: BEH-CAP-CERAMIC (with leaded ESL). Terminals (3D spec OHM-028): two round tinned leads d 0.5 mm at (-S/2, 0) and (+S/2, 0); pin 1 at -X; non-polarized; Class A, THT. Pin map: pin "1" -> lead 1 (-X), pin "2" -> lead 2 (+X).
+- Defaults: 100 nF, 50 V, treated as a high-permittivity (Y5V-like) disc: V0 = 0.35*VR = 17.5 V (derived from the Y5V point in S2; ASSUMPTION), aging rate 0.07 per decade hour (S7), ESR 0.1 ohm, ESL 10 nH (lead length, ASSUMPTION; SRF about 5 MHz), RLK = 1e10 ohm.
+- Safety warning: a disc may be a safety (Y-class, line-to-earth) capacitor, aliased in the 3D spec. The Y-class rating definitions and tests come from a safety standard that was not opened here, so this entry must not be used as a mains-rated part: set `safety_class = none` and treat any mains application as a checker error until a safety-rated variant is researched (RESEARCH_REQUIRED).
+- Class 1 option (C0G disc): V0 = 1e6, tolerance and TC from the user; the default is the high-K disc because that is the common 100 nF disc.
+- Status: partial.
+
+## OHM-029: Radial electrolytic capacitor
+
+Status retained: `partial`.
+
+- BEH-CAP-ALEL /parameters/esl: basis=ASSUMPTION, confidence=L
+- BEH-CAP-ALEL /parameters/esr: basis=ASSUMPTION, confidence=L
+- BEH-CAP-ALEL /parameters/r_leak: basis=ASSUMPTION, confidence=L
+- BEH-CAP-ALEL /parameters/value: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 2140.
+
+## [OHM-029] Radial electrolytic capacitor
+- Class: BEH-CAP-ALEL. Terminals (3D spec OHM-029): two round tinned leads, lead 1 = + at -X (-F/2), lead 2 = - at +X (+F/2); negative stripe band on the +X side; the longer lead is positive on new parts (visual only, 3D spec). Pin map: pin "+" -> terminal 1, pin "-" -> terminal 2. Electrical convention matches the marked stripe: stripe side = negative.
+- Defaults (default member 10x16): 220 uF, 25 V, ESR 0.15 ohm, ESL 15 nH (SRF about 88 kHz), RLK = 1e8/220 = 4.5e5 ohm, VREVMAX 1 V. Vent clearance above the can: 2 mm for diameters 8-16 mm (S11 as extracted; the 10 mm can falls in that band).
+- Ratings: rated ripple Irated, dTo, L0 (life at 105 C) are RESEARCH_REQUIRED per part; use the post-check formulas in the class.
+- Status: partial.
+
+## OHM-030: SMD aluminum electrolytic capacitor
+
+Status retained: `partial`.
+
+- BEH-CAP-ALEL /parameters/esl: basis=ASSUMPTION, confidence=L
+- BEH-CAP-ALEL /parameters/esr: basis=ASSUMPTION, confidence=L
+- BEH-CAP-ALEL /parameters/r_leak: basis=ASSUMPTION, confidence=L
+- BEH-CAP-ALEL /parameters/value: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 2146.
+
+## [OHM-030] SMD aluminum electrolytic capacitor
+- Class: BEH-CAP-ALEL. Terminals (3D spec OHM-030): two flat tin terminals, pin 1 (+) at (-2.4, 0) and pin 2 (-) at (+2.4, 0) for the default D8 member (6.3 x 7.7); negative side (+X) has a black top segment and a '-' band; positive side has chamfered base-plate corners (3D spec confidence M). Pin map: "+" -> pin 1, "-" -> pin 2.
+- Defaults: 47 uF, 25 V, ESR 0.8 ohm, ESL 10 nH (SRF about 232 kHz), RLK = 1e8/47 = 2.1e6 ohm.
+- Notes: vent clearance for a 6.3 mm diameter can is not covered by the three bands in S11 (2/3/5 mm for 8-16, 18-35, 40+ mm): RESEARCH_REQUIRED. SMD cans are reflow-soldered; reflow stress is not modeled.
+- Status: partial.
+
+## OHM-031: Snap-in electrolytic capacitor
+
+Status retained: `partial`.
+
+- BEH-CAP-ALEL /parameters/esl: basis=ASSUMPTION, confidence=L
+- BEH-CAP-ALEL /parameters/esr: basis=ASSUMPTION, confidence=L
+- BEH-CAP-ALEL /parameters/r_leak: basis=ASSUMPTION, confidence=L
+- BEH-CAP-ALEL /parameters/value: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 2152.
+
+## [OHM-031] Snap-in electrolytic capacitor
+- Class: BEH-CAP-ALEL. Terminals (3D spec OHM-031): 2-pin default: pins at (-5, 0) (+) and (+5, 0) (-), 10 mm pitch; minus-pole band on the +X side. 3-pin variant: one + pin and two electrically connected - pins; the third hole geometry and the 3-pin numbering are unresolved in the 3D spec (RESEARCH_REQUIRED). Pin map (2-pin): "+" -> pin 1 at -X, "-" -> pin 2 at +X. For a 3-pin variant, tie the two negative pins to the same net and flag a numbering question to the user.
+- Defaults (25x40): 2200 uF, 35 V, ESR 0.03 ohm, ESL 20 nH (SRF about 24 kHz), RLK = 1e8/2200 = 4.5e4 ohm. Vent clearance for a 25 mm diameter: 3 mm (S11 band 18-35 mm).
+- Notes: large ripple currents and long life lines: use the life formula with the part's dTo (S13). High-voltage snap-in types (200-450 V, S14 example) need a creepage check and a discharge path; bleeder resistors are a design rule, not part of this model.
+- Status: partial.
+
+## OHM-032: Polymer electrolytic capacitor
+
+Status retained: `partial`.
+
+- BEH-CAP-ALPOLY /parameters/esl: basis=ASSUMPTION, confidence=L
+- BEH-CAP-ALPOLY /parameters/esr: basis=ASSUMPTION, confidence=L
+- BEH-CAP-ALPOLY /parameters/rated_voltage: basis=MFR_DATASHEET, confidence=L
+- BEH-CAP-ALPOLY /parameters/value: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 2158.
+
+## [OHM-032] Polymer electrolytic capacitor
+- Class: BEH-CAP-ALPOLY. Terminals (3D spec OHM-032): Style A (default, SMD can, same outline as OHM-030): pin 1 (+) at (-2.4, 0), pin 2 (-) at (+2.4, 0). Style B (radial leaded OS-CON-like): pin 1 (+) at (-1.25, 0), pin 2 (-) at (+1.25, 0), 2.5 mm pitch; lead diameter 0.5 mm assumed in the 3D spec. Negative side marked at +X (OHMNI default); other makers' molded polymer chips mark the positive end (not this entry). Pin map: "+" -> pin 1, "-" -> pin 2.
+- Defaults: 100 uF, 16 V, DER 0.8 (12.8 V operating), ESR 20 mohm, ESL 5 nH (SRF about 225 kHz), RLK 1e6 ohm, rush limit 10 A.
+- Notes: SP-Cap/POSCAP molded parts are handled by the tantalum class's polymer option, not here. The polarity-marking conflict among makers (negative band on cans vs positive stripe on molded polymer chips) is a footprint-checking risk; the checker must verify stripe polarity against the selected style.
+- Status: partial.
+
+## OHM-033: Tantalum capacitor A-case
+
+Status retained: `partial`.
+
+- BEH-CAP-TANT /parameters/esl: basis=ASSUMPTION, confidence=L
+- BEH-CAP-TANT /parameters/esr: basis=ASSUMPTION, confidence=L
+- BEH-CAP-TANT /parameters/value: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 2164.
+
+## [OHM-033] Tantalum capacitor A-case
+- Class: BEH-CAP-TANT. Terminals (3D spec OHM-033): EIA 3216-18; pin 1 = anode (+) at (-1.2, 0), pin 2 = cathode (-) at (+1.2, 0); stripe and bevel at the -X end mark the ANODE (3D spec, KEMET 'Polarity Stripe (+)'). Pin map: "+" -> pin 1 (-X, stripe), "-" -> pin 2.
+- Defaults: 10 uF, 16 V, cathode type MnO2 (DER 0.5, so the operating limit is 8 V), ESR 2.0 ohm, ESL 2.5 nH (SRF about 1.0 MHz), RLK = 1e7/10 = 1e6 ohm (LKF 0.1 max), reverse flag at 0.48 V (3% of VR), surge/fail level 21.1 V.
+- Notes: case-A power dissipation limit Pmax is RESEARCH_REQUIRED. 3D spec warns that EDA footprints sometimes mark the cathode: the checker must confirm.
+- Status: partial.
+
+## OHM-034: Tantalum capacitor B-case
+
+Status retained: `partial`.
+
+- BEH-CAP-TANT /parameters/esl: basis=ASSUMPTION, confidence=L
+- BEH-CAP-TANT /parameters/esr: basis=ASSUMPTION, confidence=L
+- BEH-CAP-TANT /parameters/value: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 2170.
+
+## [OHM-034] Tantalum capacitor B-case
+- Class: BEH-CAP-TANT. Terminals (3D spec OHM-034): EIA 3528-21; pin 1 anode (+) at (-1.35, 0), pin 2 cathode (-) at (+1.35, 0); stripe and bevel at -X mark the anode. Pin map as OHM-033.
+- Defaults: 22 uF, 16 V, MnO2 (operating limit 8 V), ESR 1.5 ohm, ESL 2.5 nH (SRF about 679 kHz), RLK = 1e7/22 = 4.5e5 ohm.
+- Status: partial.
+
+## OHM-035: Tantalum capacitor C-case
+
+Status retained: `partial`.
+
+- BEH-CAP-TANT /parameters/esl: basis=ASSUMPTION, confidence=L
+- BEH-CAP-TANT /parameters/esr: basis=ASSUMPTION, confidence=L
+- BEH-CAP-TANT /parameters/value: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 2175.
+
+## [OHM-035] Tantalum capacitor C-case
+- Class: BEH-CAP-TANT. Terminals (3D spec OHM-035): EIA 6032-28; pin 1 anode (+) at (-2.35, 0), pin 2 cathode (-) at (+2.35, 0); stripe and bevel at -X mark the anode. Pin map as OHM-033.
+- Defaults: 47 uF, 16 V, MnO2 (operating limit 8 V), ESR 0.9 ohm, ESL 2.5 nH (SRF about 464 kHz), RLK = 1e7/47 = 2.1e5 ohm.
+- Status: partial.
+
+## OHM-036: Tantalum capacitor D-case
+
+Status retained: `partial`.
+
+- BEH-CAP-TANT /parameters/esl: basis=ASSUMPTION, confidence=L
+- BEH-CAP-TANT /parameters/esr: basis=ASSUMPTION, confidence=L
+- BEH-CAP-TANT /parameters/value: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 2180.
+
+## [OHM-036] Tantalum capacitor D-case
+- Class: BEH-CAP-TANT. Terminals (3D spec OHM-036): EIA 7343-31; pin 1 anode (+) at (-3.0, 0), pin 2 cathode (-) at (+3.0, 0); stripe and bevel at -X mark the anode. Pin map as OHM-033.
+- Defaults: 100 uF, 16 V, MnO2 (operating limit 8 V), ESR 0.5 ohm, ESL 2.5 nH (SRF about 318 kHz), RLK = 1e7/100 = 1e5 ohm.
+- Notes: for polymer type, set DER 0.8 (16 V rating, above 10 V, S17/S19) and ESR in the 9-100 mohm range (S19); no ignition flag.
+- Status: partial.
+
+## OHM-037: Film box capacitor
+
+Status retained: `partial`.
+
+- BEH-CAP-FILM /parameters/esl: basis=ASSUMPTION, confidence=L
+- BEH-CAP-FILM /parameters/value: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 2186.
+
+## [OHM-037] Film box capacitor
+- Class: BEH-CAP-FILM. Terminals (3D spec OHM-037): two straight round leads, diameter 0.5 mm (0.4-1.0 by pitch) at (-P/2, 0) and (+P/2, 0), pitch 10.0 mm default; non-polarized, pin 1 at -X by convention. Some parts have an outer-foil band marking (not modeled). Pin map: pin "1" -> -X lead, pin "2" -> +X lead.
+- Defaults: 100 nF, tan(delta) 30e-4 at 1 kHz (upper end of the WIMA MKP range, S20, used as a proxy since PET/PP box values were not opened), ESL 10 nH (SRF about 5.0 MHz), RLK = 15e9 ohm, VRPK = 100 V peak (ASSUMPTION; WIMA SMD range 63-1000 VDC from S21), temperature -55 to 105 C (S20, PP).
+- Status: partial.
+
+## OHM-038: X2 safety capacitor
+
+Status retained: `partial`.
+
+- BEH-CAP-FILM /parameters/esl: basis=ASSUMPTION, confidence=L
+- BEH-CAP-FILM /parameters/value: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 2191.
+
+## [OHM-038] X2 safety capacitor
+- Class: BEH-CAP-FILM with the X2 profile. Terminals (3D spec OHM-038): same box geometry as OHM-037 with default pitch 15.0 mm; pin 1 at -X; non-polarized. Pin map as OHM-037.
+- Defaults: 100 nF, tan(delta) 20e-4 at 1 kHz (S20 range 10-30e-4), ESL 15 nH (SRF about 4.1 MHz), RLK 15e9 ohm, VRPK = 388.9 V (275 Vrms x sqrt(2); S20), temperature -55 to 105 C (S20), pitch 7.5-27.5 mm (S20).
+- Safety: the entry is a mains-connected capacitor; hazard is stored charge after unplugging (0.5*C*Vpk^2 = 7.6 mJ for 100 nF at 389 V) and fire if a non-safety part is used. The X2 class definition and the discharge-time requirement come from IEC 60384-14 and the equipment safety standards, which were not opened; the checker should (a) require a discharge path across any X2 capacitor on a mains net, (b) forbid OHM-037 and OHM-028 in the same position, (c) not claim safety approval for the placed part. Statements about the class are RESEARCH_REQUIRED beyond WIMA's own label "Class X2".
+- Status: partial.
+
+## OHM-039: Silver mica capacitor
+
+Status retained: `partial`.
+
+- BEH-CAP-MICA /parameters/esl: basis=ASSUMPTION, confidence=L
+- BEH-CAP-MICA /parameters/q_at_1mhz: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 2197.
+
+## [OHM-039] Silver mica capacitor
+- Class: BEH-CAP-MICA. Terminals (3D spec OHM-039): two round leads d 0.6 mm (CD15) at (-S/2, 0), (+S/2, 0), exiting the bottom edge; non-polarized, pin 1 at -X; lead plating not verified in the 3D spec. Pin map: pin "1" -> -X, "2" -> +X.
+- Defaults: 100 pF, +/-5% (code J), characteristic F (0 to +70 ppm/C for 91 pF and up; default +35), Q 1000 at 1 MHz (assumed), ESL 8 nH (SRF about 178 MHz), RLK = 1e12 ohm, VR = 500 V (assumed; CDE range 100-2500 Vdc by type, S22).
+- Status: partial.
+
+## OHM-040: Supercapacitor
+
+Status retained: `partial`.
+
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 2202.
+
+## [OHM-040] Supercapacitor
+- Class: BEH-CAP-EDLC. Terminals (3D spec OHM-040): two leads d 0.6 mm (AVX SCC, D at or below 12.5 mm), 5.0 mm pitch for D 10 mm; pin 1 (+) at (-2.5, 0), pin 2 (-) at (+2.5, 0); negative lead carries the 'Vent (-)' indicator for AVX SCC; the longer lead is positive per Eaton PB (not stated for AVX); stripe on the negative side at +X. Pin map: "+" -> pin 1, "-" -> pin 2. The 3D spec lists three styles (radial can default placeholder, stacked-cell PB pack, coin with pins); only the radial-can style has an electrical default.
+- Defaults: 10 F, 2.5 V, ESR 0.02 ohm, leakage 20 uA at 2.5 V (RLK 125 kohm), surge 2.8 V (these come from the Eaton HB data ranges, S24; the 3D spec's default style is an AVX SCC that was not opened, so a 10 mm radial can in reality holds far less than 10 F: treat the default as an Eaton HB-like cell, not as the 10 mm can; RESEARCH_REQUIRED).
+- Hazard: stored energy and short-circuit current are large for high-capacitance cells (31 J and 119 A for the default into 1 mohm). Series strings need balancing (bench B2/B2b).
+- Status: partial.
+
+---
+
+# Group notes for the coordinator and implementer
+
+- Layer decisions: all 20 entries are L1. No L2/L3 content.
+- 3D spec versus electrical reality checks:
+  - Polarity is consistent for polarized parts (pin 1 = + at -X). Tantalum stripe marks the anode while aluminum, polymer-can and supercapacitor stripes mark the cathode: the footprint/3D renderer and the DRC must treat these oppositely. The 3D spec itself already warns about EDA footprints that mark the tantalum cathode.
+  - OHM-026 and OHM-025 share pad centers (+/-1.35 mm) in the 3D spec although their lengths (3.2 vs 3.2 mm) are the same and only width differs; not an electrical issue.
+  - OHM-032: polymer capacitors have two body styles with opposite marking conventions across manufacturers (3D spec records this); keep the style as a parameter.
+  - OHM-040 default style (AVX SCC radial 10 mm) was not electrically sourced; the electrical default is an Eaton HB-like cell (S24).
+  - OHM-031 3-pin numbering is unresolved in the 3D spec.
+- Source conflicts recorded: MLCC aging 2.5 vs 1.0 percent per decade hour (S7 vs S8); supercapacitor surge 2.8 V vs 3 V and +85 C derating 2.3 V vs 1.8 V (S24 vs S23); polymer life rule (10x per 20 C, no ripple term, S15) vs wet electrolytic (2x per 10 C with ripple term, S13); MLCC bias fits from three sources differ by a factor of about 2.4 in V0/VR (S2 vs S10, different parts).
+- Simulation flag convention (section 0) should be mirrored by the behavior layer's check engine: flag bits 1, 2, 4, 8.
+
+<!-- END R2 -->
+
+
+---
+
+<!-- BEGIN R3 -->
+# GROUP R3: Inductors, chokes, transformers (OHM-041 to OHM-055)
+
+Output of the R3 research agent. Bench netlists live in `/home/claude/behavior/bench/mag_inductor/`, `mag_xfmr/`, `mag_cmc/`, `mag_flyback/`, `mag_ct/`, `mag_ethmag/`. Every benchmark number below was produced by running `ngspice -b` (ngspice-42, KLU build, no XSPICE needed) in this environment.
+
+## OHM-041: 0603 chip inductor
+
+Status retained: `partial`.
+
+- BEH-MAG-INDUCTOR /parameters/lr: basis=ASSUMPTION, confidence=L
+- BEH-MAG-INDUCTOR /parameters/rp: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 3405.
+
+## [OHM-041] 0603 chip inductor -> BEH-MAG-INDUCTOR
+
+- Variants (from the 3D spec): multilayer ferrite (default), multilayer ceramic (HF), wirewound ceramic (larger envelope).
+- Default instance (multilayer ferrite, reference Murata LQM18DN6R8M70#, 1608M = 0603, S6): L = 6.8 uH +-20 %, DCR 0.74 Ohm typ (0.96 max), Isat 120 mA (inductance-change rating, drop percentage not stated: use `drop=0.3`, `assumed_drop=true`), Itemp 330 mA (temperature rise not stated: use `dT_rated=40`, assumed), SRF 40 MHz min, ferrite core, -55 to +125 C. Cp upper bound = 1/((2 pi 40 MHz)^2*6.8 uH) = 2.33 pF. Q not stated (use `RP=1e9`). Rth derived = 40/(0.33^2*0.74*1.157) = 429 K/W (DERIVED from the assumed rise; ASSUMPTION confidence L).
+- Wirewound ceramic variant (reference Murata LQW18AN15NJ10D, 0603, S5): L = 15 nH +-5 %, Q min 42 (test frequency not stated; bench assumes 100 MHz), SRF 4.5 GHz (listing says "max"; Murata convention is a minimum), DCR 85 mOhm max, Idc 700 mA, -55 to +125 C. Cp = 83.4 fF, RP = 637 Ohm (bench B3).
+- Pin map: electrical A -> terminal 1 (-X, x = -0.65 mm), B -> terminal 2 (+X). Non-polarized; no marking.
+- Package parasitics: Cp 0.08 to 2.3 pF by type (above); ESL is inside L (no separate ESL).
+- Ratings: Isat 0.12 A, Irms 0.33 A (multilayer ferrite default); 125 C maximum.
+- Notes: 0603 multilayer power-rated parts have very low saturation current; the layer must warn when a user places one in a DC supply path above Isat.
+- Status: complete for the multilayer ferrite default (one real part opened); the multilayer ceramic variant has no values (RESEARCH_REQUIRED).
+
+## OHM-042: 0805 chip inductor
+
+Status retained: `research_required`.
+
+- BEH-MAG-INDUCTOR /parameters/lr: basis=ASSUMPTION, confidence=L
+- BEH-MAG-INDUCTOR /parameters/rp: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 3416.
+
+## [OHM-042] 0805 chip inductor -> BEH-MAG-INDUCTOR
+
+- Same class and pin rule as OHM-041 (A -> terminal 1 at -X x = -0.75 mm; B -> terminal 2). Non-polarized.
+- **No electrical datasheet for a 2012-size part was opened.** The 3D spec names Murata LQM21F and TDK MLZ2012 as dimensional sources only. Placeholder default (placeholder=true, basis ASSUMPTION, confidence L): L = 2.2 uH, DCR 0.2 Ohm, Isat 0.4 A, Irms 0.5 A, Cp 2 pF, Tmax 125 C. A Coilcraft 0805CS wirewound variant exists (dimensions in the 3D spec) but its electrical table was not opened.
+- Status: partial (RESEARCH_REQUIRED: real 0805 multilayer and wirewound rows).
+
+## OHM-043: 1206 chip inductor
+
+Status retained: `partial`.
+
+- BEH-MAG-INDUCTOR /parameters/lr: basis=ASSUMPTION, confidence=L
+- BEH-MAG-INDUCTOR /parameters/rp: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 3422.
+
+## [OHM-043] 1206 chip inductor -> BEH-MAG-INDUCTOR
+
+- Same class and pin rule (A -> terminal 1 at -X x = -1.35 mm; B -> terminal 2). Non-polarized.
+- The 3D spec cites Murata LQM31P (for example LQM31PN2R2M00; the Murata code "2R2" means 2.2 uH and "M" +-20 %, DERIVED from the naming convention, not from an opened table) and a wirewound LQM31HN. **No electrical table was opened.** Placeholder default (placeholder=true, ASSUMPTION, confidence L): L = 2.2 uH, DCR 0.1 Ohm, Isat 1.0 A, Irms 1.0 A, Cp 2 pF, Tmax 125 C.
+- Status: partial.
+
+## OHM-044: SMD wirewound inductor
+
+Status retained: `partial`.
+
+- BEH-MAG-INDUCTOR /parameters/lr: basis=ASSUMPTION, confidence=L
+- BEH-MAG-INDUCTOR /parameters/rp: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 3428.
+
+## [OHM-044] SMD wirewound inductor -> BEH-MAG-INDUCTOR
+
+- Package: 0603CS size (1.8 x 1.12 x 1.02 mm max); Coilcraft 0603CS is the 3D reference but its electrical rows were not opened. Variants 0805CS and 1008CS exist (3D spec).
+- Default instance uses the Murata LQW18AN15NJ10D numbers as a functionally equivalent 0603 wirewound ceramic chip (S5): L = 15 nH +-5 %, Q 42 min, SRF 4.5 GHz, DCR 85 mOhm max, Idc 700 mA, Cp 83.4 fF, RP 637 Ohm. Basis MFR_DATASHEET (other manufacturer), confidence M for the physics, L for equivalence to Coilcraft values. Non-magnetic (ceramic) core: no saturation in practice: set `isat=100` (model disabled); `drop=0.3`.
+- Pin map: A -> terminal 1 (-X, x = -0.71 mm), B -> terminal 2 (+X). The color dot is value coding (the 3D spec places it near terminal 1 as an OHMNI default); the part is non-polarized.
+- Notes: Q and SRF are the defining numbers; the L tolerance +-5 % (or +-2 % in other bins) and the Q test frequency are not stated in the opened text.
+- Status: partial (Coilcraft electrical rows not opened).
+
+## OHM-045: Shielded power inductor
+
+Status retained: `complete`.
+
+- BEH-MAG-INDUCTOR /parameters/lr: basis=ASSUMPTION, confidence=L
+- BEH-MAG-INDUCTOR /parameters/rp: basis=DERIVED, confidence=L
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 3436.
+
+## [OHM-045] Shielded power inductor -> BEH-MAG-INDUCTOR
+
+- Representative: Bourns SRP7028A (7.3 x 6.7 x 2.8 mm), REV. 11/19 (S4): carbonyl-powder core, enameled copper, Sn terminals, -55 to +150 C including temperature rise, tolerance +-20 %, "Inductance drops 20 % at Isat", "temperature rise 40 C at rated Irms".
+- Rows: R82M 0.82 uH, DCR 6.7/8.0 mOhm, Isat 24 A, Irms 13 A (Rth 30.5 K/W derived); 1R8M 1.8 uH, 14/17 mOhm, 16 A, 8.5 A (Rth 34.2 K/W, default instance); 100M 10 uH, 75/85 mOhm, 6 A, 3.5 A (Rth 37.6 K/W).
+- Default instance: SRP7028A-1R8M, `drop=0.2`, `lr=0.05`, Cp = 4.2 pF (DERIVED by analogy to the XAL4020/4040 molded parts of S2: 4.26 pF and 4.22 pF from their SRF values 52 MHz and 20 MHz; SRP SRF not in the extraction, ASSUMPTION confidence L), `tmax=150`.
+- Variant XAL4020-222ME (S2): 2.2 uH, DCR 35.2/38.7 mOhm, SRF 52 MHz, Isat 5.6 A (30 %), Irms 4.0 A (20 K) and 5.5 A (40 K), Rth 32.5 K/W, Tmax 165 C. XAL4040-153ME: 15 uH, 109/120 mOhm, SRF 20 MHz, 2.9 A, 2.0/2.8 A.
+- Pin map: A -> terminal 1 (-X, x = -2.95 mm), B -> terminal 2 (+X). Non-polarized (some parts have a dot near terminal 1, not documented; OHMNI default none).
+- Shielding: `full` (molded powder core, S7). Soft saturation: `lr` can be raised to 0.1 for powder cores (ASSUMPTION).
+- Status: complete (two real families opened; SRF of SRP7028A missing).
+
+## OHM-046: Unshielded power inductor
+
+Status retained: `partial`.
+
+- BEH-MAG-INDUCTOR /parameters/lr: basis=ASSUMPTION, confidence=L
+- BEH-MAG-INDUCTOR /parameters/rp: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 3446.
+
+## [OHM-046] Unshielded power inductor -> BEH-MAG-INDUCTOR
+
+- Representative: Bourns SDR0604 (5.8 mm diameter x 4.8 mm). Default instance SDR0604-100ML (S21, distributor listing): 10 uH +-20 %, DCR 0.1 Ohm max, Irms 1.45 A, Isat 2 A (drop percentage not stated: `drop=0.3`, assumed), unshielded. SRF not stated (placeholder Cp 5 pF, ASSUMPTION).
+- Pin map: A -> terminal 1 (-X, x = -2.5 mm default), B -> terminal 2. Non-polarized; winding start not documented.
+- Shielding: `none` (open drum): flag keep-out and no parallel coupled placement with another inductor within about one body diameter (heuristic, ASSUMPTION).
+- Status: partial (Bourns datasheet not opened; listing only; drop percentage and SRF unknown).
+
+## OHM-047: Axial inductor
+
+Status retained: `partial`.
+
+- BEH-MAG-INDUCTOR /parameters/lr: basis=ASSUMPTION, confidence=L
+- BEH-MAG-INDUCTOR /parameters/rp: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 3453.
+
+## [OHM-047] Axial inductor -> BEH-MAG-INDUCTOR
+
+- Representative Bourns 78F series (2.79 mm dia x 7.11 mm). Default instance 78F3R3J-RC (S18): 3.3 uH +-5 %, SRF 60 MHz (listing: "max"), Q 50 min (test frequency not stated), Idc 575 mA, DCR 300 mOhm, ferrite drum-core, -55 to +105 C. Cp = 2.13 pF (DERIVED from SRF), RP from Q with an assumed fq (RESEARCH_REQUIRED, default `RP=1e9`). Whether 575 mA is a heating or saturation rating is not stated: model it as both `isat=0.575` (drop 0.3 assumed) and `irms=0.575`.
+- Pin map: A -> terminal 1 (-X lead, x = -5.08 mm, first band end), B -> terminal 2 (+X lead). Non-polarized.
+- Notes: color bands code value and tolerance (not decoded here).
+- Status: partial (one real value set; Bourns datasheet not opened).
+
+## OHM-048: Radial drum-core inductor
+
+Status retained: `partial`.
+
+- BEH-MAG-INDUCTOR /parameters/lr: basis=ASSUMPTION, confidence=L
+- BEH-MAG-INDUCTOR /parameters/rp: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 3460.
+
+## [OHM-048] Radial drum-core inductor -> BEH-MAG-INDUCTOR
+
+- Representative Bourns RLB0914 (8.7 mm dia x 12 mm per the 3D spec). Default instance RLB0914-101KL (S19, distributor listing): 100 uH +-10 %, DCR 0.28 Ohm max, Irms 1.1 A, Isat 2.1 A (drop percentage not stated: `drop=0.3`, assumed), unshielded. SRF not stated (placeholder Cp 5 pF, ASSUMPTION). The 3D spec adds a shrink sleeve rated 125 C and 600 V (from the Bourns datasheet as quoted there; not re-checked here); treat 600 V as an insulation rating only, not a working voltage, and `tmax = 125`.
+- Pin map: A -> terminal 1 (-X, x = -2.5 mm), B -> terminal 2 (+X). Non-polarized.
+- Shielding: `none` (open drum under sleeve).
+- Status: partial.
+
+## OHM-049: Toroidal inductor
+
+Status retained: `partial`.
+
+- BEH-MAG-INDUCTOR /parameters/lr: basis=ASSUMPTION, confidence=L
+- BEH-MAG-INDUCTOR /parameters/rp: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 3467.
+
+## [OHM-049] Toroidal inductor -> BEH-MAG-INDUCTOR
+
+- Representative Bourns 2100 series, default instance 2107-V-RC (S20, listing): 33 uH +-15 %, rated 5 A DC (heating versus saturation not stated: both set to 5 A, drop 0.3 assumed), DCR 29 mOhm, -55 to +105 C, intended for DC/DC converters and EMI filters. SRF not stated (Cp placeholder 8 pF, ASSUMPTION). Rth cannot be derived (rise not stated); use placeholder 25 K/W (ASSUMPTION).
+- Pin map: A -> lead 1 (-X, x = -4.064 mm), B -> lead 2 (+X). Non-polarized.
+- Shielding: `semi` (closed toroid, but with leakage flux; not stated in the opened text, ASSUMPTION).
+- Status: partial.
+
+## OHM-050: SMD common-mode choke
+
+Status retained: `partial`.
+
+- BEH-MAG-CMC /parameters/c0: basis=DERIVED, confidence=L
+- BEH-MAG-CMC /parameters/isat_cm: basis=ASSUMPTION, confidence=L
+- BEH-MAG-CMC /parameters/rpar: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 3474.
+
+## [OHM-050] SMD common-mode choke -> BEH-MAG-CMC
+
+- Representative now: Wurth WE-SL5 744272222 (S9): 2200 uH +-40 % (100 kHz/100 mV), RDC 0.3 Ohm max, IR 830 mA (dT = 40 K; the product page lists 750 mA: conflict, the datasheet value is used), VR 80 V, Zmax 7500 Ohm typ at 2.5 MHz, 4000 Ohm at 10 MHz, 400 Ohm at 100 MHz, leakage LS 130 nH typ at 1 MHz/1 mA, insulation test 300 Vac for 1 s, 10.0 x 8.7 x 6.5 mm. Variant TDK ACM4520-142-2P-T000 (4.7 x 4.5 x 2.0 mm): no electrical values opened (RESEARCH_REQUIRED).
+- Default instance: CMC_SAT with L = 2.2 mH, LS = 130 nH, RDC 0.3, ISATM 1.66 (ASSUMPTION), HF set for EMI studies: L = 1.02 mH, C0 = 1.99 pF, RPAR = 15 kOhm.
+- **Pin map (WARNING, three conflicting readings).** Terminals 1 to 4 follow the 3D spec: 1 (-3.81, +3.11), 2 (-3.81, -3.11), 3 (+3.81, -3.11), 4 (+3.81, +3.11). 3D spec text: windings 1-2 and 4-3. Wurth datasheet read via the fetch summarizer: windings 1-3 and 2-4. Conventional through-flow chokes: 1-4 and 2-3. **Default adopted: A1 = 1, A2 = 4, B1 = 2, B2 = 3 (through-flow, dots at 1 and 2), marked `pairing_verified=false`.** Nothing is verified; read the drawing before trusting any polarity or DM/CM DRC. The electrical class itself is winding-symmetric.
+- Polarity: the dot position (pin 1 dot in the 3D spec) is an OHMNI convention; the datasheet marking was not extracted.
+- Land pattern: pads 2.7 x 2.7; the datasheet read quotes 10 +-0.3 mm between pad centres versus +-3.81 mm centres in the 3D spec (mismatch to resolve in the 3D layer, not here).
+- Status: partial.
+
+## OHM-051: THT common-mode choke
+
+Status retained: `partial`.
+
+- BEH-MAG-CMC /parameters/c0: basis=DERIVED, confidence=L
+- BEH-MAG-CMC /parameters/isat_cm: basis=ASSUMPTION, confidence=L
+- BEH-MAG-CMC /parameters/rpar: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 3483.
+
+## [OHM-051] THT common-mode choke -> BEH-MAG-CMC
+
+- Representative: Wurth 744821240 (series WE-CMB per the RS listing, S17): 4 mH (listing: "2 x 4 mH") +-30 %, rated current 1.5 A, rated voltage 250 V ac, temperature -40 to +125 C, 15.8 x 7.8 x 18 mm, 4 radial pins. DCR: 140 mOhm (lioncircuits) versus "240 Ohm" in an RS listing (implausible for 1.5 A; likely 240 mOhm): conflict kept; default 0.14 Ohm. Leakage inductance, impedance curve and saturation current not found (defaults: LS = 1 percent of L = 40 uH is an ASSUMPTION; use with a warning).
+- Default instance: CMC_SAT with L = 4 mH, LS = 40 uH (placeholder), RDC = 0.14, ISATM = 3 A (ASSUMPTION, 2x rating), C0 = 10 pF (ASSUMPTION).
+- Pin map (3D spec): 1 (-5.0, +2.25), 2 (-5.0, -2.25), 3 (+5.0, -2.25), 4 (+5.0, +2.25), rows 10.0 mm apart, pitch 4.5 mm. Adopted default (through-flow, dots at 1 and 2): A1 = 1, A2 = 4, B1 = 2, B2 = 3, `pairing_verified=false`. The 3D spec itself says the numbering order is not visually confirmed.
+- Safety: working voltage 250 V ac is from a distributor listing; no creepage, clearance or approval document was opened. Do not treat as certified mains hardware.
+- Status: partial.
+
+## OHM-052: Small signal transformer
+
+Status retained: `partial`.
+
+- BEH-MAG-XFMR-SIGNAL /parameters/ciw: basis=ASSUMPTION, confidence=L
+- BEH-MAG-XFMR-SIGNAL /parameters/isat_m: basis=ASSUMPTION, confidence=L
+- BEH-MAG-XFMR-SIGNAL /parameters/llk: basis=ASSUMPTION, confidence=L
+- BEH-MAG-XFMR-SIGNAL /parameters/lp: basis=ASSUMPTION, confidence=L
+- BEH-MAG-XFMR-SIGNAL /parameters/rwinding: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 3491.
+
+## [OHM-052] Small signal transformer -> BEH-MAG-XFMR-SIGNAL
+
+- Representative Triad TY-145P (S22): 600CT : 600CT, 1:1, response 200 Hz to 15 kHz, through hole.
+- Default instance: XFMR_K / four-half-winding center-tapped form with N = 1, LP = 1 H, LLK = 5 mH, RP = RS = 40 Ohm, CIW = 100 pF, all ASSUMPTIONS except N and the band.
+- Pin map (DEFAULT-ASSUMPTION, unverified): P_A = 1 (dot), P_CT = 2, P_B = 3; S_A = 4 (dot), S_CT = 5, S_B = 6; 3D positions 1 (-5.335, +4.75), 2 (-5.335, 0), 3 (-5.335, -4.75), 4 (+5.335, -4.75), 5 (+5.335, 0), 6 (+5.335, +4.75). The 3D spec states Triad numbering 1-3 and 4-6 by rows, which supports rows = windings but not the function of each pin.
+- Polarity: dots assumed at pins 1 and 4. Phase relationship between the two rows is RESEARCH_REQUIRED.
+- Status: partial.
+
+## OHM-053: Flyback transformer
+
+Status retained: `research_required`.
+
+- BEH-MAG-XFMR-FLYBACK /parameters/ciw: basis=ASSUMPTION, confidence=L
+- BEH-MAG-XFMR-FLYBACK /parameters/isat_pri: basis=ASSUMPTION, confidence=L
+- BEH-MAG-XFMR-FLYBACK /parameters/llk: basis=ASSUMPTION, confidence=L
+- BEH-MAG-XFMR-FLYBACK /parameters/lp: basis=ASSUMPTION, confidence=L
+- BEH-MAG-XFMR-FLYBACK /parameters/rpri: basis=ASSUMPTION, confidence=L
+- BEH-MAG-XFMR-FLYBACK /parameters/rsec: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 3499.
+
+## [OHM-053] Flyback transformer -> BEH-MAG-XFMR-FLYBACK
+
+- Representative Wurth WE-FB 750311595 (EFD25, 12 pins) and WE-OLSTM 750871111 (EE20/10/6, 14 positions). No electrical value was opened for either. The listing of a different WE-FB part (750311691: 1:5, 60 uH, 0.315 Ohm, 1 uH leakage, 2.5 kV, 6 pins, S23) shows the typical magnitude only.
+- Default instance: placeholder (placeholder=true) Lp = 100 uH, N = 0.5, Llk = 2 uH, ISATM = 3 A, RP 20 mOhm, RS 40 mOhm (bench values; not a catalogue part).
+- Pin map: RESEARCH_REQUIRED. The 3D spec records windings N1 (pin 1...), N2 (6, 7...), N3 (12, 1...) with the remark that exact pin lists are unreliable, and for the WE-OLSTM windings on pins 1,3,4 / 6 / 7,9,12,14 (8 populated positions out of 14), which contradicts the first-pass 6 pins. Use the abstract functional pins PRI/SEC/AUX and let the user bind them.
+- Polarity: dots required on every winding; pin 1 is marked on the bobbin flange (3D spec). Polarity vs pin map unverified.
+- Status: partial / research_required for the part-level electrical data.
+
+## OHM-054: Current transformer
+
+Status retained: `partial`.
+
+- BEH-MAG-XFMR-CT /parameters/isat_m_pri: basis=ASSUMPTION, confidence=L
+- BEH-MAG-XFMR-CT /parameters/lsec: basis=MFR_DATASHEET, confidence=L
+- BEH-MAG-XFMR-CT /parameters/rsec: basis=MFR_DATASHEET, confidence=L
+- BEH-MAG-XFMR-CT /parameters/turns_ratio: basis=MFR_DATASHEET, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 3507.
+
+## [OHM-054] Current transformer -> BEH-MAG-XFMR-CT
+
+- Representative Talema AS-103 (AS series), 17.2 x 9.53 x 20.4 mm per the 3D spec. Defaults from the conflicting sources: N = 200, Lsec = 10 mH, Rsec = 3 Ohm, Rb = 100 Ohm, Isec max 75 mA, Ip max 15 A, 20 kHz to 200 kHz, isolation 2500 VAC, -40 to +120 C. Conflicting readings (1:300, 250 mH, 10 Ohm; 1 mH, 3 Ohm; 10 mH, 300 Ohm) are tabulated in the class section.
+- Pin map: 3D spec pins 1 (-6.35, 0), 2 (0, 0), 3 (+6.35, 0); pin 2 only on center-tapped versions (S13). Candidate electrical roles: pins 1 and 3 = secondary ends S1 and S2 (or, per the aggregator reading, pin 1 primary input and pin 3 primary return/secondary ground), pin 2 = secondary center tap. **A primary connection is not represented by the 3D spec's 3 pins. RESEARCH_REQUIRED**; the behavior layer uses a four-terminal abstraction (P1, P2, S1, S2, optional S_CT) until the true pinout is established.
+- Polarity: pin 1 at -X per 3D spec; dot position unknown.
+- Safety: open secondary is a hazard (class section 6 and 7).
+- Status: partial.
+
+## OHM-055: Ethernet magnetics transformer
+
+Status retained: `partial`.
+
+- BEH-MAG-ETHMAG /parameters/ciw: basis=ASSUMPTION, confidence=L
+- BEH-MAG-ETHMAG /parameters/leakage: basis=DERIVED, confidence=L
+- BEH-MAG-ETHMAG /parameters/ocl: basis=MFR_DATASHEET, confidence=L
+- BEH-MAG-ETHMAG /parameters/rwinding: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 3515.
+
+## [OHM-055] Ethernet magnetics transformer -> BEH-MAG-ETHMAG
+
+- Representative Pulse H1102NL (1:1 TX / 1:1 RX, hipot 1500 Vrms min, S11); 16 terminals per the 3D spec: pin 1 (-5.08, +4.445) ... 8 (-5.08, -4.445), 9 (+5.08, -4.445) ... 16 (+5.08, +4.445), pitch 1.27 mm, rows 10.16 mm (uncertain).
+- Default instance: two `ETH_CH` channels (TX, RX) with the parameters in the class section.
+- Pin map: **RESEARCH_REQUIRED** (the datasheet's schematic is a drawing). Functional pins: TD_P, TD_N, TD_CT, RD_P, RD_N, RD_CT (PHY side), TX_LP, TX_LN, TX_LCT, RX_LP, RX_LN, RX_LCT (RJ45 side); 4 of the 16 terminals are unassigned. The 3D spec's numbering (pin 1 top-left, counter-clockwise) is used for geometry only.
+- Polarity: no polarity in the passive sense, but the PHY side versus line side must be correct; dots are internal. The pin 1 dot is RESEARCH_REQUIRED (3D spec).
+- Status: partial.
+
+---
+
+# SOURCES (global table)
+
+| id | organization | document | URL | revision/date | used for |
+|---|---|---|---|---|---|
+| S1 | Coilcraft | Doc 469 "Selecting inductors", inductor parameter definitions | https://www.coilcraft.com/getmedia/d4009ece-69be-49a6-9185-9cbacb65e3aa/Doc469_selecting_inductors.pdf | Revised 07/22/17 | Isat percent-drop, Irms/temperature rise, DCR, SRF definitions (opened via WebFetch summarizer; Q and shielding are NOT in this document) |
+| S2 | Coilcraft | XAL40xx shielded power inductors datasheet, Doc 806-1 | https://www.coilcraft.com/en-us/files/datasheet/XAL40xx | Revised 02/25/26 | 30 % Isat definition, Irms 20/40 K, rows XAL4020-222ME and XAL4040-153ME, Tmax 165 C |
+| S3 | ngspice project | ngspice user manual (online HTML) | https://ngspice.sourceforge.io/docs/ngspice-html-manual/manual.xhtml | version not shown (ngspice 42 run locally) | L element syntax incl. `L='expr'`, `flux='expr'`; K element, 0 < k <= 1; verified by running ngspice-42 |
+| S4 | Bourns | SRP7028A series shielded power inductors (Farnell-hosted) | https://www.farnell.com/datasheets/2907623.pdf | REV. 11/19 | 20 % Isat, 40 C Irms, rows R82M/1R8M/100M, carbonyl powder core, -55 to +150 C |
+| S5 | Murata (via RS listing) | LQW18AN15NJ10D listing | https://uk.rs-online.com/web/p/surface-mount-inductors/7242920 | not shown | 15 nH, +-5 %, Q 42, SRF 4.5 GHz, 85 mOhm, 700 mA (distributor listing) |
+| S6 | Murata | Product Search Data Sheet LQM18DN6R8M70# (Farnell-hosted) | https://www.farnell.com/datasheets/3170423.pdf | last updated 12/05/2020 | 6.8 uH, DCR, Isat 120 mA, Itemp 330 mA, SRF 40 MHz min, ferrite, -55 to 125 C |
+| S7 | Coilcraft | Doc 1733 Ferrite vs pressed-powder core inductors | https://www.coilcraft.com/getmedia/5196d074-40d5-4f53-ac0b-bf458214187d/Doc1733_Ferrite_Vs_Composite.pdf | Revised 04/13/22 | hard vs soft saturation, core loss, shielding |
+| S8 | Wurth Elektronik | ANP146a common mode choke theory (WE-CMDC) | https://www.we-online.com/components/media/o868432v410 ANP146a_WE-CMDC_EN.pdf | 2025/08/05 | DM/CM principle, k typical 0.80 to 0.95, leakage, C0, equivalent circuit |
+| S9 | Wurth Elektronik | WE-SL5 744272222 datasheet | https://www.we-online.com/katalog/datasheet/744272222.pdf | 2026-02-06 | L, RDC, IR (830 mA), VR 80 V, Z points, LS 130 nH, 300 Vac test; pin pairing text (conflicts with 3D spec) |
+| S10 | Wurth Elektronik | Design considerations for flyback transformer (Digital WE Days 2023) | https://we-online.com/files/pdf1/design-considerations-for-flyback-transformer.pdf | 2023-10-19 | gap energy storage, Isat >> Ipri, leakage spike (printed equation dimensionally inconsistent) |
+| S11 | Pulse Engineering | H325.Q 10/100BASE-T single port SMD magnetics (hosted by DESY) | https://www.zeuthen.desy.de/~sulanke/Projects/ICECUBE/mDOM/mainboard/datasheets/transformer_eth_H1102NL_+.pdf | H325.Q (9/09) | turns ratios, IL, RL, CMR, crosstalk, hipot 1500 Vrms min |
+| S12 | Pulse Engineering | H315.D 10/100BASE-T single port transformer modules (e-sonic copy) | https://www.e-sonic.com/productfiles/mf-pul/h315.pdf | H315.D (5/09) | OCL 350 uH with 8 mA bias, 1500 Vrms (different part family) |
+| S13 | Talema Group | AS series current sense transformers datasheet (CERN-hosted) | https://sy-dep-epc-lpc.web.cern.ch/components/datasheets/epc-lpc%20(converters)/AS%20series-Hall%20effect%20current%20sensor-Talemagroup.pdf | 07/18 | ratio range, Lsec range, termination, isolation, pins, temperature |
+| S14 | Talema Group | AS-103 and AS-211 datasheet copies (aggregator pages; two readings) | https://pdf.jiepei.com/as-103-13781511.html and https://pdf.jiepei.com/as-211-13781539.html | (06-06) | AS-103 row (1:200, Isec 75 mA, 100 Ohm), pin text; readings disagree on Lsec and DCR |
+| S15 | Talema/Amgis via DigiKey | AS-103 product listing | https://www.digikey.it/en/products/detail/amgis-llc/AS-103/2260664 | not shown | 1:300, 250 mH, 10 Ohm, 20 to 200 kHz (conflicts with S14) |
+| S16 | Elliott Sound Products | "Current Transformers" article | https://www.sound-au.com/articles/current-transformers.htm | not shown | Vout = Isec*Rburden, open-secondary warning (secondary source; no manufacturer document found for the open-circuit statement) |
+| S17 | Wurth Elektronik (via lioncircuits and RS listings) | 744821240 listings | https://www.lioncircuits.com/parts/744821240 ; https://uk.rs-online.com/web/p/common-mode-chokes/9040287 | not shown | 4 mH, 1.5 A, 250 V ac, DCR conflict, WE-CMB series, pin pitch |
+| S18 | Bourns (via RS listing) | 78F3R3J-RC listing | https://uk.rs-online.com/web/p/leaded-inductors/8604082 | not shown | 3.3 uH, Q 50, SRF 60 MHz, 575 mA, 300 mOhm, ferrite, -55 to 105 C |
+| S19 | Bourns (via Farnell listing) | RLB0914-101KL listing | https://ie.farnell.com/bourns/rlb0914-101kl/inductor-100uh-1a-10-radial/dp/2321766 | not shown | 100 uH, Irms 1.1 A, Isat 2.1 A, 0.28 Ohm max, unshielded |
+| S20 | Bourns (via RS listing) | 2107-V-RC listing | https://uk.rs-online.com/web/p/leaded-inductors/7360936 | not shown | 33 uH, 5 A, 29 mOhm, -55 to 105 C |
+| S21 | Bourns (via Farnell listing) | SDR0604-100ML listing | https://fr.farnell.com/en-FR/bourns/sdr0604-100ml/inductor-10uh-20-1-45a/dp/2467529 | not shown | 10 uH, Irms 1.45 A, Isat 2 A, 0.1 Ohm max, unshielded, 5.8 x 5.8 x 4.8 mm |
+| S22 | Triad Magnetics (via DigiKey listing) | TY-145P listing | https://www.digikey.ca/en/products/detail/TY-145P/237-1121-ND/242643 | not shown | 600CT:600CT, 1:1, 200 Hz to 15 kHz |
+| S23 | Wurth Elektronik (via RS listing) | 750311691 pulse transformer listing | https://uk.rs-online.com/web/p/pulse-transformers/1634318 | not shown | WE-FB order of magnitude: 1:5, 60 uH, 0.315 Ohm, 1 uH, 2.5 kV, 6 pins |
+
+Documents that were searched or fetched but NOT cited because they were not usable: Wurth product page for WE-SL5 744272222 (company site, used only to detect the 750 mA conflict; its numbers are listed in the entry), industrialmonitordirect.com CT articles (blog style), the Coilcraft application-note index page (list of titles only), digikey.bg and digikey.ca pages for the AS-103 and TY-145P (listing text only).
+
+Method caveat applying to every source above: pages were read through the WebFetch tool, which returns a model-written summary of the page rather than raw text. Numbers that were repeated across independent fetches (XAL, SRP, WE-SL5 table, H325.Q) are credible; numbers that changed between fetches of the same family (AS-103 Lsec and DCR) were kept as conflicts. No datasheet drawing was inspected visually.
+
+# FINAL STATUS SUMMARY
+
+| entry | class | status |
+|---|---|---|
+| OHM-041 | BEH-MAG-INDUCTOR | complete (multilayer ferrite default); ceramic variant RESEARCH_REQUIRED |
+| OHM-042 | BEH-MAG-INDUCTOR | partial (placeholder values) |
+| OHM-043 | BEH-MAG-INDUCTOR | partial (placeholder values) |
+| OHM-044 | BEH-MAG-INDUCTOR | partial (Murata equivalent used; Coilcraft rows not opened) |
+| OHM-045 | BEH-MAG-INDUCTOR | complete (SRP7028A, XAL) |
+| OHM-046 | BEH-MAG-INDUCTOR | partial |
+| OHM-047 | BEH-MAG-INDUCTOR | partial |
+| OHM-048 | BEH-MAG-INDUCTOR | partial |
+| OHM-049 | BEH-MAG-INDUCTOR | partial |
+| OHM-050 | BEH-MAG-CMC | partial (pin pairing conflict) |
+| OHM-051 | BEH-MAG-CMC | partial |
+| OHM-052 | BEH-MAG-XFMR-SIGNAL | partial (no datasheet values) |
+| OHM-053 | BEH-MAG-XFMR-FLYBACK | partial / research_required (part data) |
+| OHM-054 | BEH-MAG-XFMR-CT | partial (source conflict, pin function) |
+| OHM-055 | BEH-MAG-ETHMAG | partial (pin map) |
+
+<!-- END R3 -->
+
+
+---
+
+<!-- BEGIN R4 -->
+# R4: Diodes, rectifiers, bridges (OHM-056 to OHM-072)
+
+Group R4 covers 17 library entries and 5 behavior classes. Layer for every class: **L1 analog** (ngspice D model plus R and B sources). Fidelity label for every netlist in this document: `behavioural_approximation` (each deck carries its own `.model`/`.subckt`, none is a vendor model). Two vendor SPICE files were opened as cross-checks (Nexperia 1N4148 and BAT54, S12 and S14 below) but are NOT attached to any OHMNI part, so no entry may claim `vendor_model`.
+
+Evidence caveat (applies to every number below): datasheets were read through a web fetch tool that returns a model-written extraction of each PDF, not the PDF pages. Tabulated values were cross-checked against each other where two documents exist (conflicts are listed, not hidden), but graphs (VF vs IF, capacitance vs VR, derating curves) were NOT readable, so no number here comes from a datasheet graph. Where a value needed a graph it is marked ASSUMPTION.
+
+Class index
+
+| Class | Entries | One line |
+|---|---|---|
+| BEH-DIO-PN | OHM-056..066, OHM-070 | silicon pn junction diode: signal, rectifier, dual (SOT-23) |
+| BEH-DIO-SCHOTTKY | OHM-067 | metal-semiconductor diode, low VF, high leakage |
+| BEH-DIO-ZENER | OHM-068 | reference/regulator diode used in breakdown |
+| BEH-DIO-TVS | OHM-069 | avalanche surge clamp, uni and bidirectional |
+| BEH-DIO-BRIDGE | OHM-071, OHM-072 | four-diode full-wave bridge, 4 pins |
+
+## OHM-056: DO-35 signal diode
+
+Status retained: `partial`.
+
+- BEH-DIO-PN /parameters/M: basis=ASSUMPTION, confidence=L
+- BEH-DIO-PN /parameters/VJ: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 4390.
+
+## [OHM-056] DO-35 signal diode -> BEH-DIO-PN
+* Reference functional part: 1N4148 (Vishay doc 81857, S1). Package DO-204AH glass, cathode band black (3D spec).
+* Defaults (fit A): IS 5.537e-9, N 1.944, RS 0.6, CJO 2 pF, VJ 0.7, M 0.4, TT 23 ns, BV 100 V, IBV 100 uA.
+* Ratings: VRRM 100 V, IF 200 mA (conservative; Vishay 300 mA, Nexperia IFRM 450 mA), IFSM 2 A for 1 us (Vishay) / 4 A (Nexperia), Ptot 500 mW at TL <= 25 C (440 mW at 45 C), RthJA 350 K/W with 4 mm leads, TJmax 175 C.
+* Pin map: K to terminal 1 (band end, -X, hole at X = -3.81), A to terminal 2 (+X).
+* Other DO-35 contents (Zener 1N52xx/BZX55, small Schottky) belong to BEH-DIO-ZENER and BEH-DIO-SCHOTTKY via the part's `behavior_class` field.
+* Notes: glass package; mechanical shock and lead stress crack the glass. Status: complete for the 1N4148 reference (partial for max-corner trr and no typical VF graph); partial overall.
+
+## OHM-057: DO-41 rectifier diode
+
+Status retained: `partial`.
+
+- BEH-DIO-PN /parameters/M: basis=ASSUMPTION, confidence=L
+- BEH-DIO-PN /parameters/VJ: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 4398.
+
+## [OHM-057] DO-41 rectifier diode -> BEH-DIO-PN (rectifier variant)
+* Reference part: 1N4007 (Vishay doc 88503, onsemi Rev 12), family 1N4001-1N4007 (50-1000 V).
+* Defaults (fit B, typical): IS 4.02e-9, N 1.8 (assumed), RS 0.03 (assumed), CJO 38.9 pF, VJ 0.7, M 0.5, TT 3 us (assumed), BV 1100 V (assumed), IBV 5 uA.
+* Ratings: VRRM per type (1N4007 1000 V), IF(AV) 1.0 A at TA 75 C 0.375 in leads, IFSM 30 A (8.3 ms) and 45 A (1 ms), VF max 1.1 V at 1 A (typ 0.93 V), IR 5 uA (25 C) / 50 uA (125 C), CJ 15 pF at 4 V, RthJA 50 C/W, RthJL 25 C/W (PCB mounted, 0.375 in), TJmax 175 C (onsemi operating range).
+* Thermal power limit at 25 C: (175 - 25)/50 = 3.0 W junction limit; the 1 A rating gives about 1.0 W (0.93 V * 1 A), margin is the lead length.
+* Pin map: K to terminal 1 (band end, -X), A to terminal 2. Vishay: "color band denotes cathode end".
+* Notes: standard recovery (trr not specified): unsuitable above about 50 kHz in switchers. Status: partial.
+
+## OHM-058: DO-201 power diode
+
+Status retained: `partial`.
+
+- BEH-DIO-PN /parameters/M: basis=ASSUMPTION, confidence=L
+- BEH-DIO-PN /parameters/VJ: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 4406.
+
+## [OHM-058] DO-201 power diode (DO-201AD) -> BEH-DIO-PN (rectifier variant)
+* Reference part: 1N5400-1N5408 (Vishay doc 88516, 3 A).
+* Defaults (max-corner fit): IS 5.05e-11, N 1.8, RS 0.015 (assumed), CJO 77.7 pF, TT 3 us (assumed), BV 1.1*VRRM.
+* Ratings: VRRM 50-1000 V, IF(AV) 3.0 A at TL 105 C with 0.5 in leads, IFSM 200 A (8.3 ms), VF max 1.2 V at 3 A, IR 5 uA (25 C) / 500 uA (150 C), CJ typ 30 pF at 4 V, RthJA 20 C/W typical (PCB, 0.375 in), no trr.
+* Pin map: K to terminal 1 (band, -X, X = -7.62), A to terminal 2.
+* Notes: dissipation at 3 A: about 1.2 V * 3 A = 3.6 W max-corner; with 20 C/W the rise is 72 K. Status: partial.
+
+## OHM-059: MiniMELF diode
+
+Status retained: `partial`.
+
+- BEH-DIO-PN /parameters/M: basis=ASSUMPTION, confidence=L
+- BEH-DIO-PN /parameters/VJ: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 4413.
+
+## [OHM-059] MiniMELF diode -> BEH-DIO-PN (also BEH-DIO-ZENER and BEH-DIO-SCHOTTKY via part)
+* Reference parts named by the 3D spec: BZV55 Zener (blue band, Vishay doc 88315, cited by the spec, NOT opened in this research), LL4148-type switching diodes. No MiniMELF datasheet was opened here.
+* Defaults: use the 1N4148 fit (fit A) for a switching diode; Zener use BEH-DIO-ZENER with the BZX55-derived fit (the SOD-80 BZV55 sheet may differ, RESEARCH_REQUIRED). Power for MiniMELF Zeners is typically 500 mW (assumed from the BZV55 series name in the spec, not opened).
+* Pin map: K to terminal 1 (cathode end cap, band, -X, X = -1.56), A to terminal 2.
+* Notes: lower thermal mass than DO-35; RthJA higher on board, not sourced. Status: partial (no ratings sourced for the package itself).
+
+## OHM-060: MELF diode
+
+Status retained: `research_required`.
+
+- BEH-DIO-PN /parameters/M: basis=ASSUMPTION, confidence=L
+- BEH-DIO-PN /parameters/VJ: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 4419.
+
+## [OHM-060] MELF diode -> BEH-DIO-PN
+* Reference part named by the spec: GL41 plastic MELF rectifiers (Vishay doc 88548, cited by the spec, NOT opened here). Use the BEH-DIO-PN rectifier class with ratings of a 1 A rectifier family as a placeholder (1N4007 data S6) and mark `rating_source: assumed`.
+* Pin map: K to terminal 1 (band end cap, -X, X = -2.245), A to terminal 2.
+* Notes: MELF cylinders have no polarity cue besides the band; cylindrical body can roll in assembly. Status: partial (research_required for GL41 ratings).
+
+## OHM-061: SOD-123 diode
+
+Status retained: `partial`.
+
+- BEH-DIO-PN /parameters/M: basis=ASSUMPTION, confidence=L
+- BEH-DIO-PN /parameters/VJ: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 4424.
+
+## [OHM-061] SOD-123 diode -> BEH-DIO-PN
+* Reference parts: 1N4148W-class switching diode (use fit A with CJO and ratings per its datasheet; no SOD-123 datasheet was opened). Schottky (BAT42W/BAT54 type) uses BEH-DIO-SCHOTTKY, Zener (BZT52/MMSZ) BEH-DIO-ZENER.
+* Pin map: K to terminal 1 (-X bar side, X = -1.425), A to terminal 2.
+* Notes: SOD-123F/FL flat-power variants are a different package and are not covered by this entry. Package RthJA not sourced; Nexperia SOT-23 devices quote 500 K/W (BAV99, S22) as a lower-power reference. Status: partial.
+
+## OHM-062: SOD-323 diode
+
+Status retained: `research_required`.
+
+- BEH-DIO-PN /parameters/M: basis=ASSUMPTION, confidence=L
+- BEH-DIO-PN /parameters/VJ: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 4429.
+
+## [OHM-062] SOD-323 diode -> BEH-DIO-PN
+* Reference: 1N4148WS / BAS16WS / BAT54WS class (no datasheet opened). Use fit A with CJO 1.5 pF (ASSUMPTION), ratings from the 1N4148 family scaled down: IF 150 mA assumed.
+* Pin map: K to terminal 1 (-X, X = -1.05), A to terminal 2.
+* Status: partial (ratings research_required).
+
+## OHM-063: SOD-523 diode
+
+Status retained: `research_required`.
+
+- BEH-DIO-PN /parameters/M: basis=ASSUMPTION, confidence=L
+- BEH-DIO-PN /parameters/VJ: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 4434.
+
+## [OHM-063] SOD-523 diode -> BEH-DIO-PN
+* Reference: BAS16-type in SOD-523 (no datasheet opened). Same placeholder as OHM-062 with lower power.
+* Pin map: K to terminal 1 (-X, X = -0.625), A to terminal 2.
+* Status: partial (ratings research_required).
+
+## OHM-064: SMA diode
+
+Status retained: `partial`.
+
+- BEH-DIO-PN /parameters/M: basis=ASSUMPTION, confidence=L
+- BEH-DIO-PN /parameters/VJ: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 4439.
+
+## [OHM-064] SMA diode -> BEH-DIO-PN (rectifier), also BEH-DIO-SCHOTTKY and BEH-DIO-TVS via part
+* Rectifier reference: S1A-S1M (Vishay, S9): IF(AV) 1.0 A, IFSM 40 A (S1A-S1J) / 30 A (S1K-S1M), VF max 1.1 V at 1 A, IR 1 uA (25 C) / 5 uA (125 C), CJ typ 12 pF at 4 V, trr typ 1.8 us, RthJA 75 C/W (S1A-S1J) / 85 (S1K-S1M), RthJL 27/30 C/W, TJ -55 to +150 C. Fit: IS 1.04e-10 (max corner), N 1.8, RS 0.03, CJO 31.1 pF, TT 3 us (assumed; datasheet trr 1.8 us typ with unknown test condition).
+* Schottky: SS14 (S10) 1 A, 40 V, RthJA 88 C/W. TVS: SMAJ 400 W, RthJA 120 C/W (S17).
+* Pin map: K to terminal 1 (-X, J-lead, contact center -2.0), A to terminal 2 (+2.0).
+* Power handling: (150 - 25)/75 = 1.67 W junction limit at 25 C for the rectifier with the quoted pads; SS14 (150 - 25)/88 = 1.42 W; SMAJ TVS continuous 1.04 W. Status: partial.
+
+## OHM-065: SMB diode
+
+Status retained: `partial`.
+
+- BEH-DIO-PN /parameters/M: basis=ASSUMPTION, confidence=L
+- BEH-DIO-PN /parameters/VJ: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 4445.
+
+## [OHM-065] SMB diode -> BEH-DIO-PN, BEH-DIO-SCHOTTKY, BEH-DIO-TVS
+* Schottky reference: SS24 (Vishay SS22-SS26, S12): 2 A, 40 V, IFSM 75 A, VF max 0.5 V (SS22-SS24) at 2 A, IR 0.4 mA / 10 mA (25 / 100 C), RthJA 75 C/W, RthJL 17 C/W. TVS: SMBJ (S16) 600 W, RthJA 100 C/W. Rectifier S2x (spec-named, no datasheet opened): RESEARCH_REQUIRED, use S1x scaling with IF(AV) 2.0 A.
+* Pin map: K to terminal 1 (-X, contact center -2.15 per this entry; OHM-069 states 2.425, which is inconsistent, see header), A to terminal 2 (+2.15).
+* Power handling at 25 C: Schottky 1.67 W, TVS continuous 1.25 W. Status: partial.
+
+## OHM-066: SMC diode
+
+Status retained: `partial`.
+
+- BEH-DIO-PN /parameters/M: basis=ASSUMPTION, confidence=L
+- BEH-DIO-PN /parameters/VJ: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 4450.
+
+## [OHM-066] SMC diode -> BEH-DIO-PN, BEH-DIO-SCHOTTKY, BEH-DIO-TVS
+* Schottky reference: SS34 (Vishay SS32-SS36, S13): 3 A, 40 V, IFSM 100 A, VF 0.5 V (SS32-SS34) / 0.75 V (SS35-SS36), EAS 20 mJ, TJ 150 C; IR and RthJA not in the extraction. TVS: SMCJ (S18) 1500 W, IFSM 200 A, RthJA 75 C/W, RthJL 15 C/W. Rectifier MURS-type (spec-named, not opened): RESEARCH_REQUIRED.
+* Pin map: K to terminal 1 (-X, contact center -3.42), A to terminal 2 (+3.42).
+* Power handling at 25 C (RthJA 75 proxy): 1.67 W. SMC is the largest of the three bodies and has the highest continuous and pulse capability: SMA 400 W TVS, SMB 600 W, SMC 1500 W. Status: partial.
+
+## OHM-067: Schottky diode
+
+Status retained: `partial`.
+
+- BEH-DIO-SCHOTTKY /parameters/BV: basis=ASSUMPTION, confidence=L
+- BEH-DIO-SCHOTTKY /parameters/CJO: basis=ASSUMPTION, confidence=L
+- BEH-DIO-SCHOTTKY /parameters/IS: basis=DERIVED, confidence=L
+- BEH-DIO-SCHOTTKY /parameters/N: basis=ASSUMPTION, confidence=L
+- BEH-DIO-SCHOTTKY /parameters/RS: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 4455.
+
+## [OHM-067] Schottky diode -> BEH-DIO-SCHOTTKY
+* Default package SOD-123 (small-signal): defaults from the Nexperia BAT54 vendor numbers (S14): IS 2.117e-7, N 1, RS 2.7, CJO 8 pF, BV 56 V, IR 2 uA at 25 V, VR 30 V, VF max 0.8 V at 100 mA. Power variants (SMA SS14, DO-41, DO-201AD): SS14 fit.
+* Alternates: SMA, DO-41, DO-201AD, SOD-323 (per 3D spec `package_member`).
+* Pin map: K to terminal 1 (bar, -X), A to terminal 2, for every member.
+* Notes: leakage rises steeply with temperature; thermal runaway check is mandatory for power parts above about 60 C ambient at high VR (bench B3, Ta threshold 83 C for SS14 max leakage at 40 V). Status: partial.
+
+## OHM-068: Zener diode
+
+Status retained: `partial`.
+
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 4461.
+
+## [OHM-068] Zener diode -> BEH-DIO-ZENER
+* Default package SOD-123; alternates DO-35 (1N52xx), DO-41 (1 W), MiniMELF (BZV55), SOD-323. The Zener VZ is a part parameter (E24), default 5.1 V from the BZX55C5V1 fit; BZX55C10 (9.4-10.6 V at 5 mA, rZ < 15 ohm at 5 mA) shows the form for other voltages.
+* Pin map: K to terminal 1 (band/bar, -X) which is the end that goes positive in regulation; A to terminal 2. For DO-35 glass the cathode is at X = -3.81.
+* Power: 500 mW at 25 C for DO-35, derating (175 - Ta)/300; SOD-123 and DO-41 values are RESEARCH_REQUIRED.
+* Status: partial.
+
+## OHM-069: TVS diode
+
+Status retained: `partial`.
+
+- BEH-DIO-TVS /parameters/VBR_nom: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 4467.
+
+## [OHM-069] TVS diode -> BEH-DIO-TVS
+* Default package SMB (SMBJ), alternates SMA (SMAJ, 400 W) and SMC (SMCJ, 1500 W). Default part SMBJ15A: VWM 15 V, VBR min 16.7 V at 1 mA, VC 24.4 V at 24.6 A, 600 W (10/1000 us).
+* Unidirectional: K to terminal 1 (band at -X), A to terminal 2. Bidirectional (`bidirectional: true`): no band; terminals 1 and 2 interchangeable, model BEH-DIO-TVS bidirectional cell pair.
+* Notes: terminal center X is stated as +/-2.425 here but +/-2.15 for the same package in OHM-065 and PKG-SMX.SMB; 2.15 is arithmetically correct (see header). HAZARD: short-circuit failure mode, see class section 1 and 7. Status: partial.
+
+## OHM-070: Dual diode SOT-23
+
+Status retained: `partial`.
+
+- BEH-DIO-PN /parameters/M: basis=ASSUMPTION, confidence=L
+- BEH-DIO-PN /parameters/VJ: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 4472.
+
+## [OHM-070] Dual diode SOT-23 -> BEH-DIO-PN (two diodes per instance)
+* Three configurations (3D spec pin usage; BAV99 confirmed by opened Nexperia datasheet S22, BAV70 and BAW56 from the spec's own sourcing, not re-opened here). Parameter `config`.
+* Defaults per diode: 1N4148-class fit A (CJO 1.5 pF used by Nexperia max Cd 1.5 pF for BAV99, S22; IS/N/RS from fit A as a proxy because the BAV99 sheet extraction gives only VF 855 mV at 10 mA, min/typ/max unlabeled). Ratings per BAV99 (S22): VRRM 100 V, IF 215 mA per diode, IFSM 4 A (1 us), IR 0.5 uA max at 80 V, trr 4 ns max, Ptot 250 mW total, Rth(j-a) 500 K/W. Fit A VF(10 mA) = 0.730 V, below the BAV99 855 mV figure, so the fit is a typical-to-low corner here; for max-VF behavior scale IS by exp(-(0.855-0.730)/(1.944*0.02586)) = 0.083.
+* Pin map (package terminals, per 3D spec numbering: pin 1 (-0.95, -1.0), pin 2 (+0.95, -1.0), pin 3 (0, +1.0)):
+
+| config | pin 1 | pin 2 | pin 3 | SPICE |
+|---|---|---|---|---|
+| series (BAV99) | A1 | K2 | K1 and A2 | `D1 {p1} {p3} M` , `D2 {p3} {p2} M` |
+| common cathode (BAV70) | A1 | A2 | K1 and K2 | `D1 {p1} {p3} M` , `D2 {p2} {p3} M` |
+| common anode (BAW56) | K1 | K2 | A1 and A2 | `D1 {p3} {p1} M` , `D2 {p3} {p2} M` |
+
+* Convention note: unlike the two-lead packages, pin 1 is not always the cathode here; polarity is carried by this table only. Bench B6 ran the BAV99 series config as a rail clamp (clamps to 5.685 V and -0.726 V, matching the closed form).
+* Status: partial (BAV70 and BAW56 sheets not opened in this session).
+
+## OHM-071: DIP bridge rectifier
+
+Status retained: `research_required`.
+
+- BEH-DIO-BRIDGE /parameters/CJO: basis=DERIVED, confidence=L
+- BEH-DIO-BRIDGE /parameters/IS: basis=DERIVED, confidence=L
+- BEH-DIO-BRIDGE /parameters/N: basis=ASSUMPTION, confidence=L
+- BEH-DIO-BRIDGE /parameters/RS: basis=ASSUMPTION, confidence=L
+- BEH-DIO-BRIDGE /parameters/TT: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+- Bridge terminal functions unresolved; automatic electrical binding blocked
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 4486.
+
+## [OHM-071] DIP bridge rectifier -> BEH-DIO-BRIDGE
+* Reference parts: DB101-DB107 (DB-1 outline) and DF005M-DF10M (Vishay case DFM, doc 88571). Defaults: DF10M-class ratings: VRRM 1000 V, IF(AV) 1.0 A at TA 40 C, IFSM 50 A, VF 1.1 V max per diode at 1 A, IR 5 uA / 500 uA (25 / 125 C), CJ 25 pF, RthJA 40 C/W.
+* Pin map (3D spec numbering: pin 1 (-3.81, +2.54), pin 2 (-3.81, -2.54), pin 3 (+3.81, -2.54), pin 4 (+3.81, +2.54)): electrical PLUS to pin 1, AC1 to pin 2, MINUS to pin 3, AC2 to pin 4. ASSUMPTION (L), consistent with the 3D spec placeholder (pin 1 = +) and with the diagonal AC rule from the Vishay drawing, but NOT confirmed from a dimension drawing. The part record must hold this as a function table so a correction changes only data.
+* Notes: bridge polarity is printed on the body; the modelling is correct for any permutation of AC pins. Status: partial (pin functions research_required).
+
+## OHM-072: Round bridge rectifier
+
+Status retained: `partial`.
+
+- BEH-DIO-BRIDGE /parameters/CJO: basis=DERIVED, confidence=L
+- BEH-DIO-BRIDGE /parameters/IS: basis=DERIVED, confidence=L
+- BEH-DIO-BRIDGE /parameters/N: basis=ASSUMPTION, confidence=L
+- BEH-DIO-BRIDGE /parameters/RS: basis=ASSUMPTION, confidence=L
+- BEH-DIO-BRIDGE /parameters/TT: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+- Bridge terminal functions unresolved; automatic electrical binding blocked
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 4491.
+
+## [OHM-072] Round bridge rectifier -> BEH-DIO-BRIDGE
+* Reference parts: W005G-W10G (Vishay WOG, S20), W02M-W10M (MCC WOM, S21). Defaults: IF(AV) 1.5 A (0.375 in leads, 25 C), IFSM 50 A, VF 1.0 V at 1 A per diode, IR 5 uA / 500 uA, CJ 14 pF, RthJA 36 C/W, VRRM 50 to 1000 V, TJ -55 to +150 C (Vishay), -65 to +125 C (MCC).
+* Pin map (3D spec: pin 1 (-2.54, +2.54), pin 2 (-2.54, -2.54), pin 3 (+2.54, -2.54), pin 4 (+2.54, +2.54)): electrical PLUS to pin 1, AC1 to pin 2, MINUS to pin 3, AC2 to pin 4. ASSUMPTION (L). The 3D spec states MCC WOM labels as AC, AC, +, -, which suggests a different numbering order than the assumed one (AC at pins 1 and 2); that statement is not resolved by any opened drawing. RESEARCH_REQUIRED before use for any visual or layout checking.
+* Status: partial.
+
+---
+
+# Group source list (ids used above)
+S1 to S5, S6 to S9, S22, S23 are defined in BEH-DIO-PN section 12. S10 to S14 in BEH-DIO-SCHOTTKY section 12, S15 in BEH-DIO-ZENER section 12, S16 to S18 in BEH-DIO-TVS section 12, S19 to S21 and the KiCad footprint in BEH-DIO-BRIDGE section 12. The Vishay and Nexperia SPICE files (S4, S5, S14) were used as cross-checks only; their parameters appear in this document as vendor-extracted values, not as a vendor_model attachment.
+
+# Open items summary (research_required)
+1. Physical lead functions (PLUS, MINUS, AC) of DIP-4 and round bridges; the OHM-072 spec statement (AC, AC, +, -) vs the assumed order.
+2. Typical VF-vs-IF and capacitance-vs-VR graph data for every part (graphs not readable by the fetch tool); every N, RS for rectifiers and Schottky is an assumption.
+3. trr for 1N4007-class and S1x/1N5400 (only S1M typ 1.8 us seen, unknown test condition).
+4. Datasheets not opened for BAT42W, BZV55, GL41, BAV70, BAW56, MMSZ/BZT52, SMB/SMC general rectifiers (S2x, MURS), 1 W Zeners (BZX85/1N47xx).
+5. TVS pulse-width and temperature derating curves; failure-mode citation (short-circuit) from a manufacturer application note.
+6. SS14 VF max conflict (Vishay extraction 0.75 V vs 0.5 V in sibling and Fairchild sheets) and Tj max (125 vs 150 C).
+
+<!-- END R4 -->
+
+
+---
+
+<!-- BEGIN R5 -->
+# R5: LEDs and displays (OHM-073 to OHM-092)
+
+Group R5 covers 20 library entries in 8 behavior classes.
+
+| Class | Entries | Layer | One line |
+|---|---|---|---|
+| BEH-LED-INDICATOR | OHM-073..081 | L1 | single-die LED (THT lamps, chip LEDs, PLCC-2), series-resistor driven |
+| BEH-LED-RGB | OHM-082, 083 | L1 | three independent dies in one package (PLCC-4 RGB, 5050 6-pin RGB) |
+| BEH-LED-POWER | OHM-085, 086 | L1 + thermal | 1 W-class emitter and its MCPCB star, current-source driven |
+| BEH-LED-ADDRESSABLE | OHM-084 | L1 supply + L2/L3 protocol | WS2812B-style RGB LED with built-in driver, single-wire NRZ |
+| BEH-DISP-LEDARRAY | OHM-087..090 | L1 (+L2 drive pattern) | 7-segment digits and 8x8 matrix: LED groups with common anode/cathode, multiplexed |
+| BEH-DISP-LCD1602 | OHM-091 | L3 (+L1 supply, backlight) | HD44780/ST7066 character LCD module |
+| BEH-DISP-OLED-I2C | OHM-092 | L3 (+L1 supply, I2C pull-ups) | SSD1306 128x64 OLED breakout |
+
+Fidelity label for every netlist here: `behavioural_approximation` (every deck carries its own `.model` or behavioural source). No vendor SPICE model was opened or attached, so no entry may claim `vendor_model`. A simulation that did not run is never a pass.
+
+## OHM-073: 3 mm THT LED
+
+Status retained: `partial`.
+
+- BEH-LED-INDICATOR /bench/5/expected/0: basis=ASSUMPTION, confidence=not specified
+- BEH-LED-INDICATOR /parameters/IS: basis=DERIVED, confidence=L
+- BEH-LED-INDICATOR /parameters/N: basis=ASSUMPTION, confidence=L
+- BEH-LED-INDICATOR /parameters/RS: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 5567.
+
+## [OHM-073] 3 mm THT LED -> BEH-LED-INDICATOR
+* Package: T-1 lamp, lead pitch 2.54 mm (3D spec). Pin map: terminal 1 = cathode (-X, flat side, short lead), terminal 2 = anode (+X, long lead).
+* Sourced reference part: Vishay TLDR4400 (deep red GaAlAs, 3 mm tinted diffused), S1: IF 50 mA at Tamb <= 60 C, PV 100 mW, Tj 100 C, RthJA 400 K/W, VR 6 V, IFSM 1 A (tp <= 10 us), VF 1.8 typ / 2.2 max at 20 mA, Cj 30 pF, Iv 45 mcd typ at 20 mA (25 mcd min), 2 mcd typ at 1 mA. Model card LED_RED is fitted to this part.
+* Defaults: colour red, if_test 20 mA, if_max 20 mA (generic; 50 mA only for TLDR4400-class at <= 60 C), rth_ja 400 K/W, vr_max 6 V (red/GaP) or 5 V (blue/white).
+* Polarity: flat on flange = cathode. Mounting the lamp backwards means reverse bias; flag against vr_max.
+* Status: complete for the reference part; generic colours partial.
+
+## OHM-074: 5 mm THT LED
+
+Status retained: `partial`.
+
+- BEH-LED-INDICATOR /bench/5/expected/0: basis=ASSUMPTION, confidence=not specified
+- BEH-LED-INDICATOR /parameters/IS: basis=DERIVED, confidence=L
+- BEH-LED-INDICATOR /parameters/N: basis=ASSUMPTION, confidence=L
+- BEH-LED-INDICATOR /parameters/RS: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 5574.
+
+## [OHM-074] 5 mm THT LED -> BEH-LED-INDICATOR
+* Package: T-1 3/4 lamp, pitch 2.54 mm. Pin map as OHM-073 (terminal 1 cathode, terminal 2 anode).
+* Sourced reference parts (S2..S5): blue TLHB5800 (IF 20 mA at <= 65 C, PV 100 mW, RthJA 350 K/W, VR 5 V, IFSM 0.1 A, VF 3.9 typ / 4.5 max, Tj 100 C); yellow/green/pure-green TLHY/G/P5800 (IF 30 mA, VR 6 V, IFSM 1 A, RthJA 350 K/W, VF 2.4 typ / 3.0 max, Cj 50 pF); white VLHW5100 (IF 30 mA, VR 5 V, IFSM 0.1 A, RthJA 400 K/W, VF 2.8 to 3.6 V, IR <= 50 uA at 5 V, intensity 5600 to 11200 mcd, narrow +-10 degree beam); red/yellow/green TLH x 520x (IF 30 mA at <= 65 C, VF 2 to 3 V).
+* Defaults: red, 20 mA. Model cards: LED_GREEN (TLHG5800 fit), LED_BLUE (TLHB5800 fit), LED_WHITE (VLHW5100 single-point fit).
+* Notes: the largest evidence base in the group. Blue VF: Vishay GaN-on-SiC 3.9 V vs modern InGaN 3.1 V (S7), so the part record must pick a variant; a 3.3 V rail cannot light a 3.9 V blue.
+* Status: complete for the listed reference parts.
+
+## OHM-075: 10 mm THT LED
+
+Status retained: `research_required`.
+
+- BEH-LED-INDICATOR /bench/5/expected/0: basis=ASSUMPTION, confidence=not specified
+- BEH-LED-INDICATOR /parameters/IS: basis=DERIVED, confidence=L
+- BEH-LED-INDICATOR /parameters/N: basis=ASSUMPTION, confidence=L
+- BEH-LED-INDICATOR /parameters/RS: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 5581.
+
+## [OHM-075] 10 mm THT LED -> BEH-LED-INDICATOR
+* Package: 10 mm lamp, pitch 2.54 mm; same pin map and polarity as OHM-073.
+* No datasheet opened for a 10 mm part. Defaults are ASSUMPTION: if_max 20 mA (generic conservative; many 10 mm lamps run at the same 20 to 30 mA or use several dies, not verified), rth_ja 350 K/W (copied from 5 mm, flagged L), vr_max 5 V.
+* Status: partial; ratings RESEARCH_REQUIRED per MPN.
+
+## OHM-076: Rectangular THT LED
+
+Status retained: `research_required`.
+
+- BEH-LED-INDICATOR /bench/5/expected/0: basis=ASSUMPTION, confidence=not specified
+- BEH-LED-INDICATOR /parameters/IS: basis=DERIVED, confidence=L
+- BEH-LED-INDICATOR /parameters/N: basis=ASSUMPTION, confidence=L
+- BEH-LED-INDICATOR /parameters/RS: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 5586.
+
+## [OHM-076] Rectangular THT LED -> BEH-LED-INDICATOR
+* Package: rectangular lamp (about 5 x 2 mm), pitch 2.54 mm. Pin map: terminal 1 = cathode (-X, chamfer/flat), terminal 2 = anode (+X).
+* No datasheet opened. Defaults: ASSUMPTION as OHM-075 (20 mA).
+* Notes: stackable bar LEDs are often red/green dual-die variants: that is a different circuit (two dies) and is not in this entry.
+* Status: partial; RESEARCH_REQUIRED per MPN.
+
+## OHM-077: 0402 SMD LED
+
+Status retained: `partial`.
+
+- BEH-LED-INDICATOR /bench/5/expected/0: basis=ASSUMPTION, confidence=not specified
+- BEH-LED-INDICATOR /parameters/IS: basis=DERIVED, confidence=L
+- BEH-LED-INDICATOR /parameters/N: basis=ASSUMPTION, confidence=L
+- BEH-LED-INDICATOR /parameters/RS: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 5592.
+
+## [OHM-077] 0402 SMD LED -> BEH-LED-INDICATOR
+* Package: 1.0 x 0.5 x 0.4 mm chip; pin map: terminal 1 = cathode (marked end, -X), terminal 2 = anode (+X).
+* No datasheet opened for 0402. Defaults ASSUMPTION: if_max 20 mA (many 0402 parts are 10 to 20 mA, not verified), p_max 50 mW, rth_ja 500 K/W (L), vr_max 5 V. Bright at 1 to 2 mA (modern chip LEDs).
+* Polarity: cathode mark on the -X end (3D spec); misplacement by rotation of 180 degrees puts reverse bias on the die.
+* Status: partial.
+
+## OHM-078: 0603 SMD LED
+
+Status retained: `partial`.
+
+- BEH-LED-INDICATOR /bench/5/expected/0: basis=ASSUMPTION, confidence=not specified
+- BEH-LED-INDICATOR /parameters/IS: basis=DERIVED, confidence=L
+- BEH-LED-INDICATOR /parameters/N: basis=ASSUMPTION, confidence=L
+- BEH-LED-INDICATOR /parameters/RS: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 5598.
+
+## [OHM-078] 0603 SMD LED -> BEH-LED-INDICATOR
+* Package: 1.6 x 0.8 mm, height 0.55 (3D spec) vs 0.8 in the Vishay VLM x 1300 datasheet S6 (1.6 x 0.8 x 0.8 mm, 3D spec lists height 0.55 as MFR_DATASHEET: a conflict in height, not electrical). Pin map: terminal 1 = cathode, terminal 2 = anode.
+* Sourced (S6, VLM x 1300): AlInGaP (red, orange, yellow, yellow-green): VR 5 V, IF 30 mA, surge 80 mA (0.1 ms), PV 75 mW, -35 to +85 C, VF 2.0 typ / 2.4 max at 20 mA; InGaN (true green, blue): IF 20 mA, surge 100 mA, PV 76 mW, -20 to +80 C, VF true green 3.2 typ / 3.6 max, blue max 3.8 at 20 mA. Intensity (20 mA): red 18 to 54 mcd, true green 71 to 450 mcd, blue 28 to 180 mcd.
+* Defaults: red, if_max 20 mA generic (30 mA for the AlInGaP parts), tj_max n/a (operating temperature limit instead).
+* Repo note: the repo record lists 0603 and 0805 packages for the green LED (`GENERIC_LED_GREEN.json`, kicad LED_0603_1608Metric); pin 1 = A in the repo vs terminal 1 = K here: bind by role.
+* Status: complete for VLM x 1300.
+
+## OHM-079: 0805 SMD LED
+
+Status retained: `partial`.
+
+- BEH-LED-INDICATOR /bench/5/expected/0: basis=ASSUMPTION, confidence=not specified
+- BEH-LED-INDICATOR /parameters/IS: basis=DERIVED, confidence=L
+- BEH-LED-INDICATOR /parameters/N: basis=ASSUMPTION, confidence=L
+- BEH-LED-INDICATOR /parameters/RS: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 5605.
+
+## [OHM-079] 0805 SMD LED -> BEH-LED-INDICATOR
+* Package: 2.0 x 1.25 x 1.1 mm. Pin map: terminal 1 = cathode, terminal 2 = anode.
+* No 0805 datasheet opened. Defaults ASSUMPTION: if_max 20 mA, p_max about 60 to 80 mW (L), vr_max 5 V.
+* Status: partial.
+
+## OHM-080: 1206 SMD LED
+
+Status retained: `partial`.
+
+- BEH-LED-INDICATOR /bench/5/expected/0: basis=ASSUMPTION, confidence=not specified
+- BEH-LED-INDICATOR /parameters/IS: basis=DERIVED, confidence=L
+- BEH-LED-INDICATOR /parameters/N: basis=ASSUMPTION, confidence=L
+- BEH-LED-INDICATOR /parameters/RS: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 5610.
+
+## [OHM-080] 1206 SMD LED -> BEH-LED-INDICATOR
+* Package: 3.2 x 1.6 x 1.1 mm. Pin map as above.
+* No 1206 datasheet opened. Defaults ASSUMPTION as OHM-079.
+* Status: partial.
+
+## OHM-081: PLCC-2 LED
+
+Status retained: `partial`.
+
+- BEH-LED-INDICATOR /bench/5/expected/0: basis=ASSUMPTION, confidence=not specified
+- BEH-LED-INDICATOR /parameters/IS: basis=DERIVED, confidence=L
+- BEH-LED-INDICATOR /parameters/N: basis=ASSUMPTION, confidence=L
+- BEH-LED-INDICATOR /parameters/RS: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 5615.
+
+## [OHM-081] PLCC-2 LED -> BEH-LED-INDICATOR
+* Package: 3.5 x 2.8 x 1.9 mm (3528). Pin map: terminal 1 = cathode (-X, chamfered corner), terminal 2 = anode (+X).
+* No PLCC-2 datasheet opened. Defaults ASSUMPTION: if_max 20 mA generic; PLCC-2 white or high-brightness parts are commonly rated higher (30 to 150 mA) but this is not sourced here: use the MPN datasheet.
+* Notes: because PLCC-2 holds a larger die and a reflector, its Rth is lower than a chip LED; no number sourced.
+* Status: partial.
+
+## OHM-082: PLCC-4 RGB LED
+
+Status retained: `partial`.
+
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 5621.
+
+## [OHM-082] PLCC-4 RGB LED -> BEH-LED-RGB
+* Package: 3528, 4 terminals: 1 top-left, 2 bottom-left, 3 bottom-right, 4 top-right (3D spec, counter-clockwise from the pin-1 corner).
+* Pin map (Broadcom ASMB-MTB0-0A3A2, S7, common anode): 1 = common anode, 2 = blue cathode, 3 = green cathode, 4 = red cathode. CONFLICT: the 3D spec cites an RND 135-00252 sheet (not opened here) with 1 = common anode, 2 = red cathode, 3 = green cathode, 4 = blue cathode, and says pin function varies by vendor. The behavior layer must carry the pin map per MPN; there is no universal PLCC-4 RGB function map. Default (opened source): Broadcom map.
+* Defaults: common anode, per-die ratings as S7 (25 mA DC, 100 mA peak at 10 percent duty and 1 kHz, PD 65 mW red / 90 mW green and blue, VF at 20 mA 2.1 / 3.1 / 3.1 V typ), Tj 110 C, MSL 3.
+* Status: partial (vendor-specific pin function; one source opened).
+
+## OHM-083: 5050 RGB LED
+
+Status retained: `research_required`.
+
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 5627.
+
+## [OHM-083] 5050 RGB LED -> BEH-LED-RGB
+* Package: PLCC-6 5050, 6 terminals: 1-3 down the -X side from pin 1 (top-left), 4-6 up the +X side (3D spec).
+* Pin function: RESEARCH_REQUIRED. The structure is three independent LEDs, 6 pins = 3 anode/cathode pairs, but which pin is which die and electrode depends on the MPN and no passive 5050 RGB datasheet was opened. (A 6-pin 5050 with a built-in IC, such as the Kingbright KAAF-5050RGBST-IC12 seen on a distributor page, is an addressable part with a different pin set and belongs to BEH-LED-ADDRESSABLE-class behavior, not this one.) The behavior layer should reject this entry's simulation until a pin map is bound from an MPN datasheet.
+* Defaults: per-die D cards as OHM-082 (LED_RGB_R, LED_RGB_GB) flagged "vendor-specific"; ratings from the chosen MPN.
+* Status: research_required for the pin map; partial for the electrical class.
+
+## OHM-084: WS2812B/addressable RGB LED
+
+Status retained: `partial`.
+
+- BEH-LED-ADDRESSABLE /parameters/ich: basis=ASSUMPTION, confidence=L
+- BEH-LED-ADDRESSABLE /parameters/iq: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+- Protocol/firmware outside ngspice; electrical-interface simulation is a separate bounded claim
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 5633.
+
+## [OHM-084] WS2812B / addressable RGB LED -> BEH-LED-ADDRESSABLE
+* Package: 5050 with 4 terminals: 1 VDD (top-left), 2 DOUT (bottom-left), 3 VSS (bottom-right), 4 DIN (top-right) (3D spec). The datasheet pin table (S9) agrees: 1 VDD, 2 DOUT, 3 VSS, 4 DIN. The corner placement of pin 1 on the real package drawing was not text-extractable in the 3D spec work, so the corner is unverified; the pin FUNCTION order is verified.
+* Defaults: VDD 5.0 V (3.5 to 5.3 V as printed), data at 800 kHz NRZ (period 1.25 us), GRB MSB-first, reset >= 50 us in the opened revision, VIH 0.7*VDD, current model 20 mA per colour plus 1 mA static (ASSUMPTION).
+* Notes: L3 requirements in the class section. Variants (WS2812B-V5, WS2812C, SK6812) differ in timing and reset time and are NOT covered by the opened datasheet; the part record must name the variant.
+* Status: partial (protocol and levels sourced; current and variants unresolved).
+
+## OHM-085: High-power LED emitter
+
+Status retained: `partial`.
+
+- BEH-LED-POWER /parameters/eta: basis=ASSUMPTION, confidence=L
+- BEH-LED-POWER /parameters/rth_sa: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 5639.
+
+## [OHM-085] High-power LED emitter -> BEH-LED-POWER
+* Package: 3535 emitter (default Cree XP-E2), three underside pads. 3D spec numbering: 1 = cathode (-X), 2 = anode, 3 = thermal pad (KiCad XP convention). The Cree sheet (S8) marks the anode with a "+" on the bottom view. Pin map: K -> terminal 1, A -> terminal 2, TH -> terminal 3 (isolation unverified).
+* Defaults: white, Vf 3.05 V at 700 mA (Tj 85 C), if_max 1.0 A, Tj max 150 C, Rth_js 9 K/W, VR 5 V, ESD 8 kV HBM (S8). Drive: constant current only.
+* Status: partial (thermal pad isolation, pulsed rating, flux numbers open).
+
+## OHM-086: Star LED module
+
+Status retained: `partial`.
+
+- BEH-LED-POWER /parameters/eta: basis=ASSUMPTION, confidence=L
+- BEH-LED-POWER /parameters/rth_sa: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 5644.
+
+## [OHM-086] Star LED module -> BEH-LED-POWER
+* Package: 20 mm MCPCB star carrying one OHM-085 emitter; 4 wire pads in the 3D spec ("anode/cathode wire pads, layout RESEARCH_REQUIRED"). Electrical pin map: pads marked + and - on silkscreen; assume two + pads tied together and two - pads tied together (a four-pad star usually mirrors the pair; ASSUMPTION), emitter pads as OHM-085.
+* Behavior: same emitter card; thermal: junction-to-board resistance of the MCPCB and the heat-sink interface are not sourced: set `rth_sa` from the user's heat sink; a bare star in air is a bad thermal design (about 30 to 60 K/W is the case used here, ASSUMPTION).
+* Defaults: as OHM-085 plus a note `requires_heatsink: true` (a star module run above about 350 mA with no sink exceeds the emitter's Tj by the arithmetic in the BEH-LED-POWER thermal section).
+* Status: partial.
+
+## OHM-087: Single 7-segment display
+
+Status retained: `research_required`.
+
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 5650.
+
+## [OHM-087] Single 7-segment display -> BEH-DISP-LEDARRAY
+* Package: 10 pins, 2.54 pitch, rows at X = -7.62 and +7.62; pin 1 at (-7.62, +5.08); pins 1-5 down the -X row, 6-10 up the +X row (3D spec). In the datasheet-upright view pin 1 is bottom-left, pins 1-5 along the bottom, 6-10 along the top right to left (the OHMNI view is rotated 90 degrees clockwise): consistent with the usual 10-pin layout.
+* Pin map: NOT in the opened documents (S14 extraction omitted the pin table). Conventional 0.56 in common-cathode layout, UNVERIFIED (ASSUMPTION, L): 1 = E, 2 = D, 3 = common, 4 = C, 5 = DP, 6 = B, 7 = A, 8 = common, 9 = F, 10 = G. Two common pins (3 and 8) are joined internally. Bind from the MPN datasheet.
+* Electrical (S14, SC56-11EWA, common cathode, right-hand decimal): VF 2.0 typ / 2.5 max at 20 mA, DC 30 mA, peak 160 mA at 1/10 duty and 0.1 ms, PD 105 mW per segment, VR 5 V. Defaults: common_type cathode (anode versions exist).
+* Status: partial (pin map research_required).
+
+## OHM-088: Dual 7-segment display
+
+Status retained: `research_required`.
+
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 5656.
+
+## [OHM-088] Dual 7-segment display -> BEH-DISP-LEDARRAY
+* Package: 18 pins, 2.54 pitch, pins 1-9 down the -X row, 10-18 up the +X row (3D spec).
+* Pin map: NOT available. Pin-count arithmetic: 18 pins = 2 digits x (8 segment pins + 1 common) would mean each digit has its own segment pins (non-multiplexed); a multiplexed dual would need only 10 pins, so 18 pins suggests separate segment pins per digit (DERIVED, L; not verified). Bind from the MPN datasheet.
+* Electrical: same per-segment limits as OHM-087 for the red 0.56 in class (S14).
+* Status: research_required for pin map and wiring; class model applies.
+
+## OHM-089: Four-digit 7-segment display
+
+Status retained: `research_required`.
+
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 5662.
+
+## [OHM-089] Four-digit 7-segment display -> BEH-DISP-LEDARRAY
+* Package: 12 pins, 2.54 pitch, pins 1-6 down the -X row, 7-12 up the +X row (3D spec).
+* Pin map: NOT in the opened documents. 12 pins = 8 segment lines + 4 digit commons, i.e. a multiplexed display (DERIVED from pin count). Conventional 0.56 in four-digit layout, UNVERIFIED (ASSUMPTION, L): 1 = E, 2 = D, 3 = DP, 4 = C, 5 = G, 6 = digit 4, 7 = B, 8 = digit 3, 9 = digit 2, 10 = F, 11 = A, 12 = digit 1. Common type per MPN.
+* Behavior: requires multiplexing; one digit at a time; scan rule and common-pin current check as in the class (digit common carries up to 8 x 20 mA = 160 mA).
+* Status: partial (pin map research_required).
+
+## OHM-090: 8×8 LED matrix
+
+Status retained: `research_required`.
+
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 5668.
+
+## [OHM-090] 8x8 LED matrix -> BEH-DISP-LEDARRAY
+* Package: 16 pins (2 rows of 8, 2.54 pitch), pins 1-8 down the -X row, 9-16 up the +X row (3D spec; placeholder dimensions, status partial there as well). 16 pins = 8 row lines + 8 column lines (DERIVED).
+* Pin map: NOT available (S15 extraction has no pin table; the 3D default 1588BS-style part has no datasheet opened). Bind from the MPN datasheet.
+* Electrical (S15, Kingbright TC23-11 as class reference): column cathode or column anode options, VF 2.1 typ / 2.5 max at 20 mA, DC 30 mA, peak 150 mA at 1/10 duty and 0.1 ms, VR 5 V. Scan: 8 rows, 1/8 duty, per-LED average = Ipk/8 (bench B1).
+* Status: partial; pin map and 32 mm part ratings research_required.
+
+## OHM-091: 16×2 LCD module
+
+Status retained: `partial`.
+
+- BEH-DISP-LCD1602 /parameters/backlight_if: basis=ASSUMPTION, confidence=L
+- BEH-DISP-LCD1602 /parameters/backlight_vf: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+- Protocol/firmware outside ngspice; electrical-interface simulation is a separate bounded claim
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 5674.
+
+## [OHM-091] 16x2 LCD module -> BEH-DISP-LCD1602
+* Package: single-row 16-pin header, 2.54 pitch (3D spec places pin 1 at the left end, display upright).
+* Pin map (S13, WH1602B; 3D spec confirms 15/16 as A/K): 1 VSS, 2 VDD, 3 V0 (VO), 4 RS, 5 R/W, 6 E, 7..14 DB0..DB7, 15 A, 16 K.
+* Defaults: VDD 5 V, IDD 1.2 mA, VLCD 4.0 V, 4-bit mode on DB4..DB7, backlight assumed 4.1 V at 100 mA (ASSUMPTION; replace per MPN).
+* Controller: ST7066U in the WH1602B, HD44780-compatible; L3 requirements in the class section.
+* Status: partial (L3 behavior documented but not implemented; backlight data unresolved).
+
+## OHM-092: Small OLED module
+
+Status retained: `partial`.
+
+- BEH-DISP-OLED-I2C /parameters/iidle: basis=ASSUMPTION, confidence=L
+- BEH-DISP-OLED-I2C /parameters/ion: basis=ASSUMPTION, confidence=L
+- BEH-DISP-OLED-I2C /parameters/rpu: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+- Protocol/firmware outside ngspice; electrical-interface simulation is a separate bounded claim
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 5681.
+
+## [OHM-092] Small OLED module -> BEH-DISP-OLED-I2C
+* Package: 4-pin header, 2.54 pitch; the 3D spec numbers pin 1 as the left pin with the display upright and header at the bottom; the 3D spec records that VCC/GND order varies between vendors (GND/VCC/SCL/SDA vs VCC/GND/SCL/SDA). Pin map is therefore per MPN; default GND, VCC, SCL, SDA (ASSUMPTION, most common; verify silkscreen).
+* Defaults: I2C address 0x3C, supply 3.3 V (module accepts 3.3 to 5 V: ASSUMPTION), 4.7 kohm pull-ups assumed (check module), idle 1 mA and all-white 20 mA (ASSUMPTIONs; SSD1306 DC table not obtained).
+* L3: controller commands and GDDRAM semantics in the class section.
+* Status: partial.
+
+---
+
+# Group-level findings
+
+* Pin/polarity conflicts: (1) the repo GENERIC_LED_GREEN record has pin 1 = anode while the 3D spec has terminal 1 = cathode for every two-lead LED; bind by role. (2) OHM-082 has two different pin function maps (Broadcom 2 = B, 3 = G, 4 = R; RND 2 = R, 3 = G, 4 = B); there is no universal PLCC-4 RGB map. (3) OHM-083 pin map unknown. (4) OHM-092 module pin order varies (VCC/GND swap). (5) OHM-085: Cree datasheet marks the anode with "+"; the 3D spec uses the KiCad convention with pad 1 = cathode; consistent in function but check silkscreen.
+* Datasheet conflicts kept: red 3 mm VF typ 1.8 V (table) vs about 2.0 V at 20 mA (chart); blue VF typ 3.9 V (GaN on SiC) vs 3.1 V (InGaN); blue 1 mA chart point (3.0 V) inconsistent with a physical diode fit; ST7066 vs HD44780U bus timing (400 vs 500 ns cycle, 40 vs 80 ns data setup); WS2812B VDD printed as 3.5 to 5.3 V in maximum ratings but 4.5 to 5.5 V in the electrical table; LCD module IDD 1.0 to 1.5 mA vs controller 0.3 to 0.6 mA; 0603 height 0.55 mm (3D spec) vs 0.8 mm (Vishay VLM x 1300).
+* Layer decisions: LED parts are L1; LED arrays L1 with L2 drive patterns; WS2812B has L1 supply, L2 thresholds, L3 protocol; LCD1602 and OLED are L3 with L1 supply, backlight and pull-ups. L3 requirements are listed in each class.
+* Honesty notes: no vendor SPICE models were opened; every deck is `behavioural_approximation`. All datasheets were read through an extraction tool; graph readings are LOW confidence. Not opened or not available: SSD1306 DC table, I2C timing, 7-segment and matrix pin maps, 5050 passive RGB pin map, 10 mm, rectangular, 0402, 0805, 1206 and PLCC-2 datasheets, backlight data of the 1602 module.
+* Benches: 17 netlists run in ngspice 42 under `/home/claude/behavior/bench/beh-led-indicator`, `beh-led-mux`, `beh-led-power`, `beh-led-ws2812`, `beh-lcd1602`, `beh-oled-ssd1306` with `results.txt` files. All matched their analytical expectation within the stated tolerance. Scope limits are stated per bench (several verify model arithmetic with assumed parameters, not a datasheet number).
+
+<!-- END R5 -->
+
+
+---
+
+<!-- BEGIN R6 -->
+# GROUP R6: Transistor and power packages (BJT, MOSFET, linear regulator) (OHM-093 to OHM-102)
+
+Author: research agent R6. ngspice 42 run locally; every bench file is under `/home/claude/behavior/bench/<class>/`, with the raw results of the last full run in `results_ngspice42.txt` in each class directory.
+
+## OHM-093: TO-92 transistor
+
+Status retained: `partial`.
+
+- BEH-TRN-BJT /parameters/VAF: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 6517.
+
+## [OHM-093] TO-92 transistor -> BEH-TRN-BJT, BEH-TRN-MOSFET, BEH-REG-LINEAR
+
+Package facts (3D spec OHM-093): THT, 3 straight leads at 1.27 mm spacing (2.54 outer to outer), body 4.6 x 3.7 x 4.8 mm, flat marked face, pin 1 leftmost looking at the flat face, no pin-1 dot. No tab. Aliases TO-92, TO-226, SOT54, SC-43A.
+Binding (pin order is part dependent):
+
+| Functional part | Class | Pin 1 | Pin 2 | Pin 3 | Source |
+|---|---|---|---|---|---|
+| 2N3904 | BJT NPN | E | B | C | S1 |
+| PN2222A | BJT NPN | E | B | C | S2 |
+| BC546/547/548 | BJT NPN | C | B | E | S3 |
+| 2N7000 | N-MOSFET | S | G | D | S8 |
+| L78L05 (ST) | regulator | IN | GND | OUT | S22 |
+| LM78L05 (TI) | regulator | OUT | GND | IN | S23 |
+Electrical-type mapping: BJT C and E bidirectional, B input; MOSFET D and S bidirectional, G input; regulator IN power_in, GND power_in, OUT power_out.
+Package-specific values: RthJA 200 K/W and RthJC 83.3 K/W (2N3904, PN2222A, BC547, derating 5 mW/K from 625 mW, Tj max 150 C); RthJA 357 K/W for the 2N7000 (350 mW, 2.8 mW/K); ST L78L05 TO-92 RthJA 200 K/W, RthJC 15 K/W vs TI LM78L 158.7 K/W (conflict). Pad: three-hole in-line footprint, the same for all functions, so a wrongly oriented part is electrically wrong but mechanically plausible.
+Defaults: 2N3904 (`Q2N3904_R6FIT`), pin map E-B-C. Polarity: the flat face is the only orientation feature; the schematic symbol must carry the part's pin order (E-B-C vs C-B-E) so that a part swap cannot silently reorder pins.
+Parasitics: lead inductance and capacitance not researched (THT lead 0.45 x 0.40 mm, about 14 mm uncut); the fT of 300 MHz parts is limited by the die, not the package.
+Notes: 2N7000 is also sold with other pin orders by other makers (BS170 is drain-gate-source; not opened, so only mentioned as a known risk, no data). The 78L05 vendor orders mirror each other (S22 vs S23).
+Status: partial (2N3904, PN2222A, BC547 pin maps verified; BC547 has no fitted card; 78L05 vendor conflict; regulators in TO-92 other than 78L05 not researched).
+
+## OHM-094: SOT-23 transistor
+
+Status retained: `partial`.
+
+- BEH-TRN-BJT /parameters/VAF: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 6537.
+
+## [OHM-094] SOT-23 transistor -> BEH-TRN-BJT, BEH-TRN-MOSFET, BEH-REG-LINEAR
+
+Package facts (3D spec OHM-094): SMD, 3 gull-wing leads, pins 1 and 2 on one side (pitch 1.9 mm), pin 3 on the opposite side, counter-clockwise numbering seen from the top, pin 1 bottom-left. Aliases SOT-23, TO-236AB, SOT23-3.
+Binding:
+
+| Functional part | Class | Pin 1 | Pin 2 | Pin 3 | Source |
+|---|---|---|---|---|---|
+| BC817 | BJT NPN | B | E | C | S4 |
+| MMBT3904 (SMD 2N3904) | BJT NPN | B | E | C (industry norm, NOT verified: datasheet blocked) | none opened |
+| 2N7002 | N-MOSFET | G | S | D | S9 |
+| MCP1700-3302E/TT (existing repo record) | regulator | VOUT | GND | VIN as recorded in the repo (evidence list empty; not verified against Microchip) | repo |
+Package-specific values: RthJA 500 K/W (standard footprint) and 362 K/W (1 cm2 collector pad) for the BC817 (Ptot 250 mW and 345 mW, Tj max 150 C); 2N7002 350 K/W, Ptot 0.83 W (conflict with its own Rth: 125/350 = 0.357 W; the 0.83 W is probably referenced to another condition and was not resolved). Land pattern per the 3D spec (0.8 x 0.9 pads).
+Defaults: MMBT3904 modelled with the 2N3904 fit (`Q2N3904_R6FIT`): ASSUMPTION that the SMD part has the same die, status partial. Polarity: pin 1 bottom-left; for SOT-23 the single pin on the top edge is pin 3 (collector or drain or VIN depending on the part).
+Notes: A SOT-23 sits at 250 mW for a BC817 on a minimum footprint, an order of magnitude below a TO-92 power rating of the 2N7000, so the power check will be the common DRC hit. Pin 1/2/3 functions of the three bindings differ: BC817 B-E-C, 2N7002 G-S-D, MCP1700 as recorded VOUT-GND-VIN. The repo record for MCP1700 may disagree with the datasheet (not opened here): treat as RESEARCH_REQUIRED.
+Status: partial (BC817 and 2N7002 verified; MMBT3904 and MCP1700 pin maps unverified).
+
+## OHM-095: SOT-89 transistor
+
+Status retained: `partial`.
+
+- BEH-TRN-BJT /parameters/VAF: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 6553.
+
+## [OHM-095] SOT-89 transistor -> BEH-TRN-BJT, BEH-REG-LINEAR (MOSFET variants possible, not researched)
+
+Package facts (3D spec OHM-095): SMD, body 4.5 x 2.5 x 1.5 mm, three leads at 1.5 mm pitch on one side, the centre lead widens into a tab on the opposite end, pin 2 = tab. Aliases SOT89, TO-243, SC-62.
+Binding:
+
+| Functional part | Class | Pin 1 | Pin 2 (tab) | Pin 3 | Source |
+|---|---|---|---|---|---|
+| BCX56 | BJT NPN | E | C | B | S6 |
+| L78L05 (ST) | regulator | GND | VI | VO (extract says the tab is connected to GND: contradicts "tab = pin 2 = VI" in the same extract) | S22 |
+| LM78L05 (TI) | regulator | VOUT | GND | VIN | S23 |
+Package-specific values: BCX56 RthJA 250 K/W (standard footprint), 132 K/W (1 cm2 collector pad), 93 K/W (6 cm2), Ptot 0.5 to 1.35 W, Tj max 150 C; L78L05 SOT-89 55 K/W with 6 cm2 copper (ST) and 54.7 K/W (TI).
+Defaults: BCX56-16 (hFE 100-250 at 2 V, 150 mA, no fitted card: use DERIVED BF = 158, IS = 1e-14, status partial). Polarity: tab on the opposite side from the three leads.
+Notes: The BCX56 is E-C-B while the BC817 and BCP56 are B-E-C and B-C-E, so SOT-89 BJT footprints cannot be freely swapped. In the L78L SOT-89 extract the tab is GND while pin 2 is VI: either the extract is garbled or the ST part's tab is not pin 2. This is UNRESOLVED and affects the rule "pin 2 = tab" from the 3D spec for regulators; keep the 3D spec's pin 2 = tab and mark the L78L SOT-89 binding research_required.
+Status: partial.
+
+## OHM-096: SOT-223 transistor/regulator
+
+Status retained: `partial`.
+
+- BEH-TRN-BJT /parameters/VAF: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 6568.
+
+## [OHM-096] SOT-223 transistor/regulator -> BEH-TRN-BJT, BEH-REG-LINEAR
+
+Package facts (3D spec OHM-096): SMD, body 6.5 x 3.5 x 1.65 mm, three leads at 2.3 mm pitch, pin 4 = wide tab (3.0 mm) opposite the leads, pin 4 electrically tied to pin 2. Aliases SOT223, SC-73, TO-261 (not seen in the opened documents).
+Binding:
+
+| Functional part | Class | Pin 1 | Pin 2 | Pin 3 | Pin 4 (tab) | Source |
+|---|---|---|---|---|---|---|
+| BCP56 | BJT NPN | B | C | E | C | S5 |
+| AMS1117-3.3 | regulator | GND/ADJ | OUT | IN | OUT | S17 |
+| LM1117 | regulator | ADJ/GND | OUT | IN | OUT | S18 |
+| LM317 (DCY) | regulator | ADJ | OUT | IN | OUT (not stated; consistent with pin 2) | S20 |
+Package-specific values: BCP56 RthJA 192 / 125 / 93 K/W (standard footprint, 1 cm2, 6 cm2 collector pad), Ptot 0.65 to 1.35 W, VCEO 80 V, 1 A; LM1117 61.6 K/W, LM317 59.6 K/W, LM2940 59.3 K/W (TI, new chip, JEDEC board), AMS1117 45-80 K/W by copper. A SOT-223 regulator at 8.7 V drop and 0.8 A needs 6.96 W: the 61.6 K/W part reaches thermal shutdown. Land pattern per 3D spec (tab pad 3.30 x 1.60).
+Defaults: AMS1117-3.3 (`LDO_R6` with the AMS parameter set, GND/ADJ pin 1, OUT pin 2 and tab 4, IN pin 3), `.nodeset v(OUT)=3.3`. Polarity: tab opposite the leads; pin 1 left of the three leads.
+Notes: The tab is the output for every regulator opened and the collector for the BJT, so the board copper under the tab carries the output (or collector) net: the copper pour that cools the part is not ground. The BCP56 and the regulators agree that pin 2 and pin 4 are the same net, so one electrical net serves both terminals. The 4th terminal must be tied to pin 2 in the netlist (one pin map entry with two package terminals).
+Status: partial (pin maps verified for four parts; no MOSFET in SOT-223 researched; BCP56 has no fitted card).
+
+## OHM-097: TO-126 transistor
+
+Status retained: `partial`.
+
+- BEH-TRN-BJT /parameters/VAF: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 6584.
+
+## [OHM-097] TO-126 transistor -> BEH-TRN-BJT
+
+Package facts (3D spec OHM-097): THT, body 7.6 x 2.6 x 10.8 mm, three flat leads at 2.28 mm, metal back plate with mounting hole (pin 2 tied to the plate). Aliases TO-126, SOT-32.
+Binding: BD135/BD137/BD139 (ST, S7): pin 1 emitter, pin 2 collector (plate), pin 3 base; no other part opened (the PNP BD136/138/140 mirror the function but no PNP data opened).
+Package-specific values: BD139 VCEO 80 V (BD135 45 V), IC 1.5 A, Ptot 12.5 W at Tc = 25 C (125 K / 10 K/W = 12.5 W reproduces the datasheet), Tj max 150 C, RthJC 10 K/W, RthJA 100 K/W, hFE 40-250 at 150 mA and 2 V, VCE(sat) 0.5 V at 0.5 A/50 mA; no fT in the datasheet. Free-air Ptot is 1.25 W (125/100), a factor of 10 below the case-referenced value.
+Defaults: BD139, model DERIVED (BF = 100 geometric mean of 40-250, IS 1e-14; status partial). Polarity: the metal plate faces away from the marked face; the plate is the collector, so a heat sink at ground needs an insulating pad (standard practice; the plate is pin 2 per the 3D spec and S7).
+Notes: do not use the free-air RthJA for a TO-126 mounted on a sink and do not use RthJC without one.
+Status: partial (pin map and ratings verified; no fitted model; no SOA chart).
+
+## OHM-098: TO-220 transistor/MOSFET
+
+Status retained: `partial`.
+
+- BEH-TRN-MOSFET /parameters/cgs_ciss: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 6593.
+
+## [OHM-098] TO-220 transistor/MOSFET -> BEH-TRN-MOSFET, BEH-REG-LINEAR (power BJTs possible, not researched)
+
+Package facts (3D spec OHM-098): THT, plastic 10.1 x 3.18 x 9.03 mm with a metal tab on +Y rising 6.22 mm above the plastic and a 3.8 mm hole, leads at 2.54 mm pitch, pin 2 tied to the tab; isolated TO-220F variant has no exposed metal. Aliases TO-220AB, SOT78, TO-220-3.
+Binding:
+
+| Functional part | Class | Pin 1 | Pin 2 (tab) | Pin 3 | Source |
+|---|---|---|---|---|---|
+| IRFZ44N, IRF540N, IRLB8721 | N-MOSFET | G | D | S | S10, S11, S12 |
+| L7805 (ST) | regulator | IN | GND | OUT | S19 (tab aligns with pin 2 = GND) |
+| LM317 | regulator | ADJ | OUT | IN | S20 (tab not stated) |
+| LM1117 | regulator | GND | OUT | IN | S18 (tab not stated for TO-220) |
+| LM2940 | regulator | IN | GND | OUT | S21 (tab not stated) |
+So the tab is the drain for MOSFETs, GND for the L78 family and, by pin position, the output for LM317/LM1117 (an inference). A heat sink bolted to the tab therefore carries drain, ground or output potential, a classic wiring surprise.
+Package-specific values: MOSFETs: RthJC 1.5 (IRFZ44N), 1.15 (IRF540N), 2.3 (IRLB8721) K/W; RthJA 62 K/W; RthCS 0.5 K/W greased (IRFZ44N); regulators: L7805 RthJC 5, RthJA 50 K/W; TI regulators 23.3-23.8 K/W (JEDEC board). Tj max 175 C for the MOSFETs, 125 C for the L78 'C' versions and new-chip LM317, 150 C absolute for LM1117 and LM2940.
+Defaults: IRFZ44N (`IRFZ44N_R6`, G-D-S). Polarity: the tab and pin 1 at the left when facing the marked front.
+Notes: The Vgs(th) of logic-level IRLB8721 is 1.35-2.35 V, IRFZ44N/IRF540N 2-4 V: a 3.3 V gate drive is marginal for the latter (bench B9 principle). The L7805 at 12 V in and 1 A out dissipates 7 W: 50 K/W free air gives 350 K of rise, so a sink is mandatory.
+Status: partial (three MOSFETs and four regulators verified from datasheets; fitted cards for the three MOSFETs; regulator cards use datasheet-based parameters; tab for LM317/LM1117/LM2940 inferred; power BJTs in TO-220 not researched).
+
+## OHM-099: TO-247 power transistor
+
+Status retained: `research_required`.
+
+- BEH-TRN-MOSFET /parameters/cgs_ciss: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 6611.
+
+## [OHM-099] TO-247 power transistor -> BEH-TRN-MOSFET
+
+Package facts (3D spec OHM-099): THT, body 15.9 x 5.02 mm, height 20.95 mm, leads at 5.45 mm pitch, metal tab on +Y with a 3.6 mm hole, pin 2 = tab. Aliases TO-247-3, TO-247AC/AD, SOT429.
+Binding: IRFP260N (S13): drain, gate, source order as printed in the extract appears garbled; the TO-247AC convention is G-D-S like TO-220 (tab = drain) but this is UNRESOLVED from the opened document: keep G=pin 1, D=pin 2 and tab, S=pin 3 with status research_required for the pin order.
+Package-specific values: VDS 200 V, ID 50 A, IDM 200 A, PD 300 W (150 K / 0.50 K/W = 300 W reproduces it), VGS +/-20 V, EAS 560 mJ, Tj -55..175 C, RthJC 0.50, RthCS 0.24 (greased), RthJA 40 K/W, Rds(on) max 40 mohm at 10 V and 28 A, Vgs(th) 2-4 V, Qg max 234 nC, Ciss 4057 pF, body diode 1.3 V max, trr 268-402 ns. The model carries only a lumped Cgs = Ciss (no Crss, Coss data in the extract).
+Defaults: IRFP260N, level-1 card from `IRFP260N_R6` (KP = 4.197, VTO = 3.0 assumed). Polarity: pin 1 at -X from the marked face, tab at the back.
+Notes: the gate charge of 234 nC means a 1 A gate driver needs 234 ns at the plateau start; the lumped Cgs model will understate switching time. 0.5 K/W is a case-referenced number; with a 1 K/W sink and 0.24 K/W interface the practical limit is about (175 - 25)/(0.5 + 0.24 + 1) = 86 W.
+Status: partial (ratings verified, pin order unresolved, no vendor model).
+
+## OHM-100: DPAK / TO-252
+
+Status retained: `research_required`.
+
+- BEH-TRN-MOSFET /parameters/cgs_ciss: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 6620.
+
+## [OHM-100] DPAK / TO-252 -> BEH-TRN-MOSFET, BEH-REG-LINEAR
+
+Package facts (3D spec OHM-100): SMD, plastic 6.10 x 6.58 x 2.29 mm, two gull-wing leads (pin 1 at -X, pin 3 at +X), the middle lead cropped (pin 2), exposed tab on +Y = pin 2/4, standoff 0.08 mm, optional stub to 1.0 mm. Aliases DPAK, TO-252, TO-252AA, SOT428.
+Binding:
+
+| Functional part | Class | Pin 1 | Pin 2 (cropped lead and tab) | Pin 3 | Source |
+|---|---|---|---|---|---|
+| IRLR8721, IRLR3410 | N-MOSFET | G | D (tab = drain) | S | S14, S15 |
+| LM1117 (TO-252) | regulator | ADJ/GND | OUT (tab) | IN | S18 |
+| L78 (DPAK) | regulator | IN | GND | OUT (tab not stated; assumed GND like TO-220) | S19 |
+The cropped middle lead is physically absent in the default 3D model but its net is the tab, so the pin-2 net still reaches the board through the tab and the copper pour; only the lead stub is missing.
+Package-specific values: IRLR8721 RthJA 50 K/W (1 in2 copper) vs 110 K/W (minimum footprint), RthJC 2.3 K/W with PD 33 W (extracts conflict: 150/2.3 = 65 W); IRLR3410 RthJC 1.9, RthJA 50 (PCB mount), PD 79 W; ST AN1703: junction-to-PCB 62 K/W at 0.45 cm2 and 50 K/W at 6 cm2 (2 oz, FR-4), 2.4-3 W at 150 K; L78 DPAK RthJC 8, RthJA 100 K/W; LM1117 TO-252 45.1 K/W; onsemi AND9008: DPAK constant-current regulators 0.92 W (300 mm2, 1 oz) to 1.82 W (1000 mm2, 3 oz) at 85 C ambient.
+Defaults: IRLR8721 (`IRLB8721_R6` card is the closest fitted card but a different part; ASSUMPTION that the IRLR8721 shares the IRLB8721 die: Rds(on) 8.4/11.8 mohm vs 8.7/16 mohm shows they differ, so no card is shipped for IRLR8721: status research_required for the card). Polarity: tab at +Y, pin 1 at -X.
+Notes: the copper under the tab is the heat path (S24, S25); the pour carries the drain (or output) net and must not be assumed ground. A DPAK at minimum footprint can dissipate only about 1.1 W at 125 K rise (110 K/W).
+Status: partial.
+
+## OHM-101: D2PAK / TO-263
+
+Status retained: `partial`.
+
+- BEH-TRN-MOSFET /parameters/cgs_ciss: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 6636.
+
+## [OHM-101] D2PAK / TO-263 -> BEH-TRN-MOSFET (not opened), BEH-REG-LINEAR
+
+Package facts (3D spec OHM-101): SMD, plastic 10.0 x 9.0 x 4.3 mm, 1.4 mm copper tab with exposed underside extending 1.5 mm past the +Y edge, two gull-wing leads at +/-2.54 mm, middle lead cropped, 5-lead variant at 1.7 mm pitch exists. Aliases D2PAK, TO-263, TO-263AB, SOT404.
+Binding:
+
+| Functional part | Class | Pin 1 | Pin 2 (cropped, tab) | Pin 3 | Source |
+|---|---|---|---|---|---|
+| LM317 (TO-263 KTT) | regulator | ADJ | OUT | IN | S20 |
+| LM2940 (TO-263 KTT) | regulator | IN | GND | OUT | S21 |
+| L78 (D2PAK) | regulator | IN | GND | OUT | S19 |
+| power MOSFETs in D2PAK | MOSFET | G | D | S | no D2PAK MOSFET datasheet opened: research_required |
+Package-specific values: L78 D2PAK RthJC 3, RthJA 62.5 K/W; LM317 TO-263 41 K/W; LM2940 TO-263 40.9 K/W (TI, new chip); ST AN1703 junction-to-PCB 42 K/W at 1.2 cm2 and 34 K/W at 6 cm2 (3.5-4.4 W at 150 K).
+Defaults: L7805 in D2PAK (IN pin 1, GND pin 2/tab, OUT pin 3), `LDO_R6` with the L7805 parameter set, RTH 62.5 or the area-table value. Polarity: tab at +Y, pin 1 at -X.
+Notes: the tab and the middle terminal are GND for L78 and LM2940 but OUT for LM317: copper pour polarity differs per part. LM317 5-lead D2PAK variants are not researched.
+Status: partial.
+
+## OHM-102: PowerPAK SO-8 MOSFET
+
+Status retained: `partial`.
+
+- BEH-TRN-MOSFET /parameters/cgs_ciss: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 6652.
+
+## [OHM-102] PowerPAK SO-8 MOSFET -> BEH-TRN-MOSFET
+
+Package facts (3D spec OHM-102): SMD, molded body 5.89 x 4.90 x 1.04 mm, 8 flat leads at 1.27 mm pitch on the two long sides protruding about 0.13 mm, exposed drain pad 3.76 x 3.66 mm underneath, pins 1-3 source, pin 4 gate, pins 5-8 drain. Aliases PowerPAK SO-8, PPAK SO-8. Not SO-8FL, DFN5x6, LFPAK or PowerPAK SO-8L; the dual version is not modelled.
+Binding: Si7898DP (Vishay, S16): S, S, S, G, D, D, D, D (pins 1-8): agrees exactly with the 3D spec.
+Package-specific values: VDS 150 V, VGS +/-20 V, ID 4.8 A (25 C) and 3.8 A (70 C), IDM 25 A, PD 5 W (25 C), 3.2 W (70 C), Tj -55..150 C, RthJA 20/25 K/W (typ/max, t <= 10 s) and 52/65 K/W (steady state) on 1 in x 1 in FR4, RthJC (drain) 2.1/2.6 K/W; Rds(on) 68 mohm typ and 85 mohm max at 10 V and 3.5 A, 76/95 mohm at 6 V and 3 A; Qg 17/21 nC; VSD 0.75/1.2 V; trr 45/70 ns. The datasheet power of 5 W corresponds to the 10 s thermal resistance (125 K / 25 K/W = 5 W); steady state is 125/65 = 1.9 W.
+Defaults: Si7898DP (`SI7898DP_R6`, level-3 card with THETA 1.84 and a lumped Cgs of 1.7 nF derived from Qg/10 V), `Rth` steady state 65 K/W max. Polarity: pin 1 dot at the top-left; the drain pad must be soldered to a copper pour for the datasheet thermal numbers to apply.
+Notes: the drain pad is the heat path (RthJC to the pad 2.1-2.6 K/W); the leads alone are not. The 2 to 4 V Vgs(th) means 3.3 V logic is marginal. Package-level rows from the Vishay extract are consistent with the 3D spec dimensions (extracted thickness 1.07 mm on the product page vs 1.04 mm in the 3D spec: a 0.03 mm difference, no action).
+Status: partial (single part verified; no vendor SPICE model; Qg only for dynamics).
+
+---
+
+# SOURCES
+
+All sources below were opened (through the page-fetch tool, which returns a model-written extract of the document, not the raw PDF). Nothing is cited that was not opened. Dates are those the extract reported.
+
+| id | Organization | Title | URL | Revision / date | Used for |
+|---|---|---|---|---|---|
+| S1 | onsemi | 2N3903 / 2N3904 General Purpose Transistors (2N3903/D) | https://www.onsemi.com/pdf/datasheet/2n3903-d.pdf | Rev. 9, Aug 2021 | 2N3904 pinout (E-B-C), ratings, hFE bands, saturation, fT, switching, Rth |
+| S2 | onsemi | PN2222A (PN2222A/D) | https://www.onsemi.com/pdf/datasheet/pn2222a-d.pdf | Rev. 1.1.0, Jul 2014 | PN2222A pinout, ratings, hFE, saturation, capacitances, switching |
+| S3 | onsemi | BC546/547/548 (BC546/D) | https://www.onsemi.com/pdf/datasheet/bc546-d.pdf | Rev. 8, Aug 2021 | BC547 pinout C-B-E, ratings, hFE groups |
+| S4 | Nexperia | BC817 series product data sheet | https://assets.nexperia.com/documents/data-sheet/BC817_SER.pdf | Rev. 8, 1 Jul 2022 | SOT-23 B-E-C pinout, ratings, Rth, Ptot, hFE bins |
+| S5 | Nexperia | BCP56 series product data sheet | https://assets.nexperia.com/documents/data-sheet/BCP56_SER.pdf | Rev. 11, 1 Jul 2022 | SOT-223 B-C-E pinout, tab = C, Rth vs pad, hFE |
+| S6 | Nexperia | BCX56 series product data sheet | https://assets.nexperia.com/documents/data-sheet/BCX56_SER.pdf | Rev. 13, 25 Oct 2023 | SOT-89 E-C-B pinout, Rth vs pad |
+| S7 | STMicroelectronics | BD135 / BD137 / BD139 | https://www.st.com/resource/en/datasheet/bd135.pdf | Rev. 5, May 2008 | SOT-32/TO-126 pinout E-C-B, ratings, Rth |
+| S8 | onsemi | 2N7000 (2N7000/D) | https://www.onsemi.com/download/data-sheet/pdf/2n7000-d.pdf | Rev. 8, Apr 2011 | TO-92 S-G-D pinout, ratings, Rds(on), Vgs(th) |
+| S9 | Nexperia | 2N7002 product data sheet | https://assets.nexperia.com/documents/data-sheet/2N7002.pdf | Rev. 7, 8 Sep 2011 | SOT-23 G-S-D pinout, ratings, Rds(on) |
+| S10 | Infineon | IRFZ44NPbF | https://www.infineon.com/dgdl/irfz44npbf.pdf | Rev. 2.1 (extract reported 2026-08-11) | ratings, Rth, Rds(on), charges, capacitances, body diode |
+| S11 | Infineon | IRF540NPbF | https://www.infineon.com/dgdl/irf540npbf.pdf | Rev. 2.1 (extract reported 2026-07-24) | same, IRF540N |
+| S12 | Infineon | IRLB8721PbF | https://www.infineon.com/dgdl/irlb8721pbf.pdf | extract reported April 22, 2009 | logic-level MOSFET ratings and Rds(on) |
+| S13 | Infineon | IRFP260NPbF | https://www.infineon.com/dgdl/irfp260npbf.pdf | Rev. 2.1 (extract reported 2024-10-08) | TO-247 ratings and Rth |
+| S14 | Infineon | IRLR8721PbF | https://www.infineon.com/dgdl/irlr8721pbf.pdf | not reported | DPAK ratings, Rth vs copper |
+| S15 | Infineon | IRLR/U3410PbF | https://www.infineon.com/dgdl/irlr3410pbf.pdf | Rev. 2.2 (extract reported 2024-08-30) | DPAK ratings |
+| S16 | Vishay | Si7898DP | https://www.vishay.com/docs/71873/si7898dp.pdf | S09-0227-Rev. D, 09-Feb-09 | PowerPAK SO-8 pinout, ratings, Rth, Rds(on) |
+| S17 | Advanced Monolithic Systems | AMS1117 datasheet | https://www.advanced-monolithic.com/pdf/ds1117.pdf | not reported | pinout, dropout, regulation, cap requirement, thermal |
+| S18 | Texas Instruments | LM1117 (SNOS412Q) | https://www.ti.com/lit/ds/symlink/lm1117.pdf | SNOS412Q, Feb 2000 rev. Jan 2023 | pinouts by package, dropout, ESR window, Rth, limits |
+| S19 | STMicroelectronics | L78 series (DS0422) | https://www.st.com/resource/en/datasheet/l78.pdf | Rev. 38, Feb 2025 | TO-220/DPAK/D2PAK pinouts, regulation, Rth, caps |
+| S20 | Texas Instruments | LM317 | https://www.ti.com/lit/ds/symlink/lm317.pdf | not reported | pinouts, VREF, min load, Rth |
+| S21 | Texas Instruments | LM2940 (SNVS769J) | https://www.ti.com/lit/ds/symlink/lm2940-n.pdf | SNVS769J, Dec 2014 | pinouts, dropout, ESR window, input ratings, Rth |
+| S22 | STMicroelectronics | L78L series (DS0424) | https://www.st.com/resource/en/datasheet/l78l.pdf | Rev. 30, Aug 2024 | TO-92/SOT-89 pinouts, ratings, Rth |
+| S23 | Texas Instruments | LM78L (SNVS754O) | https://www.ti.com/lit/ds/symlink/lm78l.pdf | Rev. O (extract reported Aug 2026) | TO-92/SOT-89 pinouts, Rth |
+| S24 | STMicroelectronics | AN1703 Guidelines for using ST's MOSFET SMD packages | https://www.st.com/resource/en/application_note/an1703-guidelines-for-using-sts-mosfet-smd-packages-stmicroelectronics.pdf | June 2003 | DPAK/D2PAK Rth vs copper area |
+| S25 | Diodes Incorporated | Thermal resistance in MOSFETs (AN1157; title as the extract gave it, URL named "Understanding Thermal Resistance in the Real World") | https://www.diodes.com/assets/Uploads/Understanding-Thermal-Resistance-in-the-Real-World-Application-Note.pdf | Rev. 3, May 2024 | RthJC vs RthJA definitions, copper-area trend |
+| S26 | onsemi | AND9008/D Thermal considerations for CCRs in DPAK, SMC and SMB | https://www.onsemi.com/pub/Collateral/AND9008-D.PDF | Rev. 2, May 2012 | DPAK power vs copper at 85 C |
+| S27 | Nexperia | AN90003 LFPAK MOSFET thermal design guide (found at a mirror URL) | https://www.mouser.lt/pdfDocs/LFPAKMOSFETthermaldesignguide-2.pdf | Rev. 4.1, 22 Aug 2023 | PCB thermal floor, copper/vias effect (LFPAK context) |
+| S28 | Nexperia | AN50006 Power MOSFETs in linear mode | https://docs.ampnuts.ru/nexperia.com.datasheet/application-note/AN50006.pdf | Rev. 2.0, 12 Apr 2022 | ZTC point, Spirito effect, SOA thermal limit (document hosted on a third-party mirror) |
+| S29 | onsemi | AND90187/D Understanding power MOSFET saturation operation capability | https://www.onsemi.com/pub/collateral/and90187-d.pdf | Jan 2023 | saturation-mode thermal runaway, electrical failure signature |
+| S30 | onsemi | AN875/D Power transistor safe operating area: special considerations for switching power supplies | https://www.onsemi.com/pub/Collateral/AN875-D.PDF | Dec 2002, Rev. 1 | second breakdown, FBSOA/RBSOA, 0.75 VCEO rule |
+| S31 | ngspice project | ngspice user manual (BJT, MOSFET chapters; the extract reported version 47+, Sept 2026, while the installed simulator is 42) | https://ngspice.sourceforge.io/docs/ngspice-manual.pdf | as reported | Gummel-Poon and MOS1/MOS3 model parameter lists; behavior was verified by running ngspice 42 |
+
+Attempts that failed (documents NOT used): onsemi MMBT3904L (403), Diodes MMBT3904 (robots), onsemi BCP56T1 (403), Nexperia BCP56_BCX56_BC56PA_SER (404), TI ngspice manual 42 (404), onsemi 2N7002, MC78L00, 2N7000 first URL (403), Vishay SiR180DP (404), Microchip MCP1703 (robots), Nexperia AN11243 (response too large). The MMBT3904, MCP1700, MC78L05 and AN11243 contents are therefore absent.
+
+---
+
+# SOURCE CONFLICTS, GAPS AND DECISIONS FOR THE COORDINATOR
+
+Conflicts between opened documents (all kept visible):
+1. TO-92 BJT pin order: 2N3904 and PN2222A are E-B-C, BC546/547/548 are C-B-E (same package).
+2. 78L05: ST L78L TO-92 IN-GND-OUT vs TI LM78L TO-92 OUT-GND-IN; SOT-89 ST GND-VI-VO vs TI VOUT-GND-VIN; TO-92 RthJA 200 (ST) vs 158.7 (TI), quiescent current 6 mA (ST) vs 3.6-4.7 mA (TI), maximum input 20 V (ST) vs 30 V (TI), dropout 2 V (ST) vs 1.4-1.8 V at 40 mA (TI).
+3. SOT-89 L78L: the extract says the tab is GND and also that pin 2 is VI; cannot both be "tab = pin 2".
+4. IRFZ44N: PD = 94 W with derating 0.63 W/K (1.59 K/W) vs RthJC 1.5 K/W (100 W).
+5. 2N7002 (Nexperia): Ptot 0.83 W vs Rth(j-a) 350 K/W (0.357 W).
+6. IRLR8721: PD 33 W at Tc = 25 C vs RthJC 2.3 K/W (65 W); the 2.3 may have been carried over from the IRLB8721 table.
+7. TO-220 regulator RthJA: ST L7805 50, Infineon MOSFETs 62, TI regulators 23.3-23.8 (different test boards).
+8. DPAK minimum footprint RthJA: ST AN1703 62 K/W junction-to-PCB vs Infineon IRLR8721 110 K/W.
+9. IRFP260N pinout order printed as "drain, gate, source" (probable extraction error).
+10. Si7898DP package height: 1.07 mm on the Vishay product page, 1.04 mm in the 3D spec (trivial).
+11. Infineon extracts carry 2026 revision stamps and the TI LM78L extract says "Revision O (August 2026)"; I cannot confirm them.
+
+3D spec versus electrical reality (no hard disagreement found; these need a decision):
+- "Pin 2 = tab" holds for BJT (collector), MOSFET (drain), LM317/LM1117/AMS1117 (output) and L78/LM2940 (ground) in every opened case, so the 3D spec's tab rule is right, but the tab FUNCTION must come from the part binding, not from the package.
+- SOT-89 L78L (ST) as extracted would break "pin 2 = tab" (unresolved).
+- OHM-100/101 default to a cropped middle lead; for a 3-lead regulator the middle terminal is the same net as the tab, so no electrical change is needed, but a 3-lead variant (no cropping) may be needed for through-hole-like pin maps and for LM2940/LM317 5-lead TO-263 (not researched).
+- OHM-093 TO-92: pin 1 is the left lead looking at the flat face; for BC547 that lead is the collector, for 2N3904 the emitter, so the package symbol alone cannot define the pin names.
+- OHM-098: nothing contradicts the 3D spec; the TO-220F (isolated) variant mentioned in the spec has no exposed tab and a different RthJC (not researched).
+
+Layer decisions: everything is L1. The regulator behavioural subcircuit is a pure L1 B-source model (no XSPICE). Thermal runs through an electrical analogy network (L1). No L2 or L3 content.
+
+Compatibility with the OHMNI runner: every model ships `.model`/`.subckt` so the runner would label it `behavioural_approximation`; none may be labelled `vendor_model`. The runner parses only `.op` tables, so transient, ac and thermal results are available only if the runner is extended. The regulator needs a `.nodeset` per instance. The MOSFET and regulator subcircuits use B sources, charge capacitors (`q=`), `tanh` and `sqrt`, all in stock ngspice 42.
+
+What is NOT done: no vendor SPICE models (Infineon, Vishay, TI, onsemi publish some; none opened); no PNP, P-channel or depletion fits; no MMBT3904, MCP1700, MC78L05 verification; no Zth(t) curves; no SOA charts for the small-signal BJTs; no Rds(on)-vs-Tj or Vth-vs-Tj curves; no D2PAK MOSFET datasheet; hFE typical curves were guessed from min/max bands (labelled).
+
+
+<!-- END R6 -->
+
+
+---
+
+<!-- BEGIN R7A -->
+# GROUP R7A: IC packages DIP, SOIC, TSSOP, SSOP, MSOP, SOT-23-5/6 (OHM-103 to OHM-121)
+
+Author: research agent R7A. ngspice 42 (stock build, XSPICE enabled) run locally. Every bench netlist is under `/home/claude/behavior/bench/<class-dir>/`, the raw output of the last full run is `results_ngspice42.txt` in each directory, and `/home/claude/behavior/tmp_R7A_runall.sh` re-runs all of them.
+
+## OHM-103: DIP-6 IC
+
+Status retained: `partial`.
+
+- BEH-IC-PKGBIND /parameters/lead_C: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_L: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_R: basis=MFR_DATASHEET, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 8577.
+
+## [OHM-103] DIP-6 IC -> BEH-IC-PKGBIND (class 1) with functional parts below
+
+- Pin count 6. Layout: 3 per row at 2.54 mm pitch (5.08 mm along a row), row spacing 7.62 mm (spec: lead axes x = +-3.81). Geometry reference: 3D spec entry OHM-103 (Body 7.12 x 6.50 x 3.3, notch at +Y end, dimple at pin 1); not re-researched here.
+- Pin-map convention: pin 1 marked by the notch/dimple (DIP, SO) or by the lead position under upright text (SOT-23); the terminal number is the only identity used by the binding (class 1 section 1.3).
+- Bound reference parts and their terminal maps (terminal number function):
+  - 4N35 (optocoupler, class 12): 1 anode, 2 cathode, 3 NC, 4 emitter, 5 collector, 6 base (Rev 1.2 copy; Rev 1.8 extract swaps 5 and 6: CONFLICT)
+- Lead parasitics per terminal (series L, shunt C, series R; source AN-1205 MDIP row, M): L 5.0 nH (3.0..7.0), C 0.85 pF (0.7..1.0), R 0.10 ohm (0.05..0.15).
+- Thermal: theta_JA default 50.0 C/W (ASSUMPTION L, no sourced value); observations: none found. Derating 20.0 mW/C. Pmax 2.50 W at 25 C, 1.60 W at 70 C, 1.30 W at 85 C. Tj,max 150 C (TI abs-max of every part opened). RESEARCH_REQUIRED: no DIP-6 theta in any opened source; 50 C/W is an extrapolation from the DIP-8/14/16 values (ASSUMPTION L). For 4N35 the binding limit is the part power rating (output 70 mW conservative, 150 mW Rev 1.8 extract), not the package.
+- Layer: L1 for the bound analog parts, L2 for logic and pads (classes 5 to 7), L3 for firmware and protocol. Polarity: none (pin 1 orientation only); wrong rotation by 180 degrees swaps supply and ground on the ICs above (class 1 failure mode).
+- Status: partial: pin map and parasitics bound; thermal research_required.
+
+## OHM-104: DIP-8 IC
+
+Status retained: `complete`.
+
+- BEH-IC-PKGBIND /parameters/lead_C: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_L: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_R: basis=MFR_DATASHEET, confidence=L
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 8588.
+
+## [OHM-104] DIP-8 IC -> BEH-IC-PKGBIND (class 1) with functional parts below
+
+- Pin count 8. Layout: 4 per row at 2.54 mm pitch, row spacing 7.62 mm (spec: lead axes x = +-3.81, pins 1..4 left, 5..8 right). Geometry reference: 3D spec entry OHM-104 (Body 9.27 x 6.35 x 3.3, notch at +Y end, dimple at pin 1); not re-researched here.
+- Pin-map convention: pin 1 marked by the notch/dimple (DIP, SO) or by the lead position under upright text (SOT-23); the terminal number is the only identity used by the binding (class 1 section 1.3).
+- Bound reference parts and their terminal maps (terminal number function):
+  - NE555 (class 4): 1 GND, 2 TRIG, 3 OUT, 4 RESET, 5 CONT, 6 THRES, 7 DISCH, 8 VCC
+  - LM358 (class 2): 1 OUT1, 2 IN1-, 3 IN1+, 4 V-, 5 IN2+, 6 IN2-, 7 OUT2, 8 V+
+  - LM393 (class 3): 1 1OUT, 2 1IN-, 3 1IN+, 4 GND, 5 2IN+, 6 2IN-, 7 2OUT, 8 VCC
+  - 25LC256 (class 7, P/PDIP): 1 CS, 2 SO, 3 WP, 4 VSS, 5 SI, 6 SCK, 7 HOLD, 8 VCC
+  - ATtiny85 (class 7, PDIP-8): 1 PB5/RESET, 2 PB3, 3 PB4, 4 GND, 5 PB0, 6 PB1, 7 PB2, 8 VCC
+- Lead parasitics per terminal (series L, shunt C, series R; source AN-1205 MDIP row, M): L 5.0 nH (3.0..7.0), C 0.85 pF (0.7..1.0), R 0.10 ohm (0.05..0.15).
+- Thermal: theta_JA default 98.5 C/W; observations: 80.9 (LM358), 98.5 (NE555), 114.9 (LM393) C/W. Derating 10.2 mW/C. Pmax 1.27 W at 25 C, 0.81 W at 70 C, 0.66 W at 85 C. Tj,max 150 C (TI abs-max of every part opened). 
+- Layer: L1 for the bound analog parts, L2 for logic and pads (classes 5 to 7), L3 for firmware and protocol. Polarity: none (pin 1 orientation only); wrong rotation by 180 degrees swaps supply and ground on the ICs above (class 1 failure mode).
+- Status: complete.
+
+## OHM-105: DIP-14 IC
+
+Status retained: `complete`.
+
+- BEH-IC-PKGBIND /parameters/lead_C: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_L: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_R: basis=MFR_DATASHEET, confidence=L
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 8603.
+
+## [OHM-105] DIP-14 IC -> BEH-IC-PKGBIND (class 1) with functional parts below
+
+- Pin count 14. Layout: 7 per row at 2.54 mm pitch, row spacing 7.62 mm (spec: pin 1 at (-3.81, +7.62)). Geometry reference: 3D spec entry OHM-105 (Body 19.3 x 6.35 x 3.3); not re-researched here.
+- Pin-map convention: pin 1 marked by the notch/dimple (DIP, SO) or by the lead position under upright text (SOT-23); the terminal number is the only identity used by the binding (class 1 section 1.3).
+- Bound reference parts and their terminal maps (terminal number function):
+  - 74HC00 (class 5): 1 1A, 2 1B, 3 1Y, 4 2A, 5 2B, 6 2Y, 7 GND, 8 3Y, 9 3A, 10 3B, 11 4Y, 12 4A, 13 4B, 14 VCC
+  - 74HC14 (class 5; the 74HC04 uses the same order, not opened: ASSUMPTION M): 1 1A, 2 1Y, 3 2A, 4 2Y, 5 3A, 6 3Y, 7 GND, 8 4Y, 9 4A, 10 5Y, 11 5A, 12 6Y, 13 6A, 14 VCC
+  - LM324 (class 2): 1 1OUT, 2 1IN-, 3 1IN+, 4 VCC+, 5 2IN+, 6 2IN-, 7 2OUT, 8 3OUT, 9 3IN-, 10 3IN+, 11 VCC-, 12 4IN+, 13 4IN-, 14 4OUT
+- Lead parasitics per terminal (series L, shunt C, series R; source AN-1205 MDIP row, M): L 5.0 nH (3.0..7.0), C 0.85 pF (0.7..1.0), R 0.10 ohm (0.05..0.15).
+- Thermal: theta_JA default 60.7 C/W; observations: 57.5 (HC00), 60.7 (HC14), 83.5 (LM324) C/W. Derating 16.5 mW/C. Pmax 2.06 W at 25 C, 1.32 W at 70 C, 1.07 W at 85 C. Tj,max 150 C (TI abs-max of every part opened). 
+- Layer: L1 for the bound analog parts, L2 for logic and pads (classes 5 to 7), L3 for firmware and protocol. Polarity: none (pin 1 orientation only); wrong rotation by 180 degrees swaps supply and ground on the ICs above (class 1 failure mode).
+- Status: complete.
+
+## OHM-106: DIP-16 IC
+
+Status retained: `complete`.
+
+- BEH-IC-PKGBIND /parameters/lead_C: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_L: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_R: basis=MFR_DATASHEET, confidence=L
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 8616.
+
+## [OHM-106] DIP-16 IC -> BEH-IC-PKGBIND (class 1) with functional parts below
+
+- Pin count 16. Layout: 8 per row at 2.54 mm pitch, row spacing 7.62 mm (spec: pin 1 at (-3.81, +8.89)). Geometry reference: 3D spec entry OHM-106 (Body 19.3 x 6.35 x 3.3 (same body length as DIP-14 in the spec)); not re-researched here.
+- Pin-map convention: pin 1 marked by the notch/dimple (DIP, SO) or by the lead position under upright text (SOT-23); the terminal number is the only identity used by the binding (class 1 section 1.3).
+- Bound reference parts and their terminal maps (terminal number function):
+  - 74HC595 (class 6): 1 QB, 2 QC, 3 QD, 4 QE, 5 QF, 6 QG, 7 QH, 8 GND, 9 QH', 10 SRCLR, 11 SRCLK, 12 RCLK, 13 OE, 14 SER, 15 QA, 16 VCC
+  - 74HC138 (class 6): 1 A, 2 B, 3 C, 4 G2A, 5 G2B, 6 G1, 7 Y7, 8 GND, 9 Y6, 10 Y5, 11 Y4, 12 Y3, 13 Y2, 14 Y1, 15 Y0, 16 VCC
+  - ULN2003A (class 10): 1..7 1B..7B, 8 E, 9 COM, 10 7C, 11 6C, 12 5C, 13 4C, 14 3C, 15 2C, 16 1C
+  - L293D (class 10): 1 1,2EN, 2 1A, 3 1Y, 4 GND, 5 GND, 6 2Y, 7 2A, 8 VCC2, 9 3,4EN, 10 3A, 11 3Y, 12 GND, 13 GND, 14 4Y, 15 4A, 16 VCC1
+  - MAX232 (class 11): 1 C1+, 2 VS+, 3 C1-, 4 C2+, 5 C2-, 6 VS-, 7 T2OUT, 8 R2IN, 9 R2OUT, 10 T2IN, 11 T1IN, 12 R1OUT, 13 R1IN, 14 T1OUT, 15 GND, 16 VCC
+- Lead parasitics per terminal (series L, shunt C, series R; source AN-1205 MDIP row, M): L 5.0 nH (3.0..7.0), C 0.85 pF (0.7..1.0), R 0.10 ohm (0.05..0.15).
+- Thermal: theta_JA default 60.6 C/W; observations: 36.4 (L293D, ground pins heat-sink), 54.8 (HC138), 60.6 (MAX232), 66.7 (ULN2003A), 67 (HC595) C/W. Derating 16.5 mW/C. Pmax 2.06 W at 25 C, 1.32 W at 70 C, 1.07 W at 85 C. Tj,max 150 C (TI abs-max of every part opened). 
+- Layer: L1 for the bound analog parts, L2 for logic and pads (classes 5 to 7), L3 for firmware and protocol. Polarity: none (pin 1 orientation only); wrong rotation by 180 degrees swaps supply and ground on the ICs above (class 1 failure mode).
+- Status: complete.
+
+## OHM-107: DIP-20 IC
+
+Status retained: `complete`.
+
+- BEH-IC-PKGBIND /parameters/lead_C: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_L: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_R: basis=MFR_DATASHEET, confidence=L
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 8631.
+
+## [OHM-107] DIP-20 IC -> BEH-IC-PKGBIND (class 1) with functional parts below
+
+- Pin count 20. Layout: 10 per row at 2.54 mm pitch, row spacing 7.62 mm (spec: pin 1 at (-3.81, +11.43)). Geometry reference: 3D spec entry OHM-107 (Body 26.16 x 6.35 x 3.3); not re-researched here.
+- Pin-map convention: pin 1 marked by the notch/dimple (DIP, SO) or by the lead position under upright text (SOT-23); the terminal number is the only identity used by the binding (class 1 section 1.3).
+- Bound reference parts and their terminal maps (terminal number function):
+  - 74HC245 (class 5 interface numbers; model not benched): 1 DIR, 2..9 A1..A8, 10 GND, 11..18 B8..B1, 19 OE, 20 VCC
+- Lead parasitics per terminal (series L, shunt C, series R; source AN-1205 MDIP row, M): L 5.0 nH (3.0..7.0), C 0.85 pF (0.7..1.0), R 0.10 ohm (0.05..0.15).
+- Thermal: theta_JA default 57.0 C/W; observations: 57.0 (HC245 N) C/W, single observation. Derating 17.5 mW/C. Pmax 2.19 W at 25 C, 1.40 W at 70 C, 1.14 W at 85 C. Tj,max 150 C (TI abs-max of every part opened). 
+- Layer: L1 for the bound analog parts, L2 for logic and pads (classes 5 to 7), L3 for firmware and protocol. Polarity: none (pin 1 orientation only); wrong rotation by 180 degrees swaps supply and ground on the ICs above (class 1 failure mode).
+- Status: complete.
+
+## OHM-108: DIP-28 IC
+
+Status retained: `research_required`.
+
+- BEH-IC-PKGBIND /parameters/lead_C: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_L: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_R: basis=MFR_DATASHEET, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 8642.
+
+## [OHM-108] DIP-28 IC -> BEH-IC-PKGBIND (class 1) with functional parts below
+
+- Pin count 28. Layout: 14 per row at 2.54 mm pitch, wide row spacing 15.24 mm (spec: lead axes x = +-7.62, pin 1 at (-7.62, +16.51)). Geometry reference: 3D spec entry OHM-108 (Body 37.4 x 13.5 x 3.81); not re-researched here.
+- Pin-map convention: pin 1 marked by the notch/dimple (DIP, SO) or by the lead position under upright text (SOT-23); the terminal number is the only identity used by the binding (class 1 section 1.3).
+- Bound reference parts and their terminal maps (terminal number function):
+  - ATmega328P (class 7, electrical interface only): 1 PC6/RESET, 2 PD0, 3 PD1, 4 PD2, 5 PD3, 6 PD4, 7 VCC, 8 GND, 9 PB6/XTAL1, 10 PB7/XTAL2, 11 PD5, 12 PD6, 13 PD7, 14 PB0, 15 PB1, 16 PB2, 17 PB3, 18 PB4, 19 PB5, 20 AVCC, 21 AREF, 22 GND, 23 PC0, 24 PC1, 25 PC2, 26 PC3, 27 PC4, 28 PC5
+- Lead parasitics per terminal (series L, shunt C, series R; source AN-1205 MDIP row, M): L 5.0 nH (3.0..7.0), C 0.85 pF (0.7..1.0), R 0.10 ohm (0.05..0.15).
+- Thermal: theta_JA default 50.0 C/W (ASSUMPTION L, no sourced value); observations: none found. Derating 20.0 mW/C. Pmax 2.50 W at 25 C, 1.60 W at 70 C, 1.30 W at 85 C. Tj,max 150 C (TI abs-max of every part opened). RESEARCH_REQUIRED: the ATmega328P extract has no PDIP-28 theta; 50 C/W is an extrapolation (ASSUMPTION L). Typical MCU power is far below the limit.
+- Layer: L1 for the bound analog parts, L2 for logic and pads (classes 5 to 7), L3 for firmware and protocol. Polarity: none (pin 1 orientation only); wrong rotation by 180 degrees swaps supply and ground on the ICs above (class 1 failure mode).
+- Status: partial: thermal research_required; firmware is L3.
+
+## OHM-109: DIP-40 IC
+
+Status retained: `partial`.
+
+- BEH-IC-PKGBIND /parameters/lead_C: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_L: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_R: basis=MFR_DATASHEET, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 8653.
+
+## [OHM-109] DIP-40 IC -> BEH-IC-PKGBIND (class 1) with functional parts below
+
+- Pin count 40. Layout: 20 per row at 2.54 mm pitch, wide row spacing 15.24 mm (spec: pin 1 at (-7.62, +24.13)). Geometry reference: 3D spec entry OHM-109 (Body 51.75 x 13.5 x 3.81); not re-researched here.
+- Pin-map convention: pin 1 marked by the notch/dimple (DIP, SO) or by the lead position under upright text (SOT-23); the terminal number is the only identity used by the binding (class 1 section 1.3).
+- Bound reference parts and their terminal maps (terminal number function):
+  - W65C02S (class 7): terminal map UNVERIFIED (the extract is self-contradictory, see class 7); no map is given.
+- Lead parasitics per terminal (series L, shunt C, series R; source AN-1205 MDIP row, M): L 5.0 nH (3.0..7.0), C 0.85 pF (0.7..1.0), R 0.10 ohm (0.05..0.15).
+- Thermal: theta_JA default 50.0 C/W (ASSUMPTION L, no sourced value); observations: none found. Derating 20.0 mW/C. Pmax 2.50 W at 25 C, 1.60 W at 70 C, 1.30 W at 85 C. Tj,max 150 C (TI abs-max of every part opened). RESEARCH_REQUIRED: no DIP-40 theta found; 50 C/W is an extrapolation (ASSUMPTION L). The W65C02S extract lists IDD 1.5 mA/MHz max (about 21 mA at 14 MHz): small.
+- Layer: L1 for the bound analog parts, L2 for logic and pads (classes 5 to 7), L3 for firmware and protocol. Polarity: none (pin 1 orientation only); wrong rotation by 180 degrees swaps supply and ground on the ICs above (class 1 failure mode).
+- Status: partial: pin map UNVERIFIED (corrupted extract), thermal research_required, bus behaviour is L3.
+
+## OHM-110: SOIC-8
+
+Status retained: `complete`.
+
+- BEH-IC-PKGBIND /parameters/lead_C: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_L: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_R: basis=MFR_DATASHEET, confidence=L
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 8664.
+
+## [OHM-110] SOIC-8 -> BEH-IC-PKGBIND (class 1) with functional parts below
+
+- Pin count 8. Layout: 4 per row, contact center x = +-2.58 mm, pitch 1.27, 3.9 mm body (spec: pin 1 at (-2.58, +1.905)). Geometry reference: 3D spec entry OHM-110 (Body 4.9 x 3.9 x 1.4, round dimple at pin 1); not re-researched here.
+- Pin-map convention: pin 1 marked by the notch/dimple (DIP, SO) or by the lead position under upright text (SOT-23); the terminal number is the only identity used by the binding (class 1 section 1.3).
+- Bound reference parts and their terminal maps (terminal number function):
+  - NE555 (D, PS): 1 GND, 2 TRIG, 3 OUT, 4 RESET, 5 CONT, 6 THRES, 7 DISCH, 8 VCC
+  - LM358 (D): 1 OUT1, 2 IN1-, 3 IN1+, 4 V-, 5 IN2+, 6 IN2-, 7 OUT2, 8 V+
+  - LM393 (D): 1 1OUT, 2 1IN-, 3 1IN+, 4 GND, 5 2IN+, 6 2IN-, 7 2OUT, 8 VCC
+  - 25LC256 (SN): 1 CS, 2 SO, 3 WP, 4 VSS, 5 SI, 6 SCK, 7 HOLD, 8 VCC
+  - ATtiny85 (SOIC-8, pin compatible with PDIP-8 per the extract): 1 PB5/RESET, 2 PB3, 3 PB4, 4 GND, 5 PB0, 6 PB1, 7 PB2, 8 VCC
+- Lead parasitics per terminal (series L, shunt C, series R; source AN-1205 SSOP-28 row used as proxy, M-L): L 2.0 nH (1.3..2.9), C 0.45 pF (0.35..0.6), R 0.27 ohm (0.25..0.3).
+- Thermal: theta_JA default 125.4 C/W; observations: 124.7 (LM358), 125.4 (NE555; PS 124.5), 148.5 (LM393) C/W. Derating 8.0 mW/C. Pmax 1.00 W at 25 C, 0.64 W at 70 C, 0.52 W at 85 C. Tj,max 150 C (TI abs-max of every part opened). 
+- Layer: L1 for the bound analog parts, L2 for logic and pads (classes 5 to 7), L3 for firmware and protocol. Polarity: none (pin 1 orientation only); wrong rotation by 180 degrees swaps supply and ground on the ICs above (class 1 failure mode).
+- Status: complete.
+
+## OHM-111: SOIC-14
+
+Status retained: `complete`.
+
+- BEH-IC-PKGBIND /parameters/lead_C: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_L: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_R: basis=MFR_DATASHEET, confidence=L
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 8679.
+
+## [OHM-111] SOIC-14 -> BEH-IC-PKGBIND (class 1) with functional parts below
+
+- Pin count 14. Layout: 7 per row, x = +-2.58 mm, pitch 1.27 (spec: pin 1 at (-2.58, +3.81)). Geometry reference: 3D spec entry OHM-111 (Body 8.65 x 3.9 x 1.4); not re-researched here.
+- Pin-map convention: pin 1 marked by the notch/dimple (DIP, SO) or by the lead position under upright text (SOT-23); the terminal number is the only identity used by the binding (class 1 section 1.3).
+- Bound reference parts and their terminal maps (terminal number function):
+  - 74HC00: 1 1A, 2 1B, 3 1Y, 4 2A, 5 2B, 6 2Y, 7 GND, 8 3Y, 9 3A, 10 3B, 11 4Y, 12 4A, 13 4B, 14 VCC
+  - 74HC14: 1 1A, 2 1Y, 3 2A, 4 2Y, 5 3A, 6 3Y, 7 GND, 8 4Y, 9 4A, 10 5Y, 11 5A, 12 6Y, 13 6A, 14 VCC
+  - LM324: 1 1OUT, 2 1IN-, 3 1IN+, 4 VCC+, 5 2IN+, 6 2IN-, 7 2OUT, 8 3OUT, 9 3IN-, 10 3IN+, 11 VCC-, 12 4IN+, 13 4IN-, 14 4OUT
+- Lead parasitics per terminal (series L, shunt C, series R; source AN-1205 SSOP-28 row used as proxy, M-L): L 2.0 nH (1.3..2.9), C 0.45 pF (0.35..0.6), R 0.27 ohm (0.25..0.3).
+- Thermal: theta_JA default 116.4 C/W; observations: 99.3 (LM324 D; NS 90.4), 133.6 (HC00 and HC14) C/W. Derating 8.6 mW/C. Pmax 1.07 W at 25 C, 0.69 W at 70 C, 0.56 W at 85 C. Tj,max 150 C (TI abs-max of every part opened). 
+- Layer: L1 for the bound analog parts, L2 for logic and pads (classes 5 to 7), L3 for firmware and protocol. Polarity: none (pin 1 orientation only); wrong rotation by 180 degrees swaps supply and ground on the ICs above (class 1 failure mode).
+- Status: complete.
+
+## OHM-112: SOIC-16
+
+Status retained: `complete`.
+
+- BEH-IC-PKGBIND /parameters/lead_C: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_L: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_R: basis=MFR_DATASHEET, confidence=L
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 8692.
+
+## [OHM-112] SOIC-16 (narrow default, wide by body_class=wide) -> BEH-IC-PKGBIND (class 1) with functional parts below
+
+- Pin count 16. Layout: 8 per row, narrow x = +-2.58 mm, wide variant x = +-4.73 mm (spec: pin 1 (-2.58, +4.445), wide (-4.73, +4.445)), pitch 1.27. Geometry reference: 3D spec entry OHM-112 (Body 9.9 x 3.9 x 1.4 narrow; wide D 10.30 x E 7.50); not re-researched here.
+- Pin-map convention: pin 1 marked by the notch/dimple (DIP, SO) or by the lead position under upright text (SOT-23); the terminal number is the only identity used by the binding (class 1 section 1.3).
+- Bound reference parts and their terminal maps (terminal number function):
+  - 74HC595 (D, DW): 1 QB, 2 QC, 3 QD, 4 QE, 5 QF, 6 QG, 7 QH, 8 GND, 9 QH', 10 SRCLR, 11 SRCLK, 12 RCLK, 13 OE, 14 SER, 15 QA, 16 VCC
+  - 74HC138 (D): 1 A, 2 B, 3 C, 4 G2A, 5 G2B, 6 G1, 7 Y7, 8 GND, 9 Y6, 10 Y5, 11 Y4, 12 Y3, 13 Y2, 14 Y1, 15 Y0, 16 VCC
+  - ULN2003A (D): 1..7 1B..7B, 8 E, 9 COM, 10 7C, 11 6C, 12 5C, 13 4C, 14 3C, 15 2C, 16 1C
+  - MAX232 (D, DW): 1 C1+, 2 VS+, 3 C1-, 4 C2+, 5 C2-, 6 VS-, 7 T2OUT, 8 R2IN, 9 R2OUT, 10 T2IN, 11 T1IN, 12 R1OUT, 13 R1IN, 14 T1OUT, 15 GND, 16 VCC
+- Lead parasitics per terminal (series L, shunt C, series R; source AN-1205 SSOP-28 row used as proxy, M-L): L 2.0 nH (1.3..2.9), C 0.45 pF (0.35..0.6), R 0.27 ohm (0.25..0.3).
+- Thermal: theta_JA default 85.9 C/W; observations: narrow: 73 (HC595), 84.6 (MAX232), 87.3 (HC138), 88.6 (ULN2003A); wide: 57 (HC595 DW), 71.7 (MAX232 DW) C/W. Default 85.9 narrow, 64.3 wide. Derating 11.6 mW/C. Pmax 1.46 W at 25 C, 0.93 W at 70 C, 0.76 W at 85 C. Tj,max 150 C (TI abs-max of every part opened). 
+- Layer: L1 for the bound analog parts, L2 for logic and pads (classes 5 to 7), L3 for firmware and protocol. Polarity: none (pin 1 orientation only); wrong rotation by 180 degrees swaps supply and ground on the ICs above (class 1 failure mode).
+- Status: complete.
+
+## OHM-113: SOIC-20
+
+Status retained: `complete`.
+
+- BEH-IC-PKGBIND /parameters/lead_C: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_L: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_R: basis=MFR_DATASHEET, confidence=L
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 8706.
+
+## [OHM-113] SOIC-20 (wide, SOIC-20W) -> BEH-IC-PKGBIND (class 1) with functional parts below
+
+- Pin count 20. Layout: 10 per row, wide x = +-4.73 mm, pitch 1.27 (spec: pin 1 at (-4.73, +5.715)). Geometry reference: 3D spec entry OHM-113 (Body 12.8 x 7.5 x 2.35); not re-researched here.
+- Pin-map convention: pin 1 marked by the notch/dimple (DIP, SO) or by the lead position under upright text (SOT-23); the terminal number is the only identity used by the binding (class 1 section 1.3).
+- Bound reference parts and their terminal maps (terminal number function):
+  - 74HC245 (DW): 1 DIR, 2..9 A1..A8, 10 GND, 11..18 B8..B1, 19 OE, 20 VCC
+- Lead parasitics per terminal (series L, shunt C, series R; source AN-1205 SSOP-28 row used as proxy, M-L): L 2.0 nH (1.3..2.9), C 0.45 pF (0.35..0.6), R 0.27 ohm (0.25..0.3).
+- Thermal: theta_JA default 77.0 C/W; observations: 77.0 (HC245 DW), single observation. Derating 13.0 mW/C. Pmax 1.62 W at 25 C, 1.04 W at 70 C, 0.84 W at 85 C. Tj,max 150 C (TI abs-max of every part opened). 
+- Layer: L1 for the bound analog parts, L2 for logic and pads (classes 5 to 7), L3 for firmware and protocol. Polarity: none (pin 1 orientation only); wrong rotation by 180 degrees swaps supply and ground on the ICs above (class 1 failure mode).
+- Status: complete.
+
+## OHM-114: TSSOP-8
+
+Status retained: `complete`.
+
+- BEH-IC-PKGBIND /parameters/lead_C: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_L: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_R: basis=MFR_DATASHEET, confidence=L
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 8717.
+
+## [OHM-114] TSSOP-8 -> BEH-IC-PKGBIND (class 1) with functional parts below
+
+- Pin count 8. Layout: 4 per row, x = +-2.90 mm, pitch 0.65, body 3.0 x 4.4 (spec: pin 1 at (-2.90, +0.975)). Geometry reference: 3D spec entry OHM-114 (Body 3.0 x 4.4 x 0.9); not re-researched here.
+- Pin-map convention: pin 1 marked by the notch/dimple (DIP, SO) or by the lead position under upright text (SOT-23); the terminal number is the only identity used by the binding (class 1 section 1.3).
+- Bound reference parts and their terminal maps (terminal number function):
+  - NE555 (PW): 1 GND, 2 TRIG, 3 OUT, 4 RESET, 5 CONT, 6 THRES, 7 DISCH, 8 VCC
+  - LM358 (PW): 1 OUT1, 2 IN1-, 3 IN1+, 4 V-, 5 IN2+, 6 IN2-, 7 OUT2, 8 V+
+  - LM393 (PW): 1 1OUT, 2 1IN-, 3 1IN+, 4 GND, 5 2IN+, 6 2IN-, 7 2OUT, 8 VCC
+- Lead parasitics per terminal (series L, shunt C, series R; source AN-1205 SSOP-28 row used as proxy, M-L): L 2.0 nH (1.3..2.9), C 0.45 pF (0.35..0.6), R 0.27 ohm (0.25..0.3).
+- Thermal: theta_JA default 171.7 C/W; observations: 164.2 (NE555), 171.7 (LM358), 200.6 (LM393) C/W. Derating 5.8 mW/C. Pmax 0.73 W at 25 C, 0.47 W at 70 C, 0.38 W at 85 C. Tj,max 150 C (TI abs-max of every part opened). 
+- Layer: L1 for the bound analog parts, L2 for logic and pads (classes 5 to 7), L3 for firmware and protocol. Polarity: none (pin 1 orientation only); wrong rotation by 180 degrees swaps supply and ground on the ICs above (class 1 failure mode).
+- Status: complete.
+
+## OHM-115: TSSOP-14
+
+Status retained: `complete`.
+
+- BEH-IC-PKGBIND /parameters/lead_C: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_L: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_R: basis=MFR_DATASHEET, confidence=L
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 8730.
+
+## [OHM-115] TSSOP-14 -> BEH-IC-PKGBIND (class 1) with functional parts below
+
+- Pin count 14. Layout: 7 per row, x = +-2.90 mm, pitch 0.65 (spec: pin 1 at (-2.90, +1.95)). Geometry reference: 3D spec entry OHM-115 (Body 5.0 x 4.4 x 0.9); not re-researched here.
+- Pin-map convention: pin 1 marked by the notch/dimple (DIP, SO) or by the lead position under upright text (SOT-23); the terminal number is the only identity used by the binding (class 1 section 1.3).
+- Bound reference parts and their terminal maps (terminal number function):
+  - 74HC00 (PW): 1 1A, 2 1B, 3 1Y, 4 2A, 5 2B, 6 2Y, 7 GND, 8 3Y, 9 3A, 10 3B, 11 4Y, 12 4A, 13 4B, 14 VCC
+  - 74HC14 (PW): 1 1A, 2 1Y, 3 2A, 4 2Y, 5 3A, 6 3Y, 7 GND, 8 4Y, 9 4A, 10 5Y, 11 5A, 12 6Y, 13 6A, 14 VCC
+  - LM324 (PW): 1 1OUT, 2 1IN-, 3 1IN+, 4 VCC+, 5 2IN+, 6 2IN-, 7 2OUT, 8 3OUT, 9 3IN-, 10 3IN+, 11 VCC-, 12 4IN+, 13 4IN-, 14 4OUT
+- Lead parasitics per terminal (series L, shunt C, series R; source AN-1205 SSOP-28 row used as proxy, M-L): L 2.0 nH (1.3..2.9), C 0.45 pF (0.35..0.6), R 0.27 ohm (0.25..0.3).
+- Thermal: theta_JA default 138.2 C/W; observations: 124.7 (LM324), 151.7 (HC00, HC14) C/W. Derating 7.2 mW/C. Pmax 0.90 W at 25 C, 0.58 W at 70 C, 0.47 W at 85 C. Tj,max 150 C (TI abs-max of every part opened). 
+- Layer: L1 for the bound analog parts, L2 for logic and pads (classes 5 to 7), L3 for firmware and protocol. Polarity: none (pin 1 orientation only); wrong rotation by 180 degrees swaps supply and ground on the ICs above (class 1 failure mode).
+- Status: complete.
+
+## OHM-116: TSSOP-16
+
+Status retained: `complete`.
+
+- BEH-IC-PKGBIND /parameters/lead_C: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_L: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_R: basis=MFR_DATASHEET, confidence=L
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 8743.
+
+## [OHM-116] TSSOP-16 -> BEH-IC-PKGBIND (class 1) with functional parts below
+
+- Pin count 16. Layout: 8 per row, x = +-2.90 mm, pitch 0.65 (spec: pin 1 at (-2.90, +2.275)). Geometry reference: 3D spec entry OHM-116 (Body 5.0 x 4.4 x 0.9); not re-researched here.
+- Pin-map convention: pin 1 marked by the notch/dimple (DIP, SO) or by the lead position under upright text (SOT-23); the terminal number is the only identity used by the binding (class 1 section 1.3).
+- Bound reference parts and their terminal maps (terminal number function):
+  - 74HC595 (PW): 1 QB, 2 QC, 3 QD, 4 QE, 5 QF, 6 QG, 7 QH, 8 GND, 9 QH', 10 SRCLR, 11 SRCLK, 12 RCLK, 13 OE, 14 SER, 15 QA, 16 VCC
+  - 74HC138 (PW): 1 A, 2 B, 3 C, 4 G2A, 5 G2B, 6 G1, 7 Y7, 8 GND, 9 Y6, 10 Y5, 11 Y4, 12 Y3, 13 Y2, 14 Y1, 15 Y0, 16 VCC
+  - ULN2003A (PW): 1..7 1B..7B, 8 E, 9 COM, 10 7C, 11 6C, 12 5C, 13 4C, 14 3C, 15 2C, 16 1C
+- Lead parasitics per terminal (series L, shunt C, series R; source AN-1205 SSOP-28 row used as proxy, M-L): L 2.0 nH (1.3..2.9), C 0.45 pF (0.35..0.6), R 0.27 ohm (0.25..0.3).
+- Thermal: theta_JA default 114.1 C/W; observations: 108 (HC595), 114.1 (ULN2003A), 141.6 (HC138) C/W. Derating 8.8 mW/C. Pmax 1.10 W at 25 C, 0.70 W at 70 C, 0.57 W at 85 C. Tj,max 150 C (TI abs-max of every part opened). 
+- Layer: L1 for the bound analog parts, L2 for logic and pads (classes 5 to 7), L3 for firmware and protocol. Polarity: none (pin 1 orientation only); wrong rotation by 180 degrees swaps supply and ground on the ICs above (class 1 failure mode).
+- Status: complete.
+
+## OHM-117: TSSOP-20
+
+Status retained: `complete`.
+
+- BEH-IC-PKGBIND /parameters/lead_C: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_L: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_R: basis=MFR_DATASHEET, confidence=L
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 8756.
+
+## [OHM-117] TSSOP-20 -> BEH-IC-PKGBIND (class 1) with functional parts below
+
+- Pin count 20. Layout: 10 per row, x = +-2.90 mm, pitch 0.65 (spec: pin 1 at (-2.90, +2.925)). Geometry reference: 3D spec entry OHM-117 (Body 6.5 x 4.4 x 0.9); not re-researched here.
+- Pin-map convention: pin 1 marked by the notch/dimple (DIP, SO) or by the lead position under upright text (SOT-23); the terminal number is the only identity used by the binding (class 1 section 1.3).
+- Bound reference parts and their terminal maps (terminal number function):
+  - 74HC245 (PW): 1 DIR, 2..9 A1..A8, 10 GND, 11..18 B8..B1, 19 OE, 20 VCC
+- Lead parasitics per terminal (series L, shunt C, series R; source AN-1205 SSOP-28 row used as proxy, M-L): L 2.0 nH (1.3..2.9), C 0.45 pF (0.35..0.6), R 0.27 ohm (0.25..0.3).
+- Thermal: theta_JA default 99.7 C/W; observations: 99.7 (HC245 PW), single observation. Derating 10.0 mW/C. Pmax 1.25 W at 25 C, 0.80 W at 70 C, 0.65 W at 85 C. Tj,max 150 C (TI abs-max of every part opened). 
+- Layer: L1 for the bound analog parts, L2 for logic and pads (classes 5 to 7), L3 for firmware and protocol. Polarity: none (pin 1 orientation only); wrong rotation by 180 degrees swaps supply and ground on the ICs above (class 1 failure mode).
+- Status: complete.
+
+## OHM-118: SSOP-16
+
+Status retained: `complete`.
+
+- BEH-IC-PKGBIND /parameters/lead_C: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_L: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_R: basis=MFR_DATASHEET, confidence=L
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 8767.
+
+## [OHM-118] SSOP-16 (5.3 mm, TI DB) -> BEH-IC-PKGBIND (class 1) with functional parts below
+
+- Pin count 16. Layout: 8 per row, x = +-3.525 mm, pitch 0.65 (spec: pin 1 at (-3.525, +2.275); a qsop150 variant with pitch 0.635 exists in the spec). Geometry reference: 3D spec entry OHM-118 (Body 6.2 x 5.3 x 1.75); not re-researched here.
+- Pin-map convention: pin 1 marked by the notch/dimple (DIP, SO) or by the lead position under upright text (SOT-23); the terminal number is the only identity used by the binding (class 1 section 1.3).
+- Bound reference parts and their terminal maps (terminal number function):
+  - 74HC595 (DB): 1 QB, 2 QC, 3 QD, 4 QE, 5 QF, 6 QG, 7 QH, 8 GND, 9 QH', 10 SRCLR, 11 SRCLK, 12 RCLK, 13 OE, 14 SER, 15 QA, 16 VCC
+  - 74HC138 (DB): 1 A, 2 B, 3 C, 4 G2A, 5 G2B, 6 G1, 7 Y7, 8 GND, 9 Y6, 10 Y5, 11 Y4, 12 Y3, 13 Y2, 14 Y1, 15 Y0, 16 VCC
+- Lead parasitics per terminal (series L, shunt C, series R; source AN-1205 SSOP-28 row used as proxy, M-L): L 2.0 nH (1.3..2.9), C 0.45 pF (0.35..0.6), R 0.27 ohm (0.25..0.3).
+- Thermal: theta_JA default 93.2 C/W; observations: 82 (HC595), 104.3 (HC138) C/W. Derating 10.7 mW/C. Pmax 1.34 W at 25 C, 0.86 W at 70 C, 0.70 W at 85 C. Tj,max 150 C (TI abs-max of every part opened). 
+- Layer: L1 for the bound analog parts, L2 for logic and pads (classes 5 to 7), L3 for firmware and protocol. Polarity: none (pin 1 orientation only); wrong rotation by 180 degrees swaps supply and ground on the ICs above (class 1 failure mode).
+- Status: complete.
+
+## OHM-119: MSOP-8
+
+Status retained: `complete`.
+
+- BEH-IC-PKGBIND /parameters/lead_C: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_L: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_R: basis=MFR_DATASHEET, confidence=L
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 8779.
+
+## [OHM-119] MSOP-8 -> BEH-IC-PKGBIND (class 1) with functional parts below
+
+- Pin count 8. Layout: 4 per row, x = +-2.175 mm, pitch 0.65, square 3.0 x 3.0 body (spec: pin 1 at (-2.175, +0.975)). Geometry reference: 3D spec entry OHM-119 (Body 3.0 x 3.0 x 0.85); not re-researched here.
+- Pin-map convention: pin 1 marked by the notch/dimple (DIP, SO) or by the lead position under upright text (SOT-23); the terminal number is the only identity used by the binding (class 1 section 1.3).
+- Bound reference parts and their terminal maps (terminal number function):
+  - LM358 (TI DGK, VSSOP-8, same footprint class): 1 OUT1, 2 IN1-, 3 IN1+, 4 V-, 5 IN2+, 6 IN2-, 7 OUT2, 8 V+
+  - LM393 (DGK): 1 1OUT, 2 1IN-, 3 1IN+, 4 GND, 5 2IN+, 6 2IN-, 7 2OUT, 8 VCC
+- Lead parasitics per terminal (series L, shunt C, series R; source AN-1205 Mini SOIC row (L 0.45 nH looks low) plus SSOP bound, L): L 1.0 nH (0.45..2.0), C 0.12 pF (0.08..0.15), R 0.1 ohm.
+- Thermal: theta_JA default 187.6 C/W; observations: 181.4 (LM358), 193.7 (LM393) C/W (TI "VSSOP" DGK column). Derating 5.3 mW/C. Pmax 0.67 W at 25 C, 0.43 W at 70 C, 0.35 W at 85 C. Tj,max 150 C (TI abs-max of every part opened). 
+- Layer: L1 for the bound analog parts, L2 for logic and pads (classes 5 to 7), L3 for firmware and protocol. Polarity: none (pin 1 orientation only); wrong rotation by 180 degrees swaps supply and ground on the ICs above (class 1 failure mode).
+- Status: complete.
+
+## OHM-120: SOT-23-5 IC
+
+Status retained: `partial`.
+
+- BEH-IC-PKGBIND /parameters/lead_C: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_L: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_R: basis=MFR_DATASHEET, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 8791.
+
+## [OHM-120] SOT-23-5 IC -> BEH-IC-PKGBIND (class 1) with functional parts below
+
+- Pin count 5. Layout: 3 leads along the bottom (x = -0.95, 0, +0.95; y = -1.2) and 2 on top (pin 4 at (+0.95, +1.2), pin 5 at (-0.95, +1.2)); centre-top position empty. Geometry reference: 3D spec entry OHM-120 (SOT-23 body, top laser-mark area with pin-1 dot at the bottom-left); not re-researched here.
+- Pin-map convention: pin 1 marked by the notch/dimple (DIP, SO) or by the lead position under upright text (SOT-23); the terminal number is the only identity used by the binding (class 1 section 1.3).
+- Bound reference parts and their terminal maps (terminal number function):
+  - TLV70033 / TLV700 (class 8): 1 IN, 2 GND, 3 EN, 4 NC, 5 OUT (DDC)
+  - TLV9061 (class 2): 1 OUT, 2 V-, 3 IN+, 4 IN-, 5 V+ (DBV)
+  - MCP73831 (class 9): 1 STAT, 2 VSS, 3 VBAT, 4 VDD, 5 PROG (OT; repo annotation of DS20001984H p11)
+  - MCP6001 (class 2): UNVERIFIED, three mirrors conflict: SOT-23-5 terminal order unresolved: three mirrors disagree (class 2 section 2.13); no map is given. TLV9061 order above is the verified alternative.
+- Lead parasitics per terminal (series L, shunt C, series R; source ASSUMPTION L: no sourced SOT-23 value): L 1.0 nH (0.5..2.0), C 0.2 pF, R 0.1 ohm.
+- Thermal: theta_JA default 232.9 C/W; observations: 221.7 (TLV9061 DBV), 235.9 (TLV700 DDC), 230 (MCP73831 4-layer), 256 (MCP6001 mirror) C/W. Derating 4.3 mW/C. Pmax 0.54 W at 25 C, 0.34 W at 70 C, 0.28 W at 85 C. Tj,max 150 C (TI abs-max of every part opened). 
+- Layer: L1 for the bound analog parts, L2 for logic and pads (classes 5 to 7), L3 for firmware and protocol. Polarity: none (pin 1 orientation only); wrong rotation by 180 degrees swaps supply and ground on the ICs above (class 1 failure mode).
+- Status: partial: MCP6001 pin order unresolved.
+
+## OHM-121: SOT-23-6 IC
+
+Status retained: `partial`.
+
+- BEH-IC-PKGBIND /parameters/lead_C: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_L: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-PKGBIND /parameters/lead_R: basis=MFR_DATASHEET, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 8805.
+
+## [OHM-121] SOT-23-6 IC -> BEH-IC-PKGBIND (class 1) with functional parts below
+
+- Pin count 6. Layout: 3 leads along the bottom (pins 1..3) and 3 on top (pin 4 at (+0.95, +1.2), pin 5 at (0, +1.2), pin 6 at (-0.95, +1.2)). Geometry reference: 3D spec entry OHM-121 (SOT-23 body, laser-mark area with pin-1 dot at the bottom-left); not re-researched here.
+- Pin-map convention: pin 1 marked by the notch/dimple (DIP, SO) or by the lead position under upright text (SOT-23); the terminal number is the only identity used by the binding (class 1 section 1.3).
+- Bound reference parts and their terminal maps (terminal number function):
+  - TPS3808 (section 13, binding example only): 1 RESET, 2 GND, 3 MR, 4 CT, 5 SENSE, 6 VDD (DBV)
+- Lead parasitics per terminal (series L, shunt C, series R; source ASSUMPTION L: no sourced SOT-23 value): L 1.0 nH (0.5..2.0), C 0.2 pF, R 0.1 ohm.
+- Thermal: theta_JA default 180.9 C/W; observations: 180.9 (TPS3808 DBV), single observation. Derating 5.5 mW/C. Pmax 0.69 W at 25 C, 0.44 W at 70 C, 0.36 W at 85 C. Tj,max 150 C (TI abs-max of every part opened). 
+- Layer: L1 for the bound analog parts, L2 for logic and pads (classes 5 to 7), L3 for firmware and protocol. Polarity: none (pin 1 orientation only); wrong rotation by 180 degrees swaps supply and ground on the ICs above (class 1 failure mode).
+- Status: partial: no behavior model for the bound part.
+
+---
+
+# PART C. SOURCES, CONFLICTS AND GAPS
+
+## OHM-122: QFP-32
+
+Status retained: `partial`.
+
+- BEH-IC-DIGITAL-IF /parameters/C_pin: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-DIGITAL-IF /parameters/Ceff: basis=DERIVED, confidence=L
+- BEH-IC-DIGITAL-IF /parameters/RON_high: basis=DERIVED, confidence=L
+- BEH-IC-DIGITAL-IF /parameters/RON_low: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 9795.
+
+## [OHM-122] QFP-32 -> BEH-PKG-IC-BINDING + BEH-IC-DIGITAL-IF
+- Pins 32, 8 per side. Reference: ATmega328P in TQFP-32 (package code 32A, S13/S14), speeds 0-4 MHz at 1.8-5.5 V, 0-10 MHz at 2.7-5.5 V, 0-20 MHz at 4.5-5.5 V.
+- Pin numbering: RESEARCH_REQUIRED (extract returned text-flow order and was rejected). The commonly used map is an ASSUMPTION, confidence L, and must not be auto-bound until checked against the datasheet figure.
+- Thermal and parasitics: RthJA RESEARCH_REQUIRED for this part; class values in section 2.
+- No exposed pad. Status: **partial** (pin numbers assumption).
+
+## OHM-123: TQFP-44
+
+Status retained: `partial`.
+
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 9801.
+
+## [OHM-123] TQFP-44 -> BEH-PKG-IC-BINDING
+- Pins 44, 11 per side. Package verified as NXP SOT376-1, 10x10x1.0 mm (S32).
+- Reference ATmega32U4 was NOT verified in an opened datasheet: RESEARCH_REQUIRED. No bound part. Status: **partial**.
+
+## OHM-124: TQFP-64
+
+Status retained: `partial`.
+
+- BEH-IC-DIGITAL-IF /parameters/C_pin: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-DIGITAL-IF /parameters/Ceff: basis=DERIVED, confidence=L
+- BEH-IC-DIGITAL-IF /parameters/RON_high: basis=DERIVED, confidence=L
+- BEH-IC-DIGITAL-IF /parameters/RON_low: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 9805.
+
+## [OHM-124] TQFP-64 -> BEH-PKG-IC-BINDING + BEH-IC-DIGITAL-IF
+- Pins 64, 16 per side. References: STM32F103RB in LQFP64 (S10; VBAT pin 1, OSC_IN 5, OSC_OUT 6, NRST 7, PA9 42, PA10 43, BOOT0 60, VSS/VDD pairs 31/32, 47/48, 63/64 per extract; rows partly noisy, verify before binding), RthJA 45 K/W (S11 verbatim table). PCF85176H on SOT357-1 (TQFP64 10x10x1.0, S32).
+- Conflict: ST LQFP64 is the 1.4 mm height class; library TQFP is 1.0 mm. Same 10x10 outline and 0.5 pitch, different height: flag in binding, electrical map unaffected.
+- No exposed pad. Status: **complete for outline, partial for pin rows** (the pin table must be re-verified).
+
+## OHM-125: TQFP-100
+
+Status retained: `partial`.
+
+- BEH-IC-DIGITAL-IF /parameters/C_pin: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-DIGITAL-IF /parameters/Ceff: basis=DERIVED, confidence=L
+- BEH-IC-DIGITAL-IF /parameters/RON_high: basis=DERIVED, confidence=L
+- BEH-IC-DIGITAL-IF /parameters/RON_low: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 9810.
+
+## [OHM-125] TQFP-100 -> BEH-PKG-IC-BINDING + BEH-IC-DIGITAL-IF
+- Pins 100, 25 per side. References: STM32F103 LQFP100 (RthJA 46 K/W, S11; PA9 pin 68, PA10 pin 69, BOOT0 pin 94); LPC1768 LQFP100 SOT407-1 14x14x1.4, 0.5 pitch (S9, S32); Lattice iCE40 VQ100 14x14, 0.5 pitch (S19).
+- Same height-class conflict as OHM-124 (1.4 mm vs 1.0 mm). Status: **partial** (full pin tables not captured).
+
+## OHM-126: LQFP-144
+
+Status retained: `partial`.
+
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 9814.
+
+## [OHM-126] LQFP-144 -> BEH-PKG-IC-BINDING
+- Pins 144, 36 per side. References: STM32F407ZG (S12, pins and thermal NOT obtained, RESEARCH_REQUIRED); iCE40 TQ144 20x20, 0.5 pitch (S19). Status: **partial**.
+
+## OHM-127: QFN-16
+
+Status retained: `complete`.
+
+- BEH-REG-BUCK-DCS /parameters/RINJ: basis=ASSUMPTION, confidence=L
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 9817.
+
+## [OHM-127] QFN-16 -> BEH-PKG-IC-BINDING + BEH-REG-BUCK-DCS
+- Pins 16 plus exposed pad. Reference: TPS62130 VQFN-16 RGT 3x3 (S2). Pin map: SW 1,2,3; PG 4; FB 5; AGND 6; FSW 7; DEF 8; SS/TR 9; AVIN 10; PVIN 11,12; EN 13; VOS 14; PGND 15,16.
+- Exposed pad: connect to AGND, PGND and the ground plane (must_connect: GND). RthJA 45 K/W, RthJC(bot) 4.5 K/W (S2).
+- Parasitics: class QFN (S27 1.119 nH for QFN-20 vs S30 0.008 nH LLP, factor ~140 conflict, see section 2). Status: **complete**.
+
+## OHM-128: QFN-20
+
+Status retained: `partial`.
+
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 9822.
+
+## [OHM-128] QFN-20 -> BEH-PKG-IC-BINDING
+- Pins 20 plus pad. Reference: FT231XQ, 4.00 mm body, 0.5 pitch, centre pad internally ground (S26); pin table not captured. Thermal: TI SCBA017D 20-pin QFN example 46.8 K/W without vias, 30.8 K/W with 4 vias (S27, one package only; calibrated bench P2). Status: **partial** (no verified pin table).
+
+## OHM-129: QFN-24
+
+Status retained: `partial`.
+
+- BEH-IC-DIGITAL-IF /parameters/C_pin: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-DIGITAL-IF /parameters/Ceff: basis=DERIVED, confidence=L
+- BEH-IC-DIGITAL-IF /parameters/RON_high: basis=DERIVED, confidence=L
+- BEH-IC-DIGITAL-IF /parameters/RON_low: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 9825.
+
+## [OHM-129] QFN-24 -> BEH-PKG-IC-BINDING + BEH-IC-DIGITAL-IF
+- Pins 24 plus pad. Reference: CP2104 (S25). Map: RI 1, GND 2, D+ 3, D- 4, VIO 5, VDD 6, REGIN 7, VBUS 8, RST 9, NC 10, GPIO.3 11, GPIO.2 12, GPIO.1 13, GPIO.0 14, /SUSPEND 15, VPP 16, SUSPEND 17, CTS 18, RTS 19, RXD 20, TXD 21, DSR 22, DTR 23, DCD 24.
+- Abs max: pins to 5.8 V, VDD and VIO 4.2 V, total 500 mA. Exposed pad: GND (assumed class rule L; part text not captured). Status: **complete for pins, partial for thermal**.
+
+## OHM-130: QFN-32
+
+Status retained: `partial`.
+
+- BEH-IC-DIGITAL-IF /parameters/C_pin: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-DIGITAL-IF /parameters/Ceff: basis=DERIVED, confidence=L
+- BEH-IC-DIGITAL-IF /parameters/RON_high: basis=DERIVED, confidence=L
+- BEH-IC-DIGITAL-IF /parameters/RON_low: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 9829.
+
+## [OHM-130] QFN-32 -> BEH-PKG-IC-BINDING + BEH-IC-DIGITAL-IF
+- Pins 32 plus pad. References: ATmega328P MLF 32M1-A (bottom pad to GND, S13); ESP32-C3 QFN32 5x5 (S16): 1 LNA_IN, 2/3 VDD3P3, 4 XTAL_32K_P, 5 XTAL_32K_N, 6 GPIO2, 7 CHIP_EN, 8 GPIO3, 9 MTMS, 10 MTDI, 11 VDD3P3_RTC, 12 MTCK, 13 MTDO, 14 GPIO8, 15 GPIO9, 16 GPIO10, 17 VDD3P3_CPU, 18 VDD_SPI, 19-24 SPIHD/SPIWP/SPICS0/SPICLK/SPID/SPIQ, 25 GPIO18, 26 GPIO19, 27 U0RXD, 28 U0TXD, 29 XTAL_N, 30 XTAL_P, 31/32 VDDA, 33 EPAD GND (extract, confidence M). Pad: GND.
+- Status: **partial** (ATmega QFN pin numbers not captured).
+
+## OHM-131: QFN-48
+
+Status retained: `partial`.
+
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 9833.
+
+## [OHM-131] QFN-48 -> BEH-PKG-IC-BINDING
+- Pins 48 plus pad. References: STM32F103 UFQFPN48 (RthJA 32 K/W, S11); nRF52832 QFN48 is 6x6 at 0.4 pitch (S18), NOT 7x7 at 0.5: footprint mismatch with the library, flag. Also RP2040 is QFN-56 7x7, no library entry. Status: **partial**.
+
+## OHM-132: DFN-6
+
+Status retained: `partial`.
+
+- BEH-PWR-LOADSWITCH /parameters/ILIM: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 9836.
+
+## [OHM-132] DFN-6 -> BEH-PKG-IC-BINDING + BEH-PWR-LOADSWITCH
+- Reference TPS22810 WSON-6 DRV 2x2, 0.65 pitch (S4): 1 VOUT, 2 QOD, 3 CT, 4 GND, 5 EN/UVLO, 6 VIN. Pad rule RESEARCH_REQUIRED (ASSUMPTION GND, L). RthJA 74.6 K/W (extract). Status: **partial**.
+
+## OHM-133: DFN-8
+
+Status retained: `partial`.
+
+- BEH-REG-LINEAR /parameters/ilim: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+- Package needs a primary-source reference-part binding before electrical simulation
+- Master table includes BEH-REG-LINEAR but canonical applies_to omits OHM-133
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 9839.
+
+## [OHM-133] DFN-8 -> BEH-PKG-IC-BINDING + BEH-REG-LINEAR (parts/R6.md)
+- Reference TPS7A80 VSON-8 DRB 3x3: OUT 1,2; FB/SNS 3; GND 4 and pad; EN 5; NR 6; IN 7,8; RthJA 47.8 K/W (S3). Pad: GND.
+- SPI NOR flash W25Q128JV 8-pad (S21): 1 /CS, 2 DO, 3 /WP, 4 GND, 5 DI, 6 CLK, 7 /HOLD(/RESET), 8 VCC. Winbond WSON-8 is 6x5 at 1.27 pitch, not this entry's 3x3: footprint mismatch. Status: **partial**.
+
+## OHM-134: WSON-8
+
+Status retained: `complete`.
+
+- BEH-REG-BUCK-DCS /parameters/RINJ: basis=ASSUMPTION, confidence=L
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 9843.
+
+## [OHM-134] WSON-8 -> BEH-PKG-IC-BINDING + BEH-REG-BUCK-DCS
+- Reference TPS62160 DSG 2x2 (S1): 1 PGND, 2 VIN, 3 EN, 4 AGND, 5 FB, 6 VOS, 7 SW, 8 PG; pad AGND, soldered. RthJA 61.8 K/W (VSSOP DGK 184.3 shown for contrast). Matches the 3D spec. SPI flash W25Q WSON-8 6x5 is a different footprint. Status: **complete**.
+
+## OHM-135: PLCC-28
+
+Status retained: `partial`.
+
+- BEH-IC-DIGITAL-IF /parameters/C_pin: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-DIGITAL-IF /parameters/Ceff: basis=DERIVED, confidence=L
+- BEH-IC-DIGITAL-IF /parameters/RON_high: basis=DERIVED, confidence=L
+- BEH-IC-DIGITAL-IF /parameters/RON_low: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 9846.
+
+## [OHM-135] PLCC-28 -> BEH-PKG-IC-BINDING + BEH-IC-DIGITAL-IF
+- Pins 28, 7 per side, pin 1 at top centre notch, counter-clockwise, J-lead. Reference P89LPC935FA (SOT261-2, S8): VDD 17, VSS 3, P1.5/RST 2, P1.6 1, P1.7 28, P3.1/XTAL1 4, P3.0/XTAL2 5, P1.4 6, P1.3/SDA 7, P1.2/SCL 8, P2.2 9, P2.3 10, P2.4 11, P2.5 12, P1.1/RXD 13, P1.0/TXD 14, P0.7 15, P0.6 16, P0.5 18, P0.4 19, P0.3 20, P0.2 21, P0.1 22, P2.6 23, P2.7 24, P2.0 25, P2.1 26, P0.0 27.
+- 27C256: the brief's premise is false. AT27C256R exists in 28-pin PDIP and 32-pin PLCC (S23), not PLCC-28. ATF22V10C PLCC-28 pin table not captured (RESEARCH_REQUIRED). Thermal RESEARCH_REQUIRED. Status: **complete for P89LPC935, partial overall**.
+
+## OHM-136: BGA-64
+
+Status retained: `research_required`.
+
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 9850.
+
+## [OHM-136] BGA-64 -> BEH-PKG-IC-BINDING
+- 64 balls, 8x8 array. A 64-ball LFBGA 8x8 at 0.8 pitch exists (S33 Renesas PLBG0064GB, S34 Infineon P-LFBGA-64-800, S32 NXP SOT534-1), but no reference part with a verified ball map was found. Status: **partial, unbound** (RESEARCH_REQUIRED).
+
+## OHM-137: BGA-100
+
+Status retained: `partial`.
+
+- BEH-IC-DIGITAL-IF /parameters/C_pin: basis=MFR_DATASHEET, confidence=L
+- BEH-IC-DIGITAL-IF /parameters/Ceff: basis=DERIVED, confidence=L
+- BEH-IC-DIGITAL-IF /parameters/RON_high: basis=DERIVED, confidence=L
+- BEH-IC-DIGITAL-IF /parameters/RON_low: basis=DERIVED, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 9853.
+
+## [OHM-137] BGA-100 -> BEH-PKG-IC-BINDING + BEH-IC-DIGITAL-IF
+- 100 balls, 10x10. Reference LPC1768 TFBGA100 SOT926-1 9x9, 0.8 pitch (S9, S32), example balls A2 (pin 99 equivalent), D5, J2. STM32F103 LFBGA100 is 10x10 (RthJA 44 K/W, UFBGA100 59 K/W, S11): size mismatch with the library 9x9. Status: **partial**.
+
+## OHM-138: BGA-256
+
+Status retained: `partial`.
+
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 9856.
+
+## [OHM-138] BGA-256 -> BEH-PKG-IC-BINDING
+- 256 balls, 16x16. Reference Artix-7 FTG256, 17x17 mm, 1.0 pitch (S20 DS180 v2.6.1); iCE40 CT256 14x14 at 0.8 pitch (S19). Ball map and electrical limits NOT opened, thermal RESEARCH_REQUIRED. No BGA DRAM datasheet opened. Status: **partial**.
+
+## OHM-139: WLCSP-9
+
+Status retained: `partial`.
+
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 9859.
+
+## [OHM-139] WLCSP-9 -> BEH-PKG-IC-BINDING
+- 9 bumps, 3x3, 0.4 pitch. Reference MAX98357A WLP-9 (S6): A1 SD_MODE, A2 VDD, A3 OUTP, B1 DIN, B2 GAIN_SLOT, B3 OUTN, C1 BCLK, C2 GND, C3 LRCLK; RthJA 73 K/W; body 1.345x1.435x0.64 mm (spec 1.5x1.28: mismatch). PCF8564A WLCSP9 is 1.27x1.9x0.29 mm (S7), also a mismatch. Status: **partial** (size mismatches flagged).
+
+## OHM-140: WLCSP-16
+
+Status retained: `complete`.
+
+- BEH-PWR-LOADSWITCH /parameters/ILIM: basis=ASSUMPTION, confidence=L
+- Package needs a primary-source reference-part binding before electrical simulation
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 9862.
+
+## [OHM-140] WLCSP-16 -> BEH-PKG-IC-BINDING + BEH-PWR-LOADSWITCH
+- 16 balls, 4x4. Reference NX5P3290 (S5, SOT1394-2): map in section 6.3, transparent top view. RthJA 58.4 K/W. Status: **complete**.
+
+---
+
+## OHM-141: HC-49/U crystal
+
+Status retained: `partial`.
+
+- BEH-FREQ-XTAL /parameters/C1: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 10512.
+
+## [OHM-141] HC-49/U crystal -> BEH-FREQ-XTAL
+Package: through-hole metal can 10.8 x 4.65 x 13.5 mm, two leads 4.88 mm pitch (3D spec). Pin map: A = terminal 1 (at -X), B = terminal 2 (+X); non-polarized, pin 1 is a convention. Defaults: f_nom 8 MHz, CL 18 pF, C0 3 pF (datasheet max 7 pF, Abracon ABLS), R1 80 ohm (ABLS 8 to 8.999 MHz), C1 9 fF (ASSUMPTION), tolerance +/-30 ppm, stability +/-50 ppm, DL_rec 10 uW (max placeholder 100 to 1000 uW as printed by ABLS). Parasitics: lead inductance and can capacitance negligible; the can is not connected in 2-lead versions (3-pin case-ground variants are not modeled). Largest C0 and lowest ESR per frequency of the group, so the easiest to start. Status: partial (C1 assumed).
+
+## OHM-142: Low-profile HC-49 crystal
+
+Status retained: `partial`.
+
+- BEH-FREQ-XTAL /parameters/C1: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 10515.
+
+## [OHM-142] Low-profile HC-49 crystal -> BEH-FREQ-XTAL
+Package: HC-49/S (also /US), 11.05 x 4.65 x 3.5 mm, same leads and pin map as OHM-141. Electrically identical class; datasheet ABLS is an HC49/US part (11.4 x 4.7 x 4.2 mm in the opened sheet, which differs from the 3D spec 11.05 x 4.65 x 3.5: ABLS lists 4.2 mm height, the 3D spec cites 3.5 max from SaRonix/Abracon ABL; a physical conflict, not an electrical one). Defaults as OHM-141. Status: partial.
+
+## OHM-143: 3225 SMD crystal
+
+Status retained: `partial`.
+
+- BEH-FREQ-XTAL /parameters/C1: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 10518.
+
+## [OHM-143] 3225 SMD crystal -> BEH-FREQ-XTAL
+Package 3.2 x 2.5 mm, 4 pads. Pin map (3D spec numbering, pin 1 top-left, counter-clockwise: 1 TL, 2 BL, 3 BR, 4 TR): A = pad 1, B = pad 3 (diagonal), LID1 = pad 2, LID2 = pad 4 (lid; GND or NC; Epson FA-238/TSX-3225 states 2 and 4 connect to the cover). Abracon variant numbers pin 1 bottom-left; the diagonal rule (1 and 3) still holds. A 2-pad variant has pads 1 and 2 at the short ends. Defaults: R1 per frequency from the chosen family (Epson FA-238 16 to 20 MHz 80 ohm; TSX-3225 16 to 21 MHz 60 ohm; NDK NX3225GD 8 to 9.8 MHz 500 ohm max), CL 8 pF is NX3225GD-style, 12 pF typical, DL_rec 10 uW, DL_max 200 uW, C0 about 1 to 3 pF (ASSUMPTION; Suntsu 1 to 7). High ESR at low frequency makes gain margin the critical check (bench B6). Status: partial.
+Warning: Abracon ABM3 is 5.0 x 3.2 mm, not 3.2 x 2.5 mm.
+
+## OHM-144: 2520 SMD crystal
+
+Status retained: `partial`.
+
+- BEH-FREQ-XTAL /parameters/C1: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 10522.
+
+## [OHM-144] 2520 SMD crystal -> BEH-FREQ-XTAL
+Package 2.5 x 2.0 mm, 4 pads, pin map as OHM-143 (pads 1,3 crystal; 2,4 lid). Smaller blank means lower C0 and C1, higher ESR and lower DL_max: use DL_rec 10 uW, DL_max 100 uW (ASSUMPTION; no opened 2520 sheet). Status: partial (no opened datasheet specific to 2520).
+
+## OHM-145: 2016 SMD crystal
+
+Status retained: `partial`.
+
+- BEH-FREQ-XTAL /parameters/C1: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 10525.
+
+## [OHM-145] 2016 SMD crystal -> BEH-FREQ-XTAL
+Package 2.0 x 1.6 mm, 4 pads, pin map as OHM-143. Highest ESR and lowest drive-level tolerance of the three; typical DL_max 50 to 100 uW (ASSUMPTION). Pulling per pF is larger for small C0 (S = C1/(2*(C0+CL)^2): a smaller C0 increases sensitivity slightly). Status: partial (no opened 2016 sheet).
+
+## OHM-146: 7050 oscillator
+
+Status retained: `partial`.
+
+- BEH-FREQ-XO /parameters/rout: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 10528.
+
+## [OHM-146] 7050 oscillator -> BEH-FREQ-XO
+Package 7.0 x 5.0 mm, 4 pads. Pin map: 1 (top-left) = OE/ST, 2 (bottom-left) = GND, 3 (bottom-right) = OUT, 4 (top-right) = VDD (SiTime SiT8008, Abracon sheets cited in the 3D spec). Defaults: f0 10 MHz, VDD 3.3 V, icc 4.2 mA, standby 1 uA, ppm +/-25, tstart 5 ms (datasheet max; benches use 5 us for speed), rout 30 ohm. Output CMOS. Status: partial (OE pull-up behavior and OE thresholds unconfirmed; pin-1 marking not confirmed in opened texts).
+
+## OHM-147: TCXO
+
+Status retained: `partial`.
+
+- BEH-FREQ-XO /parameters/rout: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 10531.
+
+## [OHM-147] TCXO -> BEH-FREQ-XO (TCXO parameter set)
+Package: 3.2 x 2.5 mm default per the 3D spec (opened AST3TQ53 is 5.0 x 3.2 x 1.6 mm; 7050 TCXO also exists per the 3D spec). Pin map: 1 = NC/Vc, 2 = GND, 3 = OUT, 4 = VDD. Parameters: stability +/-50, +/-100 or +/-280 ppb over -40 to +85 C (default 100 ppb), initial +/-0.5 ppm, aging +/-1 ppm first year, VDD 3.135 to 3.465 V (3.3 V part), icc 10 mA max, LVCMOS 2.4/0.4 V at 15 pF or clipped sine 0.8 Vpp into 10 kohm // 10 pF. A part, not a passive: it needs VDD and decoupling. Clipped-sine output needs DC coupling care. Status: partial (start-up time and thermal data not in the opened sheet).
+
+## OHM-148: Ceramic resonator
+
+Status retained: `partial`.
+
+- BEH-FREQ-CERRES /parameters/C0: basis=ASSUMPTION, confidence=L
+- BEH-FREQ-CERRES /parameters/C1: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 10534.
+
+## [OHM-148] Ceramic resonator -> BEH-FREQ-CERRES
+Package: 3-lead radial block, pitch 2.5 mm (3D spec). Pin map: 1 = terminal A (-X), 2 = ground (center), 3 = terminal B (+X); symmetric, polarity none. Defaults: 8 MHz, built-in 15 pF each, R1 25 ohm max, tolerance +/-0.5 %, temp +/-0.2 %, aging +/-0.2 %, C1 0.8 pF and C0 30 pF (ASSUMPTION). Status: partial.
+
+## OHM-149: SAW filter
+
+Status retained: `partial`.
+
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 10537.
+
+## [OHM-149] SAW filter -> BEH-FREQ-SAW
+Package: 3.8 x 3.8 x 1.5 mm, 6 pads (3D spec lists them as placeholders; AFS869S3 has 6 pins confirmed by a distributor page). Pin map in 3D spec numbering: pins 1 to 3 down the -X row ((-1.5, +1.1), (-1.5, 0), (-1.5, -1.1)), pins 4 to 6 up the +X row ((+1.5, -1.1), (+1.5, 0), (+1.5, +1.1)); IN = pin 2 (middle of -X row), OUT = pin 5 (middle of +X row), GND = 1, 3, 4, 6. Defaults: 869 MHz, 8 MHz passband, 4.5 dB, 50 ohm. Status: partial.
+
+---
+
+# Group summary (for the coordinator)
+Pin-map agreement with the 3D spec: OHM-143/144/145 (crystal pads 1,3; lid 2,4) agree with the Epson sheet; OHM-146/147 (OE, GND, OUT, VDD) agree with SiT8008 and AST3TQ53; OHM-149 (IN pin 2, OUT pin 5) agrees with the AFS869S3 sheet. Disagreements/uncertainties: the 3D spec TCXO and HC-49/S size sources versus opened sheets (above); pin-1 placement conflict across vendors is noted in the 3D spec itself.
+
+<!-- END R8 -->
+
+
+---
+
+<!-- BEGIN R9 -->
+# R9: Headers, terminals, wire-to-board connectors (OHM-150 to OHM-161)
+
+Author note: three behavior classes cover the 12 entries.
+
+| Class | Entries |
+|---|---|
+| BEH-CON-HEADER | OHM-150, 151, 152, 153, 154 (2.54 mm pin and socket headers, including right angle) |
+| BEH-CON-WTB | OHM-155 JST-PH, 156 JST-XH, 157 JST-SH, 158 Molex KK (crimp-housing wire-to-board) |
+| BEH-CON-TERMINAL | OHM-159, 160 (screw terminals), 161 (pluggable terminal block) |
+
+Common to all three: every contact is a passive two-terminal path with a series contact resistance, one current rating, and a self-heating temperature rise. All three are layer L1 (ngspice R, optionally L and C). Fidelity is `behavioural_approximation` in realistic mode (parameters are datasheet limits, not a vendor model) and `ideal_components` when contact resistance is 0. No connector here has a vendor SPICE model attached, so `vendor_model` is never claimed.
+
+Shared semantics (apply to all three classes):
+
+- "Mated pair" model. A connector instance is a set of N contacts. A contact whose mate is absent connects to nothing: the pin has its board-side net only, and the netlist exporter emits no element for it (a one-pin net is dropped, as in the existing `HEADER_1X6_254` record whose pins are all `passive`). A mating relation (`mate_ref` in the project, or a harness) emits one resistor per contact between the two sides' nets, using the pin mapping given per entry. A header plus a harness is: board net -> Rc (mated pair) -> wire (+ crimp Rc each end) -> Rc (mated pair) -> other board net.
+- The existing runner (`src/ohmni/eda/simulation.py`) only runs `.op`. All benches below use `.op`, plus `.ac` for B4, run directly with ngspice. A simulation that did not run is never a pass.
+- Existing catalog record `HEADER_1X6_254.json` has pins numbered "1".."6", names P1..P6, electrical_type passive, no `design_rules`. Keep that scheme: pin names P1..PN, type passive.
+
+---
+
+## OHM-150: 1×N male pin header
+
+Status retained: `partial`.
+
+- BEH-CON-HEADER /parameters/Lpin: basis=DERIVED, confidence=L
+- BEH-CON-HEADER /parameters/Rc: basis=ASSUMPTION, confidence=L
+- BEH-CON-HEADER /parameters/Rth_derived: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 10933.
+
+## [OHM-150] 1xN male pin header -> BEH-CON-HEADER
+- Defaults: N = 8, 1 row, gold (Wurth WR-PHD style), Rc 10 mOhm, Rbulk 2 mOhm, Lpin 8 nH, Irated 3 A, Tmax 105 degC, cycles 25 (conservative), mated=false.
+- Pin map: P1..PN = terminals 1..N; pin 1 at +Y end ("(0, +(N-1)/2 x 2.54)"), numbering toward -Y (3D spec). Existing catalog analogue: `HEADER_1X6_254` (pins 1..6, passive).
+- Polarity: none; no keying. Silkscreen pin 1 is a footprint convention.
+- Mated pair: a mate with OHM-152 or a Dupont housing; N contacts each Rc. A shunt connects adjacent P_i, P_i+1.
+- Notes: current derating per class; header series (Samtec 4.7 to 6.3 A, Wurth/Harwin 3 A) selectable. Status: partial (Rc typical and Rth assumed).
+
+## OHM-151: 2×N male pin header
+
+Status retained: `partial`.
+
+- BEH-CON-HEADER /parameters/Lpin: basis=DERIVED, confidence=L
+- BEH-CON-HEADER /parameters/Rc: basis=ASSUMPTION, confidence=L
+- BEH-CON-HEADER /parameters/Rth_derived: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 10940.
+
+## [OHM-151] 2xN male pin header -> BEH-CON-HEADER
+- Defaults: N = 5 (10 pins), 2 rows; same electrical values as OHM-150.
+- Pin map: 2N pins, odd pins on -X row, even pins on +X row, pairs descending in -Y; pin 1 at (-1.27, +(N-1)/2 x 2.54) (3D spec). Pins 1-2 are a row pair; the usual jumper positions are 1-2, 3-4, ...
+- Polarity: none. A 2xN IDC or Dupont housing can be mated 180 degrees rotated, which swaps pin pairs; the sim should warn that unshrouded headers do not prevent it.
+- Derating: k = 0.7 when all 2N loaded. Status: partial.
+
+## OHM-152: 1×N female header
+
+Status retained: `partial`.
+
+- BEH-CON-HEADER /parameters/Lpin: basis=DERIVED, confidence=L
+- BEH-CON-HEADER /parameters/Rc: basis=ASSUMPTION, confidence=L
+- BEH-CON-HEADER /parameters/Rth_derived: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 10946.
+
+## [OHM-152] 1xN female header -> BEH-CON-HEADER
+- Defaults: N = 8, female contacts (spring beams), Rc 10 mOhm (Rc for a female/male interface; no separate contact in the pin path), Irated 3 A (Samtec SSW and Wurth female not read separately; SSW listed in S1 with TSW: 4.7 A).
+- Pin map: P1..PN = contacts 1..N; pin 1 at +Y end; numbering toward -Y (3D spec). Tail 0.64 square "UNCERTAIN".
+- Polarity: none. Mates only with a male pin; male-male is rejected.
+- Notes: female socket sets mated count to mate_ref; the 25-cycle Wurth rating is the conservative default; Samtec 1000 cycles. Status: partial (female-specific datasheet not read).
+
+## OHM-153: 2×N female header
+
+Status retained: `partial`.
+
+- BEH-CON-HEADER /parameters/Lpin: basis=DERIVED, confidence=L
+- BEH-CON-HEADER /parameters/Rc: basis=ASSUMPTION, confidence=L
+- BEH-CON-HEADER /parameters/Rth_derived: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 10952.
+
+## [OHM-153] 2xN female header -> BEH-CON-HEADER
+- Defaults: N = 5 (10 contacts); same electrical values as OHM-152.
+- Pin map: 2N contacts, odd on -X row, even on +X row, pairs descending -Y; pin 1 at (-1.27, +(N-1)/2 x 2.54) (3D spec).
+- Polarity: none; unkeyed. Status: partial.
+
+## OHM-154: Right-angle pin header
+
+Status retained: `partial`.
+
+- BEH-CON-HEADER /parameters/Lpin: basis=DERIVED, confidence=L
+- BEH-CON-HEADER /parameters/Rc: basis=ASSUMPTION, confidence=L
+- BEH-CON-HEADER /parameters/Rth_derived: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 10957.
+
+## [OHM-154] Right-angle pin header -> BEH-CON-HEADER
+- Defaults: N = 8, 1 row (2xN supported), Rc 10 mOhm, Rbulk 4 mOhm (longer elbow path, DERIVED, L), Lpin 11 nH (DERIVED, L), Irated 3 A, cycles 25.
+- Pin map: 1xN pin 1 at +Y end; 2xN pin 1 at (-1.27, +(N-1)/2 x 2.54) with odd pins on the upper row, descending toward -Y (3D spec). Tail depth 3.0 below board top.
+- Polarity: none. Row stacking staggers tails; electrically identical.
+- Notes: mechanical stress at the elbow and cable pull is not an electrical effect; same ratings as straight. Status: partial.
+
+## OHM-155: JST-PH connector
+
+Status retained: `partial`.
+
+- BEH-CON-WTB /parameters/Rmate: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 10963.
+
+## [OHM-155] JST-PH connector -> BEH-CON-WTB
+- Defaults: B2B-PH-K-S style, N = 2, 2.0 mm pitch. Irated 2 A (AWG24), Vwork 100 V, Tmax 105 degC (includes rise), Rmate spec 10 mOhm initial max (20 after tests), sim default 6 mOhm, AWG 32-24.
+- Pin map: pins 1..N, pin 1 at (0, +(N-1)/2 x 2.0) = (0, 1.0) for N = 2, numbering toward -Y (3D spec). JST marks "No. 1 circuit".
+- Polarity: housing is polarized (cannot be reversed) but nothing says which pin is positive; battery packs and cables from different vendors differ. The tool must make the user assign nets and show a warning for a power role.
+- Notes: side-entry S2B-PH-K-S and SMT variants not modeled. Status: partial.
+
+## OHM-156: JST-XH connector
+
+Status retained: `partial`.
+
+- BEH-CON-WTB /parameters/Rmate: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 10969.
+
+## [OHM-156] JST-XH connector -> BEH-CON-WTB
+- Defaults: B2B-XH-A, N = 2, 2.5 mm pitch. Irated 3 A (AWG22), Vwork 250 V, Tmax 85 degC (includes rise), Rmate 10 mOhm initial max (20 after tests), sim default 6 mOhm, AWG 30-22.
+- Pin map: pin 1 at (0, +(N-1)/2 x 2.5) = (0, 1.25), toward -Y (3D spec). Marked "No. 1 circuit".
+- Polarity: polarized housing; positive pin not standardized (same warning). Common for balance leads: N may be larger and positions carry different cell taps; not a power-pair assumption.
+- Status: partial.
+
+## OHM-157: JST-SH connector
+
+Status retained: `partial`.
+
+- BEH-CON-WTB /parameters/Rmate: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 10975.
+
+## [OHM-157] JST-SH connector -> BEH-CON-WTB
+- Defaults: SM04B-SRSS-TB, N = 4, 1.0 mm pitch, SMD side entry. Irated 1.0 A (AWG28), Vwork 50 V, Tmax 85 degC, Rmate 20 mOhm initial max (40 after tests), sim default 12 mOhm, AWG 32-28, IR 100 MOhm min.
+- Pin map: pin 1 at (+2.0, +1.5) for SM04B, numbering toward -Y; top-entry BM04B pin 1 at (-1.325, +1.5) (3D spec). No housing pin-1 mark confirmed.
+- Polarity: polarized housing; signal order is defined by the application (I2C-style 4-pin cables, per the 3D spec alias) and is not set by JST. No pin-assignment is implied. 4 positions with 1 A each is a conservative limit; use derating 0.8 if all loaded.
+- Notes: the thin AWG28 wire drops about 0.2 Ohm/m at 1 A (AWG28 about 213 Ohm/km, general table, unsourced).
+- Status: partial.
+
+## OHM-158: Molex KK connector
+
+Status retained: `partial`.
+
+- BEH-CON-WTB /parameters/Rmate: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 10982.
+
+## [OHM-158] Molex KK connector -> BEH-CON-WTB
+- Defaults: 22-23-2021 style, N = 2, 2.54 mm, friction-lock ramp. Irated 4.0 A (AWG22), 3.75 A (24), 3.5 A (26), 3.0 A (28); Vwork 250 V (conflict: 500 V on part page); temperature 0 to +75 (spec) vs -40 to +80 (part page); Rmate 10 mOhm initial max, Rcrimp 2 mOhm max; cycles 25.
+- Pin map: pin 1 at (0, +(N-1)/2 x 2.54) = (0, 1.27), toward -Y (3D spec). Pin 1 mark not read; polarized lock features identify orientation.
+- Polarity: positive pin is not standardized; cables vary.
+- Notes: Molex housing sheet for 0470541000 refers to terminals 2759 for 22-30 AWG; I did not open PS-47053-001-001. Status: partial.
+
+## OHM-159: 2-position screw terminal
+
+Status retained: `partial`.
+
+- BEH-CON-TERMINAL /parameters/Rclamp: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 10988.
+
+## [OHM-159] 2-position screw terminal -> BEH-CON-TERMINAL
+- Defaults: Phoenix MKDS 1,5/2-5,08 style, N = 2, 5.08 mm. Irated 17.5 A at 1.5 mm^2 (derate to wire), Vrated 400 V (III/2) per 2014 datasheet (conflict: 160 V on RS for a 5 mm variant; 250 V MKDSP), AWG 26-14, torque 0.5-0.6 Nm, Rclamp 3 mOhm (assumed).
+- Pin map: P1 at (0, 2.54), P2 at (0, -2.54), solder pins 0.9 x 0.9, toward -Y (3D spec).
+- Polarity: none; user assigns + and -.
+- Notes: wire is the limiting element for small AWG; user is warned. Status: partial.
+
+## OHM-160: 3-position screw terminal
+
+Status retained: `partial`.
+
+- BEH-CON-TERMINAL /parameters/Rclamp: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 10994.
+
+## [OHM-160] 3-position screw terminal -> BEH-CON-TERMINAL
+- Defaults: N = 3, 5.08 mm, same values as OHM-159; derating 0.8 if all three carry current.
+- Pin map: P1 at (0, 5.08), P2 (0, 0), P3 (0, -5.08) (3D spec).
+- Polarity: none; typical use supply/signal/ground, but the assignment is the user's.
+- Status: partial.
+
+## OHM-161: Pluggable terminal block
+
+Status retained: `partial`.
+
+- BEH-CON-TERMINAL /parameters/Rclamp: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 11000.
+
+## [OHM-161] Pluggable terminal block -> BEH-CON-TERMINAL
+- Defaults: Phoenix MSTBA 2,5/2-G-5,08 header plus MSTB 2,5/2-ST-5,08 plug, N = 2. Irated 12 A, Vrated 320 V (III/2), 4 kV surge, AWG 24-12, torque 0.5-0.6 Nm, Tmax 100 degC (header listing), Rclamp 3 mOhm and Rmate 3 mOhm (assumed).
+- Pin map: header pins 1..N at +Y end first, (0, +(N-1)/2 x 5.08) (3D spec); the plug has no PCB pins and is a separate mating object with the same positions. Unmated plug: header pins exist but connect nowhere.
+- Polarity: mechanical coding only; electrical polarity is the user's.
+- Notes: model state `mated` toggles the header/plug path; cycles RESEARCH_REQUIRED. Status: partial.
+
+---
+
+## OHM-162: USB-A receptacle
+
+Status retained: `partial`.
+
+- BEH-CON-USB /parameters/Rc_other: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 11801.
+
+## [OHM-162] USB-A receptacle -> BEH-CON-USB
+
+- Package PKG-USB_A.RA_THT (Molex 67643 style). Terminals 1..4 along -X at the rear (pin 1 at +X end, 3D spec): **1 = VBUS, 2 = D-, 3 = D+, 4 = GND**. 3D spec pitch 2.5 / 2.0 / 2.5 mm: the inner close pair (2-3, 2.0 mm) is the data pair, outer pins are power, consistent with the standard USB-A contact order (physical order from standard knowledge; the 3D spec marks the function RECALLED_UNVERIFIED). 2 shield legs (nickel) = SHELL (no electrical pin in the current spec; add SHELL1, SHELL2).
+- Ratings: 1.5 A, 30 V, -40..85 C (Molex 67643-3910 listing, S11). Rc: ASSUMPTION 30 mOhm (no figure found).
+- USB interface: VBUS 4.75..5.25 V, 100/500 mA unit-load rule (S8); host side has 15 kohm pull-downs on D+/D- (recalled); blue tongue variant = USB 3.0 (9-pin, SuperSpeed, 900 mA recalled; not this default).
+- Polarity: none, keyed by shape. Defaults: Rc 30 mOhm (realistic), 1 uOhm (ideal). Notes: add ESD and a power switch with current limit on the host side. Status: partial.
+
+## OHM-163: USB-B receptacle
+
+Status retained: `partial`.
+
+- BEH-CON-USB /parameters/Rc_other: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 11808.
+
+## [OHM-163] USB-B receptacle -> BEH-CON-USB
+
+- Package PKG-USB_B.RA_THT (Lumberg 2411 02 style). 4 pins in a 2 x 2 rectangle, 3D spec FCO coordinates: pin 1 (-1.25, -2.43), 2 (1.25, -2.43), 3 (1.25, -0.43), 4 (-1.25, -0.43). Function: **1 = VBUS, 2 = D-, 3 = D+, 4 = GND** (standard contact order; the numbering runs round the rectangle, so the physical placement (VBUS and D- in the rear row) agrees with the usual Standard-B layout; the chirality has not been checked against a drawing). 2 shield posts = SHELL.
+- Ratings: no Standard-B receptacle rating found: RESEARCH_REQUIRED; use 1.0 A, 30 V as a conservative placeholder (ASSUMPTION, aligned with the Mini-B and Micro-B figures S9, S10). Rc ASSUMPTION 30 mOhm.
+- Device side connector: VBUS is `power_in`; the device must not back-feed VBUS. Status: partial.
+
+## OHM-164: Micro-USB receptacle
+
+Status retained: `partial`.
+
+- BEH-CON-USB /parameters/Rc_other: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 11814.
+
+## [OHM-164] Micro-USB receptacle (Micro-B) -> BEH-CON-USB
+
+- Package PKG-USB_MICRO.AMPH_10118194. 5 SMD contacts at 0.65 mm pitch, pin 1 at +X (1.3, -1.35) running to pin 5 at -X (3D spec). Function: **1 = VBUS, 2 = D-, 3 = D+, 4 = ID, 5 = GND**; matches the Molex 105017 "5 circuits, 0.65 mm pitch" (S9). Shell: 4 SMD pads and 4 THT shell legs = SHELL (the 3D spec describes 2 rear TH ovals and 2 side TH ovals plus SMD pads).
+- Ratings: Molex 105017-0002 (a different part from the Amphenol 10118194 default): 1.8 A and 1 A per contact, 30 V AC rms, 10,000 mating cycles, -30..+85 C (S9). Contact resistance not given in the sheet read; ASSUMPTION 30 mOhm.
+- ID: for a device-only (B) receptacle leave ID unconnected (floating); a micro-AB or OTG host function reads ID: grounded = A-device (S7 notes the ID pin identifies the role; the grounded/floating convention is recalled). VBUS at 20 V (USB-PD) is outside the 30 V AC rating margin and outside the micro-B design intent: flag if `v(vbus) > 5.5`.
+- Status: partial.
+
+## OHM-165: USB-C receptacle
+
+Status retained: `partial`.
+
+- BEH-CON-USB /parameters/Rc_other: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 11821.
+
+## [OHM-165] USB-C receptacle -> BEH-CON-USB
+
+- Default Amphenol 12401610E4-2A style, SMD contacts + 4 THT legs. 3D spec: 24 SMD tails A1..A12, B1..B12 at 0.5 mm pitch; A row on the rear line (A1 at (2.75, -3.93)), B row 1.7 mm closer to the front and offset 0.25 mm; pin 1 = A1. Four shell legs (front pair at (+-4.49, +3.93), rear pair at (+-4.13, -2.02)) and two NPTH pegs = SHELL.
+- Full pin table (map by name): A1 GND, A2 TX1+, A3 TX1-, A4 VBUS, A5 CC1, A6 D+, A7 D-, A8 SBU1, A9 VBUS, A10 RX2-, A11 RX2+, A12 GND; B1 GND, B2 TX2+, B3 TX2-, B4 VBUS, B5 CC2, B6 D+, B7 D-, B8 SBU2, B9 VBUS, B10 RX1-, B11 RX1+, B12 GND. Confirmed by S1: GND A1/B1/A12/B12, VBUS A4/B4/A9/B9, CC A5/B5, D+ A6/B6, D- A7/B7, SBU A8/B8; the SuperSpeed pins are recalled (consensus).
+- **Compatibility with the existing catalog record** (`USB_C_RECEPTACLE_16P.json`, HRO TYPE-C-31-M-12, 16 pins): that record's pins (A1,A12,B1,B12 GND; A4,A9,B4,B9 VBUS; A5,B5 CC; A8,B8 SBU; A6,A7,B6,B7 D+/D-) are the 24-pin set minus the eight SuperSpeed pins (A2, A3, A10, A11, B2, B3, B10, B11), so the 16-pin part is a strict subset. If OHM-165 is placed as the 24-pin Amphenol, the eight SuperSpeed pins are `passive` no-connects for a USB 2.0 design. Neither record has a SHELL pin.
+- Mating sequence (S1): GND and VBUS first, then CC, D+, D-, SBU (second); shell GND. Ratings (S1): 5.00 A collectively VBUS, 6.25 A collectively GND, 1.25 A on B5, 0.25 A per other pin; Rc 40 mOhm max initial, 50 mOhm after test; insulation 100 MOhm; 100 V AC withstand; 10,000 cycles. The A5/B5 rating asymmetry is real and is modeled per physical pin.
+- Sink circuit (board, not connector): Rd 5.1 kohm from A5 to GND and from B5 to GND (two resistors, never one shared); D+ A6 and B6 tied, D- A7 and B7 tied; ESD array near the connector; SBU left open. Source: Rp per advertisement. Orientation detect and VCONN supply are IC functions.
+- Polarity: none (reversible); A1 is the pin-1 reference for geometry only. Status: partial (24-pin vs 16-pin identity unresolved, SuperSpeed not modelled).
+
+## OHM-166: Mini-USB receptacle
+
+Status retained: `partial`.
+
+- BEH-CON-USB /parameters/Rc_other: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 11830.
+
+## [OHM-166] Mini-USB receptacle (Mini-B) -> BEH-CON-USB
+
+- Package PKG-USB_MINI.WURTH_65100516121. 5 SMD tails 0.5 x 2.5 mm at 0.8 mm pitch, pin 1 at +X (1.6, -2.75) to pin 5 at -X (3D spec). Function: **1 = VBUS, 2 = D-, 3 = D+, 4 = ID, 5 = GND**. 4 shell SMD pads and 2 NPTH pegs = SHELL.
+- Ratings (Wurth 65100516121 via Farnell listing, S10): 1 A, 30 VAC, contact resistance 20 mOhm max, 5 positions. Mating cycles and insulation not in the listing.
+- ID as in OHM-164. Mini-B is obsolete for new designs (general knowledge). Status: partial.
+
+## OHM-167: HDMI receptacle
+
+Status retained: `partial`.
+
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 11836.
+
+## [OHM-167] HDMI receptacle -> BEH-CON-HDMI
+
+- Package PKG-HDMI.CT_19APL2, SMT right angle. 19 contacts, pad centres x = 4.5 - 0.5(n-1), pin 1 at +X (4.5, -0.05); odd pins on the top layer, even pins on the bottom layer; 4 shield SMD pads at (+-6.775, +0.05) = SHELL.
+- Pin map by number: 1 D2+, 2 D2 shield, 3 D2-, 4 D1+, 5 D1 shield, 6 D1-, 7 D0+, 8 D0 shield, 9 D0-, 10 CK+, 11 CK shield, 12 CK-, 13 CEC, 14 Utility, 15 SCL, 16 SDA, 17 DDC/CEC GND, 18 +5 V, 19 HPD (S12). The odd-on-one-row layout (1,3,..,19 top, 2,..,18 bottom) is consistent with the 3D spec's two-layer pads.
+- Ratings (Same Sky HD12-19-SMT-TR, S12): 0.5 A, 40 Vac, 20 mOhm, 100 MOhm, 500 Vac, 5,000 cycles, -40..100 C. A through-hole sibling (HD01-19-RA-TH, S13) reads 30 mOhm and 50 mOhm shell; the part in the 3D spec (CT_19APL2) is a different manufacturer, no datasheet opened.
+- Defaults: Rc 20 mOhm. Differential impedance 100 ohm. Status: partial.
+
+## OHM-168: Mini-HDMI receptacle
+
+Status retained: `partial`.
+
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 11843.
+
+## [OHM-168] Mini-HDMI receptacle (Type C) -> BEH-CON-HDMI
+
+- Package PKG-HDMI_MINI, SMT right angle. 19 contacts at 0.4 mm pitch (TE 2013978-1 listing); the 3D spec position formula x = 3.6 - 0.4(n-1) is DERIVED and whether the contacts are one row or two staggered rows is RESEARCH_REQUIRED.
+- Pin map: **RESEARCH_REQUIRED.** S14 says the 19-pin assignment of Type C differs from Type A and does not give the table. The 19 signals are the same as Type A (3 TMDS pairs, clock pair, shields/grounds, CEC, DDC clock/data, DDC/CEC ground, +5 V, HPD, utility). Do not reuse Type A numbering; map by signal name once a per-part pin table is opened.
+- Ratings (TE Mini HDMI Type C, S14): 0.5 A, 40 VAC, 100 MOhm min, opening 10.42 x 2.42 mm; temperature printed garbled ("-250 C - +700 C"), probably -25 to +70 C; Rc not given: ASSUMPTION 30 mOhm.
+- Status: partial (pin map missing).
+
+## OHM-169: RJ45 Ethernet jack
+
+Status retained: `partial`.
+
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 11850.
+
+## [OHM-169] RJ45 Ethernet jack -> BEH-CON-MODJACK
+
+- Package PKG-RJ45.AMPH_54602, THT, tab-down. 8 pins in two staggered rows: OHMNI pin n at x = 4.445 - 1.27(n-1), odd pins y = -1.905, even pins y = -4.445; pin 1 at (4.445, -1.905); 2 NPTH locating holes.
+- Pin map (jack position n = pin n): 1 TD+, 2 TD-, 3 RD+, 4, 5, 6 RD-, 7, 8. Pins 4,5 and 7,8 are unused for 10/100 and are the PoE Alternative B spare pairs; pins 1,2,3,6 carry data and PoE Alternative A (S17, S18). 10/100 pair use per TE magjack spec 114-161364 (S17). T568A and T568B differ only in the colours of pairs 2 and 3 (TD and RD), not in the pin numbers.
+- Magjack variant (RJHSE538X-type, 3D spec): pins 1..8 at x = -3.56 + 1.016(n-1); LED pins 9, 10 (left) and 11, 12 (right); two shield legs; two NPTH pegs. Pin names beyond 1..8 (LED anode/cathode, centre taps, chassis) follow the vendor sheet: **RESEARCH_REQUIRED** (the Amphenol RJHSE538X sheet itself was not opened; S15 is a family sheet; S16 is a different maker's magjack).
+- **Transformer/magnetics link:** in the plain-jack default there is no magnetics in this part; place OHM-055 (BEH-MAG-ETHMAG, `parts/R3.md`, 1CT:1CT with line-side CMC) between this jack's 1/2 and 3/6 and the PHY. For a magjack the magnetics are inside the part: use the `ETH_CH` model from `bench/mag_ethmag/ethmag.lib`, TX pair on pins 1/2, RX on 3/6; do not also place OHM-055.
+- Ratings: S15 1.5 A DC, 20 mOhm, 125 V AC, 500 MOhm; RJmag: 1000 V AC / 1 min, 0 to +70 C; PulseJack hipot 1500 Vrms (S16).
+- Defaults: Rc 20 mOhm. Status: partial.
+
+## OHM-170: RJ11 jack
+
+Status retained: `partial`.
+
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 11859.
+
+## [OHM-170] RJ11 jack -> BEH-CON-MODJACK
+
+- Package PKG-RJ11 (variant of PKG-RJ45), THT, tab-down. 3D spec placeholder: 4 pins at x = 1.53, 0.51, -0.51, -1.53 (pitch 1.02) in alternating rows, pin 1 at +X; 6P6C would be 6 pins. Pin positions flagged UNCERTAIN in the 3D spec.
+- Pin map (jack positions of a 6P4C jack, consensus): OHM pins 1..4 = jack positions 2, 3, 4, 5; line 1 on positions 3 (ring) and 4 (tip); line 2 on positions 2 and 5. Whether the vendor numbers the four contacts 1..4 or 2..5 and which end is pin 1 is RESEARCH_REQUIRED. A 6P2C jack populates only positions 3 and 4. Document the tip/ring names, not the colors.
+- Electrical (connector only): telephone line -48 V DC on hook, 20 to 120 mA off hook, ring 20 Hz at about 86 V (S19; 90 Vrms common figure) superimposed on -48 V: peak about -175 V (bench B2). Hazard: this is far above SELV levels; the model's job is to flag, not protect. No RJ11 rating was found: use the RJ45 125 V AC figure only as a comparison, not as a rating.
+- Defaults: Rc 30 mOhm (ASSUMPTION). Status: partial (pin numbering and rating research required).
+
+## OHM-171: 3.5 mm audio jack
+
+Status retained: `partial`.
+
+- BEH-CON-AUDIO /parameters/Rsw: basis=MFR_DATASHEET, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 11866.
+
+## [OHM-171] 3.5 mm audio jack -> BEH-CON-AUDIO
+
+- Package PKG-AUDIO_JACK.LEDINO_KB3SPRS (default), THT right-angle. 5 pins, map by NAME: T (-4.9, +1.7) = pin 1, TN (-4.4, -5.6), RN (+2.2, -1.2), R (+4.9, -2.4), S (-0.3, +5.6) (3D spec, KiCad names). Alternates: SJ1-3535NG (S (-1.0, 5.8), T (1.0, 3.4), R (1.0, -2.1), TN (-1.0, -5.8), RN (-1.0, -0.3)), and PJ-307 whose pin positions are unresolved (do not reuse the KB3SPRS pads).
+- Behavior: TN = tip switch terminal: closed to T when no plug, opens on insertion; RN likewise for R (SJ1-3535NG is "tip and ring switch" per S21). Ratings from the SJ1 family (S21): 12 V DC, 1 A, -25 to 85 C, 5000 cycles; Switchcraft 3.5 mm family (S20): 20 to 30 mOhm initial, 100 mOhm after life. The default KB3SPRS ratings are not known: RESEARCH_REQUIRED.
+- Polarity: none; pin identity by name. Plug type (TS/TRS/TRRS) is a harness parameter. Status: partial.
+
+---
+
+# SOURCES (global table)
+
+All pages were read through WebFetch (summarizer text, see section 0, item 4). "Not opened" documents are listed at the end.
+
+| id | organization | document | URL | revision/date | used for |
+|---|---|---|---|---|---|
+| S1 | Global Connector Technology (GCT) | USB4105 USB Type-C receptacle specification and mechanical drawing (Farnell CAD copy) | https://www.farnell.com/cad/3307614.pdf | not shown | Type-C current ratings (5.00 A VBUS, 6.25 A GND, 1.25 A B5, 0.25 A other), Rc 40 / 50 mOhm, insulation 100 MOhm, 100 V AC, 10,000 cycles, mating-sequence table |
+| S2 | Infineon | Knowledge-base article "USB Type-C connector: Rp, Rd, and Ra termination resistors" | https://community.infineon.com/t5/Knowledge-Base-Articles/Termination-Resistors-Required-for-the-USB-Type-C-Connector/ta-p/253544 | not shown | Rd 5.1 kohm, Rp 56k/22k/10k (5 V) and 36k/12k/4.7k (3.3 V), Ra 800..1200 ohm and VCONN purpose |
+| S3 | STMicroelectronics | AN5225 USB Type-C Power Delivery using STM32 MCUs and MPUs (zh copy) | https://www.st.com.cn/resource/zh/application_note/an5225-usb-typec-power-delivery-using-stm32-mcus-and-mpus-stmicroelectronics.pdf | not shown | Rp resistor and current-source values, sink CC detection windows (summarizer), Rd tolerance 10 % |
+| S4 | Espressif | USB Type-C Hardware Design Guide (ESP-IoT-Solution docs) | https://docs.espressif.com/projects/esp-iot-solution/en/latest/usb/usb_overview/usb_typec_hardware_guide.html | not shown | CC1/CC2 5.1 kohm to GND, A6/B6 and A7/B7 tied, 24/16/12/6-pin variants, 3 A at 5 V |
+| S5 | USB-IF | USB Type-C Cable and Connector Specification R2.0 | https://www.usb.org/sites/default/files/USB Type-C Spec R2.0 - August 2019.pdf | August 2019 | requested twice; the tool returned only a table-of-contents excerpt, so NO value in this file is attributed to it. Listed for honesty, not as a source of numbers |
+| S6 | Renesas | Full-Speed USB 2.0 board design guidelines (APN) | https://renesas.com/en/document/apn/full-speed-usb-guidelines-full-speed-usb20-board-design-rev100 | rev 1.00 | 90 ohm +-15 % differential impedance, trace length limits, 1.5 kohm pull-up control, ESD component caution |
+| S7 | STMicroelectronics | AN4879 Introduction to USB hardware and PCB guidelines using STM32 MCUs (ja copy) | https://www.st.com/resource/ja/application_note/an4879-introduction-to-usb-hardware-and-pcb-guidelines-using-stm32-mcus-stmicroelectronics.pdf | not shown | D+ 1.5 kohm to 3.0..3.6 V for full speed, ESD device near the connector, ID pin in micro-AB |
+| S8 | Texas Instruments | TPS2062C datasheet, power supply recommendations section | https://www.ti.com/document-viewer/TPS2062C/datasheet/power_supply_recommendations | not shown | VBUS 4.75..5.25 V, 100 mA power-up, 500 mA, 44 ohm / 10 uF inrush rule |
+| S9 | Molex | 105017-0002 Micro-USB B receptacle datasheet (IBS Electronics copy) | https://datasheets.ibselectronics.com/1050170002-Molex-datasheet-16324174.pdf | not shown | 1.8 A / 1 A, 30 V AC, 10,000 cycles, -30..85 C, 5 circuits, 0.65 mm pitch |
+| S10 | Wurth Elektronik (Farnell listing) | 65100516121 Mini-USB 2.0 Type B receptacle | https://cz.farnell.com/en-CZ/wurth-elektronik/65100516121/mini-usb-2-0-type-b-receptacle/dp/1642036 | not shown | 1 A, 30 VAC, 20 mOhm, 5 positions |
+| S11 | Molex (RS listing) | 67643-3910 USB Type A receptacle | https://uk.rs-online.com/p/usb-connectors/8006867 | not shown | 1.5 A, 30 V, -40..85 C, phosphor bronze gold |
+| S12 | Same Sky (formerly CUI Devices) | HD12-19-SMT-TR HDMI receptacle datasheet (Farnell copy) | https://www.sameskydevices.com/product/resource/farnellpdf/hd12-19-smt-tr.pdf | not shown | 19-pin signal table and mating sequence, 0.5 A, 40 Vac, 20 mOhm, 100 MOhm, 500 Vac, 5,000 cycles, -40..100 C |
+| S13 | Same Sky | HD01-19-RA-TH HDMI receptacle datasheet | https://www.sameskydevices.com/product/resource/hd01-19-ra-th.pdf | not shown | 30 mOhm dry circuit, 50 mOhm shell, insulation 100/10 MOhm, 500/300 Vac, 10,000 cycles, -20..85 C |
+| S14 | TE Connectivity | Mini HDMI Type C connector datasheet (Farnell copy) | https://www.farnell.com/datasheets/4476584.pdf | not shown | 0.5 A, 40 VAC, 100 MOhm, 10.42 x 2.42 mm, 19-pin assignment differs from Type A |
+| S15 | Amphenol InfoCom Europe | RJ45 modular jack catalog (RJHSE, RJSSE, RJSAE, RJmag; chipdip copy) | https://static.chipdip.ru/lib/109/DOC032109501.pdf | not shown | 1.5 A DC, 20 mOhm, 500 MOhm, 125 V AC, RJmag 1000 V AC and 0..70 C, phosphor bronze gold over nickel |
+| S16 | Pulse Electronics | PulseJack 1x1 Tab-UP RJ45 with LEDs, integrated magnetics (chipdip copy) | https://static.chipdip.ru/lib/041/DOC012041836.pdf | not shown | pin 1,2,3,6 to TD/RD, hipot 1500 Vrms, 1CT:1 ratio, insertion loss, LED Vf 2.1..2.5 V (summarizer; "pins 4,5 CT to ground" is as read) |
+| S17 | TE Connectivity | RJ45 jack with integrated magnetics (non-PoE), specification 114-161364 Rev A (RS copy) | https://docs.rs-online.com/dc56/A700000015363982.pdf | Rev A | 10/100BASE-T pair mapping J1/J2, J3/J6; all four pairs for gigabit |
+| S18 | Linux kernel documentation | PSE Power Interface (PSE PI) | https://docs.kernel.org/6.14/networking/pse-pd/pse-pi.html | kernel 6.14 docs | PoE Alternative A = conductors 1,2,3,6; Alternative B = 4,5,7,8 |
+| S19 | University of British Columbia (ECE 4550) | Lecture 2 notes (telephone circuits) | https://people.ece.ubc.ca/edc/4550.fall2017/lec2.pdf | Fall 2017 | -48 VDC loop voltage, 20 Hz ring at about 86 V, 2 s on 4 s off, 20..120 mA off-hook |
+| S20 | Switchcraft | 3.5 mm jack family datasheets (RS copy) | https://assets.rs-online.com/v1698949150/Datasheets/fc6a346ba3ebaf1c18750c741b58f352.pdf | not shown | contact resistance 20/30 mOhm initial and 100 mOhm after life, insulation 100 MOhm, 250/500 V AC, 5000 cycles, shunt terminal |
+| S21 | Same Sky (CUI Devices) | SJ1-353xNG 3.5 mm jack datasheet (IBS copy) | https://datasheets.ibselectronics.com/sj1-353xng.pdf | not shown | 12 Vdc, 1 A, switch models (tip, tip and ring), 100 MOhm, 500 Vac, 5000 cycles, -25..85 C, contact resistance values (unit printed as MOhm) |
+| S22 | Penta Conn | Audio standard pinouts (3.5 mm TRRS CTIA vs OMTP) | https://pentaconnglobal.com/?p=155 | not shown | CTIA: tip L, ring1 R, ring2 GND, sleeve MIC; OMTP: ring2 MIC, sleeve GND |
+
+
+Documents requested but NOT usable (no number taken from them): USB-IF USB 2.0 specification (usb20.pdf mirror) and USB Type-C R2.0 (only a table-of-contents excerpt returned), USB-IF ECN on VBUS max (a Git LFS pointer returned), FTDI AN_146 and Microchip AN15.17 (security-wall page returned), Farnell RJ11 cable listing PS11456ST (cable, not a jack), Adam Tech MTJ-645X1 DigiKey page (no specifications in the page text), Amphenol 12401610E4 and RJHSE538X datasheets (not found/opened), HDMI Licensing specification (not opened), Ledino KB3SPRS datasheet (not opened), ANSI/TIA-568 and IEEE 802.3 (not opened).
+
+---
+
+# FINAL STATUS SUMMARY
+
+| Entry | Class | Status |
+|---|---|---|
+| OHM-162 USB-A | BEH-CON-USB | partial (Rc unsourced) |
+| OHM-163 USB-B | BEH-CON-USB | partial (rating RESEARCH_REQUIRED) |
+| OHM-164 Micro-USB | BEH-CON-USB | partial |
+| OHM-165 USB-C | BEH-CON-USB | partial (24- vs 16-pin identity; SuperSpeed unmodelled) |
+| OHM-166 Mini-USB | BEH-CON-USB | partial |
+| OHM-167 HDMI | BEH-CON-HDMI | partial |
+| OHM-168 Mini-HDMI | BEH-CON-HDMI | partial (pin map RESEARCH_REQUIRED) |
+| OHM-169 RJ45 | BEH-CON-MODJACK | partial (magjack pin table RESEARCH_REQUIRED) |
+| OHM-170 RJ11 | BEH-CON-MODJACK | partial (pin numbering, rating) |
+| OHM-171 Audio jack | BEH-CON-AUDIO | partial (KB3SPRS datasheet, NC convention) |
+
+Benches: 12 netlists in 4 bench directories (USB 5, HDMI 2, MODJACK 3, AUDIO 2; B1..B5 where listed), all run in ngspice-42, all matching their analytical expectation (after two corrections noted in the text: a node-name collision in USB B5, a wrong topology in MODJACK B3).
+
+<!-- END R10A -->
+
+
+---
+
+<!-- BEGIN R10B -->
+# GROUP R10B: Power, RF, FFC and card connectors (OHM-172 to OHM-180)
+
+Author: research agent R10B. ngspice 42 (stock build with KLU) run locally. All benches are in `/home/claude/behavior/bench/beh-con-dcjack/`, `beh-con-xt/`, `beh-con-rf/`, `beh-con-ffc/`, `beh-con-sd/`; each folder holds a `results_ngspice42.txt` with the raw output of the last full run.
+
+## OHM-172: DC barrel jack
+
+Status retained: `partial`.
+
+- BEH-CON-DCJACK /parameters/r_switch_on: basis=ASSUMPTION, confidence=L
+- BEH-CON-DCJACK /parameters/switch_partner: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 12707.
+
+## [OHM-172] DC Barrel Jack -> BEH-CON-DCJACK
+- Package: PKG-DC_JACK, member PJ-102A-like (CUI). Default 2.1 mm center pin / 5.5 mm barrel, right-angle THT; variant 2.5 mm center pin (parameter center_pin_dia). The opened S2 gives the jack's center pin as 2.0 mm copper (the library's `center_pin_dia` default 2.0 matches it; the 2.5 mm variant is a library parameter and was not found in an opened document).
+- Pin map (3D spec): P1 center pin (TIP), P2 sleeve, P3 switch. KiCad PJ-102AH coordinates: P1 (0,0), P2 (0,6.0), P3 (4.7,3.0).
+- Ratings: 24 Vdc / 2.5 A / 30 mohm (S1); conflict 16 Vdc (S2).
+- Polarity: NONE on the part. Do not assume center positive; the schematic net names decide.
+- Defaults: Rc_total 30 mohm, switch partner TIP (placeholder), thermal Rth 160 K/W calibrated (ASSUMPTION).
+- Notes: sleeve-switch versus tip-switch variants exist; flag in UI that the switch pairing is unverified.
+- Status: partial.
+
+## OHM-173: XT30 PCB connector
+
+Status retained: `partial`.
+
+- BEH-CON-XT /parameters/alpha: basis=ASSUMPTION, confidence=L
+- BEH-CON-XT /parameters/c_th: basis=ASSUMPTION, confidence=L
+- BEH-CON-XT /parameters/i_peak: basis=MFR_DATASHEET, confidence=L
+- BEH-CON-XT /parameters/r_th: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 12716.
+
+## [OHM-173] XT30 PCB Connector -> BEH-CON-XT
+- Package PKG-XT, member XT30PW-M (Amass), right-angle male THT. Pitch 5.0.
+- Pin map: pin 1 at -X (OHMNI), pin 2 at +X; the KiCad footprint numbers the square pad (pad 1) at +X (mirror delta: map by pad name). Polarity (+ / -) RESEARCH_REQUIRED.
+- Ratings: 15 A continuous, 30 A peak, 0.80 mohm, 500 V DC, -20 to 120 degC, 1000 cycles (S4).
+- Thermal defaults: Rth 167 K/W, Cth 1 J/K, alpha 0.0039 (ASSUMPTION); P at rated = 0.18 W, drop 12 mV.
+- Hazard note: battery pack short-circuit current can exceed the 30 A peak by orders of magnitude; a fuse or current limit is required.
+- Status: partial.
+
+## OHM-174: XT60 PCB connector
+
+Status retained: `partial`.
+
+- BEH-CON-XT /parameters/alpha: basis=ASSUMPTION, confidence=L
+- BEH-CON-XT /parameters/c_th: basis=ASSUMPTION, confidence=L
+- BEH-CON-XT /parameters/i_peak: basis=MFR_DATASHEET, confidence=L
+- BEH-CON-XT /parameters/r_th: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 12724.
+
+## [OHM-174] XT60 PCB Connector -> BEH-CON-XT
+- Package PKG-XT, member XT60PW-M (Amass). Pitch 7.2.
+- Pin map: pin 1 at -X, pin 2 at +X (3D spec: (-3.6,0), (+3.6,0)). Polarity RESEARCH_REQUIRED. 3D spec also leaves the tail assignment (0.6 x 1.7 slot versus dia 2.7 hole) unresolved.
+- Ratings: 30 A continuous, 60 A peak, 0.55 mohm, DC 500 V, -20 to 120 degC, 1000 cycles, 12 AWG (S3). Mated pair P at rated = 0.495 W, drop 16.5 mV.
+- Thermal defaults: Rth 60.6 K/W, Cth 2 J/K, alpha 0.0039 (ASSUMPTION).
+- Hazard: PCB copper and solder joint at 30 A are the true limit; the part is not protective.
+- Status: partial.
+
+## OHM-175: U.FL/I-PEX RF connector
+
+Status retained: `partial`.
+
+- BEH-CON-RF /parameters/c_pad: basis=ASSUMPTION, confidence=L
+- BEH-CON-RF /parameters/l_pin: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 12732.
+
+## [OHM-175] U.FL/I-PEX RF Connector -> BEH-CON-RF
+- Package PKG-UFL, member U.FL-R-SMT-1 (Hirose). SMD receptacle.
+- Pin map (3D spec): SIG (-1.05, 0) 1.05 x 1.0; GND1 (+0.475, +1.475) and GND2 (+0.475, -1.475) 2.2 x 1.05. Electrical: SIG is the center contact, GND1 and GND2 tied to the shell. No polarity.
+- Ratings: 50 ohm; DC to 6 GHz; VSWR 1.3 max to 3 GHz, 1.3 to 1.5 from 3 to 6 GHz; 30 cycles; 100 V DC; 10 mA max; contact resistance center 20 mohm, outer 10 mohm max (S5).
+- Defaults: Cpad 0, Lpin 0 (ideal); realistic mode tunes parasitics to |Gamma| of 0.2 at 6 GHz (derived from VSWR 1.5). Insertion loss RESEARCH_REQUIRED.
+- Notes: mated height 1.9 mm or 2.4 mm depends on cable (S5); the library uses 3.0 x 2.6 body.
+- Status: partial.
+
+## OHM-176: Vertical SMA connector
+
+Status retained: `partial`.
+
+- BEH-CON-RF /parameters/c_pad: basis=ASSUMPTION, confidence=L
+- BEH-CON-RF /parameters/l_pin: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 12740.
+
+## [OHM-176] Vertical SMA Connector -> BEH-CON-RF
+- Package PKG-SMA_RF, member Cinch 142-0701-201 / Amphenol 132134 aliases. Vertical THT jack (female).
+- Pin map: center signal pin at (0,0) (hole 1.5); four ground legs at (+-2.54, +-2.54) (hole 1.7). Electrical: SIG = center, GND = four legs tied.
+- Ratings: 50 ohm; DC to 18 GHz; 500 cycles; VSWR 1.15 max is from the SMA panel-mount family (S6), so apply with confidence L; BeCu gold center, PTFE (S7).
+- Defaults: Cpad 0, Lpin 0; note the through-hole transition adds discontinuity that is not sourced.
+- Status: partial.
+
+## OHM-177: Edge-launch SMA connector
+
+Status retained: `partial`.
+
+- BEH-CON-RF /parameters/c_pad: basis=ASSUMPTION, confidence=L
+- BEH-CON-RF /parameters/l_pin: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 12747.
+
+## [OHM-177] Edge-Launch SMA Connector -> BEH-CON-RF
+- Package PKG-SMA_EDGE, member Molex 73251 series (EWR-2074 drawing). Mounting smd_edge.
+- Pin map: SIG center pad 1.78 x 4.19 on top; two ground pads top and bottom at (+-3.4925, ...); small ground tabs and via-style ground pads. Terminal order per 3D spec: SIG then 4 grounds (2 top legs, 2 bottom legs). All grounds tied. No polarity.
+- Ratings: 50 ohm; 18 GHz; 500 Vrms at sea level (S8); VSWR not published in the opened Molex page; torque 7 to 10 in-lb for SMA, board mount 12 in-oz (S9).
+- Notes: board thickness slot 1.57 mm (2.13 mm on another Molex part); launch impedance depends on that thickness. Use the step model (bench B3) for launch sensitivity. The 3D spec leaves the barrel axis height RESEARCH_REQUIRED.
+- Status: partial.
+
+## OHM-178: FFC/FPC ZIF connector
+
+Status retained: `partial`.
+
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 12754.
+
+## [OHM-178] FFC/FPC ZIF Connector -> BEH-CON-FFC
+- Package PKG-FFC_ZIF, parametric by N; default FH12-10S-0.5SH-like, bottom contact, flip-lock, pitch 0.5.
+- Pin map: pad k (k = 1..N) at x = -A/2 + 0.5 (k-1), y = +1.85, pad 0.3 x 1.3; pin 1 at -X. Two retaining-tab pads 1.8 x 2.2 (mechanical; may be tied to GND at the schematic level, not a datasheet requirement).
+- Ratings: 0.5 A per contact (70% = 0.35 A when all loaded), 50 V AC, 50 mohm max, 20 cycles, -40 to +85 degC (S11).
+- Defaults: N = 10, Rc 50 mohm worst.
+- Notes: Top versus bottom contact is a mechanical property that flips cable orientation; FPC thickness 0.3 mm.
+- Status: partial.
+
+## OHM-179: SD card socket
+
+Status retained: `partial`.
+
+- BEH-CON-SDSOCKET /parameters/r_switch_on: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 12762.
+
+## [OHM-179] SD Card Socket -> BEH-CON-SDSOCKET
+- Package PKG-SD_SOCKET, Molex 67600-8001 default (the 3D spec notes that Molex 5031821852 is a microSD part). Push-push SMD.
+- Pin map (3D spec numbering, X = -7.065, -4.565, -1.265, +0.435, +2.935, +5.435, +7.865, +9.565, -9.565): pad 1 DAT3/CS, 2 CMD/DI, 3 VSS1, 4 VDD, 5 CLK/SCLK, 6 VSS2, 7 DAT0/DO, 8 DAT1, 9 DAT2 (S15, S16). The 3D spec says pad 9 is the outer pad on the -X side and the pad positions are an exemplar from a Kyocera footprint (confidence L). Detect and write-protect switch pads are NOT modeled in the 3D spec (RESEARCH_REQUIRED); the electrical model carries CD_A, CD_B, WP_A, WP_B as extra terminals so the schematic is complete.
+- Switch behavior: CD open when no card, closes on insertion (S13); WP closes when write-protect is set (S13). A host pull-up to VDD with the switch to GND reads high with no card and low with a card (bench B1).
+- Defaults: Rc 50 mohm, 0.5 A per contact, 10,000 cycles, supply 3.3 V, card current 100 mA (200 mA high speed).
+- Layers: socket L1; protocol L3.
+- Status: partial.
+
+## OHM-180: MicroSD card socket
+
+Status retained: `partial`.
+
+- BEH-CON-SDSOCKET /parameters/r_switch_on: basis=ASSUMPTION, confidence=L
+- Retain source status until parameters, ratings, failure behavior and current-run bench are supported
+
+Source: COMPONENT_BEHAVIOR_SPEC.md line 12770.
+
+## [OHM-180] MicroSD Card Socket -> BEH-CON-SDSOCKET
+- Package PKG-MICROSD_SOCKET, Molex 104031-0811 default (alternates 503398-1892, 503182-1852, 47352, DM3AT). Push-pull SMD.
+- Pin map (3D spec: 8 contacts at pitch 1.10, pin 1 at +X, pad 8 narrower): pad 1 DAT2, 2 CD/DAT3 (SPI: CS), 3 CMD (SPI: DI), 4 VDD, 5 CLK (SPI: SCLK), 6 VSS, 7 DAT0 (SPI: DO), 8 DAT1 (S12). Shield/detect pads 1.2 x 1.0 at (+5.74, +1.25) and (+5.74, +4.95); mirrored positions at -X assumed (L). Which of the two pads pairs with the card-detect switch is RESEARCH_REQUIRED.
+- Switch: card-detect only, normally open, closes on card insertion (S12). No write-protect switch.
+- Ratings: 0.5 A, 125 V AC, 40 mohm change, 100 Mohm, 10,000 cycles for DM3AT (S12).
+- Defaults: Rc 50 mohm, supply 3.3 V, card 100 mA default mode.
+- Layers: socket L1; protocol L3.
+- Status: partial.
+
+<!-- END R10B -->

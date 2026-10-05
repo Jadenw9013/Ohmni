@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "active_task": null,
-  "last_known_commit": "6d29a1a117eab9a86b33caf31d3f9e4fbe50b85a",
+  "active_task": "CBH-AUDIT",
+  "last_known_commit": "0505077",
   "previous_checkpoint": ".ai/approvals/COMPONENT-BEHAVIOR-STAGE1-previous-checkpoint.yaml",
   "completed_substeps": [
     "Human approval including Stage 5 materials recorded; ordered A-E/integration tasks created.",
@@ -21,13 +21,19 @@
     "Implemented the typed registry, deterministic generator and fail-closed loader for 66 behavior classes and all 180 catalog entries.",
     "Applied and tested the approved GENERIC_LED_GREEN terminal permutation and the three MCP1700 package-specific pin orders with datasheet page evidence.",
     "Recorded imported bench artifacts without rerunning them; ngspice is unavailable in this shell.",
-    "Generator, focused tests, Ruff, AI-state validation and full fast verification passed; implementation committed as 6d29a1a117eab9a86b33caf31d3f9e4fbe50b85a."
+    "Generator, focused tests, Ruff, AI-state validation and full fast verification passed; implementation committed as 6d29a1a117eab9a86b33caf31d3f9e4fbe50b85a.",
+    "Human approved the self-audit system and uninterrupted Stages 2 through 7 run, subject to the stated hard stops.",
+    "Created isolated branch codex/behavior-audit from the completed Stage 1 gate."
   ],
-  "remaining_work": [],
+  "remaining_work": [
+    "Build, test and commit the behavior self-audit and canary system.",
+    "Continue through the approved Stage 2 through Stage 7 task chain without an intermediate approval stop.",
+    "If ngspice 42 or research network access is unavailable, complete independent offline work and produce the hard-stop FINAL_REPORT.md."
+  ],
   "last_failure": null,
-  "resume_action": "Stop at the Stage 1 human gate. Do not begin Stage 2 without human approval and working ngspice 42 evidence.",
+  "resume_action": "Continue CBH-AUDIT on codex/behavior-audit; do not touch main or the production-repair checkout.",
   "modified_files": [],
-  "last_command": "Completed Stage 1 implementation verification",
-  "verification_record": ".ai/verification/CBH-T01.yaml",
-  "artifact_directory": "src/ohmni/behavior/data/"
+  "last_command": "Recorded approval and created the behavior audit branch",
+  "verification_record": null,
+  "artifact_directory": "out/component-behavior/run/"
 }
