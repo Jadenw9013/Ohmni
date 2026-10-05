@@ -101,6 +101,13 @@ def test_changing_a_state_baseline_is_detected(audit):
     assert not audit.check_state().passed
 
 
+def test_rule_hash_cannot_be_rebased_by_editing_state(audit):
+    state = audit._state()
+    state["rule_hash"] = "0" * 64
+    audit._write_state(state)
+    assert not audit.check_rule_hash().passed
+
+
 def test_canary_fixture_tampering_is_detected(audit, tmp_path):
     import shutil
 

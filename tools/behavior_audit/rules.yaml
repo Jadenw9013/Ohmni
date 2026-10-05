@@ -22,7 +22,8 @@
   "regression_commands": [
     "python scripts/generate_behavior_records.py --check",
     "python -m pytest tests/test_behavior_registry.py tests/test_ai_workflow.py tests/test_behavior_audit.py tests/test_simulation.py -q",
-    "node --test apps/web/tests/scope-view.test.mjs"
+    "node --test apps/web/tests/scope-view.test.mjs",
+    "python scripts/verify.py fast"
   ],
   "rules": [
     {"id": "AUD-RULE-001", "check": "rule_hash", "description": "Rules remain hash-locked; an explicit non-loosening RULE_CHANGE is required for any change."},

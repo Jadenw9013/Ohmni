@@ -1,0 +1,123 @@
+Before any further behavior stages, build the SELF-AUDIT SYSTEM, then run the
+remaining stages (2 through 7) end to end in one run without stopping for
+approval. My earlier approvals stand. The hard rules, gap-research rules and
+stage definitions from the original brief still apply in full. This prompt
+adds how you check yourself and when you may or may not stop.
+
+GOAL
+I will walk away. The run must be resumable, auditable and conservative.
+When it finishes, I read one FINAL_REPORT.md and trust that every claim in
+it was checked by a script, not by your own opinion of your work.
+
+PART 1: BUILD THE AUDIT SYSTEM (commit it first, on its own branch)
+Location: tools/behavior_audit/ plus out/component-behavior/run/.
+
+1. RULES.md and rules.yaml: the hard rules as machine-checkable assertions,
+   each with an ID. Hash-lock them (SHA-256 recorded in run/STATE.json). If
+   the hash changes, the audit fails unless a RULE_CHANGE entry exists in
+   run/RULE_CHANGES.md, and every RULE_CHANGE is listed in the final report
+   for my review. You may never loosen a rule, tolerance, expected value or
+   baseline to make a check pass.
+
+2. Deterministic checks (scripts, not judgment):
+   - No fabricated sources. Keep a fetch ledger (run/FETCH_LEDGER.jsonl:
+     URL, timestamp, HTTP status, content hash, tool used). Every source in
+     any gapfill file or record must exist in the ledger with success. A
+     source not in the ledger fails the audit.
+   - No silent upgrades. A record's status can rise (research_required ->
+     partial -> complete) only if its gapfill file has sources, basis and
+     confidence for each upgraded field and a bench with a recorded ngspice
+     result. Status can never rise because of a code change alone.
+   - No vendor_model label without an attached, license-compatible model
+     file in the repo.
+   - Spec preservation: for every entry, basis and confidence in the record
+     match spec or gapfill. Diff report at every checkpoint.
+   - Benches: re-run through the product code path, compare to analytical
+     expected value within the stated tolerance, record `ngspice -v` output.
+     A bench that did not run is a failure, never a pass.
+   - Honesty in code and UI: a test proving a non-run or errored simulation
+     is displayed as not-run, never pass, and a violated rating is shown as
+     a violation.
+   - Protected paths: the audit fails if git shows changes to main, the
+     production-repair checkout, COMPONENT_BEHAVIOR_SPEC.md (except via the
+     revision-log flow), or any push.
+   - Coverage: all 180 entries have a record and a row in COVERAGE.md.
+   - Regression: every earlier stage's gate checks re-run at every later
+     checkpoint.
+
+3. Canary fixtures (the audit auditing itself). Create deliberately bad
+   fixtures: an invented parameter with no source, a source URL not in the
+   ledger, a status upgrade without a bench, a vendor_model label with no
+   file, a bench with a wrong expected value, a swapped LED permutation, a
+   non-run simulation marked pass. The audit must reject every one. Run the
+   canaries at the start of every checkpoint. If any canary passes, the
+   audit is broken: fix the audit, and do not proceed until all canaries are
+   rejected.
+
+4. Independent verifier pass. At the end of every research stage, run a
+   fresh-context review (a separate agent or a fresh session that sees only
+   the gapfill file, the cited source and the record, not your reasoning).
+   It re-derives K = max(5, 10 percent) randomly chosen entries from the
+   cited primary source and flags any value, rating or pin map that does not
+   match. Any mismatch fails the stage: fix and re-sample with a new random
+   seed. Store the seed and results.
+
+5. Run state and resumability. run/STATE.json holds current stage, per-entry
+   status, attempts, rule hash, last checkpoint, and heartbeat time. Every
+   step is idempotent. If interrupted, resume from STATE.json without
+   redoing completed, audited work.
+
+PART 2: CHECKPOINTS (how you stay on track)
+Run a full checkpoint at: start of each stage, every 20 entries inside a
+research stage, every 10 components inside a model-building stage, and end of
+each stage. A checkpoint is:
+ a) re-read RULES.md and verify the rule hash;
+ b) run the canaries (all must be rejected);
+ c) run the deterministic checks above plus regression;
+ d) write run/checkpoints/<NNN>-<stage>.md with pass/fail per check, the
+    entries touched since the last checkpoint, and a one-paragraph drift
+    note: what you did, whether it matches the brief, any place you deviated;
+ e) commit.
+A failed checkpoint blocks forward progress until fixed.
+
+PART 3: DECISION POLICY (so you do not need to ask)
+Make the conservative choice, log it in run/DECISIONS.md (what, why, the
+alternative you did not take), and continue:
+- Missing or unreliable data: keep it ASSUMPTION or RESEARCH_REQUIRED, status
+  partial, and refuse to simulate if a rating-critical field is unsourced.
+- Source conflict: record both values, use the more conservative rating, mark
+  the entry partial, and list it for my review.
+- Labeling or permutation mismatch between spec, catalog and 3D: fix it,
+  with a test.
+- Anything that would change electrical truth and is not resolved by a
+  primary source: do not apply it. Mark that entry blocked in STATE.json,
+  continue with the others, and list it in the final report.
+- Ambiguous scope: pick the narrower reading and document it.
+
+REPAIR LOOP
+When a check fails, fix the root cause. Maximum 3 attempts per failing check.
+After 3, park that entry or stage item as blocked with the evidence, and
+continue with independent work. Never edit a check, canary, tolerance,
+expected value or baseline to get green.
+
+THE ONLY HARD STOPS (end the run early with a clear FINAL_REPORT.md)
+- ngspice 42 is not runnable. Do all non-simulation work first, then stop.
+- No network access during a research stage. Do the offline work, then stop.
+- The canaries cannot be made to reject after 3 fix attempts.
+- Any protected-path violation or an attempted push or merge to main.
+Everything else is parked and reported, not stopped on.
+
+OUTPUT
+- Commit per stage on codex/behavior-stage<N>. Never push, never merge.
+- run/FINAL_REPORT.md at the end, containing: stage-by-stage pass/fail, the
+  full COVERAGE table totals, every blocked or parked item with reason, every
+  decision from DECISIONS.md that touched electrical data, every RULE_CHANGE,
+  canary results per checkpoint, verifier sample results (seeds and
+  mismatches), and a short list titled "Needs human review" covering
+  rating-critical numbers, safety-relevant parts (X2, XT30/XT60, supercaps,
+  TVS, transformers, power resistors) and all source conflicts.
+- Never state that something passed unless a script in the audit produced
+  that result in this run.
+
+Start with Part 1. Report briefly when the audit and canaries are working,
+then continue straight into Stage 2 and run through Stage 7 without waiting.

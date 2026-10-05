@@ -299,7 +299,10 @@ class BehaviorAudit:
 
     def check_rule_hash(self) -> CheckResult:
         state = self._state()
-        old_hash = state.get("rule_hash")
+        baseline_record = _json(self.run_dir / "BASELINE.json")
+        old_hash = baseline_record["rule_hash"]
+        if state.get("rule_hash") != old_hash:
+            return CheckResult("AUD-RULE-001", False, "STATE.json rule hash was changed from the locked original")
         if old_hash == self.rule_hash:
             return CheckResult("AUD-RULE-001", True, f"rule hash {self.rule_hash} matches state")
         matching = [
@@ -346,6 +349,9 @@ class BehaviorAudit:
         ledger = _read_jsonl(self.run_dir / "FETCH_LEDGER.jsonl")
         missing = evidence.source_errors(cited, ledger, self.run_dir)
         field_failures = []
+        for path in (self.root / "docs/behavior/gapfill").glob("OHM-*.md"):
+            if self._gapfill_evidence(path.stem) is None:
+                field_failures.append(f"{path.name}: per-entry gapfill lacks machine-readable audit-evidence fields")
         # Named source references without URLs are unresolved evidence, not an
         # implicit exemption from the ledger requirement.
         for path in sorted((self.root / "src/ohmni/behavior/data/classes").glob("*.json")):
@@ -779,6 +785,13 @@ class BehaviorAudit:
         recorded_hash = _json(self.run_dir / "BASELINE.sha256.json")["sha256"]
         if _sha_bytes(baseline_path.read_bytes()) != recorded_hash:
             errors.append("baseline archive hash mismatch")
+        # Once committed, editing both local baseline and its local hash is still
+        # detected against the immutable Git version used by this checkpoint.
+        relative = baseline_path.relative_to(self.root).as_posix() if self.root in baseline_path.parents else None
+        if relative:
+            known = _run(["git", "ls-files", "--error-unmatch", relative], self.root)
+            if known.returncode == 0 and _git(self.root, "diff", "HEAD", "--", relative).strip():
+                errors.append("committed protected baseline artifact was modified")
         for key in ("bench_contracts", "protected_baseline", "rules_baseline", "canary_hashes", "run_id"):
             if state.get(key) != baseline.get(key):
                 errors.append(f"state changed locked baseline field {key}")
