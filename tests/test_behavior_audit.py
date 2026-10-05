@@ -199,3 +199,46 @@ def test_resume_preserves_original_run_and_baselines(audit):
     before = audit._state()
     after = audit.initialize()
     assert before == after
+
+
+def test_ordered_operating_point_binding_requires_every_point(audit):
+    from tools.behavior_audit.benches import observed_value
+
+    item = {"measure": "V at 10 mA"}
+    text = "v(d) = 0.6\nv(d) = 0.7\nv(d) = 0.9\n"
+    assert observed_value(audit, "BEH-DIO-PN/B1", item, text) == 0.7
+    assert observed_value(audit, "BEH-DIO-PN/B1", item, "v(d) = 0.7\n") is None
+
+
+def test_named_model_binding_does_not_select_the_comparator(audit):
+    from tools.behavior_audit.benches import observed_value
+
+    assert observed_value(audit, "BEH-TRN-MOSFET/B2", {"measure": "Rds_4p5V_L3"},
+                          "r45a = 0.026\nr45b = 0.016\n") == 0.026
+
+
+def test_unit_tolerance_is_converted_exactly():
+    from tools.behavior_audit.benches import numeric_contract
+
+    assert numeric_contract({"value": 0.7, "tolerance": "1 mV"}) == {"expected": 0.7, "tolerance": 0.001}
+    assert numeric_contract({"value": 4000, "tolerance": 0.15})["tolerance"] == 0.15
+
+
+def test_relocated_author_include_is_locked_and_contained(tmp_path):
+    import hashlib
+
+    from tools.behavior_audit.audit import AuditError
+    from tools.behavior_audit.benches import inline_deck
+
+    deck = tmp_path / "bench.cir"
+    lib = tmp_path / "model.lib"
+    deck.write_text("title\n.include /old/model.lib\n.end\n")
+    lib.write_text(".model DTEST D(IS=1e-12)\n")
+    binding = {"/old/model.lib": {"relative_path": "model.lib", "sha256": hashlib.sha256(lib.read_bytes()).hexdigest()}}
+    assert ".model DTEST" in inline_deck(deck, tmp_path, relocations=binding)
+    lib.write_text(".model DTEST D(IS=1)\n")
+    with pytest.raises(AuditError, match="content changed"):
+        inline_deck(deck, tmp_path, relocations=binding)
+    binding["/old/model.lib"]["relative_path"] = "../outside.lib"
+    with pytest.raises(AuditError, match="escapes"):
+        inline_deck(deck, tmp_path, relocations=binding)

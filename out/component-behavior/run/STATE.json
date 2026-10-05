@@ -4,10 +4,10 @@
     "audit-final/AUD-SOURCE-001": 1,
     "audit/AUD-BENCH-001": 1,
     "audit/AUD-SOURCE-001": 1,
-    "stage2/AUD-BENCH-001": 2,
+    "stage2/AUD-BENCH-001": 3,
     "stage2/AUD-HONESTY-001": 1,
     "stage2/AUD-REGRESSION-001": 1,
-    "stage2/AUD-SOURCE-001": 2
+    "stage2/AUD-SOURCE-001": 3
   },
   "baseline_commit": "050507726684c120a942ae434088ba1a7e76579b",
   "bench_contracts": {
@@ -2671,13 +2671,8 @@
     }
   },
   "blocked_entries": {
-    "AUD-SOURCE-001": "41/63 cited URLs have successful hashed fetches; named citations without resolved URLs also remain unresolved. See checkpoint 002 for every source issue.",
-    "stage2": "NOT RUN. The failed corpus checkpoint blocks dependent work; ngspice 42 is unavailable. Independent inventory, supplied-URL fetching, coverage and audit remediation were performed; full gap research and the later product implementations remain unfinished.",
-    "stage3": "NOT RUN. The failed corpus checkpoint blocks dependent work; ngspice 42 is unavailable. Independent inventory, supplied-URL fetching, coverage and audit remediation were performed; full gap research and the later product implementations remain unfinished.",
-    "stage4": "NOT RUN. The failed corpus checkpoint blocks dependent work; ngspice 42 is unavailable. Independent inventory, supplied-URL fetching, coverage and audit remediation were performed; full gap research and the later product implementations remain unfinished.",
-    "stage5": "NOT RUN. The failed corpus checkpoint blocks dependent work; ngspice 42 is unavailable. Independent inventory, supplied-URL fetching, coverage and audit remediation were performed; full gap research and the later product implementations remain unfinished.",
-    "stage6": "NOT RUN. The failed corpus checkpoint blocks dependent work; ngspice 42 is unavailable. Independent inventory, supplied-URL fetching, coverage and audit remediation were performed; full gap research and the later product implementations remain unfinished.",
-    "stage7": "NOT RUN. The failed corpus checkpoint blocks dependent work; ngspice 42 is unavailable. Independent inventory, supplied-URL fetching, coverage and audit remediation were performed; full gap research and the later product implementations remain unfinished."
+    "stage2/AUD-BENCH-001": "Parked after 3 failed checkpoints: 74/205 canonical bench references passed; 21 additional authored netlists lack a canonical contract",
+    "stage2/AUD-SOURCE-001": "Parked after 3 failed checkpoints: 159/241 cited URLs have successful hashed fetches"
   },
   "branch": "codex/behavior-stage2",
   "canary_hashes": {
@@ -2697,7 +2692,11 @@
     "fetch_supplied_source_urls",
     "bench_non_run_receipts",
     "coverage_180_entries",
-    "checkpoint_002_with_full_fast_regression"
+    "checkpoint_002_with_full_fast_regression",
+    "ngspice42_current_run_verified",
+    "all_205_canonical_benches_executed",
+    "stage2_first20_primary_source_reviews",
+    "checkpoint_005_all_regressions_and_canaries_passed"
   ],
   "current_stage": "stage2",
   "entry_status": {
@@ -3422,7 +3421,7 @@
       "current": "partial"
     }
   },
-  "heartbeat_time": "2026-10-05T17:20:05Z",
+  "heartbeat_time": "2026-10-05T17:29:21Z",
   "last_checkpoint": {
     "entries_touched": [
       "OHM-001",
@@ -3446,8 +3445,8 @@
       "OHM-019",
       "OHM-020"
     ],
-    "number": 4,
-    "path": "out/component-behavior/run/checkpoints/004-stage2.md",
+    "number": 5,
+    "path": "out/component-behavior/run/checkpoints/005-stage2.md",
     "rule_hash": "f240b5f2beb9b8d56d2901fa5b663c5d877d0d6c68c84209b8e61301aafc21d3",
     "stage": "stage2",
     "status": "failed"
@@ -3481,7 +3480,7 @@
     },
     "remote_refs_sha256": "4ee57aceb876fee1af034f8381ddfdceec78d1a096d93bbd9552c23e0057766e"
   },
-  "resume_action": "Run actual ngspice benches and remediate corpus evidence; prior hard stop resolved. All Stage 2 through 7 approvals persist.",
+  "resume_action": "Continue independent Stage 2 primary-source research at OHM-021; source and bench acceptance items parked after three attempts. Retain failed results and reject unsupported product simulations.",
   "rule_hash": "730f651999bc31c7e9db55deb1beac59d05da9aa2d9d9a89ec6f1f20eb53a1c7",
   "rules_baseline": {
     "allowed_fidelity": [
@@ -3602,5 +3601,5 @@
   },
   "run_id": "behavior-20261005T065040Z",
   "schema_version": 1,
-  "stage_status": "blocked_by_checkpoint"
+  "stage_status": "independent_research_in_progress"
 }

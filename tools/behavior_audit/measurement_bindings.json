@@ -308,5 +308,565 @@
       }
     },
     "netlist_sha256": "f0bd4b2381c2f51ab4bb780b6f670453144be7ceb4c39823b4e0dae5763714dc"
+  },
+  "BEH-RES-NETWORK/B1": {
+    "netlist_sha256": "6a1168767729e6a8c9c8eb78704731030975b1d38100fbb7bb8131a923e84bd2",
+    "measurements": {
+      "i(pin4)": {
+        "scalar": "i4",
+        "scale": 1.0,
+        "source_line": "print i4",
+        "rationale": "Explicit authored observation for i(pin4); no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-RES-NETWORK/B2": {
+    "netlist_sha256": "8fa6c319f64524d7d3f213d97460ee74158d0cd70dcf801b1f4a5031de4c32a3",
+    "measurements": {
+      "i_total": {
+        "scalar": "itot",
+        "scale": 1.0,
+        "source_line": "print itot",
+        "rationale": "Explicit authored observation for i_total; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-RES-POT/B4": {
+    "netlist_sha256": "b0eb4cc463afe641a0fa3852af1693f4ead58dad3aa3aa832a7f0944453f209b",
+    "measurements": {
+      "v(w)@0.25ms": {
+        "scalar": "v1",
+        "scale": 1.0,
+        "source_line": "meas tran v1 find v(w) at=0.25m",
+        "rationale": "Explicit authored observation for v(w)@0.25ms; no nearest-value matching or expected-value change."
+      },
+      "v(w)@0.75ms": {
+        "scalar": "v2",
+        "scale": 1.0,
+        "source_line": "meas tran v2 find v(w) at=0.75m",
+        "rationale": "Explicit authored observation for v(w)@0.75ms; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-RES-SENSE/B1": {
+    "netlist_sha256": "b25bde9e184f48fc4d20bd86358c2e094f446d0e029227a5348ef9d3fd8cdc73",
+    "measurements": {
+      "V_kelvin": {
+        "scalar": "vk",
+        "scale": 1.0,
+        "source_line": "print vk",
+        "rationale": "Explicit authored observation for V_kelvin; no nearest-value matching or expected-value change."
+      },
+      "V_2wire": {
+        "scalar": "v2w",
+        "scale": 1.0,
+        "source_line": "print v2w",
+        "rationale": "Explicit authored observation for V_2wire; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-RES-SENSE/B2": {
+    "netlist_sha256": "0b0a78b1f032d49bd51c24c2d608be21adac74b212cf4cc113cb28c495c784b5",
+    "measurements": {
+      "V": {
+        "scalar": "v(n1)",
+        "scale": 1.0,
+        "source_line": "print v(n1)",
+        "rationale": "Explicit authored observation for V; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-RES-SENSE/B3": {
+    "netlist_sha256": "cd006528e6823b3cbeb9cbfbcec0722629abf38f9d4e71087e9e8e6dca615385",
+    "measurements": {
+      "Zmag": {
+        "scalar": "z",
+        "scale": 1.0,
+        "source_line": "print z",
+        "rationale": "Explicit authored observation for Zmag; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-DIO-PN/B1": {
+    "netlist_sha256": "8dffd8f6985236af4d99116aa263af199cdcdb5fc7c245e50fe3f888153ca5ec",
+    "measurements": {
+      "V at 10 mA": {
+        "scalar": "v(d)",
+        "scale": 1.0,
+        "source_line": "print v(d)",
+        "rationale": "Explicit authored observation for V at 10 mA; no nearest-value matching or expected-value change. Ordered operating points are explicit in the immutable authored deck; require the exact count.",
+        "occurrence": 1,
+        "occurrence_count": 3
+      }
+    }
+  },
+  "BEH-DIO-PN/B4": {
+    "netlist_sha256": "6b6ca39ee892607314b73c505ecb7b9e11bf2e17734fd249322a6e5254f57e29",
+    "measurements": {
+      "CJ at 4 V": {
+        "scalar": "c",
+        "scale": 1.0,
+        "source_line": "print c",
+        "rationale": "Explicit authored observation for CJ at 4 V; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-DIO-PN/B5": {
+    "netlist_sha256": "ca60d43378e4d4b97cbb974e48461a5e0cded28d9060e1c4e5f32757f479ad61",
+    "measurements": {
+      "V at 100 uA reverse": {
+        "scalar": "v(k)",
+        "scale": 1.0,
+        "source_line": "print v(k)",
+        "rationale": "Explicit authored observation for V at 100 uA reverse; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-DIO-PN/B6": {
+    "netlist_sha256": "e9f7cd6d87fc46c904546e35f20c371675e3aa23be5c773fc0c17f8da7affdf8",
+    "measurements": {
+      "high clamp": {
+        "scalar": "vhi",
+        "scale": 1.0,
+        "source_line": "meas tran vhi max v(sig)",
+        "rationale": "Explicit authored observation for high clamp; no nearest-value matching or expected-value change."
+      },
+      "low clamp": {
+        "scalar": "vlo",
+        "scale": 1.0,
+        "source_line": "meas tran vlo min v(sig)",
+        "rationale": "Explicit authored observation for low clamp; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-DIO-PN/B7": {
+    "netlist_sha256": "805c356fc03f568801e42d6b92b658d1ba940f00bdb7ec52eeba8c3d2ad6ece9",
+    "measurements": {
+      "VF at 100 C, 10 mA": {
+        "scalar": "v(d)",
+        "scale": 1.0,
+        "source_line": "print v(d)",
+        "rationale": "Explicit authored observation for VF at 100 C, 10 mA; no nearest-value matching or expected-value change. Ordered operating points are explicit in the immutable authored deck; require the exact count.",
+        "occurrence": 1,
+        "occurrence_count": 2
+      }
+    }
+  },
+  "BEH-DIO-SCHOTTKY/B1": {
+    "netlist_sha256": "ce4f584cb70a767d35def3fb98def8557c50d2244ff6de925f26437489c0c99e",
+    "measurements": {
+      "V at 1 A": {
+        "scalar": "v(d)",
+        "scale": 1.0,
+        "source_line": "print v(d)",
+        "rationale": "Explicit authored observation for V at 1 A; no nearest-value matching or expected-value change. Ordered operating points are explicit in the immutable authored deck; require the exact count.",
+        "occurrence": 0,
+        "occurrence_count": 2
+      }
+    }
+  },
+  "BEH-DIO-SCHOTTKY/B2": {
+    "netlist_sha256": "cbf6f9c5a3c5e010d7e139890763b96f31c6f3f62befaf11bd37a30f74031e66",
+    "measurements": {
+      "IR 25C": {
+        "scalar": "i(vr)",
+        "scale": -1.0,
+        "source_line": "print i(Vr)",
+        "rationale": "Explicit authored observation for IR 25C; no nearest-value matching or expected-value change. The voltage-source branch current is opposite to the stated load/reverse-current magnitude. Ordered operating points are explicit in the immutable authored deck; require the exact count.",
+        "occurrence": 0,
+        "occurrence_count": 2
+      },
+      "IR 100C": {
+        "scalar": "i(vr)",
+        "scale": -1.0,
+        "source_line": "print i(Vr)",
+        "rationale": "Explicit authored observation for IR 100C; no nearest-value matching or expected-value change. The voltage-source branch current is opposite to the stated load/reverse-current magnitude. Ordered operating points are explicit in the immutable authored deck; require the exact count.",
+        "occurrence": 1,
+        "occurrence_count": 2
+      }
+    }
+  },
+  "BEH-DIO-TVS/B1": {
+    "netlist_sha256": "a1f44f588f3fefe33edb85ccd93c846f83e3b03ed62a332c25f0a8c9afc903da",
+    "measurements": {
+      "V at 24.6 A": {
+        "scalar": "v(c)",
+        "scale": 1.0,
+        "source_line": "print v(c)",
+        "rationale": "Explicit authored observation for V at 24.6 A; no nearest-value matching or expected-value change. Ordered operating points are explicit in the immutable authored deck; require the exact count.",
+        "occurrence": 0,
+        "occurrence_count": 2
+      }
+    }
+  },
+  "BEH-DIO-TVS/B2": {
+    "netlist_sha256": "1677fe2af05a855fec84078147a67c8d181c0d657f6a941c2263fb82f6a21115",
+    "measurements": {
+      "Ppeak": {
+        "scalar": "ppk",
+        "scale": 1.0,
+        "source_line": "meas tran ppk max ptvs",
+        "rationale": "Explicit authored observation for Ppeak; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-DIO-ZENER/B1": {
+    "netlist_sha256": "bf8f3b0ae809d16e0779fc1ed9b16de5242820fb6740c4e08707f78442e51768",
+    "measurements": {
+      "VZ": {
+        "scalar": "v(c)",
+        "scale": 1.0,
+        "source_line": "print v(c)",
+        "rationale": "Explicit authored observation for VZ; no nearest-value matching or expected-value change."
+      },
+      "rZ": {
+        "scalar": "rz",
+        "scale": 1.0,
+        "source_line": "print rz",
+        "rationale": "Explicit authored observation for rZ; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-DIO-ZENER/B2": {
+    "netlist_sha256": "d569be201eb0add4a27836436fd3a8d0972b5a257f1914ba9ad594de1a11a381",
+    "measurements": {
+      "Vout": {
+        "scalar": "v(k)",
+        "scale": 1.0,
+        "source_line": "print v(k) i(Vin)",
+        "rationale": "Explicit authored observation for Vout; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-DIO-ZENER/B3": {
+    "netlist_sha256": "3f8c2451e4b375087ff02d8e587c1bf047a67140f6634454dc270c70b711d422",
+    "measurements": {
+      "dVout/dVin": {
+        "scalar": "abs(v(k))",
+        "scale": 1.0,
+        "source_line": "print abs(v(k))",
+        "rationale": "Explicit authored observation for dVout/dVin; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-DISP-LCD1602/B1": {
+    "netlist_sha256": "9e02cac4b7b46d934cd0fa9a240166018535e1dc6c9c6d5d486315d60e830328",
+    "measurements": {
+      "I_backlight": {
+        "scalar": "ibl",
+        "scale": 1.0,
+        "source_line": "print v(a) ibl",
+        "rationale": "Explicit authored observation for I_backlight; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-DISP-LEDARRAY/B1": {
+    "netlist_sha256": "534b0d4afb36093d9d17da1915e9a1e7b2a0b22b0fcc04c114d04329a3fce4b0",
+    "measurements": {
+      "I_led_avg": {
+        "scalar": "iled",
+        "scale": 1.0,
+        "source_line": ".meas tran iled AVG i(VSENSE) FROM=2m TO=20m",
+        "rationale": "Explicit authored observation for I_led_avg; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-DISP-LEDARRAY/B2": {
+    "netlist_sha256": "4478d672ed320fdb30137e5e2c193700436e404cfa0689faff2b5dcb7ef7fa98",
+    "measurements": {
+      "I_digit_avg": {
+        "scalar": "idig",
+        "scale": 1.0,
+        "source_line": ".meas tran idig AVG i(VD0) FROM=2m TO=20m",
+        "rationale": "Explicit authored observation for I_digit_avg; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-DISP-OLED-I2C/B1": {
+    "netlist_sha256": "b942eae26bfbdfbdbc80612fc49a91a239ea99c47184e8e35df4e27d9cea105e",
+    "measurements": {
+      "tr 30-70": {
+        "scalar": "tr",
+        "scale": 1.0,
+        "source_line": ".meas tran tr TRIG v(sda) VAL=0.99 RISE=1 TARG v(sda) VAL=2.31 RISE=1",
+        "rationale": "Explicit authored observation for tr 30-70; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-DISP-OLED-I2C/B2": {
+    "netlist_sha256": "526d227c4c8058d04a2b77e2045b5b99c6ae29b4ce35ab422242f9c188d44363",
+    "measurements": {
+      "Vdd": {
+        "scalar": "v(vdd)",
+        "scale": 1.0,
+        "source_line": "print v(vdd)",
+        "rationale": "Explicit authored observation for Vdd; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-LED-ADDRESSABLE/B2": {
+    "netlist_sha256": "3fc3f479a262f7591af348c467a4bf4c2cfdcef714282832c67bb9d954b0a06f",
+    "measurements": {
+      "V_end": {
+        "scalar": "v(n10)",
+        "scale": 1.0,
+        "source_line": "print v(n10) v(n1)",
+        "rationale": "Explicit authored observation for V_end; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-LED-INDICATOR/B2": {
+    "netlist_sha256": "5a7ae87cab48c44037d23231ad67cbaadd6a5a3b1df6f3b6432c982eff396c86",
+    "measurements": {
+      "I_red": {
+        "scalar": "ir",
+        "scale": 1.0,
+        "source_line": "print ir ig ib iw",
+        "rationale": "Explicit authored observation for I_red; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-LED-INDICATOR/B5": {
+    "netlist_sha256": "555e6df5332b703155542fbfe7146355f9b9587cda4228db652062b4bee92c8a",
+    "measurements": {
+      "Iv(1mA)": {
+        "scalar": "iv1",
+        "scale": 1.0,
+        "source_line": "print iv1 iv20",
+        "rationale": "Explicit authored observation for Iv(1mA); no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-LED-INDICATOR/B6": {
+    "netlist_sha256": "5cfaea5527df5dab5ac243fb6b7e381a0077c9a2e8b1306f1d2eaa00289c2cb8",
+    "measurements": {
+      "dVF/dT red": {
+        "scalar": "d1",
+        "scale": 1.0,
+        "source_line": "print d1 d2 d3 d4",
+        "rationale": "Explicit authored observation for dVF/dT red; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-LED-POWER/B1": {
+    "netlist_sha256": "5ad1557a1cddbe4ece69140c5e70e66e7022d0a24e8b2be1858974eb27bff6a5",
+    "measurements": {
+      "Tj": {
+        "scalar": "const.tj",
+        "scale": 1.0,
+        "source_line": "print vf pheat tj",
+        "rationale": "Explicit authored observation for Tj; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-MAG-CMC/B2": {
+    "netlist_sha256": "2752871fe273ec6078597b222940cbbde54642e6e40a0ab453b87544448f0b04",
+    "measurements": {
+      "Z_2p5MHz": {
+        "scalar": "z25",
+        "scale": 1.0,
+        "source_line": "meas ac z25 find vm(c1) at=2.5meg",
+        "rationale": "Explicit authored observation for Z_2p5MHz; no nearest-value matching or expected-value change."
+      },
+      "Z_10MHz": {
+        "scalar": "z10",
+        "scale": 1.0,
+        "source_line": "meas ac z10 find vm(c1) at=10meg",
+        "rationale": "Explicit authored observation for Z_10MHz; no nearest-value matching or expected-value change."
+      },
+      "Z_100MHz": {
+        "scalar": "z100",
+        "scale": 1.0,
+        "source_line": "meas ac z100 find vm(c1) at=100meg",
+        "rationale": "Explicit authored observation for Z_100MHz; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-MAG-ETHMAG/B1": {
+    "netlist_sha256": "0712987ab31e9a5ddb1e8cb0e65d8b3d33afb09eacb3570ade89e0c52ec39d6f",
+    "measurements": {
+      "IL_1MHz_dB": {
+        "scalar": "il_1m",
+        "scale": 1.0,
+        "source_line": "meas ac il_1M find il at=1meg",
+        "rationale": "Explicit authored observation for IL_1MHz_dB; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-MAG-INDUCTOR/B2": {
+    "netlist_sha256": "f645755c77eebc5ae49837e0695a7338a1122fc0ce2eb78a7cb8fba4cf409917",
+    "measurements": {
+      "i_at_8us": {
+        "scalar": "i_8u",
+        "scale": -1.0,
+        "source_line": "meas tran i_8u find i(V1) at=8u",
+        "rationale": "Explicit authored observation for i_at_8us; no nearest-value matching or expected-value change. The voltage-source branch current is opposite to the stated load/reverse-current magnitude."
+      }
+    }
+  },
+  "BEH-MAG-XFMR-CT/B1": {
+    "netlist_sha256": "ef63735e5d59ea745350d0bef133da31dd8b3c606e426c8acc096050dda108fb",
+    "measurements": {
+      "Vburden_pk": {
+        "scalar": "vb",
+        "scale": 1.0,
+        "source_line": "meas tran vb max v(s1) from=300u to=400u",
+        "rationale": "Explicit authored observation for Vburden_pk; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-MAG-XFMR-CT/B2": {
+    "netlist_sha256": "4e28f2dc2a96160bdab0eef1a249fb1065330a2b84c3ab8f77237d68ae90671d",
+    "measurements": {
+      "fc": {
+        "scalar": "fl",
+        "scale": 1.0,
+        "source_line": "meas ac fl when vm(s1)=0.35355 rise=1",
+        "rationale": "Explicit authored observation for fc; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-MAG-XFMR-CT/B3": {
+    "netlist_sha256": "7d8bef592e896dbff62ca893f7305e293be257d26b75a17e4d6429973abe7064",
+    "measurements": {
+      "V_open_pk": {
+        "scalar": "vopen",
+        "scale": 1.0,
+        "source_line": "meas tran vopen max v(s1) from=60u to=120u",
+        "rationale": "Explicit authored observation for V_open_pk; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-MAG-XFMR-FLYBACK/B2": {
+    "netlist_sha256": "adfdba5be4610f8667ec239fbe98e7dcf1d6782a6f3322f88ba65b26e31606e8",
+    "measurements": {
+      "Vdrain_pk": {
+        "scalar": "vdpk",
+        "scale": 1.0,
+        "source_line": "meas tran vdpk max v(d) from=1.0m to=1.2m",
+        "rationale": "Explicit authored observation for Vdrain_pk; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-MAG-XFMR-FLYBACK/B3": {
+    "netlist_sha256": "7e566889e253c6d73c674fa2043ec22b06ca35e61b25600a3e3392cfc7449997",
+    "measurements": {
+      "P_clamp": {
+        "scalar": "psn",
+        "scale": 1.0,
+        "source_line": "meas tran psn avg pclamp from=2.2m to=2.5m",
+        "rationale": "Explicit authored observation for P_clamp; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-MAG-XFMR-FLYBACK/B3b": {
+    "netlist_sha256": "f42760432b7b35e65e35fec22c7beb754d4d4f60f5800fce2f8bb5034cf573c4",
+    "measurements": {
+      "P_clamp": {
+        "scalar": "psn",
+        "scale": 1.0,
+        "source_line": "meas tran psn avg pclamp from=2.2m to=2.5m",
+        "rationale": "Explicit authored observation for P_clamp; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-MAG-XFMR-SIGNAL/B1": {
+    "netlist_sha256": "703e04c63ae3ac6fc2172c1fd40ccc6105f6ad19cc1f096ad77ecff2be0f4946",
+    "measurements": {
+      "gain_1kHz": {
+        "scalar": "vmid",
+        "scale": 1.0,
+        "source_line": "meas ac vmid find vm(s1) at=1k",
+        "rationale": "Explicit authored observation for gain_1kHz; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-MAG-XFMR-SIGNAL/B3": {
+    "netlist_sha256": "5bf351c44afcaf50e153d6161863213a43d93692018d4dd7e1747be8eb178f1a",
+    "measurements": {
+      "i_pk": {
+        "scalar": "ipk",
+        "scale": 1.0,
+        "source_line": "meas tran ipk max i(V1) from=10m to=50m",
+        "rationale": "Explicit authored observation for i_pk; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-TRN-BJT/B1": {
+    "netlist_sha256": "5e771a22f62e58c8529a1e75e4da648b02b14102c12f8089b2f1682f3e638a5b",
+    "measurements": {
+      "Ic": {
+        "scalar": "ic",
+        "scale": 1.0,
+        "source_line": "print ic v(c) i(Vlogic)",
+        "rationale": "Explicit authored observation for Ic; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-TRN-BJT/B2": {
+    "netlist_sha256": "f0b7dac1f81c7d9878245be0bbdc6a2b714162f97b6e778a0083c32e7b866a75",
+    "measurements": {
+      "gain": {
+        "scalar": "av",
+        "scale": 1.0,
+        "source_line": "print av",
+        "rationale": "Explicit authored observation for gain; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-TRN-BJT/B6": {
+    "netlist_sha256": "d8d3804a44b624b4881b7aac57bc0be6d725a4dd3078c2c4bd1089c5ca328ed0",
+    "measurements": {
+      "dVbe_dT": {
+        "scalar": "tc",
+        "scale": 1.0,
+        "source_line": "print tc",
+        "rationale": "Explicit authored observation for dVbe_dT; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-TRN-MOSFET/B1": {
+    "netlist_sha256": "c31895ab76cafe0b97d85e06df2f187db9eac46f931ae1873123d40cc1d3c621",
+    "measurements": {
+      "Vds": {
+        "scalar": "v(d)",
+        "scale": 1.0,
+        "source_line": "print v(d)",
+        "rationale": "Explicit authored observation for Vds; no nearest-value matching or expected-value change."
+      }
+    }
+  },
+  "BEH-TRN-MOSFET/B2": {
+    "netlist_sha256": "16563c40448af14b6ce263897531955873928be65968d4ddb82a7fd7e737e243",
+    "measurements": {
+      "Rds_4p5V_L3": {
+        "scalar": "r45a",
+        "scale": 1.0,
+        "source_line": "print r45a r45b",
+        "rationale": "Device A is the authored L3 model; device B is the deliberately mismatched L1 comparator."
+      }
+    }
+  },
+  "BEH-TRN-MOSFET/B3": {
+    "netlist_sha256": "c22390a13cc1d3a2d1fdac5de91919b58e65c1302c5f3e264e688a7cbfcbd0ea",
+    "measurements": {
+      "Qgd": {
+        "scalar": "qgd_a_nc",
+        "scale": 1e-09,
+        "source_line": "print qg_a_nC qg_b_nC qgd_a_nC qgd_b_nC",
+        "rationale": "Device A uses nonlinear Cgd; device B is the deliberately inadequate constant-capacitance comparator. Convert the authored nC observation to coulombs."
+      }
+    }
+  },
+  "BEH-TRN-MOSFET/B8": {
+    "netlist_sha256": "6aba1ec8b6b055edc8c2abf10222c9dc09c692107fcce7e6b8cb4ec37d3c3448",
+    "measurements": {
+      "Eav": {
+        "scalar": "eav",
+        "scale": 1.0,
+        "source_line": "meas tran eav integ p from=0.6251m to=1.5m",
+        "rationale": "Explicit authored observation for Eav; no nearest-value matching or expected-value change."
+      }
+    }
   }
 }

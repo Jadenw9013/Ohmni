@@ -38,6 +38,12 @@ def numeric_contract(item: dict) -> dict:
         elif isinstance(tolerance, str) and re.fullmatch(r"\s*[\d.]+\s*(?:%|percent)\s*", tolerance):
             percentage = re.sub(r"(?:%|percent)\s*$", "", tolerance).strip()
             tolerance = abs(value) * float(percentage) / 100
+        elif isinstance(tolerance, str) and (unit := re.fullmatch(
+            rf"\s*({NUMBER})\s+(mV|V|ohm|C|ns|us|ms|s)\s*", tolerance
+        )):
+            tolerance = float(unit[1]) * {"mV": 1e-3, "V": 1, "ohm": 1,
+                                         "C": 1, "ns": 1e-9, "us": 1e-6,
+                                         "ms": 1e-3, "s": 1}[unit[2]]
         else:
             tolerance = float(tolerance)
     except (ValueError, TypeError):
@@ -63,16 +69,23 @@ def measurement_binding(audit, identity: str, item: dict) -> dict:
     deck = (audit.root / contract["file"]).read_text(encoding="utf-8")
     if not row.get("source_line") or row["source_line"] not in deck.splitlines():
         raise AuditError(f"measurement binding does not relocate to its source line: {identity}")
-    return {"scalar": row["scalar"].casefold(), "scale": row.get("scale", 1.0)}
+    return dict(row, scalar=row["scalar"].casefold(), scale=row.get("scale", 1.0))
 
 
 def observed_value(audit, identity: str, item: dict, output: str) -> float | None:
     binding = measurement_binding(audit, identity, item)
-    value = scalars(output).get(binding["scalar"])
+    if "occurrence" in binding:
+        values = [float(number) for name, number in SCALAR.findall(output)
+                  if name.casefold() == binding["scalar"]]
+        if len(values) != binding["occurrence_count"]:
+            return None
+        value = values[binding["occurrence"]]
+    else:
+        value = scalars(output).get(binding["scalar"])
     return value * binding["scale"] if value is not None else None
 
 
-def inline_deck(path: Path, boundary: Path, seen: tuple[Path, ...] = ()) -> str:
+def inline_deck(path: Path, boundary: Path, seen: tuple[Path, ...] = (), relocations: dict | None = None) -> str:
     path = path.resolve()
     if boundary.resolve() not in path.parents or path in seen:
         raise AuditError(f"include escapes bench directory or cycles: {path}")
@@ -80,8 +93,17 @@ def inline_deck(path: Path, boundary: Path, seen: tuple[Path, ...] = ()) -> str:
     for line in path.read_text(encoding="utf-8").splitlines():
         match = re.match(r"^\s*\.(?:include|inc)\s+(.+?)\s*$", line, re.IGNORECASE)
         if match:
-            target = path.parent / match.group(1).strip('"\'')
-            lines.append(inline_deck(target, boundary, (*seen, path)))
+            reference = match.group(1).strip('"\'')
+            relocation = (relocations or {}).get(reference)
+            if relocation:
+                target = (boundary / relocation["relative_path"]).resolve()
+                if boundary.resolve() not in target.parents:
+                    raise AuditError(f"relocated include escapes bench directory: {reference}")
+                if _sha_bytes(target.read_bytes()) != relocation["sha256"]:
+                    raise AuditError(f"relocated include content changed: {reference}")
+            else:
+                target = path.parent / reference
+            lines.append(inline_deck(target, boundary, (*seen, path), relocations))
         else:
             lines.append(line)
     return "\n".join(lines)+"\n"
@@ -94,6 +116,9 @@ def run_benches(audit, ids: list[str] | None = None):
     contracts = state["bench_contracts"]
     selected = ids or sorted(contracts)
     adapter = NgspiceAdapter()
+    import json
+    relocations_path = audit.root / "tools/behavior_audit/include_relocations.json"
+    relocations = json.loads(relocations_path.read_text()) if relocations_path.exists() else {}
     receipts = []
     for identity in selected:
         if identity not in contracts:
@@ -103,7 +128,7 @@ def run_benches(audit, ids: list[str] | None = None):
         folder = audit.run_dir / "bench-output" / slug
         folder.mkdir(parents=True, exist_ok=True)
         try:
-            deck = inline_deck(audit.root / contract["file"], audit.root / "docs/behavior/bench")
+            deck = inline_deck(audit.root / contract["file"], audit.root / "docs/behavior/bench", relocations=relocations)
             observation = adapter.behavior_bench(deck, work_dir=folder)
         except (AuditError, OSError) as exc:
             observation = {"status": "not_run", "stderr": str(exc), "stdout": "", "version_output": ""}
