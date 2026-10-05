@@ -119,3 +119,11 @@ Read primary diagrams for WE-SL5, WE-CMB, TY-145P, WE-FB, AS-103 and H1102NL. Re
 ## D015: Diode and LED reference conflicts, 2026-10-05
 
 Use the primary S2M 1.5 A ceiling instead of the unsourced 2 A scaling. Keep earlier conservative 150 C for an unspecified S1M revision although the opened 2024 source says 175 C. BAW56 common-anode variant needs its own 90 V limit and 2 pF maximum, not BAV99 values. Correctly scope SS14 100 C leakage to 6 mA and SS34 to 20 mA. Record the BZT52 thermal-table/note discrepancy rather than selecting a convenient value. DF10M drawing has adjacent AC pins: rotating its top view 90 degrees into the library yields PLUS1/MINUS2/AC3/AC4; the old assumed permutation remains blocked until tested. WOG/MCC mixed physical binding remains unresolved. Do not promote generic LED ratings from a single color/reference, nor treat an absent thermal rating as zero heating. Record reference/body mismatches without changing the 3D library.
+
+## D016 — display bindings and package-specific power limits
+
+Keep display mappings specific to SC56-11EWA, DC56-11EWA and CA56-12EWA; do not infer shared pins from segment count. WS2812B top-view notch is pin3, opposite pin1; intersect its conflicting supply intervals at4.5..5.3 V. Controller-only SSD1306 ratings do not establish module pin order, 5 V tolerance or load current. Block module simulation until those facts are supplied. Keep the six-terminal RGB package blocked when no complete primary PDF can be archived.
+
+XP-E2 Rev25B white reverse limit is1 V; retain its revision scope and do not silently increase existing current ratings. Transistor bindings remain part-specific. IRFP260N source gives1=G,2=D,3=S,tab=D, resolving the earlier extraction error. IRLR8721 power65 W atTC25 and33 W atTC100 are separate conditions. IRFZ44N94 W versus RthJC1.5 remains a genuine conflict: enforce both limits, choosing the lower power. None of these datasheet facts makes a generic package an electrically verified part.
+
+Python TLS errors were recoverable with normal Windows trust-store validation. Added a PowerShell fetch adapter that preserves certificate verification and records exact response hashes; HTTP success does not by itself establish that a response is a datasheet, so HTML rejection pages were not used as evidence.

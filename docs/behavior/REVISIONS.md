@@ -60,3 +60,7 @@
 ## 2026-10-05: Stage 2 diode and indicator LED source review (OHM-061..080)
 
 Opened package-matched primary sheets; published field/page/condition evidence and current-run class bench receipts. Source status remains unchanged. The DFM bridge drawing contradicts the assumed diagonal AC map; a derived 90-degree package transform is recorded and legacy binding stays blocked pending implementation/tests. S2M is 1.5 A, BAW56 is 90 V, SS14 hot leakage is 6 mA in the source column, and package-specific thermal conditions must not be copied between references. Exact reference LED dimensions differ from some illustrative geometry. No original spec or geometry was changed.
+
+## 2026-10-05: Stage 2 OHM-081 through OHM-100
+
+Added page-specific primary research and current-run receipts for LEDs, displays and transistor packages. Original statuses and canonical fields remain unchanged. OHM-083 remains unresolved after unsuccessful archival fetches. Exact manufacturer/version scopes, display pin maps, WS2812B corner/voltage conflict, OLED module limitations, maximum-versus-typical thermal values and MOSFET case-temperature conditions are explicit in gapfill ledgers.

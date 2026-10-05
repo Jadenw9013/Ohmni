@@ -11,7 +11,153 @@
   "fidelity": "behavioural_approximation",
   "group": "R5",
   "layer": "L1",
-  "research": null,
+  "research": {
+    "bench_result": "bench-results/BEH-LED-POWER--B1.json",
+    "bench_results": [
+      "bench-results/BEH-LED-POWER--B1.json",
+      "bench-results/BEH-LED-POWER--B2.json"
+    ],
+    "conflicts": [
+      "No actual star-module binding establishes that this XP-E2 revision is fitted."
+    ],
+    "documents": [
+      {
+        "document_id": "xpe2",
+        "manufacturer": "Cree LED",
+        "note": "Manufacturer PDF read from the hashed fetch archive; distributor-hosted copies retain manufacturer identity.",
+        "page": null,
+        "revision": "CLD-DS56 Rev.25B,2026",
+        "source_status": "primary_source_opened",
+        "title": "XLamp XP-E2 LED",
+        "url": "https://downloads.cree-led.com/files/ds/x/XLamp-XPE2.pdf"
+      }
+    ],
+    "entry_id": "OHM-086",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "reference_part",
+        "page": 3,
+        "scope": "XP-E2 white, Rev.25B",
+        "sources": [
+          "https://downloads.cree-led.com/files/ds/x/XLamp-XPE2.pdf"
+        ],
+        "unit": null,
+        "value": "Cree XLamp XP-E2 white"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "thermal_resistance_junction_solderpoint_typical",
+        "page": 3,
+        "scope": "XP-E2 white, Rev.25B",
+        "sources": [
+          "https://downloads.cree-led.com/files/ds/x/XLamp-XPE2.pdf"
+        ],
+        "unit": "K/W",
+        "value": 5.8
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_forward_current",
+        "page": 3,
+        "scope": "XP-E2 white, Rev.25B",
+        "sources": [
+          "https://downloads.cree-led.com/files/ds/x/XLamp-XPE2.pdf"
+        ],
+        "unit": "mA",
+        "value": 1500
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_reverse_voltage",
+        "page": 3,
+        "scope": "XP-E2 white, Rev.25B",
+        "sources": [
+          "https://downloads.cree-led.com/files/ds/x/XLamp-XPE2.pdf"
+        ],
+        "unit": "V",
+        "value": 1
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_junction_temperature",
+        "page": 4,
+        "scope": "XP-E2 white, Rev.25B",
+        "sources": [
+          "https://downloads.cree-led.com/files/ds/x/XLamp-XPE2.pdf"
+        ],
+        "unit": "C",
+        "value": 150
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "forward_voltage_typical_max",
+        "page": 4,
+        "scope": "XP-E2 white, Rev.25B; IF350 mA,TJ85 C",
+        "sources": [
+          "https://downloads.cree-led.com/files/ds/x/XLamp-XPE2.pdf"
+        ],
+        "unit": "V",
+        "value": [
+          2.84,
+          3.1
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "forward_voltage_temperature_coefficient",
+        "page": 3,
+        "scope": "XP-E2 white, Rev.25B; typical",
+        "sources": [
+          "https://downloads.cree-led.com/files/ds/x/XLamp-XPE2.pdf"
+        ],
+        "unit": "mV/C",
+        "value": -1.5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "thermal_pad_electrical_role",
+        "page": 38,
+        "scope": "XP-E2 white, Rev.25B; mechanical drawing visually inspected",
+        "sources": [
+          "https://downloads.cree-led.com/files/ds/x/XLamp-XPE2.pdf"
+        ],
+        "unit": null,
+        "value": "Center pad electrically isolated; cathode at left in top view, anode at right"
+      }
+    ],
+    "remaining_open_items": [
+      "The star module manufacturer, electrical pad-to-emitter map and MCPCB/heatsink thermal path remain unspecified.",
+      "Emitter datasheet values do not establish whole-module insulation or ambient power dissipation."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [
+      "Module terminal map and module thermal limits are missing; keep the star model blocked."
+    ],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-086.md",
+      "document_sha256": "c0d36eec4378e5a6b7efc80651e2d0986584c447d386413ff23d95a9d1ee3181",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
   "resolution_ids": [],
   "schema_version": 1,
   "simulation_disposition": "simulable",

@@ -11,7 +11,179 @@
   "fidelity": "behavioural_approximation",
   "group": "R5",
   "layer": "L1",
-  "research": null,
+  "research": {
+    "bench_result": "bench-results/BEH-DISP-LEDARRAY--B1.json",
+    "bench_results": [
+      "bench-results/BEH-DISP-LEDARRAY--B1.json",
+      "bench-results/BEH-DISP-LEDARRAY--B2.json"
+    ],
+    "conflicts": [
+      "The primary source gives 75 mW per die; do not use the older 105 mW assumption."
+    ],
+    "documents": [
+      {
+        "document_id": "sc56-11ewa",
+        "manufacturer": "Kingbright",
+        "note": "Manufacturer PDF read from the hashed fetch archive; distributor-hosted copies retain manufacturer identity.",
+        "page": null,
+        "revision": "DSAP6671 V1A,03/04/2019",
+        "source_status": "primary_source_opened",
+        "title": "SC56-11EWA",
+        "url": "https://www.kingbrightusa.com/images/catalog/SPEC/SC56-11EWA.pdf"
+      }
+    ],
+    "entry_id": "OHM-087",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "reference_part",
+        "page": 1,
+        "scope": "SC56-11EWA",
+        "sources": [
+          "https://www.kingbrightusa.com/images/catalog/SPEC/SC56-11EWA.pdf"
+        ],
+        "unit": null,
+        "value": "SC56-11EWA"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "manufacturer_pin_roles",
+        "page": 1,
+        "scope": "SC56-11EWA; internal circuit image inspected",
+        "sources": [
+          "https://www.kingbrightusa.com/images/catalog/SPEC/SC56-11EWA.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "common_cathodes": [
+            3,
+            8
+          ],
+          "segments": {
+            "a": 7,
+            "b": 6,
+            "c": 4,
+            "d": 2,
+            "dp": 5,
+            "e": 1,
+            "f": 9,
+            "g": 10
+          }
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "source_pin1_orientation",
+        "page": 1,
+        "scope": "SC56-11EWA; rotate coordinates clockwise 90 degrees for the stated library orientation; preserve pin numbers",
+        "sources": [
+          "https://www.kingbrightusa.com/images/catalog/SPEC/SC56-11EWA.pdf"
+        ],
+        "unit": null,
+        "value": "Bottom-left in upright front view"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_forward_current_per_segment",
+        "page": 2,
+        "scope": "SC56-11EWA; TA25 C",
+        "sources": [
+          "https://www.kingbrightusa.com/images/catalog/SPEC/SC56-11EWA.pdf"
+        ],
+        "unit": "mA",
+        "value": 30
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_power_per_segment",
+        "page": 2,
+        "scope": "SC56-11EWA; TA25 C",
+        "sources": [
+          "https://www.kingbrightusa.com/images/catalog/SPEC/SC56-11EWA.pdf"
+        ],
+        "unit": "mW",
+        "value": 75
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_reverse_voltage",
+        "page": 2,
+        "scope": "SC56-11EWA",
+        "sources": [
+          "https://www.kingbrightusa.com/images/catalog/SPEC/SC56-11EWA.pdf"
+        ],
+        "unit": "V",
+        "value": 5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_junction_temperature",
+        "page": 2,
+        "scope": "SC56-11EWA",
+        "sources": [
+          "https://www.kingbrightusa.com/images/catalog/SPEC/SC56-11EWA.pdf"
+        ],
+        "unit": "C",
+        "value": 125
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "forward_voltage_typical_max",
+        "page": 2,
+        "scope": "SC56-11EWA; IF10 mA",
+        "sources": [
+          "https://www.kingbrightusa.com/images/catalog/SPEC/SC56-11EWA.pdf"
+        ],
+        "unit": "V",
+        "value": [
+          1.9,
+          2.3
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_peak_forward_current",
+        "page": 2,
+        "scope": "SC56-11EWA; 0.1 ms pulse,10 percent duty",
+        "sources": [
+          "https://www.kingbrightusa.com/images/catalog/SPEC/SC56-11EWA.pdf"
+        ],
+        "unit": "mA",
+        "value": 160
+      }
+    ],
+    "remaining_open_items": [
+      "Per-segment thermal coupling, aggregate common-lead current and exact fit across current/temperature remain open.",
+      "Multiplex duty does not permit exceeding the specified peak-current pulse conditions."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-087.md",
+      "document_sha256": "ebb15d9fcb799a496458ce50fc8c4ff79da8c828c690471ff34a63926da685be",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
   "resolution_ids": [],
   "schema_version": 1,
   "simulation_disposition": "not_simulable",

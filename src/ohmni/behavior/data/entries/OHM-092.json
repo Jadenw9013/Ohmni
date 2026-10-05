@@ -11,7 +11,182 @@
   "fidelity": "behavioural_approximation",
   "group": "R5",
   "layer": "L3",
-  "research": null,
+  "research": {
+    "bench_result": "bench-results/BEH-DISP-OLED-I2C--B1.json",
+    "bench_results": [
+      "bench-results/BEH-DISP-OLED-I2C--B1.json",
+      "bench-results/BEH-DISP-OLED-I2C--B2.json"
+    ],
+    "conflicts": [
+      "The retrieved DC and I2C tables resolve controller-level missing data only; they do not verify 5 V module tolerance."
+    ],
+    "documents": [
+      {
+        "document_id": "ssd1306",
+        "manufacturer": "Solomon Systech",
+        "note": "Manufacturer PDF read from the hashed fetch archive; distributor-hosted copies retain manufacturer identity.",
+        "page": null,
+        "revision": "Datasheet Rev1.1 Apr2008; appended app note Rev0.4 Jan2009",
+        "source_status": "primary_source_opened",
+        "title": "SSD1306 driver datasheet and charge-pump application note",
+        "url": "https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf"
+      }
+    ],
+    "entry_id": "OHM-092",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "logic_supply_range",
+        "page": 48,
+        "scope": "Bare SSD1306 controller, not a generic four-pin OLED module",
+        "sources": [
+          "https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf"
+        ],
+        "unit": "V",
+        "value": [
+          1.65,
+          3.3
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "panel_supply_range",
+        "page": 48,
+        "scope": "Bare SSD1306 controller, not a generic four-pin OLED module",
+        "sources": [
+          "https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf"
+        ],
+        "unit": "V",
+        "value": [
+          7,
+          15
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "logic_threshold_fractions",
+        "page": 48,
+        "scope": "Bare SSD1306 controller, not a generic four-pin OLED module",
+        "sources": [
+          "https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf"
+        ],
+        "unit": "VDD",
+        "value": {
+          "VIH_min": 0.8,
+          "VIL_max": 0.2
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_sleep_current_each_supply",
+        "page": 48,
+        "scope": "Bare SSD1306 controller, not a generic four-pin OLED module; display OFF,no panel attached",
+        "sources": [
+          "https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf"
+        ],
+        "unit": "uA",
+        "value": 10
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "logic_current_typical_max",
+        "page": 48,
+        "scope": "Bare SSD1306 controller, not a generic four-pin OLED module; VDD2.8,VCC12,IREF12.5uA,contrastFF,no load,display/all ON",
+        "sources": [
+          "https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf"
+        ],
+        "unit": "uA",
+        "value": [
+          50,
+          150
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "panel_supply_current_typical_max",
+        "page": 48,
+        "scope": "Bare SSD1306 controller, not a generic four-pin OLED module; VDD2.8,VCC12,IREF12.5uA,no load,display/all ON",
+        "sources": [
+          "https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf"
+        ],
+        "unit": "uA",
+        "value": [
+          430,
+          780
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "minimum_i2c_clock_cycle",
+        "page": 54,
+        "scope": "Bare SSD1306 controller, not a generic four-pin OLED module; TA25 C,VDD1.65..3.3",
+        "sources": [
+          "https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf"
+        ],
+        "unit": "us",
+        "value": 2.5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_i2c_rise_fall_time",
+        "page": 54,
+        "scope": "Bare SSD1306 controller, not a generic four-pin OLED module; same conditions",
+        "sources": [
+          "https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf"
+        ],
+        "unit": "ns",
+        "value": 300
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "charge_pump_battery_supply_range",
+        "page": 62,
+        "scope": "Bare SSD1306 controller, not a generic four-pin OLED module; app note p3; VDD<VBAT",
+        "sources": [
+          "https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf"
+        ],
+        "unit": "V",
+        "value": [
+          3.3,
+          4.2
+        ]
+      }
+    ],
+    "remaining_open_items": [
+      "Exact OLED module MPN, connector pin order, onboard regulator and pull-ups are absent.",
+      "Controller no-load current does not predict lit-panel/module current.",
+      "I2C address/commands/pixel state are L3 requirements and must not be claimed as ngspice results."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [
+      "Unknown module terminal map and power/logic limits block module electrical simulation."
+    ],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-092.md",
+      "document_sha256": "e7f48c46e4cdd0dcf1d3a41ee8818ee8decc5060d39b9f998e7d91a1a64a8ddb",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
   "resolution_ids": [],
   "schema_version": 1,
   "simulation_disposition": "not_simulable",

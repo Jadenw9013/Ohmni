@@ -11,7 +11,203 @@
   "fidelity": "behavioural_approximation",
   "group": "R5",
   "layer": "L3",
-  "research": null,
+  "research": {
+    "bench_result": "bench-results/BEH-LED-ADDRESSABLE--B1.json",
+    "bench_results": [
+      "bench-results/BEH-LED-ADDRESSABLE--B1.json",
+      "bench-results/BEH-LED-ADDRESSABLE--B2.json"
+    ],
+    "conflicts": [
+      "Source absolute maximum ends at 5.3 V while electrical test heading extends to 5.5 V; use the conservative intersection for any exact-reference checks.",
+      "The 5.0 mm body and 5.4 mm lead span are distinct dimensions in this drawing; do not silently change existing provisional geometry.",
+      "The notch identifies pin 3, not pin 1, for this revision."
+    ],
+    "documents": [
+      {
+        "document_id": "ws2812b",
+        "manufacturer": "Worldsemi",
+        "note": "Manufacturer PDF read from the hashed fetch archive; distributor-hosted copies retain manufacturer identity.",
+        "page": null,
+        "revision": null,
+        "source_status": "primary_source_opened",
+        "title": "WS2812B Intelligent control LED integrated light source",
+        "url": "https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf"
+      }
+    ],
+    "entry_id": "OHM-084",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "manufacturer_pin_roles",
+        "page": 2,
+        "scope": "WS2812B, the revision in this archived PDF",
+        "sources": [
+          "https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "1": "VDD",
+          "2": "DOUT",
+          "3": "VSS",
+          "4": "DIN"
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "top_view_corners",
+        "page": 2,
+        "scope": "WS2812B, the revision in this archived PDF; image inspected",
+        "sources": [
+          "https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "bottom_left": "2/DOUT",
+          "bottom_right": "3/VSS/notch",
+          "top_left": "1/VDD",
+          "top_right": "4/DIN"
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "body_width_and_lead_span",
+        "page": 2,
+        "scope": "WS2812B, the revision in this archived PDF",
+        "sources": [
+          "https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf"
+        ],
+        "unit": "mm",
+        "value": {
+          "back_view_terminal_span": 5.4,
+          "body": 5.0
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "absolute_supply_range",
+        "page": 2,
+        "scope": "WS2812B, the revision in this archived PDF",
+        "sources": [
+          "https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf"
+        ],
+        "unit": "V",
+        "value": [
+          3.5,
+          5.3
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "electrical_characterization_supply_range",
+        "page": 2,
+        "scope": "WS2812B, the revision in this archived PDF",
+        "sources": [
+          "https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf"
+        ],
+        "unit": "V",
+        "value": [
+          4.5,
+          5.5
+        ]
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": null,
+        "field": "conservative_supply_intersection",
+        "page": 2,
+        "scope": "WS2812B, the revision in this archived PDF; intersection of absolute and characterization intervals",
+        "sources": [
+          "https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf"
+        ],
+        "unit": "V",
+        "value": [
+          4.5,
+          5.3
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "input_voltage_absolute_range",
+        "page": 2,
+        "scope": "WS2812B, the revision in this archived PDF",
+        "sources": [
+          "https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf"
+        ],
+        "unit": null,
+        "value": "-0.5 V to VDD+0.5 V"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "logic_threshold_fractions",
+        "page": 3,
+        "scope": "WS2812B, the revision in this archived PDF",
+        "sources": [
+          "https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf"
+        ],
+        "unit": "VDD",
+        "value": {
+          "VIH_min": 0.7,
+          "VIL_max": 0.3
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_input_capacitance",
+        "page": 3,
+        "scope": "WS2812B, the revision in this archived PDF",
+        "sources": [
+          "https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf"
+        ],
+        "unit": "pF",
+        "value": 15
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "reset_low_minimum_exclusive",
+        "page": 3,
+        "scope": "WS2812B, the revision in this archived PDF",
+        "sources": [
+          "https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf"
+        ],
+        "unit": "us",
+        "value": 50
+      }
+    ],
+    "remaining_open_items": [
+      "Supply current and per-channel current remain unsourced assumptions; refuse a rated L1 load model.",
+      "Pixel protocol/color decoding belongs to L3, outside ngspice."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [
+      "Rated supply-current model is blocked until an exact-version current specification is sourced."
+    ],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-084.md",
+      "document_sha256": "cde9c800950bc9eb00cafb9e72e3a349786f1bea234382b6991f45bd21b0573a",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
   "resolution_ids": [],
   "schema_version": 1,
   "simulation_disposition": "not_simulable",
