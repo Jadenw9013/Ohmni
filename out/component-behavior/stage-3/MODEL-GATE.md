@@ -113,7 +113,7 @@ Stage acceptance remains blocked by the separately recorded audit failures. Runt
 
 ## Implementation and remaining scope
 
-CircuitIR instances compile through the existing NgspiceAdapter. Models are inlined, terminal permutations remain explicit, and the runtime enforces tnom/temp25 C. MOSFET cards require IS=0, regulator templates retain nodesets, and pin strays return to ground. Source stimuli currently support explicit DC voltage/current; arbitrary waveforms and AC circuit analysis are not implemented in this stage.
+CircuitIR instances compile through the existing NgspiceAdapter. Models are inlined, terminal permutations remain explicit, and the runtime enforces tnom/temp25 C. MOSFET cards require IS=0, regulator templates retain nodesets, and pin strays return to ground. Source stimuli support explicit DC voltage/current and typed PWL test waveforms. AC circuit analysis is not yet implemented.
 
 No source status was promoted. Unbound entries remain refused. Tantalum reverse/temperature policy and other condition-sensitive ratings require the later ratings stage; reference-function joins for package and mixed-function entries require the IC binding work. L3 protocol behavior remains outside ngspice.
 

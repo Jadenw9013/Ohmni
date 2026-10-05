@@ -16,6 +16,28 @@ from .audit import _atomic_json, _atomic_text, _now, _sha_bytes
 from .benches import numeric_contract
 
 
+def run_runtime_recipes(audit, entry_ids=None):
+    """Run every selected binding through its authored product-path probe."""
+    from .ic_benches import run_ic_recipes
+
+    registry = BehaviorRegistry(repo_root=audit.root)
+    recipes = load_recipes(registry, audit.root)
+    selected = set(recipes.entries) if entry_ids is None else set(entry_ids)
+    unknown = selected - recipes.entries.keys()
+    if unknown:
+        raise ValueError(f"no runtime recipe for {sorted(unknown)}")
+    runners = {}
+    ic_classes = {"BEH-IC-TIMER555", "BEH-IC-LOGIC-HC", "BEH-IC-LOGIC-SEQ",
+                  "BEH-IC-OPAMP", "BEH-IC-LDO-SOT235"}
+    for key in sorted(selected):
+        behavior = recipes.entries[key].behavior_id
+        runner = (run_resistor_recipes if behavior == "BEH-RES-FIXED" else
+                  run_mosfet_recipes if behavior == "BEH-TRN-MOSFET" else
+                  run_ic_recipes if behavior in ic_classes else run_dc_probes)
+        runners.setdefault(runner, []).append(key)
+    return [receipt for runner, keys in runners.items() for receipt in runner(audit, keys)]
+
+
 def resistor_divider(entry_id, package):
     """5 V / two 10 kohm divider from BEH-RES-FIXED/B1, not a new fit."""
     return CircuitIR(ir_id=f"runtime-{entry_id}", name="Authored B1 divider topology", components=[
@@ -253,6 +275,11 @@ def runtime_receipt_errors(audit, entry_id):
     registry = BehaviorRegistry(repo_root=audit.root)
     recipes = load_recipes(registry, audit.root)
     behavior = recipes.entries[entry_id].behavior_id
+    if behavior in {"BEH-IC-TIMER555", "BEH-IC-LOGIC-HC", "BEH-IC-LOGIC-SEQ",
+                    "BEH-IC-OPAMP", "BEH-IC-LDO-SOT235"}:
+        from .ic_benches import ic_receipt_errors
+
+        return ic_receipt_errors(audit, entry_id)
     if entry_id == "OHM-069":
         from .calibration import tvs_calibration_errors
 

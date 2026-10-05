@@ -512,6 +512,25 @@ class TestTransientParser:
         data = simulation.parse_transient(TRAN_STDOUT, analysis="t")
         assert data.decimated_from is None
 
+    def test_wide_column_groups_join_by_sample_before_decimation(self):
+        stdout = ("Index time v(a) v(b)\n0 0 1 2\n1 1e-6 3 4\n2 2e-6 5 6\n"
+                  "Index time v(c)\n0 0 7\n1 1e-6 8\n2 2e-6 9\n")
+        data = simulation.parse_transient(stdout, analysis="t")
+        assert data.time_s == [0, 1e-6, 2e-6]
+        assert [s.name for s in data.series] == ["v(a)", "v(b)", "v(c)"]
+        assert [s.values for s in data.series] == [[1, 3, 5], [2, 4, 6], [7, 8, 9]]
+
+    def test_missing_wide_group_sample_is_not_filled_or_shifted(self):
+        stdout = ("Index time v(a)\n0 0 1\n1 1e-6 2\n2 2e-6 3\n"
+                  "Index time v(b)\n0 0 4\n2 2e-6 6\n")
+        data = simulation.parse_transient(stdout, analysis="t")
+        assert data.time_s == [0, 2e-6]
+        assert [s.values for s in data.series] == [[1, 3], [4, 6]]
+
+    def test_conflicting_duplicate_sample_is_not_a_valid_trace(self):
+        stdout = "Index time v(a)\n0 0 1\nIndex time v(a)\n0 0 2\n"
+        assert simulation.parse_transient(stdout, analysis="t").sample_count == 0
+
 
 class TestTransientAnalysis:
     def _adapter(self, monkeypatch, result):

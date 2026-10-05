@@ -236,6 +236,7 @@ Class bench results do not establish package ratings or full physical-device val
 - remaining: Firmware and peripheral protocols are not simulated.
 - remaining: GPIO alternate-function/type mapping and power-sequence rules remain application-specific.
 - remaining: Board thermal path and programmed I/O state require explicit circuit context.
+- remaining: CIO 5pF is typical, not a worst-case maximum; no maximum can be inferred from guaranteed-by-design footnote.
 - conflicts: Selected STM32F405/407 reference is explicit; other MCUs cannot inherit these pin numbers or ratings.
 - conflicts: LQFP body height1.4mm is different from generic TQFP1.0mm for OHM-124/125; no automatic physical compatibility claim.
 - blockers: No validated interface-only recipe; firmware execution is not simulable.
@@ -245,6 +246,7 @@ Class bench results do not establish package ratings or full physical-device val
 - remaining: Firmware and peripheral protocols are not simulated.
 - remaining: GPIO alternate-function/type mapping and power-sequence rules remain application-specific.
 - remaining: Board thermal path and programmed I/O state require explicit circuit context.
+- remaining: CIO 5pF is typical, not a worst-case maximum; no maximum can be inferred from guaranteed-by-design footnote.
 - conflicts: Selected STM32F405/407 reference is explicit; other MCUs cannot inherit these pin numbers or ratings.
 - conflicts: LQFP body height1.4mm is different from generic TQFP1.0mm for OHM-124/125; no automatic physical compatibility claim.
 - blockers: No validated interface-only recipe; firmware execution is not simulable.
@@ -254,6 +256,7 @@ Class bench results do not establish package ratings or full physical-device val
 - remaining: Firmware and peripheral protocols are not simulated.
 - remaining: GPIO alternate-function/type mapping and power-sequence rules remain application-specific.
 - remaining: Board thermal path and programmed I/O state require explicit circuit context.
+- remaining: CIO 5pF is typical, not a worst-case maximum; no maximum can be inferred from guaranteed-by-design footnote.
 - conflicts: Package medianTj150C is superseded for this reference by125C absolute and105C suffix6 recommended junction limits.
 - blockers: No validated interface-only recipe; firmware execution is not simulable.
 
@@ -336,6 +339,7 @@ Class bench results do not establish package ratings or full physical-device val
 
 - remaining: Configured FPGA logic/protocols are not simulable in ngspice.
 - remaining: IO standard,bank voltage,configured drive and activity-dependent power must be supplied; no generic drive/current or thermal model.
+- remaining: Complete XC7A35T-1FTG256C ordering code has not been independently established; UG475 p64 only supports XC7A35T in FTG256.
 - conflicts: Pinout data is not a licensed vendor SPICE model and is never labeled vendor_model.
 - blockers: No validated interface recipe or configuration-specific ratings.
 
@@ -408,7 +412,8 @@ Class bench results do not establish package ratings or full physical-device val
 
 - remaining: Startup timing,absolute output-current limit,Tj and thermal resistance remain missing.
 - remaining: Clipped-sine option is a different output choice;do not merge its impedance/amplitude with CMOS.
-- conflicts: Reference5x3.2mm body differs from default3.2x2.5mm TCXO package.
+- conflicts: Selected nominal5.2x3.4mm body differs from default3.2x2.5mm TCXO package.
+- conflicts: Source internal discrepancy: p1 family heading says5.0x3.2mm; selected p6 post-02/10/2021 drawing says5.20+/-0.20x3.40+/-0.20mm, maximum5.40x3.60mm. Keep both; do not fit the smaller library envelope.
 - blockers: Unresolved rating-critical output/thermal data and physical mismatch.
 
 ### OHM-148: Ceramic resonator

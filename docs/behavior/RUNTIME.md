@@ -42,3 +42,11 @@ reparses these artifacts before accepting a receipt. Locked legacy expectations
 are not changed to match a new result. For example, the signal-diode B1 deck uses
 the simulator's 27 C default; its 0.73039 V expectation does not match the
 required runtime temperature of 25 C. That acceptance conflict remains failed.
+
+## Stage4 reference functions and waveforms
+
+Functionless package records require an exact sourced reference-function selection plus the source pin-role map. Removing the selection, substituting another part, or treating an assumption as the source refuses compilation. The first ten IC bindings instantiate all four NAND gates, both op-amps, all sixteen shift-register terminals, and the LDO NC terminal metadata. Models remain behavioural approximations.
+
+Typed PWL voltage/current excitations declare seconds and finite V/A samples from time zero in strictly increasing order. They never carry a source capability or component rating. Transient callers may explicitly choose up to the existing signal limit; the parser joins paginated column groups by sample identity before decimation and rejects conflicting duplicate observations. The LDO initial guess evaluates the authored equation before emitting a numeric nodeset.
+
+`tools.behavior_audit.runtime_benches.run_runtime_recipes` reruns selected package bindings through NgspiceAdapter. `tools.behavior_audit.ic_benches` re-derives comparisons from locked analytical contracts and revalidates raw output, version, netlist and evidence hashes. No legacy expected value or tolerance was changed.

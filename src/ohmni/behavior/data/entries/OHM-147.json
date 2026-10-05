@@ -18,7 +18,8 @@
       "bench-results/BEH-FREQ-XO--B2.json"
     ],
     "conflicts": [
-      "Reference5x3.2mm body differs from default3.2x2.5mm TCXO package."
+      "Selected nominal5.2x3.4mm body differs from default3.2x2.5mm TCXO package.",
+      "Source internal discrepancy: p1 family heading says5.0x3.2mm; selected p6 post-02/10/2021 drawing says5.20+/-0.20x3.40+/-0.20mm, maximum5.40x3.60mm. Keep both; do not fit the smaller library envelope."
     ],
     "documents": [
       {
@@ -206,26 +207,26 @@
         "confidence": "H",
         "detail": null,
         "field": "body_length",
-        "page": 1,
-        "scope": "AST3TQ53 TCXO,T option,C LVCMOS,3.3V,stability option1; source envelope",
+        "page": 6,
+        "scope": "AST3TQ53 post-02/10/2021 drawing: nominal dimension with +/-0.20 mm tolerance; family heading is not this mechanical envelope.",
         "sources": [
           "https://abracon.com/Oscillators/AST3TQ53.pdf"
         ],
         "unit": "mm",
-        "value": 5
+        "value": 5.2
       },
       {
         "basis": "MFR_DATASHEET",
         "confidence": "H",
         "detail": null,
         "field": "body_width",
-        "page": 1,
-        "scope": "AST3TQ53 TCXO,T option,C LVCMOS,3.3V,stability option1; source envelope",
+        "page": 6,
+        "scope": "AST3TQ53 post-02/10/2021 drawing: nominal dimension with +/-0.20 mm tolerance; family heading is not this mechanical envelope.",
         "sources": [
           "https://abracon.com/Oscillators/AST3TQ53.pdf"
         ],
         "unit": "mm",
-        "value": 3.2
+        "value": 3.4
       }
     ],
     "remaining_open_items": [
@@ -239,7 +240,7 @@
     ],
     "source": {
       "document": "docs/behavior/gapfill/OHM-147.md",
-      "document_sha256": "36177c913b609e08605dd3c4e35088358bbd0274fcba7d1de35b3afbee18443c",
+      "document_sha256": "2506576d9d92e5a892085234c9a7b77875d3bdd17d03a893c88c75bc69fbcb0b",
       "fragment_sha256": null,
       "line": 1
     }

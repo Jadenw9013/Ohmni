@@ -105,3 +105,7 @@ OHM-143..162 record the opened crystal/oscillator/SAW and connector sources. Abr
 ## 2026-10-05 — Stage4 research OHM-163..180
 
 Added exact/explicit-alternate manufacturer archives, scoped ratings, switch/pin evidence and conflicts in all18 gapfill files. Original spec and source statuses are unchanged. Added regression cases for PJ102A sleeve switching, U.FL measurement-current scope, XT60 variant separation and microSD mechanical detection versus data pin2. Full details and blocked physical/rating mappings are in the per-entry evidence; no alternate footprint is silently substituted.
+
+### 2026-10-05 — Stage4 independent-review corrections
+
+The first two fresh samples exposed incorrect page/table/date metadata, an unsupported Artix ordering-code scope, the TCXO heading versus mechanical-envelope conflict, a typical STM32 capacitance mislabeled maximum, and crystal permutation attribution. Corrected those fields and their related sibling records. The crystal library-side permutation is now explicitly ASSUMPTION/L; no source status, rating tolerance, benchmark expectation or physical model was upgraded. Source-internal dimensional conflicts remain listed. Hirose catalog issue and copyright footer are retained separately.

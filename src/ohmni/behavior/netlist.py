@@ -26,6 +26,7 @@ from .runtime_models import (
     BehaviorSelection,
     CompiledComponent,
     DCExcitation,
+    PWLExcitation,
     RuntimeRecipe,
     RuntimeRecipes,
 )
@@ -37,8 +38,7 @@ def load_recipes(registry: BehaviorRegistry, root) -> RuntimeRecipes:
     for key, recipe in recipes.entries.items():
         if key != recipe.entry_id:
             raise BehaviorRegistryError(f"runtime recipe key differs from entry: {key}")
-        if recipe.behavior_id not in registry.entry(key).behavior_class_ids:
-            raise BehaviorRegistryError(f"runtime recipe class differs from entry: {key}")
+        validate_reference_function(registry.entry(key), recipe)
         if recipe.template_override is not None and recipe.template_provenance is None:
             raise BehaviorRegistryError(f"runtime template requires provenance: {key}")
         for anchor in [*recipe.inline_assets, *(p.source for p in recipe.derived_parameters.values())]:
@@ -49,6 +49,19 @@ def load_recipes(registry: BehaviorRegistry, root) -> RuntimeRecipes:
         if recipe.template_provenance:
             _validate_anchor(root, recipe.template_provenance, key)
     return recipes
+
+
+def validate_reference_function(entry, recipe):
+    if recipe.behavior_id in entry.behavior_class_ids and recipe.reference_function is None:
+        return
+    binding = recipe.reference_function
+    if (binding is None or recipe.pin_role_fact is None or entry.research is None
+            or not set(entry.behavior_class_ids) & {"BEH-IC-PKGBIND", "BEH-PKG-IC-BINDING"}):
+        raise BehaviorRegistryError(f"runtime recipe class differs from entry without a sourced reference function: {entry.entry_id}")
+    facts = [f for f in entry.research.field_updates if f.field == binding.field
+             and binding.scope_contains in f.scope and f.value == binding.value]
+    if len(facts) != 1 or facts[0].basis not in {"MFR_DATASHEET", "STANDARD"} or not facts[0].sources:
+        raise BehaviorRegistryError(f"sourced reference function does not match the package record: {entry.entry_id}")
 
 
 def terminal_nodes(circuit, component, entry_id, terminal_roles, registry, nodes, identity_map=None):
@@ -219,7 +232,7 @@ def _parameter_defaults(behavior, recipe, values, evidence, root):
 
 def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: RuntimeRecipes,
                     selections: dict[str, BehaviorSelection] | None = None, *, analysis="op",
-                    excitations: list[DCExcitation] | None = None):
+                    excitations: list[DCExcitation | PWLExcitation] | None = None):
     selections = selections or {}
     problems, components, limitations = [], [], []
     if set(selections) - {c.ref for c in circuit.components}:
@@ -234,7 +247,7 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
     root = _find_repo_root(registry.directory)
     source_count = 0
     source_elements = {}
-    excitations = sorted(excitations or [], key=lambda x: (x.positive_net, x.negative_net, x.value.unit.value, x.value.value))
+    excitations = sorted(excitations or [], key=lambda x: x.model_dump_json())
     for i, net in enumerate(sorted(circuit.nets, key=lambda n: n.name), 1):
         if net.external_source:
             typical = net.external_source.voltage.typical
@@ -252,15 +265,18 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
             problems.append("An excitation refers to a net outside the circuit")
             continue
         pair = frozenset((source.positive_net, source.negative_net))
-        if source.value.unit.value == "V" and pair in voltage_pairs:
+        value = source.points[0].value if isinstance(source, PWLExcitation) else source.value
+        if value.unit.value == "V" and pair in voltage_pairs:
             problems.append("Duplicate ideal voltage sources on the same nets are not allowed")
             continue
-        if source.value.unit.value == "V":
+        if value.unit.value == "V":
             voltage_pairs.add(pair)
-        prefix = "V" if source.value.unit.value == "V" else "I"
-        lines.append(f"{prefix}excitation{i} {nodes[source.positive_net]} {nodes[source.negative_net]} DC {_number(source.value.value)}")
+        prefix = "V" if value.unit.value == "V" else "I"
+        stimulus = ("PWL(" + " ".join(f"{_number(p.time.value)} {_number(p.value.value)}" for p in source.points) + ")"
+                    if isinstance(source, PWLExcitation) else f"DC {_number(value.value)}")
+        lines.append(f"{prefix}excitation{i} {nodes[source.positive_net]} {nodes[source.negative_net]} {stimulus}")
         source_count += 1
-        limitations.append("Explicit DC test excitation; an ideal stimulus is not physical source capability or evidence")
+        limitations.append("Explicit ideal test excitation; a stimulus is not physical source capability or evidence")
     if not source_count:
         problems.append("No explicit external DC source or test excitation is connected")
     for i, component in enumerate(sorted(circuit.components, key=lambda c: c.ref), 1):
@@ -277,6 +293,7 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
             reasons = entry_problems(entry, recipe)
             if reasons:
                 raise ValueError("; ".join(reasons))
+            validate_reference_function(entry, recipe)
             if component.placeholder:
                 raise ValueError("unresolved placeholder component")
             if component.part_id != entry_id and component.part_id not in recipe.catalog_parts:

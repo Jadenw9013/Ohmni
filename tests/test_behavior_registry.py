@@ -379,3 +379,11 @@ def test_xt60_source_variants_are_not_merged_into_one_rating(registry):
     assert facts["web_voltage_rated_dc"].value == 80
     assert facts["legacy_voltage_rated_dc"].value == 500
     assert registry.entry("OHM-174").research.simulation_blockers
+@pytest.mark.parametrize("number", [124, 125, 126])
+def test_stm32_capacitance_is_typical_not_a_rating_ceiling(number):
+    registry = BehaviorRegistry(repo_root=ROOT)
+    facts = {f.field: f for f in registry.entry(f"OHM-{number:03}").research.field_updates}
+    assert "io_input_capacitance_max" not in facts
+    assert facts["io_input_capacitance_typical"].value == 5
+    assert facts["io_input_capacitance_typical"].page == 105
+    assert facts["reference_part"].page == 164

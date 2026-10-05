@@ -1,0 +1,42 @@
+OHMNI sourced behavior circuit
+.options tnom=25
+.temp 25
+Vsource3 n3 0 DC 2
+Vsource5 n5 0 DC 5
+Rc1 n1 0 1000
+Rc2 n2 0 1000
+Xc3_a1 n3 n1 n5 0 n1 opamp_gp aol=100000 gbw=700000 sr=300000 vos=0.0030000000000000001 ib=2e-08 vdrop=1.5 rout=50 iq=0.00035
+Xc3_a2 n3 n2 n5 0 n2 opamp_gp aol=100000 gbw=700000 sr=300000 vos=0.0030000000000000001 ib=2e-08 vdrop=1.5 rout=50 iq=0.00035
+* BEH-IC-OPAMP behavioural macromodel (behavioural_approximation). ngspice 42 stock, no XSPICE.
+* pins: inp inm vcc vee out
+* Single dominant pole: Aol = gm*R1, GBW = gm/(2*pi*C1); slew limit via tanh-limited gm current Imax = SR*C1.
+* Rail limits: out clamped to [vee+vol, vcc-vdrop]; Rout in series; Iq constant supply current; input bias flows OUT of pins when ib>0 (PNP input, LM358) and INTO pins when ib<0 (CMOS leakage sign ignored).
+.subckt opamp_gp inp inm vcc vee out params: aol=100k gbw=700k sr=0.3Meg vos=3m ib=20n ios=2n vol=5m vdrop=1.5 rout=50 iq=350u cin=2p rid=2Meg
+.param c1v=1n
+.param gmv={6.283185307*gbw*c1v}
+.param r1v={aol/gmv}
+.param imaxv={sr*c1v}
+* input offset (series with +) and bias currents
+Vos ip1 inp dc {vos}
+Ibp vcc ip1 dc {ib+ios/2}
+Ibm vcc inm dc {ib-ios/2}
+Rid ip1 inm {rid}
+Cip ip1 vee {cin}
+Cim inm vee {cin}
+* gm stage into dominant pole node n1 (absolute node: v(n1) is the unclamped open-loop output target)
+Bgm 0 n1 I={imaxv*( max(tanh(gmv*(v(ip1)-v(inm))/imaxv),0)*0.5*(1-tanh((v(n1)-(v(vcc)+0.5))/0.05)) + min(tanh(gmv*(v(ip1)-v(inm))/imaxv),0)*0.5*(1+tanh((v(n1)-(v(vee)-0.5))/0.05)) )}
+R1 n1 0 {r1v}
+C1 n1 0 {c1v}
+* wind-up limit: gm current is switched off smoothly once n1 passes rail+0.5 V (n1 then holds near the rail; recovery is fast)
+* output stage: clamp to rails, series Rout
+Bo oi vee V=max(min(v(n1), v(vcc)-vdrop), v(vee)+vol)-v(vee)
+Ro oi out {rout}
+* supply accounting: load current sourced by the output is drawn from vcc (Bo is referenced to vee, so sunk current returns to vee)
+Bsupp vcc vee I=max(i(Ro),0)
+* supply current
+Iq vcc vee dc {iq}
+.ends
+
+.op
+.print op
+.end

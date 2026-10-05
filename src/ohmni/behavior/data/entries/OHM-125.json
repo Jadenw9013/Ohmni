@@ -48,8 +48,8 @@
         "confidence": "H",
         "detail": null,
         "field": "reference_part",
-        "page": 1,
-        "scope": "STM32F407VGT6 LQFP100; suffix6; family and package selection,ordering code suffix6 per p72",
+        "page": 164,
+        "scope": "STM32F407VGT6 LQFP100; Table95 full ordering scheme: R/V/Z pin count, G1MB, T LQFP,6 industrial -40..85C; available family/package also p1.",
         "sources": [
           "https://www.keil.com/dd/docs/datashts/st/stm32f4xx/dm00037051.pdf"
         ],
@@ -307,9 +307,9 @@
         "basis": "MFR_DATASHEET",
         "confidence": "H",
         "detail": null,
-        "field": "io_input_capacitance_max",
+        "field": "io_input_capacitance_typical",
         "page": 105,
-        "scope": "STM32F407VGT6 LQFP100; suffix6; guaranteed by design,not production tested",
+        "scope": "STM32F407VGT6 LQFP100; suffix6; guaranteed by design,not production tested; Table46 Typ column, not a maximum; maximum is unestablished.",
         "sources": [
           "https://www.keil.com/dd/docs/datashts/st/stm32f4xx/dm00037051.pdf"
         ],
@@ -333,7 +333,8 @@
     "remaining_open_items": [
       "Firmware and peripheral protocols are not simulated.",
       "GPIO alternate-function/type mapping and power-sequence rules remain application-specific.",
-      "Board thermal path and programmed I/O state require explicit circuit context."
+      "Board thermal path and programmed I/O state require explicit circuit context.",
+      "CIO 5pF is typical, not a worst-case maximum; no maximum can be inferred from guaranteed-by-design footnote."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
@@ -342,7 +343,7 @@
     ],
     "source": {
       "document": "docs/behavior/gapfill/OHM-125.md",
-      "document_sha256": "acb464d0cd9b681bac0f722af479f60f09bdca29df50f6cb0a41e1b88e2a50da",
+      "document_sha256": "f836c9a1fad3feebb360abfb3dcfa0d4abea4df01359e95802f5b830d96716d4",
       "fragment_sha256": null,
       "line": 1
     }

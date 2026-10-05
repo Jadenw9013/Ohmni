@@ -365,7 +365,8 @@ def parse_transient(stdout: str, *, analysis: str,
     """
     columns: list[str] = []
     indexed = False
-    rows: list[list[float]] = []
+    signal_names: list[str] = []
+    samples: dict[tuple[int | None, float], dict[str, float]] = {}
     for raw in (stdout or "").splitlines():
         line = raw.replace("\f", " ").strip()
         if not line:
@@ -378,20 +379,35 @@ def parse_transient(stdout: str, *, analysis: str,
             heading = line.split()
             indexed = heading[0].lower() == "index"
             columns = heading[1:] if indexed else heading
+            for name in columns[1:]:
+                if name.lower() not in signal_names:
+                    signal_names.append(name.lower())
             continue
         if not columns or _RULE_LINE.match(line):
             continue
         tokens = line.split()
         if len(tokens) != len(columns) + (1 if indexed else 0):
             continue
-        if indexed:
-            tokens = tokens[1:]
         try:
+            index = int(tokens[0]) if indexed else None
+            if indexed:
+                tokens = tokens[1:]
             values = [float(token) for token in tokens]
         except ValueError:
             continue
-        rows.append(values)
-    if not columns or not rows:
+        sample = samples.setdefault((index, values[0]), {})
+        for name, value in zip(columns[1:], values[1:], strict=True):
+            name = name.lower()
+            if name in sample and sample[name] != value:
+                return TransientData(analysis=analysis)
+            sample[name] = value
+    # Wide ngspice print tables repeat all sample indices for the next group
+    # of columns. Join by sample identity before thinning; never relabel an
+    # earlier group's values with the final group's header.
+    rows = [[time, *(sample[name] for name in signal_names)]
+            for (_, time), sample in sorted(samples.items(), key=lambda item: item[0][1])
+            if all(name in sample for name in signal_names)]
+    if not signal_names or not rows:
         return TransientData(analysis=analysis)
     total = len(rows)
     if total > limit:
@@ -401,7 +417,7 @@ def parse_transient(stdout: str, *, analysis: str,
             kept.append(rows[-1])
         rows = kept
     series = []
-    for position, name in enumerate(columns[1:], start=1):
+    for position, name in enumerate(signal_names, start=1):
         series.append(TransientSeries(
             name=name.lower(), unit=_series_unit(name),
             values=[row[position] for row in rows],
@@ -568,7 +584,8 @@ class NgspiceAdapter:
         return result
 
     def behavior_circuit(self, compilation, *, work_dir: Path, analysis: str = "op",
-                         tstep: str = DEFAULT_TSTEP, tstop: str = DEFAULT_TSTOP) -> dict:
+                         tstep: str = DEFAULT_TSTEP, tstop: str = DEFAULT_TSTOP,
+                         observe_nets: list[str] | None = None) -> dict:
         """Run a compiled CircuitIR model with the same version-gated adapter.
 
         `ran` records observations, never a design pass. Rating checks are a
@@ -602,7 +619,15 @@ class NgspiceAdapter:
             except ValueError:
                 result["problems"].append("Invalid transient time value")
                 return result
-            signals = [node for node in compilation.node_names.values() if node != "0"]
+            if observe_nets is not None:
+                if (not observe_nets or len(observe_nets) > MAX_TRANSIENT_SIGNALS
+                        or len(set(observe_nets)) != len(observe_nets)
+                        or any(n not in compilation.node_names or compilation.node_names[n] == "0" for n in observe_nets)):
+                    result["problems"].append("Observed nets must be distinct known non-ground nets within the signal limit")
+                    return result
+                signals = [compilation.node_names[n] for n in observe_nets]
+            else:
+                signals = [node for node in compilation.node_names.values() if node != "0"]
             deck = transient_deck(compilation.netlist, format(step.value, ".17g"),
                                   format(stop.value, ".17g"), signals[:MAX_TRANSIENT_SIGNALS])
         else:

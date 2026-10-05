@@ -331,6 +331,7 @@ def render_records(root: Path = ROOT) -> dict[Path, bytes]:
         add(f"{DATA_DIR}/bindings/{_binding_filename(record.part_id)}", record)
     recipe_path = root / "docs/behavior/runtime-recipes.json"
     if recipe_path.exists():
+        from ohmni.behavior.netlist import validate_reference_function
         from ohmni.behavior.runtime_models import RuntimeRecipes
 
         raw = recipe_path.read_bytes()
@@ -339,8 +340,9 @@ def render_records(root: Path = ROOT) -> dict[Path, bytes]:
         recipes = RuntimeRecipes.model_validate(payload)
         entry_map = {entry.entry_id: entry for entry in entries}
         for key, recipe in recipes.entries.items():
-            if key != recipe.entry_id or recipe.behavior_id not in entry_map[key].behavior_class_ids:
+            if key != recipe.entry_id:
                 raise ValueError(f"invalid runtime recipe join: {key}")
+            validate_reference_function(entry_map[key], recipe)
         add(f"{DATA_DIR}/runtime-recipes.json", recipes)
     return rendered
 

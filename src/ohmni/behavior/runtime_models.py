@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
@@ -50,6 +51,16 @@ class PinRoleFact(BaseModel):
     tied_features: list[str] = Field(default_factory=list)
 
 
+class ReferenceFunction(BaseModel):
+    """Exact researched reference selected for an otherwise functionless package."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    field: str = "reference_part"
+    value: str
+    scope_contains: str
+
+
 class RuntimeRecipe(BaseModel):
     """An authored mapping; numeric electrical facts stay in sourced records."""
 
@@ -59,6 +70,7 @@ class RuntimeRecipe(BaseModel):
     behavior_id: str
     package: str
     reference_part: str | None = None
+    reference_function: ReferenceFunction | None = None
     catalog_parts: list[str] = Field(default_factory=list)
     catalog_identity_pin_map: dict[str, str] = Field(default_factory=dict)
     terminal_roles: dict[str, str]
@@ -109,6 +121,43 @@ class DCExcitation(BaseModel):
         return self
 
 
+class PWLPoint(BaseModel):
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    time: Quantity
+    value: Quantity
+
+    @model_validator(mode="after")
+    def valid_point(self):
+        if self.time.unit.value != "s" or not math.isfinite(self.time.value) or self.time.value < 0:
+            raise ValueError("PWL time requires finite nonnegative seconds")
+        if self.value.unit.value not in {"V", "A"} or not math.isfinite(self.value.value):
+            raise ValueError("PWL value requires finite volts or amperes")
+        return self
+
+
+class PWLExcitation(BaseModel):
+    """Typed ideal test waveform; values never establish device ratings."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    positive_net: str
+    negative_net: str
+    points: list[PWLPoint] = Field(min_length=2, max_length=10000)
+
+    @model_validator(mode="after")
+    def valid_waveform(self):
+        if self.positive_net == self.negative_net:
+            raise ValueError("PWL excitation requires distinct nets")
+        if self.points[0].time.value != 0:
+            raise ValueError("PWL waveform must declare its initial value at zero seconds")
+        if any(b.time.value <= a.time.value for a, b in zip(self.points, self.points[1:])):
+            raise ValueError("PWL times must strictly increase")
+        if len({p.value.unit for p in self.points}) != 1:
+            raise ValueError("PWL waveform cannot mix voltage and current")
+        return self
+
+
 class CompiledComponent(BaseModel):
     model_config = ConfigDict(frozen=True)
 
@@ -138,7 +187,7 @@ class BehaviorCompilation(BaseModel):
     netlist_sha256: str | None = None
     node_names: dict[str, str] = Field(default_factory=dict)
     source_elements: dict[str, str] = Field(default_factory=dict)
-    excitations: list[DCExcitation] = Field(default_factory=list)
+    excitations: list[DCExcitation | PWLExcitation] = Field(default_factory=list)
     components: list[CompiledComponent] = Field(default_factory=list)
     problems: list[str] = Field(default_factory=list)
     limitations: list[str] = Field(default_factory=list)

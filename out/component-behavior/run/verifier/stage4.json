@@ -1,0 +1,266 @@
+{
+  "population": [
+    "OHM-103",
+    "OHM-104",
+    "OHM-105",
+    "OHM-106",
+    "OHM-107",
+    "OHM-108",
+    "OHM-109",
+    "OHM-110",
+    "OHM-111",
+    "OHM-112",
+    "OHM-113",
+    "OHM-114",
+    "OHM-115",
+    "OHM-116",
+    "OHM-117",
+    "OHM-118",
+    "OHM-119",
+    "OHM-120",
+    "OHM-121",
+    "OHM-122",
+    "OHM-123",
+    "OHM-124",
+    "OHM-125",
+    "OHM-126",
+    "OHM-127",
+    "OHM-128",
+    "OHM-129",
+    "OHM-130",
+    "OHM-131",
+    "OHM-132",
+    "OHM-133",
+    "OHM-134",
+    "OHM-135",
+    "OHM-136",
+    "OHM-137",
+    "OHM-138",
+    "OHM-139",
+    "OHM-140",
+    "OHM-141",
+    "OHM-142",
+    "OHM-143",
+    "OHM-144",
+    "OHM-145",
+    "OHM-146",
+    "OHM-147",
+    "OHM-148",
+    "OHM-149",
+    "OHM-150",
+    "OHM-151",
+    "OHM-152",
+    "OHM-153",
+    "OHM-154",
+    "OHM-155",
+    "OHM-156",
+    "OHM-157",
+    "OHM-158",
+    "OHM-159",
+    "OHM-160",
+    "OHM-161",
+    "OHM-162",
+    "OHM-163",
+    "OHM-164",
+    "OHM-165",
+    "OHM-166",
+    "OHM-167",
+    "OHM-168",
+    "OHM-169",
+    "OHM-170",
+    "OHM-171",
+    "OHM-172",
+    "OHM-173",
+    "OHM-174",
+    "OHM-175",
+    "OHM-176",
+    "OHM-177",
+    "OHM-178",
+    "OHM-179",
+    "OHM-180"
+  ],
+  "results": [
+    {
+      "entry_id": "OHM-105",
+      "mismatches": [],
+      "notes": [
+        "Examined archived TI SN74HC00 PDF pp1,3,4,5,6; verified SCLS181H, revised August 2021, and SN74HC00N PDIP-14 selection.",
+        "Visually checked every pin in the p3 top-view drawing/table: 1/2/3=1A/1B/1Y, 4/5/6=2A/2B/2Y, 7=GND, 8/9/10=3Y/3A/3B, 11/12/13=4Y/4A/4B, 14=VCC. The input uses semantically equivalent channel labels A1/B1/Y1 etc.",
+        "Re-derived all ratings: recommended supply 2..6 V; absolute supply 7 V; continuous output magnitude 25 mA, total VCC/GND 50 mA; junction 150 C; commercial ambient -40..85 C; N-package RthetaJA 57.5 K/W.",
+        "Checked p4 VIH/VIL=3.15/1.35 V at VCC=4.5 V; p5 VOH minimum 3.84 V at -4 mA and VOL maximum 0.33 V at 4 mA across -40..85 C; Ci typical 3 pF (25 C column, VCC=2..6 V).",
+        "Visually confirmed commercial p5 prints leakage magnitude 1000 uA at VCC=6 V across -40..85 C, while military p6 prints nA. The input explicitly preserves this source conflict; no silent conversion or independent 1 uA validation was made.",
+        "Archived source SHA-256 aacc4e5e60c10be7412b635c327d42413c4f68a58bf381467fec1e54bff24af0; examined from source-index.json mapping, without refetching or substituting another revision.",
+        "Compared the complete audit-evidence payload with generated research fields: identical apart from generated null detail/page fields. Reviewed-content hashes are computed from the copied input bytes. Bench results, implementation behavior and retained source status were outside this independent primary-source review; no benches were run."
+      ],
+      "primary_sources": [
+        "https://www.ti.com/lit/ds/symlink/sn74hc00.pdf"
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "5f0b5be1db08918c090989d7b070d43495614df320f448f3eb69a00622f01197",
+        "generated_record_sha256": "f5ad41e7c6f161e9f66d2ae7dc45779633ea9864dc3ff1b4b04bb8730d4204b2"
+      }
+    },
+    {
+      "entry_id": "OHM-114",
+      "mismatches": [],
+      "notes": [
+        "Examined archived TI NE555 PDF pp1,3,4,5,6; verified SLFS022K, revised March 2026, and NE555 PW TSSOP-8 device/package availability.",
+        "Visually checked the complete p3 pin map: 1 GND, 2 TRIG, 3 OUT, 4 RESET, 5 CONT, 6 THRES, 7 DISCH, 8 VCC.",
+        "Re-derived recommended supply 4.5..16 V, absolute supply 18 V, output current magnitudes 200 mA recommended/225 mA absolute, junction 150 C, and NE555 ambient 0..70 C.",
+        "Checked the PW thermal column for RthetaJA=164.2 K/W; p5 threshold/trigger typical values 3.3/1.67 V at VCC=5 V and TA=25 C; reset typical 0.7 V under the table conditions VCC=5..15 V and TA=25 C.",
+        "Visually checked p6 supply-current row: output low, no load, VCC=5 V, TA=25 C gives 3 mA typical and 6 mA maximum. All field values, cited pages and reference scope match.",
+        "Archived source SHA-256 ce821b05832f5a98840da2055ddab4815fde9d8da5ee47057266eec7bbb84f28; examined from source-index.json mapping, without refetching or substituting another revision.",
+        "Compared the complete audit-evidence payload with generated research fields: identical apart from generated null detail/page fields. Reviewed-content hashes are computed from the copied input bytes. Bench results, implementation behavior and retained source status were outside this independent primary-source review; no benches were run."
+      ],
+      "primary_sources": [
+        "https://www.ti.com/lit/ds/symlink/ne555.pdf"
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "d1a99e22d0f13ddda329896d5ff7680007974670f82698bbc43a61d10f555432",
+        "generated_record_sha256": "7c5941d043ecd96d26c608367e2bea194904fed392c3d0ae78ff9dbba63b2f5f"
+      }
+    },
+    {
+      "entry_id": "OHM-117",
+      "mismatches": [],
+      "notes": [
+        "Examined archived TI SN74HC245 PDF pp1,3,4,5; verified SCLS131F, revised August 2022, and PW TSSOP-20 selection.",
+        "Visually checked all 20 pins: 1 DIR, 2..9 A1..A8, 10 GND, 11..18 B8..B1, 19 OE, 20 VCC. The manufacturer drawing marks OE active low.",
+        "Re-derived recommended supply 2..6 V, absolute supply 7 V, continuous output magnitude 35 mA, total VCC/GND magnitude 70 mA, junction 150 C, and SN74HC245 ambient -40..85 C.",
+        "Checked PW RthetaJA=99.7 K/W, control-input Ci typical 3 pF (25 C, VCC=2..6 V), DIR/OE leakage maximum magnitude 1000 nA=1 uA, and A/B high-impedance output leakage maximum magnitude 5 uA for the SN74HC245 column at VCC=6 V. All field values, cited pages and pin assignments match.",
+        "Archived source SHA-256 31514d936e53661d1c380603e5034b2958085359313986775b838d1f30fb8d3f; examined from source-index.json mapping, without refetching or substituting another revision.",
+        "Compared the complete audit-evidence payload with generated research fields: identical apart from generated null detail/page fields. Reviewed-content hashes are computed from the copied input bytes. Bench results, implementation behavior and retained source status were outside this independent primary-source review; no benches were run."
+      ],
+      "primary_sources": [
+        "https://www.ti.com/lit/ds/symlink/sn74hc245.pdf"
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "6d97acbde6fa4abff0f10331ab847f27204930f3eb44aed9c7ba8d82bec2f1f8",
+        "generated_record_sha256": "40515ba75c0f6d4413544e754af990894479bbe2845feb6f9405161e1d5817fc"
+      }
+    },
+    {
+      "entry_id": "OHM-126",
+      "mismatches": [
+        "io_input_capacitance_max is incorrectly qualified as a maximum in both the gapfill and generated record. In the cited Doc ID 022152 Rev 3 p105, Table 46, the CIO row places 5 pF in the Typ column; the Max column is blank. Footnote 8 (guaranteed by design, not tested in production) does not make it a maximum. Record 5 pF as typical and leave the maximum unestablished.",
+        "reference_part has the correct selected value STM32F407ZGT6, but its p1 locator and scope reference to an ordering code on p72 do not locate the full ordering-code evidence. Page 1 lists STM32F407ZG and available packages; p72 gives suffix-dependent operating limits. The explicit Z=144 pins, G=1024 Kbytes, T=LQFP, 6=-40..85 C ordering scheme is Table 95 on p164. Add/correct the locator for the full suffix/package selection."
+      ],
+      "notes": [
+        "Examined archived STMicroelectronics/Keil PDF pp1,40,70,71,72,105,163,164, plus the p179 revision-history text; verified Doc ID 022152 Rev 3, May 2012.",
+        "Independently transcribed all four 36-pin sides of the rendered p40 Figure 12, then compared all 144 assignments with the generated record: zero pin mismatches, including pins 30 VDD, 31 VSSA, 32 VREF+, 51 VSS, 71 VCAP_1, 106 VCAP_2 and 143 PDR_ON.",
+        "Re-derived VDD standard range 1.8..3.6 V, VDD/VDDA stress maximum 4 V, absolute output magnitude 25 mA, separate total source/sink limits 150 mA, and absolute junction maximum 125 C.",
+        "Checked suffix-6 limits on p72: recommended junction maximum 105 C; ambient -40..85 C at maximum dissipation; LQFP144 power 500 mW at TA=85 C. Checked p163 LQFP144 RthetaJA=40 K/W with JESD51-2 still-air reference.",
+        "Checked p105 input leakage magnitude 1 uA for VSS<=VIN<=VDD with adjacent negative-current injection caveat; the 5 V FT-input row is separately 3 uA. The 5 pF CIO typical/maximum classification mismatch is recorded above.",
+        "The 1.8 V range excludes the p72 1.7 V PDR_ON exception. VDDA conditions additionally depend on ADC rate and power sequencing; no firmware or alternate-function behavior was inferred.",
+        "Archived source SHA-256 e14d7913938ff0fbdde54de37940dac08fe533dbbc9f46462a5337e8b2cbe125; examined from source-index.json mapping, without refetching or substituting another revision.",
+        "Compared the complete audit-evidence payload with generated research fields: identical apart from generated null detail/page fields. Reviewed-content hashes are computed from the copied input bytes. Bench results, implementation behavior and retained source status were outside this independent primary-source review; no benches were run."
+      ],
+      "primary_sources": [
+        "https://www.keil.com/dd/docs/datashts/st/stm32f4xx/dm00037051.pdf"
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "665555018f895733c3c01ffcba9e6aaa75a62a45c16856c44abb9623e86ba79d",
+        "generated_record_sha256": "8005752cece2aa2f361d48d16ce6302f9b5ab3322ca01c298eb31ec7021bb8c9"
+      }
+    },
+    {
+      "entry_id": "OHM-144",
+      "mismatches": [
+        "manufacturer_to_library_terminal is recorded as DERIVED, confidence H, with only ABM10 p2 cited. That page establishes manufacturer top-view positions (1 bottom-left, 2 bottom-right, 3 top-right, 4 top-left), but contains no Ohmni/library terminal numbers. The claimed permutation {1:2,2:3,3:4,4:1} therefore cannot be independently re-derived from the supplied primary source without evidence for the library-side numbering. Retain the DERIVED basis and explicit unvalidated-binding limitation, and provide separate library-side evidence or lower the unsupported confidence.",
+        "equivalent_series_resistance_max=150 ohm is correct for the selected ABM10 at 16 MHz, but its scope also claims the ABM8 16..19.999 MHz and ABM11 16..17.999 MHz ranges. The sole cited ABM10 PDF p1 establishes only ABM10, with 150 ohm maximum over 16.000..19.999 MHz. Remove the other-family scope claims or cite their own primary sources."
+      ],
+      "notes": [
+        "Examined both pages of the archived Abracon ABM10 PDF, including rendered standard-specification columns, ESR table, top-view schematic, mechanical drawing and chamfer note. Verified Revised 04.21.15.",
+        "Re-derived selected 16 MHz fundamental option from the 12..55 MHz range; standard ESR maximum 150 ohm over 16.000..19.999 MHz, C0 maximum 7 pF, standard CL 10 pF, drive typical 10 uW and maximum 100 uW.",
+        "Checked standard operating ambient -10..60 C, tolerance magnitude 20 ppm at 25 C, and stability magnitude 30 ppm over that operating range relative to 25 C.",
+        "Visually confirmed crystal terminals 1 and 3, ground terminals 2 and 4, and top-view numbering 1 bottom-left, 2 bottom-right, 3 top-right, 4 top-left. The note explicitly permits the chamfer at pin 1, 2 or 4. Manufacturer pin roles match.",
+        "The manufacturer-to-library permutation is not a direct manufacturer fact; the input itself leaves physical binding unvalidated. No implementation or library files were inspected.",
+        "Archived source SHA-256 02cc6d648a5c4bd899218b850345acebbd0f7df1996e6c5119a14c94bed5058d; examined from source-index.json mapping, without refetching or substituting another revision.",
+        "Compared the complete audit-evidence payload with generated research fields: identical apart from generated null detail/page fields. Reviewed-content hashes are computed from the copied input bytes. Bench results, implementation behavior and retained source status were outside this independent primary-source review; no benches were run.",
+        "Follow-up recheck of the copied OHM-144 Markdown and generated record confirmed that manufacturer_to_library_terminal has basis DERIVED and confidence H in both. Corrected the reviewer wording accordingly; the absence of independent library-side numbering evidence remains the finding. Refreshed reviewed-content hashes from those copied bytes."
+      ],
+      "primary_sources": [
+        "https://abracon.com/Resonators/ABM10.pdf"
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "bad9313f47fddfea04739629640261285bb1ed58c49cb242c2cc067f32655752",
+        "generated_record_sha256": "a729f5730b2f467f407212ebff977e5c150767ed2c83dfbca81b956f04d3366b"
+      }
+    },
+    {
+      "entry_id": "OHM-157",
+      "mismatches": [],
+      "notes": [
+        "Examined all four pages of the archived JST SH PDF and rendered pp1..4. No printed revision/date was found. Confirmed SHR-04V-S housing on p2, SM04B-SRSS-TB side-entry header on p3, and part-number allocation on p4.",
+        "Re-derived p1 ratings: 1 A AC/DC specifically at AWG 28; 50 V AC/DC general specification; -25..85 C including temperature rise under current; contact resistance 20 milliohm initial maximum and 40 milliohm after environmental tests; insulation resistance 100 megohm minimum.",
+        "Visually checked 1.0 mm pitch and No.1 circuit in the side-entry connector-mounting-surface PCB view. Housing/header drawings corroborate the first-circuit mark; no battery polarity or ground assignment is specified.",
+        "Checked source caveats that overseas registered specifications may differ and PCB dimensions are reference values. All field values and scope match; no thermal, derating, endurance or typical-contact-resistance values were inferred.",
+        "Archived source SHA-256 ea3071ca5ee5a6069eba534fa39a10f34c9fb742ee42135a69ab4156bfa0f5de; examined from source-index.json mapping, without refetching or substituting another revision.",
+        "Compared the complete audit-evidence payload with generated research fields: identical apart from generated null detail/page fields. Reviewed-content hashes are computed from the copied input bytes. Bench results, implementation behavior and retained source status were outside this independent primary-source review; no benches were run."
+      ],
+      "primary_sources": [
+        "https://www.jst-mfg.com/product/pdf/eng/eSH.pdf"
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "5cb54c4a88e0f8bc2b5b1c4581106b069514e35d6422aac027fd2da898cd27c1",
+        "generated_record_sha256": "fecca1d06baa4f98ad7bd7c0af3843ba037ae8f0a426cf21351a152e578fc427"
+      }
+    },
+    {
+      "entry_id": "OHM-159",
+      "mismatches": [],
+      "notes": [
+        "Examined all five pages of the archived manufacturer-authored Phoenix Contact catalog PDF mirrored by Conrad; visually checked pp1,2,5 and extracted the approval tables on pp3..4. Verified product MKDS 1,5/2-5,08, order 1715721, and Nov 12, 2013 stamp.",
+        "Re-derived nominal 17.5 A and nominal conductor cross-section 1.5 mm2 under EN-VDE context; distinguished the separate 22 A maximum-load entry.",
+        "Checked rated voltage 250 V (III/3), 400 V (III/2), 630 V (II/2), and 4 kV rated surge for all three categories. These are not universal ratings; separate UL/CSA approval values are not substituted.",
+        "Checked p2 M3 screw torque 0.5..0.6 Nm, strip length 7 mm, single solid conductor 0.14..2.5 mm2 and single stranded conductor 0.14..1.5 mm2. Ferrule and two-conductor rows remain separate.",
+        "All field values, pages and scopes match. The inspected document does not establish the assumed clamp resistance, full load-temperature derating, or a polarity pin map; those limitations are retained.",
+        "Archived source SHA-256 f55b08b98fd1ae3a37d3eeb75a641ac914cd4409429c273c248e0e6617a6fd6a; examined from source-index.json mapping, without refetching or substituting another revision.",
+        "Compared the complete audit-evidence payload with generated research fields: identical apart from generated null detail/page fields. Reviewed-content hashes are computed from the copied input bytes. Bench results, implementation behavior and retained source status were outside this independent primary-source review; no benches were run."
+      ],
+      "primary_sources": [
+        "https://asset.conrad.com/media10/add/160267/c1/-/en/000743450DS03/datenblatt-743450-phoenix-contact-mkds-15-2-508-schraubklemmblock-150-mm-polzahl-2-gruen-1-st.pdf"
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "aa864060337942f8fcb7745a9093471939a958b9e18c9e01e4fceeb012f9a1ee",
+        "generated_record_sha256": "b2f99b9b944f97742e96d657b73e816f5e64960cd49d8585a024793ddef8e23a"
+      }
+    },
+    {
+      "entry_id": "OHM-180",
+      "mismatches": [
+        "documents[0].revision records only the Oct.1.2026 copyright footer and says engineering revision is not stated, but p1 also visibly prints the catalog issue code 2017.1 followed by a circled 3 (2017.1\u2462). Preserve that printed issue identifier separately from the 2026 copyright/download stamp; the supplied revision metadata omits it."
+      ],
+      "notes": [
+        "Examined archived Hirose DM3 catalog pp1..3 as rendered pages and extracted text. Verified DM3AT-SF-PEJM5 / HRS 609-0031-0 as the top-mount push-push reference; the default Molex part was not treated as interchangeable.",
+        "Re-derived p2 connector current 0.5 A, insulation voltage rating 125 V AC, initial contact resistance maximum 100 milliohm=0.1 ohm measured at 1 mA, and operating -25..85 C including current-induced rise.",
+        "Checked 10000-cycle durability for the DM3AT family in p2 test conditions (400..600 cycles/hour), distinct from the 5000-cycle DM3C/DM3D condition.",
+        "Visually checked every p3 signal label: 1 DAT2, 2 CD/DAT3, 3 CMD, 4 VDD, 5 CLK, 6 VSS, 7 DAT0, 8 DAT1. Verified separate mechanical A/B card-detect pair is open without card and closed with card.",
+        "Checked p3 body dimensions 13.85 mm width, 15.95 mm depth and 1.68 mm height, excluding card overstroke/lock/eject dimensions. Electrical values, drawing and scopes match; printed issue-code metadata omission is recorded above.",
+        "Archived source SHA-256 61df8287420edb5f1d019f603aa72bbafbd23efb0656d77c7b16504097a19dcf; examined from source-index.json mapping, without refetching or substituting another revision.",
+        "Compared the complete audit-evidence payload with generated research fields: identical apart from generated null detail/page fields. Reviewed-content hashes are computed from the copied input bytes. Bench results, implementation behavior and retained source status were outside this independent primary-source review; no benches were run."
+      ],
+      "primary_sources": [
+        "https://www.hirose.com/ko/product/series/DM3/documents?path=%2Fapi%2Fv1%2Fseries%2FDM3%2Fdocuments%2Fproduct_series_catalog%2Fcontent%3Flang%3DEN"
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "f600f61fd3d8baee9c7a9e415db60dcc2e840c4f0ae66d71aa3c8c01967d4e9d",
+        "generated_record_sha256": "58723fa358c374794cdbdf8debb21f27467fcb6313be0d68aca262450d401f86"
+      }
+    }
+  ],
+  "reviewer_context": "fresh",
+  "sample": [
+    "OHM-105",
+    "OHM-114",
+    "OHM-117",
+    "OHM-126",
+    "OHM-144",
+    "OHM-157",
+    "OHM-159",
+    "OHM-180"
+  ],
+  "schema_version": 1,
+  "seed": 5078557961213280324,
+  "stage": "stage4"
+}
