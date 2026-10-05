@@ -29,6 +29,7 @@ from ohmni.behavior.models import (
     BehaviorManifest,
     BenchReference,
     CatalogPartBinding,
+    EntryResearch,
     SourceAnchor,
     SourceConsistencyIssue,
     Stage1Resolution,
@@ -240,6 +241,20 @@ def build_records(root: Path = ROOT) -> tuple[
     entries = _master_entries(text, spec_raw)
     bindings = _gapfill_bindings(root)
     resolutions = _gapfill_resolutions(root)
+    research = {}
+    for path in sorted((root / GAPFILL_DIR).glob("OHM-*.md")):
+        raw = path.read_bytes()
+        match = re.search(r"```audit-evidence\s*\n(.*?)\n```", raw.decode("utf-8"), re.DOTALL)
+        if not match:
+            raise ValueError(f"{path.name}: missing machine-readable research evidence")
+        payload = json.loads(match[1])
+        if payload.get("entry_id") != path.stem:
+            raise ValueError(f"{path.name}: entry identity mismatch")
+        for field in payload.get("field_updates", []):
+            if not all(field.get(key) for key in ("field", "basis", "confidence", "sources")) or "value" not in field:
+                raise ValueError(f"{path.name}: incomplete field provenance")
+        payload["source"] = _anchor(path.relative_to(root).as_posix(), raw, 1).model_dump()
+        research[path.stem] = EntryResearch.model_validate(payload)
 
     class_map = {record.behavior_id: record for record in classes}
     binding_map = {record.part_id: record for record in bindings}
@@ -255,9 +270,10 @@ def build_records(root: Path = ROOT) -> tuple[
             for resolution in resolutions
             if entry.entry_id in resolution.entry_ids
         )
-        if attached or resolution_ids:
+        if attached or resolution_ids or entry.entry_id in research:
             entries[index] = entry.model_copy(
-                update={"catalog_binding_ids": attached, "resolution_ids": resolution_ids}
+                update={"catalog_binding_ids": attached, "resolution_ids": resolution_ids,
+                        "research": research.get(entry.entry_id)}
             )
 
     issues: list[SourceConsistencyIssue] = []

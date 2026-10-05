@@ -70,6 +70,18 @@ def validate_registry_references(
                 )
     for entry_id, record in entries.items():
         _validate_anchor(root, record.source, entry_id)
+        if record.research is not None:
+            research = record.research
+            if research.entry_id != entry_id:
+                raise BehaviorRegistryError(f"{entry_id} has research for {research.entry_id}")
+            _validate_anchor(root, research.source, f"{entry_id} research")
+            urls = {citation.url for citation in research.documents if citation.url}
+            for fact in research.field_updates:
+                if not set(fact.sources) <= urls:
+                    raise BehaviorRegistryError(f"{entry_id}/{fact.field} cites an undeclared document")
+            for receipt in research.bench_results:
+                if not _safe_local_path(root, f"out/component-behavior/run/{receipt}").is_file():
+                    raise BehaviorRegistryError(f"{entry_id} points to missing research bench {receipt}")
         for behavior_id, relative in zip(
             record.behavior_class_ids, record.class_record_paths, strict=True
         ):

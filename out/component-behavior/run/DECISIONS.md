@@ -66,3 +66,29 @@ confirmed installation directory to its own PATH; no persisted user settings
 are changed. The earlier unavailable result remains in Git history. Existing
 source and bench failures remain failures until rechecked. Electrical-data
 effect: no parameter, tolerance or expected value changes.
+
+## D009 — Bench observation mapping repair
+
+Actual ngspice output uses authored scalar identifiers, whereas the spec often
+uses descriptive measurement labels. Explicit mappings now cite exact source
+lines and the immutable deck hash. Unit conversions are declared per mapping.
+Expected values and tolerances remain unchanged. Ambiguous repeated values,
+unsupported qualitative contracts and failed solver runs still fail.
+
+## D010 — Scoped primary-source corrections, OHM-001..020
+
+Each field is recorded in its entry gapfill with source/page/basis/confidence.
+Use conservative standard-operation chip ratings, not extended-operation
+ratings. The 3296 CW endpoint is pin 3. Potentiometer end resistance is a
+maximum bound, not a nominal value. The 4608X package needs its own 1 W limit.
+CRA06P 5% grade has 200 ppm/K TCR. Refuse default RV16 simulation while its
+power rating remains unknown; do not borrow the alternate PTV09 rating.
+No source status is upgraded and none of these observations rewrites the spec.
+
+## D011 — Simulator availability root cause
+
+The installed engine exposed an adapter inconsistency: an explicitly unresolved
+executable could be rediscovered by the availability property. Preserve the
+adapter's original resolution for both availability and execution. The existing
+missing-executable regression assertion is unchanged; the added test prevents
+rediscovery. Generated bench decks use LF to preserve reviewable output.

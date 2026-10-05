@@ -8,7 +8,12 @@ from pathlib import Path
 
 from .audit import AuditError, _atomic_json, _atomic_text, _now, _sha_bytes
 
-SCALAR = re.compile(r"^\s*(\S+)\s*=\s*([-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?)\s*$", re.MULTILINE)
+NUMBER = r"[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?"
+# .meas adds an interval or crossing time after the numeric observation.
+SCALAR = re.compile(
+    rf"^\s*(\S+)\s*=\s*({NUMBER})(?:\s+(?:(?:from|to|at|trig|targ)\s*=\s*{NUMBER}\s*)+)?\s*$",
+    re.MULTILINE | re.IGNORECASE,
+)
 
 
 def scalars(output: str) -> dict[str, float]:
@@ -28,13 +33,43 @@ def numeric_contract(item: dict) -> dict:
     value, tolerance = item.get("value"), item.get("tolerance")
     try:
         value = float(value)
-        if isinstance(tolerance, str) and tolerance.endswith("%"):
-            tolerance = abs(value) * float(tolerance[:-1]) / 100
+        if isinstance(tolerance, str) and tolerance.strip() == "exact":
+            tolerance = 0.0
+        elif isinstance(tolerance, str) and re.fullmatch(r"\s*[\d.]+\s*(?:%|percent)\s*", tolerance):
+            percentage = re.sub(r"(?:%|percent)\s*$", "", tolerance).strip()
+            tolerance = abs(value) * float(percentage) / 100
         else:
             tolerance = float(tolerance)
     except (ValueError, TypeError):
         return {"expected": None, "tolerance": None}
     return {"expected": value, "tolerance": tolerance}
+
+
+def measurement_binding(audit, identity: str, item: dict) -> dict:
+    """Resolve an explicit label-to-observation binding, never by numeric proximity."""
+    import json
+
+    path = audit.root / "tools/behavior_audit/measurement_bindings.json"
+    mapping = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+    source = mapping.get(identity)
+    if source is None:
+        return {"scalar": str(item.get("measure", "")).casefold(), "scale": 1.0}
+    contract = audit._state()["bench_contracts"][identity]
+    if source["netlist_sha256"] != contract["netlist_sha256"]:
+        raise AuditError(f"measurement binding has a different source deck: {identity}")
+    row = source["measurements"].get(item.get("measure"))
+    if row is None:
+        return {"scalar": str(item.get("measure", "")).casefold(), "scale": 1.0}
+    deck = (audit.root / contract["file"]).read_text(encoding="utf-8")
+    if not row.get("source_line") or row["source_line"] not in deck.splitlines():
+        raise AuditError(f"measurement binding does not relocate to its source line: {identity}")
+    return {"scalar": row["scalar"].casefold(), "scale": row.get("scale", 1.0)}
+
+
+def observed_value(audit, identity: str, item: dict, output: str) -> float | None:
+    binding = measurement_binding(audit, identity, item)
+    value = scalars(output).get(binding["scalar"])
+    return value * binding["scale"] if value is not None else None
 
 
 def inline_deck(path: Path, boundary: Path, seen: tuple[Path, ...] = ()) -> str:
@@ -77,13 +112,12 @@ def run_benches(audit, ids: list[str] | None = None):
         output_path, version_path = folder / "output.txt", folder / "version.txt"
         _atomic_text(output_path, output)
         _atomic_text(version_path, version)
-        values = scalars(observation["stdout"])
         comparisons = []
         expected = contract["expected"]
         if isinstance(expected, list):
             for item in expected:
                 if isinstance(item, dict):
-                    comparisons.append(dict(numeric_contract(item), measure=item.get("measure"), measured=values.get(str(item.get("measure")).casefold())))
+                    comparisons.append(dict(numeric_contract(item), measure=item.get("measure"), measured=observed_value(audit, identity, item, observation["stdout"])))
         record = {
             "bench_id": identity, "run_id": state["run_id"], "timestamp": _now(),
             "run_status": "passed" if observation["status"] == "ran" else observation["status"],
@@ -94,6 +128,8 @@ def run_benches(audit, ids: list[str] | None = None):
             "output_sha256": _sha_bytes(output.encode()),
             "version_file": version_path.relative_to(audit.run_dir).as_posix(),
             "version_sha256": _sha_bytes(version.encode()), "comparisons": comparisons,
+            "execution_status": observation["status"],
+            "returncode": observation.get("returncode"),
         }
         errors = audit._bench_errors(record)
         if errors and record["run_status"] == "passed":

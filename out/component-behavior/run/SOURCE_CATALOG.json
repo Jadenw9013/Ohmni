@@ -1,0 +1,3631 @@
+{
+  "BEH-CAP-ALEL": {
+    "sources": [
+      {
+        "id": "S11",
+        "origin": "spec_bibliography",
+        "source_line": 1147,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S11 | Nichicon | \"Application Guidelines for Aluminum Electrolytic Capacitors\" | https://www.nichicon.com/getmedia/d6d540b9-2d08-42e7-8d62-a4085f6e1fbd/applicationguidelines.pdf | not shown | polarity, no reverse or AC, ripple limits, storage leakage rise and 1 kohm voltage treatment, polymer rush current not above 10 A, series balancing resistors, vent clearances 2/3/5 mm by can diameter |",
+        "urls": [
+          "https://www.nichicon.com/getmedia/d6d540b9-2d08-42e7-8d62-a4085f6e1fbd/applicationguidelines.pdf"
+        ]
+      },
+      {
+        "id": "S12",
+        "origin": "spec_bibliography",
+        "source_line": 1148,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S12 | Nichicon | \"1. General Description of Aluminum Electrolytic Capacitors\" | https://www.nichicon.co.jp/english/products/pdf/aluminum.pdf | not shown | equivalent circuit C, ESR, L, parallel oxide resistance; leakage temperature factor about 2-3x at 65 C and 3-5x at 85 C; life doubles per 10 C; W = I^2 * ESR; reverse voltage behavior; cathode oxide withstands about 1 V |",
+        "urls": [
+          "https://www.nichicon.co.jp/english/products/pdf/aluminum.pdf"
+        ]
+      },
+      {
+        "id": "S13",
+        "origin": "spec_bibliography",
+        "source_line": 1149,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S13 | Nippon Chemi-Con | FAQ \"Lifetime of Aluminum Electrolytic Capacitors\" | https://www.chemi-con.co.jp/en/faq/detail.php?id=29BDBH5 | not shown | 10-degree rule Lx = Lo * Bt^((To-Tx)/10), Bt about 2; dT = (Ix/Io)^2 * dTo; combined Lx = Lo * 2^((To-Tx)/10) * 2^(-dT/5) |",
+        "urls": [
+          "https://www.chemi-con.co.jp/en/faq/detail.php?id=29BDBH5"
+        ]
+      },
+      {
+        "id": "S14",
+        "origin": "spec_bibliography",
+        "source_line": 1150,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S14 | NIC Components | \"Ripple Current Correction Factors\" (RC-CorrectionFactors) | https://www.niccomp.com/wp-content/uploads/files/aluminum/RC-CorrectionFactors-122010r5.pdf | 15 Dec 2010 | example frequency and temperature ripple multipliers for one 450 V series |",
+        "urls": [
+          "https://www.niccomp.com/wp-content/uploads/files/aluminum/RC-CorrectionFactors-122010r5.pdf"
+        ]
+      },
+      {
+        "id": "S26",
+        "origin": "spec_bibliography",
+        "source_line": 1162,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S26 | OHMNI | benches in /home/claude/behavior/bench/cap-* (ngspice 42 runs) | local | 2026-10-02 | all measured values |",
+        "urls": []
+      }
+    ],
+    "unresolved": [
+      "BEH-CAP-ALEL/S26: local or unresolved reference requires an explicit artifact binding: | S26 | OHMNI | benches in /home/claude/behavior/bench/cap-* (ngspice 42 runs) | local | 2026-10-02 | all measured values |"
+    ]
+  },
+  "BEH-CAP-ALPOLY": {
+    "sources": [
+      {
+        "id": "S11",
+        "origin": "spec_bibliography",
+        "source_line": 1147,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S11 | Nichicon | \"Application Guidelines for Aluminum Electrolytic Capacitors\" | https://www.nichicon.com/getmedia/d6d540b9-2d08-42e7-8d62-a4085f6e1fbd/applicationguidelines.pdf | not shown | polarity, no reverse or AC, ripple limits, storage leakage rise and 1 kohm voltage treatment, polymer rush current not above 10 A, series balancing resistors, vent clearances 2/3/5 mm by can diameter |",
+        "urls": [
+          "https://www.nichicon.com/getmedia/d6d540b9-2d08-42e7-8d62-a4085f6e1fbd/applicationguidelines.pdf"
+        ]
+      },
+      {
+        "id": "S15",
+        "origin": "spec_bibliography",
+        "source_line": 1151,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S15 | Vishay | \"Reliability\" document 90017 for OS-CON | https://www.vishay.com/docs/90017/reliabilityoscon.pdf | 07-Feb-14 | polymer life rule Lx = Lo * 10^((To-Tx)/20), no ripple self-heating term, wear-out failure is open mode / capacitance decrease, life estimate capped at 15 years |",
+        "urls": [
+          "https://www.vishay.com/docs/90017/reliabilityoscon.pdf"
+        ]
+      },
+      {
+        "id": "S17",
+        "origin": "spec_bibliography",
+        "source_line": 1153,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S17 | KEMET | \"Derating Review of Ta-MnO2 vs. Ta-Polymer vs. Al-Polymer vs. NbO-MnO2\" (Prymak, Staubli, Prevallet) | https://www.kemet.com/content/dam/kemet/lightning/obsolete/technical-archive/2004-CARTS-Europe-Derating-Differences.pdf | Oct 2004 | derating: MnO2 50%, polymer 20% above 10 V and 10% at or below 10 V; surge failure-rate figures |",
+        "urls": [
+          "https://www.kemet.com/content/dam/kemet/lightning/obsolete/technical-archive/2004-CARTS-Europe-Derating-Differences.pdf"
+        ]
+      },
+      {
+        "id": "S19",
+        "origin": "spec_bibliography",
+        "source_line": 1155,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S19 | KEMET | T543 polymer tantalum datasheet T2061_T543 | https://www.mouser.lt/pdfdocs/KEM_T2061_T543UPDATED-2.pdf | 2/4/2013 | derating 90% (<=10 V) and 80% (>10 V), ESR 9-100 mohm at 100 kHz, leakage <= 0.1 CV after 5 min, reverse tolerance 15% of VR at 25 C down to 3% at 105 C, I(max) = sqrt(Pmax/ESR), power multipliers 1.0 (<=45 C) to 0.25 (>85 C), benign failure mode |",
+        "urls": [
+          "https://www.mouser.lt/pdfdocs/KEM_T2061_T543UPDATED-2.pdf"
+        ]
+      },
+      {
+        "id": "S26",
+        "origin": "spec_bibliography",
+        "source_line": 1162,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S26 | OHMNI | benches in /home/claude/behavior/bench/cap-* (ngspice 42 runs) | local | 2026-10-02 | all measured values |",
+        "urls": []
+      }
+    ],
+    "unresolved": [
+      "BEH-CAP-ALPOLY/S26: local or unresolved reference requires an explicit artifact binding: | S26 | OHMNI | benches in /home/claude/behavior/bench/cap-* (ngspice 42 runs) | local | 2026-10-02 | all measured values |"
+    ]
+  },
+  "BEH-CAP-CERAMIC": {
+    "sources": [
+      {
+        "id": "S1",
+        "origin": "spec_bibliography",
+        "source_line": 1137,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S1 | Murata | FAQ \"DC Bias Characteristic Explanation\" | https://www.murata.com/en-us/support/faqs/products/capacitor/mlcc/char/0005 | not shown | DC bias mechanism (BaTiO3 polarization); C0G/CH has no DC bias |",
+        "urls": [
+          "https://www.murata.com/en-us/support/faqs/products/capacitor/mlcc/char/0005"
+        ]
+      },
+      {
+        "id": "S2",
+        "origin": "spec_bibliography",
+        "source_line": 1138,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S2 | Murata | Capacitor Guide article \"Voltage characteristics of electrostatic capacitance\" | https://article.murata.com/article/voltage-characteristics-of-electrostatic-capacitance | not shown | numeric example: 100 uF 6.3 V, 1.8 V bias: X5R about -10%, Y5V about -40% |",
+        "urls": [
+          "https://article.murata.com/article/voltage-characteristics-of-electrostatic-capacitance"
+        ]
+      },
+      {
+        "id": "S3",
+        "origin": "spec_bibliography",
+        "source_line": 1139,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S3 | Murata | \"SimSurfing Multilayer Ceramic Capacitors Characteristics Viewer\" measurement conditions | https://ds.murata.com/simsurfing_data/pdf/en-us/mlcc/sim_mlcc_measuringcond_e.pdf | Sept 2022 | how Murata characterizes DC bias (0 V to rated, 60 s, 1 kHz or 120 Hz, 0.5/1 Vrms, 25 C) and that SimSurfing provides measured data, no published bias equation |",
+        "urls": [
+          "https://ds.murata.com/simsurfing_data/pdf/en-us/mlcc/sim_mlcc_measuringcond_e.pdf"
+        ]
+      },
+      {
+        "id": "S4",
+        "origin": "spec_bibliography",
+        "source_line": 1140,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S4 | Murata | Datasheet GRM21BR61A106KE19 (copy hosted by store.comet.bg) | https://store.comet.bg/download-file.php?id=10468 | not shown | 10 uF +/-10%, 10 V, X5R, +/-15% over -55 to 85 C, 0805 part; datasheet states bias graphs exist but has no numbers in the text |",
+        "urls": [
+          "https://store.comet.bg/download-file.php?id=10468"
+        ]
+      },
+      {
+        "id": "S5",
+        "origin": "spec_bibliography",
+        "source_line": 1141,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S5 | TDK | Datasheet C2012X5R1V106M085AC (copy hosted by arrow.com) | https://static6.arrow.com/aropdfconversion/9b57075dcb9d6fd09f527e256d515abd213125c/c2012x5r1v106m085ac.pdf | created 2025-05-03 | 10 uF +/-20%, 35 V, 0805, X5R +/-15%, -55 to 85 C, DF max 10%, IR min 50 Mohm, thickness 0.85 mm; bias, ESR, impedance and ripple-rise graphs exist but have no numbers in the text |",
+        "urls": [
+          "https://static6.arrow.com/aropdfconversion/9b57075dcb9d6fd09f527e256d515abd213125c/c2012x5r1v106m085ac.pdf"
+        ]
+      },
+      {
+        "id": "S6",
+        "origin": "spec_bibliography",
+        "source_line": 1142,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S6 | TDK | Tech-Mag \"Electronics ABC, Capacitors Part 3, Ceramic Capacitors [2]\" | https://www.tdk.com/en/tech-mag/electronics_primer/6 | not shown | bias loss is worse in smaller parts; V-shaped impedance with SRF; Class 1 versus Class 2 temperature behavior |",
+        "urls": [
+          "https://www.tdk.com/en/tech-mag/electronics_primer/6"
+        ]
+      },
+      {
+        "id": "S7",
+        "origin": "spec_bibliography",
+        "source_line": 1143,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S7 | Johanson Dielectrics | \"Ceramic Capacitor Aging Made Simple\" | https://johansondielectrics.com/docs/3945/ceramic-capacitor-aging-made-simple.pdf | 21 May 2012 | aging per decade hour: C0G none, X7R and X5R -2.5%, Y5V -7%; Curie point about 125 C; 150 C for 1.5 h restores |",
+        "urls": [
+          "https://johansondielectrics.com/docs/3945/ceramic-capacitor-aging-made-simple.pdf"
+        ]
+      },
+      {
+        "id": "S8",
+        "origin": "spec_bibliography",
+        "source_line": 1144,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S8 | KEMET | Ceramic high-reliability capacitor datasheet F3054 | https://content.kemet.com/datasheets/F3054.pdf | not shown | C0G 0 +/-30 ppm/C -55 to 125 C, X7R +/-15%, DF limits (C0G 0.15%, X7R 2.5%), IR rule (100 Gohm or 1000 Mohm*uF, whichever is less, at 25 C), DWV 250% for 5 s, aging about 1.0% per decade hour for X7R |",
+        "urls": [
+          "https://content.kemet.com/datasheets/F3054.pdf"
+        ]
+      },
+      {
+        "id": "S9",
+        "origin": "spec_bibliography",
+        "source_line": 1145,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S9 | KEMET | \"KEMET K-SIM Simulation Tool\" (Mouser page) | https://www.mouser.com/kemet-ksim-simulation-tool/ | updated 2023-11-01 | what K-SIM provides: capacitance vs temperature, vs DC voltage, impedance and ESR vs frequency, ripple temperature rise, SPICE/S2P/CSV export |",
+        "urls": [
+          "https://www.mouser.com/kemet-ksim-simulation-tool/"
+        ]
+      },
+      {
+        "id": "S10",
+        "origin": "spec_bibliography",
+        "source_line": 1146,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S10 | Electronic Design | H. T.-J. Ma, \"Diagnosing Class II MLCC Effective Capacitance and Aging Under DC Bias\" | https://www.electronicdesign.com/technologies/analog/article/21135733/diagnosing-class-ii-mlcc-effective-capacitance-and-aging-under-dc-bias | 2 Jul 2020 | measured 1 uF 6.3 V X5R: 3 V bias gives 0.36 uF (-64%) at 500 mVrms/1 kHz and 0.32 uF with 10 mVrms drive. Trade-press article, secondary source |",
+        "urls": [
+          "https://www.electronicdesign.com/technologies/analog/article/21135733/diagnosing-class-ii-mlcc-effective-capacitance-and-aging-under-dc-bias"
+        ]
+      },
+      {
+        "id": "S26",
+        "origin": "spec_bibliography",
+        "source_line": 1162,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S26 | OHMNI | benches in /home/claude/behavior/bench/cap-* (ngspice 42 runs) | local | 2026-10-02 | all measured values |",
+        "urls": []
+      }
+    ],
+    "unresolved": [
+      "BEH-CAP-CERAMIC/S26: local or unresolved reference requires an explicit artifact binding: | S26 | OHMNI | benches in /home/claude/behavior/bench/cap-* (ngspice 42 runs) | local | 2026-10-02 | all measured values |"
+    ]
+  },
+  "BEH-CAP-EDLC": {
+    "sources": [
+      {
+        "id": "S23",
+        "origin": "spec_bibliography",
+        "source_line": 1159,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S23 | Eaton | Supercapacitor application guidelines, Technical Note PS-5006 (copy hosted by astrolkwx.com) | https://astrolkwx.com/wp-content/uploads/eaton-supercapacitor-application-guidelines.pdf | Dec 2017 | 2.5 V standard rating, 3 V surge, +/-20% imbalance example, balancing current at least 50x worst-case leakage, 3.3-22 kohm passive balance resistors, life halves per +10 C, 1.8 V at +85 C, vent or rupture on overcharge, reverse charge or heating above 150 C |",
+        "urls": [
+          "https://astrolkwx.com/wp-content/uploads/eaton-supercapacitor-application-guidelines.pdf"
+        ]
+      },
+      {
+        "id": "S24",
+        "origin": "spec_bibliography",
+        "source_line": 1160,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S24 | Eaton | HB supercapacitors Technical Data 4375 | https://www.eaton.com/content/dam/eaton/products/electronic-components/resources/data-sheet/eaton-hb-supercapacitor-data-sheet.pdf | Nov 2016 | 2.5 V max, 2.8 V surge, ESR 0.020-0.160 ohm DC, leakage 7-180 uA after 72 h, -10/+30% tolerance, 1000 h at 70 C life limits, longer lead positive, derate to 2.3 V at 85 C |",
+        "urls": [
+          "https://www.eaton.com/content/dam/eaton/products/electronic-components/resources/data-sheet/eaton-hb-supercapacitor-data-sheet.pdf"
+        ]
+      },
+      {
+        "id": "S25",
+        "origin": "spec_bibliography",
+        "source_line": 1161,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S25 | Abracon | \"Supercapacitors Balancing Basics and Techniques\" application note | https://abracon.com/uploads/resources/Supercapacitors-Balancing-Basics-and-Techniques-Application-Note.pdf | not shown | why series balancing is needed, resistor divider rule (load at least 10x higher resistance), leakage spread, active balancing, overvoltage damage |",
+        "urls": [
+          "https://abracon.com/uploads/resources/Supercapacitors-Balancing-Basics-and-Techniques-Application-Note.pdf"
+        ]
+      },
+      {
+        "id": "S26",
+        "origin": "spec_bibliography",
+        "source_line": 1162,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S26 | OHMNI | benches in /home/claude/behavior/bench/cap-* (ngspice 42 runs) | local | 2026-10-02 | all measured values |",
+        "urls": []
+      }
+    ],
+    "unresolved": [
+      "BEH-CAP-EDLC/S26: local or unresolved reference requires an explicit artifact binding: | S26 | OHMNI | benches in /home/claude/behavior/bench/cap-* (ngspice 42 runs) | local | 2026-10-02 | all measured values |"
+    ]
+  },
+  "BEH-CAP-FILM": {
+    "sources": [
+      {
+        "id": "S20",
+        "origin": "spec_bibliography",
+        "source_line": 1156,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S20 | WIMA | MKP-X2 datasheet (copy hosted by CERN) | https://sy-dep-epc-lpc.web.cern.ch/components/datasheets/epc-lpc%20(converters)/MKP%20-%20EMI%20Capacitor%20-%20WIMA.pdf | not shown | Class X2 metallized PP; 275 VAC (250 VAC certified), 305 VAC variant; capacitance range as extracted (\"1000 pF to 2.2 mF\", likely a typo, not used); tan(delta) 10-30e-4 (1 kHz), 20-60e-4 (10 kHz), 90e-4 (100 kHz); IR; -55 to +105 C; self-healing; pitch 7.5 to 27.5 mm |",
+        "urls": [
+          "https://sy-dep-epc-lpc.web.cern.ch/components/datasheets/epc-lpc%20(converters)/MKP%20-%20EMI%20Capacitor%20-%20WIMA.pdf"
+        ]
+      },
+      {
+        "id": "S21",
+        "origin": "spec_bibliography",
+        "source_line": 1157,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S21 | WIMA | Main Catalogue 2025 (SMD-PET / SMD-PPS section) | https://www.wima.de/wp-content/uploads/media/WIMA_Main_Catalogue_2025.pdf | 2025 | self-healing metallized construction; 63 to 1000 VDC range for the SMD series; PPS very constant capacitance vs temperature |",
+        "urls": [
+          "https://www.wima.de/wp-content/uploads/media/WIMA_Main_Catalogue_2025.pdf"
+        ]
+      },
+      {
+        "id": "S26",
+        "origin": "spec_bibliography",
+        "source_line": 1162,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S26 | OHMNI | benches in /home/claude/behavior/bench/cap-* (ngspice 42 runs) | local | 2026-10-02 | all measured values |",
+        "urls": []
+      }
+    ],
+    "unresolved": [
+      "BEH-CAP-FILM/S26: local or unresolved reference requires an explicit artifact binding: | S26 | OHMNI | benches in /home/claude/behavior/bench/cap-* (ngspice 42 runs) | local | 2026-10-02 | all measured values |"
+    ]
+  },
+  "BEH-CAP-MICA": {
+    "sources": [
+      {
+        "id": "S22",
+        "origin": "spec_bibliography",
+        "source_line": 1158,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S22 | Cornell Dubilier | Dipped silvered mica capacitor catalog CD10 | https://www.cde.com/resources/catalogs/CD10.pdf | not shown | tolerance codes, temperature coefficient characteristic codes C/E/F with ppm/C bands, -55 to 125 C (150 C option for CD10/15/19/30/42), 100 to 2500 Vdc, DWV 200% |",
+        "urls": [
+          "https://www.cde.com/resources/catalogs/CD10.pdf"
+        ]
+      },
+      {
+        "id": "S26",
+        "origin": "spec_bibliography",
+        "source_line": 1162,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S26 | OHMNI | benches in /home/claude/behavior/bench/cap-* (ngspice 42 runs) | local | 2026-10-02 | all measured values |",
+        "urls": []
+      }
+    ],
+    "unresolved": [
+      "BEH-CAP-MICA/S26: local or unresolved reference requires an explicit artifact binding: | S26 | OHMNI | benches in /home/claude/behavior/bench/cap-* (ngspice 42 runs) | local | 2026-10-02 | all measured values |"
+    ]
+  },
+  "BEH-CAP-TANT": {
+    "sources": [
+      {
+        "id": "S16",
+        "origin": "spec_bibliography",
+        "source_line": 1152,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S16 | KEMET | \"Update - Derating Polymer Tantalum Capacitors\" (Prymak, Moore, Reynolds) | https://bitsavers.mirrorservice.org/components/kemet/Derating_Polymer-Tanalum_Capacitors_200008.pdf | Aug 2000 | MnO2 50% derating practice, polymer 20%, failure mechanism (dielectric cracking in wedge areas) |",
+        "urls": [
+          "https://bitsavers.mirrorservice.org/components/kemet/Derating_Polymer-Tanalum_Capacitors_200008.pdf"
+        ]
+      },
+      {
+        "id": "S17",
+        "origin": "spec_bibliography",
+        "source_line": 1153,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S17 | KEMET | \"Derating Review of Ta-MnO2 vs. Ta-Polymer vs. Al-Polymer vs. NbO-MnO2\" (Prymak, Staubli, Prevallet) | https://www.kemet.com/content/dam/kemet/lightning/obsolete/technical-archive/2004-CARTS-Europe-Derating-Differences.pdf | Oct 2004 | derating: MnO2 50%, polymer 20% above 10 V and 10% at or below 10 V; surge failure-rate figures |",
+        "urls": [
+          "https://www.kemet.com/content/dam/kemet/lightning/obsolete/technical-archive/2004-CARTS-Europe-Derating-Differences.pdf"
+        ]
+      },
+      {
+        "id": "S18",
+        "origin": "spec_bibliography",
+        "source_line": 1154,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S18 | KEMET | \"Power-On Failures in Tantalum and Aluminum SMT Capacitors\" (2002 EMAP, Singapore) | https://escies.org/download/webDocumentFile?id=62189 | Nov 2003 | MnO2 ignition mechanism when current is unrestricted; surge test at 1.32 x rated; surge-current test at 75% or 100% of rated |",
+        "urls": [
+          "https://escies.org/download/webDocumentFile?id=62189"
+        ]
+      },
+      {
+        "id": "S19",
+        "origin": "spec_bibliography",
+        "source_line": 1155,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S19 | KEMET | T543 polymer tantalum datasheet T2061_T543 | https://www.mouser.lt/pdfdocs/KEM_T2061_T543UPDATED-2.pdf | 2/4/2013 | derating 90% (<=10 V) and 80% (>10 V), ESR 9-100 mohm at 100 kHz, leakage <= 0.1 CV after 5 min, reverse tolerance 15% of VR at 25 C down to 3% at 105 C, I(max) = sqrt(Pmax/ESR), power multipliers 1.0 (<=45 C) to 0.25 (>85 C), benign failure mode |",
+        "urls": [
+          "https://www.mouser.lt/pdfdocs/KEM_T2061_T543UPDATED-2.pdf"
+        ]
+      },
+      {
+        "id": "S26",
+        "origin": "spec_bibliography",
+        "source_line": 1162,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S26 | OHMNI | benches in /home/claude/behavior/bench/cap-* (ngspice 42 runs) | local | 2026-10-02 | all measured values |",
+        "urls": []
+      }
+    ],
+    "unresolved": [
+      "BEH-CAP-TANT/S26: local or unresolved reference requires an explicit artifact binding: | S26 | OHMNI | benches in /home/claude/behavior/bench/cap-* (ngspice 42 runs) | local | 2026-10-02 | all measured values |"
+    ]
+  },
+  "BEH-CON-AUDIO": {
+    "sources": [
+      {
+        "id": "S20",
+        "origin": "spec_bibliography",
+        "source_line": 11899,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S20 | Switchcraft | 3.5 mm jack family datasheets (RS copy) | https://assets.rs-online.com/v1698949150/Datasheets/fc6a346ba3ebaf1c18750c741b58f352.pdf | not shown | contact resistance 20/30 mOhm initial and 100 mOhm after life, insulation 100 MOhm, 250/500 V AC, 5000 cycles, shunt terminal |",
+        "urls": [
+          "https://assets.rs-online.com/v1698949150/Datasheets/fc6a346ba3ebaf1c18750c741b58f352.pdf"
+        ]
+      },
+      {
+        "id": "S21",
+        "origin": "spec_bibliography",
+        "source_line": 11900,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S21 | Same Sky (CUI Devices) | SJ1-353xNG 3.5 mm jack datasheet (IBS copy) | https://datasheets.ibselectronics.com/sj1-353xng.pdf | not shown | 12 Vdc, 1 A, switch models (tip, tip and ring), 100 MOhm, 500 Vac, 5000 cycles, -25..85 C, contact resistance values (unit printed as MOhm) |",
+        "urls": [
+          "https://datasheets.ibselectronics.com/sj1-353xng.pdf"
+        ]
+      },
+      {
+        "id": "S22",
+        "origin": "spec_bibliography",
+        "source_line": 11901,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S22 | Penta Conn | Audio standard pinouts (3.5 mm TRRS CTIA vs OMTP) | https://pentaconnglobal.com/?p=155 | not shown | CTIA: tip L, ring1 R, ring2 GND, sleeve MIC; OMTP: ring2 MIC, sleeve GND |",
+        "urls": [
+          "https://pentaconnglobal.com/?p=155"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-CON-DCJACK": {
+    "sources": [
+      {
+        "id": "S1",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "03/11/2025",
+          "id": "S1",
+          "org": "CUI Devices (Same Sky)",
+          "title": "PJ-102A DC Power Jack datasheet rev 1.07",
+          "url": "https://www.sameskydevices.com/product/resource/pj-102a.pdf",
+          "used_for": "24 Vdc, 2.5 A, 30 mohm, 5000 cycles, IR, temperature"
+        },
+        "source_line": 12048,
+        "urls": [
+          "https://www.sameskydevices.com/product/resource/pj-102a.pdf"
+        ]
+      },
+      {
+        "id": "S2",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "n/a",
+          "id": "S2",
+          "org": "CUI (hosted by UConn course page)",
+          "title": "PJ-102A DC Power Jack Datasheet (older copy)",
+          "url": "https://scl.engr.uconn.edu/courses/f2015-ece3411/preliminaries/DC_Power_Jack_Datasheet.pdf",
+          "used_for": "16 Vdc, 50/30 mohm, 500 Vac, 9.0 mm insertion depth, center pin 2.0, 3 terminals"
+        },
+        "source_line": 12048,
+        "urls": [
+          "https://scl.engr.uconn.edu/courses/f2015-ece3411/preliminaries/DC_Power_Jack_Datasheet.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-CON-FFC": {
+    "sources": [
+      {
+        "id": "S11",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "2010.9",
+          "id": "S11",
+          "org": "Hirose",
+          "title": "FH12 Series FPC/FFC connector sheet (2010.9)",
+          "url": "https://www.physics.utoronto.ca/~astummer/Archives/2014%20Micro%203D%20Magnetometer/Docs/Hirose%20FH12-16S-1SV(55),%20FFC%20connector,%20SMT%201mm%2016-pos.pdf",
+          "used_for": "0.5 A, 70% rule, 50 V AC, 50 mohm, 20 cycles, FPC thickness, temperature"
+        },
+        "source_line": 12484,
+        "urls": [
+          "https://www.physics.utoronto.ca/~astummer/Archives/2014%20Micro%203D%20Magnetometer/Docs/Hirose%20FH12-16S-1SV(55),%20FFC%20connector,%20SMT%201mm%2016-pos.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-CON-HDMI": {
+    "sources": [
+      {
+        "id": "S12",
+        "origin": "spec_bibliography",
+        "source_line": 11891,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S12 | Same Sky (formerly CUI Devices) | HD12-19-SMT-TR HDMI receptacle datasheet (Farnell copy) | https://www.sameskydevices.com/product/resource/farnellpdf/hd12-19-smt-tr.pdf | not shown | 19-pin signal table and mating sequence, 0.5 A, 40 Vac, 20 mOhm, 100 MOhm, 500 Vac, 5,000 cycles, -40..100 C |",
+        "urls": [
+          "https://www.sameskydevices.com/product/resource/farnellpdf/hd12-19-smt-tr.pdf"
+        ]
+      },
+      {
+        "id": "S13",
+        "origin": "spec_bibliography",
+        "source_line": 11892,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S13 | Same Sky | HD01-19-RA-TH HDMI receptacle datasheet | https://www.sameskydevices.com/product/resource/hd01-19-ra-th.pdf | not shown | 30 mOhm dry circuit, 50 mOhm shell, insulation 100/10 MOhm, 500/300 Vac, 10,000 cycles, -20..85 C |",
+        "urls": [
+          "https://www.sameskydevices.com/product/resource/hd01-19-ra-th.pdf"
+        ]
+      },
+      {
+        "id": "S14",
+        "origin": "spec_bibliography",
+        "source_line": 11893,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S14 | TE Connectivity | Mini HDMI Type C connector datasheet (Farnell copy) | https://www.farnell.com/datasheets/4476584.pdf | not shown | 0.5 A, 40 VAC, 100 MOhm, 10.42 x 2.42 mm, 19-pin assignment differs from Type A |",
+        "urls": [
+          "https://www.farnell.com/datasheets/4476584.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-CON-HEADER": {
+    "sources": [
+      {
+        "id": "S1",
+        "origin": "spec_bibliography",
+        "source_line": 10720,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S1: Samtec, \"SSW/TSW/SMH Series product specification\" (https://suddendocs.samtec.com/productspecs/tsw-sxx.pdf), Revision C, 2023-02-08: current 4.7 A (one pin per row), contact resistance delta 15 mOhm (EIA-364-23), DWV 1410 VAC, working 465 VAC, IR 5000 MOhm, temperature, 1000 cycles. Also Samtec TSW/HTSW catalog page (https://suddendocs.samtec.com/catalog_english/tsw_th.pdf), undated: 5.2-6.3 A with 2 positions powered, voltage by mate, PBT/LCP, phosphor bronze, plating.",
+        "urls": [
+          "https://suddendocs.samtec.com/catalog_english/tsw_th.pdf",
+          "https://suddendocs.samtec.com/productspecs/tsw-sxx.pdf"
+        ]
+      },
+      {
+        "id": "S2",
+        "origin": "spec_bibliography",
+        "source_line": 10721,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S2: Wurth Elektronik, WR-PHD pin header datasheet (https://www.we-online.com/components/products/datasheet/61300811121.pdf), dated 2023-01-08: 3 A, 20 mOhm max, IR 1000 MOhm, 500 VAC, -40 to +105, 25 cycles, PA6T, gold. (I read only a summarized extraction of this page.)",
+        "urls": [
+          "https://www.we-online.com/components/products/datasheet/61300811121.pdf"
+        ]
+      },
+      {
+        "id": "S3",
+        "origin": "spec_bibliography",
+        "source_line": 10722,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S3: Harwin M20 series: Mouser feature page (https://www.mouser.in/new/harwin/harwin-m20-m22-connectors): 3 A per contact, 30 mOhm max, -40 to +105; and distributor datasheet pages datasheets.com (https://www.datasheets.com/harwin/m20-9990245) and Farnell Japan (https://jp.farnell.com/en-JP/harwin/m20-9990245/header-tht-2-54mm-1row-2way/dp/1022245): 3 A, 300 cycles, nylon PA6T, 750 V (unverified). I did not read a Harwin-issued PDF.",
+        "urls": [
+          "https://jp.farnell.com/en-JP/harwin/m20-9990245/header-tht-2-54mm-1row-2way/dp/1022245",
+          "https://www.datasheets.com/harwin/m20-9990245",
+          "https://www.mouser.in/new/harwin/harwin-m20-m22-connectors"
+        ]
+      },
+      {
+        "id": "S4",
+        "origin": "spec_bibliography",
+        "source_line": 10723,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S4: Wurth ibselectronics.cn listing for 61300811121 (https://ibselectronics.cn/products/wrth-elektronik/61300811121): 8-pin, gold, only for dimension/plating cross-check.",
+        "urls": [
+          "https://ibselectronics.cn/products/wrth-elektronik/61300811121"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-CON-MODJACK": {
+    "sources": [
+      {
+        "id": "S15",
+        "origin": "spec_bibliography",
+        "source_line": 11894,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S15 | Amphenol InfoCom Europe | RJ45 modular jack catalog (RJHSE, RJSSE, RJSAE, RJmag; chipdip copy) | https://static.chipdip.ru/lib/109/DOC032109501.pdf | not shown | 1.5 A DC, 20 mOhm, 500 MOhm, 125 V AC, RJmag 1000 V AC and 0..70 C, phosphor bronze gold over nickel |",
+        "urls": [
+          "https://static.chipdip.ru/lib/109/DOC032109501.pdf"
+        ]
+      },
+      {
+        "id": "S16",
+        "origin": "spec_bibliography",
+        "source_line": 11895,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S16 | Pulse Electronics | PulseJack 1x1 Tab-UP RJ45 with LEDs, integrated magnetics (chipdip copy) | https://static.chipdip.ru/lib/041/DOC012041836.pdf | not shown | pin 1,2,3,6 to TD/RD, hipot 1500 Vrms, 1CT:1 ratio, insertion loss, LED Vf 2.1..2.5 V (summarizer; \"pins 4,5 CT to ground\" is as read) |",
+        "urls": [
+          "https://static.chipdip.ru/lib/041/DOC012041836.pdf"
+        ]
+      },
+      {
+        "id": "S17",
+        "origin": "spec_bibliography",
+        "source_line": 11896,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S17 | TE Connectivity | RJ45 jack with integrated magnetics (non-PoE), specification 114-161364 Rev A (RS copy) | https://docs.rs-online.com/dc56/A700000015363982.pdf | Rev A | 10/100BASE-T pair mapping J1/J2, J3/J6; all four pairs for gigabit |",
+        "urls": [
+          "https://docs.rs-online.com/dc56/A700000015363982.pdf"
+        ]
+      },
+      {
+        "id": "S18",
+        "origin": "spec_bibliography",
+        "source_line": 11897,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S18 | Linux kernel documentation | PSE Power Interface (PSE PI) | https://docs.kernel.org/6.14/networking/pse-pd/pse-pi.html | kernel 6.14 docs | PoE Alternative A = conductors 1,2,3,6; Alternative B = 4,5,7,8 |",
+        "urls": [
+          "https://docs.kernel.org/6.14/networking/pse-pd/pse-pi.html"
+        ]
+      },
+      {
+        "id": "S19",
+        "origin": "spec_bibliography",
+        "source_line": 11898,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S19 | University of British Columbia (ECE 4550) | Lecture 2 notes (telephone circuits) | https://people.ece.ubc.ca/edc/4550.fall2017/lec2.pdf | Fall 2017 | -48 VDC loop voltage, 20 Hz ring at about 86 V, 2 s on 4 s off, 20..120 mA off-hook |",
+        "urls": [
+          "https://people.ece.ubc.ca/edc/4550.fall2017/lec2.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-CON-RF": {
+    "sources": [
+      {
+        "id": "S5",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "2009.2w",
+          "id": "S5",
+          "org": "Hirose",
+          "title": "Ultra Small Surface Mount Coaxial Connectors, U.FL Series (doc 2009.2w)",
+          "url": "https://docs.rs-online.com/3355/0900766b8105243f.pdf",
+          "used_for": "50 ohm, DC-6 GHz, VSWR, 30 cycles, contact resistance"
+        },
+        "source_line": 12358,
+        "urls": [
+          "https://docs.rs-online.com/3355/0900766b8105243f.pdf"
+        ]
+      },
+      {
+        "id": "S6",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "n/a",
+          "id": "S6",
+          "org": "Amphenol RF",
+          "title": "SMA Panel Mount Receptacles",
+          "url": "https://www.amphenolrf.com/en-us/assets/file/4065861601/",
+          "used_for": "VSWR 1.15, DC-18 GHz, torque, 500 cycles, 2.0 mohm"
+        },
+        "source_line": 12358,
+        "urls": [
+          "https://www.amphenolrf.com/en-us/assets/file/4065861601/"
+        ]
+      },
+      {
+        "id": "S7",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "n/a",
+          "id": "S7",
+          "org": "Cytech Systems (distributor listing, Amphenol 132134)",
+          "title": "132134 product page",
+          "url": "https://www.cytechsystems.com/product/132134",
+          "used_for": "50 ohm, 18 GHz max, 500 cycles, BeCu gold, PTFE"
+        },
+        "source_line": 12358,
+        "urls": [
+          "https://www.cytechsystems.com/product/132134"
+        ]
+      },
+      {
+        "id": "S8",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "n/a",
+          "id": "S8",
+          "org": "Molex",
+          "title": "73251-1150 part detail page",
+          "url": "https://www.molex.com/en-us/products/part-detail/732511150?display=pdf",
+          "used_for": "50 ohm, 18 GHz, 500 Vrms"
+        },
+        "source_line": 12358,
+        "urls": [
+          "https://www.molex.com/en-us/products/part-detail/732511150?display=pdf"
+        ]
+      },
+      {
+        "id": "S9",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "Rev 2 (05/28)",
+          "id": "S9",
+          "org": "SV Microwave",
+          "title": "Solderless PCB Edge Launch Connectors Application Note Rev. 2 (05/28)",
+          "url": "https://www.svmicrowave.com/images/uploaded/Solderless_PCB_Edge_Launch_Connectors_Application_Note.pdf",
+          "used_for": "VSWR 1.0-2.0 plots, torque"
+        },
+        "source_line": 12358,
+        "urls": [
+          "https://www.svmicrowave.com/images/uploaded/Solderless_PCB_Edge_Launch_Connectors_Application_Note.pdf"
+        ]
+      },
+      {
+        "id": "S10",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "n/a",
+          "id": "S10",
+          "org": "Copper Mountain Technologies",
+          "title": "Optimal fixture design with end launch SMA connectors",
+          "url": "https://coppermountaintech.com/optimal-fixture-design-with-end-launch-sma-connectors/",
+          "used_for": "small flat pin, fringing capacitance, CPWG guidance"
+        },
+        "source_line": 12358,
+        "urls": [
+          "https://coppermountaintech.com/optimal-fixture-design-with-end-launch-sma-connectors/"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-CON-SDSOCKET": {
+    "sources": [
+      {
+        "id": "S12",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "n/a",
+          "id": "S12",
+          "org": "Hirose",
+          "title": "DM3 Series microSD card connectors",
+          "url": "https://engineering.purdue.edu/ece477/Archive/2008/Fall/F08-Grp02/datasheets/e60900232.pdf",
+          "used_for": "microSD 8-pin names, 0.5 A, 125 V AC, 40 mohm, 10000 cycles, detect switch NO"
+        },
+        "source_line": 12642,
+        "urls": [
+          "https://engineering.purdue.edu/ece477/Archive/2008/Fall/F08-Grp02/datasheets/e60900232.pdf"
+        ]
+      },
+      {
+        "id": "S13",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "n/a",
+          "id": "S13",
+          "org": "WERI (Wurth family listing 693 063 010 911)",
+          "title": "SD Card Connector push-pull with card detection",
+          "url": "https://www.farnell.com/datasheets/2725610.pdf",
+          "used_for": "0.5 A, 100 VAC, 100 mohm, 10000 cycles, CD and WP switch states"
+        },
+        "source_line": 12642,
+        "urls": [
+          "https://www.farnell.com/datasheets/2725610.pdf"
+        ]
+      },
+      {
+        "id": "S14",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "n/a",
+          "id": "S14",
+          "org": "Molex",
+          "title": "Memory card sockets 987652-0671",
+          "url": "https://supplychain.molex.com/content/dam/molex/molex-dot-com/en_us/pdf/datasheets/987652-0671.pdf",
+          "used_for": "0.5 A, 500 V AC, 100 mohm, 500-10000 cycles, CD on most models"
+        },
+        "source_line": 12642,
+        "urls": [
+          "https://supplychain.molex.com/content/dam/molex/molex-dot-com/en_us/pdf/datasheets/987652-0671.pdf"
+        ]
+      },
+      {
+        "id": "S15",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "n/a",
+          "id": "S15",
+          "org": "Cactus Technologies",
+          "title": "An Introduction To SD Card Interface",
+          "url": "https://www.cactus-tech.com/files/cactus-tech.com/documents/whitepapers/An Introduction To SD Card Interface.pdf",
+          "used_for": "SD mode pin table, 2.7-3.3 V"
+        },
+        "source_line": 12642,
+        "urls": [
+          "https://www.cactus-tech.com/files/cactus-tech.com/documents/whitepapers/An Introduction To SD Card Interface.pdf"
+        ]
+      },
+      {
+        "id": "S16",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "Rev 1.0",
+          "id": "S16",
+          "org": "Transcend",
+          "title": "SDXC card series technical specification Rev. 1.0",
+          "url": "https://www.secomp.de/data/i2cmsdata/pdf/xcont/902/249/4/58234608.pdf",
+          "used_for": "SD/SPI pin table, 2.7-3.6 V, 15/100/200/500 mA, pull-ups 10-100 kohm, pin 1 10-90 kohm"
+        },
+        "source_line": 12642,
+        "urls": [
+          "https://www.secomp.de/data/i2cmsdata/pdf/xcont/902/249/4/58234608.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-CON-TERMINAL": {
+    "sources": [
+      {
+        "id": "S1",
+        "origin": "spec_bibliography",
+        "source_line": 10921,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S1: Phoenix Contact, MKDS 1,5/2-5,08 datasheet dated 2014-08-13 (distributor copy: https://novapart.co/datasheet/farnell:3241355/); MKDSP 1.5/2-5.08, order 1730120, dated 2011-01-19 (https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/640/1730120.pdf); MSTB 2,5/2-ST-5,08, order 1757019, dated 2014-06-12 (https://www.bpx.ie/dbdocument/104035/1757019.pdf).",
+        "urls": [
+          "https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/640/1730120.pdf",
+          "https://novapart.co/datasheet/farnell:3241355/",
+          "https://www.bpx.ie/dbdocument/104035/1757019.pdf"
+        ]
+      },
+      {
+        "id": "S2",
+        "origin": "spec_bibliography",
+        "source_line": 10922,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S2: RS Components listing for MKDS 1.5/2 (5 mm, 1715022): 10 A, 160 V, polyamide (https://ph.rs-online.com/web/p/pcb-terminal-blocks/8020510).",
+        "urls": [
+          "https://ph.rs-online.com/web/p/pcb-terminal-blocks/8020510"
+        ]
+      },
+      {
+        "id": "S3",
+        "origin": "spec_bibliography",
+        "source_line": 10923,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S3: RS (https://hkcn.rs-online.com/web/p/pluggable-terminal-blocks/1896105) and Element14 (https://www.element14.cn/en-CN/phoenix-contact/1757242/header-right-angle-5-08mm-2way/dp/3705171) listings for MSTBA 2,5/2-G-5,08 (1757242): 12 A, 320 V, -40 to +100 degC.",
+        "urls": [
+          "https://hkcn.rs-online.com/web/p/pluggable-terminal-blocks/1896105",
+          "https://www.element14.cn/en-CN/phoenix-contact/1757242/header-right-angle-5-08mm-2way/dp/3705171"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-CON-USB": {
+    "sources": [
+      {
+        "id": "S1",
+        "origin": "spec_bibliography",
+        "source_line": 11880,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S1 | Global Connector Technology (GCT) | USB4105 USB Type-C receptacle specification and mechanical drawing (Farnell CAD copy) | https://www.farnell.com/cad/3307614.pdf | not shown | Type-C current ratings (5.00 A VBUS, 6.25 A GND, 1.25 A B5, 0.25 A other), Rc 40 / 50 mOhm, insulation 100 MOhm, 100 V AC, 10,000 cycles, mating-sequence table |",
+        "urls": [
+          "https://www.farnell.com/cad/3307614.pdf"
+        ]
+      },
+      {
+        "id": "S2",
+        "origin": "spec_bibliography",
+        "source_line": 11881,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S2 | Infineon | Knowledge-base article \"USB Type-C connector: Rp, Rd, and Ra termination resistors\" | https://community.infineon.com/t5/Knowledge-Base-Articles/Termination-Resistors-Required-for-the-USB-Type-C-Connector/ta-p/253544 | not shown | Rd 5.1 kohm, Rp 56k/22k/10k (5 V) and 36k/12k/4.7k (3.3 V), Ra 800..1200 ohm and VCONN purpose |",
+        "urls": [
+          "https://community.infineon.com/t5/Knowledge-Base-Articles/Termination-Resistors-Required-for-the-USB-Type-C-Connector/ta-p/253544"
+        ]
+      },
+      {
+        "id": "S3",
+        "origin": "spec_bibliography",
+        "source_line": 11882,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S3 | STMicroelectronics | AN5225 USB Type-C Power Delivery using STM32 MCUs and MPUs (zh copy) | https://www.st.com.cn/resource/zh/application_note/an5225-usb-typec-power-delivery-using-stm32-mcus-and-mpus-stmicroelectronics.pdf | not shown | Rp resistor and current-source values, sink CC detection windows (summarizer), Rd tolerance 10 % |",
+        "urls": [
+          "https://www.st.com.cn/resource/zh/application_note/an5225-usb-typec-power-delivery-using-stm32-mcus-and-mpus-stmicroelectronics.pdf"
+        ]
+      },
+      {
+        "id": "S4",
+        "origin": "spec_bibliography",
+        "source_line": 11883,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S4 | Espressif | USB Type-C Hardware Design Guide (ESP-IoT-Solution docs) | https://docs.espressif.com/projects/esp-iot-solution/en/latest/usb/usb_overview/usb_typec_hardware_guide.html | not shown | CC1/CC2 5.1 kohm to GND, A6/B6 and A7/B7 tied, 24/16/12/6-pin variants, 3 A at 5 V |",
+        "urls": [
+          "https://docs.espressif.com/projects/esp-iot-solution/en/latest/usb/usb_overview/usb_typec_hardware_guide.html"
+        ]
+      },
+      {
+        "id": "S5",
+        "origin": "spec_bibliography",
+        "source_line": 11884,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S5 | USB-IF | USB Type-C Cable and Connector Specification R2.0 | https://www.usb.org/sites/default/files/USB Type-C Spec R2.0 - August 2019.pdf | August 2019 | requested twice; the tool returned only a table-of-contents excerpt, so NO value in this file is attributed to it. Listed for honesty, not as a source of numbers |",
+        "urls": [
+          "https://www.usb.org/sites/default/files/USB"
+        ]
+      },
+      {
+        "id": "S6",
+        "origin": "spec_bibliography",
+        "source_line": 11885,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S6 | Renesas | Full-Speed USB 2.0 board design guidelines (APN) | https://renesas.com/en/document/apn/full-speed-usb-guidelines-full-speed-usb20-board-design-rev100 | rev 1.00 | 90 ohm +-15 % differential impedance, trace length limits, 1.5 kohm pull-up control, ESD component caution |",
+        "urls": [
+          "https://renesas.com/en/document/apn/full-speed-usb-guidelines-full-speed-usb20-board-design-rev100"
+        ]
+      },
+      {
+        "id": "S7",
+        "origin": "spec_bibliography",
+        "source_line": 11886,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S7 | STMicroelectronics | AN4879 Introduction to USB hardware and PCB guidelines using STM32 MCUs (ja copy) | https://www.st.com/resource/ja/application_note/an4879-introduction-to-usb-hardware-and-pcb-guidelines-using-stm32-mcus-stmicroelectronics.pdf | not shown | D+ 1.5 kohm to 3.0..3.6 V for full speed, ESD device near the connector, ID pin in micro-AB |",
+        "urls": [
+          "https://www.st.com/resource/ja/application_note/an4879-introduction-to-usb-hardware-and-pcb-guidelines-using-stm32-mcus-stmicroelectronics.pdf"
+        ]
+      },
+      {
+        "id": "S8",
+        "origin": "spec_bibliography",
+        "source_line": 11887,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S8 | Texas Instruments | TPS2062C datasheet, power supply recommendations section | https://www.ti.com/document-viewer/TPS2062C/datasheet/power_supply_recommendations | not shown | VBUS 4.75..5.25 V, 100 mA power-up, 500 mA, 44 ohm / 10 uF inrush rule |",
+        "urls": [
+          "https://www.ti.com/document-viewer/TPS2062C/datasheet/power_supply_recommendations"
+        ]
+      },
+      {
+        "id": "S9",
+        "origin": "spec_bibliography",
+        "source_line": 11888,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S9 | Molex | 105017-0002 Micro-USB B receptacle datasheet (IBS Electronics copy) | https://datasheets.ibselectronics.com/1050170002-Molex-datasheet-16324174.pdf | not shown | 1.8 A / 1 A, 30 V AC, 10,000 cycles, -30..85 C, 5 circuits, 0.65 mm pitch |",
+        "urls": [
+          "https://datasheets.ibselectronics.com/1050170002-Molex-datasheet-16324174.pdf"
+        ]
+      },
+      {
+        "id": "S10",
+        "origin": "spec_bibliography",
+        "source_line": 11889,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S10 | Wurth Elektronik (Farnell listing) | 65100516121 Mini-USB 2.0 Type B receptacle | https://cz.farnell.com/en-CZ/wurth-elektronik/65100516121/mini-usb-2-0-type-b-receptacle/dp/1642036 | not shown | 1 A, 30 VAC, 20 mOhm, 5 positions |",
+        "urls": [
+          "https://cz.farnell.com/en-CZ/wurth-elektronik/65100516121/mini-usb-2-0-type-b-receptacle/dp/1642036"
+        ]
+      },
+      {
+        "id": "S11",
+        "origin": "spec_bibliography",
+        "source_line": 11890,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S11 | Molex (RS listing) | 67643-3910 USB Type A receptacle | https://uk.rs-online.com/p/usb-connectors/8006867 | not shown | 1.5 A, 30 V, -40..85 C, phosphor bronze gold |",
+        "urls": [
+          "https://uk.rs-online.com/p/usb-connectors/8006867"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-CON-WTB": {
+    "sources": [
+      {
+        "id": "S1",
+        "origin": "spec_bibliography",
+        "source_line": 10825,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S1: JST Mfg., PH connector specification (https://www.jst-mfg.com/product/pdf/eng/ePH.pdf): 2 A (AWG24), 100 V, -40 to +105 incl. rise, contact resistance 10/20 mOhm, IR 1000 MOhm, 800 VAC, AWG32-24, copper alloy tin plated, PA housing, No. 1 circuit mark. JST XH (https://www.jst-mfg.com/product/pdf/eng/eXH.pdf): 3 A (AWG22), 250 V, -25 to +85, 10/20 mOhm, 1000 MOhm, 1000 VAC, AWG30-22. JST SH (https://www.jst-mfg.com/product/pdf/eng/eSH.pdf): 1.0 A (AWG28), 50 V, -25 to +85, 20/40 mOhm, 100 MOhm, 500 VAC, AWG32-28. No document date was shown.",
+        "urls": [
+          "https://www.jst-mfg.com/product/pdf/eng/ePH.pdf",
+          "https://www.jst-mfg.com/product/pdf/eng/eSH.pdf",
+          "https://www.jst-mfg.com/product/pdf/eng/eXH.pdf"
+        ]
+      },
+      {
+        "id": "S2",
+        "origin": "spec_bibliography",
+        "source_line": 10826,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S2: Molex, Product Specification PS-99020-0088 B, EC E2003-0971 A, 2003/03/18, KK connectors (https://datasheet.ciiva.com/19454/234819-19454258.pdf, distributor copy): current by AWG, 250 V, contact resistance 10 mOhm mated / 2 mOhm termination, IR 1000 MOhm, 0 to +75 degC, 25 cycles, 22-28 AWG pull-out. Note: this is a distributor copy and I did not confirm it applies to part 22-23-2021 specifically.",
+        "urls": [
+          "https://datasheet.ciiva.com/19454/234819-19454258.pdf"
+        ]
+      },
+      {
+        "id": "S3",
+        "origin": "spec_bibliography",
+        "source_line": 10827,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S3: Molex part page 22232021 (https://www.molex.com/en-us/products/part-detail/22232021): 4.0 A, 500 V, 25 cycles, -40 to +80, tin, nylon (page says not formally published). Molex housing sheet 0470541000 (https://static.rapidonline.com/pdf/05-3771_v1.pdf): 4.0 A max per contact, 22-30 AWG with 2759 crimp terminal, refers to PS-47053-001-001 (not read).",
+        "urls": [
+          "https://static.rapidonline.com/pdf/05-3771_v1.pdf",
+          "https://www.molex.com/en-us/products/part-detail/22232021"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-CON-XT": {
+    "sources": [
+      {
+        "id": "S3",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "v1.2",
+          "id": "S3",
+          "org": "Changzhou Amass Electronics",
+          "title": "XT60-F and XT60-M specification, version 1.2",
+          "url": "https://mrsdprojects.ri.cmu.edu/2025teamb/wp-content/uploads/sites/84/2025/05/xt60.pdf",
+          "used_for": "30 A, 60 A peak, 0.55 mohm, 500 V DC, -20..120 C, 1000 cycles, 12 AWG"
+        },
+        "source_line": 12196,
+        "urls": [
+          "https://mrsdprojects.ri.cmu.edu/2025teamb/wp-content/uploads/sites/84/2025/05/xt60.pdf"
+        ]
+      },
+      {
+        "id": "S4",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "V1.2",
+          "id": "S4",
+          "org": "Changzhou Amass Electronics",
+          "title": "XT30PW-M specification V1.2",
+          "url": "https://store.comet.bg/download-file.php?id=30571",
+          "used_for": "15 A, 30 A peak, 0.80 mohm, 500 V, 1000 cycles"
+        },
+        "source_line": 12196,
+        "urls": [
+          "https://store.comet.bg/download-file.php?id=30571"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-DIO-BRIDGE": {
+    "sources": [
+      {
+        "id": "S19",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "10-Oct-06",
+          "id": "S19",
+          "org": "Vishay",
+          "title": "DF005M thru DF10M Single-Phase Bridge Rectifier doc 88571",
+          "url": "https://hallaweb.jlab.org/tech/Detectors/public_html/manuals/chip_specs/M-Z/vishay_siliconix/dfm.pdf",
+          "used_for": "VRRM, IF(AV), IFSM, VF, IR, CJ, RthJA, polarity statement"
+        },
+        "source_line": 4321,
+        "urls": [
+          "https://hallaweb.jlab.org/tech/Detectors/public_html/manuals/chip_specs/M-Z/vishay_siliconix/dfm.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-DIO-PN": {
+    "sources": [
+      {
+        "id": "S1",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "07-Nov-2024",
+          "id": "S1",
+          "org": "Vishay",
+          "title": "1N4148 small signal fast switching diode (doc 81857 rev 1.6)",
+          "url": "https://www.vishay.com/docs/81857/1n4148.pdf",
+          "used_for": "ratings, VF max, IR, BV, Cd, trr"
+        },
+        "source_line": 3741,
+        "urls": [
+          "https://www.vishay.com/docs/81857/1n4148.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-DIO-SCHOTTKY": {
+    "sources": [
+      {
+        "id": "S10",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "23-Apr-2020",
+          "id": "S10",
+          "org": "Vishay",
+          "title": "SS12 thru SS16 Surface Mount Schottky Barrier Rectifier doc 88746",
+          "url": "https://www.vishay.com/docs/88746/ss12.pdf",
+          "used_for": "ratings, leakage, thermal"
+        },
+        "source_line": 3902,
+        "urls": [
+          "https://www.vishay.com/docs/88746/ss12.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-DIO-TVS": {
+    "sources": [
+      {
+        "id": "S16",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "09-Jan-2024",
+          "id": "S16",
+          "org": "Vishay",
+          "title": "SMBJ5.0A thru SMBJ188CA doc 88392",
+          "url": "https://www.vishay.com/docs/88392/smbj.pdf",
+          "used_for": "PPPM, VWM, VBR, VC, IPP, ID, TC, IFSM, RthJA"
+        },
+        "source_line": 4185,
+        "urls": [
+          "https://www.vishay.com/docs/88392/smbj.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-DIO-ZENER": {
+    "sources": [
+      {
+        "id": "S15",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "07-Nov-2024",
+          "id": "S15",
+          "org": "Vishay",
+          "title": "BZX55 series Zener diodes doc 85604 Rev 2.0",
+          "url": "https://www.vishay.com/docs/85604/bzx55.pdf",
+          "used_for": "VZ, rZ, TC, IR, Ptot, RthJA"
+        },
+        "source_line": 4039,
+        "urls": [
+          "https://www.vishay.com/docs/85604/bzx55.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-DISP-LCD1602": {
+    "sources": [
+      {
+        "id": "S10",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "not shown",
+          "id": "S10",
+          "org": "Hitachi",
+          "title": "HD44780U",
+          "url": "https://cdn-shop.adafruit.com/datasheets/HD44780.pdf",
+          "used_for": "instruction set, init, timing"
+        },
+        "source_line": 5376,
+        "urls": [
+          "https://cdn-shop.adafruit.com/datasheets/HD44780.pdf"
+        ]
+      },
+      {
+        "id": "S11",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "2000-06-13",
+          "id": "S11",
+          "org": "Sitronix",
+          "title": "ST7066 V1.2",
+          "url": "https://www.lcd-module.de/eng/pdf/zubehoer/st7066.pdf",
+          "used_for": "timing, supply, instruction codes"
+        },
+        "source_line": 5376,
+        "urls": [
+          "https://www.lcd-module.de/eng/pdf/zubehoer/st7066.pdf"
+        ]
+      },
+      {
+        "id": "S13",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "not shown",
+          "id": "S13",
+          "org": "Winstar",
+          "title": "WH1602B",
+          "url": "https://static.rapidonline.com/pdf/61-6235_v1.pdf",
+          "used_for": "pins, supply, contrast"
+        },
+        "source_line": 5376,
+        "urls": [
+          "https://static.rapidonline.com/pdf/61-6235_v1.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-DISP-LEDARRAY": {
+    "sources": [
+      {
+        "id": "S14",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "2003-01-09",
+          "id": "S14",
+          "org": "Kingbright",
+          "title": "SC56-11EWA, DSAA5198 V.2",
+          "url": "https://www.komponenten.es.aau.dk/fileadmin/komponenten/Data_Sheet/LCD/SC56-11EWA.pdf",
+          "used_for": "segment ratings and VF"
+        },
+        "source_line": 5229,
+        "urls": [
+          "https://www.komponenten.es.aau.dk/fileadmin/komponenten/Data_Sheet/LCD/SC56-11EWA.pdf"
+        ]
+      },
+      {
+        "id": "S15",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "2013-05-13",
+          "id": "S15",
+          "org": "Kingbright",
+          "title": "TC23-11CGKWA V.4A",
+          "url": "https://docs.rs-online.com/41ca/0900766b813c5dd9.pdf",
+          "used_for": "matrix ratings"
+        },
+        "source_line": 5229,
+        "urls": [
+          "https://docs.rs-online.com/41ca/0900766b813c5dd9.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-DISP-OLED-I2C": {
+    "sources": [
+      {
+        "id": "S12",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "Rev 1.1 April 2008",
+          "id": "S12",
+          "org": "Solomon Systech",
+          "title": "SSD1306 128x64 Dot Matrix OLED/PLED Segment/Common Driver",
+          "url": "https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf",
+          "used_for": "supply, I2C address, control byte, commands, reset"
+        },
+        "source_line": 5514,
+        "urls": [
+          "https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-FREQ-CERRES": {
+    "sources": [
+      {
+        "id": "S13",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "2020-04-01 (as printed; may be out of date)",
+          "id": "S13",
+          "org": "Murata",
+          "title": "CSTLS8M00G53-B0 datasheet (CERALOCK with built-in load capacitors)",
+          "url": "https://static.chipdip.ru/lib/150/DOC036150746.pdf",
+          "used_for": "tolerance, stability, aging, 15 pF, R1 25 ohm"
+        },
+        "source_line": 10346,
+        "urls": [
+          "https://static.chipdip.ru/lib/150/DOC036150746.pdf"
+        ]
+      },
+      {
+        "id": "S14",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "n/a",
+          "id": "S14",
+          "org": "Murata",
+          "title": "CSTLS_G series page",
+          "url": "https://www.murata.com/en-us/products/timingdevice/ceralock/overview/lineup/cstlsg",
+          "used_for": "3.40-10.00 MHz, +/-0.5 %, -20..+80 C, 47 pF type, discontinued flag"
+        },
+        "source_line": 10346,
+        "urls": [
+          "https://www.murata.com/en-us/products/timingdevice/ceralock/overview/lineup/cstlsg"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-FREQ-SAW": {
+    "sources": [
+      {
+        "id": "S15",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "not shown",
+          "id": "S15",
+          "org": "Abracon",
+          "title": "AFS869S3 SAW filter datasheet",
+          "url": "https://www.mouser.com/datasheet/2/3/AFS869S3-46075.pdf",
+          "used_for": "869 MHz, IL 4.5 dB, ripple 1.5, 35 dB, 50 ohm, pins 2/5, temperature, 10 dBm, ESD warning"
+        },
+        "source_line": 10465,
+        "urls": [
+          "https://www.mouser.com/datasheet/2/3/AFS869S3-46075.pdf"
+        ]
+      },
+      {
+        "id": "S16",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "n/a",
+          "id": "S16",
+          "org": "DigiKey / Lion Circuits (distributors)",
+          "title": "AFS869S3-T product pages",
+          "url": "https://www.digikey.at/en/products/detail/abracon-llc/AFS869S3-T/675442",
+          "used_for": "bandwidth 8 MHz, 6 pins, 10 V DC (low trust)"
+        },
+        "source_line": 10465,
+        "urls": [
+          "https://www.digikey.at/en/products/detail/abracon-llc/AFS869S3-T/675442"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-FREQ-XO": {
+    "sources": [
+      {
+        "id": "S11",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "not shown",
+          "id": "S11",
+          "org": "SiTime",
+          "title": "SiT8008 low power programmable oscillator datasheet (mature)",
+          "url": "https://www.sitime.com/sites/default/files/mature-datasheets/SiT8008-datasheet.pdf",
+          "used_for": "supply, current, startup, jitter, pinout, abs max, ESD"
+        },
+        "source_line": 10239,
+        "urls": [
+          "https://www.sitime.com/sites/default/files/mature-datasheets/SiT8008-datasheet.pdf"
+        ]
+      },
+      {
+        "id": "S12",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "2021-02-16 (REVISED 2.16.2021)",
+          "id": "S12",
+          "org": "Abracon",
+          "title": "AST3TQ53 TCXO/VCTCXO",
+          "url": "https://www.farnell.com/datasheets/3557905.pdf",
+          "used_for": "stability ppb, aging, supply, output types, pins, package 5.0x3.2x1.6"
+        },
+        "source_line": 10239,
+        "urls": [
+          "https://www.farnell.com/datasheets/3557905.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-FREQ-XTAL": {
+    "sources": [
+      {
+        "id": "S1",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "not shown in extraction",
+          "id": "S1",
+          "org": "STMicroelectronics",
+          "title": "AN2867 Guidelines for oscillator design on STM8AF/AL/S and STM32 MCUs/MPUs",
+          "url": "https://www.st.com/resource/en/application_note/an2867-guidelines-for-oscillator-design-on-stm8afals-and-stm32-mcusmpus-stmicroelectronics.pdf",
+          "used_for": "BVD circuit, Fs/Fa/Fp, CL formula, gm_crit, drive level, Sf, start-up, overdrive effects"
+        },
+        "source_line": 10077,
+        "urls": [
+          "https://www.st.com/resource/en/application_note/an2867-guidelines-for-oscillator-design-on-stm8afals-and-stm32-mcusmpus-stmicroelectronics.pdf"
+        ]
+      },
+      {
+        "id": "S2",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "2022-09-07",
+          "id": "S2",
+          "org": "Abracon",
+          "title": "ABLS Series HC49/US (AT49) SMD microprocessor crystal, drawing 450669 Rev AD",
+          "url": "https://abracon.com/Resonators/ABLS.pdf",
+          "used_for": "ESR table, C0 7 pF, CL 18 pF, DL, tolerance, stability, aging, DLD"
+        },
+        "source_line": 10077,
+        "urls": [
+          "https://abracon.com/Resonators/ABLS.pdf"
+        ]
+      },
+      {
+        "id": "S3",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "not shown",
+          "id": "S3",
+          "org": "Epson",
+          "title": "FC-135R / FC-135 crystal unit",
+          "url": "https://www.mouser.lt/datasheet/3/97/1/FC_135_en.pdf",
+          "used_for": "32.768 kHz: C1 3.4 fF, C0 1.0 pF, R1 70 kohm, parabolic -0.04 ppm/C2, DL 0.5 uW"
+        },
+        "source_line": 10077,
+        "urls": [
+          "https://www.mouser.lt/datasheet/3/97/1/FC_135_en.pdf"
+        ]
+      },
+      {
+        "id": "S4",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "2020 (c)",
+          "id": "S4",
+          "org": "Epson",
+          "title": "FA-238V / FA-238 / TSX-3225 crystal units",
+          "url": "https://static.chipdip.ru/lib/442/DOC030442603.pdf",
+          "used_for": "ESR, DL 200 uW max/10 uW rec, aging, 4-pad pad assignment (2,4 = lid GND)"
+        },
+        "source_line": 10077,
+        "urls": [
+          "https://static.chipdip.ru/lib/442/DOC030442603.pdf"
+        ]
+      },
+      {
+        "id": "S5",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "not shown",
+          "id": "S5",
+          "org": "NDK",
+          "title": "NX3225GD crystal unit (automotive)",
+          "url": "https://static.chipdip.ru/lib/143/DOC013143963.pdf",
+          "used_for": "8 MHz ESR 500 ohm max, DL 10 uW (max 200 uW), tolerance +/-50 ppm, stability +/-150 ppm"
+        },
+        "source_line": 10077,
+        "urls": [
+          "https://static.chipdip.ru/lib/143/DOC013143963.pdf"
+        ]
+      },
+      {
+        "id": "S6",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "revised 04-25-22",
+          "id": "S6",
+          "org": "Abracon",
+          "title": "ABM3 ceramic SMD crystal (5.0 x 3.2 mm)",
+          "url": "https://abracon.com/Resonators/ABM3.pdf",
+          "used_for": "ESR 140 ohm at 8 MHz, C0 7 pF, CL 18 pF, DL 10-100 uW, aging"
+        },
+        "source_line": 10077,
+        "urls": [
+          "https://abracon.com/Resonators/ABM3.pdf"
+        ]
+      },
+      {
+        "id": "S7",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "2024 (upload path)",
+          "id": "S7",
+          "org": "Suntsu Electronics",
+          "title": "Crystal Equivalent Circuit",
+          "url": "https://suntsu.com/wp-content/uploads/2024/08/Crystal-Equivalent-Circuit-PDF.pdf",
+          "used_for": "C1 0.005-0.030 pF fundamental, C0 1-7 pF, Thomson relation"
+        },
+        "source_line": 10077,
+        "urls": [
+          "https://suntsu.com/wp-content/uploads/2024/08/Crystal-Equivalent-Circuit-PDF.pdf"
+        ]
+      },
+      {
+        "id": "S8",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "n/a",
+          "id": "S8",
+          "org": "Microchip",
+          "title": "Recommended Crystal Characteristics (online documentation page, device family not shown)",
+          "url": "https://onlinedocs.microchip.com/oxy/GUID-2ACDA668-0A87-46A1-B7FC-9DC74A5461AD-en-US-2/GUID-9D6E52D1-BC20-4009-8F14-35F680E0A5EC.html",
+          "used_for": "typical Cm 1.3-9 fF, C0 <= 3 pF, ESR <= 80-100 ohm"
+        },
+        "source_line": 10077,
+        "urls": [
+          "https://onlinedocs.microchip.com/oxy/GUID-2ACDA668-0A87-46A1-B7FC-9DC74A5461AD-en-US-2/GUID-9D6E52D1-BC20-4009-8F14-35F680E0A5EC.html"
+        ]
+      },
+      {
+        "id": "S9",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "2021-07",
+          "id": "S9",
+          "org": "Texas Instruments",
+          "title": "SLLA549 TCAN455x clock optimization and design guidelines",
+          "url": "https://ti.com/lit/SLLA549",
+          "used_for": "start-up tau = 2*Lm/(R+Rneg), Rneg = -gm/(w^2*2*CL^2), safety 3-5x, Rd 50-100 ohm"
+        },
+        "source_line": 10077,
+        "urls": [
+          "https://ti.com/lit/SLLA549"
+        ]
+      },
+      {
+        "id": "S10",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "2019-06",
+          "id": "S10",
+          "org": "NXP",
+          "title": "AN12442 Theoretical set up checks for MPC5510 XOSC use, Rev 0",
+          "url": "https://NXP.com/docs/en/application-note/AN12442.pdf",
+          "used_for": "8 MHz example, gm_opt formula (cross-check only)"
+        },
+        "source_line": 10077,
+        "urls": [
+          "https://NXP.com/docs/en/application-note/AN12442.pdf"
+        ]
+      },
+      {
+        "id": "S17",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "n/a",
+          "id": "S17",
+          "org": "ngspice project",
+          "title": "ngspice manual (B sources, .tran uic, .meas)",
+          "url": "https://ngspice.sourceforge.io/docs/ngspice-manual.pdf",
+          "used_for": "B-source tanh, .meas syntax"
+        },
+        "source_line": 10077,
+        "urls": [
+          "https://ngspice.sourceforge.io/docs/ngspice-manual.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-IC-CHARGER-SOT235": {
+    "sources": [
+      {
+        "id": "S20",
+        "origin": "spec_bibliography",
+        "source_line": 8843,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S20 | Microchip (SparkFun mirror) | MCP73831/2 linear Li-ion charge controller | https://cdn.sparkfun.com/assets/2/c/c/5/a/MCP73831.pdf | DS20001984H (family) | class 9: Ireg formula, ranges, thermal |",
+        "urls": [
+          "https://cdn.sparkfun.com/assets/2/c/c/5/a/MCP73831.pdf"
+        ]
+      },
+      {
+        "id": "S25",
+        "origin": "spec_bibliography",
+        "source_line": 8848,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S25 | OHMNI repository | `tests/corpus/annotations/MCP73831_SOT23-5.json` and `recordings/MCP73831_SOT23-5_accepted.json` | local | transcription 2026-09-14 | class 9: SOT-23-5 pin map |",
+        "urls": []
+      },
+      {
+        "id": "S29",
+        "origin": "spec_bibliography",
+        "source_line": 8852,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S29 | OHMNI | `/home/claude/PCB_COMPONENT_3D_LIBRARY_SPEC.md`, entries OHM-103 to OHM-121 | local | as in the repo | pin 1, geometry, terminals |",
+        "urls": []
+      }
+    ],
+    "unresolved": [
+      "BEH-IC-CHARGER-SOT235/S25: local or unresolved reference requires an explicit artifact binding: | S25 | OHMNI repository | `tests/corpus/annotations/MCP73831_SOT23-5.json` and `recordings/MCP73831_SOT23-5_accepted.json` | local | transcription 2026-09-14 | class 9: SOT-23-5 pin map |",
+      "BEH-IC-CHARGER-SOT235/S29: local or unresolved reference requires an explicit artifact binding: | S29 | OHMNI | `/home/claude/PCB_COMPONENT_3D_LIBRARY_SPEC.md`, entries OHM-103 to OHM-121 | local | as in the repo | pin 1, geometry, terminals |"
+    ]
+  },
+  "BEH-IC-COMPARATOR": {
+    "sources": [
+      {
+        "id": "S3",
+        "origin": "spec_bibliography",
+        "source_line": 8826,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S3 | Texas Instruments | LM393B, LM2903B, LM193, LM293, LM393, LM2903 dual comparators | https://www.ti.com/lit/ds/symlink/lm393.pdf | SLCS005AH, revised April 2025 | class 3: pin map, ratings, VOL, response times, theta 114.9/148.5/200.6/193.7 |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/lm393.pdf"
+        ]
+      },
+      {
+        "id": "S29",
+        "origin": "spec_bibliography",
+        "source_line": 8852,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S29 | OHMNI | `/home/claude/PCB_COMPONENT_3D_LIBRARY_SPEC.md`, entries OHM-103 to OHM-121 | local | as in the repo | pin 1, geometry, terminals |",
+        "urls": []
+      }
+    ],
+    "unresolved": [
+      "BEH-IC-COMPARATOR/S29: local or unresolved reference requires an explicit artifact binding: | S29 | OHMNI | `/home/claude/PCB_COMPONENT_3D_LIBRARY_SPEC.md`, entries OHM-103 to OHM-121 | local | as in the repo | pin 1, geometry, terminals |"
+    ]
+  },
+  "BEH-IC-DIGITAL-IF": {
+    "sources": [
+      {
+        "id": "S7",
+        "origin": "spec_bibliography",
+        "source_line": 8944,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S7 | NXP | PCF8564A real-time clock, Rev. 3, 26 Aug 2013 (extract); package page for PCF8564ACX9 | https://www.nxp.com/docs/en/data-sheet/PCF8564A.pdf ; https://www.alldatasheet.net/html-pdf/346652/NXP/PCF8564ACX9SLASHBSLASH1/2502/33/PCF8564ACX9SLASHBSLASH1.html | 9-bump RTC, WLCSP9 1.27 x 1.9 x 0.29 mm |",
+        "urls": [
+          "https://www.alldatasheet.net/html-pdf/346652/NXP/PCF8564ACX9SLASHBSLASH1/2502/33/PCF8564ACX9SLASHBSLASH1.html",
+          "https://www.nxp.com/docs/en/data-sheet/PCF8564A.pdf"
+        ]
+      },
+      {
+        "id": "S8",
+        "origin": "spec_bibliography",
+        "source_line": 8945,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S8 | NXP | P89LPC933/934/935/936 (revision not shown) (extract) | https://www.nxp.com/docs/en/data-sheet/P89LPC933_934_935_936.pdf | PLCC28 (SOT261-2) pin table, static limits |",
+        "urls": [
+          "https://www.nxp.com/docs/en/data-sheet/P89LPC933_934_935_936.pdf"
+        ]
+      },
+      {
+        "id": "S9",
+        "origin": "spec_bibliography",
+        "source_line": 8946,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S9 | NXP | LPC1769/68/67/66/65/64/63, Rev. 9.10, 8 Sept 2020 (extract) | https://www.nxp.com/docs/en/data-sheet/LPC1769_68_67_66_65_64_63.pdf | LQFP100 SOT407-1, TFBGA100 SOT926-1 9x9x0.7, ball names, VDD, reset, crystal |",
+        "urls": [
+          "https://www.nxp.com/docs/en/data-sheet/LPC1769_68_67_66_65_64_63.pdf"
+        ]
+      },
+      {
+        "id": "S10",
+        "origin": "spec_bibliography",
+        "source_line": 8947,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S10 | STMicroelectronics | STM32F103x8/xB, DS5319 Rev 20, July 2025 (extract, mostly TOC and early tables) | https://www.st.com/resource/en/datasheet/stm32f103c8.pdf | package list, VDD-VSS, IVDD/IVSS 150 mA, pin definitions rows (partly noisy) |",
+        "urls": [
+          "https://www.st.com/resource/en/datasheet/stm32f103c8.pdf"
+        ]
+      },
+      {
+        "id": "S12",
+        "origin": "spec_bibliography",
+        "source_line": 8949,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S12 | STMicroelectronics | STM32F405xx/407xx, DS8626 Rev 12 (March 2026) (extract, shallow) | https://www.st.com/resource/en/datasheet/stm32f407vg.pdf | package list, VDD, 168 MHz, HSE 4-26 MHz |",
+        "urls": [
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+        ]
+      },
+      {
+        "id": "S13",
+        "origin": "spec_bibliography",
+        "source_line": 8950,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S13 | Atmel / Microchip | ATmega48A/PA/88A/PA/168A/PA/328/P datasheet summary 8271I-10/2014 (UWA copy) | https://robotics.ee.uwa.edu.au/nano/doc/ATmega328P-summary.pdf | package codes 32A, 32M1-A, 28M1; \"Bottom pad should be soldered to ground\"; speed grades |",
+        "urls": [
+          "https://robotics.ee.uwa.edu.au/nano/doc/ATmega328P-summary.pdf"
+        ]
+      },
+      {
+        "id": "S14",
+        "origin": "spec_bibliography",
+        "source_line": 8951,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S14 | Atmel | ATmega48/88/168/328 datasheet summary 8271ES-07/2012 (Princeton copy) | https://www.princeton.edu/~mae412/HANDOUTS/Datasheets/ATmega328abrev.pdf | 1.8-5.5 V, active 0.2 mA at 1 MHz, 1.8 V, 25 C |",
+        "urls": [
+          "https://www.princeton.edu/~mae412/HANDOUTS/Datasheets/ATmega328abrev.pdf"
+        ]
+      },
+      {
+        "id": "S15",
+        "origin": "spec_bibliography",
+        "source_line": 8952,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S15 | Atmel | ATmega8(L) 2486M-AVR-12/03 (studfile copy) | https://studfile.net/preview/2297021/page:62/ | **sibling device, not the 328P**: AVR-family abs max and DC table, used only as a family proxy and labelled so |",
+        "urls": [
+          "https://studfile.net/preview/2297021/page:62/"
+        ]
+      },
+      {
+        "id": "S16",
+        "origin": "spec_bibliography",
+        "source_line": 8953,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S16 | Espressif | ESP32-C3 Series Datasheet v2.4 (extract) | https://documentation.espressif.com/esp32-c3_datasheet_en.pdf | QFN32 5x5 pin list (EPAD = GND), supply 3.0-3.6 V, DC thresholds, power-up timing |",
+        "urls": [
+          "https://documentation.espressif.com/esp32-c3_datasheet_en.pdf"
+        ]
+      },
+      {
+        "id": "S17",
+        "origin": "spec_bibliography",
+        "source_line": 8954,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S17 | Raspberry Pi | RP2040 Datasheet (extract) | https://pip-assets.raspberrypi.com/categories/814-rp2040/documents/RP-008371-DS-1-rp2040-datasheet.pdf | QFN-56 7x7, rails, 30 GPIO |",
+        "urls": [
+          "https://pip-assets.raspberrypi.com/categories/814-rp2040/documents/RP-008371-DS-1-rp2040-datasheet.pdf"
+        ]
+      },
+      {
+        "id": "S18",
+        "origin": "spec_bibliography",
+        "source_line": 8955,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S18 | Elnec (programmer device list) | nRF52832-QFAA [QFN48] | https://www.elnec.com/en/device/Nordic%20Semicond./nRF52832-QFAA%20%5BQFN48%5D | \"QF = QFN48 6x6, 0.4 mm pitch\" (secondary source, not Nordic) |",
+        "urls": [
+          "https://www.elnec.com/en/device/Nordic%20Semicond./nRF52832-QFAA%20%5BQFN48%5D"
+        ]
+      },
+      {
+        "id": "S19",
+        "origin": "spec_bibliography",
+        "source_line": 8956,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S19 | Lattice | iCE40 LP/HX Family Data Sheet DS1040 v3.4, Oct 2017 (extract) | https://cdn.sparkfun.com/assets/9/d/a/0/7/iCE40LPHXFamilyDataSheet.pdf | package table (VQ100, TQ144, CT256, CB132 ...), rails, POR, config pins |",
+        "urls": [
+          "https://cdn.sparkfun.com/assets/9/d/a/0/7/iCE40LPHXFamilyDataSheet.pdf"
+        ]
+      },
+      {
+        "id": "S23",
+        "origin": "spec_bibliography",
+        "source_line": 8960,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S23 | Atmel | AT27C256R 256K OTP EPROM (xdevs copy, extract) | https://xdevs.com/doc/Keithley/KMVM2/pdf/AT27C256R.pdf | 28-pin PDIP and 32-pin PLCC only |",
+        "urls": [
+          "https://xdevs.com/doc/Keithley/KMVM2/pdf/AT27C256R.pdf"
+        ]
+      },
+      {
+        "id": "S24",
+        "origin": "spec_bibliography",
+        "source_line": 8961,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S24 | Atmel | ATF22V10C(Q) 0735U-PLD-7/10 (USC and comet copies, extract) | https://ece-classes.usc.edu/ee459/library/datasheets/DOC0735.PDF ; https://store.comet.bg/download-file.php?id=17407 | PLCC 28J exists; abs max; DC/AC (PLCC pin table not captured) |",
+        "urls": [
+          "https://ece-classes.usc.edu/ee459/library/datasheets/DOC0735.PDF",
+          "https://store.comet.bg/download-file.php?id=17407"
+        ]
+      },
+      {
+        "id": "S25",
+        "origin": "spec_bibliography",
+        "source_line": 8962,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S25 | Silicon Laboratories | CP2104 USB-to-UART bridge (Pololu copy, extract) | https://pololu.com/file/0J679/cp2104.pdf | QFN-24 4x4 pin table, abs max |",
+        "urls": [
+          "https://pololu.com/file/0J679/cp2104.pdf"
+        ]
+      },
+      {
+        "id": "S26",
+        "origin": "spec_bibliography",
+        "source_line": 8963,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S26 | FTDI | FT231X (alldatasheet page 38) | https://www.alldatasheet.com/html-pdf/659067/FTDI/FT231XQ-R/3946/38/FT231XQ-R.html | QFN-20 4.00 mm, 0.50 pitch, centre pad internally ground |",
+        "urls": [
+          "https://www.alldatasheet.com/html-pdf/659067/FTDI/FT231XQ-R/3946/38/FT231XQ-R.html"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-IC-DIGITAL-IO": {
+    "sources": [
+      {
+        "id": "S16",
+        "origin": "spec_bibliography",
+        "source_line": 8839,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S16 | Atmel / Microchip | ATmega328P 8-bit AVR microcontroller (physicslabs.colorado.edu mirror); ww1.microchip.com DS40002061B was refused (robots.txt) | https://physicslabs.colorado.edu/courses/phys-3330/resources/manuals-and-data-sheets/ds-ATmega328P-Microcontroller.pdf | 8161D-AVR-10/09 | class 7: PDIP-28 pin map, abs max, DC characteristics |",
+        "urls": [
+          "https://physicslabs.colorado.edu/courses/phys-3330/resources/manuals-and-data-sheets/ds-ATmega328P-Microcontroller.pdf"
+        ]
+      },
+      {
+        "id": "S17",
+        "origin": "spec_bibliography",
+        "source_line": 8840,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S17 | Atmel / Microchip | ATtiny25/45/85 (soselectronic mirror) and a second extract naming Rev. 2586Q-AVR-08/2013 (host not recorded); the ww1.microchip.com DS40002196 copy was refused | https://cdn.soselectronic.com/productdata/d3/71/bc19a080/attiny25gak-15mz.pdf | preliminary 2586AS-AVR-02/05 | class 7: PDIP-8 pin map, supply range; no DC characteristics |",
+        "urls": [
+          "https://cdn.soselectronic.com/productdata/d3/71/bc19a080/attiny25gak-15mz.pdf"
+        ]
+      },
+      {
+        "id": "S19",
+        "origin": "spec_bibliography",
+        "source_line": 8842,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S19 | Microchip (mirror) | 25AA256/25LC256 256K SPI bus serial EEPROM | https://ww1.microchip.com/downloads/en/DeviceDoc/25AA256-25LC256-256K-SPI-Bus-Serial-EEPROM-20001822H.pdf (original refused; content from a mirror extract) | DS20001822H, Rev H, 08/2019 | class 7: pin map, DC and AC characteristics |",
+        "urls": [
+          "https://ww1.microchip.com/downloads/en/DeviceDoc/25AA256-25LC256-256K-SPI-Bus-Serial-EEPROM-20001822H.pdf"
+        ]
+      },
+      {
+        "id": "S23",
+        "origin": "spec_bibliography",
+        "source_line": 8846,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S23 | Western Design Center | W65C02S 8-bit microprocessor | https://westerndesigncenter.com/wdc/documentation/w65c02s.pdf | April 8, 2022 | class 7: DC characteristics; pin table corrupted |",
+        "urls": [
+          "https://westerndesigncenter.com/wdc/documentation/w65c02s.pdf"
+        ]
+      },
+      {
+        "id": "S24",
+        "origin": "spec_bibliography",
+        "source_line": 8847,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S24 | OHMNI repository | catalog record `src/ohmni/catalog/data/parts/25LC256-I_SN.json` | local | recorded 2026-09-09 | class 7: pin electrical types, abs max, firmware rule |",
+        "urls": []
+      }
+    ],
+    "unresolved": [
+      "BEH-IC-DIGITAL-IO/S24: local or unresolved reference requires an explicit artifact binding: | S24 | OHMNI repository | catalog record `src/ohmni/catalog/data/parts/25LC256-I_SN.json` | local | recorded 2026-09-09 | class 7: pin electrical types, abs max, firmware rule |"
+    ]
+  },
+  "BEH-IC-DRIVER-DIP16": {
+    "sources": [
+      {
+        "id": "S10",
+        "origin": "spec_bibliography",
+        "source_line": 8833,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S10 | Texas Instruments | ULN2002A, ULN2003A, ULN2004A, ULQ2003A Darlington arrays | https://www.ti.com/lit/ds/symlink/uln2003a.pdf | SLRS027T, March 2025 | class 10: pin map, ratings, VCE(sat), clamp VF, theta 66.7/88.6/114.1 |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/uln2003a.pdf"
+        ]
+      },
+      {
+        "id": "S12",
+        "origin": "spec_bibliography",
+        "source_line": 8835,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S12 | Texas Instruments | L293, L293D quadruple half-H drivers | https://www.ti.com/lit/ds/symlink/l293d.pdf | Rev D, January 2016 | class 10: pin map, ratings, VOH/VOL, theta 36.4 |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/l293d.pdf"
+        ]
+      },
+      {
+        "id": "S29",
+        "origin": "spec_bibliography",
+        "source_line": 8852,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S29 | OHMNI | `/home/claude/PCB_COMPONENT_3D_LIBRARY_SPEC.md`, entries OHM-103 to OHM-121 | local | as in the repo | pin 1, geometry, terminals |",
+        "urls": []
+      }
+    ],
+    "unresolved": [
+      "BEH-IC-DRIVER-DIP16/S29: local or unresolved reference requires an explicit artifact binding: | S29 | OHMNI | `/home/claude/PCB_COMPONENT_3D_LIBRARY_SPEC.md`, entries OHM-103 to OHM-121 | local | as in the repo | pin 1, geometry, terminals |"
+    ]
+  },
+  "BEH-IC-LDO-SOT235": {
+    "sources": [
+      {
+        "id": "S14",
+        "origin": "spec_bibliography",
+        "source_line": 8837,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S14 | Texas Instruments | TLV700 200-mA low-IQ LDO | https://www.ti.com/lit/ds/symlink/tlv700.pdf | SLVSA00E, revised April 2015 | class 8: pin map, ratings, dropout, Iq, theta 235.9 |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/tlv700.pdf"
+        ]
+      },
+      {
+        "id": "S29",
+        "origin": "spec_bibliography",
+        "source_line": 8852,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S29 | OHMNI | `/home/claude/PCB_COMPONENT_3D_LIBRARY_SPEC.md`, entries OHM-103 to OHM-121 | local | as in the repo | pin 1, geometry, terminals |",
+        "urls": []
+      },
+      {
+        "id": "S31",
+        "origin": "spec_bibliography",
+        "source_line": 8854,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S31 | Group R6 output | `/home/claude/behavior/parts/R6.md` (BEH-PWR-PKGTHERMAL, BEH-REG-LINEAR) | local | | cross-reference for thermal network and linear regulators |",
+        "urls": []
+      }
+    ],
+    "unresolved": [
+      "BEH-IC-LDO-SOT235/S29: local or unresolved reference requires an explicit artifact binding: | S29 | OHMNI | `/home/claude/PCB_COMPONENT_3D_LIBRARY_SPEC.md`, entries OHM-103 to OHM-121 | local | as in the repo | pin 1, geometry, terminals |",
+      "BEH-IC-LDO-SOT235/S31: local or unresolved reference requires an explicit artifact binding: | S31 | Group R6 output | `/home/claude/behavior/parts/R6.md` (BEH-PWR-PKGTHERMAL, BEH-REG-LINEAR) | local | | cross-reference for thermal network and linear regulators |"
+    ]
+  },
+  "BEH-IC-LOGIC-HC": {
+    "sources": [
+      {
+        "id": "S4",
+        "origin": "spec_bibliography",
+        "source_line": 8827,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S4 | Texas Instruments | SN54HC00, SN74HC00 quadruple 2-input NAND | https://www.ti.com/lit/ds/symlink/sn74hc00.pdf | SCLS181H, revised August 2021 | class 5: pin map, ratings, levels, delay, Cpd, theta 57.5/133.6/151.7 |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/sn74hc00.pdf"
+        ]
+      },
+      {
+        "id": "S5",
+        "origin": "spec_bibliography",
+        "source_line": 8828,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S5 | Texas Instruments | SN54HC14, SN74HC14 hex Schmitt inverters | https://www.ti.com/lit/ds/symlink/sn74hc14.pdf | SCLS085L, revised February 2025 | class 5: pin map, VT+/VT-, theta 60.7/133.6/151.7 |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/sn74hc14.pdf"
+        ]
+      },
+      {
+        "id": "S8",
+        "origin": "spec_bibliography",
+        "source_line": 8831,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S8 | Texas Instruments | SNx4HC245 octal bus transceivers | https://www.ti.com/lit/ds/symlink/sn74hc245.pdf | SCLS131F, August 2022 | class 5: HC245 pin map, ratings, theta 57.0/77.0/92.1/99.7 |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/sn74hc245.pdf"
+        ]
+      },
+      {
+        "id": "S29",
+        "origin": "spec_bibliography",
+        "source_line": 8852,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S29 | OHMNI | `/home/claude/PCB_COMPONENT_3D_LIBRARY_SPEC.md`, entries OHM-103 to OHM-121 | local | as in the repo | pin 1, geometry, terminals |",
+        "urls": []
+      }
+    ],
+    "unresolved": [
+      "BEH-IC-LOGIC-HC/S29: local or unresolved reference requires an explicit artifact binding: | S29 | OHMNI | `/home/claude/PCB_COMPONENT_3D_LIBRARY_SPEC.md`, entries OHM-103 to OHM-121 | local | as in the repo | pin 1, geometry, terminals |"
+    ]
+  },
+  "BEH-IC-LOGIC-SEQ": {
+    "sources": [
+      {
+        "id": "S4",
+        "origin": "spec_bibliography",
+        "source_line": 8827,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S4 | Texas Instruments | SN54HC00, SN74HC00 quadruple 2-input NAND | https://www.ti.com/lit/ds/symlink/sn74hc00.pdf | SCLS181H, revised August 2021 | class 5: pin map, ratings, levels, delay, Cpd, theta 57.5/133.6/151.7 |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/sn74hc00.pdf"
+        ]
+      },
+      {
+        "id": "S6",
+        "origin": "spec_bibliography",
+        "source_line": 8829,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S6 | Texas Instruments | SNx4HC595 8-bit shift registers with 3-state output registers | https://www.ti.com/lit/ds/symlink/sn74hc595.pdf | SCLS041J, October 2021 | class 6: pin map, ratings, timing, Cpd, theta 57..108 |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf"
+        ]
+      },
+      {
+        "id": "S7",
+        "origin": "spec_bibliography",
+        "source_line": 8830,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S7 | Texas Instruments | SNx4HC138 3-line to 8-line decoders | https://www.ti.com/lit/ds/symlink/sn74hc138.pdf | SCLS107G, October 2021 | class 6: pin map, ratings, tpd, Cpd, theta 54.8/87.3/91.1/104.3/141.6 |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/sn74hc138.pdf"
+        ]
+      },
+      {
+        "id": "S29",
+        "origin": "spec_bibliography",
+        "source_line": 8852,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S29 | OHMNI | `/home/claude/PCB_COMPONENT_3D_LIBRARY_SPEC.md`, entries OHM-103 to OHM-121 | local | as in the repo | pin 1, geometry, terminals |",
+        "urls": []
+      }
+    ],
+    "unresolved": [
+      "BEH-IC-LOGIC-SEQ/S29: local or unresolved reference requires an explicit artifact binding: | S29 | OHMNI | `/home/claude/PCB_COMPONENT_3D_LIBRARY_SPEC.md`, entries OHM-103 to OHM-121 | local | as in the repo | pin 1, geometry, terminals |"
+    ]
+  },
+  "BEH-IC-OPAMP": {
+    "sources": [
+      {
+        "id": "S2",
+        "origin": "spec_bibliography",
+        "source_line": 8825,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S2 | Texas Instruments | LM158 to LM358B family operational amplifiers | https://www.ti.com/lit/ds/symlink/lm358.pdf | revised October 2024 (document number not shown in the extract) | class 2: pin map, ratings, theta 80.9/124.7/171.7/181.4 |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/lm358.pdf"
+        ]
+      },
+      {
+        "id": "S9",
+        "origin": "spec_bibliography",
+        "source_line": 8832,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S9 | Texas Instruments | LM124, LM224, LM324, LM2902 quadruple operational amplifiers | https://www.ti.com/lit/ds/symlink/lm324.pdf | SLOS066AE, September 2025 | class 2: pin map, theta 83.5/99.3/124.7, supply current |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/lm324.pdf"
+        ]
+      },
+      {
+        "id": "S11",
+        "origin": "spec_bibliography",
+        "source_line": 8834,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S11 | Texas Instruments | TLV906xS 10 MHz RRIO CMOS operational amplifiers | https://www.ti.com/lit/ds/symlink/tlv9061.pdf | SBOS839N, revised July 2026 | class 2: SOT-23-5 pin map, parameters, theta 221.7 |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/tlv9061.pdf"
+        ]
+      },
+      {
+        "id": "S18",
+        "origin": "spec_bibliography",
+        "source_line": 8841,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S18 | Microchip (mirrors: radiolocman, ciiva, alldatasheet) | MCP6001/1R/1U/2/4 1 MHz low-power op amp | https://www.radiolocman.com/datasheet/pdf.html?di=121053 and https://datasheet.ciiva.com/14545/70045422-14545053.pdf | DS21733J | class 2: parameters; the three mirrors disagree on SOT-23-5 pins (C.2) |",
+        "urls": [
+          "https://datasheet.ciiva.com/14545/70045422-14545053.pdf",
+          "https://www.radiolocman.com/datasheet/pdf.html?di=121053"
+        ]
+      },
+      {
+        "id": "S29",
+        "origin": "spec_bibliography",
+        "source_line": 8852,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S29 | OHMNI | `/home/claude/PCB_COMPONENT_3D_LIBRARY_SPEC.md`, entries OHM-103 to OHM-121 | local | as in the repo | pin 1, geometry, terminals |",
+        "urls": []
+      }
+    ],
+    "unresolved": [
+      "BEH-IC-OPAMP/S29: local or unresolved reference requires an explicit artifact binding: | S29 | OHMNI | `/home/claude/PCB_COMPONENT_3D_LIBRARY_SPEC.md`, entries OHM-103 to OHM-121 | local | as in the repo | pin 1, geometry, terminals |"
+    ]
+  },
+  "BEH-IC-OPTO-DIP6": {
+    "sources": [
+      {
+        "id": "S22",
+        "origin": "spec_bibliography",
+        "source_line": 8845,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S22 | Vishay | 4N35, 4N36, 4N37 optocoupler, phototransistor output with base connection (document 83717) | https://alessandra-flammini.unibs.it/EG_FED/EG_AA2324/SED/Datasheet%20componenti/optoisolatore%204n35.pdf (Rev 1.8) and a second host (Rev 1.2) | Rev 1.8 16-Jan-12; Rev 1.2 07-Jan-10 | class 12 |",
+        "urls": [
+          "https://alessandra-flammini.unibs.it/EG_FED/EG_AA2324/SED/Datasheet%20componenti/optoisolatore%204n35.pdf"
+        ]
+      },
+      {
+        "id": "S29",
+        "origin": "spec_bibliography",
+        "source_line": 8852,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S29 | OHMNI | `/home/claude/PCB_COMPONENT_3D_LIBRARY_SPEC.md`, entries OHM-103 to OHM-121 | local | as in the repo | pin 1, geometry, terminals |",
+        "urls": []
+      }
+    ],
+    "unresolved": [
+      "BEH-IC-OPTO-DIP6/S29: local or unresolved reference requires an explicit artifact binding: | S29 | OHMNI | `/home/claude/PCB_COMPONENT_3D_LIBRARY_SPEC.md`, entries OHM-103 to OHM-121 | local | as in the repo | pin 1, geometry, terminals |"
+    ]
+  },
+  "BEH-IC-PKGBIND": {
+    "sources": [
+      {
+        "id": "S1",
+        "origin": "spec_bibliography",
+        "source_line": 8824,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S1 | Texas Instruments | NA555, NE555, SA555, SE555 Precision Timers | https://www.ti.com/lit/ds/symlink/ne555.pdf | SLFS022K, March 2026 | class 4: pin map, ratings, thresholds, output levels, discharge VCE(sat), theta 98.5/125.4/164.2 |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/ne555.pdf"
+        ]
+      },
+      {
+        "id": "S2",
+        "origin": "spec_bibliography",
+        "source_line": 8825,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S2 | Texas Instruments | LM158 to LM358B family operational amplifiers | https://www.ti.com/lit/ds/symlink/lm358.pdf | revised October 2024 (document number not shown in the extract) | class 2: pin map, ratings, theta 80.9/124.7/171.7/181.4 |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/lm358.pdf"
+        ]
+      },
+      {
+        "id": "S3",
+        "origin": "spec_bibliography",
+        "source_line": 8826,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S3 | Texas Instruments | LM393B, LM2903B, LM193, LM293, LM393, LM2903 dual comparators | https://www.ti.com/lit/ds/symlink/lm393.pdf | SLCS005AH, revised April 2025 | class 3: pin map, ratings, VOL, response times, theta 114.9/148.5/200.6/193.7 |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/lm393.pdf"
+        ]
+      },
+      {
+        "id": "S4",
+        "origin": "spec_bibliography",
+        "source_line": 8827,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S4 | Texas Instruments | SN54HC00, SN74HC00 quadruple 2-input NAND | https://www.ti.com/lit/ds/symlink/sn74hc00.pdf | SCLS181H, revised August 2021 | class 5: pin map, ratings, levels, delay, Cpd, theta 57.5/133.6/151.7 |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/sn74hc00.pdf"
+        ]
+      },
+      {
+        "id": "S5",
+        "origin": "spec_bibliography",
+        "source_line": 8828,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S5 | Texas Instruments | SN54HC14, SN74HC14 hex Schmitt inverters | https://www.ti.com/lit/ds/symlink/sn74hc14.pdf | SCLS085L, revised February 2025 | class 5: pin map, VT+/VT-, theta 60.7/133.6/151.7 |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/sn74hc14.pdf"
+        ]
+      },
+      {
+        "id": "S6",
+        "origin": "spec_bibliography",
+        "source_line": 8829,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S6 | Texas Instruments | SNx4HC595 8-bit shift registers with 3-state output registers | https://www.ti.com/lit/ds/symlink/sn74hc595.pdf | SCLS041J, October 2021 | class 6: pin map, ratings, timing, Cpd, theta 57..108 |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf"
+        ]
+      },
+      {
+        "id": "S7",
+        "origin": "spec_bibliography",
+        "source_line": 8830,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S7 | Texas Instruments | SNx4HC138 3-line to 8-line decoders | https://www.ti.com/lit/ds/symlink/sn74hc138.pdf | SCLS107G, October 2021 | class 6: pin map, ratings, tpd, Cpd, theta 54.8/87.3/91.1/104.3/141.6 |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/sn74hc138.pdf"
+        ]
+      },
+      {
+        "id": "S8",
+        "origin": "spec_bibliography",
+        "source_line": 8831,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S8 | Texas Instruments | SNx4HC245 octal bus transceivers | https://www.ti.com/lit/ds/symlink/sn74hc245.pdf | SCLS131F, August 2022 | class 5: HC245 pin map, ratings, theta 57.0/77.0/92.1/99.7 |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/sn74hc245.pdf"
+        ]
+      },
+      {
+        "id": "S9",
+        "origin": "spec_bibliography",
+        "source_line": 8832,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S9 | Texas Instruments | LM124, LM224, LM324, LM2902 quadruple operational amplifiers | https://www.ti.com/lit/ds/symlink/lm324.pdf | SLOS066AE, September 2025 | class 2: pin map, theta 83.5/99.3/124.7, supply current |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/lm324.pdf"
+        ]
+      },
+      {
+        "id": "S10",
+        "origin": "spec_bibliography",
+        "source_line": 8833,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S10 | Texas Instruments | ULN2002A, ULN2003A, ULN2004A, ULQ2003A Darlington arrays | https://www.ti.com/lit/ds/symlink/uln2003a.pdf | SLRS027T, March 2025 | class 10: pin map, ratings, VCE(sat), clamp VF, theta 66.7/88.6/114.1 |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/uln2003a.pdf"
+        ]
+      },
+      {
+        "id": "S11",
+        "origin": "spec_bibliography",
+        "source_line": 8834,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S11 | Texas Instruments | TLV906xS 10 MHz RRIO CMOS operational amplifiers | https://www.ti.com/lit/ds/symlink/tlv9061.pdf | SBOS839N, revised July 2026 | class 2: SOT-23-5 pin map, parameters, theta 221.7 |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/tlv9061.pdf"
+        ]
+      },
+      {
+        "id": "S12",
+        "origin": "spec_bibliography",
+        "source_line": 8835,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S12 | Texas Instruments | L293, L293D quadruple half-H drivers | https://www.ti.com/lit/ds/symlink/l293d.pdf | Rev D, January 2016 | class 10: pin map, ratings, VOH/VOL, theta 36.4 |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/l293d.pdf"
+        ]
+      },
+      {
+        "id": "S13",
+        "origin": "spec_bibliography",
+        "source_line": 8836,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S13 | Texas Instruments | MAX232 dual EIA-232 drivers and receivers | https://www.ti.com/lit/ds/symlink/max232.pdf | SLLS047N, February 2024 | class 11: pin map, ratings, driver, receiver, theta 60.6/71.7/84.6/88.5 |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/max232.pdf"
+        ]
+      },
+      {
+        "id": "S14",
+        "origin": "spec_bibliography",
+        "source_line": 8837,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S14 | Texas Instruments | TLV700 200-mA low-IQ LDO | https://www.ti.com/lit/ds/symlink/tlv700.pdf | SLVSA00E, revised April 2015 | class 8: pin map, ratings, dropout, Iq, theta 235.9 |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/tlv700.pdf"
+        ]
+      },
+      {
+        "id": "S15",
+        "origin": "spec_bibliography",
+        "source_line": 8838,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S15 | Texas Instruments | TPS3808 programmable-delay supervisory circuit | https://www.ti.com/lit/ds/symlink/tps3808.pdf | SBVS050N, revised August 2026 as printed | section 13: pin map, theta 180.9 |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/tps3808.pdf"
+        ]
+      },
+      {
+        "id": "S26",
+        "origin": "spec_bibliography",
+        "source_line": 8849,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S26 | Texas Instruments (National Semiconductor) | AN-1205 Electrical Performance of Packages | https://ti.com/lit/pdf/SNOA405 | SNOA405A, May 2004 | class 1: lead R/L/C |",
+        "urls": [
+          "https://ti.com/lit/pdf/SNOA405"
+        ]
+      },
+      {
+        "id": "S27",
+        "origin": "spec_bibliography",
+        "source_line": 8850,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S27 | Texas Instruments | Semiconductor and IC Package Thermal Metrics | https://ti.com/lit/SPRA953 | SPRA953D, March 2024 | class 1: theta_JA definition and caveats |",
+        "urls": [
+          "https://ti.com/lit/SPRA953"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-IC-RS232-DIP16": {
+    "sources": [
+      {
+        "id": "S13",
+        "origin": "spec_bibliography",
+        "source_line": 8836,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S13 | Texas Instruments | MAX232 dual EIA-232 drivers and receivers | https://www.ti.com/lit/ds/symlink/max232.pdf | SLLS047N, February 2024 | class 11: pin map, ratings, driver, receiver, theta 60.6/71.7/84.6/88.5 |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/max232.pdf"
+        ]
+      },
+      {
+        "id": "S29",
+        "origin": "spec_bibliography",
+        "source_line": 8852,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S29 | OHMNI | `/home/claude/PCB_COMPONENT_3D_LIBRARY_SPEC.md`, entries OHM-103 to OHM-121 | local | as in the repo | pin 1, geometry, terminals |",
+        "urls": []
+      }
+    ],
+    "unresolved": [
+      "BEH-IC-RS232-DIP16/S29: local or unresolved reference requires an explicit artifact binding: | S29 | OHMNI | `/home/claude/PCB_COMPONENT_3D_LIBRARY_SPEC.md`, entries OHM-103 to OHM-121 | local | as in the repo | pin 1, geometry, terminals |"
+    ]
+  },
+  "BEH-IC-TIMER555": {
+    "sources": [
+      {
+        "id": "S1",
+        "origin": "spec_bibliography",
+        "source_line": 8824,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S1 | Texas Instruments | NA555, NE555, SA555, SE555 Precision Timers | https://www.ti.com/lit/ds/symlink/ne555.pdf | SLFS022K, March 2026 | class 4: pin map, ratings, thresholds, output levels, discharge VCE(sat), theta 98.5/125.4/164.2 |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/ne555.pdf"
+        ]
+      },
+      {
+        "id": "S29",
+        "origin": "spec_bibliography",
+        "source_line": 8852,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S29 | OHMNI | `/home/claude/PCB_COMPONENT_3D_LIBRARY_SPEC.md`, entries OHM-103 to OHM-121 | local | as in the repo | pin 1, geometry, terminals |",
+        "urls": []
+      }
+    ],
+    "unresolved": [
+      "BEH-IC-TIMER555/S29: local or unresolved reference requires an explicit artifact binding: | S29 | OHMNI | `/home/claude/PCB_COMPONENT_3D_LIBRARY_SPEC.md`, entries OHM-103 to OHM-121 | local | as in the repo | pin 1, geometry, terminals |"
+    ]
+  },
+  "BEH-LED-ADDRESSABLE": {
+    "sources": [
+      {
+        "id": "S9",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "no revision printed in extract",
+          "id": "S9",
+          "org": "Worldsemi",
+          "title": "WS2812B Intelligent control LED integrated light source",
+          "url": "https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf",
+          "used_for": "pins, timing, VDD, thresholds, GRB format, LED data"
+        },
+        "source_line": 5094,
+        "urls": [
+          "https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-LED-INDICATOR": {
+    "sources": [
+      {
+        "id": "S1",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "14-Oct-14",
+          "id": "S1",
+          "org": "Vishay",
+          "title": "TLDR4400 Rev 2.0",
+          "url": "https://www.vishay.com/docs/83001/tldr4400.pdf",
+          "used_for": "3 mm deep red ratings, VF, Iv, red fit"
+        },
+        "source_line": 4713,
+        "urls": [
+          "https://www.vishay.com/docs/83001/tldr4400.pdf"
+        ]
+      },
+      {
+        "id": "S2",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "29-Apr-13",
+          "id": "S2",
+          "org": "Vishay",
+          "title": "TLHB5800 Rev 2.0",
+          "url": "https://atom.ubbcluj.ro/alpar/datasheets/optoelectronic_components/LED/Untinted%20Non-Diffused%20LED%20(B)%20-%20Vishay.pdf",
+          "used_for": "blue ratings, VF points"
+        },
+        "source_line": 4713,
+        "urls": [
+          "https://atom.ubbcluj.ro/alpar/datasheets/optoelectronic_components/LED/Untinted%20Non-Diffused%20LED%20(B)%20-%20Vishay.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-LED-POWER": {
+    "sources": [
+      {
+        "id": "S8",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "Rev 8D",
+          "id": "S8",
+          "org": "Cree",
+          "title": "XLamp XP-E2 LEDs data sheet",
+          "url": "https://cdn1.components.ru/81/35081.pdf",
+          "used_for": "VF, Rth_js, Tj max, VR, ESD, flux vs I and T"
+        },
+        "source_line": 4961,
+        "urls": [
+          "https://cdn1.components.ru/81/35081.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-LED-RGB": {
+    "sources": [
+      {
+        "id": "S7",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "2014-09-10",
+          "id": "S7",
+          "org": "Broadcom",
+          "title": "ASMB-MTB0-0A3A2",
+          "url": "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf",
+          "used_for": "pin map, VF, ratings"
+        },
+        "source_line": 4836,
+        "urls": [
+          "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-MAG-CMC": {
+    "sources": [
+      {
+        "id": "S8",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "2025/08/05",
+          "id": "S8",
+          "org": "Wurth Elektronik",
+          "title": "ANP146a common mode choke theory",
+          "url": "https://www.we-online.com/components/media/o868432v410 ANP146a_WE-CMDC_EN.pdf",
+          "used_for": "DM/CM principle, k, leakage, equivalent circuit"
+        },
+        "source_line": 2645,
+        "urls": [
+          "https://www.we-online.com/components/media/o868432v410 ANP146a_WE-CMDC_EN.pdf"
+        ]
+      },
+      {
+        "id": "S9",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "2026-02-06",
+          "id": "S9",
+          "org": "Wurth Elektronik",
+          "title": "WE-SL5 744272222 datasheet",
+          "url": "https://www.we-online.com/katalog/datasheet/744272222.pdf",
+          "used_for": "L, LS, RDC, IR, VR, Z points"
+        },
+        "source_line": 2645,
+        "urls": [
+          "https://www.we-online.com/katalog/datasheet/744272222.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-MAG-ETHMAG": {
+    "sources": [
+      {
+        "id": "S11",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "9/09",
+          "id": "S11",
+          "org": "Pulse Electronics",
+          "title": "H325.Q 10/100BASE-T single port surface mount magnetics",
+          "url": "https://www.zeuthen.desy.de/~sulanke/Projects/ICECUBE/mDOM/mainboard/datasheets/transformer_eth_H1102NL_+.pdf",
+          "used_for": "turns ratios, IL, RL, CMR, crosstalk, hipot 1500 Vrms"
+        },
+        "source_line": 3336,
+        "urls": [
+          "https://www.zeuthen.desy.de/~sulanke/Projects/ICECUBE/mDOM/mainboard/datasheets/transformer_eth_H1102NL_+.pdf"
+        ]
+      },
+      {
+        "id": "S12",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "5/09",
+          "id": "S12",
+          "org": "Pulse Engineering",
+          "title": "H315.D 10/100BASE-T single port transformer modules",
+          "url": "https://www.e-sonic.com/productfiles/mf-pul/h315.pdf",
+          "used_for": "OCL 350 uH with 8 mA bias, 1500 Vrms"
+        },
+        "source_line": 3336,
+        "urls": [
+          "https://www.e-sonic.com/productfiles/mf-pul/h315.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-MAG-INDUCTOR": {
+    "sources": [
+      {
+        "id": "S1",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "rev 07/22/17",
+          "id": "S1",
+          "org": "Coilcraft",
+          "title": "Doc 469 inductor parameter definitions",
+          "url": "https://www.coilcraft.com/getmedia/d4009ece-69be-49a6-9185-9cbacb65e3aa/Doc469_selecting_inductors.pdf",
+          "used_for": "Isat drop definitions, Irms, DCR, SRF"
+        },
+        "source_line": 2448,
+        "urls": [
+          "https://www.coilcraft.com/getmedia/d4009ece-69be-49a6-9185-9cbacb65e3aa/Doc469_selecting_inductors.pdf"
+        ]
+      },
+      {
+        "id": "S2",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "rev 02/25/26",
+          "id": "S2",
+          "org": "Coilcraft",
+          "title": "XAL40xx shielded power inductors, Doc 806-1",
+          "url": "https://www.coilcraft.com/en-us/files/datasheet/XAL40xx",
+          "used_for": "30 % Isat, Irms 20/40 K, table rows"
+        },
+        "source_line": 2448,
+        "urls": [
+          "https://www.coilcraft.com/en-us/files/datasheet/XAL40xx"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-MAG-XFMR-CT": {
+    "sources": [
+      {
+        "id": "S13",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "07/18",
+          "id": "S13",
+          "org": "Talema Group",
+          "title": "AS series current sense transformers datasheet (CERN-hosted copy)",
+          "url": "https://sy-dep-epc-lpc.web.cern.ch/components/datasheets/epc-lpc%20(converters)/AS%20series-Hall%20effect%20current%20sensor-Talemagroup.pdf",
+          "used_for": "family ranges, pins, burden, isolation, temperature"
+        },
+        "source_line": 3140,
+        "urls": [
+          "https://sy-dep-epc-lpc.web.cern.ch/components/datasheets/epc-lpc%20(converters)/AS%20series-Hall%20effect%20current%20sensor-Talemagroup.pdf"
+        ]
+      },
+      {
+        "id": "S14",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "06-06",
+          "id": "S14",
+          "org": "Talema Group",
+          "title": "AS-103 / AS-211 datasheet copies (pdf.jiepei.com aggregator)",
+          "url": "https://pdf.jiepei.com/as-103-13781511.html",
+          "used_for": "AS-103 row"
+        },
+        "source_line": 3140,
+        "urls": [
+          "https://pdf.jiepei.com/as-103-13781511.html"
+        ]
+      },
+      {
+        "id": "S15",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "not shown",
+          "id": "S15",
+          "org": "Talema/Amgis via DigiKey",
+          "title": "AS-103 listing",
+          "url": "https://www.digikey.it/en/products/detail/amgis-llc/AS-103/2260664",
+          "used_for": "conflicting 1:300 and 250 mH"
+        },
+        "source_line": 3140,
+        "urls": [
+          "https://www.digikey.it/en/products/detail/amgis-llc/AS-103/2260664"
+        ]
+      },
+      {
+        "id": "S16",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "not shown",
+          "id": "S16",
+          "org": "Elliott Sound Products",
+          "title": "Current Transformers",
+          "url": "https://www.sound-au.com/articles/current-transformers.htm",
+          "used_for": "open-secondary warning (engineering article, secondary source)"
+        },
+        "source_line": 3140,
+        "urls": [
+          "https://www.sound-au.com/articles/current-transformers.htm"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-MAG-XFMR-FLYBACK": {
+    "sources": [
+      {
+        "id": "S10",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "2023-10-19",
+          "id": "S10",
+          "org": "Wurth Elektronik",
+          "title": "Design considerations for flyback transformer (Digital WE Days 2023)",
+          "url": "https://we-online.com/files/pdf1/design-considerations-for-flyback-transformer.pdf",
+          "used_for": "gap energy storage, Isat requirement, leakage spike"
+        },
+        "source_line": 2973,
+        "urls": [
+          "https://we-online.com/files/pdf1/design-considerations-for-flyback-transformer.pdf"
+        ]
+      },
+      {
+        "id": "S23",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "not shown",
+          "id": "S23",
+          "org": "Wurth Elektronik",
+          "title": "750311691 pulse transformer listing (RS)",
+          "url": "https://uk.rs-online.com/web/p/pulse-transformers/1634318",
+          "used_for": "order of magnitude of WE-FB parameters"
+        },
+        "source_line": 2973,
+        "urls": [
+          "https://uk.rs-online.com/web/p/pulse-transformers/1634318"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-MAG-XFMR-SIGNAL": {
+    "sources": [
+      {
+        "id": "S22",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "not shown",
+          "id": "S22",
+          "org": "Triad Magnetics",
+          "title": "TY-145P DigiKey listing",
+          "url": "https://www.digikey.ca/en/products/detail/TY-145P/237-1121-ND/242643",
+          "used_for": "600CT:600CT, 1:1, 200 Hz to 15 kHz"
+        },
+        "source_line": 2823,
+        "urls": [
+          "https://www.digikey.ca/en/products/detail/TY-145P/237-1121-ND/242643"
+        ]
+      },
+      {
+        "id": "S3",
+        "origin": "canonical_citation",
+        "source": {
+          "date": "not shown",
+          "id": "S3",
+          "org": "ngspice",
+          "title": "ngspice manual",
+          "url": "https://ngspice.sourceforge.io/docs/ngspice-html-manual/manual.xhtml",
+          "used_for": "L, K syntax"
+        },
+        "source_line": 2823,
+        "urls": [
+          "https://ngspice.sourceforge.io/docs/ngspice-html-manual/manual.xhtml"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-MEM-SPINOR": {
+    "sources": [
+      {
+        "id": "S21",
+        "origin": "spec_bibliography",
+        "source_line": 8958,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S21 | Winbond | W25Q128JV Revision F (Mouser copy) (extract) | https://www.mouser.com/datasheet/2/949/w25q128jv_revf_03272018_plus-1489608.pdf | 8-pad WSON pin names, standard SPI opcodes |",
+        "urls": [
+          "https://www.mouser.com/datasheet/2/949/w25q128jv_revf_03272018_plus-1489608.pdf"
+        ]
+      },
+      {
+        "id": "S22",
+        "origin": "spec_bibliography",
+        "source_line": 8959,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S22 | Microchip | SST25VF016B 16 Mbit SPI Serial Flash EOL Supplemental Information, DS20005291A, April 2015 (chipdip copy, extract) | https://static.chipdip.ru/lib/076/DOC036076661.pdf | instruction table, DC and AC tables (column headings garbled, see 4.5) |",
+        "urls": [
+          "https://static.chipdip.ru/lib/076/DOC036076661.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-PKG-IC-BINDING": {
+    "sources": [
+      {
+        "id": "S1",
+        "origin": "spec_bibliography",
+        "source_line": 8938,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S1 | Texas Instruments | TPS6216x 3-17 V 1 A step-down converter, SLVSAM2E Nov 2011 rev May 2017 (extract, two queries agree) | https://www.ti.com/lit/ds/symlink/tps62160.pdf | WSON-8 DSG pin map, EP to AGND, RthJA 61.8, tON = 420 ns x Vo/Vin, IQ, UVLO, ILIM, L/C values |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
+        ]
+      },
+      {
+        "id": "S2",
+        "origin": "spec_bibliography",
+        "source_line": 8939,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S2 | Texas Instruments | TPS6213x 3-17 V 3 A step-down converter, SLVSAG7F Nov 2011 rev Nov 2021 (extract) | https://www.ti.com/lit/ds/symlink/tps62130.pdf | VQFN-16 RGT 3x3 pin map, EP, RthJA 45, tON = 400 ns x Vo/Vin, RDS(on), ILIM |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/tps62130.pdf"
+        ]
+      },
+      {
+        "id": "S3",
+        "origin": "spec_bibliography",
+        "source_line": 8940,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S3 | Texas Instruments | TPS7A80 1 A LDO (revision not shown in extract) | https://www.ti.com/lit/ds/symlink/tps7a80.pdf | VSON-8 DRB pin map, RthJA 47.8, abs max, 4.7 uF cap rule |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/tps7a80.pdf"
+        ]
+      },
+      {
+        "id": "S4",
+        "origin": "spec_bibliography",
+        "source_line": 8941,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S4 | Texas Instruments | TPS22810 load switch (revision not shown) | https://www.ti.com/lit/ds/symlink/tps22810.pdf | WSON-6 DRV 2x2 0.65 pin map, RON 79 mOhm, UVLO 2.54 V, RthJA 74.6 (extract, M-L) |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/tps22810.pdf"
+        ]
+      },
+      {
+        "id": "S5",
+        "origin": "spec_bibliography",
+        "source_line": 8942,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S5 | NXP | NX5P3290 USB PD / Type-C current-limited power switch, Rev. 1.2, 7 June 2019 (extract, two queries agree) | https://www.nxp.com/docs/en/data-sheet/NX5P3290.pdf | WLCSP16 SOT1394-2 ball map A1..D4, RON, limits, Rth(j-a) 58.4 |",
+        "urls": [
+          "https://www.nxp.com/docs/en/data-sheet/NX5P3290.pdf"
+        ]
+      },
+      {
+        "id": "S6",
+        "origin": "spec_bibliography",
+        "source_line": 8943,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S6 | Analog Devices (Maxim) | MAX98357A/MAX98357B, revision 16 (2/26) (extract) | https://www.analog.com/media/en/technical-documentation/data-sheets/MAX98357A-MAX98357B.pdf | WLP-9 bump map, EP not connected, thetaJA 73 (WLP), 48 (TQFN) |",
+        "urls": [
+          "https://www.analog.com/media/en/technical-documentation/data-sheets/MAX98357A-MAX98357B.pdf"
+        ]
+      },
+      {
+        "id": "S11",
+        "origin": "spec_bibliography",
+        "source_line": 8948,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S11 | STMicroelectronics (alldatasheet.net reproduction) | STM32F103xx, DocID13587 Rev 16 page 93 Table 59 and a second revision page 82 Table 56 | https://www.alldatasheet.net/html-pdf/556763/STMICROELECTRONICS/STM32F103CBU6/181902/93/STM32F103CBU6.html ; https://www.alldatasheet.net/html-pdf/303567/STMICROELECTRONICS/STM32F103CBU6XXX/160632/82/STM32F103CBU6XXX.html | thermal resistance per package, verbatim table rows, two revisions agree |",
+        "urls": [
+          "https://www.alldatasheet.net/html-pdf/303567/STMICROELECTRONICS/STM32F103CBU6XXX/160632/82/STM32F103CBU6XXX.html",
+          "https://www.alldatasheet.net/html-pdf/556763/STMICROELECTRONICS/STM32F103CBU6/181902/93/STM32F103CBU6.html"
+        ]
+      },
+      {
+        "id": "S13",
+        "origin": "spec_bibliography",
+        "source_line": 8950,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S13 | Atmel / Microchip | ATmega48A/PA/88A/PA/168A/PA/328/P datasheet summary 8271I-10/2014 (UWA copy) | https://robotics.ee.uwa.edu.au/nano/doc/ATmega328P-summary.pdf | package codes 32A, 32M1-A, 28M1; \"Bottom pad should be soldered to ground\"; speed grades |",
+        "urls": [
+          "https://robotics.ee.uwa.edu.au/nano/doc/ATmega328P-summary.pdf"
+        ]
+      },
+      {
+        "id": "S16",
+        "origin": "spec_bibliography",
+        "source_line": 8953,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S16 | Espressif | ESP32-C3 Series Datasheet v2.4 (extract) | https://documentation.espressif.com/esp32-c3_datasheet_en.pdf | QFN32 5x5 pin list (EPAD = GND), supply 3.0-3.6 V, DC thresholds, power-up timing |",
+        "urls": [
+          "https://documentation.espressif.com/esp32-c3_datasheet_en.pdf"
+        ]
+      },
+      {
+        "id": "S25",
+        "origin": "spec_bibliography",
+        "source_line": 8962,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S25 | Silicon Laboratories | CP2104 USB-to-UART bridge (Pololu copy, extract) | https://pololu.com/file/0J679/cp2104.pdf | QFN-24 4x4 pin table, abs max |",
+        "urls": [
+          "https://pololu.com/file/0J679/cp2104.pdf"
+        ]
+      },
+      {
+        "id": "S26",
+        "origin": "spec_bibliography",
+        "source_line": 8963,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S26 | FTDI | FT231X (alldatasheet page 38) | https://www.alldatasheet.com/html-pdf/659067/FTDI/FT231XQ-R/3946/38/FT231XQ-R.html | QFN-20 4.00 mm, 0.50 pitch, centre pad internally ground |",
+        "urls": [
+          "https://www.alldatasheet.com/html-pdf/659067/FTDI/FT231XQ-R/3946/38/FT231XQ-R.html"
+        ]
+      },
+      {
+        "id": "S27",
+        "origin": "spec_bibliography",
+        "source_line": 8964,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S27 | Texas Instruments | Quad Flatpack No-Lead Logic Packages, SCBA017D, Feb 2004 (extract) | https://www.ti.com/lit/pdf/scba017 | QFN-20 R, L, C, thermal, thermal-via data, paste coverage |",
+        "urls": [
+          "https://www.ti.com/lit/pdf/scba017"
+        ]
+      },
+      {
+        "id": "S28",
+        "origin": "spec_bibliography",
+        "source_line": 8965,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S28 | Texas Instruments | PowerPAD Thermally Enhanced Package, SLMA002H, July 2018 (extract) | https://www.ti.com/lit/pdf/slma002 | via diameter and pitch, 50 percent minimum pad solder area, SSOP/TSSOP power limit |",
+        "urls": [
+          "https://www.ti.com/lit/pdf/slma002"
+        ]
+      },
+      {
+        "id": "S29",
+        "origin": "spec_bibliography",
+        "source_line": 8966,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S29 | Infineon | AN72845 Design Guidelines for QFN Packaged Devices v04_00 (extract) | https://www.infineon.com/dgdl/Infineon-AN72845_Design_Guidelines_For_Infineon_Quad_Flat_No_Lead_(QFN)_Packaged_Devices-ApplicationNotes-v04_00-EN.pdf?fileId=8ac78c8c7cdc391c017d0735936858e5 | via array, paste coverage 50-80 percent |",
+        "urls": [
+          "https://www.infineon.com/dgdl/Infineon-AN72845_Design_Guidelines_For_Infineon_Quad_Flat_No_Lead_(QFN)_Packaged_Devices-ApplicationNotes-v04_00-EN.pdf?fileId=8ac78c8c7cdc391c017d0735936858e5"
+        ]
+      },
+      {
+        "id": "S30",
+        "origin": "spec_bibliography",
+        "source_line": 8967,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S30 | National Semiconductor (now TI) | AN-1205 Electrical Performance of Packages, SNOA405A May 2004 (extract, one literal re-query) | https://www.ti.com/lit/an/snoa405a/snoa405a.pdf | R, L, C tables for QFP, PLCC, BGA, CSP, micro SMD, wirebond |",
+        "urls": [
+          "https://www.ti.com/lit/an/snoa405a/snoa405a.pdf"
+        ]
+      },
+      {
+        "id": "S31",
+        "origin": "spec_bibliography",
+        "source_line": 8968,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S31 | NXP | AN10778 PCB layout guidelines for NXP MCUs in BGA packages, Rev. 2, 15 April 2011 (extract) | https://www.nxp.com/docs/en/application-note/AN10778.pdf | BGA land pad and via rules |",
+        "urls": [
+          "https://www.nxp.com/docs/en/application-note/AN10778.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-PWR-LOADSWITCH": {
+    "sources": [
+      {
+        "id": "S4",
+        "origin": "spec_bibliography",
+        "source_line": 8941,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S4 | Texas Instruments | TPS22810 load switch (revision not shown) | https://www.ti.com/lit/ds/symlink/tps22810.pdf | WSON-6 DRV 2x2 0.65 pin map, RON 79 mOhm, UVLO 2.54 V, RthJA 74.6 (extract, M-L) |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/tps22810.pdf"
+        ]
+      },
+      {
+        "id": "S5",
+        "origin": "spec_bibliography",
+        "source_line": 8942,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S5 | NXP | NX5P3290 USB PD / Type-C current-limited power switch, Rev. 1.2, 7 June 2019 (extract, two queries agree) | https://www.nxp.com/docs/en/data-sheet/NX5P3290.pdf | WLCSP16 SOT1394-2 ball map A1..D4, RON, limits, Rth(j-a) 58.4 |",
+        "urls": [
+          "https://www.nxp.com/docs/en/data-sheet/NX5P3290.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-PWR-PKGTHERMAL": {
+    "sources": [
+      {
+        "id": "S1",
+        "origin": "spec_bibliography",
+        "source_line": 6669,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S1 | onsemi | 2N3903 / 2N3904 General Purpose Transistors (2N3903/D) | https://www.onsemi.com/pdf/datasheet/2n3903-d.pdf | Rev. 9, Aug 2021 | 2N3904 pinout (E-B-C), ratings, hFE bands, saturation, fT, switching, Rth |",
+        "urls": [
+          "https://www.onsemi.com/pdf/datasheet/2n3903-d.pdf"
+        ]
+      },
+      {
+        "id": "S2",
+        "origin": "spec_bibliography",
+        "source_line": 6670,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S2 | onsemi | PN2222A (PN2222A/D) | https://www.onsemi.com/pdf/datasheet/pn2222a-d.pdf | Rev. 1.1.0, Jul 2014 | PN2222A pinout, ratings, hFE, saturation, capacitances, switching |",
+        "urls": [
+          "https://www.onsemi.com/pdf/datasheet/pn2222a-d.pdf"
+        ]
+      },
+      {
+        "id": "S4",
+        "origin": "spec_bibliography",
+        "source_line": 6672,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S4 | Nexperia | BC817 series product data sheet | https://assets.nexperia.com/documents/data-sheet/BC817_SER.pdf | Rev. 8, 1 Jul 2022 | SOT-23 B-E-C pinout, ratings, Rth, Ptot, hFE bins |",
+        "urls": [
+          "https://assets.nexperia.com/documents/data-sheet/BC817_SER.pdf"
+        ]
+      },
+      {
+        "id": "S5",
+        "origin": "spec_bibliography",
+        "source_line": 6673,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S5 | Nexperia | BCP56 series product data sheet | https://assets.nexperia.com/documents/data-sheet/BCP56_SER.pdf | Rev. 11, 1 Jul 2022 | SOT-223 B-C-E pinout, tab = C, Rth vs pad, hFE |",
+        "urls": [
+          "https://assets.nexperia.com/documents/data-sheet/BCP56_SER.pdf"
+        ]
+      },
+      {
+        "id": "S6",
+        "origin": "spec_bibliography",
+        "source_line": 6674,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S6 | Nexperia | BCX56 series product data sheet | https://assets.nexperia.com/documents/data-sheet/BCX56_SER.pdf | Rev. 13, 25 Oct 2023 | SOT-89 E-C-B pinout, Rth vs pad |",
+        "urls": [
+          "https://assets.nexperia.com/documents/data-sheet/BCX56_SER.pdf"
+        ]
+      },
+      {
+        "id": "S7",
+        "origin": "spec_bibliography",
+        "source_line": 6675,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S7 | STMicroelectronics | BD135 / BD137 / BD139 | https://www.st.com/resource/en/datasheet/bd135.pdf | Rev. 5, May 2008 | SOT-32/TO-126 pinout E-C-B, ratings, Rth |",
+        "urls": [
+          "https://www.st.com/resource/en/datasheet/bd135.pdf"
+        ]
+      },
+      {
+        "id": "S10",
+        "origin": "spec_bibliography",
+        "source_line": 6678,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S10 | Infineon | IRFZ44NPbF | https://www.infineon.com/dgdl/irfz44npbf.pdf | Rev. 2.1 (extract reported 2026-08-11) | ratings, Rth, Rds(on), charges, capacitances, body diode |",
+        "urls": [
+          "https://www.infineon.com/dgdl/irfz44npbf.pdf"
+        ]
+      },
+      {
+        "id": "S11",
+        "origin": "spec_bibliography",
+        "source_line": 6679,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S11 | Infineon | IRF540NPbF | https://www.infineon.com/dgdl/irf540npbf.pdf | Rev. 2.1 (extract reported 2026-07-24) | same, IRF540N |",
+        "urls": [
+          "https://www.infineon.com/dgdl/irf540npbf.pdf"
+        ]
+      },
+      {
+        "id": "S12",
+        "origin": "spec_bibliography",
+        "source_line": 6680,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S12 | Infineon | IRLB8721PbF | https://www.infineon.com/dgdl/irlb8721pbf.pdf | extract reported April 22, 2009 | logic-level MOSFET ratings and Rds(on) |",
+        "urls": [
+          "https://www.infineon.com/dgdl/irlb8721pbf.pdf"
+        ]
+      },
+      {
+        "id": "S13",
+        "origin": "spec_bibliography",
+        "source_line": 6681,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S13 | Infineon | IRFP260NPbF | https://www.infineon.com/dgdl/irfp260npbf.pdf | Rev. 2.1 (extract reported 2024-10-08) | TO-247 ratings and Rth |",
+        "urls": [
+          "https://www.infineon.com/dgdl/irfp260npbf.pdf"
+        ]
+      },
+      {
+        "id": "S14",
+        "origin": "spec_bibliography",
+        "source_line": 6682,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S14 | Infineon | IRLR8721PbF | https://www.infineon.com/dgdl/irlr8721pbf.pdf | not reported | DPAK ratings, Rth vs copper |",
+        "urls": [
+          "https://www.infineon.com/dgdl/irlr8721pbf.pdf"
+        ]
+      },
+      {
+        "id": "S15",
+        "origin": "spec_bibliography",
+        "source_line": 6683,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S15 | Infineon | IRLR/U3410PbF | https://www.infineon.com/dgdl/irlr3410pbf.pdf | Rev. 2.2 (extract reported 2024-08-30) | DPAK ratings |",
+        "urls": [
+          "https://www.infineon.com/dgdl/irlr3410pbf.pdf"
+        ]
+      },
+      {
+        "id": "S16",
+        "origin": "spec_bibliography",
+        "source_line": 6684,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S16 | Vishay | Si7898DP | https://www.vishay.com/docs/71873/si7898dp.pdf | S09-0227-Rev. D, 09-Feb-09 | PowerPAK SO-8 pinout, ratings, Rth, Rds(on) |",
+        "urls": [
+          "https://www.vishay.com/docs/71873/si7898dp.pdf"
+        ]
+      },
+      {
+        "id": "S19",
+        "origin": "spec_bibliography",
+        "source_line": 6687,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S19 | STMicroelectronics | L78 series (DS0422) | https://www.st.com/resource/en/datasheet/l78.pdf | Rev. 38, Feb 2025 | TO-220/DPAK/D2PAK pinouts, regulation, Rth, caps |",
+        "urls": [
+          "https://www.st.com/resource/en/datasheet/l78.pdf"
+        ]
+      },
+      {
+        "id": "S24",
+        "origin": "spec_bibliography",
+        "source_line": 6692,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S24 | STMicroelectronics | AN1703 Guidelines for using ST's MOSFET SMD packages | https://www.st.com/resource/en/application_note/an1703-guidelines-for-using-sts-mosfet-smd-packages-stmicroelectronics.pdf | June 2003 | DPAK/D2PAK Rth vs copper area |",
+        "urls": [
+          "https://www.st.com/resource/en/application_note/an1703-guidelines-for-using-sts-mosfet-smd-packages-stmicroelectronics.pdf"
+        ]
+      },
+      {
+        "id": "S25",
+        "origin": "spec_bibliography",
+        "source_line": 6693,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S25 | Diodes Incorporated | Thermal resistance in MOSFETs (AN1157; title as the extract gave it, URL named \"Understanding Thermal Resistance in the Real World\") | https://www.diodes.com/assets/Uploads/Understanding-Thermal-Resistance-in-the-Real-World-Application-Note.pdf | Rev. 3, May 2024 | RthJC vs RthJA definitions, copper-area trend |",
+        "urls": [
+          "https://www.diodes.com/assets/Uploads/Understanding-Thermal-Resistance-in-the-Real-World-Application-Note.pdf"
+        ]
+      },
+      {
+        "id": "S26",
+        "origin": "spec_bibliography",
+        "source_line": 6694,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S26 | onsemi | AND9008/D Thermal considerations for CCRs in DPAK, SMC and SMB | https://www.onsemi.com/pub/Collateral/AND9008-D.PDF | Rev. 2, May 2012 | DPAK power vs copper at 85 C |",
+        "urls": [
+          "https://www.onsemi.com/pub/Collateral/AND9008-D.PDF"
+        ]
+      },
+      {
+        "id": "S27",
+        "origin": "spec_bibliography",
+        "source_line": 6695,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S27 | Nexperia | AN90003 LFPAK MOSFET thermal design guide (found at a mirror URL) | https://www.mouser.lt/pdfDocs/LFPAKMOSFETthermaldesignguide-2.pdf | Rev. 4.1, 22 Aug 2023 | PCB thermal floor, copper/vias effect (LFPAK context) |",
+        "urls": [
+          "https://www.mouser.lt/pdfDocs/LFPAKMOSFETthermaldesignguide-2.pdf"
+        ]
+      },
+      {
+        "id": "S28",
+        "origin": "spec_bibliography",
+        "source_line": 6696,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S28 | Nexperia | AN50006 Power MOSFETs in linear mode | https://docs.ampnuts.ru/nexperia.com.datasheet/application-note/AN50006.pdf | Rev. 2.0, 12 Apr 2022 | ZTC point, Spirito effect, SOA thermal limit (document hosted on a third-party mirror) |",
+        "urls": [
+          "https://docs.ampnuts.ru/nexperia.com.datasheet/application-note/AN50006.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-REG-BUCK-DCS": {
+    "sources": [
+      {
+        "id": "S1",
+        "origin": "spec_bibliography",
+        "source_line": 8938,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S1 | Texas Instruments | TPS6216x 3-17 V 1 A step-down converter, SLVSAM2E Nov 2011 rev May 2017 (extract, two queries agree) | https://www.ti.com/lit/ds/symlink/tps62160.pdf | WSON-8 DSG pin map, EP to AGND, RthJA 61.8, tON = 420 ns x Vo/Vin, IQ, UVLO, ILIM, L/C values |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
+        ]
+      },
+      {
+        "id": "S2",
+        "origin": "spec_bibliography",
+        "source_line": 8939,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S2 | Texas Instruments | TPS6213x 3-17 V 3 A step-down converter, SLVSAG7F Nov 2011 rev Nov 2021 (extract) | https://www.ti.com/lit/ds/symlink/tps62130.pdf | VQFN-16 RGT 3x3 pin map, EP, RthJA 45, tON = 400 ns x Vo/Vin, RDS(on), ILIM |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/tps62130.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-REG-LINEAR": {
+    "sources": [
+      {
+        "id": "S17",
+        "origin": "spec_bibliography",
+        "source_line": 6685,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S17 | Advanced Monolithic Systems | AMS1117 datasheet | https://www.advanced-monolithic.com/pdf/ds1117.pdf | not reported | pinout, dropout, regulation, cap requirement, thermal |",
+        "urls": [
+          "https://www.advanced-monolithic.com/pdf/ds1117.pdf"
+        ]
+      },
+      {
+        "id": "S18",
+        "origin": "spec_bibliography",
+        "source_line": 6686,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S18 | Texas Instruments | LM1117 (SNOS412Q) | https://www.ti.com/lit/ds/symlink/lm1117.pdf | SNOS412Q, Feb 2000 rev. Jan 2023 | pinouts by package, dropout, ESR window, Rth, limits |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/lm1117.pdf"
+        ]
+      },
+      {
+        "id": "S19",
+        "origin": "spec_bibliography",
+        "source_line": 6687,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S19 | STMicroelectronics | L78 series (DS0422) | https://www.st.com/resource/en/datasheet/l78.pdf | Rev. 38, Feb 2025 | TO-220/DPAK/D2PAK pinouts, regulation, Rth, caps |",
+        "urls": [
+          "https://www.st.com/resource/en/datasheet/l78.pdf"
+        ]
+      },
+      {
+        "id": "S20",
+        "origin": "spec_bibliography",
+        "source_line": 6688,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S20 | Texas Instruments | LM317 | https://www.ti.com/lit/ds/symlink/lm317.pdf | not reported | pinouts, VREF, min load, Rth |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/lm317.pdf"
+        ]
+      },
+      {
+        "id": "S21",
+        "origin": "spec_bibliography",
+        "source_line": 6689,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S21 | Texas Instruments | LM2940 (SNVS769J) | https://www.ti.com/lit/ds/symlink/lm2940-n.pdf | SNVS769J, Dec 2014 | pinouts, dropout, ESR window, input ratings, Rth |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/lm2940-n.pdf"
+        ]
+      },
+      {
+        "id": "S22",
+        "origin": "spec_bibliography",
+        "source_line": 6690,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S22 | STMicroelectronics | L78L series (DS0424) | https://www.st.com/resource/en/datasheet/l78l.pdf | Rev. 30, Aug 2024 | TO-92/SOT-89 pinouts, ratings, Rth |",
+        "urls": [
+          "https://www.st.com/resource/en/datasheet/l78l.pdf"
+        ]
+      },
+      {
+        "id": "S23",
+        "origin": "spec_bibliography",
+        "source_line": 6691,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S23 | Texas Instruments | LM78L (SNVS754O) | https://www.ti.com/lit/ds/symlink/lm78l.pdf | Rev. O (extract reported Aug 2026) | TO-92/SOT-89 pinouts, Rth |",
+        "urls": [
+          "https://www.ti.com/lit/ds/symlink/lm78l.pdf"
+        ]
+      },
+      {
+        "id": "S31",
+        "origin": "spec_bibliography",
+        "source_line": 6699,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S31 | ngspice project | ngspice user manual (BJT, MOSFET chapters; the extract reported version 47+, Sept 2026, while the installed simulator is 42) | https://ngspice.sourceforge.io/docs/ngspice-manual.pdf | as reported | Gummel-Poon and MOS1/MOS3 model parameter lists; behavior was verified by running ngspice 42 |",
+        "urls": [
+          "https://ngspice.sourceforge.io/docs/ngspice-manual.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-RES-FIXED": {
+    "sources": [
+      {
+        "id": "S1",
+        "origin": "spec_bibliography",
+        "source_line": 1068,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S1: Vishay Intertechnology, \"D/CRCW e3 Thick Film Chip Resistors\", https://www.vishay.com/docs/20035/dcrcwe3.pdf, revision 14-Apr-2026. Used for: P70, limiting element voltage, TCR, tolerance, E-series, jumper currents, derating (linear 70 to 155 C), 0402 to 2512.",
+        "urls": [
+          "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+        ]
+      },
+      {
+        "id": "S2",
+        "origin": "spec_bibliography",
+        "source_line": 1069,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S2: Vishay, \"CRCW01005 e3\", https://www.vishay.com/docs/20056/crcw01005e3.pdf, revision 28-Oct-13. Used for 01005 ratings.",
+        "urls": [
+          "https://www.vishay.com/docs/20056/crcw01005e3.pdf"
+        ]
+      },
+      {
+        "id": "S3",
+        "origin": "spec_bibliography",
+        "source_line": 1070,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S3: Vishay, \"CRCW0201 e3\", https://www.vishay.com/docs/20052/crcw0201e3.pdf, revision 21-Sep-2022. Used for 0201 ratings.",
+        "urls": [
+          "https://www.vishay.com/docs/20052/crcw0201e3.pdf"
+        ]
+      },
+      {
+        "id": "S4",
+        "origin": "spec_bibliography",
+        "source_line": 1071,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S4: Yageo, \"Thick Film Chip Resistors Automotive Grade AC series (PYU-AC_51_ROHS_L)\", https://yageogroup.com/content/datasheet/asset/file/PYU-AC_51_ROHS_L, V.11, 17 Nov 2023. Used for conflicting per-size ratings.",
+        "urls": [
+          "https://yageogroup.com/content/datasheet/asset/file/PYU-AC_51_ROHS_L"
+        ]
+      },
+      {
+        "id": "S5",
+        "origin": "spec_bibliography",
+        "source_line": 1072,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S5: Yageo, \"CFR carbon film leaded resistors\", https://www.yageogroup.com/content/Resource%20Library/Datasheet/YAGEO-CFR_DATASHEET.pdf, Apr. 03, 2024 V.3. Ratings, TCR, overload.",
+        "urls": [
+          "https://www.yageogroup.com/content/Resource%20Library/Datasheet/YAGEO-CFR_DATASHEET.pdf"
+        ]
+      },
+      {
+        "id": "S6",
+        "origin": "spec_bibliography",
+        "source_line": 1073,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S6: Yageo, \"MFR metal film leaded resistors\", https://yageogroup.com/content/Resource%20Library/Datasheet/YAGEO-MFR_DATASHEET.pdf, Apr. 03, 2024 V.4. Ratings, TCR, derating.",
+        "urls": [
+          "https://yageogroup.com/content/Resource%20Library/Datasheet/YAGEO-MFR_DATASHEET.pdf"
+        ]
+      },
+      {
+        "id": "S7",
+        "origin": "spec_bibliography",
+        "source_line": 1074,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S7: KOA Speer, \"CF carbon film leaded resistors\", https://www.koaspeer.com/pdfs/CF.pdf, header date unreliable (see OHM-010). TCR range, CFP flame-retardant variant.",
+        "urls": [
+          "https://www.koaspeer.com/pdfs/CF.pdf"
+        ]
+      },
+      {
+        "id": "S8",
+        "origin": "spec_bibliography",
+        "source_line": 1075,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S8: Vishay BCcomponents, \"MRS16, MRS25 Professional Thin Film Leaded Resistors\", https://static.chipdip.ru/lib/097/DOC014097860.pdf (copy of the Vishay document), 07-Mar-16. Thin-film leaded comparison.",
+        "urls": [
+          "https://static.chipdip.ru/lib/097/DOC014097860.pdf"
+        ]
+      },
+      {
+        "id": "S9",
+        "origin": "spec_bibliography",
+        "source_line": 1076,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S9: Vishay Dale, \"Wirewound Resistors, Commercial Power, Radial Terminals CPR\", document 30219, https://www.mouser.com/datasheet/2/427/VISHS73798_1-2566147.pdf, 21-Dec-10. Cement-class ratings and fusible statement.",
+        "urls": [
+          "https://www.mouser.com/datasheet/2/427/VISHS73798_1-2566147.pdf"
+        ]
+      },
+      {
+        "id": "S10",
+        "origin": "spec_bibliography",
+        "source_line": 1077,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S10: Vishay Draloric, \"Z300 Axial Cemented Wirewound Resistors\", document 21007, https://www.wts-electronic.de/download/z300.pdf?id=730, 25-Aug-10. Cemented axial ratings.",
+        "urls": [
+          "https://www.wts-electronic.de/download/z300.pdf?id=730"
+        ]
+      },
+      {
+        "id": "S11",
+        "origin": "spec_bibliography",
+        "source_line": 1078,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S11: Vishay Dale, \"RS, NS wirewound resistors\", https://www.vishay.com/docs/30204/rsns.pdf, revision 27-Apr-2026. Wirewound ratings, TCR, non-inductive option.",
+        "urls": [
+          "https://www.vishay.com/docs/30204/rsns.pdf"
+        ]
+      },
+      {
+        "id": "S22",
+        "origin": "spec_bibliography",
+        "source_line": 1089,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S22: Vishay, \"R.I.F.A.Q.\" resistor FAQ landing page, https://www.vishay.com/en/landingpage/rifaq/. Definitions of derating, VCR, noise, TCR of manganin and foil, pulse load, thermal-rise example.",
+        "urls": [
+          "https://www.vishay.com/en/landingpage/rifaq/"
+        ]
+      },
+      {
+        "id": "S24",
+        "origin": "spec_bibliography",
+        "source_line": 1091,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S24: Vishay Dale, \"Thin / Thick Film Chip Resistors selector guide SG2168\", https://www.vishay.com/docs/49188/_sg2168-2103-thin-thick_film_chip_resistors.pdf, 2021. Thin-film TCR, noise, VCR ranges.",
+        "urls": [
+          "https://www.vishay.com/docs/49188/_sg2168-2103-thin-thick_film_chip_resistors.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-RES-NETWORK": {
+    "sources": [
+      {
+        "id": "S17",
+        "origin": "spec_bibliography",
+        "source_line": 1084,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S17: Bourns, \"4600X Series Resistor Networks and Arrays\", https://www.bourns.com/docs/Product-Datasheets/4600X.pdf, REV. 10/1/20. Bussed/isolated definitions, ratings.",
+        "urls": [
+          "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+        ]
+      },
+      {
+        "id": "S18",
+        "origin": "spec_bibliography",
+        "source_line": 1085,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S18: Vishay Dale, \"CRA06P thick film resistor array\", https://pccomponents.com/datasheets/vish-cra06p.pdf (third-party copy), revision 09-Jan-07. Array ratings.",
+        "urls": [
+          "https://pccomponents.com/datasheets/vish-cra06p.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-RES-POT": {
+    "sources": [
+      {
+        "id": "S19",
+        "origin": "spec_bibliography",
+        "source_line": 1086,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S19: Bourns, \"3296 Trimpot trimming potentiometer\", https://www.bourns.com/docs/Product-Datasheets/3296.pdf, REV. 02/26.",
+        "urls": [
+          "https://www.bourns.com/docs/Product-Datasheets/3296.pdf"
+        ]
+      },
+      {
+        "id": "S20",
+        "origin": "spec_bibliography",
+        "source_line": 1087,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S20: Bourns, \"3314 Trimpot trimming potentiometer\", https://www.bourns.com/docs/Product-Datasheets/3314.pdf, REV. 07/24.",
+        "urls": [
+          "https://www.bourns.com/docs/Product-Datasheets/3314.pdf"
+        ]
+      },
+      {
+        "id": "S21",
+        "origin": "spec_bibliography",
+        "source_line": 1088,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S21: Bourns, \"PTV09 potentiometer\", https://www.bourns.com/docs/Product-Datasheets/ptv09.pdf, REV. 01/25.",
+        "urls": [
+          "https://www.bourns.com/docs/Product-Datasheets/ptv09.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-RES-SENSE": {
+    "sources": [
+      {
+        "id": "S13",
+        "origin": "spec_bibliography",
+        "source_line": 1080,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S13: Vishay Dale, \"WSL Power Metal Strip Resistors\", https://www.vishay.com/docs/30100/wsl.pdf, 23-Nov-2023. Ratings, TCR, L, derating.",
+        "urls": [
+          "https://www.vishay.com/docs/30100/wsl.pdf"
+        ]
+      },
+      {
+        "id": "S14",
+        "origin": "spec_bibliography",
+        "source_line": 1081,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S14: Vishay Dale, \"WSK2512 Power Metal Strip Resistor, 4-terminal\", document 30108, https://www.vishay.com/docs/30108/wsk2512.pdf, 11-Dec-2023. Kelvin terminals E1, E2, I1, I2; ratings.",
+        "urls": [
+          "https://www.vishay.com/docs/30108/wsk2512.pdf"
+        ]
+      },
+      {
+        "id": "S15",
+        "origin": "spec_bibliography",
+        "source_line": 1082,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S15: Vishay, \"WSBS8518 Power Metal Strip battery shunt\", document 30134, https://www.vishay.com/docs/30134/wsbs8518.pdf, 26-May-2026. Shunt ratings, TCR, L, thermal EMF.",
+        "urls": [
+          "https://www.vishay.com/docs/30134/wsbs8518.pdf"
+        ]
+      },
+      {
+        "id": "S16",
+        "origin": "spec_bibliography",
+        "source_line": 1083,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S16: Vishay, \"Power Metal Strip resistors selector guide\", https://www.vishay.com/docs/49581/pl4667278-2604-powermetalstrip-resistors_v06.pdf (2026). Four-terminal type list.",
+        "urls": [
+          "https://www.vishay.com/docs/49581/pl4667278-2604-powermetalstrip-resistors_v06.pdf"
+        ]
+      },
+      {
+        "id": "S22",
+        "origin": "spec_bibliography",
+        "source_line": 1089,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "- S22: Vishay, \"R.I.F.A.Q.\" resistor FAQ landing page, https://www.vishay.com/en/landingpage/rifaq/. Definitions of derating, VCR, noise, TCR of manganin and foil, pulse load, thermal-rise example.",
+        "urls": [
+          "https://www.vishay.com/en/landingpage/rifaq/"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-TRN-BJT": {
+    "sources": [
+      {
+        "id": "S1",
+        "origin": "spec_bibliography",
+        "source_line": 6669,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S1 | onsemi | 2N3903 / 2N3904 General Purpose Transistors (2N3903/D) | https://www.onsemi.com/pdf/datasheet/2n3903-d.pdf | Rev. 9, Aug 2021 | 2N3904 pinout (E-B-C), ratings, hFE bands, saturation, fT, switching, Rth |",
+        "urls": [
+          "https://www.onsemi.com/pdf/datasheet/2n3903-d.pdf"
+        ]
+      },
+      {
+        "id": "S2",
+        "origin": "spec_bibliography",
+        "source_line": 6670,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S2 | onsemi | PN2222A (PN2222A/D) | https://www.onsemi.com/pdf/datasheet/pn2222a-d.pdf | Rev. 1.1.0, Jul 2014 | PN2222A pinout, ratings, hFE, saturation, capacitances, switching |",
+        "urls": [
+          "https://www.onsemi.com/pdf/datasheet/pn2222a-d.pdf"
+        ]
+      },
+      {
+        "id": "S3",
+        "origin": "spec_bibliography",
+        "source_line": 6671,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S3 | onsemi | BC546/547/548 (BC546/D) | https://www.onsemi.com/pdf/datasheet/bc546-d.pdf | Rev. 8, Aug 2021 | BC547 pinout C-B-E, ratings, hFE groups |",
+        "urls": [
+          "https://www.onsemi.com/pdf/datasheet/bc546-d.pdf"
+        ]
+      },
+      {
+        "id": "S4",
+        "origin": "spec_bibliography",
+        "source_line": 6672,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S4 | Nexperia | BC817 series product data sheet | https://assets.nexperia.com/documents/data-sheet/BC817_SER.pdf | Rev. 8, 1 Jul 2022 | SOT-23 B-E-C pinout, ratings, Rth, Ptot, hFE bins |",
+        "urls": [
+          "https://assets.nexperia.com/documents/data-sheet/BC817_SER.pdf"
+        ]
+      },
+      {
+        "id": "S5",
+        "origin": "spec_bibliography",
+        "source_line": 6673,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S5 | Nexperia | BCP56 series product data sheet | https://assets.nexperia.com/documents/data-sheet/BCP56_SER.pdf | Rev. 11, 1 Jul 2022 | SOT-223 B-C-E pinout, tab = C, Rth vs pad, hFE |",
+        "urls": [
+          "https://assets.nexperia.com/documents/data-sheet/BCP56_SER.pdf"
+        ]
+      },
+      {
+        "id": "S6",
+        "origin": "spec_bibliography",
+        "source_line": 6674,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S6 | Nexperia | BCX56 series product data sheet | https://assets.nexperia.com/documents/data-sheet/BCX56_SER.pdf | Rev. 13, 25 Oct 2023 | SOT-89 E-C-B pinout, Rth vs pad |",
+        "urls": [
+          "https://assets.nexperia.com/documents/data-sheet/BCX56_SER.pdf"
+        ]
+      },
+      {
+        "id": "S7",
+        "origin": "spec_bibliography",
+        "source_line": 6675,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S7 | STMicroelectronics | BD135 / BD137 / BD139 | https://www.st.com/resource/en/datasheet/bd135.pdf | Rev. 5, May 2008 | SOT-32/TO-126 pinout E-C-B, ratings, Rth |",
+        "urls": [
+          "https://www.st.com/resource/en/datasheet/bd135.pdf"
+        ]
+      },
+      {
+        "id": "S30",
+        "origin": "spec_bibliography",
+        "source_line": 6698,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S30 | onsemi | AN875/D Power transistor safe operating area: special considerations for switching power supplies | https://www.onsemi.com/pub/Collateral/AN875-D.PDF | Dec 2002, Rev. 1 | second breakdown, FBSOA/RBSOA, 0.75 VCEO rule |",
+        "urls": [
+          "https://www.onsemi.com/pub/Collateral/AN875-D.PDF"
+        ]
+      },
+      {
+        "id": "S31",
+        "origin": "spec_bibliography",
+        "source_line": 6699,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S31 | ngspice project | ngspice user manual (BJT, MOSFET chapters; the extract reported version 47+, Sept 2026, while the installed simulator is 42) | https://ngspice.sourceforge.io/docs/ngspice-manual.pdf | as reported | Gummel-Poon and MOS1/MOS3 model parameter lists; behavior was verified by running ngspice 42 |",
+        "urls": [
+          "https://ngspice.sourceforge.io/docs/ngspice-manual.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  },
+  "BEH-TRN-MOSFET": {
+    "sources": [
+      {
+        "id": "S8",
+        "origin": "spec_bibliography",
+        "source_line": 6676,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S8 | onsemi | 2N7000 (2N7000/D) | https://www.onsemi.com/download/data-sheet/pdf/2n7000-d.pdf | Rev. 8, Apr 2011 | TO-92 S-G-D pinout, ratings, Rds(on), Vgs(th) |",
+        "urls": [
+          "https://www.onsemi.com/download/data-sheet/pdf/2n7000-d.pdf"
+        ]
+      },
+      {
+        "id": "S9",
+        "origin": "spec_bibliography",
+        "source_line": 6677,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S9 | Nexperia | 2N7002 product data sheet | https://assets.nexperia.com/documents/data-sheet/2N7002.pdf | Rev. 7, 8 Sep 2011 | SOT-23 G-S-D pinout, ratings, Rds(on) |",
+        "urls": [
+          "https://assets.nexperia.com/documents/data-sheet/2N7002.pdf"
+        ]
+      },
+      {
+        "id": "S10",
+        "origin": "spec_bibliography",
+        "source_line": 6678,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S10 | Infineon | IRFZ44NPbF | https://www.infineon.com/dgdl/irfz44npbf.pdf | Rev. 2.1 (extract reported 2026-08-11) | ratings, Rth, Rds(on), charges, capacitances, body diode |",
+        "urls": [
+          "https://www.infineon.com/dgdl/irfz44npbf.pdf"
+        ]
+      },
+      {
+        "id": "S11",
+        "origin": "spec_bibliography",
+        "source_line": 6679,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S11 | Infineon | IRF540NPbF | https://www.infineon.com/dgdl/irf540npbf.pdf | Rev. 2.1 (extract reported 2026-07-24) | same, IRF540N |",
+        "urls": [
+          "https://www.infineon.com/dgdl/irf540npbf.pdf"
+        ]
+      },
+      {
+        "id": "S12",
+        "origin": "spec_bibliography",
+        "source_line": 6680,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S12 | Infineon | IRLB8721PbF | https://www.infineon.com/dgdl/irlb8721pbf.pdf | extract reported April 22, 2009 | logic-level MOSFET ratings and Rds(on) |",
+        "urls": [
+          "https://www.infineon.com/dgdl/irlb8721pbf.pdf"
+        ]
+      },
+      {
+        "id": "S13",
+        "origin": "spec_bibliography",
+        "source_line": 6681,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S13 | Infineon | IRFP260NPbF | https://www.infineon.com/dgdl/irfp260npbf.pdf | Rev. 2.1 (extract reported 2024-10-08) | TO-247 ratings and Rth |",
+        "urls": [
+          "https://www.infineon.com/dgdl/irfp260npbf.pdf"
+        ]
+      },
+      {
+        "id": "S14",
+        "origin": "spec_bibliography",
+        "source_line": 6682,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S14 | Infineon | IRLR8721PbF | https://www.infineon.com/dgdl/irlr8721pbf.pdf | not reported | DPAK ratings, Rth vs copper |",
+        "urls": [
+          "https://www.infineon.com/dgdl/irlr8721pbf.pdf"
+        ]
+      },
+      {
+        "id": "S15",
+        "origin": "spec_bibliography",
+        "source_line": 6683,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S15 | Infineon | IRLR/U3410PbF | https://www.infineon.com/dgdl/irlr3410pbf.pdf | Rev. 2.2 (extract reported 2024-08-30) | DPAK ratings |",
+        "urls": [
+          "https://www.infineon.com/dgdl/irlr3410pbf.pdf"
+        ]
+      },
+      {
+        "id": "S16",
+        "origin": "spec_bibliography",
+        "source_line": 6684,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S16 | Vishay | Si7898DP | https://www.vishay.com/docs/71873/si7898dp.pdf | S09-0227-Rev. D, 09-Feb-09 | PowerPAK SO-8 pinout, ratings, Rth, Rds(on) |",
+        "urls": [
+          "https://www.vishay.com/docs/71873/si7898dp.pdf"
+        ]
+      },
+      {
+        "id": "S28",
+        "origin": "spec_bibliography",
+        "source_line": 6696,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S28 | Nexperia | AN50006 Power MOSFETs in linear mode | https://docs.ampnuts.ru/nexperia.com.datasheet/application-note/AN50006.pdf | Rev. 2.0, 12 Apr 2022 | ZTC point, Spirito effect, SOA thermal limit (document hosted on a third-party mirror) |",
+        "urls": [
+          "https://docs.ampnuts.ru/nexperia.com.datasheet/application-note/AN50006.pdf"
+        ]
+      },
+      {
+        "id": "S29",
+        "origin": "spec_bibliography",
+        "source_line": 6697,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S29 | onsemi | AND90187/D Understanding power MOSFET saturation operation capability | https://www.onsemi.com/pub/collateral/and90187-d.pdf | Jan 2023 | saturation-mode thermal runaway, electrical failure signature |",
+        "urls": [
+          "https://www.onsemi.com/pub/collateral/and90187-d.pdf"
+        ]
+      },
+      {
+        "id": "S31",
+        "origin": "spec_bibliography",
+        "source_line": 6699,
+        "source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "source_text": "| S31 | ngspice project | ngspice user manual (BJT, MOSFET chapters; the extract reported version 47+, Sept 2026, while the installed simulator is 42) | https://ngspice.sourceforge.io/docs/ngspice-manual.pdf | as reported | Gummel-Poon and MOS1/MOS3 model parameter lists; behavior was verified by running ngspice 42 |",
+        "urls": [
+          "https://ngspice.sourceforge.io/docs/ngspice-manual.pdf"
+        ]
+      }
+    ],
+    "unresolved": []
+  }
+}

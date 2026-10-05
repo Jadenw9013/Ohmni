@@ -17,6 +17,7 @@ import sys
 import tempfile
 import threading
 import urllib.error
+import urllib.parse
 import urllib.request
 from collections.abc import Iterable
 from dataclasses import asdict, dataclass
@@ -127,13 +128,23 @@ URL_PATTERN = re.compile(r"https?://[^\s<>\"']+")
 
 
 def _normalise_url(value: str) -> str:
-    value = value.rstrip(".,;]")
+    value = value.rstrip(".,;]:")
     while value.endswith(")") and value.count(")") > value.count("("):
         value = value[:-1]
     return value
 
 
 def _urls_in(value: Any) -> set[str]:
+    if isinstance(value, dict):
+        found = set()
+        for key, child in value.items():
+            if key == "url" and isinstance(child, str) and child.startswith(("http://", "https://")):
+                found.add(child)
+            else:
+                found.update(_urls_in(child))
+        return found
+    if isinstance(value, list):
+        return set().union(*(_urls_in(child) for child in value)) if value else set()
     found: set[str] = set()
     for text in _walk_strings(value):
         found.update(_normalise_url(item) for item in URL_PATTERN.findall(text))
@@ -329,6 +340,8 @@ class BehaviorAudit:
         )
 
     def cited_urls(self) -> set[str]:
+        from .sources import source_catalog
+
         urls: set[str] = set()
         locations = [
             self.root / "src/ohmni/behavior/data",
@@ -342,6 +355,9 @@ class BehaviorAudit:
                     urls.update(_urls_in(_json(path)))
                 else:
                     urls.update(_urls_in(path.read_text(encoding="utf-8")))
+        for record in source_catalog(self.root).values():
+            for source in record["sources"]:
+                urls.update(source["urls"])
         return urls
 
     def check_source_ledger(self) -> CheckResult:
@@ -354,11 +370,11 @@ class BehaviorAudit:
                 field_failures.append(f"{path.name}: per-entry gapfill lacks machine-readable audit-evidence fields")
         # Named source references without URLs are unresolved evidence, not an
         # implicit exemption from the ledger requirement.
-        for path in sorted((self.root / "src/ohmni/behavior/data/classes").glob("*.json")):
-            refs = _json(path).get("source_refs")
-            for ref in _walk_strings(refs):
-                if ref.strip() and not _urls_in(ref):
-                    field_failures.append(f"{path.stem}: named source requires URL-to-document resolution: {ref}")
+        from .sources import source_catalog
+        catalog = source_catalog(self.root)
+        _atomic_json(self.run_dir / "SOURCE_CATALOG.json", catalog)
+        for row in catalog.values():
+            field_failures.extend(row["unresolved"])
         for path in sorted((self.root / "src/ohmni/behavior/data/bindings").glob("*.json")):
             for order in _json(path).get("package_pin_orders", []):
                 cite = order.get("citation", {})
@@ -483,7 +499,7 @@ class BehaviorAudit:
         )
 
     def _bench_errors(self, result: dict[str, Any]) -> list[str]:
-        from .benches import numeric_contract, scalars
+        from .benches import numeric_contract, observed_value
 
         bench_id = str(result.get("bench_id", "<unknown>"))
         state = self._state()
@@ -518,10 +534,11 @@ class BehaviorAudit:
             elif key == "version" and path.read_text(encoding="utf-8") != result.get("ngspice_version"):
                 errors.append(f"AUD-BENCH-001: {bench_id}: version differs from captured output")
             elif key == "output":
-                observed = scalars(path.read_text(encoding="utf-8"))
+                output = path.read_text(encoding="utf-8")
                 for comparison in comparisons:
-                    name = str(comparison.get("measure", "")).casefold()
-                    if name not in observed or comparison.get("measured") != observed[name]:
+                    name = str(comparison.get("measure", ""))
+                    observed = observed_value(self, bench_id, comparison, output)
+                    if observed is None or comparison.get("measured") != observed:
                         errors.append(f"AUD-BENCH-001: {bench_id}: measurement not found unambiguously in archived output: {name}")
         if result.get("netlist_sha256") != contract["netlist_sha256"]:
             errors.append(f"AUD-BENCH-001: {bench_id}: netlist differs from locked source")
@@ -968,8 +985,9 @@ class BehaviorAudit:
         status: int | None = None
         content = b""
         error: str | None = None
+        request_url = urllib.parse.quote(url, safe=":/?#[]@!$&'()*+,;=%")
         try:
-            request = urllib.request.Request(url, headers={"User-Agent": "OhmniBehaviorAudit/1.0"})
+            request = urllib.request.Request(request_url, headers={"User-Agent": "OhmniBehaviorAudit/1.0"})
             with urllib.request.urlopen(request, timeout=45) as response:
                 status = int(response.status)
                 content = response.read()
@@ -987,6 +1005,7 @@ class BehaviorAudit:
                 path.write_bytes(content)
         row = {
             "url": url,
+            "request_url": request_url,
             "timestamp": started,
             "http_status": status,
             "content_sha256": digest,

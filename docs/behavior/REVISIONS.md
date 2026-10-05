@@ -13,3 +13,21 @@
   such.
 - Preserved the unresolved source inconsistency where the master table assigns
   `BEH-REG-LINEAR` to OHM-133 but the class YAML omits it from `applies_to`.
+
+## 2026-10-05 — Stage 2 first research checkpoint (OHM-001..020)
+
+- Added field-level research ledgers with actual opened PDF pages, scoped
+  reference variants, unchanged source status, and links to current-run bench
+  receipts. No `complete` status upgrade is made.
+- Re-derived tiny-chip film temperatures and the CFR/MFR derating endpoints.
+  The MFR graph reaches zero power at 155 C; the earlier extraction was ambiguous.
+- Recorded the 4608X 1 W package limit and consecutive isolated terminal pairs.
+- Recorded the 3296 clockwise endpoint as terminal 3, and the 3296/3314 end
+  resistance limit as max(1% of total resistance, 2 ohm). These are bounds,
+  not nominal contact resistances. The original spec remains byte-preserved.
+- Kept RV16AF power-rating and physical-array pin binding blockers explicit.
+  RV16AF's manufacturer document supplies a 150 VAC limit but no power rating;
+  the distinct PTV09 alternative cannot supply that missing rating.
+- Preserved variant conflicts: CRCW standard/extended operation, CPR radial
+  reference versus axial illustration, RS U versus V operation, and CRA06P
+  5% grade TCR (200 ppm/K, not the 1% grade's 100 ppm/K).

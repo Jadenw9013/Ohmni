@@ -527,6 +527,10 @@ class NgspiceAdapter:
         # The existing probe already runs `--version` and explains the KiCad
         # shared-library case; re-deriving that here would be a second answer to
         # the same question.
+        if self.executable is None:
+            return ToolAvailability(
+                name=self.name, status=ToolStatus.UNAVAILABLE, detail=_NGSPICE_MISSING,
+            )
         return NgspiceCli(self.executable).availability()
 
     def behavior_bench(self, deck: str, *, work_dir: Path) -> dict:
@@ -553,7 +557,7 @@ class NgspiceAdapter:
                 return result
             work_dir.mkdir(parents=True, exist_ok=True)
             path = work_dir / "bench.cir"
-            path.write_text(deck, encoding="utf-8")
+            path.write_text(deck, encoding="utf-8", newline="\n")
             completed = run_tool([self.executable, "-b", str(path.resolve())], timeout=self.timeout_seconds)
             result.update(stdout=completed.stdout, stderr=completed.stderr, returncode=completed.returncode)
             result["status"] = "ran" if completed.returncode == 0 and not _error_summary(completed.stdout, completed.stderr) else "failed"

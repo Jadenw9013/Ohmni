@@ -209,6 +209,13 @@ class TestNgspiceAdapterWithoutNgspice:
         assert availability.status is ToolStatus.UNAVAILABLE
         assert "ngspice" in (availability.detail or "").lower()
 
+    def test_unavailable_adapter_does_not_rediscover_a_different_cli(self, monkeypatch):
+        def unexpected_probe(*args):
+            raise AssertionError("availability must use the adapter's selected executable")
+
+        monkeypatch.setattr(simulation, "NgspiceCli", unexpected_probe)
+        assert NgspiceAdapter().availability().status is ToolStatus.UNAVAILABLE
+
     def test_an_unavailable_run_reports_no_operating_point_and_writes_nothing(self, tmp_path):
         run = NgspiceAdapter().operating_point(GOLDEN_NETLIST, "run-1", work_dir=tmp_path)
         assert run.status is ToolStatus.UNAVAILABLE

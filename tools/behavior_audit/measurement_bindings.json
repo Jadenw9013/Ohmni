@@ -1,0 +1,312 @@
+{
+  "BEH-CAP-ALEL/B1": {
+    "measurements": {
+      "|Z| at 120 Hz (ohm)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "z120",
+        "scale": 1,
+        "source_line": "print z120"
+      }
+    },
+    "netlist_sha256": "7236d5293ce14262533c0f178f931362aca669ee8240b442ccc76c5f2b0aa190"
+  },
+  "BEH-CAP-ALEL/B2": {
+    "measurements": {
+      "P (W)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "pavg",
+        "scale": 1,
+        "source_line": "meas tran pavg avg v(pw) from=40m to=60m"
+      }
+    },
+    "netlist_sha256": "f320a0841da84a09de13885f3e456ea4a39f53ea62fd2e927a9d6b160775ded5"
+  },
+  "BEH-CAP-ALEL/B3": {
+    "measurements": {
+      "flag at -1.5 V": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "fl_15",
+        "scale": 1,
+        "source_line": "meas tran fl_15 find v(f) at=1.5"
+      }
+    },
+    "netlist_sha256": "775206c79af3535d04d32b556c16ceef4f57dd4a44093d8fdcae7af1f4212688"
+  },
+  "BEH-CAP-ALEL/B4": {
+    "measurements": {
+      "ESR at -25 C (ohm)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "esr_eff",
+        "scale": 1,
+        "source_line": "print esr_eff"
+      }
+    },
+    "netlist_sha256": "7c62588503f10a6905efaaef81b95b8e24ab54a15c943a6ff5133d43897e598e"
+  },
+  "BEH-CAP-ALPOLY/B1": {
+    "measurements": {
+      "f0 (kHz)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "fres",
+        "scale": 0.001,
+        "source_line": "meas ac fres when zm=0.02000001 fall=1"
+      }
+    },
+    "netlist_sha256": "0475fc2562e76b8175f61bfa2da1acfe2b4e3e379e8c2ab018d3d3daca84bab7"
+  },
+  "BEH-CAP-ALPOLY/B2": {
+    "measurements": {
+      "peak current RS=0.1 (A)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "ipkneg",
+        "scale": -1,
+        "source_line": "meas tran ipkneg min i(Vs)"
+      }
+    },
+    "netlist_sha256": "ac38e08b2e1f8f0a0f85145a5040af5a002158cca94ade4f3aaad037543ebaab"
+  },
+  "BEH-CAP-CERAMIC/B2": {
+    "measurements": {
+      "SRF (MHz)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "fres",
+        "scale": 1e-06,
+        "source_line": "meas ac fres when zm=zmin"
+      },
+      "Zmin (mohm)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "zmin",
+        "scale": 1000,
+        "source_line": "meas ac zmin min zm"
+      }
+    },
+    "netlist_sha256": "dc98551848e27467a3c18a6c802f568943327eac6399736b02cad5bd44dd2f44"
+  },
+  "BEH-CAP-CERAMIC/B3": {
+    "measurements": {
+      "v(t0+tau) (V)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "vtau",
+        "scale": 1,
+        "source_line": "meas tran vtau find v(p) at=100.0001"
+      }
+    },
+    "netlist_sha256": "461a68a5d3f7a46c3a9cd9e03b4ecd6527edc300c9dc2cd1ddbe09e13de6cf67"
+  },
+  "BEH-CAP-CERAMIC/B4": {
+    "measurements": {
+      "flag edge (s)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "tflag",
+        "scale": 1,
+        "source_line": "meas tran tflag when v(f)=0.5 rise=1"
+      }
+    },
+    "netlist_sha256": "3307d9ef14e028edb4a74e8245a207fbde5c6f3bc7e591bd32a7113fdead739a"
+  },
+  "BEH-CAP-EDLC/B1": {
+    "measurements": {
+      "v(tau) (V)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "vtau",
+        "scale": 1,
+        "source_line": "meas tran vtau find v(p) at=10000"
+      }
+    },
+    "netlist_sha256": "1c3cff19dd01609d5e77326cdcbff45d1ca67f2e0edb9574d7d03d1e9b85ce77"
+  },
+  "BEH-CAP-EDLC/B3": {
+    "measurements": {
+      "E (J)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "etot",
+        "scale": 1,
+        "source_line": "meas tran etot integ v(pw) from=0 to=3"
+      },
+      "Ipk (A)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "ipk",
+        "scale": 1,
+        "source_line": "meas tran ipk max i(Vm)"
+      }
+    },
+    "netlist_sha256": "21ef3f048e6839fc7ea6a892d6c2d387ef694b67496fcb979838d88b8a853e4d"
+  },
+  "BEH-CAP-FILM/B1": {
+    "measurements": {
+      "tan delta at 1 kHz": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "tand",
+        "scale": 1,
+        "source_line": "print tand"
+      }
+    },
+    "netlist_sha256": "b98c113635abab21b6c6f464b09570ec152bdea1b5f90ac9e8288d89d8ed514d"
+  },
+  "BEH-CAP-FILM/B3": {
+    "measurements": {
+      "flag at 400 V amplitude": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "fmax_400",
+        "scale": 1,
+        "source_line": "meas tran fmax_400 max v(f) from=20m to=60m"
+      }
+    },
+    "netlist_sha256": "d6463df587515834a413d759048669d96e70108846b5cf7417b2e089b1be7e0b"
+  },
+  "BEH-CAP-MICA/B1": {
+    "measurements": {
+      "C at 125 C (pF)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "cpf",
+        "scale": 1,
+        "source_line": "print cpf"
+      }
+    },
+    "netlist_sha256": "bc5876847243641c38992ea159429696b3cb1c21dbfbf357320670af8dd035d8"
+  },
+  "BEH-CAP-MICA/B2": {
+    "measurements": {
+      "Q at 1 MHz": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "qm",
+        "scale": 1,
+        "source_line": "print qm"
+      }
+    },
+    "netlist_sha256": "7a169031805ad593323026b1766a50186c0d7a1d4b8753415431a2ab0369d741"
+  },
+  "BEH-CAP-TANT/B1": {
+    "measurements": {
+      "leakage current (uA)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "ileak_uA",
+        "scale": 1,
+        "source_line": "print ileak_uA"
+      }
+    },
+    "netlist_sha256": "ca6d9adadb434bdbe2c959ed4a90ff650db9a469116eebcef4b3d020400b2d98"
+  },
+  "BEH-CAP-TANT/B2": {
+    "measurements": {
+      "bit 1 edge (V)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "t_flag1",
+        "scale": 1,
+        "source_line": "meas tran t_flag1 when v(f)=0.5 rise=1"
+      },
+      "bit 8 edge (V)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "t_flag8",
+        "scale": 1,
+        "source_line": "meas tran t_flag8 when v(f)=8.5 rise=1"
+      }
+    },
+    "netlist_sha256": "4d523857c2cf0338ef8ff2bd50639dbd9aa4b0da7913cd6339a243aee3387b82"
+  },
+  "BEH-CAP-TANT/B3": {
+    "measurements": {
+      "reverse flag edge (V)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "t_flag",
+        "scale": -1,
+        "source_line": "meas tran t_flag when v(f)=1 rise=1"
+      }
+    },
+    "netlist_sha256": "29bd8e2442ff8327f436356030c1d47300d5173b71f81e15b9dad8a073c7281e"
+  },
+  "BEH-RES-FIXED/B1": {
+    "measurements": {
+      "R(125C)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "r125",
+        "scale": 1,
+        "source_line": "print r125"
+      },
+      "v(out)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "v(out)",
+        "scale": 1,
+        "source_line": "print v(out)"
+      }
+    },
+    "netlist_sha256": "dffa43d06f37aade19e7898398dccc646141e28304fd575fc64c9c1906458ed8"
+  },
+  "BEH-RES-FIXED/B2": {
+    "measurements": {
+      "R": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "rr",
+        "scale": 1,
+        "source_line": "print rr"
+      }
+    },
+    "netlist_sha256": "cc00adcdf1b6c65d9ce216d3183bdb7ce659c7dc2780d3ecf16ecf74b4d92052"
+  },
+  "BEH-RES-FIXED/B3": {
+    "measurements": {
+      "Zmag": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "z",
+        "scale": 1,
+        "source_line": "print z"
+      }
+    },
+    "netlist_sha256": "2e15cbf302f5d636258fd4286347fb5a7d6dc7eaff805ab800b2d024304435e0"
+  },
+  "BEH-RES-FIXED/B4": {
+    "measurements": {
+      "P_allowed": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "v(p)",
+        "scale": 1,
+        "source_line": "print v(p)"
+      }
+    },
+    "netlist_sha256": "175dcc76eccf12e898c2117f6a536ae2ac70f38c7a8d822f97ea57022635ad63"
+  },
+  "BEH-RES-FIXED/B5": {
+    "measurements": {
+      "R85": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "rr",
+        "scale": 1,
+        "source_line": "print rr"
+      }
+    },
+    "netlist_sha256": "dc37e2dab30b849267daa03edbe33a6ebba44e12417b396b28af88aaa5a250ee"
+  },
+  "BEH-RES-POT/B1": {
+    "measurements": {
+      "v(w)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "v(w)",
+        "scale": 1,
+        "source_line": "print v(w)"
+      }
+    },
+    "netlist_sha256": "8940f64f409247a3eb8c6d214d1ad5104d80fa4cee2bc9fc19c65d2e8beb8d8f"
+  },
+  "BEH-RES-POT/B2": {
+    "measurements": {
+      "v(w)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "v(w)",
+        "scale": 1,
+        "source_line": "print v(w)"
+      }
+    },
+    "netlist_sha256": "da24f0d3ea399eeba6f8fa737fc37d89a655606610b05ced5851db93da94ffe5"
+  },
+  "BEH-RES-POT/B3": {
+    "measurements": {
+      "v(w)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "v(w)",
+        "scale": 1,
+        "source_line": "print v(w)"
+      }
+    },
+    "netlist_sha256": "f0bd4b2381c2f51ab4bb780b6f670453144be7ceb4c39823b4e0dae5763714dc"
+  }
+}

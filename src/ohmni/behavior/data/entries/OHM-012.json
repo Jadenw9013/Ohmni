@@ -11,6 +11,115 @@
   "fidelity": "ideal_components",
   "group": "R1",
   "layer": "L1",
+  "research": {
+    "bench_result": "bench-results/BEH-RES-FIXED--B1.json",
+    "bench_results": [
+      "bench-results/BEH-RES-FIXED--B1.json",
+      "bench-results/BEH-RES-FIXED--B2.json",
+      "bench-results/BEH-RES-FIXED--B3.json",
+      "bench-results/BEH-RES-FIXED--B4.json",
+      "bench-results/BEH-RES-FIXED--B5.json"
+    ],
+    "conflicts": [
+      "CPR is a radial reference with a different outline from the axial cement model. Do not assert a footprint equivalence."
+    ],
+    "documents": [
+      {
+        "document_id": "cpr",
+        "manufacturer": "Vishay Dale",
+        "note": "Read from fetched PDF bytes; an HTTP success alone is not evidence of semantic support.",
+        "page": null,
+        "revision": "11-Feb-2016",
+        "source_status": "primary_source_opened",
+        "title": "CPR commercial power resistors",
+        "url": "https://www.vishay.com/docs/30219/cpr.pdf"
+      }
+    ],
+    "entry_id": "OHM-012",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "p_rated",
+        "page": 1,
+        "scope": "Vishay CPR05 (legacy; EOL January 2016)",
+        "sources": [
+          "https://www.vishay.com/docs/30219/cpr.pdf"
+        ],
+        "unit": "W",
+        "value": 5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "derating_knee",
+        "page": 2,
+        "scope": "Vishay CPR05 (legacy; EOL January 2016)",
+        "sources": [
+          "https://www.vishay.com/docs/30219/cpr.pdf"
+        ],
+        "unit": "degC",
+        "value": 40
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "t_end",
+        "page": 2,
+        "scope": "Vishay CPR05 (legacy; EOL January 2016)",
+        "sources": [
+          "https://www.vishay.com/docs/30219/cpr.pdf"
+        ],
+        "unit": "degC",
+        "value": 275
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "tcr_max",
+        "page": 1,
+        "scope": "Vishay CPR05 (legacy; EOL January 2016)",
+        "sources": [
+          "https://www.vishay.com/docs/30219/cpr.pdf"
+        ],
+        "unit": "ppm/degC",
+        "value": 300
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "The fusing statement is conditional; it is not a guaranteed protective-fuse rating.",
+        "field": "fuse_design_requirement",
+        "page": 1,
+        "scope": "Vishay CPR05 (legacy; EOL January 2016)",
+        "sources": [
+          "https://www.vishay.com/docs/30219/cpr.pdf"
+        ],
+        "unit": null,
+        "value": "Application-specific manufacturer design assistance required"
+      }
+    ],
+    "remaining_open_items": [
+      "Reactive parasitics remain unspecified; zero L/C is an idealized assumption, not measured package behavior.",
+      "Thermal resistance derived from rating endpoints is not an independently measured board-specific value.",
+      "Destructive-failure thresholds and timing are not characterized by the rating table.",
+      "Z300 axial and 2 W variants are not covered by CPR05.",
+      "A generic open-circuit failure at the continuous power limit is not a sourced fuse time/current curve."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-012.md",
+      "document_sha256": "6087d98d278478f58a1c47f94f2a09809607eabc97baa84a78d80a3c818363b5",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
   "resolution_ids": [],
   "schema_version": 1,
   "simulation_disposition": "simulable",

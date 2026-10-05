@@ -139,6 +139,52 @@ def test_errors_and_violations_never_display_as_pass():
     assert evidence.honesty_errors({"simulation_status": "ok", "rating_status": "violation", "display_status": "violation"}) == []
 
 
+def test_measurement_suffixes_are_parsed_without_accepting_arbitrary_prose():
+    from tools.behavior_audit.benches import scalars
+
+    assert scalars("pavg = 2.998362e-1 from=4e-2 to=6e-2\nvmax = 4.2 at=0.5\n") == {
+        "pavg": 0.2998362, "vmax": 4.2,
+    }
+    assert scalars("pavg = 0.3 assumed because it should pass\n") == {}
+    assert scalars("pavg = 0.3\npavg = 0.4\n") == {}
+
+
+def test_explicit_binding_uses_named_measurement_not_nearest_expected_number(audit):
+    from tools.behavior_audit.benches import observed_value
+
+    item = {"measure": "|Z| at 120 Hz (ohm)"}
+    output = "z120 = 12.0\nz100k = 13.2663\n"
+    assert observed_value(audit, "BEH-CAP-ALEL/B1", item, output) == 12.0
+    assert observed_value(audit, "BEH-CAP-ALEL/B1", item, "z100k = 13.2663\n") is None
+
+
+def test_exact_and_percent_words_preserve_the_stated_numeric_tolerance():
+    from tools.behavior_audit.benches import numeric_contract
+
+    assert numeric_contract({"value": 2, "tolerance": "exact"}) == {"expected": 2, "tolerance": 0}
+    assert numeric_contract({"value": 2, "tolerance": "0.1 percent"}) == {"expected": 2, "tolerance": 0.002}
+    assert numeric_contract({"value": 2, "tolerance": "unclear"})["tolerance"] is None
+
+
+def test_source_ids_are_resolved_within_their_bibliography_not_globally():
+    from tools.behavior_audit.sources import reference_ids, source_catalog
+
+    assert reference_ids("see S1..S3, S5") == ["S1", "S2", "S3", "S5"]
+    catalog = source_catalog(ROOT)
+    header = next(row for row in catalog["BEH-CON-HEADER"]["sources"] if row["id"] == "S1")
+    wtb = next(row for row in catalog["BEH-CON-WTB"]["sources"] if row["id"] == "S1")
+    assert any("samtec" in url for url in header["urls"])
+    assert all("jst-mfg.com" in url for url in wtb["urls"])
+    assert not any(url.endswith("):") for url in wtb["urls"])
+
+
+def test_structured_url_with_spaces_is_preserved_as_one_citation():
+    from tools.behavior_audit.audit import _urls_in
+
+    url = "https://manufacturer.example/data/My Datasheet.pdf"
+    assert _urls_in({"url": url, "title": "A descriptive title"}) == {url}
+
+
 def test_verifier_seed_and_unique_sample_are_enforced(audit):
     population = [f"OHM-{index:03d}" for index in range(1, 31)]
     plan = audit.verifier_plan("stage2", population, seed=314159)

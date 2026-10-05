@@ -7,7 +7,7 @@ simulator or convert a research claim into a verified electrical fact.
 from __future__ import annotations
 
 from enum import StrEnum
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
@@ -157,6 +157,38 @@ class CatalogPartBinding(BaseModel):
         raise KeyError(f"{self.part_id} has no package pin order {name!r}")
 
 
+class ResearchFact(BaseModel):
+    """One re-derived field; a citation is provenance, not blanket verification."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    field: str
+    value: Any
+    basis: Literal["STANDARD", "MFR_DATASHEET", "CONSENSUS", "DERIVED", "ASSUMPTION", "RESEARCH_REQUIRED"]
+    confidence: Literal["H", "M", "L"]
+    sources: list[str] = Field(min_length=1)
+    page: int = Field(ge=1)
+    scope: str
+    unit: str | None = None
+    detail: str | None = None
+
+
+class EntryResearch(BaseModel):
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    entry_id: str = Field(pattern=r"^OHM-\d{3}$")
+    researched_at: str
+    research_result: Literal["sources_reviewed", "unresolved"]
+    field_updates: list[ResearchFact]
+    documents: list[EvidenceCitation]
+    remaining_open_items: list[str]
+    conflicts: list[str] = Field(default_factory=list)
+    simulation_blockers: list[str] = Field(default_factory=list)
+    bench_results: list[str] = Field(default_factory=list)
+    bench_result: str | None = None
+    source: SourceAnchor
+
+
 class BehaviorEntryRecord(BaseModel):
     model_config = ConfigDict(frozen=True)
 
@@ -174,6 +206,7 @@ class BehaviorEntryRecord(BaseModel):
     catalog_binding_ids: list[str] = Field(default_factory=list)
     resolution_ids: list[str] = Field(default_factory=list)
     source: SourceAnchor
+    research: EntryResearch | None = None
 
 
 class ResolutionKind(StrEnum):
