@@ -258,10 +258,12 @@
       "id": "COMPONENT-BEHAVIOR-STAGE1",
       "type": "component_behavior",
       "title": "Component behavior foundation and evidence registry",
-      "status": "IN_PROGRESS",
+      "status": "REVIEW",
       "approved_by": "human",
       "approval_evidence": ".ai/approvals/COMPONENT-BEHAVIOR-STAGE1.yaml",
-      "review_policy": "Deterministic generation and validation plus focused self-review; stop at the Stage 1 human gate."
+      "review_policy": "Deterministic generation and validation plus focused self-review; stop at the Stage 1 human gate.",
+      "implementation_complete": true,
+      "human_stage_gate": "PENDING"
     }
   ],
   "tasks": [
@@ -2580,7 +2582,7 @@
       "scope": "COMPONENT-BEHAVIOR-STAGE1",
       "milestone": null,
       "title": "Generate and validate the component behavior registry",
-      "status": "IN_PROGRESS",
+      "status": "COMPLETE",
       "priority": 100,
       "dependencies": [],
       "goal": "Create the typed, traceable behavior data foundation for all 180 component entries without beginning simulation execution.",
@@ -2599,17 +2601,17 @@
           "fast repository verification",
           "ruff"
         ],
-        "record": null
+        "record": ".ai/verification/CBH-T01.yaml"
       },
       "implementation": {
         "started_at_commit": "c52a050",
-        "completed_at_commit": null
+        "completed_at_commit": "6d29a1a117eab9a86b33caf31d3f9e4fbe50b85a"
       },
       "review": {
         "required": true,
-        "status": "PENDING",
+        "status": "PASSED",
         "independent": false,
-        "record": null
+        "record": ".ai/reviews.yaml#CBH-T01-SELF"
       },
       "blockers": []
     }

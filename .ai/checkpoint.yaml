@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "active_task": "CBH-T01",
-  "last_known_commit": "c52a050",
+  "active_task": null,
+  "last_known_commit": "6d29a1a117eab9a86b33caf31d3f9e4fbe50b85a",
   "previous_checkpoint": ".ai/approvals/COMPONENT-BEHAVIOR-STAGE1-previous-checkpoint.yaml",
   "completed_substeps": [
     "Human approval including Stage 5 materials recorded; ordered A-E/integration tasks created.",
@@ -17,18 +17,17 @@
     "Final integration committed 708d0c4d9df8c4ed69d6cd9edfddec0b335abe9a: 180 entries, 994 frontend passed, 1760 Python passed / 89 skipped, imports and Ruff passed.",
     "Components catalog redesign committed 878eacf4dd4449fc971f686cc068a541e7ede2e1: all 180 visual cards, search/filter, selected 3D views and data tabs; 995 frontend tests, 43 Python UI/static tests and browser checks passed.",
     "Human Stage 1 approval and the LED/MCP1700 resolutions recorded.",
-    "Isolated branch codex/behavior-stage1 created; primary checkout left untouched."
+    "Isolated branch codex/behavior-stage1 created; primary checkout left untouched.",
+    "Implemented the typed registry, deterministic generator and fail-closed loader for 66 behavior classes and all 180 catalog entries.",
+    "Applied and tested the approved GENERIC_LED_GREEN terminal permutation and the three MCP1700 package-specific pin orders with datasheet page evidence.",
+    "Recorded imported bench artifacts without rerunning them; ngspice is unavailable in this shell.",
+    "Generator, focused tests, Ruff, AI-state validation and full fast verification passed; implementation committed as 6d29a1a117eab9a86b33caf31d3f9e4fbe50b85a."
   ],
-  "remaining_work": [
-    "Implement behavior schema, deterministic generator, loader, and validator.",
-    "Generate class and entry records from the approved source corpus.",
-    "Apply and test the LED terminal permutation and MCP1700 package pin maps.",
-    "Run the Stage 1 verification gate and report without beginning Stage 2."
-  ],
+  "remaining_work": [],
   "last_failure": null,
-  "resume_action": "Continue CBH-T01 on codex/behavior-stage1 and stop at the Stage 1 gate.",
+  "resume_action": "Stop at the Stage 1 human gate. Do not begin Stage 2 without human approval and working ngspice 42 evidence.",
   "modified_files": [],
-  "last_command": "Recorded Stage 1 approval",
-  "verification_record": null,
+  "last_command": "Completed Stage 1 implementation verification",
+  "verification_record": ".ai/verification/CBH-T01.yaml",
   "artifact_directory": "src/ohmni/behavior/data/"
 }
