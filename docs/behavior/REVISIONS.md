@@ -47,3 +47,12 @@
 - Recorded the AVX SCCS20B505SRB 5 F reference matching the 10 x 20 mm body.
   The original mixed 10 F default remains a blocking binding conflict; the
   10 F AVX alternative needs a 30 mm-tall can.
+
+## 2026-10-05 - Stage 2 magnetics and initial diode research (OHM-041..060)
+
+- Added primary field ledgers, intrinsic winding diagrams and source conditions.
+- WE-SL5 pairings are 1-2/4-3; physical permutations remain explicit blockers.
+- AS-103 is 1:300, 200 mH minimum, 10 ohm maximum, with an external primary conductor and pins 1/3 for the secondary. The illustrated center-tapped variant differs.
+- The 750311595 flyback has 12 uH primary, 2:1:0.8 ratio and parallel terminal groups; working-voltage and loss limits remain open.
+- Re-derived Murata/Coilcraft alternatives without promoting placeholders, Bourns SRF and heating/drop conditions, TY-145P winding DCR and H1102NL OCL/pin roles.
+- Separated diode DC and repetitive peak voltage, mounting-specific thermal figures and manufacturer-specific temperature ratings. Corrected the GL41 source identity to document 88546. All original source statuses remain unchanged.

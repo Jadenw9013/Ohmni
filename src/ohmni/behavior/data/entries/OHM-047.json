@@ -11,7 +11,126 @@
   "fidelity": "behavioural_approximation",
   "group": "R3",
   "layer": "L1",
-  "research": null,
+  "research": {
+    "bench_result": "bench-results/BEH-MAG-INDUCTOR--B2.json",
+    "bench_results": [
+      "bench-results/BEH-MAG-INDUCTOR--B1.json",
+      "bench-results/BEH-MAG-INDUCTOR--B2.json",
+      "bench-results/BEH-MAG-INDUCTOR--B3.json",
+      "bench-results/BEH-MAG-INDUCTOR--B4.json"
+    ],
+    "conflicts": [
+      "Do not equate the 575 mA thermal rating to a sourced 30%-drop saturation current."
+    ],
+    "documents": [
+      {
+        "document_id": "bourns78f",
+        "manufacturer": "Bourns",
+        "note": "Primary manufacturer content read from archived PDF, including diagrams where pin maps are claimed.",
+        "page": null,
+        "revision": "01/18",
+        "source_status": "primary_source_opened",
+        "title": "78F Conformal Coated RF Choke",
+        "url": "https://www.bourns.com/docs/product-datasheets/78f_series.pdf"
+      }
+    ],
+    "entry_id": "OHM-047",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "nominal_inductance",
+        "page": 1,
+        "scope": "78F3R3J-RC",
+        "sources": [
+          "https://www.bourns.com/docs/product-datasheets/78f_series.pdf"
+        ],
+        "unit": "uH",
+        "value": 3.3
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "minimum_Q",
+        "page": 1,
+        "scope": "78F3R3J-RC; 7.9 MHz",
+        "sources": [
+          "https://www.bourns.com/docs/product-datasheets/78f_series.pdf"
+        ],
+        "unit": null,
+        "value": 50
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "minimum_srf",
+        "page": 1,
+        "scope": "78F3R3J-RC",
+        "sources": [
+          "https://www.bourns.com/docs/product-datasheets/78f_series.pdf"
+        ],
+        "unit": "MHz",
+        "value": 60
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_dcr",
+        "page": 1,
+        "scope": "78F3R3J-RC",
+        "sources": [
+          "https://www.bourns.com/docs/product-datasheets/78f_series.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.3
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "rated_current",
+        "page": 1,
+        "scope": "78F3R3J-RC; 35 C temperature rise",
+        "sources": [
+          "https://www.bourns.com/docs/product-datasheets/78f_series.pdf"
+        ],
+        "unit": "A",
+        "value": 0.575
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_part_temperature",
+        "page": 1,
+        "scope": "78F3R3J-RC; includes rise",
+        "sources": [
+          "https://www.bourns.com/docs/product-datasheets/78f_series.pdf"
+        ],
+        "unit": "C",
+        "value": 105
+      }
+    ],
+    "remaining_open_items": [
+      "The sheet supplies a heating current, not a separate saturation-current/drop curve.",
+      "Typical broadband loss and inductance-versus-current remain unresolved."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [
+      "Saturation limit is not established for the ferrite-core default."
+    ],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-047.md",
+      "document_sha256": "84a60d9c0abc5a6c4011d1596fb1f79f67db25c58bf72a4d3f27335a5dd0e9cd",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
   "resolution_ids": [],
   "schema_version": 1,
   "simulation_disposition": "simulable",

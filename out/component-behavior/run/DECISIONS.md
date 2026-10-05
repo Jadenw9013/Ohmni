@@ -107,3 +107,11 @@ not percentages. Neither is silently repaired. Qualitative expectations remain
 unsupported and failed. Unresolved corpus gate items will be parked at the
 third failed checkpoint under the human repair policy; independent research
 and implementation may continue with explicit refusals for affected entries.
+
+## D013 - Capacitor references remain condition-specific
+
+T491 ESR and reverse limits are scoped to MnO2. Nichicon auxiliary terminals cannot inherit a guessed negative connection. The 305 VAC WIMA source does not silently raise the 275 VAC default. The AVX 10 x 20 mm body is 5 F, conflicting with the mixed 10 F default; that binding stays blocked.
+
+## D014 - Magnetic winding and rating corrections require explicit binding
+
+Read primary diagrams for WE-SL5, WE-CMB, TY-145P, WE-FB, AS-103 and H1102NL. Record intrinsic manufacturer pin maps separately from geometric terminal transforms. WE-SL5 is 1-2/4-3, AS-103 is 1:300 with an external primary conductor and two secondary pins, and the named flyback has a 12 uH primary. Do not apply guessed permutations, change protected geometry or borrow safety insulation limits. Original source statuses remain unchanged; physical conflicts and missing safety ratings are blocked.
