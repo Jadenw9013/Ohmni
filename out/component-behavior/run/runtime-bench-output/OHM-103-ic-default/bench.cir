@@ -1,0 +1,20 @@
+OHMNI sourced behavior circuit
+.options tnom=25
+.temp 25
+Vsource6 n6 0 DC 5
+Iexcitation1 0 n1 DC 0.0050000000000000001
+Rc1 n6 n3 100
+Xc2 n1 0 n3 0 opto_pt ctr=1 vsat=0.14999999999999999 ioff=5.0000000000000001e-09
+* BEH-IC-OPTO-DIP6 phototransistor optocoupler (4N35 class), behavioural_approximation. ngspice 42 stock.
+* pins: an cat c e  (anode, cathode, collector, emitter); base (pin 6) not modelled (left open in the typical application; see class text)
+* LED: diode, VF ~1.2 V @10 mA (Vishay 83717 extract 1.2..1.5 V). Output: Ic = CTR*IF*tanh(Vce/vsat), CTR constant (the real CTR varies with IF, temperature and ageing: not modelled).
+.model dled d(is=1.5e-13 n=1.8 rs=4 cjo=30p)
+.subckt opto_pt an cat c e params: ctr=1.0 vsat=0.15 ioff=5n
+Dled ai cat dled
+Vsn an ai 0
+Bc c e I=0.0+{ctr}*max(i(Vsn),0)*tanh(max(v(c)-v(e),0)/{vsat})+{ioff}
+.ends
+
+.op
+.print op
+.end

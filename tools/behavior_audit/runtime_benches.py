@@ -28,7 +28,7 @@ def run_runtime_recipes(audit, entry_ids=None):
         raise ValueError(f"no runtime recipe for {sorted(unknown)}")
     runners = {}
     ic_classes = {"BEH-IC-TIMER555", "BEH-IC-LOGIC-HC", "BEH-IC-LOGIC-SEQ",
-                  "BEH-IC-OPAMP", "BEH-IC-LDO-SOT235"}
+                  "BEH-IC-OPAMP", "BEH-IC-LDO-SOT235", "BEH-IC-OPTO-DIP6", "BEH-FREQ-XO"}
     for key in sorted(selected):
         behavior = recipes.entries[key].behavior_id
         runner = (run_resistor_recipes if behavior == "BEH-RES-FIXED" else
@@ -276,7 +276,7 @@ def runtime_receipt_errors(audit, entry_id):
     recipes = load_recipes(registry, audit.root)
     behavior = recipes.entries[entry_id].behavior_id
     if behavior in {"BEH-IC-TIMER555", "BEH-IC-LOGIC-HC", "BEH-IC-LOGIC-SEQ",
-                    "BEH-IC-OPAMP", "BEH-IC-LDO-SOT235"}:
+                    "BEH-IC-OPAMP", "BEH-IC-LDO-SOT235", "BEH-IC-OPTO-DIP6", "BEH-FREQ-XO"}:
         from .ic_benches import ic_receipt_errors
 
         return ic_receipt_errors(audit, entry_id)

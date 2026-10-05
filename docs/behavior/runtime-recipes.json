@@ -3489,6 +3489,91 @@
         "8": "D"
       }
     },
+    "OHM-103": {
+      "behavior_id": "BEH-IC-OPTO-DIP6",
+      "class_parameters": {
+        "ctr": "ctr",
+        "ioff": "ioff",
+        "vsat": "vsat"
+      },
+      "critical_facts": {
+        "ic_max": {
+          "field": "maximum_collector_current",
+          "output_unit": "A",
+          "unit": "mA"
+        },
+        "if_max": {
+          "field": "maximum_forward_current",
+          "output_unit": "A",
+          "unit": "mA"
+        },
+        "pin_max": {
+          "field": "maximum_input_power",
+          "output_unit": "W",
+          "unit": "mW"
+        },
+        "pout_max": {
+          "field": "maximum_output_power",
+          "output_unit": "W",
+          "unit": "mW"
+        },
+        "tj_max": {
+          "field": "maximum_junction_temperature",
+          "unit": "C"
+        },
+        "vce_max": {
+          "field": "conservative_collector_emitter_ceiling",
+          "unit": "V"
+        },
+        "vr_max": {
+          "field": "maximum_reverse_voltage",
+          "unit": "V"
+        }
+      },
+      "entry_id": "OHM-103",
+      "inline_assets": [
+        {
+          "document": "docs/behavior/bench/ic-opto/opto4n35.lib",
+          "document_sha256": "f98da74c9498ca687365fbb347eeff3d6df9db964f06cd37ee8d0fe9fe9849df",
+          "line": 1
+        }
+      ],
+      "limitations": [
+        "Constant CTR approximation, at25C and quasi-static with base pin6 isolated. Connecting the base to another terminal, source or component is refused.",
+        "No isolation-safety, temperature/aging, CTR spread or transient-speed acceptance; sourced70V absolute vs30V minimum-breakdown conflict remains limited to30V."
+      ],
+      "package": "DIP-6",
+      "pin_role_fact": {
+        "scope_contains": "4N35 DIP-6; Rev1.2 only"
+      },
+      "reference_function": {
+        "field": "reference_part",
+        "scope_contains": "4N35 DIP-6; Rev1.2 only",
+        "value": "4N35"
+      },
+      "reference_part": "4N35; base open",
+      "required_isolated_roles": [
+        "B"
+      ],
+      "supported_analyses": [
+        "op"
+      ],
+      "template_override": "X{ref} {A} {K} {C} {E} opto_pt ctr={ctr} vsat={vsat} ioff={ioff}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "fragment_sha256": "5b214308686d36e84afc3c4e4206dad551278ca27742ff97088d807cba0512fb",
+        "line": 8517
+      },
+      "terminal_roles": {
+        "1": "A",
+        "2": "K",
+        "3": "NC",
+        "4": "E",
+        "5": "C",
+        "6": "B"
+      }
+    },
     "OHM-104": {
       "behavior_id": "BEH-IC-TIMER555",
       "class_parameters": {
@@ -3553,6 +3638,9 @@
         "value": "NE555"
       },
       "reference_part": "NE555 / NE555 P PDIP-8",
+      "required_ground_roles": [
+        "GND"
+      ],
       "supported_analyses": [
         "op",
         "tran"
@@ -3646,6 +3734,9 @@
         "value": "SN74HC00"
       },
       "reference_part": "SN74HC00 / SN74HC00 N PDIP-14",
+      "required_ground_roles": [
+        "GND"
+      ],
       "supported_analyses": [
         "op",
         "tran"
@@ -3733,6 +3824,9 @@
         "value": "SN74HC595"
       },
       "reference_part": "SN74HC595 / SN74HC595 N PDIP-16",
+      "required_ground_roles": [
+        "GND"
+      ],
       "supported_analyses": [
         "tran"
       ],
@@ -3760,6 +3854,118 @@
         "7": "QH",
         "8": "GND",
         "9": "QH_serial"
+      }
+    },
+    "OHM-107": {
+      "behavior_id": "BEH-IC-LOGIC-HC",
+      "class_parameters": {
+        "ci_bus": "ci",
+        "roh": "roh",
+        "rol": "rol",
+        "taue": "taue",
+        "td": "td"
+      },
+      "critical_facts": {
+        "ci": {
+          "field": "input_capacitance_typical",
+          "output_unit": "F",
+          "unit": "pF"
+        },
+        "icc_abs_max": {
+          "field": "maximum_supply_current_magnitude",
+          "output_unit": "A",
+          "unit": "mA"
+        },
+        "iout_abs_max": {
+          "field": "maximum_output_current_magnitude",
+          "output_unit": "A",
+          "unit": "mA"
+        },
+        "off_leak_max": {
+          "field": "off_state_output_leakage_max",
+          "output_unit": "A",
+          "unit": "uA"
+        },
+        "rth_ja": {
+          "field": "thermal_resistance_junction_ambient",
+          "unit": "K/W"
+        },
+        "supply_abs_max": {
+          "field": "absolute_supply_max",
+          "unit": "V"
+        },
+        "supply_max": {
+          "field": "recommended_supply_max",
+          "unit": "V"
+        },
+        "supply_min": {
+          "field": "recommended_supply_min",
+          "unit": "V"
+        },
+        "tj_max": {
+          "field": "maximum_junction_temperature",
+          "unit": "C"
+        }
+      },
+      "entry_id": "OHM-107",
+      "inline_assets": [
+        {
+          "document": "docs/behavior/bench/ic-logic-seq/hc_seq.lib",
+          "document_sha256": "7630abe9933845fe7bb725e4d67107d6b7e24640824edd7aae53e0b94d69d686",
+          "line": 1
+        }
+      ],
+      "limitations": [
+        "SN74HC245 eight-bit bidirectional bus; DIR high A-to-B, low B-to-A, OE high disables both paths (source function table). All20 physical terminals remain explicit.",
+        "Uses the existing authored HC input/output cells: 4.5V output-resistance/delay approximations are transferred assumptions, not a calibrated HC245 timing model or vendor model.",
+        "Control capacitance3pF is sourced at25C; bus capacitance retains the authored5pF ASSUMPTION/L. Quiescent current is unmodeled; zero model supply current is not evidence. No dynamic power, shoot-through, metastability or safe-contention claim.",
+        "Library normalized logic cells require GND on the circuit global ground."
+      ],
+      "package": "DIP-20",
+      "pin_role_fact": {
+        "scope_contains": "SN74HC245 N PDIP-20"
+      },
+      "reference_function": {
+        "field": "reference_part",
+        "scope_contains": "SN74HC245 N PDIP-20",
+        "value": "SN74HC245"
+      },
+      "reference_part": "SN74HC245 / SN74HC245 N PDIP-20",
+      "required_ground_roles": [
+        "GND"
+      ],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "template_override": "X{ref}_dir {DIR} ndir_{ref} {VCC} {GND} hcin ci={ci}\nX{ref}_oe {OE} noe_{ref} {VCC} {GND} hcin ci={ci}\nB{ref}_enab enab_{ref} {GND} V=v(ndir_{ref})*(1-v(noe_{ref}))\nB{ref}_enba enba_{ref} {GND} V=(1-v(ndir_{ref}))*(1-v(noe_{ref}))\nX{ref}_senseA1 {A1} nA1_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveB1 nA1_{ref} enab_{ref} {B1} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseB1 {B1} nB1_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveA1 nB1_{ref} enba_{ref} {A1} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseA2 {A2} nA2_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveB2 nA2_{ref} enab_{ref} {B2} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseB2 {B2} nB2_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveA2 nB2_{ref} enba_{ref} {A2} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseA3 {A3} nA3_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveB3 nA3_{ref} enab_{ref} {B3} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseB3 {B3} nB3_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveA3 nB3_{ref} enba_{ref} {A3} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseA4 {A4} nA4_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveB4 nA4_{ref} enab_{ref} {B4} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseB4 {B4} nB4_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveA4 nB4_{ref} enba_{ref} {A4} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseA5 {A5} nA5_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveB5 nA5_{ref} enab_{ref} {B5} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseB5 {B5} nB5_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveA5 nB5_{ref} enba_{ref} {A5} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseA6 {A6} nA6_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveB6 nA6_{ref} enab_{ref} {B6} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseB6 {B6} nB6_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveA6 nB6_{ref} enba_{ref} {A6} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseA7 {A7} nA7_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveB7 nA7_{ref} enab_{ref} {B7} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseB7 {B7} nB7_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveA7 nB7_{ref} enba_{ref} {A7} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseA8 {A8} nA8_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveB8 nA8_{ref} enab_{ref} {B8} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseB8 {B8} nB8_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveA8 nB8_{ref} enba_{ref} {A8} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "fragment_sha256": "b76cb9a3cc7498b2194493aec04eeffb45cbe29b5179e7d55fd0b7ab3cfe0b5f",
+        "line": 7561
+      },
+      "terminal_roles": {
+        "1": "DIR",
+        "10": "GND",
+        "11": "B8",
+        "12": "B7",
+        "13": "B6",
+        "14": "B5",
+        "15": "B4",
+        "16": "B3",
+        "17": "B2",
+        "18": "B1",
+        "19": "OE",
+        "2": "A1",
+        "20": "VCC",
+        "3": "A2",
+        "4": "A3",
+        "5": "A4",
+        "6": "A5",
+        "7": "A6",
+        "8": "A7",
+        "9": "A8"
       }
     },
     "OHM-110": {
@@ -3826,6 +4032,9 @@
         "value": "NE555"
       },
       "reference_part": "NE555 / NE555 D SOIC-8",
+      "required_ground_roles": [
+        "GND"
+      ],
       "supported_analyses": [
         "op",
         "tran"
@@ -3919,6 +4128,9 @@
         "value": "SN74HC00"
       },
       "reference_part": "SN74HC00 / SN74HC00 D SOIC-14",
+      "required_ground_roles": [
+        "GND"
+      ],
       "supported_analyses": [
         "op",
         "tran"
@@ -4006,6 +4218,9 @@
         "value": "SN74HC595"
       },
       "reference_part": "SN74HC595 / SN74HC595 D SOIC-16",
+      "required_ground_roles": [
+        "GND"
+      ],
       "supported_analyses": [
         "tran"
       ],
@@ -4033,6 +4248,118 @@
         "7": "QH",
         "8": "GND",
         "9": "QH_serial"
+      }
+    },
+    "OHM-113": {
+      "behavior_id": "BEH-IC-LOGIC-HC",
+      "class_parameters": {
+        "ci_bus": "ci",
+        "roh": "roh",
+        "rol": "rol",
+        "taue": "taue",
+        "td": "td"
+      },
+      "critical_facts": {
+        "ci": {
+          "field": "input_capacitance_typical",
+          "output_unit": "F",
+          "unit": "pF"
+        },
+        "icc_abs_max": {
+          "field": "maximum_supply_current_magnitude",
+          "output_unit": "A",
+          "unit": "mA"
+        },
+        "iout_abs_max": {
+          "field": "maximum_output_current_magnitude",
+          "output_unit": "A",
+          "unit": "mA"
+        },
+        "off_leak_max": {
+          "field": "off_state_output_leakage_max",
+          "output_unit": "A",
+          "unit": "uA"
+        },
+        "rth_ja": {
+          "field": "thermal_resistance_junction_ambient",
+          "unit": "K/W"
+        },
+        "supply_abs_max": {
+          "field": "absolute_supply_max",
+          "unit": "V"
+        },
+        "supply_max": {
+          "field": "recommended_supply_max",
+          "unit": "V"
+        },
+        "supply_min": {
+          "field": "recommended_supply_min",
+          "unit": "V"
+        },
+        "tj_max": {
+          "field": "maximum_junction_temperature",
+          "unit": "C"
+        }
+      },
+      "entry_id": "OHM-113",
+      "inline_assets": [
+        {
+          "document": "docs/behavior/bench/ic-logic-seq/hc_seq.lib",
+          "document_sha256": "7630abe9933845fe7bb725e4d67107d6b7e24640824edd7aae53e0b94d69d686",
+          "line": 1
+        }
+      ],
+      "limitations": [
+        "SN74HC245 eight-bit bidirectional bus; DIR high A-to-B, low B-to-A, OE high disables both paths (source function table). All20 physical terminals remain explicit.",
+        "Uses the existing authored HC input/output cells: 4.5V output-resistance/delay approximations are transferred assumptions, not a calibrated HC245 timing model or vendor model.",
+        "Control capacitance3pF is sourced at25C; bus capacitance retains the authored5pF ASSUMPTION/L. Quiescent current is unmodeled; zero model supply current is not evidence. No dynamic power, shoot-through, metastability or safe-contention claim.",
+        "Library normalized logic cells require GND on the circuit global ground."
+      ],
+      "package": "SOIC-20",
+      "pin_role_fact": {
+        "scope_contains": "SN74HC245 DW SOIC-20 wide"
+      },
+      "reference_function": {
+        "field": "reference_part",
+        "scope_contains": "SN74HC245 DW SOIC-20 wide",
+        "value": "SN74HC245"
+      },
+      "reference_part": "SN74HC245 / SN74HC245 DW SOIC-20 wide",
+      "required_ground_roles": [
+        "GND"
+      ],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "template_override": "X{ref}_dir {DIR} ndir_{ref} {VCC} {GND} hcin ci={ci}\nX{ref}_oe {OE} noe_{ref} {VCC} {GND} hcin ci={ci}\nB{ref}_enab enab_{ref} {GND} V=v(ndir_{ref})*(1-v(noe_{ref}))\nB{ref}_enba enba_{ref} {GND} V=(1-v(ndir_{ref}))*(1-v(noe_{ref}))\nX{ref}_senseA1 {A1} nA1_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveB1 nA1_{ref} enab_{ref} {B1} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseB1 {B1} nB1_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveA1 nB1_{ref} enba_{ref} {A1} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseA2 {A2} nA2_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveB2 nA2_{ref} enab_{ref} {B2} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseB2 {B2} nB2_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveA2 nB2_{ref} enba_{ref} {A2} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseA3 {A3} nA3_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveB3 nA3_{ref} enab_{ref} {B3} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseB3 {B3} nB3_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveA3 nB3_{ref} enba_{ref} {A3} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseA4 {A4} nA4_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveB4 nA4_{ref} enab_{ref} {B4} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseB4 {B4} nB4_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveA4 nB4_{ref} enba_{ref} {A4} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseA5 {A5} nA5_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveB5 nA5_{ref} enab_{ref} {B5} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseB5 {B5} nB5_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveA5 nB5_{ref} enba_{ref} {A5} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseA6 {A6} nA6_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveB6 nA6_{ref} enab_{ref} {B6} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseB6 {B6} nB6_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveA6 nB6_{ref} enba_{ref} {A6} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseA7 {A7} nA7_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveB7 nA7_{ref} enab_{ref} {B7} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseB7 {B7} nB7_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveA7 nB7_{ref} enba_{ref} {A7} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseA8 {A8} nA8_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveB8 nA8_{ref} enab_{ref} {B8} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseB8 {B8} nB8_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveA8 nB8_{ref} enba_{ref} {A8} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "fragment_sha256": "b76cb9a3cc7498b2194493aec04eeffb45cbe29b5179e7d55fd0b7ab3cfe0b5f",
+        "line": 7561
+      },
+      "terminal_roles": {
+        "1": "DIR",
+        "10": "GND",
+        "11": "B8",
+        "12": "B7",
+        "13": "B6",
+        "14": "B5",
+        "15": "B4",
+        "16": "B3",
+        "17": "B2",
+        "18": "B1",
+        "19": "OE",
+        "2": "A1",
+        "20": "VCC",
+        "3": "A2",
+        "4": "A3",
+        "5": "A4",
+        "6": "A5",
+        "7": "A6",
+        "8": "A7",
+        "9": "A8"
       }
     },
     "OHM-114": {
@@ -4099,6 +4426,9 @@
         "value": "NE555"
       },
       "reference_part": "NE555 / NE555 PW TSSOP-8",
+      "required_ground_roles": [
+        "GND"
+      ],
       "supported_analyses": [
         "op",
         "tran"
@@ -4192,6 +4522,9 @@
         "value": "SN74HC00"
       },
       "reference_part": "SN74HC00 / SN74HC00 PW TSSOP-14",
+      "required_ground_roles": [
+        "GND"
+      ],
       "supported_analyses": [
         "op",
         "tran"
@@ -4218,6 +4551,300 @@
         "7": "GND",
         "8": "Y3",
         "9": "A3"
+      }
+    },
+    "OHM-116": {
+      "behavior_id": "BEH-IC-LOGIC-SEQ",
+      "class_parameters": {},
+      "critical_facts": {
+        "icc_abs_max": {
+          "field": "maximum_supply_current_magnitude",
+          "output_unit": "A",
+          "unit": "mA"
+        },
+        "iout_abs_max": {
+          "field": "maximum_output_current_magnitude",
+          "output_unit": "A",
+          "unit": "mA"
+        },
+        "rth_ja": {
+          "field": "thermal_resistance_junction_ambient",
+          "unit": "K/W"
+        },
+        "supply_abs_max": {
+          "field": "absolute_supply_max",
+          "unit": "V"
+        },
+        "supply_max": {
+          "field": "recommended_supply_max",
+          "unit": "V"
+        },
+        "supply_min": {
+          "field": "recommended_supply_min",
+          "unit": "V"
+        },
+        "tj_max": {
+          "field": "maximum_junction_temperature",
+          "unit": "C"
+        }
+      },
+      "entry_id": "OHM-116",
+      "inline_assets": [
+        {
+          "document": "docs/behavior/bench/ic-logic-seq/hc_seq.lib",
+          "document_sha256": "7630abe9933845fe7bb725e4d67107d6b7e24640824edd7aae53e0b94d69d686",
+          "line": 1
+        }
+      ],
+      "limitations": [
+        "Explicit named reference function; the package alone carries no electrical function. Physical drawing compatibility is separate.",
+        "Authored behavioural approximation from the spec library, not a licensed vendor model or component certification.",
+        "All implicit subcircuit constants remain exactly those in the hashed authored asset; unverified dynamic details and protection approximations are not device guarantees.",
+        "XSPICE 8-bit shift and storage registers with active-low OE/SRCLR. Setup/hold, metastability and power-on state are not validated."
+      ],
+      "package": "TSSOP-16",
+      "pin_role_fact": {
+        "scope_contains": "SN74HC595 PW TSSOP-16"
+      },
+      "reference_function": {
+        "field": "reference_part",
+        "scope_contains": "SN74HC595 PW TSSOP-16",
+        "value": "SN74HC595"
+      },
+      "reference_part": "SN74HC595 / SN74HC595 PW TSSOP-16",
+      "required_ground_roles": [
+        "GND"
+      ],
+      "supported_analyses": [
+        "tran"
+      ],
+      "template_override": "X{ref} {QB} {QC} {QD} {QE} {QF} {QG} {QH} {GND} {QH_serial} {SRCLR} {SRCLK} {RCLK} {OE} {SER} {QA} {VCC} hc595\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "fragment_sha256": "c651f6a25938a8bcc0431ef1870784b2984e95f8b1c1084edfdb359944bc38ab",
+        "line": 7685
+      },
+      "terminal_roles": {
+        "1": "QB",
+        "10": "SRCLR",
+        "11": "SRCLK",
+        "12": "RCLK",
+        "13": "OE",
+        "14": "SER",
+        "15": "QA",
+        "16": "VCC",
+        "2": "QC",
+        "3": "QD",
+        "4": "QE",
+        "5": "QF",
+        "6": "QG",
+        "7": "QH",
+        "8": "GND",
+        "9": "QH_serial"
+      }
+    },
+    "OHM-117": {
+      "behavior_id": "BEH-IC-LOGIC-HC",
+      "class_parameters": {
+        "ci_bus": "ci",
+        "roh": "roh",
+        "rol": "rol",
+        "taue": "taue",
+        "td": "td"
+      },
+      "critical_facts": {
+        "ci": {
+          "field": "input_capacitance_typical",
+          "output_unit": "F",
+          "unit": "pF"
+        },
+        "icc_abs_max": {
+          "field": "maximum_supply_current_magnitude",
+          "output_unit": "A",
+          "unit": "mA"
+        },
+        "iout_abs_max": {
+          "field": "maximum_output_current_magnitude",
+          "output_unit": "A",
+          "unit": "mA"
+        },
+        "off_leak_max": {
+          "field": "off_state_output_leakage_max",
+          "output_unit": "A",
+          "unit": "uA"
+        },
+        "rth_ja": {
+          "field": "thermal_resistance_junction_ambient",
+          "unit": "K/W"
+        },
+        "supply_abs_max": {
+          "field": "absolute_supply_max",
+          "unit": "V"
+        },
+        "supply_max": {
+          "field": "recommended_supply_max",
+          "unit": "V"
+        },
+        "supply_min": {
+          "field": "recommended_supply_min",
+          "unit": "V"
+        },
+        "tj_max": {
+          "field": "maximum_junction_temperature",
+          "unit": "C"
+        }
+      },
+      "entry_id": "OHM-117",
+      "inline_assets": [
+        {
+          "document": "docs/behavior/bench/ic-logic-seq/hc_seq.lib",
+          "document_sha256": "7630abe9933845fe7bb725e4d67107d6b7e24640824edd7aae53e0b94d69d686",
+          "line": 1
+        }
+      ],
+      "limitations": [
+        "SN74HC245 eight-bit bidirectional bus; DIR high A-to-B, low B-to-A, OE high disables both paths (source function table). All20 physical terminals remain explicit.",
+        "Uses the existing authored HC input/output cells: 4.5V output-resistance/delay approximations are transferred assumptions, not a calibrated HC245 timing model or vendor model.",
+        "Control capacitance3pF is sourced at25C; bus capacitance retains the authored5pF ASSUMPTION/L. Quiescent current is unmodeled; zero model supply current is not evidence. No dynamic power, shoot-through, metastability or safe-contention claim.",
+        "Library normalized logic cells require GND on the circuit global ground."
+      ],
+      "package": "TSSOP-20",
+      "pin_role_fact": {
+        "scope_contains": "SN74HC245 PW TSSOP-20"
+      },
+      "reference_function": {
+        "field": "reference_part",
+        "scope_contains": "SN74HC245 PW TSSOP-20",
+        "value": "SN74HC245"
+      },
+      "reference_part": "SN74HC245 / SN74HC245 PW TSSOP-20",
+      "required_ground_roles": [
+        "GND"
+      ],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "template_override": "X{ref}_dir {DIR} ndir_{ref} {VCC} {GND} hcin ci={ci}\nX{ref}_oe {OE} noe_{ref} {VCC} {GND} hcin ci={ci}\nB{ref}_enab enab_{ref} {GND} V=v(ndir_{ref})*(1-v(noe_{ref}))\nB{ref}_enba enba_{ref} {GND} V=(1-v(ndir_{ref}))*(1-v(noe_{ref}))\nX{ref}_senseA1 {A1} nA1_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveB1 nA1_{ref} enab_{ref} {B1} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseB1 {B1} nB1_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveA1 nB1_{ref} enba_{ref} {A1} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseA2 {A2} nA2_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveB2 nA2_{ref} enab_{ref} {B2} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseB2 {B2} nB2_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveA2 nB2_{ref} enba_{ref} {A2} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseA3 {A3} nA3_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveB3 nA3_{ref} enab_{ref} {B3} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseB3 {B3} nB3_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveA3 nB3_{ref} enba_{ref} {A3} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseA4 {A4} nA4_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveB4 nA4_{ref} enab_{ref} {B4} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseB4 {B4} nB4_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveA4 nB4_{ref} enba_{ref} {A4} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseA5 {A5} nA5_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveB5 nA5_{ref} enab_{ref} {B5} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseB5 {B5} nB5_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveA5 nB5_{ref} enba_{ref} {A5} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseA6 {A6} nA6_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveB6 nA6_{ref} enab_{ref} {B6} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseB6 {B6} nB6_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveA6 nB6_{ref} enba_{ref} {A6} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseA7 {A7} nA7_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveB7 nA7_{ref} enab_{ref} {B7} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseB7 {B7} nB7_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveA7 nB7_{ref} enba_{ref} {A7} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseA8 {A8} nA8_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveB8 nA8_{ref} enab_{ref} {B8} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\nX{ref}_senseB8 {B8} nB8_{ref} {VCC} {GND} hcin ci={ci_bus}\nX{ref}_driveA8 nB8_{ref} enba_{ref} {A8} {VCC} {GND} hcout roh={roh} rol={rol} td={td} taue={taue}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "fragment_sha256": "b76cb9a3cc7498b2194493aec04eeffb45cbe29b5179e7d55fd0b7ab3cfe0b5f",
+        "line": 7561
+      },
+      "terminal_roles": {
+        "1": "DIR",
+        "10": "GND",
+        "11": "B8",
+        "12": "B7",
+        "13": "B6",
+        "14": "B5",
+        "15": "B4",
+        "16": "B3",
+        "17": "B2",
+        "18": "B1",
+        "19": "OE",
+        "2": "A1",
+        "20": "VCC",
+        "3": "A2",
+        "4": "A3",
+        "5": "A4",
+        "6": "A5",
+        "7": "A6",
+        "8": "A7",
+        "9": "A8"
+      }
+    },
+    "OHM-118": {
+      "behavior_id": "BEH-IC-LOGIC-SEQ",
+      "class_parameters": {},
+      "critical_facts": {
+        "icc_abs_max": {
+          "field": "maximum_supply_current_magnitude",
+          "output_unit": "A",
+          "unit": "mA"
+        },
+        "iout_abs_max": {
+          "field": "maximum_output_current_magnitude",
+          "output_unit": "A",
+          "unit": "mA"
+        },
+        "rth_ja": {
+          "field": "thermal_resistance_junction_ambient",
+          "unit": "K/W"
+        },
+        "supply_abs_max": {
+          "field": "absolute_supply_max",
+          "unit": "V"
+        },
+        "supply_max": {
+          "field": "recommended_supply_max",
+          "unit": "V"
+        },
+        "supply_min": {
+          "field": "recommended_supply_min",
+          "unit": "V"
+        },
+        "tj_max": {
+          "field": "maximum_junction_temperature",
+          "unit": "C"
+        }
+      },
+      "entry_id": "OHM-118",
+      "inline_assets": [
+        {
+          "document": "docs/behavior/bench/ic-logic-seq/hc_seq.lib",
+          "document_sha256": "7630abe9933845fe7bb725e4d67107d6b7e24640824edd7aae53e0b94d69d686",
+          "line": 1
+        }
+      ],
+      "limitations": [
+        "Explicit named reference function; the package alone carries no electrical function. Physical drawing compatibility is separate.",
+        "Authored behavioural approximation from the spec library, not a licensed vendor model or component certification.",
+        "All implicit subcircuit constants remain exactly those in the hashed authored asset; unverified dynamic details and protection approximations are not device guarantees.",
+        "XSPICE 8-bit shift and storage registers with active-low OE/SRCLR. Setup/hold, metastability and power-on state are not validated."
+      ],
+      "package": "SSOP-16",
+      "pin_role_fact": {
+        "scope_contains": "SN74HC595 DB SSOP-16"
+      },
+      "reference_function": {
+        "field": "reference_part",
+        "scope_contains": "SN74HC595 DB SSOP-16",
+        "value": "SN74HC595"
+      },
+      "reference_part": "SN74HC595 / SN74HC595 DB SSOP-16",
+      "required_ground_roles": [
+        "GND"
+      ],
+      "supported_analyses": [
+        "tran"
+      ],
+      "template_override": "X{ref} {QB} {QC} {QD} {QE} {QF} {QG} {QH} {GND} {QH_serial} {SRCLR} {SRCLK} {RCLK} {OE} {SER} {QA} {VCC} hc595\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "fragment_sha256": "c651f6a25938a8bcc0431ef1870784b2984e95f8b1c1084edfdb359944bc38ab",
+        "line": 7685
+      },
+      "terminal_roles": {
+        "1": "QB",
+        "10": "SRCLR",
+        "11": "SRCLK",
+        "12": "RCLK",
+        "13": "OE",
+        "14": "SER",
+        "15": "QA",
+        "16": "VCC",
+        "2": "QC",
+        "3": "QD",
+        "4": "QE",
+        "5": "QF",
+        "6": "QG",
+        "7": "QH",
+        "8": "GND",
+        "9": "QH_serial"
       }
     },
     "OHM-119": {
@@ -4419,6 +5046,9 @@
         "value": "TLV70033"
       },
       "reference_part": "TLV70033 / TLV70033 DDC SOT-23-5",
+      "required_ground_roles": [
+        "GND"
+      ],
       "supported_analyses": [
         "op"
       ],
@@ -4435,6 +5065,112 @@
         "3": "EN",
         "4": "NC",
         "5": "OUT"
+      }
+    },
+    "OHM-146": {
+      "behavior_id": "BEH-FREQ-XO",
+      "class_parameters": {
+        "ppm": "ppm",
+        "rout": "rout"
+      },
+      "critical_facts": {
+        "f0": {
+          "field": "quiescent_current_test_frequency",
+          "output_unit": "Hz",
+          "unit": "MHz"
+        },
+        "icc": {
+          "field": "quiescent_current_typical",
+          "output_unit": "A",
+          "unit": "mA"
+        },
+        "rth_ja": {
+          "field": "thermal_resistance_junction_ambient",
+          "unit": "K/W"
+        },
+        "supply_abs_max": {
+          "field": "absolute_supply_max",
+          "unit": "V"
+        },
+        "supply_max": {
+          "field": "recommended_supply_range",
+          "unit": "V",
+          "value_path": [
+            1
+          ]
+        },
+        "supply_min": {
+          "field": "recommended_supply_range",
+          "unit": "V",
+          "value_path": [
+            0
+          ]
+        },
+        "tj_max": {
+          "field": "maximum_junction_temperature",
+          "unit": "C"
+        },
+        "tstart": {
+          "field": "startup_time_max",
+          "output_unit": "s",
+          "unit": "ms"
+        }
+      },
+      "entry_id": "OHM-146",
+      "inline_assets": [
+        {
+          "document": "docs/behavior/bench/osc-clock/ohm_xo.lib",
+          "document_sha256": "a042c836d742f8c27d9e110db7f3fbb7dc64232e46d907f7ff326033e8c9f12a",
+          "line": 1
+        }
+      ],
+      "limitations": [
+        "Explicit20MHz variant retains the source20MHz no-load current condition instead of assigning the2.5V4.2mA row to3.3V. Nominal10MHz spec example remains unchanged.",
+        "Only OE tied high is bound. The authored disabled-output/standby behavior is not valid for this OE part and cannot be reached through this binding.",
+        "Static+25ppm class setting is a selected approximation, not measured calibration; startup uses sourced5ms maximum as a conservative deterministic delay. No jitter, phase noise or load-current accounting.",
+        "Manufacturer pin1 is library terminal2. The generic library terminal1 dot and1.8mm ceramic height do not represent the SiTime pin1 marker or0.90mm MEMS body; physical geometry remains provisional."
+      ],
+      "package": "7050 SiT8008 reference",
+      "pin_role_fact": {
+        "manufacturer_to_package_terminal": {
+          "1": "2",
+          "2": "3",
+          "3": "4",
+          "4": "1"
+        },
+        "permutation_provenance": {
+          "document": "docs/behavior/SIT8008-PERMUTATION.md",
+          "document_sha256": "1624b65afb6d9e3c25adb6797a2729d666a852eb595c943b8bd57e8eb6d3540f",
+          "line": 1
+        },
+        "scope_contains": "top view"
+      },
+      "reference_part": "SiT8008 7050,3.3V,20MHz,industrial; OE tied toVDD",
+      "required_ground_roles": [
+        "GND"
+      ],
+      "required_same_net_roles": [
+        [
+          "OE",
+          "VDD"
+        ]
+      ],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "template_override": "X{ref} {VDD} {GND} {OE} {OUT} ohm_xo f0={f0} ppm={ppm} tstart={tstart} icc={icc} rout={rout} vmin={supply_min}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "fragment_sha256": "0a300e6210fbb0bf5c03417c8399158edf7f527f83188ff9627d18908e1841ca",
+        "line": 10239
+      },
+      "terminal_roles": {
+        "1": "VDD",
+        "2": "OE",
+        "3": "GND",
+        "4": "OUT"
       }
     }
   },

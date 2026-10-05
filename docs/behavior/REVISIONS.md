@@ -109,3 +109,7 @@ Added exact/explicit-alternate manufacturer archives, scoped ratings, switch/pin
 ### 2026-10-05 — Stage4 independent-review corrections
 
 The first two fresh samples exposed incorrect page/table/date metadata, an unsupported Artix ordering-code scope, the TCXO heading versus mechanical-envelope conflict, a typical STM32 capacitance mislabeled maximum, and crystal permutation attribution. Corrected those fields and their related sibling records. The crystal library-side permutation is now explicitly ASSUMPTION/L; no source status, rating tolerance, benchmark expectation or physical model was upgraded. Source-internal dimensional conflicts remain listed. Hirose catalog issue and copyright footer are retained separately.
+
+### 2026-10-05 — Stage4 third sample and oscillator corners
+
+Corrected HC capacitance25C qualification, TPS7A8001 reference/feedback/enable/dropout scope and Phoenix environmental versus20C electrical test conditions. Added SiT8008 primary top-view corner and body-height facts, with the library permutation recorded in SIT8008-PERMUTATION.md. Preserved the0.9mm/1.8mm body conflict and all source statuses. Third independent review remains failed; no fourth acceptance sample is claimed.

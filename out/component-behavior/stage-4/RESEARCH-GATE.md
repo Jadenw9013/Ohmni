@@ -38,7 +38,7 @@ Class bench results do not establish package ratings or full physical-device val
 | [OHM-130](../../../docs/behavior/gapfill/OHM-130.md) | partial | partial | sources_reviewed | 1 / 9 | 0/8 PASS |
 | [OHM-131](../../../docs/behavior/gapfill/OHM-131.md) | partial | partial | sources_reviewed | 1 / 11 | 0/4 PASS |
 | [OHM-132](../../../docs/behavior/gapfill/OHM-132.md) | partial | partial | sources_reviewed | 1 / 13 | 0/7 PASS |
-| [OHM-133](../../../docs/behavior/gapfill/OHM-133.md) | partial | partial | sources_reviewed | 1 / 14 | 0/7 PASS |
+| [OHM-133](../../../docs/behavior/gapfill/OHM-133.md) | partial | partial | sources_reviewed | 1 / 15 | 0/7 PASS |
 | [OHM-134](../../../docs/behavior/gapfill/OHM-134.md) | complete | complete | sources_reviewed | 1 / 13 | 0/9 PASS |
 | [OHM-135](../../../docs/behavior/gapfill/OHM-135.md) | partial | partial | sources_reviewed | 1 / 10 | 0/8 PASS |
 | [OHM-136](../../../docs/behavior/gapfill/OHM-136.md) | research_required | research_required | sources_reviewed | 1 / 11 | 0/4 PASS |
@@ -51,7 +51,7 @@ Class bench results do not establish package ratings or full physical-device val
 | [OHM-143](../../../docs/behavior/gapfill/OHM-143.md) | partial | partial | sources_reviewed | 1 / 12 | 0/8 PASS |
 | [OHM-144](../../../docs/behavior/gapfill/OHM-144.md) | partial | partial | sources_reviewed | 1 / 12 | 0/8 PASS |
 | [OHM-145](../../../docs/behavior/gapfill/OHM-145.md) | partial | partial | sources_reviewed | 1 / 12 | 0/8 PASS |
-| [OHM-146](../../../docs/behavior/gapfill/OHM-146.md) | partial | partial | sources_reviewed | 1 / 19 | 0/2 PASS |
+| [OHM-146](../../../docs/behavior/gapfill/OHM-146.md) | partial | partial | sources_reviewed | 1 / 22 | 0/2 PASS |
 | [OHM-147](../../../docs/behavior/gapfill/OHM-147.md) | partial | partial | sources_reviewed | 1 / 14 | 0/2 PASS |
 | [OHM-148](../../../docs/behavior/gapfill/OHM-148.md) | partial | partial | sources_reviewed | 2 / 7 | 0/1 PASS |
 | [OHM-149](../../../docs/behavior/gapfill/OHM-149.md) | partial | partial | sources_reviewed | 1 / 12 | 0/2 PASS |
@@ -405,8 +405,10 @@ Class bench results do not establish package ratings or full physical-device val
 
 - remaining: No absolute output-current rating is established;4mA VOH/VOL is a test condition,not an unlimited drive license.
 - remaining: Drive strength,frequency and output loading need explicit model validation.
+- remaining: Runtime uses explicitly selected SiT8008 reference and terminal permutation; generic7050 rendering/marker and manufacturing geometry are not validated.
 - conflicts: The spec4.2mA/1uA values do not match this3.3V revision:4.2mA is the2.5V20MHz maximum;3.3V standby max4.3uA.
 - conflicts: Page1 labels OE-disabled output weakly pulled down,while page2 states high impedance. Retain conflict; cannot silently treat OE and ST alike.
+- conflicts: SiT8008 source pin1 bottom-left differs from library terminal1 top-left; explicit manufacturer1->library2,2->3,3->4,4->1. Generic body height1.8mm versus sourced MEMS0.90mm. No 3D geometry verification.
 
 ### OHM-147: TCXO
 

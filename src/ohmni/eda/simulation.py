@@ -328,7 +328,8 @@ def with_power_on_stimulus(netlist: str, net: str = STIMULUS_NET, *,
     return "\n".join([*lines[:end], source, *lines[end:]]) + "\n", note
 
 
-def transient_deck(netlist: str, tstep: str, tstop: str, signals: list[str]) -> str:
+def transient_deck(netlist: str, tstep: str, tstop: str, signals: list[str], *,
+                   precision: int | None = None) -> str:
     """Add the transient command and the signals to print, and nothing else.
 
     Built the same way as the operating-point deck: the caller's first line
@@ -340,7 +341,15 @@ def transient_deck(netlist: str, tstep: str, tstop: str, signals: list[str]) -> 
     additions = []
     if not any(re.match(r"\.tran\b", line, re.IGNORECASE) for line in stripped):
         additions.append(f".tran {tstep} {tstop}")
-    if not any(re.match(r"\.print\s+tran\b", line, re.IGNORECASE) for line in stripped):
+    if precision is not None:
+        if type(precision) is not int or not 6 <= precision <= 17:
+            raise ValueError("transient print precision must be an integer from6 to17")
+        if any(re.match(r"\.control\b", line, re.IGNORECASE) for line in stripped):
+            raise ValueError("precise transient printing cannot replace an existing control block")
+        printed = " ".join(f"v({name})" for name in signals)
+        additions.extend([".control", f"set numdgt={precision}", "run",
+                          f"print {printed}", "quit", ".endc"])
+    elif not any(re.match(r"\.print\s+tran\b", line, re.IGNORECASE) for line in stripped):
         printed = " ".join(f"v({name})" for name in signals)
         additions.append(f".print tran {printed}" if printed else ".print tran")
     end = next(
@@ -629,7 +638,7 @@ class NgspiceAdapter:
             else:
                 signals = [node for node in compilation.node_names.values() if node != "0"]
             deck = transient_deck(compilation.netlist, format(step.value, ".17g"),
-                                  format(stop.value, ".17g"), signals[:MAX_TRANSIENT_SIGNALS])
+                                  format(stop.value, ".17g"), signals[:MAX_TRANSIENT_SIGNALS], precision=15)
         else:
             result["problems"].append(f"Unsupported circuit analysis: {analysis}")
             return result

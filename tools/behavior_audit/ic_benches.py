@@ -16,7 +16,11 @@ from .audit import _atomic_json, _atomic_text, _now, _sha_bytes
 from .benches import numeric_contract
 
 
-def ic_cases(behavior):
+def ic_cases(behavior, recipe=None):
+    if recipe and recipe.reference_function and recipe.reference_function.value == "SN74HC245":
+        return ["a_to_b", "b_to_a", "disabled"]
+    if behavior == "BEH-FREQ-XO":
+        return ["frequency", "current"]
     return ["high", "low"] if behavior == "BEH-IC-LOGIC-HC" else ["default"]
 
 
@@ -47,6 +51,8 @@ def ic_definition(audit, entry_id, case="default"):
         "BEH-IC-LOGIC-SEQ": "B1",
         "BEH-IC-OPAMP": "B5",
         "BEH-IC-LDO-SOT235": "B1",
+        "BEH-IC-OPTO-DIP6": "B2",
+        "BEH-FREQ-XO": "B1",
     }
     contract_id = behavior + "/" + contracts[behavior]
     contract = audit._state()["bench_contracts"][contract_id]
@@ -86,6 +92,49 @@ def ic_definition(audit, entry_id, case="default"):
                 "maximum": float(band[2]),
             }
         ]
+    elif (
+        behavior == "BEH-IC-LOGIC-HC"
+        and r.reference_function
+        and r.reference_function.value == "SN74HC245"
+    ):
+        roles.update(
+            GND="return",
+            VCC="supply",
+            OE="supply" if case == "disabled" else "return",
+            DIR="return" if case == "b_to_a" else "supply",
+        )
+        supplies = {"supply": 4.5}
+        source, destination = ("B", "A") if case == "b_to_a" else ("A", "B")
+        for i in range(1, 9):
+            high = i % 2 == 1
+            roles[source + str(i)] = "supply" if high else "return"
+            node = destination + str(i)
+            if case == "disabled":
+                resistors.extend([(node, "return", 10000), (node, "supply", 10000)])
+                leak = next(
+                    f
+                    for f in registry.entry(entry_id).research.field_updates
+                    if f.field == "off_state_output_leakage_max"
+                )
+                bound = leak.value * 1e-6 * 5000
+                comparisons.append(
+                    {
+                        "kind": "interval",
+                        "node": node,
+                        "minimum": 2.25 - bound,
+                        "maximum": 2.25 + bound,
+                        "source_fact": leak.model_dump(mode="json"),
+                        "derivation": "Ideal10kohm/10kohm divider: VCC/2 +/- source off-state current maximum times5kohm Thevenin resistance.",
+                    }
+                )
+            else:
+                dc(node, "return", 0.004) if high else dc("supply", node, 0.004)
+                row = next(
+                    x
+                    for x in contract["expected"]
+                    if x["measure"] == ("VOH_4mA" if high else "VOL_4mA")
+                )
+                comparisons.append(dict(numeric_contract(row), kind="absolute", node=node))
     elif behavior == "BEH-IC-LOGIC-HC":
         roles.update(GND="return", VCC="supply")
         supplies = {"supply": 4.5}
@@ -123,6 +172,73 @@ def ic_definition(audit, entry_id, case="default"):
         supplies = {"supply": 3}
         dc("OUT", "return", 0.1)
         comparisons = [dict(numeric_contract(contract["expected"][0]), kind="absolute", node="OUT")]
+    elif behavior == "BEH-IC-OPTO-DIP6":
+        roles.update(K="return", E="return")
+        supplies = {"supply": 5}
+        # Source B2 collector supply and100ohm load, LED5mA point.
+        resistors.append(("supply", "C", 100))
+        dc("return", "A", 0.005)
+        comparisons = [
+            dict(
+                numeric_contract(contract["expected"][0]),
+                kind="absolute",
+                supply="supply",
+                scale=1000,
+            )
+        ]
+    elif behavior == "BEH-FREQ-XO":
+        roles.update(GND="return", VDD="supply", OE="supply")
+        supplies = {"supply": 3.3}
+        if case == "frequency":
+            analysis = "tran"
+            observe = ["OUT"]
+            step = "100u"
+            stop = "5.02ms"
+            source_frequency = next(
+                f
+                for f in registry.entry(entry_id).research.field_updates
+                if f.field == "quiescent_current_test_frequency"
+            )
+            factor = (
+                source_frequency.value
+                * 1e6
+                / float(
+                    registry.behavior_class(behavior).canonical_payload["parameters"]["f0"][
+                        "default"
+                    ]
+                )
+            )
+            expected = numeric_contract(contract["expected"][0])
+            comparisons = [
+                {
+                    "kind": "frequency",
+                    "node": "OUT",
+                    "threshold": 1.65,
+                    "after": 0.005,
+                    "rise_start": 10,
+                    "rise_end": 210,
+                    "expected": expected["expected"] * factor,
+                    "tolerance": expected["tolerance"],
+                    "source_fact": source_frequency.model_dump(mode="json"),
+                    "derivation": "Same f0*(1+ppm) contract at explicit20MHz variant; unchanged1Hz absolute tolerance. Source B1 measures200 periods from rise10 to210. Startup is5ms source maximum instead of5us bench demonstration.",
+                }
+            ]
+        else:
+            fact = next(
+                f
+                for f in registry.entry(entry_id).research.field_updates
+                if f.field == "quiescent_current_max"
+            )
+            comparisons = [
+                {
+                    "kind": "interval",
+                    "supply": "supply",
+                    "scale": 1000,
+                    "minimum": 0,
+                    "maximum": fact.value,
+                    "source_fact": fact.model_dump(mode="json"),
+                }
+            ]
     else:
         roles.update(GND="return", VCC="supply")
         supplies = {"supply": 4.5}
@@ -157,7 +273,7 @@ def ic_definition(audit, entry_id, case="default"):
                 }
             )
     comps = [CircuitComponent(ref="U1", part_id=entry_id, package=r.package)]
-    nets = {n: [] for n in set(roles.values())}
+    nets = {n: [] for n in set(roles.values()) | supplies.keys()}
     nets.setdefault("return", [])
     for pin, role in r.terminal_roles.items():
         nets[roles[role]].append(PinRef(component="U1", pin=pin))
@@ -214,7 +330,11 @@ def ic_definition(audit, entry_id, case="default"):
 
 def _observations(compiled, identity, output):
     point = parse_operating_point(output) if identity["analysis"] == "op" else None
-    curve = parse_transient(output, analysis="tran") if identity["analysis"] == "tran" else None
+    curve = (
+        parse_transient(output, analysis="tran", limit=100000)
+        if identity["analysis"] == "tran"
+        else None
+    )
     values = []
     for row in identity["comparison"]:
         if point and "supply" in row:
@@ -232,6 +352,21 @@ def _observations(compiled, identity, output):
                 ),
                 None,
             )
+            if row["kind"] == "frequency":
+                crossings = []
+                if series:
+                    for t0, t1, v0, v1 in zip(
+                        curve.time_s, curve.time_s[1:], series.values, series.values[1:]
+                    ):
+                        if t0 >= row["after"] and v0 < row["threshold"] <= v1:
+                            crossings.append(t0 + (t1 - t0) * (row["threshold"] - v0) / (v1 - v0))
+                start, end = row["rise_start"] - 1, row["rise_end"] - 1
+                values.append(
+                    (end - start) / (crossings[end] - crossings[start])
+                    if len(crossings) > end
+                    else None
+                )
+                continue
             if (
                 series is None
                 or not curve.time_s
@@ -253,7 +388,7 @@ def _observations(compiled, identity, output):
 def _matches(row, value):
     if value is None:
         return False
-    if row["kind"] == "absolute":
+    if row["kind"] in {"absolute", "frequency"}:
         return abs(value - row["expected"]) <= row["tolerance"]
     if row["kind"] == "interval":
         return row["minimum"] <= value <= row["maximum"]
@@ -272,7 +407,7 @@ def run_ic_recipes(audit, entry_ids):
     recipes = load_recipes(registry, audit.root)
     receipts = []
     for key in entry_ids:
-        for case in ic_cases(recipes.entries[key].behavior_id):
+        for case in ic_cases(recipes.entries[key].behavior_id, recipes.entries[key]):
             compiled, identity = ic_definition(audit, key, case)
             relative = f"runtime-bench-output/{key}-ic-{case}"
             result = NgspiceAdapter().behavior_circuit(
@@ -317,7 +452,7 @@ def ic_receipt_errors(audit, entry_id):
     registry = BehaviorRegistry(repo_root=audit.root)
     recipe = load_recipes(registry, audit.root).entries[entry_id]
     errors = []
-    for case in ic_cases(recipe.behavior_id):
+    for case in ic_cases(recipe.behavior_id, recipe):
         compiled, identity = ic_definition(audit, entry_id, case)
         path = audit.run_dir / f"runtime-bench-results/{entry_id}-ic-{case}.json"
         if not path.is_file():

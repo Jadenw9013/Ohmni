@@ -13,7 +13,7 @@ from tools.behavior_audit.audit import BehaviorAudit
 from tools.behavior_audit.ic_benches import ic_definition
 
 ROOT = Path(__file__).resolve().parents[1]
-FIRST_IC_BATCH = (104, 105, 106, 110, 111, 112, 114, 115, 119, 120)
+FIRST_IC_BATCH = (103, 104, 105, 106, 107, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120)
 
 
 @pytest.fixture(scope="module")
@@ -96,3 +96,52 @@ def test_shift_register_clock_is_typed_and_all_eight_bits_are_observed():
     assert identity["observe_nets"] == ["Q" + c for c in "ABCDEFGH"]
     assert [r["expected"] for r in identity["comparison"]] == [0, 1, 0, 0, 1, 1, 0, 1]
     assert compiled.netlist.count(" PWL(") == 5
+
+
+def test_sit8008_permutation_preserves_top_view_physical_corners(recipes):
+    recipe = recipes.entries["OHM-146"]
+    assert recipe.package == "7050 SiT8008 reference"
+    assert recipe.pin_role_fact.manufacturer_to_package_terminal == {"1": "2", "2": "3", "3": "4", "4": "1"}
+    compiled, _ = ic_definition(BehaviorAudit(ROOT), "OHM-146", "current")
+    assert compiled.runnable, compiled.problems
+    component = compiled.components[0]
+    assert component.terminal_nodes["3"] == "0"  # Manufacturer pin 2, bottom-right.
+    assert component.terminal_nodes["4"] == component.role_nodes["OUT"]
+    assert component.parameter_evidence["manufacturer_to_package_terminal"]["basis"] == "DERIVED"
+
+
+@pytest.mark.parametrize("mapping", [{}, {"1": "1", "2": "2", "3": "3", "4": "4"}])
+def test_sit8008_missing_or_wrong_permutation_refuses_run(monkeypatch, recipes, mapping):
+    import tools.behavior_audit.ic_benches as probes
+    recipe = recipes.entries["OHM-146"]
+    binding = recipe.pin_role_fact.model_copy(update={"manufacturer_to_package_terminal": mapping})
+    altered = recipes.model_copy(update={"entries": dict(recipes.entries, **{
+        "OHM-146": recipe.model_copy(update={"pin_role_fact": binding})})})
+    monkeypatch.setattr(probes, "load_recipes", lambda *_: altered)
+    compiled, _ = probes.ic_definition(BehaviorAudit(ROOT), "OHM-146", "current")
+    assert not compiled.runnable
+    assert "pin roles" in ";".join(compiled.problems)
+
+
+@pytest.mark.parametrize("entry,role,target", [
+    ("OHM-103", "B", "return"),
+    ("OHM-104", "GND", "OUT"),
+    ("OHM-146", "OE", "OUT"),
+])
+def test_unsupported_connections_refuse_run(monkeypatch, recipes, entry, role, target):
+    import tools.behavior_audit.ic_benches as probes
+    original = probes.compile_circuit
+
+    def changed(circuit, *args, **kwargs):
+        pin = next(p for p, r in recipes.entries[entry].terminal_roles.items() if r == role)
+        source = next(n for n in circuit.nets if any(c.component == "U1" and c.pin == pin for c in n.connections))
+        destination = next(n for n in circuit.nets if n.name == target)
+        connection = next(c for c in source.connections if c.component == "U1" and c.pin == pin)
+        source.connections.remove(connection)
+        destination.connections.append(connection)
+        return original(circuit, *args, **kwargs)
+
+    monkeypatch.setattr(probes, "compile_circuit", changed)
+    compiled, _ = probes.ic_definition(BehaviorAudit(ROOT), entry, "current" if entry == "OHM-146" else "default")
+    assert not compiled.runnable
+    assert any(word in ";".join(compiled.problems) for word in ("isolated", "ground", "same net"))

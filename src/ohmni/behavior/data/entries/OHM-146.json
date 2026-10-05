@@ -19,7 +19,8 @@
     ],
     "conflicts": [
       "The spec4.2mA/1uA values do not match this3.3V revision:4.2mA is the2.5V20MHz maximum;3.3V standby max4.3uA.",
-      "Page1 labels OE-disabled output weakly pulled down,while page2 states high impedance. Retain conflict; cannot silently treat OE and ST alike."
+      "Page1 labels OE-disabled output weakly pulled down,while page2 states high impedance. Retain conflict; cannot silently treat OE and ST alike.",
+      "SiT8008 source pin1 bottom-left differs from library terminal1 top-left; explicit manufacturer1->library2,2->3,3->4,4->1. Generic body height1.8mm versus sourced MEMS0.90mm. No 3D geometry verification."
     ],
     "documents": [
       {
@@ -292,18 +293,63 @@
         ],
         "unit": null,
         "value": "weak_pulldown"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "quiescent_current_test_frequency",
+        "page": 1,
+        "scope": "SiT8008 3.3V current table condition20MHz,no load; explicitly selected runtime frequency,not a claim that all SiT8008 parts have this nominal frequency.",
+        "sources": [
+          "https://www.sitime.com/sites/default/files/mature-datasheets/SiT8008-datasheet.pdf"
+        ],
+        "unit": "MHz",
+        "value": 20
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "manufacturer_top_view_corners",
+        "page": 9,
+        "scope": "Marked top view; underside is mirrored inX; do not copy generic library pin1corner.",
+        "sources": [
+          "https://www.sitime.com/sites/default/files/mature-datasheets/SiT8008-datasheet.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "1": "bottom_left",
+          "2": "bottom_right",
+          "3": "top_right",
+          "4": "top_left"
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "manufacturer_body_height",
+        "page": 9,
+        "scope": "7.0x5.0 SiT8008 MEMS body,0.90+/-0.10mm; not1.8mm generic ceramic default.",
+        "sources": [
+          "https://www.sitime.com/sites/default/files/mature-datasheets/SiT8008-datasheet.pdf"
+        ],
+        "unit": "mm",
+        "value": 0.9
       }
     ],
     "remaining_open_items": [
       "No absolute output-current rating is established;4mA VOH/VOL is a test condition,not an unlimited drive license.",
-      "Drive strength,frequency and output loading need explicit model validation."
+      "Drive strength,frequency and output loading need explicit model validation.",
+      "Runtime uses explicitly selected SiT8008 reference and terminal permutation; generic7050 rendering/marker and manufacturing geometry are not validated."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-146.md",
-      "document_sha256": "abefa349843b820dce8126e738650f83cc9a722f8c6339de4dfac5050d8a78d2",
+      "document_sha256": "2b1e9eec0728cbf8ada05e93a6d2cfb67c656da64b3bb8d1697816f72bb0f1a0",
       "fragment_sha256": null,
       "line": 1
     }

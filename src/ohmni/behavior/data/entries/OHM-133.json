@@ -46,7 +46,7 @@
         "confidence": "H",
         "detail": null,
         "field": "reference_part",
-        "page": 4,
+        "page": 1,
         "scope": "TPS7A8001 DRB VSON8,adjustable",
         "sources": [
           "https://www.ti.com/lit/ds/symlink/tps7a80.pdf"
@@ -165,9 +165,9 @@
         "basis": "MFR_DATASHEET",
         "confidence": "H",
         "detail": null,
-        "field": "feedback_voltage_typical",
+        "field": "internal_reference_voltage_typical",
         "page": 6,
-        "scope": "TPS7A8001 DRB VSON8,adjustable; adjustable",
+        "scope": "TPS7A8001 DRB VSON8,adjustable; adjustable; VNR row, TJ25C typical.",
         "sources": [
           "https://www.ti.com/lit/ds/symlink/tps7a80.pdf"
         ],
@@ -180,7 +180,7 @@
         "detail": null,
         "field": "dropout_voltage_max",
         "page": 6,
-        "scope": "TPS7A8001 DRB VSON8,adjustable; IOUT1A,VIN>=2.5V,FBgrounded",
+        "scope": "TPS7A8001 DRB VSON8,adjustable; IOUT1A,VIN>=2.5V,FBgrounded; general table test scope VOUT+0.5V<=VIN<=6.5V, alongside row-specific VIN>=2.5V and FBgrounded condition.",
         "sources": [
           "https://www.ti.com/lit/ds/symlink/tps7a80.pdf"
         ],
@@ -219,7 +219,7 @@
         "detail": null,
         "field": "enable_low_max",
         "page": 6,
-        "scope": "TPS7A8001 DRB VSON8,adjustable; off",
+        "scope": "TPS7A8001 DRB VSON8,adjustable; off; RL1kohm.",
         "sources": [
           "https://www.ti.com/lit/ds/symlink/tps7a80.pdf"
         ],
@@ -232,12 +232,25 @@
         "detail": null,
         "field": "enable_high_min_above3V6",
         "page": 6,
-        "scope": "TPS7A8001 DRB VSON8,adjustable; VIN>3.6V",
+        "scope": "TPS7A8001 DRB VSON8,adjustable; VIN>3.6V; VIN<=6.5V,RL1kohm.",
         "sources": [
           "https://www.ti.com/lit/ds/symlink/tps7a80.pdf"
         ],
         "unit": "V",
         "value": 1.35
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "H",
+        "detail": null,
+        "field": "feedback_voltage_typical",
+        "page": 17,
+        "scope": "TPS7A8001 adjustable; Equation2 VOUT=0.800*(R1+R2)/R2 establishes nominal feedback voltage from the internal reference; TJ25C typical reference in p6.",
+        "sources": [
+          "https://www.ti.com/lit/ds/symlink/tps7a80.pdf"
+        ],
+        "unit": "V",
+        "value": 0.8
       }
     ],
     "remaining_open_items": [
@@ -249,7 +262,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-133.md",
-      "document_sha256": "bd3028c344a5fd246e04b9a02817378c1689b52c1b367da673740381d653677d",
+      "document_sha256": "b66d101dc17ba170bd784273f66cf9873cb4aa046f0f89178ca4d24c9bb30bd1",
       "fragment_sha256": null,
       "line": 1
     }

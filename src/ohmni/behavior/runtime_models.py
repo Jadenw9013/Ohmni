@@ -49,6 +49,16 @@ class PinRoleFact(BaseModel):
     field: str = "manufacturer_pin_roles"
     scope_contains: str | None = None
     tied_features: list[str] = Field(default_factory=list)
+    manufacturer_to_package_terminal: dict[str, str] = Field(default_factory=dict)
+    permutation_provenance: SourceAnchor | None = None
+
+    @model_validator(mode="after")
+    def explicit_permutation(self):
+        if bool(self.manufacturer_to_package_terminal) != bool(self.permutation_provenance):
+            raise ValueError("manufacturer permutation and its provenance must be supplied together")
+        if len(set(self.manufacturer_to_package_terminal.values())) != len(self.manufacturer_to_package_terminal):
+            raise ValueError("manufacturer permutation must be one-to-one")
+        return self
 
 
 class ReferenceFunction(BaseModel):
@@ -74,6 +84,9 @@ class RuntimeRecipe(BaseModel):
     catalog_parts: list[str] = Field(default_factory=list)
     catalog_identity_pin_map: dict[str, str] = Field(default_factory=dict)
     terminal_roles: dict[str, str]
+    required_ground_roles: list[str] = Field(default_factory=list)
+    required_same_net_roles: list[list[str]] = Field(default_factory=list)
+    required_isolated_roles: list[str] = Field(default_factory=list)
     pin_role_fact: PinRoleFact | None = None
     template_key: str = "netlist_template"
     instance_value_unit: str | None = None
@@ -87,6 +100,18 @@ class RuntimeRecipe(BaseModel):
     ground_strays: dict[str, str] = Field(default_factory=dict, description="Pin role to sourced capacitance parameter; every stray returns to node 0")
     supported_analyses: list[Literal["op", "tran"]] = Field(default_factory=lambda: ["op"])
     limitations: list[str]
+
+    @model_validator(mode="after")
+    def valid_connection_constraints(self):
+        roles = set(self.terminal_roles.values())
+        constrained = set(self.required_ground_roles) | set(self.required_isolated_roles)
+        for group in self.required_same_net_roles:
+            if len(set(group)) < 2:
+                raise ValueError("same-net constraint requires at least two distinct roles")
+            constrained.update(group)
+        if constrained - roles:
+            raise ValueError("connection constraint refers to an unknown terminal role")
+        return self
 
 
 class RuntimeRecipes(BaseModel):

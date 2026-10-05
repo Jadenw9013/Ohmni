@@ -125,5 +125,10 @@ Bicc vcc gnd I={icc0}
 .ends
 
 .tran 1.0000000000000001e-09 3.2000000000000003e-06
-.print tran v(n2) v(n3) v(n4) v(n5) v(n6) v(n7) v(n8) v(n9)
+.control
+set numdgt=15
+run
+print v(n2) v(n3) v(n4) v(n5) v(n6) v(n7) v(n8) v(n9)
+quit
+.endc
 .end

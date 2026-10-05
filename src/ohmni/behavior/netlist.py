@@ -48,6 +48,8 @@ def load_recipes(registry: BehaviorRegistry, root) -> RuntimeRecipes:
                 _validate_anchor(root, parameter.source, key)
         if recipe.template_provenance:
             _validate_anchor(root, recipe.template_provenance, key)
+        if recipe.pin_role_fact and recipe.pin_role_fact.permutation_provenance:
+            _validate_anchor(root, recipe.pin_role_fact.permutation_provenance, key)
     return recipes
 
 
@@ -315,6 +317,12 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
                     role = sourced_roles.pop(feature)
                     if role not in sourced_roles.values():
                         raise ValueError("tied package feature has no matching electrical terminal")
+                if binding.manufacturer_to_package_terminal:
+                    if set(binding.manufacturer_to_package_terminal) != set(sourced_roles):
+                        raise ValueError("manufacturer permutation must cover exactly the sourced terminals")
+                    _validate_anchor(root, binding.permutation_provenance, entry_id)
+                    sourced_roles = {binding.manufacturer_to_package_terminal[pin]: role
+                                     for pin, role in sourced_roles.items()}
                 if sourced_roles != recipe.terminal_roles:
                     raise ValueError("recipe pin roles differ from the sourced manufacturer map")
             terminals = terminal_nodes(circuit, component, entry_id, recipe.terminal_roles, registry,
@@ -325,9 +333,26 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
                 if role in roles and roles[role] != node:
                     raise ValueError(f"internally common {role} terminals are on different nets")
                 roles[role] = node
+            for role in recipe.required_ground_roles:
+                if roles[role] != "0":
+                    raise ValueError(f"this reference model requires {role} on circuit ground")
+            for group in recipe.required_same_net_roles:
+                if len({roles[role] for role in group}) != 1:
+                    raise ValueError(f"this reference model requires roles {group} on the same net")
+            for role in recipe.required_isolated_roles:
+                net = next(n for n in circuit.nets if nodes[n.name] == roles[role])
+                if (net.kind is NetKind.GROUND or net.external_source or len(net.connections) != 1
+                        or any(net.name in (s.positive_net, s.negative_net) for s in excitations)):
+                    raise ValueError(f"unmodeled role {role} must remain isolated")
             values, evidence = _facts(entry, recipe)
             if role_fact:
                 evidence["terminal_roles"] = role_fact.model_dump(mode="json")
+                if recipe.pin_role_fact.manufacturer_to_package_terminal:
+                    evidence["manufacturer_to_package_terminal"] = {
+                        "basis": "DERIVED", "confidence": "H",
+                        "value": recipe.pin_role_fact.manufacturer_to_package_terminal,
+                        "source": recipe.pin_role_fact.permutation_provenance.model_dump(mode="json"),
+                    }
             if recipe.instance_value_unit:
                 if component.value is None or component.value.unit.value != recipe.instance_value_unit:
                     raise ValueError(f"an explicit instance value in {recipe.instance_value_unit} is required")
