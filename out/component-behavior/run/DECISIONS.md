@@ -167,3 +167,11 @@ Stage 3 keeps CircuitIR electrical intent unchanged. Generated runtime recipes j
 ## D026 — Preserve model confidence separately from scoped ratings
 
 The first runtime projection initially took its single confidence label from sourced rating fields. Correct it before committing: the authored resistor model confidence remains M, while its newly re-derived scoped ratings can be H. Carry the complete original class confidence dictionary (including L failure confidence) alongside both labels. A high-confidence power rating cannot upgrade model or failure confidence. Regression explicitly asserts this separation; no electrical numbers or source statuses changed.
+
+## D027 — Runtime temperature and scoped model defaults (2026-10-05)
+
+The three fit-A diode bindings retain the authored proxy and the required tnom/temp25 C. Their current-run forward probes measure0.7255607 V, while the unchanged legacy B1 contract expects0.73039 V +/-0.001 V and its source deck leaves temperature at ngspice default27 C. The runtime acceptance remains failed; neither the baseline nor the temperature requirement is relaxed. BCX56-16 uses the explicitly authorized geometric-mean gain model with primary-source100..250 gain limits at2 V/150 mA/25 C; IS=1e-14 remains ASSUMPTION. MOSFET default bindings are IRFZ44N, IRFP260N and Si7898DP only; unrelated researched alternatives are not silently substituted.
+
+## D028 — Checkpoint regression and byte-preserving sources
+
+Checkpoint015 recorded one local HTTP connection-aborted regression failure. The unchanged12-test server suite passed alone; checkpoint016 reran all four locked regressions and passed1817 fast tests with82 skipped and49 deselected. No test timeout, expected value or tolerance was changed. Git attributes preserve exact behavior spec, gapfill, model-asset and generated-record bytes across checkouts, because source anchors and independent reviews use SHA-256. Current protected spec bytes match HEAD; this changes checkout policy only, not electrical content.

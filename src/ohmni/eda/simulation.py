@@ -580,6 +580,7 @@ class NgspiceAdapter:
             "circuit_hash": compilation.circuit_hash,
             "components": [c.model_dump(mode="json") for c in compilation.components],
             "node_names": compilation.node_names,
+            "source_elements": compilation.source_elements,
             "limitations": compilation.limitations,
             "problems": list(compilation.problems), "rating_status": "not_checked",
             "operating_point": None, "transient": None,

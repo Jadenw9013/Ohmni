@@ -308,3 +308,40 @@ def test_runtime_receipts_relocate_observations_and_reject_stale_inputs(audit, m
     receipt["recipe_source_sha256"] = "0" * 64
     _atomic_json(path, receipt)
     assert any("recipe_source" in e for e in resistor_receipt_errors(audit, "OHM-004"))
+
+
+def test_mosfet_receipt_cannot_replace_captured_current(audit, monkeypatch):
+    from ohmni.eda.simulation import NgspiceAdapter
+    from tools.behavior_audit.runtime_benches import mosfet_receipt_errors, run_mosfet_recipes
+
+    def fake(self, compiled, *, work_dir):
+        branch = compiled.source_elements["drain"]
+        return {"status": "ran", "stdout": f"{branch}#branch = -25\n", "stderr": "",
+                "version_output": "ngspice-42", "problems": [],
+                "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+                "operating_point": {"branch_currents": {branch: {"value": -25}}}}
+    monkeypatch.setattr(NgspiceAdapter, "behavior_circuit", fake)
+    run_mosfet_recipes(audit, ["OHM-098"])
+    assert not mosfet_receipt_errors(audit, "OHM-098")
+    path = audit.run_dir / "runtime-bench-results/OHM-098-op.json"
+    receipt = json.loads(path.read_text())
+    receipt["observed_current"] = 2500
+    _atomic_json(path, receipt)
+    assert any("captured current" in error for error in mosfet_receipt_errors(audit, "OHM-098"))
+
+
+def test_failed_dc_contract_cannot_be_presented_as_passing(audit, monkeypatch):
+    from ohmni.eda.simulation import NgspiceAdapter
+    from tools.behavior_audit.runtime_benches import dc_probe_receipt_errors, run_dc_probes
+
+    def fake(self, compiled, *, work_dir):
+        node = compiled.node_names["anode"]
+        return {"status": "ran", "stdout": f"v({node}) = 0.72556\n", "stderr": "",
+                "version_output": "ngspice-42", "problems": [],
+                "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit"}
+    monkeypatch.setattr(NgspiceAdapter, "behavior_circuit", fake)
+    receipts = run_dc_probes(audit, ["OHM-056"])
+    assert receipts[0]["run_status"] == "failed"
+    path = audit.run_dir / "runtime-bench-results/OHM-056-op.json"
+    _atomic_json(path, dict(receipts[0], run_status="passed", observed=0.73039))
+    assert any("raw observation" in error for error in dc_probe_receipt_errors(audit, "OHM-056"))

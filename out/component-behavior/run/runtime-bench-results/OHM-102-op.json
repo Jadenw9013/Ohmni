@@ -1,0 +1,63 @@
+{
+  "analysis": "op",
+  "bias": {
+    "drain_voltage": 0.29750000000000004,
+    "gate_voltage": 10.0,
+    "source_fact": {
+      "basis": "MFR_DATASHEET",
+      "confidence": "H",
+      "converted_unit": "ohm",
+      "converted_value": 0.085,
+      "detail": null,
+      "field": "on_resistance_typical_max",
+      "page": 2,
+      "scope": "Si7898DP-T1-E3 or -GE3,PowerPAK SO-8 single; TJ25 C,pulse<=300 us,duty<=2 percent",
+      "selected_value": 85,
+      "selected_value_path": [
+        "VGS10_ID3.5A",
+        1
+      ],
+      "sources": [
+        "https://www.vishay.com/docs/71873/si7898dp.pdf"
+      ],
+      "unit": "mohm",
+      "value": {
+        "VGS10_ID3.5A": [
+          68,
+          85
+        ],
+        "VGS6_ID3A": [
+          76,
+          95
+        ]
+      }
+    },
+    "target_resistance": 0.085,
+    "test_current": 3.5
+  },
+  "circuit_hash": "c0bb70b18f5bfaf37038a37bd79fd74142652882a722bf9095cae503076bfcdd",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "entry_id": "OHM-102",
+  "entry_research_sha256": "165a7a891d2f918fba065e400439995072a8c13113332c5f7804b76da5791b28",
+  "expected": {
+    "expected": 0.085,
+    "tolerance": 0.00255
+  },
+  "limits": "Isothermal authored fit at 25 C; no SOA, avalanche, board thermal or destructive-failure acceptance. Uses the unchanged B1 relative fit tolerance with the scoped datasheet on-resistance target.",
+  "netlist_sha256": "dec7ac16fe9575ea5b7c68ecc8ec6f7719b8b11c4ac185973109b7b1186fb88f",
+  "observation_status": "ran",
+  "observed_current": 3.50001,
+  "observed_resistance": 0.08499975714355103,
+  "output_sha256": "95722d3112e244edb6394ffc54e8746891ea75dfed71b412b573f71bee4bfd95",
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-05T19:46:05Z",
+  "raw_output": "runtime-bench-output/OHM-102-op/output.txt",
+  "recipe_source_sha256": "4c2533741d04deee4b7db2db79a600038a2e8e17380c2457f8c0bdd29dd7aeb1",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "source_deck_sha256": "c31895ab76cafe0b97d85e06df2f187db9eac46f931ae1873123d40cc1d3c621",
+  "tolerance_contract": "BEH-TRN-MOSFET/B1",
+  "version_file": "runtime-bench-output/OHM-102-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n",
+  "version_sha256": "2cdcb25fcf77dea87742b9ac629a0b5ba20169e01beb2b59fdd2e41ee348a45d"
+}

@@ -7,15 +7,25 @@ an explicit join between the package and its sourced behavior record.
 from __future__ import annotations
 
 import hashlib
+import json
 import math
 import re
 
 from ..domain.circuit import CircuitIR, NetKind
-from .loader import BehaviorRegistry, BehaviorRegistryError, _json, _validate_anchor
+from .expressions import evaluate
+from .loader import (
+    BehaviorRegistry,
+    BehaviorRegistryError,
+    _find_repo_root,
+    _json,
+    _safe_local_path,
+    _validate_anchor,
+)
 from .runtime_models import (
     BehaviorCompilation,
     BehaviorSelection,
     CompiledComponent,
+    DCExcitation,
     RuntimeRecipe,
     RuntimeRecipes,
 )
@@ -29,6 +39,12 @@ def load_recipes(registry: BehaviorRegistry, root) -> RuntimeRecipes:
             raise BehaviorRegistryError(f"runtime recipe key differs from entry: {key}")
         if recipe.behavior_id not in registry.entry(key).behavior_class_ids:
             raise BehaviorRegistryError(f"runtime recipe class differs from entry: {key}")
+        if recipe.template_override is not None and recipe.template_provenance is None:
+            raise BehaviorRegistryError(f"runtime template requires provenance: {key}")
+        for anchor in [*recipe.inline_assets, *(p.source for p in recipe.derived_parameters.values())]:
+            _validate_anchor(root, anchor, key)
+        if recipe.template_provenance:
+            _validate_anchor(root, recipe.template_provenance, key)
     return recipes
 
 
@@ -85,10 +101,22 @@ def _facts(entry, recipe):
             raise ValueError(f"critical field {binding.field} is unsourced")
         if fact.unit != binding.unit:
             raise ValueError(f"critical field {binding.field} has the wrong unit")
-        if isinstance(fact.value, bool) or not isinstance(fact.value, (int, float)) or not math.isfinite(fact.value):
+        value = fact.value
+        for key in binding.value_path:
+            try:
+                value = value[key]
+            except (KeyError, IndexError, TypeError) as exc:
+                raise ValueError(f"critical field {binding.field} has no selected condition {key}") from exc
+        if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
             raise ValueError(f"critical field {binding.field} needs a finite scalar")
-        values[name] = float(fact.value)
+        values[name] = convert_unit(float(value), binding.unit, binding.output_unit or binding.unit)
         evidence[name] = fact.model_dump(mode="json")
+        if binding.value_path:
+            evidence[name]["selected_value_path"] = binding.value_path
+            evidence[name]["selected_value"] = value
+        if binding.output_unit:
+            evidence[name]["converted_unit"] = binding.output_unit
+            evidence[name]["converted_value"] = values[name]
     return values, evidence
 
 
@@ -96,8 +124,94 @@ def _number(value):
     return format(value, ".17g")
 
 
+def convert_unit(value, source, target):
+    if source == target:
+        return value
+    units = {
+        "V": ("V", 1), "mV": ("V", 1e-3), "A": ("A", 1), "mA": ("A", 1e-3),
+        "uA": ("A", 1e-6), "ohm": ("ohm", 1), "mohm": ("ohm", 1e-3),
+        "W": ("W", 1), "mW": ("W", 1e-3), "F": ("F", 1), "uF": ("F", 1e-6),
+        "nF": ("F", 1e-9), "pF": ("F", 1e-12), "H": ("H", 1), "uH": ("H", 1e-6),
+        "nH": ("H", 1e-9), "s": ("s", 1), "ms": ("s", 1e-3), "us": ("s", 1e-6),
+        "ns": ("s", 1e-9), "C": ("degC", 1), "degC": ("degC", 1),
+    }
+    if source not in units or target not in units or units[source][0] != units[target][0]:
+        raise ValueError(f"unsupported unit conversion {source} -> {target}")
+    return value * units[source][1] / units[target][1]
+
+
+def inline_asset(root, anchor):
+    path = _safe_local_path(root, anchor.document)
+    raw = path.read_bytes()
+    if hashlib.sha256(raw).hexdigest() != anchor.document_sha256:
+        raise ValueError(f"inline model asset changed: {anchor.document}")
+    text = raw.decode("utf-8")
+    if re.search(r"^\s*(?:\.(?:include|inc|lib|control|end)\b|(?:shell|source|write|wrdata)\b)", text, re.IGNORECASE | re.MULTILINE):
+        raise ValueError("inline model asset contains file or analysis commands")
+    validate_mosfet_cards(text)
+    return text
+
+
+def validate_mosfet_cards(text):
+    logical = re.sub(r"\r?\n\s*\+", " ", text)
+    for line in logical.splitlines():
+        if (re.match(r"\s*\.model\s+\S+\s+[NP]MOS\b", line, re.IGNORECASE)
+                and not re.search(r"\bIS\s*=\s*0(?:\.0*)?(?=\s|\))", line, re.IGNORECASE)):
+            raise ValueError("every MOSFET card must explicitly set IS=0")
+
+
+def pin_ground_strays(roles, parameters, parameter_evidence, mapping, reference):
+    """Physical pin capacitance returns only to ground, never across pin pairs."""
+    lines = []
+    for i, (role, parameter) in enumerate(sorted(mapping.items()), 1):
+        if role not in roles or parameter not in parameters:
+            raise ValueError("stray requires an explicit pin role and capacitance parameter")
+        evidence = parameter_evidence[parameter]
+        if evidence.get("converted_unit", evidence.get("unit")) != "F" or parameters[parameter] <= 0:
+            raise ValueError("stray capacitance must be positive and in farads")
+        if roles[role] != "0":
+            lines.append(f"Cstray_{reference}_{i} {roles[role]} 0 {_number(parameters[parameter])}")
+    return lines
+
+
+def _parameter_defaults(behavior, recipe, values, evidence):
+    for alias, name in recipe.class_parameters.items():
+        if alias in values:
+            raise ValueError(f"class default cannot replace a critical or instance value: {alias}")
+        parameter = behavior.canonical_payload["parameters"][name]
+        value = float(parameter["default"])
+        if not math.isfinite(value):
+            raise ValueError("non-finite authored parameter")
+        values[alias], evidence[alias] = value, dict(parameter, source=behavior.source.model_dump(mode="json"))
+    authored = json.dumps(behavior.canonical_payload)
+    for name, parameter in recipe.quoted_parameters.items():
+        if name in values or parameter.source_fragment not in authored or parameter.value_text not in parameter.source_fragment:
+            raise ValueError(f"quoted parameter does not relocate to the authored class: {name}")
+        value = float(parameter.value_text)
+        if not math.isfinite(value):
+            raise ValueError("non-finite quoted parameter")
+        values[name], evidence[name] = value, parameter.model_dump(mode="json")
+    pending = dict(recipe.derived_parameters)
+    while pending:
+        advanced = False
+        for name, parameter in list(pending.items()):
+            try:
+                value = evaluate(parameter.expression, values)
+            except ValueError:
+                continue
+            if name in values:
+                raise ValueError(f"derived parameter cannot replace another value: {name}")
+            values[name] = float(value)
+            evidence[name] = parameter.model_dump(mode="json")
+            del pending[name]
+            advanced = True
+        if not advanced:
+            raise ValueError(f"derived parameter missing input, invalid equation or cycle: {sorted(pending)}")
+
+
 def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: RuntimeRecipes,
-                    selections: dict[str, BehaviorSelection] | None = None, *, analysis="op"):
+                    selections: dict[str, BehaviorSelection] | None = None, *, analysis="op",
+                    excitations: list[DCExcitation] | None = None):
     selections = selections or {}
     problems, components, limitations = [], [], []
     if set(selections) - {c.ref for c in circuit.components}:
@@ -108,7 +222,11 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
     nodes = {net.name: ("0" if net.kind is NetKind.GROUND else f"n{i}")
              for i, net in enumerate(sorted(circuit.nets, key=lambda n: n.name), 1)}
     lines = ["OHMNI sourced behavior circuit", ".options tnom=25", ".temp 25"]
+    assets = {}
+    root = _find_repo_root(registry.directory)
     source_count = 0
+    source_elements = {}
+    excitations = sorted(excitations or [], key=lambda x: (x.positive_net, x.negative_net, x.value.unit.value, x.value.value))
     for i, net in enumerate(sorted(circuit.nets, key=lambda n: n.name), 1):
         if net.external_source:
             typical = net.external_source.voltage.typical
@@ -116,10 +234,27 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
                 problems.append(f"{net.name}: source requires an explicit typical voltage on a non-ground net")
                 continue
             lines.append(f"Vsource{i} {nodes[net.name]} 0 DC {_number(typical.value)}")
+            source_elements[net.name] = f"vsource{i}"
             source_count += 1
             limitations.append(f"{net.name}: ideal declared DC source; source impedance and current limiting are not modeled")
+    voltage_pairs = {frozenset((net.name, ground[0].name)) for net in circuit.nets
+                     if net.external_source and len(ground) == 1}
+    for i, source in enumerate(excitations, 1):
+        if source.positive_net not in nodes or source.negative_net not in nodes:
+            problems.append("An excitation refers to a net outside the circuit")
+            continue
+        pair = frozenset((source.positive_net, source.negative_net))
+        if source.value.unit.value == "V" and pair in voltage_pairs:
+            problems.append("Duplicate ideal voltage sources on the same nets are not allowed")
+            continue
+        if source.value.unit.value == "V":
+            voltage_pairs.add(pair)
+        prefix = "V" if source.value.unit.value == "V" else "I"
+        lines.append(f"{prefix}excitation{i} {nodes[source.positive_net]} {nodes[source.negative_net]} DC {_number(source.value.value)}")
+        source_count += 1
+        limitations.append("Explicit DC test excitation; an ideal stimulus is not physical source capability or evidence")
     if not source_count:
-        problems.append("No explicit external DC source is connected")
+        problems.append("No explicit external DC source or test excitation is connected")
     for i, component in enumerate(sorted(circuit.components, key=lambda c: c.ref), 1):
         selected = selections.get(component.ref)
         candidates = [r for r in recipes.entries.values()
@@ -142,6 +277,21 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
                 raise ValueError("selected package differs from the bound reference model")
             if analysis not in recipe.supported_analyses:
                 raise ValueError(f"analysis {analysis} is not supported by this binding")
+            role_fact = None
+            if recipe.pin_role_fact:
+                binding = recipe.pin_role_fact
+                candidates = [f for f in entry.research.field_updates if f.field == binding.field
+                              and (not binding.scope_contains or binding.scope_contains in f.scope)]
+                if len(candidates) != 1 or candidates[0].basis in {"ASSUMPTION", "RESEARCH_REQUIRED"}:
+                    raise ValueError("a unique sourced pin-role map is required")
+                role_fact = candidates[0]
+                sourced_roles = dict(role_fact.value)
+                for feature in binding.tied_features:
+                    role = sourced_roles.pop(feature)
+                    if role not in sourced_roles.values():
+                        raise ValueError("tied package feature has no matching electrical terminal")
+                if sourced_roles != recipe.terminal_roles:
+                    raise ValueError("recipe pin roles differ from the sourced manufacturer map")
             terminals = terminal_nodes(circuit, component, entry_id, recipe.terminal_roles, registry,
                                        nodes, recipe.catalog_identity_pin_map)
             roles = {}
@@ -151,6 +301,8 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
                     raise ValueError(f"internally common {role} terminals are on different nets")
                 roles[role] = node
             values, evidence = _facts(entry, recipe)
+            if role_fact:
+                evidence["terminal_roles"] = role_fact.model_dump(mode="json")
             if recipe.instance_value_unit:
                 if component.value is None or component.value.unit.value != recipe.instance_value_unit:
                     raise ValueError(f"an explicit instance value in {recipe.instance_value_unit} is required")
@@ -160,18 +312,44 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
                 evidence["value"] = {"basis": "circuit_instance", "unit": recipe.instance_value_unit,
                                      "value": component.value.value}
             behavior = registry.behavior_class(recipe.behavior_id)
-            template = behavior.canonical_payload["model"][recipe.template_key]
+            _parameter_defaults(behavior, recipe, values, evidence)
+            template = recipe.template_override or behavior.canonical_payload["model"][recipe.template_key]
+            if recipe.template_override:
+                if recipe.template_provenance is None:
+                    raise ValueError("template override lacks provenance")
+                _validate_anchor(root, recipe.template_provenance, entry_id)
+            for parameter in recipe.derived_parameters.values():
+                _validate_anchor(root, parameter.source, entry_id)
+            asset_names = {}
+            for anchor in recipe.inline_assets:
+                asset_names[anchor.document.rsplit("/", 1)[-1]] = anchor
+                assets[anchor.document] = inline_asset(root, anchor)
+            kept = []
+            for line in template.splitlines():
+                include = re.match(r"\s*\.(?:include|inc)\s+(.+?)\s*$", line, re.IGNORECASE)
+                if include:
+                    if include[1].strip("\"'") not in asset_names:
+                        raise ValueError("include has no explicit, hashed inline asset binding")
+                else:
+                    kept.append(line)
+            template = "\n".join(kept)
             substitutions = {**roles, **{k: _number(v) for k, v in values.items()}, "ref": f"c{i}"}
             fragment = template.format_map(substitutions)
             if re.search(r"^\s*\.(?:include|inc|lib|control|end)\b", fragment, re.IGNORECASE | re.MULTILINE):
                 raise ValueError("model must be self-contained without includes or analysis commands")
+            original = behavior.canonical_payload["model"][recipe.template_key]
+            if ".nodeset" in original.lower() and ".nodeset" not in fragment.lower():
+                raise ValueError("regulator binding must preserve its authored nodeset")
+            validate_mosfet_cards(fragment)
+            strays = pin_ground_strays(roles, values, evidence, recipe.ground_strays, f"c{i}")
             lines.extend(fragment.splitlines())
+            lines.extend(strays)
             components.append(CompiledComponent(
                 ref=component.ref, entry_id=entry_id, behavior_id=recipe.behavior_id,
                 fidelity=behavior.fidelity, source_status=entry.status.value,
                 confidence=behavior.canonical_payload.get("confidence", {}).get("model", "L"),
                 source_confidence=behavior.canonical_payload.get("confidence", {}),
-                rating_confidence=min((f["confidence"] for f in evidence.values() if "confidence" in f),
+                rating_confidence=min((evidence[k]["confidence"] for k in recipe.critical_facts),
                                       key={"L": 0, "M": 1, "H": 2}.get, default="L"),
                 role_nodes=roles, terminal_nodes=terminals, parameters=values,
                 parameter_evidence=evidence,
@@ -181,10 +359,12 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
             ))
         except (ValueError, KeyError) as exc:
             problems.append(f"{component.ref} ({entry_id}): {exc}")
+    lines.extend(text for _, text in sorted(assets.items()))
     lines.append(".end")
     netlist = None if problems else "\n".join(lines) + "\n"
     return BehaviorCompilation(
         circuit_hash=circuit.content_hash, analysis=analysis, netlist=netlist,
         netlist_sha256=hashlib.sha256(netlist.encode()).hexdigest() if netlist else None,
-        node_names=nodes, components=components, problems=problems, limitations=limitations,
+        node_names=nodes, source_elements=source_elements, excitations=excitations, components=components,
+        problems=problems, limitations=limitations,
     )

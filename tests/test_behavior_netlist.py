@@ -156,3 +156,107 @@ def test_invalid_time_arguments_never_reach_the_solver(registry, recipes, tmp_pa
         compiled, work_dir=tmp_path, analysis="tran", tstep=step, tstop=stop)
     assert result["status"] == "not_run"
     assert "Invalid transient" in ";".join(result["problems"])
+
+
+@pytest.mark.parametrize("entry_id", ["OHM-011", "OHM-012", "OHM-013"])
+def test_power_resistor_equations_come_from_explicit_binding(entry_id, registry, recipes):
+    recipe = recipes.entries[entry_id]
+    circuit = divider(entry_id, recipe.package, entry_id)
+    choices = {c.ref: BehaviorSelection(entry_id=entry_id) for c in circuit.components}
+    compiled = compile_circuit(circuit, registry, recipes, choices)
+    assert compiled.runnable, compiled.problems
+    if entry_id in {"OHM-012", "OHM-013"}:
+        assert compiled.components[0].parameters["u_limit"] ** 2 == pytest.approx(5 * 10000)
+        assert compiled.components[0].parameter_evidence["u_limit"]["basis"] == "DERIVED"
+
+
+@pytest.mark.parametrize("entry_id", ["OHM-098", "OHM-099", "OHM-102"])
+def test_mosfet_binding_selects_the_sourced_pins_and_inlines_assets(entry_id, registry, recipes):
+    from tools.behavior_audit.runtime_benches import mosfet_case
+
+    compiled, point = mosfet_case(registry, recipes, entry_id)
+    assert compiled.runnable, compiled.problems
+    assert ".include" not in compiled.netlist
+    assert "IS=0" in compiled.netlist
+    assert point["source_fact"]["basis"] == "MFR_DATASHEET"
+    assert compiled.components[0].parameters["vds_max"] in {55, 200, 150}
+    assert compiled.components[0].role_nodes == {"G": compiled.node_names["gate"],
+                                                 "D": compiled.node_names["drain"],
+                                                 "S": "0"}
+
+
+def test_manufacturer_pin_permutation_is_checked_again(registry, recipes):
+    from tools.behavior_audit.runtime_benches import mosfet_case
+
+    row = recipes.entries["OHM-098"].model_copy(update={"terminal_roles": {"1": "S", "2": "D", "3": "G"}})
+    changed = recipes.model_copy(update={"entries": dict(recipes.entries, **{"OHM-098": row})})
+    compiled, _ = mosfet_case(registry, changed, "OHM-098")
+    assert not compiled.runnable
+    assert "manufacturer map" in ";".join(compiled.problems)
+
+
+def test_mosfet_asset_requires_explicit_zero_is_and_matching_hash(tmp_path):
+    import hashlib
+
+    from ohmni.behavior.models import SourceAnchor
+    from ohmni.behavior.netlist import inline_asset
+
+    path = tmp_path / "fixture.lib"
+    path.write_text(".model UNIT_NMOS NMOS(LEVEL=1 IS=1e-14)\n")
+    anchor = SourceAnchor(document="fixture.lib", line=1, document_sha256=hashlib.sha256(path.read_bytes()).hexdigest())
+    with pytest.raises(ValueError, match="IS=0"):
+        inline_asset(tmp_path, anchor)
+    path.write_text(".model UNIT_NMOS NMOS(LEVEL=1 IS=0)\n")
+    with pytest.raises(ValueError, match="asset changed"):
+        inline_asset(tmp_path, anchor)
+
+
+def test_expression_evaluator_refuses_unknowns_and_code():
+    from ohmni.behavior.expressions import ExpressionUnavailable, evaluate
+
+    assert evaluate("sqrt(p*R)", {"p": 5, "R": 20}) == 10
+    for expression in ("missing+1", "__import__('os').system('whoami')", "values[0]", "10**10000", "1/0"):
+        with pytest.raises(ExpressionUnavailable):
+            evaluate(expression, {})
+
+
+def test_dc_excitations_are_explicit_and_cannot_override_declared_sources(registry, recipes):
+    from ohmni.behavior.runtime_models import DCExcitation
+
+    circuit = divider()
+    duplicate = DCExcitation(positive_net="supply", negative_net="return", value=Quantity.volts(12))
+    compiled = compile_circuit(circuit, registry, recipes, excitations=[duplicate])
+    assert not compiled.runnable
+    assert any("Duplicate ideal voltage" in p for p in compiled.problems)
+    missing = duplicate.model_copy(update={"positive_net": "not-in-circuit"})
+    assert not compile_circuit(circuit, registry, recipes, excitations=[missing]).runnable
+
+
+def test_pin_strays_are_only_to_ground_and_require_capacitance_evidence():
+    from ohmni.behavior.netlist import pin_ground_strays
+
+    rows = pin_ground_strays({"A": "n1", "B": "n2", "GND": "0"}, {"cin": 2e-12},
+                             {"cin": {"unit": "F"}}, {"A": "cin", "B": "cin", "GND": "cin"}, "c1")
+    assert len(rows) == 2
+    assert all(row.split()[2] == "0" for row in rows)
+    with pytest.raises(ValueError, match="farads"):
+        pin_ground_strays({"A": "n1"}, {"cin": 2}, {"cin": {"unit": "V"}}, {"A": "cin"}, "c1")
+
+
+def test_authored_startup_nodeset_cannot_be_dropped(registry, recipes, monkeypatch):
+    from copy import deepcopy
+
+    original_lookup = registry.behavior_class
+    behavior = original_lookup("BEH-RES-FIXED").model_copy(deep=True)
+    behavior.canonical_payload["model"]["netlist_template"] += ".nodeset v({B})=2.5\n"
+    monkeypatch.setattr(registry, "behavior_class", lambda key: behavior if key == behavior.behavior_id else original_lookup(key))
+    compiled = compile_circuit(divider(), registry, recipes)
+    assert compiled.runnable and ".nodeset v(n1)=2.5" in compiled.netlist
+    override = deepcopy(recipes)
+    row = override.entries["OHM-004"].model_copy(update={
+        "template_override": original_lookup("BEH-RES-FIXED").canonical_payload["model"]["netlist_template"],
+        "template_provenance": behavior.source,
+    })
+    override.entries["OHM-004"] = row
+    result = compile_circuit(divider(), registry, override)
+    assert not result.runnable and any("preserve its authored nodeset" in p for p in result.problems)

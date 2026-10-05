@@ -80,3 +80,5 @@ Seed13643895546496402650 found9 qualification/metadata issues across6 of11 entri
 ## 2026-10-05: third independent Stage 2 review
 
 Added the ten omitted primary-source conditions to BCP56 (OHM-096) and BD139 (OHM-097): open-terminal voltage conditions, ambient/case temperature, pulse qualification and free-air board thermal conditions. Numeric values and pin maps are unchanged. OHM-083 remains unsourced and blocked. The three sampled reviews remain failed historical evidence; corrected records are not claimed independently accepted.
+
+- 2026-10-05 Stage 3: OHM-095 adds BCX56-16 gain limits 100..250 at VCE=2 V, IC=150 mA, Tamb=25 C from Nexperia BCX56_SER Rev13 page6. Default BF follows the spec geometric-mean rule; IS remains an explicit assumption. Original source status is unchanged.

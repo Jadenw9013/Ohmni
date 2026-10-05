@@ -1,0 +1,288 @@
+
+Note: No compatibility mode selected!
+
+
+Circuit: ohmni sourced behavior circuit
+
+Doing analysis at TEMP = 25.000000 and TNOM = 25.000000
+
+
+No. of Data Rows : 1
+	Node                                  Voltage
+	----                                  -------
+	----	-------
+	xc1.cgd_int1                     0.000000e+00
+	xc1.gi                           1.000000e+01
+	n2                               1.000000e+01
+	n1                               4.375000e-01
+
+	Source	Current
+	------	-------
+
+	vsource1#branch                  -2.49999e+01
+	vsource2#branch                  0.000000e+00
+	l.xc1.lcgd#branch                3.505907e-08
+
+ Capacitor models (Fixed capacitor)
+      model                     C
+
+        cap                     0
+         cj                     0
+       cjsw                     0
+       defw                 1e-05
+       defl                     0
+     narrow                     0
+      short                     0
+        del                     0
+        tc1                     0
+        tc2                     0
+         di                     0
+      thick                     0
+     bv_max                 1e+99
+
+ Diode models (Junction Diode model)
+      model        xc1:db_irfz44n
+
+      level                     1
+         is             1.015e-14
+        jsw                     0
+         rs                 0.008
+        trs                     0
+       trs2                     0
+          n                   1.2
+         ns                     1
+         tt               1.4e-08
+       ttt1                     0
+       ttt2                     0
+        cjo             1.545e-09
+         vj                   0.8
+          m                   0.5
+        tm1                     0
+        tm2                     0
+        cjp                     0
+        php                     1
+       mjsw                  0.33
+        ikf                     0
+        ikr                     0
+        nbv                   1.2
+       area                     1
+         pj                     0
+       tlev                     0
+      tlevc                     0
+         eg                  1.11
+        xti                     3
+        cta                     0
+        ctp                     0
+        tpb                     0
+       tphp                     0
+       jtun                     0
+     jtunsw                     0
+       ntun                    30
+     xtitun                     3
+        keg                     1
+         kf                     0
+         af                     1
+         fc                   0.5
+        fcs                   0.5
+         bv                    55
+        ibv                 0.001
+        tcv                     0
+        isr                 1e-14
+         nr                     2
+     fv_max                 1e+99
+     bv_max                 1e+99
+     id_max                 1e+99
+     te_max                 1e+99
+     pd_max                 1e+99
+       rth0                     0
+       cth0                 1e-05
+         lm                     0
+         lp                     0
+         wm                     0
+         wp                     0
+        xom                 1e-06
+        xoi                 1e-06
+         xm                     0
+         xp                     0
+
+ Inductor models (Fixed inductor)
+      model                     L
+
+        ind                     0
+        tc1                     0
+        tc2                     0
+      csect                     0
+        dia                     0
+     length                     0
+         nt                     0
+         mu                     1
+
+ Mos1 models (Level 1 MOSfet model with Meyer capacitance model)
+      model            nm_irfz44n
+
+       type                  nmos
+        vto                     3
+         kp                 10.17
+      gamma                     0
+        phi                   0.6
+     lambda                     0
+         rd                0.0015
+         rs                0.0015
+        cbd                     0
+        cbs                     0
+         is                     0
+         pb                   0.8
+       cgso                     0
+       cgdo                     0
+       cgbo                     0
+        rsh                     0
+         cj                     0
+         mj                   0.5
+       cjsw                     0
+       mjsw                   0.5
+         js                     0
+        tox                     0
+         ld                     0
+         u0                     0
+         fc                   0.5
+       nsub                     0
+        tpg                     0
+        nss                     0
+       tnom                    25
+         kf <<NAN, error = 7>>
+         af <<NAN, error = 7>>
+
+ Resistor models (Simple linear resistor)
+      model                     R
+
+        rsh                     0
+     narrow                     0
+      short                     0
+        tc1                     0
+        tc2                     0
+        tce                     0
+       defw                 1e-05
+          l                 1e-05
+         kf                     0
+         af                     0
+          r                     0
+     bv_max                 1e+99
+         lf                     1
+         wf                     1
+         ef                     1
+
+ ASRC: Arbitrary Source 
+     device            b.xc1.bcgd
+      dtemp                     0
+          i           3.50591e-08
+          v                     0
+   pos_node                     0
+   neg_node                     4
+
+ Capacitor: Fixed capacitor
+     device             c.xc1.cgs
+      model                     C
+capacitance             1.382e-09
+      dtemp                     0
+     bv_max                 1e+99
+          i                     0
+          p                     0
+
+ Diode: Junction Diode model
+     device           d.xc1.dbody
+      model        xc1:db_irfz44n
+    thermal                     0
+         vd               -0.4375
+         id          -4.47645e-13
+         gd           1.00003e-12
+         cd           1.24223e-09
+
+ Inductor: Fixed inductor
+     device            l.xc1.lcgd
+      model                     L
+ inductance                     1
+      dtemp                     0
+         nt                     0
+       flux                     0
+          v                     0
+          i           3.50591e-08
+          p                     0
+
+ Mos1: Level 1 MOSfet model with Meyer capacitance model
+     device              m.xc1.m1
+      model            nm_irfz44n
+         id               24.9999
+         is              -24.9999
+         ig                     0
+         ib            -4.375e-13
+        vgs                9.9625
+        vds                0.3625
+        vbs            -0.0374999
+        von                     3
+      vdsat                6.9625
+         rs                0.0015
+         rd                0.0015
+         gm               3.68663
+        gds                67.122
+        gmb                     0
+        cbd                     0
+        cbs                     0
+        cgs                     0
+        cgd                     0
+        cgb                     0
+       cbd0                     0
+     cbdsw0                     0
+       cbs0                     0
+     cbssw0                     0
+
+ Resistor: Simple linear resistor
+     device              r.xc1.rg
+      model                     R
+ resistance                     3
+         ac                     3
+      dtemp                     0
+     bv_max                 1e+99
+      noisy                     1
+          i                     0
+          p                     0
+
+ VCCS: Voltage controlled current source
+     device            g.xc1.gcgd
+          m                     0
+          i                     0
+          v                9.5625
+          p                     0
+
+ Vsource: Independent voltage source
+     device              vsource2              vsource1
+         dc                    10                0.4375
+      acmag                     0                     0
+      pulse         -         -
+        sin         -         -
+        exp         -         -
+        pwl         -         -
+       sffm         -         -
+         am         -         -
+    trnoise         -         -
+   trrandom         -         -
+    portnum                     0                     0
+         z0                     0                     0
+        pwr                     0                     0
+       freq                     0                     0
+      phase                     0                     0
+          i                     0              -24.9999
+          p                     0              -10.9375
+
+
+
+Total analysis time (seconds) = 0
+
+Total elapsed time (seconds) = 0.004 
+
+Total DRAM available = 31849.426 MB.
+DRAM currently available = 4160.230 MB.
+Maximum ngspice program size =    9.734 MB.
+Current ngspice program size =    9.734 MB.
+
+Warning: no nodes given: .print op
+Using SPARSE 1.3 as Direct Linear Solver

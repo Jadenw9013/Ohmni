@@ -584,11 +584,11 @@ class BehaviorAudit:
         errors.extend(f"{path}: authored netlist has no canonical benchmark contract; not run" for path in unbound)
         runtime_models = self._state().get("model_implementation", {})
         if runtime_models:
-            from .runtime_benches import resistor_receipt_errors
+            from .runtime_benches import runtime_receipt_errors
 
             for entry_id, implementation in runtime_models.items():
                 if implementation in {"implemented", "audited"}:
-                    errors.extend(resistor_receipt_errors(self, entry_id))
+                    errors.extend(runtime_receipt_errors(self, entry_id))
         return CheckResult(
             "AUD-BENCH-001",
             not errors,
