@@ -2,49 +2,45 @@
   "schema_version": 1,
   "scopes": [
     {
-      "id": "DEV-WORKFLOW-1",
-      "type": "repository_infrastructure",
-      "title": "AI Development Workflow Infrastructure",
-      "status": "COMPLETE",
-      "approved_by": "human",
       "approval_evidence": "User instruction authorizing this repository-infrastructure task",
-      "review_policy": "self_review_allowed; independent availability recorded honestly"
+      "approved_by": "human",
+      "id": "DEV-WORKFLOW-1",
+      "review_policy": "self_review_allowed; independent availability recorded honestly",
+      "status": "COMPLETE",
+      "title": "AI Development Workflow Infrastructure",
+      "type": "repository_infrastructure"
     },
     {
-      "id": "M8",
-      "type": "product_milestone",
-      "title": "Ohmni End-User Experience and Demo",
-      "status": "COMPLETE",
-      "approved_by": "human",
       "approval_evidence": "Human instruction: 'Human approval: create and execute Milestone 8.'",
-      "review_policy": "independent review required for COMPLETE; unavailable permits VERIFIED only"
+      "approved_by": "human",
+      "id": "M8",
+      "review_policy": "independent review required for COMPLETE; unavailable permits VERIFIED only",
+      "status": "COMPLETE",
+      "title": "Ohmni End-User Experience and Demo",
+      "type": "product_milestone"
     },
     {
-      "id": "M8-REGRESSION-1",
-      "type": "post_milestone_regression",
-      "title": "Milestone 8 local demo startup operability",
-      "status": "COMPLETE",
-      "approved_by": "human",
       "approval_evidence": "Human instruction reporting the real local Run scripted engineering workflow failure and explicitly authorizing a post-M8 regression fix without beginning Milestone 9.",
-      "review_policy": "focused regression review required; accepted M8 product history remains unchanged"
+      "approved_by": "human",
+      "id": "M8-REGRESSION-1",
+      "review_policy": "focused regression review required; accepted M8 product history remains unchanged",
+      "status": "COMPLETE",
+      "title": "Milestone 8 local demo startup operability",
+      "type": "post_milestone_regression"
     },
     {
-      "id": "M8-REGRESSION-2",
-      "type": "post_milestone_regression",
-      "title": "Milestone 8 demo lifecycle identity and actionable startup diagnostics",
-      "status": "COMPLETE",
-      "approved_by": "human",
       "approval_evidence": "Human instruction reporting the repeated real Windows start failure after M8-RG01 and explicitly authorizing reproduction, remediation, independent verification, commit, and safe push without beginning Milestone 9.",
-      "review_policy": "one focused independent regression review required; accepted M8 product history remains unchanged"
+      "approved_by": "human",
+      "id": "M8-REGRESSION-2",
+      "review_policy": "one focused independent regression review required; accepted M8 product history remains unchanged",
+      "status": "COMPLETE",
+      "title": "Milestone 8 demo lifecycle identity and actionable startup diagnostics",
+      "type": "post_milestone_regression"
     },
     {
-      "id": "M9",
-      "type": "product_milestone",
-      "title": "Ohmni Product Experience and Interactive Design Prototype",
-      "status": "COMPLETE",
-      "approved_by": "human",
       "approval_evidence": "Human instruction 'HUMAN APPROVAL: MILESTONE 9 - Ohmni Product Experience + Interactive Design Prototype', which explicitly approves M9 only and states that M10 and later remain unapproved.",
-      "review_policy": "one bounded independent final review required for COMPLETE; unavailable permits VERIFIED only",
+      "approved_by": "human",
+      "id": "M9",
       "non_goals": [
         "dynamic circuit synthesis or arbitrary project generation",
         "production LLM narration",
@@ -55,25 +51,25 @@
         "simulation",
         "new MCU families",
         "photorealistic STEP component models"
-      ]
-    },
-    {
-      "id": "M9-REMEDIATION-1",
-      "type": "post_milestone_remediation",
-      "title": "M9 beginner-comprehension and interaction remediation",
+      ],
+      "review_policy": "one bounded independent final review required for COMPLETE; unavailable permits VERIFIED only",
       "status": "COMPLETE",
-      "approved_by": "human",
-      "approval_evidence": "Human instruction 'M9 BOUNDED PRODUCT-EXPERIENCE REMEDIATION', classifying the M9 experience as B and authorising a bounded UX remediation covering nine named items plus the open independent-review findings, without beginning M10.",
-      "review_policy": "one focused independent review required; no broad review panel"
+      "title": "Ohmni Product Experience and Interactive Design Prototype",
+      "type": "product_milestone"
     },
     {
-      "id": "M10",
-      "type": "product_milestone",
-      "title": "Deterministic bounded design synthesis",
-      "status": "IN_PROGRESS",
+      "approval_evidence": "Human instruction 'M9 BOUNDED PRODUCT-EXPERIENCE REMEDIATION', classifying the M9 experience as B and authorising a bounded UX remediation covering nine named items plus the open independent-review findings, without beginning M10.",
       "approved_by": "human",
+      "id": "M9-REMEDIATION-1",
+      "review_policy": "one focused independent review required; no broad review panel",
+      "status": "COMPLETE",
+      "title": "M9 beginner-comprehension and interaction remediation",
+      "type": "post_milestone_remediation"
+    },
+    {
       "approval_evidence": "Human instruction on 2026-09-04: 'ok begin implementation now', given immediately after accepting docs/product/HACKATHON_IMPROVEMENT_AUDIT.md and the assistant's stated selection of the highest-priority bounded deterministic synthesis scope. Human instruction on 2026-09-08: 'ok proceed with implementation then', in response to COMPETITIVE_RESEARCH_AND_PRODUCT_STRATEGY.md and the recommended first unit: one editable sensor project, accurate explanations, guided diagnosis, saved revisions, and complete build handoff. This authorizes finishing and integrating A1 first; it does not mark A2/A3, general placement, cloud hosting, simulation, firmware, or physical validation complete.",
-      "review_policy": "one focused independent final review required for COMPLETE; unavailable permits VERIFIED only",
+      "approved_by": "human",
+      "id": "M10",
       "non_goals": [
         "production LLM integration",
         "cloud deployment",
@@ -84,409 +80,402 @@
         "live supplier APIs",
         "firmware generation",
         "arbitrary hardware generation"
-      ]
+      ],
+      "review_policy": "one focused independent final review required for COMPLETE; unavailable permits VERIFIED only",
+      "status": "IN_PROGRESS",
+      "title": "Deterministic bounded design synthesis",
+      "type": "product_milestone"
     },
     {
-      "id": "MCP-SEMANTIC-1",
-      "type": "repository_infrastructure",
-      "title": "Local MCP semantic verification boundary",
-      "status": "COMPLETE",
-      "approved_by": "human",
       "approval_evidence": ".ai/approvals/MCP-SEMANTIC-1.yaml",
-      "review_policy": "Focused boundary review; self review allowed for this bounded infrastructure slice, with independent review availability recorded honestly",
+      "approved_by": "human",
+      "completed_at_commit": "01d17386f5ce904f32f4564cb04b0f55208f521f",
+      "id": "MCP-SEMANTIC-1",
       "non_goals": [
         "Gated schematic, PCB, routing, ERC, DRC, and fabrication MCP tools",
         "SPICE integration",
         "Approval or execution of the rest of V2 commercialization",
         "Remote hosting, authentication, and tenant isolation"
       ],
-      "completed_at_commit": "01d17386f5ce904f32f4564cb04b0f55208f521f"
+      "review_policy": "Focused boundary review; self review allowed for this bounded infrastructure slice, with independent review availability recorded honestly",
+      "status": "COMPLETE",
+      "title": "Local MCP semantic verification boundary",
+      "type": "repository_infrastructure"
     },
     {
-      "id": "PCB-EXPLORER-1",
-      "type": "bounded_product_enhancement",
-      "title": "Generated ESP32 sensor-and-controller board explorer",
-      "status": "COMPLETE",
-      "approved_by": "human",
       "approval_evidence": ".ai/approvals/PCB-EXPLORER-1.yaml",
-      "review_policy": "One focused independent review required for COMPLETE; otherwise VERIFIED only",
+      "approved_by": "human",
+      "id": "PCB-EXPLORER-1",
       "non_goals": [
         "Claims of bench-tested hardware or simulated operation",
         "Decorative electrical parts, invented copper, mounting holes or evidence",
         "Gated MCP EDA tools, SPICE, cloud hosting or the rest of V2",
         "Resuming or marking the parked M10-T05 benchmark complete"
-      ]
+      ],
+      "review_policy": "One focused independent review required for COMPLETE; otherwise VERIFIED only",
+      "status": "COMPLETE",
+      "title": "Generated ESP32 sensor-and-controller board explorer",
+      "type": "bounded_product_enhancement"
     },
     {
-      "id": "VIS-REF-001",
-      "type": "product_enhancement",
-      "title": "Reference-grade visualization and distinct dense educational explorer",
-      "status": "VERIFIED",
-      "approved_by": "human",
       "approval_evidence": ".ai/approvals/VIS-REF-001.yaml",
-      "review_policy": "One focused independent final review; human visual acceptance remains explicit",
+      "approved_by": "human",
+      "followup_approval_evidence": ".ai/approvals/VIS-REF-001-FOLLOWUP.yaml",
+      "human_visual_acceptance": "PENDING",
+      "id": "VIS-REF-001",
       "non_goals": [
         "Electrical design changes",
         "Unrelated milestones, cloud, purchasing, model integration",
         "Publishing private reference image"
       ],
-      "human_visual_acceptance": "PENDING",
-      "followup_approval_evidence": ".ai/approvals/VIS-REF-001-FOLLOWUP.yaml"
+      "review_policy": "One focused independent final review; human visual acceptance remains explicit",
+      "status": "VERIFIED",
+      "title": "Reference-grade visualization and distinct dense educational explorer",
+      "type": "product_enhancement"
     },
     {
-      "id": "DEPLOY-1",
-      "type": "release",
-      "title": "Publish the verified Ohmni update",
-      "status": "COMPLETE",
-      "approved_by": "human",
       "approval_evidence": ".ai/approvals/DEPLOY-1.yaml",
+      "approved_by": "human",
+      "id": "DEPLOY-1",
       "non_goals": [
         "New electrical functionality or verification claims",
         "Unrelated product milestones or services"
-      ]
+      ],
+      "status": "COMPLETE",
+      "title": "Publish the verified Ohmni update",
+      "type": "release"
     },
     {
-      "id": "COMPONENT-SYNTHESIS-1",
-      "type": "product_capability",
-      "title": "Dynamic multimodal component synthesis",
-      "status": "IN_PROGRESS",
-      "approved_by": "human",
       "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
-      "plan_document": "COMPONENT_SYNTHESIS_PLAN.md",
+      "approved_by": "human",
+      "id": "COMPONENT-SYNTHESIS-1",
       "non_goals": [
         "Claiming IPC compliance, validated SPICE behaviour, or arbitrary-chip correctness",
         "Activating imported components in the design catalog before CS-T07 admission gates",
         "Deployment, paid infrastructure provisioning, or hosting migration",
         "Reactivating the parked M10-T05 benchmark or rewriting accepted milestones"
-      ]
+      ],
+      "plan_document": "COMPONENT_SYNTHESIS_PLAN.md",
+      "status": "IN_PROGRESS",
+      "title": "Dynamic multimodal component synthesis",
+      "type": "product_capability"
     },
     {
-      "id": "COMPONENT-ATLAS-BUILDER-1",
-      "type": "product_capability",
-      "title": "3D component atlas and interactive board builder",
-      "status": "IN_PROGRESS",
-      "approved_by": "human",
       "approval_evidence": ".ai/approvals/COMPONENT-ATLAS-BUILDER-1.yaml",
+      "approved_by": "human",
+      "id": "COMPONENT-ATLAS-BUILDER-1",
       "plan_document": "docs/product/THREE_D_COMPONENT_ATLAS_AND_BOARD_BUILDER_PLAN.md",
-      "review_policy": "Task-level self review is recorded honestly; independent final acceptance is required by CAB-T10 before scope COMPLETE."
-    },
-    {
-      "id": "UX-CLARITY-1",
-      "type": "product_improvement",
-      "title": "Readable, purpose-led Ohmni experience",
-      "status": "VERIFIED",
-      "approved_by": "human",
-      "approval_evidence": ".ai/approvals/UX-WORKBENCH-1.yaml",
-      "review_policy": "Self review permitted for this presentation task; independent accessibility and user evaluation remain outstanding, no WCAG conformance claim."
-    },
-    {
-      "id": "REPO-READY-1",
-      "type": "repository_infrastructure",
-      "title": "Verify and publish the existing local work",
-      "status": "COMPLETE",
-      "approved_by": "human",
-      "approval_evidence": ".ai/approvals/REPO-READY-1.yaml",
-      "review_policy": "self_review_allowed for repository preparation; existing product review gates remain unchanged"
-    },
-    {
-      "id": "COMPONENT-3D-STAGE1",
-      "type": "component_library",
-      "title": "Reusable 3D library Stage 1",
-      "status": "COMPLETE",
-      "approved_by": "human",
-      "approval_evidence": ".ai/approvals/COMPONENT-3D-STAGE1.yaml",
-      "review_policy": "Self-review and rendered inspection; user stage acceptance pending before Stage 2.",
-      "human_visual_acceptance": "APPROVED",
-      "acceptance_evidence": ".ai/approvals/COMPONENT-3D-STAGE2.yaml"
-    },
-    {
-      "id": "COMPONENT-3D-STAGE2",
-      "type": "component_library",
-      "title": "Reusable 3D library Stage 2",
-      "status": "COMPLETE",
-      "approved_by": "human",
-      "approval_evidence": ".ai/approvals/COMPONENT-3D-STAGE2.yaml",
-      "review_policy": "Self-review and rendered inspection; human stage acceptance before Stage 3.",
-      "human_visual_acceptance": "APPROVED",
-      "acceptance_evidence": ".ai/approvals/COMPONENT-3D-STAGE3.yaml"
-    },
-    {
-      "id": "COMPONENT-3D-STAGE3",
-      "type": "component_library",
-      "title": "Reusable 3D library Stage 3",
-      "status": "COMPLETE",
-      "approved_by": "human",
-      "approval_evidence": ".ai/approvals/COMPONENT-3D-STAGE3.yaml",
-      "review_policy": "Self-review and rendered inspection; human stage acceptance before Stage 4.",
-      "human_visual_acceptance": "APPROVED",
-      "acceptance_evidence": ".ai/approvals/COMPONENT-3D-STAGE4.yaml"
-    },
-    {
-      "id": "COMPONENT-3D-STAGE4",
-      "type": "component_library",
-      "title": "Reusable 3D library Stage 4: diodes and power packages",
-      "status": "COMPLETE",
-      "approved_by": "human",
-      "approval_evidence": ".ai/approvals/COMPONENT-3D-STAGE4.yaml",
-      "review_policy": "Self-review and rendered inspection; human acceptance before LEDs.",
-      "human_visual_acceptance": "APPROVED",
-      "acceptance_evidence": ".ai/approvals/COMPONENT-3D-STAGE5.yaml"
-    },
-    {
-      "id": "COMPONENT-3D-STAGE5",
-      "type": "component_library",
-      "title": "Reusable 3D library Stage 5: LEDs and leaded passives/cans",
-      "status": "COMPLETE",
-      "approved_by": "human",
-      "approval_evidence": ".ai/approvals/COMPONENT-3D-STAGE5.yaml",
-      "review_policy": "Self-review and rendered inspection; human acceptance before connectors.",
-      "human_visual_acceptance": "APPROVED",
-      "acceptance_evidence": ".ai/approvals/COMPONENT-3D-COMPLETION.yaml"
-    },
-    {
-      "id": "COMPONENT-3D-COMPLETION",
-      "type": "component_library",
-      "title": "Complete remaining 63 entries and integrate all 180",
-      "status": "REVIEW",
-      "approved_by": "human",
-      "approval_evidence": ".ai/approvals/COMPONENT-3D-COMPLETION.yaml",
-      "review_policy": "Tests and commit after every ordered group; no intervening human gate. Final human library review.",
-      "implementation_complete": true,
-      "human_library_review": "PENDING"
-    },
-    {
-      "id": "COMPONENT-BEHAVIOR-STAGE1",
-      "type": "component_behavior",
-      "title": "Component behavior foundation and evidence registry",
-      "status": "REVIEW",
-      "approved_by": "human",
-      "approval_evidence": ".ai/approvals/COMPONENT-BEHAVIOR-STAGE1.yaml",
-      "review_policy": "Deterministic generation and validation plus focused self-review; stop at the Stage 1 human gate.",
-      "implementation_complete": true,
-      "human_stage_gate": "APPROVED",
-      "acceptance_evidence": ".ai/approvals/COMPONENT-BEHAVIOR-COMPLETION.yaml"
-    },
-    {
-      "id": "COMPONENT-BEHAVIOR-COMPLETION",
-      "type": "component_behavior",
-      "title": "Audited component behavior Stages 2 through 7",
+      "review_policy": "Task-level self review is recorded honestly; independent final acceptance is required by CAB-T10 before scope COMPLETE.",
       "status": "IN_PROGRESS",
+      "title": "3D component atlas and interactive board builder",
+      "type": "product_capability"
+    },
+    {
+      "approval_evidence": ".ai/approvals/UX-WORKBENCH-1.yaml",
       "approved_by": "human",
+      "id": "UX-CLARITY-1",
+      "review_policy": "Self review permitted for this presentation task; independent accessibility and user evaluation remain outstanding, no WCAG conformance claim.",
+      "status": "VERIFIED",
+      "title": "Readable, purpose-led Ohmni experience",
+      "type": "product_improvement"
+    },
+    {
+      "approval_evidence": ".ai/approvals/REPO-READY-1.yaml",
+      "approved_by": "human",
+      "id": "REPO-READY-1",
+      "review_policy": "self_review_allowed for repository preparation; existing product review gates remain unchanged",
+      "status": "COMPLETE",
+      "title": "Verify and publish the existing local work",
+      "type": "repository_infrastructure"
+    },
+    {
+      "acceptance_evidence": ".ai/approvals/COMPONENT-3D-STAGE2.yaml",
+      "approval_evidence": ".ai/approvals/COMPONENT-3D-STAGE1.yaml",
+      "approved_by": "human",
+      "human_visual_acceptance": "APPROVED",
+      "id": "COMPONENT-3D-STAGE1",
+      "review_policy": "Self-review and rendered inspection; user stage acceptance pending before Stage 2.",
+      "status": "COMPLETE",
+      "title": "Reusable 3D library Stage 1",
+      "type": "component_library"
+    },
+    {
+      "acceptance_evidence": ".ai/approvals/COMPONENT-3D-STAGE3.yaml",
+      "approval_evidence": ".ai/approvals/COMPONENT-3D-STAGE2.yaml",
+      "approved_by": "human",
+      "human_visual_acceptance": "APPROVED",
+      "id": "COMPONENT-3D-STAGE2",
+      "review_policy": "Self-review and rendered inspection; human stage acceptance before Stage 3.",
+      "status": "COMPLETE",
+      "title": "Reusable 3D library Stage 2",
+      "type": "component_library"
+    },
+    {
+      "acceptance_evidence": ".ai/approvals/COMPONENT-3D-STAGE4.yaml",
+      "approval_evidence": ".ai/approvals/COMPONENT-3D-STAGE3.yaml",
+      "approved_by": "human",
+      "human_visual_acceptance": "APPROVED",
+      "id": "COMPONENT-3D-STAGE3",
+      "review_policy": "Self-review and rendered inspection; human stage acceptance before Stage 4.",
+      "status": "COMPLETE",
+      "title": "Reusable 3D library Stage 3",
+      "type": "component_library"
+    },
+    {
+      "acceptance_evidence": ".ai/approvals/COMPONENT-3D-STAGE5.yaml",
+      "approval_evidence": ".ai/approvals/COMPONENT-3D-STAGE4.yaml",
+      "approved_by": "human",
+      "human_visual_acceptance": "APPROVED",
+      "id": "COMPONENT-3D-STAGE4",
+      "review_policy": "Self-review and rendered inspection; human acceptance before LEDs.",
+      "status": "COMPLETE",
+      "title": "Reusable 3D library Stage 4: diodes and power packages",
+      "type": "component_library"
+    },
+    {
+      "acceptance_evidence": ".ai/approvals/COMPONENT-3D-COMPLETION.yaml",
+      "approval_evidence": ".ai/approvals/COMPONENT-3D-STAGE5.yaml",
+      "approved_by": "human",
+      "human_visual_acceptance": "APPROVED",
+      "id": "COMPONENT-3D-STAGE5",
+      "review_policy": "Self-review and rendered inspection; human acceptance before connectors.",
+      "status": "COMPLETE",
+      "title": "Reusable 3D library Stage 5: LEDs and leaded passives/cans",
+      "type": "component_library"
+    },
+    {
+      "approval_evidence": ".ai/approvals/COMPONENT-3D-COMPLETION.yaml",
+      "approved_by": "human",
+      "human_library_review": "PENDING",
+      "id": "COMPONENT-3D-COMPLETION",
+      "implementation_complete": true,
+      "review_policy": "Tests and commit after every ordered group; no intervening human gate. Final human library review.",
+      "status": "REVIEW",
+      "title": "Complete remaining 63 entries and integrate all 180",
+      "type": "component_library"
+    },
+    {
+      "acceptance_evidence": ".ai/approvals/COMPONENT-BEHAVIOR-COMPLETION.yaml",
+      "approval_evidence": ".ai/approvals/COMPONENT-BEHAVIOR-STAGE1.yaml",
+      "approved_by": "human",
+      "human_stage_gate": "APPROVED",
+      "id": "COMPONENT-BEHAVIOR-STAGE1",
+      "implementation_complete": true,
+      "review_policy": "Deterministic generation and validation plus focused self-review; stop at the Stage 1 human gate.",
+      "status": "REVIEW",
+      "title": "Component behavior foundation and evidence registry",
+      "type": "component_behavior"
+    },
+    {
       "approval_evidence": ".ai/approvals/COMPONENT-BEHAVIOR-COMPLETION.yaml",
-      "review_policy": "Deterministic checkpoint audit at every boundary plus fresh-context verifier sampling after research stages; final human review of FINAL_REPORT.md."
+      "approved_by": "human",
+      "id": "COMPONENT-BEHAVIOR-COMPLETION",
+      "review_policy": "Deterministic checkpoint audit at every boundary plus fresh-context verifier sampling after research stages; final human review of FINAL_REPORT.md.",
+      "status": "IN_PROGRESS",
+      "title": "Audited component behavior Stages 2 through 7",
+      "type": "component_behavior"
     }
   ],
   "tasks": [
     {
-      "id": "DEV-WF-001",
-      "scope": "DEV-WORKFLOW-1",
-      "milestone": null,
-      "title": "Install AI-operable development workflow",
-      "status": "COMPLETE",
-      "priority": 100,
-      "dependencies": [],
-      "goal": "Make repository state sufficient for safe continuation across fresh coding-agent sessions.",
       "acceptance_criteria": [
         "Canonical agent manual and machine-readable state exist",
         "Approval, task, review, verification, and recovery boundaries are validated",
         "No future product milestone is approved",
         "Existing product tests remain passing"
       ],
+      "blockers": [],
+      "dependencies": [],
+      "goal": "Make repository state sufficient for safe continuation across fresh coding-agent sessions.",
+      "id": "DEV-WF-001",
+      "implementation": {
+        "completed_at_commit": "7f73d2a",
+        "started_at_commit": "43ffac5"
+      },
+      "milestone": null,
+      "priority": 100,
+      "review": {
+        "independent": false,
+        "required": false,
+        "status": "SELF_REVIEW_PASSED"
+      },
+      "scope": "DEV-WORKFLOW-1",
+      "status": "COMPLETE",
+      "title": "Install AI-operable development workflow",
       "verification": {
+        "record": ".ai/verification/DEV-WF-001.yaml",
         "required": [
           "workflow_tests",
           "fast_tests",
           "integration_tests",
           "full_tests"
-        ],
-        "record": ".ai/verification/DEV-WF-001.yaml"
-      },
-      "implementation": {
-        "started_at_commit": "43ffac5",
-        "completed_at_commit": "7f73d2a"
-      },
-      "review": {
-        "required": false,
-        "status": "SELF_REVIEW_PASSED",
-        "independent": false
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "M8-T01",
-      "scope": "M8",
-      "milestone": "M8",
-      "title": "Create truthful demo application projection",
-      "status": "COMPLETE",
-      "priority": 100,
-      "dependencies": [],
-      "goal": "Project existing structured design, evidence, verification, physical, manufacturing, BOM, and release results into one frontend-safe contract without duplicating engineering decisions.",
       "acceptance_criteria": [
         "Contract distinguishes every verification layer",
         "Requirements/evidence/repair/notebook/cost unknowns are preserved",
         "Artifact lineage and stale state are explicit"
       ],
+      "blockers": [],
+      "dependencies": [],
+      "goal": "Project existing structured design, evidence, verification, physical, manufacturing, BOM, and release results into one frontend-safe contract without duplicating engineering decisions.",
+      "id": "M8-T01",
+      "implementation": {
+        "completed_at_commit": "a852502",
+        "started_at_commit": "69d883b"
+      },
+      "milestone": "M8",
+      "priority": 100,
+      "review": {
+        "independent": false,
+        "required": false,
+        "status": "SELF_REVIEW_PASSED"
+      },
+      "scope": "M8",
+      "status": "COMPLETE",
+      "title": "Create truthful demo application projection",
       "verification": {
+        "record": ".ai/verification/M8-T01.yaml",
         "required": [
           "unit_tests",
           "architecture_tests"
-        ],
-        "record": ".ai/verification/M8-T01.yaml"
-      },
-      "implementation": {
-        "started_at_commit": "69d883b",
-        "completed_at_commit": "a852502"
-      },
-      "review": {
-        "required": false,
-        "status": "SELF_REVIEW_PASSED",
-        "independent": false
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "M8-T02",
-      "scope": "M8",
-      "milestone": "M8",
-      "title": "Build engineering-instrument web experience",
-      "status": "COMPLETE",
-      "priority": 90,
-      "dependencies": [
-        "M8-T01"
-      ],
-      "goal": "Build the responsive request, requirements, evidence, repair, notebook, verification ladder, artifact, BOM, assembly, and release surfaces following the brand guide.",
       "acceptance_criteria": [
         "All core UX surfaces render truthful statuses",
         "UNKNOWN and warnings remain visible",
         "Schematic and PCB views derive from actual artifact geometry",
         "No verification logic exists in the frontend"
       ],
-      "verification": {
-        "required": [
-          "frontend_tests",
-          "accessibility_structural_tests"
-        ],
-        "record": ".ai/verification/M8-T02.yaml"
-      },
-      "implementation": {
-        "started_at_commit": "bb611fe",
-        "completed_at_commit": "0ea4762"
-      },
-      "review": {
-        "required": false,
-        "status": "SELF_REVIEW_PASSED",
-        "independent": false
-      },
-      "blockers": []
-    },
-    {
-      "id": "M8-T03",
-      "scope": "M8",
-      "milestone": "M8",
-      "title": "Add asynchronous deterministic demo execution",
-      "status": "COMPLETE",
-      "priority": 80,
+      "blockers": [],
       "dependencies": [
         "M8-T01"
       ],
-      "goal": "Expose a local asynchronous application boundary that executes the real scripted repair and engineering pipeline without live AI or network dependencies.",
+      "goal": "Build the responsive request, requirements, evidence, repair, notebook, verification ladder, artifact, BOM, assembly, and release surfaces following the brand guide.",
+      "id": "M8-T02",
+      "implementation": {
+        "completed_at_commit": "0ea4762",
+        "started_at_commit": "bb611fe"
+      },
+      "milestone": "M8",
+      "priority": 90,
+      "review": {
+        "independent": false,
+        "required": false,
+        "status": "SELF_REVIEW_PASSED"
+      },
+      "scope": "M8",
+      "status": "COMPLETE",
+      "title": "Build engineering-instrument web experience",
+      "verification": {
+        "record": ".ai/verification/M8-T02.yaml",
+        "required": [
+          "frontend_tests",
+          "accessibility_structural_tests"
+        ]
+      }
+    },
+    {
       "acceptance_criteria": [
         "UI initiation starts a real job",
         "Progress never claims uncompleted stages",
         "Core demo is network-independent",
         "Artifact download and exact fingerprints are exposed"
       ],
+      "blockers": [],
+      "dependencies": [
+        "M8-T01"
+      ],
+      "goal": "Expose a local asynchronous application boundary that executes the real scripted repair and engineering pipeline without live AI or network dependencies.",
+      "id": "M8-T03",
+      "implementation": {
+        "completed_at_commit": "0453db4",
+        "started_at_commit": "0ea4762"
+      },
+      "milestone": "M8",
+      "priority": 80,
+      "review": {
+        "independent": false,
+        "required": false,
+        "status": "SELF_REVIEW_PASSED"
+      },
+      "scope": "M8",
+      "status": "COMPLETE",
+      "title": "Add asynchronous deterministic demo execution",
       "verification": {
+        "record": ".ai/verification/M8-T03.yaml",
         "required": [
           "api_tests",
           "integration_tests"
-        ],
-        "record": ".ai/verification/M8-T03.yaml"
-      },
-      "implementation": {
-        "started_at_commit": "0ea4762",
-        "completed_at_commit": "0453db4"
-      },
-      "review": {
-        "required": false,
-        "status": "SELF_REVIEW_PASSED",
-        "independent": false
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "M8-T04",
-      "scope": "M8",
-      "milestone": "M8",
-      "title": "Verify and harden the complete demo journey",
-      "status": "COMPLETE",
-      "priority": 70,
-      "dependencies": [
-        "M8-T02",
-        "M8-T03"
-      ],
-      "goal": "Exercise the real flawed-proposal-to-release journey, protect artifact freshness, update documentation, and collect milestone evidence.",
       "acceptance_criteria": [
         "Major user journey consumes real structured results",
         "0 DRC violations and 0 unrouted reproduced",
         "Existing backend gates pass",
         "Demo run instructions are documented"
       ],
+      "blockers": [],
+      "dependencies": [
+        "M8-T02",
+        "M8-T03"
+      ],
+      "goal": "Exercise the real flawed-proposal-to-release journey, protect artifact freshness, update documentation, and collect milestone evidence.",
+      "id": "M8-T04",
+      "implementation": {
+        "completed_at_commit": "ff4309a",
+        "started_at_commit": "0453db4"
+      },
+      "milestone": "M8",
+      "priority": 70,
+      "review": {
+        "independent": false,
+        "required": false,
+        "status": "SELF_REVIEW_PASSED"
+      },
+      "scope": "M8",
+      "status": "COMPLETE",
+      "title": "Verify and harden the complete demo journey",
       "verification": {
+        "record": ".ai/verification/M8-T04.yaml",
         "required": [
           "fast_tests",
           "integration_tests",
           "full_tests",
           "manual_ui_review"
-        ],
-        "record": ".ai/verification/M8-T04.yaml"
-      },
-      "implementation": {
-        "started_at_commit": "0453db4",
-        "completed_at_commit": "ff4309a"
-      },
-      "review": {
-        "required": false,
-        "status": "SELF_REVIEW_PASSED",
-        "independent": false
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "M8-T05",
-      "scope": "M8",
-      "milestone": "M8",
-      "title": "Review and close Milestone 8",
-      "status": "COMPLETE",
-      "priority": 60,
-      "dependencies": [
-        "M8-T04"
-      ],
-      "goal": "Run repository-backed review and completion gates, resolve blocking findings, and record the accepted Milestone 8 baseline.",
       "acceptance_criteria": [
         "Review state is honest",
         "No open BLOCKER/HIGH findings",
         "Task and milestone ledgers match commits",
         "No Milestone 9 is approved"
       ],
-      "verification": {
-        "required": [
-          "state_validation",
-          "review_gate"
-        ],
-        "record": ".ai/verification/M8-R07-R15.yaml"
-      },
+      "blockers": [],
+      "dependencies": [
+        "M8-T04"
+      ],
+      "goal": "Run repository-backed review and completion gates, resolve blocking findings, and record the accepted Milestone 8 baseline.",
+      "id": "M8-T05",
       "implementation": {
-        "started_at_commit": "ff4309a",
-        "remediation_commit": "371e0a4",
+        "completed_at_commit": "db4e6dc",
+        "latest_remediation_commit": "3a6f9d3",
+        "latest_remediation_started_at_commit": "db1cca2",
         "prior_remediation_starts": [
           "fd4352b",
           "6bef107",
           "61e5f4e",
           "9318005"
         ],
-        "latest_remediation_started_at_commit": "db1cca2",
-        "latest_remediation_commit": "3a6f9d3",
+        "remediation_commit": "371e0a4",
         "remediation_commits": [
           "371e0a4",
           "93a0a10",
@@ -495,25 +484,28 @@
           "e178b0d",
           "3a6f9d3"
         ],
-        "completed_at_commit": "db4e6dc"
+        "started_at_commit": "ff4309a"
       },
-      "review": {
-        "required": true,
-        "status": "PASSED",
-        "independent": true
-      },
+      "milestone": "M8",
+      "priority": 60,
       "remediation_authorization": "Standing human authorization plus bounded-review correction: remediate current in-scope M8-R07 and M8-R13 HIGH findings; fix directly related small M8-R14 MEDIUM and M8-R15 LOW; run the canonical full suite once; then launch exactly one focused final independent reviewer. Previously confirmed findings stay closed absent a reproduced regression. No further parallel/broad M8 panels. Do not begin or approve M9.",
-      "blockers": []
+      "review": {
+        "independent": true,
+        "required": true,
+        "status": "PASSED"
+      },
+      "scope": "M8",
+      "status": "COMPLETE",
+      "title": "Review and close Milestone 8",
+      "verification": {
+        "record": ".ai/verification/M8-R07-R15.yaml",
+        "required": [
+          "state_validation",
+          "review_gate"
+        ]
+      }
     },
     {
-      "id": "M8-RG01",
-      "scope": "M8-REGRESSION-1",
-      "milestone": "M8",
-      "title": "Restore documented local demo startup and completion",
-      "status": "COMPLETE",
-      "priority": 100,
-      "dependencies": [],
-      "goal": "Make one documented local demo server own its endpoint exclusively and prove the real browser-to-server golden workflow starts and completes.",
       "acceptance_criteria": [
         "The documented command starts one exclusive local server",
         "The loaded UI starts the server-owned deterministic fixture",
@@ -522,38 +514,38 @@
         "Artifact integrity and verification truth are unchanged",
         "No Milestone 9 work is begun or approved"
       ],
+      "blockers": [],
+      "dependencies": [],
+      "goal": "Make one documented local demo server own its endpoint exclusively and prove the real browser-to-server golden workflow starts and completes.",
+      "id": "M8-RG01",
+      "implementation": {
+        "completed_at_commit": "5033189",
+        "remediation_commit": "1b2d0b9",
+        "started_at_commit": "52a0eeb"
+      },
+      "milestone": "M8",
+      "priority": 100,
+      "remediation_authorization": "Direct human authorization to diagnose and fix this post-M8 operability regression; do not begin or approve M9.",
+      "review": {
+        "independent": true,
+        "required": true,
+        "status": "PASSED"
+      },
+      "scope": "M8-REGRESSION-1",
+      "status": "COMPLETE",
+      "title": "Restore documented local demo startup and completion",
       "verification": {
+        "record": ".ai/verification/M8-REGRESSION-1.yaml",
         "required": [
           "state_validation",
           "focused_server_tests",
           "frontend_tests",
           "fast_tests",
           "documented_command_browser_smoke"
-        ],
-        "record": ".ai/verification/M8-REGRESSION-1.yaml"
-      },
-      "implementation": {
-        "started_at_commit": "52a0eeb",
-        "remediation_commit": "1b2d0b9",
-        "completed_at_commit": "5033189"
-      },
-      "review": {
-        "required": true,
-        "status": "PASSED",
-        "independent": true
-      },
-      "remediation_authorization": "Direct human authorization to diagnose and fix this post-M8 operability regression; do not begin or approve M9.",
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "M8-RG02",
-      "scope": "M8-REGRESSION-2",
-      "milestone": "M8",
-      "title": "Bind the local demo UI, API, and jobs to one live server generation",
-      "status": "COMPLETE",
-      "priority": 100,
-      "dependencies": [],
-      "goal": "Make retained, refreshed, restarted, and mismatched local demo states detectable and actionable while proving the exact Windows browser workflow still completes truthfully.",
       "acceptance_criteria": [
         "The documented Windows command leaves exactly one usable listener",
         "The real form submission creates a server-owned job and progresses beyond zero",
@@ -566,7 +558,28 @@
         "One focused independent review passes",
         "No Milestone 9 work is begun or approved"
       ],
+      "blockers": [],
+      "dependencies": [],
+      "goal": "Make retained, refreshed, restarted, and mismatched local demo states detectable and actionable while proving the exact Windows browser workflow still completes truthfully.",
+      "id": "M8-RG02",
+      "implementation": {
+        "completed_at_commit": "784c257",
+        "started_at_commit": "0ecd162"
+      },
+      "milestone": "M8",
+      "priority": 100,
+      "remediation_authorization": "Direct human authorization for the repeated post-M8 Windows operability regression; do not begin or approve M9.",
+      "review": {
+        "independent": true,
+        "record": "M8-RG02-REV-INDEPENDENT-FINAL",
+        "required": true,
+        "status": "PASSED"
+      },
+      "scope": "M8-REGRESSION-2",
+      "status": "COMPLETE",
+      "title": "Bind the local demo UI, API, and jobs to one live server generation",
       "verification": {
+        "record": ".ai/verification/M8-REGRESSION-2.yaml",
         "required": [
           "state_validation",
           "focused_server_tests",
@@ -576,31 +589,10 @@
           "fast_tests",
           "integration_tests",
           "full_tests_if_appropriate"
-        ],
-        "record": ".ai/verification/M8-REGRESSION-2.yaml"
-      },
-      "implementation": {
-        "started_at_commit": "0ecd162",
-        "completed_at_commit": "784c257"
-      },
-      "review": {
-        "required": true,
-        "status": "PASSED",
-        "independent": true,
-        "record": "M8-RG02-REV-INDEPENDENT-FINAL"
-      },
-      "remediation_authorization": "Direct human authorization for the repeated post-M8 Windows operability regression; do not begin or approve M9.",
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "M9-T01",
-      "scope": "M9",
-      "milestone": "M9",
-      "title": "Project the product experience from verified reports",
-      "status": "COMPLETE",
-      "priority": 100,
-      "dependencies": [],
-      "goal": "Add a product-shaped projection beside the pipeline projection, deriving functional systems and signal flows from authoritative topology without deciding any engineering truth.",
       "acceptance_criteria": [
         "Every component is grouped into exactly one functional system with a stated basis",
         "Flows name only nets, pins and refs that exist in CircuitIR",
@@ -608,72 +600,70 @@
         "UNKNOWN, UNSUPPORTED and NOT_YET_VERIFIED survive the projection unchanged",
         "No PASS/FAIL is computed in the projection layer"
       ],
+      "blockers": [],
+      "dependencies": [],
+      "goal": "Add a product-shaped projection beside the pipeline projection, deriving functional systems and signal flows from authoritative topology without deciding any engineering truth.",
+      "id": "M9-T01",
+      "implementation": {
+        "completed_at_commit": "d8909b1",
+        "started_at_commit": "784c257"
+      },
+      "milestone": "M9",
+      "priority": 100,
+      "review": {
+        "independent": false,
+        "required": false,
+        "status": "NOT_REQUIRED"
+      },
+      "scope": "M9",
+      "status": "COMPLETE",
+      "title": "Project the product experience from verified reports",
       "verification": {
+        "record": ".ai/verification/M9.yaml",
         "required": [
           "state_validation",
           "fast_tests",
           "frontend_tests"
-        ],
-        "record": ".ai/verification/M9.yaml"
-      },
-      "implementation": {
-        "started_at_commit": "784c257",
-        "completed_at_commit": "d8909b1"
-      },
-      "review": {
-        "required": false,
-        "status": "NOT_REQUIRED",
-        "independent": false
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "M9-T02",
-      "scope": "M9",
-      "milestone": "M9",
-      "title": "Build the interactive board and schematic visualization",
-      "status": "COMPLETE",
-      "priority": 90,
-      "dependencies": [
-        "M9-T01"
-      ],
-      "goal": "Implement a dependency-free 3D board renderer, schematic rendering, and the schematic-to-board transition, architected so a WebGL backend can replace the rasterizer later.",
       "acceptance_criteria": [
         "Rotate, zoom, pan, flip, select, and layer visibility all work from projected geometry",
         "No coordinate is invented; board thickness is labelled display-only",
         "Scene construction and camera projection are pure and unit tested",
         "Highlighting is set membership over backend-supplied refs and nets"
       ],
+      "blockers": [],
+      "dependencies": [
+        "M9-T01"
+      ],
+      "goal": "Implement a dependency-free 3D board renderer, schematic rendering, and the schematic-to-board transition, architected so a WebGL backend can replace the rasterizer later.",
+      "id": "M9-T02",
+      "implementation": {
+        "completed_at_commit": "d8909b1",
+        "started_at_commit": "784c257"
+      },
+      "milestone": "M9",
+      "priority": 90,
+      "review": {
+        "independent": false,
+        "required": false,
+        "status": "NOT_REQUIRED"
+      },
+      "scope": "M9",
+      "status": "COMPLETE",
+      "title": "Build the interactive board and schematic visualization",
       "verification": {
+        "record": ".ai/verification/M9.yaml",
         "required": [
           "state_validation",
           "fast_tests",
           "frontend_tests"
-        ],
-        "record": ".ai/verification/M9.yaml"
-      },
-      "implementation": {
-        "started_at_commit": "784c257",
-        "completed_at_commit": "d8909b1"
-      },
-      "review": {
-        "required": false,
-        "status": "NOT_REQUIRED",
-        "independent": false
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "M9-T03",
-      "scope": "M9",
-      "milestone": "M9",
-      "title": "Rebuild the web experience around the user's idea",
-      "status": "COMPLETE",
-      "priority": 80,
-      "dependencies": [
-        "M9-T02"
-      ],
-      "goal": "Replace the pipeline-shaped page with the Describe/Agree/Design/Review/Build journey, progressive disclosure, the repair replay, flows, exploded systems and the guided tour.",
       "acceptance_criteria": [
         "A new visitor can state what Ohmni does from the first screen",
         "Assumptions are visually distinct from stated requirements",
@@ -683,36 +673,36 @@
         "Advanced evidence remains reachable without dominating the beginner path",
         "The frontend generates no engineering verdicts"
       ],
+      "blockers": [],
+      "dependencies": [
+        "M9-T02"
+      ],
+      "goal": "Replace the pipeline-shaped page with the Describe/Agree/Design/Review/Build journey, progressive disclosure, the repair replay, flows, exploded systems and the guided tour.",
+      "id": "M9-T03",
+      "implementation": {
+        "completed_at_commit": "d8909b1",
+        "started_at_commit": "784c257"
+      },
+      "milestone": "M9",
+      "priority": 80,
+      "review": {
+        "independent": false,
+        "required": false,
+        "status": "NOT_REQUIRED"
+      },
+      "scope": "M9",
+      "status": "COMPLETE",
+      "title": "Rebuild the web experience around the user's idea",
       "verification": {
+        "record": ".ai/verification/M9.yaml",
         "required": [
           "state_validation",
           "fast_tests",
           "frontend_tests"
-        ],
-        "record": ".ai/verification/M9.yaml"
-      },
-      "implementation": {
-        "started_at_commit": "784c257",
-        "completed_at_commit": "d8909b1"
-      },
-      "review": {
-        "required": false,
-        "status": "NOT_REQUIRED",
-        "independent": false
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "M9-T04",
-      "scope": "M9",
-      "milestone": "M9",
-      "title": "Verify and review Milestone 9",
-      "status": "COMPLETE",
-      "priority": 70,
-      "dependencies": [
-        "M9-T03"
-      ],
-      "goal": "Run every gate, record commit-bound evidence, and obtain one bounded independent final review.",
       "acceptance_criteria": [
         "Backend fast, integration and full tiers pass",
         "Frontend tests pass",
@@ -720,36 +710,38 @@
         "One bounded independent review passes with no open BLOCKER or HIGH findings",
         "No Milestone 10 work is begun or approved"
       ],
+      "blockers": [],
+      "dependencies": [
+        "M9-T03"
+      ],
+      "goal": "Run every gate, record commit-bound evidence, and obtain one bounded independent final review.",
+      "id": "M9-T04",
+      "implementation": {
+        "completed_at_commit": "d8909b1",
+        "started_at_commit": "784c257"
+      },
+      "milestone": "M9",
+      "priority": 70,
+      "review": {
+        "independent": true,
+        "note": "Closed by M9-REMEDIATION-1, which resolved every BLOCKER, HIGH and MEDIUM finding this review raised.",
+        "record": "M9-REV-INDEPENDENT-FINAL",
+        "required": true,
+        "status": "PASSED"
+      },
+      "scope": "M9",
+      "status": "COMPLETE",
+      "title": "Verify and review Milestone 9",
       "verification": {
+        "record": ".ai/verification/M9.yaml",
         "required": [
           "state_validation",
           "fast_tests",
           "frontend_tests"
-        ],
-        "record": ".ai/verification/M9.yaml"
-      },
-      "implementation": {
-        "started_at_commit": "784c257",
-        "completed_at_commit": "d8909b1"
-      },
-      "review": {
-        "required": true,
-        "status": "PASSED",
-        "independent": true,
-        "record": "M9-REV-INDEPENDENT-FINAL",
-        "note": "Closed by M9-REMEDIATION-1, which resolved every BLOCKER, HIGH and MEDIUM finding this review raised."
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "M9-RM01",
-      "scope": "M9-REMEDIATION-1",
-      "milestone": "M9",
-      "title": "Lead with human vocabulary and close the open M9 review findings",
-      "status": "COMPLETE",
-      "priority": 100,
-      "dependencies": [],
-      "goal": "Make the beginner-facing surfaces readable without engineering identifiers, fix the checks taxonomy contradiction, bring the Agree checkpoint above the fold, put live progress into plain language, make components discoverable without precision targeting, and close every BLOCKER/HIGH/MEDIUM finding from the M9 review.",
       "acceptance_criteria": [
         "Component, net and system names are derived from authoritative metadata, never tabulated",
         "Engineering identifiers remain reachable through progressive disclosure",
@@ -764,7 +756,28 @@
         "One focused independent review passes with no open BLOCKER or HIGH findings",
         "No Milestone 10 work is begun or approved"
       ],
+      "blockers": [],
+      "dependencies": [],
+      "goal": "Make the beginner-facing surfaces readable without engineering identifiers, fix the checks taxonomy contradiction, bring the Agree checkpoint above the fold, put live progress into plain language, make components discoverable without precision targeting, and close every BLOCKER/HIGH/MEDIUM finding from the M9 review.",
+      "id": "M9-RM01",
+      "implementation": {
+        "completed_at_commit": "19f9afe",
+        "started_at_commit": "d8909b1"
+      },
+      "milestone": "M9",
+      "priority": 100,
+      "review": {
+        "independent": true,
+        "note": "Verdict was FINDINGS_OPEN at 0 BLOCKER / 0 HIGH; all five findings were fixed rather than accepted.",
+        "record": "M9-RM01-REV-INDEPENDENT-FINAL",
+        "required": true,
+        "status": "PASSED"
+      },
+      "scope": "M9-REMEDIATION-1",
+      "status": "COMPLETE",
+      "title": "Lead with human vocabulary and close the open M9 review findings",
       "verification": {
+        "record": ".ai/verification/M9-REMEDIATION-1.yaml",
         "required": [
           "state_validation",
           "fast_tests",
@@ -772,31 +785,10 @@
           "integration_tests",
           "full_tests",
           "browser_journey"
-        ],
-        "record": ".ai/verification/M9-REMEDIATION-1.yaml"
-      },
-      "implementation": {
-        "started_at_commit": "d8909b1",
-        "completed_at_commit": "19f9afe"
-      },
-      "review": {
-        "required": true,
-        "status": "PASSED",
-        "independent": true,
-        "record": "M9-RM01-REV-INDEPENDENT-FINAL",
-        "note": "Verdict was FINDINGS_OPEN at 0 BLOCKER / 0 HIGH; all five findings were fixed rather than accepted."
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "M10-T01",
-      "scope": "M10",
-      "milestone": "M10",
-      "title": "Finish A1 synthesis and deliver the personal sensor-project learning unit",
-      "status": "COMPLETE",
-      "priority": 100,
-      "dependencies": [],
-      "goal": "Turn a structured, validated USB I2C sensor-node brief into a derived CircuitIR without importing the golden fixture or scripted model responses. Integrate the approved A1-first product unit with local durable revisions, a real diagnostic exercise, and a manifest-checked complete build download.",
       "acceptance_criteria": [
         "A strict typed synthesis brief represents the A1 USB I2C sensor-node envelope and distinguishes supported input from a typed refusal",
         "A deterministic synthesizer derives the ESP32, USB-C power path, regulator, one supported I2C sensor, optional status LED, programming header, required passives, and their connections from the brief and catalog facts",
@@ -813,7 +805,28 @@
         "A complete current build bundle is downloadable with artifact integrity checks and explicit synthetic-pricing, synthetic-profile, no-firmware and untested-hardware limitations",
         "Frontend tests, relevant real KiCad integration, and desktop/mobile browser journeys pass"
       ],
+      "blockers": [],
+      "dependencies": [],
+      "goal": "Turn a structured, validated USB I2C sensor-node brief into a derived CircuitIR without importing the golden fixture or scripted model responses. Integrate the approved A1-first product unit with local durable revisions, a real diagnostic exercise, and a manifest-checked complete build download.",
+      "id": "M10-T01",
+      "implementation": {
+        "approval_evidence": "Human instruction on 2026-09-08: 'ok proceed with implementation then', in response to COMPETITIVE_RESEARCH_AND_PRODUCT_STRATEGY.md and the recommended first unit: one editable sensor project, accurate explanations, guided diagnosis, saved revisions, and complete build handoff. This authorizes finishing and integrating A1 first; it does not mark A2/A3, general placement, cloud hosting, simulation, firmware, or physical validation complete.",
+        "completed_at_commit": "dd62691adf50f9cdd00ce7bde3cd2f30d521d21d",
+        "resumed_at_commit": "04531cd2dd829e2bd31954362aa97f8094b41caa",
+        "started_at_commit": "df41225"
+      },
+      "milestone": "M10",
+      "priority": 100,
+      "review": {
+        "independent": false,
+        "required": false,
+        "status": "NOT_REQUIRED"
+      },
+      "scope": "M10",
+      "status": "COMPLETE",
+      "title": "Finish A1 synthesis and deliver the personal sensor-project learning unit",
       "verification": {
+        "record": ".ai/verification/M10-T01.yaml",
         "required": [
           "focused_synthesis_tests",
           "workflow_tests",
@@ -824,33 +837,10 @@
           "eight_configuration_drc",
           "browser_journey",
           "ruff"
-        ],
-        "record": ".ai/verification/M10-T01.yaml"
-      },
-      "implementation": {
-        "started_at_commit": "df41225",
-        "approval_evidence": "Human instruction on 2026-09-08: 'ok proceed with implementation then', in response to COMPETITIVE_RESEARCH_AND_PRODUCT_STRATEGY.md and the recommended first unit: one editable sensor project, accurate explanations, guided diagnosis, saved revisions, and complete build handoff. This authorizes finishing and integrating A1 first; it does not mark A2/A3, general placement, cloud hosting, simulation, firmware, or physical validation complete.",
-        "resumed_at_commit": "04531cd2dd829e2bd31954362aa97f8094b41caa",
-        "completed_at_commit": "dd62691adf50f9cdd00ce7bde3cd2f30d521d21d"
-      },
-      "review": {
-        "required": false,
-        "status": "NOT_REQUIRED",
-        "independent": false
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "M10-T02",
-      "scope": "M10",
-      "milestone": "M10",
-      "title": "Add A2/A3 synthesis and complete supported catalog coverage",
-      "status": "COMPLETE",
-      "priority": 90,
-      "dependencies": [
-        "M10-T01"
-      ],
-      "goal": "Extend deterministic synthesis across the USB GPIO controller and USB SPI peripheral archetypes with complete catalog and footprint support.",
       "acceptance_criteria": [
         "A2 derives one to four LED channels, one to two buttons, and an optional programming header",
         "A3 derives one to two supported SPI devices and an optional I2C sensor with distinct chip selects",
@@ -858,75 +848,75 @@
         "Synthesis selects only evidence-bearing catalog parts and reports unavailable slot choices without guessing",
         "Identical briefs remain byte-deterministic across all three archetypes"
       ],
+      "blockers": [],
+      "dependencies": [
+        "M10-T01"
+      ],
+      "goal": "Extend deterministic synthesis across the USB GPIO controller and USB SPI peripheral archetypes with complete catalog and footprint support.",
+      "id": "M10-T02",
+      "implementation": {
+        "approval_evidence": "Human instruction: 'ok proceed with unfinished work and dont stop unless you cannot unblock', following explicit list of unfinished work and approved M10-T02 through M10-T05. Continue the unfinished roadmap without stopping at another arbitrary phase boundary; preserve truthful hardware and deployment limits.",
+        "completed_at_commit": "42caa004c0c3464ec3b957a080b8daab0b6c8589",
+        "started_at_commit": "43d7b38"
+      },
+      "milestone": "M10",
+      "priority": 90,
+      "review": {
+        "independent": false,
+        "required": false,
+        "status": "NOT_REQUIRED"
+      },
+      "scope": "M10",
+      "status": "COMPLETE",
+      "title": "Add A2/A3 synthesis and complete supported catalog coverage",
       "verification": {
+        "record": ".ai/verification/M10-T02.yaml",
         "required": [
           "focused_synthesis_tests",
           "fast_tests",
           "pcb_compilation_tests"
-        ],
-        "record": ".ai/verification/M10-T02.yaml"
-      },
-      "review": {
-        "required": false,
-        "status": "NOT_REQUIRED",
-        "independent": false
-      },
-      "blockers": [],
-      "implementation": {
-        "started_at_commit": "43d7b38",
-        "approval_evidence": "Human instruction: 'ok proceed with unfinished work and dont stop unless you cannot unblock', following explicit list of unfinished work and approved M10-T02 through M10-T05. Continue the unfinished roadmap without stopping at another arbitrary phase boundary; preserve truthful hardware and deployment limits.",
-        "completed_at_commit": "42caa004c0c3464ec3b957a080b8daab0b6c8589"
+        ]
       }
     },
     {
-      "id": "M10-T03",
-      "scope": "M10",
-      "milestone": "M10",
-      "title": "Generate placement and bound routing",
-      "status": "COMPLETE",
-      "priority": 80,
-      "dependencies": [
-        "M10-T02"
-      ],
-      "goal": "Replace fixture coordinates with deterministic constraint-driven placement and give routing a truthful wall-clock failure mode.",
       "acceptance_criteria": [
         "The golden A1-equivalent brief is placed without a reference-designator coordinate table and remains routable",
         "Edge, proximity, orientation, antenna, and board-boundary constraints are evaluated deterministically",
         "Routing has a configured wall-clock budget and produces ROUTING_INCOMPLETE rather than running without a product-level bound",
         "Placement and routing quality metrics include board area, total route length, and via count"
       ],
+      "blockers": [],
+      "dependencies": [
+        "M10-T02"
+      ],
+      "goal": "Replace fixture coordinates with deterministic constraint-driven placement and give routing a truthful wall-clock failure mode.",
+      "id": "M10-T03",
+      "implementation": {
+        "approval_evidence": "Continuing human instruction to proceed with unfinished work without stopping unless unable to unblock.",
+        "completed_at_commit": "b49209e16f96e2ea7c1fd0549e3c7c03f1418cc6",
+        "started_at_commit": "42caa004c0c3464ec3b957a080b8daab0b6c8589"
+      },
+      "milestone": "M10",
+      "priority": 80,
+      "review": {
+        "independent": false,
+        "required": false,
+        "status": "NOT_REQUIRED"
+      },
+      "scope": "M10",
+      "status": "COMPLETE",
+      "title": "Generate placement and bound routing",
       "verification": {
+        "record": ".ai/verification/M10-T03.yaml",
         "required": [
           "placement_tests",
           "routing_tests",
           "integration_tests",
           "slow_tests"
-        ],
-        "record": ".ai/verification/M10-T03.yaml"
-      },
-      "review": {
-        "required": false,
-        "status": "NOT_REQUIRED",
-        "independent": false
-      },
-      "blockers": [],
-      "implementation": {
-        "started_at_commit": "42caa004c0c3464ec3b957a080b8daab0b6c8589",
-        "approval_evidence": "Continuing human instruction to proceed with unfinished work without stopping unless unable to unblock.",
-        "completed_at_commit": "b49209e16f96e2ea7c1fd0549e3c7c03f1418cc6"
+        ]
       }
     },
     {
-      "id": "M10-T04",
-      "scope": "M10",
-      "milestone": "M10",
-      "title": "Integrate structured briefs into the product path",
-      "status": "COMPLETE",
-      "priority": 70,
-      "dependencies": [
-        "M10-T03"
-      ],
-      "goal": "Replace the fixture-only application path with user-confirmed structured briefs and project the real synthesized result through the existing truthful experience.",
       "acceptance_criteria": [
         "The product can create and run a validated brief for each supported archetype without a scripted provider",
         "Every confirmed requirement is projected as met, violated, or unknown",
@@ -934,38 +924,38 @@
         "Fixture-specific application and CLI choices are removed from the product path while regression fixtures remain available to tests",
         "The frontend continues to derive no engineering verdicts"
       ],
+      "blockers": [],
+      "dependencies": [
+        "M10-T03"
+      ],
+      "goal": "Replace the fixture-only application path with user-confirmed structured briefs and project the real synthesized result through the existing truthful experience.",
+      "id": "M10-T04",
+      "implementation": {
+        "approval_evidence": "Continuing the human instruction to proceed with unfinished work without stopping unless unable to unblock; T03 dependencies verified complete.",
+        "completed_at_commit": "cf9f04c8888ee5ab54df81e89740dd853f449f67",
+        "started_at_commit": "b49209e16f96e2ea7c1fd0549e3c7c03f1418cc6"
+      },
+      "milestone": "M10",
+      "priority": 70,
+      "review": {
+        "independent": false,
+        "required": false,
+        "status": "NOT_REQUIRED"
+      },
+      "scope": "M10",
+      "status": "COMPLETE",
+      "title": "Integrate structured briefs into the product path",
       "verification": {
+        "record": ".ai/verification/M10-T04.yaml",
         "required": [
           "application_tests",
           "frontend_tests",
           "fast_tests",
           "browser_journey"
-        ],
-        "record": ".ai/verification/M10-T04.yaml"
-      },
-      "review": {
-        "required": false,
-        "status": "NOT_REQUIRED",
-        "independent": false
-      },
-      "blockers": [],
-      "implementation": {
-        "started_at_commit": "b49209e16f96e2ea7c1fd0549e3c7c03f1418cc6",
-        "approval_evidence": "Continuing the human instruction to proceed with unfinished work without stopping unless unable to unblock; T03 dependencies verified complete.",
-        "completed_at_commit": "cf9f04c8888ee5ab54df81e89740dd853f449f67"
+        ]
       }
     },
     {
-      "id": "M10-T05",
-      "scope": "M10",
-      "milestone": "M10",
-      "title": "Benchmark, verify, and review deterministic synthesis",
-      "status": "BLOCKED",
-      "priority": 60,
-      "dependencies": [
-        "M10-T04"
-      ],
-      "goal": "Demonstrate that bounded synthesis is deterministic, rejects unsafe requests, and meets the milestone's end-to-end success thresholds.",
       "acceptance_criteria": [
         "At least 90 percent of the agreed 60 in-envelope benchmark cases reach DRC 0/0 and a passing manufacturing profile without manual edits",
         "All 20 agreed out-of-envelope cases are refused with a stable specific reason",
@@ -973,7 +963,34 @@
         "All canonical verification tiers and frontend tests pass",
         "One focused independent final review passes with no open BLOCKER or HIGH finding"
       ],
+      "blockers": [
+        "Human-priority deferral: park M10-T05 while MCP-T01 implements and verifies the initial semantic MCP slice; approval and preserved checkpoint: .ai/approvals/MCP-SEMANTIC-1.yaml",
+        "Known bounded routing failure remains unresolved: job9f2f15c4f068 has four NO_PATH connections; benchmark cases, determinism evidence, full tiers, and independent final review remain incomplete"
+      ],
+      "dependencies": [
+        "M10-T04"
+      ],
+      "goal": "Demonstrate that bounded synthesis is deterministic, rejects unsafe requests, and meets the milestone's end-to-end success thresholds.",
+      "id": "M10-T05",
+      "implementation": {
+        "approval_evidence": "Continuing the human instruction to finish unfinished work without stopping unless unable to unblock. T04 is verified complete; proceed with approved benchmark and independent final review.",
+        "parked_at": "2026-09-11",
+        "parked_at_commit": "51bc35df85a655bf72a10b12b2a2225081f47828",
+        "parked_checkpoint": ".ai/approvals/MCP-SEMANTIC-1.yaml#preserved_m10_t05_checkpoint",
+        "started_at_commit": "cf9f04c8888ee5ab54df81e89740dd853f449f67"
+      },
+      "milestone": "M10",
+      "priority": 60,
+      "review": {
+        "independent": true,
+        "required": true,
+        "status": "PENDING"
+      },
+      "scope": "M10",
+      "status": "BLOCKED",
+      "title": "Benchmark, verify, and review deterministic synthesis",
       "verification": {
+        "record": ".ai/verification/M10.yaml",
         "required": [
           "benchmark",
           "workflow_tests",
@@ -982,35 +999,10 @@
           "slow_tests",
           "full_tests",
           "frontend_tests"
-        ],
-        "record": ".ai/verification/M10.yaml"
-      },
-      "review": {
-        "required": true,
-        "status": "PENDING",
-        "independent": true
-      },
-      "blockers": [
-        "Human-priority deferral: park M10-T05 while MCP-T01 implements and verifies the initial semantic MCP slice; approval and preserved checkpoint: .ai/approvals/MCP-SEMANTIC-1.yaml",
-        "Known bounded routing failure remains unresolved: job9f2f15c4f068 has four NO_PATH connections; benchmark cases, determinism evidence, full tiers, and independent final review remain incomplete"
-      ],
-      "implementation": {
-        "started_at_commit": "cf9f04c8888ee5ab54df81e89740dd853f449f67",
-        "approval_evidence": "Continuing the human instruction to finish unfinished work without stopping unless unable to unblock. T04 is verified complete; proceed with approved benchmark and independent final review.",
-        "parked_at_commit": "51bc35df85a655bf72a10b12b2a2225081f47828",
-        "parked_at": "2026-09-11",
-        "parked_checkpoint": ".ai/approvals/MCP-SEMANTIC-1.yaml#preserved_m10_t05_checkpoint"
+        ]
       }
     },
     {
-      "id": "MCP-T01",
-      "scope": "MCP-SEMANTIC-1",
-      "milestone": null,
-      "title": "Expose local MCP capabilities, catalog discovery, and semantic verification",
-      "status": "COMPLETE",
-      "priority": 100,
-      "dependencies": [],
-      "goal": "Wrap the existing deterministic Python semantic verifier with a strict local stdio MCP adapter that accepts circuit proposals and returns authoritative reports without accepting client-supplied evidence or verification authority.",
       "acceptance_criteria": [
         "M10-T05 is parked with its unresolved four-NO_PATH routing failure and original benchmark/review work preserved in a durable recovery record",
         "An independently launchable src/ohmni/mcp_server package uses the official Python MCP SDK over local stdio",
@@ -1022,46 +1014,46 @@
         "Focused MCP boundary tests, workflow validation, existing fast tests, and Ruff pass or any unavailable gate is explicitly recorded without a success claim",
         "No gated EDA tools, SPICE integration, remote hosting, or later V2 scope is implemented in this unit"
       ],
+      "blockers": [],
+      "dependencies": [],
+      "goal": "Wrap the existing deterministic Python semantic verifier with a strict local stdio MCP adapter that accepts circuit proposals and returns authoritative reports without accepting client-supplied evidence or verification authority.",
+      "id": "MCP-T01",
+      "implementation": {
+        "approval_evidence": ".ai/approvals/MCP-SEMANTIC-1.yaml",
+        "completed_at": "2026-09-13",
+        "completed_at_commit": "01d17386f5ce904f32f4564cb04b0f55208f521f",
+        "lifecycle": [
+          "Human approval recorded for bounded MCP-SEMANTIC-1 scope",
+          "MCP-T01 selected READY with no dependencies or blockers",
+          "MCP-T01 transitioned to IN_PROGRESS after parking M10-T05"
+        ],
+        "source_commit": "596e8c787f4dec7af726c3dd8008c2d05c0e4836",
+        "started_at": "2026-09-11",
+        "started_at_commit": "51bc35df85a655bf72a10b12b2a2225081f47828"
+      },
+      "milestone": null,
+      "priority": 100,
+      "review": {
+        "independent": true,
+        "record": ".ai/reviews.yaml#MCP-T01-INDEPENDENT",
+        "required": false,
+        "status": "PASSED"
+      },
+      "scope": "MCP-SEMANTIC-1",
+      "status": "COMPLETE",
+      "title": "Expose local MCP capabilities, catalog discovery, and semantic verification",
       "verification": {
+        "record": ".ai/verification/MCP-T01.yaml",
         "required": [
           "mcp_client_tests",
           "deterministic_report_parity",
           "workflow_tests",
           "fast_tests",
           "ruff"
-        ],
-        "record": ".ai/verification/MCP-T01.yaml"
-      },
-      "implementation": {
-        "started_at_commit": "51bc35df85a655bf72a10b12b2a2225081f47828",
-        "started_at": "2026-09-11",
-        "approval_evidence": ".ai/approvals/MCP-SEMANTIC-1.yaml",
-        "lifecycle": [
-          "Human approval recorded for bounded MCP-SEMANTIC-1 scope",
-          "MCP-T01 selected READY with no dependencies or blockers",
-          "MCP-T01 transitioned to IN_PROGRESS after parking M10-T05"
-        ],
-        "completed_at_commit": "01d17386f5ce904f32f4564cb04b0f55208f521f",
-        "completed_at": "2026-09-13",
-        "source_commit": "596e8c787f4dec7af726c3dd8008c2d05c0e4836"
-      },
-      "review": {
-        "required": false,
-        "status": "PASSED",
-        "independent": true,
-        "record": ".ai/reviews.yaml#MCP-T01-INDEPENDENT"
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "PCB-T01",
-      "scope": "PCB-EXPLORER-1",
-      "milestone": null,
-      "title": "Generate and explain a richer sensor-and-controller showcase",
-      "status": "COMPLETE",
-      "priority": 100,
-      "dependencies": [],
-      "goal": "A visually richer real circuit with reusable rendering and generated component-level learning, backed by deterministic design reports.",
       "acceptance_criteria": [
         "Compose a bounded ESP32 sensor-and-controller design from catalog-backed sensor, LED and button circuitry; expose editable parameters and regenerate it through existing deterministic gates",
         "Create a reproducible saved showcase from actual generated artifacts with honest check and lineage information",
@@ -1069,27 +1061,14 @@
         "Make every displayed part and connection discoverable and teachable from recorded circuit data",
         "Run deterministic, frontend and browser checks and a focused independent review"
       ],
-      "verification": {
-        "required": [
-          "fast_tests",
-          "frontend_tests",
-          "generated_design_checks",
-          "browser_checks",
-          "ruff"
-        ],
-        "record": ".ai/verification/PCB-T01.yaml"
-      },
-      "review": {
-        "required": true,
-        "status": "PASSED",
-        "independent": true,
-        "record": ".ai/reviews.yaml#PCB-T01-BACKEND-AND-UI"
-      },
       "blockers": [],
+      "dependencies": [],
+      "goal": "A visually richer real circuit with reusable rendering and generated component-level learning, backed by deterministic design reports.",
+      "id": "PCB-T01",
       "implementation": {
-        "started_at_commit": "cba96e076baf2538d08a151e3dd6d18258f88d40",
-        "started_at": "2026-09-14",
         "approval_evidence": ".ai/approvals/PCB-EXPLORER-1.yaml",
+        "completed_at": "2026-09-14",
+        "completed_at_commit": "03c5679bd0bd72a05ba770e382f1098b2f07e785",
         "lifecycle": [
           "Explicit human request recorded; PCB-T01 selected READY without dependencies or blockers",
           "Transitioned to IN_PROGRESS; prior MCP scope remains complete and M10-T05 remains parked",
@@ -1097,20 +1076,33 @@
           "VERIFIED: final canonical fast1465, frontend148, native generated-design and export checks, browser altered-brief generation and Ruff passed",
           "COMPLETE: two focused independent reviews cleared, including reviewed corrections"
         ],
-        "completed_at_commit": "03c5679bd0bd72a05ba770e382f1098b2f07e785",
-        "completed_at": "2026-09-14",
-        "source_commit": "b3b6bb0"
+        "source_commit": "b3b6bb0",
+        "started_at": "2026-09-14",
+        "started_at_commit": "cba96e076baf2538d08a151e3dd6d18258f88d40"
+      },
+      "milestone": null,
+      "priority": 100,
+      "review": {
+        "independent": true,
+        "record": ".ai/reviews.yaml#PCB-T01-BACKEND-AND-UI",
+        "required": true,
+        "status": "PASSED"
+      },
+      "scope": "PCB-EXPLORER-1",
+      "status": "COMPLETE",
+      "title": "Generate and explain a richer sensor-and-controller showcase",
+      "verification": {
+        "record": ".ai/verification/PCB-T01.yaml",
+        "required": [
+          "fast_tests",
+          "frontend_tests",
+          "generated_design_checks",
+          "browser_checks",
+          "ruff"
+        ]
       }
     },
     {
-      "id": "VIS-T01",
-      "scope": "VIS-REF-001",
-      "milestone": null,
-      "title": "Implement reference-grade rendering W0-W7",
-      "status": "VERIFIED",
-      "priority": 100,
-      "dependencies": [],
-      "goal": "Improve actual board rendering and integrate separately labeled dense educational sample with all158 inventory dispositions.",
       "acceptance_criteria": [
         "Five-object browser proof before completing library",
         "All158 entries mapped; complete compound asset families",
@@ -1119,27 +1111,13 @@
         "Integrated list/selection/layers/cameras/explode/fallback/reduced motion",
         "Browser comparison and macros, measured performance, required tests and focused independent review"
       ],
-      "verification": {
-        "required": [
-          "fast_tests",
-          "frontend_tests",
-          "browser_checks",
-          "source_hash_invariance",
-          "ruff"
-        ],
-        "record": ".ai/verification/VIS-T01.yaml"
-      },
-      "review": {
-        "required": true,
-        "status": "PASSED",
-        "independent": true,
-        "record": ".ai/reviews.yaml#VIS-T01-FINAL"
-      },
       "blockers": [],
+      "dependencies": [],
+      "goal": "Improve actual board rendering and integrate separately labeled dense educational sample with all158 inventory dispositions.",
+      "id": "VIS-T01",
       "implementation": {
-        "started_at_commit": "3cefca72be2a69e75df440e7bc7c715657dd9be9",
-        "started_at": "2026-09-14",
         "approval_evidence": ".ai/approvals/VIS-REF-001.yaml",
+        "human_visual_acceptance": "PENDING",
         "lifecycle": [
           "Human W0-W7 approval recorded",
           "READY selected by ai_state.py next",
@@ -1148,48 +1126,50 @@
           "VERIFIED: fast1477, frontend180, nativegolden1, browser/sourcehashes/Ruff and focused independent review passed",
           "Human visual acceptance pending; no COMPLETE or human-approved visual verdict asserted"
         ],
+        "responsive_followup_commit": "480b40c0359b72641790bac7b82f190156a48906",
         "source_commit": "c80315fdae46386c9fbc54b2055ed23c4a15a30c",
-        "verified_at_commit": "480b40c0359b72641790bac7b82f190156a48906",
+        "started_at": "2026-09-14",
+        "started_at_commit": "3cefca72be2a69e75df440e7bc7c715657dd9be9",
         "verified_at": "2026-09-14",
-        "human_visual_acceptance": "PENDING",
-        "responsive_followup_commit": "480b40c0359b72641790bac7b82f190156a48906"
-      }
-    },
-    {
-      "id": "VIS-T02",
-      "scope": "VIS-REF-001",
+        "verified_at_commit": "480b40c0359b72641790bac7b82f190156a48906"
+      },
       "milestone": null,
-      "title": "Make the dense board discoverable and reconcile functional evidence",
+      "priority": 100,
+      "review": {
+        "independent": true,
+        "record": ".ai/reviews.yaml#VIS-T01-FINAL",
+        "required": true,
+        "status": "PASSED"
+      },
+      "scope": "VIS-REF-001",
       "status": "VERIFIED",
-      "priority": 110,
-      "dependencies": [],
-      "goal": "Homepage visibly presents the dense board and opens it directly; electrical status and per-part connections derive from actual evidence.",
-      "acceptance_criteria": [
-        "Dense preview and prominent homepage entry; keyboard and compact access",
-        "Actualboard remains source-authenticated; unknown reference forms not silently renamed",
-        "Fresh audit identifies all actual component identities/connections and supported functional expansion constraints",
-        "Browser screenshots and focused checks; preserve source artifacts"
-      ],
+      "title": "Implement reference-grade rendering W0-W7",
       "verification": {
+        "record": ".ai/verification/VIS-T01.yaml",
         "required": [
           "fast_tests",
           "frontend_tests",
           "browser_checks",
           "source_hash_invariance",
           "ruff"
-        ],
-        "record": ".ai/verification/VIS-T02.yaml"
-      },
-      "review": {
-        "required": true,
-        "status": "PASSED",
-        "independent": true,
-        "record": ".ai/reviews.yaml#VIS-T02-FINAL"
-      },
+        ]
+      }
+    },
+    {
+      "acceptance_criteria": [
+        "Dense preview and prominent homepage entry; keyboard and compact access",
+        "Actualboard remains source-authenticated; unknown reference forms not silently renamed",
+        "Fresh audit identifies all actual component identities/connections and supported functional expansion constraints",
+        "Browser screenshots and focused checks; preserve source artifacts"
+      ],
       "blockers": [],
+      "dependencies": [],
+      "goal": "Homepage visibly presents the dense board and opens it directly; electrical status and per-part connections derive from actual evidence.",
+      "id": "VIS-T02",
       "implementation": {
-        "started_at_commit": "e2d63077550f6d737e748d80df311d29f0e46cea",
         "approval_evidence": ".ai/approvals/VIS-REF-001-FOLLOWUP.yaml",
+        "functional_expansion": "OPEN: dense124-body functional requirement unimplemented; documented supported29-part evidence and expansion limits.",
+        "human_visual_acceptance": "PENDING",
         "lifecycle": [
           "Human followup authorizes homepage access and functional evidence work",
           "READY selected by ai_state.py next; IN_PROGRESS",
@@ -1197,212 +1177,222 @@
           "VERIFIED: fast1478, frontend180, native guarded preview export, browser1500/849/390, source22 invariance and independent correction review passed",
           "Functional expansion remains open; no unknown reference identities converted to verified parts"
         ],
-        "verified_at_commit": "39d108dafd9c95b79f52f1c279ccbb121d931f85",
+        "started_at_commit": "e2d63077550f6d737e748d80df311d29f0e46cea",
         "verified_at": "2026-09-14",
-        "human_visual_acceptance": "PENDING",
-        "functional_expansion": "OPEN: dense124-body functional requirement unimplemented; documented supported29-part evidence and expansion limits."
+        "verified_at_commit": "39d108dafd9c95b79f52f1c279ccbb121d931f85"
+      },
+      "milestone": null,
+      "priority": 110,
+      "review": {
+        "independent": true,
+        "record": ".ai/reviews.yaml#VIS-T02-FINAL",
+        "required": true,
+        "status": "PASSED"
+      },
+      "scope": "VIS-REF-001",
+      "status": "VERIFIED",
+      "title": "Make the dense board discoverable and reconcile functional evidence",
+      "verification": {
+        "record": ".ai/verification/VIS-T02.yaml",
+        "required": [
+          "fast_tests",
+          "frontend_tests",
+          "browser_checks",
+          "source_hash_invariance",
+          "ruff"
+        ]
       }
     },
     {
-      "id": "DEPLOY-T01",
-      "scope": "DEPLOY-1",
-      "milestone": null,
-      "title": "Push and deploy the verified homepage and board explorer",
-      "status": "COMPLETE",
-      "priority": 120,
-      "dependencies": [],
-      "goal": "Current verified code is on GitHub and the existing public hosts; live assets, API and viewer agree.",
       "acceptance_criteria": [
         "Exclude private inputs and credentials from upload contexts",
         "Push current coherent commits without rewriting history",
         "Deploy existing Vercel and Fly apps from the same release source",
         "Verify public homepage, assets, API contract and board interactions"
       ],
-      "verification": {
-        "required": [
-          "workflow",
-          "deployment_packaging",
-          "live_checks"
-        ],
-        "record": ".ai/verification/DEPLOY-T01.yaml"
-      },
-      "review": {
-        "required": true,
-        "status": "PASSED",
-        "independent": true,
-        "record": ".ai/reviews.yaml#DEPLOY-T01-PACKAGING"
-      },
       "blockers": [],
+      "dependencies": [],
+      "goal": "Current verified code is on GitHub and the existing public hosts; live assets, API and viewer agree.",
+      "id": "DEPLOY-T01",
       "implementation": {
         "approval_evidence": ".ai/approvals/DEPLOY-1.yaml",
-        "started_at_commit": "38c1df4",
-        "completed_at_commit": "a619cbaf08f4eab1255f99d0d3028675a3ebe33b",
         "completed_at": "2026-09-14",
+        "completed_at_commit": "a619cbaf08f4eab1255f99d0d3028675a3ebe33b",
         "lifecycle": [
           "Human push/deploy approval recorded and READY task selected",
           "IN_PROGRESS: reviewed packaging and prepared clean release",
           "IMPLEMENTED: pushed release and deployed existing Vercel/Fly hosts",
           "VERIFIED: public browser/API/file checks, live29-part pipeline/download and GitHubCI passed",
           "COMPLETE: independent packaging/live review passed; current deployment and limits recorded"
+        ],
+        "started_at_commit": "38c1df4"
+      },
+      "milestone": null,
+      "priority": 120,
+      "review": {
+        "independent": true,
+        "record": ".ai/reviews.yaml#DEPLOY-T01-PACKAGING",
+        "required": true,
+        "status": "PASSED"
+      },
+      "scope": "DEPLOY-1",
+      "status": "COMPLETE",
+      "title": "Push and deploy the verified homepage and board explorer",
+      "verification": {
+        "record": ".ai/verification/DEPLOY-T01.yaml",
+        "required": [
+          "workflow",
+          "deployment_packaging",
+          "live_checks"
         ]
       }
     },
     {
-      "id": "CS-T01",
-      "scope": "COMPONENT-SYNTHESIS-1",
-      "milestone": null,
-      "title": "Contracts and trust gates",
-      "status": "VERIFIED",
-      "priority": 110,
-      "dependencies": [],
-      "goal": "Typed schemas, source/claim/asset identity, capability matrix, architecture tests, and an initial real source corpus with independent annotations.",
       "acceptance_criteria": [
         "Frozen strict contracts for import requests, locators, candidates, receipts, manifests and capabilities, rejecting model-supplied verdict or evidence fields",
         "Exact decimal source values on a documented integer length grid with explicit unit conversion",
         "Architecture tests keep domain purity and forbid provider or network access in pure checks",
         "Pinned real manufacturer source corpus with acquisition provenance and independently transcribed expected values"
       ],
-      "verification": {
-        "required": [
-          "fast_tests",
-          "architecture_tests",
-          "ruff"
-        ],
-        "record": ".ai/verification/CS-T01.yaml"
-      },
-      "review": {
-        "required": true,
-        "status": "FINDINGS_ADDRESSED_AWAITING_RE_REVIEW",
-        "independent": true,
-        "record": ".ai/reviews.yaml#CS-T01-T04-REMEDIATION-2-VERIFICATION",
-        "note": "Earlier independent review and remediation history retained. Publication is not independent re-review of the final fixes."
-      },
       "blockers": [
         "Source and remediation are committed and locally verified. Independent re-review of NEW-1..NEW-7 remains outstanding; preserve the live-extraction evaluation limitation in CS-T02. VERIFIED is not COMPLETE."
       ],
+      "dependencies": [],
+      "goal": "Typed schemas, source/claim/asset identity, capability matrix, architecture tests, and an initial real source corpus with independent annotations.",
+      "id": "CS-T01",
       "implementation": {
         "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
-        "started_at_commit": "d7b1175",
+        "committed_at": "7efe78b94577103303df231bc84a30a2eede5be6",
+        "completed_at": "2026-09-14",
         "completed_at_commit": null,
         "lifecycle": [
           "Human scope approval recorded in .ai/approvals/COMPONENT-SYNTHESIS-1.yaml; CS-T01 selected and started",
           "IMPLEMENTED: frozen proposal/receipt/capability contracts, integer nanometre length grid, pinned real source corpus with independent annotations",
           "VERIFIED: 49 contract tests, 62 architecture tests, Ruff clean at the recorded commit"
         ],
-        "completed_at": "2026-09-14",
-        "uncommitted": false,
-        "committed_at": "7efe78b94577103303df231bc84a30a2eede5be6"
+        "started_at_commit": "d7b1175",
+        "uncommitted": false
+      },
+      "milestone": null,
+      "priority": 110,
+      "review": {
+        "independent": true,
+        "note": "Earlier independent review and remediation history retained. Publication is not independent re-review of the final fixes.",
+        "record": ".ai/reviews.yaml#CS-T01-T04-REMEDIATION-2-VERIFICATION",
+        "required": true,
+        "status": "FINDINGS_ADDRESSED_AWAITING_RE_REVIEW"
+      },
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "status": "VERIFIED",
+      "title": "Contracts and trust gates",
+      "verification": {
+        "record": ".ai/verification/CS-T01.yaml",
+        "required": [
+          "fast_tests",
+          "architecture_tests",
+          "ruff"
+        ]
       }
     },
     {
-      "id": "CS-T02",
-      "scope": "COMPONENT-SYNTHESIS-1",
-      "milestone": null,
-      "title": "Source and vision proof",
-      "status": "VERIFIED",
-      "priority": 109,
-      "dependencies": [
-        "CS-T01"
-      ],
-      "goal": "Bounded local PDF rendering plus a provider-neutral vision adapter whose candidate pins and dimensions carry source regions and never become evidence.",
       "acceptance_criteria": [
         "Bounded observation bundle records parser and renderer versions, page geometry, stable token IDs and render digests",
         "Provider-neutral multimodal adapter enforces the strict schema and rejects malformed or out-of-document output",
         "Recorded provider responses make the default suite offline; live evaluation is bounded and accounted for",
         "Candidate pins and dimensions are shown with their source regions and remain unverified"
       ],
-      "verification": {
-        "required": [
-          "fast_tests",
-          "recorded_provider_tests",
-          "ruff"
-        ],
-        "record": ".ai/verification/CS-T02.yaml"
-      },
-      "review": {
-        "required": true,
-        "status": "FINDINGS_ADDRESSED_AWAITING_RE_REVIEW",
-        "independent": true,
-        "record": ".ai/reviews.yaml#CS-T01-T04-REMEDIATION-2-VERIFICATION",
-        "note": "Earlier independent review and remediation history retained. Publication is not independent re-review of the final fixes."
-      },
       "blockers": [
         "Source and remediation are committed and locally verified. Independent re-review of NEW-1..NEW-7 remains outstanding; preserve the live-extraction evaluation limitation in CS-T02. VERIFIED is not COMPLETE."
       ],
+      "dependencies": [
+        "CS-T01"
+      ],
+      "goal": "Bounded local PDF rendering plus a provider-neutral vision adapter whose candidate pins and dimensions carry source regions and never become evidence.",
+      "id": "CS-T02",
       "implementation": {
         "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
-        "started_at_commit": "d7b1175",
+        "committed_at": "7efe78b94577103303df231bc84a30a2eede5be6",
+        "completed_at": "2026-09-14",
         "completed_at_commit": null,
         "lifecycle": [
           "IN_PROGRESS after CS-T01 verification",
           "IMPLEMENTED: bounded observation bundle with printed rules and page renders, provider-neutral vision port, recorded and scripted providers, live Anthropic vision adapter",
           "VERIFIED: 26 offline multimodal tests plus a corpus-backed recorded extraction; live provider evaluation NOT RUN (no credentials)"
         ],
-        "completed_at": "2026-09-14",
-        "uncommitted": false,
-        "committed_at": "7efe78b94577103303df231bc84a30a2eede5be6"
+        "started_at_commit": "d7b1175",
+        "uncommitted": false
+      },
+      "milestone": null,
+      "priority": 109,
+      "review": {
+        "independent": true,
+        "note": "Earlier independent review and remediation history retained. Publication is not independent re-review of the final fixes.",
+        "record": ".ai/reviews.yaml#CS-T01-T04-REMEDIATION-2-VERIFICATION",
+        "required": true,
+        "status": "FINDINGS_ADDRESSED_AWAITING_RE_REVIEW"
+      },
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "status": "VERIFIED",
+      "title": "Source and vision proof",
+      "verification": {
+        "record": ".ai/verification/CS-T02.yaml",
+        "required": [
+          "fast_tests",
+          "recorded_provider_tests",
+          "ruff"
+        ]
       }
     },
     {
-      "id": "CS-T03",
-      "scope": "COMPONENT-SYNTHESIS-1",
-      "milestone": null,
-      "title": "Independent source verification",
-      "status": "VERIFIED",
-      "priority": 108,
-      "dependencies": [
-        "CS-T02"
-      ],
-      "goal": "Exact supported table and drawing grammars, identity and variant checks, units and conditions, and a rejection corpus where wrong-but-consistent model output fails.",
       "acceptance_criteria": [
         "Deterministic grammars bind a value to its row, symbol, column, units and package applicability",
         "Verification receipts are constructed only by deterministic checking, never by a provider",
         "Rejection corpus covers wrong row, wrong column, wrong package column, detached number, wrong units and fabricated region",
         "Unsupported image-only or unassociated sources stay quarantined rather than passing"
       ],
-      "verification": {
-        "required": [
-          "fast_tests",
-          "rejection_corpus",
-          "ruff"
-        ],
-        "record": ".ai/verification/CS-T03.yaml"
-      },
-      "review": {
-        "required": true,
-        "status": "FINDINGS_ADDRESSED_AWAITING_RE_REVIEW",
-        "independent": true,
-        "record": ".ai/reviews.yaml#CS-T01-T04-REMEDIATION-2-VERIFICATION",
-        "note": "Earlier independent review and remediation history retained. Publication is not independent re-review of the final fixes."
-      },
       "blockers": [
         "Source and remediation are committed and locally verified. Independent re-review of NEW-1..NEW-7 remains outstanding; preserve the live-extraction evaluation limitation in CS-T02. VERIFIED is not COMPLETE."
       ],
+      "dependencies": [
+        "CS-T02"
+      ],
+      "goal": "Exact supported table and drawing grammars, identity and variant checks, units and conditions, and a rejection corpus where wrong-but-consistent model output fails.",
+      "id": "CS-T03",
       "implementation": {
         "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
-        "started_at_commit": "d7b1175",
+        "committed_at": "7efe78b94577103303df231bc84a30a2eede5be6",
+        "completed_at": "2026-09-14",
         "completed_at_commit": null,
         "lifecycle": [
           "IN_PROGRESS after CS-T02 verification",
           "IMPLEMENTED: ruled-table grammars, identity/variant/package-legend checks, drawn-land topology, printed-arithmetic cross-checks, receipts",
           "VERIFIED: 30 corpus-backed tests including the full rejection corpus; go/no-go source-association checkpoint passed on a real datasheet"
         ],
-        "completed_at": "2026-09-14",
-        "uncommitted": false,
-        "committed_at": "7efe78b94577103303df231bc84a30a2eede5be6"
+        "started_at_commit": "d7b1175",
+        "uncommitted": false
+      },
+      "milestone": null,
+      "priority": 108,
+      "review": {
+        "independent": true,
+        "note": "Earlier independent review and remediation history retained. Publication is not independent re-review of the final fixes.",
+        "record": ".ai/reviews.yaml#CS-T01-T04-REMEDIATION-2-VERIFICATION",
+        "required": true,
+        "status": "FINDINGS_ADDRESSED_AWAITING_RE_REVIEW"
+      },
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "status": "VERIFIED",
+      "title": "Independent source verification",
+      "verification": {
+        "record": ".ai/verification/CS-T03.yaml",
+        "required": [
+          "fast_tests",
+          "rejection_corpus",
+          "ruff"
+        ]
       }
     },
     {
-      "id": "CS-T04",
-      "scope": "COMPONENT-SYNTHESIS-1",
-      "milestone": null,
-      "title": "One-package CAD proof",
-      "status": "VERIFIED",
-      "priority": 107,
-      "dependencies": [
-        "CS-T03"
-      ],
-      "goal": "One parameterized package compiled to a standalone symbol and footprint, independently parsed and measured from the emitted bytes, and corroborated by KiCad.",
       "acceptance_criteria": [
         "Deterministic symbol and footprint serialization from verified constraints only",
         "Independent byte-level parse and measurement that never reads the generator geometry objects",
@@ -1410,632 +1400,634 @@
         "Real KiCad CLI harness binds its reports to the exact artifact hashes",
         "No catalog admission occurs"
       ],
-      "verification": {
-        "required": [
-          "fast_tests",
-          "kicad_integration",
-          "asset_mutation_corpus",
-          "ruff"
-        ],
-        "record": ".ai/verification/CS-T04.yaml"
-      },
-      "review": {
-        "required": true,
-        "status": "FINDINGS_ADDRESSED_AWAITING_RE_REVIEW",
-        "independent": true,
-        "record": ".ai/reviews.yaml#CS-T01-T04-REMEDIATION-2-VERIFICATION",
-        "note": "Earlier independent review and remediation history retained. Publication is not independent re-review of the final fixes."
-      },
       "blockers": [
         "Source and remediation are committed and locally verified. Independent re-review of NEW-1..NEW-7 remains outstanding; preserve the live-extraction evaluation limitation in CS-T02. VERIFIED is not COMPLETE."
       ],
+      "dependencies": [
+        "CS-T03"
+      ],
+      "goal": "One parameterized package compiled to a standalone symbol and footprint, independently parsed and measured from the emitted bytes, and corroborated by KiCad.",
+      "id": "CS-T04",
       "implementation": {
         "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
-        "started_at_commit": "d7b1175",
+        "committed_at": "7efe78b94577103303df231bc84a30a2eede5be6",
+        "completed_at": "2026-09-14",
         "completed_at_commit": null,
         "lifecycle": [
           "IN_PROGRESS after CS-T03 verification",
           "IMPLEMENTED: deterministic land pattern and symbol, byte-exact KiCad serialisation, independent asset parser and measurements, CS-* asset checks, bounded KiCad harness",
           "VERIFIED: 38 asset tests including the mutation corpus, 31/31 CS-* checks pass on the real generated pair, KiCad 10.0.5 loaded and rendered both artifacts; no catalog admission occurred"
         ],
-        "completed_at": "2026-09-14",
-        "uncommitted": false,
-        "committed_at": "7efe78b94577103303df231bc84a30a2eede5be6"
+        "started_at_commit": "d7b1175",
+        "uncommitted": false
+      },
+      "milestone": null,
+      "priority": 107,
+      "review": {
+        "independent": true,
+        "note": "Earlier independent review and remediation history retained. Publication is not independent re-review of the final fixes.",
+        "record": ".ai/reviews.yaml#CS-T01-T04-REMEDIATION-2-VERIFICATION",
+        "required": true,
+        "status": "FINDINGS_ADDRESSED_AWAITING_RE_REVIEW"
+      },
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "status": "VERIFIED",
+      "title": "One-package CAD proof",
+      "verification": {
+        "record": ".ai/verification/CS-T04.yaml",
+        "required": [
+          "fast_tests",
+          "kicad_integration",
+          "asset_mutation_corpus",
+          "ruff"
+        ]
       }
     },
     {
-      "id": "CS-T05",
-      "scope": "COMPONENT-SYNTHESIS-1",
-      "milestone": null,
-      "title": "Reusable asset library",
-      "status": "APPROVED",
-      "priority": 106,
-      "dependencies": [
-        "CS-T04"
-      ],
-      "goal": "A second initial package family, bounded QFN and QFP exposed-pad cases, portable exports and an immutable asset resolver.",
       "acceptance_criteria": [
         "Second family needs no per-MPN source edits",
         "Pad, orientation and geometry mutations are rejected",
         "Unsupported paste or thermal policy blocks the affected packages",
         "Portable export never modifies global KiCad libraries"
       ],
+      "blockers": [],
+      "dependencies": [
+        "CS-T04"
+      ],
+      "goal": "A second initial package family, bounded QFN and QFP exposed-pad cases, portable exports and an immutable asset resolver.",
+      "id": "CS-T05",
+      "implementation": {
+        "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
+        "completed_at_commit": null,
+        "started_at_commit": null
+      },
+      "milestone": null,
+      "priority": 106,
+      "review": {
+        "independent": false,
+        "required": true,
+        "status": "PENDING"
+      },
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "status": "APPROVED",
+      "title": "Reusable asset library",
       "verification": {
+        "record": ".ai/verification/CS-T05.yaml",
         "required": [
           "fast_tests",
           "kicad_integration",
           "ruff"
-        ],
-        "record": ".ai/verification/CS-T05.yaml"
-      },
-      "review": {
-        "required": true,
-        "status": "PENDING",
-        "independent": false
-      },
-      "blockers": [],
-      "implementation": {
-        "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
-        "started_at_commit": null,
-        "completed_at_commit": null
+        ]
       }
     },
     {
-      "id": "CS-T06",
-      "scope": "COMPONENT-SYNTHESIS-1",
-      "milestone": null,
-      "title": "Persistent admission infrastructure",
-      "status": "APPROVED",
-      "priority": 105,
-      "dependencies": [
-        "CS-T05"
-      ],
-      "goal": "SQLite migrations, immutable revisions, snapshots, report lineage and restart, idempotency and revocation behaviour.",
       "acceptance_criteria": [
         "Versioned, rollback-tested migrations",
         "Blobs committed before the referencing transaction publishes",
         "Duplicate concurrent imports and interrupted sequences resolve explicitly",
         "Quarantine is never active discovery; real activation stays disabled until CS-T07"
       ],
+      "blockers": [],
+      "dependencies": [
+        "CS-T05"
+      ],
+      "goal": "SQLite migrations, immutable revisions, snapshots, report lineage and restart, idempotency and revocation behaviour.",
+      "id": "CS-T06",
+      "implementation": {
+        "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
+        "completed_at_commit": null,
+        "started_at_commit": null
+      },
+      "milestone": null,
+      "priority": 105,
+      "review": {
+        "independent": false,
+        "required": true,
+        "status": "PENDING"
+      },
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "status": "APPROVED",
+      "title": "Persistent admission infrastructure",
       "verification": {
+        "record": ".ai/verification/CS-T06.yaml",
         "required": [
           "fast_tests",
           "persistence_tests",
           "ruff"
-        ],
-        "record": ".ai/verification/CS-T06.yaml"
-      },
-      "review": {
-        "required": true,
-        "status": "PENDING",
-        "independent": false
-      },
-      "blockers": [],
-      "implementation": {
-        "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
-        "started_at_commit": null,
-        "completed_at_commit": null
+        ]
       }
     },
     {
-      "id": "CS-T07",
-      "scope": "COMPONENT-SYNTHESIS-1",
-      "milestone": null,
-      "title": "Electrical profile and admission gates",
-      "status": "APPROVED",
-      "priority": 104,
-      "dependencies": [
-        "CS-T03",
-        "CS-T06"
-      ],
-      "goal": "ComponentSpec construction from checked claims, required-fact and profile coverage gates, and refusal of unsupported functions.",
       "acceptance_criteria": [
         "Required-fact matrix and applicable-rule outcomes are evaluated explicitly, not through export_blocked alone",
         "Unsupported electrical behaviour blocks the requested capability",
         "Existing catalog fixtures retain their truthful status",
         "Real admission is enabled only after these gates pass"
       ],
+      "blockers": [],
+      "dependencies": [
+        "CS-T03",
+        "CS-T06"
+      ],
+      "goal": "ComponentSpec construction from checked claims, required-fact and profile coverage gates, and refusal of unsupported functions.",
+      "id": "CS-T07",
+      "implementation": {
+        "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
+        "completed_at_commit": null,
+        "started_at_commit": null
+      },
+      "milestone": null,
+      "priority": 104,
+      "review": {
+        "independent": false,
+        "required": true,
+        "status": "PENDING"
+      },
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "status": "APPROVED",
+      "title": "Electrical profile and admission gates",
       "verification": {
+        "record": ".ai/verification/CS-T07.yaml",
         "required": [
           "fast_tests",
           "admission_gate_tests",
           "ruff"
-        ],
-        "record": ".ai/verification/CS-T07.yaml"
-      },
-      "review": {
-        "required": true,
-        "status": "PENDING",
-        "independent": false
-      },
-      "blockers": [],
-      "implementation": {
-        "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
-        "started_at_commit": null,
-        "completed_at_commit": null
+        ]
       }
     },
     {
-      "id": "CS-T08",
-      "scope": "COMPONENT-SYNTHESIS-1",
-      "milestone": null,
-      "title": "Resume and real board integration",
-      "status": "APPROVED",
-      "priority": 103,
-      "dependencies": [
-        "CS-T07"
-      ],
-      "goal": "Missing-part pause, import and resume through an explicit dynamic project path with supported functional placement and MCP snapshot parity.",
       "acceptance_criteria": [
         "Typed component-resolution request precedes architecture generation",
         "Functional placement replaces reference-designator positions",
         "One new supported part traverses semantic, ERC, placement, routing, DRC and download with exact lineage",
         "Negative requests cannot bypass import"
       ],
+      "blockers": [],
+      "dependencies": [
+        "CS-T07"
+      ],
+      "goal": "Missing-part pause, import and resume through an explicit dynamic project path with supported functional placement and MCP snapshot parity.",
+      "id": "CS-T08",
+      "implementation": {
+        "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
+        "completed_at_commit": null,
+        "started_at_commit": null
+      },
+      "milestone": null,
+      "priority": 103,
+      "review": {
+        "independent": false,
+        "required": true,
+        "status": "PENDING"
+      },
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "status": "APPROVED",
+      "title": "Resume and real board integration",
       "verification": {
+        "record": ".ai/verification/CS-T08.yaml",
         "required": [
           "fast_tests",
           "integration",
           "slow_integration",
           "ruff"
-        ],
-        "record": ".ai/verification/CS-T08.yaml"
-      },
-      "review": {
-        "required": true,
-        "status": "PENDING",
-        "independent": false
-      },
-      "blockers": [],
-      "implementation": {
-        "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
-        "started_at_commit": null,
-        "completed_at_commit": null
+        ]
       }
     },
     {
-      "id": "CS-T09",
-      "scope": "COMPONENT-SYNTHESIS-1",
-      "milestone": null,
-      "title": "SPICE model boundary",
-      "status": "APPROVED",
-      "priority": 102,
-      "dependencies": [
-        "CS-T07"
-      ],
-      "goal": "Model provenance, pin maps, deck restrictions, vendor and approximation harnesses, and actual design-deck model bindings.",
       "acceptance_criteria": [
         "Restricted directives, includes and transitive files resolve only manifest-listed hashes",
         "Independent measured assertions are defined before the run",
         "Unsupported dialects, nonconvergence and empty results stay explicit",
         "CAD-only support remains distinguishable from simulation support"
       ],
+      "blockers": [],
+      "dependencies": [
+        "CS-T07"
+      ],
+      "goal": "Model provenance, pin maps, deck restrictions, vendor and approximation harnesses, and actual design-deck model bindings.",
+      "id": "CS-T09",
+      "implementation": {
+        "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
+        "completed_at_commit": null,
+        "started_at_commit": null
+      },
+      "milestone": null,
+      "priority": 102,
+      "review": {
+        "independent": false,
+        "required": true,
+        "status": "PENDING"
+      },
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "status": "APPROVED",
+      "title": "SPICE model boundary",
       "verification": {
+        "record": ".ai/verification/CS-T09.yaml",
         "required": [
           "fast_tests",
           "simulation_integration",
           "ruff"
-        ],
-        "record": ".ai/verification/CS-T09.yaml"
-      },
-      "review": {
-        "required": true,
-        "status": "PENDING",
-        "independent": false
-      },
-      "blockers": [],
-      "implementation": {
-        "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
-        "started_at_commit": null,
-        "completed_at_commit": null
+        ]
       }
     },
     {
-      "id": "CS-T10",
-      "scope": "COMPONENT-SYNTHESIS-1",
-      "milestone": null,
-      "title": "LM317 end-to-end",
-      "status": "APPROVED",
-      "priority": 101,
-      "dependencies": [
-        "CS-T08",
-        "CS-T09"
-      ],
-      "goal": "Independently checked SOT-223 package and tab extension plus adjustable-feedback and conditional-limit rules with a real vendor-model compatibility result.",
       "acceptance_criteria": [
         "Package and tab mapping verified from the source, never guessed",
         "Adjustable feedback network derived and checked deterministically",
         "Incorrect divider, tab and limit negative cases fail",
         "Vendor-model ngspice compatibility is measured, not assumed"
       ],
+      "blockers": [],
+      "dependencies": [
+        "CS-T08",
+        "CS-T09"
+      ],
+      "goal": "Independently checked SOT-223 package and tab extension plus adjustable-feedback and conditional-limit rules with a real vendor-model compatibility result.",
+      "id": "CS-T10",
+      "implementation": {
+        "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
+        "completed_at_commit": null,
+        "started_at_commit": null
+      },
+      "milestone": null,
+      "priority": 101,
+      "review": {
+        "independent": false,
+        "required": true,
+        "status": "PENDING"
+      },
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "status": "APPROVED",
+      "title": "LM317 end-to-end",
       "verification": {
+        "record": ".ai/verification/CS-T10.yaml",
         "required": [
           "fast_tests",
           "integration",
           "simulation_integration",
           "ruff"
-        ],
-        "record": ".ai/verification/CS-T10.yaml"
-      },
-      "review": {
-        "required": true,
-        "status": "PENDING",
-        "independent": false
-      },
-      "blockers": [],
-      "implementation": {
-        "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
-        "started_at_commit": null,
-        "completed_at_commit": null
+        ]
       }
     },
     {
-      "id": "CS-T11",
-      "scope": "COMPONENT-SYNTHESIS-1",
-      "milestone": null,
-      "title": "Acceptance and documentation",
-      "status": "APPROVED",
-      "priority": 100,
-      "dependencies": [
-        "CS-T10"
-      ],
-      "goal": "Full regression, held-out datasheet corpus, independent review, real source, asset and UI evidence and complete limitations.",
       "acceptance_criteria": [
         "Zero false admission across the defined negative corpus",
         "Complete required-fact coverage for admitted parts",
         "Real tool runs for every claimed supported operation",
         "Portable output and restart verification recorded with limitations"
       ],
+      "blockers": [],
+      "dependencies": [
+        "CS-T10"
+      ],
+      "goal": "Full regression, held-out datasheet corpus, independent review, real source, asset and UI evidence and complete limitations.",
+      "id": "CS-T11",
+      "implementation": {
+        "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
+        "completed_at_commit": null,
+        "started_at_commit": null
+      },
+      "milestone": null,
+      "priority": 100,
+      "review": {
+        "independent": false,
+        "required": true,
+        "status": "PENDING"
+      },
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "status": "APPROVED",
+      "title": "Acceptance and documentation",
       "verification": {
+        "record": ".ai/verification/CS-T11.yaml",
         "required": [
           "full",
           "integration",
           "slow_integration",
           "verify_all",
           "ruff"
-        ],
-        "record": ".ai/verification/CS-T11.yaml"
-      },
-      "review": {
-        "required": true,
-        "status": "PENDING",
-        "independent": false
-      },
-      "blockers": [],
-      "implementation": {
-        "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
-        "started_at_commit": null,
-        "completed_at_commit": null
+        ]
       }
     },
     {
-      "id": "CAB-T01",
-      "scope": "COMPONENT-ATLAS-BUILDER-1",
-      "milestone": null,
-      "title": "Freeze contracts and eligibility states",
-      "status": "COMPLETE",
-      "priority": 209,
-      "dependencies": [],
-      "goal": "define immutable visual records, exact catalog bindings, draft commands, invalidation rules, and user-visible statuses.",
       "acceptance_criteria": [
         "architecture tests prove visual data cannot grant design eligibility; `LEARN_ONLY` and quarantined assets fail closed; records carry source/license/hash/limitations; integer coordinate rules are fixed."
       ],
+      "blockers": [],
+      "dependencies": [],
+      "goal": "define immutable visual records, exact catalog bindings, draft commands, invalidation rules, and user-visible statuses.",
+      "id": "CAB-T01",
+      "implementation": {
+        "completed_at_commit": "2c5e585",
+        "started_at_commit": "d7b1175"
+      },
+      "milestone": null,
+      "priority": 209,
+      "review": {
+        "independent": false,
+        "record": ".ai/reviews.yaml#CAB-T01-SELF",
+        "required": false,
+        "status": "PASSED"
+      },
+      "scope": "COMPONENT-ATLAS-BUILDER-1",
+      "status": "COMPLETE",
+      "title": "Freeze contracts and eligibility states",
       "verification": {
+        "record": ".ai/verification/CAB-T01.yaml",
         "required": [
           "contract_tests",
           "architecture_tests",
           "workflow",
           "fast",
           "ruff"
-        ],
-        "record": ".ai/verification/CAB-T01.yaml"
-      },
-      "review": {
-        "required": false,
-        "status": "PASSED",
-        "independent": false,
-        "record": ".ai/reviews.yaml#CAB-T01-SELF"
-      },
-      "blockers": [],
-      "implementation": {
-        "started_at_commit": "d7b1175",
-        "completed_at_commit": "2c5e585"
+        ]
       }
     },
     {
-      "id": "CAB-T02",
-      "scope": "COMPONENT-ATLAS-BUILDER-1",
-      "milestone": null,
-      "title": "Backend component-library projection",
-      "status": "COMPLETE",
-      "priority": 208,
+      "acceptance_criteria": [
+        "deterministic pagination/search/filtering; exact snapshot hash; no client-supplied evidence; twelve current catalog records represented; missing visuals use an explicit fallback; revoked/quarantined items remain visible only under appropriate filters and cannot be added."
+      ],
+      "blockers": [],
       "dependencies": [
         "CAB-T01"
       ],
       "goal": "expose a read-only API joining the existing visual registry with server-owned catalog snapshots and evidence summaries.",
-      "acceptance_criteria": [
-        "deterministic pagination/search/filtering; exact snapshot hash; no client-supplied evidence; twelve current catalog records represented; missing visuals use an explicit fallback; revoked/quarantined items remain visible only under appropriate filters and cannot be added."
-      ],
+      "id": "CAB-T02",
+      "implementation": {
+        "completed_at_commit": "972800d",
+        "started_at_commit": "2c5e585"
+      },
+      "milestone": null,
+      "priority": 208,
+      "review": {
+        "independent": false,
+        "record": ".ai/reviews.yaml#CAB-T02-SELF",
+        "required": false,
+        "status": "PASSED"
+      },
+      "scope": "COMPONENT-ATLAS-BUILDER-1",
+      "status": "COMPLETE",
+      "title": "Backend component-library projection",
       "verification": {
+        "record": ".ai/verification/CAB-T02.yaml",
         "required": [
           "task_acceptance_checks"
-        ],
-        "record": ".ai/verification/CAB-T02.yaml"
-      },
-      "review": {
-        "required": false,
-        "status": "PASSED",
-        "independent": false,
-        "record": ".ai/reviews.yaml#CAB-T02-SELF"
-      },
-      "blockers": [],
-      "implementation": {
-        "started_at_commit": "2c5e585",
-        "completed_at_commit": "972800d"
+        ]
       }
     },
     {
-      "id": "CAB-T03",
-      "scope": "COMPONENT-ATLAS-BUILDER-1",
-      "milestone": null,
-      "title": "Story discovery experience",
-      "status": "COMPLETE",
-      "priority": 207,
+      "acceptance_criteria": [
+        "desktop, touch, keyboard, screen-reader, reduced-motion, and renderer-fallback paths; story facts match backend records; every unknown and illustrative limitation is visible; no project mutation occurs."
+      ],
+      "blockers": [],
       "dependencies": [
         "CAB-T02"
       ],
       "goal": "make the atlas a first-class home/header experience with deterministic story queues and accessible navigation.",
-      "acceptance_criteria": [
-        "desktop, touch, keyboard, screen-reader, reduced-motion, and renderer-fallback paths; story facts match backend records; every unknown and illustrative limitation is visible; no project mutation occurs."
-      ],
+      "id": "CAB-T03",
+      "implementation": {
+        "completed_at_commit": "0f4c555",
+        "started_at_commit": "972800d"
+      },
+      "milestone": null,
+      "priority": 207,
+      "review": {
+        "independent": false,
+        "record": ".ai/reviews.yaml#CAB-T03-SELF",
+        "required": false,
+        "status": "PASSED"
+      },
+      "scope": "COMPONENT-ATLAS-BUILDER-1",
+      "status": "COMPLETE",
+      "title": "Story discovery experience",
       "verification": {
+        "record": ".ai/verification/CAB-T03.yaml",
         "required": [
           "task_acceptance_checks"
-        ],
-        "record": ".ai/verification/CAB-T03.yaml"
-      },
-      "review": {
-        "required": false,
-        "status": "PASSED",
-        "independent": false,
-        "record": ".ai/reviews.yaml#CAB-T03-SELF"
-      },
-      "blockers": [],
-      "implementation": {
-        "started_at_commit": "972800d",
-        "completed_at_commit": "0f4c555"
+        ]
       }
     },
     {
-      "id": "CAB-T04",
-      "scope": "COMPONENT-ATLAS-BUILDER-1",
-      "milestone": null,
-      "title": "Disposable placement sandbox",
-      "status": "COMPLETE",
-      "priority": 206,
+      "acceptance_criteria": [
+        "snapping, rotate, side preview, collision/out-of-bounds states, undo/redo/reset/discard, mobile controls, and zero saved-project writes. Reload or discard destroys the sandbox unless the user explicitly saves a learning scene separate from engineering projects."
+      ],
+      "blockers": [],
       "dependencies": [
         "CAB-T03"
       ],
       "goal": "implement drag/tap/keyboard placement on a non-project sandbox using the existing procedural assets.",
-      "acceptance_criteria": [
-        "snapping, rotate, side preview, collision/out-of-bounds states, undo/redo/reset/discard, mobile controls, and zero saved-project writes. Reload or discard destroys the sandbox unless the user explicitly saves a learning scene separate from engineering projects."
-      ],
+      "id": "CAB-T04",
+      "implementation": {
+        "completed_at_commit": "00fa538",
+        "started_at_commit": "0f4c555"
+      },
+      "milestone": null,
+      "priority": 206,
+      "review": {
+        "independent": false,
+        "record": ".ai/reviews.yaml#CAB-T04-SELF",
+        "required": false,
+        "status": "PASSED"
+      },
+      "scope": "COMPONENT-ATLAS-BUILDER-1",
+      "status": "COMPLETE",
+      "title": "Disposable placement sandbox",
       "verification": {
+        "record": ".ai/verification/CAB-T04.yaml",
         "required": [
           "task_acceptance_checks"
-        ],
-        "record": ".ai/verification/CAB-T04.yaml"
-      },
-      "review": {
-        "required": false,
-        "status": "PASSED",
-        "independent": false,
-        "record": ".ai/reviews.yaml#CAB-T04-SELF"
-      },
-      "blockers": [],
-      "implementation": {
-        "started_at_commit": "0f4c555",
-        "completed_at_commit": "00fa538"
+        ]
       }
     },
     {
-      "id": "CAB-T05",
-      "scope": "COMPONENT-ATLAS-BUILDER-1",
-      "milestone": null,
-      "title": "Existing-component layout drafts",
-      "status": "APPROVED",
-      "priority": 205,
+      "acceptance_criteria": [
+        "server-owned `BoardDraft`; stale-base conflicts; complete physical invalidation; no changed nets/pads/parts; deterministic command replay; discard leaves source bytes unchanged; committing creates a new revision."
+      ],
+      "blockers": [],
       "dependencies": [
         "CAB-T04",
         "CS-T04"
       ],
       "goal": "move and rotate components already present in an immutable project revision.",
-      "acceptance_criteria": [
-        "server-owned `BoardDraft`; stale-base conflicts; complete physical invalidation; no changed nets/pads/parts; deterministic command replay; discard leaves source bytes unchanged; committing creates a new revision."
-      ],
+      "id": "CAB-T05",
+      "implementation": {
+        "completed_at_commit": null,
+        "started_at_commit": null
+      },
+      "milestone": null,
+      "priority": 205,
+      "review": {
+        "independent": false,
+        "required": false,
+        "status": "PENDING"
+      },
+      "scope": "COMPONENT-ATLAS-BUILDER-1",
+      "status": "APPROVED",
+      "title": "Existing-component layout drafts",
       "verification": {
+        "record": null,
         "required": [
           "task_acceptance_checks"
-        ],
-        "record": null
-      },
-      "review": {
-        "required": false,
-        "status": "PENDING",
-        "independent": false
-      },
-      "blockers": [],
-      "implementation": {
-        "started_at_commit": null,
-        "completed_at_commit": null
+        ]
       }
     },
     {
-      "id": "CAB-T06",
-      "scope": "COMPONENT-ATLAS-BUILDER-1",
-      "milestone": null,
-      "title": "Authoritative placement validation and reroute",
-      "status": "APPROVED",
-      "priority": 204,
+      "acceptance_criteria": [
+        "deliberately overlapping/out-of-bounds/keepout/antenna-edge placements fail; unavailable KiCad remains unavailable; routing failures remain explicit; generated artifacts bind the draft and base fingerprints; no old download remains enabled after an edit."
+      ],
+      "blockers": [],
       "dependencies": [
         "CAB-T05"
       ],
       "goal": "validate a settled layout draft through placement, routing, parsed artifact checks, ERC/DRC where applicable, manufacturing profile, and lineage.",
-      "acceptance_criteria": [
-        "deliberately overlapping/out-of-bounds/keepout/antenna-edge placements fail; unavailable KiCad remains unavailable; routing failures remain explicit; generated artifacts bind the draft and base fingerprints; no old download remains enabled after an edit."
-      ],
+      "id": "CAB-T06",
+      "implementation": {
+        "completed_at_commit": null,
+        "started_at_commit": null
+      },
+      "milestone": null,
+      "priority": 204,
+      "review": {
+        "independent": false,
+        "required": false,
+        "status": "PENDING"
+      },
+      "scope": "COMPONENT-ATLAS-BUILDER-1",
+      "status": "APPROVED",
+      "title": "Authoritative placement validation and reroute",
       "verification": {
+        "record": null,
         "required": [
           "task_acceptance_checks"
-        ],
-        "record": null
-      },
-      "review": {
-        "required": false,
-        "status": "PENDING",
-        "independent": false
-      },
-      "blockers": [],
-      "implementation": {
-        "started_at_commit": null,
-        "completed_at_commit": null
+        ]
       }
     },
     {
-      "id": "CAB-T07",
-      "scope": "COMPONENT-ATLAS-BUILDER-1",
-      "milestone": null,
-      "title": "Supported component addition",
-      "status": "APPROVED",
-      "priority": 203,
+      "acceptance_criteria": [
+        "drop creates a candidate; role resolution precedes electrical addition; one admitted component traverses semantic, schematic, ERC, placement, routing, DRC, manufacturing, learning projection, restart, and download with exact lineage; unsupported roles and negative requests cannot bypass admission."
+      ],
+      "blockers": [],
       "dependencies": [
         "CAB-T06",
         "CS-T07",
         "CS-T08"
       ],
       "goal": "let users drag a `DESIGN_ELIGIBLE` part into a supported project role.",
-      "acceptance_criteria": [
-        "drop creates a candidate; role resolution precedes electrical addition; one admitted component traverses semantic, schematic, ERC, placement, routing, DRC, manufacturing, learning projection, restart, and download with exact lineage; unsupported roles and negative requests cannot bypass admission."
-      ],
+      "id": "CAB-T07",
+      "implementation": {
+        "completed_at_commit": null,
+        "started_at_commit": null
+      },
+      "milestone": null,
+      "priority": 203,
+      "review": {
+        "independent": false,
+        "required": false,
+        "status": "PENDING"
+      },
+      "scope": "COMPONENT-ATLAS-BUILDER-1",
+      "status": "APPROVED",
+      "title": "Supported component addition",
       "verification": {
+        "record": null,
         "required": [
           "task_acceptance_checks"
-        ],
-        "record": null
-      },
-      "review": {
-        "required": false,
-        "status": "PENDING",
-        "independent": false
-      },
-      "blockers": [],
-      "implementation": {
-        "started_at_commit": null,
-        "completed_at_commit": null
+        ]
       }
     },
     {
-      "id": "CAB-T08",
-      "scope": "COMPONENT-ATLAS-BUILDER-1",
-      "milestone": null,
-      "title": "Mechanical board features",
-      "status": "APPROVED",
-      "priority": 202,
+      "acceptance_criteria": [
+        "each feature has a source/profile basis, exact fabrication semantics, independent parsed-byte checks, and mutation tests. Decorative models cannot create fabrication features."
+      ],
+      "blockers": [],
       "dependencies": [
         "CAB-T07"
       ],
       "goal": "add typed mounting holes, test points, fiducials, and keepouts.",
-      "acceptance_criteria": [
-        "each feature has a source/profile basis, exact fabrication semantics, independent parsed-byte checks, and mutation tests. Decorative models cannot create fabrication features."
-      ],
+      "id": "CAB-T08",
+      "implementation": {
+        "completed_at_commit": null,
+        "started_at_commit": null
+      },
+      "milestone": null,
+      "priority": 202,
+      "review": {
+        "independent": false,
+        "required": false,
+        "status": "PENDING"
+      },
+      "scope": "COMPONENT-ATLAS-BUILDER-1",
+      "status": "APPROVED",
+      "title": "Mechanical board features",
       "verification": {
+        "record": null,
         "required": [
           "task_acceptance_checks"
-        ],
-        "record": null
-      },
-      "review": {
-        "required": false,
-        "status": "PENDING",
-        "independent": false
-      },
-      "blockers": [],
-      "implementation": {
-        "started_at_commit": null,
-        "completed_at_commit": null
+        ]
       }
     },
     {
-      "id": "CAB-T09",
-      "scope": "COMPONENT-ATLAS-BUILDER-1",
-      "milestone": null,
-      "title": "Vetted external 3D assets and LOD",
-      "status": "APPROVED",
-      "priority": 201,
+      "acceptance_criteria": [
+        "bounded offline conversion, exact hashes, no external runtime fetches, origin/pad alignment tests, top/bottom/rotation/repeated-instance tests, license manifest, procedural fallback, and measured browser memory/load budgets."
+      ],
+      "blockers": [],
       "dependencies": [
         "CAB-T08"
       ],
       "goal": "add manufacturer or upstream models only where identity, transform, license, and redistribution are resolved.",
-      "acceptance_criteria": [
-        "bounded offline conversion, exact hashes, no external runtime fetches, origin/pad alignment tests, top/bottom/rotation/repeated-instance tests, license manifest, procedural fallback, and measured browser memory/load budgets."
-      ],
+      "id": "CAB-T09",
+      "implementation": {
+        "completed_at_commit": null,
+        "started_at_commit": null
+      },
+      "milestone": null,
+      "priority": 201,
+      "review": {
+        "independent": false,
+        "required": false,
+        "status": "PENDING"
+      },
+      "scope": "COMPONENT-ATLAS-BUILDER-1",
+      "status": "APPROVED",
+      "title": "Vetted external 3D assets and LOD",
       "verification": {
+        "record": null,
         "required": [
           "task_acceptance_checks"
-        ],
-        "record": null
-      },
-      "review": {
-        "required": false,
-        "status": "PENDING",
-        "independent": false
-      },
-      "blockers": [],
-      "implementation": {
-        "started_at_commit": null,
-        "completed_at_commit": null
+        ]
       }
     },
     {
-      "id": "CAB-T10",
-      "scope": "COMPONENT-ATLAS-BUILDER-1",
-      "milestone": null,
-      "title": "Acceptance and product evaluation",
-      "status": "APPROVED",
-      "priority": 200,
+      "acceptance_criteria": [
+        "held-out user tasks cover discovery, placement, cancellation, conflict recovery, invalid geometry, supported addition, and exact revision history; independent review has no open blocker/high finding; all canonical tiers pass with current KiCad; documentation and UI state all limits."
+      ],
+      "blockers": [],
       "dependencies": [
         "CAB-T09"
       ],
       "goal": "complete usability, accessibility, performance, safety, and independent review gates.",
-      "acceptance_criteria": [
-        "held-out user tasks cover discovery, placement, cancellation, conflict recovery, invalid geometry, supported addition, and exact revision history; independent review has no open blocker/high finding; all canonical tiers pass with current KiCad; documentation and UI state all limits."
-      ],
+      "id": "CAB-T10",
+      "implementation": {
+        "completed_at_commit": null,
+        "started_at_commit": null
+      },
+      "milestone": null,
+      "priority": 200,
+      "review": {
+        "independent": true,
+        "required": true,
+        "status": "PENDING"
+      },
+      "scope": "COMPONENT-ATLAS-BUILDER-1",
+      "status": "APPROVED",
+      "title": "Acceptance and product evaluation",
       "verification": {
+        "record": null,
         "required": [
           "task_acceptance_checks"
-        ],
-        "record": null
-      },
-      "review": {
-        "required": true,
-        "status": "PENDING",
-        "independent": true
-      },
-      "blockers": [],
-      "implementation": {
-        "started_at_commit": null,
-        "completed_at_commit": null
+        ]
       }
     },
     {
-      "id": "UX-T01",
-      "scope": "UX-CLARITY-1",
-      "milestone": null,
-      "title": "Audit and implement purpose-led landing and accessible presentation",
-      "status": "COMPLETE",
-      "priority": 220,
-      "dependencies": [],
-      "goal": "Document six reported concerns and eight additional evidence-backed findings, implement readability, navigation and component-led landing improvements without engineering authority changes.",
       "acceptance_criteria": [
         "Audit names user, purpose, evidence, priority, solution, tests and remaining work for all 14 findings.",
         "Landing explains bounded capability and provides primary project action and optional component learning.",
@@ -2043,120 +2035,140 @@
         "Existing project, library and disposable sandbox workflows retain truthful boundaries.",
         "Node, relevant Python, workflow and browser checks recorded; no live provider calls."
       ],
+      "blockers": [],
+      "dependencies": [],
+      "goal": "Document six reported concerns and eight additional evidence-backed findings, implement readability, navigation and component-led landing improvements without engineering authority changes.",
+      "id": "UX-T01",
+      "implementation": {
+        "completed_at_commit": "6fa487c",
+        "started_at_commit": "61d3832"
+      },
+      "milestone": null,
+      "priority": 220,
+      "review": {
+        "independent": false,
+        "record": ".ai/reviews.yaml#UX-T01-SELF",
+        "required": false,
+        "status": "PASSED"
+      },
+      "scope": "UX-CLARITY-1",
+      "status": "COMPLETE",
+      "title": "Audit and implement purpose-led landing and accessible presentation",
       "verification": {
+        "record": ".ai/verification/UX-T01.yaml",
         "required": [
           "node",
           "fast",
           "workflow",
           "browser",
           "ruff"
-        ],
-        "record": ".ai/verification/UX-T01.yaml"
-      },
-      "review": {
-        "required": false,
-        "status": "PASSED",
-        "independent": false,
-        "record": ".ai/reviews.yaml#UX-T01-SELF"
-      },
-      "blockers": [],
-      "implementation": {
-        "started_at_commit": "61d3832",
-        "completed_at_commit": "6fa487c"
+        ]
       }
     },
     {
-      "id": "UX-T02",
-      "scope": "UX-CLARITY-1",
-      "milestone": null,
-      "title": "Rebuild landing to supplied dark PCB reference",
-      "status": "COMPLETE",
-      "priority": 220,
-      "dependencies": [
-        "UX-T01"
-      ],
-      "goal": "Match reference composition, dark cyan/violet palette, PCB artwork, callouts and feature cards while retaining readable and truthful functional flows.",
       "acceptance_criteria": [
         "Reference-led responsive landing with functional build, learn, docs and demo actions.",
         "Artwork explicitly illustrative; no engineering status fabricated.",
         "No workbench regression; keyboard, mobile and reduced-motion checks.",
         "Tests and takeover notes recorded."
       ],
+      "blockers": [],
+      "dependencies": [
+        "UX-T01"
+      ],
+      "goal": "Match reference composition, dark cyan/violet palette, PCB artwork, callouts and feature cards while retaining readable and truthful functional flows.",
+      "id": "UX-T02",
+      "implementation": {
+        "completed_at_commit": "4bf53ef",
+        "started_at_commit": "c15373c"
+      },
+      "milestone": null,
+      "priority": 220,
+      "review": {
+        "independent": false,
+        "record": ".ai/reviews.yaml#UX-T02-SELF",
+        "required": false,
+        "status": "PASSED"
+      },
+      "scope": "UX-CLARITY-1",
+      "status": "COMPLETE",
+      "title": "Rebuild landing to supplied dark PCB reference",
       "verification": {
+        "record": ".ai/verification/UX-T02.yaml",
         "required": [
           "node",
           "fast",
           "workflow",
           "browser"
-        ],
-        "record": ".ai/verification/UX-T02.yaml"
-      },
-      "review": {
-        "required": false,
-        "status": "PASSED",
-        "independent": false,
-        "record": ".ai/reviews.yaml#UX-T02-SELF"
-      },
-      "blockers": [],
-      "implementation": {
-        "started_at_commit": "c15373c",
-        "completed_at_commit": "4bf53ef"
+        ]
       }
     },
     {
-      "id": "UX-T03",
-      "scope": "UX-CLARITY-1",
-      "milestone": null,
-      "title": "Unify all existing pages with the reference-led dark design",
-      "status": "COMPLETE",
-      "priority": 220,
-      "dependencies": [
-        "UX-T02"
-      ],
-      "goal": "Consistent readable workbench, project form, activity, results, build, library and dialogs without engineering behavior changes.",
       "acceptance_criteria": [
         "Shared dark semantic tokens and consistent controls/status styling.",
         "Project form follows supplied reference with real disabled/save states.",
         "Desktop/mobile, large-text and keyboard flows checked.",
         "Regression tests and handoff documented."
       ],
+      "blockers": [],
+      "dependencies": [
+        "UX-T02"
+      ],
+      "goal": "Consistent readable workbench, project form, activity, results, build, library and dialogs without engineering behavior changes.",
+      "id": "UX-T03",
+      "implementation": {
+        "completed_at_commit": "19ce9bf",
+        "started_at_commit": "4bf53ef"
+      },
+      "milestone": null,
+      "priority": 220,
+      "review": {
+        "independent": false,
+        "record": ".ai/reviews.yaml#UX-T03-SELF",
+        "required": false,
+        "status": "PASSED"
+      },
+      "scope": "UX-CLARITY-1",
+      "status": "COMPLETE",
+      "title": "Unify all existing pages with the reference-led dark design",
       "verification": {
+        "record": ".ai/verification/UX-T03.yaml",
         "required": [
           "node",
           "fast",
           "workflow",
           "browser"
-        ],
-        "record": ".ai/verification/UX-T03.yaml"
-      },
-      "review": {
-        "required": false,
-        "status": "PASSED",
-        "independent": false,
-        "record": ".ai/reviews.yaml#UX-T03-SELF"
-      },
-      "blockers": [],
-      "implementation": {
-        "started_at_commit": "4bf53ef",
-        "completed_at_commit": "19ce9bf"
+        ]
       }
     },
     {
-      "id": "REPO-T01",
-      "scope": "REPO-READY-1",
-      "milestone": null,
-      "title": "Prepare, verify, commit and push current work to main",
-      "status": "COMPLETE",
-      "priority": 230,
-      "dependencies": [],
-      "goal": "Publish a coherent verified source tree and truthful takeover state without beginning further product work.",
       "acceptance_criteria": [
         "Investigate local demo failure and run actual KiCad checks.",
         "Run full Python, corpus, frontend, lint and workflow gates; resolve failures before publication.",
         "Review tracked and untracked inputs, exclude local configuration and secrets, preserve existing product gates.",
         "Commit source and evidence, verify remote ancestry and push to main without force."
       ],
+      "blockers": [],
+      "dependencies": [],
+      "goal": "Publish a coherent verified source tree and truthful takeover state without beginning further product work.",
+      "id": "REPO-T01",
+      "implementation": {
+        "completed_at_commit": "7efe78b94577103303df231bc84a30a2eede5be6",
+        "started_at_commit": "4c3ccc5"
+      },
+      "milestone": null,
+      "priority": 230,
+      "review": {
+        "independent": false,
+        "record": ".ai/reviews.yaml#REPO-T01-SELF",
+        "required": false,
+        "status": "PASSED"
+      },
+      "scope": "REPO-READY-1",
+      "status": "COMPLETE",
+      "title": "Prepare, verify, commit and push current work to main",
       "verification": {
+        "record": ".ai/verification/REPO-T01.yaml",
         "required": [
           "full",
           "corpus",
@@ -2165,28 +2177,10 @@
           "ruff",
           "kicad",
           "git"
-        ],
-        "record": ".ai/verification/REPO-T01.yaml"
-      },
-      "review": {
-        "required": false,
-        "status": "PASSED",
-        "independent": false,
-        "record": ".ai/reviews.yaml#REPO-T01-SELF"
-      },
-      "blockers": [],
-      "implementation": {
-        "started_at_commit": "4c3ccc5",
-        "completed_at_commit": "7efe78b94577103303df231bc84a30a2eede5be6"
+        ]
       }
     },
     {
-      "id": "C3D-T01",
-      "scope": "COMPONENT-3D-STAGE1",
-      "title": "Foundation and all 20 CHIP2T instances",
-      "status": "COMPLETE",
-      "priority": 100,
-      "dependencies": [],
       "acceptance_criteria": [
         "20 spec-driven instances across LOD0/1/2",
         "Deterministic geometry, contact, bounds, material and transform checks",
@@ -2194,35 +2188,33 @@
         "Partial records provisional with source status retained",
         "No Stage 2 implementation"
       ],
+      "blockers": [],
+      "dependencies": [],
+      "id": "C3D-T01",
+      "implementation": {
+        "completed_at_commit": "e0018a473ccfb75900dbe2a43ff21bb2d695b9ce",
+        "started_at_commit": "ab1a8e4"
+      },
+      "priority": 100,
+      "review": {
+        "independent": false,
+        "record": ".ai/reviews.yaml#C3D-T01-SELF",
+        "required": true,
+        "status": "PASSED"
+      },
+      "scope": "COMPONENT-3D-STAGE1",
+      "status": "COMPLETE",
+      "title": "Foundation and all 20 CHIP2T instances",
       "verification": {
+        "record": ".ai/verification/C3D-T01.yaml",
         "required": [
           "node",
           "fast",
           "visual inspection"
-        ],
-        "record": ".ai/verification/C3D-T01.yaml"
-      },
-      "implementation": {
-        "started_at_commit": "ab1a8e4",
-        "completed_at_commit": "e0018a473ccfb75900dbe2a43ff21bb2d695b9ce"
-      },
-      "review": {
-        "required": true,
-        "status": "PASSED",
-        "independent": false,
-        "record": ".ai/reviews.yaml#C3D-T01-SELF"
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "C3D-T02",
-      "scope": "COMPONENT-3D-STAGE2",
-      "title": "Data-driven dual gull-wing, SOT23 and DIP models",
-      "status": "COMPLETE",
-      "priority": 100,
-      "dependencies": [
-        "C3D-T01"
-      ],
       "acceptance_criteria": [
         "All listed IDs at LOD0/1/2",
         "Exact per-entry terminal count, pin1 and numbering tests",
@@ -2230,35 +2222,35 @@
         "24 review views plus same-scale comparison and all-entry contact sheet",
         "No Stage 3 work"
       ],
+      "blockers": [],
+      "dependencies": [
+        "C3D-T01"
+      ],
+      "id": "C3D-T02",
+      "implementation": {
+        "completed_at_commit": "81598d3b565680b6380da12b603c596930b4aadf",
+        "started_at_commit": "f859571"
+      },
+      "priority": 100,
+      "review": {
+        "independent": false,
+        "record": ".ai/reviews.yaml#C3D-T02-SELF",
+        "required": true,
+        "status": "PASSED"
+      },
+      "scope": "COMPONENT-3D-STAGE2",
+      "status": "COMPLETE",
+      "title": "Data-driven dual gull-wing, SOT23 and DIP models",
       "verification": {
+        "record": ".ai/verification/C3D-T02.yaml",
         "required": [
           "node",
           "fast",
           "visual inspection"
-        ],
-        "record": ".ai/verification/C3D-T02.yaml"
-      },
-      "implementation": {
-        "started_at_commit": "f859571",
-        "completed_at_commit": "81598d3b565680b6380da12b603c596930b4aadf"
-      },
-      "review": {
-        "required": true,
-        "status": "PASSED",
-        "independent": false,
-        "record": ".ai/reviews.yaml#C3D-T02-SELF"
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "C3D-T03",
-      "scope": "COMPONENT-3D-STAGE3",
-      "title": "Quad, leadless, J-lead and grid-array component library",
-      "status": "COMPLETE",
-      "priority": 100,
-      "dependencies": [
-        "C3D-T02"
-      ],
       "acceptance_criteria": [
         "19 data-driven entries at LOD0/1/2",
         "Numbering, side and terminal counts tested per entry",
@@ -2267,35 +2259,35 @@
         "24 review views, same-scale comparison and all-19 sheet; underside every family",
         "Stop before Stage 4"
       ],
+      "blockers": [],
+      "dependencies": [
+        "C3D-T02"
+      ],
+      "id": "C3D-T03",
+      "implementation": {
+        "completed_at_commit": "d75861f0d8045592a02e30e54ab540d26202e94f",
+        "started_at_commit": "d50ab3e"
+      },
+      "priority": 100,
+      "review": {
+        "independent": false,
+        "record": ".ai/reviews.yaml#C3D-T03-SELF",
+        "required": true,
+        "status": "PASSED"
+      },
+      "scope": "COMPONENT-3D-STAGE3",
+      "status": "COMPLETE",
+      "title": "Quad, leadless, J-lead and grid-array component library",
       "verification": {
+        "record": ".ai/verification/C3D-T03.yaml",
         "required": [
           "node",
           "fast",
           "visual inspection"
-        ],
-        "record": ".ai/verification/C3D-T03.yaml"
-      },
-      "implementation": {
-        "started_at_commit": "d50ab3e",
-        "completed_at_commit": "d75861f0d8045592a02e30e54ab540d26202e94f"
-      },
-      "review": {
-        "required": true,
-        "status": "PASSED",
-        "independent": false,
-        "record": ".ai/reviews.yaml#C3D-T03-SELF"
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "C3D-T04",
-      "scope": "COMPONENT-3D-STAGE4",
-      "title": "Data-driven diodes, bridges and transistor/power packages",
-      "status": "COMPLETE",
-      "priority": 100,
-      "dependencies": [
-        "C3D-T03"
-      ],
       "acceptance_criteria": [
         "25 scoped entries at all three LODs; existing SOT23 reused unchanged",
         "Cathode at -X, terminal1/band tests; bidirectional TVS no band",
@@ -2305,35 +2297,35 @@
         "36 review views, same-scale comparison and all-25 sheet",
         "Stop before LEDs"
       ],
+      "blockers": [],
+      "dependencies": [
+        "C3D-T03"
+      ],
+      "id": "C3D-T04",
+      "implementation": {
+        "completed_at_commit": "66c68596b9c820a5ca5a86237e177dfd2ced08f3",
+        "started_at_commit": "89fe29f"
+      },
+      "priority": 100,
+      "review": {
+        "independent": false,
+        "record": ".ai/reviews.yaml#C3D-T04-SELF",
+        "required": true,
+        "status": "PASSED"
+      },
+      "scope": "COMPONENT-3D-STAGE4",
+      "status": "COMPLETE",
+      "title": "Data-driven diodes, bridges and transistor/power packages",
       "verification": {
+        "record": ".ai/verification/C3D-T04.yaml",
         "required": [
           "node",
           "fast",
           "visual inspection"
-        ],
-        "record": ".ai/verification/C3D-T04.yaml"
-      },
-      "implementation": {
-        "started_at_commit": "89fe29f",
-        "completed_at_commit": "66c68596b9c820a5ca5a86237e177dfd2ced08f3"
-      },
-      "review": {
-        "required": true,
-        "status": "PASSED",
-        "independent": false,
-        "record": ".ai/reviews.yaml#C3D-T04-SELF"
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "C3D-T05",
-      "scope": "COMPONENT-3D-STAGE5",
-      "title": "Data-driven LED, leaded passive and can packages",
-      "status": "COMPLETE",
-      "priority": 100,
-      "dependencies": [
-        "C3D-T04"
-      ],
       "acceptance_criteria": [
         "32 scoped records at explicit LOD0/1/2",
         "LED cathode and capacitor plus at -X with correct opposite markings",
@@ -2343,259 +2335,259 @@
         "36 review views, same-scale comparison and all-32 contact sheet",
         "Stop before Stage 6 connectors"
       ],
+      "blockers": [],
+      "dependencies": [
+        "C3D-T04"
+      ],
+      "id": "C3D-T05",
+      "implementation": {
+        "completed_at_commit": "86542c7ca443bf8013512a0d964c23be5bfc81b0",
+        "started_at_commit": "740db92"
+      },
+      "priority": 100,
+      "review": {
+        "independent": false,
+        "record": ".ai/reviews.yaml#C3D-T05-SELF",
+        "required": true,
+        "status": "PASSED"
+      },
+      "scope": "COMPONENT-3D-STAGE5",
+      "status": "COMPLETE",
+      "title": "Data-driven LED, leaded passive and can packages",
       "verification": {
+        "record": ".ai/verification/C3D-T05.yaml",
         "required": [
           "node",
           "fast",
           "visual inspection"
-        ],
-        "record": ".ai/verification/C3D-T05.yaml"
-      },
-      "implementation": {
-        "started_at_commit": "740db92",
-        "completed_at_commit": "86542c7ca443bf8013512a0d964c23be5bfc81b0"
-      },
-      "review": {
-        "required": true,
-        "status": "PASSED",
-        "independent": false,
-        "record": ".ai/reviews.yaml#C3D-T05-SELF"
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "C3D-A",
-      "scope": "COMPONENT-3D-COMPLETION",
-      "title": "Library completion A",
-      "status": "COMPLETE",
-      "priority": 100,
+      "acceptance_criteria": [
+        "Data-driven family generators, source statuses and uncertainties preserved, all LODs, terminal/mating tests and contact sheet; commit separately"
+      ],
+      "blockers": [],
       "dependencies": [
         "C3D-T05"
       ],
-      "acceptance_criteria": [
-        "Data-driven family generators, source statuses and uncertainties preserved, all LODs, terminal/mating tests and contact sheet; commit separately"
-      ],
+      "id": "C3D-A",
+      "implementation": {
+        "completed_at_commit": "8ffc8fb3de3c8f03a12b760b6c2cbe53fdbc394c",
+        "started_at_commit": "250fecb"
+      },
+      "priority": 100,
+      "review": {
+        "independent": false,
+        "record": ".ai/reviews.yaml#C3D-A-SELF",
+        "required": true,
+        "status": "PASSED"
+      },
+      "scope": "COMPONENT-3D-COMPLETION",
+      "status": "COMPLETE",
+      "title": "Library completion A",
       "verification": {
+        "record": ".ai/verification/C3D-A.yaml",
         "required": [
           "node",
           "source imports",
           "visual inspection"
-        ],
-        "record": ".ai/verification/C3D-A.yaml"
-      },
-      "implementation": {
-        "started_at_commit": "250fecb",
-        "completed_at_commit": "8ffc8fb3de3c8f03a12b760b6c2cbe53fdbc394c"
-      },
-      "review": {
-        "required": true,
-        "status": "PASSED",
-        "independent": false,
-        "record": ".ai/reviews.yaml#C3D-A-SELF"
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "C3D-B",
-      "scope": "COMPONENT-3D-COMPLETION",
-      "title": "Library completion B",
-      "status": "COMPLETE",
-      "priority": 100,
+      "acceptance_criteria": [
+        "Data-driven family generators, source statuses and uncertainties preserved, all LODs, terminal/mating tests and contact sheet; commit separately"
+      ],
+      "blockers": [],
       "dependencies": [
         "C3D-A"
       ],
-      "acceptance_criteria": [
-        "Data-driven family generators, source statuses and uncertainties preserved, all LODs, terminal/mating tests and contact sheet; commit separately"
-      ],
+      "id": "C3D-B",
+      "implementation": {
+        "completed_at_commit": "09af85a3a25c1a51887b2bfaf2252e85fddd32f7",
+        "started_at_commit": "8ffc8fb3de3c8f03a12b760b6c2cbe53fdbc394c"
+      },
+      "priority": 100,
+      "review": {
+        "independent": false,
+        "record": ".ai/reviews.yaml#C3D-B-SELF",
+        "required": true,
+        "status": "PASSED"
+      },
+      "scope": "COMPONENT-3D-COMPLETION",
+      "status": "COMPLETE",
+      "title": "Library completion B",
       "verification": {
+        "record": ".ai/verification/C3D-B.yaml",
         "required": [
           "node",
           "source imports",
           "visual inspection"
-        ],
-        "record": ".ai/verification/C3D-B.yaml"
-      },
-      "implementation": {
-        "started_at_commit": "8ffc8fb3de3c8f03a12b760b6c2cbe53fdbc394c",
-        "completed_at_commit": "09af85a3a25c1a51887b2bfaf2252e85fddd32f7"
-      },
-      "review": {
-        "required": true,
-        "status": "PASSED",
-        "independent": false,
-        "record": ".ai/reviews.yaml#C3D-B-SELF"
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "C3D-C",
-      "scope": "COMPONENT-3D-COMPLETION",
-      "title": "Library completion C",
-      "status": "COMPLETE",
-      "priority": 100,
+      "acceptance_criteria": [
+        "Data-driven family generators, source statuses and uncertainties preserved, all LODs, terminal/mating tests and contact sheet; commit separately"
+      ],
+      "blockers": [],
       "dependencies": [
         "C3D-B"
       ],
-      "acceptance_criteria": [
-        "Data-driven family generators, source statuses and uncertainties preserved, all LODs, terminal/mating tests and contact sheet; commit separately"
-      ],
+      "id": "C3D-C",
+      "implementation": {
+        "completed_at_commit": "eacb3b2116b4d97c1e7b2bfb270d46ec1407558e",
+        "started_at_commit": "09af85a3a25c1a51887b2bfaf2252e85fddd32f7"
+      },
+      "priority": 100,
+      "review": {
+        "independent": false,
+        "record": ".ai/reviews.yaml#C3D-C-SELF",
+        "required": true,
+        "status": "PASSED"
+      },
+      "scope": "COMPONENT-3D-COMPLETION",
+      "status": "COMPLETE",
+      "title": "Library completion C",
       "verification": {
+        "record": ".ai/verification/C3D-C.yaml",
         "required": [
           "node",
           "source imports",
           "visual inspection"
-        ],
-        "record": ".ai/verification/C3D-C.yaml"
-      },
-      "implementation": {
-        "started_at_commit": "09af85a3a25c1a51887b2bfaf2252e85fddd32f7",
-        "completed_at_commit": "eacb3b2116b4d97c1e7b2bfb270d46ec1407558e"
-      },
-      "review": {
-        "required": true,
-        "status": "PASSED",
-        "independent": false,
-        "record": ".ai/reviews.yaml#C3D-C-SELF"
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "C3D-D",
-      "scope": "COMPONENT-3D-COMPLETION",
-      "title": "Library completion D",
-      "status": "COMPLETE",
-      "priority": 100,
+      "acceptance_criteria": [
+        "Data-driven family generators, source statuses and uncertainties preserved, all LODs, terminal/mating tests and contact sheet; commit separately"
+      ],
+      "blockers": [],
       "dependencies": [
         "C3D-C"
       ],
-      "acceptance_criteria": [
-        "Data-driven family generators, source statuses and uncertainties preserved, all LODs, terminal/mating tests and contact sheet; commit separately"
-      ],
+      "id": "C3D-D",
+      "implementation": {
+        "completed_at_commit": "1f7a9e310789246d21370a191a0493171f718c34",
+        "started_at_commit": "eacb3b2116b4d97c1e7b2bfb270d46ec1407558e"
+      },
+      "priority": 100,
+      "review": {
+        "independent": false,
+        "record": ".ai/reviews.yaml#C3D-D-SELF",
+        "required": true,
+        "status": "PASSED"
+      },
+      "scope": "COMPONENT-3D-COMPLETION",
+      "status": "COMPLETE",
+      "title": "Library completion D",
       "verification": {
+        "record": ".ai/verification/C3D-D.yaml",
         "required": [
           "node",
           "source imports",
           "visual inspection"
-        ],
-        "record": ".ai/verification/C3D-D.yaml"
-      },
-      "implementation": {
-        "started_at_commit": "eacb3b2116b4d97c1e7b2bfb270d46ec1407558e",
-        "completed_at_commit": "1f7a9e310789246d21370a191a0493171f718c34"
-      },
-      "review": {
-        "required": true,
-        "status": "PASSED",
-        "independent": false,
-        "record": ".ai/reviews.yaml#C3D-D-SELF"
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "C3D-E",
-      "scope": "COMPONENT-3D-COMPLETION",
-      "title": "Library completion E",
-      "status": "COMPLETE",
-      "priority": 100,
+      "acceptance_criteria": [
+        "Data-driven family generators, source statuses and uncertainties preserved, all LODs, terminal/mating tests and contact sheet; commit separately"
+      ],
+      "blockers": [],
       "dependencies": [
         "C3D-D"
       ],
-      "acceptance_criteria": [
-        "Data-driven family generators, source statuses and uncertainties preserved, all LODs, terminal/mating tests and contact sheet; commit separately"
-      ],
+      "id": "C3D-E",
+      "implementation": {
+        "completed_at_commit": "a5dd8825083dbf5ae0b27daeab40bfcdee5ac2c4",
+        "started_at_commit": "1f7a9e310789246d21370a191a0493171f718c34"
+      },
+      "priority": 100,
+      "review": {
+        "independent": false,
+        "record": ".ai/reviews.yaml#C3D-E-SELF",
+        "required": true,
+        "status": "PASSED"
+      },
+      "scope": "COMPONENT-3D-COMPLETION",
+      "status": "COMPLETE",
+      "title": "Library completion E",
       "verification": {
+        "record": ".ai/verification/C3D-E.yaml",
         "required": [
           "node",
           "source imports",
           "visual inspection"
-        ],
-        "record": ".ai/verification/C3D-E.yaml"
-      },
-      "implementation": {
-        "started_at_commit": "1f7a9e310789246d21370a191a0493171f718c34",
-        "completed_at_commit": "a5dd8825083dbf5ae0b27daeab40bfcdee5ac2c4"
-      },
-      "review": {
-        "required": true,
-        "status": "PASSED",
-        "independent": false,
-        "record": ".ai/reviews.yaml#C3D-E-SELF"
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "C3D-INTEGRATION",
-      "scope": "COMPONENT-3D-COMPLETION",
-      "title": "Library completion INTEGRATION",
-      "status": "COMPLETE",
-      "priority": 100,
-      "dependencies": [
-        "C3D-E"
-      ],
       "acceptance_criteria": [
         "All 180 IDs, no extras or duplicate; source partial preserved; coverage table, all-180 sheet, README, frontend/Python/lint/source gates and complete report"
       ],
+      "blockers": [],
+      "dependencies": [
+        "C3D-E"
+      ],
+      "id": "C3D-INTEGRATION",
+      "implementation": {
+        "completed_at_commit": "708d0c4d9df8c4ed69d6cd9edfddec0b335abe9a",
+        "started_at_commit": "a5dd8825083dbf5ae0b27daeab40bfcdee5ac2c4"
+      },
+      "priority": 100,
+      "review": {
+        "independent": false,
+        "record": ".ai/reviews.yaml#C3D-INTEGRATION-SELF",
+        "required": true,
+        "status": "PASSED"
+      },
+      "scope": "COMPONENT-3D-COMPLETION",
+      "status": "COMPLETE",
+      "title": "Library completion INTEGRATION",
       "verification": {
+        "record": ".ai/verification/C3D-INTEGRATION.yaml",
         "required": [
           "node",
           "source imports",
           "visual inspection"
-        ],
-        "record": ".ai/verification/C3D-INTEGRATION.yaml"
-      },
-      "implementation": {
-        "started_at_commit": "a5dd8825083dbf5ae0b27daeab40bfcdee5ac2c4",
-        "completed_at_commit": "708d0c4d9df8c4ed69d6cd9edfddec0b335abe9a"
-      },
-      "review": {
-        "required": true,
-        "status": "PASSED",
-        "independent": false,
-        "record": ".ai/reviews.yaml#C3D-INTEGRATION-SELF"
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "C3D-CATALOG-UI",
-      "scope": "COMPONENT-3D-COMPLETION",
-      "title": "Expose all 180 models in the Components catalog",
-      "status": "COMPLETE",
-      "priority": 100,
-      "dependencies": [
-        "C3D-INTEGRATION"
-      ],
       "acceptance_criteria": [
         "All 180 models are visually browsable, searchable and filterable in the Components modal with selected-model views, LOD controls, model facts, pins and source status; desktop and mobile are usable"
       ],
+      "blockers": [],
+      "dependencies": [
+        "C3D-INTEGRATION"
+      ],
+      "id": "C3D-CATALOG-UI",
+      "implementation": {
+        "completed_at_commit": "878eacf4dd4449fc971f686cc068a541e7ede2e1",
+        "started_at_commit": "81721c4"
+      },
+      "priority": 100,
+      "review": {
+        "independent": false,
+        "record": ".ai/reviews.yaml#C3D-CATALOG-UI-SELF",
+        "required": true,
+        "status": "PASSED"
+      },
+      "scope": "COMPONENT-3D-COMPLETION",
+      "status": "COMPLETE",
+      "title": "Expose all 180 models in the Components catalog",
       "verification": {
+        "record": ".ai/verification/C3D-CATALOG-UI.yaml",
         "required": [
           "node",
           "python UI/static boundary",
           "browser visual inspection"
-        ],
-        "record": ".ai/verification/C3D-CATALOG-UI.yaml"
-      },
-      "implementation": {
-        "started_at_commit": "81721c4",
-        "completed_at_commit": "878eacf4dd4449fc971f686cc068a541e7ede2e1"
-      },
-      "review": {
-        "required": true,
-        "status": "PASSED",
-        "independent": false,
-        "record": ".ai/reviews.yaml#C3D-CATALOG-UI-SELF"
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "CBH-T01",
-      "scope": "COMPONENT-BEHAVIOR-STAGE1",
-      "milestone": null,
-      "title": "Generate and validate the component behavior registry",
-      "status": "COMPLETE",
-      "priority": 100,
-      "dependencies": [],
-      "goal": "Create the typed, traceable behavior data foundation for all 180 component entries without beginning simulation execution.",
       "acceptance_criteria": [
         "All 180 entries have generated behavior records and all canonical behavior classes are represented",
         "Source status and evidence basis values are preserved from the approved inputs",
@@ -2604,286 +2596,291 @@
         "MCP1700 SOT-23, SOT-89, and TO-92 package pin orders are separately represented and tested with datasheet page evidence",
         "No Stage 2 implementation or unverified ngspice bench claim is introduced"
       ],
+      "blockers": [],
+      "dependencies": [],
+      "goal": "Create the typed, traceable behavior data foundation for all 180 component entries without beginning simulation execution.",
+      "id": "CBH-T01",
+      "implementation": {
+        "completed_at_commit": "6d29a1a117eab9a86b33caf31d3f9e4fbe50b85a",
+        "started_at_commit": "c52a050"
+      },
+      "milestone": null,
+      "priority": 100,
+      "review": {
+        "independent": false,
+        "record": ".ai/reviews.yaml#CBH-T01-SELF",
+        "required": true,
+        "status": "PASSED"
+      },
+      "scope": "COMPONENT-BEHAVIOR-STAGE1",
+      "status": "COMPLETE",
+      "title": "Generate and validate the component behavior registry",
       "verification": {
+        "record": ".ai/verification/CBH-T01.yaml",
         "required": [
           "behavior generator check",
           "focused pytest",
           "fast repository verification",
           "ruff"
-        ],
-        "record": ".ai/verification/CBH-T01.yaml"
-      },
-      "implementation": {
-        "started_at_commit": "c52a050",
-        "completed_at_commit": "6d29a1a117eab9a86b33caf31d3f9e4fbe50b85a"
-      },
-      "review": {
-        "required": true,
-        "status": "PASSED",
-        "independent": false,
-        "record": ".ai/reviews.yaml#CBH-T01-SELF"
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "CBH-AUDIT",
-      "scope": "COMPONENT-BEHAVIOR-COMPLETION",
-      "milestone": null,
-      "title": "Build the behavior self-audit system",
-      "status": "COMPLETE",
-      "priority": 700,
-      "dependencies": [
-        "CBH-T01"
-      ],
-      "goal": "Create a deterministic, resumable audit that rejects dishonest evidence and protects the accepted repository baseline.",
       "acceptance_criteria": [
         "Hash-locked machine rules, protected-path baselines, resumable state and checkpoint reports",
         "Deterministic source, status-upgrade, vendor-model, spec-preservation, bench, honesty, coverage and regression checks",
         "All seven deliberately invalid canaries are rejected by the intended rule",
         "Audit system committed before Stage 2 begins"
       ],
+      "blockers": [],
+      "dependencies": [
+        "CBH-T01"
+      ],
+      "goal": "Create a deterministic, resumable audit that rejects dishonest evidence and protects the accepted repository baseline.",
+      "id": "CBH-AUDIT",
+      "implementation": {
+        "completed_at_commit": "add6e411319ea34dc1a8c1f4d50c67f1200eef64",
+        "started_at_commit": "0505077"
+      },
+      "milestone": null,
+      "priority": 700,
+      "review": {
+        "independent": false,
+        "record": ".ai/reviews.yaml#CBH-AUDIT-SELF",
+        "required": true,
+        "status": "PASSED"
+      },
+      "scope": "COMPONENT-BEHAVIOR-COMPLETION",
+      "status": "COMPLETE",
+      "title": "Build the behavior self-audit system",
       "verification": {
+        "record": ".ai/verification/CBH-AUDIT.yaml",
         "required": [
           "audit unit tests",
           "canary run",
           "AI workflow validation"
-        ],
-        "record": ".ai/verification/CBH-AUDIT.yaml"
-      },
-      "implementation": {
-        "started_at_commit": "0505077",
-        "completed_at_commit": "add6e411319ea34dc1a8c1f4d50c67f1200eef64"
-      },
-      "review": {
-        "required": true,
-        "status": "PASSED",
-        "independent": false,
-        "record": ".ai/reviews.yaml#CBH-AUDIT-SELF"
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "CBH-STAGE2",
-      "scope": "COMPONENT-BEHAVIOR-COMPLETION",
-      "milestone": null,
-      "title": "Gap research batch A",
-      "status": "BLOCKED",
-      "priority": 600,
-      "dependencies": [
-        "CBH-AUDIT"
-      ],
-      "goal": "Research and conservatively update OHM-001 through OHM-102 without fabricating evidence.",
       "acceptance_criteria": [
         "Per-entry before/after table",
         "Primary-source fetch ledger",
         "Bench evidence or explicit blocked status",
         "Fresh-context verifier sample"
       ],
+      "blockers": [],
+      "dependencies": [
+        "CBH-AUDIT"
+      ],
+      "goal": "Research and conservatively update OHM-001 through OHM-102 without fabricating evidence.",
+      "id": "CBH-STAGE2",
+      "implementation": {
+        "completed_at_commit": null,
+        "started_at_commit": "039b12d"
+      },
+      "milestone": null,
+      "notes": [
+        "Prior approvals remain effective. Research and product stages have not been accepted. Resolve the failed checkpoint before dependent progression; see run/FINAL_REPORT.md and STATE.json."
+      ],
+      "priority": 600,
+      "review": {
+        "independent": true,
+        "record": null,
+        "required": true,
+        "status": "PENDING"
+      },
+      "scope": "COMPONENT-BEHAVIOR-COMPLETION",
+      "status": "IN_PROGRESS",
+      "title": "Gap research batch A",
       "verification": {
+        "record": null,
         "required": [
           "audit checkpoints",
           "independent verifier"
-        ],
-        "record": null
-      },
-      "implementation": {
-        "started_at_commit": null,
-        "completed_at_commit": null
-      },
-      "review": {
-        "required": true,
-        "status": "PENDING",
-        "independent": true,
-        "record": null
-      },
-      "blockers": [
-        "NGSPICE-42-UNAVAILABLE",
-        "AUDIT-CORPUS-CHECKPOINT-FAILED"
-      ],
-      "notes": [
-        "Prior approvals remain effective. Research and product stages have not been accepted. Resolve the failed checkpoint before dependent progression; see run/FINAL_REPORT.md and STATE.json."
-      ]
+        ]
+      }
     },
     {
-      "id": "CBH-STAGE3",
-      "scope": "COMPONENT-BEHAVIOR-COMPLETION",
-      "milestone": null,
-      "title": "Behavior netlist generation",
-      "status": "APPROVED",
-      "priority": 500,
-      "dependencies": [
-        "CBH-STAGE2"
-      ],
-      "goal": "Generate inline behavior netlists through the existing simulation path and rerun matching benches.",
       "acceptance_criteria": [
         "Inline subcircuits",
         "Documented ngspice gotchas",
         "Product-path bench comparisons"
       ],
+      "blockers": [],
+      "dependencies": [
+        "CBH-STAGE2"
+      ],
+      "goal": "Generate inline behavior netlists through the existing simulation path and rerun matching benches.",
+      "id": "CBH-STAGE3",
+      "implementation": {
+        "completed_at_commit": null,
+        "started_at_commit": null
+      },
+      "milestone": null,
+      "priority": 500,
+      "review": {
+        "independent": false,
+        "record": null,
+        "required": true,
+        "status": "PENDING"
+      },
+      "scope": "COMPONENT-BEHAVIOR-COMPLETION",
+      "status": "APPROVED",
+      "title": "Behavior netlist generation",
       "verification": {
+        "record": null,
         "required": [
           "audit checkpoints",
           "ngspice 42 benches",
           "regression"
-        ],
-        "record": null
-      },
-      "implementation": {
-        "started_at_commit": null,
-        "completed_at_commit": null
-      },
-      "review": {
-        "required": true,
-        "status": "PENDING",
-        "independent": false,
-        "record": null
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "CBH-STAGE4",
-      "scope": "COMPONENT-BEHAVIOR-COMPLETION",
-      "milestone": null,
-      "title": "Gap research batch B and IC models",
-      "status": "APPROVED",
-      "priority": 400,
-      "dependencies": [
-        "CBH-STAGE3"
-      ],
-      "goal": "Bind package references and build sourced IC, frequency and connector behavior models.",
       "acceptance_criteria": [
         "Sourced reference bindings",
         "Conservative IC/frequency/interface models",
         "Fresh-context verifier sample",
         "Bench comparison"
       ],
+      "blockers": [],
+      "dependencies": [
+        "CBH-STAGE3"
+      ],
+      "goal": "Bind package references and build sourced IC, frequency and connector behavior models.",
+      "id": "CBH-STAGE4",
+      "implementation": {
+        "completed_at_commit": null,
+        "started_at_commit": null
+      },
+      "milestone": null,
+      "priority": 400,
+      "review": {
+        "independent": true,
+        "record": null,
+        "required": true,
+        "status": "PENDING"
+      },
+      "scope": "COMPONENT-BEHAVIOR-COMPLETION",
+      "status": "APPROVED",
+      "title": "Gap research batch B and IC models",
       "verification": {
+        "record": null,
         "required": [
           "audit checkpoints",
           "independent verifier",
           "ngspice 42 benches"
-        ],
-        "record": null
-      },
-      "implementation": {
-        "started_at_commit": null,
-        "completed_at_commit": null
-      },
-      "review": {
-        "required": true,
-        "status": "PENDING",
-        "independent": true,
-        "record": null
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "CBH-STAGE5",
-      "scope": "COMPONENT-BEHAVIOR-COMPLETION",
-      "milestone": null,
-      "title": "Ratings and failure checker",
-      "status": "APPROVED",
-      "priority": 300,
-      "dependencies": [
-        "CBH-STAGE4"
-      ],
-      "goal": "Evaluate sourced ratings and failure responses without turning violations or unknowns into passes.",
       "acceptance_criteria": [
         "Deterministic check expressions",
         "Violations remain violations",
         "Unknown or non-run remains non-pass"
       ],
+      "blockers": [],
+      "dependencies": [
+        "CBH-STAGE4"
+      ],
+      "goal": "Evaluate sourced ratings and failure responses without turning violations or unknowns into passes.",
+      "id": "CBH-STAGE5",
+      "implementation": {
+        "completed_at_commit": null,
+        "started_at_commit": null
+      },
+      "milestone": null,
+      "priority": 300,
+      "review": {
+        "independent": false,
+        "record": null,
+        "required": true,
+        "status": "PENDING"
+      },
+      "scope": "COMPONENT-BEHAVIOR-COMPLETION",
+      "status": "APPROVED",
+      "title": "Ratings and failure checker",
       "verification": {
+        "record": null,
         "required": [
           "audit checkpoints",
           "canary regression",
           "fast verification"
-        ],
-        "record": null
-      },
-      "implementation": {
-        "started_at_commit": null,
-        "completed_at_commit": null
-      },
-      "review": {
-        "required": true,
-        "status": "PENDING",
-        "independent": false,
-        "record": null
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "CBH-STAGE6",
-      "scope": "COMPONENT-BEHAVIOR-COMPLETION",
-      "milestone": null,
-      "title": "Behavior simulation UI",
-      "status": "APPROVED",
-      "priority": 200,
-      "dependencies": [
-        "CBH-STAGE5"
-      ],
-      "goal": "Expose honest simulation controls, results, fidelity, status and confidence in the web UI.",
       "acceptance_criteria": [
         "Run control and results",
         "Non-simulable reason",
         "Non-run is never pass",
         "Browser coverage"
       ],
+      "blockers": [],
+      "dependencies": [
+        "CBH-STAGE5"
+      ],
+      "goal": "Expose honest simulation controls, results, fidelity, status and confidence in the web UI.",
+      "id": "CBH-STAGE6",
+      "implementation": {
+        "completed_at_commit": null,
+        "started_at_commit": null
+      },
+      "milestone": null,
+      "priority": 200,
+      "review": {
+        "independent": false,
+        "record": null,
+        "required": true,
+        "status": "PENDING"
+      },
+      "scope": "COMPONENT-BEHAVIOR-COMPLETION",
+      "status": "APPROVED",
+      "title": "Behavior simulation UI",
       "verification": {
+        "record": null,
         "required": [
           "audit checkpoints",
           "Playwright",
           "fast verification"
-        ],
-        "record": null
-      },
-      "implementation": {
-        "started_at_commit": null,
-        "completed_at_commit": null
-      },
-      "review": {
-        "required": true,
-        "status": "PENDING",
-        "independent": false,
-        "record": null
-      },
-      "blockers": []
+        ]
+      }
     },
     {
-      "id": "CBH-STAGE7",
-      "scope": "COMPONENT-BEHAVIOR-COMPLETION",
-      "milestone": null,
-      "title": "Final behavior coverage and audit report",
-      "status": "APPROVED",
-      "priority": 100,
-      "dependencies": [
-        "CBH-STAGE6"
-      ],
-      "goal": "Publish exact 180-entry coverage and one script-generated final audit report.",
       "acceptance_criteria": [
         "180-row COVERAGE.md",
         "Script-generated FINAL_REPORT.md",
         "All blockers, decisions, rule changes and verifier results listed"
       ],
+      "blockers": [],
+      "dependencies": [
+        "CBH-STAGE6"
+      ],
+      "goal": "Publish exact 180-entry coverage and one script-generated final audit report.",
+      "id": "CBH-STAGE7",
+      "implementation": {
+        "completed_at_commit": null,
+        "started_at_commit": null
+      },
+      "milestone": null,
+      "priority": 100,
+      "review": {
+        "independent": false,
+        "record": null,
+        "required": true,
+        "status": "PENDING"
+      },
+      "scope": "COMPONENT-BEHAVIOR-COMPLETION",
+      "status": "APPROVED",
+      "title": "Final behavior coverage and audit report",
       "verification": {
+        "record": null,
         "required": [
           "final audit checkpoint",
           "full coverage check"
-        ],
-        "record": null
-      },
-      "implementation": {
-        "started_at_commit": null,
-        "completed_at_commit": null
-      },
-      "review": {
-        "required": true,
-        "status": "PENDING",
-        "independent": false,
-        "record": null
-      },
-      "blockers": []
+        ]
+      }
     }
   ]
 }

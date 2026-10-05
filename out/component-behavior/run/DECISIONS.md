@@ -57,3 +57,12 @@ The workflow regression's exact approved-scope expectation is updated from
 Stage 1 to the user's explicit completion scope, with assertions on the new
 human approval record. Electrical baselines, benchmark expectations, tolerances
 and canary fixture values are unchanged.
+
+## D-008 — Resume with the installed ngspice 42 console
+
+The user installed ngspice 42. Its console binary has been executed and the
+version is recorded in NGSPICE_PROBE.json. The audit process prepends the
+confirmed installation directory to its own PATH; no persisted user settings
+are changed. The earlier unavailable result remains in Git history. Existing
+source and bench failures remain failures until rechecked. Electrical-data
+effect: no parameter, tolerance or expected value changes.
