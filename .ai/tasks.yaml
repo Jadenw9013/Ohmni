@@ -2669,7 +2669,9 @@
         "Bench evidence or explicit blocked status",
         "Fresh-context verifier sample"
       ],
-      "blockers": [],
+      "blockers": [
+        "Stage 2 corpus source/bench acceptance and independent sample acceptance parked after three repair attempts; details in run/STATE.json."
+      ],
       "dependencies": [
         "CBH-AUDIT"
       ],
@@ -2681,7 +2683,7 @@
       },
       "milestone": null,
       "notes": [
-        "Prior approvals remain effective. Research and product stages have not been accepted. Resolve the failed checkpoint before dependent progression; see run/FINAL_REPORT.md and STATE.json."
+        "Research for all OHM-001..102 committed fdaf039. Failed acceptance stays explicit. Human completion request authorizes independent later-stage work after the repair limit."
       ],
       "priority": 600,
       "review": {
@@ -2691,7 +2693,7 @@
         "status": "PENDING"
       },
       "scope": "COMPONENT-BEHAVIOR-COMPLETION",
-      "status": "IN_PROGRESS",
+      "status": "BLOCKED",
       "title": "Gap research batch A",
       "verification": {
         "record": null,
@@ -2709,13 +2711,13 @@
       ],
       "blockers": [],
       "dependencies": [
-        "CBH-STAGE2"
+        "CBH-AUDIT"
       ],
       "goal": "Generate inline behavior netlists through the existing simulation path and rerun matching benches.",
       "id": "CBH-STAGE3",
       "implementation": {
         "completed_at_commit": null,
-        "started_at_commit": null
+        "started_at_commit": "fdaf039"
       },
       "milestone": null,
       "priority": 500,
@@ -2726,7 +2728,7 @@
         "status": "PENDING"
       },
       "scope": "COMPONENT-BEHAVIOR-COMPLETION",
-      "status": "APPROVED",
+      "status": "IN_PROGRESS",
       "title": "Behavior netlist generation",
       "verification": {
         "record": null,
@@ -2735,7 +2737,10 @@
           "ngspice 42 benches",
           "regression"
         ]
-      }
+      },
+      "notes": [
+        "Dependency narrowed under the human repair policy in .ai/approvals/COMPONENT-BEHAVIOR-COMPLETION-request.txt: Stage 2 acceptance is blocked, not complete. Critical evidence blockers must refuse simulation; independent runtime work continues."
+      ]
     },
     {
       "acceptance_criteria": [
