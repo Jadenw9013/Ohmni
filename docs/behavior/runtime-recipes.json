@@ -526,6 +526,112 @@
         }
       }
     },
+    "OHM-014": {
+      "entry_id": "OHM-014",
+      "behavior_id": "BEH-RES-SENSE",
+      "package": "2512 two-terminal",
+      "reference_part": "Vishay WSL2512, 5 milliohm, two-terminal",
+      "terminal_roles": {
+        "1": "I1",
+        "2": "I2"
+      },
+      "critical_facts": {
+        "value": {
+          "field": "nominal_resistance",
+          "unit": "ohm"
+        },
+        "p_rated": {
+          "field": "p_rated",
+          "unit": "W"
+        },
+        "t_knee": {
+          "field": "t_knee",
+          "unit": "C"
+        },
+        "t_end": {
+          "field": "t_end",
+          "unit": "C"
+        },
+        "tcr": {
+          "field": "component_tcr_magnitude",
+          "unit": "ppm/K"
+        }
+      },
+      "template_override": "R{ref} {I1} {I2} {value}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "line": 1042,
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef"
+      },
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "DC two-terminal binding only; voltage sense is at the same two package terminals. Four-terminal WSK and three-terminal variants remain unbound.",
+        "No fitted parasitic inductance, terminal/contact resistance, board thermal path or pulse model. The family inductance range does not specify this part.",
+        "The sourced TCR magnitude is a tolerance bound, not a signed temperature-fit coefficient."
+      ]
+    },
+    "OHM-016": {
+      "entry_id": "OHM-016",
+      "behavior_id": "BEH-RES-NETWORK",
+      "package": "SIP-8 bussed",
+      "reference_part": "Bourns 4608X-101 eight-pin bussed network, 10 kohm",
+      "terminal_roles": {
+        "1": "P1",
+        "2": "P2",
+        "3": "P3",
+        "4": "P4",
+        "5": "P5",
+        "6": "P6",
+        "7": "P7",
+        "8": "P8"
+      },
+      "pin_role_fact": {
+        "field": "derived_package_pin_roles"
+      },
+      "critical_facts": {
+        "value": {
+          "field": "nominal_resistance",
+          "unit": "ohm"
+        },
+        "p_element": {
+          "field": "p_element_bussed",
+          "unit": "W"
+        },
+        "p_package": {
+          "field": "p_package",
+          "unit": "W"
+        },
+        "v_max": {
+          "field": "v_max",
+          "unit": "V"
+        },
+        "t_knee": {
+          "field": "t_knee",
+          "unit": "C"
+        },
+        "t_end": {
+          "field": "t_end",
+          "unit": "degC"
+        }
+      },
+      "template_override": "R{ref}_2 {P1} {P2} {value}\nR{ref}_3 {P1} {P3} {value}\nR{ref}_4 {P1} {P4} {value}\nR{ref}_5 {P1} {P5} {value}\nR{ref}_6 {P1} {P6} {value}\nR{ref}_7 {P1} {P7} {value}\nR{ref}_8 {P1} {P8} {value}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "line": 1048,
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef"
+      },
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Seven equal 10 kohm resistors share pin1. Only this bussed eight-pin reference is bound; isolated and dual-terminator variants are separate.",
+        "Apply both 0.2 W per element and 1 W whole-package limits with source derating; neither replaces the other.",
+        "No parasitic coupling, self-heating or time-to-failure model."
+      ]
+    },
     "OHM-045": {
       "entry_id": "OHM-045",
       "behavior_id": "BEH-MAG-INDUCTOR",
@@ -1515,6 +1621,261 @@
         "scope_contains": "BAS516"
       }
     },
+    "OHM-064": {
+      "entry_id": "OHM-064",
+      "behavior_id": "BEH-DIO-PN",
+      "package": "SMA",
+      "reference_part": "Vishay S1M, authored rectifier proxy",
+      "terminal_roles": {
+        "1": "K",
+        "2": "A"
+      },
+      "critical_facts": {
+        "vr_max": {
+          "field": "repetitive_peak_reverse_voltage",
+          "unit": "V"
+        },
+        "if_max": {
+          "field": "average_forward_current",
+          "unit": "A"
+        },
+        "tj_max": {
+          "field": "maximum_junction_temperature",
+          "unit": "C"
+        },
+        "rth_ja": {
+          "field": "thermal_resistance_junction_ambient",
+          "unit": "K/W"
+        },
+        "vf_max": {
+          "field": "maximum_forward_voltage",
+          "unit": "V"
+        }
+      },
+      "class_parameters": {
+        "VJ": "VJ",
+        "EG": "EG",
+        "XTI": "XTI"
+      },
+      "quoted_parameters": {
+        "IS": {
+          "value_text": "4.02e-9",
+          "unit": "A",
+          "source_fragment": "* Defaults (fit B, typical): IS 4.02e-9, N 1.8 (assumed), RS 0.03 (assumed), CJO 38.9 pF, VJ 0.7, M 0.5, TT 3 us (assumed), BV 1100 V (assumed), IBV 5 uA.",
+          "basis": "DERIVED",
+          "confidence": "M",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "line": 4398,
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef"
+          }
+        },
+        "N": {
+          "value_text": "1.8",
+          "unit": "1",
+          "source_fragment": "* Defaults (fit B, typical): IS 4.02e-9, N 1.8 (assumed), RS 0.03 (assumed), CJO 38.9 pF, VJ 0.7, M 0.5, TT 3 us (assumed), BV 1100 V (assumed), IBV 5 uA.",
+          "basis": "ASSUMPTION",
+          "confidence": "L",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "line": 4398,
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef"
+          }
+        },
+        "RS": {
+          "value_text": "0.03",
+          "unit": "ohm",
+          "source_fragment": "* Defaults (fit B, typical): IS 4.02e-9, N 1.8 (assumed), RS 0.03 (assumed), CJO 38.9 pF, VJ 0.7, M 0.5, TT 3 us (assumed), BV 1100 V (assumed), IBV 5 uA.",
+          "basis": "ASSUMPTION",
+          "confidence": "L",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "line": 4398,
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef"
+          }
+        },
+        "CJO_pf": {
+          "value_text": "38.9",
+          "unit": "pF",
+          "source_fragment": "* Defaults (fit B, typical): IS 4.02e-9, N 1.8 (assumed), RS 0.03 (assumed), CJO 38.9 pF, VJ 0.7, M 0.5, TT 3 us (assumed), BV 1100 V (assumed), IBV 5 uA.",
+          "basis": "DERIVED",
+          "confidence": "M",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "line": 4398,
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef"
+          }
+        },
+        "M": {
+          "value_text": "0.5",
+          "unit": "1",
+          "source_fragment": "* Defaults (fit B, typical): IS 4.02e-9, N 1.8 (assumed), RS 0.03 (assumed), CJO 38.9 pF, VJ 0.7, M 0.5, TT 3 us (assumed), BV 1100 V (assumed), IBV 5 uA.",
+          "basis": "ASSUMPTION",
+          "confidence": "L",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "line": 4398,
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef"
+          }
+        },
+        "TT_us": {
+          "value_text": "3",
+          "unit": "us",
+          "source_fragment": "* Defaults (fit B, typical): IS 4.02e-9, N 1.8 (assumed), RS 0.03 (assumed), CJO 38.9 pF, VJ 0.7, M 0.5, TT 3 us (assumed), BV 1100 V (assumed), IBV 5 uA.",
+          "basis": "ASSUMPTION",
+          "confidence": "L",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "line": 4398,
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef"
+          }
+        },
+        "BV": {
+          "value_text": "1100",
+          "unit": "V",
+          "source_fragment": "* Defaults (fit B, typical): IS 4.02e-9, N 1.8 (assumed), RS 0.03 (assumed), CJO 38.9 pF, VJ 0.7, M 0.5, TT 3 us (assumed), BV 1100 V (assumed), IBV 5 uA.",
+          "basis": "ASSUMPTION",
+          "confidence": "L",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "line": 4398,
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef"
+          }
+        },
+        "IBV_ua": {
+          "value_text": "5",
+          "unit": "uA",
+          "source_fragment": "* Defaults (fit B, typical): IS 4.02e-9, N 1.8 (assumed), RS 0.03 (assumed), CJO 38.9 pF, VJ 0.7, M 0.5, TT 3 us (assumed), BV 1100 V (assumed), IBV 5 uA.",
+          "basis": "ASSUMPTION",
+          "confidence": "L",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "line": 4398,
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef"
+          }
+        }
+      },
+      "derived_parameters": {
+        "CJO": {
+          "expression": "CJO_pf/1e12",
+          "unit": "F",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "line": 4398,
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef"
+          },
+          "basis": "DERIVED",
+          "confidence": "M",
+          "detail": "Unit conversion of the authored corner fit."
+        },
+        "TT": {
+          "expression": "TT_us/1e6",
+          "unit": "s",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "line": 4398,
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef"
+          },
+          "basis": "DERIVED",
+          "confidence": "L",
+          "detail": "Unit conversion of the assumed transit-time parameter."
+        },
+        "IBV": {
+          "expression": "IBV_ua/1e6",
+          "unit": "A",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "line": 4398,
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef"
+          },
+          "basis": "DERIVED",
+          "confidence": "L",
+          "detail": "Unit conversion of the authored reverse-knee modeling assumption."
+        }
+      },
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "The original 1N4007 rectifier fit is an explicit approximation for S1M; no measured S1M fit or vendor model is claimed.",
+        "S1M-specific ratings and 5 x 5 mm pad thermal conditions are retained. Its typical recovery time is not substituted for SPICE transit time.",
+        "Schottky and TVS alternatives remain unbound; thermal and destructive behavior are not validated by the forward probe."
+      ]
+    },
+    "OHM-071": {
+      "entry_id": "OHM-071",
+      "behavior_id": "BEH-DIO-BRIDGE",
+      "package": "DFM",
+      "reference_part": "Vishay DF10M",
+      "terminal_roles": {
+        "1": "PLUS",
+        "2": "MINUS",
+        "3": "AC1",
+        "4": "AC2"
+      },
+      "pin_role_fact": {
+        "field": "derived_package_pin_roles"
+      },
+      "critical_facts": {
+        "VRRM": {
+          "field": "repetitive_peak_reverse_voltage",
+          "unit": "V"
+        },
+        "IF_AV": {
+          "field": "average_output_current",
+          "unit": "A"
+        },
+        "tj_max": {
+          "field": "maximum_junction_temperature",
+          "unit": "C"
+        },
+        "vf_max": {
+          "field": "maximum_forward_voltage_per_diode",
+          "unit": "V"
+        },
+        "rth_ja": {
+          "field": "thermal_resistance_junction_ambient",
+          "unit": "K/W"
+        }
+      },
+      "class_parameters": {
+        "IS": "IS",
+        "N": "N",
+        "RS": "RS",
+        "CJO": "CJO",
+        "TT": "TT"
+      },
+      "derived_parameters": {
+        "BV": {
+          "expression": "1.1*VRRM",
+          "unit": "V",
+          "basis": "DERIVED",
+          "confidence": "L",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "line": 4320,
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef"
+          },
+          "detail": "Original bridge model knee; not a reverse-voltage rating."
+        }
+      },
+      "template_override": ".subckt BRIDGE_{ref} AC1 AC2 PLUS MINUS\nD1 AC1 PLUS DBR_{ref}\nD2 AC2 PLUS DBR_{ref}\nD3 MINUS AC1 DBR_{ref}\nD4 MINUS AC2 DBR_{ref}\n.ends\n.model DBR_{ref} D (IS={IS} N={N} RS={RS} CJO={CJO} VJ=0.7 M=0.5 TT={TT} BV={BV} IBV=5u)\nX{ref} {AC1} {AC2} {PLUS} {MINUS} BRIDGE_{ref}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "line": 4320,
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef"
+      },
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "The source marking view is rotated 90 degrees counter-clockwise into library coordinates: pin1 PLUS, pin2 MINUS, pin3 AC1, pin4 AC2. Manufacturer drawing does not label these library numbers.",
+        "Only DF10M is bound. Existing generic 3D labels and DB-series variants are not certified by this binding.",
+        "Four identical authored proxy diodes, without shared thermal or surge-failure modeling. Source copper-pad and temperature conditions remain mandatory."
+      ]
+    },
     "OHM-073": {
       "entry_id": "OHM-073",
       "behavior_id": "BEH-LED-INDICATOR",
@@ -1578,6 +1939,480 @@
         "The authored LED_RED fit is approximately2.0 V at20 mA, whereas the TLDR4400 table gives1.8 V typical and2.2 V maximum. This difference is preserved, not described as an exact typical fit.",
         "The model knee BV15 V does not replace the sourced6 V reverse limit. No thermal feedback, optical output or destructive failure is validated by the electrical curve.",
         "Source50 mA and100 mW limits apply only for Tamb<=60 C; the runtime is isothermal25 C."
+      ]
+    },
+    "OHM-074": {
+      "entry_id": "OHM-074",
+      "behavior_id": "BEH-LED-INDICATOR",
+      "package": "5 mm THT LED",
+      "reference_part": "Vishay TLHR5200 red",
+      "terminal_roles": {
+        "1": "K",
+        "2": "A"
+      },
+      "critical_facts": {
+        "if_max": {
+          "field": "red_maximum_forward_current",
+          "unit": "mA",
+          "output_unit": "A"
+        },
+        "p_rated": {
+          "field": "red_maximum_power",
+          "unit": "mW",
+          "output_unit": "W"
+        },
+        "tj_max": {
+          "field": "red_maximum_junction_temperature",
+          "unit": "C"
+        },
+        "vr_max": {
+          "field": "red_maximum_reverse_voltage",
+          "unit": "V"
+        },
+        "rth_ja": {
+          "field": "red_thermal_resistance_junction_ambient",
+          "unit": "K/W"
+        },
+        "vf_max": {
+          "field": "red_forward_voltage_typical_max",
+          "unit": "V",
+          "value_path": [
+            1
+          ]
+        },
+        "vf_typical": {
+          "field": "red_forward_voltage_typical_max",
+          "unit": "V",
+          "value_path": [
+            0
+          ]
+        }
+      },
+      "inline_assets": [
+        {
+          "document": "docs/behavior/bench/beh-led-indicator/models.inc",
+          "line": 1,
+          "document_sha256": "4470d83215bc32eb05c6afd4c925404443cce21495fb2897453c7fb7c7249ef5"
+        }
+      ],
+      "template_override": "D{ref} {A} {K} LED_RED\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "line": 5567,
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef"
+      },
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Only the named color/reference is bound; a color selector does not establish another device rating.",
+        "Authored LED card is an explicit color-family proxy, not a measured fit for this reference. Current, reverse voltage, power and thermal ratings come from the separately scoped source.",
+        "The one-point source-bound probe does not establish typical I/V, optics, temperature behavior or physical package equivalence.",
+        "Source mounting and temperature conditions are retained; no self-heating or destructive-failure timing is simulated."
+      ]
+    },
+    "OHM-077": {
+      "entry_id": "OHM-077",
+      "behavior_id": "BEH-LED-INDICATOR",
+      "package": "0402 LED",
+      "reference_part": "Kingbright APHHS1005SURCK red",
+      "terminal_roles": {
+        "1": "K",
+        "2": "A"
+      },
+      "critical_facts": {
+        "if_max": {
+          "field": "maximum_forward_current",
+          "unit": "mA",
+          "output_unit": "A"
+        },
+        "p_rated": {
+          "field": "maximum_power",
+          "unit": "mW",
+          "output_unit": "W"
+        },
+        "tj_max": {
+          "field": "maximum_junction_temperature",
+          "unit": "C"
+        },
+        "vr_max": {
+          "field": "maximum_reverse_voltage",
+          "unit": "V"
+        },
+        "rth_ja": {
+          "field": "thermal_resistance_junction_ambient",
+          "unit": "K/W"
+        },
+        "vf_max": {
+          "field": "forward_voltage_typical_max",
+          "unit": "V",
+          "value_path": [
+            1
+          ]
+        },
+        "vf_typical": {
+          "field": "forward_voltage_typical_max",
+          "unit": "V",
+          "value_path": [
+            0
+          ]
+        }
+      },
+      "inline_assets": [
+        {
+          "document": "docs/behavior/bench/beh-led-indicator/models.inc",
+          "line": 1,
+          "document_sha256": "4470d83215bc32eb05c6afd4c925404443cce21495fb2897453c7fb7c7249ef5"
+        }
+      ],
+      "template_override": "D{ref} {A} {K} LED_RED\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "line": 5567,
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef"
+      },
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Only the named color/reference is bound; a color selector does not establish another device rating.",
+        "Authored LED card is an explicit color-family proxy, not a measured fit for this reference. Current, reverse voltage, power and thermal ratings come from the separately scoped source.",
+        "The one-point source-bound probe does not establish typical I/V, optics, temperature behavior or physical package equivalence.",
+        "Source mounting and temperature conditions are retained; no self-heating or destructive-failure timing is simulated."
+      ],
+      "pin_role_fact": {}
+    },
+    "OHM-079": {
+      "entry_id": "OHM-079",
+      "behavior_id": "BEH-LED-INDICATOR",
+      "package": "0805 LED",
+      "reference_part": "Kingbright AP2012EC red",
+      "terminal_roles": {
+        "1": "K",
+        "2": "A"
+      },
+      "critical_facts": {
+        "if_max": {
+          "field": "maximum_forward_current",
+          "unit": "mA",
+          "output_unit": "A"
+        },
+        "p_rated": {
+          "field": "maximum_power",
+          "unit": "mW",
+          "output_unit": "W"
+        },
+        "tj_max": {
+          "field": "maximum_junction_temperature",
+          "unit": "C"
+        },
+        "vr_max": {
+          "field": "maximum_reverse_voltage",
+          "unit": "V"
+        },
+        "rth_ja": {
+          "field": "thermal_resistance_junction_ambient",
+          "unit": "K/W"
+        },
+        "vf_max": {
+          "field": "forward_voltage_typical_max",
+          "unit": "V",
+          "value_path": [
+            1
+          ]
+        },
+        "vf_typical": {
+          "field": "forward_voltage_typical_max",
+          "unit": "V",
+          "value_path": [
+            0
+          ]
+        }
+      },
+      "inline_assets": [
+        {
+          "document": "docs/behavior/bench/beh-led-indicator/models.inc",
+          "line": 1,
+          "document_sha256": "4470d83215bc32eb05c6afd4c925404443cce21495fb2897453c7fb7c7249ef5"
+        }
+      ],
+      "template_override": "D{ref} {A} {K} LED_RED\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "line": 5567,
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef"
+      },
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Only the named color/reference is bound; a color selector does not establish another device rating.",
+        "Authored LED card is an explicit color-family proxy, not a measured fit for this reference. Current, reverse voltage, power and thermal ratings come from the separately scoped source.",
+        "The one-point source-bound probe does not establish typical I/V, optics, temperature behavior or physical package equivalence.",
+        "Source mounting and temperature conditions are retained; no self-heating or destructive-failure timing is simulated."
+      ],
+      "pin_role_fact": {}
+    },
+    "OHM-080": {
+      "entry_id": "OHM-080",
+      "behavior_id": "BEH-LED-INDICATOR",
+      "package": "1206 LED",
+      "reference_part": "Kingbright APT3216SURCK red",
+      "terminal_roles": {
+        "1": "K",
+        "2": "A"
+      },
+      "critical_facts": {
+        "if_max": {
+          "field": "maximum_forward_current",
+          "unit": "mA",
+          "output_unit": "A"
+        },
+        "p_rated": {
+          "field": "maximum_power",
+          "unit": "mW",
+          "output_unit": "W"
+        },
+        "tj_max": {
+          "field": "maximum_junction_temperature",
+          "unit": "C"
+        },
+        "vr_max": {
+          "field": "maximum_reverse_voltage",
+          "unit": "V"
+        },
+        "rth_ja": {
+          "field": "thermal_resistance_junction_ambient",
+          "unit": "K/W"
+        },
+        "vf_max": {
+          "field": "forward_voltage_typical_max",
+          "unit": "V",
+          "value_path": [
+            1
+          ]
+        },
+        "vf_typical": {
+          "field": "forward_voltage_typical_max",
+          "unit": "V",
+          "value_path": [
+            0
+          ]
+        }
+      },
+      "inline_assets": [
+        {
+          "document": "docs/behavior/bench/beh-led-indicator/models.inc",
+          "line": 1,
+          "document_sha256": "4470d83215bc32eb05c6afd4c925404443cce21495fb2897453c7fb7c7249ef5"
+        }
+      ],
+      "template_override": "D{ref} {A} {K} LED_RED\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "line": 5567,
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef"
+      },
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Only the named color/reference is bound; a color selector does not establish another device rating.",
+        "Authored LED card is an explicit color-family proxy, not a measured fit for this reference. Current, reverse voltage, power and thermal ratings come from the separately scoped source.",
+        "The one-point source-bound probe does not establish typical I/V, optics, temperature behavior or physical package equivalence.",
+        "Source mounting and temperature conditions are retained; no self-heating or destructive-failure timing is simulated."
+      ],
+      "pin_role_fact": {}
+    },
+    "OHM-081": {
+      "entry_id": "OHM-081",
+      "behavior_id": "BEH-LED-INDICATOR",
+      "package": "PLCC-2 LED",
+      "reference_part": "Vishay VLMW33S2V1-5K8L-08 white",
+      "terminal_roles": {
+        "1": "K",
+        "2": "A"
+      },
+      "critical_facts": {
+        "if_max": {
+          "field": "maximum_forward_current",
+          "unit": "mA",
+          "output_unit": "A"
+        },
+        "p_rated": {
+          "field": "maximum_power",
+          "unit": "mW",
+          "output_unit": "W"
+        },
+        "tj_max": {
+          "field": "maximum_junction_temperature",
+          "unit": "C"
+        },
+        "vr_max": {
+          "field": "maximum_reverse_voltage",
+          "unit": "V"
+        },
+        "rth_ja": {
+          "field": "thermal_resistance_junction_ambient",
+          "unit": "K/W"
+        },
+        "vf_max": {
+          "field": "forward_voltage_typical_max",
+          "unit": "V",
+          "value_path": [
+            1
+          ]
+        },
+        "vf_typical": {
+          "field": "forward_voltage_typical_max",
+          "unit": "V",
+          "value_path": [
+            0
+          ]
+        }
+      },
+      "inline_assets": [
+        {
+          "document": "docs/behavior/bench/beh-led-indicator/models.inc",
+          "line": 1,
+          "document_sha256": "4470d83215bc32eb05c6afd4c925404443cce21495fb2897453c7fb7c7249ef5"
+        }
+      ],
+      "template_override": "D{ref} {A} {K} LED_WHITE\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "line": 5567,
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef"
+      },
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Only the named color/reference is bound; a color selector does not establish another device rating.",
+        "Authored LED card is an explicit color-family proxy, not a measured fit for this reference. Current, reverse voltage, power and thermal ratings come from the separately scoped source.",
+        "The one-point source-bound probe does not establish typical I/V, optics, temperature behavior or physical package equivalence.",
+        "Source mounting and temperature conditions are retained; no self-heating or destructive-failure timing is simulated."
+      ]
+    },
+    "OHM-082": {
+      "entry_id": "OHM-082",
+      "behavior_id": "BEH-LED-RGB",
+      "package": "PLCC-4 RGB",
+      "reference_part": "Avago ASMB-MTB0-0A3A2",
+      "terminal_roles": {
+        "1": "common_anode",
+        "2": "blue_cathode",
+        "3": "green_cathode",
+        "4": "red_cathode"
+      },
+      "pin_role_fact": {},
+      "critical_facts": {
+        "if_max_die": {
+          "field": "maximum_forward_current_per_die",
+          "unit": "mA",
+          "output_unit": "A"
+        },
+        "tj_max": {
+          "field": "maximum_junction_temperature",
+          "unit": "C"
+        },
+        "p_red": {
+          "field": "maximum_power_by_color",
+          "unit": "mW",
+          "output_unit": "W",
+          "value_path": [
+            "red"
+          ]
+        },
+        "vf_red": {
+          "field": "forward_voltage_typical_max",
+          "unit": "V",
+          "value_path": [
+            "red",
+            1
+          ]
+        },
+        "rth_js_red": {
+          "field": "thermal_resistance_junction_solderpoint_three_chips",
+          "unit": "K/W",
+          "value_path": [
+            "red"
+          ]
+        },
+        "p_green": {
+          "field": "maximum_power_by_color",
+          "unit": "mW",
+          "output_unit": "W",
+          "value_path": [
+            "green"
+          ]
+        },
+        "vf_green": {
+          "field": "forward_voltage_typical_max",
+          "unit": "V",
+          "value_path": [
+            "green",
+            1
+          ]
+        },
+        "rth_js_green": {
+          "field": "thermal_resistance_junction_solderpoint_three_chips",
+          "unit": "K/W",
+          "value_path": [
+            "green"
+          ]
+        },
+        "p_blue": {
+          "field": "maximum_power_by_color",
+          "unit": "mW",
+          "output_unit": "W",
+          "value_path": [
+            "blue"
+          ]
+        },
+        "vf_blue": {
+          "field": "forward_voltage_typical_max",
+          "unit": "V",
+          "value_path": [
+            "blue",
+            1
+          ]
+        },
+        "rth_js_blue": {
+          "field": "thermal_resistance_junction_solderpoint_three_chips",
+          "unit": "K/W",
+          "value_path": [
+            "blue"
+          ]
+        }
+      },
+      "template_override": "D{ref}R {common_anode} {red_cathode} LED_RGB_R\nD{ref}G {common_anode} {green_cathode} LED_RGB_GB\nD{ref}B {common_anode} {blue_cathode} LED_RGB_GB\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "line": 4840,
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef"
+      },
+      "inline_assets": [
+        {
+          "document": "docs/behavior/bench/beh-led-indicator/models.inc",
+          "line": 1,
+          "document_sha256": "4470d83215bc32eb05c6afd4c925404443cce21495fb2897453c7fb7c7249ef5"
+        }
+      ],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Exact manufacturer numbered pins:1 common anode,2 blue cathode,3 green cathode,4 red cathode. Source front-view pin1 corner requires explicit rotation for physical placement.",
+        "Reverse operation is not recommended; the 4 V final-test minimum is not an operating reverse rating.",
+        "Three-chip junction-to-solderpoint thermal values apply, not junction-to-ambient. A board thermal path is required for thermal acceptance.",
+        "Authored RGB cards approximate the sourced typical forward points; no die-to-die thermal or optical color-mixing model."
       ]
     },
     "OHM-095": {

@@ -2,8 +2,8 @@
 
 > Generated from recipes, scoped records and revalidated runtime receipts.
 
-Registered bindings: 30. Bindings with current passing runtime comparisons: 25.
-Runtime comparison results: {'failed': 5, 'passed': 38}.
+Registered bindings: 40. Bindings with current passing runtime comparisons: 35.
+Runtime comparison results: {'failed': 5, 'passed': 51}.
 This is an in-progress checkpoint, not stage acceptance. Runtime comparisons only cover the measurement stated in each receipt; they do not establish complete model accuracy, ratings or safe operation.
 
 | Entry | Source status before → after | Bound reference | Runtime comparisons / blockers |
@@ -21,9 +21,9 @@ This is an in-progress checkpoint, not stage acceptance. Runtime comparisons onl
 | OHM-011 | partial → partial | Scoped package record | Current runtime comparisons pass; limits below apply |
 | OHM-012 | partial → partial | Scoped package record | Current runtime comparisons pass; limits below apply |
 | OHM-013 | partial → partial | Scoped package record | Current runtime comparisons pass; limits below apply |
-| OHM-014 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
+| OHM-014 | partial → partial | Vishay WSL2512, 5 milliohm, two-terminal | Current runtime comparisons pass; limits below apply |
 | OHM-015 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
-| OHM-016 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
+| OHM-016 | partial → partial | Bourns 4608X-101 eight-pin bussed network, 10 kohm | Current runtime comparisons pass; limits below apply |
 | OHM-017 | partial → partial | Unbound | Confirm numbered pin-to-element map before simulating the physical array.; No executable package-to-model recipe is bound to this entry |
 | OHM-018 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
 | OHM-019 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
@@ -71,25 +71,25 @@ This is an in-progress checkpoint, not stage acceptance. Runtime comparisons onl
 | OHM-061 | partial → partial | Scoped package record | OHM-061: stale or invalid runtime run_status; OHM-061: raw observation does not meet its locked or sourced contract |
 | OHM-062 | research_required → research_required | Nexperia BAS316 | OHM-062: stale or invalid runtime run_status; OHM-062: raw observation does not meet its locked or sourced contract |
 | OHM-063 | research_required → research_required | Nexperia BAS516 | OHM-063: stale or invalid runtime run_status; OHM-063: raw observation does not meet its locked or sourced contract |
-| OHM-064 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
+| OHM-064 | partial → partial | Vishay S1M, authored rectifier proxy | Current runtime comparisons pass; limits below apply |
 | OHM-065 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
 | OHM-066 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
 | OHM-067 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
 | OHM-068 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
 | OHM-069 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
 | OHM-070 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
-| OHM-071 | research_required → research_required | Unbound | Legacy diagonal-AC binding is unsafe for this reference until the explicit derived permutation is implemented and tested.; No executable package-to-model recipe is bound to this entry |
+| OHM-071 | research_required → research_required | Vishay DF10M | Current runtime comparisons pass; limits below apply |
 | OHM-072 | partial → partial | Unbound | Physical role binding remains unverified for the generic WOM/WOG combined entry.; No executable package-to-model recipe is bound to this entry |
 | OHM-073 | partial → partial | Vishay TLDR4400; authored LED_RED approximation | Current runtime comparisons pass; limits below apply |
-| OHM-074 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
+| OHM-074 | partial → partial | Vishay TLHR5200 red | Current runtime comparisons pass; limits below apply |
 | OHM-075 | research_required → research_required | Unbound | Junction-temperature/thermal acceptance cannot use the unsourced 350 K/W placeholder.; No executable package-to-model recipe is bound to this entry |
 | OHM-076 | research_required → research_required | Unbound | The copied thermal parameters are unsourced for this rectangular lamp.; No executable package-to-model recipe is bound to this entry |
-| OHM-077 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
+| OHM-077 | partial → partial | Kingbright APHHS1005SURCK red | Current runtime comparisons pass; limits below apply |
 | OHM-078 | partial → partial | Unbound | Thermal acceptance lacks sourced junction/thermal parameters; generic color variants lack an exact reference.; No executable package-to-model recipe is bound to this entry |
-| OHM-079 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
-| OHM-080 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
-| OHM-081 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
-| OHM-082 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
+| OHM-079 | partial → partial | Kingbright AP2012EC red | Current runtime comparisons pass; limits below apply |
+| OHM-080 | partial → partial | Kingbright APT3216SURCK red | Current runtime comparisons pass; limits below apply |
+| OHM-081 | partial → partial | Vishay VLMW33S2V1-5K8L-08 white | Current runtime comparisons pass; limits below apply |
+| OHM-082 | partial → partial | Avago ASMB-MTB0-0A3A2 | Current runtime comparisons pass; limits below apply |
 | OHM-083 | research_required → research_required | Unbound | Do not simulate OHM-083 from a generic six-terminal RGB pin map or unsourced per-color ratings.; No usable primary-source research is available; No executable package-to-model recipe is bound to this entry |
 | OHM-084 | partial → partial | Unbound | L3 protocol behavior is not simulable by ngspice; Rated supply-current model is blocked until an exact-version current specification is sourced.; No executable package-to-model recipe is bound to this entry |
 | OHM-085 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
@@ -295,6 +295,20 @@ This is an in-progress checkpoint, not stage acceptance. Runtime comparisons onl
 - Captured observation: {'samples': 108, 'minimum': 2.5, 'maximum': 2.5}.
 - Limits: Tests the authored ideal-divider equation and its compiled binding, not manufacturing suitability, ratings or destructive failure.
 
+### OHM-014 / op
+
+- Recorded comparison: passed.
+- Contract: {'analytical_source': 'BEH-RES-SENSE/B1', 'derivation': "Same authored I*Rs equation and relative tolerance, evaluated at the bound 5 milliohm reference instead of the class bench's 1 milliohm example.", 'expected': 0.05, 'kind': 'absolute', 'observable': 'anode_voltage', 'source_deck_sha256': 'b25bde9e184f48fc4d20bd86358c2e094f446d0e029227a5348ef9d3fd8cdc73', 'source_fact': {'basis': 'MFR_DATASHEET', 'confidence': 'H', 'detail': None, 'field': 'nominal_resistance', 'page': 1, 'scope': 'Vishay WSL2512 5 milliohm two-terminal reference', 'sources': ['https://www.vishay.com/docs/30100/wsl.pdf'], 'unit': 'ohm', 'value': 0.005}, 'tolerance': 5.000000000000001e-05}.
+- Captured observation: 0.05.
+- Limits: Two-terminal isothermal DC Ohm's law only; no Kelvin, lead-drop, temperature or safe-current acceptance.
+
+### OHM-016 / op
+
+- Recorded comparison: passed.
+- Contract: {'analytical_source': 'BEH-RES-NETWORK/B2', 'derivation': 'Same authored parallel sum N*V/R and relative tolerance, evaluated for the bound seven 10 kohm branches; the original four 1 kohm branch contract remains unchanged.', 'expected': 0.0035, 'kind': 'absolute', 'observable': 'supply_current', 'source_deck_sha256': '8fa6c319f64524d7d3f213d97460ee74158d0cd70dcf801b1f4a5031de4c32a3', 'source_fact': {'basis': 'MFR_DATASHEET', 'confidence': 'H', 'detail': None, 'field': 'nominal_resistance', 'page': 2, 'scope': 'Bourns 4608X-101 eight-pin bussed network, 10 kohm', 'sources': ['https://www.bourns.com/docs/Product-Datasheets/4600X.pdf'], 'unit': 'ohm', 'value': 10000}, 'tolerance': 3.5000000000000004e-06}.
+- Captured observation: 0.0035.
+- Limits: Total DC branch current for the sourced bussed topology only; per-element and whole-package thermal ratings remain separate.
+
 ### OHM-045 / op
 
 - Recorded comparison: passed.
@@ -372,12 +386,89 @@ This is an in-progress checkpoint, not stage acceptance. Runtime comparisons onl
 - Captured observation: 0.7255607.
 - Limits: Authored proxy forward curve only. The runtime enforces 25 C; a legacy bench temperature mismatch is reported without changing its locked expected value.
 
+### OHM-064 / op
+
+- Recorded comparison: passed.
+- Contract: {'kind': 'interval', 'maximum': 1.1, 'minimum': 0, 'observable': 'anode_voltage', 'source_fact': {'basis': 'MFR_DATASHEET', 'confidence': 'H', 'detail': None, 'field': 'maximum_forward_voltage', 'page': 2, 'scope': 'S1M SMA; IF=1 A; TA25 C source table default', 'sources': ['https://www.vishay.com/doc?88711'], 'unit': 'V', 'value': 1.1}}.
+- Captured observation: 0.9240392.
+- Limits: Isothermal25 C forward voltage against the scoped primary-source maximum at its test current; a source-bound check does not validate typical fit, temperature, reverse recovery or ratings.
+
+### OHM-071 / op / negative
+
+- Recorded comparison: passed.
+- Contract: {'derivation': "Two conducting junctions; sum of two source per-diode forward-voltage maxima. Both AC polarities use the original bench's 10 V input amplitude.", 'kind': 'interval', 'maximum': 2.2, 'minimum': 0, 'observable': 'bridge_drop', 'source_deck_sha256': '07a175ac644ca384e8b8a4cf187e0554f74b2510450bcbad6e2841d718dd1274', 'source_fact': {'basis': 'MFR_DATASHEET', 'confidence': 'H', 'detail': None, 'field': 'maximum_forward_voltage_per_diode', 'page': 2, 'scope': 'DF10M DFM; 1A; TA25 C source table default', 'sources': ['https://www.vishay.com/doc?88571'], 'unit': 'V', 'value': 1.1}, 'stimulus_source': 'BEH-DIO-BRIDGE/B1', 'supply_magnitude': 10, 'test_current': 1.0}.
+- Captured observation: 2.186119999999999.
+- Limits: Isothermal DC rectification and two-junction voltage bound under both AC polarities; does not validate ripple, shared thermal behavior, surge or safe sustained output current.
+
+### OHM-071 / op / positive
+
+- Recorded comparison: passed.
+- Contract: {'derivation': "Two conducting junctions; sum of two source per-diode forward-voltage maxima. Both AC polarities use the original bench's 10 V input amplitude.", 'kind': 'interval', 'maximum': 2.2, 'minimum': 0, 'observable': 'bridge_drop', 'source_deck_sha256': '07a175ac644ca384e8b8a4cf187e0554f74b2510450bcbad6e2841d718dd1274', 'source_fact': {'basis': 'MFR_DATASHEET', 'confidence': 'H', 'detail': None, 'field': 'maximum_forward_voltage_per_diode', 'page': 2, 'scope': 'DF10M DFM; 1A; TA25 C source table default', 'sources': ['https://www.vishay.com/doc?88571'], 'unit': 'V', 'value': 1.1}, 'stimulus_source': 'BEH-DIO-BRIDGE/B1', 'supply_magnitude': 10, 'test_current': 1.0}.
+- Captured observation: 2.1861239999999995.
+- Limits: Isothermal DC rectification and two-junction voltage bound under both AC polarities; does not validate ripple, shared thermal behavior, surge or safe sustained output current.
+
 ### OHM-073 / op
 
 - Recorded comparison: passed.
 - Contract: {'analytical_source': 'BEH-LED-INDICATOR/B1', 'expected': 2.0, 'kind': 'absolute', 'observable': 'anode_voltage', 'source_deck_sha256': '29fe19065247098a3dacc078c2a5cdd90962fdcb06ac581925b4b9e212b0c159', 'tolerance': 0.05}.
 - Captured observation: 1.988581.
 - Limits: Authored proxy forward curve only. The runtime enforces 25 C; a legacy bench temperature mismatch is reported without changing its locked expected value.
+
+### OHM-074 / op
+
+- Recorded comparison: passed.
+- Contract: {'kind': 'interval', 'maximum': 3.0, 'minimum': 0, 'observable': 'anode_voltage', 'source_fact': {'basis': 'MFR_DATASHEET', 'confidence': 'H', 'detail': None, 'field': 'red_forward_voltage_typical_max', 'page': 2, 'scope': 'TLHR5200 red; 20 mA', 'selected_value': 3, 'selected_value_path': [1], 'sources': ['https://www.farnell.com/datasheets/6603.pdf'], 'unit': 'V', 'value': [2, 3]}, 'test_current': 0.02}.
+- Captured observation: 1.988581.
+- Limits: Explicit color-family proxy at the source test current, checked against its maximum forward voltage. This does not validate the typical curve, thermal/optical model, reverse operation or physical package equivalence.
+
+### OHM-077 / op
+
+- Recorded comparison: passed.
+- Contract: {'kind': 'interval', 'maximum': 2.5, 'minimum': 0, 'observable': 'anode_voltage', 'source_fact': {'basis': 'MFR_DATASHEET', 'confidence': 'H', 'detail': None, 'field': 'forward_voltage_typical_max', 'page': 2, 'scope': 'APHHS1005SURCK; IF20mA', 'selected_value': 2.5, 'selected_value_path': [1], 'sources': ['https://www.kingbrightusa.com/images/catalog/SPEC/APHHS1005SURCK.pdf'], 'unit': 'V', 'value': [1.95, 2.5]}, 'test_current': 0.02}.
+- Captured observation: 1.988581.
+- Limits: Explicit color-family proxy at the source test current, checked against its maximum forward voltage. This does not validate the typical curve, thermal/optical model, reverse operation or physical package equivalence.
+
+### OHM-079 / op
+
+- Recorded comparison: passed.
+- Contract: {'kind': 'interval', 'maximum': 2.5, 'minimum': 0, 'observable': 'anode_voltage', 'source_fact': {'basis': 'MFR_DATASHEET', 'confidence': 'H', 'detail': None, 'field': 'forward_voltage_typical_max', 'page': 2, 'scope': 'AP2012EC; IF20mA', 'selected_value': 2.5, 'selected_value_path': [1], 'sources': ['https://www.kingbrightusa.com/images/catalog/SPEC/AP2012EC.pdf'], 'unit': 'V', 'value': [2, 2.5]}, 'test_current': 0.02}.
+- Captured observation: 1.988581.
+- Limits: Explicit color-family proxy at the source test current, checked against its maximum forward voltage. This does not validate the typical curve, thermal/optical model, reverse operation or physical package equivalence.
+
+### OHM-080 / op
+
+- Recorded comparison: passed.
+- Contract: {'kind': 'interval', 'maximum': 2.5, 'minimum': 0, 'observable': 'anode_voltage', 'source_fact': {'basis': 'MFR_DATASHEET', 'confidence': 'H', 'detail': None, 'field': 'forward_voltage_typical_max', 'page': 2, 'scope': 'APT3216SURCK; IF20mA', 'selected_value': 2.5, 'selected_value_path': [1], 'sources': ['https://www.kingbrightusa.com/images/catalog/SPEC/APT3216SURCK.pdf'], 'unit': 'V', 'value': [1.95, 2.5]}, 'test_current': 0.02}.
+- Captured observation: 1.988581.
+- Limits: Explicit color-family proxy at the source test current, checked against its maximum forward voltage. This does not validate the typical curve, thermal/optical model, reverse operation or physical package equivalence.
+
+### OHM-081 / op
+
+- Recorded comparison: passed.
+- Contract: {'kind': 'interval', 'maximum': 4.2, 'minimum': 0, 'observable': 'anode_voltage', 'source_fact': {'basis': 'MFR_DATASHEET', 'confidence': 'H', 'detail': None, 'field': 'forward_voltage_typical_max', 'page': 2, 'scope': 'VLMW33 white; not a rating for every PLCC-2 LED; 20 mA,25 C', 'selected_value': 4.2, 'selected_value_path': [1], 'sources': ['https://www.vishay.com/doc?81273'], 'unit': 'V', 'value': [3.7, 4.2]}, 'test_current': 0.02}.
+- Captured observation: 3.179538.
+- Limits: Explicit color-family proxy at the source test current, checked against its maximum forward voltage. This does not validate the typical curve, thermal/optical model, reverse operation or physical package equivalence.
+
+### OHM-082 / op / blue
+
+- Recorded comparison: passed.
+- Contract: {'kind': 'interval', 'maximum': 3.6, 'minimum': 0, 'observable': 'anode_voltage', 'source_fact': {'basis': 'MFR_DATASHEET', 'confidence': 'H', 'detail': None, 'field': 'forward_voltage_typical_max', 'page': 3, 'scope': 'ASMB-MTB0-0A3A2; IF20 mA,TJ25 C', 'selected_value': 3.6, 'selected_value_path': ['blue', 1], 'sources': ['https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf'], 'unit': 'V', 'value': {'blue': [3.1, 3.6], 'green': [3.1, 3.6], 'red': [2.1, 2.6]}}, 'test_current': 0.02}.
+- Captured observation: 3.080177.
+- Limits: Explicit color-family proxy at the source test current, checked against its maximum forward voltage. This does not validate the typical curve, thermal/optical model, reverse operation or physical package equivalence.
+
+### OHM-082 / op / green
+
+- Recorded comparison: passed.
+- Contract: {'kind': 'interval', 'maximum': 3.6, 'minimum': 0, 'observable': 'anode_voltage', 'source_fact': {'basis': 'MFR_DATASHEET', 'confidence': 'H', 'detail': None, 'field': 'forward_voltage_typical_max', 'page': 3, 'scope': 'ASMB-MTB0-0A3A2; IF20 mA,TJ25 C', 'selected_value': 3.6, 'selected_value_path': ['green', 1], 'sources': ['https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf'], 'unit': 'V', 'value': {'blue': [3.1, 3.6], 'green': [3.1, 3.6], 'red': [2.1, 2.6]}}, 'test_current': 0.02}.
+- Captured observation: 3.080177.
+- Limits: Explicit color-family proxy at the source test current, checked against its maximum forward voltage. This does not validate the typical curve, thermal/optical model, reverse operation or physical package equivalence.
+
+### OHM-082 / op / red
+
+- Recorded comparison: passed.
+- Contract: {'kind': 'interval', 'maximum': 2.6, 'minimum': 0, 'observable': 'anode_voltage', 'source_fact': {'basis': 'MFR_DATASHEET', 'confidence': 'H', 'detail': None, 'field': 'forward_voltage_typical_max', 'page': 3, 'scope': 'ASMB-MTB0-0A3A2; IF20 mA,TJ25 C', 'selected_value': 2.6, 'selected_value_path': ['red', 1], 'sources': ['https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf'], 'unit': 'V', 'value': {'blue': [3.1, 3.6], 'green': [3.1, 3.6], 'red': [2.1, 2.6]}}, 'test_current': 0.02}.
+- Captured observation: 2.087601.
+- Limits: Explicit color-family proxy at the source test current, checked against its maximum forward voltage. This does not validate the typical curve, thermal/optical model, reverse operation or physical package equivalence.
 
 ### OHM-095 / op
 

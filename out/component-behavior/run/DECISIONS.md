@@ -183,3 +183,7 @@ Use the sourced 20% SRP7028A and 10% SDR0604/RLB0914 saturation definitions, pre
 ## D030 — Distinguish mandatory rechecks from repair attempts
 
 Earlier STATE.attempts counted every failed checkpoint, including mandatory rechecks of already parked gates. Cap active attempt counters at the unchanged three-attempt ceiling and keep continued failures in failed_gate_observations. Where an old counter exceeds three, preserve it in legacy_checkpoint_attempt_counts; historical checkpoints remain unchanged. Rechecking a parked gate cannot authorize a fourth repair attempt. No rule, baseline, expected value, tolerance or failed verdict changes.
+
+## D031 — Reference-specific topology and proxy limits
+
+Bind only the two-terminal WSL2512, using its sourced 110 ppm/C TCR bound rather than the original 75 default; four-terminal alternatives remain unavailable. Bind all seven branches of the eight-pin bussed SIP network and retain its separate 0.2 W element and 1 W package limits. DF10M uses the source drawing rotated 90 degrees counter-clockwise, giving library pins PLUS, MINUS, AC1, AC2; test both AC input polarities instead of retaining the unsafe diagonal-AC assumption. S1M and the additional LED bindings explicitly identify their authored family proxy, which is distinct from the named reference's ratings and cannot establish physical equivalence or a typical I/V fit. RGB reverse operation is not recommended; its final-test reverse voltage is not promoted to an operating rating. All original source statuses and locked bench contracts remain unchanged.

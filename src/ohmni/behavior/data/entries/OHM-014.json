@@ -18,7 +18,9 @@
       "bench-results/BEH-RES-SENSE--B2.json",
       "bench-results/BEH-RES-SENSE--B3.json"
     ],
-    "conflicts": [],
+    "conflicts": [
+      "The WSL2512 5 milliohm component TCR is +/-110 ppm/C in the opened Rev.23-Nov-2023 page2 table, not the spec default75. The element-only <20 ppm/C value is a different quantity."
+    ],
     "documents": [
       {
         "document_id": "wsl",
@@ -78,6 +80,58 @@
           "at_ohm": 0.5,
           "power_fraction": 0.8
         }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "nominal_resistance",
+        "page": 1,
+        "scope": "Vishay WSL2512 5 milliohm two-terminal reference",
+        "sources": [
+          "https://www.vishay.com/docs/30100/wsl.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.005
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "t_knee",
+        "page": 3,
+        "scope": "Vishay WSL2512 5 milliohm two-terminal reference",
+        "sources": [
+          "https://www.vishay.com/docs/30100/wsl.pdf"
+        ],
+        "unit": "C",
+        "value": 70
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "t_end",
+        "page": 3,
+        "scope": "Vishay WSL2512 5 milliohm two-terminal reference",
+        "sources": [
+          "https://www.vishay.com/docs/30100/wsl.pdf"
+        ],
+        "unit": "C",
+        "value": 170
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "component_tcr_magnitude",
+        "page": 2,
+        "scope": "Vishay WSL2512 5 milliohm two-terminal reference",
+        "sources": [
+          "https://www.vishay.com/docs/30100/wsl.pdf"
+        ],
+        "unit": "ppm/K",
+        "value": 110
       }
     ],
     "remaining_open_items": [
@@ -90,7 +144,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-014.md",
-      "document_sha256": "c8868a4f3a45bed62cefc0fa2bd3fc6ff5becd727732181c8a5aee9e671852a9",
+      "document_sha256": "270420a37b76715a0ec59dffa781fe2e324dd3e1c81d3d333419a233c376902f",
       "fragment_sha256": null,
       "line": 1
     }

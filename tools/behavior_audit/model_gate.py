@@ -39,7 +39,8 @@ def write_model_gate(audit):
         if isinstance(observed, list):
             observed = {"samples": len(observed), "minimum": min(observed) if observed else None,
                         "maximum": max(observed) if observed else None}
-        lines.extend([f"### {entry_id} / {receipt['analysis']}", "",
+        variant = f" / {receipt['variant']}" if receipt.get("variant") else ""
+        lines.extend([f"### {entry_id} / {receipt['analysis']}{variant}", "",
                       f"- Recorded comparison: {receipt['run_status']}.",
                       f"- Contract: {comparison}.", f"- Captured observation: {observed}.",
                       f"- Limits: {receipt['limits']}", ""])

@@ -7,7 +7,7 @@ import pytest
 from ohmni.behavior.loader import BehaviorRegistry
 from ohmni.behavior.netlist import compile_circuit, load_recipes, terminal_nodes
 from ohmni.behavior.runtime_models import BehaviorSelection
-from ohmni.domain.circuit import CircuitComponent, CircuitIR, ExternalSource, Net, PinRef
+from ohmni.domain.circuit import CircuitComponent, CircuitIR, ExternalSource, Net, NetKind, PinRef
 from ohmni.domain.units import Quantity, ValueRange
 from ohmni.eda.simulation import NgspiceAdapter
 
@@ -316,3 +316,76 @@ def test_entry_specific_assumption_requires_its_exact_source_fragment(registry, 
     changed = recipe.model_copy(update={"quoted_parameters": {"TT_us": recipe.quoted_parameters["TT_us"].model_copy(update={"source_fragment": "invented 3 us data"})}})
     with pytest.raises(ValueError, match="does not relocate"):
         _parameter_defaults(registry.behavior_class(recipe.behavior_id), changed, {}, {}, ROOT)
+
+
+@pytest.mark.parametrize("entry_id,variant", [
+    ("OHM-014", None), ("OHM-016", None), ("OHM-064", None),
+    ("OHM-071", "positive"), ("OHM-071", "negative"),
+    ("OHM-074", None), ("OHM-077", None), ("OHM-079", None),
+    ("OHM-080", None), ("OHM-081", None),
+    ("OHM-082", "red"), ("OHM-082", "green"), ("OHM-082", "blue"),
+])
+def test_bound_network_bridge_and_led_probes(entry_id, variant):
+    from tools.behavior_audit.audit import BehaviorAudit
+    from tools.behavior_audit.runtime_benches import dc_probe_definition
+
+    compiled, identity = dc_probe_definition(BehaviorAudit(ROOT), entry_id, variant)
+    assert compiled.runnable, compiled.problems
+    assert identity.get("variant") == variant
+    assert compiled.components[0].source_status == ("research_required" if entry_id == "OHM-071" else "partial")
+    if entry_id == "OHM-014":
+        assert compiled.components[0].parameters["tcr"] == 110
+        assert set(compiled.components[0].terminal_nodes) == {"1", "2"}
+        assert identity["comparison"]["expected"] == .05
+    if entry_id == "OHM-016":
+        component = compiled.components[0]
+        assert component.parameters["p_element"] == .2
+        assert component.parameters["p_package"] == 1
+        assert len(component.element_names) == 7
+        assert identity["comparison"]["expected"] == .0035
+        assert component.terminal_nodes["1"] == "0"
+        assert all(component.terminal_nodes[str(i)] != "0" for i in range(2,9))
+    if entry_id == "OHM-082":
+        component = compiled.components[0]
+        cathode_pin = {"red": "4", "green": "3", "blue": "2"}[variant]
+        assert component.terminal_nodes[cathode_pin] == "0"
+        assert component.terminal_nodes["1"] != "0"
+        assert all(component.terminal_nodes[pin] == component.terminal_nodes["1"]
+                   for pin in {"2", "3", "4"} - {cathode_pin})
+
+
+def test_df10m_rotation_and_pin_permutation(registry, recipes):
+    # Independently rotate the manufacturer marking view into the library's
+    # top-left-first CCW convention. Diagonal AC pins would fail this test.
+    entry = registry.entry("OHM-071")
+    source = next(f.value for f in entry.research.field_updates if f.field == "source_drawing_roles")
+    corners = {"upper_left": (-1,1), "upper_right": (1,1), "lower_left": (-1,-1), "lower_right": (1,-1)}
+    rotated = {(-y,x): source[corner] for corner,(x,y) in corners.items()}
+    library_order = [(-1,1),(-1,-1),(1,-1),(1,1)]
+    assert [rotated[c] for c in library_order] == ["PLUS","MINUS","AC","AC"]
+    recipe = recipes.entries["OHM-071"]
+    assert recipe.terminal_roles == {"1":"PLUS","2":"MINUS","3":"AC1","4":"AC2"}
+    nodes = [Net(name=name, kind="ground" if name == "return" else "signal",
+                 connections=[PinRef(component="B1",pin=pin)])
+             for pin,name in {"1":"plus","2":"minus","3":"supply","4":"return"}.items()]
+    nodes[2].external_source = ExternalSource(kind="bench_supply",voltage=ValueRange.exact(Quantity.volts(10)))
+    nodes[2].kind = NetKind.POWER
+    circuit = CircuitIR(ir_id="bridge",name="pin permutation regression",
+                        components=[CircuitComponent(ref="B1",part_id="OHM-071",package=recipe.package)],nets=nodes)
+    bad = recipe.model_copy(update={"terminal_roles":{"1":"PLUS","2":"AC1","3":"MINUS","4":"AC2"}})
+    changed = recipes.model_copy(update={"entries":dict(recipes.entries,**{"OHM-071":bad})})
+    result = compile_circuit(circuit,registry,changed,{"B1":BehaviorSelection(entry_id="OHM-071")})
+    assert not result.runnable
+    assert any("manufacturer map" in reason for reason in result.problems)
+
+
+def test_network_and_bridge_probe_contracts_refuse_changed_source_decks(tmp_path):
+    from types import SimpleNamespace
+
+    from tools.behavior_audit.runtime_benches import _locked_probe_deck
+
+    (tmp_path / "original.cir").write_text("V1 in 0 500\n")
+    audit = SimpleNamespace(root=tmp_path,_state=lambda:{"bench_contracts":{"example":{
+        "file":"original.cir","netlist_sha256":"0"*64}}})
+    with pytest.raises(ValueError,match="source deck changed"):
+        _locked_probe_deck(audit,"example")

@@ -257,18 +257,39 @@ def runtime_receipt_errors(audit, entry_id):
         return resistor_receipt_errors(audit, entry_id)
     if behavior == "BEH-TRN-MOSFET":
         return mosfet_receipt_errors(audit, entry_id)
-    if behavior in {"BEH-DIO-PN", "BEH-TRN-BJT", "BEH-MAG-INDUCTOR", "BEH-LED-INDICATOR"}:
+    if behavior in {"BEH-DIO-PN", "BEH-TRN-BJT", "BEH-MAG-INDUCTOR", "BEH-LED-INDICATOR",
+                    "BEH-RES-SENSE", "BEH-RES-NETWORK", "BEH-DIO-BRIDGE", "BEH-LED-RGB"}:
         return dc_probe_receipt_errors(audit, entry_id)
     return [f"{entry_id}: no runtime analytical receipt validator for {behavior}"]
 
 
-def dc_probe_definition(audit, entry_id):
+def dc_probe_variants(behavior_id):
+    if behavior_id == "BEH-DIO-BRIDGE":
+        return ["positive", "negative"]
+    if behavior_id == "BEH-LED-RGB":
+        return ["red", "green", "blue"]
+    return [None]
+
+
+def _locked_probe_deck(audit, bench_id):
+    contract = audit._state()["bench_contracts"][bench_id]
+    path = audit.root / contract["file"]
+    if _sha_bytes(path.read_bytes()) != contract["netlist_sha256"]:
+        raise ValueError("locked analytical source deck changed")
+    return contract, path.read_text()
+
+
+def dc_probe_definition(audit, entry_id, variant=None):
     """Definitions are separate from execution and re-used to re-derive receipts."""
     registry = BehaviorRegistry(repo_root=audit.root)
     recipes = load_recipes(registry, audit.root)
     recipe = recipes.entries[entry_id]
     values, evidence = _facts(registry.entry(entry_id), recipe)
-    if recipe.behavior_id == "BEH-DIO-PN" and entry_id in {"OHM-057", "OHM-058"}:
+    variants = dc_probe_variants(recipe.behavior_id)
+    variant = variant or variants[0]
+    if variant not in variants:
+        raise ValueError("unknown probe variant")
+    if recipe.behavior_id == "BEH-DIO-PN" and entry_id in {"OHM-057", "OHM-058", "OHM-064"}:
         fact = evidence["vf_max"]
         current = re.search(r"IF=(\d+(?:\.\d+)?) A", fact["scope"])
         if current is None:
@@ -279,6 +300,68 @@ def dc_probe_definition(audit, entry_id):
         comparison = {"kind": "interval", "minimum": 0, "maximum": values["vf_max"],
                       "observable": "anode_voltage", "source_fact": fact}
         limits = "Isothermal25 C forward voltage against the scoped primary-source maximum at its test current; a source-bound check does not validate typical fit, temperature, reverse recovery or ratings."
+    elif recipe.behavior_id in {"BEH-LED-INDICATOR", "BEH-LED-RGB"} and entry_id != "OHM-073":
+        rgb = recipe.behavior_id == "BEH-LED-RGB"
+        fact = evidence["vf_" + variant if rgb else "vf_max"]
+        condition = re.search(r"(?:IF)?\s*(\d+(?:\.\d+)?)\s*mA", fact["scope"])
+        if condition is None:
+            raise ValueError("LED source test current is missing")
+        current = float(condition[1]) / 1000
+        roles = ({role: "return" if role == variant + "_cathode" else "anode"
+                  for role in recipe.terminal_roles.values()} if rgb else {"A": "anode", "K": "return"})
+        supplies = {}
+        excitations = [DCExcitation(positive_net="return", negative_net="anode", value=Quantity(value=current, unit="A"))]
+        comparison = {"kind": "interval", "minimum": 0, "maximum": values["vf_" + variant if rgb else "vf_max"],
+                      "observable": "anode_voltage", "source_fact": fact, "test_current": current}
+        limits = "Explicit color-family proxy at the source test current, checked against its maximum forward voltage. This does not validate the typical curve, thermal/optical model, reverse operation or physical package equivalence."
+    elif recipe.behavior_id == "BEH-RES-SENSE":
+        contract, deck = _locked_probe_deck(audit, "BEH-RES-SENSE/B1")
+        if not re.search(r"(?im)^I\S*\s+\S+\s+\S+\s+(?:DC\s+)?10\s*$", deck):
+            raise ValueError("authored sense-resistor current stimulus changed")
+        target = 10 * values["value"]
+        locked = numeric_contract(contract["expected"][0])
+        roles = {"I1": "anode", "I2": "return"}
+        supplies = {}
+        excitations = [DCExcitation(positive_net="return", negative_net="anode", value=Quantity(value=10, unit="A"))]
+        comparison = {"kind": "absolute", "expected": target,
+                      "tolerance": target * locked["tolerance"] / locked["expected"], "observable": "anode_voltage",
+                      "analytical_source": "BEH-RES-SENSE/B1", "source_deck_sha256": contract["netlist_sha256"],
+                      "derivation": "Same authored I*Rs equation and relative tolerance, evaluated at the bound 5 milliohm reference instead of the class bench's 1 milliohm example.",
+                      "source_fact": evidence["value"]}
+        limits = "Two-terminal isothermal DC Ohm's law only; no Kelvin, lead-drop, temperature or safe-current acceptance."
+    elif recipe.behavior_id == "BEH-RES-NETWORK":
+        contract, deck = _locked_probe_deck(audit, "BEH-RES-NETWORK/B2")
+        if not re.search(r"(?im)^V\S*\s+\S+\s+\S+\s+(?:DC\s+)?5\s*$", deck):
+            raise ValueError("authored network voltage stimulus changed")
+        locked = numeric_contract(contract["expected"][0])
+        target = (len(recipe.terminal_roles)-1)*5/values["value"]
+        roles = {role: "return" if role == "P1" else "supply" for role in recipe.terminal_roles.values()}
+        supplies = {"supply": 5}
+        excitations = []
+        comparison = {"kind": "absolute", "expected": target,
+                      "tolerance": target*locked["tolerance"]/locked["expected"], "observable": "supply_current",
+                      "analytical_source": "BEH-RES-NETWORK/B2", "source_deck_sha256": contract["netlist_sha256"],
+                      "derivation": "Same authored parallel sum N*V/R and relative tolerance, evaluated for the bound seven 10 kohm branches; the original four 1 kohm branch contract remains unchanged.",
+                      "source_fact": evidence["value"]}
+        limits = "Total DC branch current for the sourced bussed topology only; per-element and whole-package thermal ratings remain separate."
+    elif recipe.behavior_id == "BEH-DIO-BRIDGE":
+        contract, deck = _locked_probe_deck(audit, "BEH-DIO-BRIDGE/B1")
+        if "SIN(0 10 50)" not in deck:
+            raise ValueError("authored bridge amplitude changed")
+        fact = evidence["vf_max"]
+        match = re.search(r";\s*(\d+(?:\.\d+)?)A", fact["scope"])
+        if match is None:
+            raise ValueError("bridge per-diode voltage test current missing")
+        current = float(match[1])
+        roles = {"AC1": "supply", "AC2": "return", "PLUS": "plus", "MINUS": "minus"}
+        supplies = {"supply": 10 if variant == "positive" else -10}
+        excitations = [DCExcitation(positive_net="plus", negative_net="minus", value=Quantity(value=current, unit="A"))]
+        comparison = {"kind": "interval", "minimum": 0, "maximum": 2*values["vf_max"],
+                      "observable": "bridge_drop", "supply_magnitude": 10,
+                      "source_fact": fact, "test_current": current,
+                      "stimulus_source": "BEH-DIO-BRIDGE/B1", "source_deck_sha256": contract["netlist_sha256"],
+                      "derivation": "Two conducting junctions; sum of two source per-diode forward-voltage maxima. Both AC polarities use the original bench's 10 V input amplitude."}
+        limits = "Isothermal DC rectification and two-junction voltage bound under both AC polarities; does not validate ripple, shared thermal behavior, surge or safe sustained output current."
     elif recipe.behavior_id in {"BEH-DIO-PN", "BEH-LED-INDICATOR"}:
         is_led = recipe.behavior_id == "BEH-LED-INDICATOR"
         contract_id = "BEH-LED-INDICATOR/B1" if is_led else "BEH-DIO-PN/B1"
@@ -330,6 +413,8 @@ def dc_probe_definition(audit, entry_id):
                 "entry_research_sha256": registry.entry(entry_id).research.source.document_sha256,
                 "class_source_sha256": registry.behavior_class(recipe.behavior_id).source.document_sha256,
                 "comparison": comparison, "limits": limits}
+    if variant:
+        identity["variant"] = variant
     return compiled, identity
 
 
@@ -341,6 +426,13 @@ def _dc_observation(compiled, comparison, output):
     if comparison["observable"] == "current_gain":
         current = parsed.branch_currents.get(compiled.source_elements["collector"])
         return abs(current.value) / comparison["base_current"] if current else None
+    if comparison["observable"] == "supply_current":
+        current = parsed.branch_currents.get(compiled.source_elements["supply"])
+        return -current.value if current else None
+    if comparison["observable"] == "bridge_drop":
+        plus = parsed.node_voltages.get(compiled.node_names["plus"])
+        minus = parsed.node_voltages.get(compiled.node_names["minus"])
+        return comparison["supply_magnitude"] - (plus.value - minus.value) if plus and minus else None
     if comparison["observable"] == "dc_resistance":
         voltage = parsed.node_voltages.get(compiled.node_names["winding"])
         return voltage.value / comparison["current"] if voltage else None
@@ -356,10 +448,15 @@ def _dc_matches(comparison, value):
 
 
 def run_dc_probes(audit, entry_ids):
+    registry = BehaviorRegistry(repo_root=audit.root)
+    recipes = load_recipes(registry, audit.root)
+    cases = [(entry_id, variant) for entry_id in entry_ids
+             for variant in dc_probe_variants(recipes.entries[entry_id].behavior_id)]
     receipts = []
-    for entry_id in entry_ids:
-        compiled, identity = dc_probe_definition(audit, entry_id)
-        relative = f"runtime-bench-output/{entry_id}-op"
+    for entry_id, variant in cases:
+        compiled, identity = dc_probe_definition(audit, entry_id, variant)
+        suffix = f"-{variant}" if variant else ""
+        relative = f"runtime-bench-output/{entry_id}-op{suffix}"
         result = NgspiceAdapter().behavior_circuit(compiled, work_dir=audit.run_dir / relative)
         output = result.get("stdout", "") + result.get("stderr", "")
         observed = _dc_observation(compiled, identity["comparison"], output)
@@ -372,14 +469,22 @@ def run_dc_probes(audit, entry_ids):
                        output_sha256=_sha_bytes(output.encode()), raw_output=relative + "/output.txt",
                        version_output=result["version_output"], version_file=relative + "/version.txt",
                        version_sha256=_sha_bytes(result["version_output"].encode()))
-        _atomic_json(audit.run_dir / f"runtime-bench-results/{entry_id}-op.json", receipt)
+        _atomic_json(audit.run_dir / f"runtime-bench-results/{entry_id}-op{suffix}.json", receipt)
         receipts.append(receipt)
     return receipts
 
 
 def dc_probe_receipt_errors(audit, entry_id):
-    compiled, identity = dc_probe_definition(audit, entry_id)
-    path = audit.run_dir / f"runtime-bench-results/{entry_id}-op.json"
+    registry = BehaviorRegistry(repo_root=audit.root)
+    recipes = load_recipes(registry, audit.root)
+    return [error for variant in dc_probe_variants(recipes.entries[entry_id].behavior_id)
+            for error in _dc_probe_receipt_errors(audit, entry_id, variant)]
+
+
+def _dc_probe_receipt_errors(audit, entry_id, variant):
+    compiled, identity = dc_probe_definition(audit, entry_id, variant)
+    suffix = f"-{variant}" if variant else ""
+    path = audit.run_dir / f"runtime-bench-results/{entry_id}-op{suffix}.json"
     if not path.is_file():
         return [f"{entry_id}: runtime receipt missing"]
     receipt = json.loads(path.read_text())
