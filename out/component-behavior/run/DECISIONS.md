@@ -195,3 +195,7 @@ Use the original entry-specific S1M fit and its proposed proxy for the explicitl
 ## D033 — Continue independent Stage4 work
 
 Stage3 acceptance stays blocked at checkpoint019:45 bindings,58/63 limited probes pass,57 entries unbound. The human repair policy permits independent later-stage work after parked failures. Stage4 depends on the verified audit foundation; no failed acceptance is promoted. Protected main stays unchanged.
+
+## D034 — Package-specific sources and source locators
+
+The P89LPC935FA PLCC28 map is re-derived from primary Figure4,page6: VSS7,VDD21,RESET6,pin1P2.0. The spec had the HVQFN numbering; preserve its bytes and record this scoped correction. PDI1394P23EC provides an explicit preliminary BGA64 reference. Preserve ball names through view transforms; its bottom drawing requires mirror-X and90-degree counterclockwise rotation to canonical top view. AMD's manufacturer CSV supplies all256 Artix7 ball functions with an exact archive member and SHA-256; the research schema now accepts an explicit non-paginated locator instead of inventing a page number. This is pinout data,not a vendor simulation model. WLCSP and MCU body mismatches prevent automatic physical binding. AB/ABL through-hole crystals replace the incorrectly associated SMD ABLS reference,while unsourced motional parameters remain assumptions. No source status or historical audit verdict is upgraded.

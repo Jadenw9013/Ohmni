@@ -283,3 +283,47 @@ def test_source_hashes_are_real_sha256_values(registry):
     assert registry.manifest.source_spec.document_sha256 == spec_hash
     assert all(record.source.document_sha256 == spec_hash for record in registry.classes.values())
     assert all(record.source.document_sha256 == spec_hash for record in registry.entries.values())
+
+
+def test_plcc_reference_uses_primary_plcc_figure_not_hvqfn(registry):
+    # Philips P89LPC933/934/935/936 Rev05, page6 Figure4 (PLCC28).
+    research = registry.entry("OHM-135").research
+    facts = {fact.field: fact for fact in research.field_updates}
+    mapping = facts["manufacturer_pin_roles"]
+    assert mapping.page == 6
+    assert len(mapping.value) == 28
+    assert {pin: mapping.value[pin] for pin in ["1", "6", "7", "21", "28"]} == {
+        "1": "P2_0", "6": "P1_5_RESET", "7": "VSS", "21": "VDD", "28": "P2_7",
+    }
+    assert any("HVQFN" in conflict for conflict in research.conflicts)
+
+
+@pytest.mark.parametrize("entry,count,corners", [
+    ("OHM-136", 64, {"A1": "AGND", "A8": "AGND", "H1": "LREQ", "H8": "DGND"}),
+    ("OHM-137", 100, {"A1": "TDO_SWO", "A10": "P0_9", "K1": "P3_26", "K10": "P2_12"}),
+    ("OHM-139", 9, {"A1": "SD_MODE", "A3": "OUTP", "C1": "BCLK", "C3": "LRCLK"}),
+    ("OHM-140", 16, {"A1": "VIN", "A4": "FLT", "D1": "VBUS", "D4": "CAP"}),
+])
+def test_primary_ball_identifiers_are_not_mirrored_as_electrical_names(registry, entry, count, corners):
+    # PDI1394P23 p4; LPC1768 pp7-10; MAX98357A p15; NX5P3290 p4.
+    facts = {fact.field: fact for fact in registry.entry(entry).research.field_updates}
+    mapping = facts["manufacturer_pin_roles"].value
+    assert len(mapping) == count
+    assert {name: mapping[name] for name in corners} == corners
+    assert "ball_view_transform" in facts
+
+
+def test_non_paginated_manufacturer_pinout_has_exact_locator(registry):
+    from ohmni.behavior.models import ResearchFact
+
+    facts = {fact.field: fact for fact in registry.entry("OHM-138").research.field_updates}
+    mapping = facts["manufacturer_pin_roles"]
+    assert len(mapping.value) == 256
+    assert mapping.value["H10"] == "DONE_0"
+    assert mapping.value["G7"] == "GNDADC_0"
+    assert mapping.page is None
+    assert mapping.source_locator == "a7all/xc7a35tftg256pkg.csv"
+    payload = mapping.model_dump()
+    payload["source_locator"] = " "
+    with pytest.raises(ValueError, match="source locator"):
+        ResearchFact.model_validate(payload)

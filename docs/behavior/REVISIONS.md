@@ -92,3 +92,7 @@ Added the ten omitted primary-source conditions to BCP56 (OHM-096) and BD139 (OH
 ## 2026-10-05 Stage4 first research batch
 
 OHM-103..122 now carry scoped manufacturer reference,pin and rating facts. Original source statuses and spec bytes unchanged. The4N35 pin5/6 conflict is resolved for explicitRev1.2;70/30V discrepancy retained. ATmega328P-PU narrow-DIP mismatch blocks automatic physical binding. SN74HC00 commercial leakage unit conflict is retained. Source PDFs were opened and pin diagrams checked where text flow was ambiguous.
+
+## 2026-10-05 Stage4 second research batch
+
+OHM-123..142 now carry scoped primary reference facts, including PLCC28 correction, named BGA64/100/256 references and unchanged ball identifiers. Manufacturer ZIP pinout data is cited by archive member and content hash. Package mismatches, source qualifications and missing rating-critical values remain explicit blockers; original statuses/spec bytes are unchanged. AB/ABL crystal data does not source the assumed motional branch.

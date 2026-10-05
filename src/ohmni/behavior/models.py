@@ -167,10 +167,17 @@ class ResearchFact(BaseModel):
     basis: Literal["STANDARD", "MFR_DATASHEET", "CONSENSUS", "DERIVED", "ASSUMPTION", "RESEARCH_REQUIRED"]
     confidence: Literal["H", "M", "L"]
     sources: list[str] = Field(min_length=1)
-    page: int = Field(ge=1)
+    page: int | None = Field(default=None, ge=1)
+    source_locator: str | None = Field(default=None, min_length=1, exclude_if=lambda v: v is None)
     scope: str
     unit: str | None = None
     detail: str | None = None
+
+    @model_validator(mode="after")
+    def _require_source_location(self) -> ResearchFact:
+        if self.page is None and not (self.source_locator or "").strip():
+            raise ValueError("research requires a page or explicit non-paginated source locator")
+        return self
 
 
 class EntryResearch(BaseModel):
