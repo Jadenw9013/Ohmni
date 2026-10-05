@@ -11,7 +11,97 @@
   "fidelity": "behavioural_approximation",
   "group": "R2",
   "layer": "L1",
-  "research": null,
+  "research": {
+    "bench_result": "bench-results/BEH-CAP-ALPOLY--B1.json",
+    "bench_results": [
+      "bench-results/BEH-CAP-ALPOLY--B1.json",
+      "bench-results/BEH-CAP-ALPOLY--B2.json"
+    ],
+    "conflicts": [],
+    "documents": [
+      {
+        "document_id": "nichicon-guidelines",
+        "manufacturer": "Nichicon",
+        "note": "Read from fetched primary document; field-specific page and conditions are recorded below.",
+        "page": null,
+        "revision": "CAT.8100M; date not established",
+        "source_status": "primary_source_opened",
+        "title": "Application Guidelines for Aluminum Electrolytic Capacitors",
+        "url": "https://www.nichicon.com/getmedia/d6d540b9-2d08-42e7-8d62-a4085f6e1fbd/applicationguidelines.pdf"
+      }
+    ],
+    "entry_id": "OHM-032",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "reverse_voltage_permitted",
+        "page": 1,
+        "scope": "Nichicon aluminum electrolytic, conductive polymer and hybrid application guidance",
+        "sources": [
+          "https://www.nichicon.com/getmedia/d6d540b9-2d08-42e7-8d62-a4085f6e1fbd/applicationguidelines.pdf"
+        ],
+        "unit": null,
+        "value": false
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "voltage_limit_condition",
+        "page": 1,
+        "scope": "Part rating must come from the selected series datasheet",
+        "sources": [
+          "https://www.nichicon.com/getmedia/d6d540b9-2d08-42e7-8d62-a4085f6e1fbd/applicationguidelines.pdf"
+        ],
+        "unit": null,
+        "value": "DC plus positive ripple peak must not exceed rated voltage"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "auxiliary_terminal_connection",
+        "page": 1,
+        "scope": "Auxiliary terminals; do not infer net function from case proximity",
+        "sources": [
+          "https://www.nichicon.com/getmedia/d6d540b9-2d08-42e7-8d62-a4085f6e1fbd/applicationguidelines.pdf"
+        ],
+        "unit": null,
+        "value": "isolate from positive, negative and other circuit connections"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "rush_current_upper_limit",
+        "page": 1,
+        "scope": "Conductive polymer and hybrid capacitors; general application guidance, not a part-specific ripple rating",
+        "sources": [
+          "https://www.nichicon.com/getmedia/d6d540b9-2d08-42e7-8d62-a4085f6e1fbd/applicationguidelines.pdf"
+        ],
+        "unit": "A",
+        "value": 10
+      }
+    ],
+    "remaining_open_items": [
+      "Exact series/orderable part and its ripple-current, lifetime, voltage and temperature ratings remain unbound.",
+      "ESR at frequency/temperature, ESL and failure timing are still model assumptions.",
+      "The sleeve is not a guaranteed electrical insulation system."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [
+      "Rating-critical part voltage and ripple/lifetime limits need an exact series binding."
+    ],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-032.md",
+      "document_sha256": "94a74765d66987fef9c601ddc253cab9cd4dd3b38b033c4ed5dda0b2ff189b52",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
   "resolution_ids": [
     "POLARITY-CAN-NEGATIVE-STRIPE"
   ],

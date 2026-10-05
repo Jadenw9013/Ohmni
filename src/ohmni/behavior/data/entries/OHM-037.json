@@ -11,7 +11,112 @@
   "fidelity": "behavioural_approximation",
   "group": "R2",
   "layer": "L1",
-  "research": null,
+  "research": {
+    "bench_result": "bench-results/BEH-CAP-FILM--B1.json",
+    "bench_results": [
+      "bench-results/BEH-CAP-FILM--B1.json",
+      "bench-results/BEH-CAP-FILM--B2.json",
+      "bench-results/BEH-CAP-FILM--B3.json"
+    ],
+    "conflicts": [
+      "MKS 2 PET dissipation bound is 0.008, not the polypropylene proxy 0.003; do not treat these dielectrics as interchangeable."
+    ],
+    "documents": [
+      {
+        "document_id": "wima-mks2",
+        "manufacturer": "WIMA",
+        "note": "Read from fetched primary document; field-specific page and conditions are recorded below.",
+        "page": null,
+        "revision": "03.26",
+        "source_status": "primary_source_opened",
+        "title": "WIMA MKS 2 Metallized Polyester Capacitors",
+        "url": "https://www.wima.de/wp-content/uploads/media/e_WIMA_MKS_2.pdf"
+      }
+    ],
+    "entry_id": "OHM-037",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "reference_part_pattern",
+        "page": 2,
+        "scope": "WIMA 0.1 uF, 100 VDC; option suffix not yet selected",
+        "sources": [
+          "https://www.wima.de/wp-content/uploads/media/e_WIMA_MKS_2.pdf"
+        ],
+        "unit": null,
+        "value": "MKS2D031001A00____"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "reference_dielectric",
+        "page": 1,
+        "scope": "WIMA MKS 2",
+        "sources": [
+          "https://www.wima.de/wp-content/uploads/media/e_WIMA_MKS_2.pdf"
+        ],
+        "unit": null,
+        "value": "PET"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "reference_pitch",
+        "page": 1,
+        "scope": "WIMA MKS 2",
+        "sources": [
+          "https://www.wima.de/wp-content/uploads/media/e_WIMA_MKS_2.pdf"
+        ],
+        "unit": "mm",
+        "value": 5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_dissipation_factor",
+        "page": 1,
+        "scope": "WIMA MKS 2 C <= 0.1 uF, 1 kHz",
+        "sources": [
+          "https://www.wima.de/wp-content/uploads/media/e_WIMA_MKS_2.pdf"
+        ],
+        "unit": null,
+        "value": 0.008
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "dc_voltage_derating_above_85C",
+        "page": 1,
+        "scope": "WIMA MKS 2",
+        "sources": [
+          "https://www.wima.de/wp-content/uploads/media/e_WIMA_MKS_2.pdf"
+        ],
+        "unit": "percent/K",
+        "value": 1.25
+      }
+    ],
+    "remaining_open_items": [
+      "Generic 10 mm-pitch OHM default has no exact-part binding to this 5 mm reference.",
+      "ESL and part-specific ripple current/dVdt remain unresolved."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [
+      "The generic 10 mm default remains unbound to an exact rated part."
+    ],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-037.md",
+      "document_sha256": "7c591baee53473f9a5f55a72bb056c7da527eef6fde905aafeaf0b48abb9ba4c",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
   "resolution_ids": [],
   "schema_version": 1,
   "simulation_disposition": "simulable",

@@ -31,3 +31,19 @@
 - Preserved variant conflicts: CRCW standard/extended operation, CPR radial
   reference versus axial illustration, RS U versus V operation, and CRA06P
   5% grade TCR (200 ppm/K, not the 1% grade's 100 ppm/K).
+
+## 2026-10-05 — Stage 2 capacitor research (OHM-021..040)
+
+- Added 20 field-level ledgers; all original statuses remain unchanged.
+- Kept MLCC bias and aging data scoped to the manufacturer's part or example.
+  A generic package size cannot establish a voltage rating or fitted bias curve.
+- Recorded Nichicon's isolated auxiliary-terminal rule. The assumed third
+  snap-in terminal connection cannot be promoted to a verified negative pin.
+- Re-derived T491 MnO2 case ratings and temperature-dependent transient reverse
+  limits. Maximum ESR is a bound, not a nominal fit; the generic 3% reverse
+  threshold does not establish the T491 operating envelope.
+- Recorded the newer WIMA X2 305 VAC family rating without replacing the
+  conservative 275 VAC default or implying mains safety certification.
+- Recorded the AVX SCCS20B505SRB 5 F reference matching the 10 x 20 mm body.
+  The original mixed 10 F default remains a blocking binding conflict; the
+  10 F AVX alternative needs a 30 mm-tall can.
