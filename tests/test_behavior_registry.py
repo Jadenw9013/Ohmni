@@ -327,3 +327,17 @@ def test_non_paginated_manufacturer_pinout_has_exact_locator(registry):
     payload["source_locator"] = " "
     with pytest.raises(ValueError, match="source locator"):
         ResearchFact.model_validate(payload)
+
+
+@pytest.mark.parametrize("entry", ["OHM-143", "OHM-144", "OHM-145"])
+def test_abracon_case_pads_are_not_bound_as_crystal_pads(registry, entry):
+    # ABM8/10/11 p2 top views, same drawing axes; library Section6 top-left pin1.
+    facts = {fact.field: fact for fact in registry.entry(entry).research.field_updates}
+    permutation = facts["manufacturer_to_library_terminal"].value
+    source_roles = facts["manufacturer_pin_roles"].value
+    mapped = {permutation[pin]: role for pin, role in source_roles.items()}
+    assert mapped == {"1": "GND", "2": "XTAL_A", "3": "GND", "4": "XTAL_B"}
+    source_corners = {"1": (-1, -1), "2": (1, -1), "3": (1, 1), "4": (-1, 1)}
+    library_corners = {"1": (-1, 1), "2": (-1, -1), "3": (1, -1), "4": (1, 1)}
+    assert all(source_corners[p] == library_corners[q] for p, q in permutation.items())
+    assert registry.entry(entry).research.simulation_blockers

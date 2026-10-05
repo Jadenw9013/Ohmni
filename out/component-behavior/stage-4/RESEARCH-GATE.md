@@ -2,7 +2,7 @@
 
 > Script-generated from gapfill records and current-run ngspice receipts.
 
-Entries: 40. Research outcomes: {'sources_reviewed': 40}.
+Entries: 60. Research outcomes: {'sources_reviewed': 60}.
 Status upgrades: 0.
 Class bench results do not establish package ratings or full physical-device validity.
 
@@ -48,6 +48,26 @@ Class bench results do not establish package ratings or full physical-device val
 | [OHM-140](../../../docs/behavior/gapfill/OHM-140.md) | complete | complete | sources_reviewed | 1 / 17 | 0/7 PASS |
 | [OHM-141](../../../docs/behavior/gapfill/OHM-141.md) | partial | partial | sources_reviewed | 1 / 13 | 0/8 PASS |
 | [OHM-142](../../../docs/behavior/gapfill/OHM-142.md) | partial | partial | sources_reviewed | 1 / 13 | 0/8 PASS |
+| [OHM-143](../../../docs/behavior/gapfill/OHM-143.md) | partial | partial | sources_reviewed | 1 / 12 | 0/8 PASS |
+| [OHM-144](../../../docs/behavior/gapfill/OHM-144.md) | partial | partial | sources_reviewed | 1 / 12 | 0/8 PASS |
+| [OHM-145](../../../docs/behavior/gapfill/OHM-145.md) | partial | partial | sources_reviewed | 1 / 12 | 0/8 PASS |
+| [OHM-146](../../../docs/behavior/gapfill/OHM-146.md) | partial | partial | sources_reviewed | 1 / 19 | 0/2 PASS |
+| [OHM-147](../../../docs/behavior/gapfill/OHM-147.md) | partial | partial | sources_reviewed | 1 / 14 | 0/2 PASS |
+| [OHM-148](../../../docs/behavior/gapfill/OHM-148.md) | partial | partial | sources_reviewed | 2 / 7 | 0/1 PASS |
+| [OHM-149](../../../docs/behavior/gapfill/OHM-149.md) | partial | partial | sources_reviewed | 1 / 12 | 0/2 PASS |
+| [OHM-150](../../../docs/behavior/gapfill/OHM-150.md) | partial | partial | sources_reviewed | 2 / 12 | 2/4 PASS |
+| [OHM-151](../../../docs/behavior/gapfill/OHM-151.md) | partial | partial | sources_reviewed | 1 / 10 | 2/4 PASS |
+| [OHM-152](../../../docs/behavior/gapfill/OHM-152.md) | partial | partial | sources_reviewed | 1 / 8 | 2/4 PASS |
+| [OHM-153](../../../docs/behavior/gapfill/OHM-153.md) | partial | partial | sources_reviewed | 1 / 8 | 2/4 PASS |
+| [OHM-154](../../../docs/behavior/gapfill/OHM-154.md) | partial | partial | sources_reviewed | 1 / 10 | 2/4 PASS |
+| [OHM-155](../../../docs/behavior/gapfill/OHM-155.md) | partial | partial | sources_reviewed | 1 / 9 | 0/2 PASS |
+| [OHM-156](../../../docs/behavior/gapfill/OHM-156.md) | partial | partial | sources_reviewed | 1 / 9 | 0/2 PASS |
+| [OHM-157](../../../docs/behavior/gapfill/OHM-157.md) | partial | partial | sources_reviewed | 1 / 9 | 0/2 PASS |
+| [OHM-158](../../../docs/behavior/gapfill/OHM-158.md) | partial | partial | sources_reviewed | 1 / 6 | 0/2 PASS |
+| [OHM-159](../../../docs/behavior/gapfill/OHM-159.md) | partial | partial | sources_reviewed | 1 / 11 | 0/2 PASS |
+| [OHM-160](../../../docs/behavior/gapfill/OHM-160.md) | partial | partial | sources_reviewed | 1 / 11 | 0/2 PASS |
+| [OHM-161](../../../docs/behavior/gapfill/OHM-161.md) | partial | partial | sources_reviewed | 2 / 14 | 0/2 PASS |
+| [OHM-162](../../../docs/behavior/gapfill/OHM-162.md) | partial | partial | sources_reviewed | 1 / 5 | 0/5 PASS |
 
 ## Remaining work and conflicts
 
@@ -331,3 +351,171 @@ Class bench results do not establish package ratings or full physical-device val
 - conflicts: ABLS is an SMD series,not the leaded AB/ABL reference;do not transfer its geometry or frequency-bin ESR.
 - conflicts: Reference body11.5x5mm differs from library package envelope;no silent geometry change.
 - blockers: Missing reference-specific motional parameters and physical-envelope mismatch prevent a sourced runtime binding.
+
+### OHM-143: 3225 SMD crystal
+
+- remaining: Motional C1/L1 are not specified; the class assumptions remain explicit and do not identify this crystal.
+- remaining: Mechanical chamfer position is not a dependable pin1 identifier;source allows other chamfer corners.
+- remaining: Package-axis permutation must be validated before a physical runtime binding.
+- conflicts: This chosen Abracon reference starts pin1 bottom-left; identity with the library top-left numbering would swap crystal and case-ground terminals.
+- conflicts: Sourced100uW drive ceiling is reference-specific;do not carry Epson200uW into this choice.
+- blockers: Missing reference-specific motional parameters and unvalidated physical terminal permutation.
+
+### OHM-144: 2520 SMD crystal
+
+- remaining: Motional C1/L1 are not specified; the class assumptions remain explicit and do not identify this crystal.
+- remaining: Mechanical chamfer position is not a dependable pin1 identifier;source allows other chamfer corners.
+- remaining: Package-axis permutation must be validated before a physical runtime binding.
+- conflicts: This chosen Abracon reference starts pin1 bottom-left; identity with the library top-left numbering would swap crystal and case-ground terminals.
+- conflicts: Sourced100uW drive ceiling is reference-specific;do not carry Epson200uW into this choice.
+- blockers: Missing reference-specific motional parameters and unvalidated physical terminal permutation.
+
+### OHM-145: 2016 SMD crystal
+
+- remaining: Motional C1/L1 are not specified; the class assumptions remain explicit and do not identify this crystal.
+- remaining: Mechanical chamfer position is not a dependable pin1 identifier;source allows other chamfer corners.
+- remaining: Package-axis permutation must be validated before a physical runtime binding.
+- conflicts: This chosen Abracon reference starts pin1 bottom-left; identity with the library top-left numbering would swap crystal and case-ground terminals.
+- conflicts: Sourced100uW drive ceiling is reference-specific;do not carry Epson200uW into this choice.
+- blockers: Missing reference-specific motional parameters and unvalidated physical terminal permutation.
+
+### OHM-146: 7050 oscillator
+
+- remaining: No absolute output-current rating is established;4mA VOH/VOL is a test condition,not an unlimited drive license.
+- remaining: Drive strength,frequency and output loading need explicit model validation.
+- conflicts: The spec4.2mA/1uA values do not match this3.3V revision:4.2mA is the2.5V20MHz maximum;3.3V standby max4.3uA.
+- conflicts: Page1 labels OE-disabled output weakly pulled down,while page2 states high impedance. Retain conflict; cannot silently treat OE and ST alike.
+
+### OHM-147: TCXO
+
+- remaining: Startup timing,absolute output-current limit,Tj and thermal resistance remain missing.
+- remaining: Clipped-sine option is a different output choice;do not merge its impedance/amplitude with CMOS.
+- conflicts: Reference5x3.2mm body differs from default3.2x2.5mm TCXO package.
+- blockers: Unresolved rating-critical output/thermal data and physical mismatch.
+
+### OHM-148: Ceramic resonator
+
+- remaining: No opened rating sheet establishes drive ceiling,terminal voltage,current or ESR for this exact part.
+- remaining: MotionalC1/C0 assumptions and numeric package-pin assignment remain unresolved; characterization diagram gives circuit roles only.
+- conflicts: Characterized-40..85C MCU combination does not override consumer-series-20..80C specification.
+- blockers: Missing rating-critical drive limit and primary terminal map; no sourced runtime binding.
+
+### OHM-149: SAW filter
+
+- remaining: No Touchstone/vendor model or licensed file is attached.
+- remaining: Authored Chebyshev approximation is not a fit to all sourced stopband masks.
+- remaining: Power-limit definition and ESD level need confirmation;10dBm is only the sheet stated value.
+- conflicts: Previously missing rejection offsets are now read from the primary table;35dB is not the criterion in both outer bands,which require40dB.
+- blockers: Input-power/DC rating interpretation and complete source-mask model validation unresolved.
+
+### OHM-150: 1×N male pin header
+
+- remaining: The initial20mohm maximum is not a sourced10mohm typical;model choice must say upper-bound or assumption.
+- remaining: Working voltage,actual mated variant and all-contacts-loaded temperature derating are not established by the series sheet.
+- remaining: Numerical terminal order remains the library convention;the connector assigns no electrical polarity.
+- remaining: The spec thermal resistance,bulk resistance,inductance and blanket0.7/0.8derating factors remain assumptions.
+- conflicts: This explicit Harwin reference has300gold operations,not Samtec1000or unrelated25-cycle defaults. Proof voltage cannot replace a continuous working-voltage rating.
+- blockers: Rating-critical working voltage and full mating/thermal context unresolved.
+
+### OHM-151: 2×N male pin header
+
+- remaining: The initial20mohm maximum is not a sourced10mohm typical;model choice must say upper-bound or assumption.
+- remaining: Working voltage,actual mated variant and all-contacts-loaded temperature derating are not established by the series sheet.
+- remaining: Numerical terminal order remains the library convention;the connector assigns no electrical polarity.
+- remaining: The spec thermal resistance,bulk resistance,inductance and blanket0.7/0.8derating factors remain assumptions.
+- conflicts: This explicit Harwin reference has300gold operations,not Samtec1000or unrelated25-cycle defaults. Proof voltage cannot replace a continuous working-voltage rating.
+- blockers: Rating-critical working voltage and full mating/thermal context unresolved.
+
+### OHM-152: 1×N female header
+
+- remaining: The initial20mohm maximum is not a sourced10mohm typical;model choice must say upper-bound or assumption.
+- remaining: Working voltage,actual mated variant and all-contacts-loaded temperature derating are not established by the series sheet.
+- remaining: Numerical terminal order remains the library convention;the connector assigns no electrical polarity.
+- remaining: The spec thermal resistance,bulk resistance,inductance and blanket0.7/0.8derating factors remain assumptions.
+- conflicts: This explicit Harwin reference has300gold operations,not Samtec1000or unrelated25-cycle defaults. Proof voltage cannot replace a continuous working-voltage rating.
+- blockers: Rating-critical working voltage and full mating/thermal context unresolved.
+
+### OHM-153: 2×N female header
+
+- remaining: The initial20mohm maximum is not a sourced10mohm typical;model choice must say upper-bound or assumption.
+- remaining: Working voltage,actual mated variant and all-contacts-loaded temperature derating are not established by the series sheet.
+- remaining: Numerical terminal order remains the library convention;the connector assigns no electrical polarity.
+- remaining: The spec thermal resistance,bulk resistance,inductance and blanket0.7/0.8derating factors remain assumptions.
+- conflicts: This explicit Harwin reference has300gold operations,not Samtec1000or unrelated25-cycle defaults. Proof voltage cannot replace a continuous working-voltage rating.
+- blockers: Rating-critical working voltage and full mating/thermal context unresolved.
+
+### OHM-154: Right-angle pin header
+
+- remaining: The initial20mohm maximum is not a sourced10mohm typical;model choice must say upper-bound or assumption.
+- remaining: Working voltage,actual mated variant and all-contacts-loaded temperature derating are not established by the series sheet.
+- remaining: Numerical terminal order remains the library convention;the connector assigns no electrical polarity.
+- remaining: The spec thermal resistance,bulk resistance,inductance and blanket0.7/0.8derating factors remain assumptions.
+- conflicts: This explicit Harwin reference has300gold operations,not Samtec1000or unrelated25-cycle defaults. Proof voltage cannot replace a continuous working-voltage rating.
+- blockers: Rating-critical working voltage and full mating/thermal context unresolved.
+
+### OHM-155: JST-PH connector
+
+- remaining: No source-backed absolute Rth or all-loaded derating curve;0.8blanketfactor remains assumption.
+- remaining: Mating-cycle endurance and crimp resistance are unestablished;do not use Molex values.
+- remaining: Cable pin1 can be any application net;keying does not standardize battery polarity.
+- remaining: Initial/conditioned resistance ceilings do not establish the spec6/12mohm typical proxies.
+- conflicts: Use contact temperature including rise,not ambient alone. SMT hold-down tabs are mechanical and are not assumed signal/ground terminals.
+
+### OHM-156: JST-XH connector
+
+- remaining: No source-backed absolute Rth or all-loaded derating curve;0.8blanketfactor remains assumption.
+- remaining: Mating-cycle endurance and crimp resistance are unestablished;do not use Molex values.
+- remaining: Cable pin1 can be any application net;keying does not standardize battery polarity.
+- remaining: Initial/conditioned resistance ceilings do not establish the spec6/12mohm typical proxies.
+- conflicts: Use contact temperature including rise,not ambient alone. SMT hold-down tabs are mechanical and are not assumed signal/ground terminals.
+
+### OHM-157: JST-SH connector
+
+- remaining: No source-backed absolute Rth or all-loaded derating curve;0.8blanketfactor remains assumption.
+- remaining: Mating-cycle endurance and crimp resistance are unestablished;do not use Molex values.
+- remaining: Cable pin1 can be any application net;keying does not standardize battery polarity.
+- remaining: Initial/conditioned resistance ceilings do not establish the spec6/12mohm typical proxies.
+- conflicts: Use contact temperature including rise,not ambient alone. SMT hold-down tabs are mechanical and are not assumed signal/ground terminals.
+
+### OHM-158: Molex KK connector
+
+- remaining: Exact default22232021header and mate remain unbound.
+- remaining: Primary PS-47053-001-001 archive fetch failed through Windows and Python clients; web text is not a successful content-hashed source receipt.
+- remaining: Working voltage,temperature range,contact resistance and AWG derating remain unresolved for the default.
+- remaining: Generic250V/0..75C vs part-page500V/-40..80C remains a source-applicability conflict,not permission to expand ratings.
+- conflicts: The opened4positionhousing cannot establish a2positionheaderpinmap or certify all KK parts.
+- blockers: Rating-critical exact-reference voltage,temperature and current conditions unresolved.
+
+### OHM-159: 2-position screw terminal
+
+- remaining: No actual clamp resistance,thermal resistance or full load-temperature derating established by this opened sheet.
+- remaining: Forbid treating the3mohm assumedclamp as measured or the0.8factor as manufacturer derating.
+- remaining: Small wire ampacity,installation category and creepage context must be checked separately.
+- remaining: Connector has no built-in polarity;terminalnumbers follow library convention.
+- conflicts: 400V is specificallyIII/2,not universal:III/3is250V;22Amaximumloadentry does not replace17.5Anominalrating.
+- blockers: Rating-critical operating-temperature/derating and validated resistance model unresolved.
+
+### OHM-160: 3-position screw terminal
+
+- remaining: No actual clamp resistance,thermal resistance or full load-temperature derating established by this opened sheet.
+- remaining: Forbid treating the3mohm assumedclamp as measured or the0.8factor as manufacturer derating.
+- remaining: Small wire ampacity,installation category and creepage context must be checked separately.
+- remaining: Connector has no built-in polarity;terminalnumbers follow library convention.
+- conflicts: 400V is specificallyIII/2,not universal:III/3is250V;22Amaximumloadentry does not replace17.5Anominalrating.
+- blockers: Rating-critical operating-temperature/derating and validated resistance model unresolved.
+
+### OHM-161: Pluggable terminal block
+
+- remaining: Digitize and validate the exact2position MSTBA mating derating curve before claiming current capacity vs ambient.
+- remaining: Pin1 remains library convention without assignedpositive/negative net.
+- remaining: The sourced1.3mohm plug value does not establish a separate3mohmclamp+3mohmmating series split.
+- conflicts: Header2013II/2rating400V differs from2025plug630V;pairlimitedby400Vheaderunderthatcategory.
+- blockers: Rating-critical mating derating/thermal context and validated contact-path model unresolved.
+
+### OHM-162: USB-A receptacle
+
+- remaining: USB protocol,enumeration and power negotiation are not simulated.
+- remaining: Pin-function/pin-coordinate map still requires archived manufacturer drawing;never treat shell as an automaticGNDshort.
+- remaining: Primary PS-67643-002 text could be read through web search,but full content-hashed fetch timedout;its30mohm/contactcapacitance figures are not promoted here.
+- remaining: Current-temperature-rise and contact-resistance model validation remain open.
+- blockers: Exact source-backed pin-function and physical map plus validated contact model unavailable.

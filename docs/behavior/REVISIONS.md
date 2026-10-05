@@ -96,3 +96,7 @@ OHM-103..122 now carry scoped manufacturer reference,pin and rating facts. Origi
 ## 2026-10-05 Stage4 second research batch
 
 OHM-123..142 now carry scoped primary reference facts, including PLCC28 correction, named BGA64/100/256 references and unchanged ball identifiers. Manufacturer ZIP pinout data is cited by archive member and content hash. Package mismatches, source qualifications and missing rating-critical values remain explicit blockers; original statuses/spec bytes are unchanged. AB/ABL crystal data does not source the assumed motional branch.
+
+## 2026-10-05 Stage4 third research batch
+
+OHM-143..162 record the opened crystal/oscillator/SAW and connector sources. Abracon crystal-to-library permutations are explicit and tested. Harwin socket/header data, JST contact-temperature limits and Phoenix category/conductor/mating restrictions retain all source scope. Failed archive fetches and missing rating-critical values remain blockers; no source-status upgrade or blanket safety inference is made.
