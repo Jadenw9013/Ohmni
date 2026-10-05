@@ -1,0 +1,24 @@
+* BEH-DIO-BRIDGE B2: bridge + 2200 uF + 100 ohm load, 12 V rms (16.97 V pk), 50 Hz
+* Expected: Vdc ~ Vpk - 2*Vf(I) - ripple/2 ; ripple dV ~ Idc/(2 f C)
+.model D1N4007_TYP D (IS=4.023e-9 N=1.8 RS=0.03 CJO=39p VJ=0.7 M=0.5 TT=3u BV=1100 IBV=5u)
+.subckt BRIDGE AC1 AC2 PLUS MINUS
+D1 AC1 PLUS D1N4007_TYP
+D2 AC2 PLUS D1N4007_TYP
+D3 MINUS AC1 D1N4007_TYP
+D4 MINUS AC2 D1N4007_TYP
+.ends
+V1 ac1 ac2 SIN(0 16.97 50)
+Rg ac2 0 1Meg
+XB ac1 ac2 p n BRIDGE
+C1 p n 2200u IC=0
+RL p n 100
+Rn n 0 1Meg
+.tran 50u 400m 0 50u
+.control
+run
+let vo = v(p)-v(n)
+meas tran vmax max vo from=300m to=400m
+meas tran vmin min vo from=300m to=400m
+meas tran vavg avg vo from=300m to=400m
+.endc
+.end

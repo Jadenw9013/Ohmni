@@ -1,0 +1,20 @@
+* B2: series resistor sizing R=(Vs-Vf)/If, red/green/blue/white from one rail, op analysis
+.include models.inc
+V5 vs 0 5
+R1 vs a1 150
+R2 vs a2 130
+R3 vs a3 56
+R4 vs a4 82
+DR a1 0 LED_RED
+DG a2 0 LED_GREEN
+DB a3 0 LED_BLUE
+DW a4 0 LED_WHITE
+.control
+op
+let ir=(5-v(a1))/150
+let ig=(5-v(a2))/130
+let ib=(5-v(a3))/56
+let iw=(5-v(a4))/82
+print ir ig ib iw
+.endc
+.end

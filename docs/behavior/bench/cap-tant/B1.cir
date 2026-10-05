@@ -1,0 +1,14 @@
+B1 Tantalum DC leakage from the 0.1*C*V maximum (KEMET T543 style): I = 0.1e-6 * C_uF * V
+* C=100 uF, V=5 V -> I = 0.1e-6*100*5 = 50 uA through RLK = 1/(0.1e-6*100) = 100 kohm
+.include ohm_tant.lib
+Vs in 0 5
+Xc in 0 f ohm_tant C0=100u ESR=0.1 RLK=100k VR=16
+Rf f 0 1meg
+.op
+.control
+op
+let ileak_uA = -i(Vs)*1e6
+print ileak_uA
+quit
+.endc
+.end

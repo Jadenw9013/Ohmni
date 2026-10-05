@@ -1,0 +1,15 @@
+* B1 BEH-CON-RF 50 ohm line terminated in 100 ohm: |Gamma|=1/3, VSWR=2, RL=9.542 dB (frequency independent for lossless line)
+Vs src 0 DC 0 AC 1
+Rs src a 50
+T1 a 0 b 0 Z0=50 TD=100p
+RL b 0 100
+.control
+ac lin 3 1g 5g
+let zin = v(a)/((v(src)-v(a))/50)
+let gam = (zin-50)/(zin+50)
+let mag = mag(gam)
+let vswr = (1+mag)/(1-mag)
+let rl = -20*log10(mag)
+print mag vswr rl
+.endc
+.end

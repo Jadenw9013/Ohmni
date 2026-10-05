@@ -1,0 +1,32 @@
+* BEH-IC-DIGITAL-IO B2: (a) input decision regions, (b) internal pull-up (20..50 kohm, ATmega328P extract; 35k used), (c) SO-style tri-state with 25LC256-class limits.
+* (a) Vcc=5 V, VIL=0.3*Vcc=1.5 V, VIH=0.6*Vcc=3.0 V: input 1.0 V -> din=0, und=0 ; 2.2 V -> und=1 ; 4.0 V -> din=1, und=0
+* (b) pad connected to 1 kohm to GND with the pull-up on and OE=0: pad = 5*1k/(35k+1k) = 0.1389 V
+* (c) 25LC256 SO (VOL 0.4 V @ 2.1 mA @4.5 V -> rol = 190 ohm ; VOH Vcc-0.5 @ -0.4 mA -> roh = 1250 ohm), OE=0 (CS high): pad floats to the 10k pull-down value.
+.include dio.lib
+Vcc vcc 0 5
+Vz z 0 0
+Vo1 one 0 1
+Va1 pa1 0 1.0
+X1 pa1 d1 u1 z z z vcc 0 dio_pin
+Va2 pa2 0 2.2
+X2 pa2 d2 u2 z z z vcc 0 dio_pin
+Va3 pa3 0 4.0
+X3 pa3 d3 u3 z z z vcc 0 dio_pin
+Rg4 pa4 0 1k
+X4 pa4 d4 u4 z z one vcc 0 dio_pin
+* (c) EEPROM SO hi-Z with 10k pulldown, vs driven high
+Rg5 pa5 0 10k
+X5 pa5 d5 u5 one z z vcc 0 dio_pin params: vilf=0.3 vihf=0.7 roh=1250 rol=190
+Rg6 pa6 0 10k
+X6 pa6 d6 u6 one one z vcc 0 dio_pin params: vilf=0.3 vihf=0.7 roh=1250 rol=190
+Rg7 pa7 0 10k
+X7 pa7 d7 u7 z z z vcc 0 dio_pin params: vilf=0.3 vihf=0.7 roh=1250 rol=190
+.control
+set noaskquit
+op
+echo RESULT in1.0V: din=$&v(d1) und=$&v(u1) in2.2V: din=$&v(d2) und=$&v(u2) in4.0V: din=$&v(d3) und=$&v(u3)
+echo RESULT pullup_pad=$&v(pa4)
+echo RESULT so_driven_high_with_10k=$&v(pa6)
+quit
+.endc
+.end

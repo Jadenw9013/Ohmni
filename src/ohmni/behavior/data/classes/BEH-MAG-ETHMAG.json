@@ -1,0 +1,361 @@
+{
+  "applies_to": [
+    "OHM-055"
+  ],
+  "basis_values": [
+    "2 pi f Ciw",
+    "2*20mA*(49.9||50)",
+    "20log((Rs+RL)/(Rs+RL+Rw))",
+    "ASSUMPTION",
+    "DERIVED",
+    "MFR_DATASHEET"
+  ],
+  "behavior_id": "BEH-MAG-ETHMAG",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "20log((Rs+RL)/(Rs+RL+Rw))",
+          "measure": "IL_1MHz_dB",
+          "tolerance": 0.01,
+          "value": -0.052
+        }
+      ],
+      "file": "docs/behavior/bench/mag_ethmag/B1_insertion_loss.cir",
+      "measured_in_ngspice": -0.0553,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "2 pi f Ciw",
+          "measure": "I_per_V_50Hz",
+          "tolerance": 0.01,
+          "value": 4.712e-09
+        }
+      ],
+      "file": "docs/behavior/bench/mag_ethmag/B2_isolation_leakage.cir",
+      "measured_in_ngspice": 4.7153e-09,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "2*20mA*(49.9||50)",
+          "measure": "V_line_plateau",
+          "tolerance": 0.05,
+          "value": 0.9988
+        }
+      ],
+      "file": "docs/behavior/bench/mag_ethmag/B3_tx_drive.cir",
+      "measured_in_ngspice": "0.988 / 1.045",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-055"
+    ],
+    "behavior_id": "BEH-MAG-ETHMAG",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "20log((Rs+RL)/(Rs+RL+Rw))",
+            "measure": "IL_1MHz_dB",
+            "tolerance": 0.01,
+            "value": -0.052
+          }
+        ],
+        "file": "bench/mag_ethmag/B1_insertion_loss.cir",
+        "id": "B1",
+        "measured_in_ngspice": -0.0553,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "2 pi f Ciw",
+            "measure": "I_per_V_50Hz",
+            "tolerance": 0.01,
+            "value": 4.712e-09
+          }
+        ],
+        "file": "bench/mag_ethmag/B2_isolation_leakage.cir",
+        "id": "B2",
+        "measured_in_ngspice": 4.7153e-09,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "2*20mA*(49.9||50)",
+            "measure": "V_line_plateau",
+            "tolerance": 0.05,
+            "value": 0.9988
+          }
+        ],
+        "file": "bench/mag_ethmag/B3_tx_drive.cir",
+        "id": "B3",
+        "measured_in_ngspice": "0.988 / 1.045",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "magnetics",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "L",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "loss of isolation (safety)",
+        "id": "isolation_breakdown",
+        "permanence": "permanent",
+        "sim_response": "ERROR; barrier model replaced by 100 ohm",
+        "trigger": "barrier voltage above hipot"
+      },
+      {
+        "effect": "OCL collapse or heating",
+        "id": "dc_imbalance",
+        "permanence": "recoverable",
+        "sim_response": "check only; no saturation in ETH_CH",
+        "trigger": "DC imbalance above 8 mA or PoE bias"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "linear only",
+        "leakage fitted to the IL limit",
+        "return loss, crosstalk, CMR not fitted",
+        "pin map unknown",
+        "no PoE"
+      ],
+      "netlist_template": ".include ethmag.lib\nXtx {TD_P} {TD_N} {TD_CT} {TX_LP} {TX_LN} {TX_LCT} ETH_CH OCL={ocl} LLK={leakage} RW={rwinding} CIW={ciw} CMC_L=100u CMC_LS={leakage} CMC_RDC=0.1 CMC_C0=1p\nXrx {RD_P} {RD_N} {RD_CT} {RX_LP} {RX_LN} {RX_LCT} ETH_CH OCL={ocl} LLK={leakage} RW={rwinding} CIW={ciw} CMC_L=100u CMC_LS={leakage} CMC_RDC=0.1 CMC_C0=1p\n",
+      "spice_primitives": [
+        "L",
+        "K",
+        "R",
+        "C"
+      ],
+      "valid_analyses": [
+        "op",
+        "ac",
+        "tran"
+      ],
+      "valid_range": "100 kHz to 100 MHz, 10/100BASE-T"
+    },
+    "parameters": {
+      "ciw": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 1.5e-11,
+        "max": 6e-11,
+        "min": 2e-12,
+        "source_ref": "S3",
+        "unit": "F"
+      },
+      "hipot_vrms": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 1500,
+        "min": 1500,
+        "source_ref": "S11",
+        "unit": "V"
+      },
+      "leakage": {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "default": 1e-07,
+        "max": 1e-06,
+        "min": 1e-08,
+        "source_ref": "S11",
+        "unit": "H"
+      },
+      "ocl": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "L",
+        "default": 0.00035,
+        "max": 0.001,
+        "min": 0.0001,
+        "source_ref": "S12",
+        "tolerance": "min_spec",
+        "unit": "H"
+      },
+      "rwinding": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.5,
+        "max": 3,
+        "min": 0.1,
+        "source_ref": "S3",
+        "unit": "ohm"
+      },
+      "turns_ratio_rx": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 1.0,
+        "source_ref": "S11",
+        "unit": "ratio"
+      },
+      "turns_ratio_tx": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 1.0,
+        "source_ref": "S11",
+        "unit": "ratio"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "TD_P",
+        "package_terminal_rule": "RESEARCH_REQUIRED (drawing not extractable)",
+        "role": "phy_side_tx_p"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "TD_N",
+        "package_terminal_rule": "RESEARCH_REQUIRED",
+        "role": "phy_side_tx_n"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "TD_CT",
+        "package_terminal_rule": "RESEARCH_REQUIRED",
+        "role": "phy_side_tx_center_tap"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "RD_P",
+        "package_terminal_rule": "RESEARCH_REQUIRED",
+        "role": "phy_side_rx_p"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "RD_N",
+        "package_terminal_rule": "RESEARCH_REQUIRED",
+        "role": "phy_side_rx_n"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "RD_CT",
+        "package_terminal_rule": "RESEARCH_REQUIRED",
+        "role": "phy_side_rx_center_tap"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "TX_LP",
+        "package_terminal_rule": "RESEARCH_REQUIRED",
+        "role": "line_side_tx_p"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "TX_LN",
+        "package_terminal_rule": "RESEARCH_REQUIRED",
+        "role": "line_side_tx_n"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "TX_LCT",
+        "package_terminal_rule": "RESEARCH_REQUIRED",
+        "role": "line_side_tx_center_tap"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "RX_LP",
+        "package_terminal_rule": "RESEARCH_REQUIRED",
+        "role": "line_side_rx_p"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "RX_LN",
+        "package_terminal_rule": "RESEARCH_REQUIRED",
+        "role": "line_side_rx_n"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "RX_LCT",
+        "package_terminal_rule": "RESEARCH_REQUIRED",
+        "role": "line_side_rx_center_tap"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "abs(V_barrier) <= 1500*sqrt(2)",
+        "condition": "min production hipot",
+        "name": "hipot",
+        "source_ref": "S11",
+        "symbol": "Viso",
+        "unit": "Vrms",
+        "value": 1500
+      },
+      {
+        "check": "abs(DC(iA1)-DC(iA2)) <= 8 mA",
+        "condition": "OCL test condition of related part",
+        "name": "dc_imbalance",
+        "source_ref": "S12",
+        "symbol": "Idc",
+        "unit": "A",
+        "value": 0.008
+      }
+    ],
+    "sources": [
+      {
+        "date": "9/09",
+        "id": "S11",
+        "org": "Pulse Electronics",
+        "title": "H325.Q 10/100BASE-T single port surface mount magnetics",
+        "url": "https://www.zeuthen.desy.de/~sulanke/Projects/ICECUBE/mDOM/mainboard/datasheets/transformer_eth_H1102NL_+.pdf",
+        "used_for": "turns ratios, IL, RL, CMR, crosstalk, hipot 1500 Vrms"
+      },
+      {
+        "date": "5/09",
+        "id": "S12",
+        "org": "Pulse Engineering",
+        "title": "H315.D 10/100BASE-T single port transformer modules",
+        "url": "https://www.e-sonic.com/productfiles/mf-pul/h315.pdf",
+        "used_for": "OCL 350 uH with 8 mA bias, 1500 Vrms"
+      }
+    ],
+    "status": "partial"
+  },
+  "category": "magnetics",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "89f98a6a54abc12af451eeb97f881a853d3de3d589171d3f6796077ffdbcbf6c",
+    "line": 3336
+  },
+  "source_refs": [
+    {
+      "date": "9/09",
+      "id": "S11",
+      "org": "Pulse Electronics",
+      "title": "H325.Q 10/100BASE-T single port surface mount magnetics",
+      "url": "https://www.zeuthen.desy.de/~sulanke/Projects/ICECUBE/mDOM/mainboard/datasheets/transformer_eth_H1102NL_+.pdf",
+      "used_for": "turns ratios, IL, RL, CMR, crosstalk, hipot 1500 Vrms"
+    },
+    {
+      "date": "5/09",
+      "id": "S12",
+      "org": "Pulse Engineering",
+      "title": "H315.D 10/100BASE-T single port transformer modules",
+      "url": "https://www.e-sonic.com/productfiles/mf-pul/h315.pdf",
+      "used_for": "OCL 350 uH with 8 mA bias, 1500 Vrms"
+    }
+  ],
+  "status": "partial"
+}

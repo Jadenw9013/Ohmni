@@ -1,0 +1,21 @@
+* RES-NETWORK B2: isolated 4-element array (8 terminals), 1k each, 5 V across each; P per element = V^2/R = 25 mW (<63 mW CRA06 rating)
+* Total supply current = 4*5 mA = 20 mA, total power 100 mW. Elements must not interact (ideal model): each current independent.
+.subckt ARR4_ISO a1 b1 a2 b2 a3 b3 a4 b4 params: R=1k
+R1 a1 b1 {R}
+R2 a2 b2 {R}
+R3 a3 b3 {R}
+R4 a4 b4 {R}
+.ends
+V1 s 0 5
+Xa s 0 s 0 s 0 s 0 ARR4_ISO R=1k
+* element 2 independently loaded differently: not possible to check interaction w/ same nets, so measure sum
+.control
+set noaskquit
+op
+let itot = -i(v1)
+print itot
+let ptot = itot*5
+print ptot
+quit
+.endc
+.end

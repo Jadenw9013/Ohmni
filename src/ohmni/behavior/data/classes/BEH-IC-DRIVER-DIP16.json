@@ -1,0 +1,298 @@
+{
+  "applies_to": [
+    "OHM-106",
+    "OHM-112",
+    "OHM-116"
+  ],
+  "basis_values": [
+    "ASSUMPTION",
+    "DERIVED",
+    "MFR_DATASHEET",
+    "TI band",
+    "divider"
+  ],
+  "behavior_id": "BEH-IC-DRIVER-DIP16",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "TI band",
+          "measure": "vce_100mA",
+          "tolerance": "band 0.9..1.1",
+          "value": 0.99
+        }
+      ],
+      "file": "docs/behavior/bench/ic-driver/B1_uln_vcesat.cir",
+      "measured_in_ngspice": "0.9285 / 1.1202 / 1.3924",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B1b",
+      "expected": [
+        {
+          "basis": "TI band",
+          "measure": "vf",
+          "tolerance": "band 1.7..2.0",
+          "value": 1.85
+        }
+      ],
+      "file": "docs/behavior/bench/ic-driver/B1b_uln_clamp_vf.cir",
+      "measured_in_ngspice": 1.818,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "divider",
+          "measure": "vmotor",
+          "tolerance": "0.1 %",
+          "value": 10.63
+        }
+      ],
+      "file": "docs/behavior/bench/ic-driver/B3_l293d_hbridge.cir",
+      "measured_in_ngspice": 10.6272,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-106",
+      "OHM-112",
+      "OHM-116"
+    ],
+    "behavior_id": "BEH-IC-DRIVER-DIP16",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "TI band",
+            "measure": "vce_100mA",
+            "tolerance": "band 0.9..1.1",
+            "value": 0.99
+          }
+        ],
+        "file": "bench/ic-driver/B1_uln_vcesat.cir",
+        "id": "B1",
+        "measured_in_ngspice": "0.9285 / 1.1202 / 1.3924",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "TI band",
+            "measure": "vf",
+            "tolerance": "band 1.7..2.0",
+            "value": 1.85
+          }
+        ],
+        "file": "bench/ic-driver/B1b_uln_clamp_vf.cir",
+        "id": "B1b",
+        "measured_in_ngspice": 1.818,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "divider",
+            "measure": "vmotor",
+            "tolerance": "0.1 %",
+            "value": 10.63
+          }
+        ],
+        "file": "bench/ic-driver/B3_l293d_hbridge.cir",
+        "id": "B3",
+        "measured_in_ngspice": 10.6272,
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "ic",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "H"
+    },
+    "failure_modes": [
+      {
+        "effect": "overheating",
+        "id": "overcurrent",
+        "permanence": "permanent",
+        "sim_response": "ERROR",
+        "trigger": "channel above rating"
+      },
+      {
+        "effect": "clamp diodes conduct",
+        "id": "com_grounded",
+        "permanence": "recoverable",
+        "sim_response": "netlist check",
+        "trigger": "ULN COM at ground"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "Darlington switching delay not calibrated",
+        "L293D linear Ron valid near 1 A only",
+        "ULN input current not sourced",
+        "no thermal feedback in the model itself"
+      ],
+      "netlist_template": "X{ref}_c{k} {IN} {OUT} {COM} {E} uln_ch rb={rb}\nX{ref}_h{k} {A} {EN} {Y} {VCC1} {VCC2} {GND} l293d_ch roh={roh} rol={rol}\n",
+      "spice_primitives": [
+        "Q",
+        "D",
+        "R",
+        "B"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "tran"
+      ],
+      "valid_range": "ULN: IC <= 350 mA per channel; L293D: near 1 A"
+    },
+    "parameters": {
+      "rb": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": "2.7e3",
+        "max": "3.4e3",
+        "min": "2.0e3",
+        "source_ref": "S10",
+        "tolerance": "",
+        "unit": "ohm"
+      },
+      "roh": {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "default": 1.6,
+        "max": 2.5,
+        "min": 1.0,
+        "source_ref": "S12",
+        "tolerance": "",
+        "unit": "ohm"
+      },
+      "rol": {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "default": 1.5,
+        "max": 2.5,
+        "min": 1.0,
+        "source_ref": "S12",
+        "tolerance": "",
+        "unit": "ohm"
+      },
+      "rpd": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": "3.0e3",
+        "max": "10.0e3",
+        "min": "1.0e3",
+        "source_ref": "S10",
+        "tolerance": "",
+        "unit": "ohm"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "input",
+        "name": "IN",
+        "package_terminal_rule": "ULN2003A 1B..7B = pins 1..7; L293D 1A=2, 2A=7, 3A=10, 4A=15",
+        "role": "signal_in"
+      },
+      {
+        "electrical_type": "output",
+        "name": "OUT",
+        "package_terminal_rule": "ULN2003A 1C..7C = pins 16..10; L293D 1Y=3, 2Y=6, 3Y=11, 4Y=14",
+        "role": "signal_out"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "COM",
+        "package_terminal_rule": "ULN2003A pin 9 (clamp cathode)",
+        "role": "supply"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "E_GND",
+        "package_terminal_rule": "ULN2003A pin 8; L293D pins 4, 5, 12, 13",
+        "role": "supply"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "VCC1",
+        "package_terminal_rule": "L293D pin 16",
+        "role": "supply"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "VCC2",
+        "package_terminal_rule": "L293D pin 8",
+        "role": "supply"
+      },
+      {
+        "electrical_type": "input",
+        "name": "EN",
+        "package_terminal_rule": "L293D pin 1 (1,2EN), pin 9 (3,4EN)",
+        "role": "signal_in"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "V(out) <= 50",
+        "condition": "abs max",
+        "name": "output voltage ULN",
+        "source_ref": "S10",
+        "symbol": "VCE",
+        "unit": "V",
+        "value": 50
+      },
+      {
+        "check": "abs(I(out)) <= 0.5",
+        "condition": "peak per channel",
+        "name": "collector current ULN",
+        "source_ref": "S10",
+        "symbol": "IC",
+        "unit": "A",
+        "value": 0.5
+      },
+      {
+        "check": "abs(I(Y)) <= 0.6",
+        "condition": "continuous per channel",
+        "name": "output current L293D",
+        "source_ref": "S12",
+        "symbol": "IO",
+        "unit": "A",
+        "value": 0.6
+      },
+      {
+        "check": "V(VCC2)-V(GND) <= 36",
+        "condition": "abs max",
+        "name": "supply L293D",
+        "source_ref": "S12",
+        "symbol": "VCC",
+        "unit": "V",
+        "value": 36
+      }
+    ],
+    "sources": "S10, S12, S29",
+    "status": "complete"
+  },
+  "category": "ic",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "dc6bbc342fa67d999c55408d5eb8689a0b7f45d24c4cab1ad54d1d8dacb1ea80",
+    "line": 8247
+  },
+  "source_refs": "S10, S12, S29",
+  "status": "complete"
+}

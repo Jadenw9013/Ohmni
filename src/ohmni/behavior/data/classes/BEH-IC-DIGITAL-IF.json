@@ -1,0 +1,395 @@
+{
+  "applies_to": [
+    "OHM-122",
+    "OHM-123",
+    "OHM-124",
+    "OHM-125",
+    "OHM-126",
+    "OHM-128",
+    "OHM-129",
+    "OHM-130",
+    "OHM-131",
+    "OHM-135",
+    "OHM-137",
+    "OHM-138",
+    "OHM-139"
+  ],
+  "basis_values": [
+    "Ceff*VDD*f",
+    "DERIVED",
+    "MFR_DATASHEET",
+    "Ron fit",
+    "Shockley fixed point",
+    "Vtrip/ramp"
+  ],
+  "behavior_id": "BEH-IC-DIGITAL-IF",
+  "benches": [
+    {
+      "bench_id": "D1",
+      "expected": [
+        {
+          "basis": "Ron fit",
+          "measure": "VOL, VOH at 5 mA",
+          "tolerance": "0.1 percent",
+          "value": "0.100, 3.135"
+        }
+      ],
+      "file": "docs/behavior/bench/ic-digital-if/D1_gpio_drive.cir",
+      "measured_in_ngspice": "0.1000, 3.1350",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "D2",
+      "expected": [
+        {
+          "basis": "Shockley fixed point",
+          "measure": "I_inj mA, Vpin V",
+          "tolerance": "0.5 percent",
+          "value": "1.0438, 3.9562"
+        }
+      ],
+      "file": "docs/behavior/bench/ic-digital-if/D2_input_injection.cir",
+      "measured_in_ngspice": "1.04377, 3.95623",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "D3",
+      "expected": [
+        {
+          "basis": "Vtrip/ramp",
+          "measure": "t_release_us",
+          "tolerance": "1 percent",
+          "value": 650
+        }
+      ],
+      "file": "docs/behavior/bench/ic-digital-if/D3_por_ramp.cir",
+      "measured_in_ngspice": 649.78,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "D4",
+      "expected": [
+        {
+          "basis": "Ceff*VDD*f",
+          "measure": "Idd mA at 1 and 18 MHz",
+          "tolerance": "0.5 percent",
+          "value": "1.389, 25.00"
+        }
+      ],
+      "file": "docs/behavior/bench/ic-digital-if/D4_supply_current_f.cir",
+      "measured_in_ngspice": "1.38897, 25.0015",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-122",
+      "OHM-123",
+      "OHM-124",
+      "OHM-125",
+      "OHM-126",
+      "OHM-128",
+      "OHM-129",
+      "OHM-130",
+      "OHM-131",
+      "OHM-135",
+      "OHM-137",
+      "OHM-138",
+      "OHM-139"
+    ],
+    "behavior_id": "BEH-IC-DIGITAL-IF",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "Ron fit",
+            "measure": "VOL, VOH at 5 mA",
+            "tolerance": "0.1 percent",
+            "value": "0.100, 3.135"
+          }
+        ],
+        "file": "bench/ic-digital-if/D1_gpio_drive.cir",
+        "id": "D1",
+        "measured_in_ngspice": "0.1000, 3.1350",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "Shockley fixed point",
+            "measure": "I_inj mA, Vpin V",
+            "tolerance": "0.5 percent",
+            "value": "1.0438, 3.9562"
+          }
+        ],
+        "file": "bench/ic-digital-if/D2_input_injection.cir",
+        "id": "D2",
+        "measured_in_ngspice": "1.04377, 3.95623",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "Vtrip/ramp",
+            "measure": "t_release_us",
+            "tolerance": "1 percent",
+            "value": 650
+          }
+        ],
+        "file": "bench/ic-digital-if/D3_por_ramp.cir",
+        "id": "D3",
+        "measured_in_ngspice": 649.78,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "Ceff*VDD*f",
+            "measure": "Idd mA at 1 and 18 MHz",
+            "tolerance": "0.5 percent",
+            "value": "1.389, 25.00"
+          }
+        ],
+        "file": "bench/ic-digital-if/D4_supply_current_f.cir",
+        "id": "D4",
+        "measured_in_ngspice": "1.38897, 25.0015",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "ic",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "L",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "clamp conduction, latch-up, oxide damage",
+        "id": "input_overvoltage",
+        "permanence": "permanent",
+        "sim_response": "flag; FAIL above abs max",
+        "trigger": "pad above abs max or injection above limit"
+      },
+      {
+        "effect": "oxide breakdown",
+        "id": "supply_over_abs_max",
+        "permanence": "permanent",
+        "sim_response": "FAIL",
+        "trigger": "VDD above abs max"
+      },
+      {
+        "effect": "undefined level",
+        "id": "floating_input",
+        "permanence": "recoverable",
+        "sim_response": "flag, no silent default",
+        "trigger": "unconnected input"
+      }
+    ],
+    "layer": "L2",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "no firmware, bitstream or peripheral behavior (L3)",
+        "linear driver fit",
+        "no slew control",
+        "no latch-up model",
+        "no analog blocks",
+        "no IBIS"
+      ],
+      "netlist_template": ".subckt DIGIF_IO pad vdd vss dout oe params: RONH=33 RONL=20 CPIN=6p ILEAK=1u\nCpad pad vss {CPIN}\nBdh vdd pad I = v(oe)*v(dout)*(v(vdd)-v(pad))/{RONH}\nBdl pad vss I = v(oe)*(1-v(dout))*(v(pad)-v(vss))/{RONL}\nDh pad vdd DCL\nDl vss pad DCL\n.ends\n",
+      "spice_primitives": [
+        "R",
+        "C",
+        "D",
+        "B"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "tran"
+      ],
+      "valid_range": "quasi-static digital, edges slower than a few ns, rails within recommended range"
+    },
+    "parameters": {
+      "C_pin": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "L",
+        "default": 6,
+        "max": 10,
+        "min": 2,
+        "source_ref": "S19",
+        "tolerance": null,
+        "unit": "pF"
+      },
+      "Ceff": {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "default": 420.9,
+        "max": null,
+        "min": null,
+        "source_ref": "S8",
+        "tolerance": null,
+        "unit": "pF"
+      },
+      "I_leak": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 1,
+        "max": 10,
+        "min": 0.05,
+        "source_ref": "S8,S15,S19",
+        "tolerance": null,
+        "unit": "uA"
+      },
+      "RON_high": {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "default": 33,
+        "max": 60,
+        "min": 10,
+        "source_ref": "S8",
+        "tolerance": "fit to worst-case point",
+        "unit": "ohm"
+      },
+      "RON_low": {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "default": 20,
+        "max": 50,
+        "min": 10,
+        "source_ref": "S8",
+        "tolerance": "fit to worst-case point",
+        "unit": "ohm"
+      },
+      "VDD_nom": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 3.3,
+        "max": 5.5,
+        "min": 1.14,
+        "source_ref": "S8,S9,S13,S16,S19,S24",
+        "tolerance": "per part",
+        "unit": "V"
+      },
+      "VIH_frac": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.7,
+        "max": 0.75,
+        "min": 0.6,
+        "source_ref": "S8,S16,S25",
+        "tolerance": "per part",
+        "unit": "ratio"
+      },
+      "VIL_frac": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.2,
+        "max": 0.3,
+        "min": 0.2,
+        "source_ref": "S8,S16,S25",
+        "tolerance": "per part",
+        "unit": "ratio"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "power_in",
+        "name": "VDD",
+        "package_terminal_rule": "from binding; ganged supply terminals tie together",
+        "role": "supply"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "VSS",
+        "package_terminal_rule": "from binding; exposed pad rule per part",
+        "role": "ground"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "GPIOn",
+        "package_terminal_rule": "from binding",
+        "role": "io"
+      },
+      {
+        "electrical_type": "input",
+        "name": "RESET",
+        "package_terminal_rule": "from binding",
+        "role": "reset"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "v(pad) <= VDD + 0.3",
+        "condition": "operating",
+        "name": "pin_voltage_max",
+        "source_ref": "S8,S16",
+        "symbol": "Vpin",
+        "unit": "V",
+        "value": "VDD+0.3 (or part value)"
+      },
+      {
+        "check": "sum(i_vdd) <= 150e-3",
+        "condition": "STM32F103",
+        "name": "total_vdd_current",
+        "source_ref": "S10",
+        "symbol": "IVDD",
+        "unit": "mA",
+        "value": 150
+      }
+    ],
+    "sources": [
+      "S7",
+      "S8",
+      "S9",
+      "S10",
+      "S12",
+      "S13",
+      "S14",
+      "S15",
+      "S16",
+      "S17",
+      "S18",
+      "S19",
+      "S23",
+      "S24",
+      "S25",
+      "S26"
+    ],
+    "status": "partial"
+  },
+  "category": "ic",
+  "fidelity": "behavioural_approximation",
+  "layer": "L2",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "4eaa36bb1a8c9cd3c787572b3f35b4d430f59afb1dc0a6ca65028718407c00c3",
+    "line": 9319
+  },
+  "source_refs": [
+    "S7",
+    "S8",
+    "S9",
+    "S10",
+    "S12",
+    "S13",
+    "S14",
+    "S15",
+    "S16",
+    "S17",
+    "S18",
+    "S19",
+    "S23",
+    "S24",
+    "S25",
+    "S26"
+  ],
+  "status": "partial"
+}

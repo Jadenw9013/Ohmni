@@ -1,0 +1,20 @@
+* BEH-DIO-SCHOTTKY B3: reverse-leakage thermal runaway, SS14 max-corner leakage, Rth(j-a)=88 K/W
+* node tj is junction temperature in degC (1 V = 1 degC). P = Gleak(Tj)*VR^2 -> Rth -> ambient.
+* Analytic: stable fixed point Tj = Ta + Rth*P(Tj); no fixed point once Rth*P25*a*e*exp(a(Ta-25)) > 1
+.param Ta=60 Rth=88 Cth=0.01 VR=40 IR25=0.2m aT={ln(25)/75}
+Vta ta 0 {Ta}
+Rth tj ta {Rth}
+Cth tj ta {Cth}
+Bp 0 tj I = {IR25/VR} * {VR}*{VR} * exp({aT}*(v(tj)-25))
+.tran 10m 40 0 10m
+.control
+alterparam Ta=60
+reset
+run
+meas tran tj60 find v(tj) at=40
+alterparam Ta=95
+reset
+run
+meas tran tj95 max v(tj)
+.endc
+.end

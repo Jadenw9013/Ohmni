@@ -1,0 +1,31 @@
+* BEH-TRN-MOSFET B2: Rds(on) at Vgs=10 V and 4.5 V for IRLB8721 (Infineon IRLB8721PbF: 8.7 mohm max @10 V, 16 mohm max @4.5 V)
+* Device A: the L3 (THETA) fit in the library. Device B: a level-1 model with the SAME Vto (1.85) and same RD+RS=1.5 mohm,
+* KP set from the 10 V point only: KP = 1/((8.7m-1.5m)*(10-1.85)) = 17.04 A/V^2.
+* Analytic for level-1 at 4.5 V (triode, Vds = Id*Rds ~ 0.3 V): Rds = R0 + 1/(KP*(Vov - Vds/2)) = 1.5m + 1/(17.04*(2.65-0.15)) = 25.0 mohm
+*   -> 56 % ABOVE the 16 mohm datasheet value
+* Expected: A: 8.7 and 16.0 mohm (tol 3 %); B at 4.5 V: ~25.0 mohm (tol 3 %), i.e. level 1 cannot reproduce both datasheet points with a plausible Vto
+.include /home/claude/behavior/bench/trn_mosfet/models_mosfet_r6fit.lib
+.model NM_L1 NMOS(LEVEL=1 VTO=1.85 KP=17.04 RD=0.00075 RS=0.00075)
+X1 d1 g1 0 IRLB8721_R6 BVDSS=30
+M2 d2 g2 0 0 NM_L1
+Vg1 g1 0 10
+Vg2 g2 0 10
+Id1 0 d1 15
+Id2 0 d2 15
+.control
+set noaskquit
+op
+let r10a = v(d1)/15
+let r10b = v(d2)/15
+print r10a r10b
+alter Vg1 = 4.5
+alter Vg2 = 4.5
+alter Id1 = 12
+alter Id2 = 12
+op
+let r45a = v(d1)/12
+let r45b = v(d2)/12
+print r45a r45b
+quit
+.endc
+.end

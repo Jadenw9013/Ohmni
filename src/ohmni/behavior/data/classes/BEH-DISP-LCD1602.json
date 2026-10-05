@@ -1,0 +1,348 @@
+{
+  "applies_to": [
+    "OHM-091"
+  ],
+  "basis_values": [
+    "(5-4.1)/9",
+    "ASSUMPTION",
+    "MFR_DATASHEET",
+    "VDD - V0 = 5 - 1.0 (divider 2k/10k)"
+  ],
+  "behavior_id": "BEH-DISP-LCD1602",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "(5-4.1)/9",
+          "measure": "I_backlight",
+          "tolerance": "1%",
+          "value": 0.1
+        }
+      ],
+      "file": "docs/behavior/bench/beh-lcd1602/B1_backlight_resistor.cir",
+      "measured_in_ngspice": 0.09999987,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "VDD - V0 = 5 - 1.0 (divider 2k/10k)",
+          "measure": "VLCD",
+          "tolerance": "0.1%",
+          "value": 4.0
+        }
+      ],
+      "file": "docs/behavior/bench/beh-lcd1602/B2_contrast_divider.cir",
+      "measured_in_ngspice": 4.000016,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-091"
+    ],
+    "behavior_id": "BEH-DISP-LCD1602",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "(5-4.1)/9",
+            "measure": "I_backlight",
+            "tolerance": "1%",
+            "value": 0.1
+          }
+        ],
+        "file": "bench/beh-lcd1602/B1_backlight_resistor.cir",
+        "id": "B1",
+        "measured_in_ngspice": 0.09999987,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "VDD - V0 = 5 - 1.0 (divider 2k/10k)",
+            "measure": "VLCD",
+            "tolerance": "0.1%",
+            "value": 4.0
+          }
+        ],
+        "file": "bench/beh-lcd1602/B2_contrast_divider.cir",
+        "id": "B2",
+        "measured_in_ngspice": 4.000016,
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "display",
+    "confidence": {
+      "failure": "L",
+      "model": "L",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "LED string damage",
+        "id": "backlight_overcurrent",
+        "permanence": "permanent",
+        "sim_response": "flag",
+        "trigger": "If above rating"
+      },
+      {
+        "effect": "undefined display",
+        "id": "not_initialised",
+        "permanence": "recoverable",
+        "sim_response": "L3 state NOT_INIT",
+        "trigger": "commands before init"
+      }
+    ],
+    "layer": "L3",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "no SPICE model of the controller",
+        "backlight Vf/If assumed",
+        "VIL and absolute maxima not extracted",
+        "module series resistor on backlight unknown"
+      ],
+      "netlist_template": "B{ref}idd {VDD} {VSS} I = {idd}\nRV0{ref} {V0} {VSS} 100Meg\nD{ref}bl {A} {K} BL\n",
+      "spice_primitives": [
+        "B",
+        "R",
+        "D"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "tran"
+      ],
+      "valid_range": "L1 supply and backlight only; display content is L3"
+    },
+    "parameters": {
+      "backlight_if": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.1,
+        "unit": "A"
+      },
+      "backlight_vf": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 4.1,
+        "unit": "V"
+      },
+      "idd": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.0012,
+        "max": 0.0015,
+        "min": 0.001,
+        "source_ref": "S13",
+        "unit": "A"
+      },
+      "vdd": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 5.0,
+        "max": 5.5,
+        "min": 4.5,
+        "source_ref": "S13",
+        "unit": "V"
+      },
+      "vlcd": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 4.0,
+        "max": 5.2,
+        "min": 3.2,
+        "source_ref": "S13",
+        "unit": "V"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "power_in",
+        "name": "VSS",
+        "package_terminal_rule": "terminal 1",
+        "role": "ground"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "VDD",
+        "package_terminal_rule": "terminal 2",
+        "role": "power"
+      },
+      {
+        "electrical_type": "input",
+        "name": "V0",
+        "package_terminal_rule": "terminal 3",
+        "role": "contrast"
+      },
+      {
+        "electrical_type": "input",
+        "name": "RS",
+        "package_terminal_rule": "terminal 4",
+        "role": "control"
+      },
+      {
+        "electrical_type": "input",
+        "name": "RW",
+        "package_terminal_rule": "terminal 5",
+        "role": "control"
+      },
+      {
+        "electrical_type": "input",
+        "name": "E",
+        "package_terminal_rule": "terminal 6",
+        "role": "control"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "DB0",
+        "package_terminal_rule": "terminal 7",
+        "role": "data"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "DB1",
+        "package_terminal_rule": "terminal 8",
+        "role": "data"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "DB2",
+        "package_terminal_rule": "terminal 9",
+        "role": "data"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "DB3",
+        "package_terminal_rule": "terminal 10",
+        "role": "data"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "DB4",
+        "package_terminal_rule": "terminal 11",
+        "role": "data"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "DB5",
+        "package_terminal_rule": "terminal 12",
+        "role": "data"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "DB6",
+        "package_terminal_rule": "terminal 13",
+        "role": "data"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "DB7",
+        "package_terminal_rule": "terminal 14",
+        "role": "data"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "A",
+        "package_terminal_rule": "terminal 15",
+        "role": "backlight_anode"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "K",
+        "package_terminal_rule": "terminal 16",
+        "role": "backlight_cathode"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "4.5 <= vdd <= 5.5",
+        "condition": "",
+        "name": "supply",
+        "source_ref": "S13",
+        "symbol": "VDD",
+        "unit": "V",
+        "value": "4.5..5.5"
+      },
+      {
+        "check": "3.2 <= vdd - v0 <= 5.2",
+        "condition": "temperature dependent",
+        "name": "contrast_voltage",
+        "source_ref": "S13",
+        "symbol": "VLCD",
+        "unit": "V",
+        "value": "3.2..5.2"
+      }
+    ],
+    "sources": [
+      {
+        "date": "not shown",
+        "id": "S10",
+        "org": "Hitachi",
+        "title": "HD44780U",
+        "url": "https://cdn-shop.adafruit.com/datasheets/HD44780.pdf",
+        "used_for": "instruction set, init, timing"
+      },
+      {
+        "date": "2000-06-13",
+        "id": "S11",
+        "org": "Sitronix",
+        "title": "ST7066 V1.2",
+        "url": "https://www.lcd-module.de/eng/pdf/zubehoer/st7066.pdf",
+        "used_for": "timing, supply, instruction codes"
+      },
+      {
+        "date": "not shown",
+        "id": "S13",
+        "org": "Winstar",
+        "title": "WH1602B",
+        "url": "https://static.rapidonline.com/pdf/61-6235_v1.pdf",
+        "used_for": "pins, supply, contrast"
+      }
+    ],
+    "status": "partial"
+  },
+  "category": "display",
+  "fidelity": "behavioural_approximation",
+  "layer": "L3",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "c70b9e1cdbfd547f32f744f3def772e7560c6ad91162775abcb67454e2b4ab47",
+    "line": 5376
+  },
+  "source_refs": [
+    {
+      "date": "not shown",
+      "id": "S10",
+      "org": "Hitachi",
+      "title": "HD44780U",
+      "url": "https://cdn-shop.adafruit.com/datasheets/HD44780.pdf",
+      "used_for": "instruction set, init, timing"
+    },
+    {
+      "date": "2000-06-13",
+      "id": "S11",
+      "org": "Sitronix",
+      "title": "ST7066 V1.2",
+      "url": "https://www.lcd-module.de/eng/pdf/zubehoer/st7066.pdf",
+      "used_for": "timing, supply, instruction codes"
+    },
+    {
+      "date": "not shown",
+      "id": "S13",
+      "org": "Winstar",
+      "title": "WH1602B",
+      "url": "https://static.rapidonline.com/pdf/61-6235_v1.pdf",
+      "used_for": "pins, supply, contrast"
+    }
+  ],
+  "status": "partial"
+}

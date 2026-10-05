@@ -1,0 +1,26 @@
+* B5 DFP enables VBUS only when the CC voltage is inside the attach window (0.25..2.04 V, ST AN5225 vRd-Connect, S3)
+* Case A: sink with Rd 5.1k per CC pin (CC voltage 0.417 V) -> VBUS on: v(outA) = 5 V * 100/(100+0.01) = 4.9995 V (100 ohm load)
+* Case B: sink with no Rd (CC floats to 5 V)           -> VBUS off: v(outB) ~ 0
+* Case C: ONE shared 5.1k on tied CC pins + cable Ra 1k (CC 0.0736 V) -> VBUS off: v(outC) ~ 0
+.include usb_io.lib
+Vp p5 0 5
+Vb vb 0 5
+XrpA p5 ccA USBC_SRC_RP Rp=56k
+XrdA ccA 0 USBC_SINK_RD Rd=5.1k
+XenA ccA vb outA 0 USBC_DFP_EN
+RlA outA 0 100
+XrpB p5 ccB USBC_SRC_RP Rp=56k
+Rfl ccB 0 1G
+XenB ccB vb outB 0 USBC_DFP_EN
+RlB outB 0 100
+XrpC p5 ccC USBC_SRC_RP Rp=56k
+XrdC ccC 0 USBC_SINK_RD Rd=5.1k
+Rra ccC 0 1k
+XenC ccC vb outC 0 USBC_DFP_EN
+RlC outC 0 100
+.control
+op
+print v(ccA) v(outA) v(ccB) v(outB) v(ccC) v(outC)
+quit
+.endc
+.end

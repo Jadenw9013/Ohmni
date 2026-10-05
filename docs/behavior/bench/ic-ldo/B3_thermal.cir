@@ -1,0 +1,19 @@
+* BEH-IC-LDO-SOT235 B3: self-heating and thermal limiting, SOT-23-5 (DDC) thetaJA = 235.9 degC/W (TI SLVSA00E extract). Vin = 5.5 V, resistive load 16.5 ohm (~200 mA).
+* (a) Ta=25: Pd = (Vin-Vout)*Iout + Vin*Ign  ->  Tj = Ta + 235.9*Pd. Check: Tj equals Ta + rth*Pd computed from the printed Vout, Iout (self consistency), expected ~129 C, below the 160 C limit.
+* (b) Ta=70: the same dissipation would give Tj = 174 C > 160 C: the thermal limiter folds the current back so that Tj ~ 160 C (memoryless model; the real part cycles 160/140 C).
+.include tlv700.lib
+Vin in 0 5.5
+Ven en 0 5.5
+X1 in 0 en out tlv700 ta=25
+Rl out 0 16.5
+.nodeset v(x1.tj)=100 v(out)=3.2
+.control
+set noaskquit
+op
+let io = v(out)/16.5
+let pd = (5.5-v(out))*io + 5.5*(31u+(270u-31u)*io/0.2)
+let tjc = 25 + 235.9*pd
+echo RESULT a_vout=$&v(out) a_iout=$&io a_pd=$&pd a_tj_model=$&v(x1.tj) a_tj_check=$&tjc
+quit
+.endc
+.end

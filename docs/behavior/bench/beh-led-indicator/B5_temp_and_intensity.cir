@@ -1,0 +1,21 @@
+* B5: Vf temperature coefficient at constant current, and luminous intensity law Iv = Iv20*(If/20mA)^k (red, TLDR4400 points 2 mcd @1 mA, 45 mcd @20 mA)
+.include models.inc
+.param iv20=45 kexp=1.0416
+IS1 0 a DC 20m
+DR a 0 LED_RED
+* intensity law as an OUTPUT quantity: node iv holds mcd (1 V = 1 mcd)
+VS2 0 b 0
+I2 0 b DC 1m
+DR2 b 0 LED_RED
+.control
+dc temp 0 85 85
+print v(a)
+let dvdt = (v(a)[1]-v(a)[0])/85
+print dvdt
+* intensity law check for If = 1 mA and 20 mA
+let k=1.0416
+let iv1 = 45*((0.001/0.02)^k)
+let iv20 = 45*((0.020/0.02)^k)
+print iv1 iv20
+.endc
+.end

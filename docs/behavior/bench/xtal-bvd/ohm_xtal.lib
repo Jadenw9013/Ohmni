@@ -1,0 +1,7 @@
+* OHMNI BVD crystal subcircuit. Terminals: 1 2. Params: L1 (H), C1 (F), R1 (ohm), C0 (F)
+.subckt ohm_xtal 1 2 L1=44m C1=9f R1=80 C0=3p
+Lm 1 a {L1}
+Cm a b {C1}
+Rm b 2 {R1}
+C0x 1 2 {C0}
+.ends ohm_xtal

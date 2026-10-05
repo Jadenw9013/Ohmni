@@ -1,0 +1,251 @@
+{
+  "applies_to": [
+    "OHM-106",
+    "OHM-112",
+    "OHM-116",
+    "OHM-118"
+  ],
+  "basis_values": [
+    "ASSUMPTION",
+    "MFR_DATASHEET",
+    "decoder truth table",
+    "shift order"
+  ],
+  "behavior_id": "BEH-IC-LOGIC-SEQ",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "shift order",
+          "measure": "QA..QH",
+          "tolerance": "exact",
+          "value": "0,1,0,0,1,1,0,1"
+        }
+      ],
+      "file": "docs/behavior/bench/ic-logic-seq/B1_hc595.cir",
+      "measured_in_ngspice": "match",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "decoder truth table",
+          "measure": "low_output_index",
+          "tolerance": "exact",
+          "value": "equals address"
+        }
+      ],
+      "file": "docs/behavior/bench/ic-logic-seq/B2_hc138.cir",
+      "measured_in_ngspice": "match",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-106",
+      "OHM-112",
+      "OHM-116",
+      "OHM-118"
+    ],
+    "behavior_id": "BEH-IC-LOGIC-SEQ",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "shift order",
+            "measure": "QA..QH",
+            "tolerance": "exact",
+            "value": "0,1,0,0,1,1,0,1"
+          }
+        ],
+        "file": "bench/ic-logic-seq/B1_hc595.cir",
+        "id": "B1",
+        "measured_in_ngspice": "match",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "decoder truth table",
+            "measure": "low_output_index",
+            "tolerance": "exact",
+            "value": "equals address"
+          }
+        ],
+        "file": "bench/ic-logic-seq/B2_hc138.cir",
+        "id": "B2",
+        "measured_in_ngspice": "match",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "ic",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "bond-wire overheating",
+        "id": "overload_outputs",
+        "permanence": "permanent",
+        "sim_response": "ERROR",
+        "trigger": "sum of output currents > 70 mA"
+      },
+      {
+        "effect": "outputs undefined",
+        "id": "oe_floating",
+        "permanence": "recoverable",
+        "sim_response": "netlist check",
+        "trigger": "OE not driven"
+      }
+    ],
+    "layer": "L2",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "requires XSPICE",
+        "no setup/hold or pulse width checks",
+        "no metastability",
+        "single delay per path"
+      ],
+      "netlist_template": "X{ref} {QB} {QC} {QD} {QE} {QF} {QG} {QH} {GND} {QHP} {SRCLR} {SRCLK} {RCLK} {OE} {SER} {QA} {VCC} hc595\n",
+      "spice_primitives": [
+        "XSPICE adc_bridge",
+        "XSPICE dac_bridge",
+        "XSPICE d_dff",
+        "XSPICE d_inverter",
+        "B",
+        "R",
+        "C",
+        "D",
+        "T"
+      ],
+      "valid_analyses": [
+        "tran"
+      ],
+      "valid_range": "VCC 2..6 V (levels fitted at 4.5 V), fclk <= 21 MHz"
+    },
+    "parameters": {
+      "clk_delay": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": "12e-9",
+        "max": "30e-9",
+        "min": "8e-9",
+        "source_ref": "S6",
+        "tolerance": "",
+        "unit": "s"
+      },
+      "cpd": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": "400e-12",
+        "max": "500e-12",
+        "min": "300e-12",
+        "source_ref": "S6",
+        "tolerance": "",
+        "unit": "F"
+      },
+      "fmax": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": "21e6",
+        "max": "31e6",
+        "min": "21e6",
+        "source_ref": "S6",
+        "tolerance": "",
+        "unit": "Hz"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "input",
+        "name": "SER",
+        "package_terminal_rule": "595 pin 14",
+        "role": "signal_in"
+      },
+      {
+        "electrical_type": "input",
+        "name": "SRCLK",
+        "package_terminal_rule": "595 pin 11",
+        "role": "signal_in"
+      },
+      {
+        "electrical_type": "input",
+        "name": "RCLK",
+        "package_terminal_rule": "595 pin 12",
+        "role": "signal_in"
+      },
+      {
+        "electrical_type": "input",
+        "name": "OE_N",
+        "package_terminal_rule": "595 pin 13",
+        "role": "signal_in"
+      },
+      {
+        "electrical_type": "input",
+        "name": "SRCLR_N",
+        "package_terminal_rule": "595 pin 10",
+        "role": "signal_in"
+      },
+      {
+        "electrical_type": "output",
+        "name": "Q",
+        "package_terminal_rule": "595 QA=15, QB..QH = 1..7; QH' = 9",
+        "role": "signal_out"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "VCC",
+        "package_terminal_rule": "pin 16",
+        "role": "supply"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "GND",
+        "package_terminal_rule": "pin 8",
+        "role": "supply"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "V(VCC)-V(GND) <= 7",
+        "condition": "abs max",
+        "name": "supply",
+        "source_ref": "S6",
+        "symbol": "VCC",
+        "unit": "V",
+        "value": 7
+      },
+      {
+        "check": "sum(abs(I(Q))) <= 70e-3",
+        "condition": "595 abs max",
+        "name": "total supply current",
+        "source_ref": "S6",
+        "symbol": "ICC",
+        "unit": "A",
+        "value": "70e-3"
+      }
+    ],
+    "sources": "S4, S6, S7, S29",
+    "status": "complete"
+  },
+  "category": "ic",
+  "fidelity": "behavioural_approximation",
+  "layer": "L2",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "c651f6a25938a8bcc0431ef1870784b2984e95f8b1c1084edfdb359944bc38ab",
+    "line": 7685
+  },
+  "source_refs": "S4, S6, S7, S29",
+  "status": "complete"
+}

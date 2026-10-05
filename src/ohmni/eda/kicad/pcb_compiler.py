@@ -25,7 +25,7 @@ from ..pcb_models import (
 )
 from .sexpr import number, quote
 
-PCB_COMPILER_VERSION="0.2.0"
+PCB_COMPILER_VERSION="0.3.0"
 PCB_FORMAT_VERSION="20240108"
 PCB_UUID_NAMESPACE=uuid.UUID("63af3592-6efd-5c14-9430-a5b827559c49")
 
@@ -68,7 +68,7 @@ class KiCadPcbCompiler:
             except ValueError as exc:
                 raise PcbCompilationError(f"{instance.ref}: invalid project-local footprint geometry: {exc}") from exc
             available={p.number for p in fp.pads if not p.mechanical}
-            required={p.number for p in spec.pins}
+            required={package.pad_for_pin(p.number) for p in spec.pins}
             if not required <= available: raise PcbCompilationError(f"{instance.ref}: missing physical pads {sorted(required-available)}")
             fp_ids[instance.ref]=fp.footprint_id
             footprint_bindings.append(FootprintBinding(component_ref=instance.ref,part_id=instance.part_id,package=instance.package,
@@ -76,8 +76,9 @@ class KiCadPcbCompiler:
                                                        geometry_fingerprint=fp.content_hash))
             events.append(self._event(circuit,EventKind.FOOTPRINT_RESOLVED,f"{instance.ref} footprint resolved"))
             for pin in spec.pins:
-                pad_bindings.append(PadBinding(component_ref=instance.ref,pin_number=pin.number,pad_number=pin.number,net_name=connected.get((instance.ref,pin.number))))
-                events.append(self._event(circuit,EventKind.PAD_BINDING_RESOLVED,f"{instance.ref}.{pin.number} mapped to pad {pin.number}"))
+                pad_number=package.pad_for_pin(pin.number)
+                pad_bindings.append(PadBinding(component_ref=instance.ref,pin_number=pin.number,pad_number=pad_number,net_name=connected.get((instance.ref,pin.number))))
+                events.append(self._event(circuit,EventKind.PAD_BINDING_RESOLVED,f"{instance.ref}.{pin.number} mapped to pad {pad_number}"))
         constraint_events=[]
         for constraint in constraints.placement_constraints:
             event=self._event(circuit,EventKind.PLACEMENT_CONSTRAINT_APPLIED,constraint.reason,{"constraint_id":constraint.constraint_id,"component_ref":constraint.component_ref,"target_ref":constraint.target_ref})
@@ -92,9 +93,10 @@ class KiCadPcbCompiler:
         lines=["(kicad_pcb",f"  (version {PCB_FORMAT_VERSION})",'  (generator "ohmni")',f'  (generator_version "{PCB_COMPILER_VERSION}")',"  (general (thickness 1.6))",'  (paper "A4")',"  (layers",'    (0 "F.Cu" signal)','    (31 "B.Cu" signal)','    (34 "B.Paste" user "b.paste")','    (35 "F.Paste" user "f.paste")','    (36 "B.SilkS" user "b.silkscreen")','    (37 "F.SilkS" user "f.silkscreen")','    (38 "B.Mask" user)','    (39 "F.Mask" user)','    (44 "Edge.Cuts" user)',"  )","  (setup (pad_to_mask_clearance 0))"]
         for name,index in sorted(nets.items(),key=lambda x:x[1]): lines.append(f"  (net {index} {quote(name)})")
         binding_by_ref={b.component_ref:b for b in footprint_bindings}
+        pad_nets={(binding.component_ref,binding.pad_number):binding.net_name for binding in pad_bindings}
         for instance in sorted(circuit.components,key=lambda c:c.ref):
             fp=footprint(binding_by_ref[instance.ref].footprint_id);place=placements[instance.ref]
-            lines += self._render_footprint(seed,instance,fp,place,nets,connected)
+            lines += self._render_footprint(seed,instance,fp,place,nets,pad_nets)
             events.append(self._event(circuit,EventKind.COMPONENT_PLACED,f"{instance.ref} placed",{"x_mm":place.x_mm,"y_mm":place.y_mm,"reason":place.reason}))
         w,h=constraints.outline.width_mm,constraints.outline.height_mm
         for i,(a,b) in enumerate([((0,0),(w,0)),((w,0),(w,h)),((w,h),(0,h)),((0,h),(0,0))]):
@@ -172,11 +174,11 @@ class KiCadPcbCompiler:
         actual={(p.component_ref,p.pin_number):p.net_name for p in pads if p.net_name is not None}
         if actual != expected: raise PcbCompilationError("PCB pad net membership differs from CircuitIR")
 
-    def _render_footprint(self,seed,instance,fp,place,nets,connected):
+    def _render_footprint(self,seed,instance,fp,place,nets,pad_nets):
         out=[f'  (footprint {quote("ohmni_generated_"+instance.ref)} (layer "F.Cu") (uuid "{_uuid(seed,"footprint:"+instance.ref)}") (at {number(place.x_mm)} {number(place.y_mm)} {number(place.rotation_deg)})',f'    (property "Reference" {quote(instance.ref)} (at 0 0 0) (layer "F.Fab") (hide yes) (effects (font (size 1 1) (thickness 0.15))))',f'    (property "Value" {quote(instance.part_id)} (at 0 0 0) (layer "F.Fab") (hide yes) (effects (font (size 1 1) (thickness 0.15))))',f'    (property "OhmniFootprintSource" {quote(fp.footprint_id)} (at 0 0 0) (layer "F.Fab") (hide yes) (effects (font (size 1 1))))','    (attr smd)']
         out.append(f'    (fp_rect (start {number(-fp.width_mm/2)} {number(-fp.height_mm/2)}) (end {number(fp.width_mm/2)} {number(fp.height_mm/2)}) (stroke (width 0.05) (type default)) (fill none) (layer "F.CrtYd"))')
         for i,pad in enumerate(fp.pads):
-            net_name=connected.get((instance.ref,pad.number));net=f' (net {nets[net_name]} {quote(net_name)})' if net_name else ""
+            net_name=pad_nets.get((instance.ref,pad.number));net=f' (net {nets[net_name]} {quote(net_name)})' if net_name else ""
             if pad.kind in {"thru_hole", "np_thru_hole"}:
                 if pad.drill is None:
                     raise PcbCompilationError(f"{instance.ref}.{pad.number}: explicit drill geometry is required")

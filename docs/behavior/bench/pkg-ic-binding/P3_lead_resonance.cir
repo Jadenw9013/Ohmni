@@ -1,0 +1,37 @@
+* BEH-PKG-IC-BINDING P3: decoupling-capacitor self-resonance through the package supply-lead inductance. Measures the frequency of minimum |Z| seen from the die.
+* f0 = 1/(2 pi sqrt(L C)), C = 100 nF.  L values are the sourced package numbers (nH): QFP-28 corner 4.5 (AN-1205), PLCC-28 corner 4.4 (AN-1205), QFN-20 1.119 (SCBA017D), LBGA-196 corner 1.7 (AN-1205), CSP single row 0.40 (AN-1205)
+* analytic f0 (MHz): 7.502, 7.588, 15.044, 12.206, 25.165
+.param C=100n
+* (1 mOhm series resistance makes the phase pass through 0 at resonance)
+* five networks: die node d_x -> lead L -> cap to ground; an AC current source of 1 A makes v(d_x) = Z
+Iq1 0 d1 dc 0 ac 1
+R1 d1 e1 1m
+L1 e1 m1 4.5n
+C1 m1 0 {C}
+Iq2 0 d2 dc 0 ac 1
+R2 d2 e2 1m
+L2 e2 m2 4.4n
+C2 m2 0 {C}
+Iq3 0 d3 dc 0 ac 1
+R3 d3 e3 1m
+L3 e3 m3 1.119n
+C3 m3 0 {C}
+Iq4 0 d4 dc 0 ac 1
+R4 d4 e4 1m
+L4 e4 m4 1.7n
+C4 m4 0 {C}
+Iq5 0 d5 dc 0 ac 1
+R5 d5 e5 1m
+L5 e5 m5 0.4n
+C5 m5 0 {C}
+.control
+set noaskquit
+ac lin 40001 1meg 41meg
+meas ac f1 when vp(d1)=0 cross=1
+meas ac f2 when vp(d2)=0 cross=1
+meas ac f3 when vp(d3)=0 cross=1
+meas ac f4 when vp(d4)=0 cross=1
+meas ac f5 when vp(d5)=0 cross=1
+quit
+.endc
+.end

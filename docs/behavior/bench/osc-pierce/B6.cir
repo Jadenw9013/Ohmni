@@ -1,0 +1,23 @@
+B6 Pierce critical gm with high-ESR 3225 8 MHz crystal (R1=500, NDK NX3225GD class max): ST gm_crit = 4*500*(2*pi*8e6)^2*(3p+18p)^2 = 2.23 mS. Edit gm; envelope ratio a(600us)/a(300us) ~1 at critical.
+.include ohm_xtal.lib
+.param gm=2.2m imax=0.3m rout=1meg cl1=32p cl2=32p cp=4p rf=1meg
+X1 xi xo ohm_xtal L1=43.99505512m C1=9f R1=500 C0=3p
+Cl1 xi 0 {cl1}
+Cl2 xo 0 {cl2}
+Cps1 xi 0 {cp}
+Cps2 xo 0 {cp}
+Rf xi xo {rf}
+Bamp xo 0 I = {imax}*tanh({gm}*v(xi)/{imax})
+Rout xo 0 {rout}
+Ikick 0 xi PULSE(0 20u 0 1n 1n 10n 1)
+.tran 2n 620u
+.control
+run
+let vx = v(xi)
+meas tran a300 PP vx FROM=298u TO=300u
+meas tran a600 PP vx FROM=618u TO=620u
+let ratio = a600/a300
+print ratio
+quit
+.endc
+.end

@@ -1,0 +1,16 @@
+B4 MLCC over-rated-voltage flag (VR=10 V)
+* ramp 0..12 V in 12 s; flag must switch 0->1 when |v|>10 i.e. at t=10 s
+.include ohm_mlcc.lib
+Vr in 0 PWL(0 0 12 12)
+Rs in p 1
+Xc p 0 f ohm_mlcc C0=1u V0=1e6 ESR=1m ESL=1p RLK=1e12 VR=10
+Rf f 0 1meg
+.tran 0.01 12
+.control
+run
+meas tran tflag when v(f)=0.5 rise=1
+meas tran fl_at_9 find v(f) at=9
+meas tran fl_at_11 find v(f) at=11
+quit
+.endc
+.end

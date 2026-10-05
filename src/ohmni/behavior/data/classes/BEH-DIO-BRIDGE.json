@@ -1,0 +1,348 @@
+{
+  "applies_to": [
+    "OHM-071",
+    "OHM-072"
+  ],
+  "basis_values": [
+    "ASSUMPTION",
+    "DERIVED",
+    "I/(2fC)",
+    "MFR_DATASHEET",
+    "leakage",
+    "numerical integral",
+    "solve"
+  ],
+  "behavior_id": "BEH-DIO-BRIDGE",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "solve",
+          "measure": "Vpk",
+          "tolerance": "0.5%",
+          "value": 8.4253
+        },
+        {
+          "basis": "numerical integral",
+          "measure": "Vavg",
+          "tolerance": "0.5%",
+          "value": 4.9287
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-bridge/B1_fullwave_load.cir",
+      "measured_in_ngspice": "8.42528 / 4.93004",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "I/(2fC)",
+          "measure": "ripple",
+          "tolerance": "bound",
+          "value": "<= 0.677 V"
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-bridge/B2_filtered.cir",
+      "measured_in_ngspice": "0.571 V",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "solve",
+          "measure": "reverse DC current",
+          "tolerance": "0.5%",
+          "value": 0.0357368
+        },
+        {
+          "basis": "leakage",
+          "measure": "blocked current",
+          "tolerance": "n/a",
+          "value": "< 1e-6"
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-bridge/B3_polarity.cir",
+      "measured_in_ngspice": "35.7368 mA / 8.06 nA",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-071",
+      "OHM-072"
+    ],
+    "behavior_id": "BEH-DIO-BRIDGE",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "solve",
+            "measure": "Vpk",
+            "tolerance": "0.5%",
+            "value": 8.4253
+          },
+          {
+            "basis": "numerical integral",
+            "measure": "Vavg",
+            "tolerance": "0.5%",
+            "value": 4.9287
+          }
+        ],
+        "file": "bench/beh-dio-bridge/B1_fullwave_load.cir",
+        "id": "B1",
+        "measured_in_ngspice": "8.42528 / 4.93004",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "I/(2fC)",
+            "measure": "ripple",
+            "tolerance": "bound",
+            "value": "<= 0.677 V"
+          }
+        ],
+        "file": "bench/beh-dio-bridge/B2_filtered.cir",
+        "id": "B2",
+        "measured_in_ngspice": "0.571 V",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "solve",
+            "measure": "reverse DC current",
+            "tolerance": "0.5%",
+            "value": 0.0357368
+          },
+          {
+            "basis": "leakage",
+            "measure": "blocked current",
+            "tolerance": "n/a",
+            "value": "< 1e-6"
+          }
+        ],
+        "file": "bench/beh-dio-bridge/B3_polarity.cir",
+        "id": "B3",
+        "measured_in_ngspice": "35.7368 mA / 8.06 nA",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "diode",
+    "confidence": {
+      "failure": "L",
+      "model": "M",
+      "parameters": "L",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "overheat, element shorts",
+        "id": "overcurrent",
+        "permanence": "permanent",
+        "sim_response": "WARN, FAIL 120%, failed_short on D1",
+        "trigger": "mean current above rating"
+      },
+      {
+        "effect": "two-diode short path",
+        "id": "dc_reverse_connection",
+        "permanence": "permanent",
+        "sim_response": "netlist reproduces; miswire flag",
+        "trigger": "DC supply across +/- pins reversed"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "four identical diodes, no thermal coupling or lead heat flow",
+        "lead functions of the physical pins are not confirmed by an opened drawing",
+        "TT, N, RS assumed"
+      ],
+      "netlist_template": ".subckt BRIDGE_{ref} AC1 AC2 PLUS MINUS\nD1 AC1 PLUS DBR_{ref}\nD2 AC2 PLUS DBR_{ref}\nD3 MINUS AC1 DBR_{ref}\nD4 MINUS AC2 DBR_{ref}\n.ends\n.model DBR_{ref} D (IS={IS} N={N} RS={RS} CJO={CJO} VJ=0.7 M=0.5 TT={TT} BV={VRRM*1.1} IBV=5u)\nX{ref} {AC1} {AC2} {PLUS} {MINUS} BRIDGE_{ref}\n",
+      "spice_primitives": [
+        "D"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "ac",
+        "tran",
+        "temp"
+      ],
+      "valid_range": "AC peak < VRRM, mean current < IF(AV)(Ta)"
+    },
+    "parameters": {
+      "CJO": {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "default": 6.5e-11,
+        "max": 2e-10,
+        "min": 1e-11,
+        "source_ref": "S19",
+        "unit": "F"
+      },
+      "IFSM": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 50,
+        "source_ref": "S19",
+        "unit": "A"
+      },
+      "IF_AV": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 1.0,
+        "max": 1.5,
+        "min": 1.0,
+        "source_ref": "S19",
+        "unit": "A"
+      },
+      "IS": {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "default": 1.04e-10,
+        "max": 1e-07,
+        "min": 1e-12,
+        "source_ref": "S19",
+        "unit": "A"
+      },
+      "N": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 1.8,
+        "max": 2.2,
+        "min": 1.0,
+        "source_ref": "S19",
+        "unit": "1"
+      },
+      "RS": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.03,
+        "max": 1.0,
+        "min": 0.005,
+        "source_ref": "S19",
+        "unit": "ohm"
+      },
+      "RthJA": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 40,
+        "source_ref": "S19",
+        "unit": "K/W"
+      },
+      "TT": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 3e-06,
+        "max": 5e-06,
+        "min": 0.0,
+        "source_ref": "S9",
+        "unit": "s"
+      },
+      "VRRM": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 1000,
+        "max": 1000,
+        "min": 50,
+        "source_ref": "S19",
+        "unit": "V"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "PLUS",
+        "package_terminal_rule": "pin 1 (default, ASSUMPTION L; physical function per marking, RESEARCH_REQUIRED)",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "AC1",
+        "package_terminal_rule": "pin 2 (default, ASSUMPTION L)",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "MINUS",
+        "package_terminal_rule": "pin 3 (default, ASSUMPTION L)",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "AC2",
+        "package_terminal_rule": "pin 4 (default, ASSUMPTION L)",
+        "role": "terminal"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "mean(i_out) <= IF_AV*(150-Ta)/(150-40)",
+        "condition": "DFM, TA 40 C, pads 13x13 mm",
+        "name": "average_forward",
+        "source_ref": "S19",
+        "symbol": "IF(AV)",
+        "unit": "A",
+        "value": 1.0
+      },
+      {
+        "check": "i_pk <= IFSM",
+        "condition": "8.3 ms half sine",
+        "name": "surge",
+        "source_ref": "S19",
+        "symbol": "IFSM",
+        "unit": "A",
+        "value": 50
+      },
+      {
+        "check": "max(v_ac_pk) <= VRRM",
+        "condition": "DF10M",
+        "name": "reverse_voltage",
+        "source_ref": "S19",
+        "symbol": "VRRM",
+        "unit": "V",
+        "value": 1000
+      }
+    ],
+    "sources": [
+      {
+        "date": "10-Oct-06",
+        "id": "S19",
+        "org": "Vishay",
+        "title": "DF005M thru DF10M Single-Phase Bridge Rectifier doc 88571",
+        "url": "https://hallaweb.jlab.org/tech/Detectors/public_html/manuals/chip_specs/M-Z/vishay_siliconix/dfm.pdf",
+        "used_for": "VRRM, IF(AV), IFSM, VF, IR, CJ, RthJA, polarity statement"
+      }
+    ],
+    "status": "partial"
+  },
+  "category": "diode",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "59f551d69464094cd31bdb9e31b2b95c2266bd8c0397810c3de3b3842d292bb9",
+    "line": 4321
+  },
+  "source_refs": [
+    {
+      "date": "10-Oct-06",
+      "id": "S19",
+      "org": "Vishay",
+      "title": "DF005M thru DF10M Single-Phase Bridge Rectifier doc 88571",
+      "url": "https://hallaweb.jlab.org/tech/Detectors/public_html/manuals/chip_specs/M-Z/vishay_siliconix/dfm.pdf",
+      "used_for": "VRRM, IF(AV), IFSM, VF, IR, CJ, RthJA, polarity statement"
+    }
+  ],
+  "status": "partial"
+}

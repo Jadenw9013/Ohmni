@@ -1,0 +1,285 @@
+{
+  "applies_to": [
+    "OHM-173",
+    "OHM-174"
+  ],
+  "basis_values": [
+    "ASSUMPTION",
+    "I^2 R",
+    "MFR_DATASHEET",
+    "P Rth/(1-P alpha Rth)",
+    "tau"
+  ],
+  "behavior_id": "BEH-CON-XT",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "I^2 R",
+          "measure": "P_xt60",
+          "tolerance": "0.1%",
+          "value": 0.495
+        },
+        {
+          "basis": "P Rth/(1-P alpha Rth)",
+          "measure": "dT",
+          "tolerance": "0.1%",
+          "value": 33.975
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-xt/B1.cir",
+      "measured_in_ngspice": "0.495 W; 33.975 K",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "tau",
+          "measure": "t63",
+          "tolerance": "1%",
+          "value": 137.26
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-xt/B2.cir",
+      "measured_in_ngspice": "137.23 s",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-173",
+      "OHM-174"
+    ],
+    "behavior_id": "BEH-CON-XT",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "I^2 R",
+            "measure": "P_xt60",
+            "tolerance": "0.1%",
+            "value": 0.495
+          },
+          {
+            "basis": "P Rth/(1-P alpha Rth)",
+            "measure": "dT",
+            "tolerance": "0.1%",
+            "value": 33.975
+          }
+        ],
+        "file": "bench/beh-con-xt/B1.cir",
+        "id": "B1",
+        "measured_in_ngspice": "0.495 W; 33.975 K",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "tau",
+            "measure": "t63",
+            "tolerance": "1%",
+            "value": 137.26
+          }
+        ],
+        "file": "bench/beh-con-xt/B2.cir",
+        "id": "B2",
+        "measured_in_ngspice": "137.23 s",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "connector",
+    "confidence": {
+      "failure": "M",
+      "model": "L",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "heating, PA softening",
+        "id": "overcurrent",
+        "permanence": "permanent",
+        "sim_response": "flag, R(T)",
+        "trigger": "I>I_cont"
+      },
+      {
+        "effect": "arc and fire hazard",
+        "id": "battery_short",
+        "permanence": "permanent",
+        "sim_response": "CRITICAL flag",
+        "trigger": "short without fuse"
+      },
+      {
+        "effect": "inrush spark",
+        "id": "hot_plug_arc",
+        "permanence": "permanent",
+        "sim_response": "flag peak > I_peak",
+        "trigger": "connect into low-ESR cap"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "no arc model",
+        "lumped thermal assumption",
+        "PCB trace heating not included"
+      ],
+      "netlist_template": "R{ref}_a {A} {Aint} {rc/2}\nR{ref}_b {B} {Bint} {rc/2}\nB{ref}_th 0 T{ref} I = i(V{ref}_s)^2*{rc}*(1+{alpha}*v(T{ref}))\nR{ref}_th T{ref} 0 {r_th}\nC{ref}_th T{ref} 0 {c_th}\n",
+      "spice_primitives": [
+        "R",
+        "B",
+        "C"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "tran"
+      ],
+      "valid_range": "DC, thermal time scales seconds to minutes"
+    },
+    "parameters": {
+      "alpha": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.0039,
+        "source_ref": "none",
+        "unit": "1/K"
+      },
+      "c_th": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 2,
+        "source_ref": "none",
+        "unit": "J/K"
+      },
+      "i_cont": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 30,
+        "max": 30,
+        "min": 0,
+        "source_ref": "S3",
+        "unit": "A"
+      },
+      "i_peak": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "L",
+        "default": 60,
+        "source_ref": "S3",
+        "unit": "A"
+      },
+      "r_th": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 60.6,
+        "source_ref": "none",
+        "unit": "K/W"
+      },
+      "rc": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.00055,
+        "max": 0.005,
+        "min": 0.0001,
+        "source_ref": "S3",
+        "unit": "ohm"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "A",
+        "package_terminal_rule": "pin 1 (OHMNI -X); KiCad pad 1 is at +X, map by pad name; polarity RESEARCH_REQUIRED",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "B",
+        "package_terminal_rule": "pin 2 (OHMNI +X)",
+        "role": "terminal"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "abs(i)<=I_cont",
+        "condition": "XT60; XT30 is 15",
+        "name": "current_continuous",
+        "source_ref": "S3",
+        "symbol": "I",
+        "unit": "A",
+        "value": 30
+      },
+      {
+        "check": "abs(i)<=I_peak and thermal tran ok",
+        "condition": "instantaneous; duration unspecified",
+        "name": "current_peak",
+        "source_ref": "S3",
+        "symbol": "Ipk",
+        "unit": "A",
+        "value": 60
+      },
+      {
+        "check": "Tamb+dT<=120",
+        "condition": "Tamb + rise",
+        "name": "temperature_max",
+        "source_ref": "S3",
+        "symbol": "T",
+        "unit": "degC",
+        "value": 120
+      }
+    ],
+    "sources": [
+      {
+        "date": "v1.2",
+        "id": "S3",
+        "org": "Changzhou Amass Electronics",
+        "title": "XT60-F and XT60-M specification, version 1.2",
+        "url": "https://mrsdprojects.ri.cmu.edu/2025teamb/wp-content/uploads/sites/84/2025/05/xt60.pdf",
+        "used_for": "30 A, 60 A peak, 0.55 mohm, 500 V DC, -20..120 C, 1000 cycles, 12 AWG"
+      },
+      {
+        "date": "V1.2",
+        "id": "S4",
+        "org": "Changzhou Amass Electronics",
+        "title": "XT30PW-M specification V1.2",
+        "url": "https://store.comet.bg/download-file.php?id=30571",
+        "used_for": "15 A, 30 A peak, 0.80 mohm, 500 V, 1000 cycles"
+      }
+    ],
+    "status": "partial"
+  },
+  "category": "connector",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "afd17f804f466651114d5a574574e1f3a1742cbf47512409de05d9bb7c93e889",
+    "line": 12196
+  },
+  "source_refs": [
+    {
+      "date": "v1.2",
+      "id": "S3",
+      "org": "Changzhou Amass Electronics",
+      "title": "XT60-F and XT60-M specification, version 1.2",
+      "url": "https://mrsdprojects.ri.cmu.edu/2025teamb/wp-content/uploads/sites/84/2025/05/xt60.pdf",
+      "used_for": "30 A, 60 A peak, 0.55 mohm, 500 V DC, -20..120 C, 1000 cycles, 12 AWG"
+    },
+    {
+      "date": "V1.2",
+      "id": "S4",
+      "org": "Changzhou Amass Electronics",
+      "title": "XT30PW-M specification V1.2",
+      "url": "https://store.comet.bg/download-file.php?id=30571",
+      "used_for": "15 A, 30 A peak, 0.80 mohm, 500 V, 1000 cycles"
+    }
+  ],
+  "status": "partial"
+}

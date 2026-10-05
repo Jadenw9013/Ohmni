@@ -1,0 +1,16 @@
+B2 Two supercapacitors in series, unbalanced leakage, with and without 10 kohm balancing resistors
+* 5 V across the stack; steady state v1 = 5*R1/(R1+R2).  R1=100k, R2=200k -> v1=1.667, v2=3.333 V (v2 > 2.5 V rating, flag 1)
+* flag f2 = 1 (V>VR) + 8 (V>2.8 V surge) = 9
+.include ohm_edlc.lib
+Vs in 0 5
+Xc1 in mid f1 ohm_edlc C0=10 ESR=0.02 RLK=100k VR=2.5
+Xc2 mid 0 f2 ohm_edlc C0=10 ESR=0.02 RLK=200k VR=2.5
+Rf1 f1 0 1meg
+Rf2 f2 0 1meg
+.op
+.control
+op
+print v(in,mid) v(mid) v(f1) v(f2)
+quit
+.endc
+.end

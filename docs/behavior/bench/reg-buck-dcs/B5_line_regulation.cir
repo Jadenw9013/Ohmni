@@ -1,0 +1,20 @@
+* BEH-REG-BUCK-DCS B5: line regulation, Vin stepped 6 V -> 12 V -> 17 V (rail of TPS62160 recommended range 3..17 V), 0.5 A load
+* Analytic: mean Vout is set by the comparator, independent of Vin to first order: Vout_mean ~ VSET - RINJ*IL_valley + ripple/2; expected 3.28 .. 3.32 V
+.include buck_core.inc
+Vin vin 0 PWL(0 6 80u 6 80.1u 12 160u 12 160.1u 17 240u 17)
+Ven en 0 3.3
+Xb vin 0 vout vout en BUCKCORE K=420n RHS=0.4 RLS=0.16 VSET=3.3 IQ=17u L=2.2u DCR=0.05
+Cout vout 0 22u ic=3.3
+Rl vout 0 6.6
+.options method=gear reltol=1e-3 abstol=1e-9 vntol=1e-5 gmin=1e-9
+.tran 1n 240u uic
+.control
+set noaskquit
+run
+meas tran v6 avg v(vout) from=60u to=79u
+meas tran v12 avg v(vout) from=140u to=159u
+meas tran v17 avg v(vout) from=220u to=239u
+print v6 v12 v17
+quit
+.endc
+.end

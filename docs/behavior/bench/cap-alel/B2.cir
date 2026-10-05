@@ -1,0 +1,21 @@
+B2 Aluminium electrolytic ripple heating: P = Irms^2 * ESR
+* 1 kHz sine, 1.4142 A peak (1.000 A rms) into 100u/ESR 0.3, 12 V DC bias via 1 kohm (blocks the 1 kHz ripple). P = 1.0^2*0.3 = 0.300 W
+.include ohm_alel.lib
+Vb vb 0 12
+Rb vb p 1k
+Iac 0 p SIN(0 1.41421356 1k)
+Xc p 0 f ohm_alel C0=100u ESR=0.3 ESL=15n RLK=1e12 VR=25
+Rf f 0 1meg
+Bp pw 0 V = (v(xc.a)-v(xc.c))*(v(xc.a)-v(xc.c))/0.3
+Bi iw 0 V = (v(xc.a)-v(xc.c))/0.3
+.ic v(p)=12 v(xc.a)=12 v(xc.c)=12 v(xc.b)=12
+.tran 5u 60m uic
+.control
+run
+meas tran pavg avg v(pw) from=40m to=60m
+meas tran irms rms v(iw) from=40m to=60m
+meas tran vmax max v(p) from=40m to=60m
+meas tran vmin min v(p) from=40m to=60m
+quit
+.endc
+.end

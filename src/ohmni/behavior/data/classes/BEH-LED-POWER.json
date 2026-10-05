@@ -1,0 +1,257 @@
+{
+  "applies_to": [
+    "OHM-085",
+    "OHM-086"
+  ],
+  "basis_values": [
+    "0.003/(N*Vt)*dT",
+    "ASSUMPTION",
+    "MFR_DATASHEET",
+    "fixed-point solve"
+  ],
+  "behavior_id": "BEH-LED-POWER",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "fixed-point solve",
+          "measure": "Tj",
+          "tolerance": 0.2,
+          "value": 83.378
+        }
+      ],
+      "file": "docs/behavior/bench/beh-led-power/B1_cc_selfheat.cir",
+      "measured_in_ngspice": 83.381,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "0.003/(N*Vt)*dT",
+          "measure": "I_hot/I_cold",
+          "tolerance": "20%",
+          "value": 1.55
+        }
+      ],
+      "file": "docs/behavior/bench/beh-led-power/B2_voltage_drive_runaway.cir",
+      "measured_in_ngspice": 1.56,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-085",
+      "OHM-086"
+    ],
+    "behavior_id": "BEH-LED-POWER",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "fixed-point solve",
+            "measure": "Tj",
+            "tolerance": 0.2,
+            "value": 83.378
+          }
+        ],
+        "file": "bench/beh-led-power/B1_cc_selfheat.cir",
+        "id": "B1",
+        "measured_in_ngspice": 83.381,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "0.003/(N*Vt)*dT",
+            "measure": "I_hot/I_cold",
+            "tolerance": "20%",
+            "value": 1.55
+          }
+        ],
+        "file": "bench/beh-led-power/B2_voltage_drive_runaway.cir",
+        "id": "B2",
+        "measured_in_ngspice": 1.56,
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "diode",
+    "confidence": {
+      "failure": "L",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "current rises with Tj",
+        "id": "thermal_runaway",
+        "permanence": "permanent",
+        "sim_response": "detect divergence, flag",
+        "trigger": "voltage drive"
+      },
+      {
+        "effect": "damage",
+        "id": "overtemp",
+        "permanence": "permanent",
+        "sim_response": "flag, open at 175 C",
+        "trigger": "Tj > 150 C"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "temperature is global in ngspice: self-heating needs an iteration loop",
+        "droop, flux, wavelength not part of the electrical solution",
+        "thermal pad isolation unverified",
+        "pulsed rating missing"
+      ],
+      "netlist_template": "D{ref} {A} {K} LED_XPE2\n.model LED_XPE2 D (IS=1.87e-14 N=3.0 RS=0.2233 CJO=300p VJ=1.0 M=0.33 BV=5 IBV=10u EG=3.9 XTI=3 TNOM=85)\n",
+      "spice_primitives": [
+        "D"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "tran"
+      ],
+      "valid_range": "0.1 to 1 A, Tj 25..150 C via electro-thermal iteration"
+    },
+    "parameters": {
+      "eta": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.3,
+        "unit": 1
+      },
+      "if_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 1.0,
+        "source_ref": "S8",
+        "unit": "A"
+      },
+      "rth_js": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 9,
+        "max": 15,
+        "min": 5,
+        "source_ref": "S8",
+        "unit": "K/W"
+      },
+      "rth_sa": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 30,
+        "unit": "K/W"
+      },
+      "tj_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 150,
+        "source_ref": "S8",
+        "unit": "C"
+      },
+      "vf_700mA_85C": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 3.05,
+        "source_ref": "S8",
+        "unit": "V"
+      },
+      "vr_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 5,
+        "source_ref": "S8",
+        "unit": "V"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "A",
+        "package_terminal_rule": "OHM-085 terminal 2 (3D spec); OHM-086 + wire pad",
+        "role": "anode"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "K",
+        "package_terminal_rule": "OHM-085 terminal 1 (3D spec); OHM-086 - wire pad",
+        "role": "cathode"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "TH",
+        "package_terminal_rule": "OHM-085 terminal 3; assumed electrically isolated (RESEARCH_REQUIRED)",
+        "role": "thermal"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "if <= 1.0",
+        "condition": "absolute max drive current",
+        "name": "forward_current",
+        "source_ref": "S8",
+        "symbol": "IF",
+        "unit": "A",
+        "value": 1.0
+      },
+      {
+        "check": "ta + (rth_js+rth_sa)*(1-eta)*vf*if <= 150",
+        "condition": "",
+        "name": "junction_temperature",
+        "source_ref": "S8",
+        "symbol": "Tj",
+        "unit": "C",
+        "value": 150
+      },
+      {
+        "check": "v_reverse <= 5",
+        "condition": "",
+        "name": "reverse_voltage",
+        "source_ref": "S8",
+        "symbol": "VR",
+        "unit": "V",
+        "value": 5
+      }
+    ],
+    "sources": [
+      {
+        "date": "Rev 8D",
+        "id": "S8",
+        "org": "Cree",
+        "title": "XLamp XP-E2 LEDs data sheet",
+        "url": "https://cdn1.components.ru/81/35081.pdf",
+        "used_for": "VF, Rth_js, Tj max, VR, ESD, flux vs I and T"
+      }
+    ],
+    "status": "partial"
+  },
+  "category": "diode",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "063deea0cbaaccdc4ce26db76d25e108f917edc2bde4e8e27790fe81dd745bea",
+    "line": 4961
+  },
+  "source_refs": [
+    {
+      "date": "Rev 8D",
+      "id": "S8",
+      "org": "Cree",
+      "title": "XLamp XP-E2 LEDs data sheet",
+      "url": "https://cdn1.components.ru/81/35081.pdf",
+      "used_for": "VF, Rth_js, Tj max, VR, ESD, flux vs I and T"
+    }
+  ],
+  "status": "partial"
+}

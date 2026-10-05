@@ -1,0 +1,25 @@
+* BEH-IC-DRIVER-DIP16 B3: L293D H-bridge on a 24 ohm resistive 'motor', VCC1=5 V, VCC2=12 V; 1A=1 (1Y high), 2A=0 (2Y low), both enables high.
+* Analytic (linear Ron model): Vmotor = 12*24/(24+1.6+1.5) = 10.63 V, I = 0.443 A ; reverse (1A=0,2A=1) gives -10.63 V ; EN low -> motor 0 V.  Check vs datasheet at 1 A: VOH = VCC2-1.4..1.8, VOL = 1.2..1.8 V.
+.include drivers.lib
+Vc1 vcc1 0 5
+Vc2 vcc2 0 12
+Ven en 0 pwl(0 5 3m 5 3.001m 0)
+Va1 a1 0 pwl(0 5 1.5m 5 1.501m 0 4m 0)
+Va2 a2 0 pwl(0 0 1.5m 0 1.501m 5 4m 5)
+X1 a1 en y1 vcc1 vcc2 0 l293d_ch
+X2 a2 en y2 vcc1 vcc2 0 l293d_ch
+Rm y1 y2 24
+Rp1 y1 0 1meg
+Rp2 y2 0 1meg
+.tran 5u 4m
+.control
+set noaskquit
+run
+let vm = v(y1)-v(y2)
+meas tran vfwd find vm at=1m
+meas tran vrev find vm at=2.5m
+meas tran voff find vm at=3.8m
+echo RESULT vmotor_fwd=$&vfwd vmotor_rev=$&vrev vmotor_disabled=$&voff
+quit
+.endc
+.end

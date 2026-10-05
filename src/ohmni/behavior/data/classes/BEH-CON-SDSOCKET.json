@@ -1,0 +1,395 @@
+{
+  "applies_to": [
+    "OHM-179",
+    "OHM-180"
+  ],
+  "basis_values": [
+    "3.3-I*Rout",
+    "ASSUMPTION",
+    "MFR_DATASHEET",
+    "divider"
+  ],
+  "behavior_id": "BEH-CON-SDSOCKET",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "divider",
+          "measure": "v_cd_open",
+          "tolerance": "0.01%",
+          "value": 3.299845
+        },
+        {
+          "basis": "divider",
+          "measure": "v_cd_closed",
+          "tolerance": "0.01%",
+          "value": 7.021e-06
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-sd/B1.cir",
+      "measured_in_ngspice": "3.299845; 7.0213e-6",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "3.3-I*Rout",
+          "measure": "vcc_loaded",
+          "tolerance": "0.1%",
+          "value": 3.2
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-sd/B2.cir",
+      "measured_in_ngspice": "3.200000",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-179",
+      "OHM-180"
+    ],
+    "behavior_id": "BEH-CON-SDSOCKET",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "divider",
+            "measure": "v_cd_open",
+            "tolerance": "0.01%",
+            "value": 3.299845
+          },
+          {
+            "basis": "divider",
+            "measure": "v_cd_closed",
+            "tolerance": "0.01%",
+            "value": 7.021e-06
+          }
+        ],
+        "file": "bench/beh-con-sd/B1.cir",
+        "id": "B1",
+        "measured_in_ngspice": "3.299845; 7.0213e-6",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "3.3-I*Rout",
+            "measure": "vcc_loaded",
+            "tolerance": "0.1%",
+            "value": 3.2
+          }
+        ],
+        "file": "bench/beh-con-sd/B2.cir",
+        "id": "B2",
+        "measured_in_ngspice": "3.200000",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "connector",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "rail collapse or droop",
+        "id": "weak_regulator",
+        "permanence": "recoverable",
+        "sim_response": "SUPPLY_COLLAPSE flag when vcc<2.7",
+        "trigger": "card current > regulator limit"
+      },
+      {
+        "effect": "bus undefined",
+        "id": "no_pullup",
+        "permanence": "recoverable",
+        "sim_response": "ERC flag",
+        "trigger": "CMD/DAT floating"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "ideal_components",
+      "known_limitations": [
+        "SD protocol is L3, not simulated",
+        "no card pin capacitance",
+        "UHS 1.8 V not sourced",
+        "switch pad locations unverified"
+      ],
+      "netlist_template": "R{ref}_k {Pk_board} {Pk_card} {rc}\nS{ref}_cd {CD_A} {CD_B} {CARD_PRESENT} 0 SWCD\n",
+      "spice_primitives": [
+        "R",
+        "S",
+        "B"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "tran"
+      ],
+      "valid_range": "DC and logic-speed bring-up; no signal-integrity model"
+    },
+    "parameters": {
+      "i_card_default": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.1,
+        "source_ref": "S16",
+        "unit": "A"
+      },
+      "i_card_highspeed": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.2,
+        "source_ref": "S16",
+        "unit": "A"
+      },
+      "i_contact": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.5,
+        "source_ref": "S13",
+        "unit": "A"
+      },
+      "r_pullup_bus": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 47000,
+        "max": 100000,
+        "min": 10000,
+        "source_ref": "S16",
+        "unit": "ohm"
+      },
+      "r_switch_on": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.1,
+        "source_ref": "none",
+        "unit": "ohm"
+      },
+      "rc": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.05,
+        "max": 0.1,
+        "min": 0.01,
+        "source_ref": "S13",
+        "unit": "ohm"
+      },
+      "vcc_nom": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 3.3,
+        "max": 3.6,
+        "min": 2.7,
+        "source_ref": "S16",
+        "unit": "V"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "bidirectional",
+        "name": "DAT3_CS",
+        "package_terminal_rule": "SD pin 1 / microSD pin 2",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "CMD_DI",
+        "package_terminal_rule": "SD pin 2 / microSD pin 3",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "VSS",
+        "package_terminal_rule": "SD pins 3 and 6 / microSD pin 6",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "power_out",
+        "name": "VDD",
+        "package_terminal_rule": "SD pin 4 / microSD pin 4",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "input",
+        "name": "CLK_SCLK",
+        "package_terminal_rule": "SD pin 5 / microSD pin 5",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "DAT0_DO",
+        "package_terminal_rule": "SD pin 7 / microSD pin 7",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "DAT1",
+        "package_terminal_rule": "SD pin 8 / microSD pin 8",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "DAT2",
+        "package_terminal_rule": "SD pin 9 / microSD pin 1",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "CD_A",
+        "package_terminal_rule": "card-detect switch contact A; footprint pad RESEARCH_REQUIRED",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "CD_B",
+        "package_terminal_rule": "card-detect switch contact B",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "WP_A",
+        "package_terminal_rule": "full-size SD only",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "WP_B",
+        "package_terminal_rule": "full-size SD only",
+        "role": "terminal"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "abs(i)<=0.5",
+        "condition": "per contact",
+        "name": "contact_current",
+        "source_ref": "S13",
+        "symbol": "I",
+        "unit": "A",
+        "value": 0.5
+      },
+      {
+        "check": "2.7<=vcc<=3.6",
+        "condition": "card, min 2.7",
+        "name": "supply_voltage",
+        "source_ref": "S16",
+        "symbol": "Vcc",
+        "unit": "V",
+        "value": 3.6
+      },
+      {
+        "check": "regulator_ilim>=0.2",
+        "condition": "high speed, 1 s average; 500 mA other functions",
+        "name": "card_current",
+        "source_ref": "S16",
+        "symbol": "Icard",
+        "unit": "A",
+        "value": 0.2
+      }
+    ],
+    "sources": [
+      {
+        "date": "n/a",
+        "id": "S12",
+        "org": "Hirose",
+        "title": "DM3 Series microSD card connectors",
+        "url": "https://engineering.purdue.edu/ece477/Archive/2008/Fall/F08-Grp02/datasheets/e60900232.pdf",
+        "used_for": "microSD 8-pin names, 0.5 A, 125 V AC, 40 mohm, 10000 cycles, detect switch NO"
+      },
+      {
+        "date": "n/a",
+        "id": "S13",
+        "org": "WERI (Wurth family listing 693 063 010 911)",
+        "title": "SD Card Connector push-pull with card detection",
+        "url": "https://www.farnell.com/datasheets/2725610.pdf",
+        "used_for": "0.5 A, 100 VAC, 100 mohm, 10000 cycles, CD and WP switch states"
+      },
+      {
+        "date": "n/a",
+        "id": "S14",
+        "org": "Molex",
+        "title": "Memory card sockets 987652-0671",
+        "url": "https://supplychain.molex.com/content/dam/molex/molex-dot-com/en_us/pdf/datasheets/987652-0671.pdf",
+        "used_for": "0.5 A, 500 V AC, 100 mohm, 500-10000 cycles, CD on most models"
+      },
+      {
+        "date": "n/a",
+        "id": "S15",
+        "org": "Cactus Technologies",
+        "title": "An Introduction To SD Card Interface",
+        "url": "https://www.cactus-tech.com/files/cactus-tech.com/documents/whitepapers/An Introduction To SD Card Interface.pdf",
+        "used_for": "SD mode pin table, 2.7-3.3 V"
+      },
+      {
+        "date": "Rev 1.0",
+        "id": "S16",
+        "org": "Transcend",
+        "title": "SDXC card series technical specification Rev. 1.0",
+        "url": "https://www.secomp.de/data/i2cmsdata/pdf/xcont/902/249/4/58234608.pdf",
+        "used_for": "SD/SPI pin table, 2.7-3.6 V, 15/100/200/500 mA, pull-ups 10-100 kohm, pin 1 10-90 kohm"
+      }
+    ],
+    "status": "partial"
+  },
+  "category": "connector",
+  "fidelity": "ideal_components",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "c75e0254d49b2ea498a638715972acdf16ba34497c048712f197c1794a85bcfc",
+    "line": 12642
+  },
+  "source_refs": [
+    {
+      "date": "n/a",
+      "id": "S12",
+      "org": "Hirose",
+      "title": "DM3 Series microSD card connectors",
+      "url": "https://engineering.purdue.edu/ece477/Archive/2008/Fall/F08-Grp02/datasheets/e60900232.pdf",
+      "used_for": "microSD 8-pin names, 0.5 A, 125 V AC, 40 mohm, 10000 cycles, detect switch NO"
+    },
+    {
+      "date": "n/a",
+      "id": "S13",
+      "org": "WERI (Wurth family listing 693 063 010 911)",
+      "title": "SD Card Connector push-pull with card detection",
+      "url": "https://www.farnell.com/datasheets/2725610.pdf",
+      "used_for": "0.5 A, 100 VAC, 100 mohm, 10000 cycles, CD and WP switch states"
+    },
+    {
+      "date": "n/a",
+      "id": "S14",
+      "org": "Molex",
+      "title": "Memory card sockets 987652-0671",
+      "url": "https://supplychain.molex.com/content/dam/molex/molex-dot-com/en_us/pdf/datasheets/987652-0671.pdf",
+      "used_for": "0.5 A, 500 V AC, 100 mohm, 500-10000 cycles, CD on most models"
+    },
+    {
+      "date": "n/a",
+      "id": "S15",
+      "org": "Cactus Technologies",
+      "title": "An Introduction To SD Card Interface",
+      "url": "https://www.cactus-tech.com/files/cactus-tech.com/documents/whitepapers/An Introduction To SD Card Interface.pdf",
+      "used_for": "SD mode pin table, 2.7-3.3 V"
+    },
+    {
+      "date": "Rev 1.0",
+      "id": "S16",
+      "org": "Transcend",
+      "title": "SDXC card series technical specification Rev. 1.0",
+      "url": "https://www.secomp.de/data/i2cmsdata/pdf/xcont/902/249/4/58234608.pdf",
+      "used_for": "SD/SPI pin table, 2.7-3.6 V, 15/100/200/500 mA, pull-ups 10-100 kohm, pin 1 10-90 kohm"
+    }
+  ],
+  "status": "partial"
+}

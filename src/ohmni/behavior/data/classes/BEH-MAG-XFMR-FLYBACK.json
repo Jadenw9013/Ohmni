@@ -1,0 +1,368 @@
+{
+  "applies_to": [
+    "OHM-053"
+  ],
+  "basis_values": [
+    "1/2 Llk Ipk^2 f Vc/(Vc-Vor)",
+    "ASSUMPTION",
+    "DERIVED",
+    "Vin D sqrt(R/(2 Lp f))",
+    "Vin+Vor+Ipk sqrt(Llk/C)",
+    "same formula, realistic parasitics"
+  ],
+  "behavior_id": "BEH-MAG-XFMR-FLYBACK",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "Vin D sqrt(R/(2 Lp f))",
+          "measure": "Vout",
+          "tolerance": 0.03,
+          "value": 21.466
+        }
+      ],
+      "file": "docs/behavior/bench/mag_flyback/B1_dcm_flyback.cir",
+      "measured_in_ngspice": 21.274,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "Vin+Vor+Ipk sqrt(Llk/C)",
+          "measure": "Vdrain_pk",
+          "tolerance": 0.05,
+          "value": 184.4
+        }
+      ],
+      "file": "docs/behavior/bench/mag_flyback/B2_leakage_spike_unclamped.cir",
+      "measured_in_ngspice": 183.1,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "1/2 Llk Ipk^2 f Vc/(Vc-Vor)",
+          "measure": "P_clamp",
+          "tolerance": 0.15,
+          "value": 0.2529
+        }
+      ],
+      "file": "docs/behavior/bench/mag_flyback/B3_rcd_clamp_lowC.cir",
+      "measured_in_ngspice": 0.2323,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3b",
+      "expected": [
+        {
+          "basis": "same formula, realistic parasitics",
+          "measure": "P_clamp",
+          "tolerance": 0.15,
+          "value": 0.3528
+        }
+      ],
+      "file": "docs/behavior/bench/mag_flyback/B3b_rcd_clamp_realC.cir",
+      "measured_in_ngspice": 0.1679,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-053"
+    ],
+    "behavior_id": "BEH-MAG-XFMR-FLYBACK",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "Vin D sqrt(R/(2 Lp f))",
+            "measure": "Vout",
+            "tolerance": 0.03,
+            "value": 21.466
+          }
+        ],
+        "file": "bench/mag_flyback/B1_dcm_flyback.cir",
+        "id": "B1",
+        "measured_in_ngspice": 21.274,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "Vin+Vor+Ipk sqrt(Llk/C)",
+            "measure": "Vdrain_pk",
+            "tolerance": 0.05,
+            "value": 184.4
+          }
+        ],
+        "file": "bench/mag_flyback/B2_leakage_spike_unclamped.cir",
+        "id": "B2",
+        "measured_in_ngspice": 183.1,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "1/2 Llk Ipk^2 f Vc/(Vc-Vor)",
+            "measure": "P_clamp",
+            "tolerance": 0.15,
+            "value": 0.2529
+          }
+        ],
+        "file": "bench/mag_flyback/B3_rcd_clamp_lowC.cir",
+        "id": "B3",
+        "measured_in_ngspice": 0.2323,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "same formula, realistic parasitics",
+            "measure": "P_clamp",
+            "tolerance": 0.15,
+            "value": 0.3528
+          }
+        ],
+        "file": "bench/mag_flyback/B3b_rcd_clamp_realC.cir",
+        "id": "B3b",
+        "measured_in_ngspice": 0.1679,
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "magnetics",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "L",
+      "ratings": "L"
+    },
+    "failure_modes": [
+      {
+        "effect": "current runaway",
+        "id": "saturation",
+        "permanence": "recoverable",
+        "sim_response": "ERROR, XFMR_SAT",
+        "trigger": "Ipk > ISATM"
+      },
+      {
+        "effect": "switch avalanche",
+        "id": "leakage_spike",
+        "permanence": "permanent",
+        "sim_response": "ERROR over 0.9*Vds_max",
+        "trigger": "no clamp"
+      },
+      {
+        "effect": "loss of isolation (safety)",
+        "id": "isolation_breakdown",
+        "permanence": "permanent",
+        "sim_response": "ERROR",
+        "trigger": "barrier voltage above rating"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "no core loss",
+        "aux winding recipe untested",
+        "leakage all on primary",
+        "ring-down depends on parasitics",
+        "pin map unknown"
+      ],
+      "netlist_template": ".include xfmr.lib\nX{ref} {PRI_DOT} {PRI_END} {SEC_DOT} {SEC_END} XFMR_SAT LP={lp} N={turns_ratio} LLK={llk} RP={rpri} RS={rsec} CIW={ciw} ISATM={isat_pri} DROP=0.3 LR=0.05\n",
+      "spice_primitives": [
+        "L",
+        "R",
+        "C",
+        "E",
+        "F",
+        "S",
+        "D"
+      ],
+      "valid_analyses": [
+        "op",
+        "tran"
+      ],
+      "valid_range": "below saturation; switching converter transient; no core loss"
+    },
+    "parameters": {
+      "ciw": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 1e-11,
+        "max": 2e-10,
+        "min": 1e-12,
+        "source_ref": "S3",
+        "unit": "F"
+      },
+      "isat_pri": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 3.0,
+        "max": 20,
+        "min": 0.1,
+        "source_ref": "S10",
+        "unit": "A"
+      },
+      "llk": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 2e-06,
+        "max": 5e-05,
+        "min": 1e-08,
+        "source_ref": "S23",
+        "unit": "H"
+      },
+      "lp": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.0001,
+        "max": 0.005,
+        "min": 1e-06,
+        "source_ref": "S23",
+        "tolerance": 0.1,
+        "unit": "H"
+      },
+      "rpri": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.02,
+        "max": 5,
+        "min": 0.001,
+        "source_ref": "S23",
+        "unit": "ohm"
+      },
+      "rsec": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.04,
+        "max": 5,
+        "min": 0.001,
+        "source_ref": "S23",
+        "unit": "ohm"
+      },
+      "turns_ratio": {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "default": 0.5,
+        "max": 100,
+        "min": 0.01,
+        "source_ref": "S10",
+        "unit": "ratio"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "PRI_DOT",
+        "package_terminal_rule": "RESEARCH_REQUIRED (3D spec pin list unreliable)",
+        "role": "primary_dot"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "PRI_END",
+        "package_terminal_rule": "RESEARCH_REQUIRED",
+        "role": "primary_end"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "SEC_DOT",
+        "package_terminal_rule": "RESEARCH_REQUIRED",
+        "role": "secondary_dot"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "SEC_END",
+        "package_terminal_rule": "RESEARCH_REQUIRED",
+        "role": "secondary_end"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "AUX_DOT",
+        "package_terminal_rule": "RESEARCH_REQUIRED",
+        "role": "aux_dot_optional"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "AUX_END",
+        "package_terminal_rule": "RESEARCH_REQUIRED",
+        "role": "aux_end_optional"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "max(abs(i_pri))<=0.8*ISATM",
+        "condition": "ASSUMPTION",
+        "name": "peak_current",
+        "source_ref": "S10",
+        "symbol": "Ipk",
+        "unit": "A",
+        "value": 3.0
+      },
+      {
+        "check": "<= 0.8*Vds_max",
+        "condition": "Vin+Vor+Ipk*sqrt(Llk/C)",
+        "name": "drain_stress",
+        "source_ref": "S10",
+        "symbol": "Vds",
+        "unit": "V",
+        "value": "derived"
+      }
+    ],
+    "sources": [
+      {
+        "date": "2023-10-19",
+        "id": "S10",
+        "org": "Wurth Elektronik",
+        "title": "Design considerations for flyback transformer (Digital WE Days 2023)",
+        "url": "https://we-online.com/files/pdf1/design-considerations-for-flyback-transformer.pdf",
+        "used_for": "gap energy storage, Isat requirement, leakage spike"
+      },
+      {
+        "date": "not shown",
+        "id": "S23",
+        "org": "Wurth Elektronik",
+        "title": "750311691 pulse transformer listing (RS)",
+        "url": "https://uk.rs-online.com/web/p/pulse-transformers/1634318",
+        "used_for": "order of magnitude of WE-FB parameters"
+      }
+    ],
+    "status": "partial"
+  },
+  "category": "magnetics",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "edff5c850d1d23ba2a108cb464ef2273d540573f45d8bfab7146118d82b3e5ab",
+    "line": 2973
+  },
+  "source_refs": [
+    {
+      "date": "2023-10-19",
+      "id": "S10",
+      "org": "Wurth Elektronik",
+      "title": "Design considerations for flyback transformer (Digital WE Days 2023)",
+      "url": "https://we-online.com/files/pdf1/design-considerations-for-flyback-transformer.pdf",
+      "used_for": "gap energy storage, Isat requirement, leakage spike"
+    },
+    {
+      "date": "not shown",
+      "id": "S23",
+      "org": "Wurth Elektronik",
+      "title": "750311691 pulse transformer listing (RS)",
+      "url": "https://uk.rs-online.com/web/p/pulse-transformers/1634318",
+      "used_for": "order of magnitude of WE-FB parameters"
+    }
+  ],
+  "status": "partial"
+}

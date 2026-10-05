@@ -1,0 +1,274 @@
+{
+  "applies_to": [
+    "OHM-087",
+    "OHM-088",
+    "OHM-089",
+    "OHM-090"
+  ],
+  "basis_values": [
+    "0.124*Ion",
+    "0.249*Ion",
+    "MFR_DATASHEET"
+  ],
+  "behavior_id": "BEH-DISP-LEDARRAY",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "0.124*Ion",
+          "measure": "I_led_avg",
+          "tolerance": "1%",
+          "value": 0.0024802
+        }
+      ],
+      "file": "docs/behavior/bench/beh-led-mux/B1_matrix_scan.cir",
+      "measured_in_ngspice": 0.0024804,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "0.249*Ion",
+          "measure": "I_digit_avg",
+          "tolerance": "1%",
+          "value": 0.0047023
+        }
+      ],
+      "file": "docs/behavior/bench/beh-led-mux/B2_digit_mux4.cir",
+      "measured_in_ngspice": 0.0047023,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-087",
+      "OHM-088",
+      "OHM-089",
+      "OHM-090"
+    ],
+    "behavior_id": "BEH-DISP-LEDARRAY",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "0.124*Ion",
+            "measure": "I_led_avg",
+            "tolerance": "1%",
+            "value": 0.0024802
+          }
+        ],
+        "file": "bench/beh-led-mux/B1_matrix_scan.cir",
+        "id": "B1",
+        "measured_in_ngspice": 0.0024804,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "0.249*Ion",
+            "measure": "I_digit_avg",
+            "tolerance": "1%",
+            "value": 0.0047023
+          }
+        ],
+        "file": "bench/beh-led-mux/B2_digit_mux4.cir",
+        "id": "B2",
+        "measured_in_ngspice": 0.0047023,
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "display",
+    "confidence": {
+      "failure": "L",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "N times average current",
+        "id": "scan_stall",
+        "permanence": "permanent",
+        "sim_response": "flag SCAN_STALL",
+        "trigger": "scan stops, one digit on"
+      },
+      {
+        "effect": "degrade/open",
+        "id": "seg_overcurrent",
+        "permanence": "permanent",
+        "sim_response": "flag; open at 2x",
+        "trigger": "i beyond rating"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "pin maps not obtained from opened documents",
+        "no ghosting beyond CJO",
+        "no light model",
+        "driver ICs not modeled"
+      ],
+      "netlist_template": "D{ref}_{seg} {SEG} {COM} LED_RED\nS{ref}_{dig} {COM} 0 {gate} 0 SWMUX\n",
+      "spice_primitives": [
+        "D",
+        "S"
+      ],
+      "valid_analyses": [
+        "op",
+        "tran"
+      ],
+      "valid_range": "per segment up to DC rating; scan peak per pulsed rating"
+    },
+    "parameters": {
+      "common_type": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": "cathode",
+        "source_ref": "S17",
+        "unit": "enum"
+      },
+      "if_dc_seg": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.03,
+        "source_ref": "S14",
+        "unit": "A"
+      },
+      "if_peak_seg": {
+        "basis": "MFR_DATASHEET",
+        "condition": "1/10 duty, 0.1 ms",
+        "confidence": "M",
+        "default": 0.16,
+        "source_ref": "S14",
+        "unit": "A"
+      },
+      "pd_seg": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.105,
+        "source_ref": "S14",
+        "unit": "W"
+      },
+      "vf_seg": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 2.0,
+        "max": 2.5,
+        "source_ref": "S14",
+        "unit": "V"
+      },
+      "vr_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 5,
+        "source_ref": "S14",
+        "unit": "V"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "SEG_x",
+        "package_terminal_rule": "per MPN pin map (RESEARCH_REQUIRED); conventional maps in per-entry sections are ASSUMPTION",
+        "role": "segment_or_row_or_col"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "COM_n",
+        "package_terminal_rule": "per MPN; common anode or common cathode",
+        "role": "common"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "i_avg <= 0.030",
+        "condition": "",
+        "name": "seg_dc",
+        "source_ref": "S14",
+        "symbol": "IF",
+        "unit": "A",
+        "value": 0.03
+      },
+      {
+        "check": "i_peak <= 0.160",
+        "condition": "1/10 duty, 0.1 ms",
+        "name": "seg_peak",
+        "source_ref": "S14",
+        "symbol": "IFM",
+        "unit": "A",
+        "value": 0.16
+      },
+      {
+        "check": "vf*i <= 0.105",
+        "condition": "",
+        "name": "seg_power",
+        "source_ref": "S14",
+        "symbol": "PD",
+        "unit": "W",
+        "value": 0.105
+      },
+      {
+        "check": "v_reverse <= 5",
+        "condition": "",
+        "name": "reverse",
+        "source_ref": "S14",
+        "symbol": "VR",
+        "unit": "V",
+        "value": 5
+      }
+    ],
+    "sources": [
+      {
+        "date": "2003-01-09",
+        "id": "S14",
+        "org": "Kingbright",
+        "title": "SC56-11EWA, DSAA5198 V.2",
+        "url": "https://www.komponenten.es.aau.dk/fileadmin/komponenten/Data_Sheet/LCD/SC56-11EWA.pdf",
+        "used_for": "segment ratings and VF"
+      },
+      {
+        "date": "2013-05-13",
+        "id": "S15",
+        "org": "Kingbright",
+        "title": "TC23-11CGKWA V.4A",
+        "url": "https://docs.rs-online.com/41ca/0900766b813c5dd9.pdf",
+        "used_for": "matrix ratings"
+      }
+    ],
+    "status": "partial"
+  },
+  "category": "display",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "cf68ce8631b247d0c799dba4214b41a217fa61d653af91b12f453c98578510fb",
+    "line": 5229
+  },
+  "source_refs": [
+    {
+      "date": "2003-01-09",
+      "id": "S14",
+      "org": "Kingbright",
+      "title": "SC56-11EWA, DSAA5198 V.2",
+      "url": "https://www.komponenten.es.aau.dk/fileadmin/komponenten/Data_Sheet/LCD/SC56-11EWA.pdf",
+      "used_for": "segment ratings and VF"
+    },
+    {
+      "date": "2013-05-13",
+      "id": "S15",
+      "org": "Kingbright",
+      "title": "TC23-11CGKWA V.4A",
+      "url": "https://docs.rs-online.com/41ca/0900766b813c5dd9.pdf",
+      "used_for": "matrix ratings"
+    }
+  ],
+  "status": "partial"
+}

@@ -1,0 +1,16 @@
+B2 low-frequency -3 dB corner set by magnetizing inductance (same transformer as B1, Lp ASSUMED 1 H)
+* Expected: fL = Req/(2*pi*Lm), Req=(Rs+RP)||(RS+RL)=640||640=320 ohm, Lm=Lp-Llk=0.995 H -> 51.2 Hz
+.include xfmr.lib
+V1 in 0 DC 0 AC 1
+Rsrc in p1 600
+X1 p1 0 s1 0 XFMR_K LP=1 N=1 LLK=5m RP=40 RS=40 CIW=100p
+RL s1 0 600
+.ac dec 400 5 100k
+.control
+run
+meas ac vmid find vm(s1) at=3k
+* target = 0.70711 * vmid(3k) = 0.70711*0.466823 = 0.33009 (hard-coded, vmid printed above)
+meas ac fl when vm(s1)=0.33009 rise=1
+quit
+.endc
+.end

@@ -1,0 +1,12 @@
+* B1: LCD backlight A-K string modelled as ONE effective diode anchored at Vf=4.1 V @ 100 mA (ASSUMPTION, module datasheet not opened), 5 V rail, series resistor R=(5-4.1)/0.1=9 ohm
+* N=6 (about two InGaN-class junctions in series, ASSUMPTION), RS=2 ohm
+.model BL D (IS=1.2188e-12 N=6 RS=2 CJO=500p VJ=1.0 BV=5 IBV=10u TNOM=27)
+V5 vcc 0 5
+R1 vcc a 9
+D1 a 0 BL
+.control
+op
+let ibl = (5-v(a))/9
+print v(a) ibl
+.endc
+.end

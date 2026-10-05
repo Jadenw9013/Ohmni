@@ -1,0 +1,18 @@
+B1 Aluminium electrolytic impedance at 120 Hz and 100 kHz (RC + ESL)
+* C=100u ESR=0.3 ESL=15n. |Z(120)| = sqrt(ESR^2+(1/(w C))^2) ; |Z(100k)| = sqrt(ESR^2+(w L)^2)
+.include ohm_alel.lib
+Iac 0 p dc 0 ac 1
+Rb p 0 1e9
+Xc p 0 f ohm_alel C0=100u ESR=0.3 ESL=15n RLK=1e12
+Rf f 0 1meg
+.ac lin 1 120 120
+.control
+run
+let z120 = vm(p)
+print z120
+ac lin 1 100k 100k
+let z100k = vm(p)
+print z100k
+quit
+.endc
+.end

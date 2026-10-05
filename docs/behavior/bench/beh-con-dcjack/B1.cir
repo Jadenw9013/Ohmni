@@ -1,0 +1,16 @@
+* B1 BEH-CON-DCJACK contact drop and self-heating at 2.5 A (CUI PJ-102A rev 1.07: 24 V, 2.5 A, 30 mohm)
+* Rth ASSUMPTION: 30 K rise at rated current. alpha 0.0039/K ASSUMPTION (copper-alloy contact)
+.param I=2.5 R0=30m alpha=0.0039 Rth={30/(I*I*R0)}
+Is 0 n {I}
+Rcon n 0 {R0}
+Bp 0 t I = {I*I*R0}*(1+{alpha}*v(t))
+Rt t 0 {Rth}
+.control
+op
+print v(n) v(t)
+let e_v = 2.5*30e-3
+let e_dt = 30/(1-0.0039*30)
+let e_p = 2.5*2.5*30e-3
+print e_v e_dt e_p
+.endc
+.end

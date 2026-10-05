@@ -1,0 +1,18 @@
+* B1 3.5 mm jack tip switch (TN-T, normally closed; opens on plug insertion)
+* Plug absent: V(tn) = 1*8/(8+10+0.03) = 0.44371 V ; Plug present (from 1 ms): switch open, V(tn) ~ 0
+.model SWNC SW(vt=-0.5 vh=0.1 ron=0.03 roff=1G)
+Vamp amp0 0 1
+Rsrc amp0 t 10
+Vplug plug 0 PWL(0 0 1m 0 1.01m 1)
+S1 t tn 0 plug SWNC
+Rspk tn 0 8
+Rhp t 0 1G
+.tran 10u 2m
+.control
+run
+meas tran v_before find v(tn) at=0.5m
+meas tran v_after find v(tn) at=1.9m
+print v_before v_after
+quit
+.endc
+.end

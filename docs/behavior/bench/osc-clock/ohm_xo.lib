@@ -1,0 +1,11 @@
+* OHMNI packaged clock oscillator, L2 behavioural. Pins: vdd gnd oe out.
+* f0 nominal Hz, ppm total static offset (init tol + temp + aging, user-set), tstart start-up delay (s),
+* icc operating supply current (A), icc_sb standby current (A), rout CMOS output resistance, tr rise/fall time, vmin min supply for operation, vth_oe enable threshold fraction of VDD.
+.subckt ohm_xo vdd gnd oe out f0=10meg ppm=0 tstart=5u icc=4.2m icc_sb=1u rout=30 tr=1n vmin=2.25 vth_oe=0.7
+.param fa={f0*(1+ppm*1e-6)} pr={1/fa} 
+Vclk clk gnd PULSE(0 1 {tstart} {tr} {tr} {0.5*pr-tr} {pr})
+* enabled when supply valid AND (oe floating-high or above threshold)
+Bdrv drv gnd V = (V(vdd,gnd)>{vmin}) ? ((V(oe,gnd)>{vth_oe}*V(vdd,gnd)) ? V(vdd,gnd)*V(clk,gnd) : 0) : 0
+Ro drv out {rout}
+Bi vdd gnd I = (V(vdd,gnd)>{vmin}) ? ((V(oe,gnd)>{vth_oe}*V(vdd,gnd)) ? {icc} : {icc_sb}) : 0
+.ends ohm_xo

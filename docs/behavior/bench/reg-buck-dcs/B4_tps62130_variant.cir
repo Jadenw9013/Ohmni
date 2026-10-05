@@ -1,0 +1,29 @@
+* BEH-REG-BUCK-DCS B4: TPS62130-style parameters (K = 400 ns, RDS(on) HS 90 mOhm / LS 40 mOhm typ, VQFN-16), 12 V -> 3.3 V, 2 A, L = 1 uH
+* Analytic: fsw(lossless) = 1/K = 2.50 MHz ("typically 2.5 MHz" in the datasheet text); dIL = (Vin-Vo)*K*Vo/Vin/L = 8.7*(400n*0.275)/1u = 0.957 A
+* Efficiency analytic (CCM): Ploss = 4*(0.275*0.09+0.725*0.04+0.05)... see run log
+.include buck_core.inc
+Vin vin 0 12
+Ven en 0 3.3
+Xb vin 0 vout vout en BUCKCORE K=400n RHS=0.09 RLS=0.04 VSET=3.3 IQ=17u L=1u DCR=0.02
+Cout vout 0 22u ic=3.3
+Rl vout 0 1.65
+.options method=gear reltol=1e-3 abstol=1e-9 vntol=1e-5 gmin=1e-9
+.tran 1n 60u uic
+.control
+set noaskquit
+run
+meas tran tper trig v(xb.q) val=0.5 rise=5 targ v(xb.q) val=0.5 rise=55 from=30u
+let il = (v(xb.vx)-v(vout))/0.02
+meas tran ilmax max il from=45u to=60u
+meas tran ilmin min il from=45u to=60u
+let pin = -12*i(vin)
+let pout = v(vout)*v(vout)/1.65
+meas tran pin_avg avg pin from=40u to=60u
+meas tran pout_avg avg pout from=40u to=60u
+let fsw = 50/tper
+let dil = ilmax-ilmin
+let eta = pout_avg/pin_avg
+print fsw dil eta
+quit
+.endc
+.end

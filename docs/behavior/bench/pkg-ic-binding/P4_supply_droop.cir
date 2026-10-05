@@ -1,0 +1,30 @@
+* BEH-PKG-IC-BINDING P4: first droop on the die rail after a current step, limited by the package lead inductance L and on-die/near-die capacitance Cd (no external cap can help in the first ns)
+* Rail ideal 3.3 V -> lead L -> die node with Cd = 1 nF; load step dI = 20 mA, 100 ps edge. Analytic peak droop for an ideal step into LC: dI*sqrt(L/Cd) (finite rise slightly lower)
+*  QFP-28 corner L = 4.5 nH -> 42.43 mV ; QFN-20 L = 1.119 nH -> 21.15 mV ; CSP single-row L = 0.40 nH -> 12.65 mV
+* (Cd value is an ASSUMPTION used only to show scaling; Z0 = sqrt(L/Cd) is the quantity that matters)
+Vr1 r 0 3.3
+L1 r d1 4.5n
+C1 d1 0 1n ic=3.3
+Rd1 d1 0 1Meg
+I1 d1 0 PWL(0 0 5n 0 5.1n 0.02 60n 0.02)
+L2 r d2 1.119n
+C2 d2 0 1n ic=3.3
+Rd2 d2 0 1Meg
+I2 d2 0 PWL(0 0 5n 0 5.1n 0.02 60n 0.02)
+L3 r d3 0.4n
+C3 d3 0 1n ic=3.3
+Rd3 d3 0 1Meg
+I3 d3 0 PWL(0 0 5n 0 5.1n 0.02 60n 0.02)
+.tran 5p 60n uic
+.control
+set noaskquit
+run
+let dr1 = 3.3-v(d1)
+let dr2 = 3.3-v(d2)
+let dr3 = 3.3-v(d3)
+meas tran peak_qfp max dr1 from=5n to=60n
+meas tran peak_qfn max dr2 from=5n to=60n
+meas tran peak_csp max dr3 from=5n to=60n
+quit
+.endc
+.end

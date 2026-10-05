@@ -1,0 +1,17 @@
+* BEH-TRN-MOSFET B1: IRFZ44N low-side switch, 12 V into 2 ohm, Vgs = 10 V
+* Analytic: Id = Vdd/(RL + Rds_on), Vds = Id*Rds_on ; Rds_on (fit) = 17.5 mohm (datasheet MAX at Vgs=10 V, Id=25 A, IRFZ44NPbF)
+*   Id = 12/(2+0.0175) = 5.949 A ; Vds = 0.1041 V.  Tolerance 3 % (Vds not 25 A so slightly lower Rds than at 25 A; model is level-1)
+.include /home/claude/behavior/bench/trn_mosfet/models_mosfet_r6fit.lib
+Vdd vdd 0 12
+RL vdd d 2
+Vg g 0 10
+X1 d g 0 IRFZ44N_R6 BVDSS=55
+.control
+set noaskquit
+op
+print v(d)
+let id = (12-v(d))/2
+print id
+quit
+.endc
+.end

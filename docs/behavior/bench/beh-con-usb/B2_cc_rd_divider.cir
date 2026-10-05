@@ -1,0 +1,31 @@
+* B2 USB-C CC divider: Rp (source pull-up) against Rd 5.1k (sink). vCC = Vp*Rd/(Rd+Rp)
+* Rp to 5 V: 56k default, 22k 1.5 A, 10k 3 A.  Rp to 3.3 V: 36k, 12k, 4.7k.  (S1, S2)
+* Case 4: shared single Rd on a CC1+CC2 tied port with Ra 1k from the cable's VCONN wire: Rd||Ra
+.param Rd=5.1k
+Vp5 p5 0 5
+Vp3 p3 0 3.3
+Rp56 p5 c56 56k
+Rp22 p5 c22 22k
+Rp10 p5 c10 10k
+Rq36 p3 d36 36k
+Rq12 p3 d12 12k
+Rq47 p3 d47 4.7k
+Rd1 c56 0 {Rd}
+Rd2 c22 0 {Rd}
+Rd3 c10 0 {Rd}
+Rd4 d36 0 {Rd}
+Rd5 d12 0 {Rd}
+Rd6 d47 0 {Rd}
+* sink port with ONE shared Rd on tied CC pins, cable VCONN wire carries Ra 1k to ground
+Rp56b p5 cs 56k
+Rdsh cs 0 {Rd}
+Rra cs 0 1k
+* Rd missing: CC floats to Rp pull-up only (DFP sees open)
+Rp56c p5 co 56k
+Rleak co 0 1G
+.control
+op
+print v(c56) v(c22) v(c10) v(d36) v(d12) v(d47) v(cs) v(co)
+quit
+.endc
+.end

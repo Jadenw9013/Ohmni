@@ -1,0 +1,265 @@
+{
+  "applies_to": [
+    "OHM-149"
+  ],
+  "basis_values": [
+    "Chebyshev",
+    "MFR_DATASHEET",
+    "datasheet IL",
+    "pad into 100 ohm"
+  ],
+  "behavior_id": "BEH-FREQ-SAW",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "datasheet IL",
+          "measure": "il_fc_dB",
+          "tolerance": 0.05,
+          "value": 4.5
+        },
+        {
+          "basis": "Chebyshev",
+          "measure": "bw3_Hz",
+          "tolerance": 100000,
+          "value": 9340000
+        }
+      ],
+      "file": "docs/behavior/bench/saw-bpf/B1.cir",
+      "measured_in_ngspice": "4.500 dB; 9.336 MHz",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "pad into 100 ohm",
+          "measure": "il_100ohm_dB",
+          "tolerance": 0.01,
+          "value": 5.0115
+        }
+      ],
+      "file": "docs/behavior/bench/saw-bpf/B2.cir",
+      "measured_in_ngspice": "5.0115 dB",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-149"
+    ],
+    "behavior_id": "BEH-FREQ-SAW",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "datasheet IL",
+            "measure": "il_fc_dB",
+            "tolerance": 0.05,
+            "value": 4.5
+          },
+          {
+            "basis": "Chebyshev",
+            "measure": "bw3_Hz",
+            "tolerance": 100000,
+            "value": 9340000
+          }
+        ],
+        "file": "bench/saw-bpf/B1.cir",
+        "id": "B1",
+        "measured_in_ngspice": "4.500 dB; 9.336 MHz",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "pad into 100 ohm",
+            "measure": "il_100ohm_dB",
+            "tolerance": 0.01,
+            "value": 5.0115
+          }
+        ],
+        "file": "bench/saw-bpf/B2.cir",
+        "id": "B2",
+        "measured_in_ngspice": "5.0115 dB",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "frequency",
+    "confidence": {
+      "failure": "L",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "L"
+    },
+    "failure_modes": [
+      {
+        "effect": "damage",
+        "id": "overpower",
+        "permanence": "permanent",
+        "sim_response": "flag",
+        "trigger": "Pin > 10 dBm"
+      },
+      {
+        "effect": "finger damage",
+        "id": "esd",
+        "permanence": "permanent",
+        "sim_response": "handling note",
+        "trigger": "ESD"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "rejection far steeper than a real SAW",
+        "no feed-through floor",
+        "no temperature drift",
+        "no nonlinearity"
+      ],
+      "netlist_template": "X{ref} {IN} {OUT} {GND} ohm_saw\n",
+      "spice_primitives": [
+        "R",
+        "L",
+        "C"
+      ],
+      "valid_analyses": [
+        "ac"
+      ],
+      "valid_range": "within a few bandwidths of f0, 50 ohm terminations"
+    },
+    "parameters": {
+      "Z0": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 50,
+        "max": 50,
+        "min": 50,
+        "source_ref": "S15",
+        "tolerance": 0,
+        "unit": "ohm"
+      },
+      "bw": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 8000000,
+        "max": 10000000,
+        "min": 6000000,
+        "source_ref": "S15",
+        "tolerance": 0,
+        "unit": "Hz"
+      },
+      "f0": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 869000000,
+        "max": 873000000,
+        "min": 865000000,
+        "source_ref": "S15",
+        "tolerance": 4000000,
+        "unit": "Hz"
+      },
+      "il_db": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 4.5,
+        "max": 4.5,
+        "min": 3,
+        "source_ref": "S15",
+        "tolerance": 0,
+        "unit": "dB"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "IN",
+        "package_terminal_rule": "pad 2 (middle of -X row)",
+        "role": "input"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "OUT",
+        "package_terminal_rule": "pad 5 (middle of +X row)",
+        "role": "output"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "GND",
+        "package_terminal_rule": "pads 1, 3, 4, 6 tied together",
+        "role": "terminal"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "Pin <= 10 dBm",
+        "condition": "typical specification, source power",
+        "name": "input_power",
+        "source_ref": "S15",
+        "symbol": "Pin",
+        "unit": "dBm",
+        "value": 10
+      },
+      {
+        "check": "T in range",
+        "condition": "",
+        "name": "operating_temperature",
+        "source_ref": "S15",
+        "symbol": "Top",
+        "unit": "C",
+        "value": "-30..80"
+      }
+    ],
+    "sources": [
+      {
+        "date": "not shown",
+        "id": "S15",
+        "org": "Abracon",
+        "title": "AFS869S3 SAW filter datasheet",
+        "url": "https://www.mouser.com/datasheet/2/3/AFS869S3-46075.pdf",
+        "used_for": "869 MHz, IL 4.5 dB, ripple 1.5, 35 dB, 50 ohm, pins 2/5, temperature, 10 dBm, ESD warning"
+      },
+      {
+        "date": "n/a",
+        "id": "S16",
+        "org": "DigiKey / Lion Circuits (distributors)",
+        "title": "AFS869S3-T product pages",
+        "url": "https://www.digikey.at/en/products/detail/abracon-llc/AFS869S3-T/675442",
+        "used_for": "bandwidth 8 MHz, 6 pins, 10 V DC (low trust)"
+      }
+    ],
+    "status": "partial"
+  },
+  "category": "frequency",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "44993bd69fb2afb26f2e111e123a6efff39ceb0a426fd4dd4f832e4ac53bc429",
+    "line": 10465
+  },
+  "source_refs": [
+    {
+      "date": "not shown",
+      "id": "S15",
+      "org": "Abracon",
+      "title": "AFS869S3 SAW filter datasheet",
+      "url": "https://www.mouser.com/datasheet/2/3/AFS869S3-46075.pdf",
+      "used_for": "869 MHz, IL 4.5 dB, ripple 1.5, 35 dB, 50 ohm, pins 2/5, temperature, 10 dBm, ESD warning"
+    },
+    {
+      "date": "n/a",
+      "id": "S16",
+      "org": "DigiKey / Lion Circuits (distributors)",
+      "title": "AFS869S3-T product pages",
+      "url": "https://www.digikey.at/en/products/detail/abracon-llc/AFS869S3-T/675442",
+      "used_for": "bandwidth 8 MHz, 6 pins, 10 V DC (low trust)"
+    }
+  ],
+  "status": "partial"
+}

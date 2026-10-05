@@ -1,0 +1,14 @@
+* B2 headphone path: Rc 30 mohm (tip) and 30 mohm (sleeve), headphone 32 ohm, ideal source
+* Expected: v(t) = (32+0.03)/(32.06) = 0.999064 ; v(t)-v(s) = 32/32.06 = 0.998129
+Vin in 0 DC 0 AC 1
+Rct in t 30m
+Rhp t s 32
+Rcs s 0 30m
+.ac lin 3 500 1.5k
+.control
+run
+meas ac g find vm(t) at=1k
+print vm(t)-vm(s)
+quit
+.endc
+.end

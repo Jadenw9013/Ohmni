@@ -1,0 +1,17 @@
+* BEH-IC-PKGBIND B3: ground-lead inductance bounce, 8 outputs switching 4 mA each in 5 ns through a shared GND lead.
+* DIP lead 5 nH vs TSSOP lead 2 nH (AN-1205 ranges: MDIP 3..7, SSOP 1.3..2.9 nH; midpoints).
+* Analytic: V = L*dI/dt = L * (8*4mA)/5ns = 6.4e6 A/s * L -> DIP 32.0 mV ; TSSOP 12.8 mV
+Ia 0 g1 pwl(0 0 10n 0 15n 32m 100n 32m)
+Lg1 g1 0 5n
+Ib 0 g2 pwl(0 0 10n 0 15n 32m 100n 32m)
+Lg2 g2 0 2n
+.tran 0.1n 60n
+.control
+set noaskquit
+run
+meas tran vb_dip max v(g1) from=11n to=14n
+meas tran vb_tssop max v(g2) from=11n to=14n
+echo RESULT vb_dip=$&vb_dip vb_tssop=$&vb_tssop
+quit
+.endc
+.end

@@ -1,0 +1,35 @@
+* BEH-TRN-BJT B3c: hFE spread corners of the 2N3904 fit. Corner rule: BF -> BF*k and ISE -> ISE/k (scales hFE by ~k over the whole range)
+* k=0.58 (min corner) and k=1.73 (max corner) = datasheet min/typ and max/typ at 10 mA (100/173, 300/173).
+* Datasheet bands (2N3903/D Rev 9, Vce=1 V): 0.1mA 40-300, 1mA 70-300, 10mA 100-300, 50mA 60-300, 100mA 30-300.
+* Expected: min corner at 10 mA = 100 (tolerance 3 %), max corner at 10 mA = 300 (tolerance 3 %), and ALL ten points inside the bands.
+.model QMIN NPN(IS=1.4693e-14 BF=188.5 NF=1 VAF=100 IKF=0.061592 ISE=4.398e-14 NE=1.331 BR=4 NR=1 RB=12.769 RE=1.1905 RC=1 CJE=9.4e-12 VJE=0.75 MJE=0.33 CJC=6.7e-12 VJC=0.75 MJC=0.33 TF=4.775e-10 XTF=2 ITF=0.4 VTF=4 TR=5e-08 XTB=1.5 EG=1.11 XTI=3)
+.model QMAX NPN(IS=1.4693e-14 BF=562.3 NF=1 VAF=100 IKF=0.061592 ISE=1.4746e-14 NE=1.331 BR=4 NR=1 RB=12.769 RE=1.1905 RC=1 CJE=9.4e-12 VJE=0.75 MJE=0.33 CJC=6.7e-12 VJC=0.75 MJC=0.33 TF=4.775e-10 XTF=2 ITF=0.4 VTF=4 TR=5e-08 XTB=1.5 EG=1.11 XTI=3)
+Qa ca ba 0 QMIN
+Vca ca 0 1
+Vba ba 0 0.6
+Qb cb bb 0 QMAX
+Vcb cb 0 1
+Vbb bb 0 0.6
+.control
+set noaskquit
+dc Vba 0.45 0.98 0.0025
+let ica = -i(Vca)
+let iba = -i(Vba)
+let hfea = ica/iba
+meas dc min100u find hfea when ica=100u
+meas dc min1m find hfea when ica=1m
+meas dc min10m find hfea when ica=10m
+meas dc min50m find hfea when ica=50m
+meas dc min100m find hfea when ica=100m
+dc Vbb 0.45 0.98 0.0025
+let icb = -i(Vcb)
+let ibb = -i(Vbb)
+let hfeb = icb/ibb
+meas dc max100u find hfeb when icb=100u
+meas dc max1m find hfeb when icb=1m
+meas dc max10m find hfeb when icb=10m
+meas dc max50m find hfeb when icb=50m
+meas dc max100m find hfeb when icb=100m
+quit
+.endc
+.end

@@ -1,0 +1,40 @@
+* BEH-TRN-MOSFET B3: gate-charge test of IRFZ44N_R6 (Infineon IRFZ44NPbF: Qg 63 nC, Qgs 14 nC, Qgd 23 nC at Vds=44 V, Id=25 A, Vgs=10 V; typical values)
+* Circuit: ideal 25 A current load (inductive), freewheel diode, constant-current gate drive Ig = 1 mA, so Q = Ig*t.
+* Device A: library subcircuit (nonlinear Cgd).  Device B: same silicon model but constant Cgd = Crss = 88 pF (what a naive Level-1 + Cgs/Cgd model does).
+* Analytic (datasheet): Qg(10 V) = 63 nC -> t = 63 us at 1 mA ; Qgd = 23 nC (time between Vds = 40 V and Vds = 1 V, i.e. the Miller plateau).
+* Expected A: Qgd 23 nC (tolerance 10 %, fitted to it); Qg 63 nC (tolerance 25 %: Cgs is only Ciss-Crss = 1382 pF, constant, so Qg comes out LOW - known limitation, see parts/R6.md).
+* Expected B: Qgd ~ Crss*44 V = 3.9 nC (+Vds-fall ripple), i.e. about 5 times too small (known failure of constant-capacitance models).
+.include /home/claude/behavior/bench/trn_mosfet/models_mosfet_r6fit.lib
+.model NM_B NMOS(LEVEL=1 VTO=3.0 KP=10.17 RD=0.0015 RS=0.0015)
+Vdd vdd 0 44
+Iload1 vdd d1 25
+Dfw1 d1 vdd DFW
+Iload2 vdd d2 25
+Dfw2 d2 vdd DFW
+.model DFW D(IS=1e-12 N=1 RS=0.001)
+Ig1 0 g1 1m
+Ig2 0 g2 1m
+X1 d1 g1 0 IRFZ44N_R6 BVDSS=55
+Rgb g2 gi2 3
+Mb d2 gi2 0 0 NM_B
+Cgsb gi2 0 1382p
+Cgdb gi2 d2 88p
+.tran 0.1u 150u uic
+.control
+set noaskquit
+run
+* gate voltage reaches 10 V -> total charge = 1 mA * t ; limit the drive when Vgs hits 10 V by post-processing
+meas tran tq1 when v(g1)=9.99 rise=1
+meas tran tq2 when v(g2)=9.99 rise=1
+meas tran tvds1_a when v(d1)=40 fall=1
+meas tran tvds1_b when v(d1)=1 fall=1
+meas tran tvds2_a when v(d2)=40 fall=1
+meas tran tvds2_b when v(d2)=1 fall=1
+let qg_a_nC = tq1*1m*1e9
+let qg_b_nC = tq2*1m*1e9
+let qgd_a_nC = (tvds1_b-tvds1_a)*1m*1e9
+let qgd_b_nC = (tvds2_b-tvds2_a)*1m*1e9
+print qg_a_nC qg_b_nC qgd_a_nC qgd_b_nC
+quit
+.endc
+.end

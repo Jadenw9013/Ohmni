@@ -1,0 +1,13 @@
+* RES-FIXED B4: power derating arithmetic (Vishay CRCW0603: P70=0.125 W, Tfilm max 155 C), Tamb=100 C
+* Expected P_allowed = 0.125*(155-100)/(155-70) = 0.080882 W ; Vmax = min(75, sqrt(P*R)) for R=10k -> 28.4 V
+.param P70=0.125 TMAX=155 TKNEE=70 TAMB=100 R=10k ULIM=75
+Bp p 0 V={P70*max(0,min(1,(TMAX-TAMB)/(TMAX-TKNEE)))}
+Bv v 0 V={min(ULIM, sqrt(V(p)*R))}
+.control
+set noaskquit
+op
+print v(p)
+print v(v)
+quit
+.endc
+.end

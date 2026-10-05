@@ -1,0 +1,224 @@
+{
+  "applies_to": [
+    "OHM-148"
+  ],
+  "basis_values": [
+    "ASSUMPTION",
+    "MFR_DATASHEET",
+    "fs*sqrt(1+C1/(C0+CL)), CL=9.5pF"
+  ],
+  "behavior_id": "BEH-FREQ-CERRES",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "fs*sqrt(1+C1/(C0+CL)), CL=9.5pF",
+          "measure": "f_Hz",
+          "tolerance": 2400,
+          "value": 7995760
+        }
+      ],
+      "file": "docs/behavior/bench/xtal-resonator/B1.cir",
+      "measured_in_ngspice": "7995797 Hz; 90pct at 0.31 ms",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-148"
+    ],
+    "behavior_id": "BEH-FREQ-CERRES",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "fs*sqrt(1+C1/(C0+CL)), CL=9.5pF",
+            "measure": "f_Hz",
+            "tolerance": 2400,
+            "value": 7995760
+          }
+        ],
+        "file": "bench/xtal-resonator/B1.cir",
+        "id": "B1",
+        "measured_in_ngspice": "7995797 Hz; 90pct at 0.31 ms",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "frequency",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "L"
+    },
+    "failure_modes": [
+      {
+        "effect": "frequency pulled",
+        "id": "extra_caps",
+        "permanence": "recoverable",
+        "sim_response": "recompute CL",
+        "trigger": "external C added"
+      },
+      {
+        "effect": "no oscillation",
+        "id": "pin2_open",
+        "permanence": "recoverable",
+        "sim_response": "ERC flag",
+        "trigger": "center pin floating"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "C0 and C1 are assumptions",
+        "no drive-level or voltage rating found",
+        "ST gm_crit invalid for large C0"
+      ],
+      "netlist_template": "X{ref} {P1} {P3} ohm_xtal L1={L1} C1={C1} R1={R1} C0={C0}\nCb1_{ref} {P1} {GND} {Cbuilt}\nCb2_{ref} {P3} {GND} {Cbuilt}\n",
+      "spice_primitives": [
+        "R",
+        "L",
+        "C"
+      ],
+      "valid_analyses": [
+        "ac",
+        "tran"
+      ],
+      "valid_range": "-20..+80 C; Cbuilt only, no external caps"
+    },
+    "parameters": {
+      "C0": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": "30e-12",
+        "max": "50e-12",
+        "min": "10e-12",
+        "source_ref": "S13",
+        "tolerance": 0.5,
+        "unit": "F"
+      },
+      "C1": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 8e-13,
+        "max": "2e-12",
+        "min": 2e-13,
+        "source_ref": "S13",
+        "tolerance": 0.5,
+        "unit": "F"
+      },
+      "Cbuilt": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": "15e-12",
+        "max": "47e-12",
+        "min": "15e-12",
+        "source_ref": "S13",
+        "tolerance": 0.2,
+        "unit": "F"
+      },
+      "R1": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 25,
+        "max": 25,
+        "min": 5,
+        "source_ref": "S13",
+        "tolerance": 0,
+        "unit": "ohm"
+      },
+      "f_nom": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 8000000,
+        "max": 10000000,
+        "min": 3400000,
+        "source_ref": "S13",
+        "tolerance": 0.005,
+        "unit": "Hz"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "P1",
+        "package_terminal_rule": "pin 1 (-X)",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "GND",
+        "package_terminal_rule": "pin 2 (center), built-in capacitor return",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "P3",
+        "package_terminal_rule": "pin 3 (+X)",
+        "role": "terminal"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "T in range",
+        "condition": "CSTLS_G",
+        "name": "operating_temperature",
+        "source_ref": "S13",
+        "symbol": "Top",
+        "unit": "C",
+        "value": "-20..80"
+      }
+    ],
+    "sources": [
+      {
+        "date": "2020-04-01 (as printed; may be out of date)",
+        "id": "S13",
+        "org": "Murata",
+        "title": "CSTLS8M00G53-B0 datasheet (CERALOCK with built-in load capacitors)",
+        "url": "https://static.chipdip.ru/lib/150/DOC036150746.pdf",
+        "used_for": "tolerance, stability, aging, 15 pF, R1 25 ohm"
+      },
+      {
+        "date": "n/a",
+        "id": "S14",
+        "org": "Murata",
+        "title": "CSTLS_G series page",
+        "url": "https://www.murata.com/en-us/products/timingdevice/ceralock/overview/lineup/cstlsg",
+        "used_for": "3.40-10.00 MHz, +/-0.5 %, -20..+80 C, 47 pF type, discontinued flag"
+      }
+    ],
+    "status": "partial"
+  },
+  "category": "frequency",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "d336ec8039f896dd469d5f3a4e3b39a948061859c537d56e12af7cb1240d2e08",
+    "line": 10346
+  },
+  "source_refs": [
+    {
+      "date": "2020-04-01 (as printed; may be out of date)",
+      "id": "S13",
+      "org": "Murata",
+      "title": "CSTLS8M00G53-B0 datasheet (CERALOCK with built-in load capacitors)",
+      "url": "https://static.chipdip.ru/lib/150/DOC036150746.pdf",
+      "used_for": "tolerance, stability, aging, 15 pF, R1 25 ohm"
+    },
+    {
+      "date": "n/a",
+      "id": "S14",
+      "org": "Murata",
+      "title": "CSTLS_G series page",
+      "url": "https://www.murata.com/en-us/products/timingdevice/ceralock/overview/lineup/cstlsg",
+      "used_for": "3.40-10.00 MHz, +/-0.5 %, -20..+80 C, 47 pF type, discontinued flag"
+    }
+  ],
+  "status": "partial"
+}

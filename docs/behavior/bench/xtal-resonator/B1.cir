@@ -1,0 +1,25 @@
+B1 3-pin ceramic resonator (Murata CSTLS8M00G53 class: R1<=25 ohm, built-in 15p+15p; C1=0.8p, C0=30p are ASSUMPTION) in a Pierce inverter with NO external caps. Expect f ~ fs*sqrt(1+C1/(C0+7.5p)) = 8.000 MHz (loop-corrected), start-up << crystal.
+.include ohm_xtal.lib
+.param gm=2m imax=0.3m rout=5k rf=1meg cp=4p
+X1 xi xo ohm_xtal L1=0.505286631966346m C1=0.8p R1=25 C0=30p
+Cb1 xi 0 15p
+Cb2 xo 0 15p
+Cps1 xi 0 {cp}
+Cps2 xo 0 {cp}
+Rf xi xo {rf}
+Bamp xo 0 I = {imax}*tanh({gm}*v(xi)/{imax})
+Rout xo 0 {rout}
+Ikick 0 xi PULSE(0 20u 0 1n 1n 10n 1)
+.tran 1n 500u
+.control
+run
+let vx = v(xi)
+meas tran vpkf MAX vx FROM=450u TO=500u
+let thr = 0.9*vpkf
+meas tran tstart WHEN vx=thr RISE=1
+meas tran tper TRIG vx VAL=0 RISE=3200 TARG vx VAL=0 RISE=3400
+let fmeas = 200/tper
+print fmeas
+quit
+.endc
+.end

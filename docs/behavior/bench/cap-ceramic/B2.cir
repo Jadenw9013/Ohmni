@@ -1,0 +1,17 @@
+B2 MLCC impedance, ESR/ESL, self-resonant frequency
+* 10uF, ESR 5 mohm, ESL 0.7 nH, no bias. f0 = 1/(2 pi sqrt(L C)) = 1.9023 MHz, |Z|min = ESR
+.include ohm_mlcc.lib
+Iac 0 p dc 0 ac 1
+Xc p 0 f ohm_mlcc C0=10u V0=1e6 ESR=5m ESL=0.7n RLK=1e12 VR=100
+Rf f 0 1meg
+.ac dec 400 1k 100meg
+.control
+run
+let zm = vm(p)
+meas ac zmin min zm
+meas ac fres when zm=zmin
+meas ac zhf find zm at=100meg
+echo f0_expected=1.9024meg
+quit
+.endc
+.end

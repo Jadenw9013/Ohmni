@@ -1,0 +1,310 @@
+{
+  "applies_to": [
+    "OHM-172"
+  ],
+  "basis_values": [
+    "ASSUMPTION",
+    "CONSENSUS",
+    "I*R",
+    "MFR_DATASHEET",
+    "P Rth/(1-P alpha Rth)",
+    "divider"
+  ],
+  "behavior_id": "BEH-CON-DCJACK",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "I*R",
+          "measure": "v_drop",
+          "tolerance": "0.1%",
+          "value": 0.075
+        },
+        {
+          "basis": "P Rth/(1-P alpha Rth)",
+          "measure": "dT",
+          "tolerance": "0.1%",
+          "value": 33.975
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-dcjack/B1.cir",
+      "measured_in_ngspice": "0.075 V; 33.975 K",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "divider",
+          "measure": "vload_unplugged",
+          "tolerance": "0.01%",
+          "value": 8.9865
+        },
+        {
+          "basis": "divider",
+          "measure": "vload_plugged",
+          "tolerance": "0.01%",
+          "value": 11.9964
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-dcjack/B2.cir",
+      "measured_in_ngspice": "8.98652; 11.9964",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-172"
+    ],
+    "behavior_id": "BEH-CON-DCJACK",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "I*R",
+            "measure": "v_drop",
+            "tolerance": "0.1%",
+            "value": 0.075
+          },
+          {
+            "basis": "P Rth/(1-P alpha Rth)",
+            "measure": "dT",
+            "tolerance": "0.1%",
+            "value": 33.975
+          }
+        ],
+        "file": "bench/beh-con-dcjack/B1.cir",
+        "id": "B1",
+        "measured_in_ngspice": "0.075 V; 33.975 K",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "divider",
+            "measure": "vload_unplugged",
+            "tolerance": "0.01%",
+            "value": 8.9865
+          },
+          {
+            "basis": "divider",
+            "measure": "vload_plugged",
+            "tolerance": "0.01%",
+            "value": 11.9964
+          }
+        ],
+        "file": "bench/beh-con-dcjack/B2.cir",
+        "id": "B2",
+        "measured_in_ngspice": "8.98652; 11.9964",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "connector",
+    "confidence": {
+      "failure": "L",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "contact heating",
+        "id": "overcurrent",
+        "permanence": "permanent",
+        "sim_response": "flag; R(T) feedback",
+        "trigger": "I>2.5 A"
+      },
+      {
+        "effect": "dielectric margin",
+        "id": "overvoltage",
+        "permanence": "recoverable",
+        "sim_response": "flag",
+        "trigger": "V>24 V"
+      },
+      {
+        "effect": "Rc grows",
+        "id": "wear",
+        "permanence": "permanent",
+        "sim_response": "Rc multiplier",
+        "trigger": ">5000 cycles"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "no wear growth",
+        "no arc or inductive kick",
+        "switch partner unverified",
+        "Rth is a calibration assumption"
+      ],
+      "netlist_template": "R{ref}_tip {PLUG_TIP} {TIP} {rc_total/2}\nR{ref}_slv {PLUG_SLV} {SLEEVE} {rc_total/2}\nS{ref}_sw {SWITCH} {SWPARTNER} {PLUGINV} 0 SWNC\n",
+      "spice_primitives": [
+        "R",
+        "S",
+        "B"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "tran"
+      ],
+      "valid_range": "DC to kHz; resistive only"
+    },
+    "parameters": {
+      "center_pin_dia": {
+        "basis": "CONSENSUS",
+        "confidence": "M",
+        "default": 2.0,
+        "max": 2.5,
+        "min": 2.0,
+        "source_ref": "S2",
+        "unit": "mm"
+      },
+      "i_rated": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 2.5,
+        "max": 2.5,
+        "min": 0,
+        "source_ref": "S1",
+        "unit": "A"
+      },
+      "r_switch_on": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.05,
+        "max": 0.2,
+        "min": 0.01,
+        "source_ref": "none",
+        "unit": "ohm"
+      },
+      "rc_total": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.03,
+        "max": 0.05,
+        "min": 0.001,
+        "source_ref": "S1",
+        "tolerance": "spec limit",
+        "unit": "ohm"
+      },
+      "switch_partner": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": "TIP",
+        "source_ref": "none",
+        "unit": "enum"
+      },
+      "v_rated": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 24,
+        "max": 24,
+        "min": 0,
+        "source_ref": "S1",
+        "unit": "V"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "TIP",
+        "package_terminal_rule": "P1 center pin",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "SLEEVE",
+        "package_terminal_rule": "P2 sleeve",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "SWITCH",
+        "package_terminal_rule": "P3 sense switch; partner contact (TIP or SLEEVE) RESEARCH_REQUIRED",
+        "role": "terminal"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "abs(i)<=2.5",
+        "condition": "continuous",
+        "name": "current",
+        "source_ref": "S1",
+        "symbol": "I",
+        "unit": "A",
+        "value": 2.5
+      },
+      {
+        "check": "v<=24",
+        "condition": "S1 rev 1.07; S2 older copy says 16",
+        "name": "voltage",
+        "source_ref": "S1",
+        "symbol": "V",
+        "unit": "V",
+        "value": 24
+      },
+      {
+        "check": "Tamb+dT<=85",
+        "condition": "Tamb + rise",
+        "name": "temperature_max",
+        "source_ref": "S1",
+        "symbol": "T",
+        "unit": "degC",
+        "value": 85
+      }
+    ],
+    "sources": [
+      {
+        "date": "03/11/2025",
+        "id": "S1",
+        "org": "CUI Devices (Same Sky)",
+        "title": "PJ-102A DC Power Jack datasheet rev 1.07",
+        "url": "https://www.sameskydevices.com/product/resource/pj-102a.pdf",
+        "used_for": "24 Vdc, 2.5 A, 30 mohm, 5000 cycles, IR, temperature"
+      },
+      {
+        "date": "n/a",
+        "id": "S2",
+        "org": "CUI (hosted by UConn course page)",
+        "title": "PJ-102A DC Power Jack Datasheet (older copy)",
+        "url": "https://scl.engr.uconn.edu/courses/f2015-ece3411/preliminaries/DC_Power_Jack_Datasheet.pdf",
+        "used_for": "16 Vdc, 50/30 mohm, 500 Vac, 9.0 mm insertion depth, center pin 2.0, 3 terminals"
+      }
+    ],
+    "status": "partial"
+  },
+  "category": "connector",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "6db597618a322c385f8bc06733049e5ade4bdbfd9a6224d0085c15434ac2c442",
+    "line": 12048
+  },
+  "source_refs": [
+    {
+      "date": "03/11/2025",
+      "id": "S1",
+      "org": "CUI Devices (Same Sky)",
+      "title": "PJ-102A DC Power Jack datasheet rev 1.07",
+      "url": "https://www.sameskydevices.com/product/resource/pj-102a.pdf",
+      "used_for": "24 Vdc, 2.5 A, 30 mohm, 5000 cycles, IR, temperature"
+    },
+    {
+      "date": "n/a",
+      "id": "S2",
+      "org": "CUI (hosted by UConn course page)",
+      "title": "PJ-102A DC Power Jack Datasheet (older copy)",
+      "url": "https://scl.engr.uconn.edu/courses/f2015-ece3411/preliminaries/DC_Power_Jack_Datasheet.pdf",
+      "used_for": "16 Vdc, 50/30 mohm, 500 Vac, 9.0 mm insertion depth, center pin 2.0, 3 terminals"
+    }
+  ],
+  "status": "partial"
+}

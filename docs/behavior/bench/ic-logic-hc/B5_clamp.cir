@@ -1,0 +1,15 @@
+* BEH-IC-LOGIC-HC B5: input clamp. Vcc = 4.5 V, input driven to 7 V through 1 kohm (overvoltage 2.5 V). Absolute-max check: |IIK| <= 20 mA, VI <= Vcc+0.5 V.
+* Analytic: diode Is=1e-14 n=1 rs=5 at 27 C (Vt=25.85 mV): fixed-point solution of (7-4.5-Vd)/1000 = I, Vd = Vt ln(I/Is+1)+5 I  ->  I = 1.820 mA, Vpin = 5.180 V (diode parameters are an ASSUMPTION; only the circuit consistency is checked)
+.include hc_gates.lib
+Vcc vcc 0 4.5
+Vin src 0 7
+Rs src in 1k
+X1 in y vcc 0 hc_inv
+.control
+set noaskquit
+op
+let iclamp = (7-v(in))/1000*1000
+echo RESULT vpin=$&v(in) iclamp_mA=$&iclamp
+quit
+.endc
+.end

@@ -1,0 +1,25 @@
+* OHMNI BEH-MAG-ETHMAG: one 10/100BASE-T channel, 1CT:1CT transformer + line-side common-mode choke (behavioural_approximation, linear)
+* PHY side: tdp tdm tdct ; line (RJ45) side: lp lm lct.  OCL = total OCL of a full winding (tdp-tdm), LLK = leakage, RW = DCR of a full winding,
+* CIW = interwinding C (lumped as two caps tdp-lxp, tdm-lxm), CMC_L/CMC_LS = line-side CMC parameters.
+.include cmc.lib
+.subckt ETH_CH tdp tdm tdct lp lm lct OCL=350u LLK=0.4u RW=0.5 CIW=15p CMC_L=100u CMC_LS=0.1u CMC_RDC=0.1 CMC_C0=1p CMC_RPAR=1e9
+.param lh={OCL/4}
+.param kk={sqrt(1-LLK/OCL)}
+Ra1 tdp a1x {RW/2}
+LA1 a1x tdct {lh}
+Ra2 tdct a2x {RW/2}
+LA2 a2x tdm {lh}
+Rb1 lxp b1x {RW/2}
+LB1 b1x lct {lh}
+Rb2 lct b2x {RW/2}
+LB2 b2x lxm {lh}
+K1 LA1 LA2 {kk}
+K2 LA1 LB1 {kk}
+K3 LA1 LB2 {kk}
+K4 LA2 LB1 {kk}
+K5 LA2 LB2 {kk}
+K6 LB1 LB2 {kk}
+Ciw1 tdp lxp {CIW/2}
+Ciw2 tdm lxm {CIW/2}
+Xcmc lxp lp lxm lm CMC_K L={CMC_L} LS={CMC_LS} RDC={CMC_RDC} C0={CMC_C0} RPAR={CMC_RPAR}
+.ends

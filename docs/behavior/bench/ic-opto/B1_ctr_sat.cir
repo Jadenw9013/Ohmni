@@ -1,0 +1,19 @@
+* BEH-IC-OPTO-DIP6 B1: transfer and saturation. Vcc=5 V, RL=470 ohm collector load, LED current set by 5 V and series resistor.
+* (a) IF~2 mA (1.9k from 5 V, VF~1.1 V: IF = (5-1.1)/1.9k = 2.05 mA), CTR=1.0 -> Ic = CTR*IF = 2.05 mA -> Vc = 5 - 470*2.05m = 4.04 V (printed VF/Vc)
+* (b) IF~10 mA (380 ohm) -> Ic would be 10 mA but 470 ohm limits to ~ (5-Vcesat)/470 = 10.2 mA minus -> saturates: Vce ~ 0.15*atanh(...)  (expect ~0.07..0.2 V, datasheet VCEsat typ 0.3..0.4 V at larger IC)
+.include opto4n35.lib
+Vcc vcc 0 5
+Rsa vcc ana 1.9k
+Xa ana 0 ca 0 opto_pt
+Rla vcc ca 470
+Rsb vcc anb 380
+Xb anb 0 cb 0 opto_pt
+Rlb vcc cb 470
+.control
+set noaskquit
+op
+let vfa = v(ana)
+echo RESULT vF_a=$&vfa vc_a=$&v(ca) vF_b=$&v(anb) vc_b=$&v(cb)
+quit
+.endc
+.end

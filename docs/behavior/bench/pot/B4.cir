@@ -1,0 +1,17 @@
+* POT B4: time-varying wiper via behavioral source (ramp pos 0->1 in 1 ms). Vin=10 V, unloaded divider, check Vw(0.25 ms)=2.5 V and Vw(0.75 ms)=7.5 V
+Vin A 0 10
+Vpos pos 0 PWL(0 0 1m 1)
+* Wiper node w from behavioral divider: current from A to w and w to B with resistances scaled by pos
+.param Rtot=10k Rend=1
+Bt A w I=V(A,w)/max({Rtot}*(1-V(pos)),{Rend})
+Bb w 0 I=V(w,0)/max({Rtot}*V(pos),{Rend})
+Rl w 0 1e12
+.tran 1u 1m
+.control
+set noaskquit
+run
+meas tran v1 find v(w) at=0.25m
+meas tran v2 find v(w) at=0.75m
+quit
+.endc
+.end

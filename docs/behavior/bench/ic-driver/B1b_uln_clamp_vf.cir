@@ -1,0 +1,14 @@
+* BEH-IC-DRIVER-DIP16 B1b: ULN2003A clamp diode VF at IF = 350 mA (TI SLRS027T extract: 1.7..2.0 V). COM at 12 V, forward current injected into OUT from a source via COM->OUT? (diode anode=OUT, cathode=COM): drive OUT above COM with 350 mA.
+.include drivers.lib
+Vcom com 0 12
+Ix 0 out dc 350m
+X1 inz out com 0 uln_ch
+Rz inz 0 1
+.control
+set noaskquit
+op
+let vf = v(out)-12
+echo RESULT vf_350mA=$&vf
+quit
+.endc
+.end

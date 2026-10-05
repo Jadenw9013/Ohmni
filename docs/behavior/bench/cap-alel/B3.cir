@@ -1,0 +1,17 @@
+B3 Aluminium electrolytic reverse voltage flag and reverse conduction
+* ramp 0 to -3 V in 3 s through 10 ohm. VREVMAX = 1 V so flag bit 2 must go high when v < -1 V (t = 1 s)
+.include ohm_alel.lib
+Vr in 0 PWL(0 0 3 -3)
+Rs in p 10
+Xc p 0 f ohm_alel C0=100u ESR=0.3 ESL=15n RLK=1e6 VR=25
+Rf f 0 1meg
+.tran 0.005 3
+.control
+run
+meas tran fl_05 find v(f) at=0.5
+meas tran fl_15 find v(f) at=1.5
+meas tran t_flag when v(f)=1 rise=1
+meas tran irev_3 find i(Vr) at=3
+quit
+.endc
+.end

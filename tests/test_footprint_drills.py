@@ -101,7 +101,7 @@ def controller(tmp_path, catalog):
 
 def test_compiler_emits_exact_round_drills_oval_slots_and_nonplated_holes(controller):
     _circuit, _schematic, pcb, _board = controller
-    assert pcb.compiler_version == PCB_COMPILER_VERSION == "0.2.0"
+    assert pcb.compiler_version == PCB_COMPILER_VERSION == "0.3.0"
     emitted = _sexpr(pcb.path.read_text(encoding="utf-8"))
     by_id = {}
     for item in emitted:

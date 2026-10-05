@@ -41,6 +41,9 @@ async def _client():
         command=sys.executable,
         args=["-m", "ohmni.mcp_server"],
         cwd=str(REPO_ROOT),
+        # An editable install can still point at another checkout. Pin the
+        # subprocess to this worktree so direct and stdio paths test one commit.
+        env={"PYTHONPATH": str(REPO_ROOT / "src")},
     )
     # Bound connection establishment as well as individual protocol requests.
     async with asyncio.timeout(60):

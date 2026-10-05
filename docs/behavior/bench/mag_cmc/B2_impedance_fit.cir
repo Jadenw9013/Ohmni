@@ -1,0 +1,18 @@
+B2 CM impedance vs frequency, HF-fit parameter set for WE-SL5 744272222 (datasheet typ points: 7500 ohm @2.5 MHz, 4000 @10 MHz, 400 @100 MHz)
+* HF fit (DERIVED, assumption that datasheet Z is the paralleled CM impedance): Lcm_eff=1.02 mH (<2.2 mH at 100 kHz because ferrite mu falls),
+* Ccm = 1/((2 pi 100MHz)^2... -> 3.98 pF total (1.99 pF per winding), Rpeak = 7500 (RPAR=15000 per winding)
+* Expected: |Zcm| 7500 @2.5MHz, 4000 @10MHz, 400 @100MHz, each within 15%
+.include cmc.lib
+Icm 0 c1 DC 0 AC 1
+X1 c1 0 c1 0 CMC_K L=1.02m LS=130n RDC=0 C0=1.99p RPAR=15000
+Rg c1 0 1G
+.ac dec 200 100k 1g
+.control
+run
+meas ac z25 find vm(c1) at=2.5meg
+meas ac z10 find vm(c1) at=10meg
+meas ac z100 find vm(c1) at=100meg
+meas ac zpk max vm(c1)
+quit
+.endc
+.end

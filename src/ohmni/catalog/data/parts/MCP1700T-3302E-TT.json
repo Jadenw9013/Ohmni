@@ -11,27 +11,62 @@
       "name": "SOT-23-3",
       "pin_count": 3,
       "hand_solderable": true,
-      "kicad_footprint": "Package_TO_SOT_SMD:SOT-23"
+      "kicad_footprint": "Package_TO_SOT_SMD:SOT-23",
+      "notes": "Pin order from Microchip DS20001826F page 11."
     }
   ],
   "pins": [
     {
       "number": "1",
-      "name": "VOUT",
-      "roles": [
-        "power"
-      ],
-      "electrical_type": "power_out",
-      "evidence": []
-    },
-    {
-      "number": "2",
       "name": "GND",
       "roles": [
         "ground"
       ],
       "electrical_type": "power_in",
-      "evidence": []
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "MCP1700 SOT-23 pin 1",
+          "source_id": "mcp1700-datasheet",
+          "document": {
+            "document_id": "mcp1700-datasheet",
+            "title": "MCP1700 Low Quiescent Current LDO",
+            "manufacturer": "Microchip Technology",
+            "part_number": "MCP1700T-3302E/TT",
+            "revision": "DS20001826F"
+          },
+          "page": 11,
+          "text_value": "SOT-23 pin 1 = GND",
+          "detail": "Hand-entered from the manufacturer datasheet after human confirmation; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-10-04T00:00:00Z"
+        }
+      ]
+    },
+    {
+      "number": "2",
+      "name": "VOUT",
+      "roles": [
+        "power"
+      ],
+      "electrical_type": "power_out",
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "MCP1700 SOT-23 pin 2",
+          "source_id": "mcp1700-datasheet",
+          "document": {
+            "document_id": "mcp1700-datasheet",
+            "title": "MCP1700 Low Quiescent Current LDO",
+            "manufacturer": "Microchip Technology",
+            "part_number": "MCP1700T-3302E/TT",
+            "revision": "DS20001826F"
+          },
+          "page": 11,
+          "text_value": "SOT-23 pin 2 = VOUT",
+          "detail": "Hand-entered from the manufacturer datasheet after human confirmation; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-10-04T00:00:00Z"
+        }
+      ]
     },
     {
       "number": "3",
@@ -41,7 +76,24 @@
       ],
       "electrical_type": "power_in",
       "supply_rail": "VIN",
-      "evidence": []
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "MCP1700 SOT-23 pin 3",
+          "source_id": "mcp1700-datasheet",
+          "document": {
+            "document_id": "mcp1700-datasheet",
+            "title": "MCP1700 Low Quiescent Current LDO",
+            "manufacturer": "Microchip Technology",
+            "part_number": "MCP1700T-3302E/TT",
+            "revision": "DS20001826F"
+          },
+          "page": 11,
+          "text_value": "SOT-23 pin 3 = VIN",
+          "detail": "Hand-entered from the manufacturer datasheet after human confirmation; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-10-04T00:00:00Z"
+        }
+      ]
     }
   ],
   "supply_rails": [
@@ -144,7 +196,8 @@
     "document_id": "mcp1700-datasheet",
     "title": "MCP1700 Low Quiescent Current LDO",
     "manufacturer": "Microchip Technology",
-    "part_number": "MCP1700T-3302E/TT"
+    "part_number": "MCP1700T-3302E/TT",
+    "revision": "DS20001826F"
   },
   "evidence": []
 }

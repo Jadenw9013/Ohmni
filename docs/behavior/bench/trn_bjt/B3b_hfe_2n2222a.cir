@@ -1,0 +1,22 @@
+* BEH-TRN-BJT B3b: DC current gain of the fitted models inside the datasheet hFE bands
+* PN2222A (onsemi PN2222A/D Rev 1.1.0, Vce=10 V): 0.1mA >=35, 1mA >=50, 10mA >=75, 150mA 100-300, 500mA >=40
+* Expected: every measured hFE lies inside its band. Tolerance: inside band (hard limits).
+.include /home/claude/behavior/bench/trn_bjt/models_bjt_r6fit.lib
+Qa ca ba 0 Q2N2222A_R6FIT
+Vca ca 0 10
+Vba ba 0 0.6
+.dc Vba 0.45 0.98 0.0025
+.control
+set noaskquit
+run
+let ica = -i(Vca)
+let iba = -i(Vba)
+let hfea = ica/iba
+meas dc a100u find hfea when ica=100u
+meas dc a1m find hfea when ica=1m
+meas dc a10m find hfea when ica=10m
+meas dc a150m find hfea when ica=150m
+meas dc a500m find hfea when ica=500m
+quit
+.endc
+.end

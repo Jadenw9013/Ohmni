@@ -1,0 +1,303 @@
+{
+  "applies_to": [
+    "OHM-104",
+    "OHM-110",
+    "OHM-114",
+    "OHM-119"
+  ],
+  "basis_values": [
+    "ASSUMPTION",
+    "DERIVED",
+    "MFR_DATASHEET",
+    "Vref - Vos",
+    "calibration to TI typ",
+    "solve (5-V)/1100 = Isat tanh(V/(Ron Isat))"
+  ],
+  "behavior_id": "BEH-IC-COMPARATOR",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "Vref - Vos",
+          "measure": "trip voltage",
+          "tolerance": "0.5 mV",
+          "value": 2.498
+        }
+      ],
+      "file": "docs/behavior/bench/ic-comparator/B1_threshold_vol.cir",
+      "measured_in_ngspice": 2.49823,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B1b",
+      "expected": [
+        {
+          "basis": "solve (5-V)/1100 = Isat tanh(V/(Ron Isat))",
+          "measure": "VOL",
+          "tolerance": "1 %",
+          "value": 0.1494
+        }
+      ],
+      "file": "docs/behavior/bench/ic-comparator/B1b_vol.cir",
+      "measured_in_ngspice": 0.14938,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "calibration to TI typ",
+          "measure": "t_5mV_us",
+          "tolerance": "5 %",
+          "value": 1.3
+        },
+        {
+          "basis": "calibration to TI typ",
+          "measure": "t_TTL_us",
+          "tolerance": "10 %",
+          "value": 0.3
+        }
+      ],
+      "file": "docs/behavior/bench/ic-comparator/B2_response.cir",
+      "measured_in_ngspice": "1.3004 / 0.3169",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-104",
+      "OHM-110",
+      "OHM-114",
+      "OHM-119"
+    ],
+    "behavior_id": "BEH-IC-COMPARATOR",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "Vref - Vos",
+            "measure": "trip voltage",
+            "tolerance": "0.5 mV",
+            "value": 2.498
+          }
+        ],
+        "file": "bench/ic-comparator/B1_threshold_vol.cir",
+        "id": "B1",
+        "measured_in_ngspice": 2.49823,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "solve (5-V)/1100 = Isat tanh(V/(Ron Isat))",
+            "measure": "VOL",
+            "tolerance": "1 %",
+            "value": 0.1494
+          }
+        ],
+        "file": "bench/ic-comparator/B1b_vol.cir",
+        "id": "B1b",
+        "measured_in_ngspice": 0.14938,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "calibration to TI typ",
+            "measure": "t_5mV_us",
+            "tolerance": "5 %",
+            "value": 1.3
+          },
+          {
+            "basis": "calibration to TI typ",
+            "measure": "t_TTL_us",
+            "tolerance": "10 %",
+            "value": 0.3
+          }
+        ],
+        "file": "bench/ic-comparator/B2_response.cir",
+        "id": "B2",
+        "measured_in_ngspice": "1.3004 / 0.3169",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "ic",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "H"
+    },
+    "failure_modes": [
+      {
+        "effect": "overheating",
+        "id": "output_overcurrent",
+        "permanence": "permanent",
+        "sim_response": "WARN at 16 mA, ERROR at 20 mA",
+        "trigger": "sink current > 20 mA"
+      },
+      {
+        "effect": "wrong output, excess input current",
+        "id": "input_below_gnd",
+        "permanence": "recoverable",
+        "sim_response": "WARN, mark output undefined",
+        "trigger": "input < -0.3 V"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "delay law fitted at two points",
+        "no hysteresis or input protection",
+        "op solve prints gmin warnings in some netlists"
+      ],
+      "netlist_template": "X{ref} {INP} {INM} {VCC} {GND} {OUT} comp_oc vos={vos} ib={ib} ios={ios} ron={ron} isat={isat} a=200 vs=1 tau={tau} td={td} icc={icc}\nR{ref}_pu {VCC_LOGIC} {OUT} {rpullup}\n",
+      "spice_primitives": [
+        "B",
+        "V",
+        "I",
+        "C",
+        "T"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "tran"
+      ],
+      "valid_range": "VCC 2..30 V, input CM 0..VCC-1.5 V"
+    },
+    "parameters": {
+      "ib": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 2.5e-08,
+        "max": 2.5e-07,
+        "min": 0,
+        "source_ref": "S3",
+        "tolerance": "",
+        "unit": "A"
+      },
+      "isat": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.016,
+        "max": 0.02,
+        "min": 0.006,
+        "source_ref": "S3",
+        "tolerance": "",
+        "unit": "A"
+      },
+      "ron": {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "default": 33,
+        "max": 100,
+        "min": 20,
+        "source_ref": "S3",
+        "tolerance": "",
+        "unit": "ohm"
+      },
+      "tau": {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "default": 1.44e-06,
+        "max": "5e-6",
+        "min": 0,
+        "source_ref": "S3",
+        "tolerance": "",
+        "unit": "s"
+      },
+      "td": {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "default": 3e-07,
+        "max": "1e-6",
+        "min": 0,
+        "source_ref": "S3",
+        "tolerance": "",
+        "unit": "s"
+      },
+      "vos": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.002,
+        "max": 0.005,
+        "min": 0,
+        "source_ref": "S3",
+        "tolerance": "max 5 mV",
+        "unit": "V"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "input",
+        "name": "INP",
+        "package_terminal_rule": "LM393: 1IN+=3, 2IN+=5",
+        "role": "signal_in"
+      },
+      {
+        "electrical_type": "input",
+        "name": "INM",
+        "package_terminal_rule": "LM393: 1IN-=2, 2IN-=6",
+        "role": "signal_in"
+      },
+      {
+        "electrical_type": "output",
+        "name": "OUT",
+        "package_terminal_rule": "open collector; LM393: 1OUT=1, 2OUT=7",
+        "role": "signal_out"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "VCC",
+        "package_terminal_rule": "pin 8",
+        "role": "supply"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "GND",
+        "package_terminal_rule": "pin 4",
+        "role": "supply"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "V(VCC)-V(GND) <= 36",
+        "condition": "LM393 (LM393B 38 V)",
+        "name": "supply",
+        "source_ref": "S3",
+        "symbol": "VCC",
+        "unit": "V",
+        "value": 36
+      },
+      {
+        "check": "I(OUT) <= 20e-3",
+        "condition": "LM393",
+        "name": "output current",
+        "source_ref": "S3",
+        "symbol": "IO",
+        "unit": "A",
+        "value": "20e-3"
+      }
+    ],
+    "sources": "S3, S29",
+    "status": "complete"
+  },
+  "category": "ic",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "0a4a6904896b8d9bfe00698006d973d0f9e3db5474443c6a167d80a34abfd291",
+    "line": 7257
+  },
+  "source_refs": "S3, S29",
+  "status": "complete"
+}

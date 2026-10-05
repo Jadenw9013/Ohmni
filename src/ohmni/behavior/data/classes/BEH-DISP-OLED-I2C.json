@@ -1,0 +1,250 @@
+{
+  "applies_to": [
+    "OHM-092"
+  ],
+  "basis_values": [
+    "0.8473*R*C",
+    "3.3-R*I",
+    "ASSUMPTION",
+    "MFR_DATASHEET"
+  ],
+  "behavior_id": "BEH-DISP-OLED-I2C",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "0.8473*R*C",
+          "measure": "tr 30-70",
+          "tolerance": "2%",
+          "value": 1.9912e-07
+        }
+      ],
+      "file": "docs/behavior/bench/beh-oled-ssd1306/B1_i2c_pullup_rise.cir",
+      "measured_in_ngspice": 1.9912e-07,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "3.3-R*I",
+          "measure": "Vdd",
+          "tolerance": "0.1%",
+          "value": 3.2895
+        }
+      ],
+      "file": "docs/behavior/bench/beh-oled-ssd1306/B2_supply_load_step.cir",
+      "measured_in_ngspice": 3.2895,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-092"
+    ],
+    "behavior_id": "BEH-DISP-OLED-I2C",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "0.8473*R*C",
+            "measure": "tr 30-70",
+            "tolerance": "2%",
+            "value": 1.9912e-07
+          }
+        ],
+        "file": "bench/beh-oled-ssd1306/B1_i2c_pullup_rise.cir",
+        "id": "B1",
+        "measured_in_ngspice": 1.9912e-07,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "3.3-R*I",
+            "measure": "Vdd",
+            "tolerance": "0.1%",
+            "value": 3.2895
+          }
+        ],
+        "file": "bench/beh-oled-ssd1306/B2_supply_load_step.cir",
+        "id": "B2",
+        "measured_in_ngspice": 3.2895,
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "display",
+    "confidence": {
+      "failure": "L",
+      "model": "L",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "board damage",
+        "id": "reverse_supply",
+        "permanence": "permanent",
+        "sim_response": "flag REVERSE_SUPPLY",
+        "trigger": "VCC/GND swapped"
+      },
+      {
+        "effect": "black screen",
+        "id": "not_initialised",
+        "permanence": "recoverable",
+        "sim_response": "L3 state",
+        "trigger": "no init sequence"
+      }
+    ],
+    "layer": "L3",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "SSD1306 DC table not obtained",
+        "I2C timing numbers not obtained",
+        "module regulator and pull-ups per MPN",
+        "charge pump commands not verified"
+      ],
+      "netlist_template": "B{ref}idd {VCC} {GND} I = {iidle} + ({ion}-{iidle})*{pixel_fraction}\nRPU_SDA {VCC} {SDA} {rpu}\nRPU_SCL {VCC} {SCL} {rpu}\n",
+      "spice_primitives": [
+        "B",
+        "R",
+        "C"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "tran"
+      ],
+      "valid_range": "L1 supply and I2C pull-up only; display is L3"
+    },
+    "parameters": {
+      "i2c_address": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 60,
+        "max": 61,
+        "min": 60,
+        "source_ref": "S12",
+        "unit": "hex"
+      },
+      "iidle": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.001,
+        "unit": "A"
+      },
+      "ion": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.02,
+        "unit": "A"
+      },
+      "rpu": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 4700,
+        "unit": "ohm"
+      },
+      "vcc_panel": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 12,
+        "max": 15,
+        "min": 7,
+        "source_ref": "S12",
+        "unit": "V"
+      },
+      "vdd_controller": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 3.3,
+        "max": 3.3,
+        "min": 1.65,
+        "source_ref": "S12",
+        "unit": "V"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "power_in",
+        "name": "GND",
+        "package_terminal_rule": "module pin order varies; 3D spec: pin 1 left pin at display-upright; commonly GND/VCC/SCL/SDA",
+        "role": "ground"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "VCC",
+        "package_terminal_rule": "see above",
+        "role": "power"
+      },
+      {
+        "electrical_type": "input",
+        "name": "SCL",
+        "package_terminal_rule": "see above",
+        "role": "clock"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "SDA",
+        "package_terminal_rule": "see above",
+        "role": "data"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "1.65 <= vdd <= 3.3",
+        "condition": "bare controller",
+        "name": "controller_supply",
+        "source_ref": "S12",
+        "symbol": "VDD",
+        "unit": "V",
+        "value": "1.65..3.3"
+      },
+      {
+        "check": "7 <= vcc <= 15",
+        "condition": "",
+        "name": "panel_supply",
+        "source_ref": "S12",
+        "symbol": "VCC",
+        "unit": "V",
+        "value": "7..15"
+      }
+    ],
+    "sources": [
+      {
+        "date": "Rev 1.1 April 2008",
+        "id": "S12",
+        "org": "Solomon Systech",
+        "title": "SSD1306 128x64 Dot Matrix OLED/PLED Segment/Common Driver",
+        "url": "https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf",
+        "used_for": "supply, I2C address, control byte, commands, reset"
+      }
+    ],
+    "status": "partial"
+  },
+  "category": "display",
+  "fidelity": "behavioural_approximation",
+  "layer": "L3",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "78351a141d002e795b577e594174bc7037901025641306d7a166c641f1717a24",
+    "line": 5514
+  },
+  "source_refs": [
+    {
+      "date": "Rev 1.1 April 2008",
+      "id": "S12",
+      "org": "Solomon Systech",
+      "title": "SSD1306 128x64 Dot Matrix OLED/PLED Segment/Common Driver",
+      "url": "https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf",
+      "used_for": "supply, I2C address, control byte, commands, reset"
+    }
+  ],
+  "status": "partial"
+}

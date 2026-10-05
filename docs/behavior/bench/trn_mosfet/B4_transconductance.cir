@@ -1,0 +1,17 @@
+* BEH-TRN-MOSFET B4: IRFZ44N_R6 transconductance at Id = 25 A, Vds = 25 V.  Datasheet gfs = 19 S (Infineon IRFZ44NPbF, typical, test Id=25 A, Vds=25 V)
+* Analytic (level 1, saturation): gfs = sqrt(2*KP*Id) = sqrt(2*10.17*25) = 22.5 S ; tolerance 20 % vs datasheet 19 S (level-1 has no mobility roll-off)
+.include /home/claude/behavior/bench/trn_mosfet/models_mosfet_r6fit.lib
+Vds d 0 25
+Vg g 0 5.2
+X1 d g 0 IRFZ44N_R6 BVDSS=55
+.control
+set noaskquit
+dc Vg 4.5 6.5 0.01
+let id = -i(Vds)
+let gfs = deriv(id)
+meas dc vg25 when id=25
+meas dc gfs25 find gfs when id=25
+print vg25 gfs25
+quit
+.endc
+.end

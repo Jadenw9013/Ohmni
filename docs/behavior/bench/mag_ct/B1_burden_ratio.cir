@@ -1,0 +1,15 @@
+B1 current transformer, burden voltage (AS-103-class, 1:200, Lsec=10 mH, Rsec=3 ohm, Rburden=100 ohm). Values are CONFLICTING between sources (see report): treated as defaults
+* Expected: Vburden_pk = (Ip/N)*Rb / sqrt(1+((Rs+Rb)/(w*Lsec))^2) = 5/200*100/sqrt(1+(103/3141.6)^2) = 2.4987 V at 50 kHz, Ip = 5 A pk
+.include xfmr.lib
+Ip 0 pa SIN(0 5 50k)
+Vsense pa p1 0
+* CT: primary winding terminals p1,p2 ; secondary s1,s2 ; LP referred to primary = Lsec/N^2
+X1 p1 0 s1 0 XFMR_SAT LP=250n N=200 LLK=0.25n RP=1u RS=3 CIW=1p ISATM=1 DROP=0.3 LR=0.05
+Rb s1 0 100
+.tran 50n 400u uic
+.control
+run
+meas tran vb max v(s1) from=300u to=400u
+quit
+.endc
+.end

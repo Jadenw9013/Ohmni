@@ -1,0 +1,32 @@
+* B2 BEH-CON-RF lumped connector parasitic in a matched 50 ohm system at 6 GHz (U.FL band edge)
+* Case 1: shunt C 0.1 pF at mid line.  Case 2: series L 1 nH (deliberately large, shows the sensitivity).
+* x = w*C*Z0 or w*L/Z0 ; |G| = x/sqrt(4+x^2) ; |S21| = 2/sqrt(4+x^2)
+* Source Vs with AC 2 behind Rs=50 gives 1 V at a matched load, so db(v(load)) = S21 in dB.
+Vs1 s1 0 DC 0 AC 2
+Rs1 s1 a1 50
+Cp a1 0 0.1p
+Ro1 a1 0 50
+Vs2 s2 0 DC 0 AC 2
+Rs2 s2 a2 50
+Ls a2 b2 1n
+Ro2 b2 0 50
+.control
+ac lin 1 6g 6g
+* reflection seen looking into node a (parallel of C and 50 load) and into series path
+let z1 = v(a1)/((v(s1)-v(a1))/50)
+let g1 = mag((z1-50)/(z1+50))
+let s21_1 = db(v(a1))
+let z2 = v(a2)/((v(s2)-v(a2))/50)
+let g2 = mag((z2-50)/(z2+50))
+let s21_2 = db(v(b2))
+print g1 s21_1 g2 s21_2
+let w = 2*pi*6e9
+let x1 = w*0.1e-12*50
+let x2 = w*1e-9/50
+let e_g1 = x1/sqrt(4+x1*x1)
+let e_g2 = x2/sqrt(4+x2*x2)
+let e_s21_1 = 20*log10(2/sqrt(4+x1*x1))
+let e_s21_2 = 20*log10(2/sqrt(4+x2*x2))
+print e_g1 e_s21_1 e_g2 e_s21_2
+.endc
+.end

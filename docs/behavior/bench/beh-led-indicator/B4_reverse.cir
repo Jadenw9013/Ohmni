@@ -1,0 +1,13 @@
+* B4: reverse leakage at 5 V (datasheet VR rating) and breakdown clamp of the LED model
+.include models.inc
+V1 a 0 DC 5
+DB 0 a LED_BLUE
+DR 0 a2 LED_RED
+V2 a2 0 DC 5
+.control
+op
+print i(V1) i(V2)
+dc V1 5 7 0.25
+print i(V1)
+.endc
+.end

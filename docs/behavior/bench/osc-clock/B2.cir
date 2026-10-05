@@ -1,0 +1,14 @@
+B2 Oscillator output-disable: OE pulled low (0 V) -> output held low, supply current drops to standby (1 uA)
+.include ohm_xo.lib
+Vdd vdd 0 3.3
+Voe oe 0 0
+Xo vdd 0 oe out ohm_xo f0=10meg ppm=0 tstart=5u icc=4.2m icc_sb=1u
+Cl out 0 15p
+.tran 1n 25u
+.control
+run
+meas tran vmaxo MAX v(out) FROM=10u TO=20u
+meas tran idd AVG i(Vdd) FROM=10u TO=20u
+quit
+.endc
+.end

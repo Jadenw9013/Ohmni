@@ -1,0 +1,13 @@
+* BEH-DIO-TVS B1: SMBJ15A clamp point. Vishay doc 88392: VWM=15 V, VBR min 16.7 V @1 mA,
+* VC max = 24.4 V @ IPP = 24.6 A (600 W / 24.4 V).  Model: BV=17.6 (assumed midpoint of 16.7-18.5 V window
+* quoted for the sibling SMAJ15A), RS fitted so V(24.6 A)=24.4 V. IBV=1 mA, NBV=1.
+.model DTVS D (IS=1e-15 N=1 RS=0.266 BV=17.6 IBV=1m NBV=1)
+I1 0 c 24.6
+D1 0 c DTVS
+.control
+dc I1 24.6 24.6 1
+print v(c)
+dc I1 1m 1m 1m
+print v(c)
+.endc
+.end

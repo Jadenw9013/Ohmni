@@ -1,0 +1,286 @@
+{
+  "applies_to": [
+    "OHM-103",
+    "OHM-104",
+    "OHM-105",
+    "OHM-106",
+    "OHM-107",
+    "OHM-108",
+    "OHM-109",
+    "OHM-110",
+    "OHM-111",
+    "OHM-112",
+    "OHM-113",
+    "OHM-114",
+    "OHM-115",
+    "OHM-116",
+    "OHM-117",
+    "OHM-118",
+    "OHM-119",
+    "OHM-120",
+    "OHM-121"
+  ],
+  "basis_values": [
+    "1/(2 pi sqrt(LC))",
+    "L dI/dt",
+    "MFR_DATASHEET",
+    "Ta+P*theta"
+  ],
+  "behavior_id": "BEH-IC-PKGBIND",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "1/(2 pi sqrt(LC))",
+          "measure": "f0",
+          "tolerance": "1 %",
+          "value": "930.6e6"
+        }
+      ],
+      "file": "docs/behavior/bench/ic-pkgbind/B1_lead_resonance.cir",
+      "measured_in_ngspice": "927.9e6",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "Ta+P*theta",
+          "measure": "Tj DIP/SOIC/TSSOP",
+          "tolerance": "0.1 %",
+          "value": "90.02/103.16/118.46"
+        }
+      ],
+      "file": "docs/behavior/bench/ic-pkgbind/B2_thermal_tj.cir",
+      "measured_in_ngspice": "90.02/103.16/118.46",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "L dI/dt",
+          "measure": "V bounce",
+          "tolerance": "1 %",
+          "value": "32.0/12.8 mV"
+        }
+      ],
+      "file": "docs/behavior/bench/ic-pkgbind/B3_ground_bounce.cir",
+      "measured_in_ngspice": "32.0/12.8 mV",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-103",
+      "OHM-104",
+      "OHM-105",
+      "OHM-106",
+      "OHM-107",
+      "OHM-108",
+      "OHM-109",
+      "OHM-110",
+      "OHM-111",
+      "OHM-112",
+      "OHM-113",
+      "OHM-114",
+      "OHM-115",
+      "OHM-116",
+      "OHM-117",
+      "OHM-118",
+      "OHM-119",
+      "OHM-120",
+      "OHM-121"
+    ],
+    "behavior_id": "BEH-IC-PKGBIND",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "1/(2 pi sqrt(LC))",
+            "measure": "f0",
+            "tolerance": "1 %",
+            "value": "930.6e6"
+          }
+        ],
+        "file": "bench/ic-pkgbind/B1_lead_resonance.cir",
+        "id": "B1",
+        "measured_in_ngspice": "927.9e6",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "Ta+P*theta",
+            "measure": "Tj DIP/SOIC/TSSOP",
+            "tolerance": "0.1 %",
+            "value": "90.02/103.16/118.46"
+          }
+        ],
+        "file": "bench/ic-pkgbind/B2_thermal_tj.cir",
+        "id": "B2",
+        "measured_in_ngspice": "90.02/103.16/118.46",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "L dI/dt",
+            "measure": "V bounce",
+            "tolerance": "1 %",
+            "value": "32.0/12.8 mV"
+          }
+        ],
+        "file": "bench/ic-pkgbind/B3_ground_bounce.cir",
+        "id": "B3",
+        "measured_in_ngspice": "32.0/12.8 mV",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "ic",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "H"
+    },
+    "failure_modes": [
+      {
+        "effect": "wear-out, parametric drift, damage if sustained",
+        "id": "overtemp",
+        "permanence": "permanent",
+        "sim_response": "FLAG error; use the part's thermal limiter if present",
+        "trigger": "Tj > 150 C"
+      },
+      {
+        "effect": "supplies on wrong pins",
+        "id": "reversed_orientation",
+        "permanence": "permanent",
+        "sim_response": "design-rule error",
+        "trigger": "pin 1 marker not at footprint pin 1"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "theta_ja is a spread over different dies and boards, not a package constant",
+        "no mutual lead coupling",
+        "SOT-23 and DIP-28/40 parasitics and DIP-6/28/40 theta have no sourced value"
+      ],
+      "netlist_template": "R{ref}_p{k} {k}_term {k}_x {lead_R}\nL{ref}_p{k} {k}_x {k}_die {lead_L}\nC{ref}_p{k} {k}_die 0 {lead_C}\nIpd{ref} 0 tj{ref} {P_W}\nRth{ref} tj{ref} tamb {theta_ja}\nVta tamb 0 {Ta}\n",
+      "spice_primitives": [
+        "R",
+        "L",
+        "C",
+        "I",
+        "V"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "ac",
+        "tran"
+      ],
+      "valid_range": "Ta -40..125 C; parasitics below ~1 GHz"
+    },
+    "parameters": {
+      "lead_C": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "L",
+        "default": 8.5e-13,
+        "max": 1e-12,
+        "min": 8e-14,
+        "source_ref": "S26",
+        "tolerance": "x2",
+        "unit": "F"
+      },
+      "lead_L": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "L",
+        "default": 5e-09,
+        "max": 7e-09,
+        "min": 4.5e-10,
+        "source_ref": "S26",
+        "tolerance": "x2",
+        "unit": "H"
+      },
+      "lead_R": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "L",
+        "default": 0.1,
+        "max": 0.3,
+        "min": 0.015,
+        "source_ref": "S26",
+        "tolerance": "x2",
+        "unit": "ohm"
+      },
+      "theta_ja": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 60.6,
+        "max": 256,
+        "min": 36.4,
+        "source_ref": "S1..S15",
+        "tolerance": "board dependent, +-50 %",
+        "unit": "C/W"
+      },
+      "tj_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 150,
+        "max": 150,
+        "min": 125,
+        "source_ref": "S1,S2,S3,S5,S13",
+        "tolerance": 0,
+        "unit": "C"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "bidirectional",
+        "name": "PIN_k",
+        "package_terminal_rule": "k = 1..N; pin 1 top-left, counter-clockwise (dual-row); SOT-23: pin 1 bottom-left, 1-3 along bottom then right-to-left along top. Function of pin k comes from the bound part's pin table (Part B).",
+        "role": "terminal"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "Tj = Ta + P_total*theta_ja <= 150",
+        "condition": "TI/Microchip abs max",
+        "name": "max junction temperature",
+        "source_ref": "S1",
+        "symbol": "Tj",
+        "unit": "C",
+        "value": 150
+      },
+      {
+        "check": "P_total <= (150-Ta)/theta_ja",
+        "condition": "table 1.5",
+        "name": "max package power",
+        "source_ref": "S27",
+        "symbol": "Pmax",
+        "unit": "W",
+        "value": "(150-Ta)/theta_ja"
+      }
+    ],
+    "sources": "see Part C: S1-S15, S26, S27",
+    "status": "partial"
+  },
+  "category": "ic",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "572a86b71ad9ce10db38cd655b3f9d6b11d30b4743b0c3234c4264d323c8a305",
+    "line": 6940
+  },
+  "source_refs": "see Part C: S1-S15, S26, S27",
+  "status": "partial"
+}

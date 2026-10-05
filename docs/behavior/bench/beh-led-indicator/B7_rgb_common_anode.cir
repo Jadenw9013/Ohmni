@@ -1,0 +1,18 @@
+* B7: PLCC-4 RGB common anode (ASMB-MTB0 pin map: 1=A, 2=Blue K, 3=Green K, 4=Red K) from a 5 V rail, current-limiting resistors in the cathodes
+.include models.inc
+V5 vcc 0 5
+* pin1 = common anode
+DR vcc kr LED_RGB_R
+DG vcc kg LED_RGB_GB
+DB vcc kb LED_RGB_GB
+RR kr 0 145
+RG kg 0 95
+RB kb 0 95
+.control
+op
+let ir=v(kr)/145
+let ig=v(kg)/95
+let ib=v(kb)/95
+print ir ig ib
+.endc
+.end

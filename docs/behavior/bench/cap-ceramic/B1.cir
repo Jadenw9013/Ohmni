@@ -1,0 +1,18 @@
+B1 MLCC DC-bias small-signal capacitance, ideal parasitics
+.include ohm_mlcc.lib
+Vb in 0 dc 0 ac 1
+Rs in x 0.01
+Xc x 0 f ohm_mlcc C0=10u V0=2 ESR=1u ESL=1p RLK=1e12 VR=100
+Rf f 0 1meg
+.control
+foreach vb 0 1 2 4
+  alter Vb dc = $vb
+  ac lin 1 1k 1k
+  let ii = (v(in)-v(x))/0.01
+  let ceffuF = imag(ii)/(2*pi*1k)*1e6
+  echo vb=$vb
+  print ceffuF
+end
+quit
+.endc
+.end

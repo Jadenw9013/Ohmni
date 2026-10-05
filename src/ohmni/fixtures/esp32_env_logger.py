@@ -365,7 +365,7 @@ def broken_undersized_regulator() -> CircuitIR:
         if component.ref == "U2":
             component.part_id = "MCP1700T-3302E-TT"
             component.package = "SOT-23-3"
-    # The MCP1700 is SOT-23-3: VOUT/GND/VIN, and it has no enable pin.
+    # MCP1700 SOT-23 order is GND/VOUT/VIN (DS20001826F p. 11); no enable pin.
     vbus = _net(circuit, "VBUS")
     vbus.connections = [
         p for p in vbus.connections if (p.component, p.pin) not in {("U2", "1"), ("U2", "3")}
@@ -373,7 +373,10 @@ def broken_undersized_regulator() -> CircuitIR:
     vbus.connections.append(PinRef(component="U2", pin="3"))
     three_v3 = _net(circuit, "3V3")
     three_v3.connections = [p for p in three_v3.connections if (p.component, p.pin) != ("U2", "5")]
-    three_v3.connections.append(PinRef(component="U2", pin="1"))
+    three_v3.connections.append(PinRef(component="U2", pin="2"))
+    ground = _net(circuit, "GND")
+    ground.connections = [p for p in ground.connections if (p.component, p.pin) != ("U2", "2")]
+    ground.connections.append(PinRef(component="U2", pin="1"))
     return circuit
 
 

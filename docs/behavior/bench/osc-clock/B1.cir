@@ -1,0 +1,17 @@
+B1 Packaged oscillator L2 behavioural: 10 MHz, +25 ppm offset, 3.3 V. Expect f=10 MHz*(1+25e-6)=10.00025 MHz, Idd=4.2 mA, output swing 3.3 V, OE low -> output low and standby current
+.include ohm_xo.lib
+Vdd vdd 0 3.3
+Voe oe 0 3.3
+Xo vdd 0 oe out ohm_xo f0=10meg ppm=25 tstart=5u icc=4.2m
+Cl out 0 15p
+.tran 1n 30u
+.control
+run
+meas tran per TRIG v(out) VAL=1.65 RISE=10 TARG v(out) VAL=1.65 RISE=210
+let f = 200/per
+print f
+meas tran vmaxo MAX v(out) FROM=10u TO=20u
+meas tran idd AVG i(Vdd) FROM=10u TO=20u
+quit
+.endc
+.end

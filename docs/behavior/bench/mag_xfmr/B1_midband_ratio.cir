@@ -1,0 +1,14 @@
+B1 small-signal 600:600 ohm audio transformer, midband insertion (TY-145P class; Lp, DCR, Llk are ASSUMPTIONS, ratio/impedance from distributor listing)
+* Expected: Vout/Vin = RL/(Rs+RP+RS+RL) = 600/(600+40+40+600) = 0.46875 at 1 kHz (ideal 1:1, Llk and Lm negligible)
+.include xfmr.lib
+V1 in 0 DC 0 AC 1
+Rsrc in p1 600
+X1 p1 0 s1 0 XFMR_K LP=1 N=1 LLK=5m RP=40 RS=40 CIW=100p
+RL s1 0 600
+.ac dec 100 10 100k
+.control
+run
+meas ac vmid find vm(s1) at=1k
+quit
+.endc
+.end

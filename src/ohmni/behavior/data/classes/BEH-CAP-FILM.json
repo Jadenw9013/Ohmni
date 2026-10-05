@@ -1,0 +1,278 @@
+{
+  "applies_to": [
+    "OHM-037",
+    "OHM-038"
+  ],
+  "basis_values": [
+    "1/(2*pi*sqrt(L*C))",
+    "ASSUMPTION",
+    "ESR*w*C",
+    "MFR_DATASHEET",
+    "VRPK 388.9"
+  ],
+  "behavior_id": "BEH-CAP-FILM",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "ESR*w*C",
+          "measure": "tan delta at 1 kHz",
+          "tolerance": "0.1%",
+          "value": 0.002
+        }
+      ],
+      "file": "docs/behavior/bench/cap-film/B1.cir",
+      "measured_in_ngspice": "0.002000001",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "1/(2*pi*sqrt(L*C))",
+          "measure": "f0 (MHz)",
+          "tolerance": "0.5%",
+          "value": 1.2995
+        }
+      ],
+      "file": "docs/behavior/bench/cap-film/B2.cir",
+      "measured_in_ngspice": "1.3032 (Zmin 0.31831 ohm)",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "VRPK 388.9",
+          "measure": "flag at 400 V amplitude",
+          "tolerance": "exact",
+          "value": 1
+        }
+      ],
+      "file": "docs/behavior/bench/cap-film/B3.cir",
+      "measured_in_ngspice": "1",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-037",
+      "OHM-038"
+    ],
+    "behavior_id": "BEH-CAP-FILM",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "ESR*w*C",
+            "measure": "tan delta at 1 kHz",
+            "tolerance": "0.1%",
+            "value": 0.002
+          }
+        ],
+        "file": "bench/cap-film/B1.cir",
+        "id": "B1",
+        "measured_in_ngspice": "0.002000001",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "1/(2*pi*sqrt(L*C))",
+            "measure": "f0 (MHz)",
+            "tolerance": "0.5%",
+            "value": 1.2995
+          }
+        ],
+        "file": "bench/cap-film/B2.cir",
+        "id": "B2",
+        "measured_in_ngspice": "1.3032 (Zmin 0.31831 ohm)",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "VRPK 388.9",
+            "measure": "flag at 400 V amplitude",
+            "tolerance": "exact",
+            "value": 1
+          }
+        ],
+        "file": "bench/cap-film/B3.cir",
+        "id": "B3",
+        "measured_in_ngspice": "1",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "passive",
+    "confidence": {
+      "failure": "L",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "breakdown, self-healing or permanent damage",
+        "id": "overvoltage",
+        "permanence": "permanent",
+        "sim_response": "flag bit 1",
+        "trigger": "abs(v) > VRPK"
+      },
+      {
+        "effect": "retained charge hazard",
+        "id": "x2_no_bleeder",
+        "permanence": "recoverable",
+        "sim_response": "checker rule",
+        "trigger": "X2 across mains without discharge path"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "constant ESR",
+        "no C(T)",
+        "no self-healing event",
+        "no dV/dt limit",
+        "ESL assumed"
+      ],
+      "netlist_template": "X{ref} {pin1} {pin2} {ref}_flag ohm_film C0={value} TAND={tand} FREF=1k ESL={esl} RLK={rleak} VRPK={vrpk}\n",
+      "spice_primitives": [
+        "R",
+        "L",
+        "C",
+        "B"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "ac",
+        "tran",
+        "noise"
+      ],
+      "valid_range": "|V| < VRPK; -55..105 C"
+    },
+    "parameters": {
+      "esl": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 1.5e-08,
+        "max": 4e-08,
+        "min": 5e-09,
+        "source_ref": "S20",
+        "tolerance": "factor 2",
+        "unit": "H"
+      },
+      "r_leak": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": "1.5e10",
+        "max": "1.0e12",
+        "min": "1.0e9",
+        "source_ref": "S20",
+        "tolerance": "decades",
+        "unit": "ohm"
+      },
+      "rated_voltage_peak": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 388.9,
+        "max": 1000,
+        "min": 63,
+        "source_ref": "S20",
+        "tolerance": "none",
+        "unit": "V"
+      },
+      "tan_delta_1k": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.002,
+        "max": 0.006,
+        "min": 0.001,
+        "source_ref": "S20",
+        "tolerance": "per part",
+        "unit": "none"
+      },
+      "value": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 1e-07,
+        "max": 1e-05,
+        "min": 1e-09,
+        "source_ref": "S20",
+        "tolerance": "+/-5..20% by code",
+        "unit": "F"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "1",
+        "package_terminal_rule": "lead 1 at -X; non-polarized",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "2",
+        "package_terminal_rule": "lead 2 at +X",
+        "role": "terminal"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "Vrms <= 275",
+        "condition": "X2 MKP, 50/60 Hz",
+        "name": "rated_voltage_ac",
+        "source_ref": "S20",
+        "symbol": "Vac",
+        "unit": "Vrms",
+        "value": 275
+      },
+      {
+        "check": "abs(v) <= 388.9",
+        "condition": "AC peak of 275 Vrms",
+        "name": "peak_voltage",
+        "source_ref": "S20",
+        "symbol": "Vpk",
+        "unit": "V",
+        "value": 388.9
+      },
+      {
+        "check": "Tamb <= 105",
+        "condition": "X2 MKP upper limit",
+        "name": "temperature",
+        "source_ref": "S20",
+        "symbol": "T",
+        "unit": "C",
+        "value": 105
+      }
+    ],
+    "sources": [
+      "S20",
+      "S21",
+      "S26"
+    ],
+    "status": "partial"
+  },
+  "category": "passive",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "45634cf55a342765a28823dfb84d37c229f67336ea3475a9b5e41375f3ddae47",
+    "line": 1801
+  },
+  "source_refs": [
+    "S20",
+    "S21",
+    "S26"
+  ],
+  "status": "partial"
+}

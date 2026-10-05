@@ -1,0 +1,21 @@
+* B1: model reproduces the datasheet VF-IF points used for the fit (L1, op/dc)
+.include models.inc
+I1 0 a1 DC 20m
+I2 0 a2 DC 20m
+I3 0 a3 DC 20m
+I4 0 a4 DC 20m
+DR a1 0 LED_RED
+DG a2 0 LED_GREEN
+DB a3 0 LED_BLUE
+DW a4 0 LED_WHITE
+.control
+foreach cur 0.001 0.010 0.020 0.050 0.100
+  alter I1 dc = $cur
+  alter I2 dc = $cur
+  alter I3 dc = $cur
+  alter I4 dc = $cur
+  op
+  echo I=$cur  Vred=$&v(a1) Vgreen=$&v(a2) Vblue=$&v(a3) Vwhite=$&v(a4)
+end
+.endc
+.end

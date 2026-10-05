@@ -1,0 +1,20 @@
+* BEH-IC-DIGITAL-IO B1: ATmega328P-class output at Vcc=5 V (ATmega328P datasheet 8161D mirror extract: VOL <= 0.4 V @ IOL=20 mA ; VOH >= 4.2 V @ IOH=-20 mA).
+* Fit: rol = 0.4/0.02 = 20 ohm ; roh = (5-4.2)/0.02 = 40 ohm.  Loaded test: pad low sinking 20 mA -> 0.400 V ; pad high sourcing 20 mA -> 4.200 V.
+* NOTE: these are datasheet LIMITS (worst case), typical outputs are stronger; the model is deliberately conservative.
+.include dio.lib
+Vcc vcc 0 5
+Vdh dh 0 1
+Vdl dl 0 0
+Voe oe 0 1
+Vpu pu 0 0
+X1 padh dinh unh dh oe pu vcc 0 dio_pin
+Ioh padh 0 dc 20m
+X2 padl dinl unl dl oe pu vcc 0 dio_pin
+Iol vcc padl dc 20m
+.control
+set noaskquit
+op
+echo RESULT voh_20mA=$&v(padh) vol_20mA=$&v(padl)
+quit
+.endc
+.end

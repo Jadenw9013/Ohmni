@@ -1,0 +1,459 @@
+{
+  "applies_to": [
+    "OHM-073",
+    "OHM-074",
+    "OHM-075",
+    "OHM-076",
+    "OHM-077",
+    "OHM-078",
+    "OHM-079",
+    "OHM-080",
+    "OHM-081"
+  ],
+  "basis_values": [
+    "45*(1/20)^1.0416",
+    "ASSUMPTION",
+    "D*Ion",
+    "DERIVED",
+    "IBV",
+    "MFR_DATASHEET",
+    "brentq solve",
+    "fit input"
+  ],
+  "behavior_id": "BEH-LED-INDICATOR",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "fit input",
+          "measure": "Vred@20mA",
+          "tolerance": 0.05,
+          "value": 2.0
+        }
+      ],
+      "file": "docs/behavior/bench/beh-led-indicator/B1_iv_fit.cir",
+      "measured_in_ngspice": 1.9997,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "brentq solve",
+          "measure": "I_red",
+          "tolerance": "0.1%",
+          "value": 0.0200017
+        }
+      ],
+      "file": "docs/behavior/bench/beh-led-indicator/B2_series_resistor.cir",
+      "measured_in_ngspice": 0.0200017,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "D*Ion",
+          "measure": "Iavg",
+          "tolerance": "1%",
+          "value": 0.0050004
+        }
+      ],
+      "file": "docs/behavior/bench/beh-led-indicator/B3_pwm_average.cir",
+      "measured_in_ngspice": 0.0050005,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B4",
+      "expected": [
+        {
+          "basis": "IBV",
+          "measure": "IR at BV",
+          "tolerance": "1%",
+          "value": 1e-05
+        }
+      ],
+      "file": "docs/behavior/bench/beh-led-indicator/B4_reverse.cir",
+      "measured_in_ngspice": 9.99e-06,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B5",
+      "expected": [
+        {
+          "basis": "45*(1/20)^1.0416",
+          "measure": "Iv(1mA)",
+          "tolerance": "0.5%",
+          "value": 1.99
+        }
+      ],
+      "file": "docs/behavior/bench/beh-led-indicator/B5_temp_and_intensity.cir",
+      "measured_in_ngspice": 1.986,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B6",
+      "expected": [
+        {
+          "basis": "ASSUMPTION",
+          "measure": "dVF/dT red",
+          "tolerance": "4e-4",
+          "value": -0.002
+        }
+      ],
+      "file": "docs/behavior/bench/beh-led-indicator/B6_tempco_all.cir",
+      "measured_in_ngspice": -0.00203,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-073",
+      "OHM-074",
+      "OHM-075",
+      "OHM-076",
+      "OHM-077",
+      "OHM-078",
+      "OHM-079",
+      "OHM-080",
+      "OHM-081"
+    ],
+    "behavior_id": "BEH-LED-INDICATOR",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "fit input",
+            "measure": "Vred@20mA",
+            "tolerance": 0.05,
+            "value": 2.0
+          }
+        ],
+        "file": "bench/beh-led-indicator/B1_iv_fit.cir",
+        "id": "B1",
+        "measured_in_ngspice": 1.9997,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "brentq solve",
+            "measure": "I_red",
+            "tolerance": "0.1%",
+            "value": 0.0200017
+          }
+        ],
+        "file": "bench/beh-led-indicator/B2_series_resistor.cir",
+        "id": "B2",
+        "measured_in_ngspice": 0.0200017,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "D*Ion",
+            "measure": "Iavg",
+            "tolerance": "1%",
+            "value": 0.0050004
+          }
+        ],
+        "file": "bench/beh-led-indicator/B3_pwm_average.cir",
+        "id": "B3",
+        "measured_in_ngspice": 0.0050005,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "IBV",
+            "measure": "IR at BV",
+            "tolerance": "1%",
+            "value": 1e-05
+          }
+        ],
+        "file": "bench/beh-led-indicator/B4_reverse.cir",
+        "id": "B4",
+        "measured_in_ngspice": 9.99e-06,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "45*(1/20)^1.0416",
+            "measure": "Iv(1mA)",
+            "tolerance": "0.5%",
+            "value": 1.99
+          }
+        ],
+        "file": "bench/beh-led-indicator/B5_temp_and_intensity.cir",
+        "id": "B5",
+        "measured_in_ngspice": 1.986,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "ASSUMPTION",
+            "measure": "dVF/dT red",
+            "tolerance": "4e-4",
+            "value": -0.002
+          }
+        ],
+        "file": "bench/beh-led-indicator/B6_tempco_all.cir",
+        "id": "B6",
+        "measured_in_ngspice": -0.00203,
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "diode",
+    "confidence": {
+      "failure": "L",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "degradation, eventual open",
+        "id": "overcurrent_cont",
+        "permanence": "permanent",
+        "sim_response": "flag; error at 1.5x",
+        "trigger": "IF > if_max_derated"
+      },
+      {
+        "effect": "avalanche, possible damage",
+        "id": "reverse_over_rating",
+        "permanence": "permanent",
+        "sim_response": "flag; BV clamp in card",
+        "trigger": "VR > vr_max"
+      },
+      {
+        "effect": "destruction",
+        "id": "no_resistor",
+        "permanence": "permanent",
+        "sim_response": "flag NO_CURRENT_LIMIT",
+        "trigger": "LED on stiff source"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "no thermal feedback in the D model",
+        "blue/white low-current VF wrong by up to 0.6 V",
+        "no wavelength shift or droop",
+        "chip LED Rth unsourced"
+      ],
+      "netlist_template": "D{ref} {A} {K} LED_{colour}\n.model LED_{colour} D (IS={IS} N={N} RS={RS} CJO={CJO} VJ=1.0 M=0.33 TT=0 BV={BV} IBV=10u EG={EG} XTI=3)\n",
+      "spice_primitives": [
+        "D",
+        "B"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "tran",
+        "temp"
+      ],
+      "valid_range": "0.1 mA to rated IF, -40..+85 C; blue/white below 1 mA unreliable"
+    },
+    "parameters": {
+      "CJO": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": "30e-12",
+        "source_ref": "S1",
+        "unit": "F"
+      },
+      "IS": {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "default": 1.846e-16,
+        "source_ref": "S1",
+        "unit": "A"
+      },
+      "N": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 2.0,
+        "unit": 1
+      },
+      "RS": {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "default": 16.4,
+        "source_ref": "S1",
+        "unit": "ohm"
+      },
+      "colour": {
+        "default": "red",
+        "unit": "enum"
+      },
+      "if_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.02,
+        "max": 0.05,
+        "min": 0.02,
+        "source_ref": "S1",
+        "unit": "A"
+      },
+      "if_test": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 0.02,
+        "source_ref": "S1",
+        "unit": "A"
+      },
+      "p_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.1,
+        "source_ref": "S1",
+        "unit": "W"
+      },
+      "rth_ja": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 350,
+        "max": 400,
+        "min": 350,
+        "source_ref": "S1",
+        "unit": "K/W"
+      },
+      "tj_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 100,
+        "source_ref": "S1",
+        "unit": "C"
+      },
+      "vf_typ": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 2.0,
+        "max": 4.5,
+        "min": 1.8,
+        "source_ref": "S1",
+        "tolerance": "typ to max +0.4..+0.7 V",
+        "unit": "V"
+      },
+      "vr_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 5,
+        "max": 6,
+        "min": 5,
+        "source_ref": "S2",
+        "unit": "V"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "A",
+        "package_terminal_rule": "terminal 2 (+X, long lead / unmarked end)",
+        "role": "anode"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "K",
+        "package_terminal_rule": "terminal 1 (-X, flat side / marked end)",
+        "role": "cathode"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "if_avg <= if_max_derated",
+        "condition": "default, package specific",
+        "name": "forward_current",
+        "source_ref": "S1",
+        "symbol": "IF",
+        "unit": "A",
+        "value": 0.02
+      },
+      {
+        "check": "vf*if <= (tj_max - tamb)/rth_ja",
+        "condition": "Tamb <= 60..65 C",
+        "name": "power",
+        "source_ref": "S1",
+        "symbol": "PV",
+        "unit": "W",
+        "value": 0.1
+      },
+      {
+        "check": "v_reverse <= vr_max",
+        "condition": "IR = 10 uA",
+        "name": "reverse_voltage",
+        "source_ref": "S2",
+        "symbol": "VR",
+        "unit": "V",
+        "value": 5
+      },
+      {
+        "check": "i_peak <= ifsm",
+        "condition": "tp <= 10 us (blue/white), 1 A GaP/GaAlAs",
+        "name": "surge",
+        "source_ref": "S2",
+        "symbol": "IFSM",
+        "unit": "A",
+        "value": 0.1
+      }
+    ],
+    "sources": [
+      {
+        "date": "14-Oct-14",
+        "id": "S1",
+        "org": "Vishay",
+        "title": "TLDR4400 Rev 2.0",
+        "url": "https://www.vishay.com/docs/83001/tldr4400.pdf",
+        "used_for": "3 mm deep red ratings, VF, Iv, red fit"
+      },
+      {
+        "date": "29-Apr-13",
+        "id": "S2",
+        "org": "Vishay",
+        "title": "TLHB5800 Rev 2.0",
+        "url": "https://atom.ubbcluj.ro/alpar/datasheets/optoelectronic_components/LED/Untinted%20Non-Diffused%20LED%20(B)%20-%20Vishay.pdf",
+        "used_for": "blue ratings, VF points"
+      }
+    ],
+    "status": "partial"
+  },
+  "category": "diode",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "fbcce31c63094a6e3abe0760135dcad55fb26d50a47a95cad938aa9f9867a8f0",
+    "line": 4713
+  },
+  "source_refs": [
+    {
+      "date": "14-Oct-14",
+      "id": "S1",
+      "org": "Vishay",
+      "title": "TLDR4400 Rev 2.0",
+      "url": "https://www.vishay.com/docs/83001/tldr4400.pdf",
+      "used_for": "3 mm deep red ratings, VF, Iv, red fit"
+    },
+    {
+      "date": "29-Apr-13",
+      "id": "S2",
+      "org": "Vishay",
+      "title": "TLHB5800 Rev 2.0",
+      "url": "https://atom.ubbcluj.ro/alpar/datasheets/optoelectronic_components/LED/Untinted%20Non-Diffused%20LED%20(B)%20-%20Vishay.pdf",
+      "used_for": "blue ratings, VF points"
+    }
+  ],
+  "status": "partial"
+}

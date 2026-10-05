@@ -1,0 +1,232 @@
+{
+  "applies_to": [
+    "OHM-171"
+  ],
+  "basis_values": [
+    "32/32.06",
+    "8/(8+10+0.03)",
+    "DERIVED",
+    "MFR_DATASHEET"
+  ],
+  "behavior_id": "BEH-CON-AUDIO",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "8/(8+10+0.03)",
+          "measure": "v_before",
+          "tolerance": "0.1%",
+          "value": 0.44371
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-audio/B1_switch.cir",
+      "measured_in_ngspice": "0.443705 V before, 8e-9 V after",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "32/32.06",
+          "measure": "gain",
+          "tolerance": "0.1%",
+          "value": 0.998129
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-audio/B2_ring_switch_rc.cir",
+      "measured_in_ngspice": "0.998129",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-171"
+    ],
+    "behavior_id": "BEH-CON-AUDIO",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "8/(8+10+0.03)",
+            "measure": "v_before",
+            "tolerance": "0.1%",
+            "value": 0.44371
+          }
+        ],
+        "file": "bench/beh-con-audio/B1_switch.cir",
+        "id": "B1",
+        "measured_in_ngspice": "0.443705 V before, 8e-9 V after",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "32/32.06",
+            "measure": "gain",
+            "tolerance": "0.1%",
+            "value": 0.998129
+          }
+        ],
+        "file": "bench/beh-con-audio/B2_ring_switch_rc.cir",
+        "id": "B2",
+        "measured_in_ngspice": "0.998129",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "connector",
+    "confidence": {
+      "failure": "L",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "L"
+    },
+    "failure_modes": [
+      {
+        "effect": "burn or weld",
+        "id": "switch_overcurrent",
+        "permanence": "permanent",
+        "sim_response": "flag",
+        "trigger": "above 1 A through switch contact"
+      },
+      {
+        "effect": "ground and mic swapped",
+        "id": "wrong_standard",
+        "permanence": "recoverable",
+        "sim_response": "plug_type flag",
+        "trigger": "CTIA/OMTP mismatch"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "no insertion bounce or pop",
+        "NC convention is CONSENSUS",
+        "plug type is a harness property",
+        "Rsw unit uncertain"
+      ],
+      "netlist_template": ".model SWNC SW(vt=-0.5 vh=0.1 ron={Rsw} roff=1G)\nS{ref}_tn {T} {TN} 0 {ctl_inserted} SWNC\nR{ref}_t {T} {T_cable} {Rc}   ; only when inserted\n",
+      "spice_primitives": [
+        "R",
+        "S"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "ac",
+        "tran",
+        "temp"
+      ],
+      "valid_range": "audio, DC to MHz; currents up to 1 A"
+    },
+    "parameters": {
+      "Rc": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.03,
+        "max": 0.1,
+        "min": 0,
+        "source_ref": "S20",
+        "tolerance": "30 initial 100 after life",
+        "unit": "ohm"
+      },
+      "Rsw": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "L",
+        "default": 0.03,
+        "max": 0.1,
+        "min": 0,
+        "source_ref": "S21",
+        "tolerance": "unit of S21 value uncertain",
+        "unit": "ohm"
+      },
+      "inserted": {
+        "basis": "DERIVED",
+        "confidence": "H",
+        "default": 0,
+        "max": 1,
+        "min": 0,
+        "source_ref": "none",
+        "tolerance": "exact",
+        "unit": "bool"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "T",
+        "package_terminal_rule": "tip; KiCad name T; map by name",
+        "role": "signal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "TN",
+        "package_terminal_rule": "tip switch, normally closed to T, opens on insertion",
+        "role": "switch"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "R",
+        "package_terminal_rule": "ring",
+        "role": "signal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "RN",
+        "package_terminal_rule": "ring switch, normally closed to R, opens on insertion",
+        "role": "switch"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "S",
+        "package_terminal_rule": "sleeve",
+        "role": "ground"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "abs(i(Rt)) <= 1.0",
+        "condition": "SJ1-353xNG",
+        "name": "current",
+        "source_ref": "S21",
+        "symbol": "I",
+        "unit": "A",
+        "value": 1.0
+      },
+      {
+        "check": "abs(v(t,s)) <= 12",
+        "condition": "DC rated",
+        "name": "voltage",
+        "source_ref": "S21",
+        "symbol": "V",
+        "unit": "V",
+        "value": 12
+      }
+    ],
+    "sources": [
+      "S20",
+      "S21",
+      "S22"
+    ],
+    "status": "partial"
+  },
+  "category": "connector",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "baacea46d3d3aeb3989a9278c7c8ee3b1108b04908c424cf5625061156c44ff2",
+    "line": 11745
+  },
+  "source_refs": [
+    "S20",
+    "S21",
+    "S22"
+  ],
+  "status": "partial"
+}

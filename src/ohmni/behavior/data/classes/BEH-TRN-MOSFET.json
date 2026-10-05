@@ -1,0 +1,379 @@
+{
+  "applies_to": [
+    "OHM-093",
+    "OHM-094",
+    "OHM-098",
+    "OHM-099",
+    "OHM-100",
+    "OHM-101",
+    "OHM-102"
+  ],
+  "basis_values": [
+    "0.5 L I^2 BV/(BV-Vdd)",
+    "DERIVED",
+    "Id*Rds",
+    "MFR_DATASHEET",
+    "datasheet"
+  ],
+  "behavior_id": "BEH-TRN-MOSFET",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "Id*Rds",
+          "measure": "Vds",
+          "tolerance": "3%",
+          "value": 0.1041
+        }
+      ],
+      "file": "docs/behavior/bench/trn_mosfet/B1_lowside_switch.cir",
+      "measured_in_ngspice": "0.1020 V",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "datasheet",
+          "measure": "Rds_4p5V_L3",
+          "tolerance": "3%",
+          "value": 0.016
+        }
+      ],
+      "file": "docs/behavior/bench/trn_mosfet/B2_rdson_vs_vgs_L1_vs_L3.cir",
+      "measured_in_ngspice": "16.000 mohm",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "datasheet",
+          "measure": "Qgd",
+          "tolerance": "10%",
+          "value": "23e-9"
+        }
+      ],
+      "file": "docs/behavior/bench/trn_mosfet/B3_gate_charge.cir",
+      "measured_in_ngspice": "23.2 nC; Qg 48.8 nC vs 63",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B8",
+      "expected": [
+        {
+          "basis": "0.5 L I^2 BV/(BV-Vdd)",
+          "measure": "Eav",
+          "tolerance": "10%",
+          "value": 0.24
+        }
+      ],
+      "file": "docs/behavior/bench/trn_mosfet/B8_uis_avalanche.cir",
+      "measured_in_ngspice": "0.239 J",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-093",
+      "OHM-094",
+      "OHM-098",
+      "OHM-099",
+      "OHM-100",
+      "OHM-101",
+      "OHM-102"
+    ],
+    "behavior_id": "BEH-TRN-MOSFET",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "Id*Rds",
+            "measure": "Vds",
+            "tolerance": "3%",
+            "value": 0.1041
+          }
+        ],
+        "file": "bench/trn_mosfet/B1_lowside_switch.cir",
+        "id": "B1",
+        "measured_in_ngspice": "0.1020 V",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "datasheet",
+            "measure": "Rds_4p5V_L3",
+            "tolerance": "3%",
+            "value": 0.016
+          }
+        ],
+        "file": "bench/trn_mosfet/B2_rdson_vs_vgs_L1_vs_L3.cir",
+        "id": "B2",
+        "measured_in_ngspice": "16.000 mohm",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "datasheet",
+            "measure": "Qgd",
+            "tolerance": "10%",
+            "value": "23e-9"
+          }
+        ],
+        "file": "bench/trn_mosfet/B3_gate_charge.cir",
+        "id": "B3",
+        "measured_in_ngspice": "23.2 nC; Qg 48.8 nC vs 63",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "0.5 L I^2 BV/(BV-Vdd)",
+            "measure": "Eav",
+            "tolerance": "10%",
+            "value": 0.24
+          }
+        ],
+        "file": "bench/trn_mosfet/B8_uis_avalanche.cir",
+        "id": "B8",
+        "measured_in_ngspice": "0.239 J",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "transistor",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "H"
+    },
+    "failure_modes": [
+      {
+        "effect": "gate short, permanent",
+        "id": "gate_oxide",
+        "permanence": "permanent",
+        "sim_response": "flag, mark failed (gate leak 100 ohm to 1 kohm)",
+        "trigger": "abs(Vgs) > 20 V"
+      },
+      {
+        "effect": "D-S-G low-ohmic short",
+        "id": "avalanche_overenergy",
+        "permanence": "permanent",
+        "sim_response": "flag, replace by 1 mohm D-S",
+        "trigger": "E_av > EAS"
+      },
+      {
+        "effect": "hot-spot runaway",
+        "id": "spirito_soa",
+        "permanence": "permanent",
+        "sim_response": "flag SOA_RISK",
+        "trigger": "linear mode, high Vds, low Vgs"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "Rds(on) is the datasheet MAXIMUM, not typical",
+        "constant Cgs: Qg 23 % low (IRFZ44N)",
+        "reverse-recovery waveform wrong although Qrr integral tuned",
+        "no Vth tempco, no hot-spot SOA, no gate-oxide breakdown",
+        "Rg, RD/RS split, body-diode N and RS are assumptions",
+        "IRFP260N and Si7898DP lack Crss/Coss data",
+        "no vendor subcircuit attached"
+      ],
+      "netlist_template": ".include models_mosfet_r6fit.lib\nX{ref} {D} {G} {S} IRFZ44N_R6 BVDSS=55\n",
+      "spice_primitives": [
+        "M",
+        "C (q= charge form)",
+        "D",
+        "R"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "tran",
+        "ac",
+        "temp"
+      ],
+      "valid_range": "Vgs 0..20 V, Vds 0..BVDSS, Tj -55..175 C, Rds(on) worst case (max column)"
+    },
+    "parameters": {
+      "cgs_ciss": {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "default": 1382,
+        "max": null,
+        "min": null,
+        "source_ref": "S10",
+        "tolerance": null,
+        "unit": "pF"
+      },
+      "eas": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.53,
+        "max": 0.53,
+        "min": null,
+        "source_ref": "S10",
+        "tolerance": null,
+        "unit": "J"
+      },
+      "rds_on_max_10V": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.0175,
+        "max": 0.0175,
+        "min": null,
+        "source_ref": "S10",
+        "tolerance": "max column; typ not captured",
+        "unit": "ohm"
+      },
+      "rth_jc": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 1.5,
+        "max": null,
+        "min": null,
+        "source_ref": "S10",
+        "tolerance": null,
+        "unit": "K/W"
+      },
+      "vds_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 55,
+        "max": 55,
+        "min": null,
+        "source_ref": "S10",
+        "tolerance": null,
+        "unit": "V"
+      },
+      "vgs_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 20,
+        "max": 20,
+        "min": null,
+        "source_ref": "S10",
+        "tolerance": null,
+        "unit": "V"
+      },
+      "vgs_th": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 3.0,
+        "max": 4.0,
+        "min": 2.0,
+        "source_ref": "S10",
+        "tolerance": "part to part",
+        "unit": "V"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "bidirectional",
+        "name": "D",
+        "package_terminal_rule": "per part: TO-220/DPAK/TO-247 pin2 and tab; SOT-23 2N7002 pin3; TO-92 2N7000 pin3; PowerPAK SO-8 pins 5-8 and pad",
+        "role": "drain"
+      },
+      {
+        "electrical_type": "input",
+        "name": "G",
+        "package_terminal_rule": "per part: TO-220/DPAK/TO-247 pin1; SOT-23 2N7002 pin1; TO-92 2N7000 pin2; PowerPAK SO-8 pin4",
+        "role": "gate"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "S",
+        "package_terminal_rule": "per part: TO-220/DPAK/TO-247 pin3; SOT-23 2N7002 pin2; TO-92 2N7000 pin1; PowerPAK SO-8 pins1-3",
+        "role": "source"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "abs(v(g)-v(s)) <= 20",
+        "condition": "IRFZ44N",
+        "name": "vgs_max",
+        "source_ref": "S10",
+        "symbol": "VGS",
+        "unit": "V",
+        "value": 20
+      },
+      {
+        "check": "v(d)-v(s) <= 55",
+        "condition": "IRFZ44N",
+        "name": "vds_max",
+        "source_ref": "S10",
+        "symbol": "VDS",
+        "unit": "V",
+        "value": 55
+      },
+      {
+        "check": "E_av <= 0.53*(1-(Tj_start-25)/150)",
+        "condition": "single pulse, Tj start 25 C",
+        "name": "eas",
+        "source_ref": "S10",
+        "symbol": "EAS",
+        "unit": "J",
+        "value": 0.53
+      },
+      {
+        "check": "vds*id <= (175-Tc)/1.5",
+        "condition": "Tc=25 C, derate 0.63 W/C",
+        "name": "power",
+        "source_ref": "S10",
+        "symbol": "PD",
+        "unit": "W",
+        "value": 94
+      }
+    ],
+    "sources": [
+      "S8",
+      "S9",
+      "S10",
+      "S11",
+      "S12",
+      "S13",
+      "S14",
+      "S15",
+      "S16",
+      "S28",
+      "S29",
+      "S31"
+    ],
+    "status": "partial"
+  },
+  "category": "transistor",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "984e588bb45b9b19f30395ec7e71106fded535758ecd70f7de39d9270b1a81a4",
+    "line": 6135
+  },
+  "source_refs": [
+    "S8",
+    "S9",
+    "S10",
+    "S11",
+    "S12",
+    "S13",
+    "S14",
+    "S15",
+    "S16",
+    "S28",
+    "S29",
+    "S31"
+  ],
+  "status": "partial"
+}

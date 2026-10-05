@@ -1,0 +1,13 @@
+B2 saturation under volt-second step. Expected: V*t = lambda(i) = LR*L0*i + (1-LR)*L0*ia*tanh(i/ia)
+.include ind_sat.lib
+V1 in 0 PWL(0 0 1n 10)
+X1 in 0 IND_SAT L0=10u Isat=6 DROP=0.2 LR=0.05 RDC=1m CP=0.01p RP=1e12
+.tran 10n 12u
+.control
+run
+meas tran i_4u find i(V1) at=4u
+meas tran i_8u find i(V1) at=8u
+meas tran i_10u find i(V1) at=10u
+quit
+.endc
+.end

@@ -1,0 +1,21 @@
+* BEH-IC-CHARGER-SOT235 B2: CC -> CV and precondition. Rprog=20k (Ireg=50 mA), Vin=5 V, Vbat swept 2.0..4.3 V.
+* Expected: Vbat=2.5 -> Ibat = pre*Ireg = 5 mA (precondition, vptrh ASSUMED 3.0 V) ; Vbat=3.7 -> 50 mA ; Vbat=4.2 -> 0 ; Vbat=4.19 -> Ireg*tanh(0.01/(0.3*0.05)) = 50 mA * tanh(0.667) = 29.1 mA
+.include mcp73831.lib
+Vdd vdd 0 5
+Vb vbat 0 3.7
+Rprog prog 0 20k
+X1 vdd 0 prog vbat stat chg_cc_cv
+Rst stat vdd 10k
+.nodeset v(x1.tj)=30
+.control
+set noaskquit
+dc Vb 2.0 4.3 0.01
+let i = i(Vb)
+let a = i[50]
+let b = i[170]
+let c = i[219]
+let d = i[220]
+echo RESULT I_at_2.5V=$&a I_at_3.7V=$&b I_at_4.19V=$&c I_at_4.20V=$&d
+quit
+.endc
+.end

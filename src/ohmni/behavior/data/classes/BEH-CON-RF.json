@@ -1,0 +1,373 @@
+{
+  "applies_to": [
+    "OHM-175",
+    "OHM-176",
+    "OHM-177"
+  ],
+  "basis_values": [
+    "(1+G)/(1-G)",
+    "(50-Zc^2/50)/(50+Zc^2/50)",
+    "ASSUMPTION",
+    "MFR_DATASHEET",
+    "x/sqrt(4+x^2)"
+  ],
+  "behavior_id": "BEH-CON-RF",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "(1+G)/(1-G)",
+          "measure": "vswr",
+          "tolerance": "0.01%",
+          "value": 2.0
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-rf/B1.cir",
+      "measured_in_ngspice": "2.0000",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "x/sqrt(4+x^2)",
+          "measure": "gamma_C",
+          "tolerance": "0.01%",
+          "value": 0.093832
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-rf/B2.cir",
+      "measured_in_ngspice": "0.093832",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "(50-Zc^2/50)/(50+Zc^2/50)",
+          "measure": "gamma_step",
+          "tolerance": "0.01%",
+          "value": 0.219512
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-rf/B3.cir",
+      "measured_in_ngspice": "0.219512",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-175",
+      "OHM-176",
+      "OHM-177"
+    ],
+    "behavior_id": "BEH-CON-RF",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "(1+G)/(1-G)",
+            "measure": "vswr",
+            "tolerance": "0.01%",
+            "value": 2.0
+          }
+        ],
+        "file": "bench/beh-con-rf/B1.cir",
+        "id": "B1",
+        "measured_in_ngspice": "2.0000",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "x/sqrt(4+x^2)",
+            "measure": "gamma_C",
+            "tolerance": "0.01%",
+            "value": 0.093832
+          }
+        ],
+        "file": "bench/beh-con-rf/B2.cir",
+        "id": "B2",
+        "measured_in_ngspice": "0.093832",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "(50-Zc^2/50)/(50+Zc^2/50)",
+            "measure": "gamma_step",
+            "tolerance": "0.01%",
+            "value": 0.219512
+          }
+        ],
+        "file": "bench/beh-con-rf/B3.cir",
+        "id": "B3",
+        "measured_in_ngspice": "0.219512",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "connector",
+    "confidence": {
+      "failure": "L",
+      "model": "L",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "wear, VSWR",
+        "id": "overcycled",
+        "permanence": "permanent",
+        "sim_response": "derate",
+        "trigger": ">30 cycles (U.FL)"
+      },
+      {
+        "effect": "VSWR step",
+        "id": "bad_launch",
+        "permanence": "recoverable",
+        "sim_response": "step element",
+        "trigger": "pad geometry mismatch"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "no sourced insertion loss",
+        "parasitics are tuning assumptions",
+        "no EM footprint model"
+      ],
+      "netlist_template": "R{ref}_c {SIG} n1 {rc_center}\nC{ref}_p n1 {GND} {c_pad}\nL{ref}_s n1 n2 {l_pin}\nT{ref} n2 {GND} OUT {GND} Z0={z0} TD={td}\n",
+      "spice_primitives": [
+        "R",
+        "C",
+        "L",
+        "T"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "ac",
+        "tran"
+      ],
+      "valid_range": "DC to f_max"
+    },
+    "parameters": {
+      "c_pad": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0,
+        "max": "3e-13",
+        "min": 0,
+        "source_ref": "none",
+        "unit": "F"
+      },
+      "f_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": "6e9",
+        "max": "18e9",
+        "min": 0,
+        "source_ref": "S5",
+        "unit": "Hz"
+      },
+      "l_pin": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0,
+        "max": "1e-9",
+        "min": 0,
+        "source_ref": "none",
+        "unit": "H"
+      },
+      "mating_cycles": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 30,
+        "source_ref": "S5",
+        "unit": "count"
+      },
+      "rc_center": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.02,
+        "max": 0.025,
+        "source_ref": "S5",
+        "unit": "ohm"
+      },
+      "vswr_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 1.5,
+        "source_ref": "S5",
+        "unit": "ratio"
+      },
+      "z0": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 50,
+        "source_ref": "S5",
+        "unit": "ohm"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "SIG",
+        "package_terminal_rule": "center contact; U.FL signal pad; SMA center pin",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "GND",
+        "package_terminal_rule": "all outer-shell ground pins/pads tied (U.FL 2; vertical SMA 4; edge-launch SMA 4)",
+        "role": "terminal"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "f<=f_max",
+        "condition": "U.FL; SMA 18e9",
+        "name": "frequency",
+        "source_ref": "S5",
+        "symbol": "f",
+        "unit": "Hz",
+        "value": "6e9"
+      },
+      {
+        "check": "vswr(f)<=vswr_max",
+        "condition": "U.FL 3-6 GHz",
+        "name": "vswr",
+        "source_ref": "S5",
+        "symbol": "VSWR",
+        "unit": "ratio",
+        "value": 1.5
+      },
+      {
+        "check": "abs(v)<=100",
+        "condition": "U.FL",
+        "name": "dc_voltage",
+        "source_ref": "S5",
+        "symbol": "V",
+        "unit": "V",
+        "value": 100
+      }
+    ],
+    "sources": [
+      {
+        "date": "2009.2w",
+        "id": "S5",
+        "org": "Hirose",
+        "title": "Ultra Small Surface Mount Coaxial Connectors, U.FL Series (doc 2009.2w)",
+        "url": "https://docs.rs-online.com/3355/0900766b8105243f.pdf",
+        "used_for": "50 ohm, DC-6 GHz, VSWR, 30 cycles, contact resistance"
+      },
+      {
+        "date": "n/a",
+        "id": "S6",
+        "org": "Amphenol RF",
+        "title": "SMA Panel Mount Receptacles",
+        "url": "https://www.amphenolrf.com/en-us/assets/file/4065861601/",
+        "used_for": "VSWR 1.15, DC-18 GHz, torque, 500 cycles, 2.0 mohm"
+      },
+      {
+        "date": "n/a",
+        "id": "S7",
+        "org": "Cytech Systems (distributor listing, Amphenol 132134)",
+        "title": "132134 product page",
+        "url": "https://www.cytechsystems.com/product/132134",
+        "used_for": "50 ohm, 18 GHz max, 500 cycles, BeCu gold, PTFE"
+      },
+      {
+        "date": "n/a",
+        "id": "S8",
+        "org": "Molex",
+        "title": "73251-1150 part detail page",
+        "url": "https://www.molex.com/en-us/products/part-detail/732511150?display=pdf",
+        "used_for": "50 ohm, 18 GHz, 500 Vrms"
+      },
+      {
+        "date": "Rev 2 (05/28)",
+        "id": "S9",
+        "org": "SV Microwave",
+        "title": "Solderless PCB Edge Launch Connectors Application Note Rev. 2 (05/28)",
+        "url": "https://www.svmicrowave.com/images/uploaded/Solderless_PCB_Edge_Launch_Connectors_Application_Note.pdf",
+        "used_for": "VSWR 1.0-2.0 plots, torque"
+      },
+      {
+        "date": "n/a",
+        "id": "S10",
+        "org": "Copper Mountain Technologies",
+        "title": "Optimal fixture design with end launch SMA connectors",
+        "url": "https://coppermountaintech.com/optimal-fixture-design-with-end-launch-sma-connectors/",
+        "used_for": "small flat pin, fringing capacitance, CPWG guidance"
+      }
+    ],
+    "status": "partial"
+  },
+  "category": "connector",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "a1fe85abfe045ecac395ce3608e78457fa72df6d8ccaf5692f837223776f7cea",
+    "line": 12358
+  },
+  "source_refs": [
+    {
+      "date": "2009.2w",
+      "id": "S5",
+      "org": "Hirose",
+      "title": "Ultra Small Surface Mount Coaxial Connectors, U.FL Series (doc 2009.2w)",
+      "url": "https://docs.rs-online.com/3355/0900766b8105243f.pdf",
+      "used_for": "50 ohm, DC-6 GHz, VSWR, 30 cycles, contact resistance"
+    },
+    {
+      "date": "n/a",
+      "id": "S6",
+      "org": "Amphenol RF",
+      "title": "SMA Panel Mount Receptacles",
+      "url": "https://www.amphenolrf.com/en-us/assets/file/4065861601/",
+      "used_for": "VSWR 1.15, DC-18 GHz, torque, 500 cycles, 2.0 mohm"
+    },
+    {
+      "date": "n/a",
+      "id": "S7",
+      "org": "Cytech Systems (distributor listing, Amphenol 132134)",
+      "title": "132134 product page",
+      "url": "https://www.cytechsystems.com/product/132134",
+      "used_for": "50 ohm, 18 GHz max, 500 cycles, BeCu gold, PTFE"
+    },
+    {
+      "date": "n/a",
+      "id": "S8",
+      "org": "Molex",
+      "title": "73251-1150 part detail page",
+      "url": "https://www.molex.com/en-us/products/part-detail/732511150?display=pdf",
+      "used_for": "50 ohm, 18 GHz, 500 Vrms"
+    },
+    {
+      "date": "Rev 2 (05/28)",
+      "id": "S9",
+      "org": "SV Microwave",
+      "title": "Solderless PCB Edge Launch Connectors Application Note Rev. 2 (05/28)",
+      "url": "https://www.svmicrowave.com/images/uploaded/Solderless_PCB_Edge_Launch_Connectors_Application_Note.pdf",
+      "used_for": "VSWR 1.0-2.0 plots, torque"
+    },
+    {
+      "date": "n/a",
+      "id": "S10",
+      "org": "Copper Mountain Technologies",
+      "title": "Optimal fixture design with end launch SMA connectors",
+      "url": "https://coppermountaintech.com/optimal-fixture-design-with-end-launch-sma-connectors/",
+      "used_for": "small flat pin, fringing capacitance, CPWG guidance"
+    }
+  ],
+  "status": "partial"
+}

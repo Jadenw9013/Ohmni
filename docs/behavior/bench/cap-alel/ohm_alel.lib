@@ -1,0 +1,14 @@
+* OHMNI BEH-CAP-ALEL subcircuit (polarised aluminium electrolytic), behavioural_approximation
+* ports: p(+) n(-) flag. flag node voltage bitmask: 1 = V > VR, 2 = reverse > VREVMAX, 4 = |i| > IPK
+.subckt ohm_alel p n flag params: C0=100u ESR=0.3 ESL=15n RLK=1meg VR=25 TA=25 TESRK=20 VREVMAX=1 IPK=1e9 DIS=1e-9 DN=4
+.param ESRT={ESR*max(1,pow(2,(25-TA)/TESRK))}
+Lesl p a {ESL}
+Resr a c {ESRT}
+Vsns c b 0
+Cb b n {C0}
+Rlk b n {RLK}
+* reverse conduction of the cathode foil oxide (shape ASSUMED): anode on n, cathode on p
+Drev n b dmod
+.model dmod D(Is={DIS} N={DN})
+Bflag flag 0 V = '(v(b,n) > {VR} ? 1 : 0) + (v(b,n) < -{VREVMAX} ? 2 : 0) + (abs(i(Vsns)) > {IPK} ? 4 : 0)'
+.ends

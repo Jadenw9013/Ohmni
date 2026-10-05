@@ -1,0 +1,323 @@
+{
+  "applies_to": [
+    "OHM-052"
+  ],
+  "basis_values": [
+    "ASSUMPTION",
+    "MFR_DATASHEET",
+    "RL/(Rs+RP+RS+RL)",
+    "Req/(2 pi Lm)",
+    "lambda(i)=V/w"
+  ],
+  "behavior_id": "BEH-MAG-XFMR-SIGNAL",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "RL/(Rs+RP+RS+RL)",
+          "measure": "gain_1kHz",
+          "tolerance": 0.01,
+          "value": 0.46875
+        }
+      ],
+      "file": "docs/behavior/bench/mag_xfmr/B1_midband_ratio.cir",
+      "measured_in_ngspice": 0.46741,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "Req/(2 pi Lm)",
+          "measure": "fL",
+          "tolerance": 0.03,
+          "value": 51.2
+        }
+      ],
+      "file": "docs/behavior/bench/mag_xfmr/B2_lf_corner.cir",
+      "measured_in_ngspice": 50.7,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "lambda(i)=V/w",
+          "measure": "i_pk",
+          "tolerance": 0.01,
+          "value": 0.85308
+        }
+      ],
+      "file": "docs/behavior/bench/mag_xfmr/B3_voltsecond_sat.cir",
+      "measured_in_ngspice": 0.85308,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-052"
+    ],
+    "behavior_id": "BEH-MAG-XFMR-SIGNAL",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "RL/(Rs+RP+RS+RL)",
+            "measure": "gain_1kHz",
+            "tolerance": 0.01,
+            "value": 0.46875
+          }
+        ],
+        "file": "bench/mag_xfmr/B1_midband_ratio.cir",
+        "id": "B1",
+        "measured_in_ngspice": 0.46741,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "Req/(2 pi Lm)",
+            "measure": "fL",
+            "tolerance": 0.03,
+            "value": 51.2
+          }
+        ],
+        "file": "bench/mag_xfmr/B2_lf_corner.cir",
+        "id": "B2",
+        "measured_in_ngspice": 50.7,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "lambda(i)=V/w",
+            "measure": "i_pk",
+            "tolerance": 0.01,
+            "value": 0.85308
+          }
+        ],
+        "file": "bench/mag_xfmr/B3_voltsecond_sat.cir",
+        "id": "B3",
+        "measured_in_ngspice": 0.85308,
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "magnetics",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "L",
+      "ratings": "L"
+    },
+    "failure_modes": [
+      {
+        "effect": "magnetizing current spike",
+        "id": "saturation",
+        "permanence": "recoverable",
+        "sim_response": "XFMR_SAT",
+        "trigger": "volt-seconds beyond lambda_max"
+      },
+      {
+        "effect": "offset flux",
+        "id": "dc_bias",
+        "permanence": "recoverable",
+        "sim_response": "WARN",
+        "trigger": "DC in winding"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "TY-145P electrical values assumed",
+        "center-tap form linear only",
+        "no isolation rating",
+        "no core loss"
+      ],
+      "netlist_template": ".include xfmr.lib\nX{ref} {P_A} {P_B} {S_A} {S_B} XFMR_SAT LP={lp} N={turns_ratio} LLK={llk} RP={rwinding} RS={rwinding} CIW={ciw} ISATM={isat_m}\n",
+      "spice_primitives": [
+        "L",
+        "K",
+        "R",
+        "C",
+        "E",
+        "F"
+      ],
+      "valid_analyses": [
+        "op",
+        "ac",
+        "tran"
+      ],
+      "valid_range": "Lm corner to leakage/capacitance corner; transient needs uic"
+    },
+    "parameters": {
+      "ciw": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 1e-10,
+        "max": 2e-09,
+        "min": 1e-12,
+        "source_ref": "S3",
+        "unit": "F"
+      },
+      "isat_m": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.5,
+        "max": 5,
+        "min": 0.001,
+        "source_ref": "S3",
+        "unit": "A"
+      },
+      "llk": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.005,
+        "max": 0.1,
+        "min": 0.0001,
+        "source_ref": "S3",
+        "unit": "H"
+      },
+      "lp": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 1.0,
+        "max": 10,
+        "min": 0.1,
+        "source_ref": "S3",
+        "tolerance": 0.3,
+        "unit": "H"
+      },
+      "rwinding": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 40,
+        "max": 200,
+        "min": 1,
+        "source_ref": "S3",
+        "tolerance": 0.2,
+        "unit": "ohm"
+      },
+      "turns_ratio": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 1.0,
+        "max": 100,
+        "min": 0.01,
+        "source_ref": "S22",
+        "tolerance": 0.01,
+        "unit": "ratio"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "P_A",
+        "package_terminal_rule": "pin 1 (DEFAULT-ASSUMPTION)",
+        "role": "primary_dot"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "P_CT",
+        "package_terminal_rule": "pin 2 (DEFAULT-ASSUMPTION)",
+        "role": "primary_center_tap"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "P_B",
+        "package_terminal_rule": "pin 3 (DEFAULT-ASSUMPTION)",
+        "role": "primary_end"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "S_A",
+        "package_terminal_rule": "pin 4 (DEFAULT-ASSUMPTION)",
+        "role": "secondary_dot"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "S_CT",
+        "package_terminal_rule": "pin 5 (DEFAULT-ASSUMPTION)",
+        "role": "secondary_center_tap"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "S_B",
+        "package_terminal_rule": "pin 6 (DEFAULT-ASSUMPTION)",
+        "role": "secondary_end"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "max(abs(i_m)) <= 0.9*ISATM",
+        "condition": "ASSUMPTION",
+        "name": "magnetizing_current",
+        "source_ref": "S3",
+        "symbol": "ISATM",
+        "unit": "A",
+        "value": 0.5
+      },
+      {
+        "check": "f in band",
+        "condition": "listing",
+        "name": "band",
+        "source_ref": "S22",
+        "symbol": "f",
+        "unit": "Hz",
+        "value": "200..15000"
+      }
+    ],
+    "sources": [
+      {
+        "date": "not shown",
+        "id": "S22",
+        "org": "Triad Magnetics",
+        "title": "TY-145P DigiKey listing",
+        "url": "https://www.digikey.ca/en/products/detail/TY-145P/237-1121-ND/242643",
+        "used_for": "600CT:600CT, 1:1, 200 Hz to 15 kHz"
+      },
+      {
+        "date": "not shown",
+        "id": "S3",
+        "org": "ngspice",
+        "title": "ngspice manual",
+        "url": "https://ngspice.sourceforge.io/docs/ngspice-html-manual/manual.xhtml",
+        "used_for": "L, K syntax"
+      }
+    ],
+    "status": "partial"
+  },
+  "category": "magnetics",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "c439b0f5d334b898af1e884b7b70415f160fc66f1287d4b9d10b933db7fdbbc7",
+    "line": 2823
+  },
+  "source_refs": [
+    {
+      "date": "not shown",
+      "id": "S22",
+      "org": "Triad Magnetics",
+      "title": "TY-145P DigiKey listing",
+      "url": "https://www.digikey.ca/en/products/detail/TY-145P/237-1121-ND/242643",
+      "used_for": "600CT:600CT, 1:1, 200 Hz to 15 kHz"
+    },
+    {
+      "date": "not shown",
+      "id": "S3",
+      "org": "ngspice",
+      "title": "ngspice manual",
+      "url": "https://ngspice.sourceforge.io/docs/ngspice-html-manual/manual.xhtml",
+      "used_for": "L, K syntax"
+    }
+  ],
+  "status": "partial"
+}

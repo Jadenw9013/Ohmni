@@ -1,0 +1,237 @@
+{
+  "applies_to": [
+    "OHM-016",
+    "OHM-017"
+  ],
+  "basis_values": [
+    "4*5/1k",
+    "5*10k/20k",
+    "5/10k",
+    "MFR_DATASHEET"
+  ],
+  "behavior_id": "BEH-RES-NETWORK",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "5*10k/20k",
+          "measure": "v(p2)",
+          "tolerance": "0.1%",
+          "value": 2.5
+        },
+        {
+          "basis": "5/10k",
+          "measure": "i(pin4)",
+          "tolerance": "0.1%",
+          "value": 0.0005
+        }
+      ],
+      "file": "docs/behavior/bench/res_network/B1.cir",
+      "measured_in_ngspice": "2.500000; 5.0000e-04",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "4*5/1k",
+          "measure": "i_total",
+          "tolerance": "0.1%",
+          "value": 0.02
+        }
+      ],
+      "file": "docs/behavior/bench/res_network/B2.cir",
+      "measured_in_ngspice": "0.02",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-016",
+      "OHM-017"
+    ],
+    "behavior_id": "BEH-RES-NETWORK",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "5*10k/20k",
+            "measure": "v(p2)",
+            "tolerance": "0.1%",
+            "value": 2.5
+          },
+          {
+            "basis": "5/10k",
+            "measure": "i(pin4)",
+            "tolerance": "0.1%",
+            "value": 0.0005
+          }
+        ],
+        "file": "bench/res_network/B1.cir",
+        "id": "B1",
+        "measured_in_ngspice": "2.500000; 5.0000e-04",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "4*5/1k",
+            "measure": "i_total",
+            "tolerance": "0.1%",
+            "value": 0.02
+          }
+        ],
+        "file": "bench/res_network/B2.cir",
+        "id": "B2",
+        "measured_in_ngspice": "0.02",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "passive",
+    "confidence": {
+      "failure": "L",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "drift or open of that element",
+        "id": "element_overpower",
+        "permanence": "permanent",
+        "sim_response": "flag per element; open that element if > 5x (assumption)",
+        "trigger": "P_k > P_elem*derate"
+      },
+      {
+        "effect": "substrate overheats",
+        "id": "package_overpower",
+        "permanence": "permanent",
+        "sim_response": "flag ERROR",
+        "trigger": "sum P > P_pkg"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "no inter-element coupling",
+        "no ratio-tracking statistics",
+        "isolated SIP pin pairing unverified",
+        "no parasitic C or L"
+      ],
+      "netlist_template": ".subckt SIP4_BUSSED p1 p2 p3 p4 params: R=10k\nR1 p1 p2 {R}\nR2 p1 p3 {R}\nR3 p1 p4 {R}\n.ends\n",
+      "spice_primitives": [
+        "R"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "ac",
+        "tran",
+        "temp"
+      ],
+      "valid_range": "DC and low frequency; below element and package power"
+    },
+    "parameters": {
+      "p_element": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 0.063,
+        "source_ref": "S18",
+        "unit": "W"
+      },
+      "p_package": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.5,
+        "source_ref": "S17",
+        "unit": "W"
+      },
+      "tcr": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 100,
+        "max": 250,
+        "source_ref": "S17",
+        "unit": "ppm_per_K"
+      },
+      "v_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 50,
+        "source_ref": "S18",
+        "unit": "V"
+      },
+      "value": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 10000,
+        "max": 1000000,
+        "min": 10,
+        "source_ref": "S17",
+        "tolerance": "1 % to 5 %",
+        "unit": "ohm"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "P1",
+        "package_terminal_rule": "SIP bussed: pin 1 = common; SIP isolated: element pairing RESEARCH_REQUIRED (default consecutive pairs 1-2, 3-4)",
+        "role": "common_or_terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "Pk",
+        "package_terminal_rule": "SIP bussed: pin k (k>=2) is the free end of element k-1; array: pin k and pin (N+1-k) are the ends of one element (CONSENSUS, M)",
+        "role": "terminal"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "v_k*i_k <= P_elem*derate(Tamb)",
+        "condition": "70 C, CRA06P",
+        "name": "element power",
+        "source_ref": "S18",
+        "symbol": "P",
+        "unit": "W",
+        "value": 0.063
+      },
+      {
+        "check": "sum(v_k*i_k) <= P_pkg*derate(Tamb)",
+        "condition": "70 C, 4600X by pin count",
+        "name": "package power",
+        "source_ref": "S17",
+        "symbol": "Ppkg",
+        "unit": "W",
+        "value": "0.5 to 1.75"
+      },
+      {
+        "check": "abs(v_k) <= Vmax",
+        "condition": "per element",
+        "name": "working voltage",
+        "source_ref": "S17",
+        "symbol": "Vmax",
+        "unit": "V",
+        "value": "100 (SIP) / 50 (array)"
+      }
+    ],
+    "sources": "S17, S18",
+    "status": "partial"
+  },
+  "category": "passive",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "54708b51647d916bbf9464c487dec9da92c8211da118276a50af7f1c119d5188",
+    "line": 778
+  },
+  "source_refs": "S17, S18",
+  "status": "partial"
+}

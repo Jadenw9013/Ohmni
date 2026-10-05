@@ -86,6 +86,7 @@ MCP1700_DOC = DocumentRef(
     title="MCP1700 Low Quiescent Current LDO",
     manufacturer="Microchip Technology",
     part_number="MCP1700T-3302E/TT",
+    revision="DS20001826F",
 )
 
 USB_C_DOC = DocumentRef(
@@ -414,20 +415,33 @@ def mcp1700_3302e() -> ComponentSpec:
                 pin_count=3,
                 hand_solderable=True,
                 kicad_footprint="Package_TO_SOT_SMD:SOT-23",
+                notes="Pin order from Microchip DS20001826F page 11.",
             )
         ],
         pins=[
             PinSpec(
                 number="1",
-                name="VOUT",
-                roles=[PinRole.POWER],
-                electrical_type=PinElectricalType.POWER_OUT,
-            ),
-            PinSpec(
-                number="2",
                 name="GND",
                 roles=[PinRole.GROUND],
                 electrical_type=PinElectricalType.POWER_IN,
+                evidence=[catalog_evidence(
+                    "MCP1700 SOT-23 pin 1",
+                    document=MCP1700_DOC,
+                    page=11,
+                    text_value="SOT-23 pin 1 = GND",
+                )],
+            ),
+            PinSpec(
+                number="2",
+                name="VOUT",
+                roles=[PinRole.POWER],
+                electrical_type=PinElectricalType.POWER_OUT,
+                evidence=[catalog_evidence(
+                    "MCP1700 SOT-23 pin 2",
+                    document=MCP1700_DOC,
+                    page=11,
+                    text_value="SOT-23 pin 2 = VOUT",
+                )],
             ),
             PinSpec(
                 number="3",
@@ -435,6 +449,12 @@ def mcp1700_3302e() -> ComponentSpec:
                 roles=[PinRole.POWER],
                 electrical_type=PinElectricalType.POWER_IN,
                 supply_rail="VIN",
+                evidence=[catalog_evidence(
+                    "MCP1700 SOT-23 pin 3",
+                    document=MCP1700_DOC,
+                    page=11,
+                    text_value="SOT-23 pin 3 = VIN",
+                )],
             ),
         ],
         supply_rails=[
@@ -722,9 +742,11 @@ def generic_led_green() -> ComponentSpec:
         description="Generic green indicator LED.",
         packages=[
             PackageOption(name="0603", pin_count=2, hand_solderable=True,
-                          kicad_footprint="LED_SMD:LED_0603_1608Metric"),
+                          kicad_footprint="LED_SMD:LED_0603_1608Metric",
+                          catalog_pin_to_pad={"1": "2", "2": "1"}),
             PackageOption(name="0805", pin_count=2, hand_solderable=True,
-                          kicad_footprint="LED_SMD:LED_0805_2012Metric"),
+                          kicad_footprint="LED_SMD:LED_0805_2012Metric",
+                          catalog_pin_to_pad={"1": "2", "2": "1"}),
         ],
         pins=[
             PinSpec(

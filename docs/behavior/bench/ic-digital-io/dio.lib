@@ -1,0 +1,16 @@
+* BEH-IC-DIGITAL-IO: electrical interface of a digital pin of an MCU / serial EEPROM (L2 pad model; the firmware/protocol behaviour is L3 and NOT simulated).
+* pad din dout oe vcc gnd : pad = package pin; dout/oe = normalised (0..1, as node voltages) data and output-enable from a higher layer; din = normalised receive level (0..1) + 'und' flag node
+* Input: Cpin, leakage, ESD clamps to rails; decision regions VIL = vilf*Vcc, VIH = vihf*Vcc, 'und' = 1 between them (undefined input level -> simulator should flag).
+* Output: push-pull Thevenin roh/rol, hi-Z with leakage when oe=0; optional pull-up (rpu) when pu=1 and oe=0.
+.model dpad d(is=1e-14 n=1 rs=5)
+.subckt dio_pin pad din und dout oe pu vcc gnd params: vilf=0.3 vihf=0.6 roh=40 rol=20 cpin=4p ileak=1u rpu=35k
+Cp pad gnd {cpin}
+Dh pad vcc dpad
+Dl gnd pad dpad
+Bleak pad gnd I=(1-v(oe))*{ileak}*tanh((v(pad)-v(gnd))/0.1)*0.0
+Bin din gnd V=0.5*(1+tanh((v(pad)-(v(gnd)+0.5*({vilf}+{vihf})*(v(vcc)-v(gnd))))/(0.02*(v(vcc)-v(gnd)))))
+Bun und gnd V=0.25*(1+tanh((v(pad)-(v(gnd)+{vilf}*(v(vcc)-v(gnd))))/0.05))*(1-tanh((v(pad)-(v(gnd)+{vihf}*(v(vcc)-v(gnd))))/0.05))
+Bth pad gnd I=v(oe)*(v(pad)-(v(gnd)+v(dout)*(v(vcc)-v(gnd))))/({roh}*v(dout)+{rol}*(1-v(dout)))
+Bsup vcc gnd I=v(oe)*max(((v(gnd)+v(dout)*(v(vcc)-v(gnd)))-v(pad))/({roh}*v(dout)+{rol}*(1-v(dout))),0)
+Bpu vcc pad I=(1-v(oe))*v(pu)*(v(vcc)-v(pad))/{rpu}
+.ends

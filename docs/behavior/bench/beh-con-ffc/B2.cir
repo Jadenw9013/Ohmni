@@ -1,0 +1,23 @@
+* B2 BEH-CON-FFC current sharing over N=5 power contacts in parallel (contact resistances spread 20..50 mohm)
+* analytical: I_k = I * (1/R_k) / sum(1/R_j). Total 1.75 A = 70% x 0.5 A x 5 contacts
+Itot 0 n 1.75
+V1 n a1 0
+Rc1 a1 0 20m
+V2 n a2 0
+Rc2 a2 0 30m
+V3 n a3 0
+Rc3 a3 0 35m
+V4 n a4 0
+Rc4 a4 0 45m
+V5 n a5 0
+Rc5 a5 0 50m
+.control
+op
+print i(V1) i(V2) i(V3) i(V4) i(V5) v(n)
+let g = 1/20e-3+1/30e-3+1/35e-3+1/45e-3+1/50e-3
+let e1 = 1.75*(1/20e-3)/g
+let e5 = 1.75*(1/50e-3)/g
+let ev = 1.75/g
+print e1 e5 ev
+.endc
+.end

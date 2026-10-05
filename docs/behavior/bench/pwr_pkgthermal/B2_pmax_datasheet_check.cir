@@ -1,0 +1,39 @@
+* BEH-PWR-PKGTHERMAL B2: P_max = (Tjmax - Tref)/Rth against datasheet power ratings (arithmetic check, no circuit; ngspice used as a calculator)
+* Formula: P_max(T) = (Tj_max - T)/Rth.  Rows: part, package, Tj_max, Tref, Rth (datasheet), datasheet P, source (see parts/R6.md S-list)
+*  2N3904   TO-92   150, 25, RthJA 200    -> 0.625 W   (ds 625 mW)
+*  IRF540N  TO-220  175, 25, RthJC 1.15   -> 130.4 W   (ds 130 W, Tc=25)
+*  IRLB8721 TO-220  175, 25, RthJC 2.3    -> 65.2 W    (ds 65 W)
+*  IRFP260N TO-247  175, 25, RthJC 0.50   -> 300 W     (ds 300 W)
+*  IRLR3410 DPAK    175, 25, RthJC 1.9    -> 78.9 W    (ds 79 W)
+*  BD139    TO-126  150, 25, RthJC 10     -> 12.5 W    (ds 12.5 W, Tc=25)
+*  BCP56    SOT-223 150, 25, RthJA 93 (6 cm2 pad) -> 1.344 W (ds 1.35 W)
+*  BCX56    SOT-89  150, 25, RthJA 250 (min footprint) -> 0.50 W (ds 0.5 W)
+*  BC817    SOT-23  150, 25, RthJA 500 -> 0.25 W (ds 250 mW) ; 362 (1 cm2 pad) -> 0.345 W (ds 345 mW)
+*  2N7000   TO-92   150, 25, RthJA 357 -> 0.350 W (ds 350 mW)
+*  Si7898DP PPAK    150, 25, RthJA 25 (t<=10 s) -> 5.0 W (ds 5 W at TA=25 C); steady 65 -> 1.92 W
+* Counter-examples found (datasheet numbers as extracted do NOT satisfy the formula, see parts/R6.md):
+*  IRFZ44N: 150/1.5 = 100 W vs ds 94 W (ds derating 0.63 W/C -> 1.59 C/W) ; 2N7002 (Nexperia): 125/350 = 0.357 W vs ds 0.83 W (Ptot referenced to a different condition) ; IRLR8721 (DPAK): 150/2.3 = 65 W vs ds 33 W
+* Expected: first 11 rows within 1.5 % of the datasheet power; counter-example rows reported as mismatches.
+.control
+set noaskquit
+let p1 = (150-25)/200
+let p2 = (175-25)/1.15
+let p3 = (175-25)/2.3
+let p4 = (175-25)/0.5
+let p5 = (175-25)/1.9
+let p6 = (150-25)/10
+let p7 = (150-25)/93
+let p8 = (150-25)/250
+let p9a = (150-25)/500
+let p9b = (150-25)/362
+let p10 = (150-25)/357
+let p11a = (150-25)/25
+let p11b = (150-25)/65
+print p1 p2 p3 p4 p5 p6 p7 p8 p9a p9b p10 p11a p11b
+let c1 = (175-25)/1.5
+let c2 = (150-25)/350
+let c3 = (175-25)/2.3
+print c1 c2 c3
+quit
+.endc
+.end

@@ -1,0 +1,23 @@
+* BEH-REG-LINEAR B2: line and load regulation of the L7805-class model (ST L78 DS0422 Rev 38: line reg 50 mV typ 7.5-25 V; load reg 100 mV typ 5 mA-1.5 A; Vout 5 V)
+* Parameters: KLINE = 0.050/17.5 = 2.857 mV/V ; ROUTDC = 0.100/1.495 = 66.9 mohm ; GM=500 (so 1/GM = 2 mohm < ROUTDC)
+* Analytic: Vout(Vin=7.5, 5 mA) = 5 + KLINE*(7.5-VINREF=10)... VINREF=10: Vout(10 V, 5 mA) = 5.000 - 0.0669*0.005 = 4.99967
+*   line: Vout(25 V,5 mA) - Vout(7.5 V,5 mA) = 0.050 V (tolerance 5 %)
+*   load: Vout(10 V,5 mA) - Vout(10 V,1.5 A) = 0.100 V (tolerance 5 %)
+.include /home/claude/behavior/bench/reg_linear/reg_behavioural_r6.lib
+Vin vin 0 10
+X1 vin vout 0 LDO_R6 VNOM=5 VINREF=10 KLINE=0.002857 ROUTDC=0.0669 VDO=2 IDO=1 IQ=5m ILIM=2.2 GM=500 FP1=300k FP2=1meg RTH=50 TSD=500
+Iload vout 0 0.005
+.nodeset v(vout)=5
+.control
+set noaskquit
+dc Vin 7.5 25 17.5
+print v(vout)
+let dline = v(vout)[1]-v(vout)[0]
+print dline
+dc Iload 0.005 1.5 1.495
+print v(vout)
+let dload = v(vout)[0]-v(vout)[1]
+print dload
+quit
+.endc
+.end

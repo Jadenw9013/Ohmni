@@ -1,0 +1,11 @@
+* BEH-DIO-PN B4: junction capacitance at VR=4 V, 1 MHz (1N4007 datasheet CJ=15 pF)
+.model D1N4007_TYP D (IS=4.023e-9 N=1.8 RS=0.03 CJO=38.87p VJ=0.7 M=0.5 TT=3u BV=1100 IBV=5u)
+V1 0 a dc 4 ac 1
+D1 a 0 D1N4007_TYP
+.ac lin 1 1meg 1meg
+.control
+run
+let c = abs(i(v1))/(2*pi*1meg)
+print c
+.endc
+.end

@@ -1,0 +1,28 @@
+* BEH-REG-BUCK-DCS B3: load step 0.1 A -> 1.0 A (10 ns edge) and back, 12 V -> 3.3 V, Cout 22 uF + 5 mOhm ESR
+* Analytic bound: catch-up time t = dI*L/(Vin-Vo) = 0.9*2.2u/8.7 = 227.6 ns ; charge deficit = 0.5*dI*t = 0.1025 uC -> dV = Q/C = 4.7 mV ; ESR step 0.9*5m = 4.5 mV
+*   expected undershoot below the pre-step mean: 4.7 .. 9.2 mV plus control delay (~ one fsw period adds <= dI*Tper/C = 0.9*0.4u/22u = 16 mV worst) -> accept 5 .. 30 mV
+.include buck_core.inc
+Vin vin 0 12
+Ven en 0 3.3
+Xb vin 0 vout vout en BUCKCORE K=420n RHS=0.4 RLS=0.16 VSET=3.3 IQ=17u L=2.2u DCR=0.05
+Cout vout nesr 22u ic=3.3
+Resr nesr 0 5m
+Rbase vout 0 33
+Iload vout 0 PWL(0 0.0 60u 0.0 60.01u 0.9 100u 0.9 100.01u 0.0)
+.options method=gear reltol=1e-3 abstol=1e-9 vntol=1e-5 gmin=1e-9
+.tran 1n 140u uic
+.control
+set noaskquit
+run
+meas tran vpre avg v(vout) from=50u to=59u
+meas tran vmin min v(vout) from=60u to=75u
+meas tran vpost avg v(vout) from=85u to=99u
+meas tran vmax max v(vout) from=100u to=115u
+meas tran vend avg v(vout) from=125u to=139u
+let under_mV = (vpre-vmin)*1000
+let over_mV = (vmax-vend)*1000
+let droop_dc_mV = (vpre-vpost)*1000
+print under_mV over_mV droop_dc_mV
+quit
+.endc
+.end

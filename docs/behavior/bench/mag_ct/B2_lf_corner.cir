@@ -1,0 +1,14 @@
+B2 CT low-frequency corner: gain Vb/Ip = (Rb/N) * jwL/(jwL+Rs+Rb), a high-pass at fc=(Rs+Rb)/(2 pi Lsec)
+* Expected fc = 103/(2 pi 0.01) = 1639.3 Hz ; at fc |gain| = 0.70711*(Rb/N) = 0.35355 V/A (Rb/N = 0.5 V/A)
+.include xfmr.lib
+Ip 0 p1 DC 0 AC 1
+X1 p1 0 s1 0 XFMR_SAT LP=250n N=200 LLK=0.25n RP=1u RS=3 CIW=1p ISATM=1 DROP=0.3 LR=0.05
+Rb s1 0 100
+.ac dec 200 100 1meg
+.control
+run
+meas ac fl when vm(s1)=0.35355 rise=1
+meas ac gmid find vm(s1) at=100k
+quit
+.endc
+.end

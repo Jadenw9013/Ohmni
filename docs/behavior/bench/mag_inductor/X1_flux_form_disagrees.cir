@@ -1,0 +1,13 @@
+X1 NEGATIVE RESULT: ngspice 42 'flux=' behavioural inductor with flux = L0*Ia*tanh(i/Ia) did NOT reproduce v = dlambda/dt = L0*sech^2(i/Ia)*di/dt.
+* Current ramp 4000 A/s ; L0=1u, Ia=2 A. Expected v(i=2A)=1u*sech^2(1)*4000 = 1.680 mV, v(i=3.6A)=0.414 mV.
+* Measured with flux= form: 6.09 mV and 7.57 mV (wrong). The L='expr' form gives 1.680 mV and 0.414 mV (right) and is the one used by the OHMNI model.
+I1 0 n PWL(0 0 1m 0 2m 4)
+L1 n 0 flux='1u*2*tanh(i(L1)/2)'
+.tran 1u 2m
+.control
+run
+meas tran va find v(n) at=1.5m
+meas tran vb find v(n) at=1.9m
+quit
+.endc
+.end

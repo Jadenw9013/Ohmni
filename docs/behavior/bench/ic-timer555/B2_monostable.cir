@@ -1,0 +1,23 @@
+* BEH-IC-TIMER555 B2: monostable. R=10k, C=100 nF, Vcc=5 V, trigger pulse low for 20 us at t=100 us.
+* Analytic: t = RC*ln(3) = 1.0986 ms (TI quotes 1.1 RC)
+.include ne555.lib
+Vcc vcc 0 5
+Vtr tg 0 pulse(5 0 100u 1u 1u 20u 5m)
+X1 0 tg out vcc cnt thr dis vcc ne555
+Cc cnt 0 10n
+R1 vcc thr 10k
+Dd thr dis dd
+Rdis dis thr 1
+C1 thr 0 100n
+.model dd d(is=1e-14)
+.tran 200n 4m uic
+.control
+set noaskquit
+run
+meas tran ta when v(out)=2.5 rise=1
+meas tran tb when v(out)=2.5 fall=1
+let w = (tb-ta)*1000
+echo RESULT width_ms=$&w
+quit
+.endc
+.end

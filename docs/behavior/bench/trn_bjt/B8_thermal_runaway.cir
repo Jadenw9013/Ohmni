@@ -1,0 +1,42 @@
+* BEH-TRN-BJT B8: electrothermal feedback. Tj = Tamb + Rth*P, iterated; model has no self-heating, so the loop is closed in the control section
+* Case A: Vbe fixed by a stiff base source (no emitter resistor), Vbe=0.84 V (Ic ~ 56 mA at 25 C, Vce=5 V)
+* Case B: Re=2 ohm emitter ballast, base source 0.9 V (Ic ~ 43 mA at 25 C)
+* Analytic stability criterion: the loop converges iff  G = Rth * Vce * dIc/dT < 1.
+*   Constant Vbe: dIc/dT = Ic*alpha, alpha = (Eg - Vbe)/(Vt*T) + XTI/T  (T in kelvin, Vt = kT/q)
+*   Ic(0.84 V)=56mA, Vt=0.0259, T=298: alpha = (1.11-0.84)/(0.0259*298)+3/298 = 0.045/K -> G = 200*5*0.056*0.045 = 2.5 > 1 => runaway
+*   With Re=2 ohm: dIc/dT reduced by 1/(1+gm*(Re+RE_int)) with gm=Ic/Vt=1.7 S -> factor ~0.2 -> G_B ~ 0.5 < 1 -> converges
+* Expected: A diverges (Tj hits the 300 C clamp), B converges (Tj changes < 0.1 K between last two iterations)
+.include /home/claude/behavior/bench/trn_bjt/models_bjt_r6fit.lib
+Qa ca ba 0 Q2N3904_R6FIT temp=25
+Vca ca 0 5
+Vba ba 0 0.84
+Qb cb bb eb Q2N3904_R6FIT temp=25
+Vcb cb 0 5
+Vbb bb 0 0.9
+Reb eb 0 2
+.control
+set noaskquit
+set rth = 200
+set ta = 25
+set tja = 25
+set tjb = 25
+repeat 30
+  alter qa temp = $tja
+  alter qb temp = $tjb
+  op
+  let pa = -i(Vca)*5
+  let pb = -i(Vcb)*5
+  set pav = "$&pa"
+  set pbv = "$&pb"
+  let tjan = $ta + $rth*pa
+  let tjbn = $ta + $rth*pb
+  if tjan > 300
+    let tjan = 300
+  end
+  set tja = "$&tjan"
+  set tjb = "$&tjbn"
+  echo Pa=$pav Pb=$pbv Tja=$tja Tjb=$tjb
+end
+quit
+.endc
+.end

@@ -102,9 +102,11 @@ def _resolve(circuit, catalog):
                                    f"{component.ref} has no supported footprint geometry", component.ref)
         definitions[component.ref] = fp
         ids[component.ref] = fp.footprint_id
-        bindings.extend(PadBinding(component_ref=component.ref, pin_number=p.number, pad_number=p.number,
+        bindings.extend(PadBinding(component_ref=component.ref, pin_number=p.number,
+                                   pad_number=package.pad_for_pin(p.number),
                                    net_name=nets.get((component.ref, p.number)))
-                        for p in part.pins if any(pad.number == p.number for pad in fp.pads))
+                        for p in part.pins
+                        if any(pad.number == package.pad_for_pin(p.number) for pad in fp.pads))
     return definitions, ids, bindings
 
 

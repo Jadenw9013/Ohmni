@@ -1,0 +1,26 @@
+* BEH-IC-TIMER555 B4: output levels vs TI SLFS022K at Vcc=15 V: VOH(-100 mA) 12.75..13.3 V ; VOL(+50 mA) 0.4..0.75 V ; VOL(+10 mA) 0.1..0.25 V
+* model: VOH = Vcc-0.9-8*I = 15-0.9-0.8 = 13.3 ; VOL = 8*0.05 = 0.4 ; 8*0.01 = 0.08
+.include ne555.lib
+Vcc vcc 0 15
+* output forced high (trig=0 with thr low): set latch
+Vt tg 0 0
+Vth th 0 0
+X1 0 tg o1 vcc cnt th dis vcc ne555
+Il1 o1 0 dc 100m
+* output low: thr forced high
+Vt2 tg2 0 15
+Vth2 th2 0 15
+X2 0 tg2 o2 vcc cnt2 th2 dis2 vcc ne555
+Il2 vcc o2 dc 50m
+Il3 vcc o3 dc 10m
+X3 0 tg2 o3 vcc cnt3 th2 dis3 vcc ne555
+.control
+set noaskquit
+op
+let voh = v(o1)
+let vol50 = v(o2)
+let vol10 = v(o3)
+echo RESULT voh_100mA=$&voh vol_50mA=$&vol50 vol_10mA=$&vol10
+quit
+.endc
+.end

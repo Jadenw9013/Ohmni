@@ -1,0 +1,16 @@
+B3 X2 peak-voltage flag: 275 Vrms rating -> VRPK = 388.9 V. 50 Hz sine, amplitude steps 330 V then 400 V
+.include ohm_film.lib
+Vs in 0 SIN(0 330 50)
+Rs in p 10
+Xc p 0 f ohm_film C0=100n TAND=20e-4 FREF=1k ESL=15n RLK=1e15 VRPK=388.9
+Rf f 0 1meg
+.tran 50u 60m
+.control
+run
+meas tran fmax_330 max v(f) from=20m to=60m
+alter Vs sin = [ 0 400 50 0 0 ]
+run
+meas tran fmax_400 max v(f) from=20m to=60m
+quit
+.endc
+.end

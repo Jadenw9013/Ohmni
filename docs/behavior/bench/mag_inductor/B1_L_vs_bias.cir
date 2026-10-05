@@ -1,0 +1,33 @@
+B1 inductance vs DC bias, small-signal AC at 100 kHz, two real parts
+* Expected: L(Isat)=(1-DROP)*L0. XAL4020-222ME: L0=2.2u Isat=5.6A at 30% -> 1.54u
+*           SRP7028A-1R8M: L0=1.8u Isat=16A at 20% -> 1.44u
+.include ind_sat.lib
+I1 0 p1 DC 0 AC 1
+I2 0 p2 DC 0 AC 1
+X1 p1 0 IND_SAT L0=2.2u Isat=5.6 DROP=0.3 LR=0.05 RDC=35.2m CP=0.01p RP=1e12
+X2 p2 0 IND_SAT L0=1.8u Isat=16 DROP=0.2 LR=0.05 RDC=14m CP=0.01p RP=1e12
+R1 p1 0 1G
+R2 p2 0 1G
+.control
+let b = 0
+foreach pt 0 1 2
+ if $pt eq 0
+  alter I1 dc = 0
+  alter I2 dc = 0
+ end
+ if $pt eq 1
+  alter I1 dc = 5.6
+  alter I2 dc = 16
+ end
+ if $pt eq 2
+  alter I1 dc = 11.2
+  alter I2 dc = 32
+ end
+ ac lin 1 100k 100k
+ let l1 = imag(v(p1))/(2*pi*100k)
+ let l2 = imag(v(p2))/(2*pi*100k)
+ echo RESULT point=$pt L_XAL4020=$&l1 L_SRP7028A=$&l2
+end
+quit
+.endc
+.end

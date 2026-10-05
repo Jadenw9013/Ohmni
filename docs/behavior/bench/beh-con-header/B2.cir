@@ -1,0 +1,26 @@
+* Expected: v(b)=3.3*Rpd/(Rpd+100+2*Rc+Rsh); v(b2)=0 (unmated pin floats to its pull-down)
+* B2 jumper short: shunt joins pin1 and pin2 (2 mated contacts, Rc=10m each, shunt body 2 mohm, assumption)
+* Case A shunt fitted: net b follows net a. Case B (unmated) b only sees its pull-down.
+.param Rc=10m Rsh=2m Rpd=10k Rl=1k
+Vs a0 0 3.3
+Rsrc a0 a 100
+.subckt shunt p1 p2 Rc=10m Rsh=2m
+R1 p1 m {Rc}
+Rb m m2 {Rsh}
+R2 m2 p2 {Rc}
+.ends
+* shunt fitted (mated=1) : case A
+Xs a b shunt Rc={Rc} Rsh={Rsh}
+Rpd b 0 {Rpd}
+* case B copy without shunt
+Vs2 a20 0 3.3
+Rsrc2 a20 a2 100
+Rpd2 b2 0 {Rpd}
+.control
+op
+print v(a) v(b) v(a2) v(b2)
+let expa2 = 3.3*10k/(10k+100+0.022)
+print expa2
+quit
+.endc
+.end

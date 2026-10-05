@@ -1,0 +1,26 @@
+* BEH-IC-PKGBIND B2: Tj = Ta + P*thetaJA for the same ULN2003A dissipation in three packages, plus Pmax check.
+* thetaJA (TI SLRS027T): N PDIP-16 66.7, D SOIC-16 88.6, PW TSSOP-16 114.1 degC/W. Ta = 50 C. P = 0.60 W.
+* Thermal analog: 1 W = 1 A, 1 degC = 1 V.  Expected Tj: 50+0.6*66.7=90.02 ; 50+0.6*88.6=103.16 ; 50+0.6*114.1=118.46
+* Pmax(Ta=50,Tjmax=150) = 100/theta : 1.499 W / 1.129 W / 0.876 W
+Vta ta 0 50
+Ip1 0 tj1 0.6
+Rth1 tj1 ta 66.7
+Ip2 0 tj2 0.6
+Rth2 tj2 ta 88.6
+Ip3 0 tj3 0.6
+Rth3 tj3 ta 114.1
+.op
+.control
+set noaskquit
+op
+let tj1 = v(tj1)
+let tj2 = v(tj2)
+let tj3 = v(tj3)
+let pm1 = (150-50)/66.7
+let pm2 = (150-50)/88.6
+let pm3 = (150-50)/114.1
+print tj1 tj2 tj3 pm1 pm2 pm3
+echo RESULT tj_dip=$&tj1 tj_soic=$&tj2 tj_tssop=$&tj3 pmax_dip=$&pm1 pmax_soic=$&pm2 pmax_tssop=$&pm3
+quit
+.endc
+.end

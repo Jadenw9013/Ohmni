@@ -1,0 +1,457 @@
+{
+  "applies_to": [
+    "OHM-041",
+    "OHM-042",
+    "OHM-043",
+    "OHM-044",
+    "OHM-045",
+    "OHM-046",
+    "OHM-047",
+    "OHM-048",
+    "OHM-049"
+  ],
+  "basis_values": [
+    "(1-drop)*L0",
+    "1/(2 pi sqrt(L Cp))",
+    "ASSUMPTION",
+    "CONSENSUS",
+    "DERIVED",
+    "Im/Re",
+    "MFR_DATASHEET",
+    "V*t=lambda(i)",
+    "a/(1-a TC)"
+  ],
+  "behavior_id": "BEH-MAG-INDUCTOR",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "(1-drop)*L0",
+          "measure": "L_at_Isat_XAL4020",
+          "tolerance": 0.01,
+          "value": 1.54e-06
+        },
+        {
+          "basis": "(1-drop)*L0",
+          "measure": "L_at_Isat_SRP7028A",
+          "tolerance": 0.01,
+          "value": 1.44e-06
+        }
+      ],
+      "file": "docs/behavior/bench/mag_inductor/B1_L_vs_bias.cir",
+      "measured_in_ngspice": "1.540e-6 and 1.440e-6",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "V*t=lambda(i)",
+          "measure": "i_at_8us",
+          "tolerance": 0.01,
+          "value": 9.48
+        }
+      ],
+      "file": "docs/behavior/bench/mag_inductor/B2_sat_step.cir",
+      "measured_in_ngspice": "9.473 A",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "1/(2 pi sqrt(L Cp))",
+          "measure": "f_peak",
+          "tolerance": 0.02,
+          "value": "4.5e9"
+        },
+        {
+          "basis": "Im/Re",
+          "measure": "Q_100MHz",
+          "tolerance": 0.03,
+          "value": 42
+        }
+      ],
+      "file": "docs/behavior/bench/mag_inductor/B3_srf_q.cir",
+      "measured_in_ngspice": "4.5012e9 Hz, Q 41.98",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B4",
+      "expected": [
+        {
+          "basis": "a/(1-a TC)",
+          "measure": "dT_5p5A",
+          "tolerance": 0.005,
+          "value": 40.0
+        }
+      ],
+      "file": "docs/behavior/bench/mag_inductor/B4_thermal.cir",
+      "measured_in_ngspice": "40.00 K",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-041",
+      "OHM-042",
+      "OHM-043",
+      "OHM-044",
+      "OHM-045",
+      "OHM-046",
+      "OHM-047",
+      "OHM-048",
+      "OHM-049"
+    ],
+    "behavior_id": "BEH-MAG-INDUCTOR",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "(1-drop)*L0",
+            "measure": "L_at_Isat_XAL4020",
+            "tolerance": 0.01,
+            "value": 1.54e-06
+          },
+          {
+            "basis": "(1-drop)*L0",
+            "measure": "L_at_Isat_SRP7028A",
+            "tolerance": 0.01,
+            "value": 1.44e-06
+          }
+        ],
+        "file": "bench/mag_inductor/B1_L_vs_bias.cir",
+        "id": "B1",
+        "measured_in_ngspice": "1.540e-6 and 1.440e-6",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "V*t=lambda(i)",
+            "measure": "i_at_8us",
+            "tolerance": 0.01,
+            "value": 9.48
+          }
+        ],
+        "file": "bench/mag_inductor/B2_sat_step.cir",
+        "id": "B2",
+        "measured_in_ngspice": "9.473 A",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "1/(2 pi sqrt(L Cp))",
+            "measure": "f_peak",
+            "tolerance": 0.02,
+            "value": "4.5e9"
+          },
+          {
+            "basis": "Im/Re",
+            "measure": "Q_100MHz",
+            "tolerance": 0.03,
+            "value": 42
+          }
+        ],
+        "file": "bench/mag_inductor/B3_srf_q.cir",
+        "id": "B3",
+        "measured_in_ngspice": "4.5012e9 Hz, Q 41.98",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "a/(1-a TC)",
+            "measure": "dT_5p5A",
+            "tolerance": 0.005,
+            "value": 40.0
+          }
+        ],
+        "file": "bench/mag_inductor/B4_thermal.cir",
+        "id": "B4",
+        "measured_in_ngspice": "40.00 K",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "magnetics",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "L collapses to LR*L0",
+        "id": "saturation",
+        "permanence": "recoverable",
+        "sim_response": "nonlinear model; WARN at 0.9*Isat, ERROR at 1.5*Isat",
+        "trigger": "abs(i) > Isat"
+      },
+      {
+        "effect": "insulation or solder failure, open winding",
+        "id": "overheat",
+        "permanence": "permanent",
+        "sim_response": "ERROR; replace by open (1G) after Tmax+20 K",
+        "trigger": "Ta + dT > Tmax"
+      },
+      {
+        "effect": "capacitive behaviour",
+        "id": "above_srf",
+        "permanence": "recoverable",
+        "sim_response": "Cp in model; WARN above 0.5*SRF",
+        "trigger": "f > SRF"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "one-point tanh saturation fit",
+        "no L(f) roll-off or AC resistance",
+        "no core loss from ripple",
+        "no L temperature dependence",
+        "no coupling to neighbours",
+        "flux= form not usable in ngspice 42"
+      ],
+      "netlist_template": ".include ind_sat.lib\nX{ref} {A} {B} IND_SAT L0={value} Isat={isat} DROP={drop} LR={lr} RDC={rdc} CP={cp} RP={rp}\n",
+      "spice_primitives": [
+        "R",
+        "C",
+        "L_behavioural",
+        "B"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "ac",
+        "tran",
+        "temp"
+      ],
+      "valid_range": "DC to 0.5*SRF; |i| up to ~2*Isat; use uic for transient"
+    },
+    "parameters": {
+      "cp": {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "default": 4.2e-12,
+        "max": 5e-11,
+        "min": 5e-14,
+        "source_ref": "S2",
+        "tolerance": 0.3,
+        "unit": "F"
+      },
+      "dT_rated": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 40,
+        "max": 40,
+        "min": 20,
+        "source_ref": "S2",
+        "unit": "K"
+      },
+      "drop": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.3,
+        "max": 0.5,
+        "min": 0.1,
+        "source_ref": "S1",
+        "tolerance": "definition",
+        "unit": "fraction"
+      },
+      "irms": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 5.0,
+        "max": 100,
+        "min": 0.05,
+        "source_ref": "S2",
+        "tolerance": "typ",
+        "unit": "A"
+      },
+      "isat": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 5.0,
+        "max": 100,
+        "min": 0.05,
+        "source_ref": "S2",
+        "tolerance": "typ",
+        "unit": "A"
+      },
+      "lr": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.05,
+        "max": 0.3,
+        "min": 0.01,
+        "source_ref": "S3",
+        "unit": "fraction"
+      },
+      "rdc": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 0.05,
+        "max": 10,
+        "min": 0.001,
+        "source_ref": "S2",
+        "tolerance": "typ_or_max",
+        "unit": "ohm"
+      },
+      "rp": {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "default": "1.0e9",
+        "max": "1.0e9",
+        "min": 100,
+        "source_ref": "S5",
+        "unit": "ohm"
+      },
+      "rth": {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "default": 33,
+        "max": 200,
+        "min": 10,
+        "source_ref": "S2",
+        "tolerance": 0.3,
+        "unit": "K/W"
+      },
+      "tc": {
+        "basis": "CONSENSUS",
+        "confidence": "M",
+        "default": 0.00393,
+        "max": 0.004,
+        "min": 0.0039,
+        "source_ref": "S3",
+        "unit": "1/K"
+      },
+      "tmax_part": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 125,
+        "max": 165,
+        "min": 105,
+        "source_ref": "S2",
+        "unit": "degC"
+      },
+      "value": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 1e-05,
+        "max": 0.01,
+        "min": 1e-09,
+        "source_ref": "S2",
+        "tolerance": "per part: 0.05 RF, 0.1-0.2 power, 0.4 chokes",
+        "unit": "H"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "A",
+        "package_terminal_rule": "terminal 1 of the 3D spec (-X end, or first-band end on axial); non-polarized",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "B",
+        "package_terminal_rule": "terminal 2 of the 3D spec (+X end)",
+        "role": "terminal"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "max(abs(i)) <= Isat",
+        "condition": "inductance drop per datasheet",
+        "name": "saturation_current",
+        "source_ref": "S1",
+        "symbol": "Isat",
+        "unit": "A",
+        "value": "per_part"
+      },
+      {
+        "check": "rms(i) <= Irms if Ta<=25 else Irms*sqrt((Tmax-Ta)/dT_rated)",
+        "condition": "dT_rated rise at 25 C ambient",
+        "name": "heating_current",
+        "source_ref": "S1",
+        "symbol": "Irms",
+        "unit": "A",
+        "value": "per_part"
+      },
+      {
+        "check": "Ta + dT <= Tmax",
+        "condition": "ambient plus self heating",
+        "name": "part_temperature",
+        "source_ref": "S2",
+        "symbol": "Tmax",
+        "unit": "degC",
+        "value": "per_part"
+      },
+      {
+        "check": "f <= 0.5*SRF",
+        "condition": "ASSUMPTION",
+        "name": "frequency",
+        "source_ref": "S1",
+        "symbol": "f",
+        "unit": "Hz",
+        "value": "0.5*SRF"
+      }
+    ],
+    "sources": [
+      {
+        "date": "rev 07/22/17",
+        "id": "S1",
+        "org": "Coilcraft",
+        "title": "Doc 469 inductor parameter definitions",
+        "url": "https://www.coilcraft.com/getmedia/d4009ece-69be-49a6-9185-9cbacb65e3aa/Doc469_selecting_inductors.pdf",
+        "used_for": "Isat drop definitions, Irms, DCR, SRF"
+      },
+      {
+        "date": "rev 02/25/26",
+        "id": "S2",
+        "org": "Coilcraft",
+        "title": "XAL40xx shielded power inductors, Doc 806-1",
+        "url": "https://www.coilcraft.com/en-us/files/datasheet/XAL40xx",
+        "used_for": "30 % Isat, Irms 20/40 K, table rows"
+      }
+    ],
+    "status": "complete"
+  },
+  "category": "magnetics",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "bbbc3f111bfa5b4829006e8f085639b64c83bd746d6f007d83d4fd1f1d541a0e",
+    "line": 2448
+  },
+  "source_refs": [
+    {
+      "date": "rev 07/22/17",
+      "id": "S1",
+      "org": "Coilcraft",
+      "title": "Doc 469 inductor parameter definitions",
+      "url": "https://www.coilcraft.com/getmedia/d4009ece-69be-49a6-9185-9cbacb65e3aa/Doc469_selecting_inductors.pdf",
+      "used_for": "Isat drop definitions, Irms, DCR, SRF"
+    },
+    {
+      "date": "rev 02/25/26",
+      "id": "S2",
+      "org": "Coilcraft",
+      "title": "XAL40xx shielded power inductors, Doc 806-1",
+      "url": "https://www.coilcraft.com/en-us/files/datasheet/XAL40xx",
+      "used_for": "30 % Isat, Irms 20/40 K, table rows"
+    }
+  ],
+  "status": "complete"
+}

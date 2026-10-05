@@ -1,0 +1,22 @@
+* BEH-IC-RS232-DIP16 B2: receiver Schmitt thresholds and inversion. Input swept -15..+15..-15 V through the 5 kohm input, Vcc=5 V.
+* Expect ROUT high for input low (< VT-=1.0 V) and ROUT low once input exceeds VT+ = 2.0 V ; returns high below VT-=1.0 V.
+.include max232.lib
+Vcc vcc 0 5
+Vin r1i 0 pwl(0 -15 100u 15 200u -15)
+X1 c1p vsp c1m c2p c2m vsm t2o r2i r2o t2i t1i r1o r1i o1 0 vcc max232
+Rg t1i 0 1k
+Rg2 t2i 0 1k
+Rg3 r2i 0 1k
+Cl r1o 0 20p
+.tran 20n 200u
+.control
+set noaskquit
+run
+meas tran tf when v(r1o)=2.5 fall=1
+meas tran tr when v(r1o)=2.5 rise=1
+let vtp = -15 + 30*tf/100u
+let vtm = 15 - 30*(tr-100u)/100u
+echo RESULT vtp=$&vtp vtm=$&vtm
+quit
+.endc
+.end

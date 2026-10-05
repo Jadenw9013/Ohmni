@@ -1,0 +1,53 @@
+* BEH-IC-LOGIC-SEQ B1: 74HC595 shift/latch/OE behaviour. Vcc=4.5 V, SRCLK 5 MHz (< fmax 21..31 MHz @4.5 V, SCLS041J extract).
+* Data in (first..last) = 1,0,1,1,0,0,1,0 -> after 8 SRCLK edges: QH=1 QG=0 QF=1 QE=1 QD=0 QC=0 QB=1 QA=0 ; QA..QH =0,1,0,0,1,1,0,1 after RCLK.
+* Expectations: before RCLK all Q=0; after RCLK Q per above; QH' (unlatched serial out) = QH of the shift register; OE high -> outputs Hi-Z (pulled to mid by 10k/10k divider -> 2.25 V)
+.include hc_seq.lib
+Vcc vcc 0 4.5
+Vser ser 0 pwl(0n 0.0 50n 0.0 52n 4.5 250n 4.5 252n 0.0 450n 0.0 452n 4.5 650n 4.5 652n 4.5 850n 4.5 852n 0.0 1050n 0.0 1052n 0.0 1250n 0.0 1252n 4.5 1450n 4.5 1452n 0.0)
+Vsck srclk 0 pwl(0 0 150n 0 152n 4.5 250n 4.5 252n 0 350n 0 352n 4.5 450n 4.5 452n 0 550n 0 552n 4.5 650n 4.5 652n 0 750n 0 752n 4.5 850n 4.5 852n 0 950n 0 952n 4.5 1050n 4.5 1052n 0 1150n 0 1152n 4.5 1250n 4.5 1252n 0 1350n 0 1352n 4.5 1450n 4.5 1452n 0 1550n 0 1552n 4.5 1650n 4.5 1652n 0)
+Vclr srclr 0 pwl(0 0 20n 0 22n 4.5)
+Vrck rclk 0 pwl(0 0 1900n 0 1902n 4.5 1960n 4.5 1962n 0)
+Voe oe 0 pwl(0 0 2500n 0 2502n 4.5)
+X1 qb qc qd qe qf qg qh 0 qhp srclr srclk rclk oe ser qa vcc hc595
+Rp1 qa 0 10k
+Rp2 qb 0 10k
+Rp3 qc 0 10k
+Rp4 qd 0 10k
+Rp5 qe 0 10k
+Rp6 qf 0 10k
+Rp7 qg 0 10k
+Rp8 qh 0 10k
+Ru1 qa vcc 10k
+Ru2 qb vcc 10k
+Ru3 qc vcc 10k
+Ru4 qd vcc 10k
+Ru5 qe vcc 10k
+Ru6 qf vcc 10k
+Ru7 qg vcc 10k
+Ru8 qh vcc 10k
+.tran 1n 3200n
+.control
+set noaskquit
+run
+* sample points: t=1800n (before RCLK), t=2400n (after RCLK, OE low), t=3000n (OE high)
+meas tran qa_pre find v(qa) at=1800n
+meas tran qh_pre find v(qh) at=1800n
+meas tran qhp_end find v(qhp) at=1850n
+meas tran qa_post find v(qa) at=2400n
+meas tran qb_post find v(qb) at=2400n
+meas tran qc_post find v(qc) at=2400n
+meas tran qd_post find v(qd) at=2400n
+meas tran qe_post find v(qe) at=2400n
+meas tran qf_post find v(qf) at=2400n
+meas tran qg_post find v(qg) at=2400n
+meas tran qh_post find v(qh) at=2400n
+meas tran qa_hz find v(qa) at=3100n
+meas tran qb_hz find v(qb) at=3100n
+meas tran qr trig v(rclk) val=2.25 rise=1 targ v(qb) val=2.25 rise=1
+echo RESULT QA..QH_post: $&qa_post $&qb_post $&qc_post $&qd_post $&qe_post $&qf_post $&qg_post $&qh_post
+echo RESULT pre qa=$&qa_pre qh=$&qh_pre qhp_end=$&qhp_end
+echo RESULT hiZ qa=$&qa_hz qb=$&qb_hz
+echo RESULT rclk_to_q_ns=$&qr
+quit
+.endc
+.end

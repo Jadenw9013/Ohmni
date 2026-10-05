@@ -1,0 +1,24 @@
+* BEH-TRN-MOSFET B9: gate-threshold spread, 2N7000 (onsemi 2N7000/D Rev 8: Vgs(th) 0.8 .. 3.0 V; Rds(on) 5 ohm max @10 V/0.5 A, 6 ohm max @4.5 V/75 mA)
+* Same L3 model (KP, THETA from library) with Vto = 0.8, 1.9 (library default, mid-band ASSUMPTION), 3.0 V, driven from 3.3 V logic into a 100 ohm load from 5 V.
+* Analytic: Id ~ (5 V)/(100 + Rds) ; with Vto=3.0 the overdrive is only 0.3 V -> Id << 40 mA.  Expected: Id(0.8) ~ 45 mA, Id(3.0) < 10 mA (ratio > 5). Tolerance: qualitative.
+.model N08 NMOS(LEVEL=3 VTO=0.8 KP=0.20959 THETA=0.75509 ETA=0 KAPPA=0 DELTA=0 VMAX=0 IS=0)
+.model N19 NMOS(LEVEL=3 VTO=1.9 KP=0.20959 THETA=0.75509 ETA=0 KAPPA=0 DELTA=0 VMAX=0 IS=0)
+.model N30 NMOS(LEVEL=3 VTO=3.0 KP=0.20959 THETA=0.75509 ETA=0 KAPPA=0 DELTA=0 VMAX=0 IS=0)
+Vdd vdd 0 5
+Vg g 0 3.3
+R1 vdd d1 100
+R2 vdd d2 100
+R3 vdd d3 100
+M1 d1 g 0 0 N08
+M2 d2 g 0 0 N19
+M3 d3 g 0 0 N30
+.control
+set noaskquit
+op
+let i08 = (5-v(d1))/100
+let i19 = (5-v(d2))/100
+let i30 = (5-v(d3))/100
+print i08 i19 i30
+quit
+.endc
+.end

@@ -1,0 +1,21 @@
+B3 HAZARD: open secondary vs burdened secondary. Ip = 15 A pk, 50 kHz, N=200 -> Is = 75 mA pk (the 75 mA 'Isec max' of the AS-103 datasheet copy).
+* Magnetizing branch saturates at ISATM=0.05 A primary-referred (= 0.25 mA secondary; ASSUMPTION, no datasheet Isat) so the open core is deep in saturation.
+* Expected: V_open_pk = Lsec*w*Is_pk = 0.01*314159*0.075 = 235.6 V (zero-crossing slope; saturation narrows the spikes but does not lower the peak)
+* NUMERICS: the spike is ~30 ns wide; with step 20n the peak reads 1051 V (artifact), 5n gives 227-237, 1n gives 182. Needs tmax <= 0.5 ns here (see report).
+*           V_burdened_pk = Is*Rb = 7.5 V
+.include xfmr.lib
+Ip 0 p1 SIN(0 15 50k)
+X1 p1 0 s1 0 XFMR_SAT LP=250n N=200 LLK=0.25n RP=1u RS=3 CIW=1p ISATM=0.05 DROP=0.3 LR=0.05
+Rload s1 0 1G
+.options reltol=1e-5
+.tran 0.5n 120u 0 0.5n uic
+.control
+alter Rload = 1G
+run
+meas tran vopen max v(s1) from=60u to=120u
+alter Rload = 100
+run
+meas tran vburd max v(s1) from=60u to=120u
+quit
+.endc
+.end

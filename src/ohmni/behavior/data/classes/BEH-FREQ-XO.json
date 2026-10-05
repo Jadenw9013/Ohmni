@@ -1,0 +1,264 @@
+{
+  "applies_to": [
+    "OHM-146",
+    "OHM-147"
+  ],
+  "basis_values": [
+    "ASSUMPTION",
+    "MFR_DATASHEET",
+    "OE low",
+    "f0*(1+ppm)"
+  ],
+  "behavior_id": "BEH-FREQ-XO",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "f0*(1+ppm)",
+          "measure": "f_Hz",
+          "tolerance": 1,
+          "value": 10000250
+        }
+      ],
+      "file": "docs/behavior/bench/osc-clock/B1.cir",
+      "measured_in_ngspice": "10000250 Hz; Idd 4.2 mA",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "OE low",
+          "measure": "vout_max_V",
+          "tolerance": 0.001,
+          "value": 0
+        }
+      ],
+      "file": "docs/behavior/bench/osc-clock/B2.cir",
+      "measured_in_ngspice": "0 V; Idd 1 uA",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-146",
+      "OHM-147"
+    ],
+    "behavior_id": "BEH-FREQ-XO",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "f0*(1+ppm)",
+            "measure": "f_Hz",
+            "tolerance": 1,
+            "value": 10000250
+          }
+        ],
+        "file": "bench/osc-clock/B1.cir",
+        "id": "B1",
+        "measured_in_ngspice": "10000250 Hz; Idd 4.2 mA",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "OE low",
+            "measure": "vout_max_V",
+            "tolerance": 0.001,
+            "value": 0
+          }
+        ],
+        "file": "bench/osc-clock/B2.cir",
+        "id": "B2",
+        "measured_in_ngspice": "0 V; Idd 1 uA",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "frequency",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "damage",
+        "id": "overvoltage",
+        "permanence": "permanent",
+        "sim_response": "flag, output 0",
+        "trigger": "VDD > abs max"
+      },
+      {
+        "effect": "no clock",
+        "id": "undervoltage",
+        "permanence": "recoverable",
+        "sim_response": "output 0",
+        "trigger": "VDD < vmin"
+      }
+    ],
+    "layer": "L2",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "no jitter/phase noise",
+        "static ppm",
+        "start-up is a pure delay",
+        "no supply pushing",
+        "clipped-sine variant needs SIN source"
+      ],
+      "netlist_template": "X{ref} {VDD} {GND} {OE} {OUT} ohm_xo f0={f0} ppm={ppm} tstart={tstart} icc={icc}\n",
+      "spice_primitives": [
+        "B",
+        "V(PULSE)",
+        "R"
+      ],
+      "valid_analyses": [
+        "tran",
+        "op"
+      ],
+      "valid_range": "VDD between vmin and abs max; load up to 15 pF"
+    },
+    "parameters": {
+      "f0": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 10000000,
+        "max": 110000000,
+        "min": 1000000,
+        "source_ref": "S11",
+        "tolerance": 0,
+        "unit": "Hz"
+      },
+      "icc": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.0042,
+        "max": "10e-3",
+        "min": "1e-3",
+        "source_ref": "S11",
+        "tolerance": 0.2,
+        "unit": "A"
+      },
+      "ppm": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 25,
+        "max": 150,
+        "min": -150,
+        "source_ref": "S11",
+        "tolerance": 0,
+        "unit": "ppm"
+      },
+      "rout": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 30,
+        "max": 100,
+        "min": 10,
+        "source_ref": "S11",
+        "tolerance": 0.5,
+        "unit": "ohm"
+      },
+      "tstart": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": "5e-3",
+        "max": "5e-3",
+        "min": 0,
+        "source_ref": "S11",
+        "tolerance": 0,
+        "unit": "s"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "input",
+        "name": "OE",
+        "package_terminal_rule": "pad 1 (top-left); OE/ST for XO, NC/Vc for TCXO",
+        "role": "input"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "GND",
+        "package_terminal_rule": "pad 2 (bottom-left); also metal lid",
+        "role": "power_in"
+      },
+      {
+        "electrical_type": "output",
+        "name": "OUT",
+        "package_terminal_rule": "pad 3 (bottom-right)",
+        "role": "output"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "VDD",
+        "package_terminal_rule": "pad 4 (top-right)",
+        "role": "power_in"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "v(vdd) <= 4",
+        "condition": "SiT8008; 6 V for AST3TQ53",
+        "name": "supply_abs_max",
+        "source_ref": "S11",
+        "symbol": "VDD_max",
+        "unit": "V",
+        "value": 4
+      }
+    ],
+    "sources": [
+      {
+        "date": "not shown",
+        "id": "S11",
+        "org": "SiTime",
+        "title": "SiT8008 low power programmable oscillator datasheet (mature)",
+        "url": "https://www.sitime.com/sites/default/files/mature-datasheets/SiT8008-datasheet.pdf",
+        "used_for": "supply, current, startup, jitter, pinout, abs max, ESD"
+      },
+      {
+        "date": "2021-02-16 (REVISED 2.16.2021)",
+        "id": "S12",
+        "org": "Abracon",
+        "title": "AST3TQ53 TCXO/VCTCXO",
+        "url": "https://www.farnell.com/datasheets/3557905.pdf",
+        "used_for": "stability ppb, aging, supply, output types, pins, package 5.0x3.2x1.6"
+      }
+    ],
+    "status": "partial"
+  },
+  "category": "frequency",
+  "fidelity": "behavioural_approximation",
+  "layer": "L2",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "0a300e6210fbb0bf5c03417c8399158edf7f527f83188ff9627d18908e1841ca",
+    "line": 10239
+  },
+  "source_refs": [
+    {
+      "date": "not shown",
+      "id": "S11",
+      "org": "SiTime",
+      "title": "SiT8008 low power programmable oscillator datasheet (mature)",
+      "url": "https://www.sitime.com/sites/default/files/mature-datasheets/SiT8008-datasheet.pdf",
+      "used_for": "supply, current, startup, jitter, pinout, abs max, ESD"
+    },
+    {
+      "date": "2021-02-16 (REVISED 2.16.2021)",
+      "id": "S12",
+      "org": "Abracon",
+      "title": "AST3TQ53 TCXO/VCTCXO",
+      "url": "https://www.farnell.com/datasheets/3557905.pdf",
+      "used_for": "stability ppb, aging, supply, output types, pins, package 5.0x3.2x1.6"
+    }
+  ],
+  "status": "partial"
+}

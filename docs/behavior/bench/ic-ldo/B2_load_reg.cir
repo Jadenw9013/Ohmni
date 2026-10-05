@@ -1,0 +1,19 @@
+* BEH-IC-LDO-SOT235 B2: load regulation and current limit. Vin = 5 V.
+* Hard-knee ideal: Vout(1 mA)=3.29996, Vout(200 mA)=3.292 -> delta 8 mV (datasheet 1..15 mV over the full load range).
+* Exact solution of the implemented soft-knee equations (python bisection): 3.30002 V @1 mA (with 1 Mohm feedback load), 3.29027 V @200 mA -> delta 9.7 mV (inside the 1..15 mV datasheet range).
+* Current limit: Icl = 0.43 A (ASSUMED between TI min 220 mA and max 860 mA); see B2b
+.include tlv700.lib
+Vin in 0 5
+Ven en 0 5
+X1 in 0 en out tlv700
+Iload out 0 dc 1m
+.nodeset v(x1.tj)=25 v(out)=3.0
+.control
+set noaskquit
+dc Iload 0.001 0.2 0.001
+let v1 = v(out)[0]
+let v2 = v(out)[199]
+echo RESULT vout_1mA=$&v1 vout_200mA=$&v2
+quit
+.endc
+.end

@@ -1,0 +1,21 @@
+* BEH-TRN-MOSFET B8: unclamped inductive switching, IRFZ44N_R6 (BV diode clamps Vds at BVDSS = 55 V).  Datasheet EAS = 530 mJ (single pulse), IAR = 25 A
+* Circuit: 20 V, L = 0.5 mH, gate on for 0.625 ms: Id = Vdd*t/L = 20*0.625m/0.5m = 25 A (Rds drop negligible).  Energy in the device at turn-off:
+*   E = 0.5*L*I^2 * BV/(BV - Vdd) = 0.5*0.5m*25^2*55/35 = 0.246 J 
+* Expected: E_av (integral of Vds*Id during the clamp) ~ 0.24 J, tolerance 10 %.  The model clamps but does NOT fail: the simulator must compare E_av with EAS (0.53 J) derated for Tj.
+.include /home/claude/behavior/bench/trn_mosfet/models_mosfet_r6fit.lib
+Vdd vdd 0 20
+L1 vdd d 0.5m
+Vg g 0 pwl(0 0 1u 10 0.625m 10 0.6251m 0)
+X1 d g 0 IRFZ44N_R6 BVDSS=55
+.tran 0.2u 2.5m
+.control
+set noaskquit
+run
+let id = -i(Vdd)
+meas tran ipk max id
+let p = v(d)*id
+meas tran eav integ p from=0.6251m to=1.5m
+print ipk eav
+quit
+.endc
+.end

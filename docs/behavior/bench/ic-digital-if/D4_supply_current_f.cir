@@ -1,0 +1,17 @@
+* BEH-IC-DIGITAL-IF D4: supply current vs clock frequency, Idd = Istatic + Ceff*VDD*f (dynamic-power model).
+* Sourced point: NXP P89LPC935 (S8 extract) typical operating current 25 mA at 18 MHz (VDD not stated in the extract; 3.3 V assumed). Istatic assumed 0 (not sourced).
+*   Ceff = 25e-3/(3.3*18e6) = 420.9 pF (DERIVED, confidence M-L).   Prediction: Idd(9 MHz) = 12.5 mA, Idd(1 MHz) = 1.389 mA (a linear scaling, NOT a datasheet value).
+.param CEFF=420.9p
+.param ISTAT=0
+Vdd vdd 0 3.3
+* frequency is encoded as the DC level of a source (1 V = 1 MHz) so a .dc sweep covers it
+Vf f 0 1
+Bidd vdd 0 I = {ISTAT} + {CEFF}*v(vdd)*v(f)*1e6
+.dc Vf 1 18 17
+.control
+set noaskquit
+run
+print -i(vdd)
+quit
+.endc
+.end

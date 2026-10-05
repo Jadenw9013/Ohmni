@@ -1,0 +1,272 @@
+{
+  "applies_to": [
+    "OHM-093",
+    "OHM-094",
+    "OHM-095",
+    "OHM-096",
+    "OHM-097",
+    "OHM-098",
+    "OHM-099",
+    "OHM-100",
+    "OHM-101",
+    "OHM-102"
+  ],
+  "basis_values": [
+    "(Tjmax-T)/Rth",
+    "ASSUMPTION",
+    "MFR_DATASHEET",
+    "Ta + P(R1+R2)"
+  ],
+  "behavior_id": "BEH-PWR-PKGTHERMAL",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "Ta + P(R1+R2)",
+          "measure": "Tj_inf",
+          "tolerance": "0.5%",
+          "value": 149.0
+        }
+      ],
+      "file": "docs/behavior/bench/pwr_pkgthermal/B1_foster_step.cir",
+      "measured_in_ngspice": "148.999 C",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "(Tjmax-T)/Rth",
+          "measure": "pmax_12_rows",
+          "tolerance": "1.5%",
+          "value": "equal datasheet"
+        }
+      ],
+      "file": "docs/behavior/bench/pwr_pkgthermal/B2_pmax_datasheet_check.cir",
+      "measured_in_ngspice": "all within 0.7%",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-093",
+      "OHM-094",
+      "OHM-095",
+      "OHM-096",
+      "OHM-097",
+      "OHM-098",
+      "OHM-099",
+      "OHM-100",
+      "OHM-101",
+      "OHM-102"
+    ],
+    "behavior_id": "BEH-PWR-PKGTHERMAL",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "Ta + P(R1+R2)",
+            "measure": "Tj_inf",
+            "tolerance": "0.5%",
+            "value": 149.0
+          }
+        ],
+        "file": "bench/pwr_pkgthermal/B1_foster_step.cir",
+        "id": "B1",
+        "measured_in_ngspice": "148.999 C",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "(Tjmax-T)/Rth",
+            "measure": "pmax_12_rows",
+            "tolerance": "1.5%",
+            "value": "equal datasheet"
+          }
+        ],
+        "file": "bench/pwr_pkgthermal/B2_pmax_datasheet_check.cir",
+        "id": "B2",
+        "measured_in_ngspice": "all within 0.7%",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "transistor",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "H"
+    },
+    "failure_modes": [
+      {
+        "effect": "die and bond damage",
+        "id": "tj_exceeded",
+        "permanence": "permanent",
+        "sim_response": "flag, class policy",
+        "trigger": "Tj above Tj_max"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "Zth(t) curves and Foster coefficients not captured",
+        "no coupling between devices",
+        "no airflow"
+      ],
+      "netlist_template": "Ip 0 tj dc {P}\nR1 tj tc {RTHJC}\nC1 tj 0 {C1} ic={TA}\nR2 tc ta {RTHCA}\nC2 tc 0 {C2} ic={TA}\nVta ta 0 {TA}\n",
+      "spice_primitives": [
+        "I",
+        "R",
+        "C",
+        "V"
+      ],
+      "valid_analyses": [
+        "op",
+        "tran"
+      ],
+      "valid_range": "published copper-area rows only; no extrapolation"
+    },
+    "parameters": {
+      "cth1": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.02,
+        "max": null,
+        "min": null,
+        "source_ref": "S28",
+        "tolerance": null,
+        "unit": "J/K"
+      },
+      "cth2": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.5,
+        "max": null,
+        "min": null,
+        "source_ref": "S28",
+        "tolerance": null,
+        "unit": "J/K"
+      },
+      "rth_cs": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.5,
+        "max": null,
+        "min": null,
+        "source_ref": "S10",
+        "tolerance": "greased",
+        "unit": "K/W"
+      },
+      "rth_ja": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 62,
+        "max": null,
+        "min": null,
+        "source_ref": "S10",
+        "tolerance": "depends on board; see table",
+        "unit": "K/W"
+      },
+      "rth_jc": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 1.5,
+        "max": null,
+        "min": null,
+        "source_ref": "S10",
+        "tolerance": null,
+        "unit": "K/W"
+      },
+      "tj_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 175,
+        "max": 175,
+        "min": null,
+        "source_ref": "S10",
+        "tolerance": null,
+        "unit": "C"
+      }
+    },
+    "pins": [],
+    "ratings": [
+      {
+        "check": "ta + rth_ja*p <= 175",
+        "condition": "IRFZ44N",
+        "name": "tj_max",
+        "source_ref": "S10",
+        "symbol": "Tj",
+        "unit": "C",
+        "value": 175
+      },
+      {
+        "check": "p <= (175 - tc)/rth_jc",
+        "condition": "TO-220, Tc = 25 C (conflicts with RthJC 1.5)",
+        "name": "pmax",
+        "source_ref": "S10",
+        "symbol": "PD",
+        "unit": "W",
+        "value": 94
+      }
+    ],
+    "sources": [
+      "S1",
+      "S2",
+      "S4",
+      "S5",
+      "S6",
+      "S7",
+      "S10",
+      "S11",
+      "S12",
+      "S13",
+      "S14",
+      "S15",
+      "S16",
+      "S19",
+      "S24",
+      "S25",
+      "S26",
+      "S27",
+      "S28"
+    ],
+    "status": "partial"
+  },
+  "category": "transistor",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "1e28803497f22a5133f37f296e2552675db0f321e60ed446a1663a3e703d975c",
+    "line": 6466
+  },
+  "source_refs": [
+    "S1",
+    "S2",
+    "S4",
+    "S5",
+    "S6",
+    "S7",
+    "S10",
+    "S11",
+    "S12",
+    "S13",
+    "S14",
+    "S15",
+    "S16",
+    "S19",
+    "S24",
+    "S25",
+    "S26",
+    "S27",
+    "S28"
+  ],
+  "status": "partial"
+}

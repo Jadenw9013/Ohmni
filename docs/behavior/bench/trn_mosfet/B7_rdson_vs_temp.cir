@@ -1,0 +1,20 @@
+* BEH-TRN-MOSFET B7: Rds(on) temperature dependence of IRFZ44N_R6 at Vgs=10 V, Id=25 A
+* ngspice level-1 scales KP with (T/Tnom)^-1.5 (mobility); RD, RS in the model have no tempco.
+* Analytic: channel part = Rds25 - 3 mohm = 14.5 mohm -> x((423.15/300.15)^1.5 = 1.674) ; total at 150 C = 14.5m*1.674 + 3m = 27.3 mohm ; ratio 1.56 (ratio computed by hand from the two printed values) ; tolerance 5 %
+* Note: datasheet Rds(on)-vs-temperature curve was NOT captured, so this ratio is an ASSUMPTION-level check (typical power MOSFETs 1.6 - 2.0 at 150 C is general practice, not sourced)
+.include /home/claude/behavior/bench/trn_mosfet/models_mosfet_r6fit.lib
+X1 d g 0 IRFZ44N_R6 BVDSS=55
+Vg g 0 10
+Id 0 d 25
+.control
+set noaskquit
+op
+let r27 = v(d)/25
+print r27
+set temp = 150
+op
+let r150 = v(d)/25
+print r150
+quit
+.endc
+.end

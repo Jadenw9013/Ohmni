@@ -1,0 +1,340 @@
+{
+  "applies_to": [
+    "OHM-067"
+  ],
+  "basis_values": [
+    "ASSUMPTION",
+    "DERIVED",
+    "MFR_DATASHEET",
+    "datasheet",
+    "fit anchor",
+    "fixed point",
+    "threshold Ta 83.2 C"
+  ],
+  "behavior_id": "BEH-DIO-SCHOTTKY",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "fit anchor",
+          "measure": "V at 1 A",
+          "tolerance": "5 mV",
+          "value": 0.5
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-schottky/B1_fwd_iv.cir",
+      "measured_in_ngspice": 0.49986,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "datasheet",
+          "measure": "IR 25C",
+          "tolerance": "1%",
+          "value": 0.0002
+        },
+        {
+          "basis": "datasheet",
+          "measure": "IR 100C",
+          "tolerance": "1%",
+          "value": 0.005
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-schottky/B2_leak_temp.cir",
+      "measured_in_ngspice": "2.00059e-4 / 5.00082e-3",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "fixed point",
+          "measure": "Tj at Ta 60C",
+          "tolerance": "0.1 C",
+          "value": 63.7072
+        },
+        {
+          "basis": "threshold Ta 83.2 C",
+          "measure": "runaway at Ta 95C",
+          "tolerance": "n/a",
+          "value": "diverges"
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-schottky/B3_thermal_runaway.cir",
+      "measured_in_ngspice": "63.7072 / diverged to 773 C",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-067"
+    ],
+    "behavior_id": "BEH-DIO-SCHOTTKY",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "fit anchor",
+            "measure": "V at 1 A",
+            "tolerance": "5 mV",
+            "value": 0.5
+          }
+        ],
+        "file": "bench/beh-dio-schottky/B1_fwd_iv.cir",
+        "id": "B1",
+        "measured_in_ngspice": 0.49986,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "datasheet",
+            "measure": "IR 25C",
+            "tolerance": "1%",
+            "value": 0.0002
+          },
+          {
+            "basis": "datasheet",
+            "measure": "IR 100C",
+            "tolerance": "1%",
+            "value": 0.005
+          }
+        ],
+        "file": "bench/beh-dio-schottky/B2_leak_temp.cir",
+        "id": "B2",
+        "measured_in_ngspice": "2.00059e-4 / 5.00082e-3",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "fixed point",
+            "measure": "Tj at Ta 60C",
+            "tolerance": "0.1 C",
+            "value": 63.7072
+          },
+          {
+            "basis": "threshold Ta 83.2 C",
+            "measure": "runaway at Ta 95C",
+            "tolerance": "n/a",
+            "value": "diverges"
+          }
+        ],
+        "file": "bench/beh-dio-schottky/B3_thermal_runaway.cir",
+        "id": "B3",
+        "measured_in_ngspice": "63.7072 / diverged to 773 C",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "diode",
+    "confidence": {
+      "failure": "L",
+      "model": "M",
+      "parameters": "L",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "leakage heating runaway, shorts",
+        "id": "thermal_runaway",
+        "permanence": "permanent",
+        "sim_response": "FAIL, failed_short",
+        "trigger": "stability inequality violated or Tj >= TJmax"
+      },
+      {
+        "effect": "junction damage",
+        "id": "reverse_overvoltage",
+        "permanence": "permanent",
+        "sim_response": "WARN 0.8, FAIL 1.0 x VRRM",
+        "trigger": "VR above VRRM"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "VF typical not available; single max anchor with assumed N and RS",
+        "leakage linear in VR; real is superlinear",
+        "capacitance default assumed"
+      ],
+      "netlist_template": "D{ref} {A} {K} DSCH_{ref}\n.model DSCH_{ref} D (IS={IS} N={N} RS={RS} CJO={CJO} VJ=0.4 M=0.45 TT=0 BV={BV} IBV=1m EG=0.296 XTI=2)\nBleak_{ref} {A} {K} I = {IR_ref/VR_ref} * v({A},{K}) * exp({aT}*(temper-25))\n",
+      "spice_primitives": [
+        "D",
+        "B"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "ac",
+        "tran",
+        "temp"
+      ],
+      "valid_range": "VR < VRRM; leakage fit anchored 25 and 100 C; Tj <= 150 C"
+    },
+    "parameters": {
+      "BV": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 45,
+        "max": 100,
+        "min": 20,
+        "source_ref": "S10",
+        "unit": "V"
+      },
+      "CJO": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 1.1e-10,
+        "max": 6e-10,
+        "min": 5e-12,
+        "source_ref": "S10",
+        "unit": "F"
+      },
+      "IR_ref": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.0002,
+        "max": 0.01,
+        "min": 1e-06,
+        "source_ref": "S10",
+        "tolerance": "max value",
+        "unit": "A"
+      },
+      "IS": {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "default": 6.37e-08,
+        "max": 1e-06,
+        "min": 1e-09,
+        "source_ref": "S10",
+        "unit": "A"
+      },
+      "N": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 1.05,
+        "max": 1.2,
+        "min": 1.0,
+        "source_ref": "S10",
+        "unit": "1"
+      },
+      "RS": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.05,
+        "max": 3.0,
+        "min": 0.0,
+        "source_ref": "S10",
+        "unit": "ohm"
+      },
+      "VR_ref": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 40,
+        "max": 100,
+        "min": 20,
+        "source_ref": "S10",
+        "unit": "V"
+      },
+      "aT": {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "default": 0.0429,
+        "max": 0.07,
+        "min": 0.03,
+        "source_ref": "S10",
+        "unit": "1/K"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "K",
+        "package_terminal_rule": "terminal 1 (cathode bar, -X) of the selected package member",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "A",
+        "package_terminal_rule": "terminal 2 (anode, +X)",
+        "role": "terminal"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "max(vr) <= VRRM",
+        "condition": "SS14",
+        "name": "repetitive_peak_reverse",
+        "source_ref": "S10",
+        "symbol": "VRRM",
+        "unit": "V",
+        "value": 40
+      },
+      {
+        "check": "mean(if) <= IF(AV)",
+        "condition": "SS14 SMA",
+        "name": "average_forward",
+        "source_ref": "S10",
+        "symbol": "IF(AV)",
+        "unit": "A",
+        "value": 1.0
+      },
+      {
+        "check": "i_pk <= IFSM*sqrt(t_ref/t)",
+        "condition": "8.3 ms half sine SS14",
+        "name": "surge",
+        "source_ref": "S10",
+        "symbol": "IFSM",
+        "unit": "A",
+        "value": 40
+      },
+      {
+        "check": "Rth*VR*IR_ref*aT*exp(aT*(Tj-25)) < 1",
+        "condition": "Rth*VR*IR*aT*exp(aT*(Tj-25)) < 1",
+        "name": "runaway_stability",
+        "source_ref": "S10",
+        "symbol": "-",
+        "unit": "1",
+        "value": 1
+      }
+    ],
+    "sources": [
+      {
+        "date": "23-Apr-2020",
+        "id": "S10",
+        "org": "Vishay",
+        "title": "SS12 thru SS16 Surface Mount Schottky Barrier Rectifier doc 88746",
+        "url": "https://www.vishay.com/docs/88746/ss12.pdf",
+        "used_for": "ratings, leakage, thermal"
+      }
+    ],
+    "status": "partial"
+  },
+  "category": "diode",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "322288fe706a114f8e8610173229bf538b4dae128c7af68d09b73c61e87c6dce",
+    "line": 3902
+  },
+  "source_refs": [
+    {
+      "date": "23-Apr-2020",
+      "id": "S10",
+      "org": "Vishay",
+      "title": "SS12 thru SS16 Surface Mount Schottky Barrier Rectifier doc 88746",
+      "url": "https://www.vishay.com/docs/88746/ss12.pdf",
+      "used_for": "ratings, leakage, thermal"
+    }
+  ],
+  "status": "partial"
+}

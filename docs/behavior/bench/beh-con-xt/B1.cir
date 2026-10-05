@@ -1,0 +1,27 @@
+* B1 BEH-CON-XT contact self-heating at rated current with R(T) feedback (op)
+* thermal node t: volts = deltaT in kelvin, Rth in K/W (ASSUMPTION: Rth = 30 K / (Irated^2 * R0), i.e. 30 K rise at rated current)
+* XT60: Irated 30 A, R0 0.55 mohm (Amass v1.2).  XT30: Irated 15 A, R0 0.80 mohm (Amass V1.2).  alpha copper alloy 0.0039 /K (general physics, ASSUMPTION for brass)
+.param alpha=0.0039
+.param R60=0.55m I60=30 Rth60={30/(I60*I60*R60)}
+.param R30=0.80m I30=15 Rth30={30/(I30*I30*R30)}
+* branch XT60 at rated, at peak 60 A short pulse is a tran case, here DC 30 A
+B60 0 t60 I = {I60*I60*R60}*(1+{alpha}*v(t60))
+Rt60 t60 0 {Rth60}
+B30 0 t30 I = {I30*I30*R30}*(1+{alpha}*v(t30))
+Rt30 t30 0 {Rth30}
+* power check without feedback
+Bp60 p60 0 V = {I60*I60*R60}
+Rp60 p60 0 1G
+Bp30 p30 0 V = {I30*I30*R30}
+Rp30 p30 0 1G
+.control
+op
+print v(p60) v(p30) v(t60) v(t30)
+* analytical: P = I^2 R0 ; dT = P*Rth/(1 - P*alpha*Rth)
+let e_p60 = 30*30*0.55e-3
+let e_p30 = 15*15*0.8e-3
+let e_t60 = 30/(1-0.0039*30)
+let e_t30 = 30/(1-0.0039*30)
+print e_p60 e_p30 e_t60 e_t30
+.endc
+.end

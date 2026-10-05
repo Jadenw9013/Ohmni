@@ -14,7 +14,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0", "ruff>=0.11"]
+dev = ["pytest>=8.0", "ruff>=0.11", "PyYAML>=6.0"]
 mcp = ["mcp==2.2.0"]
 
 [project.scripts]
@@ -24,7 +24,13 @@ ohmni-mcp = "ohmni.mcp_server.server:main"
 where = ["src"]
 
 [tool.setuptools.package-data]
-ohmni = ["catalog/data/parts/*.json"]
+ohmni = [
+    "catalog/data/parts/*.json",
+    "behavior/data/*.json",
+    "behavior/data/classes/*.json",
+    "behavior/data/entries/*.json",
+    "behavior/data/bindings/*.json",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

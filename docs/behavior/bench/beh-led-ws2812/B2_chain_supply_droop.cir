@@ -1,0 +1,31 @@
+* B2: L1 supply model of a WS2812B chain: each pixel = constant-current load 3*20 mA (ASSUMPTION, all channels full on) + 1 mA static (ASSUMPTION),
+* with a brown-out factor clamp((VDD-3.0)/0.5,0,1) on the LED current (ASSUMPTION). Feed 5 V through 0.05 ohm per segment (copper), N=10 pixels.
+.param ipix=61m rseg=0.05
+VDD vin 0 5
+R1 vin n1 {rseg}
+R2 n1 n2 {rseg}
+R3 n2 n3 {rseg}
+R4 n3 n4 {rseg}
+R5 n4 n5 {rseg}
+R6 n5 n6 {rseg}
+R7 n6 n7 {rseg}
+R8 n7 n8 {rseg}
+R9 n8 n9 {rseg}
+R10 n9 n10 {rseg}
+B1 n1 0 I = {ipix}*min(max((v(n1)-3.0)/0.5,0),1)
+B2 n2 0 I = {ipix}*min(max((v(n2)-3.0)/0.5,0),1)
+B3 n3 0 I = {ipix}*min(max((v(n3)-3.0)/0.5,0),1)
+B4 n4 0 I = {ipix}*min(max((v(n4)-3.0)/0.5,0),1)
+B5 n5 0 I = {ipix}*min(max((v(n5)-3.0)/0.5,0),1)
+B6 n6 0 I = {ipix}*min(max((v(n6)-3.0)/0.5,0),1)
+B7 n7 0 I = {ipix}*min(max((v(n7)-3.0)/0.5,0),1)
+B8 n8 0 I = {ipix}*min(max((v(n8)-3.0)/0.5,0),1)
+B9 n9 0 I = {ipix}*min(max((v(n9)-3.0)/0.5,0),1)
+B10 n10 0 I = {ipix}*min(max((v(n10)-3.0)/0.5,0),1)
+.control
+op
+print v(n10) v(n1)
+let itot = (v(vin)-v(n1))/0.05
+print itot
+.endc
+.end

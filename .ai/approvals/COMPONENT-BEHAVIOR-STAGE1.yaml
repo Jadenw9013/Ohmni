@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "scope": "COMPONENT-BEHAVIOR-STAGE1",
+  "approved_by": "human",
+  "approved_on": "2026-10-04",
+  "instruction": "Stage 1 approved, with both resolutions",
+  "source_documents": [
+    "COMPONENT_BEHAVIOR_SPEC.md",
+    "docs/behavior/gapfill/"
+  ],
+  "deliverables": [
+    "behavior schema with exact fidelity enum values",
+    "generated class and per-entry behavior records",
+    "runtime loader and deterministic validation",
+    "coverage, status, evidence-path, LED permutation, and MCP1700 package pin-order tests"
+  ],
+  "binding_resolutions": [
+    "GENERIC_LED_GREEN retains catalog roles 1/A and 2/K while explicitly binding catalog 1/A to package terminal 2/A and catalog 2/K to package terminal 1/K.",
+    "MCP1700 catalog pins are 1=GND, 2=VOUT, 3=VIN for SOT-23; SOT-23, SOT-89, and TO-92 package orders are represented and tested separately with Microchip DS20001826F page 11 evidence.",
+    "Other Stage 0 mismatches may be resolved only as pure labels or permutations. Any change to electrical truth is a Stage 1 gate item requiring human review."
+  ],
+  "non_goals": [
+    "Stage 2 or later behavior implementation",
+    "new simulation solver work",
+    "new ngspice bench runs before ngspice -v succeeds and the version is recorded"
+  ],
+  "branch": "codex/behavior-stage1",
+  "preserved_primary_checkout": "Uncommitted production-repair changes in the primary checkout remain untouched."
+}

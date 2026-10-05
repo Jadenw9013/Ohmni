@@ -1,0 +1,11 @@
+* B1: I2C open-drain line with module/host pull-up. R=4.7k, Cbus=50 pF. 30 to 70 percent rise time = 0.8473*R*C. (Module pull-up values are an ASSUMPTION; I2C limits not opened.)
+VDD vdd 0 3.3
+RPU vdd sda 4.7k
+CB sda 0 50p
+* open-drain driver releases at t=1us (pulse is the pull-down gate)
+VG g 0 PULSE(3.3 0 1u 1n 1n 10u 20u)
+S1 sda 0 g 0 SW
+.model SW SW(Ron=50 Roff=1G Vt=1.65 Vh=0.1)
+.tran 1n 12u
+.meas tran tr TRIG v(sda) VAL=0.99 RISE=1 TARG v(sda) VAL=2.31 RISE=1
+.end

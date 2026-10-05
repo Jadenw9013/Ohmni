@@ -1,0 +1,25 @@
+* BEH-IC-TIMER555 B1b: astable with large R1 (Ron effect negligible). R1=10k R2=100k C=1 nF, Vcc=5 V.
+* Analytic (TI SLFS022K): f = 1.44/((R1+2R2)C) = 1.44/(210k*1n) = 6857 Hz ; tH = 0.693*110k*1n = 76.2 us ; tL = 0.693*100k*1n = 69.3 us ; duty = 110/210 = 52.38 %
+* Exact ideal-comparator: f = 1/(ln2*210k*1n) = 6870 Hz. Ron=30 ohm vs R1=10k: Vd=15 mV, effect < 0.2 %.
+.include ne555.lib
+Vcc vcc 0 5
+X1 0 trig out vcc cnt trig dis vcc ne555
+Cc cnt 0 10n
+R1 vcc dis 10k
+R2 dis trig 100k
+C1 trig 0 1n
+.tran 20n 4m uic
+.control
+set noaskquit
+run
+meas tran t1 when v(out)=2.5 rise=3
+meas tran t2 when v(out)=2.5 rise=4
+meas tran tf when v(out)=2.5 fall=3
+let per = t2-t1
+let f = 1/per
+let duty = (tf-t1)/per
+let per_us = per*1e6
+echo RESULT f_hz=$&f period_us=$&per_us duty=$&duty
+quit
+.endc
+.end

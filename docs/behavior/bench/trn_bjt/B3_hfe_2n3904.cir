@@ -1,0 +1,22 @@
+* BEH-TRN-BJT B3: DC current gain of the fitted models inside the datasheet hFE bands
+* 2N3904 (onsemi 2N3903/D Rev 9, Vce=1 V): Ic 0.1mA 40-300, 1mA 70-300, 10mA 100-300, 50mA 60-300, 100mA 30-300
+* Expected: every measured hFE lies inside its band. Tolerance: inside band (hard limits).
+.include /home/claude/behavior/bench/trn_bjt/models_bjt_r6fit.lib
+Qa ca ba 0 Q2N3904_R6FIT
+Vca ca 0 1
+Vba ba 0 0.6
+.dc Vba 0.45 0.98 0.0025
+.control
+set noaskquit
+run
+let ica = -i(Vca)
+let iba = -i(Vba)
+let hfea = ica/iba
+meas dc a100u find hfea when ica=100u
+meas dc a1m find hfea when ica=1m
+meas dc a10m find hfea when ica=10m
+meas dc a50m find hfea when ica=50m
+meas dc a100m find hfea when ica=100m
+quit
+.endc
+.end

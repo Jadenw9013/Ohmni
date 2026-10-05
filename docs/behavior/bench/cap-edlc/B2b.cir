@@ -1,0 +1,17 @@
+B2b Two supercapacitors in series with 1 kohm balancing resistors across each (leakage RLK 100k / 200k)
+* R1' = 100k||1k = 990.099 ; R2' = 200k||1k = 995.025 ; v1 = 5*R1'/(R1'+R2') = 2.4938 V, v2 = 2.5062 V (v2 still 6 mV over 2.5 V: flag 1)
+.include ohm_edlc.lib
+Vs in 0 5
+Xc1 in mid f1 ohm_edlc C0=10 ESR=0.02 RLK=100k VR=2.5
+Xc2 mid 0 f2 ohm_edlc C0=10 ESR=0.02 RLK=200k VR=2.5
+Rb1 in mid 1k
+Rb2 mid 0 1k
+Rf1 f1 0 1meg
+Rf2 f2 0 1meg
+.op
+.control
+op
+print v(in,mid) v(mid) v(f1) v(f2)
+quit
+.endc
+.end

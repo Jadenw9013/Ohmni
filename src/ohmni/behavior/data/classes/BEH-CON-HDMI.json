@@ -1,0 +1,314 @@
+{
+  "applies_to": [
+    "OHM-167",
+    "OHM-168"
+  ],
+  "basis_values": [
+    "0.5*(1+gamma)",
+    "10mA*(50+0.02)",
+    "MFR_DATASHEET",
+    "STANDARD"
+  ],
+  "behavior_id": "BEH-CON-HDMI",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "10mA*(50+0.02)",
+          "measure": "vdiff",
+          "tolerance": "0.1%",
+          "value": 0.5002
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-hdmi/B1_tmds_term.cir",
+      "measured_in_ngspice": "0.50020 V",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "0.5*(1+gamma)",
+          "measure": "vload_first",
+          "tolerance": "0.5%",
+          "value": 0.45946
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-hdmi/B2_tline_mismatch.cir",
+      "measured_in_ngspice": "0.459459 V",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-167",
+      "OHM-168"
+    ],
+    "behavior_id": "BEH-CON-HDMI",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "10mA*(50+0.02)",
+            "measure": "vdiff",
+            "tolerance": "0.1%",
+            "value": 0.5002
+          }
+        ],
+        "file": "bench/beh-con-hdmi/B1_tmds_term.cir",
+        "id": "B1",
+        "measured_in_ngspice": "0.50020 V",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "0.5*(1+gamma)",
+            "measure": "vload_first",
+            "tolerance": "0.5%",
+            "value": 0.45946
+          }
+        ],
+        "file": "bench/beh-con-hdmi/B2_tline_mismatch.cir",
+        "id": "B2",
+        "measured_in_ngspice": "0.459459 V",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "connector",
+    "confidence": {
+      "failure": "L",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "source supply damage",
+        "id": "back_power",
+        "permanence": "permanent",
+        "sim_response": "flag",
+        "trigger": "+5 V driven from the sink side"
+      },
+      {
+        "effect": "TMDS/HPD/DDC damage",
+        "id": "esd_hotplug",
+        "permanence": "permanent",
+        "sim_response": "flag missing ESD array",
+        "trigger": "hot plug discharge"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "no loss, no crosstalk",
+        "no TMDS, DDC, CEC, HPD protocol",
+        "sink terminations are separate parts",
+        "Type C pin map unresolved"
+      ],
+      "netlist_template": "R{ref}_c{n} {BOARD_n} {CABLE_n} {Rc}\nR{ref}_sh {SHELL} {SHIELD_NET} {Rshell}\n",
+      "spice_primitives": [
+        "R",
+        "C",
+        "T"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "ac",
+        "tran"
+      ],
+      "valid_range": "DC to a few hundred MHz (lumped)"
+    },
+    "parameters": {
+      "Rc": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.02,
+        "max": 0.03,
+        "min": 0,
+        "source_ref": "S12",
+        "tolerance": "20 to 30 mohm per datasheet",
+        "unit": "ohm"
+      },
+      "Zdiff": {
+        "basis": "STANDARD",
+        "confidence": "M",
+        "default": 100,
+        "max": 115,
+        "min": 85,
+        "source_ref": "none",
+        "tolerance": "recalled",
+        "unit": "ohm"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "bidirectional",
+        "name": "D2P",
+        "package_terminal_rule": "Type A pin 1; Type C: map by name (RESEARCH_REQUIRED)",
+        "role": "tmds"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "D2S",
+        "package_terminal_rule": "Type A pin 2",
+        "role": "shield"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "D2N",
+        "package_terminal_rule": "Type A pin 3",
+        "role": "tmds"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "D1P",
+        "package_terminal_rule": "Type A pin 4",
+        "role": "tmds"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "D1S",
+        "package_terminal_rule": "Type A pin 5",
+        "role": "shield"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "D1N",
+        "package_terminal_rule": "Type A pin 6",
+        "role": "tmds"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "D0P",
+        "package_terminal_rule": "Type A pin 7",
+        "role": "tmds"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "D0S",
+        "package_terminal_rule": "Type A pin 8",
+        "role": "shield"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "D0N",
+        "package_terminal_rule": "Type A pin 9",
+        "role": "tmds"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "CKP",
+        "package_terminal_rule": "Type A pin 10",
+        "role": "tmds"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "CKS",
+        "package_terminal_rule": "Type A pin 11",
+        "role": "shield"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "CKN",
+        "package_terminal_rule": "Type A pin 12",
+        "role": "tmds"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "CEC",
+        "package_terminal_rule": "Type A pin 13",
+        "role": "control"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "UTIL",
+        "package_terminal_rule": "Type A pin 14",
+        "role": "reserved"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "SCL",
+        "package_terminal_rule": "Type A pin 15",
+        "role": "ddc"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "SDA",
+        "package_terminal_rule": "Type A pin 16",
+        "role": "ddc"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "DDCGND",
+        "package_terminal_rule": "Type A pin 17",
+        "role": "ground"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "V5",
+        "package_terminal_rule": "Type A pin 18",
+        "role": "power"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "HPD",
+        "package_terminal_rule": "Type A pin 19",
+        "role": "control"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "SHELL",
+        "package_terminal_rule": "shield tabs",
+        "role": "shield"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "abs(i(Rc_n)) <= 0.5",
+        "condition": "per contact",
+        "name": "contact_current",
+        "source_ref": "S12",
+        "symbol": "I",
+        "unit": "A",
+        "value": 0.5
+      },
+      {
+        "check": "abs(v) <= 40",
+        "condition": "AC",
+        "name": "voltage",
+        "source_ref": "S12",
+        "symbol": "V",
+        "unit": "V",
+        "value": 40
+      }
+    ],
+    "sources": [
+      "S12",
+      "S13",
+      "S14"
+    ],
+    "status": "partial"
+  },
+  "category": "connector",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "e980edc43c00b9d3b3dddd7c5815ab26fc339ba64f7e86b5aa31061ca7542edd",
+    "line": 11423
+  },
+  "source_refs": [
+    "S12",
+    "S13",
+    "S14"
+  ],
+  "status": "partial"
+}

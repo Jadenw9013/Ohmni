@@ -1,0 +1,325 @@
+{
+  "applies_to": [
+    "OHM-150",
+    "OHM-151",
+    "OHM-152",
+    "OHM-153",
+    "OHM-154"
+  ],
+  "basis_values": [
+    "ASSUMPTION",
+    "DERIVED",
+    "MFR_DATASHEET",
+    "R/(2 pi L)",
+    "closed form",
+    "divider"
+  ],
+  "behavior_id": "BEH-CON-HEADER",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "divider",
+          "measure": "V_load",
+          "tolerance": "0.1%",
+          "value": 4.90196
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-header/B1.cir",
+      "measured_in_ngspice": 4.901961,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "divider",
+          "measure": "v(b)",
+          "tolerance": "0.1%",
+          "value": 3.26732
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-header/B2.cir",
+      "measured_in_ngspice": 3.26732,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "closed form",
+          "measure": "dT",
+          "tolerance": "0.1%",
+          "value": 33.975
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-header/B3.cir",
+      "measured_in_ngspice": 33.97508,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B4",
+      "expected": [
+        {
+          "basis": "R/(2 pi L)",
+          "measure": "f3db",
+          "tolerance": "1%",
+          "value": "1.9894e9"
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-header/B4.cir",
+      "measured_in_ngspice": "1.98924e9",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-150",
+      "OHM-151",
+      "OHM-152",
+      "OHM-153",
+      "OHM-154"
+    ],
+    "behavior_id": "BEH-CON-HEADER",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "divider",
+            "measure": "V_load",
+            "tolerance": "0.1%",
+            "value": 4.90196
+          }
+        ],
+        "file": "bench/beh-con-header/B1.cir",
+        "id": "B1",
+        "measured_in_ngspice": 4.901961,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "divider",
+            "measure": "v(b)",
+            "tolerance": "0.1%",
+            "value": 3.26732
+          }
+        ],
+        "file": "bench/beh-con-header/B2.cir",
+        "id": "B2",
+        "measured_in_ngspice": 3.26732,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "closed form",
+            "measure": "dT",
+            "tolerance": "0.1%",
+            "value": 33.975
+          }
+        ],
+        "file": "bench/beh-con-header/B3.cir",
+        "id": "B3",
+        "measured_in_ngspice": 33.97508,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "R/(2 pi L)",
+            "measure": "f3db",
+            "tolerance": "1%",
+            "value": "1.9894e9"
+          }
+        ],
+        "file": "bench/beh-con-header/B4.cir",
+        "id": "B4",
+        "measured_in_ngspice": "1.98924e9",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "connector",
+    "confidence": {
+      "failure": "L",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "contact heating, housing softening",
+        "id": "overcurrent",
+        "permanence": "permanent",
+        "sim_response": "flag, damaged above Tmax",
+        "trigger": "I > Irated*k"
+      },
+      {
+        "effect": "melt",
+        "id": "thermal_runaway",
+        "permanence": "permanent",
+        "sim_response": "flag, open",
+        "trigger": "I >= I_run"
+      },
+      {
+        "effect": "Rc rises",
+        "id": "wear",
+        "permanence": "permanent",
+        "sim_response": "Rc x2",
+        "trigger": "mating cycles > rated"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "Rc is a datasheet max, not a typical",
+        "no wear dynamics",
+        "Rth assumed",
+        "L and C derived"
+      ],
+      "netlist_template": "R{ref}_c{k} {A_k} {B_k} {Rc}\n",
+      "spice_primitives": [
+        "R",
+        "L",
+        "C"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "ac",
+        "tran",
+        "temp"
+      ],
+      "valid_range": "currents up to Irated*k; frequency below roughly 500 MHz with L/C options"
+    },
+    "parameters": {
+      "Irated": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 3,
+        "max": 6,
+        "min": 1,
+        "source_ref": "S1",
+        "tolerance": "-",
+        "unit": "A"
+      },
+      "Lpin": {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "default": 8,
+        "max": 15,
+        "min": 0,
+        "source_ref": "",
+        "tolerance": "50%",
+        "unit": "nH"
+      },
+      "N": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 8,
+        "max": 40,
+        "min": 1,
+        "source_ref": "S1",
+        "tolerance": "exact",
+        "unit": "positions"
+      },
+      "Rc": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 10,
+        "max": 30,
+        "min": 0,
+        "source_ref": "S2",
+        "tolerance": "factor 2",
+        "unit": "mohm"
+      },
+      "Rth_derived": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 333,
+        "max": 1000,
+        "min": 100,
+        "source_ref": "",
+        "tolerance": "factor 2",
+        "unit": "K/W"
+      },
+      "Vwork": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 250,
+        "max": 465,
+        "min": 0,
+        "source_ref": "S1",
+        "tolerance": "-",
+        "unit": "V"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "P1..PN (or P1..P2N)",
+        "package_terminal_rule": "3D spec numbering: 1xN pin 1 at +Y end descending; 2xN odd pins on -X row, even on +X row, pairs descending in -Y",
+        "role": "terminal"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "I > Irated*k(N_loaded)",
+        "condition": "per contact, conservative; Samtec 4.7-6.3 A",
+        "name": "current",
+        "source_ref": "S1",
+        "symbol": "I",
+        "unit": "A",
+        "value": 3
+      },
+      {
+        "check": "V > Vwork",
+        "condition": "Samtec mated SSW, AC",
+        "name": "working_voltage",
+        "source_ref": "S1",
+        "symbol": "V",
+        "unit": "V",
+        "value": 465
+      },
+      {
+        "check": "Tcontact > Tmax",
+        "condition": "tin / Wurth / Harwin; gold Samtec 125",
+        "name": "temperature",
+        "source_ref": "S1",
+        "symbol": "T",
+        "unit": "degC",
+        "value": 105
+      }
+    ],
+    "sources": [
+      "S1",
+      "S2",
+      "S3",
+      "S4"
+    ],
+    "status": "partial"
+  },
+  "category": "connector",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "6f4f4543f146d8cda54f2bc872cf113fd711040f89fd4f96327b370c54081711",
+    "line": 10680
+  },
+  "source_refs": [
+    "S1",
+    "S2",
+    "S3",
+    "S4"
+  ],
+  "status": "partial"
+}

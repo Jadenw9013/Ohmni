@@ -1,0 +1,20 @@
+* B1 USB-C VBUS/GND contact-resistance drop at rated current
+* GCT USB4105 (S3): Rc 40 mohm max initial per contact; VBUS pins A4,A9,B4,B9 share 5.00 A; GND pins A1,A12,B1,B12
+* Drop at current I = I*(Rc/4 + Rc/4) = I*20 mohm
+.param Rc=40m
+Vbus src 0 5
+Ra4 src vb {Rc}
+Ra9 src vb {Rc}
+Rb4 src vb {Rc}
+Rb9 src vb {Rc}
+Iload vb gl DC 3
+Rg1 gl 0 {Rc}
+Rg2 gl 0 {Rc}
+Rg3 gl 0 {Rc}
+Rg4 gl 0 {Rc}
+.control
+dc Iload 0 5 1
+print v(vb)-v(gl)
+quit
+.endc
+.end

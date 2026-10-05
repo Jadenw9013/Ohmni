@@ -1,0 +1,289 @@
+{
+  "applies_to": [
+    "OHM-084"
+  ],
+  "basis_values": [
+    "5 - R*I*N(N+1)/2",
+    "ASSUMPTION",
+    "MFR_DATASHEET",
+    "datasheet"
+  ],
+  "behavior_id": "BEH-LED-ADDRESSABLE",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "datasheet",
+          "measure": "T0H",
+          "tolerance": 1.5e-07,
+          "value": 4e-07
+        }
+      ],
+      "file": "docs/behavior/bench/beh-led-ws2812/B1_data_timing_stimulus.cir",
+      "measured_in_ngspice": 4.05e-07,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "5 - R*I*N(N+1)/2",
+          "measure": "V_end",
+          "tolerance": 0.001,
+          "value": 4.83225
+        }
+      ],
+      "file": "docs/behavior/bench/beh-led-ws2812/B2_chain_supply_droop.cir",
+      "measured_in_ngspice": 4.83225,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-084"
+    ],
+    "behavior_id": "BEH-LED-ADDRESSABLE",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "datasheet",
+            "measure": "T0H",
+            "tolerance": 1.5e-07,
+            "value": 4e-07
+          }
+        ],
+        "file": "bench/beh-led-ws2812/B1_data_timing_stimulus.cir",
+        "id": "B1",
+        "measured_in_ngspice": 4.05e-07,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "5 - R*I*N(N+1)/2",
+            "measure": "V_end",
+            "tolerance": 0.001,
+            "value": 4.83225
+          }
+        ],
+        "file": "bench/beh-led-ws2812/B2_chain_supply_droop.cir",
+        "id": "B2",
+        "measured_in_ngspice": 4.83225,
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "ic",
+    "confidence": {
+      "failure": "L",
+      "model": "L",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "exceeds rating",
+        "id": "vdd_over",
+        "permanence": "permanent",
+        "sim_response": "flag; dead pixel above 6 V (assumption)",
+        "trigger": "VDD > 5.3 V"
+      },
+      {
+        "effect": "wrong colours",
+        "id": "bit_timing",
+        "permanence": "recoverable",
+        "sim_response": "L3 decoder flags BIT_TIMING_VIOLATION",
+        "trigger": "bit outside window"
+      }
+    ],
+    "layer": "L3",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "no SPICE model of the control IC",
+        "per-channel current is an assumption",
+        "reset time differs between datasheet revisions (50 us here)",
+        "DOUT delay unknown"
+      ],
+      "netlist_template": "B{ref}load {VDD} {VSS} I = {iq} + {ich}*({r_duty}+{g_duty}+{b_duty})*min(max((v({VDD},{VSS})-3.0)/0.5,0),1)\nRIN{ref} {DIN} {VSS} 100Meg\n",
+      "spice_primitives": [
+        "B",
+        "R",
+        "C"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "tran"
+      ],
+      "valid_range": "L1 supply only; protocol requires an L3 model"
+    },
+    "parameters": {
+      "ich": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.02,
+        "unit": "A"
+      },
+      "iq": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.001,
+        "unit": "A"
+      },
+      "t0h": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 0.4,
+        "source_ref": "S9",
+        "tolerance": 0.15,
+        "unit": "us"
+      },
+      "t0l": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 0.85,
+        "source_ref": "S9",
+        "tolerance": 0.15,
+        "unit": "us"
+      },
+      "t1h": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 0.8,
+        "source_ref": "S9",
+        "tolerance": 0.15,
+        "unit": "us"
+      },
+      "t1l": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 0.45,
+        "source_ref": "S9",
+        "tolerance": 0.15,
+        "unit": "us"
+      },
+      "t_reset": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 50,
+        "min": 50,
+        "source_ref": "S9",
+        "unit": "us"
+      },
+      "vdd": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 5.0,
+        "max": 5.3,
+        "min": 3.5,
+        "source_ref": "S9",
+        "unit": "V"
+      },
+      "vih_frac": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 0.7,
+        "source_ref": "S9",
+        "unit": 1
+      },
+      "vil_frac": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 0.3,
+        "source_ref": "S9",
+        "unit": 1
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "power_in",
+        "name": "VDD",
+        "package_terminal_rule": "terminal 1",
+        "role": "power"
+      },
+      {
+        "electrical_type": "output",
+        "name": "DOUT",
+        "package_terminal_rule": "terminal 2",
+        "role": "output"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "VSS",
+        "package_terminal_rule": "terminal 3",
+        "role": "ground"
+      },
+      {
+        "electrical_type": "input",
+        "name": "DIN",
+        "package_terminal_rule": "terminal 4",
+        "role": "input"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "3.5 <= vdd <= 5.3",
+        "condition": "max as printed",
+        "name": "supply",
+        "source_ref": "S9",
+        "symbol": "VDD",
+        "unit": "V",
+        "value": 5.3
+      },
+      {
+        "check": "vss-0.5 <= v_din <= vdd+0.5",
+        "condition": "",
+        "name": "input_voltage",
+        "source_ref": "S9",
+        "symbol": "VI",
+        "unit": "V",
+        "value": "-0.5..VDD+0.5"
+      },
+      {
+        "check": "v_din_high >= 0.7*vdd",
+        "condition": "",
+        "name": "input_high",
+        "source_ref": "S9",
+        "symbol": "VIH",
+        "unit": "xVDD",
+        "value": 0.7
+      }
+    ],
+    "sources": [
+      {
+        "date": "no revision printed in extract",
+        "id": "S9",
+        "org": "Worldsemi",
+        "title": "WS2812B Intelligent control LED integrated light source",
+        "url": "https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf",
+        "used_for": "pins, timing, VDD, thresholds, GRB format, LED data"
+      }
+    ],
+    "status": "partial"
+  },
+  "category": "ic",
+  "fidelity": "behavioural_approximation",
+  "layer": "L3",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "eaec72daeabda3a9cfc338cb2afa0193c0011a5081897b2f2850a4c972c9f1af",
+    "line": 5094
+  },
+  "source_refs": [
+    {
+      "date": "no revision printed in extract",
+      "id": "S9",
+      "org": "Worldsemi",
+      "title": "WS2812B Intelligent control LED integrated light source",
+      "url": "https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf",
+      "used_for": "pins, timing, VDD, thresholds, GRB format, LED data"
+    }
+  ],
+  "status": "partial"
+}

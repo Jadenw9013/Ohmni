@@ -1,0 +1,22 @@
+* BEH-DIO-BRIDGE B1: bridge rectifier (4x 1N4007 typical fit) 10 V peak, 50 Hz, RL=100, no filter
+* Terminals: AC1 AC2 PLUS MINUS.  D1 AC1->PLUS, D2 AC2->PLUS, D3 MINUS->AC1, D4 MINUS->AC2
+.model D1N4007_TYP D (IS=4.023e-9 N=1.8 RS=0.03 CJO=39p VJ=0.7 M=0.5 TT=3u BV=1100 IBV=5u)
+.subckt BRIDGE AC1 AC2 PLUS MINUS
+D1 AC1 PLUS D1N4007_TYP
+D2 AC2 PLUS D1N4007_TYP
+D3 MINUS AC1 D1N4007_TYP
+D4 MINUS AC2 D1N4007_TYP
+.ends
+V1 ac1 ac2 SIN(0 10 50)
+Rg ac2 0 1Meg
+XB ac1 ac2 p n BRIDGE
+RL p n 100
+Rn n 0 1Meg
+.tran 20u 40m 20m 20u
+.control
+run
+let vo = v(p)-v(n)
+meas tran vpk max vo from=20m to=40m
+meas tran vavg avg vo from=20m to=40m
+.endc
+.end

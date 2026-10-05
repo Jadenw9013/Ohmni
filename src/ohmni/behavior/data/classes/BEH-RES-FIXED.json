@@ -1,0 +1,394 @@
+{
+  "applies_to": [
+    "OHM-001",
+    "OHM-002",
+    "OHM-003",
+    "OHM-004",
+    "OHM-005",
+    "OHM-006",
+    "OHM-007",
+    "OHM-008",
+    "OHM-009",
+    "OHM-010",
+    "OHM-011",
+    "OHM-012",
+    "OHM-013"
+  ],
+  "basis_values": [
+    "(100+sqrt(14000))/2",
+    "5*10k/20k",
+    "ASSUMPTION",
+    "DERIVED",
+    "MFR_DATASHEET",
+    "R0*(1+100e-6*100)",
+    "derating formula",
+    "quadratic fixed point",
+    "sqrt(R^2+(wL)^2)"
+  ],
+  "behavior_id": "BEH-RES-FIXED",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "5*10k/20k",
+          "measure": "v(out)",
+          "tolerance": "0.1%",
+          "value": 2.5
+        },
+        {
+          "basis": "R0*(1+100e-6*100)",
+          "measure": "R(125C)",
+          "tolerance": "0.1%",
+          "value": 1010
+        }
+      ],
+      "file": "docs/behavior/bench/res_fixed/B1.cir",
+      "measured_in_ngspice": "2.500000; 1010.000",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "(100+sqrt(14000))/2",
+          "measure": "R",
+          "tolerance": "0.1%",
+          "value": 109.16
+        }
+      ],
+      "file": "docs/behavior/bench/res_fixed/B2.cir",
+      "measured_in_ngspice": "109.1608",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "sqrt(R^2+(wL)^2)",
+          "measure": "Zmag",
+          "tolerance": "0.1%",
+          "value": 14.142
+        }
+      ],
+      "file": "docs/behavior/bench/res_fixed/B3.cir",
+      "measured_in_ngspice": "14.1419",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B4",
+      "expected": [
+        {
+          "basis": "derating formula",
+          "measure": "P_allowed",
+          "tolerance": "0.1%",
+          "value": 0.080882
+        }
+      ],
+      "file": "docs/behavior/bench/res_fixed/B4.cir",
+      "measured_in_ngspice": "0.0808824",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B5",
+      "expected": [
+        {
+          "basis": "quadratic fixed point",
+          "measure": "R85",
+          "tolerance": "0.05%",
+          "value": 1006.993
+        }
+      ],
+      "file": "docs/behavior/bench/res_fixed/B5.cir",
+      "measured_in_ngspice": "1006.993",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-001",
+      "OHM-002",
+      "OHM-003",
+      "OHM-004",
+      "OHM-005",
+      "OHM-006",
+      "OHM-007",
+      "OHM-008",
+      "OHM-009",
+      "OHM-010",
+      "OHM-011",
+      "OHM-012",
+      "OHM-013"
+    ],
+    "behavior_id": "BEH-RES-FIXED",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "5*10k/20k",
+            "measure": "v(out)",
+            "tolerance": "0.1%",
+            "value": 2.5
+          },
+          {
+            "basis": "R0*(1+100e-6*100)",
+            "measure": "R(125C)",
+            "tolerance": "0.1%",
+            "value": 1010
+          }
+        ],
+        "file": "bench/res_fixed/B1.cir",
+        "id": "B1",
+        "measured_in_ngspice": "2.500000; 1010.000",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "(100+sqrt(14000))/2",
+            "measure": "R",
+            "tolerance": "0.1%",
+            "value": 109.16
+          }
+        ],
+        "file": "bench/res_fixed/B2.cir",
+        "id": "B2",
+        "measured_in_ngspice": "109.1608",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "sqrt(R^2+(wL)^2)",
+            "measure": "Zmag",
+            "tolerance": "0.1%",
+            "value": 14.142
+          }
+        ],
+        "file": "bench/res_fixed/B3.cir",
+        "id": "B3",
+        "measured_in_ngspice": "14.1419",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "derating formula",
+            "measure": "P_allowed",
+            "tolerance": "0.1%",
+            "value": 0.080882
+          }
+        ],
+        "file": "bench/res_fixed/B4.cir",
+        "id": "B4",
+        "measured_in_ngspice": "0.0808824",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "quadratic fixed point",
+            "measure": "R85",
+            "tolerance": "0.05%",
+            "value": 1006.993
+          }
+        ],
+        "file": "bench/res_fixed/B5.cir",
+        "id": "B5",
+        "measured_in_ngspice": "1006.993",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "passive",
+    "confidence": {
+      "failure": "L",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "permanent drift of R (stability limit about 1 % per 1000 h at P70 for thick film)",
+        "id": "overpower_mild",
+        "permanence": "permanent",
+        "sim_response": "flag WARNING",
+        "trigger": "P > P_allowed"
+      },
+      {
+        "effect": "element burns open; fusible variants designed to do this",
+        "id": "overpower_open",
+        "permanence": "permanent",
+        "sim_response": "flag ERROR, re-run with part open (R=1G)",
+        "trigger": "P > 5x rated for several seconds (assumption)"
+      },
+      {
+        "effect": "arc or breakdown of the element or body",
+        "id": "overvoltage",
+        "permanence": "permanent",
+        "sim_response": "flag ERROR; treat as open if abs(v) > 2*Vmax",
+        "trigger": "abs(v) > Vmax"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "ideal_components",
+      "known_limitations": [
+        "no VCR",
+        "no excess noise",
+        "no thermal EMF",
+        "single-pole thermal model",
+        "ls and cp unsourced",
+        "ngspice turns R=0 into 1 mohm",
+        "realistic mode is behavioural_approximation, never vendor_model"
+      ],
+      "netlist_template": "R{ref} {A} {B} {value}\n",
+      "realistic_template": ".options tnom=25\nRcore{ref} {A} m{ref} {value} tc1={tcr*1e-6}\n* Ls{ref} m{ref} {B} {ls}  (only if ls>0, else Rz{ref} m{ref} {B} 1u)\n* Cp{ref} {A} {B} {cp}     (only if cp>0)\n",
+      "spice_primitives": [
+        "R",
+        "B",
+        "L",
+        "C"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "ac",
+        "tran",
+        "temp"
+      ],
+      "valid_range": "DC up to the frequency where user-supplied ls/cp matter; |v| <= V_max; temperature within rated range"
+    },
+    "parameters": {
+      "cp": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0,
+        "source_ref": "none",
+        "unit": "F"
+      },
+      "ls": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0,
+        "source_ref": "none",
+        "unit": "H"
+      },
+      "p_rated": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 0.1,
+        "source_ref": "S1",
+        "unit": "W"
+      },
+      "rth": {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "default": 680,
+        "source_ref": "S1",
+        "unit": "K_per_W"
+      },
+      "t_end": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 155,
+        "source_ref": "S1",
+        "unit": "C"
+      },
+      "t_knee": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 70,
+        "source_ref": "S1",
+        "unit": "C"
+      },
+      "tcr": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 200,
+        "max": 600,
+        "min": -500,
+        "source_ref": "S1",
+        "unit": "ppm_per_K"
+      },
+      "tolerance": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 5,
+        "max": 10,
+        "min": 0.1,
+        "source_ref": "S1",
+        "unit": "percent"
+      },
+      "u_limit": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 75,
+        "source_ref": "S1",
+        "unit": "V"
+      },
+      "value": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 10000,
+        "max": 10000000,
+        "min": 0.1,
+        "source_ref": "S1",
+        "tolerance": "per series (0.1 % to 10 %)",
+        "unit": "ohm"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "A",
+        "package_terminal_rule": "terminal 1 (-X end in the 3D spec); symmetric, interchangeable",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "B",
+        "package_terminal_rule": "terminal 2 (+X end)",
+        "role": "terminal"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "v*i <= P_allowed(Tamb)",
+        "condition": "ambient Tamb",
+        "name": "power",
+        "source_ref": "S1",
+        "symbol": "P",
+        "unit": "W",
+        "value": "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)"
+      },
+      {
+        "check": "abs(v) <= Vmax",
+        "condition": "AC RMS or DC",
+        "name": "working voltage",
+        "source_ref": "S1",
+        "symbol": "Vmax",
+        "unit": "V",
+        "value": "min(u_limit, sqrt(p_rated*value))"
+      }
+    ],
+    "sources": "see S1..S11, S22, S24 at the end of this file",
+    "status": "partial"
+  },
+  "category": "passive",
+  "fidelity": "ideal_components",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+    "line": 497
+  },
+  "source_refs": "see S1..S11, S22, S24 at the end of this file",
+  "status": "partial"
+}

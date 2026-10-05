@@ -1,0 +1,18 @@
+* BEH-IC-DIGITAL-IF D1: output driver as a Thevenin source fitted to the datasheet worst-case point, then checked at a second load current.
+* Source: NXP P89LPC935 static characteristics (extracted rows): VOL <= 0.4 V at IOL = 20 mA, VOH >= 0.8*VDD at IOH = -20 mA. VDD = 3.3 V.
+*   Ron_low = 0.4/0.020 = 20 ohm ; Ron_high = (3.3-0.8*3.3)/0.020 = 33 ohm   (worst-case limits, NOT typical)
+*   Prediction at 5 mA load: VOL = 5 mA*20 = 0.100 V ; VOH = 3.3 - 5 mA*33 = 3.135 V.  (Linear-driver assumption: real drivers are not linear; this is a conservative envelope.)
+Vdd vdd 0 3.3
+* output low: Ron_low to ground, load = 5 mA current source pulled from the VDD side (sink test) is modelled as the pin sinking 5 mA
+Iol vdd pl dc 5m
+Rl_on pl 0 20
+* output high: Ron_high from VDD, load sources 5 mA to ground
+Rh_on vdd ph 33
+Ioh ph 0 dc 5m
+.control
+set noaskquit
+op
+print v(pl) v(ph)
+quit
+.endc
+.end

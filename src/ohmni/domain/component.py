@@ -199,7 +199,17 @@ class PackageOption(BaseModel):
     pin_count: int | None = Field(default=None, ge=1)
     hand_solderable: bool = True
     kicad_footprint: str | None = None
+    catalog_pin_to_pad: dict[str, str] = Field(
+        default_factory=dict,
+        description=(
+            "Explicit permutation from catalog pin numbers to physical footprint pads. "
+            "An empty map means the numbering is identical."
+        ),
+    )
     notes: str | None = None
+
+    def pad_for_pin(self, pin_number: str) -> str:
+        return self.catalog_pin_to_pad.get(pin_number, pin_number)
 
 
 class SupplyRail(BaseModel):
@@ -442,6 +452,21 @@ class ComponentSpec(BaseModel):
         dup_packages = {n for n in package_names if package_names.count(n) > 1}
         if dup_packages:
             raise ValueError(f"part {self.part_id!r} has duplicate packages: {sorted(dup_packages)}")
+        for package in self.packages:
+            if not package.catalog_pin_to_pad:
+                continue
+            mapped_pins = set(package.catalog_pin_to_pad)
+            if mapped_pins != set(numbers):
+                raise ValueError(
+                    f"part {self.part_id!r} package {package.name!r} pin-to-pad permutation "
+                    "must map every catalog pin exactly once"
+                )
+            targets = list(package.catalog_pin_to_pad.values())
+            if len(targets) != len(set(targets)):
+                raise ValueError(
+                    f"part {self.part_id!r} package {package.name!r} pin-to-pad permutation "
+                    "targets must be unique"
+                )
         if self.regulator is not None and self.category not in (
             ComponentCategory.REGULATOR_LINEAR,
             ComponentCategory.REGULATOR_SWITCHING,
