@@ -1,0 +1,263 @@
+{
+  "comparison": {
+    "comparison": {
+      "current": 8.5,
+      "kind": "interval",
+      "maximum": 0.017,
+      "minimum": 0,
+      "observable": "dc_resistance",
+      "source_facts": {
+        "irms": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "detail": null,
+          "field": "rated_rms_current",
+          "page": 1,
+          "scope": "SRP7028A-1R8M; 40 C temperature rise",
+          "sources": [
+            "https://www.farnell.com/datasheets/2907623.pdf"
+          ],
+          "unit": "A",
+          "value": 8.5
+        },
+        "rdc_max": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "converted_unit": "ohm",
+          "converted_value": 0.017,
+          "detail": null,
+          "field": "maximum_dcr",
+          "page": 1,
+          "scope": "SRP7028A-1R8M",
+          "sources": [
+            "https://www.farnell.com/datasheets/2907623.pdf"
+          ],
+          "unit": "mohm",
+          "value": 17
+        }
+      }
+    },
+    "observed": 0.013999999999999999,
+    "passed": true
+  },
+  "entry_id": "OHM-045",
+  "limits": "Same limited analytical contract with zero-volt current probes. Missing thermal context and unsupported failure rules remain unknown.",
+  "netlist_sha256": "a02834d05aab86f09a0ee023e7b010fa6cc728fba1867df501aba98d1aa91fe9",
+  "observation_status": "ran",
+  "output_sha256": "b8ab491159aae1db25fb8e493aa32f7767175439e52d431cdec4726ea088ffbb",
+  "ran_at": "2026-10-05T22:49:02Z",
+  "rating_status": "unknown",
+  "ratings": {
+    "components": [
+      {
+        "class_checks": [
+          {
+            "check": "max(abs(i)) <= Isat",
+            "condition": "inductance drop per datasheet",
+            "name": "saturation_current",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "bbbc3f111bfa5b4829006e8f085639b64c83bd746d6f007d83d4fd1f1d541a0e",
+              "line": 2448
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "Isat",
+            "unit": "A",
+            "value": "per_part"
+          },
+          {
+            "check": "rms(i) <= Irms if Ta<=25 else Irms*sqrt((Tmax-Ta)/dT_rated)",
+            "condition": "dT_rated rise at 25 C ambient",
+            "name": "heating_current",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "bbbc3f111bfa5b4829006e8f085639b64c83bd746d6f007d83d4fd1f1d541a0e",
+              "line": 2448
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "Irms",
+            "unit": "A",
+            "value": "per_part"
+          },
+          {
+            "check": "Ta + dT <= Tmax",
+            "condition": "ambient plus self heating",
+            "name": "part_temperature",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "bbbc3f111bfa5b4829006e8f085639b64c83bd746d6f007d83d4fd1f1d541a0e",
+              "line": 2448
+            },
+            "source_ref": "S2",
+            "status": "unknown",
+            "symbol": "Tmax",
+            "unit": "degC",
+            "value": "per_part"
+          },
+          {
+            "check": "f <= 0.5*SRF",
+            "condition": "ASSUMPTION",
+            "name": "frequency",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "bbbc3f111bfa5b4829006e8f085639b64c83bd746d6f007d83d4fd1f1d541a0e",
+              "line": 2448
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "f",
+            "unit": "Hz",
+            "value": "0.5*SRF"
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-045",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "L collapses to LR*L0",
+            "id": "saturation",
+            "permanence": "recoverable",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "nonlinear model; WARN at 0.9*Isat, ERROR at 1.5*Isat",
+            "status": "unknown",
+            "trigger": "abs(i) > Isat"
+          },
+          {
+            "applied_response": null,
+            "effect": "insulation or solder failure, open winding",
+            "id": "overheat",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "ERROR; replace by open (1G) after Tmax+20 K",
+            "status": "unknown",
+            "trigger": "Ta + dT > Tmax"
+          },
+          {
+            "applied_response": null,
+            "effect": "capacitive behaviour",
+            "id": "above_srf",
+            "permanence": "recoverable",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "Cp in model; WARN above 0.5*SRF",
+            "status": "unknown",
+            "trigger": "f > SRF"
+          }
+        ],
+        "observations": {
+          "cp": 1.0858323006937779e-11,
+          "dT_rated": 40.0,
+          "drop": 0.2,
+          "i_A": 8.5,
+          "i_B": -8.5,
+          "irms": 8.5,
+          "isat": 16.0,
+          "lr": 0.05,
+          "power": 1.0114999999999998,
+          "rdc": 0.014,
+          "rdc_max": 0.017,
+          "rp": 1000000000.0,
+          "srf": 36000000.0,
+          "tmax_part": 150.0,
+          "v_A": 0.119,
+          "v_B": 0.0,
+          "value": 1.8e-06
+        },
+        "ref": "U1",
+        "reference_checks": [
+          {
+            "evidence": {
+              "irms": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "rated_rms_current",
+                "page": 1,
+                "scope": "SRP7028A-1R8M; 40 C temperature rise",
+                "sources": [
+                  "https://www.farnell.com/datasheets/2907623.pdf"
+                ],
+                "unit": "A",
+                "value": 8.5
+              }
+            },
+            "expression": "abs(i_A) <= irms",
+            "name": "heating current",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "isat": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "saturation_current",
+                "page": 1,
+                "scope": "SRP7028A-1R8M; 20% inductance decrease",
+                "sources": [
+                  "https://www.farnell.com/datasheets/2907623.pdf"
+                ],
+                "unit": "A",
+                "value": 16
+              }
+            },
+            "expression": "abs(i_A) <= isat",
+            "name": "saturation current",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "tmax_part": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "maximum_part_temperature",
+                "page": 1,
+                "scope": "SRP7028A-1R8M; includes self-heating",
+                "sources": [
+                  "https://www.farnell.com/datasheets/2907623.pdf"
+                ],
+                "unit": "C",
+                "value": 150
+              }
+            },
+            "expression": "Tamb+dT <= tmax_part",
+            "name": "part temperature",
+            "reason": "Self-heating and source thermal context are unavailable",
+            "spec_names": [],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      }
+    ],
+    "fault_requests": [],
+    "limitations": [
+      "Only the stated observations and source conditions were checked.",
+      "Unsupported class expressions and failure triggers remain unknown; no damage timing is invented.",
+      "An electrical limit check does not verify physical fit or safe operation."
+    ],
+    "status": "unknown"
+  },
+  "raw_output": "instrumented-output/OHM-045/output.txt",
+  "run_id": "behavior-20261005T065040Z",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+}

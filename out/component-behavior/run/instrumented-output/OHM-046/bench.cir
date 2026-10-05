@@ -1,0 +1,34 @@
+OHMNI sourced behavior circuit
+.options tnom=25
+.temp 25
+Iexcitation1 0 n2 DC 1.45
+vprobe_c1_1 n2 probe_c1_1 0
+vprobe_c1_2 0 probe_c1_2 0
+Xc1 probe_c1_1 probe_c1_2 IND_SAT L0=9.9999999999999991e-06 Isat=2 DROP=0.10000000000000001 LR=0.050000000000000003 RDC=0.10000000000000001 CP=4.7883357108855298e-12 RP=1000000000
+* OHMNI BEH-MAG-INDUCTOR realistic model (behavioural_approximation)
+* Pins: a b. Params: L0 [H], Isat [A] at inductance drop DROP, LR = Lsat/L0 floor,
+* RDC [ohm], CP [F] (from SRF), RP [ohm] (parallel loss).
+.subckt IND_SAT a b L0=1u Isat=5 DROP=0.3 LR=0.05 RDC=10m CP=1p RP=1e9
+.param ia={Isat/atanh(sqrt(DROP/(1-LR)))}
+Rdc a x {RDC}
+Lnl x b L='L0*(LR+(1-LR)*(1/cosh(max(min(i(Lnl)/ia,20),-20)))**2)'
+Cp a b {CP}
+Rp a b {RP}
+.ends
+
+* Same model plus self-heating. Node th is the temperature rise in degC (1 V = 1 degC).
+* RTH [degC/W], CTH [J/degC], TC copper tempco [1/degC].
+.subckt IND_SAT_TH a b th L0=1u Isat=5 DROP=0.3 LR=0.05 RDC=10m CP=1p RP=1e9 RTH=40 CTH=0.05 TC=3.93m
+.param ia={Isat/atanh(sqrt(DROP/(1-LR)))}
+Rdc a x R='RDC*(1+TC*v(th))'
+Lnl x b L='L0*(LR+(1-LR)*(1/cosh(max(min(i(Lnl)/ia,20),-20)))**2)'
+Cp a b {CP}
+Rp a b {RP}
+Bpw 0 th I='v(a,x)*v(a,x)/(RDC*(1+TC*v(th)))'
+Rth th 0 {RTH}
+Cth th 0 {CTH}
+.ends
+
+.op
+.print op
+.end

@@ -1,0 +1,263 @@
+{
+  "comparison": {
+    "comparison": {
+      "current": 1.1,
+      "kind": "interval",
+      "maximum": 0.28,
+      "minimum": 0,
+      "observable": "dc_resistance",
+      "source_facts": {
+        "irms": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "detail": null,
+          "field": "rated_rms_current",
+          "page": 6,
+          "scope": "RLB0914-101KL; 40 C typical rise; current itself is a typical value, not guaranteed minimum or maximum",
+          "sources": [
+            "https://www.bourns.com/docs/product-datasheets/RLB.pdf"
+          ],
+          "unit": "A",
+          "value": 1.1
+        },
+        "rdc_max": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "converted_unit": "ohm",
+          "converted_value": 0.28,
+          "detail": null,
+          "field": "maximum_dcr",
+          "page": 6,
+          "scope": "RLB0914-101KL",
+          "sources": [
+            "https://www.bourns.com/docs/product-datasheets/RLB.pdf"
+          ],
+          "unit": "ohm",
+          "value": 0.28
+        }
+      }
+    },
+    "observed": 0.27999999999999997,
+    "passed": true
+  },
+  "entry_id": "OHM-048",
+  "limits": "Same limited analytical contract with zero-volt current probes. Missing thermal context and unsupported failure rules remain unknown.",
+  "netlist_sha256": "2c951eef495ea4d93b1e82021dbcf5ac0ea627b46da33ac18fcb1f4149b340af",
+  "observation_status": "ran",
+  "output_sha256": "7995f5cd1e729e169be322bb00f435b8ec0fda34a0053248ccb6bc286d482559",
+  "ran_at": "2026-10-05T22:49:04Z",
+  "rating_status": "unknown",
+  "ratings": {
+    "components": [
+      {
+        "class_checks": [
+          {
+            "check": "max(abs(i)) <= Isat",
+            "condition": "inductance drop per datasheet",
+            "name": "saturation_current",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "bbbc3f111bfa5b4829006e8f085639b64c83bd746d6f007d83d4fd1f1d541a0e",
+              "line": 2448
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "Isat",
+            "unit": "A",
+            "value": "per_part"
+          },
+          {
+            "check": "rms(i) <= Irms if Ta<=25 else Irms*sqrt((Tmax-Ta)/dT_rated)",
+            "condition": "dT_rated rise at 25 C ambient",
+            "name": "heating_current",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "bbbc3f111bfa5b4829006e8f085639b64c83bd746d6f007d83d4fd1f1d541a0e",
+              "line": 2448
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "Irms",
+            "unit": "A",
+            "value": "per_part"
+          },
+          {
+            "check": "Ta + dT <= Tmax",
+            "condition": "ambient plus self heating",
+            "name": "part_temperature",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "bbbc3f111bfa5b4829006e8f085639b64c83bd746d6f007d83d4fd1f1d541a0e",
+              "line": 2448
+            },
+            "source_ref": "S2",
+            "status": "unknown",
+            "symbol": "Tmax",
+            "unit": "degC",
+            "value": "per_part"
+          },
+          {
+            "check": "f <= 0.5*SRF",
+            "condition": "ASSUMPTION",
+            "name": "frequency",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "bbbc3f111bfa5b4829006e8f085639b64c83bd746d6f007d83d4fd1f1d541a0e",
+              "line": 2448
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "f",
+            "unit": "Hz",
+            "value": "0.5*SRF"
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-048",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "L collapses to LR*L0",
+            "id": "saturation",
+            "permanence": "recoverable",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "nonlinear model; WARN at 0.9*Isat, ERROR at 1.5*Isat",
+            "status": "unknown",
+            "trigger": "abs(i) > Isat"
+          },
+          {
+            "applied_response": null,
+            "effect": "insulation or solder failure, open winding",
+            "id": "overheat",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "ERROR; replace by open (1G) after Tmax+20 K",
+            "status": "unknown",
+            "trigger": "Ta + dT > Tmax"
+          },
+          {
+            "applied_response": null,
+            "effect": "capacitive behaviour",
+            "id": "above_srf",
+            "permanence": "recoverable",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "Cp in model; WARN above 0.5*SRF",
+            "status": "unknown",
+            "trigger": "f > SRF"
+          }
+        ],
+        "observations": {
+          "cp": 2.067779258006894e-11,
+          "dT_rated": 40.0,
+          "drop": 0.1,
+          "i_A": 1.1,
+          "i_B": -1.1,
+          "irms": 1.1,
+          "isat": 2.1,
+          "lr": 0.05,
+          "power": 0.33880000000000005,
+          "rdc": 0.28,
+          "rdc_max": 0.28,
+          "rp": 1000000000.0,
+          "srf": 3500000.0,
+          "tmax_part": 125.0,
+          "v_A": 0.308,
+          "v_B": 0.0,
+          "value": 9.999999999999999e-05
+        },
+        "ref": "U1",
+        "reference_checks": [
+          {
+            "evidence": {
+              "irms": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "rated_rms_current",
+                "page": 6,
+                "scope": "RLB0914-101KL; 40 C typical rise; current itself is a typical value, not guaranteed minimum or maximum",
+                "sources": [
+                  "https://www.bourns.com/docs/product-datasheets/RLB.pdf"
+                ],
+                "unit": "A",
+                "value": 1.1
+              }
+            },
+            "expression": "abs(i_A) <= irms",
+            "name": "heating current",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "isat": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "typical_saturation_current",
+                "page": 6,
+                "scope": "RLB0914-101KL; 10% typical inductance decrease",
+                "sources": [
+                  "https://www.bourns.com/docs/product-datasheets/RLB.pdf"
+                ],
+                "unit": "A",
+                "value": 2.1
+              }
+            },
+            "expression": "abs(i_A) <= isat",
+            "name": "saturation current",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "tmax_part": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "maximum_operating_temperature",
+                "page": 1,
+                "scope": "RLB family",
+                "sources": [
+                  "https://www.bourns.com/docs/product-datasheets/RLB.pdf"
+                ],
+                "unit": "C",
+                "value": 125
+              }
+            },
+            "expression": "Tamb+dT <= tmax_part",
+            "name": "part temperature",
+            "reason": "Self-heating and source thermal context are unavailable",
+            "spec_names": [],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      }
+    ],
+    "fault_requests": [],
+    "limitations": [
+      "Only the stated observations and source conditions were checked.",
+      "Unsupported class expressions and failure triggers remain unknown; no damage timing is invented.",
+      "An electrical limit check does not verify physical fit or safe operation."
+    ],
+    "status": "unknown"
+  },
+  "raw_output": "instrumented-output/OHM-048/output.txt",
+  "run_id": "behavior-20261005T065040Z",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+}

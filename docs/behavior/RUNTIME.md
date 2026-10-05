@@ -33,8 +33,7 @@ Excitations are retained in the compilation and captured in the netlist hash.
 
 `NgspiceAdapter.behavior_circuit` uses the existing simulator execution path and
 requires actual ngspice 42 version output. Results distinguish `ran`, `failed`,
-and `not_run`. A run carries `rating_status: not_checked` until the ratings layer
-evaluates it. Successful numeric output is not an electrical safety pass.
+and `not_run`. A run carries a separate deterministic rating status; unknown conditions never become a pass. Successful numeric output is not an electrical safety pass.
 
 Runtime probe receipts retain input hashes, the exact generated deck, raw
 output, version text, and the comparison contract. The audit recompiles and
@@ -52,3 +51,13 @@ Typed PWL voltage/current excitations declare seconds and finite V/A samples fro
 `tools.behavior_audit.runtime_benches.run_runtime_recipes` reruns selected package bindings through NgspiceAdapter. `tools.behavior_audit.ic_benches` re-derives comparisons from locked analytical contracts and revalidates raw output, version, netlist and evidence hashes. No legacy expected value or tolerance was changed.
 
 The final Stage4 batch adds 4N35 (isolated base), HC245 (both bus directions and disabled state), further HC595 packages and the explicit SiT8008 reference. Models enforce required ground roles, tied roles and isolated roles before simulation. SiT8008 manufacturer-to-library terminal permutation is hash-anchored and tested; its generic3D body/marker remains physically unverified. Transient native control output requests15 digits before parsing to retain the existing1Hz oscillator comparison tolerance. Raw samples, not downsampled display curves, establish frequency.
+
+## Ratings and failure evaluation
+
+The compiler accepts `measure_currents=True` to add deterministic zero-volt series probes for modeled terminal roles. It leaves NC terminals unmodeled and keeps regulator nodesets on physical circuit nets. The default preserves the existing calibration/benchmark deck identities. Missing currents are unknown, never inferred zero.
+
+The adapter evaluates reference-scoped DC ratings after a successful run. `RatingContext` requires an explicit ambient/case temperature and confirmation of the source mounting/test conditions before thermal checks can evaluate. It does not derive ambient conditions from the25C simulator setting. Rating status is `not_run`, `unknown`, `within_model_limits`, or `violation`; a completed numerical solve is never a design pass. Transient peak/RMS/energy checks remain unknown.
+
+Every original class rating and failure declaration remains in the result. Unrelated reference literals and nonquantitative triggers are not silently reinterpreted. The fixed-resistor overvoltage response can run the authored1G-ohm open approximation in a separate result, labeled `failure_approximation`. It does not erase the original violation or claim physical damage prediction. Other incomplete damage responses remain explicit.
+
+`scripts/generate_behavior_examples.py` exports the existing authored probes as typed CircuitIR data. Loading validates recipe/research/generator identity, and compilation reproduces the original netlist before adding optional current probes. These are reference test circuits, not a user's saved design. The62 bindings and118 unbound-entry reasons remain distinct.

@@ -1,0 +1,452 @@
+{
+  "comparison": {
+    "comparison": [
+      {
+        "expected": 5.0,
+        "kind": "absolute",
+        "scale": 1000,
+        "supply": "supply",
+        "tolerance": 0.005
+      }
+    ],
+    "observed": [
+      5.0
+    ],
+    "passed": true
+  },
+  "entry_id": "OHM-103",
+  "limits": "Same limited analytical contract with zero-volt current probes. Missing thermal context and unsupported failure rules remain unknown.",
+  "netlist_sha256": "61c81a465ab471e14e8c8d220b9594dd2fd67ee34eb45373f82e8a02f8890583",
+  "observation_status": "ran",
+  "output_sha256": "8c304f3f3e8dce3b19597088f86428b91c2d8cf7aa4d15357fb03e150d9c3a81",
+  "ran_at": "2026-10-05T22:49:21Z",
+  "rating_status": "unknown",
+  "ratings": {
+    "components": [
+      {
+        "class_checks": [
+          {
+            "check": "v*i <= P_allowed(Tamb)",
+            "condition": "ambient Tamb",
+            "name": "power",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "P",
+            "unit": "W",
+            "value": "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)"
+          },
+          {
+            "check": "abs(v) <= Vmax",
+            "condition": "AC RMS or DC",
+            "name": "working voltage",
+            "reason": null,
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "within_limit",
+            "symbol": "Vmax",
+            "unit": "V",
+            "value": "min(u_limit, sqrt(p_rated*value))"
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-004",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "permanent drift of R (stability limit about 1 % per 1000 h at P70 for thick film)",
+            "id": "overpower_mild",
+            "permanence": "permanent",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "sim_response": "flag WARNING",
+            "status": "unknown",
+            "trigger": "P > P_allowed"
+          },
+          {
+            "applied_response": null,
+            "effect": "element burns open; fusible variants designed to do this",
+            "id": "overpower_open",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "flag ERROR, re-run with part open (R=1G)",
+            "status": "unknown",
+            "trigger": "P > 5x rated for several seconds (assumption)"
+          },
+          {
+            "applied_response": null,
+            "effect": "arc or breakdown of the element or body",
+            "evaluated_trigger": "abs(v) > Vmax",
+            "id": "overvoltage",
+            "permanence": "permanent",
+            "reason": null,
+            "sim_response": "flag ERROR; treat as open if abs(v) > 2*Vmax",
+            "status": "not_triggered",
+            "trigger": "abs(v) > Vmax"
+          }
+        ],
+        "observations": {
+          "P": 0.0025000025,
+          "Vmax": 3.1622776601683795,
+          "i_A": 0.005000005,
+          "i_B": -0.005,
+          "p_rated": 0.1,
+          "power": 0.002500025000000003,
+          "t_end": 155.0,
+          "t_knee": 70.0,
+          "u_limit": 75.0,
+          "v": 0.5,
+          "v_A": 5.0,
+          "v_B": 4.5,
+          "value": 100.0
+        },
+        "ref": "R1",
+        "reference_checks": [
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 1,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 155
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "derating_knee",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 70
+              }
+            },
+            "expression": "P <= P_allowed",
+            "name": "power",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [
+              "power"
+            ],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "u_limit": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.v_max",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "V",
+                "value": 75
+              }
+            },
+            "expression": "abs(v) <= Vmax",
+            "name": "working voltage",
+            "reason": null,
+            "spec_names": [
+              "working voltage"
+            ],
+            "status": "within_limit"
+          }
+        ],
+        "status": "unknown"
+      },
+      {
+        "class_checks": [
+          {
+            "check": "I(LED) <= 50e-3",
+            "condition": "conservative of 50 and 60 mA",
+            "name": "LED current",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "5b214308686d36e84afc3c4e4206dad551278ca27742ff97088d807cba0512fb",
+              "line": 8517
+            },
+            "source_ref": "S22",
+            "status": "unknown",
+            "symbol": "IF",
+            "unit": "A",
+            "value": "50e-3"
+          },
+          {
+            "check": "V(C)-V(E) <= 30",
+            "condition": "conservative of 30 and 70 V",
+            "name": "VCEO",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "5b214308686d36e84afc3c4e4206dad551278ca27742ff97088d807cba0512fb",
+              "line": 8517
+            },
+            "source_ref": "S22",
+            "status": "unknown",
+            "symbol": "VCEO",
+            "unit": "V",
+            "value": 30
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-103",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "LED damage",
+            "id": "led_overcurrent",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "ERROR",
+            "status": "unknown",
+            "trigger": "IF > 60 mA"
+          },
+          {
+            "applied_response": null,
+            "effect": "isolation lost, hazard",
+            "id": "isolation_breakdown",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "design rule",
+            "status": "unknown",
+            "trigger": "barrier voltage above rating"
+          }
+        ],
+        "observations": {
+          "ctr": 1.0,
+          "i_A": 0.005,
+          "i_C": 0.005000005,
+          "i_E": -0.00500001,
+          "i_K": -0.005,
+          "ic_max": 0.05,
+          "if_max": 0.05,
+          "ioff": 5e-09,
+          "pin_max": 0.07,
+          "pout_max": 0.07,
+          "power": 0.0282027625,
+          "tj_max": 100.0,
+          "v_A": 1.140548,
+          "v_C": 4.5,
+          "v_E": 0.0,
+          "v_K": 0.0,
+          "vce_max": 30.0,
+          "vr_max": 6.0,
+          "vsat": 0.15
+        },
+        "ref": "U1",
+        "reference_checks": [
+          {
+            "evidence": {
+              "if_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "converted_unit": "A",
+                "converted_value": 0.05,
+                "detail": null,
+                "field": "maximum_forward_current",
+                "page": 1,
+                "scope": "4N35 DIP-6; Rev1.2 only; TA25C",
+                "sources": [
+                  "https://www.vishay.com/docs/81181/4n35.pdf"
+                ],
+                "unit": "mA",
+                "value": 50
+              }
+            },
+            "expression": "i_A <= if_max",
+            "name": "LED current",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "vr_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "maximum_reverse_voltage",
+                "page": 1,
+                "scope": "4N35 DIP-6; Rev1.2 only; TA25C",
+                "sources": [
+                  "https://www.vishay.com/docs/81181/4n35.pdf"
+                ],
+                "unit": "V",
+                "value": 6
+              }
+            },
+            "expression": "v_K-v_A <= vr_max",
+            "name": "LED reverse voltage",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "vce_max": {
+                "basis": "DERIVED",
+                "confidence": "M",
+                "detail": null,
+                "field": "conservative_collector_emitter_ceiling",
+                "page": 2,
+                "scope": "4N35 DIP-6; Rev1.2 only; lower of published70V absolute and30V guaranteed breakdown; not an operating guarantee",
+                "sources": [
+                  "https://www.vishay.com/docs/81181/4n35.pdf"
+                ],
+                "unit": "V",
+                "value": 30
+              }
+            },
+            "expression": "v_C-v_E <= vce_max",
+            "name": "collector voltage",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "ic_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "converted_unit": "A",
+                "converted_value": 0.05,
+                "detail": null,
+                "field": "maximum_collector_current",
+                "page": 1,
+                "scope": "4N35 DIP-6; Rev1.2 only; continuous,TA25C",
+                "sources": [
+                  "https://www.vishay.com/docs/81181/4n35.pdf"
+                ],
+                "unit": "mA",
+                "value": 50
+              }
+            },
+            "expression": "abs(i_C) <= ic_max",
+            "name": "collector current",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "pin_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "converted_unit": "W",
+                "converted_value": 0.07,
+                "detail": null,
+                "field": "maximum_input_power",
+                "page": 1,
+                "scope": "4N35 DIP-6; Rev1.2 only; TA25C",
+                "sources": [
+                  "https://www.vishay.com/docs/81181/4n35.pdf"
+                ],
+                "unit": "mW",
+                "value": 70
+              }
+            },
+            "expression": "(v_A-v_K)*i_A <= pin_max",
+            "name": "input power",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "pout_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "converted_unit": "W",
+                "converted_value": 0.07,
+                "detail": null,
+                "field": "maximum_output_power",
+                "page": 1,
+                "scope": "4N35 DIP-6; Rev1.2 only; TA25C",
+                "sources": [
+                  "https://www.vishay.com/docs/81181/4n35.pdf"
+                ],
+                "unit": "mW",
+                "value": 70
+              }
+            },
+            "expression": "(v_C-v_E)*i_C <= pout_max",
+            "name": "output power",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      }
+    ],
+    "fault_requests": [],
+    "limitations": [
+      "Only the stated observations and source conditions were checked.",
+      "Unsupported class expressions and failure triggers remain unknown; no damage timing is invented.",
+      "An electrical limit check does not verify physical fit or safe operation."
+    ],
+    "status": "unknown"
+  },
+  "raw_output": "instrumented-output/OHM-103/output.txt",
+  "run_id": "behavior-20261005T065040Z",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+}

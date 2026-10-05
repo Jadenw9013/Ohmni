@@ -1,0 +1,3209 @@
+{
+  "comparison": {
+    "comparison": [
+      {
+        "derivation": "Exact locked bit order; voltage classification uses the authored HC input thresholds, with the undefined band rejected.",
+        "expected": 0,
+        "high_fraction": 0.7,
+        "kind": "logic",
+        "low_fraction": 0.3,
+        "node": "QA",
+        "supply_voltage": 4.5,
+        "time": 2.4e-06
+      },
+      {
+        "derivation": "Exact locked bit order; voltage classification uses the authored HC input thresholds, with the undefined band rejected.",
+        "expected": 1,
+        "high_fraction": 0.7,
+        "kind": "logic",
+        "low_fraction": 0.3,
+        "node": "QB",
+        "supply_voltage": 4.5,
+        "time": 2.4e-06
+      },
+      {
+        "derivation": "Exact locked bit order; voltage classification uses the authored HC input thresholds, with the undefined band rejected.",
+        "expected": 0,
+        "high_fraction": 0.7,
+        "kind": "logic",
+        "low_fraction": 0.3,
+        "node": "QC",
+        "supply_voltage": 4.5,
+        "time": 2.4e-06
+      },
+      {
+        "derivation": "Exact locked bit order; voltage classification uses the authored HC input thresholds, with the undefined band rejected.",
+        "expected": 0,
+        "high_fraction": 0.7,
+        "kind": "logic",
+        "low_fraction": 0.3,
+        "node": "QD",
+        "supply_voltage": 4.5,
+        "time": 2.4e-06
+      },
+      {
+        "derivation": "Exact locked bit order; voltage classification uses the authored HC input thresholds, with the undefined band rejected.",
+        "expected": 1,
+        "high_fraction": 0.7,
+        "kind": "logic",
+        "low_fraction": 0.3,
+        "node": "QE",
+        "supply_voltage": 4.5,
+        "time": 2.4e-06
+      },
+      {
+        "derivation": "Exact locked bit order; voltage classification uses the authored HC input thresholds, with the undefined band rejected.",
+        "expected": 1,
+        "high_fraction": 0.7,
+        "kind": "logic",
+        "low_fraction": 0.3,
+        "node": "QF",
+        "supply_voltage": 4.5,
+        "time": 2.4e-06
+      },
+      {
+        "derivation": "Exact locked bit order; voltage classification uses the authored HC input thresholds, with the undefined band rejected.",
+        "expected": 0,
+        "high_fraction": 0.7,
+        "kind": "logic",
+        "low_fraction": 0.3,
+        "node": "QG",
+        "supply_voltage": 4.5,
+        "time": 2.4e-06
+      },
+      {
+        "derivation": "Exact locked bit order; voltage classification uses the authored HC input thresholds, with the undefined band rejected.",
+        "expected": 1,
+        "high_fraction": 0.7,
+        "kind": "logic",
+        "low_fraction": 0.3,
+        "node": "QH",
+        "supply_voltage": 4.5,
+        "time": 2.4e-06
+      }
+    ],
+    "observed": [
+      0.0288746300976876,
+      4.477722772056453,
+      0.0288746300976876,
+      0.0288746300976876,
+      4.477722772056453,
+      4.477722772056453,
+      0.0288746300976876,
+      4.477722772056453
+    ],
+    "passed": true
+  },
+  "entry_id": "OHM-112",
+  "limits": "Same limited analytical contract with zero-volt current probes. Missing thermal context and unsupported failure rules remain unknown.",
+  "netlist_sha256": "66cdc525246c50bb6f88281f012ed6745494566d227207dc75c2814a5f946daf",
+  "observation_status": "ran",
+  "output_sha256": "c02ca5f3402284f6bc3f8529371891e1e481c5778ea279df1e25e0d2b03fc747",
+  "ran_at": "2026-10-05T22:49:27Z",
+  "rating_status": "unknown",
+  "ratings": {
+    "components": [
+      {
+        "class_checks": [
+          {
+            "check": "v*i <= P_allowed(Tamb)",
+            "condition": "ambient Tamb",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "P",
+            "unit": "W",
+            "value": "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)"
+          },
+          {
+            "check": "abs(v) <= Vmax",
+            "condition": "AC RMS or DC",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "Vmax",
+            "unit": "V",
+            "value": "min(u_limit, sqrt(p_rated*value))"
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-004",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "permanent drift of R (stability limit about 1 % per 1000 h at P70 for thick film)",
+            "id": "overpower_mild",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag WARNING",
+            "status": "unknown",
+            "trigger": "P > P_allowed"
+          },
+          {
+            "applied_response": null,
+            "effect": "element burns open; fusible variants designed to do this",
+            "id": "overpower_open",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR, re-run with part open (R=1G)",
+            "status": "unknown",
+            "trigger": "P > 5x rated for several seconds (assumption)"
+          },
+          {
+            "applied_response": null,
+            "effect": "arc or breakdown of the element or body",
+            "id": "overvoltage",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR; treat as open if abs(v) > 2*Vmax",
+            "status": "unknown",
+            "trigger": "abs(v) > Vmax"
+          }
+        ],
+        "observations": {},
+        "ref": "R1",
+        "reference_checks": [
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 1,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 155
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "derating_knee",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 70
+              }
+            },
+            "expression": "P <= P_allowed",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "power"
+            ],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "u_limit": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.v_max",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "V",
+                "value": 75
+              }
+            },
+            "expression": "abs(v) <= Vmax",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "working voltage"
+            ],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      },
+      {
+        "class_checks": [
+          {
+            "check": "v*i <= P_allowed(Tamb)",
+            "condition": "ambient Tamb",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "P",
+            "unit": "W",
+            "value": "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)"
+          },
+          {
+            "check": "abs(v) <= Vmax",
+            "condition": "AC RMS or DC",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "Vmax",
+            "unit": "V",
+            "value": "min(u_limit, sqrt(p_rated*value))"
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-004",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "permanent drift of R (stability limit about 1 % per 1000 h at P70 for thick film)",
+            "id": "overpower_mild",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag WARNING",
+            "status": "unknown",
+            "trigger": "P > P_allowed"
+          },
+          {
+            "applied_response": null,
+            "effect": "element burns open; fusible variants designed to do this",
+            "id": "overpower_open",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR, re-run with part open (R=1G)",
+            "status": "unknown",
+            "trigger": "P > 5x rated for several seconds (assumption)"
+          },
+          {
+            "applied_response": null,
+            "effect": "arc or breakdown of the element or body",
+            "id": "overvoltage",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR; treat as open if abs(v) > 2*Vmax",
+            "status": "unknown",
+            "trigger": "abs(v) > Vmax"
+          }
+        ],
+        "observations": {},
+        "ref": "R10",
+        "reference_checks": [
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 1,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 155
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "derating_knee",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 70
+              }
+            },
+            "expression": "P <= P_allowed",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "power"
+            ],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "u_limit": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.v_max",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "V",
+                "value": 75
+              }
+            },
+            "expression": "abs(v) <= Vmax",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "working voltage"
+            ],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      },
+      {
+        "class_checks": [
+          {
+            "check": "v*i <= P_allowed(Tamb)",
+            "condition": "ambient Tamb",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "P",
+            "unit": "W",
+            "value": "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)"
+          },
+          {
+            "check": "abs(v) <= Vmax",
+            "condition": "AC RMS or DC",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "Vmax",
+            "unit": "V",
+            "value": "min(u_limit, sqrt(p_rated*value))"
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-004",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "permanent drift of R (stability limit about 1 % per 1000 h at P70 for thick film)",
+            "id": "overpower_mild",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag WARNING",
+            "status": "unknown",
+            "trigger": "P > P_allowed"
+          },
+          {
+            "applied_response": null,
+            "effect": "element burns open; fusible variants designed to do this",
+            "id": "overpower_open",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR, re-run with part open (R=1G)",
+            "status": "unknown",
+            "trigger": "P > 5x rated for several seconds (assumption)"
+          },
+          {
+            "applied_response": null,
+            "effect": "arc or breakdown of the element or body",
+            "id": "overvoltage",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR; treat as open if abs(v) > 2*Vmax",
+            "status": "unknown",
+            "trigger": "abs(v) > Vmax"
+          }
+        ],
+        "observations": {},
+        "ref": "R11",
+        "reference_checks": [
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 1,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 155
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "derating_knee",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 70
+              }
+            },
+            "expression": "P <= P_allowed",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "power"
+            ],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "u_limit": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.v_max",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "V",
+                "value": 75
+              }
+            },
+            "expression": "abs(v) <= Vmax",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "working voltage"
+            ],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      },
+      {
+        "class_checks": [
+          {
+            "check": "v*i <= P_allowed(Tamb)",
+            "condition": "ambient Tamb",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "P",
+            "unit": "W",
+            "value": "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)"
+          },
+          {
+            "check": "abs(v) <= Vmax",
+            "condition": "AC RMS or DC",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "Vmax",
+            "unit": "V",
+            "value": "min(u_limit, sqrt(p_rated*value))"
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-004",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "permanent drift of R (stability limit about 1 % per 1000 h at P70 for thick film)",
+            "id": "overpower_mild",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag WARNING",
+            "status": "unknown",
+            "trigger": "P > P_allowed"
+          },
+          {
+            "applied_response": null,
+            "effect": "element burns open; fusible variants designed to do this",
+            "id": "overpower_open",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR, re-run with part open (R=1G)",
+            "status": "unknown",
+            "trigger": "P > 5x rated for several seconds (assumption)"
+          },
+          {
+            "applied_response": null,
+            "effect": "arc or breakdown of the element or body",
+            "id": "overvoltage",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR; treat as open if abs(v) > 2*Vmax",
+            "status": "unknown",
+            "trigger": "abs(v) > Vmax"
+          }
+        ],
+        "observations": {},
+        "ref": "R12",
+        "reference_checks": [
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 1,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 155
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "derating_knee",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 70
+              }
+            },
+            "expression": "P <= P_allowed",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "power"
+            ],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "u_limit": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.v_max",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "V",
+                "value": 75
+              }
+            },
+            "expression": "abs(v) <= Vmax",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "working voltage"
+            ],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      },
+      {
+        "class_checks": [
+          {
+            "check": "v*i <= P_allowed(Tamb)",
+            "condition": "ambient Tamb",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "P",
+            "unit": "W",
+            "value": "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)"
+          },
+          {
+            "check": "abs(v) <= Vmax",
+            "condition": "AC RMS or DC",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "Vmax",
+            "unit": "V",
+            "value": "min(u_limit, sqrt(p_rated*value))"
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-004",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "permanent drift of R (stability limit about 1 % per 1000 h at P70 for thick film)",
+            "id": "overpower_mild",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag WARNING",
+            "status": "unknown",
+            "trigger": "P > P_allowed"
+          },
+          {
+            "applied_response": null,
+            "effect": "element burns open; fusible variants designed to do this",
+            "id": "overpower_open",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR, re-run with part open (R=1G)",
+            "status": "unknown",
+            "trigger": "P > 5x rated for several seconds (assumption)"
+          },
+          {
+            "applied_response": null,
+            "effect": "arc or breakdown of the element or body",
+            "id": "overvoltage",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR; treat as open if abs(v) > 2*Vmax",
+            "status": "unknown",
+            "trigger": "abs(v) > Vmax"
+          }
+        ],
+        "observations": {},
+        "ref": "R13",
+        "reference_checks": [
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 1,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 155
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "derating_knee",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 70
+              }
+            },
+            "expression": "P <= P_allowed",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "power"
+            ],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "u_limit": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.v_max",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "V",
+                "value": 75
+              }
+            },
+            "expression": "abs(v) <= Vmax",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "working voltage"
+            ],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      },
+      {
+        "class_checks": [
+          {
+            "check": "v*i <= P_allowed(Tamb)",
+            "condition": "ambient Tamb",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "P",
+            "unit": "W",
+            "value": "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)"
+          },
+          {
+            "check": "abs(v) <= Vmax",
+            "condition": "AC RMS or DC",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "Vmax",
+            "unit": "V",
+            "value": "min(u_limit, sqrt(p_rated*value))"
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-004",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "permanent drift of R (stability limit about 1 % per 1000 h at P70 for thick film)",
+            "id": "overpower_mild",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag WARNING",
+            "status": "unknown",
+            "trigger": "P > P_allowed"
+          },
+          {
+            "applied_response": null,
+            "effect": "element burns open; fusible variants designed to do this",
+            "id": "overpower_open",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR, re-run with part open (R=1G)",
+            "status": "unknown",
+            "trigger": "P > 5x rated for several seconds (assumption)"
+          },
+          {
+            "applied_response": null,
+            "effect": "arc or breakdown of the element or body",
+            "id": "overvoltage",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR; treat as open if abs(v) > 2*Vmax",
+            "status": "unknown",
+            "trigger": "abs(v) > Vmax"
+          }
+        ],
+        "observations": {},
+        "ref": "R14",
+        "reference_checks": [
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 1,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 155
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "derating_knee",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 70
+              }
+            },
+            "expression": "P <= P_allowed",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "power"
+            ],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "u_limit": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.v_max",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "V",
+                "value": 75
+              }
+            },
+            "expression": "abs(v) <= Vmax",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "working voltage"
+            ],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      },
+      {
+        "class_checks": [
+          {
+            "check": "v*i <= P_allowed(Tamb)",
+            "condition": "ambient Tamb",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "P",
+            "unit": "W",
+            "value": "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)"
+          },
+          {
+            "check": "abs(v) <= Vmax",
+            "condition": "AC RMS or DC",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "Vmax",
+            "unit": "V",
+            "value": "min(u_limit, sqrt(p_rated*value))"
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-004",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "permanent drift of R (stability limit about 1 % per 1000 h at P70 for thick film)",
+            "id": "overpower_mild",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag WARNING",
+            "status": "unknown",
+            "trigger": "P > P_allowed"
+          },
+          {
+            "applied_response": null,
+            "effect": "element burns open; fusible variants designed to do this",
+            "id": "overpower_open",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR, re-run with part open (R=1G)",
+            "status": "unknown",
+            "trigger": "P > 5x rated for several seconds (assumption)"
+          },
+          {
+            "applied_response": null,
+            "effect": "arc or breakdown of the element or body",
+            "id": "overvoltage",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR; treat as open if abs(v) > 2*Vmax",
+            "status": "unknown",
+            "trigger": "abs(v) > Vmax"
+          }
+        ],
+        "observations": {},
+        "ref": "R15",
+        "reference_checks": [
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 1,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 155
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "derating_knee",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 70
+              }
+            },
+            "expression": "P <= P_allowed",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "power"
+            ],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "u_limit": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.v_max",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "V",
+                "value": 75
+              }
+            },
+            "expression": "abs(v) <= Vmax",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "working voltage"
+            ],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      },
+      {
+        "class_checks": [
+          {
+            "check": "v*i <= P_allowed(Tamb)",
+            "condition": "ambient Tamb",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "P",
+            "unit": "W",
+            "value": "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)"
+          },
+          {
+            "check": "abs(v) <= Vmax",
+            "condition": "AC RMS or DC",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "Vmax",
+            "unit": "V",
+            "value": "min(u_limit, sqrt(p_rated*value))"
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-004",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "permanent drift of R (stability limit about 1 % per 1000 h at P70 for thick film)",
+            "id": "overpower_mild",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag WARNING",
+            "status": "unknown",
+            "trigger": "P > P_allowed"
+          },
+          {
+            "applied_response": null,
+            "effect": "element burns open; fusible variants designed to do this",
+            "id": "overpower_open",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR, re-run with part open (R=1G)",
+            "status": "unknown",
+            "trigger": "P > 5x rated for several seconds (assumption)"
+          },
+          {
+            "applied_response": null,
+            "effect": "arc or breakdown of the element or body",
+            "id": "overvoltage",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR; treat as open if abs(v) > 2*Vmax",
+            "status": "unknown",
+            "trigger": "abs(v) > Vmax"
+          }
+        ],
+        "observations": {},
+        "ref": "R16",
+        "reference_checks": [
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 1,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 155
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "derating_knee",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 70
+              }
+            },
+            "expression": "P <= P_allowed",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "power"
+            ],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "u_limit": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.v_max",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "V",
+                "value": 75
+              }
+            },
+            "expression": "abs(v) <= Vmax",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "working voltage"
+            ],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      },
+      {
+        "class_checks": [
+          {
+            "check": "v*i <= P_allowed(Tamb)",
+            "condition": "ambient Tamb",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "P",
+            "unit": "W",
+            "value": "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)"
+          },
+          {
+            "check": "abs(v) <= Vmax",
+            "condition": "AC RMS or DC",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "Vmax",
+            "unit": "V",
+            "value": "min(u_limit, sqrt(p_rated*value))"
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-004",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "permanent drift of R (stability limit about 1 % per 1000 h at P70 for thick film)",
+            "id": "overpower_mild",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag WARNING",
+            "status": "unknown",
+            "trigger": "P > P_allowed"
+          },
+          {
+            "applied_response": null,
+            "effect": "element burns open; fusible variants designed to do this",
+            "id": "overpower_open",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR, re-run with part open (R=1G)",
+            "status": "unknown",
+            "trigger": "P > 5x rated for several seconds (assumption)"
+          },
+          {
+            "applied_response": null,
+            "effect": "arc or breakdown of the element or body",
+            "id": "overvoltage",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR; treat as open if abs(v) > 2*Vmax",
+            "status": "unknown",
+            "trigger": "abs(v) > Vmax"
+          }
+        ],
+        "observations": {},
+        "ref": "R2",
+        "reference_checks": [
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 1,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 155
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "derating_knee",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 70
+              }
+            },
+            "expression": "P <= P_allowed",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "power"
+            ],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "u_limit": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.v_max",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "V",
+                "value": 75
+              }
+            },
+            "expression": "abs(v) <= Vmax",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "working voltage"
+            ],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      },
+      {
+        "class_checks": [
+          {
+            "check": "v*i <= P_allowed(Tamb)",
+            "condition": "ambient Tamb",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "P",
+            "unit": "W",
+            "value": "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)"
+          },
+          {
+            "check": "abs(v) <= Vmax",
+            "condition": "AC RMS or DC",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "Vmax",
+            "unit": "V",
+            "value": "min(u_limit, sqrt(p_rated*value))"
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-004",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "permanent drift of R (stability limit about 1 % per 1000 h at P70 for thick film)",
+            "id": "overpower_mild",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag WARNING",
+            "status": "unknown",
+            "trigger": "P > P_allowed"
+          },
+          {
+            "applied_response": null,
+            "effect": "element burns open; fusible variants designed to do this",
+            "id": "overpower_open",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR, re-run with part open (R=1G)",
+            "status": "unknown",
+            "trigger": "P > 5x rated for several seconds (assumption)"
+          },
+          {
+            "applied_response": null,
+            "effect": "arc or breakdown of the element or body",
+            "id": "overvoltage",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR; treat as open if abs(v) > 2*Vmax",
+            "status": "unknown",
+            "trigger": "abs(v) > Vmax"
+          }
+        ],
+        "observations": {},
+        "ref": "R3",
+        "reference_checks": [
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 1,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 155
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "derating_knee",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 70
+              }
+            },
+            "expression": "P <= P_allowed",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "power"
+            ],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "u_limit": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.v_max",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "V",
+                "value": 75
+              }
+            },
+            "expression": "abs(v) <= Vmax",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "working voltage"
+            ],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      },
+      {
+        "class_checks": [
+          {
+            "check": "v*i <= P_allowed(Tamb)",
+            "condition": "ambient Tamb",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "P",
+            "unit": "W",
+            "value": "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)"
+          },
+          {
+            "check": "abs(v) <= Vmax",
+            "condition": "AC RMS or DC",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "Vmax",
+            "unit": "V",
+            "value": "min(u_limit, sqrt(p_rated*value))"
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-004",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "permanent drift of R (stability limit about 1 % per 1000 h at P70 for thick film)",
+            "id": "overpower_mild",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag WARNING",
+            "status": "unknown",
+            "trigger": "P > P_allowed"
+          },
+          {
+            "applied_response": null,
+            "effect": "element burns open; fusible variants designed to do this",
+            "id": "overpower_open",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR, re-run with part open (R=1G)",
+            "status": "unknown",
+            "trigger": "P > 5x rated for several seconds (assumption)"
+          },
+          {
+            "applied_response": null,
+            "effect": "arc or breakdown of the element or body",
+            "id": "overvoltage",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR; treat as open if abs(v) > 2*Vmax",
+            "status": "unknown",
+            "trigger": "abs(v) > Vmax"
+          }
+        ],
+        "observations": {},
+        "ref": "R4",
+        "reference_checks": [
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 1,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 155
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "derating_knee",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 70
+              }
+            },
+            "expression": "P <= P_allowed",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "power"
+            ],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "u_limit": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.v_max",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "V",
+                "value": 75
+              }
+            },
+            "expression": "abs(v) <= Vmax",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "working voltage"
+            ],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      },
+      {
+        "class_checks": [
+          {
+            "check": "v*i <= P_allowed(Tamb)",
+            "condition": "ambient Tamb",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "P",
+            "unit": "W",
+            "value": "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)"
+          },
+          {
+            "check": "abs(v) <= Vmax",
+            "condition": "AC RMS or DC",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "Vmax",
+            "unit": "V",
+            "value": "min(u_limit, sqrt(p_rated*value))"
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-004",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "permanent drift of R (stability limit about 1 % per 1000 h at P70 for thick film)",
+            "id": "overpower_mild",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag WARNING",
+            "status": "unknown",
+            "trigger": "P > P_allowed"
+          },
+          {
+            "applied_response": null,
+            "effect": "element burns open; fusible variants designed to do this",
+            "id": "overpower_open",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR, re-run with part open (R=1G)",
+            "status": "unknown",
+            "trigger": "P > 5x rated for several seconds (assumption)"
+          },
+          {
+            "applied_response": null,
+            "effect": "arc or breakdown of the element or body",
+            "id": "overvoltage",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR; treat as open if abs(v) > 2*Vmax",
+            "status": "unknown",
+            "trigger": "abs(v) > Vmax"
+          }
+        ],
+        "observations": {},
+        "ref": "R5",
+        "reference_checks": [
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 1,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 155
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "derating_knee",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 70
+              }
+            },
+            "expression": "P <= P_allowed",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "power"
+            ],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "u_limit": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.v_max",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "V",
+                "value": 75
+              }
+            },
+            "expression": "abs(v) <= Vmax",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "working voltage"
+            ],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      },
+      {
+        "class_checks": [
+          {
+            "check": "v*i <= P_allowed(Tamb)",
+            "condition": "ambient Tamb",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "P",
+            "unit": "W",
+            "value": "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)"
+          },
+          {
+            "check": "abs(v) <= Vmax",
+            "condition": "AC RMS or DC",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "Vmax",
+            "unit": "V",
+            "value": "min(u_limit, sqrt(p_rated*value))"
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-004",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "permanent drift of R (stability limit about 1 % per 1000 h at P70 for thick film)",
+            "id": "overpower_mild",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag WARNING",
+            "status": "unknown",
+            "trigger": "P > P_allowed"
+          },
+          {
+            "applied_response": null,
+            "effect": "element burns open; fusible variants designed to do this",
+            "id": "overpower_open",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR, re-run with part open (R=1G)",
+            "status": "unknown",
+            "trigger": "P > 5x rated for several seconds (assumption)"
+          },
+          {
+            "applied_response": null,
+            "effect": "arc or breakdown of the element or body",
+            "id": "overvoltage",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR; treat as open if abs(v) > 2*Vmax",
+            "status": "unknown",
+            "trigger": "abs(v) > Vmax"
+          }
+        ],
+        "observations": {},
+        "ref": "R6",
+        "reference_checks": [
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 1,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 155
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "derating_knee",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 70
+              }
+            },
+            "expression": "P <= P_allowed",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "power"
+            ],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "u_limit": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.v_max",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "V",
+                "value": 75
+              }
+            },
+            "expression": "abs(v) <= Vmax",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "working voltage"
+            ],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      },
+      {
+        "class_checks": [
+          {
+            "check": "v*i <= P_allowed(Tamb)",
+            "condition": "ambient Tamb",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "P",
+            "unit": "W",
+            "value": "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)"
+          },
+          {
+            "check": "abs(v) <= Vmax",
+            "condition": "AC RMS or DC",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "Vmax",
+            "unit": "V",
+            "value": "min(u_limit, sqrt(p_rated*value))"
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-004",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "permanent drift of R (stability limit about 1 % per 1000 h at P70 for thick film)",
+            "id": "overpower_mild",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag WARNING",
+            "status": "unknown",
+            "trigger": "P > P_allowed"
+          },
+          {
+            "applied_response": null,
+            "effect": "element burns open; fusible variants designed to do this",
+            "id": "overpower_open",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR, re-run with part open (R=1G)",
+            "status": "unknown",
+            "trigger": "P > 5x rated for several seconds (assumption)"
+          },
+          {
+            "applied_response": null,
+            "effect": "arc or breakdown of the element or body",
+            "id": "overvoltage",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR; treat as open if abs(v) > 2*Vmax",
+            "status": "unknown",
+            "trigger": "abs(v) > Vmax"
+          }
+        ],
+        "observations": {},
+        "ref": "R7",
+        "reference_checks": [
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 1,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 155
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "derating_knee",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 70
+              }
+            },
+            "expression": "P <= P_allowed",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "power"
+            ],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "u_limit": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.v_max",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "V",
+                "value": 75
+              }
+            },
+            "expression": "abs(v) <= Vmax",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "working voltage"
+            ],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      },
+      {
+        "class_checks": [
+          {
+            "check": "v*i <= P_allowed(Tamb)",
+            "condition": "ambient Tamb",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "P",
+            "unit": "W",
+            "value": "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)"
+          },
+          {
+            "check": "abs(v) <= Vmax",
+            "condition": "AC RMS or DC",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "Vmax",
+            "unit": "V",
+            "value": "min(u_limit, sqrt(p_rated*value))"
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-004",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "permanent drift of R (stability limit about 1 % per 1000 h at P70 for thick film)",
+            "id": "overpower_mild",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag WARNING",
+            "status": "unknown",
+            "trigger": "P > P_allowed"
+          },
+          {
+            "applied_response": null,
+            "effect": "element burns open; fusible variants designed to do this",
+            "id": "overpower_open",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR, re-run with part open (R=1G)",
+            "status": "unknown",
+            "trigger": "P > 5x rated for several seconds (assumption)"
+          },
+          {
+            "applied_response": null,
+            "effect": "arc or breakdown of the element or body",
+            "id": "overvoltage",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR; treat as open if abs(v) > 2*Vmax",
+            "status": "unknown",
+            "trigger": "abs(v) > Vmax"
+          }
+        ],
+        "observations": {},
+        "ref": "R8",
+        "reference_checks": [
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 1,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 155
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "derating_knee",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 70
+              }
+            },
+            "expression": "P <= P_allowed",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "power"
+            ],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "u_limit": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.v_max",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "V",
+                "value": 75
+              }
+            },
+            "expression": "abs(v) <= Vmax",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "working voltage"
+            ],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      },
+      {
+        "class_checks": [
+          {
+            "check": "v*i <= P_allowed(Tamb)",
+            "condition": "ambient Tamb",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "P",
+            "unit": "W",
+            "value": "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)"
+          },
+          {
+            "check": "abs(v) <= Vmax",
+            "condition": "AC RMS or DC",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "Vmax",
+            "unit": "V",
+            "value": "min(u_limit, sqrt(p_rated*value))"
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-004",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "permanent drift of R (stability limit about 1 % per 1000 h at P70 for thick film)",
+            "id": "overpower_mild",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag WARNING",
+            "status": "unknown",
+            "trigger": "P > P_allowed"
+          },
+          {
+            "applied_response": null,
+            "effect": "element burns open; fusible variants designed to do this",
+            "id": "overpower_open",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR, re-run with part open (R=1G)",
+            "status": "unknown",
+            "trigger": "P > 5x rated for several seconds (assumption)"
+          },
+          {
+            "applied_response": null,
+            "effect": "arc or breakdown of the element or body",
+            "id": "overvoltage",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "flag ERROR; treat as open if abs(v) > 2*Vmax",
+            "status": "unknown",
+            "trigger": "abs(v) > Vmax"
+          }
+        ],
+        "observations": {},
+        "ref": "R9",
+        "reference_checks": [
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 1,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 155
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "derating_knee",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "degC",
+                "value": 70
+              }
+            },
+            "expression": "P <= P_allowed",
+            "name": "power",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "power"
+            ],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.p_rated",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "W",
+                "value": 0.1
+              },
+              "u_limit": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference.v_max",
+                "page": 2,
+                "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                "sources": [
+                  "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                ],
+                "unit": "V",
+                "value": 75
+              }
+            },
+            "expression": "abs(v) <= Vmax",
+            "name": "working voltage",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [
+              "working voltage"
+            ],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      },
+      {
+        "class_checks": [
+          {
+            "check": "V(VCC)-V(GND) <= 7",
+            "condition": "abs max",
+            "name": "supply",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "c651f6a25938a8bcc0431ef1870784b2984e95f8b1c1084edfdb359944bc38ab",
+              "line": 7685
+            },
+            "source_ref": "S6",
+            "status": "unknown",
+            "symbol": "VCC",
+            "unit": "V",
+            "value": 7
+          },
+          {
+            "check": "sum(abs(I(Q))) <= 70e-3",
+            "condition": "595 abs max",
+            "name": "total supply current",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "c651f6a25938a8bcc0431ef1870784b2984e95f8b1c1084edfdb359944bc38ab",
+              "line": 7685
+            },
+            "source_ref": "S6",
+            "status": "unknown",
+            "symbol": "ICC",
+            "unit": "A",
+            "value": "70e-3"
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-112",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "bond-wire overheating",
+            "id": "overload_outputs",
+            "permanence": "permanent",
+            "reason": "Simulation did not run",
+            "sim_response": "ERROR",
+            "status": "unknown",
+            "trigger": "sum of output currents > 70 mA"
+          },
+          {
+            "applied_response": null,
+            "effect": "outputs undefined",
+            "id": "oe_floating",
+            "permanence": "recoverable",
+            "reason": "Simulation did not run",
+            "sim_response": "netlist check",
+            "status": "unknown",
+            "trigger": "OE not driven"
+          }
+        ],
+        "observations": {},
+        "ref": "U1",
+        "reference_checks": [
+          {
+            "evidence": {
+              "supply_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "recommended_supply_max",
+                "page": 4,
+                "scope": "SN74HC595 D SOIC-16",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf"
+                ],
+                "unit": "V",
+                "value": 6
+              },
+              "supply_min": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "recommended_supply_min",
+                "page": 4,
+                "scope": "SN74HC595 D SOIC-16",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf"
+                ],
+                "unit": "V",
+                "value": 2
+              }
+            },
+            "expression": "supply_min <= rail <= supply_max",
+            "name": "recommended supply",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "supply_abs_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "absolute_supply_max",
+                "page": 4,
+                "scope": "SN74HC595 D SOIC-16",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf"
+                ],
+                "unit": "V",
+                "value": 7
+              }
+            },
+            "expression": "rail <= supply_abs_max",
+            "name": "absolute supply",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "icc_abs_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "converted_unit": "A",
+                "converted_value": 0.07,
+                "detail": null,
+                "field": "maximum_supply_current_magnitude",
+                "page": 4,
+                "scope": "SN74HC595 D SOIC-16; total through VCC or GND",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf"
+                ],
+                "unit": "mA",
+                "value": 70
+              }
+            },
+            "expression": "abs(i_VCC)<=icc_abs_max",
+            "name": "supply current",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "iout_abs_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "converted_unit": "A",
+                "converted_value": 0.035,
+                "detail": null,
+                "field": "maximum_output_current_magnitude",
+                "page": 4,
+                "scope": "SN74HC595 D SOIC-16; continuous,VO0..VCC",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf"
+                ],
+                "unit": "mA",
+                "value": 35
+              }
+            },
+            "expression": "abs(i_QB)<=iout_abs_max",
+            "name": "output current QB",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "iout_abs_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "converted_unit": "A",
+                "converted_value": 0.035,
+                "detail": null,
+                "field": "maximum_output_current_magnitude",
+                "page": 4,
+                "scope": "SN74HC595 D SOIC-16; continuous,VO0..VCC",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf"
+                ],
+                "unit": "mA",
+                "value": 35
+              }
+            },
+            "expression": "abs(i_QA)<=iout_abs_max",
+            "name": "output current QA",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "iout_abs_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "converted_unit": "A",
+                "converted_value": 0.035,
+                "detail": null,
+                "field": "maximum_output_current_magnitude",
+                "page": 4,
+                "scope": "SN74HC595 D SOIC-16; continuous,VO0..VCC",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf"
+                ],
+                "unit": "mA",
+                "value": 35
+              }
+            },
+            "expression": "abs(i_QC)<=iout_abs_max",
+            "name": "output current QC",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "iout_abs_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "converted_unit": "A",
+                "converted_value": 0.035,
+                "detail": null,
+                "field": "maximum_output_current_magnitude",
+                "page": 4,
+                "scope": "SN74HC595 D SOIC-16; continuous,VO0..VCC",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf"
+                ],
+                "unit": "mA",
+                "value": 35
+              }
+            },
+            "expression": "abs(i_QD)<=iout_abs_max",
+            "name": "output current QD",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "iout_abs_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "converted_unit": "A",
+                "converted_value": 0.035,
+                "detail": null,
+                "field": "maximum_output_current_magnitude",
+                "page": 4,
+                "scope": "SN74HC595 D SOIC-16; continuous,VO0..VCC",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf"
+                ],
+                "unit": "mA",
+                "value": 35
+              }
+            },
+            "expression": "abs(i_QE)<=iout_abs_max",
+            "name": "output current QE",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "iout_abs_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "converted_unit": "A",
+                "converted_value": 0.035,
+                "detail": null,
+                "field": "maximum_output_current_magnitude",
+                "page": 4,
+                "scope": "SN74HC595 D SOIC-16; continuous,VO0..VCC",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf"
+                ],
+                "unit": "mA",
+                "value": 35
+              }
+            },
+            "expression": "abs(i_QF)<=iout_abs_max",
+            "name": "output current QF",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "iout_abs_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "converted_unit": "A",
+                "converted_value": 0.035,
+                "detail": null,
+                "field": "maximum_output_current_magnitude",
+                "page": 4,
+                "scope": "SN74HC595 D SOIC-16; continuous,VO0..VCC",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf"
+                ],
+                "unit": "mA",
+                "value": 35
+              }
+            },
+            "expression": "abs(i_QG)<=iout_abs_max",
+            "name": "output current QG",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "iout_abs_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "converted_unit": "A",
+                "converted_value": 0.035,
+                "detail": null,
+                "field": "maximum_output_current_magnitude",
+                "page": 4,
+                "scope": "SN74HC595 D SOIC-16; continuous,VO0..VCC",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf"
+                ],
+                "unit": "mA",
+                "value": 35
+              }
+            },
+            "expression": "abs(i_QH)<=iout_abs_max",
+            "name": "output current QH",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "iout_abs_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "converted_unit": "A",
+                "converted_value": 0.035,
+                "detail": null,
+                "field": "maximum_output_current_magnitude",
+                "page": 4,
+                "scope": "SN74HC595 D SOIC-16; continuous,VO0..VCC",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf"
+                ],
+                "unit": "mA",
+                "value": 35
+              }
+            },
+            "expression": "abs(i_QH_serial)<=iout_abs_max",
+            "name": "output current QH_serial",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "rth_ja": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "thermal_resistance_junction_ambient",
+                "page": 5,
+                "scope": "SN74HC595 D SOIC-16; TI thermal reference condition",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf"
+                ],
+                "unit": "K/W",
+                "value": 73
+              },
+              "tj_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "maximum_junction_temperature",
+                "page": 4,
+                "scope": "SN74HC595 D SOIC-16",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf"
+                ],
+                "unit": "C",
+                "value": 150
+              }
+            },
+            "expression": "power >= 0 and Tamb+rth_ja*power <= tj_max",
+            "name": "junction temperature",
+            "reason": "No operating-point observations; transient peaks/RMS require separate analysis",
+            "spec_names": [],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      }
+    ],
+    "fault_requests": [],
+    "limitations": [
+      "Only the stated observations and source conditions were checked.",
+      "Unsupported class expressions and failure triggers remain unknown; no damage timing is invented.",
+      "An electrical limit check does not verify physical fit or safe operation."
+    ],
+    "status": "unknown"
+  },
+  "raw_output": "instrumented-output/OHM-112/output.txt",
+  "run_id": "behavior-20261005T065040Z",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+}

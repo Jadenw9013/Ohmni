@@ -1,0 +1,248 @@
+{
+  "comparison": {
+    "comparison": {
+      "analytical_source": "BEH-DIO-TVS/B1",
+      "expected": 24.4,
+      "kind": "absolute",
+      "node": "cathode",
+      "observable": "node_voltage",
+      "source_deck_sha256": "a1f44f588f3fefe33edb85ccd93c846f83e3b03ed62a332c25f0a8c9afc903da",
+      "test_current": 24.6,
+      "test_current_evidence": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "peak_pulse_current",
+        "page": 2,
+        "scope": "SMBJ15A; TA25 C; 10/1000 us waveform, source figure2 derating and figure3 waveform",
+        "sources": [
+          "https://www.vishay.com/docs/88392/smbj.pdf"
+        ],
+        "unit": "A",
+        "value": 24.6
+      },
+      "tolerance": 0.122
+    },
+    "observed": 24.4,
+    "passed": true
+  },
+  "entry_id": "OHM-069",
+  "limits": "Same limited analytical contract with zero-volt current probes. Missing thermal context and unsupported failure rules remain unknown.",
+  "netlist_sha256": "d6a4b89f7927e85f266ec38aeac03794ce76e8bb8072def9d2eec1aad4b99b87",
+  "observation_status": "ran",
+  "output_sha256": "fc514865778fdd6c2789e7ff25586f404f36a96b323961eb3969910557c83067",
+  "ran_at": "2026-10-05T22:49:13Z",
+  "rating_status": "violation",
+  "ratings": {
+    "components": [
+      {
+        "class_checks": [
+          {
+            "check": "max(v*i) <= PPPM*derate(Tj)",
+            "condition": "10/1000 us, 25 C (SMBJ); SMAJ 400 W; SMCJ 1500 W",
+            "name": "peak_pulse_power",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "2ab26a56377ff370b319fde68ba204a5bd173a0669b09eba1110837612625ee0",
+              "line": 4185
+            },
+            "source_ref": "S16",
+            "status": "unknown",
+            "symbol": "PPPM",
+            "unit": "W",
+            "value": 600
+          },
+          {
+            "check": "V_rail_max <= VWM",
+            "condition": "SMBJ15A",
+            "name": "standoff",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "2ab26a56377ff370b319fde68ba204a5bd173a0669b09eba1110837612625ee0",
+              "line": 4185
+            },
+            "source_ref": "S16",
+            "status": "unknown",
+            "symbol": "VWM",
+            "unit": "V",
+            "value": 15
+          },
+          {
+            "check": "i_forward_pk <= IFSM",
+            "condition": "8.3 ms, unidirectional, SMB",
+            "name": "forward_surge",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "2ab26a56377ff370b319fde68ba204a5bd173a0669b09eba1110837612625ee0",
+              "line": 4185
+            },
+            "source_ref": "S16",
+            "status": "unknown",
+            "symbol": "IFSM",
+            "unit": "A",
+            "value": 100
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-069",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "fails short (consensus, not from an opened document)",
+            "id": "pulse_overpower",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "FAIL, failed_short, rail collapses",
+            "status": "unknown",
+            "trigger": "pulse power above PPPM"
+          },
+          {
+            "applied_response": null,
+            "effect": "avalanche heating, short",
+            "id": "continuous_overvoltage",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "WARN above VWM, FAIL on thermal",
+            "status": "unknown",
+            "trigger": "V above VWM sustained"
+          },
+          {
+            "applied_response": null,
+            "effect": "short plus energy-rich source: overheating hazard",
+            "id": "unfused_source",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "HAZARD flag",
+            "status": "unknown",
+            "trigger": "TVS on rail without current limit"
+          }
+        ],
+        "observations": {
+          "ID": 1e-06,
+          "IPP": 24.6,
+          "IT": 0.001,
+          "PPPM": 600.0,
+          "RDYN": 0.2657691535949708,
+          "RLEAK": 15000000.0,
+          "VBR_nom": 17.6,
+          "VC": 24.4,
+          "VWM": 15.0,
+          "i_A": -24.6,
+          "i_K": 24.6,
+          "power": 600.24,
+          "rth_ja": 100.0,
+          "tj_max": 150.0,
+          "v_A": 0.0,
+          "v_K": 24.4,
+          "vbr_max": 18.5,
+          "vbr_min": 16.7,
+          "vf": -24.4,
+          "vr": 24.4
+        },
+        "ref": "U1",
+        "reference_checks": [
+          {
+            "evidence": {
+              "VWM": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "standoff_voltage",
+                "page": 2,
+                "scope": "SMBJ15A unidirectional / SMBJ15CA bidirectional",
+                "sources": [
+                  "https://www.vishay.com/docs/88392/smbj.pdf"
+                ],
+                "unit": "V",
+                "value": 15
+              }
+            },
+            "expression": "vr <= VWM",
+            "name": "working standoff",
+            "reason": null,
+            "spec_names": [],
+            "status": "violation"
+          },
+          {
+            "evidence": {
+              "IPP": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "peak_pulse_current",
+                "page": 2,
+                "scope": "SMBJ15A; TA25 C; 10/1000 us waveform, source figure2 derating and figure3 waveform",
+                "sources": [
+                  "https://www.vishay.com/docs/88392/smbj.pdf"
+                ],
+                "unit": "A",
+                "value": 24.6
+              }
+            },
+            "expression": "abs(i_K) <= IPP",
+            "name": "pulse survival",
+            "reason": "Pulse shape, duration and energy are not established by a DC point",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "rth_ja": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "thermal_resistance_junction_ambient",
+                "page": 3,
+                "scope": "SMBJ15A unidirectional / SMBJ15CA bidirectional; typical;minimum recommended pad layout",
+                "sources": [
+                  "https://www.vishay.com/docs/88392/smbj.pdf"
+                ],
+                "unit": "K/W",
+                "value": 100
+              },
+              "tj_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "maximum_junction_temperature",
+                "page": 1,
+                "scope": "SMBJ15A unidirectional / SMBJ15CA bidirectional",
+                "sources": [
+                  "https://www.vishay.com/docs/88392/smbj.pdf"
+                ],
+                "unit": "C",
+                "value": 150
+              }
+            },
+            "expression": "power >= 0 and Tamb+rth_ja*power <= tj_max",
+            "name": "junction temperature",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          }
+        ],
+        "status": "violation"
+      }
+    ],
+    "fault_requests": [],
+    "limitations": [
+      "Only the stated observations and source conditions were checked.",
+      "Unsupported class expressions and failure triggers remain unknown; no damage timing is invented.",
+      "An electrical limit check does not verify physical fit or safe operation."
+    ],
+    "status": "violation"
+  },
+  "raw_output": "instrumented-output/OHM-069/output.txt",
+  "run_id": "behavior-20261005T065040Z",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+}

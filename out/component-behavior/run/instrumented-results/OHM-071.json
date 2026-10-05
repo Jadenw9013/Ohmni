@@ -1,0 +1,239 @@
+{
+  "comparison": {
+    "comparison": {
+      "derivation": "Two conducting junctions; sum of two source per-diode forward-voltage maxima. Both AC polarities use the original bench's 10 V input amplitude.",
+      "kind": "interval",
+      "maximum": 2.2,
+      "minimum": 0,
+      "observable": "bridge_drop",
+      "source_deck_sha256": "07a175ac644ca384e8b8a4cf187e0554f74b2510450bcbad6e2841d718dd1274",
+      "source_fact": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_forward_voltage_per_diode",
+        "page": 2,
+        "scope": "DF10M DFM; 1A; TA25 C source table default",
+        "sources": [
+          "https://www.vishay.com/doc?88571"
+        ],
+        "unit": "V",
+        "value": 1.1
+      },
+      "stimulus_source": "BEH-DIO-BRIDGE/B1",
+      "supply_magnitude": 10,
+      "test_current": 1.0
+    },
+    "observed": 2.1861239999999995,
+    "passed": true
+  },
+  "entry_id": "OHM-071",
+  "limits": "Same limited analytical contract with zero-volt current probes. Missing thermal context and unsupported failure rules remain unknown.",
+  "netlist_sha256": "3ec192fc0ad90f2d94d1d3c4350eb9ef0764c36eaaa797626f9a35b046505292",
+  "observation_status": "ran",
+  "output_sha256": "e8db5178ccd99f6e42664f47834c6de925baec5fa9b7c22d5e9d347b2248672e",
+  "ran_at": "2026-10-05T22:49:14Z",
+  "rating_status": "unknown",
+  "ratings": {
+    "components": [
+      {
+        "class_checks": [
+          {
+            "check": "mean(i_out) <= IF_AV*(150-Ta)/(150-40)",
+            "condition": "DFM, TA 40 C, pads 13x13 mm",
+            "name": "average_forward",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "59f551d69464094cd31bdb9e31b2b95c2266bd8c0397810c3de3b3842d292bb9",
+              "line": 4321
+            },
+            "source_ref": "S19",
+            "status": "unknown",
+            "symbol": "IF(AV)",
+            "unit": "A",
+            "value": 1.0
+          },
+          {
+            "check": "i_pk <= IFSM",
+            "condition": "8.3 ms half sine",
+            "name": "surge",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "59f551d69464094cd31bdb9e31b2b95c2266bd8c0397810c3de3b3842d292bb9",
+              "line": 4321
+            },
+            "source_ref": "S19",
+            "status": "unknown",
+            "symbol": "IFSM",
+            "unit": "A",
+            "value": 50
+          },
+          {
+            "check": "max(v_ac_pk) <= VRRM",
+            "condition": "DF10M",
+            "name": "reverse_voltage",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "59f551d69464094cd31bdb9e31b2b95c2266bd8c0397810c3de3b3842d292bb9",
+              "line": 4321
+            },
+            "source_ref": "S19",
+            "status": "unknown",
+            "symbol": "VRRM",
+            "unit": "V",
+            "value": 1000
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-071",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "overheat, element shorts",
+            "id": "overcurrent",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "WARN, FAIL 120%, failed_short on D1",
+            "status": "unknown",
+            "trigger": "mean current above rating"
+          },
+          {
+            "applied_response": null,
+            "effect": "two-diode short path",
+            "id": "dc_reverse_connection",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "netlist reproduces; miswire flag",
+            "status": "unknown",
+            "trigger": "DC supply across +/- pins reversed"
+          }
+        ],
+        "observations": {
+          "BV": 1100.0,
+          "CJO": 6.5e-11,
+          "IF_AV": 1.0,
+          "IS": 1.04e-10,
+          "N": 1.8,
+          "RS": 0.03,
+          "TT": 3e-06,
+          "VRRM": 1000.0,
+          "i_AC1": 1.0,
+          "i_AC2": -1.0,
+          "i_MINUS": 1.0,
+          "i_PLUS": -1.0,
+          "power": 2.1861239999999995,
+          "rth_ja": 40.0,
+          "tj_max": 150.0,
+          "v_AC1": 10.0,
+          "v_AC2": 0.0,
+          "v_MINUS": 1.093062,
+          "v_PLUS": 8.906938,
+          "vf_max": 1.1
+        },
+        "ref": "U1",
+        "reference_checks": [
+          {
+            "evidence": {
+              "IF_AV": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "average_output_current",
+                "page": 1,
+                "scope": "DF10M DFM; TA40C",
+                "sources": [
+                  "https://www.vishay.com/doc?88571"
+                ],
+                "unit": "A",
+                "value": 1
+              }
+            },
+            "expression": "abs(i_PLUS)<=IF_AV",
+            "name": "average forward current at DC",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "VRRM": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "repetitive_peak_reverse_voltage",
+                "page": 1,
+                "scope": "DF10M DFM",
+                "sources": [
+                  "https://www.vishay.com/doc?88571"
+                ],
+                "unit": "V",
+                "value": 1000
+              }
+            },
+            "expression": "max(v_PLUS-v_AC1,v_PLUS-v_AC2,v_AC1-v_MINUS,v_AC2-v_MINUS)<=VRRM",
+            "name": "diode reverse voltage",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "rth_ja": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "thermal_resistance_junction_ambient",
+                "page": 2,
+                "scope": "DF10M DFM; typical;13x13mm copper pads; TA25 C source table default",
+                "sources": [
+                  "https://www.vishay.com/doc?88571"
+                ],
+                "unit": "K/W",
+                "value": 40
+              },
+              "tj_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "maximum_junction_temperature",
+                "page": 1,
+                "scope": "DF10M DFM",
+                "sources": [
+                  "https://www.vishay.com/doc?88571"
+                ],
+                "unit": "C",
+                "value": 150
+              }
+            },
+            "expression": "power >= 0 and Tamb+rth_ja*power <= tj_max",
+            "name": "junction temperature",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      }
+    ],
+    "fault_requests": [],
+    "limitations": [
+      "Only the stated observations and source conditions were checked.",
+      "Unsupported class expressions and failure triggers remain unknown; no damage timing is invented.",
+      "An electrical limit check does not verify physical fit or safe operation."
+    ],
+    "status": "unknown"
+  },
+  "raw_output": "instrumented-output/OHM-071/output.txt",
+  "run_id": "behavior-20261005T065040Z",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+}

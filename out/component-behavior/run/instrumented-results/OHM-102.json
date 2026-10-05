@@ -1,0 +1,347 @@
+{
+  "comparison": {
+    "comparison": {
+      "expected": 0.085,
+      "tolerance": 0.0025500000000000006
+    },
+    "observed": 0.08499975714355103,
+    "passed": true
+  },
+  "entry_id": "OHM-102",
+  "limits": "Same limited analytical contract with zero-volt current probes. Missing thermal context and unsupported failure rules remain unknown.",
+  "netlist_sha256": "e9da548785c7c8b2d5a7142adf364349f58728c422074cb88eff1dd18aecd96c",
+  "observation_status": "ran",
+  "output_sha256": "7b19c5fe7c596761219b16bb68e47e7c17a54bf446eb73f8eebdecf4c748bb6e",
+  "ran_at": "2026-10-05T22:49:20Z",
+  "rating_status": "unknown",
+  "ratings": {
+    "components": [
+      {
+        "class_checks": [
+          {
+            "check": "abs(v(g)-v(s)) <= 20",
+            "condition": "IRFZ44N",
+            "name": "vgs_max",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "984e588bb45b9b19f30395ec7e71106fded535758ecd70f7de39d9270b1a81a4",
+              "line": 6135
+            },
+            "source_ref": "S10",
+            "status": "unknown",
+            "symbol": "VGS",
+            "unit": "V",
+            "value": 20
+          },
+          {
+            "check": "v(d)-v(s) <= 55",
+            "condition": "IRFZ44N",
+            "name": "vds_max",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "984e588bb45b9b19f30395ec7e71106fded535758ecd70f7de39d9270b1a81a4",
+              "line": 6135
+            },
+            "source_ref": "S10",
+            "status": "unknown",
+            "symbol": "VDS",
+            "unit": "V",
+            "value": 55
+          },
+          {
+            "check": "E_av <= 0.53*(1-(Tj_start-25)/150)",
+            "condition": "single pulse, Tj start 25 C",
+            "name": "eas",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "984e588bb45b9b19f30395ec7e71106fded535758ecd70f7de39d9270b1a81a4",
+              "line": 6135
+            },
+            "source_ref": "S10",
+            "status": "unknown",
+            "symbol": "EAS",
+            "unit": "J",
+            "value": 0.53
+          },
+          {
+            "check": "vds*id <= (175-Tc)/1.5",
+            "condition": "Tc=25 C, derate 0.63 W/C",
+            "name": "power",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "984e588bb45b9b19f30395ec7e71106fded535758ecd70f7de39d9270b1a81a4",
+              "line": 6135
+            },
+            "source_ref": "S10",
+            "status": "unknown",
+            "symbol": "PD",
+            "unit": "W",
+            "value": 94
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-102",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "gate short, permanent",
+            "evaluated_trigger": "Violation of scoped check: gate voltage",
+            "id": "gate_oxide",
+            "permanence": "permanent",
+            "reason": null,
+            "sim_response": "flag, mark failed (gate leak 100 ohm to 1 kohm)",
+            "status": "not_triggered",
+            "trigger": "abs(Vgs) > 20 V"
+          },
+          {
+            "applied_response": null,
+            "effect": "D-S-G low-ohmic short",
+            "id": "avalanche_overenergy",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "flag, replace by 1 mohm D-S",
+            "status": "unknown",
+            "trigger": "E_av > EAS"
+          },
+          {
+            "applied_response": null,
+            "effect": "hot-spot runaway",
+            "id": "spirito_soa",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "flag SOA_RISK",
+            "status": "unknown",
+            "trigger": "linear mode, high Vds, low Vgs"
+          }
+        ],
+        "observations": {
+          "i_D": 3.500007,
+          "i_G": 0.0,
+          "i_S": -3.50001,
+          "id_max": 3.0,
+          "p_rated": 1.9,
+          "power": 1.0412520825,
+          "rds_on_max_10V": 0.085,
+          "rth_ja": 65.0,
+          "rth_jc": 2.6,
+          "tj_max": 150.0,
+          "v_D": 0.2975,
+          "v_G": 10.0,
+          "v_S": 0.0,
+          "vds_max": 150.0,
+          "vgs_max": 20.0
+        },
+        "ref": "M1",
+        "reference_checks": [
+          {
+            "evidence": {
+              "vgs_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "maximum_gate_source_magnitude",
+                "page": 1,
+                "scope": "Si7898DP-T1-E3 or -GE3,PowerPAK SO-8 single",
+                "sources": [
+                  "https://www.vishay.com/docs/71873/si7898dp.pdf"
+                ],
+                "unit": "V",
+                "value": 20
+              }
+            },
+            "expression": "abs(v_G-v_S) <= vgs_max",
+            "name": "gate voltage",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "vds_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "maximum_drain_source_voltage",
+                "page": 1,
+                "scope": "Si7898DP-T1-E3 or -GE3,PowerPAK SO-8 single",
+                "sources": [
+                  "https://www.vishay.com/docs/71873/si7898dp.pdf"
+                ],
+                "unit": "V",
+                "value": 150
+              }
+            },
+            "expression": "v_D-v_S <= vds_max",
+            "name": "drain voltage",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "id_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "maximum_drain_current_steady_state",
+                "page": 1,
+                "scope": "Si7898DP-T1-E3 or -GE3,PowerPAK SO-8 single; 1-inch-square FR4 board,TJ150 C limit",
+                "selected_value": 3,
+                "selected_value_path": [
+                  "ambient25_C"
+                ],
+                "sources": [
+                  "https://www.vishay.com/docs/71873/si7898dp.pdf"
+                ],
+                "unit": "A",
+                "value": {
+                  "ambient25_C": 3,
+                  "ambient70_C": 2.4
+                }
+              }
+            },
+            "expression": "abs(i_D) <= id_max",
+            "name": "drain current",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "maximum_power_steady_state",
+                "page": 1,
+                "scope": "Si7898DP-T1-E3 or -GE3,PowerPAK SO-8 single; same board",
+                "selected_value": 1.9,
+                "selected_value_path": [
+                  "ambient25_C"
+                ],
+                "sources": [
+                  "https://www.vishay.com/docs/71873/si7898dp.pdf"
+                ],
+                "unit": "W",
+                "value": {
+                  "ambient25_C": 1.9,
+                  "ambient70_C": 1.2
+                }
+              },
+              "rth_jc": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "thermal_resistance_junction_drain_typical_max",
+                "page": 1,
+                "scope": "Si7898DP-T1-E3 or -GE3,PowerPAK SO-8 single; steady state",
+                "selected_value": 2.6,
+                "selected_value_path": [
+                  1
+                ],
+                "sources": [
+                  "https://www.vishay.com/docs/71873/si7898dp.pdf"
+                ],
+                "unit": "K/W",
+                "value": [
+                  2.1,
+                  2.6
+                ]
+              },
+              "tj_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "maximum_junction_temperature",
+                "page": 1,
+                "scope": "Si7898DP-T1-E3 or -GE3,PowerPAK SO-8 single",
+                "sources": [
+                  "https://www.vishay.com/docs/71873/si7898dp.pdf"
+                ],
+                "unit": "C",
+                "value": 150
+              }
+            },
+            "expression": "power <= min(p_rated,(tj_max-Tc)/rth_jc)",
+            "name": "case thermal",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "rth_ja": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "thermal_resistance_junction_ambient_typical_max",
+                "page": 1,
+                "scope": "Si7898DP-T1-E3 or -GE3,PowerPAK SO-8 single; same board",
+                "selected_value": 65,
+                "selected_value_path": [
+                  "steady_state",
+                  1
+                ],
+                "sources": [
+                  "https://www.vishay.com/docs/71873/si7898dp.pdf"
+                ],
+                "unit": "K/W",
+                "value": {
+                  "steady_state": [
+                    52,
+                    65
+                  ],
+                  "up_to10_seconds": [
+                    20,
+                    25
+                  ]
+                }
+              },
+              "tj_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "maximum_junction_temperature",
+                "page": 1,
+                "scope": "Si7898DP-T1-E3 or -GE3,PowerPAK SO-8 single",
+                "sources": [
+                  "https://www.vishay.com/docs/71873/si7898dp.pdf"
+                ],
+                "unit": "C",
+                "value": 150
+              }
+            },
+            "expression": "power >= 0 and Tamb+rth_ja*power <= tj_max",
+            "name": "junction temperature",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      }
+    ],
+    "fault_requests": [],
+    "limitations": [
+      "Only the stated observations and source conditions were checked.",
+      "Unsupported class expressions and failure triggers remain unknown; no damage timing is invented.",
+      "An electrical limit check does not verify physical fit or safe operation."
+    ],
+    "status": "unknown"
+  },
+  "raw_output": "instrumented-output/OHM-102/output.txt",
+  "run_id": "behavior-20261005T065040Z",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+}

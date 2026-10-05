@@ -1,0 +1,290 @@
+{
+  "comparison": {
+    "comparison": {
+      "kind": "interval",
+      "maximum": 3.0,
+      "minimum": 0,
+      "observable": "anode_voltage",
+      "source_fact": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "red_forward_voltage_typical_max",
+        "page": 2,
+        "scope": "TLHR5200 red; 20 mA",
+        "selected_value": 3,
+        "selected_value_path": [
+          1
+        ],
+        "sources": [
+          "https://www.farnell.com/datasheets/6603.pdf"
+        ],
+        "unit": "V",
+        "value": [
+          2,
+          3
+        ]
+      },
+      "test_current": 0.02
+    },
+    "observed": 1.988581,
+    "passed": true
+  },
+  "entry_id": "OHM-074",
+  "limits": "Same limited analytical contract with zero-volt current probes. Missing thermal context and unsupported failure rules remain unknown.",
+  "netlist_sha256": "d963dc5511ad264542fb878c8758dd13c337e18fd828bc784251b2c96e5b7f2f",
+  "observation_status": "ran",
+  "output_sha256": "6f9cd3da25f3e57315c2770f5090e7323a9684244f03ed277b99a29afaa329bc",
+  "ran_at": "2026-10-05T22:49:15Z",
+  "rating_status": "unknown",
+  "ratings": {
+    "components": [
+      {
+        "class_checks": [
+          {
+            "check": "if_avg <= if_max_derated",
+            "condition": "default, package specific",
+            "name": "forward_current",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "fbcce31c63094a6e3abe0760135dcad55fb26d50a47a95cad938aa9f9867a8f0",
+              "line": 4713
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "IF",
+            "unit": "A",
+            "value": 0.02
+          },
+          {
+            "check": "vf*if <= (tj_max - tamb)/rth_ja",
+            "condition": "Tamb <= 60..65 C",
+            "name": "power",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "fbcce31c63094a6e3abe0760135dcad55fb26d50a47a95cad938aa9f9867a8f0",
+              "line": 4713
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "PV",
+            "unit": "W",
+            "value": 0.1
+          },
+          {
+            "check": "v_reverse <= vr_max",
+            "condition": "IR = 10 uA",
+            "name": "reverse_voltage",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "fbcce31c63094a6e3abe0760135dcad55fb26d50a47a95cad938aa9f9867a8f0",
+              "line": 4713
+            },
+            "source_ref": "S2",
+            "status": "unknown",
+            "symbol": "VR",
+            "unit": "V",
+            "value": 5
+          },
+          {
+            "check": "i_peak <= ifsm",
+            "condition": "tp <= 10 us (blue/white), 1 A GaP/GaAlAs",
+            "name": "surge",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "fbcce31c63094a6e3abe0760135dcad55fb26d50a47a95cad938aa9f9867a8f0",
+              "line": 4713
+            },
+            "source_ref": "S2",
+            "status": "unknown",
+            "symbol": "IFSM",
+            "unit": "A",
+            "value": 0.1
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-074",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "degradation, eventual open",
+            "id": "overcurrent_cont",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "flag; error at 1.5x",
+            "status": "unknown",
+            "trigger": "IF > if_max_derated"
+          },
+          {
+            "applied_response": null,
+            "effect": "avalanche, possible damage",
+            "evaluated_trigger": "Violation of scoped check: reverse voltage",
+            "id": "reverse_over_rating",
+            "permanence": "permanent",
+            "reason": null,
+            "sim_response": "flag; BV clamp in card",
+            "status": "not_triggered",
+            "trigger": "VR > vr_max"
+          },
+          {
+            "applied_response": null,
+            "effect": "destruction",
+            "id": "no_resistor",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "flag NO_CURRENT_LIMIT",
+            "status": "unknown",
+            "trigger": "LED on stiff source"
+          }
+        ],
+        "observations": {
+          "i_A": 0.02,
+          "i_K": -0.02,
+          "if_max": 0.03,
+          "p_rated": 0.1,
+          "power": 0.03977162,
+          "rth_ja": 350.0,
+          "tj_max": 100.0,
+          "v_A": 1.988581,
+          "v_K": 0.0,
+          "vf": 1.988581,
+          "vf_max": 3.0,
+          "vf_typical": 2.0,
+          "vr": -1.988581,
+          "vr_max": 6.0
+        },
+        "ref": "U1",
+        "reference_checks": [
+          {
+            "evidence": {
+              "vr_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "red_maximum_reverse_voltage",
+                "page": 2,
+                "scope": "TLHR5200 red",
+                "sources": [
+                  "https://www.farnell.com/datasheets/6603.pdf"
+                ],
+                "unit": "V",
+                "value": 6
+              }
+            },
+            "expression": "vr <= vr_max",
+            "name": "reverse voltage",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "if_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "converted_unit": "A",
+                "converted_value": 0.03,
+                "detail": null,
+                "field": "red_maximum_forward_current",
+                "page": 2,
+                "scope": "TLHR5200 red; Tamb<=65 C",
+                "sources": [
+                  "https://www.farnell.com/datasheets/6603.pdf"
+                ],
+                "unit": "mA",
+                "value": 30
+              }
+            },
+            "expression": "i_A <= if_max",
+            "name": "forward current",
+            "reason": "DC ceiling only; source temperature/derating conditions need confirmation",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "converted_unit": "W",
+                "converted_value": 0.1,
+                "detail": null,
+                "field": "red_maximum_power",
+                "page": 2,
+                "scope": "TLHR5200 red; Tamb<=65 C",
+                "sources": [
+                  "https://www.farnell.com/datasheets/6603.pdf"
+                ],
+                "unit": "mW",
+                "value": 100
+              }
+            },
+            "expression": "power <= p_rated",
+            "name": "source power ceiling",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "rth_ja": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "red_thermal_resistance_junction_ambient",
+                "page": 2,
+                "scope": "TLHR5200 red",
+                "sources": [
+                  "https://www.farnell.com/datasheets/6603.pdf"
+                ],
+                "unit": "K/W",
+                "value": 350
+              },
+              "tj_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "red_maximum_junction_temperature",
+                "page": 2,
+                "scope": "TLHR5200 red",
+                "sources": [
+                  "https://www.farnell.com/datasheets/6603.pdf"
+                ],
+                "unit": "C",
+                "value": 100
+              }
+            },
+            "expression": "power >= 0 and Tamb+rth_ja*power <= tj_max",
+            "name": "junction temperature",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      }
+    ],
+    "fault_requests": [],
+    "limitations": [
+      "Only the stated observations and source conditions were checked.",
+      "Unsupported class expressions and failure triggers remain unknown; no damage timing is invented.",
+      "An electrical limit check does not verify physical fit or safe operation."
+    ],
+    "status": "unknown"
+  },
+  "raw_output": "instrumented-output/OHM-074/output.txt",
+  "run_id": "behavior-20261005T065040Z",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+}

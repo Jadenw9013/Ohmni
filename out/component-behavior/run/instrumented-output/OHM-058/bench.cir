@@ -1,0 +1,11 @@
+OHMNI sourced behavior circuit
+.options tnom=25
+.temp 25
+Iexcitation1 0 n1 DC 3
+vprobe_c1_1 n1 probe_c1_1 0
+vprobe_c1_2 0 probe_c1_2 0
+Dc1 probe_c1_1 probe_c1_2 DMOD_c1
+.model DMOD_c1 D (IS=5.05e-11 N=1.8 RS=0.014999999999999999 CJO=7.7700000000000001e-11 VJ=0.69999999999999996 M=0.40000000000000002 TT=3.0000000000000001e-06 BV=1100 IBV=0.0001 EG=1.1100000000000001 XTI=3)
+.op
+.print op
+.end

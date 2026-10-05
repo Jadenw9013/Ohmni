@@ -200,6 +200,7 @@ class CompiledComponent(BaseModel):
     parameters: dict[str, float]
     parameter_evidence: dict[str, dict]
     element_names: list[str]
+    role_current_probes: dict[str, str] = Field(default_factory=dict)
     limitations: list[str]
 
 

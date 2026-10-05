@@ -594,7 +594,8 @@ class NgspiceAdapter:
 
     def behavior_circuit(self, compilation, *, work_dir: Path, analysis: str = "op",
                          tstep: str = DEFAULT_TSTEP, tstop: str = DEFAULT_TSTOP,
-                         observe_nets: list[str] | None = None) -> dict:
+                         observe_nets: list[str] | None = None, rating_context=None,
+                         rating_registry=None, apply_failures: bool = True) -> dict:
         """Run a compiled CircuitIR model with the same version-gated adapter.
 
         `ran` records observations, never a design pass. Rating checks are a
@@ -608,7 +609,7 @@ class NgspiceAdapter:
             "node_names": compilation.node_names,
             "source_elements": compilation.source_elements,
             "limitations": compilation.limitations,
-            "problems": list(compilation.problems), "rating_status": "not_checked",
+            "problems": list(compilation.problems), "rating_status": "not_run",
             "operating_point": None, "transient": None,
         }
         if not compilation.runnable:
@@ -659,6 +660,20 @@ class NgspiceAdapter:
                 result.update(status="failed", problems=["ngspice returned no transient observations"])
             else:
                 result["transient"] = curve.model_dump(mode="json")
+        from ..behavior.loader import default_behavior_registry
+        from ..behavior.ratings import RatingContext, apply_open_faults, evaluate_ratings
+
+        registry = rating_registry or default_behavior_registry()
+        context = RatingContext.model_validate(rating_context or {})
+        result["ratings"] = evaluate_ratings(compilation, result, registry, context)
+        result["rating_status"] = result["ratings"]["status"]
+        if apply_failures and result["ratings"]["fault_requests"]:
+            faulted = apply_open_faults(compilation, result["ratings"]["fault_requests"])
+            failure = self.behavior_circuit(faulted, work_dir=work_dir / "failure", analysis=analysis,
+                                          rating_context=context, rating_registry=registry, apply_failures=False)
+            failure.update(ratings=None, rating_status="failure_approximation",
+                           limitation="Authored open-circuit substitution; not a physical damage prediction")
+            result["failure_rerun"] = failure
         return result
 
     def operating_point(self, netlist: str, run_id: str, *,

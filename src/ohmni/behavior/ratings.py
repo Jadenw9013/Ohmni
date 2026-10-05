@@ -1,0 +1,451 @@
+"""Deterministic, reference-scoped ratings. Missing observations stay unknown.
+
+Class prose is retained verbatim. Only explicit translations below are executable;
+neither a generic class number nor a model fit establishes a reference rating.
+"""
+
+from __future__ import annotations
+
+import math
+from dataclasses import dataclass, field
+
+from pydantic import BaseModel, ConfigDict
+
+from .expressions import ExpressionUnavailable, evaluate
+
+
+class RatingContext(BaseModel):
+    model_config = ConfigDict(frozen=True, extra="forbid", allow_inf_nan=False)
+    ambient_c: float | None = None
+    case_c: float | None = None
+    # Explicit caller assertion about the source board/heatsink/test conditions.
+    thermal_scope_confirmed: bool = False
+
+
+@dataclass
+class CheckBuilder:
+    component: object
+    values: dict = field(default_factory=dict)
+    checks: list = field(default_factory=list)
+
+    def add(self, name, expression, parameters=(), reason=None, spec_names=()):
+        evidence = self.component.parameter_evidence
+        missing = [
+            key
+            for key in parameters
+            if key not in evidence
+            or evidence[key].get("basis") in {"ASSUMPTION", "RESEARCH_REQUIRED"}
+        ]
+        row = {
+            "name": name,
+            "expression": expression,
+            "spec_names": list(spec_names),
+            "evidence": {key: evidence[key] for key in parameters if key in evidence},
+            "status": "unknown",
+            "reason": reason,
+        }
+        if missing:
+            row["reason"] = "Missing sourced limit: " + ", ".join(missing)
+        elif not reason:
+            try:
+                outcome = evaluate(expression, self.values)
+                if type(outcome) is not bool:
+                    raise ExpressionUnavailable("A rating check must return a boolean")
+                row.update(status="within_limit" if outcome else "violation", reason=None)
+            except ExpressionUnavailable as exc:
+                row["reason"] = str(exc)
+        self.checks.append(row)
+        return row
+
+
+def _observations(component, point):
+    values = dict(component.parameters)
+    voltages = {"0": 0.0}
+    for node, q in (point or {}).get("node_voltages", {}).items():
+        if q.get("unit") == "V" and math.isfinite(q["value"]):
+            voltages[node.lower()] = q["value"]
+    currents = (point or {}).get("branch_currents", {})
+    for role, node in component.role_nodes.items():
+        if node.lower() in voltages:
+            values["v_" + role] = voltages[node.lower()]
+        probe = component.role_current_probes.get(role)
+        q = currents.get(probe.lower()) if probe else None
+        if q and q.get("unit") == "A" and math.isfinite(q["value"]):
+            values["i_" + role] = q["value"]
+    used = component.role_current_probes
+    if used and all("v_" + role in values and "i_" + role in values for role in used):
+        values["power"] = sum(values["v_" + role] * values["i_" + role] for role in used)
+    return values
+
+
+def _scoped_checks(component, point, context):
+    values = _observations(component, point)
+    if context.ambient_c is not None:
+        values["Tamb"] = context.ambient_c
+    if context.case_c is not None:
+        values["Tc"] = context.case_c
+    b = CheckBuilder(component, values)
+    cls = component.behavior_id
+    thermal = (
+        None
+        if context.thermal_scope_confirmed
+        else "Source thermal mounting/test conditions have not been confirmed"
+    )
+    if values.get("power", 0) < 0:
+        thermal = (
+            "Negative terminal power from this approximate model cannot establish dissipated heat"
+        )
+
+    def derive(name, expression):
+        try:
+            values[name] = evaluate(expression, values)
+        except ExpressionUnavailable:
+            pass
+
+    if cls in {"BEH-RES-FIXED", "BEH-RES-SENSE"}:
+        a, z = ("A", "B") if cls == "BEH-RES-FIXED" else ("I1", "I2")
+        derive("v", f"v_{a}-v_{z}")
+        derive("P", f"v*i_{a}")
+        derive("P_allowed", "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)")
+        b.add("power", "P <= P_allowed", ("p_rated", "t_end", "t_knee"), thermal, ("power",))
+        if cls == "BEH-RES-FIXED":
+            derive("Vmax", "min(u_limit,sqrt(p_rated*value))")
+            b.add(
+                "working voltage",
+                "abs(v) <= Vmax",
+                ("u_limit", "p_rated"),
+                spec_names=("working voltage",),
+            )
+        else:
+            b.add(
+                "current",
+                f"abs(i_{a}) <= sqrt(P_allowed/value)",
+                ("p_rated", "t_end", "t_knee", "value"),
+                thermal,
+                ("current",),
+            )
+    elif cls == "BEH-RES-NETWORK":
+        derive("derate", "clamp((t_end-Tamb)/(t_end-t_knee),0,1)")
+        for k in range(2, 9):
+            b.add(
+                f"element power P{k}",
+                f"(v_P{k}-v_P1)*i_P{k} <= p_element*derate",
+                ("p_element", "t_end", "t_knee"),
+                thermal,
+            )
+            b.add(f"working voltage P{k}", f"abs(v_P{k}-v_P1)<=v_max", ("v_max",))
+        b.add(
+            "package power", "power <= p_package*derate", ("p_package", "t_end", "t_knee"), thermal
+        )
+    elif cls in {
+        "BEH-DIO-PN",
+        "BEH-DIO-SCHOTTKY",
+        "BEH-LED-INDICATOR",
+        "BEH-DIO-ZENER",
+        "BEH-DIO-TVS",
+    }:
+        derive("vf", "v_A-v_K")
+        derive("vr", "v_K-v_A")
+        if "vr_max" in values:
+            b.add("reverse voltage", "vr <= vr_max", ("vr_max",))
+        if "if_max" in values:
+            b.add(
+                "forward current",
+                "i_A <= if_max",
+                ("if_max",),
+                "DC ceiling only; source temperature/derating conditions need confirmation"
+                if thermal
+                else None,
+            )
+        if "p_rated" in values:
+            b.add("source power ceiling", "power <= p_rated", ("p_rated",), thermal)
+        if cls == "BEH-DIO-TVS":
+            b.add("working standoff", "vr <= VWM", ("VWM",))
+            b.add(
+                "pulse survival",
+                "abs(i_K) <= IPP",
+                ("IPP",),
+                "Pulse shape, duration and energy are not established by a DC point",
+            )
+    elif cls == "BEH-DIO-BRIDGE":
+        b.add("average forward current at DC", "abs(i_PLUS)<=IF_AV", ("IF_AV",), thermal)
+        b.add(
+            "diode reverse voltage",
+            "max(v_PLUS-v_AC1,v_PLUS-v_AC2,v_AC1-v_MINUS,v_AC2-v_MINUS)<=VRRM",
+            ("VRRM",),
+        )
+    elif cls == "BEH-LED-RGB":
+        for color in ("red", "green", "blue"):
+            b.add(
+                f"{color} die current",
+                f"abs(i_{color}_cathode)<=if_max_die",
+                ("if_max_die",),
+                thermal,
+            )
+            b.add(
+                f"{color} die power",
+                f"-(v_common_anode-v_{color}_cathode)*i_{color}_cathode<=p_{color}",
+                (f"p_{color}",),
+                thermal,
+            )
+            b.add(
+                f"{color} junction temperature",
+                f"Tc+rth_js_{color}*(-(v_common_anode-v_{color}_cathode)*i_{color}_cathode)<=tj_max",
+                (f"rth_js_{color}", "tj_max"),
+                thermal,
+            )
+    elif cls == "BEH-MAG-INDUCTOR":
+        b.add("heating current", "abs(i_A) <= irms", ("irms",), thermal)
+        if "isat" in values:
+            b.add("saturation current", "abs(i_A) <= isat", ("isat",))
+        b.add(
+            "part temperature",
+            "Tamb+dT <= tmax_part",
+            ("tmax_part",),
+            "Self-heating and source thermal context are unavailable",
+        )
+    elif cls == "BEH-TRN-BJT":
+        b.add("collector voltage", "v_C-v_E <= vce_max", ("vce_max",))
+        b.add("reverse base voltage", "v_E-v_B <= veb_max", ("veb_max",))
+        b.add("collector current", "abs(i_C) <= ic_max", ("ic_max",))
+    elif cls == "BEH-TRN-MOSFET":
+        b.add("gate voltage", "abs(v_G-v_S) <= vgs_max", ("vgs_max",))
+        b.add("drain voltage", "v_D-v_S <= vds_max", ("vds_max",))
+        b.add("drain current", "abs(i_D) <= id_max", ("id_max",), thermal)
+        b.add(
+            "case thermal",
+            "power <= min(p_rated,(tj_max-Tc)/rth_jc)",
+            ("p_rated", "tj_max", "rth_jc"),
+            thermal,
+        )
+    elif cls == "BEH-IC-OPTO-DIP6":
+        b.add("LED current", "i_A <= if_max", ("if_max",))
+        b.add("LED reverse voltage", "v_K-v_A <= vr_max", ("vr_max",))
+        b.add("collector voltage", "v_C-v_E <= vce_max", ("vce_max",))
+        b.add("collector current", "abs(i_C) <= ic_max", ("ic_max",))
+        b.add("input power", "(v_A-v_K)*i_A <= pin_max", ("pin_max",), thermal)
+        b.add("output power", "(v_C-v_E)*i_C <= pout_max", ("pout_max",), thermal)
+
+    supply = next(
+        (
+            pair
+            for pair in [("VCC", "GND"), ("VDD", "GND"), ("Vplus", "Vminus"), ("IN", "GND")]
+            if set(pair) <= set(component.role_nodes)
+        ),
+        None,
+    )
+    if supply:
+        p, n = supply
+        derive("rail", f"v_{p}-v_{n}")
+        b.add(
+            "recommended supply", "supply_min <= rail <= supply_max", ("supply_min", "supply_max")
+        )
+        b.add("absolute supply", "rail <= supply_abs_max", ("supply_abs_max",))
+        if "icc_abs_max" in values:
+            b.add("supply current", f"abs(i_{p})<=icc_abs_max", ("icc_abs_max",))
+        for role in component.role_nodes:
+            if role.startswith(("OUT", "Y", "Q")) and "iout_abs_max" in values:
+                b.add(f"output current {role}", f"abs(i_{role})<=iout_abs_max", ("iout_abs_max",))
+        if "iout_recommended" in values:
+            b.add(
+                "recommended output current", "abs(i_OUT)<=iout_recommended", ("iout_recommended",)
+            )
+    if "rth_ja" in values and "tj_max" in values:
+        b.add(
+            "junction temperature",
+            "power >= 0 and Tamb+rth_ja*power <= tj_max",
+            ("rth_ja", "tj_max"),
+            thermal,
+        )
+    return b
+
+
+def _failure_modes(component, behavior, builder, ran):
+    output = []
+    faults = []
+    for raw in behavior.canonical_payload.get("failure_modes", []):
+        row = dict(
+            raw,
+            status="unknown",
+            applied_response=None,
+            reason="Trigger or response lacks an executable reference-scoped translation",
+        )
+        if not ran:
+            row["reason"] = "Simulation did not run"
+        elif component.behavior_id == "BEH-RES-FIXED" and raw["id"] in {
+            "overpower_mild",
+            "overvoltage",
+        }:
+            expression = "P > P_allowed" if raw["id"] == "overpower_mild" else "abs(v) > Vmax"
+            # A derived power limit still needs the declared mounting context.
+            power_row = next(x for x in builder.checks if x["name"] == "power")
+            try:
+                if raw["id"] == "overpower_mild" and power_row["status"] == "unknown":
+                    raise ExpressionUnavailable(power_row["reason"])
+                if raw["id"] == "overvoltage":
+                    voltage_row = next(x for x in builder.checks if x["name"] == "working voltage")
+                    if voltage_row["status"] == "unknown":
+                        raise ExpressionUnavailable(voltage_row["reason"])
+                triggered = evaluate(expression, builder.values)
+                row.update(
+                    status="triggered" if triggered else "not_triggered",
+                    reason=None,
+                    evaluated_trigger=expression,
+                )
+                if triggered:
+                    row["applied_response"] = (
+                        "flag WARNING" if raw["id"] == "overpower_mild" else "flag ERROR"
+                    )
+                    if raw["id"] == "overvoltage" and evaluate("abs(v)>2*Vmax", builder.values):
+                        faults.append(
+                            {
+                                "ref": component.ref,
+                                "kind": "open",
+                                "resistance_ohm": 1e9,
+                                "basis": "ASSUMPTION",
+                                "source": behavior.source.model_dump(mode="json"),
+                                "reason": raw["sim_response"],
+                            }
+                        )
+                        row["applied_response"] = (
+                            "flag ERROR; requested modeled open-circuit rerun (1G ohm)"
+                        )
+            except ExpressionUnavailable as exc:
+                row["reason"] = str(exc)
+        # Only flag-only responses with an unambiguous scoped predicate transfer.
+        # A range such as 100..1000 ohm or an unspecified duration never becomes
+        # an invented device substitution.
+        mapped = {
+            "BEH-TRN-BJT": {
+                "vceo_exceeded": "collector voltage",
+                "vebo_exceeded": "reverse base voltage",
+            },
+            "BEH-LED-INDICATOR": {
+                "reverse_over_rating": "reverse voltage",
+                "overcurrent_cont": "forward current",
+            },
+            "BEH-IC-TIMER555": {
+                "overvoltage": "absolute supply",
+                "output_overcurrent": "output current OUT",
+            },
+            "BEH-TRN-MOSFET": {"gate_oxide": "gate voltage"},
+        }.get(component.behavior_id, {})
+        if ran and raw["id"] in mapped:
+            check = next((c for c in builder.checks if c["name"] == mapped[raw["id"]]), None)
+            if check and check["status"] != "unknown":
+                row.update(
+                    status="triggered" if check["status"] == "violation" else "not_triggered",
+                    evaluated_trigger="Violation of scoped check: " + check["name"],
+                    reason=None,
+                )
+                if check["status"] == "violation":
+                    row.update(
+                        applied_response="Violation flag; source sim_response retained below",
+                        unresolved_response="Clamp/degradation/damage substitution is not quantitatively defined for this reference",
+                    )
+        output.append(row)
+    return output, faults
+
+
+def evaluate_ratings(compilation, result, registry, context=None):
+    """Evaluate observed op values only; unknown context never establishes safety."""
+    context = context or RatingContext()
+    ran = (
+        result.get("status") == "ran"
+        and result.get("analysis") == "op"
+        and bool(result.get("operating_point"))
+    )
+    components = []
+    all_faults = []
+    for component in compilation.components:
+        behavior = registry.behavior_class(component.behavior_id)
+        b = _scoped_checks(component, result.get("operating_point") if ran else None, context)
+        if not ran:
+            for check in b.checks:
+                check.update(
+                    status="unknown",
+                    reason="No operating-point observations; transient peaks/RMS require separate analysis",
+                )
+        class_checks = []
+        for original in behavior.canonical_payload.get("ratings", []):
+            matches = [x for x in b.checks if original["name"] in x["spec_names"]]
+            class_checks.append(
+                dict(
+                    original,
+                    status=matches[0]["status"] if len(matches) == 1 else "unknown",
+                    reason=matches[0]["reason"]
+                    if len(matches) == 1
+                    else "Class expression is not safely bound to this reference/analysis",
+                    source=behavior.source.model_dump(mode="json"),
+                )
+            )
+        failures, faults = _failure_modes(component, behavior, b, ran)
+        all_faults.extend(faults)
+        statuses = [x["status"] for x in [*b.checks, *class_checks]]
+        violated = "violation" in statuses or any(f["status"] == "triggered" for f in failures)
+        status = (
+            "violation"
+            if violated
+            else "unknown"
+            if not ran or not statuses or "unknown" in statuses
+            else "within_model_limits"
+        )
+        components.append(
+            {
+                "ref": component.ref,
+                "entry_id": component.entry_id,
+                "status": status,
+                "class_checks": class_checks,
+                "reference_checks": b.checks,
+                "failure_modes": failures,
+                "observations": b.values if ran else {},
+                "context": context.model_dump(mode="json"),
+            }
+        )
+    statuses = [c["status"] for c in components]
+    overall = (
+        "violation"
+        if "violation" in statuses
+        else "not_run"
+        if result.get("status") != "ran"
+        else "unknown"
+        if not statuses or "unknown" in statuses
+        else "within_model_limits"
+    )
+    return {
+        "status": overall,
+        "components": components,
+        "fault_requests": all_faults,
+        "limitations": [
+            "Only the stated observations and source conditions were checked.",
+            "Unsupported class expressions and failure triggers remain unknown; no damage timing is invented.",
+            "An electrical limit check does not verify physical fit or safe operation.",
+        ],
+    }
+
+
+def apply_open_faults(compilation, faults):
+    """Explicit authored resistor-open approximation, never a physical prediction."""
+    import hashlib
+
+    if not compilation.runnable or not faults:
+        raise ValueError("A runnable compilation and explicit fault requests are required")
+    lines = compilation.netlist.splitlines()
+    for index, fault in enumerate(faults):
+        component = next(c for c in compilation.components if c.ref == fault["ref"])
+        if (
+            component.behavior_id != "BEH-RES-FIXED"
+            or fault["kind"] != "open"
+            or fault["resistance_ohm"] != 1e9
+        ):
+            raise ValueError("Unsupported failure substitution")
+        removed = set(component.element_names)
+        lines = [line for line in lines if not line.split() or line.split()[0] not in removed]
+        # Probe sources remain, but replacement uses their physical nodes.
+        lines.insert(
+            -1, f"Rfailure{index} {component.role_nodes['A']} {component.role_nodes['B']} 1e9"
+        )
+    deck = "\n".join(lines) + "\n"
+    return compilation.model_copy(
+        update={"netlist": deck, "netlist_sha256": hashlib.sha256(deck.encode()).hexdigest()}
+    )

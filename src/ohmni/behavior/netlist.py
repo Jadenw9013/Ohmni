@@ -10,6 +10,7 @@ import hashlib
 import json
 import math
 import re
+from string import Formatter
 
 from ..domain.circuit import CircuitIR, NetKind
 from .expressions import evaluate
@@ -234,7 +235,8 @@ def _parameter_defaults(behavior, recipe, values, evidence, root):
 
 def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: RuntimeRecipes,
                     selections: dict[str, BehaviorSelection] | None = None, *, analysis="op",
-                    excitations: list[DCExcitation | PWLExcitation] | None = None):
+                    excitations: list[DCExcitation | PWLExcitation] | None = None,
+                    measure_currents: bool = False):
     selections = selections or {}
     problems, components, limitations = [], [], []
     if set(selections) - {c.ref for c in circuit.components}:
@@ -390,8 +392,20 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
                 else:
                     kept.append(line)
             template = "\n".join(kept)
-            substitutions = {**roles, **{k: _number(v) for k, v in values.items()}, "ref": f"c{i}"}
-            fragment = template.format_map(substitutions)
+            # Zero-volt series probes expose signed current into each modeled
+            # role. NC/unmodeled terminals stay metadata, without invented paths.
+            fields = {name for _, name, _, _ in Formatter().parse(template) if name}
+            probe_names = {}
+            measured_roles = dict(roles)
+            probes = []
+            for j, role in enumerate(sorted(fields & roles.keys()) if measure_currents else [], 1):
+                probe_names[role] = f"vprobe_c{i}_{j}"
+                measured_roles[role] = f"probe_c{i}_{j}"
+                probes.append(f"{probe_names[role]} {roles[role]} {measured_roles[role]} 0")
+            substitutions = {**measured_roles, **{k: _number(v) for k, v in values.items()}, "ref": f"c{i}"}
+            physical_substitutions = {**substitutions, **roles}
+            fragment = "\n".join(line.format_map(physical_substitutions if line.lstrip().lower().startswith(".nodeset") else substitutions)
+                                 for line in template.splitlines()) + ("\n" if template.endswith("\n") else "")
             if re.search(r"^\s*\.(?:include|inc|lib|control|end)\b", fragment, re.IGNORECASE | re.MULTILINE):
                 raise ValueError("model must be self-contained without includes or analysis commands")
             original = behavior.canonical_payload["model"][recipe.template_key]
@@ -399,6 +413,7 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
                 raise ValueError("regulator binding must preserve its authored nodeset")
             validate_mosfet_cards(fragment)
             strays = pin_ground_strays(roles, values, evidence, recipe.ground_strays, f"c{i}")
+            lines.extend(probes)
             lines.extend(fragment.splitlines())
             lines.extend(strays)
             components.append(CompiledComponent(
@@ -410,7 +425,7 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
                 rating_confidence=min((evidence[k]["confidence"] for k in recipe.critical_facts),
                                       key={"L": 0, "M": 1, "H": 2}.get, default="L"),
                 role_nodes=roles, terminal_nodes=terminals, parameters=values,
-                parameter_evidence=evidence,
+                parameter_evidence=evidence, role_current_probes=probe_names,
                 element_names=[line.split()[0] for line in fragment.splitlines()
                                if line.strip() and not line.lstrip().startswith(("*", ".", "+"))],
                 limitations=recipe.limitations + behavior.canonical_payload["model"].get("known_limitations", []),

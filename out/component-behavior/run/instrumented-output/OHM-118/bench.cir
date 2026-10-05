@@ -1,0 +1,182 @@
+OHMNI sourced behavior circuit
+.options tnom=25
+.temp 25
+Vsource16 n16 0 DC 4.5
+Vexcitation1 n1 0 PWL(0 0 2.5000000000000002e-06 0 2.5020000000000004e-06 4.5)
+Vexcitation2 n11 0 PWL(0 0 1.9e-06 0 1.9020000000000002e-06 4.5 1.9600000000000003e-06 4.5 1.962e-06 0)
+Vexcitation3 n12 0 PWL(0 0 5.0000000000000004e-08 0 5.2000000000000002e-08 4.5 2.5000000000000004e-07 4.5 2.5200000000000003e-07 0 4.5000000000000003e-07 0 4.5200000000000002e-07 4.5 6.5000000000000002e-07 4.5 6.5200000000000007e-07 4.5 8.5000000000000001e-07 4.5 8.5200000000000006e-07 0 1.0500000000000001e-06 0 1.052e-06 0 1.2500000000000001e-06 0 1.252e-06 4.5 1.4500000000000001e-06 4.5 1.452e-06 0)
+Vexcitation4 n13 0 PWL(0 0 1.5000000000000002e-07 0 1.5200000000000001e-07 4.5 2.5000000000000004e-07 4.5 2.5200000000000003e-07 0 3.5000000000000004e-07 0 3.5200000000000003e-07 4.5 4.5000000000000003e-07 4.5 4.5200000000000002e-07 0 5.5000000000000003e-07 0 5.5200000000000007e-07 4.5 6.5000000000000002e-07 4.5 6.5200000000000007e-07 0 7.5000000000000002e-07 0 7.5200000000000006e-07 4.5 8.5000000000000001e-07 4.5 8.5200000000000006e-07 0 9.5000000000000001e-07 0 9.5200000000000005e-07 4.5 1.0500000000000001e-06 4.5 1.052e-06 0 1.15e-06 0 1.1520000000000002e-06 4.5 1.2500000000000001e-06 4.5 1.252e-06 0 1.35e-06 0 1.3520000000000001e-06 4.5 1.4500000000000001e-06 4.5 1.452e-06 0 1.5500000000000002e-06 0 1.5520000000000001e-06 4.5 1.6500000000000001e-06 4.5 1.652e-06 0)
+Vexcitation5 n14 0 PWL(0 0 2e-08 0 2.2000000000000002e-08 4.5)
+vprobe_c1_1 n2 probe_c1_1 0
+vprobe_c1_2 0 probe_c1_2 0
+Rc1 probe_c1_1 probe_c1_2 10000
+vprobe_c2_1 n6 probe_c2_1 0
+vprobe_c2_2 n16 probe_c2_2 0
+Rc2 probe_c2_1 probe_c2_2 10000
+vprobe_c3_1 n7 probe_c3_1 0
+vprobe_c3_2 0 probe_c3_2 0
+Rc3 probe_c3_1 probe_c3_2 10000
+vprobe_c4_1 n7 probe_c4_1 0
+vprobe_c4_2 n16 probe_c4_2 0
+Rc4 probe_c4_1 probe_c4_2 10000
+vprobe_c5_1 n8 probe_c5_1 0
+vprobe_c5_2 0 probe_c5_2 0
+Rc5 probe_c5_1 probe_c5_2 10000
+vprobe_c6_1 n8 probe_c6_1 0
+vprobe_c6_2 n16 probe_c6_2 0
+Rc6 probe_c6_1 probe_c6_2 10000
+vprobe_c7_1 n9 probe_c7_1 0
+vprobe_c7_2 0 probe_c7_2 0
+Rc7 probe_c7_1 probe_c7_2 10000
+vprobe_c8_1 n9 probe_c8_1 0
+vprobe_c8_2 n16 probe_c8_2 0
+Rc8 probe_c8_1 probe_c8_2 10000
+vprobe_c9_1 n2 probe_c9_1 0
+vprobe_c9_2 n16 probe_c9_2 0
+Rc9 probe_c9_1 probe_c9_2 10000
+vprobe_c10_1 n3 probe_c10_1 0
+vprobe_c10_2 0 probe_c10_2 0
+Rc10 probe_c10_1 probe_c10_2 10000
+vprobe_c11_1 n3 probe_c11_1 0
+vprobe_c11_2 n16 probe_c11_2 0
+Rc11 probe_c11_1 probe_c11_2 10000
+vprobe_c12_1 n4 probe_c12_1 0
+vprobe_c12_2 0 probe_c12_2 0
+Rc12 probe_c12_1 probe_c12_2 10000
+vprobe_c13_1 n4 probe_c13_1 0
+vprobe_c13_2 n16 probe_c13_2 0
+Rc13 probe_c13_1 probe_c13_2 10000
+vprobe_c14_1 n5 probe_c14_1 0
+vprobe_c14_2 0 probe_c14_2 0
+Rc14 probe_c14_1 probe_c14_2 10000
+vprobe_c15_1 n5 probe_c15_1 0
+vprobe_c15_2 n16 probe_c15_2 0
+Rc15 probe_c15_1 probe_c15_2 10000
+vprobe_c16_1 n6 probe_c16_1 0
+vprobe_c16_2 0 probe_c16_2 0
+Rc16 probe_c16_1 probe_c16_2 10000
+vprobe_c17_1 0 probe_c17_1 0
+vprobe_c17_2 n1 probe_c17_2 0
+vprobe_c17_3 n2 probe_c17_3 0
+vprobe_c17_4 n3 probe_c17_4 0
+vprobe_c17_5 n4 probe_c17_5 0
+vprobe_c17_6 n5 probe_c17_6 0
+vprobe_c17_7 n6 probe_c17_7 0
+vprobe_c17_8 n7 probe_c17_8 0
+vprobe_c17_9 n8 probe_c17_9 0
+vprobe_c17_10 n9 probe_c17_10 0
+vprobe_c17_11 n10 probe_c17_11 0
+vprobe_c17_12 n11 probe_c17_12 0
+vprobe_c17_13 n12 probe_c17_13 0
+vprobe_c17_14 n13 probe_c17_14 0
+vprobe_c17_15 n14 probe_c17_15 0
+vprobe_c17_16 n16 probe_c17_16 0
+Xc17 probe_c17_4 probe_c17_5 probe_c17_6 probe_c17_7 probe_c17_8 probe_c17_9 probe_c17_10 probe_c17_1 probe_c17_11 probe_c17_15 probe_c17_14 probe_c17_12 probe_c17_2 probe_c17_13 probe_c17_3 probe_c17_16 hc595
+* BEH-IC-LOGIC-SEQ: 74HC595 and 74HC138 L2 models. Needs XSPICE (adc_bridge, dac_bridge, d_dff, d_inverter): ngspice 42 here is built with XSPICE.
+* Pin order of every subckt = DIP/SOIC/TSSOP package pin order 1..N, so X-instances can be bound pin-for-pin.
+.model dclamp d(is=1e-14 n=1 rs=5 cjo=0)
+.model adcn adc_bridge(in_low=0.4 in_high=0.6 rise_delay=1n fall_delay=1n)
+.model dacn dac_bridge(out_low=0 out_high=1 out_undef=0.5 t_rise=1n t_fall=1n)
+.model dffm d_dff(clk_delay=12n set_delay=12n reset_delay=12n ic=0)
+.model dinv d_inverter(rise_delay=1n fall_delay=1n)
+* ---- input conditioner: Ci, ESD clamps, normalised decision (0..1) at Vcc/2 ----
+.subckt hcin a n vcc gnd params: ci=5p
+Cia a gnd {ci}
+Dah a vcc dclamp
+Dal gnd a dclamp
+Bn n gnd V=0.5*(1+tanh((v(a)-(v(gnd)+0.5*(v(vcc)-v(gnd))))/0.05))
+.ends
+* ---- output cell: normalised s (0..1) + normalised enable en (1 = driven). Thevenin roh/rol, hi-Z leakage when en=0 ----
+.subckt hcout s en y vcc gnd params: roh=50 rol=65 td=10.4n taue=6.4n gz=1n
+Bsd0 sdd gnd V=min(max(v(s),0),1)
+Rsd sdd d2 50
+T1 d2 gnd d3 gnd Z0=50 TD={td}
+Rtd d3 gnd 50
+Bsh sh gnd V=2*v(d3)
+Rsh sh sh2 {taue/1p}
+Csh sh2 gnd 1p
+Bth y gnd I=min(max(v(en),0),1)*(v(y)-(v(gnd)+min(max(v(sh2),0),1)*(v(vcc)-v(gnd))))/(roh*min(max(v(sh2),0),1)+rol*(1-min(max(v(sh2),0),1)))+(1-min(max(v(en),0),1))*gz*(v(y)-v(gnd))
+Bsup vcc gnd I=min(max(v(en),0),1)*max(((v(gnd)+min(max(v(sh2),0),1)*(v(vcc)-v(gnd)))-v(y))/(roh*min(max(v(sh2),0),1)+rol*(1-min(max(v(sh2),0),1))),0)
+Dyh y vcc dclamp
+Dyl gnd y dclamp
+.ends
+* ---- 74HC595 : pins 1..16 = QB QC QD QE QF QG QH GND QH' SRCLR SRCLK RCLK OE SER QA VCC ----
+.subckt hc595 qb qc qd qe qf qg qh gnd qhp srclr srclk rclk oe ser qa vcc params: cpd=400p icc0=8u
+Xi1 srclr n_clr vcc gnd hcin
+Xi2 srclk n_sck vcc gnd hcin
+Xi3 rclk n_rck vcc gnd hcin
+Xi4 oe n_oe vcc gnd hcin
+Xi5 ser n_ser vcc gnd hcin
+Aadc [n_clr n_sck n_rck n_ser n_oe] [d_clr d_sck d_rck d_ser d_oe] adcn
+Ainv d_clr d_rst dinv
+* shift register: stage1 = QA ... stage8 = QH
+Asr1 d_ser d_sck NULL d_rst sr1 nsr1 dffm
+Asr2 sr1 d_sck NULL d_rst sr2 nsr2 dffm
+Asr3 sr2 d_sck NULL d_rst sr3 nsr3 dffm
+Asr4 sr3 d_sck NULL d_rst sr4 nsr4 dffm
+Asr5 sr4 d_sck NULL d_rst sr5 nsr5 dffm
+Asr6 sr5 d_sck NULL d_rst sr6 nsr6 dffm
+Asr7 sr6 d_sck NULL d_rst sr7 nsr7 dffm
+Asr8 sr7 d_sck NULL d_rst sr8 nsr8 dffm
+* storage register
+Ast1 sr1 d_rck NULL NULL st1 nst1 dffm
+Ast2 sr2 d_rck NULL NULL st2 nst2 dffm
+Ast3 sr3 d_rck NULL NULL st3 nst3 dffm
+Ast4 sr4 d_rck NULL NULL st4 nst4 dffm
+Ast5 sr5 d_rck NULL NULL st5 nst5 dffm
+Ast6 sr6 d_rck NULL NULL st6 nst6 dffm
+Ast7 sr7 d_rck NULL NULL st7 nst7 dffm
+Ast8 sr8 d_rck NULL NULL st8 nst8 dffm
+Ainvoe d_oe d_oen dinv
+Adac [st1 st2 st3 st4 st5 st6 st7 st8 sr8 d_oen] [a_s1 a_s2 a_s3 a_s4 a_s5 a_s6 a_s7 a_s8 a_s9 a_oen] dacn
+* OE is active low: enable = NOT OE
+Xo1 a_s1 a_oen qa vcc gnd hcout
+Xo2 a_s2 a_oen qb vcc gnd hcout
+Xo3 a_s3 a_oen qc vcc gnd hcout
+Xo4 a_s4 a_oen qd vcc gnd hcout
+Xo5 a_s5 a_oen qe vcc gnd hcout
+Xo6 a_s6 a_oen qf vcc gnd hcout
+Xo7 a_s7 a_oen qg vcc gnd hcout
+Xo8 a_s8 a_oen qh vcc gnd hcout
+Bone one gnd V=1
+Xo9 a_s9 one qhp vcc gnd hcout
+Bicc vcc gnd I={icc0}+0.5*cpd*(v(vcc)-v(gnd))*(abs(ddt(v(n_sck)))+abs(ddt(v(n_rck))))*0.5
+.ends
+* ---- 74HC138 : pins 1..16 = A B C G2A G2B G1 Y7 GND Y6 Y5 Y4 Y3 Y2 Y1 Y0 VCC ----
+.subckt hc138 a b c g2a g2b g1 y7 gnd y6 y5 y4 y3 y2 y1 y0 vcc params: cpd=85p icc0=8u
+Xa a na vcc gnd hcin
+Xb b nb vcc gnd hcin
+Xc c nc vcc gnd hcin
+Xg1 g1 ng1 vcc gnd hcin
+Xg2a g2a ng2a vcc gnd hcin
+Xg2b g2b ng2b vcc gnd hcin
+Ben en gnd V=v(ng1)*(1-v(ng2a))*(1-v(ng2b))
+Bone one gnd V=1
+* active-low outputs: Yn = 1 - en*match(n)
+By0 l0 gnd V=1-v(en)*(1-v(na))*(1-v(nb))*(1-v(nc))
+By1 l1 gnd V=1-v(en)*(v(na))*(1-v(nb))*(1-v(nc))
+By2 l2 gnd V=1-v(en)*(1-v(na))*(v(nb))*(1-v(nc))
+By3 l3 gnd V=1-v(en)*(v(na))*(v(nb))*(1-v(nc))
+By4 l4 gnd V=1-v(en)*(1-v(na))*(1-v(nb))*(v(nc))
+By5 l5 gnd V=1-v(en)*(v(na))*(1-v(nb))*(v(nc))
+By6 l6 gnd V=1-v(en)*(1-v(na))*(v(nb))*(v(nc))
+By7 l7 gnd V=1-v(en)*(v(na))*(v(nb))*(v(nc))
+Xo0 l0 one y0 vcc gnd hcout
+Xo1 l1 one y1 vcc gnd hcout
+Xo2 l2 one y2 vcc gnd hcout
+Xo3 l3 one y3 vcc gnd hcout
+Xo4 l4 one y4 vcc gnd hcout
+Xo5 l5 one y5 vcc gnd hcout
+Xo6 l6 one y6 vcc gnd hcout
+Xo7 l7 one y7 vcc gnd hcout
+Bicc vcc gnd I={icc0}
+.ends
+
+.tran 1.0000000000000001e-09 3.2000000000000003e-06
+.control
+set numdgt=15
+run
+print v(n2) v(n3) v(n4) v(n5) v(n6) v(n7) v(n8) v(n9)
+quit
+.endc
+.end
