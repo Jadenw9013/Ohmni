@@ -1,0 +1,2599 @@
+{
+  "stage": "stage2",
+  "seed": 13643895546496402650,
+  "population": [
+    "OHM-001",
+    "OHM-002",
+    "OHM-003",
+    "OHM-004",
+    "OHM-005",
+    "OHM-006",
+    "OHM-007",
+    "OHM-008",
+    "OHM-009",
+    "OHM-010",
+    "OHM-011",
+    "OHM-012",
+    "OHM-013",
+    "OHM-014",
+    "OHM-015",
+    "OHM-016",
+    "OHM-017",
+    "OHM-018",
+    "OHM-019",
+    "OHM-020",
+    "OHM-021",
+    "OHM-022",
+    "OHM-023",
+    "OHM-024",
+    "OHM-025",
+    "OHM-026",
+    "OHM-027",
+    "OHM-028",
+    "OHM-029",
+    "OHM-030",
+    "OHM-031",
+    "OHM-032",
+    "OHM-033",
+    "OHM-034",
+    "OHM-035",
+    "OHM-036",
+    "OHM-037",
+    "OHM-038",
+    "OHM-039",
+    "OHM-040",
+    "OHM-041",
+    "OHM-042",
+    "OHM-043",
+    "OHM-044",
+    "OHM-045",
+    "OHM-046",
+    "OHM-047",
+    "OHM-048",
+    "OHM-049",
+    "OHM-050",
+    "OHM-051",
+    "OHM-052",
+    "OHM-053",
+    "OHM-054",
+    "OHM-055",
+    "OHM-056",
+    "OHM-057",
+    "OHM-058",
+    "OHM-059",
+    "OHM-060",
+    "OHM-061",
+    "OHM-062",
+    "OHM-063",
+    "OHM-064",
+    "OHM-065",
+    "OHM-066",
+    "OHM-067",
+    "OHM-068",
+    "OHM-069",
+    "OHM-070",
+    "OHM-071",
+    "OHM-072",
+    "OHM-073",
+    "OHM-074",
+    "OHM-075",
+    "OHM-076",
+    "OHM-077",
+    "OHM-078",
+    "OHM-079",
+    "OHM-080",
+    "OHM-081",
+    "OHM-082",
+    "OHM-083",
+    "OHM-084",
+    "OHM-085",
+    "OHM-086",
+    "OHM-087",
+    "OHM-088",
+    "OHM-089",
+    "OHM-090",
+    "OHM-091",
+    "OHM-092",
+    "OHM-093",
+    "OHM-094",
+    "OHM-095",
+    "OHM-096",
+    "OHM-097",
+    "OHM-098",
+    "OHM-099",
+    "OHM-100",
+    "OHM-101",
+    "OHM-102"
+  ],
+  "sample": [
+    "OHM-008",
+    "OHM-019",
+    "OHM-021",
+    "OHM-025",
+    "OHM-028",
+    "OHM-038",
+    "OHM-050",
+    "OHM-056",
+    "OHM-062",
+    "OHM-068",
+    "OHM-100"
+  ],
+  "reviewer_context": "fresh",
+  "schema_version": 1,
+  "verification_method": "Direct PyMuPDF text extraction of SHA256-verified archived primary PDFs, with visual inspection of pin maps, table alignments, derating curves and ambiguous source footnotes. Ledger used solely to locate archived bytes. No access to implementation, specification, decisions or prior reports.",
+  "scope_limitations": [
+    "Bench-results and model correctness are outside this source-only stage.",
+    "Physical package bindings are not inferred from intrinsic manufacturer pin roles.",
+    "An empty mismatch list means the sampled source claims were supported within their stated scope, not that the part or model is fully verified."
+  ],
+  "results": [
+    {
+      "entry_id": "OHM-008",
+      "primary_sources": [
+        "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+      ],
+      "mismatches": [],
+      "notes": "Fresh source-only verification: every listed field was compared with the cited primary PDF, including table headings and material notes. Sampled gapfill evidence and generated research record agree after normalization of omitted/null optional keys; embedded gapfill content hash matches. Class-bench receipts, implementation, specification, decisions, previous reports, package bindings and physical hardware were not read or verified. Their status is not inferred from this source review. Page 1 supports P70 and the temperature limit; page 6 independently corroborates the derating knee/endpoints visually. No film-to-board thermal constant was inferred.",
+      "field_checks": [
+        {
+          "field_index": 0,
+          "field": "reference.p_rated",
+          "claimed_value": 0.75,
+          "source_derived_value": 0.75,
+          "unit": "W",
+          "recorded_scope": "Vishay CRCW2010 e3; standard operation where listed",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1,
+            6
+          ],
+          "source_urls": [
+            "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+          ],
+          "source_content_sha256": [
+            "59f13d58254ffac7c17b54cf0328b961d83a0636e47276e4b7c99224903caec3"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "CRCW2010 column: P70 = 0.75 W. Derating graph is flat through 70 C and reaches zero at 155 C. Rating requires permitted film temperature not to be exceeded.",
+          "material_conditions": "70 C ambient rating; assembled resistor/PCB thermal path matters.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 1,
+          "field": "reference.v_max",
+          "claimed_value": 400,
+          "source_derived_value": 400,
+          "unit": "V",
+          "recorded_scope": "Vishay CRCW2010 e3; standard operation where listed",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+          ],
+          "source_content_sha256": [
+            "59f13d58254ffac7c17b54cf0328b961d83a0636e47276e4b7c99224903caec3"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "CRCW2010 operating-voltage row gives 400 V ACRMS/DC. This is not the 300 V insulation test voltage.",
+          "material_conditions": "Operating voltage ceiling; rated dissipation must also be observed.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 2,
+          "field": "t_end",
+          "claimed_value": 155,
+          "source_derived_value": 155,
+          "unit": "degC",
+          "recorded_scope": "Vishay CRCW2010 e3; standard operation where listed",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1,
+            6
+          ],
+          "source_urls": [
+            "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+          ],
+          "source_content_sha256": [
+            "59f13d58254ffac7c17b54cf0328b961d83a0636e47276e4b7c99224903caec3"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Permissible film temperature and upper operating temperature are 155 C; standard derating graph reaches zero at 155 C.",
+          "material_conditions": "Standard operation.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 3,
+          "field": "derating_knee",
+          "claimed_value": 70,
+          "source_derived_value": 70,
+          "unit": "degC",
+          "recorded_scope": "Vishay CRCW2010 e3; standard operation where listed",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1,
+            6
+          ],
+          "source_urls": [
+            "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+          ],
+          "source_content_sha256": [
+            "59f13d58254ffac7c17b54cf0328b961d83a0636e47276e4b7c99224903caec3"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "P70 notation on page 1 and visually inspected standard derating graph on page 6 establish the 70 C knee.",
+          "material_conditions": "Standard operation.",
+          "mismatch_indices": []
+        }
+      ],
+      "source_documents": [
+        {
+          "url": "https://www.vishay.com/docs/20035/dcrcwe3.pdf",
+          "content_sha256": "59f13d58254ffac7c17b54cf0328b961d83a0636e47276e4b7c99224903caec3",
+          "content_bytes": 150402,
+          "archive_path": "fetched-sources/59f13d58254ffac7c17b54cf0328b961d83a0636e47276e4b7c99224903caec3.bin",
+          "hash_verified": true
+        }
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "fde569322a84d08d1daf715752e2a2fdd65cbf36ed3502eaad4762873e0e88d0",
+        "generated_record_sha256": "5f850a5abbc28b827b5941fedfd815fb30ee43efe4de9463ccc8b6b07d3cedc7",
+        "record_gapfill_hash_matches": true,
+        "gapfill_generated_evidence_matches": true
+      }
+    },
+    {
+      "entry_id": "OHM-019",
+      "primary_sources": [
+        "https://www.bourns.com/docs/Product-Datasheets/3314.pdf"
+      ],
+      "mismatches": [
+        {
+          "kind": "missing_source_metadata",
+          "severity": "low",
+          "fields": [
+            "documents[3314].revision"
+          ],
+          "recorded": null,
+          "source_derived": "REV. 07/24 on PDF page 6; appended legal disclaimer is marked K2540 05/26R on page 7.",
+          "source_pages": [
+            6,
+            7
+          ],
+          "detail": "The record conservatively says revision not established, but the cited archived source contains a product revision that can be recorded separately from its disclaimer revision."
+        }
+      ],
+      "notes": "Fresh source-only verification: every listed field was compared with the cited primary PDF, including table headings and material notes. Sampled gapfill evidence and generated research record agree after normalization of omitted/null optional keys; embedded gapfill content hash matches. Class-bench receipts, implementation, specification, decisions, previous reports, package bindings and physical hardware were not read or verified. Their status is not inferred from this source review.",
+      "field_checks": [
+        {
+          "field_index": 0,
+          "field": "p_rated",
+          "claimed_value": 0.25,
+          "source_derived_value": 0.25,
+          "unit": "W",
+          "recorded_scope": "Bourns 3314; 3314 G/J/H",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.bourns.com/docs/Product-Datasheets/3314.pdf"
+          ],
+          "source_content_sha256": [
+            "ce8fce98749cd142029ecab14693aded2b9154533b0fc89399531ee7469153f5"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Environmental characteristics give 0.25 W at 70 C.",
+          "material_conditions": "Styles G/J/H have a 300 V ceiling; Style R is 50 V.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 1,
+          "field": "derating_knee",
+          "claimed_value": 70,
+          "source_derived_value": 70,
+          "unit": "degC",
+          "recorded_scope": "Bourns 3314; 3314 G/J/H",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.bourns.com/docs/Product-Datasheets/3314.pdf"
+          ],
+          "source_content_sha256": [
+            "ce8fce98749cd142029ecab14693aded2b9154533b0fc89399531ee7469153f5"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Power rating starts at 0.25 W at 70 C.",
+          "material_conditions": "Read jointly with the 125 C zero-power endpoint.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 2,
+          "field": "t_end",
+          "claimed_value": 125,
+          "source_derived_value": 125,
+          "unit": "degC",
+          "recorded_scope": "Bourns 3314; 3314 G/J/H",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.bourns.com/docs/Product-Datasheets/3314.pdf"
+          ],
+          "source_content_sha256": [
+            "ce8fce98749cd142029ecab14693aded2b9154533b0fc89399531ee7469153f5"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Power rating is 0 W at 125 C; operating range ends at 125 C.",
+          "material_conditions": "Power-rating endpoint, not a destruction threshold.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 3,
+          "field": "v_max",
+          "claimed_value": 300,
+          "source_derived_value": 300,
+          "unit": "V",
+          "recorded_scope": "Bourns 3314; 3314 G/J/H",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.bourns.com/docs/Product-Datasheets/3314.pdf"
+          ],
+          "source_content_sha256": [
+            "ce8fce98749cd142029ecab14693aded2b9154533b0fc89399531ee7469153f5"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Styles G, J and H are explicitly limited to 300 V.",
+          "material_conditions": "The entry excludes Style R, which is limited to 50 V.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 4,
+          "field": "end_resistance_max_expression",
+          "claimed_value": "max(0.01*R, 2)",
+          "source_derived_value": "max(0.01*R, 2)",
+          "unit": "ohm",
+          "recorded_scope": "Bourns 3314; 3314 G/J/H",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.bourns.com/docs/Product-Datasheets/3314.pdf"
+          ],
+          "source_content_sha256": [
+            "ce8fce98749cd142029ecab14693aded2b9154533b0fc89399531ee7469153f5"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "End resistance is maximum 1 percent or 2 ohms, whichever is greater.",
+          "material_conditions": "A maximum bound rather than a nominal series resistance.",
+          "mismatch_indices": []
+        }
+      ],
+      "source_documents": [
+        {
+          "url": "https://www.bourns.com/docs/Product-Datasheets/3314.pdf",
+          "content_sha256": "ce8fce98749cd142029ecab14693aded2b9154533b0fc89399531ee7469153f5",
+          "content_bytes": 348093,
+          "archive_path": "fetched-sources/ce8fce98749cd142029ecab14693aded2b9154533b0fc89399531ee7469153f5.bin",
+          "hash_verified": true
+        }
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "324a6c5635bb5ff63f7029069169fb75fca4b1739fc6a7affe65cdfd61265919",
+        "generated_record_sha256": "405c17559416997fa8d50c6304fdd526d8844a5a7b3fd136763903fc2714ff48",
+        "record_gapfill_hash_matches": true,
+        "gapfill_generated_evidence_matches": true
+      }
+    },
+    {
+      "entry_id": "OHM-021",
+      "primary_sources": [
+        "https://ds.murata.com/simsurfing_data/pdf/en-us/mlcc/sim_mlcc_measuringcond_e.pdf",
+        "https://johansondielectrics.com/docs/3945/ceramic-capacitor-aging-made-simple.pdf"
+      ],
+      "mismatches": [],
+      "notes": "Fresh source-only verification: every listed field was compared with the cited primary PDF, including table headings and material notes. Sampled gapfill evidence and generated research record agree after normalization of omitted/null optional keys; embedded gapfill content hash matches. Class-bench receipts, implementation, specification, decisions, previous reports, package bindings and physical hardware were not read or verified. Their status is not inferred from this source review. The application documents establish only scoped dielectric examples; they do not establish a manufacturer orderable part, rating or empirical package curve. The existing unresolved-part limitations are retained.",
+      "field_checks": [
+        {
+          "field_index": 0,
+          "field": "dc_bias_curve_scope",
+          "claimed_value": "part-specific measured data required",
+          "source_derived_value": "part-specific measured data required",
+          "unit": null,
+          "recorded_scope": "Murata high-K X5R/X7R MLCC; not a universal package curve",
+          "recorded_page": 7,
+          "source_pages_checked": [
+            7,
+            8
+          ],
+          "source_urls": [
+            "https://ds.murata.com/simsurfing_data/pdf/en-us/mlcc/sim_mlcc_measuringcond_e.pdf"
+          ],
+          "source_content_sha256": [
+            "487b3281b6015f8c865d502c594e12f07cf0bccdeeefcd042cd068c6a0e51027"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Page 7 describes DC-bias dependence and labels its X5R/C0G plot an example. It supplies no universal package fit. The conservative request for part-specific data is an inference consistent with this evidence.",
+          "material_conditions": "Page 8 uses 1 kHz for C<=10 uF, 120 Hz above; AC excitation depends on capacitance/rated-voltage group; 0 V to rated DC voltage, 60 s bias, 25 C +/-3 C.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 1,
+          "field": "aging_rate_reference",
+          "claimed_value": -2.5,
+          "source_derived_value": -2.5,
+          "unit": "percent per decade-hour",
+          "recorded_scope": "Johanson typical X7R/X5R example; not a rated value for an unspecified Murata/TDK part",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1,
+            2
+          ],
+          "source_urls": [
+            "https://johansondielectrics.com/docs/3945/ceramic-capacitor-aging-made-simple.pdf"
+          ],
+          "source_content_sha256": [
+            "96f1e2ebc5801d7bf7c008f58ecc597c3a197bd5a75aa9cfeb3d0e305957d27e"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Johanson gives X7R/X5R capacitance aging of -2.5 percent per decade-hour. Page 2 explains logarithmic decades and warns that values are typical.",
+          "material_conditions": "Typical dielectric example, not a guaranteed rating of an unspecified part; thermal de-aging resets the history.",
+          "mismatch_indices": []
+        }
+      ],
+      "source_documents": [
+        {
+          "url": "https://ds.murata.com/simsurfing_data/pdf/en-us/mlcc/sim_mlcc_measuringcond_e.pdf",
+          "content_sha256": "487b3281b6015f8c865d502c594e12f07cf0bccdeeefcd042cd068c6a0e51027",
+          "content_bytes": 908286,
+          "archive_path": "fetched-sources/487b3281b6015f8c865d502c594e12f07cf0bccdeeefcd042cd068c6a0e51027.bin",
+          "hash_verified": true
+        },
+        {
+          "url": "https://johansondielectrics.com/docs/3945/ceramic-capacitor-aging-made-simple.pdf",
+          "content_sha256": "96f1e2ebc5801d7bf7c008f58ecc597c3a197bd5a75aa9cfeb3d0e305957d27e",
+          "content_bytes": 33053,
+          "archive_path": "fetched-sources/96f1e2ebc5801d7bf7c008f58ecc597c3a197bd5a75aa9cfeb3d0e305957d27e.bin",
+          "hash_verified": true
+        }
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "ac24168bcc427c7084e5a299d135b066af18304eb8cf20be5da37acff07c0dd1",
+        "generated_record_sha256": "c69354c195a4144b8172e33fba0c592c8cabe2929197c1e76a2a62b065b36bd2",
+        "record_gapfill_hash_matches": true,
+        "gapfill_generated_evidence_matches": true
+      }
+    },
+    {
+      "entry_id": "OHM-025",
+      "primary_sources": [
+        "https://ds.murata.com/simsurfing_data/pdf/en-us/mlcc/sim_mlcc_measuringcond_e.pdf",
+        "https://johansondielectrics.com/docs/3945/ceramic-capacitor-aging-made-simple.pdf"
+      ],
+      "mismatches": [],
+      "notes": "Fresh source-only verification: every listed field was compared with the cited primary PDF, including table headings and material notes. Sampled gapfill evidence and generated research record agree after normalization of omitted/null optional keys; embedded gapfill content hash matches. Class-bench receipts, implementation, specification, decisions, previous reports, package bindings and physical hardware were not read or verified. Their status is not inferred from this source review. The application documents establish only scoped dielectric examples; they do not establish a manufacturer orderable part, rating or empirical package curve. The existing unresolved-part limitations are retained.",
+      "field_checks": [
+        {
+          "field_index": 0,
+          "field": "dc_bias_curve_scope",
+          "claimed_value": "part-specific measured data required",
+          "source_derived_value": "part-specific measured data required",
+          "unit": null,
+          "recorded_scope": "Murata high-K X5R/X7R MLCC; not a universal package curve",
+          "recorded_page": 7,
+          "source_pages_checked": [
+            7,
+            8
+          ],
+          "source_urls": [
+            "https://ds.murata.com/simsurfing_data/pdf/en-us/mlcc/sim_mlcc_measuringcond_e.pdf"
+          ],
+          "source_content_sha256": [
+            "487b3281b6015f8c865d502c594e12f07cf0bccdeeefcd042cd068c6a0e51027"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Page 7 describes DC-bias dependence and labels its X5R/C0G plot an example. It supplies no universal package fit. The conservative request for part-specific data is an inference consistent with this evidence.",
+          "material_conditions": "Page 8 uses 1 kHz for C<=10 uF, 120 Hz above; AC excitation depends on capacitance/rated-voltage group; 0 V to rated DC voltage, 60 s bias, 25 C +/-3 C.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 1,
+          "field": "aging_rate_reference",
+          "claimed_value": -2.5,
+          "source_derived_value": -2.5,
+          "unit": "percent per decade-hour",
+          "recorded_scope": "Johanson typical X7R/X5R example; not a rated value for an unspecified Murata/TDK part",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1,
+            2
+          ],
+          "source_urls": [
+            "https://johansondielectrics.com/docs/3945/ceramic-capacitor-aging-made-simple.pdf"
+          ],
+          "source_content_sha256": [
+            "96f1e2ebc5801d7bf7c008f58ecc597c3a197bd5a75aa9cfeb3d0e305957d27e"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Johanson gives X7R/X5R capacitance aging of -2.5 percent per decade-hour. Page 2 explains logarithmic decades and warns that values are typical.",
+          "material_conditions": "Typical dielectric example, not a guaranteed rating of an unspecified part; thermal de-aging resets the history.",
+          "mismatch_indices": []
+        }
+      ],
+      "source_documents": [
+        {
+          "url": "https://ds.murata.com/simsurfing_data/pdf/en-us/mlcc/sim_mlcc_measuringcond_e.pdf",
+          "content_sha256": "487b3281b6015f8c865d502c594e12f07cf0bccdeeefcd042cd068c6a0e51027",
+          "content_bytes": 908286,
+          "archive_path": "fetched-sources/487b3281b6015f8c865d502c594e12f07cf0bccdeeefcd042cd068c6a0e51027.bin",
+          "hash_verified": true
+        },
+        {
+          "url": "https://johansondielectrics.com/docs/3945/ceramic-capacitor-aging-made-simple.pdf",
+          "content_sha256": "96f1e2ebc5801d7bf7c008f58ecc597c3a197bd5a75aa9cfeb3d0e305957d27e",
+          "content_bytes": 33053,
+          "archive_path": "fetched-sources/96f1e2ebc5801d7bf7c008f58ecc597c3a197bd5a75aa9cfeb3d0e305957d27e.bin",
+          "hash_verified": true
+        }
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "cc89b80fafaab8899d2a13a78895cd9b443af6669d68cc63397520afe32e6e22",
+        "generated_record_sha256": "114afb8a04c9bcd4afa9c8a5f6a77fdb3baeae7a0e7d47b8d90d4becd7089eed",
+        "record_gapfill_hash_matches": true,
+        "gapfill_generated_evidence_matches": true
+      }
+    },
+    {
+      "entry_id": "OHM-028",
+      "primary_sources": [
+        "https://johansondielectrics.com/docs/3945/ceramic-capacitor-aging-made-simple.pdf"
+      ],
+      "mismatches": [],
+      "notes": "Fresh source-only verification: every listed field was compared with the cited primary PDF, including table headings and material notes. Sampled gapfill evidence and generated research record agree after normalization of omitted/null optional keys; embedded gapfill content hash matches. Class-bench receipts, implementation, specification, decisions, previous reports, package bindings and physical hardware were not read or verified. Their status is not inferred from this source review. The application documents establish only scoped dielectric examples; they do not establish a manufacturer orderable part, rating or empirical package curve. The existing unresolved-part limitations are retained.",
+      "field_checks": [
+        {
+          "field_index": 0,
+          "field": "aging_rate_reference",
+          "claimed_value": -7,
+          "source_derived_value": -7,
+          "unit": "percent per decade-hour",
+          "recorded_scope": "Johanson typical Y5V example; not a rating for the unspecified disc",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1,
+            2
+          ],
+          "source_urls": [
+            "https://johansondielectrics.com/docs/3945/ceramic-capacitor-aging-made-simple.pdf"
+          ],
+          "source_content_sha256": [
+            "96f1e2ebc5801d7bf7c008f58ecc597c3a197bd5a75aa9cfeb3d0e305957d27e"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Johanson gives Y5V aging of -7 percent per decade-hour; page 2 explains decade-hour timing and limits applicability of typical figures.",
+          "material_conditions": "Typical Y5V dielectric example, not a rating for an unbound ceramic disc.",
+          "mismatch_indices": []
+        }
+      ],
+      "source_documents": [
+        {
+          "url": "https://johansondielectrics.com/docs/3945/ceramic-capacitor-aging-made-simple.pdf",
+          "content_sha256": "96f1e2ebc5801d7bf7c008f58ecc597c3a197bd5a75aa9cfeb3d0e305957d27e",
+          "content_bytes": 33053,
+          "archive_path": "fetched-sources/96f1e2ebc5801d7bf7c008f58ecc597c3a197bd5a75aa9cfeb3d0e305957d27e.bin",
+          "hash_verified": true
+        }
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "a3a582742c59ba85fd9f711ac2a5a6e30cfde8bf5b6747e6fb82df50f1030554",
+        "generated_record_sha256": "f4add88ea0f7ce0e5c24fcd1054e4280079bb9937c96f9d9ec24ab6d1134dc7b",
+        "record_gapfill_hash_matches": true,
+        "gapfill_generated_evidence_matches": true
+      }
+    },
+    {
+      "entry_id": "OHM-038",
+      "primary_sources": [
+        "https://wima.de/wp-content/uploads/media/e_WIMA_MKP-X2.pdf"
+      ],
+      "mismatches": [
+        {
+          "kind": "missing_material_condition",
+          "severity": "medium",
+          "field_indices": [
+            3
+          ],
+          "fields": [
+            "maximum_dissipation_factor"
+          ],
+          "source_pages": [
+            1
+          ],
+          "detail": "0.0018 is numerically correct, but its scope omits the +20 C temperature explicitly attached to the dissipation-factor table. The record specifies only capacitance and frequency."
+        }
+      ],
+      "notes": "Fresh source-only verification: every listed field was compared with the cited primary PDF, including table headings and material notes. Sampled gapfill evidence and generated research record agree after normalization of omitted/null optional keys; embedded gapfill content hash matches. Class-bench receipts, implementation, specification, decisions, previous reports, package bindings and physical hardware were not read or verified. Their status is not inferred from this source review.",
+      "field_checks": [
+        {
+          "field_index": 0,
+          "field": "reference_rated_voltage",
+          "claimed_value": 305,
+          "source_derived_value": 305,
+          "unit": "V AC",
+          "recorded_scope": "WIMA MKP-X2 revision 03.26",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://wima.de/wp-content/uploads/media/e_WIMA_MKP-X2.pdf"
+          ],
+          "source_content_sha256": [
+            "6704689c9a5d84028ce73ab14fee9bff64c6e31b8af14c64bcfc3530c8d5de44"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Title and electrical-data block both specify 305 VAC.",
+          "material_conditions": "WIMA MKP-X2 revision 03.26; specific part/approval binding remains separate.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 1,
+          "field": "reference_safety_class",
+          "claimed_value": "X2",
+          "source_derived_value": "X2",
+          "unit": null,
+          "recorded_scope": "Manufacturer designation for phase-neutral/phase-phase RFI suppression; not board certification",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://wima.de/wp-content/uploads/media/e_WIMA_MKP-X2.pdf"
+          ],
+          "source_content_sha256": [
+            "6704689c9a5d84028ce73ab14fee9bff64c6e31b8af14c64bcfc3530c8d5de44"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Class X2 designation and phase-neutral or phase-phase application are explicit.",
+          "material_conditions": "This is a component series designation, not board certification.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 2,
+          "field": "maximum_pulse_peak",
+          "claimed_value": 2500,
+          "source_derived_value": 2500,
+          "unit": "V",
+          "recorded_scope": "WIMA MKP-X2 class application",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://wima.de/wp-content/uploads/media/e_WIMA_MKP-X2.pdf"
+          ],
+          "source_content_sha256": [
+            "6704689c9a5d84028ce73ab14fee9bff64c6e31b8af14c64bcfc3530c8d5de44"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Typical-applications block limits general pulse peak voltage to <=2.5 kV.",
+          "material_conditions": "Class X2 application statement, not a universal 2.5 kV continuous rating.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 3,
+          "field": "maximum_dissipation_factor",
+          "claimed_value": 0.0018,
+          "source_derived_value": 0.0018,
+          "unit": null,
+          "recorded_scope": "C <= 0.1 uF at 1 kHz",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://wima.de/wp-content/uploads/media/e_WIMA_MKP-X2.pdf"
+          ],
+          "source_content_sha256": [
+            "6704689c9a5d84028ce73ab14fee9bff64c6e31b8af14c64bcfc3530c8d5de44"
+          ],
+          "value_matches": true,
+          "result": "qualification_mismatch",
+          "evidence": "Visually inspected tan-delta table gives <=18 x 10^-4, equal to 0.0018.",
+          "material_conditions": "C<=0.1 uF, f=1 kHz, +20 C.",
+          "mismatch_indices": [
+            0
+          ]
+        },
+        {
+          "field_index": 4,
+          "field": "minimum_insulation_resistance",
+          "claimed_value": 15000000000.0,
+          "source_derived_value": 15000000000.0,
+          "unit": "ohm",
+          "recorded_scope": "C <= 0.33 uF at 20 C; 100 VDC test, 1 minute",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://wima.de/wp-content/uploads/media/e_WIMA_MKP-X2.pdf"
+          ],
+          "source_content_sha256": [
+            "6704689c9a5d84028ce73ab14fee9bff64c6e31b8af14c64bcfc3530c8d5de44"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Insulation resistance >=1.5 x 10^4 Mohm converts to 1.5 x 10^10 ohm.",
+          "material_conditions": "C<=0.33 uF, +20 C, measuring voltage 100 V for 1 minute.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 5,
+          "field": "maximum_pulse_rise_rate",
+          "claimed_value": 100,
+          "source_derived_value": 100,
+          "unit": "V/us",
+          "recorded_scope": "Pulse amplitude 432 V",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://wima.de/wp-content/uploads/media/e_WIMA_MKP-X2.pdf"
+          ],
+          "source_content_sha256": [
+            "6704689c9a5d84028ce73ab14fee9bff64c6e31b8af14c64bcfc3530c8d5de44"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Maximum pulse rise rate is 100 V/us for amplitude sqrt(2) x 305 VAC = 432 V.",
+          "material_conditions": "432 V amplitude under IEC 60384-14 statement.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 6,
+          "field": "maximum_operating_temperature",
+          "claimed_value": 105,
+          "source_derived_value": 105,
+          "unit": "C",
+          "recorded_scope": "WIMA MKP-X2",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://wima.de/wp-content/uploads/media/e_WIMA_MKP-X2.pdf"
+          ],
+          "source_content_sha256": [
+            "6704689c9a5d84028ce73ab14fee9bff64c6e31b8af14c64bcfc3530c8d5de44"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Operating-temperature range is -55 C to +105 C.",
+          "material_conditions": "Upper operating temperature of this series.",
+          "mismatch_indices": []
+        }
+      ],
+      "source_documents": [
+        {
+          "url": "https://wima.de/wp-content/uploads/media/e_WIMA_MKP-X2.pdf",
+          "content_sha256": "6704689c9a5d84028ce73ab14fee9bff64c6e31b8af14c64bcfc3530c8d5de44",
+          "content_bytes": 469496,
+          "archive_path": "fetched-sources/6704689c9a5d84028ce73ab14fee9bff64c6e31b8af14c64bcfc3530c8d5de44.bin",
+          "hash_verified": true
+        }
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "4049b29dab0b02bdd2cf59973e04d33368e127e98272eba2e3ae151ceb00ca9f",
+        "generated_record_sha256": "95c2388f79bc1ccc8adb11d41a77dabe58cc9da423803ce673eaf421f8babd7a",
+        "record_gapfill_hash_matches": true,
+        "gapfill_generated_evidence_matches": true
+      }
+    },
+    {
+      "entry_id": "OHM-050",
+      "primary_sources": [
+        "https://www.we-online.com/katalog/datasheet/744272222.pdf"
+      ],
+      "mismatches": [
+        {
+          "kind": "missing_material_condition",
+          "severity": "medium",
+          "field_indices": [
+            2,
+            3,
+            4,
+            6,
+            7
+          ],
+          "fields": [
+            "nominal_inductance",
+            "rated_current",
+            "maximum_dcr",
+            "typical_leakage_inductance",
+            "insulation_test_voltage"
+          ],
+          "source_pages": [
+            1
+          ],
+          "detail": "The electrical-properties default test environment is +20 C and 33 percent RH. The sampled gapfill/record do not retain it. This is especially material to interpreting the DCR and temperature-rise current values."
+        }
+      ],
+      "notes": "Fresh source-only verification: every listed field was compared with the cited primary PDF, including table headings and material notes. Sampled gapfill evidence and generated research record agree after normalization of omitted/null optional keys; embedded gapfill content hash matches. Class-bench receipts, implementation, specification, decisions, previous reports, package bindings and physical hardware were not read or verified. Their status is not inferred from this source review.",
+      "field_checks": [
+        {
+          "field_index": 0,
+          "field": "winding_pin_pairs",
+          "claimed_value": [
+            [
+              1,
+              2
+            ],
+            [
+              4,
+              3
+            ]
+          ],
+          "source_derived_value": [
+            [
+              1,
+              2
+            ],
+            [
+              4,
+              3
+            ]
+          ],
+          "unit": null,
+          "recorded_scope": "744272222; intrinsic manufacturer pin numbers",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.we-online.com/katalog/datasheet/744272222.pdf"
+          ],
+          "source_content_sha256": [
+            "a5e6c7bb7c97ef27bca7b2c8f40884a9dc646c64ca740374076ca9acceb02712"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Rendered manufacturer schematic shows upper winding 1 to 2 and lower winding 4 to 3.",
+          "material_conditions": "Intrinsic manufacturer numbering only; no package-coordinate transform inferred.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 1,
+          "field": "dotted_terminals",
+          "claimed_value": [
+            1,
+            4
+          ],
+          "source_derived_value": [
+            1,
+            4
+          ],
+          "unit": null,
+          "recorded_scope": "744272222; intrinsic manufacturer pin numbers",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.we-online.com/katalog/datasheet/744272222.pdf"
+          ],
+          "source_content_sha256": [
+            "a5e6c7bb7c97ef27bca7b2c8f40884a9dc646c64ca740374076ca9acceb02712"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Rendered schematic puts winding dots beside terminals 1 and 4.",
+          "material_conditions": "The land-pattern view uses a different orientation, so its numbering was not silently transferred.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 2,
+          "field": "nominal_inductance",
+          "claimed_value": 2200,
+          "source_derived_value": 2200,
+          "unit": "uH",
+          "recorded_scope": "744272222; intrinsic manufacturer pin numbers; 100 kHz/100 mV",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.we-online.com/katalog/datasheet/744272222.pdf"
+          ],
+          "source_content_sha256": [
+            "a5e6c7bb7c97ef27bca7b2c8f40884a9dc646c64ca740374076ca9acceb02712"
+          ],
+          "value_matches": true,
+          "result": "qualification_mismatch",
+          "evidence": "Electrical-properties table gives L=2200 uH with +/-40 percent tolerance.",
+          "material_conditions": "100 kHz, 100 mV; general test condition +20 C, 33 percent RH.",
+          "mismatch_indices": [
+            0
+          ]
+        },
+        {
+          "field_index": 3,
+          "field": "rated_current",
+          "claimed_value": 0.83,
+          "source_derived_value": 0.83,
+          "unit": "A",
+          "recorded_scope": "744272222; intrinsic manufacturer pin numbers; 40 K rise",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.we-online.com/katalog/datasheet/744272222.pdf"
+          ],
+          "source_content_sha256": [
+            "a5e6c7bb7c97ef27bca7b2c8f40884a9dc646c64ca740374076ca9acceb02712"
+          ],
+          "value_matches": true,
+          "result": "qualification_mismatch",
+          "evidence": "Rated current is 830 mA maximum, equal to 0.83 A.",
+          "material_conditions": "Temperature rise 40 K; general electrical-test condition +20 C, 33 percent RH.",
+          "mismatch_indices": [
+            0
+          ]
+        },
+        {
+          "field_index": 4,
+          "field": "maximum_dcr",
+          "claimed_value": 0.3,
+          "source_derived_value": 0.3,
+          "unit": "ohm",
+          "recorded_scope": "744272222; intrinsic manufacturer pin numbers",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.we-online.com/katalog/datasheet/744272222.pdf"
+          ],
+          "source_content_sha256": [
+            "a5e6c7bb7c97ef27bca7b2c8f40884a9dc646c64ca740374076ca9acceb02712"
+          ],
+          "value_matches": true,
+          "result": "qualification_mismatch",
+          "evidence": "DC resistance is 0.3 ohm maximum.",
+          "material_conditions": "General test condition +20 C, 33 percent RH.",
+          "mismatch_indices": [
+            0
+          ]
+        },
+        {
+          "field_index": 5,
+          "field": "rated_voltage",
+          "claimed_value": 80,
+          "source_derived_value": 80,
+          "unit": "V",
+          "recorded_scope": "744272222; intrinsic manufacturer pin numbers",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.we-online.com/katalog/datasheet/744272222.pdf"
+          ],
+          "source_content_sha256": [
+            "a5e6c7bb7c97ef27bca7b2c8f40884a9dc646c64ca740374076ca9acceb02712"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Rated voltage row gives 80 V.",
+          "material_conditions": "744272222; source does not label this row AC or DC.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 6,
+          "field": "typical_leakage_inductance",
+          "claimed_value": 130,
+          "source_derived_value": 130,
+          "unit": "nH",
+          "recorded_scope": "744272222; intrinsic manufacturer pin numbers; 1 MHz/1 mA",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.we-online.com/katalog/datasheet/744272222.pdf"
+          ],
+          "source_content_sha256": [
+            "a5e6c7bb7c97ef27bca7b2c8f40884a9dc646c64ca740374076ca9acceb02712"
+          ],
+          "value_matches": true,
+          "result": "qualification_mismatch",
+          "evidence": "Leakage inductance is 130 nH typical.",
+          "material_conditions": "1 MHz, 1 mA; general test condition +20 C, 33 percent RH.",
+          "mismatch_indices": [
+            0
+          ]
+        },
+        {
+          "field_index": 7,
+          "field": "insulation_test_voltage",
+          "claimed_value": 300,
+          "source_derived_value": 300,
+          "unit": "V AC",
+          "recorded_scope": "744272222; intrinsic manufacturer pin numbers; 50 Hz/3 mA/1 second",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.we-online.com/katalog/datasheet/744272222.pdf"
+          ],
+          "source_content_sha256": [
+            "a5e6c7bb7c97ef27bca7b2c8f40884a9dc646c64ca740374076ca9acceb02712"
+          ],
+          "value_matches": true,
+          "result": "qualification_mismatch",
+          "evidence": "Insulation test voltage is 300 V AC maximum.",
+          "material_conditions": "50 Hz, 3 mA, 1 second; general test condition +20 C, 33 percent RH.",
+          "mismatch_indices": [
+            0
+          ]
+        }
+      ],
+      "source_documents": [
+        {
+          "url": "https://www.we-online.com/katalog/datasheet/744272222.pdf",
+          "content_sha256": "a5e6c7bb7c97ef27bca7b2c8f40884a9dc646c64ca740374076ca9acceb02712",
+          "content_bytes": 948209,
+          "archive_path": "fetched-sources/a5e6c7bb7c97ef27bca7b2c8f40884a9dc646c64ca740374076ca9acceb02712.bin",
+          "hash_verified": true
+        }
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "d9eae4f60de234cbd57837965c0d5b423fbb9543b0b490bfe77383d20ea3c8ed",
+        "generated_record_sha256": "671198f9b5395c76cbc59a27f1f7674f82793310694c1a7cea347aaeb624ef55",
+        "record_gapfill_hash_matches": true,
+        "gapfill_generated_evidence_matches": true
+      }
+    },
+    {
+      "entry_id": "OHM-056",
+      "primary_sources": [
+        "https://www.vishay.com/docs/81857/1n4148.pdf"
+      ],
+      "mismatches": [],
+      "notes": "Fresh source-only verification: every listed field was compared with the cited primary PDF, including table headings and material notes. Sampled gapfill evidence and generated research record agree after normalization of omitted/null optional keys; embedded gapfill content hash matches. Class-bench receipts, implementation, specification, decisions, previous reports, package bindings and physical hardware were not read or verified. Their status is not inferred from this source review. Both reverse-recovery rows were checked to avoid treating the 4 ns condition as the separate 8 ns condition.",
+      "field_checks": [
+        {
+          "field_index": 0,
+          "field": "repetitive_peak_reverse_voltage",
+          "claimed_value": 100,
+          "source_derived_value": 100,
+          "unit": "V",
+          "recorded_scope": "Vishay 1N4148 DO-35, 25 C unless stated",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.vishay.com/docs/81857/1n4148.pdf"
+          ],
+          "source_content_sha256": [
+            "aefe85400a427ed886a4e1c88205ceabb9f9b38044b29c6acee4bb00146a44b7"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Absolute maximum VRRM is 100 V.",
+          "material_conditions": "Tamb=25 C unless otherwise stated; repetitive peak reverse voltage.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 1,
+          "field": "dc_reverse_voltage",
+          "claimed_value": 75,
+          "source_derived_value": 75,
+          "unit": "V",
+          "recorded_scope": "Vishay 1N4148 DO-35, 25 C unless stated",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.vishay.com/docs/81857/1n4148.pdf"
+          ],
+          "source_content_sha256": [
+            "aefe85400a427ed886a4e1c88205ceabb9f9b38044b29c6acee4bb00146a44b7"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Reverse-voltage rating VR is 75 V.",
+          "material_conditions": "Tamb=25 C; distinct from VRRM and breakdown voltage.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 2,
+          "field": "continuous_forward_current",
+          "claimed_value": 0.3,
+          "source_derived_value": 0.3,
+          "unit": "A",
+          "recorded_scope": "Vishay 1N4148 DO-35, 25 C unless stated",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.vishay.com/docs/81857/1n4148.pdf"
+          ],
+          "source_content_sha256": [
+            "aefe85400a427ed886a4e1c88205ceabb9f9b38044b29c6acee4bb00146a44b7"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Forward continuous current is 300 mA.",
+          "material_conditions": "Tamb=25 C.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 3,
+          "field": "average_forward_current",
+          "claimed_value": 0.15,
+          "source_derived_value": 0.15,
+          "unit": "A",
+          "recorded_scope": "Vishay 1N4148 DO-35, 25 C unless stated; VR=0",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.vishay.com/docs/81857/1n4148.pdf"
+          ],
+          "source_content_sha256": [
+            "aefe85400a427ed886a4e1c88205ceabb9f9b38044b29c6acee4bb00146a44b7"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Average forward current is 150 mA.",
+          "material_conditions": "VR=0, Tamb=25 C.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 4,
+          "field": "surge_current",
+          "claimed_value": 2,
+          "source_derived_value": 2,
+          "unit": "A",
+          "recorded_scope": "Vishay 1N4148 DO-35, 25 C unless stated; 1 us pulse",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.vishay.com/docs/81857/1n4148.pdf"
+          ],
+          "source_content_sha256": [
+            "aefe85400a427ed886a4e1c88205ceabb9f9b38044b29c6acee4bb00146a44b7"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Peak forward surge current is 2 A.",
+          "material_conditions": "Pulse duration 1 us, Tamb=25 C.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 5,
+          "field": "maximum_power",
+          "claimed_value": 0.5,
+          "source_derived_value": 0.5,
+          "unit": "W",
+          "recorded_scope": "Vishay 1N4148 DO-35, 25 C unless stated; lead length 4 mm, TL <=25 C",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.vishay.com/docs/81857/1n4148.pdf"
+          ],
+          "source_content_sha256": [
+            "aefe85400a427ed886a4e1c88205ceabb9f9b38044b29c6acee4bb00146a44b7"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Ptot=500 mW is the second dissipation row.",
+          "material_conditions": "Lead length 4 mm, lead temperature TL<=25 C; 440 mW applies at TL=45 C.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 6,
+          "field": "maximum_junction_temperature",
+          "claimed_value": 175,
+          "source_derived_value": 175,
+          "unit": "C",
+          "recorded_scope": "Vishay 1N4148 DO-35, 25 C unless stated",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.vishay.com/docs/81857/1n4148.pdf"
+          ],
+          "source_content_sha256": [
+            "aefe85400a427ed886a4e1c88205ceabb9f9b38044b29c6acee4bb00146a44b7"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Thermal-characteristics table gives Tj=175 C.",
+          "material_conditions": "Maximum junction temperature, not storage maximum.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 7,
+          "field": "maximum_forward_voltage",
+          "claimed_value": 1,
+          "source_derived_value": 1,
+          "unit": "V",
+          "recorded_scope": "Vishay 1N4148 DO-35, 25 C unless stated; IF=10 mA",
+          "recorded_page": 2,
+          "source_pages_checked": [
+            2
+          ],
+          "source_urls": [
+            "https://www.vishay.com/docs/81857/1n4148.pdf"
+          ],
+          "source_content_sha256": [
+            "aefe85400a427ed886a4e1c88205ceabb9f9b38044b29c6acee4bb00146a44b7"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "VF maximum is 1 V.",
+          "material_conditions": "IF=10 mA, Tamb=25 C.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 8,
+          "field": "maximum_capacitance",
+          "claimed_value": 4,
+          "source_derived_value": 4,
+          "unit": "pF",
+          "recorded_scope": "Vishay 1N4148 DO-35, 25 C unless stated; VR=0, 1 MHz, VHF=50 mV",
+          "recorded_page": 2,
+          "source_pages_checked": [
+            2
+          ],
+          "source_urls": [
+            "https://www.vishay.com/docs/81857/1n4148.pdf"
+          ],
+          "source_content_sha256": [
+            "aefe85400a427ed886a4e1c88205ceabb9f9b38044b29c6acee4bb00146a44b7"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Diode capacitance maximum is 4 pF.",
+          "material_conditions": "VR=0, f=1 MHz, VHF=50 mV, Tamb=25 C.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 9,
+          "field": "maximum_reverse_recovery_time",
+          "claimed_value": 4,
+          "source_derived_value": 4,
+          "unit": "ns",
+          "recorded_scope": "Vishay 1N4148 DO-35, 25 C unless stated; IF=10 mA, VR=6 V, iR=0.1 IR, RL=100 ohm",
+          "recorded_page": 2,
+          "source_pages_checked": [
+            2
+          ],
+          "source_urls": [
+            "https://www.vishay.com/docs/81857/1n4148.pdf"
+          ],
+          "source_content_sha256": [
+            "aefe85400a427ed886a4e1c88205ceabb9f9b38044b29c6acee4bb00146a44b7"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "The second trr row is maximum 4 ns.",
+          "material_conditions": "IF=10 mA, VR=6 V, iR=0.1*IR, RL=100 ohm, Tamb=25 C. The distinct IF=IR=10 mA/iR=1 mA row is 8 ns.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 10,
+          "field": "cathode_mark",
+          "claimed_value": "black band",
+          "source_derived_value": "black band",
+          "unit": null,
+          "recorded_scope": "Vishay 1N4148 DO-35, 25 C unless stated",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.vishay.com/docs/81857/1n4148.pdf"
+          ],
+          "source_content_sha256": [
+            "aefe85400a427ed886a4e1c88205ceabb9f9b38044b29c6acee4bb00146a44b7"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Mechanical-data block explicitly describes the cathode band as black.",
+          "material_conditions": "Vishay 1N4148 DO-35.",
+          "mismatch_indices": []
+        }
+      ],
+      "source_documents": [
+        {
+          "url": "https://www.vishay.com/docs/81857/1n4148.pdf",
+          "content_sha256": "aefe85400a427ed886a4e1c88205ceabb9f9b38044b29c6acee4bb00146a44b7",
+          "content_bytes": 93384,
+          "archive_path": "fetched-sources/aefe85400a427ed886a4e1c88205ceabb9f9b38044b29c6acee4bb00146a44b7.bin",
+          "hash_verified": true
+        }
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "a7c4e88b523a3ab6f5a26f464bc09db181c6688e12a6e4bb3e4792067e0df49c",
+        "generated_record_sha256": "b0912ed63b37e00801a35dae7fd17f2fd005ecf30cc521496e264c4b847be673",
+        "record_gapfill_hash_matches": true,
+        "gapfill_generated_evidence_matches": true
+      }
+    },
+    {
+      "entry_id": "OHM-062",
+      "primary_sources": [
+        "https://assets.nexperia.com/documents/data-sheet/BAS16_SER.pdf"
+      ],
+      "mismatches": [
+        {
+          "kind": "missing_material_condition",
+          "severity": "medium",
+          "field_indices": [
+            5
+          ],
+          "fields": [
+            "maximum_power"
+          ],
+          "source_pages": [
+            4
+          ],
+          "detail": "The 400 mW scope correctly retains cathode Tsp<=90 C but omits note 1 mounting: FR4 PCB, single-sided copper, tin-plated, standard footprint. That condition appears on a separate current field, not on this power claim."
+        },
+        {
+          "kind": "missing_material_condition",
+          "severity": "medium",
+          "field_indices": [
+            7,
+            8
+          ],
+          "fields": [
+            "maximum_capacitance",
+            "maximum_forward_voltage"
+          ],
+          "source_pages": [
+            6
+          ],
+          "detail": "The characteristic table is at Tamb=25 C unless stated. Neither corresponding field scope retains this temperature; VF is temperature dependent. The voltage/current/frequency/pulse conditions that are recorded otherwise match."
+        }
+      ],
+      "notes": "Fresh source-only verification: every listed field was compared with the cited primary PDF, including table headings and material notes. Sampled gapfill evidence and generated research record agree after normalization of omitted/null optional keys; embedded gapfill content hash matches. Class-bench receipts, implementation, specification, decisions, previous reports, package bindings and physical hardware were not read or verified. Their status is not inferred from this source review.",
+      "field_checks": [
+        {
+          "field_index": 0,
+          "field": "reference_part",
+          "claimed_value": "BAS316",
+          "source_derived_value": "BAS316",
+          "unit": null,
+          "recorded_scope": "BAS316",
+          "recorded_page": 3,
+          "source_pages_checked": [
+            1,
+            3
+          ],
+          "source_urls": [
+            "https://assets.nexperia.com/documents/data-sheet/BAS16_SER.pdf"
+          ],
+          "source_content_sha256": [
+            "07b89f7a98208f4c8b6eda69e34d07aa6e7d31c9c7fe564376f65eaf8643adae"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Product overview and ordering table bind BAS316 to SOD323/SC-76, two leads.",
+          "material_conditions": "Nexperia BAS316, not BAS16 SOT23 or BAS16J SOD323F.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 1,
+          "field": "manufacturer_pin_roles",
+          "claimed_value": {
+            "1": "K",
+            "2": "A"
+          },
+          "source_derived_value": {
+            "1": "K",
+            "2": "A"
+          },
+          "unit": null,
+          "recorded_scope": "BAS316; bar indicates cathode",
+          "recorded_page": 2,
+          "source_pages_checked": [
+            2
+          ],
+          "source_urls": [
+            "https://assets.nexperia.com/documents/data-sheet/BAS16_SER.pdf"
+          ],
+          "source_content_sha256": [
+            "07b89f7a98208f4c8b6eda69e34d07aa6e7d31c9c7fe564376f65eaf8643adae"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Rendered pinning table and diode symbol give pin 1 cathode and pin 2 anode; marking bar indicates cathode.",
+          "material_conditions": "BAS316 row shared with BAS16H/BAS16J/BAS516.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 2,
+          "field": "dc_reverse_voltage",
+          "claimed_value": 100,
+          "source_derived_value": 100,
+          "unit": "V",
+          "recorded_scope": "BAS316",
+          "recorded_page": 3,
+          "source_pages_checked": [
+            3
+          ],
+          "source_urls": [
+            "https://assets.nexperia.com/documents/data-sheet/BAS16_SER.pdf"
+          ],
+          "source_content_sha256": [
+            "07b89f7a98208f4c8b6eda69e34d07aa6e7d31c9c7fe564376f65eaf8643adae"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Limiting values specify reverse voltage VR=100 V.",
+          "material_conditions": "Per diode absolute maximum.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 3,
+          "field": "continuous_forward_current",
+          "claimed_value": 0.25,
+          "source_derived_value": 0.25,
+          "unit": "A",
+          "recorded_scope": "BAS316; FR4 single-sided tin-plated standard footprint",
+          "recorded_page": 4,
+          "source_pages_checked": [
+            4
+          ],
+          "source_urls": [
+            "https://assets.nexperia.com/documents/data-sheet/BAS16_SER.pdf"
+          ],
+          "source_content_sha256": [
+            "07b89f7a98208f4c8b6eda69e34d07aa6e7d31c9c7fe564376f65eaf8643adae"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "BAS316 IF limit is 250 mA.",
+          "material_conditions": "FR4 PCB, single-sided copper, tin-plated, standard footprint (note 1).",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 4,
+          "field": "maximum_junction_temperature",
+          "claimed_value": 150,
+          "source_derived_value": 150,
+          "unit": "C",
+          "recorded_scope": "BAS316",
+          "recorded_page": 4,
+          "source_pages_checked": [
+            4
+          ],
+          "source_urls": [
+            "https://assets.nexperia.com/documents/data-sheet/BAS16_SER.pdf"
+          ],
+          "source_content_sha256": [
+            "07b89f7a98208f4c8b6eda69e34d07aa6e7d31c9c7fe564376f65eaf8643adae"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Maximum junction temperature is 150 C.",
+          "material_conditions": "Per-device junction limit.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 5,
+          "field": "maximum_power",
+          "claimed_value": 0.4,
+          "source_derived_value": 0.4,
+          "unit": "W",
+          "recorded_scope": "BAS316; cathode solder point Tsp <=90 C; not ambient rating",
+          "recorded_page": 4,
+          "source_pages_checked": [
+            4
+          ],
+          "source_urls": [
+            "https://assets.nexperia.com/documents/data-sheet/BAS16_SER.pdf"
+          ],
+          "source_content_sha256": [
+            "07b89f7a98208f4c8b6eda69e34d07aa6e7d31c9c7fe564376f65eaf8643adae"
+          ],
+          "value_matches": true,
+          "result": "qualification_mismatch",
+          "evidence": "BAS316 total dissipation is 400 mW.",
+          "material_conditions": "Cathode solder-point Tsp<=90 C, with FR4/single-sided copper/tin-plated/standard-footprint mounting (notes 1 and 4).",
+          "mismatch_indices": [
+            0
+          ]
+        },
+        {
+          "field_index": 6,
+          "field": "thermal_resistance_junction_solderpoint",
+          "claimed_value": 150,
+          "source_derived_value": 150,
+          "unit": "K/W",
+          "recorded_scope": "BAS316; cathode tab",
+          "recorded_page": 5,
+          "source_pages_checked": [
+            5
+          ],
+          "source_urls": [
+            "https://assets.nexperia.com/documents/data-sheet/BAS16_SER.pdf"
+          ],
+          "source_content_sha256": [
+            "07b89f7a98208f4c8b6eda69e34d07aa6e7d31c9c7fe564376f65eaf8643adae"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "BAS316 junction-to-solder-point resistance is maximum 150 K/W.",
+          "material_conditions": "Cathode-tab soldering point; source gives no BAS316 junction-to-ambient value in this table.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 7,
+          "field": "maximum_capacitance",
+          "claimed_value": 1.5,
+          "source_derived_value": 1.5,
+          "unit": "pF",
+          "recorded_scope": "BAS316; VR=0, 1 MHz",
+          "recorded_page": 6,
+          "source_pages_checked": [
+            6
+          ],
+          "source_urls": [
+            "https://assets.nexperia.com/documents/data-sheet/BAS16_SER.pdf"
+          ],
+          "source_content_sha256": [
+            "07b89f7a98208f4c8b6eda69e34d07aa6e7d31c9c7fe564376f65eaf8643adae"
+          ],
+          "value_matches": true,
+          "result": "qualification_mismatch",
+          "evidence": "BAS316 is in the 1.5 pF maximum capacitance group.",
+          "material_conditions": "VR=0, f=1 MHz, Tamb=25 C.",
+          "mismatch_indices": [
+            1
+          ]
+        },
+        {
+          "field_index": 8,
+          "field": "maximum_forward_voltage",
+          "claimed_value": 0.855,
+          "source_derived_value": 0.855,
+          "unit": "V",
+          "recorded_scope": "BAS316; IF=10 mA; pulse <=300 us, duty <=.02",
+          "recorded_page": 6,
+          "source_pages_checked": [
+            6
+          ],
+          "source_urls": [
+            "https://assets.nexperia.com/documents/data-sheet/BAS16_SER.pdf"
+          ],
+          "source_content_sha256": [
+            "07b89f7a98208f4c8b6eda69e34d07aa6e7d31c9c7fe564376f65eaf8643adae"
+          ],
+          "value_matches": true,
+          "result": "qualification_mismatch",
+          "evidence": "VF maximum at 10 mA is 855 mV, equal to 0.855 V.",
+          "material_conditions": "Tamb=25 C, pulse <=300 us, duty cycle <=0.02.",
+          "mismatch_indices": [
+            1
+          ]
+        }
+      ],
+      "source_documents": [
+        {
+          "url": "https://assets.nexperia.com/documents/data-sheet/BAS16_SER.pdf",
+          "content_sha256": "07b89f7a98208f4c8b6eda69e34d07aa6e7d31c9c7fe564376f65eaf8643adae",
+          "content_bytes": 786738,
+          "archive_path": "fetched-sources/07b89f7a98208f4c8b6eda69e34d07aa6e7d31c9c7fe564376f65eaf8643adae.bin",
+          "hash_verified": true
+        }
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "e4cc1c2c0a0dc23bfc19c54610762b0cb99a0f5f78ed3b1a9de05f49f2783d9c",
+        "generated_record_sha256": "94db0676010e84838e386e7c4f17954e3582bd7cfff44ac5701708b88ce8d42d",
+        "record_gapfill_hash_matches": true,
+        "gapfill_generated_evidence_matches": true
+      }
+    },
+    {
+      "entry_id": "OHM-068",
+      "primary_sources": [
+        "https://www.diodes.com/_files/datasheets/ds18004.pdf"
+      ],
+      "mismatches": [
+        {
+          "kind": "missing_material_condition",
+          "severity": "medium",
+          "field_indices": [
+            1,
+            4
+          ],
+          "fields": [
+            "zener_voltage_range",
+            "maximum_reverse_current"
+          ],
+          "source_pages": [
+            2
+          ],
+          "detail": "Both table columns cite note 10: short-duration pulse test to minimize self-heating. The record omits this qualification, so these figures must not be treated as equilibrium DC guarantees."
+        },
+        {
+          "kind": "missing_material_condition",
+          "severity": "medium",
+          "field_indices": [
+            2,
+            3,
+            4,
+            5
+          ],
+          "fields": [
+            "maximum_zener_impedance",
+            "maximum_knee_impedance",
+            "maximum_reverse_current",
+            "zener_temperature_coefficient_range"
+          ],
+          "source_pages": [
+            2
+          ],
+          "detail": "These field scopes omit the electrical table default TA=25 C. The zener-voltage-range scope records 25 C, but no shared condition explicitly applies it to the other claims."
+        }
+      ],
+      "notes": "Fresh source-only verification: every listed field was compared with the cited primary PDF, including table headings and material notes. Sampled gapfill evidence and generated research record agree after normalization of omitted/null optional keys; embedded gapfill content hash matches. Class-bench receipts, implementation, specification, decisions, previous reports, package bindings and physical hardware were not read or verified. Their status is not inferred from this source review.",
+      "field_checks": [
+        {
+          "field_index": 0,
+          "field": "reference_part",
+          "claimed_value": "BZT52C5V1",
+          "source_derived_value": "BZT52C5V1",
+          "unit": null,
+          "recorded_scope": "BZT52C5V1 SOD123",
+          "recorded_page": 2,
+          "source_pages_checked": [
+            1,
+            2
+          ],
+          "source_urls": [
+            "https://www.diodes.com/_files/datasheets/ds18004.pdf"
+          ],
+          "source_content_sha256": [
+            "0fbd7d137524820f0160594065cbceb8c6b3188757c328416d08fceb7418202f"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "BZT52C5V1 is an electrical-table row in the SOD123 series.",
+          "material_conditions": "Ordering suffixes/qualification remain a separate binding.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 1,
+          "field": "zener_voltage_range",
+          "claimed_value": [
+            4.8,
+            5.4
+          ],
+          "source_derived_value": [
+            4.8,
+            5.4
+          ],
+          "unit": "V",
+          "recorded_scope": "BZT52C5V1 SOD123; IZT5mA,25C; nominal5.1V",
+          "recorded_page": 2,
+          "source_pages_checked": [
+            2
+          ],
+          "source_urls": [
+            "https://www.diodes.com/_files/datasheets/ds18004.pdf"
+          ],
+          "source_content_sha256": [
+            "0fbd7d137524820f0160594065cbceb8c6b3188757c328416d08fceb7418202f"
+          ],
+          "value_matches": true,
+          "result": "qualification_mismatch",
+          "evidence": "BZT52C5V1 row gives nominal 5.1 V and 4.8-5.4 V limits.",
+          "material_conditions": "IZT=5 mA, TA=25 C, short-duration pulse test to minimize self-heating (note 10).",
+          "mismatch_indices": [
+            0
+          ]
+        },
+        {
+          "field_index": 2,
+          "field": "maximum_zener_impedance",
+          "claimed_value": 60,
+          "source_derived_value": 60,
+          "unit": "ohm",
+          "recorded_scope": "BZT52C5V1 SOD123; 5mA,1kHz",
+          "recorded_page": 2,
+          "source_pages_checked": [
+            2
+          ],
+          "source_urls": [
+            "https://www.diodes.com/_files/datasheets/ds18004.pdf"
+          ],
+          "source_content_sha256": [
+            "0fbd7d137524820f0160594065cbceb8c6b3188757c328416d08fceb7418202f"
+          ],
+          "value_matches": true,
+          "result": "qualification_mismatch",
+          "evidence": "BZT52C5V1 ZZT maximum is 60 ohm.",
+          "material_conditions": "IZT=5 mA, f=1 kHz, TA=25 C.",
+          "mismatch_indices": [
+            1
+          ]
+        },
+        {
+          "field_index": 3,
+          "field": "maximum_knee_impedance",
+          "claimed_value": 480,
+          "source_derived_value": 480,
+          "unit": "ohm",
+          "recorded_scope": "BZT52C5V1 SOD123; 1mA,1kHz",
+          "recorded_page": 2,
+          "source_pages_checked": [
+            2
+          ],
+          "source_urls": [
+            "https://www.diodes.com/_files/datasheets/ds18004.pdf"
+          ],
+          "source_content_sha256": [
+            "0fbd7d137524820f0160594065cbceb8c6b3188757c328416d08fceb7418202f"
+          ],
+          "value_matches": true,
+          "result": "qualification_mismatch",
+          "evidence": "BZT52C5V1 ZZK maximum is 480 ohm.",
+          "material_conditions": "IZK=1 mA, f=1 kHz, TA=25 C.",
+          "mismatch_indices": [
+            1
+          ]
+        },
+        {
+          "field_index": 4,
+          "field": "maximum_reverse_current",
+          "claimed_value": 2,
+          "source_derived_value": 2,
+          "unit": "uA",
+          "recorded_scope": "BZT52C5V1 SOD123; VR2V",
+          "recorded_page": 2,
+          "source_pages_checked": [
+            2
+          ],
+          "source_urls": [
+            "https://www.diodes.com/_files/datasheets/ds18004.pdf"
+          ],
+          "source_content_sha256": [
+            "0fbd7d137524820f0160594065cbceb8c6b3188757c328416d08fceb7418202f"
+          ],
+          "value_matches": true,
+          "result": "qualification_mismatch",
+          "evidence": "BZT52C5V1 reverse-current maximum is 2 uA at 2 V.",
+          "material_conditions": "VR=2 V, TA=25 C, short-duration pulse test to minimize self-heating (note 10).",
+          "mismatch_indices": [
+            0,
+            1
+          ]
+        },
+        {
+          "field_index": 5,
+          "field": "zener_temperature_coefficient_range",
+          "claimed_value": [
+            -2.7,
+            1.2
+          ],
+          "source_derived_value": [
+            -2.7,
+            1.2
+          ],
+          "unit": "mV/C",
+          "recorded_scope": "BZT52C5V1 SOD123; IZTC5mA",
+          "recorded_page": 2,
+          "source_pages_checked": [
+            2
+          ],
+          "source_urls": [
+            "https://www.diodes.com/_files/datasheets/ds18004.pdf"
+          ],
+          "source_content_sha256": [
+            "0fbd7d137524820f0160594065cbceb8c6b3188757c328416d08fceb7418202f"
+          ],
+          "value_matches": true,
+          "result": "qualification_mismatch",
+          "evidence": "Temperature-coefficient columns give -2.7 to +1.2 mV/C.",
+          "material_conditions": "IZTC=5 mA; electrical-characteristics header specifies TA=25 C unless otherwise stated.",
+          "mismatch_indices": [
+            1
+          ]
+        },
+        {
+          "field_index": 6,
+          "field": "maximum_junction_temperature",
+          "claimed_value": 150,
+          "source_derived_value": 150,
+          "unit": "C",
+          "recorded_scope": "BZT52C5V1 SOD123",
+          "recorded_page": 2,
+          "source_pages_checked": [
+            2
+          ],
+          "source_urls": [
+            "https://www.diodes.com/_files/datasheets/ds18004.pdf"
+          ],
+          "source_content_sha256": [
+            "0fbd7d137524820f0160594065cbceb8c6b3188757c328416d08fceb7418202f"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Operating junction-temperature range ends at 150 C.",
+          "material_conditions": "Also the upper storage limit.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 7,
+          "field": "maximum_power_ambient",
+          "claimed_value": 0.37,
+          "source_derived_value": 0.37,
+          "unit": "W",
+          "recorded_scope": "BZT52C5V1 SOD123; TA25C,FR4 with1inch copper pad layout",
+          "recorded_page": 2,
+          "source_pages_checked": [
+            2
+          ],
+          "source_urls": [
+            "https://www.diodes.com/_files/datasheets/ds18004.pdf"
+          ],
+          "source_content_sha256": [
+            "0fbd7d137524820f0160594065cbceb8c6b3188757c328416d08fceb7418202f"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Ambient dissipation is 370 mW.",
+          "material_conditions": "TA=25 C, FR4 PCB with 1-inch copper pad layout (note 8; no additional dimension inferred).",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 8,
+          "field": "maximum_power_lead",
+          "claimed_value": 0.5,
+          "source_derived_value": 0.5,
+          "unit": "W",
+          "recorded_scope": "BZT52C5V1 SOD123; TL75C; note7RthJL132K/W",
+          "recorded_page": 2,
+          "source_pages_checked": [
+            2
+          ],
+          "source_urls": [
+            "https://www.diodes.com/_files/datasheets/ds18004.pdf"
+          ],
+          "source_content_sha256": [
+            "0fbd7d137524820f0160594065cbceb8c6b3188757c328416d08fceb7418202f"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Lead-referenced dissipation is 500 mW.",
+          "material_conditions": "TL=75 C; note 7 uses RthetaJL=132 C/W.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 9,
+          "field": "thermal_resistance_junction_ambient",
+          "claimed_value": 338,
+          "source_derived_value": 338,
+          "unit": "K/W",
+          "recorded_scope": "BZT52C5V1 SOD123; FR4 with1inch copper pad layout",
+          "recorded_page": 2,
+          "source_pages_checked": [
+            2
+          ],
+          "source_urls": [
+            "https://www.diodes.com/_files/datasheets/ds18004.pdf"
+          ],
+          "source_content_sha256": [
+            "0fbd7d137524820f0160594065cbceb8c6b3188757c328416d08fceb7418202f"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Thermal table gives RthetaJA=338 C/W.",
+          "material_conditions": "FR4 PCB with 1-inch copper pad layout, note 8.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 10,
+          "field": "thermal_resistance_junction_lead",
+          "claimed_value": 150,
+          "source_derived_value": 150,
+          "unit": "K/W",
+          "recorded_scope": "BZT52C5V1 SOD123; table value from infrared scan method; distinct fromnote7",
+          "recorded_page": 2,
+          "source_pages_checked": [
+            2
+          ],
+          "source_urls": [
+            "https://www.diodes.com/_files/datasheets/ds18004.pdf"
+          ],
+          "source_content_sha256": [
+            "0fbd7d137524820f0160594065cbceb8c6b3188757c328416d08fceb7418202f"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Thermal table gives RthetaJL=150 C/W.",
+          "material_conditions": "Infrared scan method, note 9. This differs from the separately retained 132 C/W in note 7.",
+          "mismatch_indices": []
+        }
+      ],
+      "source_documents": [
+        {
+          "url": "https://www.diodes.com/_files/datasheets/ds18004.pdf",
+          "content_sha256": "0fbd7d137524820f0160594065cbceb8c6b3188757c328416d08fceb7418202f",
+          "content_bytes": 395331,
+          "archive_path": "fetched-sources/0fbd7d137524820f0160594065cbceb8c6b3188757c328416d08fceb7418202f.bin",
+          "hash_verified": true
+        }
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "7b29b26f3a6d078c7cee1d7b65e637e19848b35e4d1f88e2a2b3f51db679abfb",
+        "generated_record_sha256": "0d42c288fa50a4b8e3d73c82f568416eb4586a92d8abaa8bf46ff83bb804197d",
+        "record_gapfill_hash_matches": true,
+        "gapfill_generated_evidence_matches": true
+      }
+    },
+    {
+      "entry_id": "OHM-100",
+      "primary_sources": [
+        "https://www.infineon.com/assets/row/public/documents/non-assigned/49/infineon-irlr8721-datasheet-en.pdf",
+        "https://www.infineon.com/dgdl/irlr3410pbf.pdf"
+      ],
+      "mismatches": [
+        {
+          "kind": "incomplete_rating_qualification",
+          "severity": "high",
+          "field_indices": [
+            4
+          ],
+          "fields": [
+            "maximum_drain_current_case25 (IRLR8721PbF)"
+          ],
+          "source_pages": [
+            1,
+            12
+          ],
+          "recorded": 65,
+          "source_derived": {
+            "calculated_current_A": 65,
+            "package_limit_A": 50
+          },
+          "detail": "65 A is the table value calculated from maximum allowable junction temperature, while source note 4 explicitly caps package current at 50 A. The scope says package/thermal limits also apply but does not preserve the numeric 50 A bound; 65 A is therefore not a complete usable DPAK current maximum."
+        },
+        {
+          "kind": "unresolved_source_condition",
+          "severity": "medium",
+          "field_indices": [
+            19
+          ],
+          "fields": [
+            "maximum_on_resistance (IRLR8721PbF)"
+          ],
+          "source_pages": [
+            2,
+            12
+          ],
+          "detail": "The record asserts pulsed without quantitative duration/duty. Source note 3 gives <=400 us and <=2 percent duty, but the rendered page-2 RDS(on) rows point to note 4, which on page 12 is the package-current note. The numeric resistances and VGS/ID/TJ conditions match; the pulse footnote linkage must be identified as ambiguous rather than assumed verified."
+        }
+      ],
+      "notes": "Fresh source-only verification: every listed field was compared with the cited primary PDF, including table headings and material notes. Sampled gapfill evidence and generated research record agree after normalization of omitted/null optional keys; embedded gapfill content hash matches. Class-bench receipts, implementation, specification, decisions, previous reports, package bindings and physical hardware were not read or verified. Their status is not inferred from this source review. IRLR8721 source page 1 incorrectly refers readers to notes on page 11; the actual notes are on PDF/printed page 12. IRLR3410 header revision is 2.2, 2024-08-30; its revision-history row labels the same date 2.1, so the record follows the actual page headers.",
+      "field_checks": [
+        {
+          "field_index": 0,
+          "field": "reference_part",
+          "claimed_value": "IRLR8721PbF",
+          "source_derived_value": "IRLR8721PbF",
+          "unit": null,
+          "recorded_scope": "IRLR8721PbF DPAK",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.infineon.com/assets/row/public/documents/non-assigned/49/infineon-irlr8721-datasheet-en.pdf"
+          ],
+          "source_content_sha256": [
+            "7b54e47af84ce31cada06686c9befe83621d56c3fa9ad30b2b12ee24de69ea8a"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Title/ordering table identify IRLR8721PbF as D-Pak.",
+          "material_conditions": "IRLU8721 is the I-Pak variant.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 1,
+          "field": "manufacturer_terminal_roles",
+          "claimed_value": {
+            "left": "G",
+            "center_and_tab": "D",
+            "right": "S"
+          },
+          "source_derived_value": {
+            "left": "G",
+            "center_and_tab": "D",
+            "right": "S"
+          },
+          "unit": null,
+          "recorded_scope": "IRLR8721PbF; front view",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.infineon.com/assets/row/public/documents/non-assigned/49/infineon-irlr8721-datasheet-en.pdf"
+          ],
+          "source_content_sha256": [
+            "7b54e47af84ce31cada06686c9befe83621d56c3fa9ad30b2b12ee24de69ea8a"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Rendered front-facing package illustrations show G on left, S on right and D on tab/center path.",
+          "material_conditions": "Intrinsic roles only; exact cropped-lead/package-coordinate binding remains unresolved in the entry.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 2,
+          "field": "maximum_drain_source_voltage",
+          "claimed_value": 30,
+          "source_derived_value": 30,
+          "unit": "V",
+          "recorded_scope": "IRLR8721PbF",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.infineon.com/assets/row/public/documents/non-assigned/49/infineon-irlr8721-datasheet-en.pdf"
+          ],
+          "source_content_sha256": [
+            "7b54e47af84ce31cada06686c9befe83621d56c3fa9ad30b2b12ee24de69ea8a"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Absolute maximum VDS is 30 V.",
+          "material_conditions": "IRLR8721PbF.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 3,
+          "field": "maximum_gate_source_magnitude",
+          "claimed_value": 20,
+          "source_derived_value": 20,
+          "unit": "V",
+          "recorded_scope": "IRLR8721PbF",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.infineon.com/assets/row/public/documents/non-assigned/49/infineon-irlr8721-datasheet-en.pdf"
+          ],
+          "source_content_sha256": [
+            "7b54e47af84ce31cada06686c9befe83621d56c3fa9ad30b2b12ee24de69ea8a"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Gate-to-source rating is +/-20 V.",
+          "material_conditions": "Magnitude 20 V with both polarities.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 4,
+          "field": "maximum_drain_current_case25",
+          "claimed_value": 65,
+          "source_derived_value": 65,
+          "unit": "A",
+          "recorded_scope": "IRLR8721PbF; VGS10 V,package/thermal limits also apply",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1,
+            12
+          ],
+          "source_urls": [
+            "https://www.infineon.com/assets/row/public/documents/non-assigned/49/infineon-irlr8721-datasheet-en.pdf"
+          ],
+          "source_content_sha256": [
+            "7b54e47af84ce31cada06686c9befe83621d56c3fa9ad30b2b12ee24de69ea8a"
+          ],
+          "value_matches": true,
+          "result": "qualification_mismatch",
+          "evidence": "Table gives calculated continuous ID=65 A at TC=25 C; note 4 separately limits package current to 50 A.",
+          "material_conditions": "VGS=10 V; calculated junction-temperature-based number does not override 50 A package limit.",
+          "mismatch_indices": [
+            0
+          ]
+        },
+        {
+          "field_index": 5,
+          "field": "maximum_power_case25",
+          "claimed_value": 65,
+          "source_derived_value": 65,
+          "unit": "W",
+          "recorded_scope": "IRLR8721PbF",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.infineon.com/assets/row/public/documents/non-assigned/49/infineon-irlr8721-datasheet-en.pdf"
+          ],
+          "source_content_sha256": [
+            "7b54e47af84ce31cada06686c9befe83621d56c3fa9ad30b2b12ee24de69ea8a"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Visually inspected power row is 65 W at TC=25 C.",
+          "material_conditions": "Case held at 25 C; not ambient power.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 6,
+          "field": "maximum_junction_temperature",
+          "claimed_value": 175,
+          "source_derived_value": 175,
+          "unit": "C",
+          "recorded_scope": "IRLR8721PbF",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.infineon.com/assets/row/public/documents/non-assigned/49/infineon-irlr8721-datasheet-en.pdf"
+          ],
+          "source_content_sha256": [
+            "7b54e47af84ce31cada06686c9befe83621d56c3fa9ad30b2b12ee24de69ea8a"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Operating junction-temperature upper limit is 175 C.",
+          "material_conditions": "Range -55 C to +175 C.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 7,
+          "field": "maximum_junction_case_thermal_resistance",
+          "claimed_value": 2.3,
+          "source_derived_value": 2.3,
+          "unit": "K/W",
+          "recorded_scope": "IRLR8721PbF",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.infineon.com/assets/row/public/documents/non-assigned/49/infineon-irlr8721-datasheet-en.pdf"
+          ],
+          "source_content_sha256": [
+            "7b54e47af84ce31cada06686c9befe83621d56c3fa9ad30b2b12ee24de69ea8a"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Maximum junction-to-case resistance is 2.3 C/W.",
+          "material_conditions": "Distinct from junction-to-ambient paths.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 8,
+          "field": "maximum_junction_ambient_thermal_resistance",
+          "claimed_value": 110,
+          "source_derived_value": 110,
+          "unit": "K/W",
+          "recorded_scope": "IRLR8721PbF; source ambient entry,not the separate enhanced PCB-mount value",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.infineon.com/assets/row/public/documents/non-assigned/49/infineon-irlr8721-datasheet-en.pdf"
+          ],
+          "source_content_sha256": [
+            "7b54e47af84ce31cada06686c9befe83621d56c3fa9ad30b2b12ee24de69ea8a"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Unqualified junction-to-ambient row is maximum 110 C/W.",
+          "material_conditions": "Separate enhanced PCB-mount row is 50 C/W; values were not conflated.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 9,
+          "field": "reference_part",
+          "claimed_value": "IRLR3410PbF",
+          "source_derived_value": "IRLR3410PbF",
+          "unit": null,
+          "recorded_scope": "IRLR3410PbF DPAK",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.infineon.com/dgdl/irlr3410pbf.pdf"
+          ],
+          "source_content_sha256": [
+            "173379c57ddf0051176343ce3c72233d0d4693e0ebbba4f157838ae28f5ac4dc"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Title/ordering table identify IRLR3410PbF as D-Pak.",
+          "material_conditions": "IRLU3410 is the I-Pak variant.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 10,
+          "field": "manufacturer_terminal_roles",
+          "claimed_value": {
+            "left": "G",
+            "center_and_tab": "D",
+            "right": "S"
+          },
+          "source_derived_value": {
+            "left": "G",
+            "center_and_tab": "D",
+            "right": "S"
+          },
+          "unit": null,
+          "recorded_scope": "IRLR3410PbF; front view",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.infineon.com/dgdl/irlr3410pbf.pdf"
+          ],
+          "source_content_sha256": [
+            "173379c57ddf0051176343ce3c72233d0d4693e0ebbba4f157838ae28f5ac4dc"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Rendered front-facing package illustrations show G on left, S on right and D on tab/center path.",
+          "material_conditions": "Intrinsic roles only; exact cropped-lead/package-coordinate binding remains unresolved in the entry.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 11,
+          "field": "maximum_drain_source_voltage",
+          "claimed_value": 100,
+          "source_derived_value": 100,
+          "unit": "V",
+          "recorded_scope": "IRLR3410PbF",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1,
+            2
+          ],
+          "source_urls": [
+            "https://www.infineon.com/dgdl/irlr3410pbf.pdf"
+          ],
+          "source_content_sha256": [
+            "173379c57ddf0051176343ce3c72233d0d4693e0ebbba4f157838ae28f5ac4dc"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Front-page VDSS is 100 V and electrical breakdown minimum is 100 V.",
+          "material_conditions": "Page 2 breakdown test: VGS=0, ID=250 uA; front-page device voltage designation supports the ceiling.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 12,
+          "field": "maximum_gate_source_magnitude",
+          "claimed_value": 16,
+          "source_derived_value": 16,
+          "unit": "V",
+          "recorded_scope": "IRLR3410PbF",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.infineon.com/dgdl/irlr3410pbf.pdf"
+          ],
+          "source_content_sha256": [
+            "173379c57ddf0051176343ce3c72233d0d4693e0ebbba4f157838ae28f5ac4dc"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Gate-to-source rating is +/-16 V.",
+          "material_conditions": "Magnitude 16 V with both polarities.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 13,
+          "field": "maximum_drain_current_case25",
+          "claimed_value": 17,
+          "source_derived_value": 17,
+          "unit": "A",
+          "recorded_scope": "IRLR3410PbF; VGS10 V,package/thermal limits also apply",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.infineon.com/dgdl/irlr3410pbf.pdf"
+          ],
+          "source_content_sha256": [
+            "173379c57ddf0051176343ce3c72233d0d4693e0ebbba4f157838ae28f5ac4dc"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Continuous ID is 17 A at TC=25 C.",
+          "material_conditions": "VGS=10 V; not ambient current capability.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 14,
+          "field": "maximum_power_case25",
+          "claimed_value": 79,
+          "source_derived_value": 79,
+          "unit": "W",
+          "recorded_scope": "IRLR3410PbF",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.infineon.com/dgdl/irlr3410pbf.pdf"
+          ],
+          "source_content_sha256": [
+            "173379c57ddf0051176343ce3c72233d0d4693e0ebbba4f157838ae28f5ac4dc"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Power dissipation is 79 W at TC=25 C.",
+          "material_conditions": "Case held at 25 C; ordinary surface-mount dissipation is much lower.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 15,
+          "field": "maximum_junction_temperature",
+          "claimed_value": 175,
+          "source_derived_value": 175,
+          "unit": "C",
+          "recorded_scope": "IRLR3410PbF",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.infineon.com/dgdl/irlr3410pbf.pdf"
+          ],
+          "source_content_sha256": [
+            "173379c57ddf0051176343ce3c72233d0d4693e0ebbba4f157838ae28f5ac4dc"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Operating junction-temperature upper limit is 175 C.",
+          "material_conditions": "Range -55 C to +175 C.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 16,
+          "field": "maximum_junction_case_thermal_resistance",
+          "claimed_value": 1.9,
+          "source_derived_value": 1.9,
+          "unit": "K/W",
+          "recorded_scope": "IRLR3410PbF",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.infineon.com/dgdl/irlr3410pbf.pdf"
+          ],
+          "source_content_sha256": [
+            "173379c57ddf0051176343ce3c72233d0d4693e0ebbba4f157838ae28f5ac4dc"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Maximum junction-to-case thermal resistance is 1.9 C/W.",
+          "material_conditions": "Distinct from ambient thermal paths.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 17,
+          "field": "maximum_junction_ambient_thermal_resistance",
+          "claimed_value": 110,
+          "source_derived_value": 110,
+          "unit": "K/W",
+          "recorded_scope": "IRLR3410PbF; source ambient entry,not the separate enhanced PCB-mount value",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.infineon.com/dgdl/irlr3410pbf.pdf"
+          ],
+          "source_content_sha256": [
+            "173379c57ddf0051176343ce3c72233d0d4693e0ebbba4f157838ae28f5ac4dc"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Unqualified junction-to-ambient row is maximum 110 C/W.",
+          "material_conditions": "Distinct from 50 C/W enhanced PCB mounting.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 18,
+          "field": "maximum_power_case100",
+          "claimed_value": 33,
+          "source_derived_value": 33,
+          "unit": "W",
+          "recorded_scope": "IRLR8721PbF; table visually inspected",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1
+          ],
+          "source_urls": [
+            "https://www.infineon.com/assets/row/public/documents/non-assigned/49/infineon-irlr8721-datasheet-en.pdf"
+          ],
+          "source_content_sha256": [
+            "7b54e47af84ce31cada06686c9befe83621d56c3fa9ad30b2b12ee24de69ea8a"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Visually inspected IRLR8721 power row is 33 W at TC=100 C.",
+          "material_conditions": "Case held at 100 C.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 19,
+          "field": "maximum_on_resistance",
+          "claimed_value": {
+            "VGS10_ID25A": 8.4,
+            "VGS4.5_ID20A": 11.8
+          },
+          "source_derived_value": {
+            "VGS10_ID25A": 8.4,
+            "VGS4.5_ID20A": 11.8
+          },
+          "unit": "mohm",
+          "recorded_scope": "IRLR8721PbF; TJ25 C,pulsed",
+          "recorded_page": 2,
+          "source_pages_checked": [
+            2,
+            12
+          ],
+          "source_urls": [
+            "https://www.infineon.com/assets/row/public/documents/non-assigned/49/infineon-irlr8721-datasheet-en.pdf"
+          ],
+          "source_content_sha256": [
+            "7b54e47af84ce31cada06686c9befe83621d56c3fa9ad30b2b12ee24de69ea8a"
+          ],
+          "value_matches": true,
+          "result": "qualification_mismatch",
+          "evidence": "IRLR8721 RDS(on) maxima are 8.4 and 11.8 milliohm with the stated gate voltages and drain currents.",
+          "material_conditions": "TJ=25 C. Source note 3 gives <=400 us and <=2 percent duty, but the rendered RDS(on) row points to note 4 (package-current note); this source footnote linkage is ambiguous.",
+          "mismatch_indices": [
+            1
+          ]
+        },
+        {
+          "field_index": 20,
+          "field": "maximum_on_resistance",
+          "claimed_value": {
+            "VGS10_ID10A": 105,
+            "VGS5_ID10A": 125,
+            "VGS4_ID9A": 155
+          },
+          "source_derived_value": {
+            "VGS10_ID10A": 105,
+            "VGS5_ID10A": 125,
+            "VGS4_ID9A": 155
+          },
+          "unit": "mohm",
+          "recorded_scope": "IRLR3410PbF; TJ25 C,pulse<=300us,duty<=2 percent",
+          "recorded_page": 2,
+          "source_pages_checked": [
+            2
+          ],
+          "source_urls": [
+            "https://www.infineon.com/dgdl/irlr3410pbf.pdf"
+          ],
+          "source_content_sha256": [
+            "173379c57ddf0051176343ce3c72233d0d4693e0ebbba4f157838ae28f5ac4dc"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "IRLR3410 RDS(on) maxima 0.105/0.125/0.155 ohm convert to 105/125/155 milliohm.",
+          "material_conditions": "TJ=25 C; VGS/ID pairs 10 V/10 A, 5 V/10 A, 4 V/9 A; pulse <=300 us and duty <=2 percent, note 4.",
+          "mismatch_indices": []
+        },
+        {
+          "field_index": 21,
+          "field": "enhanced_board_thermal_resistance",
+          "claimed_value": 50,
+          "source_derived_value": 50,
+          "unit": "K/W",
+          "recorded_scope": "IRLR3410PbF; note7 p2,1-inch-square FR4/G10 PCB",
+          "recorded_page": 1,
+          "source_pages_checked": [
+            1,
+            2
+          ],
+          "source_urls": [
+            "https://www.infineon.com/dgdl/irlr3410pbf.pdf"
+          ],
+          "source_content_sha256": [
+            "173379c57ddf0051176343ce3c72233d0d4693e0ebbba4f157838ae28f5ac4dc"
+          ],
+          "value_matches": true,
+          "result": "supported",
+          "evidence": "Enhanced PCB junction-to-ambient resistance is maximum 50 C/W.",
+          "material_conditions": "Note 7: mounted on 1-inch-square FR4 or G10 PCB; source also refers to AN-994 for recommended footprint/soldering, which is not claimed reviewed here.",
+          "mismatch_indices": []
+        }
+      ],
+      "source_documents": [
+        {
+          "url": "https://www.infineon.com/assets/row/public/documents/non-assigned/49/infineon-irlr8721-datasheet-en.pdf",
+          "content_sha256": "7b54e47af84ce31cada06686c9befe83621d56c3fa9ad30b2b12ee24de69ea8a",
+          "content_bytes": 309224,
+          "archive_path": "fetched-sources/7b54e47af84ce31cada06686c9befe83621d56c3fa9ad30b2b12ee24de69ea8a.bin",
+          "hash_verified": true
+        },
+        {
+          "url": "https://www.infineon.com/dgdl/irlr3410pbf.pdf",
+          "content_sha256": "173379c57ddf0051176343ce3c72233d0d4693e0ebbba4f157838ae28f5ac4dc",
+          "content_bytes": 1227021,
+          "archive_path": "fetched-sources/173379c57ddf0051176343ce3c72233d0d4693e0ebbba4f157838ae28f5ac4dc.bin",
+          "hash_verified": true
+        }
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "102a765908602d8094ca9294929e9fe07d7bdf1813699e2f346470daa1589545",
+        "generated_record_sha256": "2f83f76cd91d28c6d4877035da443ece38221dcb1d0201c295fe29319d83f7da",
+        "record_gapfill_hash_matches": true,
+        "gapfill_generated_evidence_matches": true
+      }
+    }
+  ],
+  "summary": {
+    "entries_reviewed": 11,
+    "fields_reviewed": 82,
+    "entries_with_mismatches": 6,
+    "mismatch_count": 9,
+    "numeric_value_mismatch_count": 0
+  }
+}

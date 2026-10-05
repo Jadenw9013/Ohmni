@@ -21,7 +21,8 @@
     ],
     "conflicts": [
       "IRFZ44N94 W/0.63 W-per-C and RthJC1.5 imply different thermal limits; apply the lower allowable power from both, never raise94 W to100 W.",
-      "Datasheet 2026 revision dates are now observed directly in primary PDF bytes."
+      "Datasheet 2026 revision dates are now observed directly in primary PDF bytes.",
+      "The class eas=0.53 J uses the typical destructive value as an operating ceiling. The primary source explicitly says this is outside rated limits. Its calculated thermal ceiling is150 mJ; do not use the old0.53 J acceptance expression."
     ],
     "documents": [
       {
@@ -457,19 +458,46 @@
         ],
         "unit": "mohm",
         "value": 16
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "typical_destructive_avalanche_energy",
+        "page": 2,
+        "scope": "IRFZ44NPbF Rev2.1; IAS25 A,L0.47 mH table; starting TJ25 C,RG25 ohm per note2; typical value at device destruction, outside rated limits; NOT an allowable operating limit",
+        "sources": [
+          "https://www.infineon.com/dgdl/irfz44npbf.pdf"
+        ],
+        "unit": "mJ",
+        "value": 530
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "calculated_thermal_avalanche_ceiling",
+        "page": 2,
+        "scope": "IRFZ44NPbF Rev2.1; IAS25 A,L0.47 mH table; starting TJ25 C,RG25 ohm per note2; calculated value limited by TJ175 C; not a replacement for SOA or repetitive pulse analysis",
+        "sources": [
+          "https://www.infineon.com/dgdl/irfz44npbf.pdf"
+        ],
+        "unit": "mJ",
+        "value": 150
       }
     ],
     "remaining_open_items": [
       "Digitized SOA and transient thermal constraints remain required for power-stress claims.",
       "Neither threshold voltage nor a 10 V RDSon establishes suitability for 3.3 V gate drive.",
-      "Regulator/BJT/isolated-TO220 variants are separate functional bindings."
+      "Regulator/BJT/isolated-TO220 variants are separate functional bindings.",
+      "Single-pulse table L0.47 mH differs from note2 L0.48 mH; retain that source discrepancy. Avalanche operation stays unsupported until a sourced pulse/SOA binding replaces the destructive-value guard."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-098.md",
-      "document_sha256": "f231d529c45bb8ded691192d893de39927539ccb788101194759552b8837f726",
+      "document_sha256": "71ec83b24df61fbb0f3cfa7bfedce4bfafa6ec4379e83b70da6f458e90078a23",
       "fragment_sha256": null,
       "line": 1
     }

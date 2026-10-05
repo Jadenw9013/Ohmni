@@ -773,7 +773,29 @@ class BehaviorAudit:
                 errors.append(f"{stage}: verifier report missing")
                 continue
             checked += 1
-            errors.extend(f"{stage}: {item}" for item in self._verifier_errors(stage, _json(path)))
+            report = _json(path)
+            errors.extend(f"{stage}: {item}" for item in self._verifier_errors(stage, report))
+            plan_path = path.with_name(f"{stage}-plan.json")
+            if not plan_path.exists():
+                errors.append(f"{stage}: verifier plan missing")
+                continue
+            plan = _json(plan_path)
+            for key in ("seed", "population", "sample"):
+                if report.get(key) != plan.get(key):
+                    errors.append(f"{stage}: report {key} differs from current plan")
+            for row in report.get("results", []):
+                entry_id = row.get("entry_id", "")
+                if not re.fullmatch(r"OHM-\d{3}", entry_id):
+                    errors.append(f"{stage}: invalid reviewed entry ID")
+                    continue
+                reviewed = row.get("reviewed_content", {})
+                for key, relative in (
+                    ("gapfill_sha256", f"docs/behavior/gapfill/{entry_id}.md"),
+                    ("generated_record_sha256", f"src/ohmni/behavior/data/entries/{entry_id}.json"),
+                ):
+                    source = self.root / relative
+                    if not source.is_file() or reviewed.get(key) != _sha_bytes(source.read_bytes()):
+                        errors.append(f"{stage}: {entry_id} reviewed {key} is missing or stale")
         return CheckResult(
             "AUD-VERIFY-001",
             not errors,

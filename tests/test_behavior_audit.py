@@ -62,7 +62,7 @@ def test_version_is_an_exact_ngspice_major(text):
 def test_archived_source_content_must_match_ledger(tmp_path):
     content = b"manufacturer source actually downloaded"
     digest = hashlib.sha256(content).hexdigest()
-    url = "https://manufacturer.example/datasheet.pdf"
+    url = "https://manufacturer.example/source.txt"
     row = {"url": url, "http_status": 200, "timestamp": "2026-10-04T00:00:00Z", "tool_used": "test", "content_sha256": digest}
     assert evidence.source_errors({url}, [row], tmp_path)
     archive = tmp_path / "fetched-sources" / f"{digest}.bin"
@@ -70,6 +70,18 @@ def test_archived_source_content_must_match_ledger(tmp_path):
     archive.write_bytes(content)
     assert evidence.source_errors({url}, [row], tmp_path) == []
     archive.write_bytes(b"different source")
+    assert evidence.source_errors({url}, [row], tmp_path)
+
+
+def test_html_refusal_at_pdf_url_is_not_source_evidence(tmp_path):
+    content = b"<html><title>Request rejected</title>Access denied</html>"
+    digest = hashlib.sha256(content).hexdigest()
+    archive = tmp_path / "fetched-sources" / f"{digest}.bin"
+    archive.parent.mkdir()
+    archive.write_bytes(content)
+    url = "https://manufacturer.example/datasheet.pdf"
+    row = {"url": url, "http_status": 200, "timestamp": "2026-10-05T00:00:00Z",
+           "tool_used": "test", "content_sha256": digest}
     assert evidence.source_errors({url}, [row], tmp_path)
 
 
@@ -193,6 +205,34 @@ def test_verifier_seed_and_unique_sample_are_enforced(audit):
     assert audit._verifier_errors("stage2", report) == []
     report["sample"] = [plan["sample"][0]] * 5
     assert audit._verifier_errors("stage2", report)
+
+
+def test_verifier_report_must_match_current_plan_and_reviewed_bytes(audit):
+    population = [f"OHM-{index:03d}" for index in range(1, 11)]
+    plan = audit.verifier_plan("stage2", population, seed=314159)
+    results = []
+    for entry_id in plan["sample"]:
+        reviewed = {}
+        for key, relative in (
+            ("gapfill_sha256", f"docs/behavior/gapfill/{entry_id}.md"),
+            ("generated_record_sha256", f"src/ohmni/behavior/data/entries/{entry_id}.json"),
+        ):
+            reviewed[key] = hashlib.sha256((ROOT / relative).read_bytes()).hexdigest()
+        results.append({"entry_id": entry_id, "primary_sources": ["source"],
+                        "mismatches": [], "reviewed_content": reviewed})
+    report = dict(plan, reviewer_context="fresh", results=results)
+    report_path = audit.run_dir / "verifier/stage2.json"
+    _atomic_json(report_path, report)
+    state = audit._state()
+    state["completed_research_stages"] = ["stage2"]
+    audit._write_state(state)
+    assert audit.check_independent_verifiers().passed
+    audit.verifier_plan("stage2", population, seed=271828)
+    assert not audit.check_independent_verifiers().passed
+    audit.verifier_plan("stage2", population, seed=314159)
+    report["results"][0]["reviewed_content"]["gapfill_sha256"] = "0" * 64
+    _atomic_json(report_path, report)
+    assert not audit.check_independent_verifiers().passed
 
 
 def test_resume_preserves_original_run_and_baselines(audit):

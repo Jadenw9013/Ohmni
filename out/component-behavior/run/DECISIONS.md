@@ -127,3 +127,35 @@ Keep display mappings specific to SC56-11EWA, DC56-11EWA and CA56-12EWA; do not 
 XP-E2 Rev25B white reverse limit is1 V; retain its revision scope and do not silently increase existing current ratings. Transistor bindings remain part-specific. IRFP260N source gives1=G,2=D,3=S,tab=D, resolving the earlier extraction error. IRLR8721 power65 W atTC25 and33 W atTC100 are separate conditions. IRFZ44N94 W versus RthJC1.5 remains a genuine conflict: enforce both limits, choosing the lower power. None of these datasheet facts makes a generic package an electrically verified part.
 
 Python TLS errors were recoverable with normal Windows trust-store validation. Added a PowerShell fetch adapter that preserves certificate verification and records exact response hashes; HTTP success does not by itself establish that a response is a datasheet, so HTML rejection pages were not used as evidence.
+
+## D017 — final batch-A power-package conditions
+
+The IRFZ44NS manufacturer summary says110 W and1.4 K/W while its archived2004 PDF says94 W and1.5 K/W. Use the lower PDF power ceiling and enforce junction-temperature headroom as well; do not silently combine revisions. The default D2PAK L7805 remains a separate blocked binding. Si7898DP continuous25 C limits are3 A and1.9 W on the specified board;4.8 A and5 W apply for10 seconds. Both time conditions are recorded, with no source-status upgrade.
+
+## D018 — avoid unrelated source hashing during field checks
+
+Restricted each field check to ledger rows for its own cited URLs. Their archived bytes are still hashed afresh on each invocation; no persistent validation cache or acceptance rule was added. Existing tamper tests and all seven canaries pass. This makes the full research audit practical without changing which sources pass.
+
+## D019 — destructive avalanche energy is not an operating rating
+
+Primary IRFZ44N/IRFZ44NS p2 footnotes identify530 mJ as a typical destruction value outside rated limits; the calculated thermal ceiling is150 mJ. The existing BEH-TRN-MOSFET0.53 J guard is therefore unsafe as an operating acceptance condition. Preserve the historical source/bench contracts, but block that avalanche guard in the runtime. Source pulse inductance also differs between table0.47 mH and note0.48 mH. No guessed replacement pulse law is permitted.
+
+## D020 — IRLR8721 package current and pulse conditions
+
+The50 A package ceiling from p12 note4 limits the65 A calculated junction-temperature current on p1. Both remain recorded; runtime limits must obey the lower. The RDS(on) rows reference note4 while the pulse duration/duty statement is note3; retain this ambiguity rather than certifying a guessed linkage.
+
+## D021 — independent-review freshness is checked against inputs
+
+AUD-VERIFY-001 now rejects a report whose seed/population/sample differs from the current plan or whose reviewed gapfill/record hashes differ from current files. This closes a stale-report acceptance path without changing or loosening the locked rule. A regression test proves that both a new seed and changed reviewed content invalidate a prior pass. Historical rejected reports remain retained.
+
+## D022 — HTTP200 HTML rejection is not a PDF source
+
+AUD-SOURCE-001 now checks that a URL ending in.pdf has a PDF header in its archived content before accepting the fetch. This rejects distributor HTML refusal pages even when they return HTTP200 and a valid hash. Existing hash-tamper checks and seven canaries still pass; a dedicated regression covers the false-success response. The source acceptance count decreased from229 to223 of295, as it should; no limit or source requirement was relaxed.
+
+## D023 — Stage 2 review repair limit
+
+The third independently seeded review found ten scope omissions in OHM-096/097 and could not verify unsourced OHM-083. Added all stated source conditions without changing numbers. Park the Stage 2 independent-acceptance item after three failed samples under the human repair policy; retain failed reports and do not re-seed to avoid OHM-083. Continue independent implementation with source-critical refusals. This is not a Stage 2 acceptance or source-status upgrade.
+
+## D024 — Checkpoint 010 execution access failure
+
+Checkpoint 010 could not read the primary checkout because Git rejected the sandbox account's ownership, and its focused pytest run could not reuse a test directory owned by a prior process. The full fast suite nevertheless ran (1777 passed, 82 skipped, 49 deselected). Re-running the protected-path assertion with local read access proved main, the production checkout, remote refs and protected files still match the locked baseline. Clear the automatically set protected-path hard-stop flag only after that successful assertion, then rerun the complete checkpoint. No protected path was edited and no rule or baseline was changed.

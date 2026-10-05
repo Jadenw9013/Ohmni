@@ -1,0 +1,469 @@
+{
+  "stage": "stage2",
+  "seed": 10543591816165434960,
+  "population": [
+    "OHM-001",
+    "OHM-002",
+    "OHM-003",
+    "OHM-004",
+    "OHM-005",
+    "OHM-006",
+    "OHM-007",
+    "OHM-008",
+    "OHM-009",
+    "OHM-010",
+    "OHM-011",
+    "OHM-012",
+    "OHM-013",
+    "OHM-014",
+    "OHM-015",
+    "OHM-016",
+    "OHM-017",
+    "OHM-018",
+    "OHM-019",
+    "OHM-020",
+    "OHM-021",
+    "OHM-022",
+    "OHM-023",
+    "OHM-024",
+    "OHM-025",
+    "OHM-026",
+    "OHM-027",
+    "OHM-028",
+    "OHM-029",
+    "OHM-030",
+    "OHM-031",
+    "OHM-032",
+    "OHM-033",
+    "OHM-034",
+    "OHM-035",
+    "OHM-036",
+    "OHM-037",
+    "OHM-038",
+    "OHM-039",
+    "OHM-040",
+    "OHM-041",
+    "OHM-042",
+    "OHM-043",
+    "OHM-044",
+    "OHM-045",
+    "OHM-046",
+    "OHM-047",
+    "OHM-048",
+    "OHM-049",
+    "OHM-050",
+    "OHM-051",
+    "OHM-052",
+    "OHM-053",
+    "OHM-054",
+    "OHM-055",
+    "OHM-056",
+    "OHM-057",
+    "OHM-058",
+    "OHM-059",
+    "OHM-060",
+    "OHM-061",
+    "OHM-062",
+    "OHM-063",
+    "OHM-064",
+    "OHM-065",
+    "OHM-066",
+    "OHM-067",
+    "OHM-068",
+    "OHM-069",
+    "OHM-070",
+    "OHM-071",
+    "OHM-072",
+    "OHM-073",
+    "OHM-074",
+    "OHM-075",
+    "OHM-076",
+    "OHM-077",
+    "OHM-078",
+    "OHM-079",
+    "OHM-080",
+    "OHM-081",
+    "OHM-082",
+    "OHM-083",
+    "OHM-084",
+    "OHM-085",
+    "OHM-086",
+    "OHM-087",
+    "OHM-088",
+    "OHM-089",
+    "OHM-090",
+    "OHM-091",
+    "OHM-092",
+    "OHM-093",
+    "OHM-094",
+    "OHM-095",
+    "OHM-096",
+    "OHM-097",
+    "OHM-098",
+    "OHM-099",
+    "OHM-100",
+    "OHM-101",
+    "OHM-102"
+  ],
+  "sample": [
+    "OHM-016",
+    "OHM-018",
+    "OHM-019",
+    "OHM-022",
+    "OHM-026",
+    "OHM-033",
+    "OHM-048",
+    "OHM-064",
+    "OHM-071",
+    "OHM-088",
+    "OHM-099"
+  ],
+  "reviewer_context": "fresh",
+  "results": [
+    {
+      "entry_id": "OHM-016",
+      "primary_sources": [
+        "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+      ],
+      "mismatches": [
+        "bussed_common_terminal: cited page 1 does not contain the common-pin claim; Bourns 4600X p2 explicitly identifies common bus pin 1.",
+        "p_element_bussed: cited page 1 is wrong; 0.20 W per bussed resistor is stated on p2.",
+        "p_element_isolated and p_element_bussed: scopes omit the 70 C ambient condition and derating above it. Source p2 gives 0.30/0.20 W at 70 C and zero at 125 C; these are not temperature-independent element limits."
+      ],
+      "notes": {
+        "field_checks": {
+          "p_package": "PDF p1, Package Power Ratings table: 4608X = 1.00 W at ambient 70 C. The package derating plot reaches zero at 125 C. Value, eight-pin scope, temperature detail and page match.",
+          "isolated_terminal_pairs": "PDF p2, visually inspected 102-circuit schematic: isolated adjacent two-terminal elements. For eight pins the pairs are 1-2, 3-4, 5-6, 7-8. Value and page match; applies to 4608X-102.",
+          "bussed_common_terminal": "PDF p2, 101-circuit schematic and accompanying prose explicitly identify pin 1 as the common bus. Value 1 matches; recorded p1 is wrong.",
+          "p_element_isolated": "PDF p2: each isolated resistor is rated 0.30 W at 70 C; graph is flat through 70 C and reaches zero at 125 C. Value/page match, but field scope omits the 70 C qualification.",
+          "p_element_bussed": "PDF p2: each bussed resistor is rated 0.20 W at 70 C; graph reaches zero at 125 C. Value matches; recorded p1 is wrong and field scope omits 70 C.",
+          "t_end": "PDF p1 operating-temperature range ends at +125 C and package derating curve reaches zero there. PDF p2 confirms that endpoint for both element types. Value and p1 reference match."
+        },
+        "source_artifacts": [
+          {
+            "url": "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf",
+            "sha256": "36da6e1ae18f53a75e9fac254962133de9195b7f188ba9930ccd0970629348bb",
+            "pdf_pages": 3
+          }
+        ],
+        "input_consistency": "Gapfill audit-evidence and generated field_updates agree after normalization of omitted versus null detail fields.",
+        "review_limits": "Source claims reviewed independently. Original brief/spec, implementation, parent reasoning, other reports and benchmark receipts were not read; conflict statements about prior code/spec and runtime behavior are therefore not independently validated."
+      }
+    },
+    {
+      "entry_id": "OHM-018",
+      "primary_sources": [
+        "https://www.bourns.com/docs/Product-Datasheets/3296.pdf"
+      ],
+      "mismatches": [],
+      "notes": {
+        "field_checks": {
+          "p_rated": "PDF p1 Environmental Characteristics: 0.5 W at 70 C, zero at 125 C. Value matches; temperature dependence is preserved by the companion derating_knee/t_end fields.",
+          "derating_knee": "PDF p1 rates 0.5 W at 70 C. Recorded 70 C matches this rated-power temperature.",
+          "t_end": "PDF p1 gives zero watts at 125 C and temperature range -55 to +125 C. Matches.",
+          "v_max": "PDF p1 Power Rating parenthesis specifies 300 volts maximum. Matches the Bourns 3296 family/3296W scope.",
+          "end_resistance_max_expression": "PDF p1 Absolute Minimum Resistance is bounded by the greater of 1% and 2 ohms. max(0.01*R,2) is the correct upper-bound expression; it is not a fixed series resistor.",
+          "cw_end_terminal": "PDF p1 schematic visually inspected: terminal 1 CCW, terminal 2 wiper, terminal 3 CW, with clockwise arrow toward 3. Matches. PDF p2 revision is 02/26."
+        },
+        "source_artifacts": [
+          {
+            "url": "https://www.bourns.com/docs/Product-Datasheets/3296.pdf",
+            "sha256": "8492a5d67ee2785d4716ec3131b8fa6f9aaef9fa9e9eff65999b1d1a50d9baef",
+            "pdf_pages": 3
+          }
+        ],
+        "input_consistency": "Gapfill audit-evidence and generated field_updates agree after normalization of omitted versus null detail fields.",
+        "review_limits": "Source claims reviewed independently. Original brief/spec, implementation, parent reasoning, other reports and benchmark receipts were not read; conflict statements about prior code/spec and runtime behavior are therefore not independently validated."
+      }
+    },
+    {
+      "entry_id": "OHM-019",
+      "primary_sources": [
+        "https://www.bourns.com/docs/Product-Datasheets/3314.pdf"
+      ],
+      "mismatches": [],
+      "notes": {
+        "field_checks": {
+          "p_rated": "PDF p1 Environmental Characteristics: 0.25 W at 70 C and zero at 125 C. Matches; companion fields retain the rated-power temperature and endpoint.",
+          "derating_knee": "PDF p1 rated-power temperature is 70 C. Matches.",
+          "t_end": "PDF p1 zero-power endpoint and upper operating-temperature limit are 125 C. Matches.",
+          "v_max": "PDF p1 explicitly distinguishes 300 V maximum for G/J/H from 50 V maximum for R. Recorded 300 V is correctly scoped to G/J/H; the record also calls out the R exception.",
+          "end_resistance_max_expression": "PDF p1 End Resistance limit is the greater of 1% and 2 ohms. Recorded max(0.01*R,2) with maximum-bound detail matches. No pin-function assertion is present in the sampled field updates."
+        },
+        "source_artifacts": [
+          {
+            "url": "https://www.bourns.com/docs/Product-Datasheets/3314.pdf",
+            "sha256": "ce8fce98749cd142029ecab14693aded2b9154533b0fc89399531ee7469153f5",
+            "pdf_pages": 7
+          }
+        ],
+        "input_consistency": "Gapfill audit-evidence and generated field_updates agree after normalization of omitted versus null detail fields.",
+        "review_limits": "Source claims reviewed independently. Original brief/spec, implementation, parent reasoning, other reports and benchmark receipts were not read; conflict statements about prior code/spec and runtime behavior are therefore not independently validated."
+      }
+    },
+    {
+      "entry_id": "OHM-022",
+      "primary_sources": [
+        "https://ds.murata.com/simsurfing_data/pdf/en-us/mlcc/sim_mlcc_measuringcond_e.pdf",
+        "https://johansondielectrics.com/docs/3945/ceramic-capacitor-aging-made-simple.pdf"
+      ],
+      "mismatches": [],
+      "notes": {
+        "field_checks": {
+          "dc_bias_curve_scope": "Murata PDF p7 explains negligible C0G/NP0 bias change versus high-K change (X5R example); it labels its plot an example and describes selectable SimSurfing capacitance versus bias. P8 specifies measurement settings: 0-to-rated DC bias, 60 seconds, 25 +/-3 C, frequency and AC voltage selected by capacitance/rating. The record makes no numerical package curve claim. Its part-specific-data requirement is conservative engineering guidance derived from this source, not a literal measured value or an established 0402 part binding.",
+          "aging_rate_reference": "Johanson PDF p1 states -2.5% per decade-hour for X7R/X5R. P2 explains logarithmic time intervals and says specifications are typical and may not apply universally. Recorded -2.5 and example-only scope match. The source is dated 5/21/2012; Murata cover is September 2022."
+        },
+        "source_artifacts": [
+          {
+            "url": "https://ds.murata.com/simsurfing_data/pdf/en-us/mlcc/sim_mlcc_measuringcond_e.pdf",
+            "sha256": "487b3281b6015f8c865d502c594e12f07cf0bccdeeefcd042cd068c6a0e51027",
+            "pdf_pages": 14
+          },
+          {
+            "url": "https://johansondielectrics.com/docs/3945/ceramic-capacitor-aging-made-simple.pdf",
+            "sha256": "96f1e2ebc5801d7bf7c008f58ecc597c3a197bd5a75aa9cfeb3d0e305957d27e",
+            "pdf_pages": 2
+          }
+        ],
+        "input_consistency": "Gapfill audit-evidence and generated field_updates agree after normalization of omitted versus null detail fields.",
+        "review_limits": "Source claims reviewed independently. Original brief/spec, implementation, parent reasoning, other reports and benchmark receipts were not read; conflict statements about prior code/spec and runtime behavior are therefore not independently validated."
+      }
+    },
+    {
+      "entry_id": "OHM-026",
+      "primary_sources": [
+        "https://ds.murata.com/simsurfing_data/pdf/en-us/mlcc/sim_mlcc_measuringcond_e.pdf",
+        "https://johansondielectrics.com/docs/3945/ceramic-capacitor-aging-made-simple.pdf"
+      ],
+      "mismatches": [],
+      "notes": {
+        "field_checks": {
+          "dc_bias_curve_scope": "Murata PDF p7 explains negligible C0G/NP0 bias change versus high-K change (X5R example); it labels its plot an example and describes selectable SimSurfing capacitance versus bias. P8 specifies measurement settings: 0-to-rated DC bias, 60 seconds, 25 +/-3 C, frequency and AC voltage selected by capacitance/rating. The record makes no numerical package curve claim. Its part-specific-data requirement is conservative engineering guidance derived from this source, not a literal measured value or an established 1210 part binding.",
+          "aging_rate_reference": "Johanson PDF p1 states -2.5% per decade-hour for X7R/X5R. P2 explains logarithmic time intervals and says specifications are typical and may not apply universally. Recorded -2.5 and example-only scope match. The source is dated 5/21/2012; Murata cover is September 2022."
+        },
+        "source_artifacts": [
+          {
+            "url": "https://ds.murata.com/simsurfing_data/pdf/en-us/mlcc/sim_mlcc_measuringcond_e.pdf",
+            "sha256": "487b3281b6015f8c865d502c594e12f07cf0bccdeeefcd042cd068c6a0e51027",
+            "pdf_pages": 14
+          },
+          {
+            "url": "https://johansondielectrics.com/docs/3945/ceramic-capacitor-aging-made-simple.pdf",
+            "sha256": "96f1e2ebc5801d7bf7c008f58ecc597c3a197bd5a75aa9cfeb3d0e305957d27e",
+            "pdf_pages": 2
+          }
+        ],
+        "input_consistency": "Gapfill audit-evidence and generated field_updates agree after normalization of omitted versus null detail fields.",
+        "review_limits": "Source claims reviewed independently. Original brief/spec, implementation, parent reasoning, other reports and benchmark receipts were not read; conflict statements about prior code/spec and runtime behavior are therefore not independently validated."
+      }
+    },
+    {
+      "entry_id": "OHM-033",
+      "primary_sources": [
+        "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+      ],
+      "mismatches": [
+        "nominal_capacitance: 10 uF value matches, but scope omits the rated-capacitance measurement condition 120 Hz/25 C specified in source p2.",
+        "rated_voltage: 16 V value matches, but field scope omits the p9 column condition VDC at 85 C. The high-temperature derating fields do not make this per-field scope explicit.",
+        "maximum_leakage_current: 1.6 uA at 25 C after 5 minutes matches, but the scope omits applied rated voltage (16 V), explicitly required by source p2.",
+        "maximum_ripple_current: 158 mA value/temperature/frequency match, but the source p9 explicitly rates RMS current; neither this field name nor its scope/detail retains RMS."
+      ],
+      "notes": {
+        "field_checks": {
+          "reference_part_pattern": "PDF p9 table has T491A106(1)016A(2), case A/3216-18. Footnotes define (1) as K or M capacitance tolerance and (2) as termination finish. The record correctly preserves an incomplete pattern rather than an orderable part.",
+          "nominal_capacitance": "PDF p9 target row gives 10 uF. PDF p2 Performance Characteristics defines rated capacitance at 120 Hz/25 C; those measurement conditions are omitted from this field scope.",
+          "rated_voltage": "PDF p9 target row gives 16 V; column heading is VDC at 85 C. Numeric value matches, but field scope omits the rating temperature. The separate p14 derating fields correctly capture the high-temperature fractions.",
+          "maximum_leakage_current": "PDF p9 target row is 1.6 uA maximum at +25 C after 5 minutes. PDF p2 specifies leakage at rated voltage; 0.01*10 uF*16 V = 1.6 uA. Recorded value/time/temperature match, but applied voltage (16 V) is missing from the field scope.",
+          "maximum_esr": "PDF p9 target row gives 3.0 ohms maximum at 100 kHz/+25 C. Matches, including maximum versus nominal distinction.",
+          "maximum_ripple_current": "PDF p9 target row gives 158 mA RMS maximum at 100 kHz/+25 C. P14 calculation sqrt(0.075 W/3 ohms)=0.158114 A independently corroborates the rounded number. Source specifies RMS; the field does not explicitly retain RMS in its name/scope.",
+          "maximum_power_dissipation": "PDF p14 table: case A, 3216-18, 75 mW at 25 C with +20 C rise. Exact match; temperature compensation is necessary above that condition.",
+          "recommended_voltage_fraction_at_or_below_85C": "PDF p14 recommended application-voltage row/plot gives 50% of VR from -55 to 85 C. Recorded 0.5 matches.",
+          "recommended_voltage_fraction_at_125C": "PDF p14 recommended application-voltage endpoint is 33% of VR at 125 C, with decline from 85 C. Recorded 0.33 matches.",
+          "maximum_working_voltage_fraction_at_125C": "PDF p14 working-DC-voltage endpoint is 67% of VR at 125 C, distinct from the 33% application recommendation. Recorded 0.67 matches.",
+          "reverse_voltage_continuous_permitted": "PDF p15 explicitly prohibits continuous reverse operation, even inside transient limits. false matches.",
+          "transient_reverse_fraction_at_25C": "PDF p15 table gives 15% of rated voltage at 25 C for short transient intervals only. Recorded 0.15 matches; no allowable duration is established.",
+          "transient_reverse_fraction_at_85C": "PDF p15 table gives 5% of rated voltage at 85 C for short transient intervals only. Recorded 0.05 matches.",
+          "transient_reverse_fraction_at_125C": "PDF p15 table gives 1% of rated voltage at 125 C for short transient intervals only. Recorded 0.01 matches.",
+          "polarity_stripe": "PDF p15 prose identifies the positive terminal by stripe and, in some cases, a beveled edge. Positive anode matches. All inspected pages carry T2005_T491 (2026-07-08)."
+        },
+        "source_artifacts": [
+          {
+            "url": "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf",
+            "sha256": "c3c5bb70009b606c87b40156259670ca9c8452f172b73faa9e2dbf2fcee3522d",
+            "pdf_pages": 23
+          }
+        ],
+        "input_consistency": "Gapfill audit-evidence and generated field_updates agree after normalization of omitted versus null detail fields.",
+        "review_limits": "Source claims reviewed independently. Original brief/spec, implementation, parent reasoning, other reports and benchmark receipts were not read; conflict statements about prior code/spec and runtime behavior are therefore not independently validated."
+      }
+    },
+    {
+      "entry_id": "OHM-048",
+      "primary_sources": [
+        "https://www.bourns.com/docs/product-datasheets/RLB.pdf"
+      ],
+      "mismatches": [
+        "nominal_inductance: 100 uH matches, but the source p6 shared L,Q test-frequency column specifies 0.796 MHz; that condition is omitted from this field scope.",
+        "rated_rms_current: source p6 labels the 1.1 A Irms column Typ. The record uses rated_rms_current and only calls the 40 C rise typical, leaving the typical nature of the current value unstated."
+      ],
+      "notes": {
+        "field_checks": {
+          "nominal_inductance": "PDF p6 RLB0914-101KL row gives 100.0 uH +/-10%; shared L,Q test-frequency column is 0.796 MHz. Value matches, but nominal-inductance field scope omits its test frequency.",
+          "reference_Q": "PDF p6 same row: Q Ref. 30 at 0.796 MHz. Exact match; not a minimum or guaranteed bound.",
+          "minimum_srf": "PDF p6 same row: SRF minimum 3.5 MHz. Matches.",
+          "maximum_dcr": "PDF p6 same row: RDC maximum 0.280 ohm. Matches.",
+          "rated_rms_current": "PDF p6 same row: Irms 1.1 A in a column explicitly labelled Typ.; footnote says 40 C typical temperature rise at rated Irms. Numeric value and rise match, but field naming/scope fail to retain that 1.1 A itself is typical.",
+          "typical_saturation_current": "PDF p6 same row: Isat typical 2.1 A; footnote defines 10% typical inductance decrease. Exact match; not a 30% criterion.",
+          "maximum_operating_temperature": "PDF p1 family operating temperature -40 to +125 C. Recorded +125 C matches. The separate 600 V text on p1 qualifies shrinkable tube material, not winding working voltage; the record correctly warns against that transfer."
+        },
+        "source_artifacts": [
+          {
+            "url": "https://www.bourns.com/docs/product-datasheets/RLB.pdf",
+            "sha256": "0706af005490cf366aeeb83157579d2f8dbec936670158216c1a1653ef36e28a",
+            "pdf_pages": 8
+          }
+        ],
+        "input_consistency": "Gapfill audit-evidence and generated field_updates agree after normalization of omitted versus null detail fields.",
+        "review_limits": "Source claims reviewed independently. Original brief/spec, implementation, parent reasoning, other reports and benchmark receipts were not read; conflict statements about prior code/spec and runtime behavior are therefore not independently validated."
+      }
+    },
+    {
+      "entry_id": "OHM-064",
+      "primary_sources": [
+        "https://www.vishay.com/doc?88711",
+        "https://www.vishay.com/docs/88746/ss12.pdf"
+      ],
+      "mismatches": [
+        "maximum_forward_voltage, typical_reverse_recovery_time and schottky_maximum_forward_voltage: numeric values and listed stimulus conditions match, but scopes omit the respective source p2 electrical-table default TA=25 C.",
+        "thermal_resistance_junction_ambient and schottky_thermal_resistance_junction_ambient: values, typical classification and pads match, but scopes omit the source p2 thermal-table default TA=25 C."
+      ],
+      "notes": {
+        "field_checks": {
+          "rectifier_reference": "Vishay 88711 PDF p1 includes S1M with SMA (DO-214AC) case. Matches.",
+          "repetitive_peak_reverse_voltage": "88711 p1 S1M column is 1000 V recurrent peak reverse voltage. Matches; this is a maximum rating, not a breakdown-model fit.",
+          "average_forward_current": "88711 p1 IF(AV)=1.0 A explicitly refers to Fig.1. P2 Fig.1 uses mount temperature and 5x5 mm copper pad areas. Value and record warning against a universal ambient rating match.",
+          "surge_forward_current": "88711 p1 S1K/S1M column is 30 A for one 8.3 ms half sine-wave superimposed on rated load. Matches waveform and value.",
+          "maximum_junction_temperature": "88711 p1 TJ/TSTG range is -55 to +175 C. Recorded maximum 175 C and 07-May-2024 revision match.",
+          "maximum_forward_voltage": "88711 p2 maximum instantaneous VF is 1.1 V at IF=1.0 A under table default TA=25 C. Value/current/page match; temperature is omitted from scope.",
+          "thermal_resistance_junction_ambient": "88711 p2 S1K/S1M typical RthetaJA is 85 C/W, with 5x5 mm PCB copper pads and table default TA=25 C. Value, typical classification and pad condition match; table temperature is omitted.",
+          "typical_reverse_recovery_time": "88711 p2 gives typical 1.8 us at IF=0.5 A, IR=1.0 A, Irr=0.25 A, with table default TA=25 C. Recorded values match; temperature is omitted.",
+          "schottky_maximum_forward_voltage": "88746 p2 SS12/SS13/SS14 maximum VF is 0.50 V at 1.0 A, footnote 1: 300 us, 1% duty. TA=25 C is the table default. Value and pulse conditions match; temperature is omitted.",
+          "schottky_maximum_reverse_current_100C": "88746 p2 SS14 has 6.0 mA maximum at TA=100 C and rated DC blocking voltage; p1 gives SS14 VDC=40 V; footnote 2 limits pulse width to <=40 ms. Exact match, distinct from 5.0 mA for SS15/SS16.",
+          "schottky_thermal_resistance_junction_ambient": "88746 p2 typical RthetaJA=88 C/W on 5x5 mm pads; default TA=25 C. Value/typical/pad scope match; temperature is omitted. Revision is 23-Apr-2020."
+        },
+        "source_artifacts": [
+          {
+            "url": "https://www.vishay.com/doc?88711",
+            "sha256": "49c11fe1f333fda1bcdacc72754927dda4ee5bf977bf88d3c46eb1cd6ffe9277",
+            "pdf_pages": 4
+          },
+          {
+            "url": "https://www.vishay.com/docs/88746/ss12.pdf",
+            "sha256": "b32a2d93d2d2cf9f48d6cf678ab03713956b7501029c0424c6a554425df562da",
+            "pdf_pages": 5
+          }
+        ],
+        "input_consistency": "Gapfill audit-evidence and generated field_updates agree after normalization of omitted versus null detail fields.",
+        "review_limits": "Source claims reviewed independently. Original brief/spec, implementation, parent reasoning, other reports and benchmark receipts were not read; conflict statements about prior code/spec and runtime behavior are therefore not independently validated."
+      }
+    },
+    {
+      "entry_id": "OHM-071",
+      "primary_sources": [
+        "https://www.vishay.com/doc?88571"
+      ],
+      "mismatches": [
+        "maximum_forward_voltage_per_diode and thermal_resistance_junction_ambient: values and other stated conditions match, but scopes omit source p2 table default TA=25 C.",
+        "derived_package_pin_roles: the p4 manufacturer drawing supplies spatial polarity marks but no pin numbers or Ohmni library numbering. The proposed 1 PLUS,2 MINUS,3 AC,4 AC is consistent with an additional counterclockwise library numbering convention, but that convention/complete coordinate map is not present in the allowed inputs. Its MFR_DATASHEET/H basis overstates direct source support; preserve as a conditional derivation with explicit library provenance."
+      ],
+      "notes": {
+        "field_checks": {
+          "reference_part": "PDF p1 lists DF10M and DFM package. Matches.",
+          "repetitive_peak_reverse_voltage": "PDF p1 DF10M VRRM=1000 V. Matches.",
+          "average_output_current": "PDF p1 IF(AV)=1.0 A at TA=40 C. Matches, including output-current interpretation.",
+          "maximum_junction_temperature": "PDF p1 operating-junction/storage range is -55 to +150 C. Maximum 150 C matches.",
+          "maximum_forward_voltage_per_diode": "PDF p2 maximum instantaneous forward drop per diode is 1.1 V at 1.0 A with table default TA=25 C. Value/current/per-diode scope match; temperature is omitted.",
+          "thermal_resistance_junction_ambient": "PDF p2 typical RthetaJA=40 C/W, footnote: PCB mounted on 13x13 mm copper pads; table default TA=25 C. Value/typical/pad scope match; temperature is omitted.",
+          "source_drawing_roles": "PDF p4 body-marking view inspected visually: upper-left MINUS, upper-right PLUS, both lower terminals AC. All four spatial roles match. Revision 03-Sep-2020 matches.",
+          "derived_package_pin_roles": "Rotating that p4 drawing 90 degrees counterclockwise places PLUS upper-left, MINUS lower-left, AC lower-right and AC upper-right. A conventional counterclockwise 1-2-3-4 assignment starting upper-left would produce 1 PLUS,2 MINUS,3 AC,4 AC. However, the source itself has no numbered pins or Ohmni library numbering. The record supplies pin1 and a rotation but not the other library pin coordinates/numbering rule; that library binding cannot be independently established from permitted source inputs."
+        },
+        "source_artifacts": [
+          {
+            "url": "https://www.vishay.com/doc?88571",
+            "sha256": "b0f5b2f738f8468c6ebc3cebe2c4601c4109a7c68633455babcba25919f96905",
+            "pdf_pages": 5
+          }
+        ],
+        "input_consistency": "Gapfill audit-evidence and generated field_updates agree after normalization of omitted versus null detail fields.",
+        "review_limits": "Source claims reviewed independently. Original brief/spec, implementation, parent reasoning, other reports and benchmark receipts were not read; conflict statements about prior code/spec and runtime behavior are therefore not independently validated."
+      }
+    },
+    {
+      "entry_id": "OHM-088",
+      "primary_sources": [
+        "https://www.kingbrightusa.com/images/catalog/SPEC/DC56-11EWA.pdf"
+      ],
+      "mismatches": [
+        "maximum_power_per_segment and maximum_forward_current_per_segment: source p2 lists PD=75 mW and IF=30 mA but does not explicitly allocate these limits per segment or provide an all-segments/package-total rating. The per-segment interpretation should be marked as an inference or supported by an additional primary statement, rather than MFR_DATASHEET/H fact.",
+        "forward_voltage_typical_max: values 1.9/2.3 V at 10 mA match, but scope omits TA=25 C and source p2 footnote 2 forward-voltage tolerance +/-0.1 V.",
+        "maximum_reverse_voltage and maximum_peak_forward_current: values match, but scopes omit source p2 absolute-maximum-table condition TA=25 C."
+      ],
+      "notes": {
+        "field_checks": {
+          "reference_part": "PDF p1 title and selection guide specify DC56-11EWA, dual digit, common cathode and right-hand decimal. Matches; DSAP4735/V.3A/02-29-2020 metadata matches.",
+          "manufacturer_pin_roles": "PDF p1 internal circuits visually inspected. Digit1 common cathode 14; a,b,c,d,e,f,g,dp = 16,15,3,2,1,18,17,4. Digit2 common cathode 13; a,b,c,d,e,f,g,dp = 11,10,8,6,5,12,7,9. Every recorded role matches.",
+          "source_pin1_orientation": "PDF p1 upright front drawing has pin1 bottom-left, pin9 bottom-right, pin18 top-left, pin10 top-right. Recorded source orientation matches. A 90-degree library rotation is an external convention, not a manufacturer direction requirement; implementation of that convention was outside this source-only review.",
+          "maximum_forward_current_per_segment": "PDF p2 absolute-maximum table gives IF=30 mA at TA=25 C. Number and temperature match, but table does not explicitly say per segment; interpreting it as a per-LED limit is an inference, not an explicit manufacturer allocation among simultaneously lit segments.",
+          "maximum_power_per_segment": "PDF p2 absolute-maximum table gives PD=75 mW at TA=25 C. Number and temperature match, but neither this table nor its footnotes explicitly identifies 75 mW as per segment or establishes package total. The per-segment allocation is unsupported as an explicit manufacturer fact.",
+          "maximum_reverse_voltage": "PDF p2 absolute-maximum table gives VR=5 V at TA=25 C. Value matches; table temperature is absent from scope.",
+          "maximum_junction_temperature": "PDF p2 absolute-maximum table gives TJ=125 C. Value matches; distinct from +85 C maximum ambient operating temperature.",
+          "forward_voltage_typical_max": "PDF p2 VF at IF=10 mA is 1.9 V typical and 2.3 V maximum at TA=25 C. Footnote 2 adds forward-voltage tolerance +/-0.1 V. Pair/current/page match, but temperature and tolerance are omitted from field evidence.",
+          "maximum_peak_forward_current": "PDF p2 IFM=160 mA at TA=25 C; footnote 1 gives 0.1 ms width and 1/10 duty. Value and pulse conditions match; table temperature is omitted."
+        },
+        "source_artifacts": [
+          {
+            "url": "https://www.kingbrightusa.com/images/catalog/SPEC/DC56-11EWA.pdf",
+            "sha256": "195e0d3211d816e06d2d50149687b9328feb523c9f24ef20a8073a8c7a6b5d14",
+            "pdf_pages": 4
+          }
+        ],
+        "input_consistency": "Gapfill audit-evidence and generated field_updates agree after normalization of omitted versus null detail fields.",
+        "review_limits": "Source claims reviewed independently. Original brief/spec, implementation, parent reasoning, other reports and benchmark receipts were not read; conflict statements about prior code/spec and runtime behavior are therefore not independently validated."
+      }
+    },
+    {
+      "entry_id": "OHM-099",
+      "primary_sources": [
+        "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irfp260n-datasheet-en.pdf?fileId=5546d462533600a401535628a2ef1fe4"
+      ],
+      "mismatches": [
+        "maximum_gate_charge: 234 nC and VDS/VGS/ID match, but scope omits TJ=25 C and the source p2 shared footnote4 condition pulse width<=400 us,duty<=2%."
+      ],
+      "notes": {
+        "field_checks": {
+          "reference_part": "PDF p1 ordering table specifies IRFP260NPbF, TO-247AC. Matches; revision 2.1 dated 2024-10-08 matches.",
+          "manufacturer_pin_roles": "PDF p1 graphic explicitly labels Gate pin1, Drain pin2/tab, Source pin3. PDF p8 lead assignments independently confirm HEXFET 1 Gate,2 Drain,3 Source,4 Drain. All recorded pin/tab roles match; p8 also shows separate IGBT and diode assignments that must not be transferred.",
+          "maximum_drain_source_voltage": "PDF p1 summary specifies V(BR)DSS=200 V; p2 defines a minimum breakdown voltage of 200 V at VGS=0 V, ID=250 uA, TJ=25 C. The record uses this as the 200 V device voltage rating; this must not be read as a measured maximum breakdown value or a universal breakdown threshold.",
+          "maximum_gate_source_magnitude": "PDF p1 VGS absolute limit is +/-20 V. Recorded magnitude 20 V matches.",
+          "maximum_drain_current_by_case_temperature": "PDF p1 maximum continuous ID: 50 A at TC=25 C,35 A at TC=100 C, both VGS=10 V. Exact match.",
+          "maximum_power_case25": "PDF p1 PD maximum 300 W at TC=25 C, linear derating 2.0 W/C. Exact match; requires controlled case temperature.",
+          "maximum_junction_temperature": "PDF p1 TJ/TSTG range -55 to +175 C. Recorded 175 C matches.",
+          "maximum_thermal_resistances": "PDF p1 thermal table puts RthetaJC=0.50 C/W and RthetaJA=40 C/W in Max columns. Recorded maximum values match; case-to-sink 0.24 is separately typical and is not included.",
+          "maximum_on_resistance": "PDF p2 maximum RDS(on)=0.04 ohm at VGS=10 V,ID=28 A,TJ=25 C,footnote4 pulse<=400 us,duty<=2%. Recorded 40 mohm and complete conditions match.",
+          "maximum_gate_charge": "PDF p2 maximum total Qg=234 nC at ID=28 A,VDS=160 V,VGS=10 V; dynamic table default TJ=25 C and shared condition footnote4 pulse<=400 us,duty<=2%. Numeric value and voltages/current match, but temperature/pulse conditions are omitted."
+        },
+        "source_artifacts": [
+          {
+            "url": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irfp260n-datasheet-en.pdf?fileId=5546d462533600a401535628a2ef1fe4",
+            "sha256": "e5d7669eba2f8e6c4267a6dfd5de58f3ec3bfcbea19306815dcf287c88b57d75",
+            "pdf_pages": 9
+          }
+        ],
+        "input_consistency": "Gapfill audit-evidence and generated field_updates agree after normalization of omitted versus null detail fields.",
+        "review_limits": "Source claims reviewed independently. Original brief/spec, implementation, parent reasoning, other reports and benchmark receipts were not read; conflict statements about prior code/spec and runtime behavior are therefore not independently validated."
+      }
+    }
+  ],
+  "method": "Primary-source text extracted from SHA256-verified archive bytes; pin/circuit diagrams visually inspected. Ledger used solely to locate source bytes. Page references use one-based PDF pages. Mismatches include incomplete source conditions and unsupported provenance as well as wrong page claims; a matching scalar alone is not a complete source verification. No research records or code modified.",
+  "rendered_evidence_directory": "out/component-behavior/run/verifier/stage2-evidence"
+}

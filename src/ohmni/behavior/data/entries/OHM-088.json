@@ -98,9 +98,9 @@
         "basis": "MFR_DATASHEET",
         "confidence": "H",
         "detail": null,
-        "field": "maximum_forward_current_per_segment",
+        "field": "listed_maximum_forward_current",
         "page": 2,
-        "scope": "DC56-11EWA; TA25 C",
+        "scope": "DC56-11EWA; TA25 C; table does not specify per-segment versus whole-package allocation",
         "sources": [
           "https://www.kingbrightusa.com/images/catalog/SPEC/DC56-11EWA.pdf"
         ],
@@ -111,9 +111,9 @@
         "basis": "MFR_DATASHEET",
         "confidence": "H",
         "detail": null,
-        "field": "maximum_power_per_segment",
+        "field": "listed_maximum_power",
         "page": 2,
-        "scope": "DC56-11EWA; TA25 C",
+        "scope": "DC56-11EWA; TA25 C; table does not specify per-segment versus whole-package allocation",
         "sources": [
           "https://www.kingbrightusa.com/images/catalog/SPEC/DC56-11EWA.pdf"
         ],
@@ -126,7 +126,7 @@
         "detail": null,
         "field": "maximum_reverse_voltage",
         "page": 2,
-        "scope": "DC56-11EWA",
+        "scope": "DC56-11EWA; TA25 C",
         "sources": [
           "https://www.kingbrightusa.com/images/catalog/SPEC/DC56-11EWA.pdf"
         ],
@@ -152,7 +152,7 @@
         "detail": null,
         "field": "forward_voltage_typical_max",
         "page": 2,
-        "scope": "DC56-11EWA; IF10 mA",
+        "scope": "DC56-11EWA; IF10 mA; TA25 C; source voltage tolerance+/-0.1 V",
         "sources": [
           "https://www.kingbrightusa.com/images/catalog/SPEC/DC56-11EWA.pdf"
         ],
@@ -168,7 +168,7 @@
         "detail": null,
         "field": "maximum_peak_forward_current",
         "page": 2,
-        "scope": "DC56-11EWA; 0.1 ms pulse,10 percent duty",
+        "scope": "DC56-11EWA; 0.1 ms pulse,10 percent duty; TA25 C",
         "sources": [
           "https://www.kingbrightusa.com/images/catalog/SPEC/DC56-11EWA.pdf"
         ],
@@ -178,14 +178,17 @@
     ],
     "remaining_open_items": [
       "Per-segment thermal coupling, aggregate common-lead current and exact fit across current/temperature remain open.",
-      "Multiplex duty does not permit exceeding the specified peak-current pulse conditions."
+      "Multiplex duty does not permit exceeding the specified peak-current pulse conditions.",
+      "Primary PD/IF table does not explicitly allocate the ratings per segment or as a package total. No such allocation is asserted."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [],
+    "simulation_blockers": [
+      "Per-segment and common-lead aggregate power/current allocation is not established; do not use table PD/IF as a rated complete-display envelope."
+    ],
     "source": {
       "document": "docs/behavior/gapfill/OHM-088.md",
-      "document_sha256": "01b232e852766ee674e85c1c37246d69f942c68ed849af2f41cb1a8d854bec14",
+      "document_sha256": "332b842c3289d2a7cd265ce8caaf4016722820f0500285fe75b1776eb0ae9fd2",
       "fragment_sha256": null,
       "line": 1
     }

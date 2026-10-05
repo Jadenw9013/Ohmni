@@ -5,6 +5,7 @@ from __future__ import annotations
 import math
 import re
 from pathlib import Path
+from urllib.parse import urlsplit
 
 RULE_SOURCE = "AUD-SOURCE-001"
 
@@ -14,6 +15,10 @@ def source_errors(urls: set[str], ledger: list[dict], run_dir: Path) -> list[str
 
     good = set()
     for row in ledger:
+        # A field check needs only its cited URLs. Still hash their bytes anew
+        # on every invocation, so a changed archive cannot reuse a prior pass.
+        if row.get("url") not in urls:
+            continue
         status = row.get("http_status")
         digest = row.get("content_sha256", "")
         if (
@@ -22,8 +27,15 @@ def source_errors(urls: set[str], ledger: list[dict], run_dir: Path) -> list[str
             and row.get("timestamp") and row.get("tool_used")
         ):
             blob = run_dir / "fetched-sources" / f"{digest}.bin"
-            if blob.is_file() and hashlib.sha256(blob.read_bytes()).hexdigest() == digest:
-                good.add(row.get("url"))
+            if blob.is_file():
+                content = blob.read_bytes()
+                if hashlib.sha256(content).hexdigest() != digest:
+                    continue
+                # Some distributors serve an HTML refusal with HTTP 200 at a
+                # datasheet URL. Its hash proves a fetch, not a usable PDF.
+                if urlsplit(row["url"]).path.lower().endswith(".pdf") and b"%PDF-" not in content[:1024]:
+                    continue
+                good.add(row["url"])
     return [f"{RULE_SOURCE}: missing successful archived fetch: {url}" for url in sorted(urls-good)]
 
 

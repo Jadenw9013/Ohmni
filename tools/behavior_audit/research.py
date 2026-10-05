@@ -6,6 +6,7 @@ This helper formats evidence; it neither researches facts nor upgrades status.
 from __future__ import annotations
 
 import json
+from collections import Counter
 
 from .audit import _atomic_text, _json
 
@@ -41,3 +42,54 @@ def publish_research(audit, payload: dict) -> None:
         lines.append("")
     lines.extend(["## Field evidence", "", "```audit-evidence", json.dumps(payload, indent=2, ensure_ascii=False), "```", ""])
     _atomic_text(audit.root / f"docs/behavior/gapfill/{entry_id}.md", "\n".join(lines))
+
+
+def research_gate(audit, stage: str, entry_ids: list[str]):
+    """Report every reviewed entry from generated records and actual receipts."""
+    state = audit._state()
+    rows = []
+    for entry_id in entry_ids:
+        record = _json(audit.root / f"src/ohmni/behavior/data/entries/{entry_id}.json")
+        research = record.get("research") or {}
+        receipts = [_json(audit.run_dir / path) for path in research.get("bench_results", [])]
+        rows.append({
+            "entry_id": entry_id,
+            "component": record["component"],
+            "before": state["entry_status"][entry_id]["before"],
+            "after": record["status"],
+            "research_result": research.get("research_result", "not_reviewed"),
+            "source_count": len(research.get("documents", [])),
+            "fact_count": len(research.get("field_updates", [])),
+            "bench_passed": sum(receipt["run_status"] == "passed" for receipt in receipts),
+            "bench_total": len(receipts),
+            "remaining": research.get("remaining_open_items", []),
+            "conflicts": research.get("conflicts", []),
+            "blockers": research.get("simulation_blockers", []),
+        })
+    counts = Counter(row["research_result"] for row in rows)
+    lines = [
+        f"# {stage}: research gate", "",
+        "> Script-generated from gapfill records and current-run ngspice receipts.", "",
+        f"Entries: {len(rows)}. Research outcomes: {dict(sorted(counts.items()))}.",
+        f"Status upgrades: {sum(row['before'] != row['after'] for row in rows)}.",
+        "Class bench results do not establish package ratings or full physical-device validity.", "",
+        "| Entry | Before | After | Research | Sources / fields | Class benches |",
+        "| --- | --- | --- | --- | --- | --- |",
+    ]
+    for row in rows:
+        entry_id = row["entry_id"]
+        lines.append(
+            f"| [{entry_id}](../../../docs/behavior/gapfill/{entry_id}.md) | "
+            f"{row['before']} | {row['after']} | {row['research_result']} | "
+            f"{row['source_count']} / {row['fact_count']} | "
+            f"{row['bench_passed']}/{row['bench_total']} PASS |"
+        )
+    lines.extend(["", "## Remaining work and conflicts", ""])
+    for row in rows:
+        lines.extend([f"### {row['entry_id']}: {row['component']}", ""])
+        for key in ("remaining", "conflicts", "blockers"):
+            lines.extend(f"- {key}: {item}" for item in row[key])
+        lines.append("")
+    output = audit.root / f"out/component-behavior/{stage}/RESEARCH-GATE.md"
+    _atomic_text(output, "\n".join(lines))
+    return output

@@ -64,3 +64,19 @@ Opened package-matched primary sheets; published field/page/condition evidence a
 ## 2026-10-05: Stage 2 OHM-081 through OHM-100
 
 Added page-specific primary research and current-run receipts for LEDs, displays and transistor packages. Original statuses and canonical fields remain unchanged. OHM-083 remains unresolved after unsuccessful archival fetches. Exact manufacturer/version scopes, display pin maps, WS2812B corner/voltage conflict, OLED module limitations, maximum-versus-typical thermal values and MOSFET case-temperature conditions are explicit in gapfill ledgers.
+
+## 2026-10-05: Stage 2 OHM-101 and OHM-102
+
+Kept D2PAK regulator and MOSFET identities separate. Archived manufacturer product-page and PDF power/thermal conflict for IRFZ44NS; conservative PDF limits remain scoped to that revision. Distinguished Si7898DP steady-state and 10-second current, dissipation and thermal limits. Source statuses remain unchanged.
+
+## 2026-10-05: Stage 2 independent-review corrections, attempt1
+
+Seed10543591816165434960 found17 discrepancy items across7 of11 sampled entries. Corrected page citations and retained omitted temperature, measurement-frequency, RMS, typical-value and pulse qualifications. Downgraded the DF10M package-number mapping to a conditional DERIVED/M fact with explicit coordinate steps and library provenance. Removed unsupported per-segment allocation from three Kingbright display rating tables; aggregate allocation stays blocked. Applied shared T491 and Kingbright qualifications to sibling records. Numerical source values and all bench contracts are unchanged. The failed report is retained as stage2-attempt1.json; a fresh sample follows.
+
+## 2026-10-05: Stage 2 independent-review corrections, attempt2
+
+Seed13643895546496402650 found9 qualification/metadata issues across6 of11 entries. Added missing test temperature, mounting, humidity and short-pulse qualifications and Bourns revision metadata. Renamed IRLR8721 65 A as a calculated value, added its separately limiting50 A package ceiling, and preserved the source ambiguity in its RDS(on) pulse-footnote linkage. Retained the failed review; a new seeded fresh review follows. Additional IRFZ44N/NS destructive-avalanche evidence records explain why the historical0.53 J guard must not authorize operation. No analytical contract or baseline changed.
+
+## 2026-10-05: third independent Stage 2 review
+
+Added the ten omitted primary-source conditions to BCP56 (OHM-096) and BD139 (OHM-097): open-terminal voltage conditions, ambient/case temperature, pulse qualification and free-air board thermal conditions. Numeric values and pin maps are unchanged. OHM-083 remains unsourced and blocked. The three sampled reviews remain failed historical evidence; corrected records are not claimed independently accepted.

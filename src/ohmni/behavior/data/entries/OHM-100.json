@@ -21,7 +21,8 @@
     ],
     "conflicts": [
       "IRLR8721 power is65 W atTC25 C and33 W atTC100 C; the earlier33 W-at25 conflict was a table-condition extraction error.",
-      "The IRLR3410 gate limit is +/-16 V, not a generic +/-20 V."
+      "The IRLR3410 gate limit is +/-16 V, not a generic +/-20 V.",
+      "IRLR8721 headline65 A is calculated; the explicit50 A package limit further caps current. RDS(on) pulse-footnote linkage is ambiguous between page2 note4 and page12 pulse note3."
     ],
     "documents": [
       {
@@ -107,9 +108,9 @@
         "basis": "MFR_DATASHEET",
         "confidence": "H",
         "detail": null,
-        "field": "maximum_drain_current_case25",
+        "field": "calculated_drain_current_case25",
         "page": 1,
-        "scope": "IRLR8721PbF; VGS10 V,package/thermal limits also apply",
+        "scope": "IRLR8721PbF; VGS10 V,package/thermal limits also apply; calculated from allowable TJ; package maximum50 A per p12 note4 separately limits operation",
         "sources": [
           "https://www.infineon.com/assets/row/public/documents/non-assigned/49/infineon-irlr8721-datasheet-en.pdf"
         ],
@@ -305,10 +306,10 @@
       {
         "basis": "MFR_DATASHEET",
         "confidence": "H",
-        "detail": null,
+        "detail": "Source p2 RDS(on) rows point to note4, which is the package-current note on p12. Pulse note3 separately states<=400 us and<=2 percent duty. Their linkage is ambiguous; do not claim this pulse condition as verified for RDS(on).",
         "field": "maximum_on_resistance",
         "page": 2,
-        "scope": "IRLR8721PbF; TJ25 C,pulsed",
+        "scope": "IRLR8721PbF; TJ25 C, pulse-test linkage unresolved",
         "sources": [
           "https://www.infineon.com/assets/row/public/documents/non-assigned/49/infineon-irlr8721-datasheet-en.pdf"
         ],
@@ -347,6 +348,19 @@
         ],
         "unit": "K/W",
         "value": 50
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_package_current",
+        "page": 12,
+        "scope": "IRLR8721PbF DPAK; package limit from note4, additional to calculated TJ-limited current and actual thermal path",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/non-assigned/49/infineon-irlr8721-datasheet-en.pdf"
+        ],
+        "unit": "A",
+        "value": 50
       }
     ],
     "remaining_open_items": [
@@ -358,7 +372,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-100.md",
-      "document_sha256": "102a765908602d8094ca9294929e9fe07d7bdf1813699e2f346470daa1589545",
+      "document_sha256": "69a36d3e1dd64927a01bb4a5b58d9d67937053797b1dcf348ce583f9dc7f0f2d",
       "fragment_sha256": null,
       "line": 1
     }

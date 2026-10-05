@@ -93,7 +93,7 @@
         "detail": null,
         "field": "maximum_forward_voltage_per_diode",
         "page": 2,
-        "scope": "DF10M DFM; 1A",
+        "scope": "DF10M DFM; 1A; TA25 C source table default",
         "sources": [
           "https://www.vishay.com/doc?88571"
         ],
@@ -106,7 +106,7 @@
         "detail": null,
         "field": "thermal_resistance_junction_ambient",
         "page": 2,
-        "scope": "DF10M DFM; typical;13x13mm copper pads",
+        "scope": "DF10M DFM; typical;13x13mm copper pads; TA25 C source table default",
         "sources": [
           "https://www.vishay.com/doc?88571"
         ],
@@ -134,7 +134,7 @@
       {
         "basis": "DERIVED",
         "confidence": "M",
-        "detail": null,
+        "detail": "Conditional coordinate derivation: manufacturer top-view PLUS upper-right, MINUS upper-left, AC lower-left/lower-right. Rotate90deg counterclockwise: PLUS(-X,+Y),MINUS(-X,-Y),AC(+X,-Y),AC(+X,+Y). Assumed library top-left-first counterclockwise numbering then gives1PLUS,2MINUS,3AC,4AC. Manufacturer drawing does not supply these library numbers; retain binding blocker until source package convention is independently tested. Library convention provenance: PCB_COMPONENT_3D_LIBRARY_SPEC.md Section6 and OHM-071, not an electrical manufacturer claim.",
         "field": "derived_package_pin_roles",
         "page": 4,
         "scope": "DF10M only. Rotate drawing90deg counterclockwise into library7.62mm X-row spacing, with PLUS at librarypin1(-X,+Y). AC interchange is electrically equivalent.",
@@ -161,7 +161,7 @@
     ],
     "source": {
       "document": "docs/behavior/gapfill/OHM-071.md",
-      "document_sha256": "db849ff91ddbac4e68d6df14d6487ea1ba37dc64c5b7c88e05f17b49e7297d71",
+      "document_sha256": "9d0bcc3b4a225945d85f9155569c0ff81c0feb1590195857bf0a344130236689",
       "fragment_sha256": null,
       "line": 1
     }
