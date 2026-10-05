@@ -11,7 +11,224 @@
   "fidelity": "behavioural_approximation",
   "group": "R4",
   "layer": "L1",
-  "research": null,
+  "research": {
+    "bench_result": "bench-results/BEH-DIO-PN--B1.json",
+    "bench_results": [
+      "bench-results/BEH-DIO-PN--B1.json",
+      "bench-results/BEH-DIO-PN--B2.json",
+      "bench-results/BEH-DIO-PN--B3.json",
+      "bench-results/BEH-DIO-PN--B4.json",
+      "bench-results/BEH-DIO-PN--B5.json",
+      "bench-results/BEH-DIO-PN--B6.json",
+      "bench-results/BEH-DIO-PN--B7.json"
+    ],
+    "conflicts": [
+      "BAW56 is90V/2pF in the2022source, not the100V/1.5pF BAV99 default.",
+      "215mA single-diode current must not be used simultaneously for both junctions;125mA conditions apply."
+    ],
+    "documents": [
+      {
+        "document_id": "nexperiabav99",
+        "manufacturer": "Nexperia",
+        "note": "Primary PDF opened from the hashed archive; page numbers are PDF pages.",
+        "page": null,
+        "revision": "1July2022",
+        "source_status": "primary_source_opened",
+        "title": "BAV99 High-speed switching diode",
+        "url": "https://assets.nexperia.com/documents/data-sheet/BAV99.pdf"
+      },
+      {
+        "document_id": "nexperiabav70",
+        "manufacturer": "Nexperia",
+        "note": "Primary PDF opened from the hashed archive; page numbers are PDF pages.",
+        "page": null,
+        "revision": "Rev8,18March2015",
+        "source_status": "primary_source_opened",
+        "title": "BAV70 series High-speed switching diodes",
+        "url": "https://assets.nexperia.com/documents/data-sheet/BAV70_SER.pdf"
+      },
+      {
+        "document_id": "nexperiabaw56",
+        "manufacturer": "Nexperia",
+        "note": "Primary PDF opened from the hashed archive; page numbers are PDF pages.",
+        "page": null,
+        "revision": "1October2022",
+        "source_status": "primary_source_opened",
+        "title": "BAW56 High-speed switching diode",
+        "url": "https://assets.nexperia.com/documents/data-sheet/BAW56.pdf"
+      }
+    ],
+    "entry_id": "OHM-070",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "series_pin_roles",
+        "page": 2,
+        "scope": "BAV99 SOT23",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAV99.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "1": "A1",
+          "2": "K2",
+          "3": "K1/A2"
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "series_reverse_voltage",
+        "page": 3,
+        "scope": "BAV99 SOT23",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAV99.pdf"
+        ],
+        "unit": "V",
+        "value": 100
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "series_forward_current_single",
+        "page": 3,
+        "scope": "BAV99 SOT23; one diode loaded",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAV99.pdf"
+        ],
+        "unit": "A",
+        "value": 0.215
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "series_forward_current_double",
+        "page": 3,
+        "scope": "BAV99 SOT23; per diode with both loaded",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAV99.pdf"
+        ],
+        "unit": "A",
+        "value": 0.125
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "series_total_power",
+        "page": 3,
+        "scope": "BAV99 SOT23; one diode loaded,TA<=25C,standardFR4footprint",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAV99.pdf"
+        ],
+        "unit": "W",
+        "value": 0.25
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "common_cathode_pin_roles",
+        "page": 2,
+        "scope": "BAV70 SOT23",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAV70_SER.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "1": "A1",
+          "2": "A2",
+          "3": "K1/K2"
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "common_cathode_device_current",
+        "page": 4,
+        "scope": "BAV70 SOT23; per device,TA<=25C",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAV70_SER.pdf"
+        ],
+        "unit": "A",
+        "value": 0.125
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "common_anode_pin_roles",
+        "page": 1,
+        "scope": "BAW56 SOT23",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAW56.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "1": "K1",
+          "2": "K2",
+          "3": "A1/A2"
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "common_anode_reverse_voltage",
+        "page": 2,
+        "scope": "BAW56 SOT23",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAW56.pdf"
+        ],
+        "unit": "V",
+        "value": 90
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "common_anode_device_current",
+        "page": 2,
+        "scope": "BAW56 SOT23; per device,TA<=25C",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAW56.pdf"
+        ],
+        "unit": "A",
+        "value": 0.125
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "common_anode_maximum_capacitance",
+        "page": 3,
+        "scope": "BAW56 SOT23; VR0,1MHz",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAW56.pdf"
+        ],
+        "unit": "pF",
+        "value": 2
+      }
+    ],
+    "remaining_open_items": [
+      "Proxy fit A remains an approximation for the actual dual-diode variants; shared package heating is not independent per die."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-070.md",
+      "document_sha256": "c3ab0e55965f856fab9a73a3228b71f09e1b3f7855fd83ba542fae8b5ef0aa5b",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
   "resolution_ids": [],
   "schema_version": 1,
   "simulation_disposition": "simulable",

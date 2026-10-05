@@ -56,3 +56,7 @@
 - The 750311595 flyback has 12 uH primary, 2:1:0.8 ratio and parallel terminal groups; working-voltage and loss limits remain open.
 - Re-derived Murata/Coilcraft alternatives without promoting placeholders, Bourns SRF and heating/drop conditions, TY-145P winding DCR and H1102NL OCL/pin roles.
 - Separated diode DC and repetitive peak voltage, mounting-specific thermal figures and manufacturer-specific temperature ratings. Corrected the GL41 source identity to document 88546. All original source statuses remain unchanged.
+
+## 2026-10-05: Stage 2 diode and indicator LED source review (OHM-061..080)
+
+Opened package-matched primary sheets; published field/page/condition evidence and current-run class bench receipts. Source status remains unchanged. The DFM bridge drawing contradicts the assumed diagonal AC map; a derived 90-degree package transform is recorded and legacy binding stays blocked pending implementation/tests. S2M is 1.5 A, BAW56 is 90 V, SS14 hot leakage is 6 mA in the source column, and package-specific thermal conditions must not be copied between references. Exact reference LED dimensions differ from some illustrative geometry. No original spec or geometry was changed.

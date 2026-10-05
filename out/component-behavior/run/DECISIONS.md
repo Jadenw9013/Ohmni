@@ -115,3 +115,7 @@ T491 ESR and reverse limits are scoped to MnO2. Nichicon auxiliary terminals can
 ## D014 - Magnetic winding and rating corrections require explicit binding
 
 Read primary diagrams for WE-SL5, WE-CMB, TY-145P, WE-FB, AS-103 and H1102NL. Record intrinsic manufacturer pin maps separately from geometric terminal transforms. WE-SL5 is 1-2/4-3, AS-103 is 1:300 with an external primary conductor and two secondary pins, and the named flyback has a 12 uH primary. Do not apply guessed permutations, change protected geometry or borrow safety insulation limits. Original source statuses remain unchanged; physical conflicts and missing safety ratings are blocked.
+
+## D015: Diode and LED reference conflicts, 2026-10-05
+
+Use the primary S2M 1.5 A ceiling instead of the unsourced 2 A scaling. Keep earlier conservative 150 C for an unspecified S1M revision although the opened 2024 source says 175 C. BAW56 common-anode variant needs its own 90 V limit and 2 pF maximum, not BAV99 values. Correctly scope SS14 100 C leakage to 6 mA and SS34 to 20 mA. Record the BZT52 thermal-table/note discrepancy rather than selecting a convenient value. DF10M drawing has adjacent AC pins: rotating its top view 90 degrees into the library yields PLUS1/MINUS2/AC3/AC4; the old assumed permutation remains blocked until tested. WOG/MCC mixed physical binding remains unresolved. Do not promote generic LED ratings from a single color/reference, nor treat an absent thermal rating as zero heating. Record reference/body mismatches without changing the 3D library.

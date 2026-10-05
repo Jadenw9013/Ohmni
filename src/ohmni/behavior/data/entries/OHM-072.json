@@ -11,7 +11,139 @@
   "fidelity": "behavioural_approximation",
   "group": "R4",
   "layer": "L1",
-  "research": null,
+  "research": {
+    "bench_result": "bench-results/BEH-DIO-BRIDGE--B1.json",
+    "bench_results": [
+      "bench-results/BEH-DIO-BRIDGE--B1.json",
+      "bench-results/BEH-DIO-BRIDGE--B2.json",
+      "bench-results/BEH-DIO-BRIDGE--B3.json"
+    ],
+    "conflicts": [
+      "VishayW10G maximumTj150C differs from specMCCW10M125C. Keep125C for an unspecified mixed reference; use150C only for explicitW10G."
+    ],
+    "documents": [
+      {
+        "document_id": "vishaywog",
+        "manufacturer": "Vishay",
+        "note": "Primary PDF opened from the hashed archive; page numbers are PDF pages.",
+        "page": null,
+        "revision": "09-Jul-2020",
+        "source_status": "primary_source_opened",
+        "title": "W005G through W10G Bridge Rectifiers",
+        "url": "https://www.vishay.com/doc?88769"
+      }
+    ],
+    "entry_id": "OHM-072",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "reference_part",
+        "page": 1,
+        "scope": "W10G WOG",
+        "sources": [
+          "https://www.vishay.com/doc?88769"
+        ],
+        "unit": null,
+        "value": "W10G"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "repetitive_peak_reverse_voltage",
+        "page": 1,
+        "scope": "W10G WOG",
+        "sources": [
+          "https://www.vishay.com/doc?88769"
+        ],
+        "unit": "V",
+        "value": 1000
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "average_output_current",
+        "page": 1,
+        "scope": "W10G WOG; TA25C,9.5mm leadlength;notcapacitive-load rating",
+        "sources": [
+          "https://www.vishay.com/doc?88769"
+        ],
+        "unit": "A",
+        "value": 1.5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_junction_temperature",
+        "page": 1,
+        "scope": "W10G WOG",
+        "sources": [
+          "https://www.vishay.com/doc?88769"
+        ],
+        "unit": "C",
+        "value": 150
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_forward_voltage_per_diode",
+        "page": 1,
+        "scope": "W10G WOG; IF1A",
+        "sources": [
+          "https://www.vishay.com/doc?88769"
+        ],
+        "unit": "V",
+        "value": 1
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "thermal_resistance_junction_ambient",
+        "page": 2,
+        "scope": "W10G WOG; typical;9.5mm leads,5.5x5.5mm PCBpads",
+        "sources": [
+          "https://www.vishay.com/doc?88769"
+        ],
+        "unit": "K/W",
+        "value": 36
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "drawing_role_relationship",
+        "page": 3,
+        "scope": "W10G WOG; lead-end view; top-view conversion must mirror; numeric pins not assigned by manufacturer",
+        "sources": [
+          "https://www.vishay.com/doc?88769"
+        ],
+        "unit": null,
+        "value": "PLUS opposite MINUS; AC opposite AC"
+      }
+    ],
+    "remaining_open_items": [
+      "A binding to librarypin1PLUS and diagonalpin3MINUS is consistent with the sourced opposite-pair relationship; prove the top/bottom-view transform before physical checks.",
+      "MCC WOM is a different reference and is not resolved by the Vishay drawing.",
+      "Capacitive-input derating depends on Ipeak/Iaverage infigure1; do not grant1.5Aunconditionally."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [
+      "Physical role binding remains unverified for the generic WOM/WOG combined entry."
+    ],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-072.md",
+      "document_sha256": "3fde709cf4838f111dce69b84052178d01d0b3750729d18e9d0e316b546f8bcc",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
   "resolution_ids": [
     "BRIDGE-PIN-FUNCTIONS-UNRESOLVED"
   ],

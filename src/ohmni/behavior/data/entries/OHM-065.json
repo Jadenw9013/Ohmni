@@ -11,7 +11,214 @@
   "fidelity": "behavioural_approximation",
   "group": "R4",
   "layer": "L1",
-  "research": null,
+  "research": {
+    "bench_result": "bench-results/BEH-DIO-PN--B1.json",
+    "bench_results": [
+      "bench-results/BEH-DIO-PN--B1.json",
+      "bench-results/BEH-DIO-PN--B2.json",
+      "bench-results/BEH-DIO-PN--B3.json",
+      "bench-results/BEH-DIO-PN--B4.json",
+      "bench-results/BEH-DIO-PN--B5.json",
+      "bench-results/BEH-DIO-PN--B6.json",
+      "bench-results/BEH-DIO-PN--B7.json"
+    ],
+    "conflicts": [
+      "The spec assumed S2x current 2 A by scaling S1x. The actual Vishay S2M sheet rates 1.5 A at TL125 C; 1.5 A is the conservative reference ceiling."
+    ],
+    "documents": [
+      {
+        "document_id": "vishays2",
+        "manufacturer": "Vishay",
+        "note": "Primary PDF opened from the hashed archive; page numbers are PDF pages.",
+        "page": null,
+        "revision": "21-May-2024",
+        "source_status": "primary_source_opened",
+        "title": "S2A through S2M Surface-Mount Glass Passivated Rectifier",
+        "url": "https://www.vishay.com/doc?88712"
+      },
+      {
+        "document_id": "vishayss2",
+        "manufacturer": "Vishay",
+        "note": "Primary PDF opened from the hashed archive; page numbers are PDF pages.",
+        "page": null,
+        "revision": "23-Apr-2020",
+        "source_status": "primary_source_opened",
+        "title": "SS22 through SS26 Surface-Mount Schottky Barrier Rectifier",
+        "url": "https://www.vishay.com/docs/88748/ss22.pdf"
+      }
+    ],
+    "entry_id": "OHM-065",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "rectifier_reference",
+        "page": 1,
+        "scope": "S2M SMB",
+        "sources": [
+          "https://www.vishay.com/doc?88712"
+        ],
+        "unit": null,
+        "value": "S2M"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "repetitive_peak_reverse_voltage",
+        "page": 1,
+        "scope": "S2M SMB",
+        "sources": [
+          "https://www.vishay.com/doc?88712"
+        ],
+        "unit": "V",
+        "value": 1000
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "average_forward_current",
+        "page": 1,
+        "scope": "S2M SMB; TL=125 C",
+        "sources": [
+          "https://www.vishay.com/doc?88712"
+        ],
+        "unit": "A",
+        "value": 1.5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_junction_temperature",
+        "page": 1,
+        "scope": "S2M SMB",
+        "sources": [
+          "https://www.vishay.com/doc?88712"
+        ],
+        "unit": "C",
+        "value": 175
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_forward_voltage",
+        "page": 2,
+        "scope": "S2M SMB; IF=1.5 A",
+        "sources": [
+          "https://www.vishay.com/doc?88712"
+        ],
+        "unit": "V",
+        "value": 1.15
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "thermal_resistance_junction_ambient",
+        "page": 2,
+        "scope": "S2M SMB; typical; 8 x 8 mm pads",
+        "sources": [
+          "https://www.vishay.com/doc?88712"
+        ],
+        "unit": "K/W",
+        "value": 53
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "typical_reverse_recovery_time",
+        "page": 2,
+        "scope": "S2M SMB; IF=.5 A, IR=1 A, Irr=.25 A",
+        "sources": [
+          "https://www.vishay.com/doc?88712"
+        ],
+        "unit": "us",
+        "value": 2
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "schottky_reverse_voltage",
+        "page": 1,
+        "scope": "SS24 SMB",
+        "sources": [
+          "https://www.vishay.com/docs/88748/ss22.pdf"
+        ],
+        "unit": "V",
+        "value": 40
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "schottky_average_forward_current",
+        "page": 1,
+        "scope": "SS24 SMB; lead-temperature derating figure1",
+        "sources": [
+          "https://www.vishay.com/docs/88748/ss22.pdf"
+        ],
+        "unit": "A",
+        "value": 2
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "schottky_maximum_forward_voltage",
+        "page": 2,
+        "scope": "SS24 SMB; IF=2 A, 300us1%duty",
+        "sources": [
+          "https://www.vishay.com/docs/88748/ss22.pdf"
+        ],
+        "unit": "V",
+        "value": 0.5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "schottky_maximum_reverse_current_100C",
+        "page": 2,
+        "scope": "SS24 SMB; rated reverse voltage",
+        "sources": [
+          "https://www.vishay.com/docs/88748/ss22.pdf"
+        ],
+        "unit": "mA",
+        "value": 10
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "schottky_thermal_resistance_junction_ambient",
+        "page": 2,
+        "scope": "SS24 SMB; typical; 14 x14 mm pads",
+        "sources": [
+          "https://www.vishay.com/docs/88748/ss22.pdf"
+        ],
+        "unit": "K/W",
+        "value": 75
+      }
+    ],
+    "remaining_open_items": [
+      "Distinct PN, Schottky and TVS functions cannot share ratings. Exact current derating and thermal mounting remain required."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-065.md",
+      "document_sha256": "19e8f006f727dc345c201a5584076d5e977ebdc0940b7a29be82894a78b48021",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
   "resolution_ids": [],
   "schema_version": 1,
   "simulation_disposition": "simulable",
