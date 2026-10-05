@@ -20,7 +20,10 @@
     "stage3/AUD-VERIFY-001": 3,
     "stage4/AUD-BENCH-001": 3,
     "stage4/AUD-SOURCE-001": 3,
-    "stage4/AUD-VERIFY-001": 3
+    "stage4/AUD-VERIFY-001": 3,
+    "stage5/AUD-BENCH-001": 1,
+    "stage5/AUD-SOURCE-001": 1,
+    "stage5/AUD-VERIFY-001": 1
   },
   "baseline_commit": "050507726684c120a942ae434088ba1a7e76579b",
   "bench_contracts": {
@@ -2757,7 +2760,7 @@
     "stage4/AUD-VERIFY-001": "Parked at the 3-attempt ceiling; 6 failed gate observations: 2 completed research-stage verifier reports checked",
     "stage4/independent_research_review": "Three independent random samples found mismatches. Findings corrected, including sibling conditions, but no fourth acceptance sample is authorized. Stage4 research acceptance remains failed; preserved reports record original reviewed hashes and findings."
   },
-  "branch": "codex/behavior-stage2",
+  "branch": "codex/behavior-stage5",
   "canary_hashes": {
     "invented_parameter.json": "08c53fcb2795e06ea65f7139e23217051e63880201875e0c4a062f4e025afca5",
     "non_run_marked_pass.json": "8a29d76f73debe25a9113c2faf58dd7ca4bed4015ef6d8ca9ac80fe0a62e2892",
@@ -2790,7 +2793,7 @@
     "stage4_research_143_162",
     "stage4_research_163_180"
   ],
-  "current_stage": "stage4",
+  "current_stage": "stage5",
   "entry_status": {
     "OHM-001": {
       "before": "partial",
@@ -3522,31 +3525,19 @@
     "stage3/AUD-VERIFY-001": 8,
     "stage4/AUD-BENCH-001": 6,
     "stage4/AUD-SOURCE-001": 6,
-    "stage4/AUD-VERIFY-001": 6
+    "stage4/AUD-VERIFY-001": 6,
+    "stage5/AUD-BENCH-001": 1,
+    "stage5/AUD-SOURCE-001": 1,
+    "stage5/AUD-VERIFY-001": 1
   },
   "hard_stop": null,
-  "heartbeat_time": "2026-10-05T22:36:27Z",
+  "heartbeat_time": "2026-10-05T22:43:20Z",
   "last_checkpoint": {
-    "entries_touched": [
-      "OHM-103",
-      "OHM-105",
-      "OHM-106",
-      "OHM-107",
-      "OHM-111",
-      "OHM-112",
-      "OHM-113",
-      "OHM-115",
-      "OHM-116",
-      "OHM-117",
-      "OHM-118",
-      "OHM-133",
-      "OHM-146",
-      "OHM-163"
-    ],
-    "number": 26,
-    "path": "out/component-behavior/run/checkpoints/026-stage4.md",
+    "entries_touched": [],
+    "number": 27,
+    "path": "out/component-behavior/run/checkpoints/027-stage5.md",
     "rule_hash": "f240b5f2beb9b8d56d2901fa5b663c5d877d0d6c68c84209b8e61301aafc21d3",
-    "stage": "stage4",
+    "stage": "stage5",
     "status": "failed"
   },
   "legacy_checkpoint_attempt_counts": {
@@ -3888,7 +3879,7 @@
   "research_verifier_attempts": {
     "stage4": 3
   },
-  "resume_action": "Finish the Stage3 end checkpoint and commit, then continue Stage4 under the approved repair/parking policy.",
+  "resume_action": "Build ratings/failure evaluation, then UI and final report. Continue under the existing parking policy; no push or main merge.",
   "rule_hash": "730f651999bc31c7e9db55deb1beac59d05da9aa2d9d9a89ec6f1f20eb53a1c7",
   "rules_baseline": {
     "allowed_fidelity": [
@@ -4026,7 +4017,14 @@
       "status": "blocked",
       "unbound": 57
     },
-    "stage4": "BLOCKED: 17 reference bindings implemented; remaining physical/rating/function blockers explicit. Three independent research samples failed; corrections retained without claiming acceptance."
+    "stage4": {
+      "checkpoint": "026-stage4",
+      "commit": "db538a98a519e47104619237455afa5a779c1310",
+      "reason": "Three failed independent samples corrected without claiming acceptance; corpus source/bench failures remain parked.",
+      "runtime_bindings": 17,
+      "status": "blocked",
+      "unbound": 61
+    }
   },
   "stage_status": "blocked_by_checkpoint"
 }

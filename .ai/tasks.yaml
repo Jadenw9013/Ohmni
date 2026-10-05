@@ -2722,6 +2722,10 @@
         "started_at_commit": "fdaf039"
       },
       "milestone": null,
+      "notes": [
+        "Dependency narrowed under the human repair policy in .ai/approvals/COMPONENT-BEHAVIOR-COMPLETION-request.txt: Stage 2 acceptance is blocked, not complete. Critical evidence blockers must refuse simulation; independent runtime work continues.",
+        "45 runtime bindings;58/63 probes pass. Source statuses unchanged. Independent later stages authorized by human parking policy."
+      ],
       "priority": 500,
       "review": {
         "independent": false,
@@ -2739,11 +2743,7 @@
           "ngspice 42 benches",
           "regression"
         ]
-      },
-      "notes": [
-        "Dependency narrowed under the human repair policy in .ai/approvals/COMPONENT-BEHAVIOR-COMPLETION-request.txt: Stage 2 acceptance is blocked, not complete. Critical evidence blockers must refuse simulation; independent runtime work continues.",
-        "45 runtime bindings;58/63 probes pass. Source statuses unchanged. Independent later stages authorized by human parking policy."
-      ]
+      }
     },
     {
       "acceptance_criteria": [
@@ -2752,7 +2752,9 @@
         "Fresh-context verifier sample",
         "Bench comparison"
       ],
-      "blockers": [],
+      "blockers": [
+        "Research acceptance failed after three samples; source and locked-bench acceptance remains parked. 17 IC/frequency bindings implemented, 61 Stage4 entries remain unbound with explicit reasons."
+      ],
       "dependencies": [
         "CBH-AUDIT"
       ],
@@ -2763,6 +2765,9 @@
         "started_at_commit": "4040902"
       },
       "milestone": null,
+      "notes": [
+        "Independent research and model work continues under the human repair/parking policy. Stage3 acceptance remains BLOCKED, never relabeled complete."
+      ],
       "priority": 400,
       "review": {
         "independent": true,
@@ -2771,7 +2776,7 @@
         "status": "PENDING"
       },
       "scope": "COMPONENT-BEHAVIOR-COMPLETION",
-      "status": "IN_PROGRESS",
+      "status": "BLOCKED",
       "title": "Gap research batch B and IC models",
       "verification": {
         "record": null,
@@ -2780,10 +2785,7 @@
           "independent verifier",
           "ngspice 42 benches"
         ]
-      },
-      "notes": [
-        "Independent research and model work continues under the human repair/parking policy. Stage3 acceptance remains BLOCKED, never relabeled complete."
-      ]
+      }
     },
     {
       "acceptance_criteria": [
@@ -2793,15 +2795,18 @@
       ],
       "blockers": [],
       "dependencies": [
-        "CBH-STAGE4"
+        "CBH-AUDIT"
       ],
       "goal": "Evaluate sourced ratings and failure responses without turning violations or unknowns into passes.",
       "id": "CBH-STAGE5",
       "implementation": {
         "completed_at_commit": null,
-        "started_at_commit": null
+        "started_at_commit": "db538a98a519e47104619237455afa5a779c1310"
       },
       "milestone": null,
+      "notes": [
+        "Independent ratings implementation authorized by the human repair/parking policy. Prior Stage4 dependency remains BLOCKED rather than falsely complete."
+      ],
       "priority": 300,
       "review": {
         "independent": false,
@@ -2810,7 +2815,7 @@
         "status": "PENDING"
       },
       "scope": "COMPONENT-BEHAVIOR-COMPLETION",
-      "status": "APPROVED",
+      "status": "IN_PROGRESS",
       "title": "Ratings and failure checker",
       "verification": {
         "record": null,
