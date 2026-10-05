@@ -45,6 +45,24 @@ class CheckResult:
         return asdict(self)
 
 
+def _record_checkpoint_failure(state, identity, summary, limit):
+    """Mandatory rechecks of a parked gate do not create more repair attempts."""
+    previous = state["attempts"].get(identity, 0)
+    observations = state.setdefault("failed_gate_observations", {})
+    observations[identity] = observations.get(identity, previous) + 1
+    if previous > limit:
+        # Earlier checkpoints counted every observation as an attempt. Preserve
+        # that history explicitly while enforcing the locked repair ceiling.
+        state.setdefault("legacy_checkpoint_attempt_counts", {}).setdefault(identity, previous)
+    attempt = min(previous + 1, limit)
+    state["attempts"][identity] = attempt
+    if attempt >= limit:
+        state["blocked_entries"][identity] = (
+            f"Parked at the {limit}-attempt ceiling; {observations[identity]} failed gate observations: {summary}"
+        )
+    return attempt
+
+
 def _now() -> str:
     return datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z")
 
@@ -979,10 +997,9 @@ class BehaviorAudit:
         for check in checks:
             if not check.passed:
                 identity = f"{stage}/{check.rule_id}"
-                attempt = state["attempts"].get(identity, 0) + 1
-                state["attempts"][identity] = attempt
-                if attempt >= self.rules["maximum_repair_attempts"]:
-                    state["blocked_entries"][identity] = f"Parked after {attempt} failed checkpoints: {check.summary}"
+                attempt = _record_checkpoint_failure(
+                    state, identity, check.summary, self.rules["maximum_repair_attempts"]
+                )
                 if check.rule_id == "AUD-PROTECT-001":
                     state["hard_stop"] = "protected_path_violation"
                 if check.rule_id == "AUD-CANARY-001" and attempt >= 3:

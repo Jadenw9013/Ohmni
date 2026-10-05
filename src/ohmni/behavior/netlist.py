@@ -43,6 +43,9 @@ def load_recipes(registry: BehaviorRegistry, root) -> RuntimeRecipes:
             raise BehaviorRegistryError(f"runtime template requires provenance: {key}")
         for anchor in [*recipe.inline_assets, *(p.source for p in recipe.derived_parameters.values())]:
             _validate_anchor(root, anchor, key)
+        for parameter in recipe.quoted_parameters.values():
+            if parameter.source:
+                _validate_anchor(root, parameter.source, key)
         if recipe.template_provenance:
             _validate_anchor(root, recipe.template_provenance, key)
     return recipes
@@ -134,6 +137,7 @@ def convert_unit(value, source, target):
         "nF": ("F", 1e-9), "pF": ("F", 1e-12), "H": ("H", 1), "uH": ("H", 1e-6),
         "nH": ("H", 1e-9), "s": ("s", 1), "ms": ("s", 1e-3), "us": ("s", 1e-6),
         "ns": ("s", 1e-9), "C": ("degC", 1), "degC": ("degC", 1),
+        "Hz": ("Hz", 1), "kHz": ("Hz", 1e3), "MHz": ("Hz", 1e6), "GHz": ("Hz", 1e9),
     }
     if source not in units or target not in units or units[source][0] != units[target][0]:
         raise ValueError(f"unsupported unit conversion {source} -> {target}")
@@ -174,7 +178,7 @@ def pin_ground_strays(roles, parameters, parameter_evidence, mapping, reference)
     return lines
 
 
-def _parameter_defaults(behavior, recipe, values, evidence):
+def _parameter_defaults(behavior, recipe, values, evidence, root):
     for alias, name in recipe.class_parameters.items():
         if alias in values:
             raise ValueError(f"class default cannot replace a critical or instance value: {alias}")
@@ -185,7 +189,11 @@ def _parameter_defaults(behavior, recipe, values, evidence):
         values[alias], evidence[alias] = value, dict(parameter, source=behavior.source.model_dump(mode="json"))
     authored = json.dumps(behavior.canonical_payload)
     for name, parameter in recipe.quoted_parameters.items():
-        if name in values or parameter.source_fragment not in authored or parameter.value_text not in parameter.source_fragment:
+        quote_source = authored
+        if parameter.source:
+            _validate_anchor(root, parameter.source, recipe.entry_id)
+            quote_source = _safe_local_path(root, parameter.source.document).read_text(encoding="utf-8")
+        if name in values or parameter.source_fragment not in quote_source or parameter.value_text not in parameter.source_fragment:
             raise ValueError(f"quoted parameter does not relocate to the authored class: {name}")
         value = float(parameter.value_text)
         if not math.isfinite(value):
@@ -311,8 +319,15 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
                 values["value"] = component.value.value
                 evidence["value"] = {"basis": "circuit_instance", "unit": recipe.instance_value_unit,
                                      "value": component.value.value}
+            elif component.value is not None:
+                if "value" not in values or not math.isclose(
+                    values["value"], convert_unit(component.value.value, component.value.unit.value,
+                                                 evidence["value"].get("converted_unit", evidence["value"]["unit"])),
+                    rel_tol=1e-12, abs_tol=0,
+                ):
+                    raise ValueError("instance value differs from the fixed sourced reference")
             behavior = registry.behavior_class(recipe.behavior_id)
-            _parameter_defaults(behavior, recipe, values, evidence)
+            _parameter_defaults(behavior, recipe, values, evidence, root)
             template = recipe.template_override or behavior.canonical_payload["model"][recipe.template_key]
             if recipe.template_override:
                 if recipe.template_provenance is None:
@@ -346,6 +361,7 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
             lines.extend(strays)
             components.append(CompiledComponent(
                 ref=component.ref, entry_id=entry_id, behavior_id=recipe.behavior_id,
+                reference_part=recipe.reference_part,
                 fidelity=behavior.fidelity, source_status=entry.status.value,
                 confidence=behavior.canonical_payload.get("confidence", {}).get("model", "L"),
                 source_confidence=behavior.canonical_payload.get("confidence", {}),

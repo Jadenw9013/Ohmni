@@ -257,7 +257,7 @@ def runtime_receipt_errors(audit, entry_id):
         return resistor_receipt_errors(audit, entry_id)
     if behavior == "BEH-TRN-MOSFET":
         return mosfet_receipt_errors(audit, entry_id)
-    if behavior in {"BEH-DIO-PN", "BEH-TRN-BJT"}:
+    if behavior in {"BEH-DIO-PN", "BEH-TRN-BJT", "BEH-MAG-INDUCTOR", "BEH-LED-INDICATOR"}:
         return dc_probe_receipt_errors(audit, entry_id)
     return [f"{entry_id}: no runtime analytical receipt validator for {behavior}"]
 
@@ -268,21 +268,35 @@ def dc_probe_definition(audit, entry_id):
     recipes = load_recipes(registry, audit.root)
     recipe = recipes.entries[entry_id]
     values, evidence = _facts(registry.entry(entry_id), recipe)
-    if recipe.behavior_id == "BEH-DIO-PN":
-        contract = audit._state()["bench_contracts"]["BEH-DIO-PN/B1"]
+    if recipe.behavior_id == "BEH-DIO-PN" and entry_id in {"OHM-057", "OHM-058"}:
+        fact = evidence["vf_max"]
+        current = re.search(r"IF=(\d+(?:\.\d+)?) A", fact["scope"])
+        if current is None:
+            raise ValueError("forward voltage source test current is missing")
+        roles = {"A": "anode", "K": "return"}
+        supplies = {}
+        excitations = [DCExcitation(positive_net="return", negative_net="anode", value=Quantity(value=float(current[1]), unit="A"))]
+        comparison = {"kind": "interval", "minimum": 0, "maximum": values["vf_max"],
+                      "observable": "anode_voltage", "source_fact": fact}
+        limits = "Isothermal25 C forward voltage against the scoped primary-source maximum at its test current; a source-bound check does not validate typical fit, temperature, reverse recovery or ratings."
+    elif recipe.behavior_id in {"BEH-DIO-PN", "BEH-LED-INDICATOR"}:
+        is_led = recipe.behavior_id == "BEH-LED-INDICATOR"
+        contract_id = "BEH-LED-INDICATOR/B1" if is_led else "BEH-DIO-PN/B1"
+        contract = audit._state()["bench_contracts"][contract_id]
         expected = numeric_contract(contract["expected"][0])
         # Relocate the source stimulus rather than treating it as a device rating.
         source_deck = (audit.root / contract["file"]).read_text()
-        if "dc I1 10m 10m 1m" not in source_deck or _sha_bytes((audit.root / contract["file"]).read_bytes()) != contract["netlist_sha256"]:
+        source_text = "I1 0 a1 DC 20m" if is_led else "dc I1 10m 10m 1m"
+        if source_text not in source_deck or _sha_bytes((audit.root / contract["file"]).read_bytes()) != contract["netlist_sha256"]:
             raise ValueError("locked diode forward test condition changed")
         roles = {"A": "anode", "K": "return"}
         supplies = {}
-        excitations = [DCExcitation(positive_net="return", negative_net="anode", value=Quantity(value=0.01, unit="A"))]
+        excitations = [DCExcitation(positive_net="return", negative_net="anode", value=Quantity(value=0.02 if is_led else 0.01, unit="A"))]
         comparison = dict(expected, kind="absolute", observable="anode_voltage",
-                          analytical_source="BEH-DIO-PN/B1", source_deck_sha256=contract["netlist_sha256"])
+                          analytical_source=contract_id, source_deck_sha256=contract["netlist_sha256"])
         limits = "Authored proxy forward curve only. The runtime enforces 25 C; a legacy bench temperature mismatch is reported without changing its locked expected value."
     elif recipe.behavior_id == "BEH-TRN-BJT":
-        # Source-defined hFE measurement: VCE=2 V, IC=150 mA for BCX56-16.
+        # Bias is supplied by the entry's scoped hFE test fields.
         vce = values["gain_test_vce"]
         collector_current = values["gain_test_ic"]
         gain = (values["gain_min"] * values["gain_max"]) ** 0.5
@@ -293,6 +307,14 @@ def dc_probe_definition(audit, entry_id):
                       "observable": "current_gain", "base_current": collector_current / gain,
                       "source_facts": {name: evidence[name] for name in ("gain_min", "gain_max", "gain_test_vce", "gain_test_ic")}}
         limits = "One-point DC gain-bin check using a geometric-mean BF and assumed IS. Does not validate gain roll-off, transient response, temperature behavior, ratings or SOA."
+    elif recipe.behavior_id == "BEH-MAG-INDUCTOR":
+        roles = {"A": "winding", "B": "return"}
+        supplies = {}
+        excitations = [DCExcitation(positive_net="return", negative_net="winding", value=Quantity(value=values["irms"], unit="A"))]
+        comparison = {"kind": "interval", "minimum": 0, "maximum": values["rdc_max"],
+                      "observable": "dc_resistance", "current": values["irms"],
+                      "source_facts": {name: evidence[name] for name in ("rdc_max", "irms")}}
+        limits = "Cold isothermal DC winding resistance against the sourced upper bound. Does not validate nonlinear inductance, resonant response, core loss, self-heating or safe sustained operation at the stimulus current."
     else:
         raise ValueError("no authored DC probe for this class")
     nets = [Net(name=name, kind="ground" if name == "return" else "power" if name in supplies else "signal",
@@ -319,6 +341,9 @@ def _dc_observation(compiled, comparison, output):
     if comparison["observable"] == "current_gain":
         current = parsed.branch_currents.get(compiled.source_elements["collector"])
         return abs(current.value) / comparison["base_current"] if current else None
+    if comparison["observable"] == "dc_resistance":
+        voltage = parsed.node_voltages.get(compiled.node_names["winding"])
+        return voltage.value / comparison["current"] if voltage else None
     raise ValueError("unknown probe observable")
 
 

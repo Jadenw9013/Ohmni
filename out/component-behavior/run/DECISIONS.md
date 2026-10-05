@@ -175,3 +175,11 @@ The three fit-A diode bindings retain the authored proxy and the required tnom/t
 ## D028 — Checkpoint regression and byte-preserving sources
 
 Checkpoint015 recorded one local HTTP connection-aborted regression failure. The unchanged12-test server suite passed alone; checkpoint016 reran all four locked regressions and passed1817 fast tests with82 skipped and49 deselected. No test timeout, expected value or tolerance was changed. Git attributes preserve exact behavior spec, gapfill, model-asset and generated-record bytes across checkouts, because source anchors and independent reviews use SHA-256. Current protected spec bytes match HEAD; this changes checkout policy only, not electrical content.
+
+## D029 — Scoped discrete and magnetic reference models
+
+Use the sourced 20% SRP7028A and 10% SDR0604/RLB0914 saturation definitions, preserving typical versus guaranteed conditions. Capacitance is derived from sourced SRF with the simple LC equation; it is not a fitted broadband loss model. The 2107-V-RC uses its measured-at-rated-current inductance point and remains DC-only because SRF is unsourced. The explicitly named Fairchild BD139 uses its narrower ungraded 40..160 gain range, not the ST-based 40..250 range or the separate grade-16 classification. The red LED model remains the authored approximate 2.0 V fit, alongside the TLDR4400 source 1.8 V typical and 2.2 V maximum at 20 mA. No source status is upgraded and no model is called a vendor model.
+
+## D030 — Distinguish mandatory rechecks from repair attempts
+
+Earlier STATE.attempts counted every failed checkpoint, including mandatory rechecks of already parked gates. Cap active attempt counters at the unchanged three-attempt ceiling and keep continued failures in failed_gate_observations. Where an old counter exceeds three, preserve it in legacy_checkpoint_attempt_counts; historical checkpoints remain unchanged. Rechecking a parked gate cannot authorize a fourth repair attempt. No rule, baseline, expected value, tolerance or failed verdict changes.

@@ -39,6 +39,7 @@ class QuotedParameter(BaseModel):
     source_fragment: str
     basis: Literal["ASSUMPTION", "DERIVED"]
     confidence: Literal["M", "L"]
+    source: SourceAnchor | None = None
 
 
 class PinRoleFact(BaseModel):
@@ -57,6 +58,7 @@ class RuntimeRecipe(BaseModel):
     entry_id: str = Field(pattern=r"^OHM-\d{3}$")
     behavior_id: str
     package: str
+    reference_part: str | None = None
     catalog_parts: list[str] = Field(default_factory=list)
     catalog_identity_pin_map: dict[str, str] = Field(default_factory=dict)
     terminal_roles: dict[str, str]
@@ -113,6 +115,7 @@ class CompiledComponent(BaseModel):
     ref: str
     entry_id: str
     behavior_id: str
+    reference_part: str | None = None
     fidelity: BehaviorFidelity
     source_status: str
     confidence: str

@@ -345,3 +345,19 @@ def test_failed_dc_contract_cannot_be_presented_as_passing(audit, monkeypatch):
     path = audit.run_dir / "runtime-bench-results/OHM-056-op.json"
     _atomic_json(path, dict(receipts[0], run_status="passed", observed=0.73039))
     assert any("raw observation" in error for error in dc_probe_receipt_errors(audit, "OHM-056"))
+
+
+def test_rechecks_cannot_extend_the_repair_attempt_ceiling():
+    from tools.behavior_audit.audit import _record_checkpoint_failure
+
+    state = {"attempts": {}, "blocked_entries": {}}
+    for _ in range(7):
+        _record_checkpoint_failure(state, "stage3/bench", "unchanged contract failure", 3)
+    assert state["attempts"]["stage3/bench"] == 3
+    assert state["failed_gate_observations"]["stage3/bench"] == 7
+    assert "stage3/bench" in state["blocked_entries"]
+    state["attempts"]["stage2/bench"] = 9
+    _record_checkpoint_failure(state, "stage2/bench", "historical observations", 3)
+    assert state["attempts"]["stage2/bench"] == 3
+    assert state["legacy_checkpoint_attempt_counts"]["stage2/bench"] == 9
+    assert state["failed_gate_observations"]["stage2/bench"] == 10

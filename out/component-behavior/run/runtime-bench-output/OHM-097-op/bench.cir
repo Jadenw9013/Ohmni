@@ -1,0 +1,10 @@
+OHMNI sourced behavior circuit
+.options tnom=25
+.temp 25
+Vsource2 n2 0 DC 2
+Iexcitation1 0 n1 DC 0.0018749999999999999
+Qc1 n2 n1 0 QMOD_c1
+.model QMOD_c1 NPN(IS=1e-14 BF=80)
+.op
+.print op
+.end

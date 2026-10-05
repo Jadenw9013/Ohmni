@@ -19,7 +19,9 @@
       "bench-results/BEH-TRN-BJT--B6.json",
       "bench-results/BEH-TRN-BJT--B8.json"
     ],
-    "conflicts": [],
+    "conflicts": [
+      "Fairchild RevA page1 gives ungraded BD139 hFE40..160, whereas the original ST-based spec uses40..250. The same Fairchild page separately lists grade16 as100..250. The ungraded Fairchild reference uses40..160; no equivalence to the ST part or suffixed grades is claimed."
+    ],
     "documents": [
       {
         "document_id": "bd139fairchild",
@@ -167,6 +169,58 @@
         ],
         "unit": null,
         "value": true
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "dc_gain_minimum_ungraded",
+        "page": 1,
+        "scope": "Fairchild BD139 ungraded; VCE2 V, IC150 mA, TC25 C; electrical characteristics table, not the separate grade-16 classification",
+        "sources": [
+          "https://www.farnell.com/datasheets/79944.pdf"
+        ],
+        "unit": "1",
+        "value": 40
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "dc_gain_maximum_ungraded",
+        "page": 1,
+        "scope": "Fairchild BD139 ungraded; VCE2 V, IC150 mA, TC25 C; electrical characteristics table, not the separate grade-16 classification",
+        "sources": [
+          "https://www.farnell.com/datasheets/79944.pdf"
+        ],
+        "unit": "1",
+        "value": 160
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "dc_gain_test_collector_voltage",
+        "page": 1,
+        "scope": "Fairchild BD139 ungraded; VCE2 V, IC150 mA, TC25 C; electrical characteristics table, not the separate grade-16 classification",
+        "sources": [
+          "https://www.farnell.com/datasheets/79944.pdf"
+        ],
+        "unit": "V",
+        "value": 2
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "dc_gain_test_collector_current",
+        "page": 1,
+        "scope": "Fairchild BD139 ungraded; VCE2 V, IC150 mA, TC25 C; electrical characteristics table, not the separate grade-16 classification",
+        "sources": [
+          "https://www.farnell.com/datasheets/79944.pdf"
+        ],
+        "unit": "A",
+        "value": 0.15
       }
     ],
     "remaining_open_items": [
@@ -179,7 +233,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-097.md",
-      "document_sha256": "ed8ce23c80b83761deb0abf5af81def64f41bc3935f9f14d8e8895a348ec2e7e",
+      "document_sha256": "0c5286fcf626891eafc270aef593a683c7a818000c350597e2c1ea8dcd2a9230",
       "fragment_sha256": null,
       "line": 1
     }

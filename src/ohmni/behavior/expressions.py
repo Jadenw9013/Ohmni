@@ -28,6 +28,8 @@ def evaluate(expression: str, values: dict[str, float]) -> float | bool:
             return node.value
         if isinstance(node, ast.Name) and node.id in values:
             return values[node.id]
+        if isinstance(node, ast.Name) and node.id == "pi":
+            return math.pi
         if isinstance(node, ast.BinOp) and type(node.op) in binary:
             left, right = visit(node.left), visit(node.right)
             if isinstance(node.op, ast.Pow) and abs(right) > 64:

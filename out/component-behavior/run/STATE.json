@@ -10,11 +10,11 @@
     "stage2/AUD-REGRESSION-001": 2,
     "stage2/AUD-SOURCE-001": 9,
     "stage2/AUD-VERIFY-001": 5,
-    "stage3/AUD-BENCH-001": 5,
+    "stage3/AUD-BENCH-001": 3,
     "stage3/AUD-HONESTY-001": 1,
     "stage3/AUD-REGRESSION-001": 1,
-    "stage3/AUD-SOURCE-001": 5,
-    "stage3/AUD-VERIFY-001": 5
+    "stage3/AUD-SOURCE-001": 3,
+    "stage3/AUD-VERIFY-001": 3
   },
   "baseline_commit": "050507726684c120a942ae434088ba1a7e76579b",
   "bench_contracts": {
@@ -2710,10 +2710,12 @@
     "OHM-053": "No safety or thermal acceptance for this transformer until working-voltage and loss limits are bound.",
     "OHM-054": "Physical/reference and primary-conductor binding conflict; open-secondary operation is hazardous.",
     "OHM-055": "Working-voltage and complete physical pin binding remain unestablished; no isolation-safety acceptance.",
-    "OHM-056": "Runtime forward fit at required tnom/temp25 C gives0.7255607V versus locked legacy B1 0.73039V +/-0.001V at default27 C. Expected value and temperature requirement are not changed; model acceptance is parked.",
-    "OHM-059": "Runtime forward fit at required tnom/temp25 C gives0.7255607V versus locked legacy B1 0.73039V +/-0.001V at default27 C. Expected value and temperature requirement are not changed; model acceptance is parked.",
+    "OHM-056": "Required25 C runtime does not meet unchanged legacy27 C fit-A B1 contract (0.7255607 V vs0.73039 V +/-0.001 V). Electrical curve implemented; analytical acceptance remains blocked.",
+    "OHM-059": "Required25 C runtime does not meet unchanged legacy27 C fit-A B1 contract (0.7255607 V vs0.73039 V +/-0.001 V). Electrical curve implemented; analytical acceptance remains blocked.",
     "OHM-060": "The average-current derating curve must be implemented before claiming a complete thermal envelope.",
-    "OHM-061": "Runtime forward fit at required tnom/temp25 C gives0.7255607V versus locked legacy B1 0.73039V +/-0.001V at default27 C. Expected value and temperature requirement are not changed; model acceptance is parked.",
+    "OHM-061": "Required25 C runtime does not meet unchanged legacy27 C fit-A B1 contract (0.7255607 V vs0.73039 V +/-0.001 V). Electrical curve implemented; analytical acceptance remains blocked.",
+    "OHM-062": "Required25 C runtime does not meet unchanged legacy27 C fit-A B1 contract (0.7255607 V vs0.73039 V +/-0.001 V). Electrical curve implemented; analytical acceptance remains blocked.",
+    "OHM-063": "Required25 C runtime does not meet unchanged legacy27 C fit-A B1 contract (0.7255607 V vs0.73039 V +/-0.001 V). Electrical curve implemented; analytical acceptance remains blocked.",
     "OHM-071": "Legacy diagonal-AC binding is unsafe for this reference until the explicit derived permutation is implemented and tested.",
     "OHM-072": "Physical role binding remains unverified for the generic WOM/WOG combined entry.",
     "OHM-075": "Junction-temperature/thermal acceptance cannot use the unsourced 350 K/W placeholder.",
@@ -2732,9 +2734,9 @@
     "stage2/AUD-BENCH-001": "Parked after 9 failed checkpoints: 74/205 canonical bench references passed; 21 additional authored netlists lack a canonical contract",
     "stage2/AUD-SOURCE-001": "Parked after 9 failed checkpoints: 223/295 cited URLs have successful hashed fetches",
     "stage2/AUD-VERIFY-001": "Parked after 5 failed checkpoints: 1 completed research-stage verifier reports checked",
-    "stage3/AUD-BENCH-001": "Parked after 5 failed checkpoints: 74/205 canonical bench references passed; 21 additional authored netlists lack a canonical contract",
-    "stage3/AUD-SOURCE-001": "Parked after 5 failed checkpoints: 223/295 cited URLs have successful hashed fetches",
-    "stage3/AUD-VERIFY-001": "Parked after 5 failed checkpoints: 1 completed research-stage verifier reports checked"
+    "stage3/AUD-BENCH-001": "Parked at the 3-attempt ceiling; 6 failed gate observations: 74/205 canonical bench references passed; 21 additional authored netlists lack a canonical contract",
+    "stage3/AUD-SOURCE-001": "Parked at the 3-attempt ceiling; 6 failed gate observations: 223/295 cited URLs have successful hashed fetches",
+    "stage3/AUD-VERIFY-001": "Parked at the 3-attempt ceiling; 6 failed gate observations: 1 completed research-stage verifier reports checked"
   },
   "branch": "codex/behavior-stage2",
   "canary_hashes": {
@@ -3485,26 +3487,36 @@
       "current": "partial"
     }
   },
+  "failed_gate_observations": {
+    "stage3/AUD-BENCH-001": 6,
+    "stage3/AUD-SOURCE-001": 6,
+    "stage3/AUD-VERIFY-001": 6
+  },
   "hard_stop": null,
-  "heartbeat_time": "2026-10-05T19:55:06Z",
+  "heartbeat_time": "2026-10-05T20:11:42Z",
   "last_checkpoint": {
     "entries_touched": [
-      "OHM-011",
-      "OHM-012",
-      "OHM-013",
-      "OHM-056",
-      "OHM-059",
-      "OHM-061",
-      "OHM-095",
-      "OHM-098",
-      "OHM-099",
-      "OHM-102"
+      "OHM-045",
+      "OHM-046",
+      "OHM-048",
+      "OHM-049",
+      "OHM-057",
+      "OHM-058",
+      "OHM-062",
+      "OHM-063",
+      "OHM-073",
+      "OHM-097"
     ],
-    "number": 16,
-    "path": "out/component-behavior/run/checkpoints/016-stage3.md",
+    "number": 17,
+    "path": "out/component-behavior/run/checkpoints/017-stage3.md",
     "rule_hash": "f240b5f2beb9b8d56d2901fa5b663c5d877d0d6c68c84209b8e61301aafc21d3",
     "stage": "stage3",
     "status": "failed"
+  },
+  "legacy_checkpoint_attempt_counts": {
+    "stage3/AUD-BENCH-001": 5,
+    "stage3/AUD-SOURCE-001": 5,
+    "stage3/AUD-VERIFY-001": 5
   },
   "model_implementation": {
     "OHM-001": "implemented",
@@ -3520,10 +3532,20 @@
     "OHM-011": "implemented",
     "OHM-012": "implemented",
     "OHM-013": "implemented",
+    "OHM-045": "implemented",
+    "OHM-046": "implemented",
+    "OHM-048": "implemented",
+    "OHM-049": "implemented",
     "OHM-056": "implemented",
+    "OHM-057": "implemented",
+    "OHM-058": "implemented",
     "OHM-059": "implemented",
     "OHM-061": "implemented",
+    "OHM-062": "implemented",
+    "OHM-063": "implemented",
+    "OHM-073": "implemented",
     "OHM-095": "implemented",
+    "OHM-097": "implemented",
     "OHM-098": "implemented",
     "OHM-099": "implemented",
     "OHM-102": "implemented"

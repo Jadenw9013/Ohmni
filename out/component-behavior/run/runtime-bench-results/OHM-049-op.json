@@ -1,0 +1,59 @@
+{
+  "analysis": "op",
+  "circuit_hash": "a26ded5e3036953cf6cd17dd798fce69400fdb54e694bc49909ee76adf852ea3",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "current": 5.0,
+    "kind": "interval",
+    "maximum": 0.029,
+    "minimum": 0,
+    "observable": "dc_resistance",
+    "source_facts": {
+      "irms": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "rated_current",
+        "page": 1,
+        "scope": "2107-V-RC; 2107 row with V mounting suffix per ordering note; 30 C maximum temperature rise",
+        "sources": [
+          "https://www.bourns.com/docs/product-datasheets/2100_series.pdf"
+        ],
+        "unit": "A",
+        "value": 5
+      },
+      "rdc_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "converted_unit": "ohm",
+        "converted_value": 0.029,
+        "detail": null,
+        "field": "maximum_dcr",
+        "page": 1,
+        "scope": "2107-V-RC; 2107 row with V mounting suffix per ordering note",
+        "sources": [
+          "https://www.bourns.com/docs/product-datasheets/2100_series.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.029
+      }
+    }
+  },
+  "entry_id": "OHM-049",
+  "entry_research_sha256": "601f274f90898ebbfffd7146ff2a3880c425ff2e8d19775d06722306b6fd51a8",
+  "limits": "Cold isothermal DC winding resistance against the sourced upper bound. Does not validate nonlinear inductance, resonant response, core loss, self-heating or safe sustained operation at the stimulus current.",
+  "netlist_sha256": "54d1f4e3d73038ad6db63d72a516acabc229707e9018215539a8d1201ed79de6",
+  "observation_status": "ran",
+  "observed": 0.028999999999999998,
+  "output_sha256": "3833618e8480c05701538963b5c05639c77391f7a3412a95559bcea94b0621f0",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-05T20:04:43Z",
+  "raw_output": "runtime-bench-output/OHM-049-op/output.txt",
+  "recipe_source_sha256": "00e4d1a89c093af0fe9eef072e9234349eb682297fc57aac4001a938a33b73e7",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "version_file": "runtime-bench-output/OHM-049-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n",
+  "version_sha256": "2cdcb25fcf77dea87742b9ac629a0b5ba20169e01beb2b59fdd2e41ee348a45d"
+}

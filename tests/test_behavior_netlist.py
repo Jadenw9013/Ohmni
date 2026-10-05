@@ -260,3 +260,59 @@ def test_authored_startup_nodeset_cannot_be_dropped(registry, recipes, monkeypat
     override.entries["OHM-004"] = row
     result = compile_circuit(divider(), registry, override)
     assert not result.runnable and any("preserve its authored nodeset" in p for p in result.problems)
+
+
+@pytest.mark.parametrize("entry_id", ["OHM-045", "OHM-046", "OHM-048", "OHM-049", "OHM-057", "OHM-058", "OHM-062", "OHM-063", "OHM-073", "OHM-097"])
+def test_scoped_runtime_references_compile_with_provenance(entry_id):
+    from tools.behavior_audit.audit import BehaviorAudit
+    from tools.behavior_audit.runtime_benches import dc_probe_definition
+
+    compiled, identity = dc_probe_definition(BehaviorAudit(ROOT), entry_id)
+    assert compiled.runnable, compiled.problems
+    assert compiled.components[0].reference_part
+    assert compiled.components[0].fidelity == "behavioural_approximation"
+    assert identity["entry_research_sha256"]
+    assert ".include" not in compiled.netlist
+    if entry_id in {"OHM-057", "OHM-058", "OHM-062", "OHM-063", "OHM-073"}:
+        assert compiled.components[0].terminal_nodes["1"] == "0"
+        assert compiled.components[0].role_nodes["K"] == "0"
+    if entry_id == "OHM-097":
+        assert compiled.components[0].parameters["BF"] == 80
+        assert "Fairchild" in compiled.components[0].reference_part
+
+
+def test_fixed_reference_cannot_accept_another_inductance(registry, recipes):
+    recipe = recipes.entries["OHM-045"]
+    circuit = divider("OHM-045", recipe.package, "OHM-045")
+    # The divider factory deliberately supplies 10 kohm: dimensional mismatch
+    # must be refused instead of silently using a fixed inductor value.
+    choices = {c.ref: BehaviorSelection(entry_id="OHM-045") for c in circuit.components}
+    assert not compile_circuit(circuit, registry, recipes, choices).runnable
+    circuit = circuit.model_copy(update={"components": [c.model_copy(update={"value": Quantity(value=2.2e-6, unit="H")}) for c in circuit.components]})
+    result = compile_circuit(circuit, registry, recipes, choices)
+    assert not result.runnable
+    assert any("differs from the fixed sourced reference" in p for p in result.problems)
+
+
+def test_inductor_definitions_and_uncertainty_are_not_interchanged():
+    from tools.behavior_audit.audit import BehaviorAudit
+    from tools.behavior_audit.runtime_benches import dc_probe_definition
+
+    for entry_id, drop in [("OHM-045", .2), ("OHM-046", .1), ("OHM-048", .1), ("OHM-049", 1-22.8/33)]:
+        compiled, _ = dc_probe_definition(BehaviorAudit(ROOT), entry_id)
+        component = compiled.components[0]
+        assert component.parameters["drop"] == pytest.approx(drop)
+        assert component.parameter_evidence["lr"]["basis"] == "ASSUMPTION"
+        if entry_id == "OHM-048":
+            assert "typical value" in component.parameter_evidence["irms"]["scope"]
+        if entry_id == "OHM-049":
+            assert component.parameter_evidence["cp_placeholder_pf"]["basis"] == "ASSUMPTION"
+
+
+def test_entry_specific_assumption_requires_its_exact_source_fragment(registry, recipes):
+    from ohmni.behavior.netlist import _parameter_defaults
+
+    recipe = recipes.entries["OHM-057"]
+    changed = recipe.model_copy(update={"quoted_parameters": {"TT_us": recipe.quoted_parameters["TT_us"].model_copy(update={"source_fragment": "invented 3 us data"})}})
+    with pytest.raises(ValueError, match="does not relocate"):
+        _parameter_defaults(registry.behavior_class(recipe.behavior_id), changed, {}, {}, ROOT)
