@@ -2793,7 +2793,9 @@
         "Violations remain violations",
         "Unknown or non-run remains non-pass"
       ],
-      "blockers": [],
+      "blockers": [
+        "Scoped ratings software and probes pass, but nonquantitative failure rules, transient stress and source-specific context remain unresolved; inherited corpus gates remain failed."
+      ],
       "dependencies": [
         "CBH-AUDIT"
       ],
@@ -2815,7 +2817,7 @@
         "status": "PENDING"
       },
       "scope": "COMPONENT-BEHAVIOR-COMPLETION",
-      "status": "IN_PROGRESS",
+      "status": "BLOCKED",
       "title": "Ratings and failure checker",
       "verification": {
         "record": null,
@@ -2835,15 +2837,18 @@
       ],
       "blockers": [],
       "dependencies": [
-        "CBH-STAGE5"
+        "CBH-AUDIT"
       ],
       "goal": "Expose honest simulation controls, results, fidelity, status and confidence in the web UI.",
       "id": "CBH-STAGE6",
       "implementation": {
         "completed_at_commit": null,
-        "started_at_commit": null
+        "started_at_commit": "72d19ccc425033908f536853314876ba4a8ddf9a"
       },
       "milestone": null,
+      "notes": [
+        "Independent truthful UI work is authorized by the human repair/parking policy. Stage5 remains partial and blocked; UI will expose those limits."
+      ],
       "priority": 200,
       "review": {
         "independent": false,
@@ -2852,7 +2857,7 @@
         "status": "PENDING"
       },
       "scope": "COMPONENT-BEHAVIOR-COMPLETION",
-      "status": "APPROVED",
+      "status": "IN_PROGRESS",
       "title": "Behavior simulation UI",
       "verification": {
         "record": null,
