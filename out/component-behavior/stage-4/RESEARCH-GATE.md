@@ -2,7 +2,7 @@
 
 > Script-generated from gapfill records and current-run ngspice receipts.
 
-Entries: 60. Research outcomes: {'sources_reviewed': 60}.
+Entries: 78. Research outcomes: {'sources_reviewed': 78}.
 Status upgrades: 0.
 Class bench results do not establish package ratings or full physical-device validity.
 
@@ -68,6 +68,24 @@ Class bench results do not establish package ratings or full physical-device val
 | [OHM-160](../../../docs/behavior/gapfill/OHM-160.md) | partial | partial | sources_reviewed | 1 / 11 | 0/2 PASS |
 | [OHM-161](../../../docs/behavior/gapfill/OHM-161.md) | partial | partial | sources_reviewed | 2 / 14 | 0/2 PASS |
 | [OHM-162](../../../docs/behavior/gapfill/OHM-162.md) | partial | partial | sources_reviewed | 1 / 5 | 0/5 PASS |
+| [OHM-163](../../../docs/behavior/gapfill/OHM-163.md) | partial | partial | sources_reviewed | 1 / 5 | 0/5 PASS |
+| [OHM-164](../../../docs/behavior/gapfill/OHM-164.md) | partial | partial | sources_reviewed | 2 / 8 | 0/5 PASS |
+| [OHM-165](../../../docs/behavior/gapfill/OHM-165.md) | partial | partial | sources_reviewed | 1 / 2 | 0/5 PASS |
+| [OHM-166](../../../docs/behavior/gapfill/OHM-166.md) | partial | partial | sources_reviewed | 1 / 7 | 0/5 PASS |
+| [OHM-167](../../../docs/behavior/gapfill/OHM-167.md) | partial | partial | sources_reviewed | 1 / 5 | 0/2 PASS |
+| [OHM-168](../../../docs/behavior/gapfill/OHM-168.md) | partial | partial | sources_reviewed | 1 / 5 | 0/2 PASS |
+| [OHM-169](../../../docs/behavior/gapfill/OHM-169.md) | partial | partial | sources_reviewed | 1 / 5 | 1/3 PASS |
+| [OHM-170](../../../docs/behavior/gapfill/OHM-170.md) | partial | partial | sources_reviewed | 1 / 7 | 1/3 PASS |
+| [OHM-171](../../../docs/behavior/gapfill/OHM-171.md) | partial | partial | sources_reviewed | 1 / 6 | 0/2 PASS |
+| [OHM-172](../../../docs/behavior/gapfill/OHM-172.md) | partial | partial | sources_reviewed | 1 / 7 | 0/2 PASS |
+| [OHM-173](../../../docs/behavior/gapfill/OHM-173.md) | partial | partial | sources_reviewed | 1 / 7 | 1/2 PASS |
+| [OHM-174](../../../docs/behavior/gapfill/OHM-174.md) | partial | partial | sources_reviewed | 3 / 12 | 1/2 PASS |
+| [OHM-175](../../../docs/behavior/gapfill/OHM-175.md) | partial | partial | sources_reviewed | 1 / 8 | 0/3 PASS |
+| [OHM-176](../../../docs/behavior/gapfill/OHM-176.md) | partial | partial | sources_reviewed | 2 / 9 | 0/3 PASS |
+| [OHM-177](../../../docs/behavior/gapfill/OHM-177.md) | partial | partial | sources_reviewed | 1 / 5 | 0/3 PASS |
+| [OHM-178](../../../docs/behavior/gapfill/OHM-178.md) | partial | partial | sources_reviewed | 1 / 8 | 0/2 PASS |
+| [OHM-179](../../../docs/behavior/gapfill/OHM-179.md) | partial | partial | sources_reviewed | 1 / 7 | 0/2 PASS |
+| [OHM-180](../../../docs/behavior/gapfill/OHM-180.md) | partial | partial | sources_reviewed | 1 / 8 | 0/2 PASS |
 
 ## Remaining work and conflicts
 
@@ -519,3 +537,131 @@ Class bench results do not establish package ratings or full physical-device val
 - remaining: Primary PS-67643-002 text could be read through web search,but full content-hashed fetch timedout;its30mohm/contactcapacitance figures are not promoted here.
 - remaining: Current-temperature-rise and contact-resistance model validation remain open.
 - blockers: Exact source-backed pin-function and physical map plus validated contact model unavailable.
+
+### OHM-163: USB-B receptacle
+
+- remaining: Manufacturer drawing numbers the four pads but does not supply USB signal names; complete signal-to-library-coordinate binding remains unverified.
+- remaining: Current derating and contact heating model are unavailable.
+- blockers: Missing validated pin-function/physical-terminal binding; USB protocol is not simulable.
+
+### OHM-164: Micro-USB receptacle
+
+- remaining: Exact pin mapping and current/temperature derating not archived; manufacturer product page and drawing returned HTTP 403.
+- conflicts: Brochure gives 30 milliohm initial plus 10 milliohm change; presentation says 10 milliohm maximum. Retain 30 milliohm conservative initial resistance.
+- conflicts: Brochure defines 100 VAC as one-minute proof; presentation calls 100 VAC rated. Working-voltage scope remains unresolved.
+- blockers: Rating-critical scope and terminal binding unresolved; no USB protocol simulation.
+
+### OHM-165: USB-C receptacle
+
+- remaining: Exact 24-pin drawing and series rating specification are blocked at manufacturer URLs; the archived brochure lacks a complete signal table, voltage rating and derating.
+- remaining: The 16-contact catalog subset is not the full 24-contact reference footprint.
+- conflicts: Family 5 A capability cannot be applied to a single VBUS contact or treated as USB-PD negotiation.
+- blockers: Missing exact contact rating and physical map; USB/PD protocols not simulable.
+
+### OHM-166: Mini-USB receptacle
+
+- remaining: Confirm resistance unit typography and working-voltage AC/DC scope; source prints MOHM in both resistance rows.
+- remaining: Pin 1 is drawn on mating view but a source signal-function table and library coordinate binding remain missing.
+- blockers: Rating unit/scope and pin-function binding not closed; USB protocol not simulable.
+
+### OHM-167: HDMI receptacle
+
+- remaining: Type A signal-to-pad binding for the selected physical reference remains unverified.
+- remaining: No sourced transmission-line or connector parasitic model.
+- conflicts: HD12 alternate outline differs from the default library reference; ratings are scoped to this alternate.
+- blockers: Unvalidated reference footprint and signal map; HDMI protocol is not simulable.
+
+### OHM-168: Mini-HDMI receptacle
+
+- remaining: Type C pin assignment must be independently bound; brochure explicitly warns it differs from Type A.
+- remaining: Contact resistance and exact physical binding not established.
+- blockers: Missing Type C map/contact resistance; HDMI protocol is not simulable.
+
+### OHM-169: RJ45 Ethernet jack
+
+- remaining: Exact c-bmj-0102 drawing and GS-12-083 specification URLs returned 403; pin numbering, contact resistance, working voltage and exact family applicability remain open.
+- remaining: Cat3 passive connector does not establish Ethernet PHY or PoE compliance.
+- conflicts: 54602-910LF in the same source is ten-position; cannot substitute it for the eight-position 54602-908LF.
+- blockers: Missing exact terminal map/contact ratings; no PHY/protocol simulation.
+
+### OHM-170: RJ11 jack
+
+- remaining: Map manufacturer contacts 1..4 to six-position housing convention 2..5 and library coordinates; telephony Tip/Ring is application wiring, not inherent pin truth.
+- remaining: Current derating unavailable.
+- conflicts: Exact drawing says 125 VAC and 35 milliohm; older family summaries of 150 VAC / 20 milliohm are not used.
+- blockers: Physical/permutation mapping unresolved; do not assign telephony polarity from memory.
+
+### OHM-171: 3.5 mm audio jack
+
+- remaining: Default Ledino footprint remains unbound; alternate does not silently replace it.
+- remaining: Maximum safe operating voltage and contact derating are not established by the typ voltage row.
+- conflicts: 12 V is printed in typ column; do not relabel it maximum.
+- blockers: Missing maximum voltage and default physical binding.
+
+### OHM-172: DC barrel jack
+
+- remaining: Maximum voltage/current and temperature derating are not qualified as max by this datasheet; conservative original 16 V envelope remains pending scope resolution.
+- remaining: Physical terminal permutation must be validated before executable binding.
+- conflicts: Spec generic switch-to-tip assumption conflicts with exact PJ-102A schematic: switch is to sleeve.
+- conflicts: Original 16 V and March2025 24 V typical rated row remain separate; no silent voltage upgrade.
+- blockers: Rating-critical limits and physical binding remain unresolved.
+
+### OHM-173: XT30 PCB connector
+
+- remaining: No unambiguous +/- pin labeling in the archived drawing; library terminal1 at -X and footprint pad1 at +X require verified polarity/permutation.
+- remaining: No thermal derating, PCB copper condition or peak-current duration.
+- conflicts: PCB wire field literally says PCB; do not apply a cable AWG rating.
+- conflicts: Battery short circuits, reversed polarity and hot-plug arcing remain hazards; 30 A is not a continuous current rating.
+- blockers: Safety-critical polarity and thermal derating unresolved.
+
+### OHM-174: XT60 PCB connector
+
+- remaining: Resolve exact legacy versus M30 variant and its working-voltage/current scope; source values are not interchangeable.
+- remaining: Polarity-to-footprint permutation, thermal derating and inrush/arc limits remain unverified.
+- conflicts: Legacy 45 A/500 V/1000 uses vs catalogue 35 A/500 V withstand/100 uses vs M30 page 35 A/80 V working/1.2 milliohm. Retain the lower original 30 A current assumption, 80 V working ceiling and 1.2 milliohm conservative resistance for review only; do not enable a model.
+- conflicts: No 60 A continuous claim; PCB variant is not the 12 AWG cable connector. Battery short-circuit and hot-mating arc hazards remain.
+- blockers: Safety-critical variant, polarity and thermal scope unresolved.
+
+### OHM-175: U.FL/I-PEX RF connector
+
+- remaining: Working current/voltage and RF power derating not supplied by this table.
+- remaining: Exact U.FL-R-SMT physical contact binding and parasitic/launch model remain open.
+- conflicts: Spec 10 mA operating-current claim confuses the resistance measurement condition with a rating. Reject that interpretation.
+- conflicts: 200 VAC is a one-minute proof test, not a working-voltage rating.
+- blockers: Missing rating-critical current/voltage; RF transmission validity requires a sourced launch model.
+
+### OHM-176: Vertical SMA connector
+
+- remaining: No connector current/RF power rating; specified insertion loss and VSWR for uncabled receptacle are N/A.
+- remaining: Exact library-to-source footprint dimensions and terminal labeling not validated.
+- conflicts: 500 mW dummy-load power row is inapplicable to the uncabled jack.
+- conflicts: Drawing center contact is item2 in BOM, not a claim that electrical terminal2 is signal.
+- blockers: Missing current/power rating and validated physical map.
+
+### OHM-177: Edge-launch SMA connector
+
+- remaining: PS-89675-346 is referenced but no successfully archived electrical specification for this exact part is available.
+- remaining: Contact current/voltage, center/shell resistance, temperature and validated launch parameters remain missing.
+- conflicts: 73251-1150 and EWR-2074/73251-2120 are distinct outlines; do not borrow their footprint or rating.
+- blockers: Rating-critical fields and exact physical binding unresolved.
+
+### OHM-178: FFC/FPC ZIF connector
+
+- remaining: Pin1 physical orientation and cable-side permutation require exact engineering drawing validation.
+- remaining: Metal fittings are mechanical; no automatic GND assignment.
+- conflicts: 0.5 A is not permitted on every contact simultaneously: manufacturer requires 70 percent (0.35 A).
+- blockers: Unvalidated physical/cable pin mapping and load-temperature derating.
+
+### OHM-179: SD card socket
+
+- remaining: Default Molex physical pin/CD/WP map and contact ratings remain unverified; alternative does not change footprint.
+- remaining: SD card protocol and memory operation remain outside ngspice.
+- conflicts: 100 VAC is a connector insulation limit, not a permissible card VDD.
+- blockers: Exact physical mapping missing; SD protocol not simulable.
+
+### OHM-180: MicroSD card socket
+
+- remaining: Default Molex reference physical mapping and CD switch differ; do not substitute the Hirose footprint.
+- remaining: Data-interface and card-current behavior require a bound card, not just the socket.
+- conflicts: Signal pin2 CD/DAT3 is not the mechanical card-detect switch A/B.
+- blockers: Default physical binding unresolved; SD protocol not simulable.

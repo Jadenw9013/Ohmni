@@ -11,7 +11,166 @@
   "fidelity": "behavioural_approximation",
   "group": "R10A",
   "layer": "L1",
-  "research": null,
+  "research": {
+    "bench_result": null,
+    "bench_results": [
+      "bench-results/BEH-CON-USB--B1.json",
+      "bench-results/BEH-CON-USB--B2.json",
+      "bench-results/BEH-CON-USB--B3.json",
+      "bench-results/BEH-CON-USB--B4.json",
+      "bench-results/BEH-CON-USB--B5.json"
+    ],
+    "conflicts": [
+      "Brochure gives 30 milliohm initial plus 10 milliohm change; presentation says 10 milliohm maximum. Retain 30 milliohm conservative initial resistance.",
+      "Brochure defines 100 VAC as one-minute proof; presentation calls 100 VAC rated. Working-voltage scope remains unresolved."
+    ],
+    "documents": [
+      {
+        "document_id": "fci-micro",
+        "manufacturer": "FCI",
+        "note": "Primary PDF read from the hash-addressed archive.",
+        "page": null,
+        "revision": "INOMICROUSB0215EA4",
+        "source_status": "primary_source_opened",
+        "title": "Micro USB 2.0 connectors",
+        "url": "https://www.farnell.com/datasheets/2366786.pdf"
+      },
+      {
+        "document_id": "fci-micro-presentation",
+        "manufacturer": "FCI",
+        "note": "Primary PDF read from the hash-addressed archive.",
+        "page": null,
+        "revision": "undated",
+        "source_status": "primary_source_opened",
+        "title": "Micro USB 2.0 product presentation",
+        "url": "https://www.farnell.com/datasheets/2366787.pdf"
+      }
+    ],
+    "entry_id": "OHM-164",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "contact_resistance_initial_max",
+        "page": 2,
+        "scope": "10118194-0001LF identified on brochure p3; family specifications, not a validated five-pin map; initial low-level measurement",
+        "sources": [
+          "https://www.farnell.com/datasheets/2366786.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.03
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "contact_resistance_change_max",
+        "page": 2,
+        "scope": "10118194-0001LF identified on brochure p3; family specifications, not a validated five-pin map; after test, magnitude of change",
+        "sources": [
+          "https://www.farnell.com/datasheets/2366786.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.01
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "insulation_resistance_initial_min",
+        "page": 2,
+        "scope": "10118194-0001LF identified on brochure p3; family specifications, not a validated five-pin map; initial",
+        "sources": [
+          "https://www.farnell.com/datasheets/2366786.pdf"
+        ],
+        "unit": "ohm",
+        "value": 1000000000.0
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "proof_voltage_ac",
+        "page": 2,
+        "scope": "10118194-0001LF identified on brochure p3; family specifications, not a validated five-pin map; one minute dielectric test; not a working-voltage inference",
+        "sources": [
+          "https://www.farnell.com/datasheets/2366786.pdf"
+        ],
+        "unit": "V",
+        "value": 100
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "temperature_functional_test",
+        "page": 2,
+        "scope": "10118194-0001LF identified on brochure p3; family specifications, not a validated five-pin map; mated test without damage",
+        "sources": [
+          "https://www.farnell.com/datasheets/2366786.pdf"
+        ],
+        "unit": "degC",
+        "value": [
+          -55,
+          85
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "presentation_current_rated",
+        "page": 3,
+        "scope": "10118194-0001LF identified on brochure p3; family specifications, not a validated five-pin map; family current rating",
+        "sources": [
+          "https://www.farnell.com/datasheets/2366787.pdf"
+        ],
+        "unit": "A",
+        "value": 1
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "presentation_contact_resistance_max",
+        "page": 3,
+        "scope": "10118194-0001LF identified on brochure p3; family specifications, not a validated five-pin map; conflicts with brochure initial 30 milliohm",
+        "sources": [
+          "https://www.farnell.com/datasheets/2366787.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.01
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "presentation_voltage_rated_ac",
+        "page": 3,
+        "scope": "10118194-0001LF identified on brochure p3; family specifications, not a validated five-pin map; family presentation calls this a voltage rating",
+        "sources": [
+          "https://www.farnell.com/datasheets/2366787.pdf"
+        ],
+        "unit": "V",
+        "value": 100
+      }
+    ],
+    "remaining_open_items": [
+      "Exact pin mapping and current/temperature derating not archived; manufacturer product page and drawing returned HTTP 403."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [
+      "Rating-critical scope and terminal binding unresolved; no USB protocol simulation."
+    ],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-164.md",
+      "document_sha256": "534667b7341600cfbd8a537ff2a7d76238648aa285bf12059724c80c37214d96",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
   "resolution_ids": [],
   "schema_version": 1,
   "simulation_disposition": "simulable",

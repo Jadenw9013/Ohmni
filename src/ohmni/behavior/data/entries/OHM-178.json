@@ -11,7 +11,153 @@
   "fidelity": "ideal_components",
   "group": "R10B",
   "layer": "L1",
-  "research": null,
+  "research": {
+    "bench_result": null,
+    "bench_results": [
+      "bench-results/BEH-CON-FFC--B1.json",
+      "bench-results/BEH-CON-FFC--B2.json"
+    ],
+    "conflicts": [
+      "0.5 A is not permitted on every contact simultaneously: manufacturer requires 70 percent (0.35 A)."
+    ],
+    "documents": [
+      {
+        "document_id": "hirose-fh12",
+        "manufacturer": "Hirose",
+        "note": "Primary PDF read from the hash-addressed archive.",
+        "page": null,
+        "revision": "undated archived family catalogue",
+        "source_status": "primary_source_opened",
+        "title": "FH12 0.5mm and 1mm pitch FPC/FFC connectors",
+        "url": "https://www.physics.utoronto.ca/~astummer/Archives/2014%20Micro%203D%20Magnetometer/Docs/Hirose%20FH12-16S-1SV(55),%20FFC%20connector,%20SMT%201mm%2016-pos.pdf"
+      }
+    ],
+    "entry_id": "OHM-178",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "current_rated_per_contact",
+        "page": 2,
+        "scope": "FH12-10S-0.5SH bottom-contact 10 position explicitly listed p4; not the 1mm part in archive filename; derate to 70 percent when all contacts carry current",
+        "sources": [
+          "https://www.physics.utoronto.ca/~astummer/Archives/2014%20Micro%203D%20Magnetometer/Docs/Hirose%20FH12-16S-1SV(55),%20FFC%20connector,%20SMT%201mm%2016-pos.pdf"
+        ],
+        "unit": "A",
+        "value": 0.5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "voltage_rated_ac",
+        "page": 2,
+        "scope": "FH12-10S-0.5SH bottom-contact 10 position explicitly listed p4; not the 1mm part in archive filename; family rating",
+        "sources": [
+          "https://www.physics.utoronto.ca/~astummer/Archives/2014%20Micro%203D%20Magnetometer/Docs/Hirose%20FH12-16S-1SV(55),%20FFC%20connector,%20SMT%201mm%2016-pos.pdf"
+        ],
+        "unit": "V",
+        "value": 50
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "contact_resistance_max",
+        "page": 2,
+        "scope": "FH12-10S-0.5SH bottom-contact 10 position explicitly listed p4; not the 1mm part in archive filename; at 1 mA test current",
+        "sources": [
+          "https://www.physics.utoronto.ca/~astummer/Archives/2014%20Micro%203D%20Magnetometer/Docs/Hirose%20FH12-16S-1SV(55),%20FFC%20connector,%20SMT%201mm%2016-pos.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.05
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "temperature_operating",
+        "page": 2,
+        "scope": "FH12-10S-0.5SH bottom-contact 10 position explicitly listed p4; not the 1mm part in archive filename; includes current-induced temperature rise",
+        "sources": [
+          "https://www.physics.utoronto.ca/~astummer/Archives/2014%20Micro%203D%20Magnetometer/Docs/Hirose%20FH12-16S-1SV(55),%20FFC%20connector,%20SMT%201mm%2016-pos.pdf"
+        ],
+        "unit": "degC",
+        "value": [
+          -40,
+          85
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "mating_cycles",
+        "page": 2,
+        "scope": "FH12-10S-0.5SH bottom-contact 10 position explicitly listed p4; not the 1mm part in archive filename; durability condition",
+        "sources": [
+          "https://www.physics.utoronto.ca/~astummer/Archives/2014%20Micro%203D%20Magnetometer/Docs/Hirose%20FH12-16S-1SV(55),%20FFC%20connector,%20SMT%201mm%2016-pos.pdf"
+        ],
+        "unit": null,
+        "value": 20
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "contact_count",
+        "page": 4,
+        "scope": "FH12-10S-0.5SH bottom-contact 10 position explicitly listed p4; not the 1mm part in archive filename; bottom contact row",
+        "sources": [
+          "https://www.physics.utoronto.ca/~astummer/Archives/2014%20Micro%203D%20Magnetometer/Docs/Hirose%20FH12-16S-1SV(55),%20FFC%20connector,%20SMT%201mm%2016-pos.pdf"
+        ],
+        "unit": null,
+        "value": 10
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "contact_pitch",
+        "page": 4,
+        "scope": "FH12-10S-0.5SH bottom-contact 10 position explicitly listed p4; not the 1mm part in archive filename; source drawing",
+        "sources": [
+          "https://www.physics.utoronto.ca/~astummer/Archives/2014%20Micro%203D%20Magnetometer/Docs/Hirose%20FH12-16S-1SV(55),%20FFC%20connector,%20SMT%201mm%2016-pos.pdf"
+        ],
+        "unit": "mm",
+        "value": 0.5
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "H",
+        "detail": null,
+        "field": "current_all_contacts",
+        "page": 2,
+        "scope": "FH12-10S-0.5SH bottom-contact 10 position explicitly listed p4; not the 1mm part in archive filename; 0.5 A times sourced 70 percent rule",
+        "sources": [
+          "https://www.physics.utoronto.ca/~astummer/Archives/2014%20Micro%203D%20Magnetometer/Docs/Hirose%20FH12-16S-1SV(55),%20FFC%20connector,%20SMT%201mm%2016-pos.pdf"
+        ],
+        "unit": "A",
+        "value": 0.35
+      }
+    ],
+    "remaining_open_items": [
+      "Pin1 physical orientation and cable-side permutation require exact engineering drawing validation.",
+      "Metal fittings are mechanical; no automatic GND assignment."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [
+      "Unvalidated physical/cable pin mapping and load-temperature derating."
+    ],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-178.md",
+      "document_sha256": "2d66580ac5ca1a3b835de369cbbc0572c982284c14e792121d9d08e198d1c5cb",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
   "resolution_ids": [],
   "schema_version": 1,
   "simulation_disposition": "simulable",

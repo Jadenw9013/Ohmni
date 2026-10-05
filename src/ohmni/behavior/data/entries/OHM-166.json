@@ -11,7 +11,141 @@
   "fidelity": "behavioural_approximation",
   "group": "R10A",
   "layer": "L1",
-  "research": null,
+  "research": {
+    "bench_result": null,
+    "bench_results": [
+      "bench-results/BEH-CON-USB--B1.json",
+      "bench-results/BEH-CON-USB--B2.json",
+      "bench-results/BEH-CON-USB--B3.json",
+      "bench-results/BEH-CON-USB--B4.json",
+      "bench-results/BEH-CON-USB--B5.json"
+    ],
+    "conflicts": [],
+    "documents": [
+      {
+        "document_id": "wurth-mini",
+        "manufacturer": "Wurth Elektronik",
+        "note": "Primary PDF read from the hash-addressed archive.",
+        "page": null,
+        "revision": "Rev E, 05-Dec-2007",
+        "source_status": "primary_source_opened",
+        "title": "Mini USB SMT Type B 5 contacts 65100516121",
+        "url": "https://datasheets.b-cdn.net/files/65100516121-W%C3%BCrth-Elektronik-Midcom-datasheet-5336019.pdf"
+      }
+    ],
+    "entry_id": "OHM-166",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "current_rated",
+        "page": 1,
+        "scope": "65100516121, exact archived manufacturer drawing; rated current",
+        "sources": [
+          "https://datasheets.b-cdn.net/files/65100516121-W%C3%BCrth-Elektronik-Midcom-datasheet-5336019.pdf"
+        ],
+        "unit": "A",
+        "value": 1
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "working_voltage_stated",
+        "page": 1,
+        "scope": "65100516121, exact archived manufacturer drawing; sheet does not qualify AC/DC",
+        "sources": [
+          "https://datasheets.b-cdn.net/files/65100516121-W%C3%BCrth-Elektronik-Midcom-datasheet-5336019.pdf"
+        ],
+        "unit": "V",
+        "value": 30
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "contact_resistance_max",
+        "page": 1,
+        "scope": "65100516121, exact archived manufacturer drawing; printed 20 MOHM interpreted as milliohm in contact row, separately from 1000 MOHM insulation row",
+        "sources": [
+          "https://datasheets.b-cdn.net/files/65100516121-W%C3%BCrth-Elektronik-Midcom-datasheet-5336019.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.02
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "insulation_resistance_min",
+        "page": 1,
+        "scope": "65100516121, exact archived manufacturer drawing; greater than stated bound",
+        "sources": [
+          "https://datasheets.b-cdn.net/files/65100516121-W%C3%BCrth-Elektronik-Midcom-datasheet-5336019.pdf"
+        ],
+        "unit": "ohm",
+        "value": 1000000000.0
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "temperature_operating",
+        "page": 1,
+        "scope": "65100516121, exact archived manufacturer drawing; environment",
+        "sources": [
+          "https://datasheets.b-cdn.net/files/65100516121-W%C3%BCrth-Elektronik-Midcom-datasheet-5336019.pdf"
+        ],
+        "unit": "degC",
+        "value": [
+          -40,
+          105
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "mating_cycles",
+        "page": 1,
+        "scope": "65100516121, exact archived manufacturer drawing; quality class",
+        "sources": [
+          "https://datasheets.b-cdn.net/files/65100516121-W%C3%BCrth-Elektronik-Midcom-datasheet-5336019.pdf"
+        ],
+        "unit": null,
+        "value": 1500
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "contact_pitch",
+        "page": 1,
+        "scope": "65100516121, exact archived manufacturer drawing; drawing five contacts span 3.20 mm",
+        "sources": [
+          "https://datasheets.b-cdn.net/files/65100516121-W%C3%BCrth-Elektronik-Midcom-datasheet-5336019.pdf"
+        ],
+        "unit": "mm",
+        "value": 0.8
+      }
+    ],
+    "remaining_open_items": [
+      "Confirm resistance unit typography and working-voltage AC/DC scope; source prints MOHM in both resistance rows.",
+      "Pin 1 is drawn on mating view but a source signal-function table and library coordinate binding remain missing."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [
+      "Rating unit/scope and pin-function binding not closed; USB protocol not simulable."
+    ],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-166.md",
+      "document_sha256": "acecb456b81585666379911a22bcbd8905d8fe3cd2b61aab17fc71abc377d93d",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
   "resolution_ids": [],
   "schema_version": 1,
   "simulation_disposition": "simulable",

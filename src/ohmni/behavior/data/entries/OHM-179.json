@@ -11,7 +11,147 @@
   "fidelity": "ideal_components",
   "group": "R10B",
   "layer": "L1",
-  "research": null,
+  "research": {
+    "bench_result": null,
+    "bench_results": [
+      "bench-results/BEH-CON-SDSOCKET--B1.json",
+      "bench-results/BEH-CON-SDSOCKET--B2.json"
+    ],
+    "conflicts": [
+      "100 VAC is a connector insulation limit, not a permissible card VDD."
+    ],
+    "documents": [
+      {
+        "document_id": "wurth-sd",
+        "manufacturer": "Wurth Elektronik",
+        "note": "Primary PDF read from the hash-addressed archive.",
+        "page": null,
+        "revision": "Rev D, 07-Mar-2012",
+        "source_status": "primary_source_opened",
+        "title": "693063010911 SD push-pull socket with detection",
+        "url": "https://www.farnell.com/datasheets/2725610.pdf"
+      }
+    ],
+    "entry_id": "OHM-179",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "current_rated",
+        "page": 1,
+        "scope": "693063010911 alternate push-pull socket only, not Molex 676008001 default push-push; electrical row",
+        "sources": [
+          "https://www.farnell.com/datasheets/2725610.pdf"
+        ],
+        "unit": "A",
+        "value": 0.5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "working_voltage_ac",
+        "page": 1,
+        "scope": "693063010911 alternate push-pull socket only, not Molex 676008001 default push-push; connector insulation rating, not SD-card supply",
+        "sources": [
+          "https://www.farnell.com/datasheets/2725610.pdf"
+        ],
+        "unit": "V",
+        "value": 100
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "contact_resistance_max",
+        "page": 1,
+        "scope": "693063010911 alternate push-pull socket only, not Molex 676008001 default push-push; maximum",
+        "sources": [
+          "https://www.farnell.com/datasheets/2725610.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.1
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "temperature_operating",
+        "page": 1,
+        "scope": "693063010911 alternate push-pull socket only, not Molex 676008001 default push-push; operating range",
+        "sources": [
+          "https://www.farnell.com/datasheets/2725610.pdf"
+        ],
+        "unit": "degC",
+        "value": [
+          -25,
+          85
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "mating_cycles",
+        "page": 1,
+        "scope": "693063010911 alternate push-pull socket only, not Molex 676008001 default push-push; quality class",
+        "sources": [
+          "https://www.farnell.com/datasheets/2725610.pdf"
+        ],
+        "unit": null,
+        "value": 10000
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "card_detect_state",
+        "page": 2,
+        "scope": "693063010911 alternate push-pull socket only, not Molex 676008001 default push-push; switch drawing",
+        "sources": [
+          "https://www.farnell.com/datasheets/2725610.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "inserted": "closed_to_ground",
+          "removed": "open"
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "write_protect_state",
+        "page": 2,
+        "scope": "693063010911 alternate push-pull socket only, not Molex 676008001 default push-push; separate mechanical switch drawing",
+        "sources": [
+          "https://www.farnell.com/datasheets/2725610.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "card_removed": "open",
+          "write_enable": "closed_to_ground",
+          "write_protect": "open"
+        }
+      }
+    ],
+    "remaining_open_items": [
+      "Default Molex physical pin/CD/WP map and contact ratings remain unverified; alternative does not change footprint.",
+      "SD card protocol and memory operation remain outside ngspice."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [
+      "Exact physical mapping missing; SD protocol not simulable."
+    ],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-179.md",
+      "document_sha256": "611e0fea984fdf9cc0ba9cb26f1635ff4549a350577b68116c1c7b403a7db6b5",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
   "resolution_ids": [],
   "schema_version": 1,
   "simulation_disposition": "simulable",

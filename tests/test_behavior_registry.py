@@ -341,3 +341,41 @@ def test_abracon_case_pads_are_not_bound_as_crystal_pads(registry, entry):
     library_corners = {"1": (-1, 1), "2": (-1, -1), "3": (1, -1), "4": (1, 1)}
     assert all(source_corners[p] == library_corners[q] for p, q in permutation.items())
     assert registry.entry(entry).research.simulation_blockers
+
+
+def test_pj102a_switch_connects_to_sleeve_when_unplugged(registry):
+    # Same Sky PJ-102A, 03/11/2025, page2 schematic (not a generic jack).
+    facts = {fact.field: fact for fact in registry.entry("OHM-172").research.field_updates}
+    assert facts["manufacturer_pin_roles"].value == {
+        "1": "CENTER", "2": "SLEEVE", "3": "SLEEVE_SWITCH",
+    }
+    assert facts["unplugged_switch_pairs"].value == [[2, 3]]
+    assert facts["unplugged_switch_pairs"].page == 2
+
+
+def test_ufl_measurement_current_is_not_an_operating_rating(registry):
+    # Hirose U.FL catalogue p4: 10mA appears in the measurement condition column.
+    facts = {fact.field: fact for fact in registry.entry("OHM-175").research.field_updates}
+    assert facts["resistance_test_current_max"].value == .01
+    assert "not rated operating current" in facts["resistance_test_current_max"].scope
+    assert "current_rated" not in facts
+    assert registry.entry("OHM-175").research.simulation_blockers
+
+
+def test_microsd_data_pin_is_distinct_from_mechanical_detect(registry):
+    # Hirose DM3AT-SF-PEJM5 p3 names eight data pins plus switch A/B.
+    facts = {fact.field: fact for fact in registry.entry("OHM-180").research.field_updates}
+    assert facts["manufacturer_pin_roles"].value["2"] == "CD/DAT3"
+    assert len(facts["manufacturer_pin_roles"].value) == 8
+    assert facts["card_detect_switch"].value == {
+        "contacts": ["A", "B"], "removed": "open", "inserted": "closed",
+    }
+
+
+def test_xt60_source_variants_are_not_merged_into_one_rating(registry):
+    facts = {fact.field: fact for fact in registry.entry("OHM-174").research.field_updates}
+    assert facts["legacy_current_rated"].value == 45
+    assert facts["catalog_current_max"].value == 35
+    assert facts["web_voltage_rated_dc"].value == 80
+    assert facts["legacy_voltage_rated_dc"].value == 500
+    assert registry.entry("OHM-174").research.simulation_blockers

@@ -100,3 +100,8 @@ OHM-123..142 now carry scoped primary reference facts, including PLCC28 correcti
 ## 2026-10-05 Stage4 third research batch
 
 OHM-143..162 record the opened crystal/oscillator/SAW and connector sources. Abracon crystal-to-library permutations are explicit and tested. Harwin socket/header data, JST contact-temperature limits and Phoenix category/conductor/mating restrictions retain all source scope. Failed archive fetches and missing rating-critical values remain blockers; no source-status upgrade or blanket safety inference is made.
+
+
+## 2026-10-05 — Stage4 research OHM-163..180
+
+Added exact/explicit-alternate manufacturer archives, scoped ratings, switch/pin evidence and conflicts in all18 gapfill files. Original spec and source statuses are unchanged. Added regression cases for PJ102A sleeve switching, U.FL measurement-current scope, XT60 variant separation and microSD mechanical detection versus data pin2. Full details and blocked physical/rating mappings are in the per-entry evidence; no alternate footprint is silently substituted.
