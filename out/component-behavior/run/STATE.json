@@ -2666,7 +2666,17 @@
       "netlist_sha256": "6aba1ec8b6b055edc8c2abf10222c9dc09c692107fcce7e6b8cb4ec37d3c3448"
     }
   },
-  "blocked_entries": {},
+  "blocked_entries": {
+    "AUD-BENCH-001": "0/205 canonical bench references passed; 21 additional authored netlists lack a canonical contract",
+    "AUD-SOURCE-001": "41/63 cited URLs have successful hashed fetches; named citations without resolved URLs also remain unresolved. See checkpoint 002 for every source issue.",
+    "stage2": "NOT RUN. The failed corpus checkpoint blocks dependent work; ngspice 42 is unavailable. Independent inventory, supplied-URL fetching, coverage and audit remediation were performed; full gap research and the later product implementations remain unfinished.",
+    "stage3": "NOT RUN. The failed corpus checkpoint blocks dependent work; ngspice 42 is unavailable. Independent inventory, supplied-URL fetching, coverage and audit remediation were performed; full gap research and the later product implementations remain unfinished.",
+    "stage4": "NOT RUN. The failed corpus checkpoint blocks dependent work; ngspice 42 is unavailable. Independent inventory, supplied-URL fetching, coverage and audit remediation were performed; full gap research and the later product implementations remain unfinished.",
+    "stage5": "NOT RUN. The failed corpus checkpoint blocks dependent work; ngspice 42 is unavailable. Independent inventory, supplied-URL fetching, coverage and audit remediation were performed; full gap research and the later product implementations remain unfinished.",
+    "stage6": "NOT RUN. The failed corpus checkpoint blocks dependent work; ngspice 42 is unavailable. Independent inventory, supplied-URL fetching, coverage and audit remediation were performed; full gap research and the later product implementations remain unfinished.",
+    "stage7": "NOT RUN. The failed corpus checkpoint blocks dependent work; ngspice 42 is unavailable. Independent inventory, supplied-URL fetching, coverage and audit remediation were performed; full gap research and the later product implementations remain unfinished."
+  },
+  "branch": "codex/behavior-audit",
   "canary_hashes": {
     "invented_parameter.json": "08c53fcb2795e06ea65f7139e23217051e63880201875e0c4a062f4e025afca5",
     "non_run_marked_pass.json": "8a29d76f73debe25a9113c2faf58dd7ca4bed4015ef6d8ca9ac80fe0a62e2892",
@@ -2677,7 +2687,15 @@
     "wrong_bench_expected.json": "dc866f063e16767fb7e84913790b8221246bd1ad73fedf1ebc626f009ab2d5a1"
   },
   "completed_research_stages": [],
-  "completed_steps": [],
+  "completed_steps": [
+    "audit_software_committed",
+    "seven_canaries_rejected",
+    "inventory_180_entries",
+    "fetch_supplied_source_urls",
+    "bench_non_run_receipts",
+    "coverage_180_entries",
+    "checkpoint_002_with_full_fast_regression"
+  ],
   "current_stage": "audit-final",
   "entry_status": {
     "OHM-001": {
@@ -3401,7 +3419,17 @@
       "current": "partial"
     }
   },
-  "heartbeat_time": "2026-10-05T07:16:23Z",
+  "hard_stop": "ngspice_42_unavailable",
+  "hard_stop_evidence": {
+    "command": [
+      "ngspice",
+      "-v"
+    ],
+    "path": "out/component-behavior/run/NGSPICE_PROBE.json",
+    "reason": "ngspice is not runnable in this shell; no current-run bench result exists.",
+    "recorded_at": "2026-10-05T07:18:21Z"
+  },
+  "heartbeat_time": "2026-10-05T07:23:44Z",
   "last_checkpoint": {
     "entries_touched": [],
     "number": 2,
@@ -3423,6 +3451,7 @@
     },
     "remote_refs_sha256": "4ee57aceb876fee1af034f8381ddfdceec78d1a096d93bbd9552c23e0057766e"
   },
+  "resume_action": "Preserve this run and all approval evidence. Make ngspice 42 runnable, re-probe and resolve source provenance plus exact bench contracts without changing expected values or tolerances. Rerun the failed checkpoint. Then continue the already-approved Stage 2 through Stage 7 sequence on codex/behavior-stage<N> branches, with fresh-context research verification. No renewed scope approval is needed.",
   "rule_hash": "730f651999bc31c7e9db55deb1beac59d05da9aa2d9d9a89ec6f1f20eb53a1c7",
   "rules_baseline": {
     "allowed_fidelity": [
@@ -3543,5 +3572,5 @@
   },
   "run_id": "behavior-20261005T065040Z",
   "schema_version": 1,
-  "stage_status": "blocked_by_checkpoint"
+  "stage_status": "hard_stopped"
 }

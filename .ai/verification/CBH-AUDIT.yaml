@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "id": "CBH-AUDIT",
+  "task": "CBH-AUDIT",
+  "scope": "COMPONENT-BEHAVIOR-COMPLETION",
+  "status": "PASSED",
+  "commit": "add6e411319ea34dc1a8c1f4d50c67f1200eef64",
+  "verified_at": "2026-10-05T07:23:44Z",
+  "approval": ".ai/approvals/COMPONENT-BEHAVIOR-COMPLETION.yaml",
+  "scope_of_result": "Audit software only. Component corpus remains FAIL; no behavior stage 2 through 7 is accepted.",
+  "results": {
+    "regression": "4 locked regression commands ran",
+    "fast": "1765 passed, 82 skipped, 49 deselected",
+    "canaries": "7/7 canaries rejected as expected",
+    "coverage": "180 records and 180 coverage rows",
+    "protected_state": "main, production checkout, remote refs and protected paths match baseline",
+    "sources": "FAIL: 41/63 cited URLs have successful hashed fetches",
+    "benches": "FAIL: 0/205 canonical bench references passed; 21 additional authored netlists lack a canonical contract"
+  },
+  "checkpoint": "out/component-behavior/run/checkpoints/002-audit-final.json",
+  "raw_regression": "out/component-behavior/run/REGRESSION_RESULTS.json",
+  "independent_review": false,
+  "limitations": [
+    "No executable ngspice 42; no real bench ran.",
+    "No completed research stage or independent research verifier pass.",
+    "Stages 2 through 7 remain unfinished."
+  ]
+}

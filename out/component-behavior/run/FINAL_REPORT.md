@@ -3,7 +3,7 @@
 > Script-generated from this run's structured checkpoint, source, bench and state records.
 
 Run: `behavior-20261005T065040Z`. Branch: `codex/behavior-audit`.
-Run state: **blocked_by_checkpoint**. Hard stop: **none recorded**.
+Run state: **hard_stopped**. Hard stop: **ngspice_42_unavailable**.
 
 ## Stage-by-stage results
 
@@ -58,10 +58,37 @@ Command: `ngspice -v`. Exit: `None`. Version gate: **FAIL**.
 | 001-audit | canary: upgrade_without_bench | PASS | Rejected by AUD-UPGRADE-001 |
 | 001-audit | canary: vendor_model_without_file | PASS | Rejected by AUD-VENDOR-001 |
 | 001-audit | canary: wrong_bench_expected | PASS | Rejected by AUD-BENCH-001 |
+| 002-audit-final | AUD-RULE-001 | PASS | rule change is explicitly recorded as non-loosening |
+| 002-audit-final | AUD-CANARY-001 | PASS | 7/7 canaries rejected as expected |
+| 002-audit-final | AUD-SOURCE-001 | FAIL | 41/63 cited URLs have successful hashed fetches |
+| 002-audit-final | AUD-UPGRADE-001 | PASS | 0 status upgrades checked |
+| 002-audit-final | AUD-VENDOR-001 | PASS | all vendor_model labels have attached compatible models |
+| 002-audit-final | AUD-SPEC-001 | PASS | generated projection and approved LED permutation are current |
+| 002-audit-final | AUD-BENCH-001 | FAIL | 0/205 canonical bench references passed; 21 additional authored netlists lack a canonical contract |
+| 002-audit-final | AUD-PROTECT-001 | PASS | main, production checkout, remote refs and protected paths match baseline |
+| 002-audit-final | AUD-COVERAGE-001 | PASS | 180 records and 180 coverage rows |
+| 002-audit-final | AUD-VERIFY-001 | PASS | 0 completed research-stage verifier reports checked |
+| 002-audit-final | AUD-RESUME-001 | PASS | run state is complete and parseable |
+| 002-audit-final | AUD-REGRESSION-001 | PASS | 4 locked regression commands ran |
+| 002-audit-final | AUD-HONESTY-001 | PASS | all recorded UI/code claims preserve non-run and violation status |
+| 002-audit-final | canary: invented_parameter | PASS | Rejected by AUD-SOURCE-001 |
+| 002-audit-final | canary: non_run_marked_pass | PASS | Rejected by AUD-HONESTY-001 |
+| 002-audit-final | canary: swapped_led_permutation | PASS | Rejected by AUD-SPEC-001 |
+| 002-audit-final | canary: unledgered_source | PASS | Rejected by AUD-SOURCE-001 |
+| 002-audit-final | canary: upgrade_without_bench | PASS | Rejected by AUD-UPGRADE-001 |
+| 002-audit-final | canary: vendor_model_without_file | PASS | Rejected by AUD-VENDOR-001 |
+| 002-audit-final | canary: wrong_bench_expected | PASS | Rejected by AUD-BENCH-001 |
 
 ## Blocked and parked items
 
-No parked state items recorded; failed checks below still block progression.
+- **AUD-BENCH-001:** 0/205 canonical bench references passed; 21 additional authored netlists lack a canonical contract
+- **AUD-SOURCE-001:** 41/63 cited URLs have successful hashed fetches; named citations without resolved URLs also remain unresolved. See checkpoint 002 for every source issue.
+- **stage2:** NOT RUN. The failed corpus checkpoint blocks dependent work; ngspice 42 is unavailable. Independent inventory, supplied-URL fetching, coverage and audit remediation were performed; full gap research and the later product implementations remain unfinished.
+- **stage3:** NOT RUN. The failed corpus checkpoint blocks dependent work; ngspice 42 is unavailable. Independent inventory, supplied-URL fetching, coverage and audit remediation were performed; full gap research and the later product implementations remain unfinished.
+- **stage4:** NOT RUN. The failed corpus checkpoint blocks dependent work; ngspice 42 is unavailable. Independent inventory, supplied-URL fetching, coverage and audit remediation were performed; full gap research and the later product implementations remain unfinished.
+- **stage5:** NOT RUN. The failed corpus checkpoint blocks dependent work; ngspice 42 is unavailable. Independent inventory, supplied-URL fetching, coverage and audit remediation were performed; full gap research and the later product implementations remain unfinished.
+- **stage6:** NOT RUN. The failed corpus checkpoint blocks dependent work; ngspice 42 is unavailable. Independent inventory, supplied-URL fetching, coverage and audit remediation were performed; full gap research and the later product implementations remain unfinished.
+- **stage7:** NOT RUN. The failed corpus checkpoint blocks dependent work; ngspice 42 is unavailable. Independent inventory, supplied-URL fetching, coverage and audit remediation were performed; full gap research and the later product implementations remain unfinished.
 
 ## Unresolved check details
 
@@ -1634,7 +1661,7 @@ and canary fixture values are unchanged.
 
 ## Every rule change
 
-None recorded. Rule hash: `730f651999bc31c7e9db55deb1beac59d05da9aa2d9d9a89ec6f1f20eb53a1c7`.
+- {'id': 'RULE_CHANGE-001', 'old_sha256': '730f651999bc31c7e9db55deb1beac59d05da9aa2d9d9a89ec6f1f20eb53a1c7', 'new_sha256': 'f240b5f2beb9b8d56d2901fa5b663c5d877d0d6c68c84209b8e61301aafc21d3', 'classification': 'tighten', 'reason': 'Add the complete Stage 1 fast repository gate to every checkpoint, in addition to the existing focused and UI regressions. The first checkpoint ran focused regressions only; this corrects that omission without removing a check or changing any expected value, tolerance, canary or baseline.', 'reviewer': 'implementation-agent; listed for final human review'}
 
 ## Independent verifier results
 
