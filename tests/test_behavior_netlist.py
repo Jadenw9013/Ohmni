@@ -389,3 +389,70 @@ def test_network_and_bridge_probe_contracts_refuse_changed_source_decks(tmp_path
         "file":"original.cir","netlist_sha256":"0"*64}}})
     with pytest.raises(ValueError,match="source deck changed"):
         _locked_probe_deck(audit,"example")
+
+
+@pytest.mark.parametrize("entry_id", ["OHM-044", "OHM-065", "OHM-067", "OHM-068", "OHM-069"])
+def test_explicit_alternatives_and_clamp_bindings(entry_id):
+    from tools.behavior_audit.audit import BehaviorAudit
+    from tools.behavior_audit.runtime_benches import dc_probe_definition
+
+    compiled, identity = dc_probe_definition(BehaviorAudit(ROOT), entry_id)
+    assert compiled.runnable, compiled.problems
+    component = compiled.components[0]
+    assert component.reference_part
+    if entry_id in {"OHM-068", "OHM-069"}:
+        assert component.terminal_nodes["1"] == compiled.node_names["cathode"]
+        assert component.terminal_nodes["2"] == "0"
+        assert identity["comparison"]["analytical_source"].endswith("/B1")
+    if entry_id == "OHM-044":
+        assert "isat" not in component.parameters
+        assert "not absolute maximum" in component.parameter_evidence["irms"]["scope"]
+    if entry_id == "OHM-065":
+        assert "S2M PN" in component.reference_part
+        assert component.parameters["vr_max"] == 1000
+        assert "SS24" in component.limitations[0]
+    if entry_id == "OHM-067":
+        assert component.parameter_evidence["IS"]["basis"] == "ASSUMPTION"
+        assert component.parameters["vr_max"] == 30
+        assert component.parameters["BV"] == 56
+    if entry_id == "OHM-068":
+        assert component.parameters["p_rated"] == .37
+        assert component.parameters["rth_ja"] == 338
+
+
+def test_tvs_source_bound_is_not_relaxed_to_legacy_numerical_tolerance():
+    from tools.behavior_audit.audit import BehaviorAudit
+    from tools.behavior_audit.runtime_benches import _dc_matches, dc_probe_definition
+
+    _, legacy = dc_probe_definition(BehaviorAudit(ROOT), "OHM-069", "legacy")
+    _, sourced = dc_probe_definition(BehaviorAudit(ROOT), "OHM-069", "source_bound")
+    assert _dc_matches(legacy["comparison"], 24.40568)
+    assert not _dc_matches(sourced["comparison"], 24.40568)
+    assert sourced["comparison"]["maximum"] == 24.4
+    assert legacy["comparison"]["expected"] == 24.4
+
+
+def test_tvs_calibration_requires_raw_trials_and_unchanged_source(registry):
+    import json
+
+    from tools.behavior_audit.audit import BehaviorAudit
+    from tools.behavior_audit.calibration import tvs_calibration_errors
+
+    audit = BehaviorAudit(ROOT)
+    assert not tvs_calibration_errors(audit)
+    assert registry.behavior_class("BEH-DIO-TVS").canonical_payload["parameters"]["RDYN"]["default"] == .266
+    record = json.loads((ROOT / "docs/behavior/calibration/OHM-069.json").read_text())
+    record["trials"][-1]["observed_voltage"] = 24.40568
+    errors = tvs_calibration_errors(audit, record)
+    assert any("observation changed" in e for e in errors)
+    assert any("unchanged source maximum" in e for e in errors)
+
+
+def test_calibration_fails_closed_without_a_bracket_or_convergence():
+    from scripts.calibrate_behavior_tvs import bracket_fit
+
+    assert bracket_fit(lambda x:2*x, 0, 2, 2) == 1
+    with pytest.raises(ValueError, match="not bracketed"):
+        bracket_fit(lambda x:2*x, 0, 1, 3)
+    with pytest.raises(ValueError, match="did not reach"):
+        bracket_fit(lambda x:0 if x < .2 else 1, 0, 1, .5, max_trials=3)

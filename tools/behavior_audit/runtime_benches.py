@@ -253,12 +253,17 @@ def runtime_receipt_errors(audit, entry_id):
     registry = BehaviorRegistry(repo_root=audit.root)
     recipes = load_recipes(registry, audit.root)
     behavior = recipes.entries[entry_id].behavior_id
+    if entry_id == "OHM-069":
+        from .calibration import tvs_calibration_errors
+
+        return tvs_calibration_errors(audit) + dc_probe_receipt_errors(audit, entry_id)
     if behavior == "BEH-RES-FIXED":
         return resistor_receipt_errors(audit, entry_id)
     if behavior == "BEH-TRN-MOSFET":
         return mosfet_receipt_errors(audit, entry_id)
     if behavior in {"BEH-DIO-PN", "BEH-TRN-BJT", "BEH-MAG-INDUCTOR", "BEH-LED-INDICATOR",
-                    "BEH-RES-SENSE", "BEH-RES-NETWORK", "BEH-DIO-BRIDGE", "BEH-LED-RGB"}:
+                    "BEH-RES-SENSE", "BEH-RES-NETWORK", "BEH-DIO-BRIDGE", "BEH-LED-RGB",
+                    "BEH-DIO-ZENER", "BEH-DIO-TVS", "BEH-DIO-SCHOTTKY"}:
         return dc_probe_receipt_errors(audit, entry_id)
     return [f"{entry_id}: no runtime analytical receipt validator for {behavior}"]
 
@@ -268,6 +273,8 @@ def dc_probe_variants(behavior_id):
         return ["positive", "negative"]
     if behavior_id == "BEH-LED-RGB":
         return ["red", "green", "blue"]
+    if behavior_id in {"BEH-DIO-ZENER", "BEH-DIO-TVS"}:
+        return ["legacy", "source_bound"]
     return [None]
 
 
@@ -289,14 +296,16 @@ def dc_probe_definition(audit, entry_id, variant=None):
     variant = variant or variants[0]
     if variant not in variants:
         raise ValueError("unknown probe variant")
-    if recipe.behavior_id == "BEH-DIO-PN" and entry_id in {"OHM-057", "OHM-058", "OHM-064"}:
+    if (recipe.behavior_id == "BEH-DIO-PN" and entry_id in {"OHM-057", "OHM-058", "OHM-064", "OHM-065"}
+            or recipe.behavior_id == "BEH-DIO-SCHOTTKY"):
         fact = evidence["vf_max"]
-        current = re.search(r"IF=(\d+(?:\.\d+)?) A", fact["scope"])
+        current = re.search(r"\bIF\s*=?\s*(\d+(?:\.\d+)?)\s*(m?A)", fact["scope"])
         if current is None:
             raise ValueError("forward voltage source test current is missing")
         roles = {"A": "anode", "K": "return"}
         supplies = {}
-        excitations = [DCExcitation(positive_net="return", negative_net="anode", value=Quantity(value=float(current[1]), unit="A"))]
+        amps = float(current[1]) / (1000 if current[2] == "mA" else 1)
+        excitations = [DCExcitation(positive_net="return", negative_net="anode", value=Quantity(value=amps, unit="A"))]
         comparison = {"kind": "interval", "minimum": 0, "maximum": values["vf_max"],
                       "observable": "anode_voltage", "source_fact": fact}
         limits = "Isothermal25 C forward voltage against the scoped primary-source maximum at its test current; a source-bound check does not validate typical fit, temperature, reverse recovery or ratings."
@@ -362,6 +371,25 @@ def dc_probe_definition(audit, entry_id, variant=None):
                       "stimulus_source": "BEH-DIO-BRIDGE/B1", "source_deck_sha256": contract["netlist_sha256"],
                       "derivation": "Two conducting junctions; sum of two source per-diode forward-voltage maxima. Both AC polarities use the original bench's 10 V input amplitude."}
         limits = "Isothermal DC rectification and two-junction voltage bound under both AC polarities; does not validate ripple, shared thermal behavior, surge or safe sustained output current."
+    elif recipe.behavior_id in {"BEH-DIO-ZENER", "BEH-DIO-TVS"}:
+        tvs = recipe.behavior_id == "BEH-DIO-TVS"
+        current = values["IPP" if tvs else "IZT"]
+        roles = {"K": "cathode", "A": "return"}
+        supplies = {}
+        excitations = [DCExcitation(positive_net="return", negative_net="cathode", value=Quantity(value=current, unit="A"))]
+        if variant == "legacy":
+            contract_id = recipe.behavior_id + "/B1"
+            contract, _ = _locked_probe_deck(audit, contract_id)
+            comparison = dict(numeric_contract(contract["expected"][0]), kind="absolute",
+                              analytical_source=contract_id, source_deck_sha256=contract["netlist_sha256"])
+        else:
+            comparison = {"kind": "interval", "minimum": 0 if tvs else values["vz_min"],
+                          "maximum": values["VC" if tvs else "vz_max"],
+                          "source_fact": evidence["VC" if tvs else "vz_max"]}
+        comparison.update(observable="node_voltage", node="cathode", test_current=current,
+                          test_current_evidence=evidence["IPP" if tvs else "IZT"])
+        limits = ("Static isothermal clamp-curve probe at 25 C only. The source rating describes a pulse; an operating-point result does not establish allowable continuous current, pulse waveform, heating or protected-load survival. Legacy numerical tolerance and the source voltage maximum are checked separately."
+                  if tvs else "Isothermal 25 C voltage at the source short-pulse test current. Does not validate equilibrium self-heating, the impedance/knee envelope, surge, forward-current limit or destructive behavior.")
     elif recipe.behavior_id in {"BEH-DIO-PN", "BEH-LED-INDICATOR"}:
         is_led = recipe.behavior_id == "BEH-LED-INDICATOR"
         contract_id = "BEH-LED-INDICATOR/B1" if is_led else "BEH-DIO-PN/B1"
@@ -420,6 +448,9 @@ def dc_probe_definition(audit, entry_id, variant=None):
 
 def _dc_observation(compiled, comparison, output):
     parsed = parse_operating_point(output)
+    if comparison["observable"] == "node_voltage":
+        voltage = parsed.node_voltages.get(compiled.node_names[comparison["node"]])
+        return voltage.value if voltage else None
     if comparison["observable"] == "anode_voltage":
         voltage = parsed.node_voltages.get(compiled.node_names["anode"])
         return voltage.value if voltage else None

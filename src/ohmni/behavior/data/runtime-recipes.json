@@ -978,6 +978,78 @@
         "8": "P8"
       }
     },
+    "OHM-044": {
+      "behavior_id": "BEH-MAG-INDUCTOR",
+      "catalog_identity_pin_map": {},
+      "catalog_parts": [],
+      "class_parameters": {},
+      "critical_facts": {
+        "irms": {
+          "field": "reference_current",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "A",
+          "value_path": []
+        },
+        "rdc": {
+          "field": "maximum_dcr",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "ohm",
+          "value_path": []
+        },
+        "rdc_max": {
+          "field": "maximum_dcr",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "ohm",
+          "value_path": []
+        },
+        "tmax_part": {
+          "field": "maximum_part_temperature",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "C",
+          "value_path": []
+        },
+        "value": {
+          "field": "nominal_inductance",
+          "output_unit": "H",
+          "scope_contains": null,
+          "unit": "nH",
+          "value_path": []
+        }
+      },
+      "derived_parameters": {},
+      "entry_id": "OHM-044",
+      "ground_strays": {},
+      "inline_assets": [],
+      "instance_value_unit": null,
+      "limitations": [
+        "Explicit Coilcraft alternative, not a silent binding of the spec Murata default. Tolerance/termination suffix is unselected.",
+        "DC winding-resistance model only. The 250 MHz inductance and minimum SRF do not establish a broadband response or fitted core loss.",
+        "The 0.7 A source point produces 15 C rise from 25 C; it is not a guaranteed maximum current. No invented 100 A disabled-saturation limit is used."
+      ],
+      "package": "0603 RF Coilcraft reference",
+      "pin_role_fact": null,
+      "quoted_parameters": {},
+      "reference_part": "Coilcraft 0603CS-15NX_R_, suffix unselected; explicit alternative",
+      "supported_analyses": [
+        "op"
+      ],
+      "template_key": "netlist_template",
+      "template_override": "R{ref} {A} {B} {rdc}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "fragment_sha256": null,
+        "line": 2440
+      },
+      "terminal_roles": {
+        "1": "A",
+        "2": "B"
+      }
+    },
     "OHM-045": {
       "behavior_id": "BEH-MAG-INDUCTOR",
       "catalog_identity_pin_map": {},
@@ -2361,7 +2433,7 @@
       "inline_assets": [],
       "instance_value_unit": null,
       "limitations": [
-        "The original 1N4007 rectifier fit is an explicit approximation for S1M; no measured S1M fit or vendor model is claimed.",
+        "Original S1M entry max-corner fit, with authored N/RS/TT assumptions; no measured typical fit or vendor model is claimed.",
         "S1M-specific ratings and 5 x 5 mm pad thermal conditions are retained. Its typical recovery time is not substituted for SPICE transit time.",
         "Schottky and TVS alternatives remain unbound; thermal and destructive behavior are not validated by the forward probe."
       ],
@@ -2388,11 +2460,11 @@
             "document": "COMPONENT_BEHAVIOR_SPEC.md",
             "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
             "fragment_sha256": null,
-            "line": 4398
+            "line": 4439
           },
-          "source_fragment": "* Defaults (fit B, typical): IS 4.02e-9, N 1.8 (assumed), RS 0.03 (assumed), CJO 38.9 pF, VJ 0.7, M 0.5, TT 3 us (assumed), BV 1100 V (assumed), IBV 5 uA.",
+          "source_fragment": "* Rectifier reference: S1A-S1M (Vishay, S9): IF(AV) 1.0 A, IFSM 40 A (S1A-S1J) / 30 A (S1K-S1M), VF max 1.1 V at 1 A, IR 1 uA (25 C) / 5 uA (125 C), CJ typ 12 pF at 4 V, trr typ 1.8 us, RthJA 75 C/W (S1A-S1J) / 85 (S1K-S1M), RthJL 27/30 C/W, TJ -55 to +150 C. Fit: IS 1.04e-10 (max corner), N 1.8, RS 0.03, CJO 31.1 pF, TT 3 us (assumed; datasheet trr 1.8 us typ with unknown test condition).",
           "unit": "pF",
-          "value_text": "38.9"
+          "value_text": "31.1"
         },
         "IBV_ua": {
           "basis": "ASSUMPTION",
@@ -2414,11 +2486,11 @@
             "document": "COMPONENT_BEHAVIOR_SPEC.md",
             "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
             "fragment_sha256": null,
-            "line": 4398
+            "line": 4439
           },
-          "source_fragment": "* Defaults (fit B, typical): IS 4.02e-9, N 1.8 (assumed), RS 0.03 (assumed), CJO 38.9 pF, VJ 0.7, M 0.5, TT 3 us (assumed), BV 1100 V (assumed), IBV 5 uA.",
+          "source_fragment": "* Rectifier reference: S1A-S1M (Vishay, S9): IF(AV) 1.0 A, IFSM 40 A (S1A-S1J) / 30 A (S1K-S1M), VF max 1.1 V at 1 A, IR 1 uA (25 C) / 5 uA (125 C), CJ typ 12 pF at 4 V, trr typ 1.8 us, RthJA 75 C/W (S1A-S1J) / 85 (S1K-S1M), RthJL 27/30 C/W, TJ -55 to +150 C. Fit: IS 1.04e-10 (max corner), N 1.8, RS 0.03, CJO 31.1 pF, TT 3 us (assumed; datasheet trr 1.8 us typ with unknown test condition).",
           "unit": "A",
-          "value_text": "4.02e-9"
+          "value_text": "1.04e-10"
         },
         "M": {
           "basis": "ASSUMPTION",
@@ -2473,7 +2545,7 @@
           "value_text": "3"
         }
       },
-      "reference_part": "Vishay S1M, authored rectifier proxy",
+      "reference_part": "Vishay S1M, original entry fit",
       "supported_analyses": [
         "op",
         "tran"
@@ -2481,6 +2553,701 @@
       "template_key": "netlist_template",
       "template_override": null,
       "template_provenance": null,
+      "terminal_roles": {
+        "1": "K",
+        "2": "A"
+      }
+    },
+    "OHM-065": {
+      "behavior_id": "BEH-DIO-PN",
+      "catalog_identity_pin_map": {},
+      "catalog_parts": [],
+      "class_parameters": {
+        "EG": "EG",
+        "VJ": "VJ",
+        "XTI": "XTI"
+      },
+      "critical_facts": {
+        "if_max": {
+          "field": "average_forward_current",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "A",
+          "value_path": []
+        },
+        "rth_ja": {
+          "field": "thermal_resistance_junction_ambient",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "K/W",
+          "value_path": []
+        },
+        "tj_max": {
+          "field": "maximum_junction_temperature",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "C",
+          "value_path": []
+        },
+        "vf_max": {
+          "field": "maximum_forward_voltage",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "V",
+          "value_path": []
+        },
+        "vr_max": {
+          "field": "repetitive_peak_reverse_voltage",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "V",
+          "value_path": []
+        }
+      },
+      "derived_parameters": {
+        "CJO": {
+          "basis": "DERIVED",
+          "confidence": "M",
+          "detail": "Unit conversion of the authored corner fit.",
+          "expression": "CJO_pf/1e12",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 4398
+          },
+          "unit": "F"
+        },
+        "IBV": {
+          "basis": "DERIVED",
+          "confidence": "L",
+          "detail": "Unit conversion of the authored reverse-knee modeling assumption.",
+          "expression": "IBV_ua/1e6",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 4398
+          },
+          "unit": "A"
+        },
+        "TT": {
+          "basis": "DERIVED",
+          "confidence": "L",
+          "detail": "Unit conversion of the assumed transit-time parameter.",
+          "expression": "TT_us/1e6",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 4398
+          },
+          "unit": "s"
+        }
+      },
+      "entry_id": "OHM-065",
+      "ground_strays": {},
+      "inline_assets": [],
+      "instance_value_unit": null,
+      "limitations": [
+        "Explicit S2M PN rectifier alternative. The original SS24 Schottky default is not simulated by this binding and must not be selected as S2M.",
+        "Uses the authored S1M fit as a proxy, not a measured S2M model. Source S2M ratings stay separate from fit values.",
+        "The 1.5 A average rating is at lead temperature125 C; typical RthJA53 K/W assumes8 x8 mm pads. No thermal, surge or recovery acceptance."
+      ],
+      "package": "SMB S2M PN reference",
+      "pin_role_fact": null,
+      "quoted_parameters": {
+        "BV": {
+          "basis": "ASSUMPTION",
+          "confidence": "L",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 4398
+          },
+          "source_fragment": "* Defaults (fit B, typical): IS 4.02e-9, N 1.8 (assumed), RS 0.03 (assumed), CJO 38.9 pF, VJ 0.7, M 0.5, TT 3 us (assumed), BV 1100 V (assumed), IBV 5 uA.",
+          "unit": "V",
+          "value_text": "1100"
+        },
+        "CJO_pf": {
+          "basis": "DERIVED",
+          "confidence": "M",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 4439
+          },
+          "source_fragment": "* Rectifier reference: S1A-S1M (Vishay, S9): IF(AV) 1.0 A, IFSM 40 A (S1A-S1J) / 30 A (S1K-S1M), VF max 1.1 V at 1 A, IR 1 uA (25 C) / 5 uA (125 C), CJ typ 12 pF at 4 V, trr typ 1.8 us, RthJA 75 C/W (S1A-S1J) / 85 (S1K-S1M), RthJL 27/30 C/W, TJ -55 to +150 C. Fit: IS 1.04e-10 (max corner), N 1.8, RS 0.03, CJO 31.1 pF, TT 3 us (assumed; datasheet trr 1.8 us typ with unknown test condition).",
+          "unit": "pF",
+          "value_text": "31.1"
+        },
+        "IBV_ua": {
+          "basis": "ASSUMPTION",
+          "confidence": "L",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 4398
+          },
+          "source_fragment": "* Defaults (fit B, typical): IS 4.02e-9, N 1.8 (assumed), RS 0.03 (assumed), CJO 38.9 pF, VJ 0.7, M 0.5, TT 3 us (assumed), BV 1100 V (assumed), IBV 5 uA.",
+          "unit": "uA",
+          "value_text": "5"
+        },
+        "IS": {
+          "basis": "DERIVED",
+          "confidence": "M",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 4439
+          },
+          "source_fragment": "* Rectifier reference: S1A-S1M (Vishay, S9): IF(AV) 1.0 A, IFSM 40 A (S1A-S1J) / 30 A (S1K-S1M), VF max 1.1 V at 1 A, IR 1 uA (25 C) / 5 uA (125 C), CJ typ 12 pF at 4 V, trr typ 1.8 us, RthJA 75 C/W (S1A-S1J) / 85 (S1K-S1M), RthJL 27/30 C/W, TJ -55 to +150 C. Fit: IS 1.04e-10 (max corner), N 1.8, RS 0.03, CJO 31.1 pF, TT 3 us (assumed; datasheet trr 1.8 us typ with unknown test condition).",
+          "unit": "A",
+          "value_text": "1.04e-10"
+        },
+        "M": {
+          "basis": "ASSUMPTION",
+          "confidence": "L",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 4398
+          },
+          "source_fragment": "* Defaults (fit B, typical): IS 4.02e-9, N 1.8 (assumed), RS 0.03 (assumed), CJO 38.9 pF, VJ 0.7, M 0.5, TT 3 us (assumed), BV 1100 V (assumed), IBV 5 uA.",
+          "unit": "1",
+          "value_text": "0.5"
+        },
+        "N": {
+          "basis": "ASSUMPTION",
+          "confidence": "L",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 4398
+          },
+          "source_fragment": "* Defaults (fit B, typical): IS 4.02e-9, N 1.8 (assumed), RS 0.03 (assumed), CJO 38.9 pF, VJ 0.7, M 0.5, TT 3 us (assumed), BV 1100 V (assumed), IBV 5 uA.",
+          "unit": "1",
+          "value_text": "1.8"
+        },
+        "RS": {
+          "basis": "ASSUMPTION",
+          "confidence": "L",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 4398
+          },
+          "source_fragment": "* Defaults (fit B, typical): IS 4.02e-9, N 1.8 (assumed), RS 0.03 (assumed), CJO 38.9 pF, VJ 0.7, M 0.5, TT 3 us (assumed), BV 1100 V (assumed), IBV 5 uA.",
+          "unit": "ohm",
+          "value_text": "0.03"
+        },
+        "TT_us": {
+          "basis": "ASSUMPTION",
+          "confidence": "L",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 4398
+          },
+          "source_fragment": "* Defaults (fit B, typical): IS 4.02e-9, N 1.8 (assumed), RS 0.03 (assumed), CJO 38.9 pF, VJ 0.7, M 0.5, TT 3 us (assumed), BV 1100 V (assumed), IBV 5 uA.",
+          "unit": "us",
+          "value_text": "3"
+        }
+      },
+      "reference_part": "Vishay S2M PN; explicit alternative to Schottky default",
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "template_key": "netlist_template",
+      "template_override": null,
+      "template_provenance": null,
+      "terminal_roles": {
+        "1": "K",
+        "2": "A"
+      }
+    },
+    "OHM-067": {
+      "behavior_id": "BEH-DIO-SCHOTTKY",
+      "catalog_identity_pin_map": {},
+      "catalog_parts": [],
+      "class_parameters": {},
+      "critical_facts": {
+        "if_max": {
+          "field": "continuous_forward_current",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "A",
+          "value_path": []
+        },
+        "p_rated": {
+          "field": "maximum_power",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "W",
+          "value_path": []
+        },
+        "rth_ja": {
+          "field": "thermal_resistance_junction_ambient",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "K/W",
+          "value_path": []
+        },
+        "tj_max": {
+          "field": "maximum_junction_temperature",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "C",
+          "value_path": []
+        },
+        "vf_max": {
+          "field": "maximum_forward_voltage",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "V",
+          "value_path": []
+        },
+        "vr_max": {
+          "field": "dc_reverse_voltage",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "V",
+          "value_path": []
+        }
+      },
+      "derived_parameters": {
+        "CJO": {
+          "basis": "DERIVED",
+          "confidence": "M",
+          "detail": "Unit conversion of the explicitly provisional proxy capacitance, not the 1 V source capacitance.",
+          "expression": "CJO_pf/1e12",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 4455
+          },
+          "unit": "F"
+        }
+      },
+      "entry_id": "OHM-067",
+      "ground_strays": {},
+      "inline_assets": [],
+      "instance_value_unit": null,
+      "limitations": [
+        "Authored BAT54 parameters are ASSUMPTION for the named BAT42W reference, not a BAT42W vendor model or sourced fit.",
+        "Only isothermal DC forward behavior is bound. No temperature/leakage-runaway or frequency response is validated.",
+        "Physical reverse rating is30 V and power200 mW on the stated FR4 footprint; proxy breakdown56 V is not a safe operating limit."
+      ],
+      "package": "SOD-123 BAT42W reference",
+      "pin_role_fact": null,
+      "quoted_parameters": {
+        "BV": {
+          "basis": "ASSUMPTION",
+          "confidence": "L",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 4455
+          },
+          "source_fragment": "* Default package SOD-123 (small-signal): defaults from the Nexperia BAT54 vendor numbers (S14): IS 2.117e-7, N 1, RS 2.7, CJO 8 pF, BV 56 V, IR 2 uA at 25 V, VR 30 V, VF max 0.8 V at 100 mA. Power variants (SMA SS14, DO-41, DO-201AD): SS14 fit.",
+          "unit": "V",
+          "value_text": "56"
+        },
+        "CJO_pf": {
+          "basis": "ASSUMPTION",
+          "confidence": "L",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 4455
+          },
+          "source_fragment": "* Default package SOD-123 (small-signal): defaults from the Nexperia BAT54 vendor numbers (S14): IS 2.117e-7, N 1, RS 2.7, CJO 8 pF, BV 56 V, IR 2 uA at 25 V, VR 30 V, VF max 0.8 V at 100 mA. Power variants (SMA SS14, DO-41, DO-201AD): SS14 fit.",
+          "unit": "pF",
+          "value_text": "8"
+        },
+        "IS": {
+          "basis": "ASSUMPTION",
+          "confidence": "L",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 4455
+          },
+          "source_fragment": "* Default package SOD-123 (small-signal): defaults from the Nexperia BAT54 vendor numbers (S14): IS 2.117e-7, N 1, RS 2.7, CJO 8 pF, BV 56 V, IR 2 uA at 25 V, VR 30 V, VF max 0.8 V at 100 mA. Power variants (SMA SS14, DO-41, DO-201AD): SS14 fit.",
+          "unit": "A",
+          "value_text": "2.117e-7"
+        },
+        "N": {
+          "basis": "ASSUMPTION",
+          "confidence": "L",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 4455
+          },
+          "source_fragment": "* Default package SOD-123 (small-signal): defaults from the Nexperia BAT54 vendor numbers (S14): IS 2.117e-7, N 1, RS 2.7, CJO 8 pF, BV 56 V, IR 2 uA at 25 V, VR 30 V, VF max 0.8 V at 100 mA. Power variants (SMA SS14, DO-41, DO-201AD): SS14 fit.",
+          "unit": "1",
+          "value_text": "1"
+        },
+        "RS": {
+          "basis": "ASSUMPTION",
+          "confidence": "L",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 4455
+          },
+          "source_fragment": "* Default package SOD-123 (small-signal): defaults from the Nexperia BAT54 vendor numbers (S14): IS 2.117e-7, N 1, RS 2.7, CJO 8 pF, BV 56 V, IR 2 uA at 25 V, VR 30 V, VF max 0.8 V at 100 mA. Power variants (SMA SS14, DO-41, DO-201AD): SS14 fit.",
+          "unit": "ohm",
+          "value_text": "2.7"
+        }
+      },
+      "reference_part": "Vishay BAT42W; BAT54-derived proxy",
+      "supported_analyses": [
+        "op"
+      ],
+      "template_key": "netlist_template",
+      "template_override": "D{ref} {A} {K} DBAT_{ref}\n.model DBAT_{ref} D (IS={IS} N={N} RS={RS} CJO={CJO} BV={BV})\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "fragment_sha256": null,
+        "line": 4455
+      },
+      "terminal_roles": {
+        "1": "K",
+        "2": "A"
+      }
+    },
+    "OHM-068": {
+      "behavior_id": "BEH-DIO-ZENER",
+      "catalog_identity_pin_map": {},
+      "catalog_parts": [],
+      "class_parameters": {},
+      "critical_facts": {
+        "IZT": {
+          "field": "zener_test_current",
+          "output_unit": "A",
+          "scope_contains": null,
+          "unit": "mA",
+          "value_path": []
+        },
+        "VZ": {
+          "field": "nominal_zener_voltage",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "V",
+          "value_path": []
+        },
+        "ir_max": {
+          "field": "maximum_reverse_current",
+          "output_unit": "A",
+          "scope_contains": null,
+          "unit": "uA",
+          "value_path": []
+        },
+        "p_rated": {
+          "field": "maximum_power_ambient",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "W",
+          "value_path": []
+        },
+        "rth_ja": {
+          "field": "thermal_resistance_junction_ambient",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "K/W",
+          "value_path": []
+        },
+        "rz_max": {
+          "field": "maximum_zener_impedance",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "ohm",
+          "value_path": []
+        },
+        "tj_max": {
+          "field": "maximum_junction_temperature",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "C",
+          "value_path": []
+        },
+        "vr_test": {
+          "field": "reverse_current_test_voltage",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "V",
+          "value_path": []
+        },
+        "vz_max": {
+          "field": "zener_voltage_range",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "V",
+          "value_path": [
+            1
+          ]
+        },
+        "vz_min": {
+          "field": "zener_voltage_range",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "V",
+          "value_path": [
+            0
+          ]
+        }
+      },
+      "derived_parameters": {
+        "BVeff": {
+          "basis": "DERIVED",
+          "confidence": "M",
+          "detail": "Authored terminal-voltage correction; this is a model parameter, not a rating.",
+          "expression": "VZ-IZT*RSZ",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 3988
+          },
+          "unit": "V"
+        },
+        "RLEAK": {
+          "basis": "DERIVED",
+          "confidence": "M",
+          "detail": "Linear leakage approximation through the source maximum at its test voltage; not a measured typical leakage law.",
+          "expression": "vr_test/ir_max",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 3991
+          },
+          "unit": "ohm"
+        }
+      },
+      "entry_id": "OHM-068",
+      "ground_strays": {},
+      "inline_assets": [],
+      "instance_value_unit": null,
+      "limitations": [
+        "DC isothermal proxy only. Capacitance is omitted rather than inventing a frequency response; no transient or AC binding.",
+        "The BZX55-derived slope is not BZT52 typical data and does not reproduce its worst-case 60 ohm impedance or 480 ohm knee. Below 1 mA the curve is optimistic.",
+        "Use the sourced 0.37 W ambient rating at 25 C on the stated FR4 pad layout, not the separate 0.5 W lead-temperature rating or DO-35 power limit.",
+        "No forward-current, surge, temperature-coefficient or destructive-failure acceptance is established by this proxy."
+      ],
+      "package": "SOD-123",
+      "pin_role_fact": null,
+      "quoted_parameters": {
+        "NBV": {
+          "basis": "DERIVED",
+          "confidence": "M",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 4006
+          },
+          "source_fragment": "| RSZ, NBV | ohm, 1 | 19.5, 2.7 |",
+          "unit": "1",
+          "value_text": "2.7"
+        },
+        "RSZ": {
+          "basis": "DERIVED",
+          "confidence": "M",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 4006
+          },
+          "source_fragment": "| RSZ, NBV | ohm, 1 | 19.5, 2.7 |",
+          "unit": "ohm",
+          "value_text": "19.5"
+        }
+      },
+      "reference_part": "Diodes Incorporated BZT52C5V1; BZX55-derived proxy",
+      "supported_analyses": [
+        "op"
+      ],
+      "template_key": "netlist_template",
+      "template_override": ".subckt DZ_{ref} A K\nDF A K DFWD_{ref}\nDR A K DZB_{ref}\nRLK K A {RLEAK}\n.ends\n.model DFWD_{ref} D (IS=5e-9 N=1.9 RS=1.0 VJ=0.7 M=0.4 TT=50n)\n.model DZB_{ref} D (IS=1e-15 N=1 RS={RSZ} BV={BVeff} IBV={IZT} NBV={NBV})\nX{ref} {A} {K} DZ_{ref}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "fragment_sha256": null,
+        "line": 4057
+      },
+      "terminal_roles": {
+        "1": "K",
+        "2": "A"
+      }
+    },
+    "OHM-069": {
+      "behavior_id": "BEH-DIO-TVS",
+      "catalog_identity_pin_map": {},
+      "catalog_parts": [],
+      "class_parameters": {},
+      "critical_facts": {
+        "ID": {
+          "field": "maximum_leakage_current",
+          "output_unit": "A",
+          "scope_contains": null,
+          "unit": "uA",
+          "value_path": []
+        },
+        "IPP": {
+          "field": "peak_pulse_current",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "A",
+          "value_path": []
+        },
+        "IT": {
+          "field": "breakdown_test_current",
+          "output_unit": "A",
+          "scope_contains": null,
+          "unit": "mA",
+          "value_path": []
+        },
+        "PPPM": {
+          "field": "maximum_pulse_power",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "W",
+          "value_path": []
+        },
+        "VC": {
+          "field": "maximum_clamping_voltage",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "V",
+          "value_path": []
+        },
+        "VWM": {
+          "field": "standoff_voltage",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "V",
+          "value_path": []
+        },
+        "rth_ja": {
+          "field": "thermal_resistance_junction_ambient",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "K/W",
+          "value_path": []
+        },
+        "tj_max": {
+          "field": "maximum_junction_temperature",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "C",
+          "value_path": []
+        },
+        "vbr_max": {
+          "field": "breakdown_voltage_range",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "V",
+          "value_path": [
+            1
+          ]
+        },
+        "vbr_min": {
+          "field": "breakdown_voltage_range",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "V",
+          "value_path": [
+            0
+          ]
+        }
+      },
+      "derived_parameters": {
+        "RLEAK": {
+          "basis": "DERIVED",
+          "confidence": "M",
+          "detail": "Linear leakage approximation through the maximum source test point, not a typical leakage curve.",
+          "expression": "VWM/ID",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 4127
+          },
+          "unit": "ohm"
+        },
+        "VBR_nom": {
+          "basis": "DERIVED",
+          "confidence": "M",
+          "detail": "Midpoint of the now-opened SMBJ15A window is a model choice, not a published typical value.",
+          "expression": "(vbr_min+vbr_max)/2",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 4127
+          },
+          "unit": "V"
+        }
+      },
+      "entry_id": "OHM-069",
+      "ground_strays": {},
+      "inline_assets": [],
+      "instance_value_unit": null,
+      "limitations": [
+        "Isothermal static clamp-curve probe only; DC solver current is not permission to dissipate the 600 W pulse rating continuously.",
+        "No surge waveform/width, repetition, heating, lead overshoot, capacitance or protected-load survival is established. No transient binding until those limits are explicit.",
+        "Only unidirectional SMBJ15A is bound; bidirectional CA, SMA and SMC require separate bindings.",
+        "The original rounded 0.266 ohm fit exceeded the source maximum. A separately recorded ngspice calibration changes only the runtime coefficient; source values and legacy class/bench contracts remain unchanged."
+      ],
+      "package": "SMB unidirectional",
+      "pin_role_fact": null,
+      "quoted_parameters": {
+        "RDYN": {
+          "basis": "DERIVED",
+          "confidence": "M",
+          "source": {
+            "document": "docs/behavior/calibration/OHM-069.json",
+            "document_sha256": "19125464933d1893cca8f6afc4fcbee1fe777dea8a0c521d48dbc78edb1ecfb6",
+            "fragment_sha256": null,
+            "line": 1
+          },
+          "source_fragment": "\"value_text\": \"0.26576915359497078\"",
+          "unit": "ohm",
+          "value_text": "0.26576915359497078"
+        }
+      },
+      "reference_part": "Vishay SMBJ15A",
+      "supported_analyses": [
+        "op"
+      ],
+      "template_key": "netlist_template",
+      "template_override": ".subckt TVSU_{ref} A K\nDF A K DFWD_{ref}\nDR A K DTVS_{ref}\nRLK K A {RLEAK}\n.ends\n.model DFWD_{ref} D (IS=1e-9 N=1.5 RS=0.05)\n.model DTVS_{ref} D (IS=1e-15 N=1 RS={RDYN} BV={VBR_nom} IBV={IT} NBV=1)\nX{ref} {A} {K} TVSU_{ref}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "fragment_sha256": null,
+        "line": 4205
+      },
       "terminal_roles": {
         "1": "K",
         "2": "A"
@@ -3971,7 +4738,7 @@
   "schema_version": 1,
   "source": {
     "document": "docs/behavior/runtime-recipes.json",
-    "document_sha256": "14f1095f47d94f2ad6c5ac50d0c34b65d597cf6ac4571faeec0b668f9a262dd7",
+    "document_sha256": "b54881b392dfbcea2ebb8ab53eb536581dce9b97319659ab91dfac0ad60bd4b8",
     "fragment_sha256": null,
     "line": 1
   }

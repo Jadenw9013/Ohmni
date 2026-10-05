@@ -1,0 +1,15 @@
+OHMNI sourced behavior circuit
+.options tnom=25
+.temp 25
+Iexcitation1 0 n1 DC 0.0050000000000000001
+.subckt DZ_c1 A K
+DF A K DFWD_c1
+DR A K DZB_c1
+RLK K A 1000000
+.ends
+.model DFWD_c1 D (IS=5e-9 N=1.9 RS=1.0 VJ=0.7 M=0.4 TT=50n)
+.model DZB_c1 D (IS=1e-15 N=1 RS=19.5 BV=5.0024999999999995 IBV=0.0050000000000000001 NBV=2.7000000000000002)
+Xc1 0 n1 DZ_c1
+.op
+.print op
+.end

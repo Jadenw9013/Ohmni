@@ -1,0 +1,57 @@
+{
+  "analysis": "op",
+  "circuit_hash": "a054ee175c33d44ca1cd392401d6f9ad5af28f05c6458331f88d44ec728ddafd",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "kind": "interval",
+    "maximum": 24.4,
+    "minimum": 0,
+    "node": "cathode",
+    "observable": "node_voltage",
+    "source_fact": {
+      "basis": "MFR_DATASHEET",
+      "confidence": "H",
+      "detail": null,
+      "field": "maximum_clamping_voltage",
+      "page": 2,
+      "scope": "SMBJ15A unidirectional / SMBJ15CA bidirectional; Ippm24.6A,10/1000us pulse;25C",
+      "sources": [
+        "https://www.vishay.com/docs/88392/smbj.pdf"
+      ],
+      "unit": "V",
+      "value": 24.4
+    },
+    "test_current": 24.6,
+    "test_current_evidence": {
+      "basis": "MFR_DATASHEET",
+      "confidence": "H",
+      "detail": null,
+      "field": "peak_pulse_current",
+      "page": 2,
+      "scope": "SMBJ15A; TA25 C; 10/1000 us waveform, source figure2 derating and figure3 waveform",
+      "sources": [
+        "https://www.vishay.com/docs/88392/smbj.pdf"
+      ],
+      "unit": "A",
+      "value": 24.6
+    }
+  },
+  "entry_id": "OHM-069",
+  "entry_research_sha256": "b0f769ad93ca0db220f0e30c15874dd45925320f96264d81cbbe124f87364963",
+  "limits": "Static isothermal clamp-curve probe at 25 C only. The source rating describes a pulse; an operating-point result does not establish allowable continuous current, pulse waveform, heating or protected-load survival. Legacy numerical tolerance and the source voltage maximum are checked separately.",
+  "netlist_sha256": "8cb415bea9796315d5a6959752043877b86b7902302d32e04d1e49178bf20b53",
+  "observation_status": "ran",
+  "observed": 24.4,
+  "output_sha256": "7a294e1e88f12e121726162fe3f279293aec11a5d6db9a3de8ec413076a91647",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-05T20:44:48Z",
+  "raw_output": "runtime-bench-output/OHM-069-op-source_bound/output.txt",
+  "recipe_source_sha256": "b54881b392dfbcea2ebb8ab53eb536581dce9b97319659ab91dfac0ad60bd4b8",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "variant": "source_bound",
+  "version_file": "runtime-bench-output/OHM-069-op-source_bound/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n",
+  "version_sha256": "2cdcb25fcf77dea87742b9ac629a0b5ba20169e01beb2b59fdd2e41ee348a45d"
+}

@@ -1,10 +1,10 @@
-# Stage 3 model checkpoint
+# Stage 3 model gate
 
 > Generated from recipes, scoped records and revalidated runtime receipts.
 
-Registered bindings: 40. Bindings with current passing runtime comparisons: 35.
-Runtime comparison results: {'failed': 5, 'passed': 51}.
-This is an in-progress checkpoint, not stage acceptance. Runtime comparisons only cover the measurement stated in each receipt; they do not establish complete model accuracy, ratings or safe operation.
+Registered bindings: 45. Bindings with current passing runtime comparisons: 40.
+Runtime comparison results: {'failed': 5, 'passed': 58}.
+Stage acceptance remains blocked by the separately recorded audit failures. Runtime comparisons only cover the measurement stated in each receipt; they do not establish complete model accuracy, ratings or safe operation.
 
 | Entry | Source status before → after | Bound reference | Runtime comparisons / blockers |
 | --- | --- | --- | --- |
@@ -22,94 +22,103 @@ This is an in-progress checkpoint, not stage acceptance. Runtime comparisons onl
 | OHM-012 | partial → partial | Scoped package record | Current runtime comparisons pass; limits below apply |
 | OHM-013 | partial → partial | Scoped package record | Current runtime comparisons pass; limits below apply |
 | OHM-014 | partial → partial | Vishay WSL2512, 5 milliohm, two-terminal | Current runtime comparisons pass; limits below apply |
-| OHM-015 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
+| OHM-015 | partial → partial | Unbound | Exact sense-pin variant and busbar thermal/current conditions are unbound; 36 W does not establish a safe free-air current. |
 | OHM-016 | partial → partial | Bourns 4608X-101 eight-pin bussed network, 10 kohm | Current runtime comparisons pass; limits below apply |
-| OHM-017 | partial → partial | Unbound | Confirm numbered pin-to-element map before simulating the physical array.; No executable package-to-model recipe is bound to this entry |
-| OHM-018 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
-| OHM-019 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
-| OHM-020 | research_required → research_required | Unbound | RV16AF power rating remains rating-critical and unsourced; refuse default simulation.; No executable package-to-model recipe is bound to this entry |
-| OHM-021 | partial → partial | Unbound | The exact default part voltage rating is not re-established by these general application documents.; No executable package-to-model recipe is bound to this entry |
-| OHM-022 | partial → partial | Unbound | The exact default part voltage rating is not re-established by these general application documents.; No executable package-to-model recipe is bound to this entry |
-| OHM-023 | partial → partial | Unbound | The exact default part voltage rating is not re-established by these general application documents.; No executable package-to-model recipe is bound to this entry |
-| OHM-024 | partial → partial | Unbound | The exact default part voltage rating is not re-established by these general application documents.; No executable package-to-model recipe is bound to this entry |
-| OHM-025 | partial → partial | Unbound | The exact default part voltage rating is not re-established by these general application documents.; No executable package-to-model recipe is bound to this entry |
-| OHM-026 | partial → partial | Unbound | The exact default part voltage rating is not re-established by these general application documents.; No executable package-to-model recipe is bound to this entry |
-| OHM-027 | partial → partial | Unbound | The exact default part voltage rating is not re-established by these general application documents.; No executable package-to-model recipe is bound to this entry |
-| OHM-028 | partial → partial | Unbound | Unbound generic disc voltage and safety class; no mains-use inference is permitted.; No executable package-to-model recipe is bound to this entry |
-| OHM-029 | partial → partial | Unbound | Rating-critical part voltage and ripple/lifetime limits need an exact series binding.; No executable package-to-model recipe is bound to this entry |
-| OHM-030 | partial → partial | Unbound | Rating-critical part voltage and ripple/lifetime limits need an exact series binding.; No executable package-to-model recipe is bound to this entry |
-| OHM-031 | partial → partial | Unbound | Rating-critical part voltage and ripple/lifetime limits need an exact series binding.; Three-pin auxiliary-terminal connectivity unresolved; only the separately mapped two-pin variant may proceed after rating binding.; No executable package-to-model recipe is bound to this entry |
-| OHM-032 | partial → partial | Unbound | Rating-critical part voltage and ripple/lifetime limits need an exact series binding.; No executable package-to-model recipe is bound to this entry |
-| OHM-033 | partial → partial | Unbound | Runtime must use the scoped MnO2 reverse/temperature limits instead of the generic fixed 3% envelope.; No executable package-to-model recipe is bound to this entry |
-| OHM-034 | partial → partial | Unbound | Runtime must use the scoped MnO2 reverse/temperature limits instead of the generic fixed 3% envelope.; No executable package-to-model recipe is bound to this entry |
-| OHM-035 | partial → partial | Unbound | Runtime must use the scoped MnO2 reverse/temperature limits instead of the generic fixed 3% envelope.; No executable package-to-model recipe is bound to this entry |
-| OHM-036 | partial → partial | Unbound | Runtime must use the scoped MnO2 reverse/temperature limits instead of the generic fixed 3% envelope.; No executable package-to-model recipe is bound to this entry |
-| OHM-037 | partial → partial | Unbound | The generic 10 mm default remains unbound to an exact rated part.; No executable package-to-model recipe is bound to this entry |
-| OHM-038 | partial → partial | Unbound | Unbound mains safety part; no claim of safe mains operation.; No executable package-to-model recipe is bound to this entry |
-| OHM-039 | partial → partial | Unbound | Do not use an unsourced Q/leakage model as a verified RF response.; No executable package-to-model recipe is bound to this entry |
-| OHM-040 | partial → partial | Unbound | Unresolved electrical/reference/geometry binding and condition-specific current limits; stored energy and short-circuit heating are safety relevant.; No executable package-to-model recipe is bound to this entry |
-| OHM-041 | partial → partial | Unbound | Do not use assumed 30% saturation drop / 40 K rise as sourced thermal or saturation limits.; No executable package-to-model recipe is bound to this entry |
-| OHM-042 | research_required → research_required | Unbound | Unspecified default variant and incomplete rating conditions remain blocked.; No executable package-to-model recipe is bound to this entry |
-| OHM-043 | partial → partial | Unbound | Saturation and temperature limits remain unestablished; no silent placeholder promotion.; No executable package-to-model recipe is bound to this entry |
-| OHM-044 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
+| OHM-017 | partial → partial | Unbound | Confirm numbered pin-to-element map before simulating the physical array. |
+| OHM-018 | partial → partial | Unbound | Maximum wiper current is unsourced; loaded-wiper simulation must be refused. End/contact resistance bounds do not establish nominal values. |
+| OHM-019 | partial → partial | Unbound | Maximum wiper current is unsourced; loaded-wiper simulation must be refused. Style-specific voltage and mechanical direction still need explicit binding. |
+| OHM-020 | research_required → research_required | Unbound | RV16AF power rating remains rating-critical and unsourced; refuse default simulation. |
+| OHM-021 | partial → partial | Unbound | The exact default part voltage rating is not re-established by these general application documents. |
+| OHM-022 | partial → partial | Unbound | The exact default part voltage rating is not re-established by these general application documents. |
+| OHM-023 | partial → partial | Unbound | The exact default part voltage rating is not re-established by these general application documents. |
+| OHM-024 | partial → partial | Unbound | The exact default part voltage rating is not re-established by these general application documents. |
+| OHM-025 | partial → partial | Unbound | The exact default part voltage rating is not re-established by these general application documents. |
+| OHM-026 | partial → partial | Unbound | The exact default part voltage rating is not re-established by these general application documents. |
+| OHM-027 | partial → partial | Unbound | The exact default part voltage rating is not re-established by these general application documents. |
+| OHM-028 | partial → partial | Unbound | Unbound generic disc voltage and safety class; no mains-use inference is permitted. |
+| OHM-029 | partial → partial | Unbound | Rating-critical part voltage and ripple/lifetime limits need an exact series binding. |
+| OHM-030 | partial → partial | Unbound | Rating-critical part voltage and ripple/lifetime limits need an exact series binding. |
+| OHM-031 | partial → partial | Unbound | Rating-critical part voltage and ripple/lifetime limits need an exact series binding.; Three-pin auxiliary-terminal connectivity unresolved; only the separately mapped two-pin variant may proceed after rating binding. |
+| OHM-032 | partial → partial | Unbound | Rating-critical part voltage and ripple/lifetime limits need an exact series binding. |
+| OHM-033 | partial → partial | Unbound | Runtime must use the scoped MnO2 reverse/temperature limits instead of the generic fixed 3% envelope. |
+| OHM-034 | partial → partial | Unbound | Runtime must use the scoped MnO2 reverse/temperature limits instead of the generic fixed 3% envelope. |
+| OHM-035 | partial → partial | Unbound | Runtime must use the scoped MnO2 reverse/temperature limits instead of the generic fixed 3% envelope. |
+| OHM-036 | partial → partial | Unbound | Runtime must use the scoped MnO2 reverse/temperature limits instead of the generic fixed 3% envelope. |
+| OHM-037 | partial → partial | Unbound | The generic 10 mm default remains unbound to an exact rated part. |
+| OHM-038 | partial → partial | Unbound | Unbound mains safety part; no claim of safe mains operation. |
+| OHM-039 | partial → partial | Unbound | Do not use an unsourced Q/leakage model as a verified RF response. |
+| OHM-040 | partial → partial | Unbound | Unresolved electrical/reference/geometry binding and condition-specific current limits; stored energy and short-circuit heating are safety relevant. |
+| OHM-041 | partial → partial | Unbound | Do not use assumed 30% saturation drop / 40 K rise as sourced thermal or saturation limits. |
+| OHM-042 | research_required → research_required | Unbound | Unspecified default variant and incomplete rating conditions remain blocked. |
+| OHM-043 | partial → partial | Unbound | Saturation and temperature limits remain unestablished; no silent placeholder promotion. |
+| OHM-044 | partial → partial | Coilcraft 0603CS-15NX_R_, suffix unselected; explicit alternative | Current runtime comparisons pass; limits below apply |
 | OHM-045 | complete → complete | Bourns SRP7028A-1R8M | Current runtime comparisons pass; limits below apply |
 | OHM-046 | partial → partial | Bourns SDR0604-100ML | Current runtime comparisons pass; limits below apply |
-| OHM-047 | partial → partial | Unbound | Saturation limit is not established for the ferrite-core default.; No executable package-to-model recipe is bound to this entry |
+| OHM-047 | partial → partial | Unbound | Saturation limit is not established for the ferrite-core default. |
 | OHM-048 | partial → partial | Bourns RLB0914-101KL | Current runtime comparisons pass; limits below apply |
 | OHM-049 | partial → partial | Bourns 2107-V-RC | Current runtime comparisons pass; limits below apply |
-| OHM-050 | partial → partial | Unbound | Default winding permutation cannot be used until explicit package binding is corrected and tested.; No executable package-to-model recipe is bound to this entry |
-| OHM-051 | partial → partial | Unbound | Mains-rated winding binding and missing saturation/thermal model need explicit handling; insulation test voltage is not a working voltage.; No executable package-to-model recipe is bound to this entry |
-| OHM-052 | partial → partial | Unbound | Do not claim safe galvanic isolation or a complete response from assumed 1 H / 5 mH / 100 pF.; No executable package-to-model recipe is bound to this entry |
-| OHM-053 | research_required → research_required | Unbound | No safety or thermal acceptance for this transformer until working-voltage and loss limits are bound.; No executable package-to-model recipe is bound to this entry |
-| OHM-054 | partial → partial | Unbound | Physical/reference and primary-conductor binding conflict; open-secondary operation is hazardous.; No executable package-to-model recipe is bound to this entry |
-| OHM-055 | partial → partial | Unbound | Working-voltage and complete physical pin binding remain unestablished; no isolation-safety acceptance.; No executable package-to-model recipe is bound to this entry |
+| OHM-050 | partial → partial | Unbound | Default winding permutation cannot be used until explicit package binding is corrected and tested. |
+| OHM-051 | partial → partial | Unbound | Mains-rated winding binding and missing saturation/thermal model need explicit handling; insulation test voltage is not a working voltage. |
+| OHM-052 | partial → partial | Unbound | Do not claim safe galvanic isolation or a complete response from assumed 1 H / 5 mH / 100 pF. |
+| OHM-053 | research_required → research_required | Unbound | No safety or thermal acceptance for this transformer until working-voltage and loss limits are bound. |
+| OHM-054 | partial → partial | Unbound | Physical/reference and primary-conductor binding conflict; open-secondary operation is hazardous. |
+| OHM-055 | partial → partial | Unbound | Working-voltage and complete physical pin binding remain unestablished; no isolation-safety acceptance. |
 | OHM-056 | partial → partial | Scoped package record | OHM-056: stale or invalid runtime run_status; OHM-056: raw observation does not meet its locked or sourced contract |
 | OHM-057 | partial → partial | Vishay 1N4007 | Current runtime comparisons pass; limits below apply |
 | OHM-058 | partial → partial | Vishay 1N5408 | Current runtime comparisons pass; limits below apply |
 | OHM-059 | partial → partial | Scoped package record | OHM-059: stale or invalid runtime run_status; OHM-059: raw observation does not meet its locked or sourced contract |
-| OHM-060 | research_required → research_required | Unbound | The average-current derating curve must be implemented before claiming a complete thermal envelope.; No executable package-to-model recipe is bound to this entry |
+| OHM-060 | research_required → research_required | Unbound | The average-current derating curve must be implemented before claiming a complete thermal envelope. |
 | OHM-061 | partial → partial | Scoped package record | OHM-061: stale or invalid runtime run_status; OHM-061: raw observation does not meet its locked or sourced contract |
 | OHM-062 | research_required → research_required | Nexperia BAS316 | OHM-062: stale or invalid runtime run_status; OHM-062: raw observation does not meet its locked or sourced contract |
 | OHM-063 | research_required → research_required | Nexperia BAS516 | OHM-063: stale or invalid runtime run_status; OHM-063: raw observation does not meet its locked or sourced contract |
-| OHM-064 | partial → partial | Vishay S1M, authored rectifier proxy | Current runtime comparisons pass; limits below apply |
-| OHM-065 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
-| OHM-066 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
-| OHM-067 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
-| OHM-068 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
-| OHM-069 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
-| OHM-070 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
+| OHM-064 | partial → partial | Vishay S1M, original entry fit | Current runtime comparisons pass; limits below apply |
+| OHM-065 | partial → partial | Vishay S2M PN; explicit alternative to Schottky default | Current runtime comparisons pass; limits below apply |
+| OHM-066 | partial → partial | Unbound | Functional variant binding is deferred: the index projects PN, while the sourced default is SS34 Schottky. No MURS PN reference is verified; source function and model must not be silently interchanged. |
+| OHM-067 | partial → partial | Vishay BAT42W; BAT54-derived proxy | Current runtime comparisons pass; limits below apply |
+| OHM-068 | partial → partial | Diodes Incorporated BZT52C5V1; BZX55-derived proxy | Current runtime comparisons pass; limits below apply |
+| OHM-069 | partial → partial | Vishay SMBJ15A | Current runtime comparisons pass; limits below apply |
+| OHM-070 | partial → partial | Unbound | The available BAV99 power/thermal rating is explicitly for one diode loaded. Shared-package loading and configuration require a scoped runtime guard; no independent per-die power allocation is assumed. |
 | OHM-071 | research_required → research_required | Vishay DF10M | Current runtime comparisons pass; limits below apply |
-| OHM-072 | partial → partial | Unbound | Physical role binding remains unverified for the generic WOM/WOG combined entry.; No executable package-to-model recipe is bound to this entry |
+| OHM-072 | partial → partial | Unbound | Physical role binding remains unverified for the generic WOM/WOG combined entry. |
 | OHM-073 | partial → partial | Vishay TLDR4400; authored LED_RED approximation | Current runtime comparisons pass; limits below apply |
 | OHM-074 | partial → partial | Vishay TLHR5200 red | Current runtime comparisons pass; limits below apply |
-| OHM-075 | research_required → research_required | Unbound | Junction-temperature/thermal acceptance cannot use the unsourced 350 K/W placeholder.; No executable package-to-model recipe is bound to this entry |
-| OHM-076 | research_required → research_required | Unbound | The copied thermal parameters are unsourced for this rectangular lamp.; No executable package-to-model recipe is bound to this entry |
+| OHM-075 | research_required → research_required | Unbound | Junction-temperature/thermal acceptance cannot use the unsourced 350 K/W placeholder. |
+| OHM-076 | research_required → research_required | Unbound | The copied thermal parameters are unsourced for this rectangular lamp. |
 | OHM-077 | partial → partial | Kingbright APHHS1005SURCK red | Current runtime comparisons pass; limits below apply |
-| OHM-078 | partial → partial | Unbound | Thermal acceptance lacks sourced junction/thermal parameters; generic color variants lack an exact reference.; No executable package-to-model recipe is bound to this entry |
+| OHM-078 | partial → partial | Unbound | Thermal acceptance lacks sourced junction/thermal parameters; generic color variants lack an exact reference. |
 | OHM-079 | partial → partial | Kingbright AP2012EC red | Current runtime comparisons pass; limits below apply |
 | OHM-080 | partial → partial | Kingbright APT3216SURCK red | Current runtime comparisons pass; limits below apply |
 | OHM-081 | partial → partial | Vishay VLMW33S2V1-5K8L-08 white | Current runtime comparisons pass; limits below apply |
 | OHM-082 | partial → partial | Avago ASMB-MTB0-0A3A2 | Current runtime comparisons pass; limits below apply |
-| OHM-083 | research_required → research_required | Unbound | Do not simulate OHM-083 from a generic six-terminal RGB pin map or unsourced per-color ratings.; No usable primary-source research is available; No executable package-to-model recipe is bound to this entry |
-| OHM-084 | partial → partial | Unbound | L3 protocol behavior is not simulable by ngspice; Rated supply-current model is blocked until an exact-version current specification is sourced.; No executable package-to-model recipe is bound to this entry |
-| OHM-085 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
-| OHM-086 | partial → partial | Unbound | Module terminal map and module thermal limits are missing; keep the star model blocked.; No executable package-to-model recipe is bound to this entry |
-| OHM-087 | research_required → research_required | Unbound | Per-segment and common-lead aggregate power/current allocation is not established; do not use table PD/IF as a rated complete-display envelope.; No executable package-to-model recipe is bound to this entry |
-| OHM-088 | research_required → research_required | Unbound | Per-segment and common-lead aggregate power/current allocation is not established; do not use table PD/IF as a rated complete-display envelope.; No executable package-to-model recipe is bound to this entry |
-| OHM-089 | research_required → research_required | Unbound | Per-segment and common-lead aggregate power/current allocation is not established; do not use table PD/IF as a rated complete-display envelope.; No executable package-to-model recipe is bound to this entry |
-| OHM-090 | research_required → research_required | Unbound | Exact part-to-library terminal map remains unverified.; No executable package-to-model recipe is bound to this entry |
-| OHM-091 | partial → partial | Unbound | L3 protocol behavior is not simulable by ngspice; Do not simulate the assumed 100 mA/4.1 V backlight as a rated module load.; No executable package-to-model recipe is bound to this entry |
-| OHM-092 | partial → partial | Unbound | L3 protocol behavior is not simulable by ngspice; Unknown module terminal map and power/logic limits block module electrical simulation.; No executable package-to-model recipe is bound to this entry |
-| OHM-093 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
-| OHM-094 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
+| OHM-083 | research_required → research_required | Unbound | Do not simulate OHM-083 from a generic six-terminal RGB pin map or unsourced per-color ratings. |
+| OHM-084 | partial → partial | Unbound | Rated supply-current model is blocked until an exact-version current specification is sourced. |
+| OHM-085 | partial → partial | Unbound | Junction-to-solderpoint data does not establish a board/heatsink-to-ambient path; the85 C fit and revised source require explicit thermal-context handling before rated runtime use. |
+| OHM-086 | partial → partial | Unbound | Module terminal map and module thermal limits are missing; keep the star model blocked. |
+| OHM-087 | research_required → research_required | Unbound | Per-segment and common-lead aggregate power/current allocation is not established; do not use table PD/IF as a rated complete-display envelope. |
+| OHM-088 | research_required → research_required | Unbound | Per-segment and common-lead aggregate power/current allocation is not established; do not use table PD/IF as a rated complete-display envelope. |
+| OHM-089 | research_required → research_required | Unbound | Per-segment and common-lead aggregate power/current allocation is not established; do not use table PD/IF as a rated complete-display envelope. |
+| OHM-090 | research_required → research_required | Unbound | Exact part-to-library terminal map remains unverified. |
+| OHM-091 | partial → partial | Unbound | Do not simulate the assumed 100 mA/4.1 V backlight as a rated module load. |
+| OHM-092 | partial → partial | Unbound | Unknown module terminal map and power/logic limits block module electrical simulation. |
+| OHM-093 | partial → partial | Unbound | Default onsemi2N3904 source is unavailable. Opened PN2222A data does not validate that model or its generic TO-92 pin assignment. |
+| OHM-094 | partial → partial | Unbound | Default MMBT3904/2N3904 fit is not established by the opened BC817 alternative; exact reference/model/pin binding is missing. |
 | OHM-095 | partial → partial | Nexperia BCX56-16, Rev13 | Current runtime comparisons pass; limits below apply |
-| OHM-096 | partial → partial | Unbound | No executable package-to-model recipe is bound to this entry |
+| OHM-096 | partial → partial | Unbound | Default AMS1117-3.3 regulator remains unbound; BCP56 transistor research cannot supply its electrical truth. Regulator binding is deferred to the IC stage. |
 | OHM-097 | partial → partial | Fairchild BD139 ungraded, RevA February2000 | Current runtime comparisons pass; limits below apply |
 | OHM-098 | partial → partial | Scoped package record | Current runtime comparisons pass; limits below apply |
 | OHM-099 | research_required → research_required | Scoped package record | Current runtime comparisons pass; limits below apply |
-| OHM-100 | research_required → research_required | Unbound | No executable package-to-model recipe is bound to this entry |
-| OHM-101 | partial → partial | Unbound | The default regulator has no re-verified source/functional binding; keep that default blocked.; No executable package-to-model recipe is bound to this entry |
+| OHM-100 | research_required → research_required | Unbound | Default IRLR8721 compatible model card is unavailable; the IRLB8721 card is a different part and cannot be substituted. |
+| OHM-101 | partial → partial | Unbound | The default regulator has no re-verified source/functional binding; keep that default blocked. |
 | OHM-102 | partial → partial | Scoped package record | Current runtime comparisons pass; limits below apply |
+
+## Implementation and remaining scope
+
+CircuitIR instances compile through the existing NgspiceAdapter. Models are inlined, terminal permutations remain explicit, and the runtime enforces tnom/temp25 C. MOSFET cards require IS=0, regulator templates retain nodesets, and pin strays return to ground. Source stimuli currently support explicit DC voltage/current; arbitrary waveforms and AC circuit analysis are not implemented in this stage.
+
+No source status was promoted. Unbound entries remain refused. Tantalum reverse/temperature policy and other condition-sensitive ratings require the later ratings stage; reference-function joins for package and mixed-function entries require the IC binding work. L3 protocol behavior remains outside ngspice.
+
+A named alternate binding does not silently replace the default: Coilcraft RF, S2M PN and BAT42W proxy records name their scope and package selection explicitly. No generic purchased part is verified by selecting an OHM reference.
+
 
 ## Captured measurements
 
@@ -309,6 +318,13 @@ This is an in-progress checkpoint, not stage acceptance. Runtime comparisons onl
 - Captured observation: 0.0035.
 - Limits: Total DC branch current for the sourced bussed topology only; per-element and whole-package thermal ratings remain separate.
 
+### OHM-044 / op
+
+- Recorded comparison: passed.
+- Contract: {'current': 0.7, 'kind': 'interval', 'maximum': 0.17, 'minimum': 0, 'observable': 'dc_resistance', 'source_facts': {'irms': {'basis': 'MFR_DATASHEET', 'confidence': 'H', 'detail': None, 'field': 'reference_current', 'page': 2, 'scope': '0603CS-15NX_R_ reference; option suffix unselected; 15 C rise from 25 C, not absolute maximum', 'sources': ['https://www.coilcraft.com/getmedia/022eb894-7253-40d0-b07c-650d362fc80e/0603cs.pdf'], 'unit': 'A', 'value': 0.7}, 'rdc_max': {'basis': 'MFR_DATASHEET', 'confidence': 'H', 'detail': None, 'field': 'maximum_dcr', 'page': 2, 'scope': '0603CS-15NX_R_ reference; option suffix unselected', 'sources': ['https://www.coilcraft.com/getmedia/022eb894-7253-40d0-b07c-650d362fc80e/0603cs.pdf'], 'unit': 'ohm', 'value': 0.17}}}.
+- Captured observation: 0.17.
+- Limits: Cold isothermal DC winding resistance against the sourced upper bound. Does not validate nonlinear inductance, resonant response, core loss, self-heating or safe sustained operation at the stimulus current.
+
 ### OHM-045 / op
 
 - Recorded comparison: passed.
@@ -390,8 +406,50 @@ This is an in-progress checkpoint, not stage acceptance. Runtime comparisons onl
 
 - Recorded comparison: passed.
 - Contract: {'kind': 'interval', 'maximum': 1.1, 'minimum': 0, 'observable': 'anode_voltage', 'source_fact': {'basis': 'MFR_DATASHEET', 'confidence': 'H', 'detail': None, 'field': 'maximum_forward_voltage', 'page': 2, 'scope': 'S1M SMA; IF=1 A; TA25 C source table default', 'sources': ['https://www.vishay.com/doc?88711'], 'unit': 'V', 'value': 1.1}}.
-- Captured observation: 0.9240392.
+- Captured observation: 1.093054.
 - Limits: Isothermal25 C forward voltage against the scoped primary-source maximum at its test current; a source-bound check does not validate typical fit, temperature, reverse recovery or ratings.
+
+### OHM-065 / op
+
+- Recorded comparison: passed.
+- Contract: {'kind': 'interval', 'maximum': 1.15, 'minimum': 0, 'observable': 'anode_voltage', 'source_fact': {'basis': 'MFR_DATASHEET', 'confidence': 'H', 'detail': None, 'field': 'maximum_forward_voltage', 'page': 2, 'scope': 'S2M SMB; IF=1.5 A', 'sources': ['https://www.vishay.com/doc?88712'], 'unit': 'V', 'value': 1.15}}.
+- Captured observation: 1.126806.
+- Limits: Isothermal25 C forward voltage against the scoped primary-source maximum at its test current; a source-bound check does not validate typical fit, temperature, reverse recovery or ratings.
+
+### OHM-067 / op
+
+- Recorded comparison: passed.
+- Contract: {'kind': 'interval', 'maximum': 0.4, 'minimum': 0, 'observable': 'anode_voltage', 'source_fact': {'basis': 'MFR_DATASHEET', 'confidence': 'H', 'detail': None, 'field': 'maximum_forward_voltage', 'page': 2, 'scope': 'BAT42W SOD123; package-matched alternative to BAT54 SOT23; IF10 mA', 'sources': ['https://www.diodes.com/datasheet/download/BAT42W.pdf'], 'unit': 'V', 'value': 0.4}}.
+- Captured observation: 0.3035291.
+- Limits: Isothermal25 C forward voltage against the scoped primary-source maximum at its test current; a source-bound check does not validate typical fit, temperature, reverse recovery or ratings.
+
+### OHM-068 / op / legacy
+
+- Recorded comparison: passed.
+- Contract: {'analytical_source': 'BEH-DIO-ZENER/B1', 'expected': 5.1, 'kind': 'absolute', 'node': 'cathode', 'observable': 'node_voltage', 'source_deck_sha256': 'bf8f3b0ae809d16e0779fc1ed9b16de5242820fb6740c4e08707f78442e51768', 'test_current': 0.005, 'test_current_evidence': {'basis': 'MFR_DATASHEET', 'confidence': 'H', 'converted_unit': 'A', 'converted_value': 0.005, 'detail': None, 'field': 'zener_test_current', 'page': 2, 'scope': 'BZT52C5V1; TA25 C; short-duration pulse test per note10', 'sources': ['https://www.diodes.com/_files/datasheets/ds18004.pdf'], 'unit': 'mA', 'value': 5}, 'tolerance': 0.01}.
+- Captured observation: 5.09983.
+- Limits: Isothermal 25 C voltage at the source short-pulse test current. Does not validate equilibrium self-heating, the impedance/knee envelope, surge, forward-current limit or destructive behavior.
+
+### OHM-068 / op / source_bound
+
+- Recorded comparison: passed.
+- Contract: {'kind': 'interval', 'maximum': 5.4, 'minimum': 4.8, 'node': 'cathode', 'observable': 'node_voltage', 'source_fact': {'basis': 'MFR_DATASHEET', 'confidence': 'H', 'detail': None, 'field': 'zener_voltage_range', 'page': 2, 'scope': 'BZT52C5V1 SOD123; IZT5mA,25C; nominal5.1V; source note10 short-duration pulse to minimize self-heating; not equilibrium DC', 'selected_value': 5.4, 'selected_value_path': [1], 'sources': ['https://www.diodes.com/_files/datasheets/ds18004.pdf'], 'unit': 'V', 'value': [4.8, 5.4]}, 'test_current': 0.005, 'test_current_evidence': {'basis': 'MFR_DATASHEET', 'confidence': 'H', 'converted_unit': 'A', 'converted_value': 0.005, 'detail': None, 'field': 'zener_test_current', 'page': 2, 'scope': 'BZT52C5V1; TA25 C; short-duration pulse test per note10', 'sources': ['https://www.diodes.com/_files/datasheets/ds18004.pdf'], 'unit': 'mA', 'value': 5}}.
+- Captured observation: 5.09983.
+- Limits: Isothermal 25 C voltage at the source short-pulse test current. Does not validate equilibrium self-heating, the impedance/knee envelope, surge, forward-current limit or destructive behavior.
+
+### OHM-069 / op / legacy
+
+- Recorded comparison: passed.
+- Contract: {'analytical_source': 'BEH-DIO-TVS/B1', 'expected': 24.4, 'kind': 'absolute', 'node': 'cathode', 'observable': 'node_voltage', 'source_deck_sha256': 'a1f44f588f3fefe33edb85ccd93c846f83e3b03ed62a332c25f0a8c9afc903da', 'test_current': 24.6, 'test_current_evidence': {'basis': 'MFR_DATASHEET', 'confidence': 'H', 'detail': None, 'field': 'peak_pulse_current', 'page': 2, 'scope': 'SMBJ15A; TA25 C; 10/1000 us waveform, source figure2 derating and figure3 waveform', 'sources': ['https://www.vishay.com/docs/88392/smbj.pdf'], 'unit': 'A', 'value': 24.6}, 'tolerance': 0.122}.
+- Captured observation: 24.4.
+- Limits: Static isothermal clamp-curve probe at 25 C only. The source rating describes a pulse; an operating-point result does not establish allowable continuous current, pulse waveform, heating or protected-load survival. Legacy numerical tolerance and the source voltage maximum are checked separately.
+
+### OHM-069 / op / source_bound
+
+- Recorded comparison: passed.
+- Contract: {'kind': 'interval', 'maximum': 24.4, 'minimum': 0, 'node': 'cathode', 'observable': 'node_voltage', 'source_fact': {'basis': 'MFR_DATASHEET', 'confidence': 'H', 'detail': None, 'field': 'maximum_clamping_voltage', 'page': 2, 'scope': 'SMBJ15A unidirectional / SMBJ15CA bidirectional; Ippm24.6A,10/1000us pulse;25C', 'sources': ['https://www.vishay.com/docs/88392/smbj.pdf'], 'unit': 'V', 'value': 24.4}, 'test_current': 24.6, 'test_current_evidence': {'basis': 'MFR_DATASHEET', 'confidence': 'H', 'detail': None, 'field': 'peak_pulse_current', 'page': 2, 'scope': 'SMBJ15A; TA25 C; 10/1000 us waveform, source figure2 derating and figure3 waveform', 'sources': ['https://www.vishay.com/docs/88392/smbj.pdf'], 'unit': 'A', 'value': 24.6}}.
+- Captured observation: 24.4.
+- Limits: Static isothermal clamp-curve probe at 25 C only. The source rating describes a pulse; an operating-point result does not establish allowable continuous current, pulse waveform, heating or protected-load survival. Legacy numerical tolerance and the source voltage maximum are checked separately.
 
 ### OHM-071 / op / negative
 

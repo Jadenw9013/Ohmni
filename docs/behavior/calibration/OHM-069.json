@@ -1,0 +1,250 @@
+{
+  "basis": "DERIVED",
+  "confidence": "M",
+  "entry_id": "OHM-069",
+  "limitations": "Calibration at one point does not establish surge-waveform, thermal, leakage, capacitance, failure timing or protected-load behavior.",
+  "method": "Bisection of the authored model's series resistance against the unchanged sourced VC at IPP. The source formula defines the series resistance as the residual voltage drop divided by current; the solver includes the nonlinear junction and leakage terms.",
+  "method_source": "COMPONENT_BEHAVIOR_SPEC.md:4127",
+  "original_authored_resistance": 0.266,
+  "parameter": "RDYN",
+  "scope": "Isothermal 25 C maximum-corner static curve, not a typical curve or a safe pulse envelope",
+  "source_contract": {
+    "analysis": "op",
+    "circuit_hash": "a054ee175c33d44ca1cd392401d6f9ad5af28f05c6458331f88d44ec728ddafd",
+    "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "comparison": {
+      "kind": "interval",
+      "maximum": 24.4,
+      "minimum": 0,
+      "node": "cathode",
+      "observable": "node_voltage",
+      "source_fact": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_clamping_voltage",
+        "page": 2,
+        "scope": "SMBJ15A unidirectional / SMBJ15CA bidirectional; Ippm24.6A,10/1000us pulse;25C",
+        "sources": [
+          "https://www.vishay.com/docs/88392/smbj.pdf"
+        ],
+        "unit": "V",
+        "value": 24.4
+      },
+      "test_current": 24.6,
+      "test_current_evidence": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "peak_pulse_current",
+        "page": 2,
+        "scope": "SMBJ15A; TA25 C; 10/1000 us waveform, source figure2 derating and figure3 waveform",
+        "sources": [
+          "https://www.vishay.com/docs/88392/smbj.pdf"
+        ],
+        "unit": "A",
+        "value": 24.6
+      }
+    },
+    "entry_id": "OHM-069",
+    "entry_research_sha256": "b0f769ad93ca0db220f0e30c15874dd45925320f96264d81cbbe124f87364963",
+    "limits": "Static isothermal clamp-curve probe at 25 C only. The source rating describes a pulse; an operating-point result does not establish allowable continuous current, pulse waveform, heating or protected-load survival. Legacy numerical tolerance and the source voltage maximum are checked separately.",
+    "netlist_sha256": "a37a6cbab2a522b5e8ba8a72c821db968a9f321653862ea14fa2ee7d0a99cf54",
+    "recipe_source_sha256": "dc611e7a7b3523d3dd54b07e6d1f5a65edfbcc1d5f41a65d9766ece042137dd6",
+    "run_id": "behavior-20261005T065040Z",
+    "variant": "source_bound"
+  },
+  "trials": [
+    {
+      "netlist_sha256": "f37cf154ba9ec7036972cb474ae420beb367f2ca5c83bea7e7eb8b81771f231c",
+      "observed_voltage": 17.87148,
+      "output_path": "out/component-behavior/run/calibration-output/OHM-069/1/output.txt",
+      "output_sha256": "9457956bb422da8dc8faa70b13ae81d11f6d478a4127ae142defa98467d73d0d",
+      "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+      "series_resistance_ohm": 0,
+      "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+    },
+    {
+      "netlist_sha256": "a37a6cbab2a522b5e8ba8a72c821db968a9f321653862ea14fa2ee7d0a99cf54",
+      "observed_voltage": 24.40568,
+      "output_path": "out/component-behavior/run/calibration-output/OHM-069/2/output.txt",
+      "output_sha256": "8eed6b41b86e735594011fd6c13313491a7db4784826009eb0ad16be09464f6a",
+      "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+      "series_resistance_ohm": 0.266,
+      "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+    },
+    {
+      "netlist_sha256": "cd11ae43c3eb01e3f170087ec0b3b1d6adbc928e95a1401c00b5c9959fa7cab1",
+      "observed_voltage": 21.13388,
+      "output_path": "out/component-behavior/run/calibration-output/OHM-069/3/output.txt",
+      "output_sha256": "31f1ab839f9606622c17aca35a7c5672974adecb36f7c92ad5a9f64919e4d5dc",
+      "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+      "series_resistance_ohm": 0.133,
+      "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+    },
+    {
+      "netlist_sha256": "a68d1b79016016c44107de8fcafc10d5c1cae95e4f60d331b8810a01a883015a",
+      "observed_voltage": 22.76978,
+      "output_path": "out/component-behavior/run/calibration-output/OHM-069/4/output.txt",
+      "output_sha256": "5bca46cb50deccacc5996291bc587ebacca3d17ce0c411f7936951f46da54933",
+      "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+      "series_resistance_ohm": 0.1995,
+      "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+    },
+    {
+      "netlist_sha256": "11bc910741cf43c9b6470bf6888416b776df97226e3c3dfc27bd215cd4b6a88c",
+      "observed_voltage": 23.58773,
+      "output_path": "out/component-behavior/run/calibration-output/OHM-069/5/output.txt",
+      "output_sha256": "951f653ec2be02850a2e138ba9bab6ed8ae60ab59810bf139fdfe7fa54c22075",
+      "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+      "series_resistance_ohm": 0.23275,
+      "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+    },
+    {
+      "netlist_sha256": "4393da1903026296935115c2d7bf27ba52f13aa6980fd4f8d1068bc0597e92e9",
+      "observed_voltage": 23.9967,
+      "output_path": "out/component-behavior/run/calibration-output/OHM-069/6/output.txt",
+      "output_sha256": "56da33c1f08a86a23e4db080a940d38db15bb77311d7009c5108d80500be4a34",
+      "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+      "series_resistance_ohm": 0.249375,
+      "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+    },
+    {
+      "netlist_sha256": "748a9f04eed9aefb994407f26cbcec7b4d9b416c159dbd2c8cd886198d4cf373",
+      "observed_voltage": 24.20119,
+      "output_path": "out/component-behavior/run/calibration-output/OHM-069/7/output.txt",
+      "output_sha256": "54405bc8d4ea93372e6d2c5371b56bbf9b5dd56388ccd3de9e46041699001c2c",
+      "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+      "series_resistance_ohm": 0.2576875,
+      "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+    },
+    {
+      "netlist_sha256": "07dd7006435bd4575358abc385014c6b7b44ab89c483453cf3a64e0d84fecb25",
+      "observed_voltage": 24.30343,
+      "output_path": "out/component-behavior/run/calibration-output/OHM-069/8/output.txt",
+      "output_sha256": "d8f5d2906d42d8673ee0d259bc8a8f983017317800a17193e082850e033ba846",
+      "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+      "series_resistance_ohm": 0.26184375000000004,
+      "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+    },
+    {
+      "netlist_sha256": "a1b228853724ed1a16b4007a99ee3c4cca0669e394cce3452d6396339a47057a",
+      "observed_voltage": 24.35456,
+      "output_path": "out/component-behavior/run/calibration-output/OHM-069/9/output.txt",
+      "output_sha256": "0845e48999bc9919b7856885cccfdacdf7ff0674dded8cca30a5cbefbcff3457",
+      "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+      "series_resistance_ohm": 0.26392187500000003,
+      "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+    },
+    {
+      "netlist_sha256": "c06132815dc087a316904db9694eb6cbcd271bf8dc634472f73b4a4d247b2675",
+      "observed_voltage": 24.38012,
+      "output_path": "out/component-behavior/run/calibration-output/OHM-069/10/output.txt",
+      "output_sha256": "f0bc487cb884eaab706616b29b2eb054c51ca9556b125e5188f94e64e9ac4b85",
+      "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+      "series_resistance_ohm": 0.26496093750000005,
+      "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+    },
+    {
+      "netlist_sha256": "071722de440f25fb1b1147ba9099566cfa8e18adc8aacbe451bf82cfdf632f31",
+      "observed_voltage": 24.3929,
+      "output_path": "out/component-behavior/run/calibration-output/OHM-069/11/output.txt",
+      "output_sha256": "848c197f3ecfcbd694af01e0ee2e8393d69544e23cfd60a085ccb27d3b8b8b5a",
+      "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+      "series_resistance_ohm": 0.26548046875000003,
+      "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+    },
+    {
+      "netlist_sha256": "cfae7a2f962cf98a76257b20f637d6624218bdd3e0abd3a9d962d6b6d1745dc2",
+      "observed_voltage": 24.39929,
+      "output_path": "out/component-behavior/run/calibration-output/OHM-069/12/output.txt",
+      "output_sha256": "80326373e6d5b9770b3e00d78659d326e78ae255424f9b268b93e8727e866839",
+      "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+      "series_resistance_ohm": 0.26574023437500005,
+      "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+    },
+    {
+      "netlist_sha256": "e8f5d4b4ebde47ccd4e44daf5bd0eaf6a8c29a60c507b6242f979bae8b23e400",
+      "observed_voltage": 24.40248,
+      "output_path": "out/component-behavior/run/calibration-output/OHM-069/13/output.txt",
+      "output_sha256": "977f022322f5d486eb0f6c6f47bb9842beb4fb05c5868c5effcd08776086c554",
+      "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+      "series_resistance_ohm": 0.26587011718750003,
+      "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+    },
+    {
+      "netlist_sha256": "5b42568dd81864c878da47f7aeb97b1e4aed9c2cf7d78f4113ad0e7a909f7fc2",
+      "observed_voltage": 24.40088,
+      "output_path": "out/component-behavior/run/calibration-output/OHM-069/14/output.txt",
+      "output_sha256": "ec29f6e30a2c5bcaa950989941be3dffae3f40b6c4bb7695fcc70a9538cd6cfb",
+      "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+      "series_resistance_ohm": 0.26580517578125007,
+      "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+    },
+    {
+      "netlist_sha256": "374662604d4ca369ad76ff0bbd2a86372bff6d19b23e1ffcbdbd23438767fd5d",
+      "observed_voltage": 24.40009,
+      "output_path": "out/component-behavior/run/calibration-output/OHM-069/15/output.txt",
+      "output_sha256": "dac761e71d314c4eb21ba1d34e2447be3ebd299f432f6755596276dfd564e192",
+      "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+      "series_resistance_ohm": 0.26577270507812506,
+      "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+    },
+    {
+      "netlist_sha256": "b97f0c399613f92c3214624ae2c8beb6dc6918911d0f743fd19cbf0a5637f082",
+      "observed_voltage": 24.39969,
+      "output_path": "out/component-behavior/run/calibration-output/OHM-069/16/output.txt",
+      "output_sha256": "7e094e73d3ff0a88d96c50812a6daa96364db1be54fefebe07479af2b5b4204f",
+      "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+      "series_resistance_ohm": 0.2657564697265625,
+      "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+    },
+    {
+      "netlist_sha256": "16f68b24b0416095f6b1b8f3ec4dcf1cdf17ee14de181f9a72f3be2fd286a8f8",
+      "observed_voltage": 24.39989,
+      "output_path": "out/component-behavior/run/calibration-output/OHM-069/17/output.txt",
+      "output_sha256": "d1a27dff7c0ce8fe5e252e6eb3e4a2af22d01ded03dc276bda7d3585a9057d2b",
+      "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+      "series_resistance_ohm": 0.26576458740234377,
+      "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+    },
+    {
+      "netlist_sha256": "510f1bbbe2f1b1dd018fc9089065b039c0cf2af3d55c0acd2384f33379989849",
+      "observed_voltage": 24.39999,
+      "output_path": "out/component-behavior/run/calibration-output/OHM-069/18/output.txt",
+      "output_sha256": "a08b043c07f0ef67ca824c34b39170f82f655ce51a9b0b310a3ac331f313c253",
+      "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+      "series_resistance_ohm": 0.26576864624023444,
+      "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+    },
+    {
+      "netlist_sha256": "ca5ed3f15a11472fd18aded5acfe87f84917b98dc318bd4c73278a460b9e1d69",
+      "observed_voltage": 24.40004,
+      "output_path": "out/component-behavior/run/calibration-output/OHM-069/19/output.txt",
+      "output_sha256": "3e537a022532190f43e588b7f0ff98cc7f8864d8cd39c1bfe5c274fd41497b18",
+      "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+      "series_resistance_ohm": 0.2657706756591798,
+      "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+    },
+    {
+      "netlist_sha256": "2abb595c6e0e9aaa7a9db5b098cbe6d649f7c7410e7cd932ea942957c48795c9",
+      "observed_voltage": 24.40001,
+      "output_path": "out/component-behavior/run/calibration-output/OHM-069/20/output.txt",
+      "output_sha256": "9407ec6b9e8c870cf336ba80cfcb225d17838fc08be63f80bc7066b2e32e6a90",
+      "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+      "series_resistance_ohm": 0.2657696609497071,
+      "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+    },
+    {
+      "netlist_sha256": "8cb415bea9796315d5a6959752043877b86b7902302d32e04d1e49178bf20b53",
+      "observed_voltage": 24.4,
+      "output_path": "out/component-behavior/run/calibration-output/OHM-069/21/output.txt",
+      "output_sha256": "0cd28a0e5a98495b2ca9b0c21092ddedd9726a9075bab33e318659c05efbe899",
+      "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+      "series_resistance_ohm": 0.2657691535949708,
+      "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+    }
+  ],
+  "unit": "ohm",
+  "value_text": "0.26576915359497078"
+}
