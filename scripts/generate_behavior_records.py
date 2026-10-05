@@ -329,6 +329,19 @@ def render_records(root: Path = ROOT) -> dict[Path, bytes]:
         add(f"{DATA_DIR}/entries/{record.entry_id}.json", record)
     for record in bindings:
         add(f"{DATA_DIR}/bindings/{_binding_filename(record.part_id)}", record)
+    recipe_path = root / "docs/behavior/runtime-recipes.json"
+    if recipe_path.exists():
+        from ohmni.behavior.runtime_models import RuntimeRecipes
+
+        raw = recipe_path.read_bytes()
+        payload = json.loads(raw)
+        payload["source"] = _anchor("docs/behavior/runtime-recipes.json", raw, 1)
+        recipes = RuntimeRecipes.model_validate(payload)
+        entry_map = {entry.entry_id: entry for entry in entries}
+        for key, recipe in recipes.entries.items():
+            if key != recipe.entry_id or recipe.behavior_id not in entry_map[key].behavior_class_ids:
+                raise ValueError(f"invalid runtime recipe join: {key}")
+        add(f"{DATA_DIR}/runtime-recipes.json", recipes)
     return rendered
 
 

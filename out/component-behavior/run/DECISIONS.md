@@ -159,3 +159,11 @@ The third independently seeded review found ten scope omissions in OHM-096/097 a
 ## D024 — Checkpoint 010 execution access failure
 
 Checkpoint 010 could not read the primary checkout because Git rejected the sandbox account's ownership, and its focused pytest run could not reuse a test directory owned by a prior process. The full fast suite nevertheless ran (1777 passed, 82 skipped, 49 deselected). Re-running the protected-path assertion with local read access proved main, the production checkout, remote refs and protected files still match the locked baseline. Clear the automatically set protected-path hard-stop flag only after that successful assertion, then rerun the complete checkpoint. No protected path was edited and no rule or baseline was changed.
+
+## D025 — Explicit runtime bindings and independent receipt checks
+
+Stage 3 keeps CircuitIR electrical intent unchanged. Generated runtime recipes join package terminals to canonical model templates and the scoped gapfill rating fields. Catalog pin permutations must be present; the approved LED permutation is tested at node assignment. Missing critical facts, unresolved research blockers, missing pins or package mismatches refuse the entire circuit. The first ten resistor entries use ideal resistance and explicit instance values, never fabricated parasitics. An OHM reference model does not verify a purchased generic component. Runtime checks reuse the locked RES-FIXED/B1 divider expectation, retain raw ngspice-42 output and version, and independently reparse observations and input hashes before they can count toward coverage. Source statuses are unchanged.
+
+## D026 — Preserve model confidence separately from scoped ratings
+
+The first runtime projection initially took its single confidence label from sourced rating fields. Correct it before committing: the authored resistor model confidence remains M, while its newly re-derived scoped ratings can be H. Carry the complete original class confidence dictionary (including L failure confidence) alongside both labels. A high-confidence power rating cannot upgrade model or failure confidence. Regression explicitly asserts this separation; no electrical numbers or source statuses changed.

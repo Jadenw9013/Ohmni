@@ -282,3 +282,29 @@ def test_relocated_author_include_is_locked_and_contained(tmp_path):
     binding["/old/model.lib"]["relative_path"] = "../outside.lib"
     with pytest.raises(AuditError, match="escapes"):
         inline_deck(deck, tmp_path, relocations=binding)
+
+
+def test_runtime_receipts_relocate_observations_and_reject_stale_inputs(audit, monkeypatch):
+    from ohmni.eda.simulation import NgspiceAdapter
+    from tools.behavior_audit.runtime_benches import resistor_receipt_errors, run_resistor_recipes
+
+    def fake(self, compiled, *, work_dir, analysis):
+        node = compiled.node_names["middle"]
+        output = (f"v({node}) = 2.5\n" if analysis == "op" else
+                  f"Index time v({node})\n0 0 2.5\n1 0.001 2.5\n")
+        return {"status": "ran", "stdout": output, "stderr": "", "version_output": "ngspice-42",
+                "problems": [], "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+                "operating_point": {"node_voltages": {node: {"value": 2.5, "unit": "V"}}},
+                "transient": {"series": [{"name": f"v({node})", "values": [2.5, 2.5]}]}}
+    monkeypatch.setattr(NgspiceAdapter, "behavior_circuit", fake)
+    run_resistor_recipes(audit, ["OHM-004"])
+    assert not resistor_receipt_errors(audit, "OHM-004")
+    path = audit.run_dir / "runtime-bench-results/OHM-004-op.json"
+    receipt = json.loads(path.read_text())
+    receipt["observations"] = [0]
+    _atomic_json(path, receipt)
+    assert any("observations" in e for e in resistor_receipt_errors(audit, "OHM-004"))
+    receipt["observations"] = [2.5]
+    receipt["recipe_source_sha256"] = "0" * 64
+    _atomic_json(path, receipt)
+    assert any("recipe_source" in e for e in resistor_receipt_errors(audit, "OHM-004"))

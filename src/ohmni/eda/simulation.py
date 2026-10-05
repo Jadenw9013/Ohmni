@@ -47,7 +47,7 @@ from ..adapters import (
 from ..adapters.process import ToolTimeoutError, describe_exit, run_tool
 from ..adapters.tools import NgspiceCli, find_kicad_cli, find_ngspice
 from ..domain.evidence import Evidence, EvidenceKind
-from ..domain.units import Quantity, Unit
+from ..domain.units import Quantity, Unit, parse_quantity
 from .models import SchematicArtifact
 
 #: The one analysis this module runs. Named on every result so a reader never
@@ -565,6 +565,65 @@ class NgspiceAdapter:
             result.update(status="timed_out", stderr="ngspice timed out")
         except OSError as exc:
             result.update(status="failed", stderr=str(exc))
+        return result
+
+    def behavior_circuit(self, compilation, *, work_dir: Path, analysis: str = "op",
+                         tstep: str = DEFAULT_TSTEP, tstop: str = DEFAULT_TSTOP) -> dict:
+        """Run a compiled CircuitIR model with the same version-gated adapter.
+
+        `ran` records observations, never a design pass. Rating checks are a
+        separate deterministic step and retain the original simulation data.
+        """
+        result = {
+            "status": "not_run", "analysis": analysis, "version_output": "",
+            "netlist_sha256": compilation.netlist_sha256,
+            "circuit_hash": compilation.circuit_hash,
+            "components": [c.model_dump(mode="json") for c in compilation.components],
+            "node_names": compilation.node_names,
+            "limitations": compilation.limitations,
+            "problems": list(compilation.problems), "rating_status": "not_checked",
+            "operating_point": None, "transient": None,
+        }
+        if not compilation.runnable:
+            return result
+        if analysis != compilation.analysis:
+            result["problems"].append("Requested analysis differs from the validated compilation")
+            return result
+        if analysis == "op":
+            deck = operating_point_deck(compilation.netlist)
+        elif analysis == "tran":
+            # Reuse the bounded existing transient builder and parser.
+            try:
+                step = parse_quantity(tstep, Unit.SECOND)
+                stop = parse_quantity(tstop, Unit.SECOND)
+                if step.value <= 0 or stop.value < step.value:
+                    raise ValueError("transient requires 0 < step <= stop")
+            except ValueError:
+                result["problems"].append("Invalid transient time value")
+                return result
+            signals = [node for node in compilation.node_names.values() if node != "0"]
+            deck = transient_deck(compilation.netlist, format(step.value, ".17g"),
+                                  format(stop.value, ".17g"), signals[:MAX_TRANSIENT_SIGNALS])
+        else:
+            result["problems"].append(f"Unsupported circuit analysis: {analysis}")
+            return result
+        observation = self.behavior_bench(deck, work_dir=work_dir)
+        result.update(observation)
+        result["product_code_path"] = "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit"
+        if observation["status"] != "ran":
+            return result
+        if analysis == "op":
+            point = parse_operating_point(observation["stdout"])
+            if not point.node_voltages and not point.branch_currents:
+                result.update(status="failed", problems=["ngspice returned no operating-point observations"])
+            else:
+                result["operating_point"] = point.model_dump(mode="json")
+        else:
+            curve = parse_transient(observation["stdout"], analysis="tran")
+            if not curve.sample_count or not curve.series:
+                result.update(status="failed", problems=["ngspice returned no transient observations"])
+            else:
+                result["transient"] = curve.model_dump(mode="json")
         return result
 
     def operating_point(self, netlist: str, run_id: str, *,

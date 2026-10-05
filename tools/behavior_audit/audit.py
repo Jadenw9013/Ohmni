@@ -582,6 +582,13 @@ class BehaviorAudit:
         mapped = {row["file"] for row in self._state()["bench_contracts"].values()}
         unbound = sorted(path.relative_to(self.root).as_posix() for path in (self.root / "docs/behavior/bench").rglob("*.cir") if path.relative_to(self.root).as_posix() not in mapped)
         errors.extend(f"{path}: authored netlist has no canonical benchmark contract; not run" for path in unbound)
+        runtime_models = self._state().get("model_implementation", {})
+        if runtime_models:
+            from .runtime_benches import resistor_receipt_errors
+
+            for entry_id, implementation in runtime_models.items():
+                if implementation in {"implemented", "audited"}:
+                    errors.extend(resistor_receipt_errors(self, entry_id))
         return CheckResult(
             "AUD-BENCH-001",
             not errors,
