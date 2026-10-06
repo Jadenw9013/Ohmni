@@ -55,7 +55,7 @@ def run_resistor_recipes(audit, entry_ids):
     registry = BehaviorRegistry(repo_root=audit.root)
     recipes = load_recipes(registry, audit.root)
     adapter = NgspiceAdapter()
-    contract = audit._state()["bench_contracts"]["BEH-RES-FIXED/B1"]
+    contract = audit._bench_contracts()["BEH-RES-FIXED/B1"]
     if _sha_bytes((audit.root / contract["file"]).read_bytes()) != contract["netlist_sha256"]:
         raise ValueError("locked analytical source deck changed")
     expected_row = next(x for x in contract["expected"] if x["measure"] == "v(out)")
@@ -116,7 +116,7 @@ def resistor_receipt_errors(audit, entry_id):
     recipe = recipes.entries[entry_id]
     circuit = resistor_divider(entry_id, recipe.package)
     choices = {c.ref: BehaviorSelection(entry_id=entry_id) for c in circuit.components}
-    contract = audit._state()["bench_contracts"]["BEH-RES-FIXED/B1"]
+    contract = audit._bench_contracts()["BEH-RES-FIXED/B1"]
     expected = numeric_contract(next(x for x in contract["expected"] if x["measure"] == "v(out)"))
     errors = []
     for analysis in ("op", "tran"):
@@ -191,7 +191,7 @@ def run_mosfet_recipes(audit, entry_ids):
     registry = BehaviorRegistry(repo_root=audit.root)
     recipes = load_recipes(registry, audit.root)
     adapter = NgspiceAdapter()
-    contract = audit._state()["bench_contracts"]["BEH-TRN-MOSFET/B1"]
+    contract = audit._bench_contracts()["BEH-TRN-MOSFET/B1"]
     source_expectation = numeric_contract(contract["expected"][0])
     relative_tolerance = source_expectation["tolerance"] / abs(source_expectation["expected"])
     receipts = []
@@ -240,7 +240,7 @@ def mosfet_receipt_errors(audit, entry_id):
     if not path.is_file():
         return [f"{entry_id}: runtime receipt missing"]
     receipt = json.loads(path.read_text(encoding="utf-8"))
-    contract = audit._state()["bench_contracts"]["BEH-TRN-MOSFET/B1"]
+    contract = audit._bench_contracts()["BEH-TRN-MOSFET/B1"]
     base = numeric_contract(contract["expected"][0])
     expected = {"expected": point["target_resistance"],
                 "tolerance": point["target_resistance"] * (base["tolerance"] / abs(base["expected"]))}
@@ -306,7 +306,7 @@ def dc_probe_variants(behavior_id):
 
 
 def _locked_probe_deck(audit, bench_id):
-    contract = audit._state()["bench_contracts"][bench_id]
+    contract = audit._bench_contracts()[bench_id]
     path = audit.root / contract["file"]
     if _sha_bytes(path.read_bytes()) != contract["netlist_sha256"]:
         raise ValueError("locked analytical source deck changed")
@@ -420,7 +420,7 @@ def dc_probe_definition(audit, entry_id, variant=None):
     elif recipe.behavior_id in {"BEH-DIO-PN", "BEH-LED-INDICATOR"}:
         is_led = recipe.behavior_id == "BEH-LED-INDICATOR"
         contract_id = "BEH-LED-INDICATOR/B1" if is_led else "BEH-DIO-PN/B1"
-        contract = audit._state()["bench_contracts"][contract_id]
+        contract = audit._bench_contracts()[contract_id]
         expected = numeric_contract(contract["expected"][0])
         # Relocate the source stimulus rather than treating it as a device rating.
         source_deck = (audit.root / contract["file"]).read_text()

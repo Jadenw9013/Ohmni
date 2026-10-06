@@ -51,6 +51,20 @@ def numeric_contract(item: dict) -> dict:
     return {"expected": value, "tolerance": tolerance}
 
 
+COMPOUND = re.compile(rf"\s*{NUMBER}(?:\s*/\s*{NUMBER})+\s*")
+
+
+def compound_contracts(item: dict) -> list[dict] | None:
+    """Split a locked slash-separated value ("10/8/5/2") into locked sub-contracts.
+
+    Each component keeps the locked tolerance text verbatim; nothing is inferred.
+    """
+    value = item.get("value")
+    if not isinstance(value, str) or not COMPOUND.fullmatch(value):
+        return None
+    return [numeric_contract(dict(item, value=part.strip())) for part in value.split("/")]
+
+
 def measurement_binding(audit, identity: str, item: dict) -> dict:
     """Resolve an explicit label-to-observation binding, never by numeric proximity."""
     import json
@@ -60,20 +74,36 @@ def measurement_binding(audit, identity: str, item: dict) -> dict:
     source = mapping.get(identity)
     if source is None:
         return {"scalar": str(item.get("measure", "")).casefold(), "scale": 1.0}
-    contract = audit._state()["bench_contracts"][identity]
+    contract = audit._bench_contracts()[identity]
     if source["netlist_sha256"] != contract["netlist_sha256"]:
         raise AuditError(f"measurement binding has a different source deck: {identity}")
     row = source["measurements"].get(item.get("measure"))
     if row is None:
         return {"scalar": str(item.get("measure", "")).casefold(), "scale": 1.0}
     deck = (audit.root / contract["file"]).read_text(encoding="utf-8")
+    if "components" in row:
+        parts = compound_contracts(item)
+        if parts is None or len(parts) != len(row["components"]):
+            raise AuditError(f"component binding does not match the locked compound value: {identity}")
+        components = []
+        for part in row["components"]:
+            if not part.get("source_line") or part["source_line"] not in deck.splitlines():
+                raise AuditError(f"measurement binding does not relocate to its source line: {identity}")
+            components.append(dict(part, scalar=part["scalar"].casefold(), scale=part.get("scale", 1.0)))
+        return dict(row, components=components)
     if not row.get("source_line") or row["source_line"] not in deck.splitlines():
         raise AuditError(f"measurement binding does not relocate to its source line: {identity}")
     return dict(row, scalar=row["scalar"].casefold(), scale=row.get("scale", 1.0))
 
 
-def observed_value(audit, identity: str, item: dict, output: str) -> float | None:
+def observed_value(audit, identity: str, item: dict, output: str) -> float | list[float] | None:
     binding = measurement_binding(audit, identity, item)
+    if "components" in binding:
+        found = scalars(output)
+        values = [found.get(part["scalar"]) for part in binding["components"]]
+        if any(value is None for value in values):
+            return None
+        return [value * part["scale"] for value, part in zip(values, binding["components"], strict=True)]
     if "occurrence" in binding:
         values = [float(number) for name, number in SCALAR.findall(output)
                   if name.casefold() == binding["scalar"]]
@@ -113,7 +143,7 @@ def run_benches(audit, ids: list[str] | None = None):
     from ohmni.eda.simulation import NgspiceAdapter
 
     state = audit._state()
-    contracts = state["bench_contracts"]
+    contracts = audit._bench_contracts()
     selected = ids or sorted(contracts)
     adapter = NgspiceAdapter()
     import json
@@ -141,8 +171,18 @@ def run_benches(audit, ids: list[str] | None = None):
         expected = contract["expected"]
         if isinstance(expected, list):
             for item in expected:
-                if isinstance(item, dict):
-                    comparisons.append(dict(numeric_contract(item), measure=item.get("measure"), measured=observed_value(audit, identity, item, observation["stdout"])))
+                if not isinstance(item, dict):
+                    continue
+                measured = observed_value(audit, identity, item, observation["stdout"])
+                parts = compound_contracts(item)
+                if isinstance(measured, list) and parts is not None:
+                    comparisons.append({
+                        "measure": item.get("measure"),
+                        "components": [dict(part, measured=value) for part, value in zip(parts, measured, strict=True)],
+                    })
+                else:
+                    comparisons.append(dict(numeric_contract(item), measure=item.get("measure"),
+                                            measured=None if isinstance(measured, list) else measured))
         record = {
             "bench_id": identity, "run_id": state["run_id"], "timestamp": _now(),
             "run_status": "passed" if observation["status"] == "ran" else observation["status"],

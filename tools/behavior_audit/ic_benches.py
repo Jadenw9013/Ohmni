@@ -55,7 +55,7 @@ def ic_definition(audit, entry_id, case="default"):
         "BEH-FREQ-XO": "B1",
     }
     contract_id = behavior + "/" + contracts[behavior]
-    contract = audit._state()["bench_contracts"][contract_id]
+    contract = audit._bench_contracts()[contract_id]
     raw = (audit.root / contract["file"]).read_bytes()
     if _sha_bytes(raw) != contract["netlist_sha256"]:
         raise ValueError("Locked IC source bench changed")

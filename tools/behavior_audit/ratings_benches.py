@@ -39,7 +39,7 @@ def definition(audit, case):
         {c.ref: BehaviorSelection(entry_id="OHM-004") for c in circuit.components},
         measure_currents=True,
     )
-    contract = audit._state()["bench_contracts"]["BEH-RES-FIXED/B1"]
+    contract = audit._bench_contracts()["BEH-RES-FIXED/B1"]
     source = audit.root / contract["file"]
     assert _sha_bytes(source.read_bytes()) == contract["netlist_sha256"]
     row = numeric_contract(next(x for x in contract["expected"] if x["measure"] == "v(out)"))

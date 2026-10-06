@@ -31,7 +31,7 @@ def compare(audit, key, compiled, output, registry, recipes):
         return {"passed": passed, "observed": observed, "comparison": identity["comparison"]}
     if behavior in {"BEH-RES-FIXED", "BEH-TRN-MOSFET"}:
         point = parse_operating_point(output)
-        contract = audit._state()["bench_contracts"][behavior + "/B1"]
+        contract = audit._bench_contracts()[behavior + "/B1"]
         source = audit.root / contract["file"]
         assert _sha_bytes(source.read_bytes()) == contract["netlist_sha256"]
         if behavior == "BEH-RES-FIXED":

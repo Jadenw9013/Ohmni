@@ -215,6 +215,50 @@ class BehaviorAudit:
             raise AuditError("unsupported audit state schema")
         return state
 
+    def bench_repins(self) -> dict[str, Any]:
+        path = self.root / "docs/behavior/BENCH_REPINS.json"
+        return _json(path) if path.exists() else {"schema_version": 1, "repins": []}
+
+    def _apply_repins(self, locked: dict[str, dict]) -> tuple[dict[str, dict], list[str]]:
+        """Apply human-approved deck re-pins. Only the deck hash may move.
+
+        Expected values, tolerances, measure labels and file paths stay locked.
+        Each re-pin must name the hash it replaces, so re-pins chain in order.
+        """
+        effective = {key: dict(value) for key, value in locked.items()}
+        errors: list[str] = []
+        allowed = {"file", "baseline_netlist_sha256", "netlist_sha256", "reason"}
+        seen_ids: set[str] = set()
+        for repin in self.bench_repins().get("repins", []):
+            repin_id = repin.get("id")
+            if not repin_id or repin_id in seen_ids:
+                errors.append(f"bench re-pin has a missing or duplicate id: {repin_id}")
+            seen_ids.add(repin_id)
+            if not repin.get("approved_by") or not repin.get("approved_on"):
+                errors.append(f"{repin_id}: bench re-pin lacks a recorded human approval")
+                continue
+            for bench_id, row in repin.get("benches", {}).items():
+                if bench_id not in effective:
+                    errors.append(f"{repin_id}: unknown locked bench {bench_id}")
+                    continue
+                if set(row) - allowed:
+                    errors.append(f"{repin_id}: {bench_id}: a re-pin may only move the deck hash")
+                    continue
+                if row.get("file") != effective[bench_id]["file"]:
+                    errors.append(f"{repin_id}: {bench_id}: re-pin changes the locked file path")
+                    continue
+                if row.get("baseline_netlist_sha256") != effective[bench_id]["netlist_sha256"]:
+                    errors.append(f"{repin_id}: {bench_id}: re-pin does not start from the locked deck hash")
+                    continue
+                if not re.fullmatch(r"[0-9a-f]{64}", str(row.get("netlist_sha256", ""))):
+                    errors.append(f"{repin_id}: {bench_id}: re-pin target hash invalid")
+                    continue
+                effective[bench_id]["netlist_sha256"] = row["netlist_sha256"]
+        return effective, errors
+
+    def _bench_contracts(self) -> dict[str, dict]:
+        return self._apply_repins(self._state()["bench_contracts"])[0]
+
     def _write_state(self, state: dict[str, Any]) -> None:
         state["heartbeat_time"] = _now()
         _atomic_json(self.state_path, state)
@@ -517,11 +561,11 @@ class BehaviorAudit:
         )
 
     def _bench_errors(self, result: dict[str, Any]) -> list[str]:
-        from .benches import numeric_contract, observed_value
+        from .benches import compound_contracts, numeric_contract, observed_value
 
         bench_id = str(result.get("bench_id", "<unknown>"))
         state = self._state()
-        contract = state["bench_contracts"].get(bench_id)
+        contract = self._bench_contracts().get(bench_id)
         if not contract:
             return [f"AUD-BENCH-001: {bench_id}: unknown locked bench identity"]
         errors = []
@@ -536,8 +580,16 @@ class BehaviorAudit:
                 if not isinstance(expected_measure, dict):
                     errors.append(f"AUD-BENCH-001: {bench_id}: analytical expression needs an explicit parser")
                     continue
-                check = dict(result, **actual)
-                errors.extend(evidence.bench_errors(check, numeric_contract(expected_measure)))
+                if "components" in actual:
+                    parts = compound_contracts(expected_measure)
+                    if parts is None or len(parts) != len(actual["components"]):
+                        errors.append(f"AUD-BENCH-001: {bench_id}: compound comparison does not match locked value")
+                    else:
+                        for part, observed in zip(parts, actual["components"], strict=True):
+                            errors.extend(evidence.bench_errors(dict(result, **observed), part))
+                else:
+                    check = dict(result, **actual)
+                    errors.extend(evidence.bench_errors(check, numeric_contract(expected_measure)))
                 if actual.get("measure") != expected_measure.get("measure"):
                     errors.append(f"AUD-BENCH-001: {bench_id}: measurement identity mismatch")
         for key in ("output", "version"):
@@ -556,7 +608,9 @@ class BehaviorAudit:
                 for comparison in comparisons:
                     name = str(comparison.get("measure", ""))
                     observed = observed_value(self, bench_id, comparison, output)
-                    if observed is None or comparison.get("measured") != observed:
+                    recorded = ([part.get("measured") for part in comparison["components"]]
+                                if "components" in comparison else comparison.get("measured"))
+                    if observed is None or recorded != observed:
                         errors.append(f"AUD-BENCH-001: {bench_id}: measurement not found unambiguously in archived output: {name}")
         if result.get("netlist_sha256") != contract["netlist_sha256"]:
             errors.append(f"AUD-BENCH-001: {bench_id}: netlist differs from locked source")
@@ -597,7 +651,7 @@ class BehaviorAudit:
             passing += int(not result_errors)
         missing = sorted(required - set(results))
         errors.extend(f"{bench_id}: no current-run result" for bench_id in missing)
-        mapped = {row["file"] for row in self._state()["bench_contracts"].values()}
+        mapped = {row["file"] for row in self._bench_contracts().values()}
         unbound = sorted(path.relative_to(self.root).as_posix() for path in (self.root / "docs/behavior/bench").rglob("*.cir") if path.relative_to(self.root).as_posix() not in mapped)
         errors.extend(f"{path}: authored netlist has no canonical benchmark contract; not run" for path in unbound)
         runtime_models = self._state().get("model_implementation", {})
@@ -859,10 +913,16 @@ class BehaviorAudit:
         for key in ("bench_contracts", "protected_baseline", "rules_baseline", "canary_hashes", "run_id"):
             if state.get(key) != baseline.get(key):
                 errors.append(f"state changed locked baseline field {key}")
-        if self.bench_contracts() != baseline["bench_contracts"]:
+        effective, repin_errors = self._apply_repins(baseline["bench_contracts"])
+        errors.extend(repin_errors)
+        if self.bench_contracts() != effective:
             errors.append("bench expectations, tolerances or source decks changed")
-        if _git(self.root, "diff", state["baseline_commit"], "--", "docs/behavior/bench").strip():
-            errors.append("authored bench/include corpus changed from the baseline commit")
+        repinned = {row["file"] for key, row in effective.items()
+                    if row["netlist_sha256"] != baseline["bench_contracts"][key]["netlist_sha256"]}
+        changed = set(_git(self.root, "diff", "--name-only", state["baseline_commit"], "--", "docs/behavior/bench").split())
+        if changed - repinned:
+            errors.append("authored bench/include corpus changed from the baseline commit outside an approved re-pin: "
+                          + ", ".join(sorted(changed - repinned)))
         return CheckResult("AUD-RESUME-001", not errors, "run state is complete and parseable", tuple(errors))
 
     def _validate_canary(self, fixture: dict[str, Any]) -> str | None:
