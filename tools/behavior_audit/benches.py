@@ -82,7 +82,10 @@ def measurement_binding(audit, identity: str, item: dict) -> dict:
         return {"scalar": str(item.get("measure", "")).casefold(), "scale": 1.0}
     deck = (audit.root / contract["file"]).read_text(encoding="utf-8")
     if "components" in row:
-        parts = compound_contracts(item)
+        # Always split the locked contract item, never a caller-supplied copy.
+        locked = next((entry for entry in contract["expected"]
+                       if isinstance(entry, dict) and entry.get("measure") == item.get("measure")), None)
+        parts = compound_contracts(locked) if locked is not None else None
         if parts is None or len(parts) != len(row["components"]):
             raise AuditError(f"component binding does not match the locked compound value: {identity}")
         components = []
