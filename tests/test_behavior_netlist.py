@@ -277,7 +277,8 @@ def test_scoped_runtime_references_compile_with_provenance(entry_id):
         assert compiled.components[0].terminal_nodes["1"] == "0"
         assert compiled.components[0].role_nodes["K"] == "0"
     if entry_id == "OHM-097":
-        assert compiled.components[0].parameters["BF"] == 80
+        # Geometric mean of the sourced ungraded hFE range 40..250 (onsemi BD139 Rev 3).
+        assert compiled.components[0].parameters["BF"] == pytest.approx((40 * 250) ** 0.5)
         assert "Fairchild" in compiled.components[0].reference_part
 
 
