@@ -837,7 +837,13 @@ class BehaviorAudit:
             class_ids = record["behavior_class_ids"]
             required = {key for key in state["bench_contracts"] if key.split("/")[0] in class_ids}
             bench_pass = bool(required) and required <= bench_ids
-            implemented = state.get("model_implementation", {}).get(entry_id) == "audited"
+            # Simulable is derived from current evidence on every run, never from a stored
+            # flag: an implemented model counts only when all of its runtime receipts pass now.
+            implemented = state.get("model_implementation", {}).get(entry_id) in {"implemented", "audited"}
+            if implemented:
+                from .runtime_benches import runtime_receipt_errors
+
+                implemented = not runtime_receipt_errors(self, entry_id)
             can_simulate = implemented and bench_pass and record["simulation_disposition"] == "simulable"
             simulable += int(can_simulate)
             before = state["entry_status"][entry_id]["before"]
