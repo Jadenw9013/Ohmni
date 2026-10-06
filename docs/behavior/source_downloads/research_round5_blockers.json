@@ -1,0 +1,989 @@
+[
+  {
+    "entry": "OHM-020",
+    "resolves_blocker": "no",
+    "findings": [
+      {
+        "field": "maximum_operating_voltage_ac",
+        "value": 150,
+        "unit": "V AC",
+        "conditions": "series-level spec, 16mm Rotary Type Metal Shaft Series (RV16AF and siblings)",
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "url": "https://www.taiwanalpha.com/downloads?id=94&target=products",
+        "document": {
+          "title": "16mm Rotary Type, Metal Shaft Series",
+          "manufacturer": "Taiwan Alpha",
+          "revision": null
+        },
+        "page_or_table": "Specifications table",
+        "evidence": "Maximum Operating Voltage 150V AC; Insulation Resistance 100M\u03a9 at DC500V; Dielectric Strength AC 500V for 1 minute; Rotation Life 15,000 cycles. No rated power, DC voltage, residual/contact resistance or derating curve present (checked with two differently worded fetches, plus id=98 copy)."
+      }
+    ],
+    "still_open": [
+      "RV16AF power rating: not published on taiwanalpha.com. The product index lists RV16AF under download id=94 (id=98 is listed against RV16AD1F but returns the same series sheet); neither contains a power rating or derating curve.",
+      "Distributor listings only (Jameco) state 125 mW for linear (B) and 60 mW for audio (A) RV16AF parts; not primary, not citable as MFR_DATASHEET.",
+      "DC voltage limit, wiper current, contact/end resistance remain unsourced."
+    ],
+    "note": "Only remaining route is direct inquiry to sales@taiwanalpha.com. Consider re-pointing the document URL to id=94 (the index's RV16AF entry)."
+  },
+  {
+    "entry": "OHM-042",
+    "resolves_blocker": "partial",
+    "findings": [
+      {
+        "field": "candidate_named_variant",
+        "value": "LQM21PH2R2MGEL",
+        "unit": null,
+        "conditions": "Murata 0805 (2012) AEC-Q200 multilayer power inductor; proposed as a fully specified named variant in place of unbound LQM21F generic",
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "url": "https://pim.murata.com/asset/pim4/inductor/JELF243B-9129_PDF_INDUCTOR",
+        "document": {
+          "title": "Reference Specification, Chip Coil LQM21PH_GE series (AEC-Q200)",
+          "manufacturer": "Murata",
+          "revision": "JELF243B-9129A-01"
+        },
+        "page_or_table": "P1/10 rating table",
+        "evidence": "Spec applies to chip coil LQM21PH_GE series based on AEC-Q200; 2.2 uH +/-20%"
+      },
+      {
+        "field": "rated_current_inductance_change_definition",
+        "value": "inductance within +/-30% of initial value at rated current",
+        "unit": null,
+        "conditions": "LQM21PH_GE series",
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "url": "https://pim.murata.com/asset/pim4/inductor/JELF243B-9129_PDF_INDUCTOR",
+        "document": {
+          "title": "Reference Specification, Chip Coil LQM21PH_GE series (AEC-Q200)",
+          "manufacturer": "Murata",
+          "revision": "JELF243B-9129A-01"
+        },
+        "page_or_table": "P1/10 rating table footnote",
+        "evidence": "When rated current is applied ... inductance will be within \u00b130% of initial inductance value range"
+      },
+      {
+        "field": "rated_current_temperature_rise_definition",
+        "value": 40,
+        "unit": "K max",
+        "conditions": "self-heating at rated current",
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "url": "https://pim.murata.com/asset/pim4/inductor/JELF243B-9129_PDF_INDUCTOR",
+        "document": {
+          "title": "Reference Specification, Chip Coil LQM21PH_GE series (AEC-Q200)",
+          "manufacturer": "Murata",
+          "revision": "JELF243B-9129A-01"
+        },
+        "page_or_table": "P1/10 rating table footnote",
+        "evidence": "Temperature rise caused by self-generated heat shall be limited to 40\u00b0C max"
+      },
+      {
+        "field": "rated_current",
+        "value": {
+          "LQM21PH1R0MGEL": [
+            2000,
+            1600,
+            950
+          ],
+          "LQM21PH2R2MGEL": [
+            1100,
+            880,
+            800
+          ],
+          "LQM21PH4R7MGEL": [
+            400,
+            300,
+            670
+          ]
+        },
+        "unit": "mA",
+        "conditions": "listed per ambient 85/125/150 \u00b0C as summarized by fetch; mapping of each value to the inductance-change vs temperature-rise criterion not confirmed",
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "url": "https://pim.murata.com/asset/pim4/inductor/JELF243B-9129_PDF_INDUCTOR",
+        "document": {
+          "title": "Reference Specification, Chip Coil LQM21PH_GE series (AEC-Q200)",
+          "manufacturer": "Murata",
+          "revision": "JELF243B-9129A-01"
+        },
+        "page_or_table": "P1/10 rating table",
+        "evidence": "Second fetch confirmed 2000 mA (1R0) and 1100 mA (2R2) at 85 \u00b0C ambient; the third column (950/800/670) is not monotonic with the others and likely a different criterion; verify on the PDF before binding."
+      },
+      {
+        "field": "dcr",
+        "value": {
+          "LQM21PH1R0MGEL": {
+            "typ": 0.22,
+            "max": 0.28
+          },
+          "LQM21PH2R2MGEL": {
+            "typ": 0.32,
+            "max": 0.39
+          }
+        },
+        "unit": "ohm",
+        "conditions": "",
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "url": "https://pim.murata.com/asset/pim4/inductor/JELF243B-9129_PDF_INDUCTOR",
+        "document": {
+          "title": "Reference Specification, Chip Coil LQM21PH_GE series (AEC-Q200)",
+          "manufacturer": "Murata",
+          "revision": "JELF243B-9129A-01"
+        },
+        "page_or_table": "P1/10 rating table",
+        "evidence": "Max values only appeared in second fetch; first fetch gave 0.22/0.32 only."
+      },
+      {
+        "field": "self_resonant_frequency_min",
+        "value": {
+          "LQM21PH1R0MGEL": 120,
+          "LQM21PH2R2MGEL": 90,
+          "LQM21PH4R7MGEL": 50
+        },
+        "unit": "MHz",
+        "conditions": "min",
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "url": "https://pim.murata.com/asset/pim4/inductor/JELF243B-9129_PDF_INDUCTOR",
+        "document": {
+          "title": "Reference Specification, Chip Coil LQM21PH_GE series (AEC-Q200)",
+          "manufacturer": "Murata",
+          "revision": "JELF243B-9129A-01"
+        },
+        "page_or_table": "P1/10 rating table",
+        "evidence": "120 MHz min (1R0), 90 MHz min (2R2), consistent across two fetches"
+      },
+      {
+        "field": "operating_temperature_range",
+        "value": [
+          -55,
+          150
+        ],
+        "unit": "\u00b0C",
+        "conditions": "LQM21PH_GE series",
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "url": "https://pim.murata.com/asset/pim4/inductor/JELF243B-9129_PDF_INDUCTOR",
+        "document": {
+          "title": "Reference Specification, Chip Coil LQM21PH_GE series (AEC-Q200)",
+          "manufacturer": "Murata",
+          "revision": "JELF243B-9129A-01"
+        },
+        "page_or_table": "P1/10",
+        "evidence": "Operating temperature range -55\u00b0C to +150\u00b0C"
+      }
+    ],
+    "still_open": [
+      "LQM21FN (original family) manufacturer spec not reachable: murata.com product detail and pdfdownloadapi return 403; LQM21FN_70 spec found only on distributor mirrors (chipdip, components.ru, arrow), which do not count.",
+      "The Murata dynamic-model component list (2502) cited earlier contains no LQM21 rows in its fetched text (DFE/LQH2HP/etc. only); re-check what it actually supports for this entry.",
+      "Exact column-to-criterion mapping of LQM21PH rated currents and inductance test frequency need confirmation on the PDF.",
+      "Choosing LQM21PH over LQM21F is a design decision for the entry owner."
+    ],
+    "note": "Resolves the 'name a variant' and 'missing definitions/temperature/SRF' items only if OHMNI rebinds to LQM21PH_GE; LQM21F itself remains unsourced from primary."
+  },
+  {
+    "entry": "OHM-053",
+    "resolves_blocker": "no",
+    "findings": [
+      {
+        "field": "insulation_test_voltage",
+        "value": 1500,
+        "unit": "V AC",
+        "conditions": "N1,N3 to N2",
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "url": "https://www.we-online.com/components/products/datasheet/750311595.pdf",
+        "document": {
+          "title": "750311595 WE-FB Flyback Transformer",
+          "manufacturer": "Wuerth Elektronik",
+          "revision": "007.001, 2023-07-11"
+        },
+        "page_or_table": "Electrical Properties",
+        "evidence": "Insulation Test Voltage VT N1,3 => N2 1500 V (AC); same in katalog URL copy. This is a hipot test value, not a working voltage."
+      },
+      {
+        "field": "application_conditions",
+        "value": {
+          "vin_dc": [
+            30,
+            75
+          ],
+          "switching_frequency_khz": 150,
+          "vout1_v": 15,
+          "iout1_a": 3,
+          "vaux_v": 10
+        },
+        "unit": "mixed",
+        "conditions": "manufacturer stated application parameters, not limits",
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "url": "https://www.we-online.com/components/products/datasheet/750311595.pdf",
+        "document": {
+          "title": "750311595 WE-FB Flyback Transformer",
+          "manufacturer": "Wuerth Elektronik",
+          "revision": "007.001, 2023-07-11"
+        },
+        "page_or_table": "Application / electrical properties section",
+        "evidence": "Input Voltage 30 - 75 V (DC); Switching Frequency 150 kHz; Output Voltage 1 15 V; Output Current 1 3 A; Auxiliary Voltage 10 V"
+      }
+    ],
+    "still_open": [
+      "Working voltage, insulation class (functional/basic/reinforced) and safety standard: not stated in either datasheet copy (we-online katalog and components URLs, both 2023-07-11); no other WE document found.",
+      "Core loss, thermal resistance/temperature rise, interwinding capacitance: not stated.",
+      "750871111 alternative not researched (budget).",
+      "Pad permutation needs runtime tests (not a document issue)."
+    ],
+    "note": "Only defensible stance: treat as functional insulation with 1500 VAC hipot, application up to 75 VDC input; safety acceptance stays refused. W\u00fcrth support inquiry is the remaining route."
+  },
+  {
+    "entry": "OHM-060",
+    "resolves_blocker": "no",
+    "findings": [
+      {
+        "field": "derating_curve_description",
+        "value": "Fig. 1 average forward rectified current (0-1.0 A) vs terminal temperature (25-175 \u00b0C), 60 Hz resistive or inductive load, separate curves for GL41A-M and GL41T-Y",
+        "unit": null,
+        "conditions": "x-axis is terminal temperature, not ambient",
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "url": "https://www.vishay.com/docs/88546/bym10-xxx.pdf",
+        "document": {
+          "title": "BYM10-xxx, GL41x Surface Mount Glass Passivated Rectifier",
+          "manufacturer": "Vishay General Semiconductor",
+          "revision": "18-May-2021"
+        },
+        "page_or_table": "Fig. 1",
+        "evidence": "Two fetches: Figure 1 carries only axis ticks and curve labels; no knee temperature or numeric points printed. IF(AV) 1.0 A in ratings table references fig. 1 with no temperature condition. Curve not converted to numbers."
+      },
+      {
+        "field": "thermal_resistance_junction_terminal",
+        "value": 30,
+        "unit": "\u00b0C/W",
+        "conditions": "typical, 6.0 mm x 6.0 mm copper pads to each terminal",
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "url": "https://www.vishay.com/docs/88546/bym10-xxx.pdf",
+        "document": {
+          "title": "BYM10-xxx, GL41x Surface Mount Glass Passivated Rectifier",
+          "manufacturer": "Vishay General Semiconductor",
+          "revision": "18-May-2021"
+        },
+        "page_or_table": "Thermal Characteristics table, note (2)",
+        "evidence": "R\u03b8JT (2) 30 \u00b0C/W; note (2) 0.24\" x 0.24\" (6.0 mm x 6.0 mm) copper pads"
+      },
+      {
+        "field": "variant_vrrm_table",
+        "value": {
+          "GL41A": 50,
+          "GL41B": 100,
+          "GL41D": 200,
+          "GL41G": 400,
+          "GL41J": 600,
+          "GL41K": 800,
+          "GL41M": 1000,
+          "GL41T": 1300,
+          "GL41Y": 1600
+        },
+        "unit": "V",
+        "conditions": "",
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "url": "https://www.vishay.com/docs/88546/bym10-xxx.pdf",
+        "document": {
+          "title": "BYM10-xxx, GL41x Surface Mount Glass Passivated Rectifier",
+          "manufacturer": "Vishay General Semiconductor",
+          "revision": "18-May-2021"
+        },
+        "page_or_table": "Maximum Ratings table",
+        "evidence": "VRRM 50 100 200 400 600 800 1000 1300 1600 V"
+      },
+      {
+        "field": "spice_model_GL41Y",
+        "value": ".MODEL GL41Y D IS=5.8498E-9 N=1.8612 RS=63.042E-3 EG=1.11 IKF=1.0090 CJO=1.38320E-11 FC=0.5 M=.3333 VJ=1.228 ISR=1E-20 BV=1780 IBV=1 TT=3.69946E-006 TRS1=0.002 XTI=4",
+        "unit": null,
+        "conditions": "fitted at 25 \u00b0C and 125 \u00b0C; GL41Y (1600 V) only, a different variant from lower-voltage GL41 parts; stated as modeling guideline, not guaranteed limits",
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "url": "https://www.vishay.com/docs/98339/p_gl41y.txt",
+        "document": {
+          "title": "GL41Y SPICE model",
+          "manufacturer": "Vishay",
+          "revision": "Nov 16, 2021"
+        },
+        "page_or_table": "model card",
+        "evidence": "Single fetch; values quoted from file. Useful for N/RS/TT reverse-recovery fit only if reference part is GL41Y."
+      }
+    ],
+    "still_open": [
+      "Numeric derating curve: Vishay publishes only the graphical Fig. 1; no tabulated points or knee temperature. Digitizing would be a guess.",
+      "Reverse recovery time not specified in datasheet; only GL41Y SPICE TT available (different variant unless reference is GL41Y).",
+      "No SPICE models found on vishay.com for other GL41 voltage letters (search found only GL41Y and an SGL41 Thomatronik model).",
+      "Thermal transient (Zth) not published.",
+      "Note: https://www.vishay.com/doc?88546 now returns 404; current URL is https://www.vishay.com/docs/88546/bym10-xxx.pdf."
+    ],
+    "note": "Blocker requires implementing the curve; the source has no numbers, so a numeric envelope cannot be sourced. Only safe implementation is the endpoint-free statement IF(AV)=1.0 A per fig.1 with refused thermal envelope, or a manual digitization flagged as non-MFR."
+  },
+  {
+    "entry": "OHM-071",
+    "resolves_blocker": "partial",
+    "findings": [
+      {
+        "field": "db_series_status",
+        "value": "Not recommended for new designs; manufacturer directs to DF005M-DF10M",
+        "unit": null,
+        "conditions": "Diodes Inc DB101-DB107",
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "url": "https://www.diodes.com/datasheet/download/DB101+(Not+Recommended).pdf",
+        "document": {
+          "title": "DB101-DB107 1.0A Glass Passivated Bridge Rectifier",
+          "manufacturer": "Diodes Incorporated",
+          "revision": "DS21211 Rev. 5 (Not Recommended for New Designs)"
+        },
+        "page_or_table": "page 1 banner",
+        "evidence": "NOT RECOMMENDED FOR NEW DESIGNS, PLEASE USE DF005M - DF10M"
+      },
+      {
+        "field": "db_repetitive_peak_reverse_voltage",
+        "value": {
+          "DB101": 50,
+          "DB102": 100,
+          "DB103": 200,
+          "DB104": 400,
+          "DB105": 600,
+          "DB106": 800,
+          "DB107": 1000
+        },
+        "unit": "V",
+        "conditions": "",
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "url": "https://www.diodes.com/datasheet/download/DB101+(Not+Recommended).pdf",
+        "document": {
+          "title": "DB101-DB107 1.0A Glass Passivated Bridge Rectifier",
+          "manufacturer": "Diodes Incorporated",
+          "revision": "DS21211 Rev. 5 (Not Recommended for New Designs)"
+        },
+        "page_or_table": "Maximum Ratings",
+        "evidence": "DB107 1000 V confirmed in two fetches"
+      },
+      {
+        "field": "db_average_output_current",
+        "value": 1.0,
+        "unit": "A",
+        "conditions": "TA = 40 \u00b0C; derating vs ambient in Fig. 1",
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "url": "https://www.diodes.com/datasheet/download/DB101+(Not+Recommended).pdf",
+        "document": {
+          "title": "DB101-DB107 1.0A Glass Passivated Bridge Rectifier",
+          "manufacturer": "Diodes Incorporated",
+          "revision": "DS21211 Rev. 5 (Not Recommended for New Designs)"
+        },
+        "page_or_table": "Maximum Ratings",
+        "evidence": "Maximum Average Rectified Output Current @ TA = 40C I(AV) 1.0 A (two fetches)"
+      },
+      {
+        "field": "db_surge_current",
+        "value": 50,
+        "unit": "A",
+        "conditions": "8.3 ms single half sine superimposed on rated load (JEDEC)",
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "url": "https://www.diodes.com/datasheet/download/DB101+(Not+Recommended).pdf",
+        "document": {
+          "title": "DB101-DB107 1.0A Glass Passivated Bridge Rectifier",
+          "manufacturer": "Diodes Incorporated",
+          "revision": "DS21211 Rev. 5 (Not Recommended for New Designs)"
+        },
+        "page_or_table": "Maximum Ratings",
+        "evidence": "IFSM 50 A"
+      },
+      {
+        "field": "db_maximum_forward_voltage_per_element",
+        "value": 1.1,
+        "unit": "V",
+        "conditions": "IF = 1.0 A",
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "url": "https://www.diodes.com/datasheet/download/DB101+(Not+Recommended).pdf",
+        "document": {
+          "title": "DB101-DB107 1.0A Glass Passivated Bridge Rectifier",
+          "manufacturer": "Diodes Incorporated",
+          "revision": "DS21211 Rev. 5 (Not Recommended for New Designs)"
+        },
+        "page_or_table": "Electrical Characteristics",
+        "evidence": "VF 1.1 V at IF = 1.0A"
+      },
+      {
+        "field": "db_thermal_resistance_junction_ambient",
+        "value": 40,
+        "unit": "K/W",
+        "conditions": "typical, PC board with 13 mm x 13 mm copper pads",
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "url": "https://www.diodes.com/datasheet/download/DB101+(Not+Recommended).pdf",
+        "document": {
+          "title": "DB101-DB107 1.0A Glass Passivated Bridge Rectifier",
+          "manufacturer": "Diodes Incorporated",
+          "revision": "DS21211 Rev. 5 (Not Recommended for New Designs)"
+        },
+        "page_or_table": "Note 1",
+        "evidence": "R\u03b8JA 40 K/W; mounted on PC board with 13mm x 13mm copper pads"
+      },
+      {
+        "field": "db_junction_temperature_range",
+        "value": [
+          -55,
+          150
+        ],
+        "unit": "\u00b0C",
+        "conditions": "TJ, TSTG",
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "url": "https://www.diodes.com/datasheet/download/DB101+(Not+Recommended).pdf",
+        "document": {
+          "title": "DB101-DB107 1.0A Glass Passivated Bridge Rectifier",
+          "manufacturer": "Diodes Incorporated",
+          "revision": "DS21211 Rev. 5 (Not Recommended for New Designs)"
+        },
+        "page_or_table": "Maximum Ratings",
+        "evidence": "Single fetch: -55 to +150 C"
+      }
+    ],
+    "still_open": [
+      "Entry blocker is null; DF10M binding (Vishay) unchanged.",
+      "DB101-DB107 pin/polarity map: Diodes drawing shows no pin designations, only 'Polarity Symbols Marked on Body'; pin roles cannot be bound from this document.",
+      "These are Diodes Inc values; other DB10x makers are separate references."
+    ],
+    "note": "Diodes Inc itself marks DB101-DB107 NRND and points to DF005M-DF10M, supporting keeping DF10M as the bound reference and leaving DB10x unbound."
+  },
+  {
+    "entry": "OHM-075",
+    "resolves_blocker": "no",
+    "findings": [
+      {
+        "field": "thermal_data_absent",
+        "value": "no RthJA, RthJS, Tj max or numeric derating curve in sheet",
+        "unit": null,
+        "conditions": "WP813ED orange",
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "url": "https://www.kingbrightusa.com/images/catalog/SPEC/WP813ED.pdf",
+        "document": {
+          "title": "WP813ED 10 mm Solid State Lamp",
+          "manufacturer": "Kingbright",
+          "revision": "DSAE9416, V.5A, 16-Feb-2013"
+        },
+        "page_or_table": "whole document",
+        "evidence": "Two fetches: no matches for thermal/junction/Rth/K/W/\u00b0C/W; absolute maxima only: Power dissipation 75 mW, DC forward current 30 mA, peak 160 mA, reverse 5 V, operating/storage -40 to +85 \u00b0C."
+      },
+      {
+        "field": "family_technical_notes_thermal",
+        "value": "no thermal resistance or Tj max given",
+        "unit": null,
+        "conditions": "Kingbright USA Technical Notes (general lamp notes)",
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "url": "https://www.kingbrightusa.com/webimages/catalog/Technical%20Notes.pdf",
+        "document": {
+          "title": "Technical Notes",
+          "manufacturer": "Kingbright USA",
+          "revision": null
+        },
+        "page_or_table": "whole document",
+        "evidence": "Only operating/storage -40~+85 \u00b0C and power dissipation limits (62.5-75 mW) listed; single fetch."
+      }
+    ],
+    "still_open": [
+      "RthJA and Tj max for WP813ED are not published by Kingbright (product page, spec sheet, technical notes checked). The 350 K/W placeholder stays unsourced; thermal acceptance must remain refused or limited to the 75 mW Pd / -40..+85 \u00b0C ambient envelope.",
+      "Only distributor mirrors (LCSC, JLCPCB) host copies; not counted."
+    ],
+    "note": "Recommend replacing Tj-based check with Pd <= 75 mW at Ta <= 85 \u00b0C (no derating published) for this part."
+  },
+  {
+    "entry": "OHM-076",
+    "resolves_blocker": "partial",
+    "findings": [
+      {
+        "field": "maximum_junction_temperature",
+        "value": 125,
+        "unit": "degC",
+        "conditions": "Absolute maximum, TA=25 degC table",
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "url": "https://www.kingbrightusa.com/images/catalog/SPEC/WP113HDT.pdf",
+        "document": {
+          "title": "WP113HDT 2 x 5 mm Rectangular LED Lamp",
+          "manufacturer": "Kingbright",
+          "revision": "DSAF2582 V.6B, 07/06/2017"
+        },
+        "page_or_table": "Absolute Maximum Ratings at TA=25C",
+        "evidence": "\"Junction Temperature Tj 125 \u00b0C\" (confirmed in two fetches). Confidence M because WP113HDT is the current Kingbright 2x5 mm rectangular Bright Red (GaP) part, the WP-prefixed successor of the W113HDT reference; the 2003 W113HDT sheet itself gives no Tj."
+      },
+      {
+        "field": "absolute_maximum_ratings_wp113hdt",
+        "value": {
+          "power_dissipation_mW": 62.5,
+          "dc_forward_current_mA": 25,
+          "peak_forward_current_mA": 130,
+          "reverse_voltage_V": 5,
+          "operating_temperature_degC": [
+            -40,
+            85
+          ]
+        },
+        "unit": "mixed",
+        "conditions": "TA=25 degC; IFM at 1/10 duty, 0.1 ms pulse",
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "url": "https://www.kingbrightusa.com/images/catalog/SPEC/WP113HDT.pdf",
+        "document": {
+          "title": "WP113HDT 2 x 5 mm Rectangular LED Lamp",
+          "manufacturer": "Kingbright",
+          "revision": "DSAF2582 V.6B, 07/06/2017"
+        },
+        "page_or_table": "Absolute Maximum Ratings",
+        "evidence": "PD 62.5 mW, IF 25 mA, IFM 130 mA, VR 5 V, Top -40 to +85 C. VF 2.05 typ / 2.45 max at IF=10 mA; C 40 pF. Successor variant, not the 2003 W113HDT revision."
+      },
+      {
+        "field": "forward_current_derating_curve",
+        "value": "curve present, no tabulated values",
+        "unit": null,
+        "conditions": "Ambient -40 to 100 degC axis, 0-50 mA axis",
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "url": "https://www.kingbrightusa.com/images/catalog/SPEC/WP113HDT.pdf",
+        "document": {
+          "title": "WP113HDT 2 x 5 mm Rectangular LED Lamp",
+          "manufacturer": "Kingbright",
+          "revision": "DSAF2582 V.6B, 07/06/2017"
+        },
+        "page_or_table": "Technical data, Forward Current Derating Curve",
+        "evidence": "Curve only; not converted to numbers."
+      },
+      {
+        "field": "thermal_resistance_junction_ambient",
+        "value": "not stated",
+        "unit": "K/W",
+        "conditions": null,
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "url": "https://www.kingbrightusa.com/images/catalog/SPEC/W113HDT.pdf",
+        "document": {
+          "title": "W113HDT 2 x 5 mm Rectangular LED Lamp",
+          "manufacturer": "Kingbright",
+          "revision": "DSAD1891 V.1, 13-Apr-2003"
+        },
+        "page_or_table": "Absolute Maximum Ratings",
+        "evidence": "Neither W113HDT (2003) nor WP113HDT (2017) states any RthJA/RthJS; the W113HDT sheet also omits Tj and a derating curve (two fetches each)."
+      }
+    ],
+    "still_open": [
+      "RthJA not published by Kingbright for this lamp in either revision; a thermal model cannot be sourced.",
+      "Tj=125 C comes from the WP113HDT successor sheet; confirm the project accepts it for the W113HDT reference or switch the reference part to WP113HDT.",
+      "Typical I-V/optical fit and failure timing still not fitted."
+    ],
+    "note": "The W113HDT 2003 PDF text extraction garbles units in the ratings table (e.g. '1W'/'2A' fragments); do not use those extracted values. WP113HDT gives clean ratings and Tj but no thermal resistance."
+  },
+  {
+    "entry": "OHM-083",
+    "resolves_blocker": "no",
+    "findings": [
+      {
+        "field": "primary_datasheet_location",
+        "value": "https://optoelectronics.liteon.com/upload/download/DS22-2012-0212/LTST-G563EGBW.pdf",
+        "unit": null,
+        "conditions": "Indexed by search on liteon.com; WebFetch failed (robots.txt / TLS certificate error on optoelectronics.liteon.com)",
+        "basis": "MFR_DATASHEET",
+        "confidence": "L",
+        "url": "https://optoelectronics.liteon.com/upload/download/DS22-2012-0212/LTST-G563EGBW.pdf",
+        "document": {
+          "title": "LTST-G563EGBW",
+          "manufacturer": "Lite-On",
+          "revision": "unknown (not opened)"
+        },
+        "page_or_table": null,
+        "evidence": "Primary URL exists per search index but could not be opened; nothing from it is cited."
+      },
+      {
+        "field": "distributor_copy_pin_groups",
+        "value": {
+          "red": [
+            3,
+            4
+          ],
+          "green": [
+            2,
+            5
+          ],
+          "blue": [
+            1,
+            6
+          ]
+        },
+        "unit": null,
+        "conditions": "Distributor mirror (LCSC) of Lite-On DS22-2012-0212 Rev C, effective 12/11/2018; NOT primary",
+        "basis": "DISTRIBUTOR_MIRROR",
+        "confidence": "L",
+        "url": "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2201131300_Lite-On-LTST-G563EGBW_C913089.pdf",
+        "document": {
+          "title": "LTST-G563EGBW",
+          "manufacturer": "Lite-On",
+          "revision": "DS22-2012-0212 Rev C, 12/11/2018"
+        },
+        "page_or_table": "Part No. / Pin Assignment table",
+        "evidence": "\"AlInGaP Red 3, 4 / InGaN Green 2, 5 / InGaN Blue 1, 6\". Anode vs cathode per pin: two fetches disagreed (one claimed pins 1-3 cathodes, 4-6 anodes; the other found no anode/cathode designation in text). Polarity unverified, likely only in a drawing."
+      },
+      {
+        "field": "distributor_copy_absolute_maximum_ratings",
+        "value": {
+          "power_dissipation_mW": {
+            "red": 130,
+            "green": 114,
+            "blue": 114
+          },
+          "dc_forward_current_mA": {
+            "red": 50,
+            "green": 30,
+            "blue": 30
+          },
+          "peak_forward_current_mA": {
+            "red": 100,
+            "green": 100,
+            "blue": 100
+          },
+          "operating_temperature_degC": [
+            -40,
+            85
+          ],
+          "storage_temperature_degC": [
+            -40,
+            100
+          ]
+        },
+        "unit": "mixed",
+        "conditions": "Ta=25C; peak at 1/10 duty, 0.1 ms pulse; distributor mirror, NOT primary",
+        "basis": "DISTRIBUTOR_MIRROR",
+        "confidence": "L",
+        "url": "https://wmsc.lcsc.com/wmsc/upload/file/pdf/v2/lcsc/2201131300_Lite-On-LTST-G563EGBW_C913089.pdf",
+        "document": {
+          "title": "LTST-G563EGBW",
+          "manufacturer": "Lite-On",
+          "revision": "DS22-2012-0212 Rev C, 12/11/2018"
+        },
+        "page_or_table": "Absolute Maximum Ratings at Ta=25C; Electrical/Optical",
+        "evidence": "Per-color PD/IF/IFP as listed; VF at 20 mA: R 1.8-2.6 V, G/B 2.8-3.8 V; IR max 10 uA at VR=5 V with note 'The device is not designed for reverse operation.' No Tj or thermal resistance listed."
+      }
+    ],
+    "still_open": [
+      "Primary Lite-On PDF still not openable (TLS/robots failure); all numbers above are from a distributor mirror and must not be promoted to runtime fields.",
+      "Exact per-pin anode/cathode polarity unverified.",
+      "Thermal path (Tj, Rth) not stated even in the mirror copy.",
+      "Reverse operating limit: device 'not designed for reverse operation'; VR=5 V is an IR test condition only."
+    ],
+    "note": "Blocker requires primary evidence; only a distributor mirror could be opened."
+  },
+  {
+    "entry": "OHM-087",
+    "resolves_blocker": "no",
+    "findings": [
+      {
+        "field": "rating_scope_statement",
+        "value": "absent",
+        "unit": null,
+        "conditions": "Absolute Maximum Ratings at TA=25C: PD 75 mW, IF 30 mA, IFM 160 mA (1/10 duty, 0.1 ms), VR 5 V, Tj 125 C",
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "url": "https://www.kingbrightusa.com/images/catalog/SPEC/SC56-11EWA.pdf",
+        "document": {
+          "title": "SC56-11EWA 14.22 mm (0.56 inch) Single Digit Numeric Display",
+          "manufacturer": "Kingbright",
+          "revision": "DSAP6671 V.1A"
+        },
+        "page_or_table": "Absolute Maximum Ratings",
+        "evidence": "Two differently worded fetches: no text assigns PD/IF per segment, per chip, per digit or per package. Only related text: 'Common Cathode, Rt. Hand Decimal', '1/10 Duty Cycle, 0.1ms Pulse Width.' (One fetch summary claimed package-level scope; the verbatim word search contradicted it, so that claim is rejected as inference.)"
+      },
+      {
+        "field": "kingbright_catalog_rating_scope",
+        "value": "absent",
+        "unit": null,
+        "conditions": "Kingbright USA through-hole display catalog pp.31-48 and kingbrightusa.com FAQ",
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "url": "http://www.kingbrightusa.com/webimages/catalog/Through-HoleDisplay-P31-48.pdf",
+        "document": {
+          "title": "Through-Hole Display catalog pages 31-48",
+          "manufacturer": "Kingbright",
+          "revision": "not stated"
+        },
+        "page_or_table": "p.37 (56-11 series)",
+        "evidence": "Catalog lists only material, wavelength and Iv for 56-11EWA parts; no absolute maximum ratings and no per-segment/common-lead allocation. FAQ page has no technical display content. Single fetch each, hence M."
+      }
+    ],
+    "still_open": [
+      "No Kingbright primary source allocates PD/IF per segment or as package/common-lead total.",
+      "Common-lead aggregate current and per-segment thermal coupling remain unsourced.",
+      "Derating curve exists only as a graph; not converted to numbers."
+    ],
+    "note": "Searched Kingbright datasheet, catalog and FAQ plus web for Kingbright display app notes; none found. Blocker stands."
+  },
+  {
+    "entry": "OHM-088",
+    "resolves_blocker": "no",
+    "findings": [
+      {
+        "field": "rating_scope_statement",
+        "value": "absent",
+        "unit": null,
+        "conditions": "Absolute Maximum Ratings at TA=25C: PD 75 mW, IF 30 mA, IFM 160 mA (1/10 duty, 0.1 ms), VR 5 V, Tj 125 C",
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "url": "https://www.kingbrightusa.com/images/catalog/SPEC/DC56-11EWA.pdf",
+        "document": {
+          "title": "DC56-11EWA 14.22 mm (0.56 inch) Dual Digit Numeric Display",
+          "manufacturer": "Kingbright",
+          "revision": "DSAP4735 V.3A"
+        },
+        "page_or_table": "Absolute Maximum Ratings",
+        "evidence": "Two fetches: table header 'at TA=25\u00b0C' only; no per-segment/per-digit/package designation; words 'per', 'chip', 'total', 'multiplex' absent. Derating shown only as graphs."
+      }
+    ],
+    "still_open": [
+      "No primary allocation of PD/IF per segment, per digit, or common-lead total.",
+      "Multiplex operation is limited to the stated IFM pulse conditions (1/10 duty, 0.1 ms); no other multiplex rating given."
+    ],
+    "note": "Same 56-series ratings table as SC56-11EWA and CA56-12EWA; Kingbright catalog and FAQ also silent (see OHM-087)."
+  },
+  {
+    "entry": "OHM-089",
+    "resolves_blocker": "no",
+    "findings": [
+      {
+        "field": "rating_scope_statement",
+        "value": "absent",
+        "unit": null,
+        "conditions": "Absolute Maximum Ratings at TA=25C: PD 75 mW, IF 30 mA, IFM 160 mA (1/10 duty, 0.1 ms), VR 5 V, Tj 125 C",
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "url": "https://www.kingbrightusa.com/images/catalog/SPEC/CA56-12EWA.pdf",
+        "document": {
+          "title": "CA56-12EWA 14.22 mm (0.56 inch) Four Digit Numeric Display",
+          "manufacturer": "Kingbright",
+          "revision": "DSAP8253 V.1A"
+        },
+        "page_or_table": "Absolute Maximum Ratings",
+        "evidence": "Two fetches: no per-segment/package allocation; only 'Common Anode, Rt. Hand Decimal' and 'LEDs mounted in parallel should each be placed in series with its own current-limiting resistor.' No 'multiplex' or 'total' text, despite four-digit parts normally being multiplexed. Derating curve graph only."
+      }
+    ],
+    "still_open": [
+      "No primary allocation of PD/IF per segment or per common anode; aggregate common-lead current unsourced.",
+      "No multiplex rating beyond IFM pulse conditions.",
+      "CA56-12EWA is not in the Kingbright through-hole catalog pp.31-48 (only CA56-11EWA, which also lacks ratings)."
+    ],
+    "note": "Blocker stands; no manufacturer source found."
+  },
+  {
+    "entry": "OHM-090",
+    "resolves_blocker": "no",
+    "findings": [],
+    "still_open": [
+      "No manufacturer-domain datasheet found for a ~32 mm single-color 8x8 matrix. Kingbright's 30.6 mm TC12-11 parts on kingbrightusa.com/kingbright.com are 5x7, not 8x8; distributor (RS) listings show Kingbright 8x8 starting at 38 mm (TC15-11 family), not opened.",
+      "Exact part-to-library terminal map, junction thermal resistance and common-lead aggregate current remain open."
+    ],
+    "note": "Closest 31 mm 8x8 candidate found: Lite-On LTP-12188A-01 (Spec DS-30-94-190, effective 09/15/2001), but only as a DigiKey-hosted copy (https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/935/LTP-12188A-01_9-15-01.pdf), which is not primary. It is a 24-pin bicolor part (anode rows on pins 3,6,9,12,13,16,19,22; paired green/red cathode columns on the rest), so it cannot bind a 16-pin single-color footprint. That copy states 36 mW avg power/dot, 13 mA avg current/dot, 100 mA peak/dot, 5 V reverse, -35..85 C; no common-pin current or thermal resistance. Recommend picking a concrete library part number with a maker-hosted datasheet (e.g. switch library to a 38 mm Kingbright TC15-11 variant) rather than a generic 32 mm matrix."
+  },
+  {
+    "entry": "OHM-099",
+    "resolves_blocker": "partial",
+    "findings": [
+      {
+        "field": "maximum_pulsed_drain_current",
+        "value": 200,
+        "unit": "A",
+        "conditions": "repetitive rating, pulse width limited by max Tj",
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "url": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irfp260n-datasheet-en.pdf?fileId=5546d462533600a401535628a2ef1fe4",
+        "document": {
+          "title": "IRFP260NPbF HEXFET Power MOSFET",
+          "manufacturer": "Infineon",
+          "revision": "Rev. 2.1, 2024-10-08"
+        },
+        "page_or_table": "Absolute Maximum Ratings",
+        "evidence": "IDM Pulsed Drain Current 200 A (read in two fetches)"
+      },
+      {
+        "field": "single_pulse_avalanche_energy",
+        "value": 560,
+        "unit": "mJ",
+        "conditions": "Starting TJ = 25 C, L = 1.5 mH, RG = 25 ohm, IAS = 28 A (footnote)",
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "url": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irfp260n-datasheet-en.pdf?fileId=5546d462533600a401535628a2ef1fe4",
+        "document": {
+          "title": "IRFP260NPbF HEXFET Power MOSFET",
+          "manufacturer": "Infineon",
+          "revision": "Rev. 2.1, 2024-10-08"
+        },
+        "page_or_table": "Avalanche Characteristics + footnote",
+        "evidence": "EAS 560 mJ; footnote conditions read in second fetch only, so M"
+      },
+      {
+        "field": "repetitive_avalanche_current_and_energy",
+        "value": {
+          "IAR_A": 50,
+          "EAR_mJ": 30
+        },
+        "unit": "A / mJ",
+        "conditions": "repetitive, limited by max Tj",
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "url": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irfp260n-datasheet-en.pdf?fileId=5546d462533600a401535628a2ef1fe4",
+        "document": {
+          "title": "IRFP260NPbF HEXFET Power MOSFET",
+          "manufacturer": "Infineon",
+          "revision": "Rev. 2.1, 2024-10-08"
+        },
+        "page_or_table": "Avalanche Characteristics",
+        "evidence": "IAR 50 A, EAR 30 mJ (EAR confirmed in both fetches)"
+      },
+      {
+        "field": "soa_and_transient_thermal_form",
+        "value": "curves only",
+        "unit": null,
+        "conditions": "Fig 8 Maximum Safe Operating Area; Fig 11 Maximum Effective Transient Thermal Impedance, Junction-to-Case",
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "url": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irfp260n-datasheet-en.pdf?fileId=5546d462533600a401535628a2ef1fe4",
+        "document": {
+          "title": "IRFP260NPbF HEXFET Power MOSFET",
+          "manufacturer": "Infineon",
+          "revision": "Rev. 2.1, 2024-10-08"
+        },
+        "page_or_table": "Fig 8, Fig 11",
+        "evidence": "No tabulated SOA or Zth/Foster values in this datasheet; curves only, not converted"
+      },
+      {
+        "field": "spice_model",
+        "value": ".SUBCKT irfp260n 1 2 3 (1=Drain, 2=Gate, 3=Source); MODPEX/Symmetry, SPICE3 format, generated Dec 1 2000; no thermal network / Tj node",
+        "unit": null,
+        "conditions": "fixed-temperature electrical model",
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "url": "https://www.infineon.com/assets/row/public/documents/24/50/irfp260n.spi?fileId=5546d462533600a401535720a0d53b3e",
+        "document": {
+          "title": "irfp260n SPICE model",
+          "manufacturer": "Infineon (IR)",
+          "revision": "Model generated on Dec 1, 00"
+        },
+        "page_or_table": "file header",
+        "evidence": "'External Node Designations * Node 1 -> Drain * Node 2 -> Gate * Node 3 -> Source'; M1 9 7 8 8 MM; body diode D1 3 1 MD"
+      }
+    ],
+    "still_open": [
+      "SOA and transient thermal impedance exist only as curves (Fig 8, Fig 11); no numeric Foster/Cauer values found on infineon.com for IRFP260N.",
+      "Model is for IRFP260N (non-PbF name); confirm it applies to IRFP260NPbF (same die expected but not stated in fetched text).",
+      "TO-247AD and IGBT variants still need separate bindings; mechanical fit validation not addressed."
+    ],
+    "note": "Blocker field was null. Electrical SPICE model found on maker domain (a Saber .sin also exists at https://infineon.com/dgdl/irfp260n.sin?fileId=5546d462533600a4015356d2370431fc, seen in search only, not opened). Infineon community thread reports the .spi has issues in LTspice; not verified."
+  },
+  {
+    "entry": "OHM-100",
+    "resolves_blocker": "no",
+    "findings": [
+      {
+        "field": "junction_case_foster_thermal_network",
+        "value": [
+          {
+            "R_C_per_W": 0.3501,
+            "tau_s": 7.2e-05
+          },
+          {
+            "R_C_per_W": 1.1877,
+            "tau_s": 0.001239
+          },
+          {
+            "R_C_per_W": 0.7635,
+            "tau_s": 0.010527
+          }
+        ],
+        "unit": "C/W, s",
+        "conditions": "junction-to-case, Ci = tau_i/Ri; sum 2.3013 C/W matches RthJC max 2.3 C/W",
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "url": "https://www.infineon.com/dgdl/irlr8721pbf.pdf?fileId=5546d462533600a40153566e27f326ec",
+        "document": {
+          "title": "IRLR/U8721PbF HEXFET Power MOSFET",
+          "manufacturer": "International Rectifier / Infineon",
+          "revision": "not shown in fetched text (prior research: 4-Dec-2012)"
+        },
+        "page_or_table": "Fig 11 inset table",
+        "evidence": "Ri 0.3501/1.1877/0.7635 C/W, tau_i 0.000072/0.001239/0.010527 s, 'Ci = tau_i/Ri' (identical in two fetches)"
+      },
+      {
+        "field": "maximum_pulsed_drain_current",
+        "value": 260,
+        "unit": "A",
+        "conditions": "pulse condition footnote read inconsistently (60 us vs 'pulse width <= 400 us; duty cycle <= 2%')",
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "url": "https://www.infineon.com/dgdl/irlr8721pbf.pdf?fileId=5546d462533600a40153566e27f326ec",
+        "document": {
+          "title": "IRLR/U8721PbF HEXFET Power MOSFET",
+          "manufacturer": "International Rectifier / Infineon",
+          "revision": "not shown in fetched text"
+        },
+        "page_or_table": "Absolute Maximum Ratings",
+        "evidence": "IDM 260 A in both fetches; footnote condition unclear, so M"
+      },
+      {
+        "field": "single_pulse_avalanche_energy",
+        "value": 93,
+        "unit": "mJ",
+        "conditions": "Starting TJ = 25 C, L = 0.47 mH, RG = 25 ohm, IAS = 20 A",
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "url": "https://www.infineon.com/dgdl/irlr8721pbf.pdf?fileId=5546d462533600a40153566e27f326ec",
+        "document": {
+          "title": "IRLR/U8721PbF HEXFET Power MOSFET",
+          "manufacturer": "International Rectifier / Infineon",
+          "revision": "not shown in fetched text"
+        },
+        "page_or_table": "Avalanche Characteristics + footnote",
+        "evidence": "93 mJ value returned in one fetch only; conditions consistent across both"
+      }
+    ],
+    "still_open": [
+      "No IRLR8721 SPICE/Saber model located on infineon.com: guessed paths /assets/row/public/documents/24/50/irlr8721pbf.spi and irlr8721.spi return 404; site-restricted searches found none; product page https://www.infineon.com/part/IRLR8721 exposed no downloads to the fetcher. IRLB8721 model must not be substituted.",
+      "SOA (Fig 8) is curve-only.",
+      "Datasheet text did not state D-Pak pin numbering or cropped middle lead; binding still needs the package outline page."
+    ],
+    "note": "Transient thermal is now numerically defined (Foster ladder), which closes part of the remaining items, but the stated blocker (IRLR8721 model card) is not resolved. Could ask Infineon support or check the product page Design Resources tab in a real browser."
+  },
+  {
+    "entry": "OHM-108",
+    "resolves_blocker": "no",
+    "findings": [],
+    "still_open": [
+      "Microchip's current datasheet (DS40002061B) exists at https://www.microchip.com/content/dam/mchp/documents/MCU08/ProductDocuments/DataSheets/ATmega48A-PA-88A-PA-168A-PA-328-P-DS-DS40002061B.pdf but could not be read: fetch failed with 413 (body > 30 MB). The ww1.microchip.com copy is blocked by robots.txt; onlinedocs.microchip.com robots fetch returned 503.",
+      "28P3 PDIP row spacing/body width (E, E1, eB) from a primary source still unverified, so the width mismatch is not resolved.",
+      "Junction thermal parameters, pin capacitance and dynamic pad model unresolved."
+    ],
+    "note": "Both documents in the entry are university mirrors, not primary. The Atmel-7810 automotive ATmega328P datasheet on microchip.com covers only TQFP/QFN (per search title), so it does not help with DIP-28. A non-WebFetch download of DS40002061B (or Microchip's package drawing page for 28P3) is needed."
+  },
+  {
+    "entry": "OHM-136",
+    "resolves_blocker": "no",
+    "findings": [],
+    "still_open": [
+      "No NXP (successor to Philips) hosted datasheet for PDI1394P23 found; https://www.nxp.com/docs/en/data-sheet/PDI1394P23.pdf returns 404 and site-restricted search returns nothing. Part appears discontinued.",
+      "Maximum IO current, Tj and thermal resistance remain unestablished.",
+      "Package question: the reference file name is PDI1394P23BD; 'BD' is typically Philips' LQFP suffix, so the BGA-64 binding should be double-checked against the ordering table (could not reopen the datasheet4u copy: 403)."
+    ],
+    "note": "Only distributor/mirror copies exist (datasheet4u, radioradar); one chipdip link that search attributed to it was actually a PDTD123Y transistor datasheet. Recommend switching the BGA-64 reference to an in-production part with a maker-hosted datasheet that states Rth(j-a) and limiting values."
+  }
+]
