@@ -1,4 +1,5 @@
 * BEH-TRN-BJT B8: electrothermal feedback. Tj = Tamb + Rth*P, iterated; model has no self-heating, so the loop is closed in the control section
+* v2: absolute include path made relative; added tja_final_c, dtjb_k (last-iteration change of case B), numerical loop gains g_a/g_b and flag g_b_lt1_flag; iteration itself unchanged
 * Case A: Vbe fixed by a stiff base source (no emitter resistor), Vbe=0.84 V (Ic ~ 56 mA at 25 C, Vce=5 V)
 * Case B: Re=2 ohm emitter ballast, base source 0.9 V (Ic ~ 43 mA at 25 C)
 * Analytic stability criterion: the loop converges iff  G = Rth * Vce * dIc/dT < 1.
@@ -6,7 +7,7 @@
 *   Ic(0.84 V)=56mA, Vt=0.0259, T=298: alpha = (1.11-0.84)/(0.0259*298)+3/298 = 0.045/K -> G = 200*5*0.056*0.045 = 2.5 > 1 => runaway
 *   With Re=2 ohm: dIc/dT reduced by 1/(1+gm*(Re+RE_int)) with gm=Ic/Vt=1.7 S -> factor ~0.2 -> G_B ~ 0.5 < 1 -> converges
 * Expected: A diverges (Tj hits the 300 C clamp), B converges (Tj changes < 0.1 K between last two iterations)
-.include /home/claude/behavior/bench/trn_bjt/models_bjt_r6fit.lib
+.include models_bjt_r6fit.lib
 Qa ca ba 0 Q2N3904_R6FIT temp=25
 Vca ca 0 5
 Vba ba 0 0.84
@@ -20,6 +21,7 @@ set rth = 200
 set ta = 25
 set tja = 25
 set tjb = 25
+set tjbprev = 0
 repeat 30
   alter qa temp = $tja
   alter qb temp = $tjb
@@ -33,10 +35,43 @@ repeat 30
   if tjan > 300
     let tjan = 300
   end
+  set tjbprev = $tjb
   set tja = "$&tjan"
   set tjb = "$&tjbn"
   echo Pa=$pav Pb=$pbv Tja=$tja Tjb=$tjb
 end
+* final state of the iteration as scalar lines (echo prints name = number)
+echo "tja_final_c = $tja"
+let tjbc = $tjb
+let tjbp = $tjbprev
+let dtjb_k = abs(tjbc-tjbp)
+print dtjb_k
+* numerical loop-gain criterion G = Rth*Vce*dIc/dT (central difference over 2 K) at the start state of case A and at the converged state of case B
+* (every op creates a new plot, so intermediate results are carried in set-variables)
+let tb_lo = tjbc-1
+let tb_hi = tjbc+1
+set tblo = "$&tb_lo"
+set tbhi = "$&tb_hi"
+alter qa temp = 24
+op
+let ia_lo = -i(Vca)
+set ialo = "$&ia_lo"
+alter qa temp = 26
+op
+let ia_hi = -i(Vca)
+set iahi = "$&ia_hi"
+alter qb temp = $tblo
+op
+let ib_lo = -i(Vcb)
+set iblo = "$&ib_lo"
+alter qb temp = $tbhi
+op
+let ib_hi = -i(Vcb)
+set ibhi = "$&ib_hi"
+let g_a = $rth*5*($iahi - $ialo)/2
+let g_b = $rth*5*($ibhi - $iblo)/2
+let g_b_lt1_flag = 0.5*(1+(1-g_b)/abs(1-g_b))
+print g_a g_b g_b_lt1_flag
 quit
 .endc
 .end

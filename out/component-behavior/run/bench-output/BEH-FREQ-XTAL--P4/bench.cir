@@ -1,0 +1,31 @@
+B4 Pierce gain-margin sweep (edit gm in .param): envelope growth ratio 300us/150us at R1=80. Kick 1uA x 10ns.
+* v2: print renamed ratio -> env_ratio_gm1m (new contract P4); circuit unchanged
+* OHMNI BVD crystal subcircuit. Terminals: 1 2. Params: L1 (H), C1 (F), R1 (ohm), C0 (F)
+.subckt ohm_xtal 1 2 L1=44m C1=9f R1=80 C0=3p
+Lm 1 a {L1}
+Cm a b {C1}
+Rm b 2 {R1}
+C0x 1 2 {C0}
+.ends ohm_xtal
+
+.param gm=1m imax=0.3m rout=5k cl1=32p cl2=32p cp=4p rf=1meg
+X1 xi xo ohm_xtal L1=43.99505512m C1=9f R1=80 C0=3p
+Cl1 xi 0 {cl1}
+Cl2 xo 0 {cl2}
+Cps1 xi 0 {cp}
+Cps2 xo 0 {cp}
+Rf xi xo {rf}
+Bamp xo 0 I = {imax}*tanh({gm}*v(xi)/{imax})
+Rout xo 0 {rout}
+Ikick 0 xi PULSE(0 1u 0 1n 1n 10n 1)
+.tran 2n 320u
+.control
+run
+let vx = v(xi)
+meas tran a150 PP vx FROM=148u TO=150u
+meas tran a300 PP vx FROM=318u TO=320u
+let env_ratio_gm1m = a300/a150
+print env_ratio_gm1m
+quit
+.endc
+.end

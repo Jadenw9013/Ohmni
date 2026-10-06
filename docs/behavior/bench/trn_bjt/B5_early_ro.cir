@@ -1,8 +1,9 @@
 * BEH-TRN-BJT B5: Early effect, output resistance ro = (VAF + Vce)/Ic  (Gummel-Poon, NF=1 forward-active)
+* v2: absolute include path made relative; added ro_ic_v = ro*Ic_mid (analytic value VAF+Vce_mid = 107.5 V, independent of the operating current); circuit unchanged
 * Bias: Ib fixed 10uA -> Ic~1.7 mA at Vce=5; slope dIc/dVce measured between Vce=5 and 10 V
 * Analytic: ro = dVce/dIc. With Ic = Ic0*(1+Vce/VAF): ro = (VAF+Vce_mid)/Ic_mid
 * VAF=100 V (model ASSUMPTION), Vce_mid=7.5 -> expected ro = (100+7.5)/Ic_mid ; tolerance 10 %
-.include /home/claude/behavior/bench/trn_bjt/models_bjt_r6fit.lib
+.include models_bjt_r6fit.lib
 Q1 c b 0 Q2N3904_R6FIT
 Vc c 0 5
 Ib 0 b 10u
@@ -14,7 +15,8 @@ print ic
 let ro = 5/(ic[1]-ic[0])
 let icm = (ic[1]+ic[0])/2
 let ro_expected = 107.5/icm
-print ro ro_expected
+let ro_ic_v = ro*icm
+print ro ro_expected ro_ic_v
 quit
 .endc
 .end

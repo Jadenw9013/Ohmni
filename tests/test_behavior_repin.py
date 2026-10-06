@@ -90,3 +90,70 @@ def test_compound_value_keeps_the_locked_tolerance_for_every_component():
 @pytest.mark.parametrize("value", ["10/8 uF", "10, 8", 10.0, "a/b"])
 def test_only_pure_numeric_slash_lists_are_compound(value):
     assert compound_contracts({"value": value, "tolerance": "1%"}) is None
+
+
+def _ledger_entries(audit, monkeypatch, **entries):
+    base = {"schema_version": 1, "repins": []}
+    base.update(entries)
+    monkeypatch.setattr(audit, "bench_repins", lambda: base)
+
+
+GOOD_ITEM = {"measure": "vout", "value": 1.0, "tolerance": "1%", "basis": "derived"}
+
+
+def test_correction_must_quote_the_locked_expected_list(audit, monkeypatch):
+    locked = _locked(audit)[BENCH]
+    _ledger_entries(audit, monkeypatch, corrections=[{
+        "id": "C-T", "approved_by": "r", "approved_on": "2026-10-05",
+        "benches": {BENCH: {"baseline_expected": [{"value": 0}], "expected": [GOOD_ITEM], "derivation": "x"}}}])
+    effective, errors = audit._apply_repins(_locked(audit))
+    assert errors and effective[BENCH]["expected"] == locked["expected"]
+
+
+def test_correction_items_must_be_numeric_and_based(audit, monkeypatch):
+    locked = _locked(audit)[BENCH]
+    bad = {"measure": "vout", "value": "about one", "tolerance": "some", "basis": "x"}
+    _ledger_entries(audit, monkeypatch, corrections=[{
+        "id": "C-T", "approved_by": "r", "approved_on": "2026-10-05",
+        "benches": {BENCH: {"baseline_expected": locked["expected"], "expected": [bad], "derivation": "x"}}}])
+    effective, errors = audit._apply_repins(_locked(audit))
+    assert errors and effective[BENCH]["expected"] == locked["expected"]
+
+
+def test_approved_correction_applies_and_class_records_stay_locked(audit, monkeypatch):
+    locked = _locked(audit)[BENCH]
+    _ledger_entries(audit, monkeypatch, corrections=[{
+        "id": "C-T", "approved_by": "r", "approved_on": "2026-10-05",
+        "benches": {BENCH: {"baseline_expected": locked["expected"], "expected": [GOOD_ITEM], "derivation": "x"}}}])
+    effective, errors = audit._apply_repins(_locked(audit))
+    assert not errors and effective[BENCH]["expected"] == [GOOD_ITEM]
+    unchanged, _ = audit._apply_repins(_locked(audit), corrections=False)
+    assert unchanged[BENCH]["expected"] == locked["expected"]
+
+
+def test_unapproved_correction_is_refused(audit, monkeypatch):
+    locked = _locked(audit)[BENCH]
+    _ledger_entries(audit, monkeypatch, corrections=[{
+        "id": "C-T", "approved_by": "", "approved_on": "2026-10-05",
+        "benches": {BENCH: {"baseline_expected": locked["expected"], "expected": [GOOD_ITEM], "derivation": "x"}}}])
+    effective, errors = audit._apply_repins(_locked(audit))
+    assert errors and effective[BENCH]["expected"] == locked["expected"]
+
+
+def test_addition_cannot_replace_an_existing_bench(audit, monkeypatch):
+    locked = _locked(audit)[BENCH]
+    _ledger_entries(audit, monkeypatch, additions=[{
+        "id": "A-T", "approved_by": "r", "approved_on": "2026-10-05",
+        "benches": {BENCH: {"file": "docs/behavior/bench/x.cir", "netlist_sha256": NEW,
+                            "expected": [GOOD_ITEM], "derivation": "x"}}}])
+    effective, errors = audit._apply_repins(_locked(audit))
+    assert errors and effective[BENCH] == locked
+
+
+def test_addition_adds_a_required_bench(audit, monkeypatch):
+    _ledger_entries(audit, monkeypatch, additions=[{
+        "id": "A-T", "approved_by": "r", "approved_on": "2026-10-05",
+        "benches": {"BEH-NEW/B1": {"file": "docs/behavior/bench/x.cir", "netlist_sha256": NEW,
+                                   "expected": [GOOD_ITEM], "derivation": "x"}}}])
+    effective, errors = audit._apply_repins(_locked(audit))
+    assert not errors and "BEH-NEW/B1" in effective

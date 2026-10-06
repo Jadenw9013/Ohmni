@@ -388,7 +388,7 @@ def test_network_and_bridge_probe_contracts_refuse_changed_source_decks(tmp_path
     contracts = {"example": {"file": "original.cir", "netlist_sha256": "0"*64}}
     # The probe reads re-pin-aware contracts; the fake exposes both views identically.
     audit = SimpleNamespace(root=tmp_path, _state=lambda: {"bench_contracts": contracts},
-                            _bench_contracts=lambda: contracts)
+                            _bench_contracts=lambda **_: contracts)
     with pytest.raises(ValueError,match="source deck changed"):
         _locked_probe_deck(audit,"example")
 

@@ -1,0 +1,53 @@
+* BEH-IC-OPAMP B1: gain-bandwidth bench. LM358 parameters (TI SLOS068 extract: GBW 0.7 MHz typ, Aol 100 V/mV typ=100 dB)
+* v2: scalars printed as 'name = value' (gain0_db_val, f3db_g10_hz); behavior unchanged
+* Non-inverting G=10 (R 9k/1k), +-... single 5 V supply, input DC 0.2 V (output 2.0 V, inside swing); AC 1.
+* Analytic: single-pole closed-loop -3 dB freq = GBW/G*(1+...) ~ GBW*beta = 700k/10 = 70.0 kHz ; DC gain 20 dB (lower by 1/(1+G/Aol)= -0.0009 dB)
+* BEH-IC-OPAMP behavioural macromodel (behavioural_approximation). ngspice 42 stock, no XSPICE.
+* pins: inp inm vcc vee out
+* Single dominant pole: Aol = gm*R1, GBW = gm/(2*pi*C1); slew limit via tanh-limited gm current Imax = SR*C1.
+* Rail limits: out clamped to [vee+vol, vcc-vdrop]; Rout in series; Iq constant supply current; input bias flows OUT of pins when ib>0 (PNP input, LM358) and INTO pins when ib<0 (CMOS leakage sign ignored).
+.subckt opamp_gp inp inm vcc vee out params: aol=100k gbw=700k sr=0.3Meg vos=3m ib=20n ios=2n vol=5m vdrop=1.5 rout=50 iq=350u cin=2p rid=2Meg
+.param c1v=1n
+.param gmv={6.283185307*gbw*c1v}
+.param r1v={aol/gmv}
+.param imaxv={sr*c1v}
+* input offset (series with +) and bias currents
+Vos ip1 inp dc {vos}
+Ibp vcc ip1 dc {ib+ios/2}
+Ibm vcc inm dc {ib-ios/2}
+Rid ip1 inm {rid}
+Cip ip1 vee {cin}
+Cim inm vee {cin}
+* gm stage into dominant pole node n1 (absolute node: v(n1) is the unclamped open-loop output target)
+Bgm 0 n1 I={imaxv*( max(tanh(gmv*(v(ip1)-v(inm))/imaxv),0)*0.5*(1-tanh((v(n1)-(v(vcc)+0.5))/0.05)) + min(tanh(gmv*(v(ip1)-v(inm))/imaxv),0)*0.5*(1+tanh((v(n1)-(v(vee)-0.5))/0.05)) )}
+R1 n1 0 {r1v}
+C1 n1 0 {c1v}
+* wind-up limit: gm current is switched off smoothly once n1 passes rail+0.5 V (n1 then holds near the rail; recovery is fast)
+* output stage: clamp to rails, series Rout
+Bo oi vee V=max(min(v(n1), v(vcc)-vdrop), v(vee)+vol)-v(vee)
+Ro oi out {rout}
+* supply accounting: load current sourced by the output is drawn from vcc (Bo is referenced to vee, so sunk current returns to vee)
+Bsupp vcc vee I=max(i(Ro),0)
+* supply current
+Iq vcc vee dc {iq}
+.ends
+
+Vcc vcc 0 5
+Vin in 0 dc 0.2 ac 1
+X1 in fb vcc 0 out opamp_gp aol=100k gbw=700k sr=0.3Meg vos=0 ib=0 ios=0
+Rf out fb 9k
+Rg fb gm 1k
+Vb gm 0 dc 0
+Rl out 0 100k
+.ac dec 100 100 10Meg
+.control
+set noaskquit
+run
+meas ac g0 find vdb(out) at=100
+let g3 = g0-3.0103
+meas ac f3 when vdb(out)=g3 cross=1
+echo gain0_db_val = $&g0
+echo f3db_g10_hz = $&f3
+quit
+.endc
+.end

@@ -597,19 +597,6 @@
     },
     "netlist_sha256": "2d0fc6af40e59ab3082e81426e24a1dbf7ce3b73749895636a006c864d9d4469"
   },
-  "BEH-DIO-PN/B1": {
-    "measurements": {
-      "V at 10 mA": {
-        "occurrence": 1,
-        "occurrence_count": 3,
-        "rationale": "Explicit authored observation for V at 10 mA; no nearest-value matching or expected-value change. Ordered operating points are explicit in the immutable authored deck; require the exact count.",
-        "scalar": "v(d)",
-        "scale": 1.0,
-        "source_line": "print v(d)"
-      }
-    },
-    "netlist_sha256": "8dffd8f6985236af4d99116aa263af199cdcdb5fc7c245e50fe3f888153ca5ec"
-  },
   "BEH-DIO-PN/B4": {
     "measurements": {
       "CJ at 4 V": {
@@ -1113,17 +1100,6 @@
     },
     "netlist_sha256": "4178bc9c6ad34c5061fa8c0c6786c931cc2062100a1ed8145d377aa189feadf4"
   },
-  "BEH-IC-LDO-SOT235/B2": {
-    "measurements": {
-      "delta_mV": {
-        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
-        "scalar": "delta_mv",
-        "scale": 1,
-        "source_line": "let delta_mv = (v1-v2)*1000"
-      }
-    },
-    "netlist_sha256": "5dbcc385cb4d82fb684ac70736c6e968224b34e38c0121661c3869cfb432dcfc"
-  },
   "BEH-IC-LDO-SOT235/B3": {
     "measurements": {
       "Tj_C": {
@@ -1497,29 +1473,6 @@
     },
     "netlist_sha256": "02626cf3442e928f3188020fc82e55b9f0c0a1adff79ead079acb6742e6535ea"
   },
-  "BEH-MAG-CMC/B2": {
-    "measurements": {
-      "Z_100MHz": {
-        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
-        "scalar": "cmc2_z100",
-        "scale": 1,
-        "source_line": "meas ac cmc2_z100 find vm(c1) at=100meg"
-      },
-      "Z_10MHz": {
-        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
-        "scalar": "cmc2_z10",
-        "scale": 1,
-        "source_line": "meas ac cmc2_z10 find vm(c1) at=10meg"
-      },
-      "Z_2p5MHz": {
-        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
-        "scalar": "cmc2_z25",
-        "scale": 1,
-        "source_line": "meas ac cmc2_z25 find vm(c1) at=2.5meg"
-      }
-    },
-    "netlist_sha256": "032254a179a054f195c24ea8c1be1c25cf49b2ca0550da886977fc77bb4b4b8c"
-  },
   "BEH-MAG-CMC/B3": {
     "measurements": {
       "Lcm_at_1A": {
@@ -1592,23 +1545,6 @@
     },
     "netlist_sha256": "f645755c77eebc5ae49837e0695a7338a1122fc0ce2eb78a7cb8fba4cf409917"
   },
-  "BEH-MAG-INDUCTOR/B3": {
-    "measurements": {
-      "Q_100MHz": {
-        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
-        "scalar": "ind3_q",
-        "scale": 1,
-        "source_line": "let ind3_q = ind3_xim/ind3_xre"
-      },
-      "f_peak": {
-        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
-        "scalar": "ind3_fpk",
-        "scale": 1,
-        "source_line": "meas ac ind3_fpk max_at vm(p)"
-      }
-    },
-    "netlist_sha256": "cc57a8236ef8784dd5243c5ab803c702aad92fb077605818714c7fd76f3b0c65"
-  },
   "BEH-MAG-INDUCTOR/B4": {
     "measurements": {
       "dT_5p5A": {
@@ -1631,72 +1567,6 @@
     },
     "netlist_sha256": "ef63735e5d59ea745350d0bef133da31dd8b3c606e426c8acc096050dda108fb"
   },
-  "BEH-MAG-XFMR-CT/B2": {
-    "measurements": {
-      "fc": {
-        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
-        "scalar": "ct2_fc",
-        "scale": 1,
-        "source_line": "meas ac ct2_fc when vm(s1)=0.35355 rise=1"
-      }
-    },
-    "netlist_sha256": "c1e779f573b5e843802edccccffd5ba6e9a88cfd2f4d6266398535f1d186054c"
-  },
-  "BEH-MAG-XFMR-CT/B3": {
-    "measurements": {
-      "V_open_pk": {
-        "rationale": "Explicit authored observation for V_open_pk; no nearest-value matching or expected-value change.",
-        "scalar": "vopen",
-        "scale": 1.0,
-        "source_line": "meas tran vopen max v(s1) from=60u to=120u"
-      }
-    },
-    "netlist_sha256": "7d8bef592e896dbff62ca893f7305e293be257d26b75a17e4d6429973abe7064"
-  },
-  "BEH-MAG-XFMR-FLYBACK/B1": {
-    "measurements": {
-      "Vout": {
-        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
-        "scalar": "fb1_vout",
-        "scale": 1,
-        "source_line": "meas tran fb1_vout avg v(out) from=2m to=2.5m"
-      }
-    },
-    "netlist_sha256": "87c9d1e19c361b8abe8c5da9779cf870a83a6093add52b09d48fb87b0b57aa6d"
-  },
-  "BEH-MAG-XFMR-FLYBACK/B2": {
-    "measurements": {
-      "Vdrain_pk": {
-        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
-        "scalar": "fb2_vdpk",
-        "scale": 1,
-        "source_line": "meas tran fb2_vdpk max v(d) from=1.0m to=1.2m"
-      }
-    },
-    "netlist_sha256": "436d9f47fc461987d983021ff9820e256af73581a7eab350cda23dee66a76d0c"
-  },
-  "BEH-MAG-XFMR-FLYBACK/B3": {
-    "measurements": {
-      "P_clamp": {
-        "rationale": "Explicit authored observation for P_clamp; no nearest-value matching or expected-value change.",
-        "scalar": "psn",
-        "scale": 1.0,
-        "source_line": "meas tran psn avg pclamp from=2.2m to=2.5m"
-      }
-    },
-    "netlist_sha256": "7e566889e253c6d73c674fa2043ec22b06ca35e61b25600a3e3392cfc7449997"
-  },
-  "BEH-MAG-XFMR-FLYBACK/B3b": {
-    "measurements": {
-      "P_clamp": {
-        "rationale": "Explicit authored observation for P_clamp; no nearest-value matching or expected-value change.",
-        "scalar": "psn",
-        "scale": 1.0,
-        "source_line": "meas tran psn avg pclamp from=2.2m to=2.5m"
-      }
-    },
-    "netlist_sha256": "f42760432b7b35e65e35fec22c7beb754d4d4f60f5800fce2f8bb5034cf573c4"
-  },
   "BEH-MAG-XFMR-SIGNAL/B1": {
     "measurements": {
       "gain_1kHz": {
@@ -1707,17 +1577,6 @@
       }
     },
     "netlist_sha256": "703e04c63ae3ac6fc2172c1fd40ccc6105f6ad19cc1f096ad77ecff2be0f4946"
-  },
-  "BEH-MAG-XFMR-SIGNAL/B2": {
-    "measurements": {
-      "fL": {
-        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
-        "scalar": "xf2_fl",
-        "scale": 1,
-        "source_line": "meas ac xf2_fl when vm(s1)=0.33009 rise=1"
-      }
-    },
-    "netlist_sha256": "3ccc7a8b8694643be4479d53a7c1a4b60976352cb3c2a35863e63fe010667f11"
   },
   "BEH-MAG-XFMR-SIGNAL/B3": {
     "measurements": {

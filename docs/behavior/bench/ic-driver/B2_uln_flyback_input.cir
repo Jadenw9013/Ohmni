@@ -1,4 +1,5 @@
 * BEH-IC-DRIVER-DIP16 B2: (a) input current at VI=3.85 V (ULN2003A, 2.7k input) and VI=5 V; (b) inductive flyback: 10 mH + 50 ohm coil from 12 V = COM, on 3 ms then off.
+* v2: scalars printed as 'name = value' (ii_3p85v_ma, ii_5v_ma, flyback_peak_v); behavior unchanged
 * (a) Analytic estimate: II = (VI - 2 Vbe)/2.7k with 2*Vbe ~1.4 V -> 0.9 mA @3.85 V, 1.33 mA @5 V (circuit consistency; datasheet ULN2003A conditions are not in the opened extract, whose II rows look like ULN2004A (10.5k): 0.34 mA @5 V = (5-1.4)/10.5k)
 * (b) Flyback peak on OUT = V(COM) + VF(IF ~ 0.22 A). Datasheet clamp VF 1.7..2.0 V at 350 mA. Expect OUT peak between 13.5 and 14.2 V.
 .include drivers.lib
@@ -23,7 +24,9 @@ meas tran i5 find i(Vi5) at=0.1m
 meas tran vpk max v(of) from=4m to=6m
 let ii385 = abs(i385)*1000
 let ii5 = abs(i5)*1000
-echo RESULT II_3p85V_mA=$&ii385 II_5V_mA=$&ii5 flyback_peak=$&vpk
+echo ii_3p85v_ma = $&ii385
+echo ii_5v_ma = $&ii5
+echo flyback_peak_v = $&vpk
 quit
 .endc
 .end

@@ -1,0 +1,26 @@
+B1 Aluminium polymer capacitor series resonance: f0 = 1/(2 pi sqrt(L C)), |Z|min = ESR
+* C=100u ESL=5n ESR=20m -> f0 = 225.08 kHz
+* OHMNI BEH-CAP-ALPOLY subcircuit (polarised aluminium polymer / hybrid), behavioural_approximation
+* ports: p(+) n(-) flag. flag bitmask: 1 = V > VR*DER, 2 = reverse > VREVMAX, 4 = |i| > IPK (rush current)
+.subckt ohm_alpoly p n flag params: C0=100u ESR=20m ESL=5n RLK=1meg VR=16 DER=0.8 VREVMAX=0.1 IPK=10
+Lesl p a {ESL}
+Resr a c {ESR}
+Vsns c b 0
+Cb b n {C0}
+Rlk b n {RLK}
+Bflag flag 0 V = '(v(b,n) > {VR*DER} ? 1 : 0) + (v(b,n) < -{VREVMAX} ? 2 : 0) + (abs(i(Vsns)) > {IPK} ? 4 : 0)'
+.ends
+
+Iac 0 p dc 0 ac 1
+Rb p 0 1e9
+Xc p 0 f ohm_alpoly C0=100u ESR=20m ESL=5n RLK=1e12
+Rf f 0 1meg
+.ac dec 400 100 10meg
+.control
+run
+let zm = vm(p)
+meas ac zmin min zm
+meas ac fres when zm=0.02000001 fall=1
+quit
+.endc
+.end

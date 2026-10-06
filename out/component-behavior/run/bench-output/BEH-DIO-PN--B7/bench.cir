@@ -1,0 +1,14 @@
+* BEH-DIO-PN B7: forward-voltage temperature dependence (EG=1.11 XTI=3 ngspice defaults) at 10 mA
+* Expected from IS(T)=IS*(T/T0)^(XTI/N)*exp(EG*q*(T-T0)/(N*k*T*T0)), V = N*Vt(T)*ln(I/IS(T)+1)+I*RS
+.model D1N4148_FIT D (IS=5.537e-9 N=1.944 RS=0.6 CJO=2p VJ=0.7 M=0.4 TT=23n BV=100 IBV=100u EG=1.11 XTI=3)
+I1 0 d 10m
+D1 d 0 D1N4148_FIT
+.control
+set temp=27
+dc I1 10m 10m 1m
+print v(d)
+set temp=100
+dc I1 10m 10m 1m
+print v(d)
+.endc
+.end

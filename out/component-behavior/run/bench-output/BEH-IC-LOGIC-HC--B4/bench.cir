@@ -1,0 +1,91 @@
+* BEH-IC-LOGIC-HC B4: Schmitt-trigger thresholds (74HC14 class), Vcc = 4.5 V, slow triangular input.
+* v2: scalars printed as 'name = value'; behavior unchanged
+* SCLS085L typ: VT+ = 2.5 V, VT- = 1.6 V (as extracted; min/max 1.55/3.13 and 0.9/2.45).  Calibration check.
+* BEH-IC-LOGIC-HC L2 gate cells (behavioural_approximation). ngspice 42 stock (B sources, T line, D) - no XSPICE needed.
+* Calibrated to TI SCLS181H (SN74HC00) / SCLS085L (SN74HC14) typical values at Vcc = 4.5 V, CL = 50 pF (see class text).
+* Common pieces:
+*  - input: Ci to gnd, ESD clamp diodes to vcc and gnd, decision at vtfrac*Vcc with 50 mV tanh smoothing
+*  - core logic -> pure transport delay (lossless T line, matched) -> single-pole edge shaper -> Thevenin-style output (roh high, rol low)
+*  - output: ONE Thevenin source (Vtarget = s*Vcc behind R = roh*s+rol*(1-s)); supply current taken = positive part of the sourced current (no crowbar), so Cpd is not double counted
+*  - supply current: icc0 static + 0.5*Cpd*Vcc*|d(logic)/dt| (average = Cpd*Vcc*f)
+.model dclamp d(is=1e-14 n=1 rs=5 cjo=0)
+* ---------- 2-input NAND (74HC00 channel) ----------
+.subckt hc_nand2 a b y vcc gnd params: vtfrac=0.5 roh=50 rol=65 td=10.4n taue=6.4n ci=5p cpd=20p icc0=2u
+Cia a gnd {ci}
+Cib b gnd {ci}
+Dah a vcc dclamp
+Dal gnd a dclamp
+Dbh b vcc dclamp
+Dbl gnd b dclamp
+Bl lg gnd V=1-(0.5*(1+tanh((v(a)-(v(gnd)+vtfrac*(v(vcc)-v(gnd))))/0.05)))*(0.5*(1+tanh((v(b)-(v(gnd)+vtfrac*(v(vcc)-v(gnd))))/0.05)))
+Rsd lg d2 50
+T1 d2 gnd d3 gnd Z0=50 TD={td}
+Rtd d3 gnd 50
+Bsh sh gnd V=2*v(d3)
+Rsh sh sh2 {taue/1p}
+Csh sh2 gnd 1p
+Bth y gnd I=(v(y)-(v(gnd)+min(max(v(sh2),0),1)*(v(vcc)-v(gnd))))/(roh*min(max(v(sh2),0),1)+rol*(1-min(max(v(sh2),0),1)))
+Bsup vcc gnd I=max(((v(gnd)+min(max(v(sh2),0),1)*(v(vcc)-v(gnd)))-v(y))/(roh*min(max(v(sh2),0),1)+rol*(1-min(max(v(sh2),0),1))),0)
+Dyh y vcc dclamp
+Dyl gnd y dclamp
+Bicc vcc gnd I={icc0}+0.5*cpd*(v(vcc)-v(gnd))*abs(ddt(v(sh2)))
+.ends
+* ---------- inverter (74HC04 channel) ----------
+.subckt hc_inv a y vcc gnd params: vtfrac=0.5 roh=50 rol=65 td=10.4n taue=6.4n ci=5p cpd=20p icc0=2u
+Cia a gnd {ci}
+Dah a vcc dclamp
+Dal gnd a dclamp
+Bl lg gnd V=1-(0.5*(1+tanh((v(a)-(v(gnd)+vtfrac*(v(vcc)-v(gnd))))/0.05)))
+Rsd lg d2 50
+T1 d2 gnd d3 gnd Z0=50 TD={td}
+Rtd d3 gnd 50
+Bsh sh gnd V=2*v(d3)
+Rsh sh sh2 {taue/1p}
+Csh sh2 gnd 1p
+Bth y gnd I=(v(y)-(v(gnd)+min(max(v(sh2),0),1)*(v(vcc)-v(gnd))))/(roh*min(max(v(sh2),0),1)+rol*(1-min(max(v(sh2),0),1)))
+Bsup vcc gnd I=max(((v(gnd)+min(max(v(sh2),0),1)*(v(vcc)-v(gnd)))-v(y))/(roh*min(max(v(sh2),0),1)+rol*(1-min(max(v(sh2),0),1))),0)
+Dyh y vcc dclamp
+Dyl gnd y dclamp
+Bicc vcc gnd I={icc0}+0.5*cpd*(v(vcc)-v(gnd))*abs(ddt(v(sh2)))
+.ends
+* ---------- Schmitt inverter (74HC14 channel): hysteresis latch, VT+ / VT- as fractions of Vcc (defaults = SCLS085L typ at 4.5 V: 2.5 V / 1.6 V) ----------
+.subckt hc_inv_st a y vcc gnd params: vtp=0.5556 vtm=0.3556 roh=50 rol=65 td=10.4n taue=6.4n ci=5p cpd=20p icc0=2u klatch=1e9
+Cia a gnd {ci}
+Dah a vcc dclamp
+Dal gnd a dclamp
+* state q = 1 means output high; set when input below VT-, reset when input above VT+
+Bs sset gnd V=0.5*(1+tanh(((v(gnd)+vtm*(v(vcc)-v(gnd)))-v(a))/0.002))
+Br srst gnd V=0.5*(1+tanh((v(a)-(v(gnd)+vtp*(v(vcc)-v(gnd))))/0.002))
+Cq q gnd 1 ic=0
+Bq gnd q I={klatch}*(v(sset)*(1-v(srst))*(1-v(q)) - v(srst)*v(q))
+Rq q gnd 1e12
+Rsd q d2 50
+T1 d2 gnd d3 gnd Z0=50 TD={td}
+Rtd d3 gnd 50
+Bsh sh gnd V=2*v(d3)
+Rsh sh sh2 {taue/1p}
+Csh sh2 gnd 1p
+Bth y gnd I=(v(y)-(v(gnd)+min(max(v(sh2),0),1)*(v(vcc)-v(gnd))))/(roh*min(max(v(sh2),0),1)+rol*(1-min(max(v(sh2),0),1)))
+Bsup vcc gnd I=max(((v(gnd)+min(max(v(sh2),0),1)*(v(vcc)-v(gnd)))-v(y))/(roh*min(max(v(sh2),0),1)+rol*(1-min(max(v(sh2),0),1))),0)
+Dyh y vcc dclamp
+Dyl gnd y dclamp
+Bicc vcc gnd I={icc0}+0.5*cpd*(v(vcc)-v(gnd))*abs(ddt(v(sh2)))
+.ends
+
+Vcc vcc 0 4.5
+Vin in 0 pwl(0 0 10u 4.5 20u 0)
+X1 in y vcc 0 hc_inv_st
+Cl y 0 10p
+.tran 10n 20u
+.control
+set noaskquit
+run
+meas tran tfall when v(y)=2.25 fall=1
+meas tran trise when v(y)=2.25 rise=1
+let vtp = 4.5*tfall/10u
+let vtm = 4.5*(20u-trise)/10u
+echo vt_plus_v = $&vtp
+echo vt_minus_v = $&vtm
+quit
+.endc
+.end

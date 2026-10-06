@@ -1,0 +1,17 @@
+* B3 thermal: self-consistent contact heating with R(T). dT = I^2 R0 Rth/(1 - I^2 R0 alpha Rth)
+* v2: scalar dt_rise added
+* JST PH: I=2 A, R0=10 mohm, Rth=750 K/W (derived from assumed 30 K rise at rating), alpha=0.0039 /K
+.param R0=10m Rth=750 alpha=0.0039 I0=2
+Vd a 0 0
+* closed form computed in a B source (volts = degC rise)
+Bdt dt 0 V = ({I0}**2*{R0}*{Rth})/(1-{I0}**2*{R0}*{alpha}*{Rth})
+Rd dt 0 1G
+.control
+op
+let dt_rise = v(dt)
+print dt_rise
+let expect = 4*0.01*750/(1-4*0.01*0.0039*750)
+print expect
+quit
+.endc
+.end

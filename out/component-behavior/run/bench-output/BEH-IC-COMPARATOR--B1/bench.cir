@@ -1,0 +1,40 @@
+* BEH-IC-COMPARATOR B1: DC threshold and offset. Vcc=5 V, Vref=2.5 V on IN-, slow ramp (0.2 V in 20 ms => 10 uV/us, delay error < 15 uV) on IN+, 10k pull-up.
+* v2: scalar printed as 'vtrip_v = value'; behavior unchanged
+* Output low when IN+ < IN- - Vos  => trip (output rising through 2.5 V) at IN+ = 2.5 - 0.002 = 2.498 V (Vos=+2 mV defined as V(ip1)=V(inp)+Vos)
+* BEH-IC-COMPARATOR open-collector comparator macromodel (behavioural_approximation), LM393 numbers (TI SLCS005AH extract).
+* pins: inp inm vcc gnd out   (one of two channels; package binding picks the channel pins)
+* IN+ > IN- (+ offset): output transistor off (high-Z, leakage ioh); IN+ < IN-: output sinks, Ron-limited with Isat.
+* Response: dominant-pole node n1 (clamped to +-Vs) chases A*vd -> trips when it crosses 0: t = td + tau*ln(1+Vs/(A*vod)); calibrated to 1.3 us @5 mV overdrive and 0.3 us @ TTL step.
+.subckt comp_oc inp inm vcc gnd out params: vos=2m ib=25n ios=3n ron=33 isat=16m a=200 vs=1 tau=1.44u td=0.3u icc=450u ioh=1n
+Vos ip1 inp dc {vos}
+Ibp vcc ip1 dc {ib+ios/2}
+Ibm vcc inm dc {ib-ios/2}
+Bt tgt gnd V=max(min({a}*(v(ip1)-v(inm)),100),-100)
+* n1 integrates toward tgt with time constant tau but is held inside +-Vs (gate switches the charging current off smoothly at the limits)
+Bn gnd n1 I=max(v(tgt)-v(n1),0)*0.5*(1-tanh((v(n1)-{vs})/0.01))+min(v(tgt)-v(n1),0)*0.5*(1+tanh((v(n1)+{vs})/0.01))
+C1 n1 gnd {tau} ic=0
+Rl1 n1 gnd 1e12
+Rsd n1 d2 50
+T1 d2 gnd d3 gnd Z0=50 TD={td}
+Rtd d3 gnd 50
+Bsh sh gnd V=2*v(d3)
+* output sinks when sh < 0
+Bout out gnd I=0.5*(1-tanh(v(sh)/0.02))*{isat}*tanh((v(out)-v(gnd))/({ron}*{isat}))+{ioh}
+Icc vcc gnd dc {icc}
+.ends
+
+Vcc vcc 0 5
+Vref ref 0 2.5
+Vin in 0 pwl(0 2.4 20m 2.6)
+X1 in ref vcc 0 out comp_oc
+Rpu vcc out 10k
+.tran 5u 20m
+.control
+set noaskquit
+run
+meas tran ttrip when v(out)=2.5 rise=1
+let vtrip = 2.4+0.2*ttrip/20m
+echo vtrip_v = $&vtrip
+quit
+.endc
+.end

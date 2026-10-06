@@ -1,0 +1,15 @@
+* B2 headphone path: Rc 30 mohm (tip) and 30 mohm (sleeve), headphone 32 ohm, ideal source
+* v2: scalar gain = |v(t)-v(s)| at 1 kHz (the loaded headphone voltage) via let + meas; previously printed vectors/other node
+* Expected: v(t) = (32+0.03)/(32.06) = 0.999064 ; v(t)-v(s) = 32/32.06 = 0.998129
+Vin in 0 DC 0 AC 1
+Rct in t 30m
+Rhp t s 32
+Rcs s 0 30m
+.ac lin 3 500 1.5k
+.control
+run
+let gd = vm(t)-vm(s)
+meas ac gain find gd at=1k
+quit
+.endc
+.end

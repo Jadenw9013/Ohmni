@@ -1,4 +1,5 @@
 * BEH-REG-BUCK-DCS B1: steady-state CCM, TPS62160-style 12 V -> 3.3 V, 1 A, L = 2.2 uH, Cout = 22 uF
+* v2: scalars re-exported via let (fsw_mhz, dil_a, vavg_v); .meas lines print with from=/to= fields that the audit cannot parse; circuit unchanged
 * Analytic (lossless COT): tON = K*Vo/Vin = 420n*3.3/12 = 115.5 ns ; fsw = 1/K = 2.381 MHz ; dIL(pp) = (Vin-Vo)*tON/L = 0.457 A
 * Tolerance: fsw 10 %, dIL 15 %, mean Vout within VSET .. VSET + dIL/(8 fsw C)+ESR term (here 3.300..3.320 V)
 .include buck_core.inc
@@ -20,7 +21,10 @@ meas tran ilmin min il from=45u to=60u
 meas tran vavg avg v(vout) from=45u to=60u
 let fsw = 50/tper
 let dil = ilmax-ilmin
-print fsw dil vavg
+let fsw_mhz = fsw/1e6
+let dil_a = dil
+let vavg_v = vavg
+print fsw_mhz dil_a vavg_v
 quit
 .endc
 .end

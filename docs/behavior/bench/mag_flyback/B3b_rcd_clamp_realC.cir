@@ -1,4 +1,5 @@
 B3b RCD clamp with realistic parasitics (Cds=10p, Dsn CJO=50p, CIW=10p): informational, shows the textbook relation overpredicts clamp power (Llk=2 uH = 2% of Lp, Coss+Cp lumped 220 pF = 200 pF Cds + 20 pF)
+* v2: meas renamed fb3b_*; added textbook prediction fb3b_ptext (from measured Vc, Ipk, Vout), flag fb3b_overpredicts (1 when simulated clamp power < textbook) and scalar prints (circuit unchanged)
 * Expected: P = 1/2*Llk*Ipk^2*f * Vc/(Vc-Vor) with Vc, Ipk, Vor=(Vout+0.45)/N all measured here (value computed in report); tolerance 15%
 .include xfmr.lib
 .model SW SW(Ron=5m Roff=1G Vt=2.5 Vh=0.1)
@@ -19,11 +20,17 @@ RL out 0 100
 run
 let vcl = v(c)-v(in)
 let pclamp = vcl*vcl/20k
-meas tran vdpk max v(d) from=2.2m to=2.5m
-meas tran vout avg v(out) from=2.2m to=2.5m
-meas tran ipk min i(Vin) from=2.2005m to=2.2021m
-meas tran vc avg vcl from=2.2m to=2.5m
-meas tran psn avg pclamp from=2.2m to=2.5m
+meas tran fb3b_vdpk max v(d) from=2.2m to=2.5m
+meas tran fb3b_vout avg v(out) from=2.2m to=2.5m
+meas tran fb3b_ipk min i(Vin) from=2.2005m to=2.2021m
+meas tran fb3b_vc avg vcl from=2.2m to=2.5m
+meas tran fb3b_psn avg pclamp from=2.2m to=2.5m
+* textbook P = 1/2 Llk Ipk^2 f Vc/(Vc-Vor), Vor=(Vout+0.45)/N, from the measured Vc, Ipk, Vout of this same run
+let fb3b_vor = (fb3b_vout+0.45)/0.5
+let fb3b_ipk_a = abs(fb3b_ipk)
+let fb3b_ptext = 0.5*2u*fb3b_ipk_a*fb3b_ipk_a*100k*fb3b_vc/(fb3b_vc-fb3b_vor)
+let fb3b_overpredicts = (fb3b_psn lt fb3b_ptext)
+print fb3b_psn fb3b_ptext fb3b_overpredicts
 quit
 .endc
 .end

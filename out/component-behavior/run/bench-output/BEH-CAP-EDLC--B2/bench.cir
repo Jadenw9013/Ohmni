@@ -1,0 +1,29 @@
+B2 Two supercapacitors in series, unbalanced leakage, with and without 10 kohm balancing resistors
+* v2: scalars edlc2_v1 / v2 / f1 / f2 printed (vector print replaced)
+* 5 V across the stack; steady state v1 = 5*R1/(R1+R2).  R1=100k, R2=200k -> v1=1.667, v2=3.333 V (v2 > 2.5 V rating, flag 1)
+* flag f2 = 1 (V>VR) + 8 (V>2.8 V surge) = 9
+* OHMNI BEH-CAP-EDLC subcircuit (supercapacitor, single series-RC + leakage), behavioural_approximation
+* ports: p(+) n(-) flag. flag bitmask: 1 = V > VR, 2 = reverse (< -10 mV), 8 = V > VSURGE
+.subckt ohm_edlc p n flag params: C0=10 ESR=0.02 RLK=125k VR=2.5 VSURGE=2.8
+Resr p b {ESR}
+Cb b n {C0}
+Rlk b n {RLK}
+Bflag flag 0 V = '(v(b,n) > {VR} ? 1 : 0) + (v(b,n) < -0.01 ? 2 : 0) + (v(b,n) > {VSURGE} ? 8 : 0)'
+.ends
+
+Vs in 0 5
+Xc1 in mid f1 ohm_edlc C0=10 ESR=0.02 RLK=100k VR=2.5
+Xc2 mid 0 f2 ohm_edlc C0=10 ESR=0.02 RLK=200k VR=2.5
+Rf1 f1 0 1meg
+Rf2 f2 0 1meg
+.op
+.control
+op
+let edlc2_v1 = v(in)-v(mid)
+let edlc2_v2 = v(mid)
+let edlc2_f1 = v(f1)
+let edlc2_f2 = v(f2)
+print edlc2_v1 edlc2_v2 edlc2_f1 edlc2_f2
+quit
+.endc
+.end

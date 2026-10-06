@@ -1,0 +1,40 @@
+* BEH-IC-DIGITAL-IO B1: ATmega328P-class output at Vcc=5 V (ATmega328P datasheet 8161D mirror extract: VOL <= 0.4 V @ IOL=20 mA ; VOH >= 4.2 V @ IOH=-20 mA).
+* v2: scalars printed as 'name = value'; behavior unchanged
+* Fit: rol = 0.4/0.02 = 20 ohm ; roh = (5-4.2)/0.02 = 40 ohm.  Loaded test: pad low sinking 20 mA -> 0.400 V ; pad high sourcing 20 mA -> 4.200 V.
+* NOTE: these are datasheet LIMITS (worst case), typical outputs are stronger; the model is deliberately conservative.
+* BEH-IC-DIGITAL-IO: electrical interface of a digital pin of an MCU / serial EEPROM (L2 pad model; the firmware/protocol behaviour is L3 and NOT simulated).
+* pad din dout oe vcc gnd : pad = package pin; dout/oe = normalised (0..1, as node voltages) data and output-enable from a higher layer; din = normalised receive level (0..1) + 'und' flag node
+* Input: Cpin, leakage, ESD clamps to rails; decision regions VIL = vilf*Vcc, VIH = vihf*Vcc, 'und' = 1 between them (undefined input level -> simulator should flag).
+* Output: push-pull Thevenin roh/rol, hi-Z with leakage when oe=0; optional pull-up (rpu) when pu=1 and oe=0.
+.model dpad d(is=1e-14 n=1 rs=5)
+.subckt dio_pin pad din und dout oe pu vcc gnd params: vilf=0.3 vihf=0.6 roh=40 rol=20 cpin=4p ileak=1u rpu=35k
+Cp pad gnd {cpin}
+Dh pad vcc dpad
+Dl gnd pad dpad
+Bleak pad gnd I=(1-v(oe))*{ileak}*tanh((v(pad)-v(gnd))/0.1)*0.0
+Bin din gnd V=0.5*(1+tanh((v(pad)-(v(gnd)+0.5*({vilf}+{vihf})*(v(vcc)-v(gnd))))/(0.02*(v(vcc)-v(gnd)))))
+Bun und gnd V=0.25*(1+tanh((v(pad)-(v(gnd)+{vilf}*(v(vcc)-v(gnd))))/0.05))*(1-tanh((v(pad)-(v(gnd)+{vihf}*(v(vcc)-v(gnd))))/0.05))
+Bth pad gnd I=v(oe)*(v(pad)-(v(gnd)+v(dout)*(v(vcc)-v(gnd))))/({roh}*v(dout)+{rol}*(1-v(dout)))
+Bsup vcc gnd I=v(oe)*max(((v(gnd)+v(dout)*(v(vcc)-v(gnd)))-v(pad))/({roh}*v(dout)+{rol}*(1-v(dout))),0)
+Bpu vcc pad I=(1-v(oe))*v(pu)*(v(vcc)-v(pad))/{rpu}
+.ends
+
+Vcc vcc 0 5
+Vdh dh 0 1
+Vdl dl 0 0
+Voe oe 0 1
+Vpu pu 0 0
+X1 padh dinh unh dh oe pu vcc 0 dio_pin
+Ioh padh 0 dc 20m
+X2 padl dinl unl dl oe pu vcc 0 dio_pin
+Iol vcc padl dc 20m
+.control
+set noaskquit
+op
+let voh = v(padh)
+let vol = v(padl)
+echo voh_20ma_v = $&voh
+echo vol_20ma_v = $&vol
+quit
+.endc
+.end

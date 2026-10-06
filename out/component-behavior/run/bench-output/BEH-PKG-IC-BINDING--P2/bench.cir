@@ -1,0 +1,25 @@
+* BEH-PKG-IC-BINDING P2: exposed-pad thermal vias as a parallel path. CALIBRATION of one TI datasheet point, not independent validation.
+* v2: print named scalars theta_0vias, theta_4vias, theta_9vias; circuit unchanged
+* TI SCBA017D Fig. 16 (modeled, 20-pin QFN, JESD51-5 card): theta_JA = 46.8 K/W with 0 vias, 30.8 K/W with 4 vias.
+* Derived via-array path (4 vias) Rvia4 = 1/(1/30.8 - 1/46.8) = 90.1 K/W -> 360 K/W per single via if the vias act in parallel.   Prediction for 9 vias: 1/(1/46.8 + 1/(90.1*4/9)) = 21.6 K/W (EXTRAPOLATION, unverified; real arrays saturate because spreading resistance in the pad copper is not parallel).
+.param Rbase=46.8
+.param Rvia4=90.1
+Vta ta 0 25
+I0 0 tj0 dc 1
+R0 tj0 ta {Rbase}
+I4 0 tj4 dc 1
+R4a tj4 ta {Rbase}
+R4b tj4 ta {Rvia4}
+I9 0 tj9 dc 1
+R9a tj9 ta {Rbase}
+R9b tj9 ta {Rvia4/9*4}
+.control
+set noaskquit
+op
+let theta_0vias = v(tj0)-25
+let theta_4vias = v(tj4)-25
+let theta_9vias = v(tj9)-25
+print theta_0vias theta_4vias theta_9vias
+quit
+.endc
+.end

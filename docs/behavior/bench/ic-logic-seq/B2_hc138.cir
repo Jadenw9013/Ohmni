@@ -1,4 +1,5 @@
 * BEH-IC-LOGIC-SEQ B2: 74HC138 decoder, Vcc=4.5 V. Address 0..7 with G1=1,G2A=G2B=0 -> exactly one low output (Y[addr]=0, others 4.5 V).
+* v2: added decoder_err accumulator (sum over addresses of |low_index-addr| + |nlow-1|) printed as 'name = value'; enable checks printed as scalars; decoding behavior unchanged
 * Enable checks: G1=0 -> all high (y0 sampled 4.5 V at addr 7... all high); at 1990 ns G1=1,G2A=0,addr 7 -> y7 low; at 2190 ns G2A=1 -> y7 high.  Samples taken after 100 ns settling per step (step = 200 ns).
 .include hc_seq.lib
 Vcc vcc 0 4.5
@@ -23,6 +24,7 @@ set noaskquit
 run
 * step k (address k) sampled at t = 100n + 200n*k ... but Va toggles at 200n multiples: sample at 190n + 200n*k
 let k = 0
+let derr = 0
 while k < 8
   let t = 190n + 200n*k
   meas tran m0 find v(y0) at=$&t
@@ -36,13 +38,18 @@ while k < 8
   let s = m0+m1+m2+m3+m4+m5+m6+m7
   let idx = ((4.5-m1)+2*(4.5-m2)+3*(4.5-m3)+4*(4.5-m4)+5*(4.5-m5)+6*(4.5-m6)+7*(4.5-m7))/4.5
   let nlow = 8-s/4.5
+  let derr = derr + abs(idx-k) + abs(nlow-1)
   echo addr $&k low_index=$&idx nlow=$&nlow
   let k = k + 1
 end
 meas tran e1 find v(y0) at=1790n
 meas tran e2 find v(y7) at=1990n
 meas tran e3 find v(y7) at=2190n
-echo RESULT G1low_y0=$&e1 addr7_enabled_y7=$&e2 G2Ahigh_y7=$&e3
+* decoder_err = sum over addresses 0..7 of |low_index-address| + |number_of_low_outputs-1| ; expected exactly 0 (to rail-leakage 1e-9)
+echo decoder_err = $&derr
+echo g1low_y0_v = $&e1
+echo addr7_enabled_y7_v = $&e2
+echo g2ahigh_y7_v = $&e3
 quit
 .endc
 .end

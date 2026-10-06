@@ -1,4 +1,5 @@
 * BEH-IC-TIMER555 B1: astable. R1=1k R2=10k C=10 nF, Vcc=5 V.
+* v2: scalars printed as 'name = value'; added f_vs_ti_formula_pct (percent deviation from the TI formula); behavior unchanged
 * Analytic (TI SLFS022K): f = 1.44/((R1+2R2)C) = 6857 Hz ; tH = 0.693(R1+R2)C = 76.2 us ; tL = 0.693 R2 C = 69.3 us ; duty = (R1+R2)/(R1+2R2) = 52.38 %
 * Exact ideal-comparator values: ln2 = 0.6931 (vs 0.693) -> f_exact = 1/(ln2*21k*10n) = 6870 Hz
 * BUT R1 is only 1k, so the discharge pin (pulled to Vcc through R1, pulled down by Ron=30 ohm) sits at Vd = Vcc*Ron/(R1+Ron) = 0.1456 V while discharging:
@@ -22,7 +23,13 @@ let per = t2-t1
 let f = 1/per
 let duty = (tf-t1)/per
 let per_us = per*1e6
-echo RESULT f_hz=$&f period_us=$&per_us duty=$&duty
+echo f_b1_hz = $&f
+echo period_b1_us = $&per_us
+echo duty_b1 = $&duty
+* deviation of the simulated frequency from the TI formula 1.44/((R1+2R2)C) = 6857.14 Hz, in percent (Ron-aware analytic: -2.9 %)
+let f_ti = 1.44/((1k+2*10k)*10n)
+let f_vs_ti_pct = (f/f_ti-1)*100
+echo f_vs_ti_formula_pct = $&f_vs_ti_pct
 quit
 .endc
 .end

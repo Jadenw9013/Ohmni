@@ -1,0 +1,31 @@
+* BEH-PWR-LOADSWITCH L2: UVLO turn-on. TPS22810 datasheet text: UVLO rising threshold 2.54 V. VIN ramps 0 -> 5 V in 5 ms; load 100 ohm.
+* v2: removed print of meas results (duplicate names dropped); turn_on_v = VIN at the instant VOUT first reaches 1 V; vout_off_v = VOUT at 2.4 ms; circuit unchanged
+* Analytic: output stays off (< 1 % of VIN) until VIN = 2.54 V (t = 2.54 ms), output reaches VIN - I*RON shortly after (TON = 10 us lag).
+* BEH-PWR-LOADSWITCH behavioural load switch / power switch (behavioural_approximation, not a vendor model)
+* ports: vin vout gnd en(logic, >1.0 V on) ; params: RON (ohm), ILIM (A, constant-current clamp), VUV (V, UVLO rising threshold), TON (s, enable-to-full-on time constant), RQOD (ohm quick output discharge, 0 = none)
+* Pass element: smooth clamp I = (Vd/RON)/(1+(Vd/(RON*ILIM))^4)^0.25 : linear RON below ~0.7*ILIM, constant ~ILIM above. Reverse current is NOT blocked (real parts with reverse-current protection need an extra diode).
+* gating g in [0,1]: g = enable AND (vin > VUV), first-order lag TON.
+.subckt LOADSW vin vout gnd en params: RON=0.079 ILIM=10 VUV=2.54 TON=10u RQOD=0
+Bgt gt gnd V = 0.5*(1+tanh((v(en)-v(gnd)-1)/0.05))*0.5*(1+tanh((v(vin)-v(gnd)-VUV)/0.005))
+Rg gt gs 1k
+Cg gs gnd {TON/1k}
+Bpass vin vout I = v(gs)*((v(vin)-v(vout))/RON)/pow(1+pow(abs(v(vin)-v(vout))/(RON*ILIM),4),0.25) + (1-v(gs))*(v(vin)-v(vout))*1n
+.ends
+
+Vin vin 0 PWL(0 0 5m 5)
+Ven en 0 3.3
+Xs vin vout 0 en LOADSW RON=0.079 ILIM=10 VUV=2.54 TON=10u
+Rl vout 0 100
+.tran 5u 5m
+.control
+set noaskquit
+run
+meas tran t_on when v(vout)=1.0 rise=1
+meas tran vout_at_2p4 find v(vout) at=2.4m
+meas tran vin_at_t_on find v(vin) when v(vout)=1.0 rise=1
+let turn_on_v = vin_at_t_on
+let vout_off_v = vout_at_2p4
+print turn_on_v vout_off_v
+quit
+.endc
+.end

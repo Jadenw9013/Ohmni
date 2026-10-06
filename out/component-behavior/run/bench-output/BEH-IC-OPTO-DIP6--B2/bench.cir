@@ -1,0 +1,48 @@
+* BEH-IC-OPTO-DIP6 B2: CTR proportionality, no saturation. LED driven by ideal current sources IF = 1, 2, 5 mA; collector load 100 ohm to 5 V.
+* v2: scalars printed as 'name = value'; behavior unchanged
+* Analytic: Ic = ctr*IF + ioff. With ctr = 1.0: 1.000005, 2.000005, 5.000005 mA ; with ctr = 0.4 (Rev 1.8 minimum): 0.4, 0.8, 2.0 mA (Vce stays above 4.5 V, tanh(Vce/0.15) = 1).
+* Ic is read as (5 - Vc)/100.
+* BEH-IC-OPTO-DIP6 phototransistor optocoupler (4N35 class), behavioural_approximation. ngspice 42 stock.
+* pins: an cat c e  (anode, cathode, collector, emitter); base (pin 6) not modelled (left open in the typical application; see class text)
+* LED: diode, VF ~1.2 V @10 mA (Vishay 83717 extract 1.2..1.5 V). Output: Ic = CTR*IF*tanh(Vce/vsat), CTR constant (the real CTR varies with IF, temperature and ageing: not modelled).
+.model dled d(is=1.5e-13 n=1.8 rs=4 cjo=30p)
+.subckt opto_pt an cat c e params: ctr=1.0 vsat=0.15 ioff=5n
+Dled ai cat dled
+Vsn an ai 0
+Bc c e I=0.0+{ctr}*max(i(Vsn),0)*tanh(max(v(c)-v(e),0)/{vsat})+{ioff}
+.ends
+
+Vcc vcc 0 5
+I1 0 a1 1m
+X1 a1 0 c1 0 opto_pt ctr=1.0
+R1 vcc c1 100
+I2 0 a2 2m
+X2 a2 0 c2 0 opto_pt ctr=1.0
+R2 vcc c2 100
+I3 0 a3 5m
+X3 a3 0 c3 0 opto_pt ctr=1.0
+R3 vcc c3 100
+I4 0 a4 1m
+X4 a4 0 c4 0 opto_pt ctr=0.4
+R4 vcc c4 100
+I5 0 a5 5m
+X5 a5 0 c5 0 opto_pt ctr=0.4
+R5 vcc c5 100
+.control
+set noaskquit
+op
+let ic1 = (5-v(c1))/100*1000
+let ic2 = (5-v(c2))/100*1000
+let ic3 = (5-v(c3))/100*1000
+let ic4 = (5-v(c4))/100*1000
+let ic5 = (5-v(c5))/100*1000
+let vf = v(a3)
+echo ic_1ma_ctr1_ma = $&ic1
+echo ic_2ma_ctr1_ma = $&ic2
+echo ic_5ma_ctr1_ma = $&ic3
+echo ic_1ma_ctr0p4_ma = $&ic4
+echo ic_5ma_ctr0p4_ma = $&ic5
+echo vf_at_5ma_v = $&vf
+quit
+.endc
+.end

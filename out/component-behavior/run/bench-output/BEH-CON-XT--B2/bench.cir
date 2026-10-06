@@ -1,0 +1,20 @@
+* B2 BEH-CON-XT thermal transient: first-order rise, tau = Rth*Cth/(1-alpha*P*Rth). XT60 at 30 A.
+.param alpha=0.0039 R0=0.55m I=30
+.param Rth={30/(I*I*R0)} Cth=2
+* Cth 2 J/K is an ASSUMPTION (about 1 g nylon+brass body class)
+B1 0 t I = {I*I*R0}*(1+{alpha}*v(t))
+Rt t 0 {Rth}
+Ct t 0 {Cth}
+.ic v(t)=0
+.tran 0.5 800 uic
+.control
+run
+meas tran dtfin find v(t) at=800
+let k = 0.0039*30
+let tau = 60.6*2/(1-0.0039*30)
+let tf = 30/(1-k)
+let v63 = 0.632*tf
+meas tran t63 when v(t)=$&v63
+print tau tf v63
+.endc
+.end

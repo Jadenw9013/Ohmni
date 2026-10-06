@@ -1,0 +1,15 @@
+* RES-SENSE B3: parasitic L. R=1 mohm, L=3 nH -> corner f = R/(2 pi L) = 53.05 kHz, |Z| = R*sqrt(2)=1.4142 mohm at corner, phase 45 deg
+.param R=1m L=3n
+V1 in 0 AC 1
+Ra in m {R}
+La m 0 {L}
+.control
+set noaskquit
+ac lin 1 53.05k 53.05k
+let z = mag(1/(-i(v1)))
+print z
+let ph = ph(-i(v1))*180/pi
+print ph
+quit
+.endc
+.end

@@ -1,0 +1,11 @@
+* B2: contrast network. 10 k pot (wiper at 80 percent: 8k above, 2k below) between VDD (5 V) and VSS, wiper to V0 pin (CMOS input, modelled 100 Mohm). VLCD = VDD - V0 must be 3.2..5.2 V per WH1602B table
+VDD vdd 0 5
+RP1 vdd v0 8k
+RP2 v0 0 2k
+RIN v0 0 100Meg
+.control
+op
+let vlcd = 5 - v(v0)
+print v(v0) vlcd
+.endc
+.end

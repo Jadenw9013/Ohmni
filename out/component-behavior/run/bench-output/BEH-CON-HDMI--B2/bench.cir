@@ -1,0 +1,18 @@
+* B2 100 ohm differential TMDS pair (single-ended equivalent 100 ohm line) into an 85 ohm termination
+* v2: removed duplicate print of meas results (names printed twice were dropped)
+* Source Rs = 100 ohm matched, step 1 V.
+* Expected: incident 0.5 V; gamma=(85-100)/(85+100)=-0.08108; load first arrival = 0.5*(1+gamma)=0.45946 V;
+* source-end voltage after 2*TD (reflection absorbed by matched Rs) = 0.45946 V; before = 0.5 V
+Vs in 0 PULSE(0 1 0 10p 10p 100n 200n)
+Rs in a 100
+T1 a 0 b 0 Z0=100 TD=1n
+RL b 0 85
+.tran 20p 6n
+.control
+run
+meas tran vload_first find v(b) at=1.5n
+meas tran vsrc_after find v(a) at=2.5n
+meas tran vsrc_before find v(a) at=1.5n
+quit
+.endc
+.end

@@ -1,0 +1,29 @@
+* BEH-PWR-LOADSWITCH L1: on-state drop. TPS22810 datasheet text: RON = 79 mOhm typical at VIN = 12 V; 3 A max continuous (DRV, TA = 65 C).
+* v2: print only vdrop, pd, dt (already scalars); header only, circuit unchanged
+* Analytic: V_drop = I*RON = 3.0*0.079 = 0.237 V ; P = I^2*RON = 0.711 W ; Tj rise with RthJA = 74.6 K/W (extract) = 53.0 K
+* BEH-PWR-LOADSWITCH behavioural load switch / power switch (behavioural_approximation, not a vendor model)
+* ports: vin vout gnd en(logic, >1.0 V on) ; params: RON (ohm), ILIM (A, constant-current clamp), VUV (V, UVLO rising threshold), TON (s, enable-to-full-on time constant), RQOD (ohm quick output discharge, 0 = none)
+* Pass element: smooth clamp I = (Vd/RON)/(1+(Vd/(RON*ILIM))^4)^0.25 : linear RON below ~0.7*ILIM, constant ~ILIM above. Reverse current is NOT blocked (real parts with reverse-current protection need an extra diode).
+* gating g in [0,1]: g = enable AND (vin > VUV), first-order lag TON.
+.subckt LOADSW vin vout gnd en params: RON=0.079 ILIM=10 VUV=2.54 TON=10u RQOD=0
+Bgt gt gnd V = 0.5*(1+tanh((v(en)-v(gnd)-1)/0.05))*0.5*(1+tanh((v(vin)-v(gnd)-VUV)/0.005))
+Rg gt gs 1k
+Cg gs gnd {TON/1k}
+Bpass vin vout I = v(gs)*((v(vin)-v(vout))/RON)/pow(1+pow(abs(v(vin)-v(vout))/(RON*ILIM),4),0.25) + (1-v(gs))*(v(vin)-v(vout))*1n
+.ends
+
+Vin vin 0 12
+Ven en 0 3.3
+Xs vin vout 0 en LOADSW RON=0.079 ILIM=10 VUV=2.54 TON=1u
+Iload vout 0 3
+.op
+.control
+set noaskquit
+op
+let vdrop = v(vin)-v(vout)
+let pd = vdrop*3
+let dt = pd*74.6
+print vdrop pd dt
+quit
+.endc
+.end

@@ -244,10 +244,11 @@ def test_resume_preserves_original_run_and_baselines(audit):
 def test_ordered_operating_point_binding_requires_every_point(audit):
     from tools.behavior_audit.benches import observed_value
 
-    item = {"measure": "V at 10 mA"}
-    text = "v(d) = 0.6\nv(d) = 0.7\nv(d) = 0.9\n"
-    assert observed_value(audit, "BEH-DIO-PN/B1", item, text) == 0.7
-    assert observed_value(audit, "BEH-DIO-PN/B1", item, "v(d) = 0.7\n") is None
+    # BEH-DIO-PN/B1 now prints a named scalar (REPIN-003); B7 keeps an ordered binding.
+    item = {"measure": "VF at 100 C, 10 mA"}
+    text = "v(d) = 0.6\nv(d) = 0.7\n"
+    assert observed_value(audit, "BEH-DIO-PN/B7", item, text) == 0.7
+    assert observed_value(audit, "BEH-DIO-PN/B7", item, "v(d) = 0.7\n") is None
 
 
 def test_named_model_binding_does_not_select_the_comparator(audit):
@@ -336,14 +337,15 @@ def test_failed_dc_contract_cannot_be_presented_as_passing(audit, monkeypatch):
 
     def fake(self, compiled, *, work_dir):
         node = compiled.node_names["anode"]
-        return {"status": "ran", "stdout": f"v({node}) = 0.72556\n", "stderr": "",
+        # 0.73039 V (the old 27 C value) is outside the corrected 25 C contract 0.725559 +/- 1 mV.
+        return {"status": "ran", "stdout": f"v({node}) = 0.73039\n", "stderr": "",
                 "version_output": "ngspice-42", "problems": [],
                 "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit"}
     monkeypatch.setattr(NgspiceAdapter, "behavior_circuit", fake)
     receipts = run_dc_probes(audit, ["OHM-056"])
     assert receipts[0]["run_status"] == "failed"
     path = audit.run_dir / "runtime-bench-results/OHM-056-op.json"
-    _atomic_json(path, dict(receipts[0], run_status="passed", observed=0.73039))
+    _atomic_json(path, dict(receipts[0], run_status="passed", observed=0.725559))
     assert any("raw observation" in error for error in dc_probe_receipt_errors(audit, "OHM-056"))
 
 

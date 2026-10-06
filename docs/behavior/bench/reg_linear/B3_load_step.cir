@@ -1,9 +1,10 @@
 * BEH-REG-LINEAR B3: load step 0.1 A -> 0.8 A (1 us edge) on the AMS1117-3.3-class model, Vin = 5 V, Cout = 22 uF with ESR 0.3 ohm vs 0.01 ohm
+* v2: absolute include path made relative; added pre-step averages and undershoot scalars (under1_mv, under2_mv, vfin1_v, vfin2_v); circuit unchanged
 * Analytic: settled Vout after the step = VNOM + KLINE*(Vin-VINREF) - ROUTDC*Iout = 3.3 + 0 - 0.006*0.8 = 3.2952 V (tolerance 0.1 %).
 * Upper bound of the transient undershoot: the output cap supplies the whole step until the loop responds, so the instantaneous drop is at most dI*ESR = 0.7*0.3 = 0.21 V (case 1) / 7 mV (case 2).
 * A loop with fast response (GM = 40 S -> fu = GM/(2*pi*C) = 289 kHz) catches the step in ~1 us, so the undershoot is far below that bound: expected 5 mV < undershoot < 0.21 V.
 * NOTE GM, FP1, FP2 are ASSUMPTIONS (the datasheets opened give no loop bandwidth); only the settled value is analytically checked, the undershoot only against the bound.
-.include /home/claude/behavior/bench/reg_linear/reg_behavioural_r6.lib
+.include reg_behavioural_r6.lib
 Vin vin 0 5
 X1 vin vout 0 LDO_R6 VNOM=3.3 VINREF=5 KLINE=0.0005 ROUTDC=0.006 VDO=1.1 IDO=0.8 IQ=5m ILIM=1.2 GM=40 FP1=200k FP2=2meg RTH=61.6
 Iload vout 0 pwl(0 0.1 20u 0.1 21u 0.8 80u 0.8)
@@ -24,6 +25,13 @@ meas tran vmin2 min v(vout2) from=20u to=80u
 meas tran vfin1 find v(vout) at=79u
 meas tran vfin2 find v(vout2) at=79u
 meas tran vmax2 max v(vout2) from=22u to=80u
+meas tran vpre1 avg v(vout) from=10u to=19u
+meas tran vpre2 avg v(vout2) from=10u to=19u
+let under1_mv = (vpre1-vmin1)*1000
+let under2_mv = (vpre2-vmin2)*1000
+let vfin1_v = vfin1
+let vfin2_v = vfin2
+print under1_mv under2_mv vfin1_v vfin2_v
 quit
 .endc
 .end

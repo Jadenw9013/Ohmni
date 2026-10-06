@@ -1,0 +1,85 @@
+B2 isolation barrier: AC leakage current through interwinding capacitance at mains frequency, and DC blocking
+* v2: RESULT echo replaced by scalar eth2_i_per_v (circuit unchanged)
+* Expected: |I| = w*Ciw*V = 2*pi*50*15p*1 = 4.712e-9 A per volt of barrier voltage at 50 Hz (Ciw ASSUMED 15 pF; datasheet value not in opened docs).
+*   At 1500 Vrms (hipot, Pulse H325.Q 1500 Vrms MIN) -> 7.07 uA. DC: no DC path, I_dc = V/Riso (model has no Riso: 1G test shunt only).
+* OHMNI BEH-MAG-ETHMAG: one 10/100BASE-T channel, 1CT:1CT transformer + line-side common-mode choke (behavioural_approximation, linear)
+* PHY side: tdp tdm tdct ; line (RJ45) side: lp lm lct.  OCL = total OCL of a full winding (tdp-tdm), LLK = leakage, RW = DCR of a full winding,
+* CIW = interwinding C (lumped as two caps tdp-lxp, tdm-lxm), CMC_L/CMC_LS = line-side CMC parameters.
+* OHMNI BEH-MAG-CMC models. Pins: a1 a2 b1 b2 ; winding A is a1->a2, winding B is b1->b2, dots at a1 and b1.
+* L = self inductance of each winding, LS = leakage inductance (other winding shorted), RDC per winding,
+* C0 = winding capacitance (each winding, across it), RPAR = parallel loss (peak impedance).
+* Linear K-coupled model:   k = sqrt(1-LS/L)
+.subckt CMC_K a1 a2 b1 b2 L=2.2m LS=130n RDC=0.3 C0=1p RPAR=1e9
+.param kk={sqrt(1-LS/L)}
+Ra a1 ax {RDC}
+La ax a2 {L}
+Rb b1 bx {RDC}
+Lb bx b2 {L}
+K1 La Lb {kk}
+Ca a1 a2 {C0}
+Cb b1 b2 {C0}
+Rpa a1 a2 {RPAR}
+Rpb b1 b2 {RPAR}
+.ends
+* Saturating model: symmetric T. Common flux is driven by iA_in + iB_in (CM current); DM current cancels in Lm.
+* ISATM = common-mode magnetizing current at which Lm drops by DROP.
+.subckt CMC_SAT a1 a2 b1 b2 L=2.2m LS=130n RDC=0.3 C0=1p RPAR=1e9 ISATM=2 DROP=0.3 LR=0.05
+.param kk={sqrt(1-LS/L)}
+.param lmag={kk*L}
+.param lleak={L*(1-kk)}
+.param ia={ISATM/atanh(sqrt(DROP/(1-LR)))}
+Ra a1 ax {RDC}
+Lla ax am {lleak}
+Lm am a2 L='lmag*(LR+(1-LR)*(1/cosh(max(min(i(Lm)/ia,20),-20)))**2)'
+Es bm b2 am a2 1
+Vs bm bs 0
+Fp am a2 Vs 1
+* Vs is the series sense: i(Vs) flows bm->bs, i.e. out of the winding-B dot side seen at bm; B-side current into b1 = -i(Vs)
+Llb bs bx {lleak}
+Rb bx b1 {RDC}
+Ca a1 a2 {C0}
+Cb b1 b2 {C0}
+Rpa a1 a2 {RPAR}
+Rpb b1 b2 {RPAR}
+.ends
+
+.subckt ETH_CH tdp tdm tdct lp lm lct OCL=350u LLK=0.4u RW=0.5 CIW=15p CMC_L=100u CMC_LS=0.1u CMC_RDC=0.1 CMC_C0=1p CMC_RPAR=1e9
+.param lh={OCL/4}
+.param kk={sqrt(1-LLK/OCL)}
+Ra1 tdp a1x {RW/2}
+LA1 a1x tdct {lh}
+Ra2 tdct a2x {RW/2}
+LA2 a2x tdm {lh}
+Rb1 lxp b1x {RW/2}
+LB1 b1x lct {lh}
+Rb2 lct b2x {RW/2}
+LB2 b2x lxm {lh}
+K1 LA1 LA2 {kk}
+K2 LA1 LB1 {kk}
+K3 LA1 LB2 {kk}
+K4 LA2 LB1 {kk}
+K5 LA2 LB2 {kk}
+K6 LB1 LB2 {kk}
+Ciw1 tdp lxp {CIW/2}
+Ciw2 tdm lxm {CIW/2}
+Xcmc lxp lp lxm lm CMC_K L={CMC_L} LS={CMC_LS} RDC={CMC_RDC} C0={CMC_C0} RPAR={CMC_RPAR}
+.ends
+
+* barrier source between PHY-side ground (node 0) and line-side common (node lg)
+Viso lg 0 DC 0 AC 1
+Rtdp tdp 0 1u
+Rtdm tdm 0 1u
+Rtdct tdct 0 1G
+X1 tdp tdm tdct lp lm lct ETH_CH OCL=350u LLK=0.1u RW=0.5 CIW=15p CMC_L=100u CMC_LS=0.1u CMC_RDC=0.1 CMC_C0=0
+Rlp lp lg 1u
+Rlm lm lg 1u
+Rlct lct lg 1G
+.ac lin 1 50 50
+.control
+run
+let iiso = mag(i(Viso))
+let eth2_i_per_v = iiso
+print eth2_i_per_v
+quit
+.endc
+.end

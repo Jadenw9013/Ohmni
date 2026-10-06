@@ -1,0 +1,18 @@
+* B3 BEH-CON-RF pin-to-trace launch step: 40 ohm section (oversized pad, excess C) in a 50/50 system
+* v2: scalar gamma_step added
+* quarter wave at 5 GHz: TD=50 ps. Zin=Zc^2/ZL=32 ohm, |G|=(50-32)/(50+32)=0.2195, VSWR=1.5625
+Vs src 0 DC 0 AC 1
+Rs src a 50
+T1 a 0 b 0 Z0=40 TD=50p
+Ro b 0 50
+.control
+ac lin 1 5g 5g
+let zin = v(a)/((v(src)-v(a))/50)
+let mag = mag((zin-50)/(zin+50))
+let vswr = (1+mag)/(1-mag)
+let gamma_step = mag
+print gamma_step vswr
+let e_mag = 18/82
+print e_mag
+.endc
+.end

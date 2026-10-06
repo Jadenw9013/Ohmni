@@ -1,0 +1,14 @@
+* RES-SENSE B2: current rating from power: Imax = sqrt(P/R) = sqrt(1.0/1m) = 31.623 A for WSK2512-class P70=1 W.
+* At Imax the sense voltage is I*R = 31.623 mV and dissipated power = 1.000 W
+.param P70=1.0 Rs=1m
+Bi 0 n1 I={sqrt(P70/Rs)}
+Rs1 n1 0 {Rs}
+.control
+set noaskquit
+op
+print v(n1)
+let p = v(n1)*v(n1)/1m
+print p
+quit
+.endc
+.end

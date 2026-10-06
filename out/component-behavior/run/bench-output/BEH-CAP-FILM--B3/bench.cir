@@ -1,0 +1,27 @@
+B3 X2 peak-voltage flag: 275 Vrms rating -> VRPK = 388.9 V. 50 Hz sine, amplitude steps 330 V then 400 V
+* OHMNI BEH-CAP-FILM subcircuit (metallised film, incl. X2), behavioural_approximation
+* ports: p n flag. flag bitmask: 1 = |V| > VRPK (peak rating; for AC-rated parts VRPK = sqrt(2)*Vrms)
+* ESR is a constant chosen from tan(delta) at a reference frequency: ESR = TAND/(2*pi*FREF*C0) (real tan(delta) rises with f, see doc)
+.subckt ohm_film p n flag params: C0=1u TAND=20e-4 FREF=1k ESL=15n RLK=15g VRPK=388.9
+.param ESRV={TAND/(2*3.14159265358979*FREF*C0)}
+Lesl p a {ESL}
+Resr a b {ESRV}
+Cb b n {C0}
+Rlk b n {RLK}
+Bflag flag 0 V = 'abs(v(b,n)) > {VRPK} ? 1 : 0'
+.ends
+
+Vs in 0 SIN(0 330 50)
+Rs in p 10
+Xc p 0 f ohm_film C0=100n TAND=20e-4 FREF=1k ESL=15n RLK=1e15 VRPK=388.9
+Rf f 0 1meg
+.tran 50u 60m
+.control
+run
+meas tran fmax_330 max v(f) from=20m to=60m
+alter Vs sin = [ 0 400 50 0 0 ]
+run
+meas tran fmax_400 max v(f) from=20m to=60m
+quit
+.endc
+.end

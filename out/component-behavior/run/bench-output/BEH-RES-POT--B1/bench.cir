@@ -1,0 +1,22 @@
+* POT B1: 3-terminal model, linear taper, unloaded: Vw = Vin * pos (pos=0.3) -> 3.000 V (neglecting Rend, Rw into 1 Tohm load)
+* Terminal order: A (pin1), W (pin2, wiper), B (pin3). pos=0 -> wiper at B (pin3) end, pos=1 -> at A (pin1)? see note
+.subckt POT3 A W B params: Rtot=10k pos=0.5 Rend=1 Rw=100m taper=0 k=1.505
+* f = fraction of resistance between W and B (pos measured from B side)
+.param fl={pos}
+.param fg={(10**(k*pos)-1)/(10**k-1)}
+.param f={taper==0 ? fl : fg}
+.param fcl={min(max(f,0),1)}
+Rab1 A m {max(Rtot*(1-fcl),Rend)}
+Rab2 m B {max(Rtot*fcl,Rend)}
+Rwp m W {Rw}
+.ends
+Vin A 0 10
+Xp A w 0 POT3 Rtot=10k pos=0.3 taper=0
+Rl w 0 1e12
+.control
+set noaskquit
+op
+print v(w)
+quit
+.endc
+.end

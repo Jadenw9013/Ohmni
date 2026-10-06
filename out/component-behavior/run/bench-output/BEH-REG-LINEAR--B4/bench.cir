@@ -1,0 +1,75 @@
+* BEH-REG-LINEAR B4: power dissipation, junction temperature and thermal shutdown, L7805-class model in TO-220 (ST L78 DS0422: RthJA 50 C/W TO-220)
+* v2: absolute include path made relative; scalars re-exported via let (tja_end_c, tjb_peak_c, voutb_min_v, voutb_end_v, tjb_end_c, reg_lost_flag); circuit unchanged
+* Case A (steady): Vin=9 V, Iout=0.5 A: P = (Vin-Vout)*Iout + Vin*Iq = 4*0.5 + 9*0.005 = 2.045 W ; Tj = Ta + Rth*P = 25 + 50*2.045 = 127.25 C. Expected 127.25 C, tolerance 2 %.
+* Case B (overload): Vin=15 V, Iout=1.0 A: P = 10*1 + 0.075 = 10.075 W -> unrestricted Tj = 25 + 50*10.075 = 528 C > TSD. The model's gate throttles the pass current near TSD=150 C
+*   (soft, no latch/hysteresis: ASSUMPTION; the real part's shutdown temperature is not in the opened ST extract). Expected: Tj peak stays within +/- 10 C of TSD,
+*   Vout drops below 5 V (regulation lost; the load is a 5 ohm resistor, 1 A at 5 V, switched on from 1 ms to 150 ms); thermal shutdown is recoverable (cooling restores regulation). Cth = 0.002 J/K is an ASSUMPTION chosen only to keep the run short.
+* OHMNI R6 linear-regulator behavioural subcircuit (fidelity: behavioural_approximation). NOT a vendor model.
+* Pins: vin vout gnd.  The pass element is a controlled current source from vin to vout:
+*   Idemand = GM*(Vreg - Vout)  -> two-pole lag (FP1, FP2) -> clamps: >=IFLOOR, <=ILIM (soft), <=(Vin-Vout)/Rdo (dropout), x thermal gate
+*   Vreg = VNOM + KLINE*(Vin-VINREF) - (ROUTDC-1/GM)*Ipass     (line and load regulation; total DC output resistance = ROUTDC because the loop adds 1/GM; the coefficient is NEGATIVE when 1/GM > ROUTDC, i.e. a mild static positive feedback of gain GM*(1/GM-ROUTDC) < 1 that raises DC loop gain without adding a pole. Keep GM*ROUTDC >= 0.2 to stay well away from 1)
+* NOTE: add .nodeset v(vout)=VNOM in every deck that has a load; without it ngspice 42 .op can land on a spurious solution (seen: Vout=0.18 V)
+*   Rdo = VDO/IDO ; ground current = IQ + IQ1*Ipass ; thermal: Tj = Ta + Rth*P with Cth (RC node 'tj', 1 V = 1 C)
+*   Dbody vout->vin models the reverse-current path (ASSUMPTION; real parts differ, see parts/R6.md)
+.subckt LDO_R6 vin vout gnd params: VNOM=3.3 VINREF=5 KLINE=0.0005 ROUTDC=0.006 VDO=1.1 IDO=0.8 IQ=5m IQ1=0 ILIM=1.2 GM=50 FP1=2meg FP2=5meg TSD=165 THYS=20 RTH=60 CTH=0.05 TA=25 IFLOOR=0
+Bvreg vreg gnd V=V(vnom_int)+{KLINE}*(V(vin,gnd)-{VINREF})-({ROUTDC}-1/{GM})*V(ipas,gnd)
+Vn vnom_int gnd {VNOM}
+Bdem dem gnd V={GM}*(V(vreg,gnd)-V(vout,gnd))
+R1 dem d1 1
+C1 d1 gnd {1/(6.2831853*FP1)}
+Eb d1b gnd d1 gnd 1
+R2 d1b d2 1
+C2 d2 gnd {1/(6.2831853*FP2)}
+* thermal gate with hysteresis-free soft knee (no latch): g=1 below TSD-THYS... gate midpoint TSD, width 1 C
+Bg g gnd V=0.5*(1-tanh((V(tj,gnd)-{TSD})/1))
+* clamps (all in amps; soft minimum/maximum with eps 1m)
+* x1 = softmin(demand, ILIM); y = dropout current; ipas = softmax(IFLOOR, softmin(x1,y)) * thermal gate  (soft width ~2 mA)
+Bx1 x1 gnd V=0.5*(V(d2,gnd)+{ILIM}-sqrt((V(d2,gnd)-{ILIM})**2+4e-6))
+By1 y1 gnd V=(V(vin,gnd)-V(vout,gnd))/({VDO}/{IDO})
+Bx2 x2 gnd V=0.5*(V(x1,gnd)+V(y1,gnd)-sqrt((V(x1,gnd)-V(y1,gnd))**2+4e-6))
+Bipas ipas gnd V=(0.5*(V(x2,gnd)+{IFLOOR}+sqrt((V(x2,gnd)-{IFLOOR})**2+4e-6)))*V(g,gnd)
+Rdum ipas gnd 1G
+Gp vin vout cur='V(ipas,gnd)'
+* ground (quiescent) current
+Gq vin gnd cur='{IQ}+{IQ1}*V(ipas,gnd)'
+* power -> thermal node
+Gpw gnd tj cur='min(max(V(vin,vout),0),V(vin,gnd))*V(ipas,gnd)+V(vin,gnd)*({IQ}+{IQ1}*V(ipas,gnd))'
+Rth tj ta {RTH}
+Cth tj ta {CTH}
+Vta ta gnd {TA}
+Dbody vout vin DREV
+.model DREV D(IS=1e-12 N=1.5 RS=0.3)
+.ends
+
+VinA vinA 0 9
+XA vinA voutA 0 LDO_R6 VNOM=5 VINREF=10 KLINE=0.002857 ROUTDC=0.0669 VDO=2 IDO=1 IQ=5m ILIM=2.2 GM=100 FP1=200k FP2=2meg RTH=50 CTH=0.002 TSD=150
+IloadA voutA 0 0.5
+CoA voutA 0 10u
+VinB vinB 0 15
+XB vinB voutB 0 LDO_R6 VNOM=5 VINREF=10 KLINE=0.002857 ROUTDC=0.0669 VDO=2 IDO=1 IQ=5m ILIM=2.2 GM=100 FP1=200k FP2=2meg RTH=50 CTH=0.002 TSD=150
+Ven en 0 pwl(0 0 1m 0 1.1m 1 150m 1 150.1m 0 400m 0)
+BloadB voutB 0 I=max(V(voutB),0)/5*V(en)
+RbaseB voutB 0 500
+CoB voutB 0 10u
+.nodeset v(voutA)=5 v(voutB)=5
+.tran 20u 400m
+.control
+set noaskquit
+run
+let tjA = v(xa.tj)
+let tjB = v(xb.tj)
+meas tran tjA_end find tjA at=390m
+meas tran tjB_peak max tjB
+meas tran voutB_min min v(voutB) from=100m to=150m
+meas tran voutB_end find v(voutB) at=399m
+meas tran tjB_end find tjB at=399m
+let tja_end_c = tjA_end
+let tjb_peak_c = tjB_peak
+let voutb_min_v = voutB_min
+let voutb_end_v = voutB_end
+let tjb_end_c = tjB_end
+let reg_lost_flag = 0.5*(1+(4.9-voutB_min)/abs(4.9-voutB_min))
+print tja_end_c tjb_peak_c voutb_min_v voutb_end_v tjb_end_c reg_lost_flag
+quit
+.endc
+.end

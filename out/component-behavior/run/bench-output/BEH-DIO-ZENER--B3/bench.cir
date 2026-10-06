@@ -1,0 +1,19 @@
+* BEH-DIO-ZENER B3: line regulation dVout/dVin around 12 V (Rs=470, RL=1k), small-signal
+* expected ~ (rz||RL)/(Rs + rz||RL)
+.subckt DZ A K
+DF A K DFWD
+DR A K DZB
+RLK K A 100Meg
+.model DFWD D (IS=5e-9 N=1.9 RS=1.0 CJO=50p VJ=0.7 M=0.4 TT=50n)
+.model DZB D (IS=1e-15 N=1 RS=19.5 BV=5.0025 IBV=5m NBV=2.7)
+.ends
+Vin in 0 dc 12 ac 1
+Rs in k 470
+RL k 0 1k
+XZ 0 k DZ
+.ac lin 1 100 100
+.control
+run
+print abs(v(k))
+.endc
+.end

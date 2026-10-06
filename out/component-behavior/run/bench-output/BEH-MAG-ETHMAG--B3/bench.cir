@@ -1,0 +1,92 @@
+B3 100BASE-TX style current-mode drive: each PHY pin sinks 0 or 40 mA (complementary), 49.9 ohm from each pin to the CT/3.3 V rail, 100 ohm line.
+* v2: meas names prefixed eth3_; added eth3_va/eth3_vb (plateau means) and scalar eth3_vplat = (vb-va)/2 as a drift-free plateau amplitude (single-instant samples eth3_vhi/eth3_vlo are 46 ns after an edge and sit on the droop); circuit unchanged
+* Expected: DM load per pin = 49.9 || 50 (100 ohm line reflects 1:1 as 50 ohm per half) = 24.97 ohm; DM drive +/-20 mA per pin about a 20 mA common value (initial state 20 mA each = zero flux)
+*   -> V(line) plateau = 2*20mA*24.97 = 0.9988 V (2.0 Vpp, the 100BASE-TX line amplitude) before winding loss and LF droop (~1-3 %); tolerance 5%
+* OHMNI BEH-MAG-ETHMAG: one 10/100BASE-T channel, 1CT:1CT transformer + line-side common-mode choke (behavioural_approximation, linear)
+* PHY side: tdp tdm tdct ; line (RJ45) side: lp lm lct.  OCL = total OCL of a full winding (tdp-tdm), LLK = leakage, RW = DCR of a full winding,
+* CIW = interwinding C (lumped as two caps tdp-lxp, tdm-lxm), CMC_L/CMC_LS = line-side CMC parameters.
+* OHMNI BEH-MAG-CMC models. Pins: a1 a2 b1 b2 ; winding A is a1->a2, winding B is b1->b2, dots at a1 and b1.
+* L = self inductance of each winding, LS = leakage inductance (other winding shorted), RDC per winding,
+* C0 = winding capacitance (each winding, across it), RPAR = parallel loss (peak impedance).
+* Linear K-coupled model:   k = sqrt(1-LS/L)
+.subckt CMC_K a1 a2 b1 b2 L=2.2m LS=130n RDC=0.3 C0=1p RPAR=1e9
+.param kk={sqrt(1-LS/L)}
+Ra a1 ax {RDC}
+La ax a2 {L}
+Rb b1 bx {RDC}
+Lb bx b2 {L}
+K1 La Lb {kk}
+Ca a1 a2 {C0}
+Cb b1 b2 {C0}
+Rpa a1 a2 {RPAR}
+Rpb b1 b2 {RPAR}
+.ends
+* Saturating model: symmetric T. Common flux is driven by iA_in + iB_in (CM current); DM current cancels in Lm.
+* ISATM = common-mode magnetizing current at which Lm drops by DROP.
+.subckt CMC_SAT a1 a2 b1 b2 L=2.2m LS=130n RDC=0.3 C0=1p RPAR=1e9 ISATM=2 DROP=0.3 LR=0.05
+.param kk={sqrt(1-LS/L)}
+.param lmag={kk*L}
+.param lleak={L*(1-kk)}
+.param ia={ISATM/atanh(sqrt(DROP/(1-LR)))}
+Ra a1 ax {RDC}
+Lla ax am {lleak}
+Lm am a2 L='lmag*(LR+(1-LR)*(1/cosh(max(min(i(Lm)/ia,20),-20)))**2)'
+Es bm b2 am a2 1
+Vs bm bs 0
+Fp am a2 Vs 1
+* Vs is the series sense: i(Vs) flows bm->bs, i.e. out of the winding-B dot side seen at bm; B-side current into b1 = -i(Vs)
+Llb bs bx {lleak}
+Rb bx b1 {RDC}
+Ca a1 a2 {C0}
+Cb b1 b2 {C0}
+Rpa a1 a2 {RPAR}
+Rpb b1 b2 {RPAR}
+.ends
+
+.subckt ETH_CH tdp tdm tdct lp lm lct OCL=350u LLK=0.4u RW=0.5 CIW=15p CMC_L=100u CMC_LS=0.1u CMC_RDC=0.1 CMC_C0=1p CMC_RPAR=1e9
+.param lh={OCL/4}
+.param kk={sqrt(1-LLK/OCL)}
+Ra1 tdp a1x {RW/2}
+LA1 a1x tdct {lh}
+Ra2 tdct a2x {RW/2}
+LA2 a2x tdm {lh}
+Rb1 lxp b1x {RW/2}
+LB1 b1x lct {lh}
+Rb2 lct b2x {RW/2}
+LB2 b2x lxm {lh}
+K1 LA1 LA2 {kk}
+K2 LA1 LB1 {kk}
+K3 LA1 LB2 {kk}
+K4 LA2 LB1 {kk}
+K5 LA2 LB2 {kk}
+K6 LB1 LB2 {kk}
+Ciw1 tdp lxp {CIW/2}
+Ciw2 tdm lxm {CIW/2}
+Xcmc lxp lp lxm lm CMC_K L={CMC_L} LS={CMC_LS} RDC={CMC_RDC} C0={CMC_C0} RPAR={CMC_RPAR}
+.ends
+
+Vcc vcc 0 DC 3.3
+Rt1 vcc tdp 49.9
+Rt2 vcc tdm 49.9
+Rct vcc tdct 0.01
+Ip tdp 0 PWL(0 20m 50n 20m 54n 40m 550n 40m 554n 0m 1050n 0m 1054n 40m 1550n 40m 1554n 0m 2050n 0m 2054n 40m 2550n 40m 2554n 0m 3050n 0m 3054n 40m 3550n 40m 3554n 0m 4050n 0m)
+Im tdm 0 PWL(0 20m 50n 20m 54n 0m 550n 0m 554n 40m 1050n 40m 1054n 0m 1550n 0m 1554n 40m 2050n 40m 2054n 0m 2550n 0m 2554n 40m 3050n 40m 3054n 0m 3550n 0m 3554n 40m 4050n 40m)
+X1 tdp tdm tdct lp lm lct ETH_CH OCL=350u LLK=0.1u RW=0.5 CIW=15p CMC_L=100u CMC_LS=0.1u CMC_RDC=0.1 CMC_C0=1p
+RL lp lm 100
+Rlm lm 0 1u
+Rlct lct 0 1G
+.tran 1n 4.2u
+.control
+run
+let vl = v(lp)-v(lm)
+meas tran eth3_vhi find vl at=1.1u
+meas tran eth3_vlo find vl at=1.6u
+* plateau amplitude: half the difference of the mean line voltage over a full positive and a full negative plateau (cancels the start-up flux offset and the saw-tooth droop)
+meas tran eth3_va avg vl from=1.1u to=1.5u
+meas tran eth3_vb avg vl from=1.6u to=2.0u
+let eth3_vplat = (eth3_vb - eth3_va)/2
+print eth3_vplat
+meas tran eth3_vdc avg v(tdct) from=1.3u to=1.6u
+quit
+.endc
+.end

@@ -1,0 +1,56 @@
+B2 CM impedance vs frequency, HF-fit parameter set for WE-SL5 744272222 (datasheet typ points: 7500 ohm @2.5 MHz, 4000 @10 MHz, 400 @100 MHz)
+* v2: meas names prefixed cmc2_ (they already printed as scalars; circuit unchanged)
+* HF fit (DERIVED, assumption that datasheet Z is the paralleled CM impedance): Lcm_eff=1.02 mH (<2.2 mH at 100 kHz because ferrite mu falls),
+* Ccm = 1/((2 pi 100MHz)^2... -> 3.98 pF total (1.99 pF per winding), Rpeak = 7500 (RPAR=15000 per winding)
+* Expected: |Zcm| 7500 @2.5MHz, 4000 @10MHz, 400 @100MHz, each within 15%
+* OHMNI BEH-MAG-CMC models. Pins: a1 a2 b1 b2 ; winding A is a1->a2, winding B is b1->b2, dots at a1 and b1.
+* L = self inductance of each winding, LS = leakage inductance (other winding shorted), RDC per winding,
+* C0 = winding capacitance (each winding, across it), RPAR = parallel loss (peak impedance).
+* Linear K-coupled model:   k = sqrt(1-LS/L)
+.subckt CMC_K a1 a2 b1 b2 L=2.2m LS=130n RDC=0.3 C0=1p RPAR=1e9
+.param kk={sqrt(1-LS/L)}
+Ra a1 ax {RDC}
+La ax a2 {L}
+Rb b1 bx {RDC}
+Lb bx b2 {L}
+K1 La Lb {kk}
+Ca a1 a2 {C0}
+Cb b1 b2 {C0}
+Rpa a1 a2 {RPAR}
+Rpb b1 b2 {RPAR}
+.ends
+* Saturating model: symmetric T. Common flux is driven by iA_in + iB_in (CM current); DM current cancels in Lm.
+* ISATM = common-mode magnetizing current at which Lm drops by DROP.
+.subckt CMC_SAT a1 a2 b1 b2 L=2.2m LS=130n RDC=0.3 C0=1p RPAR=1e9 ISATM=2 DROP=0.3 LR=0.05
+.param kk={sqrt(1-LS/L)}
+.param lmag={kk*L}
+.param lleak={L*(1-kk)}
+.param ia={ISATM/atanh(sqrt(DROP/(1-LR)))}
+Ra a1 ax {RDC}
+Lla ax am {lleak}
+Lm am a2 L='lmag*(LR+(1-LR)*(1/cosh(max(min(i(Lm)/ia,20),-20)))**2)'
+Es bm b2 am a2 1
+Vs bm bs 0
+Fp am a2 Vs 1
+* Vs is the series sense: i(Vs) flows bm->bs, i.e. out of the winding-B dot side seen at bm; B-side current into b1 = -i(Vs)
+Llb bs bx {lleak}
+Rb bx b1 {RDC}
+Ca a1 a2 {C0}
+Cb b1 b2 {C0}
+Rpa a1 a2 {RPAR}
+Rpb b1 b2 {RPAR}
+.ends
+
+Icm 0 c1 DC 0 AC 1
+X1 c1 0 c1 0 CMC_K L=1.02m LS=130n RDC=0 C0=1.99p RPAR=15000
+Rg c1 0 1G
+.ac dec 200 100k 1g
+.control
+run
+meas ac cmc2_z25 find vm(c1) at=2.5meg
+meas ac cmc2_z10 find vm(c1) at=10meg
+meas ac cmc2_z100 find vm(c1) at=100meg
+meas ac cmc2_zpk max vm(c1)
+quit
+.endc
+.end

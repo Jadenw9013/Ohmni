@@ -1,0 +1,57 @@
+* BEH-IC-TIMER555 B4: output levels vs TI SLFS022K at Vcc=15 V: VOH(-100 mA) 12.75..13.3 V ; VOL(+50 mA) 0.4..0.75 V ; VOL(+10 mA) 0.1..0.25 V
+* v2: scalars printed as 'name = value'; behavior unchanged
+* model: VOH = Vcc-0.9-8*I = 15-0.9-0.8 = 13.3 ; VOL = 8*0.05 = 0.4 ; 8*0.01 = 0.08
+* BEH-IC-TIMER555 behavioural 555 (behavioural_approximation). ngspice 42 stock, no XSPICE.
+* pins: gnd trig out rst cont thr dis vcc   (= DIP-8/SOIC-8/TSSOP-8 pins 1..8 in this order)
+* Internal 3x5k divider (CONT = 2/3 Vcc open circuit). Threshold comparator trips at v(cont); trigger comparator at v(cont)/2.
+* SR latch state q (1 = OUT high): dq/dt = k*( set*(1-reset)*(1-q) - reset*q ), reset dominant (also forced by RESET < 0.7 V: threshold ASSUMED, see class text)
+* Output: Thevenin (vcc - voh0) / 0 behind rout (fit to TI SLFS022K points, see class text). Discharge: switch to gnd with ron when q=0.
+.subckt ne555 gnd trig out rst cont thr dis vcc params: rdiv=5k voh0=0.9 rout=8 ron=30 ithr=100n itrg=500n klatch=1e8 rstth=0.7 icc0=2m icck=0.7m
+Rd1 vcc cont {rdiv}
+Rd2 cont nlo {rdiv}
+Rd3 nlo gnd {rdiv}
+* comparator decisions (smooth 1 mV edges)
+Bset sset gnd V=0.5*(1+tanh((v(nlo)-v(trig))/0.001))
+Brst srst gnd V=max(0.5*(1+tanh((v(thr)-v(cont))/0.001)), 0.5*(1+tanh((rstth-v(rst))/0.001)))
+* latch (1 F cap so I = dq/dt)
+Cq q gnd 1 ic=0
+Bq gnd q I={klatch*( v(sset)*(1-v(srst))*(1-v(q)) - v(srst)*v(q) )}
+Rq q gnd 1e12
+* output stage
+Bout oi gnd V=v(q)*(v(vcc)-v(gnd)-voh0)+v(gnd)
+Ro oi out {rout}
+* discharge transistor
+Bdc dc gnd V=1-v(q)
+Sdis dis gnd dc gnd swd
+.model swd sw vt=0.5 vh=0.1 ron={ron} roff=100Meg
+* input currents (THRES sinks, TRIG sources) and supply current
+Ith thr gnd dc {ithr}
+Itg trig gnd dc {-itrg}
+Bicc vcc gnd I={icc0 + icck*(v(vcc)-v(gnd)-5) - 1m*(1-v(q))*0 }
+.ends
+
+Vcc vcc 0 15
+* output forced high (trig=0 with thr low): set latch
+Vt tg 0 0
+Vth th 0 0
+X1 0 tg o1 vcc cnt th dis vcc ne555
+Il1 o1 0 dc 100m
+* output low: thr forced high
+Vt2 tg2 0 15
+Vth2 th2 0 15
+X2 0 tg2 o2 vcc cnt2 th2 dis2 vcc ne555
+Il2 vcc o2 dc 50m
+Il3 vcc o3 dc 10m
+X3 0 tg2 o3 vcc cnt3 th2 dis3 vcc ne555
+.control
+set noaskquit
+op
+let voh = v(o1)
+let vol50 = v(o2)
+let vol10 = v(o3)
+echo voh_100ma_v = $&voh
+echo vol_50ma_v = $&vol50
+echo vol_10ma_v = $&vol10
+quit
+.endc
+.end

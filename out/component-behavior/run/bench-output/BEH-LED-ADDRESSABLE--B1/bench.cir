@@ -1,0 +1,11 @@
+* B1: WS2812B DIN bit waveforms at nominal datasheet timings (Worldsemi WS2812B: T0H 0.4us, T0L 0.85us, T1H 0.8us, T1L 0.45us, each +/-150 ns)
+* This is a STIMULUS CHECK for the L3 driver model, not a device model. Thresholds VIH=0.7*VDD, VIL=0.3*VDD (datasheet). VDD=5 V.
+V0 d0 0 PULSE(0 5 0 5n 5n 400n 1250n)
+V1 d1 0 PULSE(0 5 0 5n 5n 800n 1250n)
+.tran 1n 3u
+.meas tran t0h TRIG v(d0) VAL=3.5 RISE=1 TARG v(d0) VAL=1.5 FALL=1
+.meas tran t0l TRIG v(d0) VAL=1.5 FALL=1 TARG v(d0) VAL=3.5 RISE=2
+.meas tran t1h TRIG v(d1) VAL=3.5 RISE=1 TARG v(d1) VAL=1.5 FALL=1
+.meas tran t1l TRIG v(d1) VAL=1.5 FALL=1 TARG v(d1) VAL=3.5 RISE=2
+.meas tran tbit TRIG v(d1) VAL=3.5 RISE=1 TARG v(d1) VAL=3.5 RISE=2
+.end

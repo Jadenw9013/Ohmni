@@ -1,0 +1,154 @@
+* BEH-IC-LOGIC-SEQ B2: 74HC138 decoder, Vcc=4.5 V. Address 0..7 with G1=1,G2A=G2B=0 -> exactly one low output (Y[addr]=0, others 4.5 V).
+* v2: added decoder_err accumulator (sum over addresses of |low_index-addr| + |nlow-1|) printed as 'name = value'; enable checks printed as scalars; decoding behavior unchanged
+* Enable checks: G1=0 -> all high (y0 sampled 4.5 V at addr 7... all high); at 1990 ns G1=1,G2A=0,addr 7 -> y7 low; at 2190 ns G2A=1 -> y7 high.  Samples taken after 100 ns settling per step (step = 200 ns).
+* BEH-IC-LOGIC-SEQ: 74HC595 and 74HC138 L2 models. Needs XSPICE (adc_bridge, dac_bridge, d_dff, d_inverter): ngspice 42 here is built with XSPICE.
+* Pin order of every subckt = DIP/SOIC/TSSOP package pin order 1..N, so X-instances can be bound pin-for-pin.
+.model dclamp d(is=1e-14 n=1 rs=5 cjo=0)
+.model adcn adc_bridge(in_low=0.4 in_high=0.6 rise_delay=1n fall_delay=1n)
+.model dacn dac_bridge(out_low=0 out_high=1 out_undef=0.5 t_rise=1n t_fall=1n)
+.model dffm d_dff(clk_delay=12n set_delay=12n reset_delay=12n ic=0)
+.model dinv d_inverter(rise_delay=1n fall_delay=1n)
+* ---- input conditioner: Ci, ESD clamps, normalised decision (0..1) at Vcc/2 ----
+.subckt hcin a n vcc gnd params: ci=5p
+Cia a gnd {ci}
+Dah a vcc dclamp
+Dal gnd a dclamp
+Bn n gnd V=0.5*(1+tanh((v(a)-(v(gnd)+0.5*(v(vcc)-v(gnd))))/0.05))
+.ends
+* ---- output cell: normalised s (0..1) + normalised enable en (1 = driven). Thevenin roh/rol, hi-Z leakage when en=0 ----
+.subckt hcout s en y vcc gnd params: roh=50 rol=65 td=10.4n taue=6.4n gz=1n
+Bsd0 sdd gnd V=min(max(v(s),0),1)
+Rsd sdd d2 50
+T1 d2 gnd d3 gnd Z0=50 TD={td}
+Rtd d3 gnd 50
+Bsh sh gnd V=2*v(d3)
+Rsh sh sh2 {taue/1p}
+Csh sh2 gnd 1p
+Bth y gnd I=min(max(v(en),0),1)*(v(y)-(v(gnd)+min(max(v(sh2),0),1)*(v(vcc)-v(gnd))))/(roh*min(max(v(sh2),0),1)+rol*(1-min(max(v(sh2),0),1)))+(1-min(max(v(en),0),1))*gz*(v(y)-v(gnd))
+Bsup vcc gnd I=min(max(v(en),0),1)*max(((v(gnd)+min(max(v(sh2),0),1)*(v(vcc)-v(gnd)))-v(y))/(roh*min(max(v(sh2),0),1)+rol*(1-min(max(v(sh2),0),1))),0)
+Dyh y vcc dclamp
+Dyl gnd y dclamp
+.ends
+* ---- 74HC595 : pins 1..16 = QB QC QD QE QF QG QH GND QH' SRCLR SRCLK RCLK OE SER QA VCC ----
+.subckt hc595 qb qc qd qe qf qg qh gnd qhp srclr srclk rclk oe ser qa vcc params: cpd=400p icc0=8u
+Xi1 srclr n_clr vcc gnd hcin
+Xi2 srclk n_sck vcc gnd hcin
+Xi3 rclk n_rck vcc gnd hcin
+Xi4 oe n_oe vcc gnd hcin
+Xi5 ser n_ser vcc gnd hcin
+Aadc [n_clr n_sck n_rck n_ser n_oe] [d_clr d_sck d_rck d_ser d_oe] adcn
+Ainv d_clr d_rst dinv
+* shift register: stage1 = QA ... stage8 = QH
+Asr1 d_ser d_sck NULL d_rst sr1 nsr1 dffm
+Asr2 sr1 d_sck NULL d_rst sr2 nsr2 dffm
+Asr3 sr2 d_sck NULL d_rst sr3 nsr3 dffm
+Asr4 sr3 d_sck NULL d_rst sr4 nsr4 dffm
+Asr5 sr4 d_sck NULL d_rst sr5 nsr5 dffm
+Asr6 sr5 d_sck NULL d_rst sr6 nsr6 dffm
+Asr7 sr6 d_sck NULL d_rst sr7 nsr7 dffm
+Asr8 sr7 d_sck NULL d_rst sr8 nsr8 dffm
+* storage register
+Ast1 sr1 d_rck NULL NULL st1 nst1 dffm
+Ast2 sr2 d_rck NULL NULL st2 nst2 dffm
+Ast3 sr3 d_rck NULL NULL st3 nst3 dffm
+Ast4 sr4 d_rck NULL NULL st4 nst4 dffm
+Ast5 sr5 d_rck NULL NULL st5 nst5 dffm
+Ast6 sr6 d_rck NULL NULL st6 nst6 dffm
+Ast7 sr7 d_rck NULL NULL st7 nst7 dffm
+Ast8 sr8 d_rck NULL NULL st8 nst8 dffm
+Ainvoe d_oe d_oen dinv
+Adac [st1 st2 st3 st4 st5 st6 st7 st8 sr8 d_oen] [a_s1 a_s2 a_s3 a_s4 a_s5 a_s6 a_s7 a_s8 a_s9 a_oen] dacn
+* OE is active low: enable = NOT OE
+Xo1 a_s1 a_oen qa vcc gnd hcout
+Xo2 a_s2 a_oen qb vcc gnd hcout
+Xo3 a_s3 a_oen qc vcc gnd hcout
+Xo4 a_s4 a_oen qd vcc gnd hcout
+Xo5 a_s5 a_oen qe vcc gnd hcout
+Xo6 a_s6 a_oen qf vcc gnd hcout
+Xo7 a_s7 a_oen qg vcc gnd hcout
+Xo8 a_s8 a_oen qh vcc gnd hcout
+Bone one gnd V=1
+Xo9 a_s9 one qhp vcc gnd hcout
+Bicc vcc gnd I={icc0}+0.5*cpd*(v(vcc)-v(gnd))*(abs(ddt(v(n_sck)))+abs(ddt(v(n_rck))))*0.5
+.ends
+* ---- 74HC138 : pins 1..16 = A B C G2A G2B G1 Y7 GND Y6 Y5 Y4 Y3 Y2 Y1 Y0 VCC ----
+.subckt hc138 a b c g2a g2b g1 y7 gnd y6 y5 y4 y3 y2 y1 y0 vcc params: cpd=85p icc0=8u
+Xa a na vcc gnd hcin
+Xb b nb vcc gnd hcin
+Xc c nc vcc gnd hcin
+Xg1 g1 ng1 vcc gnd hcin
+Xg2a g2a ng2a vcc gnd hcin
+Xg2b g2b ng2b vcc gnd hcin
+Ben en gnd V=v(ng1)*(1-v(ng2a))*(1-v(ng2b))
+Bone one gnd V=1
+* active-low outputs: Yn = 1 - en*match(n)
+By0 l0 gnd V=1-v(en)*(1-v(na))*(1-v(nb))*(1-v(nc))
+By1 l1 gnd V=1-v(en)*(v(na))*(1-v(nb))*(1-v(nc))
+By2 l2 gnd V=1-v(en)*(1-v(na))*(v(nb))*(1-v(nc))
+By3 l3 gnd V=1-v(en)*(v(na))*(v(nb))*(1-v(nc))
+By4 l4 gnd V=1-v(en)*(1-v(na))*(1-v(nb))*(v(nc))
+By5 l5 gnd V=1-v(en)*(v(na))*(1-v(nb))*(v(nc))
+By6 l6 gnd V=1-v(en)*(1-v(na))*(v(nb))*(v(nc))
+By7 l7 gnd V=1-v(en)*(v(na))*(v(nb))*(v(nc))
+Xo0 l0 one y0 vcc gnd hcout
+Xo1 l1 one y1 vcc gnd hcout
+Xo2 l2 one y2 vcc gnd hcout
+Xo3 l3 one y3 vcc gnd hcout
+Xo4 l4 one y4 vcc gnd hcout
+Xo5 l5 one y5 vcc gnd hcout
+Xo6 l6 one y6 vcc gnd hcout
+Xo7 l7 one y7 vcc gnd hcout
+Bicc vcc gnd I={icc0}
+.ends
+
+Vcc vcc 0 4.5
+Va a 0 pwl(0 0 200n 0 202n 4.5 400n 4.5 402n 0 600n 0 602n 4.5 800n 4.5 802n 0 1000n 0 1002n 4.5 1200n 4.5 1202n 0 1400n 0 1402n 4.5 1600n 4.5)
+Vb b 0 pwl(0 0 400n 0 402n 4.5 800n 4.5 802n 0 1200n 0 1202n 4.5 1600n 4.5)
+Vc c 0 pwl(0 0 800n 0 802n 4.5 1600n 4.5)
+Vg1 g1 0 pwl(0 4.5 1600n 4.5 1602n 0 1800n 0 1802n 4.5)
+Vg2a g2a 0 pwl(0 0 1800n 0 1802n 0 2000n 0 2002n 4.5)
+Vg2b g2b 0 0
+X1 a b c g2a g2b g1 y7 0 y6 y5 y4 y3 y2 y1 y0 vcc hc138
+Cl0 y0 0 10p
+Cl1 y1 0 10p
+Cl2 y2 0 10p
+Cl3 y3 0 10p
+Cl4 y4 0 10p
+Cl5 y5 0 10p
+Cl6 y6 0 10p
+Cl7 y7 0 10p
+.tran 1n 2200n
+.control
+set noaskquit
+run
+* step k (address k) sampled at t = 100n + 200n*k ... but Va toggles at 200n multiples: sample at 190n + 200n*k
+let k = 0
+let derr = 0
+while k < 8
+  let t = 190n + 200n*k
+  meas tran m0 find v(y0) at=$&t
+  meas tran m1 find v(y1) at=$&t
+  meas tran m2 find v(y2) at=$&t
+  meas tran m3 find v(y3) at=$&t
+  meas tran m4 find v(y4) at=$&t
+  meas tran m5 find v(y5) at=$&t
+  meas tran m6 find v(y6) at=$&t
+  meas tran m7 find v(y7) at=$&t
+  let s = m0+m1+m2+m3+m4+m5+m6+m7
+  let idx = ((4.5-m1)+2*(4.5-m2)+3*(4.5-m3)+4*(4.5-m4)+5*(4.5-m5)+6*(4.5-m6)+7*(4.5-m7))/4.5
+  let nlow = 8-s/4.5
+  let derr = derr + abs(idx-k) + abs(nlow-1)
+  echo addr $&k low_index=$&idx nlow=$&nlow
+  let k = k + 1
+end
+meas tran e1 find v(y0) at=1790n
+meas tran e2 find v(y7) at=1990n
+meas tran e3 find v(y7) at=2190n
+* decoder_err = sum over addresses 0..7 of |low_index-address| + |number_of_low_outputs-1| ; expected exactly 0 (to rail-leakage 1e-9)
+echo decoder_err = $&derr
+echo g1low_y0_v = $&e1
+echo addr7_enabled_y7_v = $&e2
+echo g2ahigh_y7_v = $&e3
+quit
+.endc
+.end

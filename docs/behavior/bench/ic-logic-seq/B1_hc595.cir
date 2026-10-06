@@ -1,4 +1,5 @@
 * BEH-IC-LOGIC-SEQ B1: 74HC595 shift/latch/OE behaviour. Vcc=4.5 V, SRCLK 5 MHz (< fmax 21..31 MHz @4.5 V, SCLS041J extract).
+* v2: QA..QH latched levels packed into one integer scalar qa_qh_word (bit0=QA..bit7=QH, threshold Vcc/2) and printed as 'name = value'; behavior unchanged
 * Data in (first..last) = 1,0,1,1,0,0,1,0 -> after 8 SRCLK edges: QH=1 QG=0 QF=1 QE=1 QD=0 QC=0 QB=1 QA=0 ; QA..QH =0,1,0,0,1,1,0,1 after RCLK.
 * Expectations: before RCLK all Q=0; after RCLK Q per above; QH' (unlatched serial out) = QH of the shift register; OE high -> outputs Hi-Z (pulled to mid by 10k/10k divider -> 2.25 V)
 .include hc_seq.lib
@@ -44,10 +45,15 @@ meas tran qh_post find v(qh) at=2400n
 meas tran qa_hz find v(qa) at=3100n
 meas tran qb_hz find v(qb) at=3100n
 meas tran qr trig v(rclk) val=2.25 rise=1 targ v(qb) val=2.25 rise=1
-echo RESULT QA..QH_post: $&qa_post $&qb_post $&qc_post $&qd_post $&qe_post $&qf_post $&qg_post $&qh_post
-echo RESULT pre qa=$&qa_pre qh=$&qh_pre qhp_end=$&qhp_end
-echo RESULT hiZ qa=$&qa_hz qb=$&qb_hz
-echo RESULT rclk_to_q_ns=$&qr
+* packed latched word: bit0=QA ... bit7=QH, each bit = (V(Q) gt Vcc/2); expected QA..QH = 0,1,0,0,1,1,0,1 -> 2+16+32+128 = 178
+let qword = (qa_post gt 2.25)*1 + (qb_post gt 2.25)*2 + (qc_post gt 2.25)*4 + (qd_post gt 2.25)*8 + (qe_post gt 2.25)*16 + (qf_post gt 2.25)*32 + (qg_post gt 2.25)*64 + (qh_post gt 2.25)*128
+let qpre = (qa_pre gt 2.25)*1 + (qh_pre gt 2.25)*2
+let qrc = qr*1e9
+echo qa_qh_word = $&qword
+echo q_pre_rclk_word = $&qpre
+echo qa_hiz_v = $&qa_hz
+echo qb_hiz_v = $&qb_hz
+echo rclk_to_q_ns = $&qrc
 quit
 .endc
 .end

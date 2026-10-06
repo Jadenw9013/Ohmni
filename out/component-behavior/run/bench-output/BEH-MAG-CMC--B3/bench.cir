@@ -1,0 +1,78 @@
+B3 CMC saturation: DC common-mode current saturates, DC differential current does not (CMC_SAT, ISATM=1 A of total CM current: ASSUMPTION, datasheet gives no Isat)
+* v2: RESULT echo replaced by scalar prints cmc3_lcm_{0,1,2}a and cmc3_ldm_{0,1,2}a (circuit unchanged)
+* Expected Lcm(Ibias) = Ll/2 + Lm*(LR+(1-LR)*sech^2(Ibias/ia)), Ll=L(1-k), Lm=kL, ia=ISATM/atanh(sqrt(DROP/(1-LR)))
+*   Ibias=0: 2.19997e-3 ; 1 A: 1.53999e-3 ; 2 A: 6.7515e-4 (python evaluation of the formula)
+* Expected Ldm(Ibias, differential) unchanged = 1.3e-7
+* OHMNI BEH-MAG-CMC models. Pins: a1 a2 b1 b2 ; winding A is a1->a2, winding B is b1->b2, dots at a1 and b1.
+* L = self inductance of each winding, LS = leakage inductance (other winding shorted), RDC per winding,
+* C0 = winding capacitance (each winding, across it), RPAR = parallel loss (peak impedance).
+* Linear K-coupled model:   k = sqrt(1-LS/L)
+.subckt CMC_K a1 a2 b1 b2 L=2.2m LS=130n RDC=0.3 C0=1p RPAR=1e9
+.param kk={sqrt(1-LS/L)}
+Ra a1 ax {RDC}
+La ax a2 {L}
+Rb b1 bx {RDC}
+Lb bx b2 {L}
+K1 La Lb {kk}
+Ca a1 a2 {C0}
+Cb b1 b2 {C0}
+Rpa a1 a2 {RPAR}
+Rpb b1 b2 {RPAR}
+.ends
+* Saturating model: symmetric T. Common flux is driven by iA_in + iB_in (CM current); DM current cancels in Lm.
+* ISATM = common-mode magnetizing current at which Lm drops by DROP.
+.subckt CMC_SAT a1 a2 b1 b2 L=2.2m LS=130n RDC=0.3 C0=1p RPAR=1e9 ISATM=2 DROP=0.3 LR=0.05
+.param kk={sqrt(1-LS/L)}
+.param lmag={kk*L}
+.param lleak={L*(1-kk)}
+.param ia={ISATM/atanh(sqrt(DROP/(1-LR)))}
+Ra a1 ax {RDC}
+Lla ax am {lleak}
+Lm am a2 L='lmag*(LR+(1-LR)*(1/cosh(max(min(i(Lm)/ia,20),-20)))**2)'
+Es bm b2 am a2 1
+Vs bm bs 0
+Fp am a2 Vs 1
+* Vs is the series sense: i(Vs) flows bm->bs, i.e. out of the winding-B dot side seen at bm; B-side current into b1 = -i(Vs)
+Llb bs bx {lleak}
+Rb bx b1 {RDC}
+Ca a1 a2 {C0}
+Cb b1 b2 {C0}
+Rpa a1 a2 {RPAR}
+Rpb b1 b2 {RPAR}
+.ends
+
+Icm 0 c1 DC 0 AC 1
+X1 c1 0 c1 0 CMC_SAT L=2.2m LS=130n RDC=0 C0=0 RPAR=1e12 ISATM=1 DROP=0.3 LR=0.05
+Rg1 c1 0 1G
+Idm 0 d1 DC 0 AC 1
+X2 d1 dm d2 dm CMC_SAT L=2.2m LS=130n RDC=0 C0=0 RPAR=1e12 ISATM=1 DROP=0.3 LR=0.05
+Rd2 d2 0 1u
+Rg2 d1 0 1G
+Rg3 dm 0 1G
+.control
+foreach ib 0 1 2
+ alter Icm dc = $ib
+ alter Idm dc = $ib
+ ac lin 1 100k 100k
+ let w = 2*pi*100k
+ let lcm = imag(v(c1))/w
+ let ldm = imag(v(d1)-v(d2))/w
+ if $ib eq 0
+  let cmc3_lcm_0a = lcm
+  let cmc3_ldm_0a = ldm
+  print cmc3_lcm_0a cmc3_ldm_0a
+ end
+ if $ib eq 1
+  let cmc3_lcm_1a = lcm
+  let cmc3_ldm_1a = ldm
+  print cmc3_lcm_1a cmc3_ldm_1a
+ end
+ if $ib eq 2
+  let cmc3_lcm_2a = lcm
+  let cmc3_ldm_2a = ldm
+  print cmc3_lcm_2a cmc3_ldm_2a
+ end
+end
+quit
+.endc
+.end

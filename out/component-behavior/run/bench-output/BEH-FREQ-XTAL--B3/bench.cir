@@ -1,0 +1,20 @@
+B3 32.768 kHz tuning-fork crystal (Epson FC-135 class: C1=3.4f typ, C0=1.0p typ, R1<=70k, CL=12.5p). Expect fL=32768 Hz at CL=12.5p, Q=2*pi*fs*L1/R1=20.4k
+* v2: meas result renamed fl -> fl_32k_hz (meas WHEN already prints a bare scalar line; no print added, otherwise the name would be duplicated)
+* OHMNI BVD crystal subcircuit. Terminals: 1 2. Params: L1 (H), C1 (F), R1 (ohm), C0 (F)
+.subckt ohm_xtal 1 2 L1=44m C1=9f R1=80 C0=3p
+Lm 1 a {L1}
+Cm a b {C1}
+Rm b 2 {R1}
+C0x 1 2 {C0}
+.ends ohm_xtal
+
+Iin 0 x dc 0 ac 1
+X1 x y ohm_xtal L1=6940.181693751771 C1=3.4f R1=0.001 C0=1.0p
+CLx y 0 12.5p
+.control
+ac lin 20001 32700 32800
+let ph = vp(x)
+meas ac fl_32k_hz WHEN ph=0 CROSS=1
+quit
+.endc
+.end

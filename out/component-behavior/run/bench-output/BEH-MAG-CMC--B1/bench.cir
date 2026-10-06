@@ -1,0 +1,76 @@
+B1 CMC differential-mode vs common-mode inductance at 100 kHz (WE-SL5 744272222 values: L=2.2 mH, LS=130 nH typ)
+* v2: RESULT echo replaced by scalar prints cmc1_lcm_k, cmc1_ldm_k, cmc1_lcm_t, cmc1_ldm_t (circuit unchanged)
+* Expected: k = sqrt(1-LS/L) = 0.99997 ; Lcm = L(1+k)/2 = 2.2e-3 H (both windings paralleled in CM) ; Ldm = 2L(1-k) = 1.3e-7 H (loop through both windings)
+* OHMNI BEH-MAG-CMC models. Pins: a1 a2 b1 b2 ; winding A is a1->a2, winding B is b1->b2, dots at a1 and b1.
+* L = self inductance of each winding, LS = leakage inductance (other winding shorted), RDC per winding,
+* C0 = winding capacitance (each winding, across it), RPAR = parallel loss (peak impedance).
+* Linear K-coupled model:   k = sqrt(1-LS/L)
+.subckt CMC_K a1 a2 b1 b2 L=2.2m LS=130n RDC=0.3 C0=1p RPAR=1e9
+.param kk={sqrt(1-LS/L)}
+Ra a1 ax {RDC}
+La ax a2 {L}
+Rb b1 bx {RDC}
+Lb bx b2 {L}
+K1 La Lb {kk}
+Ca a1 a2 {C0}
+Cb b1 b2 {C0}
+Rpa a1 a2 {RPAR}
+Rpb b1 b2 {RPAR}
+.ends
+* Saturating model: symmetric T. Common flux is driven by iA_in + iB_in (CM current); DM current cancels in Lm.
+* ISATM = common-mode magnetizing current at which Lm drops by DROP.
+.subckt CMC_SAT a1 a2 b1 b2 L=2.2m LS=130n RDC=0.3 C0=1p RPAR=1e9 ISATM=2 DROP=0.3 LR=0.05
+.param kk={sqrt(1-LS/L)}
+.param lmag={kk*L}
+.param lleak={L*(1-kk)}
+.param ia={ISATM/atanh(sqrt(DROP/(1-LR)))}
+Ra a1 ax {RDC}
+Lla ax am {lleak}
+Lm am a2 L='lmag*(LR+(1-LR)*(1/cosh(max(min(i(Lm)/ia,20),-20)))**2)'
+Es bm b2 am a2 1
+Vs bm bs 0
+Fp am a2 Vs 1
+* Vs is the series sense: i(Vs) flows bm->bs, i.e. out of the winding-B dot side seen at bm; B-side current into b1 = -i(Vs)
+Llb bs bx {lleak}
+Rb bx b1 {RDC}
+Ca a1 a2 {C0}
+Cb b1 b2 {C0}
+Rpa a1 a2 {RPAR}
+Rpb b1 b2 {RPAR}
+.ends
+
+* CM test: a1,b1 tied to node c1 ; a2,b2 tied to ground
+Icm 0 c1 DC 0 AC 1
+X1 c1 0 c1 0 CMC_K L=2.2m LS=130n RDC=0 C0=0 RPAR=1e12
+* DM test: current into a1, out of b1, windings joined a2-b2
+Idm 0 d1 DC 0 AC 1
+X2 d1 dm d2 dm CMC_K L=2.2m LS=130n RDC=0 C0=0 RPAR=1e12
+Rd2 d2 0 1u
+Rg1 c1 0 1G
+Rg2 d1 0 1G
+Rg3 dm 0 1G
+* SAT-model copies with big ISATM must agree with the K model in the linear region
+Icm2 0 e1 DC 0 AC 1
+X3 e1 0 e1 0 CMC_SAT L=2.2m LS=130n RDC=0 C0=0 RPAR=1e12 ISATM=1000
+Idm2 0 f1 DC 0 AC 1
+X4 f1 fm f2 fm CMC_SAT L=2.2m LS=130n RDC=0 C0=0 RPAR=1e12 ISATM=1000
+Rf2 f2 0 1u
+Rg4 e1 0 1G
+Rg5 f1 0 1G
+Rg6 fm 0 1G
+.ac lin 1 100k 100k
+.control
+run
+let w = 2*pi*100k
+let lcm = imag(v(c1))/w
+let ldm_k = imag(v(d1)-v(d2))/w
+let lcm_t = imag(v(e1))/w
+let ldm_t = imag(v(f1)-v(f2))/w
+let cmc1_lcm_k = lcm
+let cmc1_ldm_k = ldm_k
+let cmc1_lcm_t = lcm_t
+let cmc1_ldm_t = ldm_t
+print cmc1_lcm_k cmc1_ldm_k cmc1_lcm_t cmc1_ldm_t
+quit
+.endc
+.end

@@ -1,0 +1,16 @@
+* B1 BEH-CON-FFC single-contact drop and heating at Hirose FH12 limits: 0.5 A, 50 mohm max (FH12 2010.9)
+* v2: added scalar v_drop
+* P = I^2 R = 0.25*0.05 = 12.5 mW ; drop = 25 mV
+Is 0 n 0.5
+Rc n 0 50m
+Bpw pw 0 V = 0.5*0.5*0.05
+Rpw pw 0 1G
+.control
+op
+let v_drop = v(n)
+print v_drop
+let e_v = 0.5*0.05
+let e_p = 0.25*0.05
+print e_v e_p
+.endc
+.end

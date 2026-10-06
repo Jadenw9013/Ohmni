@@ -1,0 +1,44 @@
+* BEH-IC-CHARGER-SOT235 B1: constant-current phase. Vin=5 V, Rprog=10k -> Ireg = 1000/10 = 100 mA ; battery 3.7 V (ideal source, above precondition threshold).
+* v2: scalar printed as 'name = value' lines (ibat_cc_A, tj_cc_C); behavior unchanged
+* Analytic: Ibat = 1000 V / 10 kohm = 0.100 A ; Pd = (5-3.7)*0.1 + 5*50u = 0.1303 W ; Tj = 25 + 230*0.1303 = 54.97 C
+* BEH-IC-CHARGER-SOT235 behavioural linear Li-ion charger, MCP73831 class (behavioural_approximation). ngspice 42 stock.
+* pins: vdd vss prog vbat stat   (SOT-23-5 numbers: STAT=1 VSS=2 VBAT=3 VDD=4 PROG=5 per DS20001984H p11 as transcribed in ohmni tests/corpus annotation; package binding maps them)
+* Ireg = 1000 V / Rprog ('IREG(mA)=1000/RPROG(kohm)' from the Microchip datasheet mirror extract); CC->CV via I = Ireg*tanh((Vreg-Vbat)/(rcv*Ireg)) (rcv ASSUMED 0.3 ohm: the real CV loop gain is not published in the opened extracts)
+* Precondition: Vbat < vptrh -> I = pre*Ireg ; termination flag when I < term*Ireg in CV. thermal limiter memoryless at tsd (150 C from extract).
+* UNVERIFIED (ASSUMPTION): vptrh, pre, term, rdo, rcv, stat resistances.
+.subckt chg_cc_cv vdd vss prog vbat stat params: vreg=4.2 vptrh=3.0 pre=0.1 term=0.075 rcv=0.3 rdo=1.0 rth=230 ta=25 tsd=150 cth=0.05 iqs=50u uvlo=3.75
+* PROG pin regulated to 1.0 V by an internal source; the current through the external Rprog sets Ireg = 1000 * I(Rprog)  (= 1000 V / Rprog) -> node ir = Ireg in amps. PROG floating -> Ireg = 0 (standby), as in the datasheet.
+Vpg prog vss dc 1.0
+Bir ir vss V=1000*(-i(Vpg))
+Rir ir vss 1e9
+* thermal
+Vta tamb vss dc {ta}
+Rth tj tamb {rth}
+Cth tj tamb {cth} ic=0
+Bpd vss tj I=max((v(vdd)-v(vbat))*v(ib)+v(vdd)*iqs,0)
+Bts ts vss V=0.5*(1+tanh((v(tj)-{tsd})/2))
+* charge current (A) as node value
+Bib ib vss V=0.5*(1+tanh((v(vdd)-v(vss)-{uvlo})/0.05))*(1-v(ts))*min( v(ir)*( 0.5*(1-tanh((v(vbat)-{vptrh})/0.02))*{pre}+0.5*(1+tanh((v(vbat)-{vptrh})/0.02)) )*tanh(max({vreg}-v(vbat),0)/({rcv}*v(ir)+1e-6)) , max(v(vdd)-v(vbat),0)/{rdo} )
+Rib ib vss 1e9
+Bchg vbat vss I=-v(ib)
+Bdd vdd vss I=v(ib)+{iqs}
+* STAT: low while charging (above termination), high when complete, Hi-Z when not powered
+Bfl fl vss V=0.5*(1+tanh((v(ib)-{term}*v(ir))/(0.1*{term}*v(ir)+1e-6)))*0.5*(1+tanh((v(vdd)-{uvlo})/0.05))
+Bst stat vss I=v(fl)*(v(stat)-v(vss))/100 + (1-v(fl))*0.5*(1+tanh((v(vdd)-{uvlo})/0.05))*(v(stat)-v(vdd))/1k
+.ends
+
+Vdd vdd 0 5
+Vb vbat 0 3.7
+Rprog prog 0 10k
+X1 vdd 0 prog vbat stat chg_cc_cv
+Rst stat vdd 10k
+.nodeset v(x1.tj)=50
+.control
+set noaskquit
+op
+let ibat = i(Vb)
+echo ibat_cc_A = $&ibat
+echo tj_cc_C = $&v(x1.tj)
+quit
+.endc
+.end

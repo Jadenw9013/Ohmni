@@ -1,0 +1,48 @@
+* BEH-IC-OPAMP B2: slew-rate bench. Unity-gain follower, 5 V supply, input step 0.5 -> 2.5 V (inside CM range V+ -1.5 = 3.5 V).
+* v2: scalar printed as 'name = value' (sr_follower_v_per_us); behavior unchanged
+* Analytic: SR = 0.3 V/us (LM358 typ). 10..90 % rise of a 2 V step slew-limited: dv=1.6 V -> t = 1.6/0.3 = 5.33 us.
+* BEH-IC-OPAMP behavioural macromodel (behavioural_approximation). ngspice 42 stock, no XSPICE.
+* pins: inp inm vcc vee out
+* Single dominant pole: Aol = gm*R1, GBW = gm/(2*pi*C1); slew limit via tanh-limited gm current Imax = SR*C1.
+* Rail limits: out clamped to [vee+vol, vcc-vdrop]; Rout in series; Iq constant supply current; input bias flows OUT of pins when ib>0 (PNP input, LM358) and INTO pins when ib<0 (CMOS leakage sign ignored).
+.subckt opamp_gp inp inm vcc vee out params: aol=100k gbw=700k sr=0.3Meg vos=3m ib=20n ios=2n vol=5m vdrop=1.5 rout=50 iq=350u cin=2p rid=2Meg
+.param c1v=1n
+.param gmv={6.283185307*gbw*c1v}
+.param r1v={aol/gmv}
+.param imaxv={sr*c1v}
+* input offset (series with +) and bias currents
+Vos ip1 inp dc {vos}
+Ibp vcc ip1 dc {ib+ios/2}
+Ibm vcc inm dc {ib-ios/2}
+Rid ip1 inm {rid}
+Cip ip1 vee {cin}
+Cim inm vee {cin}
+* gm stage into dominant pole node n1 (absolute node: v(n1) is the unclamped open-loop output target)
+Bgm 0 n1 I={imaxv*( max(tanh(gmv*(v(ip1)-v(inm))/imaxv),0)*0.5*(1-tanh((v(n1)-(v(vcc)+0.5))/0.05)) + min(tanh(gmv*(v(ip1)-v(inm))/imaxv),0)*0.5*(1+tanh((v(n1)-(v(vee)-0.5))/0.05)) )}
+R1 n1 0 {r1v}
+C1 n1 0 {c1v}
+* wind-up limit: gm current is switched off smoothly once n1 passes rail+0.5 V (n1 then holds near the rail; recovery is fast)
+* output stage: clamp to rails, series Rout
+Bo oi vee V=max(min(v(n1), v(vcc)-vdrop), v(vee)+vol)-v(vee)
+Ro oi out {rout}
+* supply accounting: load current sourced by the output is drawn from vcc (Bo is referenced to vee, so sunk current returns to vee)
+Bsupp vcc vee I=max(i(Ro),0)
+* supply current
+Iq vcc vee dc {iq}
+.ends
+
+Vcc vcc 0 5
+Vin in 0 pulse(0.5 2.5 2u 1n 1n 40u 100u)
+X1 in out vcc 0 out opamp_gp aol=100k gbw=700k sr=0.3Meg vos=0 ib=0 ios=0
+Rl out 0 100k
+.tran 20n 30u
+.control
+set noaskquit
+run
+meas tran t10 when v(out)=0.66 cross=1
+meas tran t90 when v(out)=2.26 cross=1
+let sr = (2.26-0.66)/(t90-t10)/1e6
+echo sr_follower_v_per_us = $&sr
+quit
+.endc
+.end

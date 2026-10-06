@@ -1,8 +1,9 @@
 * BEH-TRN-BJT B4: Vce(sat)/Vbe(sat) of the fits against datasheet limits
+* v2: absolute include path made relative; printed named scalars vce_1..vce_3 and vbe_1..vbe_3 instead of v(c1) v(b1) ...
 * 2N3904 (2N3903/D Rev 9): Ic=10mA/Ib=1mA Vce(sat)<=0.2 V, Vbe(sat) 0.65-0.85 V ; Ic=50mA/Ib=5mA Vce(sat)<=0.3 V, Vbe(sat) 0.85-0.95 V
 * PN2222A (PN2222A/D Rev 1.1.0): Ic=150mA/Ib=15mA (Ib ASSUMED, standard forced beta 10) Vce(sat)<=0.3 V, Vbe(sat) 0.6-1.2 V
 * Expected: each value inside its limit. Tolerance: hard limit.
-.include /home/claude/behavior/bench/trn_bjt/models_bjt_r6fit.lib
+.include models_bjt_r6fit.lib
 Q1 c1 b1 0 Q2N3904_R6FIT
 Ic1 0 c1 10m
 Ib1 0 b1 1m
@@ -15,7 +16,13 @@ Ib3 0 b3 15m
 .control
 set noaskquit
 op
-print v(c1) v(b1) v(c2) v(b2) v(c3) v(b3)
+let vce_1 = v(c1)
+let vbe_1 = v(b1)
+let vce_2 = v(c2)
+let vbe_2 = v(b2)
+let vce_3 = v(c3)
+let vbe_3 = v(b3)
+print vce_1 vbe_1 vce_2 vbe_2 vce_3 vbe_3
 quit
 .endc
 .end

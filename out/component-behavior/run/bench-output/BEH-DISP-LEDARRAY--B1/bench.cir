@@ -1,0 +1,106 @@
+* B1: 8x8 row-scanned LED matrix (common-column cathode via 150 ohm), 8 non-overlapping row slots of 124 us in a 1 ms frame
+* OHMNI BEH-LED-INDICATOR D-model cards (behavioural_approximation, NOT vendor models)
+* Extracted by /home/claude/behavior/tmp_R5_fit.py from Vishay datasheet table and chart points, see R5.md S2..S6
+* TNOM=27 C. CJO values from datasheet Cj where given (red 30 pF @0V TLDR4400; green 50 pF TLHG5800); others ASSUMPTION.
+.model LED_RED   D (IS=1.846e-16 N=2.0  RS=16.4 CJO=30p VJ=1.0 M=0.33 TT=0 BV=15 IBV=10u EG=2.2 XTI=3)
+.model LED_GREEN D (IS=3.793e-18 N=2.38 RS=8.76 CJO=50p VJ=1.0 M=0.33 TT=0 BV=15 IBV=10u EG=2.8 XTI=3)
+.model LED_BLUE  D (IS=7.641e-24 N=3.0  RS=6.28 CJO=60p VJ=1.0 M=0.33 TT=0 BV=5.5 IBV=10u EG=4.6 XTI=3)
+.model LED_WHITE D (IS=1.247e-19 N=3.0  RS=6.3  CJO=60p VJ=1.0 M=0.33 TT=0 BV=5.5 IBV=10u EG=3.9 XTI=3)
+* RGB package dies anchored on Broadcom ASMB-MTB0-0A3A2 typical VF at 20 mA (red 2.1 V, green 3.1 V, blue 3.1 V); N, RS assumed (S-ASSUMPTION)
+.model LED_RGB_R D (IS=4.848e-18 N=2.0 RS=12  CJO=30p VJ=1.0 M=0.33 BV=5.5 IBV=10u EG=2.2 XTI=3)
+.model LED_RGB_GB D (IS=4.526e-19 N=3.0 RS=6.3 CJO=60p VJ=1.0 M=0.33 BV=5.5 IBV=10u EG=4.0 XTI=3)
+
+VROW0 row0 0 PULSE(0 5 0u 1n 1n 124u 1m)
+VROW1 row1 0 PULSE(0 5 125u 1n 1n 124u 1m)
+VROW2 row2 0 PULSE(0 5 250u 1n 1n 124u 1m)
+VROW3 row3 0 PULSE(0 5 375u 1n 1n 124u 1m)
+VROW4 row4 0 PULSE(0 5 500u 1n 1n 124u 1m)
+VROW5 row5 0 PULSE(0 5 625u 1n 1n 124u 1m)
+VROW6 row6 0 PULSE(0 5 750u 1n 1n 124u 1m)
+VROW7 row7 0 PULSE(0 5 875u 1n 1n 124u 1m)
+D0_0 row0 col0 LED_RED
+D0_1 row0 col1 LED_RED
+D0_2 row0 col2 LED_RED
+D0_3 row0 col3 LED_RED
+D0_4 row0 col4 LED_RED
+D0_5 row0 col5 LED_RED
+D0_6 row0 col6 LED_RED
+D0_7 row0 col7 LED_RED
+D1_0 row1 col0 LED_RED
+D1_1 row1 col1 LED_RED
+D1_2 row1 col2 LED_RED
+D1_3 row1 col3 LED_RED
+D1_4 row1 col4 LED_RED
+D1_5 row1 col5 LED_RED
+D1_6 row1 col6 LED_RED
+D1_7 row1 col7 LED_RED
+D2_0 row2 col0 LED_RED
+D2_1 row2 col1 LED_RED
+D2_2 row2 col2 LED_RED
+D2_3 row2 col3 LED_RED
+D2_4 row2 col4 LED_RED
+D2_5 row2 col5 LED_RED
+D2_6 row2 col6 LED_RED
+D2_7 row2 col7 LED_RED
+D3_0 row3 col0 LED_RED
+D3_1 row3 col1 LED_RED
+D3_2 row3 col2 LED_RED
+VSENSE row3 sa33 0
+D3_3 sa33 col3 LED_RED
+D3_4 row3 col4 LED_RED
+D3_5 row3 col5 LED_RED
+D3_6 row3 col6 LED_RED
+D3_7 row3 col7 LED_RED
+D4_0 row4 col0 LED_RED
+D4_1 row4 col1 LED_RED
+D4_2 row4 col2 LED_RED
+D4_3 row4 col3 LED_RED
+D4_4 row4 col4 LED_RED
+D4_5 row4 col5 LED_RED
+D4_6 row4 col6 LED_RED
+D4_7 row4 col7 LED_RED
+D5_0 row5 col0 LED_RED
+D5_1 row5 col1 LED_RED
+D5_2 row5 col2 LED_RED
+D5_3 row5 col3 LED_RED
+D5_4 row5 col4 LED_RED
+D5_5 row5 col5 LED_RED
+D5_6 row5 col6 LED_RED
+D5_7 row5 col7 LED_RED
+D6_0 row6 col0 LED_RED
+D6_1 row6 col1 LED_RED
+D6_2 row6 col2 LED_RED
+D6_3 row6 col3 LED_RED
+D6_4 row6 col4 LED_RED
+D6_5 row6 col5 LED_RED
+D6_6 row6 col6 LED_RED
+D6_7 row6 col7 LED_RED
+D7_0 row7 col0 LED_RED
+D7_1 row7 col1 LED_RED
+D7_2 row7 col2 LED_RED
+D7_3 row7 col3 LED_RED
+D7_4 row7 col4 LED_RED
+D7_5 row7 col5 LED_RED
+D7_6 row7 col6 LED_RED
+D7_7 row7 col7 LED_RED
+VC0 col0 cx0 0
+RC0 cx0 0 150
+VC1 col1 cx1 0
+RC1 cx1 0 150
+VC2 col2 cx2 0
+RC2 cx2 0 150
+VC3 col3 cx3 0
+RC3 cx3 0 150
+VC4 col4 cx4 0
+RC4 cx4 0 150
+VC5 col5 cx5 0
+RC5 cx5 0 150
+VC6 col6 cx6 0
+RC6 cx6 0 150
+VC7 col7 cx7 0
+RC7 cx7 0 150
+.tran 2u 20m 0 2u
+.meas tran iled AVG i(VSENSE) FROM=2m TO=20m
+.meas tran icol AVG i(VC3) FROM=2m TO=20m
+.meas tran ipk MAX i(VSENSE) FROM=2m TO=20m
+.end

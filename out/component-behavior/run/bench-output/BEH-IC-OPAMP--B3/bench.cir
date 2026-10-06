@@ -1,0 +1,59 @@
+* BEH-IC-OPAMP B3: output rails + input offset + bias current effect.
+* v2: scalars printed as 'name = value'; behavior unchanged
+* (a) open loop, +-100 mV overdrive: high rail = Vcc - 1.5 = 3.5 V (LM358 V+ -1.5 V, TI SLOS068 extract), low rail = 5 mV (20 mV max spec; typ assumed 5 mV)
+* (b) follower, Vin=1 V, Rs=100k on + input; Vos=3 mV, Ib=20 nA, Ios=2 nA -> Ibp = 21 nA out of pin
+*     Vout = Vin + Vos + Ibp*Rs = 1 + 0.003 + 0.0021 = 1.0051 V
+* BEH-IC-OPAMP behavioural macromodel (behavioural_approximation). ngspice 42 stock, no XSPICE.
+* pins: inp inm vcc vee out
+* Single dominant pole: Aol = gm*R1, GBW = gm/(2*pi*C1); slew limit via tanh-limited gm current Imax = SR*C1.
+* Rail limits: out clamped to [vee+vol, vcc-vdrop]; Rout in series; Iq constant supply current; input bias flows OUT of pins when ib>0 (PNP input, LM358) and INTO pins when ib<0 (CMOS leakage sign ignored).
+.subckt opamp_gp inp inm vcc vee out params: aol=100k gbw=700k sr=0.3Meg vos=3m ib=20n ios=2n vol=5m vdrop=1.5 rout=50 iq=350u cin=2p rid=2Meg
+.param c1v=1n
+.param gmv={6.283185307*gbw*c1v}
+.param r1v={aol/gmv}
+.param imaxv={sr*c1v}
+* input offset (series with +) and bias currents
+Vos ip1 inp dc {vos}
+Ibp vcc ip1 dc {ib+ios/2}
+Ibm vcc inm dc {ib-ios/2}
+Rid ip1 inm {rid}
+Cip ip1 vee {cin}
+Cim inm vee {cin}
+* gm stage into dominant pole node n1 (absolute node: v(n1) is the unclamped open-loop output target)
+Bgm 0 n1 I={imaxv*( max(tanh(gmv*(v(ip1)-v(inm))/imaxv),0)*0.5*(1-tanh((v(n1)-(v(vcc)+0.5))/0.05)) + min(tanh(gmv*(v(ip1)-v(inm))/imaxv),0)*0.5*(1+tanh((v(n1)-(v(vee)-0.5))/0.05)) )}
+R1 n1 0 {r1v}
+C1 n1 0 {c1v}
+* wind-up limit: gm current is switched off smoothly once n1 passes rail+0.5 V (n1 then holds near the rail; recovery is fast)
+* output stage: clamp to rails, series Rout
+Bo oi vee V=max(min(v(n1), v(vcc)-vdrop), v(vee)+vol)-v(vee)
+Ro oi out {rout}
+* supply accounting: load current sourced by the output is drawn from vcc (Bo is referenced to vee, so sunk current returns to vee)
+Bsupp vcc vee I=max(i(Ro),0)
+* supply current
+Iq vcc vee dc {iq}
+.ends
+
+Vcc vcc 0 5
+Vh inh 0 1.1
+Vl inl 0 0.9
+Vref ref 0 1.0
+X1 inh ref vcc 0 outh opamp_gp
+X2 inl ref vcc 0 outl opamp_gp
+Rlh outh 0 100k
+Rll outl 0 100k
+Vin in 0 1.0
+Rs in inp 100k
+X3 inp outf vcc 0 outf opamp_gp
+Rlf outf 0 100k
+.control
+set noaskquit
+op
+let vhi = v(outh)
+let vlo = v(outl)
+let vf = v(outf)
+echo vhi_v = $&vhi
+echo vlo_v = $&vlo
+echo vfollow_v = $&vf
+quit
+.endc
+.end

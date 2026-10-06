@@ -1,0 +1,30 @@
+B2b Two supercapacitors in series with 1 kohm balancing resistors across each (leakage RLK 100k / 200k)
+* v2: scalars edlc2b_v1 / v2 / f1 / f2 printed (vector print replaced)
+* R1' = 100k||1k = 990.099 ; R2' = 200k||1k = 995.025 ; v1 = 5*R1'/(R1'+R2') = 2.4938 V, v2 = 2.5062 V (v2 still 6 mV over 2.5 V: flag 1)
+* OHMNI BEH-CAP-EDLC subcircuit (supercapacitor, single series-RC + leakage), behavioural_approximation
+* ports: p(+) n(-) flag. flag bitmask: 1 = V > VR, 2 = reverse (< -10 mV), 8 = V > VSURGE
+.subckt ohm_edlc p n flag params: C0=10 ESR=0.02 RLK=125k VR=2.5 VSURGE=2.8
+Resr p b {ESR}
+Cb b n {C0}
+Rlk b n {RLK}
+Bflag flag 0 V = '(v(b,n) > {VR} ? 1 : 0) + (v(b,n) < -0.01 ? 2 : 0) + (v(b,n) > {VSURGE} ? 8 : 0)'
+.ends
+
+Vs in 0 5
+Xc1 in mid f1 ohm_edlc C0=10 ESR=0.02 RLK=100k VR=2.5
+Xc2 mid 0 f2 ohm_edlc C0=10 ESR=0.02 RLK=200k VR=2.5
+Rb1 in mid 1k
+Rb2 mid 0 1k
+Rf1 f1 0 1meg
+Rf2 f2 0 1meg
+.op
+.control
+op
+let edlc2b_v1 = v(in)-v(mid)
+let edlc2b_v2 = v(mid)
+let edlc2b_f1 = v(f1)
+let edlc2b_f2 = v(f2)
+print edlc2b_v1 edlc2b_v2 edlc2b_f1 edlc2b_f2
+quit
+.endc
+.end

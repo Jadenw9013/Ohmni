@@ -1,0 +1,21 @@
+B1 Supercapacitor self-discharge through leakage: v(t) = V0*exp(-t/(RLK*C))
+* C=10 F, RLK=1 kohm (accelerated), tau = 1e4 s, V0 = 2.5 V -> v(1e4 s) = 0.9197 V
+* OHMNI BEH-CAP-EDLC subcircuit (supercapacitor, single series-RC + leakage), behavioural_approximation
+* ports: p(+) n(-) flag. flag bitmask: 1 = V > VR, 2 = reverse (< -10 mV), 8 = V > VSURGE
+.subckt ohm_edlc p n flag params: C0=10 ESR=0.02 RLK=125k VR=2.5 VSURGE=2.8
+Resr p b {ESR}
+Cb b n {C0}
+Rlk b n {RLK}
+Bflag flag 0 V = '(v(b,n) > {VR} ? 1 : 0) + (v(b,n) < -0.01 ? 2 : 0) + (v(b,n) > {VSURGE} ? 8 : 0)'
+.ends
+
+Xc p 0 f ohm_edlc C0=10 ESR=0.02 RLK=1k VR=2.5
+Rf f 0 1meg
+.ic v(p)=2.5 v(xc.b)=2.5
+.tran 50 12000 uic
+.control
+run
+meas tran vtau find v(p) at=10000
+quit
+.endc
+.end

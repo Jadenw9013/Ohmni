@@ -1,0 +1,44 @@
+* BEH-TRN-BJT B2: common-emitter amplifier, voltage divider bias, Re bypassed
+* Design: Vcc=12, R1=47k, R2=10k, Rc=4.7k, Re=1k, Ce=100u, Cin=10u, Cout=10u, RL=open
+* Analytic (hand design, Vbe=0.65 assumed):
+*   Vth = 12*10/57 = 2.105 V ; Rth=47k||10k = 8.246k
+*   Ic ~= (Vth - 0.65)/(Re + Rth/(beta+1)) with beta~170 -> 1.455/(1000+48) = 1.39 mA
+*   re = Vt/Ic = 0.025865/1.39m = 18.6 ohm ; |Av| ~= Rc/(re+RE_int) , RE_int=1.19 ohm (model RE)
+*   |Av| ~= 4700/(18.6+1.2) = 237 ; ro correction (VA=100 -> ro~(100+Vce)/Ic) -> ~0.95 => ~225
+*   expected |Av| = 225, tolerance 15 % (Vbe uncertainty moves Ic about 3 %, plus rb,beta terms)
+* OHMNI R6 BJT models fitted to onsemi datasheet bands (see parts/R6.md, BEH-TRN-BJT section 4)
+* fidelity: behavioural_approximation. NOT a vendor model. Basis: ngspice Gummel-Poon fit to
+* hFE min/max bands, Vce(sat), Vbe(sat), fT (datasheet), Cobo/Cibo (datasheet); VAF, BR, TR, XTB, XTI, EG are ASSUMPTIONs.
+.model Q2N3904_R6FIT NPN(IS=1.4693e-14 BF=325.03 NF=1 VAF=100 IKF=0.061592 ISE=2.5511e-14 NE=1.331 BR=4 NR=1 RB=12.769 RE=1.1905 RC=1 CJE=9.4e-12 VJE=0.75 MJE=0.33 CJC=6.7e-12 VJC=0.75 MJC=0.33 TF=4.775e-10 XTF=2 ITF=0.4 VTF=4 TR=5e-08 XTB=1.5 EG=1.11 XTI=3)
+.model Q2N2222A_R6FIT NPN(IS=3.2019e-14 BF=558.78 NF=1 VAF=100 IKF=0.21803 ISE=2.7068e-14 NE=1.2366 BR=4 NR=1 RB=6.6976 RE=0.097874 RC=0.56613 CJE=29e-12 VJE=0.75 MJE=0.33 CJC=17e-12 VJC=0.75 MJC=0.33 TF=4.608e-10 XTF=2 ITF=0.5 VTF=4 TR=6e-8 XTB=1.5 EG=1.11 XTI=3)
+
+Vcc vcc 0 12
+R1 vcc b 47k
+R2 b 0 10k
+Rc vcc c 4.7k
+Re e 0 1k
+Ce e 0 100u
+Q1 c b e Q2N3904_R6FIT
+Cin vin b 10u
+Vin vin 0 dc 0 ac 1m
+Cout c vout 10u
+Rload vout 0 1G
+.control
+set noaskquit
+op
+let icq = (12-v(c))/4700
+let vceq = v(c)-v(e)
+print icq vceq
+set icv = $&icq
+set vcev = $&vceq
+ac lin 1 10k 10k
+let av = mag(v(vout)/v(vin))
+print av
+let gm = $icv/0.025865
+let ro = (100+$vcev)/$icv
+let rl = 4700*ro/(4700+ro)
+let pred = gm*rl/(1+gm*1.1905+gm*12.769/170)
+print gm ro pred
+quit
+.endc
+.end

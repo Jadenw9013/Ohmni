@@ -1,0 +1,68 @@
+* BEH-IC-RS232-DIP16 B2: receiver Schmitt thresholds and inversion. Input swept -15..+15..-15 V through the 5 kohm input, Vcc=5 V.
+* v2: scalars printed as 'name = value' (vt_plus_v, vt_minus_v); behavior unchanged
+* Expect ROUT high for input low (< VT-=1.0 V) and ROUT low once input exceeds VT+ = 2.0 V ; returns high below VT-=1.0 V.
+* BEH-IC-RS232-DIP16 MAX232-class dual driver/receiver with charge pump (behavioural_approximation). ngspice 42 stock.
+* pins (package order 1..16): c1p vsp c1m c2p c2m vsm t2out r2in r2out t2in t1in r1out r1in t1out gnd vcc
+* Charge pump is behavioural: VS+ = 2*Vcc - vdrop - rpump*I(load), VS- = -(VS+) with its own rpump; the four 1 uF capacitors are REQUIRED by the real part but are not simulated (c1p/c1m/c2p/c2m are left as unconnected stubs; a netlist check should insist on them).
+* Driver: inverting (TIN high -> OUT negative), Ro = 300 ohm (extract), swing = VS+ - 1.0 / VS- + 1.0 unloaded, slew limited to 30 V/us (extract).
+* Receiver: 5k to GND, Schmitt VT+ = 2.0 V / VT- = 1.0 V (mid of extract ranges 1.7..2.4 / 0.8..1.2), inverting (RIN high -> ROUT low), push-pull logic output Roh=Rol=100 ohm (ASSUMED).
+.model dpump d(is=1e-14)
+.subckt max232 c1p vsp c1m c2p c2m vsm t2out r2in r2out t2in t1in r1out r1in t1out gnd vcc params: vdrop=1.0 rpump=200 ro=300 vsat=1.0 sr=30e6 icc0=8m vtp=2.0 vtm=1.0 rrx=5k
+* charge pump rails (current drawn from the pump = current sourced by the driver outputs, supply current ~ 2x that)
+Bvsp vsp gnd V=2*(v(vcc)-v(gnd))-{vdrop}-{rpump}*(v(ips1)+v(ips2))
+Bvsm vsm gnd V=-(2*(v(vcc)-v(gnd))-{vdrop})+{rpump}*(v(ims1)+v(ims2))
+Rsp vsp gnd 1e9
+Rsm vsm gnd 1e9
+Bicc vcc gnd I={icc0}+2*(v(ips1)+v(ips2)+v(ims1)+v(ims2))
+* two drivers
+.subckt drv tin out gnd vcc vsp vsm ips ims params: ro=300 vsat=1.0 sr=30e6
+Bn n gnd V=0.5*(1+tanh((v(tin)-(v(gnd)+1.4))/0.05))
+* inverting: target = vsm+vsat when TIN high, vsp-vsat when low
+Btg tg gnd V=v(n)*(v(vsm)+{vsat})+(1-v(n))*(v(vsp)-{vsat})
+Cs s gnd 1n ic=0
+Bs gnd s I={sr}*1n*tanh(5*(v(tg)-v(s))/1)
+Rss s gnd 1e12
+Bo out gnd I=(v(out)-v(s))/{ro}
+* current delivered by the driver (A, as a node voltage): positive = sourcing from VS+, negative = sinking into VS-
+Bps ips gnd V=max((v(s)-v(out))/{ro},0)
+Bms ims gnd V=max((v(out)-v(s))/{ro},0)
+Rps ips gnd 1e9
+Rms ims gnd 1e9
+.ends
+Xd1 t1in t1out gnd vcc vsp vsm ips1 ims1 drv params: ro={ro} vsat={vsat} sr={sr}
+Xd2 t2in t2out gnd vcc vsp vsm ips2 ims2 drv params: ro={ro} vsat={vsat} sr={sr}
+* two receivers
+.subckt rcv rin rout gnd vcc params: vtp=2.0 vtm=1.0 rrx=5k
+Rin rin gnd {rrx}
+Bs sset gnd V=0.5*(1+tanh(((v(gnd)+{vtm})-v(rin))/0.01))
+Br srst gnd V=0.5*(1+tanh((v(rin)-(v(gnd)+{vtp}))/0.01))
+Cq q gnd 1 ic=1
+Bq gnd q I=1e8*(v(sset)*(1-v(srst))*(1-v(q))-v(srst)*v(q))
+Rq q gnd 1e12
+* inverting: q=1 when input low -> ROUT high
+Bo rout gnd I=(v(rout)-(v(gnd)+v(q)*(v(vcc)-v(gnd))))/100
+.ends
+Xr1 r1in r1out gnd vcc rcv params: vtp={vtp} vtm={vtm} rrx={rrx}
+Xr2 r2in r2out gnd vcc rcv params: vtp={vtp} vtm={vtm} rrx={rrx}
+.ends
+
+Vcc vcc 0 5
+Vin r1i 0 pwl(0 -15 100u 15 200u -15)
+X1 c1p vsp c1m c2p c2m vsm t2o r2i r2o t2i t1i r1o r1i o1 0 vcc max232
+Rg t1i 0 1k
+Rg2 t2i 0 1k
+Rg3 r2i 0 1k
+Cl r1o 0 20p
+.tran 20n 200u
+.control
+set noaskquit
+run
+meas tran tf when v(r1o)=2.5 fall=1
+meas tran tr when v(r1o)=2.5 rise=1
+let vtp = -15 + 30*tf/100u
+let vtm = 15 - 30*(tr-100u)/100u
+echo vt_plus_v = $&vtp
+echo vt_minus_v = $&vtm
+quit
+.endc
+.end

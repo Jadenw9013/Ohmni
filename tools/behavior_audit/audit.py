@@ -219,24 +219,49 @@ class BehaviorAudit:
         path = self.root / "docs/behavior/BENCH_REPINS.json"
         return _json(path) if path.exists() else {"schema_version": 1, "repins": []}
 
-    def _apply_repins(self, locked: dict[str, dict]) -> tuple[dict[str, dict], list[str]]:
-        """Apply human-approved deck re-pins. Only the deck hash may move.
+    def _apply_repins(self, locked: dict[str, dict], *, corrections: bool = True,
+                      additions: bool = True) -> tuple[dict[str, dict], list[str]]:
+        """Apply human-approved bench ledger entries in a fixed order.
 
-        Expected values, tolerances, measure labels and file paths stay locked.
-        Each re-pin must name the hash it replaces, so re-pins chain in order.
+        repins:      move only a locked deck hash (expected, tolerance, labels, file stay).
+        corrections: replace a locked expected list; each entry must quote the exact
+                     list it replaces and every new item must be numerically checkable.
+        additions:   add a new bench identity that the baseline did not have.
+        Every entry carries a recorded human approval; unapproved entries are refused.
         """
+        from .benches import numeric_contract
+
         effective = {key: dict(value) for key, value in locked.items()}
         errors: list[str] = []
-        allowed = {"file", "baseline_netlist_sha256", "netlist_sha256", "reason"}
+        ledger = self.bench_repins()
         seen_ids: set[str] = set()
-        for repin in self.bench_repins().get("repins", []):
-            repin_id = repin.get("id")
-            if not repin_id or repin_id in seen_ids:
-                errors.append(f"bench re-pin has a missing or duplicate id: {repin_id}")
-            seen_ids.add(repin_id)
-            if not repin.get("approved_by") or not repin.get("approved_on"):
-                errors.append(f"{repin_id}: bench re-pin lacks a recorded human approval")
+
+        def approved(entry: dict) -> bool:
+            entry_id = entry.get("id")
+            if not entry_id or entry_id in seen_ids:
+                errors.append(f"bench ledger entry has a missing or duplicate id: {entry_id}")
+            seen_ids.add(entry_id)
+            if not entry.get("approved_by") or not entry.get("approved_on"):
+                errors.append(f"{entry_id}: bench ledger entry lacks a recorded human approval")
+                return False
+            return True
+
+        def checkable(entry_id: str, bench_id: str, expected) -> bool:
+            if not isinstance(expected, list) or not expected:
+                errors.append(f"{entry_id}: {bench_id}: expected list missing")
+                return False
+            for item in expected:
+                if (not isinstance(item, dict) or not item.get("measure") or not item.get("basis")
+                        or numeric_contract(item)["expected"] is None):
+                    errors.append(f"{entry_id}: {bench_id}: item is not numerically checkable or lacks a basis: {item}")
+                    return False
+            return True
+
+        allowed = {"file", "baseline_netlist_sha256", "netlist_sha256", "reason"}
+        for repin in ledger.get("repins", []):
+            if not approved(repin):
                 continue
+            repin_id = repin["id"]
             for bench_id, row in repin.get("benches", {}).items():
                 if bench_id not in effective:
                     errors.append(f"{repin_id}: unknown locked bench {bench_id}")
@@ -254,10 +279,56 @@ class BehaviorAudit:
                     errors.append(f"{repin_id}: {bench_id}: re-pin target hash invalid")
                     continue
                 effective[bench_id]["netlist_sha256"] = row["netlist_sha256"]
+        if corrections:
+            for correction in ledger.get("corrections", []):
+                if not approved(correction):
+                    continue
+                correction_id = correction["id"]
+                for bench_id, row in correction.get("benches", {}).items():
+                    if bench_id not in effective:
+                        errors.append(f"{correction_id}: unknown locked bench {bench_id}")
+                        continue
+                    if row.get("baseline_expected") != effective[bench_id]["expected"]:
+                        errors.append(f"{correction_id}: {bench_id}: correction does not quote the locked expected list")
+                        continue
+                    if not row.get("derivation"):
+                        errors.append(f"{correction_id}: {bench_id}: correction lacks a derivation")
+                        continue
+                    if not checkable(correction_id, bench_id, row.get("expected")):
+                        continue
+                    effective[bench_id]["expected"] = row["expected"]
+        if additions:
+            for addition in ledger.get("additions", []):
+                if not approved(addition):
+                    continue
+                addition_id = addition["id"]
+                for bench_id, row in addition.get("benches", {}).items():
+                    if bench_id in effective:
+                        errors.append(f"{addition_id}: {bench_id}: an addition cannot replace an existing bench")
+                        continue
+                    file = str(row.get("file", ""))
+                    if not file.startswith("docs/behavior/bench/") or not file.endswith(".cir"):
+                        errors.append(f"{addition_id}: {bench_id}: addition file must be an authored bench deck")
+                        continue
+                    if not re.fullmatch(r"[0-9a-f]{64}", str(row.get("netlist_sha256", ""))):
+                        errors.append(f"{addition_id}: {bench_id}: addition hash invalid")
+                        continue
+                    if not row.get("derivation") or not checkable(addition_id, bench_id, row.get("expected")):
+                        if not row.get("derivation"):
+                            errors.append(f"{addition_id}: {bench_id}: addition lacks a derivation")
+                        continue
+                    effective[bench_id] = {"file": file, "expected": row["expected"],
+                                           "netlist_sha256": row["netlist_sha256"]}
         return effective, errors
 
-    def _bench_contracts(self) -> dict[str, dict]:
-        return self._apply_repins(self._state()["bench_contracts"])[0]
+    def _bench_contracts(self, *, corrected: bool = True) -> dict[str, dict]:
+        """Locked contracts with ledger entries applied.
+
+        corrected=False applies only deck re-pins, so model/runtime receipts that
+        parse the original spec expectation text keep reading exactly that text.
+        """
+        return self._apply_repins(self._state()["bench_contracts"],
+                                  corrections=corrected, additions=corrected)[0]
 
     def _write_state(self, state: dict[str, Any]) -> None:
         state["heartbeat_time"] = _now()
@@ -635,7 +706,7 @@ class BehaviorAudit:
         return required
 
     def check_benches(self) -> CheckResult:
-        required = set(self._state()["bench_contracts"])
+        required = set(self._bench_contracts())
         results: dict[str, dict[str, Any]] = {}
         errors: list[str] = []
         passing = 0
@@ -913,12 +984,21 @@ class BehaviorAudit:
         for key in ("bench_contracts", "protected_baseline", "rules_baseline", "canary_hashes", "run_id"):
             if state.get(key) != baseline.get(key):
                 errors.append(f"state changed locked baseline field {key}")
-        effective, repin_errors = self._apply_repins(baseline["bench_contracts"])
+        full, repin_errors = self._apply_repins(baseline["bench_contracts"])
         errors.extend(repin_errors)
+        # Class records keep the spec's expectations; ledger corrections and
+        # additions apply on top and are verified separately above.
+        effective, _ = self._apply_repins(baseline["bench_contracts"], corrections=False, additions=False)
         if self.bench_contracts() != effective:
             errors.append("bench expectations, tolerances or source decks changed")
-        repinned = {row["file"] for key, row in effective.items()
-                    if row["netlist_sha256"] != baseline["bench_contracts"][key]["netlist_sha256"]}
+        repinned = {row["file"] for key, row in full.items()
+                    if key not in baseline["bench_contracts"]
+                    or row["netlist_sha256"] != baseline["bench_contracts"][key]["netlist_sha256"]}
+        for key, row in full.items():
+            if key not in baseline["bench_contracts"]:
+                path = self.root / row["file"]
+                if not path.is_file() or _sha_bytes(path.read_bytes()) != row["netlist_sha256"]:
+                    errors.append(f"added bench deck missing or changed: {key}")
         changed = set(_git(self.root, "diff", "--name-only", state["baseline_commit"], "--", "docs/behavior/bench").split())
         if changed - repinned:
             errors.append("authored bench/include corpus changed from the baseline commit outside an approved re-pin: "
