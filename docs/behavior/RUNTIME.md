@@ -61,3 +61,7 @@ The adapter evaluates reference-scoped DC ratings after a successful run. `Ratin
 Every original class rating and failure declaration remains in the result. Unrelated reference literals and nonquantitative triggers are not silently reinterpreted. The fixed-resistor overvoltage response can run the authored1G-ohm open approximation in a separate result, labeled `failure_approximation`. It does not erase the original violation or claim physical damage prediction. Other incomplete damage responses remain explicit.
 
 `scripts/generate_behavior_examples.py` exports the existing authored probes as typed CircuitIR data. Loading validates recipe/research/generator identity, and compilation reproduces the original netlist before adding optional current probes. These are reference test circuits, not a user's saved design. The62 bindings and118 unbound-entry reasons remain distinct.
+
+## Reference behavior UI
+
+The Components dialog has a Behavior tab with source status, fidelity, confidence, limitations, and a Run reference circuit control. The62 authored reference circuits run through NgspiceAdapter in a separate output directory; the118 unbound entries show specific blockers. This is a learning reference, not a saved-project simulation or a manufacturing approval. Unknown ratings are explicit. Failed or canceled requests cannot reuse prior measurements.

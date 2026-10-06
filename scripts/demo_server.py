@@ -87,7 +87,7 @@ STATIC_ASSETS=("index.html","app.js","view-model.js","board-model.js","board-vie
                "learning-model.js","circuit-lessons.js","circuit-lab.js",
                "project-workbench.js","project-contract.js","scope-view.js",
                "reference-board.json","styles.css","visual-explorer.css",
-               "component-visuals.json","component-stories.js","component-stories.css",
+               "component-visuals.json","component-stories.js","component-stories.css","component-behavior.js",
                "component-sandbox.js","sandbox-model.js","home.js","home.css","landing.css","landing-board.png","workbench-theme.css",
                "visual-assets.js","visual-renderer.js","visual-explorer.js","visual-layers.js","visual-board-scene.js","visual-inventory.js","visual-version.js",
                "vendor/three.module.js","vendor/three.core.min.js",
@@ -775,6 +775,8 @@ def _build_guide(report):
 class DemoHTTPServer(ThreadingHTTPServer):
     def __init__(self,server_address,handler_class,*,store=None,web_root=WEB_ROOT):
         self.workspace_lock=None
+        self.behavior_service=None
+        self.behavior_service_lock=threading.Lock()
         try:
             self.server_instance_id=uuid.uuid4().hex[:16]
             self.static_assets,self.ui_version=_load_web_snapshot(web_root)
@@ -974,7 +976,33 @@ class DemoHandler(SimpleHTTPRequestHandler):
         except BaseException:  # noqa: BLE001 - exercise evidence failures fail closed
             return self._json({"error":"exercise_unavailable"},HTTPStatus.SERVICE_UNAVAILABLE)
 
+    def _behavior(self, entry_id, *, run=False):
+        if run:
+            payload=self._project_payload(set())
+            if payload is None:return
+        else:
+            error=self._poll_contract_error()
+            if error is not None:return self._reject(error,HTTPStatus.CONFLICT)
+        from ohmni.application.component_behavior import BehaviorRunBusy, ComponentBehaviorService
+        from ohmni.behavior.loader import BehaviorRegistryError, _find_repo_root
+        try:
+            with self.server.behavior_service_lock:
+                if self.server.behavior_service is None:
+                    self.server.behavior_service=ComponentBehaviorService(
+                        _find_repo_root(ROOT),self.server.store.output_root/"behavior-runs")
+                service=self.server.behavior_service
+            if run:return self._json({"result":service.run(entry_id),**self.server._identity()})
+            return self._json({"component":service.describe(entry_id),**self.server._identity()})
+        except BehaviorRunBusy:
+            return self._json({"error":"behavior_run_busy"},HTTPStatus.CONFLICT)
+        except BehaviorRegistryError:
+            return self._json({"error":"behavior_reference_unavailable"},HTTPStatus.SERVICE_UNAVAILABLE)
+        except Exception:  # noqa: BLE001 - failed service requests must not disclose local paths
+            return self._json({"error":"behavior_run_unavailable"},HTTPStatus.SERVICE_UNAVAILABLE)
+
     def do_POST(self):
+        behavior_path=re.fullmatch(r"/api/behavior/(OHM-[0-9]{3})/run",self.path)
+        if behavior_path:return self._behavior(behavior_path[1],run=True)
         if self.path=="/api/projects":return self._post_project()
         if self.path=="/api/exercises/sensor-rail":return self._sensor_exercise(answer=True)
         revision_path=re.fullmatch(r"/api/projects/([0-9a-f]{16})/revisions",self.path)
@@ -1042,6 +1070,8 @@ class DemoHandler(SimpleHTTPRequestHandler):
             try:return self._json({"options":project_options(),**self.server._identity()})
             except BaseException:  # noqa: BLE001 - unavailable catalog choices fail closed
                 return self._json({"error":"project_unavailable"},HTTPStatus.SERVICE_UNAVAILABLE)
+        behavior_path=re.fullmatch(r"/api/behavior/(OHM-[0-9]{3})",request_path)
+        if behavior_path:return self._behavior(behavior_path[1])
         if request_path=="/api/components":
             from ohmni.application.component_library import (
                 LibraryQuery,
