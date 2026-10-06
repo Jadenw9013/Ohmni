@@ -24,9 +24,9 @@
     "stage5/AUD-BENCH-001": 2,
     "stage5/AUD-SOURCE-001": 2,
     "stage5/AUD-VERIFY-001": 2,
-    "stage6/AUD-BENCH-001": 1,
-    "stage6/AUD-SOURCE-001": 1,
-    "stage6/AUD-VERIFY-001": 1
+    "stage6/AUD-BENCH-001": 2,
+    "stage6/AUD-SOURCE-001": 2,
+    "stage6/AUD-VERIFY-001": 2
   },
   "baseline_commit": "050507726684c120a942ae434088ba1a7e76579b",
   "bench_contracts": {
@@ -3532,16 +3532,16 @@
     "stage5/AUD-BENCH-001": 2,
     "stage5/AUD-SOURCE-001": 2,
     "stage5/AUD-VERIFY-001": 2,
-    "stage6/AUD-BENCH-001": 1,
-    "stage6/AUD-SOURCE-001": 1,
-    "stage6/AUD-VERIFY-001": 1
+    "stage6/AUD-BENCH-001": 2,
+    "stage6/AUD-SOURCE-001": 2,
+    "stage6/AUD-VERIFY-001": 2
   },
   "hard_stop": null,
-  "heartbeat_time": "2026-10-05T23:07:47Z",
+  "heartbeat_time": "2026-10-05T23:24:00Z",
   "last_checkpoint": {
     "entries_touched": [],
-    "number": 29,
-    "path": "out/component-behavior/run/checkpoints/029-stage6.md",
+    "number": 30,
+    "path": "out/component-behavior/run/checkpoints/030-stage6.md",
     "rule_hash": "f240b5f2beb9b8d56d2901fa5b663c5d877d0d6c68c84209b8e61301aafc21d3",
     "stage": "stage6",
     "status": "failed"
@@ -4039,6 +4039,11 @@
       },
       "reason": "Ratings/failure software and limited probes implemented. Nonquantitative failure triggers, transient peak/RMS/energy, reference-specific context and parked corpus acceptance remain unresolved.",
       "status": "blocked"
+    },
+    "stage6": {
+      "gate": "out/component-behavior/stage-6/UI-GATE.md",
+      "reason": "UI artifact gate passes; inherited source/bench/research acceptance remains blocked.",
+      "status": "implemented"
     }
   },
   "stage_status": "blocked_by_checkpoint"
