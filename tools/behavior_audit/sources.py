@@ -21,6 +21,31 @@ def reference_ids(text: str) -> list[str]:
     return sorted(set(re.findall(r"\bS\d+\b", expanded)), key=lambda x: int(x[1:]))
 
 
+def _artifact_binding_errors(root, key: str) -> str | None:
+    """A local reference is resolved only by named repository files whose bytes are locked."""
+    from pathlib import Path
+
+    path = Path(root) / "docs/behavior/SOURCE_BINDINGS.json"
+    if not path.exists():
+        return "unbound"
+    bindings = _json(path)
+    entry = bindings.get("artifact_bindings", {}).get(key)
+    if not entry:
+        return "unbound"
+    if not bindings.get("approved_by") or not bindings.get("approved_on"):
+        return "binding lacks a recorded approval"
+    files = entry.get("files") or {}
+    if not files:
+        return "binding names no files"
+    for relative, digest in files.items():
+        target = (Path(root) / relative).resolve()
+        if Path(root).resolve() not in target.parents or not target.is_file():
+            return f"bound file missing: {relative}"
+        if _sha_bytes(target.read_bytes()) != digest:
+            return f"bound file changed: {relative}"
+    return None
+
+
 def resolve_class_sources(root, record: dict) -> tuple[list[dict], list[str]]:
     raw = (root / "COMPONENT_BEHAVIOR_SPEC.md").read_bytes()
     lines = raw.decode("utf-8").splitlines()
@@ -63,7 +88,9 @@ def resolve_class_sources(root, record: dict) -> tuple[list[dict], list[str]]:
             line_number, line = matches[0]
             urls = sorted(_urls_in(line))
             if not urls:
-                errors.append(f"{record['behavior_id']}/{identity}: local or unresolved reference requires an explicit artifact binding: {line}")
+                problem = _artifact_binding_errors(root, f"{record['behavior_id']}/{identity}")
+                if problem:
+                    errors.append(f"{record['behavior_id']}/{identity}: local or unresolved reference requires an explicit artifact binding: {line}" + ("" if problem == "unbound" else f" ({problem})"))
             rows.append({"id": identity, "urls": urls, "source_line": line_number,
                          "source_text": line, "source_sha256": _sha_bytes(raw),
                          "origin": "spec_bibliography"})

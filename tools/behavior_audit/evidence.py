@@ -21,8 +21,13 @@ def source_errors(urls: set[str], ledger: list[dict], run_dir: Path) -> list[str
             continue
         status = row.get("http_status")
         digest = row.get("content_sha256", "")
+        manual = row.get("manual_download")
+        # A browser download by a named person is accepted only with its own
+        # provenance; it never claims an HTTP status it did not observe.
+        manual_ok = (isinstance(manual, dict) and manual.get("downloaded_by")
+                     and manual.get("downloaded_on") and status is None)
         if (
-            type(status) is int and 200 <= status < 300
+            (type(status) is int and 200 <= status < 300 or manual_ok)
             and re.fullmatch(r"[0-9a-f]{64}", str(digest))
             and row.get("timestamp") and row.get("tool_used")
         ):

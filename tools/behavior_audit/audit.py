@@ -493,11 +493,48 @@ class BehaviorAudit:
                 urls.update(source["urls"])
         return urls
 
+    def source_bindings(self) -> dict[str, Any]:
+        path = self.root / "docs/behavior/SOURCE_BINDINGS.json"
+        return _json(path) if path.exists() else {}
+
+    def _superseded(self, missing: list[str], ledger: list[dict]) -> tuple[list[str], list[str]]:
+        """An unfetchable cited URL is satisfied only by an approved supersession
+        whose replacement document has its own successful archived fetch."""
+        bindings = self.source_bindings()
+        table = bindings.get("supersessions", {})
+        approved = bool(bindings.get("approved_by")) and bool(bindings.get("approved_on"))
+        remaining, errors = [], []
+        prefix = "AUD-SOURCE-001: missing successful archived fetch: "
+        for line in missing:
+            url = line[len(prefix):] if line.startswith(prefix) else None
+            entry = table.get(url) if url else None
+            if not entry:
+                remaining.append(line)
+                continue
+            replacement = entry.get("archive_url")
+            if not approved or not replacement or replacement == url:
+                errors.append(f"{url}: supersession lacks approval or a distinct replacement")
+                remaining.append(line)
+                continue
+            if entry.get("supports") not in {"yes", "partial", "no"} or not entry.get("evidence") and entry.get("supports") == "yes":
+                errors.append(f"{url}: supersession must state what the replacement supports")
+                remaining.append(line)
+                continue
+            if entry.get("supports") != "yes" and not entry.get("note"):
+                errors.append(f"{url}: partial or conflicting supersession must explain the gap")
+                remaining.append(line)
+                continue
+            replacement_errors = evidence.source_errors({replacement}, ledger, self.run_dir)
+            if replacement_errors:
+                remaining.extend(replacement_errors)
+        return remaining, errors
+
     def check_source_ledger(self) -> CheckResult:
         cited = self.cited_urls()
         ledger = _read_jsonl(self.run_dir / "FETCH_LEDGER.jsonl")
-        missing = evidence.source_errors(cited, ledger, self.run_dir)
-        field_failures = []
+        missing, supersession_errors = self._superseded(evidence.source_errors(cited, ledger, self.run_dir), ledger)
+        missing = sorted(set(missing))
+        field_failures = list(supersession_errors)
         for path in (self.root / "docs/behavior/gapfill").glob("OHM-*.md"):
             if self._gapfill_evidence(path.stem) is None:
                 field_failures.append(f"{path.name}: per-entry gapfill lacks machine-readable audit-evidence fields")
@@ -511,8 +548,12 @@ class BehaviorAudit:
         for path in sorted((self.root / "src/ohmni/behavior/data/bindings").glob("*.json")):
             for order in _json(path).get("package_pin_orders", []):
                 cite = order.get("citation", {})
+                bound = self.source_bindings().get("citation_urls", {}).get(cite.get("document_id"))
                 if cite.get("document_id") != "ohmni-component-behavior-spec" and not cite.get("url"):
-                    field_failures.append(f"{path.stem}/{order.get('package_name')}: external citation has no fetched URL: {cite.get('document_id')}")
+                    if not bound:
+                        field_failures.append(f"{path.stem}/{order.get('package_name')}: external citation has no fetched URL: {cite.get('document_id')}")
+                    else:
+                        field_failures.extend(evidence.source_errors({bound}, ledger, self.run_dir))
         for entry_id in _entries(self.root):
             gap = self._gapfill_evidence(entry_id)
             if gap:
