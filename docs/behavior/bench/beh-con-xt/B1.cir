@@ -1,4 +1,5 @@
 * B1 BEH-CON-XT contact self-heating at rated current with R(T) feedback (op)
+* v2: scalars p_xt60 and dt_xt60 added
 * thermal node t: volts = deltaT in kelvin, Rth in K/W (ASSUMPTION: Rth = 30 K / (Irated^2 * R0), i.e. 30 K rise at rated current)
 * XT60: Irated 30 A, R0 0.55 mohm (Amass v1.2).  XT30: Irated 15 A, R0 0.80 mohm (Amass V1.2).  alpha copper alloy 0.0039 /K (general physics, ASSUMPTION for brass)
 .param alpha=0.0039
@@ -16,7 +17,9 @@ Bp30 p30 0 V = {I30*I30*R30}
 Rp30 p30 0 1G
 .control
 op
-print v(p60) v(p30) v(t60) v(t30)
+let p_xt60 = v(p60)
+let dt_xt60 = v(t60)
+print p_xt60 dt_xt60
 * analytical: P = I^2 R0 ; dT = P*Rth/(1 - P*alpha*Rth)
 let e_p60 = 30*30*0.55e-3
 let e_p30 = 15*15*0.8e-3

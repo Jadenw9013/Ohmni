@@ -1,4 +1,5 @@
 * B2 voltage drop of a 0.3 m two-wire harness, AWG24 (84.2 ohm/km, copper at 20C), Molex KK style:
+* v2: scalar vload added
 * per conductor: 2 mated pairs x 10 mohm + 2 crimps x 2 mohm + wire. Load 1 ohm from 5 V.
 .param Rwire={0.0842*0.3} Rmate=10m Rcrimp=2m Rl=1
 Vs src 0 5
@@ -7,7 +8,8 @@ Rload a b {Rl}
 Rc2 b 0 {2*Rmate+2*Rcrimp+Rwire}
 .control
 op
-print v(a)-v(b)
+let vload = v(a)-v(b)
+print vload
 let expect = 5*1/(1+2*(0.02+0.004+0.02526))
 print expect
 quit

@@ -1,4 +1,5 @@
 * BEH-IC-RS232-DIP16 B3: driver slew rate, 3 kohm + 2.5 nF load, TIN step. Datasheet (extract): 30 V/us.
+* v2: scalars printed as 'name = value' (v_low_v, v_high_v, sr_v_per_us_val); behavior unchanged
 * Datasheet SR = 30 V/us (extract). Model: slew-limited internal node (Imax = SR*1 nF) plus Ro=300 ohm into 100 pF (tau 30 ns). Measured 10..90 % rate is ~27 V/us (soft tanh knee + RC tail) -> within 10 % of 30.
 .include max232.lib
 Vcc vcc 0 5
@@ -20,7 +21,9 @@ let hi = v0 + 0.9*(v1-v0)
 meas tran ta when v(o1)=$&lo cross=1
 meas tran tb when v(o1)=$&hi cross=1
 let sr = (hi-lo)/(tb-ta)/1e6
-echo RESULT v_low=$&v0 v_high=$&v1 sr_V_per_us=$&sr
+echo v_low_v = $&v0
+echo v_high_v = $&v1
+echo sr_v_per_us_val = $&sr
 quit
 .endc
 .end

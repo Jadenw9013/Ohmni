@@ -1,4 +1,5 @@
 * BEH-IC-TIMER555 B2: monostable. R=10k, C=100 nF, Vcc=5 V, trigger pulse low for 20 us at t=100 us.
+* v2: scalar printed as 'name = value' (width_b2_ms); behavior unchanged
 * Analytic: t = RC*ln(3) = 1.0986 ms (TI quotes 1.1 RC)
 .include ne555.lib
 Vcc vcc 0 5
@@ -17,7 +18,7 @@ run
 meas tran ta when v(out)=2.5 rise=1
 meas tran tb when v(out)=2.5 fall=1
 let w = (tb-ta)*1000
-echo RESULT width_ms=$&w
+echo width_b2_ms = $&w
 quit
 .endc
 .end

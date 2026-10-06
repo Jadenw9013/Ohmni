@@ -1,4 +1,5 @@
 * B3 10/100BASE-T pair through jack contacts: 100 ohm source, Rc 20 mohm in each of 2 mated contacts, 100 ohm cable, 100 ohm termination
+* v2: removed duplicate print of meas results
 * Expected DC gain = 100/(100+0.02+0.02+100) = 0.49990 ; line is matched so gain is flat to the line's length-limited band
 .param Rc=20m
 Vd in 0 DC 0 AC 1
@@ -12,7 +13,6 @@ Rt d 0 100
 run
 meas ac g find vm(d) at=1k
 meas ac ghi find vm(d) at=50meg
-print g ghi
 quit
 .endc
 .end

@@ -1,4 +1,5 @@
 * BEH-IC-OPAMP B2: slew-rate bench. Unity-gain follower, 5 V supply, input step 0.5 -> 2.5 V (inside CM range V+ -1.5 = 3.5 V).
+* v2: scalar printed as 'name = value' (sr_follower_v_per_us); behavior unchanged
 * Analytic: SR = 0.3 V/us (LM358 typ). 10..90 % rise of a 2 V step slew-limited: dv=1.6 V -> t = 1.6/0.3 = 5.33 us.
 .include opamp_gp.lib
 Vcc vcc 0 5
@@ -12,7 +13,7 @@ run
 meas tran t10 when v(out)=0.66 cross=1
 meas tran t90 when v(out)=2.26 cross=1
 let sr = (2.26-0.66)/(t90-t10)/1e6
-echo RESULT sr_v_per_us=$&sr
+echo sr_follower_v_per_us = $&sr
 quit
 .endc
 .end

@@ -1,4 +1,5 @@
 * BEH-IC-COMPARATOR B1: DC threshold and offset. Vcc=5 V, Vref=2.5 V on IN-, slow ramp (0.2 V in 20 ms => 10 uV/us, delay error < 15 uV) on IN+, 10k pull-up.
+* v2: scalar printed as 'vtrip_v = value'; behavior unchanged
 * Output low when IN+ < IN- - Vos  => trip (output rising through 2.5 V) at IN+ = 2.5 - 0.002 = 2.498 V (Vos=+2 mV defined as V(ip1)=V(inp)+Vos)
 .include lm393.lib
 Vcc vcc 0 5
@@ -12,7 +13,7 @@ set noaskquit
 run
 meas tran ttrip when v(out)=2.5 rise=1
 let vtrip = 2.4+0.2*ttrip/20m
-echo RESULT vtrip=$&vtrip
+echo vtrip_v = $&vtrip
 quit
 .endc
 .end

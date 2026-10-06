@@ -1,4 +1,5 @@
 * B1 screw/pluggable terminal overcurrent flag: flag=1 when I_contact > Irated*derate
+* v2: scalar flag_ovr and i_contact added
 * MSTB 2,5 rated 12 A (Phoenix 1757019); derate 1.0 single, 0.8 assumed for all positions loaded
 .param Irated=12 derate=0.8 Iload=10 Rc=3m
 Vs a 0 12
@@ -13,7 +14,9 @@ Bp pw 0 V = i(Vsense)**2 * {2*Rc}
 Rp pw 0 1G
 .control
 op
-print i(Vsense) v(flag) v(pw)
+let flag_ovr = v(flag)
+let i_contact = i(Vsense)
+print flag_ovr i_contact
 let expectI = 10
 let expectP = 100*0.006
 print expectI expectP

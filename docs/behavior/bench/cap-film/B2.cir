@@ -1,15 +1,20 @@
 B2 Film capacitor self-resonance with lead ESL: f0 = 1/(2 pi sqrt(ESL*C))
+* v2: ac sweep refined to 2000 pts/dec; scalars film2_f0_mhz / film2_zmin_ohm printed
 * C=1u, ESL=15n (ASSUMED lead/body inductance, see doc) -> f0 = 1.2995 MHz
 .include ohm_film.lib
 Iac 0 p dc 0 ac 1
 Rb p 0 1e12
 Xc p 0 f ohm_film C0=1u TAND=20e-4 FREF=1k ESL=15n RLK=1e15
 Rf f 0 1meg
-.ac dec 400 10k 100meg
+.ac dec 2000 10k 100meg
 .control
 run
 let zm = vm(p)
-meas ac zmin min zm
+meas ac film2_zmin min zm
+meas ac film2_fres min_at zm
+let film2_zmin_ohm = film2_zmin
+let film2_f0_mhz = film2_fres/1e6
+print film2_f0_mhz film2_zmin_ohm
 quit
 .endc
 .end

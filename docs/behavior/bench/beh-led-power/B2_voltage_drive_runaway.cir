@@ -1,4 +1,5 @@
 * B2: voltage-drive of a power LED (3.00 V source + 0.1 ohm) with the same electro-thermal iteration; shows why a current source is required:
+* v2: added scalars i_ratio_hot_cold = ilist[7]/ilist[0], i_cold, i_hot, tj_final; iteration unchanged
 * the same 0.7 A-class operating point drifts up with temperature (negative tempco => current grows). Rth_total 39 K/W, eta=0.30 (ASSUMPTIONs).
 .include models.inc
 V1 vs 0 DC 3.0
@@ -18,6 +19,14 @@ while k < 8
   let k = k + 1
 end
 print ilist
-print tj
+let i_cold = ilist[0]
+let i_hot = ilist[7]
+let i_ratio_hot_cold = i_hot/i_cold
+let tj_final = tj
+print i_cold
+print i_hot
+print i_ratio_hot_cold
+print tj_final
+quit
 .endc
 .end

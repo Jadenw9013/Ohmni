@@ -1,4 +1,5 @@
 * B1 contact resistance in a divider: mated connector, 2 contacts in series (signal + return)
+* v2: scalar vload printed; print of node vectors removed
 * JST PH initial 10 mohm max per mated contact pair (S: JST PH spec). Load 1 ohm, 5 V.
 .param Rc=10m Rl=1
 .subckt conn_contact a b Rc=10m
@@ -11,7 +12,6 @@ X2 n2 0 conn_contact Rc={Rc}
 .op
 .control
 op
-print v(n1) v(n2) i(Vs)
 let vload = v(n1)-v(n2)
 print vload
 let expect = 5*1/(1+2*0.01)

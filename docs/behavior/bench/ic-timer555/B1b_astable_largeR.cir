@@ -1,4 +1,5 @@
 * BEH-IC-TIMER555 B1b: astable with large R1 (Ron effect negligible). R1=10k R2=100k C=1 nF, Vcc=5 V.
+* v2: scalars printed as 'name = value'; behavior unchanged
 * Analytic (TI SLFS022K): f = 1.44/((R1+2R2)C) = 1.44/(210k*1n) = 6857 Hz ; tH = 0.693*110k*1n = 76.2 us ; tL = 0.693*100k*1n = 69.3 us ; duty = 110/210 = 52.38 %
 * Exact ideal-comparator: f = 1/(ln2*210k*1n) = 6870 Hz. Ron=30 ohm vs R1=10k: Vd=15 mV, effect < 0.2 %.
 .include ne555.lib
@@ -19,7 +20,9 @@ let per = t2-t1
 let f = 1/per
 let duty = (tf-t1)/per
 let per_us = per*1e6
-echo RESULT f_hz=$&f period_us=$&per_us duty=$&duty
+echo f_b1b_hz = $&f
+echo period_b1b_us = $&per_us
+echo duty_b1b = $&duty
 quit
 .endc
 .end

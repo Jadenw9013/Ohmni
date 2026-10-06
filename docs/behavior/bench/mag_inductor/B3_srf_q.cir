@@ -1,4 +1,5 @@
 B3 SRF and Q of a 15 nH RF wirewound chip (Murata LQW18AN15NJ10D: SRF 4.5 GHz min? listed 'max SRF 4.5GHz', Q 42 min, DCR 85 mohm max)
+* v2: added max_at (ind3_fpk = frequency of |Z| peak), meas renamed ind3_*, RESULT echo replaced by scalar ind3_q = Im/Re at 100 MHz (circuit unchanged)
 * Expected: f_peak = 1/(2 pi sqrt(L*Cp)) = 4.5 GHz ; Q(100 MHz) = Im(Z)/Re(Z) = 42 (Q test frequency ASSUMED 100 MHz)
 .include ind_sat.lib
 I1 0 p DC 0 AC 1
@@ -7,11 +8,12 @@ R1 p 0 1G
 .ac dec 400 10meg 20g
 .control
 run
-meas ac zpk max vm(p)
-meas ac xim find vi(p) at=100meg
-meas ac xre find vr(p) at=100meg
-let q = xim/xre
-echo RESULT Q_100MHz=$&q
+meas ac ind3_zpk max vm(p)
+meas ac ind3_fpk max_at vm(p)
+meas ac ind3_xim find vi(p) at=100meg
+meas ac ind3_xre find vr(p) at=100meg
+let ind3_q = ind3_xim/ind3_xre
+print ind3_q ind3_fpk
 quit
 .endc
 .end

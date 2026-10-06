@@ -1,4 +1,5 @@
 * BEH-IC-COMPARATOR B2: response time, falling output, RL=5.1k to 5 V, CL=15 pF (TI test circuit conditions), Vos=0.
+* v2: scalars printed as 'name = value'; behavior unchanged
 * (a) 100 mV step with 5 mV overdrive: expect ~1.3 us (TI typ) -- calibration target
 * (b) large (TTL-level) overdrive: expect ~0.3 us (TI typ) -- calibration target
 * Model analytic: t = td + tau*ln(1+Vs/(A*vod)) = 0.3u + 1.44u*ln(1+1/(200*0.005)) = 1.298 us ; large overdrive 1.4 V: 0.3u+1.44u*ln(1+1/280)=0.305 us ; plus output edge ~ Ron*... small
@@ -23,7 +24,8 @@ meas tran ta trig v(ina) val=2.5 fall=1 targ v(outa) val=2.5 fall=1
 meas tran tb trig v(inb) val=2.5 fall=1 targ v(outb) val=2.5 fall=1
 let tau = ta*1e6
 let tbb = tb*1e6
-echo RESULT t_5mV_us=$&tau t_TTL_us=$&tbb
+echo t_5mv_us = $&tau
+echo t_ttl_us = $&tbb
 quit
 .endc
 .end

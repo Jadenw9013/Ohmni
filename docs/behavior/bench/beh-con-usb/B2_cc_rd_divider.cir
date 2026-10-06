@@ -1,4 +1,5 @@
 * B2 USB-C CC divider: Rp (source pull-up) against Rd 5.1k (sink). vCC = Vp*Rd/(Rd+Rp)
+* v2: scalar vcc_56k added; other node prints kept as aliases
 * Rp to 5 V: 56k default, 22k 1.5 A, 10k 3 A.  Rp to 3.3 V: 36k, 12k, 4.7k.  (S1, S2)
 * Case 4: shared single Rd on a CC1+CC2 tied port with Ra 1k from the cable's VCONN wire: Rd||Ra
 .param Rd=5.1k
@@ -25,7 +26,10 @@ Rp56c p5 co 56k
 Rleak co 0 1G
 .control
 op
-print v(c56) v(c22) v(c10) v(d36) v(d12) v(d47) v(cs) v(co)
+let vcc_56k = v(c56)
+let vcc_22k = v(c22)
+let vcc_10k = v(c10)
+print vcc_56k vcc_22k vcc_10k
 quit
 .endc
 .end

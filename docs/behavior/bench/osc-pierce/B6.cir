@@ -1,4 +1,5 @@
 B6 Pierce critical gm with high-ESR 3225 8 MHz crystal (R1=500, NDK NX3225GD class max): ST gm_crit = 4*500*(2*pi*8e6)^2*(3p+18p)^2 = 2.23 mS. Edit gm; envelope ratio a(600us)/a(300us) ~1 at critical.
+* v2: bench now finds gm_crit itself: two transients (gm=2.2m and 2.6m via alterparam+reset, same circuit/timestep) and a linear root of ln(envelope ratio) -> scalar gm_crit_s; the original only printed the ratio at 2.2m (kept as env_ratio_gm_lo)
 .include ohm_xtal.lib
 .param gm=2.2m imax=0.3m rout=1meg cl1=32p cl2=32p cp=4p rf=1meg
 X1 xi xo ohm_xtal L1=43.99505512m C1=9f R1=500 C0=3p
@@ -12,12 +13,28 @@ Rout xo 0 {rout}
 Ikick 0 xi PULSE(0 20u 0 1n 1n 10n 1)
 .tran 2n 620u
 .control
+* pass 1 at gm=2.2m (as in the original bench)
 run
 let vx = v(xi)
 meas tran a300 PP vx FROM=298u TO=300u
 meas tran a600 PP vx FROM=618u TO=620u
-let ratio = a600/a300
-print ratio
+let env_ratio_gm_lo = a600/a300
+let lr_lo = ln(env_ratio_gm_lo)
+print env_ratio_gm_lo
+set lrlov = $&lr_lo
+* pass 2 at gm=2.6m, same circuit
+alterparam gm = 2.6m
+reset
+run
+let vx = v(xi)
+meas tran a300 PP vx FROM=298u TO=300u
+meas tran a600 PP vx FROM=618u TO=620u
+let env_ratio_gm_hi = a600/a300
+let lr_hi = ln(env_ratio_gm_hi)
+print env_ratio_gm_hi
+* envelope growth rate is ~linear in gm near critical: linear root of ln(ratio)=0 between the two passes
+let gm_crit_s = 2.2m + (2.6m - 2.2m)*(0 - $lrlov)/(lr_hi - $lrlov)
+print gm_crit_s
 quit
 .endc
 .end

@@ -1,4 +1,5 @@
 * B5 DFP enables VBUS only when the CC voltage is inside the attach window (0.25..2.04 V, ST AN5225 vRd-Connect, S3)
+* v2: scalars vbus_on_load (case A), vbus_off_noRd (B), vbus_off_sharedRd (C)
 * Case A: sink with Rd 5.1k per CC pin (CC voltage 0.417 V) -> VBUS on: v(outA) = 5 V * 100/(100+0.01) = 4.9995 V (100 ohm load)
 * Case B: sink with no Rd (CC floats to 5 V)           -> VBUS off: v(outB) ~ 0
 * Case C: ONE shared 5.1k on tied CC pins + cable Ra 1k (CC 0.0736 V) -> VBUS off: v(outC) ~ 0
@@ -20,7 +21,10 @@ XenC ccC vb outC 0 USBC_DFP_EN
 RlC outC 0 100
 .control
 op
-print v(ccA) v(outA) v(ccB) v(outB) v(ccC) v(outC)
+let vbus_on_load = v(outA)
+let vbus_off_nord = v(outB)
+let vbus_off_sharedrd = v(outC)
+print vbus_on_load vbus_off_nord vbus_off_sharedrd
 quit
 .endc
 .end

@@ -1,4 +1,5 @@
 * B2 BEH-CON-DCJACK third (switch) contact: battery disconnects when plug inserted
+* v2: sweep results exposed as scalars vload_unplugged (index 0) and vload_plugged (index 1)
 * plug control voltage 0 = unplugged (switch closed), 1 = plugged (switch open)
 * switch contact resistance 50 mohm (ASSUMPTION), tip contact 30 mohm (CUI), battery int. 0.1 ohm
 Vplug plug 0 0
@@ -16,7 +17,9 @@ S2 adp p1 plug 0 SWAD
 RL p1 0 100
 .control
 dc Vplug 0 1 1
-print v(p1) i(Vbat)
+let vload_unplugged = v(p1)[0]
+let vload_plugged = v(p1)[1]
+print vload_unplugged vload_plugged
 let e0 = 9*100/(100+0.1+0.05)
 let e1 = 12*100/(100+0.03)
 print e0 e1

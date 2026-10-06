@@ -1,4 +1,5 @@
 B2 CT low-frequency corner: gain Vb/Ip = (Rb/N) * jwL/(jwL+Rs+Rb), a high-pass at fc=(Rs+Rb)/(2 pi Lsec)
+* v2: meas names prefixed ct2_ (they already printed as scalars; circuit unchanged)
 * Expected fc = 103/(2 pi 0.01) = 1639.3 Hz ; at fc |gain| = 0.70711*(Rb/N) = 0.35355 V/A (Rb/N = 0.5 V/A)
 .include xfmr.lib
 Ip 0 p1 DC 0 AC 1
@@ -7,8 +8,8 @@ Rb s1 0 100
 .ac dec 200 100 1meg
 .control
 run
-meas ac fl when vm(s1)=0.35355 rise=1
-meas ac gmid find vm(s1) at=100k
+meas ac ct2_fc when vm(s1)=0.35355 rise=1
+meas ac ct2_gmid find vm(s1) at=100k
 quit
 .endc
 .end

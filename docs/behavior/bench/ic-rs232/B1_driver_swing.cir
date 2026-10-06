@@ -1,4 +1,5 @@
 * BEH-IC-RS232-DIP16 B1: driver levels with 3 kohm load to GND (RS-232 test load), Vcc=5 V; TIN low -> OUT positive, TIN high -> negative.
+* v2: scalars printed as 'name = value'; behavior unchanged
 * Pump: VS+ = 2*5-1.0 - 200*I ; unloaded driver level = VS+-1.0. Load: V = (VS+-1)*3000/(3000+300) ... solve with pump drop: I = V/3k (ignoring other current)
 *  VS+ = 9 - 200*I ; V = (VS+ - 1.0)*3000/3300  -> V = (8 - 200 V/3000)*0.90909 -> V = 7.2727 - 0.060606 V  -> V = 6.857 V ; (negative side symmetric: -6.857 V), VS+ = 9 - 200*2.286 mA = 8.54 V
 * TI SLLS047N extract: 'high level output voltage 5..7 V typ at RL=3k'. 
@@ -19,7 +20,14 @@ Rg6 r1i2 0 1k
 .control
 set noaskquit
 op
-echo RESULT v_out_tin_low=$&v(o1) v_out_tin_high=$&v(o2) vsp=$&v(vsp) vsm=$&v(vsm)
+let vo1 = v(o1)
+let vo2 = v(o2)
+let vsp_ = v(vsp)
+let vsm_ = v(vsm)
+echo v_out_tin_low_v = $&vo1
+echo v_out_tin_high_v = $&vo2
+echo vs_plus_v = $&vsp_
+echo vs_minus_v = $&vsm_
 quit
 .endc
 .end

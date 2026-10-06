@@ -1,4 +1,5 @@
 * BEH-PWR-LOADSWITCH L2: UVLO turn-on. TPS22810 datasheet text: UVLO rising threshold 2.54 V. VIN ramps 0 -> 5 V in 5 ms; load 100 ohm.
+* v2: removed print of meas results (duplicate names dropped); turn_on_v = VIN at the instant VOUT first reaches 1 V; vout_off_v = VOUT at 2.4 ms; circuit unchanged
 * Analytic: output stays off (< 1 % of VIN) until VIN = 2.54 V (t = 2.54 ms), output reaches VIN - I*RON shortly after (TON = 10 us lag).
 .include loadsw.inc
 Vin vin 0 PWL(0 0 5m 5)
@@ -12,7 +13,9 @@ run
 meas tran t_on when v(vout)=1.0 rise=1
 meas tran vout_at_2p4 find v(vout) at=2.4m
 meas tran vin_at_t_on find v(vin) when v(vout)=1.0 rise=1
-print t_on vout_at_2p4 vin_at_t_on
+let turn_on_v = vin_at_t_on
+let vout_off_v = vout_at_2p4
+print turn_on_v vout_off_v
 quit
 .endc
 .end

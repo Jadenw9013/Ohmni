@@ -1,4 +1,6 @@
 B2 Oscillator output-disable: OE pulled low (0 V) -> output held low, supply current drops to standby (1 uA)
+* v2 (REPIN-001): vout_max_v removed from print; its meas line already prints it once.
+* v2: scalars printed: vout_max_v, icc_sb_a (positive standby current); circuit unchanged
 .include ohm_xo.lib
 Vdd vdd 0 3.3
 Voe oe 0 0
@@ -7,8 +9,10 @@ Cl out 0 15p
 .tran 1n 25u
 .control
 run
-meas tran vmaxo MAX v(out) FROM=10u TO=20u
+meas tran vout_max_v MAX v(out) FROM=10u TO=20u
 meas tran idd AVG i(Vdd) FROM=10u TO=20u
+let icc_sb_a = -idd
+print icc_sb_a
 quit
 .endc
 .end

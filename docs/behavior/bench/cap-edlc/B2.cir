@@ -1,4 +1,5 @@
 B2 Two supercapacitors in series, unbalanced leakage, with and without 10 kohm balancing resistors
+* v2: scalars edlc2_v1 / v2 / f1 / f2 printed (vector print replaced)
 * 5 V across the stack; steady state v1 = 5*R1/(R1+R2).  R1=100k, R2=200k -> v1=1.667, v2=3.333 V (v2 > 2.5 V rating, flag 1)
 * flag f2 = 1 (V>VR) + 8 (V>2.8 V surge) = 9
 .include ohm_edlc.lib
@@ -10,7 +11,11 @@ Rf2 f2 0 1meg
 .op
 .control
 op
-print v(in,mid) v(mid) v(f1) v(f2)
+let edlc2_v1 = v(in)-v(mid)
+let edlc2_v2 = v(mid)
+let edlc2_f1 = v(f1)
+let edlc2_f2 = v(f2)
+print edlc2_v1 edlc2_v2 edlc2_f1 edlc2_f2
 quit
 .endc
 .end

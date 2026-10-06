@@ -1,4 +1,5 @@
 * BEH-REG-BUCK-DCS B4: TPS62130-style parameters (K = 400 ns, RDS(on) HS 90 mOhm / LS 40 mOhm typ, VQFN-16), 12 V -> 3.3 V, 2 A, L = 1 uH
+* v2: scalars re-exported via let (fsw_mhz, dil_a, eta_pct); circuit unchanged
 * Analytic: fsw(lossless) = 1/K = 2.50 MHz ("typically 2.5 MHz" in the datasheet text); dIL = (Vin-Vo)*K*Vo/Vin/L = 8.7*(400n*0.275)/1u = 0.957 A
 * Efficiency analytic (CCM): Ploss = 4*(0.275*0.09+0.725*0.04+0.05)... see run log
 .include buck_core.inc
@@ -23,7 +24,10 @@ meas tran pout_avg avg pout from=40u to=60u
 let fsw = 50/tper
 let dil = ilmax-ilmin
 let eta = pout_avg/pin_avg
-print fsw dil eta
+let fsw_mhz = fsw/1e6
+let dil_a = dil
+let eta_pct = eta*100
+print fsw_mhz dil_a eta_pct
 quit
 .endc
 .end

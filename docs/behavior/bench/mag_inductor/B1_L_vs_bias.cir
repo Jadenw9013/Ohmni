@@ -1,4 +1,5 @@
 B1 inductance vs DC bias, small-signal AC at 100 kHz, two real parts
+* v2: RESULT echo replaced by scalar prints: ind1_l_*_0 (0 A), ind1_l_*_isat (at Isat), ind1_l_*_2x (2*Isat) for both parts (circuit unchanged)
 * Expected: L(Isat)=(1-DROP)*L0. XAL4020-222ME: L0=2.2u Isat=5.6A at 30% -> 1.54u
 *           SRP7028A-1R8M: L0=1.8u Isat=16A at 20% -> 1.44u
 .include ind_sat.lib
@@ -26,7 +27,21 @@ foreach pt 0 1 2
  ac lin 1 100k 100k
  let l1 = imag(v(p1))/(2*pi*100k)
  let l2 = imag(v(p2))/(2*pi*100k)
- echo RESULT point=$pt L_XAL4020=$&l1 L_SRP7028A=$&l2
+ if $pt eq 0
+  let ind1_l_xal4020_0 = l1
+  let ind1_l_srp7028a_0 = l2
+  print ind1_l_xal4020_0 ind1_l_srp7028a_0
+ end
+ if $pt eq 1
+  let ind1_l_xal4020_isat = l1
+  let ind1_l_srp7028a_isat = l2
+  print ind1_l_xal4020_isat ind1_l_srp7028a_isat
+ end
+ if $pt eq 2
+  let ind1_l_xal4020_2x = l1
+  let ind1_l_srp7028a_2x = l2
+  print ind1_l_xal4020_2x ind1_l_srp7028a_2x
+ end
 end
 quit
 .endc

@@ -1,4 +1,5 @@
 * BEH-IC-OPAMP B3: output rails + input offset + bias current effect.
+* v2: scalars printed as 'name = value'; behavior unchanged
 * (a) open loop, +-100 mV overdrive: high rail = Vcc - 1.5 = 3.5 V (LM358 V+ -1.5 V, TI SLOS068 extract), low rail = 5 mV (20 mV max spec; typ assumed 5 mV)
 * (b) follower, Vin=1 V, Rs=100k on + input; Vos=3 mV, Ib=20 nA, Ios=2 nA -> Ibp = 21 nA out of pin
 *     Vout = Vin + Vos + Ibp*Rs = 1 + 0.003 + 0.0021 = 1.0051 V
@@ -21,7 +22,9 @@ op
 let vhi = v(outh)
 let vlo = v(outl)
 let vf = v(outf)
-echo RESULT vhi=$&vhi vlo=$&vlo vfollow=$&vf
+echo vhi_v = $&vhi
+echo vlo_v = $&vlo
+echo vfollow_v = $&vf
 quit
 .endc
 .end

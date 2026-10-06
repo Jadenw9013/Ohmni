@@ -1,4 +1,5 @@
 B1 Pierce oscillator, 8 MHz BVD crystal (C1=9f C0=3p R1=80), CL=18p, per-pin ground stray cp=4p => Cs(lumped)=cp/2=2p => C1=C2=2*(18p-2p)=32p, gm=5mS. Expect f ~ 8.000 MHz, report startup.
+* v2: print renamed dl -> dl_w (drive level, W); added vpk_xi_v scalar; tran/timestep/amp unchanged
 .include ohm_xtal.lib
 .param gm=5m imax=0.3m rout=5k cl1=32p cl2=32p cp=4p rf=1meg
 X1 xi xo ohm_xtal L1=43.99505512m C1=9f R1=80 C0=3p
@@ -22,8 +23,10 @@ let thr = 0.9*vpkf
 meas tran tstart WHEN vx=thr RISE=1
 let im = l.x1.lm#branch
 meas tran irms RMS im FROM=5.5m TO=6m
-let dl = 80*irms*irms
-print dl
+let dl_w = 80*irms*irms
+print dl_w
+let vpk_xi_v = vpkf
+print vpk_xi_v
 let vo = v(xo)
 meas tran voppf PP vo FROM=5.5m TO=6m
 quit

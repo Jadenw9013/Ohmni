@@ -1,4 +1,5 @@
 * BEH-IC-DIGITAL-IF D3: power-on-reset release of a core rail as a threshold detector with hysteresis (behavioural S switch).
+* v2: removed duplicate print of t_release (meas already prints it, duplicate name is dropped by the audit); added t_release_us = t_release*1e6; circuit unchanged
 * Source: Lattice iCE40 LP/HX data sheet DS1040 v3.4 (extract): VCC ramp-up POR trip 0.55-0.75 V (LP640/1K/4K/8K & HX), ramp-down trip <= 0.75 V, supply ramp rate 0.40 .. 10 V/ms (min/max, extract formatting unclear).
 * Model: ngspice SW turns ON at Vt+Vh (rising) and OFF at Vt-Vh (falling): Vt=0.64, Vh=0.01 -> release at 0.65 V rising (mid of 0.55-0.75), 0.63 V falling.
 * Analytic: t_release = Vtrip_up / ramp = 0.65 V / 1000 V/s = 650 us. Tolerance 1 %.
@@ -13,7 +14,8 @@ Rpu pu pn 10k
 set noaskquit
 run
 meas tran t_release when v(pn)=1.65 fall=1
-print t_release
+let t_release_us = t_release*1e6
+print t_release_us
 quit
 .endc
 .end

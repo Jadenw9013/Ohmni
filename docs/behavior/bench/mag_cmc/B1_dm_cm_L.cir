@@ -1,4 +1,5 @@
 B1 CMC differential-mode vs common-mode inductance at 100 kHz (WE-SL5 744272222 values: L=2.2 mH, LS=130 nH typ)
+* v2: RESULT echo replaced by scalar prints cmc1_lcm_k, cmc1_ldm_k, cmc1_lcm_t, cmc1_ldm_t (circuit unchanged)
 * Expected: k = sqrt(1-LS/L) = 0.99997 ; Lcm = L(1+k)/2 = 2.2e-3 H (both windings paralleled in CM) ; Ldm = 2L(1-k) = 1.3e-7 H (loop through both windings)
 .include cmc.lib
 * CM test: a1,b1 tied to node c1 ; a2,b2 tied to ground
@@ -28,7 +29,11 @@ let lcm = imag(v(c1))/w
 let ldm_k = imag(v(d1)-v(d2))/w
 let lcm_t = imag(v(e1))/w
 let ldm_t = imag(v(f1)-v(f2))/w
-echo RESULT Lcm_K=$&lcm Ldm_K=$&ldm_k Lcm_T=$&lcm_t Ldm_T=$&ldm_t
+let cmc1_lcm_k = lcm
+let cmc1_ldm_k = ldm_k
+let cmc1_lcm_t = lcm_t
+let cmc1_ldm_t = ldm_t
+print cmc1_lcm_k cmc1_ldm_k cmc1_lcm_t cmc1_ldm_t
 quit
 .endc
 .end

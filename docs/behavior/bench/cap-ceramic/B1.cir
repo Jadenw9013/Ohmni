@@ -1,18 +1,27 @@
 B1 MLCC DC-bias small-signal capacitance, ideal parasitics
+* v2: foreach unrolled so each bias prints its own scalar (ceramic1_ceff_v0..v4, uF); echo removed
 .include ohm_mlcc.lib
 Vb in 0 dc 0 ac 1
 Rs in x 0.01
 Xc x 0 f ohm_mlcc C0=10u V0=2 ESR=1u ESL=1p RLK=1e12 VR=100
 Rf f 0 1meg
 .control
-foreach vb 0 1 2 4
-  alter Vb dc = $vb
-  ac lin 1 1k 1k
-  let ii = (v(in)-v(x))/0.01
-  let ceffuF = imag(ii)/(2*pi*1k)*1e6
-  echo vb=$vb
-  print ceffuF
-end
+alter Vb dc = 0
+ac lin 1 1k 1k
+let ceramic1_ceff_v0 = imag((v(in)-v(x))/0.01)/(2*pi*1k)*1e6
+print ceramic1_ceff_v0
+alter Vb dc = 1
+ac lin 1 1k 1k
+let ceramic1_ceff_v1 = imag((v(in)-v(x))/0.01)/(2*pi*1k)*1e6
+print ceramic1_ceff_v1
+alter Vb dc = 2
+ac lin 1 1k 1k
+let ceramic1_ceff_v2 = imag((v(in)-v(x))/0.01)/(2*pi*1k)*1e6
+print ceramic1_ceff_v2
+alter Vb dc = 4
+ac lin 1 1k 1k
+let ceramic1_ceff_v4 = imag((v(in)-v(x))/0.01)/(2*pi*1k)*1e6
+print ceramic1_ceff_v4
 quit
 .endc
 .end

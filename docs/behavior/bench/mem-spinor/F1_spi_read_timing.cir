@@ -1,4 +1,5 @@
 * BEH-MEM-SPINOR F1: stimulus + checker for an SPI mode-0 READ transaction: CS# low, 8-bit opcode, 24-bit address, N data bytes, CS# high.
+* v2: replaced print of meas results (duplicate names dropped by audit) by unit-scaled scalars tcs_low_us, tces_ns; circuit unchanged
 * Required of an L3 flash model (SST25VF016B EOL supplement DS20005291A Table 3-2): SCK high/low >= 6 ns, CE# active setup TCES >= 5 ns, CE# high time TCPH >= 50 ns, data setup TDS >= 2 ns.
 * Analytic: CS# low time = (8 + 24 + 8*N)/fSCK.   Case 0Bh high-speed read has 8 extra dummy clocks: (8+24+8+8N)/fSCK.
 * This deck: fSCK = 25 MHz (40 ns period), opcode 03h, N = 256 bytes: (32 + 2048)*40 ns = 83.2 us plus the 10 ns lead-in (TCES) and 10 ns hold -> measured CS# low = 83.22 us expected.
@@ -16,7 +17,9 @@ set noaskquit
 run
 meas tran tcs_low trig v(cs) val=1.65 fall=1 targ v(cs) val=1.65 rise=1
 meas tran tces trig v(cs) val=1.65 fall=1 targ v(ck) val=1.65 rise=1
-print tcs_low tces
+let tcs_low_us = tcs_low*1e6
+let tces_ns = tces*1e9
+print tcs_low_us tces_ns
 quit
 .endc
 .end

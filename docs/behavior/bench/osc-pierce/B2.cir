@@ -1,4 +1,5 @@
 B2 Pierce loop small-signal check: Re/Im of total series loop impedance (crystal + amplifier network) vs frequency. Oscillation needs Re<0 at the frequency where Im=0. Same values as B1 (linear gm=5mS).
+* v2: meas f0 renamed f_loop_hz (meas WHEN already prints a bare line; rneg/rneg8 unchanged); circuit unchanged
 .include ohm_xtal.lib
 .param gm=5m rout=5k cl1=32p cl2=32p cp=4p rf=1meg
 Vt xi xc dc 0 ac 1
@@ -15,7 +16,7 @@ ac lin 8001 7.98e6 8.02e6
 let zt = 1/(-i(Vt))
 let rz = real(zt)
 let xz = imag(zt)
-meas ac f0 WHEN xz=0 CROSS=1
+meas ac f_loop_hz WHEN xz=0 CROSS=1
 meas ac rneg FIND rz AT=7.993e6
 meas ac rneg8 FIND rz AT=8e6
 quit

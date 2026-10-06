@@ -1,4 +1,5 @@
 * B1 TMDS current-mode link: sink terminates each leg 50 ohm to AVcc 3.3 V; source steers I=10 mA into one leg.
+* v2: scalar vdiff printed (renamed from vd)
 * Contact resistance 20 mohm per contact (Same Sky HD12-19-SMT: 20 mohm) in each leg.
 * Expected: V(dp)=3.3 V (undriven leg, no current), V(dn)=3.3-10m*(50+0.02)=2.7998 V ; Vdiff = 10m*50.02 = 0.5002 V
 .param Rc=20m
@@ -12,8 +13,8 @@ Rbp dp 0 1G
 .control
 op
 print v(dp) v(dn)
-let vd = v(dp)-v(dn)
-print vd
+let vdiff = v(dp)-v(dn)
+print vdiff
 quit
 .endc
 .end
