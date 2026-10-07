@@ -1,0 +1,775 @@
+{
+ "entries": [
+  {
+   "entry": "OHM-056",
+   "part": "Vishay 1N4148 (identified from doc; reference_part was None)",
+   "doc_checked": "Vishay 1N4148 Rev. 1.6, 07-Nov-2024 (doc 81857), pages 1-2 tables, page 2 Figs. 1-3",
+   "proposals": [
+    {
+     "param": "IS",
+     "value": 5.216e-09,
+     "unit": "A",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/docs/81857/1n4148.pdf",
+     "page": 2,
+     "evidence": "Fig. 2 \"Forward Current vs. Forward Voltage\", Tj = 25 C curve, typical forward curve, vector-extracted read points (IF, VF): (1e-06 A, 0.2629 V), (2e-06 A, 0.2978 V), (5e-06 A, 0.3446 V), (1e-05 A, 0.3797 V), (2e-05 A, 0.4153 V), (5e-05 A, 0.4620 V), (0.0001 A, 0.4965 V), (0.0002 A, 0.5305 V), (0.0005 A, 0.5751 V), (0.001 A, 0.6093 V), (0.002 A, 0.6438 V), (0.005 A, 0.6914 V), (0.01 A, 0.7295 V), (0.02 A, 0.7692 V), (0.05 A, 0.8259 V), (0.1 A, 0.8738 V); residuals mV: [-1.2, -0.9, -0.1, 0.3, 1.1, 1.8, 1.5, 0.7, -0.8, -1.6, -2.2, -1.6, 0.0, 1.6, 2.3, -1.3] (rms 1.4, max 2.3)",
+     "method": "Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over the full plotted 25 C range 1 uA to 100 mA (16 points). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. Cross-check against Fig. 1 (VF vs Tj) at Tj=25 C: 0.499 V@0.1 mA, 0.611@1 mA, 0.731@10 mA, 0.878@100 mA vs Fig. 2 0.497/0.609/0.730/0.874 V (within 4 mV)."
+    },
+    {
+     "param": "N",
+     "value": 1.954,
+     "unit": "1",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/docs/81857/1n4148.pdf",
+     "page": 2,
+     "evidence": "Fig. 2 \"Forward Current vs. Forward Voltage\", Tj = 25 C curve, typical forward curve, vector-extracted read points (IF, VF): (1e-06 A, 0.2629 V), (2e-06 A, 0.2978 V), (5e-06 A, 0.3446 V), (1e-05 A, 0.3797 V), (2e-05 A, 0.4153 V), (5e-05 A, 0.4620 V), (0.0001 A, 0.4965 V), (0.0002 A, 0.5305 V), (0.0005 A, 0.5751 V), (0.001 A, 0.6093 V), (0.002 A, 0.6438 V), (0.005 A, 0.6914 V), (0.01 A, 0.7295 V), (0.02 A, 0.7692 V), (0.05 A, 0.8259 V), (0.1 A, 0.8738 V); residuals mV: [-1.2, -0.9, -0.1, 0.3, 1.1, 1.8, 1.5, 0.7, -0.8, -1.6, -2.2, -1.6, 0.0, 1.6, 2.3, -1.3] (rms 1.4, max 2.3)",
+     "method": "Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over the full plotted 25 C range 1 uA to 100 mA (16 points). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. Cross-check against Fig. 1 (VF vs Tj) at Tj=25 C: 0.499 V@0.1 mA, 0.611@1 mA, 0.731@10 mA, 0.878@100 mA vs Fig. 2 0.497/0.609/0.730/0.874 V (within 4 mV). IS and N are strongly correlated; use them as a pair."
+    },
+    {
+     "param": "RS",
+     "value": 0.3342,
+     "unit": "ohm",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/docs/81857/1n4148.pdf",
+     "page": 2,
+     "evidence": "Fig. 2 \"Forward Current vs. Forward Voltage\", Tj = 25 C curve, typical forward curve, vector-extracted read points (IF, VF): (1e-06 A, 0.2629 V), (2e-06 A, 0.2978 V), (5e-06 A, 0.3446 V), (1e-05 A, 0.3797 V), (2e-05 A, 0.4153 V), (5e-05 A, 0.4620 V), (0.0001 A, 0.4965 V), (0.0002 A, 0.5305 V), (0.0005 A, 0.5751 V), (0.001 A, 0.6093 V), (0.002 A, 0.6438 V), (0.005 A, 0.6914 V), (0.01 A, 0.7295 V), (0.02 A, 0.7692 V), (0.05 A, 0.8259 V), (0.1 A, 0.8738 V); residuals mV: [-1.2, -0.9, -0.1, 0.3, 1.1, 1.8, 1.5, 0.7, -0.8, -1.6, -2.2, -1.6, 0.0, 1.6, 2.3, -1.3] (rms 1.4, max 2.3)",
+     "method": "Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over the full plotted 25 C range 1 uA to 100 mA (16 points). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. Cross-check against Fig. 1 (VF vs Tj) at Tj=25 C: 0.499 V@0.1 mA, 0.611@1 mA, 0.731@10 mA, 0.878@100 mA vs Fig. 2 0.497/0.609/0.730/0.874 V (within 4 mV)."
+    },
+    {
+     "param": "TT",
+     "value": 1.154e-08,
+     "value_kind": "upper_bound",
+     "unit": "s",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.vishay.com/docs/81857/1n4148.pdf",
+     "page": 2,
+     "evidence": "Electrical characteristics: \"Reverse recovery time IF = IR = 10 mA, iR = 1 mA trr ... 8 ns\" (max); second row \"IF = 10 mA, VR = 6 V, iR = 0.1 x IR, RL = 100 ohm ... 4 ns\" (max)",
+     "method": "Charge-control storage-time estimate used by the SPICE lumped-charge diode: ts = TT*ln(1+IF/IR). Treating the whole quoted trr as storage time gives TT = trr/ln(1+IF/IR). Ignores the recovery tail to the quoted Irr, junction capacitance and RS, so it over-estimates TT. With IF=IR=10 mA: TT <= 8 ns/ln 2 = 11.5 ns. This is an UPPER BOUND from a maximum trr, not a typical value; the 4 ns row has an ill-defined IR (set by 6 V/100 ohm) and gives a weaker bound. The class default TT 23 ns that this entry currently inherits would give ts ~16 ns, which exceeds the 8 ns maximum."
+    },
+    {
+     "param": "BV",
+     "value": 100,
+     "unit": "V",
+     "basis": "MFR_DATASHEET",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/docs/81857/1n4148.pdf",
+     "page": 2,
+     "evidence": "\"Breakdown voltage IR = 100 uA, tp/T = 0.01, tp = 0.3 ms V(BR) 100\" (MIN column)",
+     "method": "Minimum breakdown at IR=100 uA; pair with IBV=100 uA. A guaranteed minimum, not a typical breakdown."
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "VJ",
+     "reason": "Document has no capacitance-vs-voltage curve; only CD max 4 pF at VR=0 V, 1 MHz. No basis to fit VJ."
+    },
+    {
+     "param": "M",
+     "reason": "Same: no C-V curve in this document."
+    },
+    {
+     "param": "CJO",
+     "reason": "Only a maximum (4 pF at VR=0) is stated; no typical. (The separate LL4148 doc says it is electrically identical to 1N4148 and plots ~0.95 pF typical, but that is a different source.)"
+    }
+   ],
+   "field_corrections": [],
+   "notes": [
+    "Runtime has no entry recipe; OHM-056 runs on class defaults IS 5.537e-9, N 1.944, RS 0.6, TT 23 ns. The fit confirms IS/N closely (5.22e-9, 1.954) but gives RS 0.33 ohm, and TT default exceeds the trr-max bound."
+   ]
+  },
+  {
+   "entry": "OHM-057",
+   "part": "Vishay 1N4007",
+   "doc_checked": "Vishay 1N4001-1N4007 Rev. 29-Apr-2020 (doc 88503), pages 1-3",
+   "proposals": [
+    {
+     "param": "IS",
+     "value": 7.811e-08,
+     "unit": "A",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/docs/88503/1n4001.pdf",
+     "page": 3,
+     "evidence": "Fig. 4 \"Typical Instantaneous Forward Characteristics\" (TJ = 25 C, 300 us pulse, 1 % duty), typical forward curve, vector-extracted read points (IF, VF): (0.01021 A, 0.6214 V), (0.14614 A, 0.7671 V), (0.44146 A, 0.8386 V), (1.26145 A, 0.9214 V), (1.87742 A, 0.9605 V), (2.6358 A, 1.0043 V), (4.45497 A, 1.1011 V); residuals mV: [-0.6, -0.1, 2.7, 1.2, -2.3, -3.0, 2.1] (rms 2.0, max 3.0)",
+     "method": "Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over 0.01 A to 4.45 A (7 of 11 polyline vertices; IF(AV) rating is 1 A). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. The curve is drawn as an 11-vertex polyline; the vertices are used as read points. Vertices above 5 A depart from Shockley+RS (residual vs this fit: +8.9 mV@8.95 A, +23@11.8 A, +42@15.6 A, +147 mV@18.0 A), so they were excluded."
+    },
+    {
+     "param": "N",
+     "value": 2.054,
+     "unit": "1",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/docs/88503/1n4001.pdf",
+     "page": 3,
+     "evidence": "Fig. 4 \"Typical Instantaneous Forward Characteristics\" (TJ = 25 C, 300 us pulse, 1 % duty), typical forward curve, vector-extracted read points (IF, VF): (0.01021 A, 0.6214 V), (0.14614 A, 0.7671 V), (0.44146 A, 0.8386 V), (1.26145 A, 0.9214 V), (1.87742 A, 0.9605 V), (2.6358 A, 1.0043 V), (4.45497 A, 1.1011 V); residuals mV: [-0.6, -0.1, 2.7, 1.2, -2.3, -3.0, 2.1] (rms 2.0, max 3.0)",
+     "method": "Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over 0.01 A to 4.45 A (7 of 11 polyline vertices; IF(AV) rating is 1 A). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. The curve is drawn as an 11-vertex polyline; the vertices are used as read points. Vertices above 5 A depart from Shockley+RS (residual vs this fit: +8.9 mV@8.95 A, +23@11.8 A, +42@15.6 A, +147 mV@18.0 A), so they were excluded. IS and N are strongly correlated; use them as a pair."
+    },
+    {
+     "param": "RS",
+     "value": 0.03514,
+     "unit": "ohm",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/docs/88503/1n4001.pdf",
+     "page": 3,
+     "evidence": "Fig. 4 \"Typical Instantaneous Forward Characteristics\" (TJ = 25 C, 300 us pulse, 1 % duty), typical forward curve, vector-extracted read points (IF, VF): (0.01021 A, 0.6214 V), (0.14614 A, 0.7671 V), (0.44146 A, 0.8386 V), (1.26145 A, 0.9214 V), (1.87742 A, 0.9605 V), (2.6358 A, 1.0043 V), (4.45497 A, 1.1011 V); residuals mV: [-0.6, -0.1, 2.7, 1.2, -2.3, -3.0, 2.1] (rms 2.0, max 3.0)",
+     "method": "Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over 0.01 A to 4.45 A (7 of 11 polyline vertices; IF(AV) rating is 1 A). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. The curve is drawn as an 11-vertex polyline; the vertices are used as read points. Vertices above 5 A depart from Shockley+RS (residual vs this fit: +8.9 mV@8.95 A, +23@11.8 A, +42@15.6 A, +147 mV@18.0 A), so they were excluded."
+    },
+    {
+     "param": "CJO",
+     "value": 3.035e-11,
+     "unit": "F",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/docs/88503/1n4001.pdf",
+     "page": 3,
+     "evidence": "Fig. 6 \"Typical Junction Capacitance\" (TJ=25 C, 1 MHz, 50 mVp-p), 5 polyline vertices, typical junction capacitance vs reverse voltage, read points (VR, C): (0.1011 V, 28.641 pF), (0.646 V, 21.204 pF), (3.5764 V, 14.582 pF), (18.466 V, 9.144 pF), (99.9608 V, 5.052 pF); fit residuals %: [1.76, -4.15, 1.13, 3.96, -2.48] (max 4.15%)",
+     "method": "Least-squares fit of ln C = ln CJO - M*ln(1+VR/VJ) (grid over VJ, linear solve for CJO and M at each VJ). Check: fit gives C(4 V) = 14.0 pF vs table typical CJ 15 pF at 4.0 V, 1 MHz."
+    },
+    {
+     "param": "VJ",
+     "value": 0.377,
+     "unit": "V",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/docs/88503/1n4001.pdf",
+     "page": 3,
+     "evidence": "Fig. 6 \"Typical Junction Capacitance\" (TJ=25 C, 1 MHz, 50 mVp-p), 5 polyline vertices, typical junction capacitance vs reverse voltage, read points (VR, C): (0.1011 V, 28.641 pF), (0.646 V, 21.204 pF), (3.5764 V, 14.582 pF), (18.466 V, 9.144 pF), (99.9608 V, 5.052 pF); fit residuals %: [1.76, -4.15, 1.13, 3.96, -2.48] (max 4.15%)",
+     "method": "Least-squares fit of ln C = ln CJO - M*ln(1+VR/VJ) (grid over VJ, linear solve for CJO and M at each VJ). Check: fit gives C(4 V) = 14.0 pF vs table typical CJ 15 pF at 4.0 V, 1 MHz. VJ and M are correlated."
+    },
+    {
+     "param": "M",
+     "value": 0.317,
+     "unit": "1",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/docs/88503/1n4001.pdf",
+     "page": 3,
+     "evidence": "Fig. 6 \"Typical Junction Capacitance\" (TJ=25 C, 1 MHz, 50 mVp-p), 5 polyline vertices, typical junction capacitance vs reverse voltage, read points (VR, C): (0.1011 V, 28.641 pF), (0.646 V, 21.204 pF), (3.5764 V, 14.582 pF), (18.466 V, 9.144 pF), (99.9608 V, 5.052 pF); fit residuals %: [1.76, -4.15, 1.13, 3.96, -2.48] (max 4.15%)",
+     "method": "Least-squares fit of ln C = ln CJO - M*ln(1+VR/VJ) (grid over VJ, linear solve for CJO and M at each VJ). Check: fit gives C(4 V) = 14.0 pF vs table typical CJ 15 pF at 4.0 V, 1 MHz. VJ and M are correlated."
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "TT",
+     "reason": "No reverse-recovery time is given anywhere in the document; the runtime TT_us 3 remains an assumption."
+    },
+    {
+     "param": "BV",
+     "reason": "Only VRRM/VDC 1000 V (ratings) are stated; no breakdown/avalanche voltage. Runtime BV 1100 V stays an assumption."
+    }
+   ],
+   "field_corrections": [],
+   "notes": [
+    "Runtime quoted IS 4.02e-9/N 1.8/RS 0.03 (N, RS assumed) vs curve fit IS 7.81e-08/N 2.05/RS 0.0351.",
+    "Runtime CJO 38.9 pF with VJ 0.7, M 0.5 reproduces the 15 pF@4 V point but not the curve (gives 36 pF@0.1 V vs 28.6 read, 3.3 pF@100 V vs 5.05 read)."
+   ]
+  },
+  {
+   "entry": "OHM-058",
+   "part": "Vishay 1N5408",
+   "doc_checked": "Vishay 1N5400-1N5408 Rev. 19-Dec-2025 (doc 88516), pages 1-3",
+   "proposals": [
+    {
+     "param": "IS",
+     "value": 3.429e-07,
+     "unit": "A",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.vishay.com/docs/88516/1n5400.pdf",
+     "page": 3,
+     "evidence": "Fig. 3 \"Typical Instantaneous Forward Characteristics\" (TJ = 25 C, 300 us pulse, 1 % duty), typical forward curve, vector-extracted read points (IF, VF): (0.378 A, 0.7202 V), (1.3788 A, 0.7927 V), (3.39787 A, 0.8806 V), (8.06715 A, 0.9861 V); residuals mV: [2.1, -6.4, 5.8, -1.4] (rms 4.5, max 6.4)",
+     "method": "Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over 0.378 A to 8.07 A (4 polyline vertices bracketing the 3 A rating). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. Fit is range-sensitive: the curve below 0.3 A is drawn almost vertical (0.639 V@10 mA, 0.642 V@27 mA, 0.664 V@0.10 A, steeper than any physical exponential) and the curve above ~10 A bends hard (residual vs this fit -30 mV@13.9 A, -96 mV@23 A, -620 mV@97 A). Alternative ranges: 0.3-15 A gives IS 2.2e-6/N 2.30/RS 0.011; 1-25 A gives IS 2.0e-4/N 3.44/RS 0.0058. Hence confidence L."
+    },
+    {
+     "param": "N",
+     "value": 1.994,
+     "unit": "1",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.vishay.com/docs/88516/1n5400.pdf",
+     "page": 3,
+     "evidence": "Fig. 3 \"Typical Instantaneous Forward Characteristics\" (TJ = 25 C, 300 us pulse, 1 % duty), typical forward curve, vector-extracted read points (IF, VF): (0.378 A, 0.7202 V), (1.3788 A, 0.7927 V), (3.39787 A, 0.8806 V), (8.06715 A, 0.9861 V); residuals mV: [2.1, -6.4, 5.8, -1.4] (rms 4.5, max 6.4)",
+     "method": "Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over 0.378 A to 8.07 A (4 polyline vertices bracketing the 3 A rating). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. Fit is range-sensitive: the curve below 0.3 A is drawn almost vertical (0.639 V@10 mA, 0.642 V@27 mA, 0.664 V@0.10 A, steeper than any physical exponential) and the curve above ~10 A bends hard (residual vs this fit -30 mV@13.9 A, -96 mV@23 A, -620 mV@97 A). Alternative ranges: 0.3-15 A gives IS 2.2e-6/N 2.30/RS 0.011; 1-25 A gives IS 2.0e-4/N 3.44/RS 0.0058. Hence confidence L. IS and N are strongly correlated; use them as a pair."
+    },
+    {
+     "param": "RS",
+     "value": 0.01465,
+     "unit": "ohm",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.vishay.com/docs/88516/1n5400.pdf",
+     "page": 3,
+     "evidence": "Fig. 3 \"Typical Instantaneous Forward Characteristics\" (TJ = 25 C, 300 us pulse, 1 % duty), typical forward curve, vector-extracted read points (IF, VF): (0.378 A, 0.7202 V), (1.3788 A, 0.7927 V), (3.39787 A, 0.8806 V), (8.06715 A, 0.9861 V); residuals mV: [2.1, -6.4, 5.8, -1.4] (rms 4.5, max 6.4)",
+     "method": "Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over 0.378 A to 8.07 A (4 polyline vertices bracketing the 3 A rating). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. Fit is range-sensitive: the curve below 0.3 A is drawn almost vertical (0.639 V@10 mA, 0.642 V@27 mA, 0.664 V@0.10 A, steeper than any physical exponential) and the curve above ~10 A bends hard (residual vs this fit -30 mV@13.9 A, -96 mV@23 A, -620 mV@97 A). Alternative ranges: 0.3-15 A gives IS 2.2e-6/N 2.30/RS 0.011; 1-25 A gives IS 2.0e-4/N 3.44/RS 0.0058. Hence confidence L."
+    },
+    {
+     "param": "CJO",
+     "value": 6.69e-11,
+     "unit": "F",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/docs/88516/1n5400.pdf",
+     "page": 3,
+     "evidence": "Fig. 5 \"Typical Junction Capacitance\" (TJ=25 C, 1 MHz), 4 polyline vertices, typical junction capacitance vs reverse voltage, read points (VR, C): (0.1003 V, 60.323 pF), (0.9187 V, 41.795 pF), (4.5946 V, 30.281 pF), (99.8194 V, 13.596 pF); fit residuals %: [0.44, -2.24, 2.54, -0.68] (max 2.54%)",
+     "method": "Least-squares fit of ln C = ln CJO - M*ln(1+VR/VJ) (grid over VJ, linear solve for CJO and M at each VJ). Only 4 vertices (straight segments) so VJ/M are weakly constrained. Check: C(4 V) = 30.5 pF vs table typical CJ 30 pF at 4.0 V."
+    },
+    {
+     "param": "VJ",
+     "value": 0.189,
+     "unit": "V",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.vishay.com/docs/88516/1n5400.pdf",
+     "page": 3,
+     "evidence": "Fig. 5 \"Typical Junction Capacitance\" (TJ=25 C, 1 MHz), 4 polyline vertices, typical junction capacitance vs reverse voltage, read points (VR, C): (0.1003 V, 60.323 pF), (0.9187 V, 41.795 pF), (4.5946 V, 30.281 pF), (99.8194 V, 13.596 pF); fit residuals %: [0.44, -2.24, 2.54, -0.68] (max 2.54%)",
+     "method": "Least-squares fit of ln C = ln CJO - M*ln(1+VR/VJ) (grid over VJ, linear solve for CJO and M at each VJ). Only 4 vertices (straight segments) so VJ/M are weakly constrained. Check: C(4 V) = 30.5 pF vs table typical CJ 30 pF at 4.0 V. VJ and M are correlated."
+    },
+    {
+     "param": "M",
+     "value": 0.253,
+     "unit": "1",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.vishay.com/docs/88516/1n5400.pdf",
+     "page": 3,
+     "evidence": "Fig. 5 \"Typical Junction Capacitance\" (TJ=25 C, 1 MHz), 4 polyline vertices, typical junction capacitance vs reverse voltage, read points (VR, C): (0.1003 V, 60.323 pF), (0.9187 V, 41.795 pF), (4.5946 V, 30.281 pF), (99.8194 V, 13.596 pF); fit residuals %: [0.44, -2.24, 2.54, -0.68] (max 2.54%)",
+     "method": "Least-squares fit of ln C = ln CJO - M*ln(1+VR/VJ) (grid over VJ, linear solve for CJO and M at each VJ). Only 4 vertices (straight segments) so VJ/M are weakly constrained. Check: C(4 V) = 30.5 pF vs table typical CJ 30 pF at 4.0 V. VJ and M are correlated."
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "TT",
+     "reason": "No reverse-recovery time stated in the document."
+    },
+    {
+     "param": "BV",
+     "reason": "Only VRRM/VDC 1000 V ratings; runtime 1.1*VRRM is a model choice, not sourced."
+    }
+   ],
+   "field_corrections": [],
+   "notes": [
+    "Runtime CJO 77.7 pF (max-corner) vs curve fit CJO 66.9 pF."
+   ]
+  },
+  {
+   "entry": "OHM-059",
+   "part": "Vishay LL4148 (identified from doc + entry fields; reference_part was None)",
+   "doc_checked": "Vishay LL4148/LL4448 Rev. 2.2, 25-Jun-2024 (doc 85557), pages 1-2",
+   "proposals": [
+    {
+     "param": "IS",
+     "value": 5.214e-09,
+     "unit": "A",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/docs/85557/ll4148.pdf",
+     "page": 2,
+     "evidence": "Fig. 1 \"Forward Current vs. Forward Voltage\", Tj = 25 C curve, typical forward curve, vector-extracted read points (IF, VF): (1e-06 A, 0.2629 V), (2e-06 A, 0.2978 V), (5e-06 A, 0.3446 V), (1e-05 A, 0.3797 V), (2e-05 A, 0.4153 V), (5e-05 A, 0.4620 V), (0.0001 A, 0.4965 V), (0.0002 A, 0.5305 V), (0.0005 A, 0.5751 V), (0.001 A, 0.6093 V), (0.002 A, 0.6438 V), (0.005 A, 0.6914 V), (0.01 A, 0.7295 V), (0.02 A, 0.7691 V), (0.05 A, 0.8258 V), (0.1 A, 0.8737 V); residuals mV: [-1.2, -1.0, -0.1, 0.3, 1.1, 1.8, 1.5, 0.7, -0.8, -1.6, -2.2, -1.6, 0.1, 1.5, 2.3, -1.3] (rms 1.3, max 2.3)",
+     "method": "Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over the full plotted 25 C range 1 uA to 100 mA (16 points). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. Figure carries the same figure code (23241) and identical path data as the Vishay 1N4148 Fig. 2. Note the table typicals sit above this curve: \"IF = 50 mA LL4148 VF 0.860\" typ vs curve/fit 0.826/0.824 V; LL4448 0.930 V typ @100 mA vs curve 0.874 V."
+    },
+    {
+     "param": "N",
+     "value": 1.954,
+     "unit": "1",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/docs/85557/ll4148.pdf",
+     "page": 2,
+     "evidence": "Fig. 1 \"Forward Current vs. Forward Voltage\", Tj = 25 C curve, typical forward curve, vector-extracted read points (IF, VF): (1e-06 A, 0.2629 V), (2e-06 A, 0.2978 V), (5e-06 A, 0.3446 V), (1e-05 A, 0.3797 V), (2e-05 A, 0.4153 V), (5e-05 A, 0.4620 V), (0.0001 A, 0.4965 V), (0.0002 A, 0.5305 V), (0.0005 A, 0.5751 V), (0.001 A, 0.6093 V), (0.002 A, 0.6438 V), (0.005 A, 0.6914 V), (0.01 A, 0.7295 V), (0.02 A, 0.7691 V), (0.05 A, 0.8258 V), (0.1 A, 0.8737 V); residuals mV: [-1.2, -1.0, -0.1, 0.3, 1.1, 1.8, 1.5, 0.7, -0.8, -1.6, -2.2, -1.6, 0.1, 1.5, 2.3, -1.3] (rms 1.3, max 2.3)",
+     "method": "Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over the full plotted 25 C range 1 uA to 100 mA (16 points). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. Figure carries the same figure code (23241) and identical path data as the Vishay 1N4148 Fig. 2. Note the table typicals sit above this curve: \"IF = 50 mA LL4148 VF 0.860\" typ vs curve/fit 0.826/0.824 V; LL4448 0.930 V typ @100 mA vs curve 0.874 V. IS and N are strongly correlated; use them as a pair."
+    },
+    {
+     "param": "RS",
+     "value": 0.3332,
+     "unit": "ohm",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/docs/85557/ll4148.pdf",
+     "page": 2,
+     "evidence": "Fig. 1 \"Forward Current vs. Forward Voltage\", Tj = 25 C curve, typical forward curve, vector-extracted read points (IF, VF): (1e-06 A, 0.2629 V), (2e-06 A, 0.2978 V), (5e-06 A, 0.3446 V), (1e-05 A, 0.3797 V), (2e-05 A, 0.4153 V), (5e-05 A, 0.4620 V), (0.0001 A, 0.4965 V), (0.0002 A, 0.5305 V), (0.0005 A, 0.5751 V), (0.001 A, 0.6093 V), (0.002 A, 0.6438 V), (0.005 A, 0.6914 V), (0.01 A, 0.7295 V), (0.02 A, 0.7691 V), (0.05 A, 0.8258 V), (0.1 A, 0.8737 V); residuals mV: [-1.2, -1.0, -0.1, 0.3, 1.1, 1.8, 1.5, 0.7, -0.8, -1.6, -2.2, -1.6, 0.1, 1.5, 2.3, -1.3] (rms 1.3, max 2.3)",
+     "method": "Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over the full plotted 25 C range 1 uA to 100 mA (16 points). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. Figure carries the same figure code (23241) and identical path data as the Vishay 1N4148 Fig. 2. Note the table typicals sit above this curve: \"IF = 50 mA LL4148 VF 0.860\" typ vs curve/fit 0.826/0.824 V; LL4448 0.930 V typ @100 mA vs curve 0.874 V."
+    },
+    {
+     "param": "CJO",
+     "value": 9.474e-13,
+     "unit": "F",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/docs/85557/ll4148.pdf",
+     "page": 2,
+     "evidence": "Fig. 3 \"Typical Capacitance vs. Reverse Voltage\" (f = 1 MHz, VHF = 50 mV) read points (VR, CD): (0.03 V, 0.9454 pF), (0.1 V, 0.9415 pF), (0.3 V, 0.9381 pF), (1 V, 0.9312 pF), (3 V, 0.9243 pF), (10 V, 0.9192 pF), (30 V, 0.9161 pF)",
+     "method": "Curve is nearly flat (0.945 pF at 0.03 V to 0.916 pF at 30 V); CJO taken from the zero-bias end of the junction-formula fit (0.947 pF, max residual 0.19%). Well below the 4 pF maximum."
+    },
+    {
+     "param": "TT",
+     "value": 1.154e-08,
+     "value_kind": "upper_bound",
+     "unit": "s",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.vishay.com/docs/85557/ll4148.pdf",
+     "page": 2,
+     "evidence": "\"Reverse recovery time IF = IR = 10 mA, iR = 1 mA ... 8\" ns max; \"IF = 10 mA, VR = 6 V, iR = 0.1 x IR, RL = 100 ohm ... 4\" ns max",
+     "method": "Charge-control storage-time estimate used by the SPICE lumped-charge diode: ts = TT*ln(1+IF/IR). Treating the whole quoted trr as storage time gives TT = trr/ln(1+IF/IR). Ignores the recovery tail to the quoted Irr, junction capacitance and RS, so it over-estimates TT. TT <= 8 ns/ln 2 = 11.5 ns; upper bound from a max trr, not typical. Class default 23 ns exceeds it."
+    },
+    {
+     "param": "BV",
+     "value": 100,
+     "unit": "V",
+     "basis": "MFR_DATASHEET",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/docs/85557/ll4148.pdf",
+     "page": 2,
+     "evidence": "\"Breakdown voltage IR = 100 uA, tp/T = 0.01, tp = 0.3 ms V(BR) 100\" MIN",
+     "method": "Minimum breakdown at IR=100 uA (IBV=100 uA)."
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "VJ",
+     "reason": "C-V curve is almost flat (3% drop over 0.01-36 V): any VJ from 0.05 to 0.7 V fits within 0.5% with M only 0.005-0.008, so VJ and M are not separately identifiable from this figure."
+    },
+    {
+     "param": "M",
+     "reason": "Same degeneracy; the document supports only \"very weak voltage dependence\" (M on the order of 0.01 for VJ 0.05-0.7 V)."
+    }
+   ],
+   "field_corrections": [],
+   "notes": [
+    "Fig. 1/3 are not labelled per part (LL4148 vs LL4448); the sheet says electrical data are identical to 1N4148/1N4448."
+   ]
+  },
+  {
+   "entry": "OHM-061",
+   "part": "Diodes Incorporated 1N4148W (identified from doc BAV16W/1N4148W + entry field reference_part=1N4148W; input reference_part was None)",
+   "doc_checked": "Diodes Inc. BAV16W/1N4148W DS30086 Rev. 31-2, Sept 2024, pages 2-3",
+   "proposals": [
+    {
+     "param": "IS",
+     "value": 4.19e-08,
+     "unit": "A",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.diodes.com/datasheet/download/1N4148W.pdf",
+     "page": 3,
+     "evidence": "Figure 2 \"Typical Forward Characteristics\", TA = 25 C curve (third from left; order 150/75/25/0/-40 C), typical forward curve, vector-extracted read points (IF, VF): (0.002 A, 0.6232 V), (0.005 A, 0.6689 V), (0.01 A, 0.7087 V), (0.02 A, 0.7563 V), (0.05 A, 0.8469 V), (0.1 A, 0.9349 V), (0.2 A, 1.0487 V); residuals mV: [6.9, -2.3, -6.5, -7.2, 4.7, 9.1, -4.7] (rms 6.3, max 9.1)",
+     "method": "Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over 2 mA to 200 mA (7 points; the plotted 25 C curve spans ~1 mA to ~0.3 A). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. Curve is drawn as a filled outline; VF taken as the mean of the outline crossings at each current. N lands at the class maximum (2.2); residuals show curvature a single exponential cannot follow. Figure is shared by BAV16W and 1N4148W."
+    },
+    {
+     "param": "N",
+     "value": 2.22,
+     "unit": "1",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.diodes.com/datasheet/download/1N4148W.pdf",
+     "page": 3,
+     "evidence": "Figure 2 \"Typical Forward Characteristics\", TA = 25 C curve (third from left; order 150/75/25/0/-40 C), typical forward curve, vector-extracted read points (IF, VF): (0.002 A, 0.6232 V), (0.005 A, 0.6689 V), (0.01 A, 0.7087 V), (0.02 A, 0.7563 V), (0.05 A, 0.8469 V), (0.1 A, 0.9349 V), (0.2 A, 1.0487 V); residuals mV: [6.9, -2.3, -6.5, -7.2, 4.7, 9.1, -4.7] (rms 6.3, max 9.1)",
+     "method": "Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over 2 mA to 200 mA (7 points; the plotted 25 C curve spans ~1 mA to ~0.3 A). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. Curve is drawn as a filled outline; VF taken as the mean of the outline crossings at each current. N lands at the class maximum (2.2); residuals show curvature a single exponential cannot follow. Figure is shared by BAV16W and 1N4148W. IS and N are strongly correlated; use them as a pair."
+    },
+    {
+     "param": "RS",
+     "value": 0.8808,
+     "unit": "ohm",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.diodes.com/datasheet/download/1N4148W.pdf",
+     "page": 3,
+     "evidence": "Figure 2 \"Typical Forward Characteristics\", TA = 25 C curve (third from left; order 150/75/25/0/-40 C), typical forward curve, vector-extracted read points (IF, VF): (0.002 A, 0.6232 V), (0.005 A, 0.6689 V), (0.01 A, 0.7087 V), (0.02 A, 0.7563 V), (0.05 A, 0.8469 V), (0.1 A, 0.9349 V), (0.2 A, 1.0487 V); residuals mV: [6.9, -2.3, -6.5, -7.2, 4.7, 9.1, -4.7] (rms 6.3, max 9.1)",
+     "method": "Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over 2 mA to 200 mA (7 points; the plotted 25 C curve spans ~1 mA to ~0.3 A). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. Curve is drawn as a filled outline; VF taken as the mean of the outline crossings at each current. N lands at the class maximum (2.2); residuals show curvature a single exponential cannot follow. Figure is shared by BAV16W and 1N4148W."
+    },
+    {
+     "param": "CJO",
+     "value": 7.588e-13,
+     "unit": "F",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.diodes.com/datasheet/download/1N4148W.pdf",
+     "page": 3,
+     "evidence": "Figure 4 \"Typical Total Capacitance\" (f = 1 MHz), thick curve, mean of outline crossings, typical junction capacitance vs reverse voltage, read points (VR, C): (0.5 V, 0.746 pF), (1 V, 0.729 pF), (2 V, 0.714 pF), (5 V, 0.678 pF), (10 V, 0.650 pF), (15 V, 0.633 pF), (20 V, 0.618 pF), (30 V, 0.598 pF), (40 V, 0.584 pF); fit residuals %: [0.29, -0.39, 0.11, -0.27, 0.1, 0.35, 0.07, -0.09, -0.16] (max 0.39%)",
+     "method": "Least-squares fit of ln C = ln CJO - M*ln(1+VR/VJ) (grid over VJ, linear solve for CJO and M at each VJ). Curve falls only from 0.76 to 0.58 pF over 0-40 V, so VJ/M are poorly separated (with VJ fixed at 0.4 or 0.7 V, M = 0.064 or 0.069 and CJO 0.79/0.78 pF fit within 1.1%). Consistent with CT max 2.0 pF at VR=0."
+    },
+    {
+     "param": "VJ",
+     "value": 1.77,
+     "unit": "V",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.diodes.com/datasheet/download/1N4148W.pdf",
+     "page": 3,
+     "evidence": "Figure 4 \"Typical Total Capacitance\" (f = 1 MHz), thick curve, mean of outline crossings, typical junction capacitance vs reverse voltage, read points (VR, C): (0.5 V, 0.746 pF), (1 V, 0.729 pF), (2 V, 0.714 pF), (5 V, 0.678 pF), (10 V, 0.650 pF), (15 V, 0.633 pF), (20 V, 0.618 pF), (30 V, 0.598 pF), (40 V, 0.584 pF); fit residuals %: [0.29, -0.39, 0.11, -0.27, 0.1, 0.35, 0.07, -0.09, -0.16] (max 0.39%)",
+     "method": "Least-squares fit of ln C = ln CJO - M*ln(1+VR/VJ) (grid over VJ, linear solve for CJO and M at each VJ). Curve falls only from 0.76 to 0.58 pF over 0-40 V, so VJ/M are poorly separated (with VJ fixed at 0.4 or 0.7 V, M = 0.064 or 0.069 and CJO 0.79/0.78 pF fit within 1.1%). Consistent with CT max 2.0 pF at VR=0. VJ and M are correlated."
+    },
+    {
+     "param": "M",
+     "value": 0.0821,
+     "unit": "1",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.diodes.com/datasheet/download/1N4148W.pdf",
+     "page": 3,
+     "evidence": "Figure 4 \"Typical Total Capacitance\" (f = 1 MHz), thick curve, mean of outline crossings, typical junction capacitance vs reverse voltage, read points (VR, C): (0.5 V, 0.746 pF), (1 V, 0.729 pF), (2 V, 0.714 pF), (5 V, 0.678 pF), (10 V, 0.650 pF), (15 V, 0.633 pF), (20 V, 0.618 pF), (30 V, 0.598 pF), (40 V, 0.584 pF); fit residuals %: [0.29, -0.39, 0.11, -0.27, 0.1, 0.35, 0.07, -0.09, -0.16] (max 0.39%)",
+     "method": "Least-squares fit of ln C = ln CJO - M*ln(1+VR/VJ) (grid over VJ, linear solve for CJO and M at each VJ). Curve falls only from 0.76 to 0.58 pF over 0-40 V, so VJ/M are poorly separated (with VJ fixed at 0.4 or 0.7 V, M = 0.064 or 0.069 and CJO 0.79/0.78 pF fit within 1.1%). Consistent with CT max 2.0 pF at VR=0. VJ and M are correlated."
+    },
+    {
+     "param": "TT",
+     "value": 5.771e-09,
+     "value_kind": "upper_bound",
+     "unit": "s",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.diodes.com/datasheet/download/1N4148W.pdf",
+     "page": 2,
+     "evidence": "\"Reverse Recovery Time tRR ... 4.0 ns IF = IR = 10mA, IRR = 0.1 x IR, RL = 100 ohm\" (Max column)",
+     "method": "Charge-control storage-time estimate used by the SPICE lumped-charge diode: ts = TT*ln(1+IF/IR). Treating the whole quoted trr as storage time gives TT = trr/ln(1+IF/IR). Ignores the recovery tail to the quoted Irr, junction capacitance and RS, so it over-estimates TT. TT <= 4 ns/ln 2 = 5.8 ns; upper bound from a maximum. Class default 23 ns would give ~16 ns, 4x the guaranteed maximum."
+    },
+    {
+     "param": "BV",
+     "value": 100,
+     "unit": "V",
+     "basis": "MFR_DATASHEET",
+     "confidence": "M",
+     "source_url": "https://www.diodes.com/datasheet/download/1N4148W.pdf",
+     "page": 2,
+     "evidence": "\"Reverse Breakdown Voltage (Note 6) V(BR)R 100 ... IR = 1.0uA\" (Min)",
+     "method": "Minimum breakdown at IR = 1.0 uA (so IBV=1 uA, not the class 100 uA)."
+    }
+   ],
+   "unresolved": [],
+   "field_corrections": [],
+   "notes": [
+    "Fig. 2 shows only ~1 mA and up at 25 C; low-current behaviour is not constrained."
+   ]
+  },
+  {
+   "entry": "OHM-064",
+   "part": "Vishay S1M",
+   "doc_checked": "Vishay S1A-S1M Rev. 07-May-2024 (doc 88711), pages 1-3; SS12-SS16 doc checked only for the Schottky fields",
+   "proposals": [
+    {
+     "param": "IS",
+     "value": 1.183e-07,
+     "unit": "A",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/doc?88711",
+     "page": 3,
+     "evidence": "Fig. 3 \"Typical Instantaneous Forward Characteristics\", TJ = 25 C curve (4th from left at 0.1 A; order 175/125/75/25/-40 C), typical forward curve, vector-extracted read points (IF, VF): (0.02 A, 0.7100 V), (0.05 A, 0.7500 V), (0.1 A, 0.7900 V), (0.2 A, 0.8424 V), (0.5 A, 0.9029 V), (1 A, 0.9700 V), (2 A, 1.0500 V), (5 A, 1.2198 V), (10 A, 1.4536 V); residuals mV: [9.2, -5.2, -7.5, 0.7, -3.9, 3.2, 3.5, 1.8, -1.6] (rms 4.9, max 9.2)",
+     "method": "Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over 20 mA to 10 A (9 points). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. N exceeds the class range maximum 2.2; fitting only 50 mA-10 A gives IS 2.55e-7/N 2.39/RS 0.038 (rms 2.2 mV). Figure is for the S1A-S1M family, not S1M alone."
+    },
+    {
+     "param": "N",
+     "value": 2.263,
+     "unit": "1",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/doc?88711",
+     "page": 3,
+     "evidence": "Fig. 3 \"Typical Instantaneous Forward Characteristics\", TJ = 25 C curve (4th from left at 0.1 A; order 175/125/75/25/-40 C), typical forward curve, vector-extracted read points (IF, VF): (0.02 A, 0.7100 V), (0.05 A, 0.7500 V), (0.1 A, 0.7900 V), (0.2 A, 0.8424 V), (0.5 A, 0.9029 V), (1 A, 0.9700 V), (2 A, 1.0500 V), (5 A, 1.2198 V), (10 A, 1.4536 V); residuals mV: [9.2, -5.2, -7.5, 0.7, -3.9, 3.2, 3.5, 1.8, -1.6] (rms 4.9, max 9.2)",
+     "method": "Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over 20 mA to 10 A (9 points). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. N exceeds the class range maximum 2.2; fitting only 50 mA-10 A gives IS 2.55e-7/N 2.39/RS 0.038 (rms 2.2 mV). Figure is for the S1A-S1M family, not S1M alone. IS and N are strongly correlated; use them as a pair."
+    },
+    {
+     "param": "RS",
+     "value": 0.03939,
+     "unit": "ohm",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/doc?88711",
+     "page": 3,
+     "evidence": "Fig. 3 \"Typical Instantaneous Forward Characteristics\", TJ = 25 C curve (4th from left at 0.1 A; order 175/125/75/25/-40 C), typical forward curve, vector-extracted read points (IF, VF): (0.02 A, 0.7100 V), (0.05 A, 0.7500 V), (0.1 A, 0.7900 V), (0.2 A, 0.8424 V), (0.5 A, 0.9029 V), (1 A, 0.9700 V), (2 A, 1.0500 V), (5 A, 1.2198 V), (10 A, 1.4536 V); residuals mV: [9.2, -5.2, -7.5, 0.7, -3.9, 3.2, 3.5, 1.8, -1.6] (rms 4.9, max 9.2)",
+     "method": "Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over 20 mA to 10 A (9 points). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. N exceeds the class range maximum 2.2; fitting only 50 mA-10 A gives IS 2.55e-7/N 2.39/RS 0.038 (rms 2.2 mV). Figure is for the S1A-S1M family, not S1M alone."
+    },
+    {
+     "param": "TT",
+     "value": 4.439e-06,
+     "unit": "s",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.vishay.com/doc?88711",
+     "page": 2,
+     "evidence": "\"Typical reverse recovery time IF = 0.5 A, IR = 1.0 A, Irr = 0.25 A trr 1.8 us\" (S1A-S1M, typical)",
+     "method": "Charge-control storage-time estimate used by the SPICE lumped-charge diode: ts = TT*ln(1+IF/IR). Treating the whole quoted trr as storage time gives TT = trr/ln(1+IF/IR). Ignores the recovery tail to the quoted Irr, junction capacitance and RS, so it over-estimates TT. TT = 1.8 us/ln(1.5) = 4.44 us (approximate, upper-leaning)."
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "VJ",
+     "reason": "Fig. 5 C-V (read: 0.0099 V 42.0 pF, 0.0414 V 29.9 pF, 0.156 V 22.1 pF, 0.534 V 16.9 pF, 1.69 V 13.4 pF, 5.01 V 10.9 pF, 14.1 V 9.2 pF, 37.7 V 8.0 pF, 98.2 V 7.1 pF) keeps rising as a power law down to 0.01 V and cannot be fit by CJO/(1+V/VJ)^M: free fit drives VJ to the grid floor (1e-4 V) with 10% error; restricting to VR>=1 V still pins VJ at the floor. No physically meaningful VJ."
+    },
+    {
+     "param": "M",
+     "reason": "Same: junction formula does not fit the curve; the only clean statement is the table \"Typical junction capacitance 4.0 V, 1 MHz CJ 12 pF\" (curve reads ~11.3 pF at 4 V). Converting that to CJO needs assumed VJ/M."
+    },
+    {
+     "param": "BV",
+     "reason": "Only VRRM 1000 V (rating) and EAS 5 mJ avalanche energy; no breakdown voltage."
+    }
+   ],
+   "field_corrections": [],
+   "notes": [
+    "Runtime IS 1.04e-10 is a max-VF-corner fit, not typical; typical-curve fit is IS 1.18e-07."
+   ]
+  },
+  {
+   "entry": "OHM-065",
+   "part": "Vishay S2M",
+   "doc_checked": "Vishay S2A-S2M Rev. 21-May-2024 (doc 88712), pages 1-3; SS22-SS26 doc checked for Schottky fields",
+   "proposals": [
+    {
+     "param": "IS",
+     "value": 2.269e-08,
+     "unit": "A",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/doc?88712",
+     "page": 3,
+     "evidence": "Fig. 3 \"Typical Instantaneous Forward Characteristics\", TJ = 25 C curve (4th from left at 0.1 A), typical forward curve, vector-extracted read points (IF, VF): (0.02 A, 0.6936 V), (0.05 A, 0.7374 V), (0.1 A, 0.7692 V), (0.2 A, 0.8060 V), (0.5 A, 0.8580 V), (1 A, 0.9057 V), (2 A, 0.9601 V), (5 A, 1.0600 V), (10 A, 1.1801 V); residuals mV: [3.7, 0.8, -3.3, -3.2, -2.7, 1.1, 2.7, 2.7, -1.8] (rms 2.6, max 3.7)",
+     "method": "Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over 20 mA to 10 A (9 points). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. Figure is for the S2A-S2M family."
+    },
+    {
+     "param": "N",
+     "value": 1.961,
+     "unit": "1",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/doc?88712",
+     "page": 3,
+     "evidence": "Fig. 3 \"Typical Instantaneous Forward Characteristics\", TJ = 25 C curve (4th from left at 0.1 A), typical forward curve, vector-extracted read points (IF, VF): (0.02 A, 0.6936 V), (0.05 A, 0.7374 V), (0.1 A, 0.7692 V), (0.2 A, 0.8060 V), (0.5 A, 0.8580 V), (1 A, 0.9057 V), (2 A, 0.9601 V), (5 A, 1.0600 V), (10 A, 1.1801 V); residuals mV: [3.7, 0.8, -3.3, -3.2, -2.7, 1.1, 2.7, 2.7, -1.8] (rms 2.6, max 3.7)",
+     "method": "Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over 20 mA to 10 A (9 points). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. Figure is for the S2A-S2M family. IS and N are strongly correlated; use them as a pair."
+    },
+    {
+     "param": "RS",
+     "value": 0.01792,
+     "unit": "ohm",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/doc?88712",
+     "page": 3,
+     "evidence": "Fig. 3 \"Typical Instantaneous Forward Characteristics\", TJ = 25 C curve (4th from left at 0.1 A), typical forward curve, vector-extracted read points (IF, VF): (0.02 A, 0.6936 V), (0.05 A, 0.7374 V), (0.1 A, 0.7692 V), (0.2 A, 0.8060 V), (0.5 A, 0.8580 V), (1 A, 0.9057 V), (2 A, 0.9601 V), (5 A, 1.0600 V), (10 A, 1.1801 V); residuals mV: [3.7, 0.8, -3.3, -3.2, -2.7, 1.1, 2.7, 2.7, -1.8] (rms 2.6, max 3.7)",
+     "method": "Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over 20 mA to 10 A (9 points). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. Figure is for the S2A-S2M family."
+    },
+    {
+     "param": "CJO",
+     "value": 4.318e-11,
+     "unit": "F",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/doc?88712",
+     "page": 3,
+     "evidence": "Fig. 5 \"Typical Junction Capacitance\" (1 MHz), 8 polyline vertices, typical junction capacitance vs reverse voltage, read points (VR, C): (0.099 V, 37.128 pF), (3.9549 V, 16.281 pF), (9.7874 V, 12.443 pF), (19.717 V, 10.403 pF), (39.714 V, 8.389 pF), (58.7505 V, 7.400 pF), (78.3891 V, 6.888 pF), (98.2819 V, 6.412 pF); fit residuals %: [0.03, 0.01, -0.98, 1.39, 0.25, -0.87, 0.38, -0.18] (max 1.39%)",
+     "method": "Least-squares fit of ln C = ln CJO - M*ln(1+VR/VJ) (grid over VJ, linear solve for CJO and M at each VJ). Check: C(4 V) = 16.2 pF vs table \"Typical junction capacitance 4.0 V, 1 MHz CJ 16 pF\"."
+    },
+    {
+     "param": "VJ",
+     "value": 0.146,
+     "unit": "V",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/doc?88712",
+     "page": 3,
+     "evidence": "Fig. 5 \"Typical Junction Capacitance\" (1 MHz), 8 polyline vertices, typical junction capacitance vs reverse voltage, read points (VR, C): (0.099 V, 37.128 pF), (3.9549 V, 16.281 pF), (9.7874 V, 12.443 pF), (19.717 V, 10.403 pF), (39.714 V, 8.389 pF), (58.7505 V, 7.400 pF), (78.3891 V, 6.888 pF), (98.2819 V, 6.412 pF); fit residuals %: [0.03, 0.01, -0.98, 1.39, 0.25, -0.87, 0.38, -0.18] (max 1.39%)",
+     "method": "Least-squares fit of ln C = ln CJO - M*ln(1+VR/VJ) (grid over VJ, linear solve for CJO and M at each VJ). Check: C(4 V) = 16.2 pF vs table \"Typical junction capacitance 4.0 V, 1 MHz CJ 16 pF\". VJ and M are correlated."
+    },
+    {
+     "param": "M",
+     "value": 0.293,
+     "unit": "1",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/doc?88712",
+     "page": 3,
+     "evidence": "Fig. 5 \"Typical Junction Capacitance\" (1 MHz), 8 polyline vertices, typical junction capacitance vs reverse voltage, read points (VR, C): (0.099 V, 37.128 pF), (3.9549 V, 16.281 pF), (9.7874 V, 12.443 pF), (19.717 V, 10.403 pF), (39.714 V, 8.389 pF), (58.7505 V, 7.400 pF), (78.3891 V, 6.888 pF), (98.2819 V, 6.412 pF); fit residuals %: [0.03, 0.01, -0.98, 1.39, 0.25, -0.87, 0.38, -0.18] (max 1.39%)",
+     "method": "Least-squares fit of ln C = ln CJO - M*ln(1+VR/VJ) (grid over VJ, linear solve for CJO and M at each VJ). Check: C(4 V) = 16.2 pF vs table \"Typical junction capacitance 4.0 V, 1 MHz CJ 16 pF\". VJ and M are correlated."
+    },
+    {
+     "param": "TT",
+     "value": 4.933e-06,
+     "unit": "s",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.vishay.com/doc?88712",
+     "page": 2,
+     "evidence": "\"Typical reverse recovery time IF = 0.5 A, IR = 1.0 A, Irr = 0.25 A trr 2.0 us\"",
+     "method": "Charge-control storage-time estimate used by the SPICE lumped-charge diode: ts = TT*ln(1+IF/IR). Treating the whole quoted trr as storage time gives TT = trr/ln(1+IF/IR). Ignores the recovery tail to the quoted Irr, junction capacitance and RS, so it over-estimates TT. TT = 2.0 us/ln(1.5) = 4.93 us."
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "BV",
+     "reason": "Only VRRM 1000 V rating; no breakdown voltage."
+    }
+   ],
+   "field_corrections": [],
+   "notes": [
+    "Runtime quoted IS 1.04e-10 and CJO 31.1 pF come from the S1A-S1M line of the spec (COMPONENT_BEHAVIOR_SPEC.md:4439), not from S2M; S2M curve fit gives IS 2.27e-08, CJO 43.2 pF."
+   ]
+  },
+  {
+   "entry": "OHM-067",
+   "part": "Diodes Incorporated BAT42W",
+   "doc_checked": "Diodes Inc. BAT42W/BAT43W DS30016 Rev. 19-2, Feb 2025, pages 2-3",
+   "proposals": [
+    {
+     "param": "IS",
+     "value": 6.889e-08,
+     "unit": "A",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.diodes.com/datasheet/download/BAT42W.pdf",
+     "page": 3,
+     "evidence": "Fig. 1 \"Typical Forward Characteristics\", TA = 25 C curve (third from left; order 125/75/25/-25 C), typical forward curve, vector-extracted read points (IF, VF): (0.0001 A, 0.2056 V), (0.0002 A, 0.2231 V), (0.0005 A, 0.2462 V), (0.001 A, 0.2644 V), (0.002 A, 0.2838 V), (0.005 A, 0.3157 V), (0.01 A, 0.3471 V), (0.02 A, 0.3902 V), (0.05 A, 0.4807 V), (0.1 A, 0.5825 V); residuals mV: [3.8, 2.0, -0.9, -2.9, -4.5, -3.9, -1.4, 3.0, 9.8, -5.0] (rms 4.4, max 9.8)",
+     "method": "Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over 0.1 mA to 100 mA (10 points, the whole plotted 25 C curve). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. Curve drawn as filled outline; mean of outline crossings. Grid lines inside each decade are irregular in this figure, so calibration uses the evenly spaced decade lines (0.1/1/10/100 mA). The figure is shared by BAT42W and BAT43W and is not labelled per part; it is consistent with both (e.g. 0.284 V@2 mA within BAT43W 0.26-0.33 V; 0.347 V@10 mA under BAT42W max 0.40 V)."
+    },
+    {
+     "param": "N",
+     "value": 1.077,
+     "unit": "1",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.diodes.com/datasheet/download/BAT42W.pdf",
+     "page": 3,
+     "evidence": "Fig. 1 \"Typical Forward Characteristics\", TA = 25 C curve (third from left; order 125/75/25/-25 C), typical forward curve, vector-extracted read points (IF, VF): (0.0001 A, 0.2056 V), (0.0002 A, 0.2231 V), (0.0005 A, 0.2462 V), (0.001 A, 0.2644 V), (0.002 A, 0.2838 V), (0.005 A, 0.3157 V), (0.01 A, 0.3471 V), (0.02 A, 0.3902 V), (0.05 A, 0.4807 V), (0.1 A, 0.5825 V); residuals mV: [3.8, 2.0, -0.9, -2.9, -4.5, -3.9, -1.4, 3.0, 9.8, -5.0] (rms 4.4, max 9.8)",
+     "method": "Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over 0.1 mA to 100 mA (10 points, the whole plotted 25 C curve). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. Curve drawn as filled outline; mean of outline crossings. Grid lines inside each decade are irregular in this figure, so calibration uses the evenly spaced decade lines (0.1/1/10/100 mA). The figure is shared by BAT42W and BAT43W and is not labelled per part; it is consistent with both (e.g. 0.284 V@2 mA within BAT43W 0.26-0.33 V; 0.347 V@10 mA under BAT42W max 0.40 V). IS and N are strongly correlated; use them as a pair."
+    },
+    {
+     "param": "RS",
+     "value": 1.948,
+     "unit": "ohm",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.diodes.com/datasheet/download/BAT42W.pdf",
+     "page": 3,
+     "evidence": "Fig. 1 \"Typical Forward Characteristics\", TA = 25 C curve (third from left; order 125/75/25/-25 C), typical forward curve, vector-extracted read points (IF, VF): (0.0001 A, 0.2056 V), (0.0002 A, 0.2231 V), (0.0005 A, 0.2462 V), (0.001 A, 0.2644 V), (0.002 A, 0.2838 V), (0.005 A, 0.3157 V), (0.01 A, 0.3471 V), (0.02 A, 0.3902 V), (0.05 A, 0.4807 V), (0.1 A, 0.5825 V); residuals mV: [3.8, 2.0, -0.9, -2.9, -4.5, -3.9, -1.4, 3.0, 9.8, -5.0] (rms 4.4, max 9.8)",
+     "method": "Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over 0.1 mA to 100 mA (10 points, the whole plotted 25 C curve). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. Curve drawn as filled outline; mean of outline crossings. Grid lines inside each decade are irregular in this figure, so calibration uses the evenly spaced decade lines (0.1/1/10/100 mA). The figure is shared by BAT42W and BAT43W and is not labelled per part; it is consistent with both (e.g. 0.284 V@2 mA within BAT43W 0.26-0.33 V; 0.347 V@10 mA under BAT42W max 0.40 V)."
+    },
+    {
+     "param": "CJO",
+     "value": 9.479e-12,
+     "unit": "F",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.diodes.com/datasheet/download/BAT42W.pdf",
+     "page": 3,
+     "evidence": "Fig. 3 \"Total Capacitance vs. Reverse Voltage\" (TJ=25 C, 1 MHz) read points (VR, CT): (0.1 V, 9.19 pF), (0.5 V, 8.69 pF), (1 V, 8.01 pF), (2 V, 6.85 pF), (3 V, 5.92 pF), (5 V, 4.63 pF), (7 V, 3.90 pF), (10 V, 3.22 pF), (15 V, 2.57 pF), (20 V, 2.14 pF), (25 V, 1.78 pF), (30 V, 1.47 pF), (35 V, 1.25 pF); free 3-parameter fit residuals %: [-1.1, 1.03, 1.62, 1.16, -0.29, -3.3, -3.26, -1.21, 3.13, 5.51, 3.59, -1.09, -5.23]",
+     "method": "Free fit gives CJO 9.48 pF, VJ 4.40 V, M 0.90 (max 5.5%). The Schottky netlist template hard-codes VJ=0.4, M=0.45; with those fixed the best CJO is 12.8 pF and the curve is missed by -18%..+36%, so CJO alone cannot make the template match. Consistent with CT max 10 pF at 1 V (curve 8.0 pF)."
+    },
+    {
+     "param": "BV",
+     "value": 30,
+     "unit": "V",
+     "basis": "MFR_DATASHEET",
+     "confidence": "M",
+     "source_url": "https://www.diodes.com/datasheet/download/BAT42W.pdf",
+     "page": 2,
+     "evidence": "\"Reverse Breakdown Voltage (Note 6) V(BR)R 30 ... IR = 100uA\" (Min)",
+     "method": "Minimum breakdown at 100 uA. Template fixes IBV=1 mA, so model breakdown current differs from the test current."
+    },
+    {
+     "param": "IR_ref",
+     "value": 5e-07,
+     "unit": "A",
+     "basis": "MFR_DATASHEET",
+     "confidence": "H",
+     "source_url": "https://www.diodes.com/datasheet/download/BAT42W.pdf",
+     "page": 2,
+     "evidence": "\"Peak Reverse Current (Note 6) IRM ... 500 nA VR = 25V\" (Max)",
+     "method": "Max at 25 C; pair with VR_ref = 25 V. Fig. 2 typical at 25 V reads 0.136 uA."
+    },
+    {
+     "param": "VR_ref",
+     "value": 25,
+     "unit": "V",
+     "basis": "MFR_DATASHEET",
+     "confidence": "H",
+     "source_url": "https://www.diodes.com/datasheet/download/BAT42W.pdf",
+     "page": 2,
+     "evidence": "\"500 nA VR = 25V\"",
+     "method": "Test voltage of IR_ref."
+    },
+    {
+     "param": "aT",
+     "value": 0.0667,
+     "unit": "1/K",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.diodes.com/datasheet/download/BAT42W.pdf",
+     "page": 3,
+     "evidence": "Fig. 2 \"Typical Reverse Characteristics\" at VR = 25 V: 0.136 uA (25 C), 4.86 uA (75 C), 106.8 uA (125 C)",
+     "method": "Least-squares slope of ln IR vs T at VR=25 V over 25-125 C (pairwise 0.0715 for 25-75 C, 0.0618 for 75-125 C). Cross-check from table maxima \"500 nA VR = 25V\" and \"100 uA VR = 25V, TJ = +100C\": ln(200)/75 = 0.0706 /K. Both are at/above the class aT range max 0.07. Leakage in Fig. 2 also rises ~3.4x from 5 V to 30 V at 25 C, which the linear-in-V template does not capture."
+    }
+   ],
+   "unresolved": [],
+   "field_corrections": [
+    {
+     "field": "reference_part (input string \"Vishay BAT42W; BAT54-derived proxy\")",
+     "issue": "The bound document is Diodes Incorporated BAT42W/BAT43W (DS30016), not Vishay. The entry field value \"BAT42W\" itself is fine; the manufacturer attribution is wrong."
+    }
+   ],
+   "notes": [
+    "Runtime uses BAT54 vendor numbers (IS 2.117e-7, N 1, RS 2.7, CJO 8 pF, BV 56 V) and class-default IR_ref 0.2 mA@40 V / aT 0.0429, which are 400x the BAT42W leakage max; all are superseded by the proposals above if accepted."
+   ]
+  },
+  {
+   "entry": "OHM-068",
+   "part": "Diodes Incorporated BZT52C5V1",
+   "doc_checked": "Diodes Inc. BZT52C2V0-C51 DS18004 Rev. 38-2, pages 2-3",
+   "proposals": [],
+   "unresolved": [
+    {
+     "param": "RSZ",
+     "reason": "Only source for a refit is Fig. 2 \"Typical Zener Breakdown Characteristics\" (0-20 mA linear, 13 overlapping curves drawn as fragmented fill segments with arrows on top). The C5V1 trace can be roughly located (~5.06 V@3 mA to ~5.17 V@9 mA) but not isolated reliably enough to fit a series resistance; the runtime RSZ 19.5 ohm stays BZX55-derived. Consistency check only: model dynamic impedance RSZ + NBV*Vt/IZ = 19.5 + 2.7*25.7mV/5mA = 33 ohm at IZT, under the \"ZZT @ IZT 60\" ohm max; 89 ohm at 1 mA, under \"ZZK 480\" ohm max."
+    },
+    {
+     "param": "NBV",
+     "reason": "Same as RSZ; no usable knee data at this resolution."
+    },
+    {
+     "param": "CJ",
+     "reason": "Fig. 5 \"Typical Total Capacitance vs. Nominal Zener Voltage\" has its dashed transition exactly around VZ 4.7-5.6 V (roughly 300 pF to 150 pF at VR=1 V), so a C5V1 value cannot be read unambiguously."
+    }
+   ],
+   "field_corrections": [],
+   "notes": [
+    "Entry has no weak class parameters; existing fields re-checked against the C5V1 row \"5.1 4.8 5.4 5 60 480 1.0 2.0 2.0 -2.7 1.2 5\" and all match."
+   ]
+  },
+  {
+   "entry": "OHM-069",
+   "part": "Vishay SMBJ15A",
+   "doc_checked": "Vishay SMBJ5.0A-SMBJ188A (doc 88392), pages 1-3",
+   "proposals": [
+    {
+     "param": "VBR_nom",
+     "value": 17.6,
+     "unit": "V",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/docs/88392/smbj.pdf",
+     "page": 2,
+     "evidence": "SMBJ15A row: \"LM BM 16.7 18.5 1.0 15 1.0 24.6 24.4 0.088\" (VBR min/max at IT = 1.0 mA, note (1) \"Pulse test: t <= 50 ms\")",
+     "method": "Midpoint of the stated VBR window at IT=1 mA: (16.7+18.5)/2 = 17.6 V. A model choice (no typical is published), but now from the SMBJ15A row itself rather than a sibling SMAJ part; the class ASSUMPTION label can be upgraded."
+    },
+    {
+     "param": "RDYN",
+     "value": 0.2659,
+     "unit": "ohm",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/docs/88392/smbj.pdf",
+     "page": 2,
+     "evidence": "SMBJ15A row: IPPM 24.6 A, VC 24.4 V max at IPPM (10/1000 us), VBR 16.7-18.5 V at IT 1.0 mA",
+     "method": "Simple (VC - VBR_nom)/IPP = (24.4-17.6)/24.6 = 0.2764 ohm. Because the template diode adds NBV*Vt*ln(IPP/IBV) = 0.260 V of junction voltage above BV at 24.6 A (IBV = IT = 1 mA), the model-consistent value is (24.4-17.6-0.260)/24.6 = 0.2659 ohm, which equals the current calibrated runtime value 0.26577. Using VBR max 18.5 V instead gives 0.240 ohm. VC is a maximum, so this is a max-corner clamp, not typical."
+    }
+   ],
+   "unresolved": [],
+   "field_corrections": [],
+   "notes": [
+    "All existing fields re-checked against the SMBJ15A row and the thermal table and match. Doc also states VBR temperature coefficient 0.088 %/C for SMBJ15A (not a class parameter)."
+   ]
+  }
+ ]
+}

@@ -1,0 +1,220 @@
+{
+ "model_reading": "Class model ind_sat.lib: Rdc in series with nonlinear L, Cp and Rp directly across the terminals; LR is the Lsat/L0 floor of the sech^2 saturation law (not a core-loss term); Rp is the only AC loss element.",
+ "entries": [
+  {
+   "entry": "OHM-044",
+   "doc_checked": "Coilcraft Document 195 (0603CS), archived 8f69766c..., pages 1-2 (Document 195-1 rev 06/26/24 and 195-2 table, row 0603CS-15NX_R_)",
+   "proposals": [
+    {
+     "param": "cp",
+     "value": 1.06e-13,
+     "unit": "F",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.coilcraft.com/getmedia/022eb894-7253-40d0-b07c-650d362fc80e/0603cs.pdf",
+     "page": 2,
+     "evidence": "Row: \"0603CS-15NX_R_ 15 @ 250 MHz 5,3,2 35 15.4 64 16.8 89 4.00 0.170 700\"; SRF column header \"SRF min5 (GHz)\".",
+     "method": "Cp = 1/((2*pi*SRF)^2 * L0) with SRF = 4.00 GHz (minimum), L0 = 15 nH -> 1.055e-13 F (0.106 pF). Because SRF is a guaranteed minimum, this Cp is an upper bound; the typical part has a higher SRF and smaller Cp. Uses nominal L0 as the model does (the table shows L rising to 16.8 nH typ at 1.7 GHz)."
+    },
+    {
+     "param": "rp",
+     "value": 6600.0,
+     "unit": "ohm",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.coilcraft.com/getmedia/022eb894-7253-40d0-b07c-650d362fc80e/0603cs.pdf",
+     "page": 2,
+     "evidence": "Same row: Q typ 64 at 900 MHz (L typ 15.4 nH), Q min 35 at 250 MHz, Q typ 89 at 1.7 GHz; DCR max 0.170 ohm; SRF min 4.00 GHz.",
+     "method": "Solved Rp so that the class model (Rdc=0.170 + j*w*15nH) || Cp(1.055e-13) || Rp gives Im(Z)/Re(Z) = 64 at 900 MHz -> 6.61e3 ohm (closed form wL/(1/Q - Rdc/wL) with L=15.4 nH gives 6.37e3). Single-point fit: the same model needs Rp >= 1.1e3 ohm to meet Q min 35 at 250 MHz and ~1.97e4 ohm to match Q typ 89 at 1.7 GHz, so one constant Rp cannot reproduce the Q(f) curve; 900 MHz chosen as a mid-band typical point."
+    },
+    {
+     "param": "rth",
+     "value": 180,
+     "unit": "K/W",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.coilcraft.com/getmedia/022eb894-7253-40d0-b07c-650d362fc80e/0603cs.pdf",
+     "page": 2,
+     "evidence": "Irms 700 mA; footnote 7: \"Current that causes a 15°C temperature rise from 25°C ambient. This information is for reference only\"; DCR max 0.170 ohm.",
+     "method": "rth = dT/(I^2*DCR) = 15/(0.7^2*0.170) = 180 K/W. DCR is a maximum (no typical given), so real power is lower and true rth likely higher. If the model's copper tempco (class tc=0.00393, not from this document) is applied so the simulated rise lands on 15 K, rth = 170 K/W."
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "lr",
+     "reason": "Document gives no inductance-vs-DC-current data or saturation rating; it states only \"Core material Ceramic\" (p1). The L-vs-frequency figure is small-signal. No basis for an Lsat/L0 floor."
+    }
+   ],
+   "field_corrections": []
+  },
+  {
+   "entry": "OHM-045",
+   "doc_checked": "Bourns SRP7028A datasheet (archived 3088c44b..., rev K2540 05/26R) pages 1-2; Farnell copy (4f96c254...) p1 table identical for the -1R8M row",
+   "proposals": [
+    {
+     "param": "cp",
+     "value": 1.09e-11,
+     "unit": "F",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.bourns.com/docs/Product-Datasheets/SRP7028A.pdf",
+     "page": 1,
+     "evidence": "Row: \"SRP7028A-1R8M 1.8 ± 20 20 36 14 17.0 8.5 16\"; header \"SRF (MHz) Typ.\".",
+     "method": "Cp = 1/((2*pi*36 MHz)^2 * 1.8 uH) = 1.086e-11 F (10.9 pF). Typical SRF, so a typical Cp; inherits the +/-20% L tolerance."
+    },
+    {
+     "param": "rth",
+     "value": 39.5,
+     "unit": "K/W",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.bourns.com/docs/Product-Datasheets/SRP7028A.pdf",
+     "page": 1,
+     "evidence": "\"Temperature Rise ......40 °C at rated Irms\"; row Irms 8.5 A, DCR typ 14 mohm, max 17.0 mohm.",
+     "method": "rth = 40/(8.5^2*0.014) = 39.5 K/W (typ DCR). Cross-checks: with DCR max 17 mohm -> 32.6 K/W; with class tc=0.00393 applied (not from this document) so the model hits 40 K -> 34.2 K/W. Page 2 'SRP7028A-1R8M' temperature-rise curve (right axis, pixel-digitized) reads ~33 C at 8.5 A, ~29 C at 8 A, ~59 C at 12 A, ~92 C at 16 A, i.e. 32.2 / 32.8 / 29.1 / 25.7 K/W with typ DCR: the typical curve runs cooler than the 40 C table rating and apparent rth falls with current. 39.5 is the rating-consistent value; ~32 K/W is the curve-typical value near rated current."
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "rp",
+     "reason": "Only Q (Min.) 20 at 100 kHz/1 V is stated (p1). A minimum Q only bounds Rp from below: with Rdc 14 mohm, Rp >= 1.131/(1/20 - 0.014/1.131) = 30 ohm (32 ohm with DCR max). That bound is below the class rp min (100 ohm) and would grossly overstate loss if used as a value (e.g. ~3 W across a 10 V switch node), so no supported typical Rp exists."
+    },
+    {
+     "param": "lr",
+     "reason": "Page 2 L vs I curve for -1R8M ends at 20 A (1.25 x Isat) with L ~1.39 uH, ~0.76 of the ~1.82 uH zero-bias reading; the floor is not reached. Fitting the sech^2 law through 20 A gives LR ~0.7 when anchored on 20% drop at 16 A, but the curve itself shows only ~17% drop at 16 A, and the fit is ill-conditioned. Extrapolated floor is not document-supported."
+    }
+   ],
+   "field_corrections": [],
+   "notes": [
+    "Not a field error, but the typical temperature-rise curve (p2) shows ~33 C at the 8.5 A rated Irms versus the 40 C table rating, and ~17% (not 20%) inductance drop at the 16 A Isat; the table values are the rating basis."
+   ]
+  },
+  {
+   "entry": "OHM-046",
+   "doc_checked": "Bourns SDR0604 datasheet (archived f21b356f...), page 1 table row SDR0604-100ML and General Specifications; pages 2-3 are soldering/packaging only",
+   "proposals": [
+    {
+     "param": "cp",
+     "value": 4.79e-12,
+     "unit": "F",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.bourns.com/pdfs/SDR0604.pdf",
+     "page": 1,
+     "evidence": "Row: \"SDR0604- 100ML 10 ± 20 30 2.52 23 0.10 1.45 2.00\"; header \"SRF Min. (MHz)\".",
+     "method": "Cp = 1/((2*pi*23 MHz)^2 * 10 uH) = 4.79e-12 F. SRF is a minimum, so this is an upper bound on Cp."
+    },
+    {
+     "param": "rp",
+     "value": 4900.0,
+     "unit": "ohm",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.bourns.com/pdfs/SDR0604.pdf",
+     "page": 1,
+     "evidence": "Same row: Q Ref. 30 at test frequency 2.52 MHz; RDC max 0.10 ohm.",
+     "method": "Solved class model (0.10 + j*w*10uH) || Cp(4.79e-12) || Rp for Im/Re = 30 at 2.52 MHz -> 4.90e3 ohm (closed form wL/(1/Q - R/wL) = 4.84e3). Q is a 'Ref.' value, neither min nor typ; single-frequency fit, no Q(f) data to check."
+    },
+    {
+     "param": "rth",
+     "value": 190,
+     "unit": "K/W",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.bourns.com/pdfs/SDR0604.pdf",
+     "page": 1,
+     "evidence": "\"Temperature Rise ......40 °C max. at rated Irms\" (text layer garbles it to '405.8 °C'; confirmed by rendering); Irms 1.45 A (column 'Max.'); RDC max 0.10 ohm.",
+     "method": "rth = 40/(1.45^2*0.10) = 190 K/W. Only max DCR and max rise are given (no typical), so this is a rating-consistent estimate; 164 K/W if class tc=0.00393 (not from this document) is applied. Near the class max of 200."
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "lr",
+     "reason": "No L vs current curve; only \"Ind. drop 10 % typ. at Isat\" and Isat typ 2.00 A. The saturation floor is not stated."
+    }
+   ],
+   "field_corrections": [],
+   "notes": [
+    "Inductance test condition is 1 kHz/1 V (column header '1k/1V'); Q is at the separate 2.52 MHz test frequency."
+   ]
+  },
+  {
+   "entry": "OHM-048",
+   "doc_checked": "Bourns RLB datasheet (archived 0706af00...), page 6 RLB0914 table row RLB0914-101KL and series note; page 1 general specs. No curves anywhere in the 8 pages.",
+   "proposals": [
+    {
+     "param": "cp",
+     "value": 2.07e-11,
+     "unit": "F",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.bourns.com/docs/product-datasheets/RLB.pdf",
+     "page": 6,
+     "evidence": "Row: \"RLB0914-101KL 100.0 ± 10 % 30 0.796 3.5 0.280 1.1 2.1\"; header \"SRF (MHz) Min.\".",
+     "method": "Cp = 1/((2*pi*3.5 MHz)^2 * 100 uH) = 2.07e-11 F. Upper bound since SRF is a minimum."
+    },
+    {
+     "param": "rp",
+     "value": 16000.0,
+     "unit": "ohm",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.bourns.com/docs/product-datasheets/RLB.pdf",
+     "page": 6,
+     "evidence": "Same row: Q Ref. 30 at L,Q test frequency 0.796 MHz; RDC max 0.280 ohm.",
+     "method": "Solved class model (0.28 + j*w*100uH) || Cp(2.07e-11) || Rp for Im/Re = 30 at 0.796 MHz -> 1.61e4 ohm (closed form without Cp: 1.53e4). Cp matters here because 0.796 MHz is 0.23 x SRF min; 'Ref.' Q, single point."
+    },
+    {
+     "param": "rth",
+     "value": 118,
+     "unit": "K/W",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.bourns.com/docs/product-datasheets/RLB.pdf",
+     "page": 6,
+     "evidence": "\"NOTE: Temperature rise.............. 40 °C typ. at rated Irms\"; Irms (A) Typ. 1.1; RDC max 0.280 ohm.",
+     "method": "rth = 40/(1.1^2*0.28) = 118 K/W. Mixes typical current/rise with max DCR (no typ DCR given), so true rth is likely somewhat higher; 102 K/W if class tc=0.00393 (not from this document) is applied."
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "lr",
+     "reason": "No L vs current curve; only \"Inductance drop............... 10 % typ at Isat\" with Isat typ 2.1 A. Floor not stated."
+    }
+   ],
+   "field_corrections": []
+  },
+  {
+   "entry": "OHM-049",
+   "doc_checked": "Bourns 2100 Series datasheet (archived eb556ffd..., REV. 07/09) page 1 table row 2107-RC (column order confirmed by rendering) and notes; page 2 legal only",
+   "proposals": [
+    {
+     "param": "rth",
+     "value": 41.4,
+     "unit": "K/W",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.bourns.com/docs/product-datasheets/2100_series.pdf",
+     "page": 1,
+     "evidence": "Row: \"2107-RC 33 5.0 22.8 0.029\"; note \"* Current to cause 30 °C max. temperature rise\".",
+     "method": "rth = 30/(5.0^2*0.029) = 41.4 K/W. DCR is max only and the rise is a max, so the errors partly offset; 37.0 K/W if class tc=0.00393 (not from this document) is applied. Same row covers -H and -V mounting; mounting/lead conditions not stated."
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "cp",
+     "reason": "No SRF, impedance or capacitance data in the document. The existing 8 pF cp_placeholder_pf (runtime-recipes, ASSUMPTION) stays unsourced."
+    },
+    {
+     "param": "rp",
+     "reason": "No Q or loss data at any frequency; only the feature bullet \"Low core loss\"."
+    },
+    {
+     "param": "lr",
+     "reason": "Only one biased point (22.8 uH at the 5.0 A thermal Idc, ratio 0.69, which supports the existing drop fit); no curve or floor."
+    }
+   ],
+   "field_corrections": []
+  }
+ ]
+}

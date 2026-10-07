@@ -1,0 +1,249 @@
+{
+ "entries": [
+  {
+   "entry": "OHM-095",
+   "part": "BCX56-16",
+   "doc_checked": "Nexperia BCX56 series, Rev. 13, 25 October 2023 (archived 2cfdade4...), text pp1-7 and figures 5/6/7 on p7 rendered and pixel-digitized at 200 dpi",
+   "proposals": [
+    {
+     "param": "BF",
+     "value": 158.11,
+     "unit": "",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://assets.nexperia.com/documents/data-sheet/BCX56_SER.pdf",
+     "page": 6,
+     "evidence": "Table 7: \"BCX56-16 ... VCE = 2 V; IC = 150 mA  100  -  250\"",
+     "method": "Class rule BF = sqrt(hFE_min*hFE_max) = sqrt(100*250). Cross-check: Fig. 5 (p7, typical, Tamb 25 C, VCE 2 V) reads hFE ~149 on the 10-100 mA plateau and ~147 at 150 mA, but Fig. 5 is for the 'BCX56 series' and does not name a gain group, so it is not used as the value. Unchanged from current runtime value (158.114)."
+    },
+    {
+     "param": "hfe_corner_k",
+     "value": {
+      "default": 1.0,
+      "min": 0.632,
+      "max": 1.581
+     },
+     "unit": "",
+     "basis": "DERIVED",
+     "confidence": "H",
+     "source_url": "https://assets.nexperia.com/documents/data-sheet/BCX56_SER.pdf",
+     "page": 6,
+     "evidence": "Table 7: \"BCX56-16 ... VCE = 2 V; IC = 150 mA  100  -  250\"",
+     "method": "Class definition (BEH-TRN-BJT: tolerance 'corner rule BF*k, ISE/k', default 1.0) makes hfe_corner_k a min/max gain-corner multiplier on BF, not a high-current roll-off. k_min = 100/158.11 = 0.632, k_max = 250/158.11 = 1.581 (= sqrt(250/100)). Inside the class bounds 0.58..1.73. NOTE: the task brief described hfe_corner_k as high-current roll-off; the class does not. For information only, Fig. 5 (p7, 25 C) shows hFE falling from ~147 at 0.16 A to ~137 at 0.35 A and ~72 at ~0.75 A (curve read, M)."
+    },
+    {
+     "param": "IS",
+     "value": 7.4e-14,
+     "unit": "A",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://assets.nexperia.com/documents/data-sheet/BCX56_SER.pdf",
+     "page": 7,
+     "evidence": "Fig. 7 \"Base-emitter voltage as a function of collector current; typical values\", VCE = 2 V, curve (2) Tamb = 25 C",
+     "method": "Pixel-digitized curve (2): IC=0.105 mA VBE=0.5405 V; 0.217 mA 0.5595; 0.472 mA 0.5811; 1.05 mA 0.6014; 2.23 mA 0.6203; 10.5 mA 0.6595; 22.9 mA 0.6811 V. Log fit over 0.1-23 mA gives 59.5 mV/decade, i.e. N = 1.005, so N=1 is consistent. IS = IC/exp(VBE/Vt) with Vt = kT/q at 298.15 K (25.69 mV) gives 7.0e-14..7.7e-14 per point, mean 7.4e-14 (free-N fit 8.3e-14). Above ~0.1 A the curve bends up (high injection/RB), so those points are excluded. Assumes Tj = Tamb = 25 C. A +/-3 mV read error moves IS about +/-12%. Consistency: read VBE 0.815 V at 0.51 A is below the Table 7 max \"VBE ... VCE = 2 V; IC = 500 mA ... 1 V\". Replaces the 1e-14 assumption (factor ~7)."
+    },
+    {
+     "param": "VAF",
+     "value": 8.9,
+     "unit": "V",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://assets.nexperia.com/documents/data-sheet/BCX56_SER.pdf",
+     "page": 7,
+     "evidence": "Fig. 6 \"Collector current as a function of collector-emitter voltage; typical values\", Tamb = 25 C, IB = 5..50 mA, VCE 0..2 V",
+     "method": "Pixel-digitized each IB curve at VCE = 1.41, 1.62, 1.82, 1.98 V (axis calibration 222 px/V, 277.5 px/A). Linear fit IC = a + b*VCE, VA = a/b. IB=5 mA: 0.479/0.494/0.508/0.519 A -> VA 5.4 V; 10 mA: 0.688..0.742 A -> 5.6 V; 15 mA -> 7.2 V; 20 mA: 0.959..1.016 A -> 7.9 V; 25 mA -> 8.4 V; 30 mA -> 9.4 V; 35 mA -> 10.6 V; 40 mA -> 11.3 V; 45 mA -> 11.4 V; 50 mA: 1.449..1.510 A -> 11.6 V. Median 8.9 V, range 5.4-11.6 V.",
+     "adoption_caveat": "DO NOT adopt as the SPICE VAF without review. The figure only spans VCE <= 2 V at IC 0.38-1.5 A (up to ~3 W, above the 0.5-1.35 W Ptot; pulsing is not stated), so the slope mixes Early effect with self-heating/high-level injection. The result is far below the class bounds (30..200 V) and would badly overstate output conductance at small-signal currents. It is the only VAF the document supports; treat it as an effective high-current output conductance, not a true Early voltage."
+    }
+   ],
+   "unresolved": [],
+   "field_corrections": [
+    {
+     "field": "dc_gain_minimum_16_bin / dc_gain_maximum_16_bin (scope note)",
+     "issue": "Values 100/250 at VCE 2 V, IC 150 mA (p6) are correct. The scope says 'no pulse footnote on this row', which is true of Table 7 p6, but Table 1 Quick reference data on p1 marks the same BCX56-16 150 mA row with [1] 'pulsed; tp <= 300 us; delta <= 0.02'. Suggest the scope note records the p1 pulsed footnote instead of implying DC.",
+     "severity": "minor"
+    }
+   ]
+  },
+  {
+   "entry": "OHM-097",
+   "part": "BD139 (Fairchild, ungraded), RevA February 2000",
+   "doc_checked": "Fairchild BD135/137/139 Rev. A Feb 2000 (farnell 79944, archived 47978634...) pp1-2, figures on p2 rendered/digitized; cross-read onsemi BD135/137/139 Rev. 3 April 2026 (archived ba567ad1...) pp1-4",
+   "proposals": [
+    {
+     "param": "BF",
+     "value": 80.0,
+     "unit": "",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.farnell.com/datasheets/79944.pdf",
+     "page": 1,
+     "evidence": "\"hFE3 ... : BD137, BD139  VCE = 2V, IC = 150mA  40  160\"",
+     "method": "Class rule sqrt(40*160) = 80 for the named reference (Fairchild RevA ungraded). Current runtime bench uses BF=100 (sqrt(40*250)) because the dc_gain_maximum_ungraded field holds the onsemi Rev 3 value 250; see field_corrections. If the reference is switched to onsemi Rev 3 (p2: \"hFE3 VCE = 2 V, IC = 150 mA 40 250\"), BF = 100. Fig. 1 p2 (shared BD135/137/139 typical, VCE 2 V) peaks at hFE ~98 near 150 mA (eyeball, M)."
+    },
+    {
+     "param": "hfe_corner_k",
+     "value": {
+      "default": 1.0,
+      "min": 0.5,
+      "max": 2.0
+     },
+     "unit": "",
+     "basis": "DERIVED",
+     "confidence": "H",
+     "source_url": "https://www.farnell.com/datasheets/79944.pdf",
+     "page": 1,
+     "evidence": "\"hFE3 ... : BD137, BD139  VCE = 2V, IC = 150mA  40  160\"",
+     "method": "Corner multiplier per class definition: 40/80 = 0.5, 160/80 = 2.0. OUTSIDE the class bounds 0.58..1.73; class min/max would clip the datasheet range. (onsemi 40..250 would give 0.4..2.5.) Not a high-current roll-off; for information, Fig. 1 p2 shows hFE falling from ~98 at ~150 mA to 40 at ~1.4 A (typical, eyeball)."
+    },
+    {
+     "param": "IS",
+     "value": 1.3e-13,
+     "unit": "A",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.farnell.com/datasheets/79944.pdf",
+     "page": 2,
+     "evidence": "Figure 3 \"Base-Emitter Voltage\", curve \"VBE(on) VCE = 5V\" (typical characteristics, BD135/137/139 shared)",
+     "method": "Pixel-digitized (102 px/decade, 333.5 px/V): IC=1.72 mA VBE=0.599 V; 2.70 mA 0.608; 5.3 mA 0.626; 13.1 mA 0.653; 25.8 mA 0.671; 125 mA 0.731 V. IS = IC/exp(VBE/Vt), Vt = 25.69 mV: 1.28e-13, 1.41e-13, 1.38e-13, 1.19e-13, 1.16e-13 over 1.7-26 mA -> 1.3e-13. Confidence L because the curve starts at 1.7 mA and its slope is ~70.5 mV/decade (N ~1.19), so an N=1 IS depends on the anchor current (5.5e-14 if anchored at 125 mA). Temperature not stated on the figure (assumed 25 C). The onsemi Rev 3 Fig. 3 p3 shows the same VBE(on) VCE = 5 V curve. Stated table point only gives a ceiling: \"VBE(on) ... VCE = 2V, IC = 0.5A ... 1 V\" (p1)."
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "VAF",
+     "reason": "Neither the Fairchild RevA nor the onsemi Rev 3 sheet contains an IC vs VCE output-characteristic figure (figures are hFE, VCE(sat), VBE, SOA, power derating). No Early-voltage derivation is possible from the documents."
+    }
+   ],
+   "field_corrections": [
+    {
+     "field": "dc_gain_maximum_ungraded",
+     "current": 250,
+     "issue": "Sourced from onsemi Rev 3 while reference_part (and recipe) name 'Fairchild BD139 ungraded, RevA February2000', whose p1 says BD137/BD139 hFE3 max is 160. The recipe limitation text claims 'BF=sqrt(40*160)=80' but runtime bench.cir has BF=100. Either set the field to 160 citing https://www.farnell.com/datasheets/79944.pdf p1, or change reference_part to onsemi BD139 Rev 3 (April 2026) and fix the limitation text and BF=100.",
+     "severity": "major"
+    },
+    {
+     "field": "maximum_collector_emitter_saturation, dc_gain_minimum_ungraded, dc_gain_test_collector_voltage, dc_gain_test_collector_current",
+     "issue": "These fields cite the onsemi URL with page 1, but in onsemi Rev 3 the Electrical Characteristics table is on page 2 (p1 holds only absolute maxima and thermal). They are on p1 of the Fairchild farnell document that the scope text names. The values themselves (0.5 V at 500 mA/50 mA; 40; 2 V; 150 mA) match both documents.",
+     "severity": "minor"
+    },
+    {
+     "field": "source_soa_curve_available",
+     "issue": "Page 2 / Figure 4 is right for the Fairchild farnell document, but the field cites the onsemi URL, where Figure 4 SOA is on page 3.",
+     "severity": "minor"
+    }
+   ]
+  },
+  {
+   "entry": "OHM-098",
+   "part": "IRFZ44NPbF (identified by me: reference_part is null in input; runtime recipe binds scope_contains 'IRFZ44NPbF' and template IRFZ44N_R6; IRF540NPbF and IRLB8721PbF also in the doc set)",
+   "doc_checked": "Infineon IRFZ44NPbF Rev 2.1 2026-08-11 (archived 954d7134...), IRF540NPbF Rev 2.1 2026-07-24 (a3fd62a7...), IRLB8721PbF (8a313aec...), dynamic tables on p2",
+   "proposals": [
+    {
+     "param": "cgs_ciss",
+     "value": 1382,
+     "unit": "pF",
+     "basis": "DERIVED",
+     "confidence": "H",
+     "source_url": "https://www.infineon.com/dgdl/irfz44npbf.pdf",
+     "page": 2,
+     "evidence": "\"Ciss Input Capacitance ––– 1470 ––– VGS = 0V\"; \"Coss Output Capacitance ––– 360 ––– pF VDS = 25V\"; \"Crss Reverse Transfer Capacitance ––– 88 ––– ƒ = 1.0MHz\"",
+     "method": "Cgs = Ciss - Crss = 1470 - 88 = 1382 pF (typical, VGS 0 V, VDS 25 V, 1 MHz). Matches the existing class default 1382 pF and the subckt 'Cgs gi s 1382p', so the value is confirmed, not changed; only basis/confidence can be raised. Constant-Cgs remains an approximation away from VDS 25 V."
+    },
+    {
+     "param": "cgs_ciss (variant IRF540NPbF, not bound)",
+     "value": 1920,
+     "unit": "pF",
+     "basis": "DERIVED",
+     "confidence": "H",
+     "source_url": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irf540n-datasheet-en.pdf",
+     "page": 2,
+     "evidence": "\"Ciss Input Capacitance ––– 1960\"; \"Coss ... 250 ... pF VDS = 25V\"; \"Crss Reverse Transfer Capacitance ––– 40\"",
+     "method": "1960 - 40 = 1920 pF at VGS 0 V, VDS 25 V, 1 MHz. Only if the IRF540N variant is bound."
+    },
+    {
+     "param": "cgs_ciss (variant IRLB8721PbF, not bound)",
+     "value": 967,
+     "unit": "pF",
+     "basis": "DERIVED",
+     "confidence": "H",
+     "source_url": "https://www.infineon.com/dgdl/irlb8721pbf.pdf",
+     "page": 2,
+     "evidence": "\"Ciss Input Capacitance ––– 1077 ––– VGS = 0V\"; \"Coss ... 360 ... pF VDS = 15V\"; \"Crss Reverse Transfer Capacitance ––– 110\"",
+     "method": "1077 - 110 = 967 pF at VDS 15 V (note different VDS from the IRF parts). Only if the IRLB8721 variant is bound."
+    }
+   ],
+   "unresolved": [],
+   "field_corrections": [
+    {
+     "field": "reference_part (input)",
+     "issue": "Input reference_part is null although entry fields carry three reference_part values (IRF540NPbF, IRFZ44NPbF, IRLB8721PbF) and the recipe binds IRFZ44NPbF; the input 'fields' list repeats nine field names three times. Spot-checked IRFZ44N/IRF540N/IRLB8721 VDS, ID, PD, RthJC, RthJA, RDS(on) and EAS values against the PDFs: all match. No value errors found.",
+     "severity": "info"
+    }
+   ]
+  },
+  {
+   "entry": "OHM-102",
+   "part": "Si7898DP (identified by me: reference_part null in input; sole doc and recipe scope 'Si7898DP'; Vishay S09-0227-Rev. D, 09-Feb-09, doc 71873)",
+   "doc_checked": "Vishay Si7898DP (archived ff982ecc...), spec table p2, Capacitance figure p3 rendered at 250 dpi and digitized",
+   "proposals": [
+    {
+     "param": "cgs_ciss",
+     "value": 816,
+     "unit": "pF",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/docs/71873/si7898dp.pdf",
+     "page": 3,
+     "evidence": "Typical characteristics figure \"Capacitance\" (C - Capacitance (pF) vs VDS - Drain-to-Source Voltage (V), curves Ciss, Coss, Crss); no capacitance rows in the p2 SPECIFICATIONS table",
+     "method": "Pixel-digitized (3.61 px/V, 0.394 px/pF). At VDS = 75 V (the Qg test VDS on p2): Ciss ~852 pF, Coss ~71 pF, Crss ~36 pF -> Cgs = 852 - 36 = 816 pF. Other reads: VDS 25 V Ciss ~895 (on the 900 gridline), Crss ~51 -> ~844 pF; 50 V 869/41 -> 828; 100 V 837/33 -> 804; 125 V 822/30 -> 792. Rough check against p2 \"Gate-source charge Qgs VDS = 75 V, VGS = 10 V, ID = 3.5 A - 3.2 - nC\": 816 pF x ~4.4 V plateau (Gate Charge figure p3, eyeball) ~3.6 nC.",
+     "adoption_caveat": "The current SI7898DP_R6 uses a lumped Cgs 1700p (Qg/10 V) with NO Cgd. Replacing it with 816 pF without adding a Cgd (Crss ~36 pF at 75 V, rising sharply at low VDS) would under-predict Qg 17 nC typ. Change together with a Cgd element."
+    }
+   ],
+   "unresolved": [],
+   "field_corrections": [
+    {
+     "field": "class BEH-TRN-MOSFET model.known_limitations 'IRFP260N and Si7898DP lack Crss/Coss data'",
+     "issue": "Not true for Si7898DP: p3 has a typical Ciss/Coss/Crss vs VDS figure (no tabulated values). Also p2 states gate resistance \"Rg 0.5 0.85 2.5\" ohm (min/typ/max), while SI7898DP_R6 uses Rg 1.5 (within range, but the doc gives a typical value).",
+     "severity": "minor"
+    },
+    {
+     "field": "entry fields",
+     "issue": "Spot-checked RDS(on) 68/85 and 76/95 mohm, Qg 17/21 nC, trr 45/70 ns, VGS(th) against p2: match. No value errors found.",
+     "severity": "info"
+    }
+   ]
+  },
+  {
+   "entry": "OHM-146",
+   "part": "SiT8008 7050, 3.3 V, 20 MHz, industrial, OE",
+   "doc_checked": "SiTime SiT8008 Rev. 1.11, revised May 27, 2013 (archived 0b5cfe11...), electrical table p1, notes, Figure 12 caption",
+   "proposals": [
+    {
+     "param": "rout",
+     "value": {
+      "max": 82.5
+     },
+     "unit": "ohm",
+     "basis": "DERIVED",
+     "confidence": "H",
+     "source_url": "https://www.sitime.com/sites/default/files/mature-datasheets/SiT8008-datasheet.pdf",
+     "page": 1,
+     "evidence": "\"Output High Voltage VOH 90% ... Vdd IOH = -4 mA (Vdd = 3.0V or 3.3V)\"; \"Output Low Voltage VOL ... 10% Vdd IOL = 4 mA (Vdd = 3.0V or 3.3V)\"; note 1 \"specified with 15 pF output load at default drive strength\"",
+     "method": "Guaranteed DC drop <= 10% of Vdd at 4 mA on either rail, so Rout <= 0.1*Vdd/4 mA = 0.33 V/4 mA = 82.5 ohm at Vdd 3.3 V (75 ohm at Vdd 3.0 V). This is an upper bound for default drive strength, not a typical value; it supports tightening the class max (currently 100 ohm) to 82.5 ohm for the 3.3 V option. The 4 mA is a test condition, not a current rating (consistent with the entry's open item)."
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "rout (typical/default)",
+     "reason": "No stated output impedance, drive current or typical VOH/VOL. A single-pole RC reading of \"Rise/Fall Time Tr, Tf - 1 2 ns Vdd = 2.5V, 2.8V, 3.0V or 3.3V, 20% - 80%\" into the 15 pF note-1 load gives R = tr/(ln4*C) = 48 ohm typ (96 ohm at 2 ns max), but the ohm_xo model already applies a separate source edge tr=1n before Ro, so using this would double-count the edge. It is valid only if the model's internal tr is set near zero. Default 30 ohm stays an ASSUMPTION. Drive strength is also programmable ('Programmable drive strength', p1 features), so any value applies to default drive strength only."
+    }
+   ],
+   "field_corrections": [
+    {
+     "field": "(none wrong)",
+     "issue": "Spot-checked recommended_supply_range 2.97..3.63 V, quiescent_current 3.8/4.5 mA (20 MHz, no load), standby 4.3 uA max, Z_in 87/100 kohm, VIH/VIL 70%/30%: match p1. Additional note for the existing OE conflict: p1 row \"OE Disable Current I_OD - - 4 mA Vdd = 2.5V to 3.3V, OE = GND, output is Weakly Pulled Down\" also says weak pull-down on OE disable, contradicting the p2 'high impedance' value held in oe_disabled_state.",
+     "severity": "info"
+    }
+   ]
+  }
+ ]
+}

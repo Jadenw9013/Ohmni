@@ -101,6 +101,19 @@
         ],
         "unit": null,
         "value": "Application-specific manufacturer design assistance required"
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "detail": "p1 'POWER RATING P40 °C' CPR05 = 5 W; p1 'Operating Temperature Range °C -65 to +275'; p2 Derating figure: 100 % to 40 °C, 0 % at 275 °C (visually read). Method: Rth = (275 - 40) K / 5 W = 47 K/W. Linear derating means film/element temperature = T_amb + Rth*P reaches the endpoint on the derating line, so Rth_implied = (T_end - T_knee)/P_rated. This is the derating-implied thermal resistance on the manufacturer's (unstated) reference mounting, not a measured or board-specific value. Lower confidence: no hot-spot temperature stated; free-air radial mounting assumed by the rating, not stated.",
+        "field": "thermal_resistance_from_rating_derivation",
+        "page": 2,
+        "scope": "OHM-012; rth for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://www.vishay.com/docs/30219/cpr.pdf"
+        ],
+        "unit": "K/W",
+        "value": 47.0
       }
     ],
     "remaining_open_items": [
@@ -115,7 +128,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-012.md",
-      "document_sha256": "dd7dffca0983aa3e7b206270eb6539e5afa8237edc1a45f32565e4dc0539f475",
+      "document_sha256": "a04a6836f2f997e15a0a8f67206ab9a2d9259a3699421bed033b5a9d37102bf5",
       "fragment_sha256": null,
       "line": 1
     }

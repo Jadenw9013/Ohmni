@@ -185,6 +185,19 @@
         ],
         "unit": "fraction",
         "value": 0.2
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "\"Temperature Rise ......40 °C at rated Irms\"; row Irms 8.5 A, DCR typ 14 mohm, max 17.0 mohm. Method: rth = 40/(8.5^2*0.014) = 39.5 K/W (typ DCR). Cross-checks: with DCR max 17 mohm -> 32.6 K/W; with class tc=0.00393 applied (not from this document) so the model hits 40 K -> 34.2 K/W. Page 2 'SRP7028A-1R8M' temperature-rise curve (right axis, pixel-digitized) reads ~33 C at 8.5 A, ~29 C at 8 A, ~59 C at 12 A, ~92 C at 16 A, i.e. 32.2 / 32.8 / 29.1 / 25.7 K/W with typ DCR: the typical curve runs cooler than the 40 C table rating and apparent rth falls with current. 39.5 is the rating-consistent value; ~32 K/W is the curve-typical value near rated current.",
+        "field": "thermal_resistance_from_rating_derivation",
+        "page": 1,
+        "scope": "Bourns SRP7028A-1R8M; rth for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/SRP7028A.pdf"
+        ],
+        "unit": "K/W",
+        "value": 39.5
       }
     ],
     "remaining_open_items": [
@@ -196,7 +209,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-045.md",
-      "document_sha256": "5c84cb764c88573fe2a8f257232ac5c6cc92ff0dd0579a43ff819c2570e7e2a2",
+      "document_sha256": "8dde60bab39e255e6e811859f22fd1ef8dc4f84f9c85079f0dbfec8d1f6e4330",
       "fragment_sha256": null,
       "line": 1
     }

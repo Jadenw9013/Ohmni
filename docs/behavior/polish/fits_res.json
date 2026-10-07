@@ -1,0 +1,418 @@
+{
+ "entries": [
+  {
+   "entry": "OHM-001",
+   "doc_checked": "CRCW01005 e3, Rev 28-Oct-13 (4 pp.); covers 01005/RR0402M only - matches entry.",
+   "proposals": [
+    {
+     "param": "rth",
+     "value": 1774.2,
+     "unit": "K/W",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/docs/20056/crcw01005e3.pdf",
+     "page": 2,
+     "evidence": "p1 Technical specs 'Rated Dissipation P70 (1) W 0.031'; p1 note (1) 'The rated dissipation applies only if the permitted film temperature of 125 °C is not exceeded'; p2 Derating figure: 100 % to 70 °C, 0 % at 125 °C (visually read).",
+     "method": "Rth = (125 - 70) K / 0.031 W = 1774.2 K/W. Linear derating means film/element temperature = T_amb + Rth*P reaches the endpoint on the derating line, so Rth_implied = (T_end - T_knee)/P_rated. This is the derating-implied thermal resistance on the manufacturer's (unstated) reference mounting, not a measured or board-specific value. Note the 01005 endpoint is 125 °C, not the class default 155 °C."
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "cp",
+     "reason": "CRCW01005 e3 (4 pp.) contains electrical table, derating curve, dimensions, test table; no capacitance, inductance, impedance-vs-frequency or HF data anywhere. cp stays ASSUMPTION/unresolved."
+    },
+    {
+     "param": "ls",
+     "reason": "CRCW01005 e3 (4 pp.) contains electrical table, derating curve, dimensions, test table; no capacitance, inductance, impedance-vs-frequency or HF data anywhere. ls stays ASSUMPTION/unresolved."
+    }
+   ],
+   "field_corrections": []
+  },
+  {
+   "entry": "OHM-002",
+   "doc_checked": "CRCW0201 e3, Rev 21-Sep-2022 (5 pp.); covers 0201/RR0603M only - matches entry.",
+   "proposals": [
+    {
+     "param": "rth",
+     "value": 1700.0,
+     "unit": "K/W",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/docs/20052/crcw0201e3.pdf",
+     "page": 3,
+     "evidence": "p1 'Rated Dissipation at 70 °C (1) W 0.05'; p1 note (1) 'The rated dissipation applies only if the permitted film temperature of 155 °C is not exceeded'; p3 Derating figure: 100 % to 70 °C, 0 % at 155 °C (visually read).",
+     "method": "Rth = (155 - 70) K / 0.05 W = 1700 K/W. Linear derating means film/element temperature = T_amb + Rth*P reaches the endpoint on the derating line, so Rth_implied = (T_end - T_knee)/P_rated. This is the derating-implied thermal resistance on the manufacturer's (unstated) reference mounting, not a measured or board-specific value."
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "cp",
+     "reason": "CRCW0201 e3 (5 pp.) has no capacitance, inductance or frequency-response data. cp stays ASSUMPTION/unresolved."
+    },
+    {
+     "param": "ls",
+     "reason": "CRCW0201 e3 (5 pp.) has no capacitance, inductance or frequency-response data. ls stays ASSUMPTION/unresolved."
+    }
+   ],
+   "field_corrections": []
+  },
+  {
+   "entry": "OHM-003",
+   "doc_checked": "D/CRCW e3, Rev 14-Apr-2026 (13 pp.); multi-size family incl. CRCW0402 e3 column (p1) and its own rows on p2/p6/p11 - covers this entry. Page 1 table lists the EXTENDED-mode P70/Umax for 0402-0805; standard-mode values are on p2 (entry correctly uses standard).",
+   "proposals": [
+    {
+     "param": "rth",
+     "value": 1349.2,
+     "unit": "K/W",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.vishay.com/docs/20035/dcrcwe3.pdf",
+     "page": 6,
+     "evidence": "p1 'Permissible film temperature, ϑF max. 155 °C'; p1 'The rated dissipation applies only if the permitted film temperature is not exceeded'; P70 (standard) for CRCW0402 = 0.063 W (p2); p6 Derating figure: CRCW0402 line flat at 0.063 W to 70 °C, reaching 0 W at 155 °C (visually read).",
+     "method": "Rth = (155 - 70) K / 0.063 W = 1349.2 K/W. Linear derating means film/element temperature = T_amb + Rth*P reaches the endpoint on the derating line, so Rth_implied = (T_end - T_knee)/P_rated. This is the derating-implied thermal resistance on the manufacturer's (unstated) reference mounting, not a measured or board-specific value. Caveat: the same part's extended-operation rating (p2: 0.1 W at 70 °C, p6 extended derating also to 0 at 155 °C) implies 850.0 K/W, so the derating-implied Rth is a rating construct that depends on the operation mode, not a physical package constant."
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "cp",
+     "reason": "D/CRCW e3 (13 pp.) gives pulse-load, pulse-voltage, derating, non-linearity (A3) and current-noise curves, but no parasitic capacitance, inductance or impedance-vs-frequency data for any size. cp stays ASSUMPTION/unresolved."
+    },
+    {
+     "param": "ls",
+     "reason": "D/CRCW e3 (13 pp.) gives pulse-load, pulse-voltage, derating, non-linearity (A3) and current-noise curves, but no parasitic capacitance, inductance or impedance-vs-frequency data for any size. ls stays ASSUMPTION/unresolved."
+    }
+   ],
+   "field_corrections": [
+    {
+     "field": "derating_knee",
+     "current": {
+      "value": 70,
+      "page": 2
+     },
+     "issue": "Value is right, but the derating curve that shows the 70 °C knee is on p6; p2 only carries the P70 subscript. Suggest citing p6 (or p1/p2 P70 plus p6).",
+     "severity": "minor_citation"
+    }
+   ]
+  },
+  {
+   "entry": "OHM-004",
+   "doc_checked": "D/CRCW e3, Rev 14-Apr-2026 (13 pp.); multi-size family incl. CRCW0603 e3 column (p1) and its own rows on p2/p6/p11 - covers this entry. Page 1 table lists the EXTENDED-mode P70/Umax for 0402-0805; standard-mode values are on p2 (entry correctly uses standard).",
+   "proposals": [
+    {
+     "param": "rth",
+     "value": 850.0,
+     "unit": "K/W",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.vishay.com/docs/20035/dcrcwe3.pdf",
+     "page": 6,
+     "evidence": "p1 'Permissible film temperature, ϑF max. 155 °C'; p1 'The rated dissipation applies only if the permitted film temperature is not exceeded'; P70 (standard) for CRCW0603 = 0.1 W (p2); p6 Derating figure: CRCW0603 line flat at 0.1 W to 70 °C, reaching 0 W at 155 °C (visually read).",
+     "method": "Rth = (155 - 70) K / 0.1 W = 850.0 K/W. Linear derating means film/element temperature = T_amb + Rth*P reaches the endpoint on the derating line, so Rth_implied = (T_end - T_knee)/P_rated. This is the derating-implied thermal resistance on the manufacturer's (unstated) reference mounting, not a measured or board-specific value. Caveat: the same part's extended-operation rating (p2: 0.125 W at 70 °C, p6 extended derating also to 0 at 155 °C) implies 680.0 K/W, so the derating-implied Rth is a rating construct that depends on the operation mode, not a physical package constant."
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "cp",
+     "reason": "D/CRCW e3 (13 pp.) gives pulse-load, pulse-voltage, derating, non-linearity (A3) and current-noise curves, but no parasitic capacitance, inductance or impedance-vs-frequency data for any size. cp stays ASSUMPTION/unresolved."
+    },
+    {
+     "param": "ls",
+     "reason": "D/CRCW e3 (13 pp.) gives pulse-load, pulse-voltage, derating, non-linearity (A3) and current-noise curves, but no parasitic capacitance, inductance or impedance-vs-frequency data for any size. ls stays ASSUMPTION/unresolved."
+    }
+   ],
+   "field_corrections": [
+    {
+     "field": "derating_knee",
+     "current": {
+      "value": 70,
+      "page": 2
+     },
+     "issue": "Value is right, but the derating curve that shows the 70 °C knee is on p6; p2 only carries the P70 subscript. Suggest citing p6 (or p1/p2 P70 plus p6).",
+     "severity": "minor_citation"
+    }
+   ]
+  },
+  {
+   "entry": "OHM-005",
+   "doc_checked": "D/CRCW e3, Rev 14-Apr-2026 (13 pp.); multi-size family incl. CRCW0805 e3 column (p1) and its own rows on p2/p6/p11 - covers this entry. Page 1 table lists the EXTENDED-mode P70/Umax for 0402-0805; standard-mode values are on p2 (entry correctly uses standard).",
+   "proposals": [
+    {
+     "param": "rth",
+     "value": 680.0,
+     "unit": "K/W",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.vishay.com/docs/20035/dcrcwe3.pdf",
+     "page": 6,
+     "evidence": "p1 'Permissible film temperature, ϑF max. 155 °C'; p1 'The rated dissipation applies only if the permitted film temperature is not exceeded'; P70 (standard) for CRCW0805 = 0.125 W (p2); p6 Derating figure: CRCW0805 line flat at 0.125 W to 70 °C, reaching 0 W at 155 °C (visually read).",
+     "method": "Rth = (155 - 70) K / 0.125 W = 680.0 K/W. Linear derating means film/element temperature = T_amb + Rth*P reaches the endpoint on the derating line, so Rth_implied = (T_end - T_knee)/P_rated. This is the derating-implied thermal resistance on the manufacturer's (unstated) reference mounting, not a measured or board-specific value. Caveat: the same part's extended-operation rating (p2: 0.25 W at 70 °C, p6 extended derating also to 0 at 155 °C) implies 340.0 K/W, so the derating-implied Rth is a rating construct that depends on the operation mode, not a physical package constant."
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "cp",
+     "reason": "D/CRCW e3 (13 pp.) gives pulse-load, pulse-voltage, derating, non-linearity (A3) and current-noise curves, but no parasitic capacitance, inductance or impedance-vs-frequency data for any size. cp stays ASSUMPTION/unresolved."
+    },
+    {
+     "param": "ls",
+     "reason": "D/CRCW e3 (13 pp.) gives pulse-load, pulse-voltage, derating, non-linearity (A3) and current-noise curves, but no parasitic capacitance, inductance or impedance-vs-frequency data for any size. ls stays ASSUMPTION/unresolved."
+    }
+   ],
+   "field_corrections": [
+    {
+     "field": "derating_knee",
+     "current": {
+      "value": 70,
+      "page": 2
+     },
+     "issue": "Value is right, but the derating curve that shows the 70 °C knee is on p6; p2 only carries the P70 subscript. Suggest citing p6 (or p1/p2 P70 plus p6).",
+     "severity": "minor_citation"
+    }
+   ]
+  },
+  {
+   "entry": "OHM-006",
+   "doc_checked": "D/CRCW e3, Rev 14-Apr-2026 (13 pp.); multi-size family incl. CRCW1206 e3 column (p1) and its own rows on p2/p6/p11 - covers this entry.",
+   "proposals": [
+    {
+     "param": "rth",
+     "value": 340.0,
+     "unit": "K/W",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/docs/20035/dcrcwe3.pdf",
+     "page": 6,
+     "evidence": "p1 'Permissible film temperature, ϑF max. 155 °C'; p1 'The rated dissipation applies only if the permitted film temperature is not exceeded'; P70 (standard) for CRCW1206 = 0.25 W (p1); p6 Derating figure: CRCW1206 line flat at 0.25 W to 70 °C, reaching 0 W at 155 °C (visually read).",
+     "method": "Rth = (155 - 70) K / 0.25 W = 340.0 K/W. Linear derating means film/element temperature = T_amb + Rth*P reaches the endpoint on the derating line, so Rth_implied = (T_end - T_knee)/P_rated. This is the derating-implied thermal resistance on the manufacturer's (unstated) reference mounting, not a measured or board-specific value."
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "cp",
+     "reason": "D/CRCW e3 (13 pp.) gives pulse-load, pulse-voltage, derating, non-linearity (A3) and current-noise curves, but no parasitic capacitance, inductance or impedance-vs-frequency data for any size. cp stays ASSUMPTION/unresolved."
+    },
+    {
+     "param": "ls",
+     "reason": "D/CRCW e3 (13 pp.) gives pulse-load, pulse-voltage, derating, non-linearity (A3) and current-noise curves, but no parasitic capacitance, inductance or impedance-vs-frequency data for any size. ls stays ASSUMPTION/unresolved."
+    }
+   ],
+   "field_corrections": []
+  },
+  {
+   "entry": "OHM-007",
+   "doc_checked": "D/CRCW e3, Rev 14-Apr-2026 (13 pp.); multi-size family incl. CRCW1210 e3 column (p1) and its own rows on p2/p6/p11 - covers this entry.",
+   "proposals": [
+    {
+     "param": "rth",
+     "value": 170.0,
+     "unit": "K/W",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/docs/20035/dcrcwe3.pdf",
+     "page": 6,
+     "evidence": "p1 'Permissible film temperature, ϑF max. 155 °C'; p1 'The rated dissipation applies only if the permitted film temperature is not exceeded'; P70 (standard) for CRCW1210 = 0.5 W (p1); p6 Derating figure: CRCW1210 line flat at 0.5 W to 70 °C, reaching 0 W at 155 °C (visually read).",
+     "method": "Rth = (155 - 70) K / 0.5 W = 170.0 K/W. Linear derating means film/element temperature = T_amb + Rth*P reaches the endpoint on the derating line, so Rth_implied = (T_end - T_knee)/P_rated. This is the derating-implied thermal resistance on the manufacturer's (unstated) reference mounting, not a measured or board-specific value."
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "cp",
+     "reason": "D/CRCW e3 (13 pp.) gives pulse-load, pulse-voltage, derating, non-linearity (A3) and current-noise curves, but no parasitic capacitance, inductance or impedance-vs-frequency data for any size. cp stays ASSUMPTION/unresolved."
+    },
+    {
+     "param": "ls",
+     "reason": "D/CRCW e3 (13 pp.) gives pulse-load, pulse-voltage, derating, non-linearity (A3) and current-noise curves, but no parasitic capacitance, inductance or impedance-vs-frequency data for any size. ls stays ASSUMPTION/unresolved."
+    }
+   ],
+   "field_corrections": []
+  },
+  {
+   "entry": "OHM-008",
+   "doc_checked": "D/CRCW e3, Rev 14-Apr-2026 (13 pp.); multi-size family incl. CRCW2010 e3 column (p1) and its own rows on p2/p6/p11 - covers this entry.",
+   "proposals": [
+    {
+     "param": "rth",
+     "value": 113.3,
+     "unit": "K/W",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/docs/20035/dcrcwe3.pdf",
+     "page": 6,
+     "evidence": "p1 'Permissible film temperature, ϑF max. 155 °C'; p1 'The rated dissipation applies only if the permitted film temperature is not exceeded'; P70 (standard) for CRCW2010 = 0.75 W (p1); p6 Derating figure: CRCW2010 line flat at 0.75 W to 70 °C, reaching 0 W at 155 °C (visually read).",
+     "method": "Rth = (155 - 70) K / 0.75 W = 113.3 K/W. Linear derating means film/element temperature = T_amb + Rth*P reaches the endpoint on the derating line, so Rth_implied = (T_end - T_knee)/P_rated. This is the derating-implied thermal resistance on the manufacturer's (unstated) reference mounting, not a measured or board-specific value."
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "cp",
+     "reason": "D/CRCW e3 (13 pp.) gives pulse-load, pulse-voltage, derating, non-linearity (A3) and current-noise curves, but no parasitic capacitance, inductance or impedance-vs-frequency data for any size. cp stays ASSUMPTION/unresolved."
+    },
+    {
+     "param": "ls",
+     "reason": "D/CRCW e3 (13 pp.) gives pulse-load, pulse-voltage, derating, non-linearity (A3) and current-noise curves, but no parasitic capacitance, inductance or impedance-vs-frequency data for any size. ls stays ASSUMPTION/unresolved."
+    }
+   ],
+   "field_corrections": []
+  },
+  {
+   "entry": "OHM-009",
+   "doc_checked": "D/CRCW e3, Rev 14-Apr-2026 (13 pp.); multi-size family incl. CRCW2512 e3 column (p1) and its own rows on p2/p6/p11 - covers this entry.",
+   "proposals": [
+    {
+     "param": "rth",
+     "value": 85.0,
+     "unit": "K/W",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/docs/20035/dcrcwe3.pdf",
+     "page": 6,
+     "evidence": "p1 'Permissible film temperature, ϑF max. 155 °C'; p1 'The rated dissipation applies only if the permitted film temperature is not exceeded'; P70 (standard) for CRCW2512 = 1.0 W (p1); p6 Derating figure: CRCW2512 line flat at 1.0 W to 70 °C, reaching 0 W at 155 °C (visually read).",
+     "method": "Rth = (155 - 70) K / 1.0 W = 85.0 K/W. Linear derating means film/element temperature = T_amb + Rth*P reaches the endpoint on the derating line, so Rth_implied = (T_end - T_knee)/P_rated. This is the derating-implied thermal resistance on the manufacturer's (unstated) reference mounting, not a measured or board-specific value."
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "cp",
+     "reason": "D/CRCW e3 (13 pp.) gives pulse-load, pulse-voltage, derating, non-linearity (A3) and current-noise curves, but no parasitic capacitance, inductance or impedance-vs-frequency data for any size. cp stays ASSUMPTION/unresolved."
+    },
+    {
+     "param": "ls",
+     "reason": "D/CRCW e3 (13 pp.) gives pulse-load, pulse-voltage, derating, non-linearity (A3) and current-noise curves, but no parasitic capacitance, inductance or impedance-vs-frequency data for any size. ls stays ASSUMPTION/unresolved."
+    }
+   ],
+   "field_corrections": []
+  },
+  {
+   "entry": "OHM-010",
+   "doc_checked": "Yageo CFR datasheet V.3 03-Apr-2024 (16 pp.); CFR-25 column on p3 (normal 1/4 W size) - matches entry scope.",
+   "proposals": [
+    {
+     "param": "rth",
+     "value": 340.0,
+     "unit": "K/W",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.yageogroup.com/content/Resource%20Library/Datasheet/YAGEO-CFR_DATASHEET.pdf",
+     "page": 3,
+     "evidence": "p3 Table 1 'Power Rating at 70 °C' CFR-25 = 1/4W; p3 Derating curve 100 % to 70 °C, 0 at 155 °C (visually read); operating temp range '- 55°C to +155°C'.",
+     "method": "Rth = (155 - 70) K / 0.25 W = 340 K/W. Linear derating means film/element temperature = T_amb + Rth*P reaches the endpoint on the derating line, so Rth_implied = (T_end - T_knee)/P_rated. This is the derating-implied thermal resistance on the manufacturer's (unstated) reference mounting, not a measured or board-specific value. Lower confidence: Yageo states no hot-spot/film temperature limit, so equating the zero-power ambient with the maximum element temperature is an interpretation; mounting (lead length, board) unspecified."
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "cp",
+     "reason": "Yageo CFR datasheet gives ratings, derating, TCR, tests and pulse diagrams; no capacitance/inductance/HF data. cp stays ASSUMPTION/unresolved."
+    },
+    {
+     "param": "ls",
+     "reason": "Yageo CFR datasheet gives ratings, derating, TCR, tests and pulse diagrams; no capacitance/inductance/HF data. ls stays ASSUMPTION/unresolved."
+    }
+   ],
+   "field_corrections": []
+  },
+  {
+   "entry": "OHM-011",
+   "doc_checked": "Yageo MFR datasheet V.4 03-Apr-2024 (17 pp.); MFR-25 column on p3 - matches entry scope.",
+   "proposals": [
+    {
+     "param": "rth",
+     "value": 340.0,
+     "unit": "K/W",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://yageogroup.com/content/Resource%20Library/Datasheet/YAGEO-MFR_DATASHEET.pdf",
+     "page": 3,
+     "evidence": "p3 'Power Rating at 70 °C' MFR-25 = 1/4W; p3 Derating curve 100 % to 70 °C, 0 at 155 °C (visually read); operating temp range '- 55°C to +155°C'.",
+     "method": "Rth = (155 - 70) K / 0.25 W = 340 K/W. Linear derating means film/element temperature = T_amb + Rth*P reaches the endpoint on the derating line, so Rth_implied = (T_end - T_knee)/P_rated. This is the derating-implied thermal resistance on the manufacturer's (unstated) reference mounting, not a measured or board-specific value. Lower confidence: no hot-spot temperature stated; zero-power ambient taken as element limit; mounting unspecified."
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "cp",
+     "reason": "Yageo MFR datasheet gives ratings, derating, TCR, tests and pulse diagrams; no capacitance/inductance/HF data. cp stays ASSUMPTION/unresolved."
+    },
+    {
+     "param": "ls",
+     "reason": "Yageo MFR datasheet gives ratings, derating, TCR, tests and pulse diagrams; no capacitance/inductance/HF data. ls stays ASSUMPTION/unresolved."
+    }
+   ],
+   "field_corrections": []
+  },
+  {
+   "entry": "OHM-012",
+   "doc_checked": "Vishay Dale CPR, Rev 11-Feb-16 (EOL Jan-2016), CPR05 row p1 - radial ceramic-case wirewound; covers CPR05 5 W only (axial cement / 2 W variants not covered, as open_items already say).",
+   "proposals": [
+    {
+     "param": "rth",
+     "value": 47.0,
+     "unit": "K/W",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.vishay.com/docs/30219/cpr.pdf",
+     "page": 2,
+     "evidence": "p1 'POWER RATING P40 °C' CPR05 = 5 W; p1 'Operating Temperature Range °C -65 to +275'; p2 Derating figure: 100 % to 40 °C, 0 % at 275 °C (visually read).",
+     "method": "Rth = (275 - 40) K / 5 W = 47 K/W. Linear derating means film/element temperature = T_amb + Rth*P reaches the endpoint on the derating line, so Rth_implied = (T_end - T_knee)/P_rated. This is the derating-implied thermal resistance on the manufacturer's (unstated) reference mounting, not a measured or board-specific value. Lower confidence: no hot-spot temperature stated; free-air radial mounting assumed by the rating, not stated."
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "cp",
+     "reason": "CPR datasheet (wirewound element, fiberglass core) gives no inductance or capacitance value. cp stays ASSUMPTION/unresolved."
+    },
+    {
+     "param": "ls",
+     "reason": "CPR datasheet (wirewound element, fiberglass core) gives no inductance or capacitance value. ls stays ASSUMPTION/unresolved."
+    }
+   ],
+   "field_corrections": []
+  },
+  {
+   "entry": "OHM-013",
+   "doc_checked": "Vishay Dale RS/NS, Rev 27-Apr-2026; RS005 row p1, characteristic U - matches entry scope.",
+   "proposals": [
+    {
+     "param": "rth",
+     "value": 45.0,
+     "unit": "K/W",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.vishay.com/docs/30204/rsns.pdf",
+     "page": 3,
+     "evidence": "p1 'POWER RATING P25 °C W' RS005 U = 5.0; p3 'Operating Temperature Range °C Characteristic U = -65 to +250'; p3 Derating figure CHAR. U: 100 % to 25 °C, 0 % at 250 °C (visually read).",
+     "method": "Rth = (250 - 25) K / 5 W = 45 K/W. Linear derating means film/element temperature = T_amb + Rth*P reaches the endpoint on the derating line, so Rth_implied = (T_end - T_knee)/P_rated. This is the derating-implied thermal resistance on the manufacturer's (unstated) reference mounting, not a measured or board-specific value. Caveat: characteristic V (6.5 W, 0 at 350 °C) implies (350-25)/6.5 = 50 K/W for the same body, again showing the derating-implied figure is a rating construct."
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "cp",
+     "reason": "RS/NS datasheet only says NS (Ayrton-Perry) styles have 'lowest reactive components'; no numeric inductance or capacitance for RS or NS. The OHM-013 reference is RS005 (standard, inductive winding), for which nothing is quantified. cp stays ASSUMPTION/unresolved."
+    },
+    {
+     "param": "ls",
+     "reason": "RS/NS datasheet only says NS (Ayrton-Perry) styles have 'lowest reactive components'; no numeric inductance or capacitance for RS or NS. The OHM-013 reference is RS005 (standard, inductive winding), for which nothing is quantified. ls stays ASSUMPTION/unresolved."
+    }
+   ],
+   "field_corrections": []
+  },
+  {
+   "entry": "OHM-014",
+   "doc_checked": "Vishay WSL, Rev 23-Nov-2023 (5 pp.); WSL2512 rows p1/p2/p3, 0.005 ohm within 0.0005-0.5 range - matches reference part.",
+   "proposals": [],
+   "unresolved": [
+    {
+     "param": "rc",
+     "reason": "Class definition mismatch with the brief: in BEH-RES-SENSE rc has unit 'ohm' and the netlist template uses it as series terminal/contact resistance (Rc1 I1 ea {Rc}), not a capacitance. The WSL datasheet gives neither: no terminal/contact resistance (p2 only says component TCR 'includes the TCR effects of the resistor element and the copper terminal' and shows 'Typical sensing traces'), and no capacitance anywhere. Inductance 0.5-5 nH (p1) is the only parasitic stated and is already sourced as ls."
+    }
+   ],
+   "field_corrections": []
+  },
+  {
+   "entry": "OHM-016",
+   "doc_checked": "Bourns 4600X, REV 10/1/20 (3 pp.); 4608X package power p1, 101/102 circuits p2 - covers 4608X-101.",
+   "proposals": [],
+   "unresolved": [],
+   "field_corrections": [],
+   "notes": "No weak class params. All 10 entry field values checked against the doc and match (1.00 W 4608X @70 °C, 100 V, -55..+125 °C, 0.30 W isolated / 0.20 W bussed per resistor @70 °C, bus pin 1). Class-level defaults p_package 0.5 W (that is the 4604X row) and v_max 50 V (S18) differ from this entry's 4608X values; not an entry error."
+  }
+ ]
+}

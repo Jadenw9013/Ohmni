@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import { componentSearchText, filterComponentRecords, parseLibraryPage, readComponentLibrary,
+import { behaviorStatusText, BEHAVIOR_LABELS, componentSearchText, filterComponentRecords, parseLibraryPage, readComponentLibrary,
     storyManifest, storyQueue, storySwipe } from '../component-stories.js';
 
 const identity = { api_version: 2, server_instance_id: 'a'.repeat(16), ui_version: 'b'.repeat(64) };
@@ -76,7 +76,7 @@ test('component catalog markup exposes a modal, accessible filters, model contro
     for (const query of ['BME280', 'ESP32', 'USB_C']) assert.ok(html.includes(`data-component-query="${query}"`));
     assert.match(html, /role="status" aria-live="polite" data-story-status/);
     assert.match(html, /<label class="story-search"><span class="sr-only">Search components<\/span>/);
-    for (const control of ['category', 'package', 'mounting', 'source', 'sort']) assert.ok(html.includes(`data-story-${control}`));
+    for (const control of ['category', 'package', 'mounting', 'source', 'behavior', 'sort']) assert.ok(html.includes(`data-story-${control}`));
     for (const view of ['three-quarter', 'top', 'underside', 'side']) assert.ok(html.includes(`data-story-view="${view}"`));
     for (const lod of ['LOD0', 'LOD1', 'LOD2']) assert.ok(html.includes(`data-story-lod="${lod}"`));
     assert.match(html, /role="tablist" aria-label="Component information"/);
@@ -106,4 +106,18 @@ test('touch story gestures separate horizontal swipes from scroll, mouse orbit a
     assert.equal(storySwipe(start, {...end, pointerType: 'mouse'}), 0);
     assert.equal(storySwipe(start, {...end, pointerId: 4}), 0);
     assert.equal(storySwipe(null, end), 0);
+});
+
+test('behavior status says what each part can do instead of one blanket caveat', () => {
+    assert.match(behaviorStatusText({ state: 'simulated', reason: null }), /simulated from this part's sourced data/);
+    assert.match(behaviorStatusText({ state: 'documented', reason: 'Required electrical evidence remains unresolved.' }), /documented only, not simulated\. Required electrical/);
+    assert.match(behaviorStatusText({ state: 'reference_only', reason: 'A package has no electrical function.' }), /not verified yet\. A package/);
+    assert.match(behaviorStatusText(undefined), /see the Behavior tab/);
+    assert.equal(BEHAVIOR_LABELS.simulated, 'Simulates');
+    const records = [{ id:'OHM-057', slug:'a', canonical_name:'A', category:'c', subcategory:'s', package_family:'P', package_member:'m', generator:'g', mounting:'tht', status:'partial' },
+                     { id:'OHM-083', slug:'b', canonical_name:'B', category:'c', subcategory:'s', package_family:'P', package_member:'m', generator:'g', mounting:'tht', status:'partial' }];
+    const behaviorStates = { 'OHM-057': { state:'simulated', reason:null }, 'OHM-083': { state:'documented', reason:'x' } };
+    assert.deepEqual(filterComponentRecords(records, { behavior:'simulated', behaviorStates }).map(r => r.id), ['OHM-057']);
+    assert.deepEqual(filterComponentRecords(records, { behavior:'documented', behaviorStates }).map(r => r.id), ['OHM-083']);
+    assert.deepEqual(filterComponentRecords(records, { behavior:'simulated' }).map(r => r.id), []);
 });

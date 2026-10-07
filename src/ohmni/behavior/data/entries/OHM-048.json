@@ -152,6 +152,32 @@
         ],
         "unit": "fraction",
         "value": 0.1
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "detail": "Same row: Q Ref. 30 at L,Q test frequency 0.796 MHz; RDC max 0.280 ohm. Method: Solved class model (0.28 + j*w*100uH) || Cp(2.07e-11) || Rp for Im/Re = 30 at 0.796 MHz -> 1.61e4 ohm (closed form without Cp: 1.53e4). Cp matters here because 0.796 MHz is 0.23 x SRF min; 'Ref.' Q, single point.",
+        "field": "spice_rp_fit",
+        "page": 6,
+        "scope": "Bourns RLB0914-101KL; rp for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://www.bourns.com/docs/product-datasheets/RLB.pdf"
+        ],
+        "unit": "ohm",
+        "value": 16000.0
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "detail": "\"NOTE: Temperature rise.............. 40 °C typ. at rated Irms\"; Irms (A) Typ. 1.1; RDC max 0.280 ohm. Method: rth = 40/(1.1^2*0.28) = 118 K/W. Mixes typical current/rise with max DCR (no typ DCR given), so true rth is likely somewhat higher; 102 K/W if class tc=0.00393 (not from this document) is applied.",
+        "field": "thermal_resistance_from_rating_derivation",
+        "page": 6,
+        "scope": "Bourns RLB0914-101KL; rth for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://www.bourns.com/docs/product-datasheets/RLB.pdf"
+        ],
+        "unit": "K/W",
+        "value": 118
       }
     ],
     "remaining_open_items": [
@@ -163,7 +189,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-048.md",
-      "document_sha256": "97b98bfa5af210576dc51e13add3a8a30fc8aa48466534a158a71e4e46e464e4",
+      "document_sha256": "8cd0a950f5f32a721e301cdbe294b72339b1356da3984a5255f8dc808d628a88",
       "fragment_sha256": null,
       "line": 1
     }

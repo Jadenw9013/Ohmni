@@ -245,6 +245,19 @@
         ],
         "unit": "A",
         "value": 0.15
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "detail": "Figure 3 \"Base-Emitter Voltage\", curve \"VBE(on) VCE = 5V\" (typical characteristics, BD135/137/139 shared) Method: Pixel-digitized (102 px/decade, 333.5 px/V): IC=1.72 mA VBE=0.599 V; 2.70 mA 0.608; 5.3 mA 0.626; 13.1 mA 0.653; 25.8 mA 0.671; 125 mA 0.731 V. IS = IC/exp(VBE/Vt), Vt = 25.69 mV: 1.28e-13, 1.41e-13, 1.38e-13, 1.19e-13, 1.16e-13 over 1.7-26 mA -> 1.3e-13. Confidence L because the curve starts at 1.7 mA and its slope is ~70.5 mV/decade (N ~1.19), so an N=1 IS depends on the anchor current (5.5e-14 if anchored at 125 mA). Temperature not stated on the figure (assumed 25 C). The onsemi Rev 3 Fig. 3 p3 shows the same VBE(on) VCE = 5 V curve. Stated table point only gives a ceiling: \"VBE(on) ... VCE = 2V, IC = 0.5A ... 1 V\" (p1).",
+        "field": "spice_IS_fit",
+        "page": 2,
+        "scope": "BD139 (Fairchild, ungraded), RevA February 2000; IS for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://www.farnell.com/datasheets/79944.pdf"
+        ],
+        "unit": "A",
+        "value": 1.3e-13
       }
     ],
     "remaining_open_items": [
@@ -257,7 +270,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-097.md",
-      "document_sha256": "a57b5f0c22bc153d0609dc4871dd4101cb4f5f59e3f7c0ca6eda92f951f09c3a",
+      "document_sha256": "cb43fba1532552c405d0e164e41070cb31366eb93a0f920b4eeaba4d73c5ef36",
       "fragment_sha256": null,
       "line": 1
     }

@@ -24,9 +24,27 @@ class ComponentBehaviorService:
         self.adapter = adapter or NgspiceAdapter(timeout_seconds=90)
         self._run_lock = threading.Lock()
 
+    def behavior_state(self, entry_id):
+        """Same rule as the audit's coverage count: a bound runtime recipe and a simulable record."""
+        entry = self.registry.entry(entry_id)
+        recipe = self.recipes.entries.get(entry_id)
+        if recipe and entry.simulation_disposition.value == "simulable":
+            return "simulated", None
+        if recipe:
+            return "reference_only", entry.simulation_reason
+        return "documented", entry.simulation_reason
+
+    def summary(self):
+        states = {}
+        for entry_id in sorted(self.registry.entries):
+            state, reason = self.behavior_state(entry_id)
+            states[entry_id] = {"state": state, "reason": reason}
+        return states
+
     def describe(self, entry_id):
         entry = self.registry.entry(entry_id)
         recipe = self.recipes.entries.get(entry_id)
+        state, state_reason = self.behavior_state(entry_id)
         classes = [
             self.registry.behavior_class(key)
             for key in ([recipe.behavior_id] if recipe else entry.behavior_class_ids)
@@ -41,6 +59,8 @@ class ComponentBehaviorService:
             "name": entry.component,
             "source_status": entry.status.value,
             "available": bool(recipe),
+            "behavior_state": state,
+            "behavior_state_reason": state_reason,
             "reference_part": (recipe.reference_part or f"Scoped {recipe.package} reference") if recipe else None,
             "package": recipe.package if recipe else None,
             "blockers": blockers,

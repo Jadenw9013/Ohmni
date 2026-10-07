@@ -415,9 +415,12 @@ def test_explicit_alternatives_and_clamp_bindings(entry_id):
         assert component.parameters["vr_max"] == 1000
         assert "SS24" in component.limitations[0]
     if entry_id == "OHM-067":
-        assert component.parameter_evidence["IS"]["basis"] == "ASSUMPTION"
+        # The BAT42W forward terms are fitted from its own datasheet curve, not the BAT54 proxy.
+        assert component.parameter_evidence["IS"]["basis"] == "DERIVED"
+        assert component.parameter_evidence["IS"]["field"] == "spice_IS_fit"
         assert component.parameters["vr_max"] == 30
-        assert component.parameters["BV"] == 56
+        assert component.parameters["BV"] == 30
+        assert component.parameter_evidence["CJO_pf"]["basis"] == "ASSUMPTION"
     if entry_id == "OHM-068":
         assert component.parameters["p_rated"] == .37
         assert component.parameters["rth_ja"] == 338
@@ -459,3 +462,29 @@ def test_calibration_fails_closed_without_a_bracket_or_convergence():
         bracket_fit(lambda x:2*x, 0, 1, 3)
     with pytest.raises(ValueError, match="did not reach"):
         bracket_fit(lambda x:0 if x < .2 else 1, 0, 1, .5, max_trials=3)
+
+
+def test_model_facts_bind_part_fits_without_lowering_rating_confidence():
+    from tools.behavior_audit.audit import BehaviorAudit
+    from tools.behavior_audit.runtime_benches import dc_probe_definition
+
+    compiled, _ = dc_probe_definition(BehaviorAudit(ROOT), "OHM-057")
+    assert compiled.runnable, compiled.problems
+    component = compiled.components[0]
+    recipe = load_recipes(BehaviorRegistry(repo_root=ROOT), ROOT).entries["OHM-057"]
+    assert set(recipe.model_facts) >= {"IS", "N", "RS", "CJO", "VJ", "M"}
+    for alias, binding in recipe.model_facts.items():
+        assert component.parameter_evidence[alias]["field"] == binding.field
+        assert component.parameter_evidence[alias]["basis"] in {"DERIVED", "MFR_DATASHEET"}
+    rating = min((component.parameter_evidence[k]["confidence"] for k in recipe.critical_facts),
+                 key={"L": 0, "M": 1, "H": 2}.get)
+    assert component.rating_confidence == rating
+
+
+def test_model_fact_cannot_shadow_a_critical_fact(registry, recipes):
+    recipe = recipes.entries["OHM-057"]
+    alias = next(iter(recipe.critical_facts))
+    shadowed = recipe.model_copy(update={"model_facts": {**recipe.model_facts, alias: recipe.critical_facts[alias]}})
+    from ohmni.behavior.netlist import _facts
+    with pytest.raises(ValueError, match="shadow"):
+        _facts(registry.entry("OHM-057"), shadowed)

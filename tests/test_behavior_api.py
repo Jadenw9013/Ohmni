@@ -55,3 +55,16 @@ def test_backend_failures_do_not_expose_private_paths(server):
     service.behavior_service=Broken()
     code,body=request(base,'/api/behavior/OHM-004')
     assert code==503 and body=={'error':'behavior_run_unavailable'}
+
+
+def test_behavior_summary_matches_the_audited_coverage_rule(server):
+    service,base=server
+    code,body=request(base,'/api/behavior')
+    assert code==200 and len(body['entries'])==180
+    states=[value['state'] for value in body['entries'].values()]
+    assert states.count('simulated')==42
+    assert body['entries']['OHM-057']=={'state':'simulated','reason':None}
+    assert body['entries']['OHM-103']['state']=='reference_only' and body['entries']['OHM-103']['reason']
+    assert body['entries']['OHM-083']['state']=='documented'
+    code,body=request(base,'/api/behavior/OHM-057')
+    assert body['component']['behavior_state']=='simulated'

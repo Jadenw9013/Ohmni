@@ -113,6 +113,19 @@
         ],
         "unit": "K",
         "value": 30
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "detail": "Row: \"2107-RC 33 5.0 22.8 0.029\"; note \"* Current to cause 30 °C max. temperature rise\". Method: rth = 30/(5.0^2*0.029) = 41.4 K/W. DCR is max only and the rise is a max, so the errors partly offset; 37.0 K/W if class tc=0.00393 (not from this document) is applied. Same row covers -H and -V mounting; mounting/lead conditions not stated.",
+        "field": "thermal_resistance_from_rating_derivation",
+        "page": 1,
+        "scope": "Bourns 2107-V-RC; rth for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://www.bourns.com/docs/product-datasheets/2100_series.pdf"
+        ],
+        "unit": "K/W",
+        "value": 41.4
       }
     ],
     "remaining_open_items": [
@@ -124,7 +137,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-049.md",
-      "document_sha256": "601f274f90898ebbfffd7146ff2a3880c425ff2e8d19775d06722306b6fd51a8",
+      "document_sha256": "b0728a95faec8c3e7da55dbc3ab410b80b58bf519bceef667248ce8d5dea4bc0",
       "fragment_sha256": null,
       "line": 1
     }

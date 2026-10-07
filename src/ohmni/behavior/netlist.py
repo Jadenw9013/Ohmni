@@ -109,7 +109,9 @@ def entry_problems(entry, recipe: RuntimeRecipe | None) -> list[str]:
 
 def _facts(entry, recipe):
     values, evidence = {}, {}
-    for name, binding in recipe.critical_facts.items():
+    if set(recipe.critical_facts) & set(recipe.model_facts):
+        raise ValueError("a model fact cannot shadow a critical fact")
+    for name, binding in {**recipe.critical_facts, **recipe.model_facts}.items():
         candidates = [f for f in entry.research.field_updates
                       if f.field == binding.field
                       and (not binding.scope_contains or binding.scope_contains in f.scope)]

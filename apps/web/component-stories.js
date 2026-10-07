@@ -271,6 +271,19 @@ export function componentSearchText(record) {
         ...(record.names?.aliases ?? [])].filter(Boolean).join(' ').replaceAll('_', ' ').toLowerCase();
 }
 
+export const BEHAVIOR_LABELS = Object.freeze({
+    simulated: 'Simulates',
+    reference_only: 'Reference circuit, not verified',
+    documented: 'Documented only',
+});
+
+export function behaviorStatusText(entry) {
+    if (entry?.state === 'simulated') return 'Electrical behavior: simulated from this part\'s sourced data. Open the Behavior tab to run its reference circuit.';
+    if (entry?.state === 'reference_only') return `Electrical behavior: a reference circuit runs, but this entry is not verified yet. ${entry.reason ?? ''}`.trim();
+    if (entry?.state === 'documented') return `Electrical behavior: documented only, not simulated. ${entry.reason ?? ''}`.trim();
+    return 'Electrical behavior: see the Behavior tab.';
+}
+
 export function filterComponentRecords(records, filters = {}) {
     const rawQuery = String(filters.query ?? '').trim().toLowerCase();
     const query = searchAliases[rawQuery] ?? rawQuery.replaceAll('_', ' ');
@@ -278,7 +291,8 @@ export function filterComponentRecords(records, filters = {}) {
         && (!filters.category || record.category === filters.category)
         && (!filters.packageFamily || record.package_family === filters.packageFamily)
         && (!filters.mounting || record.mounting === filters.mounting)
-        && (!filters.source || record.status === filters.source));
+        && (!filters.source || record.status === filters.source)
+        && (!filters.behavior || filters.behaviorStates?.[record.id]?.state === filters.behavior));
     const sort = filters.sort ?? 'featured';
     return result.slice().sort((a, b) => {
         if (sort === 'featured') {
@@ -302,6 +316,7 @@ export function initializeComponentStories() {
     const $ = selector => dialog.querySelector(selector);
     let library = null, records = [], visible = [], selectedId = null;
     let disposeBehavior = null;
+    let behaviorStates = {};
     let preview = null, thumbnailPreview = null, thumbnailObserver = null, opener = null;
     let model = null, view = 'three-quarter', lod = 'LOD1', tab = 'overview', loadGeneration = 0;
 
@@ -326,7 +341,8 @@ export function initializeComponentStories() {
     };
     const filters = () => ({ query: $('[data-story-search]').value, category: $('[data-story-category]').value,
         packageFamily: $('[data-story-package]').value, mounting: $('[data-story-mounting]').value,
-        source: $('[data-story-source]').value, sort: $('[data-story-sort]').value });
+        source: $('[data-story-source]').value, sort: $('[data-story-sort]').value,
+        behavior: $('[data-story-behavior]')?.value ?? '', behaviorStates });
 
     function ensurePreview() {
         if (preview) return true;
@@ -365,7 +381,9 @@ export function initializeComponentStories() {
         addDefinition(list, 'Model detail', `${lod} of LOD0 / LOD1 / LOD2`);
         element('h4', 'About this model', details);
         element('p', `${record.canonical_name} is a reusable package model generated from the recorded ${record.package_family} data.`, details);
-        const caveat = element('p', 'The model helps with visual recognition. It does not verify a footprint, electrical behavior, manufacturing fit, or source completeness. Any OHM ID shown on the body is a preview label, not a manufacturer marking.', details);
+        const behaviorLine = element('p', behaviorStatusText(behaviorStates[record.id]), details);
+        behaviorLine.className = `story-behavior-line ${behaviorStates[record.id]?.state ?? ''}`;
+        const caveat = element('p', 'The 3D shape is a visual guide. It does not verify the footprint or manufacturing fit, and any OHM ID on the body is a preview label, not a manufacturer marking.', details);
         caveat.className = 'story-caveat';
     }
 
@@ -471,6 +489,7 @@ export function initializeComponentStories() {
             const status = element('span', '', visual); status.className = `story-card-status ${record.status === 'partial' ? 'partial' : ''}`; status.title = `${words(record.status)} source record`;
             const copy = element('span', '', card); copy.className = 'story-card-copy';
             element('strong', record.canonical_name, copy); element('small', `${record.id} · ${record.package_member}`, copy);
+            addBehaviorChip(card, record.id);
             card.onclick = () => select(record.id); grid.append(card);
             if (thumbnailObserver) thumbnailObserver.observe(image); else if (grid.children.length <= 24) requestAnimationFrame(() => thumb(image, record.id));
         }
@@ -498,6 +517,7 @@ export function initializeComponentStories() {
         try {
             const loaded = await loadFullLibrary(); if (generation !== loadGeneration || !dialog.open) return;
             library = loaded; records = library.components;
+            void loadBehaviorStates(generation);
             populate('[data-story-category]', records.map(record => record.category));
             populate('[data-story-package]', records.map(record => record.package_family));
             populate('[data-story-mounting]', records.map(record => record.mounting));
@@ -513,9 +533,32 @@ export function initializeComponentStories() {
         }
     }
 
+    function addBehaviorChip(card, id) {
+        if (behaviorStates[id]?.state !== 'simulated' || card.querySelector('.story-card-sim')) return;
+        const chip = element('span', BEHAVIOR_LABELS.simulated, card.querySelector('.story-card-copy')); chip.className = 'story-card-sim';
+        card.setAttribute('aria-label', `${card.getAttribute('aria-label')}, simulates`);
+    }
+
+    async function loadBehaviorStates(generation) {
+        // Behavior status is advisory UI metadata; the library stays usable if it cannot load.
+        try {
+            const identity = await fetchHealth(fetch);
+            const response = await fetch(`${API_BASE}/api/behavior`, { cache: 'no-store', headers: pollHeaders(identity) });
+            if (!response.ok) return;
+            const payload = await response.json();
+            if (generation !== loadGeneration || !sameIdentity(payload, identity) || typeof payload.entries !== 'object') return;
+            behaviorStates = payload.entries;
+            if ($('[data-story-behavior]')?.value) { applyFilters(); return; }
+            // Add badges in place so thumbnails and the open 3D view are not rebuilt.
+            dialog.querySelectorAll('[data-component-id]').forEach(card => addBehaviorChip(card, card.dataset.componentId));
+            const line = $('[data-story-details] .story-behavior-line');
+            if (line && selectedId) { line.textContent = behaviorStatusText(behaviorStates[selectedId]); line.className = `story-behavior-line ${behaviorStates[selectedId]?.state ?? ''}`; }
+        } catch { /* keep the library without behavior badges */ }
+    }
+
     function clearFilters() {
         $('[data-story-search]').value = '';
-        for (const selector of ['[data-story-category]','[data-story-package]','[data-story-mounting]','[data-story-source]']) $(selector).value = '';
+        for (const selector of ['[data-story-category]','[data-story-package]','[data-story-mounting]','[data-story-source]','[data-story-behavior]']) if ($(selector)) $(selector).value = '';
         $('[data-story-sort]').value = 'featured'; applyFilters({ preserveSelection: false }); $('[data-story-search]').focus();
     }
     function close() { disposeBehavior?.(); disposeBehavior = null; loadGeneration++; disposeRenderers(); dialog.close(); opener?.focus(); }
@@ -527,7 +570,7 @@ export function initializeComponentStories() {
     dialog.addEventListener('cancel', event => { event.preventDefault(); close(); });
     $('[data-story-retry]').onclick = load; $('[data-story-clear]').onclick = clearFilters;
     $('[data-story-search]').oninput = () => applyFilters({ preserveSelection: false });
-    for (const selector of ['[data-story-category]','[data-story-package]','[data-story-mounting]','[data-story-source]','[data-story-sort]']) $(selector).onchange = () => applyFilters();
+    for (const selector of ['[data-story-category]','[data-story-package]','[data-story-mounting]','[data-story-source]','[data-story-behavior]','[data-story-sort]']) if ($(selector)) $(selector).onchange = () => applyFilters();
     dialog.querySelectorAll('[data-story-view]').forEach(button => button.onclick = () => {
         view = button.dataset.storyView; dialog.querySelectorAll('[data-story-view]').forEach(item => item.setAttribute('aria-pressed', String(item === button))); drawSelected();
     });
