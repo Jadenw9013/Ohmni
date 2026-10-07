@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "approved_by": "Jaden (repository owner): in-session reply 'ok apply' on 2026-10-05 approving the source-supersession patch and this bindings file",
-  "approved_on": "2026-10-05",
+  "approved_by": "Jaden (repository owner): in-session reply 'ok apply' on 2026-10-05 approving the source-supersession patch and this bindings file; Jaden (repository owner): in-session reply 'approve both' on 2026-10-06 approving the USB Type-C supersession and the DS20001826F citation URL",
+  "approved_on": "2026-10-06",
   "purpose": "The protected spec cites URLs that cannot be archived (dead, blocked, mirrors, distributor pages) and local paths from the authoring workspace. Supersessions point each unarchivable URL to a primary document that was opened and checked; artifact bindings lock the repository files a local reference means. Fetch receipts prove bytes, not support: every supersession states what it supports, and partial or conflicting ones explain the gap.",
   "supersessions": {
     "https://datasheet.ciiva.com/19454/234819-19454258.pdf": {
@@ -44,7 +44,7 @@
       "revision_or_date": "not shown (accessed 2026-10-05)",
       "claims_checked": "1.5 A, 30 V, -40..85 C, phosphor bronze gold",
       "supports": "partial",
-      "evidence": "'Current Maximum Per Contact: 1.5A'; 'Voltage Maximum: 30V'; operating temperature '-40\u00b0 to +85\u00b0C'; mating interface plating Gold, termination plating Tin",
+      "evidence": "'Current Maximum Per Contact: 1.5A'; 'Voltage Maximum: 30V'; operating temperature '-40° to +85°C'; mating interface plating Gold, termination plating Tin",
       "note": "RS listing replaced with Molex part page. Contact base material (phosphor bronze) not shown in extract. Page says 'Limited Information Available / not formally published to our online part catalog'; no datasheet PDF linked.",
       "checked_by": "Claude research subagent via WebFetch, 2026-10-05"
     },
@@ -77,7 +77,7 @@
       "revision_or_date": "generated 2026-10-06 (dynamic PDF)",
       "claims_checked": "12 A, 320 V, -40 to +100 degC",
       "supports": "yes",
-      "evidence": "Nominal current 12 A; nominal voltage 320 V; operating temperature '-40 \u00b0C ... 100 \u00b0C (dependent on the derating curve)'",
+      "evidence": "Nominal current 12 A; nominal voltage 320 V; operating temperature '-40 °C ... 100 °C (dependent on the derating curve)'",
       "note": "Element14 listing replaced with Phoenix Contact's own product PDF (dynamically generated, date stamps will vary). Product page https://www.phoenixcontact.com/en-us/products/pcb-header-mstba-25-2-g-508-1757242 also confirms 12 A / 320 V. The spec line's other RS URL (hkcn.rs-online.com/.../1896105) is covered by the same replacement.",
       "checked_by": "Claude research subagent via WebFetch, 2026-10-05"
     },
@@ -99,7 +99,7 @@
       "revision_or_date": "Rev. 5.0, 12 February 2026 (spec cites Rev. 4.1, 22 Aug 2023)",
       "claims_checked": "PCB thermal floor, copper/vias effect (LFPAK context)",
       "supports": "yes",
-      "evidence": "Single-layer LFPAK56D at 0.5 W: 'Tj will plateau at around 50 \u00b0C ... no matter how much copper area we provide'; LFPAK56 max power 5.05 W single layer vs 9.6 W 4-layer with vias (~90% improvement); FR4 max temperature caution",
+      "evidence": "Single-layer LFPAK56D at 0.5 W: 'Tj will plateau at around 50 °C ... no matter how much copper area we provide'; LFPAK56 max power 5.05 W single layer vs 9.6 W 4-layer with vias (~90% improvement); FR4 max temperature caution",
       "note": "Mouser mirror replaced with Nexperia's own document; newer revision than cited.",
       "checked_by": "Claude research subagent via WebFetch, 2026-10-05"
     },
@@ -333,6 +333,16 @@
       "evidence": "'USB_DP (D+) pin must be pulled up with a 1.5 kOhm resistor to a voltage in the 3.0 to 3.6 V range'; protection components as close as possible to connector; 'The USB role is identified through the ID pin' on Micro-AB.",
       "note": "ja copy replaced with English original on st.com.",
       "checked_by": "Claude research subagent via WebFetch, 2026-10-05"
+    },
+    "https://www.usb.org/sites/default/files/USB": {
+      "archive_url": "https://www.usb.org/sites/default/files/USB Type-C Spec R2.0 - August 2019.pdf",
+      "org": "USB-IF (USB 3.0 Promoter Group)",
+      "title": "Universal Serial Bus Type-C Cable and Connector Specification, Release 2.0",
+      "revision_or_date": "Release 2.0, August 2019",
+      "claims_checked": "document identity: spec bibliography row S5 names 'USB Type-C Cable and Connector Specification R2.0' and its URL cell is truncated at the first space",
+      "supports": "yes",
+      "evidence": "Archived PDF title page reads 'Universal Serial Bus Type-C Cable and Connector Specification Release 2.0 August 2019'; the truncated cited URL is the leading part of this file's URL.",
+      "note": "Same document; the spec table cut the URL at the first space in the file name."
     }
   },
   "artifact_bindings": {
@@ -473,5 +483,7 @@
       "note": "Group R6 output (parts/R6.md) is embedded in the protected behavior spec between <!-- BEGIN R6 --> and the next group marker."
     }
   },
-  "citation_urls": {}
+  "citation_urls": {
+    "DS20001826F": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MCP1700-Data-Sheet-20001826F.pdf"
+  }
 }
