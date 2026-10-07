@@ -1,0 +1,35 @@
+B2 Load-capacitance pulling: frequency where X=0 with series CL (reactance zero crossing), CL = 12 15 18 pF
+* v2: foreach loop unrolled: one distinct scalar per load cap, fl_<CL>_hz (the loop printed the same name six times, which the audit drops as duplicate); sweep and circuit unchanged
+.include ohm_xtal.lib
+.param cl=18p
+Iin 0 x dc 0 ac 1
+X1 x y ohm_xtal L1=43.99505512m C1=9f R1=0.001 C0=3p
+CLx y 0 {cl}
+.control
+alter CLx = 8p
+ac lin 40001 7.995e6 8.02e6
+let ph = vp(x)
+meas ac fl_8p_hz WHEN ph=0 CROSS=1
+alter CLx = 12p
+ac lin 40001 7.995e6 8.02e6
+let ph = vp(x)
+meas ac fl_12p_hz WHEN ph=0 CROSS=1
+alter CLx = 15p
+ac lin 40001 7.995e6 8.02e6
+let ph = vp(x)
+meas ac fl_15p_hz WHEN ph=0 CROSS=1
+alter CLx = 18p
+ac lin 40001 7.995e6 8.02e6
+let ph = vp(x)
+meas ac fl_18p_hz WHEN ph=0 CROSS=1
+alter CLx = 22p
+ac lin 40001 7.995e6 8.02e6
+let ph = vp(x)
+meas ac fl_22p_hz WHEN ph=0 CROSS=1
+alter CLx = 30p
+ac lin 40001 7.995e6 8.02e6
+let ph = vp(x)
+meas ac fl_30p_hz WHEN ph=0 CROSS=1
+quit
+.endc
+.end

@@ -1,0 +1,36 @@
+
+Note: No compatibility mode selected!
+
+
+Circuit: b1 packaged oscillator l2 behavioural: 10 mhz, +25 ppm offset, 3.3 v. expect f=10 mhz*(1+25e-6)=10.00025 mhz, idd=4.2 ma, output swing 3.3 v, oe low -> output low and standby current
+
+Doing analysis at TEMP = 27.000000 and TNOM = 27.000000
+
+
+Initial Transient Solution
+--------------------------
+
+Node                                   Voltage
+----                                   -------
+vdd                                        3.3
+oe                                         3.3
+xo.clk                                       0
+xo.drv                                       0
+out                                          0
+b.xo.bdrv#branch                             0
+v.xo.vclk#branch                             0
+voe#branch                                   0
+vdd#branch                             -0.0042
+
+
+No. of Data Rows : 36515
+per                 =  1.999950e-05 targ=  2.590036e-05 trig=  5.900865e-06
+f_out_hz = 1.000025e+07
+f_off_ppm = 2.500063e+01
+vout_max_v          =  3.300075e+00 at=  1.520402e-05
+idd                 =  -4.200000e-03 from=  1.000000e-05 to=  2.000001e-05
+vout_max_v = 3.300075e+00
+icc_a = 4.200000e-03
+ngspice-42 done
+
+Using SPARSE 1.3 as Direct Linear Solver

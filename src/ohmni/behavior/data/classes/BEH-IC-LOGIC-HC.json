@@ -1,0 +1,402 @@
+{
+  "applies_to": [
+    "OHM-105",
+    "OHM-107",
+    "OHM-111",
+    "OHM-113",
+    "OHM-115",
+    "OHM-117"
+  ],
+  "basis_values": [
+    "4.5-50*4m",
+    "65*4m",
+    "ASSUMPTION",
+    "DERIVED",
+    "MFR_DATASHEET",
+    "calibration",
+    "diode fixed point",
+    "icc0+(Cpd+CL)*VCC*f"
+  ],
+  "behavior_id": "BEH-IC-LOGIC-HC",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "4.5-50*4m",
+          "measure": "VOH_4mA",
+          "tolerance": "1 %",
+          "value": 4.3
+        },
+        {
+          "basis": "65*4m",
+          "measure": "VOL_4mA",
+          "tolerance": "1 %",
+          "value": 0.26
+        }
+      ],
+      "file": "docs/behavior/bench/ic-logic-hc/B1_dc_levels.cir",
+      "measured_in_ngspice": "4.30 / 0.26",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "calibration",
+          "measure": "tpd_ns",
+          "tolerance": "5 %",
+          "value": 18
+        }
+      ],
+      "file": "docs/behavior/bench/ic-logic-hc/B2_tpd.cir",
+      "measured_in_ngspice": 17.93,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "icc0+(Cpd+CL)*VCC*f",
+          "measure": "icc_uA",
+          "tolerance": "2 %",
+          "value": 317
+        }
+      ],
+      "file": "docs/behavior/bench/ic-logic-hc/B3_icc_vs_f.cir",
+      "measured_in_ngspice": 317,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B4",
+      "expected": [
+        {
+          "basis": "calibration",
+          "measure": "VT_plus",
+          "tolerance": "1 %",
+          "value": 2.5
+        },
+        {
+          "basis": "calibration",
+          "measure": "VT_minus",
+          "tolerance": "1 %",
+          "value": 1.6
+        }
+      ],
+      "file": "docs/behavior/bench/ic-logic-hc/B4_schmitt.cir",
+      "measured_in_ngspice": "2.5064 / 1.5939",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B5",
+      "expected": [
+        {
+          "basis": "diode fixed point",
+          "measure": "I_clamp_mA",
+          "tolerance": "1 %",
+          "value": 1.82
+        }
+      ],
+      "file": "docs/behavior/bench/ic-logic-hc/B5_clamp.cir",
+      "measured_in_ngspice": 1.8203,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-105",
+      "OHM-107",
+      "OHM-111",
+      "OHM-113",
+      "OHM-115",
+      "OHM-117"
+    ],
+    "behavior_id": "BEH-IC-LOGIC-HC",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "4.5-50*4m",
+            "measure": "VOH_4mA",
+            "tolerance": "1 %",
+            "value": 4.3
+          },
+          {
+            "basis": "65*4m",
+            "measure": "VOL_4mA",
+            "tolerance": "1 %",
+            "value": 0.26
+          }
+        ],
+        "file": "bench/ic-logic-hc/B1_dc_levels.cir",
+        "id": "B1",
+        "measured_in_ngspice": "4.30 / 0.26",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "calibration",
+            "measure": "tpd_ns",
+            "tolerance": "5 %",
+            "value": 18
+          }
+        ],
+        "file": "bench/ic-logic-hc/B2_tpd.cir",
+        "id": "B2",
+        "measured_in_ngspice": 17.93,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "icc0+(Cpd+CL)*VCC*f",
+            "measure": "icc_uA",
+            "tolerance": "2 %",
+            "value": 317
+          }
+        ],
+        "file": "bench/ic-logic-hc/B3_icc_vs_f.cir",
+        "id": "B3",
+        "measured_in_ngspice": 317,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "calibration",
+            "measure": "VT_plus",
+            "tolerance": "1 %",
+            "value": 2.5
+          },
+          {
+            "basis": "calibration",
+            "measure": "VT_minus",
+            "tolerance": "1 %",
+            "value": 1.6
+          }
+        ],
+        "file": "bench/ic-logic-hc/B4_schmitt.cir",
+        "id": "B4",
+        "measured_in_ngspice": "2.5064 / 1.5939",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "diode fixed point",
+            "measure": "I_clamp_mA",
+            "tolerance": "1 %",
+            "value": 1.82
+          }
+        ],
+        "file": "bench/ic-logic-hc/B5_clamp.cir",
+        "id": "B5",
+        "measured_in_ngspice": 1.8203,
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "ic",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "ESD diode conduction, latch-up risk",
+        "id": "input_overvoltage",
+        "permanence": "permanent",
+        "sim_response": "clamp diode model; ERROR when current > 20 mA",
+        "trigger": "input > VCC+0.5 V"
+      },
+      {
+        "effect": "undefined level, extra ICC",
+        "id": "floating_input",
+        "permanence": "recoverable",
+        "sim_response": "netlist check",
+        "trigger": "unconnected input"
+      }
+    ],
+    "layer": "L2",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "fitted at 4.5 V only",
+        "single delay for both edges",
+        "no threshold spread",
+        "no ground bounce unless package parasitics are bound"
+      ],
+      "netlist_template": "X{ref} {A} {B} {Y} {VCC} {GND} hc_nand2 roh={roh} rol={rol} td={td} taue={taue} ci={ci} cpd={cpd} icc0={icc0}\n",
+      "spice_primitives": [
+        "B",
+        "R",
+        "C",
+        "D",
+        "T"
+      ],
+      "valid_analyses": [
+        "op",
+        "tran"
+      ],
+      "valid_range": "VCC 2..6 V (fitted at 4.5 V), f below 25 MHz"
+    },
+    "parameters": {
+      "ci": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": "5e-12",
+        "max": "10e-12",
+        "min": "3e-12",
+        "source_ref": "S4",
+        "tolerance": "",
+        "unit": "F"
+      },
+      "cpd": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": "20e-12",
+        "max": "30e-12",
+        "min": "15e-12",
+        "source_ref": "S4",
+        "tolerance": "",
+        "unit": "F"
+      },
+      "icc0": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": "2e-6",
+        "max": "20e-6",
+        "min": 1e-07,
+        "source_ref": "S4",
+        "tolerance": "",
+        "unit": "A"
+      },
+      "roh": {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "default": 50,
+        "max": 80,
+        "min": 30,
+        "source_ref": "S4",
+        "tolerance": "",
+        "unit": "ohm"
+      },
+      "rol": {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "default": 65,
+        "max": 100,
+        "min": 40,
+        "source_ref": "S4",
+        "tolerance": "",
+        "unit": "ohm"
+      },
+      "taue": {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "default": 6.4e-09,
+        "max": "12e-9",
+        "min": "3e-9",
+        "source_ref": "S4",
+        "tolerance": "",
+        "unit": "s"
+      },
+      "td": {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "default": 1.04e-08,
+        "max": "20e-9",
+        "min": "5e-9",
+        "source_ref": "S4",
+        "tolerance": "",
+        "unit": "s"
+      },
+      "vtfrac": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.5,
+        "max": 0.7,
+        "min": 0.3,
+        "source_ref": "S4",
+        "tolerance": "VIL max 0.3 VCC, VIH min 0.7 VCC",
+        "unit": ""
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "input",
+        "name": "A",
+        "package_terminal_rule": "gate input; HC00 1,2,4,5,9,10,12,13; HC14 1,3,5,9,11,13",
+        "role": "signal_in"
+      },
+      {
+        "electrical_type": "output",
+        "name": "Y",
+        "package_terminal_rule": "HC00 3,6,8,11; HC14 2,4,6,8,10,12",
+        "role": "signal_out"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "VCC",
+        "package_terminal_rule": "pin 14 (HC245 pin 20)",
+        "role": "supply"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "GND",
+        "package_terminal_rule": "pin 7 (HC245 pin 10)",
+        "role": "supply"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "V(VCC)-V(GND) <= 7",
+        "condition": "abs max",
+        "name": "supply",
+        "source_ref": "S4",
+        "symbol": "VCC",
+        "unit": "V",
+        "value": 7
+      },
+      {
+        "check": "abs(I(in_clamp)) <= 20e-3",
+        "condition": "abs max",
+        "name": "input clamp",
+        "source_ref": "S4",
+        "symbol": "IIK",
+        "unit": "A",
+        "value": "20e-3"
+      },
+      {
+        "check": "abs(I(out)) <= 25e-3",
+        "condition": "abs max per output",
+        "name": "output current",
+        "source_ref": "S4",
+        "symbol": "IO",
+        "unit": "A",
+        "value": "25e-3"
+      }
+    ],
+    "sources": "S4, S5, S8, S29",
+    "status": "complete"
+  },
+  "category": "ic",
+  "fidelity": "behavioural_approximation",
+  "layer": "L2",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "b76cb9a3cc7498b2194493aec04eeffb45cbe29b5179e7d55fd0b7ab3cfe0b5f",
+    "line": 7561
+  },
+  "source_refs": "S4, S5, S8, S29",
+  "status": "complete"
+}

@@ -1,0 +1,205 @@
+{
+  "behavior_class_ids": [
+    "BEH-DISP-LCD1602"
+  ],
+  "catalog_binding_ids": [],
+  "class_record_paths": [
+    "src/ohmni/behavior/data/classes/BEH-DISP-LCD1602.json"
+  ],
+  "component": "16×2 LCD module",
+  "entry_id": "OHM-091",
+  "fidelity": "behavioural_approximation",
+  "group": "R5",
+  "layer": "L3",
+  "research": {
+    "bench_result": "bench-results/BEH-DISP-LCD1602--B1.json",
+    "bench_results": [
+      "bench-results/BEH-DISP-LCD1602--B1.json",
+      "bench-results/BEH-DISP-LCD1602--B2.json"
+    ],
+    "conflicts": [
+      "Logic low is 0.6 V maximum, not a generic 0.3*VDD threshold.",
+      "At25 C recommended VDD-VO is 3.6..3.8 V, not the prior 4.0 V assumption."
+    ],
+    "documents": [
+      {
+        "document_id": "wh1602b",
+        "manufacturer": "Winstar",
+        "note": "Manufacturer PDF read from the hashed fetch archive; distributor-hosted copies retain manufacturer identity.",
+        "page": null,
+        "revision": null,
+        "source_status": "primary_source_opened",
+        "title": "WH1602B LCD module",
+        "url": "https://static.rapidonline.com/pdf/61-6235_v1.pdf"
+      }
+    ],
+    "entry_id": "OHM-091",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "manufacturer_pin_roles",
+        "page": 4,
+        "scope": "WH1602B, ST7066U controller",
+        "sources": [
+          "https://static.rapidonline.com/pdf/61-6235_v1.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "1": "VSS",
+          "10": "DB3",
+          "11": "DB4",
+          "12": "DB5",
+          "13": "DB6",
+          "14": "DB7",
+          "15": "A",
+          "16": "K",
+          "2": "VDD",
+          "3": "VO",
+          "4": "RS",
+          "5": "RW",
+          "6": "E",
+          "7": "DB0",
+          "8": "DB1",
+          "9": "DB2"
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "operating_supply_range",
+        "page": 3,
+        "scope": "WH1602B, ST7066U controller",
+        "sources": [
+          "https://static.rapidonline.com/pdf/61-6235_v1.pdf"
+        ],
+        "unit": "V",
+        "value": [
+          4.5,
+          5.5
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "absolute_supply_range",
+        "page": 3,
+        "scope": "WH1602B, ST7066U controller",
+        "sources": [
+          "https://static.rapidonline.com/pdf/61-6235_v1.pdf"
+        ],
+        "unit": "V",
+        "value": [
+          -0.3,
+          7
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "logic_supply_current_min_typ_max",
+        "page": 3,
+        "scope": "WH1602B, ST7066U controller; VDD5 V, backlight excluded",
+        "sources": [
+          "https://static.rapidonline.com/pdf/61-6235_v1.pdf"
+        ],
+        "unit": "mA",
+        "value": [
+          1,
+          1.2,
+          1.5
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "contrast_voltage_min_typ_max",
+        "page": 3,
+        "scope": "WH1602B, ST7066U controller; VDD-VO at25 C",
+        "sources": [
+          "https://static.rapidonline.com/pdf/61-6235_v1.pdf"
+        ],
+        "unit": "V",
+        "value": [
+          3.6,
+          3.7,
+          3.8
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "minimum_logic_high_fraction",
+        "page": 3,
+        "scope": "WH1602B, ST7066U controller",
+        "sources": [
+          "https://static.rapidonline.com/pdf/61-6235_v1.pdf"
+        ],
+        "unit": "VDD",
+        "value": 0.7
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_logic_low_voltage",
+        "page": 3,
+        "scope": "WH1602B, ST7066U controller",
+        "sources": [
+          "https://static.rapidonline.com/pdf/61-6235_v1.pdf"
+        ],
+        "unit": "V",
+        "value": 0.6
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "reference_body_size",
+        "page": 2,
+        "scope": "WH1602B, ST7066U controller; max height",
+        "sources": [
+          "https://static.rapidonline.com/pdf/61-6235_v1.pdf"
+        ],
+        "unit": "mm",
+        "value": [
+          80,
+          36,
+          13.2
+        ]
+      }
+    ],
+    "remaining_open_items": [
+      "Backlight voltage/current and thermal rating are not given in this opened document.",
+      "Controller instruction execution and text state belong to L3."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [
+      "Do not simulate the assumed 100 mA/4.1 V backlight as a rated module load."
+    ],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-091.md",
+      "document_sha256": "9ebef8ac214300976ed8aa88496ef5f52773fe373fa37cc525317140163f85f9",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
+  "resolution_ids": [],
+  "schema_version": 1,
+  "simulation_disposition": "not_simulable",
+  "simulation_reason": "L3 protocol or firmware behavior requires a higher-layer model.",
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "b0430c48a9a08f58099419366a46b286dcdc91db7989c4a60861130c6d529b49",
+    "line": 109
+  },
+  "status": "partial"
+}

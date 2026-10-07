@@ -1,0 +1,37 @@
+B1 MLCC DC-bias small-signal capacitance, ideal parasitics
+* v2: foreach unrolled so each bias prints its own scalar (ceramic1_ceff_v0..v4, uF); echo removed
+* OHMNI BEH-CAP-CERAMIC subcircuit, behavioural_approximation
+* ports: p n flag ; flag node voltage is a bitmask: 1=overvoltage, 2=reverse(not used for ceramic)
+.subckt ohm_mlcc p n flag params: C0=1u V0=1e6 ESR=5m ESL=0.7n RLK=1e9 VR=10 AGE=0 TCDEV=0
+Lesl p a {ESL}
+Resr a b {ESR}
+* charge-based DC-bias capacitor: q = Ceff0*V0*atan(v/V0) so dq/dv = Ceff0/(1+(v/V0)^2)
+Cb b n q = '{C0*(1-AGE)*(1+TCDEV)}*{V0}*atan(v(b,n)/{V0})'
+Rlk b n {RLK}
+Bflag flag 0 V = 'abs(v(b,n)) > {VR} ? 1 : 0'
+.ends
+
+Vb in 0 dc 0 ac 1
+Rs in x 0.01
+Xc x 0 f ohm_mlcc C0=10u V0=2 ESR=1u ESL=1p RLK=1e12 VR=100
+Rf f 0 1meg
+.control
+alter Vb dc = 0
+ac lin 1 1k 1k
+let ceramic1_ceff_v0 = imag((v(in)-v(x))/0.01)/(2*pi*1k)*1e6
+print ceramic1_ceff_v0
+alter Vb dc = 1
+ac lin 1 1k 1k
+let ceramic1_ceff_v1 = imag((v(in)-v(x))/0.01)/(2*pi*1k)*1e6
+print ceramic1_ceff_v1
+alter Vb dc = 2
+ac lin 1 1k 1k
+let ceramic1_ceff_v2 = imag((v(in)-v(x))/0.01)/(2*pi*1k)*1e6
+print ceramic1_ceff_v2
+alter Vb dc = 4
+ac lin 1 1k 1k
+let ceramic1_ceff_v4 = imag((v(in)-v(x))/0.01)/(2*pi*1k)*1e6
+print ceramic1_ceff_v4
+quit
+.endc
+.end

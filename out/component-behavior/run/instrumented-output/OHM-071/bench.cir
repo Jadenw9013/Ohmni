@@ -1,0 +1,20 @@
+OHMNI sourced behavior circuit
+.options tnom=25
+.temp 25
+Vsource4 n4 0 DC 10
+Iexcitation1 n2 n1 DC 1
+vprobe_c1_1 n4 probe_c1_1 0
+vprobe_c1_2 0 probe_c1_2 0
+vprobe_c1_3 n1 probe_c1_3 0
+vprobe_c1_4 n2 probe_c1_4 0
+.subckt BRIDGE_c1 AC1 AC2 PLUS MINUS
+D1 AC1 PLUS DBR_c1
+D2 AC2 PLUS DBR_c1
+D3 MINUS AC1 DBR_c1
+D4 MINUS AC2 DBR_c1
+.ends
+.model DBR_c1 D (IS=1.04e-10 N=1.8 RS=0.029999999999999999 CJO=6.4999999999999995e-11 VJ=0.7 M=0.5 TT=3.0000000000000001e-06 BV=1100 IBV=5u)
+Xc1 probe_c1_1 probe_c1_2 probe_c1_4 probe_c1_3 BRIDGE_c1
+.op
+.print op
+.end

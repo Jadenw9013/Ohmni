@@ -1,0 +1,30 @@
+B3 100BASE-TX style current-mode drive: each PHY pin sinks 0 or 40 mA (complementary), 49.9 ohm from each pin to the CT/3.3 V rail, 100 ohm line.
+* v2: meas names prefixed eth3_; added eth3_va/eth3_vb (plateau means) and scalar eth3_vplat = (vb-va)/2 as a drift-free plateau amplitude (single-instant samples eth3_vhi/eth3_vlo are 46 ns after an edge and sit on the droop); circuit unchanged
+* Expected: DM load per pin = 49.9 || 50 (100 ohm line reflects 1:1 as 50 ohm per half) = 24.97 ohm; DM drive +/-20 mA per pin about a 20 mA common value (initial state 20 mA each = zero flux)
+*   -> V(line) plateau = 2*20mA*24.97 = 0.9988 V (2.0 Vpp, the 100BASE-TX line amplitude) before winding loss and LF droop (~1-3 %); tolerance 5%
+.include ethmag.lib
+Vcc vcc 0 DC 3.3
+Rt1 vcc tdp 49.9
+Rt2 vcc tdm 49.9
+Rct vcc tdct 0.01
+Ip tdp 0 PWL(0 20m 50n 20m 54n 40m 550n 40m 554n 0m 1050n 0m 1054n 40m 1550n 40m 1554n 0m 2050n 0m 2054n 40m 2550n 40m 2554n 0m 3050n 0m 3054n 40m 3550n 40m 3554n 0m 4050n 0m)
+Im tdm 0 PWL(0 20m 50n 20m 54n 0m 550n 0m 554n 40m 1050n 40m 1054n 0m 1550n 0m 1554n 40m 2050n 40m 2054n 0m 2550n 0m 2554n 40m 3050n 40m 3054n 0m 3550n 0m 3554n 40m 4050n 40m)
+X1 tdp tdm tdct lp lm lct ETH_CH OCL=350u LLK=0.1u RW=0.5 CIW=15p CMC_L=100u CMC_LS=0.1u CMC_RDC=0.1 CMC_C0=1p
+RL lp lm 100
+Rlm lm 0 1u
+Rlct lct 0 1G
+.tran 1n 4.2u
+.control
+run
+let vl = v(lp)-v(lm)
+meas tran eth3_vhi find vl at=1.1u
+meas tran eth3_vlo find vl at=1.6u
+* plateau amplitude: half the difference of the mean line voltage over a full positive and a full negative plateau (cancels the start-up flux offset and the saw-tooth droop)
+meas tran eth3_va avg vl from=1.1u to=1.5u
+meas tran eth3_vb avg vl from=1.6u to=2.0u
+let eth3_vplat = (eth3_vb - eth3_va)/2
+print eth3_vplat
+meas tran eth3_vdc avg v(tdct) from=1.3u to=1.6u
+quit
+.endc
+.end

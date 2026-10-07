@@ -1,0 +1,25 @@
+B1 SAW band-pass behavioural (AFS869S3 class: 869 MHz, 8 MHz passband, IL 4.5 dB, 50 ohm): IL at fc, edges, 3 dB bandwidth, rejection at +/-40 MHz, return loss
+* v2: meas il_fc renamed il_fc_db (meas FIND already prints a bare line); bw3 print renamed bw3_hz; circuit unchanged
+.include ohm_saw.lib
+V1 s 0 ac 1
+Rs s in 50
+X1 in out 0 ohm_saw
+Rl out 0 50
+.control
+ac lin 6001 800e6 940e6
+let il = -20*log10(2*mag(v(out)))
+let rl = -20*log10(mag((v(in)-0.5*1)/(v(in)+0.5*1)*1))
+meas ac il_fc_db FIND il AT=869e6
+meas ac il_lo FIND il AT=865e6
+meas ac il_hi FIND il AT=873e6
+meas ac il_m40 FIND il AT=829e6
+meas ac il_p40 FIND il AT=909e6
+meas ac ilmin MIN il
+let ilr = il - ilmin
+meas ac f3lo WHEN ilr=3 CROSS=1
+meas ac f3hi WHEN ilr=3 CROSS=LAST
+let bw3_hz = f3hi - f3lo
+print bw3_hz
+quit
+.endc
+.end

@@ -1,0 +1,40 @@
+* BEH-PWR-PKGTHERMAL B2: P_max = (Tjmax - Tref)/Rth against datasheet power ratings (arithmetic check, no circuit; ngspice used as a calculator)
+* v2: renamed scalars p1..p11b / c1..c3 to pmax_<part> (generic names); same arithmetic
+* Formula: P_max(T) = (Tj_max - T)/Rth.  Rows: part, package, Tj_max, Tref, Rth (datasheet), datasheet P, source (see parts/R6.md S-list)
+*  2N3904   TO-92   150, 25, RthJA 200    -> 0.625 W   (ds 625 mW)
+*  IRF540N  TO-220  175, 25, RthJC 1.15   -> 130.4 W   (ds 130 W, Tc=25)
+*  IRLB8721 TO-220  175, 25, RthJC 2.3    -> 65.2 W    (ds 65 W)
+*  IRFP260N TO-247  175, 25, RthJC 0.50   -> 300 W     (ds 300 W)
+*  IRLR3410 DPAK    175, 25, RthJC 1.9    -> 78.9 W    (ds 79 W)
+*  BD139    TO-126  150, 25, RthJC 10     -> 12.5 W    (ds 12.5 W, Tc=25)
+*  BCP56    SOT-223 150, 25, RthJA 93 (6 cm2 pad) -> 1.344 W (ds 1.35 W)
+*  BCX56    SOT-89  150, 25, RthJA 250 (min footprint) -> 0.50 W (ds 0.5 W)
+*  BC817    SOT-23  150, 25, RthJA 500 -> 0.25 W (ds 250 mW) ; 362 (1 cm2 pad) -> 0.345 W (ds 345 mW)
+*  2N7000   TO-92   150, 25, RthJA 357 -> 0.350 W (ds 350 mW)
+*  Si7898DP PPAK    150, 25, RthJA 25 (t<=10 s) -> 5.0 W (ds 5 W at TA=25 C); steady 65 -> 1.92 W
+* Counter-examples found (datasheet numbers as extracted do NOT satisfy the formula, see parts/R6.md):
+*  IRFZ44N: 150/1.5 = 100 W vs ds 94 W (ds derating 0.63 W/C -> 1.59 C/W) ; 2N7002 (Nexperia): 125/350 = 0.357 W vs ds 0.83 W (Ptot referenced to a different condition) ; IRLR8721 (DPAK): 150/2.3 = 65 W vs ds 33 W
+* Expected: first 11 rows within 1.5 % of the datasheet power; counter-example rows reported as mismatches.
+.control
+set noaskquit
+let pmax_2n3904 = (150-25)/200
+let pmax_irf540n = (175-25)/1.15
+let pmax_irlb8721 = (175-25)/2.3
+let pmax_irfp260n = (175-25)/0.5
+let pmax_irlr3410 = (175-25)/1.9
+let pmax_bd139 = (150-25)/10
+let pmax_bcp56 = (150-25)/93
+let pmax_bcx56 = (150-25)/250
+let pmax_bc817_min = (150-25)/500
+let pmax_bc817_1cm2 = (150-25)/362
+let pmax_2n7000 = (150-25)/357
+let pmax_si7898dp_10s = (150-25)/25
+let pmax_si7898dp_ss = (150-25)/65
+print pmax_2n3904 pmax_irf540n pmax_irlb8721 pmax_irfp260n pmax_irlr3410 pmax_bd139 pmax_bcp56 pmax_bcx56 pmax_bc817_min pmax_bc817_1cm2 pmax_2n7000 pmax_si7898dp_10s pmax_si7898dp_ss
+let pmax_irfz44n_cex = (175-25)/1.5
+let pmax_2n7002_cex = (150-25)/350
+let pmax_irlr8721_cex = (175-25)/2.3
+print pmax_irfz44n_cex pmax_2n7002_cex pmax_irlr8721_cex
+quit
+.endc
+.end

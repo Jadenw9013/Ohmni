@@ -1,0 +1,44 @@
+* BEH-IC-LOGIC-HC B1: truth table and DC output levels. Vcc = 4.5 V.
+* v2: scalars printed as 'name = value'; behavior unchanged
+* Truth table NAND: 00->1, 01->1, 10->1, 11->0.
+* Loaded levels (SCLS181H typ): VOH(-4 mA) = 4.30 V ; VOL(+4 mA) = 0.26 V (calibration targets; model: 4.5-50*4m = 4.30 ; 65*4m = 0.26)
+.include hc_gates.lib
+Vcc vcc 0 4.5
+Va1 a1 0 0
+Vb1 b1 0 0
+Va2 a2 0 0
+Vb2 b2 0 4.5
+Va3 a3 0 4.5
+Vb3 b3 0 0
+Va4 a4 0 4.5
+Vb4 b4 0 4.5
+X1 a1 b1 y1 vcc 0 hc_nand2
+X2 a2 b2 y2 vcc 0 hc_nand2
+X3 a3 b3 y3 vcc 0 hc_nand2
+X4 a4 b4 y4 vcc 0 hc_nand2
+* loaded high: inputs low, sink 4 mA... (source current out of y5 into load = 4 mA)
+Va5 a5 0 0
+X5 a5 a5 y5 vcc 0 hc_nand2
+Ioh y5 0 dc 4m
+* loaded low: inputs high, load pulls 4 mA into y6
+Va6 a6 0 4.5
+X6 a6 a6 y6 vcc 0 hc_nand2
+Iol vcc y6 dc 4m
+.control
+set noaskquit
+op
+let y00 = v(y1)
+let y01 = v(y2)
+let y10 = v(y3)
+let y11 = v(y4)
+let voh = v(y5)
+let vol = v(y6)
+echo y00_v = $&y00
+echo y01_v = $&y01
+echo y10_v = $&y10
+echo y11_v = $&y11
+echo voh_4ma_v = $&voh
+echo vol_4ma_v = $&vol
+quit
+.endc
+.end

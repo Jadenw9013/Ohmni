@@ -1,0 +1,101 @@
+* BEH-TRN-MOSFET B6: body-diode reverse recovery, IRFZ44N_R6, IF ~ 24 A, di/dt = 100 A/us (Infineon IRFZ44NPbF typical: trr 63 ns, Qrr 170 nC)
+* v2: absolute include path made relative; meas results (printed with from=/to=/at= fields) re-exported as qrr_a_nc, qrr_b_nc, irrm_a_a, irrm_b_a (positive nC / A magnitudes)
+* Method: IF ~24 A ramps down at di/dt = 100 A/us through L=0.2 uH with -20 V; Qrr = integral of the negative part of the current, window 0.4..0.8 us.
+* Datasheet-implied: Qrr 170 nC.  TT = 14 ns was found by trial (TT=0 gives 140 nC from the 1.5 nF junction-capacitance ringing alone, so the window is
+* NOT a clean Qrr: this is a behavioural fit of the integral, not of the waveform shape).  Expected case A: 170 nC, tolerance 15 %.
+* Case B uses TT=0: ~115 nC from junction capacitance only.  Peak reverse current irr: datasheet-implied ~5.4 A (2*Qrr/trr); the model gives ~2 A. Known mismatch.
+* OHMNI R6 N-channel MOSFET behavioural subcircuits, parameters fitted from datasheet numbers (see parts/R6.md BEH-TRN-MOSFET).
+* fidelity: behavioural_approximation. NOT vendor models. Rds(on) fitted to datasheet MAX values (worst case). Pins: d g s.
+* Dynamic part: Cgs const, Cgd nonlinear (charge-based capacitor q=Q(Vgd), Cgd=Cmin+(Cmax-Cmin)/(1+exp(-Vgd/0.9))), Cds + body diode junction capacitance (abrupt, M=0.5, VJ=0.8).
+.model NM_IRFZ44N NMOS(LEVEL=1 VTO=3.0 KP=10.17 IS=0 RD=0.0015 RS=0.0015)
+.subckt IRFZ44N_R6 d g s params: BVDSS=55
+Rg g gi 3.0
+M1 d gi s s NM_IRFZ44N
+Cgs gi s 1382p
+* Cgd: Cmin=88p (Crss), Cmax=3666p, transition width ~Vgs plateau 5.22 V centred at Vdg=0
+Cgd gi d q='88p*(v(gi)-v(d)) + (3666.3p-88p)*0.9*ln(1+exp((v(gi)-v(d))/0.9))'
+Dbody s d DB_IRFZ44N
+.model DB_IRFZ44N D(IS=1.015e-14 N=1.2 RS=0.008 TT=14n CJO=1545p VJ=0.8 M=0.5 BV={BVDSS})
+.ends
+.model NM_IRF540N NMOS(LEVEL=1 VTO=3.0 KP=3.6688 IS=0 RD=0.0015 RS=0.0015)
+.subckt IRF540N_R6 d g s params: BVDSS=100
+Rg g gi 3.0
+M1 d gi s s NM_IRF540N
+Cgs gi s 1920p
+Cgd gi d 40p
+Dbody s d DB_IRF540N
+.model DB_IRF540N D(IS=1.258e-13 N=1.2 RS=0.012 TT=0 CJO=1193p VJ=0.8 M=0.5 BV={BVDSS})
+.ends
+.model NM_IRLB8721 NMOS(LEVEL=3 VTO=1.85 KP=37.23 THETA=0.14341 ETA=0 KAPPA=0 DELTA=0 VMAX=0 IS=0 RD=0.00075 RS=0.00075)
+.subckt IRLB8721_R6 d g s params: BVDSS=30
+Rg g gi 2.0
+M1 d gi s s NM_IRLB8721
+Cgs gi s 967p
+Cgd gi d 110p
+Dbody s d DB_IRLB8721
+.model DB_IRLB8721 D(IS=1.055e-12 N=1.2 RS=0.004 TT=0 CJO=1420p VJ=0.8 M=0.5 BV={BVDSS})
+.ends
+.model NM_IRFP260N NMOS(LEVEL=1 VTO=3.0 KP=4.1967 IS=0 RD=0.0015 RS=0.0015)
+.subckt IRFP260N_R6 d g s params: BVDSS=200
+Rg g gi 2.0
+M1 d gi s s NM_IRFP260N
+Cgs gi s 4057p
+Dbody s d DB_IRFP260N
+.model DB_IRFP260N D(IS=2.463e-14 N=1.2 RS=0.008 TT=0  BV={BVDSS})
+.ends
+.model NM_SI7898DP NMOS(LEVEL=3 VTO=3.0 KP=25.343 THETA=1.8438 ETA=0 KAPPA=0 DELTA=0 VMAX=0 IS=0 RD=0.0025 RS=0.0025)
+.subckt SI7898DP_R6 d g s params: BVDSS=150
+Rg g gi 1.5
+M1 d gi s s NM_SI7898DP
+Cgs gi s 1700p
+Dbody s d DB_SI7898DP
+.model DB_SI7898DP D(IS=2.271e-15 N=1.2 RS=0.05 TT=0  BV={BVDSS})
+.ends
+.model NM_2N7000 NMOS(LEVEL=3 VTO=1.9 KP=0.20959 THETA=0.75509 ETA=0 KAPPA=0 DELTA=0 VMAX=0 IS=0 RD=0.025 RS=0.025)
+.subckt 2N7000_R6 d g s params: BVDSS=60
+Rg g gi 10
+M1 d gi s s NM_2N7000
+Cgs gi s 55p
+Cgd gi d 5p
+Dbody s d DB_2N7000
+.model DB_2N7000 D(IS=1e-14 N=1.2 RS=1.0 TT=0 CJO=114p VJ=0.8 M=0.5 BV={BVDSS})
+.ends
+.model NM_2N7002 NMOS(LEVEL=3 VTO=1.75 KP=0.36327 THETA=1.4067 ETA=0 KAPPA=0 DELTA=0 VMAX=0 IS=0 RD=0.025 RS=0.025)
+.subckt 2N7002_R6 d g s params: BVDSS=60
+Rg g gi 10
+M1 d gi s s NM_2N7002
+Cgs gi s 50p
+Dbody s d DB_2N7002
+.model DB_2N7002 D(IS=1e-14 N=1.2 RS=1.0 TT=0  BV={BVDSS})
+.ends
+
+X1 d g s IRFZ44N_R6 BVDSS=55
+Rg0 g s 0.01
+Vs1 sw 0 pwl(0 0 1n 20 0.255u 20 0.2551u -20 5u -20)
+L1 sw s 0.2u
+Vdd d 0 0
+.model DB0 D(IS=1.015e-14 N=1.2 RS=0.008 TT=0 CJO=1545p VJ=0.8 M=0.5 BV=55)
+Vs2 sw2 0 pwl(0 0 1n 20 0.255u 20 0.2551u -20 5u -20)
+L2 sw2 s2 0.2u
+D2 s2 d2 DB0
+Vdd2 d2 0 0
+.tran 0.5n 1.2u
+.control
+set noaskquit
+run
+let i1 = i(Vdd)
+let i2 = i(Vdd2)
+let ineg1 = (i1 - abs(i1))/2
+let ineg2 = (i2 - abs(i2))/2
+meas tran qrr_A integ ineg1 from=0.4u to=0.8u
+meas tran qrr_B integ ineg2 from=0.4u to=0.8u
+meas tran irrm_A min i1
+meas tran irrm_B min i2
+let qrr_a_nc = -qrr_A*1e9
+let qrr_b_nc = -qrr_B*1e9
+let irrm_a_a = -irrm_A
+let irrm_b_a = -irrm_B
+print qrr_a_nc qrr_b_nc irrm_a_a irrm_b_a
+quit
+.endc
+.end

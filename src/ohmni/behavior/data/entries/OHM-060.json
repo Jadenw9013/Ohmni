@@ -1,0 +1,200 @@
+{
+  "behavior_class_ids": [
+    "BEH-DIO-PN"
+  ],
+  "catalog_binding_ids": [],
+  "class_record_paths": [
+    "src/ohmni/behavior/data/classes/BEH-DIO-PN.json"
+  ],
+  "component": "MELF diode",
+  "entry_id": "OHM-060",
+  "fidelity": "behavioural_approximation",
+  "group": "R4",
+  "layer": "L1",
+  "research": {
+    "bench_result": "bench-results/BEH-DIO-PN--B1.json",
+    "bench_results": [
+      "bench-results/BEH-DIO-PN--B1.json",
+      "bench-results/BEH-DIO-PN--B2.json",
+      "bench-results/BEH-DIO-PN--B3.json",
+      "bench-results/BEH-DIO-PN--B4.json",
+      "bench-results/BEH-DIO-PN--B5.json",
+      "bench-results/BEH-DIO-PN--B6.json",
+      "bench-results/BEH-DIO-PN--B7.json"
+    ],
+    "conflicts": [
+      "The spec names document 88548, which is a Schottky family. Standard recovery GL41 is document 88546; do not copy Schottky parameters."
+    ],
+    "documents": [
+      {
+        "document_id": "vishaygl41",
+        "manufacturer": "Vishay",
+        "note": "Manufacturer PDF read directly from the hashed fetch archive.",
+        "page": null,
+        "revision": "2021-05-18",
+        "source_status": "primary_source_opened",
+        "title": "BYM10 and GL41 Surface Mount Glass Passivated Rectifiers",
+        "url": "https://www.vishay.com/doc?88546"
+      }
+    ],
+    "entry_id": "OHM-060",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "reference_part",
+        "page": 1,
+        "scope": "Vishay GL41M, standard recovery MELF reference",
+        "sources": [
+          "https://www.vishay.com/doc?88546"
+        ],
+        "unit": null,
+        "value": "GL41M"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "repetitive_peak_reverse_voltage",
+        "page": 1,
+        "scope": "Vishay GL41M, standard recovery MELF reference",
+        "sources": [
+          "https://www.vishay.com/doc?88546"
+        ],
+        "unit": "V",
+        "value": 1000
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "average_forward_current",
+        "page": 1,
+        "scope": "Vishay GL41M, standard recovery MELF reference; derate per figure 1 mounting conditions",
+        "sources": [
+          "https://www.vishay.com/doc?88546"
+        ],
+        "unit": "A",
+        "value": 1
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "surge_current",
+        "page": 1,
+        "scope": "Vishay GL41M, standard recovery MELF reference; 8.3 ms single half-sine",
+        "sources": [
+          "https://www.vishay.com/doc?88546"
+        ],
+        "unit": "A",
+        "value": 30
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_junction_temperature",
+        "page": 1,
+        "scope": "Vishay GL41M, standard recovery MELF reference",
+        "sources": [
+          "https://www.vishay.com/doc?88546"
+        ],
+        "unit": "C",
+        "value": 175
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_forward_voltage",
+        "page": 2,
+        "scope": "Vishay GL41M, standard recovery MELF reference; IF=1 A, TA=25 C; GL41K-GL41Y column (GL41A-GL41J are 1.1 V)",
+        "sources": [
+          "https://www.vishay.com/doc?88546"
+        ],
+        "unit": "V",
+        "value": 1.2
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_reverse_leakage",
+        "page": 2,
+        "scope": "Vishay GL41M, standard recovery MELF reference; rated blocking voltage, TA=25 C",
+        "sources": [
+          "https://www.vishay.com/doc?88546"
+        ],
+        "unit": "uA",
+        "value": 10
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "typical_junction_capacitance",
+        "page": 2,
+        "scope": "Vishay GL41M, standard recovery MELF reference; 4 V, 1 MHz",
+        "sources": [
+          "https://www.vishay.com/doc?88546"
+        ],
+        "unit": "pF",
+        "value": 8
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "typical_thermal_resistance_junction_ambient",
+        "page": 2,
+        "scope": "Vishay GL41M, standard recovery MELF reference; 6 x 6 mm copper pads at each terminal",
+        "sources": [
+          "https://www.vishay.com/doc?88546"
+        ],
+        "unit": "K/W",
+        "value": 75
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "cathode_mark",
+        "page": 1,
+        "scope": "Vishay GL41M, standard recovery MELF reference",
+        "sources": [
+          "https://www.vishay.com/doc?88546"
+        ],
+        "unit": null,
+        "value": "two bands: white device-type band and violet voltage band for GL41M"
+      }
+    ],
+    "remaining_open_items": [
+      "Full current derating curve, reverse recovery, N/RS fit and thermal transient remain unimplemented.",
+      "Other GL41 reverse-voltage variants need explicit type selection."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [
+      "The average-current derating curve must be implemented before claiming a complete thermal envelope."
+    ],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-060.md",
+      "document_sha256": "9cab540b6311b4bb5f92721efae9ca2005f9a69c94dbf0993c3585e861fa84d8",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
+  "resolution_ids": [],
+  "schema_version": 1,
+  "simulation_disposition": "not_simulable",
+  "simulation_reason": "Required electrical or terminal evidence remains unresolved.",
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "8898ffc3391e2a974b8374aa45d192b9791efd5eac0196a2cb877542436c6949",
+    "line": 78
+  },
+  "status": "research_required"
+}

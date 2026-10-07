@@ -1,0 +1,21 @@
+* B1 cable harness polarity: header A pin1=+ , cable crossed (pin1 -> pin2 of mate). Load is a diode (polarity-sensitive).
+* v2: no functional change (straight_i already printed)
+* Straight harness: current flows; crossed harness: diode reverse biased -> ~0 A.
+Vs src 0 5
+* straight
+Rh1 src s1 0.1
+D1 s1 s2 DD
+Rl1 s2 0 100
+* crossed: the "+" wire lands on the "-" pin, diode sees reversed source
+Rh2 0 c1 0.1
+D2 c1 c2 DD
+Rl2 c2 src 100
+.model DD D(Is=1e-14 N=1)
+.control
+op
+print v(s2) v(c2)
+let straight_i = v(s2)/100
+print straight_i
+quit
+.endc
+.end

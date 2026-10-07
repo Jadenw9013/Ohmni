@@ -35,6 +35,23 @@ const simulation = (values = {}) => ({
     ...values,
 });
 
+test("an errored or non-run simulation cannot display a stale successful trace", () => {
+    for (const status of ["UNAVAILABLE", "FAILED", "TIMED_OUT", "NOT_RUN", "UNKNOWN"]) {
+        const html = scopeHtml(simulation({status}));
+        assert.doesNotMatch(html, /<svg|<polyline/);
+        assert.match(html, /No curve was produced/);
+        assert.ok(html.includes(status));
+    }
+});
+
+test("a rating violation survives both successful and non-run result rendering", () => {
+    for (const status of ["OK", "NOT_RUN", "FAILED"]) {
+        const html = scopeHtml(simulation({status, rating_status: "violation", rating_detail: "Current exceeds the sourced rating."}));
+        assert.match(html, /data-rating-status="violation"/);
+        assert.match(html, /Rating violation: Current exceeds the sourced rating/);
+    }
+});
+
 test("a transient becomes a plot with a trace and a key per signal", () => {
     const svg = scopeSvg(rc());
     assert.match(svg, /<svg[^>]+viewBox="0 0 620 260"/);

@@ -1,0 +1,36 @@
+* BEH-PKG-IC-BINDING P1: steady-state junction temperature Tj = Ta + RthJA*P for sourced package RthJA values (thermal-electrical analogy: 1 W = 1 A, 1 K/W = 1 ohm, Ta = voltage source)
+* v2: print named scalars tj_a..tj_f; circuit unchanged
+* Cases (RthJA from datasheets actually opened; conditions are the vendors' JEDEC boards):
+*  a TPS62130 VQFN-16 RGT 45 K/W,   P = 1.0 W, Ta = 25 C  -> 70.0 C
+*  b TPS62160 WSON-8 DSG 61.8 K/W,  P = 0.5 W, Ta = 25 C  -> 55.9 C
+*  c TPS7A80 VSON-8 DRB 47.8 K/W,   P = (5.0-3.3)*1.0 = 1.7 W, Ta = 25 C -> 106.26 C
+*  d NX5P3290 WLCSP-16 58.4 K/W,    P = 3^2*0.035 = 0.315 W, Ta = 25 C -> 43.396 C
+*  e STM32F103 LQFP64 45 K/W,       P = 0.1 W, Ta = 85 C -> 89.5 C
+*  f MAX98357A WLP-9 73 K/W,        P = 0.4 W, Ta = 25 C -> 54.2 C
+Vta ta 0 25
+Ia 0 tja dc 1.0
+Ra tja ta 45
+Ib 0 tjb dc 0.5
+Rb tjb ta 61.8
+Ic 0 tjc dc 1.7
+Rc tjc ta 47.8
+Id 0 tjd dc 0.315
+Rd tjd ta 58.4
+Vtae tae 0 85
+Ie 0 tje dc 0.1
+Re tje tae 45
+Ifx 0 tjf dc 0.4
+Rf tjf ta 73
+.control
+set noaskquit
+op
+let tj_a = v(tja)
+let tj_b = v(tjb)
+let tj_c = v(tjc)
+let tj_d = v(tjd)
+let tj_e = v(tje)
+let tj_f = v(tjf)
+print tj_a tj_b tj_c tj_d tj_e tj_f
+quit
+.endc
+.end

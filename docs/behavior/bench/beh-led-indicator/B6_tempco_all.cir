@@ -1,0 +1,19 @@
+* B6: Vf temperature coefficient of all four LED cards at 20 mA, 0 C to 85 C (tempco targets are ASSUMPTIONs, about -2 to -3 mV/K)
+.include models.inc
+I1 0 a1 DC 20m
+I2 0 a2 DC 20m
+I3 0 a3 DC 20m
+I4 0 a4 DC 20m
+DR a1 0 LED_RED
+DG a2 0 LED_GREEN
+DB a3 0 LED_BLUE
+DW a4 0 LED_WHITE
+.control
+dc temp 0 85 85
+let d1=(v(a1)[1]-v(a1)[0])/85
+let d2=(v(a2)[1]-v(a2)[0])/85
+let d3=(v(a3)[1]-v(a3)[0])/85
+let d4=(v(a4)[1]-v(a4)[0])/85
+print d1 d2 d3 d4
+.endc
+.end

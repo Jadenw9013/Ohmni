@@ -1,0 +1,181 @@
+{
+  "behavior_class_ids": [
+    "BEH-MAG-INDUCTOR"
+  ],
+  "catalog_binding_ids": [],
+  "class_record_paths": [
+    "src/ohmni/behavior/data/classes/BEH-MAG-INDUCTOR.json"
+  ],
+  "component": "Unshielded power inductor",
+  "entry_id": "OHM-046",
+  "fidelity": "behavioural_approximation",
+  "group": "R3",
+  "layer": "L1",
+  "research": {
+    "bench_result": "bench-results/BEH-MAG-INDUCTOR--B2.json",
+    "bench_results": [
+      "bench-results/BEH-MAG-INDUCTOR--B1.json",
+      "bench-results/BEH-MAG-INDUCTOR--B2.json",
+      "bench-results/BEH-MAG-INDUCTOR--B3.json",
+      "bench-results/BEH-MAG-INDUCTOR--B4.json"
+    ],
+    "conflicts": [
+      "The source uses 10% typical inductance drop, not the assumed 30%."
+    ],
+    "documents": [
+      {
+        "document_id": "sdr0604",
+        "manufacturer": "Bourns",
+        "note": "Primary manufacturer content read from archived PDF, including diagrams where pin maps are claimed.",
+        "page": null,
+        "revision": "04/26",
+        "source_status": "primary_source_opened",
+        "title": "SDR0604 SMD Power Inductors",
+        "url": "https://www.bourns.com/pdfs/SDR0604.pdf"
+      }
+    ],
+    "entry_id": "OHM-046",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "nominal_inductance",
+        "page": 1,
+        "scope": "SDR0604-100ML",
+        "sources": [
+          "https://www.bourns.com/pdfs/SDR0604.pdf"
+        ],
+        "unit": "uH",
+        "value": 10
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_dcr",
+        "page": 1,
+        "scope": "SDR0604-100ML",
+        "sources": [
+          "https://www.bourns.com/pdfs/SDR0604.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.1
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "rated_rms_current",
+        "page": 1,
+        "scope": "SDR0604-100ML; 40 C maximum rise",
+        "sources": [
+          "https://www.bourns.com/pdfs/SDR0604.pdf"
+        ],
+        "unit": "A",
+        "value": 1.45
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "typical_saturation_current",
+        "page": 1,
+        "scope": "SDR0604-100ML; 10% typical inductance decrease",
+        "sources": [
+          "https://www.bourns.com/pdfs/SDR0604.pdf"
+        ],
+        "unit": "A",
+        "value": 2
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "minimum_srf",
+        "page": 1,
+        "scope": "SDR0604-100ML",
+        "sources": [
+          "https://www.bourns.com/pdfs/SDR0604.pdf"
+        ],
+        "unit": "MHz",
+        "value": 23
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "reference_Q",
+        "page": 1,
+        "scope": "SDR0604-100ML; 2.52 MHz",
+        "sources": [
+          "https://www.bourns.com/pdfs/SDR0604.pdf"
+        ],
+        "unit": null,
+        "value": 30
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_part_temperature",
+        "page": 1,
+        "scope": "SDR0604-100ML; rise included",
+        "sources": [
+          "https://www.bourns.com/pdfs/SDR0604.pdf"
+        ],
+        "unit": "C",
+        "value": 125
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "rated_temperature_rise",
+        "page": 1,
+        "scope": "Bourns SDR0604-100ML; at rated current; source mounting conditions apply",
+        "sources": [
+          "https://www.bourns.com/pdfs/SDR0604.pdf"
+        ],
+        "unit": "K",
+        "value": 40
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "saturation_drop_fraction",
+        "page": 1,
+        "scope": "Bourns SDR0604-100ML; typical definition at typical Isat",
+        "sources": [
+          "https://www.bourns.com/pdfs/SDR0604.pdf"
+        ],
+        "unit": "fraction",
+        "value": 0.1
+      }
+    ],
+    "remaining_open_items": [
+      "Residual inductance, core-loss curve and thermal transient are not established."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-046.md",
+      "document_sha256": "cf69b15be71eb60515482c923bed4112cd6e43fb2a80f80e4f9036406f531f21",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
+  "resolution_ids": [],
+  "schema_version": 1,
+  "simulation_disposition": "simulable",
+  "simulation_reason": "The canonical class provides an L1/L2 model; fidelity and assumptions remain explicit.",
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "899b61d196285b7742fa713f503a76fb016e4d24f4c831bf93280bfa18faa99e",
+    "line": 64
+  },
+  "status": "partial"
+}

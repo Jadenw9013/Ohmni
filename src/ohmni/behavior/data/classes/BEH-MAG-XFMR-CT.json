@@ -1,0 +1,396 @@
+{
+  "applies_to": [
+    "OHM-054"
+  ],
+  "basis_values": [
+    "(Ip/N) Rb / sqrt(1+((Rs+Rb)/(w L))^2)",
+    "(Rs+Rb)/(2 pi L)",
+    "ASSUMPTION",
+    "Lsec w Is_pk",
+    "MFR_DATASHEET"
+  ],
+  "behavior_id": "BEH-MAG-XFMR-CT",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "(Ip/N) Rb / sqrt(1+((Rs+Rb)/(w L))^2)",
+          "measure": "Vburden_pk",
+          "tolerance": 0.01,
+          "value": 2.4987
+        }
+      ],
+      "file": "docs/behavior/bench/mag_ct/B1_burden_ratio.cir",
+      "measured_in_ngspice": 2.4971,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "(Rs+Rb)/(2 pi L)",
+          "measure": "fc",
+          "tolerance": 0.03,
+          "value": 1639.3
+        }
+      ],
+      "file": "docs/behavior/bench/mag_ct/B2_lf_corner.cir",
+      "measured_in_ngspice": 1640.9,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "Lsec w Is_pk",
+          "measure": "V_open_pk",
+          "tolerance": 0.05,
+          "value": 235.6
+        }
+      ],
+      "file": "docs/behavior/bench/mag_ct/B3_open_secondary.cir",
+      "measured_in_ngspice": 237.7,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-054"
+    ],
+    "behavior_id": "BEH-MAG-XFMR-CT",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "(Ip/N) Rb / sqrt(1+((Rs+Rb)/(w L))^2)",
+            "measure": "Vburden_pk",
+            "tolerance": 0.01,
+            "value": 2.4987
+          }
+        ],
+        "file": "bench/mag_ct/B1_burden_ratio.cir",
+        "id": "B1",
+        "measured_in_ngspice": 2.4971,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "(Rs+Rb)/(2 pi L)",
+            "measure": "fc",
+            "tolerance": 0.03,
+            "value": 1639.3
+          }
+        ],
+        "file": "bench/mag_ct/B2_lf_corner.cir",
+        "id": "B2",
+        "measured_in_ngspice": 1640.9,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "Lsec w Is_pk",
+            "measure": "V_open_pk",
+            "tolerance": 0.05,
+            "value": 235.6
+          }
+        ],
+        "file": "bench/mag_ct/B3_open_secondary.cir",
+        "id": "B3",
+        "measured_in_ngspice": 237.7,
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "magnetics",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "L",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "dangerous secondary voltage, saturation, insulation breakdown",
+        "id": "open_secondary",
+        "permanence": "permanent",
+        "sim_response": "ERROR with predicted peak; fail part if predicted peak > 0.7*isolation peak",
+        "trigger": "burden missing with primary current"
+      },
+      {
+        "effect": "clipping, ratio error",
+        "id": "overload_saturation",
+        "permanence": "recoverable",
+        "sim_response": "XFMR_SAT, WARN",
+        "trigger": "Isec above Isec_max or Rb too large"
+      },
+      {
+        "effect": "shock hazard",
+        "id": "isolation_breakdown",
+        "permanence": "permanent",
+        "sim_response": "ERROR",
+        "trigger": "barrier over 2500 Vac"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "AS-103 parameters conflict between sources",
+        "no remanence",
+        "open-secondary spike is numerically stiff",
+        "primary connection pins unknown"
+      ],
+      "netlist_template": ".include xfmr.lib\nX{ref} {P1} {P2} {S1} {S2} XFMR_SAT LP={lsec/(turns_ratio*turns_ratio)} N={turns_ratio} LLK={0.001*lsec/(turns_ratio*turns_ratio)} RP=1u RS={rsec} CIW=1p ISATM={isat_m_pri} DROP=0.3 LR=0.05\nRburden {S1} {S2} {burden}\n",
+      "spice_primitives": [
+        "L",
+        "R",
+        "E",
+        "F",
+        "C"
+      ],
+      "valid_analyses": [
+        "op",
+        "ac",
+        "tran"
+      ],
+      "valid_range": "20 kHz to 200 kHz; open-secondary transient needs tmax <= 0.5 ns or an analytic check"
+    },
+    "parameters": {
+      "burden": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 100,
+        "max": 500,
+        "min": 25,
+        "source_ref": "S13",
+        "unit": "ohm"
+      },
+      "f_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 200000,
+        "source_ref": "S13",
+        "unit": "Hz"
+      },
+      "f_min": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 20000,
+        "source_ref": "S13",
+        "unit": "Hz"
+      },
+      "ip_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 15,
+        "max": 30,
+        "min": 1,
+        "source_ref": "S14",
+        "unit": "A"
+      },
+      "isat_m_pri": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 1.0,
+        "max": 30,
+        "min": 0.05,
+        "source_ref": "S3",
+        "unit": "A"
+      },
+      "isec_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.075,
+        "max": 0.3,
+        "min": 0.03,
+        "source_ref": "S14",
+        "unit": "A"
+      },
+      "isolation": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 2500,
+        "max": 4000,
+        "min": 2500,
+        "source_ref": "S13",
+        "unit": "Vac"
+      },
+      "lsec": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "L",
+        "default": 0.01,
+        "max": 0.56,
+        "min": 0.001,
+        "source_ref": "S14",
+        "tolerance": "conflict",
+        "unit": "H"
+      },
+      "rsec": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "L",
+        "default": 3,
+        "max": 25,
+        "min": 0.3,
+        "source_ref": "S13",
+        "tolerance": "conflict",
+        "unit": "ohm"
+      },
+      "turns_ratio": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "L",
+        "default": 200,
+        "max": 750,
+        "min": 50,
+        "source_ref": "S14",
+        "tolerance": "conflict",
+        "unit": "ratio"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "P1",
+        "package_terminal_rule": "RESEARCH_REQUIRED (3D spec has 3 pins; primary connection not in 3D spec)",
+        "role": "primary_dot"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "P2",
+        "package_terminal_rule": "RESEARCH_REQUIRED",
+        "role": "primary_end"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "S1",
+        "package_terminal_rule": "pin 1 candidate (DEFAULT-ASSUMPTION)",
+        "role": "secondary_dot"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "S2",
+        "package_terminal_rule": "pin 3 candidate (DEFAULT-ASSUMPTION)",
+        "role": "secondary_end"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "S_CT",
+        "package_terminal_rule": "pin 2, CT versions only (datasheet)",
+        "role": "secondary_center_tap_optional"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "max(abs(i_sec)) <= Isec_max",
+        "condition": "AS-103 datasheet copy",
+        "name": "secondary_current",
+        "source_ref": "S14",
+        "symbol": "Isec_max",
+        "unit": "A",
+        "value": 0.075
+      },
+      {
+        "check": "ERROR if Rburden_eff > 100*Rb_nom and Ip > 0.1*Ip_max",
+        "condition": "Lsec*omega*Ip_pk/N",
+        "name": "open_secondary",
+        "source_ref": "S16",
+        "symbol": "Vopen",
+        "unit": "V",
+        "value": "derived"
+      },
+      {
+        "check": "abs(Vps) <= 2500 Vac",
+        "condition": "datasheet",
+        "name": "isolation",
+        "source_ref": "S13",
+        "symbol": "Viso",
+        "unit": "Vac",
+        "value": 2500
+      }
+    ],
+    "sources": [
+      {
+        "date": "07/18",
+        "id": "S13",
+        "org": "Talema Group",
+        "title": "AS series current sense transformers datasheet (CERN-hosted copy)",
+        "url": "https://sy-dep-epc-lpc.web.cern.ch/components/datasheets/epc-lpc%20(converters)/AS%20series-Hall%20effect%20current%20sensor-Talemagroup.pdf",
+        "used_for": "family ranges, pins, burden, isolation, temperature"
+      },
+      {
+        "date": "06-06",
+        "id": "S14",
+        "org": "Talema Group",
+        "title": "AS-103 / AS-211 datasheet copies (pdf.jiepei.com aggregator)",
+        "url": "https://pdf.jiepei.com/as-103-13781511.html",
+        "used_for": "AS-103 row"
+      },
+      {
+        "date": "not shown",
+        "id": "S15",
+        "org": "Talema/Amgis via DigiKey",
+        "title": "AS-103 listing",
+        "url": "https://www.digikey.it/en/products/detail/amgis-llc/AS-103/2260664",
+        "used_for": "conflicting 1:300 and 250 mH"
+      },
+      {
+        "date": "not shown",
+        "id": "S16",
+        "org": "Elliott Sound Products",
+        "title": "Current Transformers",
+        "url": "https://www.sound-au.com/articles/current-transformers.htm",
+        "used_for": "open-secondary warning (engineering article, secondary source)"
+      }
+    ],
+    "status": "partial"
+  },
+  "category": "magnetics",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "1aba3d382c9a5e9bf1148b56d6001e30b9a0fa5c921e36377befaa5f828b13c3",
+    "line": 3140
+  },
+  "source_refs": [
+    {
+      "date": "07/18",
+      "id": "S13",
+      "org": "Talema Group",
+      "title": "AS series current sense transformers datasheet (CERN-hosted copy)",
+      "url": "https://sy-dep-epc-lpc.web.cern.ch/components/datasheets/epc-lpc%20(converters)/AS%20series-Hall%20effect%20current%20sensor-Talemagroup.pdf",
+      "used_for": "family ranges, pins, burden, isolation, temperature"
+    },
+    {
+      "date": "06-06",
+      "id": "S14",
+      "org": "Talema Group",
+      "title": "AS-103 / AS-211 datasheet copies (pdf.jiepei.com aggregator)",
+      "url": "https://pdf.jiepei.com/as-103-13781511.html",
+      "used_for": "AS-103 row"
+    },
+    {
+      "date": "not shown",
+      "id": "S15",
+      "org": "Talema/Amgis via DigiKey",
+      "title": "AS-103 listing",
+      "url": "https://www.digikey.it/en/products/detail/amgis-llc/AS-103/2260664",
+      "used_for": "conflicting 1:300 and 250 mH"
+    },
+    {
+      "date": "not shown",
+      "id": "S16",
+      "org": "Elliott Sound Products",
+      "title": "Current Transformers",
+      "url": "https://www.sound-au.com/articles/current-transformers.htm",
+      "used_for": "open-secondary warning (engineering article, secondary source)"
+    }
+  ],
+  "status": "partial"
+}

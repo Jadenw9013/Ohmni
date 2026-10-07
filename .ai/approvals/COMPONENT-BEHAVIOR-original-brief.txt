@@ -1,0 +1,128 @@
+You are implementing the OHMNI component BEHAVIOR layer and finishing the
+research behind it. The 3D library is done and on main (c52a050). Its
+appearance is not electrical evidence. By the end of this run, all 180
+components must be accounted for: each one either simulates with a sourced,
+honestly labeled model, or is explicitly documented as not simulable with
+the reason.
+
+INPUTS (already in the repo)
+- COMPONENT_BEHAVIOR_SPEC.md (repo root): behavior research for all 180
+  entries. Classes (BEH-*), per-entry sections, canonical YAML, parameter
+  tables, ratings, failure modes, sources, status. Current status: 18
+  complete, 144 partial, 18 research_required.
+- docs/behavior/bench/**: 226 ngspice netlists with analytical expectations,
+  run_all_bench.sh, bench_rerun.tsv. Needs ngspice 42.
+- PCB_COMPONENT_3D_LIBRARY_SPEC.md and apps/web/component-library/: package
+  and terminal numbering.
+- src/ohmni/eda/simulation.py, src/ohmni/catalog/data/parts/*.json,
+  src/ohmni/domain/, ARCHITECTURE.md: existing electrical side.
+
+HARD RULES
+1. Do not touch my uncommitted local changes. Work on branches named
+   codex/behavior-stage<N>. Never push or merge to main.
+2. Extend the existing ngspice path in simulation.py. No second solver. Keep
+   the fidelity vocabulary: ideal_components, behavioural_approximation,
+   vendor_model. Use vendor_model only when a real vendor model file is
+   attached and its license allows keeping it in the repo.
+3. A simulation that did not run is never a pass. Keep this everywhere,
+   including the UI.
+4. The LLM is not an authority on pin maps, ratings or simulation output.
+   Take them from the spec YAML, catalog JSON, or sourced gap research only.
+5. Never invent a parameter, rating, equation, part number, URL, revision or
+   standard number. Cite only documents you actually opened. If you cannot
+   establish something from a primary source, keep it labeled ASSUMPTION or
+   RESEARCH_REQUIRED and say what is missing. A partial trustworthy record
+   beats a complete invented one.
+6. L3 behaviors (USB, HDMI, Ethernet PHY, SD, I2C/SPI peripherals, firmware,
+   LCD/OLED controllers, WS2812B protocol) cannot be simulated by ngspice.
+   Complete them as: electrical interface modeled (L1/L2), protocol side
+   documented, marked not simulable. That counts as complete for this run.
+7. Package entries (OHM-103..140) have no function alone. Each needs a bound
+   reference part. Pick reference parts, research them, and bind them.
+
+GAP RESEARCH (this is part of the job, not optional)
+Inventory every gap: the 18 research_required entries (OHM-020, 042, 053,
+060, 062, 063, 071, 075, 076, 083, 087, 088, 089, 090, 099, 100, 108, 136),
+and the 144 partial entries, with each one's open items from the spec.
+Then research them from primary sources: manufacturer datasheets and
+application notes, standards text reproduced by manufacturers, ngspice
+manual, university-level references. No blogs, forums, AI-written pages or
+video summaries. If a fetch is blocked, try another source; do not scrape
+around a block. If you have no network access, say so at Stage 0 and stop.
+
+For each gap you close:
+- write the result to docs/behavior/gapfill/<OHM-NNN>.md with sources
+  (organization, title, URL, date or revision, what you took), the values,
+  basis (STANDARD, MFR_DATASHEET, CONSENSUS, DERIVED, ASSUMPTION),
+  confidence, and a bench netlist that you ran in ngspice 42 with measured
+  vs analytical values;
+- never edit COMPONENT_BEHAVIOR_SPEC.md silently. Add a dated revision log
+  (docs/behavior/REVISIONS.md) and regenerate the records from spec plus
+  gapfill files, so every upgrade is traceable;
+- show conflicting source values instead of picking quietly;
+- an entry becomes complete only when parameters, ratings, failure behavior
+  and a passing bench are all sourced. Otherwise it stays partial with the
+  remaining items listed.
+For safety-relevant parts (X2 mains capacitors, XT60 and XT30, supercaps and
+Li-ion energy, TVS clamping, transformers, power resistors), be conservative
+and state the hazard and the datasheet limit.
+
+KNOWN CROSS-DOCUMENT MISMATCHES (resolve, do not guess)
+- GENERIC_LED_GREEN: catalog pin 1 = anode, 3D spec terminal 1 = cathode.
+- Tantalum vs aluminum polarity stripe meaning.
+- Bridge rectifier pin functions vs 3D numbering.
+- MCP1700 pin order in catalog vs datasheet-based spec.
+- 27C256 is PLCC-32, not 28.
+- BGA top-view vs bottom-view mirroring; XT pad 1 at +X.
+- Reference-part dimensions differ from 3D package dimensions.
+Report which side you changed and why. If spec and catalog disagree on
+electrical truth, stop and ask me.
+
+STAGE 0 (no code): survey and proposal. Report how simulation.py, catalog
+JSON and CircuitIR consume a per-entry behavior record; the record format,
+where records live, and how OHM-NNN links to BEH class, 3D package and
+catalog part; terminal-to-spice-node mapping from 3D numbering; the mismatch
+list with proposed fixes; the full gap inventory by entry with open items;
+whether you have web access; and your staging plan. Wait for my approval.
+
+STAGE 1: record schema, loader, validator, and a generator from spec plus
+gapfill files. Tests: all 180 entries have a record, status and basis are
+preserved, records pointing to missing sources or bench files fail.
+
+STAGE 2: gap research batch A. Resistors, capacitors, magnetics, diodes,
+LEDs and displays, discrete transistors (everything in OHM-001..102 that is
+partial or research_required, including 020, 042, 053, 060, 062, 063, 071,
+075, 076, 083, 087, 088, 089, 090, 099, 100). Gate: per-entry before/after
+status table, sources used, benches run, what remains open and why.
+
+STAGE 3: netlist generation. Component record plus CircuitIR instance gives
+an ngspice netlist through simulation.py, with inline .subckt and no
+relative .include. Apply the spec's ngspice gotchas (tnom=25, .temp 25, IS=0
+on MOSFET cards, .nodeset for regulators, strays pin-to-ground only).
+Classes: everything in batch A plus sources. Gate: re-run the matching
+docs/behavior/bench netlists through the product code path and compare with
+the spec's measured and analytical values.
+
+STAGE 4: gap research batch B, then IC models. Packages bound to reference
+parts (OHM-103..140, including 108 and 136), regulators, op-amps, 555, logic,
+memory, crystals, oscillators, resonators and filters, connectors and
+headers (pin maps and contact ratings). Build the IC and frequency models and
+bind them. Same gate format as Stage 2 plus the Stage 3 bench comparison.
+
+STAGE 5: ratings and failure checker. Evaluate each class's check
+expressions on results and apply the spec's failure_modes sim_response.
+Violations are reported as violations, never as a pass.
+
+STAGE 6: UI. Run button, results panel, per-component badges for fidelity,
+status and confidence. Components that cannot simulate show why. Playwright
+coverage.
+
+STAGE 7: final coverage report, committed as docs/behavior/COVERAGE.md.
+One row per OHM-001..180: behavior class, layer (L1/L2/L3), fidelity label,
+status before and after this run, simulable yes/no and why, sourced bench
+result, open items. Totals at the top. Nothing is rounded up: an entry with
+an unsourced parameter stays partial.
+
+AT EVERY GATE report: what you built, tests and results, bench pass/fail with
+numbers, what the spec could not answer, and any deviations with reasons.
+Stop and wait for my go. You may batch work freely inside a stage.

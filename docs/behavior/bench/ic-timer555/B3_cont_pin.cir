@@ -1,0 +1,22 @@
+* BEH-IC-TIMER555 B3: CONT pin forced to 2.0 V at Vcc=5 V (stiff source), monostable R=10k C=100nF.
+* v2: scalar printed as 'name = value' (width_b3_ms); behavior unchanged
+* Thresholds become 2.0 V and 1.0 V.  t = RC*ln(Vcc/(Vcc-Vcont)) = RC*ln(5/3) = 0.5108 ms
+.include ne555.lib
+Vcc vcc 0 5
+Vct cnt 0 2.0
+Vtr tg 0 pulse(5 0 100u 1u 1u 20u 5m)
+X1 0 tg out vcc cnt thr dis vcc ne555
+R1 vcc thr 10k
+Rdis dis thr 1
+C1 thr 0 100n
+.tran 200n 3m uic
+.control
+set noaskquit
+run
+meas tran ta when v(out)=2.5 rise=1
+meas tran tb when v(out)=2.5 fall=1
+let w = (tb-ta)*1000
+echo width_b3_ms = $&w
+quit
+.endc
+.end

@@ -1,0 +1,239 @@
+{
+  "comparison": {
+    "comparison": {
+      "analytical_source": "BEH-DIO-PN/B1",
+      "expected": 0.73039,
+      "kind": "absolute",
+      "observable": "anode_voltage",
+      "source_deck_sha256": "8dffd8f6985236af4d99116aa263af199cdcdb5fc7c245e50fe3f888153ca5ec",
+      "tolerance": 0.001
+    },
+    "observed": 0.7255607,
+    "passed": false
+  },
+  "entry_id": "OHM-063",
+  "limits": "Same limited analytical contract with zero-volt current probes. Missing thermal context and unsupported failure rules remain unknown.",
+  "netlist_sha256": "f325c5a6fb56c84f8b3b4ac6172a32ba86edd2b3b4502cffced2aca4fdb6bf2c",
+  "observation_status": "ran",
+  "output_sha256": "b1661065224ce51e35818519b982ad6c13709684292e8d03c5753ae86982c65b",
+  "ran_at": "2026-10-05T22:49:09Z",
+  "rating_status": "unknown",
+  "ratings": {
+    "components": [
+      {
+        "class_checks": [
+          {
+            "check": "max(vr) <= VRRM",
+            "condition": "1N4148 (1N4007: 1000 V)",
+            "name": "repetitive_peak_reverse",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "89f5db0dcca159cde2ccd668b59c574da0e174a4994689a406b3fe028ab8040b",
+              "line": 3741
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "VRRM",
+            "unit": "V",
+            "value": 100
+          },
+          {
+            "check": "mean(i_f) <= IF_derated(Ta)",
+            "condition": "conservative among 200 to 300 mA sources (1N4007: IF(AV) 1.0 A at TA 75 C)",
+            "name": "forward_current",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "89f5db0dcca159cde2ccd668b59c574da0e174a4994689a406b3fe028ab8040b",
+              "line": 3741
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "IF",
+            "unit": "A",
+            "value": 0.2
+          },
+          {
+            "check": "i_pk <= IFSM*sqrt(t_ref/t)",
+            "condition": "1 us, 1N4148 Vishay (Nexperia 4 A); 1N4007 30 A 8.3 ms",
+            "name": "surge",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "89f5db0dcca159cde2ccd668b59c574da0e174a4994689a406b3fe028ab8040b",
+              "line": 3741
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "IFSM",
+            "unit": "A",
+            "value": 2.0
+          },
+          {
+            "check": "Ta + RthJA*Pd <= TJmax",
+            "condition": "signal types",
+            "name": "junction_temperature",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "89f5db0dcca159cde2ccd668b59c574da0e174a4994689a406b3fe028ab8040b",
+              "line": 3741
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "TJmax",
+            "unit": "C",
+            "value": 175
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-063",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "overheat, usually shorts",
+            "id": "overcurrent",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "WARN 100%, FAIL 120%, then failed_short",
+            "status": "unknown",
+            "trigger": "mean IF above rating or Tj above TJmax"
+          },
+          {
+            "applied_response": null,
+            "effect": "die or bond wire damage, usually short, extreme energy open",
+            "id": "surge",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "FAIL, failed_short (option failed_open)",
+            "status": "unknown",
+            "trigger": "pulse above IFSM"
+          },
+          {
+            "applied_response": null,
+            "effect": "avalanche hot spot, short",
+            "id": "reverse_overvoltage",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "WARN 0.8*VRRM, FAIL above VRRM",
+            "status": "unknown",
+            "trigger": "VR above VRRM on non-avalanche-rated type"
+          }
+        ],
+        "observations": {
+          "BV": 100.0,
+          "CJO": 1e-12,
+          "EG": 1.11,
+          "IBV": 0.0001,
+          "IS": 5.537e-09,
+          "M": 0.4,
+          "N": 1.944,
+          "RS": 0.6,
+          "TT": 2.3e-08,
+          "VJ": 0.7,
+          "XTI": 3.0,
+          "i_A": 0.01,
+          "i_K": -0.01,
+          "if_max": 0.25,
+          "p_rated": 0.5,
+          "power": 0.007255607,
+          "tj_max": 150.0,
+          "v_A": 0.7255607,
+          "v_K": 0.0,
+          "vf": 0.7255607,
+          "vr": -0.7255607,
+          "vr_max": 100.0
+        },
+        "ref": "U1",
+        "reference_checks": [
+          {
+            "evidence": {
+              "vr_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "dc_reverse_voltage",
+                "page": 3,
+                "scope": "BAS516",
+                "sources": [
+                  "https://assets.nexperia.com/documents/data-sheet/BAS16_SER.pdf"
+                ],
+                "unit": "V",
+                "value": 100
+              }
+            },
+            "expression": "vr <= vr_max",
+            "name": "reverse voltage",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "if_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "continuous_forward_current",
+                "page": 4,
+                "scope": "BAS516; FR4 single-sided tin-plated standard footprint",
+                "sources": [
+                  "https://assets.nexperia.com/documents/data-sheet/BAS16_SER.pdf"
+                ],
+                "unit": "A",
+                "value": 0.25
+              }
+            },
+            "expression": "i_A <= if_max",
+            "name": "forward current",
+            "reason": "DC ceiling only; source temperature/derating conditions need confirmation",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "maximum_power",
+                "page": 4,
+                "scope": "BAS516; cathode solder point Tsp <=90 C; not ambient rating",
+                "sources": [
+                  "https://assets.nexperia.com/documents/data-sheet/BAS16_SER.pdf"
+                ],
+                "unit": "W",
+                "value": 0.5
+              }
+            },
+            "expression": "power <= p_rated",
+            "name": "source power ceiling",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      }
+    ],
+    "fault_requests": [],
+    "limitations": [
+      "Only the stated observations and source conditions were checked.",
+      "Unsupported class expressions and failure triggers remain unknown; no damage timing is invented.",
+      "An electrical limit check does not verify physical fit or safe operation."
+    ],
+    "status": "unknown"
+  },
+  "raw_output": "instrumented-output/OHM-063/output.txt",
+  "run_id": "behavior-20261005T065040Z",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+}

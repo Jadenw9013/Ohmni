@@ -1,0 +1,25 @@
+B3 Pierce oscillator frequency accuracy (fine time step 0.2 ns, linear small-signal regime), 8 MHz BVD crystal (C1=9f C0=3p R1=80), CL=18p, per-pin ground stray cp=4p => Cs(lumped)=cp/2=2p => C1=C2=2*(18p-2p)=32p, gm=5mS. Expect f from B2 loop zero (8.0002 MHz).
+* v2: print renamed fmeas -> f_tran_hz; circuit and timestep unchanged
+.include ohm_xtal.lib
+.param gm=5m imax=0.3m rout=5k cl1=32p cl2=32p cp=4p rf=1meg
+X1 xi xo ohm_xtal L1=43.99505512m C1=9f R1=80 C0=3p
+Cl1 xi 0 {cl1}
+Cl2 xo 0 {cl2}
+Cps1 xi 0 {cp}
+Cps2 xo 0 {cp}
+Rf xi xo {rf}
+* inverting amplifier: current drawn from xo (inverting)= +imax*tanh(gm*v(xi)/imax), output resistance rout
+Bamp xo 0 I = {imax}*tanh({gm}*v(xi)/{imax})
+Rout xo 0 {rout}
+* start-up kick: 1 mV equivalent via short current pulse
+Ikick 0 xi PULSE(0 1u 0 1n 1n 10n 1)
+.tran 0.2n 220u
+.control
+run
+let vx = v(xi)
+meas tran tper TRIG vx VAL=0 RISE=400 TARG vx VAL=0 RISE=1200
+let f_tran_hz = 800/tper
+print f_tran_hz
+quit
+.endc
+.end

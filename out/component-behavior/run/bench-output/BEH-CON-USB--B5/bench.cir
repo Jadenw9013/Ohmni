@@ -1,0 +1,50 @@
+* B5 DFP enables VBUS only when the CC voltage is inside the attach window (0.25..2.04 V, ST AN5225 vRd-Connect, S3)
+* v2: scalars vbus_on_load (case A), vbus_off_noRd (B), vbus_off_sharedRd (C)
+* Case A: sink with Rd 5.1k per CC pin (CC voltage 0.417 V) -> VBUS on: v(outA) = 5 V * 100/(100+0.01) = 4.9995 V (100 ohm load)
+* Case B: sink with no Rd (CC floats to 5 V)           -> VBUS off: v(outB) ~ 0
+* Case C: ONE shared 5.1k on tied CC pins + cable Ra 1k (CC 0.0736 V) -> VBUS off: v(outC) ~ 0
+* OHMNI USB I/O helper models (behavioural_approximation). Not part of the connector body.
+* Connector contact (mated pair): board node a, mated-side node b
+.subckt CON_CONTACT a b Rc=40m
+Rcon a b {Rc}
+.ends
+* Type-C sink CC termination (belongs to the sink circuit/board, one per CC pin): Rd to ground
+.subckt USBC_SINK_RD cc gnd Rd=5.1k
+Rrd cc gnd {Rd}
+.ends
+* Type-C source (DFP) CC termination: Rp to supply (5 V pull-up variant)
+.subckt USBC_SRC_RP cc vp Rp=56k
+Rrp vp cc {Rp}
+.ends
+* Type-C DFP VBUS enable: closes the VBUS switch when the CC voltage is inside the sink-attach window
+.subckt USBC_DFP_EN cc vbus_in vbus_out gnd vlo=0.25 vhi=2.04 Ron=10m
+Bctl ctl gnd V = (v(cc,gnd) > {vlo} && v(cc,gnd) < {vhi}) ? 1 : 0
+Rctl ctl gnd 1Meg
+S1 vbus_in vbus_out ctl gnd SWV
+.model SWV SW(vt=0.5 vh=0.1 ron={Ron} roff=1G)
+.ends
+
+Vp p5 0 5
+Vb vb 0 5
+XrpA p5 ccA USBC_SRC_RP Rp=56k
+XrdA ccA 0 USBC_SINK_RD Rd=5.1k
+XenA ccA vb outA 0 USBC_DFP_EN
+RlA outA 0 100
+XrpB p5 ccB USBC_SRC_RP Rp=56k
+Rfl ccB 0 1G
+XenB ccB vb outB 0 USBC_DFP_EN
+RlB outB 0 100
+XrpC p5 ccC USBC_SRC_RP Rp=56k
+XrdC ccC 0 USBC_SINK_RD Rd=5.1k
+Rra ccC 0 1k
+XenC ccC vb outC 0 USBC_DFP_EN
+RlC outC 0 100
+.control
+op
+let vbus_on_load = v(outA)
+let vbus_off_nord = v(outB)
+let vbus_off_sharedrd = v(outC)
+print vbus_on_load vbus_off_nord vbus_off_sharedrd
+quit
+.endc
+.end

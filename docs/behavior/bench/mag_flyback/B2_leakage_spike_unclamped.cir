@@ -1,0 +1,26 @@
+B2 leakage-inductance turn-off spike with NO snubber (Llk=2 uH = 2% of Lp, Coss+Cp lumped 220 pF = 200 pF Cds + 20 pF)
+* v2 (REPIN-001): fb2_vdpk removed from print; its meas line already prints it once.
+* v2: meas renamed fb2_* and printed as scalars (circuit unchanged)
+* Expected: drain peak ~ Vin + Vor + Ipk*sqrt(Llk/C) (energy 1/2 Llk Ipk^2 dumped into C; WE design-considerations spike equation Vspike = Ipk*Llk/(Cp+Cds) is dimensionally inconsistent
+*   as extracted, so the energy-balance form is used). Vin=48, Vor=(Vout+Vf)/N ~ 43-44 V, Ipk ~ 1.0 A (B1), sqrt(2e-6/220e-12)=95.3 ohm -> ~ 186 V ; tolerance 20%
+.include xfmr.lib
+.model SW SW(Ron=5m Roff=1G Vt=2.5 Vh=0.1)
+.model DSCH D(IS=1e-7 N=1.05 RS=20m CJO=50p)
+Vin in 0 DC 48
+Vg g 0 PULSE(0 5 0 5n 5n 2u 10u)
+X1 in d 0 sa XFMR_SAT LP=100u N=0.5 LLK=2u RP=20m RS=40m CIW=10p ISATM=3 DROP=0.3 LR=0.05
+S1 d 0 g 0 SW
+Cds d 0 200p
+D1 sa out DSCH
+Co out 0 1u
+RL out 0 100
+.tran 100n 1.2m
+.control
+run
+meas tran fb2_vdpk max v(d) from=1.0m to=1.2m
+meas tran fb2_vout avg v(out) from=1.0m to=1.2m
+meas tran fb2_ipk min i(Vin) from=1.0m to=1.2m
+print fb2_vout fb2_ipk
+quit
+.endc
+.end

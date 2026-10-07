@@ -1,0 +1,256 @@
+{
+  "bench_execution": "imported_research_records_not_rerun_in_stage_1",
+  "bench_reference_count": 205,
+  "binding_count": 2,
+  "class_count": 66,
+  "entry_count": 180,
+  "fidelity_counts": {
+    "behavioural_approximation": 145,
+    "ideal_components": 35
+  },
+  "generator": "scripts/generate_behavior_records.py",
+  "resolutions": [
+    {
+      "action": "Bind the sleeve stripe label to the negative electrical terminal independently of tantalum markings.",
+      "changes_electrical_truth": false,
+      "data": {
+        "electrical_role": "MINUS",
+        "marking": "negative_stripe"
+      },
+      "entry_ids": [
+        "OHM-029",
+        "OHM-030",
+        "OHM-031",
+        "OHM-032",
+        "OHM-040"
+      ],
+      "gate_required": false,
+      "kind": "label",
+      "resolution_id": "POLARITY-CAN-NEGATIVE-STRIPE",
+      "source": {
+        "document": "docs/behavior/gapfill/STAGE1_MISMATCH_RESOLUTIONS.json",
+        "document_sha256": "bf33a122081003768819bdca0a3279a1591e0f99569ca76a908c41e0c629317f",
+        "fragment_sha256": null,
+        "line": 1
+      },
+      "subject": "Aluminum, polymer-can, and supercapacitor stripe meaning"
+    },
+    {
+      "action": "Bind the molded tantalum bar label to the positive electrical terminal independently of can stripes.",
+      "changes_electrical_truth": false,
+      "data": {
+        "electrical_role": "PLUS",
+        "marking": "positive_bar"
+      },
+      "entry_ids": [
+        "OHM-033",
+        "OHM-034",
+        "OHM-035",
+        "OHM-036"
+      ],
+      "gate_required": false,
+      "kind": "label",
+      "resolution_id": "POLARITY-TANTALUM-POSITIVE-BAR",
+      "source": {
+        "document": "docs/behavior/gapfill/STAGE1_MISMATCH_RESOLUTIONS.json",
+        "document_sha256": "bf33a122081003768819bdca0a3279a1591e0f99569ca76a908c41e0c629317f",
+        "fragment_sha256": null,
+        "line": 1
+      },
+      "subject": "Tantalum bar meaning"
+    },
+    {
+      "action": "Keep automatic electrical binding blocked until a manufacturer drawing establishes PLUS and MINUS; AC1 and AC2 may interchange only afterward.",
+      "changes_electrical_truth": true,
+      "data": {
+        "automatic_binding": "blocked",
+        "missing_evidence": "manufacturer terminal-function drawing"
+      },
+      "entry_ids": [
+        "OHM-071",
+        "OHM-072"
+      ],
+      "gate_required": true,
+      "kind": "blocker",
+      "resolution_id": "BRIDGE-PIN-FUNCTIONS-UNRESOLVED",
+      "source": {
+        "document": "docs/behavior/gapfill/STAGE1_MISMATCH_RESOLUTIONS.json",
+        "document_sha256": "bf33a122081003768819bdca0a3279a1591e0f99569ca76a908c41e0c629317f",
+        "fragment_sha256": null,
+        "line": 1
+      },
+      "subject": "Bridge rectifier PLUS, MINUS, AC1, and AC2 terminal positions"
+    },
+    {
+      "action": "Keep P89LPC935 as the PLCC-28 reference and exclude AT27C256R from this entry because it is PLCC-32.",
+      "changes_electrical_truth": false,
+      "data": {
+        "excluded_package": "PLCC-32",
+        "excluded_reference": "AT27C256R",
+        "reference": "P89LPC935"
+      },
+      "entry_ids": [
+        "OHM-135"
+      ],
+      "gate_required": false,
+      "kind": "label",
+      "resolution_id": "PLCC28-REFERENCE-LABEL",
+      "source": {
+        "document": "docs/behavior/gapfill/STAGE1_MISMATCH_RESOLUTIONS.json",
+        "document_sha256": "bf33a122081003768819bdca0a3279a1591e0f99569ca76a908c41e0c629317f",
+        "fragment_sha256": null,
+        "line": 1
+      },
+      "subject": "PLCC-28 reference candidate"
+    },
+    {
+      "action": "Transform a datasheet bottom view into the OHMNI top-view convention exactly once by mirroring X; retain ball names.",
+      "changes_electrical_truth": false,
+      "data": {
+        "source_view": "bottom",
+        "target_view": "top",
+        "transform": "mirror_x"
+      },
+      "entry_ids": [
+        "OHM-136",
+        "OHM-137",
+        "OHM-138",
+        "OHM-139",
+        "OHM-140"
+      ],
+      "gate_required": false,
+      "kind": "permutation",
+      "resolution_id": "BGA-WLCSP-TOP-VIEW-TRANSFORM",
+      "source": {
+        "document": "docs/behavior/gapfill/STAGE1_MISMATCH_RESOLUTIONS.json",
+        "document_sha256": "bf33a122081003768819bdca0a3279a1591e0f99569ca76a908c41e0c629317f",
+        "fragment_sha256": null,
+        "line": 1
+      },
+      "subject": "BGA and WLCSP datasheet bottom-view coordinates"
+    },
+    {
+      "action": "Map OHMNI terminal 1 at -X to footprint pad 2 and terminal 2 at +X to footprint pad 1; leave polarity unbound.",
+      "changes_electrical_truth": false,
+      "data": {
+        "package_terminal_to_footprint_pad": {
+          "1": "2",
+          "2": "1"
+        },
+        "polarity": "unbound"
+      },
+      "entry_ids": [
+        "OHM-173",
+        "OHM-174"
+      ],
+      "gate_required": false,
+      "kind": "permutation",
+      "resolution_id": "XT-FOOTPRINT-PAD-PERMUTATION",
+      "source": {
+        "document": "docs/behavior/gapfill/STAGE1_MISMATCH_RESOLUTIONS.json",
+        "document_sha256": "bf33a122081003768819bdca0a3279a1591e0f99569ca76a908c41e0c629317f",
+        "fragment_sha256": null,
+        "line": 1
+      },
+      "subject": "XT package terminals versus footprint pads"
+    },
+    {
+      "action": "Record exact, compatible_variant, or mismatch per reference binding; mismatch blocks automatic footprint and 3D selection without changing either source.",
+      "changes_electrical_truth": false,
+      "data": {
+        "allowed_labels": [
+          "exact",
+          "compatible_variant",
+          "mismatch"
+        ],
+        "mismatch_action": "block_automatic_selection"
+      },
+      "entry_ids": [
+        "OHM-103",
+        "OHM-104",
+        "OHM-105",
+        "OHM-106",
+        "OHM-107",
+        "OHM-108",
+        "OHM-109",
+        "OHM-110",
+        "OHM-111",
+        "OHM-112",
+        "OHM-113",
+        "OHM-114",
+        "OHM-115",
+        "OHM-116",
+        "OHM-117",
+        "OHM-118",
+        "OHM-119",
+        "OHM-120",
+        "OHM-121",
+        "OHM-122",
+        "OHM-123",
+        "OHM-124",
+        "OHM-125",
+        "OHM-126",
+        "OHM-127",
+        "OHM-128",
+        "OHM-129",
+        "OHM-130",
+        "OHM-131",
+        "OHM-132",
+        "OHM-133",
+        "OHM-134",
+        "OHM-135",
+        "OHM-136",
+        "OHM-137",
+        "OHM-138",
+        "OHM-139",
+        "OHM-140"
+      ],
+      "gate_required": false,
+      "kind": "policy",
+      "resolution_id": "REFERENCE-DIMENSION-COMPATIBILITY-POLICY",
+      "source": {
+        "document": "docs/behavior/gapfill/STAGE1_MISMATCH_RESOLUTIONS.json",
+        "document_sha256": "bf33a122081003768819bdca0a3279a1591e0f99569ca76a908c41e0c629317f",
+        "fragment_sha256": null,
+        "line": 1
+      },
+      "subject": "Reference-part package dimensions versus 3D package dimensions"
+    }
+  ],
+  "schema_version": 1,
+  "source_consistency_issues": [
+    {
+      "behavior_id": "BEH-REG-LINEAR",
+      "detail": "Master table assigns BEH-REG-LINEAR to OHM-133, but the canonical class applies_to list omits the entry.",
+      "entry_id": "OHM-133",
+      "kind": "master_class_application_mismatch",
+      "resolution": "preserved_unresolved_for_human_gate"
+    }
+  ],
+  "source_spec": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": null,
+    "line": 1
+  },
+  "status_counts": {
+    "complete": 18,
+    "partial": 144,
+    "research_required": 18
+  },
+  "unbound_reference_classes": [
+    "BEH-IC-CHARGER-SOT235",
+    "BEH-IC-COMPARATOR",
+    "BEH-IC-DIGITAL-IO",
+    "BEH-IC-DRIVER-DIP16",
+    "BEH-IC-LDO-SOT235",
+    "BEH-IC-LOGIC-HC",
+    "BEH-IC-LOGIC-SEQ",
+    "BEH-IC-OPAMP",
+    "BEH-IC-OPTO-DIP6",
+    "BEH-IC-RS232-DIP16",
+    "BEH-IC-TIMER555",
+    "BEH-MEM-SPINOR",
+    "BEH-PWR-PKGTHERMAL"
+  ]
+}

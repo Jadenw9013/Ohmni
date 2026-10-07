@@ -1,0 +1,26 @@
+* RES-FIXED B5: self-heating resistor subckt using `temper` as ambient, at .temp 85 and 25 (reference 25 C).
+* R0=1000, TCR=100ppm/K, Rth=100 K/W, V=10 V. P~0.1 W.
+* Analytic at Tamb=85: fixed point R = R0*(1+TCR*(Tamb+Rth*V^2/R-25)).  Solve numerically in python-free form: use expected 1006.0..1006.1 (see doc: R^2 - R*R0*(1+TCR*(Tamb-25)) - R0*TCR*Rth*V^2 = 0)
+* => R^2 - 1006*R - 1000*1e-4*100*100 = 0 -> R^2 - 1006 R - 1000 = 0 -> R = (1006+sqrt(1006^2+4000))/2 = 1006.9926
+.options tnom=25
+.subckt RTH_SH p n params: R0=1000 TCR=100e-6 RTH=100
+Bres p n I=V(p,n)/({R0}*(1+{TCR}*(V(tj)-25)))
+Bpw 0 tj I=V(p,n)*V(p,n)/({R0}*(1+{TCR}*(V(tj)-25)))
+Rth tj amb {RTH}
+Bamb amb 0 V=temper
+.ends
+V1 in 0 10
+Xr in 0 RTH_SH R0=1000 TCR=100e-6 RTH=100
+.control
+set noaskquit
+set temp = 85
+op
+let rr = 10/abs(i(v1))
+print rr
+set temp = 25
+op
+let rr25 = 10/abs(i(v1))
+print rr25
+quit
+.endc
+.end

@@ -1,0 +1,83 @@
+* BEH-REG-LINEAR B5: output-capacitor ESR / capacitance stability window of the behavioural loop (ILOAD step 0.40 -> 0.50 A)
+* v2: absolute include path made relative; added scalars late_k_v (late peak, V) and ring3_ratio (late/early excess over settled value, case 3); circuit unchanged
+* The loop: T(s) = GM*H(s)*Zout(s), H = 2-pole lag (FP1=200k, FP2=2M), Zout = Cout+ESR (resistive load). Analytic (small signal):
+*   no ESR: |T|=1 at fu = GM/(2*pi*C): C=22u -> 289 kHz ; C=2.2u -> 2.9 MHz ; phase = -90 - atan(fu/FP1) - atan(fu/FP2)
+*   C=22u: -90-55.3-8.2 = -153 deg -> PM 27 deg (stable, rings) ; C=2.2u: fu(est)~2.9 MHz : -90-86-55 = -231 deg -> unstable
+*   an ESR zero at 1/(2*pi*ESR*C) adds up to +90 deg lead (ESR=0.3, C=22u: zero at 24 kHz) -> stable
+* Expected (qualitative; GM/FP1/FP2 are ASSUMPTIONS, NOT datasheet values): cases 1, 2, 4 settle (late peak = final value 3.297 V); case 3 (2.2 uF, ESR 10 mohm) sustains an oscillation (late peak ~ early peak)
+* OHMNI R6 linear-regulator behavioural subcircuit (fidelity: behavioural_approximation). NOT a vendor model.
+* Pins: vin vout gnd.  The pass element is a controlled current source from vin to vout:
+*   Idemand = GM*(Vreg - Vout)  -> two-pole lag (FP1, FP2) -> clamps: >=IFLOOR, <=ILIM (soft), <=(Vin-Vout)/Rdo (dropout), x thermal gate
+*   Vreg = VNOM + KLINE*(Vin-VINREF) - (ROUTDC-1/GM)*Ipass     (line and load regulation; total DC output resistance = ROUTDC because the loop adds 1/GM; the coefficient is NEGATIVE when 1/GM > ROUTDC, i.e. a mild static positive feedback of gain GM*(1/GM-ROUTDC) < 1 that raises DC loop gain without adding a pole. Keep GM*ROUTDC >= 0.2 to stay well away from 1)
+* NOTE: add .nodeset v(vout)=VNOM in every deck that has a load; without it ngspice 42 .op can land on a spurious solution (seen: Vout=0.18 V)
+*   Rdo = VDO/IDO ; ground current = IQ + IQ1*Ipass ; thermal: Tj = Ta + Rth*P with Cth (RC node 'tj', 1 V = 1 C)
+*   Dbody vout->vin models the reverse-current path (ASSUMPTION; real parts differ, see parts/R6.md)
+.subckt LDO_R6 vin vout gnd params: VNOM=3.3 VINREF=5 KLINE=0.0005 ROUTDC=0.006 VDO=1.1 IDO=0.8 IQ=5m IQ1=0 ILIM=1.2 GM=50 FP1=2meg FP2=5meg TSD=165 THYS=20 RTH=60 CTH=0.05 TA=25 IFLOOR=0
+Bvreg vreg gnd V=V(vnom_int)+{KLINE}*(V(vin,gnd)-{VINREF})-({ROUTDC}-1/{GM})*V(ipas,gnd)
+Vn vnom_int gnd {VNOM}
+Bdem dem gnd V={GM}*(V(vreg,gnd)-V(vout,gnd))
+R1 dem d1 1
+C1 d1 gnd {1/(6.2831853*FP1)}
+Eb d1b gnd d1 gnd 1
+R2 d1b d2 1
+C2 d2 gnd {1/(6.2831853*FP2)}
+* thermal gate with hysteresis-free soft knee (no latch): g=1 below TSD-THYS... gate midpoint TSD, width 1 C
+Bg g gnd V=0.5*(1-tanh((V(tj,gnd)-{TSD})/1))
+* clamps (all in amps; soft minimum/maximum with eps 1m)
+* x1 = softmin(demand, ILIM); y = dropout current; ipas = softmax(IFLOOR, softmin(x1,y)) * thermal gate  (soft width ~2 mA)
+Bx1 x1 gnd V=0.5*(V(d2,gnd)+{ILIM}-sqrt((V(d2,gnd)-{ILIM})**2+4e-6))
+By1 y1 gnd V=(V(vin,gnd)-V(vout,gnd))/({VDO}/{IDO})
+Bx2 x2 gnd V=0.5*(V(x1,gnd)+V(y1,gnd)-sqrt((V(x1,gnd)-V(y1,gnd))**2+4e-6))
+Bipas ipas gnd V=(0.5*(V(x2,gnd)+{IFLOOR}+sqrt((V(x2,gnd)-{IFLOOR})**2+4e-6)))*V(g,gnd)
+Rdum ipas gnd 1G
+Gp vin vout cur='V(ipas,gnd)'
+* ground (quiescent) current
+Gq vin gnd cur='{IQ}+{IQ1}*V(ipas,gnd)'
+* power -> thermal node
+Gpw gnd tj cur='min(max(V(vin,vout),0),V(vin,gnd))*V(ipas,gnd)+V(vin,gnd)*({IQ}+{IQ1}*V(ipas,gnd))'
+Rth tj ta {RTH}
+Cth tj ta {CTH}
+Vta ta gnd {TA}
+Dbody vout vin DREV
+.model DREV D(IS=1e-12 N=1.5 RS=0.3)
+.ends
+
+Vin vin 0 5
+X1 vin v1 0 LDO_R6 VNOM=3.3 ROUTDC=0.006 GM=40 FP1=200k FP2=2meg
+X2 vin v2 0 LDO_R6 VNOM=3.3 ROUTDC=0.006 GM=40 FP1=200k FP2=2meg
+X3 vin v3 0 LDO_R6 VNOM=3.3 ROUTDC=0.006 GM=40 FP1=200k FP2=2meg
+X4 vin v4 0 LDO_R6 VNOM=3.3 ROUTDC=0.006 GM=40 FP1=200k FP2=2meg
+I1 v1 0 pwl(0 0.4 10u 0.4 10.1u 0.5 200u 0.5)
+I2 v2 0 pwl(0 0.4 10u 0.4 10.1u 0.5 200u 0.5)
+I3 v3 0 pwl(0 0.4 10u 0.4 10.1u 0.5 200u 0.5)
+I4 v4 0 pwl(0 0.4 10u 0.4 10.1u 0.5 200u 0.5)
+C1 v1 e1 22u
+R1e e1 0 0.3
+C2 v2 e2 22u
+R2e e2 0 0.01
+C3 v3 e3 2.2u
+R3e e3 0 0.01
+C4 v4 e4 2.2u
+R4e e4 0 0.3
+.nodeset v(v1)=3.3 v(v2)=3.3 v(v3)=3.3 v(v4)=3.3
+.tran 0.02u 200u
+.control
+set noaskquit
+run
+meas tran a1_early max v(v1) from=10.1u to=40u
+meas tran a1_late max v(v1) from=150u to=200u
+meas tran a2_early max v(v2) from=10.1u to=40u
+meas tran a2_late max v(v2) from=150u to=200u
+meas tran a3_early max v(v3) from=10.1u to=40u
+meas tran a3_late max v(v3) from=150u to=200u
+meas tran a4_early max v(v4) from=10.1u to=40u
+meas tran a4_late max v(v4) from=150u to=200u
+let late1_v = a1_late
+let late2_v = a2_late
+let late3_v = a3_late
+let late4_v = a4_late
+let ring3_ratio = (a3_late-3.297)/(a3_early-3.297)
+print late1_v late2_v late3_v late4_v ring3_ratio
+quit
+.endc
+.end

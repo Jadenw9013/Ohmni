@@ -1,0 +1,18 @@
+* BEH-IC-DIGITAL-IF D2: 5 V driver into a 3.3 V standard (non-5V-tolerant) input through a series resistor; protection clamp diode to VDD conducts.
+* v2: print scalars i_inj_ma (= -i(vsrc) in mA) and vpin; circuit unchanged
+* Analytic: solve I = (5 - Vd - 3.3)/R with Vd = n*Vt*ln(I/Is+1) (n = 1, Is = 1e-14 A, Vt = 25.865 mV) -> for R = 1 kohm I = 1.0 mA ... fixed-point solution: Vd = 0.6562 V, I = 1.0438 mA, Vpin = 3.956 V (python fixed-point iteration, same diode equation).
+* Limit check: ST STM32F103 datasheet (DS5319 rev 20, extract): injected current on a standard I/O +/-5 mA, sum +/-25 mA, standard I/O abs max input -0.3..4.0 V (the pin voltage itself is clamped to VDD + Vd ~ 3.9 V, which is why the series R sets the current)
+.model DCLAMP D(Is=1e-14 N=1 Rs=0)
+Vdd vdd 0 3.3
+Vsrc src 0 5
+Rser src pin 1k
+Dclamp pin vdd DCLAMP
+.control
+set noaskquit
+op
+let i_inj_ma = -i(vsrc)*1000
+let vpin = v(pin)
+print i_inj_ma vpin
+quit
+.endc
+.end

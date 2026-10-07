@@ -5,6 +5,7 @@ import { BoardView } from './board-view.js';
 import { visualBoard } from './visual-explorer.js';
 import { openComponentSandbox } from './component-sandbox.js';
 import { loadFullLibrary, createFullComponent } from './component-library/full-registry.js';
+import { mountBehaviorPanel } from './component-behavior.js';
 import { ModelPreview } from './component-library/preview/model-preview.js';
 
 const START_HERE = ['GENERIC_RESISTOR', 'GENERIC_CAPACITOR', 'GENERIC_LED_GREEN',
@@ -300,6 +301,7 @@ export function initializeComponentStories() {
     if (!dialog) return;
     const $ = selector => dialog.querySelector(selector);
     let library = null, records = [], visible = [], selectedId = null;
+    let disposeBehavior = null;
     let preview = null, thumbnailPreview = null, thumbnailObserver = null, opener = null;
     let model = null, view = 'three-quarter', lod = 'LOD1', tab = 'overview', loadGeneration = 0;
 
@@ -338,8 +340,10 @@ export function initializeComponentStories() {
 
     function drawSelected() {
         if (!library || !selectedId || !ensurePreview()) return;
-        model = createFullComponent(library, selectedId, { lod, marking_text: selectedId.replace('-','') });
+        model = createFullComponent(library, selectedId, { lod });
         preview.setModel(model);
+        $('[data-story-canvas]').hidden = false; $('[data-story-fallback]').hidden = true;
+        $('[data-story-canvas]').dataset.modelEntry = model.userData.component_id;
         const size = renderSize();
         const stats = preview.renderView(view, { ...size, sideSign: ownerSide(selectedId) });
         $('[data-story-render-note]').textContent = `${stats.triangles.toLocaleString()} triangles · ${stats.draw_calls} draws`;
@@ -421,9 +425,11 @@ export function initializeComponentStories() {
     }
 
     function renderDetails() {
+        disposeBehavior?.(); disposeBehavior = null;
         const record = library?.records[selectedId], details = $('[data-story-details]'); details.replaceChildren();
         if (!record) return;
         details.id = `story-panel-${tab}`; details.setAttribute('role', 'tabpanel'); details.setAttribute('aria-labelledby', `story-tab-${tab}`);
+        if (tab === 'behavior') { disposeBehavior = mountBehaviorPanel(details, record.id); return; }
         ({ overview, dimensions, pins, source })[tab](record);
     }
 
@@ -478,6 +484,8 @@ export function initializeComponentStories() {
         setStatus(`${visible.length.toLocaleString()} of ${records.length.toLocaleString()} components${filters().query ? ` matching “${filters().query}”` : ''}`);
         if (!preserveSelection || !currentVisible) selectedId = visible[0]?.id ?? null;
         if (selectedId) select(selectedId); else {
+            disposeBehavior?.(); disposeBehavior = null;
+            $('[data-story-canvas]').hidden = true; delete $('[data-story-canvas]').dataset.modelEntry;
             $('[data-story-name]').textContent = 'No component selected'; $('[data-story-identity]').textContent = '';
             $('[data-story-details]').replaceChildren(); $('[data-story-copy]').disabled = true;
         }
@@ -510,7 +518,7 @@ export function initializeComponentStories() {
         for (const selector of ['[data-story-category]','[data-story-package]','[data-story-mounting]','[data-story-source]']) $(selector).value = '';
         $('[data-story-sort]').value = 'featured'; applyFilters({ preserveSelection: false }); $('[data-story-search]').focus();
     }
-    function close() { loadGeneration++; disposeRenderers(); dialog.close(); opener?.focus(); }
+    function close() { disposeBehavior?.(); disposeBehavior = null; loadGeneration++; disposeRenderers(); dialog.close(); opener?.focus(); }
 
     document.querySelectorAll('[data-open-components]').forEach(button => button.addEventListener('click', () => {
         opener = button; dialog.showModal(); $('[data-story-search]').value = button.dataset.componentQuery ?? ''; void load();

@@ -1,0 +1,227 @@
+{
+  "applies_to": [
+    "OHM-103"
+  ],
+  "basis_values": [
+    "5-470*IF*CTR",
+    "CTR*IF",
+    "DERIVED",
+    "MFR_DATASHEET"
+  ],
+  "behavior_id": "BEH-IC-OPTO-DIP6",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "5-470*IF*CTR",
+          "measure": "Vc_2mA",
+          "tolerance": "1 %",
+          "value": 4.04
+        }
+      ],
+      "file": "docs/behavior/bench/ic-opto/B1_ctr_sat.cir",
+      "measured_in_ngspice": 4.034,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "CTR*IF",
+          "measure": "Ic_mA_at_IF5mA",
+          "tolerance": "0.1 %",
+          "value": 5.0
+        }
+      ],
+      "file": "docs/behavior/bench/ic-opto/B2_ctr_linear.cir",
+      "measured_in_ngspice": 5.0,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-103"
+    ],
+    "behavior_id": "BEH-IC-OPTO-DIP6",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "5-470*IF*CTR",
+            "measure": "Vc_2mA",
+            "tolerance": "1 %",
+            "value": 4.04
+          }
+        ],
+        "file": "bench/ic-opto/B1_ctr_sat.cir",
+        "id": "B1",
+        "measured_in_ngspice": 4.034,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "CTR*IF",
+            "measure": "Ic_mA_at_IF5mA",
+            "tolerance": "0.1 %",
+            "value": 5.0
+          }
+        ],
+        "file": "bench/ic-opto/B2_ctr_linear.cir",
+        "id": "B2",
+        "measured_in_ngspice": 5.0,
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "ic",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "L",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "LED damage",
+        "id": "led_overcurrent",
+        "permanence": "permanent",
+        "sim_response": "ERROR",
+        "trigger": "IF > 60 mA"
+      },
+      {
+        "effect": "isolation lost, hazard",
+        "id": "isolation_breakdown",
+        "permanence": "permanent",
+        "sim_response": "design rule",
+        "trigger": "barrier voltage above rating"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "constant CTR",
+        "no speed limit",
+        "base pin not modelled"
+      ],
+      "netlist_template": "X{ref} {AN} {CAT} {C} {E} opto_pt ctr={ctr} vsat={vsat}\n",
+      "spice_primitives": [
+        "D",
+        "B"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "tran"
+      ],
+      "valid_range": "IF 1..20 mA, quasi-static (below 10 kHz)"
+    },
+    "parameters": {
+      "ctr": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "L",
+        "default": 1.0,
+        "max": 1.5,
+        "min": 0.4,
+        "source_ref": "S22",
+        "tolerance": "",
+        "unit": "ratio"
+      },
+      "ioff": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": "5e-9",
+        "max": "50e-9",
+        "min": "5e-9",
+        "source_ref": "S22",
+        "tolerance": "",
+        "unit": "A"
+      },
+      "vsat": {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "default": 0.15,
+        "max": 0.4,
+        "min": 0.05,
+        "source_ref": "S22",
+        "tolerance": "",
+        "unit": "V"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "input",
+        "name": "AN",
+        "package_terminal_rule": "pin 1",
+        "role": "signal_in"
+      },
+      {
+        "electrical_type": "input",
+        "name": "CAT",
+        "package_terminal_rule": "pin 2",
+        "role": "signal_in"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "NC",
+        "package_terminal_rule": "pin 3",
+        "role": "no_connect"
+      },
+      {
+        "electrical_type": "output",
+        "name": "E",
+        "package_terminal_rule": "pin 4",
+        "role": "signal_out"
+      },
+      {
+        "electrical_type": "output",
+        "name": "C",
+        "package_terminal_rule": "pin 5 (Rev 1.2); CONFLICT: Rev 1.8 extract says pin 6",
+        "role": "signal_out"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "B",
+        "package_terminal_rule": "pin 6 (Rev 1.2); CONFLICT: Rev 1.8 extract says pin 5",
+        "role": "signal_in"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "I(LED) <= 50e-3",
+        "condition": "conservative of 50 and 60 mA",
+        "name": "LED current",
+        "source_ref": "S22",
+        "symbol": "IF",
+        "unit": "A",
+        "value": "50e-3"
+      },
+      {
+        "check": "V(C)-V(E) <= 30",
+        "condition": "conservative of 30 and 70 V",
+        "name": "VCEO",
+        "source_ref": "S22",
+        "symbol": "VCEO",
+        "unit": "V",
+        "value": 30
+      }
+    ],
+    "sources": "S22, S29",
+    "status": "partial"
+  },
+  "category": "ic",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "5b214308686d36e84afc3c4e4206dad551278ca27742ff97088d807cba0512fb",
+    "line": 8517
+  },
+  "source_refs": "S22, S29",
+  "status": "partial"
+}

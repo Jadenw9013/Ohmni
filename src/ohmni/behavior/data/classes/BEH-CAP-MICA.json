@@ -1,0 +1,226 @@
+{
+  "applies_to": [
+    "OHM-039"
+  ],
+  "basis_values": [
+    "1/(w*C*ESR)",
+    "ASSUMPTION",
+    "C0*(1+TC*1e-6*100)",
+    "MFR_DATASHEET"
+  ],
+  "behavior_id": "BEH-CAP-MICA",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "C0*(1+TC*1e-6*100)",
+          "measure": "C at 125 C (pF)",
+          "tolerance": "0.1%",
+          "value": 100.7
+        }
+      ],
+      "file": "docs/behavior/bench/cap-mica/B1.cir",
+      "measured_in_ngspice": "100.6999",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "1/(w*C*ESR)",
+          "measure": "Q at 1 MHz",
+          "tolerance": "0.5%",
+          "value": 1000
+        }
+      ],
+      "file": "docs/behavior/bench/cap-mica/B2.cir",
+      "measured_in_ngspice": "999.97",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-039"
+    ],
+    "behavior_id": "BEH-CAP-MICA",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "C0*(1+TC*1e-6*100)",
+            "measure": "C at 125 C (pF)",
+            "tolerance": "0.1%",
+            "value": 100.7
+          }
+        ],
+        "file": "bench/cap-mica/B1.cir",
+        "id": "B1",
+        "measured_in_ngspice": "100.6999",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "1/(w*C*ESR)",
+            "measure": "Q at 1 MHz",
+            "tolerance": "0.5%",
+            "value": 1000
+          }
+        ],
+        "file": "bench/cap-mica/B2.cir",
+        "id": "B2",
+        "measured_in_ngspice": "999.97",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "passive",
+    "confidence": {
+      "failure": "L",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "dielectric puncture (not sourced)",
+        "id": "overvoltage",
+        "permanence": "permanent",
+        "sim_response": "flag bit 1",
+        "trigger": "abs(v) > VR"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "Q and ESL assumed",
+        "linear TC",
+        "no voltage dependence"
+      ],
+      "netlist_template": "X{ref} {pin1} {pin2} {ref}_flag ohm_mica C0={value} TCPPM={tc} TEMP={temp} Q=1000 FQ=1meg ESL={esl} RLK={rleak} VR={vr}\n",
+      "spice_primitives": [
+        "R",
+        "L",
+        "C",
+        "B"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "ac",
+        "tran",
+        "noise"
+      ],
+      "valid_range": "|V| < VR; -55..125 C"
+    },
+    "parameters": {
+      "esl": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 8e-09,
+        "max": 2e-08,
+        "min": 3e-09,
+        "source_ref": "S22",
+        "tolerance": "factor 2",
+        "unit": "H"
+      },
+      "q_at_1mhz": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 1000,
+        "max": 5000,
+        "min": 100,
+        "source_ref": "S22",
+        "tolerance": "factor 2",
+        "unit": "none"
+      },
+      "rated_voltage": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 500,
+        "max": 2500,
+        "min": 100,
+        "source_ref": "S22",
+        "tolerance": "none",
+        "unit": "V"
+      },
+      "tc_ppm_per_c": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 35,
+        "max": 200,
+        "min": -200,
+        "source_ref": "S22",
+        "tolerance": "per characteristic code",
+        "unit": "ppm/C"
+      },
+      "value": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 1e-10,
+        "max": 5e-09,
+        "min": 1e-12,
+        "source_ref": "S22",
+        "tolerance": "+/-5% (J); codes D C E F G exist",
+        "unit": "F"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "1",
+        "package_terminal_rule": "lead 1 at -X; non-polarized",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "2",
+        "package_terminal_rule": "lead 2 at +X",
+        "role": "terminal"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "abs(v(p,n)) <= VR",
+        "condition": "100..2500 Vdc by type",
+        "name": "rated_voltage",
+        "source_ref": "S22",
+        "symbol": "VR",
+        "unit": "V",
+        "value": "per part"
+      },
+      {
+        "check": "Tamb <= 125",
+        "condition": "standard (O); 150 C option (P) on selected types",
+        "name": "temperature",
+        "source_ref": "S22",
+        "symbol": "T",
+        "unit": "C",
+        "value": "-55..125"
+      }
+    ],
+    "sources": [
+      "S22",
+      "S26"
+    ],
+    "status": "partial"
+  },
+  "category": "passive",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "2a64d6695b10bd14386bc25dd5a126b9d49300877085ada0831271b659d4b34a",
+    "line": 1916
+  },
+  "source_refs": [
+    "S22",
+    "S26"
+  ],
+  "status": "partial"
+}

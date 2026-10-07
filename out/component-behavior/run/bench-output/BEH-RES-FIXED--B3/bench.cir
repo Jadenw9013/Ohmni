@@ -1,0 +1,16 @@
+* RES-FIXED B3: wirewound parasitic L. R=10, L=15.915uH -> at f=100 kHz wL = 10 ohm, |Z| = 10*sqrt(2)=14.142, phase 45 deg
+.param R=10 L=15.915e-6
+V1 in 0 AC 1
+Ra in m {R}
+La m 0 {L}
+.ac lin 1 100k 100k
+.control
+set noaskquit
+ac lin 1 100k 100k
+let z = mag(1/(-i(v1)))
+print z
+let ph = ph(-i(v1))*180/pi
+print ph
+quit
+.endc
+.end

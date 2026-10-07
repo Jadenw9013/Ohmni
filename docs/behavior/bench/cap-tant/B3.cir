@@ -1,0 +1,15 @@
+B3 Tantalum reverse flag, VR=16 V (flag bit 2 above 3 % of VR reverse)
+.include ohm_tant.lib
+Vs in 0 PWL(0 0 2 -2)
+Rs in p 1
+Xc p 0 f ohm_tant C0=1u ESR=0.1 RLK=1e12 VR=16
+Rf f 0 1meg
+.tran 0.001 2
+.control
+run
+meas tran fl_at_0p2 find v(f) at=0.2
+meas tran fl_at_1 find v(f) at=1
+meas tran t_flag when v(f)=1 rise=1
+quit
+.endc
+.end

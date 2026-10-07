@@ -1,0 +1,26 @@
+B3 Tantalum reverse flag, VR=16 V (flag bit 2 above 3 % of VR reverse)
+* OHMNI BEH-CAP-TANT subcircuit (polarised molded tantalum, MnO2 or polymer), behavioural_approximation
+* ports: p(+) n(-) flag. flag bitmask: 1 = V > VR*DER, 2 = reverse > VREVFR*VR, 4 = |i| > IPK, 8 = V > 1.32*VR (beyond KEMET surge test level, treat as failed)
+* RLK from KEMET T543 max leakage 0.1*C[uF]*V[uV]... : RLK = 1/(LKF*1e-6*C_uF) with LKF = 0.1 (max spec) => ohm
+.subckt ohm_tant p n flag params: C0=100u ESR=0.1 ESL=2.5n RLK=100k VR=16 DER=0.5 VREVFR=0.03 IPK=1e9
+Lesl p a {ESL}
+Resr a c {ESR}
+Vsns c b 0
+Cb b n {C0}
+Rlk b n {RLK}
+Bflag flag 0 V = '(v(b,n) > {VR*DER} ? 1 : 0) + (v(b,n) < -{VREVFR*VR} ? 2 : 0) + (abs(i(Vsns)) > {IPK} ? 4 : 0) + (v(b,n) > {1.32*VR} ? 8 : 0)'
+.ends
+
+Vs in 0 PWL(0 0 2 -2)
+Rs in p 1
+Xc p 0 f ohm_tant C0=1u ESR=0.1 RLK=1e12 VR=16
+Rf f 0 1meg
+.tran 0.001 2
+.control
+run
+meas tran fl_at_0p2 find v(f) at=0.2
+meas tran fl_at_1 find v(f) at=1
+meas tran t_flag when v(f)=1 rise=1
+quit
+.endc
+.end

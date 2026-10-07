@@ -1,0 +1,239 @@
+{
+  "applies_to": [
+    "OHM-178"
+  ],
+  "basis_values": [
+    "CONSENSUS",
+    "I*R",
+    "MFR_DATASHEET",
+    "current divider"
+  ],
+  "behavior_id": "BEH-CON-FFC",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "I*R",
+          "measure": "v_drop",
+          "tolerance": "0.1%",
+          "value": 0.025
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-ffc/B1.cir",
+      "measured_in_ngspice": "0.025 V",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "current divider",
+          "measure": "i_contact1",
+          "tolerance": "0.01%",
+          "value": 0.567714
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-ffc/B2.cir",
+      "measured_in_ngspice": "0.567714",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-178"
+    ],
+    "behavior_id": "BEH-CON-FFC",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "I*R",
+            "measure": "v_drop",
+            "tolerance": "0.1%",
+            "value": 0.025
+          }
+        ],
+        "file": "bench/beh-con-ffc/B1.cir",
+        "id": "B1",
+        "measured_in_ngspice": "0.025 V",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "current divider",
+            "measure": "i_contact1",
+            "tolerance": "0.01%",
+            "value": 0.567714
+          }
+        ],
+        "file": "bench/beh-con-ffc/B2.cir",
+        "id": "B2",
+        "measured_in_ngspice": "0.567714",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "connector",
+    "confidence": {
+      "failure": "L",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "heating",
+        "id": "overcurrent",
+        "permanence": "permanent",
+        "sim_response": "flag",
+        "trigger": "I_k>0.5 A"
+      },
+      {
+        "effect": "per-contact overload",
+        "id": "uneven_sharing",
+        "permanence": "permanent",
+        "sim_response": "per-contact check",
+        "trigger": "paralleled contacts"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "ideal_components",
+      "known_limitations": [
+        "no high-speed behavior",
+        "no mutual heating model",
+        "typical Rc not published"
+      ],
+      "netlist_template": "R{ref}_{k} {Pk_board} {Pk_cable} {rc}\n",
+      "spice_primitives": [
+        "R"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "tran",
+        "ac"
+      ],
+      "valid_range": "DC to low MHz; no impedance or crosstalk model"
+    },
+    "parameters": {
+      "all_contact_factor": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.7,
+        "source_ref": "S11",
+        "unit": "ratio"
+      },
+      "i_contact": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.5,
+        "source_ref": "S11",
+        "unit": "A"
+      },
+      "n_contacts": {
+        "basis": "CONSENSUS",
+        "confidence": "M",
+        "default": 10,
+        "max": 60,
+        "min": 4,
+        "source_ref": "3D spec",
+        "unit": "count"
+      },
+      "rc": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.05,
+        "max": 0.05,
+        "min": 0.01,
+        "source_ref": "S11",
+        "unit": "ohm"
+      },
+      "v_rated_ac": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 50,
+        "source_ref": "S11",
+        "unit": "V"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "P1..PN",
+        "package_terminal_rule": "pin k at x = -A/2 + 0.5(k-1), pin 1 at -X; N from the 3D parametric",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "SHIELD_TAB",
+        "package_terminal_rule": "two retaining-tab pads; mechanical, may be grounded",
+        "role": "terminal"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "abs(i_k)<=0.5*(0.7 if all_loaded else 1)",
+        "condition": "single contact; 0.35 A each if all loaded",
+        "name": "contact_current",
+        "source_ref": "S11",
+        "symbol": "I",
+        "unit": "A",
+        "value": 0.5
+      },
+      {
+        "check": "abs(v)<=50",
+        "condition": "",
+        "name": "voltage",
+        "source_ref": "S11",
+        "symbol": "V",
+        "unit": "V_AC",
+        "value": 50
+      },
+      {
+        "check": "Tamb<=85",
+        "condition": "includes self-heating",
+        "name": "temperature_max",
+        "source_ref": "S11",
+        "symbol": "T",
+        "unit": "degC",
+        "value": 85
+      }
+    ],
+    "sources": [
+      {
+        "date": "2010.9",
+        "id": "S11",
+        "org": "Hirose",
+        "title": "FH12 Series FPC/FFC connector sheet (2010.9)",
+        "url": "https://www.physics.utoronto.ca/~astummer/Archives/2014%20Micro%203D%20Magnetometer/Docs/Hirose%20FH12-16S-1SV(55),%20FFC%20connector,%20SMT%201mm%2016-pos.pdf",
+        "used_for": "0.5 A, 70% rule, 50 V AC, 50 mohm, 20 cycles, FPC thickness, temperature"
+      }
+    ],
+    "status": "partial"
+  },
+  "category": "connector",
+  "fidelity": "ideal_components",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "9ce195344790e4355e297021d947dbd7a5819e310bb042d1c2a9871218a6f0c1",
+    "line": 12484
+  },
+  "source_refs": [
+    {
+      "date": "2010.9",
+      "id": "S11",
+      "org": "Hirose",
+      "title": "FH12 Series FPC/FFC connector sheet (2010.9)",
+      "url": "https://www.physics.utoronto.ca/~astummer/Archives/2014%20Micro%203D%20Magnetometer/Docs/Hirose%20FH12-16S-1SV(55),%20FFC%20connector,%20SMT%201mm%2016-pos.pdf",
+      "used_for": "0.5 A, 70% rule, 50 V AC, 50 mohm, 20 cycles, FPC thickness, temperature"
+    }
+  ],
+  "status": "partial"
+}

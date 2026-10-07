@@ -1,0 +1,444 @@
+{
+  "comparison": {
+    "comparison": {
+      "kind": "interval",
+      "maximum": 2.6,
+      "minimum": 0,
+      "observable": "anode_voltage",
+      "source_fact": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "forward_voltage_typical_max",
+        "page": 3,
+        "scope": "ASMB-MTB0-0A3A2; IF20 mA,TJ25 C",
+        "selected_value": 2.6,
+        "selected_value_path": [
+          "red",
+          1
+        ],
+        "sources": [
+          "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf"
+        ],
+        "unit": "V",
+        "value": {
+          "blue": [
+            3.1,
+            3.6
+          ],
+          "green": [
+            3.1,
+            3.6
+          ],
+          "red": [
+            2.1,
+            2.6
+          ]
+        }
+      },
+      "test_current": 0.02
+    },
+    "observed": 2.087601,
+    "passed": true
+  },
+  "entry_id": "OHM-082",
+  "limits": "Same limited analytical contract with zero-volt current probes. Missing thermal context and unsupported failure rules remain unknown.",
+  "netlist_sha256": "75fd1c0b516c97d2ca5ddcbe0c0fc6bd6b84fb472bb7fea002f7b1c13a9a84f1",
+  "observation_status": "ran",
+  "output_sha256": "41ae7e80eeffe1a519466b205ba81563799271233e75a534573ba6a8192cd13f",
+  "ran_at": "2026-10-05T22:49:19Z",
+  "rating_status": "unknown",
+  "ratings": {
+    "components": [
+      {
+        "class_checks": [
+          {
+            "check": "if_die <= 0.025",
+            "condition": "per die",
+            "name": "die_current",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "643bdc7d2073da7e85153ce486b5f4031320450811728579e7ab249cdc827eab",
+              "line": 4836
+            },
+            "source_ref": "S7",
+            "status": "unknown",
+            "symbol": "IF",
+            "unit": "A",
+            "value": 0.025
+          },
+          {
+            "check": "i_peak <= 0.100",
+            "condition": "10 percent duty, 1 kHz",
+            "name": "die_peak",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "643bdc7d2073da7e85153ce486b5f4031320450811728579e7ab249cdc827eab",
+              "line": 4836
+            },
+            "source_ref": "S7",
+            "status": "unknown",
+            "symbol": "IFM",
+            "unit": "A",
+            "value": 0.1
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-082",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "die degradation",
+            "id": "die_overcurrent",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "flag per die",
+            "status": "unknown",
+            "trigger": "if_die > 25 mA"
+          }
+        ],
+        "observations": {
+          "i_blue_cathode": 0.0,
+          "i_common_anode": 0.02,
+          "i_green_cathode": 3.816392e-17,
+          "i_red_cathode": -0.02,
+          "if_max_die": 0.025,
+          "p_blue": 0.09,
+          "p_green": 0.09,
+          "p_red": 0.065,
+          "power": 0.04175202000000007,
+          "rth_js_blue": 430.0,
+          "rth_js_green": 430.0,
+          "rth_js_red": 653.0,
+          "tj_max": 110.0,
+          "v_blue_cathode": 2.087601,
+          "v_common_anode": 2.087601,
+          "v_green_cathode": 2.087601,
+          "v_red_cathode": 0.0,
+          "vf_blue": 3.6,
+          "vf_green": 3.6,
+          "vf_red": 2.6
+        },
+        "ref": "U1",
+        "reference_checks": [
+          {
+            "evidence": {
+              "if_max_die": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "converted_unit": "A",
+                "converted_value": 0.025,
+                "detail": null,
+                "field": "maximum_forward_current_per_die",
+                "page": 3,
+                "scope": "ASMB-MTB0-0A3A2; TJ25 C, derate per source figures",
+                "sources": [
+                  "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf"
+                ],
+                "unit": "mA",
+                "value": 25
+              }
+            },
+            "expression": "abs(i_red_cathode)<=if_max_die",
+            "name": "red die current",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "p_red": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "converted_unit": "W",
+                "converted_value": 0.065,
+                "detail": null,
+                "field": "maximum_power_by_color",
+                "page": 3,
+                "scope": "ASMB-MTB0-0A3A2; TJ25 C",
+                "selected_value": 65,
+                "selected_value_path": [
+                  "red"
+                ],
+                "sources": [
+                  "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf"
+                ],
+                "unit": "mW",
+                "value": {
+                  "blue": 90,
+                  "green": 90,
+                  "red": 65
+                }
+              }
+            },
+            "expression": "-(v_common_anode-v_red_cathode)*i_red_cathode<=p_red",
+            "name": "red die power",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "rth_js_red": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "thermal_resistance_junction_solderpoint_three_chips",
+                "page": 3,
+                "scope": "ASMB-MTB0-0A3A2",
+                "selected_value": 653,
+                "selected_value_path": [
+                  "red"
+                ],
+                "sources": [
+                  "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf"
+                ],
+                "unit": "K/W",
+                "value": {
+                  "blue": 430,
+                  "green": 430,
+                  "red": 653
+                }
+              },
+              "tj_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "maximum_junction_temperature",
+                "page": 3,
+                "scope": "ASMB-MTB0-0A3A2",
+                "sources": [
+                  "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf"
+                ],
+                "unit": "C",
+                "value": 110
+              }
+            },
+            "expression": "Tc+rth_js_red*(-(v_common_anode-v_red_cathode)*i_red_cathode)<=tj_max",
+            "name": "red junction temperature",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "if_max_die": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "converted_unit": "A",
+                "converted_value": 0.025,
+                "detail": null,
+                "field": "maximum_forward_current_per_die",
+                "page": 3,
+                "scope": "ASMB-MTB0-0A3A2; TJ25 C, derate per source figures",
+                "sources": [
+                  "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf"
+                ],
+                "unit": "mA",
+                "value": 25
+              }
+            },
+            "expression": "abs(i_green_cathode)<=if_max_die",
+            "name": "green die current",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "p_green": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "converted_unit": "W",
+                "converted_value": 0.09,
+                "detail": null,
+                "field": "maximum_power_by_color",
+                "page": 3,
+                "scope": "ASMB-MTB0-0A3A2; TJ25 C",
+                "selected_value": 90,
+                "selected_value_path": [
+                  "green"
+                ],
+                "sources": [
+                  "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf"
+                ],
+                "unit": "mW",
+                "value": {
+                  "blue": 90,
+                  "green": 90,
+                  "red": 65
+                }
+              }
+            },
+            "expression": "-(v_common_anode-v_green_cathode)*i_green_cathode<=p_green",
+            "name": "green die power",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "rth_js_green": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "thermal_resistance_junction_solderpoint_three_chips",
+                "page": 3,
+                "scope": "ASMB-MTB0-0A3A2",
+                "selected_value": 430,
+                "selected_value_path": [
+                  "green"
+                ],
+                "sources": [
+                  "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf"
+                ],
+                "unit": "K/W",
+                "value": {
+                  "blue": 430,
+                  "green": 430,
+                  "red": 653
+                }
+              },
+              "tj_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "maximum_junction_temperature",
+                "page": 3,
+                "scope": "ASMB-MTB0-0A3A2",
+                "sources": [
+                  "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf"
+                ],
+                "unit": "C",
+                "value": 110
+              }
+            },
+            "expression": "Tc+rth_js_green*(-(v_common_anode-v_green_cathode)*i_green_cathode)<=tj_max",
+            "name": "green junction temperature",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "if_max_die": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "converted_unit": "A",
+                "converted_value": 0.025,
+                "detail": null,
+                "field": "maximum_forward_current_per_die",
+                "page": 3,
+                "scope": "ASMB-MTB0-0A3A2; TJ25 C, derate per source figures",
+                "sources": [
+                  "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf"
+                ],
+                "unit": "mA",
+                "value": 25
+              }
+            },
+            "expression": "abs(i_blue_cathode)<=if_max_die",
+            "name": "blue die current",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "p_blue": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "converted_unit": "W",
+                "converted_value": 0.09,
+                "detail": null,
+                "field": "maximum_power_by_color",
+                "page": 3,
+                "scope": "ASMB-MTB0-0A3A2; TJ25 C",
+                "selected_value": 90,
+                "selected_value_path": [
+                  "blue"
+                ],
+                "sources": [
+                  "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf"
+                ],
+                "unit": "mW",
+                "value": {
+                  "blue": 90,
+                  "green": 90,
+                  "red": 65
+                }
+              }
+            },
+            "expression": "-(v_common_anode-v_blue_cathode)*i_blue_cathode<=p_blue",
+            "name": "blue die power",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "rth_js_blue": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "thermal_resistance_junction_solderpoint_three_chips",
+                "page": 3,
+                "scope": "ASMB-MTB0-0A3A2",
+                "selected_value": 430,
+                "selected_value_path": [
+                  "blue"
+                ],
+                "sources": [
+                  "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf"
+                ],
+                "unit": "K/W",
+                "value": {
+                  "blue": 430,
+                  "green": 430,
+                  "red": 653
+                }
+              },
+              "tj_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "maximum_junction_temperature",
+                "page": 3,
+                "scope": "ASMB-MTB0-0A3A2",
+                "sources": [
+                  "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf"
+                ],
+                "unit": "C",
+                "value": 110
+              }
+            },
+            "expression": "Tc+rth_js_blue*(-(v_common_anode-v_blue_cathode)*i_blue_cathode)<=tj_max",
+            "name": "blue junction temperature",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      }
+    ],
+    "fault_requests": [],
+    "limitations": [
+      "Only the stated observations and source conditions were checked.",
+      "Unsupported class expressions and failure triggers remain unknown; no damage timing is invented.",
+      "An electrical limit check does not verify physical fit or safe operation."
+    ],
+    "status": "unknown"
+  },
+  "raw_output": "instrumented-output/OHM-082/output.txt",
+  "run_id": "behavior-20261005T065040Z",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+}

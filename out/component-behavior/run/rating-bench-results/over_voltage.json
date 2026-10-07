@@ -1,0 +1,697 @@
+{
+  "analytical_source": "BEH-RES-FIXED/B1",
+  "case": "over_voltage",
+  "circuit_hash": "9008969a88fb7fdbeddd703bed7b79d0fa51d2afea0e56e03c152badce024326",
+  "expected_fault_rerun": false,
+  "expected_rating_status": "violation",
+  "expected_voltage": 40.0,
+  "limits": "Synthetic source mounting condition for equation testing, not evidence of a real board thermal path. The failure rerun is an authored approximation.",
+  "netlist_sha256": "528cef8fe66f2e822dd868f7e7d62ce297c11f93d2ab988f4c3d36f87c7bf41b",
+  "output_sha256": "b6bb1eec7548540c6b18700af587fb79fcb1f8a824f4be0b2aaadd3251cbcd88",
+  "ran_at": "2026-10-05T22:53:48Z",
+  "rating_context": {
+    "ambient_c": 25.0,
+    "case_c": null,
+    "thermal_scope_confirmed": true
+  },
+  "recipe_sha256": "eaa714ff1b2ed130d1338d42429ff173a92033ed3e3c84b5eea55862c709fd33",
+  "result": {
+    "analysis": "op",
+    "circuit_hash": "9008969a88fb7fdbeddd703bed7b79d0fa51d2afea0e56e03c152badce024326",
+    "components": [
+      {
+        "behavior_id": "BEH-RES-FIXED",
+        "confidence": "M",
+        "element_names": [
+          "Rc1"
+        ],
+        "entry_id": "OHM-004",
+        "fidelity": "ideal_components",
+        "limitations": [
+          "Reference-series ratings apply only to the named gapfill source and conditions; a generic catalog package does not verify a purchased part.",
+          "Ideal resistance uses the explicit circuit-instance value; tolerance and parasitics are not simulated.",
+          "no VCR",
+          "no excess noise",
+          "no thermal EMF",
+          "single-pole thermal model",
+          "ls and cp unsourced",
+          "ngspice turns R=0 into 1 mohm",
+          "realistic mode is behavioural_approximation, never vendor_model"
+        ],
+        "parameter_evidence": {
+          "p_rated": {
+            "basis": "MFR_DATASHEET",
+            "confidence": "H",
+            "detail": null,
+            "field": "reference.p_rated",
+            "page": 2,
+            "scope": "Vishay CRCW0603 e3; standard operation where listed",
+            "sources": [
+              "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+            ],
+            "unit": "W",
+            "value": 0.1
+          },
+          "t_end": {
+            "basis": "MFR_DATASHEET",
+            "confidence": "H",
+            "detail": null,
+            "field": "t_end",
+            "page": 1,
+            "scope": "Vishay CRCW0603 e3; standard operation where listed",
+            "sources": [
+              "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+            ],
+            "unit": "degC",
+            "value": 155
+          },
+          "t_knee": {
+            "basis": "MFR_DATASHEET",
+            "confidence": "H",
+            "detail": null,
+            "field": "derating_knee",
+            "page": 2,
+            "scope": "Vishay CRCW0603 e3; standard operation where listed",
+            "sources": [
+              "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+            ],
+            "unit": "degC",
+            "value": 70
+          },
+          "u_limit": {
+            "basis": "MFR_DATASHEET",
+            "confidence": "H",
+            "detail": null,
+            "field": "reference.v_max",
+            "page": 2,
+            "scope": "Vishay CRCW0603 e3; standard operation where listed",
+            "sources": [
+              "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+            ],
+            "unit": "V",
+            "value": 75
+          },
+          "value": {
+            "basis": "circuit_instance",
+            "unit": "ohm",
+            "value": 10000.0
+          }
+        },
+        "parameters": {
+          "p_rated": 0.1,
+          "t_end": 155.0,
+          "t_knee": 70.0,
+          "u_limit": 75.0,
+          "value": 10000.0
+        },
+        "rating_confidence": "H",
+        "ref": "R1",
+        "reference_part": null,
+        "role_current_probes": {
+          "A": "vprobe_c1_1",
+          "B": "vprobe_c1_2"
+        },
+        "role_nodes": {
+          "A": "n3",
+          "B": "n1"
+        },
+        "source_confidence": {
+          "failure": "L",
+          "model": "M",
+          "parameters": "M",
+          "ratings": "M"
+        },
+        "source_status": "partial",
+        "terminal_nodes": {
+          "1": "n3",
+          "2": "n1"
+        }
+      },
+      {
+        "behavior_id": "BEH-RES-FIXED",
+        "confidence": "M",
+        "element_names": [
+          "Rc2"
+        ],
+        "entry_id": "OHM-004",
+        "fidelity": "ideal_components",
+        "limitations": [
+          "Reference-series ratings apply only to the named gapfill source and conditions; a generic catalog package does not verify a purchased part.",
+          "Ideal resistance uses the explicit circuit-instance value; tolerance and parasitics are not simulated.",
+          "no VCR",
+          "no excess noise",
+          "no thermal EMF",
+          "single-pole thermal model",
+          "ls and cp unsourced",
+          "ngspice turns R=0 into 1 mohm",
+          "realistic mode is behavioural_approximation, never vendor_model"
+        ],
+        "parameter_evidence": {
+          "p_rated": {
+            "basis": "MFR_DATASHEET",
+            "confidence": "H",
+            "detail": null,
+            "field": "reference.p_rated",
+            "page": 2,
+            "scope": "Vishay CRCW0603 e3; standard operation where listed",
+            "sources": [
+              "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+            ],
+            "unit": "W",
+            "value": 0.1
+          },
+          "t_end": {
+            "basis": "MFR_DATASHEET",
+            "confidence": "H",
+            "detail": null,
+            "field": "t_end",
+            "page": 1,
+            "scope": "Vishay CRCW0603 e3; standard operation where listed",
+            "sources": [
+              "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+            ],
+            "unit": "degC",
+            "value": 155
+          },
+          "t_knee": {
+            "basis": "MFR_DATASHEET",
+            "confidence": "H",
+            "detail": null,
+            "field": "derating_knee",
+            "page": 2,
+            "scope": "Vishay CRCW0603 e3; standard operation where listed",
+            "sources": [
+              "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+            ],
+            "unit": "degC",
+            "value": 70
+          },
+          "u_limit": {
+            "basis": "MFR_DATASHEET",
+            "confidence": "H",
+            "detail": null,
+            "field": "reference.v_max",
+            "page": 2,
+            "scope": "Vishay CRCW0603 e3; standard operation where listed",
+            "sources": [
+              "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+            ],
+            "unit": "V",
+            "value": 75
+          },
+          "value": {
+            "basis": "circuit_instance",
+            "unit": "ohm",
+            "value": 10000.0
+          }
+        },
+        "parameters": {
+          "p_rated": 0.1,
+          "t_end": 155.0,
+          "t_knee": 70.0,
+          "u_limit": 75.0,
+          "value": 10000.0
+        },
+        "rating_confidence": "H",
+        "ref": "R2",
+        "reference_part": null,
+        "role_current_probes": {
+          "A": "vprobe_c2_1",
+          "B": "vprobe_c2_2"
+        },
+        "role_nodes": {
+          "A": "n1",
+          "B": "0"
+        },
+        "source_confidence": {
+          "failure": "L",
+          "model": "M",
+          "parameters": "M",
+          "ratings": "M"
+        },
+        "source_status": "partial",
+        "terminal_nodes": {
+          "1": "n1",
+          "2": "0"
+        }
+      }
+    ],
+    "limitations": [
+      "supply: ideal declared DC source; source impedance and current limiting are not modeled"
+    ],
+    "netlist_sha256": "528cef8fe66f2e822dd868f7e7d62ce297c11f93d2ab988f4c3d36f87c7bf41b",
+    "node_names": {
+      "middle": "n1",
+      "return": "0",
+      "supply": "n3"
+    },
+    "operating_point": {
+      "branch_currents": {
+        "vprobe_c1_1": {
+          "unit": "A",
+          "value": 0.004
+        },
+        "vprobe_c1_2": {
+          "unit": "A",
+          "value": -0.004
+        },
+        "vprobe_c2_1": {
+          "unit": "A",
+          "value": 0.004
+        },
+        "vprobe_c2_2": {
+          "unit": "A",
+          "value": -0.004
+        },
+        "vsource3": {
+          "unit": "A",
+          "value": -0.004
+        }
+      },
+      "node_voltages": {
+        "n1": {
+          "unit": "V",
+          "value": 40.0
+        },
+        "n3": {
+          "unit": "V",
+          "value": 80.0
+        },
+        "probe_c1_1": {
+          "unit": "V",
+          "value": 80.0
+        },
+        "probe_c1_2": {
+          "unit": "V",
+          "value": 40.0
+        },
+        "probe_c2_1": {
+          "unit": "V",
+          "value": 40.0
+        },
+        "probe_c2_2": {
+          "unit": "V",
+          "value": 0.0
+        }
+      }
+    },
+    "problems": [],
+    "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+    "rating_status": "violation",
+    "ratings": {
+      "components": [
+        {
+          "class_checks": [
+            {
+              "check": "v*i <= P_allowed(Tamb)",
+              "condition": "ambient Tamb",
+              "name": "power",
+              "reason": null,
+              "source": {
+                "document": "COMPONENT_BEHAVIOR_SPEC.md",
+                "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+                "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+                "line": 497
+              },
+              "source_ref": "S1",
+              "status": "violation",
+              "symbol": "P",
+              "unit": "W",
+              "value": "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)"
+            },
+            {
+              "check": "abs(v) <= Vmax",
+              "condition": "AC RMS or DC",
+              "name": "working voltage",
+              "reason": null,
+              "source": {
+                "document": "COMPONENT_BEHAVIOR_SPEC.md",
+                "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+                "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+                "line": 497
+              },
+              "source_ref": "S1",
+              "status": "violation",
+              "symbol": "Vmax",
+              "unit": "V",
+              "value": "min(u_limit, sqrt(p_rated*value))"
+            }
+          ],
+          "context": {
+            "ambient_c": 25.0,
+            "case_c": null,
+            "thermal_scope_confirmed": true
+          },
+          "entry_id": "OHM-004",
+          "failure_modes": [
+            {
+              "applied_response": "flag WARNING",
+              "effect": "permanent drift of R (stability limit about 1 % per 1000 h at P70 for thick film)",
+              "evaluated_trigger": "P > P_allowed",
+              "id": "overpower_mild",
+              "permanence": "permanent",
+              "reason": null,
+              "sim_response": "flag WARNING",
+              "status": "triggered",
+              "trigger": "P > P_allowed"
+            },
+            {
+              "applied_response": null,
+              "effect": "element burns open; fusible variants designed to do this",
+              "id": "overpower_open",
+              "permanence": "permanent",
+              "reason": "Trigger or response lacks an executable reference-scoped translation",
+              "sim_response": "flag ERROR, re-run with part open (R=1G)",
+              "status": "unknown",
+              "trigger": "P > 5x rated for several seconds (assumption)"
+            },
+            {
+              "applied_response": "flag ERROR",
+              "effect": "arc or breakdown of the element or body",
+              "evaluated_trigger": "abs(v) > Vmax",
+              "id": "overvoltage",
+              "permanence": "permanent",
+              "reason": null,
+              "sim_response": "flag ERROR; treat as open if abs(v) > 2*Vmax",
+              "status": "triggered",
+              "trigger": "abs(v) > Vmax"
+            }
+          ],
+          "observations": {
+            "P": 0.16,
+            "P_allowed": 0.1,
+            "Tamb": 25.0,
+            "Vmax": 31.622776601683793,
+            "i_A": 0.004,
+            "i_B": -0.004,
+            "p_rated": 0.1,
+            "power": 0.16,
+            "t_end": 155.0,
+            "t_knee": 70.0,
+            "u_limit": 75.0,
+            "v": 40.0,
+            "v_A": 80.0,
+            "v_B": 40.0,
+            "value": 10000.0
+          },
+          "ref": "R1",
+          "reference_checks": [
+            {
+              "evidence": {
+                "p_rated": {
+                  "basis": "MFR_DATASHEET",
+                  "confidence": "H",
+                  "detail": null,
+                  "field": "reference.p_rated",
+                  "page": 2,
+                  "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                  "sources": [
+                    "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                  ],
+                  "unit": "W",
+                  "value": 0.1
+                },
+                "t_end": {
+                  "basis": "MFR_DATASHEET",
+                  "confidence": "H",
+                  "detail": null,
+                  "field": "t_end",
+                  "page": 1,
+                  "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                  "sources": [
+                    "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                  ],
+                  "unit": "degC",
+                  "value": 155
+                },
+                "t_knee": {
+                  "basis": "MFR_DATASHEET",
+                  "confidence": "H",
+                  "detail": null,
+                  "field": "derating_knee",
+                  "page": 2,
+                  "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                  "sources": [
+                    "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                  ],
+                  "unit": "degC",
+                  "value": 70
+                }
+              },
+              "expression": "P <= P_allowed",
+              "name": "power",
+              "reason": null,
+              "spec_names": [
+                "power"
+              ],
+              "status": "violation"
+            },
+            {
+              "evidence": {
+                "p_rated": {
+                  "basis": "MFR_DATASHEET",
+                  "confidence": "H",
+                  "detail": null,
+                  "field": "reference.p_rated",
+                  "page": 2,
+                  "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                  "sources": [
+                    "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                  ],
+                  "unit": "W",
+                  "value": 0.1
+                },
+                "u_limit": {
+                  "basis": "MFR_DATASHEET",
+                  "confidence": "H",
+                  "detail": null,
+                  "field": "reference.v_max",
+                  "page": 2,
+                  "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                  "sources": [
+                    "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                  ],
+                  "unit": "V",
+                  "value": 75
+                }
+              },
+              "expression": "abs(v) <= Vmax",
+              "name": "working voltage",
+              "reason": null,
+              "spec_names": [
+                "working voltage"
+              ],
+              "status": "violation"
+            }
+          ],
+          "status": "violation"
+        },
+        {
+          "class_checks": [
+            {
+              "check": "v*i <= P_allowed(Tamb)",
+              "condition": "ambient Tamb",
+              "name": "power",
+              "reason": null,
+              "source": {
+                "document": "COMPONENT_BEHAVIOR_SPEC.md",
+                "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+                "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+                "line": 497
+              },
+              "source_ref": "S1",
+              "status": "violation",
+              "symbol": "P",
+              "unit": "W",
+              "value": "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)"
+            },
+            {
+              "check": "abs(v) <= Vmax",
+              "condition": "AC RMS or DC",
+              "name": "working voltage",
+              "reason": null,
+              "source": {
+                "document": "COMPONENT_BEHAVIOR_SPEC.md",
+                "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+                "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+                "line": 497
+              },
+              "source_ref": "S1",
+              "status": "violation",
+              "symbol": "Vmax",
+              "unit": "V",
+              "value": "min(u_limit, sqrt(p_rated*value))"
+            }
+          ],
+          "context": {
+            "ambient_c": 25.0,
+            "case_c": null,
+            "thermal_scope_confirmed": true
+          },
+          "entry_id": "OHM-004",
+          "failure_modes": [
+            {
+              "applied_response": "flag WARNING",
+              "effect": "permanent drift of R (stability limit about 1 % per 1000 h at P70 for thick film)",
+              "evaluated_trigger": "P > P_allowed",
+              "id": "overpower_mild",
+              "permanence": "permanent",
+              "reason": null,
+              "sim_response": "flag WARNING",
+              "status": "triggered",
+              "trigger": "P > P_allowed"
+            },
+            {
+              "applied_response": null,
+              "effect": "element burns open; fusible variants designed to do this",
+              "id": "overpower_open",
+              "permanence": "permanent",
+              "reason": "Trigger or response lacks an executable reference-scoped translation",
+              "sim_response": "flag ERROR, re-run with part open (R=1G)",
+              "status": "unknown",
+              "trigger": "P > 5x rated for several seconds (assumption)"
+            },
+            {
+              "applied_response": "flag ERROR",
+              "effect": "arc or breakdown of the element or body",
+              "evaluated_trigger": "abs(v) > Vmax",
+              "id": "overvoltage",
+              "permanence": "permanent",
+              "reason": null,
+              "sim_response": "flag ERROR; treat as open if abs(v) > 2*Vmax",
+              "status": "triggered",
+              "trigger": "abs(v) > Vmax"
+            }
+          ],
+          "observations": {
+            "P": 0.16,
+            "P_allowed": 0.1,
+            "Tamb": 25.0,
+            "Vmax": 31.622776601683793,
+            "i_A": 0.004,
+            "i_B": -0.004,
+            "p_rated": 0.1,
+            "power": 0.16,
+            "t_end": 155.0,
+            "t_knee": 70.0,
+            "u_limit": 75.0,
+            "v": 40.0,
+            "v_A": 40.0,
+            "v_B": 0.0,
+            "value": 10000.0
+          },
+          "ref": "R2",
+          "reference_checks": [
+            {
+              "evidence": {
+                "p_rated": {
+                  "basis": "MFR_DATASHEET",
+                  "confidence": "H",
+                  "detail": null,
+                  "field": "reference.p_rated",
+                  "page": 2,
+                  "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                  "sources": [
+                    "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                  ],
+                  "unit": "W",
+                  "value": 0.1
+                },
+                "t_end": {
+                  "basis": "MFR_DATASHEET",
+                  "confidence": "H",
+                  "detail": null,
+                  "field": "t_end",
+                  "page": 1,
+                  "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                  "sources": [
+                    "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                  ],
+                  "unit": "degC",
+                  "value": 155
+                },
+                "t_knee": {
+                  "basis": "MFR_DATASHEET",
+                  "confidence": "H",
+                  "detail": null,
+                  "field": "derating_knee",
+                  "page": 2,
+                  "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                  "sources": [
+                    "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                  ],
+                  "unit": "degC",
+                  "value": 70
+                }
+              },
+              "expression": "P <= P_allowed",
+              "name": "power",
+              "reason": null,
+              "spec_names": [
+                "power"
+              ],
+              "status": "violation"
+            },
+            {
+              "evidence": {
+                "p_rated": {
+                  "basis": "MFR_DATASHEET",
+                  "confidence": "H",
+                  "detail": null,
+                  "field": "reference.p_rated",
+                  "page": 2,
+                  "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                  "sources": [
+                    "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                  ],
+                  "unit": "W",
+                  "value": 0.1
+                },
+                "u_limit": {
+                  "basis": "MFR_DATASHEET",
+                  "confidence": "H",
+                  "detail": null,
+                  "field": "reference.v_max",
+                  "page": 2,
+                  "scope": "Vishay CRCW0603 e3; standard operation where listed",
+                  "sources": [
+                    "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
+                  ],
+                  "unit": "V",
+                  "value": 75
+                }
+              },
+              "expression": "abs(v) <= Vmax",
+              "name": "working voltage",
+              "reason": null,
+              "spec_names": [
+                "working voltage"
+              ],
+              "status": "violation"
+            }
+          ],
+          "status": "violation"
+        }
+      ],
+      "fault_requests": [],
+      "limitations": [
+        "Only the stated observations and source conditions were checked.",
+        "Unsupported class expressions and failure triggers remain unknown; no damage timing is invented.",
+        "An electrical limit check does not verify physical fit or safe operation."
+      ],
+      "status": "violation"
+    },
+    "returncode": 0,
+    "source_elements": {
+      "supply": "vsource3"
+    },
+    "status": "ran",
+    "stderr": "Warning: no nodes given: .print op\nUsing SPARSE 1.3 as Direct Linear Solver\n",
+    "stdout": "\nNote: No compatibility mode selected!\n\n\nCircuit: ohmni sourced behavior circuit\n\nDoing analysis at TEMP = 25.000000 and TNOM = 25.000000\n\n\nNo. of Data Rows : 1\n\tNode                                  Voltage\n\t----                                  -------\n\t----\t-------\n\tprobe_c2_2                       0.000000e+00\n\tprobe_c2_1                       4.000000e+01\n\tprobe_c1_2                       4.000000e+01\n\tn1                               4.000000e+01\n\tprobe_c1_1                       8.000000e+01\n\tn3                               8.000000e+01\n\n\tSource\tCurrent\n\t------\t-------\n\n\tvsource3#branch                  -4.00000e-03\n\tvprobe_c1_1#branch               4.000000e-03\n\tvprobe_c1_2#branch               -4.00000e-03\n\tvprobe_c2_1#branch               4.000000e-03\n\tvprobe_c2_2#branch               -4.00000e-03\n\n Resistor models (Simple linear resistor)\n      model                     R\n\n        rsh                     0\n     narrow                     0\n      short                     0\n        tc1                     0\n        tc2                     0\n        tce                     0\n       defw                 1e-05\n          l                 1e-05\n         kf                     0\n         af                     0\n          r                     0\n     bv_max                 1e+99\n         lf                     1\n         wf                     1\n         ef                     1\n\n Resistor: Simple linear resistor\n     device                   rc2                   rc1\n      model                     R                     R\n resistance                 10000                 10000\n         ac                 10000                 10000\n      dtemp                     0                     0\n     bv_max                 1e+99                 1e+99\n      noisy                     1                     1\n          i                 0.004                 0.004\n          p                  0.16                  0.16\n\n Vsource: Independent voltage source\n     device           vprobe_c2_2           vprobe_c2_1           vprobe_c1_2\n         dc                     0                     0                     0\n      acmag                     0                     0                     0\n      pulse         -         -         -\n        sin         -         -         -\n        exp         -         -         -\n        pwl         -         -         -\n       sffm         -         -         -\n         am         -         -         -\n    trnoise         -         -         -\n   trrandom         -         -         -\n    portnum                     0                     0                     0\n         z0                     0                     0                     0\n        pwr                     0                     0                     0\n       freq                     0                     0                     0\n      phase                     0                     0                     0\n          i                -0.004                 0.004                -0.004\n          p                    -0                     0                    -0\n\n Vsource: Independent voltage source\n     device           vprobe_c1_1              vsource3\n         dc                     0                    80\n      acmag                     0                     0\n      pulse         -         -\n        sin         -         -\n        exp         -         -\n        pwl         -         -\n       sffm         -         -\n         am         -         -\n    trnoise         -         -\n   trrandom         -         -\n    portnum                     0                     0\n         z0                     0                     0\n        pwr                     0                     0\n       freq                     0                     0\n      phase                     0                     0\n          i                 0.004                -0.004\n          p                     0                 -0.32\n\n\n\nTotal analysis time (seconds) = 0\n\nTotal elapsed time (seconds) = 0.004 \n\nTotal DRAM available = 31849.426 MB.\nDRAM currently available = 3911.844 MB.\nMaximum ngspice program size =    9.480 MB.\nCurrent ngspice program size =    9.480 MB.\n\n",
+    "transient": null,
+    "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+  },
+  "source_deck_sha256": "dffa43d06f37aade19e7898398dccc646141e28304fd575fc64c9c1906458ed8",
+  "tolerance": 0.0025,
+  "version_sha256": "2cdcb25fcf77dea87742b9ac629a0b5ba20169e01beb2b59fdd2e41ee348a45d"
+}

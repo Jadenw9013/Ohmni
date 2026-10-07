@@ -30,3 +30,17 @@ OHMNI_REFERENCE_IMPLEMENTATION_PLAN.md -text whitespace=-blank-at-eol
 ohmni_reference_visual_plan/*.md whitespace=-blank-at-eol
 COMPONENT_SYNTHESIS_PLAN.md whitespace=-blank-at-eol
 docs/product/*.md whitespace=-blank-at-eol
+
+# Audit rules, canaries and run evidence are hash-locked as exact bytes.
+tools/behavior_audit/RULES.md -text
+tools/behavior_audit/rules.yaml -text
+tools/behavior_audit/fixtures/*.json -text
+out/component-behavior/run/** -text
+
+# Behavior source anchors, model assets and independent review records hash bytes.
+COMPONENT_BEHAVIOR_SPEC.md -text
+docs/behavior/** -text
+src/ohmni/behavior/data/** -text
+# The reference-circuit export hashes its generating source file exactly.
+scripts/generate_behavior_examples.py -text
+src/ohmni/behavior/reference-circuits.json -text

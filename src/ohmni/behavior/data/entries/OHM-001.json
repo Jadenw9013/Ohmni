@@ -1,0 +1,117 @@
+{
+  "behavior_class_ids": [
+    "BEH-RES-FIXED"
+  ],
+  "catalog_binding_ids": [],
+  "class_record_paths": [
+    "src/ohmni/behavior/data/classes/BEH-RES-FIXED.json"
+  ],
+  "component": "01005 SMD resistor",
+  "entry_id": "OHM-001",
+  "fidelity": "ideal_components",
+  "group": "R1",
+  "layer": "L1",
+  "research": {
+    "bench_result": "bench-results/BEH-RES-FIXED--B1.json",
+    "bench_results": [
+      "bench-results/BEH-RES-FIXED--B1.json",
+      "bench-results/BEH-RES-FIXED--B2.json",
+      "bench-results/BEH-RES-FIXED--B3.json",
+      "bench-results/BEH-RES-FIXED--B4.json",
+      "bench-results/BEH-RES-FIXED--B5.json"
+    ],
+    "conflicts": [],
+    "documents": [
+      {
+        "document_id": "tiny",
+        "manufacturer": "Vishay",
+        "note": "Read from fetched PDF bytes; an HTTP success alone is not evidence of semantic support.",
+        "page": null,
+        "revision": "28-Oct-2013",
+        "source_status": "primary_source_opened",
+        "title": "CRCW01005 e3",
+        "url": "https://www.vishay.com/docs/20056/crcw01005e3.pdf"
+      }
+    ],
+    "entry_id": "OHM-001",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "p_rated",
+        "page": 1,
+        "scope": "CRCW01005 e3",
+        "sources": [
+          "https://www.vishay.com/docs/20056/crcw01005e3.pdf"
+        ],
+        "unit": "W",
+        "value": 0.031
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "v_max",
+        "page": 1,
+        "scope": "CRCW01005 e3",
+        "sources": [
+          "https://www.vishay.com/docs/20056/crcw01005e3.pdf"
+        ],
+        "unit": "V",
+        "value": 15
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Permissible film temperature in page 1 footnote.",
+        "field": "t_end",
+        "page": 1,
+        "scope": "CRCW01005 e3",
+        "sources": [
+          "https://www.vishay.com/docs/20056/crcw01005e3.pdf"
+        ],
+        "unit": "degC",
+        "value": 125
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "derating_knee",
+        "page": 1,
+        "scope": "CRCW01005 e3",
+        "sources": [
+          "https://www.vishay.com/docs/20056/crcw01005e3.pdf"
+        ],
+        "unit": "degC",
+        "value": 70
+      }
+    ],
+    "remaining_open_items": [
+      "Reactive parasitics remain unspecified; zero L/C is an idealized assumption, not measured package behavior.",
+      "Thermal resistance derived from rating endpoints is not an independently measured board-specific value.",
+      "Destructive-failure thresholds and timing are not characterized by the rating table."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-001.md",
+      "document_sha256": "6d761a10167bdd53722d0a07556d9d0a3d721031c263a0e28af07e9c8f1e809a",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
+  "resolution_ids": [],
+  "schema_version": 1,
+  "simulation_disposition": "simulable",
+  "simulation_reason": "The canonical class provides an L1/L2 model; fidelity and assumptions remain explicit.",
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "df3c3bca3bb449c1d33d81212f9de3547e2f070a7f400faf50de10bf5364cd1e",
+    "line": 19
+  },
+  "status": "partial"
+}

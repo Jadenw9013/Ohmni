@@ -1,0 +1,16 @@
+B1 Mica capacitor temperature coefficient: C(125 C) = C0*(1+TC*1e-6*100)
+* C0=100p, TC=+70 ppm/K (CDE characteristic F upper bound) -> 100.7 pF ; measured via 1 kHz AC current (ESL, ESR negligible)
+.include ohm_mica.lib
+Vs in 0 dc 0 ac 1
+Rs in p 0.01
+Xc p 0 f ohm_mica C0=100p TCPPM=70 TEMP=125 Q=1000 FQ=1meg ESL=1p RLK=1e15
+Rf f 0 1meg
+.ac lin 1 1meg 1meg
+.control
+run
+let ii = (v(in)-v(p))/0.01
+let cpf = imag(ii)/(2*pi*1meg)*1e12
+print cpf
+quit
+.endc
+.end

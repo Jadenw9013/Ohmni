@@ -47,7 +47,7 @@ from ..adapters import (
 from ..adapters.process import ToolTimeoutError, describe_exit, run_tool
 from ..adapters.tools import NgspiceCli, find_kicad_cli, find_ngspice
 from ..domain.evidence import Evidence, EvidenceKind
-from ..domain.units import Quantity, Unit
+from ..domain.units import Quantity, Unit, parse_quantity
 from .models import SchematicArtifact
 
 #: The one analysis this module runs. Named on every result so a reader never
@@ -328,7 +328,8 @@ def with_power_on_stimulus(netlist: str, net: str = STIMULUS_NET, *,
     return "\n".join([*lines[:end], source, *lines[end:]]) + "\n", note
 
 
-def transient_deck(netlist: str, tstep: str, tstop: str, signals: list[str]) -> str:
+def transient_deck(netlist: str, tstep: str, tstop: str, signals: list[str], *,
+                   precision: int | None = None) -> str:
     """Add the transient command and the signals to print, and nothing else.
 
     Built the same way as the operating-point deck: the caller's first line
@@ -340,7 +341,15 @@ def transient_deck(netlist: str, tstep: str, tstop: str, signals: list[str]) -> 
     additions = []
     if not any(re.match(r"\.tran\b", line, re.IGNORECASE) for line in stripped):
         additions.append(f".tran {tstep} {tstop}")
-    if not any(re.match(r"\.print\s+tran\b", line, re.IGNORECASE) for line in stripped):
+    if precision is not None:
+        if type(precision) is not int or not 6 <= precision <= 17:
+            raise ValueError("transient print precision must be an integer from6 to17")
+        if any(re.match(r"\.control\b", line, re.IGNORECASE) for line in stripped):
+            raise ValueError("precise transient printing cannot replace an existing control block")
+        printed = " ".join(f"v({name})" for name in signals)
+        additions.extend([".control", f"set numdgt={precision}", "run",
+                          f"print {printed}", "quit", ".endc"])
+    elif not any(re.match(r"\.print\s+tran\b", line, re.IGNORECASE) for line in stripped):
         printed = " ".join(f"v({name})" for name in signals)
         additions.append(f".print tran {printed}" if printed else ".print tran")
     end = next(
@@ -365,7 +374,8 @@ def parse_transient(stdout: str, *, analysis: str,
     """
     columns: list[str] = []
     indexed = False
-    rows: list[list[float]] = []
+    signal_names: list[str] = []
+    samples: dict[tuple[int | None, float], dict[str, float]] = {}
     for raw in (stdout or "").splitlines():
         line = raw.replace("\f", " ").strip()
         if not line:
@@ -378,20 +388,35 @@ def parse_transient(stdout: str, *, analysis: str,
             heading = line.split()
             indexed = heading[0].lower() == "index"
             columns = heading[1:] if indexed else heading
+            for name in columns[1:]:
+                if name.lower() not in signal_names:
+                    signal_names.append(name.lower())
             continue
         if not columns or _RULE_LINE.match(line):
             continue
         tokens = line.split()
         if len(tokens) != len(columns) + (1 if indexed else 0):
             continue
-        if indexed:
-            tokens = tokens[1:]
         try:
+            index = int(tokens[0]) if indexed else None
+            if indexed:
+                tokens = tokens[1:]
             values = [float(token) for token in tokens]
         except ValueError:
             continue
-        rows.append(values)
-    if not columns or not rows:
+        sample = samples.setdefault((index, values[0]), {})
+        for name, value in zip(columns[1:], values[1:], strict=True):
+            name = name.lower()
+            if name in sample and sample[name] != value:
+                return TransientData(analysis=analysis)
+            sample[name] = value
+    # Wide ngspice print tables repeat all sample indices for the next group
+    # of columns. Join by sample identity before thinning; never relabel an
+    # earlier group's values with the final group's header.
+    rows = [[time, *(sample[name] for name in signal_names)]
+            for (_, time), sample in sorted(samples.items(), key=lambda item: item[0][1])
+            if all(name in sample for name in signal_names)]
+    if not signal_names or not rows:
         return TransientData(analysis=analysis)
     total = len(rows)
     if total > limit:
@@ -401,7 +426,7 @@ def parse_transient(stdout: str, *, analysis: str,
             kept.append(rows[-1])
         rows = kept
     series = []
-    for position, name in enumerate(columns[1:], start=1):
+    for position, name in enumerate(signal_names, start=1):
         series.append(TransientSeries(
             name=name.lower(), unit=_series_unit(name),
             values=[row[position] for row in rows],
@@ -527,7 +552,129 @@ class NgspiceAdapter:
         # The existing probe already runs `--version` and explains the KiCad
         # shared-library case; re-deriving that here would be a second answer to
         # the same question.
+        if self.executable is None:
+            return ToolAvailability(
+                name=self.name, status=ToolStatus.UNAVAILABLE, detail=_NGSPICE_MISSING,
+            )
         return NgspiceCli(self.executable).availability()
+
+    def behavior_bench(self, deck: str, *, work_dir: Path) -> dict:
+        """Execute an authored, fully inlined bench with version and raw output.
+
+        A successful process is only an observation. Analytical comparisons are
+        performed separately; this method never declares an electrical pass.
+        """
+        result = {"status": "not_run", "version_output": "", "stdout": "", "stderr": "",
+                  "returncode": None, "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_bench"}
+        if self.executable is None:
+            result["stderr"] = "ngspice executable unavailable"
+            return result
+        try:
+            version = run_tool([self.executable, "-v"], timeout=self.timeout_seconds)
+            result["version_output"] = version.stdout + version.stderr
+            if version.returncode != 0 or not re.search(r"\bngspice(?:[-\s]+version)?[-\s]+42(?:\D|$)", result["version_output"], re.IGNORECASE):
+                result["stderr"] = "ngspice 42 version gate failed"
+                return result
+            # This path accepts trusted authored decks, never file/shell control commands.
+            unsafe = re.compile(r"^\s*(?:\.(?:include|inc|lib)\b|(?:shell|source|cd|write|wrdata|hardcopy)\b)", re.IGNORECASE | re.MULTILINE)
+            if unsafe.search(deck):
+                result["stderr"] = "bench must be inlined and cannot issue file or shell commands"
+                return result
+            work_dir.mkdir(parents=True, exist_ok=True)
+            path = work_dir / "bench.cir"
+            path.write_text(deck, encoding="utf-8", newline="\n")
+            completed = run_tool([self.executable, "-b", str(path.resolve())], timeout=self.timeout_seconds)
+            result.update(stdout=completed.stdout, stderr=completed.stderr, returncode=completed.returncode)
+            result["status"] = "ran" if completed.returncode == 0 and not _error_summary(completed.stdout, completed.stderr) else "failed"
+        except ToolTimeoutError:
+            result.update(status="timed_out", stderr="ngspice timed out")
+        except OSError as exc:
+            result.update(status="failed", stderr=str(exc))
+        return result
+
+    def behavior_circuit(self, compilation, *, work_dir: Path, analysis: str = "op",
+                         tstep: str = DEFAULT_TSTEP, tstop: str = DEFAULT_TSTOP,
+                         observe_nets: list[str] | None = None, rating_context=None,
+                         rating_registry=None, apply_failures: bool = True) -> dict:
+        """Run a compiled CircuitIR model with the same version-gated adapter.
+
+        `ran` records observations, never a design pass. Rating checks are a
+        separate deterministic step and retain the original simulation data.
+        """
+        result = {
+            "status": "not_run", "analysis": analysis, "version_output": "",
+            "netlist_sha256": compilation.netlist_sha256,
+            "circuit_hash": compilation.circuit_hash,
+            "components": [c.model_dump(mode="json") for c in compilation.components],
+            "node_names": compilation.node_names,
+            "source_elements": compilation.source_elements,
+            "limitations": compilation.limitations,
+            "problems": list(compilation.problems), "rating_status": "not_run",
+            "operating_point": None, "transient": None,
+        }
+        if not compilation.runnable:
+            return result
+        if analysis != compilation.analysis:
+            result["problems"].append("Requested analysis differs from the validated compilation")
+            return result
+        if analysis == "op":
+            deck = operating_point_deck(compilation.netlist)
+        elif analysis == "tran":
+            # Reuse the bounded existing transient builder and parser.
+            try:
+                step = parse_quantity(tstep, Unit.SECOND)
+                stop = parse_quantity(tstop, Unit.SECOND)
+                if step.value <= 0 or stop.value < step.value:
+                    raise ValueError("transient requires 0 < step <= stop")
+            except ValueError:
+                result["problems"].append("Invalid transient time value")
+                return result
+            if observe_nets is not None:
+                if (not observe_nets or len(observe_nets) > MAX_TRANSIENT_SIGNALS
+                        or len(set(observe_nets)) != len(observe_nets)
+                        or any(n not in compilation.node_names or compilation.node_names[n] == "0" for n in observe_nets)):
+                    result["problems"].append("Observed nets must be distinct known non-ground nets within the signal limit")
+                    return result
+                signals = [compilation.node_names[n] for n in observe_nets]
+            else:
+                signals = [node for node in compilation.node_names.values() if node != "0"]
+            deck = transient_deck(compilation.netlist, format(step.value, ".17g"),
+                                  format(stop.value, ".17g"), signals[:MAX_TRANSIENT_SIGNALS], precision=15)
+        else:
+            result["problems"].append(f"Unsupported circuit analysis: {analysis}")
+            return result
+        observation = self.behavior_bench(deck, work_dir=work_dir)
+        result.update(observation)
+        result["product_code_path"] = "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit"
+        if observation["status"] != "ran":
+            return result
+        if analysis == "op":
+            point = parse_operating_point(observation["stdout"])
+            if not point.node_voltages and not point.branch_currents:
+                result.update(status="failed", problems=["ngspice returned no operating-point observations"])
+            else:
+                result["operating_point"] = point.model_dump(mode="json")
+        else:
+            curve = parse_transient(observation["stdout"], analysis="tran")
+            if not curve.sample_count or not curve.series:
+                result.update(status="failed", problems=["ngspice returned no transient observations"])
+            else:
+                result["transient"] = curve.model_dump(mode="json")
+        from ..behavior.loader import default_behavior_registry
+        from ..behavior.ratings import RatingContext, apply_open_faults, evaluate_ratings
+
+        registry = rating_registry or default_behavior_registry()
+        context = RatingContext.model_validate(rating_context or {})
+        result["ratings"] = evaluate_ratings(compilation, result, registry, context)
+        result["rating_status"] = result["ratings"]["status"]
+        if apply_failures and result["ratings"]["fault_requests"]:
+            faulted = apply_open_faults(compilation, result["ratings"]["fault_requests"])
+            failure = self.behavior_circuit(faulted, work_dir=work_dir / "failure", analysis=analysis,
+                                          rating_context=context, rating_registry=registry, apply_failures=False)
+            failure.update(ratings=None, rating_status="failure_approximation",
+                           limitation="Authored open-circuit substitution; not a physical damage prediction")
+            result["failure_rerun"] = failure
+        return result
 
     def operating_point(self, netlist: str, run_id: str, *,
                         work_dir: Path | None = None) -> SimulationRun:

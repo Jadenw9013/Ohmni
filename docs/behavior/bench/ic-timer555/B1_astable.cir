@@ -1,0 +1,35 @@
+* BEH-IC-TIMER555 B1: astable. R1=1k R2=10k C=10 nF, Vcc=5 V.
+* v2: scalars printed as 'name = value'; added f_vs_ti_formula_pct (percent deviation from the TI formula); behavior unchanged
+* Analytic (TI SLFS022K): f = 1.44/((R1+2R2)C) = 6857 Hz ; tH = 0.693(R1+R2)C = 76.2 us ; tL = 0.693 R2 C = 69.3 us ; duty = (R1+R2)/(R1+2R2) = 52.38 %
+* Exact ideal-comparator values: ln2 = 0.6931 (vs 0.693) -> f_exact = 1/(ln2*21k*10n) = 6870 Hz
+* BUT R1 is only 1k, so the discharge pin (pulled to Vcc through R1, pulled down by Ron=30 ohm) sits at Vd = Vcc*Ron/(R1+Ron) = 0.1456 V while discharging:
+*   tL = R2*C*ln((Vh-Vd)/(Vl-Vd)) = 10k*10n*ln((3.3333-0.1456)/(1.6667-0.1456)) = 73.95 us ; tH = ln2*(R1+R2)*C = 76.2 us -> T = 150.2 us, f = 6658 Hz, duty 50.7 %
+* Both expectations are recorded in the class text: TI formula 6857 Hz (-2.9 %), Ron-aware 6658 Hz (+-1 %).
+.include ne555.lib
+Vcc vcc 0 5
+X1 0 trig out vcc cnt trig dis vcc ne555
+Cc cnt 0 10n
+R1 vcc dis 1k
+R2 dis trig 10k
+C1 trig 0 10n
+.tran 20n 4m uic
+.control
+set noaskquit
+run
+meas tran t1 when v(out)=2.5 rise=3
+meas tran t2 when v(out)=2.5 rise=4
+meas tran tf when v(out)=2.5 fall=3
+let per = t2-t1
+let f = 1/per
+let duty = (tf-t1)/per
+let per_us = per*1e6
+echo f_b1_hz = $&f
+echo period_b1_us = $&per_us
+echo duty_b1 = $&duty
+* deviation of the simulated frequency from the TI formula 1.44/((R1+2R2)C) = 6857.14 Hz, in percent (Ron-aware analytic: -2.9 %)
+let f_ti = 1.44/((1k+2*10k)*10n)
+let f_vs_ti_pct = (f/f_ti-1)*100
+echo f_vs_ti_formula_pct = $&f_vs_ti_pct
+quit
+.endc
+.end

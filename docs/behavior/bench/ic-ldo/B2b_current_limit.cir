@@ -1,0 +1,20 @@
+* BEH-IC-LDO-SOT235 B2b: current-limit fold. Vin=5 V, resistive load 3 ohm (demand 1.1 A > Icl 0.43 A).
+* v2: scalars printed as 'name = value' (vout_cl_v, iout_cl_a); behavior unchanged
+* Thermal limiter disabled (rth=0.001) to isolate the current limit (at 5 V in and 3 ohm the real part would also overheat: Pd ~1.6 W vs thetaJA 235.9 C/W).
+* Implemented limit: I = icl*tanh(Iraw/icl) -> with Iraw>>icl, I -> 0.43 A, Vo = 3*0.43 = 1.29 V
+.include tlv700.lib
+Vin in 0 5
+Ven en 0 5
+X1 in 0 en out tlv700 rth=0.001
+Rl out 0 3
+.nodeset v(x1.tj)=25 v(x1.ts)=0 v(out)=3.0
+.control
+set noaskquit
+op
+let io = v(out)/3
+let vo = v(out)
+echo vout_cl_v = $&vo
+echo iout_cl_a = $&io
+quit
+.endc
+.end

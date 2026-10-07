@@ -1,0 +1,3994 @@
+{
+  "declarations": [
+    {
+      "behavior_id": "BEH-CAP-ALEL",
+      "declaration": {
+        "check": "v(p,n) <= VR",
+        "condition": "DC",
+        "name": "rated_voltage",
+        "source_ref": "S11",
+        "symbol": "VR",
+        "unit": "V",
+        "value": "per part"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CAP-ALEL",
+      "declaration": {
+        "check": "v(p,n) >= -1",
+        "condition": "cathode oxide withstand",
+        "name": "reverse_voltage",
+        "source_ref": "S12",
+        "symbol": "Vrev",
+        "unit": "V",
+        "value": 1.0
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CAP-ALEL",
+      "declaration": {
+        "check": "Irms <= Irated(f,T)",
+        "condition": "Irms^2*ESR",
+        "name": "ripple_power",
+        "source_ref": "S12",
+        "symbol": "P",
+        "unit": "W",
+        "value": "per part"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CAP-ALEL",
+      "declaration": {
+        "effect": "gas generation, vent opens, rupture possible",
+        "id": "reverse_voltage",
+        "permanence": "permanent",
+        "sim_response": "flag bit 2; mark failed (open after venting)",
+        "trigger": "v(p,n) < -1 V"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CAP-ALEL",
+      "declaration": {
+        "effect": "oxide stress, leakage rise",
+        "id": "overvoltage",
+        "permanence": "permanent",
+        "sim_response": "flag bit 1",
+        "trigger": "v(p,n) > VR"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CAP-ALEL",
+      "declaration": {
+        "effect": "core heating, life loss",
+        "id": "ripple_overheat",
+        "permanence": "recoverable",
+        "sim_response": "post-check flag and life estimate",
+        "trigger": "Irms > Irated"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CAP-ALPOLY",
+      "declaration": {
+        "check": "v(p,n) <= VR*DER",
+        "condition": "continuous",
+        "name": "derated_voltage",
+        "source_ref": "S17",
+        "symbol": "Vop",
+        "unit": "V",
+        "value": "VR*DER"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CAP-ALPOLY",
+      "declaration": {
+        "check": "abs(i) <= 10",
+        "condition": "conductive polymer types, Nichicon guideline",
+        "name": "rush_current",
+        "source_ref": "S11",
+        "symbol": "Irush",
+        "unit": "A",
+        "value": 10
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CAP-ALPOLY",
+      "declaration": {
+        "effect": "short circuit or leakage rise",
+        "id": "rush",
+        "permanence": "permanent",
+        "sim_response": "flag bit 4",
+        "trigger": "|i| > 10 A"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CAP-ALPOLY",
+      "declaration": {
+        "effect": "assumed damage (not sourced)",
+        "id": "reverse",
+        "permanence": "permanent",
+        "sim_response": "flag bit 2",
+        "trigger": "v(p,n) < -0.1 V"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CAP-ALPOLY",
+      "declaration": {
+        "effect": "open mode, capacitance decrease",
+        "id": "wearout",
+        "permanence": "permanent",
+        "sim_response": "life estimate only",
+        "trigger": "life exceeded"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CAP-CERAMIC",
+      "declaration": {
+        "check": "abs(v(p,n)) <= VR",
+        "condition": "DC, 25 C",
+        "name": "rated_voltage",
+        "source_ref": "S4",
+        "symbol": "VR",
+        "unit": "V",
+        "value": "per part"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CAP-CERAMIC",
+      "declaration": {
+        "check": "Tamb + dT <= 85",
+        "condition": "X5R",
+        "name": "temperature_range_X5R",
+        "source_ref": "S4",
+        "symbol": "T",
+        "unit": "C",
+        "value": "-55..85"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CAP-CERAMIC",
+      "declaration": {
+        "check": "Tamb + dT <= 125",
+        "condition": "X7R, C0G",
+        "name": "temperature_range_X7R_C0G",
+        "source_ref": "S8",
+        "symbol": "T",
+        "unit": "C",
+        "value": "-55..125"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CAP-CERAMIC",
+      "declaration": {
+        "effect": "dielectric stress; breakdown is a short",
+        "id": "overvoltage",
+        "permanence": "permanent",
+        "sim_response": "flag bit 1; at >= 2.5*VR mark failed short (1 mohm)",
+        "trigger": "|V| > VR"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CAP-CERAMIC",
+      "declaration": {
+        "effect": "capacitance falls to C0/(1+(V/V0)^2)",
+        "id": "bias_loss",
+        "permanence": "recoverable",
+        "sim_response": "model derating; flag if C_eff/C0 < 0.5",
+        "trigger": "Class 2 under DC bias"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CAP-CERAMIC",
+      "declaration": {
+        "effect": "out-of-spec C and ESR",
+        "id": "overtemp",
+        "permanence": "recoverable",
+        "sim_response": "flag",
+        "trigger": "outside dielectric range"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CAP-EDLC",
+      "declaration": {
+        "check": "v(p,n) <= 2.5",
+        "condition": "up to 70 C",
+        "name": "rated_voltage",
+        "source_ref": "S24",
+        "symbol": "VR",
+        "unit": "V",
+        "value": 2.5
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CAP-EDLC",
+      "declaration": {
+        "check": "v(p,n) <= 2.8",
+        "condition": "momentary",
+        "name": "surge_voltage",
+        "source_ref": "S24",
+        "symbol": "Vs",
+        "unit": "V",
+        "value": 2.8
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CAP-EDLC",
+      "declaration": {
+        "check": "I_balance >= 50*I_leak",
+        "condition": "passive balancing",
+        "name": "balancing_current",
+        "source_ref": "S23",
+        "symbol": "Ibal",
+        "unit": "A",
+        "value": "50 x worst leakage"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CAP-EDLC",
+      "declaration": {
+        "effect": "degradation, gas",
+        "id": "overvoltage",
+        "permanence": "permanent",
+        "sim_response": "flag bit 1",
+        "trigger": "v > VR"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CAP-EDLC",
+      "declaration": {
+        "effect": "venting or rupture",
+        "id": "reverse",
+        "permanence": "permanent",
+        "sim_response": "flag bit 2",
+        "trigger": "v < 0"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CAP-EDLC",
+      "declaration": {
+        "effect": "peak current V/ESR; stored energy 0.5*C*V^2",
+        "id": "hard_short",
+        "permanence": "recoverable",
+        "sim_response": "report and hazard note",
+        "trigger": "terminals shorted"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CAP-FILM",
+      "declaration": {
+        "check": "Vrms <= 275",
+        "condition": "X2 MKP, 50/60 Hz",
+        "name": "rated_voltage_ac",
+        "source_ref": "S20",
+        "symbol": "Vac",
+        "unit": "Vrms",
+        "value": 275
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CAP-FILM",
+      "declaration": {
+        "check": "abs(v) <= 388.9",
+        "condition": "AC peak of 275 Vrms",
+        "name": "peak_voltage",
+        "source_ref": "S20",
+        "symbol": "Vpk",
+        "unit": "V",
+        "value": 388.9
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CAP-FILM",
+      "declaration": {
+        "check": "Tamb <= 105",
+        "condition": "X2 MKP upper limit",
+        "name": "temperature",
+        "source_ref": "S20",
+        "symbol": "T",
+        "unit": "C",
+        "value": 105
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CAP-FILM",
+      "declaration": {
+        "effect": "breakdown, self-healing or permanent damage",
+        "id": "overvoltage",
+        "permanence": "permanent",
+        "sim_response": "flag bit 1",
+        "trigger": "abs(v) > VRPK"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CAP-FILM",
+      "declaration": {
+        "effect": "retained charge hazard",
+        "id": "x2_no_bleeder",
+        "permanence": "recoverable",
+        "sim_response": "checker rule",
+        "trigger": "X2 across mains without discharge path"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CAP-MICA",
+      "declaration": {
+        "check": "abs(v(p,n)) <= VR",
+        "condition": "100..2500 Vdc by type",
+        "name": "rated_voltage",
+        "source_ref": "S22",
+        "symbol": "VR",
+        "unit": "V",
+        "value": "per part"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CAP-MICA",
+      "declaration": {
+        "check": "Tamb <= 125",
+        "condition": "standard (O); 150 C option (P) on selected types",
+        "name": "temperature",
+        "source_ref": "S22",
+        "symbol": "T",
+        "unit": "C",
+        "value": "-55..125"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CAP-MICA",
+      "declaration": {
+        "effect": "dielectric puncture (not sourced)",
+        "id": "overvoltage",
+        "permanence": "permanent",
+        "sim_response": "flag bit 1",
+        "trigger": "abs(v) > VR"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CAP-TANT",
+      "declaration": {
+        "check": "v(p,n) <= DER*VR",
+        "condition": "continuous, DER 0.5 MnO2, 0.8 polymer >10 V, 0.9 polymer <=10 V",
+        "name": "derated_voltage",
+        "source_ref": "S16",
+        "symbol": "Vop",
+        "unit": "V",
+        "value": "DER*VR"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CAP-TANT",
+      "declaration": {
+        "check": "v(p,n) <= 1.32*VR",
+        "condition": "KEMET surge test",
+        "name": "surge_test_voltage",
+        "source_ref": "S18",
+        "symbol": "Vsurge",
+        "unit": "x VR",
+        "value": 1.32
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CAP-TANT",
+      "declaration": {
+        "check": "v(p,n) >= -0.03*VR",
+        "condition": "transient only, 3% at 105 C, 15% at 25 C",
+        "name": "reverse_transient",
+        "source_ref": "S19",
+        "symbol": "Vrev",
+        "unit": "x VR",
+        "value": "0.03..0.15 of VR"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CAP-TANT",
+      "declaration": {
+        "effect": "dielectric breakdown; short; MnO2 may ignite",
+        "id": "overvoltage_surge",
+        "permanence": "permanent",
+        "sim_response": "flag bit 8; short 10 mohm; ignition risk flag for MnO2",
+        "trigger": "v > 1.32*VR"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CAP-TANT",
+      "declaration": {
+        "effect": "short, MnO2 ignition",
+        "id": "inrush",
+        "permanence": "permanent",
+        "sim_response": "flag bit 4 when IPK set",
+        "trigger": "stiff-source power-on"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CAP-TANT",
+      "declaration": {
+        "effect": "permanent damage",
+        "id": "reverse",
+        "permanence": "permanent",
+        "sim_response": "flag bit 2; short",
+        "trigger": "steady reverse"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-AUDIO",
+      "declaration": {
+        "check": "abs(i(Rt)) <= 1.0",
+        "condition": "SJ1-353xNG",
+        "name": "current",
+        "source_ref": "S21",
+        "symbol": "I",
+        "unit": "A",
+        "value": 1.0
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-AUDIO",
+      "declaration": {
+        "check": "abs(v(t,s)) <= 12",
+        "condition": "DC rated",
+        "name": "voltage",
+        "source_ref": "S21",
+        "symbol": "V",
+        "unit": "V",
+        "value": 12
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-AUDIO",
+      "declaration": {
+        "effect": "burn or weld",
+        "id": "switch_overcurrent",
+        "permanence": "permanent",
+        "sim_response": "flag",
+        "trigger": "above 1 A through switch contact"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-AUDIO",
+      "declaration": {
+        "effect": "ground and mic swapped",
+        "id": "wrong_standard",
+        "permanence": "recoverable",
+        "sim_response": "plug_type flag",
+        "trigger": "CTIA/OMTP mismatch"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-DCJACK",
+      "declaration": {
+        "check": "abs(i)<=2.5",
+        "condition": "continuous",
+        "name": "current",
+        "source_ref": "S1",
+        "symbol": "I",
+        "unit": "A",
+        "value": 2.5
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-DCJACK",
+      "declaration": {
+        "check": "v<=24",
+        "condition": "S1 rev 1.07; S2 older copy says 16",
+        "name": "voltage",
+        "source_ref": "S1",
+        "symbol": "V",
+        "unit": "V",
+        "value": 24
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-DCJACK",
+      "declaration": {
+        "check": "Tamb+dT<=85",
+        "condition": "Tamb + rise",
+        "name": "temperature_max",
+        "source_ref": "S1",
+        "symbol": "T",
+        "unit": "degC",
+        "value": 85
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-DCJACK",
+      "declaration": {
+        "effect": "contact heating",
+        "id": "overcurrent",
+        "permanence": "permanent",
+        "sim_response": "flag; R(T) feedback",
+        "trigger": "I>2.5 A"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-DCJACK",
+      "declaration": {
+        "effect": "dielectric margin",
+        "id": "overvoltage",
+        "permanence": "recoverable",
+        "sim_response": "flag",
+        "trigger": "V>24 V"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-DCJACK",
+      "declaration": {
+        "effect": "Rc grows",
+        "id": "wear",
+        "permanence": "permanent",
+        "sim_response": "Rc multiplier",
+        "trigger": ">5000 cycles"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-FFC",
+      "declaration": {
+        "check": "abs(i_k)<=0.5*(0.7 if all_loaded else 1)",
+        "condition": "single contact; 0.35 A each if all loaded",
+        "name": "contact_current",
+        "source_ref": "S11",
+        "symbol": "I",
+        "unit": "A",
+        "value": 0.5
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-FFC",
+      "declaration": {
+        "check": "abs(v)<=50",
+        "condition": "",
+        "name": "voltage",
+        "source_ref": "S11",
+        "symbol": "V",
+        "unit": "V_AC",
+        "value": 50
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-FFC",
+      "declaration": {
+        "check": "Tamb<=85",
+        "condition": "includes self-heating",
+        "name": "temperature_max",
+        "source_ref": "S11",
+        "symbol": "T",
+        "unit": "degC",
+        "value": 85
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-FFC",
+      "declaration": {
+        "effect": "heating",
+        "id": "overcurrent",
+        "permanence": "permanent",
+        "sim_response": "flag",
+        "trigger": "I_k>0.5 A"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-FFC",
+      "declaration": {
+        "effect": "per-contact overload",
+        "id": "uneven_sharing",
+        "permanence": "permanent",
+        "sim_response": "per-contact check",
+        "trigger": "paralleled contacts"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-HDMI",
+      "declaration": {
+        "check": "abs(i(Rc_n)) <= 0.5",
+        "condition": "per contact",
+        "name": "contact_current",
+        "source_ref": "S12",
+        "symbol": "I",
+        "unit": "A",
+        "value": 0.5
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-HDMI",
+      "declaration": {
+        "check": "abs(v) <= 40",
+        "condition": "AC",
+        "name": "voltage",
+        "source_ref": "S12",
+        "symbol": "V",
+        "unit": "V",
+        "value": 40
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-HDMI",
+      "declaration": {
+        "effect": "source supply damage",
+        "id": "back_power",
+        "permanence": "permanent",
+        "sim_response": "flag",
+        "trigger": "+5 V driven from the sink side"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-HDMI",
+      "declaration": {
+        "effect": "TMDS/HPD/DDC damage",
+        "id": "esd_hotplug",
+        "permanence": "permanent",
+        "sim_response": "flag missing ESD array",
+        "trigger": "hot plug discharge"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-HEADER",
+      "declaration": {
+        "check": "I > Irated*k(N_loaded)",
+        "condition": "per contact, conservative; Samtec 4.7-6.3 A",
+        "name": "current",
+        "source_ref": "S1",
+        "symbol": "I",
+        "unit": "A",
+        "value": 3
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-HEADER",
+      "declaration": {
+        "check": "V > Vwork",
+        "condition": "Samtec mated SSW, AC",
+        "name": "working_voltage",
+        "source_ref": "S1",
+        "symbol": "V",
+        "unit": "V",
+        "value": 465
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-HEADER",
+      "declaration": {
+        "check": "Tcontact > Tmax",
+        "condition": "tin / Wurth / Harwin; gold Samtec 125",
+        "name": "temperature",
+        "source_ref": "S1",
+        "symbol": "T",
+        "unit": "degC",
+        "value": 105
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-HEADER",
+      "declaration": {
+        "effect": "contact heating, housing softening",
+        "id": "overcurrent",
+        "permanence": "permanent",
+        "sim_response": "flag, damaged above Tmax",
+        "trigger": "I > Irated*k"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-HEADER",
+      "declaration": {
+        "effect": "melt",
+        "id": "thermal_runaway",
+        "permanence": "permanent",
+        "sim_response": "flag, open",
+        "trigger": "I >= I_run"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-HEADER",
+      "declaration": {
+        "effect": "Rc rises",
+        "id": "wear",
+        "permanence": "permanent",
+        "sim_response": "Rc x2",
+        "trigger": "mating cycles > rated"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-MODJACK",
+      "declaration": {
+        "check": "abs(i(Rc_n)) <= 1.5",
+        "condition": "DC per contact",
+        "name": "contact_current",
+        "source_ref": "S15",
+        "symbol": "I",
+        "unit": "A",
+        "value": 1.5
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-MODJACK",
+      "declaration": {
+        "check": "abs(v) <= 125*sqrt(2)",
+        "condition": "rms",
+        "name": "voltage",
+        "source_ref": "S15",
+        "symbol": "V",
+        "unit": "V_ac",
+        "value": 125
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-MODJACK",
+      "declaration": {
+        "check": "abs(v_barrier) <= 1500",
+        "condition": "magjack, 1 min",
+        "name": "hipot",
+        "source_ref": "S16",
+        "symbol": "V_iso",
+        "unit": "V_rms",
+        "value": 1500
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-MODJACK",
+      "declaration": {
+        "effect": "175 V peak on PHY pair",
+        "id": "ring_voltage_on_ethernet",
+        "permanence": "permanent",
+        "sim_response": "flag over PHY rating",
+        "trigger": "telephone line connected to Ethernet jack"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-MODJACK",
+      "declaration": {
+        "effect": "isolation failure",
+        "id": "hipot_breakdown",
+        "permanence": "permanent",
+        "sim_response": "flag",
+        "trigger": "barrier voltage above hipot"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-RF",
+      "declaration": {
+        "check": "f<=f_max",
+        "condition": "U.FL; SMA 18e9",
+        "name": "frequency",
+        "source_ref": "S5",
+        "symbol": "f",
+        "unit": "Hz",
+        "value": "6e9"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-RF",
+      "declaration": {
+        "check": "vswr(f)<=vswr_max",
+        "condition": "U.FL 3-6 GHz",
+        "name": "vswr",
+        "source_ref": "S5",
+        "symbol": "VSWR",
+        "unit": "ratio",
+        "value": 1.5
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-RF",
+      "declaration": {
+        "check": "abs(v)<=100",
+        "condition": "U.FL",
+        "name": "dc_voltage",
+        "source_ref": "S5",
+        "symbol": "V",
+        "unit": "V",
+        "value": 100
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-RF",
+      "declaration": {
+        "effect": "wear, VSWR",
+        "id": "overcycled",
+        "permanence": "permanent",
+        "sim_response": "derate",
+        "trigger": ">30 cycles (U.FL)"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-RF",
+      "declaration": {
+        "effect": "VSWR step",
+        "id": "bad_launch",
+        "permanence": "recoverable",
+        "sim_response": "step element",
+        "trigger": "pad geometry mismatch"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-SDSOCKET",
+      "declaration": {
+        "check": "abs(i)<=0.5",
+        "condition": "per contact",
+        "name": "contact_current",
+        "source_ref": "S13",
+        "symbol": "I",
+        "unit": "A",
+        "value": 0.5
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-SDSOCKET",
+      "declaration": {
+        "check": "2.7<=vcc<=3.6",
+        "condition": "card, min 2.7",
+        "name": "supply_voltage",
+        "source_ref": "S16",
+        "symbol": "Vcc",
+        "unit": "V",
+        "value": 3.6
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-SDSOCKET",
+      "declaration": {
+        "check": "regulator_ilim>=0.2",
+        "condition": "high speed, 1 s average; 500 mA other functions",
+        "name": "card_current",
+        "source_ref": "S16",
+        "symbol": "Icard",
+        "unit": "A",
+        "value": 0.2
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-SDSOCKET",
+      "declaration": {
+        "effect": "rail collapse or droop",
+        "id": "weak_regulator",
+        "permanence": "recoverable",
+        "sim_response": "SUPPLY_COLLAPSE flag when vcc<2.7",
+        "trigger": "card current > regulator limit"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-SDSOCKET",
+      "declaration": {
+        "effect": "bus undefined",
+        "id": "no_pullup",
+        "permanence": "recoverable",
+        "sim_response": "ERC flag",
+        "trigger": "CMD/DAT floating"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-TERMINAL",
+      "declaration": {
+        "check": "I > min(Irated, ampacity(AWG))",
+        "condition": "MSTB 2.5 at 2.5 mm2; MKDS 17.5 A",
+        "name": "current",
+        "source_ref": "S1",
+        "symbol": "I",
+        "unit": "A",
+        "value": 12
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-TERMINAL",
+      "declaration": {
+        "check": "V > Vrated",
+        "condition": "III/2, MSTB",
+        "name": "voltage",
+        "source_ref": "S1",
+        "symbol": "V",
+        "unit": "V",
+        "value": 320
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-TERMINAL",
+      "declaration": {
+        "effect": "clamp and housing overheating",
+        "id": "overcurrent",
+        "permanence": "permanent",
+        "sim_response": "flag, damaged above Tmax",
+        "trigger": "I > I_allowed"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-TERMINAL",
+      "declaration": {
+        "effect": "I^2R heating",
+        "id": "loose_clamp",
+        "permanence": "recoverable",
+        "sim_response": "report power and dT",
+        "trigger": "Rclamp raised by user"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-USB",
+      "declaration": {
+        "check": "sum(i(Rvbus_k)) <= 5.0",
+        "condition": "4 VBUS pins collectively, GCT USB4105",
+        "name": "typec_vbus_group_current",
+        "source_ref": "S1",
+        "symbol": "I_vbus",
+        "unit": "A",
+        "value": 5.0
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-USB",
+      "declaration": {
+        "check": "sum(i(Rgnd_k)) <= 6.25",
+        "condition": "GND collectively",
+        "name": "typec_gnd_group_current",
+        "source_ref": "S1",
+        "symbol": "I_gnd",
+        "unit": "A",
+        "value": 6.25
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-USB",
+      "declaration": {
+        "check": "abs(i(R_pin)) <= 0.25",
+        "condition": "per pin other than VBUS, GND, B5",
+        "name": "typec_pin_current",
+        "source_ref": "S1",
+        "symbol": "I_pin",
+        "unit": "A",
+        "value": 0.25
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-USB",
+      "declaration": {
+        "check": "abs(v(vbus)) <= 30",
+        "condition": "AC rms, Molex 105017",
+        "name": "microb_voltage",
+        "source_ref": "S9",
+        "symbol": "V",
+        "unit": "V",
+        "value": 30
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-USB",
+      "declaration": {
+        "check": "v(vbus) >= 4.75 and v(vbus) <= 5.25",
+        "condition": "host port",
+        "name": "usb2_vbus_range",
+        "source_ref": "S8",
+        "symbol": "VBUS",
+        "unit": "V",
+        "value": "4.75..5.25"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-USB",
+      "declaration": {
+        "effect": "heating, plating wear",
+        "id": "over_current_contact",
+        "permanence": "permanent",
+        "sim_response": "flag; overtemperature check",
+        "trigger": "I > rating"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-USB",
+      "declaration": {
+        "effect": "CC pin sees 5 V or more",
+        "id": "vbus_to_cc_leak",
+        "permanence": "permanent",
+        "sim_response": "flag abs(v(cc)) > 5.5",
+        "trigger": "contamination between VBUS and CC pins"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-USB",
+      "declaration": {
+        "effect": "Type-C source never turns on VBUS",
+        "id": "missing_rd",
+        "permanence": "recoverable",
+        "sim_response": "CC voltage above 2.04 V means no attach; DRC usbc.rd_required",
+        "trigger": "no 5.1k on a CC pin"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-USB",
+      "declaration": {
+        "effect": "vCC 0.074 V, below attach threshold",
+        "id": "shared_rd",
+        "permanence": "recoverable",
+        "sim_response": "flag detach",
+        "trigger": "one resistor for both CC pins"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-USB",
+      "declaration": {
+        "effect": "PHY damage if unprotected",
+        "id": "esd",
+        "permanence": "permanent",
+        "sim_response": "flag D+/D-/CC/VBUS without ESD part",
+        "trigger": "plug or cable discharge"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-WTB",
+      "declaration": {
+        "check": "I > Irated",
+        "condition": "PH AWG24; XH 3 A AWG22; SH 1 A AWG28; KK 4 A AWG22",
+        "name": "current",
+        "source_ref": "S1",
+        "symbol": "I",
+        "unit": "A",
+        "value": 2
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-WTB",
+      "declaration": {
+        "check": "V > Vwork",
+        "condition": "PH; XH 250; SH 50; KK 250",
+        "name": "voltage",
+        "source_ref": "S1",
+        "symbol": "V",
+        "unit": "V",
+        "value": 100
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-WTB",
+      "declaration": {
+        "effect": "heating and housing damage",
+        "id": "overcurrent",
+        "permanence": "permanent",
+        "sim_response": "flag, damaged above Tmax",
+        "trigger": "I > Irated"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-WTB",
+      "declaration": {
+        "effect": "downstream part sees reversed supply",
+        "id": "reverse_polarity",
+        "permanence": "recoverable",
+        "sim_response": "no connector response; downstream models respond",
+        "trigger": "cable pin assignment crossed"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-XT",
+      "declaration": {
+        "check": "abs(i)<=I_cont",
+        "condition": "XT60; XT30 is 15",
+        "name": "current_continuous",
+        "source_ref": "S3",
+        "symbol": "I",
+        "unit": "A",
+        "value": 30
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-XT",
+      "declaration": {
+        "check": "abs(i)<=I_peak and thermal tran ok",
+        "condition": "instantaneous; duration unspecified",
+        "name": "current_peak",
+        "source_ref": "S3",
+        "symbol": "Ipk",
+        "unit": "A",
+        "value": 60
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-XT",
+      "declaration": {
+        "check": "Tamb+dT<=120",
+        "condition": "Tamb + rise",
+        "name": "temperature_max",
+        "source_ref": "S3",
+        "symbol": "T",
+        "unit": "degC",
+        "value": 120
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-CON-XT",
+      "declaration": {
+        "effect": "heating, PA softening",
+        "id": "overcurrent",
+        "permanence": "permanent",
+        "sim_response": "flag, R(T)",
+        "trigger": "I>I_cont"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-XT",
+      "declaration": {
+        "effect": "arc and fire hazard",
+        "id": "battery_short",
+        "permanence": "permanent",
+        "sim_response": "CRITICAL flag",
+        "trigger": "short without fuse"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-CON-XT",
+      "declaration": {
+        "effect": "inrush spark",
+        "id": "hot_plug_arc",
+        "permanence": "permanent",
+        "sim_response": "flag peak > I_peak",
+        "trigger": "connect into low-ESR cap"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-DIO-BRIDGE",
+      "declaration": {
+        "check": "mean(i_out) <= IF_AV*(150-Ta)/(150-40)",
+        "condition": "DFM, TA 40 C, pads 13x13 mm",
+        "name": "average_forward",
+        "source_ref": "S19",
+        "symbol": "IF(AV)",
+        "unit": "A",
+        "value": 1.0
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-DIO-BRIDGE",
+      "declaration": {
+        "check": "i_pk <= IFSM",
+        "condition": "8.3 ms half sine",
+        "name": "surge",
+        "source_ref": "S19",
+        "symbol": "IFSM",
+        "unit": "A",
+        "value": 50
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-DIO-BRIDGE",
+      "declaration": {
+        "check": "max(v_ac_pk) <= VRRM",
+        "condition": "DF10M",
+        "name": "reverse_voltage",
+        "source_ref": "S19",
+        "symbol": "VRRM",
+        "unit": "V",
+        "value": 1000
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-DIO-BRIDGE",
+      "declaration": {
+        "effect": "overheat, element shorts",
+        "id": "overcurrent",
+        "permanence": "permanent",
+        "sim_response": "WARN, FAIL 120%, failed_short on D1",
+        "trigger": "mean current above rating"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-DIO-BRIDGE",
+      "declaration": {
+        "effect": "two-diode short path",
+        "id": "dc_reverse_connection",
+        "permanence": "permanent",
+        "sim_response": "netlist reproduces; miswire flag",
+        "trigger": "DC supply across +/- pins reversed"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-DIO-PN",
+      "declaration": {
+        "check": "max(vr) <= VRRM",
+        "condition": "1N4148 (1N4007: 1000 V)",
+        "name": "repetitive_peak_reverse",
+        "source_ref": "S1",
+        "symbol": "VRRM",
+        "unit": "V",
+        "value": 100
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-DIO-PN",
+      "declaration": {
+        "check": "mean(i_f) <= IF_derated(Ta)",
+        "condition": "conservative among 200 to 300 mA sources (1N4007: IF(AV) 1.0 A at TA 75 C)",
+        "name": "forward_current",
+        "source_ref": "S1",
+        "symbol": "IF",
+        "unit": "A",
+        "value": 0.2
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-DIO-PN",
+      "declaration": {
+        "check": "i_pk <= IFSM*sqrt(t_ref/t)",
+        "condition": "1 us, 1N4148 Vishay (Nexperia 4 A); 1N4007 30 A 8.3 ms",
+        "name": "surge",
+        "source_ref": "S1",
+        "symbol": "IFSM",
+        "unit": "A",
+        "value": 2.0
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-DIO-PN",
+      "declaration": {
+        "check": "Ta + RthJA*Pd <= TJmax",
+        "condition": "signal types",
+        "name": "junction_temperature",
+        "source_ref": "S1",
+        "symbol": "TJmax",
+        "unit": "C",
+        "value": 175
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-DIO-PN",
+      "declaration": {
+        "effect": "overheat, usually shorts",
+        "id": "overcurrent",
+        "permanence": "permanent",
+        "sim_response": "WARN 100%, FAIL 120%, then failed_short",
+        "trigger": "mean IF above rating or Tj above TJmax"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-DIO-PN",
+      "declaration": {
+        "effect": "die or bond wire damage, usually short, extreme energy open",
+        "id": "surge",
+        "permanence": "permanent",
+        "sim_response": "FAIL, failed_short (option failed_open)",
+        "trigger": "pulse above IFSM"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-DIO-PN",
+      "declaration": {
+        "effect": "avalanche hot spot, short",
+        "id": "reverse_overvoltage",
+        "permanence": "permanent",
+        "sim_response": "WARN 0.8*VRRM, FAIL above VRRM",
+        "trigger": "VR above VRRM on non-avalanche-rated type"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-DIO-SCHOTTKY",
+      "declaration": {
+        "check": "max(vr) <= VRRM",
+        "condition": "SS14",
+        "name": "repetitive_peak_reverse",
+        "source_ref": "S10",
+        "symbol": "VRRM",
+        "unit": "V",
+        "value": 40
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-DIO-SCHOTTKY",
+      "declaration": {
+        "check": "mean(if) <= IF(AV)",
+        "condition": "SS14 SMA",
+        "name": "average_forward",
+        "source_ref": "S10",
+        "symbol": "IF(AV)",
+        "unit": "A",
+        "value": 1.0
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-DIO-SCHOTTKY",
+      "declaration": {
+        "check": "i_pk <= IFSM*sqrt(t_ref/t)",
+        "condition": "8.3 ms half sine SS14",
+        "name": "surge",
+        "source_ref": "S10",
+        "symbol": "IFSM",
+        "unit": "A",
+        "value": 40
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-DIO-SCHOTTKY",
+      "declaration": {
+        "check": "Rth*VR*IR_ref*aT*exp(aT*(Tj-25)) < 1",
+        "condition": "Rth*VR*IR*aT*exp(aT*(Tj-25)) < 1",
+        "name": "runaway_stability",
+        "source_ref": "S10",
+        "symbol": "-",
+        "unit": "1",
+        "value": 1
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-DIO-SCHOTTKY",
+      "declaration": {
+        "effect": "leakage heating runaway, shorts",
+        "id": "thermal_runaway",
+        "permanence": "permanent",
+        "sim_response": "FAIL, failed_short",
+        "trigger": "stability inequality violated or Tj >= TJmax"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-DIO-SCHOTTKY",
+      "declaration": {
+        "effect": "junction damage",
+        "id": "reverse_overvoltage",
+        "permanence": "permanent",
+        "sim_response": "WARN 0.8, FAIL 1.0 x VRRM",
+        "trigger": "VR above VRRM"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-DIO-TVS",
+      "declaration": {
+        "check": "max(v*i) <= PPPM*derate(Tj)",
+        "condition": "10/1000 us, 25 C (SMBJ); SMAJ 400 W; SMCJ 1500 W",
+        "name": "peak_pulse_power",
+        "source_ref": "S16",
+        "symbol": "PPPM",
+        "unit": "W",
+        "value": 600
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-DIO-TVS",
+      "declaration": {
+        "check": "V_rail_max <= VWM",
+        "condition": "SMBJ15A",
+        "name": "standoff",
+        "source_ref": "S16",
+        "symbol": "VWM",
+        "unit": "V",
+        "value": 15
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-DIO-TVS",
+      "declaration": {
+        "check": "i_forward_pk <= IFSM",
+        "condition": "8.3 ms, unidirectional, SMB",
+        "name": "forward_surge",
+        "source_ref": "S16",
+        "symbol": "IFSM",
+        "unit": "A",
+        "value": 100
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-DIO-TVS",
+      "declaration": {
+        "effect": "fails short (consensus, not from an opened document)",
+        "id": "pulse_overpower",
+        "permanence": "permanent",
+        "sim_response": "FAIL, failed_short, rail collapses",
+        "trigger": "pulse power above PPPM"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-DIO-TVS",
+      "declaration": {
+        "effect": "avalanche heating, short",
+        "id": "continuous_overvoltage",
+        "permanence": "permanent",
+        "sim_response": "WARN above VWM, FAIL on thermal",
+        "trigger": "V above VWM sustained"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-DIO-TVS",
+      "declaration": {
+        "effect": "short plus energy-rich source: overheating hazard",
+        "id": "unfused_source",
+        "permanence": "permanent",
+        "sim_response": "HAZARD flag",
+        "trigger": "TVS on rail without current limit"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-DIO-ZENER",
+      "declaration": {
+        "check": "VZ*IZ <= (175-Ta)/300",
+        "condition": "25 C ambient, 4 mm leads, DO-35",
+        "name": "power",
+        "source_ref": "S15",
+        "symbol": "Ptot",
+        "unit": "W",
+        "value": 0.5
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-DIO-ZENER",
+      "declaration": {
+        "effect": "overheat, usually shorts",
+        "id": "overpower",
+        "permanence": "permanent",
+        "sim_response": "WARN 80%, FAIL 100%, failed_short",
+        "trigger": "Pz above derated limit"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-DIO-ZENER",
+      "declaration": {
+        "effect": "VZ droops",
+        "id": "knee_operation",
+        "permanence": "recoverable",
+        "sim_response": "flag outside validity",
+        "trigger": "IZ < 1 mA"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-DISP-LCD1602",
+      "declaration": {
+        "check": "4.5 <= vdd <= 5.5",
+        "condition": "",
+        "name": "supply",
+        "source_ref": "S13",
+        "symbol": "VDD",
+        "unit": "V",
+        "value": "4.5..5.5"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-DISP-LCD1602",
+      "declaration": {
+        "check": "3.2 <= vdd - v0 <= 5.2",
+        "condition": "temperature dependent",
+        "name": "contrast_voltage",
+        "source_ref": "S13",
+        "symbol": "VLCD",
+        "unit": "V",
+        "value": "3.2..5.2"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-DISP-LCD1602",
+      "declaration": {
+        "effect": "LED string damage",
+        "id": "backlight_overcurrent",
+        "permanence": "permanent",
+        "sim_response": "flag",
+        "trigger": "If above rating"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-DISP-LCD1602",
+      "declaration": {
+        "effect": "undefined display",
+        "id": "not_initialised",
+        "permanence": "recoverable",
+        "sim_response": "L3 state NOT_INIT",
+        "trigger": "commands before init"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-DISP-LEDARRAY",
+      "declaration": {
+        "check": "i_avg <= 0.030",
+        "condition": "",
+        "name": "seg_dc",
+        "source_ref": "S14",
+        "symbol": "IF",
+        "unit": "A",
+        "value": 0.03
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-DISP-LEDARRAY",
+      "declaration": {
+        "check": "i_peak <= 0.160",
+        "condition": "1/10 duty, 0.1 ms",
+        "name": "seg_peak",
+        "source_ref": "S14",
+        "symbol": "IFM",
+        "unit": "A",
+        "value": 0.16
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-DISP-LEDARRAY",
+      "declaration": {
+        "check": "vf*i <= 0.105",
+        "condition": "",
+        "name": "seg_power",
+        "source_ref": "S14",
+        "symbol": "PD",
+        "unit": "W",
+        "value": 0.105
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-DISP-LEDARRAY",
+      "declaration": {
+        "check": "v_reverse <= 5",
+        "condition": "",
+        "name": "reverse",
+        "source_ref": "S14",
+        "symbol": "VR",
+        "unit": "V",
+        "value": 5
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-DISP-LEDARRAY",
+      "declaration": {
+        "effect": "N times average current",
+        "id": "scan_stall",
+        "permanence": "permanent",
+        "sim_response": "flag SCAN_STALL",
+        "trigger": "scan stops, one digit on"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-DISP-LEDARRAY",
+      "declaration": {
+        "effect": "degrade/open",
+        "id": "seg_overcurrent",
+        "permanence": "permanent",
+        "sim_response": "flag; open at 2x",
+        "trigger": "i beyond rating"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-DISP-OLED-I2C",
+      "declaration": {
+        "check": "1.65 <= vdd <= 3.3",
+        "condition": "bare controller",
+        "name": "controller_supply",
+        "source_ref": "S12",
+        "symbol": "VDD",
+        "unit": "V",
+        "value": "1.65..3.3"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-DISP-OLED-I2C",
+      "declaration": {
+        "check": "7 <= vcc <= 15",
+        "condition": "",
+        "name": "panel_supply",
+        "source_ref": "S12",
+        "symbol": "VCC",
+        "unit": "V",
+        "value": "7..15"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-DISP-OLED-I2C",
+      "declaration": {
+        "effect": "board damage",
+        "id": "reverse_supply",
+        "permanence": "permanent",
+        "sim_response": "flag REVERSE_SUPPLY",
+        "trigger": "VCC/GND swapped"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-DISP-OLED-I2C",
+      "declaration": {
+        "effect": "black screen",
+        "id": "not_initialised",
+        "permanence": "recoverable",
+        "sim_response": "L3 state",
+        "trigger": "no init sequence"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-FREQ-CERRES",
+      "declaration": {
+        "check": "T in range",
+        "condition": "CSTLS_G",
+        "name": "operating_temperature",
+        "source_ref": "S13",
+        "symbol": "Top",
+        "unit": "C",
+        "value": "-20..80"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-FREQ-CERRES",
+      "declaration": {
+        "effect": "frequency pulled",
+        "id": "extra_caps",
+        "permanence": "recoverable",
+        "sim_response": "recompute CL",
+        "trigger": "external C added"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-FREQ-CERRES",
+      "declaration": {
+        "effect": "no oscillation",
+        "id": "pin2_open",
+        "permanence": "recoverable",
+        "sim_response": "ERC flag",
+        "trigger": "center pin floating"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-FREQ-SAW",
+      "declaration": {
+        "check": "Pin <= 10 dBm",
+        "condition": "typical specification, source power",
+        "name": "input_power",
+        "source_ref": "S15",
+        "symbol": "Pin",
+        "unit": "dBm",
+        "value": 10
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-FREQ-SAW",
+      "declaration": {
+        "check": "T in range",
+        "condition": "",
+        "name": "operating_temperature",
+        "source_ref": "S15",
+        "symbol": "Top",
+        "unit": "C",
+        "value": "-30..80"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-FREQ-SAW",
+      "declaration": {
+        "effect": "damage",
+        "id": "overpower",
+        "permanence": "permanent",
+        "sim_response": "flag",
+        "trigger": "Pin > 10 dBm"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-FREQ-SAW",
+      "declaration": {
+        "effect": "finger damage",
+        "id": "esd",
+        "permanence": "permanent",
+        "sim_response": "handling note",
+        "trigger": "ESD"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-FREQ-XO",
+      "declaration": {
+        "check": "v(vdd) <= 4",
+        "condition": "SiT8008; 6 V for AST3TQ53",
+        "name": "supply_abs_max",
+        "source_ref": "S11",
+        "symbol": "VDD_max",
+        "unit": "V",
+        "value": 4
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-FREQ-XO",
+      "declaration": {
+        "effect": "damage",
+        "id": "overvoltage",
+        "permanence": "permanent",
+        "sim_response": "flag, output 0",
+        "trigger": "VDD > abs max"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-FREQ-XO",
+      "declaration": {
+        "effect": "no clock",
+        "id": "undervoltage",
+        "permanence": "recoverable",
+        "sim_response": "output 0",
+        "trigger": "VDD < vmin"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-FREQ-XTAL",
+      "declaration": {
+        "check": "DL = R1*irms(i(Lm))^2 <= DL_max; warn > DL_rec",
+        "condition": "FA-238/NX3225GD max; 100 uW ABM3; 1 uW FC-135",
+        "name": "drive_level",
+        "source_ref": "S4",
+        "symbol": "DL",
+        "unit": "W",
+        "value": "200e-6"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-FREQ-XTAL",
+      "declaration": {
+        "check": "gm/(4*ESR*(2*pi*f)^2*(C0+CL)^2) >= 5",
+        "condition": "HSE, MHz crystal",
+        "name": "gain_margin",
+        "source_ref": "S1",
+        "symbol": "gm_ratio",
+        "unit": "",
+        "value": 5
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-FREQ-XTAL",
+      "declaration": {
+        "check": "T in range",
+        "condition": "ABLS standard; -40..85 for FC-135",
+        "name": "operating_temperature",
+        "source_ref": "S2",
+        "symbol": "Top",
+        "unit": "C",
+        "value": "0..70"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-FREQ-XTAL",
+      "declaration": {
+        "effect": "frequency drift, ESR rise, damage",
+        "id": "overdrive",
+        "permanence": "permanent",
+        "sim_response": "flag error, optional ESR rise",
+        "trigger": "DL > DL_max"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-FREQ-XTAL",
+      "declaration": {
+        "effect": "frequency error ~10 ppm/pF at 8 MHz",
+        "id": "wrong_CL",
+        "permanence": "recoverable",
+        "sim_response": "compute fL from netlist and flag",
+        "trigger": "|CL_actual - CL_spec| > 2 pF"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-FREQ-XTAL",
+      "declaration": {
+        "effect": "no clock",
+        "id": "no_oscillation",
+        "permanence": "recoverable",
+        "sim_response": "oscillation_started=false",
+        "trigger": "gm < gm_crit"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-FREQ-XTAL",
+      "declaration": {
+        "effect": "no feedback",
+        "id": "open_crystal",
+        "permanence": "permanent",
+        "sim_response": "remove motional arm",
+        "trigger": "broken lead"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-CHARGER-SOT235",
+      "declaration": {
+        "check": "I(VBAT) <= 0.5",
+        "condition": "MCP73831 max programmable",
+        "name": "charge current",
+        "source_ref": "S20",
+        "symbol": "Ibat",
+        "unit": "A",
+        "value": 0.5
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-CHARGER-SOT235",
+      "declaration": {
+        "check": "(V(VDD)-V(VBAT))*Ibat + V(VDD)*Iq <= (150-Ta)/230",
+        "condition": "SOT-23-5 4-layer, 25 C",
+        "name": "dissipation",
+        "source_ref": "S20",
+        "symbol": "Pd",
+        "unit": "W",
+        "value": 0.54
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-CHARGER-SOT235",
+      "declaration": {
+        "effect": "destructive, Li-ion hazard",
+        "id": "battery_reversed",
+        "permanence": "permanent",
+        "sim_response": "ERROR",
+        "trigger": "reverse polarity battery"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-CHARGER-SOT235",
+      "declaration": {
+        "effect": "current reduction",
+        "id": "thermal_overload",
+        "permanence": "recoverable",
+        "sim_response": "thermal limiter",
+        "trigger": "Tj near 150 C"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-COMPARATOR",
+      "declaration": {
+        "check": "V(VCC)-V(GND) <= 36",
+        "condition": "LM393 (LM393B 38 V)",
+        "name": "supply",
+        "source_ref": "S3",
+        "symbol": "VCC",
+        "unit": "V",
+        "value": 36
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-COMPARATOR",
+      "declaration": {
+        "check": "I(OUT) <= 20e-3",
+        "condition": "LM393",
+        "name": "output current",
+        "source_ref": "S3",
+        "symbol": "IO",
+        "unit": "A",
+        "value": "20e-3"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-COMPARATOR",
+      "declaration": {
+        "effect": "overheating",
+        "id": "output_overcurrent",
+        "permanence": "permanent",
+        "sim_response": "WARN at 16 mA, ERROR at 20 mA",
+        "trigger": "sink current > 20 mA"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-COMPARATOR",
+      "declaration": {
+        "effect": "wrong output, excess input current",
+        "id": "input_below_gnd",
+        "permanence": "recoverable",
+        "sim_response": "WARN, mark output undefined",
+        "trigger": "input < -0.3 V"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-DIGITAL-IF",
+      "declaration": {
+        "check": "v(pad) <= VDD + 0.3",
+        "condition": "operating",
+        "name": "pin_voltage_max",
+        "source_ref": "S8,S16",
+        "symbol": "Vpin",
+        "unit": "V",
+        "value": "VDD+0.3 (or part value)"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-DIGITAL-IF",
+      "declaration": {
+        "check": "sum(i_vdd) <= 150e-3",
+        "condition": "STM32F103",
+        "name": "total_vdd_current",
+        "source_ref": "S10",
+        "symbol": "IVDD",
+        "unit": "mA",
+        "value": 150
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-DIGITAL-IF",
+      "declaration": {
+        "effect": "clamp conduction, latch-up, oxide damage",
+        "id": "input_overvoltage",
+        "permanence": "permanent",
+        "sim_response": "flag; FAIL above abs max",
+        "trigger": "pad above abs max or injection above limit"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-DIGITAL-IF",
+      "declaration": {
+        "effect": "oxide breakdown",
+        "id": "supply_over_abs_max",
+        "permanence": "permanent",
+        "sim_response": "FAIL",
+        "trigger": "VDD above abs max"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-DIGITAL-IF",
+      "declaration": {
+        "effect": "undefined level",
+        "id": "floating_input",
+        "permanence": "recoverable",
+        "sim_response": "flag, no silent default",
+        "trigger": "unconnected input"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-DIGITAL-IO",
+      "declaration": {
+        "check": "V(pin) <= V(VCC)+1.0",
+        "condition": "25LC256: max above VCC",
+        "name": "pin voltage",
+        "source_ref": "S24",
+        "symbol": "VIN",
+        "unit": "V",
+        "value": 1.0
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-DIGITAL-IO",
+      "declaration": {
+        "check": "fsck <= 5e6",
+        "condition": "25LC256 at 2.5..<4.5 V (10 MHz at 4.5-5.5 V)",
+        "name": "SPI clock",
+        "source_ref": "S24",
+        "symbol": "fSCK",
+        "unit": "Hz",
+        "value": "5e6"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-DIGITAL-IO",
+      "declaration": {
+        "check": "abs(I(pin)) <= 40e-3",
+        "condition": "abs max",
+        "name": "ATmega328P per-pin current",
+        "source_ref": "S16",
+        "symbol": "IO",
+        "unit": "A",
+        "value": "40e-3"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-DIGITAL-IO",
+      "declaration": {
+        "effect": "clamp conduction, damage",
+        "id": "input_overvoltage",
+        "permanence": "permanent",
+        "sim_response": "ERROR",
+        "trigger": "pin above VCC+1.0 V (25LC256)"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-DIGITAL-IO",
+      "declaration": {
+        "effect": "undefined state",
+        "id": "floating_control",
+        "permanence": "recoverable",
+        "sim_response": "netlist check",
+        "trigger": "CS, WP or HOLD left open"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-DIGITAL-IO",
+      "declaration": {
+        "effect": "high current",
+        "id": "contention",
+        "permanence": "permanent",
+        "sim_response": "report current",
+        "trigger": "two outputs on one net"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-DRIVER-DIP16",
+      "declaration": {
+        "check": "V(out) <= 50",
+        "condition": "abs max",
+        "name": "output voltage ULN",
+        "source_ref": "S10",
+        "symbol": "VCE",
+        "unit": "V",
+        "value": 50
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-DRIVER-DIP16",
+      "declaration": {
+        "check": "abs(I(out)) <= 0.5",
+        "condition": "peak per channel",
+        "name": "collector current ULN",
+        "source_ref": "S10",
+        "symbol": "IC",
+        "unit": "A",
+        "value": 0.5
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-DRIVER-DIP16",
+      "declaration": {
+        "check": "abs(I(Y)) <= 0.6",
+        "condition": "continuous per channel",
+        "name": "output current L293D",
+        "source_ref": "S12",
+        "symbol": "IO",
+        "unit": "A",
+        "value": 0.6
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-DRIVER-DIP16",
+      "declaration": {
+        "check": "V(VCC2)-V(GND) <= 36",
+        "condition": "abs max",
+        "name": "supply L293D",
+        "source_ref": "S12",
+        "symbol": "VCC",
+        "unit": "V",
+        "value": 36
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-DRIVER-DIP16",
+      "declaration": {
+        "effect": "overheating",
+        "id": "overcurrent",
+        "permanence": "permanent",
+        "sim_response": "ERROR",
+        "trigger": "channel above rating"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-DRIVER-DIP16",
+      "declaration": {
+        "effect": "clamp diodes conduct",
+        "id": "com_grounded",
+        "permanence": "recoverable",
+        "sim_response": "netlist check",
+        "trigger": "ULN COM at ground"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-LDO-SOT235",
+      "declaration": {
+        "check": "(V(IN)-V(OUT))*I(OUT)+V(IN)*Iq <= (150-Ta)/235.9",
+        "condition": "SOT-23-5 DDC at 25 C",
+        "name": "dissipation",
+        "source_ref": "S14",
+        "symbol": "Pd",
+        "unit": "W",
+        "value": 0.53
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-LDO-SOT235",
+      "declaration": {
+        "effect": "current limit then shutdown",
+        "id": "output_short",
+        "permanence": "recoverable",
+        "sim_response": "current-limited model; thermal limiter",
+        "trigger": "load below Vout/icl"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-LDO-SOT235",
+      "declaration": {
+        "effect": "shutdown",
+        "id": "overtemperature",
+        "permanence": "recoverable",
+        "sim_response": "memoryless limiter",
+        "trigger": "Tj above 160 C"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-LOGIC-HC",
+      "declaration": {
+        "check": "V(VCC)-V(GND) <= 7",
+        "condition": "abs max",
+        "name": "supply",
+        "source_ref": "S4",
+        "symbol": "VCC",
+        "unit": "V",
+        "value": 7
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-LOGIC-HC",
+      "declaration": {
+        "check": "abs(I(in_clamp)) <= 20e-3",
+        "condition": "abs max",
+        "name": "input clamp",
+        "source_ref": "S4",
+        "symbol": "IIK",
+        "unit": "A",
+        "value": "20e-3"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-LOGIC-HC",
+      "declaration": {
+        "check": "abs(I(out)) <= 25e-3",
+        "condition": "abs max per output",
+        "name": "output current",
+        "source_ref": "S4",
+        "symbol": "IO",
+        "unit": "A",
+        "value": "25e-3"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-LOGIC-HC",
+      "declaration": {
+        "effect": "ESD diode conduction, latch-up risk",
+        "id": "input_overvoltage",
+        "permanence": "permanent",
+        "sim_response": "clamp diode model; ERROR when current > 20 mA",
+        "trigger": "input > VCC+0.5 V"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-LOGIC-HC",
+      "declaration": {
+        "effect": "undefined level, extra ICC",
+        "id": "floating_input",
+        "permanence": "recoverable",
+        "sim_response": "netlist check",
+        "trigger": "unconnected input"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-LOGIC-SEQ",
+      "declaration": {
+        "check": "V(VCC)-V(GND) <= 7",
+        "condition": "abs max",
+        "name": "supply",
+        "source_ref": "S6",
+        "symbol": "VCC",
+        "unit": "V",
+        "value": 7
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-LOGIC-SEQ",
+      "declaration": {
+        "check": "sum(abs(I(Q))) <= 70e-3",
+        "condition": "595 abs max",
+        "name": "total supply current",
+        "source_ref": "S6",
+        "symbol": "ICC",
+        "unit": "A",
+        "value": "70e-3"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-LOGIC-SEQ",
+      "declaration": {
+        "effect": "bond-wire overheating",
+        "id": "overload_outputs",
+        "permanence": "permanent",
+        "sim_response": "ERROR",
+        "trigger": "sum of output currents > 70 mA"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-LOGIC-SEQ",
+      "declaration": {
+        "effect": "outputs undefined",
+        "id": "oe_floating",
+        "permanence": "recoverable",
+        "sim_response": "netlist check",
+        "trigger": "OE not driven"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-OPAMP",
+      "declaration": {
+        "check": "V(VPLUS)-V(VMINUS) <= 32",
+        "condition": "LM358 (+-16 V)",
+        "name": "supply",
+        "source_ref": "S2",
+        "symbol": "Vs",
+        "unit": "V",
+        "value": 32
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-OPAMP",
+      "declaration": {
+        "check": "V(IN) between V-0.3 and 40",
+        "condition": "LM358, -0.3 min",
+        "name": "input voltage",
+        "source_ref": "S2",
+        "symbol": "VI",
+        "unit": "V",
+        "value": 40
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-OPAMP",
+      "declaration": {
+        "check": "V(VDD)-V(VSS) <= 7.0",
+        "condition": "mirror",
+        "name": "supply MCP6001",
+        "source_ref": "S18",
+        "symbol": "Vs",
+        "unit": "V",
+        "value": 7.0
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-OPAMP",
+      "declaration": {
+        "check": "Ta+P*theta_ja <= 150",
+        "condition": "",
+        "name": "junction temperature",
+        "source_ref": "S2",
+        "symbol": "Tj",
+        "unit": "C",
+        "value": 150
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-OPAMP",
+      "declaration": {
+        "effect": "destroyed",
+        "id": "overvoltage",
+        "permanence": "permanent",
+        "sim_response": "ERROR, mark failed",
+        "trigger": "supply above abs max"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-OPAMP",
+      "declaration": {
+        "effect": "gain collapse / clamp diodes",
+        "id": "input_overrange",
+        "permanence": "recoverable",
+        "sim_response": "WARN, output clamp",
+        "trigger": "input outside CM range"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-OPAMP",
+      "declaration": {
+        "effect": "heating",
+        "id": "output_short",
+        "permanence": "recoverable",
+        "sim_response": "WARN, compute Tj",
+        "trigger": "|Iout| > Isc"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-OPTO-DIP6",
+      "declaration": {
+        "check": "I(LED) <= 50e-3",
+        "condition": "conservative of 50 and 60 mA",
+        "name": "LED current",
+        "source_ref": "S22",
+        "symbol": "IF",
+        "unit": "A",
+        "value": "50e-3"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-OPTO-DIP6",
+      "declaration": {
+        "check": "V(C)-V(E) <= 30",
+        "condition": "conservative of 30 and 70 V",
+        "name": "VCEO",
+        "source_ref": "S22",
+        "symbol": "VCEO",
+        "unit": "V",
+        "value": 30
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-OPTO-DIP6",
+      "declaration": {
+        "effect": "LED damage",
+        "id": "led_overcurrent",
+        "permanence": "permanent",
+        "sim_response": "ERROR",
+        "trigger": "IF > 60 mA"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-OPTO-DIP6",
+      "declaration": {
+        "effect": "isolation lost, hazard",
+        "id": "isolation_breakdown",
+        "permanence": "permanent",
+        "sim_response": "design rule",
+        "trigger": "barrier voltage above rating"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-PKGBIND",
+      "declaration": {
+        "check": "Tj = Ta + P_total*theta_ja <= 150",
+        "condition": "TI/Microchip abs max",
+        "name": "max junction temperature",
+        "source_ref": "S1",
+        "symbol": "Tj",
+        "unit": "C",
+        "value": 150
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-PKGBIND",
+      "declaration": {
+        "check": "P_total <= (150-Ta)/theta_ja",
+        "condition": "table 1.5",
+        "name": "max package power",
+        "source_ref": "S27",
+        "symbol": "Pmax",
+        "unit": "W",
+        "value": "(150-Ta)/theta_ja"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-PKGBIND",
+      "declaration": {
+        "effect": "wear-out, parametric drift, damage if sustained",
+        "id": "overtemp",
+        "permanence": "permanent",
+        "sim_response": "FLAG error; use the part's thermal limiter if present",
+        "trigger": "Tj > 150 C"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-PKGBIND",
+      "declaration": {
+        "effect": "supplies on wrong pins",
+        "id": "reversed_orientation",
+        "permanence": "permanent",
+        "sim_response": "design-rule error",
+        "trigger": "pin 1 marker not at footprint pin 1"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-RS232-DIP16",
+      "declaration": {
+        "check": "V(VCC)-V(GND) <= 6",
+        "condition": "abs max",
+        "name": "supply",
+        "source_ref": "S13",
+        "symbol": "VCC",
+        "unit": "V",
+        "value": 6
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-RS232-DIP16",
+      "declaration": {
+        "check": "abs(V(RIN)) <= 30",
+        "condition": "abs max",
+        "name": "receiver input",
+        "source_ref": "S13",
+        "symbol": "VI",
+        "unit": "V",
+        "value": 30
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-RS232-DIP16",
+      "declaration": {
+        "effect": "no RS-232 swing",
+        "id": "missing_pump_cap",
+        "permanence": "recoverable",
+        "sim_response": "netlist check",
+        "trigger": "C1..C4 absent"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-RS232-DIP16",
+      "declaration": {
+        "effect": "breakdown",
+        "id": "overvoltage_rx",
+        "permanence": "permanent",
+        "sim_response": "ERROR",
+        "trigger": "|RIN| > 30 V"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-TIMER555",
+      "declaration": {
+        "check": "V(VCC)-V(GND) <= 18",
+        "condition": "abs max",
+        "name": "supply",
+        "source_ref": "S1",
+        "symbol": "VCC",
+        "unit": "V",
+        "value": 18
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-TIMER555",
+      "declaration": {
+        "check": "abs(I(OUT)) <= 0.225",
+        "condition": "abs max",
+        "name": "output current",
+        "source_ref": "S1",
+        "symbol": "IO",
+        "unit": "A",
+        "value": 0.225
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-TIMER555",
+      "declaration": {
+        "check": "Ta+P*theta_ja <= 150",
+        "condition": "",
+        "name": "junction temperature",
+        "source_ref": "S1",
+        "symbol": "Tj",
+        "unit": "C",
+        "value": 150
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-IC-TIMER555",
+      "declaration": {
+        "effect": "destroyed",
+        "id": "overvoltage",
+        "permanence": "permanent",
+        "sim_response": "ERROR",
+        "trigger": "VCC > 18 V"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-IC-TIMER555",
+      "declaration": {
+        "effect": "overheat",
+        "id": "output_overcurrent",
+        "permanence": "permanent",
+        "sim_response": "ERROR",
+        "trigger": "|IO| > 225 mA"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-LED-ADDRESSABLE",
+      "declaration": {
+        "check": "3.5 <= vdd <= 5.3",
+        "condition": "max as printed",
+        "name": "supply",
+        "source_ref": "S9",
+        "symbol": "VDD",
+        "unit": "V",
+        "value": 5.3
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-LED-ADDRESSABLE",
+      "declaration": {
+        "check": "vss-0.5 <= v_din <= vdd+0.5",
+        "condition": "",
+        "name": "input_voltage",
+        "source_ref": "S9",
+        "symbol": "VI",
+        "unit": "V",
+        "value": "-0.5..VDD+0.5"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-LED-ADDRESSABLE",
+      "declaration": {
+        "check": "v_din_high >= 0.7*vdd",
+        "condition": "",
+        "name": "input_high",
+        "source_ref": "S9",
+        "symbol": "VIH",
+        "unit": "xVDD",
+        "value": 0.7
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-LED-ADDRESSABLE",
+      "declaration": {
+        "effect": "exceeds rating",
+        "id": "vdd_over",
+        "permanence": "permanent",
+        "sim_response": "flag; dead pixel above 6 V (assumption)",
+        "trigger": "VDD > 5.3 V"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-LED-ADDRESSABLE",
+      "declaration": {
+        "effect": "wrong colours",
+        "id": "bit_timing",
+        "permanence": "recoverable",
+        "sim_response": "L3 decoder flags BIT_TIMING_VIOLATION",
+        "trigger": "bit outside window"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-LED-INDICATOR",
+      "declaration": {
+        "check": "if_avg <= if_max_derated",
+        "condition": "default, package specific",
+        "name": "forward_current",
+        "source_ref": "S1",
+        "symbol": "IF",
+        "unit": "A",
+        "value": 0.02
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-LED-INDICATOR",
+      "declaration": {
+        "check": "vf*if <= (tj_max - tamb)/rth_ja",
+        "condition": "Tamb <= 60..65 C",
+        "name": "power",
+        "source_ref": "S1",
+        "symbol": "PV",
+        "unit": "W",
+        "value": 0.1
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-LED-INDICATOR",
+      "declaration": {
+        "check": "v_reverse <= vr_max",
+        "condition": "IR = 10 uA",
+        "name": "reverse_voltage",
+        "source_ref": "S2",
+        "symbol": "VR",
+        "unit": "V",
+        "value": 5
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-LED-INDICATOR",
+      "declaration": {
+        "check": "i_peak <= ifsm",
+        "condition": "tp <= 10 us (blue/white), 1 A GaP/GaAlAs",
+        "name": "surge",
+        "source_ref": "S2",
+        "symbol": "IFSM",
+        "unit": "A",
+        "value": 0.1
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-LED-INDICATOR",
+      "declaration": {
+        "effect": "degradation, eventual open",
+        "id": "overcurrent_cont",
+        "permanence": "permanent",
+        "sim_response": "flag; error at 1.5x",
+        "trigger": "IF > if_max_derated"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-LED-INDICATOR",
+      "declaration": {
+        "effect": "avalanche, possible damage",
+        "id": "reverse_over_rating",
+        "permanence": "permanent",
+        "sim_response": "flag; BV clamp in card",
+        "trigger": "VR > vr_max"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-LED-INDICATOR",
+      "declaration": {
+        "effect": "destruction",
+        "id": "no_resistor",
+        "permanence": "permanent",
+        "sim_response": "flag NO_CURRENT_LIMIT",
+        "trigger": "LED on stiff source"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-LED-POWER",
+      "declaration": {
+        "check": "if <= 1.0",
+        "condition": "absolute max drive current",
+        "name": "forward_current",
+        "source_ref": "S8",
+        "symbol": "IF",
+        "unit": "A",
+        "value": 1.0
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-LED-POWER",
+      "declaration": {
+        "check": "ta + (rth_js+rth_sa)*(1-eta)*vf*if <= 150",
+        "condition": "",
+        "name": "junction_temperature",
+        "source_ref": "S8",
+        "symbol": "Tj",
+        "unit": "C",
+        "value": 150
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-LED-POWER",
+      "declaration": {
+        "check": "v_reverse <= 5",
+        "condition": "",
+        "name": "reverse_voltage",
+        "source_ref": "S8",
+        "symbol": "VR",
+        "unit": "V",
+        "value": 5
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-LED-POWER",
+      "declaration": {
+        "effect": "current rises with Tj",
+        "id": "thermal_runaway",
+        "permanence": "permanent",
+        "sim_response": "detect divergence, flag",
+        "trigger": "voltage drive"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-LED-POWER",
+      "declaration": {
+        "effect": "damage",
+        "id": "overtemp",
+        "permanence": "permanent",
+        "sim_response": "flag, open at 175 C",
+        "trigger": "Tj > 150 C"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-LED-RGB",
+      "declaration": {
+        "check": "if_die <= 0.025",
+        "condition": "per die",
+        "name": "die_current",
+        "source_ref": "S7",
+        "symbol": "IF",
+        "unit": "A",
+        "value": 0.025
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-LED-RGB",
+      "declaration": {
+        "check": "i_peak <= 0.100",
+        "condition": "10 percent duty, 1 kHz",
+        "name": "die_peak",
+        "source_ref": "S7",
+        "symbol": "IFM",
+        "unit": "A",
+        "value": 0.1
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-LED-RGB",
+      "declaration": {
+        "effect": "die degradation",
+        "id": "die_overcurrent",
+        "permanence": "permanent",
+        "sim_response": "flag per die",
+        "trigger": "if_die > 25 mA"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-MAG-CMC",
+      "declaration": {
+        "check": "rms(iA)<=IR and rms(iB)<=IR",
+        "condition": "dT=40K per winding (assumed)",
+        "name": "rated_current",
+        "source_ref": "S9",
+        "symbol": "IR",
+        "unit": "A",
+        "value": 0.83
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-MAG-CMC",
+      "declaration": {
+        "check": "max(abs(v))<=VR",
+        "condition": "WE-SL5 744272222",
+        "name": "rated_voltage",
+        "source_ref": "S9",
+        "symbol": "VR",
+        "unit": "V",
+        "value": 80
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-MAG-CMC",
+      "declaration": {
+        "check": "max(abs(iA+iB))<=0.9*ISATM",
+        "condition": "ASSUMPTION",
+        "name": "cm_current",
+        "source_ref": "S3",
+        "symbol": "ISATM",
+        "unit": "A",
+        "value": 1.66
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-MAG-CMC",
+      "declaration": {
+        "effect": "CM inductance collapses",
+        "id": "cm_saturation",
+        "permanence": "recoverable",
+        "sim_response": "CMC_SAT; WARN at 0.9*ISATM",
+        "trigger": "abs(iA+iB) > ISATM"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-MAG-CMC",
+      "declaration": {
+        "effect": "overheating, open winding",
+        "id": "overcurrent",
+        "permanence": "permanent",
+        "sim_response": "ERROR; open after Tmax+20K",
+        "trigger": "rms > IR"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-MAG-CMC",
+      "declaration": {
+        "effect": "choke acts as DM inductor and saturates",
+        "id": "reversed_winding",
+        "permanence": "recoverable",
+        "sim_response": "DRC plus automatic in CMC_SAT",
+        "trigger": "one winding wired reversed"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-MAG-ETHMAG",
+      "declaration": {
+        "check": "abs(V_barrier) <= 1500*sqrt(2)",
+        "condition": "min production hipot",
+        "name": "hipot",
+        "source_ref": "S11",
+        "symbol": "Viso",
+        "unit": "Vrms",
+        "value": 1500
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-MAG-ETHMAG",
+      "declaration": {
+        "check": "abs(DC(iA1)-DC(iA2)) <= 8 mA",
+        "condition": "OCL test condition of related part",
+        "name": "dc_imbalance",
+        "source_ref": "S12",
+        "symbol": "Idc",
+        "unit": "A",
+        "value": 0.008
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-MAG-ETHMAG",
+      "declaration": {
+        "effect": "loss of isolation (safety)",
+        "id": "isolation_breakdown",
+        "permanence": "permanent",
+        "sim_response": "ERROR; barrier model replaced by 100 ohm",
+        "trigger": "barrier voltage above hipot"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-MAG-ETHMAG",
+      "declaration": {
+        "effect": "OCL collapse or heating",
+        "id": "dc_imbalance",
+        "permanence": "recoverable",
+        "sim_response": "check only; no saturation in ETH_CH",
+        "trigger": "DC imbalance above 8 mA or PoE bias"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-MAG-INDUCTOR",
+      "declaration": {
+        "check": "max(abs(i)) <= Isat",
+        "condition": "inductance drop per datasheet",
+        "name": "saturation_current",
+        "source_ref": "S1",
+        "symbol": "Isat",
+        "unit": "A",
+        "value": "per_part"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-MAG-INDUCTOR",
+      "declaration": {
+        "check": "rms(i) <= Irms if Ta<=25 else Irms*sqrt((Tmax-Ta)/dT_rated)",
+        "condition": "dT_rated rise at 25 C ambient",
+        "name": "heating_current",
+        "source_ref": "S1",
+        "symbol": "Irms",
+        "unit": "A",
+        "value": "per_part"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-MAG-INDUCTOR",
+      "declaration": {
+        "check": "Ta + dT <= Tmax",
+        "condition": "ambient plus self heating",
+        "name": "part_temperature",
+        "source_ref": "S2",
+        "symbol": "Tmax",
+        "unit": "degC",
+        "value": "per_part"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-MAG-INDUCTOR",
+      "declaration": {
+        "check": "f <= 0.5*SRF",
+        "condition": "ASSUMPTION",
+        "name": "frequency",
+        "source_ref": "S1",
+        "symbol": "f",
+        "unit": "Hz",
+        "value": "0.5*SRF"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-MAG-INDUCTOR",
+      "declaration": {
+        "effect": "L collapses to LR*L0",
+        "id": "saturation",
+        "permanence": "recoverable",
+        "sim_response": "nonlinear model; WARN at 0.9*Isat, ERROR at 1.5*Isat",
+        "trigger": "abs(i) > Isat"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-MAG-INDUCTOR",
+      "declaration": {
+        "effect": "insulation or solder failure, open winding",
+        "id": "overheat",
+        "permanence": "permanent",
+        "sim_response": "ERROR; replace by open (1G) after Tmax+20 K",
+        "trigger": "Ta + dT > Tmax"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-MAG-INDUCTOR",
+      "declaration": {
+        "effect": "capacitive behaviour",
+        "id": "above_srf",
+        "permanence": "recoverable",
+        "sim_response": "Cp in model; WARN above 0.5*SRF",
+        "trigger": "f > SRF"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-MAG-XFMR-CT",
+      "declaration": {
+        "check": "max(abs(i_sec)) <= Isec_max",
+        "condition": "AS-103 datasheet copy",
+        "name": "secondary_current",
+        "source_ref": "S14",
+        "symbol": "Isec_max",
+        "unit": "A",
+        "value": 0.075
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-MAG-XFMR-CT",
+      "declaration": {
+        "check": "ERROR if Rburden_eff > 100*Rb_nom and Ip > 0.1*Ip_max",
+        "condition": "Lsec*omega*Ip_pk/N",
+        "name": "open_secondary",
+        "source_ref": "S16",
+        "symbol": "Vopen",
+        "unit": "V",
+        "value": "derived"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-MAG-XFMR-CT",
+      "declaration": {
+        "check": "abs(Vps) <= 2500 Vac",
+        "condition": "datasheet",
+        "name": "isolation",
+        "source_ref": "S13",
+        "symbol": "Viso",
+        "unit": "Vac",
+        "value": 2500
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-MAG-XFMR-CT",
+      "declaration": {
+        "effect": "dangerous secondary voltage, saturation, insulation breakdown",
+        "id": "open_secondary",
+        "permanence": "permanent",
+        "sim_response": "ERROR with predicted peak; fail part if predicted peak > 0.7*isolation peak",
+        "trigger": "burden missing with primary current"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-MAG-XFMR-CT",
+      "declaration": {
+        "effect": "clipping, ratio error",
+        "id": "overload_saturation",
+        "permanence": "recoverable",
+        "sim_response": "XFMR_SAT, WARN",
+        "trigger": "Isec above Isec_max or Rb too large"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-MAG-XFMR-CT",
+      "declaration": {
+        "effect": "shock hazard",
+        "id": "isolation_breakdown",
+        "permanence": "permanent",
+        "sim_response": "ERROR",
+        "trigger": "barrier over 2500 Vac"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-MAG-XFMR-FLYBACK",
+      "declaration": {
+        "check": "max(abs(i_pri))<=0.8*ISATM",
+        "condition": "ASSUMPTION",
+        "name": "peak_current",
+        "source_ref": "S10",
+        "symbol": "Ipk",
+        "unit": "A",
+        "value": 3.0
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-MAG-XFMR-FLYBACK",
+      "declaration": {
+        "check": "<= 0.8*Vds_max",
+        "condition": "Vin+Vor+Ipk*sqrt(Llk/C)",
+        "name": "drain_stress",
+        "source_ref": "S10",
+        "symbol": "Vds",
+        "unit": "V",
+        "value": "derived"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-MAG-XFMR-FLYBACK",
+      "declaration": {
+        "effect": "current runaway",
+        "id": "saturation",
+        "permanence": "recoverable",
+        "sim_response": "ERROR, XFMR_SAT",
+        "trigger": "Ipk > ISATM"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-MAG-XFMR-FLYBACK",
+      "declaration": {
+        "effect": "switch avalanche",
+        "id": "leakage_spike",
+        "permanence": "permanent",
+        "sim_response": "ERROR over 0.9*Vds_max",
+        "trigger": "no clamp"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-MAG-XFMR-FLYBACK",
+      "declaration": {
+        "effect": "loss of isolation (safety)",
+        "id": "isolation_breakdown",
+        "permanence": "permanent",
+        "sim_response": "ERROR",
+        "trigger": "barrier voltage above rating"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-MAG-XFMR-SIGNAL",
+      "declaration": {
+        "check": "max(abs(i_m)) <= 0.9*ISATM",
+        "condition": "ASSUMPTION",
+        "name": "magnetizing_current",
+        "source_ref": "S3",
+        "symbol": "ISATM",
+        "unit": "A",
+        "value": 0.5
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-MAG-XFMR-SIGNAL",
+      "declaration": {
+        "check": "f in band",
+        "condition": "listing",
+        "name": "band",
+        "source_ref": "S22",
+        "symbol": "f",
+        "unit": "Hz",
+        "value": "200..15000"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-MAG-XFMR-SIGNAL",
+      "declaration": {
+        "effect": "magnetizing current spike",
+        "id": "saturation",
+        "permanence": "recoverable",
+        "sim_response": "XFMR_SAT",
+        "trigger": "volt-seconds beyond lambda_max"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-MAG-XFMR-SIGNAL",
+      "declaration": {
+        "effect": "offset flux",
+        "id": "dc_bias",
+        "permanence": "recoverable",
+        "sim_response": "WARN",
+        "trigger": "DC in winding"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-MEM-SPINOR",
+      "declaration": {
+        "check": "2.7 <= v(vcc) <= 3.6",
+        "condition": "SST25VF016B",
+        "name": "supply_range",
+        "source_ref": "S22",
+        "symbol": "VCC",
+        "unit": "V",
+        "value": "2.7 to 3.6"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-MEM-SPINOR",
+      "declaration": {
+        "check": "t(cs_n high) >= 50ns",
+        "condition": "SST25VF016B",
+        "name": "cs_high_time",
+        "source_ref": "S22",
+        "symbol": "TCPH",
+        "unit": "ns",
+        "value": 50
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-MEM-SPINOR",
+      "declaration": {
+        "effect": "sector undefined",
+        "id": "power_loss_during_write",
+        "permanence": "permanent",
+        "sim_response": "L3 marks sector corrupt",
+        "trigger": "VCC out of range while WIP"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-MEM-SPINOR",
+      "declaration": {
+        "effect": "spurious pause or protect",
+        "id": "floating_hold_wp",
+        "permanence": "recoverable",
+        "sim_response": "verifier flag",
+        "trigger": "open /HOLD or /WP"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-PKG-IC-BINDING",
+      "declaration": {
+        "check": "Ta + RthJA*P <= Tj_max",
+        "condition": "operating, parts opened",
+        "name": "junction_temperature",
+        "source_ref": "S1",
+        "symbol": "Tj",
+        "unit": "degC",
+        "value": 125
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-PKG-IC-BINDING",
+      "declaration": {
+        "check": "(Tj_max - Ta)/RthJA",
+        "condition": "per bound part",
+        "name": "power_limit",
+        "source_ref": "S1,S3",
+        "symbol": "Pmax",
+        "unit": "W",
+        "value": null
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-PKG-IC-BINDING",
+      "declaration": {
+        "effect": "shutdown or die damage",
+        "id": "overtemp",
+        "permanence": "recoverable",
+        "sim_response": "flag; open output if part has thermal shutdown",
+        "trigger": "Tj > Tj_max_abs"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-PKG-IC-BINDING",
+      "declaration": {
+        "effect": "thermal/AGND error",
+        "id": "ep_wrong_net",
+        "permanence": "permanent",
+        "sim_response": "verifier ERROR",
+        "trigger": "EP not on must_connect net"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-PKG-IC-BINDING",
+      "declaration": {
+        "effect": "no behavior",
+        "id": "unbound",
+        "permanence": "recoverable",
+        "sim_response": "status unbound, never pass",
+        "trigger": "no package_binding"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-PWR-LOADSWITCH",
+      "declaration": {
+        "check": "vin <= limit",
+        "condition": "recommended or abs max not distinguished in the extract",
+        "name": "vin_max",
+        "source_ref": "S4,S5",
+        "symbol": "VIN",
+        "unit": "V",
+        "value": "18 (TPS22810), 29 (NX5P3290 VBUS)"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-PWR-LOADSWITCH",
+      "declaration": {
+        "effect": "current limit then thermal shutdown",
+        "id": "short",
+        "permanence": "recoverable",
+        "sim_response": "clamp and flag",
+        "trigger": "VOUT shorted"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-PWR-PKGTHERMAL",
+      "declaration": {
+        "check": "ta + rth_ja*p <= 175",
+        "condition": "IRFZ44N",
+        "name": "tj_max",
+        "source_ref": "S10",
+        "symbol": "Tj",
+        "unit": "C",
+        "value": 175
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-PWR-PKGTHERMAL",
+      "declaration": {
+        "check": "p <= (175 - tc)/rth_jc",
+        "condition": "TO-220, Tc = 25 C (conflicts with RthJC 1.5)",
+        "name": "pmax",
+        "source_ref": "S10",
+        "symbol": "PD",
+        "unit": "W",
+        "value": 94
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-PWR-PKGTHERMAL",
+      "declaration": {
+        "effect": "die and bond damage",
+        "id": "tj_exceeded",
+        "permanence": "permanent",
+        "sim_response": "flag, class policy",
+        "trigger": "Tj above Tj_max"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-REG-BUCK-DCS",
+      "declaration": {
+        "check": "v(vin) <= 20",
+        "condition": "abs max",
+        "name": "vin_abs_max",
+        "source_ref": "S1,S2",
+        "symbol": "VIN",
+        "unit": "V",
+        "value": 20
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-REG-BUCK-DCS",
+      "declaration": {
+        "check": "iout + dIL/2 <= ILIM_min",
+        "condition": "VIN=12V, TJ=25C",
+        "name": "current_limit_min",
+        "source_ref": "S1,S2",
+        "symbol": "ILIM",
+        "unit": "A",
+        "value": "1.45 (TPS62160), 3.6 (TPS62130)"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-REG-BUCK-DCS",
+      "declaration": {
+        "check": "ta + RthJA*Ploss <= 125",
+        "condition": "recommended",
+        "name": "junction_temperature",
+        "source_ref": "S1,S2",
+        "symbol": "Tj",
+        "unit": "degC",
+        "value": 125
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-REG-BUCK-DCS",
+      "declaration": {
+        "effect": "breakdown",
+        "id": "vin_overvoltage",
+        "permanence": "permanent",
+        "sim_response": "FAIL",
+        "trigger": "VIN > 20 V"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-REG-BUCK-DCS",
+      "declaration": {
+        "effect": "current limit",
+        "id": "overcurrent",
+        "permanence": "recoverable",
+        "sim_response": "flag, no clamp",
+        "trigger": "ipeak > ILIM"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-REG-BUCK-DCS",
+      "declaration": {
+        "effect": "thermal shutdown",
+        "id": "overtemp",
+        "permanence": "recoverable",
+        "sim_response": "flag via package binding",
+        "trigger": "Tj > 160 C"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-REG-LINEAR",
+      "declaration": {
+        "check": "v(in) <= 15",
+        "condition": "AMS1117",
+        "name": "vin_max",
+        "source_ref": "S17",
+        "symbol": "VIN",
+        "unit": "V",
+        "value": 15
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-REG-LINEAR",
+      "declaration": {
+        "check": "v(in)-v(out) >= 1.1 + 0.0*(i/0.8-1)",
+        "condition": "0.8 A, typ",
+        "name": "dropout",
+        "source_ref": "S17",
+        "symbol": "VDO",
+        "unit": "V",
+        "value": 1.1
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-REG-LINEAR",
+      "declaration": {
+        "check": "ta + rth*((v(in)-v(out))*i(out)+v(in)*iq) <= 125",
+        "condition": "continuous",
+        "name": "tj_max",
+        "source_ref": "S17",
+        "symbol": "Tj",
+        "unit": "C",
+        "value": 125
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-REG-LINEAR",
+      "declaration": {
+        "check": "cout >= 22e-6",
+        "condition": "minimum, solid tantalum",
+        "name": "cout",
+        "source_ref": "S17",
+        "symbol": "Cout",
+        "unit": "F",
+        "value": "22e-6"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-REG-LINEAR",
+      "declaration": {
+        "effect": "output collapses and recovers on cooling",
+        "id": "thermal_shutdown",
+        "permanence": "recoverable",
+        "sim_response": "soft thermal gate throttles pass current",
+        "trigger": "Tj > TSD"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-REG-LINEAR",
+      "declaration": {
+        "effect": "pass device breakdown, usually IN-OUT short",
+        "id": "overvoltage_in",
+        "permanence": "permanent",
+        "sim_response": "flag, mark failed",
+        "trigger": "Vin > abs max"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-REG-LINEAR",
+      "declaration": {
+        "effect": "oscillation",
+        "id": "bad_cout",
+        "permanence": "recoverable",
+        "sim_response": "flag by rule",
+        "trigger": "Cout/ESR outside window"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-RES-FIXED",
+      "declaration": {
+        "check": "v*i <= P_allowed(Tamb)",
+        "condition": "ambient Tamb",
+        "name": "power",
+        "source_ref": "S1",
+        "symbol": "P",
+        "unit": "W",
+        "value": "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-RES-FIXED",
+      "declaration": {
+        "check": "abs(v) <= Vmax",
+        "condition": "AC RMS or DC",
+        "name": "working voltage",
+        "source_ref": "S1",
+        "symbol": "Vmax",
+        "unit": "V",
+        "value": "min(u_limit, sqrt(p_rated*value))"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-RES-FIXED",
+      "declaration": {
+        "effect": "permanent drift of R (stability limit about 1 % per 1000 h at P70 for thick film)",
+        "id": "overpower_mild",
+        "permanence": "permanent",
+        "sim_response": "flag WARNING",
+        "trigger": "P > P_allowed"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-RES-FIXED",
+      "declaration": {
+        "effect": "element burns open; fusible variants designed to do this",
+        "id": "overpower_open",
+        "permanence": "permanent",
+        "sim_response": "flag ERROR, re-run with part open (R=1G)",
+        "trigger": "P > 5x rated for several seconds (assumption)"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-RES-FIXED",
+      "declaration": {
+        "effect": "arc or breakdown of the element or body",
+        "id": "overvoltage",
+        "permanence": "permanent",
+        "sim_response": "flag ERROR; treat as open if abs(v) > 2*Vmax",
+        "trigger": "abs(v) > Vmax"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-RES-NETWORK",
+      "declaration": {
+        "check": "v_k*i_k <= P_elem*derate(Tamb)",
+        "condition": "70 C, CRA06P",
+        "name": "element power",
+        "source_ref": "S18",
+        "symbol": "P",
+        "unit": "W",
+        "value": 0.063
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-RES-NETWORK",
+      "declaration": {
+        "check": "sum(v_k*i_k) <= P_pkg*derate(Tamb)",
+        "condition": "70 C, 4600X by pin count",
+        "name": "package power",
+        "source_ref": "S17",
+        "symbol": "Ppkg",
+        "unit": "W",
+        "value": "0.5 to 1.75"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-RES-NETWORK",
+      "declaration": {
+        "check": "abs(v_k) <= Vmax",
+        "condition": "per element",
+        "name": "working voltage",
+        "source_ref": "S17",
+        "symbol": "Vmax",
+        "unit": "V",
+        "value": "100 (SIP) / 50 (array)"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-RES-NETWORK",
+      "declaration": {
+        "effect": "drift or open of that element",
+        "id": "element_overpower",
+        "permanence": "permanent",
+        "sim_response": "flag per element; open that element if > 5x (assumption)",
+        "trigger": "P_k > P_elem*derate"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-RES-NETWORK",
+      "declaration": {
+        "effect": "substrate overheats",
+        "id": "package_overpower",
+        "permanence": "permanent",
+        "sim_response": "flag ERROR",
+        "trigger": "sum P > P_pkg"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-RES-POT",
+      "declaration": {
+        "check": "v_AB^2/Rtot <= P_allowed",
+        "condition": "whole track, ambient Tamb",
+        "name": "track power",
+        "source_ref": "S19",
+        "symbol": "P",
+        "unit": "W",
+        "value": "p_rated*clamp((125-Tamb)/(125-70),0,1)"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-RES-POT",
+      "declaration": {
+        "check": "abs(v_AB) <= 300",
+        "condition": "3296 / 3314 G,J,H as listed",
+        "name": "working voltage",
+        "source_ref": "S19",
+        "symbol": "V",
+        "unit": "V",
+        "value": 300
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-RES-POT",
+      "declaration": {
+        "effect": "track burns at the wiper, local resistance rises, then open",
+        "id": "overpower_track",
+        "permanence": "permanent",
+        "sim_response": "flag ERROR; open segment at >5x (assumption)",
+        "trigger": "track or segment power above rating"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-RES-POT",
+      "declaration": {
+        "effect": "wiper floats",
+        "id": "open_wiper",
+        "permanence": "recoverable",
+        "sim_response": "user toggle sets Rw=1G",
+        "trigger": "contact lift or burnout"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-RES-SENSE",
+      "declaration": {
+        "check": "i*i*Rs <= P_allowed",
+        "condition": "ambient Tamb",
+        "name": "power",
+        "source_ref": "S13",
+        "symbol": "P",
+        "unit": "W",
+        "value": "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-RES-SENSE",
+      "declaration": {
+        "check": "abs(i) <= sqrt(P_allowed/Rs)",
+        "condition": "continuous",
+        "name": "current",
+        "source_ref": "S15",
+        "symbol": "I",
+        "unit": "A",
+        "value": "sqrt(P_allowed/Rs)"
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-RES-SENSE",
+      "declaration": {
+        "effect": "element overheats; drift, solder joint damage; open at gross overload",
+        "id": "overpower",
+        "permanence": "permanent",
+        "sim_response": "flag ERROR; open the part if P > 5x for 5 s (assumption)",
+        "trigger": "P > P_allowed"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-RES-SENSE",
+      "declaration": {
+        "effect": "measurement error equal to lead drop",
+        "id": "kelvin_violation",
+        "permanence": "recoverable",
+        "sim_response": "flag DRC warning",
+        "trigger": "sense net shares load-current path"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-TRN-BJT",
+      "declaration": {
+        "check": "abs(v(c)-v(e)) <= 40",
+        "condition": "2N3904",
+        "name": "vceo",
+        "source_ref": "S1",
+        "symbol": "VCEO",
+        "unit": "V",
+        "value": 40
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-TRN-BJT",
+      "declaration": {
+        "check": "-(v(b)-v(e)) <= 6",
+        "condition": "2N3904",
+        "name": "vebo",
+        "source_ref": "S1",
+        "symbol": "VEBO",
+        "unit": "V",
+        "value": 6
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-TRN-BJT",
+      "declaration": {
+        "check": "abs(i(c)) <= 0.2",
+        "condition": "2N3904 continuous",
+        "name": "ic",
+        "source_ref": "S1",
+        "symbol": "IC",
+        "unit": "A",
+        "value": 0.2
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-TRN-BJT",
+      "declaration": {
+        "check": "vce*ic <= (150-Ta)/200",
+        "condition": "TO-92, Ta=25C, derate 5 mW/C",
+        "name": "power",
+        "source_ref": "S1",
+        "symbol": "PD",
+        "unit": "W",
+        "value": 0.625
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-TRN-BJT",
+      "declaration": {
+        "effect": "avalanche, possible destruction",
+        "id": "vceo_exceeded",
+        "permanence": "recoverable",
+        "sim_response": "flag, no clamp",
+        "trigger": "Vce > VCEO"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-TRN-BJT",
+      "declaration": {
+        "effect": "C-E short (power) or open (small signal)",
+        "id": "overtemp",
+        "permanence": "permanent",
+        "sim_response": "mark failed",
+        "trigger": "Tj > 150 C"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-TRN-BJT",
+      "declaration": {
+        "effect": "BE avalanche, hFE degradation",
+        "id": "vebo_exceeded",
+        "permanence": "permanent",
+        "sim_response": "flag, optional BF degradation policy",
+        "trigger": "reverse Vbe > VEBO"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-TRN-MOSFET",
+      "declaration": {
+        "check": "abs(v(g)-v(s)) <= 20",
+        "condition": "IRFZ44N",
+        "name": "vgs_max",
+        "source_ref": "S10",
+        "symbol": "VGS",
+        "unit": "V",
+        "value": 20
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-TRN-MOSFET",
+      "declaration": {
+        "check": "v(d)-v(s) <= 55",
+        "condition": "IRFZ44N",
+        "name": "vds_max",
+        "source_ref": "S10",
+        "symbol": "VDS",
+        "unit": "V",
+        "value": 55
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-TRN-MOSFET",
+      "declaration": {
+        "check": "E_av <= 0.53*(1-(Tj_start-25)/150)",
+        "condition": "single pulse, Tj start 25 C",
+        "name": "eas",
+        "source_ref": "S10",
+        "symbol": "EAS",
+        "unit": "J",
+        "value": 0.53
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-TRN-MOSFET",
+      "declaration": {
+        "check": "vds*id <= (175-Tc)/1.5",
+        "condition": "Tc=25 C, derate 0.63 W/C",
+        "name": "power",
+        "source_ref": "S10",
+        "symbol": "PD",
+        "unit": "W",
+        "value": 94
+      },
+      "kind": "ratings"
+    },
+    {
+      "behavior_id": "BEH-TRN-MOSFET",
+      "declaration": {
+        "effect": "gate short, permanent",
+        "id": "gate_oxide",
+        "permanence": "permanent",
+        "sim_response": "flag, mark failed (gate leak 100 ohm to 1 kohm)",
+        "trigger": "abs(Vgs) > 20 V"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-TRN-MOSFET",
+      "declaration": {
+        "effect": "D-S-G low-ohmic short",
+        "id": "avalanche_overenergy",
+        "permanence": "permanent",
+        "sim_response": "flag, replace by 1 mohm D-S",
+        "trigger": "E_av > EAS"
+      },
+      "kind": "failure_modes"
+    },
+    {
+      "behavior_id": "BEH-TRN-MOSFET",
+      "declaration": {
+        "effect": "hot-spot runaway",
+        "id": "spirito_soa",
+        "permanence": "permanent",
+        "sim_response": "flag SOA_RISK",
+        "trigger": "linear mode, high Vds, low Vgs"
+      },
+      "kind": "failure_modes"
+    }
+  ],
+  "limits": "All declarations are retained. Unsupported grammar, missing scope or missing observations evaluates UNKNOWN. This inventory does not claim all declarations are executable."
+}

@@ -1,0 +1,284 @@
+{
+  "applies_to": [
+    "OHM-120"
+  ],
+  "basis_values": [
+    "(150-25)/230/1.3",
+    "1000/Rprog",
+    "ASSUMPTION",
+    "Ireg*tanh(dV/(rcv*Ireg))",
+    "MFR_DATASHEET"
+  ],
+  "behavior_id": "BEH-IC-CHARGER-SOT235",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "1000/Rprog",
+          "measure": "Ibat_A",
+          "tolerance": "0.5 %",
+          "value": 0.1
+        }
+      ],
+      "file": "docs/behavior/bench/ic-charger/B1_cc.cir",
+      "measured_in_ngspice": 0.1,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "Ireg*tanh(dV/(rcv*Ireg))",
+          "measure": "I_4.19V_mA",
+          "tolerance": "1 %",
+          "value": 29.1
+        }
+      ],
+      "file": "docs/behavior/bench/ic-charger/B2_cv_taper.cir",
+      "measured_in_ngspice": 29.14,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "(150-25)/230/1.3",
+          "measure": "Ibat_A",
+          "tolerance": "2 %",
+          "value": 0.418
+        }
+      ],
+      "file": "docs/behavior/bench/ic-charger/B3_thermal.cir",
+      "measured_in_ngspice": 0.4126,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-120"
+    ],
+    "behavior_id": "BEH-IC-CHARGER-SOT235",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "1000/Rprog",
+            "measure": "Ibat_A",
+            "tolerance": "0.5 %",
+            "value": 0.1
+          }
+        ],
+        "file": "bench/ic-charger/B1_cc.cir",
+        "id": "B1",
+        "measured_in_ngspice": 0.1,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "Ireg*tanh(dV/(rcv*Ireg))",
+            "measure": "I_4.19V_mA",
+            "tolerance": "1 %",
+            "value": 29.1
+          }
+        ],
+        "file": "bench/ic-charger/B2_cv_taper.cir",
+        "id": "B2",
+        "measured_in_ngspice": 29.14,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "(150-25)/230/1.3",
+            "measure": "Ibat_A",
+            "tolerance": "2 %",
+            "value": 0.418
+          }
+        ],
+        "file": "bench/ic-charger/B3_thermal.cir",
+        "id": "B3",
+        "measured_in_ngspice": 0.4126,
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "ic",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "L",
+      "ratings": "L"
+    },
+    "failure_modes": [
+      {
+        "effect": "destructive, Li-ion hazard",
+        "id": "battery_reversed",
+        "permanence": "permanent",
+        "sim_response": "ERROR",
+        "trigger": "reverse polarity battery"
+      },
+      {
+        "effect": "current reduction",
+        "id": "thermal_overload",
+        "permanence": "recoverable",
+        "sim_response": "thermal limiter",
+        "trigger": "Tj near 150 C"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "no timers or battery detect",
+        "termination is a flag only",
+        "CV loop and precondition values assumed",
+        "thermal limiter memoryless"
+      ],
+      "netlist_template": "X{ref} {VDD} {VSS} {PROG} {VBAT} {STAT} chg_cc_cv vreg={vreg} rth={rth} ta={ta}\nR{ref}_prog {PROG} {VSS} {rprog}\n",
+      "spice_primitives": [
+        "B",
+        "V",
+        "R",
+        "C"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "tran"
+      ],
+      "valid_range": "VDD 3.75..6 V, Ireg up to 500 mA"
+    },
+    "parameters": {
+      "pre": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.1,
+        "max": 0.2,
+        "min": 0.05,
+        "source_ref": "S20",
+        "tolerance": "",
+        "unit": "x Ireg"
+      },
+      "rprog": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": "10e3",
+        "max": "100e3",
+        "min": "2e3",
+        "source_ref": "S20",
+        "tolerance": "",
+        "unit": "ohm"
+      },
+      "rth": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 230,
+        "max": 260,
+        "min": 200,
+        "source_ref": "S20",
+        "tolerance": "",
+        "unit": "C/W"
+      },
+      "term": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.075,
+        "max": 0.2,
+        "min": 0.05,
+        "source_ref": "S20",
+        "tolerance": "",
+        "unit": "x Ireg"
+      },
+      "vptrh": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 3.0,
+        "max": 3.2,
+        "min": 2.8,
+        "source_ref": "S20",
+        "tolerance": "",
+        "unit": "V"
+      },
+      "vreg": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 4.2,
+        "max": 4.4,
+        "min": 4.1,
+        "source_ref": "S20",
+        "tolerance": "",
+        "unit": "V"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "output",
+        "name": "STAT",
+        "package_terminal_rule": "SOT-23-5 pin 1",
+        "role": "signal_out"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "VSS",
+        "package_terminal_rule": "pin 2",
+        "role": "supply"
+      },
+      {
+        "electrical_type": "power_out",
+        "name": "VBAT",
+        "package_terminal_rule": "pin 3",
+        "role": "supply"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "VDD",
+        "package_terminal_rule": "pin 4",
+        "role": "supply"
+      },
+      {
+        "electrical_type": "input",
+        "name": "PROG",
+        "package_terminal_rule": "pin 5",
+        "role": "signal_in"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "I(VBAT) <= 0.5",
+        "condition": "MCP73831 max programmable",
+        "name": "charge current",
+        "source_ref": "S20",
+        "symbol": "Ibat",
+        "unit": "A",
+        "value": 0.5
+      },
+      {
+        "check": "(V(VDD)-V(VBAT))*Ibat + V(VDD)*Iq <= (150-Ta)/230",
+        "condition": "SOT-23-5 4-layer, 25 C",
+        "name": "dissipation",
+        "source_ref": "S20",
+        "symbol": "Pd",
+        "unit": "W",
+        "value": 0.54
+      }
+    ],
+    "sources": "S20, S25, S29",
+    "status": "partial"
+  },
+  "category": "ic",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "3cdf84f34ed9f8fb72c6c54ce98393eec967c71427d6da24c9495a993b10ee51",
+    "line": 8101
+  },
+  "source_refs": "S20, S25, S29",
+  "status": "partial"
+}

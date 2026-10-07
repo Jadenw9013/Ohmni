@@ -1,0 +1,16 @@
+B1 Aluminium polymer capacitor series resonance: f0 = 1/(2 pi sqrt(L C)), |Z|min = ESR
+* C=100u ESL=5n ESR=20m -> f0 = 225.08 kHz
+.include ohm_alpoly.lib
+Iac 0 p dc 0 ac 1
+Rb p 0 1e9
+Xc p 0 f ohm_alpoly C0=100u ESR=20m ESL=5n RLK=1e12
+Rf f 0 1meg
+.ac dec 400 100 10meg
+.control
+run
+let zm = vm(p)
+meas ac zmin min zm
+meas ac fres when zm=0.02000001 fall=1
+quit
+.endc
+.end

@@ -1,0 +1,16 @@
+* B2 RJ11 telephone line hazard: ringing 90 Vrms 20 Hz on -48 V DC.
+* v2 (REPIN-001): vmin removed from print; its meas line already prints it once.
+* v2: no functional change (vmin/vmax printed once by print; meas min/max lines carry no matchable scalar)
+* Peak = -48 -/+ 90*sqrt(2) = -48 -/+ 127.279
+* Expected min = -175.279 V ; max = 79.279 V
+Vr ring 0 SIN(-48 127.279 20)
+Rl ring 0 10k
+.tran 0.1m 100m
+.control
+run
+meas tran vmin min v(ring)
+meas tran vmax max v(ring)
+print vmax
+quit
+.endc
+.end

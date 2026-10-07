@@ -1,0 +1,87 @@
+{
+  "analysis": "op",
+  "circuit_hash": "1ea7a97d2a0cb3fb07a03a10f997c11a6db958a54b7e626b38393f1d3f3e0119",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "base_current": 0.0015,
+    "kind": "interval",
+    "maximum": 250.0,
+    "minimum": 40.0,
+    "observable": "current_gain",
+    "source_facts": {
+      "gain_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "dc_gain_maximum_ungraded",
+        "page": 1,
+        "scope": "onsemi BD139 (ex-Fairchild) current data sheet Rev 3; ungraded hFE at VCE 2 V, IC 150 mA; the Fairchild RevA (2000) sheet listed 160",
+        "sources": [
+          "https://www.onsemi.com/pdf/datasheet/bd139-d.pdf",
+          "https://www.farnell.com/datasheets/79944.pdf"
+        ],
+        "unit": "1",
+        "value": 250
+      },
+      "gain_min": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "dc_gain_minimum_ungraded",
+        "page": 1,
+        "scope": "Fairchild BD139 ungraded; VCE2 V, IC150 mA, TC25 C; electrical characteristics table, not the separate grade-16 classification",
+        "sources": [
+          "https://www.onsemi.com/pdf/datasheet/bd139-d.pdf",
+          "https://www.farnell.com/datasheets/79944.pdf"
+        ],
+        "unit": "1",
+        "value": 40
+      },
+      "gain_test_ic": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "dc_gain_test_collector_current",
+        "page": 1,
+        "scope": "Fairchild BD139 ungraded; VCE2 V, IC150 mA, TC25 C; electrical characteristics table, not the separate grade-16 classification",
+        "sources": [
+          "https://www.onsemi.com/pdf/datasheet/bd139-d.pdf",
+          "https://www.farnell.com/datasheets/79944.pdf"
+        ],
+        "unit": "A",
+        "value": 0.15
+      },
+      "gain_test_vce": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "dc_gain_test_collector_voltage",
+        "page": 1,
+        "scope": "Fairchild BD139 ungraded; VCE2 V, IC150 mA, TC25 C; electrical characteristics table, not the separate grade-16 classification",
+        "sources": [
+          "https://www.onsemi.com/pdf/datasheet/bd139-d.pdf",
+          "https://www.farnell.com/datasheets/79944.pdf"
+        ],
+        "unit": "V",
+        "value": 2
+      }
+    }
+  },
+  "entry_id": "OHM-097",
+  "entry_research_sha256": "a57b5f0c22bc153d0609dc4871dd4101cb4f5f59e3f7c0ca6eda92f951f09c3a",
+  "limits": "One-point DC gain-bin check using a geometric-mean BF and assumed IS. Does not validate gain roll-off, transient response, temperature behavior, ratings or SOA.",
+  "netlist_sha256": "39863aaf8d25ada2a959ebb3999e3ad6614d1c735e0b5359ff8145986f4f9dcc",
+  "observation_status": "ran",
+  "observed": 100.0,
+  "output_sha256": "d6e9e6733ddb12db233c529edef0b9ac179996295a9de975ead2029a60af1fca",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-06T07:27:41Z",
+  "raw_output": "runtime-bench-output/OHM-097-op/output.txt",
+  "recipe_source_sha256": "eaa714ff1b2ed130d1338d42429ff173a92033ed3e3c84b5eea55862c709fd33",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "version_file": "runtime-bench-output/OHM-097-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sun Mar 31 20:15:14 UTC 2024\n******\n",
+  "version_sha256": "d18ced87a01768ec53b4682c549f1182be38030c71159f071a008b747a8f04be"
+}

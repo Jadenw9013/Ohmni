@@ -1,0 +1,20 @@
+* BEH-IC-COMPARATOR B1b: output saturation voltage. IN+ 0.5 V below IN-, 1.1k pull-up to 5 V.
+* v2: scalars printed as 'name = value'; behavior unchanged
+* Sink law: I = Isat*tanh(V/(Ron*Isat)), Isat=16 mA, Ron=33 ohm. Solve (5-V)/1100 = 0.016*tanh(V/0.528) -> V = 0.149 V at I = 4.4 mA.
+* Datasheet (TI SLCS005AH extract): VOL typ 0.13 V (min col), max 0.4 V at IOL=4 mA. NOTE: op solve prints gmin/source-stepping warnings in ngspice 42 but converges.
+.include lm393.lib
+Vcc vcc 0 5
+Vref ref 0 2.5
+Vin in 0 2.0
+X1 in ref vcc 0 out comp_oc
+Rpu vcc out 1.1k
+.control
+set noaskquit
+op
+let vol = v(out)
+let iol = (5-v(out))/1100*1000
+echo vol_b1b_v = $&vol
+echo iol_b1b_mA = $&iol
+quit
+.endc
+.end

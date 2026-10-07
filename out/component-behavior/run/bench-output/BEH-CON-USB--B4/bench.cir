@@ -1,0 +1,17 @@
+* B4 full-speed device identification: device 1.5k on D+ to 3.3 V; host 15k pull-downs on D+ and D-
+* v2: scalar v_dp and v_dm
+* Expected: V(D+) = 3.3*15k/(15k+1.5k) = 3.0 V ; V(D-) = 0 V ; unattached host: both 0 V
+Vdev vdd 0 3.3
+Rpu vdd dp 1.5k
+Rhp dp 0 15k
+Rhm dm 0 15k
+Rdev_dm dm 0 1G
+.op
+.control
+op
+let v_dp = v(dp)
+let v_dm = v(dm)
+print v_dp v_dm
+quit
+.endc
+.end

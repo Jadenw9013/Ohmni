@@ -1,0 +1,699 @@
+{
+  "comparison": {
+    "comparison": {
+      "analytical_source": "BEH-RES-NETWORK/B2",
+      "derivation": "Same authored parallel sum N*V/R and relative tolerance, evaluated for the bound seven 10 kohm branches; the original four 1 kohm branch contract remains unchanged.",
+      "expected": 0.0035,
+      "kind": "absolute",
+      "observable": "supply_current",
+      "source_deck_sha256": "8fa6c319f64524d7d3f213d97460ee74158d0cd70dcf801b1f4a5031de4c32a3",
+      "source_fact": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "nominal_resistance",
+        "page": 2,
+        "scope": "Bourns 4608X-101 eight-pin bussed network, 10 kohm",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+        ],
+        "unit": "ohm",
+        "value": 10000
+      },
+      "tolerance": 3.5000000000000004e-06
+    },
+    "observed": 0.0035,
+    "passed": true
+  },
+  "entry_id": "OHM-016",
+  "limits": "Same limited analytical contract with zero-volt current probes. Missing thermal context and unsupported failure rules remain unknown.",
+  "netlist_sha256": "a9aa967b486776d4e8a28787d2ed56ce72835ae7173858fd8c528c32f844365b",
+  "observation_status": "ran",
+  "output_sha256": "f27079e65f1cdc692b31f64ee329457f62737369a2363c0399ba7c8ba514e0d1",
+  "ran_at": "2026-10-05T22:49:01Z",
+  "rating_status": "unknown",
+  "ratings": {
+    "components": [
+      {
+        "class_checks": [
+          {
+            "check": "v_k*i_k <= P_elem*derate(Tamb)",
+            "condition": "70 C, CRA06P",
+            "name": "element power",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "54708b51647d916bbf9464c487dec9da92c8211da118276a50af7f1c119d5188",
+              "line": 778
+            },
+            "source_ref": "S18",
+            "status": "unknown",
+            "symbol": "P",
+            "unit": "W",
+            "value": 0.063
+          },
+          {
+            "check": "sum(v_k*i_k) <= P_pkg*derate(Tamb)",
+            "condition": "70 C, 4600X by pin count",
+            "name": "package power",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "54708b51647d916bbf9464c487dec9da92c8211da118276a50af7f1c119d5188",
+              "line": 778
+            },
+            "source_ref": "S17",
+            "status": "unknown",
+            "symbol": "Ppkg",
+            "unit": "W",
+            "value": "0.5 to 1.75"
+          },
+          {
+            "check": "abs(v_k) <= Vmax",
+            "condition": "per element",
+            "name": "working voltage",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "54708b51647d916bbf9464c487dec9da92c8211da118276a50af7f1c119d5188",
+              "line": 778
+            },
+            "source_ref": "S17",
+            "status": "unknown",
+            "symbol": "Vmax",
+            "unit": "V",
+            "value": "100 (SIP) / 50 (array)"
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-016",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "drift or open of that element",
+            "id": "element_overpower",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "flag per element; open that element if > 5x (assumption)",
+            "status": "unknown",
+            "trigger": "P_k > P_elem*derate"
+          },
+          {
+            "applied_response": null,
+            "effect": "substrate overheats",
+            "id": "package_overpower",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "flag ERROR",
+            "status": "unknown",
+            "trigger": "sum P > P_pkg"
+          }
+        ],
+        "observations": {
+          "i_P1": -0.0035,
+          "i_P2": 0.0005,
+          "i_P3": 0.0005,
+          "i_P4": 0.0005,
+          "i_P5": 0.0005,
+          "i_P6": 0.0005,
+          "i_P7": 0.0005,
+          "i_P8": 0.0005,
+          "p_element": 0.2,
+          "p_package": 1.0,
+          "power": 0.0175,
+          "t_end": 125.0,
+          "t_knee": 70.0,
+          "v_P1": 0.0,
+          "v_P2": 5.0,
+          "v_P3": 5.0,
+          "v_P4": 5.0,
+          "v_P5": 5.0,
+          "v_P6": 5.0,
+          "v_P7": 5.0,
+          "v_P8": 5.0,
+          "v_max": 100.0,
+          "value": 10000.0
+        },
+        "ref": "U1",
+        "reference_checks": [
+          {
+            "evidence": {
+              "p_element": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "p_element_bussed",
+                "page": 2,
+                "scope": "Bourns 4608X eight-pin network; at 70 C ambient; derate linearly to zero at125 C per p2",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "W",
+                "value": 0.2
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 1,
+                "scope": "Bourns 4608X eight-pin network",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "degC",
+                "value": 125
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_knee",
+                "page": 2,
+                "scope": "Bourns 4608X-101 eight-pin bussed network, 10 kohm",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "C",
+                "value": 70
+              }
+            },
+            "expression": "(v_P2-v_P1)*i_P2 <= p_element*derate",
+            "name": "element power P2",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "v_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "v_max",
+                "page": 1,
+                "scope": "Bourns 4608X-101 eight-pin bussed network, 10 kohm",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "V",
+                "value": 100
+              }
+            },
+            "expression": "abs(v_P2-v_P1)<=v_max",
+            "name": "working voltage P2",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "p_element": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "p_element_bussed",
+                "page": 2,
+                "scope": "Bourns 4608X eight-pin network; at 70 C ambient; derate linearly to zero at125 C per p2",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "W",
+                "value": 0.2
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 1,
+                "scope": "Bourns 4608X eight-pin network",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "degC",
+                "value": 125
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_knee",
+                "page": 2,
+                "scope": "Bourns 4608X-101 eight-pin bussed network, 10 kohm",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "C",
+                "value": 70
+              }
+            },
+            "expression": "(v_P3-v_P1)*i_P3 <= p_element*derate",
+            "name": "element power P3",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "v_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "v_max",
+                "page": 1,
+                "scope": "Bourns 4608X-101 eight-pin bussed network, 10 kohm",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "V",
+                "value": 100
+              }
+            },
+            "expression": "abs(v_P3-v_P1)<=v_max",
+            "name": "working voltage P3",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "p_element": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "p_element_bussed",
+                "page": 2,
+                "scope": "Bourns 4608X eight-pin network; at 70 C ambient; derate linearly to zero at125 C per p2",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "W",
+                "value": 0.2
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 1,
+                "scope": "Bourns 4608X eight-pin network",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "degC",
+                "value": 125
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_knee",
+                "page": 2,
+                "scope": "Bourns 4608X-101 eight-pin bussed network, 10 kohm",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "C",
+                "value": 70
+              }
+            },
+            "expression": "(v_P4-v_P1)*i_P4 <= p_element*derate",
+            "name": "element power P4",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "v_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "v_max",
+                "page": 1,
+                "scope": "Bourns 4608X-101 eight-pin bussed network, 10 kohm",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "V",
+                "value": 100
+              }
+            },
+            "expression": "abs(v_P4-v_P1)<=v_max",
+            "name": "working voltage P4",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "p_element": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "p_element_bussed",
+                "page": 2,
+                "scope": "Bourns 4608X eight-pin network; at 70 C ambient; derate linearly to zero at125 C per p2",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "W",
+                "value": 0.2
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 1,
+                "scope": "Bourns 4608X eight-pin network",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "degC",
+                "value": 125
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_knee",
+                "page": 2,
+                "scope": "Bourns 4608X-101 eight-pin bussed network, 10 kohm",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "C",
+                "value": 70
+              }
+            },
+            "expression": "(v_P5-v_P1)*i_P5 <= p_element*derate",
+            "name": "element power P5",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "v_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "v_max",
+                "page": 1,
+                "scope": "Bourns 4608X-101 eight-pin bussed network, 10 kohm",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "V",
+                "value": 100
+              }
+            },
+            "expression": "abs(v_P5-v_P1)<=v_max",
+            "name": "working voltage P5",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "p_element": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "p_element_bussed",
+                "page": 2,
+                "scope": "Bourns 4608X eight-pin network; at 70 C ambient; derate linearly to zero at125 C per p2",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "W",
+                "value": 0.2
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 1,
+                "scope": "Bourns 4608X eight-pin network",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "degC",
+                "value": 125
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_knee",
+                "page": 2,
+                "scope": "Bourns 4608X-101 eight-pin bussed network, 10 kohm",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "C",
+                "value": 70
+              }
+            },
+            "expression": "(v_P6-v_P1)*i_P6 <= p_element*derate",
+            "name": "element power P6",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "v_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "v_max",
+                "page": 1,
+                "scope": "Bourns 4608X-101 eight-pin bussed network, 10 kohm",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "V",
+                "value": 100
+              }
+            },
+            "expression": "abs(v_P6-v_P1)<=v_max",
+            "name": "working voltage P6",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "p_element": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "p_element_bussed",
+                "page": 2,
+                "scope": "Bourns 4608X eight-pin network; at 70 C ambient; derate linearly to zero at125 C per p2",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "W",
+                "value": 0.2
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 1,
+                "scope": "Bourns 4608X eight-pin network",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "degC",
+                "value": 125
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_knee",
+                "page": 2,
+                "scope": "Bourns 4608X-101 eight-pin bussed network, 10 kohm",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "C",
+                "value": 70
+              }
+            },
+            "expression": "(v_P7-v_P1)*i_P7 <= p_element*derate",
+            "name": "element power P7",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "v_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "v_max",
+                "page": 1,
+                "scope": "Bourns 4608X-101 eight-pin bussed network, 10 kohm",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "V",
+                "value": 100
+              }
+            },
+            "expression": "abs(v_P7-v_P1)<=v_max",
+            "name": "working voltage P7",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "p_element": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "p_element_bussed",
+                "page": 2,
+                "scope": "Bourns 4608X eight-pin network; at 70 C ambient; derate linearly to zero at125 C per p2",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "W",
+                "value": 0.2
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 1,
+                "scope": "Bourns 4608X eight-pin network",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "degC",
+                "value": 125
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_knee",
+                "page": 2,
+                "scope": "Bourns 4608X-101 eight-pin bussed network, 10 kohm",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "C",
+                "value": 70
+              }
+            },
+            "expression": "(v_P8-v_P1)*i_P8 <= p_element*derate",
+            "name": "element power P8",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "v_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "v_max",
+                "page": 1,
+                "scope": "Bourns 4608X-101 eight-pin bussed network, 10 kohm",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "V",
+                "value": 100
+              }
+            },
+            "expression": "abs(v_P8-v_P1)<=v_max",
+            "name": "working voltage P8",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "p_package": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": "Eight-pin package at 70 degC; must be checked in addition to individual elements.",
+                "field": "p_package",
+                "page": 1,
+                "scope": "Bourns 4608X eight-pin network",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "W",
+                "value": 1
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 1,
+                "scope": "Bourns 4608X eight-pin network",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "degC",
+                "value": 125
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_knee",
+                "page": 2,
+                "scope": "Bourns 4608X-101 eight-pin bussed network, 10 kohm",
+                "sources": [
+                  "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+                ],
+                "unit": "C",
+                "value": 70
+              }
+            },
+            "expression": "power <= p_package*derate",
+            "name": "package power",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      }
+    ],
+    "fault_requests": [],
+    "limitations": [
+      "Only the stated observations and source conditions were checked.",
+      "Unsupported class expressions and failure triggers remain unknown; no damage timing is invented.",
+      "An electrical limit check does not verify physical fit or safe operation."
+    ],
+    "status": "unknown"
+  },
+  "raw_output": "instrumented-output/OHM-016/output.txt",
+  "run_id": "behavior-20261005T065040Z",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+}

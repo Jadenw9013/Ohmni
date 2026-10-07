@@ -1,0 +1,266 @@
+{
+  "applies_to": [
+    "OHM-133",
+    "OHM-134"
+  ],
+  "basis_values": [
+    "(8+24+8N)*Tck + 20 ns",
+    "ASSUMPTION",
+    "MFR_DATASHEET",
+    "independent ODE solution"
+  ],
+  "behavior_id": "BEH-MEM-SPINOR",
+  "benches": [
+    {
+      "bench_id": "F1",
+      "expected": [
+        {
+          "basis": "(8+24+8N)*Tck + 20 ns",
+          "measure": "tCSlow_us",
+          "tolerance": "0.1 percent",
+          "value": 83.22
+        }
+      ],
+      "file": "docs/behavior/bench/mem-spinor/F1_spi_read_timing.cir",
+      "measured_in_ngspice": 83.22,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "F2",
+      "expected": [
+        {
+          "basis": "independent ODE solution",
+          "measure": "peak_droop_mV",
+          "tolerance": "3 percent",
+          "value": "5.508, 2.554"
+        }
+      ],
+      "file": "docs/behavior/bench/mem-spinor/F2_program_current_droop.cir",
+      "measured_in_ngspice": "5.508, 2.554",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-133",
+      "OHM-134"
+    ],
+    "behavior_id": "BEH-MEM-SPINOR",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "(8+24+8N)*Tck + 20 ns",
+            "measure": "tCSlow_us",
+            "tolerance": "0.1 percent",
+            "value": 83.22
+          }
+        ],
+        "file": "bench/mem-spinor/F1_spi_read_timing.cir",
+        "id": "F1",
+        "measured_in_ngspice": 83.22,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "independent ODE solution",
+            "measure": "peak_droop_mV",
+            "tolerance": "3 percent",
+            "value": "5.508, 2.554"
+          }
+        ],
+        "file": "bench/mem-spinor/F2_program_current_droop.cir",
+        "id": "F2",
+        "measured_in_ngspice": "5.508, 2.554",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "ic",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "L"
+    },
+    "failure_modes": [
+      {
+        "effect": "sector undefined",
+        "id": "power_loss_during_write",
+        "permanence": "permanent",
+        "sim_response": "L3 marks sector corrupt",
+        "trigger": "VCC out of range while WIP"
+      },
+      {
+        "effect": "spurious pause or protect",
+        "id": "floating_hold_wp",
+        "permanence": "recoverable",
+        "sim_response": "verifier flag",
+        "trigger": "open /HOLD or /WP"
+      }
+    ],
+    "layer": "L3",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "no array, no command decode, no status register (L3)",
+        "RO is a worst-case limit fit",
+        "W25Q timing not obtained"
+      ],
+      "netlist_template": ".subckt SPINOR_IF cs_n sck di do wp_n hold_n vcc gnd params: CIN=6p RO=250 oe=1 dout=0\nCin1 cs_n gnd {CIN}\nCin2 sck gnd {CIN}\nCin3 di gnd {CIN}\nBdo_h vcc do I = v(oe)*v(dout)*(v(vcc)-v(do))/{RO}\nBdo_l do gnd I = v(oe)*(1-v(dout))*(v(do)-v(gnd))/{RO}\n.ends\n",
+      "spice_primitives": [
+        "C",
+        "B"
+      ],
+      "valid_analyses": [
+        "op",
+        "tran"
+      ],
+      "valid_range": "VCC 2.7-3.6 V; SPI modes 0/3"
+    },
+    "parameters": {
+      "CIN": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 6,
+        "max": 10,
+        "min": 3,
+        "source_ref": "none",
+        "tolerance": null,
+        "unit": "pF"
+      },
+      "IDD_program": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "L",
+        "default": 30,
+        "max": 30,
+        "min": null,
+        "source_ref": "S22",
+        "tolerance": null,
+        "unit": "mA"
+      },
+      "VCC": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 3.3,
+        "max": 3.6,
+        "min": 2.7,
+        "source_ref": "S22",
+        "tolerance": null,
+        "unit": "V"
+      },
+      "fSCK_fast": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 80,
+        "max": 80,
+        "min": 0,
+        "source_ref": "S22",
+        "tolerance": null,
+        "unit": "MHz"
+      },
+      "fSCK_read": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 25,
+        "max": 25,
+        "min": 0,
+        "source_ref": "S22",
+        "tolerance": null,
+        "unit": "MHz"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "input",
+        "name": "CS_N",
+        "package_terminal_rule": "pad 1 in 8-pad WSON/SOIC maps (W25Q128JV)",
+        "role": "chip_select"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "DO_IO1",
+        "package_terminal_rule": "pad 2",
+        "role": "data_out"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "WP_N_IO2",
+        "package_terminal_rule": "pad 3",
+        "role": "write_protect"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "GND",
+        "package_terminal_rule": "pad 4; exposed pad per part (not captured)",
+        "role": "ground"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "DI_IO0",
+        "package_terminal_rule": "pad 5",
+        "role": "data_in"
+      },
+      {
+        "electrical_type": "input",
+        "name": "CLK",
+        "package_terminal_rule": "pad 6",
+        "role": "clock"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "HOLD_N_RESET_IO3",
+        "package_terminal_rule": "pad 7",
+        "role": "hold"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "VCC",
+        "package_terminal_rule": "pad 8",
+        "role": "supply"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "2.7 <= v(vcc) <= 3.6",
+        "condition": "SST25VF016B",
+        "name": "supply_range",
+        "source_ref": "S22",
+        "symbol": "VCC",
+        "unit": "V",
+        "value": "2.7 to 3.6"
+      },
+      {
+        "check": "t(cs_n high) >= 50ns",
+        "condition": "SST25VF016B",
+        "name": "cs_high_time",
+        "source_ref": "S22",
+        "symbol": "TCPH",
+        "unit": "ns",
+        "value": 50
+      }
+    ],
+    "sources": [
+      "S21",
+      "S22"
+    ],
+    "status": "partial"
+  },
+  "category": "ic",
+  "fidelity": "behavioural_approximation",
+  "layer": "L3",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "e648ef3e32d2e50163c781de9f1985f8a64d5733c58d4793a9b58a2700aacd55",
+    "line": 9477
+  },
+  "source_refs": [
+    "S21",
+    "S22"
+  ],
+  "status": "partial"
+}

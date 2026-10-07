@@ -1,0 +1,24 @@
+* RES-NETWORK B1: bussed SIP, common pin 1 to 5 V, 3 elements of 10k; pin2 pulled to gnd by 10k external -> V(p2)=2.5
+* v2: scalar names rnet1_vp2 / rnet1_vp3 / rnet1_i4; sign fix: i4 = +i(vs) (current enters the + terminal of Vs, so the original -i(vs) printed -0.5 mA)
+* pin3 open -> V(p3)=5 V (no current). pin4 shorted to ground -> I = 0.5 mA
+* Bussed topology: element k between pin1 (common) and pin k+1.
+.subckt SIP4_BUSSED p1 p2 p3 p4 params: R=10k
+R1 p1 p2 {R}
+R2 p1 p3 {R}
+R3 p1 p4 {R}
+.ends
+V1 c 0 5
+Xn c p2 p3 p4 SIP4_BUSSED R=10k
+Rext p2 0 10k
+Rhi p3 0 1Meg
+Vs p4 0 0
+.control
+set noaskquit
+op
+let rnet1_vp2 = v(p2)
+let rnet1_vp3 = v(p3)
+let rnet1_i4 = i(vs)
+print rnet1_vp2 rnet1_vp3 rnet1_i4
+quit
+.endc
+.end

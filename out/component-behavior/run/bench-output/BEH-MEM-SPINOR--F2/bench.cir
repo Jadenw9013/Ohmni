@@ -1,0 +1,29 @@
+* BEH-MEM-SPINOR F2: VCC droop on a SPI NOR flash when a program/erase starts (current step 0 -> IDDW).
+* v2: meas lines print with trailing at=, so scalars are re-exported with let in mV (peak_l4p5_mv, peak_l1p1_mv); circuit unchanged
+* IDDW = 30 mA (SST25VF016B EOL supplement DS20005291A Table 3-1 max program/erase current; column header reads 'Min' in the extract but the values are clearly maximum limits).
+* Supply ideal 3.3 V -> board trace/lead inductance Lpath -> local node with 100 nF (ESR 50 mOhm). Step 0 -> 30 mA in 1 ns.
+* Analytic undamped bound: dI*sqrt(L/C) = 0.030*sqrt(Lpath/100n) = 6.36 mV (4.5 nH), 3.15 mV (1.1 nH). With ESR 50 mOhm the circuit is damped (zeta = 0.118 for 4.5 nH); an independent explicit-Euler ODE solution (python, same circuit) gives 5.508 mV and 2.554 mV.
+* Expected peak: 5.508 mV (L = 4.5 nH) and 2.554 mV (L = 1.1 nH), tolerance 3 %.
+Vr r 0 3.3
+L1 r d1 4.5n
+C1 d1 e1 100n ic=3.3
+Resr1 e1 0 50m
+I1 d1 0 PWL(0 0 5n 0 6n 0.03 2u 0.03)
+L2 r d2 1.1n
+C2 d2 e2 100n ic=3.3
+Resr2 e2 0 50m
+I2 d2 0 PWL(0 0 5n 0 6n 0.03 2u 0.03)
+.tran 20p 400n uic
+.control
+set noaskquit
+run
+let dr1 = 3.3-v(d1)
+let dr2 = 3.3-v(d2)
+meas tran peak_L4p5 max dr1 from=5n to=400n
+meas tran peak_L1p1 max dr2 from=5n to=400n
+let peak_l4p5_mv = peak_L4p5*1000
+let peak_l1p1_mv = peak_L1p1*1000
+print peak_l4p5_mv peak_l1p1_mv
+quit
+.endc
+.end

@@ -1,0 +1,245 @@
+{
+  "behavior_class_ids": [
+    "BEH-IC-PKGBIND"
+  ],
+  "catalog_binding_ids": [],
+  "class_record_paths": [
+    "src/ohmni/behavior/data/classes/BEH-IC-PKGBIND.json"
+  ],
+  "component": "DIP-6 IC",
+  "entry_id": "OHM-103",
+  "fidelity": "behavioural_approximation",
+  "group": "R7A",
+  "layer": "L1",
+  "research": {
+    "bench_result": null,
+    "bench_results": [
+      "bench-results/BEH-IC-PKGBIND--B1.json",
+      "bench-results/BEH-IC-PKGBIND--B2.json",
+      "bench-results/BEH-IC-PKGBIND--B3.json"
+    ],
+    "conflicts": [
+      "The primary Rev1.2 diagram confirms5=C,6=B; the spec Rev1.8 extract swap is rejected for this explicit revision.",
+      "Primary source prints70V VCEO absolute but guarantees30V BVCEO; preserve both and use30V conservative ceiling.",
+      "Spec package default Tj150C and2.5W cannot override4N35 Tj100C/70mW."
+    ],
+    "documents": [
+      {
+        "document_id": "vishay-4n35",
+        "manufacturer": "Vishay",
+        "note": "Primary PDF read from the hash-addressed archive.",
+        "page": null,
+        "revision": "81181 Rev1.2,07-Jan-2010",
+        "source_status": "primary_source_opened",
+        "title": "4N35,4N36,4N37 optocoupler",
+        "url": "https://www.vishay.com/docs/81181/4n35.pdf"
+      }
+    ],
+    "entry_id": "OHM-103",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "reference_part",
+        "page": 1,
+        "scope": "4N35 DIP-6; Rev1.2 only",
+        "sources": [
+          "https://www.vishay.com/docs/81181/4n35.pdf"
+        ],
+        "unit": null,
+        "value": "4N35"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "manufacturer_pin_roles",
+        "page": 1,
+        "scope": "4N35 DIP-6; Rev1.2 only; pin diagram visually inspected",
+        "sources": [
+          "https://www.vishay.com/docs/81181/4n35.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "1": "A",
+          "2": "K",
+          "3": "NC",
+          "4": "E",
+          "5": "C",
+          "6": "B"
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_forward_current",
+        "page": 1,
+        "scope": "4N35 DIP-6; Rev1.2 only; TA25C",
+        "sources": [
+          "https://www.vishay.com/docs/81181/4n35.pdf"
+        ],
+        "unit": "mA",
+        "value": 50
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_reverse_voltage",
+        "page": 1,
+        "scope": "4N35 DIP-6; Rev1.2 only; TA25C",
+        "sources": [
+          "https://www.vishay.com/docs/81181/4n35.pdf"
+        ],
+        "unit": "V",
+        "value": 6
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_input_power",
+        "page": 1,
+        "scope": "4N35 DIP-6; Rev1.2 only; TA25C",
+        "sources": [
+          "https://www.vishay.com/docs/81181/4n35.pdf"
+        ],
+        "unit": "mW",
+        "value": 70
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_output_power",
+        "page": 1,
+        "scope": "4N35 DIP-6; Rev1.2 only; TA25C",
+        "sources": [
+          "https://www.vishay.com/docs/81181/4n35.pdf"
+        ],
+        "unit": "mW",
+        "value": 70
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_collector_current",
+        "page": 1,
+        "scope": "4N35 DIP-6; Rev1.2 only; continuous,TA25C",
+        "sources": [
+          "https://www.vishay.com/docs/81181/4n35.pdf"
+        ],
+        "unit": "mA",
+        "value": 50
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "collector_emitter_absolute_voltage",
+        "page": 1,
+        "scope": "4N35 DIP-6; Rev1.2 only; printed absolute maximum",
+        "sources": [
+          "https://www.vishay.com/docs/81181/4n35.pdf"
+        ],
+        "unit": "V",
+        "value": 70
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "minimum_collector_emitter_breakdown",
+        "page": 2,
+        "scope": "4N35 DIP-6; Rev1.2 only; IC1mA,TA25C",
+        "sources": [
+          "https://www.vishay.com/docs/81181/4n35.pdf"
+        ],
+        "unit": "V",
+        "value": 30
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": null,
+        "field": "conservative_collector_emitter_ceiling",
+        "page": 2,
+        "scope": "4N35 DIP-6; Rev1.2 only; lower of published70V absolute and30V guaranteed breakdown; not an operating guarantee",
+        "sources": [
+          "https://www.vishay.com/docs/81181/4n35.pdf"
+        ],
+        "unit": "V",
+        "value": 30
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_junction_temperature",
+        "page": 2,
+        "scope": "4N35 DIP-6; Rev1.2 only",
+        "sources": [
+          "https://www.vishay.com/docs/81181/4n35.pdf"
+        ],
+        "unit": "C",
+        "value": 100
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "minimum_current_transfer_ratio",
+        "page": 3,
+        "scope": "4N35 DIP-6; Rev1.2 only; IF10mA,VCE10V,TA25C",
+        "sources": [
+          "https://www.vishay.com/docs/81181/4n35.pdf"
+        ],
+        "unit": "A/A",
+        "value": 1
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_forward_voltage",
+        "page": 2,
+        "scope": "4N35 DIP-6; Rev1.2 only; IF10mA,TA25C",
+        "sources": [
+          "https://www.vishay.com/docs/81181/4n35.pdf"
+        ],
+        "unit": "V",
+        "value": 1.5
+      }
+    ],
+    "remaining_open_items": [
+      "Package thetaJA and temperature derating are not established;70mW limits apply only at25C.",
+      "CTR is a minimum at one operating point, not a calibrated transfer curve.",
+      "Isolation test voltage5000VRMS is not a continuous working-voltage or mains-safety approval."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-103.md",
+      "document_sha256": "6416b2bf28645824f5c06cb789346e71061c33d8d9c7ba6f4cd6632b1af3f1b6",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
+  "resolution_ids": [
+    "REFERENCE-DIMENSION-COMPATIBILITY-POLICY"
+  ],
+  "schema_version": 1,
+  "simulation_disposition": "not_simulable",
+  "simulation_reason": "A package has no electrical function until a sourced reference part is bound.",
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "d8196ae6b303f5871c99328ba3cc60ba5cf3b14bcd283b189439182222c5480d",
+    "line": 121
+  },
+  "status": "partial"
+}

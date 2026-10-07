@@ -1,0 +1,169 @@
+{
+  "behavior_class_ids": [
+    "BEH-CON-MODJACK"
+  ],
+  "catalog_binding_ids": [],
+  "class_record_paths": [
+    "src/ohmni/behavior/data/classes/BEH-CON-MODJACK.json"
+  ],
+  "component": "RJ11 jack",
+  "entry_id": "OHM-170",
+  "fidelity": "behavioural_approximation",
+  "group": "R10A",
+  "layer": "L1",
+  "research": {
+    "bench_result": "bench-results/BEH-CON-MODJACK--B1.json",
+    "bench_results": [
+      "bench-results/BEH-CON-MODJACK--B1.json",
+      "bench-results/BEH-CON-MODJACK--B2.json",
+      "bench-results/BEH-CON-MODJACK--B3.json"
+    ],
+    "conflicts": [
+      "Exact drawing says 125 VAC and 35 milliohm; older family summaries of 150 VAC / 20 milliohm are not used."
+    ],
+    "documents": [
+      {
+        "document_id": "adam-rj11",
+        "manufacturer": "Adam Tech",
+        "note": "Primary PDF read from the hash-addressed archive.",
+        "page": null,
+        "revision": "Rev D, 14-Jan-2019; signature 17-Feb-2021",
+        "source_status": "primary_source_opened",
+        "title": "MTJ-645X1 modular telephone jack, 6P4C",
+        "url": "https://app.adam-tech.com/products/download/data_sheet/203853/mtj-645x1-data-sheet.pdf"
+      }
+    ],
+    "entry_id": "OHM-170",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "current_rated_max",
+        "page": 1,
+        "scope": "MTJ-645X1 only; visually read manufacturer drawing; maximum",
+        "sources": [
+          "https://app.adam-tech.com/products/download/data_sheet/203853/mtj-645x1-data-sheet.pdf"
+        ],
+        "unit": "A",
+        "value": 1.5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "voltage_rated_ac_max",
+        "page": 1,
+        "scope": "MTJ-645X1 only; visually read manufacturer drawing; maximum",
+        "sources": [
+          "https://app.adam-tech.com/products/download/data_sheet/203853/mtj-645x1-data-sheet.pdf"
+        ],
+        "unit": "V",
+        "value": 125
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "contact_resistance_max",
+        "page": 1,
+        "scope": "MTJ-645X1 only; visually read manufacturer drawing; maximum",
+        "sources": [
+          "https://app.adam-tech.com/products/download/data_sheet/203853/mtj-645x1-data-sheet.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.035
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "insulation_resistance_min",
+        "page": 1,
+        "scope": "MTJ-645X1 only; visually read manufacturer drawing; at 500 VDC",
+        "sources": [
+          "https://app.adam-tech.com/products/download/data_sheet/203853/mtj-645x1-data-sheet.pdf"
+        ],
+        "unit": "ohm",
+        "value": 1000000000.0
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "temperature_operating",
+        "page": 1,
+        "scope": "MTJ-645X1 only; visually read manufacturer drawing; operating range",
+        "sources": [
+          "https://app.adam-tech.com/products/download/data_sheet/203853/mtj-645x1-data-sheet.pdf"
+        ],
+        "unit": "degC",
+        "value": [
+          -40,
+          85
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "manufacturer_contact_numbers",
+        "page": 1,
+        "scope": "MTJ-645X1 only; visually read manufacturer drawing; four loaded center contacts numbered 1..4 in mating view; not housing positions 2..5",
+        "sources": [
+          "https://app.adam-tech.com/products/download/data_sheet/203853/mtj-645x1-data-sheet.pdf"
+        ],
+        "unit": null,
+        "value": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "body_envelope",
+        "page": 1,
+        "scope": "MTJ-645X1 only; visually read manufacturer drawing; width, depth, height",
+        "sources": [
+          "https://app.adam-tech.com/products/download/data_sheet/203853/mtj-645x1-data-sheet.pdf"
+        ],
+        "unit": "mm",
+        "value": [
+          13.2,
+          18,
+          11.65
+        ]
+      }
+    ],
+    "remaining_open_items": [
+      "Map manufacturer contacts 1..4 to six-position housing convention 2..5 and library coordinates; telephony Tip/Ring is application wiring, not inherent pin truth.",
+      "Current derating unavailable."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [
+      "Physical/permutation mapping unresolved; do not assign telephony polarity from memory."
+    ],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-170.md",
+      "document_sha256": "24559c790e32915b3c1985e1f33d1381089d573e30b378523de65f8d5be4a101",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
+  "resolution_ids": [],
+  "schema_version": 1,
+  "simulation_disposition": "simulable",
+  "simulation_reason": "The canonical class provides an L1/L2 model; fidelity and assumptions remain explicit.",
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "27de0f844829052f70d35657a5b787d712ce27a96f7eb766df7077cd3e09167b",
+    "line": 188
+  },
+  "status": "partial"
+}

@@ -1,62 +1,66 @@
 {
-  "schema_version": 1,
-  "project": "ohmni",
+  "active_task": "CBH-STAGE6",
+  "approved_product_scope": "COMPONENT-BEHAVIOR-COMPLETION",
+  "atlas_hold": "CAB-T01..CAB-T04 are COMPLETE as task units. CAB-T05 depends on CS-T04 COMPLETE; CS-T04 remains VERIFIED pending independent re-review and the recorded extraction gates. Publication does not activate imported parts or authorize later implementation.",
   "baseline": {
     "commit": "d9f2176",
     "kind": "independently_reviewed_product_milestone",
     "verification_status": "complete"
   },
-  "latest_product_milestone": {
-    "id": "M9",
-    "title": "Product contract and experience architecture",
-    "commit": "19f9afe",
-    "status": "COMPLETE"
-  },
-  "approved_product_scope": "COMPONENT-3D-COMPLETION",
-  "active_task": null,
-  "next_ready_tasks": [],
   "blocked_tasks": [
+    "CBH-STAGE2",
+    "CBH-STAGE3",
     "CS-T01",
     "CS-T02",
     "CS-T03",
     "CS-T04",
-    "M10-T05"
+    "M10-T05",
+    "CBH-STAGE4",
+    "CBH-STAGE5"
   ],
-  "last_verification": {
-    "id": "C3D-CATALOG-UI",
-    "commit": "878eacf4dd4449fc971f686cc068a541e7ede2e1",
-    "record": ".ai/verification/C3D-CATALOG-UI.yaml"
+  "component_synthesis_review": {
+    "commit": "uncommitted working tree on d7b1175",
+    "implementation_commit": "7efe78b94577103303df231bc84a30a2eede5be6",
+    "independent": true,
+    "note": "Historical independent reviews remain as recorded. All 23 remediation findings are addressed and their implementation is now committed. NEW-1..NEW-7 still need independent re-review; CS-T01..CS-T04 remain VERIFIED. Publication adds no live-extraction evidence.",
+    "record": ".ai/reviews.yaml#CS-T01-T04-REMEDIATION-2-VERIFICATION",
+    "scope": "COMPONENT-SYNTHESIS-1",
+    "status": "FINDINGS_ADDRESSED_AWAITING_RE_REVIEW"
   },
+  "cs_t05_hold": "CS-T05 is not blocked by a blocker entry; it is held by the ledger itself. Its dependency CS-T04 is VERIFIED, not COMPLETE, so executable_tasks() excludes it. It must stay unstarted until the prerequisites actually complete.",
   "last_review": {
-    "status": "PASSED",
-    "scope": "COMPONENT-3D-COMPLETION",
-    "task": "C3D-CATALOG-UI",
-    "commit": "878eacf4dd4449fc971f686cc068a541e7ede2e1",
+    "commit": "add6e411319ea34dc1a8c1f4d50c67f1200eef64",
     "independent": false,
-    "record": ".ai/reviews.yaml#C3D-CATALOG-UI-SELF"
+    "record": ".ai/reviews.yaml#CBH-AUDIT-SELF",
+    "scope": "COMPONENT-BEHAVIOR-COMPLETION",
+    "status": "PASSED",
+    "task": "CBH-AUDIT"
   },
+  "last_verification": {
+    "commit": "add6e411319ea34dc1a8c1f4d50c67f1200eef64",
+    "id": "CBH-AUDIT",
+    "record": ".ai/verification/CBH-AUDIT.yaml"
+  },
+  "latest_product_milestone": {
+    "commit": "19f9afe",
+    "id": "M9",
+    "status": "COMPLETE",
+    "title": "Product contract and experience architecture"
+  },
+  "next_ready_tasks": [],
+  "project": "ohmni",
   "repository_status": {
     "expected_clean": true,
-    "tracked_changes_expected": false,
-    "preserved_untracked_inputs": [],
     "ignored_local_inputs": [
       ".codex/",
       "build/",
       "out/",
       ".env",
       ".env.local"
-    ]
+    ],
+    "preserved_untracked_inputs": [],
+    "tracked_changes_expected": false
   },
-  "status": "COMPONENT_3D_LIBRARY_AWAITING_HUMAN_REVIEW",
-  "cs_t05_hold": "CS-T05 is not blocked by a blocker entry; it is held by the ledger itself. Its dependency CS-T04 is VERIFIED, not COMPLETE, so executable_tasks() excludes it. It must stay unstarted until the prerequisites actually complete.",
-  "component_synthesis_review": {
-    "status": "FINDINGS_ADDRESSED_AWAITING_RE_REVIEW",
-    "scope": "COMPONENT-SYNTHESIS-1",
-    "commit": "uncommitted working tree on d7b1175",
-    "independent": true,
-    "record": ".ai/reviews.yaml#CS-T01-T04-REMEDIATION-2-VERIFICATION",
-    "note": "Historical independent reviews remain as recorded. All 23 remediation findings are addressed and their implementation is now committed. NEW-1..NEW-7 still need independent re-review; CS-T01..CS-T04 remain VERIFIED. Publication adds no live-extraction evidence.",
-    "implementation_commit": "7efe78b94577103303df231bc84a30a2eede5be6"
-  },
-  "atlas_hold": "CAB-T01..CAB-T04 are COMPLETE as task units. CAB-T05 depends on CS-T04 COMPLETE; CS-T04 remains VERIFIED pending independent re-review and the recorded extraction gates. Publication does not activate imported parts or authorize later implementation."
+  "schema_version": 1,
+  "status": "COMPONENT_BEHAVIOR_STAGE6_IN_PROGRESS"
 }

@@ -1,0 +1,172 @@
+{
+  "behavior_class_ids": [
+    "BEH-DIO-PN"
+  ],
+  "catalog_binding_ids": [],
+  "class_record_paths": [
+    "src/ohmni/behavior/data/classes/BEH-DIO-PN.json"
+  ],
+  "component": "DO-201 power diode",
+  "entry_id": "OHM-058",
+  "fidelity": "behavioural_approximation",
+  "group": "R4",
+  "layer": "L1",
+  "research": {
+    "bench_result": "bench-results/BEH-DIO-PN--B1.json",
+    "bench_results": [
+      "bench-results/BEH-DIO-PN--B1.json",
+      "bench-results/BEH-DIO-PN--B2.json",
+      "bench-results/BEH-DIO-PN--B3.json",
+      "bench-results/BEH-DIO-PN--B4.json",
+      "bench-results/BEH-DIO-PN--B5.json",
+      "bench-results/BEH-DIO-PN--B6.json",
+      "bench-results/BEH-DIO-PN--B7.json"
+    ],
+    "conflicts": [
+      "Average-current conditions use lead temperature and 12.5 mm leads; thermal-resistance test uses 9.5 mm leads and specified heat sinks."
+    ],
+    "documents": [
+      {
+        "document_id": "vishay1n5408",
+        "manufacturer": "Vishay",
+        "note": "Manufacturer PDF read directly from the hashed fetch archive.",
+        "page": null,
+        "revision": "2025-12-19",
+        "source_status": "primary_source_opened",
+        "title": "1N5400 through 1N5408 General Purpose Rectifiers",
+        "url": "https://www.vishay.com/docs/88516/1n5400.pdf"
+      }
+    ],
+    "entry_id": "OHM-058",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "repetitive_peak_reverse_voltage",
+        "page": 1,
+        "scope": "Vishay 1N5408; 25 C unless stated",
+        "sources": [
+          "https://www.vishay.com/docs/88516/1n5400.pdf"
+        ],
+        "unit": "V",
+        "value": 1000
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "average_forward_current",
+        "page": 1,
+        "scope": "Vishay 1N5408; 25 C unless stated; TL=105 C, 12.5 mm leads",
+        "sources": [
+          "https://www.vishay.com/docs/88516/1n5400.pdf"
+        ],
+        "unit": "A",
+        "value": 3
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "surge_current",
+        "page": 1,
+        "scope": "Vishay 1N5408; 25 C unless stated; 8.3 ms single half-sine superimposed on rated load",
+        "sources": [
+          "https://www.vishay.com/docs/88516/1n5400.pdf"
+        ],
+        "unit": "A",
+        "value": 200
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_junction_temperature",
+        "page": 1,
+        "scope": "Vishay 1N5408; 25 C unless stated",
+        "sources": [
+          "https://www.vishay.com/docs/88516/1n5400.pdf"
+        ],
+        "unit": "C",
+        "value": 150
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_forward_voltage",
+        "page": 2,
+        "scope": "Vishay 1N5408; 25 C unless stated; IF=3 A",
+        "sources": [
+          "https://www.vishay.com/docs/88516/1n5400.pdf"
+        ],
+        "unit": "V",
+        "value": 1.2
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "typical_junction_capacitance",
+        "page": 2,
+        "scope": "Vishay 1N5408; 25 C unless stated; 4 V, 1 MHz",
+        "sources": [
+          "https://www.vishay.com/docs/88516/1n5400.pdf"
+        ],
+        "unit": "pF",
+        "value": 30
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "typical_thermal_resistance_junction_ambient",
+        "page": 2,
+        "scope": "Vishay 1N5408; 25 C unless stated; 9.5 mm leads, PCB mounted, 20 x 20 mm copper heat sinks",
+        "sources": [
+          "https://www.vishay.com/docs/88516/1n5400.pdf"
+        ],
+        "unit": "K/W",
+        "value": 20
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "cathode_mark",
+        "page": 1,
+        "scope": "Vishay 1N5408; 25 C unless stated",
+        "sources": [
+          "https://www.vishay.com/docs/88516/1n5400.pdf"
+        ],
+        "unit": null,
+        "value": "color band"
+      }
+    ],
+    "remaining_open_items": [
+      "No specified reverse-recovery time; assumed TT/N/RS and avalanche factor remain unverified.",
+      "The 20 K/W value is mounting-specific and cannot be transferred to the illustrated free leads."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-058.md",
+      "document_sha256": "405efe7d7fef695e4318a6f1f8bf53867b33715977095e981dca43c61f58549b",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
+  "resolution_ids": [],
+  "schema_version": 1,
+  "simulation_disposition": "simulable",
+  "simulation_reason": "The canonical class provides an L1/L2 model; fidelity and assumptions remain explicit.",
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "d78d4261ead530bc8c4c84628b28a998b3fd280a82cd4e1de7e72259b55d32a3",
+    "line": 76
+  },
+  "status": "partial"
+}

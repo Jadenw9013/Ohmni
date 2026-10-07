@@ -1,0 +1,15 @@
+* BEH-TRN-MOSFET B5: body diode forward drop at IS = 25 A, Vgs = 0, IRFZ44N_R6.  Datasheet VSD = 1.3 V max (Infineon IRFZ44NPbF, Is=25 A, Vgs=0, 25 C)
+* v2: absolute include path made relative; printed named scalar vsd_v
+* Fitted by construction (IS, N=1.2 assumed, RS = 8 mohm assumed): expected 1.3 V, tolerance 3 %.  Result confirms parameter transcription only.
+.include models_mosfet_r6fit.lib
+Isrc 0 s 25
+X1 0 g s IRFZ44N_R6 BVDSS=55
+Vg g s 0
+.control
+set noaskquit
+op
+let vsd_v = v(s)
+print vsd_v
+quit
+.endc
+.end

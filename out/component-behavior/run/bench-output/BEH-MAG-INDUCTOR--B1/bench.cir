@@ -1,0 +1,71 @@
+B1 inductance vs DC bias, small-signal AC at 100 kHz, two real parts
+* v2: RESULT echo replaced by scalar prints: ind1_l_*_0 (0 A), ind1_l_*_isat (at Isat), ind1_l_*_2x (2*Isat) for both parts (circuit unchanged)
+* Expected: L(Isat)=(1-DROP)*L0. XAL4020-222ME: L0=2.2u Isat=5.6A at 30% -> 1.54u
+*           SRP7028A-1R8M: L0=1.8u Isat=16A at 20% -> 1.44u
+* OHMNI BEH-MAG-INDUCTOR realistic model (behavioural_approximation)
+* Pins: a b. Params: L0 [H], Isat [A] at inductance drop DROP, LR = Lsat/L0 floor,
+* RDC [ohm], CP [F] (from SRF), RP [ohm] (parallel loss).
+.subckt IND_SAT a b L0=1u Isat=5 DROP=0.3 LR=0.05 RDC=10m CP=1p RP=1e9
+.param ia={Isat/atanh(sqrt(DROP/(1-LR)))}
+Rdc a x {RDC}
+Lnl x b L='L0*(LR+(1-LR)*(1/cosh(max(min(i(Lnl)/ia,20),-20)))**2)'
+Cp a b {CP}
+Rp a b {RP}
+.ends
+
+* Same model plus self-heating. Node th is the temperature rise in degC (1 V = 1 degC).
+* RTH [degC/W], CTH [J/degC], TC copper tempco [1/degC].
+.subckt IND_SAT_TH a b th L0=1u Isat=5 DROP=0.3 LR=0.05 RDC=10m CP=1p RP=1e9 RTH=40 CTH=0.05 TC=3.93m
+.param ia={Isat/atanh(sqrt(DROP/(1-LR)))}
+Rdc a x R='RDC*(1+TC*v(th))'
+Lnl x b L='L0*(LR+(1-LR)*(1/cosh(max(min(i(Lnl)/ia,20),-20)))**2)'
+Cp a b {CP}
+Rp a b {RP}
+Bpw 0 th I='v(a,x)*v(a,x)/(RDC*(1+TC*v(th)))'
+Rth th 0 {RTH}
+Cth th 0 {CTH}
+.ends
+
+I1 0 p1 DC 0 AC 1
+I2 0 p2 DC 0 AC 1
+X1 p1 0 IND_SAT L0=2.2u Isat=5.6 DROP=0.3 LR=0.05 RDC=35.2m CP=0.01p RP=1e12
+X2 p2 0 IND_SAT L0=1.8u Isat=16 DROP=0.2 LR=0.05 RDC=14m CP=0.01p RP=1e12
+R1 p1 0 1G
+R2 p2 0 1G
+.control
+let b = 0
+foreach pt 0 1 2
+ if $pt eq 0
+  alter I1 dc = 0
+  alter I2 dc = 0
+ end
+ if $pt eq 1
+  alter I1 dc = 5.6
+  alter I2 dc = 16
+ end
+ if $pt eq 2
+  alter I1 dc = 11.2
+  alter I2 dc = 32
+ end
+ ac lin 1 100k 100k
+ let l1 = imag(v(p1))/(2*pi*100k)
+ let l2 = imag(v(p2))/(2*pi*100k)
+ if $pt eq 0
+  let ind1_l_xal4020_0 = l1
+  let ind1_l_srp7028a_0 = l2
+  print ind1_l_xal4020_0 ind1_l_srp7028a_0
+ end
+ if $pt eq 1
+  let ind1_l_xal4020_isat = l1
+  let ind1_l_srp7028a_isat = l2
+  print ind1_l_xal4020_isat ind1_l_srp7028a_isat
+ end
+ if $pt eq 2
+  let ind1_l_xal4020_2x = l1
+  let ind1_l_srp7028a_2x = l2
+  print ind1_l_xal4020_2x ind1_l_srp7028a_2x
+ end
+end
+quit
+.endc
+.end

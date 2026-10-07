@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "kind": "catalog_binding",
+  "binding": {
+    "part_id": "GENERIC_LED_GREEN",
+    "entry_ids": ["OHM-078", "OHM-079"],
+    "rationale": "The catalog uses pin 1=A and pin 2=K, while the physical LED packages use terminal 1=K and terminal 2=A. Bind by role rather than assuming equal numbers.",
+    "package_pin_orders": [
+      {
+        "package_name": "0603",
+        "catalog_pin_roles": {"1": "A", "2": "K"},
+        "package_terminal_roles": {"1": "K", "2": "A"},
+        "catalog_to_package_terminal": {"1": "2", "2": "1"},
+        "catalog_to_footprint_pad": {"1": "2", "2": "1"},
+        "citation": {
+          "document_id": "ohmni-component-behavior-spec",
+          "title": "OHMNI Component Behavior Specification",
+          "revision": "first research pass plus human Stage 1 resolution",
+          "page": null,
+          "source_status": "HUMAN_CONFIRMED",
+          "note": "Approved 2026-10-04; source discussion at specification line 5602."
+        }
+      },
+      {
+        "package_name": "0805",
+        "catalog_pin_roles": {"1": "A", "2": "K"},
+        "package_terminal_roles": {"1": "K", "2": "A"},
+        "catalog_to_package_terminal": {"1": "2", "2": "1"},
+        "catalog_to_footprint_pad": {"1": "2", "2": "1"},
+        "citation": {
+          "document_id": "ohmni-component-behavior-spec",
+          "title": "OHMNI Component Behavior Specification",
+          "revision": "first research pass plus human Stage 1 resolution",
+          "page": null,
+          "source_status": "HUMAN_CONFIRMED",
+          "note": "Approved 2026-10-04; the same catalog record offers both package variants."
+        }
+      }
+    ]
+  }
+}

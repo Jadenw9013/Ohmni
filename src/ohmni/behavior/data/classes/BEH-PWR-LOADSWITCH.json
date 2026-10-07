@@ -1,0 +1,226 @@
+{
+  "applies_to": [
+    "OHM-132",
+    "OHM-140"
+  ],
+  "basis_values": [
+    "ASSUMPTION",
+    "I*RON",
+    "ILIM",
+    "MFR_DATASHEET",
+    "threshold"
+  ],
+  "behavior_id": "BEH-PWR-LOADSWITCH",
+  "benches": [
+    {
+      "bench_id": "L1",
+      "expected": [
+        {
+          "basis": "I*RON",
+          "measure": "vdrop_V",
+          "tolerance": "2 percent",
+          "value": 0.237
+        }
+      ],
+      "file": "docs/behavior/bench/pwr-loadswitch/L1_ron_drop.cir",
+      "measured_in_ngspice": "0.2375",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "L2",
+      "expected": [
+        {
+          "basis": "threshold",
+          "measure": "turn_on_V",
+          "tolerance": "15 mV",
+          "value": 2.54
+        }
+      ],
+      "file": "docs/behavior/bench/pwr-loadswitch/L2_uvlo.cir",
+      "measured_in_ngspice": "2.526",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "L3",
+      "expected": [
+        {
+          "basis": "ILIM",
+          "measure": "isc_A",
+          "tolerance": "1 percent",
+          "value": 1.5
+        }
+      ],
+      "file": "docs/behavior/bench/pwr-loadswitch/L3_current_limit.cir",
+      "measured_in_ngspice": "1.500",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-132",
+      "OHM-140"
+    ],
+    "behavior_id": "BEH-PWR-LOADSWITCH",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "I*RON",
+            "measure": "vdrop_V",
+            "tolerance": "2 percent",
+            "value": 0.237
+          }
+        ],
+        "file": "bench/pwr-loadswitch/L1_ron_drop.cir",
+        "id": "L1",
+        "measured_in_ngspice": "0.2375",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "threshold",
+            "measure": "turn_on_V",
+            "tolerance": "15 mV",
+            "value": 2.54
+          }
+        ],
+        "file": "bench/pwr-loadswitch/L2_uvlo.cir",
+        "id": "L2",
+        "measured_in_ngspice": "2.526",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "ILIM",
+            "measure": "isc_A",
+            "tolerance": "1 percent",
+            "value": 1.5
+          }
+        ],
+        "file": "bench/pwr-loadswitch/L3_current_limit.cir",
+        "id": "L3",
+        "measured_in_ngspice": "1.500",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "ic",
+    "confidence": {
+      "failure": "M",
+      "model": "L",
+      "parameters": "M",
+      "ratings": "L"
+    },
+    "failure_modes": [
+      {
+        "effect": "current limit then thermal shutdown",
+        "id": "short",
+        "permanence": "recoverable",
+        "sim_response": "clamp and flag",
+        "trigger": "VOUT shorted"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "no slew control, QOD, thermal shutdown, fault flag, reverse blocking"
+      ],
+      "netlist_template": "see bench/pwr-loadswitch/loadsw.inc (.subckt LOADSW vin vout en gnd params: RON ILIM VUVLO TON)",
+      "spice_primitives": [
+        "B",
+        "R",
+        "C"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "tran"
+      ],
+      "valid_range": "VIN within datasheet range"
+    },
+    "parameters": {
+      "ILIM": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 1.5,
+        "max": null,
+        "min": null,
+        "source_ref": "none",
+        "tolerance": null,
+        "unit": "A"
+      },
+      "RON": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.079,
+        "max": null,
+        "min": null,
+        "source_ref": "S4,S5",
+        "tolerance": null,
+        "unit": "ohm"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "power_in",
+        "name": "VIN",
+        "package_terminal_rule": "TPS22810 WSON-6 pin 6; NX5P3290 A1,A2 ganged",
+        "role": "supply_in"
+      },
+      {
+        "electrical_type": "power_out",
+        "name": "VOUT",
+        "package_terminal_rule": "TPS22810 pin 1; NX5P3290 VBUS C2,D1,D2 ganged",
+        "role": "switched_out"
+      },
+      {
+        "electrical_type": "input",
+        "name": "EN",
+        "package_terminal_rule": "TPS22810 pin 5 (EN/UVLO); NX5P3290 B4",
+        "role": "enable"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "GND",
+        "package_terminal_rule": "TPS22810 pin 4; NX5P3290 B3,C3,D3",
+        "role": "ground"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "vin <= limit",
+        "condition": "recommended or abs max not distinguished in the extract",
+        "name": "vin_max",
+        "source_ref": "S4,S5",
+        "symbol": "VIN",
+        "unit": "V",
+        "value": "18 (TPS22810), 29 (NX5P3290 VBUS)"
+      }
+    ],
+    "sources": [
+      "S4",
+      "S5"
+    ],
+    "status": "partial"
+  },
+  "category": "ic",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "de7bc9be159a07d3c78914c3f7f650e93973567f6f3efc30d515b7ca9967171e",
+    "line": 9754
+  },
+  "source_refs": [
+    "S4",
+    "S5"
+  ],
+  "status": "partial"
+}

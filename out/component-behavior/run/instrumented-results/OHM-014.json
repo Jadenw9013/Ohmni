@@ -1,0 +1,246 @@
+{
+  "comparison": {
+    "comparison": {
+      "analytical_source": "BEH-RES-SENSE/B1",
+      "derivation": "Same authored I*Rs equation and relative tolerance, evaluated at the bound 5 milliohm reference instead of the class bench's 1 milliohm example.",
+      "expected": 0.05,
+      "kind": "absolute",
+      "observable": "anode_voltage",
+      "source_deck_sha256": "b25bde9e184f48fc4d20bd86358c2e094f446d0e029227a5348ef9d3fd8cdc73",
+      "source_fact": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "nominal_resistance",
+        "page": 1,
+        "scope": "Vishay WSL2512 5 milliohm two-terminal reference",
+        "sources": [
+          "https://www.vishay.com/docs/30100/wsl.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.005
+      },
+      "tolerance": 5.000000000000001e-05
+    },
+    "observed": 0.05,
+    "passed": true
+  },
+  "entry_id": "OHM-014",
+  "limits": "Same limited analytical contract with zero-volt current probes. Missing thermal context and unsupported failure rules remain unknown.",
+  "netlist_sha256": "dea72d895f7b20419ca3731a92def0b16dfb66815c36fb83bc0e9377e3361f80",
+  "observation_status": "ran",
+  "output_sha256": "f155e1501e7971dbabba9418053cbadc43e3deafd99c19df4692481d40ff0258",
+  "ran_at": "2026-10-05T22:49:00Z",
+  "rating_status": "unknown",
+  "ratings": {
+    "components": [
+      {
+        "class_checks": [
+          {
+            "check": "i*i*Rs <= P_allowed",
+            "condition": "ambient Tamb",
+            "name": "power",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "268b4a292fa8b8ecc64e329d720f89c54077cdf9f8c565cc261f96547e765c09",
+              "line": 645
+            },
+            "source_ref": "S13",
+            "status": "unknown",
+            "symbol": "P",
+            "unit": "W",
+            "value": "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)"
+          },
+          {
+            "check": "abs(i) <= sqrt(P_allowed/Rs)",
+            "condition": "continuous",
+            "name": "current",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "268b4a292fa8b8ecc64e329d720f89c54077cdf9f8c565cc261f96547e765c09",
+              "line": 645
+            },
+            "source_ref": "S15",
+            "status": "unknown",
+            "symbol": "I",
+            "unit": "A",
+            "value": "sqrt(P_allowed/Rs)"
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-014",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "element overheats; drift, solder joint damage; open at gross overload",
+            "id": "overpower",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "flag ERROR; open the part if P > 5x for 5 s (assumption)",
+            "status": "unknown",
+            "trigger": "P > P_allowed"
+          },
+          {
+            "applied_response": null,
+            "effect": "measurement error equal to lead drop",
+            "id": "kelvin_violation",
+            "permanence": "recoverable",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "flag DRC warning",
+            "status": "unknown",
+            "trigger": "sense net shares load-current path"
+          }
+        ],
+        "observations": {
+          "P": 0.5,
+          "i_I1": 10.0,
+          "i_I2": -10.0,
+          "p_rated": 1.0,
+          "power": 0.5,
+          "t_end": 170.0,
+          "t_knee": 70.0,
+          "tcr": 110.0,
+          "v": 0.05,
+          "v_I1": 0.05,
+          "v_I2": 0.0,
+          "value": 0.005
+        },
+        "ref": "U1",
+        "reference_checks": [
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "p_rated",
+                "page": 1,
+                "scope": "Vishay WSL2512, 5 milliohm two-terminal option",
+                "sources": [
+                  "https://www.vishay.com/docs/30100/wsl.pdf"
+                ],
+                "unit": "W",
+                "value": 1
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 3,
+                "scope": "Vishay WSL2512 5 milliohm two-terminal reference",
+                "sources": [
+                  "https://www.vishay.com/docs/30100/wsl.pdf"
+                ],
+                "unit": "C",
+                "value": 170
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_knee",
+                "page": 3,
+                "scope": "Vishay WSL2512 5 milliohm two-terminal reference",
+                "sources": [
+                  "https://www.vishay.com/docs/30100/wsl.pdf"
+                ],
+                "unit": "C",
+                "value": 70
+              }
+            },
+            "expression": "P <= P_allowed",
+            "name": "power",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [
+              "power"
+            ],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "p_rated",
+                "page": 1,
+                "scope": "Vishay WSL2512, 5 milliohm two-terminal option",
+                "sources": [
+                  "https://www.vishay.com/docs/30100/wsl.pdf"
+                ],
+                "unit": "W",
+                "value": 1
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 3,
+                "scope": "Vishay WSL2512 5 milliohm two-terminal reference",
+                "sources": [
+                  "https://www.vishay.com/docs/30100/wsl.pdf"
+                ],
+                "unit": "C",
+                "value": 170
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_knee",
+                "page": 3,
+                "scope": "Vishay WSL2512 5 milliohm two-terminal reference",
+                "sources": [
+                  "https://www.vishay.com/docs/30100/wsl.pdf"
+                ],
+                "unit": "C",
+                "value": 70
+              },
+              "value": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "nominal_resistance",
+                "page": 1,
+                "scope": "Vishay WSL2512 5 milliohm two-terminal reference",
+                "sources": [
+                  "https://www.vishay.com/docs/30100/wsl.pdf"
+                ],
+                "unit": "ohm",
+                "value": 0.005
+              }
+            },
+            "expression": "abs(i_I1) <= sqrt(P_allowed/value)",
+            "name": "current",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [
+              "current"
+            ],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      }
+    ],
+    "fault_requests": [],
+    "limitations": [
+      "Only the stated observations and source conditions were checked.",
+      "Unsupported class expressions and failure triggers remain unknown; no damage timing is invented.",
+      "An electrical limit check does not verify physical fit or safe operation."
+    ],
+    "status": "unknown"
+  },
+  "raw_output": "instrumented-output/OHM-014/output.txt",
+  "run_id": "behavior-20261005T065040Z",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+}

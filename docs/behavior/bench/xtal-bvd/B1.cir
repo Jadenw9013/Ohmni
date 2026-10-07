@@ -1,0 +1,17 @@
+B1 BVD crystal impedance: series fs, parallel fa, ESR at fs (8 MHz, C1=9f C0=3p R1=80)
+* v2 (REPIN-001): zmin_ohm removed from print; its meas line already prints it once.
+* v2: renamed meas results to zmin_ohm/fzmin_hz/zmax_ohm/fa_hz and added print (meas lines carry at=/with= suffix and are not parseable); circuit unchanged
+.include ohm_xtal.lib
+Iin 0 x dc 0 ac 1
+X1 x 0 ohm_xtal L1=43.99505512m C1=9f R1=80 C0=3p
+.control
+ac lin 40001 7.99e6 8.03e6
+let zm = mag(v(x))
+meas ac zmin_ohm MIN zm
+meas ac fzmin_hz MIN_AT zm
+meas ac zmax_ohm MAX zm
+meas ac fa_hz MAX_AT zm
+print fzmin_hz zmax_ohm fa_hz
+quit
+.endc
+.end

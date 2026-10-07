@@ -1,0 +1,14 @@
+B2 SAW mismatch: same filter with 100 ohm load instead of 50 ohm (impedance-matching sensitivity). Midband n=3 Chebyshev is transparent so loss is that of the pad terminated in 100 ohm.
+* v2: print renamed il -> il_100ohm_db; circuit unchanged
+.include ohm_saw.lib
+V1 s 0 ac 1
+Rs s in 50
+X1 in out 0 ohm_saw
+Rl out 0 100
+.control
+ac lin 1 869e6 869e6
+let il_100ohm_db = -10*log10(4*50*mag(v(out))^2/100)
+print il_100ohm_db
+quit
+.endc
+.end

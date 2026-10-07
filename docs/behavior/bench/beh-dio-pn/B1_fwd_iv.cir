@@ -1,0 +1,18 @@
+* BEH-DIO-PN B1: forward I-V of fitted 1N4148 vs Shockley+RS closed form
+* model: IS=5.537e-9 N=1.944 RS=0.6 (fit, see parts/R4.md)
+* REPIN-003: run at 25 C (tnom=25, .temp 25) to match the 25 C datasheet fit and the product runtime; prints vd_10ma.
+.options tnom=25
+.temp 25
+.model D1N4148_FIT D (IS=5.537e-9 N=1.944 RS=0.6 CJO=2p VJ=0.7 M=0.4 TT=23n BV=100 IBV=100u)
+I1 0 d 1m
+D1 d 0 D1N4148_FIT
+.control
+dc I1 1m 1m 1m
+print v(d)
+dc I1 10m 10m 1m
+let vd_10ma = v(d)
+print vd_10ma
+dc I1 100m 100m 1m
+print v(d)
+.endc
+.end

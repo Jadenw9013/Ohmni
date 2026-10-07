@@ -1,0 +1,15 @@
+B4 Aluminium electrolytic ESR rise at low temperature (assumed 2x per 20 degC below 25 degC)
+* TA=-25 -> ESRT = 0.3*2^(50/20) = 1.697 ohm ; Re(Z) of the series model equals ESR at all frequencies (Rleak high)
+.include ohm_alel.lib
+Iac 0 p dc 0 ac 1
+Rb p 0 1e9
+Xc p 0 f ohm_alel C0=100u ESR=0.3 ESL=15n RLK=1e12 TA=-25
+Rf f 0 1meg
+.ac lin 1 1k 1k
+.control
+run
+let esr_eff = real(v(p))
+print esr_eff
+quit
+.endc
+.end

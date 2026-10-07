@@ -1,0 +1,233 @@
+{
+  "applies_to": [
+    "OHM-155",
+    "OHM-156",
+    "OHM-157",
+    "OHM-158"
+  ],
+  "basis_values": [
+    "ASSUMPTION",
+    "MFR_DATASHEET",
+    "diode drop 0.75 V",
+    "divider"
+  ],
+  "behavior_id": "BEH-CON-WTB",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "diode drop 0.75 V",
+          "measure": "i_straight",
+          "tolerance": "5%",
+          "value": 0.0425
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-wtb/B1.cir",
+      "measured_in_ngspice": 0.04244,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "divider",
+          "measure": "V_load",
+          "tolerance": "0.1%",
+          "value": 4.55158
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-wtb/B2.cir",
+      "measured_in_ngspice": 4.551578,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-155",
+      "OHM-156",
+      "OHM-157",
+      "OHM-158"
+    ],
+    "behavior_id": "BEH-CON-WTB",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "diode drop 0.75 V",
+            "measure": "i_straight",
+            "tolerance": "5%",
+            "value": 0.0425
+          }
+        ],
+        "file": "bench/beh-con-wtb/B1.cir",
+        "id": "B1",
+        "measured_in_ngspice": 0.04244,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "divider",
+            "measure": "V_load",
+            "tolerance": "0.1%",
+            "value": 4.55158
+          }
+        ],
+        "file": "bench/beh-con-wtb/B2.cir",
+        "id": "B2",
+        "measured_in_ngspice": 4.551578,
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "connector",
+    "confidence": {
+      "failure": "L",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "H"
+    },
+    "failure_modes": [
+      {
+        "effect": "heating and housing damage",
+        "id": "overcurrent",
+        "permanence": "permanent",
+        "sim_response": "flag, damaged above Tmax",
+        "trigger": "I > Irated"
+      },
+      {
+        "effect": "downstream part sees reversed supply",
+        "id": "reverse_polarity",
+        "permanence": "recoverable",
+        "sim_response": "no connector response; downstream models respond",
+        "trigger": "cable pin assignment crossed"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "rating tied to wire gauge",
+        "no polarity assignment is standardized",
+        "Rmate default is derived from spec max",
+        "no L/C"
+      ],
+      "netlist_template": "R{ref}_m{k} {Pk} {mid} {Rmate}\nR{ref}_x{k} {mid} {Wk} {Rcrimp}\n",
+      "spice_primitives": [
+        "R"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "ac",
+        "tran",
+        "temp"
+      ],
+      "valid_range": "I <= Irated at stated AWG, T <= Tmax including rise"
+    },
+    "parameters": {
+      "Irated": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 2,
+        "max": 4,
+        "min": 1,
+        "source_ref": "S1",
+        "tolerance": "-",
+        "unit": "A"
+      },
+      "N": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 2,
+        "max": 16,
+        "min": 2,
+        "source_ref": "S1",
+        "tolerance": "exact",
+        "unit": "positions"
+      },
+      "Rcrimp": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 2,
+        "max": 5,
+        "min": 0,
+        "source_ref": "S2",
+        "tolerance": "-",
+        "unit": "mohm"
+      },
+      "Rmate": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 6,
+        "max": 20,
+        "min": 0,
+        "source_ref": "S1",
+        "tolerance": "factor 2",
+        "unit": "mohm"
+      },
+      "Vwork": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 100,
+        "max": 250,
+        "min": 50,
+        "source_ref": "S1",
+        "tolerance": "-",
+        "unit": "V"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "P1..PN",
+        "package_terminal_rule": "3D spec: pin 1 at +Y end, numbering toward -Y (SH: pin 1 at +Y end of SM04B)",
+        "role": "terminal"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "I > Irated",
+        "condition": "PH AWG24; XH 3 A AWG22; SH 1 A AWG28; KK 4 A AWG22",
+        "name": "current",
+        "source_ref": "S1",
+        "symbol": "I",
+        "unit": "A",
+        "value": 2
+      },
+      {
+        "check": "V > Vwork",
+        "condition": "PH; XH 250; SH 50; KK 250",
+        "name": "voltage",
+        "source_ref": "S1",
+        "symbol": "V",
+        "unit": "V",
+        "value": 100
+      }
+    ],
+    "sources": [
+      "S1",
+      "S2",
+      "S3"
+    ],
+    "status": "partial"
+  },
+  "category": "connector",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "705bbb868430c568b6ef9834d6738f27ca45650a276c4226376772575ba98615",
+    "line": 10789
+  },
+  "source_refs": [
+    "S1",
+    "S2",
+    "S3"
+  ],
+  "status": "partial"
+}

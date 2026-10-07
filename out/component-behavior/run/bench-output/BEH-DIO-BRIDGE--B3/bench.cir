@@ -1,0 +1,34 @@
+* BEH-DIO-BRIDGE B3: polarity. 5 V source with 100 ohm series resistor across the DC pins of a bridge.
+* v2: scalars renamed br3_ia (blocked case A) and br3_ib (conducting case B) (circuit unchanged)
+* Case A (PLUS to +5 V, MINUS to 0 V): the DC pins see the bridge in REVERSE -> blocked, I ~ 0.
+* Case B (PLUS to 0 V, MINUS to +5 V): current flows MINUS->AC->PLUS through two diodes in series
+*   (each of D3||D4 and D1||D2 carries I/2): expected I = (5 - 2*Vf(I/2))/100.
+* AC pins left floating via 1 Gohm to ground.
+.model D1N4007_TYP D (IS=4.023e-9 N=1.8 RS=0.03 CJO=39p VJ=0.7 M=0.5 TT=3u BV=1100 IBV=5u)
+.subckt BRIDGE AC1 AC2 PLUS MINUS
+D1 AC1 PLUS D1N4007_TYP
+D2 AC2 PLUS D1N4007_TYP
+D3 MINUS AC1 D1N4007_TYP
+D4 MINUS AC2 D1N4007_TYP
+.ends
+.param SA=5
+Vs s 0 {SA}
+Rs s a 100
+* case A: PLUS=a, MINUS=0
+XA ac1 ac2 a 0 BRIDGE
+Rg1 ac1 0 1G
+Rg2 ac2 0 1G
+* case B: PLUS=0 (node 0), MINUS=b
+Rs2 s b 100
+XB bc1 bc2 0 b BRIDGE
+Rg3 bc1 0 1G
+Rg4 bc2 0 1G
+.control
+op
+let iA = (v(s)-v(a))/100
+let iB = (v(s)-v(b))/100
+let br3_ia = iA
+let br3_ib = iB
+print br3_ia br3_ib
+.endc
+.end

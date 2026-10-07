@@ -1,0 +1,311 @@
+{
+  "applies_to": [
+    "OHM-069"
+  ],
+  "basis_values": [
+    "ASSUMPTION",
+    "DERIVED",
+    "MFR_DATASHEET",
+    "STANDARD",
+    "VC*IPP at 24.0 A",
+    "datasheet VC",
+    "symmetry"
+  ],
+  "behavior_id": "BEH-DIO-TVS",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "datasheet VC",
+          "measure": "V at 24.6 A",
+          "tolerance": "0.5%",
+          "value": 24.4
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-tvs/B1_vc_ipp.cir",
+      "measured_in_ngspice": 24.416,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "VC*IPP at 24.0 A",
+          "measure": "Ppeak",
+          "tolerance": "2%",
+          "value": 582
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-tvs/B2_surge_clamp.cir",
+      "measured_in_ngspice": 584.4,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "symmetry",
+          "measure": "V at +/-24.6 A",
+          "tolerance": "0.5%",
+          "value": 24.4
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-tvs/B3_bidir.cir",
+      "measured_in_ngspice": "+24.395 / -24.395",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-069"
+    ],
+    "behavior_id": "BEH-DIO-TVS",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "datasheet VC",
+            "measure": "V at 24.6 A",
+            "tolerance": "0.5%",
+            "value": 24.4
+          }
+        ],
+        "file": "bench/beh-dio-tvs/B1_vc_ipp.cir",
+        "id": "B1",
+        "measured_in_ngspice": 24.416,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "VC*IPP at 24.0 A",
+            "measure": "Ppeak",
+            "tolerance": "2%",
+            "value": 582
+          }
+        ],
+        "file": "bench/beh-dio-tvs/B2_surge_clamp.cir",
+        "id": "B2",
+        "measured_in_ngspice": 584.4,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "symmetry",
+            "measure": "V at +/-24.6 A",
+            "tolerance": "0.5%",
+            "value": 24.4
+          }
+        ],
+        "file": "bench/beh-dio-tvs/B3_bidir.cir",
+        "id": "B3",
+        "measured_in_ngspice": "+24.395 / -24.395",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "diode",
+    "confidence": {
+      "failure": "L",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "fails short (consensus, not from an opened document)",
+        "id": "pulse_overpower",
+        "permanence": "permanent",
+        "sim_response": "FAIL, failed_short, rail collapses",
+        "trigger": "pulse power above PPPM"
+      },
+      {
+        "effect": "avalanche heating, short",
+        "id": "continuous_overvoltage",
+        "permanence": "permanent",
+        "sim_response": "WARN above VWM, FAIL on thermal",
+        "trigger": "V above VWM sustained"
+      },
+      {
+        "effect": "short plus energy-rich source: overheating hazard",
+        "id": "unfused_source",
+        "permanence": "permanent",
+        "sim_response": "HAZARD flag",
+        "trigger": "TVS on rail without current limit"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "no pulse-width derating curve available; rule-of-thumb scaling is an ASSUMPTION",
+        "VBR nominal assumed from a sibling part's window",
+        "no lead inductance overshoot, no repetition or energy memory",
+        "bidirectional model needs trimmed cells (see B3)"
+      ],
+      "netlist_template": ".subckt TVSU_{ref} A K\nDF A K DFWD_{ref}\nDR A K DTVS_{ref}\nRLK K A {VWM/ID}\n.ends\n.model DFWD_{ref} D (IS=1e-9 N=1.5 RS=0.05 CJO={CJ})\n.model DTVS_{ref} D (IS=1e-15 N=1 RS={RDYN} BV={VBR_nom} IBV=1m NBV=1)\nX{ref} {A} {K} TVSU_{ref}\n",
+      "spice_primitives": [
+        "D",
+        "R"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "ac",
+        "tran"
+      ],
+      "valid_range": "pulse peak <= IPP at the rated 10/1000 us pulse, 25 C"
+    },
+    "parameters": {
+      "ID": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 1e-06,
+        "source_ref": "S16",
+        "tolerance": "max",
+        "unit": "A"
+      },
+      "IPP": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 24.6,
+        "source_ref": "S16",
+        "unit": "A"
+      },
+      "PPPM": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 600,
+        "source_ref": "S16",
+        "unit": "W"
+      },
+      "RDYN": {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "default": 0.266,
+        "source_ref": "S16",
+        "unit": "ohm"
+      },
+      "VBR_min": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 16.7,
+        "max": 209,
+        "min": 6.4,
+        "source_ref": "S16",
+        "tolerance": "window to 18.5 V (SMAJ15A)",
+        "unit": "V"
+      },
+      "VBR_nom": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 17.6,
+        "source_ref": "S17",
+        "unit": "V"
+      },
+      "VC": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 24.4,
+        "source_ref": "S16",
+        "tolerance": "max",
+        "unit": "V"
+      },
+      "VWM": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 15,
+        "max": 188,
+        "min": 5.0,
+        "source_ref": "S16",
+        "unit": "V"
+      },
+      "bidirectional": {
+        "basis": "STANDARD",
+        "confidence": "H",
+        "default": false,
+        "source_ref": "S16",
+        "unit": "bool"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "K",
+        "package_terminal_rule": "unidirectional: terminal 1 (cathode band, -X); bidirectional: terminal 1 arbitrary",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "A",
+        "package_terminal_rule": "unidirectional: terminal 2 (+X); bidirectional: terminal 2 arbitrary",
+        "role": "terminal"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "max(v*i) <= PPPM*derate(Tj)",
+        "condition": "10/1000 us, 25 C (SMBJ); SMAJ 400 W; SMCJ 1500 W",
+        "name": "peak_pulse_power",
+        "source_ref": "S16",
+        "symbol": "PPPM",
+        "unit": "W",
+        "value": 600
+      },
+      {
+        "check": "V_rail_max <= VWM",
+        "condition": "SMBJ15A",
+        "name": "standoff",
+        "source_ref": "S16",
+        "symbol": "VWM",
+        "unit": "V",
+        "value": 15
+      },
+      {
+        "check": "i_forward_pk <= IFSM",
+        "condition": "8.3 ms, unidirectional, SMB",
+        "name": "forward_surge",
+        "source_ref": "S16",
+        "symbol": "IFSM",
+        "unit": "A",
+        "value": 100
+      }
+    ],
+    "sources": [
+      {
+        "date": "09-Jan-2024",
+        "id": "S16",
+        "org": "Vishay",
+        "title": "SMBJ5.0A thru SMBJ188CA doc 88392",
+        "url": "https://www.vishay.com/docs/88392/smbj.pdf",
+        "used_for": "PPPM, VWM, VBR, VC, IPP, ID, TC, IFSM, RthJA"
+      }
+    ],
+    "status": "partial"
+  },
+  "category": "diode",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "2ab26a56377ff370b319fde68ba204a5bd173a0669b09eba1110837612625ee0",
+    "line": 4185
+  },
+  "source_refs": [
+    {
+      "date": "09-Jan-2024",
+      "id": "S16",
+      "org": "Vishay",
+      "title": "SMBJ5.0A thru SMBJ188CA doc 88392",
+      "url": "https://www.vishay.com/docs/88392/smbj.pdf",
+      "used_for": "PPPM, VWM, VBR, VC, IPP, ID, TC, IFSM, RthJA"
+    }
+  ],
+  "status": "partial"
+}

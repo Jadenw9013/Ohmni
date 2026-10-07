@@ -1,0 +1,15 @@
+B1 Film capacitor dissipation factor from ESR: tan(delta) = Re(Z)/|Im(Z)| at FREF
+* C=1u, TAND=20e-4 (WIMA MKP-X2 1 kHz class value) at 1 kHz; expect 0.0020 (ESL has negligible effect at 1 kHz)
+.include ohm_film.lib
+Iac 0 p dc 0 ac 1
+Rb p 0 1e12
+Xc p 0 f ohm_film C0=1u TAND=20e-4 FREF=1k ESL=15n RLK=1e15
+Rf f 0 1meg
+.ac lin 1 1k 1k
+.control
+run
+let tand = real(v(p))/abs(imag(v(p)))
+print tand
+quit
+.endc
+.end

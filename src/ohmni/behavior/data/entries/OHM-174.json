@@ -1,0 +1,250 @@
+{
+  "behavior_class_ids": [
+    "BEH-CON-XT"
+  ],
+  "catalog_binding_ids": [],
+  "class_record_paths": [
+    "src/ohmni/behavior/data/classes/BEH-CON-XT.json"
+  ],
+  "component": "XT60 PCB connector",
+  "entry_id": "OHM-174",
+  "fidelity": "behavioural_approximation",
+  "group": "R10B",
+  "layer": "L1",
+  "research": {
+    "bench_result": "bench-results/BEH-CON-XT--B2.json",
+    "bench_results": [
+      "bench-results/BEH-CON-XT--B1.json",
+      "bench-results/BEH-CON-XT--B2.json"
+    ],
+    "conflicts": [
+      "Legacy 45 A/500 V/1000 uses vs catalogue 35 A/500 V withstand/100 uses vs M30 page 35 A/80 V working/1.2 milliohm. Retain the lower original 30 A current assumption, 80 V working ceiling and 1.2 milliohm conservative resistance for review only; do not enable a model.",
+      "No 60 A continuous claim; PCB variant is not the 12 AWG cable connector. Battery short-circuit and hot-mating arc hazards remain."
+    ],
+    "documents": [
+      {
+        "document_id": "amass-xt60pw-old",
+        "manufacturer": "Amass",
+        "note": "Primary PDF read from the hash-addressed archive.",
+        "page": null,
+        "revision": "V1.2; undated",
+        "source_status": "primary_source_opened",
+        "title": "XT60PW-M specification",
+        "url": "https://www.adelaida.ro/var/attachments/product/45089/XT60PW-M.pdf"
+      },
+      {
+        "document_id": "amass-board-catalog",
+        "manufacturer": "Amass",
+        "note": "Primary PDF read from the hash-addressed archive.",
+        "page": null,
+        "revision": "undated document; URL directory 20240723 is not a document revision",
+        "source_status": "primary_source_opened",
+        "title": "Connector catalogue, 20-40A two-pin PCB variants",
+        "url": "https://www.china-amass.com/public/upload/20240723/c1ae9604bbe795ebfd366c9063019e3e.pdf"
+      },
+      {
+        "document_id": "amass-xt60pw-page",
+        "manufacturer": "Amass",
+        "note": "Electrical SPEC table archived; identifies XT60PW-M30.G.Y.",
+        "page": null,
+        "revision": "undated webpage",
+        "source_status": "primary_source_opened",
+        "title": "XT60PW-M product page",
+        "url": "https://www.china-amass.net/xt60pw-m-product/"
+      }
+    ],
+    "entry_id": "OHM-174",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "legacy_current_rated",
+        "page": 1,
+        "scope": "XT60PW-M V1.2 only; rated row",
+        "sources": [
+          "https://www.adelaida.ro/var/attachments/product/45089/XT60PW-M.pdf"
+        ],
+        "unit": "A",
+        "value": 45
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "legacy_current_instantaneous",
+        "page": 1,
+        "scope": "XT60PW-M V1.2 only; duration unspecified, not continuous",
+        "sources": [
+          "https://www.adelaida.ro/var/attachments/product/45089/XT60PW-M.pdf"
+        ],
+        "unit": "A",
+        "value": 60
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "legacy_contact_resistance_stated",
+        "page": 1,
+        "scope": "XT60PW-M V1.2 only; unqualified printed value",
+        "sources": [
+          "https://www.adelaida.ro/var/attachments/product/45089/XT60PW-M.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.0005
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "legacy_voltage_rated_dc",
+        "page": 1,
+        "scope": "XT60PW-M V1.2 only; rated row",
+        "sources": [
+          "https://www.adelaida.ro/var/attachments/product/45089/XT60PW-M.pdf"
+        ],
+        "unit": "V",
+        "value": 500
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "legacy_recommended_uses",
+        "page": 1,
+        "scope": "XT60PW-M V1.2 only; recommended count",
+        "sources": [
+          "https://www.adelaida.ro/var/attachments/product/45089/XT60PW-M.pdf"
+        ],
+        "unit": "cycles",
+        "value": 1000
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "catalog_current_max",
+        "page": 15,
+        "scope": "XT60PW-M30.G.Y catalogue row, visually read p15; temperature-rise delta less than 85 C; no ambient or PCB copper derivation",
+        "sources": [
+          "https://www.china-amass.com/public/upload/20240723/c1ae9604bbe795ebfd366c9063019e3e.pdf"
+        ],
+        "unit": "A",
+        "value": 35
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "catalog_withstand_dc",
+        "page": 15,
+        "scope": "XT60PW-M30.G.Y catalogue row, visually read p15; Chinese heading withstand voltage; not working voltage",
+        "sources": [
+          "https://www.china-amass.com/public/upload/20240723/c1ae9604bbe795ebfd366c9063019e3e.pdf"
+        ],
+        "unit": "V",
+        "value": 500
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "catalog_mechanical_life",
+        "page": 15,
+        "scope": "XT60PW-M30.G.Y catalogue row, visually read p15; cycles",
+        "sources": [
+          "https://www.china-amass.com/public/upload/20240723/c1ae9604bbe795ebfd366c9063019e3e.pdf"
+        ],
+        "unit": null,
+        "value": 100
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "catalog_temperature_operating",
+        "page": 15,
+        "scope": "XT60PW-M30.G.Y catalogue row, visually read p15; operating range",
+        "sources": [
+          "https://www.china-amass.com/public/upload/20240723/c1ae9604bbe795ebfd366c9063019e3e.pdf"
+        ],
+        "unit": "degC",
+        "value": [
+          -20,
+          120
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "web_voltage_rated_dc",
+        "page": null,
+        "scope": "XT60PW-M30.G.Y rated voltage",
+        "source_locator": "Electrical SPEC table",
+        "sources": [
+          "https://www.china-amass.net/xt60pw-m-product/"
+        ],
+        "unit": "V",
+        "value": 80
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "web_contact_resistance_max",
+        "page": null,
+        "scope": "XT60PW-M30.G.Y maximum",
+        "source_locator": "Electrical SPEC table",
+        "sources": [
+          "https://www.china-amass.net/xt60pw-m-product/"
+        ],
+        "unit": "ohm",
+        "value": 0.0012
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "web_current_rated",
+        "page": null,
+        "scope": "temperature-rise delta <=85 K",
+        "source_locator": "Electrical SPEC table",
+        "sources": [
+          "https://www.china-amass.net/xt60pw-m-product/"
+        ],
+        "unit": "A",
+        "value": 35
+      }
+    ],
+    "remaining_open_items": [
+      "Resolve exact legacy versus M30 variant and its working-voltage/current scope; source values are not interchangeable.",
+      "Polarity-to-footprint permutation, thermal derating and inrush/arc limits remain unverified."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [
+      "Safety-critical variant, polarity and thermal scope unresolved."
+    ],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-174.md",
+      "document_sha256": "3be92b0cf3ac6a41334eefd20104777da60058b4fcf2df49263f87e741c1e9ca",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
+  "resolution_ids": [
+    "XT-FOOTPRINT-PAD-PERMUTATION"
+  ],
+  "schema_version": 1,
+  "simulation_disposition": "simulable",
+  "simulation_reason": "The canonical class provides an L1/L2 model; fidelity and assumptions remain explicit.",
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "0b1632181ac7fd99ce47bc10a1f204bd66edd2d60580755a842b04b91690f858",
+    "line": 192
+  },
+  "status": "partial"
+}

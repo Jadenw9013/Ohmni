@@ -1,0 +1,30 @@
+* BEH-DIO-SCHOTTKY B3: reverse-leakage thermal runaway, SS14 max-corner leakage, Rth(j-a)=88 K/W
+* v2: uic start (no DC op) and IC=0 on Cth with .ic v(tj)=v(ta)=Ta so Ta=95 no longer needs a nonexistent DC solution; Ta=95 run stopped at 2.5 s before the finite-time blow-up; added scalars sch3_tj60, sch3_tj95_end, sch3_runaway. Circuit parameters unchanged.
+* node tj is junction temperature in degC (1 V = 1 degC). P = Gleak(Tj)*VR^2 -> Rth -> ambient.
+* Analytic: stable fixed point Tj = Ta + Rth*P(Tj); no fixed point once Rth*P25*a*e*exp(a(Ta-25)) > 1
+.param Ta=60 Rth=88 Cth=0.01 VR=40 IR25=0.2m aT={ln(25)/75}
+Vta ta 0 {Ta}
+Rth tj ta {Rth}
+Cth tj ta {Cth} IC=0
+Bp 0 tj I = {IR25/VR} * {VR}*{VR} * exp({aT}*(v(tj)-25))
+.tran 10m 40 0 10m uic
+.ic v(ta)={Ta} v(tj)={Ta}
+.control
+alterparam Ta=60
+reset
+run
+meas tran sch3_tj60 find v(tj) at=40
+* Ta=95: dTj/dt = (Ta + Rth*P25*exp(a(Tj-25)) - Tj)/(Rth Cth) has NO zero (no fixed point), so the DC operating point does not exist
+* (that is what made dynamic gmin stepping fail in v1). Start from Tj=Ta with uic and stop at 2.5 s, before the finite-time blow-up (~2.8 s).
+* Guaranteed minimum rate of rise (analytic): (1+ln(a*c))/a/(Rth*Cth), c=Rth*P25*exp(a(Ta-25)); runaway flag = Tj(2.5 s) above Ta + 2.5*rate.
+alterparam Ta=95
+reset
+tran 1m 2.5 0 1m uic
+meas tran sch3_tj95_end find v(tj) at=2.5
+let sch3_a = ln(25)/75
+let sch3_c = 88*0.2m*40*exp(sch3_a*(95-25))
+let sch3_rate = (1+ln(sch3_a*sch3_c))/sch3_a/(88*0.01)
+let sch3_runaway = (sch3_tj95_end gt (95 + 2.5*sch3_rate))
+print sch3_rate sch3_runaway
+.endc
+.end

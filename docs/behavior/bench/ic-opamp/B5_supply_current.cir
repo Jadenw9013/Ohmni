@@ -1,0 +1,18 @@
+* BEH-IC-OPAMP B5: supply-current accounting. LM358 parameter set, Vcc = 5 V, follower output at 2.0 V into 1 kohm (2 mA sourced).
+* v2: scalars printed as 'name = value'; behavior unchanged
+* Expected: Icc = Iq + I_load + input bias terms = 350 uA + 2.0 mA + 2*20 nA ~ 2.350 mA (bias current flows from vcc into the input network and out through the 0 V sources).
+.include opamp_gp.lib
+Vcc vcc 0 5
+Vin in 0 2.0
+X1 in out vcc 0 out opamp_gp aol=100k gbw=700k sr=0.3Meg vos=0 ib=20n ios=0
+Rl out 0 1k
+.control
+set noaskquit
+op
+let icc = -i(Vcc)*1000
+let vo = v(out)
+echo icc_ma = $&icc
+echo vout_v = $&vo
+quit
+.endc
+.end

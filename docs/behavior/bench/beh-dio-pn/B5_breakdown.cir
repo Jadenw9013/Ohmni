@@ -1,0 +1,9 @@
+* BEH-DIO-PN B5: reverse breakdown: V(BR)=100 V at IR=100 uA (Vishay 1N4148 doc 81857)
+.model D1N4148_FIT D (IS=5.537e-9 N=1.944 RS=0.6 CJO=2p VJ=0.7 M=0.4 TT=23n BV=100 IBV=100u)
+I1 0 k 100u
+D1 0 k D1N4148_FIT
+.control
+dc I1 100u 100u 1u
+print v(k)
+.endc
+.end

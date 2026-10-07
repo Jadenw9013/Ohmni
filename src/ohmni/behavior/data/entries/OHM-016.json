@@ -1,0 +1,216 @@
+{
+  "behavior_class_ids": [
+    "BEH-RES-NETWORK"
+  ],
+  "catalog_binding_ids": [],
+  "class_record_paths": [
+    "src/ohmni/behavior/data/classes/BEH-RES-NETWORK.json"
+  ],
+  "component": "SIP resistor network",
+  "entry_id": "OHM-016",
+  "fidelity": "behavioural_approximation",
+  "group": "R1",
+  "layer": "L1",
+  "research": {
+    "bench_result": "bench-results/BEH-RES-NETWORK--B2.json",
+    "bench_results": [
+      "bench-results/BEH-RES-NETWORK--B1.json",
+      "bench-results/BEH-RES-NETWORK--B2.json"
+    ],
+    "conflicts": [],
+    "documents": [
+      {
+        "document_id": "sip",
+        "manufacturer": "Bourns",
+        "note": "Read from fetched PDF bytes; an HTTP success alone is not evidence of semantic support.",
+        "page": null,
+        "revision": "10/1/20",
+        "source_status": "primary_source_opened",
+        "title": "4600X resistor networks",
+        "url": "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+      }
+    ],
+    "entry_id": "OHM-016",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Eight-pin package at 70 degC; must be checked in addition to individual elements.",
+        "field": "p_package",
+        "page": 1,
+        "scope": "Bourns 4608X eight-pin network",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+        ],
+        "unit": "W",
+        "value": 1
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "-102 circuit visually inspected.",
+        "field": "isolated_terminal_pairs",
+        "page": 2,
+        "scope": "Bourns 4608X eight-pin network",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+        ],
+        "unit": null,
+        "value": [
+          [
+            1,
+            2
+          ],
+          [
+            3,
+            4
+          ],
+          [
+            5,
+            6
+          ],
+          [
+            7,
+            8
+          ]
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "bussed_common_terminal",
+        "page": 2,
+        "scope": "Bourns 4608X eight-pin network",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+        ],
+        "unit": null,
+        "value": 1
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "p_element_isolated",
+        "page": 2,
+        "scope": "Bourns 4608X eight-pin network; at 70 C ambient; derate linearly to zero at125 C per p2",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+        ],
+        "unit": "W",
+        "value": 0.3
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "p_element_bussed",
+        "page": 2,
+        "scope": "Bourns 4608X eight-pin network; at 70 C ambient; derate linearly to zero at125 C per p2",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+        ],
+        "unit": "W",
+        "value": 0.2
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "t_end",
+        "page": 1,
+        "scope": "Bourns 4608X eight-pin network",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+        ],
+        "unit": "degC",
+        "value": 125
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "nominal_resistance",
+        "page": 2,
+        "scope": "Bourns 4608X-101 eight-pin bussed network, 10 kohm",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+        ],
+        "unit": "ohm",
+        "value": 10000
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "v_max",
+        "page": 1,
+        "scope": "Bourns 4608X-101 eight-pin bussed network, 10 kohm",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+        ],
+        "unit": "V",
+        "value": 100
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "t_knee",
+        "page": 2,
+        "scope": "Bourns 4608X-101 eight-pin bussed network, 10 kohm",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+        ],
+        "unit": "C",
+        "value": 70
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "Manufacturer common pin1 and seven separate numbered pins mapped to library SIP numbering; P1 is common.",
+        "field": "derived_package_pin_roles",
+        "page": 2,
+        "scope": "Bourns 4608X-101 eight-pin bussed network, 10 kohm",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/4600X.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "1": "P1",
+          "2": "P2",
+          "3": "P3",
+          "4": "P4",
+          "5": "P5",
+          "6": "P6",
+          "7": "P7",
+          "8": "P8"
+        }
+      }
+    ],
+    "remaining_open_items": [
+      "Board-specific thermal coupling and failure timing are not characterized."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-016.md",
+      "document_sha256": "462e171ce2262b829f9453737f8255159e22ef4e970db2bcc1ba1b08debd40ec",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
+  "resolution_ids": [],
+  "schema_version": 1,
+  "simulation_disposition": "simulable",
+  "simulation_reason": "The canonical class provides an L1/L2 model; fidelity and assumptions remain explicit.",
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "cb1349e3c0384ee478179067ace193819aa2c82d5ff80f16d02c5528a9bc32dd",
+    "line": 34
+  },
+  "status": "partial"
+}

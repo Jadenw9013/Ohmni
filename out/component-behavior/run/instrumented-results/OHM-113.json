@@ -1,0 +1,347 @@
+{
+  "comparison": {
+    "comparison": [
+      {
+        "expected": 4.3,
+        "kind": "absolute",
+        "node": "B1",
+        "tolerance": 0.043
+      },
+      {
+        "expected": 0.26,
+        "kind": "absolute",
+        "node": "B2",
+        "tolerance": 0.0026
+      },
+      {
+        "expected": 4.3,
+        "kind": "absolute",
+        "node": "B3",
+        "tolerance": 0.043
+      },
+      {
+        "expected": 0.26,
+        "kind": "absolute",
+        "node": "B4",
+        "tolerance": 0.0026
+      },
+      {
+        "expected": 4.3,
+        "kind": "absolute",
+        "node": "B5",
+        "tolerance": 0.043
+      },
+      {
+        "expected": 0.26,
+        "kind": "absolute",
+        "node": "B6",
+        "tolerance": 0.0026
+      },
+      {
+        "expected": 4.3,
+        "kind": "absolute",
+        "node": "B7",
+        "tolerance": 0.043
+      },
+      {
+        "expected": 0.26,
+        "kind": "absolute",
+        "node": "B8",
+        "tolerance": 0.0026
+      }
+    ],
+    "observed": [
+      4.3,
+      0.26,
+      4.3,
+      0.26,
+      4.3,
+      0.26,
+      4.3,
+      0.26
+    ],
+    "passed": true
+  },
+  "entry_id": "OHM-113",
+  "limits": "Same limited analytical contract with zero-volt current probes. Missing thermal context and unsupported failure rules remain unknown.",
+  "netlist_sha256": "400f090515338f413d2d9865a7ffaf8e4e5bbe4ea7722028cda62d605d8e4eaa",
+  "observation_status": "ran",
+  "output_sha256": "3c5916f1803ecd04e3fa23278668b4f73c1cbf7c9ed80a55de9ec5e7c748fa52",
+  "ran_at": "2026-10-05T22:49:28Z",
+  "rating_status": "unknown",
+  "ratings": {
+    "components": [
+      {
+        "class_checks": [
+          {
+            "check": "V(VCC)-V(GND) <= 7",
+            "condition": "abs max",
+            "name": "supply",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "b76cb9a3cc7498b2194493aec04eeffb45cbe29b5179e7d55fd0b7ab3cfe0b5f",
+              "line": 7561
+            },
+            "source_ref": "S4",
+            "status": "unknown",
+            "symbol": "VCC",
+            "unit": "V",
+            "value": 7
+          },
+          {
+            "check": "abs(I(in_clamp)) <= 20e-3",
+            "condition": "abs max",
+            "name": "input clamp",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "b76cb9a3cc7498b2194493aec04eeffb45cbe29b5179e7d55fd0b7ab3cfe0b5f",
+              "line": 7561
+            },
+            "source_ref": "S4",
+            "status": "unknown",
+            "symbol": "IIK",
+            "unit": "A",
+            "value": "20e-3"
+          },
+          {
+            "check": "abs(I(out)) <= 25e-3",
+            "condition": "abs max per output",
+            "name": "output current",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "b76cb9a3cc7498b2194493aec04eeffb45cbe29b5179e7d55fd0b7ab3cfe0b5f",
+              "line": 7561
+            },
+            "source_ref": "S4",
+            "status": "unknown",
+            "symbol": "IO",
+            "unit": "A",
+            "value": "25e-3"
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-113",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "ESD diode conduction, latch-up risk",
+            "id": "input_overvoltage",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "clamp diode model; ERROR when current > 20 mA",
+            "status": "unknown",
+            "trigger": "input > VCC+0.5 V"
+          },
+          {
+            "applied_response": null,
+            "effect": "undefined level, extra ICC",
+            "id": "floating_input",
+            "permanence": "recoverable",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "netlist check",
+            "status": "unknown",
+            "trigger": "unconnected input"
+          }
+        ],
+        "observations": {
+          "ci": 3e-12,
+          "ci_bus": 5e-12,
+          "i_A1": 4.50902e-09,
+          "i_A2": -9.02e-12,
+          "i_A3": 4.50902e-09,
+          "i_A4": -9.02e-12,
+          "i_A5": 4.50902e-09,
+          "i_A6": -9.02e-12,
+          "i_A7": 4.50902e-09,
+          "i_A8": -9.02e-12,
+          "i_B1": -0.004,
+          "i_B2": 0.004,
+          "i_B3": -0.004,
+          "i_B4": 0.004,
+          "i_B5": -0.004,
+          "i_B6": 0.004,
+          "i_B7": -0.004,
+          "i_B8": 0.004,
+          "i_DIR": 4.510059e-12,
+          "i_GND": 0.0,
+          "i_OE": -4.51e-12,
+          "i_VCC": 0.016,
+          "icc_abs_max": 0.07,
+          "iout_abs_max": 0.035,
+          "off_leak_max": 4.9999999999999996e-06,
+          "power": 0.007360081182655275,
+          "rail": 4.5,
+          "roh": 50.0,
+          "rol": 65.0,
+          "rth_ja": 77.0,
+          "supply_abs_max": 7.0,
+          "supply_max": 6.0,
+          "supply_min": 2.0,
+          "taue": 6.4e-09,
+          "td": 1.04e-08,
+          "tj_max": 150.0,
+          "v_A1": 4.5,
+          "v_A2": 0.0,
+          "v_A3": 4.5,
+          "v_A4": 0.0,
+          "v_A5": 4.5,
+          "v_A6": 0.0,
+          "v_A7": 4.5,
+          "v_A8": 0.0,
+          "v_B1": 4.3,
+          "v_B2": 0.26,
+          "v_B3": 4.3,
+          "v_B4": 0.26,
+          "v_B5": 4.3,
+          "v_B6": 0.26,
+          "v_B7": 4.3,
+          "v_B8": 0.26,
+          "v_DIR": 4.5,
+          "v_GND": 0.0,
+          "v_OE": 0.0,
+          "v_VCC": 4.5
+        },
+        "ref": "U1",
+        "reference_checks": [
+          {
+            "evidence": {
+              "supply_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "recommended_supply_max",
+                "page": 4,
+                "scope": "SN74HC245 DW SOIC-20 wide",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/sn74hc245.pdf"
+                ],
+                "unit": "V",
+                "value": 6
+              },
+              "supply_min": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "recommended_supply_min",
+                "page": 4,
+                "scope": "SN74HC245 DW SOIC-20 wide",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/sn74hc245.pdf"
+                ],
+                "unit": "V",
+                "value": 2
+              }
+            },
+            "expression": "supply_min <= rail <= supply_max",
+            "name": "recommended supply",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "supply_abs_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "absolute_supply_max",
+                "page": 4,
+                "scope": "SN74HC245 DW SOIC-20 wide",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/sn74hc245.pdf"
+                ],
+                "unit": "V",
+                "value": 7
+              }
+            },
+            "expression": "rail <= supply_abs_max",
+            "name": "absolute supply",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "icc_abs_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "converted_unit": "A",
+                "converted_value": 0.07,
+                "detail": null,
+                "field": "maximum_supply_current_magnitude",
+                "page": 4,
+                "scope": "SN74HC245 DW SOIC-20 wide; total through VCC or GND",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/sn74hc245.pdf"
+                ],
+                "unit": "mA",
+                "value": 70
+              }
+            },
+            "expression": "abs(i_VCC)<=icc_abs_max",
+            "name": "supply current",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "rth_ja": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "thermal_resistance_junction_ambient",
+                "page": 5,
+                "scope": "SN74HC245 DW SOIC-20 wide; TI thermal reference condition",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/sn74hc245.pdf"
+                ],
+                "unit": "K/W",
+                "value": 77
+              },
+              "tj_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "maximum_junction_temperature",
+                "page": 4,
+                "scope": "SN74HC245 DW SOIC-20 wide",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/sn74hc245.pdf"
+                ],
+                "unit": "C",
+                "value": 150
+              }
+            },
+            "expression": "power >= 0 and Tamb+rth_ja*power <= tj_max",
+            "name": "junction temperature",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      }
+    ],
+    "fault_requests": [],
+    "limitations": [
+      "Only the stated observations and source conditions were checked.",
+      "Unsupported class expressions and failure triggers remain unknown; no damage timing is invented.",
+      "An electrical limit check does not verify physical fit or safe operation."
+    ],
+    "status": "unknown"
+  },
+  "raw_output": "instrumented-output/OHM-113/output.txt",
+  "run_id": "behavior-20261005T065040Z",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+}

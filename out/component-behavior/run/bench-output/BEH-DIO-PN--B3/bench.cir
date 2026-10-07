@@ -1,0 +1,13 @@
+* BEH-DIO-PN B3: half-wave rectifier, 1N4007 typical fit, 10 V peak, 100 ohm load
+* model: VF(1A)=0.93 V typ (onsemi), N=1.8 and RS=0.03 assumed, IS=4.023e-9
+.model D1N4007_TYP D (IS=4.023e-9 N=1.8 RS=0.03 CJO=39p VJ=0.7 M=0.5 TT=3u BV=1100 IBV=5u)
+V1 in 0 SIN(0 10 50)
+D1 in out D1N4007_TYP
+RL out 0 100
+.tran 20u 40m 20m 20u
+.control
+run
+meas tran vpk max v(out) from=20m to=40m
+meas tran vavg avg v(out) from=20m to=40m
+.endc
+.end

@@ -1,0 +1,43 @@
+* BEH-TRN-BJT B7: switching times of the fits, resistive load, compared with datasheet MAXIMA
+* v2: absolute include path made relative; .meas results (printed with targ=/trig= fields) re-exported as td1_ns..tf2_ns scalars
+* 2N3904 (2N3903/D Rev 9): td<=35 ns, tr<=35 ns, ts<=200 ns, tf<=50 ns at Vcc=3 V, Ic=10 mA
+*   test deck: RL=275 ohm, Rb=3.3k, drive -1 V -> +4 V (IB1~1 mA, IB2~0.5 mA; ASSUMED drive, the datasheet drive circuit was not captured)
+* PN2222A (PN2222A/D Rev 1.1.0): td 10 ns, tr 25 ns, ts 225 ns, tf 60 ns (quoted as limits; conditions not captured)
+*   test deck: Vcc 30 V, RL 200 ohm (Ic~150 mA), Rb 200 ohm, drive -1 -> +4 V (ASSUMED)
+* Expected: each time <= datasheet number. Tolerance: hard limit (model is a fit, not guaranteed typical)
+.include models_bjt_r6fit.lib
+Q1 c1 b1 0 Q2N3904_R6FIT
+Vcc1 vcc1 0 3
+RL1 vcc1 c1 275
+Rb1 drv b1 3.3k
+Q2 c2 b2 0 Q2N2222A_R6FIT
+Vcc2 vcc2 0 30
+RL2 vcc2 c2 200
+Rb2 drv b2 200
+Vd drv 0 pulse(-1 4 20n 1n 1n 400n 1.2u)
+.tran 0.2n 900n
+.control
+set noaskquit
+run
+let i1=(3-v(c1))/275
+let i2=(30-v(c2))/200
+meas tran td1 trig v(drv) val=1.5 rise=1 targ i1 val=1m rise=1
+meas tran tr1 trig i1 val=1m rise=1 targ i1 val=9m rise=1
+meas tran ts1 trig v(drv) val=1.5 fall=1 targ i1 val=9m fall=1
+meas tran tf1 trig i1 val=9m fall=1 targ i1 val=1m fall=1
+meas tran td2 trig v(drv) val=1.5 rise=1 targ i2 val=15m rise=1
+meas tran tr2 trig i2 val=15m rise=1 targ i2 val=135m rise=1
+meas tran ts2 trig v(drv) val=1.5 fall=1 targ i2 val=135m fall=1
+meas tran tf2 trig i2 val=135m fall=1 targ i2 val=15m fall=1
+let td1_ns = td1*1e9
+let tr1_ns = tr1*1e9
+let ts1_ns = ts1*1e9
+let tf1_ns = tf1*1e9
+let td2_ns = td2*1e9
+let tr2_ns = tr2*1e9
+let ts2_ns = ts2*1e9
+let tf2_ns = tf2*1e9
+print td1_ns tr1_ns ts1_ns tf1_ns td2_ns tr2_ns ts2_ns tf2_ns
+quit
+.endc
+.end

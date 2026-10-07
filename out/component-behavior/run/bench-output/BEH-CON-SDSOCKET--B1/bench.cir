@@ -1,0 +1,20 @@
+* B1 BEH-CON-SD card-detect switch (normally open, closes to GND on card insertion) with host pull-up
+* v2: sweep results exposed as scalars v_cd_open (index 0) and v_cd_closed (index 1)
+* ctl: 0 = card removed (open), 1 = inserted (closed). Rpu 47k to 3.3 V, switch Ron 0.1 ohm (ASSUMPTION: contact 100 mohm max, WERI/Molex sheets), Roff 1G
+* expected: open -> 3.3*1G/(1G+47k) = 3.29984 V ; closed -> 3.3*0.1/(47000.1) = 7.02e-6 V ; closed pull-up current 3.3/47000.1=70.2 uA
+Vdd vdd 0 3.3
+Rpu vdd cd 47k
+Vctl ctl 0 0
+.model SWCD SW(Vt=0.5 Vh=0.1 Ron=0.1 Roff=1G)
+Scd cd 0 ctl 0 SWCD
+.control
+dc Vctl 0 1 1
+let v_cd_open = v(cd)[0]
+let v_cd_closed = v(cd)[1]
+print v_cd_open v_cd_closed
+let eo = 3.3*1e9/(1e9+47e3)
+let ec = 3.3*0.1/(47e3+0.1)
+let ei = 3.3/(47e3+0.1)
+print eo ec ei
+.endc
+.end

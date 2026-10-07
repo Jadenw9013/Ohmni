@@ -1,0 +1,29 @@
+* BEH-DIO-TVS B3: bidirectional SMBJ15CA = two unidirectional cells anti-series (A-[cell1]-m-[cell2]-B)
+* v2: added scalars tvs3_vpos (V at +24.6 A) and tvs3_vneg_mag (-V at -24.6 A) (circuit unchanged)
+* each cell = low-drop forward junction DFW || avalanche diode DAV. DFW (IS=1e-6, RS=5m) drops ~0.56 V at
+* 24.6 A, so DAV is trimmed (BV=17.42, RS=0.25) so the sum at 24.6 A is VC = 24.4 V, symmetric for +/-.
+.model DFW D (IS=1e-6 N=1 RS=5m)
+.model DAV D (IS=1e-15 N=1 RS=0.25 BV=17.42 IBV=1m NBV=1)
+.subckt CELL A K
+DF A K DFW
+DR A K DAV
+.ends
+.subckt TVSB A B
+X1 A m CELL
+X2 B m CELL
+.ends
+I1 0 c 24.6
+X1 c 0 TVSB
+.control
+dc I1 24.6 24.6 1
+print v(c)
+let tvs3_vpos = v(c)
+print tvs3_vpos
+dc I1 -24.6 -24.6 1
+print v(c)
+let tvs3_vneg_mag = -v(c)
+print tvs3_vneg_mag
+dc I1 1m 1m 1m
+print v(c)
+.endc
+.end

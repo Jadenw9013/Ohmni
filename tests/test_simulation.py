@@ -209,6 +209,13 @@ class TestNgspiceAdapterWithoutNgspice:
         assert availability.status is ToolStatus.UNAVAILABLE
         assert "ngspice" in (availability.detail or "").lower()
 
+    def test_unavailable_adapter_does_not_rediscover_a_different_cli(self, monkeypatch):
+        def unexpected_probe(*args):
+            raise AssertionError("availability must use the adapter's selected executable")
+
+        monkeypatch.setattr(simulation, "NgspiceCli", unexpected_probe)
+        assert NgspiceAdapter().availability().status is ToolStatus.UNAVAILABLE
+
     def test_an_unavailable_run_reports_no_operating_point_and_writes_nothing(self, tmp_path):
         run = NgspiceAdapter().operating_point(GOLDEN_NETLIST, "run-1", work_dir=tmp_path)
         assert run.status is ToolStatus.UNAVAILABLE
@@ -505,6 +512,25 @@ class TestTransientParser:
         data = simulation.parse_transient(TRAN_STDOUT, analysis="t")
         assert data.decimated_from is None
 
+    def test_wide_column_groups_join_by_sample_before_decimation(self):
+        stdout = ("Index time v(a) v(b)\n0 0 1 2\n1 1e-6 3 4\n2 2e-6 5 6\n"
+                  "Index time v(c)\n0 0 7\n1 1e-6 8\n2 2e-6 9\n")
+        data = simulation.parse_transient(stdout, analysis="t")
+        assert data.time_s == [0, 1e-6, 2e-6]
+        assert [s.name for s in data.series] == ["v(a)", "v(b)", "v(c)"]
+        assert [s.values for s in data.series] == [[1, 3, 5], [2, 4, 6], [7, 8, 9]]
+
+    def test_missing_wide_group_sample_is_not_filled_or_shifted(self):
+        stdout = ("Index time v(a)\n0 0 1\n1 1e-6 2\n2 2e-6 3\n"
+                  "Index time v(b)\n0 0 4\n2 2e-6 6\n")
+        data = simulation.parse_transient(stdout, analysis="t")
+        assert data.time_s == [0, 2e-6]
+        assert [s.values for s in data.series] == [[1, 3], [4, 6]]
+
+    def test_conflicting_duplicate_sample_is_not_a_valid_trace(self):
+        stdout = "Index time v(a)\n0 0 1\nIndex time v(a)\n0 0 2\n"
+        assert simulation.parse_transient(stdout, analysis="t").sample_count == 0
+
 
 class TestTransientAnalysis:
     def _adapter(self, monkeypatch, result):
@@ -625,6 +651,37 @@ class TestTransientInThePipeline:
 
 
 class TestPowerOnStimulus:
+    def test_behavior_bench_unavailable_produces_no_run(self, tmp_path, monkeypatch):
+        monkeypatch.setattr(simulation, "find_ngspice", lambda: None)
+        result = NgspiceAdapter().behavior_bench("R1 a 0 1k\n.end", work_dir=tmp_path)
+        assert result["status"] == "not_run"
+        assert not result["stdout"] and result["returncode"] is None
+
+    def test_behavior_bench_wrong_version_never_runs_the_deck(self, tmp_path, monkeypatch):
+        calls = []
+        def version_only(command, **kwargs):
+            calls.append(command)
+            return completed(0, "ngspice-43")
+        monkeypatch.setattr(simulation, "run_tool", version_only)
+        result = NgspiceAdapter(executable="ngspice").behavior_bench("R1 a 0 1k\n.end", work_dir=tmp_path)
+        assert result["status"] == "not_run"
+        assert calls == [["ngspice", "-v"]]
+
+    def test_behavior_bench_process_success_is_only_an_observation(self, tmp_path, monkeypatch):
+        def execute(command, **kwargs):
+            return completed(0, "ngspice-42" if command[-1] == "-v" else "v(out) = 2.5\n")
+        monkeypatch.setattr(simulation, "run_tool", execute)
+        result = NgspiceAdapter(executable="ngspice").behavior_bench("V1 out 0 2.5\n.end", work_dir=tmp_path)
+        assert result["status"] == "ran"
+        assert result["version_output"] == "ngspice-42"
+        assert result["stdout"] == "v(out) = 2.5\n"
+
+    def test_behavior_bench_refuses_file_or_shell_commands(self, tmp_path, monkeypatch):
+        monkeypatch.setattr(simulation, "run_tool", lambda *args, **kwargs: completed(0, "ngspice-42"))
+        for deck in (".include private.lib", ".control\nshell echo bad\n.endc"):
+            result = NgspiceAdapter(executable="ngspice").behavior_bench(deck, work_dir=tmp_path)
+            assert result["status"] == "not_run" and "cannot issue" in result["stderr"]
+
     UNDRIVEN = ".title t\nC1 VBUS GND 1u\nR1 VBUS 3V3 100\nU1 __U1\n.end\n"
 
     def test_an_undriven_deck_gets_a_ramp_and_a_sentence_about_it(self):

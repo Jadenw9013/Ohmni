@@ -1,0 +1,14 @@
+OHMNI sourced behavior circuit
+.options tnom=25
+.temp 25
+Vsource3 n3 0 DC 5
+Rc1 n3 n1 10000
+Rc2 n1 0 10000
+.tran 9.9999999999999991e-06 0.001
+.control
+set numdgt=15
+run
+print v(n1) v(n3)
+quit
+.endc
+.end

@@ -1,0 +1,18 @@
+B2 Tantalum derating and reverse flags, VR=16 V
+* MnO2 DER=0.5 -> flag bit1 when V > 8 V ; hard-fail bit 8 when V > 1.32*16 = 21.12 V ; reverse bit 2 when V < -0.03*16 = -0.48 V
+.include ohm_tant.lib
+Vs in 0 PWL(0 0 24 24)
+Rs in p 1
+Xc p 0 f ohm_tant C0=1u ESR=0.1 RLK=1e12 VR=16 DER=0.5
+Rf f 0 1meg
+.tran 0.01 24
+.control
+run
+meas tran fl_at_7 find v(f) at=7
+meas tran fl_at_10 find v(f) at=10
+meas tran fl_at_23 find v(f) at=23
+meas tran t_flag1 when v(f)=0.5 rise=1
+meas tran t_flag8 when v(f)=8.5 rise=1
+quit
+.endc
+.end

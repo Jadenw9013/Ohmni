@@ -1,0 +1,32 @@
+* BEH-IC-OPAMP B4: rail-to-rail op-amp parameter set (MCP6001 numbers from DS21733 mirror extracts: GBW 1 MHz, SR 0.6 V/us, Aol 112 dB, swing VSS+25 mV..VDD-25 mV, IQ 100 uA, Ib 1 pA, Vos max 4.5 mV -> typ 1 mV ASSUMED)
+* v2: scalars printed as 'name = value' (vmid_v, vtop_v, vbot_v, f3db_rrio_hz); behavior unchanged
+* (a) follower DC sweep 0..5 V: out = in for 0.025 < in < 4.975 ; clipped to 0.025 / 4.975 at the ends.
+* (b) G=10 non-inverting, f-3dB = GBW/10 = 100 kHz
+.include opamp_gp.lib
+Vcc vcc 0 5
+Vin in 0 dc 2.5 ac 1
+X1 in out vcc 0 out opamp_gp aol=398k gbw=1Meg sr=0.6Meg vos=1m ib=1p ios=0 vol=25m vdrop=25m iq=100u rout=100
+Rl out 0 100k
+* gain-10 stage
+Vin2 in2 0 dc 0.2 ac 1
+X2 in2 fb vcc 0 out2 opamp_gp aol=398k gbw=1Meg sr=0.6Meg vos=0 ib=0 ios=0 vol=25m vdrop=25m iq=100u rout=100
+Rf out2 fb 9k
+Rg fb 0 1k
+Rl2 out2 0 100k
+.control
+set noaskquit
+dc Vin 0 5 0.025
+let vmid = v(out)[100]
+let vtop = vecmax(v(out))
+let vbot = vecmin(v(out))
+echo vmid_v = $&vmid
+echo vtop_v = $&vtop
+echo vbot_v = $&vbot
+ac dec 100 100 10Meg
+meas ac g0 find vdb(out2) at=100
+let g3 = g0-3.0103
+meas ac f3 when vdb(out2)=g3 cross=1
+echo f3db_rrio_hz = $&f3
+quit
+.endc
+.end

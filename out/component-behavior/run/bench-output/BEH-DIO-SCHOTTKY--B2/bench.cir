@@ -1,0 +1,17 @@
+* BEH-DIO-SCHOTTKY B2: reverse leakage vs temperature (behavioural parallel conductance)
+* IR(40 V, 25 C) = 0.2 mA, IR(40 V, 100 C) = 5 mA (Vishay SS14 doc 88746 max values)
+* Gleak(T) = (0.2m/40) * exp(ln(25)/75 * (T-25)), applied between anode and cathode
+.param IR25=0.2m VR25=40 aT={ln(25)/75}
+.model DSS14_MAX D (IS=6.40e-8 N=1.05 RS=0.05 CJO=110p VJ=0.4 M=0.45 TT=0 BV=45 IBV=1m EG=0.296 XTI=2)
+Vr k 0 40
+D1 0 k DSS14_MAX
+Bleak 0 k I = {IR25/VR25} * v(0,k) * exp(aT*(temper-25))
+.control
+set temp=25
+op
+print i(Vr)
+set temp=100
+op
+print i(Vr)
+.endc
+.end

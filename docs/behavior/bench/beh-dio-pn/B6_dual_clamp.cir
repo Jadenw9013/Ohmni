@@ -1,0 +1,19 @@
+* BEH-DIO-PN B6: BAV99-type dual series diode (SOT-23 pin 1=A1, pin 2=K2, pin 3=K1/A2) as input clamp
+* pin 1 -> GND, pin 2 -> +5 V rail, pin 3 -> signal.  Signal driven by 1k from +/-10 V pulse.
+* Expected high clamp: 5 + Vf(I), I=(10-Vclamp)/1k  ; low clamp: -Vf(I), I=(10+Vclamp)/1k   (1N4148 fit proxy, Vf typ)
+.model D1N4148_FIT D (IS=5.537e-9 N=1.944 RS=0.6 CJO=2p VJ=0.7 M=0.4 TT=23n BV=100 IBV=100u)
+.subckt BAV99 P1 P2 P3
+D1 P1 P3 D1N4148_FIT
+D2 P3 P2 D1N4148_FIT
+.ends
+Vcc vcc 0 5
+Vin in 0 PULSE(-10 10 0 1u 1u 1m 2m)
+Rin in sig 1k
+X1 0 vcc sig BAV99
+.tran 5u 4m 0 5u
+.control
+run
+meas tran vhi max v(sig)
+meas tran vlo min v(sig)
+.endc
+.end

@@ -1,0 +1,234 @@
+{
+  "comparison": {
+    "comparison": [
+      {
+        "expected": 2.9115,
+        "kind": "absolute",
+        "node": "OUT",
+        "tolerance": 0.014557500000000001
+      }
+    ],
+    "observed": [
+      2.911468
+    ],
+    "passed": true
+  },
+  "entry_id": "OHM-120",
+  "limits": "Same limited analytical contract with zero-volt current probes. Missing thermal context and unsupported failure rules remain unknown.",
+  "netlist_sha256": "2b42077e5883574e3ddac0a62534298aa8387f0740974faedcc5943a61f7632a",
+  "observation_status": "ran",
+  "output_sha256": "5264dab788a4afbf6248a1069a489595d52f0525a37944b7324d052a2e2d0952",
+  "ran_at": "2026-10-05T22:49:33Z",
+  "rating_status": "unknown",
+  "ratings": {
+    "components": [
+      {
+        "class_checks": [
+          {
+            "check": "(V(IN)-V(OUT))*I(OUT)+V(IN)*Iq <= (150-Ta)/235.9",
+            "condition": "SOT-23-5 DDC at 25 C",
+            "name": "dissipation",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "07334ae8b1fdfd9ecd72606d719e05a91c5118b57a4cce40d12bec6b42eaf795",
+              "line": 7967
+            },
+            "source_ref": "S14",
+            "status": "unknown",
+            "symbol": "Pd",
+            "unit": "W",
+            "value": 0.53
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-120",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "current limit then shutdown",
+            "id": "output_short",
+            "permanence": "recoverable",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "current-limited model; thermal limiter",
+            "status": "unknown",
+            "trigger": "load below Vout/icl"
+          },
+          {
+            "applied_response": null,
+            "effect": "shutdown",
+            "id": "overtemperature",
+            "permanence": "recoverable",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "memoryless limiter",
+            "status": "unknown",
+            "trigger": "Tj above 160 C"
+          }
+        ],
+        "observations": {
+          "i_EN": 0.0,
+          "i_GND": 0.0,
+          "i_IN": 0.1001534,
+          "i_OUT": -0.1,
+          "icl": 0.43,
+          "iout_recommended": 0.2,
+          "iq": 3.1e-05,
+          "nodeset_output": 2.9699999999999998,
+          "power": 0.009313399999999972,
+          "rail": 3.0,
+          "rdo": 0.86,
+          "rout": 0.04,
+          "rth": 235.9,
+          "rth_ja": 235.9,
+          "supply_abs_max": 6.0,
+          "supply_max": 5.5,
+          "supply_min": 2.0,
+          "ta": 25.0,
+          "tj_max": 150.0,
+          "v_EN": 3.0,
+          "v_GND": 0.0,
+          "v_IN": 3.0,
+          "v_OUT": 2.911468,
+          "ven_hi": 0.9,
+          "ven_lo": 0.4,
+          "vnom": 3.3
+        },
+        "ref": "U1",
+        "reference_checks": [
+          {
+            "evidence": {
+              "supply_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "recommended_supply_max",
+                "page": 5,
+                "scope": "TLV70033 DDC SOT-23-5",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/tlv700.pdf"
+                ],
+                "unit": "V",
+                "value": 5.5
+              },
+              "supply_min": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "recommended_supply_min",
+                "page": 5,
+                "scope": "TLV70033 DDC SOT-23-5",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/tlv700.pdf"
+                ],
+                "unit": "V",
+                "value": 2
+              }
+            },
+            "expression": "supply_min <= rail <= supply_max",
+            "name": "recommended supply",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "supply_abs_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "absolute_supply_max",
+                "page": 5,
+                "scope": "TLV70033 DDC SOT-23-5",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/tlv700.pdf"
+                ],
+                "unit": "V",
+                "value": 6
+              }
+            },
+            "expression": "rail <= supply_abs_max",
+            "name": "absolute supply",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "iout_recommended": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "converted_unit": "A",
+                "converted_value": 0.2,
+                "detail": null,
+                "field": "recommended_output_current_max",
+                "page": 5,
+                "scope": "TLV70033 DDC SOT-23-5",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/tlv700.pdf"
+                ],
+                "unit": "mA",
+                "value": 200
+              }
+            },
+            "expression": "abs(i_OUT)<=iout_recommended",
+            "name": "recommended output current",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "rth_ja": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "thermal_resistance_junction_ambient",
+                "page": 5,
+                "scope": "TLV70033 DDC SOT-23-5; DDC reference thermal metric",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/tlv700.pdf"
+                ],
+                "unit": "K/W",
+                "value": 235.9
+              },
+              "tj_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "maximum_junction_temperature",
+                "page": 5,
+                "scope": "TLV70033 DDC SOT-23-5; absolute",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/tlv700.pdf"
+                ],
+                "unit": "C",
+                "value": 150
+              }
+            },
+            "expression": "power >= 0 and Tamb+rth_ja*power <= tj_max",
+            "name": "junction temperature",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      }
+    ],
+    "fault_requests": [],
+    "limitations": [
+      "Only the stated observations and source conditions were checked.",
+      "Unsupported class expressions and failure triggers remain unknown; no damage timing is invented.",
+      "An electrical limit check does not verify physical fit or safe operation."
+    ],
+    "status": "unknown"
+  },
+  "raw_output": "instrumented-output/OHM-120/output.txt",
+  "run_id": "behavior-20261005T065040Z",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+}

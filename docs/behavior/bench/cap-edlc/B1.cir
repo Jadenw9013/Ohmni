@@ -1,0 +1,13 @@
+B1 Supercapacitor self-discharge through leakage: v(t) = V0*exp(-t/(RLK*C))
+* C=10 F, RLK=1 kohm (accelerated), tau = 1e4 s, V0 = 2.5 V -> v(1e4 s) = 0.9197 V
+.include ohm_edlc.lib
+Xc p 0 f ohm_edlc C0=10 ESR=0.02 RLK=1k VR=2.5
+Rf f 0 1meg
+.ic v(p)=2.5 v(xc.b)=2.5
+.tran 50 12000 uic
+.control
+run
+meas tran vtau find v(p) at=10000
+quit
+.endc
+.end

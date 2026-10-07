@@ -1,0 +1,232 @@
+{
+  "comparison": {
+    "comparison": {
+      "current": 0.7,
+      "kind": "interval",
+      "maximum": 0.17,
+      "minimum": 0,
+      "observable": "dc_resistance",
+      "source_facts": {
+        "irms": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "detail": null,
+          "field": "reference_current",
+          "page": 2,
+          "scope": "0603CS-15NX_R_ reference; option suffix unselected; 15 C rise from 25 C, not absolute maximum",
+          "sources": [
+            "https://www.coilcraft.com/getmedia/022eb894-7253-40d0-b07c-650d362fc80e/0603cs.pdf"
+          ],
+          "unit": "A",
+          "value": 0.7
+        },
+        "rdc_max": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "detail": null,
+          "field": "maximum_dcr",
+          "page": 2,
+          "scope": "0603CS-15NX_R_ reference; option suffix unselected",
+          "sources": [
+            "https://www.coilcraft.com/getmedia/022eb894-7253-40d0-b07c-650d362fc80e/0603cs.pdf"
+          ],
+          "unit": "ohm",
+          "value": 0.17
+        }
+      }
+    },
+    "observed": 0.17,
+    "passed": true
+  },
+  "entry_id": "OHM-044",
+  "limits": "Same limited analytical contract with zero-volt current probes. Missing thermal context and unsupported failure rules remain unknown.",
+  "netlist_sha256": "6323d002528da5cbcd4a4f01ee4b8242be4b4c494f3531a578c9cebe44b91ade",
+  "observation_status": "ran",
+  "output_sha256": "0e209def01d662187e7908a8eac91fc835e5902df1b522d5f1729c1efcde544f",
+  "ran_at": "2026-10-05T22:49:02Z",
+  "rating_status": "unknown",
+  "ratings": {
+    "components": [
+      {
+        "class_checks": [
+          {
+            "check": "max(abs(i)) <= Isat",
+            "condition": "inductance drop per datasheet",
+            "name": "saturation_current",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "bbbc3f111bfa5b4829006e8f085639b64c83bd746d6f007d83d4fd1f1d541a0e",
+              "line": 2448
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "Isat",
+            "unit": "A",
+            "value": "per_part"
+          },
+          {
+            "check": "rms(i) <= Irms if Ta<=25 else Irms*sqrt((Tmax-Ta)/dT_rated)",
+            "condition": "dT_rated rise at 25 C ambient",
+            "name": "heating_current",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "bbbc3f111bfa5b4829006e8f085639b64c83bd746d6f007d83d4fd1f1d541a0e",
+              "line": 2448
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "Irms",
+            "unit": "A",
+            "value": "per_part"
+          },
+          {
+            "check": "Ta + dT <= Tmax",
+            "condition": "ambient plus self heating",
+            "name": "part_temperature",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "bbbc3f111bfa5b4829006e8f085639b64c83bd746d6f007d83d4fd1f1d541a0e",
+              "line": 2448
+            },
+            "source_ref": "S2",
+            "status": "unknown",
+            "symbol": "Tmax",
+            "unit": "degC",
+            "value": "per_part"
+          },
+          {
+            "check": "f <= 0.5*SRF",
+            "condition": "ASSUMPTION",
+            "name": "frequency",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "bbbc3f111bfa5b4829006e8f085639b64c83bd746d6f007d83d4fd1f1d541a0e",
+              "line": 2448
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "f",
+            "unit": "Hz",
+            "value": "0.5*SRF"
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-044",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "L collapses to LR*L0",
+            "id": "saturation",
+            "permanence": "recoverable",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "nonlinear model; WARN at 0.9*Isat, ERROR at 1.5*Isat",
+            "status": "unknown",
+            "trigger": "abs(i) > Isat"
+          },
+          {
+            "applied_response": null,
+            "effect": "insulation or solder failure, open winding",
+            "id": "overheat",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "ERROR; replace by open (1G) after Tmax+20 K",
+            "status": "unknown",
+            "trigger": "Ta + dT > Tmax"
+          },
+          {
+            "applied_response": null,
+            "effect": "capacitive behaviour",
+            "id": "above_srf",
+            "permanence": "recoverable",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "Cp in model; WARN above 0.5*SRF",
+            "status": "unknown",
+            "trigger": "f > SRF"
+          }
+        ],
+        "observations": {
+          "i_A": 0.7,
+          "i_B": -0.7,
+          "irms": 0.7,
+          "power": 0.08329999999999999,
+          "rdc": 0.17,
+          "rdc_max": 0.17,
+          "tmax_part": 140.0,
+          "v_A": 0.119,
+          "v_B": 0.0,
+          "value": 1.5000000000000002e-08
+        },
+        "ref": "U1",
+        "reference_checks": [
+          {
+            "evidence": {
+              "irms": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "reference_current",
+                "page": 2,
+                "scope": "0603CS-15NX_R_ reference; option suffix unselected; 15 C rise from 25 C, not absolute maximum",
+                "sources": [
+                  "https://www.coilcraft.com/getmedia/022eb894-7253-40d0-b07c-650d362fc80e/0603cs.pdf"
+                ],
+                "unit": "A",
+                "value": 0.7
+              }
+            },
+            "expression": "abs(i_A) <= irms",
+            "name": "heating current",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "tmax_part": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "maximum_part_temperature",
+                "page": 1,
+                "scope": "0603CS family; ambient plus rise",
+                "sources": [
+                  "https://www.coilcraft.com/getmedia/022eb894-7253-40d0-b07c-650d362fc80e/0603cs.pdf"
+                ],
+                "unit": "C",
+                "value": 140
+              }
+            },
+            "expression": "Tamb+dT <= tmax_part",
+            "name": "part temperature",
+            "reason": "Self-heating and source thermal context are unavailable",
+            "spec_names": [],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      }
+    ],
+    "fault_requests": [],
+    "limitations": [
+      "Only the stated observations and source conditions were checked.",
+      "Unsupported class expressions and failure triggers remain unknown; no damage timing is invented.",
+      "An electrical limit check does not verify physical fit or safe operation."
+    ],
+    "status": "unknown"
+  },
+  "raw_output": "instrumented-output/OHM-044/output.txt",
+  "run_id": "behavior-20261005T065040Z",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+}

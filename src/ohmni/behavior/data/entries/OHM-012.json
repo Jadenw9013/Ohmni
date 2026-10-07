@@ -1,0 +1,134 @@
+{
+  "behavior_class_ids": [
+    "BEH-RES-FIXED"
+  ],
+  "catalog_binding_ids": [],
+  "class_record_paths": [
+    "src/ohmni/behavior/data/classes/BEH-RES-FIXED.json"
+  ],
+  "component": "Cement power resistor",
+  "entry_id": "OHM-012",
+  "fidelity": "ideal_components",
+  "group": "R1",
+  "layer": "L1",
+  "research": {
+    "bench_result": "bench-results/BEH-RES-FIXED--B1.json",
+    "bench_results": [
+      "bench-results/BEH-RES-FIXED--B1.json",
+      "bench-results/BEH-RES-FIXED--B2.json",
+      "bench-results/BEH-RES-FIXED--B3.json",
+      "bench-results/BEH-RES-FIXED--B4.json",
+      "bench-results/BEH-RES-FIXED--B5.json"
+    ],
+    "conflicts": [
+      "CPR is a radial reference with a different outline from the axial cement model. Do not assert a footprint equivalence."
+    ],
+    "documents": [
+      {
+        "document_id": "cpr",
+        "manufacturer": "Vishay Dale",
+        "note": "Read from fetched PDF bytes; an HTTP success alone is not evidence of semantic support.",
+        "page": null,
+        "revision": "11-Feb-2016",
+        "source_status": "primary_source_opened",
+        "title": "CPR commercial power resistors",
+        "url": "https://www.vishay.com/docs/30219/cpr.pdf"
+      }
+    ],
+    "entry_id": "OHM-012",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "p_rated",
+        "page": 1,
+        "scope": "Vishay CPR05 (legacy; EOL January 2016)",
+        "sources": [
+          "https://www.vishay.com/docs/30219/cpr.pdf"
+        ],
+        "unit": "W",
+        "value": 5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "derating_knee",
+        "page": 2,
+        "scope": "Vishay CPR05 (legacy; EOL January 2016)",
+        "sources": [
+          "https://www.vishay.com/docs/30219/cpr.pdf"
+        ],
+        "unit": "degC",
+        "value": 40
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "t_end",
+        "page": 2,
+        "scope": "Vishay CPR05 (legacy; EOL January 2016)",
+        "sources": [
+          "https://www.vishay.com/docs/30219/cpr.pdf"
+        ],
+        "unit": "degC",
+        "value": 275
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "+/-300 ppm/C for R >= 1.0 ohm; +/-600 ppm/C for R < 1.0 ohm. CPR05 spans 0.1 ohm to 1 kohm, so the range-wide maximum is 600.",
+        "field": "tcr_max",
+        "page": 1,
+        "scope": "Vishay CPR05 (legacy; EOL January 2016)",
+        "sources": [
+          "https://www.vishay.com/docs/30219/cpr.pdf"
+        ],
+        "unit": "ppm/degC",
+        "value": 600
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "The fusing statement is conditional; it is not a guaranteed protective-fuse rating.",
+        "field": "fuse_design_requirement",
+        "page": 1,
+        "scope": "Vishay CPR05 (legacy; EOL January 2016)",
+        "sources": [
+          "https://www.vishay.com/docs/30219/cpr.pdf"
+        ],
+        "unit": null,
+        "value": "Application-specific manufacturer design assistance required"
+      }
+    ],
+    "remaining_open_items": [
+      "Reactive parasitics remain unspecified; zero L/C is an idealized assumption, not measured package behavior.",
+      "Thermal resistance derived from rating endpoints is not an independently measured board-specific value.",
+      "Destructive-failure thresholds and timing are not characterized by the rating table.",
+      "Z300 axial and 2 W variants are not covered by CPR05.",
+      "A generic open-circuit failure at the continuous power limit is not a sourced fuse time/current curve."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-012.md",
+      "document_sha256": "dd7dffca0983aa3e7b206270eb6539e5afa8237edc1a45f32565e4dc0539f475",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
+  "resolution_ids": [],
+  "schema_version": 1,
+  "simulation_disposition": "simulable",
+  "simulation_reason": "The canonical class provides an L1/L2 model; fidelity and assumptions remain explicit.",
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "06bf70aa6d3c4a19b4e568c6523fe823e803236eb2f28c480642dce2fc1d87d4",
+    "line": 30
+  },
+  "status": "partial"
+}

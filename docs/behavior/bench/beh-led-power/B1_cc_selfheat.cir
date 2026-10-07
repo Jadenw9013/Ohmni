@@ -1,0 +1,20 @@
+* B1: constant-current drive of a power LED with electro-thermal fixed-point iteration.
+* Tj = Ta + Rth_total*(1-eta)*Vf*If ; Rth_js=9 K/W (Cree XP-E2 white), Rth_sa=30 K/W (ASSUMPTION small board), eta=0.30 (ASSUMPTION)
+.include models.inc
+I1 0 a DC 0.7
+D1 a 0 LED_XPE2
+.control
+let tj = 25
+let k = 0
+while k < 12
+  option temp = $&tj
+  op
+  let vf = v(a)
+  let pheat = (1-0.30)*vf*0.7
+  let tjn = 25 + (9+30)*pheat
+  let tj = tjn
+  let k = k + 1
+end
+print vf pheat tj
+.endc
+.end

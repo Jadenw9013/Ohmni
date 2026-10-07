@@ -1,0 +1,16 @@
+B3 MLCC insulation-resistance self-discharge, tau = RLK*C
+* PWL current pulse (area 49.5 uC) puts v0 = 49.5uC/10uF = 4.95 V on the cap; then v(t) = v0*exp(-(t-t0)/tau)
+* tau = 10uF * 10Mohm = 100 s ; v(t0+tau) = 4.95*exp(-1) = 1.8210 V
+* (q-defined capacitors ignore .ic in ngspice 42, so the part is charged by a current pulse)
+.include ohm_mlcc.lib
+Ip 0 p PWL(0 0 1u 0.5 99u 0.5 100u 0)
+Xc p 0 f ohm_mlcc C0=10u V0=1e6 ESR=1m ESL=1p RLK=10meg VR=100
+Rf f 0 1meg
+.tran 0.05 150
+.control
+run
+meas tran v0 find v(p) at=0.001
+meas tran vtau find v(p) at=100.0001
+quit
+.endc
+.end

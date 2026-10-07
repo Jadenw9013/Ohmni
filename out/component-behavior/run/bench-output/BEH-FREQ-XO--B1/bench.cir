@@ -1,0 +1,32 @@
+B1 Packaged oscillator L2 behavioural: 10 MHz, +25 ppm offset, 3.3 V. Expect f=10 MHz*(1+25e-6)=10.00025 MHz, Idd=4.2 mA, output swing 3.3 V, OE low -> output low and standby current
+* v2: scalars renamed/printed: f_out_hz, f_off_ppm, vout_max_v, icc_a (positive supply current); circuit unchanged
+* OHMNI packaged clock oscillator, L2 behavioural. Pins: vdd gnd oe out.
+* f0 nominal Hz, ppm total static offset (init tol + temp + aging, user-set), tstart start-up delay (s),
+* icc operating supply current (A), icc_sb standby current (A), rout CMOS output resistance, tr rise/fall time, vmin min supply for operation, vth_oe enable threshold fraction of VDD.
+.subckt ohm_xo vdd gnd oe out f0=10meg ppm=0 tstart=5u icc=4.2m icc_sb=1u rout=30 tr=1n vmin=2.25 vth_oe=0.7
+.param fa={f0*(1+ppm*1e-6)} pr={1/fa} 
+Vclk clk gnd PULSE(0 1 {tstart} {tr} {tr} {0.5*pr-tr} {pr})
+* enabled when supply valid AND (oe floating-high or above threshold)
+Bdrv drv gnd V = (V(vdd,gnd)>{vmin}) ? ((V(oe,gnd)>{vth_oe}*V(vdd,gnd)) ? V(vdd,gnd)*V(clk,gnd) : 0) : 0
+Ro drv out {rout}
+Bi vdd gnd I = (V(vdd,gnd)>{vmin}) ? ((V(oe,gnd)>{vth_oe}*V(vdd,gnd)) ? {icc} : {icc_sb}) : 0
+.ends ohm_xo
+
+Vdd vdd 0 3.3
+Voe oe 0 3.3
+Xo vdd 0 oe out ohm_xo f0=10meg ppm=25 tstart=5u icc=4.2m
+Cl out 0 15p
+.tran 1n 30u
+.control
+run
+meas tran per TRIG v(out) VAL=1.65 RISE=10 TARG v(out) VAL=1.65 RISE=210
+let f_out_hz = 200/per
+let f_off_ppm = (f_out_hz/10meg - 1)*1e6
+print f_out_hz f_off_ppm
+meas tran vout_max_v MAX v(out) FROM=10u TO=20u
+meas tran idd AVG i(Vdd) FROM=10u TO=20u
+let icc_a = -idd
+print vout_max_v icc_a
+quit
+.endc
+.end

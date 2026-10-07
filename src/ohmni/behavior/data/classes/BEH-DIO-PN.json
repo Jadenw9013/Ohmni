@@ -1,0 +1,518 @@
+{
+  "applies_to": [
+    "OHM-056",
+    "OHM-057",
+    "OHM-058",
+    "OHM-059",
+    "OHM-060",
+    "OHM-061",
+    "OHM-062",
+    "OHM-063",
+    "OHM-064",
+    "OHM-065",
+    "OHM-066",
+    "OHM-070"
+  ],
+  "basis_values": [
+    "ASSUMPTION",
+    "BV at IBV",
+    "CJO/(1+VR/VJ)^M",
+    "CONSENSUS",
+    "DERIVED",
+    "MFR_DATASHEET",
+    "Shockley+RS",
+    "TT*ln(1+IF/IRM)+RC tail",
+    "ngspice IS(T) formula",
+    "numerical integral",
+    "solve",
+    "solve 10=Vd(I)+100*I"
+  ],
+  "behavior_id": "BEH-DIO-PN",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "Shockley+RS",
+          "measure": "V at 10 mA",
+          "tolerance": "1 mV",
+          "value": 0.73039
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-pn/B1_fwd_iv.cir",
+      "measured_in_ngspice": 0.730388,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "TT*ln(1+IF/IRM)+RC tail",
+          "measure": "trr",
+          "tolerance": "20% of estimate",
+          "value": "<= 4 ns (datasheet); storage estimate 3.2 ns"
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-pn/B2_trr.cir",
+      "measured_in_ngspice": "3.83 ns",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "solve 10=Vd(I)+100*I",
+          "measure": "Vpk",
+          "tolerance": "0.5%",
+          "value": 9.2083
+        },
+        {
+          "basis": "numerical integral",
+          "measure": "Vavg",
+          "tolerance": "0.5%",
+          "value": 2.8114
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-pn/B3_halfwave_1N4007.cir",
+      "measured_in_ngspice": "9.20826 / 2.81366",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B4",
+      "expected": [
+        {
+          "basis": "CJO/(1+VR/VJ)^M",
+          "measure": "CJ at 4 V",
+          "tolerance": "2%",
+          "value": 1.5e-11
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-pn/B4_cj_ac.cir",
+      "measured_in_ngspice": 1.50008e-11,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B5",
+      "expected": [
+        {
+          "basis": "BV at IBV",
+          "measure": "V at 100 uA reverse",
+          "tolerance": "1%",
+          "value": 100.0
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-pn/B5_breakdown.cir",
+      "measured_in_ngspice": 100.458,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B6",
+      "expected": [
+        {
+          "basis": "solve",
+          "measure": "high clamp",
+          "tolerance": "5 mV",
+          "value": 5.6847
+        },
+        {
+          "basis": "solve",
+          "measure": "low clamp",
+          "tolerance": "5 mV",
+          "value": -0.7262
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-pn/B6_dual_clamp.cir",
+      "measured_in_ngspice": "5.68491 / -0.72624",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B7",
+      "expected": [
+        {
+          "basis": "ngspice IS(T) formula",
+          "measure": "VF at 100 C, 10 mA",
+          "tolerance": "1 mV",
+          "value": 0.615604
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-pn/B7_vf_temp.cir",
+      "measured_in_ngspice": 0.615603,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-056",
+      "OHM-057",
+      "OHM-058",
+      "OHM-059",
+      "OHM-060",
+      "OHM-061",
+      "OHM-062",
+      "OHM-063",
+      "OHM-064",
+      "OHM-065",
+      "OHM-066",
+      "OHM-070"
+    ],
+    "behavior_id": "BEH-DIO-PN",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "Shockley+RS",
+            "measure": "V at 10 mA",
+            "tolerance": "1 mV",
+            "value": 0.73039
+          }
+        ],
+        "file": "bench/beh-dio-pn/B1_fwd_iv.cir",
+        "id": "B1",
+        "measured_in_ngspice": 0.730388,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "TT*ln(1+IF/IRM)+RC tail",
+            "measure": "trr",
+            "tolerance": "20% of estimate",
+            "value": "<= 4 ns (datasheet); storage estimate 3.2 ns"
+          }
+        ],
+        "file": "bench/beh-dio-pn/B2_trr.cir",
+        "id": "B2",
+        "measured_in_ngspice": "3.83 ns",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "solve 10=Vd(I)+100*I",
+            "measure": "Vpk",
+            "tolerance": "0.5%",
+            "value": 9.2083
+          },
+          {
+            "basis": "numerical integral",
+            "measure": "Vavg",
+            "tolerance": "0.5%",
+            "value": 2.8114
+          }
+        ],
+        "file": "bench/beh-dio-pn/B3_halfwave_1N4007.cir",
+        "id": "B3",
+        "measured_in_ngspice": "9.20826 / 2.81366",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "CJO/(1+VR/VJ)^M",
+            "measure": "CJ at 4 V",
+            "tolerance": "2%",
+            "value": 1.5e-11
+          }
+        ],
+        "file": "bench/beh-dio-pn/B4_cj_ac.cir",
+        "id": "B4",
+        "measured_in_ngspice": 1.50008e-11,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "BV at IBV",
+            "measure": "V at 100 uA reverse",
+            "tolerance": "1%",
+            "value": 100.0
+          }
+        ],
+        "file": "bench/beh-dio-pn/B5_breakdown.cir",
+        "id": "B5",
+        "measured_in_ngspice": 100.458,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "solve",
+            "measure": "high clamp",
+            "tolerance": "5 mV",
+            "value": 5.6847
+          },
+          {
+            "basis": "solve",
+            "measure": "low clamp",
+            "tolerance": "5 mV",
+            "value": -0.7262
+          }
+        ],
+        "file": "bench/beh-dio-pn/B6_dual_clamp.cir",
+        "id": "B6",
+        "measured_in_ngspice": "5.68491 / -0.72624",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "ngspice IS(T) formula",
+            "measure": "VF at 100 C, 10 mA",
+            "tolerance": "1 mV",
+            "value": 0.615604
+          }
+        ],
+        "file": "bench/beh-dio-pn/B7_vf_temp.cir",
+        "id": "B7",
+        "measured_in_ngspice": 0.615603,
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "diode",
+    "confidence": {
+      "failure": "L",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "overheat, usually shorts",
+        "id": "overcurrent",
+        "permanence": "permanent",
+        "sim_response": "WARN 100%, FAIL 120%, then failed_short",
+        "trigger": "mean IF above rating or Tj above TJmax"
+      },
+      {
+        "effect": "die or bond wire damage, usually short, extreme energy open",
+        "id": "surge",
+        "permanence": "permanent",
+        "sim_response": "FAIL, failed_short (option failed_open)",
+        "trigger": "pulse above IFSM"
+      },
+      {
+        "effect": "avalanche hot spot, short",
+        "id": "reverse_overvoltage",
+        "permanence": "permanent",
+        "sim_response": "WARN 0.8*VRRM, FAIL above VRRM",
+        "trigger": "VR above VRRM on non-avalanche-rated type"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "reverse current is flat -IS in ngspice D model; add R=VR/IR for datasheet leakage",
+        "single exponential does not fit recombination knee and high injection together",
+        "reverse recovery softness and forward recovery overshoot not modelled",
+        "TT for 1N400x class is an ASSUMPTION (trr not in 1N4007 datasheets)"
+      ],
+      "netlist_template": "D{ref} {A} {K} DMOD_{ref}\n.model DMOD_{ref} D (IS={IS} N={N} RS={RS} CJO={CJO} VJ={VJ} M={M} TT={TT} BV={BV} IBV={IBV} EG={EG} XTI={XTI})\n",
+      "spice_primitives": [
+        "D"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "ac",
+        "tran",
+        "noise",
+        "temp"
+      ],
+      "valid_range": "VR < BV, |I| < IFSM, -55 C to 150 C; reverse leakage not modelled unless parallel R added"
+    },
+    "parameters": {
+      "BV": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 100,
+        "max": 1500,
+        "min": 50,
+        "source_ref": "S1",
+        "unit": "V"
+      },
+      "CJO": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 2e-12,
+        "max": 1e-10,
+        "min": 3e-13,
+        "source_ref": "S1",
+        "tolerance": "datasheet max 4 pF (signal)",
+        "unit": "F"
+      },
+      "EG": {
+        "basis": "CONSENSUS",
+        "confidence": "M",
+        "default": 1.11,
+        "source_ref": "S23",
+        "unit": "eV"
+      },
+      "IBV": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 0.0001,
+        "max": 0.01,
+        "min": 1e-06,
+        "source_ref": "S1",
+        "unit": "A"
+      },
+      "IS": {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "default": 5.537e-09,
+        "max": 1e-06,
+        "min": 1e-14,
+        "source_ref": "S4",
+        "tolerance": "x/ divide 2 (ASSUMPTION)",
+        "unit": "A"
+      },
+      "M": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.4,
+        "max": 0.5,
+        "min": 0.3,
+        "source_ref": "S23",
+        "unit": "1"
+      },
+      "N": {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "default": 1.944,
+        "max": 2.2,
+        "min": 1.0,
+        "source_ref": "S4",
+        "tolerance": 0.1,
+        "unit": "1"
+      },
+      "RS": {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "default": 0.6,
+        "max": 5.0,
+        "min": 0.0,
+        "source_ref": "S4",
+        "tolerance": "30%",
+        "unit": "ohm"
+      },
+      "TT": {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "default": 2.3e-08,
+        "max": 5e-06,
+        "min": 0.0,
+        "source_ref": "S1",
+        "tolerance": "trimmed to trr max 4 ns (signal); 3 us ASSUMPTION for 1N400x class",
+        "unit": "s"
+      },
+      "VJ": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.7,
+        "max": 1.0,
+        "min": 0.4,
+        "source_ref": "S23",
+        "unit": "V"
+      },
+      "XTI": {
+        "basis": "CONSENSUS",
+        "confidence": "M",
+        "default": 3,
+        "source_ref": "S23",
+        "unit": "1"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "K",
+        "package_terminal_rule": "2-lead packages: terminal 1 (band/bar end, -X). OHM-070: see per-entry table",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "A",
+        "package_terminal_rule": "2-lead packages: terminal 2 (+X). OHM-070: see per-entry table",
+        "role": "terminal"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "max(vr) <= VRRM",
+        "condition": "1N4148 (1N4007: 1000 V)",
+        "name": "repetitive_peak_reverse",
+        "source_ref": "S1",
+        "symbol": "VRRM",
+        "unit": "V",
+        "value": 100
+      },
+      {
+        "check": "mean(i_f) <= IF_derated(Ta)",
+        "condition": "conservative among 200 to 300 mA sources (1N4007: IF(AV) 1.0 A at TA 75 C)",
+        "name": "forward_current",
+        "source_ref": "S1",
+        "symbol": "IF",
+        "unit": "A",
+        "value": 0.2
+      },
+      {
+        "check": "i_pk <= IFSM*sqrt(t_ref/t)",
+        "condition": "1 us, 1N4148 Vishay (Nexperia 4 A); 1N4007 30 A 8.3 ms",
+        "name": "surge",
+        "source_ref": "S1",
+        "symbol": "IFSM",
+        "unit": "A",
+        "value": 2.0
+      },
+      {
+        "check": "Ta + RthJA*Pd <= TJmax",
+        "condition": "signal types",
+        "name": "junction_temperature",
+        "source_ref": "S1",
+        "symbol": "TJmax",
+        "unit": "C",
+        "value": 175
+      }
+    ],
+    "sources": [
+      {
+        "date": "07-Nov-2024",
+        "id": "S1",
+        "org": "Vishay",
+        "title": "1N4148 small signal fast switching diode (doc 81857 rev 1.6)",
+        "url": "https://www.vishay.com/docs/81857/1n4148.pdf",
+        "used_for": "ratings, VF max, IR, BV, Cd, trr"
+      }
+    ],
+    "status": "partial"
+  },
+  "category": "diode",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "89f5db0dcca159cde2ccd668b59c574da0e174a4994689a406b3fe028ab8040b",
+    "line": 3741
+  },
+  "source_refs": [
+    {
+      "date": "07-Nov-2024",
+      "id": "S1",
+      "org": "Vishay",
+      "title": "1N4148 small signal fast switching diode (doc 81857 rev 1.6)",
+      "url": "https://www.vishay.com/docs/81857/1n4148.pdf",
+      "used_for": "ratings, VF max, IR, BV, Cd, trr"
+    }
+  ],
+  "status": "partial"
+}

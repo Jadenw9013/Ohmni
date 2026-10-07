@@ -1,0 +1,17 @@
+* BEH-TRN-BJT B6: Vbe temperature coefficient of a diode-connected 2N3904 fit at I = 1 mA
+* Analytic (ideal junction): dVbe/dT = (Vbe - Eg/q)/T - XTI*k/q
+*   = (0.647 - 1.11)/300 - 3*8.617e-5 = -1.54e-3 - 0.26e-3 = -1.80 mV/K  (Eg=1.11, XTI=3 are model assumptions)
+* Expected -1.8 mV/K, tolerance +/-0.3 mV/K
+.include /home/claude/behavior/bench/trn_bjt/models_bjt_r6fit.lib
+Q1 b b 0 Q2N3904_R6FIT
+I1 0 b 1m
+.control
+set noaskquit
+dc temp 25 75 50
+let vb = v(b)
+print vb
+let tc = (vb[1]-vb[0])/50
+print tc
+quit
+.endc
+.end

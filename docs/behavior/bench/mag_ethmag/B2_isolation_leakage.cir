@@ -1,0 +1,23 @@
+B2 isolation barrier: AC leakage current through interwinding capacitance at mains frequency, and DC blocking
+* v2: RESULT echo replaced by scalar eth2_i_per_v (circuit unchanged)
+* Expected: |I| = w*Ciw*V = 2*pi*50*15p*1 = 4.712e-9 A per volt of barrier voltage at 50 Hz (Ciw ASSUMED 15 pF; datasheet value not in opened docs).
+*   At 1500 Vrms (hipot, Pulse H325.Q 1500 Vrms MIN) -> 7.07 uA. DC: no DC path, I_dc = V/Riso (model has no Riso: 1G test shunt only).
+.include ethmag.lib
+* barrier source between PHY-side ground (node 0) and line-side common (node lg)
+Viso lg 0 DC 0 AC 1
+Rtdp tdp 0 1u
+Rtdm tdm 0 1u
+Rtdct tdct 0 1G
+X1 tdp tdm tdct lp lm lct ETH_CH OCL=350u LLK=0.1u RW=0.5 CIW=15p CMC_L=100u CMC_LS=0.1u CMC_RDC=0.1 CMC_C0=0
+Rlp lp lg 1u
+Rlm lm lg 1u
+Rlct lct lg 1G
+.ac lin 1 50 50
+.control
+run
+let iiso = mag(i(Viso))
+let eth2_i_per_v = iiso
+print eth2_i_per_v
+quit
+.endc
+.end

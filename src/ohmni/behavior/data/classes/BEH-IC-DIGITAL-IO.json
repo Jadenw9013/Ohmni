@@ -1,0 +1,277 @@
+{
+  "applies_to": [
+    "OHM-104",
+    "OHM-108",
+    "OHM-109",
+    "OHM-110"
+  ],
+  "basis_values": [
+    "5*1k/(35k+1k)",
+    "5-roh*I",
+    "DERIVED",
+    "MFR_DATASHEET",
+    "rol*I"
+  ],
+  "behavior_id": "BEH-IC-DIGITAL-IO",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "rol*I",
+          "measure": "VOL_20mA",
+          "tolerance": "1 %",
+          "value": 0.4
+        },
+        {
+          "basis": "5-roh*I",
+          "measure": "VOH_20mA",
+          "tolerance": "1 %",
+          "value": 4.2
+        }
+      ],
+      "file": "docs/behavior/bench/ic-digital-io/B1_output_drive.cir",
+      "measured_in_ngspice": "0.4 / 4.2",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "5*1k/(35k+1k)",
+          "measure": "pullup_pad_V",
+          "tolerance": "1 %",
+          "value": 0.1389
+        }
+      ],
+      "file": "docs/behavior/bench/ic-digital-io/B2_input_pullup_hiz.cir",
+      "measured_in_ngspice": 0.138889,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-104",
+      "OHM-108",
+      "OHM-109",
+      "OHM-110"
+    ],
+    "behavior_id": "BEH-IC-DIGITAL-IO",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "rol*I",
+            "measure": "VOL_20mA",
+            "tolerance": "1 %",
+            "value": 0.4
+          },
+          {
+            "basis": "5-roh*I",
+            "measure": "VOH_20mA",
+            "tolerance": "1 %",
+            "value": 4.2
+          }
+        ],
+        "file": "bench/ic-digital-io/B1_output_drive.cir",
+        "id": "B1",
+        "measured_in_ngspice": "0.4 / 4.2",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "5*1k/(35k+1k)",
+            "measure": "pullup_pad_V",
+            "tolerance": "1 %",
+            "value": 0.1389
+          }
+        ],
+        "file": "bench/ic-digital-io/B2_input_pullup_hiz.cir",
+        "id": "B2",
+        "measured_in_ngspice": 0.138889,
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "ic",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "L",
+      "ratings": "L"
+    },
+    "failure_modes": [
+      {
+        "effect": "clamp conduction, damage",
+        "id": "input_overvoltage",
+        "permanence": "permanent",
+        "sim_response": "ERROR",
+        "trigger": "pin above VCC+1.0 V (25LC256)"
+      },
+      {
+        "effect": "undefined state",
+        "id": "floating_control",
+        "permanence": "recoverable",
+        "sim_response": "netlist check",
+        "trigger": "CS, WP or HOLD left open"
+      },
+      {
+        "effect": "high current",
+        "id": "contention",
+        "permanence": "permanent",
+        "sim_response": "report current",
+        "trigger": "two outputs on one net"
+      }
+    ],
+    "layer": "L2",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "pad only",
+        "no leakage",
+        "no hysteresis",
+        "L3 behaviour not simulated",
+        "ATtiny85, W65C02S electrical numbers RESEARCH_REQUIRED"
+      ],
+      "netlist_template": "X{ref}_p{k} {PAD} {DIN} {UND} {DOUT} {OE} {PU} {VCC} {GND} dio_pin roh={roh} rol={rol} vilf={vilf} vihf={vihf} rpu={rpu}\n",
+      "spice_primitives": [
+        "B",
+        "C",
+        "D",
+        "R"
+      ],
+      "valid_analyses": [
+        "op",
+        "tran"
+      ],
+      "valid_range": "VCC 2.7..5.5 V (ATmega328P class); firmware, peripherals and protocol are L3 and not simulated"
+    },
+    "parameters": {
+      "cpin": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": "4e-12",
+        "max": "10e-12",
+        "min": "2e-12",
+        "source_ref": "S16",
+        "tolerance": "",
+        "unit": "F"
+      },
+      "roh": {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "default": 40,
+        "max": 80,
+        "min": 20,
+        "source_ref": "S16",
+        "tolerance": "",
+        "unit": "ohm"
+      },
+      "rol": {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "default": 20,
+        "max": 40,
+        "min": 10,
+        "source_ref": "S16",
+        "tolerance": "",
+        "unit": "ohm"
+      },
+      "rpu": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": "35e3",
+        "max": "50e3",
+        "min": "20e3",
+        "source_ref": "S16",
+        "tolerance": "",
+        "unit": "ohm"
+      },
+      "vihf": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.6,
+        "max": 0.7,
+        "min": 0.55,
+        "source_ref": "S16",
+        "tolerance": "",
+        "unit": "x VCC"
+      },
+      "vilf": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.3,
+        "max": 0.35,
+        "min": 0.2,
+        "source_ref": "S16",
+        "tolerance": "",
+        "unit": "x VCC"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "bidirectional",
+        "name": "PAD",
+        "package_terminal_rule": "per part, see Part B; every I/O pin of the MCU or memory",
+        "role": "signal_io"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "VCC",
+        "package_terminal_rule": "ATmega328P 7 and 20 (AVCC); ATtiny85 8; 25LC256 8",
+        "role": "supply"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "GND",
+        "package_terminal_rule": "ATmega328P 8 and 22; ATtiny85 4; 25LC256 4",
+        "role": "supply"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "V(pin) <= V(VCC)+1.0",
+        "condition": "25LC256: max above VCC",
+        "name": "pin voltage",
+        "source_ref": "S24",
+        "symbol": "VIN",
+        "unit": "V",
+        "value": 1.0
+      },
+      {
+        "check": "fsck <= 5e6",
+        "condition": "25LC256 at 2.5..<4.5 V (10 MHz at 4.5-5.5 V)",
+        "name": "SPI clock",
+        "source_ref": "S24",
+        "symbol": "fSCK",
+        "unit": "Hz",
+        "value": "5e6"
+      },
+      {
+        "check": "abs(I(pin)) <= 40e-3",
+        "condition": "abs max",
+        "name": "ATmega328P per-pin current",
+        "source_ref": "S16",
+        "symbol": "IO",
+        "unit": "A",
+        "value": "40e-3"
+      }
+    ],
+    "sources": "S16, S17, S19, S23, S24",
+    "status": "partial"
+  },
+  "category": "ic",
+  "fidelity": "behavioural_approximation",
+  "layer": "L2",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "cf219d25153c188c7544f4f3a65f6cb6ba0af9d9f618010520d1864b6f15130f",
+    "line": 7832
+  },
+  "source_refs": "S16, S17, S19, S23, S24",
+  "status": "partial"
+}

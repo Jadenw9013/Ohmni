@@ -1,0 +1,387 @@
+{
+  "applies_to": [
+    "OHM-050",
+    "OHM-051"
+  ],
+  "basis_values": [
+    "2L(1-k)",
+    "ASSUMPTION",
+    "DERIVED",
+    "L(1+k)/2",
+    "MFR_DATASHEET",
+    "datasheet",
+    "formula"
+  ],
+  "behavior_id": "BEH-MAG-CMC",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "L(1+k)/2",
+          "measure": "Lcm",
+          "tolerance": 0.005,
+          "value": 0.00219997
+        },
+        {
+          "basis": "2L(1-k)",
+          "measure": "Ldm",
+          "tolerance": 0.005,
+          "value": 1.30002e-07
+        }
+      ],
+      "file": "docs/behavior/bench/mag_cmc/B1_dm_cm_L.cir",
+      "measured_in_ngspice": "2.19997e-3, 1.30002e-7",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "datasheet",
+          "measure": "Z_2p5MHz",
+          "tolerance": 0.15,
+          "value": 7500
+        },
+        {
+          "basis": "datasheet",
+          "measure": "Z_10MHz",
+          "tolerance": 0.15,
+          "value": 4000
+        },
+        {
+          "basis": "datasheet",
+          "measure": "Z_100MHz",
+          "tolerance": 0.15,
+          "value": 400
+        }
+      ],
+      "file": "docs/behavior/bench/mag_cmc/B2_impedance_fit.cir",
+      "measured_in_ngspice": "7499.8, 3707, 399.6",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "formula",
+          "measure": "Lcm_at_1A",
+          "tolerance": 0.01,
+          "value": 0.00153999
+        }
+      ],
+      "file": "docs/behavior/bench/mag_cmc/B3_cm_saturation.cir",
+      "measured_in_ngspice": "1.53999e-3",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-050",
+      "OHM-051"
+    ],
+    "behavior_id": "BEH-MAG-CMC",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "L(1+k)/2",
+            "measure": "Lcm",
+            "tolerance": 0.005,
+            "value": 0.00219997
+          },
+          {
+            "basis": "2L(1-k)",
+            "measure": "Ldm",
+            "tolerance": 0.005,
+            "value": 1.30002e-07
+          }
+        ],
+        "file": "bench/mag_cmc/B1_dm_cm_L.cir",
+        "id": "B1",
+        "measured_in_ngspice": "2.19997e-3, 1.30002e-7",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "datasheet",
+            "measure": "Z_2p5MHz",
+            "tolerance": 0.15,
+            "value": 7500
+          },
+          {
+            "basis": "datasheet",
+            "measure": "Z_10MHz",
+            "tolerance": 0.15,
+            "value": 4000
+          },
+          {
+            "basis": "datasheet",
+            "measure": "Z_100MHz",
+            "tolerance": 0.15,
+            "value": 400
+          }
+        ],
+        "file": "bench/mag_cmc/B2_impedance_fit.cir",
+        "id": "B2",
+        "measured_in_ngspice": "7499.8, 3707, 399.6",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "formula",
+            "measure": "Lcm_at_1A",
+            "tolerance": 0.01,
+            "value": 0.00153999
+          }
+        ],
+        "file": "bench/mag_cmc/B3_cm_saturation.cir",
+        "id": "B3",
+        "measured_in_ngspice": "1.53999e-3",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "magnetics",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "CM inductance collapses",
+        "id": "cm_saturation",
+        "permanence": "recoverable",
+        "sim_response": "CMC_SAT; WARN at 0.9*ISATM",
+        "trigger": "abs(iA+iB) > ISATM"
+      },
+      {
+        "effect": "overheating, open winding",
+        "id": "overcurrent",
+        "permanence": "permanent",
+        "sim_response": "ERROR; open after Tmax+20K",
+        "trigger": "rms > IR"
+      },
+      {
+        "effect": "choke acts as DM inductor and saturates",
+        "id": "reversed_winding",
+        "permanence": "recoverable",
+        "sim_response": "DRC plus automatic in CMC_SAT",
+        "trigger": "one winding wired reversed"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "single resonance, 10 MHz point -7 %",
+        "no CM-to-DM conversion from winding asymmetry",
+        "saturation current assumed",
+        "pin pairing unverified"
+      ],
+      "netlist_template": ".include cmc.lib\nX{ref} {A1} {A2} {B1} {B2} CMC_SAT L={value} LS={leakage} RDC={rdc} C0={c0} RPAR={rpar} ISATM={isat_cm} DROP=0.3 LR=0.05\n",
+      "spice_primitives": [
+        "L",
+        "K",
+        "R",
+        "C",
+        "E",
+        "F"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "ac",
+        "tran"
+      ],
+      "valid_range": "100 kHz to 100 MHz with the HF fit; DM operation below the leakage/C0 resonance"
+    },
+    "parameters": {
+      "c0": {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "default": 2e-12,
+        "max": 5e-11,
+        "min": 2e-13,
+        "source_ref": "S9",
+        "unit": "F"
+      },
+      "isat_cm": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 1.66,
+        "max": 20,
+        "min": 0.1,
+        "source_ref": "S3",
+        "unit": "A"
+      },
+      "leakage": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 1.3e-07,
+        "max": 0.0001,
+        "min": 1e-08,
+        "source_ref": "S9",
+        "tolerance": "typ",
+        "unit": "H"
+      },
+      "rated_current": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.83,
+        "max": 10,
+        "min": 0.1,
+        "source_ref": "S9",
+        "tolerance": "max",
+        "unit": "A"
+      },
+      "rated_voltage": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 80,
+        "max": 300,
+        "min": 5,
+        "source_ref": "S9",
+        "unit": "V"
+      },
+      "rdc": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.3,
+        "max": 5,
+        "min": 0.01,
+        "source_ref": "S9",
+        "tolerance": "max",
+        "unit": "ohm"
+      },
+      "rpar": {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "default": 15000,
+        "max": "1.0e9",
+        "min": 1000,
+        "source_ref": "S9",
+        "unit": "ohm"
+      },
+      "value": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 0.0022,
+        "max": 0.1,
+        "min": 0.0001,
+        "source_ref": "S9",
+        "tolerance": 0.4,
+        "unit": "H"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "A1",
+        "package_terminal_rule": "winding A first terminal (dot); pairing to pin numbers is RESEARCH_REQUIRED",
+        "role": "winding_A_dot"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "A2",
+        "package_terminal_rule": "winding A second terminal",
+        "role": "winding_A_end"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "B1",
+        "package_terminal_rule": "winding B first terminal (dot)",
+        "role": "winding_B_dot"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "B2",
+        "package_terminal_rule": "winding B second terminal",
+        "role": "winding_B_end"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "rms(iA)<=IR and rms(iB)<=IR",
+        "condition": "dT=40K per winding (assumed)",
+        "name": "rated_current",
+        "source_ref": "S9",
+        "symbol": "IR",
+        "unit": "A",
+        "value": 0.83
+      },
+      {
+        "check": "max(abs(v))<=VR",
+        "condition": "WE-SL5 744272222",
+        "name": "rated_voltage",
+        "source_ref": "S9",
+        "symbol": "VR",
+        "unit": "V",
+        "value": 80
+      },
+      {
+        "check": "max(abs(iA+iB))<=0.9*ISATM",
+        "condition": "ASSUMPTION",
+        "name": "cm_current",
+        "source_ref": "S3",
+        "symbol": "ISATM",
+        "unit": "A",
+        "value": 1.66
+      }
+    ],
+    "sources": [
+      {
+        "date": "2025/08/05",
+        "id": "S8",
+        "org": "Wurth Elektronik",
+        "title": "ANP146a common mode choke theory",
+        "url": "https://www.we-online.com/components/media/o868432v410 ANP146a_WE-CMDC_EN.pdf",
+        "used_for": "DM/CM principle, k, leakage, equivalent circuit"
+      },
+      {
+        "date": "2026-02-06",
+        "id": "S9",
+        "org": "Wurth Elektronik",
+        "title": "WE-SL5 744272222 datasheet",
+        "url": "https://www.we-online.com/katalog/datasheet/744272222.pdf",
+        "used_for": "L, LS, RDC, IR, VR, Z points"
+      }
+    ],
+    "status": "partial"
+  },
+  "category": "magnetics",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "0c4e0fa04fe7b75082e989c38086a2b9dc468546dc2bdfe3f16bffed350a2e24",
+    "line": 2645
+  },
+  "source_refs": [
+    {
+      "date": "2025/08/05",
+      "id": "S8",
+      "org": "Wurth Elektronik",
+      "title": "ANP146a common mode choke theory",
+      "url": "https://www.we-online.com/components/media/o868432v410 ANP146a_WE-CMDC_EN.pdf",
+      "used_for": "DM/CM principle, k, leakage, equivalent circuit"
+    },
+    {
+      "date": "2026-02-06",
+      "id": "S9",
+      "org": "Wurth Elektronik",
+      "title": "WE-SL5 744272222 datasheet",
+      "url": "https://www.we-online.com/katalog/datasheet/744272222.pdf",
+      "used_for": "L, LS, RDC, IR, VR, Z points"
+    }
+  ],
+  "status": "partial"
+}

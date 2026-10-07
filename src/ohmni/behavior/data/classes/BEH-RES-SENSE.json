@@ -1,0 +1,291 @@
+{
+  "applies_to": [
+    "OHM-014",
+    "OHM-015"
+  ],
+  "basis_values": [
+    "ASSUMPTION",
+    "I*(Rs+6m+2u)",
+    "I*Rs",
+    "MFR_DATASHEET",
+    "R*sqrt(2)",
+    "sqrt(P*R)"
+  ],
+  "behavior_id": "BEH-RES-SENSE",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "I*Rs",
+          "measure": "V_kelvin",
+          "tolerance": "0.1%",
+          "value": 0.01
+        },
+        {
+          "basis": "I*(Rs+6m+2u)",
+          "measure": "V_2wire",
+          "tolerance": "0.1%",
+          "value": 0.07002
+        }
+      ],
+      "file": "docs/behavior/bench/res_sense/B1.cir",
+      "measured_in_ngspice": "0.010000; 0.070020",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "sqrt(P*R)",
+          "measure": "V",
+          "tolerance": "0.1%",
+          "value": 0.031623
+        }
+      ],
+      "file": "docs/behavior/bench/res_sense/B2.cir",
+      "measured_in_ngspice": "0.0316228",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "R*sqrt(2)",
+          "measure": "Zmag",
+          "tolerance": "0.1%",
+          "value": 0.0014142
+        }
+      ],
+      "file": "docs/behavior/bench/res_sense/B3.cir",
+      "measured_in_ngspice": "0.00141419",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-014",
+      "OHM-015"
+    ],
+    "behavior_id": "BEH-RES-SENSE",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "I*Rs",
+            "measure": "V_kelvin",
+            "tolerance": "0.1%",
+            "value": 0.01
+          },
+          {
+            "basis": "I*(Rs+6m+2u)",
+            "measure": "V_2wire",
+            "tolerance": "0.1%",
+            "value": 0.07002
+          }
+        ],
+        "file": "bench/res_sense/B1.cir",
+        "id": "B1",
+        "measured_in_ngspice": "0.010000; 0.070020",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "sqrt(P*R)",
+            "measure": "V",
+            "tolerance": "0.1%",
+            "value": 0.031623
+          }
+        ],
+        "file": "bench/res_sense/B2.cir",
+        "id": "B2",
+        "measured_in_ngspice": "0.0316228",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "R*sqrt(2)",
+            "measure": "Zmag",
+            "tolerance": "0.1%",
+            "value": 0.0014142
+          }
+        ],
+        "file": "bench/res_sense/B3.cir",
+        "id": "B3",
+        "measured_in_ngspice": "0.00141419",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "passive",
+    "confidence": {
+      "failure": "L",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "element overheats; drift, solder joint damage; open at gross overload",
+        "id": "overpower",
+        "permanence": "permanent",
+        "sim_response": "flag ERROR; open the part if P > 5x for 5 s (assumption)",
+        "trigger": "P > P_allowed"
+      },
+      {
+        "effect": "measurement error equal to lead drop",
+        "id": "kelvin_violation",
+        "permanence": "recoverable",
+        "sim_response": "flag DRC warning",
+        "trigger": "sense net shares load-current path"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "no thermal EMF",
+        "Rc unsourced",
+        "no pulse model",
+        "single-pole thermal",
+        "Kelvin pad numbering of OHM-014 unresolved"
+      ],
+      "netlist_template": ".subckt RSENSE4 I1 I2 E1 E2 params: Rs=1m Rc=1u\nRel ea eb {Rs}\nRc1 I1 ea {Rc}\nRc2 I2 eb {Rc}\nRs1 E1 ea 1u\nRs2 E2 eb 1u\n.ends\n",
+      "spice_primitives": [
+        "R",
+        "L",
+        "B"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "ac",
+        "tran",
+        "temp"
+      ],
+      "valid_range": "DC to about 1 MHz; |i| <= sqrt(P_allowed/Rs)"
+    },
+    "parameters": {
+      "ls": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": "2e-9",
+        "max": "5e-9",
+        "min": 5e-10,
+        "source_ref": "S13",
+        "unit": "H"
+      },
+      "p_rated": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 1.0,
+        "source_ref": "S13",
+        "unit": "W"
+      },
+      "rc": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0,
+        "source_ref": "none",
+        "unit": "ohm"
+      },
+      "t_end": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 170,
+        "source_ref": "S13",
+        "unit": "C"
+      },
+      "t_knee": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 70,
+        "source_ref": "S13",
+        "unit": "C"
+      },
+      "tcr": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 75,
+        "max": 400,
+        "min": 35,
+        "source_ref": "S13",
+        "unit": "ppm_per_K"
+      },
+      "value": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 0.005,
+        "max": 0.5,
+        "min": 5e-05,
+        "source_ref": "S13",
+        "tolerance": "0.1 % to 10 % by part",
+        "unit": "ohm"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "I1",
+        "package_terminal_rule": "OHM-014 2-terminal: terminal 1; OHM-015: pin 1 (bolt hole, -X)",
+        "role": "current_terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "I2",
+        "package_terminal_rule": "OHM-014 2-terminal: terminal 2; OHM-015: pin 2 (bolt hole, +X)",
+        "role": "current_terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "E1",
+        "package_terminal_rule": "OHM-014 2-terminal: tied to I1; 4-terminal numbering RESEARCH_REQUIRED; OHM-015: pin 3 (-X sense pin)",
+        "role": "sense_terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "E2",
+        "package_terminal_rule": "OHM-014 2-terminal: tied to I2; 4-terminal numbering RESEARCH_REQUIRED; OHM-015: pin 4 (+X sense pin)",
+        "role": "sense_terminal"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "i*i*Rs <= P_allowed",
+        "condition": "ambient Tamb",
+        "name": "power",
+        "source_ref": "S13",
+        "symbol": "P",
+        "unit": "W",
+        "value": "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)"
+      },
+      {
+        "check": "abs(i) <= sqrt(P_allowed/Rs)",
+        "condition": "continuous",
+        "name": "current",
+        "source_ref": "S15",
+        "symbol": "I",
+        "unit": "A",
+        "value": "sqrt(P_allowed/Rs)"
+      }
+    ],
+    "sources": "S13, S14, S15, S16, S22",
+    "status": "partial"
+  },
+  "category": "passive",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "268b4a292fa8b8ecc64e329d720f89c54077cdf9f8c565cc261f96547e765c09",
+    "line": 645
+  },
+  "source_refs": "S13, S14, S15, S16, S22",
+  "status": "partial"
+}

@@ -1,0 +1,28 @@
+B1 Mica capacitor temperature coefficient: C(125 C) = C0*(1+TC*1e-6*100)
+* C0=100p, TC=+70 ppm/K (CDE characteristic F upper bound) -> 100.7 pF ; measured via 1 kHz AC current (ESL, ESR negligible)
+* OHMNI BEH-CAP-MICA subcircuit (dipped silver mica, near-ideal), behavioural_approximation
+* ports: p n flag. flag: 1 = |V| > VR
+* C(T) = C0*(1+TCPPM*1e-6*(TEMP-25)); ESR from Q at FQ: ESR = 1/(Q*2*pi*FQ*C0)
+.subckt ohm_mica p n flag params: C0=100p TCPPM=0 TEMP=25 Q=1000 FQ=1meg ESL=8n RLK=1e12 VR=500
+.param CT={C0*(1+TCPPM*1e-6*(TEMP-25))}
+.param ESRV={1/(Q*2*3.14159265358979*FQ*C0)}
+Lesl p a {ESL}
+Resr a b {ESRV}
+Cb b n {CT}
+Rlk b n {RLK}
+Bflag flag 0 V = 'abs(v(b,n)) > {VR} ? 1 : 0'
+.ends
+
+Vs in 0 dc 0 ac 1
+Rs in p 0.01
+Xc p 0 f ohm_mica C0=100p TCPPM=70 TEMP=125 Q=1000 FQ=1meg ESL=1p RLK=1e15
+Rf f 0 1meg
+.ac lin 1 1meg 1meg
+.control
+run
+let ii = (v(in)-v(p))/0.01
+let cpf = imag(ii)/(2*pi*1meg)*1e12
+print cpf
+quit
+.endc
+.end

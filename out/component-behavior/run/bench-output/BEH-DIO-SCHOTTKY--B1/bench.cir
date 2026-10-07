@@ -1,0 +1,12 @@
+* BEH-DIO-SCHOTTKY B1: SS14 max-corner forward fit: VF = 0.50 V at 1 A
+* IS=6.4e-8 N=1.05 RS=0.05 (N, RS assumed; IS fitted to the 0.5 V max point)
+.model DSS14_MAX D (IS=6.40e-8 N=1.05 RS=0.05 CJO=110p VJ=0.4 M=0.45 TT=0 BV=45 IBV=1m EG=0.296 XTI=2)
+I1 0 d 1
+D1 d 0 DSS14_MAX
+.control
+dc I1 1 1 1
+print v(d)
+dc I1 10m 10m 1m
+print v(d)
+.endc
+.end

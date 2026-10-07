@@ -1,0 +1,397 @@
+{
+  "comparison": {
+    "comparison": {
+      "expected": 2.5,
+      "tolerance": 0.0025
+    },
+    "observed": 2.5,
+    "passed": true
+  },
+  "entry_id": "OHM-012",
+  "limits": "Same limited analytical contract with zero-volt current probes. Missing thermal context and unsupported failure rules remain unknown.",
+  "netlist_sha256": "1423f65d8ff600438d06e13f02234f90d1771351a34797b41674f2c65b62c18d",
+  "observation_status": "ran",
+  "output_sha256": "32467b8ffc5311733d72b3b18a85cebbb05b3a3b99b8384737dd54829c72f4eb",
+  "ran_at": "2026-10-05T22:48:59Z",
+  "rating_status": "unknown",
+  "ratings": {
+    "components": [
+      {
+        "class_checks": [
+          {
+            "check": "v*i <= P_allowed(Tamb)",
+            "condition": "ambient Tamb",
+            "name": "power",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "P",
+            "unit": "W",
+            "value": "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)"
+          },
+          {
+            "check": "abs(v) <= Vmax",
+            "condition": "AC RMS or DC",
+            "name": "working voltage",
+            "reason": null,
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "within_limit",
+            "symbol": "Vmax",
+            "unit": "V",
+            "value": "min(u_limit, sqrt(p_rated*value))"
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-012",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "permanent drift of R (stability limit about 1 % per 1000 h at P70 for thick film)",
+            "id": "overpower_mild",
+            "permanence": "permanent",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "sim_response": "flag WARNING",
+            "status": "unknown",
+            "trigger": "P > P_allowed"
+          },
+          {
+            "applied_response": null,
+            "effect": "element burns open; fusible variants designed to do this",
+            "id": "overpower_open",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "flag ERROR, re-run with part open (R=1G)",
+            "status": "unknown",
+            "trigger": "P > 5x rated for several seconds (assumption)"
+          },
+          {
+            "applied_response": null,
+            "effect": "arc or breakdown of the element or body",
+            "evaluated_trigger": "abs(v) > Vmax",
+            "id": "overvoltage",
+            "permanence": "permanent",
+            "reason": null,
+            "sim_response": "flag ERROR; treat as open if abs(v) > 2*Vmax",
+            "status": "not_triggered",
+            "trigger": "abs(v) > Vmax"
+          }
+        ],
+        "observations": {
+          "P": 0.000625,
+          "Vmax": 223.60679774997897,
+          "i_A": 0.00025,
+          "i_B": -0.00025,
+          "p_rated": 5.0,
+          "power": 0.000625,
+          "t_end": 275.0,
+          "t_knee": 40.0,
+          "u_limit": 223.60679774997897,
+          "v": 2.5,
+          "v_A": 5.0,
+          "v_B": 2.5,
+          "value": 10000.0
+        },
+        "ref": "R1",
+        "reference_checks": [
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "p_rated",
+                "page": 1,
+                "scope": "Vishay CPR05 (legacy; EOL January 2016)",
+                "sources": [
+                  "https://www.vishay.com/docs/30219/cpr.pdf"
+                ],
+                "unit": "W",
+                "value": 5
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 2,
+                "scope": "Vishay CPR05 (legacy; EOL January 2016)",
+                "sources": [
+                  "https://www.vishay.com/docs/30219/cpr.pdf"
+                ],
+                "unit": "degC",
+                "value": 275
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "derating_knee",
+                "page": 2,
+                "scope": "Vishay CPR05 (legacy; EOL January 2016)",
+                "sources": [
+                  "https://www.vishay.com/docs/30219/cpr.pdf"
+                ],
+                "unit": "degC",
+                "value": 40
+              }
+            },
+            "expression": "P <= P_allowed",
+            "name": "power",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [
+              "power"
+            ],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "p_rated",
+                "page": 1,
+                "scope": "Vishay CPR05 (legacy; EOL January 2016)",
+                "sources": [
+                  "https://www.vishay.com/docs/30219/cpr.pdf"
+                ],
+                "unit": "W",
+                "value": 5
+              },
+              "u_limit": {
+                "basis": "DERIVED",
+                "confidence": "M",
+                "detail": "Entry explicitly states V=sqrt(P R); substitute scoped rated power and the declared instance resistance. No independent dielectric-test voltage is treated as a working rating.",
+                "expression": "sqrt(p_rated*value)",
+                "source": {
+                  "document": "COMPONENT_BEHAVIOR_SPEC.md",
+                  "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+                  "fragment_sha256": null,
+                  "line": 1035
+                },
+                "unit": "V"
+              }
+            },
+            "expression": "abs(v) <= Vmax",
+            "name": "working voltage",
+            "reason": null,
+            "spec_names": [
+              "working voltage"
+            ],
+            "status": "within_limit"
+          }
+        ],
+        "status": "unknown"
+      },
+      {
+        "class_checks": [
+          {
+            "check": "v*i <= P_allowed(Tamb)",
+            "condition": "ambient Tamb",
+            "name": "power",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "P",
+            "unit": "W",
+            "value": "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)"
+          },
+          {
+            "check": "abs(v) <= Vmax",
+            "condition": "AC RMS or DC",
+            "name": "working voltage",
+            "reason": null,
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9",
+              "line": 497
+            },
+            "source_ref": "S1",
+            "status": "within_limit",
+            "symbol": "Vmax",
+            "unit": "V",
+            "value": "min(u_limit, sqrt(p_rated*value))"
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-012",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "permanent drift of R (stability limit about 1 % per 1000 h at P70 for thick film)",
+            "id": "overpower_mild",
+            "permanence": "permanent",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "sim_response": "flag WARNING",
+            "status": "unknown",
+            "trigger": "P > P_allowed"
+          },
+          {
+            "applied_response": null,
+            "effect": "element burns open; fusible variants designed to do this",
+            "id": "overpower_open",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "flag ERROR, re-run with part open (R=1G)",
+            "status": "unknown",
+            "trigger": "P > 5x rated for several seconds (assumption)"
+          },
+          {
+            "applied_response": null,
+            "effect": "arc or breakdown of the element or body",
+            "evaluated_trigger": "abs(v) > Vmax",
+            "id": "overvoltage",
+            "permanence": "permanent",
+            "reason": null,
+            "sim_response": "flag ERROR; treat as open if abs(v) > 2*Vmax",
+            "status": "not_triggered",
+            "trigger": "abs(v) > Vmax"
+          }
+        ],
+        "observations": {
+          "P": 0.000625,
+          "Vmax": 223.60679774997897,
+          "i_A": 0.00025,
+          "i_B": -0.00025,
+          "p_rated": 5.0,
+          "power": 0.000625,
+          "t_end": 275.0,
+          "t_knee": 40.0,
+          "u_limit": 223.60679774997897,
+          "v": 2.5,
+          "v_A": 2.5,
+          "v_B": 0.0,
+          "value": 10000.0
+        },
+        "ref": "R2",
+        "reference_checks": [
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "p_rated",
+                "page": 1,
+                "scope": "Vishay CPR05 (legacy; EOL January 2016)",
+                "sources": [
+                  "https://www.vishay.com/docs/30219/cpr.pdf"
+                ],
+                "unit": "W",
+                "value": 5
+              },
+              "t_end": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "t_end",
+                "page": 2,
+                "scope": "Vishay CPR05 (legacy; EOL January 2016)",
+                "sources": [
+                  "https://www.vishay.com/docs/30219/cpr.pdf"
+                ],
+                "unit": "degC",
+                "value": 275
+              },
+              "t_knee": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "derating_knee",
+                "page": 2,
+                "scope": "Vishay CPR05 (legacy; EOL January 2016)",
+                "sources": [
+                  "https://www.vishay.com/docs/30219/cpr.pdf"
+                ],
+                "unit": "degC",
+                "value": 40
+              }
+            },
+            "expression": "P <= P_allowed",
+            "name": "power",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [
+              "power"
+            ],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "p_rated",
+                "page": 1,
+                "scope": "Vishay CPR05 (legacy; EOL January 2016)",
+                "sources": [
+                  "https://www.vishay.com/docs/30219/cpr.pdf"
+                ],
+                "unit": "W",
+                "value": 5
+              },
+              "u_limit": {
+                "basis": "DERIVED",
+                "confidence": "M",
+                "detail": "Entry explicitly states V=sqrt(P R); substitute scoped rated power and the declared instance resistance. No independent dielectric-test voltage is treated as a working rating.",
+                "expression": "sqrt(p_rated*value)",
+                "source": {
+                  "document": "COMPONENT_BEHAVIOR_SPEC.md",
+                  "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+                  "fragment_sha256": null,
+                  "line": 1035
+                },
+                "unit": "V"
+              }
+            },
+            "expression": "abs(v) <= Vmax",
+            "name": "working voltage",
+            "reason": null,
+            "spec_names": [
+              "working voltage"
+            ],
+            "status": "within_limit"
+          }
+        ],
+        "status": "unknown"
+      }
+    ],
+    "fault_requests": [],
+    "limitations": [
+      "Only the stated observations and source conditions were checked.",
+      "Unsupported class expressions and failure triggers remain unknown; no damage timing is invented.",
+      "An electrical limit check does not verify physical fit or safe operation."
+    ],
+    "status": "unknown"
+  },
+  "raw_output": "instrumented-output/OHM-012/output.txt",
+  "run_id": "behavior-20261005T065040Z",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+}

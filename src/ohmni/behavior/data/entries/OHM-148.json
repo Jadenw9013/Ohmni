@@ -1,0 +1,177 @@
+{
+  "behavior_class_ids": [
+    "BEH-FREQ-CERRES"
+  ],
+  "catalog_binding_ids": [],
+  "class_record_paths": [
+    "src/ohmni/behavior/data/classes/BEH-FREQ-CERRES.json"
+  ],
+  "component": "Ceramic resonator",
+  "entry_id": "OHM-148",
+  "fidelity": "behavioural_approximation",
+  "group": "R8",
+  "layer": "L1",
+  "research": {
+    "bench_result": null,
+    "bench_results": [
+      "bench-results/BEH-FREQ-CERRES--B1.json"
+    ],
+    "conflicts": [
+      "Characterized-40..85C MCU combination does not override consumer-series-20..80C specification."
+    ],
+    "documents": [
+      {
+        "document_id": "cstls8m00",
+        "manufacturer": "Murata",
+        "note": "Murata-authored circuit characterization hosted by Renesas;not an absolute-rating sheet.",
+        "page": null,
+        "revision": "TCD-02-2137,15November2002",
+        "source_status": "primary_source_opened",
+        "title": "CSTLS8M00G53-B0 technical data applied to HD6437049",
+        "url": "https://www.renesas.com/en/document/rep/tcd-02-2137"
+      },
+      {
+        "document_id": "cstlsg",
+        "manufacturer": "Murata",
+        "note": "Primary HTML series table;non-paginated.",
+        "page": null,
+        "revision": "Undated,opened2026-10-05",
+        "source_status": "primary_source_opened",
+        "title": "CSTLS_G consumer series",
+        "url": "https://www.murata.com/en-us/products/timingdevice/ceralock/overview/lineup/cstlsg"
+      }
+    ],
+    "entry_id": "OHM-148",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "reference_part",
+        "page": 1,
+        "scope": "CSTLS8M00G53-B0 withHD6437049 only",
+        "sources": [
+          "https://www.renesas.com/en/document/rep/tcd-02-2137"
+        ],
+        "unit": null,
+        "value": "CSTLS8M00G53-B0"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "built_in_load_capacitance_typical",
+        "page": 3,
+        "scope": "CSTLS8M00G53-B0 withHD6437049 only; each C1/C2 to common,not motional capacitance",
+        "sources": [
+          "https://www.renesas.com/en/document/rep/tcd-02-2137"
+        ],
+        "unit": "pF",
+        "value": 15
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "characterized_mcu_supply_range",
+        "page": 3,
+        "scope": "CSTLS8M00G53-B0 withHD6437049 only; MCU supply,not resonator terminal absolute rating",
+        "sources": [
+          "https://www.renesas.com/en/document/rep/tcd-02-2137"
+        ],
+        "unit": "V",
+        "value": [
+          4,
+          5.5
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "characterized_ambient_range",
+        "page": 3,
+        "scope": "CSTLS8M00G53-B0 withHD6437049 only; particular test setup,not general rating",
+        "sources": [
+          "https://www.renesas.com/en/document/rep/tcd-02-2137"
+        ],
+        "unit": "C",
+        "value": [
+          -40,
+          85
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "series_operating_ambient_range",
+        "page": null,
+        "scope": "CSTLS_G consumer series,conservative general range",
+        "source_locator": "Product status / CSTLS_G table",
+        "sources": [
+          "https://www.murata.com/en-us/products/timingdevice/ceralock/overview/lineup/cstlsg"
+        ],
+        "unit": "C",
+        "value": [
+          -20,
+          80
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "series_frequency_tolerance_magnitude",
+        "page": null,
+        "scope": "consumer series",
+        "source_locator": "Product status / CSTLS_G table",
+        "sources": [
+          "https://www.murata.com/en-us/products/timingdevice/ceralock/overview/lineup/cstlsg"
+        ],
+        "unit": "percent",
+        "value": 0.5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "series_frequency_shift_temperature_magnitude",
+        "page": null,
+        "scope": "excludes47pFtypewhichis-0.4..+0.2",
+        "source_locator": "Product status / CSTLS_G table",
+        "sources": [
+          "https://www.murata.com/en-us/products/timingdevice/ceralock/overview/lineup/cstlsg"
+        ],
+        "unit": "percent",
+        "value": 0.2
+      }
+    ],
+    "remaining_open_items": [
+      "No opened rating sheet establishes drive ceiling,terminal voltage,current or ESR for this exact part.",
+      "MotionalC1/C0 assumptions and numeric package-pin assignment remain unresolved; characterization diagram gives circuit roles only."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [
+      "Missing rating-critical drive limit and primary terminal map; no sourced runtime binding."
+    ],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-148.md",
+      "document_sha256": "6583a5e398bb66a7c7f98de6568eb342ad79a0dc430be6f1581d85ff09767e8c",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
+  "resolution_ids": [],
+  "schema_version": 1,
+  "simulation_disposition": "simulable",
+  "simulation_reason": "The canonical class provides an L1/L2 model; fidelity and assumptions remain explicit.",
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "8dee4be69b7de61b3e27c9443826415d8648a0cfa4000a2f0c5a42a240248c01",
+    "line": 166
+  },
+  "status": "partial"
+}

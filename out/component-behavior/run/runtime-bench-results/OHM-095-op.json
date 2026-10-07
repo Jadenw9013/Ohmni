@@ -1,0 +1,83 @@
+{
+  "analysis": "op",
+  "circuit_hash": "ccfdb2d72f3e25d128adc811b0db2b6b9d3ef41e7bca57457299fc25ab80716c",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "base_current": 0.0009486832980505137,
+    "kind": "interval",
+    "maximum": 250.0,
+    "minimum": 100.0,
+    "observable": "current_gain",
+    "source_facts": {
+      "gain_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "dc_gain_maximum_16_bin",
+        "page": 6,
+        "scope": "BCX56-16 only; VCE2 V, IC150 mA, Tamb25 C; no pulse footnote on this row",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BCX56_SER.pdf"
+        ],
+        "unit": "1",
+        "value": 250
+      },
+      "gain_min": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "dc_gain_minimum_16_bin",
+        "page": 6,
+        "scope": "BCX56-16 only; VCE2 V, IC150 mA, Tamb25 C; no pulse footnote on this row",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BCX56_SER.pdf"
+        ],
+        "unit": "1",
+        "value": 100
+      },
+      "gain_test_ic": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "dc_gain_test_collector_current",
+        "page": 6,
+        "scope": "BCX56-16 only; hFE test condition at Tamb25 C; no pulse footnote on this row",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BCX56_SER.pdf"
+        ],
+        "unit": "A",
+        "value": 0.15
+      },
+      "gain_test_vce": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "dc_gain_test_collector_voltage",
+        "page": 6,
+        "scope": "BCX56-16 only; hFE test condition at Tamb25 C; no pulse footnote on this row",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BCX56_SER.pdf"
+        ],
+        "unit": "V",
+        "value": 2
+      }
+    }
+  },
+  "entry_id": "OHM-095",
+  "entry_research_sha256": "d929aedfc54a40e154018dbd57458c1c7916cfece4e422862afee47c4cc068f9",
+  "limits": "One-point DC gain-bin check using a geometric-mean BF and assumed IS. Does not validate gain roll-off, transient response, temperature behavior, ratings or SOA.",
+  "netlist_sha256": "81bd9763903dc33db1bd732927e65476eb1358b1f2bf389c1082853e217ece02",
+  "observation_status": "ran",
+  "observed": 158.11388300841898,
+  "output_sha256": "a6fe0e2e8786d0ab692acab3a4c4150467e51a46dcc56e93ebb5b468482a09b9",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-06T07:27:41Z",
+  "raw_output": "runtime-bench-output/OHM-095-op/output.txt",
+  "recipe_source_sha256": "eaa714ff1b2ed130d1338d42429ff173a92033ed3e3c84b5eea55862c709fd33",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "version_file": "runtime-bench-output/OHM-095-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sun Mar 31 20:15:14 UTC 2024\n******\n",
+  "version_sha256": "d18ced87a01768ec53b4682c549f1182be38030c71159f071a008b747a8f04be"
+}

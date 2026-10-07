@@ -1,0 +1,264 @@
+{
+  "comparison": {
+    "comparison": {
+      "current": 5.0,
+      "kind": "interval",
+      "maximum": 0.029,
+      "minimum": 0,
+      "observable": "dc_resistance",
+      "source_facts": {
+        "irms": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "detail": null,
+          "field": "rated_current",
+          "page": 1,
+          "scope": "2107-V-RC; 2107 row with V mounting suffix per ordering note; 30 C maximum temperature rise",
+          "sources": [
+            "https://www.bourns.com/docs/product-datasheets/2100_series.pdf"
+          ],
+          "unit": "A",
+          "value": 5
+        },
+        "rdc_max": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "converted_unit": "ohm",
+          "converted_value": 0.029,
+          "detail": null,
+          "field": "maximum_dcr",
+          "page": 1,
+          "scope": "2107-V-RC; 2107 row with V mounting suffix per ordering note",
+          "sources": [
+            "https://www.bourns.com/docs/product-datasheets/2100_series.pdf"
+          ],
+          "unit": "ohm",
+          "value": 0.029
+        }
+      }
+    },
+    "observed": 0.028999999999999998,
+    "passed": true
+  },
+  "entry_id": "OHM-049",
+  "limits": "Same limited analytical contract with zero-volt current probes. Missing thermal context and unsupported failure rules remain unknown.",
+  "netlist_sha256": "c6fd077ca5f74f3e9bd2d8426854daf59ab8116ad52d953c7235b6c000270ef2",
+  "observation_status": "ran",
+  "output_sha256": "fb2d80d30e9baee400ab097ca089eab03cbbea5aa330ecc2171a05bf46ec59c5",
+  "ran_at": "2026-10-05T22:49:04Z",
+  "rating_status": "unknown",
+  "ratings": {
+    "components": [
+      {
+        "class_checks": [
+          {
+            "check": "max(abs(i)) <= Isat",
+            "condition": "inductance drop per datasheet",
+            "name": "saturation_current",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "bbbc3f111bfa5b4829006e8f085639b64c83bd746d6f007d83d4fd1f1d541a0e",
+              "line": 2448
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "Isat",
+            "unit": "A",
+            "value": "per_part"
+          },
+          {
+            "check": "rms(i) <= Irms if Ta<=25 else Irms*sqrt((Tmax-Ta)/dT_rated)",
+            "condition": "dT_rated rise at 25 C ambient",
+            "name": "heating_current",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "bbbc3f111bfa5b4829006e8f085639b64c83bd746d6f007d83d4fd1f1d541a0e",
+              "line": 2448
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "Irms",
+            "unit": "A",
+            "value": "per_part"
+          },
+          {
+            "check": "Ta + dT <= Tmax",
+            "condition": "ambient plus self heating",
+            "name": "part_temperature",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "bbbc3f111bfa5b4829006e8f085639b64c83bd746d6f007d83d4fd1f1d541a0e",
+              "line": 2448
+            },
+            "source_ref": "S2",
+            "status": "unknown",
+            "symbol": "Tmax",
+            "unit": "degC",
+            "value": "per_part"
+          },
+          {
+            "check": "f <= 0.5*SRF",
+            "condition": "ASSUMPTION",
+            "name": "frequency",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "bbbc3f111bfa5b4829006e8f085639b64c83bd746d6f007d83d4fd1f1d541a0e",
+              "line": 2448
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "f",
+            "unit": "Hz",
+            "value": "0.5*SRF"
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-049",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "L collapses to LR*L0",
+            "id": "saturation",
+            "permanence": "recoverable",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "nonlinear model; WARN at 0.9*Isat, ERROR at 1.5*Isat",
+            "status": "unknown",
+            "trigger": "abs(i) > Isat"
+          },
+          {
+            "applied_response": null,
+            "effect": "insulation or solder failure, open winding",
+            "id": "overheat",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "ERROR; replace by open (1G) after Tmax+20 K",
+            "status": "unknown",
+            "trigger": "Ta + dT > Tmax"
+          },
+          {
+            "applied_response": null,
+            "effect": "capacitive behaviour",
+            "id": "above_srf",
+            "permanence": "recoverable",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "Cp in model; WARN above 0.5*SRF",
+            "status": "unknown",
+            "trigger": "f > SRF"
+          }
+        ],
+        "observations": {
+          "L_at_rated": 2.28e-05,
+          "cp": 8e-12,
+          "cp_placeholder_pf": 8.0,
+          "dT_rated": 30.0,
+          "drop": 0.3090909090909091,
+          "i_A": 5.0,
+          "i_B": -5.0,
+          "irms": 5.0,
+          "isat": 5.0,
+          "lr": 0.05,
+          "power": 0.725,
+          "rdc": 0.029,
+          "rdc_max": 0.029,
+          "rp": 1000000000.0,
+          "tmax_part": 105.0,
+          "v_A": 0.145,
+          "v_B": 0.0,
+          "value": 3.2999999999999996e-05
+        },
+        "ref": "U1",
+        "reference_checks": [
+          {
+            "evidence": {
+              "irms": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "rated_current",
+                "page": 1,
+                "scope": "2107-V-RC; 2107 row with V mounting suffix per ordering note; 30 C maximum temperature rise",
+                "sources": [
+                  "https://www.bourns.com/docs/product-datasheets/2100_series.pdf"
+                ],
+                "unit": "A",
+                "value": 5
+              }
+            },
+            "expression": "abs(i_A) <= irms",
+            "name": "heating current",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "isat": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "rated_current",
+                "page": 1,
+                "scope": "2107-V-RC; 2107 row with V mounting suffix per ordering note; 30 C maximum temperature rise",
+                "sources": [
+                  "https://www.bourns.com/docs/product-datasheets/2100_series.pdf"
+                ],
+                "unit": "A",
+                "value": 5
+              }
+            },
+            "expression": "abs(i_A) <= isat",
+            "name": "saturation current",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "tmax_part": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "maximum_operating_temperature",
+                "page": 1,
+                "scope": "2100 series",
+                "sources": [
+                  "https://www.bourns.com/docs/product-datasheets/2100_series.pdf"
+                ],
+                "unit": "C",
+                "value": 105
+              }
+            },
+            "expression": "Tamb+dT <= tmax_part",
+            "name": "part temperature",
+            "reason": "Self-heating and source thermal context are unavailable",
+            "spec_names": [],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      }
+    ],
+    "fault_requests": [],
+    "limitations": [
+      "Only the stated observations and source conditions were checked.",
+      "Unsupported class expressions and failure triggers remain unknown; no damage timing is invented.",
+      "An electrical limit check does not verify physical fit or safe operation."
+    ],
+    "status": "unknown"
+  },
+  "raw_output": "instrumented-output/OHM-049/output.txt",
+  "run_id": "behavior-20261005T065040Z",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+}

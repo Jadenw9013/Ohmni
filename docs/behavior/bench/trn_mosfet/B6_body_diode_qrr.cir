@@ -1,0 +1,37 @@
+* BEH-TRN-MOSFET B6: body-diode reverse recovery, IRFZ44N_R6, IF ~ 24 A, di/dt = 100 A/us (Infineon IRFZ44NPbF typical: trr 63 ns, Qrr 170 nC)
+* v2: absolute include path made relative; meas results (printed with from=/to=/at= fields) re-exported as qrr_a_nc, qrr_b_nc, irrm_a_a, irrm_b_a (positive nC / A magnitudes)
+* Method: IF ~24 A ramps down at di/dt = 100 A/us through L=0.2 uH with -20 V; Qrr = integral of the negative part of the current, window 0.4..0.8 us.
+* Datasheet-implied: Qrr 170 nC.  TT = 14 ns was found by trial (TT=0 gives 140 nC from the 1.5 nF junction-capacitance ringing alone, so the window is
+* NOT a clean Qrr: this is a behavioural fit of the integral, not of the waveform shape).  Expected case A: 170 nC, tolerance 15 %.
+* Case B uses TT=0: ~115 nC from junction capacitance only.  Peak reverse current irr: datasheet-implied ~5.4 A (2*Qrr/trr); the model gives ~2 A. Known mismatch.
+.include models_mosfet_r6fit.lib
+X1 d g s IRFZ44N_R6 BVDSS=55
+Rg0 g s 0.01
+Vs1 sw 0 pwl(0 0 1n 20 0.255u 20 0.2551u -20 5u -20)
+L1 sw s 0.2u
+Vdd d 0 0
+.model DB0 D(IS=1.015e-14 N=1.2 RS=0.008 TT=0 CJO=1545p VJ=0.8 M=0.5 BV=55)
+Vs2 sw2 0 pwl(0 0 1n 20 0.255u 20 0.2551u -20 5u -20)
+L2 sw2 s2 0.2u
+D2 s2 d2 DB0
+Vdd2 d2 0 0
+.tran 0.5n 1.2u
+.control
+set noaskquit
+run
+let i1 = i(Vdd)
+let i2 = i(Vdd2)
+let ineg1 = (i1 - abs(i1))/2
+let ineg2 = (i2 - abs(i2))/2
+meas tran qrr_A integ ineg1 from=0.4u to=0.8u
+meas tran qrr_B integ ineg2 from=0.4u to=0.8u
+meas tran irrm_A min i1
+meas tran irrm_B min i2
+let qrr_a_nc = -qrr_A*1e9
+let qrr_b_nc = -qrr_B*1e9
+let irrm_a_a = -irrm_A
+let irrm_b_a = -irrm_B
+print qrr_a_nc qrr_b_nc irrm_a_a irrm_b_a
+quit
+.endc
+.end

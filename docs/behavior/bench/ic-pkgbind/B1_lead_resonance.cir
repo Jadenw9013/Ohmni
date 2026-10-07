@@ -1,0 +1,23 @@
+* BEH-IC-PKGBIND B1: bond-wire/lead inductance + pad capacitance resonance.
+* v2: removed 'print fpk fexp vpk' (it printed fpk a second time, making the name duplicate and dropped); scalars f0_hz (peak of the swept response) and f0_formula_hz printed as 'name = value'; circuit and sweep unchanged
+* One DIP-class signal lead: L_lead = 5 nH (mid of AN-1205 MDIP 3..7 nH row), pin+pad C = Cin 5 pF (HC input cap, assumption midpoint 3..10 pF) + C_pkg 0.85 pF (MDIP row 0.7..1.0 pF mid)
+* Drive: 1 V ac through 1 ohm; probe node 'pad' (series L, shunt C -> LC resonance peak)
+* Analytic: f0 = 1/(2*pi*sqrt(L*C)) , L=5e-9, C=5.85e-12  -> 930.7 MHz ; Q = sqrt(L/C)/R_total = 29.2/ (1+0.1)= ~26.5 (peaking)
+Vs src 0 dc 0 ac 1
+Rs src a 1
+Llead a b 5n
+Rlead b pad 0.1
+Cpad pad 0 5.85p
+.ac dec 400 1Meg 10G
+.control
+set noaskquit
+run
+meas ac vpk max vdb(pad)
+meas ac fpk when vdb(pad)=vpk cross=1
+let fexp = 1/(2*3.14159265*sqrt(5e-9*5.85e-12))
+let f0hz = fpk
+echo f0_hz = $&f0hz
+echo f0_formula_hz = $&fexp
+quit
+.endc
+.end

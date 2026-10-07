@@ -1,0 +1,19 @@
+* BEH-IC-LOGIC-HC B3: supply current vs frequency. Inverter, Vcc=4.5 V, 1 MHz square input, CL = 50 pF.
+* v2: scalar printed as 'name = value' (icc_ua_val); behavior unchanged
+* Analytic: ICC = icc0 + (Cpd+CL)*Vcc*f = 2u + (20p+50p)*4.5*1e6 = 317 uA (Cpd=20 pF from SCLS181H)
+.include hc_gates.lib
+Vcc vcc 0 4.5
+Vsense vcc vdd 0
+Vin in 0 pulse(0 4.5 0 2n 2n 498n 1u)
+X1 in y vdd 0 hc_inv
+Cl y 0 50p
+.tran 1n 20u
+.control
+set noaskquit
+run
+meas tran icc avg i(Vsense) from=5u to=20u
+let iccu = abs(icc)*1e6
+echo icc_ua_val = $&iccu
+quit
+.endc
+.end

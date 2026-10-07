@@ -1,0 +1,191 @@
+
+Note: No compatibility mode selected!
+
+
+Circuit: ohmni sourced behavior circuit
+
+Doing analysis at TEMP = 25.000000 and TNOM = 25.000000
+
+
+No. of Data Rows : 1
+	Node                                  Voltage
+	----                                  -------
+	----	-------
+	xc2.ai                           1.140548e+00
+	n3                               4.500000e+00
+	n1                               1.140548e+00
+	n6                               5.000000e+00
+
+	Source	Current
+	------	-------
+
+	vsource6#branch                  -5.00000e-03
+	v.xc2.vsn#branch                 5.000000e-03
+
+ Diode models (Junction Diode model)
+      model                  dled
+
+      level                     1
+         is               1.5e-13
+        jsw                     0
+         rs                     4
+        trs                     0
+       trs2                     0
+          n                   1.8
+         ns                     1
+         tt                     0
+       ttt1                     0
+       ttt2                     0
+        cjo                 3e-11
+         vj                     1
+          m                   0.5
+        tm1                     0
+        tm2                     0
+        cjp                     0
+        php                     1
+       mjsw                  0.33
+        ikf                     0
+        ikr                     0
+        nbv                   1.8
+       area                     1
+         pj                     0
+       tlev                     0
+      tlevc                     0
+         eg                  1.11
+        xti                     3
+        cta                     0
+        ctp                     0
+        tpb                     0
+       tphp                     0
+       jtun                     0
+     jtunsw                     0
+       ntun                    30
+     xtitun                     3
+        keg                     1
+         kf                     0
+         af                     1
+         fc                   0.5
+        fcs                   0.5
+         bv                     0
+        ibv                 0.001
+        tcv                     0
+        isr                 1e-14
+         nr                     2
+     fv_max                 1e+99
+     bv_max                 1e+99
+     id_max                 1e+99
+     te_max                 1e+99
+     pd_max                 1e+99
+       rth0                     0
+       cth0                 1e-05
+         lm                     0
+         lp                     0
+         wm                     0
+         wp                     0
+        xom                 1e-06
+        xoi                 1e-06
+         xm                     0
+         xp                     0
+
+ Resistor models (Simple linear resistor)
+      model                     R
+
+        rsh                     0
+     narrow                     0
+      short                     0
+        tc1                     0
+        tc2                     0
+        tce                     0
+       defw                 1e-05
+          l                 1e-05
+         kf                     0
+         af                     0
+          r                     0
+     bv_max                 1e+99
+         lf                     1
+         wf                     1
+         ef                     1
+
+ ASRC: Arbitrary Source 
+     device              b.xc2.bc
+      dtemp                     0
+          i            0.00500001
+          v                   4.5
+   pos_node                     3
+   neg_node                     0
+
+ Diode: Junction Diode model
+     device            d.xc2.dled
+      model                  dled
+    thermal                     0
+         vd               1.12055
+         id            0.00500001
+         gd              0.108116
+         cd            6.8754e-11
+
+ Isource: Independent current source
+     device          iexcitation1
+         dc                 0.005
+          m                     1
+      acmag                     0
+      pulse         -
+        sin         -
+        exp         -
+        pwl         -
+       sffm         -
+         am         -
+    trnoise         -
+   trrandom         -
+          v               1.14055
+          p           -0.00570274
+    current                 0.005
+
+ Resistor: Simple linear resistor
+     device                   rc1
+      model                     R
+ resistance                   100
+         ac                   100
+      dtemp                     0
+     bv_max                 1e+99
+      noisy                     1
+          i                 0.005
+          p            0.00250001
+
+ Vsource: Independent voltage source
+     device             v.xc2.vsn              vsource6
+         dc                     0                     5
+      acmag                     0                     0
+      pulse         -         -
+        sin         -         -
+        exp         -         -
+        pwl         -         -
+       sffm         -         -
+         am         -         -
+    trnoise         -         -
+   trrandom         -         -
+    portnum                     0                     0
+         z0                     0                     0
+        pwr                     0                     0
+       freq                     0                     0
+      phase                     0                     0
+          i                 0.005                -0.005
+          p                     0                -0.025
+
+
+
+Total analysis time (seconds) = 0.001
+
+Total elapsed time (seconds) = 0.003 
+
+Total DRAM available = 8031.117 MB.
+DRAM currently available = 6846.949 MB.
+Maximum ngspice program size =   21.375 MB.
+Current ngspice program size =   12.059 MB.
+
+Shared ngspice pages =   10.066 MB.
+Text (code) pages =    6.156 MB.
+Stack = 0 bytes.
+Library pages =    2.121 MB.
+
+Warning: no nodes given: .print op
+Using SPARSE 1.3 as Direct Linear Solver

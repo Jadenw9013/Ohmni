@@ -149,13 +149,15 @@ export function scopeHtml(simulation) {
     if (!simulation || typeof simulation !== "object") {
         return `<h3>Power-on behaviour</h3><p class="panel-note">No simulation was attempted for this design.</p>`;
     }
-    const plot = scopeSvg(simulation.transient);
+    const plot = simulation.status === "OK" ? scopeSvg(simulation.transient) : null;
+    const violation = simulation.rating_status === "violation"
+        ? `<p class="panel-note" role="alert" data-rating-status="violation">Rating violation: ${escapeHtml(simulation.rating_detail || "A sourced component limit was exceeded.")}</p>` : "";
     const limitation = simulation.limitation
         ? `<p class="fineprint">${escapeHtml(simulation.limitation)}</p>` : "";
     if (!plot) {
         const status = String(simulation.status || "UNKNOWN");
         const because = simulation.detail ? ` ${escapeHtml(simulation.detail)}` : "";
-        return `<h3>Power-on behaviour</h3>
+        return `<h3>Power-on behaviour</h3>${violation}
             <p class="panel-note">No curve was produced: the simulator reported
             <strong>${escapeHtml(status)}</strong>.${because}</p>
             <p class="fineprint">A missing simulation is not a passed one. Nothing on this
@@ -164,7 +166,7 @@ export function scopeHtml(simulation) {
     const transient = simulation.transient;
     const thinned = transient.decimated_from
         ? ` Thinned from ${transient.decimated_from} simulator steps.` : "";
-    return `<h3>Power-on behaviour</h3>
+    return `<h3>Power-on behaviour</h3>${violation}
         <p class="panel-note">What the voltages do in the first moments after power is applied,
         from <code>${escapeHtml(transient.analysis || "a transient analysis")}</code> over
         ${transient.sample_count} samples.${escapeHtml(thinned)}</p>

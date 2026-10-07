@@ -1,0 +1,21 @@
+* B2 BEH-CON-SD card supply sag: 3.3 V regulator with Rout and current limit feeding a card load step
+* v2: no functional change (vfinal already printed once by meas)
+* card load 100 mA (default mode max) and 200 mA (high-speed max), Transcend SDXC sheet Rev 1.0
+* regulator (behavioural): Ireg = min(Ilim, (3.3-v)/Rout) ; bulk cap 10 u with 20 mohm ESR
+* Case A Rout=0.5 ohm, Ilim=500 mA, load 200 mA: steady V = 3.3 - 0.2*0.5 = 3.2 V (above 2.7 V min)
+* Case B (B2b.cir) Ilim=150 mA < 200 mA load: regulator saturates, rail collapses until the card load, modelled as constant current above 1.5 V and linear (I = 0.2*v/1.5) below, equals 0.15 A.
+*   analytical: v = Ilim*1.5/Iload = 1.125 V (the 1.5 V knee is an ASSUMPTION of the load model, not a card parameter)
+.param Rout=0.5 Ilim=0.5 Iload=0.2
+Bload vcc 0 I = {Iload}*min(1, v(vcc)/1.5)
+Breg 0 vcc I = min({Ilim}, (3.3-v(vcc))/{Rout})
+Cb vcc e 10u
+Resr e 0 20m
+Rleak vcc 0 10meg
+.ic v(vcc)=3.3
+.tran 10u 5m uic
+.control
+run
+meas tran vfinal find v(vcc) at=5m
+meas tran vmin min v(vcc)
+.endc
+.end

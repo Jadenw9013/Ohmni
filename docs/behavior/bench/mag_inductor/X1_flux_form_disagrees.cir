@@ -1,0 +1,22 @@
+X1 NEGATIVE RESULT: ngspice 42 'flux=' behavioural inductor with flux = L0*Ia*tanh(i/Ia) did NOT reproduce v = dlambda/dt = L0*sech^2(i/Ia)*di/dt.
+* v2: added a positive-control L=expr inductor (I2/L2, independent branch; L1 branch unchanged) and scalars x1_vc_lexpr_a/b, x1_flux_a/b and flag x1_flux_agrees. The flux= form still disagrees by design (this deck documents that).
+* Current ramp 4000 A/s ; L0=1u, Ia=2 A. Expected v(i=2A)=1u*sech^2(1)*4000 = 1.680 mV, v(i=3.6A)=0.414 mV.
+* Measured with flux= form: 6.09 mV and 7.57 mV (wrong). The L='expr' form gives 1.680 mV and 0.414 mV (right) and is the one used by the OHMNI model.
+I1 0 n PWL(0 0 1m 0 2m 4)
+L1 n 0 flux='1u*2*tanh(i(L1)/2)'
+* positive control (added): same ramp into an L=expr inductor, the form used by the OHMNI models: v = L0 sech^2(i/Ia) di/dt
+I2 0 n2 PWL(0 0 1m 0 2m 4)
+L2 n2 0 L='1u/cosh(i(L2)/2)**2'
+.tran 1u 2m
+.control
+run
+meas tran x1_flux_a find v(n) at=1.5m
+meas tran x1_flux_b find v(n) at=1.9m
+meas tran x1_vc_lexpr_a find v(n2) at=1.5m
+meas tran x1_vc_lexpr_b find v(n2) at=1.9m
+* flag: 1 only if the flux= form reproduces the analytic 1.680 mV and 0.414 mV within 5 %
+let x1_flux_agrees = (abs(x1_flux_a-1.679897e-03) lt 0.05*1.679897e-03) * (abs(x1_flux_b-4.142335e-04) lt 0.05*4.142335e-04)
+print x1_flux_agrees
+quit
+.endc
+.end

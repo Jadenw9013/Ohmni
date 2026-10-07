@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "kind": "stage1_resolutions",
+  "resolutions": [
+    {
+      "resolution_id": "POLARITY-CAN-NEGATIVE-STRIPE",
+      "kind": "label",
+      "entry_ids": ["OHM-029", "OHM-030", "OHM-031", "OHM-032", "OHM-040"],
+      "subject": "Aluminum, polymer-can, and supercapacitor stripe meaning",
+      "action": "Bind the sleeve stripe label to the negative electrical terminal independently of tantalum markings.",
+      "data": {"marking": "negative_stripe", "electrical_role": "MINUS"},
+      "changes_electrical_truth": false,
+      "gate_required": false
+    },
+    {
+      "resolution_id": "POLARITY-TANTALUM-POSITIVE-BAR",
+      "kind": "label",
+      "entry_ids": ["OHM-033", "OHM-034", "OHM-035", "OHM-036"],
+      "subject": "Tantalum bar meaning",
+      "action": "Bind the molded tantalum bar label to the positive electrical terminal independently of can stripes.",
+      "data": {"marking": "positive_bar", "electrical_role": "PLUS"},
+      "changes_electrical_truth": false,
+      "gate_required": false
+    },
+    {
+      "resolution_id": "BRIDGE-PIN-FUNCTIONS-UNRESOLVED",
+      "kind": "blocker",
+      "entry_ids": ["OHM-071", "OHM-072"],
+      "subject": "Bridge rectifier PLUS, MINUS, AC1, and AC2 terminal positions",
+      "action": "Keep automatic electrical binding blocked until a manufacturer drawing establishes PLUS and MINUS; AC1 and AC2 may interchange only afterward.",
+      "data": {"automatic_binding": "blocked", "missing_evidence": "manufacturer terminal-function drawing"},
+      "changes_electrical_truth": true,
+      "gate_required": true
+    },
+    {
+      "resolution_id": "PLCC28-REFERENCE-LABEL",
+      "kind": "label",
+      "entry_ids": ["OHM-135"],
+      "subject": "PLCC-28 reference candidate",
+      "action": "Keep P89LPC935 as the PLCC-28 reference and exclude AT27C256R from this entry because it is PLCC-32.",
+      "data": {"reference": "P89LPC935", "excluded_reference": "AT27C256R", "excluded_package": "PLCC-32"},
+      "changes_electrical_truth": false,
+      "gate_required": false
+    },
+    {
+      "resolution_id": "BGA-WLCSP-TOP-VIEW-TRANSFORM",
+      "kind": "permutation",
+      "entry_ids": ["OHM-136", "OHM-137", "OHM-138", "OHM-139", "OHM-140"],
+      "subject": "BGA and WLCSP datasheet bottom-view coordinates",
+      "action": "Transform a datasheet bottom view into the OHMNI top-view convention exactly once by mirroring X; retain ball names.",
+      "data": {"source_view": "bottom", "target_view": "top", "transform": "mirror_x"},
+      "changes_electrical_truth": false,
+      "gate_required": false
+    },
+    {
+      "resolution_id": "XT-FOOTPRINT-PAD-PERMUTATION",
+      "kind": "permutation",
+      "entry_ids": ["OHM-173", "OHM-174"],
+      "subject": "XT package terminals versus footprint pads",
+      "action": "Map OHMNI terminal 1 at -X to footprint pad 2 and terminal 2 at +X to footprint pad 1; leave polarity unbound.",
+      "data": {"package_terminal_to_footprint_pad": {"1": "2", "2": "1"}, "polarity": "unbound"},
+      "changes_electrical_truth": false,
+      "gate_required": false
+    },
+    {
+      "resolution_id": "REFERENCE-DIMENSION-COMPATIBILITY-POLICY",
+      "kind": "policy",
+      "entry_ids": ["OHM-103", "OHM-104", "OHM-105", "OHM-106", "OHM-107", "OHM-108", "OHM-109", "OHM-110", "OHM-111", "OHM-112", "OHM-113", "OHM-114", "OHM-115", "OHM-116", "OHM-117", "OHM-118", "OHM-119", "OHM-120", "OHM-121", "OHM-122", "OHM-123", "OHM-124", "OHM-125", "OHM-126", "OHM-127", "OHM-128", "OHM-129", "OHM-130", "OHM-131", "OHM-132", "OHM-133", "OHM-134", "OHM-135", "OHM-136", "OHM-137", "OHM-138", "OHM-139", "OHM-140"],
+      "subject": "Reference-part package dimensions versus 3D package dimensions",
+      "action": "Record exact, compatible_variant, or mismatch per reference binding; mismatch blocks automatic footprint and 3D selection without changing either source.",
+      "data": {"allowed_labels": ["exact", "compatible_variant", "mismatch"], "mismatch_action": "block_automatic_selection"},
+      "changes_electrical_truth": false,
+      "gate_required": false
+    }
+  ]
+}

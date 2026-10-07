@@ -1,0 +1,24 @@
+* BEH-DIO-TVS B2: 10/1000 us style exponential surge into a 15 V rail protected by SMBJ15A model
+* Source 100 V peak behind Rs = 3.1 ohm -> IPP ~ (100-24.4)/3.1 = 24.4 A.  Rail load 1k.
+.subckt TVSU A K
+DF A K DFWD
+DR A K DTVS
+RLK K A 15Meg
+.model DFWD D (IS=1e-9 N=1.5 RS=0.05 CJO=800p)
+.model DTVS D (IS=1e-15 N=1 RS=0.266 BV=17.6 IBV=1m NBV=1)
+.ends
+* double exponential 10/1000 us: rise tau ~ 5 us (approx), fall 1000 us half-value time ~ 1 ms -> tau=1.44 ms
+Vs s 0 EXP(0 100 0 2.5u 5u 1.44m)
+Rs s k 3.1
+Rl k 0 1k
+X1 0 k TVSU
+.tran 1u 5m 0 1u
+.control
+run
+meas tran vclamp max v(k)
+let itvs = (v(s)-v(k))/3.1 - v(k)/1k
+meas tran ipk max itvs
+let ptvs = v(k)*itvs
+meas tran ppk max ptvs
+.endc
+.end

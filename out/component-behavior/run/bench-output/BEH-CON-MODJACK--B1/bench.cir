@@ -1,0 +1,14 @@
+* B1 RJ45 contact drop at rated current: Amphenol RJ45 series 1.5 A DC max, contact resistance 20 mohm max
+* Expected drop = 1.5*20m = 30 mV
+.param Rc=20m
+V1 s 0 5
+Rcon s n {Rc}
+Iload n 0 DC 1.5
+.control
+op
+print v(n)
+let drop = 5 - v(n)
+print drop
+quit
+.endc
+.end

@@ -1,0 +1,388 @@
+{
+  "applies_to": [
+    "OHM-104",
+    "OHM-110",
+    "OHM-114"
+  ],
+  "basis_values": [
+    "1.44/((R1+2R2)C)",
+    "DERIVED",
+    "MFR_DATASHEET",
+    "RC ln(5/3)",
+    "RC ln3",
+    "Ron-aware: tL=R2 C ln((Vh-Vd)/(Vl-Vd)), tH=ln2 (R1+R2) C",
+    "TI formula",
+    "fit"
+  ],
+  "behavior_id": "BEH-IC-TIMER555",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "Ron-aware: tL=R2 C ln((Vh-Vd)/(Vl-Vd)), tH=ln2 (R1+R2) C",
+          "measure": "f_Hz",
+          "tolerance": "1 %",
+          "value": 6658
+        },
+        {
+          "basis": "1.44/((R1+2R2)C)",
+          "measure": "f_TI_formula",
+          "tolerance": "documented -2.9 %",
+          "value": 6857
+        }
+      ],
+      "file": "docs/behavior/bench/ic-timer555/B1_astable.cir",
+      "measured_in_ngspice": 6654.1,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B1b",
+      "expected": [
+        {
+          "basis": "TI formula",
+          "measure": "f_Hz",
+          "tolerance": "1 %",
+          "value": 6857
+        }
+      ],
+      "file": "docs/behavior/bench/ic-timer555/B1b_astable_largeR.cir",
+      "measured_in_ngspice": 6863.8,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "RC ln3",
+          "measure": "width_ms",
+          "tolerance": "1 %",
+          "value": 1.0986
+        }
+      ],
+      "file": "docs/behavior/bench/ic-timer555/B2_monostable.cir",
+      "measured_in_ngspice": 1.0947,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "RC ln(5/3)",
+          "measure": "width_ms",
+          "tolerance": "1.5 %",
+          "value": 0.5108
+        }
+      ],
+      "file": "docs/behavior/bench/ic-timer555/B3_cont_pin.cir",
+      "measured_in_ngspice": 0.5073,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B4",
+      "expected": [
+        {
+          "basis": "fit",
+          "measure": "VOH_100mA",
+          "tolerance": "TI band 12.75..13.3",
+          "value": 13.3
+        }
+      ],
+      "file": "docs/behavior/bench/ic-timer555/B4_output_levels.cir",
+      "measured_in_ngspice": 13.3,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-104",
+      "OHM-110",
+      "OHM-114"
+    ],
+    "behavior_id": "BEH-IC-TIMER555",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "Ron-aware: tL=R2 C ln((Vh-Vd)/(Vl-Vd)), tH=ln2 (R1+R2) C",
+            "measure": "f_Hz",
+            "tolerance": "1 %",
+            "value": 6658
+          },
+          {
+            "basis": "1.44/((R1+2R2)C)",
+            "measure": "f_TI_formula",
+            "tolerance": "documented -2.9 %",
+            "value": 6857
+          }
+        ],
+        "file": "bench/ic-timer555/B1_astable.cir",
+        "id": "B1",
+        "measured_in_ngspice": 6654.1,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "TI formula",
+            "measure": "f_Hz",
+            "tolerance": "1 %",
+            "value": 6857
+          }
+        ],
+        "file": "bench/ic-timer555/B1b_astable_largeR.cir",
+        "id": "B1b",
+        "measured_in_ngspice": 6863.8,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "RC ln3",
+            "measure": "width_ms",
+            "tolerance": "1 %",
+            "value": 1.0986
+          }
+        ],
+        "file": "bench/ic-timer555/B2_monostable.cir",
+        "id": "B2",
+        "measured_in_ngspice": 1.0947,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "RC ln(5/3)",
+            "measure": "width_ms",
+            "tolerance": "1.5 %",
+            "value": 0.5108
+          }
+        ],
+        "file": "bench/ic-timer555/B3_cont_pin.cir",
+        "id": "B3",
+        "measured_in_ngspice": 0.5073,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "fit",
+            "measure": "VOH_100mA",
+            "tolerance": "TI band 12.75..13.3",
+            "value": 13.3
+          }
+        ],
+        "file": "bench/ic-timer555/B4_output_levels.cir",
+        "id": "B4",
+        "measured_in_ngspice": 13.3,
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "ic",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "H"
+    },
+    "failure_modes": [
+      {
+        "effect": "destroyed",
+        "id": "overvoltage",
+        "permanence": "permanent",
+        "sim_response": "ERROR",
+        "trigger": "VCC > 18 V"
+      },
+      {
+        "effect": "overheat",
+        "id": "output_overcurrent",
+        "permanence": "permanent",
+        "sim_response": "ERROR",
+        "trigger": "|IO| > 225 mA"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "no propagation delay or switching current spikes",
+        "ideal 1/3 2/3 thresholds",
+        "VOL at 100 mA underestimated",
+        "ron overstates tL for R1 of a few kohm"
+      ],
+      "netlist_template": "X{ref} {GND} {TRIG} {OUT} {RESET} {CONT} {THRES} {DISCH} {VCC} ne555 voh0={voh0} rout={rout} ron={ron}\n",
+      "spice_primitives": [
+        "R",
+        "C",
+        "B",
+        "S",
+        "I"
+      ],
+      "valid_analyses": [
+        "tran",
+        "op"
+      ],
+      "valid_range": "VCC 4.5..16 V, |Iout| <= 200 mA"
+    },
+    "parameters": {
+      "ithr": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": "100e-9",
+        "max": "250e-9",
+        "min": "30e-9",
+        "source_ref": "S1",
+        "tolerance": "",
+        "unit": "A"
+      },
+      "itrg": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": "500e-9",
+        "max": "2e-6",
+        "min": "500e-9",
+        "source_ref": "S1",
+        "tolerance": "",
+        "unit": "A"
+      },
+      "ron": {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "default": 30,
+        "max": 60,
+        "min": 10,
+        "source_ref": "S1",
+        "tolerance": "",
+        "unit": "ohm"
+      },
+      "rout": {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "default": 8,
+        "max": 12,
+        "min": 5,
+        "source_ref": "S1",
+        "tolerance": "",
+        "unit": "ohm"
+      },
+      "vcc": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 5,
+        "max": 16,
+        "min": 4.5,
+        "source_ref": "S1",
+        "tolerance": "abs max 18",
+        "unit": "V"
+      },
+      "voh0": {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "default": 0.9,
+        "max": 1.7,
+        "min": 0.5,
+        "source_ref": "S1",
+        "tolerance": "",
+        "unit": "V"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "power_in",
+        "name": "GND",
+        "package_terminal_rule": "pin 1",
+        "role": "supply"
+      },
+      {
+        "electrical_type": "input",
+        "name": "TRIG",
+        "package_terminal_rule": "pin 2",
+        "role": "signal_in"
+      },
+      {
+        "electrical_type": "output",
+        "name": "OUT",
+        "package_terminal_rule": "pin 3",
+        "role": "signal_out"
+      },
+      {
+        "electrical_type": "input",
+        "name": "RESET",
+        "package_terminal_rule": "pin 4, active low",
+        "role": "signal_in"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "CONT",
+        "package_terminal_rule": "pin 5",
+        "role": "signal_in"
+      },
+      {
+        "electrical_type": "input",
+        "name": "THRES",
+        "package_terminal_rule": "pin 6",
+        "role": "signal_in"
+      },
+      {
+        "electrical_type": "output",
+        "name": "DISCH",
+        "package_terminal_rule": "pin 7, open collector",
+        "role": "signal_out"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "VCC",
+        "package_terminal_rule": "pin 8",
+        "role": "supply"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "V(VCC)-V(GND) <= 18",
+        "condition": "abs max",
+        "name": "supply",
+        "source_ref": "S1",
+        "symbol": "VCC",
+        "unit": "V",
+        "value": 18
+      },
+      {
+        "check": "abs(I(OUT)) <= 0.225",
+        "condition": "abs max",
+        "name": "output current",
+        "source_ref": "S1",
+        "symbol": "IO",
+        "unit": "A",
+        "value": 0.225
+      },
+      {
+        "check": "Ta+P*theta_ja <= 150",
+        "condition": "",
+        "name": "junction temperature",
+        "source_ref": "S1",
+        "symbol": "Tj",
+        "unit": "C",
+        "value": 150
+      }
+    ],
+    "sources": "S1, S29",
+    "status": "complete"
+  },
+  "category": "ic",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "f137813b18bf0b9bb21eb95f62775326ed5ca786cb30f5b51453d341c2968c40",
+    "line": 7406
+  },
+  "source_refs": "S1, S29",
+  "status": "complete"
+}

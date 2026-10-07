@@ -1,0 +1,28 @@
+* BEH-IC-CHARGER-SOT235 B2: CC -> CV and precondition. Rprog=20k (Ireg=50 mA), Vin=5 V, Vbat swept 2.0..4.3 V.
+* v2: dc sweep values read with meas dc FIND AT (interpolated, no index arithmetic) and printed as scalars in mA; behavior unchanged
+* Expected: Vbat=2.5 -> Ibat = pre*Ireg = 5 mA (precondition, vptrh ASSUMED 3.0 V) ; Vbat=3.7 -> 50 mA ; Vbat=4.2 -> 0 ; Vbat=4.19 -> Ireg*tanh(0.01/(0.3*0.05)) = 50 mA * tanh(0.667) = 29.1 mA
+.include mcp73831.lib
+Vdd vdd 0 5
+Vb vbat 0 3.7
+Rprog prog 0 20k
+X1 vdd 0 prog vbat stat chg_cc_cv
+Rst stat vdd 10k
+.nodeset v(x1.tj)=30
+.control
+set noaskquit
+dc Vb 2.0 4.3 0.01
+meas dc ia find i(Vb) at=2.5
+meas dc ib find i(Vb) at=3.7
+meas dc ic find i(Vb) at=4.19
+meas dc id find i(Vb) at=4.2
+let ia_mA = ia*1000
+let ib_mA = ib*1000
+let ic_mA = ic*1000
+let id_mA = id*1000
+echo i_2p5v_pre_mA = $&ia_mA
+echo i_3p7v_cc_mA = $&ib_mA
+echo i_4p19v_mA = $&ic_mA
+echo i_4p20v_mA = $&id_mA
+quit
+.endc
+.end

@@ -1,0 +1,282 @@
+{
+  "applies_to": [
+    "OHM-068"
+  ],
+  "basis_values": [
+    "MFR_DATASHEET",
+    "datasheet max",
+    "fit",
+    "linear rZ",
+    "rZ(I) divider"
+  ],
+  "behavior_id": "BEH-DIO-ZENER",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "fit",
+          "measure": "VZ",
+          "tolerance": "10 mV",
+          "value": 5.1
+        },
+        {
+          "basis": "datasheet max",
+          "measure": "rZ",
+          "tolerance": "1 ohm",
+          "value": 35.0
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-zener/B1_vz_rz.cir",
+      "measured_in_ngspice": "5.100000 / 35.0186",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "linear rZ",
+          "measure": "Vout",
+          "tolerance": "1%",
+          "value": 5.2441
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-zener/B2_regulator.cir",
+      "measured_in_ngspice": 5.22427,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "rZ(I) divider",
+          "measure": "dVout/dVin",
+          "tolerance": "5%",
+          "value": 0.0547
+        }
+      ],
+      "file": "docs/behavior/bench/beh-dio-zener/B3_line_reg.cir",
+      "measured_in_ngspice": 0.05315,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-068"
+    ],
+    "behavior_id": "BEH-DIO-ZENER",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "fit",
+            "measure": "VZ",
+            "tolerance": "10 mV",
+            "value": 5.1
+          },
+          {
+            "basis": "datasheet max",
+            "measure": "rZ",
+            "tolerance": "1 ohm",
+            "value": 35.0
+          }
+        ],
+        "file": "bench/beh-dio-zener/B1_vz_rz.cir",
+        "id": "B1",
+        "measured_in_ngspice": "5.100000 / 35.0186",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "linear rZ",
+            "measure": "Vout",
+            "tolerance": "1%",
+            "value": 5.2441
+          }
+        ],
+        "file": "bench/beh-dio-zener/B2_regulator.cir",
+        "id": "B2",
+        "measured_in_ngspice": 5.22427,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "rZ(I) divider",
+            "measure": "dVout/dVin",
+            "tolerance": "5%",
+            "value": 0.0547
+          }
+        ],
+        "file": "bench/beh-dio-zener/B3_line_reg.cir",
+        "id": "B3",
+        "measured_in_ngspice": 0.05315,
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "diode",
+    "confidence": {
+      "failure": "L",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "overheat, usually shorts",
+        "id": "overpower",
+        "permanence": "permanent",
+        "sim_response": "WARN 80%, FAIL 100%, failed_short",
+        "trigger": "Pz above derated limit"
+      },
+      {
+        "effect": "VZ droops",
+        "id": "knee_operation",
+        "permanence": "recoverable",
+        "sim_response": "flag outside validity",
+        "trigger": "IZ < 1 mA"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "single exponential cannot fit both rZ at 5 mA and the 550 ohm knee at 1 mA",
+        "TC applied only by parameter edit per temperature step",
+        "forward and leakage parameters are assumptions"
+      ],
+      "netlist_template": ".subckt DZ_{ref} A K\nDF A K DFWD_{ref}\nDR A K DZB_{ref}\nRLK K A {RLEAK}\n.ends\n.model DFWD_{ref} D (IS=5e-9 N=1.9 RS=1.0 CJO={CJ} VJ=0.7 M=0.4 TT=50n)\n.model DZB_{ref} D (IS=1e-15 N=1 RS={RSZ} BV={VZ - IZT*RSZ} IBV={IZT} NBV={NBV})\nX{ref} {A} {K} DZ_{ref}\n",
+      "spice_primitives": [
+        "D",
+        "R"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "ac",
+        "tran",
+        "temp"
+      ],
+      "valid_range": "IZ from about 1 mA to Ptot/VZ; below 1 mA model regulates better than the part"
+    },
+    "parameters": {
+      "IZT": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.005,
+        "max": 0.1,
+        "min": 0.0001,
+        "source_ref": "S15",
+        "unit": "A"
+      },
+      "Ptot": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.5,
+        "max": 5.0,
+        "min": 0.2,
+        "source_ref": "S15",
+        "unit": "W"
+      },
+      "RthJA": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 300,
+        "max": 500,
+        "min": 50,
+        "source_ref": "S15",
+        "unit": "K/W"
+      },
+      "TC": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.0,
+        "max": 0.12,
+        "min": -0.1,
+        "source_ref": "S15",
+        "unit": "%/K"
+      },
+      "VZ": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 5.1,
+        "max": 75,
+        "min": 2.4,
+        "source_ref": "S15",
+        "tolerance": "bin 4.8-5.4 V for C5V1",
+        "unit": "V"
+      },
+      "rZ": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 35,
+        "max": 600,
+        "min": 2,
+        "source_ref": "S15",
+        "tolerance": "datasheet max",
+        "unit": "ohm"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "K",
+        "package_terminal_rule": "terminal 1 (cathode bar, -X); the end that goes positive in regulation",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "A",
+        "package_terminal_rule": "terminal 2 (anode, +X)",
+        "role": "terminal"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "VZ*IZ <= (175-Ta)/300",
+        "condition": "25 C ambient, 4 mm leads, DO-35",
+        "name": "power",
+        "source_ref": "S15",
+        "symbol": "Ptot",
+        "unit": "W",
+        "value": 0.5
+      }
+    ],
+    "sources": [
+      {
+        "date": "07-Nov-2024",
+        "id": "S15",
+        "org": "Vishay",
+        "title": "BZX55 series Zener diodes doc 85604 Rev 2.0",
+        "url": "https://www.vishay.com/docs/85604/bzx55.pdf",
+        "used_for": "VZ, rZ, TC, IR, Ptot, RthJA"
+      }
+    ],
+    "status": "partial"
+  },
+  "category": "diode",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "843325633847e92ff5cb7fdf3c1a4f594c9d11accad657bac3d0a94e6ff2462d",
+    "line": 4039
+  },
+  "source_refs": [
+    {
+      "date": "07-Nov-2024",
+      "id": "S15",
+      "org": "Vishay",
+      "title": "BZX55 series Zener diodes doc 85604 Rev 2.0",
+      "url": "https://www.vishay.com/docs/85604/bzx55.pdf",
+      "used_for": "VZ, rZ, TC, IR, Ptot, RthJA"
+    }
+  ],
+  "status": "partial"
+}

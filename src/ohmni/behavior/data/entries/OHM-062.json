@@ -1,0 +1,188 @@
+{
+  "behavior_class_ids": [
+    "BEH-DIO-PN"
+  ],
+  "catalog_binding_ids": [],
+  "class_record_paths": [
+    "src/ohmni/behavior/data/classes/BEH-DIO-PN.json"
+  ],
+  "component": "SOD-323 diode",
+  "entry_id": "OHM-062",
+  "fidelity": "behavioural_approximation",
+  "group": "R4",
+  "layer": "L1",
+  "research": {
+    "bench_result": "bench-results/BEH-DIO-PN--B1.json",
+    "bench_results": [
+      "bench-results/BEH-DIO-PN--B1.json",
+      "bench-results/BEH-DIO-PN--B2.json",
+      "bench-results/BEH-DIO-PN--B3.json",
+      "bench-results/BEH-DIO-PN--B4.json",
+      "bench-results/BEH-DIO-PN--B5.json",
+      "bench-results/BEH-DIO-PN--B6.json",
+      "bench-results/BEH-DIO-PN--B7.json"
+    ],
+    "conflicts": [
+      "BAS316 is an explicit package-matched alternative to the generic BAS16/1N4148WS placeholder. The source limit is 250 mA, while the original conservative 150 mA assumption is retained until binding."
+    ],
+    "documents": [
+      {
+        "document_id": "nexperiabas16",
+        "manufacturer": "Nexperia",
+        "note": "Primary PDF opened from the hashed archive; page numbers are PDF pages.",
+        "page": null,
+        "revision": "Rev.6, 24 September 2014; Nexperia 2017 branding",
+        "source_status": "primary_source_opened",
+        "title": "BAS16 series High-speed switching diodes",
+        "url": "https://assets.nexperia.com/documents/data-sheet/BAS16_SER.pdf"
+      }
+    ],
+    "entry_id": "OHM-062",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "reference_part",
+        "page": 3,
+        "scope": "BAS316",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAS16_SER.pdf"
+        ],
+        "unit": null,
+        "value": "BAS316"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "manufacturer_pin_roles",
+        "page": 2,
+        "scope": "BAS316; bar indicates cathode",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAS16_SER.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "1": "K",
+          "2": "A"
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "dc_reverse_voltage",
+        "page": 3,
+        "scope": "BAS316",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAS16_SER.pdf"
+        ],
+        "unit": "V",
+        "value": 100
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "continuous_forward_current",
+        "page": 4,
+        "scope": "BAS316; FR4 single-sided tin-plated standard footprint",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAS16_SER.pdf"
+        ],
+        "unit": "A",
+        "value": 0.25
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_junction_temperature",
+        "page": 4,
+        "scope": "BAS316",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAS16_SER.pdf"
+        ],
+        "unit": "C",
+        "value": 150
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_power",
+        "page": 4,
+        "scope": "BAS316; cathode solder point Tsp <=90 C; not ambient rating; FR4 PCB,single-sided copper,tin-plated,standard footprint per p4 note1",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAS16_SER.pdf"
+        ],
+        "unit": "W",
+        "value": 0.4
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "thermal_resistance_junction_solderpoint",
+        "page": 5,
+        "scope": "BAS316; cathode tab",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAS16_SER.pdf"
+        ],
+        "unit": "K/W",
+        "value": 150
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_capacitance",
+        "page": 6,
+        "scope": "BAS316; VR=0, 1 MHz; Tamb25 C source characteristics table default",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAS16_SER.pdf"
+        ],
+        "unit": "pF",
+        "value": 1.5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_forward_voltage",
+        "page": 6,
+        "scope": "BAS316; IF=10 mA; pulse <=300 us, duty <=.02; Tamb25 C source characteristics table default",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAS16_SER.pdf"
+        ],
+        "unit": "V",
+        "value": 0.855
+      }
+    ],
+    "remaining_open_items": [
+      "Solder-point temperature and actual board thermal path must be provided for thermal acceptance; no junction-to-ambient value is supplied for this variant.",
+      "Nominal I-V/recovery parameters remain proxy assumptions."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-062.md",
+      "document_sha256": "f0e4360c27927ef14af89e058876819681f06444d592bcbc20d21d655d44d302",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
+  "resolution_ids": [],
+  "schema_version": 1,
+  "simulation_disposition": "not_simulable",
+  "simulation_reason": "Required electrical or terminal evidence remains unresolved.",
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "0101a251838d0d7bdf09cce1920e32acbc09eb0c20b4f182338af621a44190be",
+    "line": 80
+  },
+  "status": "research_required"
+}

@@ -1,0 +1,211 @@
+{
+  "behavior_class_ids": [
+    "BEH-MAG-XFMR-FLYBACK"
+  ],
+  "catalog_binding_ids": [],
+  "class_record_paths": [
+    "src/ohmni/behavior/data/classes/BEH-MAG-XFMR-FLYBACK.json"
+  ],
+  "component": "Flyback transformer",
+  "entry_id": "OHM-053",
+  "fidelity": "behavioural_approximation",
+  "group": "R3",
+  "layer": "L1",
+  "research": {
+    "bench_result": "bench-results/BEH-MAG-XFMR-FLYBACK--B3.json",
+    "bench_results": [
+      "bench-results/BEH-MAG-XFMR-FLYBACK--B1.json",
+      "bench-results/BEH-MAG-XFMR-FLYBACK--B2.json",
+      "bench-results/BEH-MAG-XFMR-FLYBACK--B3.json",
+      "bench-results/BEH-MAG-XFMR-FLYBACK--B3b.json"
+    ],
+    "conflicts": [
+      "Source 12 uH / 16 A / 0.4 uH leakage differs substantially from 100 uH / 3 A / 2 uH placeholders."
+    ],
+    "documents": [
+      {
+        "document_id": "we-flyback",
+        "manufacturer": "Wuerth Elektronik",
+        "note": "Primary manufacturer content read from archived PDF, including diagrams where pin maps are claimed.",
+        "page": null,
+        "revision": "007.001, 2023-07-11",
+        "source_status": "primary_source_opened",
+        "title": "750311595 WE-FB Flyback Transformer",
+        "url": "https://www.we-online.com/katalog/datasheet/750311595.pdf"
+      }
+    ],
+    "entry_id": "OHM-053",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Schematic visually inspected; parallel pin groups must stay on the same net.",
+        "field": "winding_terminal_groups",
+        "page": 1,
+        "scope": "750311595 EFD25; manufacturer intrinsic pin numbers",
+        "sources": [
+          "https://www.we-online.com/katalog/datasheet/750311595.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "N1": {
+            "dot": [
+              1,
+              2
+            ],
+            "return": [
+              3,
+              4
+            ]
+          },
+          "N2": {
+            "dot": [
+              10,
+              11,
+              12
+            ],
+            "return": [
+              7,
+              8,
+              9
+            ]
+          },
+          "N3": {
+            "dot": [
+              5
+            ],
+            "return": [
+              6
+            ]
+          }
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "primary_inductance",
+        "page": 1,
+        "scope": "750311595 EFD25; manufacturer intrinsic pin numbers; N1, 150 kHz/100 mV, +/-10%",
+        "sources": [
+          "https://www.we-online.com/katalog/datasheet/750311595.pdf"
+        ],
+        "unit": "uH",
+        "value": 12
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "turns_ratio_N1_N2_N3",
+        "page": 1,
+        "scope": "750311595 EFD25; manufacturer intrinsic pin numbers",
+        "sources": [
+          "https://www.we-online.com/katalog/datasheet/750311595.pdf"
+        ],
+        "unit": null,
+        "value": [
+          2,
+          1,
+          0.8
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "typical_saturation_current",
+        "page": 1,
+        "scope": "750311595 EFD25; manufacturer intrinsic pin numbers; N1, |delta L/L| <20%",
+        "sources": [
+          "https://www.we-online.com/katalog/datasheet/750311595.pdf"
+        ],
+        "unit": "A",
+        "value": 16
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_winding_dcr",
+        "page": 1,
+        "scope": "750311595 EFD25; manufacturer intrinsic pin numbers; N1/N2/N3 at 20 C",
+        "sources": [
+          "https://www.we-online.com/katalog/datasheet/750311595.pdf"
+        ],
+        "unit": "ohm",
+        "value": [
+          0.015,
+          0.012,
+          0.018
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_leakage_inductance",
+        "page": 1,
+        "scope": "750311595 EFD25; manufacturer intrinsic pin numbers; N1, 100 kHz/10 mV",
+        "sources": [
+          "https://www.we-online.com/katalog/datasheet/750311595.pdf"
+        ],
+        "unit": "uH",
+        "value": 0.4
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "insulation_test_voltage",
+        "page": 1,
+        "scope": "750311595 EFD25; manufacturer intrinsic pin numbers; N1 and N3 to N2",
+        "sources": [
+          "https://www.we-online.com/katalog/datasheet/750311595.pdf"
+        ],
+        "unit": "V AC",
+        "value": 1500
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_operating_temperature",
+        "page": 1,
+        "scope": "750311595 EFD25; manufacturer intrinsic pin numbers",
+        "sources": [
+          "https://www.we-online.com/katalog/datasheet/750311595.pdf"
+        ],
+        "unit": "C",
+        "value": 125
+      }
+    ],
+    "remaining_open_items": [
+      "Core loss, thermal resistance, interwinding capacitance and working-voltage/safety-insulation limits remain unsourced.",
+      "Package pad permutation and parallel-group binding need runtime tests.",
+      "The 750871111 alternative is not established by this source."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [
+      "No safety or thermal acceptance for this transformer until working-voltage and loss limits are bound."
+    ],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-053.md",
+      "document_sha256": "eb09d3e9bcd19547899e507fde98c139b8e818551403724ecbdea0f7d9f8c9cc",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
+  "resolution_ids": [],
+  "schema_version": 1,
+  "simulation_disposition": "not_simulable",
+  "simulation_reason": "Required electrical or terminal evidence remains unresolved.",
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "dbb3ed68a64316dd38734c015170fc15cd3ba4f53d9fa4ad62f037f950c7920c",
+    "line": 71
+  },
+  "status": "research_required"
+}

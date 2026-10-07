@@ -1,0 +1,143 @@
+{
+  "behavior_class_ids": [
+    "BEH-MAG-INDUCTOR"
+  ],
+  "catalog_binding_ids": [],
+  "class_record_paths": [
+    "src/ohmni/behavior/data/classes/BEH-MAG-INDUCTOR.json"
+  ],
+  "component": "Toroidal inductor",
+  "entry_id": "OHM-049",
+  "fidelity": "behavioural_approximation",
+  "group": "R3",
+  "layer": "L1",
+  "research": {
+    "bench_result": "bench-results/BEH-MAG-INDUCTOR--B2.json",
+    "bench_results": [
+      "bench-results/BEH-MAG-INDUCTOR--B1.json",
+      "bench-results/BEH-MAG-INDUCTOR--B2.json",
+      "bench-results/BEH-MAG-INDUCTOR--B3.json",
+      "bench-results/BEH-MAG-INDUCTOR--B4.json"
+    ],
+    "conflicts": [
+      "The original 30% drop approximation is close to the nominal 22.8/33 ratio but was not a sourced exact saturation specification."
+    ],
+    "documents": [
+      {
+        "document_id": "bourns2100",
+        "manufacturer": "Bourns",
+        "note": "Primary manufacturer content read from archived PDF, including diagrams where pin maps are claimed.",
+        "page": null,
+        "revision": "07/09",
+        "source_status": "primary_source_opened",
+        "title": "2100 High Current Toroid Inductors",
+        "url": "https://www.bourns.com/docs/product-datasheets/2100_series.pdf"
+      }
+    ],
+    "entry_id": "OHM-049",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "nominal_inductance",
+        "page": 1,
+        "scope": "2107-V-RC; 2107 row with V mounting suffix per ordering note; 1 kHz",
+        "sources": [
+          "https://www.bourns.com/docs/product-datasheets/2100_series.pdf"
+        ],
+        "unit": "uH",
+        "value": 33
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "rated_current",
+        "page": 1,
+        "scope": "2107-V-RC; 2107 row with V mounting suffix per ordering note; 30 C maximum temperature rise",
+        "sources": [
+          "https://www.bourns.com/docs/product-datasheets/2100_series.pdf"
+        ],
+        "unit": "A",
+        "value": 5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "inductance_at_rated_current",
+        "page": 1,
+        "scope": "2107-V-RC; 2107 row with V mounting suffix per ordering note; +/-15% table tolerance",
+        "sources": [
+          "https://www.bourns.com/docs/product-datasheets/2100_series.pdf"
+        ],
+        "unit": "uH",
+        "value": 22.8
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_dcr",
+        "page": 1,
+        "scope": "2107-V-RC; 2107 row with V mounting suffix per ordering note",
+        "sources": [
+          "https://www.bourns.com/docs/product-datasheets/2100_series.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.029
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_operating_temperature",
+        "page": 1,
+        "scope": "2100 series",
+        "sources": [
+          "https://www.bourns.com/docs/product-datasheets/2100_series.pdf"
+        ],
+        "unit": "C",
+        "value": 105
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "rated_temperature_rise",
+        "page": 1,
+        "scope": "Bourns 2107-V-RC; at rated current; source mounting conditions apply",
+        "sources": [
+          "https://www.bourns.com/docs/product-datasheets/2100_series.pdf"
+        ],
+        "unit": "K",
+        "value": 30
+      }
+    ],
+    "remaining_open_items": [
+      "Frequency loss/SRF and thermal transient remain unknown.",
+      "A single biased-inductance row does not establish the complete saturation curve."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-049.md",
+      "document_sha256": "601f274f90898ebbfffd7146ff2a3880c425ff2e8d19775d06722306b6fd51a8",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
+  "resolution_ids": [],
+  "schema_version": 1,
+  "simulation_disposition": "simulable",
+  "simulation_reason": "The canonical class provides an L1/L2 model; fidelity and assumptions remain explicit.",
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "6c8e56d2dea8965e9f72479df4e3e42915588ce45e49d7d3e6b021cdf5662a24",
+    "line": 67
+  },
+  "status": "partial"
+}

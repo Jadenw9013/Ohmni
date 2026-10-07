@@ -1,0 +1,67 @@
+B3b RCD clamp with realistic parasitics (Cds=10p, Dsn CJO=50p, CIW=10p): informational, shows the textbook relation overpredicts clamp power (Llk=2 uH = 2% of Lp, Coss+Cp lumped 220 pF = 200 pF Cds + 20 pF)
+* v2: meas renamed fb3b_*; added textbook prediction fb3b_ptext (from measured Vc, Ipk, Vout), flag fb3b_overpredicts (1 when simulated clamp power < textbook) and scalar prints (circuit unchanged)
+* Expected: P = 1/2*Llk*Ipk^2*f * Vc/(Vc-Vor) with Vc, Ipk, Vor=(Vout+0.45)/N all measured here (value computed in report); tolerance 15%
+* OHMNI BEH-MAG-XFMR models (behavioural_approximation). Pins: p1 p2 s1 s2 (p1 and s1 are dot terminals).
+* LP = primary open-circuit inductance, N = Ns/Np, LLK = leakage seen at primary with secondary shorted.
+* RP, RS winding DC resistances. CIW = interwinding capacitance (one lumped C p1-s1 / p2-s2 split).
+* Linear coupled-inductor version (K element).
+.subckt XFMR_K p1 p2 s1 s2 LP=1m N=1 LLK=1u RP=1m RS=1m CIW=1p
+.param kk={sqrt(1-LLK/LP)}
+Rp1 p1 pa {RP}
+L1 pa p2 {LP}
+L2 sa s2 {LP*N*N}
+Rs1 s1 sa {RS}
+K12 L1 L2 {kk}
+Ciw1 p1 s1 {CIW/2}
+Ciw2 p2 s2 {CIW/2}
+.ends
+
+* Saturating version: leakage Llk in series on primary side, nonlinear magnetizing inductance across an ideal transformer.
+* ISATM = magnetizing current at which Lm has dropped by DROP (referred to primary). LR = Lsat/Lm floor.
+.subckt XFMR_SAT p1 p2 s1 s2 LP=1m N=1 LLK=1u RP=1m RS=1m CIW=1p ISATM=1 DROP=0.3 LR=0.05
+.param lmag={LP-LLK}
+.param ia={ISATM/atanh(sqrt(DROP/(1-LR)))}
+Rp1 p1 pa {RP}
+Llk pa pb {LLK}
+Lm pb p2 L='lmag*(LR+(1-LR)*(1/cosh(max(min(i(Lm)/ia,20),-20)))**2)'
+* ideal transformer v(sx,s2)=N*v(pb,p2); current N*i(Vs) forced pb->p2
+Es sx s2 pb p2 {N}
+Vs sx sb 0
+Fp pb p2 Vs {N}
+Rs1 s1 sb {RS}
+Ciw1 p1 s1 {CIW/2}
+Ciw2 p2 s2 {CIW/2}
+.ends
+
+.model SW SW(Ron=5m Roff=1G Vt=2.5 Vh=0.1)
+.model DSCH D(IS=1e-7 N=1.05 RS=20m CJO=50p)
+Vin in 0 DC 48
+Vg g 0 PULSE(0 5 0 5n 5n 2u 10u)
+X1 in d 0 sa XFMR_SAT LP=100u N=0.5 LLK=2u RP=20m RS=40m CIW=10p ISATM=3 DROP=0.3 LR=0.05
+S1 d 0 g 0 SW
+Cds d 0 10p
+Dsn d c DSCH
+Csn c in 100n
+Rsn c in 20k
+D1 sa out DSCH
+Co out 0 1u
+RL out 0 100
+.tran 100n 2.5m
+.control
+run
+let vcl = v(c)-v(in)
+let pclamp = vcl*vcl/20k
+meas tran fb3b_vdpk max v(d) from=2.2m to=2.5m
+meas tran fb3b_vout avg v(out) from=2.2m to=2.5m
+meas tran fb3b_ipk min i(Vin) from=2.2005m to=2.2021m
+meas tran fb3b_vc avg vcl from=2.2m to=2.5m
+meas tran fb3b_psn avg pclamp from=2.2m to=2.5m
+* textbook P = 1/2 Llk Ipk^2 f Vc/(Vc-Vor), Vor=(Vout+0.45)/N, from the measured Vc, Ipk, Vout of this same run
+let fb3b_vor = (fb3b_vout+0.45)/0.5
+let fb3b_ipk_a = abs(fb3b_ipk)
+let fb3b_ptext = 0.5*2u*fb3b_ipk_a*fb3b_ipk_a*100k*fb3b_vc/(fb3b_vc-fb3b_vor)
+let fb3b_overpredicts = (fb3b_psn lt fb3b_ptext)
+print fb3b_psn fb3b_ptext fb3b_overpredicts
+quit
+.endc
+.end

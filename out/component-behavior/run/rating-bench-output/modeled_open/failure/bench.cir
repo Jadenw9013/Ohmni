@@ -1,0 +1,13 @@
+OHMNI sourced behavior circuit
+.options tnom=25
+.temp 25
+Vsource3 n3 0 DC 300
+vprobe_c1_1 n3 probe_c1_1 0
+vprobe_c1_2 n1 probe_c1_2 0
+vprobe_c2_1 n1 probe_c2_1 0
+vprobe_c2_2 0 probe_c2_2 0
+Rfailure0 n3 n1 1e9
+Rfailure1 n1 0 1e9
+.op
+.print op
+.end

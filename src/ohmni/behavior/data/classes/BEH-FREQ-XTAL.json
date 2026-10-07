@@ -1,0 +1,690 @@
+{
+  "applies_to": [
+    "OHM-141",
+    "OHM-142",
+    "OHM-143",
+    "OHM-144",
+    "OHM-145"
+  ],
+  "basis_values": [
+    "ASSUMPTION",
+    "B2 loop zero",
+    "FC-135 values",
+    "KCL estimate",
+    "MFR_DATASHEET",
+    "R1",
+    "ST gm_crit 0.357 mS",
+    "ST gm_crit R1=500",
+    "fs*sqrt(1+C1/(C0+CL))",
+    "fs*sqrt(1+C1/C0)",
+    "loop Im(Z)=0"
+  ],
+  "behavior_id": "BEH-FREQ-XTAL",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "R1",
+          "measure": "zmin_ohm",
+          "tolerance": 0.5,
+          "value": 80
+        },
+        {
+          "basis": "fs*sqrt(1+C1/C0)",
+          "measure": "fa_Hz",
+          "tolerance": 100,
+          "value": 8010275
+        }
+      ],
+      "file": "docs/behavior/bench/xtal-bvd/B1.cir",
+      "measured_in_ngspice": "zmin 79.989 ohm @7.998285 MHz; fa 8010276 Hz",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "fs*sqrt(1+C1/(C0+CL))",
+          "measure": "fL_18pF_Hz",
+          "tolerance": 10,
+          "value": 8000000
+        }
+      ],
+      "file": "docs/behavior/bench/xtal-bvd/B2.cir",
+      "measured_in_ngspice": "8000000 Hz at 18 pF; 8001558 at 8 pF",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "FC-135 values",
+          "measure": "fL_32k_Hz",
+          "tolerance": 0.1,
+          "value": 32768
+        }
+      ],
+      "file": "docs/behavior/bench/xtal-bvd/B3.cir",
+      "measured_in_ngspice": "32768.0 Hz",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "P1",
+      "expected": [
+        {
+          "basis": "KCL estimate",
+          "measure": "DL_W",
+          "tolerance": "5e-6",
+          "value": 8.08e-05
+        }
+      ],
+      "file": "docs/behavior/bench/osc-pierce/B1.cir",
+      "measured_in_ngspice": "80.5e-6 W; 90pct amplitude at 2.87 ms",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "P2",
+      "expected": [
+        {
+          "basis": "loop Im(Z)=0",
+          "measure": "f_loop_Hz",
+          "tolerance": 800,
+          "value": 8000215
+        }
+      ],
+      "file": "docs/behavior/bench/osc-pierce/B2.cir",
+      "measured_in_ngspice": "8000215 Hz",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "P3",
+      "expected": [
+        {
+          "basis": "B2 loop zero",
+          "measure": "f_tran_Hz",
+          "tolerance": 800,
+          "value": 8000215
+        }
+      ],
+      "file": "docs/behavior/bench/osc-pierce/B3.cir",
+      "measured_in_ngspice": "8000474 Hz",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "P5",
+      "expected": [
+        {
+          "basis": "ST gm_crit 0.357 mS",
+          "measure": "envelope_ratio_at_gm_crit",
+          "tolerance": 0.05,
+          "value": 1.0
+        }
+      ],
+      "file": "docs/behavior/bench/osc-pierce/B5.cir",
+      "measured_in_ngspice": "0.9993",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "P6",
+      "expected": [
+        {
+          "basis": "ST gm_crit R1=500",
+          "measure": "gm_crit_S",
+          "tolerance": 0.0003,
+          "value": 0.00223
+        }
+      ],
+      "file": "docs/behavior/bench/osc-pierce/B6.cir",
+      "measured_in_ngspice": "crossing ~2.25 mS",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-141",
+      "OHM-142",
+      "OHM-143",
+      "OHM-144",
+      "OHM-145"
+    ],
+    "behavior_id": "BEH-FREQ-XTAL",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "R1",
+            "measure": "zmin_ohm",
+            "tolerance": 0.5,
+            "value": 80
+          },
+          {
+            "basis": "fs*sqrt(1+C1/C0)",
+            "measure": "fa_Hz",
+            "tolerance": 100,
+            "value": 8010275
+          }
+        ],
+        "file": "bench/xtal-bvd/B1.cir",
+        "id": "B1",
+        "measured_in_ngspice": "zmin 79.989 ohm @7.998285 MHz; fa 8010276 Hz",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "fs*sqrt(1+C1/(C0+CL))",
+            "measure": "fL_18pF_Hz",
+            "tolerance": 10,
+            "value": 8000000
+          }
+        ],
+        "file": "bench/xtal-bvd/B2.cir",
+        "id": "B2",
+        "measured_in_ngspice": "8000000 Hz at 18 pF; 8001558 at 8 pF",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "FC-135 values",
+            "measure": "fL_32k_Hz",
+            "tolerance": 0.1,
+            "value": 32768
+          }
+        ],
+        "file": "bench/xtal-bvd/B3.cir",
+        "id": "B3",
+        "measured_in_ngspice": "32768.0 Hz",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "KCL estimate",
+            "measure": "DL_W",
+            "tolerance": "5e-6",
+            "value": 8.08e-05
+          }
+        ],
+        "file": "bench/osc-pierce/B1.cir",
+        "id": "P1",
+        "measured_in_ngspice": "80.5e-6 W; 90pct amplitude at 2.87 ms",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "loop Im(Z)=0",
+            "measure": "f_loop_Hz",
+            "tolerance": 800,
+            "value": 8000215
+          }
+        ],
+        "file": "bench/osc-pierce/B2.cir",
+        "id": "P2",
+        "measured_in_ngspice": "8000215 Hz",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "B2 loop zero",
+            "measure": "f_tran_Hz",
+            "tolerance": 800,
+            "value": 8000215
+          }
+        ],
+        "file": "bench/osc-pierce/B3.cir",
+        "id": "P3",
+        "measured_in_ngspice": "8000474 Hz",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "ST gm_crit 0.357 mS",
+            "measure": "envelope_ratio_at_gm_crit",
+            "tolerance": 0.05,
+            "value": 1.0
+          }
+        ],
+        "file": "bench/osc-pierce/B5.cir",
+        "id": "P5",
+        "measured_in_ngspice": "0.9993",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "ST gm_crit R1=500",
+            "measure": "gm_crit_S",
+            "tolerance": 0.0003,
+            "value": 0.00223
+          }
+        ],
+        "file": "bench/osc-pierce/B6.cir",
+        "id": "P6",
+        "measured_in_ngspice": "crossing ~2.25 mS",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "frequency",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "frequency drift, ESR rise, damage",
+        "id": "overdrive",
+        "permanence": "permanent",
+        "sim_response": "flag error, optional ESR rise",
+        "trigger": "DL > DL_max"
+      },
+      {
+        "effect": "frequency error ~10 ppm/pF at 8 MHz",
+        "id": "wrong_CL",
+        "permanence": "recoverable",
+        "sim_response": "compute fL from netlist and flag",
+        "trigger": "|CL_actual - CL_spec| > 2 pF"
+      },
+      {
+        "effect": "no clock",
+        "id": "no_oscillation",
+        "permanence": "recoverable",
+        "sim_response": "oscillation_started=false",
+        "trigger": "gm < gm_crit"
+      },
+      {
+        "effect": "no feedback",
+        "id": "open_crystal",
+        "permanence": "permanent",
+        "sim_response": "remove motional arm",
+        "trigger": "broken lead"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "no spurious modes or overtone selection",
+        "no drive-level dependency by default",
+        "C1 usually unknown (ASSUMPTION for MHz parts)",
+        "temperature/aging are static ppm offsets",
+        "start-up time depends on kick energy",
+        "ST gm_crit formula invalid when C0 >> CL"
+      ],
+      "netlist_template": "X{ref} {A} {B} ohm_xtal L1={L1} C1={C1} R1={R1} C0={C0}\n",
+      "spice_primitives": [
+        "R",
+        "L",
+        "C"
+      ],
+      "valid_analyses": [
+        "ac",
+        "tran"
+      ],
+      "valid_range": "fundamental mode, DL <= DL_max, between fs and fa; tran step <= T/500 (T/5000 for ppm-level frequency)"
+    },
+    "parameters": {
+      "C0": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": "3e-12",
+        "max": "7e-12",
+        "min": 8e-13,
+        "source_ref": "S2",
+        "tolerance": "typ/max",
+        "unit": "F"
+      },
+      "C1": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": "9e-15",
+        "max": "30e-15",
+        "min": "1e-15",
+        "source_ref": "S7",
+        "tolerance": 0.3,
+        "unit": "F"
+      },
+      "CL": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": "18e-12",
+        "max": "33e-12",
+        "min": "6e-12",
+        "source_ref": "S2",
+        "tolerance": "user",
+        "unit": "F"
+      },
+      "DL_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": "200e-6",
+        "max": "1000e-6",
+        "min": "1e-6",
+        "source_ref": "S4",
+        "tolerance": 0,
+        "unit": "W"
+      },
+      "DL_rec": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": "10e-6",
+        "max": "100e-6",
+        "min": 5e-07,
+        "source_ref": "S4",
+        "tolerance": 0,
+        "unit": "W"
+      },
+      "R1": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 80,
+        "max": 70000,
+        "min": 20,
+        "source_ref": "S2",
+        "tolerance": "max on sheet",
+        "unit": "ohm"
+      },
+      "aging_ppm_yr1": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 5,
+        "max": 5,
+        "min": 1,
+        "source_ref": "S4",
+        "tolerance": 0,
+        "unit": "ppm"
+      },
+      "f_nom": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 8000000,
+        "max": 80000000,
+        "min": 32768,
+        "source_ref": "S2",
+        "tolerance": "user",
+        "unit": "Hz"
+      },
+      "stability_ppm": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 50,
+        "max": 150,
+        "min": 10,
+        "source_ref": "S2",
+        "tolerance": 0,
+        "unit": "ppm"
+      },
+      "tolerance_ppm": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 30,
+        "max": 150,
+        "min": 10,
+        "source_ref": "S2",
+        "tolerance": 0,
+        "unit": "ppm"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "A",
+        "package_terminal_rule": "THT: lead 1; SMD 4-pad: pad 1; SMD 2-pad: pad 1",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "B",
+        "package_terminal_rule": "THT: lead 2; SMD 4-pad: pad 3 (diagonal to pad 1); SMD 2-pad: pad 2",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "LID1",
+        "package_terminal_rule": "SMD 4-pad only: pad 2; lid/GND or NC; optional, floating in sim",
+        "role": "shield"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "LID2",
+        "package_terminal_rule": "SMD 4-pad only: pad 4; lid/GND or NC; optional, floating in sim",
+        "role": "shield"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "DL = R1*irms(i(Lm))^2 <= DL_max; warn > DL_rec",
+        "condition": "FA-238/NX3225GD max; 100 uW ABM3; 1 uW FC-135",
+        "name": "drive_level",
+        "source_ref": "S4",
+        "symbol": "DL",
+        "unit": "W",
+        "value": "200e-6"
+      },
+      {
+        "check": "gm/(4*ESR*(2*pi*f)^2*(C0+CL)^2) >= 5",
+        "condition": "HSE, MHz crystal",
+        "name": "gain_margin",
+        "source_ref": "S1",
+        "symbol": "gm_ratio",
+        "unit": "",
+        "value": 5
+      },
+      {
+        "check": "T in range",
+        "condition": "ABLS standard; -40..85 for FC-135",
+        "name": "operating_temperature",
+        "source_ref": "S2",
+        "symbol": "Top",
+        "unit": "C",
+        "value": "0..70"
+      }
+    ],
+    "sources": [
+      {
+        "date": "not shown in extraction",
+        "id": "S1",
+        "org": "STMicroelectronics",
+        "title": "AN2867 Guidelines for oscillator design on STM8AF/AL/S and STM32 MCUs/MPUs",
+        "url": "https://www.st.com/resource/en/application_note/an2867-guidelines-for-oscillator-design-on-stm8afals-and-stm32-mcusmpus-stmicroelectronics.pdf",
+        "used_for": "BVD circuit, Fs/Fa/Fp, CL formula, gm_crit, drive level, Sf, start-up, overdrive effects"
+      },
+      {
+        "date": "2022-09-07",
+        "id": "S2",
+        "org": "Abracon",
+        "title": "ABLS Series HC49/US (AT49) SMD microprocessor crystal, drawing 450669 Rev AD",
+        "url": "https://abracon.com/Resonators/ABLS.pdf",
+        "used_for": "ESR table, C0 7 pF, CL 18 pF, DL, tolerance, stability, aging, DLD"
+      },
+      {
+        "date": "not shown",
+        "id": "S3",
+        "org": "Epson",
+        "title": "FC-135R / FC-135 crystal unit",
+        "url": "https://www.mouser.lt/datasheet/3/97/1/FC_135_en.pdf",
+        "used_for": "32.768 kHz: C1 3.4 fF, C0 1.0 pF, R1 70 kohm, parabolic -0.04 ppm/C2, DL 0.5 uW"
+      },
+      {
+        "date": "2020 (c)",
+        "id": "S4",
+        "org": "Epson",
+        "title": "FA-238V / FA-238 / TSX-3225 crystal units",
+        "url": "https://static.chipdip.ru/lib/442/DOC030442603.pdf",
+        "used_for": "ESR, DL 200 uW max/10 uW rec, aging, 4-pad pad assignment (2,4 = lid GND)"
+      },
+      {
+        "date": "not shown",
+        "id": "S5",
+        "org": "NDK",
+        "title": "NX3225GD crystal unit (automotive)",
+        "url": "https://static.chipdip.ru/lib/143/DOC013143963.pdf",
+        "used_for": "8 MHz ESR 500 ohm max, DL 10 uW (max 200 uW), tolerance +/-50 ppm, stability +/-150 ppm"
+      },
+      {
+        "date": "revised 04-25-22",
+        "id": "S6",
+        "org": "Abracon",
+        "title": "ABM3 ceramic SMD crystal (5.0 x 3.2 mm)",
+        "url": "https://abracon.com/Resonators/ABM3.pdf",
+        "used_for": "ESR 140 ohm at 8 MHz, C0 7 pF, CL 18 pF, DL 10-100 uW, aging"
+      },
+      {
+        "date": "2024 (upload path)",
+        "id": "S7",
+        "org": "Suntsu Electronics",
+        "title": "Crystal Equivalent Circuit",
+        "url": "https://suntsu.com/wp-content/uploads/2024/08/Crystal-Equivalent-Circuit-PDF.pdf",
+        "used_for": "C1 0.005-0.030 pF fundamental, C0 1-7 pF, Thomson relation"
+      },
+      {
+        "date": "n/a",
+        "id": "S8",
+        "org": "Microchip",
+        "title": "Recommended Crystal Characteristics (online documentation page, device family not shown)",
+        "url": "https://onlinedocs.microchip.com/oxy/GUID-2ACDA668-0A87-46A1-B7FC-9DC74A5461AD-en-US-2/GUID-9D6E52D1-BC20-4009-8F14-35F680E0A5EC.html",
+        "used_for": "typical Cm 1.3-9 fF, C0 <= 3 pF, ESR <= 80-100 ohm"
+      },
+      {
+        "date": "2021-07",
+        "id": "S9",
+        "org": "Texas Instruments",
+        "title": "SLLA549 TCAN455x clock optimization and design guidelines",
+        "url": "https://ti.com/lit/SLLA549",
+        "used_for": "start-up tau = 2*Lm/(R+Rneg), Rneg = -gm/(w^2*2*CL^2), safety 3-5x, Rd 50-100 ohm"
+      },
+      {
+        "date": "2019-06",
+        "id": "S10",
+        "org": "NXP",
+        "title": "AN12442 Theoretical set up checks for MPC5510 XOSC use, Rev 0",
+        "url": "https://NXP.com/docs/en/application-note/AN12442.pdf",
+        "used_for": "8 MHz example, gm_opt formula (cross-check only)"
+      },
+      {
+        "date": "n/a",
+        "id": "S17",
+        "org": "ngspice project",
+        "title": "ngspice manual (B sources, .tran uic, .meas)",
+        "url": "https://ngspice.sourceforge.io/docs/ngspice-manual.pdf",
+        "used_for": "B-source tanh, .meas syntax"
+      }
+    ],
+    "status": "partial"
+  },
+  "category": "frequency",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "fd2f8616a140852b0133e6066d9910c4072fe2f4946cc746a0f87ecba893ba01",
+    "line": 10077
+  },
+  "source_refs": [
+    {
+      "date": "not shown in extraction",
+      "id": "S1",
+      "org": "STMicroelectronics",
+      "title": "AN2867 Guidelines for oscillator design on STM8AF/AL/S and STM32 MCUs/MPUs",
+      "url": "https://www.st.com/resource/en/application_note/an2867-guidelines-for-oscillator-design-on-stm8afals-and-stm32-mcusmpus-stmicroelectronics.pdf",
+      "used_for": "BVD circuit, Fs/Fa/Fp, CL formula, gm_crit, drive level, Sf, start-up, overdrive effects"
+    },
+    {
+      "date": "2022-09-07",
+      "id": "S2",
+      "org": "Abracon",
+      "title": "ABLS Series HC49/US (AT49) SMD microprocessor crystal, drawing 450669 Rev AD",
+      "url": "https://abracon.com/Resonators/ABLS.pdf",
+      "used_for": "ESR table, C0 7 pF, CL 18 pF, DL, tolerance, stability, aging, DLD"
+    },
+    {
+      "date": "not shown",
+      "id": "S3",
+      "org": "Epson",
+      "title": "FC-135R / FC-135 crystal unit",
+      "url": "https://www.mouser.lt/datasheet/3/97/1/FC_135_en.pdf",
+      "used_for": "32.768 kHz: C1 3.4 fF, C0 1.0 pF, R1 70 kohm, parabolic -0.04 ppm/C2, DL 0.5 uW"
+    },
+    {
+      "date": "2020 (c)",
+      "id": "S4",
+      "org": "Epson",
+      "title": "FA-238V / FA-238 / TSX-3225 crystal units",
+      "url": "https://static.chipdip.ru/lib/442/DOC030442603.pdf",
+      "used_for": "ESR, DL 200 uW max/10 uW rec, aging, 4-pad pad assignment (2,4 = lid GND)"
+    },
+    {
+      "date": "not shown",
+      "id": "S5",
+      "org": "NDK",
+      "title": "NX3225GD crystal unit (automotive)",
+      "url": "https://static.chipdip.ru/lib/143/DOC013143963.pdf",
+      "used_for": "8 MHz ESR 500 ohm max, DL 10 uW (max 200 uW), tolerance +/-50 ppm, stability +/-150 ppm"
+    },
+    {
+      "date": "revised 04-25-22",
+      "id": "S6",
+      "org": "Abracon",
+      "title": "ABM3 ceramic SMD crystal (5.0 x 3.2 mm)",
+      "url": "https://abracon.com/Resonators/ABM3.pdf",
+      "used_for": "ESR 140 ohm at 8 MHz, C0 7 pF, CL 18 pF, DL 10-100 uW, aging"
+    },
+    {
+      "date": "2024 (upload path)",
+      "id": "S7",
+      "org": "Suntsu Electronics",
+      "title": "Crystal Equivalent Circuit",
+      "url": "https://suntsu.com/wp-content/uploads/2024/08/Crystal-Equivalent-Circuit-PDF.pdf",
+      "used_for": "C1 0.005-0.030 pF fundamental, C0 1-7 pF, Thomson relation"
+    },
+    {
+      "date": "n/a",
+      "id": "S8",
+      "org": "Microchip",
+      "title": "Recommended Crystal Characteristics (online documentation page, device family not shown)",
+      "url": "https://onlinedocs.microchip.com/oxy/GUID-2ACDA668-0A87-46A1-B7FC-9DC74A5461AD-en-US-2/GUID-9D6E52D1-BC20-4009-8F14-35F680E0A5EC.html",
+      "used_for": "typical Cm 1.3-9 fF, C0 <= 3 pF, ESR <= 80-100 ohm"
+    },
+    {
+      "date": "2021-07",
+      "id": "S9",
+      "org": "Texas Instruments",
+      "title": "SLLA549 TCAN455x clock optimization and design guidelines",
+      "url": "https://ti.com/lit/SLLA549",
+      "used_for": "start-up tau = 2*Lm/(R+Rneg), Rneg = -gm/(w^2*2*CL^2), safety 3-5x, Rd 50-100 ohm"
+    },
+    {
+      "date": "2019-06",
+      "id": "S10",
+      "org": "NXP",
+      "title": "AN12442 Theoretical set up checks for MPC5510 XOSC use, Rev 0",
+      "url": "https://NXP.com/docs/en/application-note/AN12442.pdf",
+      "used_for": "8 MHz example, gm_opt formula (cross-check only)"
+    },
+    {
+      "date": "n/a",
+      "id": "S17",
+      "org": "ngspice project",
+      "title": "ngspice manual (B sources, .tran uic, .meas)",
+      "url": "https://ngspice.sourceforge.io/docs/ngspice-manual.pdf",
+      "used_for": "B-source tanh, .meas syntax"
+    }
+  ],
+  "status": "partial"
+}

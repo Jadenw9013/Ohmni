@@ -1,0 +1,128 @@
+{
+  "behavior_class_ids": [
+    "BEH-RES-SENSE"
+  ],
+  "catalog_binding_ids": [],
+  "class_record_paths": [
+    "src/ohmni/behavior/data/classes/BEH-RES-SENSE.json"
+  ],
+  "component": "Metal shunt resistor",
+  "entry_id": "OHM-015",
+  "fidelity": "behavioural_approximation",
+  "group": "R1",
+  "layer": "L1",
+  "research": {
+    "bench_result": "bench-results/BEH-RES-SENSE--B1.json",
+    "bench_results": [
+      "bench-results/BEH-RES-SENSE--B1.json",
+      "bench-results/BEH-RES-SENSE--B2.json",
+      "bench-results/BEH-RES-SENSE--B3.json"
+    ],
+    "conflicts": [],
+    "documents": [
+      {
+        "document_id": "shunt",
+        "manufacturer": "Vishay Dale",
+        "note": "Read from fetched PDF bytes; an HTTP success alone is not evidence of semantic support.",
+        "page": null,
+        "revision": "26-May-2026",
+        "source_status": "primary_source_opened",
+        "title": "WSBS8518 battery shunt",
+        "url": "https://www.vishay.com/docs/30134/wsbs8518.pdf"
+      }
+    ],
+    "entry_id": "OHM-015",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "p_rated",
+        "page": 1,
+        "scope": "Vishay WSBS8518, 100 microohm option",
+        "sources": [
+          "https://www.vishay.com/docs/30134/wsbs8518.pdf"
+        ],
+        "unit": "W",
+        "value": 36
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "derating_knee",
+        "page": 1,
+        "scope": "Vishay WSBS8518, 100 microohm option",
+        "sources": [
+          "https://www.vishay.com/docs/30134/wsbs8518.pdf"
+        ],
+        "unit": "degC",
+        "value": 70
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "tcr_max",
+        "page": 1,
+        "scope": "Vishay WSBS8518, 100 microohm option",
+        "sources": [
+          "https://www.vishay.com/docs/30134/wsbs8518.pdf"
+        ],
+        "unit": "ppm/degC",
+        "value": 175
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "thermal_emf_max",
+        "page": 1,
+        "scope": "Vishay WSBS8518, 100 microohm option",
+        "sources": [
+          "https://www.vishay.com/docs/30134/wsbs8518.pdf"
+        ],
+        "unit": "V/degC",
+        "value": 3e-06
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Datasheet maximum current equation; apply derating, not nominal power at every temperature.",
+        "field": "current_limit_equation",
+        "page": 1,
+        "scope": "Vishay WSBS8518, 100 microohm option",
+        "sources": [
+          "https://www.vishay.com/docs/30134/wsbs8518.pdf"
+        ],
+        "unit": "A",
+        "value": "sqrt(P_allowed/R)"
+      }
+    ],
+    "remaining_open_items": [
+      "Current calculated from 36 W requires the applicable mounting and thermal conditions; no independent safe installation current is established.",
+      "Sense attachment and thermal model must be bound for a high-current assembly.",
+      "No destructive-failure transient model is sourced."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-015.md",
+      "document_sha256": "29c6eda978cb99ecca1ca217e36e2cd31659e6b84a2ab2cbf30b7ff16b553305",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
+  "resolution_ids": [],
+  "schema_version": 1,
+  "simulation_disposition": "simulable",
+  "simulation_reason": "The canonical class provides an L1/L2 model; fidelity and assumptions remain explicit.",
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "e292c80d2d96befc4d0b56315886f3e3b4857090e57bbb3582e165fb2816d4c3",
+    "line": 33
+  },
+  "status": "partial"
+}

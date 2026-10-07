@@ -1,0 +1,272 @@
+{
+  "comparison": {
+    "comparison": {
+      "kind": "interval",
+      "maximum": 0.4,
+      "minimum": 0,
+      "observable": "anode_voltage",
+      "source_fact": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_forward_voltage",
+        "page": 2,
+        "scope": "BAT42W SOD123; package-matched alternative to BAT54 SOT23; IF10 mA",
+        "sources": [
+          "https://www.diodes.com/datasheet/download/BAT42W.pdf"
+        ],
+        "unit": "V",
+        "value": 0.4
+      }
+    },
+    "observed": 0.3035291,
+    "passed": true
+  },
+  "entry_id": "OHM-067",
+  "limits": "Same limited analytical contract with zero-volt current probes. Missing thermal context and unsupported failure rules remain unknown.",
+  "netlist_sha256": "a9d086bbe42b54a5ab5d91eb9c9fac72be049cadfdb3522ddab0c229de68f192",
+  "observation_status": "ran",
+  "output_sha256": "bd65e70df2b59ba28352477879ca08fe3fea426488fc21cd4ba65498f59cdd6b",
+  "ran_at": "2026-10-05T22:49:12Z",
+  "rating_status": "unknown",
+  "ratings": {
+    "components": [
+      {
+        "class_checks": [
+          {
+            "check": "max(vr) <= VRRM",
+            "condition": "SS14",
+            "name": "repetitive_peak_reverse",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "322288fe706a114f8e8610173229bf538b4dae128c7af68d09b73c61e87c6dce",
+              "line": 3902
+            },
+            "source_ref": "S10",
+            "status": "unknown",
+            "symbol": "VRRM",
+            "unit": "V",
+            "value": 40
+          },
+          {
+            "check": "mean(if) <= IF(AV)",
+            "condition": "SS14 SMA",
+            "name": "average_forward",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "322288fe706a114f8e8610173229bf538b4dae128c7af68d09b73c61e87c6dce",
+              "line": 3902
+            },
+            "source_ref": "S10",
+            "status": "unknown",
+            "symbol": "IF(AV)",
+            "unit": "A",
+            "value": 1.0
+          },
+          {
+            "check": "i_pk <= IFSM*sqrt(t_ref/t)",
+            "condition": "8.3 ms half sine SS14",
+            "name": "surge",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "322288fe706a114f8e8610173229bf538b4dae128c7af68d09b73c61e87c6dce",
+              "line": 3902
+            },
+            "source_ref": "S10",
+            "status": "unknown",
+            "symbol": "IFSM",
+            "unit": "A",
+            "value": 40
+          },
+          {
+            "check": "Rth*VR*IR_ref*aT*exp(aT*(Tj-25)) < 1",
+            "condition": "Rth*VR*IR*aT*exp(aT*(Tj-25)) < 1",
+            "name": "runaway_stability",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "322288fe706a114f8e8610173229bf538b4dae128c7af68d09b73c61e87c6dce",
+              "line": 3902
+            },
+            "source_ref": "S10",
+            "status": "unknown",
+            "symbol": "-",
+            "unit": "1",
+            "value": 1
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-067",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "leakage heating runaway, shorts",
+            "id": "thermal_runaway",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "FAIL, failed_short",
+            "status": "unknown",
+            "trigger": "stability inequality violated or Tj >= TJmax"
+          },
+          {
+            "applied_response": null,
+            "effect": "junction damage",
+            "id": "reverse_overvoltage",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "WARN 0.8, FAIL 1.0 x VRRM",
+            "status": "unknown",
+            "trigger": "VR above VRRM"
+          }
+        ],
+        "observations": {
+          "BV": 56.0,
+          "CJO": 8e-12,
+          "CJO_pf": 8.0,
+          "IS": 2.117e-07,
+          "N": 1.0,
+          "RS": 2.7,
+          "i_A": 0.01,
+          "i_K": -0.01,
+          "if_max": 0.2,
+          "p_rated": 0.2,
+          "power": 0.003035291,
+          "rth_ja": 500.0,
+          "tj_max": 125.0,
+          "v_A": 0.3035291,
+          "v_K": 0.0,
+          "vf": 0.3035291,
+          "vf_max": 0.4,
+          "vr": -0.3035291,
+          "vr_max": 30.0
+        },
+        "ref": "U1",
+        "reference_checks": [
+          {
+            "evidence": {
+              "vr_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "dc_reverse_voltage",
+                "page": 2,
+                "scope": "BAT42W SOD123; package-matched alternative to BAT54 SOT23",
+                "sources": [
+                  "https://www.diodes.com/datasheet/download/BAT42W.pdf"
+                ],
+                "unit": "V",
+                "value": 30
+              }
+            },
+            "expression": "vr <= vr_max",
+            "name": "reverse voltage",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "if_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "continuous_forward_current",
+                "page": 2,
+                "scope": "BAT42W SOD123; package-matched alternative to BAT54 SOT23; FR4 recommended pad layout",
+                "sources": [
+                  "https://www.diodes.com/datasheet/download/BAT42W.pdf"
+                ],
+                "unit": "A",
+                "value": 0.2
+              }
+            },
+            "expression": "i_A <= if_max",
+            "name": "forward current",
+            "reason": "DC ceiling only; source temperature/derating conditions need confirmation",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "p_rated": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "maximum_power",
+                "page": 2,
+                "scope": "BAT42W SOD123; package-matched alternative to BAT54 SOT23; TA25 C",
+                "sources": [
+                  "https://www.diodes.com/datasheet/download/BAT42W.pdf"
+                ],
+                "unit": "W",
+                "value": 0.2
+              }
+            },
+            "expression": "power <= p_rated",
+            "name": "source power ceiling",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          },
+          {
+            "evidence": {
+              "rth_ja": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "thermal_resistance_junction_ambient",
+                "page": 2,
+                "scope": "BAT42W SOD123; package-matched alternative to BAT54 SOT23; FR4 recommended pad layout",
+                "sources": [
+                  "https://www.diodes.com/datasheet/download/BAT42W.pdf"
+                ],
+                "unit": "K/W",
+                "value": 500
+              },
+              "tj_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "maximum_junction_temperature",
+                "page": 2,
+                "scope": "BAT42W SOD123; package-matched alternative to BAT54 SOT23",
+                "sources": [
+                  "https://www.diodes.com/datasheet/download/BAT42W.pdf"
+                ],
+                "unit": "C",
+                "value": 125
+              }
+            },
+            "expression": "power >= 0 and Tamb+rth_ja*power <= tj_max",
+            "name": "junction temperature",
+            "reason": "Source thermal mounting/test conditions have not been confirmed",
+            "spec_names": [],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      }
+    ],
+    "fault_requests": [],
+    "limitations": [
+      "Only the stated observations and source conditions were checked.",
+      "Unsupported class expressions and failure triggers remain unknown; no damage timing is invented.",
+      "An electrical limit check does not verify physical fit or safe operation."
+    ],
+    "status": "unknown"
+  },
+  "raw_output": "instrumented-output/OHM-067/output.txt",
+  "run_id": "behavior-20261005T065040Z",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+}

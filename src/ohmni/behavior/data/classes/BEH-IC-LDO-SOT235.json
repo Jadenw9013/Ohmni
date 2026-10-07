@@ -1,0 +1,276 @@
+{
+  "applies_to": [
+    "OHM-120"
+  ],
+  "basis_values": [
+    "ASSUMPTION",
+    "DERIVED",
+    "MFR_DATASHEET",
+    "Ta+rth*Pd",
+    "soft-knee solve"
+  ],
+  "behavior_id": "BEH-IC-LDO-SOT235",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "soft-knee solve",
+          "measure": "vout_vin3.0",
+          "tolerance": "0.5 %",
+          "value": 2.9115
+        }
+      ],
+      "file": "docs/behavior/bench/ic-ldo/B1_dropout.cir",
+      "measured_in_ngspice": 2.91147,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "soft-knee solve",
+          "measure": "delta_mV",
+          "tolerance": "1 mV",
+          "value": 9.7
+        }
+      ],
+      "file": "docs/behavior/bench/ic-ldo/B2_load_reg.cir",
+      "measured_in_ngspice": 9.75,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "Ta+rth*Pd",
+          "measure": "Tj_C",
+          "tolerance": "0.1 C",
+          "value": 129.292
+        }
+      ],
+      "file": "docs/behavior/bench/ic-ldo/B3_thermal.cir",
+      "measured_in_ngspice": 129.294,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-120"
+    ],
+    "behavior_id": "BEH-IC-LDO-SOT235",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "soft-knee solve",
+            "measure": "vout_vin3.0",
+            "tolerance": "0.5 %",
+            "value": 2.9115
+          }
+        ],
+        "file": "bench/ic-ldo/B1_dropout.cir",
+        "id": "B1",
+        "measured_in_ngspice": 2.91147,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "soft-knee solve",
+            "measure": "delta_mV",
+            "tolerance": "1 mV",
+            "value": 9.7
+          }
+        ],
+        "file": "bench/ic-ldo/B2_load_reg.cir",
+        "id": "B2",
+        "measured_in_ngspice": 9.75,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "Ta+rth*Pd",
+            "measure": "Tj_C",
+            "tolerance": "0.1 C",
+            "value": 129.292
+          }
+        ],
+        "file": "bench/ic-ldo/B3_thermal.cir",
+        "id": "B3",
+        "measured_in_ngspice": 129.294,
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "ic",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "current limit then shutdown",
+        "id": "output_short",
+        "permanence": "recoverable",
+        "sim_response": "current-limited model; thermal limiter",
+        "trigger": "load below Vout/icl"
+      },
+      {
+        "effect": "shutdown",
+        "id": "overtemperature",
+        "permanence": "recoverable",
+        "sim_response": "memoryless limiter",
+        "trigger": "Tj above 160 C"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "no PSRR or noise",
+        "no hysteresis in thermal shutdown",
+        "no reverse current",
+        "needs nodesets",
+        "current limit assumed"
+      ],
+      "netlist_template": "X{ref} {IN} {GND} {EN} {OUT} tlv700 vnom={vnom} rdo={rdo} rout={rout} icl={icl} rth={rth} ta={ta}\n.nodeset v({OUT})=0.9*{vnom}\n",
+      "spice_primitives": [
+        "B",
+        "R",
+        "C",
+        "V"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "tran"
+      ],
+      "valid_range": "Vin up to 5.5 V, Iout up to the current limit"
+    },
+    "parameters": {
+      "icl": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.43,
+        "max": 0.86,
+        "min": 0.22,
+        "source_ref": "S14",
+        "tolerance": "",
+        "unit": "A"
+      },
+      "rdo": {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "default": 0.86,
+        "max": 1.6,
+        "min": 0.5,
+        "source_ref": "S14",
+        "tolerance": "",
+        "unit": "ohm"
+      },
+      "rout": {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "default": 0.04,
+        "max": 0.2,
+        "min": 0.01,
+        "source_ref": "S14",
+        "tolerance": "",
+        "unit": "ohm"
+      },
+      "rth": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 235.9,
+        "max": 256,
+        "min": 221.7,
+        "source_ref": "S14",
+        "tolerance": "",
+        "unit": "C/W"
+      },
+      "tsd": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 160,
+        "max": 170,
+        "min": 150,
+        "source_ref": "S14",
+        "tolerance": "",
+        "unit": "C"
+      },
+      "vnom": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 3.3,
+        "max": 5.0,
+        "min": 1.2,
+        "source_ref": "S14",
+        "tolerance": "",
+        "unit": "V"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "power_in",
+        "name": "IN",
+        "package_terminal_rule": "TLV700 DDC pin 1",
+        "role": "supply"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "GND",
+        "package_terminal_rule": "pin 2",
+        "role": "supply"
+      },
+      {
+        "electrical_type": "input",
+        "name": "EN",
+        "package_terminal_rule": "pin 3",
+        "role": "signal_in"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "NC",
+        "package_terminal_rule": "pin 4",
+        "role": "no_connect"
+      },
+      {
+        "electrical_type": "power_out",
+        "name": "OUT",
+        "package_terminal_rule": "pin 5",
+        "role": "supply"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "(V(IN)-V(OUT))*I(OUT)+V(IN)*Iq <= (150-Ta)/235.9",
+        "condition": "SOT-23-5 DDC at 25 C",
+        "name": "dissipation",
+        "source_ref": "S14",
+        "symbol": "Pd",
+        "unit": "W",
+        "value": 0.53
+      }
+    ],
+    "sources": "S14, S31, S29",
+    "status": "complete"
+  },
+  "category": "ic",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "07334ae8b1fdfd9ecd72606d719e05a91c5118b57a4cce40d12bec6b42eaf795",
+    "line": 7967
+  },
+  "source_refs": "S14, S31, S29",
+  "status": "complete"
+}

@@ -1,0 +1,181 @@
+
+Note: No compatibility mode selected!
+
+
+Circuit: ohmni sourced behavior circuit
+
+Doing analysis at TEMP = 25.000000 and TNOM = 25.000000
+
+
+No. of Data Rows : 1
+	Node                                  Voltage
+	----                                  -------
+	----	-------
+	n2                               0.000000e+00
+	xc1.dc                           0.000000e+00
+	xc1.oi                           1.410000e+01
+	xc1.q                            1.000000e+00
+	xc1.srst                         0.000000e+00
+	xc1.sset                         1.000000e+00
+	xc1.nlo                          5.000000e+00
+	n1                               1.000000e+01
+	n3                               1.330000e+01
+	n5                               1.500000e+01
+
+	Source	Current
+	------	-------
+
+	vsource5#branch                  -1.00000e-02
+	b.xc1.bset#branch                0.000000e+00
+	b.xc1.brst#branch                0.000000e+00
+	b.xc1.bout#branch                -1.00000e-01
+	b.xc1.bdc#branch                 0.000000e+00
+
+ Capacitor models (Fixed capacitor)
+      model                     C
+
+        cap                     0
+         cj                     0
+       cjsw                     0
+       defw                 1e-05
+       defl                     0
+     narrow                     0
+      short                     0
+        del                     0
+        tc1                     0
+        tc2                     0
+         di                     0
+      thick                     0
+     bv_max                 1e+99
+
+ Resistor models (Simple linear resistor)
+      model                     R
+
+        rsh                     0
+     narrow                     0
+      short                     0
+        tc1                     0
+        tc2                     0
+        tce                     0
+       defw                 1e-05
+          l                 1e-05
+         kf                     0
+         af                     0
+          r                     0
+     bv_max                 1e+99
+         lf                     1
+         wf                     1
+         ef                     1
+
+ Switch models (Ideal voltage controlled switch)
+      model               xc1:swd
+
+
+ ASRC: Arbitrary Source 
+     device            b.xc1.bicc             b.xc1.bdc            b.xc1.bout
+      dtemp                     0                     0                     0
+          i                 0.009                     0                  -0.1
+          v                    15                     0                  14.1
+   pos_node                     1                     9                     8
+   neg_node                     0                     0                     0
+
+ ASRC: Arbitrary Source 
+     device              b.xc1.bq            b.xc1.brst            b.xc1.bset
+      dtemp                     0                     0                     0
+          i                     0                     0                     0
+          v                    -1                     0                     1
+   pos_node                     0                     6                     5
+   neg_node                     7                     0                     0
+
+ Capacitor: Fixed capacitor
+     device              c.xc1.cq
+      model                     C
+capacitance                     1
+      dtemp                     0
+     bv_max                 1e+99
+          i                     0
+          p                     0
+
+ Isource: Independent current source
+     device             i.xc1.itg             i.xc1.ith          iexcitation1
+         dc                -5e-07                 1e-07                   0.1
+          m                     1                     1                     1
+      acmag                     0                     0                     0
+      pulse         -         -         -
+        sin         -         -         -
+        exp         -         -         -
+        pwl         -         -         -
+       sffm         -         -         -
+         am         -         -         -
+    trnoise         -         -         -
+   trrandom         -         -         -
+          v                     0                     0                 -13.3
+          p                     0                    -0                  1.33
+    current                -5e-07                 1e-07                   0.1
+
+ Resistor: Simple linear resistor
+     device              r.xc1.ro              r.xc1.rq             r.xc1.rd3
+      model                     R                     R                     R
+ resistance                     8                 1e+12                  5000
+         ac                     8                 1e+12                  5000
+      dtemp                     0                     0                     0
+     bv_max                 1e+99                 1e+99                 1e+99
+      noisy                     1                     1                     1
+          i                   0.1                 1e-12                 0.001
+          p                  0.08                 1e-12                 0.005
+
+ Resistor: Simple linear resistor
+     device             r.xc1.rd2             r.xc1.rd1
+      model                     R                     R
+ resistance                  5000                  5000
+         ac                  5000                  5000
+      dtemp                     0                     0
+     bv_max                 1e+99                 1e+99
+      noisy                     1                     1
+          i                 0.001                 0.001
+          p                 0.005                 0.005
+
+ Switch: Ideal voltage controlled switch
+     device            s.xc1.sdis
+      model               xc1:swd
+          i                     0
+          p                     0
+
+ Vsource: Independent voltage source
+     device              vsource5
+         dc                    15
+      acmag                     0
+      pulse         -
+        sin         -
+        exp         -
+        pwl         -
+       sffm         -
+         am         -
+    trnoise         -
+   trrandom         -
+    portnum                     0
+         z0                     0
+        pwr                     0
+       freq                     0
+      phase                     0
+          i                 -0.01
+          p                 -0.15
+
+
+
+Total analysis time (seconds) = 0
+
+Total elapsed time (seconds) = 0.002 
+
+Total DRAM available = 8031.117 MB.
+DRAM currently available = 6846.949 MB.
+Maximum ngspice program size =   21.375 MB.
+Current ngspice program size =   12.172 MB.
+
+Shared ngspice pages =   10.145 MB.
+Text (code) pages =    6.156 MB.
+Stack = 0 bytes.
+Library pages =    2.121 MB.
+
+Warning: no nodes given: .print op
+Using SPARSE 1.3 as Direct Linear Solver

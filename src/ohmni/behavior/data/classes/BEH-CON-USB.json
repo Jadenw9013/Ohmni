@@ -1,0 +1,480 @@
+{
+  "applies_to": [
+    "OHM-162",
+    "OHM-163",
+    "OHM-164",
+    "OHM-165",
+    "OHM-166"
+  ],
+  "basis_values": [
+    "1/(2 pi 22.5 1p)",
+    "3.3*15/16.5",
+    "5 - I*Rc/4*2",
+    "5*100/100.01",
+    "5*5.1/61.1",
+    "ASSUMPTION",
+    "MFR_DATASHEET",
+    "STANDARD"
+  ],
+  "behavior_id": "BEH-CON-USB",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "5 - I*Rc/4*2",
+          "measure": "v_load_5A",
+          "tolerance": "0.1%",
+          "value": 4.9
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-usb/B1_vbus_drop.cir",
+      "measured_in_ngspice": "4.900 V",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "5*5.1/61.1",
+          "measure": "vcc_56k",
+          "tolerance": "0.1%",
+          "value": 0.41735
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-usb/B2_cc_rd_divider.cir",
+      "measured_in_ngspice": "0.417349 V",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "1/(2 pi 22.5 1p)",
+          "measure": "f3dB",
+          "tolerance": "1%",
+          "value": "7.074e9"
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-usb/B3_pair_term.cir",
+      "measured_in_ngspice": "7.0737e9 Hz",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B4",
+      "expected": [
+        {
+          "basis": "3.3*15/16.5",
+          "measure": "v_dp",
+          "tolerance": "0.1%",
+          "value": 3.0
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-usb/B4_fs_id.cir",
+      "measured_in_ngspice": "3.000 V",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B5",
+      "expected": [
+        {
+          "basis": "5*100/100.01",
+          "measure": "vbus_on_load",
+          "tolerance": "0.1%",
+          "value": 4.9995
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-usb/B5_dfp_vbus_enable.cir",
+      "measured_in_ngspice": "4.99950 V on; 5e-7 V off",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-162",
+      "OHM-163",
+      "OHM-164",
+      "OHM-165",
+      "OHM-166"
+    ],
+    "behavior_id": "BEH-CON-USB",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "5 - I*Rc/4*2",
+            "measure": "v_load_5A",
+            "tolerance": "0.1%",
+            "value": 4.9
+          }
+        ],
+        "file": "bench/beh-con-usb/B1_vbus_drop.cir",
+        "id": "B1",
+        "measured_in_ngspice": "4.900 V",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "5*5.1/61.1",
+            "measure": "vcc_56k",
+            "tolerance": "0.1%",
+            "value": 0.41735
+          }
+        ],
+        "file": "bench/beh-con-usb/B2_cc_rd_divider.cir",
+        "id": "B2",
+        "measured_in_ngspice": "0.417349 V",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "1/(2 pi 22.5 1p)",
+            "measure": "f3dB",
+            "tolerance": "1%",
+            "value": "7.074e9"
+          }
+        ],
+        "file": "bench/beh-con-usb/B3_pair_term.cir",
+        "id": "B3",
+        "measured_in_ngspice": "7.0737e9 Hz",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "3.3*15/16.5",
+            "measure": "v_dp",
+            "tolerance": "0.1%",
+            "value": 3.0
+          }
+        ],
+        "file": "bench/beh-con-usb/B4_fs_id.cir",
+        "id": "B4",
+        "measured_in_ngspice": "3.000 V",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "5*100/100.01",
+            "measure": "vbus_on_load",
+            "tolerance": "0.1%",
+            "value": 4.9995
+          }
+        ],
+        "file": "bench/beh-con-usb/B5_dfp_vbus_enable.cir",
+        "id": "B5",
+        "measured_in_ngspice": "4.99950 V on; 5e-7 V off",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "connector",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "heating, plating wear",
+        "id": "over_current_contact",
+        "permanence": "permanent",
+        "sim_response": "flag; overtemperature check",
+        "trigger": "I > rating"
+      },
+      {
+        "effect": "CC pin sees 5 V or more",
+        "id": "vbus_to_cc_leak",
+        "permanence": "permanent",
+        "sim_response": "flag abs(v(cc)) > 5.5",
+        "trigger": "contamination between VBUS and CC pins"
+      },
+      {
+        "effect": "Type-C source never turns on VBUS",
+        "id": "missing_rd",
+        "permanence": "recoverable",
+        "sim_response": "CC voltage above 2.04 V means no attach; DRC usbc.rd_required",
+        "trigger": "no 5.1k on a CC pin"
+      },
+      {
+        "effect": "vCC 0.074 V, below attach threshold",
+        "id": "shared_rd",
+        "permanence": "recoverable",
+        "sim_response": "flag detach",
+        "trigger": "one resistor for both CC pins"
+      },
+      {
+        "effect": "PHY damage if unprotected",
+        "id": "esd",
+        "permanence": "permanent",
+        "sim_response": "flag D+/D-/CC/VBUS without ESD part",
+        "trigger": "plug or cable discharge"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "Rc is a datasheet maximum, not typical",
+        "no wear or temperature dependence",
+        "no SuperSpeed, no PD, no CC timing",
+        "pair L and C unsourced",
+        "Rc for A, B, Micro-B unsourced"
+      ],
+      "netlist_template": "R{ref}_c{k} {BOARD_k} {CABLE_k} {Rc}\nR{ref}_sh {SHELL} {SHIELD_NET} {Rshell}\n* CC resistors are separate parts: USBC_SINK_RD / USBC_SRC_RP in bench/beh-con-usb/usb_io.lib\n",
+      "spice_primitives": [
+        "R",
+        "L",
+        "C",
+        "B",
+        "S",
+        "T"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "ac",
+        "tran",
+        "temp"
+      ],
+      "valid_range": "DC to about 100 MHz for the resistive model; the pair parasitics are estimates"
+    },
+    "parameters": {
+      "Rc_miniB": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.02,
+        "max": 0.02,
+        "min": 0,
+        "source_ref": "S10",
+        "tolerance": "max",
+        "unit": "ohm"
+      },
+      "Rc_other": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.03,
+        "max": 0.05,
+        "min": 0,
+        "source_ref": "none",
+        "tolerance": "factor 2",
+        "unit": "ohm"
+      },
+      "Rc_typec": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 0.04,
+        "max": 0.05,
+        "min": 0,
+        "source_ref": "S1",
+        "tolerance": "max initial 40 mohm, 50 after test",
+        "unit": "ohm"
+      },
+      "Rd": {
+        "basis": "STANDARD",
+        "confidence": "M",
+        "default": 5100,
+        "max": 5610,
+        "min": 4590,
+        "source_ref": "S2",
+        "tolerance": "10 to 20 %",
+        "unit": "ohm"
+      },
+      "Rp_1p5A": {
+        "basis": "STANDARD",
+        "confidence": "M",
+        "default": 22000,
+        "max": 23100,
+        "min": 20900,
+        "source_ref": "S2",
+        "tolerance": "5 %",
+        "unit": "ohm"
+      },
+      "Rp_3A": {
+        "basis": "STANDARD",
+        "confidence": "M",
+        "default": 10000,
+        "max": 10500,
+        "min": 9500,
+        "source_ref": "S2",
+        "tolerance": "5 %",
+        "unit": "ohm"
+      },
+      "Rp_default": {
+        "basis": "STANDARD",
+        "confidence": "M",
+        "default": 56000,
+        "max": 67200,
+        "min": 44800,
+        "source_ref": "S2",
+        "tolerance": "20 %",
+        "unit": "ohm"
+      },
+      "Zdiff": {
+        "basis": "STANDARD",
+        "confidence": "M",
+        "default": 90,
+        "max": 103.5,
+        "min": 76.5,
+        "source_ref": "S6",
+        "tolerance": "15 %",
+        "unit": "ohm"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "VBUS",
+        "package_terminal_rule": "A/B: 1; Micro/Mini: 1; Type-C: A4,A9,B4,B9 (one net)",
+        "role": "power"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "DM",
+        "package_terminal_rule": "A/B: 2; Micro/Mini: 2; Type-C: A7,B7",
+        "role": "signal"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "DP",
+        "package_terminal_rule": "A/B: 3; Micro/Mini: 3; Type-C: A6,B6",
+        "role": "signal"
+      },
+      {
+        "electrical_type": "input",
+        "name": "ID",
+        "package_terminal_rule": "Micro/Mini: 4; absent on A, B, Type-C",
+        "role": "signal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "GND",
+        "package_terminal_rule": "A/B: 4; Micro/Mini: 5; Type-C: A1,A12,B1,B12",
+        "role": "ground"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "CC1",
+        "package_terminal_rule": "Type-C A5",
+        "role": "signal"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "CC2",
+        "package_terminal_rule": "Type-C B5",
+        "role": "signal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "SBU1",
+        "package_terminal_rule": "Type-C A8",
+        "role": "signal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "SBU2",
+        "package_terminal_rule": "Type-C B8",
+        "role": "signal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "SHELL",
+        "package_terminal_rule": "shield legs; not present in current catalog records",
+        "role": "shield"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "sum(i(Rvbus_k)) <= 5.0",
+        "condition": "4 VBUS pins collectively, GCT USB4105",
+        "name": "typec_vbus_group_current",
+        "source_ref": "S1",
+        "symbol": "I_vbus",
+        "unit": "A",
+        "value": 5.0
+      },
+      {
+        "check": "sum(i(Rgnd_k)) <= 6.25",
+        "condition": "GND collectively",
+        "name": "typec_gnd_group_current",
+        "source_ref": "S1",
+        "symbol": "I_gnd",
+        "unit": "A",
+        "value": 6.25
+      },
+      {
+        "check": "abs(i(R_pin)) <= 0.25",
+        "condition": "per pin other than VBUS, GND, B5",
+        "name": "typec_pin_current",
+        "source_ref": "S1",
+        "symbol": "I_pin",
+        "unit": "A",
+        "value": 0.25
+      },
+      {
+        "check": "abs(v(vbus)) <= 30",
+        "condition": "AC rms, Molex 105017",
+        "name": "microb_voltage",
+        "source_ref": "S9",
+        "symbol": "V",
+        "unit": "V",
+        "value": 30
+      },
+      {
+        "check": "v(vbus) >= 4.75 and v(vbus) <= 5.25",
+        "condition": "host port",
+        "name": "usb2_vbus_range",
+        "source_ref": "S8",
+        "symbol": "VBUS",
+        "unit": "V",
+        "value": "4.75..5.25"
+      }
+    ],
+    "sources": [
+      "S1",
+      "S2",
+      "S3",
+      "S4",
+      "S5",
+      "S6",
+      "S7",
+      "S8",
+      "S9",
+      "S10",
+      "S11"
+    ],
+    "status": "partial"
+  },
+  "category": "connector",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "b05b89367dd4052daac6f145d8d32d6027d1fd7b5c9a1b358da36e02c5f240f4",
+    "line": 11239
+  },
+  "source_refs": [
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7",
+    "S8",
+    "S9",
+    "S10",
+    "S11"
+  ],
+  "status": "partial"
+}

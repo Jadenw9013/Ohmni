@@ -1,0 +1,27 @@
+* RES-SENSE B1: Kelvin vs 2-wire. Rs=1 mohm, pad/trace resistance 3 mohm on each current lead, I=10 A.
+* NOTE: ngspice 42 silently replaces R=0 by 1 mohm, so Rc must be >0 (1u here).
+* Kelvin sense across E1-E2 = I*Rs = 10 mV ; 2-wire measure across the outer nodes = I*(Rs+2*3m) = 70 mV
+.subckt RSENSE4 I1 I2 E1 E2 params: Rs=1m Rc=0.1m
+* element between internal nodes a and b; current terminals reach element via terminal resistance Rc
+Rel a b {Rs}
+Rc1 I1 a {Rc}
+Rc2 I2 b {Rc}
+* sense terminals tap the element ends (high impedance, very small series resistance)
+Rs1 E1 a 1u
+Rs2 E2 b 1u
+.ends
+Iload 0 n1 DC 10
+Rp1 n1 i1 3m
+Xr i1 i2 e1 e2 RSENSE4 Rs=1m Rc=1u
+Rp2 i2 0 3m
+Rin e1 e2 10Meg
+.control
+set noaskquit
+op
+let vk = v(e1)-v(e2)
+print vk
+let v2w = v(n1)
+print v2w
+quit
+.endc
+.end

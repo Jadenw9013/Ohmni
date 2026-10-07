@@ -1,0 +1,16 @@
+* BEH-DIO-ZENER B1: BZX55C5V1 (Vishay doc 85604): VZ=5.1 V @5 mA, rZ <= 35 ohm @5 mA
+* Zener branch: reverse-breakdown diode DZB (BV=5.0025 @ IBV=5 mA), NBV=2.7, RS=19.5 -> r(5mA)=NBV*Vt/I+RS = 35
+.model DZB D (IS=1e-15 N=1 RS=19.5 BV=5.0025 IBV=5m NBV=2.7)
+* current flows into the cathode (node c) for reverse operation
+I1 0 c 5m
+D1 0 c DZB
+.control
+dc I1 5m 5m 1m
+print v(c)
+dc I1 4.5m 5.5m 1m
+let vz = v(c)
+print vz
+let rz = (vz[1]-vz[0])/1m
+print rz
+.endc
+.end

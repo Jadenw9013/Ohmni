@@ -1,0 +1,23 @@
+* B1: constant-current drive of a power LED with electro-thermal fixed-point iteration.
+* Tj = Ta + Rth_total*(1-eta)*Vf*If ; Rth_js=9 K/W (Cree XP-E2 white), Rth_sa=30 K/W (ASSUMPTION small board), eta=0.30 (ASSUMPTION)
+* XP-E2-class white power LED, parameters fitted at Tj=85 C to Cree XP-E2 Rev 8D Vf points (3.05 V @700 mA, 3.15 V @1000 mA), N=3 assumed.
+* TNOM=85 so the card reproduces the datasheet points at Tj=85 C. Tempco set by EG (about -3 mV/K, ASSUMPTION).
+.model LED_XPE2 D (IS=1.87e-14 N=3.0 RS=0.2233 CJO=300p VJ=1.0 M=0.33 BV=5 IBV=10u EG=3.9 XTI=3 TNOM=85)
+
+I1 0 a DC 0.7
+D1 a 0 LED_XPE2
+.control
+let tj = 25
+let k = 0
+while k < 12
+  option temp = $&tj
+  op
+  let vf = v(a)
+  let pheat = (1-0.30)*vf*0.7
+  let tjn = 25 + (9+30)*pheat
+  let tj = tjn
+  let k = k + 1
+end
+print vf pheat tj
+.endc
+.end

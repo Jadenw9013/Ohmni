@@ -1,0 +1,364 @@
+{
+  "applies_to": [
+    "OHM-122",
+    "OHM-123",
+    "OHM-124",
+    "OHM-125",
+    "OHM-126",
+    "OHM-127",
+    "OHM-128",
+    "OHM-129",
+    "OHM-130",
+    "OHM-131",
+    "OHM-132",
+    "OHM-133",
+    "OHM-134",
+    "OHM-135",
+    "OHM-136",
+    "OHM-137",
+    "OHM-138",
+    "OHM-139",
+    "OHM-140"
+  ],
+  "basis_values": [
+    "1/(2 pi sqrt(LC))",
+    "MFR_DATASHEET",
+    "Tj = Ta + Rth*P",
+    "calibration of S27 Fig.16",
+    "dI*sqrt(L/C)"
+  ],
+  "behavior_id": "BEH-PKG-IC-BINDING",
+  "benches": [
+    {
+      "bench_id": "P1",
+      "expected": [
+        {
+          "basis": "Tj = Ta + Rth*P",
+          "measure": "Tj",
+          "tolerance": "0.1 percent",
+          "value": "70.0, 55.9, 106.26, 43.396, 89.5, 54.2"
+        }
+      ],
+      "file": "docs/behavior/bench/pkg-ic-binding/P1_tj_steady.cir",
+      "measured_in_ngspice": "70.000, 55.900, 106.260, 43.396, 89.500, 54.200",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "P2",
+      "expected": [
+        {
+          "basis": "calibration of S27 Fig.16",
+          "measure": "theta_4vias",
+          "tolerance": "0.5 percent",
+          "value": 30.8
+        }
+      ],
+      "file": "docs/behavior/bench/pkg-ic-binding/P2_thermal_via_parallel.cir",
+      "measured_in_ngspice": "30.80 (9-via extrapolation 21.58 unverified)",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "P3",
+      "expected": [
+        {
+          "basis": "1/(2 pi sqrt(LC))",
+          "measure": "f0_MHz",
+          "tolerance": "0.5 percent",
+          "value": "7.5026, 7.5874, 15.0454, 12.2066, 25.1646"
+        }
+      ],
+      "file": "docs/behavior/bench/pkg-ic-binding/P3_lead_resonance.cir",
+      "measured_in_ngspice": "7.5026, 7.5874, 15.0454, 12.2066, 25.1646",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "P4",
+      "expected": [
+        {
+          "basis": "dI*sqrt(L/C)",
+          "measure": "peak_droop_mV",
+          "tolerance": "2 percent",
+          "value": "42.43, 21.16, 12.65"
+        }
+      ],
+      "file": "docs/behavior/bench/pkg-ic-binding/P4_supply_droop.cir",
+      "measured_in_ngspice": "42.42, 21.15, 12.64",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-122",
+      "OHM-123",
+      "OHM-124",
+      "OHM-125",
+      "OHM-126",
+      "OHM-127",
+      "OHM-128",
+      "OHM-129",
+      "OHM-130",
+      "OHM-131",
+      "OHM-132",
+      "OHM-133",
+      "OHM-134",
+      "OHM-135",
+      "OHM-136",
+      "OHM-137",
+      "OHM-138",
+      "OHM-139",
+      "OHM-140"
+    ],
+    "behavior_id": "BEH-PKG-IC-BINDING",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "Tj = Ta + Rth*P",
+            "measure": "Tj",
+            "tolerance": "0.1 percent",
+            "value": "70.0, 55.9, 106.26, 43.396, 89.5, 54.2"
+          }
+        ],
+        "file": "bench/pkg-ic-binding/P1_tj_steady.cir",
+        "id": "P1",
+        "measured_in_ngspice": "70.000, 55.900, 106.260, 43.396, 89.500, 54.200",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "calibration of S27 Fig.16",
+            "measure": "theta_4vias",
+            "tolerance": "0.5 percent",
+            "value": 30.8
+          }
+        ],
+        "file": "bench/pkg-ic-binding/P2_thermal_via_parallel.cir",
+        "id": "P2",
+        "measured_in_ngspice": "30.80 (9-via extrapolation 21.58 unverified)",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "1/(2 pi sqrt(LC))",
+            "measure": "f0_MHz",
+            "tolerance": "0.5 percent",
+            "value": "7.5026, 7.5874, 15.0454, 12.2066, 25.1646"
+          }
+        ],
+        "file": "bench/pkg-ic-binding/P3_lead_resonance.cir",
+        "id": "P3",
+        "measured_in_ngspice": "7.5026, 7.5874, 15.0454, 12.2066, 25.1646",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "dI*sqrt(L/C)",
+            "measure": "peak_droop_mV",
+            "tolerance": "2 percent",
+            "value": "42.43, 21.16, 12.65"
+          }
+        ],
+        "file": "bench/pkg-ic-binding/P4_supply_droop.cir",
+        "id": "P4",
+        "measured_in_ngspice": "42.42, 21.15, 12.64",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "ic",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "shutdown or die damage",
+        "id": "overtemp",
+        "permanence": "recoverable",
+        "sim_response": "flag; open output if part has thermal shutdown",
+        "trigger": "Tj > Tj_max_abs"
+      },
+      {
+        "effect": "thermal/AGND error",
+        "id": "ep_wrong_net",
+        "permanence": "permanent",
+        "sim_response": "verifier ERROR",
+        "trigger": "EP not on must_connect net"
+      },
+      {
+        "effect": "no behavior",
+        "id": "unbound",
+        "permanence": "recoverable",
+        "sim_response": "status unbound, never pass",
+        "trigger": "no package_binding"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "ideal_components",
+      "known_limitations": [
+        "no mutual L or C",
+        "RthJA board dependent",
+        "no airflow",
+        "thermal capacitance assumed",
+        "thermal-via model calibrated not predictive"
+      ],
+      "netlist_template": "R{ref}_lead {pin} n{ref} {lead_R}\nL{ref}_lead n{ref} {die} {lead_L}\nC{ref}_pad {die} 0 {lead_C}\nIp{ref} 0 tj{ref} dc {P_watts}\nRja{ref} tj{ref} ta {RthJA}\nVta ta 0 {Ta}\n",
+      "spice_primitives": [
+        "R",
+        "L",
+        "C",
+        "I",
+        "V"
+      ],
+      "valid_analyses": [
+        "op",
+        "ac",
+        "tran"
+      ],
+      "valid_range": "lumped model, below about 1 GHz; RthJA valid on the vendor board only"
+    },
+    "parameters": {
+      "RthJA": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": null,
+        "max": 184.3,
+        "min": 18,
+        "source_ref": "S1-S6,S11",
+        "tolerance": "board dependent",
+        "unit": "K/W"
+      },
+      "Tj_max_operating": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 125,
+        "max": 150,
+        "min": 100,
+        "source_ref": "S1,S2,S3",
+        "tolerance": null,
+        "unit": "degC"
+      },
+      "lead_C": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0,
+        "max": 0.35,
+        "min": 0.012,
+        "source_ref": "S27,S30",
+        "tolerance": "+/-50 percent",
+        "unit": "pF"
+      },
+      "lead_L": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0,
+        "max": 12.0,
+        "min": 0.011,
+        "source_ref": "S27,S30",
+        "tolerance": "+/-30 percent per package, corner vs center 2-3x",
+        "unit": "nH"
+      },
+      "lead_R": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0,
+        "max": 1.2,
+        "min": 0.001,
+        "source_ref": "S27,S30",
+        "tolerance": "wide",
+        "unit": "ohm"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "terminal_N",
+        "package_terminal_rule": "numbered per 3D spec (ccw from pin 1) for QFP/QFN/DFN/WSON/PLCC; row letter + column number for BGA/WLCSP; function comes from the bound part",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "exposed_pad",
+        "package_terminal_rule": "kind=exposed_pad, un-numbered; must_connect per bound part (GND | float_ok | not_connected)",
+        "role": "thermal_pad"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "Ta + RthJA*P <= Tj_max",
+        "condition": "operating, parts opened",
+        "name": "junction_temperature",
+        "source_ref": "S1",
+        "symbol": "Tj",
+        "unit": "degC",
+        "value": 125
+      },
+      {
+        "check": "(Tj_max - Ta)/RthJA",
+        "condition": "per bound part",
+        "name": "power_limit",
+        "source_ref": "S1,S3",
+        "symbol": "Pmax",
+        "unit": "W",
+        "value": null
+      }
+    ],
+    "sources": [
+      "S1",
+      "S2",
+      "S3",
+      "S4",
+      "S5",
+      "S6",
+      "S11",
+      "S13",
+      "S16",
+      "S25",
+      "S26",
+      "S27",
+      "S28",
+      "S29",
+      "S30",
+      "S31"
+    ],
+    "status": "complete"
+  },
+  "category": "ic",
+  "fidelity": "ideal_components",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "dfbd33aa170c8e0b58466c22941c719fc6080577824b50ff7c97c727704b735f",
+    "line": 9148
+  },
+  "source_refs": [
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S11",
+    "S13",
+    "S16",
+    "S25",
+    "S26",
+    "S27",
+    "S28",
+    "S29",
+    "S30",
+    "S31"
+  ],
+  "status": "complete"
+}

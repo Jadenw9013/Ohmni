@@ -1,0 +1,17 @@
+B3 Supercapacitor hard short: peak current = V0/(ESR+Rshort), energy = 0.5*C*V0^2
+* C=10 F, ESR=20 mohm, Rshort=1 mohm, V0=2.5 V. Ipk = 2.5/0.021 = 119.05 A ; E = 31.25 J ; tau = 0.21 s
+.include ohm_edlc.lib
+Xc p 0 f ohm_edlc C0=10 ESR=0.02 RLK=1e9 VR=2.5
+Rsh p m 0.001
+Vm m 0 0
+Rf f 0 1meg
+Bp pw 0 V = i(Vm)*i(Vm)*0.021
+.ic v(p)=2.5 v(xc.b)=2.5
+.tran 1m 3 uic
+.control
+run
+meas tran ipk max i(Vm)
+meas tran etot integ v(pw) from=0 to=3
+quit
+.endc
+.end

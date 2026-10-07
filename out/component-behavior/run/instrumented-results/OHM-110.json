@@ -1,0 +1,298 @@
+{
+  "comparison": {
+    "comparison": [
+      {
+        "kind": "interval",
+        "maximum": 13.3,
+        "minimum": 12.75,
+        "node": "OUT"
+      }
+    ],
+    "observed": [
+      13.3
+    ],
+    "passed": true
+  },
+  "entry_id": "OHM-110",
+  "limits": "Same limited analytical contract with zero-volt current probes. Missing thermal context and unsupported failure rules remain unknown.",
+  "netlist_sha256": "648796a6dc8ec18fb3c2dfe73496897650e17448269a17c4491799f0a7630950",
+  "observation_status": "ran",
+  "output_sha256": "85331feb3cb6b2214c5aa0b243f7f345cd1d01fc69aca918c33c09ea5158b585",
+  "ran_at": "2026-10-05T22:49:25Z",
+  "rating_status": "unknown",
+  "ratings": {
+    "components": [
+      {
+        "class_checks": [
+          {
+            "check": "V(VCC)-V(GND) <= 18",
+            "condition": "abs max",
+            "name": "supply",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "f137813b18bf0b9bb21eb95f62775326ed5ca786cb30f5b51453d341c2968c40",
+              "line": 7406
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "VCC",
+            "unit": "V",
+            "value": 18
+          },
+          {
+            "check": "abs(I(OUT)) <= 0.225",
+            "condition": "abs max",
+            "name": "output current",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "f137813b18bf0b9bb21eb95f62775326ed5ca786cb30f5b51453d341c2968c40",
+              "line": 7406
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "IO",
+            "unit": "A",
+            "value": 0.225
+          },
+          {
+            "check": "Ta+P*theta_ja <= 150",
+            "condition": "",
+            "name": "junction temperature",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "f137813b18bf0b9bb21eb95f62775326ed5ca786cb30f5b51453d341c2968c40",
+              "line": 7406
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "Tj",
+            "unit": "C",
+            "value": 150
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-110",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "destroyed",
+            "evaluated_trigger": "Violation of scoped check: absolute supply",
+            "id": "overvoltage",
+            "permanence": "permanent",
+            "reason": null,
+            "sim_response": "ERROR",
+            "status": "not_triggered",
+            "trigger": "VCC > 18 V"
+          },
+          {
+            "applied_response": null,
+            "effect": "overheat",
+            "evaluated_trigger": "Violation of scoped check: output current OUT",
+            "id": "output_overcurrent",
+            "permanence": "permanent",
+            "reason": null,
+            "sim_response": "ERROR",
+            "status": "not_triggered",
+            "trigger": "|IO| > 225 mA"
+          }
+        ],
+        "observations": {
+          "i_CONT": 0.0,
+          "i_DISCH": 0.0,
+          "i_GND": 0.0,
+          "i_OUT": -0.1,
+          "i_RESET": 0.0,
+          "i_THRES": 1e-07,
+          "i_TRIG": -5e-07,
+          "i_VCC": 0.01,
+          "iout_abs_max": 0.225,
+          "iout_recommended": 0.2,
+          "ithr": 1e-07,
+          "itrg": 5e-07,
+          "power": -1.1800000000000002,
+          "rail": 15.0,
+          "ron": 30.0,
+          "rout": 8.0,
+          "rth_ja": 125.4,
+          "supply_abs_max": 18.0,
+          "supply_max": 16.0,
+          "supply_min": 4.5,
+          "tj_max": 150.0,
+          "v_CONT": 10.0,
+          "v_DISCH": 0.0,
+          "v_GND": 0.0,
+          "v_OUT": 13.3,
+          "v_RESET": 15.0,
+          "v_THRES": 0.0,
+          "v_TRIG": 0.0,
+          "v_VCC": 15.0,
+          "voh0": 0.9
+        },
+        "ref": "U1",
+        "reference_checks": [
+          {
+            "evidence": {
+              "supply_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "recommended_supply_max",
+                "page": 4,
+                "scope": "NE555 D SOIC-8",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/ne555.pdf"
+                ],
+                "unit": "V",
+                "value": 16
+              },
+              "supply_min": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "recommended_supply_min",
+                "page": 4,
+                "scope": "NE555 D SOIC-8",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/ne555.pdf"
+                ],
+                "unit": "V",
+                "value": 4.5
+              }
+            },
+            "expression": "supply_min <= rail <= supply_max",
+            "name": "recommended supply",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "supply_abs_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "absolute_supply_max",
+                "page": 4,
+                "scope": "NE555 D SOIC-8",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/ne555.pdf"
+                ],
+                "unit": "V",
+                "value": 18
+              }
+            },
+            "expression": "rail <= supply_abs_max",
+            "name": "absolute supply",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "iout_abs_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "converted_unit": "A",
+                "converted_value": 0.225,
+                "detail": null,
+                "field": "absolute_output_current_magnitude",
+                "page": 4,
+                "scope": "NE555 D SOIC-8",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/ne555.pdf"
+                ],
+                "unit": "mA",
+                "value": 225
+              }
+            },
+            "expression": "abs(i_OUT)<=iout_abs_max",
+            "name": "output current OUT",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "iout_recommended": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "converted_unit": "A",
+                "converted_value": 0.2,
+                "detail": null,
+                "field": "recommended_output_current_magnitude",
+                "page": 4,
+                "scope": "NE555 D SOIC-8",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/ne555.pdf"
+                ],
+                "unit": "mA",
+                "value": 200
+              }
+            },
+            "expression": "abs(i_OUT)<=iout_recommended",
+            "name": "recommended output current",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "rth_ja": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "thermal_resistance_junction_ambient",
+                "page": 5,
+                "scope": "NE555 D SOIC-8; TI thermal-metric reference condition; actual board path separate",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/ne555.pdf"
+                ],
+                "unit": "K/W",
+                "value": 125.4
+              },
+              "tj_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "maximum_junction_temperature",
+                "page": 4,
+                "scope": "NE555 D SOIC-8",
+                "sources": [
+                  "https://www.ti.com/lit/ds/symlink/ne555.pdf"
+                ],
+                "unit": "C",
+                "value": 150
+              }
+            },
+            "expression": "power >= 0 and Tamb+rth_ja*power <= tj_max",
+            "name": "junction temperature",
+            "reason": "Negative terminal power from this approximate model cannot establish dissipated heat",
+            "spec_names": [],
+            "status": "unknown"
+          }
+        ],
+        "status": "unknown"
+      }
+    ],
+    "fault_requests": [],
+    "limitations": [
+      "Only the stated observations and source conditions were checked.",
+      "Unsupported class expressions and failure triggers remain unknown; no damage timing is invented.",
+      "An electrical limit check does not verify physical fit or safe operation."
+    ],
+    "status": "unknown"
+  },
+  "raw_output": "instrumented-output/OHM-110/output.txt",
+  "run_id": "behavior-20261005T065040Z",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+}

@@ -1,0 +1,291 @@
+{
+  "comparison": {
+    "comparison": {
+      "base_current": 0.001875,
+      "kind": "interval",
+      "maximum": 160.0,
+      "minimum": 40.0,
+      "observable": "current_gain",
+      "source_facts": {
+        "gain_max": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "detail": null,
+          "field": "dc_gain_maximum_ungraded",
+          "page": 1,
+          "scope": "Fairchild BD139 ungraded; VCE2 V, IC150 mA, TC25 C; electrical characteristics table, not the separate grade-16 classification",
+          "sources": [
+            "https://www.farnell.com/datasheets/79944.pdf"
+          ],
+          "unit": "1",
+          "value": 160
+        },
+        "gain_min": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "detail": null,
+          "field": "dc_gain_minimum_ungraded",
+          "page": 1,
+          "scope": "Fairchild BD139 ungraded; VCE2 V, IC150 mA, TC25 C; electrical characteristics table, not the separate grade-16 classification",
+          "sources": [
+            "https://www.farnell.com/datasheets/79944.pdf"
+          ],
+          "unit": "1",
+          "value": 40
+        },
+        "gain_test_ic": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "detail": null,
+          "field": "dc_gain_test_collector_current",
+          "page": 1,
+          "scope": "Fairchild BD139 ungraded; VCE2 V, IC150 mA, TC25 C; electrical characteristics table, not the separate grade-16 classification",
+          "sources": [
+            "https://www.farnell.com/datasheets/79944.pdf"
+          ],
+          "unit": "A",
+          "value": 0.15
+        },
+        "gain_test_vce": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "detail": null,
+          "field": "dc_gain_test_collector_voltage",
+          "page": 1,
+          "scope": "Fairchild BD139 ungraded; VCE2 V, IC150 mA, TC25 C; electrical characteristics table, not the separate grade-16 classification",
+          "sources": [
+            "https://www.farnell.com/datasheets/79944.pdf"
+          ],
+          "unit": "V",
+          "value": 2
+        }
+      }
+    },
+    "observed": 80.0,
+    "passed": true
+  },
+  "entry_id": "OHM-097",
+  "limits": "Same limited analytical contract with zero-volt current probes. Missing thermal context and unsupported failure rules remain unknown.",
+  "netlist_sha256": "eccb85578827494eca255e08b7ab0eb9d26e874c0dfef93fea696687479a327c",
+  "observation_status": "ran",
+  "output_sha256": "786957089752209fc28b4834e2221934ae9ab1abf824b75d782db0e9c1645a75",
+  "ran_at": "2026-10-05T22:49:20Z",
+  "rating_status": "unknown",
+  "ratings": {
+    "components": [
+      {
+        "class_checks": [
+          {
+            "check": "abs(v(c)-v(e)) <= 40",
+            "condition": "2N3904",
+            "name": "vceo",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "5764b52d731ea12ab97a45c19fb376e8883f1f490d0340b871ee7279196c8840",
+              "line": 5918
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "VCEO",
+            "unit": "V",
+            "value": 40
+          },
+          {
+            "check": "-(v(b)-v(e)) <= 6",
+            "condition": "2N3904",
+            "name": "vebo",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "5764b52d731ea12ab97a45c19fb376e8883f1f490d0340b871ee7279196c8840",
+              "line": 5918
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "VEBO",
+            "unit": "V",
+            "value": 6
+          },
+          {
+            "check": "abs(i(c)) <= 0.2",
+            "condition": "2N3904 continuous",
+            "name": "ic",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "5764b52d731ea12ab97a45c19fb376e8883f1f490d0340b871ee7279196c8840",
+              "line": 5918
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "IC",
+            "unit": "A",
+            "value": 0.2
+          },
+          {
+            "check": "vce*ic <= (150-Ta)/200",
+            "condition": "TO-92, Ta=25C, derate 5 mW/C",
+            "name": "power",
+            "reason": "Class expression is not safely bound to this reference/analysis",
+            "source": {
+              "document": "COMPONENT_BEHAVIOR_SPEC.md",
+              "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+              "fragment_sha256": "5764b52d731ea12ab97a45c19fb376e8883f1f490d0340b871ee7279196c8840",
+              "line": 5918
+            },
+            "source_ref": "S1",
+            "status": "unknown",
+            "symbol": "PD",
+            "unit": "W",
+            "value": 0.625
+          }
+        ],
+        "context": {
+          "ambient_c": null,
+          "case_c": null,
+          "thermal_scope_confirmed": false
+        },
+        "entry_id": "OHM-097",
+        "failure_modes": [
+          {
+            "applied_response": null,
+            "effect": "avalanche, possible destruction",
+            "evaluated_trigger": "Violation of scoped check: collector voltage",
+            "id": "vceo_exceeded",
+            "permanence": "recoverable",
+            "reason": null,
+            "sim_response": "flag, no clamp",
+            "status": "not_triggered",
+            "trigger": "Vce > VCEO"
+          },
+          {
+            "applied_response": null,
+            "effect": "C-E short (power) or open (small signal)",
+            "id": "overtemp",
+            "permanence": "permanent",
+            "reason": "Trigger or response lacks an executable reference-scoped translation",
+            "sim_response": "mark failed",
+            "status": "unknown",
+            "trigger": "Tj > 150 C"
+          },
+          {
+            "applied_response": null,
+            "effect": "BE avalanche, hFE degradation",
+            "evaluated_trigger": "Violation of scoped check: reverse base voltage",
+            "id": "vebo_exceeded",
+            "permanence": "permanent",
+            "reason": null,
+            "sim_response": "flag, optional BF degradation policy",
+            "status": "not_triggered",
+            "trigger": "reverse Vbe > VEBO"
+          }
+        ],
+        "observations": {
+          "BF": 80.0,
+          "IS": 1e-14,
+          "gain_max": 160.0,
+          "gain_min": 40.0,
+          "gain_test_ic": 0.15,
+          "gain_test_vce": 2.0,
+          "i_B": 0.001875,
+          "i_C": 0.15,
+          "i_E": -0.151875,
+          "ic_max": 1.5,
+          "p_case": 12.5,
+          "p_rated": 1.25,
+          "power": 0.30146155537499997,
+          "tj_max": 150.0,
+          "v_B": 0.7794962,
+          "v_C": 2.0,
+          "v_E": 0.0,
+          "vce_max": 80.0,
+          "veb_max": 5.0
+        },
+        "ref": "U1",
+        "reference_checks": [
+          {
+            "evidence": {
+              "vce_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "maximum_collector_emitter_voltage",
+                "page": 1,
+                "scope": "Fairchild BD139 TO-126; alternate manufacturer reference, not proof of ST revision; BD139 VCEO absolute maximum 80 V; absolute-maximum table header TC=25 C unless otherwise noted.",
+                "sources": [
+                  "https://www.farnell.com/datasheets/79944.pdf"
+                ],
+                "unit": "V",
+                "value": 80
+              }
+            },
+            "expression": "v_C-v_E <= vce_max",
+            "name": "collector voltage",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "veb_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "maximum_emitter_base_voltage",
+                "page": 1,
+                "scope": "Fairchild BD139 TO-126; alternate manufacturer reference, not proof of ST revision; VEBO absolute maximum 5 V; absolute-maximum table header TC=25 C unless otherwise noted.",
+                "sources": [
+                  "https://www.farnell.com/datasheets/79944.pdf"
+                ],
+                "unit": "V",
+                "value": 5
+              }
+            },
+            "expression": "v_E-v_B <= veb_max",
+            "name": "reverse base voltage",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          },
+          {
+            "evidence": {
+              "ic_max": {
+                "basis": "MFR_DATASHEET",
+                "confidence": "H",
+                "detail": null,
+                "field": "maximum_collector_current",
+                "page": 1,
+                "scope": "Fairchild BD139 TO-126; alternate manufacturer reference, not proof of ST revision; IC collector current (DC) maximum 1.5 A; absolute-maximum table header TC=25 C unless otherwise noted. Separate pulse rating is 3.0 A.",
+                "sources": [
+                  "https://www.farnell.com/datasheets/79944.pdf"
+                ],
+                "unit": "A",
+                "value": 1.5
+              }
+            },
+            "expression": "abs(i_C) <= ic_max",
+            "name": "collector current",
+            "reason": null,
+            "spec_names": [],
+            "status": "within_limit"
+          }
+        ],
+        "status": "unknown"
+      }
+    ],
+    "fault_requests": [],
+    "limitations": [
+      "Only the stated observations and source conditions were checked.",
+      "Unsupported class expressions and failure triggers remain unknown; no damage timing is invented.",
+      "An electrical limit check does not verify physical fit or safe operation."
+    ],
+    "status": "unknown"
+  },
+  "raw_output": "instrumented-output/OHM-097/output.txt",
+  "run_id": "behavior-20261005T065040Z",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n"
+}

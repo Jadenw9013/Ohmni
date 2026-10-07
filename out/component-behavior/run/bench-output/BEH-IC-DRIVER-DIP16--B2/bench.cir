@@ -1,0 +1,59 @@
+* BEH-IC-DRIVER-DIP16 B2: (a) input current at VI=3.85 V (ULN2003A, 2.7k input) and VI=5 V; (b) inductive flyback: 10 mH + 50 ohm coil from 12 V = COM, on 3 ms then off.
+* v2: scalars printed as 'name = value' (ii_3p85v_ma, ii_5v_ma, flyback_peak_v); behavior unchanged
+* (a) Analytic estimate: II = (VI - 2 Vbe)/2.7k with 2*Vbe ~1.4 V -> 0.9 mA @3.85 V, 1.33 mA @5 V (circuit consistency; datasheet ULN2003A conditions are not in the opened extract, whose II rows look like ULN2004A (10.5k): 0.34 mA @5 V = (5-1.4)/10.5k)
+* (b) Flyback peak on OUT = V(COM) + VF(IF ~ 0.22 A). Datasheet clamp VF 1.7..2.0 V at 350 mA. Expect OUT peak between 13.5 and 14.2 V.
+* BEH-IC-DRIVER-DIP16: ULN2003A Darlington channel (Gummel-Poon, fitted) and L293D half-H channel (behavioural). ngspice 42 stock.
+* ---- ULN2003A one channel: pins in out com e   (package pins: 1B..7B = 1..7, E = 8, COM = 9, 7C..1C = 10..16) ----
+* Topology: input 2.7k (TI SLRS027T block diagram), Darlington Q1/Q2, 3k base pulldown (ASSUMED, from schematic memory not confirmed in the extract), output clamp diode out->com.
+* Q1/Q2 parameters fitted by bench/ic-driver/fit_uln.py to the middle of the datasheet VCE(sat) bands: (0.1 A, 250 uA) 0.9..1.1 V ; (0.2 A, 350 uA) 1.0..1.3 V ; (0.35 A, 500 uA) 1.2..1.6 V.
+.model q1uln npn(is=1e-14 bf=50 vaf=100 rb=20 rc=2 re=0 ikf=0.05 cje=5p cjc=3p tf=0.5n tr=50n)
+.model q2uln npn(is=1e-13 bf=100 vaf=100 rb=3 rc=0.3 re=1.5 ikf=0.5 cje=20p cjc=10p tf=1n tr=100n)
+.model duln d(is=1e-11 n=1 rs=3.4 cjo=10p tt=100n bv=60 ibv=10u)
+.subckt uln_ch in out com e params: rb=2.7k
+Rb in b1 {rb}
+Q1 out b1 b2 q1uln
+Q2 out b2 e q2uln
+R3 b2 e 3k
+Dcl out com duln
+.ends
+* ---- L293D one half-H channel: pins a en y vcc1 vcc2 gnd (logic in, enable, output, logic supply, motor supply, ground) ----
+* Output: Thevenin to VCC2 (roh, high) or GND (rol, low) when enabled and VCC1 present; Hi-Z otherwise. Roh/Rol are LINEAR fits to one datasheet point each (VOH=VCC2-1.4..1.8 V and VOL=1.2..1.8 V at 1 A, mid values) -> L confidence.
+* Clamp diodes (L293D only) to VCC2 and GND, VF ~1.3 V typ at high current (extract).
+.model dl293 d(is=1e-10 n=1.5 rs=0.8 cjo=20p)
+.subckt l293d_ch a en y vcc1 vcc2 gnd params: roh=1.6 rol=1.5 vih=2.3 vil=1.5
+Bs s gnd V=0.5*(1+tanh((v(a)-0.5*({vih}+{vil}))/0.1))
+Be e1 gnd V=0.5*(1+tanh((v(en)-0.5*({vih}+{vil}))/0.1))*0.5*(1+tanh((v(vcc1)-4.5)/0.1))
+Bth y gnd I=v(e1)*(v(y)-(v(gnd)+v(s)*(v(vcc2)-v(gnd))))/(roh*v(s)+rol*(1-v(s)))
+Bsup vcc2 gnd I=v(e1)*max(((v(gnd)+v(s)*(v(vcc2)-v(gnd)))-v(y))/(roh*v(s)+rol*(1-v(s))),0)
+Dh y vcc2 dl293
+Dl gnd y dl293
+Rleak y gnd 1e9
+.ends
+
+Vc vcc 0 12
+Vi385 i1 0 3.85
+X1 i1 o1 vcc 0 uln_ch
+Rl1 vcc o1 50
+Vi5 i2 0 5
+X2 i2 o2 vcc 0 uln_ch
+Rl2 vcc o2 50
+* flyback
+Vp inp 0 pwl(0 0 1m 0 1.001m 5 4m 5 4.001m 0)
+Xf inp of vcc 0 uln_ch
+Lf vcc mid 10m
+Rf mid of 50
+.tran 1u 8m
+.control
+set noaskquit
+run
+meas tran i385 find i(Vi385) at=0.1m
+meas tran i5 find i(Vi5) at=0.1m
+meas tran vpk max v(of) from=4m to=6m
+let ii385 = abs(i385)*1000
+let ii5 = abs(i5)*1000
+echo ii_3p85v_ma = $&ii385
+echo ii_5v_ma = $&ii5
+echo flyback_peak_v = $&vpk
+quit
+.endc
+.end

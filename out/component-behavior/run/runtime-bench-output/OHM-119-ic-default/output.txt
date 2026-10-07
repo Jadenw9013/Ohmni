@@ -1,0 +1,235 @@
+
+Note: No compatibility mode selected!
+
+
+Circuit: ohmni sourced behavior circuit
+
+Doing analysis at TEMP = 25.000000 and TNOM = 25.000000
+
+
+No. of Data Rows : 1
+	Node                                  Voltage
+	----                                  -------
+	----	-------
+	xc3_a2.oi_vmeas_0                2.103127e+00
+	xc3_a2.oi                        2.103127e+00
+	xc3_a2.n1                        2.103127e+00
+	xc3_a2.ip1                       2.003000e+00
+	xc3_a1.oi_vmeas_0                2.103127e+00
+	xc3_a1.oi                        2.103127e+00
+	xc3_a1.n1                        2.103127e+00
+	xc3_a1.ip1                       2.003000e+00
+	n2                               2.002979e+00
+	n1                               2.002979e+00
+	n5                               5.000000e+00
+	n3                               2.000000e+00
+
+	Source	Current
+	------	-------
+
+	vsource3#branch                  4.197897e-08
+	vsource5#branch                  -4.70600e-03
+	v.xc3_a1.vos#branch              2.098948e-08
+	v.xc3_a2.vos#branch              2.098948e-08
+	b.xc3_a1.bo#branch               -2.00296e-03
+	v.xc3_a1.v_ro#branch             2.002960e-03
+	b.xc3_a2.bo#branch               -2.00296e-03
+	v.xc3_a2.v_ro#branch             2.002960e-03
+
+ Capacitor models (Fixed capacitor)
+      model                     C
+
+        cap                     0
+         cj                     0
+       cjsw                     0
+       defw                 1e-05
+       defl                     0
+     narrow                     0
+      short                     0
+        del                     0
+        tc1                     0
+        tc2                     0
+         di                     0
+      thick                     0
+     bv_max                 1e+99
+
+ Resistor models (Simple linear resistor)
+      model                     R
+
+        rsh                     0
+     narrow                     0
+      short                     0
+        tc1                     0
+        tc2                     0
+        tce                     0
+       defw                 1e-05
+          l                 1e-05
+         kf                     0
+         af                     0
+          r                     0
+     bv_max                 1e+99
+         lf                     1
+         wf                     1
+         ef                     1
+
+ ASRC: Arbitrary Source 
+     device        b.xc3_a2.bsupp           b.xc3_a2.bo          b.xc3_a2.bgm
+      dtemp                     0                     0                     0
+          i            0.00200296           -0.00200296           9.25004e-08
+          v                     5               2.10313              -2.10313
+   pos_node                     2                    11                     0
+   neg_node                     0                     0                    10
+
+ ASRC: Arbitrary Source 
+     device        b.xc3_a1.bsupp           b.xc3_a1.bo          b.xc3_a1.bgm
+      dtemp                     0                     0                     0
+          i            0.00200296           -0.00200296           9.25004e-08
+          v                     5               2.10313              -2.10313
+   pos_node                     2                     7                     0
+   neg_node                     0                     0                     6
+
+ Capacitor: Fixed capacitor
+     device           c.xc3_a2.c1          c.xc3_a2.cim          c.xc3_a2.cip
+      model                     C                     C                     C
+capacitance                 1e-09                 2e-12                 2e-12
+      dtemp                     0                     0                     0
+     bv_max                 1e+99                 1e+99                 1e+99
+          i                     0                     0                     0
+          p                     0                     0                     0
+
+ Capacitor: Fixed capacitor
+     device           c.xc3_a1.c1          c.xc3_a1.cim          c.xc3_a1.cip
+      model                     C                     C                     C
+capacitance                 1e-09                 2e-12                 2e-12
+      dtemp                     0                     0                     0
+     bv_max                 1e+99                 1e+99                 1e+99
+          i                     0                     0                     0
+          p                     0                     0                     0
+
+ Isource: Independent current source
+     device           i.xc3_a2.iq          i.xc3_a2.ibm          i.xc3_a2.ibp
+         dc               0.00035               1.9e-08               2.1e-08
+          m                     1                     1                     1
+      acmag                     0                     0                     0
+      pulse         -         -         -
+        sin         -         -         -
+        exp         -         -         -
+        pwl         -         -         -
+       sffm         -         -         -
+         am         -         -         -
+    trnoise         -         -         -
+   trrandom         -         -         -
+          v                    -5              -2.99702                -2.997
+          p               0.00175           5.69434e-08            6.2937e-08
+    current               0.00035               1.9e-08               2.1e-08
+
+ Isource: Independent current source
+     device           i.xc3_a1.iq          i.xc3_a1.ibm          i.xc3_a1.ibp
+         dc               0.00035               1.9e-08               2.1e-08
+          m                     1                     1                     1
+      acmag                     0                     0                     0
+      pulse         -         -         -
+        sin         -         -         -
+        exp         -         -         -
+        pwl         -         -         -
+       sffm         -         -         -
+         am         -         -         -
+    trnoise         -         -         -
+   trrandom         -         -         -
+          v                    -5              -2.99702                -2.997
+          p               0.00175           5.69434e-08            6.2937e-08
+    current               0.00035               1.9e-08               2.1e-08
+
+ Resistor: Simple linear resistor
+     device           r.xc3_a2.ro           r.xc3_a2.r1          r.xc3_a2.rid
+      model                     R                     R                     R
+ resistance                    50           2.27364e+07                 2e+06
+         ac                    50           2.27364e+07                 2e+06
+      dtemp                     0                     0                     0
+     bv_max                 1e+99                 1e+99                 1e+99
+      noisy                     1                     1                     1
+          i            0.00200296           9.25004e-08           1.05156e-11
+          p           0.000200592            1.9454e-07           2.21157e-16
+
+ Resistor: Simple linear resistor
+     device           r.xc3_a1.ro           r.xc3_a1.r1          r.xc3_a1.rid
+      model                     R                     R                     R
+ resistance                    50           2.27364e+07                 2e+06
+         ac                    50           2.27364e+07                 2e+06
+      dtemp                     0                     0                     0
+     bv_max                 1e+99                 1e+99                 1e+99
+      noisy                     1                     1                     1
+          i            0.00200296           9.25004e-08           1.05156e-11
+          p           0.000200592            1.9454e-07           2.21157e-16
+
+ Resistor: Simple linear resistor
+     device                   rc2                   rc1
+      model                     R                     R
+ resistance                  1000                  1000
+         ac                  1000                  1000
+      dtemp                     0                     0
+     bv_max                 1e+99                 1e+99
+      noisy                     1                     1
+          i            0.00200298            0.00200298
+          p            0.00401192            0.00401192
+
+ Vsource: Independent voltage source
+     device         v.xc3_a2.v_ro          v.xc3_a2.vos         v.xc3_a1.v_ro
+         dc                     0                 0.003                     0
+      acmag                     0                     0                     0
+      pulse         -         -         -
+        sin         -         -         -
+        exp         -         -         -
+        pwl         -         -         -
+       sffm         -         -         -
+         am         -         -         -
+    trnoise         -         -         -
+   trrandom         -         -         -
+    portnum                     0                     0                     0
+         z0                     0                     0                     0
+        pwr                     0                     0                     0
+       freq                     0                     0                     0
+      phase                     0                     0                     0
+          i            0.00200296           2.09895e-08            0.00200296
+          p           3.21472e-14           6.29685e-11           3.21472e-14
+
+ Vsource: Independent voltage source
+     device          v.xc3_a1.vos              vsource5              vsource3
+         dc                 0.003                     5                     2
+      acmag                     0                     0                     0
+      pulse         -         -         -
+        sin         -         -         -
+        exp         -         -         -
+        pwl         -         -         -
+       sffm         -         -         -
+         am         -         -         -
+    trnoise         -         -         -
+   trrandom         -         -         -
+    portnum                     0                     0                     0
+         z0                     0                     0                     0
+        pwr                     0                     0                     0
+       freq                     0                     0                     0
+      phase                     0                     0                     0
+          i           2.09895e-08             -0.004706            4.1979e-08
+          p           6.29685e-11              -0.02353           8.39579e-08
+
+
+
+Total analysis time (seconds) = 0.003
+
+Total elapsed time (seconds) = 0.005 
+
+Total DRAM available = 8031.117 MB.
+DRAM currently available = 6834.586 MB.
+Maximum ngspice program size =   21.508 MB.
+Current ngspice program size =   12.398 MB.
+
+Shared ngspice pages =   10.320 MB.
+Text (code) pages =    6.156 MB.
+Stack = 0 bytes.
+Library pages =    2.254 MB.
+
+Warning: no nodes given: .print op
+Using SPARSE 1.3 as Direct Linear Solver
+Note: Starting dynamic gmin stepping
+Note: Dynamic gmin stepping completed

@@ -1,0 +1,39 @@
+* BEH-TRN-BJT B2: common-emitter amplifier, voltage divider bias, Re bypassed
+* Design: Vcc=12, R1=47k, R2=10k, Rc=4.7k, Re=1k, Ce=100u, Cin=10u, Cout=10u, RL=open
+* Analytic (hand design, Vbe=0.65 assumed):
+*   Vth = 12*10/57 = 2.105 V ; Rth=47k||10k = 8.246k
+*   Ic ~= (Vth - 0.65)/(Re + Rth/(beta+1)) with beta~170 -> 1.455/(1000+48) = 1.39 mA
+*   re = Vt/Ic = 0.025865/1.39m = 18.6 ohm ; |Av| ~= Rc/(re+RE_int) , RE_int=1.19 ohm (model RE)
+*   |Av| ~= 4700/(18.6+1.2) = 237 ; ro correction (VA=100 -> ro~(100+Vce)/Ic) -> ~0.95 => ~225
+*   expected |Av| = 225, tolerance 15 % (Vbe uncertainty moves Ic about 3 %, plus rb,beta terms)
+.include /home/claude/behavior/bench/trn_bjt/models_bjt_r6fit.lib
+Vcc vcc 0 12
+R1 vcc b 47k
+R2 b 0 10k
+Rc vcc c 4.7k
+Re e 0 1k
+Ce e 0 100u
+Q1 c b e Q2N3904_R6FIT
+Cin vin b 10u
+Vin vin 0 dc 0 ac 1m
+Cout c vout 10u
+Rload vout 0 1G
+.control
+set noaskquit
+op
+let icq = (12-v(c))/4700
+let vceq = v(c)-v(e)
+print icq vceq
+set icv = $&icq
+set vcev = $&vceq
+ac lin 1 10k 10k
+let av = mag(v(vout)/v(vin))
+print av
+let gm = $icv/0.025865
+let ro = (100+$vcev)/$icv
+let rl = 4700*ro/(4700+ro)
+let pred = gm*rl/(1+gm*1.1905+gm*12.769/170)
+print gm ro pred
+quit
+.endc
+.end

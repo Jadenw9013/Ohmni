@@ -1,0 +1,314 @@
+{
+  "applies_to": [
+    "OHM-018",
+    "OHM-019",
+    "OHM-020"
+  ],
+  "basis_values": [
+    "10*(10^(k*0.5)-1)/(10^k-1), k=1.505",
+    "10*(5k||10k)/(5k+5k||10k)",
+    "10*0.3",
+    "10*t/1ms",
+    "ASSUMPTION",
+    "MFR_DATASHEET"
+  ],
+  "behavior_id": "BEH-RES-POT",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "10*0.3",
+          "measure": "v(w)",
+          "tolerance": "0.1%",
+          "value": 3.0
+        }
+      ],
+      "file": "docs/behavior/bench/pot/B1.cir",
+      "measured_in_ngspice": "3.000000",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "10*(5k||10k)/(5k+5k||10k)",
+          "measure": "v(w)",
+          "tolerance": "0.1%",
+          "value": 4.0
+        }
+      ],
+      "file": "docs/behavior/bench/pot/B2.cir",
+      "measured_in_ngspice": "3.999968",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "10*(10^(k*0.5)-1)/(10^k-1), k=1.505",
+          "measure": "v(w)",
+          "tolerance": "0.1%",
+          "value": 1.50243
+        }
+      ],
+      "file": "docs/behavior/bench/pot/B3.cir",
+      "measured_in_ngspice": "1.502431",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B4",
+      "expected": [
+        {
+          "basis": "10*t/1ms",
+          "measure": "v(w)@0.25ms",
+          "tolerance": "0.1%",
+          "value": 2.5
+        },
+        {
+          "basis": "10*t/1ms",
+          "measure": "v(w)@0.75ms",
+          "tolerance": "0.1%",
+          "value": 7.5
+        }
+      ],
+      "file": "docs/behavior/bench/pot/B4.cir",
+      "measured_in_ngspice": "2.5; 7.5",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-018",
+      "OHM-019",
+      "OHM-020"
+    ],
+    "behavior_id": "BEH-RES-POT",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "10*0.3",
+            "measure": "v(w)",
+            "tolerance": "0.1%",
+            "value": 3.0
+          }
+        ],
+        "file": "bench/pot/B1.cir",
+        "id": "B1",
+        "measured_in_ngspice": "3.000000",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "10*(5k||10k)/(5k+5k||10k)",
+            "measure": "v(w)",
+            "tolerance": "0.1%",
+            "value": 4.0
+          }
+        ],
+        "file": "bench/pot/B2.cir",
+        "id": "B2",
+        "measured_in_ngspice": "3.999968",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "10*(10^(k*0.5)-1)/(10^k-1), k=1.505",
+            "measure": "v(w)",
+            "tolerance": "0.1%",
+            "value": 1.50243
+          }
+        ],
+        "file": "bench/pot/B3.cir",
+        "id": "B3",
+        "measured_in_ngspice": "1.502431",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "10*t/1ms",
+            "measure": "v(w)@0.25ms",
+            "tolerance": "0.1%",
+            "value": 2.5
+          },
+          {
+            "basis": "10*t/1ms",
+            "measure": "v(w)@0.75ms",
+            "tolerance": "0.1%",
+            "value": 7.5
+          }
+        ],
+        "file": "bench/pot/B4.cir",
+        "id": "B4",
+        "measured_in_ngspice": "2.5; 7.5",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "passive",
+    "confidence": {
+      "failure": "L",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "track burns at the wiper, local resistance rises, then open",
+        "id": "overpower_track",
+        "permanence": "permanent",
+        "sim_response": "flag ERROR; open segment at >5x (assumption)",
+        "trigger": "track or segment power above rating"
+      },
+      {
+        "effect": "wiper floats",
+        "id": "open_wiper",
+        "permanence": "recoverable",
+        "sim_response": "user toggle sets Rw=1G",
+        "trigger": "contact lift or burnout"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "no wiper noise",
+        "log taper curve is an assumed formula",
+        "Rw unsourced",
+        "no wiper current limit in datasheets opened",
+        "end-resistance not position dependent",
+        "no parasitic C"
+      ],
+      "netlist_template": ".subckt POT3 A W B params: Rtot=10k pos=0.5 Rend=2 Rw=100m\nRab1 A m {max(Rtot*(1-pos),Rend)}\nRab2 m B {max(Rtot*pos,Rend)}\nRwp m W {Rw}\n.ends\n",
+      "spice_primitives": [
+        "R",
+        "B"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "ac",
+        "tran",
+        "temp"
+      ],
+      "valid_range": "DC to audio; wiper current small; track power below rating"
+    },
+    "parameters": {
+      "p_rated": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 0.5,
+        "source_ref": "S19",
+        "unit": "W"
+      },
+      "pos": {
+        "basis": "ASSUMPTION",
+        "confidence": "M",
+        "default": 0.5,
+        "max": 1,
+        "min": 0,
+        "source_ref": "none",
+        "unit": "fraction"
+      },
+      "rend": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 2,
+        "source_ref": "S19",
+        "unit": "ohm"
+      },
+      "rw": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.1,
+        "source_ref": "none",
+        "unit": "ohm"
+      },
+      "taper": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "L",
+        "default": "linear",
+        "source_ref": "S21",
+        "unit": "enum"
+      },
+      "tcr": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 100,
+        "source_ref": "S19",
+        "unit": "ppm_per_K"
+      },
+      "value": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 10000,
+        "max": 2000000,
+        "min": 10,
+        "source_ref": "S19",
+        "tolerance": "10 % (3296), 20 % (3314, PTV09)",
+        "unit": "ohm"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "A",
+        "package_terminal_rule": "terminal 1 (high end by convention, pos=1 end)",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "W",
+        "package_terminal_rule": "terminal 2 (wiper) in OHM-018, OHM-019, OHM-020",
+        "role": "wiper"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "B",
+        "package_terminal_rule": "terminal 3 (low end, pos=0 end)",
+        "role": "terminal"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "v_AB^2/Rtot <= P_allowed",
+        "condition": "whole track, ambient Tamb",
+        "name": "track power",
+        "source_ref": "S19",
+        "symbol": "P",
+        "unit": "W",
+        "value": "p_rated*clamp((125-Tamb)/(125-70),0,1)"
+      },
+      {
+        "check": "abs(v_AB) <= 300",
+        "condition": "3296 / 3314 G,J,H as listed",
+        "name": "working voltage",
+        "source_ref": "S19",
+        "symbol": "V",
+        "unit": "V",
+        "value": 300
+      }
+    ],
+    "sources": "S19, S20, S21",
+    "status": "partial"
+  },
+  "category": "passive",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "cbebda207f1b715019ef3cac30bad2d91f8492a902caa149642007d947294849",
+    "line": 925
+  },
+  "source_refs": "S19, S20, S21",
+  "status": "partial"
+}

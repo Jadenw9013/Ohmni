@@ -1,0 +1,1963 @@
+{
+  "BEH-CAP-ALEL/B1": {
+    "measurements": {
+      "|Z| at 120 Hz (ohm)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "z120",
+        "scale": 1,
+        "source_line": "print z120"
+      }
+    },
+    "netlist_sha256": "7236d5293ce14262533c0f178f931362aca669ee8240b442ccc76c5f2b0aa190"
+  },
+  "BEH-CAP-ALEL/B2": {
+    "measurements": {
+      "P (W)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "pavg",
+        "scale": 1,
+        "source_line": "meas tran pavg avg v(pw) from=40m to=60m"
+      }
+    },
+    "netlist_sha256": "f320a0841da84a09de13885f3e456ea4a39f53ea62fd2e927a9d6b160775ded5"
+  },
+  "BEH-CAP-ALEL/B3": {
+    "measurements": {
+      "flag at -1.5 V": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "fl_15",
+        "scale": 1,
+        "source_line": "meas tran fl_15 find v(f) at=1.5"
+      }
+    },
+    "netlist_sha256": "775206c79af3535d04d32b556c16ceef4f57dd4a44093d8fdcae7af1f4212688"
+  },
+  "BEH-CAP-ALEL/B4": {
+    "measurements": {
+      "ESR at -25 C (ohm)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "esr_eff",
+        "scale": 1,
+        "source_line": "print esr_eff"
+      }
+    },
+    "netlist_sha256": "7c62588503f10a6905efaaef81b95b8e24ab54a15c943a6ff5133d43897e598e"
+  },
+  "BEH-CAP-ALPOLY/B1": {
+    "measurements": {
+      "f0 (kHz)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "fres",
+        "scale": 0.001,
+        "source_line": "meas ac fres when zm=0.02000001 fall=1"
+      }
+    },
+    "netlist_sha256": "0475fc2562e76b8175f61bfa2da1acfe2b4e3e379e8c2ab018d3d3daca84bab7"
+  },
+  "BEH-CAP-ALPOLY/B2": {
+    "measurements": {
+      "peak current RS=0.1 (A)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "ipkneg",
+        "scale": -1,
+        "source_line": "meas tran ipkneg min i(Vs)"
+      }
+    },
+    "netlist_sha256": "ac38e08b2e1f8f0a0f85145a5040af5a002158cca94ade4f3aaad037543ebaab"
+  },
+  "BEH-CAP-CERAMIC/B1": {
+    "measurements": {
+      "Ceff at 0/1/2/4 V (uF)": {
+        "components": [
+          {
+            "scalar": "ceramic1_ceff_v0",
+            "scale": 1,
+            "source_line": "let ceramic1_ceff_v0 = imag((v(in)-v(x))/0.01)/(2*pi*1k)*1e6"
+          },
+          {
+            "scalar": "ceramic1_ceff_v1",
+            "scale": 1,
+            "source_line": "let ceramic1_ceff_v1 = imag((v(in)-v(x))/0.01)/(2*pi*1k)*1e6"
+          },
+          {
+            "scalar": "ceramic1_ceff_v2",
+            "scale": 1,
+            "source_line": "let ceramic1_ceff_v2 = imag((v(in)-v(x))/0.01)/(2*pi*1k)*1e6"
+          },
+          {
+            "scalar": "ceramic1_ceff_v4",
+            "scale": 1,
+            "source_line": "let ceramic1_ceff_v4 = imag((v(in)-v(x))/0.01)/(2*pi*1k)*1e6"
+          }
+        ],
+        "reason": "REPIN-001: locked compound value bound component-wise to named v2 scalars; locked tolerance applies to each."
+      }
+    },
+    "netlist_sha256": "5805a48ae61cd30b91cb23276433ca8e147d95353fe45eac8332acff5396cec6"
+  },
+  "BEH-CAP-CERAMIC/B2": {
+    "measurements": {
+      "SRF (MHz)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "fres",
+        "scale": 1e-06,
+        "source_line": "meas ac fres when zm=zmin"
+      },
+      "Zmin (mohm)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "zmin",
+        "scale": 1000,
+        "source_line": "meas ac zmin min zm"
+      }
+    },
+    "netlist_sha256": "dc98551848e27467a3c18a6c802f568943327eac6399736b02cad5bd44dd2f44"
+  },
+  "BEH-CAP-CERAMIC/B3": {
+    "measurements": {
+      "v(t0+tau) (V)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "vtau",
+        "scale": 1,
+        "source_line": "meas tran vtau find v(p) at=100.0001"
+      }
+    },
+    "netlist_sha256": "461a68a5d3f7a46c3a9cd9e03b4ecd6527edc300c9dc2cd1ddbe09e13de6cf67"
+  },
+  "BEH-CAP-CERAMIC/B4": {
+    "measurements": {
+      "flag edge (s)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "tflag",
+        "scale": 1,
+        "source_line": "meas tran tflag when v(f)=0.5 rise=1"
+      }
+    },
+    "netlist_sha256": "3307d9ef14e028edb4a74e8245a207fbde5c6f3bc7e591bd32a7113fdead739a"
+  },
+  "BEH-CAP-EDLC/B1": {
+    "measurements": {
+      "v(tau) (V)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "vtau",
+        "scale": 1,
+        "source_line": "meas tran vtau find v(p) at=10000"
+      }
+    },
+    "netlist_sha256": "1c3cff19dd01609d5e77326cdcbff45d1ca67f2e0edb9574d7d03d1e9b85ce77"
+  },
+  "BEH-CAP-EDLC/B2": {
+    "measurements": {
+      "v1/v2 (V)": {
+        "components": [
+          {
+            "scalar": "edlc2_v1",
+            "scale": 1,
+            "source_line": "let edlc2_v1 = v(in)-v(mid)"
+          },
+          {
+            "scalar": "edlc2_v2",
+            "scale": 1,
+            "source_line": "let edlc2_v2 = v(mid)"
+          }
+        ],
+        "reason": "REPIN-001: locked compound value bound component-wise to named v2 scalars; locked tolerance applies to each."
+      }
+    },
+    "netlist_sha256": "d6d27c6d0bc7b8e4608f3edc14b4a8cf3bfeb84d4465a5de0ec18e8619ce9862"
+  },
+  "BEH-CAP-EDLC/B3": {
+    "measurements": {
+      "E (J)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "etot",
+        "scale": 1,
+        "source_line": "meas tran etot integ v(pw) from=0 to=3"
+      },
+      "Ipk (A)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "ipk",
+        "scale": 1,
+        "source_line": "meas tran ipk max i(Vm)"
+      }
+    },
+    "netlist_sha256": "21ef3f048e6839fc7ea6a892d6c2d387ef694b67496fcb979838d88b8a853e4d"
+  },
+  "BEH-CAP-FILM/B1": {
+    "measurements": {
+      "tan delta at 1 kHz": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "tand",
+        "scale": 1,
+        "source_line": "print tand"
+      }
+    },
+    "netlist_sha256": "b98c113635abab21b6c6f464b09570ec152bdea1b5f90ac9e8288d89d8ed514d"
+  },
+  "BEH-CAP-FILM/B2": {
+    "measurements": {
+      "f0 (MHz)": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "film2_f0_mhz",
+        "scale": 1,
+        "source_line": "let film2_f0_mhz = film2_fres/1e6"
+      }
+    },
+    "netlist_sha256": "f623270cbc1a75f202b721f35985cdc073923a2519f16e4298b31c70c50a6d17"
+  },
+  "BEH-CAP-FILM/B3": {
+    "measurements": {
+      "flag at 400 V amplitude": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "fmax_400",
+        "scale": 1,
+        "source_line": "meas tran fmax_400 max v(f) from=20m to=60m"
+      }
+    },
+    "netlist_sha256": "d6463df587515834a413d759048669d96e70108846b5cf7417b2e089b1be7e0b"
+  },
+  "BEH-CAP-MICA/B1": {
+    "measurements": {
+      "C at 125 C (pF)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "cpf",
+        "scale": 1,
+        "source_line": "print cpf"
+      }
+    },
+    "netlist_sha256": "bc5876847243641c38992ea159429696b3cb1c21dbfbf357320670af8dd035d8"
+  },
+  "BEH-CAP-MICA/B2": {
+    "measurements": {
+      "Q at 1 MHz": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "qm",
+        "scale": 1,
+        "source_line": "print qm"
+      }
+    },
+    "netlist_sha256": "7a169031805ad593323026b1766a50186c0d7a1d4b8753415431a2ab0369d741"
+  },
+  "BEH-CAP-TANT/B1": {
+    "measurements": {
+      "leakage current (uA)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "ileak_uA",
+        "scale": 1,
+        "source_line": "print ileak_uA"
+      }
+    },
+    "netlist_sha256": "ca6d9adadb434bdbe2c959ed4a90ff650db9a469116eebcef4b3d020400b2d98"
+  },
+  "BEH-CAP-TANT/B2": {
+    "measurements": {
+      "bit 1 edge (V)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "t_flag1",
+        "scale": 1,
+        "source_line": "meas tran t_flag1 when v(f)=0.5 rise=1"
+      },
+      "bit 8 edge (V)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "t_flag8",
+        "scale": 1,
+        "source_line": "meas tran t_flag8 when v(f)=8.5 rise=1"
+      }
+    },
+    "netlist_sha256": "4d523857c2cf0338ef8ff2bd50639dbd9aa4b0da7913cd6339a243aee3387b82"
+  },
+  "BEH-CAP-TANT/B3": {
+    "measurements": {
+      "reverse flag edge (V)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "t_flag",
+        "scale": -1,
+        "source_line": "meas tran t_flag when v(f)=1 rise=1"
+      }
+    },
+    "netlist_sha256": "29bd8e2442ff8327f436356030c1d47300d5173b71f81e15b9dad8a073c7281e"
+  },
+  "BEH-CON-AUDIO/B1": {
+    "measurements": {
+      "v_before": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "v_before",
+        "scale": 1,
+        "source_line": "meas tran v_before find v(tn) at=0.5m"
+      }
+    },
+    "netlist_sha256": "904ba936a852b3c6beceb37895e561febe98658f76152b8fe3791bb259e96ec9"
+  },
+  "BEH-CON-AUDIO/B2": {
+    "measurements": {
+      "gain": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "gain",
+        "scale": 1,
+        "source_line": "meas ac gain find gd at=1k"
+      }
+    },
+    "netlist_sha256": "5b997facc37c6d48cb83d3911f2acb0ea87707da8052a37eb9a5d934ae367487"
+  },
+  "BEH-CON-DCJACK/B1": {
+    "measurements": {
+      "dT": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "dt_rise",
+        "scale": 1,
+        "source_line": "let dt_rise = v(t)"
+      },
+      "v_drop": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "v_drop",
+        "scale": 1,
+        "source_line": "let v_drop = v(n)"
+      }
+    },
+    "netlist_sha256": "39bb85dd6c8f5b0907ee6c2d7bfc9a5925949e01f9053309165f208a7e35e22c"
+  },
+  "BEH-CON-DCJACK/B2": {
+    "measurements": {
+      "vload_plugged": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "vload_plugged",
+        "scale": 1,
+        "source_line": "let vload_plugged = v(p1)[1]"
+      },
+      "vload_unplugged": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "vload_unplugged",
+        "scale": 1,
+        "source_line": "let vload_unplugged = v(p1)[0]"
+      }
+    },
+    "netlist_sha256": "90ec932e303f4487284c8f62f68a3687e30843728e25aa93afe0f569a5a7f411"
+  },
+  "BEH-CON-FFC/B1": {
+    "measurements": {
+      "v_drop": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "v_drop",
+        "scale": 1,
+        "source_line": "let v_drop = v(n)"
+      }
+    },
+    "netlist_sha256": "38f9df6d37e4d9b6518f0b6c7fe363e1e75d63800e5e313a1248f4cdb58806e1"
+  },
+  "BEH-CON-FFC/B2": {
+    "measurements": {
+      "i_contact1": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "i_contact1",
+        "scale": 1,
+        "source_line": "let i_contact1 = i(V1)"
+      }
+    },
+    "netlist_sha256": "74194cf3a3a23391bd2555bb698a6a242d724fe27b80c51f780ca337e55facaf"
+  },
+  "BEH-CON-HDMI/B1": {
+    "measurements": {
+      "vdiff": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "vdiff",
+        "scale": 1,
+        "source_line": "let vdiff = v(dp)-v(dn)"
+      }
+    },
+    "netlist_sha256": "d438a17690b306e427d6eb1db897a7d7b8ee5ffe62b2dbd102dd89f65d05f8fa"
+  },
+  "BEH-CON-HDMI/B2": {
+    "measurements": {
+      "vload_first": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "vload_first",
+        "scale": 1,
+        "source_line": "meas tran vload_first find v(b) at=1.5n"
+      }
+    },
+    "netlist_sha256": "c983a52642acdd97993ce89aa6ffe1c97034dd191400e6fe64a55cc4dcfbe095"
+  },
+  "BEH-CON-HEADER/B1": {
+    "measurements": {
+      "V_load": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "vload",
+        "scale": 1,
+        "source_line": "let vload = v(n1)-v(n2)"
+      }
+    },
+    "netlist_sha256": "095391b2f3103c38a72179f9146760da476c06467d81877e7e9703d9a0dba621"
+  },
+  "BEH-CON-HEADER/B3": {
+    "measurements": {
+      "dT": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "dt_rise",
+        "scale": 1,
+        "source_line": "let dt_rise = v(dt)"
+      }
+    },
+    "netlist_sha256": "8d09c085714ffc37e86b17fec56fb3e849c3fd186b421508534be0e232dabf4c"
+  },
+  "BEH-CON-MODJACK/B2": {
+    "measurements": {
+      "vmin": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "vmin",
+        "scale": 1,
+        "source_line": "meas tran vmin min v(ring)"
+      }
+    },
+    "netlist_sha256": "3f1e4fc5b1f485573fa5b5a920eb523d821353be906772d4f25d616fdbf0bb0d"
+  },
+  "BEH-CON-MODJACK/B3": {
+    "measurements": {
+      "gain": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "g",
+        "scale": 1,
+        "source_line": "meas ac g find vm(d) at=1k"
+      }
+    },
+    "netlist_sha256": "250852355c415b0bbc71b91c2a9863b534bd55680911ec44501047868c62782d"
+  },
+  "BEH-CON-RF/B1": {
+    "measurements": {
+      "vswr": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "vswr_3g",
+        "scale": 1,
+        "source_line": "let vswr_3g = mag(vswr[1])"
+      }
+    },
+    "netlist_sha256": "da2781b28d5399862b728cb168ed854c2052fd70114dbdd84ab6bee6b01be1de"
+  },
+  "BEH-CON-RF/B2": {
+    "measurements": {
+      "gamma_C": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "g1",
+        "scale": 1,
+        "source_line": "let g1 = mag((z1-50)/(z1+50))"
+      }
+    },
+    "netlist_sha256": "a1e064c54467344e09d9f310ed63031d06207f699a1a660cb0f960092f30d934"
+  },
+  "BEH-CON-RF/B3": {
+    "measurements": {
+      "gamma_step": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "gamma_step",
+        "scale": 1,
+        "source_line": "let gamma_step = mag"
+      }
+    },
+    "netlist_sha256": "9cd72d1767557022956ee1a2ad429695f4e79dbdf391394eede57cef0ccb4e70"
+  },
+  "BEH-CON-SDSOCKET/B1": {
+    "measurements": {
+      "v_cd_closed": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "v_cd_closed",
+        "scale": 1,
+        "source_line": "let v_cd_closed = v(cd)[1]"
+      },
+      "v_cd_open": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "v_cd_open",
+        "scale": 1,
+        "source_line": "let v_cd_open = v(cd)[0]"
+      }
+    },
+    "netlist_sha256": "3030b5a5dc69fab970ccc432f79513186e822bdb06e86d892a2b8f5034b06943"
+  },
+  "BEH-CON-SDSOCKET/B2": {
+    "measurements": {
+      "vcc_loaded": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "vfinal",
+        "scale": 1,
+        "source_line": "meas tran vfinal find v(vcc) at=5m"
+      }
+    },
+    "netlist_sha256": "1c6b2e28db403441c208cec0ca06eac4e8b59c17b1d4d99227d5268798ec34e0"
+  },
+  "BEH-CON-TERMINAL/B1": {
+    "measurements": {
+      "flag": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "flag_ovr",
+        "scale": 1,
+        "source_line": "let flag_ovr = v(flag)"
+      }
+    },
+    "netlist_sha256": "593d2d5181a8359ea38be654897682b5840810637fa1a56b296c4b29277c6f33"
+  },
+  "BEH-CON-TERMINAL/B2": {
+    "measurements": {
+      "dT": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "dt_rise",
+        "scale": 1,
+        "source_line": "let dt_rise = v(dt)"
+      }
+    },
+    "netlist_sha256": "f0ee46809ccac60efed1bb5ecc0f0ddb35609d5b8ae525380779c5e6d5d365d7"
+  },
+  "BEH-CON-USB/B1": {
+    "measurements": {
+      "v_load_5A": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "v_load_5a",
+        "scale": 1,
+        "source_line": "let v_load_5a = vload[5]"
+      }
+    },
+    "netlist_sha256": "c79fe73ea1d8c774723b6d06939b14b710e00dcd687c51e1efac2b6630d52317"
+  },
+  "BEH-CON-USB/B2": {
+    "measurements": {
+      "vcc_56k": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "vcc_56k",
+        "scale": 1,
+        "source_line": "let vcc_56k = v(c56)"
+      }
+    },
+    "netlist_sha256": "7712ea42a3ecf139e64f72b758cb92a0d4f8c094e4097c64ac4f3e7ef3f00afd"
+  },
+  "BEH-CON-USB/B3": {
+    "measurements": {
+      "f3dB": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "f3",
+        "scale": 1,
+        "source_line": "meas ac f3 when vm(n2)=0.3535534 fall=1"
+      }
+    },
+    "netlist_sha256": "d3bb25b40425dcac0ce2f1cd30cd86c1ccb2d7fa8155f68ff94fa52767c04ef4"
+  },
+  "BEH-CON-USB/B4": {
+    "measurements": {
+      "v_dp": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "v_dp",
+        "scale": 1,
+        "source_line": "let v_dp = v(dp)"
+      }
+    },
+    "netlist_sha256": "90529e4ae8199f9c8705179fbe365e45d18bdd80f02c53c8be8489efae4cec1d"
+  },
+  "BEH-CON-USB/B5": {
+    "measurements": {
+      "vbus_on_load": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "vbus_on_load",
+        "scale": 1,
+        "source_line": "let vbus_on_load = v(outA)"
+      }
+    },
+    "netlist_sha256": "1360f5276b386c1f94337192df5c7535ee77f22e4c5bfef47b446041408a8d0c"
+  },
+  "BEH-CON-WTB/B1": {
+    "measurements": {
+      "i_straight": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "straight_i",
+        "scale": 1,
+        "source_line": "let straight_i = v(s2)/100"
+      }
+    },
+    "netlist_sha256": "8f947212a965fef2a651636a6426c8d3bfd87e7c7fb44f890121a63c7f007b04"
+  },
+  "BEH-CON-WTB/B2": {
+    "measurements": {
+      "V_load": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "vload",
+        "scale": 1,
+        "source_line": "let vload = v(a)-v(b)"
+      }
+    },
+    "netlist_sha256": "a02250a7dc36fbccdb5efdc6d7c8763cffacb32e6dc512022930bce2aa7c2b1f"
+  },
+  "BEH-CON-XT/B1": {
+    "measurements": {
+      "P_xt60": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "p_xt60",
+        "scale": 1,
+        "source_line": "let p_xt60 = v(p60)"
+      },
+      "dT": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "dt_xt60",
+        "scale": 1,
+        "source_line": "let dt_xt60 = v(t60)"
+      }
+    },
+    "netlist_sha256": "2d0fc6af40e59ab3082e81426e24a1dbf7ce3b73749895636a006c864d9d4469"
+  },
+  "BEH-DIO-PN/B4": {
+    "measurements": {
+      "CJ at 4 V": {
+        "rationale": "Explicit authored observation for CJ at 4 V; no nearest-value matching or expected-value change.",
+        "scalar": "c",
+        "scale": 1.0,
+        "source_line": "print c"
+      }
+    },
+    "netlist_sha256": "6b6ca39ee892607314b73c505ecb7b9e11bf2e17734fd249322a6e5254f57e29"
+  },
+  "BEH-DIO-PN/B5": {
+    "measurements": {
+      "V at 100 uA reverse": {
+        "rationale": "Explicit authored observation for V at 100 uA reverse; no nearest-value matching or expected-value change.",
+        "scalar": "v(k)",
+        "scale": 1.0,
+        "source_line": "print v(k)"
+      }
+    },
+    "netlist_sha256": "ca60d43378e4d4b97cbb974e48461a5e0cded28d9060e1c4e5f32757f479ad61"
+  },
+  "BEH-DIO-PN/B6": {
+    "measurements": {
+      "high clamp": {
+        "rationale": "Explicit authored observation for high clamp; no nearest-value matching or expected-value change.",
+        "scalar": "vhi",
+        "scale": 1.0,
+        "source_line": "meas tran vhi max v(sig)"
+      },
+      "low clamp": {
+        "rationale": "Explicit authored observation for low clamp; no nearest-value matching or expected-value change.",
+        "scalar": "vlo",
+        "scale": 1.0,
+        "source_line": "meas tran vlo min v(sig)"
+      }
+    },
+    "netlist_sha256": "e9f7cd6d87fc46c904546e35f20c371675e3aa23be5c773fc0c17f8da7affdf8"
+  },
+  "BEH-DIO-PN/B7": {
+    "measurements": {
+      "VF at 100 C, 10 mA": {
+        "occurrence": 1,
+        "occurrence_count": 2,
+        "rationale": "Explicit authored observation for VF at 100 C, 10 mA; no nearest-value matching or expected-value change. Ordered operating points are explicit in the immutable authored deck; require the exact count.",
+        "scalar": "v(d)",
+        "scale": 1.0,
+        "source_line": "print v(d)"
+      }
+    },
+    "netlist_sha256": "805c356fc03f568801e42d6b92b658d1ba940f00bdb7ec52eeba8c3d2ad6ece9"
+  },
+  "BEH-DIO-SCHOTTKY/B1": {
+    "measurements": {
+      "V at 1 A": {
+        "occurrence": 0,
+        "occurrence_count": 2,
+        "rationale": "Explicit authored observation for V at 1 A; no nearest-value matching or expected-value change. Ordered operating points are explicit in the immutable authored deck; require the exact count.",
+        "scalar": "v(d)",
+        "scale": 1.0,
+        "source_line": "print v(d)"
+      }
+    },
+    "netlist_sha256": "ce4f584cb70a767d35def3fb98def8557c50d2244ff6de925f26437489c0c99e"
+  },
+  "BEH-DIO-SCHOTTKY/B2": {
+    "measurements": {
+      "IR 100C": {
+        "occurrence": 1,
+        "occurrence_count": 2,
+        "rationale": "Explicit authored observation for IR 100C; no nearest-value matching or expected-value change. The voltage-source branch current is opposite to the stated load/reverse-current magnitude. Ordered operating points are explicit in the immutable authored deck; require the exact count.",
+        "scalar": "i(vr)",
+        "scale": -1.0,
+        "source_line": "print i(Vr)"
+      },
+      "IR 25C": {
+        "occurrence": 0,
+        "occurrence_count": 2,
+        "rationale": "Explicit authored observation for IR 25C; no nearest-value matching or expected-value change. The voltage-source branch current is opposite to the stated load/reverse-current magnitude. Ordered operating points are explicit in the immutable authored deck; require the exact count.",
+        "scalar": "i(vr)",
+        "scale": -1.0,
+        "source_line": "print i(Vr)"
+      }
+    },
+    "netlist_sha256": "cbf6f9c5a3c5e010d7e139890763b96f31c6f3f62befaf11bd37a30f74031e66"
+  },
+  "BEH-DIO-TVS/B1": {
+    "measurements": {
+      "V at 24.6 A": {
+        "occurrence": 0,
+        "occurrence_count": 2,
+        "rationale": "Explicit authored observation for V at 24.6 A; no nearest-value matching or expected-value change. Ordered operating points are explicit in the immutable authored deck; require the exact count.",
+        "scalar": "v(c)",
+        "scale": 1.0,
+        "source_line": "print v(c)"
+      }
+    },
+    "netlist_sha256": "a1f44f588f3fefe33edb85ccd93c846f83e3b03ed62a332c25f0a8c9afc903da"
+  },
+  "BEH-DIO-TVS/B2": {
+    "measurements": {
+      "Ppeak": {
+        "rationale": "Explicit authored observation for Ppeak; no nearest-value matching or expected-value change.",
+        "scalar": "ppk",
+        "scale": 1.0,
+        "source_line": "meas tran ppk max ptvs"
+      }
+    },
+    "netlist_sha256": "1677fe2af05a855fec84078147a67c8d181c0d657f6a941c2263fb82f6a21115"
+  },
+  "BEH-DIO-TVS/B3": {
+    "measurements": {
+      "V at +/-24.6 A": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "tvs3_vpos",
+        "scale": 1,
+        "source_line": "let tvs3_vpos = v(c)"
+      }
+    },
+    "netlist_sha256": "bb3d60e61cd5c96670cd942be015b575ee91545a8b5eb4cca4597cc68678bb94"
+  },
+  "BEH-DIO-ZENER/B1": {
+    "measurements": {
+      "VZ": {
+        "rationale": "Explicit authored observation for VZ; no nearest-value matching or expected-value change.",
+        "scalar": "v(c)",
+        "scale": 1.0,
+        "source_line": "print v(c)"
+      },
+      "rZ": {
+        "rationale": "Explicit authored observation for rZ; no nearest-value matching or expected-value change.",
+        "scalar": "rz",
+        "scale": 1.0,
+        "source_line": "print rz"
+      }
+    },
+    "netlist_sha256": "bf8f3b0ae809d16e0779fc1ed9b16de5242820fb6740c4e08707f78442e51768"
+  },
+  "BEH-DIO-ZENER/B2": {
+    "measurements": {
+      "Vout": {
+        "rationale": "Explicit authored observation for Vout; no nearest-value matching or expected-value change.",
+        "scalar": "v(k)",
+        "scale": 1.0,
+        "source_line": "print v(k) i(Vin)"
+      }
+    },
+    "netlist_sha256": "d569be201eb0add4a27836436fd3a8d0972b5a257f1914ba9ad594de1a11a381"
+  },
+  "BEH-DIO-ZENER/B3": {
+    "measurements": {
+      "dVout/dVin": {
+        "rationale": "Explicit authored observation for dVout/dVin; no nearest-value matching or expected-value change.",
+        "scalar": "abs(v(k))",
+        "scale": 1.0,
+        "source_line": "print abs(v(k))"
+      }
+    },
+    "netlist_sha256": "3f8c2451e4b375087ff02d8e587c1bf047a67140f6634454dc270c70b711d422"
+  },
+  "BEH-DISP-LCD1602/B1": {
+    "measurements": {
+      "I_backlight": {
+        "rationale": "Explicit authored observation for I_backlight; no nearest-value matching or expected-value change.",
+        "scalar": "ibl",
+        "scale": 1.0,
+        "source_line": "print v(a) ibl"
+      }
+    },
+    "netlist_sha256": "9e02cac4b7b46d934cd0fa9a240166018535e1dc6c9c6d5d486315d60e830328"
+  },
+  "BEH-DISP-LEDARRAY/B1": {
+    "measurements": {
+      "I_led_avg": {
+        "rationale": "Explicit authored observation for I_led_avg; no nearest-value matching or expected-value change.",
+        "scalar": "iled",
+        "scale": 1.0,
+        "source_line": ".meas tran iled AVG i(VSENSE) FROM=2m TO=20m"
+      }
+    },
+    "netlist_sha256": "534b0d4afb36093d9d17da1915e9a1e7b2a0b22b0fcc04c114d04329a3fce4b0"
+  },
+  "BEH-DISP-LEDARRAY/B2": {
+    "measurements": {
+      "I_digit_avg": {
+        "rationale": "Explicit authored observation for I_digit_avg; no nearest-value matching or expected-value change.",
+        "scalar": "idig",
+        "scale": 1.0,
+        "source_line": ".meas tran idig AVG i(VD0) FROM=2m TO=20m"
+      }
+    },
+    "netlist_sha256": "4478d672ed320fdb30137e5e2c193700436e404cfa0689faff2b5dcb7ef7fa98"
+  },
+  "BEH-DISP-OLED-I2C/B1": {
+    "measurements": {
+      "tr 30-70": {
+        "rationale": "Explicit authored observation for tr 30-70; no nearest-value matching or expected-value change.",
+        "scalar": "tr",
+        "scale": 1.0,
+        "source_line": ".meas tran tr TRIG v(sda) VAL=0.99 RISE=1 TARG v(sda) VAL=2.31 RISE=1"
+      }
+    },
+    "netlist_sha256": "b942eae26bfbdfbdbc80612fc49a91a239ea99c47184e8e35df4e27d9cea105e"
+  },
+  "BEH-DISP-OLED-I2C/B2": {
+    "measurements": {
+      "Vdd": {
+        "rationale": "Explicit authored observation for Vdd; no nearest-value matching or expected-value change.",
+        "scalar": "v(vdd)",
+        "scale": 1.0,
+        "source_line": "print v(vdd)"
+      }
+    },
+    "netlist_sha256": "526d227c4c8058d04a2b77e2045b5b99c6ae29b4ce35ab422242f9c188d44363"
+  },
+  "BEH-FREQ-CERRES/B1": {
+    "measurements": {
+      "f_Hz": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "f_res_hz",
+        "scale": 1,
+        "source_line": "let f_res_hz = 200/tper"
+      }
+    },
+    "netlist_sha256": "a170b9697067e6b617b0d71b41ccb6cae3deda2527580b6c2781a5ddd2e353e1"
+  },
+  "BEH-FREQ-SAW/B1": {
+    "measurements": {
+      "bw3_Hz": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "bw3_hz",
+        "scale": 1,
+        "source_line": "let bw3_hz = f3hi - f3lo"
+      },
+      "il_fc_dB": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "il_fc_db",
+        "scale": 1,
+        "source_line": "meas ac il_fc_db FIND il AT=869e6"
+      }
+    },
+    "netlist_sha256": "c4ea75a91de42e9139cde4d50745fd48d5fec5a8c0ca664fac83b608824847c4"
+  },
+  "BEH-FREQ-SAW/B2": {
+    "measurements": {
+      "il_100ohm_dB": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "il_100ohm_db",
+        "scale": 1,
+        "source_line": "let il_100ohm_db = -10*log10(4*50*mag(v(out))^2/100)"
+      }
+    },
+    "netlist_sha256": "4081ab2963e79699e6d73c27883235af003813b2c939557000829792ec23e1b5"
+  },
+  "BEH-FREQ-XO/B1": {
+    "measurements": {
+      "f_Hz": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "f_out_hz",
+        "scale": 1,
+        "source_line": "let f_out_hz = 200/per"
+      }
+    },
+    "netlist_sha256": "e8aab1f108241f2e200958434e7d323becd8d0ca83ff22f8c3f69c61fdb33885"
+  },
+  "BEH-FREQ-XO/B2": {
+    "measurements": {
+      "vout_max_V": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "vout_max_v",
+        "scale": 1,
+        "source_line": "meas tran vout_max_v MAX v(out) FROM=10u TO=20u"
+      }
+    },
+    "netlist_sha256": "5eb825d3fd0f45fc5076c21b39d523a172be9edeed6e74ffa208922b90fab66a"
+  },
+  "BEH-FREQ-XTAL/B1": {
+    "measurements": {
+      "fa_Hz": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "fa_hz",
+        "scale": 1,
+        "source_line": "meas ac fa_hz MAX_AT zm"
+      },
+      "zmin_ohm": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "zmin_ohm",
+        "scale": 1,
+        "source_line": "meas ac zmin_ohm MIN zm"
+      }
+    },
+    "netlist_sha256": "8a6e78dfed348a1de9c2faf8790ccfa36bd63f128fe9f379a2ed64d4cf281cc6"
+  },
+  "BEH-FREQ-XTAL/B2": {
+    "measurements": {
+      "fL_18pF_Hz": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "fl_18p_hz",
+        "scale": 1,
+        "source_line": "meas ac fl_18p_hz WHEN ph=0 CROSS=1"
+      }
+    },
+    "netlist_sha256": "91ab42887babf28936bb740f847e44b66f446889040b0bf37ae01de98a8e4969"
+  },
+  "BEH-FREQ-XTAL/B3": {
+    "measurements": {
+      "fL_32k_Hz": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "fl_32k_hz",
+        "scale": 1,
+        "source_line": "meas ac fl_32k_hz WHEN ph=0 CROSS=1"
+      }
+    },
+    "netlist_sha256": "4fc8706efa23f3d8f3eb984700c6032eda49ded2f0913bbf445e47102bf5aa0f"
+  },
+  "BEH-FREQ-XTAL/P1": {
+    "measurements": {
+      "DL_W": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "dl_w",
+        "scale": 1,
+        "source_line": "let dl_w = 80*irms*irms"
+      }
+    },
+    "netlist_sha256": "a531e88c7aed52a0ec87f567cf9e1cc1f58ff952fa109a0de76cad25cf0237db"
+  },
+  "BEH-FREQ-XTAL/P2": {
+    "measurements": {
+      "f_loop_Hz": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "f_loop_hz",
+        "scale": 1,
+        "source_line": "meas ac f_loop_hz WHEN xz=0 CROSS=1"
+      }
+    },
+    "netlist_sha256": "86429c37aaeba89d811fa8953d66e3ebc76a962c260d74b4de6421c3af1ee93f"
+  },
+  "BEH-FREQ-XTAL/P3": {
+    "measurements": {
+      "f_tran_Hz": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "f_tran_hz",
+        "scale": 1,
+        "source_line": "let f_tran_hz = 800/tper"
+      }
+    },
+    "netlist_sha256": "21a9f2e6b5f62105ced440085f0c9cd8af88bc394ea48a90e92d14f380675019"
+  },
+  "BEH-FREQ-XTAL/P5": {
+    "measurements": {
+      "envelope_ratio_at_gm_crit": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "envelope_ratio_at_gm_crit",
+        "scale": 1,
+        "source_line": "let envelope_ratio_at_gm_crit = a300/a150"
+      }
+    },
+    "netlist_sha256": "1211c0b8974ba011afa474fb4b20c0111ba0aa5fccf1b24a0744afb0deda2f5e"
+  },
+  "BEH-FREQ-XTAL/P6": {
+    "measurements": {
+      "gm_crit_S": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "gm_crit_s",
+        "scale": 1,
+        "source_line": "let gm_crit_s = 2.2m + (2.6m - 2.2m)*(0 - $lrlov)/(lr_hi - $lrlov)"
+      }
+    },
+    "netlist_sha256": "3278b467a190d48bc9071b9b1a85348e4f200a52bc14a108c33fe70cf2914fbd"
+  },
+  "BEH-IC-CHARGER-SOT235/B1": {
+    "measurements": {
+      "Ibat_A": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "ibat_cc_A",
+        "scale": 1,
+        "source_line": "echo ibat_cc_A = $&ibat"
+      }
+    },
+    "netlist_sha256": "2a4067c8ed955b7c9e4ca7586fb3bf394b7ef54b7c1f10585df74b5bc836cbca"
+  },
+  "BEH-IC-CHARGER-SOT235/B2": {
+    "measurements": {
+      "I_4.19V_mA": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "i_4p19v_ma",
+        "scale": 1,
+        "source_line": "echo i_4p19v_mA = $&ic_mA"
+      }
+    },
+    "netlist_sha256": "07226fbe48ad82283878624ca7f67f7621d74082a4905658da7965b77a450dd3"
+  },
+  "BEH-IC-CHARGER-SOT235/B3": {
+    "measurements": {
+      "Ibat_A": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "ibat_therm_A",
+        "scale": 1,
+        "source_line": "echo ibat_therm_A = $&ibat"
+      }
+    },
+    "netlist_sha256": "7ae509c0ebef67fa30b36b3294df6a11a07aed86a5e69157f608d1b52cd64529"
+  },
+  "BEH-IC-COMPARATOR/B1": {
+    "measurements": {
+      "trip voltage": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "vtrip_v",
+        "scale": 1,
+        "source_line": "echo vtrip_v = $&vtrip"
+      }
+    },
+    "netlist_sha256": "a7bb8569fa4f00d7d537763a423f379d99864455fc6027b41edb73d9fa5d0f87"
+  },
+  "BEH-IC-COMPARATOR/B1b": {
+    "measurements": {
+      "VOL": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "vol_b1b_v",
+        "scale": 1,
+        "source_line": "echo vol_b1b_v = $&vol"
+      }
+    },
+    "netlist_sha256": "e5992116d24a88e42c80698c147329f13b92d8427e91e020867173d2104ac648"
+  },
+  "BEH-IC-COMPARATOR/B2": {
+    "measurements": {
+      "t_5mV_us": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "t_5mv_us",
+        "scale": 1,
+        "source_line": "echo t_5mv_us = $&tau"
+      },
+      "t_TTL_us": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "t_ttl_us",
+        "scale": 1,
+        "source_line": "echo t_ttl_us = $&tbb"
+      }
+    },
+    "netlist_sha256": "a8012d7246e2d8aa6f1091437675e91d0e335cfcf0b478a07107414a3ed70447"
+  },
+  "BEH-IC-DIGITAL-IF/D3": {
+    "measurements": {
+      "t_release_us": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "t_release_us",
+        "scale": 1,
+        "source_line": "let t_release_us = t_release*1e6"
+      }
+    },
+    "netlist_sha256": "6d8e53d82e3f37a8c81f4922b3ab469646be6a776a81a50e63883fcae605b5bb"
+  },
+  "BEH-IC-DIGITAL-IO/B1": {
+    "measurements": {
+      "VOH_20mA": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "voh_20ma_v",
+        "scale": 1,
+        "source_line": "echo voh_20ma_v = $&voh"
+      },
+      "VOL_20mA": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "vol_20ma_v",
+        "scale": 1,
+        "source_line": "echo vol_20ma_v = $&vol"
+      }
+    },
+    "netlist_sha256": "7b6a8b89d1c486cd57e08abec194990f039cbec4310bd2710247f18826280ddf"
+  },
+  "BEH-IC-DIGITAL-IO/B2": {
+    "measurements": {
+      "pullup_pad_V": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "pullup_pad_v",
+        "scale": 1,
+        "source_line": "echo pullup_pad_v = $&pa4v"
+      }
+    },
+    "netlist_sha256": "5fa10a756d36f2882c25599551a24001220e4d55696c0e6595813072d0c3b202"
+  },
+  "BEH-IC-DRIVER-DIP16/B3": {
+    "measurements": {
+      "vmotor": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "vmotor_fwd_v",
+        "scale": 1,
+        "source_line": "echo vmotor_fwd_v = $&vfwd"
+      }
+    },
+    "netlist_sha256": "492135b28d5f36779c18051470d138aed84b6384c9b2862ee13cbe2caafef342"
+  },
+  "BEH-IC-LDO-SOT235/B1": {
+    "measurements": {
+      "vout_vin3.0": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "vout_vin3p0_v",
+        "scale": 1,
+        "source_line": "echo vout_vin3p0_v = $&va"
+      }
+    },
+    "netlist_sha256": "4178bc9c6ad34c5061fa8c0c6786c931cc2062100a1ed8145d377aa189feadf4"
+  },
+  "BEH-IC-LDO-SOT235/B3": {
+    "measurements": {
+      "Tj_C": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "tj_model_c",
+        "scale": 1,
+        "source_line": "echo tj_model_c = $&tjm"
+      }
+    },
+    "netlist_sha256": "9a8bf089cde45590cf598f7dfd9ae12d41ca0332fe1c3a6d4b08473e966e6c3b"
+  },
+  "BEH-IC-LOGIC-HC/B1": {
+    "measurements": {
+      "VOH_4mA": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "voh_4ma_v",
+        "scale": 1,
+        "source_line": "echo voh_4ma_v = $&voh"
+      },
+      "VOL_4mA": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "vol_4ma_v",
+        "scale": 1,
+        "source_line": "echo vol_4ma_v = $&vol"
+      }
+    },
+    "netlist_sha256": "0e62503471eb1781a2bb192ba4faafe6bccbe48bd938ae07d936bcf2a5db6c86"
+  },
+  "BEH-IC-LOGIC-HC/B2": {
+    "measurements": {
+      "tpd_ns": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "tpd_ns_val",
+        "scale": 1,
+        "source_line": "echo tpd_ns_val = $&tpd"
+      }
+    },
+    "netlist_sha256": "a3d6640ea93a511a45557b60c034bed5831cf86746a23146522a686179429d28"
+  },
+  "BEH-IC-LOGIC-HC/B3": {
+    "measurements": {
+      "icc_uA": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "icc_ua_val",
+        "scale": 1,
+        "source_line": "echo icc_ua_val = $&iccu"
+      }
+    },
+    "netlist_sha256": "07a11b735d7c2323c0c11e29e5f6fde5f337016bd4dac832532aea3391e9c426"
+  },
+  "BEH-IC-LOGIC-HC/B4": {
+    "measurements": {
+      "VT_minus": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "vt_minus_v",
+        "scale": 1,
+        "source_line": "echo vt_minus_v = $&vtm"
+      },
+      "VT_plus": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "vt_plus_v",
+        "scale": 1,
+        "source_line": "echo vt_plus_v = $&vtp"
+      }
+    },
+    "netlist_sha256": "237f7b1be8439b44a0d83e179ff2d76cbd4c6d1d302c90d6b4b74a56bf1c7f6a"
+  },
+  "BEH-IC-LOGIC-HC/B5": {
+    "measurements": {
+      "I_clamp_mA": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "i_clamp_ma",
+        "scale": 1,
+        "source_line": "echo i_clamp_ma = $&iclamp"
+      }
+    },
+    "netlist_sha256": "2ac7783a12912765d876c7d0d539bb5c50994d58d2df583efd0753fbcbbc3332"
+  },
+  "BEH-IC-OPAMP/B1": {
+    "measurements": {
+      "f_-3dB": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "f3db_g10_hz",
+        "scale": 1,
+        "source_line": "echo f3db_g10_hz = $&f3"
+      }
+    },
+    "netlist_sha256": "aa5d598487641350b036dc21fb6fdc495057117eb77649ad0db1dd700b6b1eaf"
+  },
+  "BEH-IC-OPAMP/B2": {
+    "measurements": {
+      "SR V/us": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "sr_follower_v_per_us",
+        "scale": 1,
+        "source_line": "echo sr_follower_v_per_us = $&sr"
+      }
+    },
+    "netlist_sha256": "fdd78a3a6036b2a3661616134717b47ff4a9d04ca00c539212a7db5083dd8c30"
+  },
+  "BEH-IC-OPAMP/B3": {
+    "measurements": {
+      "Vout follower": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "vfollow_v",
+        "scale": 1,
+        "source_line": "echo vfollow_v = $&vf"
+      }
+    },
+    "netlist_sha256": "79c2fcf8b4a9a67b285184ef11dbf33801c2874a5223d91231f795eedfe0e7f4"
+  },
+  "BEH-IC-OPAMP/B4": {
+    "measurements": {
+      "f_-3dB": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "f3db_rrio_hz",
+        "scale": 1,
+        "source_line": "echo f3db_rrio_hz = $&f3"
+      }
+    },
+    "netlist_sha256": "e5fe1e485e898b317d41cc912d1a0e84ac4b22489243a15d7d8d68a21a7ec8cb"
+  },
+  "BEH-IC-OPAMP/B5": {
+    "measurements": {
+      "Icc mA": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "icc_ma",
+        "scale": 1,
+        "source_line": "echo icc_ma = $&icc"
+      }
+    },
+    "netlist_sha256": "9ab8c15f119634e3e6e5a9e5a49a7782230033a1ae46402f863fd5aa7d8189c9"
+  },
+  "BEH-IC-OPTO-DIP6/B1": {
+    "measurements": {
+      "Vc_2mA": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "vc_2ma_v",
+        "scale": 1,
+        "source_line": "echo vc_2ma_v = $&vca"
+      }
+    },
+    "netlist_sha256": "a711e7856a03f48e1cb50998fbbab3268850add551f29eb5f0e1fdcaf4949cf9"
+  },
+  "BEH-IC-OPTO-DIP6/B2": {
+    "measurements": {
+      "Ic_mA_at_IF5mA": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "ic_5ma_ctr1_ma",
+        "scale": 1,
+        "source_line": "echo ic_5ma_ctr1_ma = $&ic3"
+      }
+    },
+    "netlist_sha256": "118a5aa7ddc1a6a548248132f31c1f1bff8bd76a655aacc1e525987e79deff94"
+  },
+  "BEH-IC-PKGBIND/B1": {
+    "measurements": {
+      "f0": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "f0_hz",
+        "scale": 1,
+        "source_line": "echo f0_hz = $&f0hz"
+      }
+    },
+    "netlist_sha256": "acb2bdcb85a0590dc7be75cafaedd27c9eb6a13801c27939b0f5b1f544cd01e7"
+  },
+  "BEH-IC-PKGBIND/B2": {
+    "measurements": {
+      "Tj DIP/SOIC/TSSOP": {
+        "components": [
+          {
+            "scalar": "tj_dip_c",
+            "scale": 1,
+            "source_line": "echo tj_dip_c = $&tjdip"
+          },
+          {
+            "scalar": "tj_soic_c",
+            "scale": 1,
+            "source_line": "echo tj_soic_c = $&tjsoic"
+          },
+          {
+            "scalar": "tj_tssop_c",
+            "scale": 1,
+            "source_line": "echo tj_tssop_c = $&tjtssop"
+          }
+        ],
+        "reason": "REPIN-001: locked compound value bound component-wise to named v2 scalars; locked tolerance applies to each."
+      }
+    },
+    "netlist_sha256": "f6bebf77f2a889ff7c7b6452438e1272a791345e07d0f3bddc3def55c3a950b4"
+  },
+  "BEH-IC-RS232-DIP16/B1": {
+    "measurements": {
+      "v_out": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "v_out_tin_low_v",
+        "scale": 1,
+        "source_line": "echo v_out_tin_low_v = $&vo1"
+      }
+    },
+    "netlist_sha256": "a6cb2f3e4db8d9e0a4c6632886209945087d132ba617c6b9b89575bed5ca8e33"
+  },
+  "BEH-IC-RS232-DIP16/B2": {
+    "measurements": {
+      "vtp": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "vt_plus_v",
+        "scale": 1,
+        "source_line": "echo vt_plus_v = $&vtp"
+      }
+    },
+    "netlist_sha256": "264fb30ae261b28ab70ce01f5d091b73a8a59c6f463b335874fb23d88e26f7eb"
+  },
+  "BEH-IC-RS232-DIP16/B3": {
+    "measurements": {
+      "sr_V_per_us": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "sr_v_per_us_val",
+        "scale": 1,
+        "source_line": "echo sr_v_per_us_val = $&sr"
+      }
+    },
+    "netlist_sha256": "a5bdb150f21d1bc7efd856c06697ae50701bb337009dac4d9ec20da294330342"
+  },
+  "BEH-IC-TIMER555/B1b": {
+    "measurements": {
+      "f_Hz": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "f_b1b_hz",
+        "scale": 1,
+        "source_line": "echo f_b1b_hz = $&f"
+      }
+    },
+    "netlist_sha256": "74708091ec5d337522f8211111186c1c82fbf96d801c509a50592174959dc432"
+  },
+  "BEH-IC-TIMER555/B2": {
+    "measurements": {
+      "width_ms": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "width_b2_ms",
+        "scale": 1,
+        "source_line": "echo width_b2_ms = $&w"
+      }
+    },
+    "netlist_sha256": "78a73946edc243e4c9a16e20aebc8c2457b87e76d0675207587d563440be5079"
+  },
+  "BEH-IC-TIMER555/B3": {
+    "measurements": {
+      "width_ms": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "width_b3_ms",
+        "scale": 1,
+        "source_line": "echo width_b3_ms = $&w"
+      }
+    },
+    "netlist_sha256": "d565052f9d63854abf53625681182068b2a200b59d3ff2459bd0311a3954d6d5"
+  },
+  "BEH-LED-ADDRESSABLE/B2": {
+    "measurements": {
+      "V_end": {
+        "rationale": "Explicit authored observation for V_end; no nearest-value matching or expected-value change.",
+        "scalar": "v(n10)",
+        "scale": 1.0,
+        "source_line": "print v(n10) v(n1)"
+      }
+    },
+    "netlist_sha256": "3fc3f479a262f7591af348c467a4bf4c2cfdcef714282832c67bb9d954b0a06f"
+  },
+  "BEH-LED-INDICATOR/B1": {
+    "measurements": {
+      "Vred@20mA": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "vred_20ma",
+        "scale": 1,
+        "source_line": "let vred_20ma = v(a1)"
+      }
+    },
+    "netlist_sha256": "f86a4dc10edfa1d5cf9404e8d184e5626b76e65f9f521e6ef486a9f01fee7a6c"
+  },
+  "BEH-LED-INDICATOR/B2": {
+    "measurements": {
+      "I_red": {
+        "rationale": "Explicit authored observation for I_red; no nearest-value matching or expected-value change.",
+        "scalar": "ir",
+        "scale": 1.0,
+        "source_line": "print ir ig ib iw"
+      }
+    },
+    "netlist_sha256": "5a7ae87cab48c44037d23231ad67cbaadd6a5a3b1df6f3b6432c982eff396c86"
+  },
+  "BEH-LED-INDICATOR/B4": {
+    "measurements": {
+      "IR at BV": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "ir_at_bv",
+        "scale": 1,
+        "source_line": "let ir_at_bv = -irbv_raw"
+      }
+    },
+    "netlist_sha256": "6fe0672fb9210e40a13eecc61a0ef46f62a5dcb407451a823ae99e9c9a85119c"
+  },
+  "BEH-LED-INDICATOR/B5": {
+    "measurements": {
+      "Iv(1mA)": {
+        "rationale": "Explicit authored observation for Iv(1mA); no nearest-value matching or expected-value change.",
+        "scalar": "iv1",
+        "scale": 1.0,
+        "source_line": "print iv1 iv20"
+      }
+    },
+    "netlist_sha256": "555e6df5332b703155542fbfe7146355f9b9587cda4228db652062b4bee92c8a"
+  },
+  "BEH-LED-INDICATOR/B6": {
+    "measurements": {
+      "dVF/dT red": {
+        "rationale": "Explicit authored observation for dVF/dT red; no nearest-value matching or expected-value change.",
+        "scalar": "d1",
+        "scale": 1.0,
+        "source_line": "print d1 d2 d3 d4"
+      }
+    },
+    "netlist_sha256": "5cfaea5527df5dab5ac243fb6b7e381a0077c9a2e8b1306f1d2eaa00289c2cb8"
+  },
+  "BEH-LED-POWER/B1": {
+    "measurements": {
+      "Tj": {
+        "rationale": "Explicit authored observation for Tj; no nearest-value matching or expected-value change.",
+        "scalar": "const.tj",
+        "scale": 1.0,
+        "source_line": "print vf pheat tj"
+      }
+    },
+    "netlist_sha256": "5ad1557a1cddbe4ece69140c5e70e66e7022d0a24e8b2be1858974eb27bff6a5"
+  },
+  "BEH-LED-POWER/B2": {
+    "measurements": {
+      "I_hot/I_cold": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "i_ratio_hot_cold",
+        "scale": 1,
+        "source_line": "let i_ratio_hot_cold = i_hot/i_cold"
+      }
+    },
+    "netlist_sha256": "772d94ac86e0cbe67b6f0b53ea3fbe0350a147412ea257db0782c3b8173527b5"
+  },
+  "BEH-LED-RGB/B7": {
+    "measurements": {
+      "I_each": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "ir",
+        "scale": 1,
+        "source_line": "let ir=v(kr)/145"
+      }
+    },
+    "netlist_sha256": "a397361dfaabd27dc8b48bc008938d3d104685c19f74a4a81ed2c7aae1ede9e9"
+  },
+  "BEH-MAG-CMC/B1": {
+    "measurements": {
+      "Lcm": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "cmc1_lcm_k",
+        "scale": 1,
+        "source_line": "let cmc1_lcm_k = lcm"
+      },
+      "Ldm": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "cmc1_ldm_k",
+        "scale": 1,
+        "source_line": "let cmc1_ldm_k = ldm_k"
+      }
+    },
+    "netlist_sha256": "02626cf3442e928f3188020fc82e55b9f0c0a1adff79ead079acb6742e6535ea"
+  },
+  "BEH-MAG-CMC/B3": {
+    "measurements": {
+      "Lcm_at_1A": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "cmc3_lcm_1a",
+        "scale": 1,
+        "source_line": "  let cmc3_lcm_1a = lcm"
+      }
+    },
+    "netlist_sha256": "398a5d07253e3c7a9af6112fe7fcc9bec4f43653049fb572dd5c2f4944129d68"
+  },
+  "BEH-MAG-ETHMAG/B1": {
+    "measurements": {
+      "IL_1MHz_dB": {
+        "rationale": "Explicit authored observation for IL_1MHz_dB; no nearest-value matching or expected-value change.",
+        "scalar": "il_1m",
+        "scale": 1.0,
+        "source_line": "meas ac il_1M find il at=1meg"
+      }
+    },
+    "netlist_sha256": "0712987ab31e9a5ddb1e8cb0e65d8b3d33afb09eacb3570ade89e0c52ec39d6f"
+  },
+  "BEH-MAG-ETHMAG/B2": {
+    "measurements": {
+      "I_per_V_50Hz": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "eth2_i_per_v",
+        "scale": 1,
+        "source_line": "let eth2_i_per_v = iiso"
+      }
+    },
+    "netlist_sha256": "ae4a0e2ee38a9207d90856f43bf0522cc846142d609cdfe55d4850ca0733e449"
+  },
+  "BEH-MAG-ETHMAG/B3": {
+    "measurements": {
+      "V_line_plateau": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "eth3_vplat",
+        "scale": 1,
+        "source_line": "let eth3_vplat = (eth3_vb - eth3_va)/2"
+      }
+    },
+    "netlist_sha256": "a52a132eda14d549bdfdc5f885888442c6c3c3faf7310b1870b448ed882b3724"
+  },
+  "BEH-MAG-INDUCTOR/B1": {
+    "measurements": {
+      "L_at_Isat_SRP7028A": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "ind1_l_srp7028a_isat",
+        "scale": 1,
+        "source_line": "  let ind1_l_srp7028a_isat = l2"
+      },
+      "L_at_Isat_XAL4020": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "ind1_l_xal4020_isat",
+        "scale": 1,
+        "source_line": "  let ind1_l_xal4020_isat = l1"
+      }
+    },
+    "netlist_sha256": "c2762f526d21ca7086c4dc4e78884d3303d71b5ebfa49fa611575db054aef976"
+  },
+  "BEH-MAG-INDUCTOR/B2": {
+    "measurements": {
+      "i_at_8us": {
+        "rationale": "Explicit authored observation for i_at_8us; no nearest-value matching or expected-value change. The voltage-source branch current is opposite to the stated load/reverse-current magnitude.",
+        "scalar": "i_8u",
+        "scale": -1.0,
+        "source_line": "meas tran i_8u find i(V1) at=8u"
+      }
+    },
+    "netlist_sha256": "f645755c77eebc5ae49837e0695a7338a1122fc0ce2eb78a7cb8fba4cf409917"
+  },
+  "BEH-MAG-INDUCTOR/B4": {
+    "measurements": {
+      "dT_5p5A": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "ind4_dt_5p5a",
+        "scale": 1,
+        "source_line": "  let ind4_dt_5p5a = v(th)"
+      }
+    },
+    "netlist_sha256": "dcc49960743dd6955206a96f8d4998386e28a82f1d633c9b05abf4c9d3b5c6aa"
+  },
+  "BEH-MAG-XFMR-CT/B1": {
+    "measurements": {
+      "Vburden_pk": {
+        "rationale": "Explicit authored observation for Vburden_pk; no nearest-value matching or expected-value change.",
+        "scalar": "vb",
+        "scale": 1.0,
+        "source_line": "meas tran vb max v(s1) from=300u to=400u"
+      }
+    },
+    "netlist_sha256": "ef63735e5d59ea745350d0bef133da31dd8b3c606e426c8acc096050dda108fb"
+  },
+  "BEH-MAG-XFMR-SIGNAL/B1": {
+    "measurements": {
+      "gain_1kHz": {
+        "rationale": "Explicit authored observation for gain_1kHz; no nearest-value matching or expected-value change.",
+        "scalar": "vmid",
+        "scale": 1.0,
+        "source_line": "meas ac vmid find vm(s1) at=1k"
+      }
+    },
+    "netlist_sha256": "703e04c63ae3ac6fc2172c1fd40ccc6105f6ad19cc1f096ad77ecff2be0f4946"
+  },
+  "BEH-MAG-XFMR-SIGNAL/B3": {
+    "measurements": {
+      "i_pk": {
+        "rationale": "Explicit authored observation for i_pk; no nearest-value matching or expected-value change.",
+        "scalar": "ipk",
+        "scale": 1.0,
+        "source_line": "meas tran ipk max i(V1) from=10m to=50m"
+      }
+    },
+    "netlist_sha256": "5bf351c44afcaf50e153d6161863213a43d93692018d4dd7e1747be8eb178f1a"
+  },
+  "BEH-MEM-SPINOR/F1": {
+    "measurements": {
+      "tCSlow_us": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "tcs_low_us",
+        "scale": 1,
+        "source_line": "let tcs_low_us = tcs_low*1e6"
+      }
+    },
+    "netlist_sha256": "3714b84fae69290212908af2571fcd9697e93198f4be06fd2408a03693a7b737"
+  },
+  "BEH-PKG-IC-BINDING/P2": {
+    "measurements": {
+      "theta_4vias": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "theta_4vias",
+        "scale": 1,
+        "source_line": "let theta_4vias = v(tj4)-25"
+      }
+    },
+    "netlist_sha256": "c713aa230ffd9d82698053cc5fb08d1bdfff3e8f08f4bb906635e083356cfb9c"
+  },
+  "BEH-PWR-LOADSWITCH/L1": {
+    "measurements": {
+      "vdrop_V": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "vdrop",
+        "scale": 1,
+        "source_line": "let vdrop = v(vin)-v(vout)"
+      }
+    },
+    "netlist_sha256": "b9aad879351ddd05aa74410f3ee2a454b616d52a1c1d9a9abc6cfbb45b86bc5f"
+  },
+  "BEH-PWR-LOADSWITCH/L2": {
+    "measurements": {
+      "turn_on_V": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "turn_on_v",
+        "scale": 1,
+        "source_line": "let turn_on_v = vin_at_t_on"
+      }
+    },
+    "netlist_sha256": "7415084e9517c0fb793b0213fa29cbc29b58c75020a4eb7457185facf6efd763"
+  },
+  "BEH-PWR-LOADSWITCH/L3": {
+    "measurements": {
+      "isc_A": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "ishort",
+        "scale": 1,
+        "source_line": "let ishort = v(vout)/1m"
+      }
+    },
+    "netlist_sha256": "5ed4a02b6f0f96532608f96b7b19d94a5409655e2c50d74dfed79c56c506a222"
+  },
+  "BEH-PWR-PKGTHERMAL/B1": {
+    "measurements": {
+      "Tj_inf": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "tj_inf_c",
+        "scale": 1,
+        "source_line": "let tj_inf_c = tj_end"
+      }
+    },
+    "netlist_sha256": "6d5b373aaeb545e89bc73a0b7e205834fc7ae49b3cf86a93561bf77b40d57cff"
+  },
+  "BEH-REG-BUCK-DCS/B4": {
+    "measurements": {
+      "fsw_MHz": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "fsw_mhz",
+        "scale": 1,
+        "source_line": "let fsw_mhz = fsw/1e6"
+      }
+    },
+    "netlist_sha256": "eed4042162f6637331a16f9f26c287e2a8dc81b552d15fa30c7e1a3049375b96"
+  },
+  "BEH-REG-LINEAR/B1": {
+    "measurements": {
+      "Vout_3p8V": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "vout_3p8v",
+        "scale": 1,
+        "source_line": "let vout_3p8v = v(vout)"
+      }
+    },
+    "netlist_sha256": "80006687dc56ff733eb6027c8674dec640262940e8badbd967a6185e82f7fda1"
+  },
+  "BEH-REG-LINEAR/B2": {
+    "measurements": {
+      "line_reg": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "line_reg_v",
+        "scale": 1,
+        "source_line": "let line_reg_v = dline"
+      },
+      "load_reg": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "load_reg_v",
+        "scale": 1,
+        "source_line": "let load_reg_v = dload"
+      }
+    },
+    "netlist_sha256": "d5af1bf9b8ec2ec91dbb6320bbfb5918f930eed4c604032111de69601b1a2a82"
+  },
+  "BEH-REG-LINEAR/B4": {
+    "measurements": {
+      "Tj": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "tja_end_c",
+        "scale": 1,
+        "source_line": "let tja_end_c = tjA_end"
+      }
+    },
+    "netlist_sha256": "a09e62a70831830d56ce6b351dfa2c63107b5e22b5398369e3f71e09edd86ddc"
+  },
+  "BEH-RES-FIXED/B1": {
+    "measurements": {
+      "R(125C)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "r125",
+        "scale": 1,
+        "source_line": "print r125"
+      },
+      "v(out)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "v(out)",
+        "scale": 1,
+        "source_line": "print v(out)"
+      }
+    },
+    "netlist_sha256": "dffa43d06f37aade19e7898398dccc646141e28304fd575fc64c9c1906458ed8"
+  },
+  "BEH-RES-FIXED/B2": {
+    "measurements": {
+      "R": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "rr",
+        "scale": 1,
+        "source_line": "print rr"
+      }
+    },
+    "netlist_sha256": "cc00adcdf1b6c65d9ce216d3183bdb7ce659c7dc2780d3ecf16ecf74b4d92052"
+  },
+  "BEH-RES-FIXED/B3": {
+    "measurements": {
+      "Zmag": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "z",
+        "scale": 1,
+        "source_line": "print z"
+      }
+    },
+    "netlist_sha256": "2e15cbf302f5d636258fd4286347fb5a7d6dc7eaff805ab800b2d024304435e0"
+  },
+  "BEH-RES-FIXED/B4": {
+    "measurements": {
+      "P_allowed": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "v(p)",
+        "scale": 1,
+        "source_line": "print v(p)"
+      }
+    },
+    "netlist_sha256": "175dcc76eccf12e898c2117f6a536ae2ac70f38c7a8d822f97ea57022635ad63"
+  },
+  "BEH-RES-FIXED/B5": {
+    "measurements": {
+      "R85": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "rr",
+        "scale": 1,
+        "source_line": "print rr"
+      }
+    },
+    "netlist_sha256": "dc37e2dab30b849267daa03edbe33a6ebba44e12417b396b28af88aaa5a250ee"
+  },
+  "BEH-RES-NETWORK/B1": {
+    "measurements": {
+      "i(pin4)": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "rnet1_i4",
+        "scale": 1,
+        "source_line": "let rnet1_i4 = i(vs)"
+      },
+      "v(p2)": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "rnet1_vp2",
+        "scale": 1,
+        "source_line": "let rnet1_vp2 = v(p2)"
+      }
+    },
+    "netlist_sha256": "216f36b682fc5e1c26ab8a13c5c930a5cab04c21f074669420e3e8d12c60ab55"
+  },
+  "BEH-RES-NETWORK/B2": {
+    "measurements": {
+      "i_total": {
+        "rationale": "Explicit authored observation for i_total; no nearest-value matching or expected-value change.",
+        "scalar": "itot",
+        "scale": 1.0,
+        "source_line": "print itot"
+      }
+    },
+    "netlist_sha256": "8fa6c319f64524d7d3f213d97460ee74158d0cd70dcf801b1f4a5031de4c32a3"
+  },
+  "BEH-RES-POT/B1": {
+    "measurements": {
+      "v(w)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "v(w)",
+        "scale": 1,
+        "source_line": "print v(w)"
+      }
+    },
+    "netlist_sha256": "8940f64f409247a3eb8c6d214d1ad5104d80fa4cee2bc9fc19c65d2e8beb8d8f"
+  },
+  "BEH-RES-POT/B2": {
+    "measurements": {
+      "v(w)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "v(w)",
+        "scale": 1,
+        "source_line": "print v(w)"
+      }
+    },
+    "netlist_sha256": "da24f0d3ea399eeba6f8fa737fc37d89a655606610b05ced5851db93da94ffe5"
+  },
+  "BEH-RES-POT/B3": {
+    "measurements": {
+      "v(w)": {
+        "reason": "The named authored output measures the locked quantity. Scale converts its printed units or source-current/ramp polarity to the units and orientation of the unchanged spec expectation.",
+        "scalar": "v(w)",
+        "scale": 1,
+        "source_line": "print v(w)"
+      }
+    },
+    "netlist_sha256": "f0bd4b2381c2f51ab4bb780b6f670453144be7ceb4c39823b4e0dae5763714dc"
+  },
+  "BEH-RES-POT/B4": {
+    "measurements": {
+      "v(w)@0.25ms": {
+        "rationale": "Explicit authored observation for v(w)@0.25ms; no nearest-value matching or expected-value change.",
+        "scalar": "v1",
+        "scale": 1.0,
+        "source_line": "meas tran v1 find v(w) at=0.25m"
+      },
+      "v(w)@0.75ms": {
+        "rationale": "Explicit authored observation for v(w)@0.75ms; no nearest-value matching or expected-value change.",
+        "scalar": "v2",
+        "scale": 1.0,
+        "source_line": "meas tran v2 find v(w) at=0.75m"
+      }
+    },
+    "netlist_sha256": "b0eb4cc463afe641a0fa3852af1693f4ead58dad3aa3aa832a7f0944453f209b"
+  },
+  "BEH-RES-SENSE/B1": {
+    "measurements": {
+      "V_2wire": {
+        "rationale": "Explicit authored observation for V_2wire; no nearest-value matching or expected-value change.",
+        "scalar": "v2w",
+        "scale": 1.0,
+        "source_line": "print v2w"
+      },
+      "V_kelvin": {
+        "rationale": "Explicit authored observation for V_kelvin; no nearest-value matching or expected-value change.",
+        "scalar": "vk",
+        "scale": 1.0,
+        "source_line": "print vk"
+      }
+    },
+    "netlist_sha256": "b25bde9e184f48fc4d20bd86358c2e094f446d0e029227a5348ef9d3fd8cdc73"
+  },
+  "BEH-RES-SENSE/B2": {
+    "measurements": {
+      "V": {
+        "rationale": "Explicit authored observation for V; no nearest-value matching or expected-value change.",
+        "scalar": "v(n1)",
+        "scale": 1.0,
+        "source_line": "print v(n1)"
+      }
+    },
+    "netlist_sha256": "0b0a78b1f032d49bd51c24c2d608be21adac74b212cf4cc113cb28c495c784b5"
+  },
+  "BEH-RES-SENSE/B3": {
+    "measurements": {
+      "Zmag": {
+        "rationale": "Explicit authored observation for Zmag; no nearest-value matching or expected-value change.",
+        "scalar": "z",
+        "scale": 1.0,
+        "source_line": "print z"
+      }
+    },
+    "netlist_sha256": "cd006528e6823b3cbeb9cbfbcec0722629abf38f9d4e71087e9e8e6dca615385"
+  },
+  "BEH-TRN-BJT/B1": {
+    "measurements": {
+      "Ic": {
+        "rationale": "Explicit authored observation for Ic; no nearest-value matching or expected-value change.",
+        "scalar": "ic",
+        "scale": 1.0,
+        "source_line": "print ic v(c) i(Vlogic)"
+      }
+    },
+    "netlist_sha256": "5e771a22f62e58c8529a1e75e4da648b02b14102c12f8089b2f1682f3e638a5b"
+  },
+  "BEH-TRN-BJT/B2": {
+    "measurements": {
+      "gain": {
+        "rationale": "Explicit authored observation for gain; no nearest-value matching or expected-value change.",
+        "scalar": "av",
+        "scale": 1.0,
+        "source_line": "print av"
+      }
+    },
+    "netlist_sha256": "f0b7dac1f81c7d9878245be0bbdc6a2b714162f97b6e778a0083c32e7b866a75"
+  },
+  "BEH-TRN-BJT/B6": {
+    "measurements": {
+      "dVbe_dT": {
+        "rationale": "Explicit authored observation for dVbe_dT; no nearest-value matching or expected-value change.",
+        "scalar": "tc",
+        "scale": 1.0,
+        "source_line": "print tc"
+      }
+    },
+    "netlist_sha256": "d8d3804a44b624b4881b7aac57bc0be6d725a4dd3078c2c4bd1089c5ca328ed0"
+  },
+  "BEH-TRN-MOSFET/B1": {
+    "measurements": {
+      "Vds": {
+        "rationale": "Explicit authored observation for Vds; no nearest-value matching or expected-value change.",
+        "scalar": "v(d)",
+        "scale": 1.0,
+        "source_line": "print v(d)"
+      }
+    },
+    "netlist_sha256": "c31895ab76cafe0b97d85e06df2f187db9eac46f931ae1873123d40cc1d3c621"
+  },
+  "BEH-TRN-MOSFET/B2": {
+    "measurements": {
+      "Rds_4p5V_L3": {
+        "rationale": "Device A is the authored L3 model; device B is the deliberately mismatched L1 comparator.",
+        "scalar": "r45a",
+        "scale": 1.0,
+        "source_line": "print r45a r45b"
+      }
+    },
+    "netlist_sha256": "16563c40448af14b6ce263897531955873928be65968d4ddb82a7fd7e737e243"
+  },
+  "BEH-TRN-MOSFET/B3": {
+    "measurements": {
+      "Qgd": {
+        "rationale": "Device A uses nonlinear Cgd; device B is the deliberately inadequate constant-capacitance comparator. Convert the authored nC observation to coulombs.",
+        "scalar": "qgd_a_nc",
+        "scale": 1e-09,
+        "source_line": "print qg_a_nC qg_b_nC qgd_a_nC qgd_b_nC"
+      }
+    },
+    "netlist_sha256": "c22390a13cc1d3a2d1fdac5de91919b58e65c1302c5f3e264e688a7cbfcbd0ea"
+  },
+  "BEH-TRN-MOSFET/B8": {
+    "measurements": {
+      "Eav": {
+        "reason": "REPIN-001: named v2 scalar for the unchanged locked quantity.",
+        "scalar": "eav_j",
+        "scale": 1,
+        "source_line": "let eav_j = eav"
+      }
+    },
+    "netlist_sha256": "67ed618fc0534a3ef34bd629f09b4fde6fe1569ff16e12b5db409d57f63545df"
+  }
+}

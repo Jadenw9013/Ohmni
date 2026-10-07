@@ -1,0 +1,26 @@
+B3 MLCC insulation-resistance self-discharge, tau = RLK*C
+* PWL current pulse (area 49.5 uC) puts v0 = 49.5uC/10uF = 4.95 V on the cap; then v(t) = v0*exp(-(t-t0)/tau)
+* tau = 10uF * 10Mohm = 100 s ; v(t0+tau) = 4.95*exp(-1) = 1.8210 V
+* (q-defined capacitors ignore .ic in ngspice 42, so the part is charged by a current pulse)
+* OHMNI BEH-CAP-CERAMIC subcircuit, behavioural_approximation
+* ports: p n flag ; flag node voltage is a bitmask: 1=overvoltage, 2=reverse(not used for ceramic)
+.subckt ohm_mlcc p n flag params: C0=1u V0=1e6 ESR=5m ESL=0.7n RLK=1e9 VR=10 AGE=0 TCDEV=0
+Lesl p a {ESL}
+Resr a b {ESR}
+* charge-based DC-bias capacitor: q = Ceff0*V0*atan(v/V0) so dq/dv = Ceff0/(1+(v/V0)^2)
+Cb b n q = '{C0*(1-AGE)*(1+TCDEV)}*{V0}*atan(v(b,n)/{V0})'
+Rlk b n {RLK}
+Bflag flag 0 V = 'abs(v(b,n)) > {VR} ? 1 : 0'
+.ends
+
+Ip 0 p PWL(0 0 1u 0.5 99u 0.5 100u 0)
+Xc p 0 f ohm_mlcc C0=10u V0=1e6 ESR=1m ESL=1p RLK=10meg VR=100
+Rf f 0 1meg
+.tran 0.05 150
+.control
+run
+meas tran v0 find v(p) at=0.001
+meas tran vtau find v(p) at=100.0001
+quit
+.endc
+.end

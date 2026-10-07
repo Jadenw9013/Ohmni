@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "expected_entry_count": 180,
+  "maximum_repair_attempts": 3,
+  "allowed_statuses": ["research_required", "partial", "complete"],
+  "status_order": ["research_required", "partial", "complete"],
+  "allowed_fidelity": ["ideal_components", "behavioural_approximation", "vendor_model"],
+  "compatible_vendor_model_licenses": ["BSD-2-Clause", "BSD-3-Clause", "MIT", "Apache-2.0", "CC0-1.0", "manufacturer-redistributable"],
+  "required_ngspice_major": 42,
+  "protected_paths": ["COMPONENT_BEHAVIOR_SPEC.md"],
+  "protected_branches": ["main"],
+  "allowed_work_branch_prefix": "codex/behavior-",
+  "required_canaries": [
+    "invented_parameter",
+    "unledgered_source",
+    "upgrade_without_bench",
+    "vendor_model_without_file",
+    "wrong_bench_expected",
+    "swapped_led_permutation",
+    "non_run_marked_pass"
+  ],
+  "regression_commands": [
+    "python scripts/generate_behavior_records.py --check",
+    "python -m pytest tests/test_behavior_registry.py tests/test_ai_workflow.py tests/test_behavior_audit.py tests/test_simulation.py -q",
+    "node --test apps/web/tests/scope-view.test.mjs",
+    "python scripts/verify.py fast"
+  ],
+  "rules": [
+    {"id": "AUD-RULE-001", "check": "rule_hash", "description": "Rules remain hash-locked; an explicit non-loosening RULE_CHANGE is required for any change."},
+    {"id": "AUD-SOURCE-001", "check": "source_ledger", "description": "Every external source in behavior records or gapfills has a successful content-hashed fetch ledger entry."},
+    {"id": "AUD-UPGRADE-001", "check": "status_upgrades", "description": "Status upgrades require field-level sources, basis, confidence, and a passing ngspice 42 bench."},
+    {"id": "AUD-VENDOR-001", "check": "vendor_models", "description": "vendor_model requires an attached model and compatible attached license."},
+    {"id": "AUD-SPEC-001", "check": "spec_preservation", "description": "Generated behavior data remains a current projection of spec plus gapfills."},
+    {"id": "AUD-BENCH-001", "check": "benches", "description": "Every required bench ran through the product path and matched its expected value within its locked tolerance."},
+    {"id": "AUD-HONESTY-001", "check": "honesty", "description": "Non-runs and errors are not displayed as pass, and rating violations remain violations."},
+    {"id": "AUD-PROTECT-001", "check": "protected_state", "description": "Main, the production checkout, remote refs, and protected source paths remain at their recorded baseline."},
+    {"id": "AUD-COVERAGE-001", "check": "coverage", "description": "Exactly 180 records and exactly one coverage row for every OHM-001 through OHM-180 exist."},
+    {"id": "AUD-REGRESSION-001", "check": "regression", "description": "Every earlier completed stage gate is rerun at later checkpoints."},
+    {"id": "AUD-CANARY-001", "check": "canaries", "description": "All seven deliberately invalid canaries are rejected by their intended rule."},
+    {"id": "AUD-VERIFY-001", "check": "independent_verifier", "description": "Research stages have a fresh-context K=max(5,ceil(10%)) primary-source re-derivation report."},
+    {"id": "AUD-RESUME-001", "check": "state", "description": "Run state is complete, current, atomic, and resumable."}
+  ]
+}

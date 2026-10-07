@@ -1,0 +1,333 @@
+{
+  "applies_to": [
+    "OHM-029",
+    "OHM-030",
+    "OHM-031"
+  ],
+  "basis_values": [
+    "0.3*2^(50/20)",
+    "ASSUMPTION",
+    "Irms^2*ESR",
+    "MFR_DATASHEET",
+    "bit 2",
+    "sqrt(ESR^2+(1/wC)^2)"
+  ],
+  "behavior_id": "BEH-CAP-ALEL",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "sqrt(ESR^2+(1/wC)^2)",
+          "measure": "|Z| at 120 Hz (ohm)",
+          "tolerance": "0.1%",
+          "value": 13.2663
+        }
+      ],
+      "file": "docs/behavior/bench/cap-alel/B1.cir",
+      "measured_in_ngspice": "13.26629",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "Irms^2*ESR",
+          "measure": "P (W)",
+          "tolerance": "1%",
+          "value": 0.3
+        }
+      ],
+      "file": "docs/behavior/bench/cap-alel/B2.cir",
+      "measured_in_ngspice": "0.29984",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "bit 2",
+          "measure": "flag at -1.5 V",
+          "tolerance": "exact",
+          "value": 2
+        }
+      ],
+      "file": "docs/behavior/bench/cap-alel/B3.cir",
+      "measured_in_ngspice": "2",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B4",
+      "expected": [
+        {
+          "basis": "0.3*2^(50/20)",
+          "measure": "ESR at -25 C (ohm)",
+          "tolerance": "0.1%",
+          "value": 1.69706
+        }
+      ],
+      "file": "docs/behavior/bench/cap-alel/B4.cir",
+      "measured_in_ngspice": "1.697056",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-029",
+      "OHM-030",
+      "OHM-031"
+    ],
+    "behavior_id": "BEH-CAP-ALEL",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "sqrt(ESR^2+(1/wC)^2)",
+            "measure": "|Z| at 120 Hz (ohm)",
+            "tolerance": "0.1%",
+            "value": 13.2663
+          }
+        ],
+        "file": "bench/cap-alel/B1.cir",
+        "id": "B1",
+        "measured_in_ngspice": "13.26629",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "Irms^2*ESR",
+            "measure": "P (W)",
+            "tolerance": "1%",
+            "value": 0.3
+          }
+        ],
+        "file": "bench/cap-alel/B2.cir",
+        "id": "B2",
+        "measured_in_ngspice": "0.29984",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "bit 2",
+            "measure": "flag at -1.5 V",
+            "tolerance": "exact",
+            "value": 2
+          }
+        ],
+        "file": "bench/cap-alel/B3.cir",
+        "id": "B3",
+        "measured_in_ngspice": "2",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "0.3*2^(50/20)",
+            "measure": "ESR at -25 C (ohm)",
+            "tolerance": "0.1%",
+            "value": 1.69706
+          }
+        ],
+        "file": "bench/cap-alel/B4.cir",
+        "id": "B4",
+        "measured_in_ngspice": "1.697056",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "passive",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "L",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "gas generation, vent opens, rupture possible",
+        "id": "reverse_voltage",
+        "permanence": "permanent",
+        "sim_response": "flag bit 2; mark failed (open after venting)",
+        "trigger": "v(p,n) < -1 V"
+      },
+      {
+        "effect": "oxide stress, leakage rise",
+        "id": "overvoltage",
+        "permanence": "permanent",
+        "sim_response": "flag bit 1",
+        "trigger": "v(p,n) > VR"
+      },
+      {
+        "effect": "core heating, life loss",
+        "id": "ripple_overheat",
+        "permanence": "recoverable",
+        "sim_response": "post-check flag and life estimate",
+        "trigger": "Irms > Irated"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "ESR(T) factor assumed",
+        "no C(T), C(f)",
+        "no wear-out",
+        "reverse diode is a shape",
+        "ESL assumed"
+      ],
+      "netlist_template": "X{ref} {p} {n} {ref}_flag ohm_alel C0={value} ESR={esr} ESL={esl} RLK={rleak} VR={vr} TA={tamb} IPK={ipk}\n",
+      "spice_primitives": [
+        "R",
+        "L",
+        "C",
+        "D",
+        "V",
+        "B"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "ac",
+        "tran",
+        "noise"
+      ],
+      "valid_range": "0..VR forward, reverse <= 1 V, -40..105 C"
+    },
+    "parameters": {
+      "esl": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 1.5e-08,
+        "max": 5e-08,
+        "min": 5e-09,
+        "source_ref": "S12",
+        "tolerance": "factor 2",
+        "unit": "H"
+      },
+      "esr": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.3,
+        "max": 5,
+        "min": 0.005,
+        "source_ref": "S12",
+        "tolerance": "factor 2",
+        "unit": "ohm"
+      },
+      "r_leak": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": "1e8/C_uF",
+        "max": "1.0e9",
+        "min": "1.0e4",
+        "source_ref": "S12",
+        "tolerance": "decades",
+        "unit": "ohm"
+      },
+      "rated_voltage": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 25,
+        "max": 450,
+        "min": 6.3,
+        "source_ref": "S14",
+        "tolerance": "none",
+        "unit": "V"
+      },
+      "reverse_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 1.0,
+        "max": 1.5,
+        "min": 0,
+        "source_ref": "S12",
+        "tolerance": "none",
+        "unit": "V"
+      },
+      "value": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.0001,
+        "max": 0.1,
+        "min": 1e-06,
+        "source_ref": "S12",
+        "tolerance": "+/-20% typical (not sourced)",
+        "unit": "F"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "+",
+        "package_terminal_rule": "terminal 1 at -X (OHM-029, OHM-030: pin 1 = +; OHM-031 pin 1 = +)",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "-",
+        "package_terminal_rule": "terminal 2 at +X (negative stripe side); OHM-031 3-pin variant: extra pin tied to -",
+        "role": "terminal"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "v(p,n) <= VR",
+        "condition": "DC",
+        "name": "rated_voltage",
+        "source_ref": "S11",
+        "symbol": "VR",
+        "unit": "V",
+        "value": "per part"
+      },
+      {
+        "check": "v(p,n) >= -1",
+        "condition": "cathode oxide withstand",
+        "name": "reverse_voltage",
+        "source_ref": "S12",
+        "symbol": "Vrev",
+        "unit": "V",
+        "value": 1.0
+      },
+      {
+        "check": "Irms <= Irated(f,T)",
+        "condition": "Irms^2*ESR",
+        "name": "ripple_power",
+        "source_ref": "S12",
+        "symbol": "P",
+        "unit": "W",
+        "value": "per part"
+      }
+    ],
+    "sources": [
+      "S11",
+      "S12",
+      "S13",
+      "S14",
+      "S26"
+    ],
+    "status": "partial"
+  },
+  "category": "passive",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "134bb6a954614194b82987f19e0a7e3d46d0282b4262c87da78e2b7a42ee2c44",
+    "line": 1410
+  },
+  "source_refs": [
+    "S11",
+    "S12",
+    "S13",
+    "S14",
+    "S26"
+  ],
+  "status": "partial"
+}

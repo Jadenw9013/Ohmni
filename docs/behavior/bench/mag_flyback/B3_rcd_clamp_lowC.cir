@@ -1,0 +1,33 @@
+B3 RCD clamp with parasitic capacitances minimised (Cds=0.1p, diode CJO=0.1p, CIW=0.1p) so the textbook relation applies
+* v2 (REPIN-002): fb3_psn removed from print; its meas line already prints it once.
+* v2: added .ic v(c)=116 v(out)=21 and shortened to .tran 100n 0.8m with measurement windows 0.6-0.8 ms (same circuit; start-up transient removed, run time ~105 s -> ~35 s); meas renamed fb3_*; fb3_psn printed as scalar
+* Expected: P = 1/2*Llk*Ipk^2*f * Vc/(Vc-Vor) with Vc, Ipk, Vor=(Vout+0.45)/N all measured here (value computed in report); tolerance 15%
+.include xfmr.lib
+.model SW SW(Ron=5m Roff=1G Vt=2.5 Vh=0.1)
+.model DSCH D(IS=1e-7 N=1.05 RS=20m CJO=0.1p)
+Vin in 0 DC 48
+Vg g 0 PULSE(0 5 0 5n 5n 2u 10u)
+X1 in d 0 sa XFMR_SAT LP=100u N=0.5 LLK=2u RP=20m RS=40m CIW=0.1p ISATM=3 DROP=0.3 LR=0.05
+S1 d 0 g 0 SW
+Cds d 0 0.1p
+Dsn d c DSCH
+Csn c in 100n
+Rsn c in 20k
+D1 sa out DSCH
+Co out 0 1u
+RL out 0 100
+* start the clamp capacitor and output near their steady values (Rsn*Csn = 2 ms made the original 2.2-2.5 ms window a decaying transient and the run take ~105 s, near the 120 s limit)
+.ic v(c)=116 v(out)=21
+.tran 100n 0.8m
+.control
+run
+let vcl = v(c)-v(in)
+let pclamp = vcl*vcl/20k
+meas tran fb3_vdpk max v(d) from=0.6m to=0.8m
+meas tran fb3_vout avg v(out) from=0.6m to=0.8m
+meas tran fb3_ipk min i(Vin) from=0.6005m to=0.6021m
+meas tran fb3_vc avg vcl from=0.6m to=0.8m
+meas tran fb3_psn avg pclamp from=0.6m to=0.8m
+quit
+.endc
+.end

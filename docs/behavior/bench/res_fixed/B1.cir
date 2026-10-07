@@ -1,0 +1,24 @@
+* RES-FIXED B1: ideal divider + TCR at 125C. Expect V(out)=2.5 V at 25C, R(125C)=R0*(1+tcr*100)
+.options tnom=25
+V1 in 0 5
+R1 in out 10k
+R2 out 0 10k
+* TCR test resistor, tc1 = 100 ppm/K
+R3 in t 1000 tc1=100e-6
+V3 t 0 0
+.temp 25
+.control
+set noaskquit
+op
+print v(out)
+
+let r25 = abs(5/i(v3))
+print r25
+* ngspice default TEMP is 27 C, hence .temp 25 above
+set temp = 125
+op
+let r125 = abs(5/i(v3))
+print r125
+quit
+.endc
+.end

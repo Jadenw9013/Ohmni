@@ -1,0 +1,31 @@
+B2 Film capacitor self-resonance with lead ESL: f0 = 1/(2 pi sqrt(ESL*C))
+* v2: ac sweep refined to 2000 pts/dec; scalars film2_f0_mhz / film2_zmin_ohm printed
+* C=1u, ESL=15n (ASSUMED lead/body inductance, see doc) -> f0 = 1.2995 MHz
+* OHMNI BEH-CAP-FILM subcircuit (metallised film, incl. X2), behavioural_approximation
+* ports: p n flag. flag bitmask: 1 = |V| > VRPK (peak rating; for AC-rated parts VRPK = sqrt(2)*Vrms)
+* ESR is a constant chosen from tan(delta) at a reference frequency: ESR = TAND/(2*pi*FREF*C0) (real tan(delta) rises with f, see doc)
+.subckt ohm_film p n flag params: C0=1u TAND=20e-4 FREF=1k ESL=15n RLK=15g VRPK=388.9
+.param ESRV={TAND/(2*3.14159265358979*FREF*C0)}
+Lesl p a {ESL}
+Resr a b {ESRV}
+Cb b n {C0}
+Rlk b n {RLK}
+Bflag flag 0 V = 'abs(v(b,n)) > {VRPK} ? 1 : 0'
+.ends
+
+Iac 0 p dc 0 ac 1
+Rb p 0 1e12
+Xc p 0 f ohm_film C0=1u TAND=20e-4 FREF=1k ESL=15n RLK=1e15
+Rf f 0 1meg
+.ac dec 2000 10k 100meg
+.control
+run
+let zm = vm(p)
+meas ac film2_zmin min zm
+meas ac film2_fres min_at zm
+let film2_zmin_ohm = film2_zmin
+let film2_f0_mhz = film2_fres/1e6
+print film2_f0_mhz film2_zmin_ohm
+quit
+.endc
+.end

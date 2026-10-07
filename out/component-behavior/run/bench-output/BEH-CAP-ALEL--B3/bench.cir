@@ -1,0 +1,31 @@
+B3 Aluminium electrolytic reverse voltage flag and reverse conduction
+* ramp 0 to -3 V in 3 s through 10 ohm. VREVMAX = 1 V so flag bit 2 must go high when v < -1 V (t = 1 s)
+* OHMNI BEH-CAP-ALEL subcircuit (polarised aluminium electrolytic), behavioural_approximation
+* ports: p(+) n(-) flag. flag node voltage bitmask: 1 = V > VR, 2 = reverse > VREVMAX, 4 = |i| > IPK
+.subckt ohm_alel p n flag params: C0=100u ESR=0.3 ESL=15n RLK=1meg VR=25 TA=25 TESRK=20 VREVMAX=1 IPK=1e9 DIS=1e-9 DN=4
+.param ESRT={ESR*max(1,pow(2,(25-TA)/TESRK))}
+Lesl p a {ESL}
+Resr a c {ESRT}
+Vsns c b 0
+Cb b n {C0}
+Rlk b n {RLK}
+* reverse conduction of the cathode foil oxide (shape ASSUMED): anode on n, cathode on p
+Drev n b dmod
+.model dmod D(Is={DIS} N={DN})
+Bflag flag 0 V = '(v(b,n) > {VR} ? 1 : 0) + (v(b,n) < -{VREVMAX} ? 2 : 0) + (abs(i(Vsns)) > {IPK} ? 4 : 0)'
+.ends
+
+Vr in 0 PWL(0 0 3 -3)
+Rs in p 10
+Xc p 0 f ohm_alel C0=100u ESR=0.3 ESL=15n RLK=1e6 VR=25
+Rf f 0 1meg
+.tran 0.005 3
+.control
+run
+meas tran fl_05 find v(f) at=0.5
+meas tran fl_15 find v(f) at=1.5
+meas tran t_flag when v(f)=1 rise=1
+meas tran irev_3 find i(Vr) at=3
+quit
+.endc
+.end

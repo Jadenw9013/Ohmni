@@ -1,0 +1,18 @@
+* BEH-DIO-PN B2: reverse recovery, Vishay/Fairchild 1N4148 trr condition
+* v2 (REPIN-002): pn2_trr removed from print; its meas line already prints it once.
+* v2: trr meas renamed pn2_trr and printed as scalar (circuit unchanged)
+* IF=10 mA, VR=6 V via RL=100 ohm, trr = time from i=0 to i=-1 mA (Irr)
+* expected from storage model: trr ~ TT*ln(1+IF/IR_peak)+RC tail
+.model D1N4148_FIT D (IS=5.537e-9 N=1.944 RS=0.6 CJO=2p VJ=0.7 M=0.4 TT=23n BV=100 IBV=100u)
+V1 in 0 PULSE(1.73 -6 20n 0.5n 0.5n 200n 400n)
+R1 in a 100
+Vsense a d 0
+D1 d 0 D1N4148_FIT
+.tran 0.02n 100n 0 0.02n
+.control
+run
+meas tran pn2_trr trig i(vsense) val=0 fall=1 targ i(vsense) val=-1m rise=1
+meas tran ipk min i(vsense)
+meas tran iF find i(vsense) at=15n
+.endc
+.end

@@ -1,0 +1,47 @@
+B3 volt-second saturation of the magnetizing branch (XFMR_SAT, secondary open)
+* lambda_pk = Vpk/(2*pi*f) = 200/(2 pi 50) = 0.63662 Wb ; expected peak magnetizing current from
+* lambda(i) = LR*Lm*i + (1-LR)*Lm*ia*tanh(i/ia), Lm=LP-LLK, ia = ISATM/atanh(sqrt(DROP/(1-LR))) -> solved numerically (python bisect, shown in report)
+* Linear (no-saturation) prediction would be lambda_pk/Lm = 0.6366 A. UIC is required: at t=0 the cosine source is at its peak and the DC operating point would short the inductor.
+* OHMNI BEH-MAG-XFMR models (behavioural_approximation). Pins: p1 p2 s1 s2 (p1 and s1 are dot terminals).
+* LP = primary open-circuit inductance, N = Ns/Np, LLK = leakage seen at primary with secondary shorted.
+* RP, RS winding DC resistances. CIW = interwinding capacitance (one lumped C p1-s1 / p2-s2 split).
+* Linear coupled-inductor version (K element).
+.subckt XFMR_K p1 p2 s1 s2 LP=1m N=1 LLK=1u RP=1m RS=1m CIW=1p
+.param kk={sqrt(1-LLK/LP)}
+Rp1 p1 pa {RP}
+L1 pa p2 {LP}
+L2 sa s2 {LP*N*N}
+Rs1 s1 sa {RS}
+K12 L1 L2 {kk}
+Ciw1 p1 s1 {CIW/2}
+Ciw2 p2 s2 {CIW/2}
+.ends
+
+* Saturating version: leakage Llk in series on primary side, nonlinear magnetizing inductance across an ideal transformer.
+* ISATM = magnetizing current at which Lm has dropped by DROP (referred to primary). LR = Lsat/Lm floor.
+.subckt XFMR_SAT p1 p2 s1 s2 LP=1m N=1 LLK=1u RP=1m RS=1m CIW=1p ISATM=1 DROP=0.3 LR=0.05
+.param lmag={LP-LLK}
+.param ia={ISATM/atanh(sqrt(DROP/(1-LR)))}
+Rp1 p1 pa {RP}
+Llk pa pb {LLK}
+Lm pb p2 L='lmag*(LR+(1-LR)*(1/cosh(max(min(i(Lm)/ia,20),-20)))**2)'
+* ideal transformer v(sx,s2)=N*v(pb,p2); current N*i(Vs) forced pb->p2
+Es sx s2 pb p2 {N}
+Vs sx sb 0
+Fp pb p2 Vs {N}
+Rs1 s1 sb {RS}
+Ciw1 p1 s1 {CIW/2}
+Ciw2 p2 s2 {CIW/2}
+.ends
+
+V1 in 0 SIN(0 200 50 0 0 90)
+X1 in 0 s1 0 XFMR_SAT LP=1 N=1 LLK=1u RP=1m RS=1m CIW=1p ISATM=0.5 DROP=0.3 LR=0.05
+RL s1 0 1G
+.tran 20u 60m uic
+.control
+run
+meas tran ipk max i(V1) from=10m to=50m
+meas tran ipk2 min i(V1) from=10m to=50m
+quit
+.endc
+.end

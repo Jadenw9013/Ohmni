@@ -1,0 +1,11 @@
+* B2: SSD1306 module 3.3 V rail load: static + pixel-proportional current (numbers are ASSUMPTIONs, SSD1306 DC table not obtained): 1 mA sleep-ish idle, 20 mA at full white
+* Checks LDO-fed rail droop: 3.3 V source, 1 ohm source impedance.
+.param ion=20m iidle=1m
+VDD vs 0 3.3
+RS vs vdd 1
+B1 vdd 0 I = {iidle} + ({ion}-{iidle})*0.5
+.control
+op
+print v(vdd)
+.endc
+.end

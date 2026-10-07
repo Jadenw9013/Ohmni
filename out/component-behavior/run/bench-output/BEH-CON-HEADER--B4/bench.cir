@@ -1,0 +1,15 @@
+* B4 high-speed option: series L of one pin (8 nH, DERIVED) in a 50 ohm system; -3 dB at f = (Rs+Rl)/(2 pi L)
+.param Lp=8n Rc=10m
+Vs in 0 DC 0 AC 1
+Rs in a 50
+Rcon a b {Rc}
+Lcon b c {Lp}
+Rl c 0 50
+.control
+ac dec 200 1meg 100g
+meas ac f3db WHEN vdb(c)=-9.0309 CROSS=1
+let expect = 100/(2*3.14159265*8e-9)
+print expect
+quit
+.endc
+.end

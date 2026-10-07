@@ -1,0 +1,133 @@
+{
+  "behavior_class_ids": [
+    "BEH-CON-HDMI"
+  ],
+  "catalog_binding_ids": [],
+  "class_record_paths": [
+    "src/ohmni/behavior/data/classes/BEH-CON-HDMI.json"
+  ],
+  "component": "HDMI receptacle",
+  "entry_id": "OHM-167",
+  "fidelity": "behavioural_approximation",
+  "group": "R10A",
+  "layer": "L1",
+  "research": {
+    "bench_result": null,
+    "bench_results": [
+      "bench-results/BEH-CON-HDMI--B1.json",
+      "bench-results/BEH-CON-HDMI--B2.json"
+    ],
+    "conflicts": [
+      "HD12 alternate outline differs from the default library reference; ratings are scoped to this alternate."
+    ],
+    "documents": [
+      {
+        "document_id": "hd12",
+        "manufacturer": "Same Sky",
+        "note": "Primary PDF read from the hash-addressed archive.",
+        "page": null,
+        "revision": "09/12/2024",
+        "source_status": "primary_source_opened",
+        "title": "HD12-19-SMT-TR HDMI receptacle",
+        "url": "https://www.sameskydevices.com/product/resource/farnellpdf/hd12-19-smt-tr.pdf"
+      }
+    ],
+    "entry_id": "OHM-167",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "contact_current_max",
+        "page": 1,
+        "scope": "HD12-19-SMT-TR alternate only; not an interchangeable CT_19APL2 footprint; specification table maximum",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/farnellpdf/hd12-19-smt-tr.pdf"
+        ],
+        "unit": "A",
+        "value": 0.5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "contact_voltage_ac_max",
+        "page": 1,
+        "scope": "HD12-19-SMT-TR alternate only; not an interchangeable CT_19APL2 footprint; rated voltage maximum",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/farnellpdf/hd12-19-smt-tr.pdf"
+        ],
+        "unit": "V",
+        "value": 40
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "contact_resistance_max",
+        "page": 1,
+        "scope": "HD12-19-SMT-TR alternate only; not an interchangeable CT_19APL2 footprint; mated, measured at 20 mV / 100 mA",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/farnellpdf/hd12-19-smt-tr.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.02
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "temperature_operating",
+        "page": 1,
+        "scope": "HD12-19-SMT-TR alternate only; not an interchangeable CT_19APL2 footprint; operating limits",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/farnellpdf/hd12-19-smt-tr.pdf"
+        ],
+        "unit": "degC",
+        "value": [
+          -40,
+          100
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "life_typical",
+        "page": 1,
+        "scope": "HD12-19-SMT-TR alternate only; not an interchangeable CT_19APL2 footprint; table places life in typ column, not minimum guarantee",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/farnellpdf/hd12-19-smt-tr.pdf"
+        ],
+        "unit": "cycles",
+        "value": 5000
+      }
+    ],
+    "remaining_open_items": [
+      "Type A signal-to-pad binding for the selected physical reference remains unverified.",
+      "No sourced transmission-line or connector parasitic model."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [
+      "Unvalidated reference footprint and signal map; HDMI protocol is not simulable."
+    ],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-167.md",
+      "document_sha256": "ea3b0ba541f3e613a94283aa45e83584a1f74d0815eebf299a7815b589f9cc7b",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
+  "resolution_ids": [],
+  "schema_version": 1,
+  "simulation_disposition": "simulable",
+  "simulation_reason": "The canonical class provides an L1/L2 model; fidelity and assumptions remain explicit.",
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "c58363c56a7e217b6a39ca08c9e8fc7d0d9153ba2814c8c76db4dae9c83cc7a1",
+    "line": 185
+  },
+  "status": "partial"
+}

@@ -1,0 +1,31 @@
+B2 Mica capacitor Q and series resonance
+* C0=100p, Q=1000 at 1 MHz -> ESR = 1/(Q w C) = 1.5915 ohm ; Q measured = |Im Z|/Re Z at 1 MHz
+* ESL=8n -> f0 = 1/(2 pi sqrt(L C)) = 177.9 MHz
+* OHMNI BEH-CAP-MICA subcircuit (dipped silver mica, near-ideal), behavioural_approximation
+* ports: p n flag. flag: 1 = |V| > VR
+* C(T) = C0*(1+TCPPM*1e-6*(TEMP-25)); ESR from Q at FQ: ESR = 1/(Q*2*pi*FQ*C0)
+.subckt ohm_mica p n flag params: C0=100p TCPPM=0 TEMP=25 Q=1000 FQ=1meg ESL=8n RLK=1e12 VR=500
+.param CT={C0*(1+TCPPM*1e-6*(TEMP-25))}
+.param ESRV={1/(Q*2*3.14159265358979*FQ*C0)}
+Lesl p a {ESL}
+Resr a b {ESRV}
+Cb b n {CT}
+Rlk b n {RLK}
+Bflag flag 0 V = 'abs(v(b,n)) > {VR} ? 1 : 0'
+.ends
+
+Iac 0 p dc 0 ac 1
+Rb p 0 1e15
+Xc p 0 f ohm_mica C0=100p TCPPM=0 Q=1000 FQ=1meg ESL=8n RLK=1e15
+Rf f 0 1meg
+.ac lin 1 1meg 1meg
+.control
+run
+let qm = abs(imag(v(p)))/real(v(p))
+print qm
+ac dec 600 1meg 1000meg
+let zm = vm(p)
+meas ac zmin min zm
+quit
+.endc
+.end

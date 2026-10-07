@@ -1,0 +1,210 @@
+{
+  "applies_to": [
+    "OHM-159",
+    "OHM-160",
+    "OHM-161"
+  ],
+  "basis_values": [
+    "10 A > 9.6 A",
+    "ASSUMPTION",
+    "MFR_DATASHEET",
+    "closed form"
+  ],
+  "behavior_id": "BEH-CON-TERMINAL",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "10 A > 9.6 A",
+          "measure": "flag",
+          "tolerance": "exact",
+          "value": 1
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-terminal/B1.cir",
+      "measured_in_ngspice": 1,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "closed form",
+          "measure": "dT",
+          "tolerance": "0.1%",
+          "value": 33.975
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-terminal/B2.cir",
+      "measured_in_ngspice": 33.97508,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-159",
+      "OHM-160",
+      "OHM-161"
+    ],
+    "behavior_id": "BEH-CON-TERMINAL",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "10 A > 9.6 A",
+            "measure": "flag",
+            "tolerance": "exact",
+            "value": 1
+          }
+        ],
+        "file": "bench/beh-con-terminal/B1.cir",
+        "id": "B1",
+        "measured_in_ngspice": 1,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "closed form",
+            "measure": "dT",
+            "tolerance": "0.1%",
+            "value": 33.975
+          }
+        ],
+        "file": "bench/beh-con-terminal/B2.cir",
+        "id": "B2",
+        "measured_in_ngspice": 33.97508,
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "connector",
+    "confidence": {
+      "failure": "L",
+      "model": "M",
+      "parameters": "L",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "clamp and housing overheating",
+        "id": "overcurrent",
+        "permanence": "permanent",
+        "sim_response": "flag, damaged above Tmax",
+        "trigger": "I > I_allowed"
+      },
+      {
+        "effect": "I^2R heating",
+        "id": "loose_clamp",
+        "permanence": "recoverable",
+        "sim_response": "report power and dT",
+        "trigger": "Rclamp raised by user"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "Rclamp assumed",
+        "wire ampacity not sourced",
+        "no derating curve"
+      ],
+      "netlist_template": "R{ref}_cl{k} {Wk} {Pk} {Rclamp}\n",
+      "spice_primitives": [
+        "R",
+        "B"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "tran",
+        "temp"
+      ],
+      "valid_range": "I <= min(terminal rating, wire ampacity)"
+    },
+    "parameters": {
+      "Irated": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 12,
+        "max": 17.5,
+        "min": 10,
+        "source_ref": "S1",
+        "tolerance": "-",
+        "unit": "A"
+      },
+      "Rclamp": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 3,
+        "max": 10,
+        "min": 0,
+        "source_ref": "",
+        "tolerance": "factor 3",
+        "unit": "mohm"
+      },
+      "Vrated": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 320,
+        "max": 400,
+        "min": 160,
+        "source_ref": "S1",
+        "tolerance": "-",
+        "unit": "V"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "P1..PN",
+        "package_terminal_rule": "3D spec: pin 1 at +Y end, descending; one solder pin per position",
+        "role": "terminal"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "I > min(Irated, ampacity(AWG))",
+        "condition": "MSTB 2.5 at 2.5 mm2; MKDS 17.5 A",
+        "name": "current",
+        "source_ref": "S1",
+        "symbol": "I",
+        "unit": "A",
+        "value": 12
+      },
+      {
+        "check": "V > Vrated",
+        "condition": "III/2, MSTB",
+        "name": "voltage",
+        "source_ref": "S1",
+        "symbol": "V",
+        "unit": "V",
+        "value": 320
+      }
+    ],
+    "sources": [
+      "S1",
+      "S2",
+      "S3"
+    ],
+    "status": "partial"
+  },
+  "category": "connector",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "3add434d30ea603b6f5fb86913f4c4a76667360057bdae9d97a0266213cb8a66",
+    "line": 10888
+  },
+  "source_refs": [
+    "S1",
+    "S2",
+    "S3"
+  ],
+  "status": "partial"
+}

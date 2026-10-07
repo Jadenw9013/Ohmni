@@ -123,12 +123,21 @@ def test_repository_product_scope_matches_human_approval():
     # Visual and release approval preserve the real board and parked M10 benchmark.
     for scope in tasks["scopes"]:
         assert scope["approved_by"]=="human" and scope["approval_evidence"]
-        if scope["id"] in {"VIS-REF-001", "DEPLOY-1", "COMPONENT-SYNTHESIS-1", "COMPONENT-ATLAS-BUILDER-1", "UX-CLARITY-1", "REPO-READY-1", "COMPONENT-3D-STAGE1", "COMPONENT-3D-STAGE2", "COMPONENT-3D-STAGE3", "COMPONENT-3D-STAGE4", "COMPONENT-3D-STAGE5", "COMPONENT-3D-COMPLETION"}:
+        if scope["id"] in {"VIS-REF-001", "DEPLOY-1", "COMPONENT-SYNTHESIS-1", "COMPONENT-ATLAS-BUILDER-1", "UX-CLARITY-1", "REPO-READY-1", "COMPONENT-3D-STAGE1", "COMPONENT-3D-STAGE2", "COMPONENT-3D-STAGE3", "COMPONENT-3D-STAGE4", "COMPONENT-3D-STAGE5", "COMPONENT-3D-COMPLETION", "COMPONENT-BEHAVIOR-STAGE1", "COMPONENT-BEHAVIOR-COMPLETION"}:
             assert scope["status"] in {"APPROVED", "IN_PROGRESS", "REVIEW", "VERIFIED", "COMPLETE"}
         else:
             expected="IN_PROGRESS" if scope["id"]=="M10" else "COMPLETE"
             assert scope["status"]==expected, scope["id"]
-    assert state["approved_product_scope"]=="COMPONENT-3D-COMPLETION"
+    assert state["approved_product_scope"]=="COMPONENT-BEHAVIOR-COMPLETION"
+    behavior_completion=json.loads((root/".ai/approvals/COMPONENT-BEHAVIOR-COMPLETION.yaml").read_text())
+    assert behavior_completion["approved_by"]=="human"
+    assert "2 through 7" in behavior_completion["evidence"]
+    behavior_stage1=json.loads((root/".ai/approvals/COMPONENT-BEHAVIOR-STAGE1.yaml").read_text())
+    assert behavior_stage1["approved_by"]=="human"
+    assert behavior_stage1["branch"]=="codex/behavior-stage1"
+    assert any("GENERIC_LED_GREEN" in item for item in behavior_stage1["binding_resolutions"])
+    assert any("MCP1700" in item for item in behavior_stage1["binding_resolutions"])
+    assert "Stage 2 or later behavior implementation" in behavior_stage1["non_goals"]
     stage1=json.loads((root/".ai/approvals/COMPONENT-3D-STAGE1.yaml").read_text())
     assert stage1["approved_by"]=="human"
     assert len(stage1["component_ids"])==20

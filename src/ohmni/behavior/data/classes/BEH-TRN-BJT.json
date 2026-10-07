@@ -1,0 +1,377 @@
+{
+  "applies_to": [
+    "OHM-093",
+    "OHM-094",
+    "OHM-095",
+    "OHM-096",
+    "OHM-097"
+  ],
+  "basis_values": [
+    "(Vbe-Eg)/T - XTI k/q",
+    "ASSUMPTION",
+    "DERIVED",
+    "Ic=(Vcc-Vf-Vcesat)/R",
+    "MFR_DATASHEET",
+    "Rc/(re+RE)*ro correction",
+    "Rth*Vce*dIc/dT"
+  ],
+  "behavior_id": "BEH-TRN-BJT",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "Ic=(Vcc-Vf-Vcesat)/R",
+          "measure": "Ic",
+          "tolerance": "5%",
+          "value": 0.0132
+        }
+      ],
+      "file": "docs/behavior/bench/trn_bjt/B1_led_switch.cir",
+      "measured_in_ngspice": "Ic=13.17 mA",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "Rc/(re+RE)*ro correction",
+          "measure": "gain",
+          "tolerance": "15%",
+          "value": 225
+        }
+      ],
+      "file": "docs/behavior/bench/trn_bjt/B2_ce_amp.cir",
+      "measured_in_ngspice": "216.2",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B6",
+      "expected": [
+        {
+          "basis": "(Vbe-Eg)/T - XTI k/q",
+          "measure": "dVbe_dT",
+          "tolerance": "0.3e-3",
+          "value": -0.0018
+        }
+      ],
+      "file": "docs/behavior/bench/trn_bjt/B6_vbe_tempco.cir",
+      "measured_in_ngspice": "-1.82 mV/K",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B8",
+      "expected": [
+        {
+          "basis": "Rth*Vce*dIc/dT",
+          "measure": "loop_gain_criterion",
+          "tolerance": "qualitative",
+          "value": "A diverges, B converges"
+        }
+      ],
+      "file": "docs/behavior/bench/trn_bjt/B8_thermal_runaway.cir",
+      "measured_in_ngspice": "A clamps 300 C, B 92.08 C",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-093",
+      "OHM-094",
+      "OHM-095",
+      "OHM-096",
+      "OHM-097"
+    ],
+    "behavior_id": "BEH-TRN-BJT",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "Ic=(Vcc-Vf-Vcesat)/R",
+            "measure": "Ic",
+            "tolerance": "5%",
+            "value": 0.0132
+          }
+        ],
+        "file": "bench/trn_bjt/B1_led_switch.cir",
+        "id": "B1",
+        "measured_in_ngspice": "Ic=13.17 mA",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "Rc/(re+RE)*ro correction",
+            "measure": "gain",
+            "tolerance": "15%",
+            "value": 225
+          }
+        ],
+        "file": "bench/trn_bjt/B2_ce_amp.cir",
+        "id": "B2",
+        "measured_in_ngspice": "216.2",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "(Vbe-Eg)/T - XTI k/q",
+            "measure": "dVbe_dT",
+            "tolerance": "0.3e-3",
+            "value": -0.0018
+          }
+        ],
+        "file": "bench/trn_bjt/B6_vbe_tempco.cir",
+        "id": "B6",
+        "measured_in_ngspice": "-1.82 mV/K",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "Rth*Vce*dIc/dT",
+            "measure": "loop_gain_criterion",
+            "tolerance": "qualitative",
+            "value": "A diverges, B converges"
+          }
+        ],
+        "file": "bench/trn_bjt/B8_thermal_runaway.cir",
+        "id": "B8",
+        "measured_in_ngspice": "A clamps 300 C, B 92.08 C",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "transistor",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "H"
+    },
+    "failure_modes": [
+      {
+        "effect": "avalanche, possible destruction",
+        "id": "vceo_exceeded",
+        "permanence": "recoverable",
+        "sim_response": "flag, no clamp",
+        "trigger": "Vce > VCEO"
+      },
+      {
+        "effect": "C-E short (power) or open (small signal)",
+        "id": "overtemp",
+        "permanence": "permanent",
+        "sim_response": "mark failed",
+        "trigger": "Tj > 150 C"
+      },
+      {
+        "effect": "BE avalanche, hFE degradation",
+        "id": "vebo_exceeded",
+        "permanence": "permanent",
+        "sim_response": "flag, optional BF degradation policy",
+        "trigger": "reverse Vbe > VEBO"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "no breakdown, no SOA, no self-heating inside ngspice",
+        "hFE curve shape is a fit to min/max bands, typical curve not captured",
+        "VAF/BR/XTB/XTI assumed",
+        "PNP not fitted",
+        "BC817/BCP56/BCX56/BD139 have ratings and hFE bins only, no fitted card (use DERIVED BF = geometric mean of bin, IS = 1e-14, status partial)"
+      ],
+      "netlist_template": ".include models_bjt_r6fit.lib\nQ{ref} {C} {B} {E} Q2N3904_R6FIT temp={Tj}\n",
+      "spice_primitives": [
+        "Q"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "ac",
+        "tran",
+        "noise",
+        "temp"
+      ],
+      "valid_range": "Ic 10 uA to datasheet max, Vce below VCEO, Tj -55..150 C, NPN only"
+    },
+    "parameters": {
+      "BF": {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "default": 325.03,
+        "max": null,
+        "min": null,
+        "source_ref": "S1",
+        "tolerance": "corner rule BF*k, ISE/k",
+        "unit": ""
+      },
+      "IC_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 0.2,
+        "max": null,
+        "min": null,
+        "source_ref": "S1",
+        "tolerance": null,
+        "unit": "A"
+      },
+      "RthJA": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 200,
+        "max": null,
+        "min": null,
+        "source_ref": "S1",
+        "tolerance": null,
+        "unit": "K/W"
+      },
+      "Tj_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 150,
+        "max": 150,
+        "min": null,
+        "source_ref": "S1",
+        "tolerance": null,
+        "unit": "C"
+      },
+      "VAF": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 100,
+        "max": 200,
+        "min": 30,
+        "source_ref": "S31",
+        "tolerance": null,
+        "unit": "V"
+      },
+      "VCEO": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 40,
+        "max": null,
+        "min": null,
+        "source_ref": "S1",
+        "tolerance": null,
+        "unit": "V"
+      },
+      "hfe_corner_k": {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "default": 1.0,
+        "max": 1.73,
+        "min": 0.58,
+        "source_ref": "S1",
+        "tolerance": null,
+        "unit": ""
+      },
+      "polarity": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": "NPN",
+        "max": null,
+        "min": null,
+        "source_ref": "S1",
+        "tolerance": null,
+        "unit": ""
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "bidirectional",
+        "name": "C",
+        "package_terminal_rule": "per part: see per-entry binding table (2N3904 TO-92 pin3, BC547 pin1, BC817 SOT-23 pin3, BCP56 SOT-223 pin2 and tab pin4, BCX56 SOT-89 pin2/tab, BD139 TO-126 pin2/plate)",
+        "role": "collector"
+      },
+      {
+        "electrical_type": "input",
+        "name": "B",
+        "package_terminal_rule": "per part: 2N3904 pin2, BC547 pin2, BC817 pin1, BCP56 pin1, BCX56 pin3, BD139 pin3",
+        "role": "base"
+      },
+      {
+        "electrical_type": "bidirectional",
+        "name": "E",
+        "package_terminal_rule": "per part: 2N3904 pin1, BC547 pin3, BC817 pin2, BCP56 pin3, BCX56 pin1, BD139 pin1",
+        "role": "emitter"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "abs(v(c)-v(e)) <= 40",
+        "condition": "2N3904",
+        "name": "vceo",
+        "source_ref": "S1",
+        "symbol": "VCEO",
+        "unit": "V",
+        "value": 40
+      },
+      {
+        "check": "-(v(b)-v(e)) <= 6",
+        "condition": "2N3904",
+        "name": "vebo",
+        "source_ref": "S1",
+        "symbol": "VEBO",
+        "unit": "V",
+        "value": 6
+      },
+      {
+        "check": "abs(i(c)) <= 0.2",
+        "condition": "2N3904 continuous",
+        "name": "ic",
+        "source_ref": "S1",
+        "symbol": "IC",
+        "unit": "A",
+        "value": 0.2
+      },
+      {
+        "check": "vce*ic <= (150-Ta)/200",
+        "condition": "TO-92, Ta=25C, derate 5 mW/C",
+        "name": "power",
+        "source_ref": "S1",
+        "symbol": "PD",
+        "unit": "W",
+        "value": 0.625
+      }
+    ],
+    "sources": [
+      "S1",
+      "S2",
+      "S3",
+      "S4",
+      "S5",
+      "S6",
+      "S7",
+      "S30",
+      "S31"
+    ],
+    "status": "partial"
+  },
+  "category": "transistor",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "5764b52d731ea12ab97a45c19fb376e8883f1f490d0340b871ee7279196c8840",
+    "line": 5918
+  },
+  "source_refs": [
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7",
+    "S30",
+    "S31"
+  ],
+  "status": "partial"
+}

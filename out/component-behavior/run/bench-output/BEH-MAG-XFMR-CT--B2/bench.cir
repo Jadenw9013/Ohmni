@@ -1,0 +1,46 @@
+B2 CT low-frequency corner: gain Vb/Ip = (Rb/N) * jwL/(jwL+Rs+Rb), a high-pass at fc=(Rs+Rb)/(2 pi Lsec)
+* v2: meas names prefixed ct2_ (they already printed as scalars; circuit unchanged)
+* Expected fc = 103/(2 pi 0.01) = 1639.3 Hz ; at fc |gain| = 0.70711*(Rb/N) = 0.35355 V/A (Rb/N = 0.5 V/A)
+* OHMNI BEH-MAG-XFMR models (behavioural_approximation). Pins: p1 p2 s1 s2 (p1 and s1 are dot terminals).
+* LP = primary open-circuit inductance, N = Ns/Np, LLK = leakage seen at primary with secondary shorted.
+* RP, RS winding DC resistances. CIW = interwinding capacitance (one lumped C p1-s1 / p2-s2 split).
+* Linear coupled-inductor version (K element).
+.subckt XFMR_K p1 p2 s1 s2 LP=1m N=1 LLK=1u RP=1m RS=1m CIW=1p
+.param kk={sqrt(1-LLK/LP)}
+Rp1 p1 pa {RP}
+L1 pa p2 {LP}
+L2 sa s2 {LP*N*N}
+Rs1 s1 sa {RS}
+K12 L1 L2 {kk}
+Ciw1 p1 s1 {CIW/2}
+Ciw2 p2 s2 {CIW/2}
+.ends
+
+* Saturating version: leakage Llk in series on primary side, nonlinear magnetizing inductance across an ideal transformer.
+* ISATM = magnetizing current at which Lm has dropped by DROP (referred to primary). LR = Lsat/Lm floor.
+.subckt XFMR_SAT p1 p2 s1 s2 LP=1m N=1 LLK=1u RP=1m RS=1m CIW=1p ISATM=1 DROP=0.3 LR=0.05
+.param lmag={LP-LLK}
+.param ia={ISATM/atanh(sqrt(DROP/(1-LR)))}
+Rp1 p1 pa {RP}
+Llk pa pb {LLK}
+Lm pb p2 L='lmag*(LR+(1-LR)*(1/cosh(max(min(i(Lm)/ia,20),-20)))**2)'
+* ideal transformer v(sx,s2)=N*v(pb,p2); current N*i(Vs) forced pb->p2
+Es sx s2 pb p2 {N}
+Vs sx sb 0
+Fp pb p2 Vs {N}
+Rs1 s1 sb {RS}
+Ciw1 p1 s1 {CIW/2}
+Ciw2 p2 s2 {CIW/2}
+.ends
+
+Ip 0 p1 DC 0 AC 1
+X1 p1 0 s1 0 XFMR_SAT LP=250n N=200 LLK=0.25n RP=1u RS=3 CIW=1p ISATM=1 DROP=0.3 LR=0.05
+Rb s1 0 100
+.ac dec 200 100 1meg
+.control
+run
+meas ac ct2_fc when vm(s1)=0.35355 rise=1
+meas ac ct2_gmid find vm(s1) at=100k
+quit
+.endc
+.end

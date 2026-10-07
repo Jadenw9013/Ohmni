@@ -1,0 +1,39 @@
+* BEH-REG-LINEAR B4: power dissipation, junction temperature and thermal shutdown, L7805-class model in TO-220 (ST L78 DS0422: RthJA 50 C/W TO-220)
+* v2: absolute include path made relative; scalars re-exported via let (tja_end_c, tjb_peak_c, voutb_min_v, voutb_end_v, tjb_end_c, reg_lost_flag); circuit unchanged
+* Case A (steady): Vin=9 V, Iout=0.5 A: P = (Vin-Vout)*Iout + Vin*Iq = 4*0.5 + 9*0.005 = 2.045 W ; Tj = Ta + Rth*P = 25 + 50*2.045 = 127.25 C. Expected 127.25 C, tolerance 2 %.
+* Case B (overload): Vin=15 V, Iout=1.0 A: P = 10*1 + 0.075 = 10.075 W -> unrestricted Tj = 25 + 50*10.075 = 528 C > TSD. The model's gate throttles the pass current near TSD=150 C
+*   (soft, no latch/hysteresis: ASSUMPTION; the real part's shutdown temperature is not in the opened ST extract). Expected: Tj peak stays within +/- 10 C of TSD,
+*   Vout drops below 5 V (regulation lost; the load is a 5 ohm resistor, 1 A at 5 V, switched on from 1 ms to 150 ms); thermal shutdown is recoverable (cooling restores regulation). Cth = 0.002 J/K is an ASSUMPTION chosen only to keep the run short.
+.include reg_behavioural_r6.lib
+VinA vinA 0 9
+XA vinA voutA 0 LDO_R6 VNOM=5 VINREF=10 KLINE=0.002857 ROUTDC=0.0669 VDO=2 IDO=1 IQ=5m ILIM=2.2 GM=100 FP1=200k FP2=2meg RTH=50 CTH=0.002 TSD=150
+IloadA voutA 0 0.5
+CoA voutA 0 10u
+VinB vinB 0 15
+XB vinB voutB 0 LDO_R6 VNOM=5 VINREF=10 KLINE=0.002857 ROUTDC=0.0669 VDO=2 IDO=1 IQ=5m ILIM=2.2 GM=100 FP1=200k FP2=2meg RTH=50 CTH=0.002 TSD=150
+Ven en 0 pwl(0 0 1m 0 1.1m 1 150m 1 150.1m 0 400m 0)
+BloadB voutB 0 I=max(V(voutB),0)/5*V(en)
+RbaseB voutB 0 500
+CoB voutB 0 10u
+.nodeset v(voutA)=5 v(voutB)=5
+.tran 20u 400m
+.control
+set noaskquit
+run
+let tjA = v(xa.tj)
+let tjB = v(xb.tj)
+meas tran tjA_end find tjA at=390m
+meas tran tjB_peak max tjB
+meas tran voutB_min min v(voutB) from=100m to=150m
+meas tran voutB_end find v(voutB) at=399m
+meas tran tjB_end find tjB at=399m
+let tja_end_c = tjA_end
+let tjb_peak_c = tjB_peak
+let voutb_min_v = voutB_min
+let voutb_end_v = voutB_end
+let tjb_end_c = tjB_end
+let reg_lost_flag = 0.5*(1+(4.9-voutB_min)/abs(4.9-voutB_min))
+print tja_end_c tjb_peak_c voutb_min_v voutb_end_v tjb_end_c reg_lost_flag
+quit
+.endc
+.end

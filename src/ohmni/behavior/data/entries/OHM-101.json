@@ -1,0 +1,268 @@
+{
+  "behavior_class_ids": [
+    "BEH-TRN-MOSFET"
+  ],
+  "catalog_binding_ids": [],
+  "class_record_paths": [
+    "src/ohmni/behavior/data/classes/BEH-TRN-MOSFET.json"
+  ],
+  "component": "D2PAK / TO-263",
+  "entry_id": "OHM-101",
+  "fidelity": "behavioural_approximation",
+  "group": "R6",
+  "layer": "L1",
+  "research": {
+    "bench_result": "bench-results/BEH-TRN-MOSFET--B1.json",
+    "bench_results": [
+      "bench-results/BEH-TRN-MOSFET--B1.json",
+      "bench-results/BEH-TRN-MOSFET--B2.json",
+      "bench-results/BEH-TRN-MOSFET--B3.json",
+      "bench-results/BEH-TRN-MOSFET--B8.json"
+    ],
+    "conflicts": [
+      "This PDF gives94 W case power and1.5 K/W thermal resistance, which imply different limiting powers; enforce the lower.",
+      "The Infineon product-page summary discovered during search reported110 W/1.4 K/W, whereas the archived2004 PDF gives94 W/1.5 K/W. Do not increase limits without a revision-specific binding.",
+      "The class eas=0.53 J uses the typical destructive value as an operating ceiling. The primary source explicitly says this is outside rated limits. Its calculated thermal ceiling is150 mJ; do not use the old0.53 J acceptance expression."
+    ],
+    "documents": [
+      {
+        "document_id": "irfz44ns",
+        "manufacturer": "International Rectifier / Infineon",
+        "note": "Primary PDF read from hashed archive; pin diagrams inspected visually.",
+        "page": null,
+        "revision": "PD-95124,18-Mar-2004",
+        "source_status": "primary_source_opened",
+        "title": "IRFZ44NS/LPbF HEXFET Power MOSFET",
+        "url": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irfz44ns-datasheet-en.pdf"
+      },
+      {
+        "document_id": "irfz44ns-product",
+        "manufacturer": "Infineon",
+        "note": "Manufacturer HTML parametrics read from hashed archive; not a revision-controlled PDF.",
+        "page": null,
+        "revision": "Web page retrieved 2026-10-05; no revision printed",
+        "source_status": "primary_source_opened",
+        "title": "IRFZ44NS manufacturer product summary",
+        "url": "https://www.infineon.com/part/IRFZ44NS"
+      }
+    ],
+    "entry_id": "OHM-101",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "reference_part",
+        "page": 1,
+        "scope": "IRFZ44NSPbF D2PAK; does not replace the default L7805 regulator",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irfz44ns-datasheet-en.pdf"
+        ],
+        "unit": null,
+        "value": "IRFZ44NSPbF"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "manufacturer_pin_roles",
+        "page": 8,
+        "scope": "IRFZ44NSPbF D2PAK; does not replace the default L7805 regulator; source lead assignments",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irfz44ns-datasheet-en.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "1": "G",
+          "2": "D",
+          "3": "S",
+          "tab": "D"
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_drain_source_voltage",
+        "page": 2,
+        "scope": "IRFZ44NSPbF D2PAK; does not replace the default L7805 regulator",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irfz44ns-datasheet-en.pdf"
+        ],
+        "unit": "V",
+        "value": 55
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_gate_source_magnitude",
+        "page": 1,
+        "scope": "IRFZ44NSPbF D2PAK; does not replace the default L7805 regulator",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irfz44ns-datasheet-en.pdf"
+        ],
+        "unit": "V",
+        "value": 20
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_drain_current_case25",
+        "page": 1,
+        "scope": "IRFZ44NSPbF D2PAK; does not replace the default L7805 regulator; VGS10 V",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irfz44ns-datasheet-en.pdf"
+        ],
+        "unit": "A",
+        "value": 49
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_power_case25",
+        "page": 1,
+        "scope": "IRFZ44NSPbF D2PAK; does not replace the default L7805 regulator; derate0.63 W/C",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irfz44ns-datasheet-en.pdf"
+        ],
+        "unit": "W",
+        "value": 94
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_junction_temperature",
+        "page": 1,
+        "scope": "IRFZ44NSPbF D2PAK; does not replace the default L7805 regulator",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irfz44ns-datasheet-en.pdf"
+        ],
+        "unit": "C",
+        "value": 175
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_thermal_resistance_junction_case",
+        "page": 1,
+        "scope": "IRFZ44NSPbF D2PAK; does not replace the default L7805 regulator",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irfz44ns-datasheet-en.pdf"
+        ],
+        "unit": "K/W",
+        "value": 1.5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_thermal_resistance_junction_ambient",
+        "page": 1,
+        "scope": "IRFZ44NSPbF D2PAK; does not replace the default L7805 regulator; source mounting condition must be reproduced",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irfz44ns-datasheet-en.pdf"
+        ],
+        "unit": "K/W",
+        "value": 40
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_on_resistance",
+        "page": 2,
+        "scope": "IRFZ44NSPbF D2PAK; does not replace the default L7805 regulator; VGS10 V,ID25 A,TJ25 C,pulse<=400 us,duty<=2 percent",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irfz44ns-datasheet-en.pdf"
+        ],
+        "unit": "mohm",
+        "value": 17.5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_gate_charge",
+        "page": 2,
+        "scope": "IRFZ44NSPbF D2PAK; does not replace the default L7805 regulator; ID25 A,VDS44 V,VGS10 V",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irfz44ns-datasheet-en.pdf"
+        ],
+        "unit": "nC",
+        "value": 63
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": null,
+        "field": "conservative_case_power_rule",
+        "page": 1,
+        "scope": "IRFZ44NSPbF D2PAK; does not replace the default L7805 regulator; obey both published constraints",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irfz44ns-datasheet-en.pdf"
+        ],
+        "unit": "W",
+        "value": "min(94-0.63*(TC-25),(175-TC)/1.5), clipped at zero"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "typical_destructive_avalanche_energy",
+        "page": 2,
+        "scope": "IRFZ44NSPbF PD95124; IAS25 A,L0.47 mH table; starting TJ25 C,RG25 ohm per note2; typical value at device destruction, outside rated limits; NOT an allowable operating limit",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irfz44ns-datasheet-en.pdf"
+        ],
+        "unit": "mJ",
+        "value": 530
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "calculated_thermal_avalanche_ceiling",
+        "page": 2,
+        "scope": "IRFZ44NSPbF PD95124; IAS25 A,L0.47 mH table; starting TJ25 C,RG25 ohm per note2; calculated value limited by TJ175 C; not a replacement for SOA or repetitive pulse analysis",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irfz44ns-datasheet-en.pdf"
+        ],
+        "unit": "mJ",
+        "value": 150
+      }
+    ],
+    "remaining_open_items": [
+      "The default ST L7805 D2PAK source timed out; its regulator binding remains separate and cannot use MOSFET drain/gate/source roles.",
+      "Actual board thermal path, SOA and dynamic failure behavior remain unresolved.",
+      "The package reference now has a sourced MOSFET example; this does not validate the regulator default or five-lead variants.",
+      "Single-pulse table L0.47 mH differs from note2 L0.48 mH; retain that source discrepancy. Avalanche operation stays unsupported until a sourced pulse/SOA binding replaces the destructive-value guard."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [
+      "The default regulator has no re-verified source/functional binding; keep that default blocked."
+    ],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-101.md",
+      "document_sha256": "d6a51c7e5a84603de15cc509450e4dc709db18e77fd21cf9bd5119f1eaa6b814",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
+  "resolution_ids": [],
+  "schema_version": 1,
+  "simulation_disposition": "simulable",
+  "simulation_reason": "The canonical class provides an L1/L2 model; fidelity and assumptions remain explicit.",
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "dc89a5c5c7749e99777f01a6c17fe15da96de78003db6347bf9371ce1534c74f",
+    "line": 119
+  },
+  "status": "partial"
+}

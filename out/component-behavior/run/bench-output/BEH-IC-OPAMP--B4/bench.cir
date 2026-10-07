@@ -1,0 +1,61 @@
+* BEH-IC-OPAMP B4: rail-to-rail op-amp parameter set (MCP6001 numbers from DS21733 mirror extracts: GBW 1 MHz, SR 0.6 V/us, Aol 112 dB, swing VSS+25 mV..VDD-25 mV, IQ 100 uA, Ib 1 pA, Vos max 4.5 mV -> typ 1 mV ASSUMED)
+* v2: scalars printed as 'name = value' (vmid_v, vtop_v, vbot_v, f3db_rrio_hz); behavior unchanged
+* (a) follower DC sweep 0..5 V: out = in for 0.025 < in < 4.975 ; clipped to 0.025 / 4.975 at the ends.
+* (b) G=10 non-inverting, f-3dB = GBW/10 = 100 kHz
+* BEH-IC-OPAMP behavioural macromodel (behavioural_approximation). ngspice 42 stock, no XSPICE.
+* pins: inp inm vcc vee out
+* Single dominant pole: Aol = gm*R1, GBW = gm/(2*pi*C1); slew limit via tanh-limited gm current Imax = SR*C1.
+* Rail limits: out clamped to [vee+vol, vcc-vdrop]; Rout in series; Iq constant supply current; input bias flows OUT of pins when ib>0 (PNP input, LM358) and INTO pins when ib<0 (CMOS leakage sign ignored).
+.subckt opamp_gp inp inm vcc vee out params: aol=100k gbw=700k sr=0.3Meg vos=3m ib=20n ios=2n vol=5m vdrop=1.5 rout=50 iq=350u cin=2p rid=2Meg
+.param c1v=1n
+.param gmv={6.283185307*gbw*c1v}
+.param r1v={aol/gmv}
+.param imaxv={sr*c1v}
+* input offset (series with +) and bias currents
+Vos ip1 inp dc {vos}
+Ibp vcc ip1 dc {ib+ios/2}
+Ibm vcc inm dc {ib-ios/2}
+Rid ip1 inm {rid}
+Cip ip1 vee {cin}
+Cim inm vee {cin}
+* gm stage into dominant pole node n1 (absolute node: v(n1) is the unclamped open-loop output target)
+Bgm 0 n1 I={imaxv*( max(tanh(gmv*(v(ip1)-v(inm))/imaxv),0)*0.5*(1-tanh((v(n1)-(v(vcc)+0.5))/0.05)) + min(tanh(gmv*(v(ip1)-v(inm))/imaxv),0)*0.5*(1+tanh((v(n1)-(v(vee)-0.5))/0.05)) )}
+R1 n1 0 {r1v}
+C1 n1 0 {c1v}
+* wind-up limit: gm current is switched off smoothly once n1 passes rail+0.5 V (n1 then holds near the rail; recovery is fast)
+* output stage: clamp to rails, series Rout
+Bo oi vee V=max(min(v(n1), v(vcc)-vdrop), v(vee)+vol)-v(vee)
+Ro oi out {rout}
+* supply accounting: load current sourced by the output is drawn from vcc (Bo is referenced to vee, so sunk current returns to vee)
+Bsupp vcc vee I=max(i(Ro),0)
+* supply current
+Iq vcc vee dc {iq}
+.ends
+
+Vcc vcc 0 5
+Vin in 0 dc 2.5 ac 1
+X1 in out vcc 0 out opamp_gp aol=398k gbw=1Meg sr=0.6Meg vos=1m ib=1p ios=0 vol=25m vdrop=25m iq=100u rout=100
+Rl out 0 100k
+* gain-10 stage
+Vin2 in2 0 dc 0.2 ac 1
+X2 in2 fb vcc 0 out2 opamp_gp aol=398k gbw=1Meg sr=0.6Meg vos=0 ib=0 ios=0 vol=25m vdrop=25m iq=100u rout=100
+Rf out2 fb 9k
+Rg fb 0 1k
+Rl2 out2 0 100k
+.control
+set noaskquit
+dc Vin 0 5 0.025
+let vmid = v(out)[100]
+let vtop = vecmax(v(out))
+let vbot = vecmin(v(out))
+echo vmid_v = $&vmid
+echo vtop_v = $&vtop
+echo vbot_v = $&vbot
+ac dec 100 100 10Meg
+meas ac g0 find vdb(out2) at=100
+let g3 = g0-3.0103
+meas ac f3 when vdb(out2)=g3 cross=1
+echo f3db_rrio_hz = $&f3
+quit
+.endc
+.end

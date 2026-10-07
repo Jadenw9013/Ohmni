@@ -1,0 +1,269 @@
+{
+  "population": [
+    "OHM-103",
+    "OHM-104",
+    "OHM-105",
+    "OHM-106",
+    "OHM-107",
+    "OHM-108",
+    "OHM-109",
+    "OHM-110",
+    "OHM-111",
+    "OHM-112",
+    "OHM-113",
+    "OHM-114",
+    "OHM-115",
+    "OHM-116",
+    "OHM-117",
+    "OHM-118",
+    "OHM-119",
+    "OHM-120",
+    "OHM-121",
+    "OHM-122",
+    "OHM-123",
+    "OHM-124",
+    "OHM-125",
+    "OHM-126",
+    "OHM-127",
+    "OHM-128",
+    "OHM-129",
+    "OHM-130",
+    "OHM-131",
+    "OHM-132",
+    "OHM-133",
+    "OHM-134",
+    "OHM-135",
+    "OHM-136",
+    "OHM-137",
+    "OHM-138",
+    "OHM-139",
+    "OHM-140",
+    "OHM-141",
+    "OHM-142",
+    "OHM-143",
+    "OHM-144",
+    "OHM-145",
+    "OHM-146",
+    "OHM-147",
+    "OHM-148",
+    "OHM-149",
+    "OHM-150",
+    "OHM-151",
+    "OHM-152",
+    "OHM-153",
+    "OHM-154",
+    "OHM-155",
+    "OHM-156",
+    "OHM-157",
+    "OHM-158",
+    "OHM-159",
+    "OHM-160",
+    "OHM-161",
+    "OHM-162",
+    "OHM-163",
+    "OHM-164",
+    "OHM-165",
+    "OHM-166",
+    "OHM-167",
+    "OHM-168",
+    "OHM-169",
+    "OHM-170",
+    "OHM-171",
+    "OHM-172",
+    "OHM-173",
+    "OHM-174",
+    "OHM-175",
+    "OHM-176",
+    "OHM-177",
+    "OHM-178",
+    "OHM-179",
+    "OHM-180"
+  ],
+  "results": [
+    {
+      "entry_id": "OHM-106",
+      "mismatches": [
+        "input_capacitance_typical: the supplied scope specifies VCC = 2..6 V but omits TA = 25 C. On source page 5 the 3 pF value belongs specifically to the TA = 25 C / TYP column; it is not a typical value specified across the -40..85 C operating range. Preserve the 25 C condition in both the gapfill and generated record."
+      ],
+      "notes": [
+        "Examined archived SN74HC595 PDF pages 1, 3, 4 and 5, including rendered pin and ratings/electrical tables. Revision SCLS041J, revised October 2021, agrees with the supplied document metadata.",
+        "Page 1 explicitly identifies SN74HC595N as a 16-pin PDIP. Page 3 top-view drawing supports 1 QB, 2 QC, 3 QD, 4 QE, 5 QF, 6 QG, 7 QH, 8 GND, 9 QH-prime serial output, 10 SRCLR, 11 SRCLK, 12 RCLK, 13 OE, 14 SER, 15 QA, 16 VCC. OE and SRCLR are active-low signals in the drawing. The source pin table has a malformed VCC/NC area, so pin 16 was independently checked against the drawing.",
+        "Page 4 supports recommended VCC = 2..6 V and SN74-specific ambient range -40..85 C. The 7 V supply maximum, 35 mA output-current magnitude at VO = 0..VCC, 70 mA total VCC/GND-current magnitude and 150 C junction maximum are absolute stress ratings, not guaranteed operating drive capability.",
+        "Page 5 N/PDIP thermal column gives 67 C/W, numerically equivalent to K/W; this is a package reference metric and does not establish the actual board thermal path.",
+        "Page 5 supports input leakage magnitude 1000 nA = 1 uA at VCC = 6 V and VI = 0 or VCC over the SN74 temperature range, and QA..QH off-state leakage magnitude 5 uA at VCC = 6 V and VO = 0 or VCC. The 3 pF input-capacitance number is numerically correct subject to the scope finding.",
+        "The generated research payload exactly matches the supplied audit-evidence fields after allowing generated null metadata. Its embedded gapfill SHA-256 matches the exact supplied Markdown bytes. Archived source SHA-256 matches its hash-addressed filename. Implementation, other research, previous reviewer results and product bench files were not inspected; bench outcome claims were not independently revalidated."
+      ],
+      "primary_sources": [
+        "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf"
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "343e6080befa4728dc0f6f4e718242227026267693c31c7b16d21e89b69e1b79",
+        "generated_record_sha256": "fcea6ec078a87c48bc12fcccf74065228d166de97c83f8b5f041b95a5d47aabe"
+      }
+    },
+    {
+      "entry_id": "OHM-107",
+      "mismatches": [
+        "input_capacitance_typical: the supplied scope identifies control inputs and VCC = 2..6 V but omits TA = 25 C. Source page 5 places the 3 pF number in the TA = 25 C / TYP column, not in a full-temperature typical-value column. Preserve that temperature condition in both supplied representations."
+      ],
+      "notes": [
+        "Examined archived SN74HC245 PDF pages 1, 3, 4 and 5, including rendered pin and table layouts. SCLS131F, revised August 2022, matches the document revision.",
+        "Page 1 supports N/PDIP-20. Page 3 top-view drawing and pin table agree with the entire supplied map: 1 DIR; 2..9 A1..A8; 10 GND; 11..18 B8..B1; 19 OE; 20 VCC. OE is active low.",
+        "Page 4 supports 2..6 V recommended supply and -40..85 C SN74 ambient range. Its separate absolute-maximum table gives 7 V supply, 35 mA continuous output-current magnitude for VO = 0..VCC, 70 mA total VCC/GND-current magnitude and 150 C junction temperature. These are stress limits.",
+        "Page 5 N/PDIP column is 57.0 C/W. The 3 pF typical input capacitance and 1 uA input-leakage magnitude concern DIR/OE only, whereas the 5 uA off-state leakage concerns A/B data pins. Leakage conditions are VCC = 6 V and signal voltage = 0 or VCC; the recorded full-temperature SN74 maxima are correct.",
+        "No per-pin current was multiplied by pin count, and no PDIP thermal value was borrowed from another package.",
+        "The generated research payload exactly matches the supplied audit-evidence fields after allowing generated null metadata. Its embedded gapfill SHA-256 matches the exact supplied Markdown bytes. Archived source SHA-256 matches its hash-addressed filename. Implementation, other research, previous reviewer results and product bench files were not inspected; bench outcome claims were not independently revalidated."
+      ],
+      "primary_sources": [
+        "https://www.ti.com/lit/ds/symlink/sn74hc245.pdf"
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "08acbf9bfd794fa4b79f16d21951592560c52c49905ae1d7b320a4b1b95e3fc6",
+        "generated_record_sha256": "496d1efe3f7af79cc5b9b54cc0e1ee64f57096d4bbc5d6cb91b1aec543923200"
+      }
+    },
+    {
+      "entry_id": "OHM-116",
+      "mismatches": [
+        "input_capacitance_typical: the supplied scope specifies VCC = 2..6 V but omits TA = 25 C, which heads the source page 5 TYP column containing 3 pF. It must retain the 25 C typical-value condition rather than imply an unqualified value over the recommended ambient range."
+      ],
+      "notes": [
+        "Examined archived SN74HC595 PDF pages 1, 3, 4 and 5, including rendered pin and table layouts. Document SCLS041J, revised October 2021, matches.",
+        "Page 1 identifies SN74HC595PW as TSSOP-16. Page 3 drawing explicitly includes PW and supports the entire supplied map: 1..7 QB..QH; 8 GND; 9 QH-prime serial output; 10 SRCLR; 11 SRCLK; 12 RCLK; 13 OE; 14 SER; 15 QA; 16 VCC. OE/SRCLR are active low. Pin 16 was checked against the drawing rather than the malformed source table VCC/NC cells.",
+        "Page 4 supports recommended supply 2..6 V and ambient -40..85 C, and separately absolute supply 7 V, continuous output-current magnitude 35 mA for VO = 0..VCC, aggregate VCC/GND-current magnitude 70 mA, and junction maximum 150 C.",
+        "Page 5 PW/TSSOP column gives 108 C/W, not the 67 C/W N/PDIP value. Page 5 SN74 maxima support input leakage 1 uA and QA..QH off-state leakage 5 uA under the recorded 6 V supply, rail-level test voltages and -40..85 C conditions.",
+        "All cited numerical values and package pin numbers agree with the archived source; the identified discrepancy is the capacitance scope qualifier.",
+        "The generated research payload exactly matches the supplied audit-evidence fields after allowing generated null metadata. Its embedded gapfill SHA-256 matches the exact supplied Markdown bytes. Archived source SHA-256 matches its hash-addressed filename. Implementation, other research, previous reviewer results and product bench files were not inspected; bench outcome claims were not independently revalidated."
+      ],
+      "primary_sources": [
+        "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf"
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "20f45cd52abeac552eb54771f164fdaaff56ed5a689d2801d147c69548459fe3",
+        "generated_record_sha256": "6a073af113b21c31a5db49addcc67ec724e9b66a7dda4909ae28a7116b5f42ee"
+      }
+    },
+    {
+      "entry_id": "OHM-133",
+      "mismatches": [
+        "reference_part: page 4 is cited for the exact value TPS7A8001, but that page names only the TPS7A80 family, DRB/VSON-8 package and generic adjustable/fixed FB/SNS functions. The exact TPS7A8001 adjustable identifier is explicit on pages 1, 6 and 15. The value is correct, but the field needs an exact supporting page citation.",
+        "feedback_voltage_typical: the page 6 row directly specifies VNR (internal reference), not a separately named FB-voltage parameter. The 0.8 V feedback interpretation is supported by the adjustable-divider relationship on page 17, Equation 2, but that supporting derivation/page is not cited. The supplied scope also omits that page 6 typical values are at TJ = 25 C. Cite the feedback relationship or identify the field as the internal-reference value, and preserve the typical-temperature condition.",
+        "Page 6 characteristic scopes are incomplete relative to the cited test rows: dropout_voltage_max omits VOUT + 0.5 V <= VIN <= 6.5 V (in addition to its correctly retained VIN >= 2.5 V, IOUT = 1 A and grounded FB); enable_low_max omits RL = 1 kohm; enable_high_min_above3V6 omits both RL = 1 kohm and the stated VIN <= 6.5 V upper boundary. The numbers 0.5 V, 0.4 V and 1.35 V are correct, but their evidence scopes should preserve these source conditions."
+      ],
+      "notes": [
+        "Examined archived TPS7A80 pages 1, 4, 5, 6, 13, 14, 15 and 17; visually checked pages 4, 5, 6 and 17. SBVS135J, revised January 2018, matches. Page 1 confirms the 3 x 3 mm VSON-8 family package.",
+        "Page 4 top-view drawing and pin table support 1/2 OUT, 3 FB for the adjustable version, 4 GND, 5 EN, 6 NR, 7/8 IN and exposed pad GND. The 4.7 uF minimum output capacitor is explicitly required for stability on this page.",
+        "Page 5 supports recommended VIN = 2.2..6.5 V with minimum VIN equal to the greater of 2.2 V or VOUT + VDO; recommended IOUT maximum 1 A; recommended junction range -40..125 C; absolute IN/OUT maximum 7 V and absolute junction maximum 150 C. These operating and stress classifications agree.",
+        "Page 5 gives RthetaJA = 47.8 C/W for DRB under JEDEC simulation assumptions: exposed pad tied to ground through a 2 x 2 via array, top/bottom layers at 5% copper thermal conductivity representing 20% copper coverage, and a single centered device on a high-K 2s2p board with 3 x 3 inch copper area. The supplied scope references these board assumptions rather than treating the figure as universal.",
+        "Page 6 adjustable ground-pin current is 60 uA typical at IOUT = 1 mA, 100 uA maximum. Typical values use TJ = 25 C; default electrical setup is VIN = max(VOUT(TYP) + 0.5 V, 2.2 V), VEN = 2.2 V, COUT = 4.7 uF and CNR = 0.01 uF unless a row overrides it. The record correctly retains the typical 60 uA number and load/temperature qualifiers.",
+        "Page 6 1 A dropout maximum is 500 mV; enable-low maximum is 0.4 V; the enable-high minimum for 3.6 V < VIN <= 6.5 V is 1.35 V. Page 14 independently describes those enable levels. The findings concern source provenance and omitted row conditions, not these numeric values.",
+        "Page 6 adjustable current limit is 1100..2000 mA, typical 1400 mA, at VOUT = 0.85 x VOUT(NOM) and VIN >= 3.3 V. Page 13 warns against extended current-limit operation, supporting the open item that this is not continuous safe output capacity. No W25Q source was supplied; the cross-part comparison was not independently verified.",
+        "The generated research payload exactly matches the supplied audit-evidence fields after allowing generated null metadata. Its embedded gapfill SHA-256 matches the exact supplied Markdown bytes. Archived source SHA-256 matches its hash-addressed filename. Implementation, other research, previous reviewer results and product bench files were not inspected; bench outcome claims were not independently revalidated."
+      ],
+      "primary_sources": [
+        "https://www.ti.com/lit/ds/symlink/tps7a80.pdf"
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "bd3028c344a5fd246e04b9a02817378c1689b52c1b367da673740381d653677d",
+        "generated_record_sha256": "fd35b9cbfab5fc48aa1779f984e5057f249b2d9a2c178137db96bd2bc5d807e2"
+      }
+    },
+    {
+      "entry_id": "OHM-143",
+      "mismatches": [],
+      "notes": [
+        "Examined both archived ABM8 pages and rendered their complete tables/drawings. Revised 07-29-20 matches the printed footer on both pages.",
+        "Page 1 supports ABM8 family and fundamental operation from 8 to 54 MHz. The selected 16 MHz is inside that range and is also the ordering-format example; the supplied DERIVED field correctly treats it as a selected reference rather than an established order number.",
+        "Page 1 Table 1 assigns 70 ohm maximum ESR to 16.000..19.999 MHz fundamental crystals. Verified C0 = 3 pF maximum (not typical), standard CL = 18 pF, drive level = 10 uW typical and 100 uW maximum from the correct column positions.",
+        "Page 1 standard-option limits are -10..60 C operating temperature, +/-50 ppm tolerance at 25 C, and +/-50 ppm stability across that operating range referenced to 25 C. The recorded 50 ppm values are explicitly magnitudes.",
+        "Page 2 top view numbers bottom-left 1, bottom-right 2, top-right 3, top-left 4; 1 and 3 connect to the crystal and 2/4 are GND. Bottom-view numbering differs and was not substituted. The source explicitly permits the chamfer on pins 1, 3 or 4.",
+        "The proposed manufacturer-to-library permutation 1->2, 2->3, 3->4, 4->1 is marked ASSUMPTION/L and explicitly unvalidated. The manufacturer PDF establishes its own positions only, so no library binding is independently approved by this review. Both source pages lack reference-specific motional C1/L1 values.",
+        "The supplied Epson comparison has no separate primary source in this review packet and was not independently verified. No Epson rating was carried into the verified ABM8 fields.",
+        "The generated research payload exactly matches the supplied audit-evidence fields after allowing generated null metadata. Its embedded gapfill SHA-256 matches the exact supplied Markdown bytes. Archived source SHA-256 matches its hash-addressed filename. Implementation, other research, previous reviewer results and product bench files were not inspected; bench outcome claims were not independently revalidated."
+      ],
+      "primary_sources": [
+        "https://abracon.com/Resonators/abm8.pdf"
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "8f652ee4ef9a7fe1854d3ed0bc5889a8775aca5b769b354b674cd23e70dd9be5",
+        "generated_record_sha256": "c66ed46f1c1e9ca4a9f42e8cb553681271c7ec04bcff4f1a24e21b1f31863156"
+      }
+    },
+    {
+      "entry_id": "OHM-153",
+      "mismatches": [],
+      "notes": [
+        "Examined all four archived Harwin M20 specification pages; visually checked the page 2 ratings and page 3 durability layout. Header/footer identify C00120, Issue 20, 28.11.2022, agreeing with the supplied revision.",
+        "Page 2 describes the M20 family as 2.54 mm pitch with 0.64 mm square mating pins/sockets. The record retains a family/finish scope and says the actual mate must be selected; it does not establish a particular double-row orderable part or physical binding.",
+        "Page 2 gives current rating 3 A maximum per contact, initial contact resistance 20 milliohm maximum, and conditioned resistance 30 milliohm maximum. It explicitly allows individual components to exceed the generic ratings after checking their own information sheets. No aggregate loaded-contact thermal capacity or 10 milliohm typical value is established.",
+        "Page 2 operating-temperature range is -40..105 C for other M20 connectors; the -25..85 C M20-106/107 exception is correctly excluded by the supplied field scope.",
+        "Page 3 durability is 300 operations for gold contact-area finish and 50 for tin, matching the selected gold scope. Page 2 voltage values are one-minute dielectric-withstand tests, not continuous working-voltage ratings; leaving working voltage open is supported.",
+        "The source does not assign electrical polarity or a numbered physical pin map for a selected double-row socket, nor provide the claimed library-model parasitics/derating assumptions. These remain open rather than manufacturer evidence. The Samtec comparison has no separate supplied source and was not independently verified.",
+        "The generated research payload exactly matches the supplied audit-evidence fields after allowing generated null metadata. Its embedded gapfill SHA-256 matches the exact supplied Markdown bytes. Archived source SHA-256 matches its hash-addressed filename. Implementation, other research, previous reviewer results and product bench files were not inspected; bench outcome claims were not independently revalidated."
+      ],
+      "primary_sources": [
+        "https://content.harwin.com/asset/92486137-0a45-4017-9b78-1edaa8709008/C001-C001XX-Component-Specification-M20-Series-2-54mm-pitch-PCB-connectors.pdf"
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "688453be36155052d0dcc12d2fbbf64d445052120282d0bab38d277ed66db1c4",
+        "generated_record_sha256": "906fcace73a88316a87f0c6e1dec8c80ff2a85e0bad95172696517b406461fb8"
+      }
+    },
+    {
+      "entry_id": "OHM-163",
+      "mismatches": [
+        "Scope misattribution in temperature_operating and pin_layout: both scopes include electrical data at ambient 20 C. On source page 2, the 20 C qualifier belongs only to the Electrical data heading containing contact resistance/current/voltage. The environmental temperature range is in a separate Environmental conditions section and the PCB drawing has no temperature qualifier. Remove that electrical-test condition from the environmental and drawing fields; their values themselves are correct."
+      ],
+      "notes": [
+        "Examined all three archived Lumberg 2411 02 pages; visually checked page 2 and an enlarged PCB-layout detail. Page 1 identifies USB 2.0 chassis socket type B, angular PCB version, state Obsolete, and all pages show 05/2023.",
+        "Page 2 Electrical data at Tamb = 20 C gives contact resistance <=30 milliohm = 0.03 ohm, rated current <=1 A, and rated voltage 30 V AC. These match the three electrical fields and their 20 C scopes. The separate 500 V / 60 s impulse/proof test is not used as the continuous working voltage.",
+        "The separate Environmental conditions section specifies -40..85 C. The numeric operating-temperature range agrees; its borrowed electrical-data qualifier is the scope finding.",
+        "In the PCB layout as printed, the four signal holes are upper-left 2, upper-right 1, lower-left 3, lower-right 4. Enlarged drawing inspection confirmed these positions. The manufacturer labels this as a printed-circuit-board layout without explicitly naming its viewing side, matching the record caveat.",
+        "The supplied source numbers contacts but does not label USB signal functions. The gapfill therefore correctly leaves signal-to-library physical binding and protocol behavior unresolved instead of inferring a manufacturer signal map.",
+        "The generated research payload exactly matches the supplied audit-evidence fields after allowing generated null metadata. Its embedded gapfill SHA-256 matches the exact supplied Markdown bytes. Archived source SHA-256 matches its hash-addressed filename. Implementation, other research, previous reviewer results and product bench files were not inspected; bench outcome claims were not independently revalidated."
+      ],
+      "primary_sources": [
+        "https://downloads.lumberg.com/datenblaetter/en/2411_02.pdf"
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "a24340921c55720b3421a26924b325fe6913bafd24ceb5ed1a769168c3ac5510",
+        "generated_record_sha256": "368c107dbab1af54cb78a6487d6576750817b8a98f2d997005edcecbc035118d"
+      }
+    },
+    {
+      "entry_id": "OHM-180",
+      "mismatches": [],
+      "notes": [
+        "Examined archived Hirose DM3 pages 1, 2 and 3 and visually checked all three layouts. Page 1 prints 2017.1 with circled 3; the separate footer shows Oct.1.2026 copyright. The supplied metadata correctly distinguishes these and does not assert an unstated engineering revision.",
+        "Page 2 product-family ratings support current 0.5 A, voltage 125 V AC, and operating temperature -25..85 C. Note 1 expressly includes self-heating from current flow. The voltage is a connector rating, not a microSD supply voltage.",
+        "Page 2 contact-resistance row is 100 milliohm initial maximum at 1 mA, equal to 0.1 ohm. Its durability test is 10000 cycles at 400..600 cycles/hour for DM3AT/DM3B, with contact-resistance change <=40 milliohm; the separate DM3C/DM3D test is 5000 cycles. The selected DM3AT count is correct and should be read as the manufacturer durability-test figure, not a guarantee under arbitrary use.",
+        "Page 3 explicitly names DM3AT-SF-PEJM5 and top-board Push-Push operation. Its labeled contact drawing supports 1 DAT2, 2 CD/DAT3, 3 CMD, 4 VDD, 5 CLK, 6 VSS, 7 DAT0 and 8 DAT1.",
+        "Page 3 shows separate mechanical card-detection terminals A/B and a switch table: open without the card, closed with the card inserted. Pin 2 CD/DAT3 is not this mechanical pair.",
+        "Page 3 dimension callouts support body width 13.85 mm, depth 15.95 mm and height 1.68 mm. Card lock, over-stroke and ejection extension dimensions were not mistaken for the body envelope.",
+        "All verified properties are limited to the named Hirose alternate. No Molex primary source was included, so this review does not verify the default Molex characteristics or approve substitution into a Molex physical binding.",
+        "The generated research payload exactly matches the supplied audit-evidence fields after allowing generated null metadata. Its embedded gapfill SHA-256 matches the exact supplied Markdown bytes. Archived source SHA-256 matches its hash-addressed filename. Implementation, other research, previous reviewer results and product bench files were not inspected; bench outcome claims were not independently revalidated."
+      ],
+      "primary_sources": [
+        "https://www.hirose.com/ko/product/series/DM3/documents?path=%2Fapi%2Fv1%2Fseries%2FDM3%2Fdocuments%2Fproduct_series_catalog%2Fcontent%3Flang%3DEN"
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "0fd2cbc7d6b739a033b9291eb75cef52fad8817dbb054c78e15dbe81fb6dbf17",
+        "generated_record_sha256": "3628a6a77fdef72b1b07570371722edc03dc76991e510c14a8663a1a3835e0ec"
+      }
+    }
+  ],
+  "reviewer_context": "fresh",
+  "sample": [
+    "OHM-106",
+    "OHM-107",
+    "OHM-116",
+    "OHM-133",
+    "OHM-143",
+    "OHM-153",
+    "OHM-163",
+    "OHM-180"
+  ],
+  "schema_version": 1,
+  "seed": 6243230174989827667,
+  "stage": "stage4"
+}

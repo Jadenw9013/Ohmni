@@ -1,0 +1,22 @@
+* RES-FIXED B2: thermal self-heating fixed point. R0=100, V=10 V, tcr=1000ppm/K, Rth=100 K/W, Tamb=25C
+* Analytic: R^2 - 100 R - 1000 = 0 -> R = (100+sqrt(14000))/2 = 109.16 ohm ; Tj = 25 + 100*100/R
+.options tnom=25
+.param R0=100 TCR=1000e-6 RTH=100 TAMB=25 CTH=1u
+V1 in 0 10
+* behavioral resistor: i = v / (R0*(1+TCR*(Tj-25))); Tj is node voltage in "volts = degC"
+Brr in 0 I=V(in)/({R0}*(1+{TCR}*(V(tj)-25)))
+* power into thermal node: P = v*i ; thermal resistance to ambient source
+Bp 0 tj I=V(in)*V(in)/({R0}*(1+{TCR}*(V(tj)-25)))
+Rth tj amb {RTH}
+Cth tj 0 {CTH}
+Vamb amb 0 {TAMB}
+.control
+set noaskquit
+op
+let ir = i(v1)
+let rr = 10/(-ir)
+print rr
+print v(tj)
+quit
+.endc
+.end

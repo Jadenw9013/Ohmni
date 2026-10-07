@@ -1,0 +1,19 @@
+* B3 90 ohm differential pair, RC model of the connector end.
+* v2: removed duplicate print of meas results
+* Source 45+45 ohm (90 diff) -> lossless pair modelled as 2 x 45 ohm T lines -> receptacle pad C 1 pF to ground each leg (assumed) -> 45+45 ohm termination (90 diff)
+* Expected: DC Vdiff = 0.5 * Vs_diff (matched). Diff -3 dB where diff load 90 || (C/2 each side...) :
+*   per leg: source 45 ohm, load 45 ohm || C (C per leg=1p) -> Vout/Vin = 0.5/(1+jw*22.5*C)  ; f3 = 1/(2 pi 22.5 * 1p) = 7.07 GHz
+.param Cp=1p
+Vd in 0 DC 0 AC 1
+Rs in n1 45
+T1 n1 0 n2 0 Z0=45 TD=100p
+Ccon n2 0 {Cp}
+Rt n2 0 45
+.ac dec 20 10meg 100g
+.control
+run
+meas ac dc_gain find vm(n2) at=10meg
+meas ac f3 when vm(n2)=0.3535534 fall=1
+quit
+.endc
+.end

@@ -1,0 +1,402 @@
+{
+  "applies_to": [
+    "OHM-127",
+    "OHM-134"
+  ],
+  "basis_values": [
+    "(Vin-Vo)*tON/L",
+    "1/K",
+    "1/K and loss-corrected D/tON",
+    "ASSUMPTION",
+    "I^2R loss estimate",
+    "Iout/Qpulse",
+    "MFR_DATASHEET",
+    "charge deficit + ESR + RINJ*dI",
+    "regulation point"
+  ],
+  "behavior_id": "BEH-REG-BUCK-DCS",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "1/K and loss-corrected D/tON",
+          "measure": "fsw_MHz",
+          "tolerance": "10 percent",
+          "value": "2.381 to 2.59"
+        },
+        {
+          "basis": "(Vin-Vo)*tON/L",
+          "measure": "dIL_A",
+          "tolerance": "15 percent",
+          "value": 0.457
+        }
+      ],
+      "file": "docs/behavior/bench/reg-buck-dcs/B1_steady_state.cir",
+      "measured_in_ngspice": "2.505 MHz, 0.463 A",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "I^2R loss estimate",
+          "measure": "eta_1A",
+          "tolerance": "1.5 point",
+          "value": "89.6 to 91.9 percent"
+        },
+        {
+          "basis": "Iout/Qpulse",
+          "measure": "fsw_10mA_kHz",
+          "tolerance": "20 percent",
+          "value": 104
+        }
+      ],
+      "file": "docs/behavior/bench/reg-buck-dcs/B2_efficiency.cir",
+      "measured_in_ngspice": "89.2 percent, 89 kHz",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "charge deficit + ESR + RINJ*dI",
+          "measure": "deviation_mV",
+          "tolerance": "window",
+          "value": "5 to 30"
+        }
+      ],
+      "file": "docs/behavior/bench/reg-buck-dcs/B3_load_step.cir",
+      "measured_in_ngspice": "10.2 mV (8.8 mV DC)",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B4",
+      "expected": [
+        {
+          "basis": "1/K",
+          "measure": "fsw_MHz",
+          "tolerance": "5 percent",
+          "value": 2.5
+        }
+      ],
+      "file": "docs/behavior/bench/reg-buck-dcs/B4_tps62130_variant.cir",
+      "measured_in_ngspice": "2.519 MHz, eta 93.1 percent",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B5",
+      "expected": [
+        {
+          "basis": "regulation point",
+          "measure": "vout_V",
+          "tolerance": "window",
+          "value": "3.28 to 3.32"
+        }
+      ],
+      "file": "docs/behavior/bench/reg-buck-dcs/B5_line_regulation.cir",
+      "measured_in_ngspice": "3.3002, 3.3013, 3.3018",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-127",
+      "OHM-134"
+    ],
+    "behavior_id": "BEH-REG-BUCK-DCS",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "1/K and loss-corrected D/tON",
+            "measure": "fsw_MHz",
+            "tolerance": "10 percent",
+            "value": "2.381 to 2.59"
+          },
+          {
+            "basis": "(Vin-Vo)*tON/L",
+            "measure": "dIL_A",
+            "tolerance": "15 percent",
+            "value": 0.457
+          }
+        ],
+        "file": "bench/reg-buck-dcs/B1_steady_state.cir",
+        "id": "B1",
+        "measured_in_ngspice": "2.505 MHz, 0.463 A",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "I^2R loss estimate",
+            "measure": "eta_1A",
+            "tolerance": "1.5 point",
+            "value": "89.6 to 91.9 percent"
+          },
+          {
+            "basis": "Iout/Qpulse",
+            "measure": "fsw_10mA_kHz",
+            "tolerance": "20 percent",
+            "value": 104
+          }
+        ],
+        "file": "bench/reg-buck-dcs/B2_efficiency.cir",
+        "id": "B2",
+        "measured_in_ngspice": "89.2 percent, 89 kHz",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "charge deficit + ESR + RINJ*dI",
+            "measure": "deviation_mV",
+            "tolerance": "window",
+            "value": "5 to 30"
+          }
+        ],
+        "file": "bench/reg-buck-dcs/B3_load_step.cir",
+        "id": "B3",
+        "measured_in_ngspice": "10.2 mV (8.8 mV DC)",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "1/K",
+            "measure": "fsw_MHz",
+            "tolerance": "5 percent",
+            "value": 2.5
+          }
+        ],
+        "file": "bench/reg-buck-dcs/B4_tps62130_variant.cir",
+        "id": "B4",
+        "measured_in_ngspice": "2.519 MHz, eta 93.1 percent",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "regulation point",
+            "measure": "vout_V",
+            "tolerance": "window",
+            "value": "3.28 to 3.32"
+          }
+        ],
+        "file": "bench/reg-buck-dcs/B5_line_regulation.cir",
+        "id": "B5",
+        "measured_in_ngspice": "3.3002, 3.3013, 3.3018",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "ic",
+    "confidence": {
+      "failure": "M",
+      "model": "L",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "breakdown",
+        "id": "vin_overvoltage",
+        "permanence": "permanent",
+        "sim_response": "FAIL",
+        "trigger": "VIN > 20 V"
+      },
+      {
+        "effect": "current limit",
+        "id": "overcurrent",
+        "permanence": "recoverable",
+        "sim_response": "flag, no clamp",
+        "trigger": "ipeak > ILIM"
+      },
+      {
+        "effect": "thermal shutdown",
+        "id": "overtemp",
+        "permanence": "recoverable",
+        "sim_response": "flag via package binding",
+        "trigger": "Tj > 160 C"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "no soft start, UVLO, current limit, thermal shutdown, 100 percent duty, power good",
+        "RINJ assumed",
+        "no capacitor derating or inductor saturation",
+        "0.09 W artifact loss at 2.5 MHz",
+        "light-load efficiency optimistic",
+        "not the TI DCS-Control loop"
+      ],
+      "netlist_template": "see bench/reg-buck-dcs/buck_core.inc (.subckt BUCKCORE vin gnd vout vos en params: K RHS RLS VSET IQ RDIS CSWP L DCR RINJ)",
+      "spice_primitives": [
+        "B",
+        "C",
+        "L",
+        "R"
+      ],
+      "valid_analyses": [
+        "tran"
+      ],
+      "valid_range": "Vin 3-17 V; Iout up to rating; Cout 22 uF class; requires uic and Cout ic"
+    },
+    "parameters": {
+      "IQ": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 1.7e-05,
+        "max": 3e-05,
+        "min": null,
+        "source_ref": "S1",
+        "tolerance": null,
+        "unit": "A"
+      },
+      "K": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 4.2e-07,
+        "max": 8e-07,
+        "min": 4e-07,
+        "source_ref": "S1,S2",
+        "tolerance": "datasheet estimate",
+        "unit": "s"
+      },
+      "RHS": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.4,
+        "max": 0.6,
+        "min": 0.09,
+        "source_ref": "S1,S2",
+        "tolerance": "wide",
+        "unit": "ohm"
+      },
+      "RINJ": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.01,
+        "max": 0.03,
+        "min": 0,
+        "source_ref": "none",
+        "tolerance": null,
+        "unit": "ohm"
+      },
+      "RLS": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.16,
+        "max": 0.2,
+        "min": 0.04,
+        "source_ref": "S1,S2",
+        "tolerance": "wide",
+        "unit": "ohm"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "power_in",
+        "name": "VIN",
+        "package_terminal_rule": "TPS62160 WSON-8 pin 2; TPS62130 VQFN-16 pins 10 (AVIN), 11, 12 (PVIN)",
+        "role": "supply"
+      },
+      {
+        "electrical_type": "power_out",
+        "name": "SW",
+        "package_terminal_rule": "WSON-8 pin 7; VQFN-16 pins 1, 2, 3 ganged",
+        "role": "switch_node"
+      },
+      {
+        "electrical_type": "input",
+        "name": "VOS",
+        "package_terminal_rule": "WSON-8 pin 6; VQFN-16 pin 14",
+        "role": "sense"
+      },
+      {
+        "electrical_type": "input",
+        "name": "FB",
+        "package_terminal_rule": "WSON-8 pin 5; VQFN-16 pin 5",
+        "role": "feedback"
+      },
+      {
+        "electrical_type": "input",
+        "name": "EN",
+        "package_terminal_rule": "WSON-8 pin 3; VQFN-16 pin 13",
+        "role": "enable"
+      },
+      {
+        "electrical_type": "open_collector",
+        "name": "PG",
+        "package_terminal_rule": "WSON-8 pin 8; VQFN-16 pin 4",
+        "role": "power_good"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "PGND",
+        "package_terminal_rule": "WSON-8 pin 1; VQFN-16 pins 15, 16",
+        "role": "ground"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "AGND",
+        "package_terminal_rule": "WSON-8 pin 4; VQFN-16 pin 6; exposed pad = AGND (WSON-8), AGND+PGND (VQFN-16)",
+        "role": "ground"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "v(vin) <= 20",
+        "condition": "abs max",
+        "name": "vin_abs_max",
+        "source_ref": "S1,S2",
+        "symbol": "VIN",
+        "unit": "V",
+        "value": 20
+      },
+      {
+        "check": "iout + dIL/2 <= ILIM_min",
+        "condition": "VIN=12V, TJ=25C",
+        "name": "current_limit_min",
+        "source_ref": "S1,S2",
+        "symbol": "ILIM",
+        "unit": "A",
+        "value": "1.45 (TPS62160), 3.6 (TPS62130)"
+      },
+      {
+        "check": "ta + RthJA*Ploss <= 125",
+        "condition": "recommended",
+        "name": "junction_temperature",
+        "source_ref": "S1,S2",
+        "symbol": "Tj",
+        "unit": "degC",
+        "value": 125
+      }
+    ],
+    "sources": [
+      "S1",
+      "S2"
+    ],
+    "status": "partial"
+  },
+  "category": "ic",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "2e29f33efe1b3d0b64db7d9a2f423509ec22d1fb105bc049522c17953f1bcf9c",
+    "line": 9640
+  },
+  "source_refs": [
+    "S1",
+    "S2"
+  ],
+  "status": "partial"
+}

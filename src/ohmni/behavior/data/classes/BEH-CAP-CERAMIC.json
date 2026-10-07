@@ -1,0 +1,377 @@
+{
+  "applies_to": [
+    "OHM-021",
+    "OHM-022",
+    "OHM-023",
+    "OHM-024",
+    "OHM-025",
+    "OHM-026",
+    "OHM-027",
+    "OHM-028"
+  ],
+  "basis_values": [
+    "1/(2*pi*sqrt(L*C))",
+    "ASSUMPTION",
+    "C0/(1+(V/V0)^2)",
+    "ESR",
+    "MFR_DATASHEET",
+    "ramp 1 V/s, VR=10",
+    "v0*exp(-1)"
+  ],
+  "behavior_id": "BEH-CAP-CERAMIC",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "C0/(1+(V/V0)^2)",
+          "measure": "Ceff at 0/1/2/4 V (uF)",
+          "tolerance": "0.1%",
+          "value": "10/8/5/2"
+        }
+      ],
+      "file": "docs/behavior/bench/cap-ceramic/B1.cir",
+      "measured_in_ngspice": "9.999996/7.999998/5.000000/2.000000",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "1/(2*pi*sqrt(L*C))",
+          "measure": "SRF (MHz)",
+          "tolerance": "0.5%",
+          "value": 1.9023
+        },
+        {
+          "basis": "ESR",
+          "measure": "Zmin (mohm)",
+          "tolerance": "1%",
+          "value": 5
+        }
+      ],
+      "file": "docs/behavior/bench/cap-ceramic/B2.cir",
+      "measured_in_ngspice": "1.9055 MHz; 5.000079 mohm",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "v0*exp(-1)",
+          "measure": "v(t0+tau) (V)",
+          "tolerance": "0.5%",
+          "value": 1.821
+        }
+      ],
+      "file": "docs/behavior/bench/cap-ceramic/B3.cir",
+      "measured_in_ngspice": "1.82091",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B4",
+      "expected": [
+        {
+          "basis": "ramp 1 V/s, VR=10",
+          "measure": "flag edge (s)",
+          "tolerance": "0.05",
+          "value": 10.0
+        }
+      ],
+      "file": "docs/behavior/bench/cap-ceramic/B4.cir",
+      "measured_in_ngspice": "9.9978",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-021",
+      "OHM-022",
+      "OHM-023",
+      "OHM-024",
+      "OHM-025",
+      "OHM-026",
+      "OHM-027",
+      "OHM-028"
+    ],
+    "behavior_id": "BEH-CAP-CERAMIC",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "C0/(1+(V/V0)^2)",
+            "measure": "Ceff at 0/1/2/4 V (uF)",
+            "tolerance": "0.1%",
+            "value": "10/8/5/2"
+          }
+        ],
+        "file": "bench/cap-ceramic/B1.cir",
+        "id": "B1",
+        "measured_in_ngspice": "9.999996/7.999998/5.000000/2.000000",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "1/(2*pi*sqrt(L*C))",
+            "measure": "SRF (MHz)",
+            "tolerance": "0.5%",
+            "value": 1.9023
+          },
+          {
+            "basis": "ESR",
+            "measure": "Zmin (mohm)",
+            "tolerance": "1%",
+            "value": 5
+          }
+        ],
+        "file": "bench/cap-ceramic/B2.cir",
+        "id": "B2",
+        "measured_in_ngspice": "1.9055 MHz; 5.000079 mohm",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "v0*exp(-1)",
+            "measure": "v(t0+tau) (V)",
+            "tolerance": "0.5%",
+            "value": 1.821
+          }
+        ],
+        "file": "bench/cap-ceramic/B3.cir",
+        "id": "B3",
+        "measured_in_ngspice": "1.82091",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "ramp 1 V/s, VR=10",
+            "measure": "flag edge (s)",
+            "tolerance": "0.05",
+            "value": 10.0
+          }
+        ],
+        "file": "bench/cap-ceramic/B4.cir",
+        "id": "B4",
+        "measured_in_ngspice": "9.9978",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "passive",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "dielectric stress; breakdown is a short",
+        "id": "overvoltage",
+        "permanence": "permanent",
+        "sim_response": "flag bit 1; at >= 2.5*VR mark failed short (1 mohm)",
+        "trigger": "|V| > VR"
+      },
+      {
+        "effect": "capacitance falls to C0/(1+(V/V0)^2)",
+        "id": "bias_loss",
+        "permanence": "recoverable",
+        "sim_response": "model derating; flag if C_eff/C0 < 0.5",
+        "trigger": "Class 2 under DC bias"
+      },
+      {
+        "effect": "out-of-spec C and ESR",
+        "id": "overtemp",
+        "permanence": "recoverable",
+        "sim_response": "flag",
+        "trigger": "outside dielectric range"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "bias law is an OHMNI fit form, not a manufacturer equation",
+        "no AC-drive dependence",
+        "no piezo noise",
+        "no flex-crack failure",
+        "constant ESR",
+        "temperature and aging are scalar inputs"
+      ],
+      "netlist_template": "X{ref} {pin1} {pin2} {ref}_flag ohm_mlcc C0={value} V0={v0} ESR={esr} ESL={esl} RLK={rleak} VR={vr} AGE={age} TCDEV={tcdev}\n",
+      "spice_primitives": [
+        "R",
+        "L",
+        "C(q=)",
+        "B"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "ac",
+        "tran",
+        "noise"
+      ],
+      "valid_range": "|V| <= VR; f up to ~3x SRF; small-signal AC"
+    },
+    "parameters": {
+      "aging_rate_per_decade_hour": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.025,
+        "max": 0.07,
+        "min": 0.0,
+        "source_ref": "S7",
+        "tolerance": "1.0-2.5 percent sources disagree",
+        "unit": "fraction"
+      },
+      "esl": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 5.5e-10,
+        "max": 1.5e-08,
+        "min": 2e-10,
+        "source_ref": "S6",
+        "tolerance": "factor 2",
+        "unit": "H"
+      },
+      "esr": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 0.02,
+        "max": 1.0,
+        "min": 0.001,
+        "source_ref": "S6",
+        "tolerance": "factor 2",
+        "unit": "ohm"
+      },
+      "r_leak": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": "min(1e11, 1e9/C_uF)",
+        "max": "1.0e11",
+        "min": "5.0e7",
+        "source_ref": "S8",
+        "tolerance": "decades",
+        "unit": "ohm"
+      },
+      "rated_voltage": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 16,
+        "max": 3000,
+        "min": 4,
+        "source_ref": "S4",
+        "tolerance": "none",
+        "unit": "V"
+      },
+      "v0_bias_knee": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": "0.5*rated_voltage (Class 2); 1e6 (C0G)",
+        "max": "1.0e6",
+        "min": 0.2,
+        "source_ref": "S2",
+        "tolerance": "n/a",
+        "unit": "V"
+      },
+      "value": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 1e-07,
+        "max": 0.0001,
+        "min": 5e-13,
+        "source_ref": "S4",
+        "tolerance": "+/-1% to +/-20% by dielectric",
+        "unit": "F"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "1",
+        "package_terminal_rule": "terminal 1 at -X (chip: wrap-around end cap; disc: lead 1); symmetric, non-polarized",
+        "role": "terminal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "2",
+        "package_terminal_rule": "terminal 2 at +X",
+        "role": "terminal"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "abs(v(p,n)) <= VR",
+        "condition": "DC, 25 C",
+        "name": "rated_voltage",
+        "source_ref": "S4",
+        "symbol": "VR",
+        "unit": "V",
+        "value": "per part"
+      },
+      {
+        "check": "Tamb + dT <= 85",
+        "condition": "X5R",
+        "name": "temperature_range_X5R",
+        "source_ref": "S4",
+        "symbol": "T",
+        "unit": "C",
+        "value": "-55..85"
+      },
+      {
+        "check": "Tamb + dT <= 125",
+        "condition": "X7R, C0G",
+        "name": "temperature_range_X7R_C0G",
+        "source_ref": "S8",
+        "symbol": "T",
+        "unit": "C",
+        "value": "-55..125"
+      }
+    ],
+    "sources": [
+      "S1",
+      "S2",
+      "S3",
+      "S4",
+      "S5",
+      "S6",
+      "S7",
+      "S8",
+      "S9",
+      "S10",
+      "S26"
+    ],
+    "status": "partial"
+  },
+  "category": "passive",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "ea6a7950a553de5c1605c69017c7def9cb5331fa2e716189cd5d94771c5c5e1b",
+    "line": 1263
+  },
+  "source_refs": [
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7",
+    "S8",
+    "S9",
+    "S10",
+    "S26"
+  ],
+  "status": "partial"
+}

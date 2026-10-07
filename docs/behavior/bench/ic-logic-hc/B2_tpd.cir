@@ -1,0 +1,23 @@
+* BEH-IC-LOGIC-HC B2: propagation delay and transition time, 74HC04-class inverter, Vcc = 4.5 V, CL = 50 pF, input 2 ns edges.
+* v2: scalars printed as 'name = value' (tpd_ns_val, tt_ns_val); behavior unchanged
+* Datasheet typ (SCLS181H HC00): tpd = 18 ns, tt = 15 ns (10-90 %).  Model is calibrated to these (td=12 ns, taue=6.4 ns); this bench confirms the calibration holds, it is NOT independent evidence.
+.include hc_gates.lib
+Vcc vcc 0 4.5
+Vin in 0 pulse(0 4.5 20n 2n 2n 100n 300n)
+X1 in y vcc 0 hc_inv
+Cl y 0 50p
+.tran 0.1n 300n
+.control
+set noaskquit
+run
+meas tran tpHL trig v(in) val=2.25 rise=1 targ v(y) val=2.25 fall=1
+meas tran tpLH trig v(in) val=2.25 fall=1 targ v(y) val=2.25 rise=1
+meas tran ttf trig v(y) val=3.95 fall=1 targ v(y) val=0.45 fall=1
+meas tran ttr trig v(y) val=0.45 rise=1 targ v(y) val=3.95 rise=1
+let tpd = (tpHL+tpLH)/2*1e9
+let tt = (ttf+ttr)/2*1e9
+echo tpd_ns_val = $&tpd
+echo tt_ns_val = $&tt
+quit
+.endc
+.end

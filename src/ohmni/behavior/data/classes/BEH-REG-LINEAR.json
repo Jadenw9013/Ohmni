@@ -1,0 +1,364 @@
+{
+  "applies_to": [
+    "OHM-093",
+    "OHM-094",
+    "OHM-095",
+    "OHM-096",
+    "OHM-098",
+    "OHM-100",
+    "OHM-101"
+  ],
+  "basis_values": [
+    "ASSUMPTION",
+    "DERIVED",
+    "MFR_DATASHEET",
+    "Ta + Rth P",
+    "Vin - VDO",
+    "datasheet"
+  ],
+  "behavior_id": "BEH-REG-LINEAR",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "Vin - VDO",
+          "measure": "Vout_3p8V",
+          "tolerance": "3%",
+          "value": 2.7
+        }
+      ],
+      "file": "docs/behavior/bench/reg_linear/B1_dc_dropout.cir",
+      "measured_in_ngspice": "2.69995 V",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "datasheet",
+          "measure": "line_reg",
+          "tolerance": "5%",
+          "value": 0.05
+        },
+        {
+          "basis": "datasheet",
+          "measure": "load_reg",
+          "tolerance": "5%",
+          "value": 0.1
+        }
+      ],
+      "file": "docs/behavior/bench/reg_linear/B2_regulation.cir",
+      "measured_in_ngspice": "49.997 mV; 100.008 mV",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B4",
+      "expected": [
+        {
+          "basis": "Ta + Rth P",
+          "measure": "Tj",
+          "tolerance": "2%",
+          "value": 127.25
+        }
+      ],
+      "file": "docs/behavior/bench/reg_linear/B4_thermal.cir",
+      "measured_in_ngspice": "128.16 C",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-093",
+      "OHM-094",
+      "OHM-095",
+      "OHM-096",
+      "OHM-098",
+      "OHM-100",
+      "OHM-101"
+    ],
+    "behavior_id": "BEH-REG-LINEAR",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "Vin - VDO",
+            "measure": "Vout_3p8V",
+            "tolerance": "3%",
+            "value": 2.7
+          }
+        ],
+        "file": "bench/reg_linear/B1_dc_dropout.cir",
+        "id": "B1",
+        "measured_in_ngspice": "2.69995 V",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "datasheet",
+            "measure": "line_reg",
+            "tolerance": "5%",
+            "value": 0.05
+          },
+          {
+            "basis": "datasheet",
+            "measure": "load_reg",
+            "tolerance": "5%",
+            "value": 0.1
+          }
+        ],
+        "file": "bench/reg_linear/B2_regulation.cir",
+        "id": "B2",
+        "measured_in_ngspice": "49.997 mV; 100.008 mV",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "Ta + Rth P",
+            "measure": "Tj",
+            "tolerance": "2%",
+            "value": 127.25
+          }
+        ],
+        "file": "bench/reg_linear/B4_thermal.cir",
+        "id": "B4",
+        "measured_in_ngspice": "128.16 C",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "ic",
+    "confidence": {
+      "failure": "M",
+      "model": "L",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "output collapses and recovers on cooling",
+        "id": "thermal_shutdown",
+        "permanence": "recoverable",
+        "sim_response": "soft thermal gate throttles pass current",
+        "trigger": "Tj > TSD"
+      },
+      {
+        "effect": "pass device breakdown, usually IN-OUT short",
+        "id": "overvoltage_in",
+        "permanence": "permanent",
+        "sim_response": "flag, mark failed",
+        "trigger": "Vin > abs max"
+      },
+      {
+        "effect": "oscillation",
+        "id": "bad_cout",
+        "permanence": "recoverable",
+        "sim_response": "flag by rule",
+        "trigger": "Cout/ESR outside window"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "loop dynamics GM/FP1/FP2 assumed, ESR window not reproduced",
+        "no PSRR, noise, startup, foldback",
+        "no thermal hysteresis",
+        "reverse-current model assumed",
+        "no vendor model",
+        "78L05 and LM317 pins vendor dependent"
+      ],
+      "netlist_template": ".include reg_behavioural_r6.lib\nX{ref} {IN} {OUT} {GND} LDO_R6 VNOM=3.3 VINREF=5 KLINE=0.0005 ROUTDC=0.006 VDO=1.1 IDO=0.8 IQ=5m ILIM=1.2 GM=40 FP1=200k FP2=2meg TSD=165 RTH=61.6\n.nodeset v({OUT})=3.3\n",
+      "spice_primitives": [
+        "B",
+        "E",
+        "R",
+        "C",
+        "G",
+        "D"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "tran"
+      ],
+      "valid_range": "Vin up to datasheet abs max, Iout 0..ILIM, Tj below TSD; op needs a nodeset on OUT"
+    },
+    "parameters": {
+      "cout_min": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": "22e-6",
+        "max": null,
+        "min": "22e-6",
+        "source_ref": "S17",
+        "tolerance": "tantalum, ESR window per part",
+        "unit": "F"
+      },
+      "ido": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 0.8,
+        "max": null,
+        "min": null,
+        "source_ref": "S17",
+        "tolerance": null,
+        "unit": "A"
+      },
+      "ilim": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 1.2,
+        "max": 1.5,
+        "min": 0.9,
+        "source_ref": "S17",
+        "tolerance": null,
+        "unit": "A"
+      },
+      "iq": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.005,
+        "max": 0.011,
+        "min": null,
+        "source_ref": "S17",
+        "tolerance": null,
+        "unit": "A"
+      },
+      "routdc": {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "default": 0.006,
+        "max": null,
+        "min": null,
+        "source_ref": "S17",
+        "tolerance": null,
+        "unit": "ohm"
+      },
+      "tsd": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 165,
+        "max": null,
+        "min": null,
+        "source_ref": "S17",
+        "tolerance": null,
+        "unit": "C"
+      },
+      "vdo": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 1.1,
+        "max": 1.3,
+        "min": null,
+        "source_ref": "S17",
+        "tolerance": null,
+        "unit": "V"
+      },
+      "vnom": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "default": 3.3,
+        "max": null,
+        "min": null,
+        "source_ref": "S17",
+        "tolerance": "L7805 4.8-5.2 V",
+        "unit": "V"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "power_in",
+        "name": "IN",
+        "package_terminal_rule": "per part: L7805 TO-220/DPAK/D2PAK pin1; LM317 pin3; LM1117/AMS1117 pin3; LM2940 pin1; ST L78L TO-92 pin1 / TI LM78L TO-92 pin3",
+        "role": "supply input"
+      },
+      {
+        "electrical_type": "power_out",
+        "name": "OUT",
+        "package_terminal_rule": "per part: L7805 pin3; LM317/LM1117/AMS1117 pin2 and tab (SOT-223 pin4); LM2940 pin3; ST L78L TO-92 pin3 / TI LM78L TO-92 pin1",
+        "role": "regulated output"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "GND",
+        "package_terminal_rule": "per part: L7805 pin2 and tab; LM317 ADJ pin1; LM1117/AMS1117 pin1; LM2940 pin2; 78L05 pin2",
+        "role": "ground or ADJ"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "v(in) <= 15",
+        "condition": "AMS1117",
+        "name": "vin_max",
+        "source_ref": "S17",
+        "symbol": "VIN",
+        "unit": "V",
+        "value": 15
+      },
+      {
+        "check": "v(in)-v(out) >= 1.1 + 0.0*(i/0.8-1)",
+        "condition": "0.8 A, typ",
+        "name": "dropout",
+        "source_ref": "S17",
+        "symbol": "VDO",
+        "unit": "V",
+        "value": 1.1
+      },
+      {
+        "check": "ta + rth*((v(in)-v(out))*i(out)+v(in)*iq) <= 125",
+        "condition": "continuous",
+        "name": "tj_max",
+        "source_ref": "S17",
+        "symbol": "Tj",
+        "unit": "C",
+        "value": 125
+      },
+      {
+        "check": "cout >= 22e-6",
+        "condition": "minimum, solid tantalum",
+        "name": "cout",
+        "source_ref": "S17",
+        "symbol": "Cout",
+        "unit": "F",
+        "value": "22e-6"
+      }
+    ],
+    "sources": [
+      "S17",
+      "S18",
+      "S19",
+      "S20",
+      "S21",
+      "S22",
+      "S23",
+      "S31"
+    ],
+    "status": "partial"
+  },
+  "category": "ic",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "561e4ad5b944490b2a99afac3142c8963700f5e28f5e4702c4a7bf31732b20e1",
+    "line": 6314
+  },
+  "source_refs": [
+    "S17",
+    "S18",
+    "S19",
+    "S20",
+    "S21",
+    "S22",
+    "S23",
+    "S31"
+  ],
+  "status": "partial"
+}

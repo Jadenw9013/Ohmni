@@ -1,0 +1,30 @@
+B2 Aluminium polymer rush-current flag (IPK = 10 A, Nichicon polymer guideline value)
+* 5 V step through RS: peak i = 5/(RS+ESR+...) ; RS=0.1 -> 41.7 A (flag bit 4 = 4), RS=1 -> 4.76 A (flag 0)
+* OHMNI BEH-CAP-ALPOLY subcircuit (polarised aluminium polymer / hybrid), behavioural_approximation
+* ports: p(+) n(-) flag. flag bitmask: 1 = V > VR*DER, 2 = reverse > VREVMAX, 4 = |i| > IPK (rush current)
+.subckt ohm_alpoly p n flag params: C0=100u ESR=20m ESL=5n RLK=1meg VR=16 DER=0.8 VREVMAX=0.1 IPK=10
+Lesl p a {ESL}
+Resr a c {ESR}
+Vsns c b 0
+Cb b n {C0}
+Rlk b n {RLK}
+Bflag flag 0 V = '(v(b,n) > {VR*DER} ? 1 : 0) + (v(b,n) < -{VREVMAX} ? 2 : 0) + (abs(i(Vsns)) > {IPK} ? 4 : 0)'
+.ends
+
+.param RS=0.1
+Vs in 0 PWL(0 0 1u 5)
+Rs in p {RS}
+Xc p 0 f ohm_alpoly C0=100u ESR=20m ESL=5n RLK=1e12 VR=16 DER=0.8 IPK=10
+Rf f 0 1meg
+.tran 0.1u 200u
+.control
+run
+meas tran ipkneg min i(Vs)
+meas tran fmax max v(f)
+alter @Rs[resistance] = 1
+run
+meas tran ipk1neg min i(Vs)
+meas tran fmax1 max v(f)
+quit
+.endc
+.end

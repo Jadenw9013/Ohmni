@@ -1,0 +1,20 @@
+* BEH-PWR-LOADSWITCH L3: constant-current clamp on a hard short. NX5P3290 (WLCSP-16): RON = 35 mOhm typ, ILIM programmable 0.4 .. 3.3 A by a resistor on pin A3 (resistor-to-current mapping NOT captured: ILIM is a direct model parameter here).
+* v2: scalars already printed; header only, circuit unchanged
+* Analytic: short (1 mOhm) -> I = (5/0.035)/(1+(5/(0.035*1.5))^4)^0.25 = 1.4999 A ; below limit (load 5 ohm) I = 5/(5+0.035) = 0.993 A (slightly lower in the model near the knee: the clamp is already active at 0.66*ILIM).
+.include loadsw.inc
+Vin vin 0 5
+Ven en 0 3.3
+Xs vin vout 0 en LOADSW RON=0.035 ILIM=1.5 VUV=3.0 TON=1u
+Rshort vout 0 1m
+Xs2 vin vout2 0 en LOADSW RON=0.035 ILIM=1.5 VUV=3.0 TON=1u
+Rok vout2 0 5
+.op
+.control
+set noaskquit
+op
+let ishort = v(vout)/1m
+let iok = v(vout2)/5
+print ishort iok
+quit
+.endc
+.end

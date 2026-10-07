@@ -1,0 +1,19 @@
+* BEH-IC-CHARGER-SOT235 B1: constant-current phase. Vin=5 V, Rprog=10k -> Ireg = 1000/10 = 100 mA ; battery 3.7 V (ideal source, above precondition threshold).
+* v2: scalar printed as 'name = value' lines (ibat_cc_A, tj_cc_C); behavior unchanged
+* Analytic: Ibat = 1000 V / 10 kohm = 0.100 A ; Pd = (5-3.7)*0.1 + 5*50u = 0.1303 W ; Tj = 25 + 230*0.1303 = 54.97 C
+.include mcp73831.lib
+Vdd vdd 0 5
+Vb vbat 0 3.7
+Rprog prog 0 10k
+X1 vdd 0 prog vbat stat chg_cc_cv
+Rst stat vdd 10k
+.nodeset v(x1.tj)=50
+.control
+set noaskquit
+op
+let ibat = i(Vb)
+echo ibat_cc_A = $&ibat
+echo tj_cc_C = $&v(x1.tj)
+quit
+.endc
+.end

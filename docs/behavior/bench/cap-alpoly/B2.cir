@@ -1,0 +1,20 @@
+B2 Aluminium polymer rush-current flag (IPK = 10 A, Nichicon polymer guideline value)
+* 5 V step through RS: peak i = 5/(RS+ESR+...) ; RS=0.1 -> 41.7 A (flag bit 4 = 4), RS=1 -> 4.76 A (flag 0)
+.include ohm_alpoly.lib
+.param RS=0.1
+Vs in 0 PWL(0 0 1u 5)
+Rs in p {RS}
+Xc p 0 f ohm_alpoly C0=100u ESR=20m ESL=5n RLK=1e12 VR=16 DER=0.8 IPK=10
+Rf f 0 1meg
+.tran 0.1u 200u
+.control
+run
+meas tran ipkneg min i(Vs)
+meas tran fmax max v(f)
+alter @Rs[resistance] = 1
+run
+meas tran ipk1neg min i(Vs)
+meas tran fmax1 max v(f)
+quit
+.endc
+.end

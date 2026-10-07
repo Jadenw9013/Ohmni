@@ -1,0 +1,200 @@
+{
+  "applies_to": [
+    "OHM-082",
+    "OHM-083"
+  ],
+  "basis_values": [
+    "MFR_DATASHEET",
+    "brentq"
+  ],
+  "behavior_id": "BEH-LED-RGB",
+  "benches": [
+    {
+      "bench_id": "B7",
+      "expected": [
+        {
+          "basis": "brentq",
+          "measure": "I_each",
+          "tolerance": "0.1%",
+          "value": 0.02
+        }
+      ],
+      "file": "docs/behavior/bench/beh-led-indicator/B7_rgb_common_anode.cir",
+      "measured_in_ngspice": 0.02000003,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-082",
+      "OHM-083"
+    ],
+    "behavior_id": "BEH-LED-RGB",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "brentq",
+            "measure": "I_each",
+            "tolerance": "0.1%",
+            "value": 0.02
+          }
+        ],
+        "file": "bench/beh-led-indicator/B7_rgb_common_anode.cir",
+        "id": "B7",
+        "measured_in_ngspice": 0.02000003,
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "diode",
+    "confidence": {
+      "failure": "L",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "die degradation",
+        "id": "die_overcurrent",
+        "permanence": "permanent",
+        "sim_response": "flag per die",
+        "trigger": "if_die > 25 mA"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "pin function is vendor specific",
+        "no colour mixing model",
+        "no die-to-die thermal coupling",
+        "5050 pin map RESEARCH_REQUIRED"
+      ],
+      "netlist_template": "D{ref}R {CA} {Rk} LED_RGB_R\nD{ref}G {CA} {Gk} LED_RGB_GB\nD{ref}B {CA} {Bk} LED_RGB_GB\n",
+      "spice_primitives": [
+        "D"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "tran",
+        "temp"
+      ],
+      "valid_range": "1 to 25 mA per die"
+    },
+    "parameters": {
+      "common_type": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": "anode",
+        "source_ref": "S7",
+        "unit": "enum"
+      },
+      "if_max_die": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.025,
+        "source_ref": "S7",
+        "unit": "A"
+      },
+      "vf_gb": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 3.1,
+        "max": 3.6,
+        "min": 2.8,
+        "source_ref": "S7",
+        "unit": "V"
+      },
+      "vf_r": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 2.1,
+        "max": 2.6,
+        "min": 1.8,
+        "source_ref": "S7",
+        "unit": "V"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "COM",
+        "package_terminal_rule": "OHM-082: terminal 1 for the Broadcom ASMB-MTB0 map; vendor-specific otherwise",
+        "role": "common"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "R",
+        "package_terminal_rule": "OHM-082 Broadcom map: terminal 4",
+        "role": "cathode_or_anode"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "G",
+        "package_terminal_rule": "OHM-082 Broadcom map: terminal 3",
+        "role": "cathode_or_anode"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "B",
+        "package_terminal_rule": "OHM-082 Broadcom map: terminal 2",
+        "role": "cathode_or_anode"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "if_die <= 0.025",
+        "condition": "per die",
+        "name": "die_current",
+        "source_ref": "S7",
+        "symbol": "IF",
+        "unit": "A",
+        "value": 0.025
+      },
+      {
+        "check": "i_peak <= 0.100",
+        "condition": "10 percent duty, 1 kHz",
+        "name": "die_peak",
+        "source_ref": "S7",
+        "symbol": "IFM",
+        "unit": "A",
+        "value": 0.1
+      }
+    ],
+    "sources": [
+      {
+        "date": "2014-09-10",
+        "id": "S7",
+        "org": "Broadcom",
+        "title": "ASMB-MTB0-0A3A2",
+        "url": "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf",
+        "used_for": "pin map, VF, ratings"
+      }
+    ],
+    "status": "partial"
+  },
+  "category": "diode",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "643bdc7d2073da7e85153ce486b5f4031320450811728579e7ab249cdc827eab",
+    "line": 4836
+  },
+  "source_refs": [
+    {
+      "date": "2014-09-10",
+      "id": "S7",
+      "org": "Broadcom",
+      "title": "ASMB-MTB0-0A3A2",
+      "url": "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf",
+      "used_for": "pin map, VF, ratings"
+    }
+  ],
+  "status": "partial"
+}

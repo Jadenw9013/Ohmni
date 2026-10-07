@@ -1,0 +1,302 @@
+{
+  "applies_to": [
+    "OHM-169",
+    "OHM-170"
+  ],
+  "basis_values": [
+    "-48-90*sqrt(2)",
+    "1.5*0.020",
+    "100/200.04",
+    "MFR_DATASHEET"
+  ],
+  "behavior_id": "BEH-CON-MODJACK",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "1.5*0.020",
+          "measure": "drop",
+          "tolerance": "0.1%",
+          "value": 0.03
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-modjack/B1_rc_drop.cir",
+      "measured_in_ngspice": "30.000 mV",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "-48-90*sqrt(2)",
+          "measure": "vmin",
+          "tolerance": "0.1%",
+          "value": -175.279
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-modjack/B2_ring_peak.cir",
+      "measured_in_ngspice": "-175.278 V",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "100/200.04",
+          "measure": "gain",
+          "tolerance": "0.1%",
+          "value": 0.4999
+        }
+      ],
+      "file": "docs/behavior/bench/beh-con-modjack/B3_pair_100ohm.cir",
+      "measured_in_ngspice": "0.49990",
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-169",
+      "OHM-170"
+    ],
+    "behavior_id": "BEH-CON-MODJACK",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "1.5*0.020",
+            "measure": "drop",
+            "tolerance": "0.1%",
+            "value": 0.03
+          }
+        ],
+        "file": "bench/beh-con-modjack/B1_rc_drop.cir",
+        "id": "B1",
+        "measured_in_ngspice": "30.000 mV",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "-48-90*sqrt(2)",
+            "measure": "vmin",
+            "tolerance": "0.1%",
+            "value": -175.279
+          }
+        ],
+        "file": "bench/beh-con-modjack/B2_ring_peak.cir",
+        "id": "B2",
+        "measured_in_ngspice": "-175.278 V",
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "100/200.04",
+            "measure": "gain",
+            "tolerance": "0.1%",
+            "value": 0.4999
+          }
+        ],
+        "file": "bench/beh-con-modjack/B3_pair_100ohm.cir",
+        "id": "B3",
+        "measured_in_ngspice": "0.49990",
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "connector",
+    "confidence": {
+      "failure": "L",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "M"
+    },
+    "failure_modes": [
+      {
+        "effect": "175 V peak on PHY pair",
+        "id": "ring_voltage_on_ethernet",
+        "permanence": "permanent",
+        "sim_response": "flag over PHY rating",
+        "trigger": "telephone line connected to Ethernet jack"
+      },
+      {
+        "effect": "isolation failure",
+        "id": "hipot_breakdown",
+        "permanence": "permanent",
+        "sim_response": "flag",
+        "trigger": "barrier voltage above hipot"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "no crosstalk or plug-jack compensation",
+        "magjack pad numbering is vendor specific",
+        "RJ11 Rc unsourced",
+        "link layer not simulated"
+      ],
+      "netlist_template": "R{ref}_c{n} {BOARD_n} {CABLE_n} {Rc}\n* magjack: instantiate ETH_CH from bench/mag_ethmag/ethmag.lib inside the part\n",
+      "spice_primitives": [
+        "R",
+        "C",
+        "T",
+        "K"
+      ],
+      "valid_analyses": [
+        "op",
+        "dc",
+        "ac",
+        "tran",
+        "temp"
+      ],
+      "valid_range": "DC to about 100 MHz"
+    },
+    "parameters": {
+      "I_contact": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 1.5,
+        "max": 1.5,
+        "min": 0,
+        "source_ref": "S15",
+        "tolerance": "max DC",
+        "unit": "A"
+      },
+      "Rc": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 0.02,
+        "max": 0.02,
+        "min": 0,
+        "source_ref": "S15",
+        "tolerance": "max",
+        "unit": "ohm"
+      },
+      "V_rated": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 125,
+        "max": 125,
+        "min": 0,
+        "source_ref": "S15",
+        "tolerance": "rms",
+        "unit": "V_ac"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "passive",
+        "name": "P1",
+        "package_terminal_rule": "RJ45 pin n = jack position n (TD+, TD-, RD+, 4, 5, RD-, 7, 8); magjack adds LED and shield pins",
+        "role": "signal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "P2",
+        "package_terminal_rule": "...",
+        "role": "signal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "P3",
+        "package_terminal_rule": "...",
+        "role": "signal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "P4",
+        "package_terminal_rule": "...",
+        "role": "signal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "P5",
+        "package_terminal_rule": "...",
+        "role": "signal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "P6",
+        "package_terminal_rule": "...",
+        "role": "signal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "P7",
+        "package_terminal_rule": "...",
+        "role": "signal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "P8",
+        "package_terminal_rule": "...",
+        "role": "signal"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "SHIELD",
+        "package_terminal_rule": "shield legs",
+        "role": "shield"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "abs(i(Rc_n)) <= 1.5",
+        "condition": "DC per contact",
+        "name": "contact_current",
+        "source_ref": "S15",
+        "symbol": "I",
+        "unit": "A",
+        "value": 1.5
+      },
+      {
+        "check": "abs(v) <= 125*sqrt(2)",
+        "condition": "rms",
+        "name": "voltage",
+        "source_ref": "S15",
+        "symbol": "V",
+        "unit": "V_ac",
+        "value": 125
+      },
+      {
+        "check": "abs(v_barrier) <= 1500",
+        "condition": "magjack, 1 min",
+        "name": "hipot",
+        "source_ref": "S16",
+        "symbol": "V_iso",
+        "unit": "V_rms",
+        "value": 1500
+      }
+    ],
+    "sources": [
+      "S15",
+      "S16",
+      "S17",
+      "S18",
+      "S19"
+    ],
+    "status": "partial"
+  },
+  "category": "connector",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "a108047d577f891f436b4968a427b18c5e38e61f0db00f9d5676798ca6f8975d",
+    "line": 11590
+  },
+  "source_refs": [
+    "S15",
+    "S16",
+    "S17",
+    "S18",
+    "S19"
+  ],
+  "status": "partial"
+}

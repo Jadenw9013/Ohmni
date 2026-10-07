@@ -1,0 +1,19 @@
+* POT B2: loaded linear pot. 10k, pos=0.5, load 10k on wiper: Rbot||RL=5k||10k=3.3333k, Rtop=5k
+* Vw = 10*3.3333/(5+3.3333)=4.000 V ; wiper current = 0.4 mA
+.subckt POT3 A W B params: Rtot=10k pos=0.5 Rend=1 Rw=100m
+Rab1 A m {max(Rtot*(1-pos),Rend)}
+Rab2 m B {max(Rtot*pos,Rend)}
+Rwp m W {Rw}
+.ends
+Vin A 0 10
+Xp A w 0 POT3 Rtot=10k pos=0.5
+Rl w 0 10k
+.control
+set noaskquit
+op
+print v(w)
+let iw = v(w)/10k
+print iw
+quit
+.endc
+.end

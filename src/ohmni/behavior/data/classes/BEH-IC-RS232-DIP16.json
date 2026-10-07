@@ -1,0 +1,326 @@
+{
+  "applies_to": [
+    "OHM-106",
+    "OHM-112"
+  ],
+  "basis_values": [
+    "ASSUMPTION",
+    "MFR_DATASHEET",
+    "chosen mid range",
+    "datasheet nominal",
+    "divider with pump droop"
+  ],
+  "behavior_id": "BEH-IC-RS232-DIP16",
+  "benches": [
+    {
+      "bench_id": "B1",
+      "expected": [
+        {
+          "basis": "divider with pump droop",
+          "measure": "v_out",
+          "tolerance": "0.5 %",
+          "value": 6.857
+        }
+      ],
+      "file": "docs/behavior/bench/ic-rs232/B1_driver_swing.cir",
+      "measured_in_ngspice": 6.85714,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B2",
+      "expected": [
+        {
+          "basis": "chosen mid range",
+          "measure": "vtp",
+          "tolerance": "1 %",
+          "value": 2.0
+        }
+      ],
+      "file": "docs/behavior/bench/ic-rs232/B2_receiver.cir",
+      "measured_in_ngspice": 1.997,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    },
+    {
+      "bench_id": "B3",
+      "expected": [
+        {
+          "basis": "datasheet nominal",
+          "measure": "sr_V_per_us",
+          "tolerance": "10 %",
+          "value": 30
+        }
+      ],
+      "file": "docs/behavior/bench/ic-rs232/B3_slew.cir",
+      "measured_in_ngspice": 27.2,
+      "ngspice_version": "42",
+      "run_provenance": "imported_research_record"
+    }
+  ],
+  "canonical_payload": {
+    "applies_to": [
+      "OHM-106",
+      "OHM-112"
+    ],
+    "behavior_id": "BEH-IC-RS232-DIP16",
+    "bench": [
+      {
+        "expected": [
+          {
+            "basis": "divider with pump droop",
+            "measure": "v_out",
+            "tolerance": "0.5 %",
+            "value": 6.857
+          }
+        ],
+        "file": "bench/ic-rs232/B1_driver_swing.cir",
+        "id": "B1",
+        "measured_in_ngspice": 6.85714,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "chosen mid range",
+            "measure": "vtp",
+            "tolerance": "1 %",
+            "value": 2.0
+          }
+        ],
+        "file": "bench/ic-rs232/B2_receiver.cir",
+        "id": "B2",
+        "measured_in_ngspice": 1.997,
+        "ngspice_version": "42"
+      },
+      {
+        "expected": [
+          {
+            "basis": "datasheet nominal",
+            "measure": "sr_V_per_us",
+            "tolerance": "10 %",
+            "value": 30
+          }
+        ],
+        "file": "bench/ic-rs232/B3_slew.cir",
+        "id": "B3",
+        "measured_in_ngspice": 27.2,
+        "ngspice_version": "42"
+      }
+    ],
+    "category": "ic",
+    "confidence": {
+      "failure": "M",
+      "model": "M",
+      "parameters": "M",
+      "ratings": "H"
+    },
+    "failure_modes": [
+      {
+        "effect": "no RS-232 swing",
+        "id": "missing_pump_cap",
+        "permanence": "recoverable",
+        "sim_response": "netlist check",
+        "trigger": "C1..C4 absent"
+      },
+      {
+        "effect": "breakdown",
+        "id": "overvoltage_rx",
+        "permanence": "permanent",
+        "sim_response": "ERROR",
+        "trigger": "|RIN| > 30 V"
+      }
+    ],
+    "layer": "L1",
+    "model": {
+      "fidelity": "behavioural_approximation",
+      "known_limitations": [
+        "pump is a behavioural voltage source",
+        "external capacitors not simulated but required",
+        "no short-circuit current limit"
+      ],
+      "netlist_template": "X{ref} {C1P} {VSP} {C1M} {C2P} {C2M} {VSM} {T2OUT} {R2IN} {R2OUT} {T2IN} {T1IN} {R1OUT} {R1IN} {T1OUT} {GND} {VCC} max232 ro={ro} sr={sr} vtp={vtp} vtm={vtm}\n",
+      "spice_primitives": [
+        "B",
+        "R",
+        "C",
+        "D"
+      ],
+      "valid_analyses": [
+        "op",
+        "tran"
+      ],
+      "valid_range": "VCC 4.5..5.5 V, below 120 kbit/s"
+    },
+    "parameters": {
+      "icc0": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": "8e-3",
+        "max": "15e-3",
+        "min": "5e-3",
+        "source_ref": "S13",
+        "tolerance": "",
+        "unit": "A"
+      },
+      "ro": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 300,
+        "max": 400,
+        "min": 200,
+        "source_ref": "S13",
+        "tolerance": "",
+        "unit": "ohm"
+      },
+      "rpump": {
+        "basis": "ASSUMPTION",
+        "confidence": "L",
+        "default": 200,
+        "max": 400,
+        "min": 100,
+        "source_ref": "S13",
+        "tolerance": "",
+        "unit": "ohm"
+      },
+      "sr": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": "30e6",
+        "max": "40e6",
+        "min": "20e6",
+        "source_ref": "S13",
+        "tolerance": "",
+        "unit": "V/s"
+      },
+      "vtm": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 1.0,
+        "max": 1.2,
+        "min": 0.8,
+        "source_ref": "S13",
+        "tolerance": "",
+        "unit": "V"
+      },
+      "vtp": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "default": 2.0,
+        "max": 2.4,
+        "min": 1.7,
+        "source_ref": "S13",
+        "tolerance": "",
+        "unit": "V"
+      }
+    },
+    "pins": [
+      {
+        "electrical_type": "input",
+        "name": "TIN",
+        "package_terminal_rule": "T1IN=11, T2IN=10",
+        "role": "signal_in"
+      },
+      {
+        "electrical_type": "output",
+        "name": "TOUT",
+        "package_terminal_rule": "T1OUT=14, T2OUT=7",
+        "role": "signal_out"
+      },
+      {
+        "electrical_type": "input",
+        "name": "RIN",
+        "package_terminal_rule": "R1IN=13, R2IN=8",
+        "role": "signal_in"
+      },
+      {
+        "electrical_type": "output",
+        "name": "ROUT",
+        "package_terminal_rule": "R1OUT=12, R2OUT=9",
+        "role": "signal_out"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "C1P",
+        "package_terminal_rule": "pin 1",
+        "role": "passive"
+      },
+      {
+        "electrical_type": "power_out",
+        "name": "VSP",
+        "package_terminal_rule": "pin 2",
+        "role": "supply"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "C1M",
+        "package_terminal_rule": "pin 3",
+        "role": "passive"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "C2P",
+        "package_terminal_rule": "pin 4",
+        "role": "passive"
+      },
+      {
+        "electrical_type": "passive",
+        "name": "C2M",
+        "package_terminal_rule": "pin 5",
+        "role": "passive"
+      },
+      {
+        "electrical_type": "power_out",
+        "name": "VSM",
+        "package_terminal_rule": "pin 6",
+        "role": "supply"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "GND",
+        "package_terminal_rule": "pin 15",
+        "role": "supply"
+      },
+      {
+        "electrical_type": "power_in",
+        "name": "VCC",
+        "package_terminal_rule": "pin 16",
+        "role": "supply"
+      }
+    ],
+    "ratings": [
+      {
+        "check": "V(VCC)-V(GND) <= 6",
+        "condition": "abs max",
+        "name": "supply",
+        "source_ref": "S13",
+        "symbol": "VCC",
+        "unit": "V",
+        "value": 6
+      },
+      {
+        "check": "abs(V(RIN)) <= 30",
+        "condition": "abs max",
+        "name": "receiver input",
+        "source_ref": "S13",
+        "symbol": "VI",
+        "unit": "V",
+        "value": 30
+      }
+    ],
+    "sources": "S13, S29",
+    "status": "complete"
+  },
+  "category": "ic",
+  "fidelity": "behavioural_approximation",
+  "layer": "L1",
+  "schema_version": 1,
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "e5787f15190c4bee9cc5fd33fbaf4a9ffc60724b466c1e19302291a4c41187b5",
+    "line": 8385
+  },
+  "source_refs": "S13, S29",
+  "status": "complete"
+}

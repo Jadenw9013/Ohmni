@@ -1,0 +1,23 @@
+B1 100BASE-TX channel insertion loss, PHY side -> RJ45 side, 100 ohm source and load (OCL=350u from Pulse H315.D min spec @8 mA bias; LLK=0.1u + CMC_LS=0.1u are DERIVED by fitting the 100 MHz IL limit; RW, CIW, CMC_L are ASSUMPTIONS)
+* Expected mid-band (1 MHz): IL = 20*log10((Rs+RL)/(Rs+RL+Rw)) with Rw = 0.5+0.5+2*0.1 = 1.2 ohm -> -0.052 dB (+/-0.01 dB; Lm droop adds ~0.004)
+* Datasheet limit (Pulse H325.Q, 100 kHz-100 MHz): -0.9 to -1.1 dB MAX; measured value at 100 MHz is reported against it, not asserted
+.include ethmag.lib
+V1 in 0 DC 0 AC 1
+Rs in tdp 100
+Rtdm tdm 0 1u
+Rct tdct 0 1G
+X1 tdp tdm tdct lp lm lct ETH_CH OCL=350u LLK=0.1u RW=0.5 CIW=15p CMC_L=100u CMC_LS=0.1u CMC_RDC=0.1 CMC_C0=1p CMC_RPAR=1e9
+RL lp lm 100
+Rlm lm 0 1u
+Rlct lct 0 1G
+* reference without magnetics: matched divider gives 0.5 V
+.ac dec 100 100k 300meg
+.control
+run
+let il = db(v(lp,lm)/0.5)
+meas ac il_1M find il at=1meg
+meas ac il_10M find il at=10meg
+meas ac il_100M find il at=100meg
+quit
+.endc
+.end

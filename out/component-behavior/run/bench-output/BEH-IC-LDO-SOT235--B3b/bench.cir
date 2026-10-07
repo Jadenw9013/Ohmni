@@ -1,0 +1,45 @@
+* BEH-IC-LDO-SOT235 B3b: thermal limiting in transient (Ta=70 C, Vin=5.5 V, 16.5 ohm load). Cth = 0.05 J/C (ASSUMED) -> tau = 235.9*0.05 = 11.8 s.
+* v2: scalars printed as 'name = value' (tj_end_c, vout_end_v, tj_t5s_c); behavior unchanged
+* Early transient (limiter inactive): Tj(5 s) = 70 + 104.3*(1-exp(-5/11.8)) = 106.0 C (Pd=0.4421 W, final 70+235.9*0.4421). Without limiting Tj would head to 174 C > 160 C. Expected: Tj ends within ~2 C of 160 C and Vout folds back (memoryless limiter).
+* BEH-IC-LDO-SOT235 behavioural LDO for the TLV700xx family (TLV70033 = 3.3 V). behavioural_approximation. ngspice 42 stock.
+* pins: in gnd en out   (SOT-23-5 DDC order is IN=1 GND=2 EN=3 NC=4 OUT=5; the package binding maps these)
+* Pass element = current source I = icl*tanh(Iraw/icl)*enable*(1-shutdown), Iraw = a*b/(a+b) with a=(Vreg-Vout)/rout (regulation branch) and b=(Vin-Vout)/rdo (dropout branch): soft knee, output impedance ~rout, dropout resistance ~rdo, current limit icl, cannot sink current. (Smooth form chosen because hard min() kinks made ngspice's op solve fail.)
+* Thermal: Pd -> Rth_ja -> Ta; memoryless thermal limiter: output current scaled by (1 - 0.5*(1+tanh((Tj-tsd_hi)/2))). The real part has hysteresis (~160 C off, ~140 C on, TI SLVSA00E extract) - NOT modelled (a latch has no unique DC solution); the model regulates at ~tsd_hi (time-average of the real thermal cycling). cth is an ASSUMPTION.
+.subckt tlv700 in gnd en out params: vnom=3.3 acc=0 rdo=0.86 rout=0.04 icl=0.43 iq=31u ign200=270u ven_hi=0.9 ven_lo=0.4 rth=235.9 ta=25 tsd_hi=160 cth=0.05
+* enable (hysteretic latch not modelled; single threshold at the mean of ven_hi/ven_lo)
+Ben enb gnd V=0.5*(1+tanh((v(en)-v(gnd)-0.5*({ven_hi}+{ven_lo}))/0.02))
+* thermal network: temperature in volts (1 V = 1 degC)
+Vta tamb gnd dc {ta}
+Rth tj tamb {rth}
+Cth tj tamb {cth} ic=0
+Bpd gnd tj I=max((v(in)-v(out))*v(ip)+v(in)*v(enb)*(iq+(ign200-iq)*min(max(v(ip)/0.2,0),1)),0)
+Bts ts gnd V=0.5*(1+tanh((v(tj)-{tsd_hi})/2))
+* pass element
+Bip ip gnd V=v(enb)*(1-v(ts))*{icl}*tanh( ( ((0.5*(({vnom}*(1+acc)-(v(out)-v(gnd)))+sqrt(({vnom}*(1+acc)-(v(out)-v(gnd)))*({vnom}*(1+acc)-(v(out)-v(gnd)))+1e-8)))/{rout}+1e-9)*((0.5*((v(in)-v(out))+sqrt((v(in)-v(out))*(v(in)-v(out))+1e-8)))/{rdo}+1e-9) / (((0.5*(({vnom}*(1+acc)-(v(out)-v(gnd)))+sqrt(({vnom}*(1+acc)-(v(out)-v(gnd)))*({vnom}*(1+acc)-(v(out)-v(gnd)))+1e-8)))/{rout}+1e-9)+((0.5*((v(in)-v(out))+sqrt((v(in)-v(out))*(v(in)-v(out))+1e-8)))/{rdo}+1e-9)) )/{icl} )
+Rip ip gnd 1e9
+Bpass in out I=v(ip)
+* internal feedback divider load (ASSUMED 1 Mohm, ~3 uA): also gives the output node a conductance to ground
+Rfb out gnd 1Meg
+* ground / quiescent current
+Biq in gnd I=v(enb)*(iq+(ign200-iq)*min(max(v(ip)/0.2,0),1))
+.ends
+
+Vin in 0 5.5
+Ven en 0 5.5
+X1 in 0 en out tlv700 ta=70
+Rl out 0 16.5
+Co out 0 1u ic=3.29
+.ic v(out)=3.29
+.tran 20m 120 uic
+.control
+set noaskquit
+run
+meas tran tjend find v(x1.tj) at=119
+meas tran voend find v(out) at=119
+meas tran t5 find v(x1.tj) at=5
+echo tj_end_c = $&tjend
+echo vout_end_v = $&voend
+echo tj_t5s_c = $&t5
+quit
+.endc
+.end

@@ -1,0 +1,163 @@
+{
+  "behavior_class_ids": [
+    "BEH-RES-SENSE"
+  ],
+  "catalog_binding_ids": [],
+  "class_record_paths": [
+    "src/ohmni/behavior/data/classes/BEH-RES-SENSE.json"
+  ],
+  "component": "SMD current-sense resistor",
+  "entry_id": "OHM-014",
+  "fidelity": "behavioural_approximation",
+  "group": "R1",
+  "layer": "L1",
+  "research": {
+    "bench_result": "bench-results/BEH-RES-SENSE--B1.json",
+    "bench_results": [
+      "bench-results/BEH-RES-SENSE--B1.json",
+      "bench-results/BEH-RES-SENSE--B2.json",
+      "bench-results/BEH-RES-SENSE--B3.json"
+    ],
+    "conflicts": [
+      "The WSL2512 5 milliohm component TCR is +/-110 ppm/C in the opened Rev.23-Nov-2023 page2 table, not the spec default75. The element-only <20 ppm/C value is a different quantity."
+    ],
+    "documents": [
+      {
+        "document_id": "wsl",
+        "manufacturer": "Vishay Dale",
+        "note": "Read from fetched PDF bytes; an HTTP success alone is not evidence of semantic support.",
+        "page": null,
+        "revision": "23-Nov-2023",
+        "source_status": "primary_source_opened",
+        "title": "WSL Power Metal Strip resistors",
+        "url": "https://www.vishay.com/docs/30100/wsl.pdf"
+      }
+    ],
+    "entry_id": "OHM-014",
+    "field_updates": [
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "p_rated",
+        "page": 1,
+        "scope": "Vishay WSL2512, 5 milliohm two-terminal option",
+        "sources": [
+          "https://www.vishay.com/docs/30100/wsl.pdf"
+        ],
+        "unit": "W",
+        "value": 1
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "inductance_family_range",
+        "page": 1,
+        "scope": "Vishay WSL2512, 5 milliohm two-terminal option",
+        "sources": [
+          "https://www.vishay.com/docs/30100/wsl.pdf"
+        ],
+        "unit": "H",
+        "value": [
+          5e-10,
+          5e-09
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Linear derating applies above 0.1 ohm; does not change the 5 milliohm default.",
+        "field": "high_resistance_derating",
+        "page": 1,
+        "scope": "Vishay WSL2512, 5 milliohm two-terminal option",
+        "sources": [
+          "https://www.vishay.com/docs/30100/wsl.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "above_ohm": 0.1,
+          "at_ohm": 0.5,
+          "power_fraction": 0.8
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "nominal_resistance",
+        "page": 1,
+        "scope": "Vishay WSL2512 5 milliohm two-terminal reference",
+        "sources": [
+          "https://www.vishay.com/docs/30100/wsl.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.005
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "t_knee",
+        "page": 3,
+        "scope": "Vishay WSL2512 5 milliohm two-terminal reference",
+        "sources": [
+          "https://www.vishay.com/docs/30100/wsl.pdf"
+        ],
+        "unit": "C",
+        "value": 70
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "t_end",
+        "page": 3,
+        "scope": "Vishay WSL2512 5 milliohm two-terminal reference",
+        "sources": [
+          "https://www.vishay.com/docs/30100/wsl.pdf"
+        ],
+        "unit": "C",
+        "value": 170
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "component_tcr_magnitude",
+        "page": 2,
+        "scope": "Vishay WSL2512 5 milliohm two-terminal reference",
+        "sources": [
+          "https://www.vishay.com/docs/30100/wsl.pdf"
+        ],
+        "unit": "ppm/K",
+        "value": 110
+      }
+    ],
+    "remaining_open_items": [
+      "The WSK2512 four-terminal alternative still needs an explicit package-terminal binding.",
+      "Board thermal resistance and exact TCR for the selected resistance are not established here.",
+      "0.5 to 5 nH is a family range, not a measured value for this exact part."
+    ],
+    "research_result": "sources_reviewed",
+    "researched_at": "2026-10-05",
+    "simulation_blockers": [],
+    "source": {
+      "document": "docs/behavior/gapfill/OHM-014.md",
+      "document_sha256": "270420a37b76715a0ec59dffa781fe2e324dd3e1c81d3d333419a233c376902f",
+      "fragment_sha256": null,
+      "line": 1
+    }
+  },
+  "resolution_ids": [],
+  "schema_version": 1,
+  "simulation_disposition": "simulable",
+  "simulation_reason": "The canonical class provides an L1/L2 model; fidelity and assumptions remain explicit.",
+  "source": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "fragment_sha256": "e5d30be50764d11e442194b655e4f64634b7622310b4992dfdb55a6a946acfc9",
+    "line": 32
+  },
+  "status": "partial"
+}

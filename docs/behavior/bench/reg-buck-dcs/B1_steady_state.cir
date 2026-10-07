@@ -1,0 +1,30 @@
+* BEH-REG-BUCK-DCS B1: steady-state CCM, TPS62160-style 12 V -> 3.3 V, 1 A, L = 2.2 uH, Cout = 22 uF
+* v2: scalars re-exported via let (fsw_mhz, dil_a, vavg_v); .meas lines print with from=/to= fields that the audit cannot parse; circuit unchanged
+* Analytic (lossless COT): tON = K*Vo/Vin = 420n*3.3/12 = 115.5 ns ; fsw = 1/K = 2.381 MHz ; dIL(pp) = (Vin-Vo)*tON/L = 0.457 A
+* Tolerance: fsw 10 %, dIL 15 %, mean Vout within VSET .. VSET + dIL/(8 fsw C)+ESR term (here 3.300..3.320 V)
+.include buck_core.inc
+Vin vin 0 12
+Ven en 0 3.3
+Xb vin 0 vout vout en BUCKCORE K=420n RHS=0.4 RLS=0.16 VSET=3.3 IQ=17u L=2.2u DCR=0.05
+Cout vout 0 22u ic=3.3
+Resr_unused vout 0 1Meg
+Rl vout 0 3.3
+.options method=gear reltol=1e-3 abstol=1e-9 vntol=1e-5 gmin=1e-9
+.tran 1n 60u uic
+.control
+set noaskquit
+run
+meas tran tper trig v(xb.q) val=0.5 rise=5 targ v(xb.q) val=0.5 rise=55 from=30u
+let il = (v(xb.vx)-v(vout))/0.05
+meas tran ilmax max il from=45u to=60u
+meas tran ilmin min il from=45u to=60u
+meas tran vavg avg v(vout) from=45u to=60u
+let fsw = 50/tper
+let dil = ilmax-ilmin
+let fsw_mhz = fsw/1e6
+let dil_a = dil
+let vavg_v = vavg
+print fsw_mhz dil_a vavg_v
+quit
+.endc
+.end

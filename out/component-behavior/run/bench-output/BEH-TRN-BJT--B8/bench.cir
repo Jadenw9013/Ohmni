@@ -1,0 +1,82 @@
+* BEH-TRN-BJT B8: electrothermal feedback. Tj = Tamb + Rth*P, iterated; model has no self-heating, so the loop is closed in the control section
+* v2: absolute include path made relative; added tja_final_c, dtjb_k (last-iteration change of case B), numerical loop gains g_a/g_b and flag g_b_lt1_flag; iteration itself unchanged
+* Case A: Vbe fixed by a stiff base source (no emitter resistor), Vbe=0.84 V (Ic ~ 56 mA at 25 C, Vce=5 V)
+* Case B: Re=2 ohm emitter ballast, base source 0.9 V (Ic ~ 43 mA at 25 C)
+* Analytic stability criterion: the loop converges iff  G = Rth * Vce * dIc/dT < 1.
+*   Constant Vbe: dIc/dT = Ic*alpha, alpha = (Eg - Vbe)/(Vt*T) + XTI/T  (T in kelvin, Vt = kT/q)
+*   Ic(0.84 V)=56mA, Vt=0.0259, T=298: alpha = (1.11-0.84)/(0.0259*298)+3/298 = 0.045/K -> G = 200*5*0.056*0.045 = 2.5 > 1 => runaway
+*   With Re=2 ohm: dIc/dT reduced by 1/(1+gm*(Re+RE_int)) with gm=Ic/Vt=1.7 S -> factor ~0.2 -> G_B ~ 0.5 < 1 -> converges
+* Expected: A diverges (Tj hits the 300 C clamp), B converges (Tj changes < 0.1 K between last two iterations)
+* OHMNI R6 BJT models fitted to onsemi datasheet bands (see parts/R6.md, BEH-TRN-BJT section 4)
+* fidelity: behavioural_approximation. NOT a vendor model. Basis: ngspice Gummel-Poon fit to
+* hFE min/max bands, Vce(sat), Vbe(sat), fT (datasheet), Cobo/Cibo (datasheet); VAF, BR, TR, XTB, XTI, EG are ASSUMPTIONs.
+.model Q2N3904_R6FIT NPN(IS=1.4693e-14 BF=325.03 NF=1 VAF=100 IKF=0.061592 ISE=2.5511e-14 NE=1.331 BR=4 NR=1 RB=12.769 RE=1.1905 RC=1 CJE=9.4e-12 VJE=0.75 MJE=0.33 CJC=6.7e-12 VJC=0.75 MJC=0.33 TF=4.775e-10 XTF=2 ITF=0.4 VTF=4 TR=5e-08 XTB=1.5 EG=1.11 XTI=3)
+.model Q2N2222A_R6FIT NPN(IS=3.2019e-14 BF=558.78 NF=1 VAF=100 IKF=0.21803 ISE=2.7068e-14 NE=1.2366 BR=4 NR=1 RB=6.6976 RE=0.097874 RC=0.56613 CJE=29e-12 VJE=0.75 MJE=0.33 CJC=17e-12 VJC=0.75 MJC=0.33 TF=4.608e-10 XTF=2 ITF=0.5 VTF=4 TR=6e-8 XTB=1.5 EG=1.11 XTI=3)
+
+Qa ca ba 0 Q2N3904_R6FIT temp=25
+Vca ca 0 5
+Vba ba 0 0.84
+Qb cb bb eb Q2N3904_R6FIT temp=25
+Vcb cb 0 5
+Vbb bb 0 0.9
+Reb eb 0 2
+.control
+set noaskquit
+set rth = 200
+set ta = 25
+set tja = 25
+set tjb = 25
+set tjbprev = 0
+repeat 30
+  alter qa temp = $tja
+  alter qb temp = $tjb
+  op
+  let pa = -i(Vca)*5
+  let pb = -i(Vcb)*5
+  set pav = "$&pa"
+  set pbv = "$&pb"
+  let tjan = $ta + $rth*pa
+  let tjbn = $ta + $rth*pb
+  if tjan > 300
+    let tjan = 300
+  end
+  set tjbprev = $tjb
+  set tja = "$&tjan"
+  set tjb = "$&tjbn"
+  echo Pa=$pav Pb=$pbv Tja=$tja Tjb=$tjb
+end
+* final state of the iteration as scalar lines (echo prints name = number)
+echo "tja_final_c = $tja"
+let tjbc = $tjb
+let tjbp = $tjbprev
+let dtjb_k = abs(tjbc-tjbp)
+print dtjb_k
+* numerical loop-gain criterion G = Rth*Vce*dIc/dT (central difference over 2 K) at the start state of case A and at the converged state of case B
+* (every op creates a new plot, so intermediate results are carried in set-variables)
+let tb_lo = tjbc-1
+let tb_hi = tjbc+1
+set tblo = "$&tb_lo"
+set tbhi = "$&tb_hi"
+alter qa temp = 24
+op
+let ia_lo = -i(Vca)
+set ialo = "$&ia_lo"
+alter qa temp = 26
+op
+let ia_hi = -i(Vca)
+set iahi = "$&ia_hi"
+alter qb temp = $tblo
+op
+let ib_lo = -i(Vcb)
+set iblo = "$&ib_lo"
+alter qb temp = $tbhi
+op
+let ib_hi = -i(Vcb)
+set ibhi = "$&ib_hi"
+let g_a = $rth*5*($iahi - $ialo)/2
+let g_b = $rth*5*($ibhi - $iblo)/2
+let g_b_lt1_flag = 0.5*(1+(1-g_b)/abs(1-g_b))
+print g_a g_b g_b_lt1_flag
+quit
+.endc
+.end
