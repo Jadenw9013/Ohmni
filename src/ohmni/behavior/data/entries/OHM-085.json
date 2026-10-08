@@ -141,6 +141,36 @@
         ],
         "unit": null,
         "value": "Center pad electrically isolated; cathode at left in top view, anode at right"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Forward voltage (@ 350 mA, 85 °C) - white ... 2.84 3.1'; the 85 C is the source test junction temperature (white binned at 85 C, p1).",
+        "field": "forward_voltage_test_junction_temperature",
+        "page": 4,
+        "scope": "XP-E2 white, Rev.25B; condition of forward_voltage_typical_max",
+        "sources": [
+          "https://downloads.cree-led.com/files/ds/x/XLamp-XPE2.pdf"
+        ],
+        "unit": "C",
+        "value": 85
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "p38 Mechanical Dimensions (viewed): Top View 'CATHODE SIDE' left, 'ANODE SIDE' right; Bottom View mirrored; 'CENTER PAD IS ELECTRICALLY ISOLATED'. Library OHM-085: pin 1 cathode at (-1.4,0), pin 2 (+1.4,0), pin 3 center thermal pad.",
+        "field": "package_pin_roles",
+        "page": 38,
+        "scope": "XP-E2 Rev.25B; library top view (KiCad LED_Cree-XP land, pin 1 at -X)",
+        "sources": [
+          "https://downloads.cree-led.com/files/ds/x/XLamp-XPE2.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "1": "K",
+          "2": "A",
+          "3": "TH"
+        }
       }
     ],
     "remaining_open_items": [
@@ -152,7 +182,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-085.md",
-      "document_sha256": "91cc14a57b0026ab17c33e617c784b5d2d06942f3b012110224adef5e15d6ebe",
+      "document_sha256": "1470108d38e9288711f4c88a3544ff60f96d0e444d4b37f988987c08fefeb490",
       "fragment_sha256": null,
       "line": 1
     }

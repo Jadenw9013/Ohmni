@@ -150,3 +150,66 @@ def test_all_declared_expressions_and_failure_responses_remain_visible(compiled)
             x["sim_response"] for x in behavior.canonical_payload.get("failure_modes", [])
         ]
         assert report["status"] == "unknown"
+
+
+def _single(registry, recipes, entry_id, pin_nets):
+    from ohmni.domain.circuit import CircuitComponent, CircuitIR, Net, PinRef
+
+    nets = [Net(name=name, kind="ground" if name == "return" else "signal",
+                connections=[PinRef(component="U1", pin=pin) for pin in pins]) for name, pins in pin_nets.items()]
+    circuit = CircuitIR(ir_id="t", name="t", nets=nets,
+                        components=[CircuitComponent(ref="U1", part_id=entry_id, package=recipes.entries[entry_id].package)])
+    from ohmni.behavior.runtime_models import DCExcitation
+    from ohmni.domain.units import Quantity
+
+    excitation = DCExcitation(positive_net="return", negative_net="a", value=Quantity(value=0.01, unit="A"))
+    result = compile_circuit(circuit, registry, recipes, {"U1": BehaviorSelection(entry_id=entry_id)},
+                             excitations=[excitation], measure_currents=True)
+    assert result.runnable, result.problems
+    return result
+
+
+def _point(component, volts, amps):
+    return {"status": "ran", "analysis": "op", "operating_point": {
+        "node_voltages": {component.role_nodes[r]: {"value": v, "unit": "V"} for r, v in volts.items()},
+        "branch_currents": {component.role_current_probes[r]: {"value": i, "unit": "A"} for r, i in amps.items()}}}
+
+
+def _checks(report):
+    return {x["name"]: x for x in report["components"][0]["reference_checks"]}
+
+
+def test_series_dual_diode_uses_double_loaded_limit_only_when_both_conduct():
+    registry = BehaviorRegistry(repo_root=ROOT)
+    recipes = load_recipes(registry, ROOT)
+    c = _single(registry, recipes, "OHM-070", {"a": ["1"], "return": ["2"], "m": ["3"]})
+    comp = c.components[0]
+    context = RatingContext(ambient_c=25, thermal_scope_confirmed=True)
+    # Both junctions forward at 150 mA: above the double-loaded limit, power/thermal stay unknown.
+    both = evaluate_ratings(c, _point(comp, {"A1": 1.8, "K1A2": 0.9, "K2": 0},
+                                      {"A1": 0.15, "K1A2": 0, "K2": -0.15}), registry, context)
+    checks = _checks(both)
+    assert checks["forward current D1"]["status"] == "violation"
+    assert checks["total power"]["status"] == "unknown"
+    assert "one diode loaded" in checks["total power"]["reason"]
+    # Only D1 conducting at 150 mA: within the single-loaded limit.
+    single = evaluate_ratings(c, _point(comp, {"A1": 0.9, "K1A2": 0, "K2": 0},
+                                        {"A1": 0.15, "K1A2": -0.15, "K2": 0}), registry, context)
+    checks = _checks(single)
+    assert checks["forward current D1"]["status"] == "within_limit"
+    assert checks["total power"]["status"] == "within_limit"
+
+
+def test_power_led_junction_check_uses_solder_point_temperature():
+    registry = BehaviorRegistry(repo_root=ROOT)
+    recipes = load_recipes(registry, ROOT)
+    c = _single(registry, recipes, "OHM-085", {"a": ["2"], "return": ["1"], "th": ["3"]})
+    comp = c.components[0]
+    point = _point(comp, {"A": 2.9, "K": 0, "TH": 0}, {"A": 0.35, "K": -0.35})
+    name = "junction temperature (all electrical power as heat)"
+    missing = _checks(evaluate_ratings(c, point, registry, RatingContext(thermal_scope_confirmed=True)))
+    assert missing[name]["status"] == "unknown"
+    cool = _checks(evaluate_ratings(c, point, registry, RatingContext(case_c=85, thermal_scope_confirmed=True)))
+    assert cool[name]["status"] == "within_limit"
+    hot = _checks(evaluate_ratings(c, point, registry, RatingContext(case_c=148, thermal_scope_confirmed=True)))
+    assert hot[name]["status"] == "violation"

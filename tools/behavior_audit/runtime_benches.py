@@ -7,7 +7,7 @@ import re
 
 from ohmni.behavior.loader import BehaviorRegistry
 from ohmni.behavior.netlist import _facts, compile_circuit, load_recipes
-from ohmni.behavior.runtime_models import BehaviorSelection, DCExcitation
+from ohmni.behavior.runtime_models import BehaviorSelection, DCExcitation, PWLExcitation, PWLPoint
 from ohmni.domain.circuit import CircuitComponent, CircuitIR, ExternalSource, Net, PinRef
 from ohmni.domain.units import Quantity, ValueRange
 from ohmni.eda.simulation import NgspiceAdapter, parse_operating_point, parse_transient
@@ -31,7 +31,8 @@ def run_runtime_recipes(audit, entry_ids=None):
                   "BEH-IC-OPAMP", "BEH-IC-LDO-SOT235", "BEH-IC-OPTO-DIP6", "BEH-FREQ-XO"}
     for key in sorted(selected):
         behavior = recipes.entries[key].behavior_id
-        runner = (run_resistor_recipes if behavior == "BEH-RES-FIXED" else
+        runner = (run_tran_probes if behavior in TRAN_PROBES else
+                  run_resistor_recipes if behavior == "BEH-RES-FIXED" else
                   run_mosfet_recipes if behavior == "BEH-TRN-MOSFET" else
                   run_ic_recipes if behavior in ic_classes else run_dc_probes)
         runners.setdefault(runner, []).append(key)
@@ -284,13 +285,15 @@ def runtime_receipt_errors(audit, entry_id):
         from .calibration import tvs_calibration_errors
 
         return tvs_calibration_errors(audit) + dc_probe_receipt_errors(audit, entry_id)
+    if behavior in TRAN_PROBES:
+        return tran_probe_receipt_errors(audit, entry_id)
     if behavior == "BEH-RES-FIXED":
         return resistor_receipt_errors(audit, entry_id)
     if behavior == "BEH-TRN-MOSFET":
         return mosfet_receipt_errors(audit, entry_id)
     if behavior in {"BEH-DIO-PN", "BEH-TRN-BJT", "BEH-MAG-INDUCTOR", "BEH-LED-INDICATOR",
                     "BEH-RES-SENSE", "BEH-RES-NETWORK", "BEH-DIO-BRIDGE", "BEH-LED-RGB",
-                    "BEH-DIO-ZENER", "BEH-DIO-TVS", "BEH-DIO-SCHOTTKY"} or behavior in PATH_PROBES:
+                    "BEH-DIO-ZENER", "BEH-DIO-TVS", "BEH-DIO-SCHOTTKY", "BEH-LED-POWER"} or behavior in PATH_PROBES:
         return dc_probe_receipt_errors(audit, entry_id)
     return [f"{entry_id}: no runtime analytical receipt validator for {behavior}"]
 
@@ -349,7 +352,13 @@ def _path_probe(recipe, values, evidence, variant):
     return node_of, comparison
 
 
-def dc_probe_variants(behavior_id):
+def _dual_diode(recipe):
+    return recipe is not None and {"A1", "K2", "K1A2"} <= set(recipe.terminal_roles.values())
+
+
+def dc_probe_variants(behavior_id, recipe=None):
+    if behavior_id == "BEH-DIO-PN" and _dual_diode(recipe):
+        return ["d1", "d2"]
     if behavior_id in PATH_PROBES:
         return [row[0] for row in PATH_PROBES[behavior_id]]
     if behavior_id == "BEH-DIO-BRIDGE":
@@ -375,14 +384,46 @@ def dc_probe_definition(audit, entry_id, variant=None):
     recipes = load_recipes(registry, audit.root)
     recipe = recipes.entries[entry_id]
     values, evidence = _facts(registry.entry(entry_id), recipe)
-    variants = dc_probe_variants(recipe.behavior_id)
+    variants = dc_probe_variants(recipe.behavior_id, recipe)
     variant = variant or variants[0]
     if variant not in variants:
         raise ValueError("unknown probe variant")
     # A binding whose forward terms are fitted to the part's own datasheet curve is checked against
     # that part's sourced maximum, not against the shared class card it no longer uses (D048).
     own_forward_fit = {"IS", "N", "RS"} <= set(recipe.model_facts)
-    if (recipe.behavior_id == "BEH-DIO-PN" and (entry_id in {"OHM-057", "OHM-058", "OHM-064", "OHM-065"} or own_forward_fit)
+    if recipe.behavior_id == "BEH-DIO-PN" and _dual_diode(recipe):
+        # Series pair (D050): drive one junction at the source VF test current, leave the third terminal idle.
+        fact = evidence["vf_max"]
+        current = re.search(r"\bIF\s*=?\s*(\d+(?:\.\d+)?)\s*(m?A)", fact["scope"])
+        if current is None:
+            raise ValueError("forward voltage source test current is missing")
+        amps = float(current[1]) / (1000 if current[2] == "mA" else 1)
+        roles = ({"A1": "anode", "K1A2": "return", "K2": "idle"} if variant == "d1"
+                 else {"K1A2": "anode", "K2": "return", "A1": "idle"})
+        supplies = {}
+        excitations = [DCExcitation(positive_net="return", negative_net="anode", value=Quantity(value=amps, unit="A"))]
+        comparison = {"kind": "interval", "minimum": 0, "maximum": values["vf_max"], "observable": "anode_voltage",
+                      "source_fact": fact, "junction": variant}
+        limits = ("One junction of the series pair at the source forward test current against its maximum VF, the other "
+                  "terminal idle; uses the class 1N4148-family card, not a BAV99 fit. Does not validate both-loaded "
+                  "thermal behavior, recovery or capacitance.")
+    elif recipe.behavior_id == "BEH-LED-POWER":
+        fact = evidence["vf_max"]
+        condition = re.search(r"(\d+(?:\.\d+)?)\s*mA", fact["scope"])
+        if condition is None:
+            raise ValueError("LED source test current is missing")
+        if values.get("tj_vf") is None:
+            raise ValueError("source forward-voltage junction temperature is missing")
+        current = float(condition[1]) / 1000
+        roles = {"A": "anode", "K": "return", "TH": "idle"}
+        supplies = {}
+        excitations = [DCExcitation(positive_net="return", negative_net="anode", value=Quantity(value=current, unit="A"))]
+        comparison = {"kind": "interval", "minimum": 0, "maximum": values["vf_max"], "observable": "anode_voltage",
+                      "source_fact": fact, "test_current": current, "junction_temperature_c": values["tj_vf"]}
+        limits = ("Forward voltage at the source test current with the diode instance held at the source junction "
+                  "temperature (the datasheet publishes this VF only at that temperature). Isolated thermal pad. Does not "
+                  "validate optics, the thermal path to ambient or other temperatures.")
+    elif (recipe.behavior_id == "BEH-DIO-PN" and (entry_id in {"OHM-057", "OHM-058", "OHM-064", "OHM-065"} or own_forward_fit)
             or recipe.behavior_id == "BEH-DIO-SCHOTTKY"):
         fact = evidence["vf_max"]
         current = re.search(r"\bIF\s*=?\s*(\d+(?:\.\d+)?)\s*(m?A)", fact["scope"])
@@ -580,7 +621,7 @@ def run_dc_probes(audit, entry_ids):
     registry = BehaviorRegistry(repo_root=audit.root)
     recipes = load_recipes(registry, audit.root)
     cases = [(entry_id, variant) for entry_id in entry_ids
-             for variant in dc_probe_variants(recipes.entries[entry_id].behavior_id)]
+             for variant in dc_probe_variants(recipes.entries[entry_id].behavior_id, recipes.entries[entry_id])]
     receipts = []
     for entry_id, variant in cases:
         compiled, identity = dc_probe_definition(audit, entry_id, variant)
@@ -606,7 +647,7 @@ def run_dc_probes(audit, entry_ids):
 def dc_probe_receipt_errors(audit, entry_id):
     registry = BehaviorRegistry(repo_root=audit.root)
     recipes = load_recipes(registry, audit.root)
-    return [error for variant in dc_probe_variants(recipes.entries[entry_id].behavior_id)
+    return [error for variant in dc_probe_variants(recipes.entries[entry_id].behavior_id, recipes.entries[entry_id])
             for error in _dc_probe_receipt_errors(audit, entry_id, variant)]
 
 
@@ -624,6 +665,118 @@ def _dc_probe_receipt_errors(audit, entry_id, variant):
     output = output_path.read_text(encoding="utf-8")
     observed = _dc_observation(compiled, identity["comparison"], output)
     if observed != receipt.get("observed") or not _dc_matches(identity["comparison"], observed):
+        errors.append(f"{entry_id}: raw observation does not meet its locked or sourced contract")
+    if _sha_bytes(output_path.read_bytes()) != receipt["output_sha256"]:
+        errors.append(f"{entry_id}: raw output changed")
+    version_path = audit._safe_run_path(receipt["version_file"])
+    version = version_path.read_text(encoding="utf-8")
+    if _sha_bytes(version_path.read_bytes()) != receipt["version_sha256"] or version != receipt["version_output"] or not re.search(r"\bngspice-42\b", version):
+        errors.append(f"{entry_id}: ngspice 42 evidence invalid")
+    return errors
+
+
+# Transient charge checks for capacitor classes whose behavior is only visible in time (D050).
+# A current ramp from zero (so the operating point starts discharged) charges the bound
+# capacitance; the node voltage at a fixed time is I*ESR + I*(t - ramp/2)/C.
+TRAN_PROBES = {
+    "BEH-CAP-MICA": {"current": 1e-5, "ramp": 1e-9, "time": 5e-6, "tstop": 6e-6, "tstep": "1n",
+                     "tolerance": 1e-3, "contract": "BEH-CAP-MICA/B1"},
+    "BEH-CAP-EDLC": {"current": None, "ramp": 1e-3, "time": 10.0, "tstop": 10.5, "tstep": "0.01",
+                     "tolerance": 1e-2, "contract": "BEH-CAP-EDLC/B3"},
+}
+
+
+def tran_probe_definition(audit, entry_id):
+    registry = BehaviorRegistry(repo_root=audit.root)
+    recipes = load_recipes(registry, audit.root)
+    recipe = recipes.entries[entry_id]
+    values, evidence = _facts(registry.entry(entry_id), recipe)
+    spec = TRAN_PROBES[recipe.behavior_id]
+    contract = audit._bench_contracts()[spec["contract"]]
+    tolerance = spec["tolerance"]
+    if {row["tolerance"] for row in contract["expected"]} != {f"{tolerance * 100:g}%"}:
+        raise ValueError("charge probe tolerance no longer matches its locked class bench")
+    capacitance = values["value"]
+    if spec["current"] is None:
+        # KYOCERA AVX capacitance-measurement current rule, I = 4*C*VR in mA (sourced field).
+        current, esr = 4 * capacitance * values["vr"] / 1000, values["esr"]
+        facts = ("value", "vr", "esr")
+    else:
+        current, esr, facts = spec["current"], 0.0, ("value", "vr")
+    t = spec["time"]
+    expected = current * esr + current * (t - spec["ramp"] / 2) / capacitance
+    if expected >= values["vr"]:
+        raise ValueError("charge probe would exceed the sourced voltage rating")
+    pos, neg = ("T1", "T2") if "T1" in recipe.terminal_roles.values() else ("P", "N")
+    roles = {pos: "anode", neg: "return"}
+    nets = [Net(name=name, kind="ground" if name == "return" else "signal",
+                connections=[PinRef(component="U1", pin=pin) for pin, role in recipe.terminal_roles.items() if roles[role] == name])
+            for name in ("anode", "return")]
+    circuit = CircuitIR(ir_id=f"runtime-{entry_id}-tran", name="Source-scoped charge probe",
+                        components=[CircuitComponent(ref="U1", part_id=entry_id, package=recipe.package)], nets=nets)
+    excitation = PWLExcitation(positive_net="return", negative_net="anode", points=[
+        PWLPoint(time=Quantity(value=0, unit="s"), value=Quantity(value=0, unit="A")),
+        PWLPoint(time=Quantity(value=spec["ramp"], unit="s"), value=Quantity(value=current, unit="A")),
+        PWLPoint(time=Quantity(value=spec["tstop"], unit="s"), value=Quantity(value=current, unit="A"))])
+    compiled = compile_circuit(circuit, registry, recipes, {"U1": BehaviorSelection(entry_id=entry_id)},
+                               analysis="tran", excitations=[excitation])
+    identity = {"run_id": audit._state()["run_id"], "entry_id": entry_id, "analysis": "tran",
+                "netlist_sha256": compiled.netlist_sha256, "circuit_hash": compiled.circuit_hash,
+                "recipe_source_sha256": recipes.source.document_sha256,
+                "entry_research_sha256": registry.entry(entry_id).research.source.document_sha256,
+                "class_source_sha256": registry.behavior_class(recipe.behavior_id).source.document_sha256,
+                "tstep": spec["tstep"], "tstop": format(spec["tstop"], "g"), "observe_nets": ["anode"],
+                "comparison": [{"kind": "absolute", "node": "anode", "time": t, "expected": expected,
+                                "tolerance": abs(expected) * tolerance, "current": current,
+                                "tolerance_contract": spec["contract"], "source_deck_sha256": contract["netlist_sha256"],
+                                "source_facts": {name: evidence[name] for name in facts}}],
+                "limits": ("Constant-current charge from zero against I*ESR + I*t/C at one time point, using the relative "
+                           "tolerance of the class bench named in the comparison. Does not validate ESR frequency "
+                           "dependence, leakage, RF loss, self-heating or any rating.")}
+    return compiled, identity
+
+
+def run_tran_probes(audit, entry_ids):
+    from .ic_benches import _matches, _observations
+
+    receipts = []
+    for entry_id in entry_ids:
+        compiled, identity = tran_probe_definition(audit, entry_id)
+        relative = f"runtime-bench-output/{entry_id}-tran"
+        result = NgspiceAdapter().behavior_circuit(compiled, work_dir=audit.run_dir / relative, analysis="tran",
+                                                   tstep=identity["tstep"], tstop=identity["tstop"],
+                                                   observe_nets=identity["observe_nets"])
+        output = result.get("stdout", "") + result.get("stderr", "")
+        values = _observations(compiled, identity, output) if result["status"] == "ran" else [None]
+        passed = result["status"] == "ran" and all(_matches(row, v) for row, v in zip(identity["comparison"], values, strict=True))
+        _atomic_text(audit.run_dir / relative / "output.txt", output)
+        _atomic_text(audit.run_dir / relative / "version.txt", result["version_output"])
+        receipt = dict(identity, ran_at=_now(), run_status="passed" if passed else "failed",
+                       observation_status=result["status"], observed=values,
+                       product_code_path=result.get("product_code_path"), problems=result["problems"],
+                       output_sha256=_sha_bytes(output.encode()), raw_output=relative + "/output.txt",
+                       version_output=result["version_output"], version_file=relative + "/version.txt",
+                       version_sha256=_sha_bytes(result["version_output"].encode()))
+        _atomic_json(audit.run_dir / f"runtime-bench-results/{entry_id}-tran.json", receipt)
+        receipts.append(receipt)
+    return receipts
+
+
+def tran_probe_receipt_errors(audit, entry_id):
+    from .ic_benches import _matches, _observations
+
+    compiled, identity = tran_probe_definition(audit, entry_id)
+    path = audit.run_dir / f"runtime-bench-results/{entry_id}-tran.json"
+    if not path.is_file():
+        return [f"{entry_id}: runtime receipt missing"]
+    receipt = json.loads(path.read_text())
+    required = dict(identity, observation_status="ran", run_status="passed",
+                    product_code_path="ohmni.eda.simulation.NgspiceAdapter.behavior_circuit")
+    errors = [f"{entry_id}: stale or invalid runtime {k}" for k, v in required.items() if receipt.get(k) != v]
+    output_path = audit._safe_run_path(receipt["raw_output"])
+    output = output_path.read_text(encoding="utf-8")
+    observed = _observations(compiled, identity, output)
+    if observed != receipt.get("observed") or not all(_matches(row, v) for row, v in zip(identity["comparison"], observed, strict=True)):
         errors.append(f"{entry_id}: raw observation does not meet its locked or sourced contract")
     if _sha_bytes(output_path.read_bytes()) != receipt["output_sha256"]:
         errors.append(f"{entry_id}: raw output changed")

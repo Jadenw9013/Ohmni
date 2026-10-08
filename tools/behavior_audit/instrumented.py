@@ -14,7 +14,6 @@ from .runtime_benches import (
     _dc_matches,
     _dc_observation,
     dc_probe_definition,
-    dc_probe_variants,
     mosfet_case,
 )
 
@@ -55,7 +54,7 @@ def compare(audit, key, compiled, output, registry, recipes):
             "observed": observed,
             "comparison": expected,
         }
-    _, identity = dc_probe_definition(audit, key, dc_probe_variants(behavior)[0])
+    _, identity = dc_probe_definition(audit, key)
     observed = _dc_observation(compiled, identity["comparison"], output)
     return {
         "passed": _dc_matches(identity["comparison"], observed),
