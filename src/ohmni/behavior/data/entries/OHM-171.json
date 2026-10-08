@@ -133,16 +133,19 @@
     ],
     "remaining_open_items": [
       "Default Ledino footprint remains unbound; alternate does not silently replace it.",
-      "Maximum safe operating voltage and contact derating are not established by the typ voltage row."
+      "Maximum safe operating voltage and contact derating are not established by the typ voltage row.",
+      "Former simulation blocker resolved for the explicitly bound reference (2026-10-08): Missing maximum voltage and default physical binding. Resolution: Resolvable only as an explicit alternate (SJ1-3535NG), not the default Ledino KB3SPRS footprint. The archived Same Sky sheet p2 gives the per-pin table (1 sleeve, 2 tip, 3 ring, 4 tip switch, 5 ring switch) and the PCB layout numbers 1#..5#; p1 gives rated input current 1 A (max column), contact resistance 50 mOhm max, rated input voltage 12 Vdc. The voltage is printed in the typ column: there is no separate maximum anywhere in the source. Closing the 'maximum voltage' blocker therefore requires accepting the manufacturer's rated input voltage as the working-voltage ceiling (checks must never exceed 12 Vdc); it must not be relabelled an absolute maximum. Reviewer decision required on that point.",
+      "Default Ledino KB3SPRS binding",
+      "Absolute maximum voltage (not published)",
+      "Switch closed resistance (unplugged state)",
+      "Contact derating"
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Missing maximum voltage and default physical binding."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-171.md",
-      "document_sha256": "13213a5ca6defdce7138028b478d9d8815fbcf796b8770c477a585ce456b8034",
+      "document_sha256": "3c8f129fafbcc083e1139e9fda1ace7578c76e71775b368eb91121dd4f0b5bf8",
       "fragment_sha256": null,
       "line": 1
     }

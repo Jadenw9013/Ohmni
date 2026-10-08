@@ -1,0 +1,1546 @@
+[
+ {
+  "entry": "OHM-066",
+  "class": "BEH-DIO-PN",
+  "verdict": "blocked",
+  "blocker_recorded": "Functional variant binding is deferred: the index projects PN, while the sourced default is SS34 Schottky. No MURS PN reference is verified; source function and model must not be silently interchanged.",
+  "blocker_resolution": "Cannot be closed honestly. The only opened document (Vishay SS32-SS36) is a Schottky rectifier; binding SS34 under BEH-DIO-PN would assign a PN junction model to a Schottky part, and netlist.validate_reference_function refuses a recipe whose class (BEH-DIO-SCHOTTKY) is not in the entry's behavior_class_ids (only BEH-DIO-PN). The S2M precedent (OHM-065) does not transfer: there the spec named an S2x PN alternative and S2M's own datasheet was opened. Here the spec names only 'MURS-type' with no MPN and no voltage grade, and no MURS document is archived; choosing a grade (e.g. MURS320 vs MURS360) is a product decision, not evidence. Two honest paths, both needing a human decision: (a) add BEH-DIO-SCHOTTKY to OHM-066's class list (the spec section header lists PN, SCHOTTKY and TVS for OHM-066 but the index row projects PN only, which is a spec inconsistency) and bind SS34 as a Schottky; or (b) name an exact MURS3xx MPN, archive its manufacturer PDF, fit IS/N/RS to its curve, then bind it as an explicit PN alternative like S2M.",
+  "reference_part": null,
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "Not reached. (SS34 SMC pin map K=1 band end, A=2 is consistent with the spec, but the function binding is the blocker.)",
+  "runtime_check": {
+   "stimulus": "n/a",
+   "observable": "n/a",
+   "comparison": "n/a",
+   "derived_from": "n/a",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "none"
+  },
+  "open_items_after": [
+   "Human decision: re-class OHM-066 to include BEH-DIO-SCHOTTKY for the SS34 default, or select and archive an exact MURS PN MPN.",
+   "SS34 RthJA 55 K/W (14x14 mm pads) vs spec SMC proxy 75 K/W conflict remains recorded."
+  ]
+ },
+ {
+  "entry": "OHM-070",
+  "class": "BEH-DIO-PN",
+  "verdict": "resolvable",
+  "blocker_recorded": "The available BAV99 power/thermal rating is explicitly for one diode loaded. Shared-package loading and configuration require a scoped runtime guard; no independent per-die power allocation is assumed.",
+  "blocker_resolution": "The evidence needed for the guard is already in the BAV99 sheet (archived 826c982f): IF 215 mA single diode loaded, 125 mA per diode double diode loaded (p3 Table 5), Ptot 250 mW and Rth(j-a) 500 K/W both stated only for 'one diode loaded' (p3 Tables 5/6). Closing the blocker is therefore code, not research: bind only the BAV99 series configuration as one three-terminal instance, and add a dual-diode branch in behavior/ratings.py: per junction i <= if_single when the other junction's forward current is ~0, i <= if_double for each junction when both conduct; package power <= p_tot and Tamb+rth_ja*P <= tj_max evaluated ONLY in the one-diode-loaded state; with both loaded the package thermal check stays 'unknown: no source rating for both diodes loaded' (not pass, not zero heating). The existing BEH-DIO-PN rating branch reads v_A/v_K/i_A, which do not exist for roles A1/K2/K1/A2, so without the new branch every diode rating would silently be absent. BAV70/BAW56 are not bound (each has its own sourced values; BAW56 90 V / 2 pF). Electrical model: the spec's own instruction for OHM-070 (fit A 1N4148-class proxy with BAV99 Cd 1.5 pF) is used as an explicit proxy, checked against BAV99's own VF maximum.",
+  "reference_part": "Nexperia BAV99 (series pair, SOT23), Rev 1 July 2022",
+  "new_field_updates": [
+   {
+    "field": "series_forward_voltage_max",
+    "value": 0.855,
+    "unit": "V",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://assets.nexperia.com/documents/data-sheet/BAV99.pdf"
+    ],
+    "page": 4,
+    "scope": "BAV99 SOT23; per diode; IF = 10 mA; Tamb = 25 C",
+    "detail": "Table 7: 'VF forward voltage IF = 10 mA; Tamb = 25 \u00b0C ... 855 mV' (max)",
+    "archived": true
+   },
+   {
+    "field": "series_diode_capacitance_max",
+    "value": 1.5,
+    "unit": "pF",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://assets.nexperia.com/documents/data-sheet/BAV99.pdf"
+    ],
+    "page": 4,
+    "scope": "BAV99 SOT23; per diode; VR = 0 V; f = 1 MHz",
+    "detail": "Table 7: 'Cd diode capacitance VR = 0 V; f = 1 MHz ... 1.5 pF' (max)",
+    "archived": true
+   },
+   {
+    "field": "series_thermal_resistance_junction_ambient",
+    "value": 500,
+    "unit": "K/W",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://assets.nexperia.com/documents/data-sheet/BAV99.pdf"
+    ],
+    "page": 3,
+    "scope": "BAV99 SOT23; single diode loaded; in free air; FR4 single-sided standard footprint",
+    "detail": "Table 6: 'Rth(j-a) ... single diode loaded; in free air [1] 500 K/W' (max)",
+    "archived": true
+   },
+   {
+    "field": "series_junction_temperature_max",
+    "value": 150,
+    "unit": "C",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://assets.nexperia.com/documents/data-sheet/BAV99.pdf"
+    ],
+    "page": 3,
+    "scope": "BAV99 SOT23",
+    "detail": "Table 5: 'Tj junction temperature ... 150 \u00b0C'",
+    "archived": true
+   }
+  ],
+  "recipe": {
+   "entry_id": "OHM-070",
+   "behavior_id": "BEH-DIO-PN",
+   "package": "SOT-23 BAV99 series pair",
+   "reference_part": "Nexperia BAV99 series pair; BAV70/BAW56 configurations not bound",
+   "terminal_roles": {
+    "1": "A1",
+    "2": "K2",
+    "3": "K1/A2"
+   },
+   "pin_role_fact": {
+    "field": "series_pin_roles",
+    "scope_contains": "BAV99"
+   },
+   "critical_facts": {
+    "vr_max": {
+     "field": "series_reverse_voltage",
+     "unit": "V"
+    },
+    "if_single": {
+     "field": "series_forward_current_single",
+     "unit": "A"
+    },
+    "if_double": {
+     "field": "series_forward_current_double",
+     "unit": "A"
+    },
+    "p_tot": {
+     "field": "series_total_power",
+     "unit": "W"
+    },
+    "rth_ja": {
+     "field": "series_thermal_resistance_junction_ambient",
+     "unit": "K/W"
+    },
+    "tj_max": {
+     "field": "series_junction_temperature_max",
+     "unit": "C"
+    },
+    "vf_max": {
+     "field": "series_forward_voltage_max",
+     "unit": "V"
+    },
+    "CJO": {
+     "field": "series_diode_capacitance_max",
+     "unit": "pF",
+     "output_unit": "F"
+    }
+   },
+   "class_parameters": {
+    "IS": "IS",
+    "N": "N",
+    "RS": "RS",
+    "TT": "TT",
+    "VJ": "VJ",
+    "M": "M",
+    "BV": "BV",
+    "IBV": "IBV",
+    "EG": "EG",
+    "XTI": "XTI"
+   },
+   "derived_parameters": {},
+   "quoted_parameters": {},
+   "template_override": "D1_{ref} {A1} {K1/A2} DMOD_{ref}\nD2_{ref} {K1/A2} {K2} DMOD_{ref}\n.model DMOD_{ref} D (IS={IS} N={N} RS={RS} CJO={CJO} VJ={VJ} M={M} TT={TT} BV={BV} IBV={IBV} EG={EG} XTI={XTI})\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 4479
+   },
+   "template_provenance_note": "Spec OHM-070 pin/SPICE table row 'series (BAV99) | A1 | K2 | K1 and A2 | D1 {p1} {p3} M , D2 {p3} {p2} M' combined with the BEH-DIO-PN class diode card; CJO is the BAV99 Cd maximum (spec OHM-070: 'CJO 1.5 pF used by Nexperia max Cd 1.5 pF for BAV99').",
+   "inline_assets": [],
+   "supported_analyses": [
+    "op",
+    "tran"
+   ],
+   "limitations": [
+    "Only the BAV99 series pair is bound; BAV70 common-cathode and BAW56 common-anode variants have their own sourced limits and are not substituted.",
+    "IS, N, RS, TT, BV are the class fit-A 1N4148-class proxy named by the spec for OHM-070, not a BAV99 curve fit; the probe checks only that the proxy stays below BAV99's sourced 855 mV maximum at 10 mA.",
+    "Both junctions are identical and thermally independent in the model; the package is not. Ptot 250 mW and Rth(j-a) 500 K/W apply only with one diode loaded; with both loaded only the 125 mA per-diode limit is sourced and package thermal acceptance is unknown.",
+    "Role name K1/A2 is kept verbatim from the sourced pin table so the pin-role fact relocates exactly."
+   ]
+  },
+  "pin_map_evidence": "Nexperia BAV99 data sheet p2 Table 2 'Pinning': pin 1 A1 anode (diode 1), pin 2 K2 cathode (diode 2), pin 3 K1, A2; simplified outline is the standard SOT23 top view (pins 1, 2 on one side, 3 opposite). Library PKG-SOT23 SOT23-3: pin1 (-0.95,-1.0), pin2 (+0.95,-1.0), pin3 (0,+1.0), datasheet-standard top view, no mirror or rotation (3D spec PKG-SOT23 'Pin numbering'). So manufacturer numbers map 1:1 to library terminals. Already recorded as field series_pin_roles (H).",
+  "runtime_check": {
+   "stimulus": "Two variants. d1: 10 mA DC current into A1 (pin 1) returned at K1/A2 (pin 3, ground), K2 (pin 2) on an isolated single-connection net. d2: 10 mA into K1/A2 (pin 3) returned at K2 (pin 2), A1 isolated. 25 C isothermal.",
+   "observable": "anode_voltage of the driven junction",
+   "comparison": "interval [0, 0.855 V] (BAV99 VF max at IF 10 mA). Hand-built ngspice-42 deck with the proposed card gave 0.72556 V for d1 (d2 identical card).",
+   "derived_from": "sourced field series_forward_voltage_max (scope 'IF = 10 mA'); 10 mA also equals the locked BEH-DIO-PN/B1 stimulus",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "BEH-DIO-PN probe maps only roles A/K. Add dc_probe_variants('BEH-DIO-PN' dual) = ['d1','d2'] keyed on terminal roles {A1,K2,K1/A2}: roles map driven anode->'anode', driven cathode->'return', the third role->'idle' (signal net, one connection, no source); test current parsed from vf_max scope with the existing IF regex. Also add the dual-diode rating branch described in blocker_resolution."
+  },
+  "open_items_after": [
+   "Own-curve IS/N/RS fit to BAV99 Fig. 1 (25 C typical) not done; proxy remains.",
+   "No package thermal limit for both diodes loaded exists in the source.",
+   "IFSM/IFRM pulse ratings and trr not exercised."
+  ]
+ },
+ {
+  "entry": "OHM-072",
+  "class": "BEH-DIO-BRIDGE",
+  "verdict": "resolvable",
+  "blocker_recorded": "Physical role binding remains unverified for the generic WOM/WOG combined entry.",
+  "blocker_resolution": "Scope the binding to Vishay W10G only (DF10M precedent, D031); MCC WOM stays unbound. The Vishay WOG outline (doc 88769 p3, inspected image) marks '+' and '-' on one diagonal of the square lead pattern and the two '~' on the other diagonal, with equal 4.6-5.6 mm spacing on both axes. Every rotation or mirror of a square maps diagonals to diagonals, so the unresolved top-view/lead-end-view transform can only exchange which AC lead is library pin 2 vs 4. The library anchors pin 1 to the '+' lead (3D spec OHM-072 'OHMNI default pin 1 = +'), so PLUS=1 and MINUS=3 (diagonal) are fixed, and AC1/AC2 are electrically interchangeable in the four-identical-diode model; the existing bridge probe already tests both AC polarities. Hence the transform does not need to be proven for the electrical binding. Second problem found: with the class proxy card (IS 1.04e-10, N 1.8, RS 0.03) a W10G diode drops ~1.09 V at 1 A, above the W10G 1.0 V maximum, so the bridge probe (2*vf_max = 2.0 V) would fail; a W10G-specific forward fit from its own Fig. 3 is proposed (two-junction drop 1.895 V, passes).",
+  "reference_part": "Vishay W10G (case WOG), Rev 09-Jul-2020",
+  "new_field_updates": [
+   {
+    "field": "maximum_forward_voltage_per_diode",
+    "value": 1.0,
+    "unit": "V",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.vishay.com/doc?88769"
+    ],
+    "page": 1,
+    "scope": "W10G WOG; 1A; TA25 C source table default",
+    "detail": "REPLACES the existing field whose scope 'W10G WOG; IF1A' does not match the bridge probe regex ';\\s*(\\d+)A'. Electrical characteristics: 'Maximum instantaneous forward voltage per diode IF = 1.0 A VF 1.0 V' (TA = 25 \u00b0C unless otherwise noted).",
+    "archived": true
+   },
+   {
+    "field": "derived_package_pin_roles",
+    "value": {
+     "1": "PLUS",
+     "2": "AC1",
+     "3": "MINUS",
+     "4": "AC2"
+    },
+    "unit": null,
+    "basis": "DERIVED",
+    "confidence": "M",
+    "sources": [
+     "https://www.vishay.com/doc?88769"
+    ],
+    "page": 3,
+    "scope": "W10G only. Library CCW numbering from top-left with pin 1 at the '+' lead; MINUS on the opposite diagonal. AC interchange is electrically equivalent.",
+    "detail": "Outline 'Case Style WOG' (p3, inspected image): '+' upper-left, '~' upper-right, '~' lower-left, '-' lower-right, square lead pattern 0.180-0.220 in on both axes. Diagonal pairs are invariant under the unproven view rotation/mirror; pin 1 = '+' is the library convention (PCB_COMPONENT_3D_LIBRARY_SPEC.md OHM-072), not a manufacturer number.",
+    "archived": true
+   },
+   {
+    "field": "spice_IS_fit",
+    "value": 1.957e-06,
+    "unit": "A",
+    "basis": "DERIVED",
+    "confidence": "L",
+    "sources": [
+     "https://www.vishay.com/doc?88769"
+    ],
+    "page": 2,
+    "scope": "W10G WOG; per diode; TJ 25 C; typical; fit 0.01-7.2 A",
+    "detail": "Least-squares fit of VF = N*Vt*ln(I/IS+1)+I*RS (Vt at 298.15 K) to the five lowest vertices of the vector polyline of Fig. 3 'Typical Forward Characteristics Per Diode' (TJ 25 C, 300 us pulse): (0.6085 V, 10.5 mA), (0.7899 V, 0.1027 A), (0.9989 V, 1.937 A), (1.0793 V, 4.92 A), (1.1376 V, 7.15 A); axis calibrated on gridlines (133.25 pt/V, 32.555 pt/decade). RMS 7.8 mV, max 11.2 mV. IS and N trade off; use as a set. Above 7 A the curve bends (excluded).",
+    "archived": true
+   },
+   {
+    "field": "spice_N_fit",
+    "value": 2.786,
+    "unit": "1",
+    "basis": "DERIVED",
+    "confidence": "L",
+    "sources": [
+     "https://www.vishay.com/doc?88769"
+    ],
+    "page": 2,
+    "scope": "W10G WOG; per diode; TJ 25 C; typical; fit 0.01-7.2 A",
+    "detail": "Same fit as spice_IS_fit (curve slope ~170 mV/decade below 2 A).",
+    "archived": true
+   },
+   {
+    "field": "spice_RS_fit",
+    "value": 0.006825,
+    "unit": "ohm",
+    "basis": "DERIVED",
+    "confidence": "L",
+    "sources": [
+     "https://www.vishay.com/doc?88769"
+    ],
+    "page": 2,
+    "scope": "W10G WOG; per diode; TJ 25 C; typical; fit 0.01-7.2 A",
+    "detail": "Same fit as spice_IS_fit. Fit VF(1 A) = 0.948 V (typical) vs 1.0 V maximum.",
+    "archived": true
+   }
+  ],
+  "recipe": {
+   "entry_id": "OHM-072",
+   "behavior_id": "BEH-DIO-BRIDGE",
+   "package": "WOG",
+   "reference_part": "Vishay W10G",
+   "terminal_roles": {
+    "1": "PLUS",
+    "2": "AC1",
+    "3": "MINUS",
+    "4": "AC2"
+   },
+   "pin_role_fact": {
+    "field": "derived_package_pin_roles"
+   },
+   "critical_facts": {
+    "IF_AV": {
+     "field": "average_output_current",
+     "unit": "A"
+    },
+    "VRRM": {
+     "field": "repetitive_peak_reverse_voltage",
+     "unit": "V"
+    },
+    "rth_ja": {
+     "field": "thermal_resistance_junction_ambient",
+     "unit": "K/W"
+    },
+    "tj_max": {
+     "field": "maximum_junction_temperature",
+     "unit": "C"
+    },
+    "vf_max": {
+     "field": "maximum_forward_voltage_per_diode",
+     "unit": "V"
+    }
+   },
+   "model_facts": {
+    "IS": {
+     "field": "spice_IS_fit",
+     "unit": "A"
+    },
+    "N": {
+     "field": "spice_N_fit",
+     "unit": "1"
+    },
+    "RS": {
+     "field": "spice_RS_fit",
+     "unit": "ohm"
+    }
+   },
+   "class_parameters": {
+    "CJO": "CJO",
+    "TT": "TT"
+   },
+   "derived_parameters": {
+    "BV": {
+     "basis": "DERIVED",
+     "confidence": "L",
+     "detail": "Original bridge model knee; not a reverse-voltage rating.",
+     "expression": "1.1*VRRM",
+     "source": {
+      "document": "COMPONENT_BEHAVIOR_SPEC.md",
+      "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+      "line": 4320
+     },
+     "unit": "V"
+    }
+   },
+   "quoted_parameters": {},
+   "template_override": ".subckt BRIDGE_{ref} AC1 AC2 PLUS MINUS\nD1 AC1 PLUS DBR_{ref}\nD2 AC2 PLUS DBR_{ref}\nD3 MINUS AC1 DBR_{ref}\nD4 MINUS AC2 DBR_{ref}\n.ends\n.model DBR_{ref} D (IS={IS} N={N} RS={RS} CJO={CJO} VJ=0.7 M=0.5 TT={TT} BV={BV} IBV=5u)\nX{ref} {AC1} {AC2} {PLUS} {MINUS} BRIDGE_{ref}\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 4320
+   },
+   "template_provenance_note": "Identical to the OHM-071 DF10M override (class bridge template, line 4320).",
+   "inline_assets": [],
+   "supported_analyses": [
+    "op",
+    "tran"
+   ],
+   "limitations": [
+    "Only Vishay W10G is bound; MCC W02M-W10M (WOM, Tj 125 C) and other W0xG voltage grades are not certified by this binding.",
+    "Library pin 1 must sit at the '+' marked lead; PLUS/MINUS diagonal is source-drawn, AC1/AC2 assignment is interchangeable.",
+    "IS, N, RS fitted to the W10G typical 25 C curve (low confidence); CJO and TT remain the authored class proxy (W10G CJ typ 14 pF at 4 V not fitted).",
+    "1.5 A is a resistive/inductive-load rating at TA 25 C with 9.5 mm leads on 5.5 x 5.5 mm pads; capacitive-load derating (Fig. 1, Ipk/Iav 5-20) is not granted. Four identical diodes without shared thermal or surge modelling."
+   ]
+  },
+  "pin_map_evidence": "Vishay doc 88769 Rev 09-Jul-2020, p3 'PACKAGE OUTLINE DIMENSIONS, Case Style WOG' (rendered and viewed): lead circle with '+' at upper-left lead, '~' upper-right and lower-left, '-' lower-right; square spacing 0.180-0.220 in both directions. Library PKG-BRIDGE_ROUND: pin1 (-2.54,+2.54), pin2 (-2.54,-2.54), pin3 (+2.54,-2.54), pin4 (+2.54,+2.54), pin 1 = '+' by library rule. Diagonal of pin 1 is pin 3 -> MINUS; pins 2 and 4 -> AC (either order).",
+  "runtime_check": {
+   "stimulus": "Existing BEH-DIO-BRIDGE probe: +10 V and -10 V on AC1 (AC2 ground) from the locked B1 amplitude, 1 A DC from PLUS to MINUS (current parsed from vf_max scope '; 1A').",
+   "observable": "bridge_drop = 10 - (V_PLUS - V_MINUS)",
+   "comparison": "interval [0, 2.0 V] = 2 x W10G VF max. Hand-built ngspice-42 deck with the proposed fit: 1.8954 V (positive polarity; symmetric model gives the same for negative). With the class proxy card it would be ~2.19 V and fail.",
+   "derived_from": "BEH-DIO-BRIDGE/B1 stimulus + sourced field maximum_forward_voltage_per_diode",
+   "existing_probe_covers_it": true,
+   "new_probe_needed_for_class": "none (requires the re-scoped vf field so the regex finds '; 1A')"
+  },
+  "open_items_after": [
+   "MCC WOM reference and its AC,AC,+,- statement remain unresolved and unbound.",
+   "Capacitive-input derating and surge (IFSM 50 A, I2t 10) not modelled.",
+   "Physical check that the footprint places pin 1 under the '+' mark."
+  ]
+ },
+ {
+  "entry": "OHM-078",
+  "class": "BEH-LED-INDICATOR",
+  "verdict": "resolvable",
+  "blocker_recorded": "Thermal acceptance lacks sourced junction/thermal parameters; generic color variants lack an exact reference.",
+  "blocker_resolution": "Not closable with the current reference: the current Vishay VLMS1300 sheet (Rev 1.6, 30-Mar-2023, archived c5cea115) and the older Rev 1.4 copy contain no junction temperature and no thermal resistance, only PV 75 mW at Tamb <= 25 C and Tamb -35..+85 C. Every bound LED recipe carries sourced rth_ja and tj_max, and binding without them would make the junction check silently absent (ratings.py adds it only when both exist), against D015. A closable route requires changing the reference part to an 0603 LED that publishes thermal data: Kingbright APT1608SURCK (hyper red, same maker family as the bound OHM-077/079/080 Kingbright parts). WebFetch of the Kingbright PDF (spec DSAD0926, Rev V.22A, 04/08/2023) shows Tj 115 C, RthJA 480 C/W and RthJS 310 C/W (FR4, pad >= 16 mm2 per pad), PD 75 mW, IF 30 mA, VR 5 V, VF 1.95 typ / 2.5 max at 20 mA. It must be browser-archived, its package drawing (cathode mark) viewed, and the rebind approved (D047: rebinds need a change of reference part). The generic colour/green catalog binding (GENERIC_LED_GREEN) stays unbound: the recipe names one red part and carries no catalog_parts.",
+  "reference_part": "Kingbright APT1608SURCK (0603, hyper red), proposed rebind; replaces VLMS1300 only after approval",
+  "new_field_updates": [
+   {
+    "field": "reference_part",
+    "value": "Kingbright APT1608SURCK",
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.kingbrightusa.com/images/catalog/SPEC/APT1608SURCK.pdf"
+    ],
+    "page": 1,
+    "scope": "Kingbright APT1608SURCK 0603 hyper red; DSAD0926 Rev V.22A",
+    "detail": "Spec No: DSAD0926 Rev No: V.22A Date: 04/08/2023 (WebFetch extract)",
+    "archived": true
+   },
+   {
+    "field": "maximum_forward_current",
+    "value": 30,
+    "unit": "mA",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.kingbrightusa.com/images/catalog/SPEC/APT1608SURCK.pdf"
+    ],
+    "page": 2,
+    "scope": "Kingbright APT1608SURCK; TA 25 C",
+    "detail": "'DC Forward Current IF 30 mA' (WebFetch)",
+    "archived": true
+   },
+   {
+    "field": "maximum_power",
+    "value": 75,
+    "unit": "mW",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.kingbrightusa.com/images/catalog/SPEC/APT1608SURCK.pdf"
+    ],
+    "page": 2,
+    "scope": "Kingbright APT1608SURCK; TA 25 C",
+    "detail": "'Power Dissipation PD 75 mW' (WebFetch)",
+    "archived": true
+   },
+   {
+    "field": "maximum_reverse_voltage",
+    "value": 5,
+    "unit": "V",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.kingbrightusa.com/images/catalog/SPEC/APT1608SURCK.pdf"
+    ],
+    "page": 2,
+    "scope": "Kingbright APT1608SURCK; TA 25 C",
+    "detail": "'Reverse Voltage VR 5 V' (WebFetch)",
+    "archived": true
+   },
+   {
+    "field": "maximum_junction_temperature",
+    "value": 115,
+    "unit": "C",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.kingbrightusa.com/images/catalog/SPEC/APT1608SURCK.pdf"
+    ],
+    "page": 2,
+    "scope": "Kingbright APT1608SURCK",
+    "detail": "'Junction Temperature Tj 115 \u00b0C' (WebFetch)",
+    "archived": true
+   },
+   {
+    "field": "thermal_resistance_junction_ambient",
+    "value": 480,
+    "unit": "K/W",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.kingbrightusa.com/images/catalog/SPEC/APT1608SURCK.pdf"
+    ],
+    "page": 2,
+    "scope": "Kingbright APT1608SURCK; FR4, pad size >= 16 mm2 per pad",
+    "detail": "'Thermal Resistance (Junction / Ambient) Rth JA [2] 480 \u00b0C/W'; note 2 mounting (WebFetch)",
+    "archived": true
+   },
+   {
+    "field": "forward_voltage_typical_max",
+    "value": [
+     1.95,
+     2.5
+    ],
+    "unit": "V",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.kingbrightusa.com/images/catalog/SPEC/APT1608SURCK.pdf"
+    ],
+    "page": 2,
+    "scope": "Kingbright APT1608SURCK; IF 20 mA; TA 25 C",
+    "detail": "'Forward Voltage IF = 20mA VF Hyper Red 1.95 2.5 V' (WebFetch)",
+    "archived": true
+   }
+  ],
+  "recipe": {
+   "entry_id": "OHM-078",
+   "behavior_id": "BEH-LED-INDICATOR",
+   "package": "0603 LED",
+   "reference_part": "Kingbright APT1608SURCK red",
+   "terminal_roles": {
+    "1": "K",
+    "2": "A"
+   },
+   "critical_facts": {
+    "if_max": {
+     "field": "maximum_forward_current",
+     "unit": "mA",
+     "output_unit": "A",
+     "scope_contains": "APT1608SURCK"
+    },
+    "p_rated": {
+     "field": "maximum_power",
+     "unit": "mW",
+     "output_unit": "W",
+     "scope_contains": "APT1608SURCK"
+    },
+    "rth_ja": {
+     "field": "thermal_resistance_junction_ambient",
+     "unit": "K/W",
+     "scope_contains": "APT1608SURCK"
+    },
+    "tj_max": {
+     "field": "maximum_junction_temperature",
+     "unit": "C",
+     "scope_contains": "APT1608SURCK"
+    },
+    "vf_max": {
+     "field": "forward_voltage_typical_max",
+     "unit": "V",
+     "value_path": [
+      1
+     ],
+     "scope_contains": "APT1608SURCK"
+    },
+    "vf_typical": {
+     "field": "forward_voltage_typical_max",
+     "unit": "V",
+     "value_path": [
+      0
+     ],
+     "scope_contains": "APT1608SURCK"
+    },
+    "vr_max": {
+     "field": "maximum_reverse_voltage",
+     "unit": "V",
+     "scope_contains": "APT1608SURCK"
+    }
+   },
+   "class_parameters": {
+    "IS": "IS",
+    "N": "N",
+    "RS": "RS"
+   },
+   "derived_parameters": {},
+   "quoted_parameters": {},
+   "template_override": "D{ref} {A} {K} LEDP_{ref}\n.model LEDP_{ref} D (IS={IS} N={N} RS={RS} CJO=30p VJ=1.0 M=0.33 TT=0 BV=15 IBV=10u EG=2.2 XTI=3)\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 4593
+   },
+   "template_provenance_note": "Class LED template with a per-reference model name (class uses {colour} as model name). Replace class_parameters with own-curve model_facts once the archived PDF's VF-IF curve is digitized (D048 practice).",
+   "inline_assets": [],
+   "supported_analyses": [
+    "op",
+    "tran"
+   ],
+   "limitations": [
+    "Only APT1608SURCK hyper red is bound; colour selectors and the GENERIC_LED_GREEN catalog part are not certified.",
+    "Forward curve is the class red card proxy until an own-curve fit is made.",
+    "RthJA applies to FR4 with >= 16 mm2 per pad; thermal scope must be confirmed by the caller."
+   ]
+  },
+  "pin_map_evidence": "Kingbright APT1608SURCK Rev V.22A p1 package drawing: symbol '1 -|<- 2' (pin 1 cathode) and 'Polarity mark' at pin 1; same 1=K, 2=A convention as the bound Kingbright siblings OHM-077/079/080.",
+  "runtime_check": {
+   "stimulus": "Existing LED probe: 20 mA DC from the vf field scope, A anode, K return.",
+   "observable": "anode_voltage",
+   "comparison": "interval [0, 2.5 V]; class red card gives 1.9886 V at 20 mA (ngspice-42 hand deck).",
+   "derived_from": "sourced field forward_voltage_typical_max (IF 20 mA), once archived",
+   "existing_probe_covers_it": true,
+   "new_probe_needed_for_class": "none"
+  },
+  "open_items_after": [
+   "Browser-archive the Kingbright PDF and re-verify every value from bytes.",
+   "Human approval to replace VLMS1300 as the OHM-078 reference.",
+   "Read the cathode mark from the drawing; fit IS/N/RS to its own curve.",
+   "VLMS1300 (current record) stays without thermal data; InGaN colour variants stay unbound."
+  ]
+ },
+ {
+  "entry": "OHM-085",
+  "class": "BEH-LED-POWER",
+  "verdict": "resolvable",
+  "blocker_recorded": "Junction-to-solderpoint data does not establish a board/heatsink-to-ambient path; the85 C fit and revised source require explicit thermal-context handling before rated runtime use.",
+  "blocker_resolution": "Handled by never using an ambient path: the rating guard is referenced to the solder point, which the caller must supply. Source facts (archived Cree CLD-DS56 Rev 25B): RthJS 5.8 C/W white (p3), Tj max 150 C (p4), IF max 1500 mA, VR 1 V (p3), VF 2.84 typ / 3.1 max at 350 mA and 85 C (p4), center pad electrically isolated, cathode left/anode right in top view (p38, viewed). Thermal context: rating check Tsp + rth_js*P_electrical <= tj_max with Tsp = RatingContext.case_c and thermal_scope_confirmed; all electrical power is counted as heat (conservative, since the optical fraction 'eta' is an ASSUMPTION); without Tsp the check is unknown. The 85 C issue: white VF is published only at Tj 85 C and the class card has TNOM=85, but compile_circuit always runs .temp 25. At 25 C the card gives 3.101 V at 350 mA, which is not comparable with an 85 C maximum. The binding pins the diode instance to the sourced binning junction temperature (instance temp from a sourced field), so the probe compares like with like: 2.9077 V at 350 mA, 85 C vs 3.1 V max. This is an isothermal-85 C electrical binding, stated as such. Requires two code additions (new probe and a BEH-LED-POWER rating branch).",
+  "reference_part": "Cree LED XLamp XP-E2 white, CLD-DS56 Rev 25B",
+  "new_field_updates": [
+   {
+    "field": "forward_voltage_test_junction_temperature",
+    "value": 85,
+    "unit": "C",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://downloads.cree-led.com/files/ds/x/XLamp-XPE2.pdf"
+    ],
+    "page": 4,
+    "scope": "XP-E2 white, Rev.25B; condition of forward_voltage_typical_max",
+    "detail": "'Forward voltage (@ 350 mA, 85 \u00b0C) - white ... 2.84 3.1'; the 85 C is the source test junction temperature (white binned at 85 C, p1).",
+    "archived": true
+   },
+   {
+    "field": "package_pin_roles",
+    "value": {
+     "1": "K",
+     "2": "A",
+     "3": "TH"
+    },
+    "unit": null,
+    "basis": "DERIVED",
+    "confidence": "M",
+    "sources": [
+     "https://downloads.cree-led.com/files/ds/x/XLamp-XPE2.pdf"
+    ],
+    "page": 38,
+    "scope": "XP-E2 Rev.25B; library top view (KiCad LED_Cree-XP land, pin 1 at -X)",
+    "detail": "p38 Mechanical Dimensions (viewed): Top View 'CATHODE SIDE' left, 'ANODE SIDE' right; Bottom View mirrored; 'CENTER PAD IS ELECTRICALLY ISOLATED'. Library OHM-085: pin 1 cathode at (-1.4,0), pin 2 (+1.4,0), pin 3 center thermal pad.",
+    "archived": true
+   }
+  ],
+  "recipe": {
+   "entry_id": "OHM-085",
+   "behavior_id": "BEH-LED-POWER",
+   "package": "XP-E2 3.45 mm",
+   "reference_part": "Cree XLamp XP-E2 white, Rev 25B",
+   "terminal_roles": {
+    "1": "K",
+    "2": "A",
+    "3": "TH"
+   },
+   "pin_role_fact": {
+    "field": "package_pin_roles"
+   },
+   "required_isolated_roles": [
+    "TH"
+   ],
+   "critical_facts": {
+    "if_max": {
+     "field": "maximum_forward_current",
+     "unit": "mA",
+     "output_unit": "A"
+    },
+    "vr_max": {
+     "field": "maximum_reverse_voltage",
+     "unit": "V"
+    },
+    "tj_max": {
+     "field": "maximum_junction_temperature",
+     "unit": "C"
+    },
+    "rth_js": {
+     "field": "thermal_resistance_junction_solderpoint_typical",
+     "unit": "K/W"
+    },
+    "vf_max": {
+     "field": "forward_voltage_typical_max",
+     "unit": "V",
+     "value_path": [
+      1
+     ]
+    },
+    "vf_typical": {
+     "field": "forward_voltage_typical_max",
+     "unit": "V",
+     "value_path": [
+      0
+     ]
+    },
+    "tj_vf": {
+     "field": "forward_voltage_test_junction_temperature",
+     "unit": "C"
+    }
+   },
+   "derived_parameters": {},
+   "quoted_parameters": {},
+   "class_parameters": {},
+   "template_override": "D{ref} {A} {K} LED_XPE2_{ref} temp={tj_vf}\n.model LED_XPE2_{ref} D (IS=1.87e-14 N=3.0 RS=0.2233 CJO=300p VJ=1.0 M=0.33 BV=5 IBV=10u EG=3.9 XTI=3 TNOM=85)\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 4902
+   },
+   "template_provenance_note": "Class LED_XPE2 card (spec line 4902-4903) unchanged except a per-reference model name and the ngspice diode instance parameter temp= bound to the sourced 85 C test junction temperature. TH has no electrical element (isolated pad).",
+   "inline_assets": [],
+   "supported_analyses": [
+    "op"
+   ],
+   "limitations": [
+    "Isothermal electrical binding at the source binning junction temperature 85 C; junction temperature is not computed and ambient conditions do not change the I-V.",
+    "The class card was fitted to an earlier XP-E2 revision (class vf_700mA_85C 3.05 V; Rev 25B typ 2.99 V at 700 mA); only the 350 mA maximum is checked.",
+    "Thermal acceptance is solder-point referenced (RthJS 5.8 C/W typical, JESD51-14); no board, MCPCB or heatsink path to ambient is assumed or modelled; RthJS is a typical value.",
+    "Reverse rating is 1 V for white Rev 25B; no destructive-failure or dielectric isolation rating for the center pad is established (electrically isolated only)."
+   ]
+  },
+  "pin_map_evidence": "Cree CLD-DS56 Rev 25B p38 (rendered, viewed): Top View labels 'CATHODE SIDE' at left and 'ANODE SIDE' at right; Bottom View shows anode left/cathode right (mirror) with the large center pad 'ELECTRICALLY ISOLATED' (also Alternate Bottom View). Library OHM-085 (3D spec): top view, pin 1 cathode at (-1.4,0), pin 2 anode at (+1.4,0), pin 3 thermal center pad. Mapping 1->K, 2->A, 3->TH (isolated).",
+  "runtime_check": {
+   "stimulus": "350 mA DC into A (anode net), K on return, TH on an isolated single-connection net; diode instance at temp 85 C from the sourced field.",
+   "observable": "anode_voltage",
+   "comparison": "interval [0, 3.1 V]; hand-built ngspice-42 deck: 2.90771 V (typ 2.84 V). Same card at 25 C gives 3.10117 V (not comparable, shown for contrast).",
+   "derived_from": "sourced field forward_voltage_typical_max (scope 'IF350 mA,TJ85 C') and forward_voltage_test_junction_temperature",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "BEH-LED-POWER has no probe. Add a branch mirroring the LED source-bound probe: current from the vf scope ('(\\d+) mA'), roles {A: anode, K: return, TH: isolated}, comparison interval [0, vf_max], and assert the compiled deck's diode instance temp equals the sourced tj_vf (and that the scope contains 'TJ85'). Also add a BEH-LED-POWER branch to ratings.py: i_A <= if_max; v_K-v_A <= vr_max; Tc + rth_js*power <= tj_max with Tc = context.case_c meaning solder-point temperature, unknown unless thermal_scope_confirmed."
+  },
+  "open_items_after": [
+   "Board/heatsink path to ambient must be supplied by the user design; not a part fact.",
+   "Refit the card to Rev 25B curves (optional fidelity).",
+   "No SOA/destructive timing; optical/electrical split remains an assumption (treated as all-heat)."
+  ]
+ },
+ {
+  "entry": "OHM-086",
+  "class": "BEH-LED-POWER",
+  "verdict": "blocked",
+  "blocker_recorded": "Module terminal map and module thermal limits are missing; keep the star model blocked.",
+  "blocker_resolution": "Must stay blocked. The only opened document is the XP-E2 emitter datasheet; no manufacturer star/MCPCB module document is archived or named (the 3D spec cites only distributor pages: cutter.com.au, LEDSupply, an RS-hosted generic star sheet, all S4). The wire-pad-to-emitter map (2 or 4 pads, which are + and -), the MCPCB thermal resistance and the dielectric isolation of the module are therefore unsourced, and emitter RthJS cannot stand in for module-to-heatsink limits. Closing requires choosing an exact star product from a maker that publishes a datasheet with pad map and thermal data, then archiving it.",
+  "reference_part": null,
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "None available from a primary source.",
+  "runtime_check": {
+   "stimulus": "n/a",
+   "observable": "n/a",
+   "comparison": "n/a",
+   "derived_from": "n/a",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "would reuse the OHM-085 BEH-LED-POWER probe once a module is bound"
+  },
+  "open_items_after": [
+   "Select and archive an exact star module datasheet (pad map, MCPCB Rth, isolation)."
+  ]
+ },
+ {
+  "entry": "OHM-093",
+  "class": "BEH-TRN-BJT",
+  "verdict": "resolvable",
+  "blocker_recorded": "Default onsemi2N3904 source is unavailable. Opened PN2222A data does not validate that model or its generic TO-92 pin assignment.",
+  "blocker_resolution": "The premise is now stale: the onsemi 2N3903/2N3904 data sheet (2N3903/D Rev 9, August 2021) was browser-archived on 2026-10-06 (content_sha256 254033368ac4..., ledger entry tools.behavior_audit.ingest_manual), after the 2026-10-05 OHM-093 research. It gives the default's own ratings, hFE bands and pin assignment, so the spec default 2N3904 can be bound directly (no alternative needed) with the spec's fitted Q2N3904_R6FIT card via the hashed inline library already used by the class benches. The card's 10 mA / 1 V gain (173.07 in ngspice-42) lies inside the onsemi 100-300 band. Pin map: onsemi TO-92 Case 29 Style 1 'PIN 1 EMITTER, 2 BASE, 3 COLLECTOR' (p8) and the p1 symbol (EMITTER 1, BASE 2, COLLECTOR 3); the p7 drawing shows pin 1 leftmost when facing the flat face, which is exactly the library PKG-TO92 rule, so numbers map 1:1. PN2222A fields stay as recorded but are not bound.",
+  "reference_part": "onsemi 2N3904 (TO-92, Case 29-11 Style 1), 2N3903/D Rev 9",
+  "new_field_updates": [
+   {
+    "field": "reference_part",
+    "value": "onsemi 2N3904",
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.onsemi.com/download/data-sheet/pdf/2n3903-d.pdf"
+    ],
+    "page": 1,
+    "scope": "onsemi 2N3904 TO-92 (Case 29, Style 1), 2N3903/D Rev 9 Aug 2021",
+    "detail": "Title '2N3903, 2N3904 General Purpose Transistors NPN Silicon'; TO-92 CASE 29 STYLE 1",
+    "archived": true
+   },
+   {
+    "field": "manufacturer_pin_roles",
+    "value": {
+     "1": "E",
+     "2": "B",
+     "3": "C"
+    },
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.onsemi.com/download/data-sheet/pdf/2n3903-d.pdf"
+    ],
+    "page": 8,
+    "scope": "onsemi 2N3904 TO-92 (Case 29, Style 1), 2N3903/D Rev 9 Aug 2021",
+    "detail": "p8 'STYLE 1: PIN 1. EMITTER 2. BASE 3. COLLECTOR'; p1 symbol 'COLLECTOR 3 / BASE 2 / EMITTER 1', 'TO-92 CASE 29 STYLE 1'; p7 Case 29-11 perspective and section views: pin 1 at left facing the flat face.",
+    "archived": true
+   },
+   {
+    "field": "maximum_collector_emitter_voltage",
+    "value": 40,
+    "unit": "V",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.onsemi.com/download/data-sheet/pdf/2n3903-d.pdf"
+    ],
+    "page": 1,
+    "scope": "onsemi 2N3904 TO-92 (Case 29, Style 1), 2N3903/D Rev 9 Aug 2021",
+    "detail": "MAXIMUM RATINGS 'Collector-Emitter Voltage VCEO 40 Vdc'",
+    "archived": true
+   },
+   {
+    "field": "maximum_collector_base_voltage",
+    "value": 60,
+    "unit": "V",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.onsemi.com/download/data-sheet/pdf/2n3903-d.pdf"
+    ],
+    "page": 1,
+    "scope": "onsemi 2N3904 TO-92 (Case 29, Style 1), 2N3903/D Rev 9 Aug 2021",
+    "detail": "'Collector-Base Voltage VCBO 60 Vdc'",
+    "archived": true
+   },
+   {
+    "field": "maximum_emitter_base_voltage",
+    "value": 6,
+    "unit": "V",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.onsemi.com/download/data-sheet/pdf/2n3903-d.pdf"
+    ],
+    "page": 1,
+    "scope": "onsemi 2N3904 TO-92 (Case 29, Style 1), 2N3903/D Rev 9 Aug 2021",
+    "detail": "'Emitter-Base Voltage VEBO 6.0 Vdc'",
+    "archived": true
+   },
+   {
+    "field": "maximum_collector_current",
+    "value": 0.2,
+    "unit": "A",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.onsemi.com/download/data-sheet/pdf/2n3903-d.pdf"
+    ],
+    "page": 1,
+    "scope": "onsemi 2N3904 TO-92 (Case 29, Style 1), 2N3903/D Rev 9 Aug 2021; continuous",
+    "detail": "'Collector Current - Continuous IC 200 mAdc'",
+    "archived": true
+   },
+   {
+    "field": "maximum_power_ambient25",
+    "value": 0.625,
+    "unit": "W",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.onsemi.com/download/data-sheet/pdf/2n3903-d.pdf"
+    ],
+    "page": 1,
+    "scope": "onsemi 2N3904 TO-92 (Case 29, Style 1), 2N3903/D Rev 9 Aug 2021; TA = 25 C; derate 5.0 mW/C",
+    "detail": "'Total Device Dissipation @ TA = 25\u00b0C 625 mW, Derate above 25\u00b0C 5.0 mW/\u00b0C'",
+    "archived": true
+   },
+   {
+    "field": "maximum_power_case25",
+    "value": 1.5,
+    "unit": "W",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.onsemi.com/download/data-sheet/pdf/2n3903-d.pdf"
+    ],
+    "page": 1,
+    "scope": "onsemi 2N3904 TO-92 (Case 29, Style 1), 2N3903/D Rev 9 Aug 2021; TC = 25 C; derate 12 mW/C",
+    "detail": "'Total Device Dissipation @ TC = 25\u00b0C 1.5 W, Derate above 25\u00b0C 12 mW/\u00b0C'",
+    "archived": true
+   },
+   {
+    "field": "maximum_junction_temperature",
+    "value": 150,
+    "unit": "C",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.onsemi.com/download/data-sheet/pdf/2n3903-d.pdf"
+    ],
+    "page": 1,
+    "scope": "onsemi 2N3904 TO-92 (Case 29, Style 1), 2N3903/D Rev 9 Aug 2021",
+    "detail": "'Operating and Storage Junction Temperature Range TJ, Tstg -55 to +150 \u00b0C'",
+    "archived": true
+   },
+   {
+    "field": "maximum_thermal_resistances",
+    "value": {
+     "junction_ambient": 200,
+     "junction_case": 83.3
+    },
+    "unit": "K/W",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.onsemi.com/download/data-sheet/pdf/2n3903-d.pdf"
+    ],
+    "page": 1,
+    "scope": "onsemi 2N3904 TO-92 (Case 29, Style 1), 2N3903/D Rev 9 Aug 2021",
+    "detail": "THERMAL CHARACTERISTICS 'R\u03b8JA 200 \u00b0C/W', 'R\u03b8JC 83.3 \u00b0C/W' (Max)",
+    "archived": true
+   },
+   {
+    "field": "dc_gain_minimum",
+    "value": 100,
+    "unit": "1",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.onsemi.com/download/data-sheet/pdf/2n3903-d.pdf"
+    ],
+    "page": 2,
+    "scope": "onsemi 2N3904 TO-92 (Case 29, Style 1), 2N3903/D Rev 9 Aug 2021; IC = 10 mA; VCE = 1.0 V; pulse test",
+    "detail": "ON CHARACTERISTICS 'DC Current Gain (IC = 10 mAdc, VCE = 1.0 Vdc) 2N3904 100 300'",
+    "archived": true
+   },
+   {
+    "field": "dc_gain_maximum",
+    "value": 300,
+    "unit": "1",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.onsemi.com/download/data-sheet/pdf/2n3903-d.pdf"
+    ],
+    "page": 2,
+    "scope": "onsemi 2N3904 TO-92 (Case 29, Style 1), 2N3903/D Rev 9 Aug 2021; IC = 10 mA; VCE = 1.0 V; pulse test",
+    "detail": "same row, max 300",
+    "archived": true
+   },
+   {
+    "field": "dc_gain_test_collector_current",
+    "value": 0.01,
+    "unit": "A",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.onsemi.com/download/data-sheet/pdf/2n3903-d.pdf"
+    ],
+    "page": 2,
+    "scope": "onsemi 2N3904 TO-92 (Case 29, Style 1), 2N3903/D Rev 9 Aug 2021; hFE band test condition",
+    "detail": "'(IC = 10 mAdc, VCE = 1.0 Vdc)'",
+    "archived": true
+   },
+   {
+    "field": "dc_gain_test_collector_voltage",
+    "value": 1.0,
+    "unit": "V",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.onsemi.com/download/data-sheet/pdf/2n3903-d.pdf"
+    ],
+    "page": 2,
+    "scope": "onsemi 2N3904 TO-92 (Case 29, Style 1), 2N3903/D Rev 9 Aug 2021; hFE band test condition",
+    "detail": "'(IC = 10 mAdc, VCE = 1.0 Vdc)'",
+    "archived": true
+   }
+  ],
+  "recipe": {
+   "entry_id": "OHM-093",
+   "behavior_id": "BEH-TRN-BJT",
+   "package": "TO-92",
+   "reference_part": "onsemi 2N3904, 2N3903/D Rev 9 (2021)",
+   "terminal_roles": {
+    "1": "E",
+    "2": "B",
+    "3": "C"
+   },
+   "pin_role_fact": {
+    "field": "manufacturer_pin_roles",
+    "scope_contains": "onsemi 2N3904"
+   },
+   "critical_facts": {
+    "gain_min": {
+     "field": "dc_gain_minimum",
+     "unit": "1",
+     "scope_contains": "onsemi 2N3904"
+    },
+    "gain_max": {
+     "field": "dc_gain_maximum",
+     "unit": "1",
+     "scope_contains": "onsemi 2N3904"
+    },
+    "gain_test_ic": {
+     "field": "dc_gain_test_collector_current",
+     "unit": "A",
+     "scope_contains": "onsemi 2N3904"
+    },
+    "gain_test_vce": {
+     "field": "dc_gain_test_collector_voltage",
+     "unit": "V",
+     "scope_contains": "onsemi 2N3904"
+    },
+    "ic_max": {
+     "field": "maximum_collector_current",
+     "unit": "A",
+     "scope_contains": "onsemi 2N3904"
+    },
+    "p_rated": {
+     "field": "maximum_power_ambient25",
+     "unit": "W",
+     "scope_contains": "onsemi 2N3904"
+    },
+    "p_case": {
+     "field": "maximum_power_case25",
+     "unit": "W",
+     "scope_contains": "onsemi 2N3904"
+    },
+    "rth_ja": {
+     "field": "maximum_thermal_resistances",
+     "unit": "K/W",
+     "value_path": [
+      "junction_ambient"
+     ],
+     "scope_contains": "onsemi 2N3904"
+    },
+    "tj_max": {
+     "field": "maximum_junction_temperature",
+     "unit": "C",
+     "scope_contains": "onsemi 2N3904"
+    },
+    "vce_max": {
+     "field": "maximum_collector_emitter_voltage",
+     "unit": "V",
+     "scope_contains": "onsemi 2N3904"
+    },
+    "veb_max": {
+     "field": "maximum_emitter_base_voltage",
+     "unit": "V",
+     "scope_contains": "onsemi 2N3904"
+    }
+   },
+   "derived_parameters": {},
+   "quoted_parameters": {},
+   "class_parameters": {},
+   "template_override": "Q{ref} {C} {B} {E} Q2N3904_R6FIT\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 5773
+   },
+   "template_provenance_note": "Class BJT template (spec line 5773 / class netlist_template) without the optional temp={Tj} (no Tj value is bound; the deck runs isothermal 25 C). The model card comes from the hashed inline asset models_bjt_r6fit.lib (contains Q2N3904_R6FIT and Q2N2222A_R6FIT; no include/control lines).",
+   "inline_assets": [
+    {
+     "document": "docs/behavior/bench/trn_bjt/models_bjt_r6fit.lib",
+     "document_sha256": "993685699b118050d78a0f2441d01f304307cc38e60f3fc2b1b4ed3b370951ca",
+     "line": 1
+    }
+   ],
+   "supported_analyses": [
+    "op",
+    "tran"
+   ],
+   "limitations": [
+    "Only onsemi 2N3904 is bound; PN2222A, BC546/547 (C-B-E) and other TO-92 functions are not substituted.",
+    "Q2N3904_R6FIT is the spec's Gummel-Poon fit to datasheet min/max bands (geometric-mean hFE targets, assumed VAF/BR/XTB/XTI), not a vendor model; the onsemi Rev 9 table gives an hFE maximum only at 10 mA.",
+    "Ambient (625 mW, 200 C/W) and case (1.5 W, 83.3 C/W) ratings are separate conditions; no SOA chart in the source; isothermal electrical model."
+   ]
+  },
+  "pin_map_evidence": "onsemi 2N3903/D Rev 9 (archived 254033368ac4): p1 schematic symbol with 'COLLECTOR 3', 'BASE 2', 'EMITTER 1' next to 'TO-92 CASE 29 STYLE 1'; p8 'STYLE 1: PIN 1. EMITTER 2. BASE 3. COLLECTOR'; p7 Case 29-11 (rendered, viewed): perspective views label leads 1,2,3 left to right with the flat face toward the viewer, and the section view places pin 1 at left with the flat side up (third-angle bottom view under the front view). Library PKG-TO92: 'Pin 1 at -X when the flat face looks toward -Y (viewer at -Y). Numbering 1, 2, 3 left to right.' Hence 1->E, 2->B, 3->C with identity numbering.",
+  "runtime_check": {
+   "stimulus": "Existing BJT probe: VCE = 1.0 V supply on C, E return, base current IC_test/sqrt(min*max) = 0.01/sqrt(100*300) = 57.735 uA.",
+   "observable": "current_gain = |I_collector| / I_base",
+   "comparison": "interval [100, 300]; hand-built ngspice-42 deck (tnom 25, temp 25, library card): IC = 9.99205 mA, gain 173.07.",
+   "derived_from": "sourced fields dc_gain_minimum/maximum and test IC/VCE (onsemi Rev 9 p2)",
+   "existing_probe_covers_it": true,
+   "new_probe_needed_for_class": "none. Note: the existing probe's limits text says 'geometric-mean BF and assumed IS'; for this binding the full fitted card is used, so the receipt limits wording should be adjusted."
+  },
+  "open_items_after": [
+   "The record's document list must add the onsemi 2N3903/D Rev 9 archive (browser download 2026-10-06).",
+   "hFE roll-off at 0.1/1/50/100 mA has only minima in Rev 9; the spec's '-300' maxima at other currents are not in this revision.",
+   "Switching times and SOA not checked."
+  ]
+ },
+ {
+  "entry": "OHM-094",
+  "class": "BEH-TRN-BJT",
+  "verdict": "resolvable",
+  "blocker_recorded": "Default MMBT3904/2N3904 fit is not established by the opened BC817 alternative; exact reference/model/pin binding is missing.",
+  "blocker_resolution": "Honest as an explicit alternative, like S2M/BAT42W: the spec's own OHM-094 binding table lists BC817 (pins B-E-C, source S4, verified) next to the unverified MMBT3904 default, and the BC817 sheet is archived (dbbbeafc). The recipe binds BC817 by name and does not claim to model MMBT3904 or reuse the 2N3904 fit; the MMBT3904 default remains unbound (no onsemi/Nexperia MMBT3904 document is archived). Gain group: the reference stays 'BC817' with the sheet's ungraded row (hFE 100-600 at VCE 1 V, IC 100 mA), matching the existing reference_part field; a suffixed grade would need its own binding. Model per the class rule for BC817 ('use DERIVED BF = geometric mean of bin, IS = 1e-14, status partial'): BF = sqrt(100*600) = 244.95, IS quoted as an ASSUMPTION because the BC817 sheet has no non-saturated VBE-IC curve to fit (only VBEsat, Figs 5/9/13).",
+  "reference_part": "Nexperia BC817 (ungraded), SOT23, Rev 8; explicit alternative to the MMBT3904 default",
+  "new_field_updates": [
+   {
+    "field": "dc_gain_minimum_ungraded",
+    "value": 100,
+    "unit": "1",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://assets.nexperia.com/documents/data-sheet/BC817_SER.pdf"
+    ],
+    "page": 5,
+    "scope": "Nexperia BC817; ungraded; VCE = 1 V; IC = 100 mA; Tamb 25 C; pulsed",
+    "detail": "Table 7 'hFE DC current gain BC817 VCE = 1 V; IC = 100 mA; Tamb = 25 \u00b0C [1] 100 - 600'",
+    "archived": true
+   },
+   {
+    "field": "dc_gain_maximum_ungraded",
+    "value": 600,
+    "unit": "1",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://assets.nexperia.com/documents/data-sheet/BC817_SER.pdf"
+    ],
+    "page": 5,
+    "scope": "Nexperia BC817; ungraded; VCE = 1 V; IC = 100 mA; Tamb 25 C; pulsed",
+    "detail": "same row, max 600",
+    "archived": true
+   },
+   {
+    "field": "dc_gain_test_collector_current",
+    "value": 0.1,
+    "unit": "A",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://assets.nexperia.com/documents/data-sheet/BC817_SER.pdf"
+    ],
+    "page": 5,
+    "scope": "Nexperia BC817; hFE test condition",
+    "detail": "'VCE = 1 V; IC = 100 mA'",
+    "archived": true
+   },
+   {
+    "field": "dc_gain_test_collector_voltage",
+    "value": 1.0,
+    "unit": "V",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://assets.nexperia.com/documents/data-sheet/BC817_SER.pdf"
+    ],
+    "page": 5,
+    "scope": "Nexperia BC817; hFE test condition",
+    "detail": "'VCE = 1 V; IC = 100 mA'",
+    "archived": true
+   }
+  ],
+  "recipe": {
+   "entry_id": "OHM-094",
+   "behavior_id": "BEH-TRN-BJT",
+   "package": "SOT-23",
+   "reference_part": "Nexperia BC817 (ungraded) Rev 8; explicit alternative to MMBT3904 default",
+   "terminal_roles": {
+    "1": "B",
+    "2": "E",
+    "3": "C"
+   },
+   "pin_role_fact": {
+    "field": "manufacturer_pin_roles",
+    "scope_contains": "Nexperia BC817"
+   },
+   "critical_facts": {
+    "gain_min": {
+     "field": "dc_gain_minimum_ungraded",
+     "unit": "1"
+    },
+    "gain_max": {
+     "field": "dc_gain_maximum_ungraded",
+     "unit": "1"
+    },
+    "gain_test_ic": {
+     "field": "dc_gain_test_collector_current",
+     "unit": "A"
+    },
+    "gain_test_vce": {
+     "field": "dc_gain_test_collector_voltage",
+     "unit": "V"
+    },
+    "ic_max": {
+     "field": "maximum_collector_current",
+     "unit": "A"
+    },
+    "p_rated": {
+     "field": "maximum_power_by_collector_pad",
+     "unit": "W",
+     "value_path": [
+      "standard_footprint"
+     ]
+    },
+    "rth_ja": {
+     "field": "maximum_thermal_resistance_junction_ambient_by_collector_pad",
+     "unit": "K/W",
+     "value_path": [
+      "standard_footprint"
+     ]
+    },
+    "tj_max": {
+     "field": "maximum_junction_temperature",
+     "unit": "C"
+    },
+    "vce_max": {
+     "field": "maximum_collector_emitter_voltage",
+     "unit": "V"
+    },
+    "veb_max": {
+     "field": "maximum_emitter_base_voltage",
+     "unit": "V"
+    }
+   },
+   "derived_parameters": {
+    "BF": {
+     "basis": "DERIVED",
+     "confidence": "M",
+     "detail": "Class rule for BC817: geometric mean of the sourced ungraded gain range; one-point approximation.",
+     "expression": "sqrt(gain_min*gain_max)",
+     "source": {
+      "document": "COMPONENT_BEHAVIOR_SPEC.md",
+      "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+      "line": 5943
+     },
+     "unit": "1"
+    }
+   },
+   "quoted_parameters": {
+    "IS": {
+     "basis": "ASSUMPTION",
+     "confidence": "L",
+     "source_fragment": "BC817/BCP56/BCX56/BD139 have ratings and hFE bins only, no fitted card (use DERIVED BF = geometric mean of bin, IS = 1e-14, status partial)",
+     "unit": "A",
+     "value_text": "1e-14"
+    }
+   },
+   "class_parameters": {},
+   "template_override": "Q{ref} {C} {B} {E} QMOD_{ref}\n.model QMOD_{ref} NPN(IS={IS} BF={BF})\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 5809
+   },
+   "template_provenance_note": "Spec BJT ideal mode '.model Q NPN(IS=1e-14 BF=hFE_typ)' (line 5809), the same template used by OHM-095/097. IS quotes the class known_limitations text in the class JSON (no source anchor -> relocated against the authored class payload).",
+   "inline_assets": [],
+   "supported_analyses": [
+    "op"
+   ],
+   "limitations": [
+    "BC817 ungraded reference; it is not the MMBT3904 default and does not use the 2N3904 fit. Suffixed -16/-25/-40 grades are not bound.",
+    "IS = 1e-14 is the class assumption (no BC817 VBE-IC curve); DC gain only, no Early effect, charge storage or switching.",
+    "Standard-footprint power 0.25 W and Rth(j-a) 500 K/W (maxima) apply only to FR4 single-sided standard footprint; IC 0.5 A and Ptot are simultaneous constraints."
+   ]
+  },
+  "pin_map_evidence": "Nexperia BC817_SER Rev 8 p2 Table 3 'Pinning': 1 B base, 2 E emitter, 3 C collector; simplified outline is the standard SOT23 top view (1, 2 bottom, 3 top). Library PKG-SOT23 SOT23-3 uses the datasheet-standard top view with no mirror/rotation (pin1 (-0.95,-1.0), pin2 (+0.95,-1.0), pin3 (0,+1.0)). Already recorded as field manufacturer_pin_roles (H); spec OHM-094 table agrees (B-E-C, S4).",
+  "runtime_check": {
+   "stimulus": "Existing BJT probe: VCE 1 V, base current 0.1/sqrt(100*600) = 408.2 uA.",
+   "observable": "current_gain",
+   "comparison": "interval [100, 600]; ngspice-42 hand deck: IC = 100.0 mA, gain 244.95 (ideal card, gain equals BF by construction).",
+   "derived_from": "sourced BC817 ungraded hFE fields",
+   "existing_probe_covers_it": true,
+   "new_probe_needed_for_class": "none"
+  },
+  "open_items_after": [
+   "MMBT3904 default stays unbound until an MMBT3904 manufacturer sheet (pins and ratings) is archived.",
+   "IS unfitted (assumption); one-point gain check is weak by construction, same as OHM-095/097."
+  ]
+ },
+ {
+  "entry": "OHM-096",
+  "class": "BEH-TRN-BJT",
+  "verdict": "resolvable",
+  "blocker_recorded": "Default AMS1117-3.3 regulator remains unbound; BCP56 transistor research cannot supply its electrical truth. Regulator binding is deferred to the IC stage.",
+  "blocker_resolution": "The blocker is correct for the regulator and stays true for it, but it does not prevent an honest BJT binding: the entry's only behavior class is BEH-TRN-BJT and the spec's OHM-096 binding table lists BCP56 (B-C-E-C, S5, verified) as a functional part beside the regulators. Binding BCP56 by name as an explicit alternative (exact precedent: OHM-095 BCX56 in the SOT-89 transistor/regulator entry, simulable with 'Regulator variants ... not bound by this recipe') leaves the AMS1117 default unbound and models nothing about it. The regulator default belongs to BEH-REG-LINEAR, which is not in this entry's class list, so it can only be bound in the IC stage (and AMS1117 has no archived source; TI LM1117 is archived). Model: BF = sqrt(63*250) = 125.5 from the ungraded hFE row, IS fitted from BCP56's own Fig. 7 VBE-IC curve at 25 C (7.3e-14 A, N 0.998 over 0.1-20 mA), consistent with the BCX56 fit (7.4e-14) on the same die family.",
+  "reference_part": "Nexperia BCP56 (ungraded), SOT223, Rev 11; explicit alternative to the AMS1117-3.3 regulator default",
+  "new_field_updates": [
+   {
+    "field": "dc_gain_minimum_ungraded",
+    "value": 63,
+    "unit": "1",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://assets.nexperia.com/documents/data-sheet/BCP56_SER.pdf"
+    ],
+    "page": 6,
+    "scope": "Nexperia BCP56; ungraded; VCE = 2 V; IC = 150 mA; Tamb 25 C; pulsed",
+    "detail": "Table 7 'hFE DC current gain BCP56 ... VCE = 2 V; IC = 150 mA [1] 63 - 250'",
+    "archived": true
+   },
+   {
+    "field": "dc_gain_maximum_ungraded",
+    "value": 250,
+    "unit": "1",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://assets.nexperia.com/documents/data-sheet/BCP56_SER.pdf"
+    ],
+    "page": 6,
+    "scope": "Nexperia BCP56; ungraded; VCE = 2 V; IC = 150 mA; Tamb 25 C; pulsed",
+    "detail": "same row, max 250",
+    "archived": true
+   },
+   {
+    "field": "dc_gain_test_collector_current",
+    "value": 0.15,
+    "unit": "A",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://assets.nexperia.com/documents/data-sheet/BCP56_SER.pdf"
+    ],
+    "page": 6,
+    "scope": "Nexperia BCP56; hFE band test condition",
+    "detail": "'VCE = 2 V; IC = 150 mA'",
+    "archived": true
+   },
+   {
+    "field": "dc_gain_test_collector_voltage",
+    "value": 2.0,
+    "unit": "V",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://assets.nexperia.com/documents/data-sheet/BCP56_SER.pdf"
+    ],
+    "page": 6,
+    "scope": "Nexperia BCP56; hFE band test condition",
+    "detail": "'VCE = 2 V; IC = 150 mA'",
+    "archived": true
+   },
+   {
+    "field": "spice_IS_fit",
+    "value": 7.3e-14,
+    "unit": "A",
+    "basis": "DERIVED",
+    "confidence": "M",
+    "sources": [
+     "https://assets.nexperia.com/documents/data-sheet/BCP56_SER.pdf"
+    ],
+    "page": 7,
+    "scope": "Nexperia BCP56 series; Fig. 7 curve (2) Tamb 25 C; VCE 2 V; typical; 0.1-20 mA",
+    "detail": "Vector polyline of Fig. 7 'Base-emitter voltage as a function of collector current; typical values' curve (2) Tamb = 25 \u00b0C, calibrated on gridlines (32.0 pt/decade, 0.4 V per 53.335 pt): e.g. 0.105 mA 0.5407 V, 1.25 mA 0.6064 V, 10.1 mA 0.6585 V, 20.2 mA 0.6776 V. Log fit 59.0 mV/decade (N = 0.998, so N = 1 used); IS = IC/exp(VBE/Vt) at 298.15 K gives 6.96e-14..7.82e-14, geometric mean 7.33e-14. Points above ~0.1 A (high injection/RB) excluded. Figure is for the 'BCP56 series', not a single gain group.",
+    "archived": true
+   }
+  ],
+  "recipe": {
+   "entry_id": "OHM-096",
+   "behavior_id": "BEH-TRN-BJT",
+   "package": "SOT-223",
+   "reference_part": "Nexperia BCP56 (ungraded) Rev 11; explicit alternative, regulator default not bound",
+   "terminal_roles": {
+    "1": "B",
+    "2": "C",
+    "3": "E",
+    "4": "C"
+   },
+   "pin_role_fact": {
+    "field": "manufacturer_pin_roles",
+    "scope_contains": "Nexperia BCP56"
+   },
+   "critical_facts": {
+    "gain_min": {
+     "field": "dc_gain_minimum_ungraded",
+     "unit": "1"
+    },
+    "gain_max": {
+     "field": "dc_gain_maximum_ungraded",
+     "unit": "1"
+    },
+    "gain_test_ic": {
+     "field": "dc_gain_test_collector_current",
+     "unit": "A"
+    },
+    "gain_test_vce": {
+     "field": "dc_gain_test_collector_voltage",
+     "unit": "V"
+    },
+    "ic_max": {
+     "field": "maximum_collector_current",
+     "unit": "A"
+    },
+    "p_rated": {
+     "field": "maximum_power_by_collector_pad",
+     "unit": "W",
+     "value_path": [
+      "standard_footprint"
+     ]
+    },
+    "rth_ja": {
+     "field": "maximum_thermal_resistance_junction_ambient_by_collector_pad",
+     "unit": "K/W",
+     "value_path": [
+      "standard_footprint"
+     ]
+    },
+    "tj_max": {
+     "field": "maximum_junction_temperature",
+     "unit": "C"
+    },
+    "vce_max": {
+     "field": "maximum_collector_emitter_voltage",
+     "unit": "V"
+    },
+    "veb_max": {
+     "field": "maximum_emitter_base_voltage",
+     "unit": "V"
+    }
+   },
+   "model_facts": {
+    "IS": {
+     "field": "spice_IS_fit",
+     "unit": "A"
+    }
+   },
+   "derived_parameters": {
+    "BF": {
+     "basis": "DERIVED",
+     "confidence": "M",
+     "detail": "Class rule for BCP56: geometric mean of the sourced ungraded gain range; one-point approximation.",
+     "expression": "sqrt(gain_min*gain_max)",
+     "source": {
+      "document": "COMPONENT_BEHAVIOR_SPEC.md",
+      "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+      "line": 5943
+     },
+     "unit": "1"
+    }
+   },
+   "quoted_parameters": {},
+   "class_parameters": {},
+   "template_override": "Q{ref} {C} {B} {E} QMOD_{ref}\n.model QMOD_{ref} NPN(IS={IS} BF={BF})\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 5809
+   },
+   "template_provenance_note": "Same ideal-mode BJT template as OHM-095 (BCX56) and OHM-097.",
+   "inline_assets": [],
+   "supported_analyses": [
+    "op"
+   ],
+   "limitations": [
+    "BCP56 ungraded transistor only. The AMS1117-3.3 default and LM1117/LM317 regulators are not modelled or substituted; a regulator in this footprint must not select this binding.",
+    "IS from the BCP56-series 25 C VBE curve (N = 1); DC gain one-point model, no Early effect, charge storage or switching.",
+    "Pins 2 and 4 (tab) share the collector net; standard-footprint 0.65 W / 192 K/W (maxima) apply only to that board condition; IC 1 A and Ptot are simultaneous constraints."
+   ]
+  },
+  "pin_map_evidence": "Nexperia BCP56_SER Rev 11 p2 Table 2 'Pinning': 1 B, 2 C, 3 E, 4 C; simplified outline: pins 1, 2, 3 along the bottom left to right, wide tab 4 on top (top view). Library PKG-SOT223: pin1 (-2.3,-3.05), pin2 (0,-3.05), pin3 (+2.3,-3.05), pin4/tab (0,+3.05), tab same net as pin 2. Identity mapping; field manufacturer_pin_roles already recorded (H). Both C terminals must be on one net (compile_circuit enforces common-role nets).",
+  "runtime_check": {
+   "stimulus": "Existing BJT probe: VCE 2 V on C (pins 2 and 4), base current 0.15/sqrt(63*250) = 1.1952 mA.",
+   "observable": "current_gain",
+   "comparison": "interval [63, 250]; ngspice-42 hand deck: IC = 150.0 mA, gain 125.5.",
+   "derived_from": "sourced BCP56 ungraded hFE fields",
+   "existing_probe_covers_it": true,
+   "new_probe_needed_for_class": "none"
+  },
+  "open_items_after": [
+   "AMS1117-3.3 regulator default: no archived AMS source; bind in the IC stage under BEH-REG-LINEAR (entry would need that class).",
+   "Gain roll-off and VCEsat not modelled."
+  ]
+ },
+ {
+  "entry": "OHM-101",
+  "class": "BEH-TRN-MOSFET",
+  "verdict": "resolvable",
+  "blocker_recorded": "The default regulator has no re-verified source/functional binding; keep that default blocked.",
+  "blocker_resolution": "The regulator default (ST L7805 D2PAK, BEH-REG-LINEAR) stays blocked, and the ST L78 sheet now archived (ccba643d) cannot change that inside this entry because BEH-REG-LINEAR is not in OHM-101's class list. But the entry's only class is BEH-TRN-MOSFET, the spec's OHM-101 table has a 'power MOSFETs in D2PAK, G-D-S' row that was research_required only because no D2PAK MOSFET sheet had been opened, and IRFZ44NS (D2PAK, archived 6fcd0535) now supplies ratings, Rds(on) test condition and lead assignments (p8 'LEAD ASSIGNMENTS HEXFET 1-GATE 2-DRAIN 3-SOURCE', tab drain). Binding IRFZ44NSPbF by name as an explicit MOSFET alternative mirrors OHM-098 and does not touch the regulator default. Model: the authored IRFZ44N_R6 subcircuit (fit to the TO-220 IRFZ44N, same 55 V / 17.5 mOhm / 2-4 V Vth die rating set) is reused as an explicit proxy; the existing MOSFET probe checks it against the IRFZ44NS's own 17.5 mOhm maximum at VGS 10 V, ID 25 A.",
+  "reference_part": "Infineon/IR IRFZ44NSPbF (D2PAK), PD-95124 18-Mar-2004; explicit alternative to the L7805 regulator default",
+  "new_field_updates": [],
+  "recipe": {
+   "entry_id": "OHM-101",
+   "behavior_id": "BEH-TRN-MOSFET",
+   "package": "D2PAK",
+   "reference_part": "IRFZ44NSPbF D2PAK; explicit MOSFET alternative, L7805 regulator default not bound",
+   "terminal_roles": {
+    "1": "G",
+    "3": "S",
+    "tab": "D"
+   },
+   "pin_role_fact": {
+    "field": "manufacturer_pin_roles",
+    "scope_contains": "IRFZ44NSPbF",
+    "tied_features": [
+     "2"
+    ]
+   },
+   "critical_facts": {
+    "id_max": {
+     "field": "maximum_drain_current_case25",
+     "unit": "A",
+     "scope_contains": "IRFZ44NSPbF"
+    },
+    "p_rated": {
+     "field": "maximum_power_case25",
+     "unit": "W",
+     "scope_contains": "IRFZ44NSPbF"
+    },
+    "rds_on_max_10V": {
+     "field": "maximum_on_resistance",
+     "unit": "mohm",
+     "output_unit": "ohm",
+     "scope_contains": "IRFZ44NSPbF"
+    },
+    "rth_ja": {
+     "field": "maximum_thermal_resistance_junction_ambient",
+     "unit": "K/W",
+     "scope_contains": "IRFZ44NSPbF"
+    },
+    "rth_jc": {
+     "field": "maximum_thermal_resistance_junction_case",
+     "unit": "K/W",
+     "scope_contains": "IRFZ44NSPbF"
+    },
+    "tj_max": {
+     "field": "maximum_junction_temperature",
+     "unit": "C",
+     "scope_contains": "IRFZ44NSPbF"
+    },
+    "vds_max": {
+     "field": "maximum_drain_source_voltage",
+     "unit": "V",
+     "scope_contains": "IRFZ44NSPbF"
+    },
+    "vgs_max": {
+     "field": "maximum_gate_source_magnitude",
+     "unit": "V",
+     "scope_contains": "IRFZ44NSPbF"
+    }
+   },
+   "derived_parameters": {},
+   "quoted_parameters": {},
+   "class_parameters": {},
+   "template_override": "X{ref} {D} {G} {S} IRFZ44N_R6 BVDSS={vds_max}\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 6003
+   },
+   "template_provenance_note": "Class MOSFET template (spec line 6003) with BVDSS bound to the sourced IRFZ44NS VDSS, identical in form to OHM-098.",
+   "inline_assets": [
+    {
+     "document": "docs/behavior/bench/trn_mosfet/models_mosfet_r6fit.lib",
+     "document_sha256": "153cb930dde07e088e8e85d7cad3a4d040caf1c853feaad014468234491cce8d",
+     "line": 1
+    }
+   ],
+   "supported_analyses": [
+    "op",
+    "tran"
+   ],
+   "limitations": [
+    "Only IRFZ44NSPbF is bound; the L7805 D2PAK default (regulator), LM317/LM2940 and five-lead D2PAK variants are not substituted.",
+    "IRFZ44N_R6 was fitted to the TO-220 IRFZ44N sheet; it is used as a same-rating proxy and checked only at the IRFZ44NS Rds(on) test point.",
+    "Library D2PAK omits the cropped centre lead (pin 2, drain); the drain is reached through the tab. 94 W case power and 1.5 K/W imply different limits; the lower is enforced. Infineon web page 110 W/1.4 K/W is not adopted. Avalanche: only the 150 mJ thermally limited value is a ceiling; the 530 mJ typical destructive value is not an operating limit."
+   ]
+  },
+  "pin_map_evidence": "IRFZ44NS/LPbF PD-95124 p8 'D2Pak Package Outline' (rendered, viewed): 'LEAD ASSIGNMENTS HEXFET 1.- GATE 2.- DRAIN 3.- SOURCE'; tab is the drain (recorded field manufacturer_pin_roles {1:G, 2:D, 3:S, tab:D}). Library PKG-D2PAK: pin1 (-2.54,-6.4), pin3 (+2.54,-6.4), tab pad (0,+3.3), cropped centre lead omitted by default. pin_role_fact pops the cropped lead '2' as a tied feature (its role D is present on 'tab'), leaving {1:G, 3:S, tab:D} = terminal_roles. The library's terminal label for the tab must be confirmed as 'tab' (if the library numbers it 4, use a manufacturer_to_package_terminal permutation tab->4 with provenance).",
+  "runtime_check": {
+   "stimulus": "Existing MOSFET probe (mosfet_case): VGS 10 V, drain biased at 25 A x 17.5 mOhm parsed from the maximum_on_resistance scope 'VGS10 V,ID25 A'.",
+   "observable": "resistance = V_drain / I_drain",
+   "comparison": "absolute: 0.0175 ohm with the unchanged BEH-TRN-MOSFET/B1 relative tolerance (same as OHM-098, whose identical card passes at the same 17.5 mOhm target).",
+   "derived_from": "sourced field maximum_on_resistance (IRFZ44NSPbF) + BEH-TRN-MOSFET/B1 tolerance",
+   "existing_probe_covers_it": true,
+   "new_probe_needed_for_class": "none"
+  },
+  "open_items_after": [
+   "L7805 D2PAK regulator default remains blocked (BEH-REG-LINEAR not in the entry; ST L78 is archived and could serve an IC-stage binding).",
+   "Board thermal path, SOA, repetitive avalanche remain unmodelled.",
+   "Confirm the library tab terminal label."
+  ]
+ }
+]

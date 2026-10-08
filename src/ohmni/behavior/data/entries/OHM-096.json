@@ -176,6 +176,71 @@
           "6_cm2": 93,
           "standard_footprint": 192
         }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Table 7 'hFE DC current gain BCP56 ... VCE = 2 V; IC = 150 mA [1] 63 - 250'",
+        "field": "dc_gain_minimum_ungraded",
+        "page": 6,
+        "scope": "Nexperia BCP56; ungraded; VCE = 2 V; IC = 150 mA; Tamb 25 C; pulsed",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BCP56_SER.pdf"
+        ],
+        "unit": "1",
+        "value": 63
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "same row, max 250",
+        "field": "dc_gain_maximum_ungraded",
+        "page": 6,
+        "scope": "Nexperia BCP56; ungraded; VCE = 2 V; IC = 150 mA; Tamb 25 C; pulsed",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BCP56_SER.pdf"
+        ],
+        "unit": "1",
+        "value": 250
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'VCE = 2 V; IC = 150 mA'",
+        "field": "dc_gain_test_collector_current",
+        "page": 6,
+        "scope": "Nexperia BCP56; hFE band test condition",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BCP56_SER.pdf"
+        ],
+        "unit": "A",
+        "value": 0.15
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'VCE = 2 V; IC = 150 mA'",
+        "field": "dc_gain_test_collector_voltage",
+        "page": 6,
+        "scope": "Nexperia BCP56; hFE band test condition",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BCP56_SER.pdf"
+        ],
+        "unit": "V",
+        "value": 2.0
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "Vector polyline of Fig. 7 'Base-emitter voltage as a function of collector current; typical values' curve (2) Tamb = 25 °C, calibrated on gridlines (32.0 pt/decade, 0.4 V per 53.335 pt): e.g. 0.105 mA 0.5407 V, 1.25 mA 0.6064 V, 10.1 mA 0.6585 V, 20.2 mA 0.6776 V. Log fit 59.0 mV/decade (N = 0.998, so N = 1 used); IS = IC/exp(VBE/Vt) at 298.15 K gives 6.96e-14..7.82e-14, geometric mean 7.33e-14. Points above ~0.1 A (high injection/RB) excluded. Figure is for the 'BCP56 series', not a single gain group.",
+        "field": "spice_IS_fit",
+        "page": 7,
+        "scope": "Nexperia BCP56 series; Fig. 7 curve (2) Tamb 25 C; VCE 2 V; typical; 0.1-20 mA",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BCP56_SER.pdf"
+        ],
+        "unit": "A",
+        "value": 7.3e-14
       }
     ],
     "remaining_open_items": [
@@ -188,7 +253,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-096.md",
-      "document_sha256": "97708bb142a1d770f9d7b2b32ad87d4690d7da80bbbc1e869c1baf5958440813",
+      "document_sha256": "d6376fe7fbd727f9ac5419f0afc7a0412b14a099458f4d489799bafa96573990",
       "fragment_sha256": null,
       "line": 1
     }

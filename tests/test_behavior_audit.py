@@ -342,11 +342,13 @@ def test_failed_dc_contract_cannot_be_presented_as_passing(audit, monkeypatch):
                 "version_output": "ngspice-42", "problems": [],
                 "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit"}
     monkeypatch.setattr(NgspiceAdapter, "behavior_circuit", fake)
-    receipts = run_dc_probes(audit, ["OHM-056"])
+    # OHM-062 still uses the shared class card, so it keeps the locked analytic comparison
+    # (OHM-056 now has its own datasheet fit and a source-bound check, D048).
+    receipts = run_dc_probes(audit, ["OHM-062"])
     assert receipts[0]["run_status"] == "failed"
-    path = audit.run_dir / "runtime-bench-results/OHM-056-op.json"
+    path = audit.run_dir / "runtime-bench-results/OHM-062-op.json"
     _atomic_json(path, dict(receipts[0], run_status="passed", observed=0.725559))
-    assert any("raw observation" in error for error in dc_probe_receipt_errors(audit, "OHM-056"))
+    assert any("raw observation" in error for error in dc_probe_receipt_errors(audit, "OHM-062"))
 
 
 def test_rechecks_cannot_extend_the_repair_attempt_ceiling():

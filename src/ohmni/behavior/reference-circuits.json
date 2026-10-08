@@ -2,13 +2,11 @@
   "blocked": {
     "OHM-015": "Exact sense-pin variant and busbar thermal/current conditions are unbound; 36 W does not establish a safe free-air current.",
     "OHM-017": "Confirm numbered pin-to-element map before simulating the physical array.",
-    "OHM-018": "Maximum wiper current is unsourced; loaded-wiper simulation must be refused. End/contact resistance bounds do not establish nominal values.",
     "OHM-019": "Maximum wiper current is unsourced; loaded-wiper simulation must be refused. Style-specific voltage and mechanical direction still need explicit binding.",
     "OHM-020": "RV16AF power rating remains rating-critical and unsourced; refuse default simulation.",
     "OHM-021": "The exact default part voltage rating is not re-established by these general application documents.",
     "OHM-022": "The exact default part voltage rating is not re-established by these general application documents.",
     "OHM-023": "The exact default part voltage rating is not re-established by these general application documents.",
-    "OHM-024": "The exact default part voltage rating is not re-established by these general application documents.",
     "OHM-025": "The exact default part voltage rating is not re-established by these general application documents.",
     "OHM-026": "The exact default part voltage rating is not re-established by these general application documents.",
     "OHM-027": "The exact default part voltage rating is not re-established by these general application documents.",
@@ -17,31 +15,19 @@
     "OHM-030": "Rating-critical part voltage and ripple/lifetime limits need an exact series binding.",
     "OHM-031": "Rating-critical part voltage and ripple/lifetime limits need an exact series binding.; Three-pin auxiliary-terminal connectivity unresolved; only the separately mapped two-pin variant may proceed after rating binding.",
     "OHM-032": "Rating-critical part voltage and ripple/lifetime limits need an exact series binding.",
-    "OHM-033": "Runtime must use the scoped MnO2 reverse/temperature limits instead of the generic fixed 3% envelope.",
-    "OHM-034": "Runtime must use the scoped MnO2 reverse/temperature limits instead of the generic fixed 3% envelope.",
-    "OHM-035": "Runtime must use the scoped MnO2 reverse/temperature limits instead of the generic fixed 3% envelope.",
-    "OHM-036": "Runtime must use the scoped MnO2 reverse/temperature limits instead of the generic fixed 3% envelope.",
     "OHM-037": "The generic 10 mm default remains unbound to an exact rated part.",
     "OHM-038": "Unbound mains safety part; no claim of safe mains operation.",
     "OHM-039": "Do not use an unsourced Q/leakage model as a verified RF response.",
     "OHM-040": "Unresolved electrical/reference/geometry binding and condition-specific current limits; stored energy and short-circuit heating are safety relevant.",
-    "OHM-041": "Do not use assumed 30% saturation drop / 40 K rise as sourced thermal or saturation limits.",
     "OHM-042": "Unspecified default variant and incomplete rating conditions remain blocked.",
-    "OHM-043": "Saturation and temperature limits remain unestablished; no silent placeholder promotion.",
-    "OHM-047": "Saturation limit is not established for the ferrite-core default.",
-    "OHM-050": "Default winding permutation cannot be used until explicit package binding is corrected and tested.",
-    "OHM-051": "Mains-rated winding binding and missing saturation/thermal model need explicit handling; insulation test voltage is not a working voltage.",
-    "OHM-052": "Do not claim safe galvanic isolation or a complete response from assumed 1 H / 5 mH / 100 pF.",
     "OHM-053": "No safety or thermal acceptance for this transformer until working-voltage and loss limits are bound.",
     "OHM-054": "Physical/reference and primary-conductor binding conflict; open-secondary operation is hazardous.",
     "OHM-055": "Working-voltage and complete physical pin binding remain unestablished; no isolation-safety acceptance.",
     "OHM-060": "The average-current derating curve must be implemented before claiming a complete thermal envelope.",
     "OHM-066": "Functional variant binding is deferred: the index projects PN, while the sourced default is SS34 Schottky. No MURS PN reference is verified; source function and model must not be silently interchanged.",
     "OHM-070": "The available BAV99 power/thermal rating is explicitly for one diode loaded. Shared-package loading and configuration require a scoped runtime guard; no independent per-die power allocation is assumed.",
-    "OHM-072": "Physical role binding remains unverified for the generic WOM/WOG combined entry.",
     "OHM-075": "Junction-temperature/thermal acceptance cannot use the unsourced 350 K/W placeholder.",
     "OHM-076": "The copied thermal parameters are unsourced for this rectangular lamp.",
-    "OHM-078": "Thermal acceptance lacks sourced junction/thermal parameters; generic color variants lack an exact reference.",
     "OHM-083": "Do not simulate OHM-083 from a generic six-terminal RGB pin map or unsourced per-color ratings.",
     "OHM-084": "Rated supply-current model is blocked until an exact-version current specification is sourced.",
     "OHM-085": "Junction-to-solderpoint data does not establish a board/heatsink-to-ambient path; the85 C fit and revised source require explicit thermal-context handling before rated runtime use.",
@@ -52,11 +38,7 @@
     "OHM-090": "Exact part-to-library terminal map remains unverified.",
     "OHM-091": "Do not simulate the assumed 100 mA/4.1 V backlight as a rated module load.",
     "OHM-092": "Unknown module terminal map and power/logic limits block module electrical simulation.",
-    "OHM-093": "Default onsemi2N3904 source is unavailable. Opened PN2222A data does not validate that model or its generic TO-92 pin assignment.",
-    "OHM-094": "Default MMBT3904/2N3904 fit is not established by the opened BC817 alternative; exact reference/model/pin binding is missing.",
-    "OHM-096": "Default AMS1117-3.3 regulator remains unbound; BCP56 transistor research cannot supply its electrical truth. Regulator binding is deferred to the IC stage.",
     "OHM-100": "Default IRLR8721 compatible model card is unavailable; the IRLB8721 card is a different part and cannot be substituted.",
-    "OHM-101": "The default regulator has no re-verified source/functional binding; keep that default blocked.",
     "OHM-108": "Physical package width mismatch prevents automatic binding.",
     "OHM-109": "Missing critical output-current/power/thermal ratings and no validated interface-only recipe.",
     "OHM-121": "No validated TPS3808 supervisor model; pin/rating data alone does not implement the function.",
@@ -92,32 +74,20 @@
     "OHM-152": "Rating-critical working voltage and full mating/thermal context unresolved.",
     "OHM-153": "Rating-critical working voltage and full mating/thermal context unresolved.",
     "OHM-154": "Rating-critical working voltage and full mating/thermal context unresolved.",
-    "OHM-155": "No executable package/reference binding. No source-backed absolute Rth or all-loaded derating curve;0.8blanketfactor remains assumption.; Mating-cycle endurance and crimp resistance are unestablished;do not use Molex values.; Cable pin1 can be any application net;keying does not standardize battery polarity.; Initial/conditioned resistance ceilings do not establish the spec6/12mohm typical proxies.",
-    "OHM-156": "No executable package/reference binding. No source-backed absolute Rth or all-loaded derating curve;0.8blanketfactor remains assumption.; Mating-cycle endurance and crimp resistance are unestablished;do not use Molex values.; Cable pin1 can be any application net;keying does not standardize battery polarity.; Initial/conditioned resistance ceilings do not establish the spec6/12mohm typical proxies.",
-    "OHM-157": "No executable package/reference binding. No source-backed absolute Rth or all-loaded derating curve;0.8blanketfactor remains assumption.; Mating-cycle endurance and crimp resistance are unestablished;do not use Molex values.; Cable pin1 can be any application net;keying does not standardize battery polarity.; Initial/conditioned resistance ceilings do not establish the spec6/12mohm typical proxies.",
     "OHM-158": "Rating-critical exact-reference voltage,temperature and current conditions unresolved.",
     "OHM-159": "Rating-critical operating-temperature/derating and validated resistance model unresolved.",
     "OHM-160": "Rating-critical operating-temperature/derating and validated resistance model unresolved.",
-    "OHM-161": "Rating-critical mating derating/thermal context and validated contact-path model unresolved.",
     "OHM-162": "Exact source-backed pin-function and physical map plus validated contact model unavailable.",
-    "OHM-163": "Missing validated pin-function/physical-terminal binding; USB protocol is not simulable.",
     "OHM-164": "Rating-critical scope and terminal binding unresolved; no USB protocol simulation.",
     "OHM-165": "Missing exact contact rating and physical map; USB/PD protocols not simulable.",
-    "OHM-166": "Rating unit/scope and pin-function binding not closed; USB protocol not simulable.",
-    "OHM-167": "Unvalidated reference footprint and signal map; HDMI protocol is not simulable.",
     "OHM-168": "Missing Type C map/contact resistance; HDMI protocol is not simulable.",
     "OHM-169": "Missing exact terminal map/contact ratings; no PHY/protocol simulation.",
-    "OHM-170": "Physical/permutation mapping unresolved; do not assign telephony polarity from memory.",
-    "OHM-171": "Missing maximum voltage and default physical binding.",
-    "OHM-172": "Rating-critical limits and physical binding remain unresolved.",
     "OHM-173": "Safety-critical polarity and thermal derating unresolved.",
     "OHM-174": "Safety-critical variant, polarity and thermal scope unresolved.",
     "OHM-175": "Missing rating-critical current/voltage; RF transmission validity requires a sourced launch model.",
     "OHM-176": "Missing current/power rating and validated physical map.",
     "OHM-177": "Rating-critical fields and exact physical binding unresolved.",
-    "OHM-178": "Unvalidated physical/cable pin mapping and load-temperature derating.",
-    "OHM-179": "Exact physical mapping missing; SD protocol not simulable.",
-    "OHM-180": "Default physical binding unresolved; SD protocol not simulable."
+    "OHM-178": "Unvalidated physical/cable pin mapping and load-temperature derating."
   },
   "examples": {
     "OHM-001": {
@@ -1847,6 +1817,602 @@
         }
       }
     },
+    "OHM-018": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "3296W top-adjust THT in-line",
+            "part_id": "OHM-018",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-018",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "iso_w",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "3"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-018",
+      "entry_research_sha256": "8e096249248adb47b57a32b4574186cde9c43faab54c96e6f788f0aae3ae0960",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 0.001
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "b437420023092e8a4859870404affcfbad1c913ce91190b95e5ea92229bf01fa",
+      "package": "3296W top-adjust THT in-line",
+      "reference_part": "Bourns 3296W-1-103LF, 10 kohm, wiper open",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-018"
+        }
+      }
+    },
+    "OHM-024": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "0805 (EIA) / TDK C2012 two-terminal chip",
+            "part_id": "OHM-024",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-024",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-024",
+      "entry_research_sha256": "cf3713d725b0bff5577c11add75bc727ca5a28b8290e5e76c2953f5c4ac73b73",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 7e-07
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "250cf11454e2601771d4411fe7a81b9a79eb5369712401919ded5ce06030619c",
+      "package": "0805 (EIA) / TDK C2012 two-terminal chip",
+      "reference_part": "TDK C2012X5R1V106M085AC (10 uF +/-20%, 35 VDC, X5R, 0805); explicit alternative to the 10 V Murata spec default; NRND",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-024"
+        }
+      }
+    },
+    "OHM-033": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "EIA 3216-18 (KEMET case A) molded tantalum",
+            "part_id": "OHM-033",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-033",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-033",
+      "entry_research_sha256": "db4e8d825d5bb3b171fca3a40819b8c983ed535b0e8ee14eb791b87c13836e12",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 1.6e-06
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "394ed1f88fed849a6f4d1a13d492b933703611b89a3b7ef78fb5939b3cfde2d7",
+      "package": "EIA 3216-18 (KEMET case A) molded tantalum",
+      "reference_part": "KEMET T491A106(1)016A(2), 10%/20% tolerance (1) and termination (2) options unselected; MnO2",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-033"
+        }
+      }
+    },
+    "OHM-034": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "EIA 3528-21 (KEMET case B) molded tantalum",
+            "part_id": "OHM-034",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-034",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-034",
+      "entry_research_sha256": "d338ebf365277e1d2d134c61c5b8dd378455cbfb91ebaafaa66775797bcf670e",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 3.5e-06
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "7f2e1b77be009e3f2ddb5227bf65d650bbbb394d9e98a7ed9446bbaa8fdeec69",
+      "package": "EIA 3528-21 (KEMET case B) molded tantalum",
+      "reference_part": "KEMET T491B226(1)016A(2), 10%/20% tolerance (1) and termination (2) options unselected; MnO2",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-034"
+        }
+      }
+    },
+    "OHM-035": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "EIA 6032-28 (KEMET case C) molded tantalum",
+            "part_id": "OHM-035",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-035",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-035",
+      "entry_research_sha256": "e1bd7b4c74c3506b63bc421dbc2404f1252a39f6341bb5277c1d412def280a8b",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 7.499999999999999e-06
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "31682de2a5d99fcd6e803bdf31988ace3e29e859c786991b930c6bdc3c79eab0",
+      "package": "EIA 6032-28 (KEMET case C) molded tantalum",
+      "reference_part": "KEMET T491C476(1)016A(2), 10%/20% tolerance (1) and termination (2) options unselected; MnO2",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-035"
+        }
+      }
+    },
+    "OHM-036": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "EIA 7343-31 (KEMET case D) molded tantalum",
+            "part_id": "OHM-036",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-036",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-036",
+      "entry_research_sha256": "dbe3b4cb87170a3ed7d5dbf00f9b0c63357866be2aff0126f7a48197285e6655",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 1.6e-05
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "187373fe5c70d8be33034c0ff62b25f9af6e974879d80eed1e849013b442e42b",
+      "package": "EIA 7343-31 (KEMET case D) molded tantalum",
+      "reference_part": "KEMET T491D107(1)016A(2), 10%/20% tolerance (1) and termination (2) options unselected; MnO2",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-036"
+        }
+      }
+    },
+    "OHM-041": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "0603 chip inductor",
+            "part_id": "OHM-041",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-041",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "winding",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-041",
+      "entry_research_sha256": "b8ad949c199916e35dd44c47af9eefb0f272ccc9b45ca051eaa97541e6548eb4",
+      "excitations": [
+        {
+          "negative_net": "winding",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 0.33
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "b1ff9d6f345a2229eee1b0b84dbc6fe1f377dc9fa5a476f26485a242692ff22a",
+      "package": "0603 chip inductor",
+      "reference_part": "Murata LQM18DN6R8M70#, packaging suffix unselected",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-041"
+        }
+      }
+    },
+    "OHM-043": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "1206 chip inductor",
+            "part_id": "OHM-043",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-043",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "winding",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-043",
+      "entry_research_sha256": "1bac40660303362b3d14db7d2d41b92d2dfa8b6b2d54c099f86050e884edd5a6",
+      "excitations": [
+        {
+          "negative_net": "winding",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 0.9
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "30f61b782a967a8c1dd8a63158cc7e17b621bf72f141fbdc1d8702b5f050e440",
+      "package": "1206 chip inductor",
+      "reference_part": "Murata LQM31PN2R2M00",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-043"
+        }
+      }
+    },
     "OHM-044": {
       "analysis": "op",
       "circuit": {
@@ -2066,6 +2632,79 @@
         }
       }
     },
+    "OHM-047": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "Axial inductor 78F",
+            "part_id": "OHM-047",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-047",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "winding",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-047",
+      "entry_research_sha256": "d7ac3e5c9a13d779082ffbc0efb090f2b31b1ddfba00cbb91b49ad79c775017c",
+      "excitations": [
+        {
+          "negative_net": "winding",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 0.575
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "d2e7223c36cd25d54eb45887cc6be0cdd982864db3131e02f3e52d612fa78ff6",
+      "package": "Axial inductor 78F",
+      "reference_part": "Bourns 78F3R3J-RC",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-047"
+        }
+      }
+    },
     "OHM-048": {
       "analysis": "op",
       "circuit": {
@@ -2212,6 +2851,273 @@
         }
       }
     },
+    "OHM-050": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "WE-SL5 SMD 4-terminal",
+            "part_id": "OHM-050",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-050",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              },
+              {
+                "component": "U1",
+                "pin": "3"
+              },
+              {
+                "component": "U1",
+                "pin": "4"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-050",
+      "entry_research_sha256": "68c4c06e976959003c3a5b58f02288c0fafbf694f5d2e1345da2830b5095953b",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 0.83
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "94e8f0d6ef9ea9df36ad0964c1b8660a66b98dd4f96a56a36fde3ea10c83cd79",
+      "package": "WE-SL5 SMD 4-terminal",
+      "reference_part": "Wurth 744272222",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-050"
+        }
+      }
+    },
+    "OHM-051": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "WE-CMB XS THT 4-pin",
+            "part_id": "OHM-051",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-051",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              },
+              {
+                "component": "U1",
+                "pin": "3"
+              },
+              {
+                "component": "U1",
+                "pin": "4"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-051",
+      "entry_research_sha256": "54b74781e2e67f7d42fb6e00fd197e7583c7ea18bead09c91846cf8723888da3",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 1.5
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "b73837c9759bcbc0650b06b704769cbde7ddb8317538bad1298c45d204cc9c24",
+      "package": "WE-CMB XS THT 4-pin",
+      "reference_part": "Wurth 744821240",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-051"
+        }
+      }
+    },
+    "OHM-052": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "Triad TY-145P PC mount 6-pin",
+            "part_id": "OHM-052",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-052",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "iso_p_ct",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "5"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "iso_s_ct",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "3"
+              },
+              {
+                "component": "U1",
+                "pin": "4"
+              },
+              {
+                "component": "U1",
+                "pin": "6"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-052",
+      "entry_research_sha256": "954f3cd758035e7e069fece506c5ff1c5d1cf482bf741f7db8fe54ed5589260e",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 0.015
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "6afc56ebffd7583d1e4d6f3bf260778d6173616f143088f4da3fee6d25b492a0",
+      "package": "Triad TY-145P PC mount 6-pin",
+      "reference_part": "Triad TY-145P; centre taps open",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-052"
+        }
+      }
+    },
     "OHM-056": {
       "analysis": "op",
       "circuit": {
@@ -2275,7 +3181,7 @@
         }
       ],
       "options": {},
-      "original_netlist_sha256": "3a52a8d9d83b285226ae7f8f4045eef994d8084bc6a50bed169b5384b756ada0",
+      "original_netlist_sha256": "d46877deb67e9ee0a039822c130241007c3732ee8c8b08d620c5a3cf7da73d01",
       "package": "DO-35",
       "reference_part": null,
       "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
@@ -2489,12 +3395,12 @@
           "positive_net": "return",
           "value": {
             "unit": "A",
-            "value": 0.01
+            "value": 0.05
           }
         }
       ],
       "options": {},
-      "original_netlist_sha256": "1762c81d4882231abe16f3954fadf47f41cecfb5ef5bb8ed19020e656e1b1670",
+      "original_netlist_sha256": "e544b1a4b66335a11c10d032bd30bb228aabd6ec6b3d4a1779c04f42e4234e36",
       "package": "MiniMELF",
       "reference_part": null,
       "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
@@ -2567,7 +3473,7 @@
         }
       ],
       "options": {},
-      "original_netlist_sha256": "c4d8058eded458044fffa4b7de9a208970363e39f886c99046a197fd0a1622ae",
+      "original_netlist_sha256": "7c3b7f298fc284b0ac8914bc7685bae27b1e569ddb11b5ec944d278b0063cba5",
       "package": "SOD-123",
       "reference_part": null,
       "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
@@ -3204,6 +4110,122 @@
         }
       }
     },
+    "OHM-072": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "WOG",
+            "part_id": "OHM-072",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-072",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "3"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "minus",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "plus",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "4"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 10.0
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 10.0
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 10.0
+                }
+              }
+            },
+            "kind": "power",
+            "name": "supply",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-072",
+      "entry_research_sha256": "e05b6205eff4793a2769dcd6dafa76b5194bc26011d974cfaa1f59272355d22d",
+      "excitations": [
+        {
+          "negative_net": "minus",
+          "positive_net": "plus",
+          "value": {
+            "unit": "A",
+            "value": 1.0
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "9f67f5c7a4a5c215d42f1540caa3e08ae787a93fdfce7ec49139e23804514181",
+      "package": "WOG",
+      "reference_part": "Vishay W10G",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-072"
+        }
+      }
+    },
     "OHM-073": {
       "analysis": "op",
       "circuit": {
@@ -3267,7 +4289,7 @@
         }
       ],
       "options": {},
-      "original_netlist_sha256": "28693ce6e1d04f1dbe83d13eeee78a9423f4cf02684151f50ea9ac480fd155b4",
+      "original_netlist_sha256": "56461dfb1278600bdc3ab55a1688d6ccf9195bb55c7cd7844f0ad12d47d0da86",
       "package": "LED-3mm",
       "reference_part": "Vishay TLDR4400; authored LED_RED approximation",
       "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
@@ -3420,6 +4442,79 @@
       "selections": {
         "U1": {
           "entry_id": "OHM-077"
+        }
+      }
+    },
+    "OHM-078": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "0603 LED",
+            "part_id": "OHM-078",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-078",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-078",
+      "entry_research_sha256": "d13db4f028c20dd7190054b6779fd810e8e6044825a74ca29cc7ac7b057be96d",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 0.02
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "1e42f36b12ad36706d610a56423b05407ceef3c95d47686642116cae166b0002",
+      "package": "0603 LED",
+      "reference_part": "Kingbright APT1608SURCK red",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-078"
         }
       }
     },
@@ -3723,6 +4818,214 @@
         }
       }
     },
+    "OHM-093": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "TO-92",
+            "part_id": "OHM-093",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-093",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "base",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "3"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 1.0
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 1.0
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 1.0
+                }
+              }
+            },
+            "kind": "power",
+            "name": "collector",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-093",
+      "entry_research_sha256": "464dc3b6c51eb874310482fd2404866185c6aa9d91caeda5730610b3ad1418a8",
+      "excitations": [
+        {
+          "negative_net": "base",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 5.773502691896258e-05
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "c58df93a6810664ecd9a3547116edc0659370128543f89e7e202a93715e5decb",
+      "package": "TO-92",
+      "reference_part": "onsemi 2N3904, 2N3903/D Rev 9 (2021)",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-093"
+        }
+      }
+    },
+    "OHM-094": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "SOT-23",
+            "part_id": "OHM-094",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-094",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "base",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "3"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 1.0
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 1.0
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 1.0
+                }
+              }
+            },
+            "kind": "power",
+            "name": "collector",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-094",
+      "entry_research_sha256": "7e4e63081fb3e1f92158aacfa36c739843c31447cde22ee4e41f71cc5dae66a8",
+      "excitations": [
+        {
+          "negative_net": "base",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 0.00040824829046386303
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "bf86de3fd3cea89a2100dac8ed30272cc52c00d2ad109b365b8d860dc881b357",
+      "package": "SOT-23",
+      "reference_part": "Nexperia BC817 (ungraded) Rev 8; explicit alternative to MMBT3904 default",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-094"
+        }
+      }
+    },
     "OHM-095": {
       "analysis": "op",
       "circuit": {
@@ -3824,6 +5127,114 @@
       "selections": {
         "U1": {
           "entry_id": "OHM-095"
+        }
+      }
+    },
+    "OHM-096": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "SOT-223",
+            "part_id": "OHM-096",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-096",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "base",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              },
+              {
+                "component": "U1",
+                "pin": "4"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 2.0
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 2.0
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 2.0
+                }
+              }
+            },
+            "kind": "power",
+            "name": "collector",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "3"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-096",
+      "entry_research_sha256": "d6376fe7fbd727f9ac5419f0afc7a0412b14a099458f4d489799bafa96573990",
+      "excitations": [
+        {
+          "negative_net": "base",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 0.0011952286093343937
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "475fcc00643e097b4383b17b27e28e2522ad20f3e64508a9bcf2066e8e0ce410",
+      "package": "SOT-223",
+      "reference_part": "Nexperia BCP56 (ungraded) Rev 11; explicit alternative, regulator default not bound",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-096"
         }
       }
     },
@@ -4156,6 +5567,120 @@
       "selections": {
         "M1": {
           "entry_id": "OHM-099"
+        }
+      }
+    },
+    "OHM-101": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "D2PAK",
+            "part_id": "OHM-101",
+            "placeholder": false,
+            "ref": "M1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-101",
+        "name": "Sourced on-resistance bias",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "M1",
+                "pin": "tab"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 0.43750000000000006
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 0.43750000000000006
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 0.43750000000000006
+                }
+              }
+            },
+            "kind": "power",
+            "name": "drain",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "M1",
+                "pin": "1"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 10.0
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 10.0
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 10.0
+                }
+              }
+            },
+            "kind": "power",
+            "name": "gate",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "M1",
+                "pin": "3"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "source",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-101",
+      "entry_research_sha256": "311ce021a0b00fbc286e3fa1f018be77697e83f69a201c69d93581ab232dac95",
+      "excitations": [],
+      "options": {},
+      "original_netlist_sha256": "f0fe9db6199db842977e7cc78b61d4d1b12b7eb4e5a70f4e8759b244802c188c",
+      "package": "D2PAK",
+      "reference_part": "IRFZ44NSPbF D2PAK; explicit MOSFET alternative, L7805 regulator default not bound",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "M1": {
+          "entry_id": "OHM-101"
         }
       }
     },
@@ -11998,9 +13523,1369 @@
           "entry_id": "OHM-146"
         }
       }
+    },
+    "OHM-155": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "B2B-PH-K-S mated with PHR-2",
+            "part_id": "OHM-155",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-155",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              },
+              {
+                "component": "U1",
+                "pin": "W1"
+              },
+              {
+                "component": "U1",
+                "pin": "W2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-155",
+      "entry_research_sha256": "c49a03be7553a14c7a9180a45e97bf5d9beb6aa2c602f3b85112ffcebeda01aa",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 2.0
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "9d59e6c7de2bc525b568a684779e17c490a9e3695cc100c266a4c4719d1006be",
+      "package": "B2B-PH-K-S mated with PHR-2",
+      "reference_part": "JST B2B-PH-K-S header + PHR-2 housing, specified crimp contact at AWG #24",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-155"
+        }
+      }
+    },
+    "OHM-156": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "B2B-XH-A mated with XHP-2",
+            "part_id": "OHM-156",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-156",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              },
+              {
+                "component": "U1",
+                "pin": "W1"
+              },
+              {
+                "component": "U1",
+                "pin": "W2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-156",
+      "entry_research_sha256": "dd6466943ef65a0f10f0ab13fef53ffe99d16bfe9e2942dedb8be8d3b96281ed",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 3.0
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "59ebbe576832bbd0bfe2acb8ab41a1ebe717c2fc96907f7b80582fc08442f15b",
+      "package": "B2B-XH-A mated with XHP-2",
+      "reference_part": "JST B2B-XH-A header + XHP-2 housing, specified crimp contact at AWG #22",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-156"
+        }
+      }
+    },
+    "OHM-157": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "SM04B-SRSS-TB mated with SHR-04V-S",
+            "part_id": "OHM-157",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-157",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              },
+              {
+                "component": "U1",
+                "pin": "3"
+              },
+              {
+                "component": "U1",
+                "pin": "4"
+              },
+              {
+                "component": "U1",
+                "pin": "W1"
+              },
+              {
+                "component": "U1",
+                "pin": "W2"
+              },
+              {
+                "component": "U1",
+                "pin": "W3"
+              },
+              {
+                "component": "U1",
+                "pin": "W4"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-157",
+      "entry_research_sha256": "2059fd5cb36d7d274f38fc7b1e75c8a7ec1cee60283b6d77275ee0bd9f2d10bd",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 1.0
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "7027dc8ef0213b26918fafd74de00ef85be180b60d8f093c867646a7222360a5",
+      "package": "SM04B-SRSS-TB mated with SHR-04V-S",
+      "reference_part": "JST SM04B-SRSS-TB header + SHR-04V-S housing, specified crimp contact at AWG #28",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-157"
+        }
+      }
+    },
+    "OHM-161": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "MSTBA 2,5/ 2-G-5,08 (1757242) mated with MSTB 2,5/ 2-ST-5,08 (1757019)",
+            "part_id": "OHM-161",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-161",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              },
+              {
+                "component": "U1",
+                "pin": "W1"
+              },
+              {
+                "component": "U1",
+                "pin": "W2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-161",
+      "entry_research_sha256": "9ed5478484712cb2dc1fed64af50480a26dccfea40a6e23948384885033ea9f2",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 12.0
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "041e1e13afd0265f69e2bc910b1b8c254464249760452d016cdf57dd635f8246",
+      "package": "MSTBA 2,5/ 2-G-5,08 (1757242) mated with MSTB 2,5/ 2-ST-5,08 (1757019)",
+      "reference_part": "Phoenix Contact 1757242 header + 1757019 plug, 2 positions, tin",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-161"
+        }
+      }
+    },
+    "OHM-163": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "USB-B angled THT, 4 contacts (Lumberg 2411 02), mated",
+            "part_id": "OHM-163",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-163",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              },
+              {
+                "component": "U1",
+                "pin": "3"
+              },
+              {
+                "component": "U1",
+                "pin": "4"
+              },
+              {
+                "component": "U1",
+                "pin": "M1"
+              },
+              {
+                "component": "U1",
+                "pin": "M2"
+              },
+              {
+                "component": "U1",
+                "pin": "M3"
+              },
+              {
+                "component": "U1",
+                "pin": "M4"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-163",
+      "entry_research_sha256": "d72db5f394ff9b94328ed930e1a55bcad409e3686ff2a486740d0723d5ad4b5d",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 1.0
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "ad420bb0c702d495b03454c0e41e272f97cad3415f0ff59aaccfdb56e7ab7508",
+      "package": "USB-B angled THT, 4 contacts (Lumberg 2411 02), mated",
+      "reference_part": "Lumberg 2411 02",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-163"
+        }
+      }
+    },
+    "OHM-166": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "Mini-USB B horizontal SMT, 5 contacts (Wurth 65100516121), mated",
+            "part_id": "OHM-166",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-166",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              },
+              {
+                "component": "U1",
+                "pin": "3"
+              },
+              {
+                "component": "U1",
+                "pin": "4"
+              },
+              {
+                "component": "U1",
+                "pin": "5"
+              },
+              {
+                "component": "U1",
+                "pin": "M1"
+              },
+              {
+                "component": "U1",
+                "pin": "M2"
+              },
+              {
+                "component": "U1",
+                "pin": "M3"
+              },
+              {
+                "component": "U1",
+                "pin": "M4"
+              },
+              {
+                "component": "U1",
+                "pin": "M5"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-166",
+      "entry_research_sha256": "3f75b5d4a8b5a2c5e4475de5806f47af4df9850b5fc928f084ef9d631d8c032b",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 1.0
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "13cbb8c9c784f292b40f74a0761f5e5d2713aa29ce2bba06237a2fd5e3a1c170",
+      "package": "Mini-USB B horizontal SMT, 5 contacts (Wurth 65100516121), mated",
+      "reference_part": "Wurth Elektronik 65100516121",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-166"
+        }
+      }
+    },
+    "OHM-167": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "HDMI Type A SMT 19 position (Same Sky HD12-19-SMT-TR), mated",
+            "part_id": "OHM-167",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-167",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "10"
+              },
+              {
+                "component": "U1",
+                "pin": "11"
+              },
+              {
+                "component": "U1",
+                "pin": "12"
+              },
+              {
+                "component": "U1",
+                "pin": "13"
+              },
+              {
+                "component": "U1",
+                "pin": "14"
+              },
+              {
+                "component": "U1",
+                "pin": "15"
+              },
+              {
+                "component": "U1",
+                "pin": "16"
+              },
+              {
+                "component": "U1",
+                "pin": "17"
+              },
+              {
+                "component": "U1",
+                "pin": "18"
+              },
+              {
+                "component": "U1",
+                "pin": "19"
+              },
+              {
+                "component": "U1",
+                "pin": "2"
+              },
+              {
+                "component": "U1",
+                "pin": "3"
+              },
+              {
+                "component": "U1",
+                "pin": "4"
+              },
+              {
+                "component": "U1",
+                "pin": "5"
+              },
+              {
+                "component": "U1",
+                "pin": "6"
+              },
+              {
+                "component": "U1",
+                "pin": "7"
+              },
+              {
+                "component": "U1",
+                "pin": "8"
+              },
+              {
+                "component": "U1",
+                "pin": "9"
+              },
+              {
+                "component": "U1",
+                "pin": "M1"
+              },
+              {
+                "component": "U1",
+                "pin": "M10"
+              },
+              {
+                "component": "U1",
+                "pin": "M11"
+              },
+              {
+                "component": "U1",
+                "pin": "M12"
+              },
+              {
+                "component": "U1",
+                "pin": "M13"
+              },
+              {
+                "component": "U1",
+                "pin": "M14"
+              },
+              {
+                "component": "U1",
+                "pin": "M15"
+              },
+              {
+                "component": "U1",
+                "pin": "M16"
+              },
+              {
+                "component": "U1",
+                "pin": "M17"
+              },
+              {
+                "component": "U1",
+                "pin": "M18"
+              },
+              {
+                "component": "U1",
+                "pin": "M19"
+              },
+              {
+                "component": "U1",
+                "pin": "M2"
+              },
+              {
+                "component": "U1",
+                "pin": "M3"
+              },
+              {
+                "component": "U1",
+                "pin": "M4"
+              },
+              {
+                "component": "U1",
+                "pin": "M5"
+              },
+              {
+                "component": "U1",
+                "pin": "M6"
+              },
+              {
+                "component": "U1",
+                "pin": "M7"
+              },
+              {
+                "component": "U1",
+                "pin": "M8"
+              },
+              {
+                "component": "U1",
+                "pin": "M9"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-167",
+      "entry_research_sha256": "d001089b2d44ee126c103f2c8fdd0dae2884ecb6fa12f4ed670453e76e1fa3dc",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 0.5
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "b51c70b997ecd0210085cb9f506905ea5ef623955284ed4848dd410f2b25376a",
+      "package": "HDMI Type A SMT 19 position (Same Sky HD12-19-SMT-TR), mated",
+      "reference_part": "Same Sky HD12-19-SMT-TR (explicit alternate)",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-167"
+        }
+      }
+    },
+    "OHM-170": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "RJ11 6P4C right-angle THT (Adam Tech MTJ-645X1), mated",
+            "part_id": "OHM-170",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-170",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              },
+              {
+                "component": "U1",
+                "pin": "3"
+              },
+              {
+                "component": "U1",
+                "pin": "4"
+              },
+              {
+                "component": "U1",
+                "pin": "M1"
+              },
+              {
+                "component": "U1",
+                "pin": "M2"
+              },
+              {
+                "component": "U1",
+                "pin": "M3"
+              },
+              {
+                "component": "U1",
+                "pin": "M4"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-170",
+      "entry_research_sha256": "6ca14b571cf15fe98b47b9bce3a3e2fa6f9297805ebb8a552063f25b598b1881",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 1.5
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "0dda0f15e148565022e385f3aa844d953f93b6127a03457dc4b05f7c12bf76dd",
+      "package": "RJ11 6P4C right-angle THT (Adam Tech MTJ-645X1), mated",
+      "reference_part": "Adam Tech MTJ-645X1 Rev D",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-170"
+        }
+      }
+    },
+    "OHM-171": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "3.5 mm audio jack, 5 pin THT (Same Sky SJ1-3535NG), plug inserted",
+            "part_id": "OHM-171",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-171",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "5"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "iso_ring_sw",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "4"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "iso_tip_sw",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              },
+              {
+                "component": "U1",
+                "pin": "3"
+              },
+              {
+                "component": "U1",
+                "pin": "M_RING"
+              },
+              {
+                "component": "U1",
+                "pin": "M_SLEEVE"
+              },
+              {
+                "component": "U1",
+                "pin": "M_TIP"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-171",
+      "entry_research_sha256": "3c8f129fafbcc083e1139e9fda1ace7578c76e71775b368eb91121dd4f0b5bf8",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 1.0
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "ab949099814823b5f42855d5cf1cc1e18f88b811134652715adbd1d86271dddb",
+      "package": "3.5 mm audio jack, 5 pin THT (Same Sky SJ1-3535NG), plug inserted",
+      "reference_part": "Same Sky SJ1-3535NG (explicit alternate)",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-171"
+        }
+      }
+    },
+    "OHM-172": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "DC barrel jack 2.0 mm, 3 pin THT right angle (Same Sky PJ-102A), plug inserted",
+            "part_id": "OHM-172",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-172",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "3"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "iso_sleeve_sw",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              },
+              {
+                "component": "U1",
+                "pin": "M_SLEEVE"
+              },
+              {
+                "component": "U1",
+                "pin": "M_TIP"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-172",
+      "entry_research_sha256": "dafd8bd31cbc23be419166631866faec476fcd28120e8a898956d9d8e425deef",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 2.5
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "1dec70733deca8c70625a14434ef297e8da0ecacec725eaa5952d9049ae94622",
+      "package": "DC barrel jack 2.0 mm, 3 pin THT right angle (Same Sky PJ-102A), plug inserted",
+      "reference_part": "Same Sky PJ-102A",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-172"
+        }
+      }
+    },
+    "OHM-179": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "SD card socket push-pull 11 pad (Wurth 693063010911), card inserted",
+            "part_id": "OHM-179",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-179",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "10"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "iso_cd",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "11"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "iso_wp",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              },
+              {
+                "component": "U1",
+                "pin": "3"
+              },
+              {
+                "component": "U1",
+                "pin": "4"
+              },
+              {
+                "component": "U1",
+                "pin": "5"
+              },
+              {
+                "component": "U1",
+                "pin": "6"
+              },
+              {
+                "component": "U1",
+                "pin": "7"
+              },
+              {
+                "component": "U1",
+                "pin": "8"
+              },
+              {
+                "component": "U1",
+                "pin": "9"
+              },
+              {
+                "component": "U1",
+                "pin": "C1"
+              },
+              {
+                "component": "U1",
+                "pin": "C2"
+              },
+              {
+                "component": "U1",
+                "pin": "C3"
+              },
+              {
+                "component": "U1",
+                "pin": "C4"
+              },
+              {
+                "component": "U1",
+                "pin": "C5"
+              },
+              {
+                "component": "U1",
+                "pin": "C6"
+              },
+              {
+                "component": "U1",
+                "pin": "C7"
+              },
+              {
+                "component": "U1",
+                "pin": "C8"
+              },
+              {
+                "component": "U1",
+                "pin": "C9"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-179",
+      "entry_research_sha256": "1c703a8aa659c9bd23a76eb8b10a6c358a8f955514a11d333c80b2cb9044715b",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 0.5
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "da000db4c2c5c6b34af31db474e3478411b8b23b1a3228a42359fc7df9d3bd65",
+      "package": "SD card socket push-pull 11 pad (Wurth 693063010911), card inserted",
+      "reference_part": "Wurth Elektronik 693063010911 (explicit alternate)",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-179"
+        }
+      }
+    },
+    "OHM-180": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "microSD socket push-push 8 contacts + CD switch A/B (Hirose DM3AT-SF-PEJM5), card inserted",
+            "part_id": "OHM-180",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-180",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              },
+              {
+                "component": "U1",
+                "pin": "3"
+              },
+              {
+                "component": "U1",
+                "pin": "4"
+              },
+              {
+                "component": "U1",
+                "pin": "5"
+              },
+              {
+                "component": "U1",
+                "pin": "6"
+              },
+              {
+                "component": "U1",
+                "pin": "7"
+              },
+              {
+                "component": "U1",
+                "pin": "8"
+              },
+              {
+                "component": "U1",
+                "pin": "A"
+              },
+              {
+                "component": "U1",
+                "pin": "B"
+              },
+              {
+                "component": "U1",
+                "pin": "C1"
+              },
+              {
+                "component": "U1",
+                "pin": "C2"
+              },
+              {
+                "component": "U1",
+                "pin": "C3"
+              },
+              {
+                "component": "U1",
+                "pin": "C4"
+              },
+              {
+                "component": "U1",
+                "pin": "C5"
+              },
+              {
+                "component": "U1",
+                "pin": "C6"
+              },
+              {
+                "component": "U1",
+                "pin": "C7"
+              },
+              {
+                "component": "U1",
+                "pin": "C8"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-180",
+      "entry_research_sha256": "4d68d7b38877c2109d84da6966ffaaa5b4bb7cfa469db023b66ea55b48bcad1b",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 0.5
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "c8ee78b76e2faa714bfb4d10f59b10cc6f70e0ed5322e9e0a5b7dafc0cf7095c",
+      "package": "microSD socket push-push 8 contacts + CD switch A/B (Hirose DM3AT-SF-PEJM5), card inserted",
+      "reference_part": "Hirose DM3AT-SF-PEJM5 (explicit alternate)",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-180"
+        }
+      }
     }
   },
   "generator_sha256": "4f18977cd877b7df60a597676f8ea390bd667d036e0e6c3a65fabfc37d1c5c39",
-  "recipe_sha256": "abe30a4472b83e657bec24442a1ce7f38bd31c2caca34da22177ea5a0c68146b",
+  "recipe_sha256": "d2f764c604570e45f33ccc922326278ec6998dfc4a4631ae723f5ce6ff92d4ab",
   "schema_version": 1
 }

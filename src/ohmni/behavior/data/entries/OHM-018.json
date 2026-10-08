@@ -113,6 +113,49 @@
         ],
         "unit": null,
         "value": 3
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Standard Resistance Table: '10,000' ohms = code '103'; How To Order example '3296 W - 1 - 103 __ LF'.",
+        "field": "nominal_resistance",
+        "page": 1,
+        "scope": "Bourns 3296W-1-103LF; resistance code 103",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/3296.pdf"
+        ],
+        "unit": "ohm",
+        "value": 10000
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Resistance Tolerance ... ±10 % std. (tighter tolerance available)'",
+        "field": "resistance_tolerance_pct",
+        "page": 1,
+        "scope": "Bourns 3296; standard tolerance",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/3296.pdf"
+        ],
+        "unit": "%",
+        "value": 10
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Schematic 'CCW 1 — 2 WIPER — 3 CW'; 3296W outline shows pins 1, 2, 3 in line at 2.54 mm. A/B are the class names for the two track ends (1 = CCW end, 3 = CW end); with the wiper unmodelled the A/B labels are electrically interchangeable.",
+        "field": "manufacturer_pin_roles",
+        "page": 1,
+        "scope": "Bourns 3296W",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/3296.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "1": "A",
+          "2": "W",
+          "3": "B"
+        }
       }
     ],
     "remaining_open_items": [
@@ -125,7 +168,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-018.md",
-      "document_sha256": "08da814e79536d2a3b7b85389e85c00b9eef25d2307edd70ee7307cc2b010236",
+      "document_sha256": "8e096249248adb47b57a32b4574186cde9c43faab54c96e6f788f0aae3ae0960",
       "fragment_sha256": null,
       "line": 1
     }

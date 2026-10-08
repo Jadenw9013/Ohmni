@@ -155,16 +155,18 @@
     ],
     "remaining_open_items": [
       "Default Molex physical pin/CD/WP map and contact ratings remain unverified; alternative does not change footprint.",
-      "SD card protocol and memory operation remain outside ngspice."
+      "SD card protocol and memory operation remain outside ngspice.",
+      "Former simulation blocker resolved for the explicitly bound reference (2026-10-08): Exact physical mapping missing; SD protocol not simulable. Resolution: Resolvable only as an explicit alternate (Wurth 693063010911 push-pull), not the default Molex 676008001 push-push. The archived current WE datasheet (rev 003.002) has a Pin Assignment table (1 DAT3, 2 CMD, 3 Vss1, 4 Vdd, 5 CLK, 6 Vss2, 7 DAT0, 8 DAT1, 9 DAT2, 10 CD, 11 WP) and a land pattern labelled 1..11, plus Rated Current 0.5 A, Working Voltage 100 V(AC), Contact Resistance 100 mOhm max. Card-detect and write-protect are single pads whose switch partner the current sheet does not name, so they are left isolated. SD protocol is out of scope; 100 VAC is an insulation working voltage, not a card VDD.",
+      "Default Molex 676008001 binding",
+      "CD/WP switch partner and closed resistance",
+      "SD protocol not simulable"
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Exact physical mapping missing; SD protocol not simulable."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-179.md",
-      "document_sha256": "e9f4c5a58c3762b07d3f674c5f28bed478f441ca7dc7ccd9a20ef60a93ab5dfb",
+      "document_sha256": "1c703a8aa659c9bd23a76eb8b10a6c358a8f955514a11d333c80b2cb9044715b",
       "fragment_sha256": null,
       "line": 1
     }

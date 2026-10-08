@@ -631,6 +631,573 @@
         "8": "P8"
       }
     },
+    "OHM-018": {
+      "entry_id": "OHM-018",
+      "behavior_id": "BEH-RES-POT",
+      "package": "3296W top-adjust THT in-line",
+      "reference_part": "Bourns 3296W-1-103LF, 10 kohm, wiper open",
+      "terminal_roles": {
+        "1": "A",
+        "2": "W",
+        "3": "B"
+      },
+      "pin_role_fact": {
+        "field": "manufacturer_pin_roles",
+        "scope_contains": "3296W"
+      },
+      "required_isolated_roles": [
+        "W"
+      ],
+      "critical_facts": {
+        "value": {
+          "field": "nominal_resistance",
+          "unit": "ohm"
+        },
+        "tol": {
+          "field": "resistance_tolerance_pct",
+          "unit": "%"
+        },
+        "p_rated": {
+          "field": "p_rated",
+          "unit": "W"
+        },
+        "v_max": {
+          "field": "v_max",
+          "unit": "V"
+        },
+        "t_knee": {
+          "field": "derating_knee",
+          "unit": "degC"
+        },
+        "t_end": {
+          "field": "t_end",
+          "unit": "degC"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref} {A} {B} {value}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 1054
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "End-to-end track resistance only. The wiper (pin 2) must stay unconnected: no maximum wiper current is published, so any loaded, driven or grounded wiper is refused rather than simulated.",
+        "No wiper position, wiper resistance, end resistance or contact-resistance variation is modelled; the datasheet gives only worst-case bounds for these.",
+        "0.5 W at 70 C derating to 0 W at 125 C and the 300 V maximum are enforced as source ratings; no self-heating, TCR or wear model."
+      ]
+    },
+    "OHM-024": {
+      "entry_id": "OHM-024",
+      "behavior_id": "BEH-CAP-CERAMIC",
+      "package": "0805 (EIA) / TDK C2012 two-terminal chip",
+      "reference_part": "TDK C2012X5R1V106M085AC (10 uF +/-20%, 35 VDC, X5R, 0805); explicit alternative to the 10 V Murata spec default; NRND",
+      "terminal_roles": {
+        "1": "T1",
+        "2": "T2"
+      },
+      "critical_facts": {
+        "value": {
+          "field": "nominal_capacitance",
+          "unit": "uF",
+          "output_unit": "F"
+        },
+        "vr": {
+          "field": "rated_voltage",
+          "unit": "V"
+        },
+        "rleak": {
+          "field": "minimum_insulation_resistance",
+          "unit": "ohm"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "C{ref} {T1} {T2} {value}\nR{ref}_lk {T1} {T2} {rleak}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 1199
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Explicit TDK 35 V alternative, not the Murata GRM21BR61A106KE19 10 V spec default; part is NRND and TDK says the alternate is not guaranteed interchangeable.",
+        "Nominal 10 uF with no DC-bias derating: an X5R 0805 loses a large, unsourced fraction of capacitance under bias, so the model overstates capacitance at any non-zero DC bias.",
+        "Leak resistor equals the 50 Mohm insulation-resistance minimum (worst case); IR test voltage/time are not stated on the source page.",
+        "No ESR, ESL, SRF, aging, temperature drift or flex-crack behaviour; DF 10% max is an upper bound, not a fitted ESR.",
+        "Rated 35 VDC is a rating check outside the netlist; no overvoltage flag is emitted.",
+        "Model scope: Linear subset of ohm_mlcc (spec lines 1195-1201): Cb with V0 -> infinity and Rlk; Lesl/Resr omitted because ESR/ESL are ASSUMPTION for this part, and the atan bias law is omitted because V0 is unsourced."
+      ]
+    },
+    "OHM-033": {
+      "entry_id": "OHM-033",
+      "behavior_id": "BEH-CAP-TANT",
+      "package": "EIA 3216-18 (KEMET case A) molded tantalum",
+      "reference_part": "KEMET T491A106(1)016A(2), 10%/20% tolerance (1) and termination (2) options unselected; MnO2",
+      "terminal_roles": {
+        "1": "A",
+        "2": "K"
+      },
+      "critical_facts": {
+        "value": {
+          "field": "nominal_capacitance",
+          "unit": "uF",
+          "output_unit": "F"
+        },
+        "vr": {
+          "field": "rated_voltage",
+          "unit": "V"
+        },
+        "ileak": {
+          "field": "maximum_leakage_current",
+          "unit": "uA",
+          "output_unit": "A"
+        },
+        "esr_max": {
+          "field": "maximum_esr",
+          "unit": "ohm"
+        },
+        "irip_max": {
+          "field": "maximum_ripple_current",
+          "unit": "mA",
+          "output_unit": "A"
+        },
+        "pd_max": {
+          "field": "maximum_power_dissipation",
+          "unit": "mW",
+          "output_unit": "W"
+        },
+        "vapp_85": {
+          "field": "recommended_application_voltage_at_or_below_85C",
+          "unit": "V"
+        },
+        "vrev_25": {
+          "field": "transient_reverse_voltage_limit_at_25C",
+          "unit": "V"
+        },
+        "vrev_85": {
+          "field": "transient_reverse_voltage_limit_at_85C",
+          "unit": "V"
+        },
+        "vrev_125": {
+          "field": "transient_reverse_voltage_limit_at_125C",
+          "unit": "V"
+        }
+      },
+      "derived_parameters": {
+        "rleak": {
+          "expression": "vr/ileak",
+          "unit": "ohm",
+          "basis": "DERIVED",
+          "confidence": "M",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "line": 1621
+          },
+          "detail": "Leak resistor reproducing the sourced maximum DCL at its sourced test voltage (rated voltage, 25 C, 5 min); same mapping as the class RLK rule but using the part's 0.01CV limit instead of the T543 0.1 factor."
+        }
+      },
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "C{ref} {A} {K} {value}\nR{ref}_lk {A} {K} {rleak}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 1615
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "Order-code tolerance and termination options are unselected; electrical row values are identical across those options in the T491 table.",
+        "DC leakage at the sourced maximum (worst case); no ESR, ESL, impedance, capacitance-vs-temperature or ignition dynamics.",
+        "Reverse voltage is only ever transient: 2.4/0.8/0.16 V at 25/85/125 C; continuous reverse is not permitted. The class fixed 3% envelope is not used.",
+        "Recommended application voltage 8 V at <= 85 C, derating to 33% of VR at 125 C; ripple and power limits are rating facts, not netlist behaviour.",
+        "Stripe marks the ANODE (opposite of aluminium/supercap convention); footprint polarity must be checked.",
+        "Model scope: Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr/Lesl dropped: 100 kHz ESR is a maximum, not a fitted nominal, and ESL is unsourced."
+      ]
+    },
+    "OHM-034": {
+      "entry_id": "OHM-034",
+      "behavior_id": "BEH-CAP-TANT",
+      "package": "EIA 3528-21 (KEMET case B) molded tantalum",
+      "reference_part": "KEMET T491B226(1)016A(2), 10%/20% tolerance (1) and termination (2) options unselected; MnO2",
+      "terminal_roles": {
+        "1": "A",
+        "2": "K"
+      },
+      "critical_facts": {
+        "value": {
+          "field": "nominal_capacitance",
+          "unit": "uF",
+          "output_unit": "F"
+        },
+        "vr": {
+          "field": "rated_voltage",
+          "unit": "V"
+        },
+        "ileak": {
+          "field": "maximum_leakage_current",
+          "unit": "uA",
+          "output_unit": "A"
+        },
+        "esr_max": {
+          "field": "maximum_esr",
+          "unit": "ohm"
+        },
+        "irip_max": {
+          "field": "maximum_ripple_current",
+          "unit": "mA",
+          "output_unit": "A"
+        },
+        "pd_max": {
+          "field": "maximum_power_dissipation",
+          "unit": "mW",
+          "output_unit": "W"
+        },
+        "vapp_85": {
+          "field": "recommended_application_voltage_at_or_below_85C",
+          "unit": "V"
+        },
+        "vrev_25": {
+          "field": "transient_reverse_voltage_limit_at_25C",
+          "unit": "V"
+        },
+        "vrev_85": {
+          "field": "transient_reverse_voltage_limit_at_85C",
+          "unit": "V"
+        },
+        "vrev_125": {
+          "field": "transient_reverse_voltage_limit_at_125C",
+          "unit": "V"
+        }
+      },
+      "derived_parameters": {
+        "rleak": {
+          "expression": "vr/ileak",
+          "unit": "ohm",
+          "basis": "DERIVED",
+          "confidence": "M",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "line": 1621
+          },
+          "detail": "Leak resistor reproducing the sourced maximum DCL at its sourced test voltage (rated voltage, 25 C, 5 min); same mapping as the class RLK rule but using the part's 0.01CV limit instead of the T543 0.1 factor."
+        }
+      },
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "C{ref} {A} {K} {value}\nR{ref}_lk {A} {K} {rleak}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 1615
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "Order-code tolerance and termination options are unselected; electrical row values are identical across those options in the T491 table.",
+        "DC leakage at the sourced maximum (worst case); no ESR, ESL, impedance, capacitance-vs-temperature or ignition dynamics.",
+        "Reverse voltage is only ever transient: 2.4/0.8/0.16 V at 25/85/125 C; continuous reverse is not permitted. The class fixed 3% envelope is not used.",
+        "Recommended application voltage 8 V at <= 85 C, derating to 33% of VR at 125 C; ripple and power limits are rating facts, not netlist behaviour.",
+        "Stripe marks the ANODE (opposite of aluminium/supercap convention); footprint polarity must be checked.",
+        "Model scope: Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr/Lesl dropped: 100 kHz ESR is a maximum, not a fitted nominal, and ESL is unsourced."
+      ]
+    },
+    "OHM-035": {
+      "entry_id": "OHM-035",
+      "behavior_id": "BEH-CAP-TANT",
+      "package": "EIA 6032-28 (KEMET case C) molded tantalum",
+      "reference_part": "KEMET T491C476(1)016A(2), 10%/20% tolerance (1) and termination (2) options unselected; MnO2",
+      "terminal_roles": {
+        "1": "A",
+        "2": "K"
+      },
+      "critical_facts": {
+        "value": {
+          "field": "nominal_capacitance",
+          "unit": "uF",
+          "output_unit": "F"
+        },
+        "vr": {
+          "field": "rated_voltage",
+          "unit": "V"
+        },
+        "ileak": {
+          "field": "maximum_leakage_current",
+          "unit": "uA",
+          "output_unit": "A"
+        },
+        "esr_max": {
+          "field": "maximum_esr",
+          "unit": "ohm"
+        },
+        "irip_max": {
+          "field": "maximum_ripple_current",
+          "unit": "mA",
+          "output_unit": "A"
+        },
+        "pd_max": {
+          "field": "maximum_power_dissipation",
+          "unit": "mW",
+          "output_unit": "W"
+        },
+        "vapp_85": {
+          "field": "recommended_application_voltage_at_or_below_85C",
+          "unit": "V"
+        },
+        "vrev_25": {
+          "field": "transient_reverse_voltage_limit_at_25C",
+          "unit": "V"
+        },
+        "vrev_85": {
+          "field": "transient_reverse_voltage_limit_at_85C",
+          "unit": "V"
+        },
+        "vrev_125": {
+          "field": "transient_reverse_voltage_limit_at_125C",
+          "unit": "V"
+        }
+      },
+      "derived_parameters": {
+        "rleak": {
+          "expression": "vr/ileak",
+          "unit": "ohm",
+          "basis": "DERIVED",
+          "confidence": "M",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "line": 1621
+          },
+          "detail": "Leak resistor reproducing the sourced maximum DCL at its sourced test voltage (rated voltage, 25 C, 5 min); same mapping as the class RLK rule but using the part's 0.01CV limit instead of the T543 0.1 factor."
+        }
+      },
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "C{ref} {A} {K} {value}\nR{ref}_lk {A} {K} {rleak}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 1615
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "Order-code tolerance and termination options are unselected; electrical row values are identical across those options in the T491 table.",
+        "DC leakage at the sourced maximum (worst case); no ESR, ESL, impedance, capacitance-vs-temperature or ignition dynamics.",
+        "Reverse voltage is only ever transient: 2.4/0.8/0.16 V at 25/85/125 C; continuous reverse is not permitted. The class fixed 3% envelope is not used.",
+        "Recommended application voltage 8 V at <= 85 C, derating to 33% of VR at 125 C; ripple and power limits are rating facts, not netlist behaviour.",
+        "Stripe marks the ANODE (opposite of aluminium/supercap convention); footprint polarity must be checked.",
+        "Model scope: Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr/Lesl dropped: 100 kHz ESR is a maximum, not a fitted nominal, and ESL is unsourced."
+      ]
+    },
+    "OHM-036": {
+      "entry_id": "OHM-036",
+      "behavior_id": "BEH-CAP-TANT",
+      "package": "EIA 7343-31 (KEMET case D) molded tantalum",
+      "reference_part": "KEMET T491D107(1)016A(2), 10%/20% tolerance (1) and termination (2) options unselected; MnO2",
+      "terminal_roles": {
+        "1": "A",
+        "2": "K"
+      },
+      "critical_facts": {
+        "value": {
+          "field": "nominal_capacitance",
+          "unit": "uF",
+          "output_unit": "F"
+        },
+        "vr": {
+          "field": "rated_voltage",
+          "unit": "V"
+        },
+        "ileak": {
+          "field": "maximum_leakage_current",
+          "unit": "uA",
+          "output_unit": "A"
+        },
+        "esr_max": {
+          "field": "maximum_esr",
+          "unit": "ohm"
+        },
+        "irip_max": {
+          "field": "maximum_ripple_current",
+          "unit": "mA",
+          "output_unit": "A"
+        },
+        "pd_max": {
+          "field": "maximum_power_dissipation",
+          "unit": "mW",
+          "output_unit": "W"
+        },
+        "vapp_85": {
+          "field": "recommended_application_voltage_at_or_below_85C",
+          "unit": "V"
+        },
+        "vrev_25": {
+          "field": "transient_reverse_voltage_limit_at_25C",
+          "unit": "V"
+        },
+        "vrev_85": {
+          "field": "transient_reverse_voltage_limit_at_85C",
+          "unit": "V"
+        },
+        "vrev_125": {
+          "field": "transient_reverse_voltage_limit_at_125C",
+          "unit": "V"
+        }
+      },
+      "derived_parameters": {
+        "rleak": {
+          "expression": "vr/ileak",
+          "unit": "ohm",
+          "basis": "DERIVED",
+          "confidence": "M",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "line": 1621
+          },
+          "detail": "Leak resistor reproducing the sourced maximum DCL at its sourced test voltage (rated voltage, 25 C, 5 min); same mapping as the class RLK rule but using the part's 0.01CV limit instead of the T543 0.1 factor."
+        }
+      },
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "C{ref} {A} {K} {value}\nR{ref}_lk {A} {K} {rleak}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 1615
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "Order-code tolerance and termination options are unselected; electrical row values are identical across those options in the T491 table.",
+        "DC leakage at the sourced maximum (worst case); no ESR, ESL, impedance, capacitance-vs-temperature or ignition dynamics.",
+        "Reverse voltage is only ever transient: 2.4/0.8/0.16 V at 25/85/125 C; continuous reverse is not permitted. The class fixed 3% envelope is not used.",
+        "Recommended application voltage 8 V at <= 85 C, derating to 33% of VR at 125 C; ripple and power limits are rating facts, not netlist behaviour.",
+        "Stripe marks the ANODE (opposite of aluminium/supercap convention); footprint polarity must be checked.",
+        "Model scope: Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr/Lesl dropped: 100 kHz ESR is a maximum, not a fitted nominal, and ESL is unsourced."
+      ]
+    },
+    "OHM-041": {
+      "entry_id": "OHM-041",
+      "behavior_id": "BEH-MAG-INDUCTOR",
+      "package": "0603 chip inductor",
+      "reference_part": "Murata LQM18DN6R8M70#, packaging suffix unselected",
+      "terminal_roles": {
+        "1": "A",
+        "2": "B"
+      },
+      "critical_facts": {
+        "value": {
+          "field": "nominal_inductance",
+          "unit": "uH",
+          "output_unit": "H"
+        },
+        "rdc": {
+          "field": "typical_dcr",
+          "unit": "ohm"
+        },
+        "rdc_max": {
+          "field": "maximum_dcr",
+          "unit": "ohm"
+        },
+        "irms": {
+          "field": "rated_current_temperature_rise",
+          "unit": "A"
+        },
+        "tmax_part": {
+          "field": "maximum_operating_temperature",
+          "unit": "C"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref} {A} {B} {rdc}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 3410
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "DC winding-resistance model only (R = 0.96 ohm maximum). No inductance, saturation, SRF or loss behaviour is simulated.",
+        "The 330 mA 'Itemp (based on temperature rise)' rating is used only as the probe current; its rise is not stated, so no thermal limit or safe sustained current is claimed. The 120 mA 'Isat (based on inductance change)' rating has no stated drop and is not used.",
+        "Binding valid only after the Murata-hosted sheet is archived; the Farnell-hosted copy is secondary."
+      ]
+    },
+    "OHM-043": {
+      "entry_id": "OHM-043",
+      "behavior_id": "BEH-MAG-INDUCTOR",
+      "package": "1206 chip inductor",
+      "reference_part": "Murata LQM31PN2R2M00",
+      "terminal_roles": {
+        "1": "A",
+        "2": "B"
+      },
+      "critical_facts": {
+        "value": {
+          "field": "nominal_inductance",
+          "unit": "uH",
+          "output_unit": "H"
+        },
+        "rdc": {
+          "field": "maximum_dcr",
+          "unit": "ohm"
+        },
+        "rdc_max": {
+          "field": "maximum_dcr",
+          "unit": "ohm"
+        },
+        "irms": {
+          "field": "rated_current_temperature_rise",
+          "unit": "A"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref} {A} {B} {rdc}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 3424
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "DC winding-resistance model only (R = 0.238 ohm maximum). No inductance, saturation, SRF or loss behaviour is simulated.",
+        "The 900 mA rating 'based on temp. rise' is used only as the probe current; the rise and the operating-temperature range are not given in the source, so no thermal limit or safe sustained current is claimed.",
+        "The inductance-change current cell is blank in the source and no saturation limit exists in this binding."
+      ]
+    },
     "OHM-044": {
       "behavior_id": "BEH-MAG-INDUCTOR",
       "critical_facts": {
@@ -859,6 +1426,57 @@
         }
       }
     },
+    "OHM-047": {
+      "entry_id": "OHM-047",
+      "behavior_id": "BEH-MAG-INDUCTOR",
+      "package": "Axial inductor 78F",
+      "reference_part": "Bourns 78F3R3J-RC",
+      "terminal_roles": {
+        "1": "A",
+        "2": "B"
+      },
+      "critical_facts": {
+        "value": {
+          "field": "nominal_inductance",
+          "unit": "uH",
+          "output_unit": "H"
+        },
+        "rdc": {
+          "field": "maximum_dcr",
+          "unit": "ohm"
+        },
+        "rdc_max": {
+          "field": "maximum_dcr",
+          "unit": "ohm"
+        },
+        "irms": {
+          "field": "rated_current",
+          "unit": "A"
+        },
+        "tmax_part": {
+          "field": "maximum_part_temperature",
+          "unit": "C"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref} {A} {B} {rdc}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 3456
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "DC winding-resistance model only (R = 0.30 ohm maximum). No inductance, saturation, Q, SRF or loss behaviour is simulated.",
+        "575 mA is the source IDC maximum for a 35 C rise; it is the probe current, not a saturation rating, and no inductance-versus-current behaviour is claimed.",
+        "105 C maximum includes self-heating; ambient derating is not modelled."
+      ]
+    },
     "OHM-048": {
       "behavior_id": "BEH-MAG-INDUCTOR",
       "class_parameters": {
@@ -1061,16 +1679,198 @@
         "2": "B"
       }
     },
+    "OHM-050": {
+      "entry_id": "OHM-050",
+      "behavior_id": "BEH-MAG-CMC",
+      "package": "WE-SL5 SMD 4-terminal",
+      "reference_part": "Wurth 744272222",
+      "terminal_roles": {
+        "1": "A1",
+        "4": "A2",
+        "2": "B1",
+        "3": "B2"
+      },
+      "pin_role_fact": {
+        "field": "manufacturer_pin_roles",
+        "scope_contains": "744272222",
+        "manufacturer_to_package_terminal": {
+          "1": "1",
+          "2": "4",
+          "3": "3",
+          "4": "2"
+        },
+        "permutation_provenance": {
+          "document": "COMPONENT_BEHAVIOR_SPEC.md",
+          "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+          "line": 3478
+        }
+      },
+      "critical_facts": {
+        "rdc": {
+          "field": "maximum_dcr",
+          "unit": "ohm"
+        },
+        "rdc_max": {
+          "field": "maximum_dcr",
+          "unit": "ohm"
+        },
+        "irated": {
+          "field": "rated_current",
+          "unit": "A"
+        },
+        "v_rated": {
+          "field": "rated_voltage",
+          "unit": "V"
+        },
+        "value": {
+          "field": "nominal_inductance",
+          "unit": "uH",
+          "output_unit": "H"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref}_A {A1} {A2} {rdc}\nR{ref}_B {B1} {B2} {rdc}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 3478
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "DC winding-resistance model only (each winding = 0.3 ohm maximum). No common-mode or leakage inductance, coupling, saturation or impedance curve is simulated.",
+        "The two windings are separate resistors with no modelled leakage path; this is not an insulation or isolation claim. The 300 V AC / 1 s figure is a test voltage, and 80 V is the rated voltage.",
+        "Manufacturer->package permutation {1:1, 2:4, 3:3, 4:2} comes from matching the datasheet's 7.62/6.22 mm pin spacings to the 3D coordinates with pin 1 held fixed. The datasheet's own land-pattern drawing is a mirror image of its top-view drawing; the winding pairs are the same either way, but dot chirality must be re-checked before any AC/CM binding."
+      ]
+    },
+    "OHM-051": {
+      "entry_id": "OHM-051",
+      "behavior_id": "BEH-MAG-CMC",
+      "package": "WE-CMB XS THT 4-pin",
+      "reference_part": "Wurth 744821240",
+      "terminal_roles": {
+        "1": "A1",
+        "2": "A2",
+        "4": "B1",
+        "3": "B2"
+      },
+      "pin_role_fact": {
+        "field": "manufacturer_pin_roles",
+        "scope_contains": "744821240",
+        "manufacturer_to_package_terminal": {
+          "1": "1",
+          "2": "4",
+          "3": "3",
+          "4": "2"
+        },
+        "permutation_provenance": {
+          "document": "COMPONENT_BEHAVIOR_SPEC.md",
+          "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+          "line": 3487
+        }
+      },
+      "critical_facts": {
+        "rdc": {
+          "field": "maximum_dcr",
+          "unit": "ohm"
+        },
+        "rdc_max": {
+          "field": "maximum_dcr",
+          "unit": "ohm"
+        },
+        "irated": {
+          "field": "rated_current",
+          "unit": "A"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref}_A {A1} {A2} {rdc}\nR{ref}_B {B1} {B2} {rdc}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 3487
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "DC winding-resistance model only (0.14 ohm maximum per winding at 20 C). No inductance, coupling, leakage, saturation or impedance is simulated, and no transient/mains-frequency analysis is supported.",
+        "No safety, insulation, creepage or galvanic-isolation acceptance. 1500 V AC / 2 s is a test voltage, not a working voltage. The 250 V AC rated voltage is a source rating to enforce, not a certification of the user's mains circuit; the listed VDE/ENEC approvals are not evaluated.",
+        "1.5 A is rated at 70 C ambient with a rise below 55 K; the probe current is not a sustained-current acceptance. Manufacturer->package permutation {1:1, 2:4, 3:3, 4:2} comes from the datasheet's 10.0/4.5 mm spacings against the 3D coordinates with pin 1 held fixed."
+      ]
+    },
+    "OHM-052": {
+      "entry_id": "OHM-052",
+      "behavior_id": "BEH-MAG-XFMR-SIGNAL",
+      "package": "Triad TY-145P PC mount 6-pin",
+      "reference_part": "Triad TY-145P; centre taps open",
+      "terminal_roles": {
+        "1": "P_A",
+        "2": "P_CT",
+        "3": "P_B",
+        "4": "S_A",
+        "5": "S_CT",
+        "6": "S_B"
+      },
+      "pin_role_fact": {
+        "field": "manufacturer_pin_roles",
+        "scope_contains": "TY-145P"
+      },
+      "required_isolated_roles": [
+        "P_CT",
+        "S_CT"
+      ],
+      "critical_facts": {
+        "rp": {
+          "field": "nominal_primary_dcr",
+          "unit": "ohm"
+        },
+        "rs": {
+          "field": "nominal_secondary_dcr",
+          "unit": "ohm"
+        },
+        "idc_unbalance": {
+          "field": "primary_dc_unbalance",
+          "unit": "A"
+        },
+        "p_out": {
+          "field": "output_power",
+          "unit": "W"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref}_P {P_A} {P_B} {rp}\nR{ref}_S {S_A} {S_B} {rs}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 3495
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "DC winding-resistance model only, using nominal (not maximum) DCR. No magnetising or leakage inductance, coupling, capacitance, core loss or frequency response; the assumed 1 H / 5 mH / 100 pF class defaults are not used.",
+        "No galvanic-isolation or safety claim. The absence of an inter-winding element is not an insulation model; 1500 V is a dielectric-strength test value, not a working voltage.",
+        "Centre taps 2 and 5 must stay unconnected because the half-winding resistance split is not published. 15 mA primary DC unbalance and 100 mW output are source limits; no saturation model."
+      ]
+    },
     "OHM-056": {
       "behavior_id": "BEH-DIO-PN",
       "class_parameters": {
         "CJO": "CJO",
         "EG": "EG",
         "IBV": "IBV",
-        "IS": "IS",
         "M": "M",
-        "N": "N",
-        "RS": "RS",
         "VJ": "VJ",
         "XTI": "XTI"
       },
@@ -1094,11 +1894,15 @@
           "field": "dc_reverse_voltage",
           "scope_contains": "Vishay 1N4148",
           "unit": "V"
+        },
+        "vf_max": {
+          "field": "maximum_forward_voltage",
+          "unit": "V"
         }
       },
       "entry_id": "OHM-056",
       "limitations": [
-        "Forward DC terms (IS, N, RS) remain the authored 1N4148 fit; a fit to the Vishay 1N4148 datasheet's own forward curve is recorded as evidence but not bound yet. TT is an upper bound from the part's maximum trr and BV is its datasheet minimum breakdown. Not a vendor model.",
+        "IS, N and RS are a least-squares fit to the Vishay 1N4148 datasheet's typical 25 C forward curve; TT is an upper bound from the part's maximum trr and BV is its datasheet minimum breakdown. Not a vendor model.",
         "Model breakdown voltage and fit parameters do not replace scoped package voltage/current/power limits.",
         "Reverse leakage, recovery softness, self-heating and destructive failure are not validated by the forward-bias model.",
         "Maximum power is conditional on the source mounting and lead or electrode temperature."
@@ -1120,6 +1924,18 @@
         "BV": {
           "field": "spice_BV_minimum_breakdown",
           "unit": "V"
+        },
+        "IS": {
+          "field": "spice_IS_fit",
+          "unit": "A"
+        },
+        "N": {
+          "field": "spice_N_fit",
+          "unit": "1"
+        },
+        "RS": {
+          "field": "spice_RS_fit",
+          "unit": "ohm"
         }
       }
     },
@@ -1377,10 +2193,7 @@
       "class_parameters": {
         "EG": "EG",
         "IBV": "IBV",
-        "IS": "IS",
         "M": "M",
-        "N": "N",
-        "RS": "RS",
         "VJ": "VJ",
         "XTI": "XTI"
       },
@@ -1404,11 +2217,15 @@
           "field": "dc_reverse_voltage",
           "scope_contains": "Vishay LL4148",
           "unit": "V"
+        },
+        "vf_max": {
+          "field": "maximum_forward_voltage",
+          "unit": "V"
         }
       },
       "entry_id": "OHM-059",
       "limitations": [
-        "Forward DC terms (IS, N, RS) remain the authored 1N4148 fit; a fit to the Vishay LL4148 datasheet's own forward curve is recorded as evidence but not bound yet. TT is an upper bound from the part's maximum trr and BV is its datasheet minimum breakdown. Not a vendor model.",
+        "IS, N and RS are a least-squares fit to the Vishay LL4148 datasheet's typical 25 C forward curve; TT is an upper bound from the part's maximum trr and BV is its datasheet minimum breakdown. Not a vendor model.",
         "Model breakdown voltage and fit parameters do not replace scoped package voltage/current/power limits.",
         "Reverse leakage, recovery softness, self-heating and destructive failure are not validated by the forward-bias model.",
         "Maximum power is conditional on the source mounting and lead or electrode temperature."
@@ -1434,6 +2251,18 @@
         "BV": {
           "field": "spice_BV_minimum_breakdown",
           "unit": "V"
+        },
+        "IS": {
+          "field": "spice_IS_fit",
+          "unit": "A"
+        },
+        "N": {
+          "field": "spice_N_fit",
+          "unit": "1"
+        },
+        "RS": {
+          "field": "spice_RS_fit",
+          "unit": "ohm"
         }
       }
     },
@@ -1442,9 +2271,6 @@
       "class_parameters": {
         "EG": "EG",
         "IBV": "IBV",
-        "IS": "IS",
-        "N": "N",
-        "RS": "RS",
         "XTI": "XTI"
       },
       "critical_facts": {
@@ -1467,11 +2293,15 @@
           "field": "dc_reverse_voltage",
           "scope_contains": "1N4148W SOD123",
           "unit": "V"
+        },
+        "vf_max": {
+          "field": "maximum_forward_voltage",
+          "unit": "V"
         }
       },
       "entry_id": "OHM-061",
       "limitations": [
-        "Forward DC terms (IS, N, RS) remain the authored 1N4148 fit; a fit to the Diodes Incorporated 1N4148W datasheet's own forward curve is recorded as evidence but not bound yet. TT is an upper bound from the part's maximum trr and BV is its datasheet minimum breakdown. Not a vendor model.",
+        "IS, N and RS are a least-squares fit to the Diodes Incorporated 1N4148W datasheet's typical 25 C forward curve; TT is an upper bound from the part's maximum trr and BV is its datasheet minimum breakdown. Not a vendor model.",
         "Model breakdown voltage and fit parameters do not replace scoped package voltage/current/power limits.",
         "Reverse leakage, recovery softness, self-heating and destructive failure are not validated by the forward-bias model.",
         "Maximum power is conditional on the source mounting and lead or electrode temperature."
@@ -1505,6 +2335,18 @@
         "BV": {
           "field": "spice_BV_minimum_breakdown",
           "unit": "V"
+        },
+        "IS": {
+          "field": "spice_IS_fit",
+          "unit": "A"
+        },
+        "N": {
+          "field": "spice_N_fit",
+          "unit": "1"
+        },
+        "RS": {
+          "field": "spice_RS_fit",
+          "unit": "ohm"
         }
       }
     },
@@ -2297,6 +3139,94 @@
         "4": "AC2"
       }
     },
+    "OHM-072": {
+      "entry_id": "OHM-072",
+      "behavior_id": "BEH-DIO-BRIDGE",
+      "package": "WOG",
+      "reference_part": "Vishay W10G",
+      "terminal_roles": {
+        "1": "PLUS",
+        "2": "AC1",
+        "3": "MINUS",
+        "4": "AC2"
+      },
+      "pin_role_fact": {
+        "field": "derived_package_pin_roles"
+      },
+      "critical_facts": {
+        "IF_AV": {
+          "field": "average_output_current",
+          "unit": "A"
+        },
+        "VRRM": {
+          "field": "repetitive_peak_reverse_voltage",
+          "unit": "V"
+        },
+        "rth_ja": {
+          "field": "thermal_resistance_junction_ambient",
+          "unit": "K/W"
+        },
+        "tj_max": {
+          "field": "maximum_junction_temperature",
+          "unit": "C"
+        },
+        "vf_max": {
+          "field": "maximum_forward_voltage_per_diode",
+          "unit": "V"
+        }
+      },
+      "model_facts": {
+        "IS": {
+          "field": "spice_IS_fit",
+          "unit": "A"
+        },
+        "N": {
+          "field": "spice_N_fit",
+          "unit": "1"
+        },
+        "RS": {
+          "field": "spice_RS_fit",
+          "unit": "ohm"
+        }
+      },
+      "class_parameters": {
+        "CJO": "CJO",
+        "TT": "TT"
+      },
+      "derived_parameters": {
+        "BV": {
+          "basis": "DERIVED",
+          "confidence": "L",
+          "detail": "Original bridge model knee; not a reverse-voltage rating.",
+          "expression": "1.1*VRRM",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "line": 4320
+          },
+          "unit": "V"
+        }
+      },
+      "quoted_parameters": {},
+      "template_override": ".subckt BRIDGE_{ref} AC1 AC2 PLUS MINUS\nD1 AC1 PLUS DBR_{ref}\nD2 AC2 PLUS DBR_{ref}\nD3 MINUS AC1 DBR_{ref}\nD4 MINUS AC2 DBR_{ref}\n.ends\n.model DBR_{ref} D (IS={IS} N={N} RS={RS} CJO={CJO} VJ=0.7 M=0.5 TT={TT} BV={BV} IBV=5u)\nX{ref} {AC1} {AC2} {PLUS} {MINUS} BRIDGE_{ref}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 4320
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Only Vishay W10G is bound; MCC W02M-W10M (WOM, Tj 125 C) and other W0xG voltage grades are not certified by this binding.",
+        "Library pin 1 must sit at the '+' marked lead; PLUS/MINUS diagonal is source-drawn, AC1/AC2 assignment is interchangeable.",
+        "IS, N, RS fitted to the W10G typical 25 C curve (low confidence); CJO and TT remain the authored class proxy (W10G CJ typ 14 pF at 4 V not fitted).",
+        "1.5 A is a resistive/inductive-load rating at TA 25 C with 9.5 mm leads on 5.5 x 5.5 mm pads; capacitive-load derating (Fig. 1, Ipk/Iav 5-20) is not granted. Four identical diodes without shared thermal or surge modelling.",
+        "Model scope: Identical to the OHM-071 DF10M override (class bridge template, line 4320)."
+      ]
+    },
     "OHM-073": {
       "behavior_id": "BEH-LED-INDICATOR",
       "critical_facts": {
@@ -2332,16 +3262,10 @@
         }
       },
       "entry_id": "OHM-073",
-      "inline_assets": [
-        {
-          "document": "docs/behavior/bench/beh-led-indicator/models.inc",
-          "document_sha256": "4470d83215bc32eb05c6afd4c925404443cce21495fb2897453c7fb7c7249ef5",
-          "line": 1
-        }
-      ],
+      "inline_assets": [],
       "limitations": [
         "Only the explicit TLDR4400 red reference is bound. No generic color or manufacturer equivalence is inferred.",
-        "The authored LED_RED fit is approximately2.0 V at20 mA, whereas the TLDR4400 table gives1.8 V typical and2.2 V maximum. This difference is preserved, not described as an exact typical fit.",
+        "IS, N and RS are an empirical fit to the TLDR4400 typical forward curve (low confidence: N varies with the fit window). The shared LED_RED card it replaces read about 2.0 V at 20 mA against the 1.8 V typical.",
         "The model knee BV15 V does not replace the sourced6 V reverse limit. No thermal feedback, optical output or destructive failure is validated by the electrical curve.",
         "Source50 mA and100 mW limits apply only for Tamb<=60 C; the runtime is isothermal25 C."
       ],
@@ -2351,15 +3275,29 @@
         "op",
         "tran"
       ],
-      "template_override": "D{ref} {A} {K} LED_RED\n",
+      "template_override": "D{ref} {A} {K} LEDP_{ref}\n.model LEDP_{ref} D (IS={IS} N={N} RS={RS} CJO=30p VJ=1.0 M=0.33 TT=0 BV=15 IBV=10u EG=2.2 XTI=3)\n",
       "template_provenance": {
-        "document": "COMPONENT_BEHAVIOR_SPEC.md",
-        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
-        "line": 5567
+        "document": "docs/behavior/PER_PART_MODELS.md",
+        "document_sha256": "5fced96702475ad8dc36e327540a4ede9bc0f804b74be6a80b66804d66f8f590",
+        "line": 14
       },
       "terminal_roles": {
         "1": "K",
         "2": "A"
+      },
+      "model_facts": {
+        "IS": {
+          "field": "spice_IS_fit",
+          "unit": "A"
+        },
+        "N": {
+          "field": "spice_N_fit",
+          "unit": "1"
+        },
+        "RS": {
+          "field": "spice_RS_fit",
+          "unit": "ohm"
+        }
       }
     },
     "OHM-074": {
@@ -2419,7 +3357,7 @@
       "template_override": "D{ref} {A} {K} LEDP_{ref}\n.model LEDP_{ref} D (IS={IS} N={N} RS={RS} CJO=30p VJ=1.0 M=0.33 TT=0 BV=15 IBV=10u EG=2.2 XTI=3)\n",
       "template_provenance": {
         "document": "docs/behavior/PER_PART_MODELS.md",
-        "document_sha256": "1430e3537f4b6fcf5bbb30ed0198208a5e02180e399fcc3f5f153806460f967c",
+        "document_sha256": "5fced96702475ad8dc36e327540a4ede9bc0f804b74be6a80b66804d66f8f590",
         "line": 9
       },
       "terminal_roles": {
@@ -2499,7 +3437,7 @@
       "template_override": "D{ref} {A} {K} LEDP_{ref}\n.model LEDP_{ref} D (IS={IS} N={N} RS={RS} CJO=30p VJ=1.0 M=0.33 TT=0 BV=15 IBV=10u EG=2.2 XTI=3)\n",
       "template_provenance": {
         "document": "docs/behavior/PER_PART_MODELS.md",
-        "document_sha256": "1430e3537f4b6fcf5bbb30ed0198208a5e02180e399fcc3f5f153806460f967c",
+        "document_sha256": "5fced96702475ad8dc36e327540a4ede9bc0f804b74be6a80b66804d66f8f590",
         "line": 10
       },
       "terminal_roles": {
@@ -2520,6 +3458,85 @@
           "unit": "ohm"
         }
       }
+    },
+    "OHM-078": {
+      "entry_id": "OHM-078",
+      "behavior_id": "BEH-LED-INDICATOR",
+      "package": "0603 LED",
+      "reference_part": "Kingbright APT1608SURCK red",
+      "terminal_roles": {
+        "1": "K",
+        "2": "A"
+      },
+      "critical_facts": {
+        "if_max": {
+          "field": "maximum_forward_current",
+          "unit": "mA",
+          "output_unit": "A",
+          "scope_contains": "APT1608SURCK"
+        },
+        "p_rated": {
+          "field": "maximum_power",
+          "unit": "mW",
+          "output_unit": "W",
+          "scope_contains": "APT1608SURCK"
+        },
+        "rth_ja": {
+          "field": "thermal_resistance_junction_ambient",
+          "unit": "K/W",
+          "scope_contains": "APT1608SURCK"
+        },
+        "tj_max": {
+          "field": "maximum_junction_temperature",
+          "unit": "C",
+          "scope_contains": "APT1608SURCK"
+        },
+        "vf_max": {
+          "field": "forward_voltage_typical_max",
+          "unit": "V",
+          "value_path": [
+            1
+          ],
+          "scope_contains": "APT1608SURCK"
+        },
+        "vf_typical": {
+          "field": "forward_voltage_typical_max",
+          "unit": "V",
+          "value_path": [
+            0
+          ],
+          "scope_contains": "APT1608SURCK"
+        },
+        "vr_max": {
+          "field": "maximum_reverse_voltage",
+          "unit": "V",
+          "scope_contains": "APT1608SURCK"
+        }
+      },
+      "class_parameters": {
+        "IS": "IS",
+        "N": "N",
+        "RS": "RS"
+      },
+      "derived_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "D{ref} {A} {K} LEDP_{ref}\n.model LEDP_{ref} D (IS={IS} N={N} RS={RS} CJO=30p VJ=1.0 M=0.33 TT=0 BV=15 IBV=10u EG=2.2 XTI=3)\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 4593
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Only APT1608SURCK hyper red is bound; colour selectors and the GENERIC_LED_GREEN catalog part are not certified.",
+        "Forward curve is the class red card proxy until an own-curve fit is made.",
+        "RthJA applies to FR4 with >= 16 mm2 per pad; thermal scope must be confirmed by the caller.",
+        "Model scope: Class LED template with a per-reference model name (class uses {colour} as model name). Replace class_parameters with own-curve model_facts once the archived PDF's VF-IF curve is digitized (D048 practice)."
+      ]
     },
     "OHM-079": {
       "behavior_id": "BEH-LED-INDICATOR",
@@ -2579,7 +3596,7 @@
       "template_override": "D{ref} {A} {K} LEDP_{ref}\n.model LEDP_{ref} D (IS={IS} N={N} RS={RS} CJO=30p VJ=1.0 M=0.33 TT=0 BV=15 IBV=10u EG=2.2 XTI=3)\n",
       "template_provenance": {
         "document": "docs/behavior/PER_PART_MODELS.md",
-        "document_sha256": "1430e3537f4b6fcf5bbb30ed0198208a5e02180e399fcc3f5f153806460f967c",
+        "document_sha256": "5fced96702475ad8dc36e327540a4ede9bc0f804b74be6a80b66804d66f8f590",
         "line": 11
       },
       "terminal_roles": {
@@ -2659,7 +3676,7 @@
       "template_override": "D{ref} {A} {K} LEDP_{ref}\n.model LEDP_{ref} D (IS={IS} N={N} RS={RS} CJO=30p VJ=1.0 M=0.33 TT=0 BV=15 IBV=10u EG=2.2 XTI=3)\n",
       "template_provenance": {
         "document": "docs/behavior/PER_PART_MODELS.md",
-        "document_sha256": "1430e3537f4b6fcf5bbb30ed0198208a5e02180e399fcc3f5f153806460f967c",
+        "document_sha256": "5fced96702475ad8dc36e327540a4ede9bc0f804b74be6a80b66804d66f8f590",
         "line": 12
       },
       "terminal_roles": {
@@ -2738,7 +3755,7 @@
       "template_override": "D{ref} {A} {K} LEDP_{ref}\n.model LEDP_{ref} D (IS={IS} N={N} RS={RS} CJO=60p VJ=1.0 M=0.33 TT=0 BV=5.5 IBV=10u EG=3.9 XTI=3)\n",
       "template_provenance": {
         "document": "docs/behavior/PER_PART_MODELS.md",
-        "document_sha256": "1430e3537f4b6fcf5bbb30ed0198208a5e02180e399fcc3f5f153806460f967c",
+        "document_sha256": "5fced96702475ad8dc36e327540a4ede9bc0f804b74be6a80b66804d66f8f590",
         "line": 13
       },
       "terminal_roles": {
@@ -2860,8 +3877,8 @@
       "template_override": "D{ref}R {common_anode} {red_cathode} LEDR_{ref}\nD{ref}G {common_anode} {green_cathode} LEDGB_{ref}\nD{ref}B {common_anode} {blue_cathode} LEDGB_{ref}\n.model LEDR_{ref} D (IS={red_IS} N={red_N} RS={red_RS} CJO=30p VJ=1.0 M=0.33 BV=5.5 IBV=10u EG=2.2 XTI=3)\n.model LEDGB_{ref} D (IS={gb_IS} N={gb_N} RS={gb_RS} CJO=60p VJ=1.0 M=0.33 BV=5.5 IBV=10u EG=4.0 XTI=3)\n",
       "template_provenance": {
         "document": "docs/behavior/PER_PART_MODELS.md",
-        "document_sha256": "1430e3537f4b6fcf5bbb30ed0198208a5e02180e399fcc3f5f153806460f967c",
-        "line": 14
+        "document_sha256": "5fced96702475ad8dc36e327540a4ede9bc0f804b74be6a80b66804d66f8f590",
+        "line": 15
       },
       "terminal_roles": {
         "1": "common_anode",
@@ -2895,6 +3912,210 @@
           "unit": "ohm"
         }
       }
+    },
+    "OHM-093": {
+      "entry_id": "OHM-093",
+      "behavior_id": "BEH-TRN-BJT",
+      "package": "TO-92",
+      "reference_part": "onsemi 2N3904, 2N3903/D Rev 9 (2021)",
+      "terminal_roles": {
+        "1": "E",
+        "2": "B",
+        "3": "C"
+      },
+      "pin_role_fact": {
+        "field": "manufacturer_pin_roles",
+        "scope_contains": "onsemi 2N3904"
+      },
+      "critical_facts": {
+        "gain_min": {
+          "field": "dc_gain_minimum",
+          "unit": "1",
+          "scope_contains": "onsemi 2N3904"
+        },
+        "gain_max": {
+          "field": "dc_gain_maximum",
+          "unit": "1",
+          "scope_contains": "onsemi 2N3904"
+        },
+        "gain_test_ic": {
+          "field": "dc_gain_test_collector_current",
+          "unit": "A",
+          "scope_contains": "onsemi 2N3904"
+        },
+        "gain_test_vce": {
+          "field": "dc_gain_test_collector_voltage",
+          "unit": "V",
+          "scope_contains": "onsemi 2N3904"
+        },
+        "ic_max": {
+          "field": "maximum_collector_current",
+          "unit": "A",
+          "scope_contains": "onsemi 2N3904"
+        },
+        "p_rated": {
+          "field": "maximum_power_ambient25",
+          "unit": "W",
+          "scope_contains": "onsemi 2N3904"
+        },
+        "p_case": {
+          "field": "maximum_power_case25",
+          "unit": "W",
+          "scope_contains": "onsemi 2N3904"
+        },
+        "rth_ja": {
+          "field": "maximum_thermal_resistances",
+          "unit": "K/W",
+          "value_path": [
+            "junction_ambient"
+          ],
+          "scope_contains": "onsemi 2N3904"
+        },
+        "tj_max": {
+          "field": "maximum_junction_temperature",
+          "unit": "C",
+          "scope_contains": "onsemi 2N3904"
+        },
+        "vce_max": {
+          "field": "maximum_collector_emitter_voltage",
+          "unit": "V",
+          "scope_contains": "onsemi 2N3904"
+        },
+        "veb_max": {
+          "field": "maximum_emitter_base_voltage",
+          "unit": "V",
+          "scope_contains": "onsemi 2N3904"
+        }
+      },
+      "derived_parameters": {},
+      "quoted_parameters": {},
+      "class_parameters": {},
+      "template_override": "Q{ref} {C} {B} {E} Q2N3904_R6FIT\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 5773
+      },
+      "inline_assets": [
+        {
+          "document": "docs/behavior/bench/trn_bjt/models_bjt_r6fit.lib",
+          "document_sha256": "993685699b118050d78a0f2441d01f304307cc38e60f3fc2b1b4ed3b370951ca",
+          "line": 1
+        }
+      ],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Only onsemi 2N3904 is bound; PN2222A, BC546/547 (C-B-E) and other TO-92 functions are not substituted.",
+        "Q2N3904_R6FIT is the spec's Gummel-Poon fit to datasheet min/max bands (geometric-mean hFE targets, assumed VAF/BR/XTB/XTI), not a vendor model; the onsemi Rev 9 table gives an hFE maximum only at 10 mA.",
+        "Ambient (625 mW, 200 C/W) and case (1.5 W, 83.3 C/W) ratings are separate conditions; no SOA chart in the source; isothermal electrical model.",
+        "Model scope: Class BJT template (spec line 5773 / class netlist_template) without the optional temp={Tj} (no Tj value is bound; the deck runs isothermal 25 C). The model card comes from the hashed inline asset models_bjt_r6fit.lib (contains Q2N3904_R6FIT and Q2N2222A_R6FIT; no include/control lines)."
+      ]
+    },
+    "OHM-094": {
+      "entry_id": "OHM-094",
+      "behavior_id": "BEH-TRN-BJT",
+      "package": "SOT-23",
+      "reference_part": "Nexperia BC817 (ungraded) Rev 8; explicit alternative to MMBT3904 default",
+      "terminal_roles": {
+        "1": "B",
+        "2": "E",
+        "3": "C"
+      },
+      "pin_role_fact": {
+        "field": "manufacturer_pin_roles",
+        "scope_contains": "Nexperia BC817"
+      },
+      "critical_facts": {
+        "gain_min": {
+          "field": "dc_gain_minimum_ungraded",
+          "unit": "1"
+        },
+        "gain_max": {
+          "field": "dc_gain_maximum_ungraded",
+          "unit": "1"
+        },
+        "gain_test_ic": {
+          "field": "dc_gain_test_collector_current",
+          "unit": "A"
+        },
+        "gain_test_vce": {
+          "field": "dc_gain_test_collector_voltage",
+          "unit": "V"
+        },
+        "ic_max": {
+          "field": "maximum_collector_current",
+          "unit": "A"
+        },
+        "p_rated": {
+          "field": "maximum_power_by_collector_pad",
+          "unit": "W",
+          "value_path": [
+            "standard_footprint"
+          ]
+        },
+        "rth_ja": {
+          "field": "maximum_thermal_resistance_junction_ambient_by_collector_pad",
+          "unit": "K/W",
+          "value_path": [
+            "standard_footprint"
+          ]
+        },
+        "tj_max": {
+          "field": "maximum_junction_temperature",
+          "unit": "C"
+        },
+        "vce_max": {
+          "field": "maximum_collector_emitter_voltage",
+          "unit": "V"
+        },
+        "veb_max": {
+          "field": "maximum_emitter_base_voltage",
+          "unit": "V"
+        }
+      },
+      "derived_parameters": {
+        "BF": {
+          "basis": "DERIVED",
+          "confidence": "M",
+          "detail": "Class rule for BC817: geometric mean of the sourced ungraded gain range; one-point approximation.",
+          "expression": "sqrt(gain_min*gain_max)",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "line": 5943
+          },
+          "unit": "1"
+        }
+      },
+      "quoted_parameters": {
+        "IS": {
+          "basis": "ASSUMPTION",
+          "confidence": "L",
+          "source_fragment": "BC817/BCP56/BCX56/BD139 have ratings and hFE bins only, no fitted card (use DERIVED BF = geometric mean of bin, IS = 1e-14, status partial)",
+          "unit": "A",
+          "value_text": "1e-14"
+        }
+      },
+      "class_parameters": {},
+      "template_override": "Q{ref} {C} {B} {E} QMOD_{ref}\n.model QMOD_{ref} NPN(IS={IS} BF={BF})\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 5809
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "BC817 ungraded reference; it is not the MMBT3904 default and does not use the 2N3904 fit. Suffixed -16/-25/-40 grades are not bound.",
+        "IS = 1e-14 is the class assumption (no BC817 VBE-IC curve); DC gain only, no Early effect, charge storage or switching.",
+        "Standard-footprint power 0.25 W and Rth(j-a) 500 K/W (maxima) apply only to FR4 single-sided standard footprint; IC 0.5 A and Ptot are simultaneous constraints.",
+        "Model scope: Spec BJT ideal mode '.model Q NPN(IS=1e-14 BF=hFE_typ)' (line 5809), the same template used by OHM-095/097. IS quotes the class known_limitations text in the class JSON (no source anchor -> relocated against the authored class payload)."
+      ]
     },
     "OHM-095": {
       "behavior_id": "BEH-TRN-BJT",
@@ -2993,6 +4214,108 @@
           "unit": "A"
         }
       }
+    },
+    "OHM-096": {
+      "entry_id": "OHM-096",
+      "behavior_id": "BEH-TRN-BJT",
+      "package": "SOT-223",
+      "reference_part": "Nexperia BCP56 (ungraded) Rev 11; explicit alternative, regulator default not bound",
+      "terminal_roles": {
+        "1": "B",
+        "2": "C",
+        "3": "E",
+        "4": "C"
+      },
+      "pin_role_fact": {
+        "field": "manufacturer_pin_roles",
+        "scope_contains": "Nexperia BCP56"
+      },
+      "critical_facts": {
+        "gain_min": {
+          "field": "dc_gain_minimum_ungraded",
+          "unit": "1"
+        },
+        "gain_max": {
+          "field": "dc_gain_maximum_ungraded",
+          "unit": "1"
+        },
+        "gain_test_ic": {
+          "field": "dc_gain_test_collector_current",
+          "unit": "A"
+        },
+        "gain_test_vce": {
+          "field": "dc_gain_test_collector_voltage",
+          "unit": "V"
+        },
+        "ic_max": {
+          "field": "maximum_collector_current",
+          "unit": "A"
+        },
+        "p_rated": {
+          "field": "maximum_power_by_collector_pad",
+          "unit": "W",
+          "value_path": [
+            "standard_footprint"
+          ]
+        },
+        "rth_ja": {
+          "field": "maximum_thermal_resistance_junction_ambient_by_collector_pad",
+          "unit": "K/W",
+          "value_path": [
+            "standard_footprint"
+          ]
+        },
+        "tj_max": {
+          "field": "maximum_junction_temperature",
+          "unit": "C"
+        },
+        "vce_max": {
+          "field": "maximum_collector_emitter_voltage",
+          "unit": "V"
+        },
+        "veb_max": {
+          "field": "maximum_emitter_base_voltage",
+          "unit": "V"
+        }
+      },
+      "model_facts": {
+        "IS": {
+          "field": "spice_IS_fit",
+          "unit": "A"
+        }
+      },
+      "derived_parameters": {
+        "BF": {
+          "basis": "DERIVED",
+          "confidence": "M",
+          "detail": "Class rule for BCP56: geometric mean of the sourced ungraded gain range; one-point approximation.",
+          "expression": "sqrt(gain_min*gain_max)",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "line": 5943
+          },
+          "unit": "1"
+        }
+      },
+      "quoted_parameters": {},
+      "class_parameters": {},
+      "template_override": "Q{ref} {C} {B} {E} QMOD_{ref}\n.model QMOD_{ref} NPN(IS={IS} BF={BF})\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 5809
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "BCP56 ungraded transistor only. The AMS1117-3.3 default and LM1117/LM317 regulators are not modelled or substituted; a regulator in this footprint must not select this binding.",
+        "IS from the BCP56-series 25 C VBE curve (N = 1); DC gain one-point model, no Early effect, charge storage or switching.",
+        "Pins 2 and 4 (tab) share the collector net; standard-footprint 0.65 W / 192 K/W (maxima) apply only to that board condition; IC 1 A and Ptot are simultaneous constraints.",
+        "Model scope: Same ideal-mode BJT template as OHM-095 (BCX56) and OHM-097."
+      ]
     },
     "OHM-097": {
       "behavior_id": "BEH-TRN-BJT",
@@ -3264,6 +4587,93 @@
         "2": "D",
         "3": "S"
       }
+    },
+    "OHM-101": {
+      "entry_id": "OHM-101",
+      "behavior_id": "BEH-TRN-MOSFET",
+      "package": "D2PAK",
+      "reference_part": "IRFZ44NSPbF D2PAK; explicit MOSFET alternative, L7805 regulator default not bound",
+      "terminal_roles": {
+        "1": "G",
+        "3": "S",
+        "tab": "D"
+      },
+      "pin_role_fact": {
+        "field": "manufacturer_pin_roles",
+        "scope_contains": "IRFZ44NSPbF",
+        "tied_features": [
+          "2"
+        ]
+      },
+      "critical_facts": {
+        "id_max": {
+          "field": "maximum_drain_current_case25",
+          "unit": "A",
+          "scope_contains": "IRFZ44NSPbF"
+        },
+        "p_rated": {
+          "field": "maximum_power_case25",
+          "unit": "W",
+          "scope_contains": "IRFZ44NSPbF"
+        },
+        "rds_on_max_10V": {
+          "field": "maximum_on_resistance",
+          "unit": "mohm",
+          "output_unit": "ohm",
+          "scope_contains": "IRFZ44NSPbF"
+        },
+        "rth_ja": {
+          "field": "maximum_thermal_resistance_junction_ambient",
+          "unit": "K/W",
+          "scope_contains": "IRFZ44NSPbF"
+        },
+        "rth_jc": {
+          "field": "maximum_thermal_resistance_junction_case",
+          "unit": "K/W",
+          "scope_contains": "IRFZ44NSPbF"
+        },
+        "tj_max": {
+          "field": "maximum_junction_temperature",
+          "unit": "C",
+          "scope_contains": "IRFZ44NSPbF"
+        },
+        "vds_max": {
+          "field": "maximum_drain_source_voltage",
+          "unit": "V",
+          "scope_contains": "IRFZ44NSPbF"
+        },
+        "vgs_max": {
+          "field": "maximum_gate_source_magnitude",
+          "unit": "V",
+          "scope_contains": "IRFZ44NSPbF"
+        }
+      },
+      "derived_parameters": {},
+      "quoted_parameters": {},
+      "class_parameters": {},
+      "template_override": "X{ref} {D} {G} {S} IRFZ44N_R6 BVDSS={vds_max}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 6003
+      },
+      "inline_assets": [
+        {
+          "document": "docs/behavior/bench/trn_mosfet/models_mosfet_r6fit.lib",
+          "document_sha256": "153cb930dde07e088e8e85d7cad3a4d040caf1c853feaad014468234491cce8d",
+          "line": 1
+        }
+      ],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Only IRFZ44NSPbF is bound; the L7805 D2PAK default (regulator), LM317/LM2940 and five-lead D2PAK variants are not substituted.",
+        "IRFZ44N_R6 was fitted to the TO-220 IRFZ44N sheet; it is used as a same-rating proxy and checked only at the IRFZ44NS Rds(on) test point.",
+        "Library D2PAK omits the cropped centre lead (pin 2, drain); the drain is reached through the tab. 94 W case power and 1.5 K/W imply different limits; the lower is enforced. Infineon web page 110 W/1.4 K/W is not adopted. Avalanche: only the 150 mJ thermally limited value is a ceiling; the 530 mJ typical destructive value is not an operating limit.",
+        "Model scope: Class MOSFET template (spec line 6003) with BVDSS bound to the sourced IRFZ44NS VDSS, identical in form to OHM-098."
+      ]
     },
     "OHM-102": {
       "behavior_id": "BEH-TRN-MOSFET",
@@ -5052,6 +6462,718 @@
         "3": "GND",
         "4": "OUT"
       }
+    },
+    "OHM-155": {
+      "entry_id": "OHM-155",
+      "behavior_id": "BEH-CON-WTB",
+      "package": "B2B-PH-K-S mated with PHR-2",
+      "reference_part": "JST B2B-PH-K-S header + PHR-2 housing, specified crimp contact at AWG #24",
+      "terminal_roles": {
+        "1": "P1",
+        "2": "P2",
+        "W1": "W1",
+        "W2": "W2"
+      },
+      "critical_facts": {
+        "rmate": {
+          "field": "contact_resistance_initial_max",
+          "unit": "mohm",
+          "output_unit": "ohm"
+        },
+        "rmate_aged_max": {
+          "field": "contact_resistance_conditioned_max",
+          "unit": "mohm",
+          "output_unit": "ohm"
+        },
+        "i_rated": {
+          "field": "contact_current_rating",
+          "unit": "A"
+        },
+        "v_work": {
+          "field": "working_voltage",
+          "unit": "V"
+        },
+        "t_contact_max": {
+          "field": "contact_temperature_range",
+          "unit": "C",
+          "value_path": [
+            1
+          ]
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref}_m1 {P1} {W1} {rmate}\nR{ref}_m2 {P2} {W2} {rmate}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 10751
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "Rmate is JST's initial MAXIMUM (10 mohm), used as an upper-bound value, not a typical; the spec's 6/12 mohm typical proxies are not used.",
+        "Crimp (wire-termination) resistance is not modeled: JST publishes none in the archived sheet and Molex values must not be used. The JST mated value may or may not include the crimp.",
+        "No thermal, Rth, all-positions-loaded derating or wear model; the class 0.8 factor and Rth are not used.",
+        "Ratings: 2 A only at AWG #24; contact temperature range includes self-heating rise; 100 V AC/DC general specification (overseas registrations may differ).",
+        "Cable side terminals W1..WN are the mated housing's circuit numbers; no polarity or battery convention is implied.",
+        "Wire resistance is a separate circuit element, not part of this binding.",
+        "Model scope: Spec line 10751 'R{ref}_m{k} {Pk} {mid} {Rmate} ; mated pair, JST/Molex spec value'. The class crimp resistor (line 10752, Rcrimp 2 mohm) is Molex-sourced and is deliberately omitted for JST; mid node collapsed so the mated-pair value runs Pk->Wk."
+      ]
+    },
+    "OHM-156": {
+      "entry_id": "OHM-156",
+      "behavior_id": "BEH-CON-WTB",
+      "package": "B2B-XH-A mated with XHP-2",
+      "reference_part": "JST B2B-XH-A header + XHP-2 housing, specified crimp contact at AWG #22",
+      "terminal_roles": {
+        "1": "P1",
+        "2": "P2",
+        "W1": "W1",
+        "W2": "W2"
+      },
+      "critical_facts": {
+        "rmate": {
+          "field": "contact_resistance_initial_max",
+          "unit": "mohm",
+          "output_unit": "ohm"
+        },
+        "rmate_aged_max": {
+          "field": "contact_resistance_conditioned_max",
+          "unit": "mohm",
+          "output_unit": "ohm"
+        },
+        "i_rated": {
+          "field": "contact_current_rating",
+          "unit": "A"
+        },
+        "v_work": {
+          "field": "working_voltage",
+          "unit": "V"
+        },
+        "t_contact_max": {
+          "field": "contact_temperature_range",
+          "unit": "C",
+          "value_path": [
+            1
+          ]
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref}_m1 {P1} {W1} {rmate}\nR{ref}_m2 {P2} {W2} {rmate}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 10751
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "Rmate is JST's initial MAXIMUM (10 mohm), used as an upper-bound value, not a typical; the spec's 6/12 mohm typical proxies are not used.",
+        "Crimp (wire-termination) resistance is not modeled: JST publishes none in the archived sheet and Molex values must not be used. The JST mated value may or may not include the crimp.",
+        "No thermal, Rth, all-positions-loaded derating or wear model; the class 0.8 factor and Rth are not used.",
+        "Ratings: 3 A only at AWG #22; contact temperature range includes self-heating rise; 250 V AC/DC general specification (overseas registrations may differ).",
+        "Cable side terminals W1..WN are the mated housing's circuit numbers; no polarity or battery convention is implied.",
+        "Wire resistance is a separate circuit element, not part of this binding.",
+        "Model scope: Spec line 10751 'R{ref}_m{k} {Pk} {mid} {Rmate} ; mated pair, JST/Molex spec value'. The class crimp resistor (line 10752, Rcrimp 2 mohm) is Molex-sourced and is deliberately omitted for JST; mid node collapsed so the mated-pair value runs Pk->Wk."
+      ]
+    },
+    "OHM-157": {
+      "entry_id": "OHM-157",
+      "behavior_id": "BEH-CON-WTB",
+      "package": "SM04B-SRSS-TB mated with SHR-04V-S",
+      "reference_part": "JST SM04B-SRSS-TB header + SHR-04V-S housing, specified crimp contact at AWG #28",
+      "terminal_roles": {
+        "1": "P1",
+        "2": "P2",
+        "3": "P3",
+        "4": "P4",
+        "W1": "W1",
+        "W2": "W2",
+        "W3": "W3",
+        "W4": "W4"
+      },
+      "critical_facts": {
+        "rmate": {
+          "field": "contact_resistance_initial_max",
+          "unit": "mohm",
+          "output_unit": "ohm"
+        },
+        "rmate_aged_max": {
+          "field": "contact_resistance_conditioned_max",
+          "unit": "mohm",
+          "output_unit": "ohm"
+        },
+        "i_rated": {
+          "field": "contact_current_rating",
+          "unit": "A"
+        },
+        "v_work": {
+          "field": "working_voltage",
+          "unit": "V"
+        },
+        "t_contact_max": {
+          "field": "contact_temperature_range",
+          "unit": "C",
+          "value_path": [
+            1
+          ]
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref}_m1 {P1} {W1} {rmate}\nR{ref}_m2 {P2} {W2} {rmate}\nR{ref}_m3 {P3} {W3} {rmate}\nR{ref}_m4 {P4} {W4} {rmate}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 10751
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "Rmate is JST's initial MAXIMUM (20 mohm), used as an upper-bound value, not a typical; the spec's 6/12 mohm typical proxies are not used.",
+        "Crimp (wire-termination) resistance is not modeled: JST publishes none in the archived sheet and Molex values must not be used. The JST mated value may or may not include the crimp.",
+        "No thermal, Rth, all-positions-loaded derating or wear model; the class 0.8 factor and Rth are not used.",
+        "Ratings: 1 A only at AWG #28; contact temperature range includes self-heating rise; 50 V AC/DC general specification (overseas registrations may differ).",
+        "Cable side terminals W1..WN are the mated housing's circuit numbers; no polarity or battery convention is implied.",
+        "Wire resistance is a separate circuit element, not part of this binding.",
+        "SM04B-SRSS-TB reinforcement tabs ('Reinforcement: Copper alloy, tin-plated', p3) are mechanical and not package terminals of this binding.",
+        "Model scope: Spec line 10751 'R{ref}_m{k} {Pk} {mid} {Rmate} ; mated pair, JST/Molex spec value'. The class crimp resistor (line 10752, Rcrimp 2 mohm) is Molex-sourced and is deliberately omitted for JST; mid node collapsed so the mated-pair value runs Pk->Wk."
+      ]
+    },
+    "OHM-161": {
+      "entry_id": "OHM-161",
+      "behavior_id": "BEH-CON-TERMINAL",
+      "package": "MSTBA 2,5/ 2-G-5,08 (1757242) mated with MSTB 2,5/ 2-ST-5,08 (1757019)",
+      "reference_part": "Phoenix Contact 1757242 header + 1757019 plug, 2 positions, tin",
+      "terminal_roles": {
+        "1": "P1",
+        "2": "P2",
+        "W1": "W1",
+        "W2": "W2"
+      },
+      "critical_facts": {
+        "rpath": {
+          "field": "mated_path_resistance_stated",
+          "unit": "mohm",
+          "output_unit": "ohm"
+        },
+        "i_nom": {
+          "field": "pair_nominal_current",
+          "unit": "A"
+        },
+        "v_III_2": {
+          "field": "pair_rated_voltage_III_2",
+          "unit": "V"
+        },
+        "t_amb_max": {
+          "field": "operating_ambient_range_header",
+          "unit": "C",
+          "value_path": [
+            1
+          ]
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref}_mt1 {P1} {W1} {rpath}\nR{ref}_mt2 {P2} {W2} {rpath}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 10854
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "One lumped resistance per position equal to Phoenix's stated durability-test contact resistance (1.4 mohm); not labelled a maximum, and Phoenix does not say whether it includes the screw clamp.",
+        "No thermal or derating model. Current capacity vs ambient follows the p11 MSTB/MSTBA 2-pos curve (12 A to about 84 C, read by eye); the recipe does not encode it.",
+        "Voltage depends on category: III/2 320 V pair; III/3 limited by plug 250 V; II/2 630 V per current Phoenix sheets.",
+        "Live mating/unmating prohibited (no switching power, IEC 61984).",
+        "Position numbering is library convention; positions are electrically identical, P_k and W_k are colocated.",
+        "Wire resistance and ampacity are separate.",
+        "Model scope: Spec line 10854 'R{ref}_mt{k} {Pk} {Hk} {Rmate} ; only for OHM-161 header/plug mated pair', collapsed with line 10853's clamp resistor into one lumped path because no source separates clamp and mating resistance; the 3 mohm ASSUMPTION Rclamp is not used."
+      ]
+    },
+    "OHM-163": {
+      "entry_id": "OHM-163",
+      "behavior_id": "BEH-CON-USB",
+      "package": "USB-B angled THT, 4 contacts (Lumberg 2411 02), mated",
+      "reference_part": "Lumberg 2411 02",
+      "terminal_roles": {
+        "1": "P1",
+        "2": "P2",
+        "3": "P3",
+        "4": "P4",
+        "M1": "M1",
+        "M2": "M2",
+        "M3": "M3",
+        "M4": "M4"
+      },
+      "critical_facts": {
+        "rc": {
+          "field": "contact_resistance_max",
+          "unit": "ohm"
+        },
+        "i_rated": {
+          "field": "current_rated",
+          "unit": "A"
+        },
+        "v_rated": {
+          "field": "voltage_rated_ac",
+          "unit": "V"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref}_c1 {P1} {M1} {rc}\nR{ref}_c2 {P2} {M2} {rc}\nR{ref}_c3 {P3} {M3} {rc}\nR{ref}_c4 {P4} {M4} {rc}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 11266
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "Each contact is a resistor at the sourced 30 mOhm maximum (20 C data); no temperature, wear or derating.",
+        "USB signal names are not given by the drawing and are not assigned; housing/shell tabs are unmodeled.",
+        "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. RuntimeRecipe has no field that separates them from footprint pads, so a schema addition (e.g. mating_terminals) or a catalog-binding rule that excludes them from pad matching is needed before this recipe can bind to a library footprint.",
+        "Obsolete part: binding is for an archived reference, not a sourcing recommendation.",
+        "Model scope: Per-contact instance of the class line 'R{ref}_c{k} {BOARD_k} {CABLE_k} {Rc}' with k = manufacturer contact 1..4; shell line omitted (no sourced shell resistance, shell not a GND)."
+      ]
+    },
+    "OHM-166": {
+      "entry_id": "OHM-166",
+      "behavior_id": "BEH-CON-USB",
+      "package": "Mini-USB B horizontal SMT, 5 contacts (Wurth 65100516121), mated",
+      "reference_part": "Wurth Elektronik 65100516121",
+      "terminal_roles": {
+        "1": "P1",
+        "2": "P2",
+        "3": "P3",
+        "4": "P4",
+        "5": "P5",
+        "M1": "M1",
+        "M2": "M2",
+        "M3": "M3",
+        "M4": "M4",
+        "M5": "M5"
+      },
+      "critical_facts": {
+        "rc": {
+          "field": "contact_resistance_max",
+          "unit": "ohm"
+        },
+        "i_rated": {
+          "field": "current_rated",
+          "unit": "A"
+        },
+        "v_rated": {
+          "field": "working_voltage_stated",
+          "unit": "V"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref}_c1 {P1} {M1} {rc}\nR{ref}_c2 {P2} {M2} {rc}\nR{ref}_c3 {P3} {M3} {rc}\nR{ref}_c4 {P4} {M4} {rc}\nR{ref}_c5 {P5} {M5} {rc}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 11266
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "Contact resistance at its 20 mOhm maximum; no temperature/wear dependence.",
+        "Signal names (VBUS/D-/D+/ID/GND) are not in the manufacturer drawing and are not assigned.",
+        "Four shield pads and two pegs are unmodeled; shell is not an automatic GND.",
+        "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. RuntimeRecipe has no field that separates them from footprint pads, so a schema addition (e.g. mating_terminals) or a catalog-binding rule that excludes them from pad matching is needed before this recipe can bind to a library footprint.",
+        "Model scope: Per-contact instance of the class 'R{ref}_c{k} {BOARD_k} {CABLE_k} {Rc}', k = 1..5; shell/peg pads unmodeled."
+      ]
+    },
+    "OHM-167": {
+      "entry_id": "OHM-167",
+      "behavior_id": "BEH-CON-HDMI",
+      "package": "HDMI Type A SMT 19 position (Same Sky HD12-19-SMT-TR), mated",
+      "reference_part": "Same Sky HD12-19-SMT-TR (explicit alternate)",
+      "terminal_roles": {
+        "1": "P1",
+        "2": "P2",
+        "3": "P3",
+        "4": "P4",
+        "5": "P5",
+        "6": "P6",
+        "7": "P7",
+        "8": "P8",
+        "9": "P9",
+        "10": "P10",
+        "11": "P11",
+        "12": "P12",
+        "13": "P13",
+        "14": "P14",
+        "15": "P15",
+        "16": "P16",
+        "17": "P17",
+        "18": "P18",
+        "19": "P19",
+        "M1": "M1",
+        "M2": "M2",
+        "M3": "M3",
+        "M4": "M4",
+        "M5": "M5",
+        "M6": "M6",
+        "M7": "M7",
+        "M8": "M8",
+        "M9": "M9",
+        "M10": "M10",
+        "M11": "M11",
+        "M12": "M12",
+        "M13": "M13",
+        "M14": "M14",
+        "M15": "M15",
+        "M16": "M16",
+        "M17": "M17",
+        "M18": "M18",
+        "M19": "M19"
+      },
+      "critical_facts": {
+        "rc": {
+          "field": "contact_resistance_max",
+          "unit": "ohm"
+        },
+        "i_rated": {
+          "field": "contact_current_max",
+          "unit": "A"
+        },
+        "v_rated": {
+          "field": "contact_voltage_ac_max",
+          "unit": "V"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref}_c1 {P1} {M1} {rc}\nR{ref}_c2 {P2} {M2} {rc}\nR{ref}_c3 {P3} {M3} {rc}\nR{ref}_c4 {P4} {M4} {rc}\nR{ref}_c5 {P5} {M5} {rc}\nR{ref}_c6 {P6} {M6} {rc}\nR{ref}_c7 {P7} {M7} {rc}\nR{ref}_c8 {P8} {M8} {rc}\nR{ref}_c9 {P9} {M9} {rc}\nR{ref}_c10 {P10} {M10} {rc}\nR{ref}_c11 {P11} {M11} {rc}\nR{ref}_c12 {P12} {M12} {rc}\nR{ref}_c13 {P13} {M13} {rc}\nR{ref}_c14 {P14} {M14} {rc}\nR{ref}_c15 {P15} {M15} {rc}\nR{ref}_c16 {P16} {M16} {rc}\nR{ref}_c17 {P17} {M17} {rc}\nR{ref}_c18 {P18} {M18} {rc}\nR{ref}_c19 {P19} {M19} {rc}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 11454
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "Explicit alternate, not a silent rebinding of the default CT_19APL2 footprint.",
+        "DC contact resistance at its 20 mOhm max (spec measured at 20 mV/100 mA); no TMDS impedance, loss, crosstalk or protocol.",
+        "Shell/shield pads unmodeled.",
+        "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. RuntimeRecipe has no field that separates them from footprint pads, so a schema addition (e.g. mating_terminals) or a catalog-binding rule that excludes them from pad matching is needed before this recipe can bind to a library footprint.",
+        "Model scope: Per-contact instance of the class 'R{ref}_c{n} {BOARD_n} {CABLE_n} {Rc}', n = 1..19; shell line omitted (no sourced shell resistance)."
+      ]
+    },
+    "OHM-170": {
+      "entry_id": "OHM-170",
+      "behavior_id": "BEH-CON-MODJACK",
+      "package": "RJ11 6P4C right-angle THT (Adam Tech MTJ-645X1), mated",
+      "reference_part": "Adam Tech MTJ-645X1 Rev D",
+      "terminal_roles": {
+        "1": "P1",
+        "2": "P2",
+        "3": "P3",
+        "4": "P4",
+        "M1": "M1",
+        "M2": "M2",
+        "M3": "M3",
+        "M4": "M4"
+      },
+      "critical_facts": {
+        "rc": {
+          "field": "contact_resistance_max",
+          "unit": "ohm"
+        },
+        "i_rated": {
+          "field": "current_rated_max",
+          "unit": "A"
+        },
+        "v_rated": {
+          "field": "voltage_rated_ac_max",
+          "unit": "V"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref}_c1 {P1} {M1} {rc}\nR{ref}_c2 {P2} {M2} {rc}\nR{ref}_c3 {P3} {M3} {rc}\nR{ref}_c4 {P4} {M4} {rc}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 11611
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "Manufacturer contact numbers 1..4, not six-position housing numbers; no Tip/Ring polarity assigned.",
+        "Contact resistance at its 35 mOhm max; no ring-voltage transient, crosstalk or derating.",
+        "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. RuntimeRecipe has no field that separates them from footprint pads, so a schema addition (e.g. mating_terminals) or a catalog-binding rule that excludes them from pad matching is needed before this recipe can bind to a library footprint.",
+        "Model scope: Per-contact instance of the class 'R{ref}_c{n} {BOARD_n} {CABLE_n} {Rc}', n = manufacturer contacts 1..4; magjack line not applicable."
+      ]
+    },
+    "OHM-171": {
+      "entry_id": "OHM-171",
+      "behavior_id": "BEH-CON-AUDIO",
+      "package": "3.5 mm audio jack, 5 pin THT (Same Sky SJ1-3535NG), plug inserted",
+      "reference_part": "Same Sky SJ1-3535NG (explicit alternate)",
+      "terminal_roles": {
+        "1": "SLEEVE",
+        "2": "TIP",
+        "3": "RING",
+        "4": "TIP_SW",
+        "5": "RING_SW",
+        "M_SLEEVE": "M_SLEEVE",
+        "M_TIP": "M_TIP",
+        "M_RING": "M_RING"
+      },
+      "required_isolated_roles": [
+        "TIP_SW",
+        "RING_SW"
+      ],
+      "critical_facts": {
+        "rc": {
+          "field": "contact_resistance_max",
+          "unit": "ohm"
+        },
+        "i_rated": {
+          "field": "current_rated_max",
+          "unit": "A"
+        },
+        "v_rated": {
+          "field": "voltage_rated_dc_typical",
+          "unit": "V"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref}_s {SLEEVE} {M_SLEEVE} {rc}\nR{ref}_t {TIP} {M_TIP} {rc}\nR{ref}_r {RING} {M_RING} {rc}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 11762
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "Plug-inserted state only; switch pins 4/5 are open and must stay isolated. The unplugged NC state is not modeled because switch closed resistance is unsourced.",
+        "12 Vdc is the manufacturer's rated input voltage (typ column), used as a ceiling, never as an absolute maximum.",
+        "Explicit alternate; the default Ledino KB3SPRS footprint stays unbound.",
+        "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. RuntimeRecipe has no field that separates them from footprint pads, so a schema addition (e.g. mating_terminals) or a catalog-binding rule that excludes them from pad matching is needed before this recipe can bind to a library footprint.",
+        "Model scope: Plug-inserted state of the class template: the 'R{ref}_t {T} {T_cable} {Rc} ; only when inserted' line instantiated for sleeve, tip and ring; the NC switch lines are dropped because inserted = open, and their closed resistance (Rsw) is unsourced."
+      ]
+    },
+    "OHM-172": {
+      "entry_id": "OHM-172",
+      "behavior_id": "BEH-CON-DCJACK",
+      "package": "DC barrel jack 2.0 mm, 3 pin THT right angle (Same Sky PJ-102A), plug inserted",
+      "reference_part": "Same Sky PJ-102A",
+      "terminal_roles": {
+        "1": "CENTER",
+        "2": "SLEEVE",
+        "3": "SLEEVE_SW",
+        "M_TIP": "M_TIP",
+        "M_SLEEVE": "M_SLEEVE"
+      },
+      "required_isolated_roles": [
+        "SLEEVE_SW"
+      ],
+      "critical_facts": {
+        "rc": {
+          "field": "contact_resistance_max",
+          "unit": "ohm"
+        },
+        "i_rated": {
+          "field": "current_rated_max",
+          "unit": "A"
+        },
+        "v_rated": {
+          "field": "voltage_rated_dc_typical",
+          "unit": "V"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref}_tip {CENTER} {M_TIP} {rc}\nR{ref}_slv {SLEEVE} {M_SLEEVE} {rc}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 12066
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "Plug-inserted state only; pin 3 (NC to sleeve when unplugged) is open and isolated. Unplugged switch resistance is unsourced.",
+        "Per-path resistance at the 30 mOhm max; no self-heating (class Rth is an assumption).",
+        "24 Vdc is the rated input voltage (typ column), used as a ceiling only.",
+        "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. RuntimeRecipe has no field that separates them from footprint pads, so a schema addition (e.g. mating_terminals) or a catalog-binding rule that excludes them from pad matching is needed before this recipe can bind to a library footprint.",
+        "Model scope: Class lines 'R{ref}_tip {PLUG_TIP} {TIP} {rc_total/2}' and 'R{ref}_slv ...' with each path at the full 30 mOhm max rather than rc_total/2 (the source does not say whether 30 mOhm is per contact or loop; full value per path is the conservative bound and matches DCJACK/B1, which uses one 30 mOhm Rcon). Switch line dropped: inserted = open; the class switch_partner=TIP ASSUMPTION is contradicted by the source (switch is to sleeve)."
+      ]
+    },
+    "OHM-179": {
+      "entry_id": "OHM-179",
+      "behavior_id": "BEH-CON-SDSOCKET",
+      "package": "SD card socket push-pull 11 pad (Wurth 693063010911), card inserted",
+      "reference_part": "Wurth Elektronik 693063010911 (explicit alternate)",
+      "terminal_roles": {
+        "1": "P1",
+        "2": "P2",
+        "3": "P3",
+        "4": "P4",
+        "5": "P5",
+        "6": "P6",
+        "7": "P7",
+        "8": "P8",
+        "9": "P9",
+        "C1": "C1",
+        "C2": "C2",
+        "C3": "C3",
+        "C4": "C4",
+        "C5": "C5",
+        "C6": "C6",
+        "C7": "C7",
+        "C8": "C8",
+        "C9": "C9",
+        "10": "CD",
+        "11": "WP"
+      },
+      "required_isolated_roles": [
+        "CD",
+        "WP"
+      ],
+      "critical_facts": {
+        "rc": {
+          "field": "contact_resistance_max",
+          "unit": "ohm"
+        },
+        "i_rated": {
+          "field": "current_rated",
+          "unit": "A"
+        },
+        "v_rated": {
+          "field": "working_voltage_ac",
+          "unit": "V"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref}_c1 {P1} {C1} {rc}\nR{ref}_c2 {P2} {C2} {rc}\nR{ref}_c3 {P3} {C3} {rc}\nR{ref}_c4 {P4} {C4} {rc}\nR{ref}_c5 {P5} {C5} {rc}\nR{ref}_c6 {P6} {C6} {rc}\nR{ref}_c7 {P7} {C7} {rc}\nR{ref}_c8 {P8} {C8} {rc}\nR{ref}_c9 {P9} {C9} {rc}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 12670
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "Card-inserted contact paths only; CD (10) and WP (11) are isolated because their switch partner and closed resistance are not sourced.",
+        "Explicit alternate; the default Molex push-push footprint stays unbound.",
+        "No card model, bus pull-ups or SD protocol.",
+        "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. RuntimeRecipe has no field that separates them from footprint pads, so a schema addition (e.g. mating_terminals) or a catalog-binding rule that excludes them from pad matching is needed before this recipe can bind to a library footprint.",
+        "Model scope: Per-contact instance of the class 'R{ref}_k {Pk_board} {Pk_card} {rc}', k = 1..9; the CD switch line is dropped because the switch partner is unsourced in the current datasheet."
+      ]
+    },
+    "OHM-180": {
+      "entry_id": "OHM-180",
+      "behavior_id": "BEH-CON-SDSOCKET",
+      "package": "microSD socket push-push 8 contacts + CD switch A/B (Hirose DM3AT-SF-PEJM5), card inserted",
+      "reference_part": "Hirose DM3AT-SF-PEJM5 (explicit alternate)",
+      "terminal_roles": {
+        "1": "P1",
+        "2": "P2",
+        "3": "P3",
+        "4": "P4",
+        "5": "P5",
+        "6": "P6",
+        "7": "P7",
+        "8": "P8",
+        "C1": "C1",
+        "C2": "C2",
+        "C3": "C3",
+        "C4": "C4",
+        "C5": "C5",
+        "C6": "C6",
+        "C7": "C7",
+        "C8": "C8",
+        "A": "CD_A",
+        "B": "CD_B"
+      },
+      "required_same_net_roles": [
+        [
+          "CD_A",
+          "CD_B"
+        ]
+      ],
+      "critical_facts": {
+        "rc": {
+          "field": "contact_resistance_initial_max",
+          "unit": "ohm"
+        },
+        "i_rated": {
+          "field": "current_rated",
+          "unit": "A"
+        },
+        "v_rated": {
+          "field": "voltage_rated_ac",
+          "unit": "V"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref}_c1 {P1} {C1} {rc}\nR{ref}_c2 {P2} {C2} {rc}\nR{ref}_c3 {P3} {C3} {rc}\nR{ref}_c4 {P4} {C4} {rc}\nR{ref}_c5 {P5} {C5} {rc}\nR{ref}_c6 {P6} {C6} {rc}\nR{ref}_c7 {P7} {C7} {rc}\nR{ref}_c8 {P8} {C8} {rc}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 12670
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "Card-inserted state only; the detect switch is an ideal closure (same-net constraint), with resistance unsourced; card-removed state not modeled.",
+        "Signal pin 2 CD/DAT3 is a card contact, not the mechanical switch A/B.",
+        "Explicit alternate; the default Molex 1040310811 footprint stays unbound.",
+        "No card current model, pull-ups or SD protocol.",
+        "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. RuntimeRecipe has no field that separates them from footprint pads, so a schema addition (e.g. mating_terminals) or a catalog-binding rule that excludes them from pad matching is needed before this recipe can bind to a library footprint.",
+        "Model scope: Per-contact instance of the class 'R{ref}_k {Pk_board} {Pk_card} {rc}', k = 1..8; class switch line replaced by a same-net constraint on CD_A/CD_B (card inserted = closed), because the switch closed resistance is unsourced."
+      ]
     }
   },
   "schema_version": 1

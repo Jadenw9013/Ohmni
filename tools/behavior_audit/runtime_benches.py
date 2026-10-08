@@ -290,12 +290,68 @@ def runtime_receipt_errors(audit, entry_id):
         return mosfet_receipt_errors(audit, entry_id)
     if behavior in {"BEH-DIO-PN", "BEH-TRN-BJT", "BEH-MAG-INDUCTOR", "BEH-LED-INDICATOR",
                     "BEH-RES-SENSE", "BEH-RES-NETWORK", "BEH-DIO-BRIDGE", "BEH-LED-RGB",
-                    "BEH-DIO-ZENER", "BEH-DIO-TVS", "BEH-DIO-SCHOTTKY"}:
+                    "BEH-DIO-ZENER", "BEH-DIO-TVS", "BEH-DIO-SCHOTTKY"} or behavior in PATH_PROBES:
         return dc_probe_receipt_errors(audit, entry_id)
     return [f"{entry_id}: no runtime analytical receipt validator for {behavior}"]
 
 
+# One DC current through one bound path, compared with that path's sourced resistance (D049).
+# Rows: variant, driven role, return role, resistance alias candidates, current rule.
+_CONTACT = [(None, "P1", ("W1", "M1", "C1"), ("rmate", "rpath", "rc"), "rated")]
+PATH_PROBES = {
+    "BEH-RES-POT": [(None, "A", ("B",), ("value",), "pot")],
+    "BEH-CAP-CERAMIC": [(None, "T1", ("T2",), ("rleak",), "leak")],
+    "BEH-CAP-TANT": [(None, "A", ("K",), (), "tant")],
+    "BEH-MAG-CMC": [("A", "A1", ("A2",), ("rdc",), "rated"), ("B", "B1", ("B2",), ("rdc",), "rated")],
+    "BEH-MAG-XFMR-SIGNAL": [("primary", "P_A", ("P_B",), ("rp",), "unbalance"),
+                            ("secondary", "S_A", ("S_B",), ("rs",), "unbalance")],
+    "BEH-CON-WTB": _CONTACT, "BEH-CON-TERMINAL": _CONTACT, "BEH-CON-USB": _CONTACT,
+    "BEH-CON-HDMI": _CONTACT, "BEH-CON-MODJACK": _CONTACT, "BEH-CON-SDSOCKET": _CONTACT,
+    "BEH-CON-AUDIO": [(None, "TIP", ("M_TIP",), ("rc",), "rated")],
+    "BEH-CON-DCJACK": [(None, "CENTER", ("M_TIP",), ("rc",), "rated")],
+}
+PATH_TOLERANCE = 1e-3
+
+
+def _path_probe(recipe, values, evidence, variant):
+    row = next(r for r in PATH_PROBES[recipe.behavior_id] if r[0] == variant)
+    _, drive, returns, aliases, rule = row
+    roles = set(recipe.terminal_roles.values())
+    back = next((r for r in returns if r in roles), None)
+    if drive not in roles or back is None:
+        raise ValueError("bound path roles are missing")
+    if rule == "tant":
+        resistance, current, facts = values["vr"] / values["ileak"], values["ileak"], ("vr", "ileak")
+    else:
+        alias = next((a for a in aliases if a in values), None)
+        if alias is None:
+            raise ValueError("path resistance fact is missing")
+        resistance = values[alias]
+        if rule == "rated":
+            current_alias = next(a for a in ("i_rated", "i_nom", "irated") if a in values)
+            current, facts = values[current_alias], (alias, current_alias)
+        elif rule == "unbalance":
+            current, facts = values["idc_unbalance"], (alias, "idc_unbalance")
+        elif rule == "leak":
+            current, facts = values["vr"] / resistance, (alias, "vr")
+        else:  # pot: the locked B1 deck's 10 V across the track
+            current, facts = 10 / resistance, (alias, "tol")
+    if rule == "pot":
+        tol = values["tol"] / 100
+        comparison = {"kind": "interval", "minimum": resistance * (1 - tol), "maximum": resistance * (1 + tol)}
+    else:
+        comparison = {"kind": "absolute", "expected": resistance, "tolerance": resistance * PATH_TOLERANCE}
+    comparison.update(observable="path_resistance", current=current, drive_role=drive, return_role=back,
+                      source_facts={name: evidence[name] for name in facts})
+    isolated = set(recipe.required_isolated_roles)
+    node_of = {role: ("anode" if role == drive else f"iso_{role}".lower() if role in isolated else "return")
+               for role in roles}
+    return node_of, comparison
+
+
 def dc_probe_variants(behavior_id):
+    if behavior_id in PATH_PROBES:
+        return [row[0] for row in PATH_PROBES[behavior_id]]
     if behavior_id == "BEH-DIO-BRIDGE":
         return ["positive", "negative"]
     if behavior_id == "BEH-LED-RGB":
@@ -323,7 +379,10 @@ def dc_probe_definition(audit, entry_id, variant=None):
     variant = variant or variants[0]
     if variant not in variants:
         raise ValueError("unknown probe variant")
-    if (recipe.behavior_id == "BEH-DIO-PN" and entry_id in {"OHM-057", "OHM-058", "OHM-064", "OHM-065"}
+    # A binding whose forward terms are fitted to the part's own datasheet curve is checked against
+    # that part's sourced maximum, not against the shared class card it no longer uses (D048).
+    own_forward_fit = {"IS", "N", "RS"} <= set(recipe.model_facts)
+    if (recipe.behavior_id == "BEH-DIO-PN" and (entry_id in {"OHM-057", "OHM-058", "OHM-064", "OHM-065"} or own_forward_fit)
             or recipe.behavior_id == "BEH-DIO-SCHOTTKY"):
         fact = evidence["vf_max"]
         current = re.search(r"\bIF\s*=?\s*(\d+(?:\.\d+)?)\s*(m?A)", fact["scope"])
@@ -336,7 +395,7 @@ def dc_probe_definition(audit, entry_id, variant=None):
         comparison = {"kind": "interval", "minimum": 0, "maximum": values["vf_max"],
                       "observable": "anode_voltage", "source_fact": fact}
         limits = "Isothermal25 C forward voltage against the scoped primary-source maximum at its test current; a source-bound check does not validate typical fit, temperature, reverse recovery or ratings."
-    elif recipe.behavior_id in {"BEH-LED-INDICATOR", "BEH-LED-RGB"} and entry_id != "OHM-073":
+    elif recipe.behavior_id in {"BEH-LED-INDICATOR", "BEH-LED-RGB"} and (entry_id != "OHM-073" or own_forward_fit):
         rgb = recipe.behavior_id == "BEH-LED-RGB"
         fact = evidence["vf_" + variant if rgb else "vf_max"]
         condition = re.search(r"(?:IF)?\s*(\d+(?:\.\d+)?)\s*mA", fact["scope"])
@@ -349,7 +408,8 @@ def dc_probe_definition(audit, entry_id, variant=None):
         excitations = [DCExcitation(positive_net="return", negative_net="anode", value=Quantity(value=current, unit="A"))]
         comparison = {"kind": "interval", "minimum": 0, "maximum": values["vf_" + variant if rgb else "vf_max"],
                       "observable": "anode_voltage", "source_fact": fact, "test_current": current}
-        limits = "Explicit color-family proxy at the source test current, checked against its maximum forward voltage. This does not validate the typical curve, thermal/optical model, reverse operation or physical package equivalence."
+        limits = (("Per-part forward fit" if own_forward_fit else "Explicit color-family proxy")
+                  + " at the source test current, checked against its maximum forward voltage. This does not validate the typical curve, thermal/optical model, reverse operation or physical package equivalence.")
     elif recipe.behavior_id == "BEH-RES-SENSE":
         contract, deck = _locked_probe_deck(audit, "BEH-RES-SENSE/B1")
         if not re.search(r"(?im)^I\S*\s+\S+\s+\S+\s+(?:DC\s+)?10\s*$", deck):
@@ -454,6 +514,13 @@ def dc_probe_definition(audit, entry_id, variant=None):
                       "observable": "dc_resistance", "current": values["irms"],
                       "source_facts": {name: evidence[name] for name in ("rdc_max", "irms")}}
         limits = "Cold isothermal DC winding resistance against the sourced upper bound. Does not validate nonlinear inductance, resonant response, core loss, self-heating or safe sustained operation at the stimulus current."
+    elif recipe.behavior_id in PATH_PROBES:
+        roles, comparison = _path_probe(recipe, values, evidence, variant)
+        supplies = {}
+        excitations = [DCExcitation(positive_net="return", negative_net="anode", value=Quantity(value=comparison["current"], unit="A"))]
+        limits = ("Binding check of one bound DC path: the sourced current through the path must reproduce the sourced path "
+                  "resistance (0.1% numerical tolerance, or the sourced tolerance band). It does not validate frequency response, "
+                  "heating, contact wear, isolation, protocol behavior or any rating beyond the stated facts.")
     else:
         raise ValueError("no authored DC probe for this class")
     nets = [Net(name=name, kind="ground" if name == "return" else "power" if name in supplies else "signal",
@@ -492,6 +559,9 @@ def _dc_observation(compiled, comparison, output):
         plus = parsed.node_voltages.get(compiled.node_names["plus"])
         minus = parsed.node_voltages.get(compiled.node_names["minus"])
         return comparison["supply_magnitude"] - (plus.value - minus.value) if plus and minus else None
+    if comparison["observable"] == "path_resistance":
+        voltage = parsed.node_voltages.get(compiled.node_names["anode"])
+        return voltage.value / comparison["current"] if voltage else None
     if comparison["observable"] == "dc_resistance":
         voltage = parsed.node_voltages.get(compiled.node_names["winding"])
         return voltage.value / comparison["current"] if voltage else None

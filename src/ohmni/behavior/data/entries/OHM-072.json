@@ -90,15 +90,15 @@
       {
         "basis": "MFR_DATASHEET",
         "confidence": "H",
-        "detail": null,
+        "detail": "REPLACES the existing field whose scope 'W10G WOG; IF1A' does not match the bridge probe regex ';\\s*(\\d+)A'. Electrical characteristics: 'Maximum instantaneous forward voltage per diode IF = 1.0 A VF 1.0 V' (TA = 25 °C unless otherwise noted).",
         "field": "maximum_forward_voltage_per_diode",
         "page": 1,
-        "scope": "W10G WOG; IF1A",
+        "scope": "W10G WOG; 1A; TA25 C source table default",
         "sources": [
           "https://www.vishay.com/doc?88769"
         ],
         "unit": "V",
-        "value": 1
+        "value": 1.0
       },
       {
         "basis": "MFR_DATASHEET",
@@ -125,21 +125,80 @@
         ],
         "unit": null,
         "value": "PLUS opposite MINUS; AC opposite AC"
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "Outline 'Case Style WOG' (p3, inspected image): '+' upper-left, '~' upper-right, '~' lower-left, '-' lower-right, square lead pattern 0.180-0.220 in on both axes. Diagonal pairs are invariant under the unproven view rotation/mirror; pin 1 = '+' is the library convention (PCB_COMPONENT_3D_LIBRARY_SPEC.md OHM-072), not a manufacturer number.",
+        "field": "derived_package_pin_roles",
+        "page": 3,
+        "scope": "W10G only. Library CCW numbering from top-left with pin 1 at the '+' lead; MINUS on the opposite diagonal. AC interchange is electrically equivalent.",
+        "sources": [
+          "https://www.vishay.com/doc?88769"
+        ],
+        "unit": null,
+        "value": {
+          "1": "PLUS",
+          "2": "AC1",
+          "3": "MINUS",
+          "4": "AC2"
+        }
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "detail": "Least-squares fit of VF = N*Vt*ln(I/IS+1)+I*RS (Vt at 298.15 K) to the five lowest vertices of the vector polyline of Fig. 3 'Typical Forward Characteristics Per Diode' (TJ 25 C, 300 us pulse): (0.6085 V, 10.5 mA), (0.7899 V, 0.1027 A), (0.9989 V, 1.937 A), (1.0793 V, 4.92 A), (1.1376 V, 7.15 A); axis calibrated on gridlines (133.25 pt/V, 32.555 pt/decade). RMS 7.8 mV, max 11.2 mV. IS and N trade off; use as a set. Above 7 A the curve bends (excluded).",
+        "field": "spice_IS_fit",
+        "page": 2,
+        "scope": "W10G WOG; per diode; TJ 25 C; typical; fit 0.01-7.2 A",
+        "sources": [
+          "https://www.vishay.com/doc?88769"
+        ],
+        "unit": "A",
+        "value": 1.957e-06
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "detail": "Same fit as spice_IS_fit (curve slope ~170 mV/decade below 2 A).",
+        "field": "spice_N_fit",
+        "page": 2,
+        "scope": "W10G WOG; per diode; TJ 25 C; typical; fit 0.01-7.2 A",
+        "sources": [
+          "https://www.vishay.com/doc?88769"
+        ],
+        "unit": "1",
+        "value": 2.786
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "detail": "Same fit as spice_IS_fit. Fit VF(1 A) = 0.948 V (typical) vs 1.0 V maximum.",
+        "field": "spice_RS_fit",
+        "page": 2,
+        "scope": "W10G WOG; per diode; TJ 25 C; typical; fit 0.01-7.2 A",
+        "sources": [
+          "https://www.vishay.com/doc?88769"
+        ],
+        "unit": "ohm",
+        "value": 0.006825
       }
     ],
     "remaining_open_items": [
       "A binding to librarypin1PLUS and diagonalpin3MINUS is consistent with the sourced opposite-pair relationship; prove the top/bottom-view transform before physical checks.",
       "MCC WOM is a different reference and is not resolved by the Vishay drawing.",
-      "Capacitive-input derating depends on Ipeak/Iaverage infigure1; do not grant1.5Aunconditionally."
+      "Capacitive-input derating depends on Ipeak/Iaverage infigure1; do not grant1.5Aunconditionally.",
+      "Former simulation blocker resolved for the explicitly bound reference (2026-10-08): Physical role binding remains unverified for the generic WOM/WOG combined entry. Resolution: Scope the binding to Vishay W10G only (DF10M precedent, D031); MCC WOM stays unbound. The Vishay WOG outline (doc 88769 p3, inspected image) marks '+' and '-' on one diagonal of the square lead pattern and the two '~' on the other diagonal, with equal 4.6-5.6 mm spacing on both axes. Every rotation or mirror of a square maps diagonals to diagonals, so the unresolved top-view/lead-end-view transform can only exchange which AC lead is library pin 2 vs 4. The library anchors pin 1 to the '+' lead (3D spec OHM-072 'OHMNI default pin 1 = +'), so PLUS=1 and MINUS=3 (diagonal) are fixed, and AC1/AC2 are electrically interchangeable in the four-identical-diode model; the existing bridge probe already tests both AC polarities. Hence the transform does not need to be proven for the electrical binding. Second problem found: with the class proxy card (IS 1.04e-10, N 1.8, RS 0.03) a W10G diode drops ~1.09 V at 1 A, above the W10G 1.0 V maximum, so the bridge probe (2*vf_max = 2.0 V) would fail; a W10G-specific forward fit from its own Fig. 3 is proposed (two-junction drop 1.895 V, passes).",
+      "MCC WOM reference and its AC,AC,+,- statement remain unresolved and unbound.",
+      "Capacitive-input derating and surge (IFSM 50 A, I2t 10) not modelled.",
+      "Physical check that the footprint places pin 1 under the '+' mark."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Physical role binding remains unverified for the generic WOM/WOG combined entry."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-072.md",
-      "document_sha256": "50969e47c67326e9ac16c5ef71c7d9deb4a275e7256896eba29b18c6a3d510a3",
+      "document_sha256": "e05b6205eff4793a2769dcd6dafa76b5194bc26011d974cfaa1f59272355d22d",
       "fragment_sha256": null,
       "line": 1
     }

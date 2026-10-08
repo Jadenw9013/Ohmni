@@ -153,6 +153,63 @@
         ],
         "unit": null,
         "value": "No.1 circuit"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "header table row '4 | SM04B-SRSS-TB'",
+        "field": "reference_part",
+        "page": 3,
+        "scope": "JST SH header model table; 4 circuits",
+        "sources": [
+          "https://www.jst-mfg.com/product/pdf/eng/eSH.pdf"
+        ],
+        "unit": null,
+        "value": "SM04B-SRSS-TB"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "housing table row '4 | SHR-04V-S'",
+        "field": "reference_mating_housing",
+        "page": 2,
+        "scope": "JST SH housing model table; 4 circuits",
+        "sources": [
+          "https://www.jst-mfg.com/product/pdf/eng/eSH.pdf"
+        ],
+        "unit": null,
+        "value": "SHR-04V-S"
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "Header drawing marks 'Mark of No. 1 circuit' / 'No. 1 circuit' (p3) and housing drawing marks 'No. 1 circuit' (p2); the shrouded header is keyed so the housing mates one way, hence header circuit k mates housing circuit k. Electrical polarity is not assigned.",
+        "field": "mated_circuit_map",
+        "page": 2,
+        "scope": "SM04B-SRSS-TB mated with SHR-04V-S; positional circuit correspondence",
+        "sources": [
+          "https://www.jst-mfg.com/product/pdf/eng/eSH.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "1": "W1",
+          "2": "W2",
+          "3": "W3",
+          "4": "W4"
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Reinforcement: Copper alloy, tin-plated' (mechanical hold-down, not a circuit)",
+        "field": "reinforcement_material",
+        "page": 3,
+        "scope": "SM**B-SRSS-TB header",
+        "sources": [
+          "https://www.jst-mfg.com/product/pdf/eng/eSH.pdf"
+        ],
+        "unit": null,
+        "value": "Copper alloy, tin-plated"
       }
     ],
     "remaining_open_items": [
@@ -166,7 +223,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-157.md",
-      "document_sha256": "2a0ff5189c3821ecf21784dc5899d21075d698797dcf202be00529dfbb07c043",
+      "document_sha256": "2059fd5cb36d7d274f38fc7b1e75c8a7ec1cee60283b6d77275ee0bd9f2d10bd",
       "fragment_sha256": null,
       "line": 1
     }

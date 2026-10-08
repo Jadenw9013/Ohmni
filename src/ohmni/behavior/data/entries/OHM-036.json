@@ -231,20 +231,127 @@
         ],
         "unit": null,
         "value": "positive anode"
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "H",
+        "detail": "p15 'Permissible Transient Reverse Voltage 25°C 15% of Rated Voltage' x rated 16 V (p10)",
+        "field": "transient_reverse_voltage_limit_at_25C",
+        "page": 15,
+        "scope": "KEMET T491D107(1)016A(2), case D; T491 MnO2; transient only, not continuous",
+        "sources": [
+          "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+        ],
+        "unit": "V",
+        "value": 2.4
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "H",
+        "detail": "p15 '85°C 5% of Rated Voltage' x 16 V",
+        "field": "transient_reverse_voltage_limit_at_85C",
+        "page": 15,
+        "scope": "KEMET T491D107(1)016A(2), case D; T491 MnO2; transient only",
+        "sources": [
+          "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+        ],
+        "unit": "V",
+        "value": 0.8
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "H",
+        "detail": "p15 '125°C 1% of Rated Voltage' x 16 V",
+        "field": "transient_reverse_voltage_limit_at_125C",
+        "page": 15,
+        "scope": "KEMET T491D107(1)016A(2), case D; T491 MnO2; transient only",
+        "sources": [
+          "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+        ],
+        "unit": "V",
+        "value": 0.16
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "H",
+        "detail": "p14 'Recommended maximum ... 50% of VR' x 16 V",
+        "field": "recommended_application_voltage_at_or_below_85C",
+        "page": 14,
+        "scope": "KEMET T491D107(1)016A(2), case D; T491 MnO2; application recommendation -55 to 85 C",
+        "sources": [
+          "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+        ],
+        "unit": "V",
+        "value": 8.0
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "H",
+        "detail": "p14 '33% of VR' x 16 V",
+        "field": "recommended_application_voltage_at_125C",
+        "page": 14,
+        "scope": "KEMET T491D107(1)016A(2), case D; T491 MnO2; application recommendation endpoint",
+        "sources": [
+          "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+        ],
+        "unit": "V",
+        "value": 5.28
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "H",
+        "detail": "p14 '67% of VR' x 16 V",
+        "field": "maximum_working_voltage_at_125C",
+        "page": 14,
+        "scope": "KEMET T491D107(1)016A(2), case D; T491 MnO2; working-voltage endpoint, not recommended application voltage",
+        "sources": [
+          "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+        ],
+        "unit": "V",
+        "value": 10.72
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "p2 'Leakage Current ≤ 0.01 CV (µA) at rated voltage after 5 minutes'; consistent with the p10 row value 16.0 uA",
+        "field": "leakage_limit_rule",
+        "page": 2,
+        "scope": "T491 series; 25 C",
+        "sources": [
+          "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+        ],
+        "unit": null,
+        "value": "<= 0.01 CV uA at rated voltage after 5 minutes"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "p15 'The positive terminal is identified on the capacitor body by a stripe, plus, in some cases a beveled edge.'",
+        "field": "polarity_identification",
+        "page": 15,
+        "scope": "T491 series",
+        "sources": [
+          "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+        ],
+        "unit": null,
+        "value": "positive terminal identified by stripe (some cases beveled edge)"
       }
     ],
     "remaining_open_items": [
       "ESL, frequency/temperature impedance fit and destructive failure behavior are not established.",
-      "Select tolerance and termination options before claiming an orderable reference binding."
+      "Select tolerance and termination options before claiming an orderable reference binding.",
+      "Former simulation blocker resolved for the explicitly bound reference (2026-10-08): Runtime must use the scoped MnO2 reverse/temperature limits instead of the generic fixed 3% envelope. Resolution: The archived T491 datasheet (already the entry's document) gives the case-D 16 V row (p10: 100 uF, DCL 16.0 uA, ESR 0.7 ohm, ripple 463 mA) and the temperature-dependent MnO2 limits (p14 derating 50%/33%/67%, p15 transient reverse 15/5/1%). The recipe replaces the class template's fixed 3% reverse flag with these scoped limits as sourced critical facts (new DERIVED volt-valued fields so they are finite scalars in V), and drops the class flag bits. Note the class/bench 3% envelope is NOT conservative at 125 C, where T491 allows only 1%.",
+      "Tolerance/termination option letters for a completed orderable code",
+      "ESL, impedance fit, ESR vs frequency/temperature",
+      "Surge/ignition behaviour",
+      "Power-dissipation temperature multipliers beyond 25 C"
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Runtime must use the scoped MnO2 reverse/temperature limits instead of the generic fixed 3% envelope."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-036.md",
-      "document_sha256": "945d8b80349a38f281f028457ea2c34bc83aa29b3a45d466052d3b319b8a163d",
+      "document_sha256": "dbe3b4cb87170a3ed7d5dbf00f9b0c63357866be2aff0126f7a48197285e6655",
       "fragment_sha256": null,
       "line": 1
     }

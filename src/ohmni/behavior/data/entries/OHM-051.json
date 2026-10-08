@@ -150,20 +150,40 @@
         ],
         "unit": "K",
         "value": 55
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Schematic: winding 1 -> 4 and 2 -> 3, dots at 1 and 2.",
+        "field": "manufacturer_pin_roles",
+        "page": 1,
+        "scope": "744821240; manufacturer terminals",
+        "sources": [
+          "https://www.we-online.com/katalog/datasheet/744821240.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "1": "A1",
+          "2": "B1",
+          "3": "B2",
+          "4": "A2"
+        }
       }
     ],
     "remaining_open_items": [
       "Package-terminal ordering differs from a simple geometric CCW assumption; bind explicitly.",
-      "Leakage, common-mode saturation and fitted HF loss remain unresolved."
+      "Leakage, common-mode saturation and fitted HF loss remain unresolved.",
+      "Former simulation blocker resolved for the explicitly bound reference (2026-10-08): Mains-rated winding binding and missing saturation/thermal model need explicit handling; insulation test voltage is not a working voltage. Resolution: Proposed explicit handling: a DC winding-resistance-only, op-only binding that makes no mains, insulation or isolation claim, with no saturation or thermal model. The 250 V AC 50 Hz rated voltage is kept as a sourced rating to enforce, and the 1500 V AC / 2 s figure is recorded only as a test voltage. Because tran is not supported, no mains-frequency simulation can run on it. Pin binding: the WE datasheet (744821240 rev 004.000, archived sha 87ca9b97...) schematic gives windings 1->4 and 2->3 with dots at 1 and 2. Its top view puts 1 and 2 10.0 mm apart and 1 and 4 4.5 mm apart, while spec line 3487 puts package 1-2 4.5 mm apart (x = -5) and 1-4 10 mm apart. With pin 1 held fixed, manufacturer->package is {1:1, 2:4, 3:3, 4:2}, so the windings are package 1-2 and 4-3, dotted at package 1 and 4. The spec's adopted default (A1=1, A2=4, B1=2, B2=3) pairs pins across the 10 mm span in package numbering and is wrong. If the caller wants mains entries kept blocked as policy, this entry should stay blocked; the evidence for the DC binding itself is complete.",
+      "Leakage inductance, CM saturation and HF loss (not in the datasheet)",
+      "Any mains/safety acceptance (out of scope; never claimed)",
+      "Thermal model for the 70 C / <55 K rating"
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Mains-rated winding binding and missing saturation/thermal model need explicit handling; insulation test voltage is not a working voltage."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-051.md",
-      "document_sha256": "4ec08388ed956f817494d509b7e175a174ec1ce2cf6d75bee525f5f97a0abc95",
+      "document_sha256": "54b74781e2e67f7d42fb6e00fd197e7583c7ea18bead09c91846cf8723888da3",
       "fragment_sha256": null,
       "line": 1
     }

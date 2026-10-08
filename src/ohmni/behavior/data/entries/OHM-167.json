@@ -101,20 +101,57 @@
         ],
         "unit": "cycles",
         "value": 5000
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "PIN CONNECTIONS table copied verbatim; pin 6 is printed 'TMDS Data-' (not 'Data1-'); kept as printed. Mating sequence: shell FIRST, pin 18 THIRD, others SECOND.",
+        "field": "manufacturer_pin_functions",
+        "page": 3,
+        "scope": "HD12-19-SMT-TR only; informational, not used as model roles",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/farnellpdf/hd12-19-smt-tr.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "1": "TMDS Data2+",
+          "10": "TMDS Clock+",
+          "11": "TMDS Clock Shield",
+          "12": "TMDS Clock-",
+          "13": "CEC",
+          "14": "Utility",
+          "15": "SCL",
+          "16": "SDA",
+          "17": "DDC/CEC Ground",
+          "18": "+5V Power",
+          "19": "Hot Plug Detect",
+          "2": "TMDS Data2 Shield",
+          "3": "TMDS Data2-",
+          "4": "TMDS Data1+",
+          "5": "TMDS Data1 Shield",
+          "6": "TMDS Data-",
+          "7": "TMDS Data0+",
+          "8": "TMDS Data0 Shield",
+          "9": "TMDS Data0-",
+          "SHELL": "SHELL/SHIELD"
+        }
       }
     ],
     "remaining_open_items": [
       "Type A signal-to-pad binding for the selected physical reference remains unverified.",
-      "No sourced transmission-line or connector parasitic model."
+      "No sourced transmission-line or connector parasitic model.",
+      "Former simulation blocker resolved for the explicitly bound reference (2026-10-08): Unvalidated reference footprint and signal map; HDMI protocol is not simulable. Resolution: Resolvable as an explicit alternate binding (same treatment as OHM-044's explicit alternative), not as the default CT_19APL2 footprint. The archived Same Sky HD12-19-SMT-TR sheet gives rated voltage 40 Vac max, rated current 0.5 A max, contact resistance 20 mOhm max 'between terminals and mating plug' (measured at 20 mV/100 mA), and on p3 a PIN CONNECTIONS table plus a Recommended PCB Layout marked NO.1 ... NO.19. That is a true contact-path specification with the part's own numbering. HDMI TMDS/DDC/CEC/HPD protocol stays out of scope.",
+      "Default CT_19APL2 footprint remains unbound",
+      "Shell pad resistance/modeling",
+      "TMDS transmission-line model",
+      "HDMI protocol not simulable"
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Unvalidated reference footprint and signal map; HDMI protocol is not simulable."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-167.md",
-      "document_sha256": "0d765b0682bf3cc6c2cd93489ceafb18e551aabf637acfcc4b23bc2fd9d5523c",
+      "document_sha256": "d001089b2d44ee126c103f2c8fdd0dae2884ecb6fa12f4ed670453e76e1fa3dc",
       "fragment_sha256": null,
       "line": 1
     }
