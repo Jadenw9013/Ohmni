@@ -1,0 +1,899 @@
+[
+ {
+  "entry": "OHM-015",
+  "class": "BEH-RES-SENSE",
+  "verdict": "blocked",
+  "blocker_recorded": "Exact sense-pin variant and busbar thermal/current conditions are unbound; 36 W does not establish a safe free-air current.",
+  "blocker_resolution": "Not closable from archived evidence. The only archived source (Vishay doc 30134, rev 26-May-2026) covers the base WSBS8518 with Cu terminals: page 2 shows two 7.0 mm bolt holes and 'Voltage test points' (marked locations, not pins); page 3 lists sense-pin builds only as separate options with their own documents (WSBS8518...20 'Two sense pins' doc 30341, ...40 'Three sense pins' doc 30350, ...35/...60/...80). The OHMNI 3D package (spec line 1045) models two sense pins, so it corresponds to an option whose drawing was not opened; www.vishay.com was unreachable from this environment (WebFetch and curl both failed), so doc 30341 could not even be located for an archived:false proposal. The thermal half also cannot be sourced: P70 = 36 W is printed with no mounting/busbar condition anywhere in the document, so sqrt(P/R) = 600 A is not a safe installation current. A two-terminal Ohm's-law binding of WSBS8518L1000 would be supportable electrically (nominal value below) but does not match the 4-pin package, so it is not proposed.",
+  "reference_part": "Vishay WSBS8518L1000 (100 microohm) base Cu-terminal build is the only archived scope; the sense-pin option the 3D package depicts is unbound",
+  "new_field_updates": [
+   {
+    "field": "nominal_resistance",
+    "value": 0.0001,
+    "unit": "ohm",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.vishay.com/docs/30134/wsbs8518.pdf"
+    ],
+    "page": 1,
+    "scope": "Vishay WSBS8518, 100 microohm option (part-number code L1000)",
+    "detail": "Resistance values currently available '50\u03bc, 100\u03bc, 125\u03bc, 250\u03bc'; part numbering 'L1000 = 0.000100 \u03a9'. Value stored in ohm because the compiler has no microohm unit.",
+    "archived": true
+   },
+   {
+    "field": "resistance_tolerance",
+    "value": [
+     5,
+     10
+    ],
+    "unit": "%",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.vishay.com/docs/30134/wsbs8518.pdf"
+    ],
+    "page": 1,
+    "scope": "Vishay WSBS8518; J or K tolerance code",
+    "detail": "Tolerance '5, 10' %; J = \u00b15 %, K = \u00b110 %. Not a scalar until the tolerance code is selected.",
+    "archived": true
+   }
+  ],
+  "recipe": null,
+  "pin_map_evidence": "Doc 30134 p2: base part has two bolt holes (\u00d87.0, 2 places) and unnumbered 'Voltage test points'; no sense pins and no pin numbers. Sense-pin geometry (spec pins 3/4) is only in the unopened option documents.",
+  "runtime_check": {
+   "stimulus": "Existing BEH-RES-SENSE probe: 10 A from locked bench BEH-RES-SENSE/B1",
+   "observable": "anode_voltage",
+   "comparison": "absolute 10 A * 1e-4 ohm = 1.0 mV, relative tolerance of B1",
+   "derived_from": "BEH-RES-SENSE/B1 and nominal_resistance",
+   "existing_probe_covers_it": true,
+   "new_probe_needed_for_class": "none; note the probe's derivation string hard-codes '5 milliohm reference' text and would need to be generalised before a second entry uses it"
+  },
+  "open_items_after": [
+   "Archive Vishay doc 30341 (WSBS8518...20 two sense pins) or 30350 and bind the exact sense-pin option and its pin positions",
+   "Busbar/mounting condition for the 36 W P70 rating; no safe free-air current",
+   "Tolerance code selection (J/K) before tolerance is a scalar"
+  ]
+ },
+ {
+  "entry": "OHM-017",
+  "class": "BEH-RES-NETWORK",
+  "verdict": "blocked",
+  "blocker_recorded": "Confirm numbered pin-to-element map before simulating the physical array.",
+  "blocker_resolution": "Not closable. The archived CRA06P datasheet (doc 31047 rev 09-Jan-07) is a third-party mirror (pccomponents.com), i.e. secondary. Its page 2 'CIRCUIT / 03 CIRCUIT' drawing shows four isolated resistors drawn top-to-bottom and the dimension/land drawings show 2x4 terminations, but no terminal carries a number, so pin 1..8 to element pairing (spec's 1-8, 2-7, 3-6, 4-5 CONSENSUS) cannot be read from the part's own drawing. The Vishay-hosted copy could not be fetched (vishay.com unreachable). Also, the datasheet calls the CRA06P a concave terminal array while the spec text says convex.",
+  "reference_part": "Vishay CRA06P0803xxxxJ (8-terminal, 03 isolated circuit); value code not selected",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "Mirror doc p2: circuit drawing and dimension drawing have no pin numbers; only schematic implication that each element joins opposite terminations.",
+  "runtime_check": {
+   "stimulus": "n/a",
+   "observable": "n/a",
+   "comparison": "n/a",
+   "derived_from": "n/a",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "The existing BEH-RES-NETWORK probe hard-codes the bussed topology (P1 = return, all other pins = supply, expected (N-1)*5/R). It does not fit an isolated array; an isolated-element variant (one element driven at a time, others floating or both ends on return, expected 5/R per element from B2's relative tolerance) would be needed once a numbered map exists."
+  },
+  "open_items_after": [
+   "Manufacturer-hosted CRA06P (or CRA06S/E) drawing with numbered terminals",
+   "Nominal value/tolerance code for the bound part (no nominal_resistance field yet)",
+   "Concave (datasheet) vs convex (spec) terminal style"
+  ]
+ },
+ {
+  "entry": "OHM-018",
+  "class": "BEH-RES-POT",
+  "verdict": "resolvable",
+  "blocker_recorded": "Maximum wiper current is unsourced; loaded-wiper simulation must be refused. End/contact resistance bounds do not establish nominal values.",
+  "blocker_resolution": "Closed by scoping, not by inventing a wiper limit: the binding is the end-to-end element only, with the wiper role W listed in required_isolated_roles (same mechanism as the OHM-103 open base), so compile_circuit refuses any circuit that connects, drives or grounds the wiper. No wiper resistance, position, end resistance or contact resistance enters the model (template is a single A-B resistor), so the bound/worst-case Rend and CRV figures are never used as nominals. The nominal 10 kohm and \u00b110 % come from the 3296 standard resistance table / tolerance line for the exact part 3296W-1-103LF, and the pin roles from the same page's schematic.",
+  "reference_part": "Bourns 3296W-1-103LF (10 kohm, \u00b110 %, top adjust, in-line pins); wiper open",
+  "new_field_updates": [
+   {
+    "field": "nominal_resistance",
+    "value": 10000,
+    "unit": "ohm",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.bourns.com/docs/Product-Datasheets/3296.pdf"
+    ],
+    "page": 1,
+    "scope": "Bourns 3296W-1-103LF; resistance code 103",
+    "detail": "Standard Resistance Table: '10,000' ohms = code '103'; How To Order example '3296 W - 1 - 103 __ LF'.",
+    "archived": true
+   },
+   {
+    "field": "resistance_tolerance_pct",
+    "value": 10,
+    "unit": "%",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.bourns.com/docs/Product-Datasheets/3296.pdf"
+    ],
+    "page": 1,
+    "scope": "Bourns 3296; standard tolerance",
+    "detail": "'Resistance Tolerance ... \u00b110 % std. (tighter tolerance available)'",
+    "archived": true
+   },
+   {
+    "field": "manufacturer_pin_roles",
+    "value": {
+     "1": "A",
+     "2": "W",
+     "3": "B"
+    },
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.bourns.com/docs/Product-Datasheets/3296.pdf"
+    ],
+    "page": 1,
+    "scope": "Bourns 3296W",
+    "detail": "Schematic 'CCW 1 \u2014 2 WIPER \u2014 3 CW'; 3296W outline shows pins 1, 2, 3 in line at 2.54 mm. A/B are the class names for the two track ends (1 = CCW end, 3 = CW end); with the wiper unmodelled the A/B labels are electrically interchangeable.",
+    "archived": true
+   }
+  ],
+  "recipe": {
+   "entry_id": "OHM-018",
+   "behavior_id": "BEH-RES-POT",
+   "package": "3296W top-adjust THT in-line",
+   "reference_part": "Bourns 3296W-1-103LF, 10 kohm, wiper open",
+   "terminal_roles": {
+    "1": "A",
+    "2": "W",
+    "3": "B"
+   },
+   "pin_role_fact": {
+    "field": "manufacturer_pin_roles",
+    "scope_contains": "3296W"
+   },
+   "required_isolated_roles": [
+    "W"
+   ],
+   "critical_facts": {
+    "value": {
+     "field": "nominal_resistance",
+     "unit": "ohm"
+    },
+    "tol": {
+     "field": "resistance_tolerance_pct",
+     "unit": "%"
+    },
+    "p_rated": {
+     "field": "p_rated",
+     "unit": "W"
+    },
+    "v_max": {
+     "field": "v_max",
+     "unit": "V"
+    },
+    "t_knee": {
+     "field": "derating_knee",
+     "unit": "degC"
+    },
+    "t_end": {
+     "field": "t_end",
+     "unit": "degC"
+    }
+   },
+   "derived_parameters": {},
+   "class_parameters": {},
+   "quoted_parameters": {},
+   "template_override": "R{ref} {A} {B} {value}\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 1054
+   },
+   "inline_assets": [],
+   "supported_analyses": [
+    "op"
+   ],
+   "limitations": [
+    "End-to-end track resistance only. The wiper (pin 2) must stay unconnected: no maximum wiper current is published, so any loaded, driven or grounded wiper is refused rather than simulated.",
+    "No wiper position, wiper resistance, end resistance or contact-resistance variation is modelled; the datasheet gives only worst-case bounds for these.",
+    "0.5 W at 70 C derating to 0 W at 125 C and the 300 V maximum are enforced as source ratings; no self-heating, TCR or wear model."
+   ]
+  },
+  "pin_map_evidence": "3296.pdf (Bourns REV. 02/26, archived sha 8492a5d6...) page 1: schematic 'CCW 1, 2 WIPER, 3 CW' and the 3296W outline with pins 1-2-3 in line on 2.54 mm. Spec line 1054 places 3D pin 1 at +Y, pin 2 wiper at centre, pin 3 at -Y, so package terminal n = manufacturer pin n (identity); 1->A, 2->W, 3->B.",
+  "runtime_check": {
+   "stimulus": "10 V DC on A with B at return and W on its own single-connection net, reusing the 'Vin A 0 10' source of locked bench BEH-RES-POT/B1 (regex as in the network probe)",
+   "observable": "supply_current",
+   "comparison": "interval: minimum 10/(value*(1+tol/100)) = 0.9091 mA, maximum 10/(value*(1-tol/100)) = 1.1111 mA (model gives 1.000 mA); dissipation 10 mW and 10 V are inside the 0.5 W / 300 V source ratings",
+   "derived_from": "BEH-RES-POT/B1 stimulus; nominal_resistance and resistance_tolerance_pct",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "Add a BEH-RES-POT branch to dc_probe_definition: verify B1 deck still contains the 10 V source, roles {A: supply, B: return, W: wiper-isolated}, supplies {supply: 10}, observable supply_current, interval from the sourced tolerance. It checks binding and topology only, not taper or wiper behaviour."
+  },
+  "open_items_after": [
+   "Maximum wiper current (still unpublished; loaded wiper stays refused)",
+   "Typical end and wiper resistance",
+   "Taper/position model and mechanical direction for a wiper-enabled binding",
+   "Failure/wear model"
+  ]
+ },
+ {
+  "entry": "OHM-019",
+  "class": "BEH-RES-POT",
+  "verdict": "blocked",
+  "blocker_recorded": "Maximum wiper current is unsourced; loaded-wiper simulation must be refused. Style-specific voltage and mechanical direction still need explicit binding.",
+  "blocker_resolution": "The wiper-current half could be handled as for OHM-018 (wiper isolated), but the style binding cannot be closed from the archived 3314 datasheet (REV. 07/24). The 300 V maximum is printed only for styles G, J and H (50 V for R; style Z not covered), while the only pin-function schematic ('CCW 1 - 2 WIPER - 3 CW', page 4) sits inside the 3314Z panel. The J/G drawings on page 1 number pins 1, 2, 3 (2 alone on one side) but never state which is the wiper or which end is CW. So the style with a voltage rating has no sourced pin function, and the style with a pin function has no voltage rating. Inferring that J/G share Z's schematic would be general knowledge, not evidence.",
+  "reference_part": "Bourns 3314J-1-103E or 3314G-1-103E would be the natural binding (10 kohm code 103 is in the p6 table), but it cannot be bound yet",
+  "new_field_updates": [
+   {
+    "field": "nominal_resistance",
+    "value": 10000,
+    "unit": "ohm",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.bourns.com/docs/Product-Datasheets/3314.pdf"
+    ],
+    "page": 6,
+    "scope": "Bourns 3314 resistance code 103",
+    "detail": "Standard Resistance Table '10,000' = '103'.",
+    "archived": true
+   },
+   {
+    "field": "resistance_tolerance_pct",
+    "value": 20,
+    "unit": "%",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.bourns.com/docs/Product-Datasheets/3314.pdf"
+    ],
+    "page": 1,
+    "scope": "Bourns 3314; standard tolerance",
+    "detail": "'Resistance Tolerance ... \u00b120 % std.'",
+    "archived": true
+   },
+   {
+    "field": "manufacturer_pin_roles",
+    "value": {
+     "1": "A",
+     "2": "W",
+     "3": "B"
+    },
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "M",
+    "sources": [
+     "https://www.bourns.com/docs/Product-Datasheets/3314.pdf"
+    ],
+    "page": 4,
+    "scope": "Bourns 3314Z only",
+    "detail": "Schematic 'CCW 1, 2 WIPER, 3 CW' printed in the 3314Z column; not stated for J/G/H/R.",
+    "archived": true
+   }
+  ],
+  "recipe": null,
+  "pin_map_evidence": "3314.pdf p1: 3314J-1/G-1/H-1 outlines label pins 3 and 1 on one edge and 2 on the opposite edge, no function; p4: CCW/WIPER/CW schematic within the 3314Z section only; p1 power line: '300 volts max. for Style G, J & H; 50 volts max. for Style R'.",
+  "runtime_check": {
+   "stimulus": "would reuse the proposed BEH-RES-POT probe (10 V across A-B, wiper isolated)",
+   "observable": "supply_current",
+   "comparison": "interval 10/(R*1.2) .. 10/(R*0.8) once bound",
+   "derived_from": "BEH-RES-POT/B1",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "same new BEH-RES-POT probe as OHM-018"
+  },
+  "open_items_after": [
+   "A Bourns document that states the J/G (or H) terminal functions, or a Z-style voltage rating",
+   "Maximum wiper current",
+   "Typical end/wiper resistance"
+  ]
+ },
+ {
+  "entry": "OHM-041",
+  "class": "BEH-MAG-INDUCTOR",
+  "verdict": "resolvable",
+  "blocker_recorded": "Do not use assumed 30% saturation drop / 40 K rise as sourced thermal or saturation limits.",
+  "blocker_resolution": "The model side closes by following the OHM-044 pattern: a DC winding-resistance-only binding (R = maximum DCR) that uses neither a saturation drop nor a temperature rise, so the assumed 30 %/40 K values never enter. The source side does not close yet: the only archived copy is the Murata-generated 'Product Search Data Sheet' hosted at farnell.com (an image-only PDF; values read from the rendered page 2), which the brief treats as secondary, and DECISIONS round 4 already lists OHM-041 as distributor-backed. The sheet itself names the Murata URL to download from; that copy must be archived (murata.com was unreachable here) before the recipe counts.",
+  "reference_part": "Murata LQM18DN6R8M70# (6.8 uH, 0603 multilayer ferrite; packaging suffix unselected)",
+  "new_field_updates": [
+   {
+    "field": "maximum_dcr",
+    "value": 0.96,
+    "unit": "ohm",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://pim.murata.com/asset/pim4/inductor/JELF243B-0086_PDF_INDUCTOR?lastModifiedDatetime=20260305091757",
+     "https://www.farnell.com/datasheets/3170423.pdf"
+    ],
+    "page": 1,
+    "scope": "LQM18DN6R8M70#",
+    "detail": "Murata reference specification JELF243B-0086 p1 table: 'LQM18DN6R8M70L 6.8 \u00b120 0.74\u00b10.22' (DC resistance 0.74 \u00b1 0.22 ohm, so 0.96 ohm maximum); the product page lists DC Resistance(max.) 0.96 ohm.",
+    "archived": true
+   }
+  ],
+  "recipe": {
+   "entry_id": "OHM-041",
+   "behavior_id": "BEH-MAG-INDUCTOR",
+   "package": "0603 chip inductor",
+   "reference_part": "Murata LQM18DN6R8M70#, packaging suffix unselected",
+   "terminal_roles": {
+    "1": "A",
+    "2": "B"
+   },
+   "critical_facts": {
+    "value": {
+     "field": "nominal_inductance",
+     "unit": "uH",
+     "output_unit": "H"
+    },
+    "rdc": {
+     "field": "maximum_dcr",
+     "unit": "ohm"
+    },
+    "rdc_max": {
+     "field": "maximum_dcr",
+     "unit": "ohm"
+    },
+    "irms": {
+     "field": "rated_current_temperature_rise",
+     "unit": "A"
+    },
+    "tmax_part": {
+     "field": "maximum_operating_temperature",
+     "unit": "C"
+    }
+   },
+   "derived_parameters": {},
+   "class_parameters": {},
+   "quoted_parameters": {},
+   "template_override": "R{ref} {A} {B} {rdc}\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 3410
+   },
+   "inline_assets": [],
+   "supported_analyses": [
+    "op"
+   ],
+   "limitations": [
+    "DC winding-resistance model only (R = 0.96 ohm maximum). No inductance, saturation, SRF or loss behaviour is simulated.",
+    "The 330 mA 'Itemp (based on temperature rise)' rating is used only as the probe current; its rise is not stated, so no thermal limit or safe sustained current is claimed. The 120 mA 'Isat (based on inductance change)' rating has no stated drop and is not used.",
+    "Binding valid only after the Murata-hosted sheet is archived; the Farnell-hosted copy is secondary."
+   ]
+  },
+  "pin_map_evidence": "Two-terminal, non-polarized chip; Murata sheet shows no polarity. Spec line 3410 maps A -> terminal 1, B -> terminal 2. A symmetric two-terminal R makes either assignment electrically identical, so no numbered pin diagram is needed for this DC binding.",
+  "runtime_check": {
+   "stimulus": "0.33 A DC (rated_current_temperature_rise) A->B",
+   "observable": "dc_resistance",
+   "comparison": "interval 0 .. 0.96 ohm (maximum_dcr)",
+   "derived_from": "sourced maximum_dcr and rated_current_temperature_rise",
+   "existing_probe_covers_it": true,
+   "new_probe_needed_for_class": "none"
+  },
+  "open_items_after": [
+   "Archive the Murata-hosted LQM18DN6R8M70# data sheet",
+   "Inductance-change % and temperature-rise definitions for the two current ratings",
+   "Saturation curve, thermal resistance, broadband/SRF model"
+  ]
+ },
+ {
+  "entry": "OHM-043",
+  "class": "BEH-MAG-INDUCTOR",
+  "verdict": "resolvable",
+  "blocker_recorded": "Saturation and temperature limits remain unestablished; no silent placeholder promotion.",
+  "blocker_resolution": "Closed by a DC winding-resistance-only binding (OHM-044 pattern). The Murata-hosted dynamic-model component list (archived, sha c85f667c...) row 'LQM31PN2R2M00 2.2 3216/1206 0.95 900mA [blank] 0.19 0.238' supplies the inductance, the temperature-rise rated current and the maximum DCR already recorded in the entry. The inductance-change cell is blank, and the recipe uses no saturation current, drop, rise or maximum temperature, and no placeholder value (the 0.1 ohm / 1 A placeholders are not used).",
+  "reference_part": "Murata LQM31PN2R2M00 (2.2 uH, 1206)",
+  "new_field_updates": [],
+  "recipe": {
+   "entry_id": "OHM-043",
+   "behavior_id": "BEH-MAG-INDUCTOR",
+   "package": "1206 chip inductor",
+   "reference_part": "Murata LQM31PN2R2M00",
+   "terminal_roles": {
+    "1": "A",
+    "2": "B"
+   },
+   "critical_facts": {
+    "value": {
+     "field": "nominal_inductance",
+     "unit": "uH",
+     "output_unit": "H"
+    },
+    "rdc": {
+     "field": "maximum_dcr",
+     "unit": "ohm"
+    },
+    "rdc_max": {
+     "field": "maximum_dcr",
+     "unit": "ohm"
+    },
+    "irms": {
+     "field": "rated_current_temperature_rise",
+     "unit": "A"
+    }
+   },
+   "derived_parameters": {},
+   "class_parameters": {},
+   "quoted_parameters": {},
+   "template_override": "R{ref} {A} {B} {rdc}\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 3424
+   },
+   "inline_assets": [],
+   "supported_analyses": [
+    "op"
+   ],
+   "limitations": [
+    "DC winding-resistance model only (R = 0.238 ohm maximum). No inductance, saturation, SRF or loss behaviour is simulated.",
+    "The 900 mA rating 'based on temp. rise' is used only as the probe current; the rise and the operating-temperature range are not given in the source, so no thermal limit or safe sustained current is claimed.",
+    "The inductance-change current cell is blank in the source and no saturation limit exists in this binding."
+   ]
+  },
+  "pin_map_evidence": "Two-terminal non-polarized 1206 chip (spec line 3424: A -> terminal 1, B -> terminal 2). The bound element is a symmetric resistor, so the assignment is electrically invariant.",
+  "runtime_check": {
+   "stimulus": "0.9 A DC (rated_current_temperature_rise) A->B",
+   "observable": "dc_resistance",
+   "comparison": "interval 0 .. 0.238 ohm (maximum_dcr)",
+   "derived_from": "sourced maximum_dcr and rated_current_temperature_rise",
+   "existing_probe_covers_it": true,
+   "new_probe_needed_for_class": "none"
+  },
+  "open_items_after": [
+   "Detailed LQM31PN specification: temperature range, rise definition, saturation curve, SRF, loss",
+   "Entry has no maximum part temperature, so tmax is not in the recipe"
+  ]
+ },
+ {
+  "entry": "OHM-047",
+  "class": "BEH-MAG-INDUCTOR",
+  "verdict": "resolvable",
+  "blocker_recorded": "Saturation limit is not established for the ferrite-core default.",
+  "blocker_resolution": "Closed by a DC winding-resistance-only binding that has no saturation term. The archived Bourns 78F sheet (01/18) row '78F3R3J-RC 3.3 \u00b15 % 50 7.9 60 0.30 575' with 'Temperature Rise ... 35 \u00b0C at rated current' and '-55 \u00b0C to +105 \u00b0C (including temperature rise)' supplies everything the binding uses; the 575 mA IDC is a heating rating and is not relabelled as Isat (the spec's isat=0.575 / drop 0.3 suggestion is not used).",
+  "reference_part": "Bourns 78F3R3J-RC (3.3 uH \u00b15 %, axial)",
+  "new_field_updates": [],
+  "recipe": {
+   "entry_id": "OHM-047",
+   "behavior_id": "BEH-MAG-INDUCTOR",
+   "package": "Axial inductor 78F",
+   "reference_part": "Bourns 78F3R3J-RC",
+   "terminal_roles": {
+    "1": "A",
+    "2": "B"
+   },
+   "critical_facts": {
+    "value": {
+     "field": "nominal_inductance",
+     "unit": "uH",
+     "output_unit": "H"
+    },
+    "rdc": {
+     "field": "maximum_dcr",
+     "unit": "ohm"
+    },
+    "rdc_max": {
+     "field": "maximum_dcr",
+     "unit": "ohm"
+    },
+    "irms": {
+     "field": "rated_current",
+     "unit": "A"
+    },
+    "tmax_part": {
+     "field": "maximum_part_temperature",
+     "unit": "C"
+    }
+   },
+   "derived_parameters": {},
+   "class_parameters": {},
+   "quoted_parameters": {},
+   "template_override": "R{ref} {A} {B} {rdc}\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 3456
+   },
+   "inline_assets": [],
+   "supported_analyses": [
+    "op"
+   ],
+   "limitations": [
+    "DC winding-resistance model only (R = 0.30 ohm maximum). No inductance, saturation, Q, SRF or loss behaviour is simulated.",
+    "575 mA is the source IDC maximum for a 35 C rise; it is the probe current, not a saturation rating, and no inductance-versus-current behaviour is claimed.",
+    "105 C maximum includes self-heating; ambient derating is not modelled."
+   ]
+  },
+  "pin_map_evidence": "Two-lead axial, non-polarized (spec line 3456: A -> terminal 1 / first band end, B -> terminal 2). Symmetric resistor binding, so the assignment is electrically invariant.",
+  "runtime_check": {
+   "stimulus": "0.575 A DC (rated_current) A->B",
+   "observable": "dc_resistance",
+   "comparison": "interval 0 .. 0.30 ohm (maximum_dcr)",
+   "derived_from": "sourced maximum_dcr and rated_current",
+   "existing_probe_covers_it": true,
+   "new_probe_needed_for_class": "none"
+  },
+  "open_items_after": [
+   "Saturation current / L-vs-I curve (not published on the 78F sheet)",
+   "Q-based loss and SRF-based capacitance for a transient binding"
+  ]
+ },
+ {
+  "entry": "OHM-050",
+  "class": "BEH-MAG-CMC",
+  "verdict": "resolvable",
+  "blocker_recorded": "Default winding permutation cannot be used until explicit package binding is corrected and tested.",
+  "blocker_resolution": "The WE datasheet (744272222 rev 007.000, archived sha a5e6c7bb...) p1 schematic gives windings 1->2 and 4->3 (dots at 1 and 4) in manufacturer numbering. Its top-view dimension drawing puts pins 3-4 (and so 1-2) 7.62 \u00b10.1 apart and pins 1-4 6.22 \u00b10.1 apart. The OHMNI 3D coordinates (spec line 3478: 1 (-3.81,+3.11), 2 (-3.81,-3.11), 3 (+3.81,-3.11), 4 (+3.81,+3.11)) put 7.62 between package 1-4 and 2-3, so package numbering is not manufacturer numbering. Keeping pin 1 fixed and matching the 7.62/6.22 axes gives manufacturer->package {1:1, 2:4, 3:3, 4:2}. In package numbering the windings are therefore 1-4 and 2-3 with dots at 1 and 2, which happens to equal the spec's through-flow default. That default was right only by coincidence and was never evidenced, so the binding should carry the explicit permutation through pin_role_fact rather than the default. The proposed binding is DC winding resistance only (op), so leakage, saturation and HF fit stay out.",
+  "reference_part": "Wurth 744272222 (WE-SL5, 2 x 2200 uH)",
+  "new_field_updates": [
+   {
+    "field": "manufacturer_pin_roles",
+    "value": {
+     "1": "A1",
+     "2": "A2",
+     "4": "B1",
+     "3": "B2"
+    },
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.we-online.com/katalog/datasheet/744272222.pdf"
+    ],
+    "page": 1,
+    "scope": "744272222; intrinsic manufacturer pin numbers",
+    "detail": "Schematic: winding 1->2 and winding 4->3, dots beside 1 and 4 ('Start of Winding \u2022'). A1/B1 = dotted starts.",
+    "archived": true
+   }
+  ],
+  "recipe": {
+   "entry_id": "OHM-050",
+   "behavior_id": "BEH-MAG-CMC",
+   "package": "WE-SL5 SMD 4-terminal",
+   "reference_part": "Wurth 744272222",
+   "terminal_roles": {
+    "1": "A1",
+    "4": "A2",
+    "2": "B1",
+    "3": "B2"
+   },
+   "pin_role_fact": {
+    "field": "manufacturer_pin_roles",
+    "scope_contains": "744272222",
+    "manufacturer_to_package_terminal": {
+     "1": "1",
+     "2": "4",
+     "3": "3",
+     "4": "2"
+    },
+    "permutation_provenance": {
+     "document": "COMPONENT_BEHAVIOR_SPEC.md",
+     "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+     "line": 3478
+    }
+   },
+   "critical_facts": {
+    "rdc": {
+     "field": "maximum_dcr",
+     "unit": "ohm"
+    },
+    "rdc_max": {
+     "field": "maximum_dcr",
+     "unit": "ohm"
+    },
+    "irated": {
+     "field": "rated_current",
+     "unit": "A"
+    },
+    "v_rated": {
+     "field": "rated_voltage",
+     "unit": "V"
+    },
+    "value": {
+     "field": "nominal_inductance",
+     "unit": "uH",
+     "output_unit": "H"
+    }
+   },
+   "derived_parameters": {},
+   "class_parameters": {},
+   "quoted_parameters": {},
+   "template_override": "R{ref}_A {A1} {A2} {rdc}\nR{ref}_B {B1} {B2} {rdc}\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 3478
+   },
+   "inline_assets": [],
+   "supported_analyses": [
+    "op"
+   ],
+   "limitations": [
+    "DC winding-resistance model only (each winding = 0.3 ohm maximum). No common-mode or leakage inductance, coupling, saturation or impedance curve is simulated.",
+    "The two windings are separate resistors with no modelled leakage path; this is not an insulation or isolation claim. The 300 V AC / 1 s figure is a test voltage, and 80 V is the rated voltage.",
+    "Manufacturer->package permutation {1:1, 2:4, 3:3, 4:2} comes from matching the datasheet's 7.62/6.22 mm pin spacings to the 3D coordinates with pin 1 held fixed. The datasheet's own land-pattern drawing is a mirror image of its top-view drawing; the winding pairs are the same either way, but dot chirality must be re-checked before any AC/CM binding."
+   ]
+  },
+  "pin_map_evidence": "744272222.pdf p1: Schematic (1 -> 2 dotted at 1; 4 -> 3 dotted at 4); Dimensions top view (2 and 3 on one edge, 1 and 4 on the other, 7.62 \u00b10.1 between 3 and 4, 6.22 \u00b10.1 lead span between 1 and 4); Recommended Land Pattern (pads 2,1 / 3,4, mirror of the top view). Spec line 3478 3D coordinates. Result: package 1 = mfr 1 (A1), package 4 = mfr 2 (A2), package 2 = mfr 4 (B1), package 3 = mfr 3 (B2).",
+  "runtime_check": {
+   "stimulus": "0.83 A DC (rated_current) into A1, A2 and B1 joined on one net, B2 at return (series differential DC loop through both windings)",
+   "observable": "dc_resistance = V(A1)/I",
+   "comparison": "interval 0 .. 2*rdc_max = 0.6 ohm",
+   "derived_from": "sourced maximum_dcr and rated_current",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "Add a BEH-MAG-CMC branch: roles {A1: winding, A2: link, B1: link, B2: return}, current excitation = rated_current, observable dc_resistance with comparison maximum 2*rdc_max. A second variant can drive each winding alone (other winding with both ends on return) against rdc_max. Neither checks coupling or CM impedance."
+  },
+  "open_items_after": [
+   "CM saturation, leakage-based DM model and HF impedance fit for an AC binding",
+   "Land-pattern vs top-view chirality conflict in the datasheet and the 3D layer",
+   "Thermal model behind the 40 K rated current"
+  ]
+ },
+ {
+  "entry": "OHM-051",
+  "class": "BEH-MAG-CMC",
+  "verdict": "resolvable",
+  "blocker_recorded": "Mains-rated winding binding and missing saturation/thermal model need explicit handling; insulation test voltage is not a working voltage.",
+  "blocker_resolution": "Proposed explicit handling: a DC winding-resistance-only, op-only binding that makes no mains, insulation or isolation claim, with no saturation or thermal model. The 250 V AC 50 Hz rated voltage is kept as a sourced rating to enforce, and the 1500 V AC / 2 s figure is recorded only as a test voltage. Because tran is not supported, no mains-frequency simulation can run on it. Pin binding: the WE datasheet (744821240 rev 004.000, archived sha 87ca9b97...) schematic gives windings 1->4 and 2->3 with dots at 1 and 2. Its top view puts 1 and 2 10.0 mm apart and 1 and 4 4.5 mm apart, while spec line 3487 puts package 1-2 4.5 mm apart (x = -5) and 1-4 10 mm apart. With pin 1 held fixed, manufacturer->package is {1:1, 2:4, 3:3, 4:2}, so the windings are package 1-2 and 4-3, dotted at package 1 and 4. The spec's adopted default (A1=1, A2=4, B1=2, B2=3) pairs pins across the 10 mm span in package numbering and is wrong. If the caller wants mains entries kept blocked as policy, this entry should stay blocked; the evidence for the DC binding itself is complete.",
+  "reference_part": "Wurth 744821240 (WE-CMB XS, 2 x 4 mH, 1.5 A)",
+  "new_field_updates": [
+   {
+    "field": "manufacturer_pin_roles",
+    "value": {
+     "1": "A1",
+     "4": "A2",
+     "2": "B1",
+     "3": "B2"
+    },
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.we-online.com/katalog/datasheet/744821240.pdf"
+    ],
+    "page": 1,
+    "scope": "744821240; manufacturer terminals",
+    "detail": "Schematic: winding 1 -> 4 and 2 -> 3, dots at 1 and 2.",
+    "archived": true
+   }
+  ],
+  "recipe": {
+   "entry_id": "OHM-051",
+   "behavior_id": "BEH-MAG-CMC",
+   "package": "WE-CMB XS THT 4-pin",
+   "reference_part": "Wurth 744821240",
+   "terminal_roles": {
+    "1": "A1",
+    "2": "A2",
+    "4": "B1",
+    "3": "B2"
+   },
+   "pin_role_fact": {
+    "field": "manufacturer_pin_roles",
+    "scope_contains": "744821240",
+    "manufacturer_to_package_terminal": {
+     "1": "1",
+     "2": "4",
+     "3": "3",
+     "4": "2"
+    },
+    "permutation_provenance": {
+     "document": "COMPONENT_BEHAVIOR_SPEC.md",
+     "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+     "line": 3487
+    }
+   },
+   "critical_facts": {
+    "rdc": {
+     "field": "maximum_dcr",
+     "unit": "ohm"
+    },
+    "rdc_max": {
+     "field": "maximum_dcr",
+     "unit": "ohm"
+    },
+    "irated": {
+     "field": "rated_current",
+     "unit": "A"
+    }
+   },
+   "derived_parameters": {},
+   "class_parameters": {},
+   "quoted_parameters": {},
+   "template_override": "R{ref}_A {A1} {A2} {rdc}\nR{ref}_B {B1} {B2} {rdc}\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 3487
+   },
+   "inline_assets": [],
+   "supported_analyses": [
+    "op"
+   ],
+   "limitations": [
+    "DC winding-resistance model only (0.14 ohm maximum per winding at 20 C). No inductance, coupling, leakage, saturation or impedance is simulated, and no transient/mains-frequency analysis is supported.",
+    "No safety, insulation, creepage or galvanic-isolation acceptance. 1500 V AC / 2 s is a test voltage, not a working voltage. The 250 V AC rated voltage is a source rating to enforce, not a certification of the user's mains circuit; the listed VDE/ENEC approvals are not evaluated.",
+    "1.5 A is rated at 70 C ambient with a rise below 55 K; the probe current is not a sustained-current acceptance. Manufacturer->package permutation {1:1, 2:4, 3:3, 4:2} comes from the datasheet's 10.0/4.5 mm spacings against the 3D coordinates with pin 1 held fixed."
+   ]
+  },
+  "pin_map_evidence": "744821240.pdf p1: Schematic (1 -> 4 dotted at 1; 2 -> 3 dotted at 2); Dimensions top view (1 top-left, 2 top-right, 10.0 \u00b10.5 between the 4-3 row, 4.5 \u00b10.5 between 2 and 3); Recommended Hole Pattern (mirror/bottom view, 4 3 / 1 2). Spec line 3487 3D coordinates. Result: package 1 = mfr 1 (A1), package 2 = mfr 4 (A2), package 4 = mfr 2 (B1), package 3 = mfr 3 (B2).",
+  "runtime_check": {
+   "stimulus": "1.5 A DC (rated_current) into A1, A2+B1 linked, B2 return",
+   "observable": "dc_resistance = V(A1)/I",
+   "comparison": "interval 0 .. 2*rdc_max = 0.28 ohm",
+   "derived_from": "sourced maximum_dcr and rated_current",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "Same new BEH-MAG-CMC probe as OHM-050."
+  },
+  "open_items_after": [
+   "Leakage inductance, CM saturation and HF loss (not in the datasheet)",
+   "Any mains/safety acceptance (out of scope; never claimed)",
+   "Thermal model for the 70 C / <55 K rating"
+  ]
+ },
+ {
+  "entry": "OHM-052",
+  "class": "BEH-MAG-XFMR-SIGNAL",
+  "verdict": "resolvable",
+  "blocker_recorded": "Do not claim safe galvanic isolation or a complete response from assumed 1 H / 5 mH / 100 pF.",
+  "blocker_resolution": "Closed by a DC-only winding binding that uses none of the assumed LP/LLK/CIW values: primary 1-3 = 44 ohm nominal and secondary 4-6 = 58 ohm nominal, as printed on the archived Triad TY-145P sheet (publish date 2026-02-23). The centre taps (pins 2, 5) are required_isolated because the half-winding split is not published. The model has no inter-winding element; limitations state this is not an isolation claim (1500 V is 'Dielectric Strength Pri to Sec to Core', a test value) and that no AC transfer or frequency response is simulated (op only). Pin functions now come from the part's own sheet, replacing the DEFAULT-ASSUMPTION map.",
+  "reference_part": "Triad Magnetics TY-145P (600CT:600CT, 1:1)",
+  "new_field_updates": [
+   {
+    "field": "manufacturer_pin_roles",
+    "value": {
+     "1": "P_A",
+     "2": "P_CT",
+     "3": "P_B",
+     "4": "S_A",
+     "5": "S_CT",
+     "6": "S_B"
+    },
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.triadmagnetics.com/Asset/TY-145P.pdf"
+    ],
+    "page": 1,
+    "scope": "TY-145P",
+    "detail": "Schematic: primary 1-2-3, secondary 4-5-6 (Z = 600 CT TO 600 CT); 'DCR: Primary (1-3) 44\u03a9 Nominal, Secondary (4-6) 58\u03a9 Nominal'; 'DOT ABOVE #1 PIN ON BOBBIN FLANGE'. Outline rows 1 2 3 / 6 5 4 at .187 in pitch, .420 in row spacing.",
+    "archived": true
+   }
+  ],
+  "recipe": {
+   "entry_id": "OHM-052",
+   "behavior_id": "BEH-MAG-XFMR-SIGNAL",
+   "package": "Triad TY-145P PC mount 6-pin",
+   "reference_part": "Triad TY-145P; centre taps open",
+   "terminal_roles": {
+    "1": "P_A",
+    "2": "P_CT",
+    "3": "P_B",
+    "4": "S_A",
+    "5": "S_CT",
+    "6": "S_B"
+   },
+   "pin_role_fact": {
+    "field": "manufacturer_pin_roles",
+    "scope_contains": "TY-145P"
+   },
+   "required_isolated_roles": [
+    "P_CT",
+    "S_CT"
+   ],
+   "critical_facts": {
+    "rp": {
+     "field": "nominal_primary_dcr",
+     "unit": "ohm"
+    },
+    "rs": {
+     "field": "nominal_secondary_dcr",
+     "unit": "ohm"
+    },
+    "idc_unbalance": {
+     "field": "primary_dc_unbalance",
+     "unit": "A"
+    },
+    "p_out": {
+     "field": "output_power",
+     "unit": "W"
+    }
+   },
+   "derived_parameters": {},
+   "class_parameters": {},
+   "quoted_parameters": {},
+   "template_override": "R{ref}_P {P_A} {P_B} {rp}\nR{ref}_S {S_A} {S_B} {rs}\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 3495
+   },
+   "inline_assets": [],
+   "supported_analyses": [
+    "op"
+   ],
+   "limitations": [
+    "DC winding-resistance model only, using nominal (not maximum) DCR. No magnetising or leakage inductance, coupling, capacitance, core loss or frequency response; the assumed 1 H / 5 mH / 100 pF class defaults are not used.",
+    "No galvanic-isolation or safety claim. The absence of an inter-winding element is not an insulation model; 1500 V is a dielectric-strength test value, not a working voltage.",
+    "Centre taps 2 and 5 must stay unconnected because the half-winding resistance split is not published. 15 mA primary DC unbalance and 100 mW output are source limits; no saturation model."
+   ]
+  },
+  "pin_map_evidence": "TY-145P.pdf p1: schematic with primary 1/2/3 and secondary 4/5/6, DCR text naming 1-3 and 4-6, dot above pin 1; outline shows rows 1-2-3 and 6-5-4 at .187 in pitch, rows .420 in apart. Spec line 3495 3D coordinates (1 (-5.335,+4.75) ... 6 (+5.335,+4.75)) match this counter-clockwise numbering (4.75 mm = .187 in, 10.67 mm = .420 in), so package n = manufacturer n.",
+  "runtime_check": {
+   "stimulus": "variant primary: 15 mA DC (primary_dc_unbalance) P_A->P_B with S_A and S_B on return; variant secondary: same explicit 15 mA stimulus S_A->S_B with P_A and P_B on return (labelled a stimulus, not a secondary rating); centre taps on isolated nets",
+   "observable": "dc_resistance",
+   "comparison": "absolute: expected 44 ohm (primary) / 58 ohm (secondary), tolerance 1e-6 relative. This is a binding/topology check against the sourced nominal only; the source gives no DCR tolerance or maximum.",
+   "derived_from": "nominal_primary_dcr, nominal_secondary_dcr, primary_dc_unbalance",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "Add a BEH-MAG-XFMR-SIGNAL branch with variants primary/secondary as described. Every node keeps a DC path (the unexcited winding has both ends on return). Observable dc_resistance, absolute comparison to the sourced nominal."
+  },
+  "open_items_after": [
+   "Magnetising and leakage inductance, interwinding capacitance and core loss for any AC binding",
+   "Half-winding DCR split (centre taps)",
+   "Insulation/isolation qualification (never claimed)"
+  ]
+ },
+ {
+  "entry": "OHM-054",
+  "class": "BEH-MAG-XFMR-CT",
+  "verdict": "blocked",
+  "blocker_recorded": "Physical/reference and primary-conductor binding conflict; open-secondary operation is hazardous.",
+  "blocker_resolution": "Kept blocked. (1) The primary is a separate conductor threaded through the aperture (entry field primary_connection, AS series doc p1). The recipe mechanism binds model roles only to package terminals, and the class template needs P1/P2, so there is no package pin to carry the primary and any P1/P2 binding would be invented. (2) Exact AS-103 non-centre-tapped has secondary pins 1 and 3 only (pin2_present = false), while the 3D package carries a pin 2, so the physical reference conflicts. (3) The class template hard-wires Rburden across S1-S2 inside the model, which would hide the open-secondary hazard (bench B3: ~236 V peak open-circuit) instead of refusing it. A secondary-only DC binding would be technically sourceable (10 ohm max DCR) but meaningless for a CT and would invite open-secondary use, so it is not proposed. The isolation figure (2500 or 4000 V AC) is not assigned to AS-103 in the series sheet.",
+  "reference_part": "Talema AS-103 (non-centre-tapped, 1:300)",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "AS series sheet (Talema 07/18, CERN-hosted mirror; the same bytes also fetched from talema.com/wp-content/uploads/datasheets/AS.pdf, sha 108718f9...): secondary on pins 1 and 3, pin 2 only on CT versions, primary through aperture. Note the identical-hash talema.com URL is manufacturer-hosted and should become the primary citation.",
+  "runtime_check": {
+   "stimulus": "n/a",
+   "observable": "n/a",
+   "comparison": "n/a",
+   "derived_from": "n/a",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "A CT probe would need an external primary-conductor abstraction (a non-package 'through-aperture' terminal pair) plus a mandatory external burden check that refuses open secondaries. That is a framework change, not just a probe."
+  },
+  "open_items_after": [
+   "Framework support for a non-pin primary conductor",
+   "3D package without pin 2 for AS-103 (or bind an AS-103 CT variant)",
+   "Isolation rating assignment for the exact option (never claim isolation)",
+   "Open-secondary refusal rule"
+  ]
+ },
+ {
+  "entry": "OHM-055",
+  "class": "BEH-MAG-ETHMAG",
+  "verdict": "blocked",
+  "blocker_recorded": "Working-voltage and complete physical pin binding remain unestablished; no isolation-safety acceptance.",
+  "blocker_resolution": "Kept blocked. The archived Pulse H1102NL sheet (rev A, 2015-07-31) p2 schematic shows that each line-side path (16/15/14 and 11/10/9) runs through a series common-mode choke whose DC resistance is not specified. The only resistance spec is '.65 OHMS MAX' per transformer half-winding plus a \u00b1.065 ohm centre-tap imbalance, so a DC model of the line side cannot be built from sourced values. Pins 4, 5, 12, 13 are physically present (p1 outline shows 16 leads) but absent from the schematic. Absence is not an NC statement, so treating them as isolated or grounded would be a guess. 1500 VRMS / 60 s is an isolation test, not a working voltage, and no working voltage is published. A chip-side-only binding (1-2-3, 6-7-8 half-windings at 0.65 ohm max) would force the whole line side to be isolated, which would be misleading for a magnetics module.",
+  "reference_part": "Pulse H1102NL",
+  "new_field_updates": [
+   {
+    "field": "maximum_half_winding_dcr_imbalance",
+    "value": 0.065,
+    "unit": "ohm",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://productfinder.pulseeng.com/doc_type/WEB301/doc_num/H1102NL/doc_part/H1102NL.pdf"
+    ],
+    "page": 2,
+    "scope": "H1102NL at 25 C",
+    "detail": "'DC RESISTANCE IMBALANCE \u00b1.065 OHMS MAX (CENTER TAP SYMMETRY)'",
+    "archived": true
+   }
+  ],
+  "recipe": null,
+  "pin_map_evidence": "H1102NL.pdf p2 schematic: TD+ 1, CT 2, TD- 3 / 15 CT / TX+ 16, TX- 14 through CMC; RD+ 6, CT 7, RD- 8 / 10 CT / RX+ 11, RX- 9 through CMC. p1 outline: 8 leads per side. Pins 4, 5, 12, 13 have no stated function.",
+  "runtime_check": {
+   "stimulus": "n/a",
+   "observable": "n/a",
+   "comparison": "n/a",
+   "derived_from": "n/a",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "Would need line-side CMC DCR (or a total 16-14 resistance) before even a DC probe can be defined."
+  },
+  "open_items_after": [
+   "Line-side CMC winding resistance or total pin-to-pin DCR",
+   "Manufacturer statement of pins 4, 5, 12, 13 (NC or otherwise)",
+   "Working voltage (never claim isolation)",
+   "Leakage, CMC, capacitance, return-loss model"
+  ]
+ }
+]

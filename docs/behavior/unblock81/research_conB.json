@@ -1,0 +1,1033 @@
+[
+ {
+  "entry": "OHM-162",
+  "class": "BEH-CON-USB",
+  "verdict": "blocked",
+  "blocker_recorded": "Exact source-backed pin-function and physical map plus validated contact model unavailable.",
+  "blocker_resolution": "Ratings close (and are corrected) via Molex PS-67643-002 rev C1, but no numbered contact map for 676433910 is available: the archived Molex product export has no drawing, PS-67643-002 has no pin table (sec 2.2 defers to the sales drawing), and the sales drawing 676433910_sd.pdf is reachable only as un-extractable text whose callouts 1-10 are not identified as circuits. Without the part's own contact numbering no terminal-role map can be evidenced, so no recipe is proposed.",
+  "reference_part": "Molex 676433910 (USB 2.0 Type A, right-angle, 4 circuits)",
+  "new_field_updates": [
+   {
+    "field": "contact_resistance_max",
+    "value": 0.03,
+    "unit": "ohm",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/productspecificationpdf/676/67643/PS-67643-002-001.pdf"
+    ],
+    "page": 2,
+    "scope": "Molex 67643 series IR-process spec PS-67643-002 (covers 676433910); low level, 20 mV max / 100 mA",
+    "detail": "sec 5.1: '30 milliohms MAXIMUM' at 'a maximum voltage of 20 mV and a current of 100 mA' (WebFetch extract)",
+    "archived": false
+   },
+   {
+    "field": "current_rated_dc",
+    "value": 1.5,
+    "unit": "A",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/productspecificationpdf/676/67643/PS-67643-002-001.pdf"
+    ],
+    "page": 1,
+    "scope": "PS-67643-002 sec 4.0",
+    "detail": "'Rate Current: 1.5 A DC' (WebFetch extract)",
+    "archived": false
+   },
+   {
+    "field": "voltage_rated_dc",
+    "value": 30,
+    "unit": "V",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/productspecificationpdf/676/67643/PS-67643-002-001.pdf"
+    ],
+    "page": 1,
+    "scope": "PS-67643-002 sec 4.0; resolves the AC/DC ambiguity of the existing working_voltage_max row",
+    "detail": "'Rate Voltage: 30 V DC' (WebFetch extract)",
+    "archived": false
+   }
+  ],
+  "recipe": null,
+  "pin_map_evidence": "None available. Archived product export p3 states 'Circuits (Loaded) 4' only; spec PS-67643-002 has no contact table; the sales drawing could not be read as a figure (proxy 403 on direct download).",
+  "runtime_check": null,
+  "open_items_after": [
+   "Numbered contact map from 676433910_sd.pdf (needs a browser download and visual read)",
+   "Archive PS-67643-002-001.pdf (WebFetch-only today)",
+   "USB protocol/enumeration not simulable",
+   "Shell is not an automatic GND"
+  ]
+ },
+ {
+  "entry": "OHM-163",
+  "class": "BEH-CON-USB",
+  "verdict": "resolvable",
+  "blocker_recorded": "Missing validated pin-function/physical-terminal binding; USB protocol is not simulable.",
+  "blocker_resolution": "The archived Lumberg 2411 02 sheet p2 numbers the four PCB terminals 1-4 in both the front view and the '*a printed circuit board layout', and gives contact resistance <=30 mOhm, rated current <=1 A and rated voltage 30 V AC at 20 C. A function-agnostic per-contact model (pad k to mating contact k through the sourced Rc max) needs only this numbering, not USB signal names, so the pin-function blocker is sidestepped rather than closed: signal names stay unassigned and the shell/housing tabs stay unmodeled. USB protocol stays out of scope.",
+  "reference_part": "Lumberg 2411 02 (USB 2.0 type B, angled, PCB; status Obsolete)",
+  "new_field_updates": [],
+  "recipe": {
+   "entry_id": "OHM-163",
+   "behavior_id": "BEH-CON-USB",
+   "package": "USB-B angled THT, 4 contacts (Lumberg 2411 02), mated",
+   "reference_part": "Lumberg 2411 02",
+   "terminal_roles": {
+    "1": "P1",
+    "2": "P2",
+    "3": "P3",
+    "4": "P4",
+    "M1": "M1",
+    "M2": "M2",
+    "M3": "M3",
+    "M4": "M4"
+   },
+   "critical_facts": {
+    "rc": {
+     "field": "contact_resistance_max",
+     "unit": "ohm"
+    },
+    "i_rated": {
+     "field": "current_rated",
+     "unit": "A"
+    },
+    "v_rated": {
+     "field": "voltage_rated_ac",
+     "unit": "V"
+    }
+   },
+   "derived_parameters": {},
+   "class_parameters": {},
+   "quoted_parameters": {},
+   "template_override": "R{ref}_c1 {P1} {M1} {rc}\nR{ref}_c2 {P2} {M2} {rc}\nR{ref}_c3 {P3} {M3} {rc}\nR{ref}_c4 {P4} {M4} {rc}\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 11266
+   },
+   "template_provenance_note": "Per-contact instance of the class line 'R{ref}_c{k} {BOARD_k} {CABLE_k} {Rc}' with k = manufacturer contact 1..4; shell line omitted (no sourced shell resistance, shell not a GND).",
+   "inline_assets": [],
+   "supported_analyses": [
+    "op"
+   ],
+   "limitations": [
+    "Each contact is a resistor at the sourced 30 mOhm maximum (20 C data); no temperature, wear or derating.",
+    "USB signal names are not given by the drawing and are not assigned; housing/shell tabs are unmodeled.",
+    "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. RuntimeRecipe has no field that separates them from footprint pads, so a schema addition (e.g. mating_terminals) or a catalog-binding rule that excludes them from pad matching is needed before this recipe can bind to a library footprint.",
+    "Obsolete part: binding is for an archived reference, not a sourcing recommendation."
+   ]
+  },
+  "pin_map_evidence": "Lumberg 2411 02 datasheet (05/2023) p2: front view labels terminals 1,2 (bottom) and 3,4 (top); '*a printed circuit board layout' labels holes 1,2,3,4 plus two housing holes (dia 2.30). Package terminal k -> role Pk (board side), Mk = mated plug contact k. The PCB layout's viewing side is not labelled, so footprint coordinate placement belongs to the catalog-binding step, not this numbering.",
+  "runtime_check": {
+   "stimulus": "Explicit DC current source equal to the sourced rated current (critical fact i_rated) driven from net 'return' into net 'board'; board = terminal P1 (first numbered contact); its mating terminal M1 and every other terminal on 'return' (other contact resistors then sit return-to-return and carry no current); isolated roles on their own single-pin nets.",
+   "observable": "contact_path_resistance = V(board)/i_rated",
+   "comparison": "interval: 0 <= R_path <= rc (sourced contact_resistance max). Secondary absolute check: drop = i_rated*rc with the locked bench's relative tolerance 0.1% (BEH-CON-USB/B1), evaluated at the bound part's sourced values instead of the bench example values. Expected drop 1 A*0.03 ohm = 30 mV.",
+   "derived_from": "BEH-CON-USB/B1 (locked I*Rc contact-drop equation and 0.1% tolerance) + sourced fields rc and i_rated",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "Yes. runtime_benches.dc_probe_definition has no BEH-CON-* branch. Proposed shared 'connector contact path' branch for BEH-CON-USB/HDMI/MODJACK/AUDIO/DCJACK/SDSOCKET(/FFC): roles {P1:'board', others:'return', required_isolated roles on their own nets}, DCExcitation(positive_net='return', negative_net='board', value=i_rated A), new observable 'contact_path_resistance' = v(board)/current in _dc_observation (same shape as the inductor 'dc_resistance' observable). Limits text: isothermal single-contact DC resistance against the sourced maximum; does not validate heating, simultaneous-contact derating, signal integrity, protocol or safe mating."
+  },
+  "open_items_after": [
+   "USB signal-to-contact names (not in the source)",
+   "Viewing side of the PCB layout for library coordinates",
+   "Current derating / contact heating",
+   "USB protocol not simulable"
+  ]
+ },
+ {
+  "entry": "OHM-164",
+  "class": "BEH-CON-USB",
+  "verdict": "blocked",
+  "blocker_recorded": "Rating-critical scope and terminal binding unresolved; no USB protocol simulation.",
+  "blocker_resolution": "All three archived Amphenol/FCI documents are family brochures for Micro USB 2.0 (contact resistance 30 mOhm initial, 100 VAC one-minute withstand); none numbers the five contacts of 10118194-0001LF or gives a working voltage. The per-part drawing 10118194.pdf is a vector-only file (WebFetch returns only its title block) and direct download is blocked by the proxy. The 1 A presentation current is a family figure. No terminal map can be evidenced.",
+  "reference_part": "Amphenol/FCI 10118194-0001LF (Micro USB 2.0 B, 4 DIP legs) - family scope only",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "None. io_usb_micro.pdf p3 lists 10118194-0001LF in a part table only; no contact numbering in any archived document.",
+  "runtime_check": null,
+  "open_items_after": [
+   "Contact numbering from the 10118194 drawing (browser download + visual read)",
+   "Working voltage (100 VAC is a withstand test)",
+   "Per-part current rating and derating",
+   "USB protocol not simulable"
+  ]
+ },
+ {
+  "entry": "OHM-165",
+  "class": "BEH-CON-USB",
+  "verdict": "blocked",
+  "blocker_recorded": "Missing exact contact rating and physical map; USB/PD protocols not simulable.",
+  "blocker_resolution": "The archived Amphenol io_usb_type_c brochure names 12401610E4#2A and states 'Contact Resistance: 40mOhm max. initial for VBUS, GND and all other contacts' (family), but gives no per-contact current, no voltage rating and no 24-contact numbering; the 5 A claim is a family/PD feature. The exact drawing URL errors out. No terminal map can be evidenced.",
+  "reference_part": "Amphenol 12401610E4#2A (USB 3.1 Gen 2 Type C, right angle, top-mount dual SMT, 0.9 mm shell tab) - family scope only",
+  "new_field_updates": [
+   {
+    "field": "family_contact_resistance_initial_max",
+    "value": 0.04,
+    "unit": "ohm",
+    "basis": "MFR_DATASHEET",
+    "confidence": "M",
+    "sources": [
+     "https://cdn.amphenol-cs.com/media/wysiwyg/files/documentation/datasheet/inputoutput/io_usb_type_c.pdf"
+    ],
+    "page": 2,
+    "scope": "Amphenol USB Type C connector system family incl. 12401610E4#2A; initial value",
+    "detail": "'Contact Resistance: 40mOhm max. initial for VBUS, GND and all other contacts'. Same page prints 'Insulation Resistance: 100mOhm min.' (evident typo) - not promoted.",
+    "archived": true
+   }
+  ],
+  "recipe": null,
+  "pin_map_evidence": "None. Brochure p2 has a part-number table only.",
+  "runtime_check": null,
+  "open_items_after": [
+   "24-contact numbering (A1..A12/B1..B12) from the 12401610 drawing",
+   "Per-contact current (VBUS group vs signal) and voltage rating",
+   "Series spec referenced as 'USB Type C Series Spec'",
+   "USB/PD protocol not simulable"
+  ]
+ },
+ {
+  "entry": "OHM-166",
+  "class": "BEH-CON-USB",
+  "verdict": "resolvable",
+  "blocker_recorded": "Rating unit/scope and pin-function binding not closed; USB protocol not simulable.",
+  "blocker_resolution": "The current Wurth datasheet (rev 001.002, 2023-04-27, archived d5c513ae) closes the unit/scope issue: its Electrical Properties table gives Rated Current 1 A, Working Voltage 30 V (AC), Withstanding Voltage 500 V (AC) 1 min, and Contact Resistance 20 mOhm max (unit printed as 'mOhm', no longer the ambiguous 'MOHM'). The p1 dimension view and land pattern number contacts 1..5. A function-agnostic per-contact model needs only this numbering; the USB signal names are not in the source and stay unassigned.",
+  "reference_part": "Wurth Elektronik 65100516121 (WR-COM Mini USB 2.0 horizontal, 5 contacts SMT, type B)",
+  "new_field_updates": [
+   {
+    "field": "contact_resistance_max",
+    "value": 0.02,
+    "unit": "ohm",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.we-online.com/components/products/datasheet/65100516121.pdf"
+    ],
+    "page": 2,
+    "scope": "65100516121 datasheet rev 001.002; supersedes the existing row's 'MOHM interpreted as milliohm' detail (same field, replace, do not duplicate)",
+    "detail": "Electrical Properties: 'Contact Resistance R 20 mOhm max.'",
+    "archived": true
+   },
+   {
+    "field": "working_voltage_stated",
+    "value": 30,
+    "unit": "V",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.we-online.com/components/products/datasheet/65100516121.pdf"
+    ],
+    "page": 2,
+    "scope": "65100516121 rev 001.002; AC working voltage; replaces existing row (same field)",
+    "detail": "'Working Voltage 30 V (AC)'; 'Withstanding Voltage 1 min 500 V (AC)' is a test value, not a rating",
+    "archived": true
+   }
+  ],
+  "recipe": {
+   "entry_id": "OHM-166",
+   "behavior_id": "BEH-CON-USB",
+   "package": "Mini-USB B horizontal SMT, 5 contacts (Wurth 65100516121), mated",
+   "reference_part": "Wurth Elektronik 65100516121",
+   "terminal_roles": {
+    "1": "P1",
+    "2": "P2",
+    "3": "P3",
+    "4": "P4",
+    "5": "P5",
+    "M1": "M1",
+    "M2": "M2",
+    "M3": "M3",
+    "M4": "M4",
+    "M5": "M5"
+   },
+   "critical_facts": {
+    "rc": {
+     "field": "contact_resistance_max",
+     "unit": "ohm"
+    },
+    "i_rated": {
+     "field": "current_rated",
+     "unit": "A"
+    },
+    "v_rated": {
+     "field": "working_voltage_stated",
+     "unit": "V"
+    }
+   },
+   "derived_parameters": {},
+   "class_parameters": {},
+   "quoted_parameters": {},
+   "template_override": "R{ref}_c1 {P1} {M1} {rc}\nR{ref}_c2 {P2} {M2} {rc}\nR{ref}_c3 {P3} {M3} {rc}\nR{ref}_c4 {P4} {M4} {rc}\nR{ref}_c5 {P5} {M5} {rc}\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 11266
+   },
+   "template_provenance_note": "Per-contact instance of the class 'R{ref}_c{k} {BOARD_k} {CABLE_k} {Rc}', k = 1..5; shell/peg pads unmodeled.",
+   "inline_assets": [],
+   "supported_analyses": [
+    "op"
+   ],
+   "limitations": [
+    "Contact resistance at its 20 mOhm maximum; no temperature/wear dependence.",
+    "Signal names (VBUS/D-/D+/ID/GND) are not in the manufacturer drawing and are not assigned.",
+    "Four shield pads and two pegs are unmodeled; shell is not an automatic GND.",
+    "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. RuntimeRecipe has no field that separates them from footprint pads, so a schema addition (e.g. mating_terminals) or a catalog-binding rule that excludes them from pad matching is needed before this recipe can bind to a library footprint."
+   ]
+  },
+  "pin_map_evidence": "Wurth 65100516121 datasheet rev 001.002 p1: dimension view labels contacts '1' and '5' at the row ends (front view too); Recommended Land Pattern labels pad 1 and pad 5 at 0.80 mm pitch, five signal pads, 3.20 mm span. Terminal k -> Pk, mating contact k -> Mk. Signal pads only.",
+  "runtime_check": {
+   "stimulus": "Explicit DC current source equal to the sourced rated current (critical fact i_rated) driven from net 'return' into net 'board'; board = terminal P1 (first numbered contact); its mating terminal M1 and every other terminal on 'return' (other contact resistors then sit return-to-return and carry no current); isolated roles on their own single-pin nets.",
+   "observable": "contact_path_resistance = V(board)/i_rated",
+   "comparison": "interval: 0 <= R_path <= rc (sourced contact_resistance max). Secondary absolute check: drop = i_rated*rc with the locked bench's relative tolerance 0.1% (BEH-CON-USB/B1), evaluated at the bound part's sourced values instead of the bench example values. Expected drop 1 A*0.02 ohm = 20 mV.",
+   "derived_from": "BEH-CON-USB/B1 (locked I*Rc contact-drop equation and 0.1% tolerance) + sourced fields rc and i_rated",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "Yes. runtime_benches.dc_probe_definition has no BEH-CON-* branch. Proposed shared 'connector contact path' branch for BEH-CON-USB/HDMI/MODJACK/AUDIO/DCJACK/SDSOCKET(/FFC): roles {P1:'board', others:'return', required_isolated roles on their own nets}, DCExcitation(positive_net='return', negative_net='board', value=i_rated A), new observable 'contact_path_resistance' = v(board)/current in _dc_observation (same shape as the inductor 'dc_resistance' observable). Limits text: isothermal single-contact DC resistance against the sourced maximum; does not validate heating, simultaneous-contact derating, signal integrity, protocol or safe mating."
+  },
+  "open_items_after": [
+   "USB signal names per contact",
+   "Shield pad modeling",
+   "Current derating",
+   "USB protocol not simulable"
+  ]
+ },
+ {
+  "entry": "OHM-167",
+  "class": "BEH-CON-HDMI",
+  "verdict": "resolvable",
+  "blocker_recorded": "Unvalidated reference footprint and signal map; HDMI protocol is not simulable.",
+  "blocker_resolution": "Resolvable as an explicit alternate binding (same treatment as OHM-044's explicit alternative), not as the default CT_19APL2 footprint. The archived Same Sky HD12-19-SMT-TR sheet gives rated voltage 40 Vac max, rated current 0.5 A max, contact resistance 20 mOhm max 'between terminals and mating plug' (measured at 20 mV/100 mA), and on p3 a PIN CONNECTIONS table plus a Recommended PCB Layout marked NO.1 ... NO.19. That is a true contact-path specification with the part's own numbering. HDMI TMDS/DDC/CEC/HPD protocol stays out of scope.",
+  "reference_part": "Same Sky HD12-19-SMT-TR (HDMI 2.0 Type A receptacle, 19 position, SMT) - explicit alternate to the default CT_19APL2 footprint",
+  "new_field_updates": [
+   {
+    "field": "manufacturer_pin_functions",
+    "value": {
+     "1": "TMDS Data2+",
+     "2": "TMDS Data2 Shield",
+     "3": "TMDS Data2-",
+     "4": "TMDS Data1+",
+     "5": "TMDS Data1 Shield",
+     "6": "TMDS Data-",
+     "7": "TMDS Data0+",
+     "8": "TMDS Data0 Shield",
+     "9": "TMDS Data0-",
+     "10": "TMDS Clock+",
+     "11": "TMDS Clock Shield",
+     "12": "TMDS Clock-",
+     "13": "CEC",
+     "14": "Utility",
+     "15": "SCL",
+     "16": "SDA",
+     "17": "DDC/CEC Ground",
+     "18": "+5V Power",
+     "19": "Hot Plug Detect",
+     "SHELL": "SHELL/SHIELD"
+    },
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.sameskydevices.com/product/resource/farnellpdf/hd12-19-smt-tr.pdf"
+    ],
+    "page": 3,
+    "scope": "HD12-19-SMT-TR only; informational, not used as model roles",
+    "detail": "PIN CONNECTIONS table copied verbatim; pin 6 is printed 'TMDS Data-' (not 'Data1-'); kept as printed. Mating sequence: shell FIRST, pin 18 THIRD, others SECOND.",
+    "archived": true
+   }
+  ],
+  "recipe": {
+   "entry_id": "OHM-167",
+   "behavior_id": "BEH-CON-HDMI",
+   "package": "HDMI Type A SMT 19 position (Same Sky HD12-19-SMT-TR), mated",
+   "reference_part": "Same Sky HD12-19-SMT-TR (explicit alternate)",
+   "terminal_roles": {
+    "1": "P1",
+    "2": "P2",
+    "3": "P3",
+    "4": "P4",
+    "5": "P5",
+    "6": "P6",
+    "7": "P7",
+    "8": "P8",
+    "9": "P9",
+    "10": "P10",
+    "11": "P11",
+    "12": "P12",
+    "13": "P13",
+    "14": "P14",
+    "15": "P15",
+    "16": "P16",
+    "17": "P17",
+    "18": "P18",
+    "19": "P19",
+    "M1": "M1",
+    "M2": "M2",
+    "M3": "M3",
+    "M4": "M4",
+    "M5": "M5",
+    "M6": "M6",
+    "M7": "M7",
+    "M8": "M8",
+    "M9": "M9",
+    "M10": "M10",
+    "M11": "M11",
+    "M12": "M12",
+    "M13": "M13",
+    "M14": "M14",
+    "M15": "M15",
+    "M16": "M16",
+    "M17": "M17",
+    "M18": "M18",
+    "M19": "M19"
+   },
+   "critical_facts": {
+    "rc": {
+     "field": "contact_resistance_max",
+     "unit": "ohm"
+    },
+    "i_rated": {
+     "field": "contact_current_max",
+     "unit": "A"
+    },
+    "v_rated": {
+     "field": "contact_voltage_ac_max",
+     "unit": "V"
+    }
+   },
+   "derived_parameters": {},
+   "class_parameters": {},
+   "quoted_parameters": {},
+   "template_override": "R{ref}_c1 {P1} {M1} {rc}\nR{ref}_c2 {P2} {M2} {rc}\nR{ref}_c3 {P3} {M3} {rc}\nR{ref}_c4 {P4} {M4} {rc}\nR{ref}_c5 {P5} {M5} {rc}\nR{ref}_c6 {P6} {M6} {rc}\nR{ref}_c7 {P7} {M7} {rc}\nR{ref}_c8 {P8} {M8} {rc}\nR{ref}_c9 {P9} {M9} {rc}\nR{ref}_c10 {P10} {M10} {rc}\nR{ref}_c11 {P11} {M11} {rc}\nR{ref}_c12 {P12} {M12} {rc}\nR{ref}_c13 {P13} {M13} {rc}\nR{ref}_c14 {P14} {M14} {rc}\nR{ref}_c15 {P15} {M15} {rc}\nR{ref}_c16 {P16} {M16} {rc}\nR{ref}_c17 {P17} {M17} {rc}\nR{ref}_c18 {P18} {M18} {rc}\nR{ref}_c19 {P19} {M19} {rc}\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 11454
+   },
+   "template_provenance_note": "Per-contact instance of the class 'R{ref}_c{n} {BOARD_n} {CABLE_n} {Rc}', n = 1..19; shell line omitted (no sourced shell resistance).",
+   "inline_assets": [],
+   "supported_analyses": [
+    "op"
+   ],
+   "limitations": [
+    "Explicit alternate, not a silent rebinding of the default CT_19APL2 footprint.",
+    "DC contact resistance at its 20 mOhm max (spec measured at 20 mV/100 mA); no TMDS impedance, loss, crosstalk or protocol.",
+    "Shell/shield pads unmodeled.",
+    "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. RuntimeRecipe has no field that separates them from footprint pads, so a schema addition (e.g. mating_terminals) or a catalog-binding rule that excludes them from pad matching is needed before this recipe can bind to a library footprint."
+   ]
+  },
+  "pin_map_evidence": "HD12-19-SMT-TR datasheet (09/12/2024) p3: PIN CONNECTIONS table pins 1..19 + SHELL/SHIELD; Recommended PCB Layout (top view) callouts 'NO.1' at the left end and 'NO.19' at the right end of the 0.50 mm pitch pad row. Terminal n -> Pn, mating plug contact n -> Mn.",
+  "runtime_check": {
+   "stimulus": "Explicit DC current source equal to the sourced rated current (critical fact i_rated) driven from net 'return' into net 'board'; board = terminal P1 (first numbered contact); its mating terminal M1 and every other terminal on 'return' (other contact resistors then sit return-to-return and carry no current); isolated roles on their own single-pin nets.",
+   "observable": "contact_path_resistance = V(board)/i_rated",
+   "comparison": "interval: 0 <= R_path <= rc (sourced contact_resistance max). Secondary absolute check: drop = i_rated*rc with the locked bench's relative tolerance 0.1% (BEH-CON-HDMI/B1), evaluated at the bound part's sourced values instead of the bench example values. Expected drop 0.5 A*0.02 ohm = 10 mV. HDMI/B1 is a series-contact termination deck (10mA*(50+Rc)); the contact-only drop is its Rc term. Note the source test current is 100 mA; stimulating at 0.5 A is the rating, not the measurement condition.",
+   "derived_from": "BEH-CON-HDMI/B1 (locked I*Rc contact-drop equation and 0.1% tolerance) + sourced fields rc and i_rated",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "Yes. runtime_benches.dc_probe_definition has no BEH-CON-* branch. Proposed shared 'connector contact path' branch for BEH-CON-USB/HDMI/MODJACK/AUDIO/DCJACK/SDSOCKET(/FFC): roles {P1:'board', others:'return', required_isolated roles on their own nets}, DCExcitation(positive_net='return', negative_net='board', value=i_rated A), new observable 'contact_path_resistance' = v(board)/current in _dc_observation (same shape as the inductor 'dc_resistance' observable). Limits text: isothermal single-contact DC resistance against the sourced maximum; does not validate heating, simultaneous-contact derating, signal integrity, protocol or safe mating."
+  },
+  "open_items_after": [
+   "Default CT_19APL2 footprint remains unbound",
+   "Shell pad resistance/modeling",
+   "TMDS transmission-line model",
+   "HDMI protocol not simulable"
+  ]
+ },
+ {
+  "entry": "OHM-168",
+  "class": "BEH-CON-HDMI",
+  "verdict": "blocked",
+  "blocker_recorded": "Missing Type C map/contact resistance; HDMI protocol is not simulable.",
+  "blocker_resolution": "TE brochure and product page give 0.5 A, 40 VAC, -25..70 C and 19 positions, and expressly warn the Type C assignment differs from standard and micro HDMI, but neither gives a pin numbering/assignment or a contact resistance. The product drawing ENG_CD_2013978_B1.pdf is listed on the archived product page, but TE's document server refuses automated fetch (robots). Both named blockers stay open.",
+  "reference_part": "TE Connectivity 2013978-1 (Mini HDMI Type C receptacle, RA SMT w/ tab)",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "None. Product page lists 'HDMI TYPE C RECEPTACLE CONNECTOR ENG_CD_2013978_B1.pdf' only.",
+  "runtime_check": null,
+  "open_items_after": [
+   "Download ENG_CD_2013978_B1.pdf (customer drawing) for pin numbering and any contact resistance",
+   "Contact resistance",
+   "HDMI protocol not simulable"
+  ]
+ },
+ {
+  "entry": "OHM-169",
+  "class": "BEH-CON-MODJACK",
+  "verdict": "blocked",
+  "blocker_recorded": "Missing exact terminal map/contact ratings; no PHY/protocol simulation.",
+  "blocker_resolution": "Both archived Amphenol documents are family brochures (3 A continuous, 500 MOhm, 1500 V withstand, -65..125 C) with no contact numbering, no contact resistance and no working voltage for 54602-908LF; the drawing/spec URLs (c-bmj-0102, GS-12-083, 54602.pdf) fail or return 403. 1500 V is a withstand value.",
+  "reference_part": "Amphenol ICC/FCI 54602-908LF (Cat3, 8 position, THT right angle)",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "None in archived sources.",
+  "runtime_check": null,
+  "open_items_after": [
+   "54602-908LF drawing for contact numbering, contact resistance and working voltage",
+   "No PHY/PoE behavior"
+  ]
+ },
+ {
+  "entry": "OHM-170",
+  "class": "BEH-CON-MODJACK",
+  "verdict": "resolvable",
+  "blocker_recorded": "Physical/permutation mapping unresolved; do not assign telephony polarity from memory.",
+  "blocker_resolution": "The exact Adam Tech MTJ-645X1 Rev D drawing numbers the four loaded contacts 1 2 3 4 in the front view and marks contacts 1 and 4 on the recommended PCB layout, and gives 125 VAC max, 1.5 A max and 35 mOhm max. A per-contact path model uses only manufacturer numbering, so no telephony Tip/Ring polarity is assigned. The mapping of manufacturer 1..4 to six-position housing numbers 2..5 is a library-footprint (catalog binding) question and stays open; the recipe uses the manufacturer numbers.",
+  "reference_part": "Adam Tech MTJ-645X1 (6P4C modular telephone jack, right angle PCB), Rev D",
+  "new_field_updates": [],
+  "recipe": {
+   "entry_id": "OHM-170",
+   "behavior_id": "BEH-CON-MODJACK",
+   "package": "RJ11 6P4C right-angle THT (Adam Tech MTJ-645X1), mated",
+   "reference_part": "Adam Tech MTJ-645X1 Rev D",
+   "terminal_roles": {
+    "1": "P1",
+    "2": "P2",
+    "3": "P3",
+    "4": "P4",
+    "M1": "M1",
+    "M2": "M2",
+    "M3": "M3",
+    "M4": "M4"
+   },
+   "critical_facts": {
+    "rc": {
+     "field": "contact_resistance_max",
+     "unit": "ohm"
+    },
+    "i_rated": {
+     "field": "current_rated_max",
+     "unit": "A"
+    },
+    "v_rated": {
+     "field": "voltage_rated_ac_max",
+     "unit": "V"
+    }
+   },
+   "derived_parameters": {},
+   "class_parameters": {},
+   "quoted_parameters": {},
+   "template_override": "R{ref}_c1 {P1} {M1} {rc}\nR{ref}_c2 {P2} {M2} {rc}\nR{ref}_c3 {P3} {M3} {rc}\nR{ref}_c4 {P4} {M4} {rc}\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 11611
+   },
+   "template_provenance_note": "Per-contact instance of the class 'R{ref}_c{n} {BOARD_n} {CABLE_n} {Rc}', n = manufacturer contacts 1..4; magjack line not applicable.",
+   "inline_assets": [],
+   "supported_analyses": [
+    "op"
+   ],
+   "limitations": [
+    "Manufacturer contact numbers 1..4, not six-position housing numbers; no Tip/Ring polarity assigned.",
+    "Contact resistance at its 35 mOhm max; no ring-voltage transient, crosstalk or derating.",
+    "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. RuntimeRecipe has no field that separates them from footprint pads, so a schema addition (e.g. mating_terminals) or a catalog-binding rule that excludes them from pad matching is needed before this recipe can bind to a library footprint."
+   ]
+  },
+  "pin_map_evidence": "MTJ-645X1 Rev D (1/14/19) drawing, sheet 1: front view labels '1 2 3 4' across the loaded contacts; recommended PCB layout marks hole '1' and hole '4' in the staggered 4-hole pattern (.050/.100 in pitch). Terminal k -> Pk, plug contact k -> Mk.",
+  "runtime_check": {
+   "stimulus": "Explicit DC current source equal to the sourced rated current (critical fact i_rated) driven from net 'return' into net 'board'; board = terminal P1 (first numbered contact); its mating terminal M1 and every other terminal on 'return' (other contact resistors then sit return-to-return and carry no current); isolated roles on their own single-pin nets.",
+   "observable": "contact_path_resistance = V(board)/i_rated",
+   "comparison": "interval: 0 <= R_path <= rc (sourced contact_resistance max). Secondary absolute check: drop = i_rated*rc with the locked bench's relative tolerance 0.1% (BEH-CON-MODJACK/B1), evaluated at the bound part's sourced values instead of the bench example values. Expected drop 1.5 A*0.035 ohm = 52.5 mV (MODJACK/B1 authored 1.5 A*20 mOhm = 30 mV with the class Rc; the bound part's own 35 mOhm replaces it).",
+   "derived_from": "BEH-CON-MODJACK/B1 (locked I*Rc contact-drop equation and 0.1% tolerance) + sourced fields rc and i_rated",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "Yes. runtime_benches.dc_probe_definition has no BEH-CON-* branch. Proposed shared 'connector contact path' branch for BEH-CON-USB/HDMI/MODJACK/AUDIO/DCJACK/SDSOCKET(/FFC): roles {P1:'board', others:'return', required_isolated roles on their own nets}, DCExcitation(positive_net='return', negative_net='board', value=i_rated A), new observable 'contact_path_resistance' = v(board)/current in _dc_observation (same shape as the inductor 'dc_resistance' observable). Limits text: isothermal single-contact DC resistance against the sourced maximum; does not validate heating, simultaneous-contact derating, signal integrity, protocol or safe mating."
+  },
+  "open_items_after": [
+   "Manufacturer 1..4 to library six-position 2..5 coordinate mapping (catalog binding)",
+   "Current derating",
+   "No telephony/PHY behavior"
+  ]
+ },
+ {
+  "entry": "OHM-171",
+  "class": "BEH-CON-AUDIO",
+  "verdict": "resolvable",
+  "blocker_recorded": "Missing maximum voltage and default physical binding.",
+  "blocker_resolution": "Resolvable only as an explicit alternate (SJ1-3535NG), not the default Ledino KB3SPRS footprint. The archived Same Sky sheet p2 gives the per-pin table (1 sleeve, 2 tip, 3 ring, 4 tip switch, 5 ring switch) and the PCB layout numbers 1#..5#; p1 gives rated input current 1 A (max column), contact resistance 50 mOhm max, rated input voltage 12 Vdc. The voltage is printed in the typ column: there is no separate maximum anywhere in the source. Closing the 'maximum voltage' blocker therefore requires accepting the manufacturer's rated input voltage as the working-voltage ceiling (checks must never exceed 12 Vdc); it must not be relabelled an absolute maximum. Reviewer decision required on that point.",
+  "reference_part": "Same Sky SJ1-3535NG (3.5 mm, tip and ring switches) - explicit alternate to the default Ledino KB3SPRS",
+  "new_field_updates": [],
+  "recipe": {
+   "entry_id": "OHM-171",
+   "behavior_id": "BEH-CON-AUDIO",
+   "package": "3.5 mm audio jack, 5 pin THT (Same Sky SJ1-3535NG), plug inserted",
+   "reference_part": "Same Sky SJ1-3535NG (explicit alternate)",
+   "terminal_roles": {
+    "1": "SLEEVE",
+    "2": "TIP",
+    "3": "RING",
+    "4": "TIP_SW",
+    "5": "RING_SW",
+    "M_SLEEVE": "M_SLEEVE",
+    "M_TIP": "M_TIP",
+    "M_RING": "M_RING"
+   },
+   "required_isolated_roles": [
+    "TIP_SW",
+    "RING_SW"
+   ],
+   "critical_facts": {
+    "rc": {
+     "field": "contact_resistance_max",
+     "unit": "ohm"
+    },
+    "i_rated": {
+     "field": "current_rated_max",
+     "unit": "A"
+    },
+    "v_rated": {
+     "field": "voltage_rated_dc_typical",
+     "unit": "V"
+    }
+   },
+   "derived_parameters": {},
+   "class_parameters": {},
+   "quoted_parameters": {},
+   "template_override": "R{ref}_s {SLEEVE} {M_SLEEVE} {rc}\nR{ref}_t {TIP} {M_TIP} {rc}\nR{ref}_r {RING} {M_RING} {rc}\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 11762
+   },
+   "template_provenance_note": "Plug-inserted state of the class template: the 'R{ref}_t {T} {T_cable} {Rc} ; only when inserted' line instantiated for sleeve, tip and ring; the NC switch lines are dropped because inserted = open, and their closed resistance (Rsw) is unsourced.",
+   "inline_assets": [],
+   "supported_analyses": [
+    "op"
+   ],
+   "limitations": [
+    "Plug-inserted state only; switch pins 4/5 are open and must stay isolated. The unplugged NC state is not modeled because switch closed resistance is unsourced.",
+    "12 Vdc is the manufacturer's rated input voltage (typ column), used as a ceiling, never as an absolute maximum.",
+    "Explicit alternate; the default Ledino KB3SPRS footprint stays unbound.",
+    "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. RuntimeRecipe has no field that separates them from footprint pads, so a schema addition (e.g. mating_terminals) or a catalog-binding rule that excludes them from pad matching is needed before this recipe can bind to a library footprint."
+   ]
+  },
+  "pin_map_evidence": "SJ1-353XNG datasheet (03/10/2025) p2: PIN table for SJ1-3535NG: 1 sleeve, 2 tip, 3 ring, 4 tip switch, 5 ring switch; Recommended PCB Layout top view labels 1#..5#; schematic shows 4 NC to 2 and 5 NC to 3 unplugged. Terminals 1/2/3 -> SLEEVE/TIP/RING with mating plug contacts M_SLEEVE/M_TIP/M_RING; 4/5 -> TIP_SW/RING_SW (isolated in the inserted state).",
+  "runtime_check": {
+   "stimulus": "Explicit DC current source equal to the sourced rated current (critical fact i_rated) driven from net 'return' into net 'board'; board = terminal P1 (first numbered contact); its mating terminal M1 and every other terminal on 'return' (other contact resistors then sit return-to-return and carry no current); isolated roles on their own single-pin nets.",
+   "observable": "contact_path_resistance = V(board)/i_rated",
+   "comparison": "interval: 0 <= R_path <= rc (sourced contact_resistance max). Secondary absolute check: drop = i_rated*rc with the locked bench's relative tolerance 0.1% (BEH-CON-AUDIO/B2), evaluated at the bound part's sourced values instead of the bench example values. Expected drop 1 A*0.05 ohm = 50 mV. AUDIO/B2 is the locked per-contact Rc path deck (30 mOhm tip, 30 mOhm sleeve); the bound part's 50 mOhm replaces the class value.",
+   "derived_from": "BEH-CON-AUDIO/B2 (locked I*Rc contact-drop equation and 0.1% tolerance) + sourced fields rc and i_rated",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "Yes. runtime_benches.dc_probe_definition has no BEH-CON-* branch. Proposed shared 'connector contact path' branch for BEH-CON-USB/HDMI/MODJACK/AUDIO/DCJACK/SDSOCKET(/FFC): roles {P1:'board', others:'return', required_isolated roles on their own nets}, DCExcitation(positive_net='return', negative_net='board', value=i_rated A), new observable 'contact_path_resistance' = v(board)/current in _dc_observation (same shape as the inductor 'dc_resistance' observable). Limits text: isothermal single-contact DC resistance against the sourced maximum; does not validate heating, simultaneous-contact derating, signal integrity, protocol or safe mating."
+  },
+  "open_items_after": [
+   "Default Ledino KB3SPRS binding",
+   "Absolute maximum voltage (not published)",
+   "Switch closed resistance (unplugged state)",
+   "Contact derating"
+  ]
+ },
+ {
+  "entry": "OHM-172",
+  "class": "BEH-CON-DCJACK",
+  "verdict": "resolvable",
+  "blocker_recorded": "Rating-critical limits and physical binding remain unresolved.",
+  "blocker_resolution": "The archived PJ-102A sheet (03/11/2025) has the exact physical binding: p2 schematic 1 = center pin, 2 = sleeve, 3 = spring contact normally closed to 2 (opens on insertion), and the Recommended PCB Layout top view labels 1#, 2#, 3#. Correction: on p1 the 2.5 A 'rated input current' is printed in the MAX column, not typ (the existing current_rated_typical row mislabels it); 24 Vdc 'rated input voltage' is in the typ column and is the only voltage rating; contact resistance 30 mOhm max. A plug-inserted contact model (center and sleeve paths, pin 3 open) closes the binding. Voltage closure requires accepting the rated 24 Vdc as the working ceiling (never relabelled an absolute max); reviewer decision required, and the original conservative 16 V envelope can stay as the checker limit if preferred.",
+  "reference_part": "Same Sky (CUI) PJ-102A (2.0 mm center pin, right angle THT)",
+  "new_field_updates": [
+   {
+    "field": "current_rated_max",
+    "value": 2.5,
+    "unit": "A",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.sameskydevices.com/product/resource/pj-102a.pdf"
+    ],
+    "page": 1,
+    "scope": "PJ-102A exact; replaces current_rated_typical (that row's 'typ column' scope is wrong)",
+    "detail": "SPECIFICATIONS: 'rated input current ... max 2.5 A' (value sits in the max column; 24 Vdc above it sits in typ)",
+    "archived": true
+   }
+  ],
+  "recipe": {
+   "entry_id": "OHM-172",
+   "behavior_id": "BEH-CON-DCJACK",
+   "package": "DC barrel jack 2.0 mm, 3 pin THT right angle (Same Sky PJ-102A), plug inserted",
+   "reference_part": "Same Sky PJ-102A",
+   "terminal_roles": {
+    "1": "CENTER",
+    "2": "SLEEVE",
+    "3": "SLEEVE_SW",
+    "M_TIP": "M_TIP",
+    "M_SLEEVE": "M_SLEEVE"
+   },
+   "required_isolated_roles": [
+    "SLEEVE_SW"
+   ],
+   "critical_facts": {
+    "rc": {
+     "field": "contact_resistance_max",
+     "unit": "ohm"
+    },
+    "i_rated": {
+     "field": "current_rated_max",
+     "unit": "A"
+    },
+    "v_rated": {
+     "field": "voltage_rated_dc_typical",
+     "unit": "V"
+    }
+   },
+   "derived_parameters": {},
+   "class_parameters": {},
+   "quoted_parameters": {},
+   "template_override": "R{ref}_tip {CENTER} {M_TIP} {rc}\nR{ref}_slv {SLEEVE} {M_SLEEVE} {rc}\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 12066
+   },
+   "template_provenance_note": "Class lines 'R{ref}_tip {PLUG_TIP} {TIP} {rc_total/2}' and 'R{ref}_slv ...' with each path at the full 30 mOhm max rather than rc_total/2 (the source does not say whether 30 mOhm is per contact or loop; full value per path is the conservative bound and matches DCJACK/B1, which uses one 30 mOhm Rcon). Switch line dropped: inserted = open; the class switch_partner=TIP ASSUMPTION is contradicted by the source (switch is to sleeve).",
+   "inline_assets": [],
+   "supported_analyses": [
+    "op"
+   ],
+   "limitations": [
+    "Plug-inserted state only; pin 3 (NC to sleeve when unplugged) is open and isolated. Unplugged switch resistance is unsourced.",
+    "Per-path resistance at the 30 mOhm max; no self-heating (class Rth is an assumption).",
+    "24 Vdc is the rated input voltage (typ column), used as a ceiling only.",
+    "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. RuntimeRecipe has no field that separates them from footprint pads, so a schema addition (e.g. mating_terminals) or a catalog-binding rule that excludes them from pad matching is needed before this recipe can bind to a library footprint."
+   ]
+  },
+  "pin_map_evidence": "PJ-102A datasheet p2: SCHEMATIC (center pin -> 1; sleeve -> 2; spring arrow -> 3 resting on 2); Recommended PCB Layout top view labels 1#, 2#, 3#; materials table names center pin and terminals 1..3. Visually re-verified at 300 dpi.",
+  "runtime_check": {
+   "stimulus": "Explicit DC current source equal to the sourced rated current (critical fact i_rated) driven from net 'return' into net 'board'; board = terminal P1 (first numbered contact); its mating terminal M1 and every other terminal on 'return' (other contact resistors then sit return-to-return and carry no current); isolated roles on their own single-pin nets.",
+   "observable": "contact_path_resistance = V(board)/i_rated",
+   "comparison": "interval: 0 <= R_path <= rc (sourced contact_resistance max). Secondary absolute check: drop = i_rated*rc with the locked bench's relative tolerance 0.1% (BEH-CON-DCJACK/B1), evaluated at the bound part's sourced values instead of the bench example values. Expected drop 2.5 A*0.03 ohm = 75 mV, identical to the locked DCJACK/B1 v_drop 0.075 V.",
+   "derived_from": "BEH-CON-DCJACK/B1 (locked I*Rc contact-drop equation and 0.1% tolerance) + sourced fields rc and i_rated",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "Yes. runtime_benches.dc_probe_definition has no BEH-CON-* branch. Proposed shared 'connector contact path' branch for BEH-CON-USB/HDMI/MODJACK/AUDIO/DCJACK/SDSOCKET(/FFC): roles {P1:'board', others:'return', required_isolated roles on their own nets}, DCExcitation(positive_net='return', negative_net='board', value=i_rated A), new observable 'contact_path_resistance' = v(board)/current in _dc_observation (same shape as the inductor 'dc_resistance' observable). Limits text: isothermal single-contact DC resistance against the sourced maximum; does not validate heating, simultaneous-contact derating, signal integrity, protocol or safe mating."
+  },
+  "open_items_after": [
+   "Absolute maximum voltage (not published)",
+   "Temperature derating / contact heating (class Rth is an assumption)",
+   "Unplugged switch resistance"
+  ]
+ },
+ {
+  "entry": "OHM-173",
+  "class": "BEH-CON-XT",
+  "verdict": "blocked",
+  "blocker_recorded": "Safety-critical polarity and thermal derating unresolved.",
+  "blocker_resolution": "Keep blocked (safety). The archived XT30PW-M V1.2 spec drawing shows two identical round contacts with no pin numbers and no +/- marking, so no terminal-role map or polarity can be evidenced from the part's own drawing. New conflict: the archived Amass catalogue p8 (XT30PW column) lists variants XT30PW-M20.G.Y / -M30.G.Y / -M30.N.B (2.0/3.0 mm leg height) with 'Rated current 20A MAX (delta<85C)', 500 V DC max voltage and 100 mechanical cycles, versus V1.2's 15 A rated / 30 A instantaneous / 1000 uses. The exact variant is unresolved, and no thermal derating or peak duration exists.",
+  "reference_part": "Amass XT30PW-M (variant M20/M30 unresolved)",
+  "new_field_updates": [
+   {
+    "field": "catalog_current_max",
+    "value": 20,
+    "unit": "A",
+    "basis": "MFR_DATASHEET",
+    "confidence": "M",
+    "sources": [
+     "https://www.china-amass.com/public/upload/20240723/c1ae9604bbe795ebfd366c9063019e3e.pdf"
+    ],
+    "page": 8,
+    "scope": "XT30PW family row (XT30PW-M20.G.Y / M30.G.Y / M30.N.B); temperature rise delta <85 C; conflicts with V1.2 15 A rated",
+    "detail": "Specifications table: 'Rated current 20A MAX (delta<85C)'; 'Max Voltage 500V DC'; 'Mechanical Life 100'; 'Weld leg height 2.0 mm / 3.0mm' (visually read)",
+    "archived": true
+   }
+  ],
+  "recipe": null,
+  "pin_map_evidence": "None: V1.2 drawing p1 and catalogue p8 show two unnumbered, unmarked contacts.",
+  "runtime_check": null,
+  "open_items_after": [
+   "Exact variant (M20 vs M30, legacy V1.2)",
+   "Polarity/terminal designation",
+   "Thermal derating, PCB copper condition, peak-current duration",
+   "Hot-plug arcing and reverse polarity hazards"
+  ]
+ },
+ {
+  "entry": "OHM-174",
+  "class": "BEH-CON-XT",
+  "verdict": "blocked",
+  "blocker_recorded": "Safety-critical variant, polarity and thermal scope unresolved.",
+  "blocker_resolution": "Keep blocked (safety). XT60PW-M V1.2 drawing has no pin numbers or polarity marks; the three Amass sources disagree (V1.2 45 A/500 V/0.5 mOhm/1000 uses; catalogue M30 35 A delta<85 C/500 V withstand/100 cycles; product page 35 A/80 V rated/1.2 mOhm max). Variant, polarity and thermal scope cannot be closed from evidence.",
+  "reference_part": "Amass XT60PW-M (legacy V1.2 vs XT60PW-M30.G.Y unresolved)",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "None: V1.2 drawing p1 shows two unnumbered contacts.",
+  "runtime_check": null,
+  "open_items_after": [
+   "Exact variant",
+   "Polarity/terminal designation",
+   "Thermal derating and inrush/arc limits"
+  ]
+ },
+ {
+  "entry": "OHM-175",
+  "class": "BEH-CON-RF",
+  "verdict": "blocked",
+  "blocker_recorded": "Missing rating-critical current/voltage; RF transmission validity requires a sourced launch model.",
+  "blocker_resolution": "Hirose U.FL catalogue p4 gives 50 ohm nominal, 0-8 GHz rated frequency, center 20 mOhm / outer 10 mOhm max contact resistance (at 10 mA test), 200 VAC one-minute withstand and -40..105 C, but no working current, working voltage or RF power rating; the 10 mA is a measurement condition. No sourced launch/parasitic model. Blocker stays.",
+  "reference_part": "Hirose U.FL-R-SMT (conventional U.FL family)",
+  "new_field_updates": [
+   {
+    "field": "rated_frequency_range",
+    "value": [
+     0,
+     8000000000.0
+    ],
+    "unit": "Hz",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.hirose.com/product/download/?distributor=all&lang=en&series=U.FL&type=catalogue"
+    ],
+    "page": 4,
+    "scope": "Conventional U.FL family; connector only, not a PCB launch",
+    "detail": "'Rated Frequency 0 to 8GHz'",
+    "archived": true
+   }
+  ],
+  "recipe": null,
+  "pin_map_evidence": "Not attempted: blocked on ratings.",
+  "runtime_check": null,
+  "open_items_after": [
+   "Working current/voltage and RF power rating",
+   "U.FL-R-SMT pad binding and launch model"
+  ]
+ },
+ {
+  "entry": "OHM-176",
+  "class": "BEH-CON-RF",
+  "verdict": "blocked",
+  "blocker_recorded": "Missing current/power rating and validated physical map.",
+  "blocker_resolution": "Cinch 142-0701-201 specification gives working voltage 335 Vrms (sea level), center 3.0/4.0 mOhm and outer 2.0 mOhm max contact resistance, 0-18 GHz, but no current or RF power rating for an uncabled receptacle (insertion loss/VSWR 'N/A'; 0.5 W applies to dummy loads only). The named current/power blocker cannot close. The physical map (one center contact, four .200 in square ground leads) is unambiguous by geometry but carries no terminal numbers.",
+  "reference_part": "Cinch/Johnson 142-0701-201 (straight PCB SMA jack)",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "Drawing dr-ccs-john-142-0701-206: center contact plus four shell leads on .200 in square; no electrical terminal numbering.",
+  "runtime_check": null,
+  "open_items_after": [
+   "Current / RF power rating",
+   "Footprint terminal labeling",
+   "Launch model"
+  ]
+ },
+ {
+  "entry": "OHM-177",
+  "class": "BEH-CON-RF",
+  "verdict": "blocked",
+  "blocker_recorded": "Rating-critical fields and exact physical binding unresolved.",
+  "blocker_resolution": "Molex SD-73251-212 sales drawing (archived) gives 50 ohm, board .062 in, FR4 1 oz, materials, and references PS-89675-346; that spec could not be fetched (WebFetch error), so contact current/voltage, center/shell resistance and temperature remain unsourced.",
+  "reference_part": "Molex 73251-2120 (EWR-2074 edge-mount SMA jack, .062 board)",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "Not attempted: no electrical ratings.",
+  "runtime_check": null,
+  "open_items_after": [
+   "PS-89675-346 electrical spec",
+   "Launch parameters"
+  ]
+ },
+ {
+  "entry": "OHM-178",
+  "class": "BEH-CON-FFC",
+  "verdict": "blocked",
+  "blocker_recorded": "Unvalidated physical/cable pin mapping and load-temperature derating.",
+  "blocker_resolution": "Ratings and derating close from the archived FH12 catalogue p2: 0.5 A DC with 'When passing the current through all of the contacts, use 70% of the current rating' and 'Note 2: Includes temperature rise caused by current flow' on the -40..85 C range, so the operating range already budgets self-heating. But the catalogue p4 drawing of FH12-**S-0.5SH shows only an unlabeled triangle mark, with no contact numbering. The FH12-10S-0.5SH(55) part drawing could not be fetched, so contact 1 orientation and the cable-side permutation cannot be evidenced. Blocked on the physical map only.",
+  "reference_part": "Hirose FH12-10S-0.5SH(55) (0.5 mm bottom contact, 10 position)",
+  "new_field_updates": [
+   {
+    "field": "operating_range_includes_self_heating",
+    "value": true,
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.physics.utoronto.ca/~astummer/Archives/2014%20Micro%203D%20Magnetometer/Docs/Hirose%20FH12-16S-1SV(55),%20FFC%20connector,%20SMT%201mm%2016-pos.pdf"
+    ],
+    "page": 2,
+    "scope": "FH12 series ratings; operating temperature -40 to +85 C",
+    "detail": "'Note 2: Includes temperature rise caused by current flow.'",
+    "archived": true
+   }
+  ],
+  "recipe": null,
+  "pin_map_evidence": "Catalogue p4: dimension drawing has a triangle mark near one end but no 'No.1' text; no contact numbers.",
+  "runtime_check": null,
+  "open_items_after": [
+   "Contact numbering / No.1 end from the FH12-10S-0.5SH drawing",
+   "Cable-side (top vs bottom contact) permutation",
+   "Metal fittings are mechanical; no automatic GND"
+  ]
+ },
+ {
+  "entry": "OHM-179",
+  "class": "BEH-CON-SDSOCKET",
+  "verdict": "resolvable",
+  "blocker_recorded": "Exact physical mapping missing; SD protocol not simulable.",
+  "blocker_resolution": "Resolvable only as an explicit alternate (Wurth 693063010911 push-pull), not the default Molex 676008001 push-push. The archived current WE datasheet (rev 003.002) has a Pin Assignment table (1 DAT3, 2 CMD, 3 Vss1, 4 Vdd, 5 CLK, 6 Vss2, 7 DAT0, 8 DAT1, 9 DAT2, 10 CD, 11 WP) and a land pattern labelled 1..11, plus Rated Current 0.5 A, Working Voltage 100 V(AC), Contact Resistance 100 mOhm max. Card-detect and write-protect are single pads whose switch partner the current sheet does not name, so they are left isolated. SD protocol is out of scope; 100 VAC is an insulation working voltage, not a card VDD.",
+  "reference_part": "Wurth Elektronik 693063010911 (WR-CRD SD push-pull with card detection) - explicit alternate to default Molex 676008001",
+  "new_field_updates": [],
+  "recipe": {
+   "entry_id": "OHM-179",
+   "behavior_id": "BEH-CON-SDSOCKET",
+   "package": "SD card socket push-pull 11 pad (Wurth 693063010911), card inserted",
+   "reference_part": "Wurth Elektronik 693063010911 (explicit alternate)",
+   "terminal_roles": {
+    "1": "P1",
+    "2": "P2",
+    "3": "P3",
+    "4": "P4",
+    "5": "P5",
+    "6": "P6",
+    "7": "P7",
+    "8": "P8",
+    "9": "P9",
+    "C1": "C1",
+    "C2": "C2",
+    "C3": "C3",
+    "C4": "C4",
+    "C5": "C5",
+    "C6": "C6",
+    "C7": "C7",
+    "C8": "C8",
+    "C9": "C9",
+    "10": "CD",
+    "11": "WP"
+   },
+   "required_isolated_roles": [
+    "CD",
+    "WP"
+   ],
+   "critical_facts": {
+    "rc": {
+     "field": "contact_resistance_max",
+     "unit": "ohm"
+    },
+    "i_rated": {
+     "field": "current_rated",
+     "unit": "A"
+    },
+    "v_rated": {
+     "field": "working_voltage_ac",
+     "unit": "V"
+    }
+   },
+   "derived_parameters": {},
+   "class_parameters": {},
+   "quoted_parameters": {},
+   "template_override": "R{ref}_c1 {P1} {C1} {rc}\nR{ref}_c2 {P2} {C2} {rc}\nR{ref}_c3 {P3} {C3} {rc}\nR{ref}_c4 {P4} {C4} {rc}\nR{ref}_c5 {P5} {C5} {rc}\nR{ref}_c6 {P6} {C6} {rc}\nR{ref}_c7 {P7} {C7} {rc}\nR{ref}_c8 {P8} {C8} {rc}\nR{ref}_c9 {P9} {C9} {rc}\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 12670
+   },
+   "template_provenance_note": "Per-contact instance of the class 'R{ref}_k {Pk_board} {Pk_card} {rc}', k = 1..9; the CD switch line is dropped because the switch partner is unsourced in the current datasheet.",
+   "inline_assets": [],
+   "supported_analyses": [
+    "op"
+   ],
+   "limitations": [
+    "Card-inserted contact paths only; CD (10) and WP (11) are isolated because their switch partner and closed resistance are not sourced.",
+    "Explicit alternate; the default Molex push-push footprint stays unbound.",
+    "No card model, bus pull-ups or SD protocol.",
+    "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. RuntimeRecipe has no field that separates them from footprint pads, so a schema addition (e.g. mating_terminals) or a catalog-binding rule that excludes them from pad matching is needed before this recipe can bind to a library footprint."
+   ]
+  },
+  "pin_map_evidence": "WE 693063010911 datasheet rev 003.002 (2026-07-16): p2 Pin Assignment table pins 1..11; p1 Recommended Land Pattern labels pads 1..9 plus 10 and 11; p3 card-detection table (CD open removed / closed inserted; WP open protect / closed enable) without naming the mating pad. Pads k=1..9 -> Pk, card pad k -> Ck; 10 -> CD, 11 -> WP.",
+  "runtime_check": {
+   "stimulus": "Explicit DC current source equal to the sourced rated current (critical fact i_rated) driven from net 'return' into net 'board'; board = terminal P1 (first numbered contact); its mating terminal M1 and every other terminal on 'return' (other contact resistors then sit return-to-return and carry no current); isolated roles on their own single-pin nets.",
+   "observable": "contact_path_resistance = V(board)/i_rated",
+   "comparison": "interval: 0 <= R_path <= rc (sourced contact_resistance max). Secondary absolute check: drop = i_rated*rc with the locked bench's relative tolerance 0.1% (BEH-CON-FFC/B1 (equation form) - no SDSOCKET bench is a contact drop), evaluated at the bound part's sourced values instead of the bench example values. Expected drop 0.5 A*0.1 ohm = 50 mV. SDSOCKET/B1 is the card-detect divider and B2 a supply sag; neither locks an I*Rc contact drop, so the interval check against the sourced max is primary and the absolute form borrows the FFC/B1 I*R equation.",
+   "derived_from": "BEH-CON-FFC/B1 (equation form) - no SDSOCKET bench is a contact drop (locked I*Rc contact-drop equation and 0.1% tolerance) + sourced fields rc and i_rated",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "Yes. runtime_benches.dc_probe_definition has no BEH-CON-* branch. Proposed shared 'connector contact path' branch for BEH-CON-USB/HDMI/MODJACK/AUDIO/DCJACK/SDSOCKET(/FFC): roles {P1:'board', others:'return', required_isolated roles on their own nets}, DCExcitation(positive_net='return', negative_net='board', value=i_rated A), new observable 'contact_path_resistance' = v(board)/current in _dc_observation (same shape as the inductor 'dc_resistance' observable). Limits text: isothermal single-contact DC resistance against the sourced maximum; does not validate heating, simultaneous-contact derating, signal integrity, protocol or safe mating."
+  },
+  "open_items_after": [
+   "Default Molex 676008001 binding",
+   "CD/WP switch partner and closed resistance",
+   "SD protocol not simulable"
+  ]
+ },
+ {
+  "entry": "OHM-180",
+  "class": "BEH-CON-SDSOCKET",
+  "verdict": "resolvable",
+  "blocker_recorded": "Default physical binding unresolved; SD protocol not simulable.",
+  "blocker_resolution": "Resolvable only as an explicit alternate (Hirose DM3AT-SF-PEJM5 push-push), not the default Molex 1040310811 push-pull. Archived DM3 catalogue p3 labels #1(DAT2) #2(CD/DAT3) #3(CMD) #4(VDD) #5(CLK) #6(VSS) #7(DAT0) #8(DAT1) and the card-detection switch contacts (A)/(B), closed with a card inserted. p2 gives current rating 0.5 A, voltage rating 125 V AC, contact resistance 100 mOhm max initial at 1 mA, and Note 1 says the -25..85 C range includes temperature rise caused by current flow. In the card-inserted state the detect switch is closed, so CD_A and CD_B are constrained to one net (ideal closure; its resistance is unsourced).",
+  "reference_part": "Hirose DM3AT-SF-PEJM5 (microSD push-push, top board) - explicit alternate to default Molex 1040310811",
+  "new_field_updates": [],
+  "recipe": {
+   "entry_id": "OHM-180",
+   "behavior_id": "BEH-CON-SDSOCKET",
+   "package": "microSD socket push-push 8 contacts + CD switch A/B (Hirose DM3AT-SF-PEJM5), card inserted",
+   "reference_part": "Hirose DM3AT-SF-PEJM5 (explicit alternate)",
+   "terminal_roles": {
+    "1": "P1",
+    "2": "P2",
+    "3": "P3",
+    "4": "P4",
+    "5": "P5",
+    "6": "P6",
+    "7": "P7",
+    "8": "P8",
+    "C1": "C1",
+    "C2": "C2",
+    "C3": "C3",
+    "C4": "C4",
+    "C5": "C5",
+    "C6": "C6",
+    "C7": "C7",
+    "C8": "C8",
+    "A": "CD_A",
+    "B": "CD_B"
+   },
+   "required_same_net_roles": [
+    [
+     "CD_A",
+     "CD_B"
+    ]
+   ],
+   "critical_facts": {
+    "rc": {
+     "field": "contact_resistance_initial_max",
+     "unit": "ohm"
+    },
+    "i_rated": {
+     "field": "current_rated",
+     "unit": "A"
+    },
+    "v_rated": {
+     "field": "voltage_rated_ac",
+     "unit": "V"
+    }
+   },
+   "derived_parameters": {},
+   "class_parameters": {},
+   "quoted_parameters": {},
+   "template_override": "R{ref}_c1 {P1} {C1} {rc}\nR{ref}_c2 {P2} {C2} {rc}\nR{ref}_c3 {P3} {C3} {rc}\nR{ref}_c4 {P4} {C4} {rc}\nR{ref}_c5 {P5} {C5} {rc}\nR{ref}_c6 {P6} {C6} {rc}\nR{ref}_c7 {P7} {C7} {rc}\nR{ref}_c8 {P8} {C8} {rc}\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 12670
+   },
+   "template_provenance_note": "Per-contact instance of the class 'R{ref}_k {Pk_board} {Pk_card} {rc}', k = 1..8; class switch line replaced by a same-net constraint on CD_A/CD_B (card inserted = closed), because the switch closed resistance is unsourced.",
+   "inline_assets": [],
+   "supported_analyses": [
+    "op"
+   ],
+   "limitations": [
+    "Card-inserted state only; the detect switch is an ideal closure (same-net constraint), with resistance unsourced; card-removed state not modeled.",
+    "Signal pin 2 CD/DAT3 is a card contact, not the mechanical switch A/B.",
+    "Explicit alternate; the default Molex 1040310811 footprint stays unbound.",
+    "No card current model, pull-ups or SD protocol.",
+    "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. RuntimeRecipe has no field that separates them from footprint pads, so a schema addition (e.g. mating_terminals) or a catalog-binding rule that excludes them from pad matching is needed before this recipe can bind to a library footprint."
+   ]
+  },
+  "pin_map_evidence": "Hirose DM3 catalogue (Oct.1.2026) p3, DM3AT drawing callouts #1(DAT2) #2(CD/DAT3) #3(CMD) #4(VDD) #5(CLK) #6(VSS) #7(DAT0) #8(DAT1); 'CARD DETECTION SWITCH(A)' and '(B)'; Note 2 table: without card Open, card inserted Closed. Contact #k -> Pk, card pad k -> Ck; A -> CD_A, B -> CD_B.",
+  "runtime_check": {
+   "stimulus": "Explicit DC current source equal to the sourced rated current (critical fact i_rated) driven from net 'return' into net 'board'; board = terminal P1 (first numbered contact); its mating terminal M1 and every other terminal on 'return' (other contact resistors then sit return-to-return and carry no current); isolated roles on their own single-pin nets.",
+   "observable": "contact_path_resistance = V(board)/i_rated",
+   "comparison": "interval: 0 <= R_path <= rc (sourced contact_resistance max). Secondary absolute check: drop = i_rated*rc with the locked bench's relative tolerance 0.1% (BEH-CON-FFC/B1 (equation form) - no SDSOCKET bench is a contact drop), evaluated at the bound part's sourced values instead of the bench example values. Expected drop 0.5 A*0.1 ohm = 50 mV. Source resistance is measured at 1 mA.",
+   "derived_from": "BEH-CON-FFC/B1 (equation form) - no SDSOCKET bench is a contact drop (locked I*Rc contact-drop equation and 0.1% tolerance) + sourced fields rc and i_rated",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "Yes. runtime_benches.dc_probe_definition has no BEH-CON-* branch. Proposed shared 'connector contact path' branch for BEH-CON-USB/HDMI/MODJACK/AUDIO/DCJACK/SDSOCKET(/FFC): roles {P1:'board', others:'return', required_isolated roles on their own nets}, DCExcitation(positive_net='return', negative_net='board', value=i_rated A), new observable 'contact_path_resistance' = v(board)/current in _dc_observation (same shape as the inductor 'dc_resistance' observable). Limits text: isothermal single-contact DC resistance against the sourced maximum; does not validate heating, simultaneous-contact derating, signal integrity, protocol or safe mating."
+  },
+  "open_items_after": [
+   "Default Molex 1040310811 binding",
+   "CD switch closed resistance / removed state",
+   "Pad numbers for switch A/B in the PCB pattern (callouts on outline only)",
+   "SD protocol not simulable"
+  ]
+ }
+]

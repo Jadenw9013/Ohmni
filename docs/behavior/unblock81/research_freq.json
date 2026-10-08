@@ -1,0 +1,265 @@
+[
+ {
+  "entry": "OHM-141",
+  "class": "BEH-FREQ-XTAL",
+  "verdict": "blocked",
+  "blocker_recorded": "Missing reference-specific motional parameters and physical-envelope mismatch prevent a sourced runtime binding.",
+  "blocker_resolution": "Not closable. The archived AB Revised 10.29.2018 sheet (https://abracon.com/Resonators/ab.pdf, read in full) gives only R1 max (35 ohm for the selected bin), C0 max (7 pF), CL (18 pF), drive level, tolerance/stability, aging. It gives no C1, L1, Q, C0/C1 ratio, pullability or trim sensitivity. There is no standard method that derives the motional capacitance/inductance from ESR, C0 and CL: those are independent of C1 (C1 needs Q with R1, or trim sensitivity TS=C1/(2(C0+CL)^2), or a measured pullability). Class template X{ref} {A} {B} ohm_xtal L1 C1 R1 C0 therefore cannot be filled with sourced values; the only way to compile it would be the class C1 default (basis ASSUMPTION, 9fF) plus a derived L1, which would not identify this crystal and is rejected. A web search for an Abracon primary motional-parameter document or SPICE model for this family found only distributor/aggregator pages (secondary). Physical-envelope blocker also stands: reference body 11.5 x 5.0 x 13.46 mm (p1 header) versus the library HC-49/U envelope; nothing in the sheet resolves it. Existing values re-checked against Table 1: 8.000-9.999 MHz fundamental HC49/U ESR 35 ohm, C0 7 pF, CL 18 pF, DL 100 typ/1000 max uW are correct. Note: the AB 'Quality Factor' field is a custom-order option (QXXXk minimum), not a standard-part specification, so it cannot supply Q.",
+  "reference_part": "Abracon AB-8.000MHz (standard 18pF, 0..70C, +/-50ppm), selection only",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": null,
+  "runtime_check": {
+   "stimulus": null,
+   "observable": null,
+   "comparison": null,
+   "derived_from": null,
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "BEH-FREQ-XTAL has no probe in runtime_benches.py/ic_benches.py. A probe would need a tran (runtime recipes only allow op/tran; runtime_models.supported_analyses is Literal['op','tran']) Pierce-loop drive of the bound model reusing locked bench P2/P3 topology, comparing oscillation frequency to fs*sqrt(1+C1/(C0+CL)) and series-branch dissipation to the sourced drive_level_max. Not drafted because the model cannot be bound."
+  },
+  "open_items_after": [
+   "Motional C1 and L1 (or Q / trim sensitivity) for the exact part; needs an Abracon-issued parameter sheet or measured equivalent-circuit data.",
+   "Physical envelope: reference 11.5x5.0x13.46mm vs library HC-49/U body; geometry not validated."
+  ]
+ },
+ {
+  "entry": "OHM-142",
+  "class": "BEH-FREQ-XTAL",
+  "verdict": "blocked",
+  "blocker_recorded": "Missing reference-specific motional parameters and physical-envelope mismatch prevent a sourced runtime binding.",
+  "blocker_resolution": "Not closable. The archived ABL Revised 03-31-23 sheet (https://abracon.com/Resonators/ABL.pdf, read in full) gives only R1 max (80 ohm for the selected bin), C0 max (7 pF), CL (18 pF), drive level, tolerance/stability, aging. It gives no C1, L1, Q, C0/C1 ratio, pullability or trim sensitivity. There is no standard method that derives the motional capacitance/inductance from ESR, C0 and CL: those are independent of C1 (C1 needs Q with R1, or trim sensitivity TS=C1/(2(C0+CL)^2), or a measured pullability). Class template X{ref} {A} {B} ohm_xtal L1 C1 R1 C0 therefore cannot be filled with sourced values; the only way to compile it would be the class C1 default (basis ASSUMPTION, 9fF) plus a derived L1, which would not identify this crystal and is rejected. A web search for an Abracon primary motional-parameter document or SPICE model for this family found only distributor/aggregator pages (secondary). Physical-envelope blocker also stands: ABL is HC49/US (AT49) low-profile, 11.5 x 5.0 x 3.5 mm, versus the library HC-49/U envelope. Existing values re-checked: Table 1 8.000-8.999 MHz fund. ESR 80 ohm, C0 7 pF, CL 18 pF correct.",
+  "reference_part": "Abracon ABL-8.000MHz (standard 18pF), selection only",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": null,
+  "runtime_check": {
+   "stimulus": null,
+   "observable": null,
+   "comparison": null,
+   "derived_from": null,
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "BEH-FREQ-XTAL has no probe in runtime_benches.py/ic_benches.py. A probe would need a tran (runtime recipes only allow op/tran; runtime_models.supported_analyses is Literal['op','tran']) Pierce-loop drive of the bound model reusing locked bench P2/P3 topology, comparing oscillation frequency to fs*sqrt(1+C1/(C0+CL)) and series-branch dissipation to the sourced drive_level_max. Not drafted because the model cannot be bound."
+  },
+  "open_items_after": [
+   "Motional C1 and L1 (or Q / trim sensitivity) for the exact part; needs an Abracon-issued parameter sheet or measured equivalent-circuit data.",
+   "Physical envelope: HC49/US 3.5mm low-profile reference vs library HC-49/U body."
+  ]
+ },
+ {
+  "entry": "OHM-143",
+  "class": "BEH-FREQ-XTAL",
+  "verdict": "blocked",
+  "blocker_recorded": "Missing reference-specific motional parameters and unvalidated physical terminal permutation.",
+  "blocker_resolution": "Not closable. The archived ABM8 Revised 07-29-20 sheet (https://abracon.com/Resonators/abm8.pdf, read in full) gives only R1 max (70 (16.000-19.999 MHz) ohm for the selected bin), C0 max (3.0 pF), CL (18 pF), drive level, tolerance/stability, aging. It gives no C1, L1, Q, C0/C1 ratio, pullability or trim sensitivity. There is no standard method that derives the motional capacitance/inductance from ESR, C0 and CL: those are independent of C1 (C1 needs Q with R1, or trim sensitivity TS=C1/(2(C0+CL)^2), or a measured pullability). Class template X{ref} {A} {B} ohm_xtal L1 C1 R1 C0 therefore cannot be filled with sourced values; the only way to compile it would be the class C1 default (basis ASSUMPTION, 9fF) plus a derived L1, which would not identify this crystal and is rejected. A web search for an Abracon primary motional-parameter document or SPICE model for this family found only distributor/aggregator pages (secondary). Terminal permutation: manufacturer pin roles (1 XTAL, 2 GND/lid, 3 XTAL, 4 GND/lid; top view pin1 bottom-left) are already sourced; the library mapping {1:'2',2:'3',3:'4',4:'1'} is basis ASSUMPTION. It could be closed the same way OHM-146 was (a hashed permutation document like docs/behavior/SIT8008-PERMUTATION.md citing the source top-view page and the library terminal coordinates; crystal roles A/B land on library 2/4, LID on 3/1), but that alone does not make the entry simulable while C1/L1 are missing, so no permutation document is drafted here. Existing ESR/C0/CL/DL values re-checked and correct.",
+  "reference_part": "Abracon ABM8-16.000MHz (standard 18pF, -10..60C), selection only",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": null,
+  "runtime_check": {
+   "stimulus": null,
+   "observable": null,
+   "comparison": null,
+   "derived_from": null,
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "BEH-FREQ-XTAL has no probe in runtime_benches.py/ic_benches.py. A probe would need a tran (runtime recipes only allow op/tran; runtime_models.supported_analyses is Literal['op','tran']) Pierce-loop drive of the bound model reusing locked bench P2/P3 topology, comparing oscillation frequency to fs*sqrt(1+C1/(C0+CL)) and series-branch dissipation to the sourced drive_level_max. Not drafted because the model cannot be bound."
+  },
+  "open_items_after": [
+   "Motional C1 and L1 (or Q / trim sensitivity) for the exact part; needs an Abracon-issued parameter sheet or measured equivalent-circuit data.",
+   "Library terminal permutation still ASSUMPTION (closable by a permutation document once C1/L1 exist)."
+  ]
+ },
+ {
+  "entry": "OHM-144",
+  "class": "BEH-FREQ-XTAL",
+  "verdict": "blocked",
+  "blocker_recorded": "Missing reference-specific motional parameters and unvalidated physical terminal permutation.",
+  "blocker_resolution": "Not closable. The archived ABM10 Revised 04.21.15 sheet (https://abracon.com/Resonators/ABM10.pdf, read in full) gives only R1 max (150 (16.000-19.999 MHz) ohm for the selected bin), C0 max (7 pF), CL (10 pF), drive level, tolerance/stability, aging. It gives no C1, L1, Q, C0/C1 ratio, pullability or trim sensitivity. There is no standard method that derives the motional capacitance/inductance from ESR, C0 and CL: those are independent of C1 (C1 needs Q with R1, or trim sensitivity TS=C1/(2(C0+CL)^2), or a measured pullability). Class template X{ref} {A} {B} ohm_xtal L1 C1 R1 C0 therefore cannot be filled with sourced values; the only way to compile it would be the class C1 default (basis ASSUMPTION, 9fF) plus a derived L1, which would not identify this crystal and is rejected. A web search for an Abracon primary motional-parameter document or SPICE model for this family found only distributor/aggregator pages (secondary). Terminal permutation: manufacturer pin roles (1 XTAL, 2 GND/lid, 3 XTAL, 4 GND/lid; top view pin1 bottom-left) are already sourced; the library mapping {1:'2',2:'3',3:'4',4:'1'} is basis ASSUMPTION. It could be closed the same way OHM-146 was (a hashed permutation document like docs/behavior/SIT8008-PERMUTATION.md citing the source top-view page and the library terminal coordinates; crystal roles A/B land on library 2/4, LID on 3/1), but that alone does not make the entry simulable while C1/L1 are missing, so no permutation document is drafted here. Existing ESR/C0/CL/DL values re-checked and correct.",
+  "reference_part": "Abracon ABM10-16.000MHz (standard 10pF, -10..60C), selection only",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": null,
+  "runtime_check": {
+   "stimulus": null,
+   "observable": null,
+   "comparison": null,
+   "derived_from": null,
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "BEH-FREQ-XTAL has no probe in runtime_benches.py/ic_benches.py. A probe would need a tran (runtime recipes only allow op/tran; runtime_models.supported_analyses is Literal['op','tran']) Pierce-loop drive of the bound model reusing locked bench P2/P3 topology, comparing oscillation frequency to fs*sqrt(1+C1/(C0+CL)) and series-branch dissipation to the sourced drive_level_max. Not drafted because the model cannot be bound."
+  },
+  "open_items_after": [
+   "Motional C1 and L1 (or Q / trim sensitivity) for the exact part; needs an Abracon-issued parameter sheet or measured equivalent-circuit data.",
+   "Library terminal permutation still ASSUMPTION."
+  ]
+ },
+ {
+  "entry": "OHM-145",
+  "class": "BEH-FREQ-XTAL",
+  "verdict": "blocked",
+  "blocker_recorded": "Missing reference-specific motional parameters and unvalidated physical terminal permutation.",
+  "blocker_resolution": "Not closable. The archived ABM11 Revised 06.19.15 sheet (https://abracon.com/Resonators/ABM11.pdf, read in full) gives only R1 max (150 (16.000-17.999 MHz) ohm for the selected bin), C0 max (7.0 pF), CL (10 pF), drive level, tolerance/stability, aging. It gives no C1, L1, Q, C0/C1 ratio, pullability or trim sensitivity. There is no standard method that derives the motional capacitance/inductance from ESR, C0 and CL: those are independent of C1 (C1 needs Q with R1, or trim sensitivity TS=C1/(2(C0+CL)^2), or a measured pullability). Class template X{ref} {A} {B} ohm_xtal L1 C1 R1 C0 therefore cannot be filled with sourced values; the only way to compile it would be the class C1 default (basis ASSUMPTION, 9fF) plus a derived L1, which would not identify this crystal and is rejected. A web search for an Abracon primary motional-parameter document or SPICE model for this family found only distributor/aggregator pages (secondary). Terminal permutation: manufacturer pin roles (1 XTAL, 2 GND/lid, 3 XTAL, 4 GND/lid; top view pin1 bottom-left) are already sourced; the library mapping {1:'2',2:'3',3:'4',4:'1'} is basis ASSUMPTION. It could be closed the same way OHM-146 was (a hashed permutation document like docs/behavior/SIT8008-PERMUTATION.md citing the source top-view page and the library terminal coordinates; crystal roles A/B land on library 2/4, LID on 3/1), but that alone does not make the entry simulable while C1/L1 are missing, so no permutation document is drafted here. Existing ESR/C0/CL/DL values re-checked and correct.",
+  "reference_part": "Abracon ABM11-16.000MHz (standard 10pF, -10..60C), selection only",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": null,
+  "runtime_check": {
+   "stimulus": null,
+   "observable": null,
+   "comparison": null,
+   "derived_from": null,
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "BEH-FREQ-XTAL has no probe in runtime_benches.py/ic_benches.py. A probe would need a tran (runtime recipes only allow op/tran; runtime_models.supported_analyses is Literal['op','tran']) Pierce-loop drive of the bound model reusing locked bench P2/P3 topology, comparing oscillation frequency to fs*sqrt(1+C1/(C0+CL)) and series-branch dissipation to the sourced drive_level_max. Not drafted because the model cannot be bound."
+  },
+  "open_items_after": [
+   "Motional C1 and L1 (or Q / trim sensitivity) for the exact part; needs an Abracon-issued parameter sheet or measured equivalent-circuit data.",
+   "Library terminal permutation still ASSUMPTION."
+  ]
+ },
+ {
+  "entry": "OHM-147",
+  "class": "BEH-FREQ-XO",
+  "verdict": "blocked",
+  "blocker_recorded": "Unresolved rating-critical output/thermal data and physical mismatch.",
+  "blocker_resolution": "Not closable from the exact-part source. The archived AST3TQ53 sheet (Revised 2.16.2021, all 7 pages read; live URL re-fetched, same revision) has no start-up time, no output-current limit, no junction temperature and no thermal resistance; maximum ratings are only storage temp, supply -0.5..6 V, control voltage, ESD. The OHM-146 pattern needs sourced tstart (template parameter, delay before output), supply_abs_max, rth_ja and tj_max; only supply_abs_max (6 V), recommended supply (3.135..3.465 V) and Icc max (10 mA, no load, no typical and no test frequency) exist. Using the class tstart default (5 ms, sourced for SiT8008/S11) or SiT8008 thermal data would be borrowing another part's facts. Additional mismatch the binding would also have to handle: pin1 is NC for the T option (no OE), so the ohm_xo OE input would need an internal tie, and the class ppm parameter is a static offset while this part is a +/-100 ppb TCXO. Physical mismatch also stands: selected post-02/10/2021 drawing 5.20x3.40 mm (p1 header says 5.0x3.2x1.6) vs library 3.2x2.5 mm TCXO.",
+  "reference_part": "Abracon AST3TQ53-T-<freq>-1-C (TCXO, stability option 1, LVCMOS, 3.3V); frequency not selected",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "AST3TQ53 p5/p6 pin table: 1 NC (TCXO) / Vc (VCTCXO), 2 GND, 3 Output, 4 Vdd. Already recorded as manufacturer_pin_roles; library permutation not derived because the entry is blocked on ratings.",
+  "runtime_check": {
+   "stimulus": "would be ic_benches BEH-FREQ-XO 'frequency' and 'current' cases (3.3 V supply, OE tied high)",
+   "observable": "OUT frequency after tstart; supply current",
+   "comparison": "frequency vs f0*(1+ppm) with locked 1 Hz tolerance (B1); current interval [0, supply_current_max=10 mA]",
+   "derived_from": "BEH-FREQ-XO/B1 and sourced supply_current_max",
+   "existing_probe_covers_it": true,
+   "new_probe_needed_for_class": "None; ic_benches XO cases would apply, but its frequency case reads quiescent_current_test_frequency, which this sheet does not provide, so a frequency would also have to be selected from the sourced standard-frequency list."
+  },
+  "open_items_after": [
+   "Start-up time (tstart) for the exact part",
+   "Output current limit",
+   "Tj max and theta_JA",
+   "Selected frequency (standard list 10..50 MHz) and Icc test condition",
+   "Library 3.2x2.5 vs 5.2x3.4 mm envelope"
+  ]
+ },
+ {
+  "entry": "OHM-148",
+  "class": "BEH-FREQ-CERRES",
+  "verdict": "blocked",
+  "blocker_recorded": "Missing rating-critical drive limit and primary terminal map; no sourced runtime binding.",
+  "blocker_resolution": "Not closable from opened evidence. TCD-02-2137 (Murata, 9 pp., read) is an MCU-pairing characterization: test circuit roles Xin/Xout/C1/C2 to GND, Vcc 4.0..5.5 V, C1=C2=15 pF typ, -40..85 C; it has no package pin numbers, no drive or voltage limit, no resonant impedance and no equivalent-circuit constants. The CSTLS_G series HTML page gives only series tolerance/temperature data. The exact-part Murata product page and spec PDF (productdetail?partno=CSTLS8M00G53-B0, pdfdownloadapi) and the CERALOCK catalog could not be reached (proxy 403 / robots disallowed), so I have not seen whether they list R1/L1/C1/C0 or pin numbering; the 25 ohm resonant impedance appears only on distributor pages (secondary). Even with those, Murata catalogs are not known from evidence here to state a drive ceiling; C0/C1 in the class are ASSUMPTION. Kept blocked.",
+  "reference_part": "Murata CSTLS8M00G53-B0",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "None primary. TCD-02-2137 p1 shows only Xin/Xout/C1/C2-to-ground circuit roles, no package pin numbers.",
+  "runtime_check": {
+   "stimulus": null,
+   "observable": null,
+   "comparison": null,
+   "derived_from": null,
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "BEH-FREQ-CERRES has no probe. A tran Pierce/inverter loop reusing locked bench xtal-resonator/B1 (f = fs*sqrt(1+C1/(C0+CL)), CL=9.5 pF, tol 2400 Hz) would be the natural probe, but C1/C0 must first be sourced."
+  },
+  "open_items_after": [
+   "Browser download of Murata CSTLS8M00G53-B0 product spec / SimSurfing equivalent-circuit data (may give R1,L1,C1,C0 and pinout)",
+   "Drive/terminal voltage limit for the exact part",
+   "Numeric pin map (1/2/3) from a Murata drawing"
+  ]
+ },
+ {
+  "entry": "OHM-149",
+  "class": "BEH-FREQ-SAW",
+  "verdict": "blocked",
+  "blocker_recorded": "Input-power/DC rating interpretation and complete source-mask model validation unresolved.",
+  "blocker_resolution": "Partly closed, overall still blocked. (1) Mask validation: I ran the authored ohm_saw.lib (unchanged, ngspice, 50/50 ohm, 800..940 MHz, 20001 pts). All four sourced relative-attenuation minima pass with margin (825-828: 64.1 dB vs 40; 846-849: 44.9 vs 35; 889-892: 44.3 vs 35; 910-913: 62.9 vs 40; reference = min passband IL, identical to IL at Fc). Ripple 0.52 dB <= 1.5. But insertion loss across the sourced passband 865..873 MHz is 4.50 dB at Fc rising to 5.02 dB at the edges, so the model EXCEEDS the 'Insertion Loss @ Passband' 4.5 dB max by about 0.52 dB at the band edges (passes only if the spec is read as at-Fc). The model is conservative but not mask-compliant; fixing it means regenerating the class lib (e.g. il_db so that passband max <= 4.5) which touches locked bench B1 (il_fc 4.5), outside this task. (2) Rating interpretation: the only primary sheet (undated, single page, rendered and inspected) prints DC Voltage 10 V and Source Power 10 dBm as values merged across the MIN/TYP/MAX columns, with no 'maximum' or 'absolute rating' label; the live URL serves the same document. This cannot be honestly upgraded to an absolute maximum. (3) Infrastructure: the class is ac-only and runtime recipes only accept op/tran, so no runtime recipe can be bound or probed without a schema and probe extension.",
+  "reference_part": "Abracon AFS869S3",
+  "new_field_updates": [
+   {
+    "field": "passband_insertion_loss_model_check",
+    "value": {
+     "il_fc_dB": 4.5,
+     "il_passband_max_dB": 5.02,
+     "ripple_dB": 0.52,
+     "rel_att_dB": {
+      "825..828MHz": 64.1,
+      "846..849MHz": 44.9,
+      "889..892MHz": 44.3,
+      "910..913MHz": 62.9
+     }
+    },
+    "unit": "dB",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://abracon.com/Filters/SAW%20FILTERS/AFS869S3.pdf"
+    ],
+    "page": 1,
+    "scope": "authored ohm_saw.lib vs AFS869S3 table, 50 ohm terminations",
+    "detail": "ngspice ac sweep of unchanged class lib; deck at /tmp/claude-0/b81/work_freq/mask.cir. Not a part fact; a model-validation receipt, propose recording as a conflict not a field.",
+    "archived": true
+   }
+  ],
+  "recipe": null,
+  "recipe_draft_not_bindable": {
+   "behavior_id": "BEH-FREQ-SAW",
+   "package": "3.8x3.8 6-pad AFS869S3 reference",
+   "reference_part": "Abracon AFS869S3",
+   "terminal_roles": {
+    "1": "GND",
+    "2": "IN",
+    "3": "GND",
+    "4": "GND",
+    "5": "OUT",
+    "6": "GND"
+   },
+   "critical_facts": {
+    "f0": {
+     "field": "center_frequency_typical",
+     "unit": "MHz",
+     "output_unit": "Hz"
+    },
+    "il_max": {
+     "field": "insertion_loss_max",
+     "unit": "dB"
+    },
+    "z0": {
+     "field": "termination_resistance",
+     "unit": "ohm"
+    }
+   },
+   "derived_parameters": {},
+   "class_parameters": {},
+   "quoted_parameters": {},
+   "template_key": "netlist_template",
+   "template_provenance": "class BEH-FREQ-SAW model.netlist_template X{ref} {IN} {OUT} {GND} ohm_saw; needs inline asset docs/behavior/bench/saw-bpf/ohm_saw.lib hashed",
+   "inline_assets": [
+    {
+     "document": "docs/behavior/bench/saw-bpf/ohm_saw.lib",
+     "document_sha256": "<compute>",
+     "line": 1
+    }
+   ],
+   "supported_analyses": [
+    "ac"
+   ],
+   "limitations": [
+    "Draft only: 'ac' is not an allowed value of supported_analyses in runtime_models.py (Literal['op','tran']); class valid_analyses is ac only.",
+    "Fixed 869 MHz Chebyshev subckt; critical facts are not template parameters, so they only gate binding.",
+    "10 dBm / 10 V row meaning unresolved; no feed-through floor."
+   ]
+  },
+  "pin_map_evidence": "AFS869S3 p1 (archived sha 0dcbfbdb..., rendered at 130 dpi): PIN NO./CONNECTIONS table 2 Input, 5 Output, Others Ground; outline top view shows pin-1 dot bottom-left, bottom row 1-2-3, top row 6-5-4. Package terminal -> role: 1 GND, 2 IN, 3 GND, 4 GND, 5 OUT, 6 GND. Matches the class pins rule. Library rotation -90 deg already recorded as DERIVED.",
+  "runtime_check": {
+   "stimulus": "locked bench saw-bpf/B1 topology: 1 V AC source, 50 ohm source and load, sweep 800..940 MHz",
+   "observable": "il = -20log10(2|Vout|) at Fc, max over 865..873 MHz, min over each stopband minus passband min",
+   "comparison": "il_passband_max <= 4.5 dB (currently 5.02: FAIL); ripple <= 1.5 dB; rel. attenuation >= 40/35/35/40 dB (PASS)",
+   "derived_from": "sourced insertion_loss_max, passband_ripple_max, relative_attenuation_min; locked bench B1",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "Yes: an AC probe for BEH-FREQ-SAW, plus allowing 'ac' in RuntimeRecipe.supported_analyses and the compile path."
+  },
+  "open_items_after": [
+   "Definition of the 10 V DC / 10 dBm source-power row (needs Abracon clarification or a revised sheet)",
+   "Model passband IL edge exceedance (5.02 vs 4.5 dB max)",
+   "No feed-through floor / Touchstone data",
+   "Runtime AC support"
+  ]
+ }
+]

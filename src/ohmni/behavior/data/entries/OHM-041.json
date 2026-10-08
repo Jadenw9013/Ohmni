@@ -32,6 +32,16 @@
         "source_status": "primary_source_opened",
         "title": "LQM18DN6R8M70 Product Search Data Sheet",
         "url": "https://www.farnell.com/datasheets/3170423.pdf"
+      },
+      {
+        "document_id": "added-2",
+        "manufacturer": null,
+        "note": "Archived source added during the behavior-81 integration; read from archived bytes.",
+        "page": null,
+        "revision": null,
+        "source_status": "primary_source_opened",
+        "title": "JELF243B-0086_PDF_INDUCTOR?lastModifiedDatetime=20260305091757",
+        "url": "https://pim.murata.com/asset/pim4/inductor/JELF243B-0086_PDF_INDUCTOR?lastModifiedDatetime=20260305091757"
       }
     ],
     "entry_id": "OHM-041",
@@ -78,11 +88,12 @@
       {
         "basis": "MFR_DATASHEET",
         "confidence": "H",
-        "detail": null,
+        "detail": "Murata reference specification JELF243B-0086 p1 table: 'LQM18DN6R8M70L 6.8 ±20 0.74±0.22' (DC resistance 0.74 ± 0.22 ohm, so 0.96 ohm maximum); the product page lists DC Resistance(max.) 0.96 ohm.",
         "field": "maximum_dcr",
-        "page": 2,
-        "scope": "LQM18DN6R8M70; manufacturer summary sheet, detailed approval specification still required for procurement",
+        "page": 1,
+        "scope": "LQM18DN6R8M70#",
         "sources": [
+          "https://pim.murata.com/asset/pim4/inductor/JELF243B-0086_PDF_INDUCTOR?lastModifiedDatetime=20260305091757",
           "https://www.farnell.com/datasheets/3170423.pdf"
         ],
         "unit": "ohm",
@@ -126,20 +137,35 @@
         ],
         "unit": "C",
         "value": 125
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "p1 table 'LQM18DN6R8M70L 6.8 ±20 0.74±0.22': nominal DC resistance 0.74 ohm, tolerance ±0.22 ohm.",
+        "field": "typical_dcr",
+        "page": 1,
+        "scope": "Murata LQM18DN6R8M70L (reference specification JELF243B-0086)",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/inductor/JELF243B-0086_PDF_INDUCTOR?lastModifiedDatetime=20260305091757"
+        ],
+        "unit": "ohm",
+        "value": 0.74
       }
     ],
     "remaining_open_items": [
       "The inductance-drop and temperature-rise percentages associated with the two current ratings are not given in this summary sheet.",
-      "The fitted saturation curve, thermal resistance and ceramic alternative remain uncertain."
+      "The fitted saturation curve, thermal resistance and ceramic alternative remain uncertain.",
+      "Former simulation blocker resolved for the explicitly bound reference (2026-10-08): Do not use assumed 30% saturation drop / 40 K rise as sourced thermal or saturation limits. Resolution: The model side closes by following the OHM-044 pattern: a DC winding-resistance-only binding (R = maximum DCR) that uses neither a saturation drop nor a temperature rise, so the assumed 30 %/40 K values never enter. The source side does not close yet: the only archived copy is the Murata-generated 'Product Search Data Sheet' hosted at farnell.com (an image-only PDF; values read from the rendered page 2), which the brief treats as secondary, and DECISIONS round 4 already lists OHM-041 as distributor-backed. The sheet itself names the Murata URL to download from; that copy must be archived (murata.com was unreachable here) before the recipe counts.",
+      "Archive the Murata-hosted LQM18DN6R8M70# data sheet",
+      "Inductance-change % and temperature-rise definitions for the two current ratings",
+      "Saturation curve, thermal resistance, broadband/SRF model"
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Do not use assumed 30% saturation drop / 40 K rise as sourced thermal or saturation limits."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-041.md",
-      "document_sha256": "697d11e67fc51a25ad622377e933c5c3cdbf7a8ea353171b777a08dd70ef1a13",
+      "document_sha256": "b8ad949c199916e35dd44c47af9eefb0f272ccc9b45ca051eaa97541e6548eb4",
       "fragment_sha256": null,
       "line": 1
     }

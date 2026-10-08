@@ -1,0 +1,1038 @@
+[
+ {
+  "entry": "OHM-150",
+  "class": "BEH-CON-HEADER",
+  "verdict": "blocked",
+  "blocker_recorded": "Rating-critical working voltage and full mating/thermal context unresolved.",
+  "blocker_resolution": "Harwin publishes no continuous working-voltage rating for M20. Archived sources re-read: C001XX spec Issue 20 (p2 gives only 'Dielectric Withstanding Voltage (Voltage Proof) M20-PH ... 500V AC for 1 minute'), the M20-999XXXX Customer Information Sheet DRG-00479 (archived 03044d5d..., 'DIELECTRIC STRENGTH = 500V AC', no working voltage), the M20-9990845 and M20-9990245 product pages (archived; list 3A max per contact and -40..+105 C, no voltage). A live check of harwin.com/products/M20-9990246 (WebFetch 2026-10-08) also lists no voltage. Per D035 a withstand/proof voltage cannot become a working voltage, so the named rating stays unsourced. Separately: (a) the class template R{ref}_c{k} {A_k} {B_k} needs a mating-side terminal B_k that is not a package terminal of a bare header; no mate is bound, and the Harwin drawing prints no pin-1 mark or numbering, so a terminal-role map cannot come from the part's own pin diagram; (b) the class Vwork default (250/465 V) is Samtec SSW, not Harwin.",
+  "reference_part": "Harwin M20-9990845 (8-way single-row straight THT, gold); mate unbound",
+  "new_field_updates": [
+   {
+    "field": "dielectric_strength_drawing",
+    "value": 500,
+    "unit": "VAC",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://content.harwin.com/asset/640f59f4-1860-40fe-82ef-f2a104ffa7d8/DRG-00479-Technical-Drawing-Datasheet-M20-999-pdf.pdf"
+    ],
+    "page": 1,
+    "scope": "Harwin M20-999XXXX (M20-99908XX active, covers M20-9990845); withstand test, not working voltage",
+    "detail": "'DIELECTRIC STRENGTH = 500V AC'",
+    "archived": true
+   },
+   {
+    "field": "insulation_resistance_min_drawing",
+    "value": 1000,
+    "unit": "Mohm",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://content.harwin.com/asset/640f59f4-1860-40fe-82ef-f2a104ffa7d8/DRG-00479-Technical-Drawing-Datasheet-M20-999-pdf.pdf"
+    ],
+    "page": 1,
+    "scope": "Harwin M20-999XXXX part drawing",
+    "detail": "'INSULATION RESISTANCE = 1,000MΩ MIN' (conflicts with series spec C00120 p2 'M20-PH ... 500MΩ min'; drawing is part-specific, spec is series-wide; keep both)",
+    "archived": true
+   },
+   {
+    "field": "contact_resistance_max_drawing",
+    "value": 20,
+    "unit": "mohm",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://content.harwin.com/asset/640f59f4-1860-40fe-82ef-f2a104ffa7d8/DRG-00479-Technical-Drawing-Datasheet-M20-999-pdf.pdf"
+    ],
+    "page": 1,
+    "scope": "Harwin M20-999XXXX part drawing; no conditioned value on drawing",
+    "detail": "'CONTACT RESISTANCE = 20mΩ MAX'",
+    "archived": true
+   },
+   {
+    "field": "polarised",
+    "value": false,
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.harwin.com/products/M20-9990845"
+    ],
+    "page": null,
+    "scope": "M20-9990845 product page, Technical details",
+    "detail": "'Polarised / No'",
+    "archived": true
+   }
+  ],
+  "recipe": null,
+  "pin_map_evidence": "DRG-00479 (M20-999XXXX, sheet 2) shows a straight unpolarised single-row strip with no pin-1 marking or position numbers; the M20-9990845 product page states 'Polarised: No'. Numbering is library convention only. No mate is selected, so no mating-side terminal exists to map.",
+  "runtime_check": {
+   "stimulus": "(if unblocked) DC current = contact_current_max 3 A through one mated contact path A1->B1, other positions tied to return",
+   "observable": "V(A1)/I",
+   "comparison": "interval [0, contact_resistance_initial_max 20 mohm], or absolute 20 mohm +/-0.1% (relative tolerance of locked BEH-CON-HEADER/B1)",
+   "derived_from": "BEH-CON-HEADER/B1 (contact resistance in a divider, 0.1%) plus sourced contact_resistance_initial_max and contact_current_max",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "Yes: no BEH-CON-* branch exists in dc_probe_definition. Same 'contact_path_resistance' probe as proposed for BEH-CON-WTB would serve, but only once a mated two-sided package is defined."
+  },
+  "open_items_after": [
+   "Continuous working voltage for M20 (Harwin does not publish one).",
+   "Mated-variant binding (which socket/crimp housing) and a two-sided terminal definition.",
+   "All-contacts-loaded derating / Rth (class 333 K/W, 0.7/0.8 factors are ASSUMPTION).",
+   "Typical vs maximum Rc: only the 20 mohm initial / 30 mohm conditioned maxima are sourced."
+  ]
+ },
+ {
+  "entry": "OHM-151",
+  "class": "BEH-CON-HEADER",
+  "verdict": "blocked",
+  "blocker_recorded": "Rating-critical working voltage and full mating/thermal context unresolved.",
+  "blocker_resolution": "Harwin publishes no continuous working-voltage rating for M20. Archived sources re-read: C001XX spec Issue 20 (p2 gives only 'Dielectric Withstanding Voltage (Voltage Proof) M20-PH ... 500V AC for 1 minute'), the M20-999XXXX Customer Information Sheet DRG-00479 (archived 03044d5d..., 'DIELECTRIC STRENGTH = 500V AC', no working voltage), the M20-9990845 and M20-9990245 product pages (archived; list 3A max per contact and -40..+105 C, no voltage). A live check of harwin.com/products/M20-9990246 (WebFetch 2026-10-08) also lists no voltage. Per D035 a withstand/proof voltage cannot become a working voltage, so the named rating stays unsourced. Separately: (a) the class template R{ref}_c{k} {A_k} {B_k} needs a mating-side terminal B_k that is not a package terminal of a bare header; no mate is bound, and the Harwin drawing prints no pin-1 mark or numbering, so a terminal-role map cannot come from the part's own pin diagram; (b) the class Vwork default (250/465 V) is Samtec SSW, not Harwin. OHM-151 additionally has no exact reference_part field; series ratings cannot be scoped to a part number.",
+  "reference_part": "none bound: entry has only series-level Harwin M20 facts (no exact 2xN part number)",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "DRG-00479 (M20-999XXXX, sheet 2) shows a straight unpolarised single-row strip with no pin-1 marking or position numbers; the M20-9990845 product page states 'Polarised: No'. Numbering is library convention only. No mate is selected, so no mating-side terminal exists to map.",
+  "runtime_check": {
+   "stimulus": "(if unblocked) DC current = contact_current_max 3 A through one mated contact path A1->B1, other positions tied to return",
+   "observable": "V(A1)/I",
+   "comparison": "interval [0, contact_resistance_initial_max 20 mohm], or absolute 20 mohm +/-0.1% (relative tolerance of locked BEH-CON-HEADER/B1)",
+   "derived_from": "BEH-CON-HEADER/B1 (contact resistance in a divider, 0.1%) plus sourced contact_resistance_initial_max and contact_current_max",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "Yes: no BEH-CON-* branch exists in dc_probe_definition. Same 'contact_path_resistance' probe as proposed for BEH-CON-WTB would serve, but only once a mated two-sided package is defined."
+  },
+  "open_items_after": [
+   "Continuous working voltage for M20 (Harwin does not publish one).",
+   "Mated-variant binding (which socket/crimp housing) and a two-sided terminal definition.",
+   "All-contacts-loaded derating / Rth (class 333 K/W, 0.7/0.8 factors are ASSUMPTION).",
+   "Typical vs maximum Rc: only the 20 mohm initial / 30 mohm conditioned maxima are sourced."
+  ]
+ },
+ {
+  "entry": "OHM-152",
+  "class": "BEH-CON-HEADER",
+  "verdict": "blocked",
+  "blocker_recorded": "Rating-critical working voltage and full mating/thermal context unresolved.",
+  "blocker_resolution": "Harwin publishes no continuous working-voltage rating for M20. Archived sources re-read: C001XX spec Issue 20 (p2 gives only 'Dielectric Withstanding Voltage (Voltage Proof) M20-PH ... 500V AC for 1 minute'), the M20-999XXXX Customer Information Sheet DRG-00479 (archived 03044d5d..., 'DIELECTRIC STRENGTH = 500V AC', no working voltage), the M20-9990845 and M20-9990245 product pages (archived; list 3A max per contact and -40..+105 C, no voltage). A live check of harwin.com/products/M20-9990246 (WebFetch 2026-10-08) also lists no voltage. Per D035 a withstand/proof voltage cannot become a working voltage, so the named rating stays unsourced. Separately: (a) the class template R{ref}_c{k} {A_k} {B_k} needs a mating-side terminal B_k that is not a package terminal of a bare header; no mate is bound, and the Harwin drawing prints no pin-1 mark or numbering, so a terminal-role map cannot come from the part's own pin diagram; (b) the class Vwork default (250/465 V) is Samtec SSW, not Harwin. OHM-152/153 are sockets: the M20-999 drawing does not cover them, and the entries lack dielectric/IR fields and any exact socket part number.",
+  "reference_part": "none bound: Harwin M20 single-row socket, no exact part number",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "DRG-00479 (M20-999XXXX, sheet 2) shows a straight unpolarised single-row strip with no pin-1 marking or position numbers; the M20-9990845 product page states 'Polarised: No'. Numbering is library convention only. No mate is selected, so no mating-side terminal exists to map.",
+  "runtime_check": {
+   "stimulus": "(if unblocked) DC current = contact_current_max 3 A through one mated contact path A1->B1, other positions tied to return",
+   "observable": "V(A1)/I",
+   "comparison": "interval [0, contact_resistance_initial_max 20 mohm], or absolute 20 mohm +/-0.1% (relative tolerance of locked BEH-CON-HEADER/B1)",
+   "derived_from": "BEH-CON-HEADER/B1 (contact resistance in a divider, 0.1%) plus sourced contact_resistance_initial_max and contact_current_max",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "Yes: no BEH-CON-* branch exists in dc_probe_definition. Same 'contact_path_resistance' probe as proposed for BEH-CON-WTB would serve, but only once a mated two-sided package is defined."
+  },
+  "open_items_after": [
+   "Continuous working voltage for M20 (Harwin does not publish one).",
+   "Mated-variant binding (which socket/crimp housing) and a two-sided terminal definition.",
+   "All-contacts-loaded derating / Rth (class 333 K/W, 0.7/0.8 factors are ASSUMPTION).",
+   "Typical vs maximum Rc: only the 20 mohm initial / 30 mohm conditioned maxima are sourced."
+  ]
+ },
+ {
+  "entry": "OHM-153",
+  "class": "BEH-CON-HEADER",
+  "verdict": "blocked",
+  "blocker_recorded": "Rating-critical working voltage and full mating/thermal context unresolved.",
+  "blocker_resolution": "Harwin publishes no continuous working-voltage rating for M20. Archived sources re-read: C001XX spec Issue 20 (p2 gives only 'Dielectric Withstanding Voltage (Voltage Proof) M20-PH ... 500V AC for 1 minute'), the M20-999XXXX Customer Information Sheet DRG-00479 (archived 03044d5d..., 'DIELECTRIC STRENGTH = 500V AC', no working voltage), the M20-9990845 and M20-9990245 product pages (archived; list 3A max per contact and -40..+105 C, no voltage). A live check of harwin.com/products/M20-9990246 (WebFetch 2026-10-08) also lists no voltage. Per D035 a withstand/proof voltage cannot become a working voltage, so the named rating stays unsourced. Separately: (a) the class template R{ref}_c{k} {A_k} {B_k} needs a mating-side terminal B_k that is not a package terminal of a bare header; no mate is bound, and the Harwin drawing prints no pin-1 mark or numbering, so a terminal-role map cannot come from the part's own pin diagram; (b) the class Vwork default (250/465 V) is Samtec SSW, not Harwin. OHM-152/153 are sockets: the M20-999 drawing does not cover them, and the entries lack any exact socket part number.",
+  "reference_part": "none bound: Harwin M20 double-row socket, no exact part number",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "DRG-00479 (M20-999XXXX, sheet 2) shows a straight unpolarised single-row strip with no pin-1 marking or position numbers; the M20-9990845 product page states 'Polarised: No'. Numbering is library convention only. No mate is selected, so no mating-side terminal exists to map.",
+  "runtime_check": {
+   "stimulus": "(if unblocked) DC current = contact_current_max 3 A through one mated contact path A1->B1, other positions tied to return",
+   "observable": "V(A1)/I",
+   "comparison": "interval [0, contact_resistance_initial_max 20 mohm], or absolute 20 mohm +/-0.1% (relative tolerance of locked BEH-CON-HEADER/B1)",
+   "derived_from": "BEH-CON-HEADER/B1 (contact resistance in a divider, 0.1%) plus sourced contact_resistance_initial_max and contact_current_max",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "Yes: no BEH-CON-* branch exists in dc_probe_definition. Same 'contact_path_resistance' probe as proposed for BEH-CON-WTB would serve, but only once a mated two-sided package is defined."
+  },
+  "open_items_after": [
+   "Continuous working voltage for M20 (Harwin does not publish one).",
+   "Mated-variant binding (which socket/crimp housing) and a two-sided terminal definition.",
+   "All-contacts-loaded derating / Rth (class 333 K/W, 0.7/0.8 factors are ASSUMPTION).",
+   "Typical vs maximum Rc: only the 20 mohm initial / 30 mohm conditioned maxima are sourced."
+  ]
+ },
+ {
+  "entry": "OHM-154",
+  "class": "BEH-CON-HEADER",
+  "verdict": "blocked",
+  "blocker_recorded": "Rating-critical working voltage and full mating/thermal context unresolved.",
+  "blocker_resolution": "Harwin publishes no continuous working-voltage rating for M20. Archived sources re-read: C001XX spec Issue 20 (p2 gives only 'Dielectric Withstanding Voltage (Voltage Proof) M20-PH ... 500V AC for 1 minute'), the M20-999XXXX Customer Information Sheet DRG-00479 (archived 03044d5d..., 'DIELECTRIC STRENGTH = 500V AC', no working voltage), the M20-9990845 and M20-9990245 product pages (archived; list 3A max per contact and -40..+105 C, no voltage). A live check of harwin.com/products/M20-9990246 (WebFetch 2026-10-08) also lists no voltage. Per D035 a withstand/proof voltage cannot become a working voltage, so the named rating stays unsourced. Separately: (a) the class template R{ref}_c{k} {A_k} {B_k} needs a mating-side terminal B_k that is not a package terminal of a bare header; no mate is bound, and the Harwin drawing prints no pin-1 mark or numbering, so a terminal-role map cannot come from the part's own pin diagram; (b) the class Vwork default (250/465 V) is Samtec SSW, not Harwin. OHM-154 has no exact right-angle part number; the archived DRG-00479 covers only vertical M20-999XXXX.",
+  "reference_part": "none bound: Harwin M20 right-angle header, no exact part number",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "DRG-00479 (M20-999XXXX, sheet 2) shows a straight unpolarised single-row strip with no pin-1 marking or position numbers; the M20-9990845 product page states 'Polarised: No'. Numbering is library convention only. No mate is selected, so no mating-side terminal exists to map.",
+  "runtime_check": {
+   "stimulus": "(if unblocked) DC current = contact_current_max 3 A through one mated contact path A1->B1, other positions tied to return",
+   "observable": "V(A1)/I",
+   "comparison": "interval [0, contact_resistance_initial_max 20 mohm], or absolute 20 mohm +/-0.1% (relative tolerance of locked BEH-CON-HEADER/B1)",
+   "derived_from": "BEH-CON-HEADER/B1 (contact resistance in a divider, 0.1%) plus sourced contact_resistance_initial_max and contact_current_max",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "Yes: no BEH-CON-* branch exists in dc_probe_definition. Same 'contact_path_resistance' probe as proposed for BEH-CON-WTB would serve, but only once a mated two-sided package is defined."
+  },
+  "open_items_after": [
+   "Continuous working voltage for M20 (Harwin does not publish one).",
+   "Mated-variant binding (which socket/crimp housing) and a two-sided terminal definition.",
+   "All-contacts-loaded derating / Rth (class 333 K/W, 0.7/0.8 factors are ASSUMPTION).",
+   "Typical vs maximum Rc: only the 20 mohm initial / 30 mohm conditioned maxima are sourced."
+  ]
+ },
+ {
+  "entry": "OHM-155",
+  "class": "BEH-CON-WTB",
+  "verdict": "resolvable",
+  "blocker_recorded": "No executable package/reference binding. No source-backed absolute Rth or all-loaded derating curve;0.8blanketfactor remains assumption.; Mating-cycle endurance and crimp resistance are unestablished;do not use Molex values.; Cable pin1 can be any application net;keying does not standardize battery polarity.; Initial/conditioned resistance ceilings do not establish the spec6/12mohm typical proxies.",
+  "blocker_resolution": "(1) Binding: exact header B2B-PH-K-S and housing PHR-2 are in the archived JST PH sheet tables, and the 'No. 1 circuit' marks on both drawings give the positional map; recipe below. (2) Rth/0.8 derating: the recipe drops the thermal model entirely (op-only, DC resistance), so no assumed thermal value enters the binding; the rating checks use only JST's sourced current-at-AWG and contact-temperature limit, which JST defines as including temperature rise. Derating with all positions loaded stays an explicit limitation, not a model input. (3) Crimp/endurance: template_override omits Rcrimp, so no Molex value is used; endurance is not modeled. (4) Pin-1 polarity: roles are positional pass-throughs P_k->W_k with no polarity semantics. (5) Typical proxies: Rmate is bound to the sourced initial maximum 10 mohm and labelled an upper bound. All five critical facts are already MFR_DATASHEET/H fields of the entry, sourced from the archived JST PDF (https://www.jst-mfg.com/product/pdf/eng/ePH.pdf, sha in ledger). The entry record already lists no simulation_blockers; only STATE.model_blockers carries this text.",
+  "reference_part": "JST B2B-PH-K-S + PHR-2",
+  "new_field_updates": [
+   {
+    "field": "reference_part",
+    "value": "B2B-PH-K-S",
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.jst-mfg.com/product/pdf/eng/ePH.pdf"
+    ],
+    "page": 3,
+    "scope": "JST PH header model table; 2 circuits",
+    "detail": "header table row '2 | B2B-PH-K-S'",
+    "archived": true
+   },
+   {
+    "field": "reference_mating_housing",
+    "value": "PHR-2",
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.jst-mfg.com/product/pdf/eng/ePH.pdf"
+    ],
+    "page": 3,
+    "scope": "JST PH housing model table; 2 circuits",
+    "detail": "housing table row '2 | PHR-2'",
+    "archived": true
+   },
+   {
+    "field": "mated_circuit_map",
+    "value": {
+     "1": "W1",
+     "2": "W2"
+    },
+    "unit": null,
+    "basis": "DERIVED",
+    "confidence": "M",
+    "sources": [
+     "https://www.jst-mfg.com/product/pdf/eng/ePH.pdf"
+    ],
+    "page": 3,
+    "scope": "B2B-PH-K-S mated with PHR-2; positional circuit correspondence",
+    "detail": "Header drawing marks 'Mark of No. 1 circuit' / 'No. 1 circuit' (p3) and housing drawing marks 'No. 1 circuit' (p3); the shrouded header is keyed so the housing mates one way, hence header circuit k mates housing circuit k. Electrical polarity is not assigned.",
+    "archived": true
+   }
+  ],
+  "recipe": {
+   "entry_id": "OHM-155",
+   "behavior_id": "BEH-CON-WTB",
+   "package": "B2B-PH-K-S mated with PHR-2",
+   "reference_part": "JST B2B-PH-K-S header + PHR-2 housing, specified crimp contact at AWG #24",
+   "terminal_roles": {
+    "1": "P1",
+    "2": "P2",
+    "W1": "W1",
+    "W2": "W2"
+   },
+   "critical_facts": {
+    "rmate": {
+     "field": "contact_resistance_initial_max",
+     "unit": "mohm",
+     "output_unit": "ohm"
+    },
+    "rmate_aged_max": {
+     "field": "contact_resistance_conditioned_max",
+     "unit": "mohm",
+     "output_unit": "ohm"
+    },
+    "i_rated": {
+     "field": "contact_current_rating",
+     "unit": "A"
+    },
+    "v_work": {
+     "field": "working_voltage",
+     "unit": "V"
+    },
+    "t_contact_max": {
+     "field": "contact_temperature_range",
+     "unit": "C",
+     "value_path": [
+      1
+     ]
+    }
+   },
+   "derived_parameters": {},
+   "class_parameters": {},
+   "quoted_parameters": {},
+   "template_override": "R{ref}_m1 {P1} {W1} {rmate}\nR{ref}_m2 {P2} {W2} {rmate}\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 10751
+   },
+   "inline_assets": [],
+   "supported_analyses": [
+    "op"
+   ],
+   "limitations": [
+    "Rmate is JST's initial MAXIMUM (10 mohm), used as an upper-bound value, not a typical; the spec's 6/12 mohm typical proxies are not used.",
+    "Crimp (wire-termination) resistance is not modeled: JST publishes none in the archived sheet and Molex values must not be used. The JST mated value may or may not include the crimp.",
+    "No thermal, Rth, all-positions-loaded derating or wear model; the class 0.8 factor and Rth are not used.",
+    "Ratings: 2 A only at AWG #24; contact temperature range includes self-heating rise; 100 V AC/DC general specification (overseas registrations may differ).",
+    "Cable side terminals W1..WN are the mated housing's circuit numbers; no polarity or battery convention is implied.",
+    "Wire resistance is a separate circuit element, not part of this binding."
+   ]
+  },
+  "pin_map_evidence": "JST PH sheet (archived): header drawing p3 marks 'No. 1 circuit' at one end of the 2-circuit B2B-PH-K-S; housing drawing p3 marks 'No. 1 circuit' on PHR-2; p1/p2 PCB layouts, 'viewed from the connector mounting surface', mark 'No. 1 circuit'. Package terminal '1'..'2' = PCB tail of circuit k (P_k); 'W1'..'W2' = wire of housing circuit k (W_k).",
+  "runtime_check": {
+   "stimulus": "DC current excitation of i_rated = 2 A into P1 (net 'anode'), W1 on return; P2..P2 and W2..W2 also on return (all bound terminals must be connected)",
+   "observable": "contact path resistance = V(anode)/I",
+   "comparison": "absolute: expected rmate = 0.01 ohm, tolerance 0.1% relative (= 1.00e-05 ohm), plus interval check observed <= contact_resistance_initial_max 0.01 ohm (+0.1% guard for float print)",
+   "derived_from": "stimulus from sourced contact_current_rating; expected from sourced contact_resistance_initial_max; relative tolerance from locked bench BEH-CON-WTB/B2 (divider, 0.1%)",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "Add a BEH-CON-WTB branch to dc_probe_definition: roles {P1:'anode', every other role:'return'}, excitations=[DCExcitation(positive_net='return', negative_net='anode', value=i_rated A)], comparison observable 'dc_resistance'-style (reuse the BEH-MAG-INDUCTOR observable but keyed on node 'anode', i.e. V(anode)/current); add BEH-CON-WTB to the dc_probe_receipt_errors class set in runtime_receipt_errors. Verify the locked B2 deck hash via _locked_probe_deck before borrowing its 0.1% tolerance."
+  },
+  "open_items_after": [
+   "Crimp resistance and whether JST's mated value includes it.",
+   "All-positions-loaded derating, Rth, mating-cycle endurance (not in archived sheet).",
+   "Current rating at wire gauges thinner than the stated AWG."
+  ],
+  "template_provenance_note": "Spec line 10751 'R{ref}_m{k} {Pk} {mid} {Rmate} ; mated pair, JST/Molex spec value'. The class crimp resistor (line 10752, Rcrimp 2 mohm) is Molex-sourced and is deliberately omitted for JST; mid node collapsed so the mated-pair value runs Pk->Wk."
+ },
+ {
+  "entry": "OHM-156",
+  "class": "BEH-CON-WTB",
+  "verdict": "resolvable",
+  "blocker_recorded": "No executable package/reference binding. No source-backed absolute Rth or all-loaded derating curve;0.8blanketfactor remains assumption.; Mating-cycle endurance and crimp resistance are unestablished;do not use Molex values.; Cable pin1 can be any application net;keying does not standardize battery polarity.; Initial/conditioned resistance ceilings do not establish the spec6/12mohm typical proxies.",
+  "blocker_resolution": "(1) Binding: exact header B2B-XH-A and housing XHP-2 are in the archived JST XH sheet tables, and the 'No. 1 circuit' marks on both drawings give the positional map; recipe below. (2) Rth/0.8 derating: the recipe drops the thermal model entirely (op-only, DC resistance), so no assumed thermal value enters the binding; the rating checks use only JST's sourced current-at-AWG and contact-temperature limit, which JST defines as including temperature rise. Derating with all positions loaded stays an explicit limitation, not a model input. (3) Crimp/endurance: template_override omits Rcrimp, so no Molex value is used; endurance is not modeled. (4) Pin-1 polarity: roles are positional pass-throughs P_k->W_k with no polarity semantics. (5) Typical proxies: Rmate is bound to the sourced initial maximum 10 mohm and labelled an upper bound. All five critical facts are already MFR_DATASHEET/H fields of the entry, sourced from the archived JST PDF (https://www.jst-mfg.com/product/pdf/eng/eXH.pdf, sha in ledger). The entry record already lists no simulation_blockers; only STATE.model_blockers carries this text.",
+  "reference_part": "JST B2B-XH-A + XHP-2",
+  "new_field_updates": [
+   {
+    "field": "reference_part",
+    "value": "B2B-XH-A",
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.jst-mfg.com/product/pdf/eng/eXH.pdf"
+    ],
+    "page": 5,
+    "scope": "JST XH header model table; 2 circuits",
+    "detail": "header table row '2 | B2B-XH-A'",
+    "archived": true
+   },
+   {
+    "field": "reference_mating_housing",
+    "value": "XHP-2",
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.jst-mfg.com/product/pdf/eng/eXH.pdf"
+    ],
+    "page": 4,
+    "scope": "JST XH housing model table; 2 circuits",
+    "detail": "housing table row '2 | XHP-2'",
+    "archived": true
+   },
+   {
+    "field": "mated_circuit_map",
+    "value": {
+     "1": "W1",
+     "2": "W2"
+    },
+    "unit": null,
+    "basis": "DERIVED",
+    "confidence": "M",
+    "sources": [
+     "https://www.jst-mfg.com/product/pdf/eng/eXH.pdf"
+    ],
+    "page": 4,
+    "scope": "B2B-XH-A mated with XHP-2; positional circuit correspondence",
+    "detail": "Header drawing marks 'Mark of No. 1 circuit' / 'No. 1 circuit' (p5) and housing drawing marks 'No. 1 circuit' (p4); the shrouded header is keyed so the housing mates one way, hence header circuit k mates housing circuit k. Electrical polarity is not assigned.",
+    "archived": true
+   }
+  ],
+  "recipe": {
+   "entry_id": "OHM-156",
+   "behavior_id": "BEH-CON-WTB",
+   "package": "B2B-XH-A mated with XHP-2",
+   "reference_part": "JST B2B-XH-A header + XHP-2 housing, specified crimp contact at AWG #22",
+   "terminal_roles": {
+    "1": "P1",
+    "2": "P2",
+    "W1": "W1",
+    "W2": "W2"
+   },
+   "critical_facts": {
+    "rmate": {
+     "field": "contact_resistance_initial_max",
+     "unit": "mohm",
+     "output_unit": "ohm"
+    },
+    "rmate_aged_max": {
+     "field": "contact_resistance_conditioned_max",
+     "unit": "mohm",
+     "output_unit": "ohm"
+    },
+    "i_rated": {
+     "field": "contact_current_rating",
+     "unit": "A"
+    },
+    "v_work": {
+     "field": "working_voltage",
+     "unit": "V"
+    },
+    "t_contact_max": {
+     "field": "contact_temperature_range",
+     "unit": "C",
+     "value_path": [
+      1
+     ]
+    }
+   },
+   "derived_parameters": {},
+   "class_parameters": {},
+   "quoted_parameters": {},
+   "template_override": "R{ref}_m1 {P1} {W1} {rmate}\nR{ref}_m2 {P2} {W2} {rmate}\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 10751
+   },
+   "inline_assets": [],
+   "supported_analyses": [
+    "op"
+   ],
+   "limitations": [
+    "Rmate is JST's initial MAXIMUM (10 mohm), used as an upper-bound value, not a typical; the spec's 6/12 mohm typical proxies are not used.",
+    "Crimp (wire-termination) resistance is not modeled: JST publishes none in the archived sheet and Molex values must not be used. The JST mated value may or may not include the crimp.",
+    "No thermal, Rth, all-positions-loaded derating or wear model; the class 0.8 factor and Rth are not used.",
+    "Ratings: 3 A only at AWG #22; contact temperature range includes self-heating rise; 250 V AC/DC general specification (overseas registrations may differ).",
+    "Cable side terminals W1..WN are the mated housing's circuit numbers; no polarity or battery convention is implied.",
+    "Wire resistance is a separate circuit element, not part of this binding."
+   ]
+  },
+  "pin_map_evidence": "JST XH sheet (archived): header drawing p5 marks 'No. 1 circuit' at one end of the 2-circuit B2B-XH-A; housing drawing p4 marks 'No. 1 circuit' on XHP-2; p1/p2 PCB layouts, 'viewed from the connector mounting surface', mark 'No. 1 circuit'. Package terminal '1'..'2' = PCB tail of circuit k (P_k); 'W1'..'W2' = wire of housing circuit k (W_k).",
+  "runtime_check": {
+   "stimulus": "DC current excitation of i_rated = 3 A into P1 (net 'anode'), W1 on return; P2..P2 and W2..W2 also on return (all bound terminals must be connected)",
+   "observable": "contact path resistance = V(anode)/I",
+   "comparison": "absolute: expected rmate = 0.01 ohm, tolerance 0.1% relative (= 1.00e-05 ohm), plus interval check observed <= contact_resistance_initial_max 0.01 ohm (+0.1% guard for float print)",
+   "derived_from": "stimulus from sourced contact_current_rating; expected from sourced contact_resistance_initial_max; relative tolerance from locked bench BEH-CON-WTB/B2 (divider, 0.1%)",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "Add a BEH-CON-WTB branch to dc_probe_definition: roles {P1:'anode', every other role:'return'}, excitations=[DCExcitation(positive_net='return', negative_net='anode', value=i_rated A)], comparison observable 'dc_resistance'-style (reuse the BEH-MAG-INDUCTOR observable but keyed on node 'anode', i.e. V(anode)/current); add BEH-CON-WTB to the dc_probe_receipt_errors class set in runtime_receipt_errors. Verify the locked B2 deck hash via _locked_probe_deck before borrowing its 0.1% tolerance."
+  },
+  "open_items_after": [
+   "Crimp resistance and whether JST's mated value includes it.",
+   "All-positions-loaded derating, Rth, mating-cycle endurance (not in archived sheet).",
+   "Current rating at wire gauges thinner than the stated AWG."
+  ],
+  "template_provenance_note": "Spec line 10751 'R{ref}_m{k} {Pk} {mid} {Rmate} ; mated pair, JST/Molex spec value'. The class crimp resistor (line 10752, Rcrimp 2 mohm) is Molex-sourced and is deliberately omitted for JST; mid node collapsed so the mated-pair value runs Pk->Wk."
+ },
+ {
+  "entry": "OHM-157",
+  "class": "BEH-CON-WTB",
+  "verdict": "resolvable",
+  "blocker_recorded": "No executable package/reference binding. No source-backed absolute Rth or all-loaded derating curve;0.8blanketfactor remains assumption.; Mating-cycle endurance and crimp resistance are unestablished;do not use Molex values.; Cable pin1 can be any application net;keying does not standardize battery polarity.; Initial/conditioned resistance ceilings do not establish the spec6/12mohm typical proxies.",
+  "blocker_resolution": "(1) Binding: exact header SM04B-SRSS-TB and housing SHR-04V-S are in the archived JST SH sheet tables, and the 'No. 1 circuit' marks on both drawings give the positional map; recipe below. (2) Rth/0.8 derating: the recipe drops the thermal model entirely (op-only, DC resistance), so no assumed thermal value enters the binding; the rating checks use only JST's sourced current-at-AWG and contact-temperature limit, which JST defines as including temperature rise. Derating with all positions loaded stays an explicit limitation, not a model input. (3) Crimp/endurance: template_override omits Rcrimp, so no Molex value is used; endurance is not modeled. (4) Pin-1 polarity: roles are positional pass-throughs P_k->W_k with no polarity semantics. (5) Typical proxies: Rmate is bound to the sourced initial maximum 20 mohm and labelled an upper bound. All five critical facts are already MFR_DATASHEET/H fields of the entry, sourced from the archived JST PDF (https://www.jst-mfg.com/product/pdf/eng/eSH.pdf, sha in ledger). The entry record already lists no simulation_blockers; only STATE.model_blockers carries this text.",
+  "reference_part": "JST SM04B-SRSS-TB + SHR-04V-S",
+  "new_field_updates": [
+   {
+    "field": "reference_part",
+    "value": "SM04B-SRSS-TB",
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.jst-mfg.com/product/pdf/eng/eSH.pdf"
+    ],
+    "page": 3,
+    "scope": "JST SH header model table; 4 circuits",
+    "detail": "header table row '4 | SM04B-SRSS-TB'",
+    "archived": true
+   },
+   {
+    "field": "reference_mating_housing",
+    "value": "SHR-04V-S",
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.jst-mfg.com/product/pdf/eng/eSH.pdf"
+    ],
+    "page": 2,
+    "scope": "JST SH housing model table; 4 circuits",
+    "detail": "housing table row '4 | SHR-04V-S'",
+    "archived": true
+   },
+   {
+    "field": "mated_circuit_map",
+    "value": {
+     "1": "W1",
+     "2": "W2",
+     "3": "W3",
+     "4": "W4"
+    },
+    "unit": null,
+    "basis": "DERIVED",
+    "confidence": "M",
+    "sources": [
+     "https://www.jst-mfg.com/product/pdf/eng/eSH.pdf"
+    ],
+    "page": 2,
+    "scope": "SM04B-SRSS-TB mated with SHR-04V-S; positional circuit correspondence",
+    "detail": "Header drawing marks 'Mark of No. 1 circuit' / 'No. 1 circuit' (p3) and housing drawing marks 'No. 1 circuit' (p2); the shrouded header is keyed so the housing mates one way, hence header circuit k mates housing circuit k. Electrical polarity is not assigned.",
+    "archived": true
+   },
+   {
+    "field": "reinforcement_material",
+    "value": "Copper alloy, tin-plated",
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.jst-mfg.com/product/pdf/eng/eSH.pdf"
+    ],
+    "page": 3,
+    "scope": "SM**B-SRSS-TB header",
+    "detail": "'Reinforcement: Copper alloy, tin-plated' (mechanical hold-down, not a circuit)",
+    "archived": true
+   }
+  ],
+  "recipe": {
+   "entry_id": "OHM-157",
+   "behavior_id": "BEH-CON-WTB",
+   "package": "SM04B-SRSS-TB mated with SHR-04V-S",
+   "reference_part": "JST SM04B-SRSS-TB header + SHR-04V-S housing, specified crimp contact at AWG #28",
+   "terminal_roles": {
+    "1": "P1",
+    "2": "P2",
+    "3": "P3",
+    "4": "P4",
+    "W1": "W1",
+    "W2": "W2",
+    "W3": "W3",
+    "W4": "W4"
+   },
+   "critical_facts": {
+    "rmate": {
+     "field": "contact_resistance_initial_max",
+     "unit": "mohm",
+     "output_unit": "ohm"
+    },
+    "rmate_aged_max": {
+     "field": "contact_resistance_conditioned_max",
+     "unit": "mohm",
+     "output_unit": "ohm"
+    },
+    "i_rated": {
+     "field": "contact_current_rating",
+     "unit": "A"
+    },
+    "v_work": {
+     "field": "working_voltage",
+     "unit": "V"
+    },
+    "t_contact_max": {
+     "field": "contact_temperature_range",
+     "unit": "C",
+     "value_path": [
+      1
+     ]
+    }
+   },
+   "derived_parameters": {},
+   "class_parameters": {},
+   "quoted_parameters": {},
+   "template_override": "R{ref}_m1 {P1} {W1} {rmate}\nR{ref}_m2 {P2} {W2} {rmate}\nR{ref}_m3 {P3} {W3} {rmate}\nR{ref}_m4 {P4} {W4} {rmate}\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 10751
+   },
+   "inline_assets": [],
+   "supported_analyses": [
+    "op"
+   ],
+   "limitations": [
+    "Rmate is JST's initial MAXIMUM (20 mohm), used as an upper-bound value, not a typical; the spec's 6/12 mohm typical proxies are not used.",
+    "Crimp (wire-termination) resistance is not modeled: JST publishes none in the archived sheet and Molex values must not be used. The JST mated value may or may not include the crimp.",
+    "No thermal, Rth, all-positions-loaded derating or wear model; the class 0.8 factor and Rth are not used.",
+    "Ratings: 1 A only at AWG #28; contact temperature range includes self-heating rise; 50 V AC/DC general specification (overseas registrations may differ).",
+    "Cable side terminals W1..WN are the mated housing's circuit numbers; no polarity or battery convention is implied.",
+    "Wire resistance is a separate circuit element, not part of this binding.",
+    "SM04B-SRSS-TB reinforcement tabs ('Reinforcement: Copper alloy, tin-plated', p3) are mechanical and not package terminals of this binding."
+   ]
+  },
+  "pin_map_evidence": "JST SH sheet (archived): header drawing p3 marks 'No. 1 circuit' at one end of the 4-circuit SM04B-SRSS-TB; housing drawing p2 marks 'No. 1 circuit' on SHR-04V-S; p1/p2 PCB layouts, 'viewed from the connector mounting surface', mark 'No. 1 circuit'. Package terminal '1'..'4' = PCB tail of circuit k (P_k); 'W1'..'W4' = wire of housing circuit k (W_k).",
+  "runtime_check": {
+   "stimulus": "DC current excitation of i_rated = 1 A into P1 (net 'anode'), W1 on return; P2..P4 and W2..W4 also on return (all bound terminals must be connected)",
+   "observable": "contact path resistance = V(anode)/I",
+   "comparison": "absolute: expected rmate = 0.02 ohm, tolerance 0.1% relative (= 2.00e-05 ohm), plus interval check observed <= contact_resistance_initial_max 0.02 ohm (+0.1% guard for float print)",
+   "derived_from": "stimulus from sourced contact_current_rating; expected from sourced contact_resistance_initial_max; relative tolerance from locked bench BEH-CON-WTB/B2 (divider, 0.1%)",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "Add a BEH-CON-WTB branch to dc_probe_definition: roles {P1:'anode', every other role:'return'}, excitations=[DCExcitation(positive_net='return', negative_net='anode', value=i_rated A)], comparison observable 'dc_resistance'-style (reuse the BEH-MAG-INDUCTOR observable but keyed on node 'anode', i.e. V(anode)/current); add BEH-CON-WTB to the dc_probe_receipt_errors class set in runtime_receipt_errors. Verify the locked B2 deck hash via _locked_probe_deck before borrowing its 0.1% tolerance."
+  },
+  "open_items_after": [
+   "Crimp resistance and whether JST's mated value includes it.",
+   "All-positions-loaded derating, Rth, mating-cycle endurance (not in archived sheet).",
+   "Current rating at wire gauges thinner than the stated AWG.",
+   "SM04B-SRSS-TB reinforcement (hold-down) tabs are mechanical, copper alloy tin-plated per p3; not modeled as terminals."
+  ],
+  "template_provenance_note": "Spec line 10751 'R{ref}_m{k} {Pk} {mid} {Rmate} ; mated pair, JST/Molex spec value'. The class crimp resistor (line 10752, Rcrimp 2 mohm) is Molex-sourced and is deliberately omitted for JST; mid node collapsed so the mated-pair value runs Pk->Wk."
+ },
+ {
+  "entry": "OHM-158",
+  "class": "BEH-CON-WTB",
+  "verdict": "blocked",
+  "blocker_recorded": "Rating-critical exact-reference voltage,temperature and current conditions unresolved.",
+  "blocker_resolution": "New archived evidence exists (manual browser downloads 2026-10-06) but does not close it. (a) Molex part page 22232021 (archived 990a0b5b...) gives 'Current Maximum Per Contact 4.0A', 'Voltage Maximum 500V', 'Temperature Range Operating -40° to +80°C', 25 cycles, brass/tin, but no AWG/mate condition, no contact resistance, and states 'Limited Information Available / not formally published'. (b) PS-99020-0088 Rev G (archived 26757f08...) lists Headers 6410, 7395 and housings 2695, terminals 2759 etc.; 22-23-2021 is series 6373 ('KK 100 HEADER ASSEMBLY / FRICTION LOCK SOLID BODY', SD-6373-001, read via WebFetch, NOT archived) and that drawing cites no PS number, no ratings and marks no circuit 1 (circuit table starts at 2). So the PS 10 mohm mated / 2 mohm crimp / AWG current table is not proven to apply to 22-23-2021. (c) Voltage stays a conflict: PS Rev G 4.1 '500 Volts AC (or 600 Volts DC)', its agency table UL 600 V / CSA 250 V for 6410/7395, part page 500 V, protected spec 250 V. Temperature: PS gives brass -40..+80 C incl. rise (matches part page), spec 0..75 C. (d) The researched 0470541000 (47053/2759) evidence is an alternate family and cannot bind the default. Net: no exact pair (header + housing + terminal) with sourced Rmate and a pin map.",
+  "reference_part": "Molex 22-23-2021 (KK 254 / 6373, 2 circuits) intended; mating housing and terminal unbound",
+  "new_field_updates": [
+   {
+    "field": "part_current_max_per_contact",
+    "value": 4.0,
+    "unit": "A",
+    "basis": "MFR_DATASHEET",
+    "confidence": "M",
+    "sources": [
+     "https://www.molex.com/en-us/products/part-detail/22232021"
+    ],
+    "page": null,
+    "scope": "Molex 22-23-2021 part page; no AWG or mate condition; page says limited information",
+    "detail": "'Current Maximum Per Contact / 4.0A'",
+    "archived": true
+   },
+   {
+    "field": "part_voltage_max",
+    "value": 500,
+    "unit": "V",
+    "basis": "MFR_DATASHEET",
+    "confidence": "M",
+    "sources": [
+     "https://www.molex.com/en-us/products/part-detail/22232021"
+    ],
+    "page": null,
+    "scope": "Molex 22-23-2021 part page; AC/DC and category unstated",
+    "detail": "'Voltage Maximum / 500V'",
+    "archived": true
+   },
+   {
+    "field": "part_operating_temperature_range",
+    "value": [
+     -40,
+     80
+    ],
+    "unit": "C",
+    "basis": "MFR_DATASHEET",
+    "confidence": "M",
+    "sources": [
+     "https://www.molex.com/en-us/products/part-detail/22232021"
+    ],
+    "page": null,
+    "scope": "Molex 22-23-2021 part page; brass",
+    "detail": "'Temperature Range Operating / -40° to +80°C'",
+    "archived": true
+   },
+   {
+    "field": "ps99020_header_series_covered",
+    "value": [
+     "6410",
+     "7395"
+    ],
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/productspecificationpdf/990/99020/PS-99020-0088-001.pdf"
+    ],
+    "page": 1,
+    "scope": "PS-99020-0088 Rev G sec 2.1; 6373 not listed",
+    "detail": "'Headers: 6410, 7395 ... Other products conforming to this specification are noted on the individual drawings.'",
+    "archived": true
+   },
+   {
+    "field": "sales_drawing_series",
+    "value": "6373",
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "M",
+    "sources": [
+     "https://www.molex.com/content/dam/molex/molex-dot-com/products/automated/en-us/salesdrawingpdf/637/6373/022232021_sd.pdf"
+    ],
+    "page": 1,
+    "scope": "22-23-2021 sales drawing SD-6373-001; cites no PS and no ratings",
+    "detail": "'KK 100 HEADER ASSEMBLY / FRICTION LOCK SOLID BODY'; row '2 22-23-2021 A-6373-02A222'",
+    "archived": false
+   }
+  ],
+  "recipe": null,
+  "pin_map_evidence": "None usable: SD-6373-001 (unarchived) has no circuit-1 mark; part page has none; PS has no drawing. The opened 0470541000 4-position housing cannot map a 2-position header.",
+  "runtime_check": {
+   "stimulus": "(if unblocked) same contact-path probe as OHM-155..157 at the sourced AWG current",
+   "observable": "V(P1)/I",
+   "comparison": "absolute vs sourced mated Rmate (+crimp if the bound spec covers the terminal)",
+   "derived_from": "BEH-CON-WTB/B2 tolerance",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "Same BEH-CON-WTB contact-path probe proposed for OHM-155."
+  },
+  "open_items_after": [
+   "A Molex document tying 22-23-2021 (series 6373) to PS-99020-0088 or another PS.",
+   "Mating housing + crimp terminal part numbers and AWG for the default.",
+   "Single working voltage for the pair (500 V AC/600 V DC vs CSA 250 V vs spec 250 V).",
+   "Circuit-1 identification for 22-23-2021."
+  ]
+ },
+ {
+  "entry": "OHM-159",
+  "class": "BEH-CON-TERMINAL",
+  "verdict": "blocked",
+  "blocker_recorded": "Rating-critical operating-temperature/derating and validated resistance model unresolved.",
+  "blocker_resolution": "No Phoenix document gives any contact/clamp resistance for MKDS 1,5/..-5,08: the primary product page 1715721 (archived manual download 51c3b224...) lists ratings, conductor data and IEC 60947-7-4 temperature-rise/short-time tests with no resistance value, and the Conrad/datasheet.live copies (secondary mirrors of the Phoenix PDF) list none either. The class template's only electrical element is R{ref}_cl{k} {Wk} {Pk} {Rclamp} with Rclamp = 3 mohm ASSUMPTION, so no sourced critical resistance fact exists and the 'validated resistance model' cannot be built. Temperature is now primary-sourced for 1715721 ('Ambient temperature (operation) -40 °C ... 105 °C (Depending on the current carrying capacity/derating curve)'), but no derating curve is present in any archived MKDS source. SOURCE_BINDINGS notes the spec's 10 A/160 V for MKDS 1,5 conflicts with Phoenix 17.5 A/400 V (III/2); 400 V is only III/2 (III/3 250 V). Several existing OHM-159 field_updates (III/3, II/2, surge, torque, stripping, conductor ranges) cite only the Conrad mirror; the archived primary page 1715721 carries the same values and should be added as their source.",
+  "reference_part": "Phoenix Contact MKDS 1,5/ 2-5,08, 1715721",
+  "new_field_updates": [
+   {
+    "field": "operating_ambient_range",
+    "value": [
+     -40,
+     105
+    ],
+    "unit": "C",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.phoenixcontact.com/us/products/1715721"
+    ],
+    "page": null,
+    "scope": "MKDS 1,5/ 2-5,08 1715721; depending on current carrying capacity/derating curve (curve not in archived sources)",
+    "detail": "'Ambient temperature (operation) -40 °C ... 105 °C (Depending on the current carrying capacity/derating curve)'",
+    "archived": true
+   },
+   {
+    "field": "conductor_cross_section_awg",
+    "value": [
+     26,
+     14
+    ],
+    "unit": "AWG",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.phoenixcontact.com/us/products/1715721"
+    ],
+    "page": null,
+    "scope": "1715721",
+    "detail": "'Conductor cross-section AWG 26 ... 14'",
+    "archived": true
+   },
+   {
+    "field": "insulation_resistance_neighboring_min",
+    "value": 5,
+    "unit": "Mohm",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.phoenixcontact.com/us/products/1715721"
+    ],
+    "page": null,
+    "scope": "1715721; IEC 60512-3-1",
+    "detail": "'Insulation resistance, neighboring positions > 5 MΩ'",
+    "archived": true
+   }
+  ],
+  "recipe": null,
+  "pin_map_evidence": "1715721 page: 'Number of potentials 2', 'Solder pins per potential 1', 'Linear pinning'. Each position is one clamp to one solder pin; no position numbering is printed, so terminal numbers are library convention (acceptable for a symmetric pass-through, but moot while the resistance is unsourced).",
+  "runtime_check": {
+   "stimulus": "(if unblocked) DC current = nominal_current 17.5 A through W1->P1",
+   "observable": "V/I",
+   "comparison": "absolute vs a sourced clamp resistance; none exists",
+   "derived_from": "BEH-CON-TERMINAL/B1 stimulus shape",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "Same contact-path probe as proposed for OHM-161; cannot run without a sourced resistance."
+  },
+  "open_items_after": [
+   "Any manufacturer clamp/contact resistance for MKDS 1,5.",
+   "MKDS 2-position derating curve (current vs ambient).",
+   "Wire ampacity at the used gauge."
+  ]
+ },
+ {
+  "entry": "OHM-160",
+  "class": "BEH-CON-TERMINAL",
+  "verdict": "blocked",
+  "blocker_recorded": "Rating-critical operating-temperature/derating and validated resistance model unresolved.",
+  "blocker_resolution": "No Phoenix document gives any contact/clamp resistance for MKDS 1,5/..-5,08: the primary product page 1715721 (archived manual download 51c3b224...) lists ratings, conductor data and IEC 60947-7-4 temperature-rise/short-time tests with no resistance value, and the Conrad/datasheet.live copies (secondary mirrors of the Phoenix PDF) list none either. The class template's only electrical element is R{ref}_cl{k} {Wk} {Pk} {Rclamp} with Rclamp = 3 mohm ASSUMPTION, so no sourced critical resistance fact exists and the 'validated resistance model' cannot be built. Temperature is now primary-sourced for 1715721 ('Ambient temperature (operation) -40 °C ... 105 °C (Depending on the current carrying capacity/derating curve)'), but no derating curve is present in any archived MKDS source. SOURCE_BINDINGS notes the spec's 10 A/160 V for MKDS 1,5 conflicts with Phoenix 17.5 A/400 V (III/2); 400 V is only III/2 (III/3 250 V). OHM-160 is worse: its only document (pdf.datasheet.live mirror of 1715734) is secondary; no Phoenix-hosted 1715734 source is archived, so even its ratings rest on a mirror. A browser download of https://www.phoenixcontact.com/us/products/1715734 would fix the ratings provenance but not the missing resistance.",
+  "reference_part": "Phoenix Contact MKDS 1,5/ 3-5,08, 1715734",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "Mirror only: 3 positions, one solder pin per potential, linear pinning; numbering is library convention.",
+  "runtime_check": {
+   "stimulus": "(if unblocked) DC 17.5 A through one clamp path",
+   "observable": "V/I",
+   "comparison": "none sourced",
+   "derived_from": "BEH-CON-TERMINAL/B1",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "Same as OHM-161."
+  },
+  "open_items_after": [
+   "Primary Phoenix source for 1715734 (archive needed).",
+   "Clamp/contact resistance.",
+   "Derating curve."
+  ]
+ },
+ {
+  "entry": "OHM-161",
+  "class": "BEH-CON-TERMINAL",
+  "verdict": "resolvable",
+  "blocker_recorded": "Rating-critical mating derating/thermal context and validated contact-path model unresolved.",
+  "blocker_resolution": "The Phoenix-hosted header PDF https://www.phoenixcontact.com/us/products/1757242/pdf (archived manual download c2d4094a..., generated 2026-10-06) and the primary plug page (archived bb59d2fa...) close it to a stated-value level. Contact path: header R1 = R2 = 1.4 mohm (p4, IEC 60512-9-1 durability test, 25 cycles) and plug R1 1.3 / R2 1.4 mohm; recipe uses one lumped 1.4 mohm path per position (DERIVED max, confidence M) with no assumed clamp+mating split, so no ASSUMPTION value enters. Mating derating: p11 contains the exact pair curve 'Type: MSTB 2,5/...-ST-5,08 with MSTBA 2,5/...-G-5,08' (1 = 2-pos.); digitized by eye to 12 A up to about 84 C (L confidence) and recorded as a rating context, not a model input; recipe is op-only and isothermal. Operating ambient -40..100 C is primary-sourced. Runtime check validates the compiled path against the stated value. CORRECTION: existing header_working_voltage_II_2 = 400 V (and the D035/conflict text 'pair limited by 400 V header') comes from the 2013 Conrad copy; the current Phoenix PDF and product page give II/2 630 V for 1757242, and III/3 320 V (header) vs 250 V (plug). Existing OHM-161 working_voltage_III_3 250 V cites only Conrad; the primary plug page supports 250 V for the plug.",
+  "reference_part": "Phoenix Contact MSTBA 2,5/ 2-G-5,08 1757242 + MSTB 2,5/ 2-ST-5,08 1757019",
+  "new_field_updates": [
+   {
+    "field": "header_contact_resistance_R1",
+    "value": 1.4,
+    "unit": "mohm",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.phoenixcontact.com/us/products/1757242/pdf",
+     "https://www.phoenixcontact.com/en-us/products/pcb-header-mstba-25-2-g-508-1757242"
+    ],
+    "page": 4,
+    "scope": "MSTBA 2,5/ 2-G-5,08 1757242; durability test IEC 60512-9-1, before cycling; not labelled max or typical",
+    "detail": "'Contact resistance R1 1.4 mΩ' (also p2 'Contact resistance 1.4 mΩ')",
+    "archived": true
+   },
+   {
+    "field": "header_contact_resistance_R2",
+    "value": 1.4,
+    "unit": "mohm",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.phoenixcontact.com/us/products/1757242/pdf",
+     "https://www.phoenixcontact.com/en-us/products/pcb-header-mstba-25-2-g-508-1757242"
+    ],
+    "page": 4,
+    "scope": "MSTBA 1757242; after 25 insertion/withdrawal cycles, IEC 60512-9-1",
+    "detail": "'Contact resistance R2 1.4 mΩ'; 'Insertion/withdrawal cycles 25'",
+    "archived": true
+   },
+   {
+    "field": "plug_contact_resistance_R1_primary",
+    "value": 1.3,
+    "unit": "mohm",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.phoenixcontact.com/en-us/products/pcb-plug-mstb-25-2-st-508-1757019"
+    ],
+    "page": null,
+    "scope": "MSTB 2,5/ 2-ST-5,08 1757019 product page (primary; replaces RS mirror source of plug_contact_resistance_stated)",
+    "detail": "'Contact resistance R1 1.3 mΩ', 'Contact resistance R2 1.4 mΩ'",
+    "archived": true
+   },
+   {
+    "field": "mated_path_resistance_stated",
+    "value": 1.4,
+    "unit": "mohm",
+    "basis": "DERIVED",
+    "confidence": "M",
+    "sources": [
+     "https://www.phoenixcontact.com/us/products/1757242/pdf",
+     "https://www.phoenixcontact.com/en-us/products/pcb-plug-mstb-25-2-st-508-1757019"
+    ],
+    "page": 4,
+    "scope": "MSTBA 1757242 + MSTB 1757019, 2 positions, tin; one lumped wire-clamp-to-solder-pin path per position",
+    "detail": "max(header R1 1.4, header R2 1.4, plug R1 1.3, plug R2 1.4) = 1.4 mohm. Phoenix does not say whether the value includes the screw clamp or only the plug/header interface, nor that it is a guaranteed maximum.",
+    "archived": true
+   },
+   {
+    "field": "header_rated_voltage_III_3",
+    "value": 320,
+    "unit": "V",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.phoenixcontact.com/us/products/1757242/pdf"
+    ],
+    "page": 2,
+    "scope": "MSTBA 1757242, PDF generated 2026-10-06",
+    "detail": "'Rated voltage (III/3) 320 V'",
+    "archived": true
+   },
+   {
+    "field": "plug_rated_voltage_III_3",
+    "value": 250,
+    "unit": "V",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.phoenixcontact.com/en-us/products/pcb-plug-mstb-25-2-st-508-1757019"
+    ],
+    "page": null,
+    "scope": "MSTB 1757019 product page",
+    "detail": "'Rated voltage (III/3) 250 V'",
+    "archived": true
+   },
+   {
+    "field": "header_rated_voltage_II_2_current",
+    "value": 630,
+    "unit": "V",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.phoenixcontact.com/us/products/1757242/pdf",
+     "https://www.phoenixcontact.com/en-us/products/pcb-header-mstba-25-2-g-508-1757242"
+    ],
+    "page": 2,
+    "scope": "MSTBA 1757242, current Phoenix PDF/page; CONFLICTS with existing header_working_voltage_II_2 = 400 V taken from the 2013 Conrad copy",
+    "detail": "'Rated voltage (II/2) 630 V'; also 'Rated insulation voltage (II/2) 630 V' p4",
+    "archived": true
+   },
+   {
+    "field": "pair_rated_voltage_III_2",
+    "value": 320,
+    "unit": "V",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://www.phoenixcontact.com/us/products/1757242/pdf",
+     "https://www.phoenixcontact.com/en-us/products/pcb-plug-mstb-25-2-st-508-1757019"
+    ],
+    "page": 2,
+    "scope": "1757242 + 1757019, III/2",
+    "detail": "min(header 320, plug 320)",
+    "archived": true
+   },
+   {
+    "field": "pair_nominal_current",
+    "value": 12,
+    "unit": "A",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://www.phoenixcontact.com/us/products/1757242/pdf",
+     "https://www.phoenixcontact.com/en-us/products/pcb-plug-mstb-25-2-st-508-1757019"
+    ],
+    "page": 2,
+    "scope": "1757242 + 1757019; plug nominal 2.5 mm2; full value only up to the derating knee",
+    "detail": "min(header 'Nominal current IN 12 A', plug 12 A)",
+    "archived": true
+   },
+   {
+    "field": "operating_ambient_range_header",
+    "value": [
+     -40,
+     100
+    ],
+    "unit": "C",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://www.phoenixcontact.com/us/products/1757242/pdf"
+    ],
+    "page": 5,
+    "scope": "MSTBA 1757242",
+    "detail": "'Ambient temperature (operation) -40 °C ... 100 °C (dependent on the derating curve)'",
+    "archived": true
+   },
+   {
+    "field": "derating_2pos_full_current_ambient_max",
+    "value": 84,
+    "unit": "C",
+    "basis": "DERIVED",
+    "confidence": "L",
+    "sources": [
+     "https://www.phoenixcontact.com/us/products/1757242/pdf"
+    ],
+    "page": 11,
+    "scope": "Diagram 'Type: MSTB 2,5/...-ST-5,08 with MSTBA 2,5/...-G-5,08', curve 1 = 2-pos.; read by eye at 4x render",
+    "detail": "Curve 1 holds 12 A to about 84 C (+/-2 C), passes about 10 A at 90 C and about 5 A at 100 C, reaching 0 near 105 C. Visual digitization; not a validated curve fit.",
+    "archived": true
+   }
+  ],
+  "recipe": {
+   "entry_id": "OHM-161",
+   "behavior_id": "BEH-CON-TERMINAL",
+   "package": "MSTBA 2,5/ 2-G-5,08 (1757242) mated with MSTB 2,5/ 2-ST-5,08 (1757019)",
+   "reference_part": "Phoenix Contact 1757242 header + 1757019 plug, 2 positions, tin",
+   "terminal_roles": {
+    "1": "P1",
+    "2": "P2",
+    "W1": "W1",
+    "W2": "W2"
+   },
+   "critical_facts": {
+    "rpath": {
+     "field": "mated_path_resistance_stated",
+     "unit": "mohm",
+     "output_unit": "ohm"
+    },
+    "i_nom": {
+     "field": "pair_nominal_current",
+     "unit": "A"
+    },
+    "v_III_2": {
+     "field": "pair_rated_voltage_III_2",
+     "unit": "V"
+    },
+    "t_amb_max": {
+     "field": "operating_ambient_range_header",
+     "unit": "C",
+     "value_path": [
+      1
+     ]
+    }
+   },
+   "derived_parameters": {},
+   "class_parameters": {},
+   "quoted_parameters": {},
+   "template_override": "R{ref}_mt1 {P1} {W1} {rpath}\nR{ref}_mt2 {P2} {W2} {rpath}\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 10854
+   },
+   "inline_assets": [],
+   "supported_analyses": [
+    "op"
+   ],
+   "limitations": [
+    "One lumped resistance per position equal to Phoenix's stated durability-test contact resistance (1.4 mohm); not labelled a maximum, and Phoenix does not say whether it includes the screw clamp.",
+    "No thermal or derating model. Current capacity vs ambient follows the p11 MSTB/MSTBA 2-pos curve (12 A to about 84 C, read by eye); the recipe does not encode it.",
+    "Voltage depends on category: III/2 320 V pair; III/3 limited by plug 250 V; II/2 630 V per current Phoenix sheets.",
+    "Live mating/unmating prohibited (no switching power, IEC 61984).",
+    "Position numbering is library convention; positions are electrically identical, P_k and W_k are colocated.",
+    "Wire resistance and ampacity are separate."
+   ]
+  },
+  "pin_map_evidence": "1757242 PDF p1/p2: 'Number of positions 2', 'Number of potentials 2', 'Pin layout Linear pinning', 'Solder pins per potential 1'; 1757019 page: 'number of positions: 2, number of connections: 2', mates MSTBA. Each header solder pin k is the same potential as plug position k (colocated pin/socket). Phoenix prints no position numbers, so '1','2' (solder pins) and 'W1','W2' (plug clamps) are library numbering applied consistently to both halves.",
+  "runtime_check": {
+   "stimulus": "DC current excitation = pair_nominal_current 12 A into P1 (net 'anode'); W1, P2, W2 on return",
+   "observable": "V(anode)/I = lumped path resistance",
+   "comparison": "absolute: expected 0.0014 ohm, tolerance 0.1% relative (1.4e-6 ohm)",
+   "derived_from": "stimulus from sourced pair_nominal_current (BEH-CON-TERMINAL/B1 also drives near rated current); expected from mated_path_resistance_stated; 0.1% relative tolerance from locked BEH-CON-TERMINAL/B2",
+   "existing_probe_covers_it": false,
+   "new_probe_needed_for_class": "Add BEH-CON-TERMINAL (and BEH-CON-WTB) to dc_probe_definition with a shared 'contact_path' branch: roles {first P role:'anode', all others:'return'}, one DCExcitation(return->anode, I from the recipe's current critical fact), observable V(anode)/I, absolute comparison against the bound resistance fact with the locked bench's relative tolerance; register both classes in runtime_receipt_errors' dc_probe set."
+  },
+  "open_items_after": [
+   "Whether 1.4 mohm includes the screw clamp; no guaranteed maximum published.",
+   "Validated (digitized) derating curve; current visual read is L confidence.",
+   "Wire ampacity at the used gauge; III/3 pair voltage = 250 V (plug)."
+  ],
+  "template_provenance_note": "Spec line 10854 'R{ref}_mt{k} {Pk} {Hk} {Rmate} ; only for OHM-161 header/plug mated pair', collapsed with line 10853's clamp resistor into one lumped path because no source separates clamp and mating resistance; the 3 mohm ASSUMPTION Rclamp is not used."
+ }
+]

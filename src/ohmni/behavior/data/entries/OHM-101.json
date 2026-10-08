@@ -240,16 +240,18 @@
       "The default ST L7805 D2PAK source timed out; its regulator binding remains separate and cannot use MOSFET drain/gate/source roles.",
       "Actual board thermal path, SOA and dynamic failure behavior remain unresolved.",
       "The package reference now has a sourced MOSFET example; this does not validate the regulator default or five-lead variants.",
-      "Single-pulse table L0.47 mH differs from note2 L0.48 mH; retain that source discrepancy. Avalanche operation stays unsupported until a sourced pulse/SOA binding replaces the destructive-value guard."
+      "Single-pulse table L0.47 mH differs from note2 L0.48 mH; retain that source discrepancy. Avalanche operation stays unsupported until a sourced pulse/SOA binding replaces the destructive-value guard.",
+      "Former simulation blocker resolved for the explicitly bound reference (2026-10-08): The default regulator has no re-verified source/functional binding; keep that default blocked. Resolution: The regulator default (ST L7805 D2PAK, BEH-REG-LINEAR) stays blocked, and the ST L78 sheet now archived (ccba643d) cannot change that inside this entry because BEH-REG-LINEAR is not in OHM-101's class list. But the entry's only class is BEH-TRN-MOSFET, the spec's OHM-101 table has a 'power MOSFETs in D2PAK, G-D-S' row that was research_required only because no D2PAK MOSFET sheet had been opened, and IRFZ44NS (D2PAK, archived 6fcd0535) now supplies ratings, Rds(on) test condition and lead assignments (p8 'LEAD ASSIGNMENTS HEXFET 1-GATE 2-DRAIN 3-SOURCE', tab drain). Binding IRFZ44NSPbF by name as an explicit MOSFET alternative mirrors OHM-098 and does not touch the regulator default. Model: the authored IRFZ44N_R6 subcircuit (fit to the TO-220 IRFZ44N, same 55 V / 17.5 mOhm / 2-4 V Vth die rating set) is reused as an explicit proxy; the existing MOSFET probe checks it against the IRFZ44NS's own 17.5 mOhm maximum at VGS 10 V, ID 25 A.",
+      "L7805 D2PAK regulator default remains blocked (BEH-REG-LINEAR not in the entry; ST L78 is archived and could serve an IC-stage binding).",
+      "Board thermal path, SOA, repetitive avalanche remain unmodelled.",
+      "Confirm the library tab terminal label."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "The default regulator has no re-verified source/functional binding; keep that default blocked."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-101.md",
-      "document_sha256": "4ff369d712d64493b82d55ec473a009e85d10a15b77f1b9d6aea9911426cd55f",
+      "document_sha256": "311ce021a0b00fbc286e3fa1f018be77697e83f69a201c69d93581ab232dac95",
       "fragment_sha256": null,
       "line": 1
     }

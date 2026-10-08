@@ -178,19 +178,41 @@
         ],
         "unit": "V",
         "value": 1500
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Schematic: primary 1-2-3, secondary 4-5-6 (Z = 600 CT TO 600 CT); 'DCR: Primary (1-3) 44Ω Nominal, Secondary (4-6) 58Ω Nominal'; 'DOT ABOVE #1 PIN ON BOBBIN FLANGE'. Outline rows 1 2 3 / 6 5 4 at .187 in pitch, .420 in row spacing.",
+        "field": "manufacturer_pin_roles",
+        "page": 1,
+        "scope": "TY-145P",
+        "sources": [
+          "https://www.triadmagnetics.com/Asset/TY-145P.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "1": "P_A",
+          "2": "P_CT",
+          "3": "P_B",
+          "4": "S_A",
+          "5": "S_CT",
+          "6": "S_B"
+        }
       }
     ],
     "remaining_open_items": [
-      "Magnetizing and leakage inductance, core loss, interwinding capacitance and detailed safety insulation qualification remain unestablished."
+      "Magnetizing and leakage inductance, core loss, interwinding capacitance and detailed safety insulation qualification remain unestablished.",
+      "Former simulation blocker resolved for the explicitly bound reference (2026-10-08): Do not claim safe galvanic isolation or a complete response from assumed 1 H / 5 mH / 100 pF. Resolution: Closed by a DC-only winding binding that uses none of the assumed LP/LLK/CIW values: primary 1-3 = 44 ohm nominal and secondary 4-6 = 58 ohm nominal, as printed on the archived Triad TY-145P sheet (publish date 2026-02-23). The centre taps (pins 2, 5) are required_isolated because the half-winding split is not published. The model has no inter-winding element; limitations state this is not an isolation claim (1500 V is 'Dielectric Strength Pri to Sec to Core', a test value) and that no AC transfer or frequency response is simulated (op only). Pin functions now come from the part's own sheet, replacing the DEFAULT-ASSUMPTION map.",
+      "Magnetising and leakage inductance, interwinding capacitance and core loss for any AC binding",
+      "Half-winding DCR split (centre taps)",
+      "Insulation/isolation qualification (never claimed)"
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Do not claim safe galvanic isolation or a complete response from assumed 1 H / 5 mH / 100 pF."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-052.md",
-      "document_sha256": "67935866c6589b0708cc18f4b725a91c7aab4706e3ae1b3712f5f6fe573c9345",
+      "document_sha256": "954f3cd758035e7e069fece506c5ff1c5d1cf482bf741f7db8fe54ed5589260e",
       "fragment_sha256": null,
       "line": 1
     }

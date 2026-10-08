@@ -1,0 +1,1677 @@
+[
+ {
+  "entry": "OHM-021",
+  "class": "BEH-CAP-CERAMIC",
+  "verdict": "blocked",
+  "blocker_recorded": "The exact default part voltage rating is not re-established by these general application documents.",
+  "blocker_resolution": "Not closable from archived evidence. The entry's two documents (Murata SimSurfing measurement conditions, Johanson aging note) are general and name no part number; no archived manufacturer page or datasheet in FETCH_LEDGER covers an exact 0201 part (the only exact MLCC part archived is TDK C2012X5R1V106M085AC, an 0805, which must not be transferred across case sizes per the entry conflict). Live lookups of manufacturer product pages (product.tdk.com, murata.com) were refused by the egress proxy and by WebFetch in this run, so not even a resolvable_needs_download candidate could be read. Next step: browser-download one manufacturer product page/datasheet for an exact 0201 part matching the spec default (100 nF, 6.3 V, X5R) and bind it like OHM-024.",
+  "reference_part": "none bound",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "not applicable while unbound",
+  "runtime_check": {
+   "stimulus": "Locked BEH-CAP-CERAMIC/B3 stimulus unchanged: PWL current pulse into terminal 1 (0 A at 0, 0.5 A from 1 us to 99 us, 0 at 100 us; area 49.5 uC), terminal 2 to return; tran to beyond t0+tau.",
+   "observable": "v(terminal 1) at t = 100 us + tau",
+   "derived_from": "BEH-CAP-CERAMIC/B3 (analytic v0*exp(-1), tau = RLK*C, tolerance 0.5%)",
+   "new_probe_needed_for_class": "No capacitor class has a probe in runtime_benches.py. Add a BEH-CAP-CERAMIC tran case (ic_benches.py already drives PWLExcitation + parse_transient): re-read B3.cir under _locked_probe_deck, assert the PWL pulse text is unchanged, compile the bound recipe with analysis='tran', and compare v(anode) at t0+tau with the B3 relative tolerance. tau is computed from the bound part's sourced capacitance and its sourced minimum insulation resistance (the leak resistor of the recipe). An op variant (rated-voltage leakage V/IRmin) is simpler but only re-checks Ohm's law at a test voltage the TDK page does not state.",
+   "comparison": "When bound: v(t0+tau) = 4.95*(10 uF/C)*exp(-1) V with tau = IRmin*C, absolute tolerance 0.5% relative (B3); for C != 10 uF the B3 pulse charge gives v0 = 49.5 uC/C, which must stay below the bound part's VR (rescale pulse amplitude if not).",
+   "existing_probe_covers_it": false
+  },
+  "open_items_after": [
+   "Exact 0201 part, rated voltage, dielectric, tolerance and IR minimum",
+   "DC-bias curve, ESR/ESL vs frequency (part-specific, unchanged)"
+  ]
+ },
+ {
+  "entry": "OHM-022",
+  "class": "BEH-CAP-CERAMIC",
+  "verdict": "blocked",
+  "blocker_recorded": "The exact default part voltage rating is not re-established by these general application documents.",
+  "blocker_resolution": "Not closable from archived evidence. The entry's two documents (Murata SimSurfing measurement conditions, Johanson aging note) are general and name no part number; no archived manufacturer page or datasheet in FETCH_LEDGER covers an exact 0402 part (the only exact MLCC part archived is TDK C2012X5R1V106M085AC, an 0805, which must not be transferred across case sizes per the entry conflict). Live lookups of manufacturer product pages (product.tdk.com, murata.com) were refused by the egress proxy and by WebFetch in this run, so not even a resolvable_needs_download candidate could be read. Next step: browser-download one manufacturer product page/datasheet for an exact 0402 part matching the spec default (100 nF, 16 V, X7R) and bind it like OHM-024.",
+  "reference_part": "none bound",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "not applicable while unbound",
+  "runtime_check": {
+   "stimulus": "Locked BEH-CAP-CERAMIC/B3 stimulus unchanged: PWL current pulse into terminal 1 (0 A at 0, 0.5 A from 1 us to 99 us, 0 at 100 us; area 49.5 uC), terminal 2 to return; tran to beyond t0+tau.",
+   "observable": "v(terminal 1) at t = 100 us + tau",
+   "derived_from": "BEH-CAP-CERAMIC/B3 (analytic v0*exp(-1), tau = RLK*C, tolerance 0.5%)",
+   "new_probe_needed_for_class": "No capacitor class has a probe in runtime_benches.py. Add a BEH-CAP-CERAMIC tran case (ic_benches.py already drives PWLExcitation + parse_transient): re-read B3.cir under _locked_probe_deck, assert the PWL pulse text is unchanged, compile the bound recipe with analysis='tran', and compare v(anode) at t0+tau with the B3 relative tolerance. tau is computed from the bound part's sourced capacitance and its sourced minimum insulation resistance (the leak resistor of the recipe). An op variant (rated-voltage leakage V/IRmin) is simpler but only re-checks Ohm's law at a test voltage the TDK page does not state.",
+   "comparison": "When bound: v(t0+tau) = 4.95*(10 uF/C)*exp(-1) V with tau = IRmin*C, absolute tolerance 0.5% relative (B3); for C != 10 uF the B3 pulse charge gives v0 = 49.5 uC/C, which must stay below the bound part's VR (rescale pulse amplitude if not).",
+   "existing_probe_covers_it": false
+  },
+  "open_items_after": [
+   "Exact 0402 part, rated voltage, dielectric, tolerance and IR minimum",
+   "DC-bias curve, ESR/ESL vs frequency (part-specific, unchanged)"
+  ]
+ },
+ {
+  "entry": "OHM-023",
+  "class": "BEH-CAP-CERAMIC",
+  "verdict": "blocked",
+  "blocker_recorded": "The exact default part voltage rating is not re-established by these general application documents.",
+  "blocker_resolution": "Not closable from archived evidence. The entry's two documents (Murata SimSurfing measurement conditions, Johanson aging note) are general and name no part number; no archived manufacturer page or datasheet in FETCH_LEDGER covers an exact 0603 part (the only exact MLCC part archived is TDK C2012X5R1V106M085AC, an 0805, which must not be transferred across case sizes per the entry conflict). Live lookups of manufacturer product pages (product.tdk.com, murata.com) were refused by the egress proxy and by WebFetch in this run, so not even a resolvable_needs_download candidate could be read. Next step: browser-download one manufacturer product page/datasheet for an exact 0603 part matching the spec default (1 uF, 25 V, X7R) and bind it like OHM-024.",
+  "reference_part": "none bound",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "not applicable while unbound",
+  "runtime_check": {
+   "stimulus": "Locked BEH-CAP-CERAMIC/B3 stimulus unchanged: PWL current pulse into terminal 1 (0 A at 0, 0.5 A from 1 us to 99 us, 0 at 100 us; area 49.5 uC), terminal 2 to return; tran to beyond t0+tau.",
+   "observable": "v(terminal 1) at t = 100 us + tau",
+   "derived_from": "BEH-CAP-CERAMIC/B3 (analytic v0*exp(-1), tau = RLK*C, tolerance 0.5%)",
+   "new_probe_needed_for_class": "No capacitor class has a probe in runtime_benches.py. Add a BEH-CAP-CERAMIC tran case (ic_benches.py already drives PWLExcitation + parse_transient): re-read B3.cir under _locked_probe_deck, assert the PWL pulse text is unchanged, compile the bound recipe with analysis='tran', and compare v(anode) at t0+tau with the B3 relative tolerance. tau is computed from the bound part's sourced capacitance and its sourced minimum insulation resistance (the leak resistor of the recipe). An op variant (rated-voltage leakage V/IRmin) is simpler but only re-checks Ohm's law at a test voltage the TDK page does not state.",
+   "comparison": "When bound: v(t0+tau) = 4.95*(10 uF/C)*exp(-1) V with tau = IRmin*C, absolute tolerance 0.5% relative (B3); for C != 10 uF the B3 pulse charge gives v0 = 49.5 uC/C, which must stay below the bound part's VR (rescale pulse amplitude if not).",
+   "existing_probe_covers_it": false
+  },
+  "open_items_after": [
+   "Exact 0603 part, rated voltage, dielectric, tolerance and IR minimum",
+   "DC-bias curve, ESR/ESL vs frequency (part-specific, unchanged)"
+  ]
+ },
+ {
+  "entry": "OHM-024",
+  "class": "BEH-CAP-CERAMIC",
+  "verdict": "resolvable",
+  "blocker_recorded": "The exact default part voltage rating is not re-established by these general application documents.",
+  "blocker_resolution": "Archived manufacturer-primary TDK product-center page (FETCH_LEDGER sha f810da9de391..., already cited as S5 in the spec via an Arrow copy, but not yet in this entry's documents) gives the rating for an exact 0805 part: C2012X5R1V106M085AC, 10 uF +/-20%, 35 VDC, X5R, IR >= 50 Mohm. Binding that exact part as an explicit alternative (precedent OHM-044) re-establishes the voltage rating for the bound reference. The spec default (Murata GRM21BR61A106KE19, 10 V) remains unsourced: S4 is only a third-party copy and is not archived, so it must not be the bound part. Add the TDK page to research.documents.",
+  "reference_part": "TDK C2012X5R1V106M085AC",
+  "new_field_updates": [
+   {
+    "field": "reference_part",
+    "value": "TDK C2012X5R1V106M085AC",
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://product.tdk.com/en/search/capacitor/ceramic/mlcc/info?part_no=C2012X5R1V106M085AC"
+    ],
+    "page": null,
+    "scope": "TDK C2012X5R1V106M085AC, EIA 0805 (C2012); TDK product-center page, status Production (NRND)",
+    "detail": "Page title 'C2012X5R1V106M085AC : Detailed Information'; 'Series C2012 [EIA 0805]'; 'Product Status Production (NRND) Recommended Alternate Part No. : C2012X5R1V106K125AC (Interchangeability is not guaranteed.)'",
+    "archived": true
+   },
+   {
+    "field": "nominal_capacitance",
+    "value": 10,
+    "unit": "uF",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://product.tdk.com/en/search/capacitor/ceramic/mlcc/info?part_no=C2012X5R1V106M085AC"
+    ],
+    "page": null,
+    "scope": "TDK C2012X5R1V106M085AC, EIA 0805 (C2012); TDK product-center page, status Production (NRND); tolerance +/-20%",
+    "detail": "'Capacitance 10μF ±20%'",
+    "archived": true
+   },
+   {
+    "field": "capacitance_tolerance",
+    "value": 20,
+    "unit": "percent",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://product.tdk.com/en/search/capacitor/ceramic/mlcc/info?part_no=C2012X5R1V106M085AC"
+    ],
+    "page": null,
+    "scope": "TDK C2012X5R1V106M085AC, EIA 0805 (C2012); TDK product-center page, status Production (NRND)",
+    "detail": "'10μF ±20%'",
+    "archived": true
+   },
+   {
+    "field": "rated_voltage",
+    "value": 35,
+    "unit": "V",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://product.tdk.com/en/search/capacitor/ceramic/mlcc/info?part_no=C2012X5R1V106M085AC"
+    ],
+    "page": null,
+    "scope": "TDK C2012X5R1V106M085AC, EIA 0805 (C2012); TDK product-center page, status Production (NRND); DC rating",
+    "detail": "'Rated Voltage 35VDC'",
+    "archived": true
+   },
+   {
+    "field": "temperature_characteristic",
+    "value": "X5R (+/-15%)",
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://product.tdk.com/en/search/capacitor/ceramic/mlcc/info?part_no=C2012X5R1V106M085AC"
+    ],
+    "page": null,
+    "scope": "TDK C2012X5R1V106M085AC, EIA 0805 (C2012); TDK product-center page, status Production (NRND)",
+    "detail": "'Temperature Characteristic X5R(±15%)'",
+    "archived": true
+   },
+   {
+    "field": "maximum_dissipation_factor",
+    "value": 0.1,
+    "unit": "1",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://product.tdk.com/en/search/capacitor/ceramic/mlcc/info?part_no=C2012X5R1V106M085AC"
+    ],
+    "page": null,
+    "scope": "TDK C2012X5R1V106M085AC, EIA 0805 (C2012); TDK product-center page, status Production (NRND); measurement frequency/level not stated on the page",
+    "detail": "'Dissipation Factor (Max.) 10%'",
+    "archived": true
+   },
+   {
+    "field": "minimum_insulation_resistance",
+    "value": 50000000.0,
+    "unit": "ohm",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://product.tdk.com/en/search/capacitor/ceramic/mlcc/info?part_no=C2012X5R1V106M085AC"
+    ],
+    "page": null,
+    "scope": "TDK C2012X5R1V106M085AC, EIA 0805 (C2012); TDK product-center page, status Production (NRND); test voltage and time not stated on the page",
+    "detail": "'Insulation Resistance (Min.) 50MΩ'",
+    "archived": true
+   },
+   {
+    "field": "operating_temperature_range",
+    "value": [
+     -55,
+     85
+    ],
+    "unit": "C",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://product.tdk.com/en/search/capacitor/ceramic/mlcc/info?part_no=C2012X5R1V106M085AC"
+    ],
+    "page": null,
+    "scope": "TDK C2012X5R1V106M085AC, EIA 0805 (C2012); TDK product-center page, status Production (NRND)",
+    "detail": "'Operating Temp. Range -55 to 85°C'",
+    "archived": true
+   },
+   {
+    "field": "body_dimensions_lwt",
+    "value": [
+     2.0,
+     1.25,
+     0.85
+    ],
+    "unit": "mm",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://product.tdk.com/en/search/capacitor/ceramic/mlcc/info?part_no=C2012X5R1V106M085AC"
+    ],
+    "page": null,
+    "scope": "TDK C2012X5R1V106M085AC, EIA 0805 (C2012); TDK product-center page, status Production (NRND); tolerances L/W +/-0.20, T +/-0.15",
+    "detail": "'Length(L) 2.00mm ±0.20mm Width(W) 1.25mm ±0.20mm Thickness(T) 0.85mm ±0.15mm'",
+    "archived": true
+   }
+  ],
+  "recipe": {
+   "entry_id": "OHM-024",
+   "behavior_id": "BEH-CAP-CERAMIC",
+   "package": "0805 (EIA) / TDK C2012 two-terminal chip",
+   "reference_part": "TDK C2012X5R1V106M085AC (10 uF +/-20%, 35 VDC, X5R, 0805); explicit alternative to the 10 V Murata spec default; NRND",
+   "terminal_roles": {
+    "1": "T1",
+    "2": "T2"
+   },
+   "critical_facts": {
+    "value": {
+     "field": "nominal_capacitance",
+     "unit": "uF",
+     "output_unit": "F"
+    },
+    "vr": {
+     "field": "rated_voltage",
+     "unit": "V"
+    },
+    "rleak": {
+     "field": "minimum_insulation_resistance",
+     "unit": "ohm"
+    }
+   },
+   "derived_parameters": {},
+   "class_parameters": {},
+   "quoted_parameters": {},
+   "template_override": "C{ref} {T1} {T2} {value}\nR{ref}_lk {T1} {T2} {rleak}\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 1199
+   },
+   "template_provenance_note": "Linear subset of ohm_mlcc (spec lines 1195-1201): Cb with V0 -> infinity and Rlk; Lesl/Resr omitted because ESR/ESL are ASSUMPTION for this part, and the atan bias law is omitted because V0 is unsourced.",
+   "inline_assets": [],
+   "supported_analyses": [
+    "op",
+    "tran"
+   ],
+   "limitations": [
+    "Explicit TDK 35 V alternative, not the Murata GRM21BR61A106KE19 10 V spec default; part is NRND and TDK says the alternate is not guaranteed interchangeable.",
+    "Nominal 10 uF with no DC-bias derating: an X5R 0805 loses a large, unsourced fraction of capacitance under bias, so the model overstates capacitance at any non-zero DC bias.",
+    "Leak resistor equals the 50 Mohm insulation-resistance minimum (worst case); IR test voltage/time are not stated on the source page.",
+    "No ESR, ESL, SRF, aging, temperature drift or flex-crack behaviour; DF 10% max is an upper bound, not a fitted ESR.",
+    "Rated 35 VDC is a rating check outside the netlist; no overvoltage flag is emitted."
+   ]
+  },
+  "pin_map_evidence": "Non-polarized two-terminal chip: the TDK page shows two symmetric end terminations (terminal width B >= 0.20 mm, spacing G >= 0.50 mm) with no polarity. Package terminal 1 (-X end cap per 3D spec OHM-024) -> role T1, terminal 2 (+X) -> T2; the roles are interchangeable, so no manufacturer pin numbering is needed.",
+  "runtime_check": {
+   "stimulus": "Locked BEH-CAP-CERAMIC/B3 stimulus unchanged: PWL current pulse into terminal 1 (0 A at 0, 0.5 A from 1 us to 99 us, 0 at 100 us; area 49.5 uC), terminal 2 to return; tran to beyond t0+tau.",
+   "observable": "v(terminal 1) at t = 100 us + tau",
+   "derived_from": "BEH-CAP-CERAMIC/B3 (analytic v0*exp(-1), tau = RLK*C, tolerance 0.5%)",
+   "new_probe_needed_for_class": "No capacitor class has a probe in runtime_benches.py. Add a BEH-CAP-CERAMIC tran case (ic_benches.py already drives PWLExcitation + parse_transient): re-read B3.cir under _locked_probe_deck, assert the PWL pulse text is unchanged, compile the bound recipe with analysis='tran', and compare v(anode) at t0+tau with the B3 relative tolerance. tau is computed from the bound part's sourced capacitance and its sourced minimum insulation resistance (the leak resistor of the recipe). An op variant (rated-voltage leakage V/IRmin) is simpler but only re-checks Ohm's law at a test voltage the TDK page does not state.",
+   "comparison": "absolute: v(100 us + 500 s) expected 1.82100 V, tolerance 0.009105 V (0.5% relative, as B3). Bound C = 10 uF equals the B3 deck C, so v0 = 49.5 uC/10 uF = 4.95 V is unchanged and below VR; only tau changes from 100 s (RLK 10 Mohm) to 500 s (sourced IRmin 50 Mohm).",
+   "existing_probe_covers_it": false
+  },
+  "open_items_after": [
+   "DC-bias curve / effective capacitance at operating bias (TDK graphs not archived as numbers)",
+   "ESR/ESL vs frequency",
+   "IR test voltage/time",
+   "Spec default still names a 10 V Murata part; decide whether the entry default changes to the 35 V TDK part"
+  ]
+ },
+ {
+  "entry": "OHM-025",
+  "class": "BEH-CAP-CERAMIC",
+  "verdict": "blocked",
+  "blocker_recorded": "The exact default part voltage rating is not re-established by these general application documents.",
+  "blocker_resolution": "Not closable from archived evidence. The entry's two documents (Murata SimSurfing measurement conditions, Johanson aging note) are general and name no part number; no archived manufacturer page or datasheet in FETCH_LEDGER covers an exact 1206 part (the only exact MLCC part archived is TDK C2012X5R1V106M085AC, an 0805, which must not be transferred across case sizes per the entry conflict). Live lookups of manufacturer product pages (product.tdk.com, murata.com) were refused by the egress proxy and by WebFetch in this run, so not even a resolvable_needs_download candidate could be read. Next step: browser-download one manufacturer product page/datasheet for an exact 1206 part matching the spec default (10 uF, 25 V, X7R) and bind it like OHM-024.",
+  "reference_part": "none bound",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "not applicable while unbound",
+  "runtime_check": {
+   "stimulus": "Locked BEH-CAP-CERAMIC/B3 stimulus unchanged: PWL current pulse into terminal 1 (0 A at 0, 0.5 A from 1 us to 99 us, 0 at 100 us; area 49.5 uC), terminal 2 to return; tran to beyond t0+tau.",
+   "observable": "v(terminal 1) at t = 100 us + tau",
+   "derived_from": "BEH-CAP-CERAMIC/B3 (analytic v0*exp(-1), tau = RLK*C, tolerance 0.5%)",
+   "new_probe_needed_for_class": "No capacitor class has a probe in runtime_benches.py. Add a BEH-CAP-CERAMIC tran case (ic_benches.py already drives PWLExcitation + parse_transient): re-read B3.cir under _locked_probe_deck, assert the PWL pulse text is unchanged, compile the bound recipe with analysis='tran', and compare v(anode) at t0+tau with the B3 relative tolerance. tau is computed from the bound part's sourced capacitance and its sourced minimum insulation resistance (the leak resistor of the recipe). An op variant (rated-voltage leakage V/IRmin) is simpler but only re-checks Ohm's law at a test voltage the TDK page does not state.",
+   "comparison": "When bound: v(t0+tau) = 4.95*(10 uF/C)*exp(-1) V with tau = IRmin*C, absolute tolerance 0.5% relative (B3); for C != 10 uF the B3 pulse charge gives v0 = 49.5 uC/C, which must stay below the bound part's VR (rescale pulse amplitude if not).",
+   "existing_probe_covers_it": false
+  },
+  "open_items_after": [
+   "Exact 1206 part, rated voltage, dielectric, tolerance and IR minimum",
+   "DC-bias curve, ESR/ESL vs frequency (part-specific, unchanged)"
+  ]
+ },
+ {
+  "entry": "OHM-026",
+  "class": "BEH-CAP-CERAMIC",
+  "verdict": "blocked",
+  "blocker_recorded": "The exact default part voltage rating is not re-established by these general application documents.",
+  "blocker_resolution": "Not closable from archived evidence. The entry's two documents (Murata SimSurfing measurement conditions, Johanson aging note) are general and name no part number; no archived manufacturer page or datasheet in FETCH_LEDGER covers an exact 1210 part (the only exact MLCC part archived is TDK C2012X5R1V106M085AC, an 0805, which must not be transferred across case sizes per the entry conflict). Live lookups of manufacturer product pages (product.tdk.com, murata.com) were refused by the egress proxy and by WebFetch in this run, so not even a resolvable_needs_download candidate could be read. Next step: browser-download one manufacturer product page/datasheet for an exact 1210 part matching the spec default (22 uF, 25 V, X7R) and bind it like OHM-024.",
+  "reference_part": "none bound",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "not applicable while unbound",
+  "runtime_check": {
+   "stimulus": "Locked BEH-CAP-CERAMIC/B3 stimulus unchanged: PWL current pulse into terminal 1 (0 A at 0, 0.5 A from 1 us to 99 us, 0 at 100 us; area 49.5 uC), terminal 2 to return; tran to beyond t0+tau.",
+   "observable": "v(terminal 1) at t = 100 us + tau",
+   "derived_from": "BEH-CAP-CERAMIC/B3 (analytic v0*exp(-1), tau = RLK*C, tolerance 0.5%)",
+   "new_probe_needed_for_class": "No capacitor class has a probe in runtime_benches.py. Add a BEH-CAP-CERAMIC tran case (ic_benches.py already drives PWLExcitation + parse_transient): re-read B3.cir under _locked_probe_deck, assert the PWL pulse text is unchanged, compile the bound recipe with analysis='tran', and compare v(anode) at t0+tau with the B3 relative tolerance. tau is computed from the bound part's sourced capacitance and its sourced minimum insulation resistance (the leak resistor of the recipe). An op variant (rated-voltage leakage V/IRmin) is simpler but only re-checks Ohm's law at a test voltage the TDK page does not state.",
+   "comparison": "When bound: v(t0+tau) = 4.95*(10 uF/C)*exp(-1) V with tau = IRmin*C, absolute tolerance 0.5% relative (B3); for C != 10 uF the B3 pulse charge gives v0 = 49.5 uC/C, which must stay below the bound part's VR (rescale pulse amplitude if not).",
+   "existing_probe_covers_it": false
+  },
+  "open_items_after": [
+   "Exact 1210 part, rated voltage, dielectric, tolerance and IR minimum",
+   "DC-bias curve, ESR/ESL vs frequency (part-specific, unchanged)"
+  ]
+ },
+ {
+  "entry": "OHM-027",
+  "class": "BEH-CAP-CERAMIC",
+  "verdict": "blocked",
+  "blocker_recorded": "The exact default part voltage rating is not re-established by these general application documents.",
+  "blocker_resolution": "Not closable from archived evidence. The entry's two documents (Murata SimSurfing measurement conditions, Johanson aging note) are general and name no part number; no archived manufacturer page or datasheet in FETCH_LEDGER covers an exact 1812 part (the only exact MLCC part archived is TDK C2012X5R1V106M085AC, an 0805, which must not be transferred across case sizes per the entry conflict). Live lookups of manufacturer product pages (product.tdk.com, murata.com) were refused by the egress proxy and by WebFetch in this run, so not even a resolvable_needs_download candidate could be read. Next step: browser-download one manufacturer product page/datasheet for an exact 1812 part matching the spec default (1 uF, 100 V, X7R) and bind it like OHM-024.",
+  "reference_part": "none bound",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "not applicable while unbound",
+  "runtime_check": {
+   "stimulus": "Locked BEH-CAP-CERAMIC/B3 stimulus unchanged: PWL current pulse into terminal 1 (0 A at 0, 0.5 A from 1 us to 99 us, 0 at 100 us; area 49.5 uC), terminal 2 to return; tran to beyond t0+tau.",
+   "observable": "v(terminal 1) at t = 100 us + tau",
+   "derived_from": "BEH-CAP-CERAMIC/B3 (analytic v0*exp(-1), tau = RLK*C, tolerance 0.5%)",
+   "new_probe_needed_for_class": "No capacitor class has a probe in runtime_benches.py. Add a BEH-CAP-CERAMIC tran case (ic_benches.py already drives PWLExcitation + parse_transient): re-read B3.cir under _locked_probe_deck, assert the PWL pulse text is unchanged, compile the bound recipe with analysis='tran', and compare v(anode) at t0+tau with the B3 relative tolerance. tau is computed from the bound part's sourced capacitance and its sourced minimum insulation resistance (the leak resistor of the recipe). An op variant (rated-voltage leakage V/IRmin) is simpler but only re-checks Ohm's law at a test voltage the TDK page does not state.",
+   "comparison": "When bound: v(t0+tau) = 4.95*(10 uF/C)*exp(-1) V with tau = IRmin*C, absolute tolerance 0.5% relative (B3); for C != 10 uF the B3 pulse charge gives v0 = 49.5 uC/C, which must stay below the bound part's VR (rescale pulse amplitude if not).",
+   "existing_probe_covers_it": false
+  },
+  "open_items_after": [
+   "Exact 1812 part, rated voltage, dielectric, tolerance and IR minimum",
+   "DC-bias curve, ESR/ESL vs frequency (part-specific, unchanged)"
+  ]
+ },
+ {
+  "entry": "OHM-028",
+  "class": "BEH-CAP-CERAMIC",
+  "verdict": "blocked",
+  "blocker_recorded": "Unbound generic disc voltage and safety class; no mains-use inference is permitted.",
+  "blocker_resolution": "Kept blocked. The only document is the Johanson aging note (Y5V example); no archived disc datasheet names a part, dielectric or voltage. The PKG-DISC_CAP sources (Vishay 561R/562R third-party copy, Vishay VY2 Y2 safety series, Murata DE1 distributor listing) are not archived manufacturer documents for a general-purpose disc and two of them are mains safety families; binding any of them would import a Y-class/mains meaning the blocker explicitly forbids.",
+  "reference_part": "none bound",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "not applicable while unbound",
+  "runtime_check": {
+   "stimulus": "Locked BEH-CAP-CERAMIC/B3 stimulus unchanged: PWL current pulse into terminal 1 (0 A at 0, 0.5 A from 1 us to 99 us, 0 at 100 us; area 49.5 uC), terminal 2 to return; tran to beyond t0+tau.",
+   "observable": "v(terminal 1) at t = 100 us + tau",
+   "derived_from": "BEH-CAP-CERAMIC/B3 (analytic v0*exp(-1), tau = RLK*C, tolerance 0.5%)",
+   "new_probe_needed_for_class": "No capacitor class has a probe in runtime_benches.py. Add a BEH-CAP-CERAMIC tran case (ic_benches.py already drives PWLExcitation + parse_transient): re-read B3.cir under _locked_probe_deck, assert the PWL pulse text is unchanged, compile the bound recipe with analysis='tran', and compare v(anode) at t0+tau with the B3 relative tolerance. tau is computed from the bound part's sourced capacitance and its sourced minimum insulation resistance (the leak resistor of the recipe). An op variant (rated-voltage leakage V/IRmin) is simpler but only re-checks Ohm's law at a test voltage the TDK page does not state.",
+   "comparison": "not computable until a part is bound",
+   "existing_probe_covers_it": false
+  },
+  "open_items_after": [
+   "Exact disc part, dielectric, VR, IR",
+   "Safety class must remain 'none' for this entry"
+  ]
+ },
+ {
+  "entry": "OHM-029",
+  "class": "BEH-CAP-ALEL",
+  "verdict": "blocked",
+  "blocker_recorded": "Rating-critical part voltage and ripple/lifetime limits need an exact series binding.",
+  "blocker_resolution": "Not closable. Archived aluminium documents are the Nichicon application guidelines and Nichicon 'General Description' (aluminum.pdf, 28 pp); both are series-independent and contain no rated-voltage/ripple/life table for any exact part (searched: no part numbers, only series names LQS/LQR/LNC/LNU in passing). No exact series datasheet for the 10x16 radial default (220 uF 25 V) is archived, and manufacturer sites could not be reached in this run.",
+  "reference_part": "none bound",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "not applicable while unbound",
+  "runtime_check": {
+   "stimulus": "Locked BEH-CAP-ALEL/B2 ripple stimulus (1 kHz sine, DC bias via 1 kohm), amplitude rescaled to the bound part's sourced rated ripple current.",
+   "observable": "average ESR power",
+   "derived_from": "BEH-CAP-ALEL/B2 analytic P = Irms^2*ESR (1% tolerance), with Irms and ESR (from the part's sourced tan delta at 120 Hz) of the bound part",
+   "new_probe_needed_for_class": "BEH-CAP-ALEL tran case; cannot be defined until an exact series row (C, VR, tan delta, ripple) is sourced.",
+   "comparison": "not computable until a part is bound",
+   "existing_probe_covers_it": false
+  },
+  "open_items_after": [
+   "Exact series datasheet row: C, VR, tan delta at 120 Hz, ripple current, endurance life, size"
+  ]
+ },
+ {
+  "entry": "OHM-030",
+  "class": "BEH-CAP-ALEL",
+  "verdict": "blocked",
+  "blocker_recorded": "Rating-critical part voltage and ripple/lifetime limits need an exact series binding.",
+  "blocker_resolution": "Not closable. Archived aluminium documents are the Nichicon application guidelines and Nichicon 'General Description' (aluminum.pdf, 28 pp); both are series-independent and contain no rated-voltage/ripple/life table for any exact part (searched: no part numbers, only series names LQS/LQR/LNC/LNU in passing). No exact series datasheet for the 6.3x7.7 SMD can default (47 uF 25 V) is archived, and manufacturer sites could not be reached in this run.",
+  "reference_part": "none bound",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "not applicable while unbound",
+  "runtime_check": {
+   "stimulus": "Locked BEH-CAP-ALEL/B2 ripple stimulus (1 kHz sine, DC bias via 1 kohm), amplitude rescaled to the bound part's sourced rated ripple current.",
+   "observable": "average ESR power",
+   "derived_from": "BEH-CAP-ALEL/B2 analytic P = Irms^2*ESR (1% tolerance), with Irms and ESR (from the part's sourced tan delta at 120 Hz) of the bound part",
+   "new_probe_needed_for_class": "BEH-CAP-ALEL tran case; cannot be defined until an exact series row (C, VR, tan delta, ripple) is sourced.",
+   "comparison": "not computable until a part is bound",
+   "existing_probe_covers_it": false
+  },
+  "open_items_after": [
+   "Exact series datasheet row: C, VR, tan delta at 120 Hz, ripple current, endurance life, size"
+  ]
+ },
+ {
+  "entry": "OHM-031",
+  "class": "BEH-CAP-ALEL",
+  "verdict": "blocked",
+  "blocker_recorded": "Rating-critical part voltage and ripple/lifetime limits need an exact series binding.; Three-pin auxiliary-terminal connectivity unresolved; only the separately mapped two-pin variant may proceed after rating binding.",
+  "blocker_resolution": "Not closable. Same as OHM-029 (no exact series datasheet archived for the 25x40 snap-in default). Additionally the three-pin auxiliary-terminal connectivity cannot be resolved: the Nichicon guideline requires auxiliary terminals isolated from + and -, conflicting with the spec's 'tie extra pin to -'; an exact-part pin diagram is required.",
+  "reference_part": "none bound",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "not applicable while unbound",
+  "runtime_check": {
+   "stimulus": "Locked BEH-CAP-ALEL/B2 ripple stimulus (1 kHz sine, DC bias via 1 kohm), amplitude rescaled to the bound part's sourced rated ripple current.",
+   "observable": "average ESR power",
+   "derived_from": "BEH-CAP-ALEL/B2 analytic P = Irms^2*ESR (1% tolerance), with Irms and ESR (from the part's sourced tan delta at 120 Hz) of the bound part",
+   "new_probe_needed_for_class": "BEH-CAP-ALEL tran case; cannot be defined until an exact series row (C, VR, tan delta, ripple) is sourced.",
+   "comparison": "not computable until a part is bound",
+   "existing_probe_covers_it": false
+  },
+  "open_items_after": [
+   "Exact snap-in series row and ratings",
+   "Three-pin variant pin diagram and auxiliary-terminal function"
+  ]
+ },
+ {
+  "entry": "OHM-032",
+  "class": "BEH-CAP-ALPOLY",
+  "verdict": "blocked",
+  "blocker_recorded": "Rating-critical part voltage and ripple/lifetime limits need an exact series binding.",
+  "blocker_resolution": "Not closable. Only the Nichicon application guideline (10 A rush guideline, no reverse) is archived; no exact conductive-polymer can or radial part with VR, ESR, ripple and life is archived. The Vishay OS-CON reliability note (S15) is not archived and gives no part row.",
+  "reference_part": "none bound",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "not applicable while unbound",
+  "runtime_check": {
+   "stimulus": "Locked BEH-CAP-ALPOLY/B2 step (0 to 5 V in 1 us) through the deck's second source resistance RS = 1 ohm.",
+   "observable": "peak charging current",
+   "derived_from": "BEH-CAP-ALPOLY/B2 ramp-charge formula (2% tolerance) with the bound part's sourced C and ESR; compare also with the sourced 10 A rush guideline",
+   "new_probe_needed_for_class": "BEH-CAP-ALPOLY tran case; undefined until an exact polymer part with sourced ESR is bound.",
+   "comparison": "not computable until a part is bound",
+   "existing_probe_covers_it": false
+  },
+  "open_items_after": [
+   "Exact polymer part (style A SMD can default) VR, ESR at 100 kHz, ripple, life"
+  ]
+ },
+ {
+  "entry": "OHM-033",
+  "class": "BEH-CAP-TANT",
+  "verdict": "resolvable",
+  "blocker_recorded": "Runtime must use the scoped MnO2 reverse/temperature limits instead of the generic fixed 3% envelope.",
+  "blocker_resolution": "The archived T491 datasheet (already the entry's document) gives the case-A 16 V row (p9: 10 uF, DCL 1.6 uA, ESR 3.0 ohm, ripple 158 mA) and the temperature-dependent MnO2 limits (p14 derating 50%/33%/67%, p15 transient reverse 15/5/1%). The recipe replaces the class template's fixed 3% reverse flag with these scoped limits as sourced critical facts (new DERIVED volt-valued fields so they are finite scalars in V), and drops the class flag bits. Note the class/bench 3% envelope is NOT conservative at 125 C, where T491 allows only 1%.",
+  "reference_part": "KEMET T491A106(1)016A(2)",
+  "new_field_updates": [
+   {
+    "field": "transient_reverse_voltage_limit_at_25C",
+    "value": 2.4,
+    "unit": "V",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 15,
+    "scope": "KEMET T491A106(1)016A(2), case A; T491 MnO2; transient only, not continuous",
+    "detail": "p15 'Permissible Transient Reverse Voltage 25°C 15% of Rated Voltage' x rated 16 V (p9)",
+    "archived": true
+   },
+   {
+    "field": "transient_reverse_voltage_limit_at_85C",
+    "value": 0.8,
+    "unit": "V",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 15,
+    "scope": "KEMET T491A106(1)016A(2), case A; T491 MnO2; transient only",
+    "detail": "p15 '85°C 5% of Rated Voltage' x 16 V",
+    "archived": true
+   },
+   {
+    "field": "transient_reverse_voltage_limit_at_125C",
+    "value": 0.16,
+    "unit": "V",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 15,
+    "scope": "KEMET T491A106(1)016A(2), case A; T491 MnO2; transient only",
+    "detail": "p15 '125°C 1% of Rated Voltage' x 16 V",
+    "archived": true
+   },
+   {
+    "field": "recommended_application_voltage_at_or_below_85C",
+    "value": 8.0,
+    "unit": "V",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 14,
+    "scope": "KEMET T491A106(1)016A(2), case A; T491 MnO2; application recommendation -55 to 85 C",
+    "detail": "p14 'Recommended maximum ... 50% of VR' x 16 V",
+    "archived": true
+   },
+   {
+    "field": "recommended_application_voltage_at_125C",
+    "value": 5.28,
+    "unit": "V",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 14,
+    "scope": "KEMET T491A106(1)016A(2), case A; T491 MnO2; application recommendation endpoint",
+    "detail": "p14 '33% of VR' x 16 V",
+    "archived": true
+   },
+   {
+    "field": "maximum_working_voltage_at_125C",
+    "value": 10.72,
+    "unit": "V",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 14,
+    "scope": "KEMET T491A106(1)016A(2), case A; T491 MnO2; working-voltage endpoint, not recommended application voltage",
+    "detail": "p14 '67% of VR' x 16 V",
+    "archived": true
+   },
+   {
+    "field": "leakage_limit_rule",
+    "value": "<= 0.01 CV uA at rated voltage after 5 minutes",
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 2,
+    "scope": "T491 series; 25 C",
+    "detail": "p2 'Leakage Current ≤ 0.01 CV (µA) at rated voltage after 5 minutes'; consistent with the p9 row value 1.6 uA",
+    "archived": true
+   },
+   {
+    "field": "polarity_identification",
+    "value": "positive terminal identified by stripe (some cases beveled edge)",
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 15,
+    "scope": "T491 series",
+    "detail": "p15 'The positive terminal is identified on the capacitor body by a stripe, plus, in some cases a beveled edge.'",
+    "archived": true
+   }
+  ],
+  "recipe": {
+   "entry_id": "OHM-033",
+   "behavior_id": "BEH-CAP-TANT",
+   "package": "EIA 3216-18 (KEMET case A) molded tantalum",
+   "reference_part": "KEMET T491A106(1)016A(2), 10%/20% tolerance (1) and termination (2) options unselected; MnO2",
+   "terminal_roles": {
+    "1": "A",
+    "2": "K"
+   },
+   "critical_facts": {
+    "value": {
+     "field": "nominal_capacitance",
+     "unit": "uF",
+     "output_unit": "F"
+    },
+    "vr": {
+     "field": "rated_voltage",
+     "unit": "V"
+    },
+    "ileak": {
+     "field": "maximum_leakage_current",
+     "unit": "uA",
+     "output_unit": "A"
+    },
+    "esr_max": {
+     "field": "maximum_esr",
+     "unit": "ohm"
+    },
+    "irip_max": {
+     "field": "maximum_ripple_current",
+     "unit": "mA",
+     "output_unit": "A"
+    },
+    "pd_max": {
+     "field": "maximum_power_dissipation",
+     "unit": "mW",
+     "output_unit": "W"
+    },
+    "vapp_85": {
+     "field": "recommended_application_voltage_at_or_below_85C",
+     "unit": "V"
+    },
+    "vrev_25": {
+     "field": "transient_reverse_voltage_limit_at_25C",
+     "unit": "V"
+    },
+    "vrev_85": {
+     "field": "transient_reverse_voltage_limit_at_85C",
+     "unit": "V"
+    },
+    "vrev_125": {
+     "field": "transient_reverse_voltage_limit_at_125C",
+     "unit": "V"
+    }
+   },
+   "derived_parameters": {
+    "rleak": {
+     "expression": "vr/ileak",
+     "unit": "ohm",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source": {
+      "document": "COMPONENT_BEHAVIOR_SPEC.md",
+      "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+      "line": 1621
+     },
+     "detail": "Leak resistor reproducing the sourced maximum DCL at its sourced test voltage (rated voltage, 25 C, 5 min); same mapping as the class RLK rule but using the part's 0.01CV limit instead of the T543 0.1 factor."
+    }
+   },
+   "class_parameters": {},
+   "quoted_parameters": {},
+   "template_override": "C{ref} {A} {K} {value}\nR{ref}_lk {A} {K} {rleak}\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 1615
+   },
+   "template_provenance_note": "Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr/Lesl dropped: 100 kHz ESR is a maximum, not a fitted nominal, and ESL is unsourced.",
+   "inline_assets": [],
+   "supported_analyses": [
+    "op"
+   ],
+   "limitations": [
+    "Order-code tolerance and termination options are unselected; electrical row values are identical across those options in the T491 table.",
+    "DC leakage at the sourced maximum (worst case); no ESR, ESL, impedance, capacitance-vs-temperature or ignition dynamics.",
+    "Reverse voltage is only ever transient: 2.4/0.8/0.16 V at 25/85/125 C; continuous reverse is not permitted. The class fixed 3% envelope is not used.",
+    "Recommended application voltage 8 V at <= 85 C, derating to 33% of VR at 125 C; ripple and power limits are rating facts, not netlist behaviour.",
+    "Stripe marks the ANODE (opposite of aluminium/supercap convention); footprint polarity must be checked."
+   ]
+  },
+  "pin_map_evidence": "T491 p15: 'The positive terminal is identified on the capacitor body by a stripe'; p4 dimension drawing labels 'ANODE (+) END VIEW' and 'CATHODE (-) END VIEW' for case A (3216-18). OHMNI 3D spec places the stripe/bevel at -X on terminal 1, so terminal 1 -> A (anode), terminal 2 -> K (cathode).",
+  "runtime_check": {
+   "stimulus": "DC supply equal to the sourced rated voltage on the anode role, cathode to return (KEMET T491 DCL test condition: rated voltage, 25 C, 5 minutes, p2).",
+   "observable": "supply_current (A)",
+   "derived_from": "BEH-CAP-TANT/B1 (authored leakage law I = V/RLK, relative tolerance 0.05/50 = 0.1%), evaluated at the bound part's sourced DCL limit instead of the class 0.1*C*V example",
+   "new_probe_needed_for_class": "Add a BEH-CAP-TANT branch to dc_probe_definition: _locked_probe_deck('BEH-CAP-TANT/B1'), assert the 'Vs in 0 5' stimulus line is unchanged, roles {'A':'supply','K':'return'}, supplies {'supply': values['vr']}, comparison absolute expected=values['ileak'], tolerance=expected*0.001, observable supply_current, source_fact=evidence['ileak'].",
+   "comparison": "absolute: supply current expected 1.6 uA (1.600e-06 A), tolerance 0.0016 uA (0.1% relative, B1) at 16 V supply; the class default RLK would give 0.1*10*16 = 16 uA, 10x the sourced maximum.",
+   "existing_probe_covers_it": false
+  },
+  "open_items_after": [
+   "Tolerance/termination option letters for a completed orderable code",
+   "ESL, impedance fit, ESR vs frequency/temperature",
+   "Surge/ignition behaviour",
+   "Power-dissipation temperature multipliers beyond 25 C"
+  ]
+ },
+ {
+  "entry": "OHM-034",
+  "class": "BEH-CAP-TANT",
+  "verdict": "resolvable",
+  "blocker_recorded": "Runtime must use the scoped MnO2 reverse/temperature limits instead of the generic fixed 3% envelope.",
+  "blocker_resolution": "The archived T491 datasheet (already the entry's document) gives the case-B 16 V row (p9: 22 uF, DCL 3.5 uA, ESR 2.2 ohm, ripple 197 mA) and the temperature-dependent MnO2 limits (p14 derating 50%/33%/67%, p15 transient reverse 15/5/1%). The recipe replaces the class template's fixed 3% reverse flag with these scoped limits as sourced critical facts (new DERIVED volt-valued fields so they are finite scalars in V), and drops the class flag bits. Note the class/bench 3% envelope is NOT conservative at 125 C, where T491 allows only 1%.",
+  "reference_part": "KEMET T491B226(1)016A(2)",
+  "new_field_updates": [
+   {
+    "field": "transient_reverse_voltage_limit_at_25C",
+    "value": 2.4,
+    "unit": "V",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 15,
+    "scope": "KEMET T491B226(1)016A(2), case B; T491 MnO2; transient only, not continuous",
+    "detail": "p15 'Permissible Transient Reverse Voltage 25°C 15% of Rated Voltage' x rated 16 V (p9)",
+    "archived": true
+   },
+   {
+    "field": "transient_reverse_voltage_limit_at_85C",
+    "value": 0.8,
+    "unit": "V",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 15,
+    "scope": "KEMET T491B226(1)016A(2), case B; T491 MnO2; transient only",
+    "detail": "p15 '85°C 5% of Rated Voltage' x 16 V",
+    "archived": true
+   },
+   {
+    "field": "transient_reverse_voltage_limit_at_125C",
+    "value": 0.16,
+    "unit": "V",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 15,
+    "scope": "KEMET T491B226(1)016A(2), case B; T491 MnO2; transient only",
+    "detail": "p15 '125°C 1% of Rated Voltage' x 16 V",
+    "archived": true
+   },
+   {
+    "field": "recommended_application_voltage_at_or_below_85C",
+    "value": 8.0,
+    "unit": "V",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 14,
+    "scope": "KEMET T491B226(1)016A(2), case B; T491 MnO2; application recommendation -55 to 85 C",
+    "detail": "p14 'Recommended maximum ... 50% of VR' x 16 V",
+    "archived": true
+   },
+   {
+    "field": "recommended_application_voltage_at_125C",
+    "value": 5.28,
+    "unit": "V",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 14,
+    "scope": "KEMET T491B226(1)016A(2), case B; T491 MnO2; application recommendation endpoint",
+    "detail": "p14 '33% of VR' x 16 V",
+    "archived": true
+   },
+   {
+    "field": "maximum_working_voltage_at_125C",
+    "value": 10.72,
+    "unit": "V",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 14,
+    "scope": "KEMET T491B226(1)016A(2), case B; T491 MnO2; working-voltage endpoint, not recommended application voltage",
+    "detail": "p14 '67% of VR' x 16 V",
+    "archived": true
+   },
+   {
+    "field": "leakage_limit_rule",
+    "value": "<= 0.01 CV uA at rated voltage after 5 minutes",
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 2,
+    "scope": "T491 series; 25 C",
+    "detail": "p2 'Leakage Current ≤ 0.01 CV (µA) at rated voltage after 5 minutes'; consistent with the p9 row value 3.5 uA",
+    "archived": true
+   },
+   {
+    "field": "polarity_identification",
+    "value": "positive terminal identified by stripe (some cases beveled edge)",
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 15,
+    "scope": "T491 series",
+    "detail": "p15 'The positive terminal is identified on the capacitor body by a stripe, plus, in some cases a beveled edge.'",
+    "archived": true
+   }
+  ],
+  "recipe": {
+   "entry_id": "OHM-034",
+   "behavior_id": "BEH-CAP-TANT",
+   "package": "EIA 3528-21 (KEMET case B) molded tantalum",
+   "reference_part": "KEMET T491B226(1)016A(2), 10%/20% tolerance (1) and termination (2) options unselected; MnO2",
+   "terminal_roles": {
+    "1": "A",
+    "2": "K"
+   },
+   "critical_facts": {
+    "value": {
+     "field": "nominal_capacitance",
+     "unit": "uF",
+     "output_unit": "F"
+    },
+    "vr": {
+     "field": "rated_voltage",
+     "unit": "V"
+    },
+    "ileak": {
+     "field": "maximum_leakage_current",
+     "unit": "uA",
+     "output_unit": "A"
+    },
+    "esr_max": {
+     "field": "maximum_esr",
+     "unit": "ohm"
+    },
+    "irip_max": {
+     "field": "maximum_ripple_current",
+     "unit": "mA",
+     "output_unit": "A"
+    },
+    "pd_max": {
+     "field": "maximum_power_dissipation",
+     "unit": "mW",
+     "output_unit": "W"
+    },
+    "vapp_85": {
+     "field": "recommended_application_voltage_at_or_below_85C",
+     "unit": "V"
+    },
+    "vrev_25": {
+     "field": "transient_reverse_voltage_limit_at_25C",
+     "unit": "V"
+    },
+    "vrev_85": {
+     "field": "transient_reverse_voltage_limit_at_85C",
+     "unit": "V"
+    },
+    "vrev_125": {
+     "field": "transient_reverse_voltage_limit_at_125C",
+     "unit": "V"
+    }
+   },
+   "derived_parameters": {
+    "rleak": {
+     "expression": "vr/ileak",
+     "unit": "ohm",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source": {
+      "document": "COMPONENT_BEHAVIOR_SPEC.md",
+      "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+      "line": 1621
+     },
+     "detail": "Leak resistor reproducing the sourced maximum DCL at its sourced test voltage (rated voltage, 25 C, 5 min); same mapping as the class RLK rule but using the part's 0.01CV limit instead of the T543 0.1 factor."
+    }
+   },
+   "class_parameters": {},
+   "quoted_parameters": {},
+   "template_override": "C{ref} {A} {K} {value}\nR{ref}_lk {A} {K} {rleak}\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 1615
+   },
+   "template_provenance_note": "Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr/Lesl dropped: 100 kHz ESR is a maximum, not a fitted nominal, and ESL is unsourced.",
+   "inline_assets": [],
+   "supported_analyses": [
+    "op"
+   ],
+   "limitations": [
+    "Order-code tolerance and termination options are unselected; electrical row values are identical across those options in the T491 table.",
+    "DC leakage at the sourced maximum (worst case); no ESR, ESL, impedance, capacitance-vs-temperature or ignition dynamics.",
+    "Reverse voltage is only ever transient: 2.4/0.8/0.16 V at 25/85/125 C; continuous reverse is not permitted. The class fixed 3% envelope is not used.",
+    "Recommended application voltage 8 V at <= 85 C, derating to 33% of VR at 125 C; ripple and power limits are rating facts, not netlist behaviour.",
+    "Stripe marks the ANODE (opposite of aluminium/supercap convention); footprint polarity must be checked."
+   ]
+  },
+  "pin_map_evidence": "T491 p15: 'The positive terminal is identified on the capacitor body by a stripe'; p4 dimension drawing labels 'ANODE (+) END VIEW' and 'CATHODE (-) END VIEW' for case B (3528-21). OHMNI 3D spec places the stripe/bevel at -X on terminal 1, so terminal 1 -> A (anode), terminal 2 -> K (cathode).",
+  "runtime_check": {
+   "stimulus": "DC supply equal to the sourced rated voltage on the anode role, cathode to return (KEMET T491 DCL test condition: rated voltage, 25 C, 5 minutes, p2).",
+   "observable": "supply_current (A)",
+   "derived_from": "BEH-CAP-TANT/B1 (authored leakage law I = V/RLK, relative tolerance 0.05/50 = 0.1%), evaluated at the bound part's sourced DCL limit instead of the class 0.1*C*V example",
+   "new_probe_needed_for_class": "Add a BEH-CAP-TANT branch to dc_probe_definition: _locked_probe_deck('BEH-CAP-TANT/B1'), assert the 'Vs in 0 5' stimulus line is unchanged, roles {'A':'supply','K':'return'}, supplies {'supply': values['vr']}, comparison absolute expected=values['ileak'], tolerance=expected*0.001, observable supply_current, source_fact=evidence['ileak'].",
+   "comparison": "absolute: supply current expected 3.5 uA (3.500e-06 A), tolerance 0.0035 uA (0.1% relative, B1) at 16 V supply; the class default RLK would give 0.1*22*16 = 35.2 uA, 10x the sourced maximum.",
+   "existing_probe_covers_it": false
+  },
+  "open_items_after": [
+   "Tolerance/termination option letters for a completed orderable code",
+   "ESL, impedance fit, ESR vs frequency/temperature",
+   "Surge/ignition behaviour",
+   "Power-dissipation temperature multipliers beyond 25 C"
+  ]
+ },
+ {
+  "entry": "OHM-035",
+  "class": "BEH-CAP-TANT",
+  "verdict": "resolvable",
+  "blocker_recorded": "Runtime must use the scoped MnO2 reverse/temperature limits instead of the generic fixed 3% envelope.",
+  "blocker_resolution": "The archived T491 datasheet (already the entry's document) gives the case-C 16 V row (p10: 47 uF, DCL 7.5 uA, ESR 1.0 ohm, ripple 332 mA) and the temperature-dependent MnO2 limits (p14 derating 50%/33%/67%, p15 transient reverse 15/5/1%). The recipe replaces the class template's fixed 3% reverse flag with these scoped limits as sourced critical facts (new DERIVED volt-valued fields so they are finite scalars in V), and drops the class flag bits. Note the class/bench 3% envelope is NOT conservative at 125 C, where T491 allows only 1%.",
+  "reference_part": "KEMET T491C476(1)016A(2)",
+  "new_field_updates": [
+   {
+    "field": "transient_reverse_voltage_limit_at_25C",
+    "value": 2.4,
+    "unit": "V",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 15,
+    "scope": "KEMET T491C476(1)016A(2), case C; T491 MnO2; transient only, not continuous",
+    "detail": "p15 'Permissible Transient Reverse Voltage 25°C 15% of Rated Voltage' x rated 16 V (p10)",
+    "archived": true
+   },
+   {
+    "field": "transient_reverse_voltage_limit_at_85C",
+    "value": 0.8,
+    "unit": "V",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 15,
+    "scope": "KEMET T491C476(1)016A(2), case C; T491 MnO2; transient only",
+    "detail": "p15 '85°C 5% of Rated Voltage' x 16 V",
+    "archived": true
+   },
+   {
+    "field": "transient_reverse_voltage_limit_at_125C",
+    "value": 0.16,
+    "unit": "V",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 15,
+    "scope": "KEMET T491C476(1)016A(2), case C; T491 MnO2; transient only",
+    "detail": "p15 '125°C 1% of Rated Voltage' x 16 V",
+    "archived": true
+   },
+   {
+    "field": "recommended_application_voltage_at_or_below_85C",
+    "value": 8.0,
+    "unit": "V",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 14,
+    "scope": "KEMET T491C476(1)016A(2), case C; T491 MnO2; application recommendation -55 to 85 C",
+    "detail": "p14 'Recommended maximum ... 50% of VR' x 16 V",
+    "archived": true
+   },
+   {
+    "field": "recommended_application_voltage_at_125C",
+    "value": 5.28,
+    "unit": "V",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 14,
+    "scope": "KEMET T491C476(1)016A(2), case C; T491 MnO2; application recommendation endpoint",
+    "detail": "p14 '33% of VR' x 16 V",
+    "archived": true
+   },
+   {
+    "field": "maximum_working_voltage_at_125C",
+    "value": 10.72,
+    "unit": "V",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 14,
+    "scope": "KEMET T491C476(1)016A(2), case C; T491 MnO2; working-voltage endpoint, not recommended application voltage",
+    "detail": "p14 '67% of VR' x 16 V",
+    "archived": true
+   },
+   {
+    "field": "leakage_limit_rule",
+    "value": "<= 0.01 CV uA at rated voltage after 5 minutes",
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 2,
+    "scope": "T491 series; 25 C",
+    "detail": "p2 'Leakage Current ≤ 0.01 CV (µA) at rated voltage after 5 minutes'; consistent with the p10 row value 7.5 uA",
+    "archived": true
+   },
+   {
+    "field": "polarity_identification",
+    "value": "positive terminal identified by stripe (some cases beveled edge)",
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 15,
+    "scope": "T491 series",
+    "detail": "p15 'The positive terminal is identified on the capacitor body by a stripe, plus, in some cases a beveled edge.'",
+    "archived": true
+   }
+  ],
+  "recipe": {
+   "entry_id": "OHM-035",
+   "behavior_id": "BEH-CAP-TANT",
+   "package": "EIA 6032-28 (KEMET case C) molded tantalum",
+   "reference_part": "KEMET T491C476(1)016A(2), 10%/20% tolerance (1) and termination (2) options unselected; MnO2",
+   "terminal_roles": {
+    "1": "A",
+    "2": "K"
+   },
+   "critical_facts": {
+    "value": {
+     "field": "nominal_capacitance",
+     "unit": "uF",
+     "output_unit": "F"
+    },
+    "vr": {
+     "field": "rated_voltage",
+     "unit": "V"
+    },
+    "ileak": {
+     "field": "maximum_leakage_current",
+     "unit": "uA",
+     "output_unit": "A"
+    },
+    "esr_max": {
+     "field": "maximum_esr",
+     "unit": "ohm"
+    },
+    "irip_max": {
+     "field": "maximum_ripple_current",
+     "unit": "mA",
+     "output_unit": "A"
+    },
+    "pd_max": {
+     "field": "maximum_power_dissipation",
+     "unit": "mW",
+     "output_unit": "W"
+    },
+    "vapp_85": {
+     "field": "recommended_application_voltage_at_or_below_85C",
+     "unit": "V"
+    },
+    "vrev_25": {
+     "field": "transient_reverse_voltage_limit_at_25C",
+     "unit": "V"
+    },
+    "vrev_85": {
+     "field": "transient_reverse_voltage_limit_at_85C",
+     "unit": "V"
+    },
+    "vrev_125": {
+     "field": "transient_reverse_voltage_limit_at_125C",
+     "unit": "V"
+    }
+   },
+   "derived_parameters": {
+    "rleak": {
+     "expression": "vr/ileak",
+     "unit": "ohm",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source": {
+      "document": "COMPONENT_BEHAVIOR_SPEC.md",
+      "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+      "line": 1621
+     },
+     "detail": "Leak resistor reproducing the sourced maximum DCL at its sourced test voltage (rated voltage, 25 C, 5 min); same mapping as the class RLK rule but using the part's 0.01CV limit instead of the T543 0.1 factor."
+    }
+   },
+   "class_parameters": {},
+   "quoted_parameters": {},
+   "template_override": "C{ref} {A} {K} {value}\nR{ref}_lk {A} {K} {rleak}\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 1615
+   },
+   "template_provenance_note": "Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr/Lesl dropped: 100 kHz ESR is a maximum, not a fitted nominal, and ESL is unsourced.",
+   "inline_assets": [],
+   "supported_analyses": [
+    "op"
+   ],
+   "limitations": [
+    "Order-code tolerance and termination options are unselected; electrical row values are identical across those options in the T491 table.",
+    "DC leakage at the sourced maximum (worst case); no ESR, ESL, impedance, capacitance-vs-temperature or ignition dynamics.",
+    "Reverse voltage is only ever transient: 2.4/0.8/0.16 V at 25/85/125 C; continuous reverse is not permitted. The class fixed 3% envelope is not used.",
+    "Recommended application voltage 8 V at <= 85 C, derating to 33% of VR at 125 C; ripple and power limits are rating facts, not netlist behaviour.",
+    "Stripe marks the ANODE (opposite of aluminium/supercap convention); footprint polarity must be checked."
+   ]
+  },
+  "pin_map_evidence": "T491 p15: 'The positive terminal is identified on the capacitor body by a stripe'; p4 dimension drawing labels 'ANODE (+) END VIEW' and 'CATHODE (-) END VIEW' for case C (6032-28). OHMNI 3D spec places the stripe/bevel at -X on terminal 1, so terminal 1 -> A (anode), terminal 2 -> K (cathode).",
+  "runtime_check": {
+   "stimulus": "DC supply equal to the sourced rated voltage on the anode role, cathode to return (KEMET T491 DCL test condition: rated voltage, 25 C, 5 minutes, p2).",
+   "observable": "supply_current (A)",
+   "derived_from": "BEH-CAP-TANT/B1 (authored leakage law I = V/RLK, relative tolerance 0.05/50 = 0.1%), evaluated at the bound part's sourced DCL limit instead of the class 0.1*C*V example",
+   "new_probe_needed_for_class": "Add a BEH-CAP-TANT branch to dc_probe_definition: _locked_probe_deck('BEH-CAP-TANT/B1'), assert the 'Vs in 0 5' stimulus line is unchanged, roles {'A':'supply','K':'return'}, supplies {'supply': values['vr']}, comparison absolute expected=values['ileak'], tolerance=expected*0.001, observable supply_current, source_fact=evidence['ileak'].",
+   "comparison": "absolute: supply current expected 7.5 uA (7.500e-06 A), tolerance 0.0075 uA (0.1% relative, B1) at 16 V supply; the class default RLK would give 0.1*47*16 = 75.2 uA, 10x the sourced maximum.",
+   "existing_probe_covers_it": false
+  },
+  "open_items_after": [
+   "Tolerance/termination option letters for a completed orderable code",
+   "ESL, impedance fit, ESR vs frequency/temperature",
+   "Surge/ignition behaviour",
+   "Power-dissipation temperature multipliers beyond 25 C"
+  ]
+ },
+ {
+  "entry": "OHM-036",
+  "class": "BEH-CAP-TANT",
+  "verdict": "resolvable",
+  "blocker_recorded": "Runtime must use the scoped MnO2 reverse/temperature limits instead of the generic fixed 3% envelope.",
+  "blocker_resolution": "The archived T491 datasheet (already the entry's document) gives the case-D 16 V row (p10: 100 uF, DCL 16.0 uA, ESR 0.7 ohm, ripple 463 mA) and the temperature-dependent MnO2 limits (p14 derating 50%/33%/67%, p15 transient reverse 15/5/1%). The recipe replaces the class template's fixed 3% reverse flag with these scoped limits as sourced critical facts (new DERIVED volt-valued fields so they are finite scalars in V), and drops the class flag bits. Note the class/bench 3% envelope is NOT conservative at 125 C, where T491 allows only 1%.",
+  "reference_part": "KEMET T491D107(1)016A(2)",
+  "new_field_updates": [
+   {
+    "field": "transient_reverse_voltage_limit_at_25C",
+    "value": 2.4,
+    "unit": "V",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 15,
+    "scope": "KEMET T491D107(1)016A(2), case D; T491 MnO2; transient only, not continuous",
+    "detail": "p15 'Permissible Transient Reverse Voltage 25°C 15% of Rated Voltage' x rated 16 V (p10)",
+    "archived": true
+   },
+   {
+    "field": "transient_reverse_voltage_limit_at_85C",
+    "value": 0.8,
+    "unit": "V",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 15,
+    "scope": "KEMET T491D107(1)016A(2), case D; T491 MnO2; transient only",
+    "detail": "p15 '85°C 5% of Rated Voltage' x 16 V",
+    "archived": true
+   },
+   {
+    "field": "transient_reverse_voltage_limit_at_125C",
+    "value": 0.16,
+    "unit": "V",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 15,
+    "scope": "KEMET T491D107(1)016A(2), case D; T491 MnO2; transient only",
+    "detail": "p15 '125°C 1% of Rated Voltage' x 16 V",
+    "archived": true
+   },
+   {
+    "field": "recommended_application_voltage_at_or_below_85C",
+    "value": 8.0,
+    "unit": "V",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 14,
+    "scope": "KEMET T491D107(1)016A(2), case D; T491 MnO2; application recommendation -55 to 85 C",
+    "detail": "p14 'Recommended maximum ... 50% of VR' x 16 V",
+    "archived": true
+   },
+   {
+    "field": "recommended_application_voltage_at_125C",
+    "value": 5.28,
+    "unit": "V",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 14,
+    "scope": "KEMET T491D107(1)016A(2), case D; T491 MnO2; application recommendation endpoint",
+    "detail": "p14 '33% of VR' x 16 V",
+    "archived": true
+   },
+   {
+    "field": "maximum_working_voltage_at_125C",
+    "value": 10.72,
+    "unit": "V",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 14,
+    "scope": "KEMET T491D107(1)016A(2), case D; T491 MnO2; working-voltage endpoint, not recommended application voltage",
+    "detail": "p14 '67% of VR' x 16 V",
+    "archived": true
+   },
+   {
+    "field": "leakage_limit_rule",
+    "value": "<= 0.01 CV uA at rated voltage after 5 minutes",
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 2,
+    "scope": "T491 series; 25 C",
+    "detail": "p2 'Leakage Current ≤ 0.01 CV (µA) at rated voltage after 5 minutes'; consistent with the p10 row value 16.0 uA",
+    "archived": true
+   },
+   {
+    "field": "polarity_identification",
+    "value": "positive terminal identified by stripe (some cases beveled edge)",
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+    ],
+    "page": 15,
+    "scope": "T491 series",
+    "detail": "p15 'The positive terminal is identified on the capacitor body by a stripe, plus, in some cases a beveled edge.'",
+    "archived": true
+   }
+  ],
+  "recipe": {
+   "entry_id": "OHM-036",
+   "behavior_id": "BEH-CAP-TANT",
+   "package": "EIA 7343-31 (KEMET case D) molded tantalum",
+   "reference_part": "KEMET T491D107(1)016A(2), 10%/20% tolerance (1) and termination (2) options unselected; MnO2",
+   "terminal_roles": {
+    "1": "A",
+    "2": "K"
+   },
+   "critical_facts": {
+    "value": {
+     "field": "nominal_capacitance",
+     "unit": "uF",
+     "output_unit": "F"
+    },
+    "vr": {
+     "field": "rated_voltage",
+     "unit": "V"
+    },
+    "ileak": {
+     "field": "maximum_leakage_current",
+     "unit": "uA",
+     "output_unit": "A"
+    },
+    "esr_max": {
+     "field": "maximum_esr",
+     "unit": "ohm"
+    },
+    "irip_max": {
+     "field": "maximum_ripple_current",
+     "unit": "mA",
+     "output_unit": "A"
+    },
+    "pd_max": {
+     "field": "maximum_power_dissipation",
+     "unit": "mW",
+     "output_unit": "W"
+    },
+    "vapp_85": {
+     "field": "recommended_application_voltage_at_or_below_85C",
+     "unit": "V"
+    },
+    "vrev_25": {
+     "field": "transient_reverse_voltage_limit_at_25C",
+     "unit": "V"
+    },
+    "vrev_85": {
+     "field": "transient_reverse_voltage_limit_at_85C",
+     "unit": "V"
+    },
+    "vrev_125": {
+     "field": "transient_reverse_voltage_limit_at_125C",
+     "unit": "V"
+    }
+   },
+   "derived_parameters": {
+    "rleak": {
+     "expression": "vr/ileak",
+     "unit": "ohm",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source": {
+      "document": "COMPONENT_BEHAVIOR_SPEC.md",
+      "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+      "line": 1621
+     },
+     "detail": "Leak resistor reproducing the sourced maximum DCL at its sourced test voltage (rated voltage, 25 C, 5 min); same mapping as the class RLK rule but using the part's 0.01CV limit instead of the T543 0.1 factor."
+    }
+   },
+   "class_parameters": {},
+   "quoted_parameters": {},
+   "template_override": "C{ref} {A} {K} {value}\nR{ref}_lk {A} {K} {rleak}\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 1615
+   },
+   "template_provenance_note": "Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr/Lesl dropped: 100 kHz ESR is a maximum, not a fitted nominal, and ESL is unsourced.",
+   "inline_assets": [],
+   "supported_analyses": [
+    "op"
+   ],
+   "limitations": [
+    "Order-code tolerance and termination options are unselected; electrical row values are identical across those options in the T491 table.",
+    "DC leakage at the sourced maximum (worst case); no ESR, ESL, impedance, capacitance-vs-temperature or ignition dynamics.",
+    "Reverse voltage is only ever transient: 2.4/0.8/0.16 V at 25/85/125 C; continuous reverse is not permitted. The class fixed 3% envelope is not used.",
+    "Recommended application voltage 8 V at <= 85 C, derating to 33% of VR at 125 C; ripple and power limits are rating facts, not netlist behaviour.",
+    "Stripe marks the ANODE (opposite of aluminium/supercap convention); footprint polarity must be checked."
+   ]
+  },
+  "pin_map_evidence": "T491 p15: 'The positive terminal is identified on the capacitor body by a stripe'; p4 dimension drawing labels 'ANODE (+) END VIEW' and 'CATHODE (-) END VIEW' for case D (7343-31). OHMNI 3D spec places the stripe/bevel at -X on terminal 1, so terminal 1 -> A (anode), terminal 2 -> K (cathode).",
+  "runtime_check": {
+   "stimulus": "DC supply equal to the sourced rated voltage on the anode role, cathode to return (KEMET T491 DCL test condition: rated voltage, 25 C, 5 minutes, p2).",
+   "observable": "supply_current (A)",
+   "derived_from": "BEH-CAP-TANT/B1 (authored leakage law I = V/RLK, relative tolerance 0.05/50 = 0.1%), evaluated at the bound part's sourced DCL limit instead of the class 0.1*C*V example",
+   "new_probe_needed_for_class": "Add a BEH-CAP-TANT branch to dc_probe_definition: _locked_probe_deck('BEH-CAP-TANT/B1'), assert the 'Vs in 0 5' stimulus line is unchanged, roles {'A':'supply','K':'return'}, supplies {'supply': values['vr']}, comparison absolute expected=values['ileak'], tolerance=expected*0.001, observable supply_current, source_fact=evidence['ileak'].",
+   "comparison": "absolute: supply current expected 16 uA (1.600e-05 A), tolerance 0.016 uA (0.1% relative, B1) at 16 V supply; the class default RLK would give 0.1*100*16 = 160 uA, 10x the sourced maximum.",
+   "existing_probe_covers_it": false
+  },
+  "open_items_after": [
+   "Tolerance/termination option letters for a completed orderable code",
+   "ESL, impedance fit, ESR vs frequency/temperature",
+   "Surge/ignition behaviour",
+   "Power-dissipation temperature multipliers beyond 25 C"
+  ]
+ },
+ {
+  "entry": "OHM-037",
+  "class": "BEH-CAP-FILM",
+  "verdict": "blocked",
+  "blocker_recorded": "The generic 10 mm default remains unbound to an exact rated part.",
+  "blocker_resolution": "Not closable for the entry as defined. The entry's document WIMA MKS 2 is a PCM 5 mm-only series (p1 'Metallized Polyester (PET) Capacitors in PCM 5 mm'); its 0.1 uF/100 VDC row MKS2D031001A00____ (p2) is sourced but cannot bind the 10 mm-pitch default without changing the package. The archived WIMA MKP-X2 sheet does list 0.1 uF at PCM 10 (MKX2AW31003H00/I00/L00, p3), but those are X2 mains RFI parts rated 305 VAC; binding a safety part as the generic film box would silently carry an X2 identity into OHM-037 (and none of the three bodies matches the 3D default W5 x H11). Options for the owner: (a) re-scope OHM-037's package to PCM 5 mm and bind MKS2D031001A00 (VR 100 VDC, DF <= 8e-3 at 1 kHz, IR >= 1.5e4 Mohm at 100 V/1 min, all p1-p2), or (b) archive a PCM 10 general-purpose film datasheet.",
+  "reference_part": "none (candidate WIMA MKS2D031001A00____ requires a PCM 5 re-scope)",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "not applicable while unbound",
+  "runtime_check": {
+   "stimulus": "DC supply at the sourced insulation-resistance measuring voltage (WIMA: 100 V, 1 min, +20 C) across the two leads.",
+   "observable": "supply_current",
+   "derived_from": "No locked film bench is DC (B1 tan delta and B2 SRF are AC, B3 is a mains-peak flag); this uses a sourced test condition: compare to interval [0, 100 V / IR_min].",
+   "new_probe_needed_for_class": "BEH-CAP-FILM op branch with a supply role; only meaningful once an exact part at the entry's pitch is bound.",
+   "comparison": "When bound to MKS2D031001A00 (only if re-scoped to PCM 5): interval [0, 100 V / 1.5e10 ohm = 6.67 nA] at a 100 V supply (sourced IR test condition, p1).",
+   "existing_probe_covers_it": false
+  },
+  "open_items_after": [
+   "Exact 10 mm-pitch general-purpose film part",
+   "ESL, ripple and dV/dt"
+  ]
+ },
+ {
+  "entry": "OHM-038",
+  "class": "BEH-CAP-FILM",
+  "verdict": "blocked",
+  "blocker_recorded": "Unbound mains safety part; no claim of safe mains operation.",
+  "blocker_resolution": "Kept blocked by design. The archived WIMA MKP-X2 rev 03.26 sheet does list exact 0.1 uF PCM 15 rows (MKX2AW31004B00____ 5x11x18 and MKX2AW31004C00____ 6x12.5x18, p3; 305 VAC, IR 1.5e4 Mohm at 100 V/1 min, p1), so an electrical binding is possible, but: (1) two bodies exist at PCM 15 and neither matches the OHMNI 3D default W8 x H14, so the exact part is not physically determined; (2) the entry is a mains safety part and the blocker forbids any claim of safe mains operation, which no class probe or recipe can discharge; (3) the class still carries the 275 VAC rating while the archived revision rates 305 VAC (with a footnote that DC operation above the AC rating voids approvals). Recommend the owner keep the disposition non-simulable for mains use; if a non-mains electrical binding is wanted, pick B00 or C00 explicitly and use the IR probe below.",
+  "reference_part": "none (candidates WIMA MKX2AW31004B00____ / MKX2AW31004C00____)",
+  "new_field_updates": [],
+  "recipe": null,
+  "pin_map_evidence": "not applicable while unbound",
+  "runtime_check": {
+   "stimulus": "DC supply at the sourced insulation-resistance measuring voltage (WIMA: 100 V, 1 min, +20 C) across the two leads.",
+   "observable": "supply_current",
+   "derived_from": "No locked film bench is DC (B1 tan delta and B2 SRF are AC, B3 is a mains-peak flag); this uses a sourced test condition: compare to interval [0, 100 V / IR_min].",
+   "new_probe_needed_for_class": "BEH-CAP-FILM op branch with a supply role; only meaningful once an exact part at the entry's pitch is bound.",
+   "comparison": "If bound (non-mains electrical only): interval [0, 100 V / 1.5e10 ohm = 6.67 nA] at a 100 V supply.",
+   "existing_probe_covers_it": false
+  },
+  "open_items_after": [
+   "Choice between MKX2AW31004B00 and C00 bodies",
+   "Mains safety application/clearance/discharge design (never from the model)",
+   "275 vs 305 VAC class rating conflict"
+  ]
+ },
+ {
+  "entry": "OHM-039",
+  "class": "BEH-CAP-MICA",
+  "verdict": "resolvable",
+  "blocker_recorded": "Do not use an unsourced Q/leakage model as a verified RF response.",
+  "blocker_resolution": "The exact part and its 500 V DC rating are already sourced (CD15FD101JO3F, CDE catalog p3). The blocker forbids using the unsourced Q/leakage as a verified RF response; the proposed recipe removes Q, ESR and ESL entirely and restricts analyses to op/tran, so no RF response is produced. The only unsourced element is a quoted, labelled-ASSUMPTION leak resistor needed for a DC solution (precedent: quoted ASSUMPTION parameters in OHM-057).",
+  "reference_part": "Cornell Dubilier CD15FD101JO3F",
+  "new_field_updates": [
+   {
+    "field": "dielectric_strength_test_voltage",
+    "value": 1000,
+    "unit": "V DC",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://www.cde.com/resources/catalogs/CD10.pdf"
+    ],
+    "page": 1,
+    "scope": "Cornell Dubilier CD15FD101JO3F; CD15, characteristic F, 500 Vdc, 100 pF J, -55..125 C (O); test level, not an operating rating",
+    "detail": "p1 'Dielectric Strenght Test 200% of rated voltage' x 500 Vdc (p3 row)",
+    "archived": true
+   }
+  ],
+  "recipe": {
+   "entry_id": "OHM-039",
+   "behavior_id": "BEH-CAP-MICA",
+   "package": "CDE CD15 dipped radial, lead spacing 5.9 mm",
+   "reference_part": "Cornell Dubilier CD15FD101JO3F",
+   "terminal_roles": {
+    "1": "T1",
+    "2": "T2"
+   },
+   "critical_facts": {
+    "value": {
+     "field": "nominal_capacitance",
+     "unit": "pF",
+     "output_unit": "F"
+    },
+    "vr": {
+     "field": "rated_voltage",
+     "unit": "V DC"
+    }
+   },
+   "derived_parameters": {},
+   "class_parameters": {},
+   "quoted_parameters": {
+    "RLK": {
+     "value_text": "1e12",
+     "unit": "ohm",
+     "basis": "ASSUMPTION",
+     "confidence": "L",
+     "source": {
+      "document": "COMPONENT_BEHAVIOR_SPEC.md",
+      "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+      "line": 1865
+     },
+     "source_fragment": ".subckt ohm_mica p n flag params: C0=100p TCPPM=0 TEMP=25 Q=1000 FQ=1meg ESL=8n RLK=1e12 VR=500"
+    }
+   },
+   "template_override": "C{ref} {T1} {T2} {value}\nR{ref}_lk {T1} {T2} {RLK}\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 1870
+   },
+   "template_provenance_note": "Cb and Rlk of ohm_mica (spec lines 1865-1873) at TEMP=25 (CT = C0). Q/ESR and ESL are omitted, so the binding makes no RF claim; RLK=1e12 is an authored ASSUMPTION used only to give the op solution a DC path and is not a verified leakage.",
+   "inline_assets": [],
+   "supported_analyses": [
+    "op",
+    "tran"
+   ],
+   "limitations": [
+    "Ideal 100 pF at 25 C only; no Q, ESR, ESL, SRF or temperature coefficient: not an RF model (the entry blocker).",
+    "Leak resistor 1e12 ohm is an assumption for numerical DC solvability, not an insulation-resistance rating; the CDE catalog gives no IR.",
+    "500 Vdc is a rating check outside the netlist."
+   ]
+  },
+  "pin_map_evidence": "CDE catalog p3 row CD15FD101JO3F: two radial leads, spacing 0.234 in (5.9 mm), lead dia 0.025 in (0.6 mm); mica capacitors are non-polarized (no polarity in the part-numbering or dimension data). Terminal 1 (-X lead per 3D spec) -> T1, terminal 2 -> T2; interchangeable.",
+  "runtime_check": {
+   "stimulus": "PWL voltage excitation across terminals 1(+) and 2(return): 0 V at 0 s, 100 V at 10 us (100 V is below the sourced 500 V DC rating); tran 0..10 us.",
+   "observable": "excitation current at t = 5 us",
+   "derived_from": "BEH-CAP-MICA/B1 analytic C = C0*(1+TC*1e-6*(T-25)) evaluated at 25 C (TC term zero), observed via i = C*dV/dt; B1 relative tolerance 0.1%",
+   "new_probe_needed_for_class": "Add a BEH-CAP-MICA tran case: compile with analysis='tran', PWLExcitation in V, read the excitation branch current. B1 itself is an AC measurement, and recipes only support op/tran.",
+   "comparison": "absolute: i(5 us) expected 100 pF * 1e7 V/s = 1.000e-3 A (+5e-11 A through RLK, negligible), tolerance 1.0e-6 A (0.1%, B1).",
+   "existing_probe_covers_it": false
+  },
+  "open_items_after": [
+   "Q/ESR vs frequency, ESL, insulation resistance (no CDE source)",
+   "Catalog row body L 0.46 in (11.7 mm) vs 3D-spec CD15 L 11.4 mm lower bound: mechanical check only"
+  ]
+ },
+ {
+  "entry": "OHM-040",
+  "class": "BEH-CAP-EDLC",
+  "verdict": "resolvable",
+  "blocker_recorded": "Unresolved electrical/reference/geometry binding and condition-specific current limits; stored energy and short-circuit heating are safety relevant.",
+  "blocker_resolution": "Electrical/reference/geometry binding: the archived AVX SCC datasheet (entry document) gives an exact part whose body matches the 10 x 20 mm can, with C, tolerance, condition-tagged ratings (2.7 V at 65 C, 2.3 V at 85 C), DCL, three ESR maxima by condition and a peak current that p7 now defines (1-second interval). Binding SCCS20B505SRB explicitly (not Eaton HB ratings, not the 10 F default) closes the reference/geometry conflict. Condition-specific current limits: only the peak definition is sourced; continuous current is absent for this row, so the recipe carries ipk as a rating fact and its limitations state that no sustained-current acceptance exists. Stored energy and short-circuit current are stated as hazards, never as rated behaviour. The class default (10 F, 20 mohm, 2.5 V) is not used.",
+  "reference_part": "KYOCERA AVX SCCS20B505SRB",
+  "new_field_updates": [
+   {
+    "field": "radial_lead_pitch",
+    "value": 5.0,
+    "unit": "mm",
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://datasheets.kyocera-avx.com/AVX-SCC.pdf"
+    ],
+    "page": 4,
+    "scope": "KYOCERA AVX SCCS20B505SRB; D10 x L20 radial; radial lead type 1F-100F, D = 10 mm",
+    "detail": "p4 table 'D (mm) 10, P (mm) 5.0, d (mm) 0.6'",
+    "archived": true
+   },
+   {
+    "field": "polarity_marking",
+    "value": "(-) negative polarity band on sleeve beside negative lead",
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://datasheets.kyocera-avx.com/AVX-SCC.pdf"
+    ],
+    "page": 4,
+    "scope": "SCC radial lead type",
+    "detail": "p4 radial lead end view label '(-) Negative Polarity'",
+    "archived": true
+   },
+   {
+    "field": "peak_current_definition",
+    "value": "maximum current during 1 second time interval",
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://datasheets.kyocera-avx.com/AVX-SCC.pdf"
+    ],
+    "page": 7,
+    "scope": "SCC series test methods",
+    "detail": "p7 'MAXIMUM PEAK CURRENT • This is the maximum current during 1 second time interval (dt)'",
+    "archived": true
+   },
+   {
+    "field": "capacitance_test_current_rule",
+    "value": "I = 4 x C x VR (mA), constant-current discharge after 30 min hold at VR",
+    "unit": null,
+    "basis": "MFR_DATASHEET",
+    "confidence": "H",
+    "sources": [
+     "https://datasheets.kyocera-avx.com/AVX-SCC.pdf"
+    ],
+    "page": 6,
+    "scope": "SCC series capacitance method",
+    "detail": "p6 'I – Discharge Current, 4 × C × VR (mA)'",
+    "archived": true
+   },
+   {
+    "field": "leakage_equivalent_resistance",
+    "value": 180000,
+    "unit": "ohm",
+    "basis": "DERIVED",
+    "confidence": "L",
+    "sources": [
+     "https://datasheets.kyocera-avx.com/AVX-SCC.pdf"
+    ],
+    "page": 2,
+    "scope": "KYOCERA AVX SCCS20B505SRB; D10 x L20 radial; assumes the 72 h DCL is at rated 2.7 V (table header does not state the voltage)",
+    "detail": "2.7 V / 15 uA (p2 row); spec line 1992 rule RLK = VR/I_leak",
+    "archived": true
+   },
+   {
+    "field": "stored_energy_at_rated_voltage",
+    "value": 18.225,
+    "unit": "J",
+    "basis": "DERIVED",
+    "confidence": "H",
+    "sources": [
+     "https://datasheets.kyocera-avx.com/AVX-SCC.pdf"
+    ],
+    "page": 2,
+    "scope": "KYOCERA AVX SCCS20B505SRB; D10 x L20 radial; 0.5*C*V^2 at 2.7 V, nominal C",
+    "detail": "0.5*5*2.7^2; consistent with table 0.0051 Wh = 18.36 J (rounded)",
+    "archived": true
+   }
+  ],
+  "recipe": {
+   "entry_id": "OHM-040",
+   "behavior_id": "BEH-CAP-EDLC",
+   "package": "radial can D10 x L20, P 5.0 mm, d 0.6 mm",
+   "reference_part": "KYOCERA AVX SCCS20B505SRB (5 F, 2.7 V at <= 65 C); explicit binding, not the 10 F Eaton-like class default",
+   "terminal_roles": {
+    "1": "P",
+    "2": "N"
+   },
+   "critical_facts": {
+    "value": {
+     "field": "nominal_capacitance",
+     "unit": "F"
+    },
+    "vr": {
+     "field": "rated_voltage_at_65C",
+     "unit": "V"
+    },
+    "vr_85": {
+     "field": "rated_voltage_at_85C",
+     "unit": "V"
+    },
+    "esr": {
+     "field": "maximum_dc_esr_10ms",
+     "unit": "mohm",
+     "output_unit": "ohm"
+    },
+    "ileak": {
+     "field": "maximum_leakage_current",
+     "unit": "uA",
+     "output_unit": "A"
+    },
+    "ipk": {
+     "field": "peak_current",
+     "unit": "A"
+    },
+    "rleak": {
+     "field": "leakage_equivalent_resistance",
+     "unit": "ohm"
+    }
+   },
+   "derived_parameters": {},
+   "class_parameters": {},
+   "quoted_parameters": {},
+   "template_override": "R{ref}_esr {P} {ref}_b {esr}\nC{ref} {ref}_b {N} {value}\nR{ref}_lk {ref}_b {N} {rleak}\n",
+   "template_provenance": {
+    "document": "COMPONENT_BEHAVIOR_SPEC.md",
+    "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+    "line": 1984
+   },
+   "template_provenance_note": "Resr/Cb/Rlk of ohm_edlc (spec lines 1984-1990) without the flag source; ESR bound to the DC ESR(10 ms) maximum, the condition matching the probe's pulse-onset step.",
+   "inline_assets": [],
+   "supported_analyses": [
+    "op",
+    "tran"
+   ],
+   "limitations": [
+    "Rated 2.7 V only at -40..65 C; 2.3 V up to 85 C. No voltage flag in the netlist.",
+    "ESR is the 10 ms DC maximum (65 mohm); 1 kHz (60 mohm) and 5 s (180 mohm) maxima are different conditions and are not interchangeable.",
+    "Peak current 5.09 A is a 1-second-interval value, not a continuous rating; no continuous current is sourced for this row, so no sustained-current acceptance is provided.",
+    "Hazard: 18.2 J stored at 2.7 V; a hard short through 1 mohm gives about 2.7/(0.065+0.001) = 41 A initially, far above the 5.09 A peak rating. Short-circuit heating is not modelled.",
+    "Leak resistor 180 kohm assumes the 72 h DCL applies at rated voltage (L); single-branch model, no redistribution, C(f) or temperature dependence."
+   ]
+  },
+  "pin_map_evidence": "AVX SCC p4 'RADIAL LEAD TYPE 1F-100F' drawing: two radial leads at P = 5.0 mm for D = 10 mm, d 0.6 mm; end view shows the '(-) Negative Polarity' sleeve band at one lead, and p7 requires connecting with the indicated polarity. OHMNI 3D spec puts the negative stripe at +X: terminal 2 (+X, band side) -> N, terminal 1 (-X) -> P. Lead length difference is not stated by AVX, so it is not used as evidence.",
+  "runtime_check": {
+   "stimulus": "Constant-current charge from 0 V: PWL current source 0 A at 0 s, I = 4*C*VR mA at 1 us, held to 10 s, into the + role (N to return). I is the KYOCERA AVX capacitance-measurement discharge current rule (p6), here used for charging.",
+   "observable": "C_meas = I*(t2-t1)/(v(t2)-v(t1)) with t1 = 5 s, t2 = 10 s; secondary: v(1 ms) = I*ESR10ms + I*1ms/C",
+   "derived_from": "BEH-CAP-EDLC/B3 analytic ESR term (V = I*(ESR+R)) with its 1% tolerance, plus the class capacitor definition Cb b n {C0}; quantities scaled to the bound 5 F / 65 mohm sourced values",
+   "new_probe_needed_for_class": "Add a BEH-CAP-EDLC tran case (PWLExcitation in A, parse_transient). B1/B3 need .ic/uic initial charge, which compile_circuit cannot express, so the probe charges from 0 V instead; B2 (op leakage divider) would only re-check V/RLK, and the DCL table does not state its test voltage.",
+   "comparison": "absolute: C_meas expected 5.000 F, tolerance 0.05 F (1%, B3); leak correction at <= 0.12 V is < 1e-5 relative. Secondary: v(1 ms) expected 3.5208 mV (I = 54 mA x 65 mohm + I*1 ms/5 F), tolerance 1%. Final v(10 s) about 0.112 V, well under 2.7 V.",
+   "existing_probe_covers_it": false
+  },
+  "open_items_after": [
+   "DCL test voltage (assumed rated)",
+   "Maximum continuous current for this row",
+   "Surge voltage",
+   "Short-circuit/failure timing and venting thresholds",
+   "Spec default 10 F/2.5 V should be reconciled with the bound 5 F/2.7 V part"
+  ]
+ }
+]

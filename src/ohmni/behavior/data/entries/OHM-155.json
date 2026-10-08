@@ -153,6 +153,48 @@
         ],
         "unit": null,
         "value": "No.1 circuit"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "header table row '2 | B2B-PH-K-S'",
+        "field": "reference_part",
+        "page": 3,
+        "scope": "JST PH header model table; 2 circuits",
+        "sources": [
+          "https://www.jst-mfg.com/product/pdf/eng/ePH.pdf"
+        ],
+        "unit": null,
+        "value": "B2B-PH-K-S"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "housing table row '2 | PHR-2'",
+        "field": "reference_mating_housing",
+        "page": 3,
+        "scope": "JST PH housing model table; 2 circuits",
+        "sources": [
+          "https://www.jst-mfg.com/product/pdf/eng/ePH.pdf"
+        ],
+        "unit": null,
+        "value": "PHR-2"
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "Header drawing marks 'Mark of No. 1 circuit' / 'No. 1 circuit' (p3) and housing drawing marks 'No. 1 circuit' (p3); the shrouded header is keyed so the housing mates one way, hence header circuit k mates housing circuit k. Electrical polarity is not assigned.",
+        "field": "mated_circuit_map",
+        "page": 3,
+        "scope": "B2B-PH-K-S mated with PHR-2; positional circuit correspondence",
+        "sources": [
+          "https://www.jst-mfg.com/product/pdf/eng/ePH.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "1": "W1",
+          "2": "W2"
+        }
       }
     ],
     "remaining_open_items": [
@@ -166,7 +208,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-155.md",
-      "document_sha256": "beedab7784aed81417bca52da70d21ac20bec1ee6dfd835a098a1f5233ee1139",
+      "document_sha256": "c49a03be7553a14c7a9180a45e97bf5d9beb6aa2c602f3b85112ffcebeda01aa",
       "fragment_sha256": null,
       "line": 1
     }
