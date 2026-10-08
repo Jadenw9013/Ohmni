@@ -155,6 +155,84 @@
         ],
         "unit": null,
         "value": "color band"
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "Fig. 4 \"Typical Instantaneous Forward Characteristics\" (TJ = 25 C, 300 us pulse, 1 % duty), typical forward curve, vector-extracted read points (IF, VF): (0.01021 A, 0.6214 V), (0.14614 A, 0.7671 V), (0.44146 A, 0.8386 V), (1.26145 A, 0.9214 V), (1.87742 A, 0.9605 V), (2.6358 A, 1.0043 V), (4.45497 A, 1.1011 V); residuals mV: [-0.6, -0.1, 2.7, 1.2, -2.3, -3.0, 2.1] (rms 2.0, max 3.0) Method: Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over 0.01 A to 4.45 A (7 of 11 polyline vertices; IF(AV) rating is 1 A). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. The curve is drawn as an 11-vertex polyline; the vertices are used as read points. Vertices above 5 A depart from Shockley+RS (residual vs this fit: +8.9 mV@8.95 A, +23@11.8 A, +42@15.6 A, +147 mV@18.0 A), so they were excluded.",
+        "field": "spice_IS_fit",
+        "page": 3,
+        "scope": "Vishay 1N4007; IS for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://www.vishay.com/docs/88503/1n4001.pdf"
+        ],
+        "unit": "A",
+        "value": 7.811e-08
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "Fig. 4 \"Typical Instantaneous Forward Characteristics\" (TJ = 25 C, 300 us pulse, 1 % duty), typical forward curve, vector-extracted read points (IF, VF): (0.01021 A, 0.6214 V), (0.14614 A, 0.7671 V), (0.44146 A, 0.8386 V), (1.26145 A, 0.9214 V), (1.87742 A, 0.9605 V), (2.6358 A, 1.0043 V), (4.45497 A, 1.1011 V); residuals mV: [-0.6, -0.1, 2.7, 1.2, -2.3, -3.0, 2.1] (rms 2.0, max 3.0) Method: Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over 0.01 A to 4.45 A (7 of 11 polyline vertices; IF(AV) rating is 1 A). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. The curve is drawn as an 11-vertex polyline; the vertices are used as read points. Vertices above 5 A depart from Shockley+RS (residual vs this fit: +8.9 mV@8.95 A, +23@11.8 A, +42@15.6 A, +147 mV@18.0 A), so they were excluded. IS and N are strongly correlated; use them as a pair.",
+        "field": "spice_N_fit",
+        "page": 3,
+        "scope": "Vishay 1N4007; N for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://www.vishay.com/docs/88503/1n4001.pdf"
+        ],
+        "unit": "1",
+        "value": 2.054
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "Fig. 4 \"Typical Instantaneous Forward Characteristics\" (TJ = 25 C, 300 us pulse, 1 % duty), typical forward curve, vector-extracted read points (IF, VF): (0.01021 A, 0.6214 V), (0.14614 A, 0.7671 V), (0.44146 A, 0.8386 V), (1.26145 A, 0.9214 V), (1.87742 A, 0.9605 V), (2.6358 A, 1.0043 V), (4.45497 A, 1.1011 V); residuals mV: [-0.6, -0.1, 2.7, 1.2, -2.3, -3.0, 2.1] (rms 2.0, max 3.0) Method: Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over 0.01 A to 4.45 A (7 of 11 polyline vertices; IF(AV) rating is 1 A). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. The curve is drawn as an 11-vertex polyline; the vertices are used as read points. Vertices above 5 A depart from Shockley+RS (residual vs this fit: +8.9 mV@8.95 A, +23@11.8 A, +42@15.6 A, +147 mV@18.0 A), so they were excluded.",
+        "field": "spice_RS_fit",
+        "page": 3,
+        "scope": "Vishay 1N4007; RS for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://www.vishay.com/docs/88503/1n4001.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.03514
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "Fig. 6 \"Typical Junction Capacitance\" (TJ=25 C, 1 MHz, 50 mVp-p), 5 polyline vertices, typical junction capacitance vs reverse voltage, read points (VR, C): (0.1011 V, 28.641 pF), (0.646 V, 21.204 pF), (3.5764 V, 14.582 pF), (18.466 V, 9.144 pF), (99.9608 V, 5.052 pF); fit residuals %: [1.76, -4.15, 1.13, 3.96, -2.48] (max 4.15%) Method: Least-squares fit of ln C = ln CJO - M*ln(1+VR/VJ) (grid over VJ, linear solve for CJO and M at each VJ). Check: fit gives C(4 V) = 14.0 pF vs table typical CJ 15 pF at 4.0 V, 1 MHz.",
+        "field": "spice_CJO_fit",
+        "page": 3,
+        "scope": "Vishay 1N4007; CJO for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://www.vishay.com/docs/88503/1n4001.pdf"
+        ],
+        "unit": "F",
+        "value": 3.035e-11
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "Fig. 6 \"Typical Junction Capacitance\" (TJ=25 C, 1 MHz, 50 mVp-p), 5 polyline vertices, typical junction capacitance vs reverse voltage, read points (VR, C): (0.1011 V, 28.641 pF), (0.646 V, 21.204 pF), (3.5764 V, 14.582 pF), (18.466 V, 9.144 pF), (99.9608 V, 5.052 pF); fit residuals %: [1.76, -4.15, 1.13, 3.96, -2.48] (max 4.15%) Method: Least-squares fit of ln C = ln CJO - M*ln(1+VR/VJ) (grid over VJ, linear solve for CJO and M at each VJ). Check: fit gives C(4 V) = 14.0 pF vs table typical CJ 15 pF at 4.0 V, 1 MHz. VJ and M are correlated.",
+        "field": "spice_VJ_fit",
+        "page": 3,
+        "scope": "Vishay 1N4007; VJ for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://www.vishay.com/docs/88503/1n4001.pdf"
+        ],
+        "unit": "V",
+        "value": 0.377
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "Fig. 6 \"Typical Junction Capacitance\" (TJ=25 C, 1 MHz, 50 mVp-p), 5 polyline vertices, typical junction capacitance vs reverse voltage, read points (VR, C): (0.1011 V, 28.641 pF), (0.646 V, 21.204 pF), (3.5764 V, 14.582 pF), (18.466 V, 9.144 pF), (99.9608 V, 5.052 pF); fit residuals %: [1.76, -4.15, 1.13, 3.96, -2.48] (max 4.15%) Method: Least-squares fit of ln C = ln CJO - M*ln(1+VR/VJ) (grid over VJ, linear solve for CJO and M at each VJ). Check: fit gives C(4 V) = 14.0 pF vs table typical CJ 15 pF at 4.0 V, 1 MHz. VJ and M are correlated.",
+        "field": "spice_M_fit",
+        "page": 3,
+        "scope": "Vishay 1N4007; M for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://www.vishay.com/docs/88503/1n4001.pdf"
+        ],
+        "unit": "1",
+        "value": 0.317
       }
     ],
     "remaining_open_items": [
@@ -166,7 +244,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-057.md",
-      "document_sha256": "9a7f3d4071567cb14ad1aa4664f90387e4f5f28f5eef8474f4b3adfc44a97f1d",
+      "document_sha256": "f2d39cd7056bd2717db2c231615fcf39b3c3f0f2e4ce0dbf37197401694bad37",
       "fragment_sha256": null,
       "line": 1
     }

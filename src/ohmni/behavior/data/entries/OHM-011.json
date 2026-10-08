@@ -88,6 +88,19 @@
         ],
         "unit": "degC",
         "value": 155
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "detail": "p3 'Power Rating at 70 °C' MFR-25 = 1/4W; p3 Derating curve 100 % to 70 °C, 0 at 155 °C (visually read); operating temp range '- 55°C to +155°C'. Method: Rth = (155 - 70) K / 0.25 W = 340 K/W. Linear derating means film/element temperature = T_amb + Rth*P reaches the endpoint on the derating line, so Rth_implied = (T_end - T_knee)/P_rated. This is the derating-implied thermal resistance on the manufacturer's (unstated) reference mounting, not a measured or board-specific value. Lower confidence: no hot-spot temperature stated; zero-power ambient taken as element limit; mounting unspecified.",
+        "field": "thermal_resistance_from_rating_derivation",
+        "page": 3,
+        "scope": "OHM-011; rth for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://yageogroup.com/content/Resource%20Library/Datasheet/YAGEO-MFR_DATASHEET.pdf"
+        ],
+        "unit": "K/W",
+        "value": 340.0
       }
     ],
     "remaining_open_items": [
@@ -100,7 +113,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-011.md",
-      "document_sha256": "b0d2ad4352d9db1d3fdd7d9230b2fee0b6699808d5febae91927bf8fae403100",
+      "document_sha256": "c8c5fc1bd1f432e7244f21e20e9991529e3f001ac0463d1ccc287f757cae0b17",
       "fragment_sha256": null,
       "line": 1
     }

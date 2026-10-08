@@ -1,0 +1,414 @@
+{
+ "entries": [
+  {
+   "entry": "OHM-073",
+   "part": "Vishay TLDR4400 (red)",
+   "doc_checked": "TLDR4400 Rev 2.0 14-Oct-14 (archived 6d1097cc), pp1-3",
+   "proposals": [
+    {
+     "param": "IS",
+     "value": 1.97e-23,
+     "unit": "A",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.vishay.com/docs/83001/tldr4400.pdf",
+     "page": 3,
+     "evidence": "Fig. 4 - Forward Current vs. Forward Voltage (red; log 1-100 mA vs 1-3 V; page header \"TYPICAL CHARACTERISTICS (Tamb = 25 \u00b0C...)\"). Read points: 1.00 mA @ 1.627 V (resid +7.3 mV); 2.00 mA @ 1.646 V (resid -5.6 mV); 5.00 mA @ 1.697 V (resid -7.6 mV); 10.00 mA @ 1.764 V (resid -0.7 mV); 20.00 mA @ 1.865 V (resid +6.0 mV); 30.00 mA @ 1.948 V (resid +5.1 mV); 50.00 mA @ 2.097 V (resid -4.5 mV). Cross-check: model VF(20 mA)=1.859 V vs stated typ 1.80 V (+59 mV); \"Forward voltage IF = 20 mA VF - 1.8 2.2 V\" (p2).",
+     "method": "Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 7 points 1.00-50.0 mA, rms 5.7 mV. Window sensitivity: windows 1-20/1-30/1-50/2-30/5-30 mA give N 0.95-2.03, RS 6.4-9.1 ohm, IS 1.8e-32..6.8e-17 A. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25."
+    },
+    {
+     "param": "N",
+     "value": 1.383,
+     "unit": "1",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.vishay.com/docs/83001/tldr4400.pdf",
+     "page": 3,
+     "evidence": "Fig. 4 - Forward Current vs. Forward Voltage (red; log 1-100 mA vs 1-3 V; page header \"TYPICAL CHARACTERISTICS (Tamb = 25 \u00b0C...)\"). Read points: 1.00 mA @ 1.627 V (resid +7.3 mV); 2.00 mA @ 1.646 V (resid -5.6 mV); 5.00 mA @ 1.697 V (resid -7.6 mV); 10.00 mA @ 1.764 V (resid -0.7 mV); 20.00 mA @ 1.865 V (resid +6.0 mV); 30.00 mA @ 1.948 V (resid +5.1 mV); 50.00 mA @ 2.097 V (resid -4.5 mV). Cross-check: model VF(20 mA)=1.859 V vs stated typ 1.80 V (+59 mV); \"Forward voltage IF = 20 mA VF - 1.8 2.2 V\" (p2).",
+     "method": "Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 7 points 1.00-50.0 mA, rms 5.7 mV. Window sensitivity: windows 1-20/1-30/1-50/2-30/5-30 mA give N 0.95-2.03, RS 6.4-9.1 ohm, IS 1.8e-32..6.8e-17 A. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25."
+    },
+    {
+     "param": "RS",
+     "value": 7.0,
+     "unit": "ohm",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.vishay.com/docs/83001/tldr4400.pdf",
+     "page": 3,
+     "evidence": "Fig. 4 - Forward Current vs. Forward Voltage (red; log 1-100 mA vs 1-3 V; page header \"TYPICAL CHARACTERISTICS (Tamb = 25 \u00b0C...)\"). Read points: 1.00 mA @ 1.627 V (resid +7.3 mV); 2.00 mA @ 1.646 V (resid -5.6 mV); 5.00 mA @ 1.697 V (resid -7.6 mV); 10.00 mA @ 1.764 V (resid -0.7 mV); 20.00 mA @ 1.865 V (resid +6.0 mV); 30.00 mA @ 1.948 V (resid +5.1 mV); 50.00 mA @ 2.097 V (resid -4.5 mV). Cross-check: model VF(20 mA)=1.859 V vs stated typ 1.80 V (+59 mV); \"Forward voltage IF = 20 mA VF - 1.8 2.2 V\" (p2).",
+     "method": "Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 7 points 1.00-50.0 mA, rms 5.7 mV. Window sensitivity: windows 1-20/1-30/1-50/2-30/5-30 mA give N 0.95-2.03, RS 6.4-9.1 ohm, IS 1.8e-32..6.8e-17 A. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25."
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "N, IS (individual physical values)",
+     "reason": "TLDR4400 Fig. 4 curvature is not well described by Shockley+RS: N swings 0.95-2.03 with fit window (N<1 unphysical). Set proposed only as an empirical L-confidence curve fit."
+    }
+   ],
+   "field_corrections": [
+    {
+     "field": "(class card) LED_RED IS=1.846e-16 N=2.0 RS=16.4 vs TLDR4400 Fig. 4",
+     "issue": "Card gives 1.989 V @20 mA and 2.528 V @50 mA; the vector curve reads 1.865 V and 2.097 V (card +124 mV, +431 mV). Card RS 16.4 ohm is ~2x the ~7 ohm implied by the figure. Card is also 1.52 V vs 1.63 V at 1 mA. Not an entry-field error, but the class DERIVED basis \"from TLDR4400 chart points\" is not reproduced by the document."
+    }
+   ],
+   "field_check": "All existing field values in src/ohmni/behavior/data/entries/OHM-073.json research.field_updates were compared to the archived document text; no value found wrong."
+  },
+  {
+   "entry": "OHM-074",
+   "part": "Vishay TLHR5200 red (+VLHW5100 white variant)",
+   "doc_checked": "TLHR5200 Rev 2.3 06-May-2022 (089214a5) pp1-3; Farnell 6603 TLHG/R/Y520 Rev 1.4 31-Aug-04 (9dfc24d7) pp2-4 (same red Fig. 95 10026); VLHW5100 Rev 1.3 20-May-2019 (a65548f4) pp1-3",
+   "proposals": [
+    {
+     "param": "IS",
+     "value": 8.72e-13,
+     "unit": "A",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.vishay.com/docs/83011/tlhr5200.pdf",
+     "page": 3,
+     "evidence": "Fig. 5 - Forward Current vs. Forward Voltage (red; log 0.1-1000 mA vs linear 0-10 V; \"tp/T = 0.001, tp = 10 us\"). Read points: 1.00 mA @ 1.511 V (resid +3.4 mV); 2.00 mA @ 1.562 V (resid -4.8 mV); 5.00 mA @ 1.661 V (resid -1.4 mV); 10.00 mA @ 1.765 V (resid +3.5 mV); 20.00 mA @ 1.910 V (resid -0.1 mV); 30.00 mA @ 2.037 V (resid -0.7 mV). Cross-check: model VF(20 mA)=1.910 V vs stated typ 2.00 V (-90 mV); \"Forward voltage IF = 20 mA VF - 2 3 V\" (p2).",
+     "method": "Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 6 points 1.00-30.0 mA, rms 2.9 mV. Window sensitivity: windows 1-20/1-30/1-50/2-30/5-30 mA give N 2.35-3.16, RS 9.2-11.7 ohm; including 0.1-0.3 mA (curve drawn non-monotonic there) gives N 1.19. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25."
+    },
+    {
+     "param": "N",
+     "value": 2.794,
+     "unit": "1",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.vishay.com/docs/83011/tlhr5200.pdf",
+     "page": 3,
+     "evidence": "Fig. 5 - Forward Current vs. Forward Voltage (red; log 0.1-1000 mA vs linear 0-10 V; \"tp/T = 0.001, tp = 10 us\"). Read points: 1.00 mA @ 1.511 V (resid +3.4 mV); 2.00 mA @ 1.562 V (resid -4.8 mV); 5.00 mA @ 1.661 V (resid -1.4 mV); 10.00 mA @ 1.765 V (resid +3.5 mV); 20.00 mA @ 1.910 V (resid -0.1 mV); 30.00 mA @ 2.037 V (resid -0.7 mV). Cross-check: model VF(20 mA)=1.910 V vs stated typ 2.00 V (-90 mV); \"Forward voltage IF = 20 mA VF - 2 3 V\" (p2).",
+     "method": "Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 6 points 1.00-30.0 mA, rms 2.9 mV. Window sensitivity: windows 1-20/1-30/1-50/2-30/5-30 mA give N 2.35-3.16, RS 9.2-11.7 ohm; including 0.1-0.3 mA (curve drawn non-monotonic there) gives N 1.19. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25."
+    },
+    {
+     "param": "RS",
+     "value": 9.85,
+     "unit": "ohm",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.vishay.com/docs/83011/tlhr5200.pdf",
+     "page": 3,
+     "evidence": "Fig. 5 - Forward Current vs. Forward Voltage (red; log 0.1-1000 mA vs linear 0-10 V; \"tp/T = 0.001, tp = 10 us\"). Read points: 1.00 mA @ 1.511 V (resid +3.4 mV); 2.00 mA @ 1.562 V (resid -4.8 mV); 5.00 mA @ 1.661 V (resid -1.4 mV); 10.00 mA @ 1.765 V (resid +3.5 mV); 20.00 mA @ 1.910 V (resid -0.1 mV); 30.00 mA @ 2.037 V (resid -0.7 mV). Cross-check: model VF(20 mA)=1.910 V vs stated typ 2.00 V (-90 mV); \"Forward voltage IF = 20 mA VF - 2 3 V\" (p2).",
+     "method": "Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 6 points 1.00-30.0 mA, rms 2.9 mV. Window sensitivity: windows 1-20/1-30/1-50/2-30/5-30 mA give N 2.35-3.16, RS 9.2-11.7 ohm; including 0.1-0.3 mA (curve drawn non-monotonic there) gives N 1.19. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25."
+    },
+    {
+     "param": "white_IS",
+     "value": 2.516e-10,
+     "unit": "A",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.vishay.com/docs/81159/vlhw5100.pdf",
+     "page": 3,
+     "evidence": "Fig. 4 - Forward Current vs. Forward Voltage (white; log 1-100 mA vs 2-5 V; Tamb = 25 \u00b0C). Read points: 2.00 mA @ 2.702 V (resid -0.3 mV); 5.00 mA @ 2.927 V (resid +1.9 mV); 10.00 mA @ 3.153 V (resid -3.6 mV); 20.00 mA @ 3.506 V (resid +3.2 mV); 30.00 mA @ 3.800 V (resid -1.2 mV). Cross-check: model VF(20 mA)=3.503 V, inside stated \"Forward voltage IF = 20 mA VF 2.8 - 3.6 V\" (p2; no typical given).",
+     "method": "Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 5 points 2.00-30.0 mA, rms 2.4 mV. Window sensitivity: windows 1-20..5-30 mA give N 6.0-7.1, RS 20.8-24.7 ohm. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25.",
+     "scope": "VLHW5100 white variant (not the TLHR5200 red reference)"
+    },
+    {
+     "param": "white_N",
+     "value": 6.507,
+     "unit": "1",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.vishay.com/docs/81159/vlhw5100.pdf",
+     "page": 3,
+     "evidence": "Fig. 4 - Forward Current vs. Forward Voltage (white; log 1-100 mA vs 2-5 V; Tamb = 25 \u00b0C). Read points: 2.00 mA @ 2.702 V (resid -0.3 mV); 5.00 mA @ 2.927 V (resid +1.9 mV); 10.00 mA @ 3.153 V (resid -3.6 mV); 20.00 mA @ 3.506 V (resid +3.2 mV); 30.00 mA @ 3.800 V (resid -1.2 mV). Cross-check: model VF(20 mA)=3.503 V, inside stated \"Forward voltage IF = 20 mA VF 2.8 - 3.6 V\" (p2; no typical given).",
+     "method": "Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 5 points 2.00-30.0 mA, rms 2.4 mV. Window sensitivity: windows 1-20..5-30 mA give N 6.0-7.1, RS 20.8-24.7 ohm. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25.",
+     "scope": "VLHW5100 white variant (not the TLHR5200 red reference)"
+    },
+    {
+     "param": "white_RS",
+     "value": 23.07,
+     "unit": "ohm",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.vishay.com/docs/81159/vlhw5100.pdf",
+     "page": 3,
+     "evidence": "Fig. 4 - Forward Current vs. Forward Voltage (white; log 1-100 mA vs 2-5 V; Tamb = 25 \u00b0C). Read points: 2.00 mA @ 2.702 V (resid -0.3 mV); 5.00 mA @ 2.927 V (resid +1.9 mV); 10.00 mA @ 3.153 V (resid -3.6 mV); 20.00 mA @ 3.506 V (resid +3.2 mV); 30.00 mA @ 3.800 V (resid -1.2 mV). Cross-check: model VF(20 mA)=3.503 V, inside stated \"Forward voltage IF = 20 mA VF 2.8 - 3.6 V\" (p2; no typical given).",
+     "method": "Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 5 points 2.00-30.0 mA, rms 2.4 mV. Window sensitivity: windows 1-20..5-30 mA give N 6.0-7.1, RS 20.8-24.7 ohm. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25.",
+     "scope": "VLHW5100 white variant (not the TLHR5200 red reference)"
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "IS/N/RS (TLHR5200 red, primary reference)",
+     "status": "proposed at L only",
+     "reason": "Fig. 5 uses a 0-10 V linear axis (~74 mV per pt; drawn stroke ~0.11 V wide) so the 1-30 mA part of the curve spans only ~7 pt horizontally; below ~1 mA the drawn line is non-monotonic. The fitted set reproduces the drawing but is weakly constrained; curve VF(20 mA)=1.91 V vs table typ 2 V."
+    }
+   ],
+   "field_corrections": [
+    {
+     "field": "red_* page numbers",
+     "issue": "Values correct. In TLHR5200 Rev 2.3 the absolute-maximum ratings are on p1 (fields say p2); p2 is correct only for the Farnell Rev 1.4 copy. VF typ/max appear on p1 parts table and p2 characteristics."
+    }
+   ],
+   "field_check": "All existing field values in src/ohmni/behavior/data/entries/OHM-074.json research.field_updates were compared to the archived document text; no value found wrong."
+  },
+  {
+   "entry": "OHM-077",
+   "part": "Kingbright APHHS1005SURCK hyper red",
+   "doc_checked": "APHHS1005SURCK DSAD0911 V18A 25-Mar-2021 (e9d813a5) pp2-3",
+   "proposals": [
+    {
+     "param": "IS",
+     "value": 7.065e-17,
+     "unit": "A",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.kingbrightusa.com/images/catalog/SPEC/APHHS1005SURCK.pdf",
+     "page": 3,
+     "evidence": "\"Forward Current vs. Forward Voltage\", Hyper Red, \"Ta = 25 \u00b0C\" (linear 0-50 mA vs 1.5-2.5 V). Read points: 0.81 mA @ 1.723 V (resid +4.6 mV); 1.34 mA @ 1.748 V (resid -0.9 mV); 2.15 mA @ 1.773 V (resid -4.6 mV); 2.96 mA @ 1.798 V (resid +0.4 mV); 4.03 mA @ 1.818 V (resid +0.2 mV); 4.84 mA @ 1.828 V (resid -2.0 mV); 5.65 mA @ 1.838 V (resid -2.7 mV); 8.00 mA @ 1.863 V (resid -3.0 mV); 9.34 mA @ 1.878 V (resid +0.1 mV); 10.95 mA @ 1.893 V (resid +2.3 mV); 12.84 mA @ 1.908 V (resid +4.0 mV); 15.26 mA @ 1.923 V (resid +3.6 mV); 20.03 mA @ 1.948 V (resid +2.2 mV); 24.87 mA @ 1.968 V (resid -1.2 mV); 29.91 mA @ 1.988 V (resid -3.2 mV). Cross-check: model VF(20 mA)=1.946 V vs stated typ 1.95 V (-4 mV); \"Forward Voltage IF = 20mA VF Hyper Red 1.95 2.5 V\" (p2).",
+     "method": "Curve read from the PDF vector polyline vertices (pdftocairo -svg), axes calibrated from gridlines; vertices with I >= 0.8 mA used (current quantised at ~0.27 mA by the drawing, so sub-mA vertices dropped). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 15 points 0.81-29.9 mA, rms 2.7 mV. Window sensitivity: lower bound 0.8/1.3/2/5 mA gives N 2.22-3.01, RS 0.9-2.3 ohm. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25."
+    },
+    {
+     "param": "N",
+     "value": 2.223,
+     "unit": "1",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.kingbrightusa.com/images/catalog/SPEC/APHHS1005SURCK.pdf",
+     "page": 3,
+     "evidence": "\"Forward Current vs. Forward Voltage\", Hyper Red, \"Ta = 25 \u00b0C\" (linear 0-50 mA vs 1.5-2.5 V). Read points: 0.81 mA @ 1.723 V (resid +4.6 mV); 1.34 mA @ 1.748 V (resid -0.9 mV); 2.15 mA @ 1.773 V (resid -4.6 mV); 2.96 mA @ 1.798 V (resid +0.4 mV); 4.03 mA @ 1.818 V (resid +0.2 mV); 4.84 mA @ 1.828 V (resid -2.0 mV); 5.65 mA @ 1.838 V (resid -2.7 mV); 8.00 mA @ 1.863 V (resid -3.0 mV); 9.34 mA @ 1.878 V (resid +0.1 mV); 10.95 mA @ 1.893 V (resid +2.3 mV); 12.84 mA @ 1.908 V (resid +4.0 mV); 15.26 mA @ 1.923 V (resid +3.6 mV); 20.03 mA @ 1.948 V (resid +2.2 mV); 24.87 mA @ 1.968 V (resid -1.2 mV); 29.91 mA @ 1.988 V (resid -3.2 mV). Cross-check: model VF(20 mA)=1.946 V vs stated typ 1.95 V (-4 mV); \"Forward Voltage IF = 20mA VF Hyper Red 1.95 2.5 V\" (p2).",
+     "method": "Curve read from the PDF vector polyline vertices (pdftocairo -svg), axes calibrated from gridlines; vertices with I >= 0.8 mA used (current quantised at ~0.27 mA by the drawing, so sub-mA vertices dropped). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 15 points 0.81-29.9 mA, rms 2.7 mV. Window sensitivity: lower bound 0.8/1.3/2/5 mA gives N 2.22-3.01, RS 0.9-2.3 ohm. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25."
+    },
+    {
+     "param": "RS",
+     "value": 2.27,
+     "unit": "ohm",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.kingbrightusa.com/images/catalog/SPEC/APHHS1005SURCK.pdf",
+     "page": 3,
+     "evidence": "\"Forward Current vs. Forward Voltage\", Hyper Red, \"Ta = 25 \u00b0C\" (linear 0-50 mA vs 1.5-2.5 V). Read points: 0.81 mA @ 1.723 V (resid +4.6 mV); 1.34 mA @ 1.748 V (resid -0.9 mV); 2.15 mA @ 1.773 V (resid -4.6 mV); 2.96 mA @ 1.798 V (resid +0.4 mV); 4.03 mA @ 1.818 V (resid +0.2 mV); 4.84 mA @ 1.828 V (resid -2.0 mV); 5.65 mA @ 1.838 V (resid -2.7 mV); 8.00 mA @ 1.863 V (resid -3.0 mV); 9.34 mA @ 1.878 V (resid +0.1 mV); 10.95 mA @ 1.893 V (resid +2.3 mV); 12.84 mA @ 1.908 V (resid +4.0 mV); 15.26 mA @ 1.923 V (resid +3.6 mV); 20.03 mA @ 1.948 V (resid +2.2 mV); 24.87 mA @ 1.968 V (resid -1.2 mV); 29.91 mA @ 1.988 V (resid -3.2 mV). Cross-check: model VF(20 mA)=1.946 V vs stated typ 1.95 V (-4 mV); \"Forward Voltage IF = 20mA VF Hyper Red 1.95 2.5 V\" (p2).",
+     "method": "Curve read from the PDF vector polyline vertices (pdftocairo -svg), axes calibrated from gridlines; vertices with I >= 0.8 mA used (current quantised at ~0.27 mA by the drawing, so sub-mA vertices dropped). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 15 points 0.81-29.9 mA, rms 2.7 mV. Window sensitivity: lower bound 0.8/1.3/2/5 mA gives N 2.22-3.01, RS 0.9-2.3 ohm. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25."
+    }
+   ],
+   "unresolved": [],
+   "field_corrections": [],
+   "field_check": "All existing field values in src/ohmni/behavior/data/entries/OHM-077.json research.field_updates were compared to the archived document text; no value found wrong."
+  },
+  {
+   "entry": "OHM-079",
+   "part": "Kingbright AP2012EC high-efficiency red",
+   "doc_checked": "AP2012EC (17c7aa10) pp2-3",
+   "proposals": [
+    {
+     "param": "IS",
+     "value": 1.386e-12,
+     "unit": "A",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.kingbrightusa.com/images/catalog/SPEC/AP2012EC.pdf",
+     "page": 3,
+     "evidence": "\"Forward Current vs. Forward Voltage\", High Efficiency Red, \"Ta = 25 \u00b0C\" (linear 0-50 mA vs 1.5-2.5 V). Read points: 0.81 mA @ 1.625 V (resid +0.9 mV); 1.08 mA @ 1.650 V (resid +1.0 mV); 1.34 mA @ 1.670 V (resid +1.4 mV); 1.61 mA @ 1.685 V (resid -0.0 mV); 1.88 mA @ 1.700 V (resid +0.8 mV); 2.42 mA @ 1.718 V (resid -4.1 mV); 3.23 mA @ 1.743 V (resid -7.5 mV); 5.11 mA @ 1.798 V (resid -1.8 mV); 7.53 mA @ 1.848 V (resid +1.1 mV); 8.60 mA @ 1.873 V (resid +8.4 mV); 9.95 mA @ 1.893 V (resid +7.9 mV); 11.22 mA @ 1.908 V (resid +4.8 mV); 12.30 mA @ 1.923 V (resid +5.4 mV); 14.99 mA @ 1.948 V (resid -3.2 mV); 16.33 mA @ 1.963 V (resid -3.9 mV); 17.67 mA @ 1.978 V (resid -4.1 mV); 19.02 mA @ 1.993 V (resid -3.8 mV); 20.09 mA @ 2.003 V (resid -5.3 mV); 20.63 mA @ 2.012 V (resid -2.2 mV); 21.17 mA @ 2.017 V (resid -2.8 mV); 21.98 mA @ 2.027 V (resid -1.1 mV); 24.06 mA @ 2.047 V (resid -2.0 mV); 25.94 mA @ 2.067 V (resid -0.4 mV); 28.09 mA @ 2.092 V (resid +4.0 mV); 29.97 mA @ 2.112 V (resid +6.5 mV). Cross-check: model VF(20 mA)=2.007 V vs stated typ 2.00 V (+7 mV); \"Forward Voltage IF = 20mA VF High Efficiency Red 2 2.5 V\" (p2).",
+     "method": "Curve read from the PDF vector polyline vertices (pdftocairo -svg), axes calibrated from gridlines; vertices with I >= 0.8 mA used (current quantised at ~0.27 mA by the drawing, so sub-mA vertices dropped). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 25 points 0.81-30.0 mA, rms 4.1 mV. Window sensitivity: lower bound 0.8/1.3/2/5 mA gives N 2.71-3.31, RS 6.2-7.2 ohm. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25."
+    },
+    {
+     "param": "N",
+     "value": 3.122,
+     "unit": "1",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.kingbrightusa.com/images/catalog/SPEC/AP2012EC.pdf",
+     "page": 3,
+     "evidence": "\"Forward Current vs. Forward Voltage\", High Efficiency Red, \"Ta = 25 \u00b0C\" (linear 0-50 mA vs 1.5-2.5 V). Read points: 0.81 mA @ 1.625 V (resid +0.9 mV); 1.08 mA @ 1.650 V (resid +1.0 mV); 1.34 mA @ 1.670 V (resid +1.4 mV); 1.61 mA @ 1.685 V (resid -0.0 mV); 1.88 mA @ 1.700 V (resid +0.8 mV); 2.42 mA @ 1.718 V (resid -4.1 mV); 3.23 mA @ 1.743 V (resid -7.5 mV); 5.11 mA @ 1.798 V (resid -1.8 mV); 7.53 mA @ 1.848 V (resid +1.1 mV); 8.60 mA @ 1.873 V (resid +8.4 mV); 9.95 mA @ 1.893 V (resid +7.9 mV); 11.22 mA @ 1.908 V (resid +4.8 mV); 12.30 mA @ 1.923 V (resid +5.4 mV); 14.99 mA @ 1.948 V (resid -3.2 mV); 16.33 mA @ 1.963 V (resid -3.9 mV); 17.67 mA @ 1.978 V (resid -4.1 mV); 19.02 mA @ 1.993 V (resid -3.8 mV); 20.09 mA @ 2.003 V (resid -5.3 mV); 20.63 mA @ 2.012 V (resid -2.2 mV); 21.17 mA @ 2.017 V (resid -2.8 mV); 21.98 mA @ 2.027 V (resid -1.1 mV); 24.06 mA @ 2.047 V (resid -2.0 mV); 25.94 mA @ 2.067 V (resid -0.4 mV); 28.09 mA @ 2.092 V (resid +4.0 mV); 29.97 mA @ 2.112 V (resid +6.5 mV). Cross-check: model VF(20 mA)=2.007 V vs stated typ 2.00 V (+7 mV); \"Forward Voltage IF = 20mA VF High Efficiency Red 2 2.5 V\" (p2).",
+     "method": "Curve read from the PDF vector polyline vertices (pdftocairo -svg), axes calibrated from gridlines; vertices with I >= 0.8 mA used (current quantised at ~0.27 mA by the drawing, so sub-mA vertices dropped). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 25 points 0.81-30.0 mA, rms 4.1 mV. Window sensitivity: lower bound 0.8/1.3/2/5 mA gives N 2.71-3.31, RS 6.2-7.2 ohm. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25."
+    },
+    {
+     "param": "RS",
+     "value": 6.56,
+     "unit": "ohm",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://www.kingbrightusa.com/images/catalog/SPEC/AP2012EC.pdf",
+     "page": 3,
+     "evidence": "\"Forward Current vs. Forward Voltage\", High Efficiency Red, \"Ta = 25 \u00b0C\" (linear 0-50 mA vs 1.5-2.5 V). Read points: 0.81 mA @ 1.625 V (resid +0.9 mV); 1.08 mA @ 1.650 V (resid +1.0 mV); 1.34 mA @ 1.670 V (resid +1.4 mV); 1.61 mA @ 1.685 V (resid -0.0 mV); 1.88 mA @ 1.700 V (resid +0.8 mV); 2.42 mA @ 1.718 V (resid -4.1 mV); 3.23 mA @ 1.743 V (resid -7.5 mV); 5.11 mA @ 1.798 V (resid -1.8 mV); 7.53 mA @ 1.848 V (resid +1.1 mV); 8.60 mA @ 1.873 V (resid +8.4 mV); 9.95 mA @ 1.893 V (resid +7.9 mV); 11.22 mA @ 1.908 V (resid +4.8 mV); 12.30 mA @ 1.923 V (resid +5.4 mV); 14.99 mA @ 1.948 V (resid -3.2 mV); 16.33 mA @ 1.963 V (resid -3.9 mV); 17.67 mA @ 1.978 V (resid -4.1 mV); 19.02 mA @ 1.993 V (resid -3.8 mV); 20.09 mA @ 2.003 V (resid -5.3 mV); 20.63 mA @ 2.012 V (resid -2.2 mV); 21.17 mA @ 2.017 V (resid -2.8 mV); 21.98 mA @ 2.027 V (resid -1.1 mV); 24.06 mA @ 2.047 V (resid -2.0 mV); 25.94 mA @ 2.067 V (resid -0.4 mV); 28.09 mA @ 2.092 V (resid +4.0 mV); 29.97 mA @ 2.112 V (resid +6.5 mV). Cross-check: model VF(20 mA)=2.007 V vs stated typ 2.00 V (+7 mV); \"Forward Voltage IF = 20mA VF High Efficiency Red 2 2.5 V\" (p2).",
+     "method": "Curve read from the PDF vector polyline vertices (pdftocairo -svg), axes calibrated from gridlines; vertices with I >= 0.8 mA used (current quantised at ~0.27 mA by the drawing, so sub-mA vertices dropped). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 25 points 0.81-30.0 mA, rms 4.1 mV. Window sensitivity: lower bound 0.8/1.3/2/5 mA gives N 2.71-3.31, RS 6.2-7.2 ohm. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25."
+    }
+   ],
+   "unresolved": [],
+   "field_corrections": [],
+   "field_check": "All existing field values in src/ohmni/behavior/data/entries/OHM-079.json research.field_updates were compared to the archived document text; no value found wrong."
+  },
+  {
+   "entry": "OHM-080",
+   "part": "Kingbright APT3216SURCK hyper red",
+   "doc_checked": "APT3216SURCK (6f2e2379) pp2-3",
+   "proposals": [
+    {
+     "param": "IS",
+     "value": 4.306e-15,
+     "unit": "A",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.kingbrightusa.com/images/catalog/SPEC/APT3216SURCK.pdf",
+     "page": 3,
+     "evidence": "\"Forward Current vs. Forward Voltage\", Hyper Red, \"Ta = 25 \u00b0C\" (linear 0-50 mA vs 1.5-2.5 V). Read points: 0.81 mA @ 1.699 V (resid +6.6 mV); 1.34 mA @ 1.724 V (resid -3.5 mV); 1.88 mA @ 1.749 V (resid -1.6 mV); 3.22 mA @ 1.784 V (resid -4.6 mV); 5.10 mA @ 1.819 V (resid -3.7 mV); 6.15 mA @ 1.834 V (resid -3.0 mV); 6.95 mA @ 1.849 V (resid +2.2 mV); 8.29 mA @ 1.864 V (resid +2.7 mV); 9.91 mA @ 1.878 V (resid +2.0 mV); 12.06 mA @ 1.893 V (resid -0.4 mV); 14.71 mA @ 1.913 V (resid +0.8 mV); 17.39 mA @ 1.933 V (resid +4.0 mV); 20.08 mA @ 1.948 V (resid +3.8 mV); 25.15 mA @ 1.968 V (resid -1.9 mV); 29.95 mA @ 1.988 V (resid -3.7 mV). Cross-check: model VF(20 mA)=1.944 V vs stated typ 1.95 V (-6 mV); \"Forward Voltage IF = 20mA VF Hyper Red 1.95 2.5 V\" (p2).",
+     "method": "Curve read from the PDF vector polyline vertices (pdftocairo -svg), axes calibrated from gridlines; vertices with I >= 0.8 mA used (current quantised at ~0.27 mA by the drawing, so sub-mA vertices dropped). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 15 points 0.81-30.0 mA, rms 3.3 mV. Window sensitivity: lower bound 0.8/1.3/2/5 mA gives N 2.54-3.17, RS 1.0-2.2 ohm. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25."
+    },
+    {
+     "param": "N",
+     "value": 2.536,
+     "unit": "1",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.kingbrightusa.com/images/catalog/SPEC/APT3216SURCK.pdf",
+     "page": 3,
+     "evidence": "\"Forward Current vs. Forward Voltage\", Hyper Red, \"Ta = 25 \u00b0C\" (linear 0-50 mA vs 1.5-2.5 V). Read points: 0.81 mA @ 1.699 V (resid +6.6 mV); 1.34 mA @ 1.724 V (resid -3.5 mV); 1.88 mA @ 1.749 V (resid -1.6 mV); 3.22 mA @ 1.784 V (resid -4.6 mV); 5.10 mA @ 1.819 V (resid -3.7 mV); 6.15 mA @ 1.834 V (resid -3.0 mV); 6.95 mA @ 1.849 V (resid +2.2 mV); 8.29 mA @ 1.864 V (resid +2.7 mV); 9.91 mA @ 1.878 V (resid +2.0 mV); 12.06 mA @ 1.893 V (resid -0.4 mV); 14.71 mA @ 1.913 V (resid +0.8 mV); 17.39 mA @ 1.933 V (resid +4.0 mV); 20.08 mA @ 1.948 V (resid +3.8 mV); 25.15 mA @ 1.968 V (resid -1.9 mV); 29.95 mA @ 1.988 V (resid -3.7 mV). Cross-check: model VF(20 mA)=1.944 V vs stated typ 1.95 V (-6 mV); \"Forward Voltage IF = 20mA VF Hyper Red 1.95 2.5 V\" (p2).",
+     "method": "Curve read from the PDF vector polyline vertices (pdftocairo -svg), axes calibrated from gridlines; vertices with I >= 0.8 mA used (current quantised at ~0.27 mA by the drawing, so sub-mA vertices dropped). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 15 points 0.81-30.0 mA, rms 3.3 mV. Window sensitivity: lower bound 0.8/1.3/2/5 mA gives N 2.54-3.17, RS 1.0-2.2 ohm. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25."
+    },
+    {
+     "param": "RS",
+     "value": 2.17,
+     "unit": "ohm",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.kingbrightusa.com/images/catalog/SPEC/APT3216SURCK.pdf",
+     "page": 3,
+     "evidence": "\"Forward Current vs. Forward Voltage\", Hyper Red, \"Ta = 25 \u00b0C\" (linear 0-50 mA vs 1.5-2.5 V). Read points: 0.81 mA @ 1.699 V (resid +6.6 mV); 1.34 mA @ 1.724 V (resid -3.5 mV); 1.88 mA @ 1.749 V (resid -1.6 mV); 3.22 mA @ 1.784 V (resid -4.6 mV); 5.10 mA @ 1.819 V (resid -3.7 mV); 6.15 mA @ 1.834 V (resid -3.0 mV); 6.95 mA @ 1.849 V (resid +2.2 mV); 8.29 mA @ 1.864 V (resid +2.7 mV); 9.91 mA @ 1.878 V (resid +2.0 mV); 12.06 mA @ 1.893 V (resid -0.4 mV); 14.71 mA @ 1.913 V (resid +0.8 mV); 17.39 mA @ 1.933 V (resid +4.0 mV); 20.08 mA @ 1.948 V (resid +3.8 mV); 25.15 mA @ 1.968 V (resid -1.9 mV); 29.95 mA @ 1.988 V (resid -3.7 mV). Cross-check: model VF(20 mA)=1.944 V vs stated typ 1.95 V (-6 mV); \"Forward Voltage IF = 20mA VF Hyper Red 1.95 2.5 V\" (p2).",
+     "method": "Curve read from the PDF vector polyline vertices (pdftocairo -svg), axes calibrated from gridlines; vertices with I >= 0.8 mA used (current quantised at ~0.27 mA by the drawing, so sub-mA vertices dropped). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 15 points 0.81-30.0 mA, rms 3.3 mV. Window sensitivity: lower bound 0.8/1.3/2/5 mA gives N 2.54-3.17, RS 1.0-2.2 ohm. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25."
+    }
+   ],
+   "unresolved": [],
+   "field_corrections": [],
+   "field_check": "All existing field values in src/ohmni/behavior/data/entries/OHM-080.json research.field_updates were compared to the archived document text; no value found wrong."
+  },
+  {
+   "entry": "OHM-081",
+   "part": "Vishay VLMW33S2V1-5K8L-08 white",
+   "doc_checked": "VLMW33 Rev 2.2 26-Sep-2022 (0e426dae) pp1-3",
+   "proposals": [
+    {
+     "param": "IS",
+     "value": 5.436e-12,
+     "unit": "A",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.vishay.com/doc?81273",
+     "page": 3,
+     "evidence": "Fig. 4 - Forward Current vs. Forward Voltage (white; log 1-100 mA vs 2-5 V; Tamb = 25 \u00b0C). Read points: 1.00 mA @ 2.859 V (resid +9.4 mV); 2.00 mA @ 2.963 V (resid -14.1 mV); 5.00 mA @ 3.187 V (resid +1.1 mV); 10.00 mA @ 3.413 V (resid +1.4 mV); 20.00 mA @ 3.767 V (resid +6.8 mV); 30.00 mA @ 4.061 V (resid -4.5 mV). Cross-check: model VF(20 mA)=3.760 V vs stated typ 3.70 V (+60 mV); \"Forward voltage IF = 20 mA VF - 3.7 4.2 V\" (p2).",
+     "method": "Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 6 points 1.00-30.0 mA, rms 7.7 mV. Window sensitivity: windows 1-20..5-30 mA give N 5.6-7.0, RS 21.4-26.1 ohm. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25."
+    },
+    {
+     "param": "N",
+     "value": 5.777,
+     "unit": "1",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.vishay.com/doc?81273",
+     "page": 3,
+     "evidence": "Fig. 4 - Forward Current vs. Forward Voltage (white; log 1-100 mA vs 2-5 V; Tamb = 25 \u00b0C). Read points: 1.00 mA @ 2.859 V (resid +9.4 mV); 2.00 mA @ 2.963 V (resid -14.1 mV); 5.00 mA @ 3.187 V (resid +1.1 mV); 10.00 mA @ 3.413 V (resid +1.4 mV); 20.00 mA @ 3.767 V (resid +6.8 mV); 30.00 mA @ 4.061 V (resid -4.5 mV). Cross-check: model VF(20 mA)=3.760 V vs stated typ 3.70 V (+60 mV); \"Forward voltage IF = 20 mA VF - 3.7 4.2 V\" (p2).",
+     "method": "Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 6 points 1.00-30.0 mA, rms 7.7 mV. Window sensitivity: windows 1-20..5-30 mA give N 5.6-7.0, RS 21.4-26.1 ohm. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25."
+    },
+    {
+     "param": "RS",
+     "value": 24.52,
+     "unit": "ohm",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://www.vishay.com/doc?81273",
+     "page": 3,
+     "evidence": "Fig. 4 - Forward Current vs. Forward Voltage (white; log 1-100 mA vs 2-5 V; Tamb = 25 \u00b0C). Read points: 1.00 mA @ 2.859 V (resid +9.4 mV); 2.00 mA @ 2.963 V (resid -14.1 mV); 5.00 mA @ 3.187 V (resid +1.1 mV); 10.00 mA @ 3.413 V (resid +1.4 mV); 20.00 mA @ 3.767 V (resid +6.8 mV); 30.00 mA @ 4.061 V (resid -4.5 mV). Cross-check: model VF(20 mA)=3.760 V vs stated typ 3.70 V (+60 mV); \"Forward voltage IF = 20 mA VF - 3.7 4.2 V\" (p2).",
+     "method": "Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 6 points 1.00-30.0 mA, rms 7.7 mV. Window sensitivity: windows 1-20..5-30 mA give N 5.6-7.0, RS 21.4-26.1 ohm. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25."
+    }
+   ],
+   "unresolved": [],
+   "field_corrections": [
+    {
+     "field": "(evidence note) VLMW33 Fig. 4",
+     "issue": "Not a field error: the VLMW33 Fig. 4 curve is the VLHW5100 Fig. 4 curve shifted by about +0.26 V (2-30 mA fits give identical N=6.55, RS=23.0 ohm, identical residual pattern). The figure looks like a generic drawing, so it is weak part-specific evidence."
+    }
+   ],
+   "field_check": "All existing field values in src/ohmni/behavior/data/entries/OHM-081.json research.field_updates were compared to the archived document text; no value found wrong."
+  },
+  {
+   "entry": "OHM-082",
+   "part": "Avago/Broadcom ASMB-MTB0-0A3A2 RGB",
+   "doc_checked": "ASMB-MTB0-0A3A2 RS-hosted PDF (a1d1eeb8) pp3,5 (vector figures); ASMB-MTB0-0B3A2 Broadcom DS100 (b1d1205c) p6 checked visually only (raster, different part number, same-looking curves)",
+   "proposals": [
+    {
+     "param": "red_IS",
+     "value": 1.393e-17,
+     "unit": "A",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf",
+     "page": 5,
+     "evidence": "Figure 2. Forward Current vs. Forward Voltage, RED trace (linear 0-100 mA vs 0-5 V; no temperature printed on figure, tables are TJ = 25 \u00b0C). Read points: 1.00 mA @ 1.799 V (resid +2.4 mV); 2.00 mA @ 1.842 V (resid -2.3 mV); 5.00 mA @ 1.919 V (resid -3.2 mV); 10.00 mA @ 2.006 V (resid +1.2 mV); 15.00 mA @ 2.074 V (resid +3.1 mV); 20.00 mA @ 2.133 V (resid +1.6 mV); 25.00 mA @ 2.185 V (resid -3.0 mV). Cross-check: model VF(20 mA)=2.131 V vs stated typ 2.10 V (+31 mV); Table 3 \"Red 1.8 2.1 2.6\" V @ IF = 20 mA (p3).",
+     "method": "Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 7 points 1.00-25.0 mA, rms 2.5 mV. Window sensitivity: windows 0.5/1/2/5-25 mA give N 2.07-2.92, RS 7.3-9.0 ohm. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25.",
+     "scope": "red die"
+    },
+    {
+     "param": "red_N",
+     "value": 2.182,
+     "unit": "1",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf",
+     "page": 5,
+     "evidence": "Figure 2. Forward Current vs. Forward Voltage, RED trace (linear 0-100 mA vs 0-5 V; no temperature printed on figure, tables are TJ = 25 \u00b0C). Read points: 1.00 mA @ 1.799 V (resid +2.4 mV); 2.00 mA @ 1.842 V (resid -2.3 mV); 5.00 mA @ 1.919 V (resid -3.2 mV); 10.00 mA @ 2.006 V (resid +1.2 mV); 15.00 mA @ 2.074 V (resid +3.1 mV); 20.00 mA @ 2.133 V (resid +1.6 mV); 25.00 mA @ 2.185 V (resid -3.0 mV). Cross-check: model VF(20 mA)=2.131 V vs stated typ 2.10 V (+31 mV); Table 3 \"Red 1.8 2.1 2.6\" V @ IF = 20 mA (p3).",
+     "method": "Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 7 points 1.00-25.0 mA, rms 2.5 mV. Window sensitivity: windows 0.5/1/2/5-25 mA give N 2.07-2.92, RS 7.3-9.0 ohm. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25.",
+     "scope": "red die"
+    },
+    {
+     "param": "red_RS",
+     "value": 8.75,
+     "unit": "ohm",
+     "basis": "DERIVED",
+     "confidence": "M",
+     "source_url": "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf",
+     "page": 5,
+     "evidence": "Figure 2. Forward Current vs. Forward Voltage, RED trace (linear 0-100 mA vs 0-5 V; no temperature printed on figure, tables are TJ = 25 \u00b0C). Read points: 1.00 mA @ 1.799 V (resid +2.4 mV); 2.00 mA @ 1.842 V (resid -2.3 mV); 5.00 mA @ 1.919 V (resid -3.2 mV); 10.00 mA @ 2.006 V (resid +1.2 mV); 15.00 mA @ 2.074 V (resid +3.1 mV); 20.00 mA @ 2.133 V (resid +1.6 mV); 25.00 mA @ 2.185 V (resid -3.0 mV). Cross-check: model VF(20 mA)=2.131 V vs stated typ 2.10 V (+31 mV); Table 3 \"Red 1.8 2.1 2.6\" V @ IF = 20 mA (p3).",
+     "method": "Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 7 points 1.00-25.0 mA, rms 2.5 mV. Window sensitivity: windows 0.5/1/2/5-25 mA give N 2.07-2.92, RS 7.3-9.0 ohm. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25.",
+     "scope": "red die"
+    },
+    {
+     "param": "green_blue_IS",
+     "value": 9.423e-15,
+     "unit": "A",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf",
+     "page": 5,
+     "evidence": "Figure 2. Forward Current vs. Forward Voltage, single \"GREEN/BLUE\" trace (linear 0-100 mA vs 0-5 V). Read points: 1.00 mA @ 2.552 V (resid +7.8 mV); 2.00 mA @ 2.620 V (resid -8.4 mV); 5.00 mA @ 2.756 V (resid -8.0 mV); 10.00 mA @ 2.911 V (resid +4.6 mV); 15.00 mA @ 3.028 V (resid +8.1 mV); 20.00 mA @ 3.126 V (resid +3.5 mV); 25.00 mA @ 3.211 V (resid -7.5 mV). Cross-check: model VF(20 mA)=3.123 V vs stated typ 3.10 V (+23 mV); Table 3 \"Green 2.8 3.1 3.6\" / \"Blue 2.8 3.1 3.6\" V @ IF = 20 mA (p3).",
+     "method": "Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 7 points 1.00-25.0 mA, rms 7.1 mV. Window sensitivity: windows 0.5/1/2/5-25 mA give N 3.39-5.82, RS 10.8-16.0 ohm. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25.",
+     "scope": "green and blue dies (shared datasheet trace)"
+    },
+    {
+     "param": "green_blue_N",
+     "value": 3.878,
+     "unit": "1",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf",
+     "page": 5,
+     "evidence": "Figure 2. Forward Current vs. Forward Voltage, single \"GREEN/BLUE\" trace (linear 0-100 mA vs 0-5 V). Read points: 1.00 mA @ 2.552 V (resid +7.8 mV); 2.00 mA @ 2.620 V (resid -8.4 mV); 5.00 mA @ 2.756 V (resid -8.0 mV); 10.00 mA @ 2.911 V (resid +4.6 mV); 15.00 mA @ 3.028 V (resid +8.1 mV); 20.00 mA @ 3.126 V (resid +3.5 mV); 25.00 mA @ 3.211 V (resid -7.5 mV). Cross-check: model VF(20 mA)=3.123 V vs stated typ 3.10 V (+23 mV); Table 3 \"Green 2.8 3.1 3.6\" / \"Blue 2.8 3.1 3.6\" V @ IF = 20 mA (p3).",
+     "method": "Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 7 points 1.00-25.0 mA, rms 7.1 mV. Window sensitivity: windows 0.5/1/2/5-25 mA give N 3.39-5.82, RS 10.8-16.0 ohm. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25.",
+     "scope": "green and blue dies (shared datasheet trace)"
+    },
+    {
+     "param": "green_blue_RS",
+     "value": 14.73,
+     "unit": "ohm",
+     "basis": "DERIVED",
+     "confidence": "L",
+     "source_url": "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf",
+     "page": 5,
+     "evidence": "Figure 2. Forward Current vs. Forward Voltage, single \"GREEN/BLUE\" trace (linear 0-100 mA vs 0-5 V). Read points: 1.00 mA @ 2.552 V (resid +7.8 mV); 2.00 mA @ 2.620 V (resid -8.4 mV); 5.00 mA @ 2.756 V (resid -8.0 mV); 10.00 mA @ 2.911 V (resid +4.6 mV); 15.00 mA @ 3.028 V (resid +8.1 mV); 20.00 mA @ 3.126 V (resid +3.5 mV); 25.00 mA @ 3.211 V (resid -7.5 mV). Cross-check: model VF(20 mA)=3.123 V vs stated typ 3.10 V (+23 mV); Table 3 \"Green 2.8 3.1 3.6\" / \"Blue 2.8 3.1 3.6\" V @ IF = 20 mA (p3).",
+     "method": "Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 7 points 1.00-25.0 mA, rms 7.1 mV. Window sensitivity: windows 0.5/1/2/5-25 mA give N 3.39-5.82, RS 10.8-16.0 ohm. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25.",
+     "scope": "green and blue dies (shared datasheet trace)"
+    }
+   ],
+   "unresolved": [
+    {
+     "param": "separate green vs blue IS/N/RS",
+     "reason": "Figure 2 gives one shared \"GREEN/BLUE\" trace; the document cannot distinguish green from blue I-V, so the same set is proposed for both."
+    }
+   ],
+   "field_corrections": [],
+   "field_check": "All existing field values in src/ohmni/behavior/data/entries/OHM-082.json research.field_updates were compared to the archived document text; no value found wrong."
+  }
+ ],
+ "bench5_note": "Class BEH-LED-INDICATOR canonical_payload.bench[5] is id B6, 'dVF/dT red' = -0.002 V/K, tol 4e-4, basis ASSUMPTION (bench file B6_tempco_all.cir, 0-85 C at 20 mA). Supportable from these documents: Kingbright APHHS1005SURCK (p2), AP2012EC (p2) and APT3216SURCK (p2) each state 'Temperature Coefficient of VF TCV ... -1.9 mV/\u00b0C, IF = 20mA, -10\u00b0C <= T <= 85\u00b0C' (Hyper Red / High Efficiency Red), which lies inside -2.0 +/- 0.4 mV/K, so for those red references the basis could become MFR_DATASHEET (value -0.0019 V/K). ASMB-MTB0-0A3A2 Figure 6 (p5, vector) red trace reads -0.0012 V at 24.8 C, -0.0619 V at 49.6 C, -0.1591 V at 100.1 C, i.e. about -2.1 mV/K over 25-100 C (DERIVED, M; drive current not printed on the figure). TLDR4400 and TLHR5200 (the S1 source the class cites for red) give no VF temperature coefficient or VF-vs-temperature curve, so they cannot support B6. VLHW5100/VLMW33 give -4 mV/K but for white, not red. Note also bench[4] (id B5, Iv(1 mA)=1.99 mcd, basis '45*(1/20)^1.0416'): TLDR4400 p2 states 'Luminous intensity IF = 1 mA IV - 2 mcd', which directly supports ~2 mcd.",
+ "class_parameter_check": "BEH-LED-INDICATOR.parameters: IS default 1.846e-16 A (DERIVED,L), N 2.0 unit 1 (ASSUMPTION,L; unit is the integer 1, not a string), RS 16.4 ohm (DERIVED,L). Definitions/units are consistent with SPICE D-model IS[A], N[-], RS[ohm]. vf_typ default 2.0 V conflicts with TLDR4400 typ 1.8 V (already noted in the OHM-073 recipe limitations); if_max default 0.02 A labelled MFR_DATASHEET while S1 TLDR4400 states 50 mA (Tamb<=60 C). Runtime recipes for OHM-073..081 all bind the shared authored LED_RED (or colour) card via template_override, so any per-part set proposed here needs a per-entry .model to take effect; OHM-082 binds LED_RGB_R / LED_RGB_GB whose N, RS are marked ASSUMPTION in models.inc.",
+ "fit_convention": "V = N*Vt*ln(I/IS+1) + I*RS, Vt=0.025693 V (25 C)"
+}

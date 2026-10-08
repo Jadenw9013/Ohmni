@@ -91,6 +91,11 @@ class RuntimeRecipe(BaseModel):
     template_key: str = "netlist_template"
     instance_value_unit: str | None = None
     critical_facts: dict[str, FactBinding]
+    model_facts: dict[str, FactBinding] = Field(
+        default_factory=dict,
+        description="Model parameters fitted from the part's own sourced curves; held to the same sourcing"
+        " rules as critical facts but excluded from rating confidence",
+    )
     derived_parameters: dict[str, AuthoredExpression] = Field(default_factory=dict)
     class_parameters: dict[str, str] = Field(default_factory=dict)
     quoted_parameters: dict[str, QuotedParameter] = Field(default_factory=dict)

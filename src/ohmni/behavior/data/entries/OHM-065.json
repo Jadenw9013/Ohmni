@@ -204,6 +204,97 @@
         ],
         "unit": "K/W",
         "value": 75
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "Fig. 3 \"Typical Instantaneous Forward Characteristics\", TJ = 25 C curve (4th from left at 0.1 A), typical forward curve, vector-extracted read points (IF, VF): (0.02 A, 0.6936 V), (0.05 A, 0.7374 V), (0.1 A, 0.7692 V), (0.2 A, 0.8060 V), (0.5 A, 0.8580 V), (1 A, 0.9057 V), (2 A, 0.9601 V), (5 A, 1.0600 V), (10 A, 1.1801 V); residuals mV: [3.7, 0.8, -3.3, -3.2, -2.7, 1.1, 2.7, 2.7, -1.8] (rms 2.6, max 3.7) Method: Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over 20 mA to 10 A (9 points). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. Figure is for the S2A-S2M family.",
+        "field": "spice_IS_fit",
+        "page": 3,
+        "scope": "Vishay S2M; IS for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://www.vishay.com/doc?88712"
+        ],
+        "unit": "A",
+        "value": 2.269e-08
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "Fig. 3 \"Typical Instantaneous Forward Characteristics\", TJ = 25 C curve (4th from left at 0.1 A), typical forward curve, vector-extracted read points (IF, VF): (0.02 A, 0.6936 V), (0.05 A, 0.7374 V), (0.1 A, 0.7692 V), (0.2 A, 0.8060 V), (0.5 A, 0.8580 V), (1 A, 0.9057 V), (2 A, 0.9601 V), (5 A, 1.0600 V), (10 A, 1.1801 V); residuals mV: [3.7, 0.8, -3.3, -3.2, -2.7, 1.1, 2.7, 2.7, -1.8] (rms 2.6, max 3.7) Method: Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over 20 mA to 10 A (9 points). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. Figure is for the S2A-S2M family. IS and N are strongly correlated; use them as a pair.",
+        "field": "spice_N_fit",
+        "page": 3,
+        "scope": "Vishay S2M; N for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://www.vishay.com/doc?88712"
+        ],
+        "unit": "1",
+        "value": 1.961
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "Fig. 3 \"Typical Instantaneous Forward Characteristics\", TJ = 25 C curve (4th from left at 0.1 A), typical forward curve, vector-extracted read points (IF, VF): (0.02 A, 0.6936 V), (0.05 A, 0.7374 V), (0.1 A, 0.7692 V), (0.2 A, 0.8060 V), (0.5 A, 0.8580 V), (1 A, 0.9057 V), (2 A, 0.9601 V), (5 A, 1.0600 V), (10 A, 1.1801 V); residuals mV: [3.7, 0.8, -3.3, -3.2, -2.7, 1.1, 2.7, 2.7, -1.8] (rms 2.6, max 3.7) Method: Least-squares fit of VF = N*Vt*ln(IF/IS+1) + IF*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt=25.69 mV at 25 C, over 20 mA to 10 A (9 points). Points read from the PDF vector path of the curve (not a raster), axis calibrated to the plot frame/decade grid lines. Figure is for the S2A-S2M family.",
+        "field": "spice_RS_fit",
+        "page": 3,
+        "scope": "Vishay S2M; RS for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://www.vishay.com/doc?88712"
+        ],
+        "unit": "ohm",
+        "value": 0.01792
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "Fig. 5 \"Typical Junction Capacitance\" (1 MHz), 8 polyline vertices, typical junction capacitance vs reverse voltage, read points (VR, C): (0.099 V, 37.128 pF), (3.9549 V, 16.281 pF), (9.7874 V, 12.443 pF), (19.717 V, 10.403 pF), (39.714 V, 8.389 pF), (58.7505 V, 7.400 pF), (78.3891 V, 6.888 pF), (98.2819 V, 6.412 pF); fit residuals %: [0.03, 0.01, -0.98, 1.39, 0.25, -0.87, 0.38, -0.18] (max 1.39%) Method: Least-squares fit of ln C = ln CJO - M*ln(1+VR/VJ) (grid over VJ, linear solve for CJO and M at each VJ). Check: C(4 V) = 16.2 pF vs table \"Typical junction capacitance 4.0 V, 1 MHz CJ 16 pF\".",
+        "field": "spice_CJO_fit",
+        "page": 3,
+        "scope": "Vishay S2M; CJO for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://www.vishay.com/doc?88712"
+        ],
+        "unit": "F",
+        "value": 4.318e-11
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "Fig. 5 \"Typical Junction Capacitance\" (1 MHz), 8 polyline vertices, typical junction capacitance vs reverse voltage, read points (VR, C): (0.099 V, 37.128 pF), (3.9549 V, 16.281 pF), (9.7874 V, 12.443 pF), (19.717 V, 10.403 pF), (39.714 V, 8.389 pF), (58.7505 V, 7.400 pF), (78.3891 V, 6.888 pF), (98.2819 V, 6.412 pF); fit residuals %: [0.03, 0.01, -0.98, 1.39, 0.25, -0.87, 0.38, -0.18] (max 1.39%) Method: Least-squares fit of ln C = ln CJO - M*ln(1+VR/VJ) (grid over VJ, linear solve for CJO and M at each VJ). Check: C(4 V) = 16.2 pF vs table \"Typical junction capacitance 4.0 V, 1 MHz CJ 16 pF\". VJ and M are correlated.",
+        "field": "spice_VJ_fit",
+        "page": 3,
+        "scope": "Vishay S2M; VJ for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://www.vishay.com/doc?88712"
+        ],
+        "unit": "V",
+        "value": 0.146
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "Fig. 5 \"Typical Junction Capacitance\" (1 MHz), 8 polyline vertices, typical junction capacitance vs reverse voltage, read points (VR, C): (0.099 V, 37.128 pF), (3.9549 V, 16.281 pF), (9.7874 V, 12.443 pF), (19.717 V, 10.403 pF), (39.714 V, 8.389 pF), (58.7505 V, 7.400 pF), (78.3891 V, 6.888 pF), (98.2819 V, 6.412 pF); fit residuals %: [0.03, 0.01, -0.98, 1.39, 0.25, -0.87, 0.38, -0.18] (max 1.39%) Method: Least-squares fit of ln C = ln CJO - M*ln(1+VR/VJ) (grid over VJ, linear solve for CJO and M at each VJ). Check: C(4 V) = 16.2 pF vs table \"Typical junction capacitance 4.0 V, 1 MHz CJ 16 pF\". VJ and M are correlated.",
+        "field": "spice_M_fit",
+        "page": 3,
+        "scope": "Vishay S2M; M for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://www.vishay.com/doc?88712"
+        ],
+        "unit": "1",
+        "value": 0.293
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "detail": "\"Typical reverse recovery time IF = 0.5 A, IR = 1.0 A, Irr = 0.25 A trr 2.0 us\" Method: Charge-control storage-time estimate used by the SPICE lumped-charge diode: ts = TT*ln(1+IF/IR). Treating the whole quoted trr as storage time gives TT = trr/ln(1+IF/IR). Ignores the recovery tail to the quoted Irr, junction capacitance and RS, so it over-estimates TT. TT = 2.0 us/ln(1.5) = 4.93 us.",
+        "field": "spice_TT_fit",
+        "page": 2,
+        "scope": "Vishay S2M; TT for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://www.vishay.com/doc?88712"
+        ],
+        "unit": "s",
+        "value": 4.933e-06
       }
     ],
     "remaining_open_items": [
@@ -214,7 +305,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-065.md",
-      "document_sha256": "19e8f006f727dc345c201a5584076d5e977ebdc0940b7a29be82894a78b48021",
+      "document_sha256": "816ac603b2ed769a664262489f5e151671d7b5d8c56383474f5fbfa1453c4d98",
       "fragment_sha256": null,
       "line": 1
     }

@@ -2,18 +2,8 @@ OHMNI sourced behavior circuit
 .options tnom=25
 .temp 25
 Iexcitation1 0 n1 DC 0.02
-Dc1 n1 0 LED_RED
-* OHMNI BEH-LED-INDICATOR D-model cards (behavioural_approximation, NOT vendor models)
-* Extracted by /home/claude/behavior/tmp_R5_fit.py from Vishay datasheet table and chart points, see R5.md S2..S6
-* TNOM=27 C. CJO values from datasheet Cj where given (red 30 pF @0V TLDR4400; green 50 pF TLHG5800); others ASSUMPTION.
-.model LED_RED   D (IS=1.846e-16 N=2.0  RS=16.4 CJO=30p VJ=1.0 M=0.33 TT=0 BV=15 IBV=10u EG=2.2 XTI=3)
-.model LED_GREEN D (IS=3.793e-18 N=2.38 RS=8.76 CJO=50p VJ=1.0 M=0.33 TT=0 BV=15 IBV=10u EG=2.8 XTI=3)
-.model LED_BLUE  D (IS=7.641e-24 N=3.0  RS=6.28 CJO=60p VJ=1.0 M=0.33 TT=0 BV=5.5 IBV=10u EG=4.6 XTI=3)
-.model LED_WHITE D (IS=1.247e-19 N=3.0  RS=6.3  CJO=60p VJ=1.0 M=0.33 TT=0 BV=5.5 IBV=10u EG=3.9 XTI=3)
-* RGB package dies anchored on Broadcom ASMB-MTB0-0A3A2 typical VF at 20 mA (red 2.1 V, green 3.1 V, blue 3.1 V); N, RS assumed (S-ASSUMPTION)
-.model LED_RGB_R D (IS=4.848e-18 N=2.0 RS=12  CJO=30p VJ=1.0 M=0.33 BV=5.5 IBV=10u EG=2.2 XTI=3)
-.model LED_RGB_GB D (IS=4.526e-19 N=3.0 RS=6.3 CJO=60p VJ=1.0 M=0.33 BV=5.5 IBV=10u EG=4.0 XTI=3)
-
+Dc1 n1 0 LEDP_c1
+.model LEDP_c1 D (IS=7.0649999999999999e-17 N=2.2229999999999999 RS=2.27 CJO=30p VJ=1.0 M=0.33 TT=0 BV=15 IBV=10u EG=2.2 XTI=3)
 .op
 .print op
 .end

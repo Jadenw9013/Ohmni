@@ -976,7 +976,7 @@ class DemoHandler(SimpleHTTPRequestHandler):
         except BaseException:  # noqa: BLE001 - exercise evidence failures fail closed
             return self._json({"error":"exercise_unavailable"},HTTPStatus.SERVICE_UNAVAILABLE)
 
-    def _behavior(self, entry_id, *, run=False):
+    def _behavior(self, entry_id, *, run=False, summary=False):
         if run:
             payload=self._project_payload(set())
             if payload is None:return
@@ -992,6 +992,7 @@ class DemoHandler(SimpleHTTPRequestHandler):
                         _find_repo_root(ROOT),self.server.store.output_root/"behavior-runs")
                 service=self.server.behavior_service
             if run:return self._json({"result":service.run(entry_id),**self.server._identity()})
+            if summary:return self._json({"entries":service.summary(),**self.server._identity()})
             return self._json({"component":service.describe(entry_id),**self.server._identity()})
         except BehaviorRunBusy:
             return self._json({"error":"behavior_run_busy"},HTTPStatus.CONFLICT)
@@ -1070,6 +1071,7 @@ class DemoHandler(SimpleHTTPRequestHandler):
             try:return self._json({"options":project_options(),**self.server._identity()})
             except BaseException:  # noqa: BLE001 - unavailable catalog choices fail closed
                 return self._json({"error":"project_unavailable"},HTTPStatus.SERVICE_UNAVAILABLE)
+        if request_path=="/api/behavior":return self._behavior(None,summary=True)
         behavior_path=re.fullmatch(r"/api/behavior/(OHM-[0-9]{3})",request_path)
         if behavior_path:return self._behavior(behavior_path[1])
         if request_path=="/api/components":

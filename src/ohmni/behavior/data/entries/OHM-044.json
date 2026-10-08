@@ -126,6 +126,19 @@
         ],
         "unit": "C",
         "value": 140
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "detail": "Irms 700 mA; footnote 7: \"Current that causes a 15°C temperature rise from 25°C ambient. This information is for reference only\"; DCR max 0.170 ohm. Method: rth = dT/(I^2*DCR) = 15/(0.7^2*0.170) = 180 K/W. DCR is a maximum (no typical given), so real power is lower and true rth likely higher. If the model's copper tempco (class tc=0.00393, not from this document) is applied so the simulated rise lands on 15 K, rth = 170 K/W.",
+        "field": "thermal_resistance_from_rating_derivation",
+        "page": 2,
+        "scope": "Coilcraft 0603CS-15NX_R_, suffix unselected; explicit alternative; rth for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://www.coilcraft.com/getmedia/022eb894-7253-40d0-b07c-650d362fc80e/0603cs.pdf"
+        ],
+        "unit": "K/W",
+        "value": 180
       }
     ],
     "remaining_open_items": [
@@ -137,7 +150,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-044.md",
-      "document_sha256": "8dd1061544c6f0db4a72dab5ba6a9d8b7ab026a5bfec86e757f4246051af4923",
+      "document_sha256": "8f5583384e1573a714fefa4dcb65324932c34583bd72685272b6ca543f89a559",
       "fragment_sha256": null,
       "line": 1
     }

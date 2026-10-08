@@ -88,6 +88,19 @@
         ],
         "unit": "ppm/degC",
         "value": 20
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "detail": "p1 'POWER RATING P25 °C W' RS005 U = 5.0; p3 'Operating Temperature Range °C Characteristic U = -65 to +250'; p3 Derating figure CHAR. U: 100 % to 25 °C, 0 % at 250 °C (visually read). Method: Rth = (250 - 25) K / 5 W = 45 K/W. Linear derating means film/element temperature = T_amb + Rth*P reaches the endpoint on the derating line, so Rth_implied = (T_end - T_knee)/P_rated. This is the derating-implied thermal resistance on the manufacturer's (unstated) reference mounting, not a measured or board-specific value. Caveat: characteristic V (6.5 W, 0 at 350 °C) implies (350-25)/6.5 = 50 K/W for the same body, again showing the derating-implied figure is a rating construct.",
+        "field": "thermal_resistance_from_rating_derivation",
+        "page": 3,
+        "scope": "OHM-013; rth for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://www.vishay.com/docs/30204/rsns.pdf"
+        ],
+        "unit": "K/W",
+        "value": 45.0
       }
     ],
     "remaining_open_items": [
@@ -100,7 +113,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-013.md",
-      "document_sha256": "b6117103475974e1997e4ffc63963f18976de17110042685242e8ef736b3eadf",
+      "document_sha256": "78d5074f7cd361cc452690f5851746aeb02359ae41e13227d4626cb00ad37b87",
       "fragment_sha256": null,
       "line": 1
     }

@@ -86,6 +86,19 @@
         ],
         "unit": "degC",
         "value": 70
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "p1 Technical specs 'Rated Dissipation P70 (1) W 0.031'; p1 note (1) 'The rated dissipation applies only if the permitted film temperature of 125 °C is not exceeded'; p2 Derating figure: 100 % to 70 °C, 0 % at 125 °C (visually read). Method: Rth = (125 - 70) K / 0.031 W = 1774.2 K/W. Linear derating means film/element temperature = T_amb + Rth*P reaches the endpoint on the derating line, so Rth_implied = (T_end - T_knee)/P_rated. This is the derating-implied thermal resistance on the manufacturer's (unstated) reference mounting, not a measured or board-specific value. Note the 01005 endpoint is 125 °C, not the class default 155 °C.",
+        "field": "thermal_resistance_from_rating_derivation",
+        "page": 2,
+        "scope": "OHM-001; rth for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://www.vishay.com/docs/20056/crcw01005e3.pdf"
+        ],
+        "unit": "K/W",
+        "value": 1774.2
       }
     ],
     "remaining_open_items": [
@@ -98,7 +111,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-001.md",
-      "document_sha256": "6d761a10167bdd53722d0a07556d9d0a3d721031c263a0e28af07e9c8f1e809a",
+      "document_sha256": "9e3d3c2ba558de5abb05b6f4aaf37822785e333ae6bfb29ef1f0495817c98ed7",
       "fragment_sha256": null,
       "line": 1
     }

@@ -239,6 +239,84 @@
         ],
         "unit": null,
         "value": "Zener diode"
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "detail": "Fig. 5 - Forward Current vs. Forward Voltage (red; log 0.1-1000 mA vs linear 0-10 V; \"tp/T = 0.001, tp = 10 us\"). Read points: 1.00 mA @ 1.511 V (resid +3.4 mV); 2.00 mA @ 1.562 V (resid -4.8 mV); 5.00 mA @ 1.661 V (resid -1.4 mV); 10.00 mA @ 1.765 V (resid +3.5 mV); 20.00 mA @ 1.910 V (resid -0.1 mV); 30.00 mA @ 2.037 V (resid -0.7 mV). Cross-check: model VF(20 mA)=1.910 V vs stated typ 2.00 V (-90 mV); \"Forward voltage IF = 20 mA VF - 2 3 V\" (p2). Method: Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 6 points 1.00-30.0 mA, rms 2.9 mV. Window sensitivity: windows 1-20/1-30/1-50/2-30/5-30 mA give N 2.35-3.16, RS 9.2-11.7 ohm; including 0.1-0.3 mA (curve drawn non-monotonic there) gives N 1.19. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25.",
+        "field": "spice_IS_fit",
+        "page": 3,
+        "scope": "Vishay TLHR5200 red (+VLHW5100 white variant); IS for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://www.vishay.com/docs/83011/tlhr5200.pdf"
+        ],
+        "unit": "A",
+        "value": 8.72e-13
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "detail": "Fig. 5 - Forward Current vs. Forward Voltage (red; log 0.1-1000 mA vs linear 0-10 V; \"tp/T = 0.001, tp = 10 us\"). Read points: 1.00 mA @ 1.511 V (resid +3.4 mV); 2.00 mA @ 1.562 V (resid -4.8 mV); 5.00 mA @ 1.661 V (resid -1.4 mV); 10.00 mA @ 1.765 V (resid +3.5 mV); 20.00 mA @ 1.910 V (resid -0.1 mV); 30.00 mA @ 2.037 V (resid -0.7 mV). Cross-check: model VF(20 mA)=1.910 V vs stated typ 2.00 V (-90 mV); \"Forward voltage IF = 20 mA VF - 2 3 V\" (p2). Method: Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 6 points 1.00-30.0 mA, rms 2.9 mV. Window sensitivity: windows 1-20/1-30/1-50/2-30/5-30 mA give N 2.35-3.16, RS 9.2-11.7 ohm; including 0.1-0.3 mA (curve drawn non-monotonic there) gives N 1.19. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25.",
+        "field": "spice_N_fit",
+        "page": 3,
+        "scope": "Vishay TLHR5200 red (+VLHW5100 white variant); N for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://www.vishay.com/docs/83011/tlhr5200.pdf"
+        ],
+        "unit": "1",
+        "value": 2.794
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "detail": "Fig. 5 - Forward Current vs. Forward Voltage (red; log 0.1-1000 mA vs linear 0-10 V; \"tp/T = 0.001, tp = 10 us\"). Read points: 1.00 mA @ 1.511 V (resid +3.4 mV); 2.00 mA @ 1.562 V (resid -4.8 mV); 5.00 mA @ 1.661 V (resid -1.4 mV); 10.00 mA @ 1.765 V (resid +3.5 mV); 20.00 mA @ 1.910 V (resid -0.1 mV); 30.00 mA @ 2.037 V (resid -0.7 mV). Cross-check: model VF(20 mA)=1.910 V vs stated typ 2.00 V (-90 mV); \"Forward voltage IF = 20 mA VF - 2 3 V\" (p2). Method: Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 6 points 1.00-30.0 mA, rms 2.9 mV. Window sensitivity: windows 1-20/1-30/1-50/2-30/5-30 mA give N 2.35-3.16, RS 9.2-11.7 ohm; including 0.1-0.3 mA (curve drawn non-monotonic there) gives N 1.19. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25.",
+        "field": "spice_RS_fit",
+        "page": 3,
+        "scope": "Vishay TLHR5200 red (+VLHW5100 white variant); RS for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://www.vishay.com/docs/83011/tlhr5200.pdf"
+        ],
+        "unit": "ohm",
+        "value": 9.85
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "detail": "Fig. 4 - Forward Current vs. Forward Voltage (white; log 1-100 mA vs 2-5 V; Tamb = 25 °C). Read points: 2.00 mA @ 2.702 V (resid -0.3 mV); 5.00 mA @ 2.927 V (resid +1.9 mV); 10.00 mA @ 3.153 V (resid -3.6 mV); 20.00 mA @ 3.506 V (resid +3.2 mV); 30.00 mA @ 3.800 V (resid -1.2 mV). Cross-check: model VF(20 mA)=3.503 V, inside stated \"Forward voltage IF = 20 mA VF 2.8 - 3.6 V\" (p2; no typical given). Method: Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 5 points 2.00-30.0 mA, rms 2.4 mV. Window sensitivity: windows 1-20..5-30 mA give N 6.0-7.1, RS 20.8-24.7 ohm. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25.",
+        "field": "spice_white_IS_fit",
+        "page": 3,
+        "scope": "Vishay TLHR5200 red (+VLHW5100 white variant); white_IS for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://www.vishay.com/docs/81159/vlhw5100.pdf"
+        ],
+        "unit": "A",
+        "value": 2.516e-10
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "detail": "Fig. 4 - Forward Current vs. Forward Voltage (white; log 1-100 mA vs 2-5 V; Tamb = 25 °C). Read points: 2.00 mA @ 2.702 V (resid -0.3 mV); 5.00 mA @ 2.927 V (resid +1.9 mV); 10.00 mA @ 3.153 V (resid -3.6 mV); 20.00 mA @ 3.506 V (resid +3.2 mV); 30.00 mA @ 3.800 V (resid -1.2 mV). Cross-check: model VF(20 mA)=3.503 V, inside stated \"Forward voltage IF = 20 mA VF 2.8 - 3.6 V\" (p2; no typical given). Method: Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 5 points 2.00-30.0 mA, rms 2.4 mV. Window sensitivity: windows 1-20..5-30 mA give N 6.0-7.1, RS 20.8-24.7 ohm. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25.",
+        "field": "spice_white_N_fit",
+        "page": 3,
+        "scope": "Vishay TLHR5200 red (+VLHW5100 white variant); white_N for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://www.vishay.com/docs/81159/vlhw5100.pdf"
+        ],
+        "unit": "1",
+        "value": 6.507
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "Fig. 4 - Forward Current vs. Forward Voltage (white; log 1-100 mA vs 2-5 V; Tamb = 25 °C). Read points: 2.00 mA @ 2.702 V (resid -0.3 mV); 5.00 mA @ 2.927 V (resid +1.9 mV); 10.00 mA @ 3.153 V (resid -3.6 mV); 20.00 mA @ 3.506 V (resid +3.2 mV); 30.00 mA @ 3.800 V (resid -1.2 mV). Cross-check: model VF(20 mA)=3.503 V, inside stated \"Forward voltage IF = 20 mA VF 2.8 - 3.6 V\" (p2; no typical given). Method: Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 5 points 2.00-30.0 mA, rms 2.4 mV. Window sensitivity: windows 1-20..5-30 mA give N 6.0-7.1, RS 20.8-24.7 ohm. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25.",
+        "field": "spice_white_RS_fit",
+        "page": 3,
+        "scope": "Vishay TLHR5200 red (+VLHW5100 white variant); white_RS for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "sources": [
+          "https://www.vishay.com/docs/81159/vlhw5100.pdf"
+        ],
+        "unit": "ohm",
+        "value": 23.07
       }
     ],
     "remaining_open_items": [
@@ -250,7 +328,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-074.md",
-      "document_sha256": "5cae08817f42452d23e7aaac2b9df001be98b1367358e87df908b21f49b338a1",
+      "document_sha256": "38a5d5277745022af53b00885a5bc45e809a453c7a8eae5ffaee998970185073",
       "fragment_sha256": null,
       "line": 1
     }
