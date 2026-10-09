@@ -67,7 +67,8 @@ def validate_reference_function(entry, recipe):
         raise BehaviorRegistryError(f"sourced reference function does not match the package record: {entry.entry_id}")
 
 
-def terminal_nodes(circuit, component, entry_id, terminal_roles, registry, nodes, identity_map=None):
+def terminal_nodes(circuit, component, entry_id, terminal_roles, registry, nodes, identity_map=None,
+                   open_roles=()):
     """Catalog numbers are never assumed to be physical terminal numbers."""
     by_pin = {pin.pin: nodes[net.name] for net in circuit.nets
               for pin in net.connections if pin.component == component.ref}
@@ -87,9 +88,11 @@ def terminal_nodes(circuit, component, entry_id, terminal_roles, registry, nodes
             raise ValueError("identity pin binding is invalid")
     else:
         raise ValueError("explicit catalog pin permutation is missing")
-    if set(by_pin) != set(mapping):
+    optional = {pin for pin, terminal in mapping.items() if terminal_roles.get(terminal) in set(open_roles)}
+    if not set(by_pin) <= set(mapping) or set(mapping) - set(by_pin) - optional:
         raise ValueError("connected pins must exactly match the bound package terminals")
-    return {terminal: by_pin[pin] for pin, terminal in mapping.items()}
+    # An unconnected mating contact is an unmated plug/cable/card side: its own node, never ground.
+    return {terminal: by_pin.get(pin, f"{component.ref}_open_{terminal}") for pin, terminal in mapping.items()}
 
 
 def entry_problems(entry, recipe: RuntimeRecipe | None) -> list[str]:
@@ -330,7 +333,7 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
                 if sourced_roles != recipe.terminal_roles:
                     raise ValueError("recipe pin roles differ from the sourced manufacturer map")
             terminals = terminal_nodes(circuit, component, entry_id, recipe.terminal_roles, registry,
-                                       nodes, recipe.catalog_identity_pin_map)
+                                       nodes, recipe.catalog_identity_pin_map, recipe.open_mating_roles)
             roles = {}
             for terminal, role in recipe.terminal_roles.items():
                 node = terminals[terminal]

@@ -87,6 +87,11 @@ class RuntimeRecipe(BaseModel):
     required_ground_roles: list[str] = Field(default_factory=list)
     required_same_net_roles: list[list[str]] = Field(default_factory=list)
     required_isolated_roles: list[str] = Field(default_factory=list)
+    open_mating_roles: list[str] = Field(
+        default_factory=list,
+        description="Connector mating-side contacts (cable, card or plug side). They are not PCB pads, so a"
+        " design may leave them unconnected; each then gets its own private node, as an unmated contact would.",
+    )
     pin_role_fact: PinRoleFact | None = None
     template_key: str = "netlist_template"
     instance_value_unit: str | None = None
@@ -116,6 +121,12 @@ class RuntimeRecipe(BaseModel):
             constrained.update(group)
         if constrained - roles:
             raise ValueError("connection constraint refers to an unknown terminal role")
+        if set(self.open_mating_roles) - roles:
+            raise ValueError("open mating role refers to an unknown terminal role")
+        if set(self.open_mating_roles) & constrained:
+            raise ValueError("an open mating role cannot also carry a connection constraint")
+        if any(pin.isdigit() for pin, role in self.terminal_roles.items() if role in self.open_mating_roles):
+            raise ValueError("a numbered package pin cannot be an open mating contact")
         return self
 
 
