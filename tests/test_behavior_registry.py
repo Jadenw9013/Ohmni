@@ -85,9 +85,16 @@ def test_master_status_layer_fidelity_and_behavior_ids_are_preserved(registry):
         assert record.status.value == source["status"]
         assert record.layer.value == source["layer"]
         assert record.fidelity.value == source["fidelity"].strip()
+        # The master-table classes always come first and unchanged; only an owner-approved
+        # class_addition resolution may append a class after them.
+        added = [
+            r.data["add_behavior_class"] for r in registry.manifest.resolutions
+            if r.kind == "class_addition" and entry_id in r.entry_ids
+            and r.gate_required and r.data.get("approved_by")
+        ]
         assert record.behavior_class_ids == [
             item.strip() for item in source["behaviors"].split(" + ")
-        ]
+        ] + added
 
 
 def test_canonical_payload_status_fidelity_and_basis_are_preserved(registry):

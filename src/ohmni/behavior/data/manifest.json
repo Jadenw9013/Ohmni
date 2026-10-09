@@ -29,7 +29,7 @@
       "resolution_id": "POLARITY-CAN-NEGATIVE-STRIPE",
       "source": {
         "document": "docs/behavior/gapfill/STAGE1_MISMATCH_RESOLUTIONS.json",
-        "document_sha256": "bf33a122081003768819bdca0a3279a1591e0f99569ca76a908c41e0c629317f",
+        "document_sha256": "252e4893445f73ea81cea08b38db4f2b0c32ba8e13d3435705349aa1c13c5c18",
         "fragment_sha256": null,
         "line": 1
       },
@@ -53,7 +53,7 @@
       "resolution_id": "POLARITY-TANTALUM-POSITIVE-BAR",
       "source": {
         "document": "docs/behavior/gapfill/STAGE1_MISMATCH_RESOLUTIONS.json",
-        "document_sha256": "bf33a122081003768819bdca0a3279a1591e0f99569ca76a908c41e0c629317f",
+        "document_sha256": "252e4893445f73ea81cea08b38db4f2b0c32ba8e13d3435705349aa1c13c5c18",
         "fragment_sha256": null,
         "line": 1
       },
@@ -75,7 +75,7 @@
       "resolution_id": "BRIDGE-PIN-FUNCTIONS-UNRESOLVED",
       "source": {
         "document": "docs/behavior/gapfill/STAGE1_MISMATCH_RESOLUTIONS.json",
-        "document_sha256": "bf33a122081003768819bdca0a3279a1591e0f99569ca76a908c41e0c629317f",
+        "document_sha256": "252e4893445f73ea81cea08b38db4f2b0c32ba8e13d3435705349aa1c13c5c18",
         "fragment_sha256": null,
         "line": 1
       },
@@ -97,7 +97,7 @@
       "resolution_id": "PLCC28-REFERENCE-LABEL",
       "source": {
         "document": "docs/behavior/gapfill/STAGE1_MISMATCH_RESOLUTIONS.json",
-        "document_sha256": "bf33a122081003768819bdca0a3279a1591e0f99569ca76a908c41e0c629317f",
+        "document_sha256": "252e4893445f73ea81cea08b38db4f2b0c32ba8e13d3435705349aa1c13c5c18",
         "fragment_sha256": null,
         "line": 1
       },
@@ -123,7 +123,7 @@
       "resolution_id": "BGA-WLCSP-TOP-VIEW-TRANSFORM",
       "source": {
         "document": "docs/behavior/gapfill/STAGE1_MISMATCH_RESOLUTIONS.json",
-        "document_sha256": "bf33a122081003768819bdca0a3279a1591e0f99569ca76a908c41e0c629317f",
+        "document_sha256": "252e4893445f73ea81cea08b38db4f2b0c32ba8e13d3435705349aa1c13c5c18",
         "fragment_sha256": null,
         "line": 1
       },
@@ -148,7 +148,7 @@
       "resolution_id": "XT-FOOTPRINT-PAD-PERMUTATION",
       "source": {
         "document": "docs/behavior/gapfill/STAGE1_MISMATCH_RESOLUTIONS.json",
-        "document_sha256": "bf33a122081003768819bdca0a3279a1591e0f99569ca76a908c41e0c629317f",
+        "document_sha256": "252e4893445f73ea81cea08b38db4f2b0c32ba8e13d3435705349aa1c13c5c18",
         "fragment_sha256": null,
         "line": 1
       },
@@ -210,11 +210,34 @@
       "resolution_id": "REFERENCE-DIMENSION-COMPATIBILITY-POLICY",
       "source": {
         "document": "docs/behavior/gapfill/STAGE1_MISMATCH_RESOLUTIONS.json",
-        "document_sha256": "bf33a122081003768819bdca0a3279a1591e0f99569ca76a908c41e0c629317f",
+        "document_sha256": "252e4893445f73ea81cea08b38db4f2b0c32ba8e13d3435705349aa1c13c5c18",
         "fragment_sha256": null,
         "line": 1
       },
       "subject": "Reference-part package dimensions versus 3D package dimensions"
+    },
+    {
+      "action": "Add BEH-DIO-SCHOTTKY to OHM-066 so its sourced default (Vishay SS34) simulates as the Schottky it is. The master table projects only BEH-DIO-PN, but the spec's own OHM-066 section heading lists BEH-DIO-PN, BEH-DIO-SCHOTTKY and BEH-DIO-TVS. BEH-DIO-PN stays listed; no PN or TVS reference is bound.",
+      "changes_electrical_truth": true,
+      "data": {
+        "add_behavior_class": "BEH-DIO-SCHOTTKY",
+        "approved_by": "Jaden (repository owner): in-session reply 'all 3' on 2026-10-09, answering the request to approve changing OHM-066's class so it simulates as a Schottky",
+        "approved_on": "2026-10-09",
+        "spec_anchor": "COMPONENT_BEHAVIOR_SPEC.md line 4450: '## [OHM-066] SMC diode -> BEH-DIO-PN, BEH-DIO-SCHOTTKY, BEH-DIO-TVS'"
+      },
+      "entry_ids": [
+        "OHM-066"
+      ],
+      "gate_required": true,
+      "kind": "class_addition",
+      "resolution_id": "OHM-066-SCHOTTKY-CLASS",
+      "source": {
+        "document": "docs/behavior/gapfill/STAGE1_MISMATCH_RESOLUTIONS.json",
+        "document_sha256": "252e4893445f73ea81cea08b38db4f2b0c32ba8e13d3435705349aa1c13c5c18",
+        "fragment_sha256": null,
+        "line": 1
+      },
+      "subject": "SMC diode functional class"
     }
   ],
   "schema_version": 1,

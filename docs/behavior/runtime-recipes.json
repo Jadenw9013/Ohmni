@@ -2849,6 +2849,79 @@
         }
       }
     },
+    "OHM-066": {
+      "entry_id": "OHM-066",
+      "behavior_id": "BEH-DIO-SCHOTTKY",
+      "package": "SMC",
+      "reference_part": "Vishay SS34 (SS32-SS36 data sheet 88751, rev. 23-Apr-2020), SMC (DO-214AB)",
+      "terminal_roles": {
+        "1": "K",
+        "2": "A"
+      },
+      "critical_facts": {
+        "if_max": {
+          "field": "average_forward_current",
+          "unit": "A"
+        },
+        "vf_max": {
+          "field": "maximum_forward_voltage",
+          "unit": "V"
+        },
+        "vr_max": {
+          "field": "repetitive_peak_reverse_voltage",
+          "unit": "V"
+        },
+        "rth_ja": {
+          "field": "thermal_resistance_junction_ambient",
+          "unit": "K/W"
+        },
+        "tj_max": {
+          "field": "maximum_junction_temperature",
+          "unit": "C"
+        }
+      },
+      "model_facts": {
+        "IS": {
+          "field": "spice_IS_fit",
+          "unit": "A"
+        },
+        "N": {
+          "field": "spice_N_fit",
+          "unit": "1"
+        },
+        "RS": {
+          "field": "spice_RS_fit",
+          "unit": "ohm"
+        },
+        "CJO": {
+          "field": "spice_CJO_fit",
+          "unit": "F"
+        },
+        "BV": {
+          "field": "spice_BV_rated_blocking",
+          "unit": "V"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "D{ref} {A} {K} DSS_{ref}\n.model DSS_{ref} D (IS={IS} N={N} RS={RS} CJO={CJO} BV={BV})\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 4455
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "IS, N and RS are a fit to the SS32-SS34 25 C typical forward curve (low confidence, read from a log plot); CJO is read from the typical capacitance plot and BV is the 40 V rated blocking voltage, not a measured breakdown.",
+        "Isothermal 25 C DC model. Schottky reverse leakage (0.5 mA at 25 C, 20 mA at 100 C, rated VR) and its heating are not modeled; leakage-driven thermal runaway must be checked separately.",
+        "3 A is the average rectified current at the lead temperature of fig. 1, used here as a DC ceiling; 55 K/W assumes 14 x 14 mm copper pads. Pin map K to terminal 1 (cathode bar, -X), A to terminal 2, per the spec's OHM-066 section and the data sheet's cathode-band marking.",
+        "Bound under owner-approved resolution OHM-066-SCHOTTKY-CLASS; the entry's PN and TVS functions have no bound reference."
+      ]
+    },
     "OHM-067": {
       "behavior_id": "BEH-DIO-SCHOTTKY",
       "critical_facts": {

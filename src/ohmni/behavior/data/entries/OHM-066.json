@@ -1,10 +1,12 @@
 {
   "behavior_class_ids": [
-    "BEH-DIO-PN"
+    "BEH-DIO-PN",
+    "BEH-DIO-SCHOTTKY"
   ],
   "catalog_binding_ids": [],
   "class_record_paths": [
-    "src/ohmni/behavior/data/classes/BEH-DIO-PN.json"
+    "src/ohmni/behavior/data/classes/BEH-DIO-PN.json",
+    "src/ohmni/behavior/data/classes/BEH-DIO-SCHOTTKY.json"
   ],
   "component": "SMC diode",
   "entry_id": "OHM-066",
@@ -123,7 +125,7 @@
         "detail": null,
         "field": "maximum_forward_voltage",
         "page": 2,
-        "scope": "SS34 SMC; 3 A pulse300us1%duty",
+        "scope": "SS34 SMC; IF = 3.0 A, pulse 300 us, 1% duty",
         "sources": [
           "https://www.vishay.com/docs/88751/ss32.pdf"
         ],
@@ -155,23 +157,91 @@
         ],
         "unit": "K/W",
         "value": 55
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "detail": "Fig. 3 SS32-SS34 TJ = 25 C curve read at (A, V): (0.01, 0.222), (0.1, 0.290), (1, 0.369), (2, 0.392), (5, 0.453), (10, 0.551), (20, 0.705). Least-squares fit of VF = N*Vt*ln(I/IS+1) + I*RS (Vt 25.693 mV at 25 C): IS 2.34e-6 A, N 1.045, RS 0.0138 ohm; residuals +2.6, -2.4, -7.1, +2.3, +7.3, -3.0, -0.2 mV (rms 4.3 mV). The fit gives 0.419 V at 3 A, below the 0.5 V maximum.",
+        "field": "spice_IS_fit",
+        "page": 3,
+        "scope": "SS34 SMC; IS for the OHMNI Schottky model (fit to the datasheet's own typical data); not a guaranteed limit",
+        "sources": [
+          "https://www.vishay.com/docs/88751/ss32.pdf"
+        ],
+        "unit": "A",
+        "value": 2.34e-06
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "detail": "Fig. 3 SS32-SS34 TJ = 25 C curve read at (A, V): (0.01, 0.222), (0.1, 0.290), (1, 0.369), (2, 0.392), (5, 0.453), (10, 0.551), (20, 0.705). Least-squares fit of VF = N*Vt*ln(I/IS+1) + I*RS (Vt 25.693 mV at 25 C): IS 2.34e-6 A, N 1.045, RS 0.0138 ohm; residuals +2.6, -2.4, -7.1, +2.3, +7.3, -3.0, -0.2 mV (rms 4.3 mV). The fit gives 0.419 V at 3 A, below the 0.5 V maximum.",
+        "field": "spice_N_fit",
+        "page": 3,
+        "scope": "SS34 SMC; N for the OHMNI Schottky model (fit to the datasheet's own typical data); not a guaranteed limit",
+        "sources": [
+          "https://www.vishay.com/docs/88751/ss32.pdf"
+        ],
+        "unit": "1",
+        "value": 1.045
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "detail": "Fig. 3 SS32-SS34 TJ = 25 C curve read at (A, V): (0.01, 0.222), (0.1, 0.290), (1, 0.369), (2, 0.392), (5, 0.453), (10, 0.551), (20, 0.705). Least-squares fit of VF = N*Vt*ln(I/IS+1) + I*RS (Vt 25.693 mV at 25 C): IS 2.34e-6 A, N 1.045, RS 0.0138 ohm; residuals +2.6, -2.4, -7.1, +2.3, +7.3, -3.0, -0.2 mV (rms 4.3 mV). The fit gives 0.419 V at 3 A, below the 0.5 V maximum.",
+        "field": "spice_RS_fit",
+        "page": 3,
+        "scope": "SS34 SMC; RS for the OHMNI Schottky model (fit to the datasheet's own typical data); not a guaranteed limit",
+        "sources": [
+          "https://www.vishay.com/docs/88751/ss32.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.0138
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "detail": "Fig. 5 SS32-SS34 junction capacitance reads about 1000 pF at 0.1 V to 0.3 V reverse (TJ 25 C, 1 MHz); used as the zero-bias CJO. Read from a log plot, low confidence.",
+        "field": "spice_CJO_fit",
+        "page": 3,
+        "scope": "SS34 SMC; CJO for the OHMNI Schottky model (fit to the datasheet's own typical data); not a guaranteed limit",
+        "sources": [
+          "https://www.vishay.com/docs/88751/ss32.pdf"
+        ],
+        "unit": "F",
+        "value": 1e-09
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "SS34 maximum DC blocking voltage 40 V (p.1) used as the model breakdown; the datasheet gives no breakdown minimum, so actual breakdown is at or above this. Not a safe operating limit.",
+        "field": "spice_BV_rated_blocking",
+        "page": 1,
+        "scope": "SS34 SMC; BV for the OHMNI Schottky model (fit to the datasheet's own typical data); not a guaranteed limit",
+        "sources": [
+          "https://www.vishay.com/docs/88751/ss32.pdf"
+        ],
+        "unit": "V",
+        "value": 40
       }
     ],
     "remaining_open_items": [
       "MURS-type rectifier alternative lacks an exact selected MPN and remains unavailable; do not use SS34 ratings for it.",
-      "Schottky leakage heating and mounting-dependent derating remain required."
+      "Schottky leakage heating and mounting-dependent derating remain required.",
+      "Former model blocker (functional variant deferred: index projects PN, sourced default is SS34 Schottky) resolved by owner-approved resolution OHM-066-SCHOTTKY-CLASS: the entry now also carries BEH-DIO-SCHOTTKY and is bound to the SS34; no PN or TVS reference is bound."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-066.md",
-      "document_sha256": "d522723844aa3760bd49168b3e299210f8b296e088d7f0f8c75f777090fe8f79",
+      "document_sha256": "94b59fd7ecfc8cbd740d1dcf4eba05b8048c5bbd288c08e2fe85898bbfc03c38",
       "fragment_sha256": null,
       "line": 1
     }
   },
-  "resolution_ids": [],
+  "resolution_ids": [
+    "OHM-066-SCHOTTKY-CLASS"
+  ],
   "schema_version": 1,
   "simulation_disposition": "simulable",
   "simulation_reason": "The canonical class provides an L1/L2 model; fidelity and assumptions remain explicit.",

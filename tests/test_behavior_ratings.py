@@ -256,8 +256,8 @@ def test_connector_checks_cover_every_contact_and_typical_column_voltages():
     assert usb["contact current P1"]["status"] == "violation"
     assert usb["contact-to-contact voltage"]["status"] == "within_limit"
     assert _report("OHM-163", {"P1": 31})["contact-to-contact voltage"]["status"] == "violation"
-    # OHM-171 publishes its voltage in a typical column: it can fail a design but never pass one.
-    assert _report("OHM-171", {"TIP": 5})["contact-to-contact voltage"]["status"] == "unknown"
+    # OHM-171 publishes its voltage in a typical column, used as the rating by owner decision (D053).
+    assert _report("OHM-171", {"TIP": 5})["contact-to-contact voltage"]["status"] == "within_limit"
     assert _report("OHM-171", {"TIP": 13})["contact-to-contact voltage"]["status"] == "violation"
     # Phoenix nominal current only holds below an unbound derating knee.
     assert _report("OHM-161", {}, {"P1": 5, "W1": -5})["contact current P1"]["status"] == "unknown"

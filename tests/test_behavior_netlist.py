@@ -523,3 +523,13 @@ def test_open_mating_roles_cannot_be_numbered_pads():
     with pytest.raises(ValueError):
         RuntimeRecipe(entry_id="X", behavior_id="BEH-CON-USB", package="p", terminal_roles={"1": "P1", "M1": "M1"},
                       open_mating_roles=["P1"], critical_facts={}, limitations=[])
+
+
+def test_ohm066_schottky_class_addition_is_owner_gated():
+    registry = BehaviorRegistry(repo_root=ROOT)
+    entry = registry.entry("OHM-066")
+    assert entry.behavior_class_ids == ["BEH-DIO-PN", "BEH-DIO-SCHOTTKY"]
+    assert "OHM-066-SCHOTTKY-CLASS" in entry.resolution_ids
+    resolution = next(r for r in registry.manifest.resolutions if r.resolution_id == "OHM-066-SCHOTTKY-CLASS")
+    assert resolution.gate_required and resolution.data["approved_by"]
+    assert load_recipes(registry, ROOT).entries["OHM-066"].behavior_id == "BEH-DIO-SCHOTTKY"

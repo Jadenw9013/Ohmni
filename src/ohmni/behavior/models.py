@@ -221,6 +221,7 @@ class ResolutionKind(StrEnum):
     PERMUTATION = "permutation"
     BLOCKER = "blocker"
     POLICY = "policy"
+    CLASS_ADDITION = "class_addition"
 
 
 class Stage1Resolution(BaseModel):
