@@ -271,3 +271,8 @@ def test_magnetics_and_pot_ratings():
     assert _report("OHM-018", {"A": 301})["track voltage"]["status"] == "violation"
     assert _report("OHM-018", {"A": 100}, {"A": 0.01, "B": -0.01})["track power"]["status"] == "violation"
     assert _report("OHM-018", {"A": 10}, {"A": 0.001, "B": -0.001})["track power"]["status"] == "within_limit"
+
+
+def test_mains_choke_line_voltage_uses_its_ac_rating_conservatively():
+    assert _report("OHM-051", {"A1": 260})["line voltage"]["status"] == "violation"
+    assert _report("OHM-051", {"A1": 230})["line voltage"]["status"] == "within_limit"
