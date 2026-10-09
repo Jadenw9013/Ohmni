@@ -96,6 +96,15 @@ def _scoped_checks(component, point, context):
             "Negative terminal power from this approximate model cannot establish dissipated heat"
         )
 
+    def upper_only(name, expression, parameters, reason, violation_only=True):
+        # A limit that can prove a violation but not a pass (transient-only or condition-incomplete ratings).
+        row = b.add(name, expression, parameters)
+        if row["status"] == "within_limit" and violation_only:
+            row.update(status="unknown", reason=reason)
+        elif row["status"] == "violation" and not violation_only:
+            row.update(reason=reason)
+        return row
+
     def derive(name, expression):
         try:
             values[name] = evaluate(expression, values)
@@ -223,6 +232,49 @@ def _scoped_checks(component, point, context):
                 (f"rth_js_{color}", "tj_max"),
                 thermal,
             )
+    elif cls == "BEH-RES-POT":
+        derive("derate", "clamp((t_end-Tamb)/(t_end-t_knee),0,1)")
+        b.add("track power", "power <= p_rated*derate", ("p_rated", "t_end", "t_knee"), thermal)
+        b.add("track voltage", "abs(v_A-v_B) <= v_max", ("v_max",))
+        if "v_W" in values:
+            b.add("wiper voltage", "max(abs(v_W-v_A), abs(v_W-v_B)) <= v_max", ("v_max",))
+    elif cls in {"BEH-CAP-CERAMIC", "BEH-CAP-MICA"}:
+        b.add("rated DC voltage", "abs(v_T1-v_T2) <= vr", ("vr",))
+    elif cls == "BEH-CAP-EDLC":
+        derive("v", "v_P-v_N")
+        if "Tamb" in values:
+            b.add("ambient within rated range", "Tamb <= 85", ())
+            b.add("rated voltage at ambient", "v <= (vr if Tamb <= 65 else vr_85)", ("vr", "vr_85"))
+        else:
+            row = b.add("rated voltage at ambient", "v <= vr_85 if v <= vr else False", ("vr", "vr_85"))
+            if row["status"] == "violation" and values.get("v", 0) <= values.get("vr", 0):
+                row.update(status="unknown", reason="Between the 85 C and 65 C voltage ratings; ambient temperature decides")
+        upper_only("polarity", "v >= 0", (), "No reverse-voltage rating is sourced; reverse bias is never accepted",
+                   violation_only=False)
+    elif cls == "BEH-CAP-TANT":
+        derive("v", "v_A-v_K")
+        derive("vrev_limit", "vrev_25 if Tamb <= 25 else vrev_85 if Tamb <= 85 else vrev_125")
+        b.add("rated voltage", "v <= vr", ("vr",),
+              "Rated voltage is stated at 85 C; higher-temperature category voltage is not bound"
+              if values.get("Tamb", 0) > 85 else None)
+        guidance = b.add("application voltage (manufacturer MnO2 derating recommendation)", "v <= vapp_85", ("vapp_85",))
+        if guidance["status"] == "violation":
+            # A recommendation for low-impedance circuits, not a rating: above it is a judgment call, not a failure.
+            guidance.update(status="unknown", reason="Above the manufacturer's application recommendation for MnO2 "
+                            "tantalum (about half the rating); acceptable only where circuit impedance limits surge current")
+        if values.get("v", 0) < 0:
+            reverse = "-v <= vrev_limit" if "Tamb" in values else "-v <= vrev_25"
+            upper_only("reverse voltage", reverse, ("vrev_25", "vrev_85", "vrev_125"),
+                       "The reverse limits are transient-only; a DC operating point is continuous reverse bias")
+    elif cls.startswith("BEH-CON-"):
+        _connector_checks(component, values, b, thermal, upper_only)
+    elif cls == "BEH-MAG-CMC":
+        for winding in ("A", "B"):
+            b.add(f"winding {winding} current", f"abs(i_{winding}1) <= irated", ("irated",), thermal)
+        if "v_rated" in values:
+            b.add("line voltage", "max(v_A1,v_A2,v_B1,v_B2)-min(v_A1,v_A2,v_B1,v_B2) <= v_rated", ("v_rated",))
+    elif cls == "BEH-MAG-XFMR-SIGNAL":
+        b.add("primary DC unbalance current", "abs(i_P_A) <= idc_unbalance", ("idc_unbalance",))
     elif cls == "BEH-MAG-INDUCTOR":
         b.add("heating current", "abs(i_A) <= irms", ("irms",), thermal)
         if "isat" in values:
@@ -287,6 +339,37 @@ def _scoped_checks(component, point, context):
             thermal,
         )
     return b
+
+
+def _connector_checks(component, values, b, thermal, upper_only):
+    """Every terminal carries one contact's current; insulation is rated between any two contacts."""
+    evidence = component.parameter_evidence
+    current = next((k for k in ("i_rated", "i_nom") if k in values), None)
+    voltage = next((k for k in ("v_rated", "v_work", "v_III_2") if k in values), None)
+    roles = [r for r in component.role_nodes if "v_" + r in values]
+    if current:
+        derating = ("Nominal current applies only up to the derating knee, which is not bound"
+                    if current == "i_nom" else thermal)
+        for role in component.role_nodes:
+            if "i_" + role not in values:
+                continue
+            if current == "i_nom":
+                upper_only(f"contact current {role}", f"abs(i_{role}) <= i_nom", ("i_nom",), derating)
+            else:
+                b.add(f"contact current {role}", f"abs(i_{role}) <= {current}", (current,), derating)
+    if voltage and len(roles) > 1:
+        spread = f"max({','.join('v_' + r for r in roles)})-min({','.join('v_' + r for r in roles)})"
+        scope = evidence.get(voltage, {}).get("scope") or ""
+        if "typ column" in scope:
+            upper_only("contact-to-contact voltage", f"{spread} <= {voltage}", (voltage,),
+                       "The voltage figure is from the typical column, not a declared maximum")
+        else:
+            b.add("contact-to-contact voltage", f"{spread} <= {voltage}", (voltage,))
+    if "t_amb_max" in values:
+        b.add("ambient temperature", "Tamb <= t_amb_max", ("t_amb_max",))
+    if "t_contact_max" in values:
+        upper_only("contact temperature", "Tamb <= t_contact_max", ("t_contact_max",),
+                   "The contact limit includes self-heating under current, which this model does not compute")
 
 
 def _failure_modes(component, behavior, builder, ran):

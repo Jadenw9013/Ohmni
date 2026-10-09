@@ -213,3 +213,61 @@ def test_power_led_junction_check_uses_solder_point_temperature():
     assert cool[name]["status"] == "within_limit"
     hot = _checks(evaluate_ratings(c, point, registry, RatingContext(case_c=148, thermal_scope_confirmed=True)))
     assert hot[name]["status"] == "violation"
+
+
+def _each_pin(registry, recipes, entry_id):
+    recipe = recipes.entries[entry_id]
+    isolated = set(recipe.required_isolated_roles or [])
+    driven = [pin for pin, role in recipe.terminal_roles.items() if role not in isolated][:2]
+    rest = [pin for pin in recipe.terminal_roles if pin not in driven]
+    nets = {"a": [driven[0]], "return": [driven[1]], **{f"n{k}": [pin] for k, pin in enumerate(rest)}}
+    return _single(registry, recipes, entry_id, nets)
+
+
+def _report(entry_id, volts, amps=None, context=None):
+    registry = BehaviorRegistry(repo_root=ROOT)
+    recipes = load_recipes(registry, ROOT)
+    c = _each_pin(registry, recipes, entry_id)
+    comp = c.components[0]
+    amps = {r: i for r, i in (amps or {}).items() if r in comp.role_current_probes}
+    volts = {r: volts.get(r, 0.0) for r in comp.role_nodes}
+    point = _point(comp, volts, amps)
+    return _checks(evaluate_ratings(c, point, registry, context or RatingContext(ambient_c=25, thermal_scope_confirmed=True)))
+
+
+def test_capacitor_voltage_ratings_flag_overvoltage_and_reverse_bias():
+    assert _report("OHM-024", {"T1": 36})["rated DC voltage"]["status"] == "violation"
+    assert _report("OHM-024", {"T1": 12})["rated DC voltage"]["status"] == "within_limit"
+    tant = _report("OHM-033", {"A": 12})
+    assert tant["rated voltage"]["status"] == "within_limit"
+    assert tant["application voltage (manufacturer MnO2 derating recommendation)"]["status"] == "unknown"
+    assert _report("OHM-033", {"A": 17})["rated voltage"]["status"] == "violation"
+    assert _report("OHM-033", {"K": 3})["reverse voltage"]["status"] == "violation"
+    assert _report("OHM-033", {"K": 0.5})["reverse voltage"]["status"] == "unknown"  # transient-only limit
+    hot = RatingContext(ambient_c=75, thermal_scope_confirmed=True)
+    assert _report("OHM-040", {"P": 2.5}, context=hot)["rated voltage at ambient"]["status"] == "violation"
+    assert _report("OHM-040", {"P": 2.5})["rated voltage at ambient"]["status"] == "within_limit"
+    assert _report("OHM-040", {"N": 1})["polarity"]["status"] == "violation"
+    assert _report("OHM-040", {"P": 2.5}, context=RatingContext())["rated voltage at ambient"]["status"] == "unknown"
+
+
+def test_connector_checks_cover_every_contact_and_typical_column_voltages():
+    usb = _report("OHM-163", {"P1": 5}, {"P1": 1.5, "M1": -1.5})
+    assert usb["contact current P1"]["status"] == "violation"
+    assert usb["contact-to-contact voltage"]["status"] == "within_limit"
+    assert _report("OHM-163", {"P1": 31})["contact-to-contact voltage"]["status"] == "violation"
+    # OHM-171 publishes its voltage in a typical column: it can fail a design but never pass one.
+    assert _report("OHM-171", {"TIP": 5})["contact-to-contact voltage"]["status"] == "unknown"
+    assert _report("OHM-171", {"TIP": 13})["contact-to-contact voltage"]["status"] == "violation"
+    # Phoenix nominal current only holds below an unbound derating knee.
+    assert _report("OHM-161", {}, {"P1": 5, "W1": -5})["contact current P1"]["status"] == "unknown"
+    assert _report("OHM-161", {}, {"P1": 13, "W1": -13})["contact current P1"]["status"] == "violation"
+
+
+def test_magnetics_and_pot_ratings():
+    assert _report("OHM-050", {}, {"A1": 1.0, "A2": -1.0})["winding A current"]["status"] == "violation"
+    assert _report("OHM-050", {"A1": 81})["line voltage"]["status"] == "violation"
+    assert _report("OHM-052", {}, {"P_A": 0.02, "P_B": -0.02})["primary DC unbalance current"]["status"] == "violation"
+    assert _report("OHM-018", {"A": 301})["track voltage"]["status"] == "violation"
+    assert _report("OHM-018", {"A": 100}, {"A": 0.01, "B": -0.01})["track power"]["status"] == "violation"
+    assert _report("OHM-018", {"A": 10}, {"A": 0.001, "B": -0.001})["track power"]["status"] == "within_limit"
