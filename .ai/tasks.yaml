@@ -302,10 +302,11 @@
       "id": "LANDING-PCB-CONTROLLER",
       "type": "visual_circuit_prototype",
       "title": "Real-component controller landing board",
-      "status": "REVIEW",
+      "status": "IN_PROGRESS",
       "approved_by": "human",
       "approval_evidence": ".ai/approvals/LANDING-PCB-CONTROLLER.yaml",
-      "review_policy": "Independent electrical/geometry and visual review; owner appearance acceptance remains distinct."
+      "review_policy": "Independent electrical/geometry and visual review; owner appearance acceptance remains distinct.",
+      "publication_approval": ".ai/approvals/LP-CONTROLLER-PUBLISH.yaml"
     }
   ],
   "tasks": [
@@ -3046,7 +3047,7 @@
       "scope": "LANDING-PCB-CONTROLLER",
       "milestone": null,
       "title": "Build, check and render the reference-inspired controller demo",
-      "status": "VERIFIED",
+      "status": "COMPLETE",
       "priority": 280,
       "dependencies": [],
       "blockers": [],
@@ -3077,7 +3078,44 @@
         "status": "PASSED",
         "independent": true,
         "record": ".ai/reviews.yaml#LP-CONTROLLER",
-        "human_visual_acceptance": "PENDING"
+        "human_visual_acceptance": "APPROVED",
+        "human_approval_record": ".ai/approvals/LP-CONTROLLER-PUBLISH.yaml"
+      }
+    },
+    {
+      "id": "LP-CONTROLLER-PUBLISH",
+      "scope": "LANDING-PCB-CONTROLLER",
+      "milestone": null,
+      "title": "Verify and publicly deploy the approved controller landing page",
+      "status": "IN_PROGRESS",
+      "priority": 280,
+      "dependencies": [
+        "LP-CONTROLLER"
+      ],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Merged latest main with passing regression checks.",
+        "Public frontend and backend serve expected assets with functional landing viewer and API.",
+        "Release pushed to origin/main and deployment evidence recorded."
+      ],
+      "implementation": {
+        "started_at_commit": "ec9955f",
+        "completed_at_commit": null,
+        "approval_evidence": ".ai/approvals/LP-CONTROLLER-PUBLISH.yaml"
+      },
+      "verification": {
+        "required": [
+          "fast",
+          "workflow",
+          "public_browser",
+          "public_api",
+          "asset_parity"
+        ],
+        "record": ".ai/verification/LP-CONTROLLER-PUBLISH.yaml"
+      },
+      "review": {
+        "required": false,
+        "status": "PENDING"
       }
     }
   ]
