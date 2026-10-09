@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "scope": "LANDING-PCB-P1",
+  "task": "LP-P1",
+  "approved_by": "human",
+  "date": "2026-10-09",
+  "instruction": "go",
+  "instruction_context": {
+    "kind": "summary_of_preceding_offer",
+    "text": "The user replied go to the offer to implement P1 only: an isolated visual prototype from the independently reviewed landing PCB plan, stopping for owner visual acceptance before integration or spending."
+  },
+  "plan_document": "docs/design/landing-pcb/PLAN.md",
+  "plan_version": "1.1",
+  "plan_sha256": "1fa0d10cc0fcbf0b55e71ed031bcc193f79e3b494f525a483339a5b4b5a23cc3",
+  "plan_review": "docs/design/landing-pcb/AUDIT.md",
+  "planning_artifact_sha256": {
+    "PLAN.md": "1fa0d10cc0fcbf0b55e71ed031bcc193f79e3b494f525a483339a5b4b5a23cc3",
+    "AUDIT.md": "300e43f61a893d960df4a4651562330e255d8dfe39e77a660e741b7c5822bd05",
+    "RESEARCH.json": "8c247d29586f4a3ff56bfe9429e8c4a4221dc8ef1b80d589aaf7cd5f406e8308"
+  },
+  "approved_phases": [
+    "P1"
+  ],
+  "branch": "codex/landing-pcb",
+  "source_commit": "42961353c1b6f111c8a11c82aed5620f6f31ebb0",
+  "session_stop_after": "P1 evidence and owner visual review",
+  "owner_visual_acceptance": "PENDING",
+  "boundaries": [
+    "P1 isolated prototype only; preserve the production landing and workbench flows.",
+    "Use the frozen saved board, explicit model bindings and independent physical-fit checks; preserve engineering coordinates, source statuses and verdicts.",
+    "Capture the default, side, underside and U1/U3/J1 close-ups, exact-scene poster, and deterministic 800 ms motion evidence.",
+    "Stop for owner visual acceptance before P2 interaction proof, P3 integration, P4 release, or P5 Higgsfield work.",
+    "No paid generation, media upload, Higgsfield spend, merge, push or deployment is authorized by this instruction.",
+    "Parking CBH-STAGE6 is a human-priority handoff only; no behavior/electrical acceptance, verification or review status is upgraded."
+  ],
+  "preserved_previous_records": {
+    "state": {
+      "record": ".ai/approvals/LANDING-PCB-P1-previous-state.yaml",
+      "sha256": "7f0c5add724a2d5a0630c2c93aaa35305d884643c14b946e196e05501d655190"
+    },
+    "checkpoint": {
+      "record": ".ai/approvals/LANDING-PCB-P1-previous-checkpoint.yaml",
+      "sha256": "55120e1042f56c177f0626a9402863d3d633e9237e59506070c6ce0f79633221"
+    },
+    "behavior_ledger": {
+      "record": ".ai/approvals/LANDING-PCB-P1-previous-behavior-ledger.yaml",
+      "sha256": "8763d73d2f5d9239a1037b6453c6422c14bacde9a74b8b2a4554e2db5237fa62"
+    }
+  },
+  "recovery_findings": [
+    "Source main and the new worktree retain CBH-STAGE6 IN_PROGRESS with no completion commit, no verification record and a pending required review.",
+    "The prior checkpoint records Stage6 progress but references the historical CBH-AUDIT verification and an older commit; it does not establish Stage6 completion.",
+    "CBH-STAGE7 remains APPROVED with its CBH-STAGE6 dependency unmet. Existing Stage2-5 and CS/CAB/M10 holds remain unchanged."
+  ]
+}

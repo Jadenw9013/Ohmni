@@ -84,8 +84,11 @@ function path(ctx, points) {
 }
 
 export class BoardView {
-    constructor(canvas, { onSelect = () => {}, onHover = () => {}, rendererFactory = node => new VisualRenderer(node) } = {}) {
+    constructor(canvas, { onSelect = () => {}, onHover = () => {}, rendererFactory = node => new VisualRenderer(node),
+        inputPolicy = 'viewport', onRendererFailure = null } = {}) {
         this.canvas = canvas;
+        this.inputPolicy = inputPolicy;
+        this.onRendererFailure = onRendererFailure;
         this.camera = createCamera();
         this.options = { explode: 0, showCopper: true, showComponents: true, showBack: false,
             autoRotate: false, animateFlow: false, xray: false, showLabels: true, showMask: true };
@@ -117,7 +120,8 @@ export class BoardView {
             this.rendererFactory = rendererFactory;
             this.renderer = rendererFactory(canvas);
             this.rendererKind = "three";
-        } catch {
+        } catch (error) {
+            if (onRendererFailure) { this.available = false; onRendererFailure(error); return; }
             try { this.context = canvas.getContext("2d"); } catch { this.context = null; }
             if (!this.context) this.createFallbackCanvas();
             this.rendererKind = "canvas";
@@ -125,7 +129,7 @@ export class BoardView {
         this.available = Boolean(this.renderer || this.context);
         if (!this.available) return;
         canvas.dataset.renderer = this.rendererKind;
-        canvas.style.touchAction = "none";
+        canvas.style.touchAction = inputPolicy === 'landing' ? 'pan-y pinch-zoom' : 'none';
         // Keep crisp labels on a transparent sibling without intercepting the
         // interactive canvas. Its offset follows the canvas inside its parent.
         if (this.renderer && canvas.ownerDocument?.createElement && canvas.parentElement) {
@@ -171,7 +175,7 @@ export class BoardView {
         this.listen(canvas, "pointerdown", (event) => {
             if (event.button !== 0 && event.button !== 1) return;
             this.interacted();
-            canvas.setPointerCapture?.(event.pointerId);
+            if (!(this.inputPolicy === 'landing' && event.pointerType === 'touch')) canvas.setPointerCapture?.(event.pointerId);
             this.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
             if (this.pointers.size === 1) this.dragging = {
                 x: event.clientX, y: event.clientY, originX: event.clientX, originY: event.clientY,
@@ -196,6 +200,11 @@ export class BoardView {
             const previous = Array.from(this.pointers.values());
             this.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
             const current = Array.from(this.pointers.values());
+            if (this.inputPolicy === 'landing' && event.pointerType === 'touch') {
+                if (Math.hypot(event.clientX - this.dragging.originX, event.clientY - this.dragging.originY) > 6)
+                    this.dragging.moved = true;
+                return;
+            }
             if (current.length >= 2) {
                 const distance = (points) => Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
                 const oldDistance = distance(previous);
@@ -232,10 +241,15 @@ export class BoardView {
         };
         this.listen(canvas, "pointerup", (event) => release(event));
         this.listen(canvas, "pointercancel", (event) => release(event, true));
+        this.listen(globalThis, 'blur', () => {
+            this.pointers.clear(); this.dragging = null; this.hovered = null;
+            this.interacted(); canvas.style.cursor = 'grab';
+        });
         this.listen(canvas, "pointerleave", () => {
             if (!this.dragging && this.hovered) { this.hovered = null; this.onHover(null); this.render(); }
         });
         this.listen(canvas, "wheel", (event) => {
+            if (this.inputPolicy === 'landing') return;
             event.preventDefault();
             this.interacted();
             const rect = canvas.getBoundingClientRect();
@@ -286,13 +300,18 @@ export class BoardView {
         });
         this.listen(canvas, "webglcontextlost", (event) => {
             event.preventDefault(); this.contextLost = true; this.stopAnimation();
+            if (this.onRendererFailure) {
+                this.available = false;
+                this.onRendererFailure(new Error('3D context lost'));
+                return;
+            }
             this.lostRenderer = this.renderer; this.renderer = null; this.rendererKind = 'canvas';
             this.createFallbackCanvas(); this.available = Boolean(this.context);
             this.contextLost = false; canvas.dataset.renderer = 'canvas';
             this.rebuild(); this.render(); this.notifyViewChange();
         });
         this.listen(canvas, "webglcontextrestored", () => {
-            if (this.disposed) return;
+            if (this.disposed || this.onRendererFailure) return;
             try {
                 this.renderer?.dispose();
                 this.lostRenderer?.dispose(); this.lostRenderer = null;

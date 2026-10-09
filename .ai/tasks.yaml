@@ -274,6 +274,22 @@
       "status": "IN_PROGRESS",
       "title": "Audited component behavior Stages 2 through 7",
       "type": "component_behavior"
+    },
+    {
+      "id": "LANDING-PCB-P1",
+      "title": "Isolated interactive PCB landing visual prototype",
+      "type": "bounded_visual_prototype",
+      "status": "REVIEW",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/LANDING-PCB-P1.yaml",
+      "review_policy": "Focused independent technical/UI review plus owner visual acceptance before completion or later phases; plan review is not implementation acceptance.",
+      "human_visual_acceptance": "PENDING",
+      "non_goals": [
+        "P2 interaction proof and P3 landing integration",
+        "P4 release and P5 Higgsfield pilot",
+        "Paid generation, merge, push or deployment",
+        "Electrical changes or upgrading parked behavior, CS/CAB or M10 acceptance"
+      ]
     }
   ],
   "tasks": [
@@ -2835,7 +2851,9 @@
         "Non-run is never pass",
         "Browser coverage"
       ],
-      "blockers": [],
+      "blockers": [
+        "Human-priority deferral for approved landing P1 prototype; prior complete records are preserved by .ai/approvals/LANDING-PCB-P1.yaml. Required Stage6 verification and review remain uncompleted."
+      ],
       "dependencies": [
         "CBH-AUDIT"
       ],
@@ -2843,7 +2861,11 @@
       "id": "CBH-STAGE6",
       "implementation": {
         "completed_at_commit": null,
-        "started_at_commit": "72d19ccc425033908f536853314876ba4a8ddf9a"
+        "started_at_commit": "72d19ccc425033908f536853314876ba4a8ddf9a",
+        "parked_at": "2026-10-09",
+        "parked_at_commit": "42961353c1b6f111c8a11c82aed5620f6f31ebb0",
+        "parked_checkpoint": ".ai/approvals/LANDING-PCB-P1-previous-checkpoint.yaml",
+        "parking_approval": ".ai/approvals/LANDING-PCB-P1.yaml"
       },
       "milestone": null,
       "notes": [
@@ -2857,7 +2879,7 @@
         "status": "PENDING"
       },
       "scope": "COMPONENT-BEHAVIOR-COMPLETION",
-      "status": "IN_PROGRESS",
+      "status": "BLOCKED",
       "title": "Behavior simulation UI",
       "verification": {
         "record": null,
@@ -2901,6 +2923,58 @@
           "final audit checkpoint",
           "full coverage check"
         ]
+      }
+    },
+    {
+      "id": "LP-P1",
+      "scope": "LANDING-PCB-P1",
+      "milestone": null,
+      "title": "Build and review an isolated real-board visual proof",
+      "status": "IMPLEMENTED",
+      "priority": 250,
+      "dependencies": [],
+      "blockers": [],
+      "goal": "Establish correct model/source joins, convincing materials and camera composition for the saved Sense & control board before landing integration.",
+      "acceptance_criteria": [
+        "Frozen reference artifact 8ec92f595a26b5769e16186e32231332955db4411247973489abe6c9c9def4f8 is unchanged and all 29 refs appear exactly once.",
+        "Binding inventory distinguishes source/projection/model identities and independently checks contact/land or hole alignment; unresolved families retain declared approximations.",
+        "Isolated default, side and underside views plus U1/U3/J1 close-ups demonstrate coherent geometry and materials without decorative electrical additions.",
+        "An exact-scene poster and deterministic 800 ms motion capture record fixed camera, renderer and source provenance.",
+        "Focused geometry/source/lifecycle/static checks and required workflow/frontend gates pass without changing production landing flows or engineering expectations.",
+        "Focused independent technical/UI review and owner visual acceptance are recorded; stop before later phases or paid work."
+      ],
+      "implementation": {
+        "started_at_commit": "42961353c1b6f111c8a11c82aed5620f6f31ebb0",
+        "completed_at_commit": null,
+        "approval_evidence": ".ai/approvals/LANDING-PCB-P1.yaml",
+        "plan_sha256": "1fa0d10cc0fcbf0b55e71ed031bcc193f79e3b494f525a483339a5b4b5a23cc3",
+        "lifecycle": [
+          "Human go recorded for P1 only; preserved interrupted behavior records and parked CBH-STAGE6 without acceptance upgrades.",
+          "LP-P1 made READY in the newly approved scope for deterministic selection.",
+          "ai_state.py validate passed and ai_state.py next selected LP-P1; transitioned the single active task to IN_PROGRESS.",
+          "P1 prototype and scoped software evidence implemented; final visual/physical-fit and owner acceptance remain open. No later phase or paid generation started."
+        ],
+        "started_at": "2026-10-09"
+      },
+      "verification": {
+        "required": [
+          "workflow_tests",
+          "frontend_tests",
+          "focused_geometry_source_tests",
+          "browser_visual_captures",
+          "poster_motion_provenance"
+        ],
+        "record": ".ai/verification/LP-P1.yaml"
+      },
+      "review": {
+        "required": true,
+        "status": "PENDING",
+        "independent": true,
+        "record": "docs/design/landing-pcb/P1-REPORT.md",
+        "human_visual_acceptance": "PENDING",
+        "ui_result": "READY_FOR_OWNER_REVIEW_FINAL_APPEARANCE_OPEN",
+        "ux_result": "PASSED_SCOPED",
+        "engineering_result": "PASSED_SCOPED"
       }
     }
   ]

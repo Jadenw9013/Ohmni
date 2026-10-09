@@ -39,14 +39,14 @@ export function disposeTree(root) {
     for (const value of [...geometries, ...textures, ...materials]) value.dispose();
 }
 
-function environment(renderer) {
+export function createStudioEnvironment(renderer, studio = {}) {
     // Original procedural studio, no third-party HDRI, image, or network dependency.
     const room = new THREE.Scene();
-    room.background = new THREE.Color('#697782');
+    room.background = new THREE.Color(studio.background ?? '#697782');
     const shell = new THREE.Mesh(new THREE.BoxGeometry(30, 30, 30),
-        new THREE.MeshBasicMaterial({ color: '#68727a', side: THREE.BackSide }));
+        new THREE.MeshBasicMaterial({ color: studio.background ?? '#68727a', side: THREE.BackSide }));
     room.add(shell);
-    for (const [position, size, color, intensity] of [
+    for (const [position, size, color, intensity] of studio.panels ?? [
         [[-8, -5, 10], [8, 12, 0.2], '#fff5e6', 4],
         [[8, 3, 7], [4, 11, 0.2], '#d6e7ff', 2.4],
         [[0, 8, 10], [10, 3, 0.2], '#ffffff', 2],
@@ -61,28 +61,38 @@ function environment(renderer) {
 }
 
 export class VisualRenderer {
-    constructor(canvas) {
+    constructor(canvas, { presentation = {}, materialFactory = createMaterials, instanceModelResolver = null } = {}) {
         this.canvas = canvas;
+        this.presentation = presentation;
+        this.materialFactory = materialFactory;
+        this.instanceModelResolver = instanceModelResolver;
         const context = canvas.getContext('webgl2', { antialias: true, alpha: false });
         if (!context) throw new Error('WebGL2 is unavailable; use compatibility view');
         this.renderer = new THREE.WebGLRenderer({ canvas, context, antialias: true, alpha: false });
         this.renderer.outputColorSpace = THREE.SRGBColorSpace;
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        this.renderer.toneMappingExposure = 0.96;
+        this.renderer.toneMappingExposure = presentation.exposure ?? 0.96;
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        this.scene = new THREE.Scene(); this.scene.background = new THREE.Color('#0b1728');
-        this.environment = environment(this.renderer); this.scene.environment = this.environment.texture;
-        this.scene.environmentIntensity = 0.55;
-        this.scene.add(new THREE.HemisphereLight('#e4f0ff', '#595340', 0.7));
-        this.key = new THREE.DirectionalLight('#fff4e6', 2.6);
-        this.key.position.set(-70, -90, 140); this.key.castShadow = true;
-        this.key.shadow.mapSize.set(2048, 2048);
+        this.renderer.shadowMap.autoUpdate = presentation.staticShadows !== true;
+        this.scene = new THREE.Scene(); this.scene.background = new THREE.Color(presentation.background ?? '#0b1728');
+        this.environment = createStudioEnvironment(this.renderer, presentation.studio); this.scene.environment = this.environment.texture;
+        this.scene.environmentIntensity = presentation.environmentIntensity ?? 0.55;
+        this.scene.add(new THREE.HemisphereLight('#e4f0ff', '#595340', presentation.hemisphereIntensity ?? 0.7));
+        this.key = new THREE.DirectionalLight(presentation.keyColor ?? '#fff4e6', presentation.keyIntensity ?? 2.6);
+        this.key.position.set(...(presentation.keyPosition ?? [-70, -90, 140])); this.key.castShadow = true;
+        this.key.shadow.mapSize.set(presentation.shadowMapSize ?? 2048, presentation.shadowMapSize ?? 2048);
         Object.assign(this.key.shadow.camera, { left: -110, right: 110, top: 110, bottom: -110, near: 1, far: 400 });
+        if (presentation.shadowExtent) Object.assign(this.key.shadow.camera, {
+            left: -presentation.shadowExtent, right: presentation.shadowExtent,
+            top: presentation.shadowExtent, bottom: -presentation.shadowExtent,
+        });
         this.key.shadow.bias = -0.00012; this.key.shadow.normalBias = 0.04;
         this.key.shadow.radius = 3; this.scene.add(this.key);
-        const fill = new THREE.DirectionalLight('#d5e6ff', 1.2); fill.position.set(60, 65, 80); this.scene.add(fill);
-        const underside = new THREE.DirectionalLight('#e2e9ed', 1.7); underside.position.set(0, -30, -100); this.scene.add(underside);
+        const fill = new THREE.DirectionalLight('#d5e6ff', presentation.fillIntensity ?? 1.2);
+        fill.position.set(...(presentation.fillPosition ?? [60, 65, 80])); this.scene.add(fill);
+        this.underside = new THREE.DirectionalLight('#e2e9ed', presentation.undersideIntensity ?? 1.7);
+        this.underside.position.set(0, -30, -100); this.scene.add(this.underside);
         this.camera = new THREE.PerspectiveCamera(40, 1, 1, 1200);
         this.raycaster = new THREE.Raycaster(); this.owners = new Map(); this.frameTimes = [];
     }
@@ -91,7 +101,7 @@ export class VisualRenderer {
         if (this.manifest === manifest) return;
         if (this.root) { this.scene.remove(this.root); disposeTree(this.root); }
         this.manifest = manifest; this.root = new THREE.Group(); this.scene.add(this.root);
-        this.materials = createMaterials();
+        this.materials = this.materialFactory();
         this.materials.mask ??= new THREE.MeshStandardMaterial({ color: '#28633b', roughness: 0.48 });
         this.materials.edge ??= new THREE.MeshStandardMaterial({ color: '#5b5332', roughness: 0.85 });
         this.owners.clear();
@@ -102,8 +112,10 @@ export class VisualRenderer {
         this.root.add(this.slab);
         this.layers = addLayers(this.root, manifest, this.materials);
         for (const entry of instances) {
-            let group;
-            try { group = createAsset(entry.family, entry.options, this.materials); }
+            // Binding rejection is not an absent cosmetic asset: callers must see
+            // it and fail closed rather than displaying an apparently ready scene.
+            let group = this.instanceModelResolver?.(entry, this.materials);
+            try { group ??= createAsset(entry.family, entry.options, this.materials); }
             catch (error) {
                 if (manifest.provenance !== 'ARTIFACT_DERIVED') throw error;
                 group = new THREE.Group();
@@ -134,6 +146,7 @@ export class VisualRenderer {
             }
         }
         this.scene.updateMatrixWorld(true);
+        this.renderer.shadowMap.needsUpdate = true;
     }
 
     boundingParts(sourceScene, options) {
@@ -158,10 +171,13 @@ export class VisualRenderer {
         if (this.renderer.getContext().isContextLost()) return;
         const start = performance.now();
         const { width, height, ratio = 1 } = viewport;
-        this.renderer.setPixelRatio(Math.min(ratio, options.quality === 'low' ? 1 : 2));
+        this.renderer.setPixelRatio(Math.min(ratio, options.quality === 'low' ? 1 : this.presentation.pixelRatioCap ?? 2));
         this.renderer.setSize(width, height, false);
         this.renderer.shadowMap.enabled = options.quality !== 'low';
         const { yaw, pitch, distance, focal, zoom, panX, panY } = camera;
+        this.underside.intensity = pitch < 0
+            ? this.presentation.undersideInspectionIntensity ?? this.presentation.undersideIntensity ?? 1.7
+            : this.presentation.undersideIntensity ?? 1.7;
         this.camera.fov = 2 * Math.atan(height / (2 * focal * zoom)) * 180 / Math.PI;
         this.camera.aspect = width / height;
         this.camera.position.set(-Math.sin(yaw) * Math.cos(pitch) * distance,
@@ -176,7 +192,7 @@ export class VisualRenderer {
         this.slab.material[0].transparent = Boolean(options.xray);
         this.slab.material[0].opacity = options.xray ? 0.16 : 1;
         this.slab.material[0].depthWrite = !options.xray;
-        updateLayerAppearance(this.layers, options);
+        updateLayerAppearance(this.layers, { ...options, maskedCopperColor: this.presentation.maskedCopperColor });
         for (const [id, object] of this.owners) {
             object.visible = options.showComponents !== false && (!options.isolate || options.isolate === id);
             object.position.copy(object.userData.displayPosition ?? object.userData.basePosition);

@@ -46,3 +46,15 @@ scripts/generate_behavior_examples.py -text
 # The behavior UI gate hashes this browser script byte for byte.
 scripts/verify_behavior_ui.cjs -text
 src/ohmni/behavior/reference-circuits.json -text
+docs/design/landing-pcb/** -text
+.ai/approvals/LANDING-PCB-P1-previous-*.yaml -text
+docs/design/landing-pcb/*.md whitespace=-blank-at-eol
+apps/web/landing-pcb*.js text eol=lf
+apps/web/board-view.js text eol=lf
+apps/web/landing-pcb-prototype/*.js text eol=lf
+apps/web/landing-pcb-prototype/*.css text eol=lf
+apps/web/landing-pcb-prototype/*.html text eol=lf
+scripts/prepare_visual_assets.py text eol=lf
+scripts/landing_pcb*.cjs text eol=lf
+scripts/report_landing_pcb_bindings.mjs text eol=lf
+scripts/export_landing_pcb_posters.cjs text eol=lf

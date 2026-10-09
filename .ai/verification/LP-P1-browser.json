@@ -1,0 +1,307 @@
+{
+  "scope": "P1_ISOLATED_PROTOTYPE_BROWSER_CHECK",
+  "url": "http://127.0.0.1:8780/landing-pcb-prototype/",
+  "startedAt": "2026-10-09T18:41:15.264Z",
+  "inputHashesBefore": {
+    "apps/web/landing-pcb-prototype/index.html": "dcb4f41f707147118ba362eb90ec7efdb55ebb51eb580ec178ec6c0a673dc38b",
+    "apps/web/landing-pcb-prototype/prototype.js": "727291ded534c67aa07d41cb0828e0a936fcbbc081cf27a7820683a41fee080e",
+    "apps/web/landing-pcb-prototype/prototype.css": "c62f30bf0dccb90b957fbae1aff951f4772e4bba4d5d959e8f205d6d01a32b25",
+    "apps/web/board-view.js": "fb790aa2d4e881263528dec4e76d8a6c69bc70f681bff506cfc62318a30fa346",
+    "apps/web/reference-board.json": "f079cb958e2019a24e5e2eac4eff1ae6c43e28913dd27678291a5847417b579a"
+  },
+  "browser": "154.0.4258.62",
+  "physicalMobileTested": false,
+  "limitations": [
+    "Headless Microsoft Edge; touch uses browser/CDP emulation, not a physical phone.",
+    "This script does not certify assistive-technology support or all WCAG requirements.",
+    "P1 tests require honest unavailable states; the full P2 semantic fallback is outside this check."
+  ],
+  "cases": [
+    {
+      "name": "29 native part options and keyboard R1/J2 inspection",
+      "status": "PASS",
+      "durationMs": 415,
+      "detail": {
+        "options": [
+          {
+            "value": "C1",
+            "label": "C1 — 1 uF power smoothing capacitor"
+          },
+          {
+            "value": "C2",
+            "label": "C2 — 1 uF power smoothing capacitor"
+          },
+          {
+            "value": "C3",
+            "label": "C3 — 100 nF power smoothing capacitor"
+          },
+          {
+            "value": "C4",
+            "label": "C4 — 22 uF power smoothing capacitor"
+          },
+          {
+            "value": "C5",
+            "label": "C5 — 100 nF capacitor"
+          },
+          {
+            "value": "C6",
+            "label": "C6 — 100 nF power smoothing capacitor"
+          },
+          {
+            "value": "C7",
+            "label": "C7 — 100 nF power smoothing capacitor"
+          },
+          {
+            "value": "D1",
+            "label": "D1 — Indicator light"
+          },
+          {
+            "value": "D2",
+            "label": "D2 — Indicator light"
+          },
+          {
+            "value": "D3",
+            "label": "D3 — Indicator light"
+          },
+          {
+            "value": "D4",
+            "label": "D4 — Indicator light"
+          },
+          {
+            "value": "J1",
+            "label": "J1 — USB power connector"
+          },
+          {
+            "value": "J2",
+            "label": "J2 — Programming header"
+          },
+          {
+            "value": "R1",
+            "label": "R1 — 5.1 kohm connector configuration resistor"
+          },
+          {
+            "value": "R10",
+            "label": "R10 — 330 ohm current-limiting resistor"
+          },
+          {
+            "value": "R11",
+            "label": "R11 — 330 ohm current-limiting resistor"
+          },
+          {
+            "value": "R12",
+            "label": "R12 — 330 ohm current-limiting resistor"
+          },
+          {
+            "value": "R13",
+            "label": "R13 — 330 ohm current-limiting resistor"
+          },
+          {
+            "value": "R2",
+            "label": "R2 — 5.1 kohm connector configuration resistor"
+          },
+          {
+            "value": "R20",
+            "label": "R20 — 10 kohm pull-up resistor"
+          },
+          {
+            "value": "R21",
+            "label": "R21 — 10 kohm pull-up resistor"
+          },
+          {
+            "value": "R3",
+            "label": "R3 — 10 kohm pull-up resistor"
+          },
+          {
+            "value": "R4",
+            "label": "R4 — 4.7 kohm pull-up resistor"
+          },
+          {
+            "value": "R5",
+            "label": "R5 — 4.7 kohm pull-up resistor"
+          },
+          {
+            "value": "SW1",
+            "label": "SW1 — Button"
+          },
+          {
+            "value": "SW2",
+            "label": "SW2 — Button"
+          },
+          {
+            "value": "U1",
+            "label": "U1 — Main computer"
+          },
+          {
+            "value": "U2",
+            "label": "U2 — 3.3 V voltage regulator"
+          },
+          {
+            "value": "U3",
+            "label": "U3 — Sensor"
+          }
+        ],
+        "r1": {
+          "value": "R1",
+          "title": "R1 · 5.1 kohm connector configuration resistor",
+          "description": "Pulls a USB-C configuration pin toward ground. This is the sink-identification connection a USB-C source checks before supplying power."
+        },
+        "j2": {
+          "value": "J2",
+          "title": "J2 · Programming header",
+          "description": "Brings the processor's serial and boot-control pins out to an external programming adapter. The adapter is separate from the USB power cable."
+        },
+        "tabExitsSelector": true
+      }
+    },
+    {
+      "name": "native wheel scroll over board leaves camera unchanged",
+      "status": "PASS",
+      "durationMs": 88,
+      "detail": {
+        "before": {
+          "scrollY": 0,
+          "camera": {
+            "yaw": -2.6179938779914944,
+            "pitch": 0.6981317007977318,
+            "zoom": 1.1733253693709211,
+            "panX": -1.7963043334994842,
+            "panY": -36.97157778697937,
+            "focal": 1034.4444444444446,
+            "distance": 190
+          }
+        },
+        "after": {
+          "scrollY": 380,
+          "camera": {
+            "yaw": -2.6179938779914944,
+            "pitch": 0.6981317007977318,
+            "zoom": 1.1733253693709211,
+            "panX": -1.7963043334994842,
+            "panY": -36.97157778697937,
+            "focal": 1034.4444444444446,
+            "distance": 190
+          }
+        }
+      }
+    },
+    {
+      "name": "session Motion Off survives OS reduced motion then return",
+      "status": "PASS",
+      "durationMs": 222,
+      "detail": {
+        "motionOff": true,
+        "replayDisabled": true
+      }
+    },
+    {
+      "name": "initial OS reduced motion disables replay and keeps stable pose",
+      "status": "PASS",
+      "durationMs": 547,
+      "detail": {
+        "replayDisabled": true,
+        "stablePose": true
+      }
+    },
+    {
+      "name": "320 CSS px reflow and all-parts inspection",
+      "status": "PASS",
+      "durationMs": 91,
+      "detail": {
+        "innerWidth": 320,
+        "clientWidth": 320,
+        "scrollWidth": 320,
+        "selectionMethod": "native select API; gesture scroll tested separately"
+      }
+    },
+    {
+      "name": "emulated native touch scroll over canvas does not orbit",
+      "status": "PASS",
+      "durationMs": 308,
+      "detail": {
+        "before": {
+          "scrollY": 0,
+          "camera": {
+            "yaw": -2.6179938779914944,
+            "pitch": 0.6981317007977318,
+            "zoom": 0.7150191831522769,
+            "panX": -0.6344558559553849,
+            "panY": -13.058385259896735,
+            "focal": 599.5555555555555,
+            "distance": 190
+          },
+          "touchAction": "pan-y pinch-zoom"
+        },
+        "after": {
+          "scrollY": 167,
+          "camera": {
+            "yaw": -2.6179938779914944,
+            "pitch": 0.6981317007977318,
+            "zoom": 0.7150191831522769,
+            "panX": -0.6344558559553849,
+            "panY": -13.058385259896735,
+            "focal": 599.5555555555555,
+            "distance": 190
+          }
+        },
+        "physicalDevice": false
+      }
+    },
+    {
+      "name": "missing reference JSON gives an honest P1 unavailable state",
+      "status": "PASS",
+      "durationMs": 269,
+      "detail": {
+        "state": "unavailable",
+        "scope": "P1 summary-only fallback"
+      }
+    },
+    {
+      "name": "initialization cancellation cannot mount a late renderer",
+      "status": "PASS",
+      "durationMs": 428,
+      "detail": {
+        "mounted": false,
+        "state": null,
+        "controlsVisible": false,
+        "method": "Synthetic pagehide exercises actual disposal hook while reference response is pending."
+      }
+    },
+    {
+      "name": "context loss leaves no active dead part-inspection control",
+      "status": "PASS",
+      "durationMs": 866,
+      "detail": {
+        "state": "unavailable",
+        "partSelectorVisible": true,
+        "partSelectorDisabled": false,
+        "behavior": "Text inspection remains functional"
+      }
+    },
+    {
+      "name": "no-JS retains readable P1 description and working plain app link",
+      "status": "PASS",
+      "durationMs": 221,
+      "detail": {
+        "enhancementControlsHidden": true,
+        "loadingVisible": false
+      }
+    }
+  ],
+  "observations": [],
+  "mutationRequests": [],
+  "pageErrors": [],
+  "gpu": "ANGLE (AMD, AMD Radeon(TM) Graphics (0x000013C0) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+  "inputHashesAfter": {
+    "apps/web/landing-pcb-prototype/index.html": "dcb4f41f707147118ba362eb90ec7efdb55ebb51eb580ec178ec6c0a673dc38b",
+    "apps/web/landing-pcb-prototype/prototype.js": "727291ded534c67aa07d41cb0828e0a936fcbbc081cf27a7820683a41fee080e",
+    "apps/web/landing-pcb-prototype/prototype.css": "c62f30bf0dccb90b957fbae1aff951f4772e4bba4d5d959e8f205d6d01a32b25",
+    "apps/web/board-view.js": "fb790aa2d4e881263528dec4e76d8a6c69bc70f681bff506cfc62318a30fa346",
+    "apps/web/reference-board.json": "f079cb958e2019a24e5e2eac4eff1ae6c43e28913dd27678291a5847417b579a"
+  },
+  "inputsChangedDuringCheck": false,
+  "finishedAt": "2026-10-09T18:41:20.222Z",
+  "summary": {
+    "passed": 10,
+    "failed": 0
+  }
+}

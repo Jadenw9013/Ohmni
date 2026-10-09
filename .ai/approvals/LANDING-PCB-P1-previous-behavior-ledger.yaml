@@ -1,0 +1,293 @@
+{
+  "schema_version": 1,
+  "captured_from_commit": "42961353c1b6f111c8a11c82aed5620f6f31ebb0",
+  "scope": {
+    "approval_evidence": ".ai/approvals/COMPONENT-BEHAVIOR-COMPLETION.yaml",
+    "approved_by": "human",
+    "id": "COMPONENT-BEHAVIOR-COMPLETION",
+    "review_policy": "Deterministic checkpoint audit at every boundary plus fresh-context verifier sampling after research stages; final human review of FINAL_REPORT.md.",
+    "status": "IN_PROGRESS",
+    "title": "Audited component behavior Stages 2 through 7",
+    "type": "component_behavior"
+  },
+  "tasks": [
+    {
+      "acceptance_criteria": [
+        "Hash-locked machine rules, protected-path baselines, resumable state and checkpoint reports",
+        "Deterministic source, status-upgrade, vendor-model, spec-preservation, bench, honesty, coverage and regression checks",
+        "All seven deliberately invalid canaries are rejected by the intended rule",
+        "Audit system committed before Stage 2 begins"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "CBH-T01"
+      ],
+      "goal": "Create a deterministic, resumable audit that rejects dishonest evidence and protects the accepted repository baseline.",
+      "id": "CBH-AUDIT",
+      "implementation": {
+        "completed_at_commit": "add6e411319ea34dc1a8c1f4d50c67f1200eef64",
+        "started_at_commit": "0505077"
+      },
+      "milestone": null,
+      "priority": 700,
+      "review": {
+        "independent": false,
+        "record": ".ai/reviews.yaml#CBH-AUDIT-SELF",
+        "required": true,
+        "status": "PASSED"
+      },
+      "scope": "COMPONENT-BEHAVIOR-COMPLETION",
+      "status": "COMPLETE",
+      "title": "Build the behavior self-audit system",
+      "verification": {
+        "record": ".ai/verification/CBH-AUDIT.yaml",
+        "required": [
+          "audit unit tests",
+          "canary run",
+          "AI workflow validation"
+        ]
+      }
+    },
+    {
+      "acceptance_criteria": [
+        "Per-entry before/after table",
+        "Primary-source fetch ledger",
+        "Bench evidence or explicit blocked status",
+        "Fresh-context verifier sample"
+      ],
+      "blockers": [
+        "Stage 2 corpus source/bench acceptance and independent sample acceptance parked after three repair attempts; details in run/STATE.json."
+      ],
+      "dependencies": [
+        "CBH-AUDIT"
+      ],
+      "goal": "Research and conservatively update OHM-001 through OHM-102 without fabricating evidence.",
+      "id": "CBH-STAGE2",
+      "implementation": {
+        "completed_at_commit": null,
+        "started_at_commit": "039b12d"
+      },
+      "milestone": null,
+      "notes": [
+        "Research for all OHM-001..102 committed fdaf039. Failed acceptance stays explicit. Human completion request authorizes independent later-stage work after the repair limit."
+      ],
+      "priority": 600,
+      "review": {
+        "independent": true,
+        "record": null,
+        "required": true,
+        "status": "PENDING"
+      },
+      "scope": "COMPONENT-BEHAVIOR-COMPLETION",
+      "status": "BLOCKED",
+      "title": "Gap research batch A",
+      "verification": {
+        "record": null,
+        "required": [
+          "audit checkpoints",
+          "independent verifier"
+        ]
+      }
+    },
+    {
+      "acceptance_criteria": [
+        "Inline subcircuits",
+        "Documented ngspice gotchas",
+        "Product-path bench comparisons"
+      ],
+      "blockers": [
+        "End checkpoint019: unresolved source/canonical-bench/review acceptance; five diode temperature-contract failures and57 unbound entries are explicit."
+      ],
+      "dependencies": [
+        "CBH-AUDIT"
+      ],
+      "goal": "Generate inline behavior netlists through the existing simulation path and rerun matching benches.",
+      "id": "CBH-STAGE3",
+      "implementation": {
+        "completed_at_commit": null,
+        "started_at_commit": "fdaf039"
+      },
+      "milestone": null,
+      "notes": [
+        "Dependency narrowed under the human repair policy in .ai/approvals/COMPONENT-BEHAVIOR-COMPLETION-request.txt: Stage 2 acceptance is blocked, not complete. Critical evidence blockers must refuse simulation; independent runtime work continues.",
+        "45 runtime bindings;58/63 probes pass. Source statuses unchanged. Independent later stages authorized by human parking policy."
+      ],
+      "priority": 500,
+      "review": {
+        "independent": false,
+        "record": null,
+        "required": true,
+        "status": "PENDING"
+      },
+      "scope": "COMPONENT-BEHAVIOR-COMPLETION",
+      "status": "BLOCKED",
+      "title": "Behavior netlist generation",
+      "verification": {
+        "record": null,
+        "required": [
+          "audit checkpoints",
+          "ngspice 42 benches",
+          "regression"
+        ]
+      }
+    },
+    {
+      "acceptance_criteria": [
+        "Sourced reference bindings",
+        "Conservative IC/frequency/interface models",
+        "Fresh-context verifier sample",
+        "Bench comparison"
+      ],
+      "blockers": [
+        "Research acceptance failed after three samples; source and locked-bench acceptance remains parked. 17 IC/frequency bindings implemented, 61 Stage4 entries remain unbound with explicit reasons."
+      ],
+      "dependencies": [
+        "CBH-AUDIT"
+      ],
+      "goal": "Bind package references and build sourced IC, frequency and connector behavior models.",
+      "id": "CBH-STAGE4",
+      "implementation": {
+        "completed_at_commit": null,
+        "started_at_commit": "4040902"
+      },
+      "milestone": null,
+      "notes": [
+        "Independent research and model work continues under the human repair/parking policy. Stage3 acceptance remains BLOCKED, never relabeled complete."
+      ],
+      "priority": 400,
+      "review": {
+        "independent": true,
+        "record": null,
+        "required": true,
+        "status": "PENDING"
+      },
+      "scope": "COMPONENT-BEHAVIOR-COMPLETION",
+      "status": "BLOCKED",
+      "title": "Gap research batch B and IC models",
+      "verification": {
+        "record": null,
+        "required": [
+          "audit checkpoints",
+          "independent verifier",
+          "ngspice 42 benches"
+        ]
+      }
+    },
+    {
+      "acceptance_criteria": [
+        "Deterministic check expressions",
+        "Violations remain violations",
+        "Unknown or non-run remains non-pass"
+      ],
+      "blockers": [
+        "Scoped ratings software and probes pass, but nonquantitative failure rules, transient stress and source-specific context remain unresolved; inherited corpus gates remain failed."
+      ],
+      "dependencies": [
+        "CBH-AUDIT"
+      ],
+      "goal": "Evaluate sourced ratings and failure responses without turning violations or unknowns into passes.",
+      "id": "CBH-STAGE5",
+      "implementation": {
+        "completed_at_commit": null,
+        "started_at_commit": "db538a98a519e47104619237455afa5a779c1310"
+      },
+      "milestone": null,
+      "notes": [
+        "Independent ratings implementation authorized by the human repair/parking policy. Prior Stage4 dependency remains BLOCKED rather than falsely complete."
+      ],
+      "priority": 300,
+      "review": {
+        "independent": false,
+        "record": null,
+        "required": true,
+        "status": "PENDING"
+      },
+      "scope": "COMPONENT-BEHAVIOR-COMPLETION",
+      "status": "BLOCKED",
+      "title": "Ratings and failure checker",
+      "verification": {
+        "record": null,
+        "required": [
+          "audit checkpoints",
+          "canary regression",
+          "fast verification"
+        ]
+      }
+    },
+    {
+      "acceptance_criteria": [
+        "Run control and results",
+        "Non-simulable reason",
+        "Non-run is never pass",
+        "Browser coverage"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "CBH-AUDIT"
+      ],
+      "goal": "Expose honest simulation controls, results, fidelity, status and confidence in the web UI.",
+      "id": "CBH-STAGE6",
+      "implementation": {
+        "completed_at_commit": null,
+        "started_at_commit": "72d19ccc425033908f536853314876ba4a8ddf9a"
+      },
+      "milestone": null,
+      "notes": [
+        "Independent truthful UI work is authorized by the human repair/parking policy. Stage5 remains partial and blocked; UI will expose those limits."
+      ],
+      "priority": 200,
+      "review": {
+        "independent": false,
+        "record": null,
+        "required": true,
+        "status": "PENDING"
+      },
+      "scope": "COMPONENT-BEHAVIOR-COMPLETION",
+      "status": "IN_PROGRESS",
+      "title": "Behavior simulation UI",
+      "verification": {
+        "record": null,
+        "required": [
+          "audit checkpoints",
+          "Playwright",
+          "fast verification"
+        ]
+      }
+    },
+    {
+      "acceptance_criteria": [
+        "180-row COVERAGE.md",
+        "Script-generated FINAL_REPORT.md",
+        "All blockers, decisions, rule changes and verifier results listed"
+      ],
+      "blockers": [],
+      "dependencies": [
+        "CBH-STAGE6"
+      ],
+      "goal": "Publish exact 180-entry coverage and one script-generated final audit report.",
+      "id": "CBH-STAGE7",
+      "implementation": {
+        "completed_at_commit": null,
+        "started_at_commit": null
+      },
+      "milestone": null,
+      "priority": 100,
+      "review": {
+        "independent": false,
+        "record": null,
+        "required": true,
+        "status": "PENDING"
+      },
+      "scope": "COMPONENT-BEHAVIOR-COMPLETION",
+      "status": "APPROVED",
+      "title": "Final behavior coverage and audit report",
+      "verification": {
+        "record": null,
+        "required": [
+          "final audit checkpoint",
+          "full coverage check"
+        ]
+      }
+    }
+  ]
+}

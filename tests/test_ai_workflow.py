@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 from unittest.mock import patch
@@ -123,12 +124,12 @@ def test_repository_product_scope_matches_human_approval():
     # Visual and release approval preserve the real board and parked M10 benchmark.
     for scope in tasks["scopes"]:
         assert scope["approved_by"]=="human" and scope["approval_evidence"]
-        if scope["id"] in {"VIS-REF-001", "DEPLOY-1", "COMPONENT-SYNTHESIS-1", "COMPONENT-ATLAS-BUILDER-1", "UX-CLARITY-1", "REPO-READY-1", "COMPONENT-3D-STAGE1", "COMPONENT-3D-STAGE2", "COMPONENT-3D-STAGE3", "COMPONENT-3D-STAGE4", "COMPONENT-3D-STAGE5", "COMPONENT-3D-COMPLETION", "COMPONENT-BEHAVIOR-STAGE1", "COMPONENT-BEHAVIOR-COMPLETION"}:
+        if scope["id"] in {"VIS-REF-001", "DEPLOY-1", "COMPONENT-SYNTHESIS-1", "COMPONENT-ATLAS-BUILDER-1", "UX-CLARITY-1", "REPO-READY-1", "COMPONENT-3D-STAGE1", "COMPONENT-3D-STAGE2", "COMPONENT-3D-STAGE3", "COMPONENT-3D-STAGE4", "COMPONENT-3D-STAGE5", "COMPONENT-3D-COMPLETION", "COMPONENT-BEHAVIOR-STAGE1", "COMPONENT-BEHAVIOR-COMPLETION", "LANDING-PCB-P1"}:
             assert scope["status"] in {"APPROVED", "IN_PROGRESS", "REVIEW", "VERIFIED", "COMPLETE"}
         else:
             expected="IN_PROGRESS" if scope["id"]=="M10" else "COMPLETE"
             assert scope["status"]==expected, scope["id"]
-    assert state["approved_product_scope"]=="COMPONENT-BEHAVIOR-COMPLETION"
+    assert state["approved_product_scope"]=="LANDING-PCB-P1"
     behavior_completion=json.loads((root/".ai/approvals/COMPONENT-BEHAVIOR-COMPLETION.yaml").read_text())
     assert behavior_completion["approved_by"]=="human"
     assert "2 through 7" in behavior_completion["evidence"]
@@ -219,3 +220,50 @@ def test_repository_product_scope_matches_human_approval():
     proposed=milestones["proposed_product_milestones"]
     assert {item["id"] for item in proposed}==later
     assert all(item["status"]=="PROPOSED" and item["approved_by"] is None for item in proposed)
+
+
+def test_landing_p1_preserves_behavior_and_reviewed_plan_boundaries():
+    root=Path(__file__).resolve().parents[1]
+    approval=json.loads((root/".ai/approvals/LANDING-PCB-P1.yaml").read_text())
+    tasks=json.loads((root/".ai/tasks.yaml").read_text())
+    assert approval["approved_by"]=="human" and approval["instruction"]=="go"
+    assert approval["instruction_context"]["kind"]=="summary_of_preceding_offer"
+    assert approval["approved_phases"]==["P1"]
+    assert approval["session_stop_after"]=="P1 evidence and owner visual review"
+    assert approval["owner_visual_acceptance"]=="PENDING"
+    expected_hash="1fa0d10cc0fcbf0b55e71ed031bcc193f79e3b494f525a483339a5b4b5a23cc3"
+    assert approval["plan_sha256"]==expected_hash
+    assert hashlib.sha256((root/approval["plan_document"]).read_bytes()).hexdigest()==expected_hash
+    for name,expected in approval["planning_artifact_sha256"].items():
+        assert hashlib.sha256((root/"docs/design/landing-pcb"/name).read_bytes()).hexdigest()==expected
+    preserved={}
+    for kind,record in approval["preserved_previous_records"].items():
+        data=(root/record["record"]).read_bytes()
+        assert hashlib.sha256(data).hexdigest()==record["sha256"]
+        preserved[kind]=json.loads(data)
+    assert preserved["state"]["active_task"]==preserved["checkpoint"]["active_task"]=="CBH-STAGE6"
+    prior=preserved["behavior_ledger"]
+    assert next(scope for scope in tasks["scopes"] if scope["id"]==prior["scope"]["id"])==prior["scope"]
+    current={task["id"]:task for task in tasks["tasks"]}
+    for previous in prior["tasks"]:
+        actual=current[previous["id"]]
+        if previous["id"]!="CBH-STAGE6":
+            assert actual==previous
+            continue
+        assert previous["status"]=="IN_PROGRESS" and actual["status"]=="BLOCKED"
+        assert actual["blockers"] and "Human-priority deferral" in actual["blockers"][-1]
+        for key in previous.keys()-{"status","blockers","implementation"}:
+            assert actual[key]==previous[key],key
+        for key,value in previous["implementation"].items():
+            assert actual["implementation"][key]==value,key
+        assert actual["implementation"]["completed_at_commit"] is None
+        assert actual["verification"]["record"] is None
+        assert actual["review"]["status"]=="PENDING"
+    assert current["CBH-STAGE7"]["status"]=="APPROVED"
+    assert current["CBH-STAGE7"]["dependencies"]==["CBH-STAGE6"]
+    landing=[task for task in tasks["tasks"] if task["scope"]=="LANDING-PCB-P1"]
+    assert [task["id"] for task in landing]==["LP-P1"]
+    assert landing[0]["review"]["required"] is True
+    assert landing[0]["implementation"]["plan_sha256"]==expected_hash
+    assert any("Stop" in item and "P2" in item for item in approval["boundaries"])
+    assert any("No paid generation" in item for item in approval["boundaries"])

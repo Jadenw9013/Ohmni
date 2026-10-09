@@ -26,7 +26,11 @@ def main() -> None:
         if not args.source_only:
             (vendor / target).write_bytes((package / source).read_bytes())
     files = ["visual-assets.js", "visual-inventory.js", "visual-renderer.js", "visual-layers.js", "visual-board-scene.js",
+             "board-view.js", "landing-pcb-models.js", "landing-pcb-presentation.js", "landing-pcb-bindings.js",
              "vendor/three.module.js", "vendor/three.core.min.js", "vendor/THREE-LICENSE.txt"]
+    # Source inputs only: poster/render outputs have separate hashes, avoiding a cycle.
+    files += [path.relative_to(WEB).as_posix() for path in sorted((WEB / "landing-pcb-prototype").rglob("*"))
+              if path.is_file() and path.suffix in {".js", ".html", ".css"}]
     files += [path.relative_to(WEB).as_posix() for path in sorted((WEB / "component-library").rglob("*"))
               if path.is_file() and path.suffix in {".js", ".json", ".html", ".css"}]
     # Match the scoped Git LF policy before hashing, including existing Windows

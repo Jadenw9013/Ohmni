@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import * as THREE from '../vendor/three.module.js';
 import { actualSceneManifest } from '../visual-board-scene.js';
 import { VisualRenderer, disposeTree } from '../visual-renderer.js';
+import { createMaterials } from '../visual-assets.js';
 
 // Exercise the actual renderer option path while replacing only the native GPU
 // submission. Colors are the same BufferAttributes uploaded by Three.js.
@@ -12,6 +13,8 @@ function rendererHarness(manifest) {
     Object.assign(view, {
         scene: new THREE.Scene(), camera: new THREE.PerspectiveCamera(40, 1, 1, 1200),
         canvas: { dataset: {} }, owners: new Map(), frameTimes: [],
+        presentation: {}, materialFactory: createMaterials, instanceModelResolver: null,
+        underside: new THREE.DirectionalLight('#e2e9ed', 1.7),
         renderer: {
             getContext: () => ({ isContextLost: () => false }),
             setPixelRatio() {}, setSize() {}, shadowMap: {},

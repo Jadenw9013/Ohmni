@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "id": "LP-P1",
+  "task": "LP-P1",
+  "scope": "LANDING-PCB-P1",
+  "status": "SOFTWARE_PASSED_VISUAL_REVIEW_PENDING",
+  "commit": null,
+  "base_commit": "42961353c1b6f111c8a11c82aed5620f6f31ebb0",
+  "verified_at": "2026-10-09",
+  "evaluated_file_sha256": {
+    "apps/web/board-view.js": "fb790aa2d4e881263528dec4e76d8a6c69bc70f681bff506cfc62318a30fa346",
+    "apps/web/landing-pcb-bindings.js": "04d2e9a31c7c1f826c13824769c29c64ca803d7f4fbf29db5d91254491828688",
+    "apps/web/landing-pcb-models.js": "57f893518cf780d4b7dd01f2fc10ae26c723438a5b377002561b4712b0be4ea8",
+    "apps/web/landing-pcb-presentation.js": "e27662b89f1daa754b68e93cd1a9e14a35bcb96be6e7c8edf0cf51727002284d",
+    "apps/web/landing-pcb-prototype/index.html": "dcb4f41f707147118ba362eb90ec7efdb55ebb51eb580ec178ec6c0a673dc38b",
+    "apps/web/landing-pcb-prototype/poster-desktop.webp": "c89a283f719f3e0c6d282b15875d338582402614a1cbdd9d35c9edb43359c22b",
+    "apps/web/landing-pcb-prototype/poster-mobile.webp": "fcc0c5294d1cdcd8c88ce08fe74b1926dfc8fc6cbdcf46ab01db95c2d833bcc3",
+    "apps/web/landing-pcb-prototype/prototype.css": "c62f30bf0dccb90b957fbae1aff951f4772e4bba4d5d959e8f205d6d01a32b25",
+    "apps/web/landing-pcb-prototype/prototype.js": "727291ded534c67aa07d41cb0828e0a936fcbbc081cf27a7820683a41fee080e",
+    "apps/web/reference-board.json": "f079cb958e2019a24e5e2eac4eff1ae6c43e28913dd27678291a5847417b579a",
+    "apps/web/visual-layers.js": "b271cb9f2c735b318e12ef90e5cff245ef2063ca9692e307448b3f25e6274a5f",
+    "apps/web/visual-renderer.js": "678f824e610e0b9cffd882dc6e1fda0fee0b8930d66006069a5fe3f11b14b8ad",
+    "apps/web/visual-version.js": "0632e51652fee29064094b9c12b935561977c28a283affc020026e759ceb2121",
+    "scripts/export_landing_pcb_posters.cjs": "540146dd74cca5a540ff3c55730b67242d34ab319915eeb57ebeddac6f3c1f0e",
+    "scripts/landing_pcb_capture.cjs": "0406264d2c3ae31fb77736e4d7cb2992cfbbc67299f7c86438d20ba79e9678a8",
+    "scripts/landing_pcb_interaction_check.cjs": "cee0753c1f7a9bf82d941cb99e6e00b82bae145d728f3f172d9a309640411aae",
+    "scripts/prepare_visual_assets.py": "4d7f69ff54f32b7d7d6a6cddb86cc4d8bc18b6cfcded0b5da12f9ec9107fa152",
+    "scripts/report_landing_pcb_bindings.mjs": "8b4fa859b5b8c0245db8013cb4a15b77ab0f03a046982a4e1adfa17e03bf8581"
+  },
+  "commands": [
+    {
+      "command": "PYTHONPATH=<worktree>/src python scripts/verify.py fast",
+      "result": "PASS",
+      "tests": 1955,
+      "skipped": 82,
+      "deselected": 49,
+      "seconds": 235.59,
+      "log": "out/landing-pcb/fast-tests.log"
+    },
+    {
+      "command": "node --test apps/web/tests/*.test.mjs",
+      "result": "PASS",
+      "tests": 1029,
+      "log": "out/landing-pcb/frontend-tests.log"
+    },
+    {
+      "command": "python scripts/verify.py workflow",
+      "result": "PASS",
+      "tests": 12,
+      "log": "out/landing-pcb/workflow-tests.log"
+    },
+    {
+      "command": "ruff check scripts/prepare_visual_assets.py tests/test_ai_workflow.py",
+      "result": "PASS"
+    },
+    {
+      "command": "node scripts/landing_pcb_capture.cjs http://127.0.0.1:8780 out/landing-pcb/p1-final",
+      "result": "PASS",
+      "record": "out/landing-pcb/p1-final/capture.json"
+    },
+    {
+      "command": "node scripts/landing_pcb_interaction_check.cjs http://127.0.0.1:8780 out/landing-pcb/p1-ux/final",
+      "result": "PASS",
+      "checks": 10,
+      "record": "out/landing-pcb/p1-ux/final/interaction-report.json"
+    },
+    {
+      "command": "node scripts/report_landing_pcb_bindings.mjs",
+      "result": "REPORT_WITH_UNRESOLVED_FITS",
+      "record": "out/landing-pcb/p1-final/physical-fit-report.json"
+    }
+  ],
+  "limitations": [
+    "Owner visual acceptance pending; UI review says ready to assess direction, not finished premium hero.",
+    "All exact library bindings remain ineligible; complete physical fits NOT_ESTABLISHED.",
+    "Saved LED pad assignments conflict with newer approved binding; source preserved.",
+    "No physical-phone, screen-reader, field-performance or hardware validation claim.",
+    "First fast attempt used wrong editable-install source path and was stopped; corrected full run passed.",
+    "No Higgsfield generation/uploads/spend; no production integration/merge/push."
+  ],
+  "capture_summary": {
+    "triangles": 37126,
+    "draw_calls": 77,
+    "desktop_poster_bytes": 14356,
+    "mobile_poster_bytes": 5442,
+    "gpu": "ANGLE AMD Radeon(TM) Graphics Direct3D11",
+    "phase": "P1 isolated prototype"
+  },
+  "owner_visual_acceptance": "PENDING",
+  "source_artifact_fingerprint": "8ec92f595a26b5769e16186e32231332955db4411247973489abe6c9c9def4f8"
+}

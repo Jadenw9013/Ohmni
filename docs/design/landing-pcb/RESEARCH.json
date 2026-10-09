@@ -1,0 +1,126 @@
+{
+  "date": "2026-10-09",
+  "scope": "Read-only research and price estimates; no uploads, generation or runtime code edits.",
+  "local_main": "acdd7e37cf176bee066d0b768f9e327d3f228043",
+  "remote_main": "f1fb90c727b325b2656fdb1ecad6fdd8904c3073",
+  "model": {
+    "id": "kling3_0",
+    "name": "Kling v3.0",
+    "provider_name": "Kling",
+    "description": "Multi-shot, audio sync, motion transfer",
+    "output_type": "video",
+    "parameters": [
+      {
+        "name": "duration",
+        "required": "optional",
+        "type": "number",
+        "description": "Duration in seconds (3-15).",
+        "min": 3,
+        "max": 15,
+        "default": 5
+      },
+      {
+        "name": "mode",
+        "required": "optional",
+        "type": "string",
+        "description": "Generation mode: 'std' (standard), 'pro' (higher quality), or '4k' (4K resolution).",
+        "options": [
+          "std",
+          "pro",
+          "4k"
+        ],
+        "default": "std"
+      },
+      {
+        "name": "sound",
+        "required": "optional",
+        "type": "string",
+        "description": "Generate audio. Use 'off' for silent video and lower credits.",
+        "options": [
+          "on",
+          "off"
+        ],
+        "default": "on"
+      }
+    ],
+    "medias": [
+      {
+        "name": "medias",
+        "type": "image",
+        "roles": [
+          "start_image",
+          "end_image"
+        ]
+      }
+    ],
+    "aspect_ratios": [
+      "16:9",
+      "9:16",
+      "1:1"
+    ],
+    "tags": [
+      "multi-shot",
+      "audio",
+      "motion-transfer",
+      "cinematic",
+      "advanced",
+      "unlim"
+    ],
+    "supports_unlim": true,
+    "free_gens": [
+      {
+        "job_set_types": [
+          "ai_influencer_motion_control",
+          "ai_influencer_replace_object",
+          "hf_mult_motion_control",
+          "hf_mult_replace_object"
+        ],
+        "remaining": 0,
+        "parameters": {
+          "resolution": [
+            "480p",
+            "720p"
+          ]
+        },
+        "max_duration": 30
+      },
+      {
+        "job_set_types": [
+          "viral_hub_video"
+        ],
+        "remaining": 0,
+        "parameters": {
+          "resolution": [
+            "480p",
+            "720p"
+          ]
+        },
+        "max_duration": null
+      }
+    ]
+  },
+  "standard_quote": {
+    "cost": {
+      "credits": 6.25,
+      "credits_exact": 6.25
+    }
+  },
+  "pro_quote": {
+    "cost": {
+      "credits": 7.5,
+      "credits_exact": 7.5
+    }
+  },
+  "sources": [
+    "https://threejs.org/manual/pages/rendering-on-demand.html",
+    "https://threejs.org/manual/pages/color-management.html",
+    "https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/WebGL_best_practices",
+    "https://web.dev/articles/vitals",
+    "https://www.w3.org/WAI/WCAG22/Understanding/animation-from-interactions.html",
+    "https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide.html",
+    "https://www.w3.org/WAI/WCAG22/Understanding/reflow.html",
+    "https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html",
+    "https://open.higgsfield.ai/models/kling-video/v3.0/std/image-to-video/api-reference"
+  ],
+  "failed_optional_browser_inspection": "CUA kernel failed to initialize (sandbox ACL helper). No live browser testing or visual-implementation acceptance claimed in this planning phase. Existing raster artwork inspected with local image viewer."
+}

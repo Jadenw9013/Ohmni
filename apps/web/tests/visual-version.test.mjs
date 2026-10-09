@@ -12,6 +12,12 @@ test('shipped visual manifest matches source bytes and separates actual/sample c
         assert.equal(actual, expected, `Stale visual manifest: run scripts/prepare_visual_assets.py (${file})`);
     }
     assert.ok(VISUAL_FILE_HASHES['visual-board-scene.js'], 'Source footprint/model mapping participates in visual identity');
+    for (const file of ['board-view.js', 'landing-pcb-bindings.js', 'landing-pcb-models.js',
+        'landing-pcb-presentation.js', 'landing-pcb-prototype/prototype.js', 'landing-pcb-prototype/prototype.css']) {
+        assert.ok(VISUAL_FILE_HASHES[file], `Landing scene input participates in visual identity: ${file}`);
+    }
+    assert.ok(!Object.keys(VISUAL_FILE_HASHES).some(file => /poster.*\.(webp|png)$/.test(file)),
+        'Poster output hashes must not form a cycle with their source hash');
     const source = JSON.parse(readFileSync(new URL('../reference-board.json', import.meta.url))).board;
     const actual = actualSceneManifest(source), sample = createIllustrativeSceneManifest();
     assert.ok(actual.id.includes(source.artifact_fingerprint));

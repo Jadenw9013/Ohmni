@@ -43,7 +43,7 @@ function joinedGeometry(list) {
 export function updateLayerAppearance(layers, options = {}) {
     const { refs = [], nets = [], systems = [] } = options.highlight ?? {};
     const refSet = new Set(refs), netSet = new Set(nets), systemSet = new Set(systems);
-    const signature = JSON.stringify([refs, nets, systems, options.showMask !== false]);
+    const signature = JSON.stringify([refs, nets, systems, options.showMask !== false, options.maskedCopperColor]);
     const highlight = new THREE.Color('#8cecff');
     for (const [key, mesh] of Object.entries(layers)) {
         if (key === 'silk') { mesh.visible = options.showSilk !== false; continue; }
@@ -51,7 +51,7 @@ export function updateLayerAppearance(layers, options = {}) {
         if (copper) mesh.visible = options.showCopper !== false;
         if (mesh.userData.appearanceSignature === signature) continue;
         mesh.userData.appearanceSignature = signature;
-        const base = copper ? new THREE.Color(options.showMask === false ? '#b58a45' : '#477d4d') : mesh.userData.baseColor;
+        const base = copper ? new THREE.Color(options.showMask === false ? '#b58a45' : options.maskedCopperColor ?? '#477d4d') : mesh.userData.baseColor;
         if (copper) mesh.material.metalness = options.showMask === false ? 1 : 0;
         const colors = mesh.geometry.attributes.color;
         for (let i = 0; i < colors.count; i++) colors.setXYZ(i, base.r, base.g, base.b);
