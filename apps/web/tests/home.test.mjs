@@ -53,7 +53,7 @@ test('guide opens with actual explanatory text and close restores its initiating
         const text=h.node('#home-info-content').children.map(n=>n.textContent).join(' ');
         assert.match(text,/Missing evidence never counts as a pass/);assert.match(text,/have not been bench-tested/);
         h.node('[data-home-info-close]').handlers.click();assert.equal(h.node('#home-info').open,false);assert.equal(h.node('checks').focused,true);
-        h.node('limits').handlers.click();assert.match(h.node('#home-info-content').children.map(n=>n.textContent).join(' '),/generated concept illustration/);
+        h.node('limits').handlers.click();assert.match(h.node('#home-info-content').children.map(n=>n.textContent).join(' '),/authored controller concept/);
     }finally{h.restore();}
 });
 
@@ -66,13 +66,14 @@ test('history navigation closes guides, changes focus and leaves the mounted wor
     }finally{h.restore();}
 });
 
-test('reference artwork is local, explicitly illustrative, and every visible action has a handler',()=>{
+test('real controller hero is local, accessible, and preserves existing demo actions',()=>{
     const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
     const home=html.slice(html.indexOf('<section id="home"'),html.indexOf('<div class="app-layout"'));
-    assert.match(home,/src="\/landing-board.png"/);assert.match(home,/Concept illustration/);
+    assert.match(home,/src="\/landing-pcb-controller\/\?embed=1"/);
+    assert.match(home,/<iframe[^>]+title="Interactive 3D controller board/);
+    assert.match(home,/Real components · authored demo circuit/);
+    assert.match(home,/<noscript><style>\.home-board-live iframe\{display:none\}<\/style><img src="\/landing-pcb-controller\/poster-desktop.webp"/);
     assert.equal((home.match(/data-home-start/g)||[]).length,2);
     assert.equal((home.match(/data-home-demo/g)||[]).length,2);
-    for(const query of ['BME280','ESP32','USB_C'])assert.ok(home.includes(`data-component-query="${query}"`));
-    const png=readFileSync(new URL('../landing-board.png',import.meta.url));assert.equal(png.subarray(1,4).toString(),'PNG');
     assert.ok(HOME_GUIDES.docs.sections.some(([,body])=>body.includes('Unsaved changes')));
 });

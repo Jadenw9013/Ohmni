@@ -124,12 +124,15 @@ def test_repository_product_scope_matches_human_approval():
     # Visual and release approval preserve the real board and parked M10 benchmark.
     for scope in tasks["scopes"]:
         assert scope["approved_by"]=="human" and scope["approval_evidence"]
-        if scope["id"] in {"VIS-REF-001", "DEPLOY-1", "COMPONENT-SYNTHESIS-1", "COMPONENT-ATLAS-BUILDER-1", "UX-CLARITY-1", "REPO-READY-1", "COMPONENT-3D-STAGE1", "COMPONENT-3D-STAGE2", "COMPONENT-3D-STAGE3", "COMPONENT-3D-STAGE4", "COMPONENT-3D-STAGE5", "COMPONENT-3D-COMPLETION", "COMPONENT-BEHAVIOR-STAGE1", "COMPONENT-BEHAVIOR-COMPLETION", "LANDING-PCB-P1", "LANDING-PCB-CIRCUIT"}:
+        if scope["id"] in {"VIS-REF-001", "DEPLOY-1", "COMPONENT-SYNTHESIS-1", "COMPONENT-ATLAS-BUILDER-1", "UX-CLARITY-1", "REPO-READY-1", "COMPONENT-3D-STAGE1", "COMPONENT-3D-STAGE2", "COMPONENT-3D-STAGE3", "COMPONENT-3D-STAGE4", "COMPONENT-3D-STAGE5", "COMPONENT-3D-COMPLETION", "COMPONENT-BEHAVIOR-STAGE1", "COMPONENT-BEHAVIOR-COMPLETION", "LANDING-PCB-P1", "LANDING-PCB-CIRCUIT", "LANDING-PCB-CONTROLLER"}:
             assert scope["status"] in {"APPROVED", "IN_PROGRESS", "REVIEW", "VERIFIED", "COMPLETE"}
         else:
             expected="IN_PROGRESS" if scope["id"]=="M10" else "COMPLETE"
             assert scope["status"]==expected, scope["id"]
-    assert state["approved_product_scope"]=="LANDING-PCB-CIRCUIT"
+    assert state["approved_product_scope"]=="LANDING-PCB-CONTROLLER"
+    controller_approval=json.loads((root/".ai/approvals/LANDING-PCB-CONTROLLER.yaml").read_text())
+    assert controller_approval["approved_by"]=="human"
+    assert "use only real compnents" in controller_approval["instruction"]
     circuit_approval=json.loads((root/".ai/approvals/LANDING-PCB-CIRCUIT.yaml").read_text())
     assert circuit_approval["approved_by"]=="human"
     assert circuit_approval["instruction"]=="Real circuit redesign, then render it"

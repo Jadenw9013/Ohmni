@@ -30,14 +30,10 @@
           <p class="home-intro">Turn your ideas into circuits you can inspect and understand—with guided design, clear explanations and real engineering checks.</p>
           <div class="home-actions"><a href="#workspace" class="home-start" data-home-start>Start building <span aria-hidden="true">→</span></a><button type="button" class="home-demo" data-home-demo><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 4 12 8-12 8z"/></svg>Explore demo</button></div>
         </div>
-        <figure class="home-board" aria-label="Illustrative circuit board concept">
-          <div class="home-board-halo" aria-hidden="true"></div>
-          <img id="home-board-art" src="/landing-board.png" width="1536" height="1024" fetchpriority="high" alt="Illustrative layered circuit board with a processor module, sensors, gold pin headers and a USB connector, lit in cyan and violet.">
-          <svg class="home-leaders" viewBox="0 0 900 600" fill="none" aria-hidden="true"><path d="M185 95H295L366 194"/><path class="violet" d="M669 83H566L486 224"/><path d="M811 248H770L713 403"/><circle cx="366" cy="194" r="4"/><circle class="violet" cx="486" cy="224" r="4"/><circle cx="713" cy="403" r="4"/></svg>
-          <button type="button" class="board-callout callout-sensor" data-open-components data-component-query="BME280"><svg viewBox="0 0 28 28" aria-hidden="true"><path d="M22 5C9 3 3 9 7 18c9 5 17-1 15-13ZM4 25 18 10"/></svg><span><strong>Environmental sensor</strong><small>Temperature · Humidity · Pressure</small></span></button>
-          <button type="button" class="board-callout callout-compute" data-open-components data-component-query="ESP32"><svg viewBox="0 0 28 28" aria-hidden="true"><rect x="7" y="7" width="14" height="14" rx="1"/><path d="M10 3v4m4-4v4m4-4v4M10 21v4m4-4v4m4-4v4M3 10h4m-4 4h4m-4 4h4M21 10h4m-4 4h4m-4 4h4"/></svg><span><strong>Compute</strong><small>Meet the ESP32<br>Your programmable processor</small></span></button>
-          <button type="button" class="board-callout callout-power" data-open-components data-component-query="USB_C"><svg viewBox="0 0 28 28" aria-hidden="true"><path d="m16 2-11 15h8l-1 9 11-15h-8z"/></svg><span><strong>Power</strong><small>USB-C connection<br>Follow the power path</small></span></button>
-          <figcaption>Concept illustration · explore the saved circuit in the demo</figcaption>
+        <figure class="home-board home-board-live" aria-label="Interactive controller PCB with real component models">
+          <iframe id="home-board-3d" src="/landing-pcb-controller/?embed=1" title="Interactive 3D controller board. Drag to orbit; use the view controls to inspect it." loading="eager" referrerpolicy="same-origin"></iframe>
+          <noscript><style>.home-board-live iframe{display:none}</style><img src="/landing-pcb-controller/poster-desktop.webp" width="1200" height="900" alt="Green controller PCB with an STM32 processor, a long expansion header, EEPROM and sixteen indicator LEDs."></noscript>
+          <figcaption>Real components · authored demo circuit <a href="/landing-pcb-controller/">Explore this board <span aria-hidden="true">↗</span></a></figcaption>
         </figure>
       </section>
       <section class="home-features" aria-label="Explore Ohmni">

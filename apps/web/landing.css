@@ -68,3 +68,17 @@
  @keyframes board-reveal { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
 }
 @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
+
+/* The controller hero is a real interactive scene; the saved engineering demo
+   retains its own circuit identity and reports. */
+.home-board-live { overflow:hidden; height:560px; padding:0; border-radius:18px; }
+.home-board-live iframe { display:block; width:100%; height:calc(100% - 38px); border:0; background:#030810; border-radius:16px; }
+.home-board-live figcaption { position:static; display:flex; justify-content:center; gap:18px; flex-wrap:wrap; padding:8px 12px; margin:0; font-size:.8rem; line-height:1.4; }
+.home-board-live figcaption a { color:#b9e8d1; text-underline-offset:3px; }
+.home-board-live noscript img { object-fit:contain; mix-blend-mode:normal; mask-image:none; animation:none; }
+@media (max-width:760px) {
+ .home-board-live { display:block; height:420px; padding:0; margin-top:20px; }
+ .home-board-live iframe { height:calc(100% - 58px); }
+ .home-board-live figcaption { gap:6px 16px; }
+}
+@media (max-width:380px) { .home-board-live { height:340px; } }

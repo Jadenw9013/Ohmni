@@ -73,7 +73,6 @@ test('component catalog markup exposes a modal, accessible filters, model contro
     const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
     assert.match(html, /<dialog id="component-stories"[^>]*aria-labelledby="component-stories-title"/);
     assert.ok((html.match(/data-open-components/g) ?? []).length >= 2);
-    for (const query of ['BME280', 'ESP32', 'USB_C']) assert.ok(html.includes(`data-component-query="${query}"`));
     assert.match(html, /role="status" aria-live="polite" data-story-status/);
     assert.match(html, /<label class="story-search"><span class="sr-only">Search components<\/span>/);
     for (const control of ['category', 'package', 'mounting', 'source', 'behavior', 'sort']) assert.ok(html.includes(`data-story-${control}`));

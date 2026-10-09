@@ -1,0 +1,180 @@
+{
+  "schema_version": 1,
+  "generator": "ohmni-landing-redesign-routing-policy-v1",
+  "pcb_path": "C:\\Dev\\hackathon\\.worktrees\\landing-pcb\\out\\landing-controller\\checked-v2\\controller.kicad_pcb",
+  "pcb_fingerprint": "ae7c0b9cac6c73c30e8e606419774ab1705f8db9fb5af43a6524b926b7d39392",
+  "circuit_fingerprint": "bff21729ff7365b86618c1f87a4ffc2500fcfc09b5faf991409fe3aa2e3fc58c",
+  "routing_plan_fingerprint": "6b5891e2ad2bbde9e887bfb1267b9e53351b1e7835d746f5ea61dbe4aafddaf1",
+  "routing_profile_fingerprint": "8829a2d3871941128695c53043de3ec63f31dea028234552637e5025a88f05fd",
+  "routing_constraints_sha256": "3c9188bc51570cf3ce804f3aaa344f66eb1853ee687979682e4a157eaa9fbddc",
+  "routing_constraints": {
+    "profile": {
+      "name": "controller fine-pitch two-layer draft geometry",
+      "allowed_layers": [
+        "F.Cu",
+        "B.Cu"
+      ],
+      "signal_width_mm": {
+        "value": 0.15,
+        "provenance": "board_profile",
+        "rationale": "0.5 mm LQFP escape; process capability not qualified"
+      },
+      "power_width_mm": {
+        "value": 0.25,
+        "provenance": "board_profile",
+        "rationale": "Draft low-power geometry, not a copper-current capacity result"
+      },
+      "clearance_mm": {
+        "value": 0.15,
+        "provenance": "board_profile",
+        "rationale": "Authored fine-pitch geometry, subject to fabricator review"
+      },
+      "via_diameter_mm": {
+        "value": 0.6,
+        "provenance": "board_profile",
+        "rationale": "Authored 0.6/0.3 mm through-via geometry for LQFP fanout; fabrication capability not yet qualified"
+      },
+      "via_drill_mm": {
+        "value": 0.3,
+        "provenance": "board_profile",
+        "rationale": "Paired with 0.6 mm via diameter; same 0.15 mm minimum annular ring on both layers"
+      },
+      "grid_mm": {
+        "value": 0.125,
+        "provenance": "project_default",
+        "rationale": "Bounded grid resolves 0.5 mm lead pitch"
+      },
+      "edge_clearance_mm": {
+        "value": 0.5,
+        "provenance": "board_profile",
+        "rationale": "routing boundary inset"
+      },
+      "maximum_vias_per_connection": {
+        "value": 4,
+        "provenance": "project_default",
+        "rationale": "bounded search policy"
+      },
+      "maximum_expanded_nodes": {
+        "value": 900000,
+        "provenance": "project_default",
+        "rationale": "Larger bounded search for the dense 100-pin breakout; preserves clearance and widths"
+      }
+    },
+    "nets": [
+      {
+        "net_name": "GND",
+        "preferred_layer": "B.Cu",
+        "width_mm": null,
+        "provenance": "board_profile",
+        "rationale": "Prefer back copper for long return links to leave front-side LQFP escape space; not a ground-plane or impedance claim"
+      }
+    ]
+  },
+  "net_minimum_width_mm": {
+    "3V3": 0.25,
+    "BOOT0": 0.15,
+    "BOOT1": 0.15,
+    "CC1": 0.15,
+    "CC2": 0.15,
+    "EEPROM_CS": 0.15,
+    "GND": 0.25,
+    "GPIO_PA8": 0.15,
+    "GPIO_PB5": 0.15,
+    "GPIO_PB6": 0.15,
+    "GPIO_PB7": 0.15,
+    "GPIO_PB8": 0.15,
+    "GPIO_PB9": 0.15,
+    "GPIO_PC10": 0.15,
+    "GPIO_PC11": 0.15,
+    "GPIO_PC12": 0.15,
+    "GPIO_PC6": 0.15,
+    "GPIO_PC7": 0.15,
+    "GPIO_PC8": 0.15,
+    "GPIO_PC9": 0.15,
+    "GPIO_PD0": 0.15,
+    "GPIO_PD1": 0.15,
+    "GPIO_PD10": 0.15,
+    "GPIO_PD11": 0.15,
+    "GPIO_PD12": 0.15,
+    "GPIO_PD13": 0.15,
+    "GPIO_PD14": 0.15,
+    "GPIO_PD15": 0.15,
+    "GPIO_PD2": 0.15,
+    "GPIO_PD3": 0.15,
+    "GPIO_PD4": 0.15,
+    "GPIO_PD5": 0.15,
+    "GPIO_PD6": 0.15,
+    "GPIO_PD7": 0.15,
+    "GPIO_PD8": 0.15,
+    "GPIO_PD9": 0.15,
+    "GPIO_PE0": 0.15,
+    "GPIO_PE1": 0.15,
+    "GPIO_PE2": 0.15,
+    "GPIO_PE3": 0.15,
+    "GPIO_PE4": 0.15,
+    "GPIO_PE5": 0.15,
+    "GPIO_PE6": 0.15,
+    "LED0_ANODE": 0.15,
+    "LED0_DRIVE": 0.15,
+    "LED10_ANODE": 0.15,
+    "LED10_DRIVE": 0.15,
+    "LED11_ANODE": 0.15,
+    "LED11_DRIVE": 0.15,
+    "LED12_ANODE": 0.15,
+    "LED12_DRIVE": 0.15,
+    "LED13_ANODE": 0.15,
+    "LED13_DRIVE": 0.15,
+    "LED14_ANODE": 0.15,
+    "LED14_DRIVE": 0.15,
+    "LED15_ANODE": 0.15,
+    "LED15_DRIVE": 0.15,
+    "LED1_ANODE": 0.15,
+    "LED1_DRIVE": 0.15,
+    "LED2_ANODE": 0.15,
+    "LED2_DRIVE": 0.15,
+    "LED3_ANODE": 0.15,
+    "LED3_DRIVE": 0.15,
+    "LED4_ANODE": 0.15,
+    "LED4_DRIVE": 0.15,
+    "LED5_ANODE": 0.15,
+    "LED5_DRIVE": 0.15,
+    "LED6_ANODE": 0.15,
+    "LED6_DRIVE": 0.15,
+    "LED7_ANODE": 0.15,
+    "LED7_DRIVE": 0.15,
+    "LED8_ANODE": 0.15,
+    "LED8_DRIVE": 0.15,
+    "LED9_ANODE": 0.15,
+    "LED9_DRIVE": 0.15,
+    "NRST": 0.15,
+    "SPI_MISO": 0.15,
+    "SPI_MOSI": 0.15,
+    "SPI_SCK": 0.15,
+    "SR_CHAIN": 0.15,
+    "SR_CLK": 0.15,
+    "SR_CLR": 0.15,
+    "SR_DATA": 0.15,
+    "SR_LATCH": 0.15,
+    "SR_OE": 0.15,
+    "SWCLK": 0.15,
+    "SWDIO": 0.15,
+    "USER": 0.15,
+    "VBUS": 0.25
+  },
+  "files": [
+    {
+      "path": "C:\\Dev\\hackathon\\.worktrees\\landing-pcb\\out\\landing-controller\\checked-v2\\controller.kicad_pro",
+      "sha256": "ab110f1f1838091e447574bd7a1a0d413ac65553196f61f471bb5f039ed8f245",
+      "size_bytes": 729
+    },
+    {
+      "path": "C:\\Dev\\hackathon\\.worktrees\\landing-pcb\\out\\landing-controller\\checked-v2\\controller.kicad_dru",
+      "sha256": "b0ca5e03d9b7aa6bd978c0bb4113126198b3e8b57583722080d5c50d860eda49",
+      "size_bytes": 927
+    }
+  ],
+  "limitations": [
+    "KiCad DRC corroborates this authored geometric profile; it does not qualify a fabrication process.",
+    "Source circuit, routing, and native reports remain separate evidence records."
+  ]
+}

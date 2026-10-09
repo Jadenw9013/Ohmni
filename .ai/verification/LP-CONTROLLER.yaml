@@ -1,0 +1,191 @@
+{
+  "schema_version": 1,
+  "id": "LP-CONTROLLER",
+  "task": "LP-CONTROLLER",
+  "scope": "LANDING-PCB-CONTROLLER",
+  "status": "SCOPED_CHECKS_PASSED_OWNER_VISUAL_REVIEW_PENDING",
+  "commit": "uncommitted working tree on 7740f289291387eac7c57d1273975b7818d8ed5d",
+  "base_commit": "7740f289291387eac7c57d1273975b7818d8ed5d",
+  "verified_at": "2026-10-09",
+  "circuit_hash": "bff21729ff7365b86618c1f87a4ffc2500fcfc09b5faf991409fe3aa2e3fc58c",
+  "pcb_artifact_fingerprint": "ae7c0b9cac6c73c30e8e606419774ab1705f8db9fb5af43a6524b926b7d39392",
+  "routing_plan_fingerprint": "6b5891e2ad2bbde9e887bfb1267b9e53351b1e7835d746f5ea61dbe4aafddaf1",
+  "counts": {
+    "components": 69,
+    "nets": 89,
+    "tracks": 2324,
+    "vias": 209
+  },
+  "geometry": {
+    "board_mm": [
+      100,
+      70
+    ],
+    "mounting_holes": 4,
+    "native_pad_comparison_count": 343,
+    "model_contact_checks": 337
+  },
+  "checks": {
+    "topology_status": "SCOPED_CHECKS_PASS_SYSTEM_UNKNOWN",
+    "whole_system_status": "UNKNOWN",
+    "routing": {
+      "passed": true,
+      "failures": 0
+    },
+    "erc": {
+      "status": "pass_with_warnings",
+      "tool_status": "ok",
+      "finding_count": 71
+    },
+    "drc": {
+      "status": "pass",
+      "tool_status": "ok",
+      "finding_count": 0,
+      "unconnected_count": 0
+    },
+    "erc_note": "Zero electrical errors; 71 retained symbol-library configuration warnings.",
+    "drc_note": "Zero violations and unconnected items under recorded KiCad project rules. Default ignored checks remain visible in the raw report."
+  },
+  "gui": {
+    "actual_app": "http://127.0.0.1:8783/",
+    "actual_app_page_errors": 0,
+    "actual_app_console_errors": 0,
+    "actual_app_failed_http_responses": 0,
+    "served_asset_hash_matches": 18,
+    "selector_parts": 69,
+    "keyboard_parts": 69,
+    "mouse_pick": "U1 actual pointer click",
+    "orbit_drag": true,
+    "mobile_widths": [
+      320,
+      390,
+      768
+    ],
+    "reduced_motion": true,
+    "webgl_failure_poster_and_readable_inventory": true,
+    "static_capture_caveat": "The static-server home capture recorded three expected API404s; the separate actual-app capture has none.",
+    "render_triangles": 194880,
+    "draw_calls": 332
+  },
+  "reviews": {
+    "engineering": "No remaining scoped blocker after lineage and semantic-report caveats; final native DRC now passes.",
+    "ui": "Renderer agent reviewed final standalone, underside, home and mobile; root inspected final desktop/mobile and approved for owner review.",
+    "independence_limits": "Pipeline reviewer did not author circuit, build or renderer; they authored native serialization and server integration. Root reviewed that code, and native pcbnew corroborated all343 pads. Renderer author did their own UI QA; pipeline reviewer independently reviewed coordinate handedness; root independently inspected screenshots.",
+    "human_visual_acceptance": "PENDING"
+  },
+  "limitations": [
+    "Source-backed authored controller concept; not a manufacturing release or hardware-tested board.",
+    "No firmware, SPICE, hardware, EMC or thermal validation has been performed.",
+    "USB-C is a power-only input; cable/source current entitlement and complete worst-case budget need review.",
+    "GPIO expansion is 3.3 V logic; external loads, protection and connector wiring need engineering review.",
+    "Exact manufacturer evidence is catalog-reported, not machine-relocated verified evidence.",
+    "The retained generic LED rule uses typical 2.2 V forward voltage as a fallback, not a guaranteed minimum. Its current estimate is not a worst-case bound. The separate scoped calculation is conditional on a rail at or below 3.6 V and 1% 1 kohm resistors; output drive and brightness remain unknown.",
+    "Rendering uses real package geometry with explicit source bindings and recorded cosmetic approximations.",
+    "USB nominal mouth is1.325mm behind board edge at current source-centered placement; mating fit remains unverified. Moving it closer failed the existing conservative footprint-edge margin, so no sourced geometry was shifted in the render.",
+    "HRO nominal body length7.35mm differs from pinned KiCad F.Fab7.30mm by0.05mm; source pad positions unchanged.",
+    "Murata C8 nominal height is unverified; model uses generic0805 appearance. LED lens, switch cover, finish and lettering are explicitly cosmetic.",
+    "Generic semantic PB-CONN-005 has two warning-severity unused-oscillator findings for internal-HSI use; PB-REG-002 is insufficient_data. The engine coverage0.95 is not95% whole-system verification."
+  ],
+  "evidence_files": {
+    ".ai/evidence/LP-CONTROLLER/erc.json": "bbfbb3af3fb989bcc4f7406a499734a26533f3a541c797b3f39e1ae4d497c1ef",
+    ".ai/evidence/LP-CONTROLLER/drc.json": "90ec6070870de39aa2c957370ef1333a6a6bd5300e824406dfacb304df0d05d2",
+    ".ai/evidence/LP-CONTROLLER/drc-before-usb-fix.json": "570e91a37635d8302d7a73123f03560c5b74aec923f2f8d54287586590e794e4",
+    ".ai/evidence/LP-CONTROLLER/routing-verification.json": "9fc6ec46efd98146132cf3eaa274c22e72d3920bc933c8f982e096f2bb6045c5",
+    ".ai/evidence/LP-CONTROLLER/build-report.json": "838be5dbb623797f6e9d1d4575a647e377647b314bc9ac4af910a362aafe69ff",
+    ".ai/evidence/LP-CONTROLLER/routing-authoring.json": "a206985178821d0d7cff4acd58668bd51679aeffa7b52c0ae7cce1524957fcf5",
+    ".ai/evidence/LP-CONTROLLER/native-rules.json": "5c0e7541dbc08a23076ea3d270ad9aa49cb2016b4151237c4af59af3e286d046",
+    ".ai/evidence/LP-CONTROLLER/visual-capture.json": "27b4b1554d8df97b222abca145ed6ce66b2e27029cd801cab1f058a5b30ebe78",
+    ".ai/evidence/LP-CONTROLLER/model-bindings.json": "296db6f3e53e306f85f120e13ef29b90e8e2030f61274b08331724bca3753901",
+    ".ai/evidence/LP-CONTROLLER/app-check.json": "e03c388c95dc2f2dcacb5f31c5ebdf2e93ee03528eda2f25d5b9f4fd3506ba35",
+    ".ai/evidence/LP-CONTROLLER/fast-tests.txt": "15045306f8656b5bbd448537b6b297c5ee7e1ce5b4cc8b04698f179790b16598",
+    ".ai/evidence/LP-CONTROLLER/native-pad-tests.txt": "ab6b925c90210b03bf59a15c7088fa2f018a4aa08b8df775e23200848a4be1b4"
+  },
+  "commands": {
+    "native_build": "python -m tools.landing_controller.build --output out/landing-controller/checked-v2 --captured-on 2026-10-09 --routing-plan out/landing-controller/structured-v7/routing-plan.json",
+    "native_pad_test": "python -m pytest tests/test_landing_controller_physical.py -o addopts= -q",
+    "visual_capture": "node scripts/landing_controller_capture.cjs http://127.0.0.1:8780 out/landing-pcb-controller/visual-final",
+    "actual_app": "node scripts/landing_controller_app_check.cjs http://127.0.0.1:8783 out/landing-pcb-controller/app-final"
+  },
+  "preserved": {
+    "original_reference_unchanged": true,
+    "original_reference_sha256": "f079cb958e2019a24e5e2eac4eff1ae6c43e28913dd27678291a5847417b579a",
+    "production_registry_restored": true,
+    "previous_candidate_sha256": "01cc75520acd546709967ab87b14faba781004cf37d6d93d4c5d448e7a45ae7c"
+  },
+  "pending": [
+    "Record resulting implementation commit; owner appearance acceptance remains separate."
+  ],
+  "test_results": {
+    "fast": {
+      "passed": 2141,
+      "skipped": 82,
+      "deselected": 50,
+      "duration_seconds": 401.87,
+      "command": "python scripts/verify.py fast",
+      "includes": "Complete frontend module suite and actual-server asset/security tests"
+    },
+    "focused_controller": {
+      "passed": 100,
+      "includes_native": true,
+      "note": "66 design,3 authoring-boundary,9 routing-boundary and22 physical/native tests"
+    },
+    "ruff": "PASS",
+    "native_pad_test": {
+      "passed": 22,
+      "pad_comparisons": 343,
+      "command": "python -m pytest tests/test_landing_controller_physical.py -o addopts= -q --basetemp out/landing-controller/native-final-all"
+    },
+    "workflow": "PENDING_FINAL_LEDGER"
+  },
+  "tool_versions": {
+    "python": "3.13.3",
+    "node": "22.16.0",
+    "kicad": "10.0.5",
+    "edge": "154.0.4258.62"
+  },
+  "evaluated_file_sha256": {
+    "apps/web/landing-pcb-controller/candidate-board.json": "b771bc846284471824bd7c1dcf40141a75f849f72aa4a30535918cafa3babf7f",
+    "apps/web/landing-pcb-controller/index.html": "756e0d1943c2d7091f93047f4a5b5ca8ba7dadf1f23b598393a3aed7a4a82de9",
+    "apps/web/landing-pcb-controller/models.js": "f3566df5641c33ddb7368338a7ddd670f0770052d9b35e4a21f10ab54095a57d",
+    "apps/web/landing-pcb-controller/poster-desktop.webp": "b1b3a44a0fd58f9c3958fbbd316aa2f85b243c4c8c31d7faf3e7e0900ebb07b2",
+    "apps/web/landing-pcb-controller/poster-mobile.webp": "a00e78782e1e4a60164e59173fd737baaa96d19c6dc24fa365c883065e188195",
+    "apps/web/landing-pcb-controller/presentation.js": "9ea770945f45e9882e2092349e74e550e320649d7f075ef11da69da3fbd7ca0e",
+    "apps/web/landing-pcb-controller/projection.js": "eb50cb94c2a4fe1468019e6704bf3d34eba205c513c99fe366bcaec220b1b693",
+    "apps/web/landing-pcb-controller/prototype.css": "c3cd528d3e0b6d10df682694faa8ef22e1b4fce7edaaaac76b5fbfc804974929",
+    "apps/web/landing-pcb-controller/prototype.js": "5f92cc0ce54aaff44b5bbba5751ee0794e91c64dcc78335a6db18767660c298b",
+    "apps/web/tests/landing-controller-models.test.mjs": "b4f1b99cd4c16f3f6038316bb43151fc0a285ec0cdaed41d5e68d1f11dce9aa7",
+    "examples/landing-controller/footprints/LQFP-100_14x14mm_P0.5mm.kicad_mod": "777168782dd4ed12f1ad208fd3d882297d1404158aeaedaa26ae42ddf1839623",
+    "examples/landing-controller/footprints/MountingHole_3.2mm_M3.kicad_mod": "3853c52bba27d3e3e3e18db44a20dfb296eb9e6cd16ebf26fe4a96a2ee8add3b",
+    "examples/landing-controller/footprints/PinHeader_1x06_P2.54mm_Vertical.kicad_mod": "e3c3501f520fc1fc39eeb5d72137e680e509c0df2348ca77fef1b9db6ab974f0",
+    "examples/landing-controller/footprints/PinHeader_2x20_P2.54mm_Vertical.kicad_mod": "98adf9a263feb8ec4e92e68d7494a0ebb6bea4f124fc4fe02c3458719ba9cac6",
+    "examples/landing-controller/footprints/SOIC-16_3.9x9.9mm_P1.27mm.kicad_mod": "a3e0cad48591b1bf41f77aa964868c62b28d32f1014a42a763a17ac184231f7f",
+    "examples/landing-controller/research.json": "e189884e5339d0fc7d220ded4ae24c70a87f0446c22a3cdb0bedeba04d3c0ac2",
+    "scripts/landing_controller_app_check.cjs": "e226b68fe1f254cd318743c6e1788dea96f84f432481cb0e303210c13440d496",
+    "scripts/landing_controller_capture.cjs": "eff4ff4b8e8ebeb51a10ce9b122f1d9a7a63045e208ebe501a3f4adadbf13bb9",
+    "tests/test_landing_controller_build.py": "86da3612d0672e18d023ce1174fa6d4cf09479a46644e6e66fcfc53192aa1c31",
+    "tests/test_landing_controller_design.py": "e7f72487bb9d8587d8f5b094808a77589134647581c103b27baeffaea22fb0c2",
+    "tests/test_landing_controller_physical.py": "d43ddc2c3eaaa250ebeb837361d40823927db27f13ce053746bcbb4e2dc82bdb",
+    "tests/test_landing_controller_routing.py": "fb4542b2c9efb97f48647926df9e4242d0b5a1dd9b283a5031ac453e4b7cd6c5",
+    "tools/landing_controller/README.md": "574121d8b3847d122ac1c64ff13b372b6bef2e58c30a566b6402eac70d7f5829",
+    "tools/landing_controller/__init__.py": "0ab5117b0c8178959cc8956584bfa1d2d4990f2c9838f0a0f976a61a8e0bfa3b",
+    "tools/landing_controller/build.py": "45ca0d8a087b136b97d26e402ba51b59915e3d5f2ce2b872eee3bc48c7047727",
+    "tools/landing_controller/catalog.py": "7c302919a840232c2c8ff4f915366bcc68f3371a0dfc25d92bd00bdd54f1d59d",
+    "tools/landing_controller/checks.py": "822427474b4fc61b3c70577a3a1dcb0cb4de5236cdc876e7f37f499c5520c7f3",
+    "tools/landing_controller/design.py": "159cdcb278afe920a7ffb7986e7467df0c7e0115d6bb4acad940b38aa2e3fc74",
+    "tools/landing_controller/physical.py": "78f1390b332043b65398a8a39a9039f4b5b656d40803c27880f219397e80daa1",
+    "tools/landing_controller/routing.py": "06b5cef16f830839e54ec26ccec5d992feca7e67131e1b05235e92559bf80c26",
+    "tools/landing_controller/schematic.py": "6f7d021b5244a3d0bfa2c497e9402359b8c451772d8272c51077f933fefc559e",
+    ".gitattributes": "44bb878ccdf6bb2bb7e41afdbff66c88f3165d4145a7fd34671fbfcc2b461742",
+    "apps/web/home.js": "bd0aa08c7397f4cf7a1650cfb8282276409f660e051d13b58bbfdbad4f12baf1",
+    "apps/web/index.html": "87545cebb24111e680980a3c829409921f4dc2fd05ad1b21f496d460b27f12f8",
+    "apps/web/landing.css": "2ff1dc7eb126b06c718e7c0ac3ec060f57bc890ec16f425afa2971f61a2865bf",
+    "apps/web/tests/component-stories.test.mjs": "846ab923319cbe388d8302cdc8a2c55dda77f63a4c27717f37e32eb8d2d7c784",
+    "apps/web/tests/home.test.mjs": "6ca863a7b95f6e798278bcdce023d03e50395359c2018df634b215fd9171d688",
+    "apps/web/visual-board-scene.js": "9e5600d1b506f4d143dac4fff0889b100136f4f77bfca4ceac2ccaca89915300",
+    "apps/web/visual-version.js": "2390db5b1cba5a00c48122a80835ee516e9fd9b3e958b311ee7a97ed63f94a80",
+    "scripts/demo_server.py": "4604553e15648098893e97e4c0d9a214c6aea79cfa039a4406ab198d333f7006",
+    "scripts/prepare_visual_assets.py": "913dad2e2b0168e39d1c8fc571c5353e9bff02932fdcdf4532b819bc898e0771",
+    "tests/test_ai_workflow.py": "29f5f113c2fc7de9888a7a37df40220b504906a8c1bdf2b29e4205b4c1ea012f",
+    "tests/test_visual_assets_server.py": "291231a1d6cba15dbbfa157ad89e32016693caeb19c478d964845fe6cae300b6"
+  }
+}

@@ -33,6 +33,8 @@ def main() -> None:
               if path.is_file() and path.suffix in {".js", ".html", ".css"}]
     files += [path.relative_to(WEB).as_posix() for path in sorted((WEB / "landing-pcb-redesign").rglob("*"))
               if path.is_file() and path.suffix in {".js", ".html", ".css"}]
+    files += [path.relative_to(WEB).as_posix() for path in sorted((WEB / "landing-pcb-controller").rglob("*"))
+              if path.is_file() and path.suffix in {".js", ".html", ".css"}]
     files += [path.relative_to(WEB).as_posix() for path in sorted((WEB / "component-library").rglob("*"))
               if path.is_file() and path.suffix in {".js", ".json", ".html", ".css"}]
     # Match the scoped Git LF policy before hashing, including existing Windows

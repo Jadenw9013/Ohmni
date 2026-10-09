@@ -297,6 +297,15 @@
       "approved_by": "human",
       "approval_evidence": ".ai/approvals/LANDING-PCB-CIRCUIT.yaml",
       "description": "Separately sourced landing PCB circuit redesign and rendering; original accepted artifacts preserved."
+    },
+    {
+      "id": "LANDING-PCB-CONTROLLER",
+      "type": "visual_circuit_prototype",
+      "title": "Real-component controller landing board",
+      "status": "IN_PROGRESS",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/LANDING-PCB-CONTROLLER.yaml",
+      "review_policy": "Independent electrical/geometry and visual review; owner appearance acceptance remains distinct."
     }
   ],
   "tasks": [
@@ -3031,6 +3040,45 @@
       "notes": [
         "32-part candidate generated, routed, checked and rendered. Optional 38-part extension has topology/placement coverage only. Manufacturing, hardware validation and final visual acceptance remain open."
       ]
+    },
+    {
+      "id": "LP-CONTROLLER",
+      "scope": "LANDING-PCB-CONTROLLER",
+      "milestone": null,
+      "title": "Build, check and render the reference-inspired controller demo",
+      "status": "IN_PROGRESS",
+      "priority": 280,
+      "dependencies": [],
+      "blockers": [],
+      "goal": "A dense green board with real components, source-bound pin geometry and actual routed connections.",
+      "acceptance_criteria": [
+        "New source-backed controller circuit and complete documented real component inventory.",
+        "Real library meshes, explicit pin/model bindings, real board holes and emitted pads/copper.",
+        "Scoped topology, physical and native checks retained with limitations; no unsupported electrical PASS.",
+        "Accessible interactive preview with reference-inspired finish and composition, independently reviewed."
+      ],
+      "implementation": {
+        "started_at_commit": "7740f289291387eac7c57d1273975b7818d8ed5d",
+        "completed_at_commit": null,
+        "approval_evidence": ".ai/approvals/LANDING-PCB-CONTROLLER.yaml"
+      },
+      "verification": {
+        "required": [
+          "workflow_tests",
+          "focused_design_tests",
+          "frontend_tests",
+          "native_checks",
+          "browser_review"
+        ],
+        "record": ".ai/verification/LP-CONTROLLER.yaml"
+      },
+      "review": {
+        "required": true,
+        "status": "PENDING",
+        "independent": true,
+        "record": ".ai/reviews.yaml#LP-CONTROLLER",
+        "human_visual_acceptance": "PENDING"
+      }
     }
   ]
 }

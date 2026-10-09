@@ -79,7 +79,7 @@ def test_nested_visual_runtime_dependency_graph_is_in_the_fixed_snapshot():
     """Follow nested ES imports, stylesheets, and local JSON references."""
     # The model adapter is a public module; the preview is a separate entrypoint.
     pending = {"component-library/transforms.js"}
-    for entry in ("index.html", "component-library/preview/index.html"):
+    for entry in ("index.html", "component-library/preview/index.html", "landing-pcb-controller/index.html"):
         html = (server_module.WEB_ROOT / entry).read_text(encoding="utf-8")
         scripts = re.findall(r'<script\b[^>]*\bsrc=[\'"]([^\'"]+)[\'"]', html)
         for inline in re.findall(r'<script\b[^>]*>(.*?)</script>', html, flags=re.DOTALL):
@@ -284,3 +284,96 @@ def test_sample_ids_and_self_asserted_release_fields_cannot_download_fabrication
                 assert status == 404 and json.loads(body) == {"error": "not found"}
         assert server.store.jobs == {}
         assert server.projects.list_projects() == []
+
+
+@pytest.fixture
+def controller_web_fixture(tmp_path):
+    """HTTP fixtures allow work before final routed scene/posters are captured.
+
+    Only these generated files may be substituted, in the temporary test root.
+    The existing all-assets/dependency tests still require every real asset.
+    """
+    pending = {
+        "landing-pcb-controller/candidate-board.json": b'{"kind":"HTTP_TEST_FIXTURE"}\n',
+        "landing-pcb-controller/poster-desktop.webp": b"RIFF\x04\x00\x00\x00WEBP",
+        "landing-pcb-controller/poster-mobile.webp": b"RIFF\x04\x00\x00\x00WEBP",
+    }
+    destination = tmp_path / "web"
+    for name in server_module.STATIC_ASSETS:
+        source, target = server_module.WEB_ROOT / name, destination / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(source.read_bytes() if source.is_file() else pending[name])
+    return destination
+
+
+def test_controller_iframe_alias_and_exact_dependencies_are_served_with_correct_mime(tmp_path, controller_web_fixture):
+    expected_types = {
+        "index.html": "text/html; charset=utf-8",
+        "prototype.css": "text/css; charset=utf-8",
+        **{name: "text/javascript; charset=utf-8"
+           for name in ("prototype.js", "models.js", "presentation.js", "projection.js")},
+        "candidate-board.json": "application/json; charset=utf-8",
+        "poster-desktop.webp": "image/webp", "poster-mobile.webp": "image/webp",
+    }
+    with _server(tmp_path / "jobs", controller_web_fixture) as (server, base):
+        for name, mime in expected_types.items():
+            path = "/landing-pcb-controller/" + name
+            status, headers, body = _request(base, path)
+            assert status == 200, path
+            assert headers["content-type"] == mime
+            assert body == server.static_assets[path]
+            assert int(headers["content-length"]) == len(body)
+            assert headers["x-ohmni-ui-version"] == server.ui_version
+        for path in ("/landing-pcb-controller/", "/landing-pcb-controller/?embed=1"):
+            status, headers, body = _request(base, path)
+            assert status == 200
+            assert headers["content-type"] == "text/html; charset=utf-8"
+            assert body == server.static_assets["/landing-pcb-controller/index.html"]
+        status, headers, body = _request(base, "/landing-pcb-presentation.js")
+        assert status == 200 and body == server.static_assets["/landing-pcb-presentation.js"]
+        assert headers["content-type"] == "text/javascript; charset=utf-8"
+        status, _, body = _request(base, "/")
+        assert status == 200 and body == server.static_assets["/index.html"]
+
+
+def test_controller_candidate_and_posters_obey_the_immutable_ui_snapshot(tmp_path, controller_web_fixture):
+    changed = ("landing-pcb-controller/index.html", "landing-pcb-controller/candidate-board.json",
+               "landing-pcb-controller/poster-desktop.webp", "landing-pcb-controller/poster-mobile.webp",
+               "landing-pcb-presentation.js")
+    with _server(tmp_path / "first", controller_web_fixture) as (first, base):
+        original = dict(first.static_assets)
+        for name in changed:
+            (controller_web_fixture / name).write_bytes(b"changed after server snapshot")
+            status, headers, body = _request(base, "/" + name)
+            assert status == 200 and body == original["/" + name]
+            assert headers["x-ohmni-ui-version"] == first.ui_version
+        assert _request(base, "/landing-pcb-controller/?embed=1")[2] == original["/landing-pcb-controller/index.html"]
+        with _server(tmp_path / "second", controller_web_fixture) as (second, second_base):
+            assert second.ui_version != first.ui_version
+            for name in changed:
+                assert _request(second_base, "/" + name)[2] == b"changed after server snapshot"
+
+
+def test_controller_alias_never_expands_to_directory_or_live_file_access(tmp_path, controller_web_fixture):
+    secret = b"private-controller-sentinel"
+    (controller_web_fixture / "landing-pcb-controller/private.txt").write_bytes(secret)
+    with _server(tmp_path / "jobs", controller_web_fixture) as (_, base):
+        for path in ("/landing-pcb-controller", "/landing-pcb-controller//",
+                     "/landing-pcb-controller/private.txt", "/landing-pcb-controller/../index.html",
+                     "/landing-pcb-controller/%2e%2e/index.html", "/landing-pcb-controller/%252e%252e/index.html",
+                     "/landing-pcb-controller/..%5cindex.html", "/landing-pcb-controller/models.js/extra",
+                     "/landing-pcb-redesign/", "/landing-pcb-prototype/"):
+            status, _, body = _request(base, path)
+            assert status == 404, path
+            assert json.loads(body) == {"error": "not found"}
+            assert secret not in body
+        status, headers, body = _request(base, "/landing-pcb-controller/?embed=1", method="HEAD")
+        assert status == 405 and body == b""
+        assert headers["allow"] == "GET, POST, OPTIONS"
+
+
+@pytest.mark.parametrize("name", ["candidate-board.json", "poster-desktop.webp", "poster-mobile.webp"])
+def test_controller_generated_assets_are_required_for_snapshot_startup(controller_web_fixture, name):
+    (controller_web_fixture / "landing-pcb-controller" / name).unlink()
+    with pytest.raises(server_module.DemoInitializationError):
+        server_module._load_web_snapshot(controller_web_fixture)

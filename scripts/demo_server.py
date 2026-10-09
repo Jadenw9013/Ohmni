@@ -89,6 +89,12 @@ STATIC_ASSETS=("index.html","app.js","view-model.js","board-model.js","board-vie
                "reference-board.json","styles.css","visual-explorer.css",
                "component-visuals.json","component-stories.js","component-stories.css","component-behavior.js",
                "component-sandbox.js","sandbox-model.js","home.js","home.css","landing.css","landing-board.png","workbench-theme.css",
+               "landing-pcb-presentation.js",
+               "landing-pcb-controller/index.html","landing-pcb-controller/prototype.css",
+               "landing-pcb-controller/prototype.js","landing-pcb-controller/models.js",
+               "landing-pcb-controller/presentation.js","landing-pcb-controller/projection.js",
+               "landing-pcb-controller/candidate-board.json",
+               "landing-pcb-controller/poster-desktop.webp","landing-pcb-controller/poster-mobile.webp",
                "visual-assets.js","visual-renderer.js","visual-explorer.js","visual-layers.js","visual-board-scene.js","visual-inventory.js","visual-version.js",
                "vendor/three.module.js","vendor/three.core.min.js",
                "component-library/data/completion-a.json","component-library/data/completion-b.json","component-library/data/completion-c.json",
@@ -141,6 +147,11 @@ STATIC_CONTENT_TYPES={
     "landing.css":"text/css; charset=utf-8",
     "workbench-theme.css":"text/css; charset=utf-8",
     "landing-board.png":"image/png",
+    "landing-pcb-controller/index.html":"text/html; charset=utf-8",
+    "landing-pcb-controller/prototype.css":"text/css; charset=utf-8",
+    "landing-pcb-controller/candidate-board.json":"application/json; charset=utf-8",
+    "landing-pcb-controller/poster-desktop.webp":"image/webp",
+    "landing-pcb-controller/poster-mobile.webp":"image/webp",
     **{name:"text/javascript; charset=utf-8" for name in STATIC_ASSETS if name.endswith(".js")},
 }
 DIAGNOSTIC_EVENTS={
@@ -1134,7 +1145,8 @@ class DemoHandler(SimpleHTTPRequestHandler):
             if state!="current" or data is None:return self._json({"error":"artifact is stale or not associated with this report"},HTTPStatus.CONFLICT)
             content_type="application/zip" if name=="build-package.zip" else "application/octet-stream"
             self.send_response(HTTPStatus.OK);self.send_header("content-type",content_type);self.send_header("x-content-type-options","nosniff");self.send_header("content-disposition",f'attachment; filename="{name}"');self.send_header("content-length",str(len(data)));self.end_headers();self.wfile.write(data);return
-        asset_path="/index.html" if request_path=="/" else request_path
+        asset_path={"/":"/index.html",
+                    "/landing-pcb-controller/":"/landing-pcb-controller/index.html"}.get(request_path,request_path)
         data=self.server.static_assets.get(asset_path)
         if data is None:return self._json({"error":"not found"},HTTPStatus.NOT_FOUND)
         name=asset_path.removeprefix("/")

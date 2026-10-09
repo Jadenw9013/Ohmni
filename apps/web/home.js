@@ -14,7 +14,7 @@ export const HOME_GUIDES = Object.freeze({
     ] },
     limits: { title: 'A focused local prototype', sections: [
         ['Supported projects', 'USB-powered ESP32 sensor, button-and-light and memory boards. This is not a general-purpose PCB editor.'],
-        ['Illustrations and real data', 'The landing artwork is a generated concept illustration. The demo is a saved circuit with recorded checks and illustrative component bodies. Neither is hardware validation.'],
+        ['Models and real data', 'The landing board is an authored controller concept with named components and recorded circuit and geometry checks. Explore demo opens the separate saved engineering example. Neither has been hardware-tested.'],
         ['Your files and revisions', 'Projects are stored on this server, not synced to the cloud. Save before reloading. Available files and release eligibility depend on the actual engineering results.']
     ] }
 });

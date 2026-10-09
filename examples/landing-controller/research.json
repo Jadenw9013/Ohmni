@@ -1,0 +1,1686 @@
+{
+  "schema_version": 1,
+  "design": "OHMNI controller 01",
+  "scope": "Authored real-part controller draft for the 3D landing demonstration",
+  "system_status": "UNKNOWN",
+  "manufacturing_ready": false,
+  "bench_run": false,
+  "architecture": {
+    "controller": "STM32F103VBT6",
+    "supply": "USB-C power only to AP2112K-3.3TRG1",
+    "memory": "25LC256-I/SN SPI EEPROM",
+    "indicator_driver": [
+      "SN74HC595D",
+      "SN74HC595D"
+    ],
+    "indicators": "16 Kingbright APT1608SGC via individual 1k series resistors",
+    "expansion": "36 GPIO contacts plus two ground and two 3V3 contacts on Samtec TSW-120-07-G-D",
+    "debug": "custom 1x6 SWD, target voltage reference only; TSW-106-07-G-S",
+    "clock": "internal 8 MHz HSI; no external oscillator, USB data or precision timekeeping"
+  },
+  "sources": [
+    {
+      "key": "mcu",
+      "manufacturer": "STMicroelectronics",
+      "title": "STM32F103x8/xB DS5319 Rev 20",
+      "url": "https://www.st.com/resource/en/datasheet/stm32f103vb.pdf",
+      "status": "CATALOG_REPORTED",
+      "reviewed_on": "2026-10-09",
+      "review_method": "manual manufacturer source review; not deterministic source relocation"
+    },
+    {
+      "key": "hardware",
+      "manufacturer": "STMicroelectronics",
+      "title": "AN2586 Rev 8 hardware development",
+      "url": "https://www.st.com/resource/en/application_note/an2586-getting-started-with-stm32f10xxx-hardware-development-stmicroelectronics.pdf",
+      "status": "CATALOG_REPORTED",
+      "reviewed_on": "2026-10-09",
+      "review_method": "manual manufacturer source review; not deterministic source relocation"
+    },
+    {
+      "key": "shift",
+      "manufacturer": "Texas Instruments",
+      "title": "SN74HC595 SCLS041J",
+      "url": "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf",
+      "status": "CATALOG_REPORTED",
+      "reviewed_on": "2026-10-09",
+      "review_method": "manual manufacturer source review; not deterministic source relocation"
+    },
+    {
+      "key": "led",
+      "manufacturer": "Kingbright",
+      "title": "APT1608SGC DSAD0932 Rev 22B",
+      "url": "https://www.kingbrightusa.com/images/catalog/spec/apt1608sgc.pdf",
+      "status": "CATALOG_REPORTED",
+      "reviewed_on": "2026-10-09",
+      "review_method": "manual manufacturer source review; not deterministic source relocation"
+    },
+    {
+      "key": "usb",
+      "manufacturer": "HRO",
+      "title": "TYPE-C-31-M-12 product and drawing",
+      "url": "https://en.krhro.com/Product-Details/726.html",
+      "status": "CATALOG_REPORTED",
+      "reviewed_on": "2026-10-09",
+      "review_method": "manual manufacturer source review; not deterministic source relocation"
+    },
+    {
+      "key": "button",
+      "manufacturer": "Omron",
+      "title": "B3F tactile switches",
+      "url": "https://components.omron.com/us-en/system/files/2023-01/datasheet_pdf/A070-E1.pdf",
+      "status": "CATALOG_REPORTED",
+      "reviewed_on": "2026-10-09",
+      "review_method": "manual manufacturer source review; not deterministic source relocation"
+    },
+    {
+      "key": "header",
+      "manufacturer": "Samtec",
+      "title": "TSW-120-07-G-D",
+      "url": "https://www.samtec.com/products/tsw-120-07-g-d",
+      "status": "CATALOG_REPORTED",
+      "reviewed_on": "2026-10-09",
+      "review_method": "manual manufacturer source review; not deterministic source relocation"
+    },
+    {
+      "key": "swd",
+      "manufacturer": "Samtec",
+      "title": "TSW-106-07-G-S",
+      "url": "https://www.samtec.com/products/tsw-106-07-g-s",
+      "status": "CATALOG_REPORTED",
+      "reviewed_on": "2026-10-09",
+      "review_method": "manual manufacturer source review; not deterministic source relocation"
+    },
+    {
+      "key": "resistor",
+      "manufacturer": "Panasonic",
+      "title": "ERJ3EKF precision chip resistor family",
+      "url": "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models?model_number=ERJ3EKF&order=series&page=0&sort=asc",
+      "status": "CATALOG_REPORTED",
+      "reviewed_on": "2026-10-09",
+      "review_method": "manual manufacturer source review; not deterministic source relocation"
+    },
+    {
+      "key": "rd",
+      "manufacturer": "Panasonic",
+      "title": "ERJ3EKF5101V",
+      "url": "https://industrial.panasonic.com/ww/products/pt/general-purpose-chip-resistors/models/ERJ3EKF5101V",
+      "status": "CATALOG_REPORTED",
+      "reviewed_on": "2026-10-09",
+      "review_method": "manual manufacturer source review; not deterministic source relocation"
+    },
+    {
+      "key": "cap100n",
+      "manufacturer": "TDK",
+      "title": "C1608X7R1H104K080AA",
+      "url": "https://product.tdk.com/en/search/capacitor/ceramic/mlcc/info?part_no=C1608X7R1H104K080AA",
+      "status": "CATALOG_REPORTED",
+      "reviewed_on": "2026-10-09",
+      "review_method": "manual manufacturer source review; not deterministic source relocation"
+    },
+    {
+      "key": "cap1u",
+      "manufacturer": "TDK",
+      "title": "C1608X5R1C105K080AA",
+      "url": "https://product.tdk.com/en/search/capacitor/ceramic/mlcc/info?part_no=C1608X5R1C105K080AA",
+      "status": "CATALOG_REPORTED",
+      "reviewed_on": "2026-10-09",
+      "review_method": "manual manufacturer source review; not deterministic source relocation"
+    },
+    {
+      "key": "cap10u",
+      "manufacturer": "Texas Instruments (publisher; component maker is Murata)",
+      "title": "TLV62569 SLVSDG1C reference-design BOM Table 3",
+      "url": "https://www.ti.com/lit/ds/symlink/tlv62569.pdf",
+      "status": "CATALOG_REPORTED",
+      "reviewed_on": "2026-10-09",
+      "review_method": "Exact MPN and nominal attributes manually corroborated in TI reference-design BOM. Not Murata datasheet verification or deterministic source relocation.",
+      "previous_unavailable_url": "https://www.murata.com/-/media/webrenewal/tool/library/common-pdf/dynamic-model/component-list-d-mlcc-2504.ashx?cvid=20250523010405000000&la=en",
+      "previous_retrieval_status": "404 during independent review",
+      "pages": [
+        8
+      ]
+    },
+    {
+      "key": "ldo",
+      "manufacturer": "Diodes Incorporated",
+      "title": "AP2112 DS39724 Rev2-2",
+      "url": "https://www.diodes.com/datasheet/download/AP2112.pdf",
+      "pages": [
+        1,
+        2,
+        3,
+        9,
+        14
+      ],
+      "status": "CATALOG_REPORTED"
+    },
+    {
+      "key": "eeprom",
+      "manufacturer": "Microchip Technology",
+      "title": "25AA256/25LC256 DS20001822H",
+      "url": "https://ww1.microchip.com/downloads/en/DeviceDoc/25AA256-25LC256-256K-SPI-Bus-Serial-EEPROM-20001822H.pdf",
+      "pages": [
+        1,
+        2,
+        3,
+        6,
+        19,
+        24,
+        29
+      ],
+      "status": "CATALOG_REPORTED"
+    },
+    {
+      "key": "button_drawing",
+      "manufacturer": "Omron",
+      "title": "B3F tactile switch drawing",
+      "url": "https://omronfs.omron.com/en_US/ecb/products/pdf/en-b3f.pdf",
+      "pages": [
+        1,
+        4
+      ],
+      "status": "CATALOG_REPORTED",
+      "review_method": "p4 drawing visually inspected; two internal electrical pairs, 1+2 and 3+4"
+    }
+  ],
+  "mcu_pin_map": {
+    "1": "PE2",
+    "2": "PE3",
+    "3": "PE4",
+    "4": "PE5",
+    "5": "PE6",
+    "6": "VBAT",
+    "7": "PC13",
+    "8": "PC14",
+    "9": "PC15",
+    "10": "VSS_5",
+    "11": "VDD_5",
+    "12": "OSC_IN",
+    "13": "OSC_OUT",
+    "14": "NRST",
+    "15": "PC0",
+    "16": "PC1",
+    "17": "PC2",
+    "18": "PC3",
+    "19": "VSSA",
+    "20": "VREF-",
+    "21": "VREF+",
+    "22": "VDDA",
+    "23": "PA0",
+    "24": "PA1",
+    "25": "PA2",
+    "26": "PA3",
+    "27": "VSS_4",
+    "28": "VDD_4",
+    "29": "PA4",
+    "30": "PA5",
+    "31": "PA6",
+    "32": "PA7",
+    "33": "PC4",
+    "34": "PC5",
+    "35": "PB0",
+    "36": "PB1",
+    "37": "PB2",
+    "38": "PE7",
+    "39": "PE8",
+    "40": "PE9",
+    "41": "PE10",
+    "42": "PE11",
+    "43": "PE12",
+    "44": "PE13",
+    "45": "PE14",
+    "46": "PE15",
+    "47": "PB10",
+    "48": "PB11",
+    "49": "VSS_1",
+    "50": "VDD_1",
+    "51": "PB12",
+    "52": "PB13",
+    "53": "PB14",
+    "54": "PB15",
+    "55": "PD8",
+    "56": "PD9",
+    "57": "PD10",
+    "58": "PD11",
+    "59": "PD12",
+    "60": "PD13",
+    "61": "PD14",
+    "62": "PD15",
+    "63": "PC6",
+    "64": "PC7",
+    "65": "PC8",
+    "66": "PC9",
+    "67": "PA8",
+    "68": "PA9",
+    "69": "PA10",
+    "70": "PA11",
+    "71": "PA12",
+    "72": "PA13",
+    "73": "NC",
+    "74": "VSS_2",
+    "75": "VDD_2",
+    "76": "PA14",
+    "77": "PA15",
+    "78": "PC10",
+    "79": "PC11",
+    "80": "PC12",
+    "81": "PD0",
+    "82": "PD1",
+    "83": "PD2",
+    "84": "PD3",
+    "85": "PD4",
+    "86": "PD5",
+    "87": "PD6",
+    "88": "PD7",
+    "89": "PB3",
+    "90": "PB4",
+    "91": "PB5",
+    "92": "PB6",
+    "93": "PB7",
+    "94": "BOOT0",
+    "95": "PB8",
+    "96": "PB9",
+    "97": "PE0",
+    "98": "PE1",
+    "99": "VSS_3",
+    "100": "VDD_3"
+  },
+  "source_pages": {
+    "mcu_pinout": {
+      "source": "mcu",
+      "pages": [
+        22,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33
+      ]
+    },
+    "mcu_order_code": {
+      "source": "mcu",
+      "pages": [
+        105
+      ]
+    },
+    "mcu_package": {
+      "source": "mcu",
+      "pages": [
+        87,
+        88,
+        89
+      ]
+    },
+    "hardware": {
+      "source": "hardware",
+      "pages": [
+        8,
+        11,
+        12,
+        16,
+        19
+      ]
+    },
+    "shift": {
+      "source": "shift",
+      "pages": [
+        1,
+        3,
+        4,
+        15
+      ]
+    },
+    "led": {
+      "source": "led",
+      "pages": [
+        1,
+        2
+      ]
+    }
+  },
+  "mcu_geometry_mm": {
+    "body": [
+      14,
+      14,
+      1.4
+    ],
+    "lead_span": [
+      16,
+      16
+    ],
+    "seated_height_typical": 1.5,
+    "seated_height_maximum": 1.6,
+    "pitch": 0.5,
+    "lead_width_typical": 0.22,
+    "lead_foot_length_typical": 0.6,
+    "standoff_range": [
+      0.05,
+      0.15
+    ],
+    "lead_thickness_range": [
+      0.09,
+      0.2
+    ],
+    "render_standoff": {
+      "value": 0.1,
+      "status": "DERIVED_MIDPOINT",
+      "derivation": "Midpoint of manufacturer A1 range"
+    },
+    "render_lead_thickness": {
+      "value": 0.145,
+      "status": "DERIVED_MIDPOINT",
+      "derivation": "Midpoint of manufacturer c range"
+    },
+    "pin1_marker_shape": "Manufacturer location zone fixed; exact marker shape optional, cosmetic nominal"
+  },
+  "package_geometry": {
+    "SN74HC595D": {
+      "body_mm": [
+        9.9,
+        3.9
+      ],
+      "pitch_mm": 1.27,
+      "pins": 16,
+      "source": "shift p1 and D package drawing"
+    },
+    "APT1608SGC": {
+      "body_mm": [
+        1.6,
+        0.8,
+        0.75
+      ],
+      "lens": "clear",
+      "polarity": "cathode-marked; our physical terminal convention is 1=K,2=A"
+    },
+    "B3F-1000": {
+      "body_mm": [
+        6,
+        6,
+        3.4
+      ],
+      "total_seated_height_mm": 4.3,
+      "actuator_diameter_mm": 3.5,
+      "actuator_color": "ivory",
+      "hole_grid_mm": [
+        6.5,
+        4.5
+      ],
+      "pin_aliases": "Two circuit terminals represent the two internally joined pairs. No claim that two physical legs exist."
+    },
+    "TYPE-C-31-M-12": {
+      "nominal_body_mm": [
+        8.94,
+        7.35,
+        3.16
+      ],
+      "contacts": 16,
+      "source": "HRO manufacturer product page; precise mating/retention fit remains unverified"
+    }
+  },
+  "component_realizations": [
+    {
+      "ref": "U1",
+      "mpn": "STM32F103VBT6",
+      "manufacturer": "STMicroelectronics",
+      "package": "LQFP-100",
+      "value": null,
+      "notes": "8 MHz HSI; no USB data, HSE or LSE. Pin 73 is NC. Unused GPIOs require firmware analog/input configuration."
+    },
+    {
+      "ref": "U2",
+      "mpn": "AP2112K-3.3TRG1",
+      "manufacturer": "Diodes Incorporated",
+      "package": "SOT-23-5",
+      "value": null,
+      "notes": null
+    },
+    {
+      "ref": "U3",
+      "mpn": "25LC256-I/SN",
+      "manufacturer": "Microchip Technology",
+      "package": "SOIC-8",
+      "value": null,
+      "notes": null
+    },
+    {
+      "ref": "U4",
+      "mpn": "SN74HC595D",
+      "manufacturer": "Texas Instruments",
+      "package": "SOIC-16",
+      "value": null,
+      "notes": "Indicator bank 0..7; active-high outputs."
+    },
+    {
+      "ref": "U5",
+      "mpn": "SN74HC595D",
+      "manufacturer": "Texas Instruments",
+      "package": "SOIC-16",
+      "value": null,
+      "notes": "Indicator bank 8..15; QH prime intentionally unused."
+    },
+    {
+      "ref": "J1",
+      "mpn": "TYPE-C-31-M-12",
+      "manufacturer": "HRO",
+      "package": "USB-C-16P-SMD",
+      "value": null,
+      "notes": "Power only; D+/D-/SBU unconnected. No USB current entitlement inferred."
+    },
+    {
+      "ref": "J2",
+      "mpn": "TSW-120-07-G-D",
+      "manufacturer": "Samtec",
+      "package": "2x20-2.54mm-THT",
+      "value": null,
+      "notes": "1/2 GND, 39/40 3V3 output, 3..38 GPIO; not Raspberry Pi compatible. External loads not qualified."
+    },
+    {
+      "ref": "J3",
+      "mpn": "TSW-106-07-G-S",
+      "manufacturer": "Samtec",
+      "package": "1x6-2.54mm-THT",
+      "value": null,
+      "notes": "1 3V3 reference, 2 SWDIO, 3 GND, 4 SWCLK, 5 NRST, 6 GND. Custom debug connector; never supply from probe."
+    },
+    {
+      "ref": "SW1",
+      "mpn": "B3F-1000",
+      "manufacturer": "Omron",
+      "package": "6mm-THT",
+      "value": null,
+      "notes": "Reset switch, NO."
+    },
+    {
+      "ref": "SW2",
+      "mpn": "B3F-1000",
+      "manufacturer": "Omron",
+      "package": "6mm-THT",
+      "value": null,
+      "notes": "User switch, NO; firmware debounce required."
+    },
+    {
+      "ref": "R1",
+      "mpn": "ERJ3EKF5101V",
+      "manufacturer": "Panasonic",
+      "package": "0603",
+      "value": {
+        "value": 5100.0,
+        "unit": "ohm"
+      },
+      "notes": null
+    },
+    {
+      "ref": "R2",
+      "mpn": "ERJ3EKF5101V",
+      "manufacturer": "Panasonic",
+      "package": "0603",
+      "value": {
+        "value": 5100.0,
+        "unit": "ohm"
+      },
+      "notes": null
+    },
+    {
+      "ref": "R3",
+      "mpn": "ERJ3EKF1002V",
+      "manufacturer": "Panasonic",
+      "package": "0603",
+      "value": {
+        "value": 10000.0,
+        "unit": "ohm"
+      },
+      "notes": null
+    },
+    {
+      "ref": "R4",
+      "mpn": "ERJ3EKF1002V",
+      "manufacturer": "Panasonic",
+      "package": "0603",
+      "value": {
+        "value": 10000.0,
+        "unit": "ohm"
+      },
+      "notes": null
+    },
+    {
+      "ref": "R5",
+      "mpn": "ERJ3EKF1002V",
+      "manufacturer": "Panasonic",
+      "package": "0603",
+      "value": {
+        "value": 10000.0,
+        "unit": "ohm"
+      },
+      "notes": null
+    },
+    {
+      "ref": "R6",
+      "mpn": "ERJ3EKF1002V",
+      "manufacturer": "Panasonic",
+      "package": "0603",
+      "value": {
+        "value": 10000.0,
+        "unit": "ohm"
+      },
+      "notes": null
+    },
+    {
+      "ref": "R7",
+      "mpn": "ERJ3EKF1002V",
+      "manufacturer": "Panasonic",
+      "package": "0603",
+      "value": {
+        "value": 10000.0,
+        "unit": "ohm"
+      },
+      "notes": null
+    },
+    {
+      "ref": "R8",
+      "mpn": "ERJ3EKF1002V",
+      "manufacturer": "Panasonic",
+      "package": "0603",
+      "value": {
+        "value": 10000.0,
+        "unit": "ohm"
+      },
+      "notes": null
+    },
+    {
+      "ref": "R9",
+      "mpn": "ERJ3EKF1002V",
+      "manufacturer": "Panasonic",
+      "package": "0603",
+      "value": {
+        "value": 10000.0,
+        "unit": "ohm"
+      },
+      "notes": null
+    },
+    {
+      "ref": "R10",
+      "mpn": "ERJ3EKF1002V",
+      "manufacturer": "Panasonic",
+      "package": "0603",
+      "value": {
+        "value": 10000.0,
+        "unit": "ohm"
+      },
+      "notes": null
+    },
+    {
+      "ref": "R11",
+      "mpn": "ERJ3EKF1002V",
+      "manufacturer": "Panasonic",
+      "package": "0603",
+      "value": {
+        "value": 10000.0,
+        "unit": "ohm"
+      },
+      "notes": null
+    },
+    {
+      "ref": "R12",
+      "mpn": "ERJ3EKF1002V",
+      "manufacturer": "Panasonic",
+      "package": "0603",
+      "value": {
+        "value": 10000.0,
+        "unit": "ohm"
+      },
+      "notes": null
+    },
+    {
+      "ref": "C1",
+      "mpn": "C1608X5R1C105K080AA",
+      "manufacturer": "TDK",
+      "package": "0603",
+      "value": {
+        "value": 1e-06,
+        "unit": "F"
+      },
+      "notes": "U2 input"
+    },
+    {
+      "ref": "C2",
+      "mpn": "C1608X5R1C105K080AA",
+      "manufacturer": "TDK",
+      "package": "0603",
+      "value": {
+        "value": 1e-06,
+        "unit": "F"
+      },
+      "notes": "U2 output"
+    },
+    {
+      "ref": "C3",
+      "mpn": "C1608X7R1H104K080AA",
+      "manufacturer": "TDK",
+      "package": "0603",
+      "value": {
+        "value": 1e-07,
+        "unit": "F"
+      },
+      "notes": "U1 VDD_5 pin 11"
+    },
+    {
+      "ref": "C4",
+      "mpn": "C1608X7R1H104K080AA",
+      "manufacturer": "TDK",
+      "package": "0603",
+      "value": {
+        "value": 1e-07,
+        "unit": "F"
+      },
+      "notes": "U1 VDD_4 pin 28"
+    },
+    {
+      "ref": "C5",
+      "mpn": "C1608X7R1H104K080AA",
+      "manufacturer": "TDK",
+      "package": "0603",
+      "value": {
+        "value": 1e-07,
+        "unit": "F"
+      },
+      "notes": "U1 VDD_1 pin 50"
+    },
+    {
+      "ref": "C6",
+      "mpn": "C1608X7R1H104K080AA",
+      "manufacturer": "TDK",
+      "package": "0603",
+      "value": {
+        "value": 1e-07,
+        "unit": "F"
+      },
+      "notes": "U1 VDD_2 pin 75"
+    },
+    {
+      "ref": "C7",
+      "mpn": "C1608X7R1H104K080AA",
+      "manufacturer": "TDK",
+      "package": "0603",
+      "value": {
+        "value": 1e-07,
+        "unit": "F"
+      },
+      "notes": "U1 VDD_3 pin 100"
+    },
+    {
+      "ref": "C8",
+      "mpn": "GRM21BR71A106KE51L",
+      "manufacturer": "Murata",
+      "package": "0805",
+      "value": {
+        "value": 1e-05,
+        "unit": "F"
+      },
+      "notes": "U1 digital bulk"
+    },
+    {
+      "ref": "C9",
+      "mpn": "C1608X7R1H104K080AA",
+      "manufacturer": "TDK",
+      "package": "0603",
+      "value": {
+        "value": 1e-07,
+        "unit": "F"
+      },
+      "notes": "U1 VBAT pin 6"
+    },
+    {
+      "ref": "C10",
+      "mpn": "C1608X7R1H104K080AA",
+      "manufacturer": "TDK",
+      "package": "0603",
+      "value": {
+        "value": 1e-07,
+        "unit": "F"
+      },
+      "notes": "U1 VDDA/VREF+ high-frequency"
+    },
+    {
+      "ref": "C11",
+      "mpn": "C1608X5R1C105K080AA",
+      "manufacturer": "TDK",
+      "package": "0603",
+      "value": {
+        "value": 1e-06,
+        "unit": "F"
+      },
+      "notes": "U1 VDDA/VREF+ bulk"
+    },
+    {
+      "ref": "C12",
+      "mpn": "C1608X7R1H104K080AA",
+      "manufacturer": "TDK",
+      "package": "0603",
+      "value": {
+        "value": 1e-07,
+        "unit": "F"
+      },
+      "notes": "U1 NRST"
+    },
+    {
+      "ref": "C13",
+      "mpn": "C1608X7R1H104K080AA",
+      "manufacturer": "TDK",
+      "package": "0603",
+      "value": {
+        "value": 1e-07,
+        "unit": "F"
+      },
+      "notes": "U3 EEPROM bypass"
+    },
+    {
+      "ref": "C14",
+      "mpn": "C1608X7R1H104K080AA",
+      "manufacturer": "TDK",
+      "package": "0603",
+      "value": {
+        "value": 1e-07,
+        "unit": "F"
+      },
+      "notes": "U4 register bypass"
+    },
+    {
+      "ref": "C15",
+      "mpn": "C1608X7R1H104K080AA",
+      "manufacturer": "TDK",
+      "package": "0603",
+      "value": {
+        "value": 1e-07,
+        "unit": "F"
+      },
+      "notes": "U5 register bypass"
+    },
+    {
+      "ref": "R20",
+      "mpn": "ERJ3EKF1001V",
+      "manufacturer": "Panasonic",
+      "package": "0603",
+      "value": {
+        "value": 1000.0,
+        "unit": "ohm"
+      },
+      "notes": null
+    },
+    {
+      "ref": "D1",
+      "mpn": "APT1608SGC",
+      "manufacturer": "Kingbright",
+      "package": "0603",
+      "value": null,
+      "notes": "Indicator 0; 1=K to ground, 2=A via 1 kohm."
+    },
+    {
+      "ref": "R21",
+      "mpn": "ERJ3EKF1001V",
+      "manufacturer": "Panasonic",
+      "package": "0603",
+      "value": {
+        "value": 1000.0,
+        "unit": "ohm"
+      },
+      "notes": null
+    },
+    {
+      "ref": "D2",
+      "mpn": "APT1608SGC",
+      "manufacturer": "Kingbright",
+      "package": "0603",
+      "value": null,
+      "notes": "Indicator 1; 1=K to ground, 2=A via 1 kohm."
+    },
+    {
+      "ref": "R22",
+      "mpn": "ERJ3EKF1001V",
+      "manufacturer": "Panasonic",
+      "package": "0603",
+      "value": {
+        "value": 1000.0,
+        "unit": "ohm"
+      },
+      "notes": null
+    },
+    {
+      "ref": "D3",
+      "mpn": "APT1608SGC",
+      "manufacturer": "Kingbright",
+      "package": "0603",
+      "value": null,
+      "notes": "Indicator 2; 1=K to ground, 2=A via 1 kohm."
+    },
+    {
+      "ref": "R23",
+      "mpn": "ERJ3EKF1001V",
+      "manufacturer": "Panasonic",
+      "package": "0603",
+      "value": {
+        "value": 1000.0,
+        "unit": "ohm"
+      },
+      "notes": null
+    },
+    {
+      "ref": "D4",
+      "mpn": "APT1608SGC",
+      "manufacturer": "Kingbright",
+      "package": "0603",
+      "value": null,
+      "notes": "Indicator 3; 1=K to ground, 2=A via 1 kohm."
+    },
+    {
+      "ref": "R24",
+      "mpn": "ERJ3EKF1001V",
+      "manufacturer": "Panasonic",
+      "package": "0603",
+      "value": {
+        "value": 1000.0,
+        "unit": "ohm"
+      },
+      "notes": null
+    },
+    {
+      "ref": "D5",
+      "mpn": "APT1608SGC",
+      "manufacturer": "Kingbright",
+      "package": "0603",
+      "value": null,
+      "notes": "Indicator 4; 1=K to ground, 2=A via 1 kohm."
+    },
+    {
+      "ref": "R25",
+      "mpn": "ERJ3EKF1001V",
+      "manufacturer": "Panasonic",
+      "package": "0603",
+      "value": {
+        "value": 1000.0,
+        "unit": "ohm"
+      },
+      "notes": null
+    },
+    {
+      "ref": "D6",
+      "mpn": "APT1608SGC",
+      "manufacturer": "Kingbright",
+      "package": "0603",
+      "value": null,
+      "notes": "Indicator 5; 1=K to ground, 2=A via 1 kohm."
+    },
+    {
+      "ref": "R26",
+      "mpn": "ERJ3EKF1001V",
+      "manufacturer": "Panasonic",
+      "package": "0603",
+      "value": {
+        "value": 1000.0,
+        "unit": "ohm"
+      },
+      "notes": null
+    },
+    {
+      "ref": "D7",
+      "mpn": "APT1608SGC",
+      "manufacturer": "Kingbright",
+      "package": "0603",
+      "value": null,
+      "notes": "Indicator 6; 1=K to ground, 2=A via 1 kohm."
+    },
+    {
+      "ref": "R27",
+      "mpn": "ERJ3EKF1001V",
+      "manufacturer": "Panasonic",
+      "package": "0603",
+      "value": {
+        "value": 1000.0,
+        "unit": "ohm"
+      },
+      "notes": null
+    },
+    {
+      "ref": "D8",
+      "mpn": "APT1608SGC",
+      "manufacturer": "Kingbright",
+      "package": "0603",
+      "value": null,
+      "notes": "Indicator 7; 1=K to ground, 2=A via 1 kohm."
+    },
+    {
+      "ref": "R28",
+      "mpn": "ERJ3EKF1001V",
+      "manufacturer": "Panasonic",
+      "package": "0603",
+      "value": {
+        "value": 1000.0,
+        "unit": "ohm"
+      },
+      "notes": null
+    },
+    {
+      "ref": "D9",
+      "mpn": "APT1608SGC",
+      "manufacturer": "Kingbright",
+      "package": "0603",
+      "value": null,
+      "notes": "Indicator 8; 1=K to ground, 2=A via 1 kohm."
+    },
+    {
+      "ref": "R29",
+      "mpn": "ERJ3EKF1001V",
+      "manufacturer": "Panasonic",
+      "package": "0603",
+      "value": {
+        "value": 1000.0,
+        "unit": "ohm"
+      },
+      "notes": null
+    },
+    {
+      "ref": "D10",
+      "mpn": "APT1608SGC",
+      "manufacturer": "Kingbright",
+      "package": "0603",
+      "value": null,
+      "notes": "Indicator 9; 1=K to ground, 2=A via 1 kohm."
+    },
+    {
+      "ref": "R30",
+      "mpn": "ERJ3EKF1001V",
+      "manufacturer": "Panasonic",
+      "package": "0603",
+      "value": {
+        "value": 1000.0,
+        "unit": "ohm"
+      },
+      "notes": null
+    },
+    {
+      "ref": "D11",
+      "mpn": "APT1608SGC",
+      "manufacturer": "Kingbright",
+      "package": "0603",
+      "value": null,
+      "notes": "Indicator 10; 1=K to ground, 2=A via 1 kohm."
+    },
+    {
+      "ref": "R31",
+      "mpn": "ERJ3EKF1001V",
+      "manufacturer": "Panasonic",
+      "package": "0603",
+      "value": {
+        "value": 1000.0,
+        "unit": "ohm"
+      },
+      "notes": null
+    },
+    {
+      "ref": "D12",
+      "mpn": "APT1608SGC",
+      "manufacturer": "Kingbright",
+      "package": "0603",
+      "value": null,
+      "notes": "Indicator 11; 1=K to ground, 2=A via 1 kohm."
+    },
+    {
+      "ref": "R32",
+      "mpn": "ERJ3EKF1001V",
+      "manufacturer": "Panasonic",
+      "package": "0603",
+      "value": {
+        "value": 1000.0,
+        "unit": "ohm"
+      },
+      "notes": null
+    },
+    {
+      "ref": "D13",
+      "mpn": "APT1608SGC",
+      "manufacturer": "Kingbright",
+      "package": "0603",
+      "value": null,
+      "notes": "Indicator 12; 1=K to ground, 2=A via 1 kohm."
+    },
+    {
+      "ref": "R33",
+      "mpn": "ERJ3EKF1001V",
+      "manufacturer": "Panasonic",
+      "package": "0603",
+      "value": {
+        "value": 1000.0,
+        "unit": "ohm"
+      },
+      "notes": null
+    },
+    {
+      "ref": "D14",
+      "mpn": "APT1608SGC",
+      "manufacturer": "Kingbright",
+      "package": "0603",
+      "value": null,
+      "notes": "Indicator 13; 1=K to ground, 2=A via 1 kohm."
+    },
+    {
+      "ref": "R34",
+      "mpn": "ERJ3EKF1001V",
+      "manufacturer": "Panasonic",
+      "package": "0603",
+      "value": {
+        "value": 1000.0,
+        "unit": "ohm"
+      },
+      "notes": null
+    },
+    {
+      "ref": "D15",
+      "mpn": "APT1608SGC",
+      "manufacturer": "Kingbright",
+      "package": "0603",
+      "value": null,
+      "notes": "Indicator 14; 1=K to ground, 2=A via 1 kohm."
+    },
+    {
+      "ref": "R35",
+      "mpn": "ERJ3EKF1001V",
+      "manufacturer": "Panasonic",
+      "package": "0603",
+      "value": {
+        "value": 1000.0,
+        "unit": "ohm"
+      },
+      "notes": null
+    },
+    {
+      "ref": "D16",
+      "mpn": "APT1608SGC",
+      "manufacturer": "Kingbright",
+      "package": "0603",
+      "value": null,
+      "notes": "Indicator 15; 1=K to ground, 2=A via 1 kohm."
+    }
+  ],
+  "connected_pin_map": {
+    "U1": {
+      "11": "3V3",
+      "28": "3V3",
+      "50": "3V3",
+      "75": "3V3",
+      "100": "3V3",
+      "6": "3V3",
+      "21": "3V3",
+      "22": "3V3",
+      "10": "GND",
+      "19": "GND",
+      "20": "GND",
+      "27": "GND",
+      "49": "GND",
+      "74": "GND",
+      "99": "GND",
+      "29": "EEPROM_CS",
+      "30": "SPI_SCK",
+      "31": "SPI_MISO",
+      "32": "SPI_MOSI",
+      "38": "SR_DATA",
+      "39": "SR_CLK",
+      "40": "SR_LATCH",
+      "41": "SR_OE",
+      "42": "SR_CLR",
+      "14": "NRST",
+      "94": "BOOT0",
+      "37": "BOOT1",
+      "23": "USER",
+      "72": "SWDIO",
+      "76": "SWCLK",
+      "1": "GPIO_PE2",
+      "2": "GPIO_PE3",
+      "3": "GPIO_PE4",
+      "4": "GPIO_PE5",
+      "5": "GPIO_PE6",
+      "97": "GPIO_PE0",
+      "98": "GPIO_PE1",
+      "95": "GPIO_PB8",
+      "96": "GPIO_PB9",
+      "92": "GPIO_PB6",
+      "93": "GPIO_PB7",
+      "91": "GPIO_PB5",
+      "88": "GPIO_PD7",
+      "87": "GPIO_PD6",
+      "86": "GPIO_PD5",
+      "85": "GPIO_PD4",
+      "84": "GPIO_PD3",
+      "83": "GPIO_PD2",
+      "82": "GPIO_PD1",
+      "81": "GPIO_PD0",
+      "80": "GPIO_PC12",
+      "79": "GPIO_PC11",
+      "78": "GPIO_PC10",
+      "67": "GPIO_PA8",
+      "66": "GPIO_PC9",
+      "65": "GPIO_PC8",
+      "64": "GPIO_PC7",
+      "63": "GPIO_PC6",
+      "62": "GPIO_PD15",
+      "61": "GPIO_PD14",
+      "60": "GPIO_PD13",
+      "59": "GPIO_PD12",
+      "58": "GPIO_PD11",
+      "57": "GPIO_PD10",
+      "56": "GPIO_PD9",
+      "55": "GPIO_PD8"
+    },
+    "U2": {
+      "5": "3V3",
+      "2": "GND",
+      "1": "VBUS",
+      "3": "VBUS"
+    },
+    "U3": {
+      "3": "3V3",
+      "7": "3V3",
+      "8": "3V3",
+      "4": "GND",
+      "1": "EEPROM_CS",
+      "6": "SPI_SCK",
+      "2": "SPI_MISO",
+      "5": "SPI_MOSI"
+    },
+    "U4": {
+      "16": "3V3",
+      "8": "GND",
+      "14": "SR_DATA",
+      "11": "SR_CLK",
+      "12": "SR_LATCH",
+      "13": "SR_OE",
+      "10": "SR_CLR",
+      "9": "SR_CHAIN",
+      "15": "LED0_DRIVE",
+      "1": "LED1_DRIVE",
+      "2": "LED2_DRIVE",
+      "3": "LED3_DRIVE",
+      "4": "LED4_DRIVE",
+      "5": "LED5_DRIVE",
+      "6": "LED6_DRIVE",
+      "7": "LED7_DRIVE"
+    },
+    "U5": {
+      "16": "3V3",
+      "8": "GND",
+      "11": "SR_CLK",
+      "12": "SR_LATCH",
+      "13": "SR_OE",
+      "10": "SR_CLR",
+      "14": "SR_CHAIN",
+      "15": "LED8_DRIVE",
+      "1": "LED9_DRIVE",
+      "2": "LED10_DRIVE",
+      "3": "LED11_DRIVE",
+      "4": "LED12_DRIVE",
+      "5": "LED13_DRIVE",
+      "6": "LED14_DRIVE",
+      "7": "LED15_DRIVE"
+    },
+    "J1": {
+      "A1": "GND",
+      "A12": "GND",
+      "B1": "GND",
+      "B12": "GND",
+      "A4": "VBUS",
+      "A9": "VBUS",
+      "B4": "VBUS",
+      "B9": "VBUS",
+      "A5": "CC1",
+      "B5": "CC2"
+    },
+    "J2": {
+      "39": "3V3",
+      "40": "3V3",
+      "1": "GND",
+      "2": "GND",
+      "3": "GPIO_PE1",
+      "4": "GPIO_PE2",
+      "5": "GPIO_PE0",
+      "6": "GPIO_PE3",
+      "7": "GPIO_PB9",
+      "8": "GPIO_PE4",
+      "9": "GPIO_PB8",
+      "10": "GPIO_PE5",
+      "11": "GPIO_PB7",
+      "12": "GPIO_PE6",
+      "13": "GPIO_PB6",
+      "14": "GPIO_PA8",
+      "15": "GPIO_PB5",
+      "16": "GPIO_PC9",
+      "17": "GPIO_PD7",
+      "18": "GPIO_PC8",
+      "19": "GPIO_PD6",
+      "20": "GPIO_PC7",
+      "21": "GPIO_PD5",
+      "22": "GPIO_PC6",
+      "23": "GPIO_PD4",
+      "24": "GPIO_PD15",
+      "25": "GPIO_PD3",
+      "26": "GPIO_PD14",
+      "27": "GPIO_PD2",
+      "28": "GPIO_PD13",
+      "29": "GPIO_PD1",
+      "30": "GPIO_PD12",
+      "31": "GPIO_PD0",
+      "32": "GPIO_PD11",
+      "33": "GPIO_PC12",
+      "34": "GPIO_PD10",
+      "35": "GPIO_PC11",
+      "36": "GPIO_PD9",
+      "37": "GPIO_PC10",
+      "38": "GPIO_PD8"
+    },
+    "J3": {
+      "1": "3V3",
+      "3": "GND",
+      "6": "GND",
+      "5": "NRST",
+      "2": "SWDIO",
+      "4": "SWCLK"
+    },
+    "SW1": {
+      "2": "GND",
+      "1": "NRST"
+    },
+    "SW2": {
+      "2": "GND",
+      "1": "USER"
+    },
+    "R1": {
+      "2": "GND",
+      "1": "CC1"
+    },
+    "R2": {
+      "2": "GND",
+      "1": "CC2"
+    },
+    "R3": {
+      "2": "3V3",
+      "1": "NRST"
+    },
+    "R4": {
+      "2": "GND",
+      "1": "BOOT0"
+    },
+    "R5": {
+      "2": "GND",
+      "1": "BOOT1"
+    },
+    "R6": {
+      "2": "3V3",
+      "1": "EEPROM_CS"
+    },
+    "R7": {
+      "2": "GND",
+      "1": "SR_DATA"
+    },
+    "R8": {
+      "2": "GND",
+      "1": "SR_CLK"
+    },
+    "R9": {
+      "2": "GND",
+      "1": "SR_LATCH"
+    },
+    "R10": {
+      "2": "3V3",
+      "1": "SR_OE"
+    },
+    "R11": {
+      "2": "3V3",
+      "1": "SR_CLR"
+    },
+    "R12": {
+      "2": "3V3",
+      "1": "USER"
+    },
+    "C1": {
+      "2": "GND",
+      "1": "VBUS"
+    },
+    "C2": {
+      "1": "3V3",
+      "2": "GND"
+    },
+    "C3": {
+      "1": "3V3",
+      "2": "GND"
+    },
+    "C4": {
+      "1": "3V3",
+      "2": "GND"
+    },
+    "C5": {
+      "1": "3V3",
+      "2": "GND"
+    },
+    "C6": {
+      "1": "3V3",
+      "2": "GND"
+    },
+    "C7": {
+      "1": "3V3",
+      "2": "GND"
+    },
+    "C8": {
+      "1": "3V3",
+      "2": "GND"
+    },
+    "C9": {
+      "1": "3V3",
+      "2": "GND"
+    },
+    "C10": {
+      "1": "3V3",
+      "2": "GND"
+    },
+    "C11": {
+      "1": "3V3",
+      "2": "GND"
+    },
+    "C12": {
+      "2": "GND",
+      "1": "NRST"
+    },
+    "C13": {
+      "1": "3V3",
+      "2": "GND"
+    },
+    "C14": {
+      "1": "3V3",
+      "2": "GND"
+    },
+    "C15": {
+      "1": "3V3",
+      "2": "GND"
+    },
+    "R20": {
+      "1": "LED0_DRIVE",
+      "2": "LED0_ANODE"
+    },
+    "D1": {
+      "1": "GND",
+      "2": "LED0_ANODE"
+    },
+    "R21": {
+      "1": "LED1_DRIVE",
+      "2": "LED1_ANODE"
+    },
+    "D2": {
+      "1": "GND",
+      "2": "LED1_ANODE"
+    },
+    "R22": {
+      "1": "LED2_DRIVE",
+      "2": "LED2_ANODE"
+    },
+    "D3": {
+      "1": "GND",
+      "2": "LED2_ANODE"
+    },
+    "R23": {
+      "1": "LED3_DRIVE",
+      "2": "LED3_ANODE"
+    },
+    "D4": {
+      "1": "GND",
+      "2": "LED3_ANODE"
+    },
+    "R24": {
+      "1": "LED4_DRIVE",
+      "2": "LED4_ANODE"
+    },
+    "D5": {
+      "1": "GND",
+      "2": "LED4_ANODE"
+    },
+    "R25": {
+      "1": "LED5_DRIVE",
+      "2": "LED5_ANODE"
+    },
+    "D6": {
+      "1": "GND",
+      "2": "LED5_ANODE"
+    },
+    "R26": {
+      "1": "LED6_DRIVE",
+      "2": "LED6_ANODE"
+    },
+    "D7": {
+      "1": "GND",
+      "2": "LED6_ANODE"
+    },
+    "R27": {
+      "1": "LED7_DRIVE",
+      "2": "LED7_ANODE"
+    },
+    "D8": {
+      "1": "GND",
+      "2": "LED7_ANODE"
+    },
+    "R28": {
+      "1": "LED8_DRIVE",
+      "2": "LED8_ANODE"
+    },
+    "D9": {
+      "1": "GND",
+      "2": "LED8_ANODE"
+    },
+    "R29": {
+      "1": "LED9_DRIVE",
+      "2": "LED9_ANODE"
+    },
+    "D10": {
+      "1": "GND",
+      "2": "LED9_ANODE"
+    },
+    "R30": {
+      "1": "LED10_DRIVE",
+      "2": "LED10_ANODE"
+    },
+    "D11": {
+      "1": "GND",
+      "2": "LED10_ANODE"
+    },
+    "R31": {
+      "1": "LED11_DRIVE",
+      "2": "LED11_ANODE"
+    },
+    "D12": {
+      "1": "GND",
+      "2": "LED11_ANODE"
+    },
+    "R32": {
+      "1": "LED12_DRIVE",
+      "2": "LED12_ANODE"
+    },
+    "D13": {
+      "1": "GND",
+      "2": "LED12_ANODE"
+    },
+    "R33": {
+      "1": "LED13_DRIVE",
+      "2": "LED13_ANODE"
+    },
+    "D14": {
+      "1": "GND",
+      "2": "LED13_ANODE"
+    },
+    "R34": {
+      "1": "LED14_DRIVE",
+      "2": "LED14_ANODE"
+    },
+    "D15": {
+      "1": "GND",
+      "2": "LED14_ANODE"
+    },
+    "R35": {
+      "1": "LED15_DRIVE",
+      "2": "LED15_ANODE"
+    },
+    "D16": {
+      "1": "GND",
+      "2": "LED15_ANODE"
+    }
+  },
+  "nc_policy": {
+    "U1": [
+      "7",
+      "8",
+      "9",
+      "12",
+      "13",
+      "15",
+      "16",
+      "17",
+      "18",
+      "24",
+      "25",
+      "26",
+      "33",
+      "34",
+      "35",
+      "36",
+      "43",
+      "44",
+      "45",
+      "46",
+      "47",
+      "48",
+      "51",
+      "52",
+      "53",
+      "54",
+      "68",
+      "69",
+      "70",
+      "71",
+      "73",
+      "77",
+      "89",
+      "90"
+    ],
+    "U2": [
+      "4"
+    ],
+    "U5": [
+      "9"
+    ],
+    "J1": [
+      "A8",
+      "B8",
+      "A6",
+      "A7",
+      "B6",
+      "B7"
+    ]
+  },
+  "decoupling_placement_intent": {
+    "C1": "U2 input",
+    "C2": "U2 output",
+    "C3": "U1 VDD_5 pin 11",
+    "C4": "U1 VDD_4 pin 28",
+    "C5": "U1 VDD_1 pin 50",
+    "C6": "U1 VDD_2 pin 75",
+    "C7": "U1 VDD_3 pin 100",
+    "C8": "U1 digital bulk",
+    "C9": "U1 VBAT pin 6",
+    "C10": "U1 VDDA/VREF+ high-frequency",
+    "C11": "U1 VDDA/VREF+ bulk",
+    "C12": "U1 NRST",
+    "C13": "U3 EEPROM bypass",
+    "C14": "U4 register bypass",
+    "C15": "U5 register bypass"
+  },
+  "firmware_contract": [
+    "Keep SR_OE high on startup; clear, shift and latch before enabling outputs.",
+    "SPI1 EEPROM target <=1MHz; shift-register control target <=100kHz. Timing not simulated.",
+    "Unused GPIOs must be set to analog input or appropriate defined state; preserve SWD pins.",
+    "BOOT0 and BOOT1 pulldowns select main flash; bootloader mode is not exposed.",
+    "Debounce user switch; no functional firmware is included in this visual-board change."
+  ],
+  "conflicts_and_limits": [
+    {
+      "id": "REFERENCE_NOT_CIRCUIT_EVIDENCE",
+      "status": "EXPLICIT",
+      "detail": "The picture dictates composition only. Its labels, traces and IC pin counts are not copied as verified circuit data."
+    },
+    {
+      "id": "LQFP_NOT_TQFP",
+      "status": "RESOLVED",
+      "detail": "MCU is a 1.4mm-body LQFP100; thin 1.0mm TQFP100 library dimensions must not be reused unchanged."
+    },
+    {
+      "id": "ADC_DECOUPLING_VARIANTS",
+      "status": "DISCLOSED",
+      "detail": "AN2586 p8 recommends VDDA 100nF+1uF; DS5319 ADC detail p78 illustrates 10nF+1uF. This nonprecision controller follows the hardware-guide 100nF+1uF; precision analog behavior remains unknown."
+    },
+    {
+      "id": "USB_POWER_CONTRACT",
+      "status": "UNKNOWN",
+      "detail": "Separate CC Rd exists, but current advertisement is not measured and GPIO-header external loads are unspecified."
+    },
+    {
+      "id": "MLCC_EFFECTIVE_CAPACITANCE",
+      "status": "UNKNOWN",
+      "detail": "Exact TDK/Murata MPNs are selected; DC bias, tolerance, temperature and AP2112 stability still require analysis."
+    },
+    {
+      "id": "SHIFT_REGISTER_DRIVE",
+      "status": "UNKNOWN",
+      "detail": "1k resistors bound channel current conservatively; 3.3V loaded output levels, brightness and timing are not measured."
+    },
+    {
+      "id": "PACKAGE_AND_FOOTPRINT_RELEASE",
+      "status": "UNKNOWN",
+      "detail": "Nominal manufacturer package dimensions and KiCad land patterns are bound explicitly; this is not a fabricated-board fit approval."
+    },
+    {
+      "id": "SIMULATION_AND_BENCH",
+      "status": "NOT_RUN",
+      "detail": "No ngspice or bench experiment is claimed."
+    }
+  ],
+  "assumptions": [
+    "Reference-inspired authored 3.3 V GPIO/pattern controller; firmware is not implemented or tested.",
+    "Use 8 MHz internal HSI, SPI <=1 MHz initially, separate bit-banged shift clock <=100 kHz. No USB data or crystal accuracy claim.",
+    "Firmware must keep OE high until registers are cleared, 16 bits shifted and latched; then enable. No startup pattern is guaranteed by hardware.",
+    "Unused GPIOs are physically NC and must be configured to a defined low-power state. U1.73 is manufacturer NC and must remain unconnected.",
+    "All VDD/VBAT/VDDA/VREF+ are tied to 3V3; VSSA/VREF- and digital VSS share ground. No precision-ADC or isolated analog performance claimed.",
+    "USB source is assumed 4.75-5.25 V; current advertisement is not detected and available current is unknown. Header loading is not authorized by LDO rating.",
+    "MLCC DC-bias, LDO stability, thermal rise, indicator brightness and 3.3 V output drive remain unverified; no bench or SPICE run.",
+    "Exact electronic MPNs are selected, but nominal package meshes and KiCad footprints are not a verified procurement or mechanical-fit release."
+  ],
+  "independent_electrical_review": {
+    "result": "NO_TOPOLOGY_BLOCKER_FOR_AUTHORED_DEMO",
+    "scope": "Pin map, supplies, reset/boot/SWD, HSI, SPI EEPROM, register cascade/OE and LED polarity",
+    "correction": "Replaced unavailable Murata source with explicitly identified primary TI reference-design BOM corroboration. Electrical circuit unchanged.",
+    "excludes": [
+      "Routing",
+      "Manufacturing readiness",
+      "Firmware and hardware performance"
+    ]
+  },
+  "authored_layout": {
+    "status": "AUTHORED_GEOMETRY_NOT_FABRICATION_QUALIFIED",
+    "header_policy": "Custom wiring preserves the same 36 MCU GPIO and J2 power contacts 1/2 GND, 39/40 3V3. Top-edge GPIO connect monotonically to lower-row odd contacts 3..37; side-edge GPIO connect to upper-row even contacts 4..38. This is not a Raspberry Pi pinout or a change to manufacturer pin functions.",
+    "routing": "Structured source-bound MCU escapes reserve via room; 18 complete top-GPIO paths are independently checked before bounded routing of remaining nets. Final independent connectivity and clearance checks remain mandatory.",
+    "geometry_mm": {
+      "signal_width": 0.15,
+      "power_width": 0.25,
+      "clearance": 0.15,
+      "via_diameter": 0.6,
+      "via_drill": 0.3,
+      "npth_copper_clearance": 0.25
+    },
+    "via_limit_per_connection": 4,
+    "usb_mating_fit": "J1 remains y=65 mm to retain 1 mm footprint-envelope edge clearance; nominal mouth is inset 1.325 mm from edge. Cable/mechanical mating remains unverified.",
+    "npth_policy": "Actual source pad/drill dimensions remain unchanged. Search obstacles expand radially by 0.10 mm beyond the source envelope so the 0.15-mm general clearance enforces 0.25-mm copper-to-NPTH spacing. Native KiCad DRC remains required."
+  }
+}

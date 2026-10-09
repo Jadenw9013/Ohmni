@@ -44,6 +44,17 @@ export function actualSceneManifest(board) {
         });
     }
     for (const via of board.vias) holes.push({ x: via.x_mm - cx, y: via.y_mm - cy, radius: via.drill_mm / 2 });
+    // Mechanical holes are authored PCB features, not electrical components or
+    // decorative annuli. Retain their source identity and cut the actual slab.
+    for (const hole of board.mounting_holes ?? []) {
+        if (hole.kind !== 'np_thru_hole' || ![hole.x_mm, hole.y_mm, hole.diameter_mm].every(Number.isFinite)
+            || hole.diameter_mm <= 0 || hole.x_mm - hole.diameter_mm / 2 < 0
+            || hole.y_mm - hole.diameter_mm / 2 < 0 || hole.x_mm + hole.diameter_mm / 2 > board.width_mm
+            || hole.y_mm + hole.diameter_mm / 2 > board.height_mm) throw new RangeError('Invalid source mounting hole');
+        holes.push({ x: hole.x_mm - cx, y: hole.y_mm - cy, radius: hole.diameter_mm / 2,
+            owner: hole.ref, kind: hole.kind, sourceFootprint: hole.source_footprint,
+            provenance: 'ARTIFACT_DERIVED_MECHANICAL_FEATURE' });
+    }
     const manifest = { id: `actual:${board.artifact_fingerprint}:${VISUAL_SOURCE_HASH}`, provenance: 'ARTIFACT_DERIVED',
         modelSourceHash: VISUAL_SOURCE_HASH,
         sourceArtifactFingerprint: board.artifact_fingerprint, sourceRoutingFingerprint: board.routing_plan_fingerprint,

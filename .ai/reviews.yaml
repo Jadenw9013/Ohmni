@@ -547,6 +547,29 @@
       "commit": "64b1e29366b68d1f5818dedced76de2512d780fd",
       "record": ".ai/verification/LP-CIRCUIT.yaml",
       "notes": "Final 32-part browser selection, picking, motion and 320 px reflow pass. Sparse composition and approximate USB/ESP32 bodies remain open."
+    },
+    {
+      "id": "LP-CONTROLLER",
+      "scope": "LANDING-PCB-CONTROLLER",
+      "task": "LP-CONTROLLER",
+      "status": "PASSED",
+      "independent": true,
+      "commit": "uncommitted working tree on 7740f289291387eac7c57d1273975b7818d8ed5d",
+      "reviewer": "dense_pipeline_audit + root visual review",
+      "record": ".ai/verification/LP-CONTROLLER.yaml",
+      "notes": {
+        "engineering": "No remaining scoped blocker after lineage and semantic-report caveats; final native DRC now passes.",
+        "ui": "Renderer agent reviewed final standalone, underside, home and mobile; root inspected final desktop/mobile and approved for owner review.",
+        "independence_limits": "Pipeline reviewer did not author circuit, build or renderer; they authored native serialization and server integration. Root reviewed that code, and native pcbnew corroborated all343 pads. Renderer author did their own UI QA; pipeline reviewer independently reviewed coordinate handedness; root independently inspected screenshots.",
+        "human_visual_acceptance": "PENDING"
+      },
+      "findings_resolved": [
+        "Prior/fresh routing proposal identity checks strengthened with mutation regressions.",
+        "Generic LED typical-Vf fallback and rule-coverage limitations explicitly retained.",
+        "Native footprint rotation and pad-axis mismatch fixed in controller-only adapter;343 pad comparison.",
+        "Native USB NPTH hole-clearance findings fixed by conservative source-derived routing obstacles, not suppressed.",
+        "Real app exact asset allowlist, MIME and directory alias added; actual app hash parity and zero-browser-error checks passed."
+      ]
     }
   ],
   "findings": [
