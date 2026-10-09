@@ -62,7 +62,7 @@ def test_behavior_summary_matches_the_audited_coverage_rule(server):
     code,body=request(base,'/api/behavior')
     assert code==200 and len(body['entries'])==180
     states=[value['state'] for value in body['entries'].values()]
-    assert states.count('simulated')==72
+    assert states.count('simulated')==76
     assert body['entries']['OHM-057']=={'state':'simulated','reason':None}
     assert body['entries']['OHM-103']['state']=='reference_only' and body['entries']['OHM-103']['reason']
     assert body['entries']['OHM-083']['state']=='documented'

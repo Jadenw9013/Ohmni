@@ -214,6 +214,75 @@
         ],
         "unit": "pF",
         "value": 2
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Table 7: 'VF forward voltage IF = 10 mA; Tamb = 25 °C ... 855 mV' (max)",
+        "field": "series_forward_voltage_max",
+        "page": 4,
+        "scope": "BAV99 SOT23; per diode; IF = 10 mA; Tamb = 25 C",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAV99.pdf"
+        ],
+        "unit": "V",
+        "value": 0.855
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Table 7: 'Cd diode capacitance VR = 0 V; f = 1 MHz ... 1.5 pF' (max)",
+        "field": "series_diode_capacitance_max",
+        "page": 4,
+        "scope": "BAV99 SOT23; per diode; VR = 0 V; f = 1 MHz",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAV99.pdf"
+        ],
+        "unit": "pF",
+        "value": 1.5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Table 6: 'Rth(j-a) ... single diode loaded; in free air [1] 500 K/W' (max)",
+        "field": "series_thermal_resistance_junction_ambient",
+        "page": 3,
+        "scope": "BAV99 SOT23; single diode loaded; in free air; FR4 single-sided standard footprint",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAV99.pdf"
+        ],
+        "unit": "K/W",
+        "value": 500
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Table 5: 'Tj junction temperature ... 150 °C'",
+        "field": "series_junction_temperature_max",
+        "page": 3,
+        "scope": "BAV99 SOT23",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAV99.pdf"
+        ],
+        "unit": "C",
+        "value": 150
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "H",
+        "detail": "Identical to series_pin_roles (pin 1 A1, pin 2 K2, pin 3 K1/A2); the shared terminal is written K1A2 so the role is a valid netlist and rating-expression name.",
+        "field": "series_pin_roles_netlist",
+        "page": 2,
+        "scope": "BAV99 SOT23; netlist role names",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAV99.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "1": "A1",
+          "2": "K2",
+          "3": "K1A2"
+        }
       }
     ],
     "remaining_open_items": [
@@ -224,7 +293,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-070.md",
-      "document_sha256": "13abb26b69b8b68663e36f87eb6c80f83234926f3399f1a8ad9c19d41d6bd911",
+      "document_sha256": "a2342f62ed3e62b52c4fe99d01e95c37b5af38f148b317a20ae04417f6f3163b",
       "fragment_sha256": null,
       "line": 1
     }

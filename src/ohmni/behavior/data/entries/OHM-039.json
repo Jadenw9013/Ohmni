@@ -112,20 +112,34 @@
         ],
         "unit": "mm",
         "value": 5.9
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "H",
+        "detail": "p1 'Dielectric Strenght Test 200% of rated voltage' x 500 Vdc (p3 row)",
+        "field": "dielectric_strength_test_voltage",
+        "page": 1,
+        "scope": "Cornell Dubilier CD15FD101JO3F; CD15, characteristic F, 500 Vdc, 100 pF J, -55..125 C (O); test level, not an operating rating",
+        "sources": [
+          "https://www.cde.com/resources/catalogs/CD10.pdf"
+        ],
+        "unit": "V DC",
+        "value": 1000
       }
     ],
     "remaining_open_items": [
       "Q=1000, ESL=8 nH and generic leakage are not established by the opened rating table.",
-      "Physical package binding and full loss-versus-frequency data remain separate."
+      "Physical package binding and full loss-versus-frequency data remain separate.",
+      "Former simulation blocker resolved for the explicitly bound reference (2026-10-08): Do not use an unsourced Q/leakage model as a verified RF response. Resolution: The exact part and its 500 V DC rating are already sourced (CD15FD101JO3F, CDE catalog p3). The blocker forbids using the unsourced Q/leakage as a verified RF response; the proposed recipe removes Q, ESR and ESL entirely and restricts analyses to op/tran, so no RF response is produced. The only unsourced element is a quoted, labelled-ASSUMPTION leak resistor needed for a DC solution (precedent: quoted ASSUMPTION parameters in OHM-057).",
+      "Q/ESR vs frequency, ESL, insulation resistance (no CDE source)",
+      "Catalog row body L 0.46 in (11.7 mm) vs 3D-spec CD15 L 11.4 mm lower bound: mechanical check only"
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Do not use an unsourced Q/leakage model as a verified RF response."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-039.md",
-      "document_sha256": "e091771b211ec0c9552b217d0dafa370b89dbcaea909358e2233b55799d6e845",
+      "document_sha256": "a32e8593ed5e7e3c9a26efecac5686e48c12bfbb5b34ae0f58db57412598ed6d",
       "fragment_sha256": null,
       "line": 1
     }

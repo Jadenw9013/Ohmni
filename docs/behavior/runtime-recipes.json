@@ -1100,6 +1100,124 @@
         "Model scope: Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr/Lesl dropped: 100 kHz ESR is a maximum, not a fitted nominal, and ESL is unsourced."
       ]
     },
+    "OHM-039": {
+      "entry_id": "OHM-039",
+      "behavior_id": "BEH-CAP-MICA",
+      "package": "CDE CD15 dipped radial, lead spacing 5.9 mm",
+      "reference_part": "Cornell Dubilier CD15FD101JO3F",
+      "terminal_roles": {
+        "1": "T1",
+        "2": "T2"
+      },
+      "critical_facts": {
+        "value": {
+          "field": "nominal_capacitance",
+          "unit": "pF",
+          "output_unit": "F"
+        },
+        "vr": {
+          "field": "rated_voltage",
+          "unit": "V DC"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {
+        "RLK": {
+          "value_text": "1e12",
+          "unit": "ohm",
+          "basis": "ASSUMPTION",
+          "confidence": "L",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "line": 1865
+          },
+          "source_fragment": ".subckt ohm_mica p n flag params: C0=100p TCPPM=0 TEMP=25 Q=1000 FQ=1meg ESL=8n RLK=1e12 VR=500"
+        }
+      },
+      "template_override": "C{ref} {T1} {T2} {value}\nR{ref}_lk {T1} {T2} {RLK}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 1870
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Ideal 100 pF at 25 C only; no Q, ESR, ESL, SRF or temperature coefficient: not an RF model (the entry blocker).",
+        "Leak resistor 1e12 ohm is an assumption for numerical DC solvability, not an insulation-resistance rating; the CDE catalog gives no IR.",
+        "500 Vdc is a rating check outside the netlist.",
+        "Model scope: Cb and Rlk of ohm_mica (spec lines 1865-1873) at TEMP=25 (CT = C0). Q/ESR and ESL are omitted, so the binding makes no RF claim; RLK=1e12 is an authored ASSUMPTION used only to give the op solution a DC path and is not a verified leakage."
+      ]
+    },
+    "OHM-040": {
+      "entry_id": "OHM-040",
+      "behavior_id": "BEH-CAP-EDLC",
+      "package": "radial can D10 x L20, P 5.0 mm, d 0.6 mm",
+      "reference_part": "KYOCERA AVX SCCS20B505SRB (5 F, 2.7 V at <= 65 C); explicit binding, not the 10 F Eaton-like class default",
+      "terminal_roles": {
+        "1": "P",
+        "2": "N"
+      },
+      "critical_facts": {
+        "value": {
+          "field": "nominal_capacitance",
+          "unit": "F"
+        },
+        "vr": {
+          "field": "rated_voltage_at_65C",
+          "unit": "V"
+        },
+        "vr_85": {
+          "field": "rated_voltage_at_85C",
+          "unit": "V"
+        },
+        "esr": {
+          "field": "maximum_dc_esr_10ms",
+          "unit": "mohm",
+          "output_unit": "ohm"
+        },
+        "ileak": {
+          "field": "maximum_leakage_current",
+          "unit": "uA",
+          "output_unit": "A"
+        },
+        "ipk": {
+          "field": "peak_current",
+          "unit": "A"
+        },
+        "rleak": {
+          "field": "leakage_equivalent_resistance",
+          "unit": "ohm"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref}_esr {P} {ref}_b {esr}\nC{ref} {ref}_b {N} {value}\nR{ref}_lk {ref}_b {N} {rleak}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 1984
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Rated 2.7 V only at -40..65 C; 2.3 V up to 85 C. No voltage flag in the netlist.",
+        "ESR is the 10 ms DC maximum (65 mohm); 1 kHz (60 mohm) and 5 s (180 mohm) maxima are different conditions and are not interchangeable.",
+        "Peak current 5.09 A is a 1-second-interval value, not a continuous rating; no continuous current is sourced for this row, so no sustained-current acceptance is provided.",
+        "Hazard: 18.2 J stored at 2.7 V; a hard short through 1 mohm gives about 2.7/(0.065+0.001) = 41 A initially, far above the 5.09 A peak rating. Short-circuit heating is not modelled.",
+        "Leak resistor 180 kohm assumes the 72 h DCL applies at rated voltage (L); single-branch model, no redistribution, C(f) or temperature dependence.",
+        "Model scope: Resr/Cb/Rlk of ohm_edlc (spec lines 1984-1990) without the flag source; ESR bound to the DC ESR(10 ms) maximum, the condition matching the probe's pulse-onset step."
+      ]
+    },
     "OHM-041": {
       "entry_id": "OHM-041",
       "behavior_id": "BEH-MAG-INDUCTOR",
@@ -3066,6 +3184,88 @@
         "2": "A"
       }
     },
+    "OHM-070": {
+      "entry_id": "OHM-070",
+      "behavior_id": "BEH-DIO-PN",
+      "package": "SOT-23 BAV99 series pair",
+      "reference_part": "Nexperia BAV99 series pair; BAV70/BAW56 configurations not bound",
+      "terminal_roles": {
+        "1": "A1",
+        "2": "K2",
+        "3": "K1A2"
+      },
+      "pin_role_fact": {
+        "field": "series_pin_roles_netlist",
+        "scope_contains": "BAV99"
+      },
+      "critical_facts": {
+        "vr_max": {
+          "field": "series_reverse_voltage",
+          "unit": "V"
+        },
+        "if_single": {
+          "field": "series_forward_current_single",
+          "unit": "A"
+        },
+        "if_double": {
+          "field": "series_forward_current_double",
+          "unit": "A"
+        },
+        "p_tot": {
+          "field": "series_total_power",
+          "unit": "W"
+        },
+        "rth_ja": {
+          "field": "series_thermal_resistance_junction_ambient",
+          "unit": "K/W"
+        },
+        "tj_max": {
+          "field": "series_junction_temperature_max",
+          "unit": "C"
+        },
+        "vf_max": {
+          "field": "series_forward_voltage_max",
+          "unit": "V"
+        },
+        "CJO": {
+          "field": "series_diode_capacitance_max",
+          "unit": "pF",
+          "output_unit": "F"
+        }
+      },
+      "class_parameters": {
+        "IS": "IS",
+        "N": "N",
+        "RS": "RS",
+        "TT": "TT",
+        "VJ": "VJ",
+        "M": "M",
+        "BV": "BV",
+        "IBV": "IBV",
+        "EG": "EG",
+        "XTI": "XTI"
+      },
+      "derived_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "D1_{ref} {A1} {K1A2} DMOD_{ref}\nD2_{ref} {K1A2} {K2} DMOD_{ref}\n.model DMOD_{ref} D (IS={IS} N={N} RS={RS} CJO={CJO} VJ={VJ} M={M} TT={TT} BV={BV} IBV={IBV} EG={EG} XTI={XTI})\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 4479
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Only the BAV99 series pair is bound; BAV70 common-cathode and BAW56 common-anode variants have their own sourced limits and are not substituted.",
+        "IS, N, RS, TT, BV are the class fit-A 1N4148-class proxy named by the spec for OHM-070, not a BAV99 curve fit; the probe checks only that the proxy stays below BAV99's sourced 855 mV maximum at 10 mA.",
+        "Both junctions are identical and thermally independent in the model; the package is not. Ptot 250 mW and Rth(j-a) 500 K/W apply only with one diode loaded; with both loaded only the 125 mA per-diode limit is sourced and package thermal acceptance is unknown.",
+        "Role name K1/A2 is kept verbatim from the sourced pin table so the pin-role fact relocates exactly.",
+        "Model scope: Spec OHM-070 pin/SPICE table row 'series (BAV99) | A1 | K2 | K1 and A2 | D1 {p1} {p3} M , D2 {p3} {p2} M' combined with the BEH-DIO-PN class diode card; CJO is the BAV99 Cd maximum (spec OHM-070: 'CJO 1.5 pF used by Nexperia max Cd 1.5 pF for BAV99')."
+      ]
+    },
     "OHM-071": {
       "behavior_id": "BEH-DIO-BRIDGE",
       "class_parameters": {
@@ -3912,6 +4112,80 @@
           "unit": "ohm"
         }
       }
+    },
+    "OHM-085": {
+      "entry_id": "OHM-085",
+      "behavior_id": "BEH-LED-POWER",
+      "package": "XP-E2 3.45 mm",
+      "reference_part": "Cree XLamp XP-E2 white, Rev 25B",
+      "terminal_roles": {
+        "1": "K",
+        "2": "A",
+        "3": "TH"
+      },
+      "pin_role_fact": {
+        "field": "package_pin_roles"
+      },
+      "required_isolated_roles": [
+        "TH"
+      ],
+      "critical_facts": {
+        "if_max": {
+          "field": "maximum_forward_current",
+          "unit": "mA",
+          "output_unit": "A"
+        },
+        "vr_max": {
+          "field": "maximum_reverse_voltage",
+          "unit": "V"
+        },
+        "tj_max": {
+          "field": "maximum_junction_temperature",
+          "unit": "C"
+        },
+        "rth_js": {
+          "field": "thermal_resistance_junction_solderpoint_typical",
+          "unit": "K/W"
+        },
+        "vf_max": {
+          "field": "forward_voltage_typical_max",
+          "unit": "V",
+          "value_path": [
+            1
+          ]
+        },
+        "vf_typical": {
+          "field": "forward_voltage_typical_max",
+          "unit": "V",
+          "value_path": [
+            0
+          ]
+        },
+        "tj_vf": {
+          "field": "forward_voltage_test_junction_temperature",
+          "unit": "C"
+        }
+      },
+      "derived_parameters": {},
+      "quoted_parameters": {},
+      "class_parameters": {},
+      "template_override": "D{ref} {A} {K} LED_XPE2_{ref} temp={tj_vf}\n.model LED_XPE2_{ref} D (IS=1.87e-14 N=3.0 RS=0.2233 CJO=300p VJ=1.0 M=0.33 BV=5 IBV=10u EG=3.9 XTI=3 TNOM=85)\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 4902
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "Isothermal electrical binding at the source binning junction temperature 85 C; junction temperature is not computed and ambient conditions do not change the I-V.",
+        "The class card was fitted to an earlier XP-E2 revision (class vf_700mA_85C 3.05 V; Rev 25B typ 2.99 V at 700 mA); only the 350 mA maximum is checked.",
+        "Thermal acceptance is solder-point referenced (RthJS 5.8 C/W typical, JESD51-14); no board, MCPCB or heatsink path to ambient is assumed or modelled; RthJS is a typical value.",
+        "Reverse rating is 1 V for white Rev 25B; no destructive-failure or dielectric isolation rating for the center pad is established (electrically isolated only).",
+        "Model scope: Class LED_XPE2 card (spec line 4902-4903) unchanged except a per-reference model name and the ngspice diode instance parameter temp= bound to the sourced 85 C test junction temperature. TH has no electrical element (isolated pad)."
+      ]
     },
     "OHM-093": {
       "entry_id": "OHM-093",

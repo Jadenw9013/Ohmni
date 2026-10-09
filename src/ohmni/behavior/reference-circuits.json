@@ -17,20 +17,16 @@
     "OHM-032": "Rating-critical part voltage and ripple/lifetime limits need an exact series binding.",
     "OHM-037": "The generic 10 mm default remains unbound to an exact rated part.",
     "OHM-038": "Unbound mains safety part; no claim of safe mains operation.",
-    "OHM-039": "Do not use an unsourced Q/leakage model as a verified RF response.",
-    "OHM-040": "Unresolved electrical/reference/geometry binding and condition-specific current limits; stored energy and short-circuit heating are safety relevant.",
     "OHM-042": "Unspecified default variant and incomplete rating conditions remain blocked.",
     "OHM-053": "No safety or thermal acceptance for this transformer until working-voltage and loss limits are bound.",
     "OHM-054": "Physical/reference and primary-conductor binding conflict; open-secondary operation is hazardous.",
     "OHM-055": "Working-voltage and complete physical pin binding remain unestablished; no isolation-safety acceptance.",
     "OHM-060": "The average-current derating curve must be implemented before claiming a complete thermal envelope.",
     "OHM-066": "Functional variant binding is deferred: the index projects PN, while the sourced default is SS34 Schottky. No MURS PN reference is verified; source function and model must not be silently interchanged.",
-    "OHM-070": "The available BAV99 power/thermal rating is explicitly for one diode loaded. Shared-package loading and configuration require a scoped runtime guard; no independent per-die power allocation is assumed.",
     "OHM-075": "Junction-temperature/thermal acceptance cannot use the unsourced 350 K/W placeholder.",
     "OHM-076": "The copied thermal parameters are unsourced for this rectangular lamp.",
     "OHM-083": "Do not simulate OHM-083 from a generic six-terminal RGB pin map or unsourced per-color ratings.",
     "OHM-084": "Rated supply-current model is blocked until an exact-version current specification is sourced.",
-    "OHM-085": "Junction-to-solderpoint data does not establish a board/heatsink-to-ambient path; the85 C fit and revised source require explicit thermal-context handling before rated runtime use.",
     "OHM-086": "Module terminal map and module thermal limits are missing; keep the star model blocked.",
     "OHM-087": "Per-segment and common-lead aggregate power/current allocation is not established; do not use table PD/IF as a rated complete-display envelope.",
     "OHM-088": "Per-segment and common-lead aggregate power/current allocation is not established; do not use table PD/IF as a rated complete-display envelope.",
@@ -2267,6 +2263,220 @@
         }
       }
     },
+    "OHM-039": {
+      "analysis": "tran",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "CDE CD15 dipped radial, lead spacing 5.9 mm",
+            "part_id": "OHM-039",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-039-tran",
+        "name": "Source-scoped charge probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-039",
+      "entry_research_sha256": "a32e8593ed5e7e3c9a26efecac5686e48c12bfbb5b34ae0f58db57412598ed6d",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "points": [
+            {
+              "time": {
+                "unit": "s",
+                "value": 0.0
+              },
+              "value": {
+                "unit": "A",
+                "value": 0.0
+              }
+            },
+            {
+              "time": {
+                "unit": "s",
+                "value": 1e-09
+              },
+              "value": {
+                "unit": "A",
+                "value": 1e-05
+              }
+            },
+            {
+              "time": {
+                "unit": "s",
+                "value": 6e-06
+              },
+              "value": {
+                "unit": "A",
+                "value": 1e-05
+              }
+            }
+          ],
+          "positive_net": "return"
+        }
+      ],
+      "options": {
+        "observe_nets": [
+          "anode"
+        ],
+        "tstep": "1n",
+        "tstop": "6e-06"
+      },
+      "original_netlist_sha256": "5714d201c7b4471dbb12c8b8e318452c8b62550c151d937002cc5d92efacc17d",
+      "package": "CDE CD15 dipped radial, lead spacing 5.9 mm",
+      "reference_part": "Cornell Dubilier CD15FD101JO3F",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-039"
+        }
+      }
+    },
+    "OHM-040": {
+      "analysis": "tran",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "radial can D10 x L20, P 5.0 mm, d 0.6 mm",
+            "part_id": "OHM-040",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-040-tran",
+        "name": "Source-scoped charge probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-040",
+      "entry_research_sha256": "bfd7179303595f08ae6b67df83b370e5dafcd0ef19ead225ccee3f1aee9844e6",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "points": [
+            {
+              "time": {
+                "unit": "s",
+                "value": 0.0
+              },
+              "value": {
+                "unit": "A",
+                "value": 0.0
+              }
+            },
+            {
+              "time": {
+                "unit": "s",
+                "value": 0.001
+              },
+              "value": {
+                "unit": "A",
+                "value": 0.054
+              }
+            },
+            {
+              "time": {
+                "unit": "s",
+                "value": 10.5
+              },
+              "value": {
+                "unit": "A",
+                "value": 0.054
+              }
+            }
+          ],
+          "positive_net": "return"
+        }
+      ],
+      "options": {
+        "observe_nets": [
+          "anode"
+        ],
+        "tstep": "0.01",
+        "tstop": "10.5"
+      },
+      "original_netlist_sha256": "86e97ff845534510ae32c8c49d830be26135668dbd4184d04dc8ea94e229a10b",
+      "package": "radial can D10 x L20, P 5.0 mm, d 0.6 mm",
+      "reference_part": "KYOCERA AVX SCCS20B505SRB (5 F, 2.7 V at <= 65 C); explicit binding, not the 10 F Eaton-like class default",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-040"
+        }
+      }
+    },
     "OHM-041": {
       "analysis": "op",
       "circuit": {
@@ -3994,6 +4204,91 @@
         }
       }
     },
+    "OHM-070": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "SOT-23 BAV99 series pair",
+            "part_id": "OHM-070",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-070",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "idle",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "3"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-070",
+      "entry_research_sha256": "a2342f62ed3e62b52c4fe99d01e95c37b5af38f148b317a20ae04417f6f3163b",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 0.01
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "dbc454e075d91494ebb09e9fe90f41f2a1cf74f4ffdaea9aa57037dc57b6802c",
+      "package": "SOT-23 BAV99 series pair",
+      "reference_part": "Nexperia BAV99 series pair; BAV70/BAW56 configurations not bound",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-070"
+        }
+      }
+    },
     "OHM-071": {
       "analysis": "op",
       "circuit": {
@@ -4815,6 +5110,91 @@
       "selections": {
         "U1": {
           "entry_id": "OHM-082"
+        }
+      }
+    },
+    "OHM-085": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "XP-E2 3.45 mm",
+            "part_id": "OHM-085",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-085",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "3"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "idle",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-085",
+      "entry_research_sha256": "1470108d38e9288711f4c88a3544ff60f96d0e444d4b37f988987c08fefeb490",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 0.35
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "884da802d9eeff807956eed2e8b0b59be074e4d2eae61737cd0c5588576bfcd4",
+      "package": "XP-E2 3.45 mm",
+      "reference_part": "Cree XLamp XP-E2 white, Rev 25B",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-085"
         }
       }
     },
@@ -14885,7 +15265,7 @@
       }
     }
   },
-  "generator_sha256": "4f18977cd877b7df60a597676f8ea390bd667d036e0e6c3a65fabfc37d1c5c39",
-  "recipe_sha256": "d2f764c604570e45f33ccc922326278ec6998dfc4a4631ae723f5ce6ff92d4ab",
+  "generator_sha256": "eb29b9a95c6872a10ecce1181a81d6af7705df5149dcb567796b624790d3f486",
+  "recipe_sha256": "be26958e3e58886b5d9b7505bf7e4e9eab983ae96b259db77b4d136a78f8d4ea",
   "schema_version": 1
 }

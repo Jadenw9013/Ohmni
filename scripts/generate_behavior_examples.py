@@ -48,8 +48,10 @@ def generate(root=ROOT):
             elif recipe.behavior_id.startswith("BEH-IC-") or recipe.behavior_id == "BEH-FREQ-XO":
                 case = ic_benches.ic_cases(recipe.behavior_id, recipe)[0]
                 compiled, identity = ic_benches.ic_definition(audit, key, case)
+            elif recipe.behavior_id in runtime_benches.TRAN_PROBES:
+                compiled, identity = runtime_benches.tran_probe_definition(audit, key)
             else:
-                variant = runtime_benches.dc_probe_variants(recipe.behavior_id)[0]
+                variant = runtime_benches.dc_probe_variants(recipe.behavior_id, recipe)[0]
                 compiled, identity = runtime_benches.dc_probe_definition(audit, key, variant)
             if not compiled.runnable:
                 raise ValueError(f"{key}: {compiled.problems}")

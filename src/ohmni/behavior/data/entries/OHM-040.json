@@ -182,21 +182,103 @@
         ],
         "unit": "Wh",
         "value": 0.0051
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "p4 table 'D (mm) 10, P (mm) 5.0, d (mm) 0.6'",
+        "field": "radial_lead_pitch",
+        "page": 4,
+        "scope": "KYOCERA AVX SCCS20B505SRB; D10 x L20 radial; radial lead type 1F-100F, D = 10 mm",
+        "sources": [
+          "https://datasheets.kyocera-avx.com/AVX-SCC.pdf"
+        ],
+        "unit": "mm",
+        "value": 5.0
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "p4 radial lead end view label '(-) Negative Polarity'",
+        "field": "polarity_marking",
+        "page": 4,
+        "scope": "SCC radial lead type",
+        "sources": [
+          "https://datasheets.kyocera-avx.com/AVX-SCC.pdf"
+        ],
+        "unit": null,
+        "value": "(-) negative polarity band on sleeve beside negative lead"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "p7 'MAXIMUM PEAK CURRENT • This is the maximum current during 1 second time interval (dt)'",
+        "field": "peak_current_definition",
+        "page": 7,
+        "scope": "SCC series test methods",
+        "sources": [
+          "https://datasheets.kyocera-avx.com/AVX-SCC.pdf"
+        ],
+        "unit": null,
+        "value": "maximum current during 1 second time interval"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "p6 'I – Discharge Current, 4 × C × VR (mA)'",
+        "field": "capacitance_test_current_rule",
+        "page": 6,
+        "scope": "SCC series capacitance method",
+        "sources": [
+          "https://datasheets.kyocera-avx.com/AVX-SCC.pdf"
+        ],
+        "unit": null,
+        "value": "I = 4 x C x VR (mA), constant-current discharge after 30 min hold at VR"
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "detail": "2.7 V / 15 uA (p2 row); spec line 1992 rule RLK = VR/I_leak",
+        "field": "leakage_equivalent_resistance",
+        "page": 2,
+        "scope": "KYOCERA AVX SCCS20B505SRB; D10 x L20 radial; assumes the 72 h DCL is at rated 2.7 V (table header does not state the voltage)",
+        "sources": [
+          "https://datasheets.kyocera-avx.com/AVX-SCC.pdf"
+        ],
+        "unit": "ohm",
+        "value": 180000
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "H",
+        "detail": "0.5*5*2.7^2; consistent with table 0.0051 Wh = 18.36 J (rounded)",
+        "field": "stored_energy_at_rated_voltage",
+        "page": 2,
+        "scope": "KYOCERA AVX SCCS20B505SRB; D10 x L20 radial; 0.5*C*V^2 at 2.7 V, nominal C",
+        "sources": [
+          "https://datasheets.kyocera-avx.com/AVX-SCC.pdf"
+        ],
+        "unit": "J",
+        "value": 18.225
       }
     ],
     "remaining_open_items": [
       "Exact temperature/voltage derating implementation, charging limits and balancing network require reference binding.",
       "Model ESR must name its time/frequency condition; one universal ESR is not supported.",
-      "Surge voltage and failure timing remain unsourced for this exact reference."
+      "Surge voltage and failure timing remain unsourced for this exact reference.",
+      "Former simulation blocker resolved for the explicitly bound reference (2026-10-08): Unresolved electrical/reference/geometry binding and condition-specific current limits; stored energy and short-circuit heating are safety relevant. Resolution: Electrical/reference/geometry binding: the archived AVX SCC datasheet (entry document) gives an exact part whose body matches the 10 x 20 mm can, with C, tolerance, condition-tagged ratings (2.7 V at 65 C, 2.3 V at 85 C), DCL, three ESR maxima by condition and a peak current that p7 now defines (1-second interval). Binding SCCS20B505SRB explicitly (not Eaton HB ratings, not the 10 F default) closes the reference/geometry conflict. Condition-specific current limits: only the peak definition is sourced; continuous current is absent for this row, so the recipe carries ipk as a rating fact and its limitations state that no sustained-current acceptance exists. Stored energy and short-circuit current are stated as hazards, never as rated behaviour. The class default (10 F, 20 mohm, 2.5 V) is not used.",
+      "DCL test voltage (assumed rated)",
+      "Maximum continuous current for this row",
+      "Surge voltage",
+      "Short-circuit/failure timing and venting thresholds",
+      "Spec default 10 F/2.5 V should be reconciled with the bound 5 F/2.7 V part"
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Unresolved electrical/reference/geometry binding and condition-specific current limits; stored energy and short-circuit heating are safety relevant."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-040.md",
-      "document_sha256": "b5baee8905b7b38b74d091d8ae34dad55e5249df9d4a8882d5cccf68aabe01d1",
+      "document_sha256": "bfd7179303595f08ae6b67df83b370e5dafcd0ef19ead225ccee3f1aee9844e6",
       "fragment_sha256": null,
       "line": 1
     }

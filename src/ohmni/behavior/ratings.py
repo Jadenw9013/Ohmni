@@ -137,6 +137,35 @@ def _scoped_checks(component, point, context):
         b.add(
             "package power", "power <= p_package*derate", ("p_package", "t_end", "t_knee"), thermal
         )
+    elif cls == "BEH-DIO-PN" and {"A1", "K2", "K1A2"} <= set(component.role_nodes):
+        # Series pair (BAV99, D050): D1 A1->K1A2, D2 K1A2->K2; currents are positive into a terminal.
+        derive("i_d1", "i_A1")
+        derive("i_d2", "-i_K2")
+        b.add("reverse voltage D1", "v_K1A2-v_A1 <= vr_max", ("vr_max",))
+        b.add("reverse voltage D2", "v_K2-v_K1A2 <= vr_max", ("vr_max",))
+        for k in ("d1", "d2"):
+            other = "i_d2" if k == "d1" else "i_d1"
+            b.add(
+                f"forward current {k.upper()}",
+                f"i_{k} <= (if_double if {other} > 0 else if_single)",
+                ("if_single", "if_double"),
+                "DC ceiling only; source temperature/derating conditions need confirmation"
+                if thermal
+                else None,
+            )
+        if values.get("i_d1", 0) > 0 and values.get("i_d2", 0) > 0:
+            thermal = "Source power and thermal resistance are stated for one diode loaded only"
+        b.add("total power", "power <= p_tot", ("p_tot",), thermal)
+    elif cls == "BEH-LED-POWER":
+        derive("vr", "v_K-v_A")
+        b.add("reverse voltage", "vr <= vr_max", ("vr_max",))
+        b.add("forward current", "i_A <= if_max", ("if_max",), thermal)
+        b.add(
+            "junction temperature (all electrical power as heat)",
+            "Tc + rth_js*(v_A-v_K)*i_A <= tj_max",
+            ("rth_js", "tj_max"),
+            thermal,
+        )
     elif cls in {
         "BEH-DIO-PN",
         "BEH-DIO-SCHOTTKY",
