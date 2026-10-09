@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "id": "LP-PUBLISH",
+  "status": "PUBLICATION_AUTHORIZED_MERGED_CANDIDATE_CHECKED",
+  "approval_record": ".ai/approvals/LANDING-PCB-PUBLISH.yaml",
+  "evaluated_commit": "7310be49a0d8dacf8e8fe2bef11e867bbcabd651",
+  "preserved_origin_main": "86aba76e5aadebf6b36ec45b9313268e7f400e23",
+  "source_verification": [
+    ".ai/verification/LP-P1.yaml",
+    ".ai/verification/LP-CIRCUIT.yaml"
+  ],
+  "independent_publication_review": {
+    "reviewer": "publish_review",
+    "status": "NO_PUBLICATION_BLOCKER",
+    "results": [
+      "All 31 LP-CIRCUIT evaluated source files match their committed hashes.",
+      "No accidental secret, temporary or log files in the publication diff.",
+      "Whitespace checks pass.",
+      "Draft engineering limitations remain disclosed."
+    ]
+  },
+  "reference_board_provenance": {
+    "path": "apps/web/reference-board.json",
+    "git_blob_sha256": "c2d9787c5cc910041a693d0ea08f4bcec0ae8564e57a8d25511c1d7aa5b9a9fb",
+    "checkout_bytes_sha256": "f079cb958e2019a24e5e2eac4eff1ae6c43e28913dd27678291a5847417b579a",
+    "committed_bytes_equal_preserved_origin_main": true,
+    "normalized_bytes_equal": true,
+    "note": "P1 historical evidence records the Windows checkout bytes. The Git blob differs only by line-ending representation; neither circuit content nor committed reference bytes changed."
+  },
+  "checks": {
+    "fast": {
+      "status": "PASS",
+      "passed": 2036,
+      "skipped": 82,
+      "deselected": 49,
+      "duration_seconds": 336.81,
+      "command": "python scripts/verify.py fast",
+      "log": "out/landing-pcb-redesign/publish-fast.log",
+      "log_sha256": "90b18ff5cbb9b06248fecb2026d6f2262a0c2facd39eae79a76ec1e6edcf5735"
+    },
+    "publication_diff": "PASS",
+    "source_hashes": "PASS",
+    "workflow": {
+      "status": "PASS",
+      "passed": 12,
+      "command": "python scripts/verify.py workflow"
+    },
+    "push_dry_run": "PASS; fast-forward accepted against preserved origin/main",
+    "frontend": {
+      "status": "PASS_CARRIED_FORWARD",
+      "passed": 1032,
+      "record": ".ai/verification/LP-CIRCUIT.yaml",
+      "reason": "Merged origin/main modifies ratings code, its tests and behavior result records; frontend source files are unchanged."
+    }
+  },
+  "limits": [
+    "Publication does not resolve the optional 5 V I2C endpoint choice.",
+    "No new simulation, bench, manufacturing or hardware acceptance is claimed.",
+    "Production landing integration is not part of this commit."
+  ]
+}
