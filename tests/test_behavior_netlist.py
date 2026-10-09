@@ -488,3 +488,38 @@ def test_model_fact_cannot_shadow_a_critical_fact(registry, recipes):
     from ohmni.behavior.netlist import _facts
     with pytest.raises(ValueError, match="shadow"):
         _facts(registry.entry("OHM-057"), shadowed)
+
+
+def test_connector_mating_contacts_may_stay_unmated():
+    from ohmni.behavior.runtime_models import DCExcitation
+    from ohmni.domain.circuit import CircuitComponent, CircuitIR, Net, PinRef
+    from ohmni.domain.units import Quantity
+
+    registry = BehaviorRegistry(repo_root=ROOT)
+    recipes = load_recipes(registry, ROOT)
+    package = recipes.entries["OHM-163"].package
+
+    def circuit(pins):
+        nets = [Net(name="vbus", connections=[PinRef(component="J1", pin=pins[0])]),
+                Net(name="return", kind="ground", connections=[PinRef(component="J1", pin=pins[1])])]
+        nets += [Net(name=f"n{p}", connections=[PinRef(component="J1", pin=p)]) for p in pins[2:]]
+        return CircuitIR(ir_id="t", name="t", nets=nets,
+                         components=[CircuitComponent(ref="J1", part_id="OHM-163", package=package)])
+
+    stimulus = [DCExcitation(positive_net="vbus", negative_net="return", value=Quantity(value=5, unit="V"))]
+    pads_only = compile_circuit(circuit(["1", "2", "3", "4"]), registry, recipes,
+                                {"J1": BehaviorSelection(entry_id="OHM-163")}, excitations=stimulus)
+    assert pads_only.runnable, pads_only.problems
+    assert "J1_open_M1" in pads_only.netlist
+    # A PCB pad is never optional.
+    missing_pad = compile_circuit(circuit(["1", "2", "3"]), registry, recipes,
+                                  {"J1": BehaviorSelection(entry_id="OHM-163")}, excitations=stimulus)
+    assert not missing_pad.runnable
+
+
+def test_open_mating_roles_cannot_be_numbered_pads():
+    from ohmni.behavior.runtime_models import RuntimeRecipe
+
+    with pytest.raises(ValueError):
+        RuntimeRecipe(entry_id="X", behavior_id="BEH-CON-USB", package="p", terminal_roles={"1": "P1", "M1": "M1"},
+                      open_mating_roles=["P1"], critical_facts={}, limitations=[])
