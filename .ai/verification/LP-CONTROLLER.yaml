@@ -4,7 +4,7 @@
   "task": "LP-CONTROLLER",
   "scope": "LANDING-PCB-CONTROLLER",
   "status": "SCOPED_CHECKS_PASSED_OWNER_VISUAL_REVIEW_PENDING",
-  "commit": "uncommitted working tree on 7740f289291387eac7c57d1273975b7818d8ed5d",
+  "commit": "da9a342c0f0d546a0e66006a600c9fede8ccae08",
   "base_commit": "7740f289291387eac7c57d1273975b7818d8ed5d",
   "verified_at": "2026-10-09",
   "circuit_hash": "bff21729ff7365b86618c1f87a4ffc2500fcfc09b5faf991409fe3aa2e3fc58c",
@@ -113,7 +113,7 @@
     "previous_candidate_sha256": "01cc75520acd546709967ab87b14faba781004cf37d6d93d4c5d448e7a45ae7c"
   },
   "pending": [
-    "Record resulting implementation commit; owner appearance acceptance remains separate."
+    "Owner appearance acceptance remains separate; hardware and manufacturing validation are outside this visual prototype scope."
   ],
   "test_results": {
     "fast": {
@@ -135,7 +135,13 @@
       "pad_comparisons": 343,
       "command": "python -m pytest tests/test_landing_controller_physical.py -o addopts= -q --basetemp out/landing-controller/native-final-all"
     },
-    "workflow": "PENDING_FINAL_LEDGER"
+    "workflow": {
+      "status": "PASS",
+      "passed": 12,
+      "duration_seconds": 0.68,
+      "command": "python scripts/verify.py workflow",
+      "control_plane_validation": "VALID; recovery NONE"
+    }
   },
   "tool_versions": {
     "python": "3.13.3",
