@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark">
+    <title>Ohmni — PCB circuit redesign</title>
+    <link rel="stylesheet" href="./prototype.css">
+</head>
+<body>
+    <header class="header"><a class="brand" href="../">ohmni<span aria-hidden="true">.</span></a>
+        <span>Circuit redesign study</span><a href="../">Open existing app</a></header>
+    <main>
+        <section class="hero" aria-labelledby="hero-title">
+            <div class="intro">
+                <h1 id="hero-title">Build circuits.<br>Understand why.</h1>
+                <p class="lede">A circuit is more than a collection of parts. Get to know the board, one connection at a time.</p>
+                <a class="primary" href="../#workspace">Open the workbench</a>
+                <p class="intro-note">A new ESP32 sensor-board candidate.<br><span id="component-count">Circuit checks and render loading.</span></p>
+            </div>
+            <div class="board-area">
+                <div class="viewport" id="viewport">
+                    <picture class="poster" id="poster">
+                        <source media="(max-width: 760px)" srcset="./poster-mobile.webp">
+                        <img src="./poster-desktop.webp" alt="The new circuit candidate rendered from its generated board geometry.">
+                    </picture>
+                    <canvas id="pcb-canvas" tabindex="0" aria-label="Circuit candidate. Drag with a mouse to rotate. Use the Part selector to inspect any component." aria-describedby="view-help"></canvas>
+                    <p class="loading" id="loading">Preparing the circuit candidate…</p>
+                </div>
+                <p class="caption" id="view-help">Drag to rotate. Scroll to move down the page. Component bodies are illustrative.</p>
+                <div class="controls" id="view-controls" hidden aria-label="Camera views">
+                    <button data-pose="overview" aria-pressed="true">Three-quarter</button>
+                    <button data-pose="top" aria-pressed="false">Top</button>
+                    <button data-pose="side" aria-pressed="false">Side</button>
+                    <button data-pose="underside" aria-pressed="false">Underside</button>
+                    <button id="replay">Replay reveal</button>
+                </div>
+                <div class="part-row" id="part-controls" hidden>
+                    <label for="part-select">Part</label><select id="part-select"><option value="">Whole board</option></select>
+                    <button id="focus-part" disabled>Close-up</button>
+                    <button id="motion" aria-pressed="false">Motion on</button>
+                </div>
+                <div class="inspector" aria-live="polite" aria-atomic="true">
+                    <h2 id="part-title">Sense &amp; control  ·  switching supply</h2>
+                    <p id="part-description">USB power, a switching supply, an ESP32 module and environmental sensing.</p>
+                </div>
+            </div>
+        </section>
+        <section class="review-note" aria-labelledby="review-title">
+            <h2 id="review-title">A new circuit, with its checks visible.</h2>
+            <p>This candidate is generated from a new netlist, footprint placements and copper. Engineering review remains open: simulation, USB power entitlement and hardware testing are unresolved. Package bodies are approximate.</p>
+            <details><summary>Source and visual limits</summary><div id="source-detail">Candidate source and exact check results are loaded with the board.</div></details>
+            <a id="binding-download" hidden>Download the generated board and check results</a>
+        </section>
+    </main>
+    <noscript><style>#pcb-canvas,#loading,#view-help{display:none}</style><p class="no-script">JavaScript is required for this isolated 3D prototype. The description and existing-app link remain available.</p></noscript>
+    <script type="module" src="./prototype.js"></script>
+</body>
+</html>

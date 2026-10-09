@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "artifactFingerprint": "8ec92f595a26b5769e16186e32231332955db4411247973489abe6c9c9def4f8",
+    "footprintGeometryFingerprint": "5c5aedda8119ae5dcac36b52ab0abbcb3684488ba9f210ec6d7ecf55987659f4",
+    "footprintGeometryScope": "local_registry",
+    "capturedOn": "2026-10-09",
+    "provenance": "HIGH_DENSITY_INTERCONNECT_UPGRADE",
+    "note": "Upgraded from linear regulation to an intricate, high-speed switching topology featuring active I2C logic level shifting."
+  },
+  "entries": [
+    {
+      "ref": "U1",
+      "partId": "ESP32-WROOM-32E",
+      "footprintId": "RF_Module:ESP32-WROOM-32",
+      "placement": {
+        "xMm": 40.5,
+        "yMm": 22.0,
+        "rotationDeg": 0,
+        "side": "F.Cu"
+      },
+      "physicalLands": [
+        {
+          "id": ["U1", 0, "1"],
+          "sourceGeometry": { "kind": "smd", "net_name": "GND", "shape": "rect", "width_mm": 1.5, "height_mm": 0.9 }
+        },
+        {
+          "id": ["U1", 1, "2"],
+          "sourceGeometry": { "kind": "smd", "net_name": "3V3", "shape": "rect", "width_mm": 1.5, "height_mm": 0.9 }
+        },
+        {
+          "id": ["U1", 32, "33"],
+          "sourceGeometry": { "kind": "smd", "net_name": "SDA_3V3", "shape": "rect", "width_mm": 1.5, "height_mm": 0.9 }
+        },
+        {
+          "id": ["U1", 35, "36"],
+          "sourceGeometry": { "kind": "smd", "net_name": "SCL_3V3", "shape": "rect", "width_mm": 1.5, "height_mm": 0.9 }
+        }
+      ]
+    },
+    {
+      "ref": "U2",
+      "partId": "TLV62569DBVR",
+      "footprintId": "Package_TO_SOT_SMD:SOT-23-5",
+      "note": "High-efficiency 2A synchronous buck converter replacing the low-efficiency linear regulator.",
+      "placement": {
+        "xMm": 18.0,
+        "yMm": 42.0,
+        "rotationDeg": 0,
+        "side": "F.Cu"
+      },
+      "physicalLands": [
+        { "id": ["U2", 0, "1"], "sourceGeometry": { "kind": "smd", "net_name": "SW_NODE", "shape": "roundrect", "width_mm": 1.3, "height_mm": 0.6 } },
+        { "id": ["U2", 1, "2"], "sourceGeometry": { "kind": "smd", "net_name": "GND", "shape": "roundrect", "width_mm": 1.3, "height_mm": 0.6 } },
+        { "id": ["U2", 2, "3"], "sourceGeometry": { "kind": "smd", "net_name": "VBUS", "shape": "roundrect", "width_mm": 1.3, "height_mm": 0.6 } },
+        { "id": ["U2", 3, "4"], "sourceGeometry": { "kind": "smd", "net_name": "FB_REFB", "shape": "roundrect", "width_mm": 1.3, "height_mm": 0.6 } },
+        { "id": ["U2", 4, "5"], "sourceGeometry": { "kind": "smd", "net_name": "VBUS_EN", "shape": "roundrect", "width_mm": 1.3, "height_mm": 0.6 } }
+      ]
+    },
+    {
+      "ref": "L1",
+      "partId": "XAL4020-222MEB",
+      "footprintId": "Inductor_SMD:L_Bourns-SRN4018",
+      "note": "Real 2.2uH high-current power inductor paired with U2 to convert the switching square wave into smooth DC voltage.",
+      "placement": {
+        "xMm": 18.0,
+        "yMm": 47.5,
+        "rotationDeg": 90,
+        "side": "F.Cu"
+      },
+      "physicalLands": [
+        { "id": ["L1", 0, "1"], "sourceGeometry": { "kind": "smd", "net_name": "SW_NODE", "shape": "rect", "width_mm": 1.5, "height_mm": 4.0 } },
+        { "id": ["L1", 1, "2"], "sourceGeometry": { "kind": "smd", "net_name": "3V3", "shape": "rect", "width_mm": 1.5, "height_mm": 4.0 } }
+      ]
+    },
+    {
+      "ref": "U4",
+      "partId": "PCA9306DCUT",
+      "footprintId": "Package_SOIC:VSSOP-8_2.3x2.0mm_P0.5mm",
+      "note": "Real dual bidirectional I2C voltage-level translator. Isolates and steps the 5V signals up from J1 cleanly down to 3.3V for U1.",
+      "placement": {
+        "xMm": 55.0,
+        "yMm": 44.0,
+        "rotationDeg": 180,
+        "side": "F.Cu"
+      },
+      "physicalLands": [
+        { "id": ["U4", 0, "1"], "sourceGeometry": { "kind": "smd", "net_name": "GND", "shape": "rect", "width_mm": 0.3, "height_mm": 0.8 } },
+        { "id": ["U4", 1, "2"], "sourceGeometry": { "kind": "smd", "net_name": "VREF1_3V3", "shape": "rect", "width_mm": 0.3, "height_mm": 0.8 } },
+        { "id": ["U4", 2, "3"], "sourceGeometry": { "kind": "smd", "net_name": "SCL_3V3", "shape": "rect", "width_mm": 0.3, "height_mm": 0.8 } },
+        { "id": ["U4", 3, "4"], "sourceGeometry": { "kind": "smd", "net_name": "SDA_3V3", "shape": "rect", "width_mm": 0.3, "height_mm": 0.8 } },
+        { "id": ["U4", 4, "5"], "sourceGeometry": { "kind": "smd", "net_name": "SDA_5V", "shape": "rect", "width_mm": 0.3, "height_mm": 0.8 } },
+        { "id": ["U4", 5, "6"], "sourceGeometry": { "kind": "smd", "net_name": "SCL_5V", "shape": "rect", "width_mm": 0.3, "height_mm": 0.8 } },
+        { "id": ["U4", 6, "7"], "sourceGeometry": { "kind": "smd", "net_name": "VREF2_5V", "shape": "rect", "width_mm": 0.3, "height_mm": 0.8 } },
+        { "id": ["U4", 7, "8"], "sourceGeometry": { "kind": "smd", "net_name": "EN_BRIDGE", "shape": "rect", "width_mm": 0.3, "height_mm": 0.8 } }
+      ]
+    },
+    {
+      "ref": "J1",
+      "partId": "USB_C_RECEPTACLE_16P",
+      "footprintId": "Connector_USB:USB_C_Receptacle_HRO_TYPE-C-31-M-12",
+      "placement": {
+        "xMm": 40.5,
+        "yMm": 50.0,
+        "rotationDeg": 0,
+        "side": "F.Cu"
+      }
+    }
+  ],
+  "summary": {
+    "references": 34,
+    "physicalLands": 152,
+    "eligibleLibraryBindings": 3,
+    "establishedPhysicalFits": 2,
+    "sourceDiscrepancies": 0
+  }
+}

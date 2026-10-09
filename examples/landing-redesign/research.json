@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "reviewed_on": "2026-10-09",
+  "purpose": "Source-reported inputs to a separately identified landing-board circuit redesign",
+  "evidence_status": "CATALOG_REPORTED",
+  "source_relocation_verified": false,
+  "hardware_tested": false,
+  "notes": [
+    "Manufacturer pages were read and transcribed; their links do not create a verified datasheet claim.",
+    "Source dimensions and ratings remain distinct from design choices and conditional calculations.",
+    "The saved reference-board artifact and its fingerprints are not overwritten or reused for this redesign."
+  ],
+  "sources": [
+    {
+      "id": "ti-tlv62569",
+      "manufacturer": "Texas Instruments",
+      "document": "SLVSDG1C",
+      "revision": "October 2017",
+      "url": "https://www.ti.com/lit/ds/symlink/tlv62569.pdf",
+      "facts": [
+        {"pages": [3], "name": "DBV pin functions", "value": {"1": "EN", "2": "GND", "3": "SW", "4": "VIN", "5": "FB"}},
+        {"pages": [4], "name": "VIN operating range", "unit": "V", "minimum": 2.5, "maximum": 5.5},
+        {"pages": [4], "name": "Feedback reference", "unit": "V", "minimum": 0.588, "typical": 0.6, "maximum": 0.612},
+        {"pages": [4], "name": "IC output current rating", "unit": "A", "maximum": 2, "scope": "IC operating rating, not board or USB capability"},
+        {"pages": [9], "name": "Recommended LC at output >=1.8 V", "inductance_H": 0.0000022, "capacitance_F": 0.00001},
+        {"pages": [9], "name": "Feedback lower resistor limit", "unit": "ohm", "maximum": 200000},
+        {"pages": [9], "name": "Optional feedforward with 100 kohm lower resistor", "unit": "F", "value": 0.0000000000068},
+        {"pages": [10], "name": "Capacitor guidance", "input_F": 0.0000047, "output_range_F": [0.00001, 0.000047], "dielectrics": ["X5R", "X7R"]},
+        {"pages": [13], "name": "Layout", "paraphrase": "Keep power loops compact and wide; keep feedback away from the switch node; join capacitor returns to power ground."}
+      ]
+    },
+    {
+      "id": "ti-tidued0",
+      "manufacturer": "Texas Instruments",
+      "document": "TIDUED0",
+      "url": "https://www.ti.com/lit/ug/tidued0/tidued0.pdf",
+      "facts": [
+        {"pages": [18], "section": "2.3.8.1", "name": "5 V to nominal 3.3 V example", "upper_resistor_ohm": 453000, "lower_resistor_ohm": 100000, "inductance_H": 0.0000022, "output_capacitance_F": 0.00001}
+      ],
+      "limitations": ["Do not copy the reference design's power-good discussion into the five-pin DBV part, which has no PG terminal."]
+    },
+    {
+      "id": "ti-slvuay6",
+      "manufacturer": "Texas Instruments",
+      "document": "SLVUAY6",
+      "url": "https://www.ti.com/lit/ug/slvuay6/slvuay6.pdf",
+      "facts": [
+        {"pages": [6], "name": "TLV62569EVM inductor", "mpn": "XAL4020-222MEB"},
+        {"pages": [6], "name": "Example input capacitor", "mpn": "GRM21BR71A475KA73L", "capacitance_F": 0.0000047, "rated_voltage_V": 10, "package": "0805", "dielectric": "X7R"},
+        {"pages": [6], "name": "Example output capacitor", "mpn": "GRM21BR71A106KE51L", "capacitance_F": 0.00001, "rated_voltage_V": 10, "package": "0805", "dielectric": "X7R"}
+      ],
+      "limitations": ["The EVM is nominally 1.8 V; manufacturer EVM results are not measurements of this redesign."]
+    },
+    {
+      "id": "coilcraft-xal4000",
+      "manufacturer": "Coilcraft",
+      "document": "806",
+      "revision": "February 25, 2026",
+      "url": "https://www.coilcraft.com/getmedia/6adcb47d-8b55-416c-976e-1e22e0d2848c/xal4000.pdf",
+      "drawing_url": "https://www.coilcraft.com/getattachment/ac30b3f1-e3e1-4170-bf20-a8ce3ea46bd4/xal4000d.gif?lang=en-US",
+      "drawing_review": "Visually inspected manufacturer drawing through browser on 2026-10-09",
+      "facts": [
+        {"pages": [1], "name": "XAL4020-222ME electrical values", "inductance_H": 0.0000022, "tolerance_fraction": 0.2, "dcr_max_ohm": 0.0387, "saturation_current_A": 5.6, "saturation_definition": "30% typical inductance drop at 25 C", "rms_current_A_at_20C_rise": 4.0},
+        {"pages": [4], "name": "XAL4020-222 body", "length_mm": 4.0, "width_mm": 4.0, "length_width_tolerance_mm": 0.3, "height_max_mm": 2.1},
+        {"pages": [4], "name": "Recommended copper lands", "pad_count": 2, "pad_width_mm": 0.98, "pad_height_mm": 3.4, "center_spacing_mm": 2.37},
+        {"pages": [4], "name": "Physical terminals", "width_mm": 0.82, "width_tolerance_mm": 0.05, "inner_gap_mm": 1.57, "inner_gap_tolerance_mm": 0.25, "length_typ_mm": 3.25},
+        {"pages": [1], "name": "Packaging suffix", "paraphrase": "B was the less-than-full-reel packaging suffix; Coilcraft directs new orders to C."}
+      ]
+    },
+    {
+      "id": "ti-pca9306",
+      "manufacturer": "Texas Instruments",
+      "document": "SCPS113O",
+      "url": "https://www.ti.com/lit/ds/symlink/pca9306.pdf",
+      "facts": [
+        {"pages": [4], "name": "DCU pin functions", "value": {"1": "GND", "2": "VREF1", "3": "SCL1", "4": "SDA1", "5": "SDA2", "6": "SCL2", "7": "VREF2", "8": "EN"}},
+        {"pages": [18, 21], "name": "Bias network", "series_resistance_ohm": 200000, "selected_bypass_capacitance_F": 0.0000000001, "topology": "EN and VREF2 join on bias node fed through resistor from high rail; VREF1 joins low rail."},
+        {"pages": [10], "name": "Sum bus capacitance limit", "unit": "F", "maximum": 0.0000000004},
+        {"pages": [14, 15], "name": "Bias current caveat", "paraphrase": "The reference arrangement can inject current into VREF1 when its rail is unloaded."}
+      ],
+      "limitations": ["The translator is not galvanic isolation, a USB interface, or proof of external-bus timing."]
+    },
+    {
+      "id": "ti-i2c-pullups",
+      "manufacturer": "Texas Instruments",
+      "document": "SLVA689",
+      "url": "https://www.ti.com/lit/pdf/slva689",
+      "facts": [{"pages": [2, 3], "name": "Pull-up calculation", "paraphrase": "Pull-up resistance must satisfy both low-level sink-current and rise-time/capacitance limits."}]
+    },
+    {
+      "id": "espressif-module",
+      "manufacturer": "Espressif Systems",
+      "revision": "v2.1",
+      "url": "https://documentation.espressif.com/esp32-wroom-32e_esp32-wroom-32ue_datasheet_en.pdf",
+      "facts": [
+        {"pages": [39], "figure": "9", "name": "Module power support", "local_capacitance_F": 0.0000001, "bulk_capacitance_F": 0.000022},
+        {"pages": [39], "name": "Enable reset support", "resistance_ohm": 10000, "capacitance_F": 0.000001},
+        {"pages": [28], "name": "Supply capability recommendation", "minimum_A": 0.5, "scope": "Required source capability, not module maximum consumption or USB entitlement"}
+      ]
+    }
+  ],
+  "design_choices": [
+    {"name": "Feedback divider", "upper_ohm": 453000, "lower_ohm": 100000, "nominal_output_V": 3.318, "assumed_resistor_tolerance_fraction": 0.01, "status": "CONDITIONAL_CALCULATION", "limits": "Real resistor MPN/tolerance and dynamic output bounds remain unverified."},
+    {"name": "USB source", "assumed_voltage_range_V": [4.75, 5.25], "available_current_A": null, "status": "DESIGN_ASSUMPTION_NOT_ENTITLEMENT"},
+    {"name": "Optional 5 V I2C port", "header_ref": "J3", "header_pins": {"1": "GND", "2": "VBUS", "3": "SDA_5V", "4": "SCL_5V"}, "pullup_ohm_each_side": 4700, "status": "CONNECTIVITY_ONLY_TIMING_UNKNOWN"},
+    {"name": "Derived inductor pad centers", "unit": "mm", "value": [[-1.185, 0], [1.185, 0]], "derivation": "Symmetric centers from manufacturer 2.37 mm spacing; long pad axis is Y."}
+  ],
+  "attachment_conflicts": [
+    "The supplied summary claims 34 references and 152 lands, but its entries contain five references and 19 lands.",
+    "The attachment TLV62569 assignments conflict with manufacturer DBV pin functions.",
+    "The attachment's Bourns footprint and 1.5 by 4.0 mm lands do not establish a Coilcraft physical fit.",
+    "The copied artifact fingerprints cannot identify changed parts, placements or nets.",
+    "USB data pins cannot simply become the proposed external I2C interface; an explicit separate header is required."
+  ],
+  "remaining_limits": [
+    "No independent source relocation or manufacturing release approval.",
+    "No measured or simulated switching stability, startup, ripple or RF load-transient acceptance.",
+    "No verified USB current entitlement, complete board power budget or external-port load budget.",
+    "No verified thermal, EMC, antenna performance or physical-fit acceptance.",
+    "No confirmed MLCC effective capacitance under voltage and temperature, or resistor production tolerances.",
+    "External I2C cable capacitance, attached pull-ups, sink-current budget, ESD and hot-plug behavior remain unspecified."
+  ]
+}

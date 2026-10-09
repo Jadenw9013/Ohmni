@@ -1,0 +1,1459 @@
+{
+  "schema_version": 1,
+  "kind": "landing_circuit_candidate",
+  "status": "DRAFT_ENGINEERING_REVIEW_REQUIRED",
+  "circuit_hash": "555a6c319b5759efea00913044c3f672224388e22d751b67b22e106e2a39d424",
+  "i2c_extension": false,
+  "original_reference_sha256": "f079cb958e2019a24e5e2eac4eff1ae6c43e28913dd27678291a5847417b579a",
+  "production_reference_replaced": false,
+  "checks": {
+    "topology": {
+      "schema_version": 1,
+      "scope": "Authored landing redesign topology and conditional arithmetic only",
+      "circuit_content_hash": "555a6c319b5759efea00913044c3f672224388e22d751b67b22e106e2a39d424",
+      "include_i2c_extension": false,
+      "status": "SCOPED_CHECKS_PASS_SYSTEM_UNKNOWN",
+      "system_status": "UNKNOWN",
+      "manufacturing_ready": false,
+      "bench_run": false,
+      "board_current_capability_A": null,
+      "topology_checks": [
+        {
+          "id": "IR_PIN_MEMBERSHIP",
+          "status": "PASS",
+          "detail": "Each connected catalog pin belongs to one net and an existing component.",
+          "source_url": null
+        },
+        {
+          "id": "BUCK_CATALOG_PINOUT",
+          "status": "PASS",
+          "detail": "TLV62569 DBV pin identities must match the manufacturer table, p3.",
+          "source_url": "https://www.ti.com/lit/ds/symlink/tlv62569.pdf"
+        },
+        {
+          "id": "BUCK_PIN_NETS",
+          "status": "PASS",
+          "detail": "EN/VIN use VBUS; SW feeds the inductor; FB reads the divider, p3.",
+          "source_url": "https://www.ti.com/lit/ds/symlink/tlv62569.pdf"
+        },
+        {
+          "id": "BUCK_NOT_FIXED_DC_SOURCE",
+          "status": "PASS",
+          "detail": "SW must not masquerade as a verified fixed DC regulator output.",
+          "source_url": null
+        },
+        {
+          "id": "BUCK_OUTPUT_FILTER",
+          "status": "PASS",
+          "detail": "A 2.2 uH inductor connects the sole SW pin to 3V3; no direct SW-to-rail join.",
+          "source_url": "https://www.ti.com/lit/ds/symlink/tlv62569.pdf"
+        },
+        {
+          "id": "BUCK_FILTER_CAPACITORS",
+          "status": "PASS",
+          "detail": "Required local 4.7 uF input and 10 uF output capacitor connectivity, pp8-10.",
+          "source_url": "https://www.ti.com/lit/ds/symlink/tlv62569.pdf"
+        },
+        {
+          "id": "BUCK_FEEDBACK_DIVIDER",
+          "status": "PASS",
+          "detail": "453 kohm upper / 100 kohm lower divider with no additional FB connection, p18.",
+          "source_url": "https://www.ti.com/lit/ug/tidued0/tidued0.pdf"
+        },
+        {
+          "id": "ESP32_SUPPLY_DECOUPLING",
+          "status": "PASS",
+          "detail": "Retained authored 100 nF local plus 22 uF bulk; proximity and effective C unknown.",
+          "source_url": null
+        },
+        {
+          "id": "ESP32_ENABLE_RC",
+          "status": "PASS",
+          "detail": "The authored module enable uses 10 kohm / 1 uF; actual reset timing remains unknown.",
+          "source_url": null
+        },
+        {
+          "id": "SENSOR_LOW_VOLTAGE_DOMAIN",
+          "status": "PASS",
+          "detail": "BME280 supplies, CSB, data and clock remain on their authored low-voltage domains.",
+          "source_url": null
+        },
+        {
+          "id": "LOW_I2C_PULLUPS",
+          "status": "PASS",
+          "detail": "Each low-side signal has its 4.7 kohm pull-up to 3V3, never VBUS.",
+          "source_url": null
+        },
+        {
+          "id": "I2C_RESISTIVE_DOMAIN_ISOLATION",
+          "status": "PASS",
+          "detail": "No resistor bypasses translation or adds a high-voltage pull-up to a low-side signal.",
+          "source_url": null
+        },
+        {
+          "id": "USB_SEPARATE_CC_RD",
+          "status": "PASS",
+          "detail": "CC1 and CC2 each retain a separate 5.1 kohm Rd to ground; no current contract inferred.",
+          "source_url": null
+        },
+        {
+          "id": "USB_POWER_ONLY",
+          "status": "PASS",
+          "detail": "USB-C carries power only; USB data and SBU pins are not repurposed as I2C.",
+          "source_url": null
+        },
+        {
+          "id": "USB_CURRENT_NOT_INFERRED",
+          "status": "PASS",
+          "detail": "Only VBUS is external; its current entitlement remains unspecified, not 2 A.",
+          "source_url": null
+        },
+        {
+          "id": "BUCK_INPUT_DESIGN_RANGE",
+          "status": "PASS",
+          "detail": "This design assumes 4.75-5.25 V input within IC limits; source behavior is untested.",
+          "source_url": "https://www.ti.com/lit/ds/symlink/tlv62569.pdf"
+        },
+        {
+          "id": "NO_UNREQUESTED_I2C_EXTENSION",
+          "status": "PASS",
+          "detail": "The base variant does not silently include an external 5 V bus.",
+          "source_url": null
+        }
+      ],
+      "failed_checks": 0,
+      "calculations": {
+        "feedback": {
+          "status": "CONDITIONAL_CALCULATION",
+          "nominal_V": 3.318,
+          "minimum_V": 3.1988946534653464,
+          "maximum_V": 3.4403672727272725,
+          "resistor_tolerance_fraction": 0.01,
+          "tolerance_status": "BOM_REQUIREMENT_NOT_COMPONENT_VERIFIED",
+          "reference_V": {
+            "minimum": 0.588,
+            "typical": 0.6,
+            "maximum": 0.612
+          },
+          "source": {
+            "url": "https://www.ti.com/lit/ds/symlink/tlv62569.pdf",
+            "pages": [
+              4,
+              9
+            ]
+          },
+          "excludes": [
+            "switching ripple",
+            "load transients",
+            "start-up",
+            "PCB parasitics"
+          ]
+        },
+        "nominal_3V3_ground_capacitance_F": 3.23e-05,
+        "capacitance_status": "NOMINAL_NETLIST_SUM_NOT_EFFECTIVE_CAPACITANCE"
+      },
+      "remaining_checks": [
+        {
+          "id": "USB_CURRENT_ENTITLEMENT",
+          "status": "UNKNOWN",
+          "reason": "No advertised-source-current detection or negotiated contract."
+        },
+        {
+          "id": "DYNAMIC_REGULATION",
+          "status": "UNKNOWN",
+          "reason": "Switching stability, startup, ripple and ESP32 load steps untested."
+        },
+        {
+          "id": "THERMAL_EMC",
+          "status": "UNKNOWN",
+          "reason": "Temperature rise, switching-node emissions and radio coupling untested."
+        },
+        {
+          "id": "PHYSICAL_LAYOUT",
+          "status": "UNKNOWN",
+          "reason": "Net connectivity does not prove placement, routing or antenna clearance."
+        },
+        {
+          "id": "PASSIVE_REALIZATION",
+          "status": "UNKNOWN",
+          "reason": "Actual resistor tolerances and MLCC bias/temperature capacitance unverified."
+        },
+        {
+          "id": "SYSTEM_CURRENT_BUDGET",
+          "status": "UNKNOWN",
+          "reason": "Converter 2 A rating is not a verified board or USB current budget."
+        },
+        {
+          "id": "SOURCE_REVERIFICATION",
+          "status": "UNKNOWN",
+          "reason": "Web/manual source review is not deterministic source relocation."
+        }
+      ]
+    },
+    "semantic": {
+      "export_blocked": true,
+      "coverage": 0.8181818181818182,
+      "blocking_findings": [
+        {
+          "rule_id": "PB-CONN-003",
+          "severity": "error",
+          "title": "U1.2 sits on an undriven net"
+        },
+        {
+          "rule_id": "PB-CONN-003",
+          "severity": "error",
+          "title": "U3.6 sits on an undriven net"
+        },
+        {
+          "rule_id": "PB-CONN-003",
+          "severity": "error",
+          "title": "U3.8 sits on an undriven net"
+        },
+        {
+          "rule_id": "PB-I2C-001",
+          "severity": "error",
+          "title": "I2C SCL line 'SCL_3V3' has no pull-up"
+        },
+        {
+          "rule_id": "PB-I2C-001",
+          "severity": "error",
+          "title": "I2C SDA line 'SDA_3V3' has no pull-up"
+        },
+        {
+          "rule_id": "PB-PIN-002",
+          "severity": "error",
+          "title": "U1.3 (EN) is floating"
+        },
+        {
+          "rule_id": "PB-PIN-002",
+          "severity": "error",
+          "title": "U3.2 (CSB) is floating"
+        }
+      ],
+      "undecided_rules": [
+        "PB-LED-001",
+        "PB-PWR-001",
+        "PB-REG-001",
+        "PB-REG-002"
+      ],
+      "note": "Default voltage derivation lacks this buck/translator topology. Full results also record identity and assembly limitations."
+    },
+    "simulation": "NOT_RUN",
+    "bench": "NOT_RUN",
+    "physical": {
+      "findings": [
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "C1 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "C1"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "C1 envelope clearance to the board edge",
+          "component_refs": [
+            "C1"
+          ],
+          "measured_mm": 11.25,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "C2 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "C2"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "C2 envelope clearance to the board edge",
+          "component_refs": [
+            "C2"
+          ],
+          "measured_mm": 8.55,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "C3 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "C3"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "C3 envelope clearance to the board edge",
+          "component_refs": [
+            "C3"
+          ],
+          "measured_mm": 12.25,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "C4 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "C4"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "C4 envelope clearance to the board edge",
+          "component_refs": [
+            "C4"
+          ],
+          "measured_mm": 16.25,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "C5 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "C5"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "C5 envelope clearance to the board edge",
+          "component_refs": [
+            "C5"
+          ],
+          "measured_mm": 8.25,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "C6 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "C6"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "C6 envelope clearance to the board edge",
+          "component_refs": [
+            "C6"
+          ],
+          "measured_mm": 14.25,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "C7 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "C7"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "C7 envelope clearance to the board edge",
+          "component_refs": [
+            "C7"
+          ],
+          "measured_mm": 14.25,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "D1 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "D1"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "D1 envelope clearance to the board edge",
+          "component_refs": [
+            "D1"
+          ],
+          "measured_mm": 5.5625,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "D2 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "D2"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "D2 envelope clearance to the board edge",
+          "component_refs": [
+            "D2"
+          ],
+          "measured_mm": 5.5625,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "D3 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "D3"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "D3 envelope clearance to the board edge",
+          "component_refs": [
+            "D3"
+          ],
+          "measured_mm": 5.5625,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "D4 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "D4"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "D4 envelope clearance to the board edge",
+          "component_refs": [
+            "D4"
+          ],
+          "measured_mm": 5.5625,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "J1 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "J1"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "J1 envelope clearance to the board edge",
+          "component_refs": [
+            "J1"
+          ],
+          "measured_mm": 1.0,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "J2 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "J2"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "J2 envelope clearance to the board edge",
+          "component_refs": [
+            "J2"
+          ],
+          "measured_mm": 2.730000000000004,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "L1 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "L1"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "L1 envelope clearance to the board edge",
+          "component_refs": [
+            "L1"
+          ],
+          "measured_mm": 9.600000000000001,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "R1 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "R1"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "R1 envelope clearance to the board edge",
+          "component_refs": [
+            "R1"
+          ],
+          "measured_mm": 11.75,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "R10 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "R10"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "R10 envelope clearance to the board edge",
+          "component_refs": [
+            "R10"
+          ],
+          "measured_mm": 9.25,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "R11 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "R11"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "R11 envelope clearance to the board edge",
+          "component_refs": [
+            "R11"
+          ],
+          "measured_mm": 9.5875,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "R12 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "R12"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "R12 envelope clearance to the board edge",
+          "component_refs": [
+            "R12"
+          ],
+          "measured_mm": 9.5875,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "R13 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "R13"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "R13 envelope clearance to the board edge",
+          "component_refs": [
+            "R13"
+          ],
+          "measured_mm": 9.5875,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "R2 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "R2"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "R2 envelope clearance to the board edge",
+          "component_refs": [
+            "R2"
+          ],
+          "measured_mm": 11.75,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "R20 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "R20"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "R20 envelope clearance to the board edge",
+          "component_refs": [
+            "R20"
+          ],
+          "measured_mm": 16.25,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "R21 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "R21"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "R21 envelope clearance to the board edge",
+          "component_refs": [
+            "R21"
+          ],
+          "measured_mm": 26.25,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "R3 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "R3"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "R3 envelope clearance to the board edge",
+          "component_refs": [
+            "R3"
+          ],
+          "measured_mm": 8.25,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "R4 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "R4"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "R4 envelope clearance to the board edge",
+          "component_refs": [
+            "R4"
+          ],
+          "measured_mm": 19.25,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "R5 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "R5"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "R5 envelope clearance to the board edge",
+          "component_refs": [
+            "R5"
+          ],
+          "measured_mm": 18.587500000000006,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "R6 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "R6"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "R6 envelope clearance to the board edge",
+          "component_refs": [
+            "R6"
+          ],
+          "measured_mm": 16.950000000000003,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "R7 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "R7"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "R7 envelope clearance to the board edge",
+          "component_refs": [
+            "R7"
+          ],
+          "measured_mm": 14.25,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "SW1 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "SW1"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "SW1 envelope clearance to the board edge",
+          "component_refs": [
+            "SW1"
+          ],
+          "measured_mm": 13.25,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "SW2 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "SW2"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "SW2 envelope clearance to the board edge",
+          "component_refs": [
+            "SW2"
+          ],
+          "measured_mm": 15.25,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "U1 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "U1"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "U1 envelope clearance to the board edge",
+          "component_refs": [
+            "U1"
+          ],
+          "measured_mm": 1.2599999999999998,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "U2 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "U2"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "U2 envelope clearance to the board edge",
+          "component_refs": [
+            "U2"
+          ],
+          "measured_mm": 13.399999999999999,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-002",
+          "status": "pass",
+          "description": "U3 footprint and pads lie inside the board outline",
+          "component_refs": [
+            "U3"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-003",
+          "status": "pass",
+          "description": "U3 envelope clearance to the board edge",
+          "component_refs": [
+            "U3"
+          ],
+          "measured_mm": 13.725000000000001,
+          "limit_mm": 1.0,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-001",
+          "status": "pass",
+          "description": "No component/pad envelopes overlap",
+          "component_refs": [],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-006",
+          "status": "pass",
+          "description": "Every connected pin resolves to its actual physical pad and net",
+          "component_refs": [],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": null
+        },
+        {
+          "rule_id": "PB-PCB-010",
+          "status": "pass",
+          "description": "Keep the authored connector/mating or module-antenna pose unchanged.",
+          "component_refs": [
+            "J1"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": "fixed-port-J1"
+        },
+        {
+          "rule_id": "PB-PCB-010",
+          "status": "pass",
+          "description": "Keep the authored connector/mating or module-antenna pose unchanged.",
+          "component_refs": [
+            "J2"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": "fixed-port-J2"
+        },
+        {
+          "rule_id": "PB-PCB-010",
+          "status": "pass",
+          "description": "Keep the authored connector/mating or module-antenna pose unchanged.",
+          "component_refs": [
+            "U1"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": "fixed-port-U1"
+        },
+        {
+          "rule_id": "PB-PCB-005",
+          "status": "pass",
+          "description": "Authored edge access policy; mating/enclosure fit is not verified.",
+          "component_refs": [
+            "J1"
+          ],
+          "measured_mm": 1.0,
+          "limit_mm": 3.0,
+          "constraint_id": "edge-J1"
+        },
+        {
+          "rule_id": "PB-PCB-005",
+          "status": "pass",
+          "description": "Authored edge access policy; mating/enclosure fit is not verified.",
+          "component_refs": [
+            "J2"
+          ],
+          "measured_mm": 2.730000000000004,
+          "limit_mm": 3.0,
+          "constraint_id": "edge-J2"
+        },
+        {
+          "rule_id": "PB-PCB-005",
+          "status": "pass",
+          "description": "Authored edge access policy; mating/enclosure fit is not verified.",
+          "component_refs": [
+            "U1"
+          ],
+          "measured_mm": 1.2599999999999998,
+          "limit_mm": 3.0,
+          "constraint_id": "edge-U1"
+        },
+        {
+          "rule_id": "PB-PCB-013",
+          "status": "pass",
+          "description": "Reuse the existing source-derived ESP32 antenna exclusion; compatibility with WROOM-32E remains assumed and RF unverified.; component exclusion only, RF performance not verified",
+          "component_refs": [
+            "U1"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": "antenna-U1"
+        },
+        {
+          "rule_id": "PB-PCB-004",
+          "status": "pass",
+          "description": "Input bypass positive land beside VIN; maximum straight-line pad distance is an authored geometric limit, not a loop-performance claim.",
+          "component_refs": [
+            "C1",
+            "U2"
+          ],
+          "measured_mm": 2.489509238785828,
+          "limit_mm": 3.0,
+          "constraint_id": "near-C1-1-U2-4"
+        },
+        {
+          "rule_id": "PB-PCB-004",
+          "status": "pass",
+          "description": "Input bypass return land near regulator ground; maximum straight-line pad distance is an authored geometric limit, not a loop-performance claim.",
+          "component_refs": [
+            "C1",
+            "U2"
+          ],
+          "measured_mm": 6.341936317088022,
+          "limit_mm": 6.5,
+          "constraint_id": "near-C1-2-U2-2"
+        },
+        {
+          "rule_id": "PB-PCB-004",
+          "status": "pass",
+          "description": "Switch node land beside regulator SW; maximum straight-line pad distance is an authored geometric limit, not a loop-performance claim.",
+          "component_refs": [
+            "L1",
+            "U2"
+          ],
+          "measured_mm": 3.3721664030708802,
+          "limit_mm": 4.0,
+          "constraint_id": "near-L1-1-U2-3"
+        },
+        {
+          "rule_id": "PB-PCB-004",
+          "status": "pass",
+          "description": "Output capacitor positive land beside inductor output; maximum straight-line pad distance is an authored geometric limit, not a loop-performance claim.",
+          "component_refs": [
+            "C2",
+            "L1"
+          ],
+          "measured_mm": 2.865,
+          "limit_mm": 3.5,
+          "constraint_id": "near-C2-1-L1-2"
+        },
+        {
+          "rule_id": "PB-PCB-004",
+          "status": "pass",
+          "description": "Upper-divider FB land beside FB input; maximum straight-line pad distance is an authored geometric limit, not a loop-performance claim.",
+          "component_refs": [
+            "R6",
+            "U2"
+          ],
+          "measured_mm": 3.010813843464919,
+          "limit_mm": 3.5,
+          "constraint_id": "near-R6-2-U2-5"
+        },
+        {
+          "rule_id": "PB-PCB-004",
+          "status": "pass",
+          "description": "Lower-divider FB land beside FB input; maximum straight-line pad distance is an authored geometric limit, not a loop-performance claim.",
+          "component_refs": [
+            "R7",
+            "U2"
+          ],
+          "measured_mm": 2.6277366686941828,
+          "limit_mm": 3.5,
+          "constraint_id": "near-R7-1-U2-5"
+        },
+        {
+          "rule_id": "PB-PCB-004",
+          "status": "pass",
+          "description": "Processor local supply bypass; maximum straight-line pad distance is an authored geometric limit, not a loop-performance claim.",
+          "component_refs": [
+            "C3",
+            "U1"
+          ],
+          "measured_mm": 4.08905857135845,
+          "limit_mm": 5.0,
+          "constraint_id": "near-C3-1-U1-2"
+        },
+        {
+          "rule_id": "PB-PCB-004",
+          "status": "pass",
+          "description": "Processor bulk supply support; maximum straight-line pad distance is an authored geometric limit, not a loop-performance claim.",
+          "component_refs": [
+            "C4",
+            "U1"
+          ],
+          "measured_mm": 7.520664864225769,
+          "limit_mm": 10.0,
+          "constraint_id": "near-C4-1-U1-2"
+        },
+        {
+          "rule_id": "PB-PCB-004",
+          "status": "pass",
+          "description": "Processor enable delay capacitor; maximum straight-line pad distance is an authored geometric limit, not a loop-performance claim.",
+          "component_refs": [
+            "C5",
+            "U1"
+          ],
+          "measured_mm": 3.6171950458884576,
+          "limit_mm": 5.0,
+          "constraint_id": "near-C5-1-U1-3"
+        },
+        {
+          "rule_id": "PB-PCB-004",
+          "status": "pass",
+          "description": "Sensor supply bypass; maximum straight-line pad distance is an authored geometric limit, not a loop-performance claim.",
+          "component_refs": [
+            "C6",
+            "U3"
+          ],
+          "measured_mm": 2.3143573622066254,
+          "limit_mm": 5.0,
+          "constraint_id": "near-C6-1-U3-8"
+        },
+        {
+          "rule_id": "PB-PCB-004",
+          "status": "pass",
+          "description": "Sensor I/O supply bypass; maximum straight-line pad distance is an authored geometric limit, not a loop-performance claim.",
+          "component_refs": [
+            "C7",
+            "U3"
+          ],
+          "measured_mm": 2.9114000068695414,
+          "limit_mm": 5.0,
+          "constraint_id": "near-C7-1-U3-6"
+        },
+        {
+          "rule_id": "PB-PCB-011",
+          "status": "pass",
+          "description": "Keep the complete switching stage inside its compact authored power region.",
+          "component_refs": [
+            "U2"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": "power-region-U2"
+        },
+        {
+          "rule_id": "PB-PCB-011",
+          "status": "pass",
+          "description": "Keep the complete switching stage inside its compact authored power region.",
+          "component_refs": [
+            "C1"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": "power-region-C1"
+        },
+        {
+          "rule_id": "PB-PCB-011",
+          "status": "pass",
+          "description": "Keep the complete switching stage inside its compact authored power region.",
+          "component_refs": [
+            "C2"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": "power-region-C2"
+        },
+        {
+          "rule_id": "PB-PCB-011",
+          "status": "pass",
+          "description": "Keep the complete switching stage inside its compact authored power region.",
+          "component_refs": [
+            "L1"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": "power-region-L1"
+        },
+        {
+          "rule_id": "PB-PCB-011",
+          "status": "pass",
+          "description": "Keep the complete switching stage inside its compact authored power region.",
+          "component_refs": [
+            "R6"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": "power-region-R6"
+        },
+        {
+          "rule_id": "PB-PCB-011",
+          "status": "pass",
+          "description": "Keep the complete switching stage inside its compact authored power region.",
+          "component_refs": [
+            "R7"
+          ],
+          "measured_mm": null,
+          "limit_mm": null,
+          "constraint_id": "power-region-R7"
+        }
+      ],
+      "limitations": [
+        "Placement checks use conservative component/pad envelopes. Copper clearance and connectivity require the independent routing verifier and KiCad DRC.",
+        "An antenna keepout check establishes geometric exclusion only; RF performance and the adequacy of an ASSUMED clearance policy are not verified."
+      ],
+      "geometry_sources": {
+        "footprint:Capacitor_SMD:C_0805_2012Metric": "62775a51fe74ba7f1b572de327bdbd3fc92582721b2abcaa47787865590d89cb",
+        "footprint:LED_SMD:LED_0805_2012Metric": "8806125556e590701b13b47a1725dff28fc47fca41a7905c7d78c8312d08cbbd",
+        "footprint:Connector_USB:USB_C_Receptacle_HRO_TYPE-C-31-M-12": "c562a7f9713a8b754c4d2305a2ea15453469a1c8c48a9b17973383e8993fc750",
+        "footprint:Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical": "5f2993c50dbd5024384bf6fa972fcd10d40d0837039e1e371b326a27d9f5b8b7",
+        "footprint:Inductor_SMD:L_Coilcraft_XAL4020-XXX": "2a45a4ea4dbccfc1e2f744c4225f65c4ddc37e555feb81a2021ac838ab920bbd",
+        "footprint:Resistor_SMD:R_0805_2012Metric": "f050b6a50cc7e6f86291fb7aa8f87b0d02255e21cfbddf291cdccc87e5889794",
+        "footprint:Button_Switch_THT:SW_PUSH_6mm": "45f5bc8d06f716115e6f50d19634a72a8aeffbb24ae6b28a12a958f2d4519d86",
+        "footprint:RF_Module:ESP32-WROOM-32": "af11e3ded30556624b02dbdb6b72e7ee6ec829fa0c549365b154eb273f7dbf7c",
+        "footprint:Package_TO_SOT_SMD:SOT-23-5": "455a3f7c3e5eb5b8847eaa5df23e18651e78ab9f75afd09a0883758a0d901761",
+        "footprint:Package_LGA:Bosch_LGA-8_2.5x2.5mm_P0.65mm_ClockwisePinNumbering": "14464b7a437e7efb0fa9947b89a7d3825242f3ed82d649fe2ca45fad5d3dda86",
+        "body:RF_Module:ESP32-WROOM-32": "e08a57b98669dbb126e5006854fdefad7226c6fceeb34c94d6449fd48db8cbc9"
+      },
+      "passed": true
+    },
+    "erc": {
+      "status": "pass_with_warnings",
+      "tool_status": "ok",
+      "finding_count": 35
+    },
+    "routing": {
+      "passed": true,
+      "failures": 0
+    },
+    "switching_layout": {
+      "circuit_fingerprint": "555a6c319b5759efea00913044c3f672224388e22d751b67b22e106e2a39d424",
+      "constraints_hash": "78e290cd0a555e90b9079b2467a111b1651b99342ac3f0c74d2588d8954aa829",
+      "routing_plan_fingerprint": "1fd89948cf1b50f77eddf2cbd4bc7a1f36cb00e1109c06c30fccb42e90da0485",
+      "status": "PASS",
+      "checks": [
+        {
+          "net": "SW_NODE",
+          "length_mm": 4.678948,
+          "maximum_length_mm": 6.0,
+          "via_count": 0,
+          "layers": [
+            "F.Cu"
+          ],
+          "status": "PASS"
+        },
+        {
+          "net": "FB_REFB",
+          "length_mm": 7.6282,
+          "maximum_length_mm": 8.0,
+          "via_count": 0,
+          "layers": [
+            "F.Cu"
+          ],
+          "status": "PASS"
+        }
+      ],
+      "limits": [
+        "These are authored length/layer limits, not manufacturer-qualified routing rules.",
+        "Input/ground hot-loop area and return-plane impedance are not established by these checks.",
+        "Switching stability, ripple, efficiency, thermal capacity and EMC remain unverified."
+      ]
+    },
+    "drc": {
+      "status": "pass",
+      "tool_status": "ok",
+      "finding_count": 0,
+      "unconnected_count": 0
+    }
+  },
+  "tools": {
+    "kicad": {
+      "status": "OK",
+      "executable": "C:\\Users\\wongj\\AppData\\Local\\Programs\\KiCad\\10.0\\bin\\kicad-cli.exe",
+      "return_code": 0,
+      "output": "10.0.5"
+    }
+  },
+  "limitations": [
+    "A candidate design, not a manufacturing release or hardware-tested board.",
+    "Scoped topology arithmetic does not establish startup, stability, EMI or temperature.",
+    "USB input-current entitlement and complete worst-case load budget require review.",
+    "Exact model-to-footprint physical fits remain separate from board DRC.",
+    "ESP32-WROOM-32 footprint versus the 32E module remains an unresolved manufacturing fit, including the thermal pad and antenna geometry.",
+    "The inherited hand-solderable requirement conflicts with the BME280 LGA package; assembly method needs resolution."
+  ],
+  "artifact_fingerprint": "5b19c4ab3c99dbfdcc8d3fe8f510d909e73d3ffb7ce4d38a3abb23f93cc79e12",
+  "routing_plan_fingerprint": "1fd89948cf1b50f77eddf2cbd4bc7a1f36cb00e1109c06c30fccb42e90da0485",
+  "native_rules": {
+    "schema_version": 1,
+    "generator": "ohmni-landing-redesign-routing-policy-v1",
+    "pcb_path": "C:\\Dev\\hackathon\\.worktrees\\landing-pcb\\out\\landing-pcb-redesign\\buck-final\\redesign.kicad_pcb",
+    "pcb_fingerprint": "5b19c4ab3c99dbfdcc8d3fe8f510d909e73d3ffb7ce4d38a3abb23f93cc79e12",
+    "circuit_fingerprint": "555a6c319b5759efea00913044c3f672224388e22d751b67b22e106e2a39d424",
+    "routing_plan_fingerprint": "1fd89948cf1b50f77eddf2cbd4bc7a1f36cb00e1109c06c30fccb42e90da0485",
+    "routing_profile_fingerprint": "274f6077a64c8c48f90e4fca7d02e63284d91be5e20060492edf20a9a188720b",
+    "routing_constraints_sha256": "3035cff2204973b428e9e72e37f910fc8b1a5b6ca91c287296fd69b52602fcfa",
+    "routing_constraints": {
+      "profile": {
+        "name": "landing redesign fine-pitch prototype geometry",
+        "allowed_layers": [
+          "F.Cu",
+          "B.Cu"
+        ],
+        "signal_width_mm": {
+          "value": 0.15,
+          "provenance": "board_profile",
+          "rationale": "0.5 mm VSSOP lead escape; fabricator review required"
+        },
+        "power_width_mm": {
+          "value": 0.25,
+          "provenance": "board_profile",
+          "rationale": "Prototype geometry only; copper current and thermal capacity unverified"
+        },
+        "clearance_mm": {
+          "value": 0.15,
+          "provenance": "board_profile",
+          "rationale": "Authored fine-pitch geometry; fabrication process not qualified"
+        },
+        "via_diameter_mm": {
+          "value": 0.8,
+          "provenance": "board_profile",
+          "rationale": "prototype through-via geometry"
+        },
+        "via_drill_mm": {
+          "value": 0.4,
+          "provenance": "board_profile",
+          "rationale": "prototype through-via drill"
+        },
+        "grid_mm": {
+          "value": 0.125,
+          "provenance": "project_default",
+          "rationale": "Bounded grid fine enough for the pinned VSSOP escape"
+        },
+        "edge_clearance_mm": {
+          "value": 0.5,
+          "provenance": "board_profile",
+          "rationale": "routing boundary inset"
+        },
+        "maximum_vias_per_connection": {
+          "value": 4,
+          "provenance": "project_default",
+          "rationale": "bounded search policy"
+        },
+        "maximum_expanded_nodes": {
+          "value": 300000,
+          "provenance": "project_default",
+          "rationale": "bounded search policy"
+        }
+      },
+      "nets": [
+        {
+          "net_name": "SW_NODE",
+          "preferred_layer": "F.Cu",
+          "width_mm": 0.25,
+          "provenance": "derived",
+          "rationale": "Keep the authored switching/feedback connection compact; measured after routing"
+        },
+        {
+          "net_name": "FB_REFB",
+          "preferred_layer": "F.Cu",
+          "width_mm": 0.15,
+          "provenance": "derived",
+          "rationale": "Keep the authored switching/feedback connection compact; measured after routing"
+        }
+      ]
+    },
+    "net_minimum_width_mm": {
+      "3V3": 0.25,
+      "BUTTON1": 0.15,
+      "BUTTON2": 0.15,
+      "CC1": 0.15,
+      "CC2": 0.15,
+      "EN": 0.15,
+      "FB_REFB": 0.15,
+      "GND": 0.25,
+      "IO0": 0.15,
+      "LED1_A": 0.15,
+      "LED1_DRIVE": 0.15,
+      "LED2_A": 0.15,
+      "LED2_DRIVE": 0.15,
+      "LED3_A": 0.15,
+      "LED3_DRIVE": 0.15,
+      "LED4_A": 0.15,
+      "LED4_DRIVE": 0.15,
+      "SCL_3V3": 0.15,
+      "SDA_3V3": 0.15,
+      "SW_NODE": 0.25,
+      "UART_RX": 0.15,
+      "UART_TX": 0.15,
+      "VBUS": 0.25
+    },
+    "files": [
+      {
+        "path": "C:\\Dev\\hackathon\\.worktrees\\landing-pcb\\out\\landing-pcb-redesign\\buck-final\\redesign.kicad_pro",
+        "sha256": "dba2eedaf65d9a095ff78459e51fedd7f5074616559040167d81854ba744af35",
+        "size_bytes": 727
+      },
+      {
+        "path": "C:\\Dev\\hackathon\\.worktrees\\landing-pcb\\out\\landing-pcb-redesign\\buck-final\\redesign.kicad_dru",
+        "sha256": "bf0b1b998a4cd47ac8904311f6dacadb96923a437c52790c45e758b197c6cddc",
+        "size_bytes": 1038
+      }
+    ],
+    "limitations": [
+      "KiCad DRC corroborates this authored geometric profile; it does not qualify a fabrication process.",
+      "Source circuit, routing, and native reports remain separate evidence records."
+    ]
+  },
+  "scene": "candidate-board.json",
+  "counts": {
+    "components": 32,
+    "nets": 23,
+    "tracks": 548,
+    "vias": 68
+  },
+  "original_reference_unchanged": true,
+  "default_footprint_registry_restored": true
+}

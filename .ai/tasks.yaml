@@ -290,6 +290,13 @@
         "Paid generation, merge, push or deployment",
         "Electrical changes or upgrading parked behavior, CS/CAB or M10 acceptance"
       ]
+    },
+    {
+      "id": "LANDING-PCB-CIRCUIT",
+      "status": "IN_PROGRESS",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/LANDING-PCB-CIRCUIT.yaml",
+      "description": "Separately sourced landing PCB circuit redesign and rendering; original accepted artifacts preserved."
     }
   ],
   "tasks": [
@@ -2976,6 +2983,54 @@
         "ux_result": "PASSED_SCOPED",
         "engineering_result": "PASSED_SCOPED"
       }
+    },
+    {
+      "id": "LP-CIRCUIT",
+      "scope": "LANDING-PCB-CIRCUIT",
+      "milestone": null,
+      "title": "Source, generate, check and render the requested landing circuit redesign",
+      "status": "BLOCKED",
+      "priority": 260,
+      "dependencies": [],
+      "blockers": [
+        "The attachment does not identify a valid I2C endpoint. Owner choice is pending: external 5 V I2C expansion header, or omit PCA9306 and retain 3.3 V I2C. The independent 32-part buck candidate is generated and reviewed."
+      ],
+      "goal": "Create an honest new circuit/board candidate, not an edited binding manifest.",
+      "acceptance_criteria": [
+        "Complete source-backed netlist, pin/package records and values; attachment inconsistencies explicitly resolved.",
+        "New artifact identity and complete footprint/pad coordinates; original reference remains byte-identical.",
+        "Placement, copper, ERC/DRC and scoped electrical checks run where supported; unsupported or failed checks remain explicit.",
+        "No switching node represented as a regulated DC supply and no level translator treated as USB-to-I2C.",
+        "New scene is generated from candidate circuit and copper; review records separate software results, engineering limits and owner appearance acceptance."
+      ],
+      "implementation": {
+        "started_at_commit": "f7554573259a2a63a19b446d03d1d0c928e83631",
+        "completed_at_commit": null,
+        "approval_evidence": ".ai/approvals/LANDING-PCB-CIRCUIT.yaml",
+        "draft_candidate_commit": null
+      },
+      "verification": {
+        "required": [
+          "workflow_tests",
+          "focused_circuit_tests",
+          "source_geometry_checks",
+          "erc_drc",
+          "browser_capture"
+        ],
+        "record": ".ai/verification/LP-CIRCUIT.yaml"
+      },
+      "review": {
+        "required": true,
+        "status": "PENDING",
+        "independent": true,
+        "record": ".ai/reviews.yaml#LP-CIRCUIT-ENGINEERING",
+        "engineering_result": "NO_NEW_BLOCKER_FOR_DRAFT_RENDER",
+        "ui_result": "READY_FOR_DRAFT_OWNER_REVIEW_FINAL_APPEARANCE_OPEN",
+        "human_visual_acceptance": "PENDING"
+      },
+      "notes": [
+        "32-part candidate generated, routed, checked and rendered. Optional 38-part extension has topology/placement coverage only. Manufacturing, hardware validation and final visual acceptance remain open."
+      ]
     }
   ]
 }

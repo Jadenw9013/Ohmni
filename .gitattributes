@@ -58,3 +58,13 @@ scripts/prepare_visual_assets.py text eol=lf
 scripts/landing_pcb*.cjs text eol=lf
 scripts/report_landing_pcb_bindings.mjs text eol=lf
 scripts/export_landing_pcb_posters.cjs text eol=lf
+
+# Preserve the owner-supplied circuit proposal as an unverified evidence input.
+examples/landing-redesign/supplied-proposal.json -text whitespace=cr-at-eol
+examples/landing-redesign/footprints/*.kicad_mod -text whitespace=cr-at-eol
+apps/web/landing-pcb-redesign/** text eol=lf
+apps/web/landing-pcb-redesign/*.webp -text
+tools/landing_redesign/*.py text eol=lf
+tests/test_landing_redesign*.py text eol=lf
+scripts/landing_redesign_capture.cjs text eol=lf
+scripts/export_landing_redesign_posters.cjs text eol=lf

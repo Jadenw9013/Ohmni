@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "scope": "LANDING-PCB-CIRCUIT",
+  "task": "LP-CIRCUIT",
+  "approved_by": "human",
+  "date": "2026-10-09",
+  "instruction": "Real circuit redesign, then render it",
+  "preceding_request": "for the pcb on the landing can we make it more like this?",
+  "branch": "codex/landing-pcb-circuit",
+  "base_commit": "f7554573259a2a63a19b446d03d1d0c928e83631",
+  "supplied_proposal": {
+    "path": "examples/landing-redesign/supplied-proposal.json",
+    "sha256": "a9f7577e61c867cbf7fbc812f9aa960367e0fd97f4aab502a5ad7dfb20fb9b47",
+    "status": "UNVERIFIED_PROPOSAL"
+  },
+  "boundaries": [
+    "Design a separately identified real circuit based on the requested buck-converter/inductor and optional I2C expansion changes; source complete pins, values and physical geometry.",
+    "Correct unsupported or conflicting attachment claims; regenerate placement and copper from new connectivity, never reuse old artifact fingerprints.",
+    "Keep accepted saved reference, production defaults, P1 owner-review state and parked behavior evidence unchanged.",
+    "Report unsupported semantic/physical checks and simulation limits honestly. No manufacturing or hardware validation claim follows from rendering.",
+    "Render the new candidate from generated geometry after checks; independent engineering and visual review remain required.",
+    "No paid Higgsfield generation, uploads, merge, push, deployment or component purchases authorized."
+  ],
+  "pending_requirement": "Whether PCA9306 feeds external5V I2C header or is omitted; async clarification pending."
+}

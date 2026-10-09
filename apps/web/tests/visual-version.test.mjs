@@ -13,7 +13,8 @@ test('shipped visual manifest matches source bytes and separates actual/sample c
     }
     assert.ok(VISUAL_FILE_HASHES['visual-board-scene.js'], 'Source footprint/model mapping participates in visual identity');
     for (const file of ['board-view.js', 'landing-pcb-bindings.js', 'landing-pcb-models.js',
-        'landing-pcb-presentation.js', 'landing-pcb-prototype/prototype.js', 'landing-pcb-prototype/prototype.css']) {
+        'landing-pcb-presentation.js', 'landing-pcb-prototype/prototype.js', 'landing-pcb-prototype/prototype.css',
+        'landing-pcb-redesign/models.js', 'landing-pcb-redesign/prototype.js', 'landing-pcb-redesign/prototype.css']) {
         assert.ok(VISUAL_FILE_HASHES[file], `Landing scene input participates in visual identity: ${file}`);
     }
     assert.ok(!Object.keys(VISUAL_FILE_HASHES).some(file => /poster.*\.(webp|png)$/.test(file)),
