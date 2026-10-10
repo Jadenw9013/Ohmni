@@ -46,6 +46,10 @@ scripts/generate_behavior_examples.py -text
 # The behavior UI gate hashes this browser script byte for byte.
 scripts/verify_behavior_ui.cjs -text
 src/ohmni/behavior/reference-circuits.json -text
+# docs/behavior/SOURCE_BINDINGS.json binds these files to the sha256 of their LF bytes.
+tests/corpus/annotations/MCP73831_SOT23-5.json text eol=lf
+tests/corpus/recordings/MCP73831_SOT23-5_accepted.json text eol=lf
+src/ohmni/catalog/data/parts/25LC256-I_SN.json text eol=lf
 docs/design/landing-pcb/** -text
 .ai/approvals/LANDING-PCB-P1-previous-*.yaml -text whitespace=cr-at-eol
 docs/design/landing-pcb/*.md whitespace=-blank-at-eol
