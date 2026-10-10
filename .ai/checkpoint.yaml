@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "active_task": null,
-  "last_known_commit": "78e2463b66ecfea06c1a614ba66fd88d2d09f83f",
+  "last_known_commit": "42cd343e",
   "approval_record": ".ai/approvals/COMPONENT-ATLAS-BUILDER-1.yaml",
   "previous_checkpoint": {
     "schema_version": 1,
@@ -34,17 +34,17 @@
   },
   "modified_files": [],
   "completed_substeps": [
-    "CAB-T05 merged through PR #15 at origin/main 4ba173f0.",
-    "CAB-T06 implemented authoritative physical placement validation and exact draft/base/catalog lineage.",
-    "The real build boundary compiles schematic and PCB artifacts, reroutes deterministically, parses emitted lineage, preserves ERC/DRC unavailability, and checks the manufacturing profile.",
-    "Acceptance tests reject overlap, board bounds, generic keepout and ESP32 antenna-edge violations; failures never enable download.",
-    "CAB-T06 implementation completed at 78e2463b66ecfea06c1a614ba66fd88d2d09f83f."
+    "Marked CBH-R04 FIXED at c7b7869 (PR #17).",
+    "Fresh independent reviews passed the technical scope of VIS-T01, VIS-T02 and LP-P1; their explicit owner visual gates remain pending.",
+    "Fresh independent reviews passed CS-T01 and CS-T02; both are COMPLETE. CS-T02-R01 remains an openly unavailable, non-blocking live-provider evaluation.",
+    "Closed M9-F15, CS-T03-R01 and CS-T03-R02 as accepted bounded risks; retained CS-T02-R01 OPEN with current evidence."
   ],
   "remaining_work": [
-    "CAB-T07 remains dependency-held by CS-T07 and CS-T08 and has not been started.",
-    "CBH-STAGE7 remains blocked on its exact owner/external blocker list."
+    "Merge this ledger-review PR.",
+    "Independently re-review CS-T03 in its own PR.",
+    "Only after the review chain permits it, activate and implement CS-T05, then CS-T06, one PR each."
   ],
-  "last_failure": null,
-  "resume_action": "Open and review the CAB-T06 PR. Do not begin CAB-T07 without its dependencies and a new instruction.",
-  "last_command": "CAB-T06 verification completed; external integration failures are recorded in .ai/verification/CAB-T06.yaml."
+  "last_failure": "Initial integration run was sandbox-constrained (KiCad could not create its user directory; Chrome/listener probes were blocked). The approved outside-sandbox rerun passed. Repository-wide Ruff still reports 12 pre-existing findings confined to protected behavior paths and was not modified.",
+  "resume_action": "After this PR merges, branch from latest origin/main and perform the separate CS-T03 independent re-review. Stop if any BLOCKER/HIGH finding remains.",
+  "last_command": "Gates: ai_state validate PASS; fast 2178 passed/82 skipped/51 deselected; integration rerun outside sandbox 26 passed/7 skipped; frontend 1043 passed; focused review suites passed."
 }

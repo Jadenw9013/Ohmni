@@ -634,6 +634,59 @@
       "status": "PASSED",
       "commit": "78e2463b66ecfea06c1a614ba66fd88d2d09f83f",
       "notes": "Self-review covered fail-closed geometry, catalog-backed footprint/pad resolution, explicit routing and EDA failure states, parsed PCB lineage, manufacturing status, draft/base/catalog/artifact fingerprints, and server-side download freshness. The composed slow acceptance test exercises the real compiler/router/parser/manufacturing chain with an isolated passing EDA boundary. Native KiCad remains unavailable in the sandbox and is not reported as a pass."
+    },
+    {
+      "id": "VIS-T01-INDEPENDENT-REREVIEW-2026-10-09",
+      "scope": "VIS-REF-001",
+      "task": "VIS-T01",
+      "reviewer": "independent-reviewer-codex",
+      "independent": true,
+      "status": "PASSED_WITH_OWNER_GATE",
+      "commit": "42cd343e",
+      "notes": "Fresh current-tree review found no open BLOCKER/HIGH technical or source-integrity finding. Focused visual/server/frontend regressions passed. Later landing work reuses the renderer without changing the task\u2019s declared actual/sample separation. Human visual acceptance remains PENDING, so VIS-T01 stays VERIFIED."
+    },
+    {
+      "id": "VIS-T02-INDEPENDENT-REREVIEW-2026-10-09",
+      "scope": "VIS-REF-001",
+      "task": "VIS-T02",
+      "reviewer": "independent-reviewer-codex",
+      "independent": true,
+      "status": "PASSED_WITH_OWNER_GATE",
+      "commit": "42cd343e",
+      "notes": "Fresh current-tree review confirmed homepage discoverability, actual/sample identity separation and source-byte guards remain covered. No open BLOCKER/HIGH finding. The declared dense-sample functional-expansion limitation and human visual acceptance remain open, so VIS-T02 stays VERIFIED."
+    },
+    {
+      "id": "CS-T01-INDEPENDENT-REREVIEW-2026-10-09",
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "task": "CS-T01",
+      "reviewer": "independent-reviewer-codex",
+      "independent": true,
+      "status": "PASSED",
+      "commit": "42cd343e",
+      "implementation_commit": "7efe78b94577103303df231bc84a30a2eede5be6",
+      "notes": "Reviewed the frozen contracts, exact length grid, architecture boundaries, corpus manifest and NEW-1..NEW-7 remediation in the committed current tree. Focused contract, architecture, isolation, provenance and audit-regression suites passed. No open BLOCKER/HIGH finding remains for CS-T01."
+    },
+    {
+      "id": "CS-T02-INDEPENDENT-REREVIEW-2026-10-09",
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "task": "CS-T02",
+      "reviewer": "independent-reviewer-codex",
+      "independent": true,
+      "status": "PASSED",
+      "commit": "42cd343e",
+      "implementation_commit": "7efe78b94577103303df231bc84a30a2eede5be6",
+      "notes": "Reviewed bounded observations, provider-neutral schema enforcement, addressability checks and recording provenance. Focused multimodal, isolation, provenance and audit-regression suites passed. CS-T02-R01 remains OPEN at MEDIUM because the live Anthropic adapter has not been exercised; the record continues to say UNAVAILABLE and makes no live-pass claim. No open BLOCKER/HIGH finding remains."
+    },
+    {
+      "id": "LP-P1-INDEPENDENT-REREVIEW-2026-10-09",
+      "scope": "LANDING-PCB-P1",
+      "task": "LP-P1",
+      "reviewer": "independent-reviewer-codex",
+      "independent": true,
+      "status": "PASSED_WITH_OWNER_GATE",
+      "commit": "42cd343e",
+      "implementation_commit": "65f6bb4feb32041ee617d8c6825b9cad969cfd1a",
+      "notes": "Fresh current-tree technical review confirmed the 29-reference inventory, physical-coordinate guards, immutable source identity and renderer lifecycle regressions. Focused landing and visual suites passed. Exact physical fits remain explicitly NOT_ESTABLISHED and owner visual acceptance remains PENDING, so LP-P1 stays IMPLEMENTED."
     }
   ],
   "findings": [
@@ -1094,12 +1147,12 @@
       "id": "M9-F15",
       "scope": "M9",
       "severity": "LOW",
-      "status": "PARTIALLY_FIXED",
+      "status": "ACCEPTED_RISK",
       "description": "Minor browser-side and hardcoded values on the result screen",
       "affected_files": "apps/web/app.js, src/ohmni/application/product.py",
       "found_at_commit": "d8909b1",
       "review": "M9-REV-INDEPENDENT-FINAL",
-      "resolution": "The tour's hardcoded system count is derived; SYSTEM_LABELS summaries remain generic prose per SystemId. The voltage-scale axis maximum is still a presentational bound computed in the browser from projected values; it is a scale extent, not an engineering claim. Accepted."
+      "resolution": "Independent re-review confirms the derived system count replaced the stale hardcoded count. Remaining SYSTEM_LABELS prose is generic UI copy and the voltage-axis maximum is computed solely as a presentation scale from projected values, not represented as verified engineering evidence. The existing M9 verification explicitly accepts this bounded presentation behavior."
     },
     {
       "id": "M9-RM01-F01",
@@ -1225,26 +1278,28 @@
       "severity": "MEDIUM",
       "status": "OPEN",
       "title": "Live vision provider has never been exercised against the real API",
-      "detail": "ANTHROPIC_API_KEY is not set in this environment, so src/ohmni/adapters/anthropic_vision.py is implemented but unrun. The offline corpus uses recorded and scripted providers. The adapter's status is UNAVAILABLE, not passing, and CS-T02 is recorded as PASSED_WITH_UNAVAILABLE_GATE.",
+      "detail": "ANTHROPIC_API_KEY is not set in this environment, so src/ohmni/adapters/anthropic_vision.py is implemented but unrun. The offline corpus uses recorded and scripted providers. The adapter's status is UNAVAILABLE, not passing, and CS-T02 is recorded as PASSED_WITH_UNAVAILABLE_GATE. Fresh independent review at origin/main 42cd343e confirms this remains an honestly reported, non-blocking unavailable evaluation rather than a passing live-provider claim.",
       "required_input": "Credentials plus an explicit, budgeted live evaluation."
     },
     {
       "id": "CS-T03-R01",
       "scope": "COMPONENT-SYNTHESIS-1",
       "severity": "LOW",
-      "status": "OPEN",
+      "status": "ACCEPTED_RISK",
       "title": "Package-code binding assumes the orderable part number carries a '/<code>' suffix",
       "detail": "_find_package requires the orderable part number to end in the package code, which is Microchip's convention and is checked against this document's own package legend. A vendor using another convention returns NOT_SUPPORTED, which quarantines the import rather than admitting a wrong package. Widening this belongs with the second package family in CS-T05.",
-      "required_input": "None; the failure mode is fail-closed."
+      "required_input": "None; the failure mode is fail-closed.",
+      "resolution": "Independent review confirms this vendor-specific suffix constraint fails closed as NOT_SUPPORTED and cannot admit a wrong package. Generalization remains CS-T05 scope; the bounded initial-family proof is complete without it."
     },
     {
       "id": "CS-T03-R02",
       "scope": "COMPONENT-SYNTHESIS-1",
       "severity": "LOW",
-      "status": "OPEN",
+      "status": "ACCEPTED_RISK",
       "title": "Proposal rows for a package column other than the requested one are skipped silently",
       "detail": "verify_extraction filters pin candidates to the requested package column, so a proposal may carry claims that produce no receipt at all. Nothing downstream reads them and no verified constraint can be built from them, but the report does not currently say they were ignored.",
-      "required_input": "None; surface the count in the import projection at CS-T08."
+      "required_input": "None; surface the count in the import projection at CS-T08.",
+      "resolution": "Independent review confirms candidates for other package columns cannot create receipts or verified constraints. The missing ignored-count projection is a transparency limitation deferred to CS-T08 and does not weaken the deterministic admission boundary."
     },
     {
       "id": "CS-AUDIT-001",
@@ -1670,16 +1725,16 @@
       "id": "CBH-R04",
       "scope": "COMPONENT-BEHAVIOR-COMPLETION",
       "severity": "LOW",
-      "status": "OPEN",
+      "status": "FIXED",
       "title": "Connector recipes still claim the mating-terminal schema is missing",
       "description": "Several connector limitations say RuntimeRecipe has no field separating mating contacts from footprint pads, while those same records now contain open_mating_roles and the compiler implements it. This contradicts the delivered PR #8 capability and can mislead users and reviewers about binding readiness.",
       "affected_files": [
         "src/ohmni/behavior/data/runtime-recipes.json"
       ],
       "found_at_commit": "a965d98f25b5262b81a440206c4e8b17008d1e15",
-      "resolution_commit": null,
-      "resolution": null,
-      "verification": "Re-reviewed commit 7464e4bb. The stale 'RuntimeRecipe has no field' wording was replaced for the edited connector rows, but the branch's own test_every_open_mating_connector_recipe_describes_the_field fails at OHM-155. OHM-155, OHM-156, OHM-157 and OHM-161 have nonempty open_mating_roles without a limitation naming that field, so the intended all-connector consistency regression is not green.",
+      "resolution_commit": "c7b7869b",
+      "resolution": "PR #17 regenerated the four remaining connector limitations so every recipe with open_mating_roles describes that field explicitly.",
+      "verification": "Independent ledger review inspected commit c7b7869b and its connector-recipe consistency change. The resolution is merged at origin/main through PR #17; no behavior files were modified by this review.",
       "recommended_correction": "Regenerate the four remaining connector limitations to describe open_mating_roles explicitly, then make test_every_open_mating_connector_recipe_describes_the_field pass for every recipe."
     }
   ]
