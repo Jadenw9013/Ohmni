@@ -1,3 +1,49 @@
+# Current public release — controller landing board (2026-10-09)
+
+The owner approved the board and explicitly requested main/public deployment.
+Runtime commit: `c2ee2bc7273bc5b27b72dc45e39dd1ea02cd9164`.
+Later evidence-only commits do not change application bytes.
+
+- Website: https://ohmni-yvnd.vercel.app
+- Board viewer: https://ohmni-yvnd.vercel.app/landing-pcb-controller/
+- Backend: https://ohmni-demo.fly.dev
+- Fly dashboard: https://fly.io/apps/ohmni-demo/monitoring
+- Verification: `.ai/verification/LP-CONTROLLER-PUBLISH.yaml`
+
+The existing Fly machine `8ed640a7d69128` and attached database volume were
+preserved. Billing was enabled by the owner. The backend now packages its
+validated behavior evidence, reference circuits, and checksum-pinned ngspice 42.
+Its container build must execute a real resistor reference successfully before
+rollout. Vercel permits same-origin framing for the embedded landing viewer;
+cross-origin framing remains blocked.
+
+GitHub checks passed for the runtime commit. Public browser checks passed for
+all 69 board selections, motion, reduced motion and mobile layout. Both hosts'
+assets matched the release archive. All API smoke checks passed, including an
+actual ngspice 42 reference run. Public project job `260f25aad1df` completed with
+zero DRC violations and missing connections; its ZIP and nine fabrication file
+hashes passed verification. The clearly named deployment-check project remains
+in the workspace. No paid free-text model request was made.
+
+## Backend operation
+
+No new app, volume or secret is required. From a clean checkout/archive of the
+tested main revision, with Fly CLI authenticated:
+
+```powershell
+flyctl deploy --app ohmni-demo --remote-only --ha=false --update-only --yes
+flyctl status --app ohmni-demo
+flyctl checks list --app ohmni-demo
+```
+
+For diagnostics, use `flyctl logs --app ohmni-demo`. The public health endpoint is
+`https://ohmni-demo.fly.dev/api/health`. Vercel deploys main through its existing
+GitHub integration and forwards `/api/*` to Fly. Preserve the persistent volume
+and existing secrets when redeploying. See the historical archive procedure below
+for a clean release upload with LF source bytes.
+
+---
+
 # Ohmni public release â€” DEPLOY-T01
 
 The user explicitly authorized pushing and deploying the verified release.

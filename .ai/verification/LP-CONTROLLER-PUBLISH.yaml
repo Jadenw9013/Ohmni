@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "id": "LP-CONTROLLER-PUBLISH",
+  "task": "LP-CONTROLLER-PUBLISH",
+  "scope": "LANDING-PCB-CONTROLLER",
+  "status": "PASSED",
+  "commit": "c2ee2bc7273bc5b27b72dc45e39dd1ea02cd9164",
+  "approval_record": ".ai/approvals/LP-CONTROLLER-PUBLISH.yaml",
+  "website": "https://ohmni-yvnd.vercel.app",
+  "backend": "https://ohmni-demo.fly.dev",
+  "vercel_deployment": "dpl_8qcq4hH3E4kMVwycC55FyNhL1qma",
+  "fly_image": "registry.fly.io/ohmni-demo:deployment-01M4HJ8VK6V9XT970YYFWFHPZZ",
+  "machine": "8ed640a7d69128",
+  "volume": "vol_4y82xd0wxg3np6er",
+  "health": "passing",
+  "source_archive": {
+    "commit": "c2ee2bc7273bc5b27b72dc45e39dd1ea02cd9164",
+    "archive": "C:\\Dev\\hackathon\\.worktrees\\landing-pcb\\build\\deployments\\c2ee2bc7273b\\source.zip",
+    "source": "C:\\Dev\\hackathon\\.worktrees\\landing-pcb\\build\\deployments\\c2ee2bc7273b\\source",
+    "sha256": "0d3ebfc45523483d14eb87ab275363676746f54369c24c665c0e09400f74ea29",
+    "entrypoint_lf": true
+  },
+  "checks": {
+    "local_fast": {
+      "commit": "dd7537201b30db1c8815037fcc85272b39f4ad2c",
+      "passed": 2146,
+      "skipped": 82,
+      "deselected": 50,
+      "duration_seconds": 407.94
+    },
+    "focused_after_packaging_and_evidence_root_fix": "80 netlist/deployment tests and 42 registry/examples/deployment tests passed; 3 final packaging tests passed. Runs overlap.",
+    "installed_wheel": "All 180 entries and reference recipes loaded from an isolated installed package.",
+    "container": "All 180 entries load; actual OHM-001 simulation ran with ngspice 42 before image rollout.",
+    "github": {
+      "status": "success",
+      "commit": "c2ee2bc7273bc5b27b72dc45e39dd1ea02cd9164",
+      "url": "https://github.com/Jadenw9013/Ohmni/actions/runs/38007808165"
+    },
+    "public_browser": "PASS: 69 components, selection, motion, route round trip, mobile and reduced motion; zero page or HTTP errors.",
+    "asset_parity": "34 comparisons across both public hosts; additional 18 in final browser check.",
+    "private_paths": "6 requests correctly returned 404.",
+    "api": "Health, project options, project listing, components, 180-entry behavior summary, resistor behavior and learning exercise all return 200.",
+    "public_simulation": "OHM-001 status ran; actual ngspice-42 version output retained.",
+    "project_id": "14db5feb72074693",
+    "job_id": "260f25aad1df",
+    "workflow": {
+      "status": "PASS",
+      "passed": 12,
+      "duration_seconds": 0.78,
+      "command": "python scripts/verify.py workflow"
+    },
+    "public_project": {
+      "status": "complete",
+      "pcb_fingerprint": "4441bf034183ba2193491162910147beda16c99f2cb018449ff90fef90fb637d",
+      "drc_status": "PASS",
+      "violations": 0,
+      "unrouted": 0,
+      "release_status": "READY_FOR_MANUFACTURING_REVIEW",
+      "download": {
+        "url": "https://ohmni-yvnd.vercel.app/api/artifacts/260f25aad1df/build-package.zip",
+        "status": 200,
+        "bytes": 127192,
+        "sha256": "21911b98a9f6f8d1864469e6d7fa14663d0796fa1ad7aa315392fce0a6669f67",
+        "zip_integrity": "PASS",
+        "entries": [
+          "golden.kicad_sch",
+          "golden.kicad_pcb",
+          "golden.placed.kicad_pcb",
+          "fabrication/golden-B_Cu.gbl",
+          "fabrication/golden-B_Mask.gbs",
+          "fabrication/golden-Edge_Cuts.gm1",
+          "fabrication/golden-F_Cu.gtl",
+          "fabrication/golden-F_Mask.gts",
+          "fabrication/golden-b_silkscreen.gbo",
+          "fabrication/golden-f_silkscreen.gto",
+          "fabrication/golden-job.gbrjob",
+          "fabrication/golden.drl",
+          "fabrication/ohmni-fabrication-manifest.json",
+          "report.json",
+          "placement-request.json",
+          "placement.json",
+          "confirmed-brief.json",
+          "project-revision.json",
+          "bom.csv",
+          "ASSEMBLY-AND-BRINGUP.md"
+        ],
+        "report_pcb_fingerprint_matches": true,
+        "fabrication_file_hash_matches": 9
+      }
+    }
+  },
+  "resolved_deployment_issues": [
+    "Expired Fly trial resolved by owner adding billing; existing stopped machine restarted.",
+    "Vercel DENY framing header changed to SAMEORIGIN for the embedded viewer.",
+    "Manual Vercel uploads failed; existing GitHub integration successfully deployed main.",
+    "Runtime evidence and historical receipt inputs were omitted from the container.",
+    "Installed wheel omitted reference-circuits.json.",
+    "Compiler rediscovered evidence beside installed package instead of retaining explicit validated root.",
+    "Distro ngspice 44.2 was correctly rejected by existing version gate; official ngspice 42 source pinned and built."
+  ],
+  "ngspice_source": {
+    "url": "https://sourceforge.net/projects/ngspice/files/ng-spice-rework/old-releases/42/ngspice-42.tar.gz/download",
+    "sha256": "737fe3846ab2333a250dfadf1ed6ebe1860af1d8a5ff5e7803c772cc4256e50a"
+  },
+  "evidence_files": {
+    ".ai/evidence/LP-CONTROLLER-PUBLISH/public-browser.json": "4940982b68eaa07e7459f733e31c5468e5aef78e7e342146bdcf7fbf367d203e",
+    ".ai/evidence/LP-CONTROLLER-PUBLISH/final-browser.json": "288ae9e6ccc1584d0759311e04c7c132f8ed9f1a046cd5910b41ee4c83e4440d",
+    ".ai/evidence/LP-CONTROLLER-PUBLISH/asset-parity.json": "1028dfe288e341fa858f073e542d918a71832b501cc2945c5e865a6af264fa81",
+    ".ai/evidence/LP-CONTROLLER-PUBLISH/private-paths.json": "403fcf7f503460ed462a0515a5b00c288133b3fdc1118de29eca2060178748d0",
+    ".ai/evidence/LP-CONTROLLER-PUBLISH/backend-check.json": "9d67c6a8679e61a9d3bd8669b3d53cbcb67704b2304966101fc507fa91abd69c",
+    ".ai/evidence/LP-CONTROLLER-PUBLISH/ci.json": "756cdbc92303024876bd27e9ac3124f30d91e944a02c0c4fdc0d49f1e162fcd8",
+    ".ai/evidence/LP-CONTROLLER-PUBLISH/archive.json": "e4dd81d093007e43e63851599fd141832bf071b1a29f57daae1604a22df627a4",
+    ".ai/evidence/LP-CONTROLLER-PUBLISH/fast-tests.txt": "d734193240f61be6488b9da5ff9a6d3d213ec2d7248bd5b6ed32d9c72d7a937f",
+    ".ai/evidence/LP-CONTROLLER-PUBLISH/job-final.json": "545b2e4129131de6d6bd2db5377eba5cb2c69a52f95ad64af7980a333324832b",
+    ".ai/evidence/LP-CONTROLLER-PUBLISH/download.json": "f839c6b05cdb88b1291a2f2dbf89d953294fafd89167daf0bfae38f4972a1f94"
+  },
+  "limitations": [
+    "No paid free-text model request was made; configured provider availability is not a live model-response test.",
+    "Public component simulation is a reference observation, not hardware validation.",
+    "The clearly labeled release-check project is retained in the existing public workspace.",
+    "One targeted test invocation omitted PYTHONPATH and imported the stale root checkout; rerun with the correct worktree source passed."
+  ]
+}

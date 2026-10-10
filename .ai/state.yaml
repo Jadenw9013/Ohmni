@@ -1,5 +1,5 @@
 {
-  "active_task": "LP-CONTROLLER-PUBLISH",
+  "active_task": null,
   "approved_product_scope": "LANDING-PCB-CONTROLLER",
   "atlas_hold": "CAB-T01..CAB-T04 are COMPLETE as task units. CAB-T05 depends on CS-T04 COMPLETE; CS-T04 remains VERIFIED pending independent re-review and the recorded extraction gates. Publication does not activate imported parts or authorize later implementation.",
   "baseline": {
@@ -39,10 +39,10 @@
     "task": "CBH-AUDIT"
   },
   "last_verification": {
-    "id": "LP-CONTROLLER",
-    "record": ".ai/verification/LP-CONTROLLER.yaml",
-    "commit": "da9a342c0f0d546a0e66006a600c9fede8ccae08",
-    "status": "SCOPED_CHECKS_PASSED_OWNER_VISUAL_REVIEW_PENDING"
+    "id": "LP-CONTROLLER-PUBLISH",
+    "record": ".ai/verification/LP-CONTROLLER-PUBLISH.yaml",
+    "commit": "c2ee2bc7273bc5b27b72dc45e39dd1ea02cd9164",
+    "status": "PASSED"
   },
   "latest_product_milestone": {
     "commit": "19f9afe",
@@ -53,7 +53,7 @@
   "next_ready_tasks": [],
   "project": "ohmni",
   "repository_status": {
-    "expected_clean": false,
+    "expected_clean": true,
     "ignored_local_inputs": [
       ".codex/",
       "build/",
@@ -62,10 +62,10 @@
       ".env.local"
     ],
     "preserved_untracked_inputs": [],
-    "tracked_changes_expected": true
+    "tracked_changes_expected": false
   },
   "schema_version": 1,
-  "status": "LANDING_PCB_CONTROLLER_PUBLICATION_IN_PROGRESS",
+  "status": "LANDING_PCB_CONTROLLER_PUBLICLY_DEPLOYED",
   "landing_p1_hold": "P1 prototype records are historical. Human publication authorization for the current draft is recorded in .ai/approvals/LANDING-PCB-PUBLISH.yaml; later-phase production integration and paid generation remain outside this publication task. CBH-STAGE6 stays parked without acceptance upgrades.",
   "landing_publication": {
     "approval_record": ".ai/approvals/LANDING-PCB-PUBLISH.yaml",
@@ -73,5 +73,12 @@
     "status": "PUBLICATION_AUTHORIZED_CHECKED",
     "candidate_commit": "7310be49a0d8dacf8e8fe2bef11e867bbcabd651",
     "verification_record": ".ai/verification/LP-PUBLISH.yaml"
+  },
+  "controller_publication": {
+    "status": "DEPLOYED_VERIFIED",
+    "commit": "c2ee2bc7273bc5b27b72dc45e39dd1ea02cd9164",
+    "approval_record": ".ai/approvals/LP-CONTROLLER-PUBLISH.yaml",
+    "website": "https://ohmni-yvnd.vercel.app",
+    "backend": "https://ohmni-demo.fly.dev"
   }
 }

@@ -1,0 +1,799 @@
+{
+  "health": {
+    "status": "ready",
+    "fixture_id": "esp32-bme280-environmental-logger",
+    "free_text": true,
+    "api_version": 2,
+    "server_instance_id": "a23a05e4751e4555",
+    "ui_version": "a001565eacfc946ddeecf19bc8822e82a063e94c575645184026165a604c9074"
+  },
+  "reads": [
+    {
+      "path": "/api/projects",
+      "status": 200,
+      "count": 1
+    },
+    {
+      "path": "/api/components",
+      "status": 200,
+      "count": 0
+    },
+    {
+      "path": "/api/behavior",
+      "status": 200,
+      "count": 180
+    },
+    {
+      "path": "/api/behavior/OHM-001",
+      "status": 200,
+      "count": 0
+    },
+    {
+      "path": "/api/exercises/sensor-rail",
+      "status": 200,
+      "count": 0
+    }
+  ],
+  "behavior_run": {
+    "result": {
+      "status": "ran",
+      "rating_status": "unknown",
+      "ratings": {
+        "status": "unknown",
+        "components": [
+          {
+            "ref": "R1",
+            "entry_id": "OHM-001",
+            "status": "unknown",
+            "class_checks": [
+              {
+                "check": "v*i <= P_allowed(Tamb)",
+                "condition": "ambient Tamb",
+                "name": "power",
+                "source_ref": "S1",
+                "symbol": "P",
+                "unit": "W",
+                "value": "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)",
+                "status": "unknown",
+                "reason": "Source thermal mounting/test conditions have not been confirmed",
+                "source": {
+                  "document": "COMPONENT_BEHAVIOR_SPEC.md",
+                  "line": 497,
+                  "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+                  "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9"
+                }
+              },
+              {
+                "check": "abs(v) <= Vmax",
+                "condition": "AC RMS or DC",
+                "name": "working voltage",
+                "source_ref": "S1",
+                "symbol": "Vmax",
+                "unit": "V",
+                "value": "min(u_limit, sqrt(p_rated*value))",
+                "status": "within_limit",
+                "reason": null,
+                "source": {
+                  "document": "COMPONENT_BEHAVIOR_SPEC.md",
+                  "line": 497,
+                  "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+                  "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9"
+                }
+              }
+            ],
+            "reference_checks": [
+              {
+                "name": "power",
+                "expression": "P <= P_allowed",
+                "spec_names": [
+                  "power"
+                ],
+                "evidence": {
+                  "p_rated": {
+                    "field": "p_rated",
+                    "value": 0.031,
+                    "basis": "MFR_DATASHEET",
+                    "confidence": "H",
+                    "sources": [
+                      "https://www.vishay.com/docs/20056/crcw01005e3.pdf"
+                    ],
+                    "page": 1,
+                    "scope": "CRCW01005 e3",
+                    "unit": "W",
+                    "detail": null
+                  },
+                  "t_end": {
+                    "field": "t_end",
+                    "value": 125,
+                    "basis": "MFR_DATASHEET",
+                    "confidence": "H",
+                    "sources": [
+                      "https://www.vishay.com/docs/20056/crcw01005e3.pdf"
+                    ],
+                    "page": 1,
+                    "scope": "CRCW01005 e3",
+                    "unit": "degC",
+                    "detail": "Permissible film temperature in page 1 footnote."
+                  },
+                  "t_knee": {
+                    "field": "derating_knee",
+                    "value": 70,
+                    "basis": "MFR_DATASHEET",
+                    "confidence": "H",
+                    "sources": [
+                      "https://www.vishay.com/docs/20056/crcw01005e3.pdf"
+                    ],
+                    "page": 1,
+                    "scope": "CRCW01005 e3",
+                    "unit": "degC",
+                    "detail": null
+                  }
+                },
+                "status": "unknown",
+                "reason": "Source thermal mounting/test conditions have not been confirmed"
+              },
+              {
+                "name": "working voltage",
+                "expression": "abs(v) <= Vmax",
+                "spec_names": [
+                  "working voltage"
+                ],
+                "evidence": {
+                  "u_limit": {
+                    "field": "v_max",
+                    "value": 15,
+                    "basis": "MFR_DATASHEET",
+                    "confidence": "H",
+                    "sources": [
+                      "https://www.vishay.com/docs/20056/crcw01005e3.pdf"
+                    ],
+                    "page": 1,
+                    "scope": "CRCW01005 e3",
+                    "unit": "V",
+                    "detail": null
+                  },
+                  "p_rated": {
+                    "field": "p_rated",
+                    "value": 0.031,
+                    "basis": "MFR_DATASHEET",
+                    "confidence": "H",
+                    "sources": [
+                      "https://www.vishay.com/docs/20056/crcw01005e3.pdf"
+                    ],
+                    "page": 1,
+                    "scope": "CRCW01005 e3",
+                    "unit": "W",
+                    "detail": null
+                  }
+                },
+                "status": "within_limit",
+                "reason": null
+              }
+            ],
+            "failure_modes": [
+              {
+                "effect": "permanent drift of R (stability limit about 1 % per 1000 h at P70 for thick film)",
+                "id": "overpower_mild",
+                "permanence": "permanent",
+                "sim_response": "flag WARNING",
+                "trigger": "P > P_allowed",
+                "status": "unknown",
+                "applied_response": null,
+                "reason": "Source thermal mounting/test conditions have not been confirmed"
+              },
+              {
+                "effect": "element burns open; fusible variants designed to do this",
+                "id": "overpower_open",
+                "permanence": "permanent",
+                "sim_response": "flag ERROR, re-run with part open (R=1G)",
+                "trigger": "P > 5x rated for several seconds (assumption)",
+                "status": "unknown",
+                "applied_response": null,
+                "reason": "Trigger or response lacks an executable reference-scoped translation"
+              },
+              {
+                "effect": "arc or breakdown of the element or body",
+                "id": "overvoltage",
+                "permanence": "permanent",
+                "sim_response": "flag ERROR; treat as open if abs(v) > 2*Vmax",
+                "trigger": "abs(v) > Vmax",
+                "status": "not_triggered",
+                "applied_response": null,
+                "reason": null,
+                "evaluated_trigger": "abs(v) > Vmax"
+              }
+            ],
+            "observations": {
+              "p_rated": 0.031,
+              "t_end": 125.0,
+              "t_knee": 70.0,
+              "u_limit": 15.0,
+              "value": 10000.0,
+              "v_A": 5.0,
+              "i_A": 0.00025,
+              "v_B": 2.5,
+              "i_B": -0.00025,
+              "power": 0.000625,
+              "v": 2.5,
+              "P": 0.000625,
+              "Vmax": 15.0
+            },
+            "context": {
+              "ambient_c": null,
+              "case_c": null,
+              "thermal_scope_confirmed": false
+            }
+          },
+          {
+            "ref": "R2",
+            "entry_id": "OHM-001",
+            "status": "unknown",
+            "class_checks": [
+              {
+                "check": "v*i <= P_allowed(Tamb)",
+                "condition": "ambient Tamb",
+                "name": "power",
+                "source_ref": "S1",
+                "symbol": "P",
+                "unit": "W",
+                "value": "p_rated*clamp((t_end-Tamb)/(t_end-t_knee),0,1)",
+                "status": "unknown",
+                "reason": "Source thermal mounting/test conditions have not been confirmed",
+                "source": {
+                  "document": "COMPONENT_BEHAVIOR_SPEC.md",
+                  "line": 497,
+                  "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+                  "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9"
+                }
+              },
+              {
+                "check": "abs(v) <= Vmax",
+                "condition": "AC RMS or DC",
+                "name": "working voltage",
+                "source_ref": "S1",
+                "symbol": "Vmax",
+                "unit": "V",
+                "value": "min(u_limit, sqrt(p_rated*value))",
+                "status": "within_limit",
+                "reason": null,
+                "source": {
+                  "document": "COMPONENT_BEHAVIOR_SPEC.md",
+                  "line": 497,
+                  "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+                  "fragment_sha256": "7028df22ce16caefe258ea4adffa6852937e2e51a98a93b74802d9700db298a9"
+                }
+              }
+            ],
+            "reference_checks": [
+              {
+                "name": "power",
+                "expression": "P <= P_allowed",
+                "spec_names": [
+                  "power"
+                ],
+                "evidence": {
+                  "p_rated": {
+                    "field": "p_rated",
+                    "value": 0.031,
+                    "basis": "MFR_DATASHEET",
+                    "confidence": "H",
+                    "sources": [
+                      "https://www.vishay.com/docs/20056/crcw01005e3.pdf"
+                    ],
+                    "page": 1,
+                    "scope": "CRCW01005 e3",
+                    "unit": "W",
+                    "detail": null
+                  },
+                  "t_end": {
+                    "field": "t_end",
+                    "value": 125,
+                    "basis": "MFR_DATASHEET",
+                    "confidence": "H",
+                    "sources": [
+                      "https://www.vishay.com/docs/20056/crcw01005e3.pdf"
+                    ],
+                    "page": 1,
+                    "scope": "CRCW01005 e3",
+                    "unit": "degC",
+                    "detail": "Permissible film temperature in page 1 footnote."
+                  },
+                  "t_knee": {
+                    "field": "derating_knee",
+                    "value": 70,
+                    "basis": "MFR_DATASHEET",
+                    "confidence": "H",
+                    "sources": [
+                      "https://www.vishay.com/docs/20056/crcw01005e3.pdf"
+                    ],
+                    "page": 1,
+                    "scope": "CRCW01005 e3",
+                    "unit": "degC",
+                    "detail": null
+                  }
+                },
+                "status": "unknown",
+                "reason": "Source thermal mounting/test conditions have not been confirmed"
+              },
+              {
+                "name": "working voltage",
+                "expression": "abs(v) <= Vmax",
+                "spec_names": [
+                  "working voltage"
+                ],
+                "evidence": {
+                  "u_limit": {
+                    "field": "v_max",
+                    "value": 15,
+                    "basis": "MFR_DATASHEET",
+                    "confidence": "H",
+                    "sources": [
+                      "https://www.vishay.com/docs/20056/crcw01005e3.pdf"
+                    ],
+                    "page": 1,
+                    "scope": "CRCW01005 e3",
+                    "unit": "V",
+                    "detail": null
+                  },
+                  "p_rated": {
+                    "field": "p_rated",
+                    "value": 0.031,
+                    "basis": "MFR_DATASHEET",
+                    "confidence": "H",
+                    "sources": [
+                      "https://www.vishay.com/docs/20056/crcw01005e3.pdf"
+                    ],
+                    "page": 1,
+                    "scope": "CRCW01005 e3",
+                    "unit": "W",
+                    "detail": null
+                  }
+                },
+                "status": "within_limit",
+                "reason": null
+              }
+            ],
+            "failure_modes": [
+              {
+                "effect": "permanent drift of R (stability limit about 1 % per 1000 h at P70 for thick film)",
+                "id": "overpower_mild",
+                "permanence": "permanent",
+                "sim_response": "flag WARNING",
+                "trigger": "P > P_allowed",
+                "status": "unknown",
+                "applied_response": null,
+                "reason": "Source thermal mounting/test conditions have not been confirmed"
+              },
+              {
+                "effect": "element burns open; fusible variants designed to do this",
+                "id": "overpower_open",
+                "permanence": "permanent",
+                "sim_response": "flag ERROR, re-run with part open (R=1G)",
+                "trigger": "P > 5x rated for several seconds (assumption)",
+                "status": "unknown",
+                "applied_response": null,
+                "reason": "Trigger or response lacks an executable reference-scoped translation"
+              },
+              {
+                "effect": "arc or breakdown of the element or body",
+                "id": "overvoltage",
+                "permanence": "permanent",
+                "sim_response": "flag ERROR; treat as open if abs(v) > 2*Vmax",
+                "trigger": "abs(v) > Vmax",
+                "status": "not_triggered",
+                "applied_response": null,
+                "reason": null,
+                "evaluated_trigger": "abs(v) > Vmax"
+              }
+            ],
+            "observations": {
+              "p_rated": 0.031,
+              "t_end": 125.0,
+              "t_knee": 70.0,
+              "u_limit": 15.0,
+              "value": 10000.0,
+              "v_A": 2.5,
+              "i_A": 0.00025,
+              "v_B": 0.0,
+              "i_B": -0.00025,
+              "power": 0.000625,
+              "v": 2.5,
+              "P": 0.000625,
+              "Vmax": 15.0
+            },
+            "context": {
+              "ambient_c": null,
+              "case_c": null,
+              "thermal_scope_confirmed": false
+            }
+          }
+        ],
+        "fault_requests": [],
+        "limitations": [
+          "Only the stated observations and source conditions were checked.",
+          "Unsupported class expressions and failure triggers remain unknown; no damage timing is invented.",
+          "An electrical limit check does not verify physical fit or safe operation."
+        ]
+      },
+      "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sat Oct 10 00:10:20 UTC 2026\n******\n",
+      "analysis": "op",
+      "problems": [],
+      "netlist_sha256": "1423f65d8ff600438d06e13f02234f90d1771351a34797b41674f2c65b62c18d",
+      "circuit_hash": "be121141f64431a91792839f788d444644f59fed240071f5fda8a2442e04f897",
+      "limitations": [
+        "supply: ideal declared DC source; source impedance and current limiting are not modeled"
+      ],
+      "entry_id": "OHM-001",
+      "run_id": "37f88fa6f52b48f7a5f8c7980b3d8013",
+      "scope": "Authored reference test circuit. This run does not simulate or change a saved project.",
+      "components": [
+        {
+          "ref": "R1",
+          "entry_id": "OHM-001",
+          "reference_part": null,
+          "fidelity": "ideal_components",
+          "source_status": "partial",
+          "confidence": "M",
+          "rating_confidence": "H",
+          "measurements": [
+            {
+              "role": "A",
+              "voltage": {
+                "value": 5.0,
+                "unit": "V"
+              },
+              "current_into_pin": {
+                "value": 0.00025,
+                "unit": "A"
+              }
+            },
+            {
+              "role": "B",
+              "voltage": {
+                "value": 2.5,
+                "unit": "V"
+              },
+              "current_into_pin": {
+                "value": -0.00025,
+                "unit": "A"
+              }
+            }
+          ]
+        },
+        {
+          "ref": "R2",
+          "entry_id": "OHM-001",
+          "reference_part": null,
+          "fidelity": "ideal_components",
+          "source_status": "partial",
+          "confidence": "M",
+          "rating_confidence": "H",
+          "measurements": [
+            {
+              "role": "A",
+              "voltage": {
+                "value": 2.5,
+                "unit": "V"
+              },
+              "current_into_pin": {
+                "value": 0.00025,
+                "unit": "A"
+              }
+            },
+            {
+              "role": "B",
+              "voltage": {
+                "value": 0,
+                "unit": "V"
+              },
+              "current_into_pin": {
+                "value": -0.00025,
+                "unit": "A"
+              }
+            }
+          ]
+        }
+      ],
+      "transient": null,
+      "failure_rerun": null
+    },
+    "api_version": 2,
+    "server_instance_id": "a23a05e4751e4555",
+    "ui_version": "a001565eacfc946ddeecf19bc8822e82a063e94c575645184026165a604c9074"
+  },
+  "project": {
+    "project": {
+      "project_id": "14db5feb72074693",
+      "created_at": "2026-10-10T00:15:17.046527+00:00",
+      "updated_at": "2026-10-10T00:15:17.046527+00:00",
+      "owner_user_id": "5fc9c120fe849591",
+      "revisions": [
+        {
+          "revision_id": "a49da085895a41da",
+          "number": 1,
+          "created_at": "2026-10-10T00:15:17.046527+00:00",
+          "brief": {
+            "archetype": "a1_usb_i2c_sensor",
+            "board_height_mm": 70.0,
+            "board_width_mm": 100.0,
+            "budget_usd": 20.0,
+            "button_count": 0,
+            "description": "USB-C powered ESP32 I2C sensor node.",
+            "hand_solderable_preferred": true,
+            "include_programming_header": true,
+            "input_power": "usb_c_5v",
+            "input_voltage_v": 5.0,
+            "logic_voltage_v": 3.3,
+            "max_board_layers": 2,
+            "mcu_part_id": "ESP32-WROOM-32E",
+            "project_name": "Deployment check - controller release 2026-10-09",
+            "safety_domains": [],
+            "schema_version": 1,
+            "sensors": [
+              {
+                "address": null,
+                "part_id": "BME280"
+              }
+            ],
+            "spi_devices": [],
+            "status_led_count": 1
+          },
+          "brief_fingerprint": "1022ebdc96f423b4800390c63ff0e962c7fb4bfce69e84e74c1bbcde4d7ec2b1",
+          "preview": {
+            "asked_for": [
+              {
+                "field": "project_name",
+                "grounding": "quoted",
+                "label": "Project name",
+                "origin": "explicit",
+                "source_text": "Deployment check - controller release 2026-10-09",
+                "value": "Deployment check - controller release 2026-10-09"
+              },
+              {
+                "field": "description",
+                "grounding": "quoted",
+                "label": "What you described",
+                "origin": "explicit",
+                "source_text": "USB-C powered ESP32 I2C sensor node.",
+                "value": "USB-C powered ESP32 I2C sensor node."
+              },
+              {
+                "field": "archetype",
+                "grounding": "quoted",
+                "label": "What your board does",
+                "origin": "explicit",
+                "source_text": "a1_usb_i2c_sensor",
+                "value": "Measure your space"
+              },
+              {
+                "field": "input_power",
+                "grounding": "quoted",
+                "label": "Power connection",
+                "origin": "explicit",
+                "source_text": "usb_c_5v",
+                "value": "USB-C power, 5 V"
+              },
+              {
+                "field": "input_voltage_v",
+                "grounding": "quoted",
+                "label": "Input voltage",
+                "origin": "explicit",
+                "source_text": "5.0",
+                "value": "5.0 V"
+              },
+              {
+                "field": "logic_voltage_v",
+                "grounding": "quoted",
+                "label": "Chip supply voltage",
+                "origin": "explicit",
+                "source_text": "3.3",
+                "value": "3.3 V"
+              },
+              {
+                "field": "mcu_part_id",
+                "grounding": "quoted",
+                "label": "Processor",
+                "origin": "explicit",
+                "source_text": "ESP32-WROOM-32E",
+                "value": "ESP32-WROOM-32E"
+              },
+              {
+                "field": "sensor_count",
+                "grounding": "quoted",
+                "label": "Number of sensors",
+                "origin": "explicit",
+                "source_text": "1",
+                "value": "1"
+              },
+              {
+                "field": "status_led_count",
+                "grounding": "quoted",
+                "label": "Indicator lights",
+                "origin": "explicit",
+                "source_text": "1",
+                "value": "1"
+              },
+              {
+                "field": "button_count",
+                "grounding": "quoted",
+                "label": "Buttons",
+                "origin": "explicit",
+                "source_text": "0",
+                "value": "0"
+              },
+              {
+                "field": "spi_count",
+                "grounding": "quoted",
+                "label": "Memory chips",
+                "origin": "explicit",
+                "source_text": "0",
+                "value": "0"
+              },
+              {
+                "field": "include_programming_header",
+                "grounding": "quoted",
+                "label": "Programming connector",
+                "origin": "explicit",
+                "source_text": "True",
+                "value": "Yes"
+              },
+              {
+                "field": "max_board_layers",
+                "grounding": "quoted",
+                "label": "Board complexity",
+                "origin": "explicit",
+                "source_text": "2",
+                "value": "2 layers"
+              },
+              {
+                "field": "board_width_mm",
+                "grounding": "quoted",
+                "label": "Board width",
+                "origin": "explicit",
+                "source_text": "100.0",
+                "value": "100.0 mm"
+              },
+              {
+                "field": "board_height_mm",
+                "grounding": "quoted",
+                "label": "Board height",
+                "origin": "explicit",
+                "source_text": "70.0",
+                "value": "70.0 mm"
+              },
+              {
+                "field": "hand_solderable_preferred",
+                "grounding": "quoted",
+                "label": "Prefer assembly with a soldering iron",
+                "origin": "explicit",
+                "source_text": "True",
+                "value": "Yes"
+              },
+              {
+                "field": "budget_usd",
+                "grounding": "quoted",
+                "label": "Budget",
+                "origin": "explicit",
+                "source_text": "20.0",
+                "value": "$20"
+              },
+              {
+                "field": "safety_domains",
+                "grounding": "quoted",
+                "label": "Special operating conditions",
+                "origin": "explicit",
+                "source_text": "None requested",
+                "value": "None requested"
+              },
+              {
+                "field": "sensors.0.part_id",
+                "grounding": "quoted",
+                "label": "Sensor 1",
+                "origin": "explicit",
+                "source_text": "BME280",
+                "value": "BME280"
+              }
+            ],
+            "assumed": [
+              {
+                "field": "assumption",
+                "grounding": "assumption",
+                "label": "Ohmni assumed",
+                "origin": "assumption",
+                "source_text": null,
+                "value": "USB-C is used as a 5 V sink without Power Delivery."
+              },
+              {
+                "field": "assumption",
+                "grounding": "assumption",
+                "label": "Ohmni assumed",
+                "origin": "assumption",
+                "source_text": null,
+                "value": "USB-C is a 5 V power sink; USB data pins are unused."
+              },
+              {
+                "field": "assumption",
+                "grounding": "assumption",
+                "label": "Ohmni assumed",
+                "origin": "assumption",
+                "source_text": null,
+                "value": "A1 uses one shared 3.3 V I2C bus and no level shifter."
+              },
+              {
+                "field": "assumption",
+                "grounding": "assumption",
+                "label": "Ohmni assumed",
+                "origin": "assumption",
+                "source_text": null,
+                "value": "USB-C supplies power only; USB data and programming over USB-C are not provided."
+              },
+              {
+                "field": "assumption",
+                "grounding": "assumption",
+                "label": "Ohmni assumed",
+                "origin": "assumption",
+                "source_text": null,
+                "value": "Firmware is not included. The board needs a program before its selected functions can operate."
+              },
+              {
+                "field": "assumption",
+                "grounding": "assumption",
+                "label": "Ohmni assumed",
+                "origin": "assumption",
+                "source_text": null,
+                "value": "Placement is generated on a 100 x 70 mm, two-layer board from circuit blocks, capacitor ownership, and geometric constraints."
+              },
+              {
+                "field": "assumption",
+                "grounding": "assumption",
+                "label": "Ohmni assumed",
+                "origin": "assumption",
+                "source_text": null,
+                "value": "Placement policies and antenna exclusion require hardware review; generated geometry does not establish RF performance."
+              },
+              {
+                "field": "assumption",
+                "grounding": "assumption",
+                "label": "Ohmni assumed",
+                "origin": "assumption",
+                "source_text": null,
+                "value": "U3 (BME280) uses LGA-8; catalog guidance does not classify this package as hand-solderable."
+              },
+              {
+                "field": "assumption",
+                "grounding": "assumption",
+                "label": "Ohmni assumed",
+                "origin": "assumption",
+                "source_text": null,
+                "value": "Programming uses the six-pin header and an external 3.3 V serial adapter."
+              }
+            ],
+            "needs_clarification": [
+              {
+                "field": "sensors.0.address",
+                "grounding": "default",
+                "label": "Sensor 1 bus address",
+                "origin": "default",
+                "source_text": "Automatic address allocation requested",
+                "value": "0x76"
+              }
+            ],
+            "project_name": "Deployment check - controller release 2026-10-09",
+            "request": "USB-C powered ESP32 I2C sensor node."
+          },
+          "job_id": null
+        }
+      ]
+    },
+    "api_version": 2,
+    "server_instance_id": "a23a05e4751e4555",
+    "ui_version": "a001565eacfc946ddeecf19bc8822e82a063e94c575645184026165a604c9074"
+  },
+  "job": {
+    "job_id": "260f25aad1df",
+    "status": "queued",
+    "api_version": 2,
+    "server_instance_id": "a23a05e4751e4555",
+    "ui_version": "a001565eacfc946ddeecf19bc8822e82a063e94c575645184026165a604c9074"
+  }
+}
