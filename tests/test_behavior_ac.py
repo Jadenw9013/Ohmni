@@ -180,9 +180,32 @@ def test_design_ac_run_checks_ripple_against_the_sourced_rating(tmp_path):
     assert hot["rating_status"] == "violation"
     names = {s["name"] for s in ok["ac"]["sweep"]["series"]}
     assert names == {"rail", "vin"} and len(ok["ac"]["sweep"]["frequency_hz"]) == 9
-    # A 10 uF ideal card: |V| = I / (2 pi f C) at 100 kHz, an independent check of the solved phasor.
+    # The bound card (D058) in parallel with the 1 kohm feed (the ideal DC source is an AC short):
+    # |V| = I * |Zc || 1k| with Zc = ESR + 1/(j w C) and ESR the sourced 3 ohm maximum.
     c1 = next(c for c in ok["components"] if c["ref"] == "C1")
     assert c1["entry_id"] == "OHM-033"
     point = ok["ac"]["points"][0]
     node = next(n for n, v in point["node_voltages"].items() if abs(complex(*v)) > 0)
-    assert abs(complex(*point["node_voltages"][node])) == pytest.approx(0.1 / (2 * math.pi * 1e5 * 10e-6), rel=2e-3)
+    zc = 3.0 + 1 / (1j * 2 * math.pi * 1e5 * 10e-6)
+    expected = 0.1 * abs(zc * 1000 / (zc + 1000))
+    assert abs(complex(*point["node_voltages"][node])) == pytest.approx(expected, rel=2e-3)
+
+
+@pytest.mark.parametrize("entry_id", ["OHM-033", "OHM-034", "OHM-035", "OHM-036"])
+def test_tantalum_cards_carry_the_sourced_maximum_esr_in_series(entry_id, registry, recipes):
+    """D058: Resr -> (Cb || Rlk), the class card topology, with ESR = the sourced 100 kHz maximum."""
+    recipe = recipes.entries[entry_id]
+    circuit = CircuitIR(ir_id="t", name="t", components=[
+        CircuitComponent(ref="C1", part_id=entry_id, package=recipe.package)], nets=[
+        Net(name="a", kind="power", connections=[PinRef(component="C1", pin="1")],
+            external_source=ExternalSource(kind="bench_supply", voltage=ValueRange.exact(Quantity.volts(5)))),
+        Net(name="g", kind="ground", connections=[PinRef(component="C1", pin="2")])])
+    compiled = compile_circuit(circuit, registry, recipes, {"C1": BehaviorSelection(entry_id=entry_id)})
+    component = compiled.components[0]
+    esr = component.parameters["esr_max"]
+    assert "100 kHz" in component.parameter_evidence["esr_max"]["scope"]
+    lines = compiled.netlist.splitlines()
+    assert f"Rc1_esr n1 c1_cb {esr:.17g}" in lines
+    assert any(line.startswith("Cc1 c1_cb 0 ") for line in lines)
+    assert any(line.startswith("Rc1_lk c1_cb 0 ") for line in lines)
+    assert circuit_is_linear(compiled.netlist)
