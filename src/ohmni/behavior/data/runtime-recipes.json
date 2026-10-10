@@ -1348,12 +1348,12 @@
       "instance_value_unit": null,
       "limitations": [
         "Order-code tolerance and termination options are unselected; electrical row values are identical across those options in the T491 table.",
-        "DC leakage at the sourced maximum (worst case); no ESR, ESL, impedance, capacitance-vs-temperature or ignition dynamics.",
+        "DC leakage at the sourced maximum (worst case); ESR at its sourced 100 kHz maximum; no ESL, ESR frequency dependence, capacitance-vs-temperature or ignition dynamics.",
         "Reverse voltage is only ever transient: 2.4/0.8/0.16 V at 25/85/125 C; continuous reverse is not permitted. The class fixed 3% envelope is not used.",
         "Recommended application voltage 8 V at <= 85 C, derating to 33% of VR at 125 C; ripple and power limits are rating facts, not netlist behaviour.",
         "Stripe marks the ANODE (opposite of aluminium/supercap convention); footprint polarity must be checked.",
-        "Model scope: Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr/Lesl dropped: 100 kHz ESR is a maximum, not a fitted nominal, and ESL is unsourced.",
-        "Transient runs use the ideal capacitance with its leakage path only (no ESR or ESL): currents and voltages are those the circuit imposes, so ripple, peak and reverse-voltage checks are meaningful, but ESR heating and impedance versus frequency are not modeled."
+        "Model scope: Resr, Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr is the sourced 100 kHz maximum ESR (a worst-case bound, not a fitted nominal; D058); Lesl dropped because ESL is unsourced.",
+        "ESR is bound as the sourced 100 kHz, 25 C maximum, constant with frequency (D058): impedance, ripple voltage and ESR loss are worst-case upper bounds at and near 100 kHz; real ESR is lower than the maximum and changes with frequency and temperature. In parallel with other capacitors this ESR shifts ripple current toward them, so their current checks are not conservative. ESL is unsourced and not modeled."
       ],
       "model_facts": {},
       "open_mating_roles": [],
@@ -1370,7 +1370,7 @@
         "tran"
       ],
       "template_key": "netlist_template",
-      "template_override": "C{ref} {A} {K} {value}\nR{ref}_lk {A} {K} {rleak}\n",
+      "template_override": "R{ref}_esr {A} {ref}_cb {esr_max}\nC{ref} {ref}_cb {K} {value}\nR{ref}_lk {ref}_cb {K} {rleak}\n",
       "template_provenance": {
         "document": "COMPONENT_BEHAVIOR_SPEC.md",
         "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
@@ -1481,12 +1481,12 @@
       "instance_value_unit": null,
       "limitations": [
         "Order-code tolerance and termination options are unselected; electrical row values are identical across those options in the T491 table.",
-        "DC leakage at the sourced maximum (worst case); no ESR, ESL, impedance, capacitance-vs-temperature or ignition dynamics.",
+        "DC leakage at the sourced maximum (worst case); ESR at its sourced 100 kHz maximum; no ESL, ESR frequency dependence, capacitance-vs-temperature or ignition dynamics.",
         "Reverse voltage is only ever transient: 2.4/0.8/0.16 V at 25/85/125 C; continuous reverse is not permitted. The class fixed 3% envelope is not used.",
         "Recommended application voltage 8 V at <= 85 C, derating to 33% of VR at 125 C; ripple and power limits are rating facts, not netlist behaviour.",
         "Stripe marks the ANODE (opposite of aluminium/supercap convention); footprint polarity must be checked.",
-        "Model scope: Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr/Lesl dropped: 100 kHz ESR is a maximum, not a fitted nominal, and ESL is unsourced.",
-        "Transient runs use the ideal capacitance with its leakage path only (no ESR or ESL): currents and voltages are those the circuit imposes, so ripple, peak and reverse-voltage checks are meaningful, but ESR heating and impedance versus frequency are not modeled."
+        "Model scope: Resr, Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr is the sourced 100 kHz maximum ESR (a worst-case bound, not a fitted nominal; D058); Lesl dropped because ESL is unsourced.",
+        "ESR is bound as the sourced 100 kHz, 25 C maximum, constant with frequency (D058): impedance, ripple voltage and ESR loss are worst-case upper bounds at and near 100 kHz; real ESR is lower than the maximum and changes with frequency and temperature. In parallel with other capacitors this ESR shifts ripple current toward them, so their current checks are not conservative. ESL is unsourced and not modeled."
       ],
       "model_facts": {},
       "open_mating_roles": [],
@@ -1503,7 +1503,7 @@
         "tran"
       ],
       "template_key": "netlist_template",
-      "template_override": "C{ref} {A} {K} {value}\nR{ref}_lk {A} {K} {rleak}\n",
+      "template_override": "R{ref}_esr {A} {ref}_cb {esr_max}\nC{ref} {ref}_cb {K} {value}\nR{ref}_lk {ref}_cb {K} {rleak}\n",
       "template_provenance": {
         "document": "COMPONENT_BEHAVIOR_SPEC.md",
         "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
@@ -1614,12 +1614,12 @@
       "instance_value_unit": null,
       "limitations": [
         "Order-code tolerance and termination options are unselected; electrical row values are identical across those options in the T491 table.",
-        "DC leakage at the sourced maximum (worst case); no ESR, ESL, impedance, capacitance-vs-temperature or ignition dynamics.",
+        "DC leakage at the sourced maximum (worst case); ESR at its sourced 100 kHz maximum; no ESL, ESR frequency dependence, capacitance-vs-temperature or ignition dynamics.",
         "Reverse voltage is only ever transient: 2.4/0.8/0.16 V at 25/85/125 C; continuous reverse is not permitted. The class fixed 3% envelope is not used.",
         "Recommended application voltage 8 V at <= 85 C, derating to 33% of VR at 125 C; ripple and power limits are rating facts, not netlist behaviour.",
         "Stripe marks the ANODE (opposite of aluminium/supercap convention); footprint polarity must be checked.",
-        "Model scope: Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr/Lesl dropped: 100 kHz ESR is a maximum, not a fitted nominal, and ESL is unsourced.",
-        "Transient runs use the ideal capacitance with its leakage path only (no ESR or ESL): currents and voltages are those the circuit imposes, so ripple, peak and reverse-voltage checks are meaningful, but ESR heating and impedance versus frequency are not modeled."
+        "Model scope: Resr, Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr is the sourced 100 kHz maximum ESR (a worst-case bound, not a fitted nominal; D058); Lesl dropped because ESL is unsourced.",
+        "ESR is bound as the sourced 100 kHz, 25 C maximum, constant with frequency (D058): impedance, ripple voltage and ESR loss are worst-case upper bounds at and near 100 kHz; real ESR is lower than the maximum and changes with frequency and temperature. In parallel with other capacitors this ESR shifts ripple current toward them, so their current checks are not conservative. ESL is unsourced and not modeled."
       ],
       "model_facts": {},
       "open_mating_roles": [],
@@ -1636,7 +1636,7 @@
         "tran"
       ],
       "template_key": "netlist_template",
-      "template_override": "C{ref} {A} {K} {value}\nR{ref}_lk {A} {K} {rleak}\n",
+      "template_override": "R{ref}_esr {A} {ref}_cb {esr_max}\nC{ref} {ref}_cb {K} {value}\nR{ref}_lk {ref}_cb {K} {rleak}\n",
       "template_provenance": {
         "document": "COMPONENT_BEHAVIOR_SPEC.md",
         "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
@@ -1747,12 +1747,12 @@
       "instance_value_unit": null,
       "limitations": [
         "Order-code tolerance and termination options are unselected; electrical row values are identical across those options in the T491 table.",
-        "DC leakage at the sourced maximum (worst case); no ESR, ESL, impedance, capacitance-vs-temperature or ignition dynamics.",
+        "DC leakage at the sourced maximum (worst case); ESR at its sourced 100 kHz maximum; no ESL, ESR frequency dependence, capacitance-vs-temperature or ignition dynamics.",
         "Reverse voltage is only ever transient: 2.4/0.8/0.16 V at 25/85/125 C; continuous reverse is not permitted. The class fixed 3% envelope is not used.",
         "Recommended application voltage 8 V at <= 85 C, derating to 33% of VR at 125 C; ripple and power limits are rating facts, not netlist behaviour.",
         "Stripe marks the ANODE (opposite of aluminium/supercap convention); footprint polarity must be checked.",
-        "Model scope: Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr/Lesl dropped: 100 kHz ESR is a maximum, not a fitted nominal, and ESL is unsourced.",
-        "Transient runs use the ideal capacitance with its leakage path only (no ESR or ESL): currents and voltages are those the circuit imposes, so ripple, peak and reverse-voltage checks are meaningful, but ESR heating and impedance versus frequency are not modeled."
+        "Model scope: Resr, Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr is the sourced 100 kHz maximum ESR (a worst-case bound, not a fitted nominal; D058); Lesl dropped because ESL is unsourced.",
+        "ESR is bound as the sourced 100 kHz, 25 C maximum, constant with frequency (D058): impedance, ripple voltage and ESR loss are worst-case upper bounds at and near 100 kHz; real ESR is lower than the maximum and changes with frequency and temperature. In parallel with other capacitors this ESR shifts ripple current toward them, so their current checks are not conservative. ESL is unsourced and not modeled."
       ],
       "model_facts": {},
       "open_mating_roles": [],
@@ -1769,7 +1769,7 @@
         "tran"
       ],
       "template_key": "netlist_template",
-      "template_override": "C{ref} {A} {K} {value}\nR{ref}_lk {A} {K} {rleak}\n",
+      "template_override": "R{ref}_esr {A} {ref}_cb {esr_max}\nC{ref} {ref}_cb {K} {value}\nR{ref}_lk {ref}_cb {K} {rleak}\n",
       "template_provenance": {
         "document": "COMPONENT_BEHAVIOR_SPEC.md",
         "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
@@ -11253,7 +11253,7 @@
   "schema_version": 1,
   "source": {
     "document": "docs/behavior/runtime-recipes.json",
-    "document_sha256": "2be790ee47f30e5ab4a14bb52fbc16bfe3fbd0d94c9b78cf2d2a87721b96d38f",
+    "document_sha256": "a24800ed56e894ce7a173065fbad945cc097e3768f27afde11c805c5b9c40d25",
     "fragment_sha256": null,
     "line": 1
   }

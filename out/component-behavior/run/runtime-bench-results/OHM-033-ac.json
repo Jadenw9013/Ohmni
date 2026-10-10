@@ -1,0 +1,101 @@
+{
+  "ac_points_hz": [
+    100000.0
+  ],
+  "analysis": "ac",
+  "circuit_hash": "3320089c5057be336720303f4da4ad1c28a9c79186f23603446ab2938f988e09",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": [
+    {
+      "expected": 3.00000000253303,
+      "kind": "absolute",
+      "observable": "impedance_real",
+      "tolerance": 0.0003004218752206431
+    },
+    {
+      "expected": -0.15915494309189532,
+      "kind": "absolute",
+      "observable": "impedance_imag",
+      "tolerance": 0.0003004218752206431
+    }
+  ],
+  "current": 0.001,
+  "entry_id": "OHM-033",
+  "entry_research_sha256": "db4e8d825d5bb3b171fca3a40819b8c983ed535b0e8ee14eb791b87c13836e12",
+  "limits": "Small-signal impedance at the 100 kHz frequency the maximum ESR is sourced at, against ESR + (Rleak || 1/(j*w*C)) from the part's own sourced facts. Shows the bound card carries the sourced ESR; does not validate ESR at other frequencies or temperatures, ESL, or any rating.",
+  "netlist_sha256": "13cad85281f49ef260fad57a7a409d83e41f02d498f93214e7a71860f63452b2",
+  "observation_status": "ran",
+  "observed": [
+    3.00000000253303,
+    -0.15915494309189498
+  ],
+  "output_sha256": "728728e325b7bae0cd16da10113bf1b43dbada7f6a9c30c0ff78702ce6b00361",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-10T22:18:02Z",
+  "raw_output": "runtime-bench-output/OHM-033-ac/output.txt",
+  "recipe_source_sha256": "a24800ed56e894ce7a173065fbad945cc097e3768f27afde11c805c5b9c40d25",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "source_facts": {
+    "esr_max": {
+      "basis": "MFR_DATASHEET",
+      "confidence": "H",
+      "detail": null,
+      "field": "maximum_esr",
+      "page": 9,
+      "scope": "KEMET T491A106(1)016A(2), case A; (1)/(2) are manufacturer option placeholders, not a completed orderable part; 100 kHz, 25 C",
+      "sources": [
+        "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+      ],
+      "unit": "ohm",
+      "value": 3
+    },
+    "ileak": {
+      "basis": "MFR_DATASHEET",
+      "confidence": "H",
+      "converted_unit": "A",
+      "converted_value": 1.6e-06,
+      "detail": null,
+      "field": "maximum_leakage_current",
+      "page": 9,
+      "scope": "KEMET T491A106(1)016A(2), case A; (1)/(2) are manufacturer option placeholders, not a completed orderable part; 25 C, 5 minutes; applied rated voltage16 V per source p2",
+      "sources": [
+        "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+      ],
+      "unit": "uA",
+      "value": 1.6
+    },
+    "value": {
+      "basis": "MFR_DATASHEET",
+      "confidence": "H",
+      "converted_unit": "F",
+      "converted_value": 9.999999999999999e-06,
+      "detail": null,
+      "field": "nominal_capacitance",
+      "page": 9,
+      "scope": "KEMET T491A106(1)016A(2), case A; (1)/(2) are manufacturer option placeholders, not a completed orderable part; measured120 Hz,25 C per source p2",
+      "sources": [
+        "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+      ],
+      "unit": "uF",
+      "value": 10
+    },
+    "vr": {
+      "basis": "MFR_DATASHEET",
+      "confidence": "H",
+      "detail": null,
+      "field": "rated_voltage",
+      "page": 9,
+      "scope": "KEMET T491A106(1)016A(2), case A; (1)/(2) are manufacturer option placeholders, not a completed orderable part; rated VDC at85 C; higher-temperature derating remains explicit",
+      "sources": [
+        "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+      ],
+      "unit": "V",
+      "value": 16
+    }
+  },
+  "version_file": "runtime-bench-output/OHM-033-ac/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sat Oct 10 21:32:36 UTC 2026\n******\n",
+  "version_sha256": "7f444023b0e5851d50a26bf40338ca29665b10988154a0ff2d662d918ab83fc3"
+}
