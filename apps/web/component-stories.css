@@ -58,10 +58,12 @@
 .story-model-controls button { min-width:36px; min-height:34px; padding:4px 9px; }
 .story-model-controls p { margin:0 0 0 auto; color:#8298b2; font-size:.7rem; text-align:right; }
 .story-detail-column { min-width:0; min-height:0; display:flex; flex-direction:column; }
-.story-tabs { display:flex; overflow-x:auto; padding:8px 10px 0; border-bottom:1px solid #203650; }
-.story-tabs button { min-height:38px; padding:7px 10px; border:0; border-bottom:2px solid transparent; border-radius:6px 6px 0 0; color:#91a5bd; background:transparent; font-size:.76rem; }
+.story-tabs { display:flex; overflow-x:auto; overflow-y:hidden; padding:8px 10px 0; border-bottom:1px solid #203650; scrollbar-width:thin; scrollbar-color:#3b526d transparent; }
+/* Labels stay whole: buttons keep their text width and the row scrolls when it cannot fit them. */
+.story-tabs button { flex:0 0 auto; min-height:38px; padding:7px 10px; border:0; border-bottom:2px solid transparent; border-radius:6px 6px 0 0; color:#91a5bd; background:transparent; font-size:.76rem; white-space:nowrap; overflow-wrap:normal; }
 .story-tabs button[aria-selected="true"] { border-bottom-color:#54d9ff; color:#eef6ff; background:#102138; }
-.story-details { min-height:0; overflow:auto; overflow-wrap:anywhere; padding:16px; scrollbar-color:#3b526d transparent; }
+@media (min-width:1201px) and (max-width:1440px) { .story-tabs { padding-inline:6px; } .story-tabs button { padding-inline:7px; } }
+.story-details { min-height:0; overflow:auto; overscroll-behavior:contain; overflow-wrap:anywhere; padding:16px; scrollbar-color:#3b526d transparent; }
 .story-details h4 { margin:0 0 12px; font-size:.92rem; }
 .story-details p,.story-details li { color:#b5c5d8; font-size:.79rem; line-height:1.55; }
 .story-details ul { padding-left:18px; }
