@@ -65,3 +65,12 @@ Every original class rating and failure declaration remains in the result. Unrel
 ## Reference behavior UI
 
 The Components dialog has a Behavior tab with source status, fidelity, confidence, limitations, and a Run reference circuit control. The62 authored reference circuits run through NgspiceAdapter in a separate output directory; the118 unbound entries show specific blockers. This is a learning reference, not a saved-project simulation or a manufacturing approval. Unknown ratings are explicit. Failed or canceled requests cannot reuse prior measurements.
+
+## Design-level runs
+
+`ComponentBehaviorService.run_design` (API: `POST /api/behavior/design/run` with the session identity and a `design` object) compiles a caller's own multi-part `CircuitIR` with the same `compile_circuit`, adapter and rating step the reference circuits use, with current probes on every part. It does not read or change a saved project.
+
+- Every part must resolve to an audited simulable entry: either the single recipe whose catalog part and package match, or an explicit `selections` entry. Ambiguous, unbound, reference-only and documented entries stop the whole run before the simulator starts, and each refused part is named with its reason. A catalog LED whose declared colour differs from the bound reference part is not substituted.
+- Ratings are evaluated per part, together, on the same operating point or transient window. The design is `within_model_limits` only when every part is; `design_summary` lists the unknown and violating parts. Declared sources stay ideal; board copper, layout parasitics and source capability are not simulated.
+- Two parts that define the same `.model` or `.subckt` name get per-part names (ngspice 42 keeps the first of two same-named cards without a warning). Hash-locked inline assets are never rewritten; two assets may share a name only with an identical definition. Single-part reference decks are unchanged.
+- Limits: at most 40 parts and 120 nets per run; a transient run with more rating signals than the adapter prints leaves every part's ratings unknown with that reason.
