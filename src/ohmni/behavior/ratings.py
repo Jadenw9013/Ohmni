@@ -78,8 +78,9 @@ def _observations(component, point):
     return values
 
 
-def _scoped_checks(component, point, context):
+def _scoped_checks(component, point, context, overrides=None, transient=None):
     values = _observations(component, point)
+    values.update(overrides or {})
     if context.ambient_c is not None:
         values["Tamb"] = context.ambient_c
     if context.case_c is not None:
@@ -338,7 +339,202 @@ def _scoped_checks(component, point, context):
             ("rth_ja", "tj_max"),
             thermal,
         )
+    if cls == "BEH-DIO-SCHOTTKY" and {"ir_25", "ir_100", "vr_ir"} <= set(values):
+        _schottky_runaway(values, b, thermal)
+    if transient is not None:
+        _transient_checks(component, values, b, thermal, upper_only, transient)
     return b
+
+
+def _schottky_runaway(values, b, thermal):
+    """Leakage self-heating: solve Tj = Tamb + Rth*(P + VR*IR(Tj)) from the two sourced leakage points.
+
+    IR(T) = IR25*exp(k*(T-25)) with k from the 25 C and 100 C maxima; below the test voltage the
+    test-voltage leakage is used (conservative), above it leakage scales linearly with VR.
+    """
+    if "Tamb" not in values or "rth_ja" not in values or "tj_max" not in values or "v_A" not in values:
+        b.add("leakage thermal stability", "tj_leakage <= tj_max", ("ir_25", "ir_100", "rth_ja", "tj_max"),
+              "Needs ambient temperature and observed terminal voltages")
+        return
+    vr = max(values["v_K"] - values["v_A"], 0.0) if "v_K" in values else 0.0
+    k = math.log(values["ir_100"] / values["ir_25"]) / 75.0
+    scale = max(1.0, vr / values["vr_ir"])
+    forward = max(values.get("power", 0.0), 0.0) if vr == 0 else 0.0
+    tj = values["Tamb"]
+    stable = False
+    for _ in range(200):
+        leak = values["ir_25"] * scale * math.exp(k * (tj - 25.0))
+        nxt = values["Tamb"] + values["rth_ja"] * (forward + vr * leak)
+        if nxt > 1000:
+            break
+        if abs(nxt - tj) < 1e-4:
+            tj, stable = nxt, True
+            break
+        tj = nxt
+    values["tj_leakage"] = tj if stable else 1e9
+    values["leakage_runaway"] = not stable
+    b.add("leakage thermal stability", "tj_leakage <= tj_max", ("ir_25", "ir_100", "rth_ja", "tj_max"), thermal)
+
+
+class TransientWindow:
+    """Full-resolution role waveforms for one component; statistics are time-weighted."""
+
+    def __init__(self, time, voltages, currents):
+        self.t, self.v, self.i = time, voltages, currents
+
+    def _mean(self, xs):
+        span = self.t[-1] - self.t[0]
+        if span <= 0:
+            return xs[-1]
+        area = sum((self.t[k + 1] - self.t[k]) * (xs[k] + xs[k + 1]) / 2 for k in range(len(xs) - 1))
+        return area / span
+
+    def series(self, kind, role):
+        return (self.v if kind == "v" else self.i).get(role)
+
+    def mean(self, xs):
+        return self._mean(xs)
+
+    def rms(self, xs):
+        return math.sqrt(max(self._mean([x * x for x in xs]), 0.0))
+
+    def ac_rms(self, xs):
+        m = self._mean(xs)
+        return self.rms([x - m for x in xs])
+
+    def frequency(self, xs):
+        m = self._mean(xs)
+        crossings = [self.t[k] for k in range(len(xs) - 1) if xs[k] < m <= xs[k + 1]]
+        if len(crossings) < 2:
+            return None
+        return (len(crossings) - 1) / (crossings[-1] - crossings[0])
+
+    def diff(self, a, b):
+        va, vb = self.v.get(a), self.v.get(b)
+        if va is None or vb is None:
+            return None
+        return [x - y for x, y in zip(va, vb, strict=True)]
+
+
+def _transient_checks(component, values, b, thermal, upper_only, w):
+    """Peak, RMS, ripple and pulse checks that a single operating point cannot express."""
+    cls = component.behavior_id
+    roles = set(component.role_nodes)
+
+    def stat(name, value):
+        if value is not None:
+            values[name] = value
+        return value
+
+    def peak(xs):
+        return max(xs) if xs else None
+
+    if {"A", "K"} <= roles and cls.startswith(("BEH-DIO-", "BEH-LED-")) and cls != "BEH-DIO-BRIDGE":
+        reverse = w.diff("K", "A")
+        i_a = w.series("i", "A")
+        if reverse is not None and "vr_max" in values and cls not in {"BEH-DIO-ZENER", "BEH-DIO-TVS"}:
+            stat("peak_vr", peak(reverse))
+            b.add("peak reverse voltage", "peak_vr <= vr_max", ("vr_max",))
+        if i_a is not None:
+            if "if_max" in values:
+                stat("avg_if", w.mean([max(x, 0.0) for x in i_a]))
+                b.add("average forward current", "avg_if <= if_max", ("if_max",),
+                      "Average over the simulated window; source temperature/derating conditions need confirmation"
+                      if thermal else None)
+            if "ifsm" in values:
+                stat("peak_if", peak(i_a))
+                upper_only("peak forward current against the surge rating", "peak_if <= ifsm", ("ifsm",),
+                           "The surge rating is a single 8.3 ms half-sine; pulse shape, width and repetition are not compared")
+        if cls == "BEH-DIO-TVS" and w.series("i", "K") is not None:
+            stat("peak_ipp", peak([abs(x) for x in w.series("i", "K")]))
+            upper_only("peak pulse current", "peak_ipp <= IPP", ("IPP",),
+                       "IPP is rated for a 10/1000 us pulse; other pulse shapes are not compared")
+    elif cls in {"BEH-CAP-CERAMIC", "BEH-CAP-MICA"}:
+        v = w.diff("T1", "T2")
+        if v is not None:
+            stat("peak_v", peak([abs(x) for x in v]))
+            b.add("peak voltage", "peak_v <= vr", ("vr",))
+    elif cls == "BEH-CAP-TANT":
+        v, i = w.diff("A", "K"), w.series("i", "A")
+        if v is not None:
+            stat("peak_v", peak(v))
+            stat("peak_rev", peak([-x for x in v]))
+            b.add("peak forward voltage", "peak_v <= vr", ("vr",),
+                  "Rated voltage is stated at 85 C; higher-temperature category voltage is not bound"
+                  if values.get("Tamb", 0) > 85 else None)
+            if values["peak_rev"] > 0:
+                limit = ("vrev_25 if Tamb <= 25 else vrev_85 if Tamb <= 85 else vrev_125"
+                         if "Tamb" in values else "vrev_125")
+                b.add("peak reverse voltage (transient limit)", f"peak_rev <= {limit}",
+                      ("vrev_25", "vrev_85", "vrev_125"),
+                      None if "Tamb" in values or values["peak_rev"] > values.get("vrev_25", 0) else
+                      "Ambient temperature selects the reverse limit")
+        if i is not None and "irip_max" in values:
+            stat("ripple_rms", w.ac_rms(i))
+            freq = stat("ripple_frequency", w.frequency(i))
+            if freq is None or freq > 100e3:
+                b.add("ripple current", "ripple_rms <= irip_max", ("irip_max",),
+                      "Ripple rating is stated at 100 kHz; the frequency multiplier for this waveform is not bound")
+            else:
+                upper_only("ripple current", "ripple_rms <= irip_max", ("irip_max",),
+                           "Below 100 kHz the allowed ripple is lower by an unbound frequency multiplier")
+    elif cls == "BEH-CAP-EDLC":
+        v, i = w.diff("P", "N"), w.series("i", "P")
+        if v is not None:
+            stat("peak_v", peak(v))
+            if "Tamb" in values:
+                b.add("peak voltage at ambient", "peak_v <= (vr if Tamb <= 65 else vr_85)", ("vr", "vr_85"))
+            else:
+                row = b.add("peak voltage at ambient", "peak_v <= vr_85 if peak_v <= vr else False", ("vr", "vr_85"))
+                if row["status"] == "violation" and values["peak_v"] <= values.get("vr", 0):
+                    row.update(status="unknown", reason="Between the 85 C and 65 C ratings; ambient decides")
+        if i is not None and "ipk" in values:
+            stat("peak_i", peak([abs(x) for x in i]))
+            b.add("peak current", "peak_i <= ipk", ("ipk",))
+    elif cls == "BEH-MAG-INDUCTOR":
+        i = w.series("i", "A")
+        if i is not None:
+            if "isat" in values:
+                stat("peak_i", peak([abs(x) for x in i]))
+                b.add("peak current against saturation", "peak_i <= isat", ("isat",))
+            if "irms" in values:
+                stat("rms_i", w.rms(i))
+                b.add("RMS heating current", "rms_i <= irms", ("irms",), thermal)
+    elif cls == "BEH-MAG-CMC":
+        for winding in ("A", "B"):
+            i = w.series("i", winding + "1")
+            if i is not None:
+                stat(f"rms_{winding}", w.rms(i))
+                b.add(f"winding {winding} RMS current", f"rms_{winding} <= irated", ("irated",), thermal)
+    elif cls.startswith("BEH-CON-"):
+        current = next((k for k in ("i_rated", "i_nom") if k in values), None)
+        for role in sorted(roles):
+            i = w.series("i", role)
+            if i is None or current is None:
+                continue
+            stat(f"rms_{role}", w.rms(i))
+            if current == "i_nom":
+                upper_only(f"contact RMS current {role}", f"rms_{role} <= i_nom", ("i_nom",),
+                           "Nominal current applies only up to the derating knee, which is not bound")
+            else:
+                b.add(f"contact RMS current {role}", f"rms_{role} <= {current}", (current,), thermal)
+    elif cls == "BEH-RES-FIXED" and "u_limit" in values:
+        v = w.diff("A", "B")
+        if v is not None:
+            stat("peak_v", peak([abs(x) for x in v]))
+            b.add("peak working voltage", "peak_v <= u_limit", ("u_limit",))
+    elif cls == "BEH-RES-POT":
+        v = w.diff("A", "B")
+        if v is not None:
+            stat("peak_v", peak([abs(x) for x in v]))
+            b.add("peak track voltage", "peak_v <= v_max", ("v_max",))
+    supply = next((pair for pair in [("VCC", "GND"), ("VDD", "GND"), ("Vplus", "Vminus"), ("IN", "GND")]
+                   if set(pair) <= roles), None)
+    if supply and "supply_abs_max" in values:
+        rail = w.diff(*supply)
+        if rail is not None:
+            stat("peak_rail", peak(rail))
+            b.add("peak supply (absolute maximum)", "peak_rail <= supply_abs_max", ("supply_abs_max",))
 
 
 def _connector_checks(component, values, b, thermal, upper_only):
@@ -457,22 +653,40 @@ def _failure_modes(component, behavior, builder, ran):
 def evaluate_ratings(compilation, result, registry, context=None):
     """Evaluate observed op values only; unknown context never establishes safety."""
     context = context or RatingContext()
-    ran = (
+    ran_op = (
         result.get("status") == "ran"
         and result.get("analysis") == "op"
         and bool(result.get("operating_point"))
     )
+    curve = None
+    if result.get("status") == "ran" and result.get("analysis") == "tran" and result.get("stdout"):
+        from ..eda.simulation import parse_transient
+
+        curve = parse_transient(result["stdout"], analysis="tran", limit=100000)
+        if not curve.time_s or len(curve.time_s) < 2:
+            curve = None
+    ran = ran_op or curve is not None
     components = []
     all_faults = []
     for component in compilation.components:
         behavior = registry.behavior_class(component.behavior_id)
-        b = _scoped_checks(component, result.get("operating_point") if ran else None, context)
-        if not ran:
+        window = _window(component, curve) if curve is not None else None
+        if curve is not None and window is None:
+            b = _scoped_checks(component, None, context)
+            reason = "Transient run did not print every terminal voltage and probe current of this component"
+        elif window is not None:
+            point, power = _average_point(component, window)
+            b = _scoped_checks(component, point, context, {"power": power} if power is not None else None, window)
+            for row in b.checks:
+                if not row["name"].startswith(("peak", "average", "ripple", "RMS", "winding", "contact RMS")):
+                    row["name"] += " (time average)"
+            reason = None
+        else:
+            b = _scoped_checks(component, result.get("operating_point") if ran_op else None, context)
+            reason = None if ran_op else "No operating-point or full transient observations"
+        if reason:
             for check in b.checks:
-                check.update(
-                    status="unknown",
-                    reason="No operating-point observations; transient peaks/RMS require separate analysis",
-                )
+                check.update(status="unknown", reason=reason)
         class_checks = []
         for original in behavior.canonical_payload.get("ratings", []):
             matches = [x for x in b.checks if original["name"] in x["spec_names"]]
@@ -486,7 +700,8 @@ def evaluate_ratings(compilation, result, registry, context=None):
                     source=behavior.source.model_dump(mode="json"),
                 )
             )
-        failures, faults = _failure_modes(component, behavior, b, ran)
+        # Authored failure triggers are operating-point expressions only.
+        failures, faults = _failure_modes(component, behavior, b, ran_op)
         all_faults.extend(faults)
         statuses = [x["status"] for x in [*b.checks, *class_checks]]
         violated = "violation" in statuses or any(f["status"] == "triggered" for f in failures)
@@ -497,6 +712,8 @@ def evaluate_ratings(compilation, result, registry, context=None):
             if not ran or not statuses or "unknown" in statuses
             else "within_model_limits"
         )
+        if curve is not None and window is None and status != "violation":
+            status = "unknown"
         components.append(
             {
                 "ref": component.ref,
@@ -507,6 +724,9 @@ def evaluate_ratings(compilation, result, registry, context=None):
                 "failure_modes": failures,
                 "observations": b.values if ran else {},
                 "context": context.model_dump(mode="json"),
+                "basis": ("transient: time-averaged operating values plus peak, RMS, ripple and pulse statistics "
+                          f"over {curve.time_s[0]:g} to {curve.time_s[-1]:g} s") if window is not None
+                else "operating point" if ran_op else None,
             }
         )
     statuses = [c["status"] for c in components]
@@ -529,6 +749,35 @@ def evaluate_ratings(compilation, result, registry, context=None):
             "An electrical limit check does not verify physical fit or safe operation.",
         ],
     }
+
+
+def _window(component, curve):
+    names = {series.name.lower(): series.values for series in curve.series}
+    voltages, currents = {}, {}
+    for role, node in component.role_nodes.items():
+        if node == "0":
+            voltages[role] = [0.0] * len(curve.time_s)
+        elif f"v({node.lower()})" in names:
+            voltages[role] = names[f"v({node.lower()})"]
+        else:
+            return None
+    for role, probe in component.role_current_probes.items():
+        if f"i({probe.lower()})" not in names:
+            return None
+        currents[role] = names[f"i({probe.lower()})"]
+    return TransientWindow(curve.time_s, voltages, currents)
+
+
+def _average_point(component, window):
+    point = {"node_voltages": {}, "branch_currents": {}}
+    for role, node in component.role_nodes.items():
+        point["node_voltages"][node] = {"value": window.mean(window.v[role]), "unit": "V"}
+    for role, probe in component.role_current_probes.items():
+        point["branch_currents"][probe] = {"value": window.mean(window.i[role]), "unit": "A"}
+    if not window.i:
+        return point, None
+    instantaneous = [sum(window.v[r][k] * window.i[r][k] for r in window.i) for k in range(len(window.t))]
+    return point, window.mean(instantaneous)
 
 
 def apply_open_faults(compilation, faults):

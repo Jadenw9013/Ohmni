@@ -248,6 +248,8 @@ MAX_TRANSIENT_SAMPLES = 400
 #: Printing every node of a large netlist is a wide table nobody reads. The
 #: signals are taken in the order the netlist introduces them.
 MAX_TRANSIENT_SIGNALS = 12
+#: Extra terminal voltages and probe currents a transient run may print for rating checks.
+MAX_RATING_SIGNALS = 96
 
 #: `Index time v(a) v(b)` and the rule beneath it, as ngspice pages its output.
 _TRANSIENT_HEADER = re.compile(r"^index\s+time\b", re.IGNORECASE)
@@ -329,7 +331,7 @@ def with_power_on_stimulus(netlist: str, net: str = STIMULUS_NET, *,
 
 
 def transient_deck(netlist: str, tstep: str, tstop: str, signals: list[str], *,
-                   precision: int | None = None) -> str:
+                   precision: int | None = None, currents: list[str] = ()) -> str:
     """Add the transient command and the signals to print, and nothing else.
 
     Built the same way as the operating-point deck: the caller's first line
@@ -346,7 +348,7 @@ def transient_deck(netlist: str, tstep: str, tstop: str, signals: list[str], *,
             raise ValueError("transient print precision must be an integer from6 to17")
         if any(re.match(r"\.control\b", line, re.IGNORECASE) for line in stripped):
             raise ValueError("precise transient printing cannot replace an existing control block")
-        printed = " ".join(f"v({name})" for name in signals)
+        printed = " ".join([*(f"v({name})" for name in signals), *(f"i({name})" for name in currents)])
         additions.extend([".control", f"set numdgt={precision}", "run",
                           f"print {printed}", "quit", ".endc"])
     elif not any(re.match(r"\.print\s+tran\b", line, re.IGNORECASE) for line in stripped):
@@ -638,8 +640,18 @@ class NgspiceAdapter:
                 signals = [compilation.node_names[n] for n in observe_nets]
             else:
                 signals = [node for node in compilation.node_names.values() if node != "0"]
+            shown = signals[:MAX_TRANSIENT_SIGNALS]
+            # Ratings need every terminal voltage and probe current of each part; they are printed after the
+            # requested signals and kept out of the returned display curve.
+            rating_nodes = [node for c in compilation.components for node in c.role_nodes.values()
+                            if node != "0" and node not in shown]
+            rating_nodes = list(dict.fromkeys(rating_nodes))
+            probes = [probe for c in compilation.components for probe in c.role_current_probes.values()]
+            if len(shown) + len(rating_nodes) + len(probes) > MAX_RATING_SIGNALS:
+                rating_nodes, probes = [], []
             deck = transient_deck(compilation.netlist, format(step.value, ".17g"),
-                                  format(stop.value, ".17g"), signals[:MAX_TRANSIENT_SIGNALS], precision=15)
+                                  format(stop.value, ".17g"), [*shown, *rating_nodes], precision=15,
+                                  currents=probes)
         else:
             result["problems"].append(f"Unsupported circuit analysis: {analysis}")
             return result
@@ -656,6 +668,8 @@ class NgspiceAdapter:
                 result["operating_point"] = point.model_dump(mode="json")
         else:
             curve = parse_transient(observation["stdout"], analysis="tran")
+            display = {f"v({name})" for name in shown}
+            curve = curve.model_copy(update={"series": [x for x in curve.series if x.name.lower() in display]})
             if not curve.sample_count or not curve.series:
                 result.update(status="failed", problems=["ngspice returned no transient observations"])
             else:

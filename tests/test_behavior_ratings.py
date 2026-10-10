@@ -1,3 +1,4 @@
+import math
 from pathlib import Path
 
 import pytest
@@ -276,3 +277,87 @@ def test_magnetics_and_pot_ratings():
 def test_mains_choke_line_voltage_uses_its_ac_rating_conservatively():
     assert _report("OHM-051", {"A1": 260})["line voltage"]["status"] == "violation"
     assert _report("OHM-051", {"A1": 230})["line voltage"]["status"] == "within_limit"
+
+
+def _tran_result(component, waveforms, *, cycles_time=1e-3, samples=401):
+    """Synthetic ngspice print table: waveforms maps ('v', role) or ('i', role) to f(t)."""
+    import math  # noqa: F401  (waveform lambdas use it)
+
+    columns = []
+    for role, node in component.role_nodes.items():
+        if node != "0":
+            columns.append((f"v({node})", waveforms.get(("v", role), lambda t: 0.0)))
+    for role, probe in component.role_current_probes.items():
+        columns.append((f"i({probe})", waveforms.get(("i", role), lambda t: 0.0)))
+    lines = ["Index   time            " + "  ".join(name for name, _ in columns)]
+    for k in range(samples):
+        t = cycles_time * k / (samples - 1)
+        lines.append("\t".join([str(k), f"{t:.15e}", *(f"{f(t):.15e}" for _, f in columns)]))
+    return {"status": "ran", "analysis": "tran", "stdout": "\n".join(lines) + "\n"}
+
+
+def _tran_checks(entry_id, pin_nets, waveforms, context, **kw):
+    registry = BehaviorRegistry(repo_root=ROOT)
+    recipes = load_recipes(registry, ROOT)
+    c = _single(registry, recipes, entry_id, pin_nets)
+    report = evaluate_ratings(c, _tran_result(c.components[0], waveforms, **kw), registry, context)
+    return report["components"][0], _checks(report)
+
+
+def test_transient_window_statistics():
+    from ohmni.behavior.ratings import TransientWindow
+
+    t = [k / 1000 for k in range(1001)]
+    sine = [math.sin(2 * math.pi * 10 * x) for x in t]
+    w = TransientWindow(t, {}, {})
+    assert abs(w.mean(sine)) < 1e-3
+    assert abs(w.rms(sine) - 1 / math.sqrt(2)) < 1e-3
+    assert abs(w.ac_rms([2 + x for x in sine]) - 1 / math.sqrt(2)) < 1e-3
+    assert abs(w.frequency(sine) - 10) < 0.2
+
+
+def test_tantalum_ripple_and_transient_reverse_limits():
+    hot = RatingContext(ambient_c=25, thermal_scope_confirmed=True)
+    ripple = lambda t: 0.25 * math.sin(2 * math.pi * 10e3 * t)
+    comp, checks = _tran_checks("OHM-033", {"a": ["1"], "return": ["2"]},
+                                {("v", "A"): lambda t: 5.0, ("i", "A"): ripple, ("i", "K"): lambda t: -ripple(t)}, hot)
+    assert checks["ripple current"]["status"] == "violation"  # 0.177 A rms at 10 kHz > 0.158 A at 100 kHz
+    assert comp["basis"].startswith("transient")
+    small = lambda t: 0.05 * math.sin(2 * math.pi * 10e3 * t)
+    _, checks = _tran_checks("OHM-033", {"a": ["1"], "return": ["2"]},
+                             {("v", "A"): lambda t: 5.0, ("i", "A"): small, ("i", "K"): lambda t: -small(t)}, hot)
+    assert checks["ripple current"]["status"] == "unknown"  # below 100 kHz a lower, unbound limit applies
+    # A brief reverse excursion within the 25 C transient limit (2.4 V) passes; beyond it fails.
+    dip = lambda depth: (lambda t: 5.0 - depth * (1 if 4e-4 < t < 5e-4 else 0) - 5.0 * (1 if 4e-4 < t < 5e-4 else 0))
+    _, checks = _tran_checks("OHM-033", {"a": ["1"], "return": ["2"]}, {("v", "A"): dip(2.0)}, hot)
+    assert checks["peak reverse voltage (transient limit)"]["status"] == "within_limit"
+    _, checks = _tran_checks("OHM-033", {"a": ["1"], "return": ["2"]}, {("v", "A"): dip(3.0)}, hot)
+    assert checks["peak reverse voltage (transient limit)"]["status"] == "violation"
+
+
+def test_peaks_are_checked_even_when_the_average_is_safe():
+    ctx = RatingContext(ambient_c=25, thermal_scope_confirmed=True)
+    # Ceramic 35 V part with a 0 V average but 40 V peaks.
+    _, checks = _tran_checks("OHM-024", {"a": ["1"], "return": ["2"]},
+                             {("v", "T1"): lambda t: 40 * math.sin(2 * math.pi * 1e3 * t)}, ctx)
+    assert checks["rated DC voltage (time average)"]["status"] == "within_limit"
+    assert checks["peak voltage"]["status"] == "violation"
+    # EDLC peak current beyond its 5.09 A table value.
+    _, checks = _tran_checks("OHM-040", {"a": ["1"], "return": ["2"]},
+                             {("v", "P"): lambda t: 1.0, ("i", "P"): lambda t: 8 * math.sin(2 * math.pi * 1e3 * t),
+                              ("i", "N"): lambda t: -8 * math.sin(2 * math.pi * 1e3 * t)}, ctx)
+    assert checks["peak current"]["status"] == "violation"
+
+
+def test_schottky_surge_average_and_leakage_runaway():
+    ctx = RatingContext(ambient_c=25, thermal_scope_confirmed=True)
+    half = lambda t: max(0.0, 4 * math.sin(2 * math.pi * 1e3 * t))
+    _, checks = _tran_checks("OHM-066", {"a": ["2"], "return": ["1"]},
+                             {("v", "A"): lambda t: 0.4 if half(t) else 0.0, ("i", "A"): half,
+                              ("i", "K"): lambda t: -half(t)}, ctx)
+    assert checks["average forward current"]["status"] == "within_limit"  # about 1.27 A average
+    assert checks["peak forward current against the surge rating"]["status"] == "unknown"
+    # Steady 40 V reverse: stable at 25 C ambient, thermal runaway at 100 C.
+    for ambient, expected in ((25, "within_limit"), (100, "violation")):
+        assert _report("OHM-066", {"K": 40}, {}, RatingContext(ambient_c=ambient, thermal_scope_confirmed=True))[
+            "leakage thermal stability"]["status"] == expected
