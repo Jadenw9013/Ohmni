@@ -343,7 +343,6 @@ def _scoped_checks(component, point, context):
 
 def _connector_checks(component, values, b, thermal, upper_only):
     """Every terminal carries one contact's current; insulation is rated between any two contacts."""
-    evidence = component.parameter_evidence
     current = next((k for k in ("i_rated", "i_nom") if k in values), None)
     voltage = next((k for k in ("v_rated", "v_work", "v_III_2") if k in values), None)
     roles = [r for r in component.role_nodes if "v_" + r in values]
@@ -359,12 +358,8 @@ def _connector_checks(component, values, b, thermal, upper_only):
                 b.add(f"contact current {role}", f"abs(i_{role}) <= {current}", (current,), derating)
     if voltage and len(roles) > 1:
         spread = f"max({','.join('v_' + r for r in roles)})-min({','.join('v_' + r for r in roles)})"
-        scope = evidence.get(voltage, {}).get("scope") or ""
-        if "typ column" in scope:
-            upper_only("contact-to-contact voltage", f"{spread} <= {voltage}", (voltage,),
-                       "The voltage figure is from the typical column, not a declared maximum")
-        else:
-            b.add("contact-to-contact voltage", f"{spread} <= {voltage}", (voltage,))
+        # OHM-171/172 print their rated voltage in a "typ" column; Jaden approved using it as the rating (D053).
+        b.add("contact-to-contact voltage", f"{spread} <= {voltage}", (voltage,))
     if "t_amb_max" in values:
         b.add("ambient temperature", "Tamb <= t_amb_max", ("t_amb_max",))
     if "t_contact_max" in values:

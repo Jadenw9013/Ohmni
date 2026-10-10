@@ -4303,6 +4303,121 @@
         "2": "A"
       }
     },
+    "OHM-066": {
+      "behavior_id": "BEH-DIO-SCHOTTKY",
+      "catalog_identity_pin_map": {},
+      "catalog_parts": [],
+      "class_parameters": {},
+      "critical_facts": {
+        "if_max": {
+          "field": "average_forward_current",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "A",
+          "value_path": []
+        },
+        "rth_ja": {
+          "field": "thermal_resistance_junction_ambient",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "K/W",
+          "value_path": []
+        },
+        "tj_max": {
+          "field": "maximum_junction_temperature",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "C",
+          "value_path": []
+        },
+        "vf_max": {
+          "field": "maximum_forward_voltage",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "V",
+          "value_path": []
+        },
+        "vr_max": {
+          "field": "repetitive_peak_reverse_voltage",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "V",
+          "value_path": []
+        }
+      },
+      "derived_parameters": {},
+      "entry_id": "OHM-066",
+      "ground_strays": {},
+      "inline_assets": [],
+      "instance_value_unit": null,
+      "limitations": [
+        "IS, N and RS are a fit to the SS32-SS34 25 C typical forward curve (low confidence, read from a log plot); CJO is read from the typical capacitance plot and BV is the 40 V rated blocking voltage, not a measured breakdown.",
+        "Isothermal 25 C DC model. Schottky reverse leakage (0.5 mA at 25 C, 20 mA at 100 C, rated VR) and its heating are not modeled; leakage-driven thermal runaway must be checked separately.",
+        "3 A is the average rectified current at the lead temperature of fig. 1, used here as a DC ceiling; 55 K/W assumes 14 x 14 mm copper pads. Pin map K to terminal 1 (cathode bar, -X), A to terminal 2, per the spec's OHM-066 section and the data sheet's cathode-band marking.",
+        "Bound under owner-approved resolution OHM-066-SCHOTTKY-CLASS; the entry's PN and TVS functions have no bound reference."
+      ],
+      "model_facts": {
+        "BV": {
+          "field": "spice_BV_rated_blocking",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "V",
+          "value_path": []
+        },
+        "CJO": {
+          "field": "spice_CJO_fit",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "F",
+          "value_path": []
+        },
+        "IS": {
+          "field": "spice_IS_fit",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "A",
+          "value_path": []
+        },
+        "N": {
+          "field": "spice_N_fit",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "1",
+          "value_path": []
+        },
+        "RS": {
+          "field": "spice_RS_fit",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "ohm",
+          "value_path": []
+        }
+      },
+      "open_mating_roles": [],
+      "package": "SMC",
+      "pin_role_fact": null,
+      "quoted_parameters": {},
+      "reference_function": null,
+      "reference_part": "Vishay SS34 (SS32-SS36 data sheet 88751, rev. 23-Apr-2020), SMC (DO-214AB)",
+      "required_ground_roles": [],
+      "required_isolated_roles": [],
+      "required_same_net_roles": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "template_key": "netlist_template",
+      "template_override": "D{ref} {A} {K} DSS_{ref}\n.model DSS_{ref} D (IS={IS} N={N} RS={RS} CJO={CJO} BV={BV})\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "fragment_sha256": null,
+        "line": 4455
+      },
+      "terminal_roles": {
+        "1": "K",
+        "2": "A"
+      }
+    },
     "OHM-067": {
       "behavior_id": "BEH-DIO-SCHOTTKY",
       "catalog_identity_pin_map": {},
@@ -10858,7 +10973,7 @@
   "schema_version": 1,
   "source": {
     "document": "docs/behavior/runtime-recipes.json",
-    "document_sha256": "c9ddb13ce6f7f8c0794cc598e086a8b6efeabfe61d33076b5b279e746c07ca8a",
+    "document_sha256": "afe9f1850adfba999fffeb7e0884aaa9f932477fc0e7ef2217c64d1a0a2a0baf",
     "fragment_sha256": null,
     "line": 1
   }

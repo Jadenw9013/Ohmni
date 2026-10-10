@@ -25,7 +25,7 @@ def service(tmp_path_factory):
 
 def test_all_180_entries_expose_behavior_status_and_bound_or_blocked_reasons(service):
     rows=[service.describe(f'OHM-{n:03}') for n in range(1,181)]
-    assert sum(r['available'] for r in rows)==96
+    assert sum(r['available'] for r in rows)==97
     assert all(r['blockers'] for r in rows if not r['available'])
     assert Counter(r['source_status'] for r in rows)=={'complete':18,'partial':144,'research_required':18}
     assert service.describe('OHM-004')['reference_part']=='Scoped 0603 reference'

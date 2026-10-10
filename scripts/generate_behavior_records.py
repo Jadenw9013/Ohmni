@@ -292,6 +292,20 @@ def build_records(root: Path = ROOT) -> tuple[
                         resolution="preserved_unresolved_for_human_gate",
                     )
                 )
+    # Owner-approved class additions apply after the master-table consistency check, so that check
+    # still describes the master table as written.
+    for resolution in resolutions:
+        if resolution.kind != "class_addition":
+            continue
+        added = resolution.data.get("add_behavior_class")
+        if (not resolution.gate_required or not resolution.data.get("approved_by")
+                or not resolution.data.get("approved_on") or added not in class_map):
+            raise ValueError(f"{resolution.resolution_id}: class addition needs a known class and a recorded owner approval")
+        for index, entry in enumerate(entries):
+            if entry.entry_id in resolution.entry_ids and added not in entry.behavior_class_ids:
+                entries[index] = entry.model_copy(update={
+                    "behavior_class_ids": [*entry.behavior_class_ids, added],
+                    "class_record_paths": [*entry.class_record_paths, f"{DATA_DIR}/classes/{added}.json"]})
     referenced = {behavior_id for entry in entries for behavior_id in entry.behavior_class_ids}
     status_counts = Counter(entry.status.value for entry in entries)
     fidelity_counts = Counter(entry.fidelity.value for entry in entries)

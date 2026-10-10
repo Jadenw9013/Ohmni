@@ -22,7 +22,6 @@
     "OHM-054": "Physical/reference and primary-conductor binding conflict; open-secondary operation is hazardous.",
     "OHM-055": "Working-voltage and complete physical pin binding remain unestablished; no isolation-safety acceptance.",
     "OHM-060": "The average-current derating curve must be implemented before claiming a complete thermal envelope.",
-    "OHM-066": "Functional variant binding is deferred: the index projects PN, while the sourced default is SS34 Schottky. No MURS PN reference is verified; source function and model must not be silently interchanged.",
     "OHM-075": "Junction-temperature/thermal acceptance cannot use the unsourced 350 K/W placeholder.",
     "OHM-076": "The copied thermal parameters are unsourced for this rectangular lamp.",
     "OHM-083": "Do not simulate OHM-083 from a generic six-terminal RGB pin map or unsourced per-color ratings.",
@@ -3982,6 +3981,79 @@
       "selections": {
         "U1": {
           "entry_id": "OHM-065"
+        }
+      }
+    },
+    "OHM-066": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "SMC",
+            "part_id": "OHM-066",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-066",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-066",
+      "entry_research_sha256": "94b59fd7ecfc8cbd740d1dcf4eba05b8048c5bbd288c08e2fe85898bbfc03c38",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 3.0
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "8ce610e846d3834e33a4573675d641d911fe55855ed399bf7583bfc51e2ba915",
+      "package": "SMC",
+      "reference_part": "Vishay SS34 (SS32-SS36 data sheet 88751, rev. 23-Apr-2020), SMC (DO-214AB)",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-066"
         }
       }
     },
@@ -15266,6 +15338,6 @@
     }
   },
   "generator_sha256": "eb29b9a95c6872a10ecce1181a81d6af7705df5149dcb567796b624790d3f486",
-  "recipe_sha256": "c9ddb13ce6f7f8c0794cc598e086a8b6efeabfe61d33076b5b279e746c07ca8a",
+  "recipe_sha256": "afe9f1850adfba999fffeb7e0884aaa9f932477fc0e7ef2217c64d1a0a2a0baf",
   "schema_version": 1
 }

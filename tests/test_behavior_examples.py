@@ -17,7 +17,7 @@ def references():
 
 def test_all_reference_circuits_reproduce_authored_probes_and_measure_only_used_roles(references):
     registry,recipes,data=references
-    assert len(data['examples'])==96
+    assert len(data['examples'])==97
     for key,row in data['examples'].items():
         original,_=compile_reference(row,registry,recipes,measure_currents=False)
         measured,_=compile_reference(row,registry,recipes)
