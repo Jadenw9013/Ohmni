@@ -254,17 +254,24 @@ def test_landing_p1_preserves_behavior_and_reviewed_plan_boundaries():
     for previous in prior["tasks"]:
         actual=current[previous["id"]]
         if previous["id"]!="CBH-STAGE6":
-            assert actual==previous
+            if previous["id"] in {"CBH-STAGE5","CBH-STAGE7"}:
+                for key in previous.keys()-{"review"}:
+                    assert actual[key]==previous[key],key
+                assert actual["review"]["independent"] is True
+                assert actual["review"]["status"]=="FINDINGS_OPEN"
+            else:
+                assert actual==previous
             continue
         assert previous["status"]=="IN_PROGRESS" and actual["status"]=="BLOCKED"
         assert actual["blockers"] and "Human-priority deferral" in actual["blockers"][-1]
-        for key in previous.keys()-{"status","blockers","implementation"}:
+        for key in previous.keys()-{"status","blockers","implementation","review"}:
             assert actual[key]==previous[key],key
+        assert actual["review"]["independent"] is True
+        assert actual["review"]["status"]=="FINDINGS_OPEN"
         for key,value in previous["implementation"].items():
             assert actual["implementation"][key]==value,key
         assert actual["implementation"]["completed_at_commit"] is None
         assert actual["verification"]["record"] is None
-        assert actual["review"]["status"]=="PENDING"
     assert current["CBH-STAGE7"]["status"]=="APPROVED"
     assert current["CBH-STAGE7"]["dependencies"]==["CBH-STAGE6"]
     landing=[task for task in tasks["tasks"] if task["scope"]=="LANDING-PCB-P1"]
