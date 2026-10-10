@@ -23,6 +23,7 @@ from .loader import (
     _validate_anchor,
 )
 from .runtime_models import (
+    ACExcitation,
     BehaviorCompilation,
     BehaviorSelection,
     CompiledComponent,
@@ -314,7 +315,7 @@ def _parameter_defaults(behavior, recipe, values, evidence, root):
 
 def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: RuntimeRecipes,
                     selections: dict[str, BehaviorSelection] | None = None, *, analysis="op",
-                    excitations: list[DCExcitation | PWLExcitation] | None = None,
+                    excitations: list[DCExcitation | PWLExcitation | ACExcitation] | None = None,
                     measure_currents: bool = False):
     selections = selections or {}
     problems, components, limitations = [], [], []
@@ -349,20 +350,31 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
             problems.append("An excitation refers to a net outside the circuit")
             continue
         pair = frozenset((source.positive_net, source.negative_net))
-        value = source.points[0].value if isinstance(source, PWLExcitation) else source.value
+        if isinstance(source, ACExcitation) != (analysis == "ac"):
+            problems.append("AC excitations are used only by, and required for, AC analysis")
+            continue
+        value = (source.points[0].value if isinstance(source, PWLExcitation)
+                 else source.ac_rms if isinstance(source, ACExcitation) else source.value)
         if value.unit.value == "V" and pair in voltage_pairs:
             problems.append("Duplicate ideal voltage sources on the same nets are not allowed")
             continue
         if value.unit.value == "V":
             voltage_pairs.add(pair)
         prefix = "V" if value.unit.value == "V" else "I"
-        stimulus = ("PWL(" + " ".join(f"{_number(p.time.value)} {_number(p.value.value)}" for p in source.points) + ")"
-                    if isinstance(source, PWLExcitation) else f"DC {_number(value.value)}")
+        if isinstance(source, PWLExcitation):
+            stimulus = "PWL(" + " ".join(f"{_number(p.time.value)} {_number(p.value.value)}" for p in source.points) + ")"
+        elif isinstance(source, ACExcitation):
+            # The AC magnitude is the sine's RMS value, so every AC result is an RMS phasor.
+            stimulus = f"DC {_number(source.dc.value if source.dc else 0.0)} AC {_number(value.value)}"
+        else:
+            stimulus = f"DC {_number(value.value)}"
         lines.append(f"{prefix}excitation{i} {nodes[source.positive_net]} {nodes[source.negative_net]} {stimulus}")
         source_count += 1
         limitations.append("Explicit ideal test excitation; a stimulus is not physical source capability or evidence")
     if not source_count:
         problems.append("No explicit external DC source or test excitation is connected")
+    if analysis == "ac" and not any(isinstance(x, ACExcitation) for x in excitations):
+        problems.append("AC analysis needs at least one explicit AC excitation")
     for i, component in enumerate(sorted(circuit.components, key=lambda c: c.ref), 1):
         selected = selections.get(component.ref)
         candidates = [r for r in recipes.entries.values()
@@ -384,7 +396,9 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
                 raise ValueError("catalog part is not bound to this reference model")
             if component.package != recipe.package:
                 raise ValueError("selected package differs from the bound reference model")
-            if analysis not in recipe.supported_analyses:
+            # AC analysis linearizes the same model around its operating point, so a binding
+            # validated for the operating point is the scope it runs in (D057).
+            if (analysis if analysis != "ac" else "op") not in recipe.supported_analyses:
                 raise ValueError(f"analysis {analysis} is not supported by this binding")
             role_fact = None
             if recipe.pin_role_fact:
