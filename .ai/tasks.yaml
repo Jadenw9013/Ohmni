@@ -2827,7 +2827,7 @@
         "Unknown or non-run remains non-pass"
       ],
       "blockers": [
-        "Scoped ratings software and probes pass, but nonquantitative failure rules, transient stress and source-specific context remain unresolved; inherited corpus gates remain failed."
+        "Ratings now cover every bound class (decisions D050-D053 in out/component-behavior/run/DECISIONS.md); transient stress, nonquantitative failure rules and some condition-incomplete limits still report unknown."
       ],
       "dependencies": [
         "CBH-AUDIT"
@@ -2868,16 +2868,14 @@
         "Non-run is never pass",
         "Browser coverage"
       ],
-      "blockers": [
-        "Human-priority deferral for approved landing P1 prototype; prior complete records are preserved by .ai/approvals/LANDING-PCB-P1.yaml. Required Stage6 verification and review remain uncompleted."
-      ],
+      "blockers": [],
       "dependencies": [
         "CBH-AUDIT"
       ],
       "goal": "Expose honest simulation controls, results, fidelity, status and confidence in the web UI.",
       "id": "CBH-STAGE6",
       "implementation": {
-        "completed_at_commit": null,
+        "completed_at_commit": "689ebe629064aad0d201c80a77957ab386c45834",
         "started_at_commit": "72d19ccc425033908f536853314876ba4a8ddf9a",
         "parked_at": "2026-10-09",
         "parked_at_commit": "42961353c1b6f111c8a11c82aed5620f6f31ebb0",
@@ -2896,10 +2894,10 @@
         "status": "PENDING"
       },
       "scope": "COMPONENT-BEHAVIOR-COMPLETION",
-      "status": "BLOCKED",
+      "status": "VERIFIED",
       "title": "Behavior simulation UI",
       "verification": {
-        "record": null,
+        "record": ".ai/verification/CBH-STAGE6.yaml",
         "required": [
           "audit checkpoints",
           "Playwright",
@@ -2913,7 +2911,11 @@
         "Script-generated FINAL_REPORT.md",
         "All blockers, decisions, rule changes and verifier results listed"
       ],
-      "blockers": [],
+      "blockers": [
+        "AUD-SOURCE-001: 7 cited URLs are dead and need owner-approved superseding documents.",
+        "AUD-VERIFY-001: a fresh verifier round is required after the source blockers close.",
+        "AUD-PROTECT-001: the protected-state check only evaluates in the owner's Windows checkout."
+      ],
       "dependencies": [
         "CBH-STAGE6"
       ],
@@ -2921,7 +2923,7 @@
       "id": "CBH-STAGE7",
       "implementation": {
         "completed_at_commit": null,
-        "started_at_commit": null
+        "started_at_commit": "465066d7b58ed6b7aeeaad0e8843bccfd851dafb"
       },
       "milestone": null,
       "priority": 100,
@@ -2932,7 +2934,7 @@
         "status": "PENDING"
       },
       "scope": "COMPONENT-BEHAVIOR-COMPLETION",
-      "status": "APPROVED",
+      "status": "IN_PROGRESS",
       "title": "Final behavior coverage and audit report",
       "verification": {
         "record": null,
