@@ -207,9 +207,8 @@ class ComponentBehaviorService:
         circuit = request.circuit
         problems = []
         if len(circuit.components) > MAX_DESIGN_COMPONENTS or len(circuit.nets) > MAX_DESIGN_NETS:
-            problems.append(
-                f"A design run is limited to {MAX_DESIGN_COMPONENTS} parts and {MAX_DESIGN_NETS} nets"
-            )
+            # Refuse before resolving any part: the bound keeps a run's work bounded too.
+            return [], [f"A design run is limited to {MAX_DESIGN_COMPONENTS} parts and {MAX_DESIGN_NETS} nets"]
         refs = {c.ref for c in circuit.components}
         for ref in sorted(set(request.selections) - refs):
             problems.append(f"{ref}: a selection names a part that is not in this circuit")
