@@ -365,11 +365,19 @@ def transient_deck(netlist: str, tstep: str, tstop: str, signals: list[str], *,
     return "\n".join([*lines[:end], *additions, *lines[end:]]) + "\n"
 
 
+AC_LIMITATIONS = [
+    "Small-signal AC solution of the bound models around their operating point; exact only for linear circuits.",
+    ("Bound cards omit unsourced parasitics (ESL, self-resonance, and ESR where it is not sourced), so AC "
+    "voltages and current sharing between parts can be non-conservative."),
+    ("Only classes with an AC rating translation are checked at each frequency; every other part reports "
+    "its AC checks unknown, so an AC run never passes on operating-point rows alone."),
+]
 MAX_AC_POINTS = 8
 MAX_AC_SWEEP_POINTS = 401
 _AC_POINT = re.compile(r"^OHMNI_AC_POINT\s+(?P<index>\d+)$")
 _AC_VALUE = re.compile(rf"^(?P<part>real|imag)\((?P<kind>[vi])\((?P<name>[^()\s]+)\)\)\s*=\s*(?P<value>{_NUMBER})$",
                        re.IGNORECASE)
+_AC_FREQUENCY = re.compile(rf"^real\(frequency\)\s*=\s*(?P<value>{_NUMBER})$", re.IGNORECASE)
 _AC_SWEEP_HEADER = re.compile(r"^index\s+frequency\b", re.IGNORECASE)
 
 
@@ -382,7 +390,8 @@ def ac_deck(netlist: str, *, nodes: list[str], currents: list[str], points_hz: l
     """
     lines = (netlist or "").splitlines()
     stripped = [line.strip() for line in lines]
-    if any(re.match(r"\.(?:control|ac|op|tran)\b", line, re.IGNORECASE) for line in stripped):
+    if any(re.match(r"\.(?:control|ac|op|tran|save|meas|measure|print|plot)\b", line, re.IGNORECASE)
+           for line in stripped):
         raise ValueError("an AC deck cannot replace existing analysis commands")
     if not 1 <= len(points_hz) <= MAX_AC_POINTS or any(not math.isfinite(f) or f <= 0 for f in points_hz):
         raise ValueError("AC analysis needs one to eight positive finite frequencies")
@@ -392,13 +401,14 @@ def ac_deck(netlist: str, *, nodes: list[str], currents: list[str], points_hz: l
     if op_print:
         additions.append(f"print {op_print}")
     for index, frequency in enumerate(points_hz):
-        additions += [f"echo OHMNI_AC_POINT {index}", f"ac lin 1 {frequency:.17g} {frequency:.17g}"]
-        if phasors:
-            additions.append(f"print {phasors}")
+        # The solved frequency is printed with the phasors: a failed solve cannot pass off the previous
+        # plot's vectors under this point's marker, because their frequency would not match.
+        additions += [f"echo OHMNI_AC_POINT {index}", f"ac lin 1 {frequency:.17g} {frequency:.17g}",
+                      f"print real(frequency) {phasors}".rstrip()]
     if sweep is not None:
         start, stop, per_decade = sweep
         if (not (math.isfinite(start) and math.isfinite(stop)) or not 0 < start < stop or type(per_decade) is not int
-                or not 1 <= per_decade <= 50 or per_decade * math.log10(stop / start) > MAX_AC_SWEEP_POINTS
+                or not 1 <= per_decade <= 50 or per_decade * math.log10(stop / start) + 1 > MAX_AC_SWEEP_POINTS
                 or not sweep_nodes):
             raise ValueError("AC sweep needs 0 < start < stop, 1 to 50 points per decade and observed nets")
         additions += ["echo OHMNI_AC_SWEEP", f"ac dec {per_decade} {start:.17g} {stop:.17g}",
@@ -417,7 +427,7 @@ def parse_ac(stdout: str, points_hz: list[float]) -> dict:
     real and its imaginary part.
     """
     section, point = None, None
-    op_lines, raw = [], {}
+    op_lines, raw, solved_at, conflicts = [], {}, {}, set()
     sweep_lines = []
     for line in (stdout or "").splitlines():
         text = line.replace("\f", " ").strip()
@@ -432,16 +442,25 @@ def parse_ac(stdout: str, points_hz: list[float]) -> dict:
             continue
         if section == "op":
             op_lines.append(text)
+        elif section == "point" and (solved := _AC_FREQUENCY.match(text)):
+            if point in solved_at:
+                conflicts.add(point)
+            solved_at[point] = float(solved["value"])
         elif section == "point" and (value := _AC_VALUE.match(text)):
             key = ("v" if value["kind"].lower() == "v" else "i", value["name"].lower())
-            raw.setdefault(point, {}).setdefault(key, {})[value["part"].lower()] = float(value["value"])
+            parts = raw.setdefault(point, {}).setdefault(key, {})
+            if value["part"].lower() in parts:
+                conflicts.add(point)
+            parts[value["part"].lower()] = float(value["value"])
         elif section == "sweep":
             sweep_lines.append(text)
     operating_point = parse_operating_point("\n".join(op_lines))
     points = []
     for index, frequency in enumerate(points_hz):
         values = raw.get(index, {})
-        if not values or any(set(parts) != {"real", "imag"} for parts in values.values()):
+        if (not values or index in conflicts or index not in solved_at
+                or not math.isclose(solved_at[index], frequency, rel_tol=1e-9)
+                or any(set(parts) != {"real", "imag"} for parts in values.values())):
             continue
         points.append({
             "frequency_hz": frequency,
@@ -817,8 +836,14 @@ class NgspiceAdapter:
                 if sweep:
                     sweep = {**sweep, "series": [{**x, "name": names.get(x["name"][2:-1], x["name"])}
                                                  for x in sweep["series"]]}
+                missing = [q for q in [*nodes, *probes] if not all(
+                    q.lower() in {**p["node_voltages"], **p["branch_currents"]} for p in parsed["points"])]
+                if missing:
+                    result.update(status="failed", problems=["ngspice did not print every requested AC vector"])
+                    return result
                 result["ac"] = {"points": parsed["points"], "sweep": sweep,
-                                "amplitude": "RMS phasors of the declared AC excitations"}
+                                "amplitude": "RMS phasors of the declared AC excitations",
+                                "limitations": AC_LIMITATIONS}
         else:
             curve = parse_transient(observation["stdout"], analysis="tran")
             display = {f"v({name})" for name in shown}

@@ -297,3 +297,22 @@ Jaden authorized the overnight run to build design-level simulation (HANDOFF "Wh
 ## D057 — 2026-10-10: AC analysis and the exact ripple checks
 
 Overnight item 2, under Jaden's standing authorization for this run and the proxy review. Everything was DC or transient; filters, decoupling and the tantalum ripple ratings (stated at 100 kHz, 25 C, RMS) need a frequency-domain path. Choices: (1) the AC excitation amplitude is defined as the sine's RMS value, so every phasor is RMS and peak = |DC| + sqrt(2)*|AC|, RMS = sqrt(DC^2 + |AC|^2) for a sine on a bias; (2) a recipe supports AC when it supports the operating point, because ngspice's AC solve is the linearization of the same model around that point, so no recipe changed; (3) linearity is decided from the compiled netlist, not the class name, because the BEH-MAG-INDUCTOR saturation card (ind_sat.lib) makes inductance a function of its own current; in a nonlinear circuit every AC-derived row is reported unknown with the computed result in its reason, and operating-point rows are unaffected; (4) the KEMET T491 ripple and ESR heating checks are exact only at the conditions the ratings are stated for (100 kHz and an ambient at or below 25 C). The T491 data sheet (archived, KEM_T2005_T491.pdf p.14, ledger sha256 c3c5bb70...) states I(max) = sqrt(P max / R) with R the ESR at the specified frequency, and its table values satisfy this (case A: sqrt(0.075/3) = 158 mA). It also gives temperature compensation multipliers of 1.00 / 0.90 / 0.40 at 25 / 85 / 125 C. Those multipliers are not bound in this change: the table title applies them to ripple current while the text applies them to P max, and binding them is a gapfill change with its own review. So above 25 C the check stays unknown. Below 100 kHz the check can prove a violation only (as in D054); above it, it stays unknown. The ESR heating row computes I^2 * maximum ESR from the sourced value, since the tantalum card itself has no ESR. Also fixed: the failure-approximation rerun now keeps the caller's transient step, stop time and observed nets (it used the defaults). No recipe, receipt, bench or record changed.
+
+## D060 — 2026-10-10: Proxy-review fixes for design runs (D056) and the AC path (D057)
+
+The owner merged #30 (D057) before its proxy review finished. The retroactive review blocked it, so these fixes are the first part of overnight item 5. AC path:
+- A missing operating-point value is no longer read as 0 V or 0 A: the component's AC checks report unknown.
+- A class with no AC translation, or a listed class whose limits are not bound, gets an explicit unknown "AC swing" row at each frequency, so no part passes an AC run on operating-point rows alone.
+- Linearity now reads continuation lines and counts POLY controlled sources and any include as nonlinear.
+- Each AC point prints and checks its solved frequency, so a failed solve cannot reuse the previous plot's vectors. Duplicated values drop the point, and a run missing any requested vector fails.
+- The tantalum ripple conditions (100 kHz, 25 C, RMS) are read from the record's own source scope instead of being assumed for the class. The exact ripple row also needs the thermal scope confirmed, like the ESR heating row.
+- `.save` and `.meas` are refused in AC decks, the sweep point limit counts the end point, and the AC result carries an explicit limitations list (unsourced parasitics, linearization, untranslated classes).
+
+Temperature ratings now follow their sources in every analysis:
+- The KEMET T491 rated voltage applies only up to 85 C ("rated VDC at 85 C" in the record scope). The KYOCERA AVX SCC ratings are 2.7 V at 65 C and 2.3 V at 85 C (fields rated_voltage_at_65C and rated_voltage_at_85C).
+- With no declared ambient, those rows can now only prove a violation. Before, they passed against the 85 C rating, which silently assumed a cool ambient; this was a D051 behaviour and is corrected in the operating-point, transient and AC branches alike.
+
+Design runs (from the #28 review):
+- A shared model name that is also a circuit or probe node is refused instead of renamed.
+- An oversized design is refused before any part is resolved.
+- A live test shows that a transient design beyond the rating-signal limit leaves every part unknown.

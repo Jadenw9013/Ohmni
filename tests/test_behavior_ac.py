@@ -66,7 +66,8 @@ def test_ac_excitation_is_explicit_rms_and_only_for_ac(registry, recipes):
 def test_ac_deck_marks_every_point_and_refuses_unsafe_requests():
     deck = ac_deck("t\nR1 a 0 1k\n.end\n", nodes=["a"], currents=["vp"], points_hz=[100e3],
                    sweep=(10.0, 1e6, 5), sweep_nodes=["a"])
-    assert "echo OHMNI_AC_POINT 0\nac lin 1 100000 100000\nprint real(v(a)) imag(v(a)) real(i(vp)) imag(i(vp))" in deck
+    assert ("echo OHMNI_AC_POINT 0\nac lin 1 100000 100000\n"
+            "print real(frequency) real(v(a)) imag(v(a)) real(i(vp)) imag(i(vp))") in deck
     assert deck.rstrip().endswith(".endc\n.end".rstrip()) and "ac dec 5 10 1000000" in deck
     for bad in ([], [0.0], [math.inf], [1.0] * 9):
         with pytest.raises(ValueError):
@@ -80,8 +81,8 @@ def test_ac_deck_marks_every_point_and_refuses_unsafe_requests():
 def test_parse_ac_attributes_values_by_marker_and_joins_column_groups():
     lines = [
         "OHMNI_AC_OP", "v(a) = 5.0", "i(vp) = -1e-3",
-        "OHMNI_AC_POINT 1", "real(v(a)) = 1.0", "imag(v(a)) = 2.0",
-        "OHMNI_AC_POINT 0", "real(v(a)) = 3.0",  # imaginary part missing: this point is dropped
+        "OHMNI_AC_POINT 1", "real(frequency) = 1000.0", "real(v(a)) = 1.0", "imag(v(a)) = 2.0",
+        "OHMNI_AC_POINT 0", "real(frequency) = 100.0", "real(v(a)) = 3.0",  # no imaginary part: dropped
         "OHMNI_AC_SWEEP",
         "Index   frequency       vm(a)           vp(a)",
         "0\t1.0e+01\t1.0\t0.0", "1\t1.0e+02\t0.5\t-1.0",
@@ -186,3 +187,76 @@ def test_design_ac_run_checks_ripple_against_the_sourced_rating(tmp_path):
     point = ok["ac"]["points"][0]
     node = next(n for n, v in point["node_voltages"].items() if abs(complex(*v)) > 0)
     assert abs(complex(*point["node_voltages"][node])) == pytest.approx(0.1 / (2 * math.pi * 1e5 * 10e-6), rel=2e-3)
+
+
+
+def test_parse_ac_refuses_a_point_whose_solved_frequency_or_values_do_not_match():
+    lines = ["OHMNI_AC_OP", "v(a) = 5.0",
+             # A failed solve prints the previous plot: its frequency gives it away.
+             "OHMNI_AC_POINT 0", "real(frequency) = 1000.0", "real(v(a)) = 1.0", "imag(v(a)) = 2.0",
+             "OHMNI_AC_POINT 1", "real(frequency) = 1000.0", "real(v(a)) = 1.0", "imag(v(a)) = 2.0",
+             "real(v(a)) = 9.0",
+             "OHMNI_AC_POINT 2", "real(v(a)) = 1.0", "imag(v(a)) = 2.0"]
+    assert parse_ac("\n".join(lines), [100.0, 1000.0, 10.0])["points"] == []
+
+
+def test_linearity_reads_continuations_poly_and_refuses_unscanned_files():
+    assert not circuit_is_linear("t\nL1 a b\n+ L='1u*(1+i(L1))'\n.end")
+    assert not circuit_is_linear("t\nE1 a 0 POLY(1) b 0 0 1 0.5\n.end")
+    assert not circuit_is_linear("t\n.include models.lib\nR1 a 0 1k\n.end")
+    assert circuit_is_linear("t\nE1 a 0 b 0 2\nR1 a 0 1k\n.end")
+
+
+def test_missing_operating_value_never_becomes_zero(registry, recipes):
+    choice = {"C1": BehaviorSelection(entry_id="OHM-033")}
+    compiled = compile_circuit(tantalum(recipes), registry, recipes, choice, analysis="ac",
+                               excitations=[ripple(0.1)], measure_currents=True)
+    result = fake_result(compiled, 0.150)
+    rail = next(c for c in compiled.components if c.ref == "C1").role_nodes["A"].lower()
+    del result["operating_point"]["node_voltages"][rail]
+    ratings = evaluate_ratings(compiled, result, registry, RatingContext(ambient_c=25, thermal_scope_confirmed=True))
+    c1 = rows(ratings)
+    assert c1["AC checks"]["status"] == "unknown" and "DC part" in c1["AC checks"]["reason"]
+    assert not any(name.endswith("at 100000 Hz") for name in c1)
+
+
+def test_a_part_without_an_ac_translation_cannot_pass_an_ac_run(registry, recipes):
+    """A resistor without its bound limits gets no AC row: the explicit unknown row keeps it from passing."""
+    choice = {"C1": BehaviorSelection(entry_id="OHM-033")}
+    compiled = compile_circuit(tantalum(recipes), registry, recipes, choice, analysis="ac",
+                               excitations=[ripple(0.1)], measure_currents=True)
+    r1 = next(c for c in compiled.components if c.ref == "R1")
+    stripped = r1.model_copy(update={"behavior_id": "BEH-LED-INDICATOR"})
+    compiled = compiled.model_copy(update={"components": [stripped if c.ref == "R1" else c for c in compiled.components]})
+    ratings = evaluate_ratings(compiled, fake_result(compiled, 0.150), registry,
+                               RatingContext(ambient_c=25, thermal_scope_confirmed=True))
+    row = rows(ratings, "R1")["AC swing at 100000 Hz"]
+    assert row["status"] == "unknown"
+    assert next(c for c in ratings["components"] if c["ref"] == "R1")["status"] == "unknown"
+
+
+def test_tantalum_ripple_needs_thermal_scope_and_an_ambient_for_its_rating(registry, recipes):
+    choice = {"C1": BehaviorSelection(entry_id="OHM-033")}
+    compiled = compile_circuit(tantalum(recipes), registry, recipes, choice, analysis="ac",
+                               excitations=[ripple(0.1)], measure_currents=True)
+    unconfirmed = rows(evaluate_ratings(compiled, fake_result(compiled, 0.150), registry, RatingContext(ambient_c=25)))
+    assert unconfirmed["ripple current (rating frequency) at 100000 Hz"]["status"] == "unknown"
+    no_ambient = rows(evaluate_ratings(compiled, fake_result(compiled, 0.150), registry, RatingContext()))
+    assert no_ambient["rated voltage"]["status"] == "unknown"
+    assert no_ambient["peak forward voltage (DC plus AC peak) at 100000 Hz"]["status"] == "unknown"
+    over = rows(evaluate_ratings(compiled, fake_result(compiled, 0.170), registry, RatingContext()))
+    assert over["ripple current (rating frequency) at 100000 Hz"]["status"] == "violation", \
+        "above the 25 C rating the ripple is over the limit at any ambient"
+
+
+def test_ripple_conditions_come_from_the_record_scope(registry, recipes):
+    choice = {"C1": BehaviorSelection(entry_id="OHM-033")}
+    compiled = compile_circuit(tantalum(recipes), registry, recipes, choice, analysis="ac",
+                               excitations=[ripple(0.1)], measure_currents=True)
+    c1 = next(c for c in compiled.components if c.ref == "C1")
+    evidence = dict(c1.parameter_evidence, irip_max=dict(c1.parameter_evidence["irip_max"], scope="KEMET T491"))
+    changed = compiled.model_copy(update={"components": [
+        c1.model_copy(update={"parameter_evidence": evidence}) if c.ref == "C1" else c for c in compiled.components]})
+    cool = RatingContext(ambient_c=25, thermal_scope_confirmed=True)
+    row = rows(evaluate_ratings(changed, fake_result(changed, 0.150), registry, cool))["ripple current at 100000 Hz"]
+    assert row["status"] == "unknown" and "not stated in its source scope" in row["reason"]
