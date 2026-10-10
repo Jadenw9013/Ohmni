@@ -129,7 +129,7 @@ def test_repository_product_scope_matches_human_approval():
         else:
             expected="IN_PROGRESS" if scope["id"]=="M10" else "COMPLETE"
             assert scope["status"]==expected, scope["id"]
-    assert state["approved_product_scope"]=="LANDING-PCB-CONTROLLER"
+    assert state["approved_product_scope"]=="COMPONENT-BEHAVIOR-COMPLETION"
     controller_approval=json.loads((root/".ai/approvals/LANDING-PCB-CONTROLLER.yaml").read_text())
     assert controller_approval["approved_by"]=="human"
     assert "use only real compnents" in controller_approval["instruction"]
@@ -252,20 +252,19 @@ def test_landing_p1_preserves_behavior_and_reviewed_plan_boundaries():
     assert next(scope for scope in tasks["scopes"] if scope["id"]==prior["scope"]["id"])==prior["scope"]
     current={task["id"]:task for task in tasks["tasks"]}
     for previous in prior["tasks"]:
-        actual=current[previous["id"]]
-        if previous["id"]!="CBH-STAGE6":
-            assert actual==previous
-            continue
-        assert previous["status"]=="IN_PROGRESS" and actual["status"]=="BLOCKED"
-        assert actual["blockers"] and "Human-priority deferral" in actual["blockers"][-1]
-        for key in previous.keys()-{"status","blockers","implementation"}:
-            assert actual[key]==previous[key],key
-        for key,value in previous["implementation"].items():
-            assert actual["implementation"][key]==value,key
-        assert actual["implementation"]["completed_at_commit"] is None
-        assert actual["verification"]["record"] is None
-        assert actual["review"]["status"]=="PENDING"
-    assert current["CBH-STAGE7"]["status"]=="APPROVED"
+        if previous["id"] not in {"CBH-STAGE5", "CBH-STAGE6", "CBH-STAGE7"}:
+            assert current[previous["id"]]==previous
+    assert "Ratings now cover every bound class" in current["CBH-STAGE5"]["blockers"][0]
+    stage6=current["CBH-STAGE6"]
+    assert stage6["status"]=="VERIFIED"
+    assert stage6["implementation"]["completed_at_commit"].startswith("689ebe6")
+    assert stage6["verification"]["record"]==".ai/verification/CBH-STAGE6.yaml"
+    assert stage6["review"]["status"]=="PENDING"
+    stage7=current["CBH-STAGE7"]
+    assert stage7["status"]=="IN_PROGRESS"
+    assert {item.split(":",1)[0] for item in stage7["blockers"]}=={
+        "AUD-SOURCE-001", "AUD-VERIFY-001", "AUD-PROTECT-001"
+    }
     assert current["CBH-STAGE7"]["dependencies"]==["CBH-STAGE6"]
     landing=[task for task in tasks["tasks"] if task["scope"]=="LANDING-PCB-P1"]
     assert [task["id"] for task in landing]==["LP-P1"]
