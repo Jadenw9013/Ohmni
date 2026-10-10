@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "id": "CS-T05",
+  "task": "CS-T05",
+  "scope": "COMPONENT-SYNTHESIS-1",
+  "status": "PASSED",
+  "commit": "02d31417ab138913bf2a507c2a1c9fa7b3279142",
+  "verified_at": "2026-10-10",
+  "summary": "Reusable data-record asset library for dual-row, QFN and QFP families with exposed-pad policy gates, byte-level mutation detection, immutable revision resolution and project-local portable KiCad export.",
+  "commands": [
+    {
+      "command": "python -m pytest tests/test_reusable_asset_library.py tests/test_architecture.py -q",
+      "result": "PASS",
+      "tests": 83
+    },
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "PASS",
+      "tests": 2193,
+      "skipped": 82,
+      "deselected": 52
+    },
+    {
+      "command": "python scripts/verify.py integration",
+      "result": "PASS",
+      "tests": 27,
+      "skipped": 7,
+      "deselected": 2293
+    },
+    {
+      "command": "node --test apps/web/tests/*.test.mjs",
+      "result": "PASS",
+      "tests": 1043
+    },
+    {
+      "command": "python -m ruff check src/ohmni/eda/kicad/reusable_asset_library.py tests/test_reusable_asset_library.py",
+      "result": "PASS"
+    },
+    {
+      "command": "python scripts/ai_state.py validate",
+      "result": "PASS"
+    }
+  ],
+  "acceptance": {
+    "second_family_data_only": "SOIC-8 and TSSOP-8 use the same compiler with different immutable rows; no per-MPN branch exists.",
+    "mutation_rejection": "Independent byte parser detects pad set, coordinate, dimension and mirrored/orientation mutations.",
+    "policy_gates": "Exposed-pad paste and thermal policies fail closed unless exactly supported.",
+    "portable_export": "Only the requested destination receives .pretty, symbols, local tables and manifest files.",
+    "immutable_resolver": "Resolution requires asset ID plus exact record hash and validates byte digests."
+  },
+  "limitations": [
+    "Only explicit per-pad or solid exposed-pad paste is implemented; custom/windowed paste blocks.",
+    "Thermal vias and custom thermal policy block.",
+    "Electrical pin types remain unspecified until CS-T07.",
+    "Source-verified geometry records are required inputs; this task does not synthesize source evidence."
+  ]
+}

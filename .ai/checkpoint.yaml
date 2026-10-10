@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "active_task": null,
-  "last_known_commit": "e64ccdd5",
-  "approval_record": ".ai/approvals/COMPONENT-ATLAS-BUILDER-1.yaml",
+  "last_known_commit": "f2c8aa05",
+  "approval_record": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
   "previous_checkpoint": {
     "schema_version": 1,
     "active_task": null,
@@ -34,17 +34,17 @@
   },
   "modified_files": [],
   "completed_substeps": [
-    "Independently re-reviewed CS-T03 implementation and acceptance criteria against the pinned real manufacturer PDF and focused rejection suites.",
-    "Recorded CS-T03 PASSED and COMPLETE with no open BLOCKER/HIGH finding.",
-    "Kept CS-T02-R01 OPEN at MEDIUM: the pinned offline proof passes, but no credential or live provider response exists.",
-    "Recorded the owner instruction closing the remaining VIS-T01, VIS-T02 and LP-P1 review gates; all three are COMPLETE with their limitations preserved."
+    "CS-T05 selected and activated from origin/main f2c8aa05.",
+    "Implemented immutable source-bound asset records and reusable dual-row/QFN/QFP family compilation.",
+    "Added explicit exposed-pad paste/thermal refusal gates, byte-level mutation detection and exact revision resolver.",
+    "Added portable project-local KiCad export and real KiCad load coverage.",
+    "All required gates passed."
   ],
   "remaining_work": [
-    "Merge the CS-T03 review PR.",
-    "From the resulting latest origin/main, run ai_state.py next, activate CS-T05 and implement it in its own PR.",
-    "After CS-T05 merges, activate and implement CS-T06 in its own PR."
+    "Open and merge the CS-T05 PR.",
+    "After merge, branch from latest origin/main and activate CS-T06."
   ],
-  "last_failure": "The first fast run correctly caught the stale approved_product_scope assertion after returning execution to COMPONENT-SYNTHESIS-1. One unrelated local HTTP test was aborted by host socket policy; its outside-sandbox isolated rerun passed. No product failure remains.",
-  "resume_action": "After this PR merges, fetch origin/main and require ai_state.py next to select CS-T05 before implementation.",
-  "last_command": "Gates: CS-T03 focused real-corpus suite PASS; fast run 2258 passed/51 deselected with two failures, both resolved by the scope assertion update and successful isolated rerun of the sandbox-aborted local HTTP test; integration 31 passed/2 skipped; frontend 1043 passed; changed-file Ruff and ai_state validate PASS."
+  "last_failure": null,
+  "resume_action": "After CS-T05 merges, fetch origin/main, require ai_state.py next to select CS-T06, then implement persistent admission infrastructure.",
+  "last_command": "fast 2193 passed; integration 27 passed; frontend 1043 passed; focused 83 passed; Ruff and ai_state validate pass."
 }
