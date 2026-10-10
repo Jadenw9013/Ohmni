@@ -16,6 +16,7 @@ from ohmni.domain.component_atlas import (
 )
 from ohmni.eda.kicad.placement import golden_board_constraints
 from ohmni.eda.models import ErcStatus
+from ohmni.eda.pcb_models import DrcStatus
 from ohmni.physical.models import PlacementConstraint, PlacementConstraintKind, PlacementRegion
 
 
@@ -194,3 +195,30 @@ def test_real_build_boundary_preserves_erc_unavailable(tmp_path, golden, catalog
     )
     assert outcome.status is LayoutValidationStatus.EDA_UNAVAILABLE
     assert outcome.details == ("KiCad ERC is unavailable",)
+
+
+@pytest.mark.slow_integration
+def test_real_compiler_router_parser_and_manufacturing_chain(tmp_path, golden, catalog):
+    class Report:
+        def __init__(self, status):
+            self.status = status
+
+        def model_dump_json(self, **kwargs):
+            return '{"result":"independently supplied EDA pass"}'
+
+    class PassingEda:
+        def run_erc(self, artifact):
+            return Report(ErcStatus.PASS)
+
+        def run_drc(self, artifact):
+            return Report(DrcStatus.PASS)
+
+    outcome = KiCadLayoutBuildEngine(catalog, eda=PassingEda()).run(
+        golden, golden_board_constraints(), tmp_path,
+    )
+    assert outcome.status is LayoutValidationStatus.VALID
+    assert outcome.parsed_artifact_checked
+    assert all((outcome.schematic_sha256, outcome.erc_sha256,
+                outcome.placed_pcb_sha256, outcome.routed_pcb_sha256,
+                outcome.routing_plan_sha256, outcome.drc_sha256,
+                outcome.manufacturing_sha256))
