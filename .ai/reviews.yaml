@@ -570,6 +570,17 @@
         "Native USB NPTH hole-clearance findings fixed by conservative source-derived routing obstacles, not suppressed.",
         "Real app exact asset allowlist, MIME and directory alias added; actual app hash parity and zero-browser-error checks passed."
       ]
+    },
+    {
+      "id": "CS-T04-INDEPENDENT-REREVIEW-2026-10-09",
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "task": "CS-T04",
+      "reviewer": "independent-reviewer-codex",
+      "independent": true,
+      "status": "PASSED",
+      "commit": "465046f6d90a9af3c915f0017b0b4015cc7816dc",
+      "record": ".ai/verification/CS-T01-T04-REMEDIATION-2.yaml",
+      "notes": "Fresh re-review of NEW-1..NEW-7 inspected the final committed implementation and regressions. The Windows kernel read-back test mutates the job-object limit behind the library; the import test uses -S to exclude editable-install leakage; requested renders and missing worker metadata fail closed; review IDs are unique; and the verification wording states the exact falsifiability limits. Focused synthesis/remediation tests passed. No open BLOCKER or HIGH finding remains for CS-T04."
     }
   ],
   "findings": [
