@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "id": "CAB-T06",
+  "task": "CAB-T06",
+  "scope": "COMPONENT-ATLAS-BUILDER-1",
+  "status": "PASSED",
+  "commit": "78e2463b66ecfea06c1a614ba66fd88d2d09f83f",
+  "verified_at": "2026-10-09",
+  "results": [
+    {
+      "command": "pytest tests/test_layout_validation.py tests/test_layout_drafts.py tests/test_physical_constraints.py tests/test_generated_placement.py tests/test_routing.py -q",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "command": "pytest tests/test_layout_validation.py::test_real_compiler_router_parser_and_manufacturing_chain -m slow_integration -q",
+      "exit_code": 0,
+      "passed": 1
+    },
+    {
+      "command": "scripts/verify.py fast",
+      "exit_code": 0,
+      "passed": 2172,
+      "skipped": 82,
+      "deselected": 50,
+      "seconds": 428.87
+    },
+    {
+      "command": "scripts/verify.py integration",
+      "exit_code": 1,
+      "passed": 14,
+      "failed": 12,
+      "skipped": 7,
+      "deselected": 2271,
+      "seconds": 194.02,
+      "classification": "external_environment",
+      "detail": "One Windows listener inspection returned no owner, Chromium CDP initialization failed, and ten KiCad-dependent checks could not run because KiCad exited after the sandbox denied creation of C:/Users/wongj/Documents/KiCad. No failure exercised CAB-T06 code."
+    },
+    {
+      "command": "python -m ruff check src/ohmni/application/layout_validation.py src/ohmni/physical/placement.py tests/test_layout_validation.py",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    }
+  ],
+  "acceptance_evidence": [
+    "Catalog-backed physical verification rejects overlapping, out-of-bounds, generic keepout and ESP32 antenna-edge placements before build execution.",
+    "Routing failures, ERC/DRC failures, manufacturing failures and unavailable KiCad remain distinct non-success states.",
+    "A valid receipt binds the immutable base revision and artifact, catalog snapshot, draft, circuit, board, physical report, schematic, ERC, placed and routed PCB, routing plan, DRC and manufacturing fingerprints.",
+    "Parsed routed-PCB lineage must match emitted bytes, board constraints and routing plan before a download can be current.",
+    "The server-side current-download check rejects the previous receipt immediately after any draft edit."
+  ],
+  "limitations": [
+    "The native KiCad CLI could not run in this sandbox because its user configuration directory was denied; the implementation preserves this as EDA_UNAVAILABLE or an EDA failure and never converts it to PASS.",
+    "The manufacturing profile is the repository's explicit synthetic prototype profile and remains subject to human fabricator review.",
+    "CAB-T07 owns electrically admitting a new component; CAB-T06 moves and validates only components already present in the immutable circuit."
+  ]
+}

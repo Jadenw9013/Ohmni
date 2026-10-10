@@ -90,7 +90,13 @@ def _pose(ref, x, y, reason):
     return ComponentPlacement(component_ref=ref, x_mm=x, y_mm=y, reason=reason)
 
 
-def _resolve(circuit, catalog):
+def resolve_physical_bindings(circuit, catalog):
+    """Resolve authoritative footprint and pin-to-pad bindings for a circuit.
+
+    Layout validation reuses the same catalog-backed resolution as generated
+    placement.  Keeping this public avoids a second, subtly different binding
+    path for edited boards.
+    """
     definitions, ids, bindings = {}, {}, []
     nets = {(pin.component, pin.pin): net.name for net in circuit.nets for pin in net.connections}
     for component in circuit.components:
@@ -160,7 +166,7 @@ def _generate_placement(circuit, request, catalog):
             raise PlacementFailure(PlacementFailureCode.UNSUPPORTED_ORIENTATION, f"Constraint {rule.constraint_id} requires another rotation")
         if rule.fixed_pose and (rule.fixed_pose.rotation_deg != 0 or rule.fixed_pose.side != "F.Cu"):
             raise PlacementFailure(PlacementFailureCode.UNSUPPORTED_ORIENTATION, f"Constraint {rule.constraint_id} requires another pose")
-    fps, ids, bindings = _resolve(circuit, catalog)
+    fps, ids, bindings = resolve_physical_bindings(circuit, catalog)
     # Repeated pad numbers (e.g. both legs of a switch terminal) identify one
     # electrical terminal. A real first land anchors the length heuristic;
     # explicit proximity constraints still require an unambiguous pad.

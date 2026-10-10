@@ -624,6 +624,16 @@
       "status": "PASSED",
       "commit": "0b59d93a2009a8fa4e10d438fea6b378c1a93d52",
       "notes": "Self-review covered immutable server ownership, exact identity and sequence enforcement, deterministic move/undo/redo replay, physical-only invalidation, electrical identity preservation, stale-base rejection, source-byte preservation, discard, and new revision lineage. Undo/redo invalidation was corrected to follow the targeted physical move. CAB-T06 retains authoritative geometry, routing and native-tool validation."
+    },
+    {
+      "id": "CAB-T06-SELF",
+      "scope": "COMPONENT-ATLAS-BUILDER-1",
+      "task": "CAB-T06",
+      "reviewer": "implementation-agent",
+      "independent": false,
+      "status": "PASSED",
+      "commit": "78e2463b66ecfea06c1a614ba66fd88d2d09f83f",
+      "notes": "Self-review covered fail-closed geometry, catalog-backed footprint/pad resolution, explicit routing and EDA failure states, parsed PCB lineage, manufacturing status, draft/base/catalog/artifact fingerprints, and server-side download freshness. The composed slow acceptance test exercises the real compiler/router/parser/manufacturing chain with an isolated passing EDA boundary. Native KiCad remains unavailable in the sandbox and is not reported as a pass."
     }
   ],
   "findings": [
