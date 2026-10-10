@@ -228,6 +228,41 @@ class DraftContext(AtlasContract):
         return self
 
 
+class DraftCommandRecord(AtlasContract):
+    sequence: Sequence
+    idempotency_key: Identifier
+    request_sha256: Digest
+    command: DraftCommand
+
+
+class BoardDraft(AtlasContract):
+    """Server-owned replayable placement draft bound to one immutable revision."""
+
+    context: DraftContext
+    source_revision_number: Annotated[int, Field(strict=True, ge=1)]
+    source_bytes_sha256: Digest
+    circuit_sha256: Digest
+    parts_sha256: Digest
+    nets_sha256: Digest
+    pads_sha256: Digest
+    base_placements: Annotated[tuple[tuple[Identifier, PlacementTarget], ...], Field(max_length=2048)]
+    placements: Annotated[tuple[tuple[Identifier, PlacementTarget], ...], Field(max_length=2048)]
+    commands: Annotated[tuple[DraftCommandRecord, ...], Field(max_length=10000)] = ()
+    invalidated: tuple[InvalidatedStage, ...] = ()
+
+    @model_validator(mode="after")
+    def placement_refs_are_exact(self) -> Self:
+        base = [ref for ref, _ in self.base_placements]
+        current = [ref for ref, _ in self.placements]
+        if len(base) != len(set(base)) or len(current) != len(set(current)):
+            raise ValueError("Draft placement references must be unique")
+        if tuple(sorted(base)) != tuple(sorted(self.context.existing_components)):
+            raise ValueError("Base placements must cover the server-owned components exactly")
+        if sorted(base) != sorted(current):
+            raise ValueError("A layout draft cannot add or remove components")
+        return self
+
+
 class Eligibility(StrEnum):
     LEARN_ONLY = "LEARN_ONLY"
     PLACEMENT_ELIGIBLE = "PLACEMENT_ELIGIBLE"
@@ -315,3 +350,6 @@ def check_request_binding(request: DraftCommandRequest, context: DraftContext,
         raise ValueError("Component is absent from the server-owned base board")
     if isinstance(request.command, (Undo, Redo)) and request.command.target_sequence >= request.sequence:
         raise ValueError("Undo/redo must reference an earlier command")
+
+
+BoardDraft.model_rebuild()

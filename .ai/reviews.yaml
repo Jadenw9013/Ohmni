@@ -614,6 +614,16 @@
       "commit": "465046f6d90a9af3c915f0017b0b4015cc7816dc",
       "record": ".ai/verification/CS-T01-T04-REMEDIATION-2.yaml",
       "notes": "Fresh re-review of NEW-1..NEW-7 inspected the final committed implementation and regressions. The Windows kernel read-back test mutates the job-object limit behind the library; the import test uses -S to exclude editable-install leakage; requested renders and missing worker metadata fail closed; review IDs are unique; and the verification wording states the exact falsifiability limits. Focused synthesis/remediation tests passed. No open BLOCKER or HIGH finding remains for CS-T04."
+    },
+    {
+      "id": "CAB-T05-SELF",
+      "scope": "COMPONENT-ATLAS-BUILDER-1",
+      "task": "CAB-T05",
+      "reviewer": "implementation-agent",
+      "independent": false,
+      "status": "PASSED",
+      "commit": "0b59d93a2009a8fa4e10d438fea6b378c1a93d52",
+      "notes": "Self-review covered immutable server ownership, exact identity and sequence enforcement, deterministic move/undo/redo replay, physical-only invalidation, electrical identity preservation, stale-base rejection, source-byte preservation, discard, and new revision lineage. Undo/redo invalidation was corrected to follow the targeted physical move. CAB-T06 retains authoritative geometry, routing and native-tool validation."
     }
   ],
   "findings": [
