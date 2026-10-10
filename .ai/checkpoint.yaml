@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "active_task": "CS-T08",
-  "last_known_commit": "26243492",
+  "active_task": null,
+  "last_known_commit": "01370a706b27d276addced8d4aa7cc1f9ffcef9e",
   "approval_record": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
   "previous_checkpoint": {
     "schema_version": 1,
@@ -39,13 +39,18 @@
     ".ai/reviews.yaml",
     ".ai/verification/CS-T07.yaml"
   ],
-  "completed_substeps": [],
-  "remaining_work": [
-    "Implement typed component resolution before synthesis and durable import/resume.",
-    "Integrate admitted parts into functional placement and the real board pipeline with exact lineage.",
-    "Expose the same active catalog snapshot through MCP and prove negative requests cannot bypass import."
+  "completed_substeps": [
+    "CS-T08 implementation committed at 01370a706b27d276addced8d4aa7cc1f9ffcef9e.",
+    "Typed resolution persists WAITING_IMPORT and rejects bypass; resume binds active admitted revisions and the catalog snapshot.",
+    "An admitted test part completed semantic, ERC, functional placement, routing, DRC, fabrication and download-lineage checks.",
+    "Fast passed 2231 tests; integration passed 28 tests; scoped Ruff passed.",
+    "Slow verification recorded the unchanged 298-versus-297 route segment baseline failure."
   ],
-  "last_failure": null,
-  "resume_action": "Continue CS-T08 from the clean origin/main worktree and run its acceptance tests.",
-  "last_command": "CS-T08 activated from origin/main after PR #29 merged."
+  "remaining_work": [
+    "Open and review the CS-T08 pull request.",
+    "CAB-T07 and CS-T09 are ready but have not been started."
+  ],
+  "last_failure": "External baseline: tests/test_routing.py expects 297 track segments while unchanged origin/main routing emits 298. Global Ruff findings are confined to protected behavior paths.",
+  "resume_action": "Open and review the CS-T08 PR; choose the next approved ready task after merge.",
+  "last_command": "CS-T08 implementation verification and self-review completed."
 }
