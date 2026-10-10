@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "active_task": null,
-  "last_known_commit": "317f98e7b340c9ef423304acfa85f7eb91593417",
+  "active_task": "CS-T07",
+  "last_known_commit": "4fa890a4",
   "approval_record": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
   "previous_checkpoint": {
     "schema_version": 1,
@@ -35,22 +35,18 @@
   "modified_files": [
     ".ai/tasks.yaml",
     ".ai/state.yaml",
-    ".ai/checkpoint.yaml",
-    ".ai/reviews.yaml",
-    ".ai/verification/CS-T06.yaml"
+    ".ai/checkpoint.yaml"
   ],
   "completed_substeps": [
-    "CS-T06 selected and activated from origin/main 11b28652 after PR #25 merged.",
-    "Implemented versioned rollback-safe SQLite migrations and content-addressed blob commits before publication.",
-    "Implemented immutable quarantined revisions, report lineage, exact snapshots, append-only revocations and disabled activation.",
-    "Covered concurrent duplicate imports, idempotency conflicts, interrupted sequences, restart and hash rechecks.",
-    "Focused, fast, integration, frontend, Ruff and ledger gates passed."
+    "CS-T07 selected and activated from origin/main 4fa890a4 after PR #27 merged."
   ],
   "remaining_work": [
-    "Open and merge the CS-T06 PR.",
-    "After merge, branch from latest origin/main and activate CS-T07."
+    "Implement ComponentSpec construction from checked electrical claims.",
+    "Implement explicit required-fact, applicable-rule and requested-capability admission gates.",
+    "Enable active discovery only for revisions carrying a passing gate decision.",
+    "Run required verification and open the CS-T07 PR."
   ],
   "last_failure": null,
-  "resume_action": "After CS-T06 merges, fetch origin/main, require ai_state.py next to select CS-T07, then implement electrical profile and admission gates.",
-  "last_command": "fast 2203 passed; integration 27 passed; frontend 1043 passed; focused 10 passed; Ruff and ai_state validate pass."
+  "resume_action": "Continue CS-T07 electrical profiles and admission gates without touching protected behavior paths.",
+  "last_command": "Fetched origin/main 4fa890a4, confirmed ai_state.py next selects CS-T07, and activated the task."
 }

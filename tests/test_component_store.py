@@ -48,7 +48,7 @@ def test_schema_is_versioned_and_restart_safe(tmp_path: Path):
         assert db.execute("PRAGMA user_version").fetchone()[0] == LATEST_SCHEMA_VERSION
         assert db.execute(
             "SELECT version FROM component_schema_migrations ORDER BY version"
-        ).fetchall() == [(1,), (2,)]
+        ).fetchall() == [(version,) for version in range(1, LATEST_SCHEMA_VERSION + 1)]
 
 
 def test_failed_migration_rolls_back_schema_and_version(tmp_path: Path):

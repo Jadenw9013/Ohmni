@@ -24,8 +24,10 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 
+from ..domain.component_admission import AdmissionRequest, evaluate_admission
+
 SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
-LATEST_SCHEMA_VERSION = 2
+LATEST_SCHEMA_VERSION = 3
 
 
 class ComponentStoreError(RuntimeError):
@@ -62,6 +64,18 @@ class QuarantinedRevision:
     revision_id: str
     component_key: str
     record_digest: str
+    publication_digest: str
+    state: str
+    assets: tuple[BlobReference, ...]
+    reports: tuple[ReportReference, ...]
+
+
+@dataclass(frozen=True)
+class ActiveRevision:
+    revision_id: str
+    component_key: str
+    record_digest: str
+    publication_digest: str
     state: str
     assets: tuple[BlobReference, ...]
     reports: tuple[ReportReference, ...]
@@ -158,6 +172,18 @@ _MIGRATIONS = (
                 "catalog_snapshot_entries",
                 "component_revocations",
             ),
+        ),
+    ),
+    Migration(
+        version=3,
+        statements=(
+            """CREATE TABLE component_activations (
+                revision_id TEXT PRIMARY KEY REFERENCES component_revisions(revision_id),
+                decision_digest TEXT NOT NULL UNIQUE,
+                decision_json TEXT NOT NULL,
+                activated_at TEXT NOT NULL
+            )""",
+            *_immutable_triggers("component_activations"),
         ),
     ),
 )
@@ -398,6 +424,7 @@ class ComponentStore:
             revision_id=row["revision_id"],
             component_key=row["component_key"],
             record_digest=row["record_digest"],
+            publication_digest=row["publication_digest"],
             state=row["state"],
             assets=assets,
             reports=reports,
@@ -414,13 +441,97 @@ class ComponentStore:
             )
         return tuple(self.revision(identifier) for identifier in identifiers)
 
-    def discover_active(self) -> tuple[QuarantinedRevision, ...]:
-        """CS-T06 has no active state, so design discovery is always empty."""
-        return ()
+    def discover_active(self) -> tuple[ActiveRevision, ...]:
+        """Return only admitted, non-revoked revisions for design discovery."""
+        with self._connection() as db:
+            identifiers = tuple(
+                row[0]
+                for row in db.execute(
+                    """SELECT a.revision_id FROM component_activations a
+                    JOIN component_revisions r ON r.revision_id=a.revision_id
+                    LEFT JOIN component_revocations x ON x.revision_id=a.revision_id
+                    WHERE x.revision_id IS NULL
+                    ORDER BY r.component_key, r.revision_id"""
+                )
+            )
+        active: list[ActiveRevision] = []
+        for identifier in identifiers:
+            revision = self.revision(identifier)
+            active.append(ActiveRevision(
+                revision_id=revision.revision_id,
+                component_key=revision.component_key,
+                record_digest=revision.record_digest,
+                publication_digest=revision.publication_digest,
+                state="ACTIVE",
+                assets=revision.assets,
+                reports=revision.reports,
+            ))
+        return tuple(active)
 
-    def activate(self, revision_id: str) -> None:
-        del revision_id
-        raise ActivationDisabledError("component activation is disabled until CS-T07 gates pass")
+    def activate(self, request: AdmissionRequest) -> ActiveRevision:
+        """Rerun CS-T07 gates and activate their exact passing publication."""
+        if not isinstance(request, AdmissionRequest):
+            raise ActivationDisabledError(
+                "direct activation is disabled; a complete CS-T07 AdmissionRequest is required"
+            )
+        request = AdmissionRequest.model_validate(request.model_dump(mode="json"))
+        decision = evaluate_admission(request)
+        if not decision.admitted or decision.component_spec is None:
+            raise ActivationDisabledError("the CS-T07 admission decision did not pass")
+        decision_json = _canonical_json(decision.model_dump(mode="json"))
+        if _text_digest(decision_json) != decision.decision_digest:
+            raise ComponentStoreError("admission decision digest does not match its content")
+        with self._connection() as db:
+            db.execute("BEGIN IMMEDIATE")
+            try:
+                row = db.execute(
+                    "SELECT publication_digest FROM component_revisions WHERE revision_id=?",
+                    (decision.revision_id,),
+                ).fetchone()
+                if row is None:
+                    raise KeyError(decision.revision_id)
+                if row["publication_digest"] != decision.publication_digest:
+                    raise ComponentStoreError(
+                        "admission decision was evaluated for different publication content"
+                    )
+                if db.execute(
+                    "SELECT 1 FROM component_revocations WHERE revision_id=?",
+                    (decision.revision_id,),
+                ).fetchone() is not None:
+                    raise ComponentStoreError("a revoked revision cannot be activated")
+                prior = db.execute(
+                    "SELECT decision_digest FROM component_activations WHERE revision_id=?",
+                    (decision.revision_id,),
+                ).fetchone()
+                if prior is not None:
+                    if prior["decision_digest"] != decision.decision_digest:
+                        raise IdempotencyConflictError(
+                            "revision was already activated by a different decision"
+                        )
+                    db.rollback()
+                    return self._active_revision(decision.revision_id)
+                db.execute(
+                    "INSERT INTO component_activations VALUES (?, ?, ?, ?)",
+                    (decision.revision_id, decision.decision_digest, decision_json, _now()),
+                )
+            except Exception:
+                db.rollback()
+                raise
+            else:
+                db.commit()
+        return self._active_revision(decision.revision_id)
+
+    def _active_revision(self, revision_id: str) -> ActiveRevision:
+        revision = self.revision(revision_id)
+        return ActiveRevision(
+            revision_id=revision.revision_id,
+            component_key=revision.component_key,
+            record_digest=revision.record_digest,
+            publication_digest=revision.publication_digest,
+            state="ACTIVE",
+            assets=revision.assets,
+            reports=revision.reports,
+        )
 
     def create_snapshot(self, revision_ids: Sequence[str]) -> str:
         """Pin exact non-revoked revisions; snapshots do not imply activation."""
@@ -529,6 +640,7 @@ class ComponentStore:
 __all__ = [
     "LATEST_SCHEMA_VERSION",
     "ActivationDisabledError",
+    "ActiveRevision",
     "BlobNotCommittedError",
     "BlobReference",
     "ComponentStore",
