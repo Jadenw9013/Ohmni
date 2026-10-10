@@ -129,7 +129,7 @@ def test_repository_product_scope_matches_human_approval():
         else:
             expected="IN_PROGRESS" if scope["id"]=="M10" else "COMPLETE"
             assert scope["status"]==expected, scope["id"]
-    assert state["approved_product_scope"]=="COMPONENT-BEHAVIOR-COMPLETION"
+    assert state["approved_product_scope"]=="COMPONENT-ATLAS-BUILDER-1"
     controller_approval=json.loads((root/".ai/approvals/LANDING-PCB-CONTROLLER.yaml").read_text())
     assert controller_approval["approved_by"]=="human"
     assert "use only real compnents" in controller_approval["instruction"]
@@ -265,12 +265,13 @@ def test_landing_p1_preserves_behavior_and_reviewed_plan_boundaries():
     assert stage6["review"]["independent"] is True
     assert stage6["review"]["status"]=="FINDINGS_OPEN"
     stage7=current["CBH-STAGE7"]
-    assert stage7["status"]=="IN_PROGRESS"
+    assert stage7["status"]=="BLOCKED"
     assert {item.split(":",1)[0] for item in stage7["blockers"]}=={
         "AUD-SOURCE-001", "AUD-VERIFY-001", "AUD-PROTECT-001"
     }
     assert stage7["review"]["independent"] is True
     assert stage7["review"]["status"]=="FINDINGS_OPEN"
+    assert current["CAB-T05"]["status"]=="IN_PROGRESS"
     assert current["CBH-STAGE7"]["dependencies"]==["CBH-STAGE6"]
     landing=[task for task in tasks["tasks"] if task["scope"]=="LANDING-PCB-P1"]
     assert [task["id"] for task in landing]==["LP-P1"]

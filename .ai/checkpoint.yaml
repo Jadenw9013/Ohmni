@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "active_task": "CBH-STAGE7",
-  "last_known_commit": "a965d98f25b5262b81a440206c4e8b17008d1e15",
-  "approval_record": ".ai/approvals/COMPONENT-BEHAVIOR-COMPLETION.yaml",
+  "active_task": "CAB-T05",
+  "last_known_commit": "43f71bd371e3acb8f7cce0015c0a1f5e2ae9a8ee",
+  "approval_record": ".ai/approvals/COMPONENT-ATLAS-BUILDER-1.yaml",
   "previous_checkpoint": {
     "schema_version": 1,
     "active_task": null,
@@ -34,21 +34,16 @@
   },
   "modified_files": [],
   "completed_substeps": [
-    "PR #2 merged at 689ebe629064aad0d201c80a77957ab386c45834: Stage 6 behavior UI work landed and approved USB Type-C and MCP1700 source bindings were reconciled.",
-    "PR #3 merged at acdd7e37cf176bee066d0b768f9e327d3f228043: D048 fitted per-part models for the 42 audited-simulable entries and switched own-curve bindings to source-bound probes.",
-    "PR #4 merged at f1fb90c727b325b2656fdb1ecad6fdd8904c3073: D049 bound 30 additional entries and added shared DC path checks, reaching 72 of 180 audited-simulable entries.",
-    "PR #5 merged at f2dabaf1613551915653c72da434206ce1c3cf4b: D050 added transient, dual-diode and high-power LED checks for the last four resolvable entries, reaching 76 of 180.",
-    "PR #6 merged at 42961353c1b6f111c8a11c82aed5620f6f31ebb0: the generated behavior UI script was marked binary to keep its audited hash byte-exact across checkouts.",
-    "PR #7 merged at 86aba76e5aadebf6b36ec45b9313268e7f400e23: D051 added rating checks for every class newly bound in D049-D050 while preserving conditional unknowns.",
-    "PR #8 merged at 786db1c218462756b2d7c5f21c0bc4eb44cb6cce: D052 added open connector mating roles, the sourced mains-choke voltage rating and the seven-dead-source finding.",
-    "PR #9 merged at a965d98f25b5262b81a440206c4e8b17008d1e15: D053 applied the approved connector-voltage policy and owner-gated OHM-066 Schottky class addition, reaching 77 of 180."
+    "Owner set CBH-STAGE7 BLOCKED on exactly AUD-SOURCE-001, AUD-VERIFY-001 and AUD-PROTECT-001.",
+    "CS-T04 independently re-reviewed and completed in PR #13.",
+    "CAB-T05 activated from latest origin/main."
   ],
   "remaining_work": [
-    "AUD-SOURCE-001: obtain owner-approved superseding documents for the 7 dead cited URLs.",
-    "AUD-VERIFY-001: run a fresh independent verifier round after the source blockers close.",
-    "AUD-PROTECT-001: evaluate the protected-state check in the owner's Windows checkout."
+    "Implement server-owned immutable BoardDraft and deterministic command replay.",
+    "Test stale-base conflicts, complete physical invalidation, electrical identity preservation, discard and new-revision commit.",
+    "Run repository validation and required test suites, then open a PR."
   ],
   "last_failure": null,
-  "resume_action": "Resume CBH-STAGE7 by closing AUD-SOURCE-001 with owner-approved superseding documents, then run the fresh verifier round and the owner-Windows protected-state evaluation. Preserve unknown results for transient stress, nonquantitative rules and condition-incomplete limits.",
-  "last_command": "Ledger reconciliation validated; fast verification passed (2148 passed, 82 skipped, 50 deselected) and integration passed (26 passed, 7 skipped, 2247 deselected)."
+  "resume_action": "Continue CAB-T05 only; preserve protected behavior paths and do not begin CAB-T06.",
+  "last_command": "Fetched origin/main at 43f71bd3 and activated CAB-T05 under the owner's explicit instruction."
 }
