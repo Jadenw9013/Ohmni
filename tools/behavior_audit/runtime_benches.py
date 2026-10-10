@@ -744,6 +744,8 @@ def _dc_probe_receipt_errors(audit, entry_id, variant):
 TRAN_PROBES = {
     "BEH-CAP-MICA": {"current": 1e-5, "ramp": 1e-9, "time": 5e-6, "tstop": 6e-6, "tstep": "1n",
                      "tolerance": 1e-3, "contract": "BEH-CAP-MICA/B1"},
+    "BEH-CAP-FILM": {"current": 1e-3, "ramp": 1e-9, "time": 1e-3, "tstop": 1.1e-3, "tstep": "1u",
+                     "tolerance": 1e-3, "contract": "BEH-CAP-FILM/B1"},
     "BEH-CAP-EDLC": {"current": None, "ramp": 1e-3, "time": 10.0, "tstop": 10.5, "tstep": "0.01",
                      "tolerance": 1e-2, "contract": "BEH-CAP-EDLC/B3"},
 }

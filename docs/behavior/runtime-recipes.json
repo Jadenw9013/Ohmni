@@ -1108,6 +1108,69 @@
         "ESR is bound as the sourced 100 kHz, 25 C maximum, constant with frequency (D058): impedance, ripple voltage and ESR loss are worst-case upper bounds at and near 100 kHz; real ESR is lower than the maximum and changes with frequency and temperature. In parallel with other capacitors this ESR shifts ripple current toward them, so their current checks are not conservative. ESL is unsourced and not modeled."
       ]
     },
+    "OHM-037": {
+      "entry_id": "OHM-037",
+      "behavior_id": "BEH-CAP-FILM",
+      "package": "WIMA MKS 4 radial box, PCM 10 mm, 13 x 5 x 11 mm",
+      "reference_part": "WIMA MKS4G031003F (MKS 4 PET, 0.1 uF, 400 VDC/200 VAC)",
+      "terminal_roles": {
+        "1": "T1",
+        "2": "T2"
+      },
+      "critical_facts": {
+        "value": {
+          "field": "nominal_capacitance",
+          "unit": "uF",
+          "output_unit": "F",
+          "scope_contains": "MKS4G031003F"
+        },
+        "vr": {
+          "field": "rated_voltage",
+          "unit": "V DC",
+          "scope_contains": "MKS4G031003F"
+        },
+        "vac": {
+          "field": "rated_ac_voltage_50Hz",
+          "unit": "V rms",
+          "scope_contains": "MKS4G031003F"
+        },
+        "derate_pct_per_k": {
+          "field": "mks4_voltage_derating",
+          "unit": "percent/K",
+          "scope_contains": "MKS4G031003F"
+        },
+        "t_max": {
+          "field": "mks4_operating_temperature_max",
+          "unit": "C",
+          "scope_contains": "MKS4G031003F"
+        },
+        "rleak": {
+          "field": "minimum_insulation_resistance",
+          "unit": "ohm",
+          "scope_contains": "MKS4G031003F"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "C{ref} {T1} {T2} {value}\nR{ref}_lk {T1} {T2} {rleak}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 1749
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Explicit reference WIMA MKS4G031003F, chosen because it is the only 0.1 uF row in the archived WIMA 2026 catalogue with the OHMNI default body (PCM 10, 13 x 5 x 11 mm); its 400 VDC rating replaces the spec's assumed 100 V peak (D059). Tolerance, packing and pin-length suffixes are unselected.",
+        "Ideal 0.1 uF with the 3 x 10^4 Mohm minimum insulation resistance as leakage (worst case, measured at 100 V, 1 min, 20 C); no ESR, ESL, dielectric absorption or capacitance drift. tan d <= 8e-3 at 1 kHz is recorded, not modeled.",
+        "Ratings checked outside the netlist: 400 VDC derated 1.25 %/K above 85 C (DC), 200 V rms at 50 Hz with 1.4 x Urms + UDC <= Ur (derated above 75 C), -55 to +125 C. Ripple current and pulse dV/dt are not bound.",
+        "Model scope: Cb and Rlk of ohm_film (spec lines 1746-1752); Resr, Lesl and the VRPK flag are dropped because the X2 defaults they carry do not apply to this DC part."
+      ]
+    },
     "OHM-039": {
       "entry_id": "OHM-039",
       "behavior_id": "BEH-CAP-MICA",
