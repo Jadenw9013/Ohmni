@@ -1015,7 +1015,42 @@ class DemoHandler(SimpleHTTPRequestHandler):
         except Exception:  # noqa: BLE001 - failed service requests must not disclose local paths
             return self._json({"error":"behavior_run_unavailable"},HTTPStatus.SERVICE_UNAVAILABLE)
 
+    def _behavior_design(self):
+        """Run the caller's own multi-part circuit; refusals name each blocked part."""
+        payload=self._project_payload({"design"})
+        if payload is None:return
+        from pydantic import ValidationError
+
+        from ohmni.application.component_behavior import BehaviorRunBusy, DesignRunRequest
+        try:
+            if type(payload["design"]) is not dict:raise ValueError
+            request=DesignRunRequest.model_validate_json(json.dumps(payload["design"]))
+        except (ValueError,ValidationError):
+            return self._reject("invalid_design_request",HTTPStatus.BAD_REQUEST)
+        service=self._behavior_service()
+        if service is None:return
+        try:return self._json({"result":service.run_design(request),**self.server._identity()})
+        except BehaviorRunBusy:return self._json({"error":"behavior_run_busy"},HTTPStatus.CONFLICT)
+        except Exception:  # noqa: BLE001 - failed service requests must not disclose local paths
+            return self._json({"error":"behavior_run_unavailable"},HTTPStatus.SERVICE_UNAVAILABLE)
+
+    def _behavior_service(self):
+        from ohmni.application.component_behavior import ComponentBehaviorService
+        from ohmni.behavior.loader import BehaviorRegistryError, _find_repo_root
+        try:
+            with self.server.behavior_service_lock:
+                if self.server.behavior_service is None:
+                    self.server.behavior_service=ComponentBehaviorService(
+                        _find_repo_root(ROOT),self.server.store.output_root/"behavior-runs")
+                return self.server.behavior_service
+        except BehaviorRegistryError:
+            self._json({"error":"behavior_reference_unavailable"},HTTPStatus.SERVICE_UNAVAILABLE)
+        except Exception:  # noqa: BLE001 - failed service requests must not disclose local paths
+            self._json({"error":"behavior_run_unavailable"},HTTPStatus.SERVICE_UNAVAILABLE)
+        return None
+
     def do_POST(self):
+        if self.path=="/api/behavior/design/run":return self._behavior_design()
         behavior_path=re.fullmatch(r"/api/behavior/(OHM-[0-9]{3})/run",self.path)
         if behavior_path:return self._behavior(behavior_path[1],run=True)
         if self.path=="/api/projects":return self._post_project()
