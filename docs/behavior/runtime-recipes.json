@@ -819,7 +819,8 @@
       },
       "inline_assets": [],
       "supported_analyses": [
-        "op"
+        "op",
+        "tran"
       ],
       "limitations": [
         "Order-code tolerance and termination options are unselected; electrical row values are identical across those options in the T491 table.",
@@ -827,7 +828,8 @@
         "Reverse voltage is only ever transient: 2.4/0.8/0.16 V at 25/85/125 C; continuous reverse is not permitted. The class fixed 3% envelope is not used.",
         "Recommended application voltage 8 V at <= 85 C, derating to 33% of VR at 125 C; ripple and power limits are rating facts, not netlist behaviour.",
         "Stripe marks the ANODE (opposite of aluminium/supercap convention); footprint polarity must be checked.",
-        "Model scope: Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr/Lesl dropped: 100 kHz ESR is a maximum, not a fitted nominal, and ESL is unsourced."
+        "Model scope: Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr/Lesl dropped: 100 kHz ESR is a maximum, not a fitted nominal, and ESL is unsourced.",
+        "Transient runs use the ideal capacitance with its leakage path only (no ESR or ESL): currents and voltages are those the circuit imposes, so ripple, peak and reverse-voltage checks are meaningful, but ESR heating and impedance versus frequency are not modeled."
       ]
     },
     "OHM-034": {
@@ -909,7 +911,8 @@
       },
       "inline_assets": [],
       "supported_analyses": [
-        "op"
+        "op",
+        "tran"
       ],
       "limitations": [
         "Order-code tolerance and termination options are unselected; electrical row values are identical across those options in the T491 table.",
@@ -917,7 +920,8 @@
         "Reverse voltage is only ever transient: 2.4/0.8/0.16 V at 25/85/125 C; continuous reverse is not permitted. The class fixed 3% envelope is not used.",
         "Recommended application voltage 8 V at <= 85 C, derating to 33% of VR at 125 C; ripple and power limits are rating facts, not netlist behaviour.",
         "Stripe marks the ANODE (opposite of aluminium/supercap convention); footprint polarity must be checked.",
-        "Model scope: Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr/Lesl dropped: 100 kHz ESR is a maximum, not a fitted nominal, and ESL is unsourced."
+        "Model scope: Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr/Lesl dropped: 100 kHz ESR is a maximum, not a fitted nominal, and ESL is unsourced.",
+        "Transient runs use the ideal capacitance with its leakage path only (no ESR or ESL): currents and voltages are those the circuit imposes, so ripple, peak and reverse-voltage checks are meaningful, but ESR heating and impedance versus frequency are not modeled."
       ]
     },
     "OHM-035": {
@@ -999,7 +1003,8 @@
       },
       "inline_assets": [],
       "supported_analyses": [
-        "op"
+        "op",
+        "tran"
       ],
       "limitations": [
         "Order-code tolerance and termination options are unselected; electrical row values are identical across those options in the T491 table.",
@@ -1007,7 +1012,8 @@
         "Reverse voltage is only ever transient: 2.4/0.8/0.16 V at 25/85/125 C; continuous reverse is not permitted. The class fixed 3% envelope is not used.",
         "Recommended application voltage 8 V at <= 85 C, derating to 33% of VR at 125 C; ripple and power limits are rating facts, not netlist behaviour.",
         "Stripe marks the ANODE (opposite of aluminium/supercap convention); footprint polarity must be checked.",
-        "Model scope: Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr/Lesl dropped: 100 kHz ESR is a maximum, not a fitted nominal, and ESL is unsourced."
+        "Model scope: Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr/Lesl dropped: 100 kHz ESR is a maximum, not a fitted nominal, and ESL is unsourced.",
+        "Transient runs use the ideal capacitance with its leakage path only (no ESR or ESL): currents and voltages are those the circuit imposes, so ripple, peak and reverse-voltage checks are meaningful, but ESR heating and impedance versus frequency are not modeled."
       ]
     },
     "OHM-036": {
@@ -1089,7 +1095,8 @@
       },
       "inline_assets": [],
       "supported_analyses": [
-        "op"
+        "op",
+        "tran"
       ],
       "limitations": [
         "Order-code tolerance and termination options are unselected; electrical row values are identical across those options in the T491 table.",
@@ -1097,7 +1104,8 @@
         "Reverse voltage is only ever transient: 2.4/0.8/0.16 V at 25/85/125 C; continuous reverse is not permitted. The class fixed 3% envelope is not used.",
         "Recommended application voltage 8 V at <= 85 C, derating to 33% of VR at 125 C; ripple and power limits are rating facts, not netlist behaviour.",
         "Stripe marks the ANODE (opposite of aluminium/supercap convention); footprint polarity must be checked.",
-        "Model scope: Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr/Lesl dropped: 100 kHz ESR is a maximum, not a fitted nominal, and ESL is unsourced."
+        "Model scope: Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr/Lesl dropped: 100 kHz ESR is a maximum, not a fitted nominal, and ESL is unsourced.",
+        "Transient runs use the ideal capacitance with its leakage path only (no ESR or ESL): currents and voltages are those the circuit imposes, so ripple, peak and reverse-voltage checks are meaningful, but ESR heating and impedance versus frequency are not modeled."
       ]
     },
     "OHM-039": {
@@ -2878,6 +2886,24 @@
         "tj_max": {
           "field": "maximum_junction_temperature",
           "unit": "C"
+        },
+        "ir_25": {
+          "field": "maximum_reverse_current_25C",
+          "unit": "mA",
+          "output_unit": "A"
+        },
+        "ir_100": {
+          "field": "maximum_reverse_current_100C",
+          "unit": "mA",
+          "output_unit": "A"
+        },
+        "vr_ir": {
+          "field": "reverse_current_test_voltage",
+          "unit": "V"
+        },
+        "ifsm": {
+          "field": "surge_forward_current",
+          "unit": "A"
         }
       },
       "model_facts": {
@@ -2913,13 +2939,15 @@
       },
       "inline_assets": [],
       "supported_analyses": [
-        "op"
+        "op",
+        "tran"
       ],
       "limitations": [
         "IS, N and RS are a fit to the SS32-SS34 25 C typical forward curve (low confidence, read from a log plot); CJO is read from the typical capacitance plot and BV is the 40 V rated blocking voltage, not a measured breakdown.",
         "Isothermal 25 C DC model. Schottky reverse leakage (0.5 mA at 25 C, 20 mA at 100 C, rated VR) and its heating are not modeled; leakage-driven thermal runaway must be checked separately.",
         "3 A is the average rectified current at the lead temperature of fig. 1, used here as a DC ceiling; 55 K/W assumes 14 x 14 mm copper pads. Pin map K to terminal 1 (cathode bar, -X), A to terminal 2, per the spec's OHM-066 section and the data sheet's cathode-band marking.",
-        "Bound under owner-approved resolution OHM-066-SCHOTTKY-CLASS; the entry's PN and TVS functions have no bound reference."
+        "Bound under owner-approved resolution OHM-066-SCHOTTKY-CLASS; the entry's PN and TVS functions have no bound reference.",
+        "Transient runs use the same isothermal diode card (junction capacitance included, no reverse-recovery charge for a Schottky beyond CJO); they support peak, average and surge-comparison checks, not junction heating over time."
       ]
     },
     "OHM-067": {
@@ -2948,6 +2976,20 @@
         "vr_max": {
           "field": "dc_reverse_voltage",
           "unit": "V"
+        },
+        "ir_25": {
+          "field": "maximum_reverse_current",
+          "unit": "uA",
+          "output_unit": "A"
+        },
+        "ir_100": {
+          "field": "maximum_reverse_current_100C",
+          "unit": "uA",
+          "output_unit": "A"
+        },
+        "vr_ir": {
+          "field": "reverse_current_test_voltage",
+          "unit": "V"
         }
       },
       "derived_parameters": {
@@ -2968,7 +3010,8 @@
       "limitations": [
         "IS, N and RS are a fit to the Diodes Incorporated BAT42W typical forward curve and BV is its minimum breakdown. Junction capacitance remains the authored BAT54-derived value because the Schottky template's fixed VJ/M cannot match the BAT42W C-V curve.",
         "Only isothermal DC forward behavior is bound. No temperature/leakage-runaway or frequency response is validated.",
-        "Physical reverse rating is 30 V and power 200 mW on the stated FR4 footprint; the model breakdown is the 30 V datasheet minimum, not a safe operating limit."
+        "Physical reverse rating is 30 V and power 200 mW on the stated FR4 footprint; the model breakdown is the 30 V datasheet minimum, not a safe operating limit.",
+        "Transient runs use the same isothermal diode card (junction capacitance included, no reverse-recovery charge for a Schottky beyond CJO); they support peak, average and surge-comparison checks, not junction heating over time."
       ],
       "package": "SOD-123 BAT42W reference",
       "quoted_parameters": {
@@ -2987,7 +3030,8 @@
       },
       "reference_part": "Diodes Incorporated BAT42W (DS30016)",
       "supported_analyses": [
-        "op"
+        "op",
+        "tran"
       ],
       "template_override": "D{ref} {A} {K} DBAT_{ref}\n.model DBAT_{ref} D (IS={IS} N={N} RS={RS} CJO={CJO} BV={BV})\n",
       "template_provenance": {
