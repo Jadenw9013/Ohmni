@@ -130,9 +130,11 @@ def test_tantalum_ripple_is_exact_only_at_the_rating_frequency_and_temperature(r
     compiled = compile_circuit(tantalum(recipes), registry, recipes, choice, analysis="ac",
                                excitations=[ripple(0.1)], measure_currents=True)
     cool = RatingContext(ambient_c=25, thermal_scope_confirmed=True)
+    # The card carries the maximum ESR (D058): at the rating conditions the real current is at least the simulated
+    # one, so these rows can prove a violation but never a pass (D061).
     within = rows(evaluate_ratings(compiled, fake_result(compiled, 0.150), registry, cool))
-    assert within["ripple current (rating frequency) at 100000 Hz"]["status"] == "within_limit"
-    assert within["ESR heating with the maximum 100 kHz ESR at 100000 Hz"]["status"] == "within_limit"
+    assert within["ripple current (rating frequency) at 100000 Hz"]["status"] == "unknown"
+    assert within["ESR heating with the maximum 100 kHz ESR at 100000 Hz"]["status"] == "unknown"
     over = rows(evaluate_ratings(compiled, fake_result(compiled, 0.170), registry, cool))
     assert over["ripple current (rating frequency) at 100000 Hz"]["status"] == "violation"
     # 0.170^2 * 3 ohm = 86.7 mW > 75 mW: the same sourced limit, seen as ESR heating.
@@ -140,10 +142,9 @@ def test_tantalum_ripple_is_exact_only_at_the_rating_frequency_and_temperature(r
     warm = rows(evaluate_ratings(compiled, fake_result(compiled, 0.150), registry,
                                  RatingContext(ambient_c=60, thermal_scope_confirmed=True)))
     assert warm["ripple current (rating frequency) at 100000 Hz"]["status"] == "unknown"
-    low = rows(evaluate_ratings(compiled, fake_result(compiled, 0.150, freq=10e3), registry, cool))
-    assert low["ripple current at 10000 Hz"]["status"] == "unknown"
-    low_over = rows(evaluate_ratings(compiled, fake_result(compiled, 0.170, freq=10e3), registry, cool))
-    assert low_over["ripple current at 10000 Hz"]["status"] == "violation"
+    for amps in (0.150, 0.170):
+        low = rows(evaluate_ratings(compiled, fake_result(compiled, amps, freq=10e3), registry, cool))
+        assert low["ripple current at 10000 Hz"]["status"] == "unknown"
     high = rows(evaluate_ratings(compiled, fake_result(compiled, 0.010, freq=1e6), registry, cool))
     assert high["ripple current at 1e+06 Hz"]["status"] == "unknown"
 
@@ -157,7 +158,8 @@ def test_nonlinear_circuit_never_proves_an_ac_result(registry, recipes, monkeypa
     for amps in (0.150, 0.170):
         result = rows(evaluate_ratings(nonlinear, fake_result(nonlinear, amps), registry, cool))
         row = result["ripple current (rating frequency) at 100000 Hz"]
-        assert row["status"] == "unknown" and "linearization" in row["reason"]
+        assert row["status"] == "unknown"
+    assert "linearization" in row["reason"]  # the computed violation at 0.170 A is downgraded
     # The operating-point rows of the same run are unaffected.
     assert result["rated voltage"]["status"] == "within_limit"
 
@@ -176,7 +178,7 @@ def test_design_ac_run_checks_ripple_against_the_sourced_rating(tmp_path):
 
     ok, hot = run(0.1), run(0.2)
     assert ok["status"] == hot["status"] == "ran"
-    assert rows(ok["ratings"])["ripple current (rating frequency) at 100000 Hz"]["status"] == "within_limit"
+    assert rows(ok["ratings"])["ripple current (rating frequency) at 100000 Hz"]["status"] == "unknown"
     assert rows(hot["ratings"])["ripple current (rating frequency) at 100000 Hz"]["status"] == "violation"
     assert hot["rating_status"] == "violation"
     names = {s["name"] for s in ok["ac"]["sweep"]["series"]}

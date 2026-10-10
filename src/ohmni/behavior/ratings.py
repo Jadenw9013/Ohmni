@@ -476,7 +476,12 @@ def _transient_checks(component, values, b, thermal, upper_only, w):
                       ("vrev_25", "vrev_85", "vrev_125"),
                       None if "Tamb" in values or values["peak_rev"] > values.get("vrev_25", 0) else
                       "Ambient temperature selects the reverse limit")
-        if i is not None and "irip_max" in values:
+        if i is not None and "irip_max" in values and _tant_esr_bound(component):
+            stat("ripple_rms", w.ac_rms(i))
+            b.add("ripple current", "ripple_rms <= irip_max", ("irip_max",),
+                  "The card carries the bound maximum ESR, so a simulated waveform's current bounds the real "
+                  "current in neither direction; use an AC run at the rating conditions")
+        elif i is not None and "irip_max" in values:
             stat("ripple_rms", w.ac_rms(i))
             freq = stat("ripple_frequency", w.frequency(i))
             if freq is None or freq > 100e3:
@@ -946,20 +951,30 @@ def _ac_checks(component, values, b, thermal, upper_only, window, linear):
                         "The ripple rating's frequency, temperature or RMS basis is not stated in its source "
                         "scope", violation_only=True)
                 elif exact and values.get("Tamb") is not None and values["Tamb"] <= 25:
-                    add("ripple current (rating frequency)", f"irip_{key} <= irip_max", ("irip_max",), thermal)
+                    # With the maximum ESR in the card the simulated current is a lower bound wherever the part
+                    # is voltage-driven (a real part has ESR at or below the maximum at these conditions), so
+                    # the rows can prove a violation but not a pass (D061).
+                    bound = _tant_esr_bound(component)
+                    add("ripple current (rating frequency)", f"irip_{key} <= irip_max", ("irip_max",),
+                        bound or thermal, violation_only=bool(bound))
                     if ("esr_max" in values and "pd_max" in values
                             and "100 kHz" in component.parameter_evidence.get("esr_max", {}).get("scope", "")):
                         stat(f"pesr_{key}", values[f"irip_{key}"] ** 2 * values["esr_max"])
                         add("ESR heating with the maximum 100 kHz ESR", f"pesr_{key} <= pd_max",
-                            ("esr_max", "pd_max"), thermal)
+                            ("esr_max", "pd_max"), bound or thermal, violation_only=bool(bound))
                 elif exact:
                     add("ripple current (rating frequency)", f"irip_{key} <= irip_max", ("irip_max",),
                         "The ripple rating is stated at 25 C; a higher or undeclared ambient needs the "
                         "temperature multiplier, which is not bound", violation_only=True)
                 elif frequency < RIPPLE_RATING_HZ:
-                    add("ripple current", f"irip_{key} <= irip_max", ("irip_max",),
-                        "Below 100 kHz the allowed ripple is lower by an unbound frequency multiplier",
-                        violation_only=True)
+                    if _tant_esr_bound(component):
+                        add("ripple current", f"irip_{key} <= irip_max", ("irip_max",),
+                            "Away from 100 kHz and 25 C the real ESR can exceed the bound maximum in the card, "
+                            "so the simulated current bounds the real one in neither direction")
+                    else:
+                        add("ripple current", f"irip_{key} <= irip_max", ("irip_max",),
+                            "Below 100 kHz the allowed ripple is lower by an unbound frequency multiplier",
+                            violation_only=True)
                 else:
                     add("ripple current", f"irip_{key} <= irip_max", ("irip_max",),
                         "Ripple rating is stated at 100 kHz; the frequency multiplier is not bound")
@@ -1037,4 +1052,12 @@ def _tant_temperature_reason(values):
         return "Ambient temperature is not declared; the rated voltage applies only up to 85 C"
     if values["Tamb"] > 85:
         return "Rated voltage is stated at 85 C; higher-temperature category voltage is not bound"
+    return None
+
+
+def _tant_esr_bound(component):
+    """Reason text when the tantalum card carries the sourced maximum ESR as its series resistor (D058)."""
+    if component.behavior_id == "BEH-CAP-TANT" and any(name.lower().endswith("_esr") for name in component.element_names):
+        return ("The card carries the maximum ESR, so where the part is voltage-driven the simulated current is a "
+                "lower bound on the real current: this row can prove a violation but not a pass")
     return None
