@@ -110,6 +110,7 @@ class BehaviorRegistry:
         validate_references: bool = True,
     ) -> None:
         self.directory = directory or DATA_DIR
+        self.repo_root = repo_root
         try:
             self.manifest = BehaviorManifest.model_validate(_json(self.directory / "manifest.json"))
             self.classes = self._load_records("classes", BehaviorClassRecord, "behavior_id")
@@ -135,6 +136,7 @@ class BehaviorRegistry:
                 )
         if validate_references:
             root = repo_root or _find_repo_root(self.directory)
+            self.repo_root = root
             validate_registry_references(root, self.classes, self.entries, self.bindings)
             for resolution in self.manifest.resolutions:
                 _validate_anchor(root, resolution.source, resolution.resolution_id)

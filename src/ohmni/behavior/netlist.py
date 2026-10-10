@@ -253,7 +253,7 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
              for i, net in enumerate(sorted(circuit.nets, key=lambda n: n.name), 1)}
     lines = ["OHMNI sourced behavior circuit", ".options tnom=25", ".temp 25"]
     assets = {}
-    root = _find_repo_root(registry.directory)
+    root = registry.repo_root or _find_repo_root(registry.directory)
     source_count = 0
     source_elements = {}
     excitations = sorted(excitations or [], key=lambda x: x.model_dump_json())

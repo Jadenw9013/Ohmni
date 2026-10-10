@@ -42,7 +42,7 @@ COPY scripts/ ./scripts/
 COPY COMPONENT_BEHAVIOR_SPEC.md ./
 COPY docs/behavior/ ./docs/behavior/
 COPY out/component-behavior/run/bench-results/ ./out/component-behavior/run/bench-results/
-RUN python -c "from pathlib import Path; from ohmni.application.component_behavior import ComponentBehaviorService; s = ComponentBehaviorService(Path('/app'), Path('/tmp/behavior-package-check')); assert len(s.summary()) == s.registry.manifest.entry_count"
+RUN python -c "from pathlib import Path; from ohmni.application.component_behavior import ComponentBehaviorService; from ohmni.behavior.examples import compile_reference; s = ComponentBehaviorService(Path('/app'), Path('/tmp/behavior-package-check')); assert len(s.summary()) == s.registry.manifest.entry_count; compile_reference(s.data['examples']['OHM-001'], s.registry, s.recipes)"
 # A checkout will not carry the mode bit on every platform.
 RUN chmod +x scripts/docker-entrypoint.sh && chown -R kicad:kicad /app
 

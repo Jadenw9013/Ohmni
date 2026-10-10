@@ -17,10 +17,14 @@ def test_public_host_allows_same_origin_viewer_but_not_cross_origin_frames(confi
     assert headers["x-content-type-options"] == "nosniff"
 
 
-def test_container_behavior_inputs_resolve_without_the_development_checkout(tmp_path):
+def test_container_behavior_inputs_resolve_without_the_development_checkout(tmp_path, monkeypatch):
     from ohmni.application.component_behavior import ComponentBehaviorService
+    from ohmni.behavior import loader
+    from ohmni.behavior.examples import compile_reference
     from ohmni.behavior.loader import BehaviorRegistryError
 
+    detached_data = tmp_path / "installed-package" / "data"
+    tmp_path = tmp_path / "evidence"
     root = Path(__file__).resolve().parents[1]
     dockerfile = (root / "Dockerfile").read_text()
     for relative in ["src", "docs/behavior", "out/component-behavior/run/bench-results"]:
@@ -30,9 +34,15 @@ def test_container_behavior_inputs_resolve_without_the_development_checkout(tmp_
         target = tmp_path / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(root / relative, target)
+    # An installed wheel lives outside the evidence root, unlike editable installs.
+    shutil.copytree(root / "src/ohmni/behavior/data", detached_data)
+    monkeypatch.setattr(loader, "DATA_DIR", detached_data)
     service = ComponentBehaviorService(tmp_path, tmp_path / "new-runs")
     assert len(service.summary()) == service.registry.manifest.entry_count
     assert service.describe("OHM-001")["available"]
+    compiled, _ = compile_reference(service.data["examples"]["OHM-001"],
+                                    service.registry, service.recipes)
+    assert compiled.netlist_sha256
     # Packaging must retain validation: missing evidence cannot become a pass.
     (tmp_path / "COMPONENT_BEHAVIOR_SPEC.md").unlink()
     with pytest.raises(BehaviorRegistryError, match="missing source"):
