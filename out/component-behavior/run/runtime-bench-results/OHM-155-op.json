@@ -1,0 +1,61 @@
+{
+  "analysis": "op",
+  "circuit_hash": "0d566c7d99f324c41e2df65876457a87f8c098e18dfb8a555251a1e7ac5b1efa",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "current": 2.0,
+    "drive_role": "P1",
+    "expected": 0.01,
+    "kind": "absolute",
+    "observable": "path_resistance",
+    "return_role": "W1",
+    "source_facts": {
+      "i_rated": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "contact_current_rating",
+        "page": 1,
+        "scope": "B2B-PH-K-S with matchingPHR-2 housing and specified crimp contact/wire; AC/DC with AWG24;not valid for every allowed thinner wire",
+        "sources": [
+          "https://www.jst-mfg.com/product/pdf/eng/ePH.pdf"
+        ],
+        "unit": "A",
+        "value": 2
+      },
+      "rmate": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "converted_unit": "ohm",
+        "converted_value": 0.01,
+        "detail": null,
+        "field": "contact_resistance_initial_max",
+        "page": 1,
+        "scope": "B2B-PH-K-S with matchingPHR-2 housing and specified crimp contact/wire; mated contact,initial",
+        "sources": [
+          "https://www.jst-mfg.com/product/pdf/eng/ePH.pdf"
+        ],
+        "unit": "mohm",
+        "value": 10
+      }
+    },
+    "tolerance": 1e-05
+  },
+  "entry_id": "OHM-155",
+  "entry_research_sha256": "c49a03be7553a14c7a9180a45e97bf5d9beb6aa2c602f3b85112ffcebeda01aa",
+  "limits": "Binding check of one bound DC path: the sourced current through the path must reproduce the sourced path resistance (0.1% numerical tolerance, or the sourced tolerance band). It does not validate frequency response, heating, contact wear, isolation, protocol behavior or any rating beyond the stated facts.",
+  "netlist_sha256": "9d59e6c7de2bc525b568a684779e17c490a9e3695cc100c266a4c4719d1006be",
+  "observation_status": "ran",
+  "observed": 0.01,
+  "output_sha256": "a1910b5051b402a64e191f736321f3a45b9c9729704aa3af7dfb6e616d1a9ad7",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-10T06:26:28Z",
+  "raw_output": "runtime-bench-output/OHM-155-op/output.txt",
+  "recipe_source_sha256": "2be790ee47f30e5ab4a14bb52fbc16bfe3fbd0d94c9b78cf2d2a87721b96d38f",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "version_file": "runtime-bench-output/OHM-155-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sun Mar 31 20:15:14 UTC 2024\n******\n",
+  "version_sha256": "d18ced87a01768ec53b4682c549f1182be38030c71159f071a008b747a8f04be"
+}

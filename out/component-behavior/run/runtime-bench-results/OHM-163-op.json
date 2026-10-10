@@ -1,0 +1,59 @@
+{
+  "analysis": "op",
+  "circuit_hash": "e2a07aa924d9b3c738867f5d724113a3d9d80beda0156e72fc6b358b4641d4d1",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "current": 1.0,
+    "drive_role": "P1",
+    "expected": 0.03,
+    "kind": "absolute",
+    "observable": "path_resistance",
+    "return_role": "M1",
+    "source_facts": {
+      "i_rated": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "current_rated",
+        "page": 2,
+        "scope": "Lumberg 2411 02 only; electrical data at ambient 20 C; upper rated current",
+        "sources": [
+          "https://downloads.lumberg.com/datenblaetter/en/2411_02.pdf"
+        ],
+        "unit": "A",
+        "value": 1
+      },
+      "rc": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "contact_resistance_max",
+        "page": 2,
+        "scope": "Lumberg 2411 02 only; electrical data at ambient 20 C; contact resistance",
+        "sources": [
+          "https://downloads.lumberg.com/datenblaetter/en/2411_02.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.03
+      }
+    },
+    "tolerance": 3e-05
+  },
+  "entry_id": "OHM-163",
+  "entry_research_sha256": "d72db5f394ff9b94328ed930e1a55bcad409e3686ff2a486740d0723d5ad4b5d",
+  "limits": "Binding check of one bound DC path: the sourced current through the path must reproduce the sourced path resistance (0.1% numerical tolerance, or the sourced tolerance band). It does not validate frequency response, heating, contact wear, isolation, protocol behavior or any rating beyond the stated facts.",
+  "netlist_sha256": "ad420bb0c702d495b03454c0e41e272f97cad3415f0ff59aaccfdb56e7ab7508",
+  "observation_status": "ran",
+  "observed": 0.03,
+  "output_sha256": "dcc7f1a55fc7c9e07acac74aecea4f9ceac349eb660af3403fc71ed07d1d1b0b",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-10T06:26:34Z",
+  "raw_output": "runtime-bench-output/OHM-163-op/output.txt",
+  "recipe_source_sha256": "2be790ee47f30e5ab4a14bb52fbc16bfe3fbd0d94c9b78cf2d2a87721b96d38f",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "version_file": "runtime-bench-output/OHM-163-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sun Mar 31 20:15:14 UTC 2024\n******\n",
+  "version_sha256": "d18ced87a01768ec53b4682c549f1182be38030c71159f071a008b747a8f04be"
+}

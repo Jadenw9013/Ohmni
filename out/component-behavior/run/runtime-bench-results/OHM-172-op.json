@@ -1,0 +1,59 @@
+{
+  "analysis": "op",
+  "circuit_hash": "e36cfa58aa786006d17019f9c018072f25a9db22b10327f2e46bdf67537b2dd4",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "current": 2.5,
+    "drive_role": "CENTER",
+    "expected": 0.03,
+    "kind": "absolute",
+    "observable": "path_resistance",
+    "return_role": "M_TIP",
+    "source_facts": {
+      "i_rated": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "SPECIFICATIONS: 'rated input current ... max 2.5 A' (value sits in the max column; 24 Vdc above it sits in typ)",
+        "field": "current_rated_max",
+        "page": 1,
+        "scope": "PJ-102A exact; replaces current_rated_typical (that row's 'typ column' scope is wrong)",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/pj-102a.pdf"
+        ],
+        "unit": "A",
+        "value": 2.5
+      },
+      "rc": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "contact_resistance_max",
+        "page": 1,
+        "scope": "PJ-102A exact reference; schematic and table visually checked; table maximum",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/pj-102a.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.03
+      }
+    },
+    "tolerance": 3e-05
+  },
+  "entry_id": "OHM-172",
+  "entry_research_sha256": "dafd8bd31cbc23be419166631866faec476fcd28120e8a898956d9d8e425deef",
+  "limits": "Binding check of one bound DC path: the sourced current through the path must reproduce the sourced path resistance (0.1% numerical tolerance, or the sourced tolerance band). It does not validate frequency response, heating, contact wear, isolation, protocol behavior or any rating beyond the stated facts.",
+  "netlist_sha256": "1dec70733deca8c70625a14434ef297e8da0ecacec725eaa5952d9049ae94622",
+  "observation_status": "ran",
+  "observed": 0.03,
+  "output_sha256": "ca1b5e7c239d308716a082ae9b49d59a4ccf0998190696360265ec4a78947153",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-10T06:26:43Z",
+  "raw_output": "runtime-bench-output/OHM-172-op/output.txt",
+  "recipe_source_sha256": "2be790ee47f30e5ab4a14bb52fbc16bfe3fbd0d94c9b78cf2d2a87721b96d38f",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "version_file": "runtime-bench-output/OHM-172-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sun Mar 31 20:15:14 UTC 2024\n******\n",
+  "version_sha256": "d18ced87a01768ec53b4682c549f1182be38030c71159f071a008b747a8f04be"
+}

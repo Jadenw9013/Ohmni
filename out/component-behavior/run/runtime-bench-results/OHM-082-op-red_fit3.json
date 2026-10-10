@@ -1,0 +1,78 @@
+{
+  "analysis": "op",
+  "circuit_hash": "62d766c212ef4e6ed7002ece8b986bdd64f3fcfeb1bd5737bd7223e38f9d62cf",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "curve": "red",
+    "expected": 2.185,
+    "kind": "absolute",
+    "observable": "anode_voltage",
+    "point_index": 2,
+    "source_fact": {
+      "basis": "DERIVED",
+      "confidence": "L",
+      "detail": "Same read points as spice_red_IS_fit: Figure 2. Structured copy so the runtime check can replay the fit at several currents.",
+      "field": "forward_curve_read_points_red",
+      "page": 5,
+      "scope": "Avago/Broadcom ASMB-MTB0-0A3A2 RGB; 25 C typical forward curve read points (I in A, V in V) used for the red IS/N/RS fit",
+      "sources": [
+        "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf"
+      ],
+      "unit": null,
+      "value": {
+        "points_a_v": [
+          [
+            0.001,
+            1.799
+          ],
+          [
+            0.002,
+            1.842
+          ],
+          [
+            0.005,
+            1.919
+          ],
+          [
+            0.01,
+            2.006
+          ],
+          [
+            0.015,
+            2.074
+          ],
+          [
+            0.02,
+            2.133
+          ],
+          [
+            0.025,
+            2.185
+          ]
+        ],
+        "temperature_c": 25
+      }
+    },
+    "test_current": 0.025,
+    "tolerance": 0.1748,
+    "tolerance_rule": "max(0.08*V, 0.025 V) for a L-confidence datasheet read"
+  },
+  "entry_id": "OHM-082",
+  "entry_research_sha256": "5feff74e967101869b2f03d085b78047170a640837c3bdb294bd9bce1c64d2ce",
+  "limits": "Replays the fitted forward model at one of the sourced curve read points and requires the read voltage within the read uncertainty. Together with the other fit points and the maximum-VF bound this validates the fit over the plotted range at 25 C; it does not validate temperature, reverse behavior, capacitance or ratings.",
+  "netlist_sha256": "edad2fd31c9541e7d79fdf113afb996551736b0014543d947d821343173875ac",
+  "observation_status": "ran",
+  "observed": 2.187821,
+  "output_sha256": "3738c3fe12bfce12ad7ddbb83b53d5895a039519e18cf2b65d82c21dae5fb7a6",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-10T06:26:16Z",
+  "raw_output": "runtime-bench-output/OHM-082-op-red_fit3/output.txt",
+  "recipe_source_sha256": "2be790ee47f30e5ab4a14bb52fbc16bfe3fbd0d94c9b78cf2d2a87721b96d38f",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "variant": "red_fit3",
+  "version_file": "runtime-bench-output/OHM-082-op-red_fit3/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sun Mar 31 20:15:14 UTC 2024\n******\n",
+  "version_sha256": "d18ced87a01768ec53b4682c549f1182be38030c71159f071a008b747a8f04be"
+}

@@ -1,0 +1,83 @@
+{
+  "analysis": "op",
+  "circuit_hash": "a9db61c885b1341d370c9ef2177b7535c973c51c53b8ce78b1b4bf044e9c8161",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "base_current": 0.00040824829046386303,
+    "kind": "interval",
+    "maximum": 600.0,
+    "minimum": 100.0,
+    "observable": "current_gain",
+    "source_facts": {
+      "gain_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "same row, max 600",
+        "field": "dc_gain_maximum_ungraded",
+        "page": 5,
+        "scope": "Nexperia BC817; ungraded; VCE = 1 V; IC = 100 mA; Tamb 25 C; pulsed",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BC817_SER.pdf"
+        ],
+        "unit": "1",
+        "value": 600
+      },
+      "gain_min": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Table 7 'hFE DC current gain BC817 VCE = 1 V; IC = 100 mA; Tamb = 25 \u00b0C [1] 100 - 600'",
+        "field": "dc_gain_minimum_ungraded",
+        "page": 5,
+        "scope": "Nexperia BC817; ungraded; VCE = 1 V; IC = 100 mA; Tamb 25 C; pulsed",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BC817_SER.pdf"
+        ],
+        "unit": "1",
+        "value": 100
+      },
+      "gain_test_ic": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'VCE = 1 V; IC = 100 mA'",
+        "field": "dc_gain_test_collector_current",
+        "page": 5,
+        "scope": "Nexperia BC817; hFE test condition",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BC817_SER.pdf"
+        ],
+        "unit": "A",
+        "value": 0.1
+      },
+      "gain_test_vce": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'VCE = 1 V; IC = 100 mA'",
+        "field": "dc_gain_test_collector_voltage",
+        "page": 5,
+        "scope": "Nexperia BC817; hFE test condition",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BC817_SER.pdf"
+        ],
+        "unit": "V",
+        "value": 1.0
+      }
+    }
+  },
+  "entry_id": "OHM-094",
+  "entry_research_sha256": "7e4e63081fb3e1f92158aacfa36c739843c31447cde22ee4e41f71cc5dae66a8",
+  "limits": "One-point DC gain-bin check using a geometric-mean BF and assumed IS. Does not validate gain roll-off, transient response, temperature behavior, ratings or SOA.",
+  "netlist_sha256": "bf86de3fd3cea89a2100dac8ed30272cc52c00d2ad109b365b8d860dc881b357",
+  "observation_status": "ran",
+  "observed": 244.94897427831782,
+  "output_sha256": "09b4303463c68e6a1034d54770cf0820b92b2d624feae24761496a7320debfa6",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-10T06:26:20Z",
+  "raw_output": "runtime-bench-output/OHM-094-op/output.txt",
+  "recipe_source_sha256": "2be790ee47f30e5ab4a14bb52fbc16bfe3fbd0d94c9b78cf2d2a87721b96d38f",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "version_file": "runtime-bench-output/OHM-094-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sun Mar 31 20:15:14 UTC 2024\n******\n",
+  "version_sha256": "d18ced87a01768ec53b4682c549f1182be38030c71159f071a008b747a8f04be"
+}

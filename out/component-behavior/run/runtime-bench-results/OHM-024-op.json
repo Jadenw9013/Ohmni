@@ -1,0 +1,61 @@
+{
+  "analysis": "op",
+  "circuit_hash": "821b57f9d8157fa247f17a6d563e20ba8d816067c795ec0ac70b4fc2f71a764d",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "current": 7e-07,
+    "drive_role": "T1",
+    "expected": 50000000.0,
+    "kind": "absolute",
+    "observable": "path_resistance",
+    "return_role": "T2",
+    "source_facts": {
+      "rleak": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Insulation Resistance (Min.) 50M\u03a9'",
+        "field": "minimum_insulation_resistance",
+        "page": null,
+        "scope": "TDK C2012X5R1V106M085AC, EIA 0805 (C2012); TDK product-center page, status Production (NRND); test voltage and time not stated on the page",
+        "source_locator": "Manufacturer product web page (HTML, non-paginated); value read from the archived page bytes",
+        "sources": [
+          "https://product.tdk.com/en/search/capacitor/ceramic/mlcc/info?part_no=C2012X5R1V106M085AC"
+        ],
+        "unit": "ohm",
+        "value": 50000000.0
+      },
+      "vr": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Rated Voltage 35VDC'",
+        "field": "rated_voltage",
+        "page": null,
+        "scope": "TDK C2012X5R1V106M085AC, EIA 0805 (C2012); TDK product-center page, status Production (NRND); DC rating",
+        "source_locator": "Manufacturer product web page (HTML, non-paginated); value read from the archived page bytes",
+        "sources": [
+          "https://product.tdk.com/en/search/capacitor/ceramic/mlcc/info?part_no=C2012X5R1V106M085AC"
+        ],
+        "unit": "V",
+        "value": 35
+      }
+    },
+    "tolerance": 50000.0
+  },
+  "entry_id": "OHM-024",
+  "entry_research_sha256": "cf3713d725b0bff5577c11add75bc727ca5a28b8290e5e76c2953f5c4ac73b73",
+  "limits": "Binding check of one bound DC path: the sourced current through the path must reproduce the sourced path resistance (0.1% numerical tolerance, or the sourced tolerance band). It does not validate frequency response, heating, contact wear, isolation, protocol behavior or any rating beyond the stated facts.",
+  "netlist_sha256": "250cf11454e2601771d4411fe7a81b9a79eb5369712401919ded5ce06030619c",
+  "observation_status": "ran",
+  "observed": 50000000.0,
+  "output_sha256": "3d2a3fce2352174d1d26824df6decb585592aa293c0775006118f5964b95ff6a",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-10T06:23:23Z",
+  "raw_output": "runtime-bench-output/OHM-024-op/output.txt",
+  "recipe_source_sha256": "2be790ee47f30e5ab4a14bb52fbc16bfe3fbd0d94c9b78cf2d2a87721b96d38f",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "version_file": "runtime-bench-output/OHM-024-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sun Mar 31 20:15:14 UTC 2024\n******\n",
+  "version_sha256": "d18ced87a01768ec53b4682c549f1182be38030c71159f071a008b747a8f04be"
+}

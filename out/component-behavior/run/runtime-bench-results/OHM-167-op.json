@@ -1,0 +1,59 @@
+{
+  "analysis": "op",
+  "circuit_hash": "f165dedc737dcbc55889c233b7115f6a9007844b1f04d7b6cc0b618cf87cdb45",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "current": 0.5,
+    "drive_role": "P1",
+    "expected": 0.02,
+    "kind": "absolute",
+    "observable": "path_resistance",
+    "return_role": "M1",
+    "source_facts": {
+      "i_rated": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "contact_current_max",
+        "page": 1,
+        "scope": "HD12-19-SMT-TR alternate only; not an interchangeable CT_19APL2 footprint; specification table maximum",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/farnellpdf/hd12-19-smt-tr.pdf"
+        ],
+        "unit": "A",
+        "value": 0.5
+      },
+      "rc": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "contact_resistance_max",
+        "page": 1,
+        "scope": "HD12-19-SMT-TR alternate only; not an interchangeable CT_19APL2 footprint; mated, measured at 20 mV / 100 mA",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/farnellpdf/hd12-19-smt-tr.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.02
+      }
+    },
+    "tolerance": 2e-05
+  },
+  "entry_id": "OHM-167",
+  "entry_research_sha256": "d001089b2d44ee126c103f2c8fdd0dae2884ecb6fa12f4ed670453e76e1fa3dc",
+  "limits": "Binding check of one bound DC path: the sourced current through the path must reproduce the sourced path resistance (0.1% numerical tolerance, or the sourced tolerance band). It does not validate frequency response, heating, contact wear, isolation, protocol behavior or any rating beyond the stated facts.",
+  "netlist_sha256": "b51c70b997ecd0210085cb9f506905ea5ef623955284ed4848dd410f2b25376a",
+  "observation_status": "ran",
+  "observed": 0.02,
+  "output_sha256": "d5a3a04e4988ae7a681c3fd79a811aaadc49b3ba09ff170f363cf3382191d1db",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-10T06:26:38Z",
+  "raw_output": "runtime-bench-output/OHM-167-op/output.txt",
+  "recipe_source_sha256": "2be790ee47f30e5ab4a14bb52fbc16bfe3fbd0d94c9b78cf2d2a87721b96d38f",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "version_file": "runtime-bench-output/OHM-167-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sun Mar 31 20:15:14 UTC 2024\n******\n",
+  "version_sha256": "d18ced87a01768ec53b4682c549f1182be38030c71159f071a008b747a8f04be"
+}

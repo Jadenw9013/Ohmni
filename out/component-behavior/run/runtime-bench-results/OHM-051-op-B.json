@@ -1,0 +1,60 @@
+{
+  "analysis": "op",
+  "circuit_hash": "3754c3388e524ea4d0f75268c614e02e70aafc8a95338219aeeefaa6132cf8e1",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "current": 1.5,
+    "drive_role": "B1",
+    "expected": 0.14,
+    "kind": "absolute",
+    "observable": "path_resistance",
+    "return_role": "B2",
+    "source_facts": {
+      "irated": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "rated_current",
+        "page": 1,
+        "scope": "744821240; manufacturer terminals; ambient 70 C",
+        "sources": [
+          "https://www.we-online.com/katalog/datasheet/744821240.pdf"
+        ],
+        "unit": "A",
+        "value": 1.5
+      },
+      "rdc": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_dcr",
+        "page": 1,
+        "scope": "744821240; manufacturer terminals; 20 C",
+        "sources": [
+          "https://www.we-online.com/katalog/datasheet/744821240.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.14
+      }
+    },
+    "tolerance": 0.00014000000000000001
+  },
+  "entry_id": "OHM-051",
+  "entry_research_sha256": "54b74781e2e67f7d42fb6e00fd197e7583c7ea18bead09c91846cf8723888da3",
+  "limits": "Binding check of one bound DC path: the sourced current through the path must reproduce the sourced path resistance (0.1% numerical tolerance, or the sourced tolerance band). It does not validate frequency response, heating, contact wear, isolation, protocol behavior or any rating beyond the stated facts.",
+  "netlist_sha256": "44e047076426188d245f4b46bce085b3dff9c8e1022a5051c95098afbed967df",
+  "observation_status": "ran",
+  "observed": 0.13999999999999999,
+  "output_sha256": "cae6bdca68d9f85b0e24717d8d460fc4da772e07952729b22f17ec63152380cf",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-10T06:23:50Z",
+  "raw_output": "runtime-bench-output/OHM-051-op-B/output.txt",
+  "recipe_source_sha256": "2be790ee47f30e5ab4a14bb52fbc16bfe3fbd0d94c9b78cf2d2a87721b96d38f",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "variant": "B",
+  "version_file": "runtime-bench-output/OHM-051-op-B/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sun Mar 31 20:15:14 UTC 2024\n******\n",
+  "version_sha256": "d18ced87a01768ec53b4682c549f1182be38030c71159f071a008b747a8f04be"
+}

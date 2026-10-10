@@ -1,0 +1,84 @@
+{
+  "analysis": "tran",
+  "circuit_hash": "7aa6e8456926c762f480a349afb21108d683b53020ad42b7de6d7239e119038d",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": [
+    {
+      "current": 0.054,
+      "expected": 0.11150459999999998,
+      "kind": "absolute",
+      "node": "anode",
+      "source_deck_sha256": "21ef3f048e6839fc7ea6a892d6c2d387ef694b67496fcb979838d88b8a853e4d",
+      "source_facts": {
+        "esr": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "converted_unit": "ohm",
+          "converted_value": 0.065,
+          "detail": null,
+          "field": "maximum_dc_esr_10ms",
+          "page": 2,
+          "scope": "SCCS20B505SRB; diameter 10 mm, height 20 mm; matches the illustrated can envelope",
+          "sources": [
+            "https://datasheets.kyocera-avx.com/AVX-SCC.pdf"
+          ],
+          "unit": "mohm",
+          "value": 65
+        },
+        "value": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "detail": null,
+          "field": "nominal_capacitance",
+          "page": 2,
+          "scope": "SCCS20B505SRB; diameter 10 mm, height 20 mm; matches the illustrated can envelope",
+          "sources": [
+            "https://datasheets.kyocera-avx.com/AVX-SCC.pdf"
+          ],
+          "unit": "F",
+          "value": 5
+        },
+        "vr": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "detail": null,
+          "field": "rated_voltage_at_65C",
+          "page": 1,
+          "scope": "SCC series; -40 to +65 C",
+          "sources": [
+            "https://datasheets.kyocera-avx.com/AVX-SCC.pdf"
+          ],
+          "unit": "V",
+          "value": 2.7
+        }
+      },
+      "time": 10.0,
+      "tolerance": 0.0011150459999999997,
+      "tolerance_contract": "BEH-CAP-EDLC/B3"
+    }
+  ],
+  "entry_id": "OHM-040",
+  "entry_research_sha256": "bfd7179303595f08ae6b67df83b370e5dafcd0ef19ead225ccee3f1aee9844e6",
+  "limits": "Constant-current charge from zero against I*ESR + I*t/C at one time point, using the relative tolerance of the class bench named in the comparison. Does not validate ESR frequency dependence, leakage, RF loss, self-heating or any rating.",
+  "netlist_sha256": "86e97ff845534510ae32c8c49d830be26135668dbd4184d04dc8ea94e229a10b",
+  "observation_status": "ran",
+  "observe_nets": [
+    "anode"
+  ],
+  "observed": [
+    0.1115247799207438
+  ],
+  "output_sha256": "a45ed2da41764b66509ac5af3cc7214fe16b9b76a3e81106f643e8e598a24ba5",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-10T06:26:50Z",
+  "raw_output": "runtime-bench-output/OHM-040-tran/output.txt",
+  "recipe_source_sha256": "2be790ee47f30e5ab4a14bb52fbc16bfe3fbd0d94c9b78cf2d2a87721b96d38f",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "tstep": "0.01",
+  "tstop": "10.5",
+  "version_file": "runtime-bench-output/OHM-040-tran/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sun Mar 31 20:15:14 UTC 2024\n******\n",
+  "version_sha256": "d18ced87a01768ec53b4682c549f1182be38030c71159f071a008b747a8f04be"
+}

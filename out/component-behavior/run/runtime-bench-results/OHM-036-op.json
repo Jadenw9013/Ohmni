@@ -1,0 +1,61 @@
+{
+  "analysis": "op",
+  "circuit_hash": "ad17c243fee817b4c27527bfc59836e7e5222124563edf53b6afe4b4ce2c7ea0",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "current": 1.6e-05,
+    "drive_role": "A",
+    "expected": 1000000.0,
+    "kind": "absolute",
+    "observable": "path_resistance",
+    "return_role": "K",
+    "source_facts": {
+      "ileak": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "converted_unit": "A",
+        "converted_value": 1.6e-05,
+        "detail": null,
+        "field": "maximum_leakage_current",
+        "page": 10,
+        "scope": "KEMET T491D107(1)016A(2), case D; (1)/(2) are manufacturer option placeholders, not a completed orderable part; 25 C, 5 minutes; applied rated voltage16 V per source p2",
+        "sources": [
+          "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+        ],
+        "unit": "uA",
+        "value": 16
+      },
+      "vr": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "rated_voltage",
+        "page": 10,
+        "scope": "KEMET T491D107(1)016A(2), case D; (1)/(2) are manufacturer option placeholders, not a completed orderable part; rated VDC at85 C; higher-temperature derating remains explicit",
+        "sources": [
+          "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+        ],
+        "unit": "V",
+        "value": 16
+      }
+    },
+    "tolerance": 1000.0
+  },
+  "entry_id": "OHM-036",
+  "entry_research_sha256": "dbe3b4cb87170a3ed7d5dbf00f9b0c63357866be2aff0126f7a48197285e6655",
+  "limits": "Binding check of one bound DC path: the sourced current through the path must reproduce the sourced path resistance (0.1% numerical tolerance, or the sourced tolerance band). It does not validate frequency response, heating, contact wear, isolation, protocol behavior or any rating beyond the stated facts.",
+  "netlist_sha256": "187373fe5c70d8be33034c0ff62b25f9af6e974879d80eed1e849013b442e42b",
+  "observation_status": "ran",
+  "observed": 1000000.0,
+  "output_sha256": "ee1f050a1392e12222d811dc06e5a1fdcedc4b6d73fde9efb69473708f872c4a",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-10T06:23:30Z",
+  "raw_output": "runtime-bench-output/OHM-036-op/output.txt",
+  "recipe_source_sha256": "2be790ee47f30e5ab4a14bb52fbc16bfe3fbd0d94c9b78cf2d2a87721b96d38f",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "version_file": "runtime-bench-output/OHM-036-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sun Mar 31 20:15:14 UTC 2024\n******\n",
+  "version_sha256": "d18ced87a01768ec53b4682c549f1182be38030c71159f071a008b747a8f04be"
+}

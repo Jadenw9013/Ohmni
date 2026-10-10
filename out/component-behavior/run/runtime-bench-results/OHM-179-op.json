@@ -1,0 +1,61 @@
+{
+  "analysis": "op",
+  "circuit_hash": "f9148df071978230920a45c846aab8ec2330ed4f613d288bdf0702521a9acb70",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "current": 0.5,
+    "drive_role": "P1",
+    "expected": 0.1,
+    "kind": "absolute",
+    "observable": "path_resistance",
+    "return_role": "C1",
+    "source_facts": {
+      "i_rated": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "current_rated",
+        "page": 1,
+        "scope": "693063010911 alternate push-pull socket only, not Molex 676008001 default push-push; electrical row",
+        "sources": [
+          "https://www.we-online.com/components/products/datasheet/693063010911.pdf",
+          "https://www.farnell.com/datasheets/2725610.pdf"
+        ],
+        "unit": "A",
+        "value": 0.5
+      },
+      "rc": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "contact_resistance_max",
+        "page": 1,
+        "scope": "693063010911 alternate push-pull socket only, not Molex 676008001 default push-push; maximum",
+        "sources": [
+          "https://www.we-online.com/components/products/datasheet/693063010911.pdf",
+          "https://www.farnell.com/datasheets/2725610.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.1
+      }
+    },
+    "tolerance": 0.0001
+  },
+  "entry_id": "OHM-179",
+  "entry_research_sha256": "1c703a8aa659c9bd23a76eb8b10a6c358a8f955514a11d333c80b2cb9044715b",
+  "limits": "Binding check of one bound DC path: the sourced current through the path must reproduce the sourced path resistance (0.1% numerical tolerance, or the sourced tolerance band). It does not validate frequency response, heating, contact wear, isolation, protocol behavior or any rating beyond the stated facts.",
+  "netlist_sha256": "da000db4c2c5c6b34af31db474e3478411b8b23b1a3228a42359fc7df9d3bd65",
+  "observation_status": "ran",
+  "observed": 0.1,
+  "output_sha256": "571841cc6feee3b2b318be1d54f804e96fb54c9c2465855fa15b1acb60e2765a",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-10T06:26:45Z",
+  "raw_output": "runtime-bench-output/OHM-179-op/output.txt",
+  "recipe_source_sha256": "2be790ee47f30e5ab4a14bb52fbc16bfe3fbd0d94c9b78cf2d2a87721b96d38f",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "version_file": "runtime-bench-output/OHM-179-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sun Mar 31 20:15:14 UTC 2024\n******\n",
+  "version_sha256": "d18ced87a01768ec53b4682c549f1182be38030c71159f071a008b747a8f04be"
+}

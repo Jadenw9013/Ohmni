@@ -1,0 +1,60 @@
+{
+  "analysis": "op",
+  "circuit_hash": "860b9dab737a9ca9aa410931b9a4b6cd793d9f0b8dfccf5c26707b19731b5791",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "current": 0.015,
+    "drive_role": "P_A",
+    "expected": 44.0,
+    "kind": "absolute",
+    "observable": "path_resistance",
+    "return_role": "P_B",
+    "source_facts": {
+      "idc_unbalance": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "primary_dc_unbalance",
+        "page": 1,
+        "scope": "TY-145P at 25 C",
+        "sources": [
+          "https://www.triadmagnetics.com/Asset/TY-145P.pdf"
+        ],
+        "unit": "A",
+        "value": 0.015
+      },
+      "rp": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "nominal_primary_dcr",
+        "page": 1,
+        "scope": "TY-145P at 25 C; pins 1-3",
+        "sources": [
+          "https://www.triadmagnetics.com/Asset/TY-145P.pdf"
+        ],
+        "unit": "ohm",
+        "value": 44
+      }
+    },
+    "tolerance": 0.044
+  },
+  "entry_id": "OHM-052",
+  "entry_research_sha256": "954f3cd758035e7e069fece506c5ff1c5d1cf482bf741f7db8fe54ed5589260e",
+  "limits": "Binding check of one bound DC path: the sourced current through the path must reproduce the sourced path resistance (0.1% numerical tolerance, or the sourced tolerance band). It does not validate frequency response, heating, contact wear, isolation, protocol behavior or any rating beyond the stated facts.",
+  "netlist_sha256": "6afc56ebffd7583d1e4d6f3bf260778d6173616f143088f4da3fee6d25b492a0",
+  "observation_status": "ran",
+  "observed": 44.00000000000001,
+  "output_sha256": "e7fde1be38a9fd65711079b8308129bc4dc1cd218d75384f92bdf05541691c15",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-10T06:23:52Z",
+  "raw_output": "runtime-bench-output/OHM-052-op-primary/output.txt",
+  "recipe_source_sha256": "2be790ee47f30e5ab4a14bb52fbc16bfe3fbd0d94c9b78cf2d2a87721b96d38f",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "variant": "primary",
+  "version_file": "runtime-bench-output/OHM-052-op-primary/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sun Mar 31 20:15:14 UTC 2024\n******\n",
+  "version_sha256": "d18ced87a01768ec53b4682c549f1182be38030c71159f071a008b747a8f04be"
+}
