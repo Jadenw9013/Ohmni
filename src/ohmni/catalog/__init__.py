@@ -13,6 +13,7 @@ upgrade to DATASHEET_SUPPORTED with machine-verified citations, and the change
 in status is visible to the user.
 """
 
+from .component_store import ComponentStore
 from .loader import JsonPartCatalog, default_catalog
 
-__all__ = ["JsonPartCatalog", "default_catalog"]
+__all__ = ["ComponentStore", "JsonPartCatalog", "default_catalog"]

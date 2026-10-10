@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "active_task": null,
-  "last_known_commit": "f2c8aa05",
+  "active_task": "CS-T06",
+  "last_known_commit": "11b28652",
   "approval_record": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
   "previous_checkpoint": {
     "schema_version": 1,
@@ -32,19 +32,20 @@
       "candidate_commit": "7310be49a0d8dacf8e8fe2bef11e867bbcabd651"
     }
   },
-  "modified_files": [],
+  "modified_files": [
+    ".ai/tasks.yaml",
+    ".ai/state.yaml",
+    ".ai/checkpoint.yaml"
+  ],
   "completed_substeps": [
-    "CS-T05 selected and activated from origin/main f2c8aa05.",
-    "Implemented immutable source-bound asset records and reusable dual-row/QFN/QFP family compilation.",
-    "Added explicit exposed-pad paste/thermal refusal gates, byte-level mutation detection and exact revision resolver.",
-    "Added portable project-local KiCad export and real KiCad load coverage.",
-    "All required gates passed."
+    "CS-T06 selected and activated from origin/main 11b28652 after PR #25 merged."
   ],
   "remaining_work": [
-    "Open and merge the CS-T05 PR.",
-    "After merge, branch from latest origin/main and activate CS-T06."
+    "Implement versioned SQLite admission migrations, immutable revisions, snapshots and lineage.",
+    "Exercise restart, duplicate concurrency, interruption, revocation and quarantine discovery boundaries.",
+    "Run required verification and open the CS-T06 PR."
   ],
   "last_failure": null,
-  "resume_action": "After CS-T05 merges, fetch origin/main, require ai_state.py next to select CS-T06, then implement persistent admission infrastructure.",
-  "last_command": "fast 2193 passed; integration 27 passed; frontend 1043 passed; focused 83 passed; Ruff and ai_state validate pass."
+  "resume_action": "Continue CS-T06 persistent admission infrastructure and its acceptance-focused tests.",
+  "last_command": "Fetched origin/main 11b28652, confirmed ai_state.py next selects CS-T06, and activated the task."
 }
