@@ -1625,14 +1625,14 @@
       "found_at_commit": "a965d98f25b5262b81a440206c4e8b17008d1e15",
       "resolution_commit": null,
       "resolution": null,
-      "verification": "git ls-files returns zero fetched-source blobs; source_errors() reports the successful OHM-066 SS32/SS34 ledger URL missing in a clean worktree.",
-      "recommended_correction": "Publish the immutable content-addressed source bundle as a versioned repository, Git LFS or release artifact dependency, bind it to the ledger manifest, and add a clean-checkout source-gate test."
+      "verification": "Re-reviewed commit 7464e4bb. rebuild_sources.py safely re-downloads and hash-checks currently reachable ledger URLs, and SOURCE_ARCHIVE.md documents the intended boundary, but the complete 383-document archive remains an owner-private bundle. The repository publishes neither the bundle digest nor a versioned/retrievable artifact binding. Manual, changed, and unavailable rows therefore remain irreproducible from a clean independent checkout.",
+      "recommended_correction": "Publish a content-addressed manifest for the complete private bundle, including its exact bundle digest and a durable owner-approved retrieval/escrow procedure, or attach the immutable bundle through an access-controlled release/artifact dependency. Add a clean-checkout test that restores the bundle and passes source_errors() without relying on an unrecorded owner file."
     },
     {
       "id": "CBH-R02",
       "scope": "COMPONENT-BEHAVIOR-COMPLETION",
       "severity": "HIGH",
-      "status": "OPEN",
+      "status": "FIXED",
       "title": "Mutable approval text can authorize an electrical class change",
       "description": "generate_behavior_records.py treats any nonempty approved_by and approved_on fields in STAGE1_MISMATCH_RESOLUTIONS.json as sufficient authorization for a class_addition that changes electrical truth. The regression repeats the same presence check. There is no check against a durable owner-approval record, approved resolution fingerprint, actor or exact quoted decision, so editing the mutable input can silently authorize another electrical class addition.",
       "affected_files": [
@@ -1642,16 +1642,16 @@
         "tests/test_behavior_netlist.py"
       ],
       "found_at_commit": "a965d98f25b5262b81a440206c4e8b17008d1e15",
-      "resolution_commit": null,
-      "resolution": null,
-      "verification": "The gate at generator lines 301-303 checks only truthiness plus known class; tests likewise assert only gate_required and a nonempty approved_by value.",
+      "resolution_commit": "7464e4bb129b73ae9d90cd7841bf70c80dc98900",
+      "resolution": "Electrical class additions now require a separate approval artifact that binds the exact Stage1Resolution fingerprint, named human owner, date, quoted decision and explicit electrical-truth acknowledgement. Missing, altered, widened and presence-only approvals fail.",
+      "verification": "Reviewed resolution_fingerprint() and verify_electrical_approval(), the dedicated OHM-066-SCHOTTKY-CLASS approval record, and adversarial tests for payload widening, fingerprint tampering, missing approval and a forged presence-only gate. Focused behavior tests passed this finding.",
       "recommended_correction": "Bind electrical-truth changes to a separate immutable approval artifact containing the exact resolution fingerprint and owner decision, and add adversarial tests showing edited approval text or payload fails."
     },
     {
       "id": "CBH-R03",
       "scope": "COMPONENT-BEHAVIOR-COMPLETION",
       "severity": "HIGH",
-      "status": "OPEN",
+      "status": "FIXED",
       "title": "A fitted nonlinear model can earn audited coverage without validating its fit",
       "description": "The diode own_forward_fit runtime probe checks one current against a 0..vf_max interval. For OHM-066 the accepted interval is 0..0.5 V, and _dc_matches accepts a near-zero result. The receipt honestly states that it does not validate the typical fit, but Stage 7 promotes any passing receipt to audited implementation coverage. A broken near-zero fitted model can therefore pass and be counted as audited.",
       "affected_files": [
@@ -1661,9 +1661,9 @@
         "tests/test_behavior_runtime_benches.py"
       ],
       "found_at_commit": "a965d98f25b5262b81a440206c4e8b17008d1e15",
-      "resolution_commit": null,
-      "resolution": null,
-      "verification": "dc_probe_definition for OHM-066 yields minimum 0 and maximum 0.5; _dc_matches accepts 1e-12 V for that comparison.",
+      "resolution_commit": "7464e4bb129b73ae9d90cd7841bf70c80dc98900",
+      "resolution": "Runtime recipes now identify sourced fit curves and replay multiple datasheet read points with confidence-dependent absolute tolerances. Audited coverage requires all generated fit receipts, so the former near-zero model no longer passes the fitted-model claim.",
+      "verification": "Reviewed fit_variants(), fit_points(), the fit-specific dc_probe_definition path and structured fit_curves records. The adversarial dead-model regression confirms the legacy 0..VF bound still passes near zero while all three OHM-066 fit receipts fail; focused behavior tests passed this finding.",
       "recommended_correction": "Store the source curve points and fit procedure as structured inputs, rederive parameters with a residual threshold, add multi-point runtime checks and an adversarial near-zero model test, or narrow the coverage label to the exact single bound checked."
     },
     {
@@ -1679,8 +1679,8 @@
       "found_at_commit": "a965d98f25b5262b81a440206c4e8b17008d1e15",
       "resolution_commit": null,
       "resolution": null,
-      "verification": "The contradiction appears in OHM-169 through OHM-172 recipe limitations next to nonempty open_mating_roles arrays.",
-      "recommended_correction": "Regenerate the limitations to describe open_mating_roles and add coverage for every connector recipe that uses the field."
+      "verification": "Re-reviewed commit 7464e4bb. The stale 'RuntimeRecipe has no field' wording was replaced for the edited connector rows, but the branch's own test_every_open_mating_connector_recipe_describes_the_field fails at OHM-155. OHM-155, OHM-156, OHM-157 and OHM-161 have nonempty open_mating_roles without a limitation naming that field, so the intended all-connector consistency regression is not green.",
+      "recommended_correction": "Regenerate the four remaining connector limitations to describe open_mating_roles explicitly, then make test_every_open_mating_connector_recipe_describes_the_field pass for every recipe."
     }
   ]
 }
