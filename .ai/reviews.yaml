@@ -1613,7 +1613,7 @@
       "id": "CBH-R01",
       "scope": "COMPONENT-BEHAVIOR-COMPLETION",
       "severity": "HIGH",
-      "status": "OPEN",
+      "status": "ACCEPTED_RISK",
       "title": "The cited source archive is absent from a clean checkout",
       "description": "FETCH_LEDGER.jsonl records 603 fetches, but origin/main tracks no out/component-behavior/run/fetched-sources/<sha>.bin blobs. tools/behavior_audit/evidence.py requires those exact bytes and hashes for every successful cited URL. A clean-checkout probe of the OHM-066 Vishay source returns AUD-SOURCE-001 missing successful archived fetch, so reviewers cannot reproduce the claimed seven-dead-URL boundary or trace fitted values to the archived datasheet bytes.",
       "affected_files": [
@@ -1623,9 +1623,9 @@
         "tools/behavior_audit/audit.py"
       ],
       "found_at_commit": "a965d98f25b5262b81a440206c4e8b17008d1e15",
-      "resolution_commit": null,
-      "resolution": null,
-      "verification": "Re-reviewed commit 7464e4bb. rebuild_sources.py safely re-downloads and hash-checks currently reachable ledger URLs, and SOURCE_ARCHIVE.md documents the intended boundary, but the complete 383-document archive remains an owner-private bundle. The repository publishes neither the bundle digest nor a versioned/retrievable artifact binding. Manual, changed, and unavailable rows therefore remain irreproducible from a clean independent checkout.",
+      "resolution_commit": "7464e4bb129b73ae9d90cd7841bf70c80dc98900",
+      "resolution": "Owner accepts the reproducibility boundary for a public repository containing citations to copyrighted manufacturer datasheets: publish the URL/hash/byte-count ledger and the rebuild-sources verifier, while retaining browser-saved documents in an owner-held private bundle. The datasheet bytes themselves will not be published. See docs/behavior/SOURCE_ARCHIVE.md.",
+      "verification": "Owner decision in this session accepts the design documented by docs/behavior/SOURCE_ARCHIVE.md. Commit 7464e4bb provides rebuild_sources.py, which re-downloads every successful scripted URL, accepts bytes only when their SHA-256 matches FETCH_LEDGER.jsonl, reports changed/unavailable/manual outcomes explicitly, and documents the owner-held private bundle for browser-saved documents. This accepted risk does not turn missing source bytes into a successful source audit.",
       "recommended_correction": "Publish a content-addressed manifest for the complete private bundle, including its exact bundle digest and a durable owner-approved retrieval/escrow procedure, or attach the immutable bundle through an access-controlled release/artifact dependency. Add a clean-checkout test that restores the bundle and passes source_errors() without relying on an unrecorded owner file."
     },
     {
