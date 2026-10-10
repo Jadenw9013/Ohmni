@@ -531,5 +531,75 @@ def test_ohm066_schottky_class_addition_is_owner_gated():
     assert entry.behavior_class_ids == ["BEH-DIO-PN", "BEH-DIO-SCHOTTKY"]
     assert "OHM-066-SCHOTTKY-CLASS" in entry.resolution_ids
     resolution = next(r for r in registry.manifest.resolutions if r.resolution_id == "OHM-066-SCHOTTKY-CLASS")
-    assert resolution.gate_required and resolution.data["approved_by"]
+    assert resolution.gate_required
     assert load_recipes(registry, ROOT).entries["OHM-066"].behavior_id == "BEH-DIO-SCHOTTKY"
+
+
+def test_electrical_class_change_needs_its_own_fingerprinted_approval(tmp_path):
+    """CBH-R02: editing the resolution payload, or the approval text, cannot authorize the change."""
+    import json
+    import shutil
+
+    from scripts.generate_behavior_records import (
+        build_records,
+        resolution_fingerprint,
+        verify_electrical_approval,
+    )
+
+    def copy_repo(mutate):
+        root = tmp_path / "repo"
+        if root.exists():
+            shutil.rmtree(root)
+        for relative in ("COMPONENT_BEHAVIOR_SPEC.md", "docs/behavior", "src/ohmni/behavior/data"):
+            target = root / relative
+            source = ROOT / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            if source.is_dir():
+                shutil.copytree(source, target)
+            else:
+                shutil.copy2(source, target)
+        mutate(root)
+        return root
+
+    res_path = "docs/behavior/gapfill/STAGE1_MISMATCH_RESOLUTIONS.json"
+    approval_path = "docs/behavior/approvals/OHM-066-SCHOTTKY-CLASS.json"
+
+    def edit_resolution(root):
+        data = json.loads((root / res_path).read_text())
+        row = next(r for r in data["resolutions"] if r["resolution_id"] == "OHM-066-SCHOTTKY-CLASS")
+        row["entry_ids"] = ["OHM-066", "OHM-065"]  # widen the electrical change without a new approval
+        (root / res_path).write_text(json.dumps(data, indent=2))
+
+    def edit_approval_text(root):
+        data = json.loads((root / approval_path).read_text())
+        data["resolution_fingerprint"] = "0" * 64
+        (root / approval_path).write_text(json.dumps(data, indent=2))
+
+    def drop_approval(root):
+        (root / approval_path).unlink()
+
+    def forge_presence_only(root):
+        # The old gate accepted any nonempty approved_by/approved_on in the mutable payload.
+        data = json.loads((root / res_path).read_text())
+        data["resolutions"].append({
+            "resolution_id": "OHM-065-SCHOTTKY-CLASS", "kind": "class_addition", "entry_ids": ["OHM-065"],
+            "subject": "forged", "action": "forged", "changes_electrical_truth": True, "gate_required": True,
+            "data": {"add_behavior_class": "BEH-DIO-SCHOTTKY", "approved_by": "someone", "approved_on": "2026-10-10"}})
+        (root / res_path).write_text(json.dumps(data, indent=2))
+
+    build_records(copy_repo(lambda root: None))  # the genuine record still builds
+    for mutate, message in ((edit_resolution, "fingerprint"), (edit_approval_text, "fingerprint"),
+                            (drop_approval, "missing owner approval"), (forge_presence_only, "missing owner approval")):
+        with pytest.raises(ValueError, match=message):
+            build_records(copy_repo(mutate))
+    registry = BehaviorRegistry(repo_root=ROOT)
+    resolution = next(r for r in registry.manifest.resolutions if r.resolution_id == "OHM-066-SCHOTTKY-CLASS")
+    assert verify_electrical_approval(ROOT, resolution)["resolution_fingerprint"] == resolution_fingerprint(resolution)
+
+
+def test_every_open_mating_connector_recipe_describes_the_field():
+    registry = BehaviorRegistry(repo_root=ROOT)
+    for entry_id, recipe in load_recipes(registry, ROOT).entries.items():
+        if recipe.open_mating_roles:
+            assert any("open_mating_roles" in text for text in recipe.limitations), entry_id
+            assert not any("has no field" in text for text in recipe.limitations), entry_id

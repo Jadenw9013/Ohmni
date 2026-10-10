@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "approved_by": "Jaden (repository owner): in-session reply 'ok apply' on 2026-10-05 approving the source-supersession patch and this bindings file; Jaden (repository owner): in-session reply 'approve both' on 2026-10-06 approving the USB Type-C supersession and the DS20001826F citation URL",
-  "approved_on": "2026-10-06",
+  "approved_by": "Jaden (repository owner): in-session reply 'ok apply' on 2026-10-05 approving the source-supersession patch and this bindings file; Jaden (repository owner): in-session reply 'approve both' on 2026-10-06 approving the USB Type-C supersession and the DS20001826F citation URL; 2026-10-10: Jaden delegated the handling of the seven remaining unarchivable URLs to Claude ('you decide whats best for all 3 questions'); the six supersessions and the one withdrawal recorded that day are Claude's choices under that delegation (DECISIONS.md D055), not individually quoted owner approvals",
+  "approved_on": "2026-10-10",
   "purpose": "The protected spec cites URLs that cannot be archived (dead, blocked, mirrors, distributor pages) and local paths from the authoring workspace. Supersessions point each unarchivable URL to a primary document that was opened and checked; artifact bindings lock the repository files a local reference means. Fetch receipts prove bytes, not support: every supersession states what it supports, and partial or conflicting ones explain the gap.",
   "supersessions": {
     "https://datasheet.ciiva.com/19454/234819-19454258.pdf": {
@@ -343,6 +343,74 @@
       "supports": "yes",
       "evidence": "Archived PDF title page reads 'Universal Serial Bus Type-C Cable and Connector Specification Release 2.0 August 2019'; the truncated cited URL is the leading part of this file's URL.",
       "note": "Same document; the spec table cut the URL at the first space in the file name."
+    },
+    "https://content.kemet.com/datasheets/F3054.pdf": {
+      "archive_url": "https://content.kemet.com/datasheets/KEM_C1115_MIL-PRF-123.pdf",
+      "org": "KEMET (YAGEO Group)",
+      "title": "Surface Mount Multilayer Ceramic Chip Capacitors (SMD MLCCs) - High Reliability Surface Mount Capacitors, MIL-PRF-123, 50 - 100 VDC (BP & BX Dielectric)",
+      "revision_or_date": "C1115_MIL-PRF-123 - 3/5/2024 (PDF created 2024-03-05)",
+      "claims_checked": "C0G 0 +/-30 ppm/C -55..125 C; X7R +/-15%; DF C0G 0.15% / X7R 2.5%; IR 100 Gohm or 1000 Mohm*uF whichever is less at 25 C; DWV 250% for 5 s; X7R aging about 1%/decade hour",
+      "supports": "yes",
+      "evidence": "p.4 Electrical Parameters/Characteristics: 'Operating temperature range' '−55°C to +125°C' | p.4 TCC: 'BP: ±30ppm/°C'; 'BX: ±15 @ 0Vdc, +15 / -25% @ Rated Vdc' | p.4 'Aging rate (maximum % capacitance loss/decade hour) BP: 0% BX: 1%' | p.4 'Dielectric Withstanding Voltage (DWV) 250% of rated voltage (5 ±1 seconds and charge/discharge not exceeding 50 mA)' | p.4 'Dissipation Factor (DF) maximum limit at 25°C' / 'BP:' 'Cap < 10 pF: 0.25%' 'Cap ≥ 10 pF: 0.15%' / 'BX:' '2.5%' | p.4 'Insulation Resistance (IR) minimum limit at 25°C' / 'At +25°C: 100,000 megaohms or 1,000 megaohm-microfarads, whichever is less.'",
+      "note": "F3054 (KEMET 'Ceramic High Reliability Products' catalogue, 2007/2010) is gone from content.kemet.com. C1115 is KEMET's current MIL-PRF-123 sheet and restates all six values using the MIL names BP (C0G) and BX (X7R); it lists the 1%/decade aging as a maximum where F3054 said typical. An Internet Archive copy of the original F3054 (not manufacturer-hosted, used for identification only) shows the exact cited wording. Checked 2026-10-10, by Claude (local Claude Code session on Jaden's PC) at Jaden's direction; claims machine-checked against the downloaded document text; manifest C:/Users/wongj/Downloads/ohmni-local/sources/manifest.json"
+    },
+    "https://www.kemet.com/content/dam/kemet/lightning/obsolete/technical-archive/2004-CARTS-Europe-Derating-Differences.pdf": {
+      "archive_url": "https://content.kemet.com/datasheets/kem_t2076_t52x-530.pdf",
+      "org": "KEMET (YAGEO Group)",
+      "title": "KEMET Organic Capacitor (KO-CAP®) T52X/T530 Polymer Electrolytic Capacitors",
+      "revision_or_date": "T2076_T52X-530 (2026-09-09)",
+      "claims_checked": "derating: MnO2 50%; polymer 20% above 10 V and 10% at or below 10 V; surge failure-rate figures",
+      "supports": "partial",
+      "evidence": "p.32 'Derating Guidelines' / 'Recommended Application Voltage' / 'KEMET recommends that designers consider a voltage derating, according to the graphic above, for the maximum steady state voltage.' Graphs (read from the rendered page): derating category 1 (-55 to 85 °C) and category 3 (-55 to 105 °C) at 90% of rated voltage; categories 2 and 4 at 80% | Ratings tables give each part a 'Derating Category', e.g. p.23 'T520A106M010A(3)E080' (10 V) -> 3; p.25 'T520B106M016A(3)E100' (16 V) -> 4 | Tally of all T520 rows: rated <= 10 V -> category 3 (or 1 for 85 °C-rated parts), i.e. 90% of VR; rated 11/16/20/25 V -> category 4, i.e. 80% of VR. Exception: the 125 °C-rated 10 V part T520B107M010ATE055 is category 6 (80% up to 105 °C)",
+      "note": "KEMET no longer hosts the 2004 CARTS Europe paper (Prymak, Staubli, Prevallet) at kemet.com or yageogroup.com. The polymer 80%/90% rule is supported by this current T52X/T530 sheet (derating graphs plus per-part derating categories) and stated in words in KEM_T2079_SSD (https://content.kemet.com/datasheets/KEM_T2079_SSD.pdf, archived c872b522); the MnO2 50% rule is in KEM_T2005_T491 (https://content.kemet.com/datasheets/KEM_T2005_T491.pdf, archived c3c5bb70). No current document carries the surge failure-rate figures, which stay unsupported. An Internet Archive copy of the original (not manufacturer-hosted) shows the exact cited rules. Checked 2026-10-10, by Claude (local Claude Code session on Jaden's PC) at Jaden's direction; claims machine-checked against the downloaded document text; manifest C:/Users/wongj/Downloads/ohmni-local/sources/manifest.json",
+      "supporting_archives": [
+        "https://content.kemet.com/datasheets/KEM_T2079_SSD.pdf",
+        "https://content.kemet.com/datasheets/KEM_T2005_T491.pdf"
+      ]
+    },
+    "https://www.wima.de/wp-content/uploads/media/WIMA_Main_Catalogue_2025.pdf": {
+      "archive_url": "https://www.wima.de/wp-content/uploads/media/WIMA_Main_Catalogue_2026.pdf",
+      "org": "WIMA GmbH & Co. KG",
+      "title": "WIMA Film Capacitors main catalogue, Edition 2026",
+      "revision_or_date": "Edition 2026 (page footers '03.26'; PDF modified 2026-07-29)",
+      "claims_checked": "SMD-PET/SMD-PPS self-healing metallized construction; 63 to 1000 VDC range for the SMD series; PPS very constant capacitance vs temperature",
+      "supports": "yes",
+      "evidence": "p.15: '...voltage ranges of 63 VDC, 100 VDC, 250 VDC, 400 VDC, 630 VDC and 1000 VDC...'; 'The WIMA SMD-PPS has an operating temperature range up to +140° C and stands out for its stable capacitance and frequency behaviour versus temperature.' | p.16 WIMA SMD-PET: 'Metallized Polyester (PET) SMD Film Capacitors with Box Encapsulation ... Rated Voltages from 63 VDC to 1000 VDC'; 'Self-healing' | p.20 WIMA SMD-PPS: 'Metallized Polyphenylene-Sulphide (PPS) SMD Film Capacitors with Box Encapsulation ... Rated Voltages from 63 VDC to 1000 VDC'; 'Self-healing'; 'Very constant capacitance value versus temperature'",
+      "note": "Newer edition of the same catalogue (the 2025 file is a soft 404). The per-series sheets e_WIMA_SMD_PPS.pdf (cec3bc4c) and e_WIMA_SMD_PET.pdf (8e0e85d5), both 03.26, carry the same statements and are archived as supporting documents. Checked 2026-10-10, by Claude (local Claude Code session on Jaden's PC) at Jaden's direction; claims machine-checked against the downloaded document text; manifest C:/Users/wongj/Downloads/ohmni-local/sources/manifest.json",
+      "supporting_archives": [
+        "https://www.wima.de/wp-content/uploads/media/e_WIMA_SMD_PPS.pdf",
+        "https://www.wima.de/wp-content/uploads/media/e_WIMA_SMD_PET.pdf"
+      ]
+    },
+    "https://onlinedocs.microchip.com/oxy/GUID-2ACDA668-0A87-46A1-B7FC-9DC74A5461AD-en-US-2/GUID-9D6E52D1-BC20-4009-8F14-35F680E0A5EC.html": {
+      "archive_url": "https://ww1.microchip.com/downloads/aemDocuments/documents/MPU32/ProductDocuments/DataSheets/SAMA5D29-Data-Sheet-DS60001764.pdf",
+      "org": "Microchip Technology Inc.",
+      "title": "SAMA5D29 Data Sheet - Ultra-Low-Power Arm® Cortex®-A5 Core-Based MPU, Graphics Interface, Ethernet 10/100, IEEE®1588, CAN-FD, USB, AEC-Q100 Grade 2",
+      "revision_or_date": "DS60001764C (Revision C, 10/2025; PDF modified 2025-11-26)",
+      "claims_checked": "recommended crystal characteristics: typical Cm 1.3-9 fF, C0 <= 3 pF, ESR <= 80-100 ohm",
+      "supports": "yes",
+      "evidence": "p.2731 §67.6.1.1 'Recommended Crystal Characteristics', Table 67-19: | ESR (Equivalent Series Resistance) max 100 Ω (FREQ = 00, 11); max 80 Ω (FREQ = 10, 01) | CM (Motional Capacitance) 5 to 9 fF (FREQ = 00); 1.3 to 3.2 fF (FREQ = 01, 10, 11) | CS (Shunt Capacitance) max 3 pF (FREQ = 00, 01, 10); max 1.3 pF (FREQ = 11) | CCRYSTAL (allowed crystal capacitive load) 12.5 to 18 pF (FREQ = 00, 01, 11); 8 to 12.5 pF (FREQ = 10)",
+      "note": "The cited onlinedocs page is section 67.6.1.1 (Table 67-19) of the SAMA5D29 data sheet DS60001764; the online host returned 503 for every page at check time, the PDF is the durable primary. The values are min/max limits per FREQ setting (CS 3 pF max, 1.3 pF for FREQ=11), not typical values as the spec row says; the ranges match. Checked 2026-10-10, by Claude (local Claude Code session on Jaden's PC) at Jaden's direction; claims machine-checked against the downloaded document text; manifest C:/Users/wongj/Downloads/ohmni-local/sources/manifest.json"
+    },
+    "https://static.chipdip.ru/lib/150/DOC036150746.pdf": {
+      "archive_url": "https://pim.murata.com/asset/pim4/ceramicResonatorCrystalUnit/SPEC_CSTLS8M00G53-A0_PDF_CERAMICRESONATORCRYSTALUNIT",
+      "org": "Murata Manufacturing Co., Ltd.",
+      "title": "Specification of Piezoelectric Ceramic Resonator - CSTLS8M00G53-A0 (taping) / CSTLS8M00G53-B0 (bulk)",
+      "revision_or_date": "Document No. JGC40-5039, Issue Date March 27, 2017 (PDF modified 2018-02-01)",
+      "claims_checked": "CSTLS8M00G53-B0 tolerance, stability, aging, 15 pF built-in load capacitors, R1 25 ohm",
+      "supports": "yes",
+      "evidence": "p.1: Murata Part Number 'Taping CSTLS8M00G53-A0', 'Bulk CSTLS8M00G53-B0'; 'Operating Temperature Range -20 to +80°C' | p.2 (bilingual JP/EN table; values quoted as printed) 5-1 'Nominal Oscillating Frequency' '8.000MHz' | p.2 5-2 'Initial Frequency Tolerance *1 *2' '±0.50%以内/max.'; footnote *1 'Terminal (1) and (3) are interchangeable, but if interchange initial tolerance is ±0.60%max.' | p.2 5-3 'Frequency Shift by Temperature' '(from initial value at +25°C)' '±0.20%以内/max.' '(-20 to +80°C)' | p.2 5-4 'Secular Change' '(Oscillation frequency for 10 years at 25°C 60%R.H.)' '±0.20%以内/max.' | p.2 5-5 'Resonant Impedance *2' '25Ωmax以下/max.' | p.2 5-6 'Built-in Load Capacitance (C1,C2 at 1MHz)' '15pF±20%以内/max.' '(参考値/ref.)' | murata.com product page (https://www.murata.com/en-us/products/productdetail?partno=CSTLS8M00G53-B0, which redirects to pim.murata.com; JS-rendered; read in Chrome): 'Frequency Tolerance ±0.50%', 'Frequency Shift by Temperature ±0.2%', 'Frequency Aging ±0.2%', 'ESR/R1 25Ω', Features 'Oscillation circuits do not require external load capacitors.', status 'To be discontinued'",
+      "note": "The chipdip.ru mirror is replaced by Murata's own specification sheet JGC40-5039, linked from the murata.com product page; despite the -A0 file name it covers both -A0 (taping) and -B0 (bulk). Murata marks the part 'To be discontinued'. Checked 2026-10-10, by Claude (local Claude Code session on Jaden's PC) at Jaden's direction; claims machine-checked against the downloaded document text; manifest C:/Users/wongj/Downloads/ohmni-local/sources/manifest.json"
+    },
+    "https://www.advanced-monolithic.com/pdf/ds1117.pdf": {
+      "archive_url": "http://www.advanced-monolithic.com/pdf/ds1117.pdf",
+      "org": "Advanced Monolithic Systems, Inc.",
+      "title": "AMS1117 - 1A Low Dropout Voltage Regulator",
+      "revision_or_date": "No revision printed; PDF created 2009-08-27 ('Microsoft Word - DS1117')",
+      "claims_checked": "AMS1117 pinout, dropout, regulation, output capacitor requirement, thermal resistance",
+      "supports": "yes",
+      "evidence": "p.1 PIN CONNECTIONS '3 PIN FIXED/ADJUSTABLE VERSION 1- Ground/Adjust 2- VOUT 3- VIN'; 'TAB IS OUTPUT' (printed beside the TO-252 front view) | p.1 'Line Regulation: 0.2% Max.'; 'Load Regulation: 0.4% Max.'; 'The dropout voltage of the device is guaranteed maximum 1.3V'; fixed versions include 3.3V | p.2 Absolute maximum 'Input Voltage 15V'; 'Operating Junction Temperature ... -40°C to 125°C'; 'SOT-223 package θJA = 90°C/W*' with '* ... θJA can vary from 46°C/W to >90°C/W depending on mounting technique and the size of the copper area' | p.3 'Dropout Voltage ... IOUT = 0.8A' 1.1 typ / 1.3 max V; 'Current Limit' 900 / 1,100 / 1,500 mA; 'Quiescent Current' 5 typ / 11 max mA; 'Thermal Resistance Junction-to-Case All packages 15 °C/W' | p.4 'Thermal protection circuitry will shut-down the regulator should the junction temperature exceed 165°C'; 'The addition of 22µF solid tantalum on the output will ensure stability for all operating conditions.' | p.5 'maximum junction temperature ratings of 125°C should not be exceeded under continuous normal load conditions'; 'thermal resistance from the junction to the tab ... is 15°C/W'; 'total thermal resistance from junction to ambient can be as low as 45°C/W'",
+      "note": "Same manufacturer server and path; only the scheme differs because the host's TLS handshake fails, so the recorded sha256 is the integrity check. Two spec details do not match the sheet: the SOT-223 theta-JA is given as 90 C/W typical (46 to >90 C/W by copper area), not '45-80'; and the TO-252 tab is marked OUTPUT. Checked 2026-10-10, by Claude (local Claude Code session on Jaden's PC) at Jaden's direction; claims machine-checked against the downloaded document text; manifest C:/Users/wongj/Downloads/ohmni-local/sources/manifest.json"
     }
   },
   "artifact_bindings": {
@@ -485,5 +553,22 @@
   },
   "citation_urls": {
     "DS20001826F": "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MCP1700-Data-Sheet-20001826F.pdf"
+  },
+  "withdrawn_sources": {
+    "https://atom.ubbcluj.ro/alpar/datasheets/optoelectronic_components/LED/Untinted%20Non-Diffused%20LED%20(B)%20-%20Vishay.pdf": {
+      "org": "Vishay Semiconductors",
+      "title": "TLHB5800 datasheet (document 83021, Rev 2.0, 29-Apr-13)",
+      "status": "withdrawn_by_manufacturer",
+      "checks": [
+        "https://www.vishay.com/doc?83021 -> 404, while the same resolver still serves live neighbours (doc?83024 -> /docs/83024/tlhe5800.pdf, doc?83028 -> /docs/83028/tlhk5800.pdf)",
+        "https://www.vishay.com/docs/83021/tlhb5800.pdf -> 404; https://www.vishay.com/en/product/83021/ -> 404; vishay.com site search for TLHB5800 -> HTTP 500",
+        "Current Vishay 5 mm LED listing (https://www.vishay.com/en/leds/t1-3m-34-5/) contains TLHE5800 and TLHK5800 but no TLHB5800",
+        "The only remaining vishay.com mention I found: doc 80095 'The Constituents of Semiconductor Components' p.3 lists 'TLHB5800 3' (package form 3; materials only, no electrical data)"
+      ],
+      "checked_by": "Claude (local Claude Code session on Jaden's PC), at Jaden's direction",
+      "checked_on": "2026-10-10",
+      "effect": "The spec's blue 5 mm LED figures (S2 of BEH-LED-INDICATOR) can no longer be traced to a manufacturer document. No gapfill field and no runtime recipe cites this URL, so no simulable binding depends on it; the class card keeps the values with this withdrawal recorded against them.",
+      "note": "The cited URL was a university mirror; the manufacturer's own copy (vishay.com/doc?83021) returns 404 while neighbouring documents still resolve, the part is absent from Vishay's current 5 mm LED listing, and the Internet Archive holds no snapshot. Sibling parts (TLHE5800, TLHK5800) are different dies and cannot support blue-specific values. A current blue 5 mm part with a live datasheet should replace it in any future blue binding."
+    }
   }
 }

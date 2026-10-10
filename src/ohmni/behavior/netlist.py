@@ -174,7 +174,23 @@ def inline_asset(root, anchor):
     if re.search(r"^\s*(?:\.(?:include|inc|lib|control|end)\b|(?:shell|source|write|wrdata)\b)", text, re.IGNORECASE | re.MULTILINE):
         raise ValueError("inline model asset contains file or analysis commands")
     validate_mosfet_cards(text)
-    return text
+    return rename_gnd_ports(text)
+
+
+def rename_gnd_ports(text):
+    """ngspice treats a node literally named ``gnd`` as global ground, so a subcircuit whose port is
+    called ``gnd`` silently bypasses the pin it is wired to: its return current reaches node 0
+    directly and the pin probe reads zero (QA-03, seven IC reference circuits failed current balance).
+    The authored assets keep their locked bytes; the inlined copy renames the token so the port is
+    an ordinary node and the pin carries the current.
+    """
+    out = []
+    for line in text.splitlines(keepends=True):
+        if line.lstrip().startswith("*"):
+            out.append(line)
+        else:
+            out.append(re.sub(r"(?<![\w.:])gnd(?![\w.:])", "gndport", line, flags=re.IGNORECASE))
+    return "".join(out)
 
 
 def validate_mosfet_cards(text):

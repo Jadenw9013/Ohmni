@@ -2067,6 +2067,12 @@
           "field": "spice_RS_fit",
           "unit": "ohm"
         }
+      },
+      "fit_curves": {
+        "forward": {
+          "field": "forward_curve_read_points",
+          "points": 3
+        }
       }
     },
     "OHM-057": {
@@ -2203,6 +2209,12 @@
           "field": "spice_M_fit",
           "unit": "1"
         }
+      },
+      "fit_curves": {
+        "forward": {
+          "field": "forward_curve_read_points",
+          "points": 3
+        }
       }
     },
     "OHM-058": {
@@ -2316,6 +2328,12 @@
           "field": "spice_M_fit",
           "unit": "1"
         }
+      },
+      "fit_curves": {
+        "forward": {
+          "field": "forward_curve_read_points",
+          "points": 3
+        }
       }
     },
     "OHM-059": {
@@ -2393,6 +2411,12 @@
         "RS": {
           "field": "spice_RS_fit",
           "unit": "ohm"
+        }
+      },
+      "fit_curves": {
+        "forward": {
+          "field": "forward_curve_read_points",
+          "points": 3
         }
       }
     },
@@ -2477,6 +2501,12 @@
         "RS": {
           "field": "spice_RS_fit",
           "unit": "ohm"
+        }
+      },
+      "fit_curves": {
+        "forward": {
+          "field": "forward_curve_read_points",
+          "points": 3
         }
       }
     },
@@ -2740,6 +2770,12 @@
           "field": "spice_TT_fit",
           "unit": "s"
         }
+      },
+      "fit_curves": {
+        "forward": {
+          "field": "forward_curve_read_points",
+          "points": 3
+        }
       }
     },
     "OHM-065": {
@@ -2855,6 +2891,12 @@
           "field": "spice_TT_fit",
           "unit": "s"
         }
+      },
+      "fit_curves": {
+        "forward": {
+          "field": "forward_curve_read_points",
+          "points": 3
+        }
       }
     },
     "OHM-066": {
@@ -2948,7 +2990,13 @@
         "3 A is the average rectified current at the lead temperature of fig. 1, used here as a DC ceiling; 55 K/W assumes 14 x 14 mm copper pads. Pin map K to terminal 1 (cathode bar, -X), A to terminal 2, per the spec's OHM-066 section and the data sheet's cathode-band marking.",
         "Bound under owner-approved resolution OHM-066-SCHOTTKY-CLASS; the entry's PN and TVS functions have no bound reference.",
         "Transient runs use the same isothermal diode card (junction capacitance included, no reverse-recovery charge for a Schottky beyond CJO); they support peak, average and surge-comparison checks, not junction heating over time."
-      ]
+      ],
+      "fit_curves": {
+        "forward": {
+          "field": "forward_curve_read_points",
+          "points": 3
+        }
+      }
     },
     "OHM-067": {
       "behavior_id": "BEH-DIO-SCHOTTKY",
@@ -3059,6 +3107,12 @@
         "BV": {
           "field": "spice_BV_minimum_breakdown",
           "unit": "V"
+        }
+      },
+      "fit_curves": {
+        "forward": {
+          "field": "forward_curve_read_points",
+          "points": 3
         }
       }
     },
@@ -3619,6 +3673,12 @@
           "field": "spice_RS_fit",
           "unit": "ohm"
         }
+      },
+      "fit_curves": {
+        "forward": {
+          "field": "forward_curve_read_points",
+          "points": 3
+        }
       }
     },
     "OHM-074": {
@@ -3697,6 +3757,12 @@
         "RS": {
           "field": "spice_RS_fit",
           "unit": "ohm"
+        }
+      },
+      "fit_curves": {
+        "forward": {
+          "field": "forward_curve_read_points",
+          "points": 3
         }
       }
     },
@@ -3777,6 +3843,12 @@
         "RS": {
           "field": "spice_RS_fit",
           "unit": "ohm"
+        }
+      },
+      "fit_curves": {
+        "forward": {
+          "field": "forward_curve_read_points",
+          "points": 3
         }
       }
     },
@@ -3937,6 +4009,12 @@
           "field": "spice_RS_fit",
           "unit": "ohm"
         }
+      },
+      "fit_curves": {
+        "forward": {
+          "field": "forward_curve_read_points",
+          "points": 3
+        }
       }
     },
     "OHM-080": {
@@ -4017,6 +4095,12 @@
           "field": "spice_RS_fit",
           "unit": "ohm"
         }
+      },
+      "fit_curves": {
+        "forward": {
+          "field": "forward_curve_read_points",
+          "points": 3
+        }
       }
     },
     "OHM-081": {
@@ -4095,6 +4179,12 @@
         "RS": {
           "field": "spice_RS_fit",
           "unit": "ohm"
+        }
+      },
+      "fit_curves": {
+        "forward": {
+          "field": "forward_curve_read_points",
+          "points": 3
         }
       }
     },
@@ -4231,6 +4321,20 @@
         "gb_RS": {
           "field": "spice_green_blue_RS_fit",
           "unit": "ohm"
+        }
+      },
+      "fit_curves": {
+        "red": {
+          "field": "forward_curve_read_points_red",
+          "points": 3,
+          "anode_role": "common_anode",
+          "cathode_role": "red_cathode"
+        },
+        "green_blue": {
+          "field": "forward_curve_read_points_green_blue",
+          "points": 3,
+          "anode_role": "common_anode",
+          "cathode_role": "green_cathode"
         }
       }
     },
@@ -7165,7 +7269,7 @@
       "limitations": [
         "Each contact is a resistor at the sourced 30 mOhm maximum (20 C data); no temperature, wear or derating.",
         "USB signal names are not given by the drawing and are not assigned; housing/shell tabs are unmodeled.",
-        "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. RuntimeRecipe has no field that separates them from footprint pads, so a schema addition (e.g. mating_terminals) or a catalog-binding rule that excludes them from pad matching is needed before this recipe can bind to a library footprint.",
+        "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. They are listed in open_mating_roles (D052): a design may leave them unconnected, each then gets its own private node as an unmated contact would, and only the numbered PCB pads must match a library footprint. Rating checks still read any current through a connected mating contact.",
         "Obsolete part: binding is for an archived reference, not a sourcing recommendation.",
         "Model scope: Per-contact instance of the class line 'R{ref}_c{k} {BOARD_k} {CABLE_k} {Rc}' with k = manufacturer contact 1..4; shell line omitted (no sourced shell resistance, shell not a GND)."
       ],
@@ -7224,7 +7328,7 @@
         "Contact resistance at its 20 mOhm maximum; no temperature/wear dependence.",
         "Signal names (VBUS/D-/D+/ID/GND) are not in the manufacturer drawing and are not assigned.",
         "Four shield pads and two pegs are unmodeled; shell is not an automatic GND.",
-        "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. RuntimeRecipe has no field that separates them from footprint pads, so a schema addition (e.g. mating_terminals) or a catalog-binding rule that excludes them from pad matching is needed before this recipe can bind to a library footprint.",
+        "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. They are listed in open_mating_roles (D052): a design may leave them unconnected, each then gets its own private node as an unmated contact would, and only the numbered PCB pads must match a library footprint. Rating checks still read any current through a connected mating contact.",
         "Model scope: Per-contact instance of the class 'R{ref}_c{k} {BOARD_k} {CABLE_k} {Rc}', k = 1..5; shell/peg pads unmodeled."
       ],
       "open_mating_roles": [
@@ -7311,7 +7415,7 @@
         "Explicit alternate, not a silent rebinding of the default CT_19APL2 footprint.",
         "DC contact resistance at its 20 mOhm max (spec measured at 20 mV/100 mA); no TMDS impedance, loss, crosstalk or protocol.",
         "Shell/shield pads unmodeled.",
-        "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. RuntimeRecipe has no field that separates them from footprint pads, so a schema addition (e.g. mating_terminals) or a catalog-binding rule that excludes them from pad matching is needed before this recipe can bind to a library footprint.",
+        "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. They are listed in open_mating_roles (D052): a design may leave them unconnected, each then gets its own private node as an unmated contact would, and only the numbered PCB pads must match a library footprint. Rating checks still read any current through a connected mating contact.",
         "Model scope: Per-contact instance of the class 'R{ref}_c{n} {BOARD_n} {CABLE_n} {Rc}', n = 1..19; shell line omitted (no sourced shell resistance)."
       ],
       "open_mating_roles": [
@@ -7381,7 +7485,7 @@
       "limitations": [
         "Manufacturer contact numbers 1..4, not six-position housing numbers; no Tip/Ring polarity assigned.",
         "Contact resistance at its 35 mOhm max; no ring-voltage transient, crosstalk or derating.",
-        "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. RuntimeRecipe has no field that separates them from footprint pads, so a schema addition (e.g. mating_terminals) or a catalog-binding rule that excludes them from pad matching is needed before this recipe can bind to a library footprint.",
+        "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. They are listed in open_mating_roles (D052): a design may leave them unconnected, each then gets its own private node as an unmated contact would, and only the numbered PCB pads must match a library footprint. Rating checks still read any current through a connected mating contact.",
         "Model scope: Per-contact instance of the class 'R{ref}_c{n} {BOARD_n} {CABLE_n} {Rc}', n = manufacturer contacts 1..4; magjack line not applicable."
       ],
       "open_mating_roles": [
@@ -7441,7 +7545,7 @@
         "Plug-inserted state only; switch pins 4/5 are open and must stay isolated. The unplugged NC state is not modeled because switch closed resistance is unsourced.",
         "12 Vdc is the manufacturer's rated input voltage (typ column), used as a ceiling, never as an absolute maximum.",
         "Explicit alternate; the default Ledino KB3SPRS footprint stays unbound.",
-        "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. RuntimeRecipe has no field that separates them from footprint pads, so a schema addition (e.g. mating_terminals) or a catalog-binding rule that excludes them from pad matching is needed before this recipe can bind to a library footprint.",
+        "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. They are listed in open_mating_roles (D052): a design may leave them unconnected, each then gets its own private node as an unmated contact would, and only the numbered PCB pads must match a library footprint. Rating checks still read any current through a connected mating contact.",
         "Model scope: Plug-inserted state of the class template: the 'R{ref}_t {T} {T_cable} {Rc} ; only when inserted' line instantiated for sleeve, tip and ring; the NC switch lines are dropped because inserted = open, and their closed resistance (Rsw) is unsourced."
       ],
       "open_mating_roles": [
@@ -7496,7 +7600,7 @@
         "Plug-inserted state only; pin 3 (NC to sleeve when unplugged) is open and isolated. Unplugged switch resistance is unsourced.",
         "Per-path resistance at the 30 mOhm max; no self-heating (class Rth is an assumption).",
         "24 Vdc is the rated input voltage (typ column), used as a ceiling only.",
-        "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. RuntimeRecipe has no field that separates them from footprint pads, so a schema addition (e.g. mating_terminals) or a catalog-binding rule that excludes them from pad matching is needed before this recipe can bind to a library footprint.",
+        "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. They are listed in open_mating_roles (D052): a design may leave them unconnected, each then gets its own private node as an unmated contact would, and only the numbered PCB pads must match a library footprint. Rating checks still read any current through a connected mating contact.",
         "Model scope: Class lines 'R{ref}_tip {PLUG_TIP} {TIP} {rc_total/2}' and 'R{ref}_slv ...' with each path at the full 30 mOhm max rather than rc_total/2 (the source does not say whether 30 mOhm is per contact or loop; full value per path is the conservative bound and matches DCJACK/B1, which uses one 30 mOhm Rcon). Switch line dropped: inserted = open; the class switch_partner=TIP ASSUMPTION is contradicted by the source (switch is to sleeve)."
       ],
       "open_mating_roles": [
@@ -7566,7 +7670,7 @@
         "Card-inserted contact paths only; CD (10) and WP (11) are isolated because their switch partner and closed resistance are not sourced.",
         "Explicit alternate; the default Molex push-push footprint stays unbound.",
         "No card model, bus pull-ups or SD protocol.",
-        "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. RuntimeRecipe has no field that separates them from footprint pads, so a schema addition (e.g. mating_terminals) or a catalog-binding rule that excludes them from pad matching is needed before this recipe can bind to a library footprint.",
+        "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. They are listed in open_mating_roles (D052): a design may leave them unconnected, each then gets its own private node as an unmated contact would, and only the numbered PCB pads must match a library footprint. Rating checks still read any current through a connected mating contact.",
         "Model scope: Per-contact instance of the class 'R{ref}_k {Pk_board} {Pk_card} {rc}', k = 1..9; the CD switch line is dropped because the switch partner is unsourced in the current datasheet."
       ],
       "open_mating_roles": [
@@ -7644,7 +7748,7 @@
         "Signal pin 2 CD/DAT3 is a card contact, not the mechanical switch A/B.",
         "Explicit alternate; the default Molex 1040310811 footprint stays unbound.",
         "No card current model, pull-ups or SD protocol.",
-        "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. RuntimeRecipe has no field that separates them from footprint pads, so a schema addition (e.g. mating_terminals) or a catalog-binding rule that excludes them from pad matching is needed before this recipe can bind to a library footprint.",
+        "Terminals named M<k> (or C<k> for card pads) are mating-interface contacts of the inserted plug/card, not PCB pads. They are listed in open_mating_roles (D052): a design may leave them unconnected, each then gets its own private node as an unmated contact would, and only the numbered PCB pads must match a library footprint. Rating checks still read any current through a connected mating contact.",
         "Model scope: Per-contact instance of the class 'R{ref}_k {Pk_board} {Pk_card} {rc}', k = 1..8; class switch line replaced by a same-net constraint on CD_A/CD_B (card inserted = closed), because the switch closed resistance is unsourced."
       ],
       "open_mating_roles": [

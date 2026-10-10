@@ -71,6 +71,17 @@ class ReferenceFunction(BaseModel):
     scope_contains: str
 
 
+class FitCurve(BaseModel):
+    """A sourced curve the fitted model must replay at several currents, not only at one bound."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    field: str
+    points: int = Field(default=3, ge=2, le=8, description="How many read points the runtime check replays")
+    anode_role: str = "A"
+    cathode_role: str = "K"
+
+
 class RuntimeRecipe(BaseModel):
     """An authored mapping; numeric electrical facts stay in sourced records."""
 
@@ -100,6 +111,10 @@ class RuntimeRecipe(BaseModel):
         default_factory=dict,
         description="Model parameters fitted from the part's own sourced curves; held to the same sourcing"
         " rules as critical facts but excluded from rating confidence",
+    )
+    fit_curves: dict[str, FitCurve] = Field(
+        default_factory=dict,
+        description="Sourced read-point curves behind fitted model facts; each adds multi-point runtime checks",
     )
     derived_parameters: dict[str, AuthoredExpression] = Field(default_factory=dict)
     class_parameters: dict[str, str] = Field(default_factory=dict)

@@ -365,3 +365,112 @@ def test_rechecks_cannot_extend_the_repair_attempt_ceiling():
     assert state["attempts"]["stage2/bench"] == 3
     assert state["legacy_checkpoint_attempt_counts"]["stage2/bench"] == 9
     assert state["failed_gate_observations"]["stage2/bench"] == 10
+
+
+def test_fitted_model_that_outputs_nothing_fails_the_curve_replay(audit, monkeypatch):
+    """CBH-R03: the 0..vf_max bound alone accepts a dead model; the replayed read points do not."""
+    from ohmni.behavior.loader import BehaviorRegistry
+    from ohmni.behavior.netlist import load_recipes
+    from ohmni.eda.simulation import NgspiceAdapter
+    from tools.behavior_audit.runtime_benches import (
+        dc_probe_definition,
+        dc_probe_variants,
+        run_dc_probes,
+    )
+
+    registry = BehaviorRegistry(repo_root=ROOT)
+    recipe = load_recipes(registry, ROOT).entries["OHM-066"]
+    variants = dc_probe_variants(recipe.behavior_id, recipe)
+    assert variants == [None, "forward_fit1", "forward_fit2", "forward_fit3"]
+    # The replayed points span the plotted range, each with its own expected voltage.
+    points = [dc_probe_definition(audit, "OHM-066", v)[1]["comparison"] for v in variants[1:]]
+    assert [p["test_current"] for p in points] == [0.01, 2.0, 20.0]
+    assert all(p["kind"] == "absolute" and p["tolerance"] < 0.1 * p["expected"] + 0.03 for p in points)
+
+    def dead_model(self, compiled, *, work_dir):
+        node = compiled.node_names["anode"]
+        return {"status": "ran", "stdout": f"v({node}) = 1e-12\n", "stderr": "",
+                "version_output": "ngspice-42", "problems": [],
+                "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit"}
+
+    monkeypatch.setattr(NgspiceAdapter, "behavior_circuit", dead_model)
+    receipts = {r.get("variant"): r["run_status"] for r in run_dc_probes(audit, ["OHM-066"])}
+    assert receipts[None] == "passed"  # the bound check alone is satisfied by ~0 V
+    assert all(receipts[v] == "failed" for v in variants[1:])
+    # Coverage follows every receipt, so the entry cannot count as audited with a dead model.
+    from tools.behavior_audit.runtime_benches import runtime_receipt_errors
+
+    assert runtime_receipt_errors(audit, "OHM-066")
+
+
+def test_withdrawn_source_is_rejected_while_a_bound_fact_still_cites_it(audit):
+    """A manufacturer withdrawal never excuses a URL that a gapfill fact or recipe relies on."""
+    dead = "https://example.invalid/withdrawn.pdf"
+    bindings = {"approved_by": "owner", "approved_on": "2026-10-10", "supersessions": {},
+                "withdrawn_sources": {dead: {"status": "withdrawn_by_manufacturer", "checks": ["404"],
+                                             "checked_by": "someone", "checked_on": "2026-10-10"}}}
+    audit.source_bindings = lambda: bindings
+    missing = [f"AUD-SOURCE-001: missing successful archived fetch: {dead}"]
+    remaining, errors = audit._withdrawn(list(missing), [])
+    assert remaining == [] and errors == []
+    # Cite it from a fact: the withdrawal no longer applies.
+    original = audit._gapfill_evidence
+    audit._gapfill_evidence = lambda entry_id: ({"field_updates": [{"field": "x", "value": 1, "sources": [dead]}]}
+                                                if entry_id == "OHM-001" else original(entry_id))
+    remaining, errors = audit._withdrawn(list(missing), [])
+    assert remaining == missing and any("still cited" in e for e in errors)
+    # Without a named checker it is not accepted either.
+    audit._gapfill_evidence = original
+    del bindings["withdrawn_sources"][dead]["checked_by"]
+    remaining, errors = audit._withdrawn(list(missing), [])
+    assert remaining == missing and any("named checker" in e for e in errors)
+
+
+def test_rebaseline_is_explicit_and_never_absorbs_a_spec_change(audit, monkeypatch):
+    from tools.behavior_audit.audit import AuditError
+
+    old = audit._state()["protected_baseline"]
+    monkeypatch.setattr(audit, "_protected_snapshot", lambda: {"main_ref": "after-merge", "protected_files": old.get("protected_files")})
+    assert not audit.check_protected_state().passed
+    with pytest.raises(AuditError):
+        audit.rebaseline("", "owner")
+    record = audit.rebaseline("PRs #3-#9 merged by the owner", "Jaden (owner)")
+    assert record["old_main_ref"] == "baseline" and record["new_main_ref"] == "after-merge"
+    assert audit._state()["baseline_history"][-1] == record
+    assert "Baseline refresh" in (audit.run_dir / "DECISIONS.md").read_text(encoding="utf-8")
+    # A changed protected spec file is never absorbed by a refresh.
+    monkeypatch.setattr(audit, "_protected_snapshot", lambda: {"main_ref": "later", "protected_files": {"COMPONENT_BEHAVIOR_SPEC.md": "tampered"}})
+    with pytest.raises(AuditError, match="spec"):
+        audit.rebaseline("try to hide a spec edit", "nobody")
+
+
+def test_rebuild_sources_verifies_bytes_against_the_ledger(tmp_path):
+    from tools.behavior_audit.rebuild_sources import rebuild
+
+    run = tmp_path / "run"
+    (run / "fetched-sources").mkdir(parents=True)
+    good = b"%PDF-1.4 good"
+    digest = hashlib.sha256(good).hexdigest()
+    rows = [
+        {"url": "https://a.example/ok.pdf", "http_status": 200, "content_sha256": digest, "content_bytes": len(good)},
+        {"url": "https://a.example/drift.pdf", "http_status": 200, "content_sha256": "0" * 64, "content_bytes": 3},
+        {"url": "https://a.example/gone.pdf", "http_status": 200, "content_sha256": "1" * 64, "content_bytes": 3},
+        {"url": "https://a.example/manual.pdf", "http_status": None, "content_sha256": "2" * 64,
+         "manual_download": {"downloaded_by": "someone", "downloaded_on": "2026-10-10"}},
+        {"url": "https://a.example/failed.pdf", "http_status": 404, "content_sha256": None},
+    ]
+    (run / "FETCH_LEDGER.jsonl").write_text("\n".join(json.dumps(r) for r in rows) + "\n")
+
+    def fake_download(url):
+        if url.endswith("ok.pdf"):
+            return good
+        if url.endswith("drift.pdf"):
+            return b"something else"
+        raise OSError("host refused")
+
+    report = rebuild(run, download=fake_download)
+    outcomes = {url.rsplit("/", 1)[1]: r["outcome"] for url, r in report["results"].items()}
+    assert outcomes == {"ok.pdf": "rebuilt", "drift.pdf": "changed", "gone.pdf": "unavailable", "manual.pdf": "manual"}
+    assert (run / "fetched-sources" / f"{digest}.bin").read_bytes() == good
+    assert not list((run / "fetched-sources").glob("0*.bin"))  # changed bytes are never stored under the old hash
+    assert rebuild(run, download=fake_download)["results"]["https://a.example/ok.pdf"]["outcome"] == "present"

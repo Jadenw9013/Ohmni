@@ -19,66 +19,66 @@ Xc1_g4 n6 n6 n4 n6 0 hc_nand2 roh=50 rol=65 td=1.04e-08 taue=6.4000000000000002e
 *  - supply current: icc0 static + 0.5*Cpd*Vcc*|d(logic)/dt| (average = Cpd*Vcc*f)
 .model dclamp d(is=1e-14 n=1 rs=5 cjo=0)
 * ---------- 2-input NAND (74HC00 channel) ----------
-.subckt hc_nand2 a b y vcc gnd params: vtfrac=0.5 roh=50 rol=65 td=10.4n taue=6.4n ci=5p cpd=20p icc0=2u
-Cia a gnd {ci}
-Cib b gnd {ci}
+.subckt hc_nand2 a b y vcc gndport params: vtfrac=0.5 roh=50 rol=65 td=10.4n taue=6.4n ci=5p cpd=20p icc0=2u
+Cia a gndport {ci}
+Cib b gndport {ci}
 Dah a vcc dclamp
-Dal gnd a dclamp
+Dal gndport a dclamp
 Dbh b vcc dclamp
-Dbl gnd b dclamp
-Bl lg gnd V=1-(0.5*(1+tanh((v(a)-(v(gnd)+vtfrac*(v(vcc)-v(gnd))))/0.05)))*(0.5*(1+tanh((v(b)-(v(gnd)+vtfrac*(v(vcc)-v(gnd))))/0.05)))
+Dbl gndport b dclamp
+Bl lg gndport V=1-(0.5*(1+tanh((v(a)-(v(gndport)+vtfrac*(v(vcc)-v(gndport))))/0.05)))*(0.5*(1+tanh((v(b)-(v(gndport)+vtfrac*(v(vcc)-v(gndport))))/0.05)))
 Rsd lg d2 50
-T1 d2 gnd d3 gnd Z0=50 TD={td}
-Rtd d3 gnd 50
-Bsh sh gnd V=2*v(d3)
+T1 d2 gndport d3 gndport Z0=50 TD={td}
+Rtd d3 gndport 50
+Bsh sh gndport V=2*v(d3)
 Rsh sh sh2 {taue/1p}
-Csh sh2 gnd 1p
-Bth y gnd I=(v(y)-(v(gnd)+min(max(v(sh2),0),1)*(v(vcc)-v(gnd))))/(roh*min(max(v(sh2),0),1)+rol*(1-min(max(v(sh2),0),1)))
-Bsup vcc gnd I=max(((v(gnd)+min(max(v(sh2),0),1)*(v(vcc)-v(gnd)))-v(y))/(roh*min(max(v(sh2),0),1)+rol*(1-min(max(v(sh2),0),1))),0)
+Csh sh2 gndport 1p
+Bth y gndport I=(v(y)-(v(gndport)+min(max(v(sh2),0),1)*(v(vcc)-v(gndport))))/(roh*min(max(v(sh2),0),1)+rol*(1-min(max(v(sh2),0),1)))
+Bsup vcc gndport I=max(((v(gndport)+min(max(v(sh2),0),1)*(v(vcc)-v(gndport)))-v(y))/(roh*min(max(v(sh2),0),1)+rol*(1-min(max(v(sh2),0),1))),0)
 Dyh y vcc dclamp
-Dyl gnd y dclamp
-Bicc vcc gnd I={icc0}+0.5*cpd*(v(vcc)-v(gnd))*abs(ddt(v(sh2)))
+Dyl gndport y dclamp
+Bicc vcc gndport I={icc0}+0.5*cpd*(v(vcc)-v(gndport))*abs(ddt(v(sh2)))
 .ends
 * ---------- inverter (74HC04 channel) ----------
-.subckt hc_inv a y vcc gnd params: vtfrac=0.5 roh=50 rol=65 td=10.4n taue=6.4n ci=5p cpd=20p icc0=2u
-Cia a gnd {ci}
+.subckt hc_inv a y vcc gndport params: vtfrac=0.5 roh=50 rol=65 td=10.4n taue=6.4n ci=5p cpd=20p icc0=2u
+Cia a gndport {ci}
 Dah a vcc dclamp
-Dal gnd a dclamp
-Bl lg gnd V=1-(0.5*(1+tanh((v(a)-(v(gnd)+vtfrac*(v(vcc)-v(gnd))))/0.05)))
+Dal gndport a dclamp
+Bl lg gndport V=1-(0.5*(1+tanh((v(a)-(v(gndport)+vtfrac*(v(vcc)-v(gndport))))/0.05)))
 Rsd lg d2 50
-T1 d2 gnd d3 gnd Z0=50 TD={td}
-Rtd d3 gnd 50
-Bsh sh gnd V=2*v(d3)
+T1 d2 gndport d3 gndport Z0=50 TD={td}
+Rtd d3 gndport 50
+Bsh sh gndport V=2*v(d3)
 Rsh sh sh2 {taue/1p}
-Csh sh2 gnd 1p
-Bth y gnd I=(v(y)-(v(gnd)+min(max(v(sh2),0),1)*(v(vcc)-v(gnd))))/(roh*min(max(v(sh2),0),1)+rol*(1-min(max(v(sh2),0),1)))
-Bsup vcc gnd I=max(((v(gnd)+min(max(v(sh2),0),1)*(v(vcc)-v(gnd)))-v(y))/(roh*min(max(v(sh2),0),1)+rol*(1-min(max(v(sh2),0),1))),0)
+Csh sh2 gndport 1p
+Bth y gndport I=(v(y)-(v(gndport)+min(max(v(sh2),0),1)*(v(vcc)-v(gndport))))/(roh*min(max(v(sh2),0),1)+rol*(1-min(max(v(sh2),0),1)))
+Bsup vcc gndport I=max(((v(gndport)+min(max(v(sh2),0),1)*(v(vcc)-v(gndport)))-v(y))/(roh*min(max(v(sh2),0),1)+rol*(1-min(max(v(sh2),0),1))),0)
 Dyh y vcc dclamp
-Dyl gnd y dclamp
-Bicc vcc gnd I={icc0}+0.5*cpd*(v(vcc)-v(gnd))*abs(ddt(v(sh2)))
+Dyl gndport y dclamp
+Bicc vcc gndport I={icc0}+0.5*cpd*(v(vcc)-v(gndport))*abs(ddt(v(sh2)))
 .ends
 * ---------- Schmitt inverter (74HC14 channel): hysteresis latch, VT+ / VT- as fractions of Vcc (defaults = SCLS085L typ at 4.5 V: 2.5 V / 1.6 V) ----------
-.subckt hc_inv_st a y vcc gnd params: vtp=0.5556 vtm=0.3556 roh=50 rol=65 td=10.4n taue=6.4n ci=5p cpd=20p icc0=2u klatch=1e9
-Cia a gnd {ci}
+.subckt hc_inv_st a y vcc gndport params: vtp=0.5556 vtm=0.3556 roh=50 rol=65 td=10.4n taue=6.4n ci=5p cpd=20p icc0=2u klatch=1e9
+Cia a gndport {ci}
 Dah a vcc dclamp
-Dal gnd a dclamp
+Dal gndport a dclamp
 * state q = 1 means output high; set when input below VT-, reset when input above VT+
-Bs sset gnd V=0.5*(1+tanh(((v(gnd)+vtm*(v(vcc)-v(gnd)))-v(a))/0.002))
-Br srst gnd V=0.5*(1+tanh((v(a)-(v(gnd)+vtp*(v(vcc)-v(gnd))))/0.002))
-Cq q gnd 1 ic=0
-Bq gnd q I={klatch}*(v(sset)*(1-v(srst))*(1-v(q)) - v(srst)*v(q))
-Rq q gnd 1e12
+Bs sset gndport V=0.5*(1+tanh(((v(gndport)+vtm*(v(vcc)-v(gndport)))-v(a))/0.002))
+Br srst gndport V=0.5*(1+tanh((v(a)-(v(gndport)+vtp*(v(vcc)-v(gndport))))/0.002))
+Cq q gndport 1 ic=0
+Bq gndport q I={klatch}*(v(sset)*(1-v(srst))*(1-v(q)) - v(srst)*v(q))
+Rq q gndport 1e12
 Rsd q d2 50
-T1 d2 gnd d3 gnd Z0=50 TD={td}
-Rtd d3 gnd 50
-Bsh sh gnd V=2*v(d3)
+T1 d2 gndport d3 gndport Z0=50 TD={td}
+Rtd d3 gndport 50
+Bsh sh gndport V=2*v(d3)
 Rsh sh sh2 {taue/1p}
-Csh sh2 gnd 1p
-Bth y gnd I=(v(y)-(v(gnd)+min(max(v(sh2),0),1)*(v(vcc)-v(gnd))))/(roh*min(max(v(sh2),0),1)+rol*(1-min(max(v(sh2),0),1)))
-Bsup vcc gnd I=max(((v(gnd)+min(max(v(sh2),0),1)*(v(vcc)-v(gnd)))-v(y))/(roh*min(max(v(sh2),0),1)+rol*(1-min(max(v(sh2),0),1))),0)
+Csh sh2 gndport 1p
+Bth y gndport I=(v(y)-(v(gndport)+min(max(v(sh2),0),1)*(v(vcc)-v(gndport))))/(roh*min(max(v(sh2),0),1)+rol*(1-min(max(v(sh2),0),1)))
+Bsup vcc gndport I=max(((v(gndport)+min(max(v(sh2),0),1)*(v(vcc)-v(gndport)))-v(y))/(roh*min(max(v(sh2),0),1)+rol*(1-min(max(v(sh2),0),1))),0)
 Dyh y vcc dclamp
-Dyl gnd y dclamp
-Bicc vcc gnd I={icc0}+0.5*cpd*(v(vcc)-v(gnd))*abs(ddt(v(sh2)))
+Dyl gndport y dclamp
+Bicc vcc gndport I={icc0}+0.5*cpd*(v(vcc)-v(gndport))*abs(ddt(v(sh2)))
 .ends
 
 .op

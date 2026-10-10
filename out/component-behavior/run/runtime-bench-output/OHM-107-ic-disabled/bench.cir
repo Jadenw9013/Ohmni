@@ -62,33 +62,33 @@ Xc17_driveA8 nB8_c17 enba_c17 0 n10 0 hcout roh=50 rol=65 td=1.04e-08 taue=6.400
 .model dffm d_dff(clk_delay=12n set_delay=12n reset_delay=12n ic=0)
 .model dinv d_inverter(rise_delay=1n fall_delay=1n)
 * ---- input conditioner: Ci, ESD clamps, normalised decision (0..1) at Vcc/2 ----
-.subckt hcin a n vcc gnd params: ci=5p
-Cia a gnd {ci}
+.subckt hcin a n vcc gndport params: ci=5p
+Cia a gndport {ci}
 Dah a vcc dclamp
-Dal gnd a dclamp
-Bn n gnd V=0.5*(1+tanh((v(a)-(v(gnd)+0.5*(v(vcc)-v(gnd))))/0.05))
+Dal gndport a dclamp
+Bn n gndport V=0.5*(1+tanh((v(a)-(v(gndport)+0.5*(v(vcc)-v(gndport))))/0.05))
 .ends
 * ---- output cell: normalised s (0..1) + normalised enable en (1 = driven). Thevenin roh/rol, hi-Z leakage when en=0 ----
-.subckt hcout s en y vcc gnd params: roh=50 rol=65 td=10.4n taue=6.4n gz=1n
-Bsd0 sdd gnd V=min(max(v(s),0),1)
+.subckt hcout s en y vcc gndport params: roh=50 rol=65 td=10.4n taue=6.4n gz=1n
+Bsd0 sdd gndport V=min(max(v(s),0),1)
 Rsd sdd d2 50
-T1 d2 gnd d3 gnd Z0=50 TD={td}
-Rtd d3 gnd 50
-Bsh sh gnd V=2*v(d3)
+T1 d2 gndport d3 gndport Z0=50 TD={td}
+Rtd d3 gndport 50
+Bsh sh gndport V=2*v(d3)
 Rsh sh sh2 {taue/1p}
-Csh sh2 gnd 1p
-Bth y gnd I=min(max(v(en),0),1)*(v(y)-(v(gnd)+min(max(v(sh2),0),1)*(v(vcc)-v(gnd))))/(roh*min(max(v(sh2),0),1)+rol*(1-min(max(v(sh2),0),1)))+(1-min(max(v(en),0),1))*gz*(v(y)-v(gnd))
-Bsup vcc gnd I=min(max(v(en),0),1)*max(((v(gnd)+min(max(v(sh2),0),1)*(v(vcc)-v(gnd)))-v(y))/(roh*min(max(v(sh2),0),1)+rol*(1-min(max(v(sh2),0),1))),0)
+Csh sh2 gndport 1p
+Bth y gndport I=min(max(v(en),0),1)*(v(y)-(v(gndport)+min(max(v(sh2),0),1)*(v(vcc)-v(gndport))))/(roh*min(max(v(sh2),0),1)+rol*(1-min(max(v(sh2),0),1)))+(1-min(max(v(en),0),1))*gz*(v(y)-v(gndport))
+Bsup vcc gndport I=min(max(v(en),0),1)*max(((v(gndport)+min(max(v(sh2),0),1)*(v(vcc)-v(gndport)))-v(y))/(roh*min(max(v(sh2),0),1)+rol*(1-min(max(v(sh2),0),1))),0)
 Dyh y vcc dclamp
-Dyl gnd y dclamp
+Dyl gndport y dclamp
 .ends
 * ---- 74HC595 : pins 1..16 = QB QC QD QE QF QG QH GND QH' SRCLR SRCLK RCLK OE SER QA VCC ----
-.subckt hc595 qb qc qd qe qf qg qh gnd qhp srclr srclk rclk oe ser qa vcc params: cpd=400p icc0=8u
-Xi1 srclr n_clr vcc gnd hcin
-Xi2 srclk n_sck vcc gnd hcin
-Xi3 rclk n_rck vcc gnd hcin
-Xi4 oe n_oe vcc gnd hcin
-Xi5 ser n_ser vcc gnd hcin
+.subckt hc595 qb qc qd qe qf qg qh gndport qhp srclr srclk rclk oe ser qa vcc params: cpd=400p icc0=8u
+Xi1 srclr n_clr vcc gndport hcin
+Xi2 srclk n_sck vcc gndport hcin
+Xi3 rclk n_rck vcc gndport hcin
+Xi4 oe n_oe vcc gndport hcin
+Xi5 ser n_ser vcc gndport hcin
 Aadc [n_clr n_sck n_rck n_ser n_oe] [d_clr d_sck d_rck d_ser d_oe] adcn
 Ainv d_clr d_rst dinv
 * shift register: stage1 = QA ... stage8 = QH
@@ -112,46 +112,46 @@ Ast8 sr8 d_rck NULL NULL st8 nst8 dffm
 Ainvoe d_oe d_oen dinv
 Adac [st1 st2 st3 st4 st5 st6 st7 st8 sr8 d_oen] [a_s1 a_s2 a_s3 a_s4 a_s5 a_s6 a_s7 a_s8 a_s9 a_oen] dacn
 * OE is active low: enable = NOT OE
-Xo1 a_s1 a_oen qa vcc gnd hcout
-Xo2 a_s2 a_oen qb vcc gnd hcout
-Xo3 a_s3 a_oen qc vcc gnd hcout
-Xo4 a_s4 a_oen qd vcc gnd hcout
-Xo5 a_s5 a_oen qe vcc gnd hcout
-Xo6 a_s6 a_oen qf vcc gnd hcout
-Xo7 a_s7 a_oen qg vcc gnd hcout
-Xo8 a_s8 a_oen qh vcc gnd hcout
-Bone one gnd V=1
-Xo9 a_s9 one qhp vcc gnd hcout
-Bicc vcc gnd I={icc0}+0.5*cpd*(v(vcc)-v(gnd))*(abs(ddt(v(n_sck)))+abs(ddt(v(n_rck))))*0.5
+Xo1 a_s1 a_oen qa vcc gndport hcout
+Xo2 a_s2 a_oen qb vcc gndport hcout
+Xo3 a_s3 a_oen qc vcc gndport hcout
+Xo4 a_s4 a_oen qd vcc gndport hcout
+Xo5 a_s5 a_oen qe vcc gndport hcout
+Xo6 a_s6 a_oen qf vcc gndport hcout
+Xo7 a_s7 a_oen qg vcc gndport hcout
+Xo8 a_s8 a_oen qh vcc gndport hcout
+Bone one gndport V=1
+Xo9 a_s9 one qhp vcc gndport hcout
+Bicc vcc gndport I={icc0}+0.5*cpd*(v(vcc)-v(gndport))*(abs(ddt(v(n_sck)))+abs(ddt(v(n_rck))))*0.5
 .ends
 * ---- 74HC138 : pins 1..16 = A B C G2A G2B G1 Y7 GND Y6 Y5 Y4 Y3 Y2 Y1 Y0 VCC ----
-.subckt hc138 a b c g2a g2b g1 y7 gnd y6 y5 y4 y3 y2 y1 y0 vcc params: cpd=85p icc0=8u
-Xa a na vcc gnd hcin
-Xb b nb vcc gnd hcin
-Xc c nc vcc gnd hcin
-Xg1 g1 ng1 vcc gnd hcin
-Xg2a g2a ng2a vcc gnd hcin
-Xg2b g2b ng2b vcc gnd hcin
-Ben en gnd V=v(ng1)*(1-v(ng2a))*(1-v(ng2b))
-Bone one gnd V=1
+.subckt hc138 a b c g2a g2b g1 y7 gndport y6 y5 y4 y3 y2 y1 y0 vcc params: cpd=85p icc0=8u
+Xa a na vcc gndport hcin
+Xb b nb vcc gndport hcin
+Xc c nc vcc gndport hcin
+Xg1 g1 ng1 vcc gndport hcin
+Xg2a g2a ng2a vcc gndport hcin
+Xg2b g2b ng2b vcc gndport hcin
+Ben en gndport V=v(ng1)*(1-v(ng2a))*(1-v(ng2b))
+Bone one gndport V=1
 * active-low outputs: Yn = 1 - en*match(n)
-By0 l0 gnd V=1-v(en)*(1-v(na))*(1-v(nb))*(1-v(nc))
-By1 l1 gnd V=1-v(en)*(v(na))*(1-v(nb))*(1-v(nc))
-By2 l2 gnd V=1-v(en)*(1-v(na))*(v(nb))*(1-v(nc))
-By3 l3 gnd V=1-v(en)*(v(na))*(v(nb))*(1-v(nc))
-By4 l4 gnd V=1-v(en)*(1-v(na))*(1-v(nb))*(v(nc))
-By5 l5 gnd V=1-v(en)*(v(na))*(1-v(nb))*(v(nc))
-By6 l6 gnd V=1-v(en)*(1-v(na))*(v(nb))*(v(nc))
-By7 l7 gnd V=1-v(en)*(v(na))*(v(nb))*(v(nc))
-Xo0 l0 one y0 vcc gnd hcout
-Xo1 l1 one y1 vcc gnd hcout
-Xo2 l2 one y2 vcc gnd hcout
-Xo3 l3 one y3 vcc gnd hcout
-Xo4 l4 one y4 vcc gnd hcout
-Xo5 l5 one y5 vcc gnd hcout
-Xo6 l6 one y6 vcc gnd hcout
-Xo7 l7 one y7 vcc gnd hcout
-Bicc vcc gnd I={icc0}
+By0 l0 gndport V=1-v(en)*(1-v(na))*(1-v(nb))*(1-v(nc))
+By1 l1 gndport V=1-v(en)*(v(na))*(1-v(nb))*(1-v(nc))
+By2 l2 gndport V=1-v(en)*(1-v(na))*(v(nb))*(1-v(nc))
+By3 l3 gndport V=1-v(en)*(v(na))*(v(nb))*(1-v(nc))
+By4 l4 gndport V=1-v(en)*(1-v(na))*(1-v(nb))*(v(nc))
+By5 l5 gndport V=1-v(en)*(v(na))*(1-v(nb))*(v(nc))
+By6 l6 gndport V=1-v(en)*(1-v(na))*(v(nb))*(v(nc))
+By7 l7 gndport V=1-v(en)*(v(na))*(v(nb))*(v(nc))
+Xo0 l0 one y0 vcc gndport hcout
+Xo1 l1 one y1 vcc gndport hcout
+Xo2 l2 one y2 vcc gndport hcout
+Xo3 l3 one y3 vcc gndport hcout
+Xo4 l4 one y4 vcc gndport hcout
+Xo5 l5 one y5 vcc gndport hcout
+Xo6 l6 one y6 vcc gndport hcout
+Xo7 l7 one y7 vcc gndport hcout
+Bicc vcc gndport I={icc0}
 .ends
 
 .op

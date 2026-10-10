@@ -44,7 +44,7 @@ def ingest(folder: Path, who: str, mapping: dict[str, str]) -> list[str]:
         shutil.copyfile(path, archive / f"{digest}.bin")
         row = {
             "url": url, "request_url": url,
-            "timestamp": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "timestamp": datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "http_status": None, "content_sha256": digest, "content_bytes": len(data),
             "tool_used": "tools.behavior_audit.ingest_manual (browser download)",
             "manual_download": {"downloaded_by": who, "downloaded_on": datetime.date.today().isoformat(), "file_name": name},

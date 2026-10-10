@@ -58,7 +58,7 @@ def test_backend_failures_do_not_expose_private_paths(server):
 
 
 def test_behavior_summary_matches_the_audited_coverage_rule(server):
-    service,base=server
+    _service,base=server
     code,body=request(base,'/api/behavior')
     assert code==200 and len(body['entries'])==180
     states=[value['state'] for value in body['entries'].values()]

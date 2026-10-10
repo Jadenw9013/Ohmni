@@ -14,7 +14,7 @@ from ohmni.behavior import BehaviorFidelity, BehaviorRegistry, SimulationDisposi
 from ohmni.behavior.loader import BehaviorRegistryError, validate_registry_references
 from ohmni.behavior.models import PackagePinOrder, SourceAnchor
 from ohmni.catalog.loader import default_catalog
-from scripts.generate_behavior_records import check_records
+from scripts.generate_behavior_records import check_records, verify_electrical_approval
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = ROOT / "COMPONENT_BEHAVIOR_SPEC.md"
@@ -90,7 +90,7 @@ def test_master_status_layer_fidelity_and_behavior_ids_are_preserved(registry):
         added = [
             r.data["add_behavior_class"] for r in registry.manifest.resolutions
             if r.kind == "class_addition" and entry_id in r.entry_ids
-            and r.gate_required and r.data.get("approved_by")
+            and r.gate_required and verify_electrical_approval(ROOT, r)
         ]
         assert record.behavior_class_ids == [
             item.strip() for item in source["behaviors"].split(" + ")
