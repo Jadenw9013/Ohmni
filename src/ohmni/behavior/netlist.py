@@ -228,7 +228,7 @@ def _definitions(lines):
     return found
 
 
-def scope_shared_definitions(blocks, assets, problems):
+def scope_shared_definitions(blocks, assets, problems, outer_nodes=()):
     """Give each part its own copy of a model or subcircuit name that two parts define.
 
     ngspice 42 silently keeps the first of two same-named ``.model`` cards, so a second part of the
@@ -236,6 +236,10 @@ def scope_shared_definitions(blocks, assets, problems):
     use of a shared name is renamed with that part's netlist token; a single-part circuit and parts
     whose names do not collide are emitted unchanged. Hash-locked inline assets are never rewritten:
     two assets may share a name only with an identical definition, and a part may not redefine one.
+    Renaming inside one fragment is consistent, so it can only break a reference that leaves the
+    fragment: a shared name that is also a circuit or probe node is refused rather than renamed.
+    A ``.model`` card nested in a ``.subckt`` body is local to that subcircuit in ngspice and is
+    covered by scoping the subcircuit name itself.
     """
     owners = {}
     for index, (_, _, fragment_lines, _) in enumerate(blocks):
@@ -249,6 +253,11 @@ def scope_shared_definitions(blocks, assets, problems):
         if len(texts) > 1 or name in owners:
             problems.append(f"Model name {name} has more than one definition; ngspice would silently use one card")
     shared = sorted(name for name, indices in owners.items() if len(indices) > 1)
+    outer = {node.lower() for node in outer_nodes}
+    outer |= {token.lower() for _, probes, _, _ in blocks for line in probes for token in line.split()[1:3]}
+    for name in shared:
+        if name in outer:
+            problems.append(f"Model name {name} is also a circuit node; renaming it per part is not safe")
     scoped = []
     for token, probes, fragment_lines, strays in blocks:
         own = [name for name in shared if name in _definitions(fragment_lines)]
@@ -524,7 +533,7 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
             ))
         except (ValueError, KeyError) as exc:
             problems.append(f"{component.ref} ({entry_id}): {exc}")
-    for _, probes, fragment_lines, strays in scope_shared_definitions(blocks, assets, problems):
+    for _, probes, fragment_lines, strays in scope_shared_definitions(blocks, assets, problems, nodes.values()):
         lines.extend(probes)
         lines.extend(fragment_lines)
         lines.extend(strays)

@@ -16,10 +16,6 @@ from ohmni.domain.units import Quantity, ValueRange
 from ohmni.eda.simulation import NgspiceAdapter
 
 ROOT = Path(__file__).resolve().parents[1]
-needs_ngspice = [
-    pytest.mark.integration,
-    pytest.mark.skipif(shutil.which("ngspice") is None, reason="ngspice 42 is not installed"),
-]
 
 
 class RecordingAdapter:
@@ -202,3 +198,50 @@ def test_design_transient_checks_every_part(live):
     assert result["status"] == "ran", result["problems"]
     rows = result["ratings"]["components"]
     assert len(rows) == 4 and all(r["basis"] and r["basis"].startswith("transient") for r in rows)
+
+
+def test_a_shared_model_name_that_is_also_a_circuit_node_is_refused():
+    blocks = [("c1", ["vprobe_c1_1 n1 probe_c1_1 0"], ["D1 probe_c1_1 0 n1", ".model n1 D (IS=1e-20)"], []),
+              ("c2", [], ["D2 n2 0 n1", ".model n1 D (IS=1e-12)"], [])]
+    problems = []
+    scope_shared_definitions(blocks, {}, problems, outer_nodes=["n1", "n2", "0"])
+    assert problems and "also a circuit node" in problems[0]
+    problems = []
+    scope_shared_definitions(blocks, {}, problems, outer_nodes=["n7"])
+    assert problems and "also a circuit node" in problems[0], "probe nodes count as outer nodes too"
+
+
+def test_oversized_design_is_refused_before_any_part_is_resolved(service, monkeypatch):
+    def fail(*_):
+        raise AssertionError("parts must not be resolved for an oversized design")
+
+    monkeypatch.setattr(service, "_candidates", fail)
+    big = two_leds()
+    parts = [CircuitComponent(ref=f"R{i}", part_id="GENERIC_RESISTOR", package="0603", value=Quantity.ohms(100))
+             for i in range(10, 51)]
+    big = big.model_copy(update={"components": [*big.components, *parts]})
+    result = service.run_design(DesignRunRequest(circuit=big))
+    assert result["status"] == "not_run" and result["bindings"] == []
+    assert result["problems"] == ["A design run is limited to 40 parts and 120 nets"]
+
+
+@pytest.mark.integration
+@pytest.mark.skipif(shutil.which("ngspice") is None, reason="ngspice 42 is not installed")
+def test_transient_design_beyond_the_rating_signal_limit_reports_every_part_unknown(live):
+    """35 resistors print more rating signals than the adapter allows: every part stays unknown, never a pass."""
+    count = 35
+    parts = [CircuitComponent(ref=f"R{i}", part_id="GENERIC_RESISTOR", package="0603", value=Quantity.ohms(100))
+             for i in range(1, count + 1)]
+    nets = [Net(name="vin", kind="power", connections=[PinRef(component="R1", pin="1")],
+                external_source=ExternalSource(kind="bench_supply", voltage=ValueRange.exact(Quantity.volts(1))))]
+    nets += [Net(name=f"m{i}", connections=[PinRef(component=f"R{i}", pin="2"), PinRef(component=f"R{i + 1}", pin="1")])
+             for i in range(1, count)]
+    nets.append(Net(name="gnd", kind="ground", connections=[PinRef(component=f"R{count}", pin="2")]))
+    circuit = CircuitIR(ir_id="chain", name="Resistor chain", components=parts, nets=nets)
+    result = live.run_design(DesignRunRequest(circuit=circuit, analysis="tran", tstep="1u", tstop="10u",
+                                              rating_context={"ambient_c": 25, "thermal_scope_confirmed": True}))
+    assert result["status"] == "ran", result["problems"]
+    rows = result["ratings"]["components"]
+    assert len(rows) == count and {r["status"] for r in rows} == {"unknown"}
+    assert all("did not print every terminal" in c["reason"] for r in rows for c in r["reference_checks"])
+    assert result["design_summary"]["counts"]["within_model_limits"] == 0

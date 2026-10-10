@@ -301,3 +301,21 @@ Overnight item 2, under Jaden's standing authorization for this run and the prox
 ## D058 — 2026-10-10: ESR on the KEMET T491 tantalum cards and an impedance receipt
 
 Overnight item 3 (capacitor ESR), under Jaden's standing authorization for this run and the proxy review. Of the capacitor families the handoff names, only the four KEMET T491 tantalum entries (OHM-033..036) are simulable and have a sourced ESR. Ceramic: the one simulable part (OHM-024, TDK) has a 10% maximum dissipation factor whose measurement frequency the source page does not state, so no ESR can be derived. Film: no film entry is simulable (OHM-037 is unbound, OHM-038 is a mains safety part). Choices: (1) the tantalum recipes now bind Resr -> (Cb || Rlk), the class card's own topology (spec lines 1611-1618; Lesl still dropped because ESL is unsourced), with Resr = maximum_esr, the T491 table's 100 kHz, 25 C maximum. PR #3/D048 had dropped Resr because a maximum is not a fitted nominal; it is bound now as a declared worst-case bound, and the limitation says so. It overstates impedance, ripple voltage and ESR loss near 100 kHz. In parallel with other capacitors it shifts ripple current toward them, so their current checks are not conservative. That trade-off is written into each recipe's limitations. (2) A new runtime receipt per part (runtime-bench-results/OHM-03x-ac.json, product adapter, ngspice 42) injects 1 mA RMS at 100 kHz and requires the solved impedance to equal ESR + (Rleak || 1/(jwC)) computed from the part's own sourced facts, within 1e-4 relative for both the real and imaginary parts (observed OHM-033: 3.0000 - j0.15915 ohm). The existing DC leakage receipts still pass (the 3 ohm series term is 2e-6 of the 1.6 Mohm path). Reference circuits and the four DC receipts were regenerated; no gapfill, record, bench or class changed. The AC rating rows of D057 already use the sourced maximum ESR for ESR heating; the model ESR now also appears in transient and AC waveforms.
+## D060 — 2026-10-10: Proxy-review fixes for design runs (D056) and the AC path (D057)
+
+The owner merged #30 (D057) before its proxy review finished. The retroactive review blocked it, so these fixes are the first part of overnight item 5. AC path:
+- A missing operating-point value is no longer read as 0 V or 0 A: the component's AC checks report unknown.
+- A class with no AC translation, or a listed class whose limits are not bound, gets an explicit unknown "AC swing" row at each frequency, so no part passes an AC run on operating-point rows alone.
+- Linearity now reads continuation lines and counts POLY controlled sources and any include as nonlinear.
+- Each AC point prints and checks its solved frequency, so a failed solve cannot reuse the previous plot's vectors. Duplicated values drop the point, and a run missing any requested vector fails.
+- The tantalum ripple conditions (100 kHz, 25 C, RMS) are read from the record's own source scope instead of being assumed for the class. The exact ripple row also needs the thermal scope confirmed, like the ESR heating row.
+- `.save` and `.meas` are refused in AC decks, the sweep point limit counts the end point, and the AC result carries an explicit limitations list (unsourced parasitics, linearization, untranslated classes).
+
+Temperature ratings now follow their sources in every analysis:
+- The KEMET T491 rated voltage applies only up to 85 C ("rated VDC at 85 C" in the record scope). The KYOCERA AVX SCC ratings are 2.7 V at 65 C and 2.3 V at 85 C (fields rated_voltage_at_65C and rated_voltage_at_85C).
+- With no declared ambient, those rows can now only prove a violation. Before, they passed against the 85 C rating, which silently assumed a cool ambient; this was a D051 behaviour and is corrected in the operating-point, transient and AC branches alike.
+
+Design runs (from the #28 review):
+- A shared model name that is also a circuit or probe node is refused instead of renamed.
+- An oversized design is refused before any part is resolved.
+- A live test shows that a transient design beyond the rating-signal limit leaves every part unknown.
