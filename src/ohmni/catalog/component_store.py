@@ -24,6 +24,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 
+from ..domain.component import ComponentSpec
 from ..domain.component_admission import AdmissionRequest, evaluate_admission
 
 SHA256_PATTERN = re.compile(r"^[0-9a-f]{64}$")
@@ -467,6 +468,30 @@ class ComponentStore:
                 reports=revision.reports,
             ))
         return tuple(active)
+
+    def active_specs(self) -> tuple[tuple[ActiveRevision, ComponentSpec], ...]:
+        """Read the exact admitted specs behind the current active inventory.
+
+        The activation decision is immutable and hash checked when it is written.
+        Design discovery therefore consumes that decision rather than rebuilding a
+        component from mutable source or report files.
+        """
+        active = {item.revision_id: item for item in self.discover_active()}
+        with self._connection() as db:
+            rows = db.execute(
+                "SELECT revision_id, decision_json FROM component_activations ORDER BY revision_id"
+            ).fetchall()
+        result = []
+        for row in rows:
+            revision = active.get(row["revision_id"])
+            if revision is None:
+                continue
+            decision = json.loads(row["decision_json"])
+            spec = decision.get("component_spec")
+            if spec is None:
+                raise ComponentStoreError("active admission decision has no component spec")
+            result.append((revision, ComponentSpec.model_validate(spec)))
+        return tuple(result)
 
     def activate(self, request: AdmissionRequest) -> ActiveRevision:
         """Rerun CS-T07 gates and activate their exact passing publication."""

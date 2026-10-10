@@ -57,12 +57,13 @@ def verifier_fingerprint() -> str:
 
 
 class SemanticService:
-    def __init__(self):
+    def __init__(self, catalog=None):
         # Private startup snapshot. Clients can discover it but cannot replace it.
-        self.catalog = JsonPartCatalog()
-        self.catalog_hash = content_hash([
+        self.catalog = catalog or JsonPartCatalog()
+        computed_hash = content_hash([
             part.model_dump(mode="json") for part in self.catalog.all_parts()
         ])
+        self.catalog_hash = getattr(self.catalog, "snapshot_hash", computed_hash)
         self.verifier_hash = verifier_fingerprint()
 
     def get_capabilities(self, request: InputModel) -> Capabilities:

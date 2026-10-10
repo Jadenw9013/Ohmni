@@ -18,6 +18,7 @@ from .models import (
     ArchitectureProposal,
     CircuitPatch,
     CircuitProposal,
+    ComponentResolutionRequest,
     DesignReport,
     GenerationIssue,
     GenerationIssueCode,
@@ -54,9 +55,16 @@ class DesignOrchestrator:
         self._event(EventKind.REQUIREMENTS_INTERPRETED, "Requirements interpreted")
         for assumption in compiled.requirements.assumptions:
             self._event(EventKind.REQUIREMENT_ASSUMPTION_INTRODUCED, assumption)
-        conflicts = requirement_conflicts(compiled, {p.part_id for p in self.catalog.all_parts()})
+        catalog_ids = tuple(sorted(p.part_id for p in self.catalog.all_parts()))
+        resolution = ComponentResolutionRequest(
+            required_part_ids=tuple(sorted(set(compiled.requirements.required_part_ids))),
+            catalog_part_ids=catalog_ids,
+        )
+        conflicts = requirement_conflicts(compiled, set(catalog_ids))
         if conflicts:
-            return self._failed(machine, GenerationIssueCode.REQUIREMENTS_CONFLICT, "; ".join(conflicts), requirements=compiled)
+            return self._failed(machine, GenerationIssueCode.REQUIREMENTS_CONFLICT,
+                                "; ".join(conflicts), requirements=compiled,
+                                component_resolution=resolution)
 
         machine.transition(GenerationState.EVIDENCE_READY)
         self._event(EventKind.DATASHEET_EVIDENCE_LOADED, "Structured catalog evidence loaded")
@@ -185,6 +193,7 @@ class DesignOrchestrator:
         machine.transition(GenerationState.COMPLETE)
         notebook = EngineeringNotebook(notebook_id=hashlib.sha256(request.encode()).hexdigest()[:16], project_name=compiled.requirements.project_name, events=self.events, lessons=lessons)
         return DesignReport(state=machine.state, requirements=compiled, architecture=architecture,
+                            component_resolution=resolution,
                             initial_circuit_hash=initial_hash, final_circuit=circuit,
                             semantic_attempts=attempts, repairs=repairs, artifact=artifact, erc=erc,
                             simulation=simulation,
@@ -254,4 +263,4 @@ class DesignOrchestrator:
             machine.transition(GenerationState.FAILED)
         issue = GenerationIssue(code=code, message=message)
         notebook = EngineeringNotebook(notebook_id="failed-design", project_name=(values.get("requirements").requirements.project_name if values.get("requirements") else "unknown"), events=self.events)
-        return DesignReport(state=machine.state, requirements=values.get("requirements"), architecture=values.get("architecture"), initial_circuit_hash=values.get("initial_hash"), final_circuit=values.get("circuit"), semantic_attempts=values.get("attempts", []), repairs=values.get("repairs", []), issues=[issue], notebook=notebook, llm_calls=self.calls)
+        return DesignReport(state=machine.state, requirements=values.get("requirements"), architecture=values.get("architecture"), component_resolution=values.get("component_resolution"), initial_circuit_hash=values.get("initial_hash"), final_circuit=values.get("circuit"), semantic_attempts=values.get("attempts", []), repairs=values.get("repairs", []), issues=[issue], notebook=notebook, llm_calls=self.calls)

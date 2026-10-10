@@ -93,6 +93,15 @@ CREATE TABLE IF NOT EXISTS revision_jobs (
     attempt INTEGER NOT NULL,
     UNIQUE(revision_id, attempt)
 );
+CREATE TABLE IF NOT EXISTS component_resolutions (
+    resolution_id TEXT PRIMARY KEY,
+    project_id TEXT,
+    brief_fingerprint TEXT NOT NULL,
+    request_json TEXT NOT NULL,
+    state TEXT NOT NULL CHECK(state IN ('READY', 'WAITING_IMPORT', 'RESOLVED')),
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+);
 """
 
 #: Columns added after the first schema shipped. SQLite can only add nullable

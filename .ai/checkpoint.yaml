@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "active_task": null,
-  "last_known_commit": "34329f24128e303ef10aa35e44cd663b43ac784c",
+  "last_known_commit": "01370a706b27d276addced8d4aa7cc1f9ffcef9e",
   "approval_record": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
   "previous_checkpoint": {
     "schema_version": 1,
@@ -40,18 +40,17 @@
     ".ai/verification/CS-T07.yaml"
   ],
   "completed_substeps": [
-    "CS-T07 selected and activated from origin/main 4fa890a4 after PR #27 merged.",
-    "Added hash-bound checked electrical facts and bounded passive/I2C ComponentSpec construction.",
-    "Added explicit required-fact, applicable-rule and requested-capability admission evaluation.",
-    "Added schema v3 activation records; activation reruns the gate and binds the exact publication digest.",
-    "Active discovery persists across restart and excludes revoked revisions while seed catalog facts remain unchanged.",
-    "Focused, fast, integration, frontend, Ruff and ledger gates passed."
+    "CS-T08 implementation committed at 01370a706b27d276addced8d4aa7cc1f9ffcef9e.",
+    "Typed resolution persists WAITING_IMPORT and rejects bypass; resume binds active admitted revisions and the catalog snapshot.",
+    "An admitted test part completed semantic, ERC, functional placement, routing, DRC, fabrication and download-lineage checks.",
+    "Fast passed 2231 tests; integration passed 28 tests; scoped Ruff passed.",
+    "Slow verification recorded the unchanged 298-versus-297 route segment baseline failure."
   ],
   "remaining_work": [
-    "Open and merge the CS-T07 PR.",
-    "After merge, branch from latest origin/main and activate CS-T08."
+    "Open and review the CS-T08 pull request.",
+    "CAB-T07 and CS-T09 are ready but have not been started."
   ],
-  "last_failure": null,
-  "resume_action": "After CS-T07 merges, fetch origin/main, require ai_state.py next to select CS-T08, then implement resume and real-board integration.",
-  "last_command": "fast 2220 passed; integration 27 passed; frontend 1043 passed; admission focused 25 passed; Ruff and ai_state validate pass."
+  "last_failure": "External baseline: tests/test_routing.py expects 297 track segments while unchanged origin/main routing emits 298. Global Ruff findings are confined to protected behavior paths.",
+  "resume_action": "Open and review the CS-T08 PR; choose the next approved ready task after merge.",
+  "last_command": "CS-T08 implementation verification and self-review completed."
 }
