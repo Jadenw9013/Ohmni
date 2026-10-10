@@ -1433,9 +1433,7 @@
         "Real KiCad CLI harness binds its reports to the exact artifact hashes",
         "No catalog admission occurs"
       ],
-      "blockers": [
-        "Source and remediation are committed and locally verified. Independent re-review of NEW-1..NEW-7 remains outstanding; preserve the live-extraction evaluation limitation in CS-T02. VERIFIED is not COMPLETE."
-      ],
+      "blockers": [],
       "dependencies": [
         "CS-T03"
       ],
@@ -1445,7 +1443,7 @@
         "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
         "committed_at": "7efe78b94577103303df231bc84a30a2eede5be6",
         "completed_at": "2026-09-14",
-        "completed_at_commit": null,
+        "completed_at_commit": "7efe78b94577103303df231bc84a30a2eede5be6",
         "lifecycle": [
           "IN_PROGRESS after CS-T03 verification",
           "IMPLEMENTED: deterministic land pattern and symbol, byte-exact KiCad serialisation, independent asset parser and measurements, CS-* asset checks, bounded KiCad harness",
@@ -1458,13 +1456,13 @@
       "priority": 107,
       "review": {
         "independent": true,
-        "note": "Earlier independent review and remediation history retained. Publication is not independent re-review of the final fixes.",
-        "record": ".ai/reviews.yaml#CS-T01-T04-REMEDIATION-2-VERIFICATION",
+        "note": "Fresh independent re-review confirmed NEW-1..NEW-7 are resolved. The live-provider extraction limitation remains explicit and does not invalidate the bounded offline CAD proof.",
+        "record": ".ai/reviews.yaml#CS-T04-INDEPENDENT-REREVIEW-2026-10-09",
         "required": true,
-        "status": "FINDINGS_ADDRESSED_AWAITING_RE_REVIEW"
+        "status": "PASSED"
       },
       "scope": "COMPONENT-SYNTHESIS-1",
-      "status": "VERIFIED",
+      "status": "COMPLETE",
       "title": "One-package CAD proof",
       "verification": {
         "record": ".ai/verification/CS-T04.yaml",
@@ -2827,7 +2825,7 @@
         "Unknown or non-run remains non-pass"
       ],
       "blockers": [
-        "Scoped ratings software and probes pass, but nonquantitative failure rules, transient stress and source-specific context remain unresolved; inherited corpus gates remain failed."
+        "Ratings now cover every bound class (decisions D050-D053 in out/component-behavior/run/DECISIONS.md); transient stress, nonquantitative failure rules and some condition-incomplete limits still report unknown."
       ],
       "dependencies": [
         "CBH-AUDIT"
@@ -2868,16 +2866,14 @@
         "Non-run is never pass",
         "Browser coverage"
       ],
-      "blockers": [
-        "Human-priority deferral for approved landing P1 prototype; prior complete records are preserved by .ai/approvals/LANDING-PCB-P1.yaml. Required Stage6 verification and review remain uncompleted."
-      ],
+      "blockers": [],
       "dependencies": [
         "CBH-AUDIT"
       ],
       "goal": "Expose honest simulation controls, results, fidelity, status and confidence in the web UI.",
       "id": "CBH-STAGE6",
       "implementation": {
-        "completed_at_commit": null,
+        "completed_at_commit": "689ebe629064aad0d201c80a77957ab386c45834",
         "started_at_commit": "72d19ccc425033908f536853314876ba4a8ddf9a",
         "parked_at": "2026-10-09",
         "parked_at_commit": "42961353c1b6f111c8a11c82aed5620f6f31ebb0",
@@ -2896,10 +2892,10 @@
         "status": "FINDINGS_OPEN"
       },
       "scope": "COMPONENT-BEHAVIOR-COMPLETION",
-      "status": "BLOCKED",
+      "status": "VERIFIED",
       "title": "Behavior simulation UI",
       "verification": {
-        "record": null,
+        "record": ".ai/verification/CBH-STAGE6.yaml",
         "required": [
           "audit checkpoints",
           "Playwright",
@@ -2913,7 +2909,11 @@
         "Script-generated FINAL_REPORT.md",
         "All blockers, decisions, rule changes and verifier results listed"
       ],
-      "blockers": [],
+      "blockers": [
+        "AUD-SOURCE-001: 7 cited URLs are dead and need owner-approved superseding documents.",
+        "AUD-VERIFY-001: a fresh verifier round is required after the source blockers close.",
+        "AUD-PROTECT-001: the protected-state check only evaluates in the owner's Windows checkout."
+      ],
       "dependencies": [
         "CBH-STAGE6"
       ],
@@ -2921,7 +2921,7 @@
       "id": "CBH-STAGE7",
       "implementation": {
         "completed_at_commit": null,
-        "started_at_commit": null
+        "started_at_commit": "465066d7b58ed6b7aeeaad0e8843bccfd851dafb"
       },
       "milestone": null,
       "priority": 100,
@@ -2932,7 +2932,7 @@
         "status": "FINDINGS_OPEN"
       },
       "scope": "COMPONENT-BEHAVIOR-COMPLETION",
-      "status": "APPROVED",
+      "status": "IN_PROGRESS",
       "title": "Final behavior coverage and audit report",
       "verification": {
         "record": null,
