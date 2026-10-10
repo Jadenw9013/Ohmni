@@ -1,0 +1,114 @@
+{
+  "analysis": "op",
+  "circuit_hash": "ca6f884092e2e5c1d4fd6007f39a4251dfc0ab7b396e59e7a8fc37982090b5b2",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "curve": "forward",
+    "expected": 0.8737,
+    "kind": "absolute",
+    "observable": "anode_voltage",
+    "point_index": 2,
+    "source_fact": {
+      "basis": "DERIVED",
+      "confidence": "M",
+      "detail": "Same read points as spice_IS_fit: Fig. Structured copy so the runtime check can replay the fit at several currents.",
+      "field": "forward_curve_read_points",
+      "page": 2,
+      "scope": "Vishay LL4148 (identified from doc + entry fields; 25 C typical forward curve read points (I in A, V in V) used for the IS/N/RS fit",
+      "sources": [
+        "https://www.vishay.com/docs/85557/ll4148.pdf"
+      ],
+      "unit": null,
+      "value": {
+        "points_a_v": [
+          [
+            1e-06,
+            0.2629
+          ],
+          [
+            2e-06,
+            0.2978
+          ],
+          [
+            5e-06,
+            0.3446
+          ],
+          [
+            1e-05,
+            0.3797
+          ],
+          [
+            2e-05,
+            0.4153
+          ],
+          [
+            5e-05,
+            0.462
+          ],
+          [
+            0.0001,
+            0.4965
+          ],
+          [
+            0.0002,
+            0.5305
+          ],
+          [
+            0.0005,
+            0.5751
+          ],
+          [
+            0.001,
+            0.6093
+          ],
+          [
+            0.002,
+            0.6438
+          ],
+          [
+            0.005,
+            0.6914
+          ],
+          [
+            0.01,
+            0.7295
+          ],
+          [
+            0.02,
+            0.7691
+          ],
+          [
+            0.05,
+            0.8258
+          ],
+          [
+            0.1,
+            0.8737
+          ]
+        ],
+        "temperature_c": 25
+      }
+    },
+    "test_current": 0.1,
+    "tolerance": 0.043685,
+    "tolerance_rule": "max(0.05*V, 0.015 V) for a M-confidence datasheet read"
+  },
+  "entry_id": "OHM-059",
+  "entry_research_sha256": "2dbf95b14efcf8e32620d738935b48854abaf97baf1fd13b5c8be2018155a6d5",
+  "limits": "Replays the fitted forward model at one of the sourced curve read points and requires the read voltage within the read uncertainty. Together with the other fit points and the maximum-VF bound this validates the fit over the plotted range at 25 C; it does not validate temperature, reverse behavior, capacitance or ratings.",
+  "netlist_sha256": "eb2f5dff5f288280a7a39b3d316bb81bcac444b52f81fa93e95a5790fd39e96a",
+  "observation_status": "ran",
+  "observed": 0.8751956,
+  "output_sha256": "f32e44db8de204993b7c4e026be8186ab1d6f89a3f6ac29bdaf9260868642f0c",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-10T06:24:21Z",
+  "raw_output": "runtime-bench-output/OHM-059-op-forward_fit3/output.txt",
+  "recipe_source_sha256": "2be790ee47f30e5ab4a14bb52fbc16bfe3fbd0d94c9b78cf2d2a87721b96d38f",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "variant": "forward_fit3",
+  "version_file": "runtime-bench-output/OHM-059-op-forward_fit3/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sun Mar 31 20:15:14 UTC 2024\n******\n",
+  "version_sha256": "d18ced87a01768ec53b4682c549f1182be38030c71159f071a008b747a8f04be"
+}

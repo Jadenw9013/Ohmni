@@ -1,0 +1,150 @@
+{
+  "analysis": "op",
+  "circuit_hash": "3487e290cc4796a093b7ae7fb8939327d35f78aa41085591c13d12963547c11a",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "curve": "forward",
+    "expected": 2.112,
+    "kind": "absolute",
+    "observable": "anode_voltage",
+    "point_index": 2,
+    "source_fact": {
+      "basis": "DERIVED",
+      "confidence": "L",
+      "detail": "Same read points as spice_IS_fit: \"Forward Current vs. Structured copy so the runtime check can replay the fit at several currents.",
+      "field": "forward_curve_read_points",
+      "page": 3,
+      "scope": "Kingbright AP2012EC high-efficiency red; 25 C typical forward curve read points (I in A, V in V) used for the IS/N/RS fit",
+      "sources": [
+        "https://www.kingbrightusa.com/images/catalog/SPEC/AP2012EC.pdf"
+      ],
+      "unit": null,
+      "value": {
+        "points_a_v": [
+          [
+            0.0008100000000000001,
+            1.625
+          ],
+          [
+            0.00108,
+            1.65
+          ],
+          [
+            0.00134,
+            1.67
+          ],
+          [
+            0.00161,
+            1.685
+          ],
+          [
+            0.00188,
+            1.7
+          ],
+          [
+            0.00242,
+            1.718
+          ],
+          [
+            0.00323,
+            1.743
+          ],
+          [
+            0.00511,
+            1.798
+          ],
+          [
+            0.00753,
+            1.848
+          ],
+          [
+            0.0086,
+            1.873
+          ],
+          [
+            0.009949999999999999,
+            1.893
+          ],
+          [
+            0.01122,
+            1.908
+          ],
+          [
+            0.0123,
+            1.923
+          ],
+          [
+            0.01499,
+            1.948
+          ],
+          [
+            0.016329999999999997,
+            1.963
+          ],
+          [
+            0.01767,
+            1.978
+          ],
+          [
+            0.01902,
+            1.993
+          ],
+          [
+            0.02009,
+            2.003
+          ],
+          [
+            0.02063,
+            2.012
+          ],
+          [
+            0.02117,
+            2.017
+          ],
+          [
+            0.02198,
+            2.027
+          ],
+          [
+            0.024059999999999998,
+            2.047
+          ],
+          [
+            0.02594,
+            2.067
+          ],
+          [
+            0.02809,
+            2.092
+          ],
+          [
+            0.02997,
+            2.112
+          ]
+        ],
+        "temperature_c": 25
+      }
+    },
+    "test_current": 0.02997,
+    "tolerance": 0.16896,
+    "tolerance_rule": "max(0.08*V, 0.025 V) for a L-confidence datasheet read"
+  },
+  "entry_id": "OHM-079",
+  "entry_research_sha256": "06a72c269c0f25db781fa249bbf6cac5c404b78916e9b7427107d7f22ecc4244",
+  "limits": "Replays the fitted forward model at one of the sourced curve read points and requires the read voltage within the read uncertainty. Together with the other fit points and the maximum-VF bound this validates the fit over the plotted range at 25 C; it does not validate temperature, reverse behavior, capacitance or ratings.",
+  "netlist_sha256": "540e9970da124e1771e2a7a85ae9c4976f692a68a8ab89c12809549027ff94eb",
+  "observation_status": "ran",
+  "observed": 2.105423,
+  "output_sha256": "46feedeeaae954a90243eaeda56920361e20abf4215ab5a3cc56ba39bad3e4fa",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-10T06:25:46Z",
+  "raw_output": "runtime-bench-output/OHM-079-op-forward_fit3/output.txt",
+  "recipe_source_sha256": "2be790ee47f30e5ab4a14bb52fbc16bfe3fbd0d94c9b78cf2d2a87721b96d38f",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "variant": "forward_fit3",
+  "version_file": "runtime-bench-output/OHM-079-op-forward_fit3/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sun Mar 31 20:15:14 UTC 2024\n******\n",
+  "version_sha256": "d18ced87a01768ec53b4682c549f1182be38030c71159f071a008b747a8f04be"
+}

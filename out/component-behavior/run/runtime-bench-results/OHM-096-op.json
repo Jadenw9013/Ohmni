@@ -1,0 +1,83 @@
+{
+  "analysis": "op",
+  "circuit_hash": "59c5ccc9633533b49ed897d4fd3ae17e42e5e8690cb1b592d16de9eff99098ee",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "base_current": 0.0011952286093343937,
+    "kind": "interval",
+    "maximum": 250.0,
+    "minimum": 63.0,
+    "observable": "current_gain",
+    "source_facts": {
+      "gain_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "same row, max 250",
+        "field": "dc_gain_maximum_ungraded",
+        "page": 6,
+        "scope": "Nexperia BCP56; ungraded; VCE = 2 V; IC = 150 mA; Tamb 25 C; pulsed",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BCP56_SER.pdf"
+        ],
+        "unit": "1",
+        "value": 250
+      },
+      "gain_min": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Table 7 'hFE DC current gain BCP56 ... VCE = 2 V; IC = 150 mA [1] 63 - 250'",
+        "field": "dc_gain_minimum_ungraded",
+        "page": 6,
+        "scope": "Nexperia BCP56; ungraded; VCE = 2 V; IC = 150 mA; Tamb 25 C; pulsed",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BCP56_SER.pdf"
+        ],
+        "unit": "1",
+        "value": 63
+      },
+      "gain_test_ic": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'VCE = 2 V; IC = 150 mA'",
+        "field": "dc_gain_test_collector_current",
+        "page": 6,
+        "scope": "Nexperia BCP56; hFE band test condition",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BCP56_SER.pdf"
+        ],
+        "unit": "A",
+        "value": 0.15
+      },
+      "gain_test_vce": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'VCE = 2 V; IC = 150 mA'",
+        "field": "dc_gain_test_collector_voltage",
+        "page": 6,
+        "scope": "Nexperia BCP56; hFE band test condition",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BCP56_SER.pdf"
+        ],
+        "unit": "V",
+        "value": 2.0
+      }
+    }
+  },
+  "entry_id": "OHM-096",
+  "entry_research_sha256": "d6376fe7fbd727f9ac5419f0afc7a0412b14a099458f4d489799bafa96573990",
+  "limits": "One-point DC gain-bin check using a geometric-mean BF and assumed IS. Does not validate gain roll-off, transient response, temperature behavior, ratings or SOA.",
+  "netlist_sha256": "475fcc00643e097b4383b17b27e28e2522ad20f3e64508a9bcf2066e8e0ce410",
+  "observation_status": "ran",
+  "observed": 125.49900398011133,
+  "output_sha256": "79f1643089974f6b8e441ec66da28e87734f50e33507eff26c5c665fc856afa3",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-10T06:26:24Z",
+  "raw_output": "runtime-bench-output/OHM-096-op/output.txt",
+  "recipe_source_sha256": "2be790ee47f30e5ab4a14bb52fbc16bfe3fbd0d94c9b78cf2d2a87721b96d38f",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "version_file": "runtime-bench-output/OHM-096-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sun Mar 31 20:15:14 UTC 2024\n******\n",
+  "version_sha256": "d18ced87a01768ec53b4682c549f1182be38030c71159f071a008b747a8f04be"
+}

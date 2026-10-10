@@ -1,0 +1,78 @@
+{
+  "analysis": "op",
+  "circuit_hash": "d13e2f5fb2bd283b664a87d744c8ecd4fafd7b67d3661712f6aaab215fff4fa7",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "curve": "forward",
+    "expected": 0.6232,
+    "kind": "absolute",
+    "observable": "anode_voltage",
+    "point_index": 0,
+    "source_fact": {
+      "basis": "DERIVED",
+      "confidence": "M",
+      "detail": "Same read points as spice_IS_fit: Figure 2 \"Typical Forward Characteristics\", TA = 25 C curve (third from left. Structured copy so the runtime check can replay the fit at several currents.",
+      "field": "forward_curve_read_points",
+      "page": 3,
+      "scope": "Diodes Incorporated 1N4148W (identified from doc BAV16W/1N4148W + entry field reference_part=1N4148W; 25 C typical forward curve read points (I in A, V in V) used for the IS/N/RS fit",
+      "sources": [
+        "https://www.diodes.com/datasheet/download/1N4148W.pdf"
+      ],
+      "unit": null,
+      "value": {
+        "points_a_v": [
+          [
+            0.002,
+            0.6232
+          ],
+          [
+            0.005,
+            0.6689
+          ],
+          [
+            0.01,
+            0.7087
+          ],
+          [
+            0.02,
+            0.7563
+          ],
+          [
+            0.05,
+            0.8469
+          ],
+          [
+            0.1,
+            0.9349
+          ],
+          [
+            0.2,
+            1.0487
+          ]
+        ],
+        "temperature_c": 25
+      }
+    },
+    "test_current": 0.002,
+    "tolerance": 0.03116,
+    "tolerance_rule": "max(0.05*V, 0.015 V) for a M-confidence datasheet read"
+  },
+  "entry_id": "OHM-061",
+  "entry_research_sha256": "270ef7ac09c25a88154bffa13b86fce5d3fa2dedb95044e24ff36df700606ac6",
+  "limits": "Replays the fitted forward model at one of the sourced curve read points and requires the read voltage within the read uncertainty. Together with the other fit points and the maximum-VF bound this validates the fit over the plotted range at 25 C; it does not validate temperature, reverse behavior, capacitance or ratings.",
+  "netlist_sha256": "86b2f0b9b47db4b15f718fe1a8b9422202b8da85ef8f1390dbac9a1ba2f55bc7",
+  "observation_status": "ran",
+  "observed": 0.6162498,
+  "output_sha256": "4149d1a85475f063c872512c8b04df0240768802aeff5635364572953e7d74ac",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-10T06:24:24Z",
+  "raw_output": "runtime-bench-output/OHM-061-op-forward_fit1/output.txt",
+  "recipe_source_sha256": "2be790ee47f30e5ab4a14bb52fbc16bfe3fbd0d94c9b78cf2d2a87721b96d38f",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "variant": "forward_fit1",
+  "version_file": "runtime-bench-output/OHM-061-op-forward_fit1/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sun Mar 31 20:15:14 UTC 2024\n******\n",
+  "version_sha256": "d18ced87a01768ec53b4682c549f1182be38030c71159f071a008b747a8f04be"
+}

@@ -1,0 +1,47 @@
+{
+  "analysis": "op",
+  "circuit_hash": "e83619e56c2f20b9339169dff917a8ffac79078b911e419e94b12ac063c1be0b",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "derivation": "Two conducting junctions; sum of two source per-diode forward-voltage maxima. Both AC polarities use the original bench's 10 V input amplitude.",
+    "kind": "interval",
+    "maximum": 2.0,
+    "minimum": 0,
+    "observable": "bridge_drop",
+    "source_deck_sha256": "07a175ac644ca384e8b8a4cf187e0554f74b2510450bcbad6e2841d718dd1274",
+    "source_fact": {
+      "basis": "MFR_DATASHEET",
+      "confidence": "H",
+      "detail": "REPLACES the existing field whose scope 'W10G WOG; IF1A' does not match the bridge probe regex ';\\s*(\\d+)A'. Electrical characteristics: 'Maximum instantaneous forward voltage per diode IF = 1.0 A VF 1.0 V' (TA = 25 \u00b0C unless otherwise noted).",
+      "field": "maximum_forward_voltage_per_diode",
+      "page": 1,
+      "scope": "W10G WOG; 1A; TA25 C source table default",
+      "sources": [
+        "https://www.vishay.com/doc?88769"
+      ],
+      "unit": "V",
+      "value": 1.0
+    },
+    "stimulus_source": "BEH-DIO-BRIDGE/B1",
+    "supply_magnitude": 10,
+    "test_current": 1.0
+  },
+  "entry_id": "OHM-072",
+  "entry_research_sha256": "e05b6205eff4793a2769dcd6dafa76b5194bc26011d974cfaa1f59272355d22d",
+  "limits": "Isothermal DC rectification and two-junction voltage bound under both AC polarities; does not validate ripple, shared thermal behavior, surge or safe sustained output current.",
+  "netlist_sha256": "9f67f5c7a4a5c215d42f1540caa3e08ae787a93fdfce7ec49139e23804514181",
+  "observation_status": "ran",
+  "observed": 1.8953463,
+  "output_sha256": "2623252bb2b425660c31bbff2709c710df61d10c5417a8eb296b372afc25b5e5",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-10T06:25:14Z",
+  "raw_output": "runtime-bench-output/OHM-072-op-positive/output.txt",
+  "recipe_source_sha256": "2be790ee47f30e5ab4a14bb52fbc16bfe3fbd0d94c9b78cf2d2a87721b96d38f",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "variant": "positive",
+  "version_file": "runtime-bench-output/OHM-072-op-positive/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sun Mar 31 20:15:14 UTC 2024\n******\n",
+  "version_sha256": "d18ced87a01768ec53b4682c549f1182be38030c71159f071a008b747a8f04be"
+}

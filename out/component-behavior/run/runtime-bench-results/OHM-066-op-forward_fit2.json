@@ -1,0 +1,78 @@
+{
+  "analysis": "op",
+  "circuit_hash": "256fffd05276fc285ccc28ad61e354f0fa44235414e9979a92525c9476decd44",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "curve": "forward",
+    "expected": 0.392,
+    "kind": "absolute",
+    "observable": "anode_voltage",
+    "point_index": 1,
+    "source_fact": {
+      "basis": "DERIVED",
+      "confidence": "L",
+      "detail": "Same read points as spice_IS_fit: Fig. Structured copy so the runtime check can replay the fit at several currents.",
+      "field": "forward_curve_read_points",
+      "page": 3,
+      "scope": "SS34 SMC; 25 C typical forward curve read points (I in A, V in V) used for the IS/N/RS fit",
+      "sources": [
+        "https://www.vishay.com/docs/88751/ss32.pdf"
+      ],
+      "unit": null,
+      "value": {
+        "points_a_v": [
+          [
+            0.01,
+            0.222
+          ],
+          [
+            0.1,
+            0.29
+          ],
+          [
+            1.0,
+            0.369
+          ],
+          [
+            2.0,
+            0.392
+          ],
+          [
+            5.0,
+            0.453
+          ],
+          [
+            10.0,
+            0.551
+          ],
+          [
+            20.0,
+            0.705
+          ]
+        ],
+        "temperature_c": 25
+      }
+    },
+    "test_current": 2.0,
+    "tolerance": 0.03136,
+    "tolerance_rule": "max(0.08*V, 0.025 V) for a L-confidence datasheet read"
+  },
+  "entry_id": "OHM-066",
+  "entry_research_sha256": "bef97281911bdc32ca6a16f7e11b33b931209bb0949bc70b0b3464b62f5feeb8",
+  "limits": "Replays the fitted forward model at one of the sourced curve read points and requires the read voltage within the read uncertainty. Together with the other fit points and the maximum-VF bound this validates the fit over the plotted range at 25 C; it does not validate temperature, reverse behavior, capacitance or ratings.",
+  "netlist_sha256": "fbe689125b82f0e13854e8ebac8b8d90dc001d0d42705109c19af65a68e80c47",
+  "observation_status": "ran",
+  "observed": 0.3943138,
+  "output_sha256": "8bae5e6ce5e2ba684f4cbcfd0fdb4f5c13a04d0a94dc0919a4269ff7c2417d08",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-10T06:24:50Z",
+  "raw_output": "runtime-bench-output/OHM-066-op-forward_fit2/output.txt",
+  "recipe_source_sha256": "2be790ee47f30e5ab4a14bb52fbc16bfe3fbd0d94c9b78cf2d2a87721b96d38f",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "variant": "forward_fit2",
+  "version_file": "runtime-bench-output/OHM-066-op-forward_fit2/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sun Mar 31 20:15:14 UTC 2024\n******\n",
+  "version_sha256": "d18ced87a01768ec53b4682c549f1182be38030c71159f071a008b747a8f04be"
+}

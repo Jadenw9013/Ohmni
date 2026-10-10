@@ -1,0 +1,110 @@
+{
+  "analysis": "op",
+  "circuit_hash": "9fc02cf02246d24eabc928c651010d480c12f765e511965f512eefbf372587a0",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "curve": "forward",
+    "expected": 1.863,
+    "kind": "absolute",
+    "observable": "anode_voltage",
+    "point_index": 1,
+    "source_fact": {
+      "basis": "DERIVED",
+      "confidence": "L",
+      "detail": "Same read points as spice_IS_fit: \"Forward Current vs. Structured copy so the runtime check can replay the fit at several currents.",
+      "field": "forward_curve_read_points",
+      "page": 3,
+      "scope": "Kingbright APHHS1005SURCK hyper red; 25 C typical forward curve read points (I in A, V in V) used for the IS/N/RS fit",
+      "sources": [
+        "https://www.kingbrightusa.com/images/catalog/SPEC/APHHS1005SURCK.pdf"
+      ],
+      "unit": null,
+      "value": {
+        "points_a_v": [
+          [
+            0.0008100000000000001,
+            1.723
+          ],
+          [
+            0.00134,
+            1.748
+          ],
+          [
+            0.00215,
+            1.773
+          ],
+          [
+            0.00296,
+            1.798
+          ],
+          [
+            0.004030000000000001,
+            1.818
+          ],
+          [
+            0.00484,
+            1.828
+          ],
+          [
+            0.0056500000000000005,
+            1.838
+          ],
+          [
+            0.008,
+            1.863
+          ],
+          [
+            0.00934,
+            1.878
+          ],
+          [
+            0.01095,
+            1.893
+          ],
+          [
+            0.01284,
+            1.908
+          ],
+          [
+            0.01526,
+            1.923
+          ],
+          [
+            0.020030000000000003,
+            1.948
+          ],
+          [
+            0.02487,
+            1.968
+          ],
+          [
+            0.02991,
+            1.988
+          ]
+        ],
+        "temperature_c": 25
+      }
+    },
+    "test_current": 0.008,
+    "tolerance": 0.14904,
+    "tolerance_rule": "max(0.08*V, 0.025 V) for a L-confidence datasheet read"
+  },
+  "entry_id": "OHM-077",
+  "entry_research_sha256": "80d10b5651d74d816ff42209581ea106a4bd1c48ace79f23964532917ae96039",
+  "limits": "Replays the fitted forward model at one of the sourced curve read points and requires the read voltage within the read uncertainty. Together with the other fit points and the maximum-VF bound this validates the fit over the plotted range at 25 C; it does not validate temperature, reverse behavior, capacitance or ratings.",
+  "netlist_sha256": "cd8fa09b58d93fb2c120bd8f0004022755f8d0c2571f53ee329c9f12dbfffa31",
+  "observation_status": "ran",
+  "observed": 1.866442,
+  "output_sha256": "74f2362a7ca37889c6964778182af412936ed4dcd8b9cb3abda33cd3c4b3c865",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-10T06:25:35Z",
+  "raw_output": "runtime-bench-output/OHM-077-op-forward_fit2/output.txt",
+  "recipe_source_sha256": "2be790ee47f30e5ab4a14bb52fbc16bfe3fbd0d94c9b78cf2d2a87721b96d38f",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "variant": "forward_fit2",
+  "version_file": "runtime-bench-output/OHM-077-op-forward_fit2/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sun Mar 31 20:15:14 UTC 2024\n******\n",
+  "version_sha256": "d18ced87a01768ec53b4682c549f1182be38030c71159f071a008b747a8f04be"
+}

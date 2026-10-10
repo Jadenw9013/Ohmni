@@ -1,0 +1,59 @@
+{
+  "analysis": "op",
+  "circuit_hash": "236d7d2ceb0b79faa233194f80da731dac7fabfaacd95e793c781d14ad6cc289",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "current": 1.5,
+    "drive_role": "P1",
+    "expected": 0.035,
+    "kind": "absolute",
+    "observable": "path_resistance",
+    "return_role": "M1",
+    "source_facts": {
+      "i_rated": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "current_rated_max",
+        "page": 1,
+        "scope": "MTJ-645X1 only; visually read manufacturer drawing; maximum",
+        "sources": [
+          "https://app.adam-tech.com/products/download/data_sheet/203853/mtj-645x1-data-sheet.pdf"
+        ],
+        "unit": "A",
+        "value": 1.5
+      },
+      "rc": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "contact_resistance_max",
+        "page": 1,
+        "scope": "MTJ-645X1 only; visually read manufacturer drawing; maximum",
+        "sources": [
+          "https://app.adam-tech.com/products/download/data_sheet/203853/mtj-645x1-data-sheet.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.035
+      }
+    },
+    "tolerance": 3.5000000000000004e-05
+  },
+  "entry_id": "OHM-170",
+  "entry_research_sha256": "6ca14b571cf15fe98b47b9bce3a3e2fa6f9297805ebb8a552063f25b598b1881",
+  "limits": "Binding check of one bound DC path: the sourced current through the path must reproduce the sourced path resistance (0.1% numerical tolerance, or the sourced tolerance band). It does not validate frequency response, heating, contact wear, isolation, protocol behavior or any rating beyond the stated facts.",
+  "netlist_sha256": "0dda0f15e148565022e385f3aa844d953f93b6127a03457dc4b05f7c12bf76dd",
+  "observation_status": "ran",
+  "observed": 0.034999999999999996,
+  "output_sha256": "3256828baae8e8c416554d9474373beaca4b86bc0ab2131aecc73f5737038f1b",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-10T06:26:40Z",
+  "raw_output": "runtime-bench-output/OHM-170-op/output.txt",
+  "recipe_source_sha256": "2be790ee47f30e5ab4a14bb52fbc16bfe3fbd0d94c9b78cf2d2a87721b96d38f",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "version_file": "runtime-bench-output/OHM-170-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sun Mar 31 20:15:14 UTC 2024\n******\n",
+  "version_sha256": "d18ced87a01768ec53b4682c549f1182be38030c71159f071a008b747a8f04be"
+}
