@@ -1,4 +1,20 @@
 # syntax=docker/dockerfile:1
+# Authored behavior benches require ngspice 42, not the base image's distro
+# version. Build the official release with a checked archive and keep compiler
+# dependencies out of the runtime image.
+FROM kicad/kicad:10.0.5 AS ngspice42
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential bison flex curl ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+WORKDIR /tmp/ngspice-build
+RUN curl --fail --location --retry 3 https://downloads.sourceforge.net/project/ngspice/ng-spice-rework/old-releases/42/ngspice-42.tar.gz -o source.tar.gz \
+    && echo "737fe3846ab2333a250dfadf1ed6ebe1860af1d8a5ff5e7803c772cc4256e50a  source.tar.gz" | sha256sum -c - \
+    && tar -xzf source.tar.gz \
+    && cd ngspice-42 \
+    && ./configure --prefix=/opt/ngspice42 --without-x --with-readline=no --enable-xspice --enable-cider --disable-debug \
+    && make -j2 && make install \
+    && /opt/ngspice42/bin/ngspice -v
+
 # Ohmni demo backend.
 #
 # KiCad is present, and it is pinned. Both are deliberate:
@@ -17,14 +33,15 @@ USER root
 # managed (PEP 668), so the application gets its own virtual environment
 # instead of fighting the distribution's packages.
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends python3 python3-venv ca-certificates ngspice \
+    && apt-get install -y --no-install-recommends python3 python3-venv ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 ENV VIRTUAL_ENV=/opt/venv
-ENV PATH="$VIRTUAL_ENV/bin:$PATH" \
+ENV PATH="$VIRTUAL_ENV/bin:/opt/ngspice42/bin:$PATH" \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 RUN python3 -m venv "$VIRTUAL_ENV"
+COPY --from=ngspice42 /opt/ngspice42 /opt/ngspice42
 
 WORKDIR /app
 
@@ -42,7 +59,7 @@ COPY scripts/ ./scripts/
 COPY COMPONENT_BEHAVIOR_SPEC.md ./
 COPY docs/behavior/ ./docs/behavior/
 COPY out/component-behavior/run/bench-results/ ./out/component-behavior/run/bench-results/
-RUN python -c "from pathlib import Path; from ohmni.application.component_behavior import ComponentBehaviorService; from ohmni.behavior.examples import compile_reference; s = ComponentBehaviorService(Path('/app'), Path('/tmp/behavior-package-check')); assert len(s.summary()) == s.registry.manifest.entry_count; compile_reference(s.data['examples']['OHM-001'], s.registry, s.recipes)"
+RUN python -c "from pathlib import Path; from ohmni.application.component_behavior import ComponentBehaviorService; s = ComponentBehaviorService(Path('/app'), Path('/tmp/behavior-package-check')); assert len(s.summary()) == s.registry.manifest.entry_count; r = s.run('OHM-001'); print(r['version_output']); assert r['status'] == 'ran', r"
 # A checkout will not carry the mode bit on every platform.
 RUN chmod +x scripts/docker-entrypoint.sh && chown -R kicad:kicad /app
 
