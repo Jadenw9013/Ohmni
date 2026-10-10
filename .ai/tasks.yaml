@@ -121,7 +121,7 @@
       "approval_evidence": ".ai/approvals/VIS-REF-001.yaml",
       "approved_by": "human",
       "followup_approval_evidence": ".ai/approvals/VIS-REF-001-FOLLOWUP.yaml",
-      "human_visual_acceptance": "PENDING",
+      "human_visual_acceptance": "APPROVED_BY_OWNER_INSTRUCTION_2026-10-10",
       "id": "VIS-REF-001",
       "non_goals": [
         "Electrical design changes",
@@ -129,9 +129,10 @@
         "Publishing private reference image"
       ],
       "review_policy": "One focused independent final review; human visual acceptance remains explicit",
-      "status": "VERIFIED",
+      "status": "COMPLETE",
       "title": "Reference-grade visualization and distinct dense educational explorer",
-      "type": "product_enhancement"
+      "type": "product_enhancement",
+      "completion_approval_evidence": ".ai/approvals/VIS-LP-COMPLETION-2026-10-10.yaml"
     },
     {
       "approval_evidence": ".ai/approvals/DEPLOY-1.yaml",
@@ -279,17 +280,18 @@
       "id": "LANDING-PCB-P1",
       "title": "Isolated interactive PCB landing visual prototype",
       "type": "bounded_visual_prototype",
-      "status": "REVIEW",
+      "status": "COMPLETE",
       "approved_by": "human",
       "approval_evidence": ".ai/approvals/LANDING-PCB-P1.yaml",
       "review_policy": "Focused independent technical/UI review plus owner visual acceptance before completion or later phases; plan review is not implementation acceptance.",
-      "human_visual_acceptance": "PENDING",
+      "human_visual_acceptance": "APPROVED_BY_OWNER_INSTRUCTION_2026-10-10",
       "non_goals": [
         "P2 interaction proof and P3 landing integration",
         "P4 release and P5 Higgsfield pilot",
         "Paid generation, merge, push or deployment",
         "Electrical changes or upgrading parked behavior, CS/CAB or M10 acceptance"
-      ]
+      ],
+      "completion_approval_evidence": ".ai/approvals/VIS-LP-COMPLETION-2026-10-10.yaml"
     },
     {
       "id": "LANDING-PCB-CIRCUIT",
@@ -1150,7 +1152,7 @@
       "id": "VIS-T01",
       "implementation": {
         "approval_evidence": ".ai/approvals/VIS-REF-001.yaml",
-        "human_visual_acceptance": "PENDING",
+        "human_visual_acceptance": "APPROVED_BY_OWNER_INSTRUCTION_2026-10-10",
         "lifecycle": [
           "Human W0-W7 approval recorded",
           "READY selected by ai_state.py next",
@@ -1164,18 +1166,20 @@
         "started_at": "2026-09-14",
         "started_at_commit": "3cefca72be2a69e75df440e7bc7c715657dd9be9",
         "verified_at": "2026-09-14",
-        "verified_at_commit": "480b40c0359b72641790bac7b82f190156a48906"
+        "verified_at_commit": "480b40c0359b72641790bac7b82f190156a48906",
+        "completed_at_commit": "480b40c0359b72641790bac7b82f190156a48906",
+        "owner_completion_approval": ".ai/approvals/VIS-LP-COMPLETION-2026-10-10.yaml"
       },
       "milestone": null,
       "priority": 100,
       "review": {
         "independent": true,
-        "record": ".ai/reviews.yaml#VIS-T01-INDEPENDENT-REREVIEW-2026-10-09",
+        "record": ".ai/reviews.yaml#VIS-T01-OWNER-GATE-2026-10-10",
         "required": true,
-        "status": "PASSED_WITH_OWNER_GATE"
+        "status": "PASSED"
       },
       "scope": "VIS-REF-001",
-      "status": "VERIFIED",
+      "status": "COMPLETE",
       "title": "Implement reference-grade rendering W0-W7",
       "verification": {
         "record": ".ai/verification/VIS-T01.yaml",
@@ -1202,7 +1206,7 @@
       "implementation": {
         "approval_evidence": ".ai/approvals/VIS-REF-001-FOLLOWUP.yaml",
         "functional_expansion": "OPEN: dense124-body functional requirement unimplemented; documented supported29-part evidence and expansion limits.",
-        "human_visual_acceptance": "PENDING",
+        "human_visual_acceptance": "APPROVED_BY_OWNER_INSTRUCTION_2026-10-10",
         "lifecycle": [
           "Human followup authorizes homepage access and functional evidence work",
           "READY selected by ai_state.py next; IN_PROGRESS",
@@ -1212,18 +1216,20 @@
         ],
         "started_at_commit": "e2d63077550f6d737e748d80df311d29f0e46cea",
         "verified_at": "2026-09-14",
-        "verified_at_commit": "39d108dafd9c95b79f52f1c279ccbb121d931f85"
+        "verified_at_commit": "39d108dafd9c95b79f52f1c279ccbb121d931f85",
+        "completed_at_commit": "39d108dafd9c95b79f52f1c279ccbb121d931f85",
+        "owner_completion_approval": ".ai/approvals/VIS-LP-COMPLETION-2026-10-10.yaml"
       },
       "milestone": null,
       "priority": 110,
       "review": {
         "independent": true,
-        "record": ".ai/reviews.yaml#VIS-T02-INDEPENDENT-REREVIEW-2026-10-09",
+        "record": ".ai/reviews.yaml#VIS-T02-OWNER-GATE-2026-10-10",
         "required": true,
-        "status": "PASSED_WITH_OWNER_GATE"
+        "status": "PASSED"
       },
       "scope": "VIS-REF-001",
-      "status": "VERIFIED",
+      "status": "COMPLETE",
       "title": "Make the dense board discoverable and reconcile functional evidence",
       "verification": {
         "record": ".ai/verification/VIS-T02.yaml",
@@ -1379,9 +1385,7 @@
         "Rejection corpus covers wrong row, wrong column, wrong package column, detached number, wrong units and fabricated region",
         "Unsupported image-only or unassociated sources stay quarantined rather than passing"
       ],
-      "blockers": [
-        "Source and remediation are committed and locally verified. Independent re-review of NEW-1..NEW-7 remains outstanding; preserve the live-extraction evaluation limitation in CS-T02. VERIFIED is not COMPLETE."
-      ],
+      "blockers": [],
       "dependencies": [
         "CS-T02"
       ],
@@ -1391,7 +1395,7 @@
         "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
         "committed_at": "7efe78b94577103303df231bc84a30a2eede5be6",
         "completed_at": "2026-09-14",
-        "completed_at_commit": null,
+        "completed_at_commit": "7efe78b94577103303df231bc84a30a2eede5be6",
         "lifecycle": [
           "IN_PROGRESS after CS-T02 verification",
           "IMPLEMENTED: ruled-table grammars, identity/variant/package-legend checks, drawn-land topology, printed-arithmetic cross-checks, receipts",
@@ -1404,13 +1408,13 @@
       "priority": 108,
       "review": {
         "independent": true,
-        "note": "Earlier independent review and remediation history retained. Publication is not independent re-review of the final fixes.",
-        "record": ".ai/reviews.yaml#CS-T01-T04-REMEDIATION-2-VERIFICATION",
+        "note": "Fresh independent review passed with no open BLOCKER/HIGH finding. CS-T02-R01 remains a non-blocking OPEN live-evaluation gap.",
+        "record": ".ai/reviews.yaml#CS-T03-INDEPENDENT-REREVIEW-2026-10-10",
         "required": true,
-        "status": "FINDINGS_ADDRESSED_AWAITING_RE_REVIEW"
+        "status": "PASSED"
       },
       "scope": "COMPONENT-SYNTHESIS-1",
-      "status": "VERIFIED",
+      "status": "COMPLETE",
       "title": "Independent source verification",
       "verification": {
         "record": ".ai/verification/CS-T03.yaml",
@@ -2943,7 +2947,7 @@
       "scope": "LANDING-PCB-P1",
       "milestone": null,
       "title": "Build and review an isolated real-board visual proof",
-      "status": "IMPLEMENTED",
+      "status": "COMPLETE",
       "priority": 250,
       "dependencies": [],
       "blockers": [],
@@ -2967,7 +2971,9 @@
           "ai_state.py validate passed and ai_state.py next selected LP-P1; transitioned the single active task to IN_PROGRESS.",
           "P1 prototype and scoped software evidence implemented; final visual/physical-fit and owner acceptance remain open. No later phase or paid generation started."
         ],
-        "started_at": "2026-10-09"
+        "started_at": "2026-10-09",
+        "human_visual_acceptance": "APPROVED_BY_OWNER_INSTRUCTION_2026-10-10",
+        "owner_completion_approval": ".ai/approvals/VIS-LP-COMPLETION-2026-10-10.yaml"
       },
       "verification": {
         "required": [
@@ -2981,10 +2987,10 @@
       },
       "review": {
         "required": true,
-        "status": "PASSED_WITH_OWNER_GATE",
+        "status": "PASSED",
         "independent": true,
-        "record": ".ai/reviews.yaml#LP-P1-INDEPENDENT-REREVIEW-2026-10-09",
-        "human_visual_acceptance": "PENDING",
+        "record": ".ai/reviews.yaml#LP-P1-OWNER-GATE-2026-10-10",
+        "human_visual_acceptance": "APPROVED_BY_OWNER_INSTRUCTION_2026-10-10",
         "ui_result": "READY_FOR_OWNER_REVIEW_FINAL_APPEARANCE_OPEN",
         "ux_result": "PASSED_SCOPED",
         "engineering_result": "PASSED_SCOPED"

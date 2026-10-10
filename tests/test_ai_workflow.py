@@ -129,7 +129,7 @@ def test_repository_product_scope_matches_human_approval():
         else:
             expected="IN_PROGRESS" if scope["id"]=="M10" else "COMPLETE"
             assert scope["status"]==expected, scope["id"]
-    assert state["approved_product_scope"]=="COMPONENT-ATLAS-BUILDER-1"
+    assert state["approved_product_scope"]=="COMPONENT-SYNTHESIS-1"
     controller_approval=json.loads((root/".ai/approvals/LANDING-PCB-CONTROLLER.yaml").read_text())
     assert controller_approval["approved_by"]=="human"
     assert "use only real compnents" in controller_approval["instruction"]

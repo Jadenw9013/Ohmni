@@ -1,7 +1,7 @@
 {
   "active_task": null,
-  "approved_product_scope": "COMPONENT-ATLAS-BUILDER-1",
-  "atlas_hold": "CAB-T06 is COMPLETE. CAB-T07 remains dependency-held by CS-T07 and CS-T08 and has not been started.",
+  "approved_product_scope": "COMPONENT-SYNTHESIS-1",
+  "atlas_hold": "CAB-T07 remains dependency-held by CS-T07 and CS-T08. The active approved scope returns to COMPONENT-SYNTHESIS-1 for the owner-directed CS-T05/CS-T06 chain.",
   "baseline": {
     "commit": "d9f2176",
     "kind": "independently_reviewed_product_milestone",
@@ -13,21 +13,20 @@
     "CBH-STAGE4",
     "CBH-STAGE5",
     "CBH-STAGE7",
-    "CS-T03",
     "LP-CIRCUIT",
     "M10-T05"
   ],
   "component_synthesis_review": {
-    "commit": "42cd343e",
+    "commit": "e64ccdd5",
     "implementation_commit": "7efe78b94577103303df231bc84a30a2eede5be6",
     "independent": true,
-    "note": "Fresh independent review completed CS-T01 and CS-T02. CS-T02-R01 remains an honestly reported non-blocking unavailable live-provider evaluation; CS-T03 awaits its separate re-review.",
-    "record": ".ai/reviews.yaml#CS-T01-INDEPENDENT-REREVIEW-2026-10-09",
+    "note": "Fresh independent review passed CS-T03 against the pinned real datasheet and rejection corpus. CS-T02-R01 stays OPEN at MEDIUM because live provider evaluation remains unavailable; no live pass is claimed.",
+    "record": ".ai/reviews.yaml#CS-T03-INDEPENDENT-REREVIEW-2026-10-10",
     "scope": "COMPONENT-SYNTHESIS-1",
     "status": "PASSED",
-    "task": "CS-T01/CS-T02"
+    "task": "CS-T03"
   },
-  "cs_t05_hold": "CS-T05 remains held until the separately requested CS-T03 re-review is complete and the ordered ledger PR is merged.",
+  "cs_t05_hold": "Released: CS-T04 and the separately reviewed CS-T03 are COMPLETE. After this review PR merges, ai_state.py next should offer CS-T05.",
   "last_review": {
     "commit": "78e2463b66ecfea06c1a614ba66fd88d2d09f83f",
     "independent": false,
@@ -48,7 +47,9 @@
     "status": "COMPLETE",
     "title": "Product contract and experience architecture"
   },
-  "next_ready_tasks": [],
+  "next_ready_tasks": [
+    "CS-T05"
+  ],
   "project": "ohmni",
   "repository_status": {
     "expected_clean": true,
@@ -78,5 +79,14 @@
     "approval_record": ".ai/approvals/LP-CONTROLLER-PUBLISH.yaml",
     "website": "https://ohmni-yvnd.vercel.app",
     "backend": "https://ohmni-demo.fly.dev"
+  },
+  "visual_completion": {
+    "approval_record": ".ai/approvals/VIS-LP-COMPLETION-2026-10-10.yaml",
+    "tasks": [
+      "VIS-T01",
+      "VIS-T02",
+      "LP-P1"
+    ],
+    "status": "COMPLETE_WITH_RECORDED_LIMITATIONS"
   }
 }
