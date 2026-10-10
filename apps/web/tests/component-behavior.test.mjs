@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { behaviorResultModel, behaviorResultHtml, behaviorMetadataHtml } from '../component-behavior.js';
+import { behaviorResultModel, behaviorResultHtml, behaviorMetadataHtml, splitChecks, ratingHeadline } from '../component-behavior.js';
 
 test('failed and non-run responses cannot retain old measurements or passing checks', () => {
     for (const status of ['not_run','failed','timed_out','unavailable',undefined]) {
@@ -44,4 +44,19 @@ test('source strings and diagnostic text are escaped', () => {
 test('transient traces use recorded time spacing, not uniform sample indexes', () => {
     const html=behaviorResultHtml({status:'ran',rating_status:'unknown',transient:{sample_count:3,time_s:[0,.1,1],series:[{name:'out',values:[0,1,0]}]}});
     assert.match(html,/points="10,100 38,20 290,100"/);
+});
+
+test('part checks come first and class checks that restate them are not listed twice', () => {
+    const component={reference_checks:[{name:'working voltage',status:'within_limit',spec_names:['working voltage']},{name:'power',status:'unknown',spec_names:['power']}],
+        class_checks:[{name:'working voltage',status:'within_limit'},{name:'typec_vbus_group_current',status:'unknown',condition:'4 VBUS pins collectively, GCT USB4105'}]};
+    const split=splitChecks(component);
+    assert.deepEqual(split.reference.map(c => c.name),['working voltage','power']);
+    assert.deepEqual(split.classChecks.map(c => c.name),['typec_vbus_group_current']);
+    const html=behaviorResultHtml({status:'ran',rating_status:'unknown',ratings:{components:[{ref:'U1',status:'unknown',...component}]}});
+    assert.equal((html.match(/working voltage/g) ?? []).length,1);
+    assert.match(html,/Class-level checks not bound to this part \(1\)/);
+    assert.match(html,/GCT USB4105/);
+    assert.equal(ratingHeadline({status:'ran',rating_status:'unknown',ratings:{components:[component]}},true),'Unknown (1 within limit, 2 unknown)');
+    assert.equal(ratingHeadline({status:'ran',rating_status:'violation',ratings:{components:[{reference_checks:[{status:'violation'}]}]}},true),'Violation (1 check exceeded)');
+    assert.equal(ratingHeadline({status:'not_run',rating_status:'unknown'},false),'Unknown / not checked');
 });

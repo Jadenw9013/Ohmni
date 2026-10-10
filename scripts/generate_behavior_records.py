@@ -205,6 +205,47 @@ def _gapfill_bindings(root: Path) -> list[CatalogPartBinding]:
     return bindings
 
 
+APPROVALS_DIR = "docs/behavior/approvals"
+
+
+def resolution_fingerprint(resolution: Stage1Resolution) -> str:
+    """Hash of the electrical payload an owner approved; any edit to it invalidates the approval."""
+    payload = {
+        "resolution_id": resolution.resolution_id, "kind": resolution.kind.value,
+        "entry_ids": sorted(resolution.entry_ids), "subject": resolution.subject, "action": resolution.action,
+        "data": {k: v for k, v in resolution.data.items() if k not in {"approved_by", "approved_on"}},
+    }
+    return hashlib.sha256(json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+
+
+def verify_electrical_approval(root: Path, resolution: Stage1Resolution) -> dict:
+    """A change to electrical truth is authorized only by its own approval record (CBH-R02).
+
+    The record is a separate file that names the exact resolution fingerprint, the owner and the
+    quoted decision. Editing the resolution changes its fingerprint; editing the record to match
+    is a visible, reviewable change to a dedicated approval artifact, never a silent payload edit.
+    """
+    path = root / APPROVALS_DIR / f"{resolution.resolution_id}.json"
+    if not path.is_file():
+        raise ValueError(f"{resolution.resolution_id}: missing owner approval record {path.relative_to(root).as_posix()}")
+    record = json.loads(path.read_bytes())
+    expected = resolution_fingerprint(resolution)
+    problems = []
+    if record.get("resolution_id") != resolution.resolution_id:
+        problems.append("approval names a different resolution")
+    if record.get("resolution_fingerprint") != expected:
+        problems.append("approval fingerprint does not match the resolution payload")
+    if record.get("approved_by") != "human" or not record.get("owner"):
+        problems.append("approval must be by a named human owner")
+    if not record.get("approved_on") or not record.get("decision_quote"):
+        problems.append("approval lacks a date or the owner's quoted decision")
+    if record.get("changes_electrical_truth") is not True or not resolution.changes_electrical_truth:
+        problems.append("approval must acknowledge an electrical-truth change")
+    if problems:
+        raise ValueError(f"{resolution.resolution_id}: " + "; ".join(problems))
+    return record
+
+
 def _gapfill_resolutions(root: Path) -> list[Stage1Resolution]:
     directory = root / GAPFILL_DIR
     resolutions: list[Stage1Resolution] = []
@@ -298,9 +339,9 @@ def build_records(root: Path = ROOT) -> tuple[
         if resolution.kind != "class_addition":
             continue
         added = resolution.data.get("add_behavior_class")
-        if (not resolution.gate_required or not resolution.data.get("approved_by")
-                or not resolution.data.get("approved_on") or added not in class_map):
-            raise ValueError(f"{resolution.resolution_id}: class addition needs a known class and a recorded owner approval")
+        if not resolution.gate_required or added not in class_map:
+            raise ValueError(f"{resolution.resolution_id}: class addition needs a known class and a gate")
+        verify_electrical_approval(root, resolution)
         for index, entry in enumerate(entries):
             if entry.entry_id in resolution.entry_ids and added not in entry.behavior_class_ids:
                 entries[index] = entry.model_copy(update={

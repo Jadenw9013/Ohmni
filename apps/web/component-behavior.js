@@ -4,13 +4,38 @@ const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&
 const friendly = value => String(value ?? 'Unknown').replaceAll('_',' ');
 const valueText = value => value && Number.isFinite(value.value) ? `${Number(value.value.toPrecision(6))} ${value.unit}` : 'Unknown';
 
+// Checks for the bound part come first; class-level checks the spec writes for other members of the
+// class (another connector, a proxy diode) are shown apart, and a class check that merely restates a
+// part check (same spec name) is not listed twice (QA-05, QA-06).
+export function splitChecks(component) {
+    const reference = Array.isArray(component?.reference_checks) ? component.reference_checks : [];
+    const covered = new Set(reference.flatMap(check => check.spec_names ?? []));
+    const classChecks = (Array.isArray(component?.class_checks) ? component.class_checks : []).filter(check => !covered.has(check.name));
+    return { reference, classChecks };
+}
+
+// The aggregate stays "unknown" whenever any check is unknown; the headline still says what was
+// evaluated instead of claiming nothing was checked (QA-08).
+export function ratingHeadline(result, ran) {
+    if (result?.rating_status === 'violation') {
+        const count = (result?.ratings?.components ?? []).flatMap(c => { const s = splitChecks(c); return [...s.reference, ...s.classChecks]; }).filter(c => c.status === 'violation').length;
+        return count ? `Violation (${count} ${count === 1 ? 'check' : 'checks'} exceeded)` : 'Violation';
+    }
+    if (!ran) return 'Unknown / not checked';
+    if (result?.rating_status === 'within_model_limits') return 'Within the checked limits';
+    const checks = (result?.ratings?.components ?? []).flatMap(c => { const s = splitChecks(c); return [...s.reference, ...s.classChecks]; });
+    if (!checks.length) return 'Unknown / not checked';
+    const within = checks.filter(c => c.status === 'within_limit').length, unknown = checks.length - within;
+    return `Unknown (${within} within limit, ${unknown} unknown)`;
+}
+
 export function behaviorResultModel(result) {
     const ran = result?.status === 'ran';
     const violation = result?.rating_status === 'violation';
     return {
         title: violation ? 'Rating violation' : ran ? 'Simulation ran' : 'Simulation not run',
         ran, violation,
-        rating: violation ? 'Violation' : ran && result?.rating_status === 'within_model_limits' ? 'Within the checked limits' : 'Unknown / not checked',
+        rating: ratingHeadline(result, ran),
         components: ran && Array.isArray(result?.components) ? result.components : [],
         transient: ran ? result?.transient : null,
         problems: Array.isArray(result?.problems) ? result.problems : [],
@@ -21,8 +46,7 @@ export function behaviorMetadataHtml(data) {
     return `<p class="behavior-reference">${escape(data.reference_part ?? 'No bound reference')}</p>
         <div class="behavior-badges"><span>Source: ${escape(friendly(data.source_status))}</span>${data.classes.map(c =>
             `<span>${escape(friendly(c.fidelity))}</span><span>Model confidence: ${escape(c.confidence?.model ?? 'Unknown')}</span>`).join('')}</div>
-        <p class="story-muted">${escape(data.scope)}</p>
-        ${data.available ? `<p>${escape(data.package)} · ${data.analysis === 'tran' ? 'Transient response' : 'DC operating point'}</p>` : `<div class="behavior-blocked"><strong>Not simulable</strong><ul>${data.blockers.map(reason => `<li>${escape(reason)}</li>`).join('')}</ul></div>`}
+        ${data.available ? `<p class="story-muted">${escape(data.scope)}</p><p>${escape(data.package)} · ${data.analysis === 'tran' ? 'Transient response' : 'DC operating point'}</p>` : `<div class="behavior-blocked"><strong>Not simulable</strong><ul>${data.blockers.map(reason => `<li>${escape(reason)}</li>`).join('')}</ul></div>`}
         <button type="button" class="behavior-run" data-behavior-run ${data.available ? '' : 'disabled'}>Run reference circuit</button>
         <p class="behavior-run-status" role="status" aria-live="polite" data-behavior-run-status>Not run.</p>
         <div data-behavior-results></div>
@@ -52,9 +76,12 @@ export function behaviorResultHtml(result) {
             <p class="story-muted">${escape(friendly(component.fidelity))} · source ${escape(component.source_status)} · model confidence ${escape(component.confidence)}</p>
             ${component.measurements?.length ? `<table><thead><tr><th>Role</th><th>Voltage</th><th>Current into pin</th></tr></thead><tbody>${component.measurements.map(m => `<tr><td>${escape(m.role)}</td><td>${escape(valueText(m.voltage))}</td><td>${escape(valueText(m.current_into_pin))}</td></tr>`).join('')}</tbody></table>` : ''}`).join('')}
         ${traceHtml(view.transient)}
-        ${ratings.map(component => `<details><summary>${escape(component.ref)} checks · ${escape(friendly(component.status))}</summary>
-            <ul>${[...(component.reference_checks ?? []),...(component.class_checks ?? [])].map(check => `<li><strong>${escape(check.name)}: ${escape(friendly(check.status))}</strong>${check.reason ? `<br>${escape(check.reason)}` : ''}</li>`).join('')}</ul>
-            <h5>Failure responses</h5><ul>${(component.failure_modes ?? []).map(f => `<li>${escape(f.id)}: ${escape(friendly(f.status))}. ${escape(f.applied_response ?? f.reason ?? '')}${f.unresolved_response ? ` ${escape(f.unresolved_response)}` : ''}</li>`).join('')}</ul></details>`).join('')}
+        ${ratings.map(component => { const split=splitChecks(component); return `<details><summary>${escape(component.ref)} checks · ${escape(friendly(component.status))}</summary>
+            ${component.basis ? `<p class="story-muted">Basis: ${escape(component.basis)}</p>` : ''}
+            <h5>Checks for this part</h5>
+            <ul>${split.reference.length ? split.reference.map(check => `<li><strong>${escape(check.name)}: ${escape(friendly(check.status))}</strong>${check.reason ? `<br>${escape(check.reason)}` : ''}</li>`).join('') : '<li>No check is bound to this reference part.</li>'}</ul>
+            ${split.classChecks.length ? `<details class="behavior-class-checks"><summary>Class-level checks not bound to this part (${split.classChecks.length})</summary><p class="story-muted">Written in the spec for the whole class; their conditions name other members, so they stay unknown here.</p><ul>${split.classChecks.map(check => `<li><strong>${escape(friendly(check.name))}: ${escape(friendly(check.status))}</strong>${check.condition ? ` · ${escape(check.condition)}` : ''}${check.reason ? `<br>${escape(check.reason)}` : ''}</li>`).join('')}</ul></details>` : ''}
+            <h5>Failure responses</h5><ul>${(component.failure_modes ?? []).map(f => `<li>${escape(f.id)}: ${escape(friendly(f.status))}. ${escape(f.applied_response ?? f.reason ?? '')}${f.unresolved_response ? ` ${escape(f.unresolved_response)}` : ''}</li>`).join('')}</ul></details>`; }).join('')}
         ${result?.failure_rerun ? `<p>Separate failure approximation: ${escape(friendly(result.failure_rerun.status))}. ${escape(result.failure_rerun.limitation)}</p>` : ''}
         <p class="story-muted">A numerical result is not a safety, manufacturing or physical-fit approval.</p>
         ${result?.version_output ? `<details><summary>Simulator version and run identity</summary><pre>${escape(result.version_output)}</pre><p>${escape(result.netlist_sha256)}</p></details>` : ''}

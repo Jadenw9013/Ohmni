@@ -527,6 +527,48 @@ class BehaviorAudit:
             replacement_errors = evidence.source_errors({replacement}, ledger, self.run_dir)
             if replacement_errors:
                 remaining.extend(replacement_errors)
+            for extra in entry.get("supporting_archives", []):
+                for problem in evidence.source_errors({extra}, ledger, self.run_dir):
+                    errors.append(f"{url}: supporting archive not fetched: {problem}")
+        return self._withdrawn(remaining, errors)
+
+    def _withdrawn(self, missing: list[str], errors: list[str]) -> tuple[list[str], list[str]]:
+        """A manufacturer-withdrawn document is accepted as unresolvable only when nothing simulable rests on it.
+
+        The record must name who checked the manufacturer's own locations and when, and the URL may not
+        be cited by any gapfill field or runtime recipe (those carry bound facts). The spec bibliography
+        row keeps the values, flagged by this record; the class card is not upgraded by it.
+        """
+        bindings = self.source_bindings()
+        table = bindings.get("withdrawn_sources", {})
+        if not table:
+            return missing, errors
+        cited_by_facts = set()
+        for path in (self.root / "docs/behavior/gapfill").glob("OHM-*.md"):
+            gap = self._gapfill_evidence(path.stem) or {}
+            for field in gap.get("field_updates", []):
+                cited_by_facts.update(field.get("sources") or [])
+        recipes_text = (self.root / "docs/behavior/runtime-recipes.json").read_text(encoding="utf-8")
+        prefix = "AUD-SOURCE-001: missing successful archived fetch: "
+        remaining = []
+        for line in missing:
+            url = line[len(prefix):] if line.startswith(prefix) else None
+            entry = table.get(url) if url else None
+            if not entry:
+                remaining.append(line)
+                continue
+            problems = []
+            if entry.get("status") != "withdrawn_by_manufacturer":
+                problems.append("withdrawal must state withdrawn_by_manufacturer")
+            if not entry.get("checked_by") or not entry.get("checked_on") or not entry.get("checks"):
+                problems.append("withdrawal lacks a named checker, date or the recorded checks")
+            if url in cited_by_facts or url in recipes_text:
+                problems.append("withdrawn source is still cited by a bound fact or runtime recipe")
+            if not bindings.get("approved_by") or not bindings.get("approved_on"):
+                problems.append("withdrawal lacks a recorded approval")
+            if problems:
+                errors.extend(f"{url}: {problem}" for problem in problems)
+                remaining.append(line)
         return remaining, errors
 
     def check_source_ledger(self) -> CheckResult:
@@ -559,10 +601,14 @@ class BehaviorAudit:
             if gap:
                 for field in gap.get("field_updates", []):
                     field_failures.extend(evidence.field_errors(field, ledger, self.run_dir))
+        withdrawn = sorted(set(self.source_bindings().get("withdrawn_sources", {})) & cited)
+        summary = f"{len(cited) - len(missing) - len(withdrawn)}/{len(cited)} cited URLs have successful hashed fetches"
+        if withdrawn:
+            summary += f"; {len(withdrawn)} withdrawn by the manufacturer with no bound fact depending on it"
         return CheckResult(
             "AUD-SOURCE-001",
             not missing and not field_failures,
-            f"{len(cited) - len(missing)}/{len(cited)} cited URLs have successful hashed fetches",
+            summary,
             tuple(missing + field_failures),
         )
 
@@ -799,6 +845,42 @@ class BehaviorAudit:
             "all recorded UI/code claims preserve non-run and violation status",
             tuple(errors),
         )
+
+    def rebaseline(self, reason: str, approved_by: str) -> dict[str, Any]:
+        """Re-record the protected-state baseline after owner-approved merges to main.
+
+        The protection check compares main, the production checkout and the remote refs with a
+        snapshot, so it fails after every legitimate merge. A refresh is an explicit, logged event:
+        it requires the protected spec files to be byte-identical to the old baseline (the actual
+        protection), a reason and the approver, and it appends the old and new main refs to the
+        decision log so the history of baselines stays visible.
+        """
+        if not reason.strip() or not approved_by.strip():
+            raise AuditError("a rebaseline needs a reason and an approver")
+        state = self._state()
+        old = state["protected_baseline"]
+        new = self._protected_snapshot()
+        if new.get("protected_files") != old.get("protected_files"):
+            raise AuditError("protected spec files differ from the baseline; a rebaseline cannot absorb a spec change")
+        # baseline_commit is deliberately kept: it anchors the bench-corpus change check, which a
+        # protection refresh must not reset.
+        state["protected_baseline"] = new
+        history = state.setdefault("baseline_history", [])
+        record = {"at": _now(), "old_main_ref": old.get("main_ref"), "new_main_ref": new.get("main_ref"),
+                  "reason": reason, "approved_by": approved_by}
+        history.append(record)
+        self._write_state(state)
+        baseline_path = self.run_dir / "BASELINE.json"
+        baseline = _json(baseline_path)
+        baseline["protected_baseline"] = new
+        baseline["baseline_history"] = history
+        _atomic_json(baseline_path, baseline)
+        _atomic_json(self.run_dir / "BASELINE.sha256.json", {"sha256": _sha_bytes(baseline_path.read_bytes())})
+        with open(self.run_dir / "DECISIONS.md", "a", encoding="utf-8") as handle:
+            handle.write(f"\n## Baseline refresh — {record['at'][:10]}\n\n"
+                         f"main {record['old_main_ref']} -> {record['new_main_ref']}. Reason: {reason}. "
+                         f"Approved by: {approved_by}. Protected spec files unchanged.\n")
+        return record
 
     def check_protected_state(self) -> CheckResult:
         state = self._state()

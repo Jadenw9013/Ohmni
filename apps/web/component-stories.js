@@ -534,9 +534,11 @@ export function initializeComponentStories() {
     }
 
     function addBehaviorChip(card, id) {
-        if (behaviorStates[id]?.state !== 'simulated' || card.querySelector('.story-card-sim')) return;
-        const chip = element('span', BEHAVIOR_LABELS.simulated, card.querySelector('.story-card-copy')); chip.className = 'story-card-sim';
-        card.setAttribute('aria-label', `${card.getAttribute('aria-label')}, simulates`);
+        const state = behaviorStates[id]?.state;
+        if (!(state === 'simulated' || state === 'reference_only') || card.querySelector('.story-card-sim')) return;
+        const chip = element('span', BEHAVIOR_LABELS[state], card.querySelector('.story-card-copy'));
+        chip.className = state === 'simulated' ? 'story-card-sim' : 'story-card-sim story-card-sim-reference';
+        card.setAttribute('aria-label', `${card.getAttribute('aria-label')}, ${state === 'simulated' ? 'simulates' : 'reference circuit, not verified'}`);
     }
 
     async function loadBehaviorStates(generation) {

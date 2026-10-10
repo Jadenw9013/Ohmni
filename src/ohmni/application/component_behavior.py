@@ -25,13 +25,29 @@ class ComponentBehaviorService:
         self._run_lock = threading.Lock()
 
     def behavior_state(self, entry_id):
-        """Same rule as the audit's coverage count: a bound runtime recipe and a simulable record."""
+        """Same rule as the audit's coverage count: a bound runtime recipe and a simulable record.
+
+        The reason names the actual blocker for this entry, not the class-level sentence the spec
+        projects (QA-01/QA-02): a documented-only entry reports its recorded model blocker, and a
+        reference-only entry reports what keeps its record from being simulable even though a
+        sourced reference part is bound.
+        """
         entry = self.registry.entry(entry_id)
         recipe = self.recipes.entries.get(entry_id)
         if recipe and entry.simulation_disposition.value == "simulable":
             return "simulated", None
+        blocker = self.data["blocked"].get(entry_id)
         if recipe:
-            return "reference_only", entry.simulation_reason
+            part = recipe.reference_part or f"a scoped {recipe.package} reference"
+            if entry.simulation_disposition.value == "not_simulable":
+                reason = (f"A sourced reference ({part}) runs, but the catalog record for this package stays "
+                          "not simulable: the package itself has no electrical function, and the spec counts "
+                          "only the bound reference, not the package, as verified.")
+            else:
+                reason = f"A sourced reference ({part}) runs; its record is not yet audited as simulable."
+            return "reference_only", reason
+        if blocker:
+            return "documented", blocker
         return "documented", entry.simulation_reason
 
     def summary(self):
@@ -78,7 +94,7 @@ class ComponentBehaviorService:
             else entry.research.remaining_open_items
             if entry.research
             else [],
-            "scope": "Authored reference test circuit. This run does not simulate or change a saved project.",
+            "scope": "Runs an authored reference test circuit for this part; it does not touch any saved project.",
             "analysis": self.data["examples"][entry_id]["analysis"] if recipe else None,
         }
 

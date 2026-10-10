@@ -35,6 +35,12 @@ def _parser() -> argparse.ArgumentParser:
     verifier.add_argument("--entries", required=True)
     verifier.add_argument("--seed", type=int)
     commands.add_parser("final-report")
+    rebuild = commands.add_parser("rebuild-sources", help="re-download ledgered sources into the local archive and verify their hashes")
+    rebuild.add_argument("--only")
+    rebuild.add_argument("--report", type=Path)
+    rebaseline = commands.add_parser("rebaseline", help="re-record the protected-state baseline after owner-approved merges")
+    rebaseline.add_argument("--reason", required=True)
+    rebaseline.add_argument("--approved-by", required=True)
     return parser
 
 
@@ -91,6 +97,17 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         if args.command == "final-report":
             print(audit.final_report())
+            return 0
+        if args.command == "rebuild-sources":
+            from .rebuild_sources import rebuild
+            report = rebuild(audit.run_dir, only=args.only)
+            target = args.report or audit.run_dir / "SOURCE_REBUILD.json"
+            from .audit import _atomic_json
+            _atomic_json(target, report)
+            print(json.dumps(report["counts"], indent=2))
+            return 0 if set(report["counts"]) <= {"present", "rebuilt"} else 1
+        if args.command == "rebaseline":
+            print(json.dumps(audit.rebaseline(args.reason, args.approved_by), indent=2))
             return 0
     except AuditError as exc:
         print(f"AUDIT ERROR: {exc}")

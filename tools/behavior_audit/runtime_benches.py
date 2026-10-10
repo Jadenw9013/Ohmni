@@ -356,6 +356,36 @@ def _dual_diode(recipe):
     return recipe is not None and {"A1", "K2", "K1A2"} <= set(recipe.terminal_roles.values())
 
 
+# Replaying a fitted curve at several read points (CBH-R03). The bound (0..vf_max) check alone
+# accepts a model that outputs almost nothing; these rows reject it. The tolerance is the
+# datasheet-read uncertainty, not a fit residual: plots read from vector paths (M) get 5% or 15 mV,
+# raster or coarse reads (L) 8% or 25 mV, whichever is larger.
+FIT_TOLERANCE = {"H": (0.03, 0.010), "M": (0.05, 0.015), "L": (0.08, 0.025)}
+
+
+def fit_variants(recipe):
+    return [f"{name}_fit{k + 1}" for name, curve in (recipe.fit_curves if recipe else {}).items()
+            for k in range(curve.points)]
+
+
+def _fit_variant(recipe, variant):
+    for name, curve in recipe.fit_curves.items():
+        if variant and variant.startswith(name + "_fit"):
+            return name, curve, int(variant[len(name) + 4:]) - 1
+    return None
+
+
+def fit_points(curve, field):
+    """Lowest, highest and evenly spaced read points, so the whole plotted range is replayed."""
+    points = sorted((float(i), float(v)) for i, v in field["value"]["points_a_v"])
+    if len(points) < 2:
+        raise ValueError("a fit curve needs at least two read points")
+    if curve.points >= len(points):
+        return points
+    idx = [round(k * (len(points) - 1) / (curve.points - 1)) for k in range(curve.points)]
+    return [points[i] for i in idx]
+
+
 def dc_probe_variants(behavior_id, recipe=None):
     if behavior_id == "BEH-DIO-PN" and _dual_diode(recipe):
         return ["d1", "d2"]
@@ -364,9 +394,11 @@ def dc_probe_variants(behavior_id, recipe=None):
     if behavior_id == "BEH-DIO-BRIDGE":
         return ["positive", "negative"]
     if behavior_id == "BEH-LED-RGB":
-        return ["red", "green", "blue"]
+        return ["red", "green", "blue", *fit_variants(recipe)]
     if behavior_id in {"BEH-DIO-ZENER", "BEH-DIO-TVS"}:
         return ["legacy", "source_bound"]
+    if recipe is not None and recipe.fit_curves:
+        return [None, *fit_variants(recipe)]
     return [None]
 
 
@@ -391,7 +423,27 @@ def dc_probe_definition(audit, entry_id, variant=None):
     # A binding whose forward terms are fitted to the part's own datasheet curve is checked against
     # that part's sourced maximum, not against the shared class card it no longer uses (D048).
     own_forward_fit = {"IS", "N", "RS"} <= set(recipe.model_facts)
-    if recipe.behavior_id == "BEH-DIO-PN" and _dual_diode(recipe):
+    fit = _fit_variant(recipe, variant)
+    if fit is not None:
+        name, curve, index = fit
+        field = next((f for f in registry.entry(entry_id).research.field_updates if f.field == curve.field), None)
+        if field is None or field.basis in {"ASSUMPTION", "RESEARCH_REQUIRED"}:
+            raise ValueError("fit curve read points are not a sourced field")
+        field = field.model_dump(mode="json")
+        current, expected = fit_points(curve, field)[index]
+        relative, floor = FIT_TOLERANCE[field.get("confidence", "L")]
+        roles = {role: "idle" for role in recipe.terminal_roles.values()}
+        roles[curve.anode_role], roles[curve.cathode_role] = "anode", "return"
+        supplies = {}
+        excitations = [DCExcitation(positive_net="return", negative_net="anode", value=Quantity(value=current, unit="A"))]
+        comparison = {"kind": "absolute", "expected": expected, "tolerance": max(relative * expected, floor),
+                      "observable": "anode_voltage", "source_fact": field, "curve": name, "point_index": index,
+                      "test_current": current, "tolerance_rule": f"max({relative:g}*V, {floor:g} V) for a {field.get('confidence')}-confidence datasheet read"}
+        limits = ("Replays the fitted forward model at one of the sourced curve read points and requires the "
+                  "read voltage within the read uncertainty. Together with the other fit points and the "
+                  "maximum-VF bound this validates the fit over the plotted range at 25 C; it does not validate "
+                  "temperature, reverse behavior, capacitance or ratings.")
+    elif recipe.behavior_id == "BEH-DIO-PN" and _dual_diode(recipe):
         # Series pair (D050): drive one junction at the source VF test current, leave the third terminal idle.
         fact = evidence["vf_max"]
         current = re.search(r"\bIF\s*=?\s*(\d+(?:\.\d+)?)\s*(m?A)", fact["scope"])
