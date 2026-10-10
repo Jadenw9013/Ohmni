@@ -50,3 +50,18 @@ OHMNI_REFERENCE_IMPLEMENTATION_PLAN.md
 # Windows
 Thumbs.db
 desktop.ini
+
+# Source-bound behavior metadata is a runtime dependency, not optional docs.
+# Include only its authored sources and referenced historical bench receipts.
+!docs/
+docs/*
+!docs/behavior/
+!docs/behavior/**
+!out/
+out/*
+!out/component-behavior/
+out/component-behavior/*
+!out/component-behavior/run/
+out/component-behavior/run/*
+!out/component-behavior/run/bench-results/
+!out/component-behavior/run/bench-results/**

@@ -37,6 +37,12 @@ RUN pip install --no-cache-dir .
 
 COPY apps/ ./apps/
 COPY scripts/ ./scripts/
+# The behavior API validates source anchors and historical receipt references at
+# runtime. Keep those inputs in the image; they are not public static assets.
+COPY COMPONENT_BEHAVIOR_SPEC.md ./
+COPY docs/behavior/ ./docs/behavior/
+COPY out/component-behavior/run/bench-results/ ./out/component-behavior/run/bench-results/
+RUN python -c "from pathlib import Path; from ohmni.application.component_behavior import ComponentBehaviorService; s = ComponentBehaviorService(Path('/app'), Path('/tmp/behavior-package-check')); assert len(s.summary()) == s.registry.manifest.entry_count"
 # A checkout will not carry the mode bit on every platform.
 RUN chmod +x scripts/docker-entrypoint.sh && chown -R kicad:kicad /app
 
