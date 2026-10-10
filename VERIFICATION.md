@@ -351,6 +351,21 @@ non-pass finding.
   `unspecified`. A checked pin table row establishes the printed name and
   function; it establishes no operating limit, absolute maximum rating, internal
   connection or behaviour. Electrical profiles are a separate later gate.
+
+### Reusable asset library boundary
+
+CS-T05 represents every supported package as an immutable data record containing
+the checked pad geometry and source/constraint hashes. The dual-row, QFN and QFP
+compilers contain no MPN-specific dimensions. Independent parsing compares every
+emitted pad number, position and size back to that record, so pad, orientation and
+geometry mutations fail. Exposed-pad packages are emitted only for the explicitly
+implemented solid-paste/no-thermal-via policy; custom windows, thermal vias and
+other unimplemented manufacturing policies block the package.
+
+The immutable resolver requires both the logical asset ID and the exact record
+hash. Portable export writes a project-local `.pretty` directory, symbol files,
+library tables and a digest manifest beneath the requested destination. It never
+modifies KiCad's global library tables.
 - **Not a package body.** When only the recommended land table was read, no
   silkscreen body or fabrication outline is emitted, and the artifact says so.
 - **Not simulation.** No model is ingested by these checks; simulation reads
