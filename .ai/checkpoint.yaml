@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "active_task": "CS-T07",
-  "last_known_commit": "4fa890a4",
+  "active_task": null,
+  "last_known_commit": "34329f24128e303ef10aa35e44cd663b43ac784c",
   "approval_record": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
   "previous_checkpoint": {
     "schema_version": 1,
@@ -35,18 +35,23 @@
   "modified_files": [
     ".ai/tasks.yaml",
     ".ai/state.yaml",
-    ".ai/checkpoint.yaml"
+    ".ai/checkpoint.yaml",
+    ".ai/reviews.yaml",
+    ".ai/verification/CS-T07.yaml"
   ],
   "completed_substeps": [
-    "CS-T07 selected and activated from origin/main 4fa890a4 after PR #27 merged."
+    "CS-T07 selected and activated from origin/main 4fa890a4 after PR #27 merged.",
+    "Added hash-bound checked electrical facts and bounded passive/I2C ComponentSpec construction.",
+    "Added explicit required-fact, applicable-rule and requested-capability admission evaluation.",
+    "Added schema v3 activation records; activation reruns the gate and binds the exact publication digest.",
+    "Active discovery persists across restart and excludes revoked revisions while seed catalog facts remain unchanged.",
+    "Focused, fast, integration, frontend, Ruff and ledger gates passed."
   ],
   "remaining_work": [
-    "Implement ComponentSpec construction from checked electrical claims.",
-    "Implement explicit required-fact, applicable-rule and requested-capability admission gates.",
-    "Enable active discovery only for revisions carrying a passing gate decision.",
-    "Run required verification and open the CS-T07 PR."
+    "Open and merge the CS-T07 PR.",
+    "After merge, branch from latest origin/main and activate CS-T08."
   ],
   "last_failure": null,
-  "resume_action": "Continue CS-T07 electrical profiles and admission gates without touching protected behavior paths.",
-  "last_command": "Fetched origin/main 4fa890a4, confirmed ai_state.py next selects CS-T07, and activated the task."
+  "resume_action": "After CS-T07 merges, fetch origin/main, require ai_state.py next to select CS-T08, then implement resume and real-board integration.",
+  "last_command": "fast 2220 passed; integration 27 passed; frontend 1043 passed; admission focused 25 passed; Ruff and ai_state validate pass."
 }
