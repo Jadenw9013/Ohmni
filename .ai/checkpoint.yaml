@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "active_task": null,
-  "last_known_commit": "317f98e7b340c9ef423304acfa85f7eb91593417",
+  "last_known_commit": "34329f24128e303ef10aa35e44cd663b43ac784c",
   "approval_record": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
   "previous_checkpoint": {
     "schema_version": 1,
@@ -37,20 +37,21 @@
     ".ai/state.yaml",
     ".ai/checkpoint.yaml",
     ".ai/reviews.yaml",
-    ".ai/verification/CS-T06.yaml"
+    ".ai/verification/CS-T07.yaml"
   ],
   "completed_substeps": [
-    "CS-T06 selected and activated from origin/main 11b28652 after PR #25 merged.",
-    "Implemented versioned rollback-safe SQLite migrations and content-addressed blob commits before publication.",
-    "Implemented immutable quarantined revisions, report lineage, exact snapshots, append-only revocations and disabled activation.",
-    "Covered concurrent duplicate imports, idempotency conflicts, interrupted sequences, restart and hash rechecks.",
+    "CS-T07 selected and activated from origin/main 4fa890a4 after PR #27 merged.",
+    "Added hash-bound checked electrical facts and bounded passive/I2C ComponentSpec construction.",
+    "Added explicit required-fact, applicable-rule and requested-capability admission evaluation.",
+    "Added schema v3 activation records; activation reruns the gate and binds the exact publication digest.",
+    "Active discovery persists across restart and excludes revoked revisions while seed catalog facts remain unchanged.",
     "Focused, fast, integration, frontend, Ruff and ledger gates passed."
   ],
   "remaining_work": [
-    "Open and merge the CS-T06 PR.",
-    "After merge, branch from latest origin/main and activate CS-T07."
+    "Open and merge the CS-T07 PR.",
+    "After merge, branch from latest origin/main and activate CS-T08."
   ],
   "last_failure": null,
-  "resume_action": "After CS-T06 merges, fetch origin/main, require ai_state.py next to select CS-T07, then implement electrical profile and admission gates.",
-  "last_command": "fast 2203 passed; integration 27 passed; frontend 1043 passed; focused 10 passed; Ruff and ai_state validate pass."
+  "resume_action": "After CS-T07 merges, fetch origin/main, require ai_state.py next to select CS-T08, then implement resume and real-board integration.",
+  "last_command": "fast 2220 passed; integration 27 passed; frontend 1043 passed; admission focused 25 passed; Ruff and ai_state validate pass."
 }
