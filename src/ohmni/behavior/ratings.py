@@ -7,6 +7,7 @@ neither a generic class number nor a model fit establishes a reference rating.
 from __future__ import annotations
 
 import math
+import re
 from dataclasses import dataclass, field
 
 from pydantic import BaseModel, ConfigDict
@@ -78,7 +79,7 @@ def _observations(component, point):
     return values
 
 
-def _scoped_checks(component, point, context, overrides=None, transient=None):
+def _scoped_checks(component, point, context, overrides=None, transient=None, ac=None):
     values = _observations(component, point)
     values.update(overrides or {})
     if context.ambient_c is not None:
@@ -343,6 +344,8 @@ def _scoped_checks(component, point, context, overrides=None, transient=None):
         _schottky_runaway(values, b, thermal)
     if transient is not None:
         _transient_checks(component, values, b, thermal, upper_only, transient)
+    if ac is not None:
+        _ac_checks(component, values, b, thermal, upper_only, *ac)
     return b
 
 
@@ -665,6 +668,12 @@ def evaluate_ratings(compilation, result, registry, context=None):
         curve = parse_transient(result["stdout"], analysis="tran", limit=100000)
         if not curve.time_s or len(curve.time_s) < 2:
             curve = None
+    ac_points = None
+    if (result.get("status") == "ran" and result.get("analysis") == "ac" and result.get("operating_point")
+            and (result.get("ac") or {}).get("points")):
+        ac_points = result["ac"]["points"]
+        ran_op = True  # the AC run solves and prints the same operating point first
+    linear = circuit_is_linear(compilation.netlist or "")
     ran = ran_op or curve is not None
     components = []
     all_faults = []
@@ -680,6 +689,10 @@ def evaluate_ratings(compilation, result, registry, context=None):
             for row in b.checks:
                 if not row["name"].startswith(("peak", "average", "ripple", "RMS", "winding", "contact RMS")):
                     row["name"] += " (time average)"
+            reason = None
+        elif ac_points is not None:
+            b = _scoped_checks(component, result.get("operating_point"), context,
+                               ac=(_ac_window(component, ac_points), linear))
             reason = None
         else:
             b = _scoped_checks(component, result.get("operating_point") if ran_op else None, context)
@@ -726,6 +739,9 @@ def evaluate_ratings(compilation, result, registry, context=None):
                 "context": context.model_dump(mode="json"),
                 "basis": ("transient: time-averaged operating values plus peak, RMS, ripple and pulse statistics "
                           f"over {curve.time_s[0]:g} to {curve.time_s[-1]:g} s") if window is not None
+                else ("operating point plus sinusoidal steady state at "
+                      + ", ".join(f"{p['frequency_hz']:g} Hz" for p in ac_points)
+                      + ("" if linear else " (small-signal linearization)")) if ac_points is not None
                 else "operating point" if ran_op else None,
             }
         )
@@ -805,3 +821,169 @@ def apply_open_faults(compilation, faults):
     return compilation.model_copy(
         update={"netlist": deck, "netlist_sha256": hashlib.sha256(deck.encode()).hexdigest()}
     )
+
+
+_NONLINEAR_ELEMENTS = set("BDQMJASWUNPZ")
+
+
+def circuit_is_linear(netlist):
+    """True only when no element can make the response depend on amplitude.
+
+    Semiconductors, switches, behavioural and digital elements are nonlinear, and so is any element
+    whose value reads a circuit voltage or current (the saturating inductor card does).
+    """
+    for line in netlist.splitlines():
+        text = line.strip()
+        if not text or text.startswith(("*", ".", "+")):
+            continue
+        if text[0].upper() in _NONLINEAR_ELEMENTS or re.search(r"(?<![\w.])[iv]\s*\(", text, re.IGNORECASE):
+            return False
+    return bool(netlist.strip())
+
+
+def _ac_window(component, points):
+    """RMS phasors per role at each solved frequency; None when any terminal is missing."""
+    window = []
+    for point in points:
+        voltages, currents = {}, {}
+        for role, node in component.role_nodes.items():
+            if node == "0":
+                voltages[role] = 0j
+            elif node.lower() in point["node_voltages"]:
+                voltages[role] = complex(*point["node_voltages"][node.lower()])
+            else:
+                return None
+        for role, probe in component.role_current_probes.items():
+            if probe.lower() not in point["branch_currents"]:
+                return None
+            currents[role] = complex(*point["branch_currents"][probe.lower()])
+        window.append((point["frequency_hz"], voltages, currents))
+    return window
+
+
+RIPPLE_RATING_HZ = 100e3
+
+
+def _ac_checks(component, values, b, thermal, upper_only, window, linear):
+    """Sinusoidal steady state: DC operating values plus RMS phasors at each requested frequency.
+
+    For a sine on a DC bias the peak is |DC| + sqrt(2)*|AC| and the RMS is sqrt(DC^2 + |AC|^2); both
+    are exact for a linear circuit. With any nonlinear element they come from a small-signal
+    linearization, so no row computed from them can prove a pass or a violation.
+    """
+    cls = component.behavior_id
+    if window is None:
+        b.checks.append({"name": "AC checks", "expression": "", "spec_names": [], "evidence": {},
+                         "status": "unknown",
+                         "reason": "AC run did not print every terminal voltage and probe current of this component"})
+        return
+    root2 = math.sqrt(2.0)
+
+    def dc(kind, role):
+        return values.get(f"{kind}_{role}", 0.0)
+
+    for frequency, v, i in window:
+        tag = f" at {frequency:g} Hz"
+        rows = []
+
+        def add(name, expression, parameters, reason=None, violation_only=False, _rows=rows, _tag=tag):
+            row = (upper_only(name + _tag, expression, parameters, reason) if violation_only
+                   else b.add(name + _tag, expression, parameters, reason))
+            _rows.append(row)
+            return row
+
+        def stat(name, value):
+            values[name] = value
+            return value
+
+        def across(a, z, _v=v):
+            return dc("v", a) - dc("v", z), _v[a] - _v[z]
+
+        key = f"{frequency:g}".replace(".", "p").replace("+", "")
+        if cls in {"BEH-CAP-CERAMIC", "BEH-CAP-MICA"} and {"T1", "T2"} <= set(v):
+            vdc, vac = across("T1", "T2")
+            stat(f"vpk_{key}", abs(vdc) + root2 * abs(vac))
+            add("peak voltage (DC plus AC peak)", f"vpk_{key} <= vr", ("vr",))
+        elif cls == "BEH-CAP-TANT" and {"A", "K"} <= set(v):
+            vdc, vac = across("A", "K")
+            stat(f"vpk_{key}", vdc + root2 * abs(vac))
+            stat(f"vrev_{key}", -(vdc - root2 * abs(vac)))
+            add("peak forward voltage (DC plus AC peak)", f"vpk_{key} <= vr", ("vr",),
+                "Rated voltage is stated at 85 C; higher-temperature category voltage is not bound"
+                if values.get("Tamb", 0) > 85 else None)
+            if values[f"vrev_{key}"] > 0:
+                add("peak reverse voltage (transient limit)", f"vrev_{key} <= vrev_125", ("vrev_125",),
+                    "A sine reverses every cycle; only transient reverse limits are sourced, so a repeated "
+                    "reverse swing can prove a violation but not a pass", violation_only=True)
+            if "A" in i and "irip_max" in values:
+                stat(f"irip_{key}", abs(i["A"]))
+                exact = math.isclose(frequency, RIPPLE_RATING_HZ, rel_tol=1e-9)
+                if exact and values.get("Tamb") is not None and values["Tamb"] <= 25:
+                    add("ripple current (rating frequency)", f"irip_{key} <= irip_max", ("irip_max",))
+                    if "esr_max" in values and "pd_max" in values:
+                        stat(f"pesr_{key}", values[f"irip_{key}"] ** 2 * values["esr_max"])
+                        add("ESR heating with the maximum 100 kHz ESR", f"pesr_{key} <= pd_max",
+                            ("esr_max", "pd_max"), thermal)
+                elif exact:
+                    add("ripple current (rating frequency)", f"irip_{key} <= irip_max", ("irip_max",),
+                        "The ripple rating is stated at 25 C; a higher or undeclared ambient needs the "
+                        "temperature multiplier, which is not bound")
+                elif frequency < RIPPLE_RATING_HZ:
+                    add("ripple current", f"irip_{key} <= irip_max", ("irip_max",),
+                        "Below 100 kHz the allowed ripple is lower by an unbound frequency multiplier",
+                        violation_only=True)
+                else:
+                    add("ripple current", f"irip_{key} <= irip_max", ("irip_max",),
+                        "Ripple rating is stated at 100 kHz; the frequency multiplier is not bound")
+        elif cls == "BEH-CAP-EDLC" and {"P", "N"} <= set(v):
+            vdc, vac = across("P", "N")
+            stat(f"vpk_{key}", vdc + root2 * abs(vac))
+            limit = "(vr if Tamb <= 65 else vr_85)" if "Tamb" in values else "vr_85"
+            add("peak voltage at ambient (DC plus AC peak)", f"vpk_{key} <= {limit}", ("vr", "vr_85"))
+            if "P" in i and "ipk" in values:
+                stat(f"ipk_{key}", abs(dc("i", "P")) + root2 * abs(i["P"]))
+                add("peak current (DC plus AC peak)", f"ipk_{key} <= ipk", ("ipk",))
+        elif cls == "BEH-MAG-INDUCTOR" and "A" in i:
+            stat(f"irms_{key}", math.hypot(dc("i", "A"), abs(i["A"])))
+            stat(f"ipk_{key}", abs(dc("i", "A")) + root2 * abs(i["A"]))
+            if "irms" in values:
+                add("RMS heating current (DC plus AC)", f"irms_{key} <= irms", ("irms",), thermal)
+            if "isat" in values:
+                add("peak current against saturation (DC plus AC peak)", f"ipk_{key} <= isat", ("isat",))
+        elif cls == "BEH-MAG-CMC":
+            for winding in ("A", "B"):
+                role = winding + "1"
+                if role in i:
+                    stat(f"irms_{winding}_{key}", math.hypot(dc("i", role), abs(i[role])))
+                    add(f"winding {winding} RMS current (DC plus AC)", f"irms_{winding}_{key} <= irated",
+                        ("irated",), thermal)
+        elif cls == "BEH-RES-FIXED" and {"A", "B"} <= set(v) and "A" in i:
+            vdc, vac = across("A", "B")
+            stat(f"vpk_{key}", abs(vdc) + root2 * abs(vac))
+            stat(f"p_{key}", vdc * dc("i", "A") + (vac * i["A"].conjugate()).real)
+            if "u_limit" in values:
+                add("peak working voltage (DC plus AC peak)", f"vpk_{key} <= u_limit", ("u_limit",))
+            if {"p_rated", "t_end", "t_knee"} <= set(values):
+                add("average power (DC plus AC)", f"p_{key} <= P_allowed", ("p_rated", "t_end", "t_knee"), thermal)
+        elif cls == "BEH-RES-POT" and {"A", "B"} <= set(v):
+            vdc, vac = across("A", "B")
+            stat(f"vpk_{key}", abs(vdc) + root2 * abs(vac))
+            add("peak track voltage (DC plus AC peak)", f"vpk_{key} <= v_max", ("v_max",))
+        elif cls.startswith("BEH-CON-"):
+            current = next((k for k in ("i_rated", "i_nom") if k in values), None)
+            for role in sorted(i) if current else ():
+                stat(f"irms_{role}_{key}", math.hypot(dc("i", role), abs(i[role])))
+                if current == "i_nom":
+                    add(f"contact RMS current {role} (DC plus AC)", f"irms_{role}_{key} <= i_nom", ("i_nom",),
+                        "Nominal current applies only up to the derating knee, which is not bound",
+                        violation_only=True)
+                else:
+                    add(f"contact RMS current {role} (DC plus AC)", f"irms_{role}_{key} <= {current}",
+                        (current,), thermal)
+        if not linear:
+            for row in rows:
+                if row["status"] != "unknown" or not row["reason"]:
+                    row.update(status="unknown", reason=(
+                        "Small-signal linearization: the circuit has a nonlinear element, so the AC amplitude "
+                        "is exact only for small ripple" + (f" (computed result: {row['status']})"
+                                                           if row["status"] != "unknown" else "")))

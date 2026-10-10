@@ -13,7 +13,7 @@ from ..behavior.examples import compile_reference, load_reference_circuits
 from ..behavior.loader import BehaviorRegistry
 from ..behavior.netlist import compile_circuit, load_recipes
 from ..behavior.ratings import RatingContext
-from ..behavior.runtime_models import BehaviorSelection, DCExcitation, PWLExcitation
+from ..behavior.runtime_models import ACExcitation, BehaviorSelection, DCExcitation, PWLExcitation
 from ..catalog.loader import default_catalog
 from ..domain.circuit import CircuitIR
 from ..eda.simulation import NgspiceAdapter
@@ -38,6 +38,14 @@ class BehaviorRunBusy(ValueError):
     pass
 
 
+class ACSweep(BaseModel):
+    model_config = ConfigDict(frozen=True, extra="forbid", allow_inf_nan=False)
+
+    start_hz: float = Field(gt=0)
+    stop_hz: float = Field(gt=0)
+    points_per_decade: int = Field(ge=1, le=50)
+
+
 class DesignRunRequest(BaseModel):
     """A user's own circuit plus the explicit choices a design run needs; nothing is defaulted."""
 
@@ -45,8 +53,10 @@ class DesignRunRequest(BaseModel):
 
     circuit: CircuitIR
     selections: dict[str, BehaviorSelection] = Field(default_factory=dict)
-    analysis: Literal["op", "tran"] = "op"
-    excitations: list[DCExcitation | PWLExcitation] = Field(default_factory=list, max_length=8)
+    analysis: Literal["op", "tran", "ac"] = "op"
+    excitations: list[DCExcitation | PWLExcitation | ACExcitation] = Field(default_factory=list, max_length=8)
+    ac_points_hz: list[float] = Field(default_factory=list, max_length=8)
+    ac_sweep: ACSweep | None = None
     tstep: str | None = None
     tstop: str | None = None
     observe_nets: list[str] | None = None
@@ -282,8 +292,13 @@ class ComponentBehaviorService:
         options = {}
         if request.analysis == "tran":
             options.update({k: v for k, v in (("tstep", request.tstep), ("tstop", request.tstop)) if v})
-            if request.observe_nets is not None:
-                options["observe_nets"] = list(request.observe_nets)
+        if request.analysis in {"tran", "ac"} and request.observe_nets is not None:
+            options["observe_nets"] = list(request.observe_nets)
+        if request.analysis == "ac":
+            options["ac_points_hz"] = list(request.ac_points_hz)
+            if request.ac_sweep:
+                sweep = request.ac_sweep
+                options["ac_sweep"] = (sweep.start_hz, sweep.stop_hz, sweep.points_per_decade)
         if not self._run_lock.acquire(blocking=False):
             raise BehaviorRunBusy("A behavior run is already active")
         try:
@@ -350,6 +365,7 @@ class ComponentBehaviorService:
                 }
             )
         projection["transient"] = result.get("transient") if result["status"] == "ran" else None
+        projection["ac"] = result.get("ac") if result["status"] == "ran" else None
         if projection["transient"]:
             names = {f"v({node})": name for name, node in compilation.node_names.items()}
             projection["transient"] = {

@@ -28,6 +28,7 @@ fixed argument vectors, no shell, bounded waiting (SECURITY.md).
 from __future__ import annotations
 
 import hashlib
+import math
 import re
 import tempfile
 from collections.abc import Iterator
@@ -364,6 +365,125 @@ def transient_deck(netlist: str, tstep: str, tstop: str, signals: list[str], *,
     return "\n".join([*lines[:end], *additions, *lines[end:]]) + "\n"
 
 
+MAX_AC_POINTS = 8
+MAX_AC_SWEEP_POINTS = 401
+_AC_POINT = re.compile(r"^OHMNI_AC_POINT\s+(?P<index>\d+)$")
+_AC_VALUE = re.compile(rf"^(?P<part>real|imag)\((?P<kind>[vi])\((?P<name>[^()\s]+)\)\)\s*=\s*(?P<value>{_NUMBER})$",
+                       re.IGNORECASE)
+_AC_SWEEP_HEADER = re.compile(r"^index\s+frequency\b", re.IGNORECASE)
+
+
+def ac_deck(netlist: str, *, nodes: list[str], currents: list[str], points_hz: list[float],
+            sweep: tuple[float, float, int] | None = None, sweep_nodes: list[str] = ()) -> str:
+    """Operating point, then one single-frequency AC solve per requested point, then an optional sweep.
+
+    Every printed block is preceded by an echoed marker naming the point's index, so a value is
+    attributed to a frequency only by its own marker, never by its position in the output.
+    """
+    lines = (netlist or "").splitlines()
+    stripped = [line.strip() for line in lines]
+    if any(re.match(r"\.(?:control|ac|op|tran)\b", line, re.IGNORECASE) for line in stripped):
+        raise ValueError("an AC deck cannot replace existing analysis commands")
+    if not 1 <= len(points_hz) <= MAX_AC_POINTS or any(not math.isfinite(f) or f <= 0 for f in points_hz):
+        raise ValueError("AC analysis needs one to eight positive finite frequencies")
+    op_print = " ".join([*(f"v({n})" for n in nodes), *(f"i({c})" for c in currents)])
+    phasors = " ".join(f"real({q}) imag({q})" for q in [*(f"v({n})" for n in nodes), *(f"i({c})" for c in currents)])
+    additions = [".control", "set numdgt=15", "op", "echo OHMNI_AC_OP"]
+    if op_print:
+        additions.append(f"print {op_print}")
+    for index, frequency in enumerate(points_hz):
+        additions += [f"echo OHMNI_AC_POINT {index}", f"ac lin 1 {frequency:.17g} {frequency:.17g}"]
+        if phasors:
+            additions.append(f"print {phasors}")
+    if sweep is not None:
+        start, stop, per_decade = sweep
+        if (not (math.isfinite(start) and math.isfinite(stop)) or not 0 < start < stop or type(per_decade) is not int
+                or not 1 <= per_decade <= 50 or per_decade * math.log10(stop / start) > MAX_AC_SWEEP_POINTS
+                or not sweep_nodes):
+            raise ValueError("AC sweep needs 0 < start < stop, 1 to 50 points per decade and observed nets")
+        additions += ["echo OHMNI_AC_SWEEP", f"ac dec {per_decade} {start:.17g} {stop:.17g}",
+                      "print " + " ".join(f"vm({n}) vp({n})" for n in sweep_nodes)]
+    additions += ["quit", ".endc"]
+    end = next((i for i in range(len(stripped) - 1, -1, -1) if re.fullmatch(r"\.end", stripped[i], re.IGNORECASE)), None)
+    if end is None:
+        return "\n".join([*lines, *additions, ".end"]) + "\n"
+    return "\n".join([*lines[:end], *additions, *lines[end:]]) + "\n"
+
+
+def parse_ac(stdout: str, points_hz: list[float]) -> dict:
+    """Read the operating point, the RMS phasor at each requested frequency, and the optional sweep.
+
+    A point whose block is missing or incomplete is dropped, never filled; a phasor needs both its
+    real and its imaginary part.
+    """
+    section, point = None, None
+    op_lines, raw = [], {}
+    sweep_lines = []
+    for line in (stdout or "").splitlines():
+        text = line.replace("\f", " ").strip()
+        if text == "OHMNI_AC_OP":
+            section = "op"
+            continue
+        if marker := _AC_POINT.match(text):
+            section, point = "point", int(marker["index"])
+            continue
+        if text == "OHMNI_AC_SWEEP":
+            section = "sweep"
+            continue
+        if section == "op":
+            op_lines.append(text)
+        elif section == "point" and (value := _AC_VALUE.match(text)):
+            key = ("v" if value["kind"].lower() == "v" else "i", value["name"].lower())
+            raw.setdefault(point, {}).setdefault(key, {})[value["part"].lower()] = float(value["value"])
+        elif section == "sweep":
+            sweep_lines.append(text)
+    operating_point = parse_operating_point("\n".join(op_lines))
+    points = []
+    for index, frequency in enumerate(points_hz):
+        values = raw.get(index, {})
+        if not values or any(set(parts) != {"real", "imag"} for parts in values.values()):
+            continue
+        points.append({
+            "frequency_hz": frequency,
+            "node_voltages": {n: [p["real"], p["imag"]] for (k, n), p in sorted(values.items()) if k == "v"},
+            "branch_currents": {n: [p["real"], p["imag"]] for (k, n), p in sorted(values.items()) if k == "i"},
+        })
+    # Wide tables are printed in column groups, each repeating every index: join by index and name.
+    sweep = None
+    columns, rows, order = [], {}, []
+    for text in sweep_lines:
+        if _AC_SWEEP_HEADER.match(text):
+            columns = [c.lower() for c in text.split()[1:]]
+            order.extend(c for c in columns[1:] if c not in order)
+            continue
+        tokens = text.split()
+        if not columns or len(tokens) != len(columns) + 1:
+            continue
+        try:
+            index, values = int(tokens[0]), [float(t) for t in tokens[1:]]
+        except ValueError:
+            continue
+        row = rows.setdefault(index, {})
+        for name, value in zip(columns, values, strict=True):
+            if name in row and row[name] != value:
+                return {"operating_point": operating_point, "points": points, "sweep": None}
+            row[name] = value
+    complete = [rows[k] for k in sorted(rows) if all(c in rows[k] for c in ["frequency", *order])]
+    if order and complete and len(complete) == len(rows):
+        series = []
+        for name in order:
+            if not name.startswith("vm("):
+                continue
+            phase = "vp(" + name[3:]
+            if phase not in order:
+                return {"operating_point": operating_point, "points": points, "sweep": None}
+            series.append({"name": "v(" + name[3:], "unit": "V",
+                           "magnitude": [row[name] for row in complete],
+                           "phase_deg": [math.degrees(row[phase]) for row in complete]})
+        sweep = {"frequency_hz": [row["frequency"] for row in complete], "series": series}
+    return {"operating_point": operating_point, "points": points, "sweep": sweep}
+
+
 def parse_transient(stdout: str, *, analysis: str,
                     limit: int = MAX_TRANSIENT_SAMPLES) -> TransientData:
     """Read ngspice's column output into a time axis and one series per signal.
@@ -597,7 +717,9 @@ class NgspiceAdapter:
     def behavior_circuit(self, compilation, *, work_dir: Path, analysis: str = "op",
                          tstep: str = DEFAULT_TSTEP, tstop: str = DEFAULT_TSTOP,
                          observe_nets: list[str] | None = None, rating_context=None,
-                         rating_registry=None, apply_failures: bool = True) -> dict:
+                         rating_registry=None, apply_failures: bool = True,
+                         ac_points_hz: list[float] | None = None,
+                         ac_sweep: tuple[float, float, int] | None = None) -> dict:
         """Run a compiled CircuitIR model with the same version-gated adapter.
 
         `ran` records observations, never a design pass. Rating checks are a
@@ -612,7 +734,7 @@ class NgspiceAdapter:
             "source_elements": compilation.source_elements,
             "limitations": compilation.limitations,
             "problems": list(compilation.problems), "rating_status": "not_run",
-            "operating_point": None, "transient": None,
+            "operating_point": None, "transient": None, "ac": None,
         }
         if not compilation.runnable:
             return result
@@ -652,6 +774,23 @@ class NgspiceAdapter:
             deck = transient_deck(compilation.netlist, format(step.value, ".17g"),
                                   format(stop.value, ".17g"), [*shown, *rating_nodes], precision=15,
                                   currents=probes)
+        elif analysis == "ac":
+            points = list(ac_points_hz or [])
+            nodes = list(dict.fromkeys(node for c in compilation.components for node in c.role_nodes.values()
+                                       if node != "0"))
+            probes = [probe for c in compilation.components for probe in c.role_current_probes.values()]
+            if observe_nets is not None and any(
+                    n not in compilation.node_names or compilation.node_names[n] == "0" for n in observe_nets):
+                result["problems"].append("Observed nets must be known non-ground nets")
+                return result
+            sweep_nodes = ([compilation.node_names[n] for n in observe_nets] if observe_nets is not None
+                           else [n for n in compilation.node_names.values() if n != "0"])[:MAX_TRANSIENT_SIGNALS]
+            try:
+                deck = ac_deck(compilation.netlist, nodes=nodes, currents=probes, points_hz=points,
+                               sweep=ac_sweep, sweep_nodes=sweep_nodes)
+            except ValueError as exc:
+                result["problems"].append(str(exc))
+                return result
         else:
             result["problems"].append(f"Unsupported circuit analysis: {analysis}")
             return result
@@ -666,6 +805,20 @@ class NgspiceAdapter:
                 result.update(status="failed", problems=["ngspice returned no operating-point observations"])
             else:
                 result["operating_point"] = point.model_dump(mode="json")
+        elif analysis == "ac":
+            parsed = parse_ac(observation["stdout"], points)
+            point = parsed["operating_point"]
+            if (not point.node_voltages and not point.branch_currents) or len(parsed["points"]) != len(points):
+                result.update(status="failed", problems=["ngspice returned incomplete AC observations"])
+            else:
+                result["operating_point"] = point.model_dump(mode="json")
+                names = {node: name for name, node in compilation.node_names.items()}
+                sweep = parsed["sweep"]
+                if sweep:
+                    sweep = {**sweep, "series": [{**x, "name": names.get(x["name"][2:-1], x["name"])}
+                                                 for x in sweep["series"]]}
+                result["ac"] = {"points": parsed["points"], "sweep": sweep,
+                                "amplitude": "RMS phasors of the declared AC excitations"}
         else:
             curve = parse_transient(observation["stdout"], analysis="tran")
             display = {f"v({name})" for name in shown}
@@ -684,7 +837,9 @@ class NgspiceAdapter:
         if apply_failures and result["ratings"]["fault_requests"]:
             faulted = apply_open_faults(compilation, result["ratings"]["fault_requests"])
             failure = self.behavior_circuit(faulted, work_dir=work_dir / "failure", analysis=analysis,
-                                          rating_context=context, rating_registry=registry, apply_failures=False)
+                                          rating_context=context, rating_registry=registry, apply_failures=False,
+                                          tstep=tstep, tstop=tstop, observe_nets=observe_nets,
+                                          ac_points_hz=ac_points_hz, ac_sweep=ac_sweep)
             failure.update(ratings=None, rating_status="failure_approximation",
                            limitation="Authored open-circuit substitution; not a physical damage prediction")
             result["failure_rerun"] = failure
