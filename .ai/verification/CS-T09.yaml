@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "id": "CS-T09",
+  "task": "CS-T09",
+  "scope": "COMPONENT-SYNTHESIS-1",
+  "status": "PASSED",
+  "commit": "d68497b0",
+  "verified_at": "2026-10-10",
+  "summary": "Hash-contained SPICE models bind exact symbol pins to actual design nets, remain separate from CAD admission, and run against immutable predeclared assertions.",
+  "commands": [
+    {
+      "command": "python -m pytest tests/test_spice_model_boundary.py -q",
+      "result": "PASS",
+      "tests": 13
+    },
+    {
+      "command": "python scripts/verify.py simulation (OHMNI_NGSPICE=ngspice_con.exe)",
+      "result": "PASS",
+      "tests": 1,
+      "version": "ngspice-42"
+    },
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "PASS",
+      "tests": 2252,
+      "skipped": 83,
+      "deselected": 58
+    },
+    {
+      "command": "python -m ruff check <CS-T09 changed Python files>",
+      "result": "PASS"
+    },
+    {
+      "command": "python scripts/ai_state.py validate",
+      "result": "PASS"
+    }
+  ],
+  "acceptance": {
+    "manifest_boundary": "All entrypoint and transitive files resolve through normalized manifest paths and exact SHA-256 blobs; restricted active directives, cycles and unreachable files fail closed.",
+    "predeclared_assertions": "The plan and limits are fingerprint-bound into the deck before tool execution and evaluated independently from returned measurements.",
+    "explicit_outcomes": "Unsupported dialect, nonconvergence, empty results, tool failure and assertion failure remain distinct typed outcomes.",
+    "separate_admission": "CAD_ONLY cannot bind a model; simulation eligibility requires an exact manifest fingerprint and full pin binding.",
+    "design_binding": "Catalog symbol pins, declared subcircuit ports and actual CircuitIR net names must agree before model deck emission."
+  },
+  "limitations": [
+    "CS-T09 provides the generic model boundary and harness; part-specific vendor compatibility remains a CS-T10 acceptance gate.",
+    "Only ngspice-42 is currently executable. PSpice, LTspice and unknown dialects are reported unsupported rather than translated."
+  ]
+}
