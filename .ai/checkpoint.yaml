@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "active_task": "CAB-T06",
-  "last_known_commit": "4ba173f06a44f297d280b29d3578c5843e82cc70",
+  "active_task": null,
+  "last_known_commit": "78e2463b66ecfea06c1a614ba66fd88d2d09f83f",
   "approval_record": ".ai/approvals/COMPONENT-ATLAS-BUILDER-1.yaml",
   "previous_checkpoint": {
     "schema_version": 1,
@@ -35,14 +35,16 @@
   "modified_files": [],
   "completed_substeps": [
     "CAB-T05 merged through PR #15 at origin/main 4ba173f0.",
-    "CAB-T06 activated from the latest origin/main under explicit owner instruction."
+    "CAB-T06 implemented authoritative physical placement validation and exact draft/base/catalog lineage.",
+    "The real build boundary compiles schematic and PCB artifacts, reroutes deterministically, parses emitted lineage, preserves ERC/DRC unavailability, and checks the manufacturing profile.",
+    "Acceptance tests reject overlap, board bounds, generic keepout and ESP32 antenna-edge violations; failures never enable download.",
+    "CAB-T06 implementation completed at 78e2463b66ecfea06c1a614ba66fd88d2d09f83f."
   ],
   "remaining_work": [
-    "Implement authoritative draft placement validation, rerouting, parsed artifact checks, EDA availability propagation, manufacturing and exact lineage.",
-    "Test overlap, bounds, keepout, antenna edge, routing failure, stale download and draft/base artifact binding.",
-    "Run repository validation and test suites, then open a PR."
+    "CAB-T07 remains dependency-held by CS-T07 and CS-T08 and has not been started.",
+    "CBH-STAGE7 remains blocked on its exact owner/external blocker list."
   ],
   "last_failure": null,
-  "resume_action": "Continue CAB-T06 only; preserve protected behavior paths and do not begin CAB-T07.",
-  "last_command": "Created codex/cab-t06-authoritative-placement from origin/main 4ba173f0 and activated CAB-T06."
+  "resume_action": "Open and review the CAB-T06 PR. Do not begin CAB-T07 without its dependencies and a new instruction.",
+  "last_command": "CAB-T06 verification completed; external integration failures are recorded in .ai/verification/CAB-T06.yaml."
 }
