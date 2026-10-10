@@ -13,6 +13,8 @@ from .a1 import (
 )
 from .placement import PlacementIntentBuilder, rail_evidence
 
+# Seed choices exposed by the current form. The compiler itself admits any
+# catalog component that passed CS-T07 and satisfies the same typed I2C shape.
 SUPPORTED_I2C_PARTS = frozenset({"BME280", "TMP102AIDRLR"})
 
 
@@ -49,8 +51,6 @@ def add_i2c_bus(components, nets, catalog, prefer_hand, *, resistor_refs=("R6", 
 def add_i2c_sensor(components, nets, catalog, slot, prefer_hand, *, ref, cap_refs, used_addresses=(),
                    placement: PlacementIntentBuilder | None = None):
     """Resolve one supported sensor, supply decoupling, mode, and address straps."""
-    if slot.part_id not in SUPPORTED_I2C_PARTS:
-        raise _CatalogCapabilityError(f"Unsupported I2C sensor topology: {slot.part_id}")
     spec = catalog.require(slot.part_id)
     if Interface.I2C not in spec.interfaces:
         raise _CatalogCapabilityError(f"{slot.part_id} has no catalog I2C interface")
@@ -65,8 +65,8 @@ def add_i2c_sensor(components, nets, catalog, slot, prefer_hand, *, ref, cap_ref
     ground.connections.extend(_pins(*[(ref, pin.number) for pin in spec.pins_with_role(PinRole.GROUND)]))
     target = ground if option.strap_level == "low" else logic
     target.connections.extend(_pins((ref, option.strap_pin)))
-    # The BME280's documented I2C mode requires CSB high. TMP102 is I2C-only.
-    if slot.part_id == "BME280":
+    # A catalog CSB pin records a mode strap; I2C-only parts have no such pin.
+    if any(pin.name == "CSB" for pin in spec.pins):
         logic.connections.extend(_pins((ref, _pin_named(spec, "CSB"))))
     for name, role in (("SDA", PinRole.I2C_SDA), ("SCL", PinRole.I2C_SCL)):
         next(net for net in nets if net.name == name).connections.extend(

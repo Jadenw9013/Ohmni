@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "active_task": null,
-  "last_known_commit": "34329f24128e303ef10aa35e44cd663b43ac784c",
+  "active_task": "CS-T08",
+  "last_known_commit": "26243492",
   "approval_record": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
   "previous_checkpoint": {
     "schema_version": 1,
@@ -39,19 +39,13 @@
     ".ai/reviews.yaml",
     ".ai/verification/CS-T07.yaml"
   ],
-  "completed_substeps": [
-    "CS-T07 selected and activated from origin/main 4fa890a4 after PR #27 merged.",
-    "Added hash-bound checked electrical facts and bounded passive/I2C ComponentSpec construction.",
-    "Added explicit required-fact, applicable-rule and requested-capability admission evaluation.",
-    "Added schema v3 activation records; activation reruns the gate and binds the exact publication digest.",
-    "Active discovery persists across restart and excludes revoked revisions while seed catalog facts remain unchanged.",
-    "Focused, fast, integration, frontend, Ruff and ledger gates passed."
-  ],
+  "completed_substeps": [],
   "remaining_work": [
-    "Open and merge the CS-T07 PR.",
-    "After merge, branch from latest origin/main and activate CS-T08."
+    "Implement typed component resolution before synthesis and durable import/resume.",
+    "Integrate admitted parts into functional placement and the real board pipeline with exact lineage.",
+    "Expose the same active catalog snapshot through MCP and prove negative requests cannot bypass import."
   ],
   "last_failure": null,
-  "resume_action": "After CS-T07 merges, fetch origin/main, require ai_state.py next to select CS-T08, then implement resume and real-board integration.",
-  "last_command": "fast 2220 passed; integration 27 passed; frontend 1043 passed; admission focused 25 passed; Ruff and ai_state validate pass."
+  "resume_action": "Continue CS-T08 from the clean origin/main worktree and run its acceptance tests.",
+  "last_command": "CS-T08 activated from origin/main after PR #29 merged."
 }
