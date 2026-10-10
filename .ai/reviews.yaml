@@ -687,6 +687,53 @@
       "commit": "42cd343e",
       "implementation_commit": "65f6bb4feb32041ee617d8c6825b9cad969cfd1a",
       "notes": "Fresh current-tree technical review confirmed the 29-reference inventory, physical-coordinate guards, immutable source identity and renderer lifecycle regressions. Focused landing and visual suites passed. Exact physical fits remain explicitly NOT_ESTABLISHED and owner visual acceptance remains PENDING, so LP-P1 stays IMPLEMENTED."
+    },
+    {
+      "id": "CS-T03-INDEPENDENT-REREVIEW-2026-10-10",
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "task": "CS-T03",
+      "reviewer": "independent-reviewer-codex",
+      "independent": true,
+      "status": "PASSED",
+      "commit": "e64ccdd5",
+      "implementation_commit": "7efe78b94577103303df231bc84a30a2eede5be6",
+      "notes": "Read the deterministic table/drawing grammars, identity binding, exact receipt construction, required-fact matrix and quarantine boundary against the task acceptance criteria. Acquired MCP73831-DS20001984H from its recorded manufacturer URL and verified all 889186 bytes against the pinned digest. The real-document source tests plus multimodal, provenance and audit regressions passed. CS-T03-R01 and CS-T03-R02 remain accepted bounded fail-closed/transparency risks. CS-T02-R01 remains OPEN at MEDIUM because no live provider call exists; it does not create a BLOCKER/HIGH finding or a live-pass claim."
+    },
+    {
+      "id": "VIS-T01-OWNER-GATE-2026-10-10",
+      "scope": "VIS-REF-001",
+      "task": "VIS-T01",
+      "reviewer": "human owner decision plus independent-reviewer-codex record",
+      "independent": true,
+      "status": "PASSED",
+      "commit": "e64ccdd5",
+      "independent_review_record": ".ai/reviews.yaml#VIS-T01-INDEPENDENT-REREVIEW-2026-10-09",
+      "approval_record": ".ai/approvals/VIS-LP-COMPLETION-2026-10-10.yaml",
+      "notes": "The independent review passed without an open BLOCKER/HIGH finding. The owner then explicitly instructed completion if review passed. Existing limitations remain limitations and are not upgraded into electrical, exact-fit or manufacturing claims."
+    },
+    {
+      "id": "VIS-T02-OWNER-GATE-2026-10-10",
+      "scope": "VIS-REF-001",
+      "task": "VIS-T02",
+      "reviewer": "human owner decision plus independent-reviewer-codex record",
+      "independent": true,
+      "status": "PASSED",
+      "commit": "e64ccdd5",
+      "independent_review_record": ".ai/reviews.yaml#VIS-T02-INDEPENDENT-REREVIEW-2026-10-09",
+      "approval_record": ".ai/approvals/VIS-LP-COMPLETION-2026-10-10.yaml",
+      "notes": "The independent review passed without an open BLOCKER/HIGH finding. The owner then explicitly instructed completion if review passed. Existing limitations remain limitations and are not upgraded into electrical, exact-fit or manufacturing claims."
+    },
+    {
+      "id": "LP-P1-OWNER-GATE-2026-10-10",
+      "scope": "LANDING-PCB-P1",
+      "task": "LP-P1",
+      "reviewer": "human owner decision plus independent-reviewer-codex record",
+      "independent": true,
+      "status": "PASSED",
+      "commit": "e64ccdd5",
+      "independent_review_record": ".ai/reviews.yaml#LP-P1-INDEPENDENT-REREVIEW-2026-10-09",
+      "approval_record": ".ai/approvals/VIS-LP-COMPLETION-2026-10-10.yaml",
+      "notes": "The independent review passed without an open BLOCKER/HIGH finding. The owner then explicitly instructed completion if review passed. Existing limitations remain limitations and are not upgraded into electrical, exact-fit or manufacturing claims."
     }
   ],
   "findings": [
@@ -1278,7 +1325,7 @@
       "severity": "MEDIUM",
       "status": "OPEN",
       "title": "Live vision provider has never been exercised against the real API",
-      "detail": "ANTHROPIC_API_KEY is not set in this environment, so src/ohmni/adapters/anthropic_vision.py is implemented but unrun. The offline corpus uses recorded and scripted providers. The adapter's status is UNAVAILABLE, not passing, and CS-T02 is recorded as PASSED_WITH_UNAVAILABLE_GATE. Fresh independent review at origin/main 42cd343e confirms this remains an honestly reported, non-blocking unavailable evaluation rather than a passing live-provider claim.",
+      "detail": "ANTHROPIC_API_KEY is not set in this environment, so src/ohmni/adapters/anthropic_vision.py is implemented but unrun. The offline corpus uses recorded and scripted providers. The adapter's status is UNAVAILABLE, not passing, and CS-T02 is recorded as PASSED_WITH_UNAVAILABLE_GATE. Fresh independent review at origin/main 42cd343e confirms this remains an honestly reported, non-blocking unavailable evaluation rather than a passing live-provider claim. Re-review on 2026-10-10 acquired the pinned manufacturer PDF by its recorded digest and passed the offline source/vision suites, but ANTHROPIC_API_KEY remained absent and no live response identity exists. The finding stays OPEN; closing it would require the separately authorized budgeted live evaluation named in required_input.",
       "required_input": "Credentials plus an explicit, budgeted live evaluation."
     },
     {

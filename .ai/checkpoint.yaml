@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "active_task": null,
-  "last_known_commit": "42cd343e",
+  "last_known_commit": "e64ccdd5",
   "approval_record": ".ai/approvals/COMPONENT-ATLAS-BUILDER-1.yaml",
   "previous_checkpoint": {
     "schema_version": 1,
@@ -34,17 +34,17 @@
   },
   "modified_files": [],
   "completed_substeps": [
-    "Marked CBH-R04 FIXED at c7b7869 (PR #17).",
-    "Fresh independent reviews passed the technical scope of VIS-T01, VIS-T02 and LP-P1; their explicit owner visual gates remain pending.",
-    "Fresh independent reviews passed CS-T01 and CS-T02; both are COMPLETE. CS-T02-R01 remains an openly unavailable, non-blocking live-provider evaluation.",
-    "Closed M9-F15, CS-T03-R01 and CS-T03-R02 as accepted bounded risks; retained CS-T02-R01 OPEN with current evidence."
+    "Independently re-reviewed CS-T03 implementation and acceptance criteria against the pinned real manufacturer PDF and focused rejection suites.",
+    "Recorded CS-T03 PASSED and COMPLETE with no open BLOCKER/HIGH finding.",
+    "Kept CS-T02-R01 OPEN at MEDIUM: the pinned offline proof passes, but no credential or live provider response exists.",
+    "Recorded the owner instruction closing the remaining VIS-T01, VIS-T02 and LP-P1 review gates; all three are COMPLETE with their limitations preserved."
   ],
   "remaining_work": [
-    "Merge this ledger-review PR.",
-    "Independently re-review CS-T03 in its own PR.",
-    "Only after the review chain permits it, activate and implement CS-T05, then CS-T06, one PR each."
+    "Merge the CS-T03 review PR.",
+    "From the resulting latest origin/main, run ai_state.py next, activate CS-T05 and implement it in its own PR.",
+    "After CS-T05 merges, activate and implement CS-T06 in its own PR."
   ],
-  "last_failure": "Initial integration run was sandbox-constrained (KiCad could not create its user directory; Chrome/listener probes were blocked). The approved outside-sandbox rerun passed. Repository-wide Ruff still reports 12 pre-existing findings confined to protected behavior paths and was not modified.",
-  "resume_action": "After this PR merges, branch from latest origin/main and perform the separate CS-T03 independent re-review. Stop if any BLOCKER/HIGH finding remains.",
-  "last_command": "Gates: ai_state validate PASS; fast 2178 passed/82 skipped/51 deselected; integration rerun outside sandbox 26 passed/7 skipped; frontend 1043 passed; focused review suites passed."
+  "last_failure": "The first fast run correctly caught the stale approved_product_scope assertion after returning execution to COMPONENT-SYNTHESIS-1. One unrelated local HTTP test was aborted by host socket policy; its outside-sandbox isolated rerun passed. No product failure remains.",
+  "resume_action": "After this PR merges, fetch origin/main and require ai_state.py next to select CS-T05 before implementation.",
+  "last_command": "Gates: CS-T03 focused real-corpus suite PASS; fast run 2258 passed/51 deselected with two failures, both resolved by the scope assertion update and successful isolated rerun of the sandbox-aborted local HTTP test; integration 31 passed/2 skipped; frontend 1043 passed; changed-file Ruff and ai_state validate PASS."
 }
