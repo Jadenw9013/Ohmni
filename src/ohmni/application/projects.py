@@ -82,9 +82,9 @@ def project_options() -> dict:
                        "Address collisions and unsupported combinations are refused before a revision is saved."]}
 
 
-def _prepare_project(brief: SynthesisBrief):
+def _prepare_project(brief: SynthesisBrief, catalog=None):
     """Resolve the exact same contract for preview and execution."""
-    catalog=default_catalog()
+    catalog=catalog or default_catalog()
     result = synthesize(brief,catalog)
     if not result.accepted:
         raise ProjectRefusalError(result.refusal)
@@ -152,9 +152,9 @@ def _prepare_project(brief: SynthesisBrief):
     return result, CompiledRequirements(requirements=requirements, provenance=provenance)
 
 
-def prepare_project(brief: SynthesisBrief):
+def prepare_project(brief: SynthesisBrief, catalog=None):
     """Preserve the existing public preview contract without dropping internal intent."""
-    result, requirements = _prepare_project(brief)
+    result, requirements = _prepare_project(brief, catalog)
     return result.circuit, requirements
 
 
@@ -164,10 +164,14 @@ def preview_project(brief: SynthesisBrief) -> Brief:
 
 
 class ProjectPipeline(DemoPipeline):
+    def __init__(self, progress=None, *, catalog=None):
+        super().__init__(progress)
+        self.catalog = catalog or default_catalog()
+
     def run(self, destination: Path, brief: SynthesisBrief) -> DemoReport:
-        result, requirements = _prepare_project(brief)
+        result, requirements = _prepare_project(brief, self.catalog)
         circuit = result.circuit
-        catalog = default_catalog()
+        catalog = self.catalog
         destination = destination.resolve()
         destination.mkdir(parents=True, exist_ok=True)
         self._progress("requirements", "Using your confirmed project choices", "PASS", 5,
@@ -219,6 +223,11 @@ class ProjectPipeline(DemoPipeline):
                                "placement_request_fingerprint": placement.request_fingerprint,
                                "archetype":brief.archetype.value,
                                "supported_fixture":FAMILY_COPY[brief.archetype][0]})
+        if hasattr(catalog, "snapshot_hash"):
+            report.project.update({
+                "catalog_snapshot_sha256": catalog.snapshot_hash,
+                "active_component_revisions": catalog.revision_bindings,
+            })
         report.pcb["placement"] = {
             "algorithm": placement.algorithm,
             "request_fingerprint": placement.request_fingerprint,

@@ -263,12 +263,6 @@ def _preflight(brief: SynthesisBrief, catalog: PartCatalog) -> SynthesisResult |
         )
 
     sensor_slot = brief.sensors[0]
-    if sensor_slot.part_id != "BME280":
-        return _refuse(
-            brief, RefusalCode.SENSOR_UNAVAILABLE,
-            "This sensor-board archetype currently supports the BME280 only.",
-            "sensors.0.part_id", context={"requested": sensor_slot.part_id},
-        )
     sensor = catalog.get(sensor_slot.part_id)
     if sensor is None:
         return _refuse(
