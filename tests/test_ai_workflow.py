@@ -254,17 +254,23 @@ def test_landing_p1_preserves_behavior_and_reviewed_plan_boundaries():
     for previous in prior["tasks"]:
         if previous["id"] not in {"CBH-STAGE5", "CBH-STAGE6", "CBH-STAGE7"}:
             assert current[previous["id"]]==previous
-    assert "Ratings now cover every bound class" in current["CBH-STAGE5"]["blockers"][0]
+    stage5=current["CBH-STAGE5"]
+    assert "Ratings now cover every bound class" in stage5["blockers"][0]
+    assert stage5["review"]["independent"] is True
+    assert stage5["review"]["status"]=="FINDINGS_OPEN"
     stage6=current["CBH-STAGE6"]
     assert stage6["status"]=="VERIFIED"
     assert stage6["implementation"]["completed_at_commit"].startswith("689ebe6")
     assert stage6["verification"]["record"]==".ai/verification/CBH-STAGE6.yaml"
-    assert stage6["review"]["status"]=="PENDING"
+    assert stage6["review"]["independent"] is True
+    assert stage6["review"]["status"]=="FINDINGS_OPEN"
     stage7=current["CBH-STAGE7"]
     assert stage7["status"]=="IN_PROGRESS"
     assert {item.split(":",1)[0] for item in stage7["blockers"]}=={
         "AUD-SOURCE-001", "AUD-VERIFY-001", "AUD-PROTECT-001"
     }
+    assert stage7["review"]["independent"] is True
+    assert stage7["review"]["status"]=="FINDINGS_OPEN"
     assert current["CBH-STAGE7"]["dependencies"]==["CBH-STAGE6"]
     landing=[task for task in tasks["tasks"] if task["scope"]=="LANDING-PCB-P1"]
     assert [task["id"] for task in landing]==["LP-P1"]
