@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "active_task": "CAB-T05",
-  "last_known_commit": "43f71bd371e3acb8f7cce0015c0a1f5e2ae9a8ee",
+  "active_task": null,
+  "last_known_commit": "0b59d93a2009a8fa4e10d438fea6b378c1a93d52",
   "approval_record": ".ai/approvals/COMPONENT-ATLAS-BUILDER-1.yaml",
   "previous_checkpoint": {
     "schema_version": 1,
@@ -36,14 +36,15 @@
   "completed_substeps": [
     "Owner set CBH-STAGE7 BLOCKED on exactly AUD-SOURCE-001, AUD-VERIFY-001 and AUD-PROTECT-001.",
     "CS-T04 independently re-reviewed and completed in PR #13.",
-    "CAB-T05 activated from latest origin/main."
+    "CAB-T05 implemented immutable server-owned BoardDraft state and deterministic existing-component command replay.",
+    "Acceptance tests cover stale bases, identity and sequence conflicts, physical invalidation, electrical identity preservation, discard and revision commit lineage.",
+    "CAB-T05 implementation completed at 0b59d93a2009a8fa4e10d438fea6b378c1a93d52."
   ],
   "remaining_work": [
-    "Implement server-owned immutable BoardDraft and deterministic command replay.",
-    "Test stale-base conflicts, complete physical invalidation, electrical identity preservation, discard and new-revision commit.",
-    "Run repository validation and required test suites, then open a PR."
+    "CAB-T06 remains approved and ready but has not been started.",
+    "CBH-STAGE7 remains blocked on owner decisions and external verification items recorded in its exact blocker list."
   ],
   "last_failure": null,
-  "resume_action": "Continue CAB-T05 only; preserve protected behavior paths and do not begin CAB-T06.",
-  "last_command": "Fetched origin/main at 43f71bd3 and activated CAB-T05 under the owner's explicit instruction."
+  "resume_action": "Open and review the CAB-T05 PR. Do not begin CAB-T06 without a new instruction.",
+  "last_command": "CAB-T05 verification completed; integration external-tool failures are recorded in .ai/verification/CAB-T05.yaml."
 }

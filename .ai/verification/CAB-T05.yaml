@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "id": "CAB-T05",
+  "task": "CAB-T05",
+  "scope": "COMPONENT-ATLAS-BUILDER-1",
+  "status": "PASSED",
+  "commit": "0b59d93a2009a8fa4e10d438fea6b378c1a93d52",
+  "verified_at": "2026-10-09",
+  "results": [
+    {
+      "command": "pytest tests/test_layout_drafts.py tests/test_component_atlas_contracts.py tests/test_project_api.py tests/test_personal_project.py -q",
+      "exit_code": 0,
+      "result": "passed"
+    },
+    {
+      "command": "scripts/verify.py fast",
+      "exit_code": 0,
+      "passed": 2160,
+      "skipped": 82,
+      "deselected": 50,
+      "seconds": 515.05
+    },
+    {
+      "command": "scripts/verify.py integration",
+      "exit_code": 1,
+      "passed": 14,
+      "failed": 12,
+      "skipped": 7,
+      "deselected": 2259,
+      "seconds": 420.18,
+      "classification": "external_environment",
+      "detail": "One Windows listener inspection returned no owner, the Chromium CDP Network.enable command timed out, and KiCad 10 exited with access violation 0xC0000005 after the sandbox denied creation of C:/Users/wongj/Documents/KiCad. None of the failures exercise CAB-T05 layout-draft code."
+    },
+    {
+      "command": "python -m ruff check src/ohmni/application/layout_drafts.py src/ohmni/domain/component_atlas.py tests/test_layout_drafts.py tests/test_ai_workflow.py",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    }
+  ],
+  "acceptance_evidence": [
+    "BoardDraft is immutable and owned by LayoutDraftService rather than accepted from the client.",
+    "Open and commit reject stale base revisions; command application rejects stale identity and sequence values.",
+    "MoveExisting, Undo and Redo replay deterministically and preserve the exact parts, nets and pads fingerprints.",
+    "Every physical edit invalidates placement, routing, manufacturing and release stages without invalidating electrical stages.",
+    "Discard restores the base placements and leaves the source revision bytes unchanged.",
+    "Commit appends a new immutable project revision with base, draft and electrical lineage while preserving source bytes."
+  ],
+  "self_review_fixes": [
+    "Undo and redo initially used their generic command invalidation sets; replay now resolves the targeted MoveExisting command so only physical stages are invalidated."
+  ],
+  "limitations": [
+    "Active drafts are process-local; committed revisions are durable through ProjectStore.",
+    "CAB-T06 owns authoritative geometry, native-tool checks, rerouting and manufacturing validation.",
+    "The integration suite had 12 external-environment failures: two Windows/browser operability checks and ten KiCad-dependent checks. The exact counts and tool errors are recorded above."
+  ]
+}

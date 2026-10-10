@@ -271,7 +271,7 @@ def test_landing_p1_preserves_behavior_and_reviewed_plan_boundaries():
     }
     assert stage7["review"]["independent"] is True
     assert stage7["review"]["status"]=="FINDINGS_OPEN"
-    assert current["CAB-T05"]["status"]=="IN_PROGRESS"
+    assert current["CAB-T05"]["status"]=="COMPLETE"
     assert current["CBH-STAGE7"]["dependencies"]==["CBH-STAGE6"]
     landing=[task for task in tasks["tasks"] if task["scope"]=="LANDING-PCB-P1"]
     assert [task["id"] for task in landing]==["LP-P1"]
