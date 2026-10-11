@@ -1,0 +1,59 @@
+{
+  "analysis": "op",
+  "circuit_hash": "1a09ab08ef0ebd2618588b2b360cabd554d56fc6f762e8cc6e0cf5c5bf0c8d58",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "current": 5e-09,
+    "drive_role": "T1",
+    "expected": 10000000000.0,
+    "kind": "absolute",
+    "observable": "path_resistance",
+    "return_role": "T2",
+    "source_facts": {
+      "rleak": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'INSULATION RESISTANCE AT RATED VOLTAGE 10 G\u03a9 min.'",
+        "field": "minimum_insulation_resistance",
+        "page": 1,
+        "scope": "Vishay BCcomponents D series D473Z39Z5VF6###R (47 nF, +80/-20%, Z5V, 50 VDC, size 39); datasheet doc 28549 rev 08-Jan-2026; ### = packaging/lead style/lead spacing unselected; at rated voltage (time/temperature not stated)",
+        "sources": [
+          "https://www.vishay.com/docs/28549/dseries.pdf"
+        ],
+        "unit": "ohm",
+        "value": 10000000000.0
+      },
+      "vr": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Ordering code position 11 'F = 50 VDC'; Z5V table 50 VDC column",
+        "field": "rated_voltage",
+        "page": 2,
+        "scope": "Vishay BCcomponents D series D473Z39Z5VF6###R (47 nF, +80/-20%, Z5V, 50 VDC, size 39); datasheet doc 28549 rev 08-Jan-2026; ### = packaging/lead style/lead spacing unselected; DC",
+        "sources": [
+          "https://www.vishay.com/docs/28549/dseries.pdf"
+        ],
+        "unit": "V",
+        "value": 50
+      }
+    },
+    "tolerance": 10000000.0
+  },
+  "entry_id": "OHM-028",
+  "entry_research_sha256": "c9478edcaed56f0ded26b6f2c88ec54422c36cb4fdd12daafd8b8313ab5a1773",
+  "limits": "Binding check of one bound DC path: the sourced current through the path must reproduce the sourced path resistance (0.1% numerical tolerance, or the sourced tolerance band). It does not validate frequency response, heating, contact wear, isolation, protocol behavior or any rating beyond the stated facts.",
+  "netlist_sha256": "13b4505a4fcfd277187425baa39750d152de244c6b7fb42daf46ce60e029d206",
+  "observation_status": "ran",
+  "observed": 10000000000.0,
+  "output_sha256": "57c50f66163794af65441ea09578cfd27518fc0051e75f046f5bdec9b2ec694c",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T07:21:12Z",
+  "raw_output": "runtime-bench-output/OHM-028-op/output.txt",
+  "recipe_source_sha256": "df15838a25783d36cca4fe23de6756cc53208d2ce19f03dc0751f6a494c1b4b5",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "version_file": "runtime-bench-output/OHM-028-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sat Oct 10 21:32:36 UTC 2026\n******\n",
+  "version_sha256": "7f444023b0e5851d50a26bf40338ca29665b10988154a0ff2d662d918ab83fc3"
+}

@@ -17,7 +17,12 @@
       "bench-results/BEH-CAP-ALPOLY--B1.json",
       "bench-results/BEH-CAP-ALPOLY--B2.json"
     ],
-    "conflicts": [],
+    "conflicts": [
+      "Spec default ESR 20 mohm vs sourced 24 mohm maximum at 100 kHz; the binding uses 24 mohm (D067).",
+      "Spec RLK 1e6 ohm vs sourced 16 V / 320 uA = 5e4 ohm (20x lower); the binding uses the sourced value (D067).",
+      "Spec 'DER 0.8 (12.8 V operating)' is not stated in the PCJ datasheet (it gives surge 18.4 V); DER is not applied.",
+      "Spec Style A outline 6.3 x 7.7 vs part 6.3 x 8 mm."
+    ],
     "documents": [
       {
         "document_id": "nichicon-guidelines",
@@ -28,6 +33,16 @@
         "source_status": "primary_source_opened",
         "title": "Application Guidelines for Aluminum Electrolytic Capacitors",
         "url": "https://www.nichicon.com/getmedia/d6d540b9-2d08-42e7-8d62-a4085f6e1fbd/applicationguidelines.pdf"
+      },
+      {
+        "document_id": "nichicon-pcj",
+        "manufacturer": "Nichicon",
+        "note": "Archived 2026-10-11 (ledger sha256 a72ec203b9d2...); specifications, drawing and ripple coefficients p1; dimension table p2 read for the bound reference Nichicon PCJ1C101MCL4GS (D067).",
+        "page": null,
+        "revision": "CAT.8100M",
+        "source_status": "primary_source_opened",
+        "title": "Nichicon PCJ series catalog (conductive polymer aluminum solid, chip type)",
+        "url": "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-pcj.pdf"
       }
     ],
     "entry_id": "OHM-032",
@@ -83,21 +98,196 @@
         ],
         "unit": "A",
         "value": 10
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Dimensions table row: '16 (1C) 18.4 ... 100 6.3 × 8 0.12 320 24 2700 PCJ1C101MCL4GS'",
+        "field": "reference_part",
+        "page": 2,
+        "scope": "Nichicon PCJ1C101MCL4GS (PCJ conductive polymer series), 100 uF 16 V, 6.3 x 8 mm chip; Nichicon catalog PCJ",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-pcj.pdf"
+        ],
+        "unit": null,
+        "value": "Nichicon PCJ1C101MCL4GS"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Rated capacitance column",
+        "field": "nominal_capacitance",
+        "page": 2,
+        "scope": "Nichicon PCJ1C101MCL4GS (PCJ series), 100 uF 16 V, 6.3 x 8 mm chip; Nichicon catalog PCJ; +/-20% at 120 Hz, 20 C",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-pcj.pdf"
+        ],
+        "unit": "uF",
+        "value": 100
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Capacitance Tolerance ±20% at 120Hz, 20°C'",
+        "field": "capacitance_tolerance",
+        "page": 1,
+        "scope": "Nichicon PCJ1C101MCL4GS (PCJ series), 100 uF 16 V, 6.3 x 8 mm chip; Nichicon catalog PCJ",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-pcj.pdf"
+        ],
+        "unit": "percent",
+        "value": 20
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Rated voltage group in the dimensions table",
+        "field": "rated_voltage",
+        "page": 2,
+        "scope": "Nichicon PCJ1C101MCL4GS (PCJ series), 100 uF 16 V, 6.3 x 8 mm chip; Nichicon catalog PCJ; DC; peak (DC + ripple) must not exceed rated voltage",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-pcj.pdf"
+        ],
+        "unit": "V",
+        "value": 16
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "tan δ column",
+        "field": "maximum_tan_delta",
+        "page": 2,
+        "scope": "Nichicon PCJ1C101MCL4GS (PCJ series), 100 uF 16 V, 6.3 x 8 mm chip; Nichicon catalog PCJ; 120 Hz, 20 C",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-pcj.pdf"
+        ],
+        "unit": "1",
+        "value": 0.12
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Leakage column '320' µA, 'at 20° after 2 minutes' ('After 2 minutes' application of rated voltage at 20°C')",
+        "field": "maximum_leakage_current",
+        "page": 2,
+        "scope": "Nichicon PCJ1C101MCL4GS (PCJ series), 100 uF 16 V, 6.3 x 8 mm chip; Nichicon catalog PCJ",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-pcj.pdf"
+        ],
+        "unit": "uA",
+        "value": 320
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Rated ripple column",
+        "field": "maximum_ripple_current",
+        "page": 2,
+        "scope": "Nichicon PCJ1C101MCL4GS (PCJ series), 100 uF 16 V, 6.3 x 8 mm chip; Nichicon catalog PCJ; 105 C, 100 kHz; frequency coefficient 0.05 at 120 Hz, 0.30 at 1 kHz, 0.70 at 10 kHz, 1.00 at >=100 kHz (p1)",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-pcj.pdf"
+        ],
+        "unit": "mA",
+        "value": 2700
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Endurance row",
+        "field": "endurance_life",
+        "page": 1,
+        "scope": "Nichicon PCJ1C101MCL4GS (PCJ series), 100 uF 16 V, 6.3 x 8 mm chip; Nichicon catalog PCJ; rated voltage applied 2000 h at 105 C; then dC within +/-20%, tan d and ESR <= 150%, leakage <= initial",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-pcj.pdf"
+        ],
+        "unit": "h",
+        "value": 2000
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Category Temperature Range' (category temperature range; the rated voltage applies across it)",
+        "field": "operating_temperature_range",
+        "page": 1,
+        "scope": "Nichicon PCJ1C101MCL4GS (PCJ series), 100 uF 16 V, 6.3 x 8 mm chip; Nichicon catalog PCJ",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-pcj.pdf"
+        ],
+        "unit": "C",
+        "value": [
+          -55,
+          105
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "ESR column",
+        "field": "maximum_esr",
+        "page": 2,
+        "scope": "Nichicon PCJ1C101MCL4GS (PCJ series), 100 uF 16 V, 6.3 x 8 mm chip; Nichicon catalog PCJ; 20 C, 100 kHz, measured at the terminal ends closest to the platform",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-pcj.pdf"
+        ],
+        "unit": "mohm",
+        "value": 24
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Surge Voltage column '18.4'",
+        "field": "surge_voltage",
+        "page": 2,
+        "scope": "Nichicon PCJ 16 V (1C) group",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-pcj.pdf"
+        ],
+        "unit": "V",
+        "value": 18.4
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Frequency 120Hz 1kHz 10kHz 100kHz or more; Coefficient 0.05 0.30 0.70 1.00'",
+        "field": "ripple_frequency_multiplier_120Hz",
+        "page": 1,
+        "scope": "Nichicon PCJ",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-pcj.pdf"
+        ],
+        "unit": "1",
+        "value": 0.05
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Z(+105°C) / Z(+20°C) 1.25 (100kHz) Z(–55°C) / Z(+20°C) 1.25'",
+        "field": "impedance_ratio_max",
+        "page": 1,
+        "scope": "Nichicon PCJ, 100 kHz",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-pcj.pdf"
+        ],
+        "unit": "1",
+        "value": {
+          "Z(+105C)/Z(+20C)": 1.25,
+          "Z(-55C)/Z(+20C)": 1.25
+        }
       }
     ],
     "remaining_open_items": [
-      "Exact series/orderable part and its ripple-current, lifetime, voltage and temperature ratings remain unbound.",
       "ESR at frequency/temperature, ESL and failure timing are still model assumptions.",
-      "The sleeve is not a guaranteed electrical insulation system."
+      "The sleeve is not a guaranteed electrical insulation system.",
+      "ESL and ESR versus frequency/temperature beyond the 1.25 impedance ratio remain unsourced.",
+      "Life under ripple and a part-specific rush-current limit.",
+      "Former simulation blocker resolved for the explicitly bound reference (2026-10-11, D067): Rating-critical part voltage and ripple/lifetime limits need an exact series binding. Resolution: Nichicon PCJ conductive-polymer catalog (archived) row PCJ1C101MCL4GS: 100 uF, 16 V, surge 18.4 V, tan d 0.12, leakage 320 uA (2 min), ESR 24 mohm (20 C/100 kHz), rated ripple 2700 mA rms (105 C/100 kHz), endurance 2000 h at 105 C. Voltage, ripple and life are bound to an exact row; ESR is sourced at 100 kHz so the tantalum-style AC probe applies."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Rating-critical part voltage and ripple/lifetime limits need an exact series binding."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-032.md",
-      "document_sha256": "94a74765d66987fef9c601ddc253cab9cd4dd3b38b033c4ed5dda0b2ff189b52",
+      "document_sha256": "02f0a5bc047feed2c716dafe75b11330307e08ad6641063058a7f3bd4c8949cd",
       "fragment_sha256": null,
       "line": 1
     }

@@ -1,0 +1,103 @@
+{
+  "ac_points_hz": [
+    100000.0
+  ],
+  "analysis": "ac",
+  "circuit_hash": "80e7c3f14af967230edd6c01028b350fb7df1d7276cc0597f08a7c0ca6b6d824",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": [
+    {
+      "expected": 0.024000005066059184,
+      "kind": "absolute",
+      "observable": "impedance_real",
+      "tolerance": 2.879762494159301e-06
+    },
+    {
+      "expected": -0.015915494309187924,
+      "kind": "absolute",
+      "observable": "impedance_imag",
+      "tolerance": 2.879762494159301e-06
+    }
+  ],
+  "current": 0.001,
+  "entry_id": "OHM-032",
+  "entry_research_sha256": "02f0a5bc047feed2c716dafe75b11330307e08ad6641063058a7f3bd4c8949cd",
+  "limits": "Small-signal impedance at the 100 kHz frequency the maximum ESR is sourced at, against ESR + (Rleak || 1/(j*w*C)) from the part's own sourced facts. Shows the bound card carries the sourced ESR; does not validate ESR at other frequencies or temperatures, ESL, or any rating.",
+  "netlist_sha256": "4042b9010bd1937b489ee5379912044d27b21e3a38e90e28696a5fddb1c55902",
+  "observation_status": "ran",
+  "observed": [
+    0.024000005066059187,
+    -0.0159154943091879
+  ],
+  "output_sha256": "72f2defe81d196ba745e852f0d80e69f5b37cb1d9ae785e56c30f9e16a73511e",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T07:25:03Z",
+  "raw_output": "runtime-bench-output/OHM-032-ac/output.txt",
+  "recipe_source_sha256": "df15838a25783d36cca4fe23de6756cc53208d2ce19f03dc0751f6a494c1b4b5",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "source_facts": {
+    "esr_max": {
+      "basis": "MFR_DATASHEET",
+      "confidence": "H",
+      "converted_unit": "ohm",
+      "converted_value": 0.024,
+      "detail": "ESR column",
+      "field": "maximum_esr",
+      "page": 2,
+      "scope": "Nichicon PCJ1C101MCL4GS (PCJ series), 100 uF 16 V, 6.3 x 8 mm chip; Nichicon catalog PCJ; 20 C, 100 kHz, measured at the terminal ends closest to the platform",
+      "sources": [
+        "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-pcj.pdf"
+      ],
+      "unit": "mohm",
+      "value": 24
+    },
+    "ileak": {
+      "basis": "MFR_DATASHEET",
+      "confidence": "H",
+      "converted_unit": "A",
+      "converted_value": 0.00031999999999999997,
+      "detail": "Leakage column '320' \u00b5A, 'at 20\u00b0 after 2 minutes' ('After 2 minutes' application of rated voltage at 20\u00b0C')",
+      "field": "maximum_leakage_current",
+      "page": 2,
+      "scope": "Nichicon PCJ1C101MCL4GS (PCJ series), 100 uF 16 V, 6.3 x 8 mm chip; Nichicon catalog PCJ",
+      "sources": [
+        "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-pcj.pdf"
+      ],
+      "unit": "uA",
+      "value": 320
+    },
+    "value": {
+      "basis": "MFR_DATASHEET",
+      "confidence": "H",
+      "converted_unit": "F",
+      "converted_value": 9.999999999999999e-05,
+      "detail": "Rated capacitance column",
+      "field": "nominal_capacitance",
+      "page": 2,
+      "scope": "Nichicon PCJ1C101MCL4GS (PCJ series), 100 uF 16 V, 6.3 x 8 mm chip; Nichicon catalog PCJ; +/-20% at 120 Hz, 20 C",
+      "sources": [
+        "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-pcj.pdf"
+      ],
+      "unit": "uF",
+      "value": 100
+    },
+    "vr": {
+      "basis": "MFR_DATASHEET",
+      "confidence": "H",
+      "detail": "Rated voltage group in the dimensions table",
+      "field": "rated_voltage",
+      "page": 2,
+      "scope": "Nichicon PCJ1C101MCL4GS (PCJ series), 100 uF 16 V, 6.3 x 8 mm chip; Nichicon catalog PCJ; DC; peak (DC + ripple) must not exceed rated voltage",
+      "sources": [
+        "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-pcj.pdf"
+      ],
+      "unit": "V",
+      "value": 16
+    }
+  },
+  "version_file": "runtime-bench-output/OHM-032-ac/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sat Oct 10 21:32:36 UTC 2026\n******\n",
+  "version_sha256": "7f444023b0e5851d50a26bf40338ca29665b10988154a0ff2d662d918ab83fc3"
+}

@@ -1,0 +1,18 @@
+OHMNI sourced behavior circuit
+.options tnom=25
+.temp 25
+Iexcitation1 0 n1 DC 0 AC 0.001
+Vohmni_short_Rc1_esr n1 c1_cb 0
+Cc1 c1_cb 0 9.9999999999999991e-06
+Rc1_lk c1_cb 0 10000000
+.control
+set numdgt=15
+op
+echo OHMNI_AC_OP
+print v(n1)
+echo OHMNI_AC_POINT 0
+ac lin 1 100000 100000
+print real(frequency) real(v(n1)) imag(v(n1))
+quit
+.endc
+.end

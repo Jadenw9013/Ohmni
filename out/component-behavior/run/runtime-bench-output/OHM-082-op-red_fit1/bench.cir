@@ -1,0 +1,12 @@
+OHMNI sourced behavior circuit
+.options tnom=25
+.temp 25
+Iexcitation1 0 n1 DC 0.001
+Dc1R n1 0 LEDR_c1
+Dc1G n1 n2 LEDGB_c1
+Dc1B n1 n2 LEDGB_c1
+.model LEDR_c1 D (IS=1.3929999999999999e-17 N=2.1819999999999999 RS=8.75 CJO=30p VJ=1.0 M=0.33 BV=5.5 IBV=10u EG=2.2 XTI=3)
+.model LEDGB_c1 D (IS=9.4230000000000003e-15 N=3.8780000000000001 RS=14.73 CJO=60p VJ=1.0 M=0.33 BV=5.5 IBV=10u EG=4.0 XTI=3)
+.op
+.print op
+.end

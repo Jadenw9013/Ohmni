@@ -20,7 +20,9 @@
       "bench-results/BEH-CAP-CERAMIC--B4.json"
     ],
     "conflicts": [
-      "Do not transfer a curve or rating between different capacitance, voltage, case or dielectric variants."
+      "Do not transfer a curve or rating between different capacitance, voltage, case or dielectric variants.",
+      "Spec default RLK 1e10 ohm (class rule) is 20x above this part's sourced IR minimum 50 ohm*F / 0.1 uF = 5e8 ohm; the binding uses 5e8 ohm (D067).",
+      "Spec ESR 50 mohm and ESL 0.3 nH remain ASSUMPTION; the part's only loss figure is DF <= 0.1 at 1 kHz."
     ],
     "documents": [
       {
@@ -42,6 +44,16 @@
         "source_status": "primary_source_opened",
         "title": "Ceramic Capacitor Aging Made Simple",
         "url": "https://johansondielectrics.com/docs/3945/ceramic-capacitor-aging-made-simple.pdf"
+      },
+      {
+        "document_id": "murata-grm033r60j104ke19",
+        "manufacturer": "Murata",
+        "note": "Archived 2026-10-11 (ledger sha256 da3ec079ac4d...); rated value p2; IR, DF and voltage proof p3 read for the bound reference Murata GRM033R60J104KE19 (D067).",
+        "page": null,
+        "revision": "specs as of Jun.16,2026",
+        "source_status": "primary_source_opened",
+        "title": "Murata reference sheet GRM033R60J104KE19-01A",
+        "url": "https://pim.murata.com/asset/pim4/ceramicCapacitorSMD/GRM033R60J104KE19-01A-EN_PDF_CERAMICCAPACITORSMD"
       }
     ],
     "entry_id": "OHM-021",
@@ -71,21 +83,155 @@
         ],
         "unit": "percent per decade-hour",
         "value": -2.5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'GRM033R60J104KE19_(0603M(0201), X5R(EIA), 0.1μF, DC 6.3V)'",
+        "field": "reference_part",
+        "page": 2,
+        "scope": "Murata GRM033R60J104KE19, 0603M(0201); Murata reference sheet GRM033R60J104KE19-01A (Jun.16,2026)",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/ceramicCapacitorSMD/GRM033R60J104KE19-01A-EN_PDF_CERAMICCAPACITORSMD"
+        ],
+        "unit": null,
+        "value": "Murata GRM033R60J104KE19"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Rated Value table: 'DC 6.3V  0.1μF  +/-10%'",
+        "field": "nominal_capacitance",
+        "page": 2,
+        "scope": "Murata GRM033R60J104KE19, 0603M(0201); Murata reference sheet GRM033R60J104KE19-01A (Jun.16,2026); tolerance +/-10%",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/ceramicCapacitorSMD/GRM033R60J104KE19-01A-EN_PDF_CERAMICCAPACITORSMD"
+        ],
+        "unit": "uF",
+        "value": 0.1
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'+/-10%'",
+        "field": "capacitance_tolerance",
+        "page": 2,
+        "scope": "Murata GRM033R60J104KE19, 0603M(0201); Murata reference sheet GRM033R60J104KE19-01A (Jun.16,2026)",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/ceramicCapacitorSMD/GRM033R60J104KE19-01A-EN_PDF_CERAMICCAPACITORSMD"
+        ],
+        "unit": "percent",
+        "value": 10
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Rated Value table: 'DC 6.3V'",
+        "field": "rated_voltage",
+        "page": 2,
+        "scope": "Murata GRM033R60J104KE19, 0603M(0201); Murata reference sheet GRM033R60J104KE19-01A (Jun.16,2026); DC; 'maximum voltage which may be applied continuously' incl. AC peak",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/ceramicCapacitorSMD/GRM033R60J104KE19-01A-EN_PDF_CERAMICCAPACITORSMD"
+        ],
+        "unit": "V",
+        "value": 6.3
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Temperature Characteristics [..] Public STD Code [X5R(EIA)] -15 to 15 % -55 to 85℃'",
+        "field": "temperature_characteristic",
+        "page": 2,
+        "scope": "Murata GRM033R60J104KE19, 0603M(0201); Murata reference sheet GRM033R60J104KE19-01A (Jun.16,2026)",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/ceramicCapacitorSMD/GRM033R60J104KE19-01A-EN_PDF_CERAMICCAPACITORSMD"
+        ],
+        "unit": null,
+        "value": "X5R (-15 to 15 %, -55 to 85 C)"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Operating Temp. Range -55 to 85℃'",
+        "field": "operating_temperature_range",
+        "page": 2,
+        "scope": "Murata GRM033R60J104KE19, 0603M(0201); Murata reference sheet GRM033R60J104KE19-01A (Jun.16,2026)",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/ceramicCapacitorSMD/GRM033R60J104KE19-01A-EN_PDF_CERAMICCAPACITORSMD"
+        ],
+        "unit": "C",
+        "value": [
+          -55,
+          85
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Insulation Resistance (IR) More than 50Ω・F' (Measurement Voltage Rated Voltage, Charging Time 1min)",
+        "field": "insulation_resistance_capacitance_product",
+        "page": 3,
+        "scope": "Murata GRM033R60J104KE19, 0603M(0201); Murata reference sheet GRM033R60J104KE19-01A (Jun.16,2026); room temperature, rated voltage, 1 min charge, 50 mA max",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/ceramicCapacitorSMD/GRM033R60J104KE19-01A-EN_PDF_CERAMICCAPACITORSMD"
+        ],
+        "unit": "ohm*F",
+        "value": 50
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "H",
+        "detail": "50 ohm*F / 0.1e-6 F = 5e+08 ohm (IR spec is 'more than 50 Ω・F'; real C within +/-10% moves the bound by the same fraction)",
+        "field": "minimum_insulation_resistance",
+        "page": 3,
+        "scope": "Murata GRM033R60J104KE19, 0603M(0201); Murata reference sheet GRM033R60J104KE19-01A (Jun.16,2026); derived at nominal C = 0.1 uF; room temperature, rated voltage, 1 min",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/ceramicCapacitorSMD/GRM033R60J104KE19-01A-EN_PDF_CERAMICCAPACITORSMD"
+        ],
+        "unit": "ohm",
+        "value": 500000000.0
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Q or Dissipation Factor (DF) DF≦0.1' (1.0+/-0.1 kHz, 0.5+/-0.1 Vrms, room temperature)",
+        "field": "maximum_dissipation_factor",
+        "page": 3,
+        "scope": "Murata GRM033R60J104KE19, 0603M(0201); Murata reference sheet GRM033R60J104KE19-01A (Jun.16,2026); 1.0+/-0.1 kHz, 0.5+/-0.1 Vrms, room temperature",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/ceramicCapacitorSMD/GRM033R60J104KE19-01A-EN_PDF_CERAMICCAPACITORSMD"
+        ],
+        "unit": "1",
+        "value": 0.1
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Voltage proof ... Test Voltage 250% of the rated voltage, Applied Time 1s to 5s'",
+        "field": "voltage_proof_test_level",
+        "page": 3,
+        "scope": "Murata GRM033R60J104KE19, 0603M(0201); Murata reference sheet GRM033R60J104KE19-01A (Jun.16,2026); 1 s to 5 s, 50 mA max; a test level, not a breakdown rating",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/ceramicCapacitorSMD/GRM033R60J104KE19-01A-EN_PDF_CERAMICCAPACITORSMD"
+        ],
+        "unit": "x rated voltage",
+        "value": 2.5
       }
     ],
     "remaining_open_items": [
-      "Exact manufacturer orderable part, voltage rating and dielectric binding remain unestablished for the package default.",
       "ESR/ESL versus frequency, leakage, bias-fit coefficients and effective capacitance at operating bias remain part-specific.",
-      "A class bench using the supplied V0 law cannot establish a real MLCC DC-bias curve."
+      "A class bench using the supplied V0 law cannot establish a real MLCC DC-bias curve.",
+      "DC-bias capacitance curve (not in the reference sheet; SimSurfing data not archived).",
+      "ESR/ESL versus frequency and SRF remain unsourced for the bound part.",
+      "Capacitance aging and the temperature curve shape inside the +/-15% X5R envelope.",
+      "Former simulation blocker resolved for the explicitly bound reference (2026-10-11, D067): The exact default part voltage rating is not re-established by these general application documents. Resolution: Murata's per-part reference sheet for GRM033R60J104KE19 (archived, sha da3ec079ac4d...) states the rated voltage (DC 6.3 V), capacitance and tolerance, X5R characteristic, operating range and an IR minimum for this exact part, closing the voltage-rating blocker for this explicitly bound reference. Bind it like OHM-024 (C + leak resistor card)."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "The exact default part voltage rating is not re-established by these general application documents."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-021.md",
-      "document_sha256": "c7108bb83317d1b99d7227fcf0916237151187bd8c786f79a16cf6682cbb8f00",
+      "document_sha256": "835614228727772225466bf0d3ed1afe2f49d979d484d83196e704e414688cb3",
       "fragment_sha256": null,
       "line": 1
     }

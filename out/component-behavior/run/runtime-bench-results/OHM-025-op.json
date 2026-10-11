@@ -1,0 +1,59 @@
+{
+  "analysis": "op",
+  "circuit_hash": "5c38006781b55e550faab698b0d9913402141c5b0e1dd639b6222f026d9c9bf3",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "current": 5e-06,
+    "drive_role": "T1",
+    "expected": 5000000.0,
+    "kind": "absolute",
+    "observable": "path_resistance",
+    "return_role": "T2",
+    "source_facts": {
+      "rleak": {
+        "basis": "DERIVED",
+        "confidence": "H",
+        "detail": "50 ohm*F / 10e-6 F = 5e+06 ohm (IR spec is 'more than 50 \u03a9\u30fbF'; real C within +/-10% moves the bound by the same fraction)",
+        "field": "minimum_insulation_resistance",
+        "page": 3,
+        "scope": "Murata GRM31CR71E106KA12, 3216M(1206); Murata reference sheet GRM31CR71E106KA12-01CA (Jun.25,2026); derived at nominal C = 10 uF; room temperature, rated voltage, 1 min",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/ceramicCapacitorSMD/GRM31CR71E106KA12-01CA-EN_PDF_CERAMICCAPACITORSMD"
+        ],
+        "unit": "ohm",
+        "value": 5000000.0
+      },
+      "vr": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Rated Value table: 'DC 25V'",
+        "field": "rated_voltage",
+        "page": 2,
+        "scope": "Murata GRM31CR71E106KA12, 3216M(1206); Murata reference sheet GRM31CR71E106KA12-01CA (Jun.25,2026); DC; 'maximum voltage which may be applied continuously' incl. AC peak",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/ceramicCapacitorSMD/GRM31CR71E106KA12-01CA-EN_PDF_CERAMICCAPACITORSMD"
+        ],
+        "unit": "V",
+        "value": 25
+      }
+    },
+    "tolerance": 5000.0
+  },
+  "entry_id": "OHM-025",
+  "entry_research_sha256": "f17f447ce4dca1aa15ca43227e87e916f83ad89bf61de3f65ea797cd7c8993c2",
+  "limits": "Binding check of one bound DC path: the sourced current through the path must reproduce the sourced path resistance (0.1% numerical tolerance, or the sourced tolerance band). It does not validate frequency response, heating, contact wear, isolation, protocol behavior or any rating beyond the stated facts.",
+  "netlist_sha256": "79c91497e86db302ef9ee4891ef291fcda462ea66f91ae6360dafa63db2ad210",
+  "observation_status": "ran",
+  "observed": 5000000.0,
+  "output_sha256": "7711f9f252eeb86e63c36993385dad24716d3d29cc0b6d66bb6ea325a49dc95e",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T07:21:07Z",
+  "raw_output": "runtime-bench-output/OHM-025-op/output.txt",
+  "recipe_source_sha256": "df15838a25783d36cca4fe23de6756cc53208d2ce19f03dc0751f6a494c1b4b5",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "version_file": "runtime-bench-output/OHM-025-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sat Oct 10 21:32:36 UTC 2026\n******\n",
+  "version_sha256": "7f444023b0e5851d50a26bf40338ca29665b10988154a0ff2d662d918ab83fc3"
+}

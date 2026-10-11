@@ -19,7 +19,11 @@
       "bench-results/BEH-CAP-CERAMIC--B3.json",
       "bench-results/BEH-CAP-CERAMIC--B4.json"
     ],
-    "conflicts": [],
+    "conflicts": [
+      "Spec default 100 nF is above the Vishay D series 50 VDC maximum (47 nF Z5V, 22 nF Y5V); the binding is 47 nF (D067).",
+      "Vishay p1 lists Z5V operating range -30 to +125 C but climatic category 30/85/21 (+85 C upper) for Class 3.",
+      "Spec ESL 10 nH and ESR 0.1 ohm remain ASSUMPTION; spec RLK 1e10 matches the sourced 10 Gohm."
+    ],
     "documents": [
       {
         "document_id": "johanson-aging",
@@ -30,6 +34,16 @@
         "source_status": "primary_source_opened",
         "title": "Ceramic Capacitor Aging Made Simple",
         "url": "https://johansondielectrics.com/docs/3945/ceramic-capacitor-aging-made-simple.pdf"
+      },
+      {
+        "document_id": "vishay-d-series-28549",
+        "manufacturer": "Vishay BCcomponents",
+        "note": "Archived 2026-10-11 (ledger sha256 224f8e5357f5...); general specifications and approvals p1; ordering code p2; Z5V table p6 read for the bound reference Vishay BCcomponents D473Z39Z5VF6###R (D067).",
+        "page": null,
+        "revision": "document 28549, revision 08-Jan-2026",
+        "source_status": "primary_source_opened",
+        "title": "Vishay BCcomponents D Series Ceramic Singlelayer DC Disc Capacitors for General Purpose",
+        "url": "https://www.vishay.com/docs/28549/dseries.pdf"
       }
     ],
     "entry_id": "OHM-028",
@@ -46,20 +60,197 @@
         ],
         "unit": "percent per decade-hour",
         "value": -7
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'DIELECTRIC Z5V 50 VDC ... 47 000 D473Z39Z5VF6###R 10.0 3.5' (diameter/thickness mm max)",
+        "field": "reference_part",
+        "page": 6,
+        "scope": "Vishay BCcomponents D series D473Z39Z5VF6###R (47 nF, +80/-20%, Z5V, 50 VDC, size 39); datasheet doc 28549 rev 08-Jan-2026; ### = packaging/lead style/lead spacing unselected",
+        "sources": [
+          "https://www.vishay.com/docs/28549/dseries.pdf"
+        ],
+        "unit": null,
+        "value": "Vishay BCcomponents D473Z39Z5VF6###R"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'47 000' pF row",
+        "field": "nominal_capacitance",
+        "page": 6,
+        "scope": "Vishay BCcomponents D series D473Z39Z5VF6###R (47 nF, +80/-20%, Z5V, 50 VDC, size 39); datasheet doc 28549 rev 08-Jan-2026; ### = packaging/lead style/lead spacing unselected",
+        "sources": [
+          "https://www.vishay.com/docs/28549/dseries.pdf"
+        ],
+        "unit": "nF",
+        "value": 47
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Ordering code position 5 'Z = +80 % / -20 %'",
+        "field": "capacitance_tolerance",
+        "page": 2,
+        "scope": "Vishay BCcomponents D series D473Z39Z5VF6###R (47 nF, +80/-20%, Z5V, 50 VDC, size 39); datasheet doc 28549 rev 08-Jan-2026; ### = packaging/lead style/lead spacing unselected",
+        "sources": [
+          "https://www.vishay.com/docs/28549/dseries.pdf"
+        ],
+        "unit": null,
+        "value": "+80/-20"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Ordering code position 11 'F = 50 VDC'; Z5V table 50 VDC column",
+        "field": "rated_voltage",
+        "page": 2,
+        "scope": "Vishay BCcomponents D series D473Z39Z5VF6###R (47 nF, +80/-20%, Z5V, 50 VDC, size 39); datasheet doc 28549 rev 08-Jan-2026; ### = packaging/lead style/lead spacing unselected; DC",
+        "sources": [
+          "https://www.vishay.com/docs/28549/dseries.pdf"
+        ],
+        "unit": "V",
+        "value": 50
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'TEMPERATURE CHARACTERISTICS ... Class 3: Y5V, Z5V'",
+        "field": "ceramic_class",
+        "page": 1,
+        "scope": "Vishay BCcomponents D series D473Z39Z5VF6###R (47 nF, +80/-20%, Z5V, 50 VDC, size 39); datasheet doc 28549 rev 08-Jan-2026; ### = packaging/lead style/lead spacing unselected",
+        "sources": [
+          "https://www.vishay.com/docs/28549/dseries.pdf"
+        ],
+        "unit": null,
+        "value": "Class 3 (Z5V)"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'INSULATION RESISTANCE AT RATED VOLTAGE 10 GΩ min.'",
+        "field": "minimum_insulation_resistance",
+        "page": 1,
+        "scope": "Vishay BCcomponents D series D473Z39Z5VF6###R (47 nF, +80/-20%, Z5V, 50 VDC, size 39); datasheet doc 28549 rev 08-Jan-2026; ### = packaging/lead style/lead spacing unselected; at rated voltage (time/temperature not stated)",
+        "sources": [
+          "https://www.vishay.com/docs/28549/dseries.pdf"
+        ],
+        "unit": "ohm",
+        "value": 10000000000.0
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Class 3 5 % max. (at 1 kHz; 1 V)'",
+        "field": "maximum_dissipation_factor",
+        "page": 1,
+        "scope": "Vishay BCcomponents D series D473Z39Z5VF6###R (47 nF, +80/-20%, Z5V, 50 VDC, size 39); datasheet doc 28549 rev 08-Jan-2026; ### = packaging/lead style/lead spacing unselected; 1 kHz, 1 V",
+        "sources": [
+          "https://www.vishay.com/docs/28549/dseries.pdf"
+        ],
+        "unit": "1",
+        "value": 0.05
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "detail": "'Y5P, Z5U, Z5V, Y5V: -30 °C to +125 °C'",
+        "field": "operating_temperature_range",
+        "page": 1,
+        "scope": "Vishay BCcomponents D series D473Z39Z5VF6###R (47 nF, +80/-20%, Z5V, 50 VDC, size 39); datasheet doc 28549 rev 08-Jan-2026; ### = packaging/lead style/lead spacing unselected; conflicts with climatic category 30/85/21 for Class 3 on the same page",
+        "sources": [
+          "https://www.vishay.com/docs/28549/dseries.pdf"
+        ],
+        "unit": "C",
+        "value": [
+          -30,
+          125
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Climatic category (acc. to EN 60058-1) ... Class 3: 30/85/21'",
+        "field": "climatic_category",
+        "page": 1,
+        "scope": "Vishay BCcomponents D series D473Z39Z5VF6###R (47 nF, +80/-20%, Z5V, 50 VDC, size 39); datasheet doc 28549 rev 08-Jan-2026; ### = packaging/lead style/lead spacing unselected",
+        "sources": [
+          "https://www.vishay.com/docs/28549/dseries.pdf"
+        ],
+        "unit": null,
+        "value": "30/85/21 (Class 3)"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'TEST VOLTAGE 250 % of rated voltage'",
+        "field": "test_voltage",
+        "page": 1,
+        "scope": "Vishay BCcomponents D series D473Z39Z5VF6###R (47 nF, +80/-20%, Z5V, 50 VDC, size 39); datasheet doc 28549 rev 08-Jan-2026; ### = packaging/lead style/lead spacing unselected",
+        "sources": [
+          "https://www.vishay.com/docs/28549/dseries.pdf"
+        ],
+        "unit": "x rated voltage",
+        "value": 2.5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Lead diameter is 0.6 mm'",
+        "field": "lead_diameter",
+        "page": 6,
+        "scope": "Vishay BCcomponents D series D473Z39Z5VF6###R (47 nF, +80/-20%, Z5V, 50 VDC, size 39); datasheet doc 28549 rev 08-Jan-2026; ### = packaging/lead style/lead spacing unselected",
+        "sources": [
+          "https://www.vishay.com/docs/28549/dseries.pdf"
+        ],
+        "unit": "mm",
+        "value": 0.6
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'D473Z39Z5VF6###R 10.0 3.5'",
+        "field": "disc_body_max",
+        "page": 6,
+        "scope": "Vishay BCcomponents D series D473Z39Z5VF6###R (47 nF, +80/-20%, Z5V, 50 VDC, size 39); datasheet doc 28549 rev 08-Jan-2026; ### = packaging/lead style/lead spacing unselected",
+        "sources": [
+          "https://www.vishay.com/docs/28549/dseries.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "diameter_mm": 10.0,
+          "thickness_mm": 3.5
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Title 'Ceramic Singlelayer DC Disc Capacitors for General Purpose'; 'APPROVALS EIA 198 IEC 60384-8 IEC 60384-9'",
+        "field": "safety_class",
+        "page": 1,
+        "scope": "Vishay BCcomponents D series D473Z39Z5VF6###R (47 nF, +80/-20%, Z5V, 50 VDC, size 39); datasheet doc 28549 rev 08-Jan-2026; ### = packaging/lead style/lead spacing unselected",
+        "sources": [
+          "https://www.vishay.com/docs/28549/dseries.pdf"
+        ],
+        "unit": null,
+        "value": "none (general-purpose DC disc; approvals listed are EIA 198, IEC 60384-8, IEC 60384-9 only)"
       }
     ],
     "remaining_open_items": [
       "Exact dielectric, manufacturer part, voltage rating, loss and leakage remain unresolved.",
-      "Generic disc construction does not establish a mains Y safety classification."
+      "Generic disc construction does not establish a mains Y safety classification.",
+      "A 100 nF disc value remains unbound: no primary 100 nF single-layer disc datasheet was found.",
+      "Lead/ESL parasitics, bias and temperature curves remain unsourced.",
+      "Y-class safety discs remain out of scope; this binding is not a safety part.",
+      "Former simulation blocker resolved for the explicitly bound reference (2026-10-11, D067): Unbound generic disc voltage and safety class; no mains-use inference is permitted. Resolution: Vishay BCcomponents D series datasheet (doc 28549, rev 08-Jan-2026, archived) is a general-purpose DC single-layer disc family: 50 VDC rating, IR 10 Gohm min, Class 3 DF 5% max, and only EIA 198/IEC 60384-8/-9 approvals (no IEC 60384-14 X/Y safety rating). Binding D473Z39Z5VF6###R closes the voltage blocker and fixes safety_class = none from the source itself. Caveat: value is 47 nF, not 100 nF (the family max at 50 VDC); recorded as an explicit alternative (OHM-024/OHM-037 precedent). If the owner requires the 100 nF value, keep blocked: no primary 100 nF single-layer disc datasheet was found (Vishay D series, Vishay K series is multilayer, Murata/TDK 'radial' parts are leaded MLCCs)."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Unbound generic disc voltage and safety class; no mains-use inference is permitted."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-028.md",
-      "document_sha256": "d29550e4783a32468ed2f20d5dc0416d31c1b9f876299ec6637f35cbc3f562cc",
+      "document_sha256": "c9478edcaed56f0ded26b6f2c88ec54422c36cb4fdd12daafd8b8313ab5a1773",
       "fragment_sha256": null,
       "line": 1
     }
