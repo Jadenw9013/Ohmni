@@ -226,6 +226,13 @@ export function mountProjectWorkbench(root, {
         if (version === editorVersion && !disposed) $("#project-run")?.focus();
     }
 
+    async function openStarter(familyId, overrides = {}) {
+        if (busy || disposed) return;
+        if (!await ensureOptions()) return;
+        const seed = { ...defaultProjectBrief(options, familyId), ...structuredClone(overrides) };
+        return openNew(seed);
+    }
+
     async function refreshShelf() {
         if (!shelf) return;
         const version = ++shelfVersion;
@@ -450,7 +457,7 @@ export function mountProjectWorkbench(root, {
     root.addEventListener("submit", submit); root.addEventListener("click", click);
     shelf?.addEventListener("click", shelfClick);
     render(); void ensureOptions(); void refreshShelf();
-    return { openNew, openProject, refreshShelf, dispose() {
+    return { openNew, openStarter, openProject, refreshShelf, dispose() {
         assistant?.dispose();
         disposed = true; exerciseVersion += 1; shelfVersion += 1;
         root.removeEventListener("input", input); root.removeEventListener("change", change);

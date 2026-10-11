@@ -75,7 +75,7 @@
     </aside>
 
     <div class="main-shell" id="top">
-      <header class="workspace-header"><a class="flow-brand" href="#home" aria-label="Ohmni home"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="13"/><path d="M20 3v13M3 20h13"/><circle class="brand-center" cx="20" cy="20" r="3"/></svg>ohmni</a><button type="button" class="ghost flow-plan" data-navigate="agree">Your plan</button><button type="button" class="ghost flow-projects" id="flow-projects">My projects</button>
+      <header class="workspace-header"><a class="flow-brand" href="#home" aria-label="Ohmni home"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="13"/><path d="M20 3v13M3 20h13"/><circle class="brand-center" cx="20" cy="20" r="3"/></svg>ohmni</a><button type="button" class="ghost flow-back" id="flow-back" hidden><span aria-hidden="true">←</span> <span id="flow-back-label">Go back</span></button><button type="button" class="ghost flow-projects" id="flow-projects">My projects</button>
         <button type="button" class="secondary" data-open-components>Components</button>
         <div class="workspace-crumb"><span class="crumb-mark" aria-hidden="true">⌘</span><span id="workspace-title">Let's build something</span></div>
         <div class="header-actions"><span id="workspace-status" class="workspace-status">A guided electronics workspace</span><details class="header-help"><summary aria-label="How Ohmni works">How it works <span aria-hidden="true">↗</span></summary><div><strong>An idea, made understandable.</strong><p>Choose a sensor station, buttons and lights, or a memory board. Pick its features, save a revision, then generate and explore your checked design.</p><p>Making a working device also takes assembly, programming, and testing. We'll show you what remains.</p></div></details></div>
@@ -90,19 +90,22 @@
             <p class="welcome-lede">Describe your idea, review the plan, then explore your checked board.</p>
           </div>
           <div class="welcome-grid">
-            <div class="welcome-copy">
-              <div class="project-starter">
+              <div class="welcome-copy">
+                <div class="project-starter">
+                <div class="quick-starts" aria-labelledby="quick-starts-title">
+                  <p id="quick-starts-title"><strong>Start with a simple project</strong><span>Pick one to see an editable plan.</span></p>
+                  <div class="prompt-examples" role="group" aria-label="Quick-start projects"><button type="button" class="ghost" data-starter-family="a1_usb_i2c_sensor">Measure my room</button><button type="button" class="ghost" data-starter-family="a2_usb_gpio_controller">Buttons and lights</button><button type="button" class="ghost" data-starter-family="a3_usb_spi_peripheral">Store readings</button></div>
+                </div>
                 <div class="free-text-starter" id="free-text-starter" hidden>
-                  <label class="free-text-label" for="free-text-request">Describe what your board should do</label>
+                  <label class="free-text-label" for="free-text-request">Or describe your own board</label>
                   <textarea id="free-text-request" rows="3" maxlength="2000" spellcheck="true" placeholder="A USB-powered logger that reads temperature and humidity and shows a status light"></textarea>
-                  <div class="prompt-examples" role="group" aria-label="Example requests"><button type="button" class="ghost" data-prompt-example="A USB-powered board that measures temperature and humidity and has a status light">Measure my room</button><button type="button" class="ghost" data-prompt-example="A USB-powered ESP32 board with two buttons and a status light">Buttons and lights</button><button type="button" class="ghost" data-prompt-example="A USB-powered ESP32 board with SPI EEPROM to store data">Store readings</button></div>
                   <div class="free-text-actions">
-                    <button type="button" id="start-free-text" class="primary">Plan my board <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+                    <button type="button" id="start-free-text" class="primary"><span id="start-free-text-label">Plan my board</span> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
                     <span class="free-text-problem" id="free-text-problem" role="alert" hidden></span>
                   </div>
                   <p class="fineprint">Review the plan before starting. Ohmni checks the proposed circuit and explains anything it cannot support.</p>
                 </div>
-                <p id="ai-entry-status" role="status">Checking whether AI planning is available. You can use guided setup below.</p>
+                <p id="ai-entry-status" role="status">Checking whether you can describe a custom idea. Quick starts and guided setup are ready now.</p>
                 <details id="guided-entry" open><summary>Choose parts with guided setup</summary>
                 <div class="starter-heading"><div class="climate-icon" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M17 9a4 4 0 0 1 8 0v14a7 7 0 1 1-8 0z"/><path d="M21 13v15m-4 0h8M30 9h4m-4 6h4"/></svg></div><div><span class="available-label">Start with something useful</span><h2>Prefer to choose the details?</h2></div></div>
                 <ul class="starter-families"><li><strong>Measure your space</strong><span>Read the world with environmental sensors.</span></li><li><strong>Buttons &amp; lights</strong><span>Give your program physical inputs and indicators.</span></li><li><strong>Store data</strong><span>Add memory for information you want to keep.</span></li></ul>
