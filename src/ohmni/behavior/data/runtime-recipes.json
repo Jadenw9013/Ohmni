@@ -1808,6 +1808,13 @@
           "unit": "C",
           "value_path": []
         },
+        "t_min": {
+          "field": "mks4_operating_temperature_min",
+          "output_unit": null,
+          "scope_contains": "MKS4G031003F",
+          "unit": "C",
+          "value_path": []
+        },
         "vac": {
           "field": "rated_ac_voltage_50Hz",
           "output_unit": null,
@@ -1838,8 +1845,8 @@
       "instance_value_unit": null,
       "limitations": [
         "Explicit reference WIMA MKS4G031003F, chosen because it is the only 0.1 uF row in the archived WIMA 2026 catalogue with the OHMNI default body (PCM 10, 13 x 5 x 11 mm); its 400 VDC rating replaces the spec's assumed 100 V peak (D059). Tolerance, packing and pin-length suffixes are unselected.",
-        "Ideal 0.1 uF with the 3 x 10^4 Mohm minimum insulation resistance as leakage (worst case, measured at 100 V, 1 min, 20 C); no ESR, ESL, dielectric absorption or capacitance drift. tan d <= 8e-3 at 1 kHz is recorded, not modeled.",
-        "Ratings checked outside the netlist: 400 VDC derated 1.25 %/K above 85 C (DC), 200 V rms at 50 Hz with 1.4 x Urms + UDC <= Ur (derated above 75 C), -55 to +125 C. Ripple current and pulse dV/dt are not bound.",
+        "Ideal 0.1 uF with the 3 x 10^4 Mohm minimum insulation resistance as leakage. That minimum is stated at 100 V, 1 min and 20 C; insulation resistance falls when hot, so the leak is not a worst case at other temperatures. No ESR, ESL, dielectric absorption or capacitance drift; tan d <= 8e-3 at 1 kHz is recorded, not modeled.",
+        "Ratings checked outside the netlist: 400 VDC derated 1.25 %/K above 85 C for DC (above 75 C when AC is present), and an ambient of -55 to +125 C (+125 C is permitted for 1000 hours in total over the life). The 200 V rms rule at 50 Hz (1.4 x Urms + UDC <= Ur) is checked only in an AC run at 50 Hz; transient runs report it unknown. Ripple current and pulse dV/dt are not bound.",
         "Model scope: Cb and Rlk of ohm_film (spec lines 1746-1752); Resr, Lesl and the VRPK flag are dropped because the X2 defaults they carry do not apply to this DC part."
       ],
       "model_facts": {},
@@ -11341,7 +11348,7 @@
   "schema_version": 1,
   "source": {
     "document": "docs/behavior/runtime-recipes.json",
-    "document_sha256": "2a8c5b8da2acec92ae29d72e9c9095e0c8165808896e9bc0bb84963e21b1c817",
+    "document_sha256": "6322014bd0f0cd3f28de9c9b7e2e7cac3d155f759e3b582bca266184f7fb695d",
     "fragment_sha256": null,
     "line": 1
   }
