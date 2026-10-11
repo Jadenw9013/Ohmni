@@ -242,6 +242,8 @@ def _scoped_checks(component, point, context, overrides=None, transient=None, ac
             b.add("wiper voltage", "max(abs(v_W-v_A), abs(v_W-v_B)) <= v_max", ("v_max",))
     elif cls in {"BEH-CAP-CERAMIC", "BEH-CAP-MICA"}:
         b.add("rated DC voltage", "abs(v_T1-v_T2) <= vr", ("vr",))
+    elif cls == "BEH-CAP-FILM" and "derate_pct_per_k" in values:
+        _film_checks(values, b, "abs(v_T1-v_T2)", "DC voltage")
     elif cls == "BEH-CAP-EDLC":
         derive("v", "v_P-v_N")
         if "Tamb" in values:
@@ -459,6 +461,11 @@ def _transient_checks(component, values, b, thermal, upper_only, w):
         if v is not None:
             stat("peak_v", peak([abs(x) for x in v]))
             b.add("peak voltage", "peak_v <= vr", ("vr",))
+    elif cls == "BEH-CAP-FILM" and "derate_pct_per_k" in values:
+        v = w.diff("T1", "T2")
+        if v is not None:
+            stat("peak_v", peak([abs(x) for x in v]))
+            _film_checks(values, b, "peak_v", "peak voltage")
     elif cls == "BEH-CAP-TANT":
         v, i = w.diff("A", "K"), w.series("i", "A")
         if v is not None:
@@ -974,6 +981,22 @@ def _ac_checks(component, values, b, thermal, upper_only, window, linear):
                 else:
                     add("ripple current", f"irip_{key} <= irip_max", ("irip_max",),
                         "Ripple rating is stated at 100 kHz; the frequency multiplier is not bound")
+        elif cls == "BEH-CAP-FILM" and "derate_pct_per_k" in values and {"T1", "T2"} <= set(v):
+            vdc, vac = across("T1", "T2")
+            stat(f"vpk_{key}", abs(vdc) + root2 * abs(vac))
+            stat(f"vac_{key}", abs(vac))
+            rows.append(_film_checks(values, b, f"vpk_{key}", "peak voltage (DC plus AC peak)", tag))
+            if math.isclose(frequency, 50.0, rel_tol=1e-9):
+                # WIMA MKS 4 p42: AC rating at 50 Hz with 1.4 x Urms + UDC <= Ur, derated from +75 C.
+                stat(f"acdc_{key}", 1.4 * abs(vac) + abs(vdc))
+                derate = "(1 - derate_pct_per_k/100*max(Tamb-75,0))"
+                add("AC voltage rule (1.4 x Urms + UDC)", f"acdc_{key} <= vr*{derate} and vac_{key} <= vac*{derate}",
+                    ("vr", "vac", "derate_pct_per_k"),
+                    None if "Tamb" in values else "The AC rating derates above 75 C; ambient temperature is needed")
+            else:
+                add("AC voltage", f"vac_{key} <= vac", ("vac",),
+                    "The AC voltage rating is stated at 50 Hz; the permitted AC voltage at other frequencies is not bound",
+                    violation_only=True)
         elif cls == "BEH-CAP-EDLC" and {"P", "N"} <= set(v):
             vdc, vac = across("P", "N")
             stat(f"vpk_{key}", vdc + root2 * abs(vac))
@@ -1039,6 +1062,22 @@ def _ac_checks(component, values, b, thermal, upper_only, window, linear):
                         "Small-signal linearization: the circuit has a nonlinear element, so the AC amplitude "
                         "is exact only for small ripple" + (f" (computed result: {row['status']})"
                                                            if row["status"] != "unknown" else "")))
+
+
+def _film_checks(values, b, observed, label, tag=""):
+    """WIMA MKS 4 DC rating: Ur, derated by the sourced %/K above +85 C, within -55..+125 C (D059).
+
+    With no declared ambient only the full rating can prove a violation; the ambient decides a pass (D060).
+    """
+    if "Tamb" in values:
+        b.add("ambient within rated range" + tag, "Tamb <= t_max", ("t_max",))
+        return b.add(label + " (derated above 85 C)" + tag,
+                     f"{observed} <= vr*(1 - derate_pct_per_k/100*max(Tamb-85,0))", ("vr", "derate_pct_per_k"))
+    row = b.add(label + " (derated above 85 C)" + tag, f"{observed} <= vr", ("vr", "derate_pct_per_k"))
+    if row["status"] == "within_limit":
+        row.update(status="unknown", reason="Ambient temperature is not declared; the rating is derated above "
+                   "+85 C and ends at +125 C")
+    return row
 
 
 def _tant_temperature_reason(values):

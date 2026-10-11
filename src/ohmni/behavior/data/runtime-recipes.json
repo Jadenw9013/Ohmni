@@ -1353,7 +1353,7 @@
         "Recommended application voltage 8 V at <= 85 C, derating to 33% of VR at 125 C; ripple and power limits are rating facts, not netlist behaviour.",
         "Stripe marks the ANODE (opposite of aluminium/supercap convention); footprint polarity must be checked.",
         "Model scope: Resr, Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr is the sourced 100 kHz maximum ESR (a worst-case bound, not a fitted nominal; D058); Lesl dropped because ESL is unsourced.",
-        "ESR is bound as the sourced 100 kHz, 25 C maximum, constant with frequency (D058): impedance, ripple voltage and ESR loss are worst-case upper bounds at and near 100 kHz; real ESR is lower than the maximum and changes with frequency and temperature. In parallel with other capacitors this ESR shifts ripple current toward them, so their current checks are not conservative. ESL is unsourced and not modeled."
+        "ESR is bound as the sourced 100 kHz, 25 C maximum, constant with frequency (D058). Real ESR, capacitance tolerance and the omitted ESL move the part's current, and parallel parts' currents, in directions this card cannot bound, so its ripple and ESR-heating rows report unknown in both directions (D063). ESL is unsourced and not modeled."
       ],
       "model_facts": {},
       "open_mating_roles": [],
@@ -1486,7 +1486,7 @@
         "Recommended application voltage 8 V at <= 85 C, derating to 33% of VR at 125 C; ripple and power limits are rating facts, not netlist behaviour.",
         "Stripe marks the ANODE (opposite of aluminium/supercap convention); footprint polarity must be checked.",
         "Model scope: Resr, Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr is the sourced 100 kHz maximum ESR (a worst-case bound, not a fitted nominal; D058); Lesl dropped because ESL is unsourced.",
-        "ESR is bound as the sourced 100 kHz, 25 C maximum, constant with frequency (D058): impedance, ripple voltage and ESR loss are worst-case upper bounds at and near 100 kHz; real ESR is lower than the maximum and changes with frequency and temperature. In parallel with other capacitors this ESR shifts ripple current toward them, so their current checks are not conservative. ESL is unsourced and not modeled."
+        "ESR is bound as the sourced 100 kHz, 25 C maximum, constant with frequency (D058). Real ESR, capacitance tolerance and the omitted ESL move the part's current, and parallel parts' currents, in directions this card cannot bound, so its ripple and ESR-heating rows report unknown in both directions (D063). ESL is unsourced and not modeled."
       ],
       "model_facts": {},
       "open_mating_roles": [],
@@ -1619,7 +1619,7 @@
         "Recommended application voltage 8 V at <= 85 C, derating to 33% of VR at 125 C; ripple and power limits are rating facts, not netlist behaviour.",
         "Stripe marks the ANODE (opposite of aluminium/supercap convention); footprint polarity must be checked.",
         "Model scope: Resr, Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr is the sourced 100 kHz maximum ESR (a worst-case bound, not a fitted nominal; D058); Lesl dropped because ESL is unsourced.",
-        "ESR is bound as the sourced 100 kHz, 25 C maximum, constant with frequency (D058): impedance, ripple voltage and ESR loss are worst-case upper bounds at and near 100 kHz; real ESR is lower than the maximum and changes with frequency and temperature. In parallel with other capacitors this ESR shifts ripple current toward them, so their current checks are not conservative. ESL is unsourced and not modeled."
+        "ESR is bound as the sourced 100 kHz, 25 C maximum, constant with frequency (D058). Real ESR, capacitance tolerance and the omitted ESL move the part's current, and parallel parts' currents, in directions this card cannot bound, so its ripple and ESR-heating rows report unknown in both directions (D063). ESL is unsourced and not modeled."
       ],
       "model_facts": {},
       "open_mating_roles": [],
@@ -1752,7 +1752,7 @@
         "Recommended application voltage 8 V at <= 85 C, derating to 33% of VR at 125 C; ripple and power limits are rating facts, not netlist behaviour.",
         "Stripe marks the ANODE (opposite of aluminium/supercap convention); footprint polarity must be checked.",
         "Model scope: Resr, Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr is the sourced 100 kHz maximum ESR (a worst-case bound, not a fitted nominal; D058); Lesl dropped because ESL is unsourced.",
-        "ESR is bound as the sourced 100 kHz, 25 C maximum, constant with frequency (D058): impedance, ripple voltage and ESR loss are worst-case upper bounds at and near 100 kHz; real ESR is lower than the maximum and changes with frequency and temperature. In parallel with other capacitors this ESR shifts ripple current toward them, so their current checks are not conservative. ESL is unsourced and not modeled."
+        "ESR is bound as the sourced 100 kHz, 25 C maximum, constant with frequency (D058). Real ESR, capacitance tolerance and the omitted ESL move the part's current, and parallel parts' currents, in directions this card cannot bound, so its ripple and ESR-heating rows report unknown in both directions (D063). ESL is unsourced and not modeled."
       ],
       "model_facts": {},
       "open_mating_roles": [],
@@ -1779,6 +1779,94 @@
       "terminal_roles": {
         "1": "A",
         "2": "K"
+      }
+    },
+    "OHM-037": {
+      "behavior_id": "BEH-CAP-FILM",
+      "catalog_identity_pin_map": {},
+      "catalog_parts": [],
+      "class_parameters": {},
+      "critical_facts": {
+        "derate_pct_per_k": {
+          "field": "mks4_voltage_derating",
+          "output_unit": null,
+          "scope_contains": "MKS4G031003F",
+          "unit": "percent/K",
+          "value_path": []
+        },
+        "rleak": {
+          "field": "minimum_insulation_resistance",
+          "output_unit": null,
+          "scope_contains": "MKS4G031003F",
+          "unit": "ohm",
+          "value_path": []
+        },
+        "t_max": {
+          "field": "mks4_operating_temperature_max",
+          "output_unit": null,
+          "scope_contains": "MKS4G031003F",
+          "unit": "C",
+          "value_path": []
+        },
+        "vac": {
+          "field": "rated_ac_voltage_50Hz",
+          "output_unit": null,
+          "scope_contains": "MKS4G031003F",
+          "unit": "V rms",
+          "value_path": []
+        },
+        "value": {
+          "field": "nominal_capacitance",
+          "output_unit": "F",
+          "scope_contains": "MKS4G031003F",
+          "unit": "uF",
+          "value_path": []
+        },
+        "vr": {
+          "field": "rated_voltage",
+          "output_unit": null,
+          "scope_contains": "MKS4G031003F",
+          "unit": "V DC",
+          "value_path": []
+        }
+      },
+      "derived_parameters": {},
+      "entry_id": "OHM-037",
+      "fit_curves": {},
+      "ground_strays": {},
+      "inline_assets": [],
+      "instance_value_unit": null,
+      "limitations": [
+        "Explicit reference WIMA MKS4G031003F, chosen because it is the only 0.1 uF row in the archived WIMA 2026 catalogue with the OHMNI default body (PCM 10, 13 x 5 x 11 mm); its 400 VDC rating replaces the spec's assumed 100 V peak (D059). Tolerance, packing and pin-length suffixes are unselected.",
+        "Ideal 0.1 uF with the 3 x 10^4 Mohm minimum insulation resistance as leakage (worst case, measured at 100 V, 1 min, 20 C); no ESR, ESL, dielectric absorption or capacitance drift. tan d <= 8e-3 at 1 kHz is recorded, not modeled.",
+        "Ratings checked outside the netlist: 400 VDC derated 1.25 %/K above 85 C (DC), 200 V rms at 50 Hz with 1.4 x Urms + UDC <= Ur (derated above 75 C), -55 to +125 C. Ripple current and pulse dV/dt are not bound.",
+        "Model scope: Cb and Rlk of ohm_film (spec lines 1746-1752); Resr, Lesl and the VRPK flag are dropped because the X2 defaults they carry do not apply to this DC part."
+      ],
+      "model_facts": {},
+      "open_mating_roles": [],
+      "package": "WIMA MKS 4 radial box, PCM 10 mm, 13 x 5 x 11 mm",
+      "pin_role_fact": null,
+      "quoted_parameters": {},
+      "reference_function": null,
+      "reference_part": "WIMA MKS4G031003F (MKS 4 PET, 0.1 uF, 400 VDC/200 VAC)",
+      "required_ground_roles": [],
+      "required_isolated_roles": [],
+      "required_same_net_roles": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "template_key": "netlist_template",
+      "template_override": "C{ref} {T1} {T2} {value}\nR{ref}_lk {T1} {T2} {rleak}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "fragment_sha256": null,
+        "line": 1749
+      },
+      "terminal_roles": {
+        "1": "T1",
+        "2": "T2"
       }
     },
     "OHM-039": {
@@ -11253,7 +11341,7 @@
   "schema_version": 1,
   "source": {
     "document": "docs/behavior/runtime-recipes.json",
-    "document_sha256": "a24800ed56e894ce7a173065fbad945cc097e3768f27afde11c805c5b9c40d25",
+    "document_sha256": "2a8c5b8da2acec92ae29d72e9c9095e0c8165808896e9bc0bb84963e21b1c817",
     "fragment_sha256": null,
     "line": 1
   }

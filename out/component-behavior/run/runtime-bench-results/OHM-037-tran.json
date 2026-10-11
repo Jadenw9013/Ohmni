@@ -1,0 +1,71 @@
+{
+  "analysis": "tran",
+  "circuit_hash": "ca03767235934d5340ebf70a14721c67e1de43ceb34f759fbcc5150952291f6d",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": [
+    {
+      "current": 0.001,
+      "expected": 9.999995,
+      "kind": "absolute",
+      "node": "anode",
+      "source_deck_sha256": "b98c113635abab21b6c6f464b09570ec152bdea1b5f90ac9e8288d89d8ed514d",
+      "source_facts": {
+        "value": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "converted_unit": "F",
+          "converted_value": 1e-07,
+          "detail": "p42 row '0.1 uF' in the 400 VDC/200 VAC column.",
+          "field": "nominal_capacitance",
+          "page": 42,
+          "scope": "WIMA MKS4G031003F00 (MKS 4 metallized PET, 0.1 uF, 400 VDC/200 VAC, PCM 10, W5 x H11 x L13 mm); tolerance/packing/pin-length suffix unselected",
+          "sources": [
+            "https://www.wima.de/wp-content/uploads/media/WIMA_Main_Catalogue_2026.pdf"
+          ],
+          "unit": "uF",
+          "value": 0.1
+        },
+        "vr": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "detail": "p42 column header '400 VDC/200 VAC*'; p40 'Rated voltages: 63 VDC, 100 VDC, 250 VDC, 400 VDC'.",
+          "field": "rated_voltage",
+          "page": 42,
+          "scope": "WIMA MKS4G031003F00 (MKS 4 metallized PET, 0.1 uF, 400 VDC/200 VAC, PCM 10, W5 x H11 x L13 mm); tolerance/packing/pin-length suffix unselected",
+          "sources": [
+            "https://www.wima.de/wp-content/uploads/media/WIMA_Main_Catalogue_2026.pdf"
+          ],
+          "unit": "V DC",
+          "value": 400
+        }
+      },
+      "time": 0.001,
+      "tolerance": 0.009999995000000001,
+      "tolerance_contract": "BEH-CAP-FILM/B1"
+    }
+  ],
+  "entry_id": "OHM-037",
+  "entry_research_sha256": "31fab78590b2afde6b5cd75938def5a01533de26c2283a8a94f739548bfc92a2",
+  "limits": "Constant-current charge from zero against I*ESR + I*t/C at one time point, using the relative tolerance of the class bench named in the comparison. Does not validate ESR frequency dependence, leakage, RF loss, self-heating or any rating.",
+  "netlist_sha256": "567f133a9ca616774b6843cab04dad9e8e59c81467008842bce0199e4618115f",
+  "observation_status": "ran",
+  "observe_nets": [
+    "anode"
+  ],
+  "observed": [
+    10.00048845416906
+  ],
+  "output_sha256": "ed87431320d5330ae24d956520222d3077d76f86c88a4192d880d16d0395512a",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T00:33:05Z",
+  "raw_output": "runtime-bench-output/OHM-037-tran/output.txt",
+  "recipe_source_sha256": "2a8c5b8da2acec92ae29d72e9c9095e0c8165808896e9bc0bb84963e21b1c817",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "tstep": "1u",
+  "tstop": "0.0011",
+  "version_file": "runtime-bench-output/OHM-037-tran/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sat Oct 10 21:32:36 UTC 2026\n******\n",
+  "version_sha256": "7f444023b0e5851d50a26bf40338ca29665b10988154a0ff2d662d918ab83fc3"
+}
