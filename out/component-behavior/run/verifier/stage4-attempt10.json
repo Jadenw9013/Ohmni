@@ -1,0 +1,327 @@
+{
+  "schema_version": 1,
+  "stage": "stage4",
+  "seed": 1439465524999280516,
+  "population": [
+    "OHM-103",
+    "OHM-104",
+    "OHM-105",
+    "OHM-106",
+    "OHM-107",
+    "OHM-108",
+    "OHM-109",
+    "OHM-110",
+    "OHM-111",
+    "OHM-112",
+    "OHM-113",
+    "OHM-114",
+    "OHM-115",
+    "OHM-116",
+    "OHM-117",
+    "OHM-118",
+    "OHM-119",
+    "OHM-120",
+    "OHM-121",
+    "OHM-122",
+    "OHM-123",
+    "OHM-124",
+    "OHM-125",
+    "OHM-126",
+    "OHM-127",
+    "OHM-128",
+    "OHM-129",
+    "OHM-130",
+    "OHM-131",
+    "OHM-132",
+    "OHM-133",
+    "OHM-134",
+    "OHM-135",
+    "OHM-136",
+    "OHM-137",
+    "OHM-138",
+    "OHM-139",
+    "OHM-140",
+    "OHM-141",
+    "OHM-142",
+    "OHM-143",
+    "OHM-144",
+    "OHM-145",
+    "OHM-146",
+    "OHM-147",
+    "OHM-148",
+    "OHM-149",
+    "OHM-150",
+    "OHM-151",
+    "OHM-152",
+    "OHM-153",
+    "OHM-154",
+    "OHM-155",
+    "OHM-156",
+    "OHM-157",
+    "OHM-158",
+    "OHM-159",
+    "OHM-160",
+    "OHM-161",
+    "OHM-162",
+    "OHM-163",
+    "OHM-164",
+    "OHM-165",
+    "OHM-166",
+    "OHM-167",
+    "OHM-168",
+    "OHM-169",
+    "OHM-170",
+    "OHM-171",
+    "OHM-172",
+    "OHM-173",
+    "OHM-174",
+    "OHM-175",
+    "OHM-176",
+    "OHM-177",
+    "OHM-178",
+    "OHM-179",
+    "OHM-180"
+  ],
+  "sample": [
+    "OHM-118",
+    "OHM-121",
+    "OHM-122",
+    "OHM-124",
+    "OHM-133",
+    "OHM-145",
+    "OHM-155",
+    "OHM-161"
+  ],
+  "reviewer_context": "fresh",
+  "plan_sha256": "086edf80ab0769b3c71b9f5a15e396accb90d44b1417c632922f9817621b0ea1",
+  "reviewed_at": "2026-10-11T23:01:21Z",
+  "method": "Human-authorized tenth verification round for stage4 (Jaden, 2026-10-10: 'run a fresh independent verifier round for the behavior research stages'; re-sample after fixing mismatches; 2026-10-11: budget-friendly path approved). Before this round, origin/main #59 and #63 were merged (D075 pin-level models re-sourced OHM-122 to OHM-126 and OHM-131), and the three mismatches the refreshed reviews of OHM-126 and OHM-131 found were fixed against the archived documents: the FT/TTa/NRST input-threshold scopes in OHM-124, OHM-125 and OHM-126 now give DS8626 Rev 12 Table 48's 1.7 V <= VDD <= 3.6 V condition (1.75 V belongs to the BOOT0 rows), and OHM-131's 5 V tolerant list adds PA14 (pin 37) and PB3 (pin 39), which DS5319 Rev 20 Table 5 marks FT. New integer seed drawn once with secrets.randbits(63) before the sample was computed. One fresh-context reviewer agent per sampled entry (Claude Sonnet, chosen for cost) with the unchanged round-7 instructions: text extraction with word coordinates first, at most four cropped renders at 150 dpi or less, and spot checks of digitized curve points instead of full re-digitization. Reviewers read only the entry gapfill, its generated record, FETCH_LEDGER.jsonl (URL-to-SHA256 mapping only) and the archived primary-source bytes; no web access, no other repository files, no prior verifier reports. Values, units, conditions, min/typ/max qualifiers, document metadata and provenance claims were re-derived; page-citation drift with the value present elsewhere in the same document is recorded as a note.",
+  "results": [
+    {
+      "entry_id": "OHM-118",
+      "primary_sources": [
+        "https://www.ti.com/lit/ds/symlink/sn74hc595.pdf"
+      ],
+      "mismatches": [],
+      "notes": [
+        "Document: TI datasheet 'SNx4HC595 8-Bit Shift Registers With 3-State Output Registers' (SN54HC595, SN74HC595), doc SCLS041J, Dec 1982 - Revised Oct 2021 (Rev J per p2 revision history), 41 pages. Archive blob f71523bb... sha256 equals its file name (2710727 bytes); ledger row http 200, fetched 2026-10-05T17:05:35Z, single row for this URL. Pages read: 1, 2, 3, 4, 5 (text + word coordinates); rendered 2 crops of p3 (Table 5-1 and the Top View pinout).",
+        "Record documents entry: manufacturer Texas Instruments and revision SCLS041J,October2021 match the page footers and p2 revision history. Title 'SN74HC595 shift register' is a shortened label for the official title above (wording only; SN74HC595 is covered by the document).",
+        "reference_part OK (p1): Device Information table lists SN74HC595DB, SSOP (16), 6.20 mm x 5.30 mm, so the DB SSOP-16 scope holds.",
+        "manufacturer_pin_roles OK (p3): the 'D, N, NS, J, DB, or PW Package / 16-Pin SOIC, PDIP, SO, CDIP, SSOP, or TSSOP / Top View' drawing gives pins 1-16 = QB, QC, QD, QE, QF, QG, QH, GND, QH', SRCLR, SRCLK, RCLK, OE, SER, QA, VCC; QH' is recorded as QH_serial (naming only). Signal-pin numbers also agree with the p1 block diagram and with Table 5-1.",
+        "Caveat on pin roles, not a mismatch: Table 5-1 on p3 prints an em dash for VCC in the SOIC/PDIP/SO/CDIP/SSOP/TSSOP column (20 only under LCCC), so VCC = pin 16 rests on the p3 pinout drawing, not on the table. The record does not mention this table inconsistency (conflicts is empty); consider noting it.",
+        "recommended_supply_min 2 V and recommended_supply_max 6 V OK (p4 6.3): SN74HC595 VCC MIN 2 / NOM 5 / MAX 6 V (SN54HC595 columns are identical). operating_ambient_range [-40, 85] degC OK (p4 6.3): SN74HC595 TA -40 to 85 degC; the SN54HC595 columns (-55 to 125) were not used.",
+        "absolute_supply_max 7 V, maximum_output_current_magnitude 35 mA, maximum_supply_current_magnitude 70 mA, maximum_junction_temperature 150 degC all OK (p4 6.1 Absolute Maximum Ratings, over operating free-air range): VCC max 7 V; IO +/-35 mA for VO = 0 to VCC; continuous current through VCC or GND +/-70 mA; TJ 150 degC (MAX column).",
+        "thermal_resistance_junction_ambient 82 K/W OK (p5 6.4): RthetaJA for DB (SSOP) 16 pins = 82 degC/W (D 73, DW 57, N 67, NS 64, PW 108); column assignment settled by word coordinates. The table gives no board conditions beyond a footnote pointing to SPRA953.",
+        "input_capacitance_typical 3 pF OK (p5 6.5): Ci, VCC = 2 V to 6 V, TA = 25 degC TYP = 3 pF (MAX is 10 pF in the 25 degC, SN54 and SN74 columns), matching the typical-column-only qualifier.",
+        "input_leakage_max 1 uA OK (p5 6.5): II at VI = VCC or 0, VCC = 6 V, SN74HC595 full-temperature MAX +/-1000 nA = 1 uA (25 degC max +/-100 nA). off_state_output_leakage_max 5 uA OK: IOZ at VO = VCC or 0, QA-QH, VCC = 6 V, SN74HC595 full-temperature MAX +/-5 uA (25 degC max +/-0.5 uA).",
+        "No DERIVED fields or digitized curves; all 13 field_updates have basis MFR_DATASHEET from the TI-hosted manufacturer datasheet. remaining_open_items statement that output and supply current limits are separate is consistent with p4 (IO +/-35 mA per output, VCC/GND +/-70 mA); document note 'Primary PDF read from the hash-addressed archive' holds.",
+        "Record vs gap-fill: research.field_updates identical (13 of 13, compared programmatically); documents, conflicts, remaining_open_items, simulation_blockers, bench_results, research_result and researched_at also identical; record research.source.document_sha256 equals the gap-fill sha256."
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "0533f4268d2b2fcda83153e09c48d27623f9dee575665b0cc7503f3be15e310b",
+        "generated_record_sha256": "4debcf2fd38ec42ff98251dee2ce82e79fcc4708a9378901fe4f6658f9d9bd20"
+      }
+    },
+    {
+      "entry_id": "OHM-121",
+      "primary_sources": [
+        "https://www.ti.com/lit/ds/symlink/tps3808.pdf"
+      ],
+      "mismatches": [],
+      "notes": [
+        "Document: Texas Instruments TPS3808 Low-Quiescent-Current, Programmable-Delay Supervisory Circuit, doc SBVS050N (MAY 2004 - REVISED AUGUST 2026; p17 revision history 'Revision M (March 2023) to Revision N (August 2026)'), 39 pages. Ledger row (single, exact URL): http 200, 2046179 bytes, fetched 2026-10-05T17:05:37Z; blob sha256 74d889c0... equals its file name. Pages read: 1-6 as text with word coordinates, p17 (revision history), p22/p25/p28 only via a text scan for G33 orderables; one region rendered (p6 electrical table, 130 dpi).",
+        "Record documents entry vs bytes: manufacturer Texas Instruments OK; revision 'SBVS050N,August2026' OK (every page header/footer, p17); source_status/note OK (TI's own PDF, no distributor copy). Title 'TPS3808 programmable-delay supervisory circuit' is a shortened paraphrase of the printed title (omits 'Low-Quiescent-Current,'): wording difference only. Part coverage OK: TPS3808G33DBVR/DBVT are Active, SOT-23 (DBV), 6 pins (p22).",
+        "reference_part TPS3808G33 (p3 Table 4-1 row TPS3808G33; DBV SOT-23-6 orderable confirmed on p22): OK.",
+        "manufacturer_pin_roles (p4): Table 5-1 SOT-23 column (word x about 125-130) gives CT 4, GND 2, MR 3, RESET 1, SENSE 5, VDD 6, and Figure 5-1 DBV top-view label positions agree. OK.",
+        "recommended_supply_min 1.7 V / recommended_supply_max 6.5 V (p5 Table 6.3 VDD row, MIN and MAX columns, header 'over operating free-air temperature range'); p6 Table 6.5 VDD -40<TJ<125C row repeats 1.7/6.5. OK.",
+        "absolute_supply_max 7 V (p5 Table 6.1 VDD MAX), maximum_reset_current_magnitude 5 mA (p5 Table 6.1 RESET pin -5/5 mA), maximum_junction_temperature 150 C (p5 Table 6.1 'Operating junction, TJ' -40/150 C, footnote 2 'TJ = TA' assumed); header 'over operating junction temperature range'. OK.",
+        "recommended_junction_temperature_range -40..125 C (p6 Table 6.5 header 'over operating temperature range (TJ = -40C to 125C)'; p1 also says fully specified -40 to 125 C (TJ)). Claim '6.3 has no TJ row' verified: Table 6.3 rows are VDD, VSENSE, V(Ct), V MR, V RESET, I RESET only. OK.",
+        "thermal_resistance_junction_ambient 180.9 K/W (p5 Table 6.4 RthetaJA, DBV (SOT-23) column by coordinates; DRV (WSON) column is 178.1; unit printed as C/W, equal to K/W for a difference). OK.",
+        "sense_threshold_nominal 3.07 V (p3 Table 4-1 row TPS3808G33: nominal supply 3.3V, threshold VIT 3.07V). OK.",
+        "sense_threshold_accuracy 1.5 percent (p6 Table 6.5 VIT row 'VIT <= 3.3V' with no TJ sub-condition: min -1.5%, typ +/-0.5%, max 1.5%, i.e. over TJ -40..125C; the tighter 1.25% row applies only to -40<TJ<85C). Header conditions 1.7V<=VDD<=6.5V, RLRESET=100k, CLRESET=50pF match the scope string. G33 VIT=3.07V <= 3.3V so this row applies. OK.",
+        "manual_reset_pullup_typical 90 kohm (p6 Table 6.5 RMR row: MIN 70, TYP 90, no MAX, by coordinates and render; typical values at TJ=25C per header; p4 pin table also says MR internally tied to VDD by 90 kohm). OK.",
+        "maximum_reset_low_voltage 0.4 V (p6 Table 6.5 VOL MAX column for '1.8V<=VDD<=6.5V, IOL=1mA'; the 0.3 V max row is the separate 1.3V<=VDD<1.8V, IOL=0.4mA row). OK.",
+        "conflicts, remaining_open_items, simulation_blockers: no statements about the document that the bytes contradict (they describe repository/bench state and cannot be checked from the PDF); no document-internal conflict found for the cited fields. No DERIVED fields (all 13 basis MFR_DATASHEET from the TI datasheet). Cited page numbers equal PDF page indexes (printed footer matches).",
+        "Record vs gap-fill: record research.field_updates (13) and gap-fill audit-evidence field_updates (13) match on every key and value; the only raw difference is that the record adds 'detail': null to each entry while the gap-fill omits the key (identical once absent detail is treated as null). documents, conflicts, remaining_open_items, simulation_blockers, bench_results, bench_result, research_result, researched_at and entry_id are identical; research.source.document_sha256 equals the gap-fill sha256."
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "c2b96762efa12b078a7fb342677577dbc2501ca518e1760efc649d94643117e5",
+        "generated_record_sha256": "eaaf1f43bf215214ed48bf4e0ef3d9f853e3763a91156a2937297a24119e1295"
+      }
+    },
+    {
+      "entry_id": "OHM-122",
+      "primary_sources": [
+        "https://www.princeton.edu/~mae412/HANDOUTS/Datasheets/ATmega328abrev.pdf",
+        "https://physicslabs.colorado.edu/courses/phys-3330/resources/manuals-and-data-sheets/ds-ATmega328P-Microcontroller.pdf",
+        "https://ww1.microchip.com/downloads/aemDocuments/documents/MCU08/ProductDocuments/DataSheets/ATmega48A-PA-88A-PA-168A-PA-328-P-DS-DS40002061B.pdf"
+      ],
+      "mismatches": [],
+      "notes": [
+        "ID Princeton blob 9a11aa8e: Atmel Corporation 'Atmel 8-bit Microcontroller with 4/8/16/32KBytes In-System Programmable Flash ATmega48A/48PA/88A/88PA/168A/168PA/328/328P SUMMARY', 8271ES-AVR-07/2012, 36 pp; title, manufacturer and revision match the record. Pages read: 1, 2, 22 (with word coordinates), 23, 27, 35, 36.",
+        "ID Colorado blob a0ea9df0: Atmel Corporation '8-bit Microcontroller with 4/8/16/32K Bytes In-System Programmable Flash ATmega48PA/88PA/168PA/328P', Rev. 8161D-AVR-10/09, 448 pp; matches the record. Pages read: 1, 314.",
+        "ID Microchip blob b9b9d83c: Microchip Technology Inc. 'megaAVR Data Sheet ATmega48A/PA/88A/PA/168A/PA/328/P', DS40002061B (Rev. B 09/2020 on p646), 653 pp; matches the record. Pages read: 1, 2, 12, 13, 14, 37, 85, 292, 308, 312, 322, 323, 646, plus keyword-search hits on p84, p91-93, p643; printed page tags equal PDF indices; 0 images rendered because word coordinates settled every column and pin assignment.",
+        "Ledger: all three URLs have http_status 200 and a 64-hex digest, and each blob's sha256 and size match the ledger. The Microchip URL has two ledger rows (2026-10-11T05:22:56Z and 05:36:38Z) with the same digest.",
+        "reference_part and operating_ambient_range (Princeton p22): OK. ATmega328P-AU is package 32A (32-lead TQFP) in the Industrial -40 to 85 degC group at 20 MHz, 1.8-5.5 V; the -AN codes form a separate 105 degC group (checked by y-coordinates), and p2 also states -40 to 85 degC. The document is Atmel's abbreviated datasheet (not a brochure) and its p22 ordering table is part-specific.",
+        "recommended_supply_min/max (Princeton p2): OK. 'Operating Voltage 1.8 - 5.5V' with speed grades 0-4 MHz@1.8-5.5 V, 0-10 MHz@2.7-5.5 V, 0-20 MHz@4.5-5.5 V, same wording on DS40002061B p2. The 8161D cover says 0-20 MHz @ 1.8-5.5 V instead; the record scope follows the later wording.",
+        "io_current_aggregate_constraints (Colorado 8161D p314, notes 3 and 4): OK. Sink 100 mA each for C0-C5+ADC7/ADC6, B0-B5+D5-D7+XTAL1/XTAL2 and D0-D4+RESET, source 150 mA each for C0-C5+D0-D4+ADC7+RESET and B0-B5+D5-D7+ADC6+XTAL1/XTAL2, test points 20 mA@5 V and 10 mA@3 V. The same sums appear on DS40002061B p323 notes 3-4.",
+        "absolute_supply_max 6.0 V, maximum_io_pin_current 40 mA, maximum_supply_current 200 mA, absolute_pin_voltage_above_vcc_max / below_ground_max 0.5 V, reset_voltage_max 13.0 V (DS40002061B p308, 29.1): OK. Each label and value share a text line (checked by coordinates), and the same list repeats in 30.1 on p322.",
+        "maximum_io_leakage, io_pullup_resistance_range, reset_pullup_resistance_range (Table 30-1, p323): OK. IIL/IIH 1 uA sits in the Max column at VCC = 5.5 V, RPU 20/50 kohm and RRST 30/60 kohm sit in Min/Max. Table 30-1 is titled TA = -40 to 105 degC, VCC = 1.8-5.5 V and these rows have no separate 85 degC split.",
+        "input_low_voltage_fraction_max 0.3, input_high_voltage_fraction_min 0.6, reset_input_low_fraction_max 0.1, reset_input_high_fraction_min 0.9 (Table 30-1, p322): OK. VIL Max 0.3VCC and VIH Min 0.6VCC are the VCC = 2.4-5.5 V rows except XTAL1 and RESET; VIL2 Max 0.1VCC and VIH2 Min 0.9VCC are the RESET rows for VCC = 1.8-5.5 V.",
+        "output_low_voltage_max 0.9 V, output_low_test_current 20 mA, output_drive_test_supply 5 V (p322) and output_high_voltage_min 4.2 V, output_high_test_current 20 mA (p323): OK. VOL Max 0.9 V at IOL = 20 mA, VCC = 5 V and VOH Min 4.2 V at IOH = -20 mA, VCC = 5 V are the TA=85 degC sub-rows (1.0 V and 4.1 V at 105 degC), pins other than RESET. These 85 degC values exist only in Table 30-1 (section 30 is titled 105 degC), and the record scopes them to the 85 degC row.",
+        "reset_io_state (p85), default_clock_source (p37), pb6_pb7_with_internal_rc (p13), rstdisbl_default (p292), avcc_connection (p14): OK. The p85 sentence is in 14.2.1 Configuring the Pin (record scope says 'I/O-Ports overview', wording only) and p37 9.2.1 gives CKSEL=0010, CKDIV8=0; the p13 TOSC sentence is quoted exactly and the port-pin reading is corroborated on p91. p292 Table 28-8 RSTDISBL bit 7 default 1 (unprogrammed) sits under the Table 28-8 heading by coordinates, and the p14 1.1.7 text is exact.",
+        "manufacturer_pin_roles (DS40002061B p12, Figure 1-1 32 TQFP Top View): OK. All 32 pin-to-name pairs were derived programmatically from the figure's word coordinates and equal the record map; pins 7, 8 and 29 carry the XTAL1, XTAL2 and RESET alternate labels.",
+        "conflicts and remaining_open_items statements about the documents: OK. Neither DS40002061B nor 8161D gives thermal resistance or a junction limit (only thermal-via land-pattern text on DS p643 for QFN packages) or clamp-injection limits (only protection-diode text, DS p84 and 8161D p75); Table 29-8 (p312) gives Active 8 MHz, VCC = 5 V as 5.2 typ / 9 max mA (columns checked). The VOL 0.9 V / 1.0 V statement matches p322 and 0.9 V / 20 mA = 45 ohm.",
+        "Document notes: the Princeton and Colorado PDFs are Atmel-authored (author metadata Atmel Corporation, Atmel copyright) and are labelled manufacturer_document_mirror, not primary; the Microchip copy is hosted at ww1.microchip.com. The summary note 'mechanical27' is true but p27 is the 28P3 PDIP drawing, and the 32A TQFP drawing is on p23 (research-process note only).",
+        "Record vs gap-fill: research.source.document_sha256 equals the gap-fill sha256, and field_updates has 29 entries in the same order with the same values, units, pages, scopes, bases, confidences and sources. Strict dict equality differs only because the record carries detail:null for 5 fields (reference_part, recommended_supply_min, recommended_supply_max, operating_ambient_range, io_current_aggregate_constraints) where the gap-fill omits the key; the lists are equal after normalizing absent detail to null.",
+        "Other research blocks (documents, conflicts, remaining_open_items, simulation_blockers, bench_results, researched_at, research_result) are identical between record and gap-fill; the record adds only page:null to each document.",
+        "Summary: 29 of 29 field_updates re-derived from the archived bytes with no mismatch; scripts and extracts are in the OHM-122 scratch folder."
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "4ee43ae1697ef32e505748e2edb61c2d8582f2f38edf4bef544158fab5cf1c6d",
+        "generated_record_sha256": "3a42f6b0343abd62e61e075cf18c8c96bd3c1bbf8cb55b4457a7bbc8c135311b"
+      }
+    },
+    {
+      "entry_id": "OHM-124",
+      "primary_sources": [
+        "https://www.keil.com/dd/docs/datashts/st/stm32f4xx/dm00037051.pdf",
+        "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+      ],
+      "mismatches": [],
+      "notes": [
+        "Hashes: gap-fill 77973fef...6a74 and record b6476f4b...7b87 match the expected values. research.field_updates is identical to the gap-fill audit-evidence field_updates (31 entries, same order, compared programmatically); bench_results, conflicts, remaining_open_items, researched_at, simulation_blockers and the first documents entry are also identical.",
+        "Ledger: Keil URL has one row (http 200, e14d7913..., 2337166 bytes, 2026-10-05T21:08:01Z). ST URL has 4 rows: 3 timeouts and a usable manual_download row (1f41b4fa49a9..., 2792056 bytes, browser download 2026-10-06). Both blobs hash to their file names and start with %PDF.",
+        "Keil blob e14d7913 (archive prefix): STMicroelectronics STM32F405xx/STM32F407xx datasheet, Doc ID 022152 Rev 3, May 2012, 180 pages, Table 1 on p1 lists STM32F405RG with LQFP64. Matches the record title, manufacturer and revision; 'manufacturer_document_mirror' is an honest status. Pages read: 1, 72, 164, plus 105 and 154 for open-item checks, and p38 label geometry.",
+        "ST blob 1f41b4fa: STMicroelectronics STM32F405xx/STM32F407xx datasheet DS8626 Rev 12, March 2026 (revision history p205 lists 18-Mar-2026 Rev 12), 206 pages, Table 1 on p2 covers STM32F405RG. Matches the record title, manufacturer and revision. Pages read: 1, 2, 43, 48-62, 80-82, 116, 117, 121, 170, 185, 205; one render (p116 Table 48 VIL/VIH block).",
+        "Keil-cited fields OK. reference_part: Table 95 p164 gives R = 64 pins, G = 1024 Kbytes, T = LQFP, 6 = -40 to 85 degC, and p1 Table 1 lists STM32F405RG in LQFP64. operating_ambient_range [-40,85] and maximum_package_power_at85C 435 mW: Table 13 (continued) p72, TA for suffix 6 at maximum power dissipation -40 to 85, PD LQFP64 Max column 435 mW (word coordinates), footnote 6 'if TA is lower, higher PD allowed as long as TJ does not exceed TJmax'. Rev 12 Table 14 p82 repeats 435 mW, -40..85 and TJ -40..105 for suffix 6.",
+        "Table 11/12/13 OK (Rev 12 p80-81): VDD-VSS -0.3..4.0 V; VIN five-volt tolerant VSS-0.3..VDD+4 V; VIN any other pin VSS-0.3..4.0 V; IVDD 240 mA; IVSS 240 mA; IIO 25 mA sunk and sourced; IINJ five-volt tolerant -5/+0 mA with note 3; any other pin +-5 mA; sum +-25 mA with note 5; TJ max 125 degC. Column assignment confirmed by word coordinates.",
+        "Table 14 OK (Rev 12 p81-82): VDD Min 1.8(2), Max 3.6 V; footnote 2 (p82) allows 1.7 V only in a reduced temperature range with an external supply supervisor (Section 3.15.2), not worded as PDR_ON as in Rev 3, the exception is not applied either way. VDDA condition 'Must be the same potential as VDD(5)' verbatim, footnote 5 (p82) tolerates 300 mV difference during power-up/down. TJ suffix 6 -40..105 degC (p82).",
+        "Table 48/51/98 OK. p116 (render checked): FT/TTa/NRST VIL Max 0.3VDD(2) and VIH Min 0.7VDD(2) at 1.7 V <= VDD <= 3.6 V, footnote 2 = tested in production. p117: Ilkg +-1 uA, FT leakage 3 uA at VIN = 5 V; RPU 30/40/50 kohm for all pins except PA10/PB12 (those are 7/10/14 kohm); CIO 5 pF in the Typ column, Max blank. p121 Table 51 NRST RPU 30/40/50 kohm; p185 Table 98 LQFP64 46 degC/W with JESD51-2 still air reference.",
+        "Pins OK. All 64 recorded manufacturer_pin_roles match Figure 12 p43 (label-to-number geometry, 64/64) and the Table 7 LQFP64 column pp49-61 (coordinate parse, 64/64); recorded 'PA0' and 'VCAP1' are the document's PA0/WKUP and VCAP_1. The old-map conflict is consistent: Rev 3 Figure 10 p38 shows the same letter-level top-row arrangement (VDD VSS PB PB BOOT0 PB PB PB PB PB PD PC PC PC PA PA for pins 64..49).",
+        "Reset rules and notes OK: p48 Table 6 legend quotes for reset_io_state and reset_pin_function_rule are verbatim; bracketed reset functions PA13 p57, PA14 and PA15 p58, PB3 and PB4 p60 match; Table 7 note 4 on p61 is verbatim and the Notes column marks pins 2-4 (PC13-PC15) with (3)(4). The record's 'only' in the backup_domain_reset_note value is a paraphrase of 'Main function after the first backup domain power-up. Later on, it depends on the RTC registers'.",
+        "five_volt_tolerant_roles: the 41 recorded pads are exactly the Table 7 LQFP64 'FT' pads (49) minus PC13-PC15, PA13-PA15, PB3, PB4, which the open items declare unmodeled; PA4/PA5 are TTa, BOOT0 is B, NRST is RST. CAVEAT not counted as a mismatch: Table 7 note 5 (p61) says 'FT = 5 V tolerant except when in analog mode or oscillator mode (for PC14, PC15, PH0 and PH1)', which the record does not carry for PH0/PH1 and the note-(5) pads; the reset-state binding (p48, floating inputs) makes it inapplicable in the modeled state.",
+        "Other caveats not counted as mismatches: the VIH rows in Table 48 are labelled 'input low level voltage' in the document (typo), the record detail says 'high'; by-design rows VIL 0.3VDD-0.04 and VIH 0.45VDD+0.3 (p116) sit beside the recorded tested-in-production rows; Table 48 notes 4 and 5 (p117) say leakage may exceed the maximum with negative adjacent-pin injection and above VDD+0.3 V pull-ups must be disabled; Table 7 note 3 (p61) limits PC13-PC15 to 3 mA sink, below the 25 mA IIO.",
+        "Conflicts and open items checked: 'LQFP body height 1.4 mm' = A2 typ 1.40 mm (Rev 12 Table 92 p170, A max 1.60; Rev 3 Table 89 p154). Table 20 is run-mode current consumption in both documents (Rev 12 p87, Rev 3 p78), though no field_updates entry cites it. No page of either document pairs the JTAG/SWD pins with a pull-up or pull-down statement, consistent with the open item. The CIO 'guaranteed-by-design footnote' wording matches Rev 3 p105 note 8, while Rev 12 p117 note 8 reads 'Hysteresis voltage between Schmitt trigger switching levels. Evaluated by characterization - not tested in production.'",
+        "Record vs gap-fill: only differences are that the record's second documents entry adds 'page': null and the record adds research.source pointing at the gap-fill with document_sha256 77973fef..., which equals the actual gap-fill hash. All 31 fields are MFR_DATASHEET direct reads; there are no DERIVED or digitized-curve fields to recompute."
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "77973fef1ddd25ef6c435e096eca55a1f447ee2b1ea014786c090c9c16616a74",
+        "generated_record_sha256": "b6476f4bf44f2b9ae4fcbea67b183db2ed8146b77d07204148b1d1b13e87177d"
+      }
+    },
+    {
+      "entry_id": "OHM-133",
+      "primary_sources": [
+        "https://www.ti.com/lit/ds/symlink/tps7a80.pdf"
+      ],
+      "mismatches": [],
+      "notes": [
+        "Document: Texas Instruments TPS7A80 Low-Noise, Wide-Bandwidth, High PSRR, Low-Dropout 1-A Linear Regulator, SBVS135J, JUNE 2010 - REVISED JANUARY 2018, 31 pages; blob 75db2a6c... (1534074 bytes) hashes to its file name and the ledger row is http 200 (fetched 2026-10-05T17:05:39Z). Pages read with word coordinates: 1, 4, 5, 6, 17, plus a string scan of all pages; no images rendered.",
+        "Record documents entry OK: manufacturer Texas Instruments and revision SBVS135J January 2018 match the p1 header and page footers; the title 'TPS7A80 low-noise LDO' is a shortened wording of the full title, not a contradiction. The datasheet is a family datasheet (fixed and adjustable versions), so the TPS7A8001 DRB scoping in the fields is required and present.",
+        "reference_part TPS7A8001 (p1): OK. The p1 typical application diagram is labelled TPS7A8001 (FB, R1, R2) and features list the 3 mm x 3 mm VSON-8 DRB package; 'Adjustable version only (TPS7A8001)' is on p6 and DRB orderables (TPS7A8001DRBR/DRBT) are on p23.",
+        "manufacturer_pin_roles (p4): OK. The pin figure (coordinates) and the Pin Functions table agree: OUT 1,2; FB/SNS 3 (FB for the adjustable version); GND 4 and pad; EN 5; NR 6; IN 7,8. output_capacitance_min 4.7 uF (p4): OK, OUT row says a 4.7-uF or larger capacitor of any type is required for stability.",
+        "p5 fields OK, MIN/MAX columns checked by x-coordinates: VIN 2.2..6.5 V with footnote 'minimum VIN = VOUT + VDO or 2.2 V, whichever is greater'; IOUT 0..1 A; operating TJ -40..125 degC; absolute max IN 7 V and OUT 7 V; absolute operating virtual junction TJ -55..150 degC (150 is the max).",
+        "thermal_resistance_junction_ambient 47.8 K/W (p5): OK. RthetaJA = 47.8 degC/W in the DRB (VSON) 8-pin column, with footnote (3) assumptions matching the scope (2x2 thermal via array, 5% copper conductivity = 20% coverage, single device at the centre of a JEDEC high-K 2s2p 3 in x 3 in board).",
+        "p6 fields OK, columns settled by x-coordinates (MIN 410-425, TYP 460-475, MAX 497-515): internal reference row 'Adjustable and Fixed VOUT = 1.2 V' is 0.79/0.8/0.81 V so typ 0.8 V; VDO row IOUT = 1 A, VIN >= 2.5 V, VFB = GND has MAX 500 mV = 0.5 V (no typ listed); IGND adjustable IOUT = 1 mA is typ 60 / max 100 uA.",
+        "p6 enable fields OK: VEN(LO) RL = 1 kohm is min 0 / max 0.4 V; VEN(HI) for 3.6 V < VIN <= 6.5 V, RL = 1 kohm is min 1.35 V (the 2.2..3.6 V row is 1.2 V). The table-preamble conditions quoted in the scopes (TJ -40..125 degC, VIN = VOUT(TYP)+0.5 V or 2.2 V, IOUT = 1 mA, VEN = 2.2 V, COUT = 4.7 uF, CNR = 0.01 uF, TPS7A8001 tested at VOUT = 0.8 V and 6 V, typical at TJ = 25 degC) match p6.",
+        "feedback_voltage_typical 0.8 V (DERIVED, p17): OK. Equation 2 is VOUT = (R1+R2)/R2 x 0.800, so the nominal FB voltage is 0.800 V, consistent with the p6 typical internal reference of 0.8 V; the derivation is an algebraic identity with both inputs present.",
+        "conflicts and remaining_open_items statements about the document hold: TPS7A80 is 3.00 mm x 3.00 mm VSON-8 (p1), and the output current limit ICL (VOUT = 0.85 x VOUT(NOM), VIN >= 3.3 V) is adjustable MIN 1100 / TYP 1400 / MAX 2000 mA (p6), matching '1.1..2 A'. The 6x5 W25Q flash alternative is not in this document and is a process statement (not checked).",
+        "Record vs gap-fill: research.field_updates equals the audit-evidence field_updates (15 of 15, parsed and compared programmatically), all other shared research keys are equal, and research.source.document_sha256 equals the gap-fill sha256. Observation only: the gap-fill prose bench table also lists BEH-REG-LINEAR B3 and B5, which are absent from the evidence bench_results list that the record mirrors; bench receipts are outside this check."
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "1432aa356e23e7ea1e629e25f58d6bf8116f007ffc676c72e9a955054fad6595",
+        "generated_record_sha256": "92078e236d552b778ec6b63688ee28323cc34413c893ef983b40f4cd7a78802a"
+      }
+    },
+    {
+      "entry_id": "OHM-145",
+      "primary_sources": [
+        "https://abracon.com/Resonators/ABM11.pdf",
+        "https://ele.kyocera.com/assets/products/crystal-device/specification/CX2016FB_8pF.pdf"
+      ],
+      "mismatches": [],
+      "notes": [
+        "Gap-fill sha256 913da795...5687 and record sha256 1b783666...92dd match the expected values; record research.source.document_sha256 equals the gap-fill hash.",
+        "Ledger rows: ABM11 line 403 (http 200, 1726521 bytes, 2026-10-05T21:24:05Z) and Kyocera line 667 (http 200, 995157 bytes, 2026-10-11T05:35:02Z); each blob's sha256 equals its file name. Both are manufacturer-hosted PDFs, so there is no distributor-copy provenance issue.",
+        "History only: researched_at is 2026-10-05 while the Kyocera blob was fetched and read 2026-10-11.",
+        "ABM11 (blob 0854b0d9...): Abracon LLC, heading 'ABM11 ... CERAMICS SMD ULTRA MINIATURE QUARTZ CRYSTAL 2.0 x 1.6 x 0.59mm', footer 'Revised: 06.19.15', 2 pages, no document number, covers the ABM11 series 16.000-50.000 MHz; matches record title, manufacturer and revision. Read pp1-2 text and word coordinates and rendered the p2 outline region once.",
+        "Kyocera (blob 3cc7e6cd...): cover 'Specifications', Quartz Crystal CX2016FB 24,25,26,27,32,38.4,40,48,50 MHz, Drawing No. UKY1C-H1-25067-02[37], Issued Date Jan.9,2026, KYOCERA Corporation, 10 pages; matches record revision and manufacturer. The '(8 pF)' in the record title is not printed in the PDF but equals CL typ 8.0 pF (p2 1.2 #3), so it is a label only.",
+        "Kyocera pp1-4 and p8 were read by word coordinates plus a text-only keyword search of all pages; the p4 drawings were rendered twice (3 renders in total across both documents).",
+        "ABM11 p1 fields OK by column x-centres (Min about 218, Typ about 277, Max about 338): ESR max 150 ohm (16.000~17.999MHz row), C0 max 7.0 pF, CL 10 pF (Typ column, 'Standard'), drive level typ 10 / max 100 uW, operating temperature -10..+60 degC, tolerance +/-30 ppm at +25 degC, stability +/-50 ppm ref +25 degC. 'recommended typical' in the drive_level_typical scope is wording only; the document just has a Typical column.",
+        "reference_frequency 16 MHz (DERIVED) OK: ABM11 p1 Frequency Range is 16.000 min to 50.000 max MHz with the ordering example 'e.g. 16.000MHz', so 16 MHz is a valid selection with no further arithmetic.",
+        "ABM11 manufacturer_pin_roles OK on the rendered p2 TOP VIEW: pin 4 top-left (GND), 3 top-right, 1 bottom-left, 2 bottom-right (GND), blank symbol joins pads 1 and 3; the p2 note 'chamfer on pin 1 or 4' supports the chamfer open item. The document labels pads 2/4 'GND' but never says 'lid', so 'lid pads 2/4' is an inference (roles are right).",
+        "ABM11 manufacturer_to_library_terminal (ASSUMPTION, L) 1/2/3/4 -> 2/3/4/1 follows from the documented corners (BL/BR/TR/TL = pins 1/2/3/4) if the library is TL/BL/BR/TR = 1/2/3/4. The library coordinates come from a spec file outside the allowed sources and were not verified; the record itself labels this an unvalidated assumption.",
+        "Kyocera p2 fields OK by column coordinates: 1.2 #1 -40/+105 degC, #3 CL typ 8.0 pF, #4 drive level max 100 uW; 1.3 #1 +/-10 ppm at 25+/-3 degC and specific load, #3 'Frequency stability 2' +/-20 ppm within -40..+85 degC, #8 aging +/-3 ppm first year, #10 insulation resistance min 500 Mohm at DC 100V; 1.1 #5 ESD HBM >= 2000 V. The document also lists stability 1 (+/-15 ppm, -30..+85 degC) and stability 3 (+/-30 ppm, -40..+105 degC); the record scope names -40..+85 degC, so no issue.",
+        "Kyocera p3 Note 1 row CX2016FB24000D0FZZH1 = ESR 50 ohm, C0 0.42~0.62 pF, C1 1.32~1.98 fF, L1 21.36~32.04 mH, rows aligned by y with headers ESR(ohms), C0(pF), C1(fF), L1(mH) and 'measured by S&A 250B or equivalent': OK. 24000 = 24 MHz is supported by the p2 nominal-frequency list, the p3 part-description list and the p8 marking sample '24000'.",
+        "Not counted: Kyocera ESR 50 ohm is stored as equivalent_series_resistance_max but the document prints one unlabeled value (p2 1.3 #9 min/typ/max are '-', p3 header 'ESR(ohms)'). The record discloses this and uses confidence M, so it is flagged here only.",
+        "Kyocera pin roles OK: p4 pad table #1/#3 X'tal terminal (Input/output), #2/#4 GND; the internal-connection sketch joins the blank to #1 and #3; the lid-side view (rendered) is #4 TL, #3 TR, #1 BL, #2 BR, mirrored in the terminal-side view and repeated in p8 4.1 (word coordinates; 'K' = 1-pin direction). The DERIVED mapping mfr1/2/3/4 -> lib2/3/4/1 holds from those corners and the library coordinates quoted in the detail, which come from a spec file outside the allowed sources and were not verified.",
+        "Conflict and open-item statements OK: CX2016FB starts at 24 MHz (p1, p2), Kyocera pads are about 0.55 x 0.45 mm (p4 terminal-side view), C0 centre (0.42+0.62)/2 = 0.52 pF, and ABM11 lists no motional C1/L1 (p1; open item 1 is superseded for the bound part by open item 4). Not verifiable from the allowed archive: 'same layout as CX3225FB', 'CX2016DB publishes no motional values', Epson 200 uW, library pad geometry and the permutation/spec files.",
+        "Record vs gap-fill parsed programmatically: research.field_updates equals audit-evidence field_updates (28 entries, same order), and conflicts, documents, remaining_open_items, bench_results, research_result, researched_at and simulation_blockers are also identical; the record only adds research.source. Side observation: the gap-fill markdown bench table lists BEH-FREQ-XTAL/P4 but bench_results omits P4 in both gap-fill JSON and record (bench files not read; not a sourced field).",
+        "Scratch scripts and renders (abm11_p2_outline.png, kyo_p4_outline.png, kyo_p4_wide.png) are in the scratch directory; nothing was written into the repository."
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "913da795974d8f73ddc390b5111d28b42196df06216163a306497751f0165687",
+        "generated_record_sha256": "1b783666b42142b1eb27928a0beb40c89f91cf299ca7699ed4f0a75b572692dd"
+      }
+    },
+    {
+      "entry_id": "OHM-155",
+      "primary_sources": [
+        "https://www.jst-mfg.com/product/pdf/eng/ePH.pdf"
+      ],
+      "mismatches": [],
+      "notes": [
+        "Document identification: ledger has one row for the URL (http 200, 103369 bytes, 2026-10-05T17:03:31Z); blob sha256 447624f4... equals its file name. It is a 5-page JST PDF titled 'PH CONNECTOR' (2.0 mm pitch wire-to-board, crimp and mating style); no document number, revision or date is printed on pp1-5 (only PDF metadata: InDesign 21.1 / Distiller 25.0, created 2026-01-27), so the record's 'No revision/date printed in read pages' holds.",
+        "Pages read as text: 1-5 (word coordinates for p1 spec rows and all p3 table rows); rendered at 150 dpi: 2 crops of p3 (housing drawing, through-hole header drawings). Record documents entry (title 'JST PH connector', manufacturer JST, primary_source_opened) is consistent with the bytes; 'JST' appears in the text and housing mark, the printed title is 'PH CONNECTOR' (wording only).",
+        "Document type: manufacturer series catalog sheet (p1 specs are series-wide; models listed pp2-5), not a per-part datasheet. The record narrows the series ratings to B2B-PH-K-S/PHR-2, which is supported by the p3 model tables, and the document states no per-model overrides, so this is not flagged.",
+        "OK p1 Specifications: reference_family PH ('PH CONNECTOR'); contact_current_rating 2 A ('Current rating: 2 A AC/DC (AWG #24)', AWG24 caveat recorded); working_voltage 100 V ('Voltage rating: 100 V AC/DC', overseas-registration caveat is in the p1 text); contact_temperature_range -40 to +105 C ('including temperature rise in applying electrical current'); insulation_resistance_min 1,000 Mohm min.",
+        "OK p1 contact resistance: 'Initial value/ 10 mohm max.' and 'After test/ 20 mohm max.' (separate rows, y=221 and y=233). The record's 'mated contact' qualifier on the initial value is inferred (the document gives no contact-resistance test conditions or crimp inclusion); it narrows rather than broadens the claim, and the 20 mohm scope correctly says the test is not specified.",
+        "OK p1 nominal_contact_pitch 2 mm ('2.0 mm pitch'; PCB layout 2+/-0.05) and pin_one_identification 'No. 1 circuit' (layout labelled No. 1 circuit; Note 1: layout viewed from the connector mounting surface, same label on p2 SMT layouts).",
+        "OK p3 by coordinates: header table (Header, Through-hole type) row '2' (y=456) lists B2B-PH-K-S under Top entry type (S2B-PH-K-S under Side entry type), A=2.0, B=5.9; housing table row '2' (y=145) lists PHR-2, A=2.0, B=5.8. The document does not literally state PHR-2 mates B2B-PH-K-S; the pairing rests on same series and circuit count (also the p5 model-number allocation).",
+        "mated_circuit_map (DERIVED, M): inputs confirmed on p3 - the three header drawings read 'Mark of No. 1 circuit' and the housing drawing reads 'No. 1 circuit' (render shows leaders to the first circuit); pp1-5 contain no keying, polarity or mating-orientation text, as the record says; for a 2-circuit part, circuit 1 to circuit 1 forces circuit 2 to circuit 2. The header mark is on the right of the front view and the housing label on the left, and view directions are not defined, which matches the record's stated assumption.",
+        "remaining_open_items and conflicts: confirmed the document has no Rth or derating curve, no mating-cycle endurance, no crimp resistance and no keying/battery-polarity text (pp1-5); the temperature range explicitly includes self-heating rise (p1); p4 lists 'Reinforcement: Copper alloy, tin-plated' for SMT headers, while 'mechanical, not signal/ground' is the record's assumption, not a document statement. The 6/12 mohm proxy remark concerns the class model, not the document.",
+        "Record vs gap-fill: record research.field_updates (12 entries) equals the gap-fill audit-evidence field_updates after normalising the 9 entries whose optional 'detail' key is absent in the gap-fill to null in the record (schema default, same meaning); documents (record adds page=null), conflicts, remaining_open_items, simulation_blockers, bench_results, bench_result, research_result, researched_at are identical; research.source.document_sha256 equals the gap-fill sha256.",
+        "Not checked by design: bench results (BEH-CON-WTB B1/B2) and class records are outside the allowed read scope."
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "889cf1413dd06e74ca9cbdec474d0b96f1efed5b61b9e5e932321a1b7ff29412",
+        "generated_record_sha256": "6d32487b087f1a0a69a4f388d3785a5c967f47a1ad2fbc6e418e1d7c2698995b"
+      }
+    },
+    {
+      "entry_id": "OHM-161",
+      "primary_sources": [
+        "https://asset.conrad.com/media10/add/160267/c1/-/en/000569017DS03/datenblatt-569017-phoenix-contact-stiftgehaeuse-platine-mstba-polzahl-gesamt-2-rastermass-508-mm-1757242-250-st.pdf",
+        "https://docs.rs-online.com/7dc2/0900766b816e4903.pdf",
+        "https://www.phoenixcontact.com/en-us/products/pcb-header-mstba-25-2-g-508-1757242",
+        "https://www.phoenixcontact.com/en-us/products/pcb-plug-mstb-25-2-st-508-1757019",
+        "https://www.phoenixcontact.com/us/products/1757242/pdf"
+      ],
+      "mismatches": [],
+      "notes": [
+        "Identity, Conrad copy: Phoenix Contact catalog PDF 'Base strip - MSTBA 2,5/ 2-G-5,08 - 1757242', footer Nov 13, 2013, 11 pp, blob 0fdf08ef (sha matches file name; ledger line 419, HTTP 200). All text read (pp6-11 carry only image diagrams); title, manufacturer, revision 13November2013 and part coverage match doc phoenix-mstba, and 'manufacturer_document_mirror' is accurate for a Phoenix-generated PDF hosted by a distributor.",
+        "Identity, RS copy: Phoenix Contact 'MSTB 2,5/ 2-ST-5,08 - PCB connector 1757019', Mar 14, 2025 8:14 AM (PDF author Phoenix Contact GmbH & Co. KG), 21 pp, blob 9db74eb7 (ledger line 417, HTTP 200). Pages 1-5 and 14-21 read; matches doc phoenix-mstb (revision 14March2025) and its mirror label.",
+        "Identity, Phoenix header PDF: 'MSTBA 2,5/ 2-G-5,08 - PCB header 1757242', generated Oct 6, 2026 6:02 PM, 15 pp, blob c2d4094a (ledger line 574, manual_download; the earlier 403 row at line 509 is superseded). All 15 pages of text read and the p11 diagram analysed from vector paths and rendered once (cropped, 140 dpi); matches doc added-5 (revision Oct 6, 2026).",
+        "Identity, product pages: header page blob e8ba5443 (ledger line 571, manual_download) is titled 'MSTBA 2,5/ 2-G-5,08 - PCB header - 1757242 | Phoenix Contact' and lists 1757019 under mating parts; plug page blob bb59d2fa (ledger line 572, manual_download) is 'MSTB 2,5/ 2-ST-5,08 - PCB connector - 1757019'. Both undated as recorded; the 'not yet archived' source_status text on these two documents is stale archive-status history (the blobs exist), not a value problem.",
+        "reference_header, reference_plug, header_nominal_current 12 A, working_voltage_III_2 320 V, pitch 5.08 mm, working_voltage_III_3 250 V, header_working_voltage_II_2 400 V: OK at Conrad p1 (rows 'Rated voltage (III/3) 250 V', '(III/2) 320 V', '(II/2) 400 V', 'Nominal current IN 12 A', 'Pitch 5.08 mm' confirmed by word coordinates). The header page repeats the 12 A, 320 V and 5.08 mm values, and RS p1 and the plug page give 1757019.",
+        "Caveat, not counted: working_voltage_III_3 250 V and header_working_voltage_II_2 400 V are 2013-sheet header values supported only by the Conrad copy, while the Oct 2026 Phoenix header PDF p2 (and header page) give III/3 320 V and II/2 630 V. 250 V still holds for the pair because the plug is 250 V (RS p2, plug page), and the record flags the 400 V itself (header_rated_voltage_II_2_current, CORRECTION text), but the conflicts entry 'pair limited by 400 V header' is stale against the 2026 header PDF.",
+        "Plug fields from the RS PDF are all OK: plug_nominal_current 12 A p2 (nominal cross section 2.5 mm2), plug_contact_resistance_stated 1.3 mohm p2, plug_contact_resistance_after_durability_test 1.4 mohm = R2 in the IEC 60512-9-1 durability block p5 (timing vs the cycles unlabelled, as the scope says), durability_test_cycles 25 p5, operating_ambient_range -40..100 degC p5 (p16 holds the MSTBA mate diagram), tightening_torque_range 0.5-0.6 Nm p3, live_mating_allowed false p4 (no switching power; not to be plugged or unplugged under voltage or load). The plug page repeats each value.",
+        "Phoenix header PDF fields OK: header_contact_resistance_R1 and R2 1.4 mohm each p4 (the 'Insertion/withdrawal cycles 25' row of the same durability table sits at the top of p5, a page nuance only), header_rated_voltage_III_3 320 V p2, header_rated_voltage_II_2_current 630 V p2 (also p4), operating_ambient_range_header -40..100 degC p5 'dependent on the derating curve'. The header page gives the same values.",
+        "Plug page fields OK: plug_contact_resistance_R1_primary 1.3 mohm (R2 1.4 mohm) and plug_rated_voltage_III_3 250 V (III/2 320 V, II/2 630 V), none labelled max or typical.",
+        "DERIVED mated_path_resistance_stated 1.4 mohm: inputs present (header R1 1.4, R2 1.4 PDF p4; plug R1 1.3, R2 1.4 plug page) and max(1.4, 1.4, 1.3, 1.4) = 1.4 holds; the documents do not say whether the value covers the screw clamp, which the scope and M confidence already state. DERIVED pair_rated_voltage_III_2 = min(320, 320) = 320 V and pair_nominal_current = min(12, 12) = 12 A: inputs in header PDF p2 and the plug page, arithmetic holds.",
+        "DERIVED derating_2pos_full_current_ambient_max 84 degC (L): the p11 'MSTB 2,5/...-ST-5,08 with MSTBA 2,5/...-G-5,08' diagram is vector; calibrated on its gridlines, curve 1 (label 1 leader tip lies on it, 0.05 pt; legend 1 = 2-pos.) stays at 12 A until x=412.1 pt = 84.2 degC, then 10.1 A at 90 degC, 5.6 A at 100 degC (recorded 'about 5 A', inside the stated tolerance) and 0 A at 105.0 degC. The cropped render agrees, and the same pair diagram is on RS p16.",
+        "Record vs gap-fill: the 25 field_updates are identical when parsed and compared (fields, order, values, units, scope, basis, confidence, sources, pages); the only difference is an explicit detail:null in the record on 14 older fields where the gap-fill omits the key. Documents differ only by an added page:null on two entries, conflicts, remaining_open_items, simulation_blockers and bench_results are identical, every cited URL is a listed document, and the gap-fill prose 'Simulation blockers' section still lists a blocker while its audit-evidence JSON and the record have an empty list.",
+        "Scope of review: bench result files and all other repository files were not opened (reading limits), so the class-bench table in the gap-fill was not checked; 1 image rendered in total."
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "0fa8fc4567412d3a6933ffba7dfc37325dae3a52a4138a86c43eb52b954a0ce7",
+        "generated_record_sha256": "2ce3e41f184baeb4e360fb46bf4e7090faf90837108cd051d33382687af766c0"
+      }
+    }
+  ],
+  "summary": {
+    "checked": 8,
+    "with_mismatches": 0
+  }
+}
