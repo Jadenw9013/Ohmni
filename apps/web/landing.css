@@ -82,3 +82,40 @@
  .home-board-live figcaption { gap:6px 16px; }
 }
 @media (max-width:380px) { .home-board-live { height:340px; } }
+
+/* Material-led polish, retaining the real interactive PCB as the hero. */
+.home-page { background: #080f1b; }
+.home-page::before { background: radial-gradient(ellipse at 75% 42%,#16314b66,transparent 58%); }
+.home-nav { border-color: #29384c; }
+.home-eyebrow { text-transform: none; letter-spacing: .01em; color: #cda983; font-size: .9rem; font-weight: 500; }
+.home-copy h1 { font-family: var(--display); font-weight: 550; letter-spacing: -.045em; font-size: clamp(2.5rem,4.3vw,3.65rem); }
+.home-copy h1 span { color: #eef3fa; background: none; font-weight: inherit; }
+.home-intro { color: #b5c4d6; max-width: 38ch; line-height: 1.7; }
+.home-start,.home-get-started { background: #83b8ff; color: #09172c; border: 1px solid #a8ceff; border-radius: 10px; box-shadow: inset 0 1px #ffffff33; }
+.home-start:hover,.home-get-started:hover { background: #a8ceff; transform: none; box-shadow: none; }
+.home-demo { background: #111e30; border: 1px solid #4b607b; border-radius: 10px; }
+.home-board-live { border: 1px solid #293e56; background: #030810; border-radius: 20px; box-shadow: 0 24px 60px #0004; }
+.home-board-live figcaption { color: #b5c4d6; }
+.home-board-live figcaption a { color: #cda983; }
+.home-features { gap: 0; margin-top: 30px; border-block: 1px solid #29384c; padding-block: 0; }
+.home-feature { background: none; border: 0; border-radius: 0; padding: 28px 24px; min-height: 132px; }
+.home-feature + .home-feature { border-left: 1px solid #29384c; }
+.home-feature:hover { background: #111e30; box-shadow: none; transform: none; }
+.home-feature .feature-icon { background: #16253a; color: #a8ceff; border: 1px solid #30435b; border-radius: 12px; box-shadow: none; }
+.home-feature .feature-icon svg { filter: none; }
+.home-feature > span:nth-child(2) > span { color: #b5c4d6; line-height: 1.6; }
+.home-footer { color: #a6b9cf; }
+.home-page :focus-visible { outline: 3px solid #acd1ff; outline-offset: 5px; }
+@media (max-width:1100px) {
+  .home-features { grid-template-columns: 1fr; }
+  .home-feature + .home-feature { border-left: 0; border-top: 1px solid #29384c; }
+}
+@media (max-width:600px) {
+  .home-nav,.home-content,.home-footer { width: calc(100% - 40px); }
+  .home-copy h1 { font-size: 2.5rem; }
+  .home-board-live { border-radius: 14px; }
+  .home-feature { padding: 22px 12px; }
+}
+/* Let the caption wrap without clipping its link on narrow screens. */
+.home-page .home-board-live { display: grid; grid-template-rows: minmax(0,1fr) auto; }
+.home-page .home-board-live iframe { height: 100%; min-height: 0; }
