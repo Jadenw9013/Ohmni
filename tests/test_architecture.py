@@ -215,16 +215,21 @@ class TestEdaBoundaries:
                 assert "import ohmni.eda" not in source
 
     def test_process_spawning_stays_inside_the_bounded_runner(self):
-        """Two modules start native tools; neither one invents how.
+        """Only reviewed EDA adapters start native tools; none invents how.
 
         `erc.py` owns the raw `subprocess` import, for the exception types it
-        must catch. Everything else that starts a child -- `simulation.py` runs
-        kicad-cli and ngspice -- goes through `adapters.process.run_tool`, which
+        must catch. Everything else that starts a child goes through
+        `adapters.process.run_tool`, which
         is what supplies the fixed argument vector, the absent shell and the
         bounded wait. The guard is that nobody writes their own process call,
         not that exactly one file may ever have one.
         """
-        spawning = {"erc.py", "simulation.py", "component_harness.py"}
+        spawning = {
+            "erc.py",
+            "simulation.py",
+            "component_harness.py",
+            "vendor_model_runner.py",
+        }
         for path in _python_files(SRC / "eda"):
             source = path.read_text(encoding="utf-8")
             if path.name != "erc.py":
