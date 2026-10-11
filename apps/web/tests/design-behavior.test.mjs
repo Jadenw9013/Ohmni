@@ -205,3 +205,12 @@ test('part rows read "Not run" only for a server not_run', () => {
     assert.match(html, /<td><span class="badge warn">Unknown, not established<\/span>/);
     assert.match(designResultHtml(refused()), /<td><span class="badge warn">Not run, not checked<\/span>/);
 });
+
+test('a result without a server status is never titled "not run"', () => {
+    for (const status of [undefined, null, '']) {
+        const model = designRunModel({ status, problems: [], bindings: [binding('R1')], limitations: [] });
+        assert.doesNotMatch(model.title, /not run/i, String(status));
+        assert.equal(model.summaryStatus, 'unknown');
+    }
+    assert.match(designRunModel({ status: 'not_run', problems: [], bindings: [] }).title, /Design not run/);
+});

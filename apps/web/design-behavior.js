@@ -48,7 +48,7 @@ export function designRunModel(result) {
     const violation = ran && (summary?.status === 'violation' || result?.rating_status === 'violation');
     // Within limits needs the server summary and every bound part inside the simulated set.
     const simulatedRefs = new Set(list(result?.components).map(c => c?.ref).filter(ref => typeof ref === 'string'));
-    const within = !violation && summary?.status === 'within_model_limits'
+    const within = !violation && summary?.status === 'within_model_limits' && list(result?.bindings).length > 0
         && list(result?.bindings).every(row => typeof row?.ref === 'string' && simulatedRefs.has(row.ref));
     const problems = list(result?.problems);
     const refused = result?.status === 'not_run' && (problems.length > 0 || list(result?.bindings).some(row => row?.problem));
@@ -57,8 +57,8 @@ export function designRunModel(result) {
         : ran ? 'Simulation ran; ratings not established for every part'
         : refused ? 'Design refused: nothing was simulated'
         : result?.status === 'unavailable' ? 'No result shown: nothing was established'
-        : result?.status && result.status !== 'not_run' ? 'Simulation did not complete: nothing was established'
-        : 'Design not run: nothing was simulated';
+        : result?.status === 'not_run' ? 'Design not run: nothing was simulated'
+        : 'Simulation did not complete: nothing was established';
     const ratings = ran ? list(result?.ratings?.components) : [];
     const byRef = new Map(ratings.map(row => [row?.ref, row]));
     const simulated = ran ? new Map(list(result?.components).map(c => [c?.ref, c])) : new Map();
