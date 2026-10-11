@@ -29,7 +29,17 @@ export function statusLabel(status) {
     return 'Unknown, not established';
 }
 
-const statusBadge = status => `<span class="badge ${statusTone(status)}">${escape(statusLabel(status))}</span>`;
+// Each level has its own vocabulary: a design or part passes only as within_model_limits, a single check only
+// as within_limit. A word from another level is not a recognised verdict here and shows as unknown.
+const LEVEL_PASS = { design: 'within_model_limits', part: 'within_model_limits', check: 'within_limit' };
+function levelStatus(status, level) {
+    if (status === 'violation' || status === 'not_run') return status;
+    return status === LEVEL_PASS[level] ? status : 'unknown';
+}
+const statusBadge = (status, level) => {
+    const clamped = levelStatus(status, level);
+    return `<span class="badge ${statusTone(clamped)}">${escape(statusLabel(clamped))}</span>`;
+};
 
 export function designRunModel(result) {
     const ran = result?.status === 'ran';
@@ -51,7 +61,8 @@ export function designRunModel(result) {
     const parts = list(result?.bindings).map(row => ({
         ref: row?.ref, part_id: row?.part_id, package: row?.package, entry_id: row?.entry_id,
         // What actually ran when the design ran; otherwise only the reference it would bind to.
-        reference: ran ? (simulated.get(row?.ref)?.reference_part ?? row?.reference_part) : row?.reference_part,
+        // "Simulated as" only for a part the run actually contains; otherwise there is no simulated reference.
+        reference: ran ? (simulated.get(row?.ref)?.reference_part ?? null) : row?.reference_part,
         problem: row?.problem,
         status: ran ? (byRef.get(row?.ref)?.status ?? 'unknown') : 'not_run',
         rating: byRef.get(row?.ref) ?? null,
@@ -66,7 +77,7 @@ function checksHtml(rating) {
     const split = splitChecks(rating);
     const rows = [...split.reference, ...split.classChecks];
     return `<details><summary>${escape(rating.ref)} checks (${rows.length})</summary>${rating.basis ? `<p class="panel-note">Basis: ${escape(rating.basis)}</p>` : ''}<ul>${rows.length
-        ? rows.map(check => `<li>${statusBadge(check.status)} ${escape(friendly(check.name))}${check.reason ? `<br>${escape(check.reason)}` : ''}</li>`).join('')
+        ? rows.map(check => `<li>${statusBadge(check.status, 'check')} ${escape(friendly(check.name))}${check.reason ? `<br>${escape(check.reason)}` : ''}</li>`).join('')
         : '<li>No check is bound to this part; its ratings stay unknown.</li>'}</ul></details>`;
 }
 
@@ -77,7 +88,7 @@ export function designResultHtml(result) {
     const limitations = [...list(result?.limitations), ...list(result?.ac?.limitations)];
     return `<section class="design-behavior-result" aria-label="Design behavior result">
         <h4>${escape(view.title)}</h4>
-        <p>Design ratings: ${statusBadge(view.summaryStatus)}</p>
+        <p>Design ratings: ${statusBadge(view.summaryStatus, 'design')}</p>
         ${result?.scope ? `<p class="panel-note">${escape(result.scope)}</p>` : ''}
         ${view.problems.length ? `<div class="design-behavior-problems"><strong>${view.refused ? 'Why the run was refused' : 'Problems'} (${view.problems.length})</strong><ul>${view.problems.map(p => `<li>${escape(p)}</li>`).join('')}</ul></div>` : ''}
         ${summary ? `<dl class="design-behavior-summary"><div><dt>Within limits</dt><dd>${escape(counts.within_model_limits ?? 0)}</dd></div><div><dt>Unknown</dt><dd>${escape(counts.unknown ?? 0)}</dd></div><div><dt>Violation</dt><dd>${escape(counts.violation ?? 0)}</dd></div></dl>
@@ -85,8 +96,8 @@ export function designResultHtml(result) {
             ${list(summary.unknown_parts).length ? `<p>Parts not established: ${list(summary.unknown_parts).map(escape).join(', ')}</p>` : ''}` : ''}
         ${view.parts.length ? `<table class="design-behavior-parts"><thead><tr><th>Part</th><th>Catalog part</th><th>${view.ran ? 'Simulated as' : 'Bound reference'}</th><th>Ratings</th></tr></thead><tbody>${view.parts.map(part => `<tr>
             <td>${escape(part.ref)}</td><td>${escape(part.part_id)} · ${escape(part.package)}</td>
-            <td>${part.reference ? `${escape(part.reference)}${part.entry_id ? ` <small>${escape(part.entry_id)}</small>` : ''}` : 'No bound reference'}</td>
-            <td>${statusBadge(part.status)}${part.problem ? `<br>${escape(part.problem)}` : ''}</td></tr>`).join('')}</tbody></table>` : ''}
+            <td>${part.reference ? `${escape(part.reference)}${part.entry_id ? ` <small>${escape(part.entry_id)}</small>` : ''}` : (view.ran ? 'Not in the simulated set' : 'No bound reference')}</td>
+            <td>${statusBadge(part.status, 'part')}${part.problem ? `<br>${escape(part.problem)}` : ''}</td></tr>`).join('')}</tbody></table>` : ''}
         ${view.parts.map(part => checksHtml(part.rating)).join('')}
         ${limitations.length ? `<details open><summary>Limitations of this run</summary><ul>${limitations.map(l => `<li>${escape(l)}</li>`).join('')}</ul></details>` : ''}
         <p class="panel-note">A numerical result is not a safety, manufacturing or physical-fit approval.</p>
@@ -95,7 +106,7 @@ export function designResultHtml(result) {
 
 export function designPanelHtml(available) {
     return `<h3>Run your circuit's electrical behavior</h3>
-        <p class="panel-note">Simulates this project's own circuit at its DC operating point, each part on its bound sourced reference model, and checks every part's ratings together. It does not change your project.</p>
+        <p class="panel-note">Simulates this project's own circuit at its DC operating point only, each part on its bound sourced reference model, and checks each part's bound ratings; a rating that cannot be established stays unknown. It does not change your project.</p>
         ${available
             ? '<button type="button" class="secondary" data-design-run>Run operating point</button>'
             : '<p><strong>Unavailable for this result.</strong> Only a saved project records the circuit a design run needs; nothing was simulated.</p>'}

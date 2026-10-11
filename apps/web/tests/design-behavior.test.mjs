@@ -146,3 +146,16 @@ test('a violation is reported only for a run that happened', () => {
     assert.notEqual(model.summaryStatus, 'violation');
     assert.doesNotMatch(designResultHtml(unrun), /Rating violation/);
 });
+
+test('part and check badges accept only their own level\'s pass word', () => {
+    const result = ran('unknown', { C1: 'within_limit', R1: 'within_model_limits' });
+    const c1 = result.ratings.components.find(c => c.ref === 'C1');
+    c1.reference_checks = [{ name: 'power', status: 'within_model_limits', reason: null },
+        { name: 'voltage', status: 'within_limit', reason: null }];
+    const html = designResultHtml(result);
+    // C1's part status uses the check-level word: it is not a recognised part verdict.
+    assert.match(html, /<td>C1<\/td>[\s\S]*?<td><span class="badge warn">Unknown, not established<\/span>/);
+    // The check carrying the part-level word is not a pass either; the real check word is.
+    assert.match(html, /<li><span class="badge warn">Unknown, not established<\/span> [^<]*power/i);
+    assert.match(html, /<li><span class="badge pass">Within limit<\/span> [^<]*voltage/i);
+});
