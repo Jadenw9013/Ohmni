@@ -1,5 +1,6 @@
 import { escapeHtml } from "./view-model.js";
 import { errorKind, fetchHealth } from "./client-contract.js";
+import { mountProjectAssistant } from "./project-assistant.js";
 import { defaultProjectBrief, parseProjectEnvelope, parseProjectList, parseProjectOptions, projectRequest, sameBrief, supportedBrief, briefFitsOptions, checkIdentity, briefChanges, ProjectRequestError } from "./project-contract.js";
 
 const e = escapeHtml;
@@ -79,6 +80,8 @@ export function mountProjectWorkbench(root, {
     let exerciseVersion = 0;
     let shelfVersion = 0;
     let disposed = false;
+    let assistant = null;
+    let assistantApplying = false;
     const $ = (selector) => root.querySelector(selector);
 
     function countSelect(field, label, count, range) {
@@ -99,11 +102,12 @@ export function mountProjectWorkbench(root, {
     }
 
     function render() {
+        assistant?.dispose();
         // Keep the actual form: an in-flight check must re-enable the same
         // controls after the surrounding feature editor is redrawn.
         const retainedExercise = $("#sensor-exercise");
         const family = options?.families.find((item) => item.id === draft.archetype);
-        root.innerHTML = `<form id="project-form" class="family-workbench">
+        root.innerHTML = `<div id="project-assistant"></div><form id="project-form" class="family-workbench">
           <div class="project-editor-heading"><div class="sr-only"><h2>Your board features</h2><p>Choose a project family, then adjust its parts.</p></div><span class="project-save-state" id="project-save-state" role="status"></span></div>
           <fieldset class="family-picker"><legend class="sr-only">Choose the kind of board</legend>${Object.entries(familyCopy).map(([id, copy]) => `<label class="family-option"><input type="radio" name="family" value="${id}" ${id === draft.archetype ? "checked" : ""}><svg viewBox="0 0 32 28" aria-hidden="true"><path d="${copy.icon}"/></svg><span><strong>${copy.title}</strong><small>${copy.outcome}</small></span></label>`).join("")}</fieldset>
           <div id="project-error" class="run-error" role="alert" hidden></div>
@@ -132,6 +136,12 @@ export function mountProjectWorkbench(root, {
         </form>
         <div class="project-secondary"><section class="project-history" aria-labelledby="project-history-title"><h2 id="project-history-title">Your saved revisions</h2><p>Every save keeps a separate version on this server. Reopen one to compare or build it.</p><div id="project-history-options"></div><div id="project-revision-changes"></div></section><aside class="project-learning"><div class="project-learning-intro"><span aria-hidden="true">↳</span><div><h2>Follow the power.</h2><p>Try a short sensor challenge while your own design takes shape.</p></div></div><div id="sensor-exercise" aria-live="polite">${exerciseStartHtml()}</div></aside></div>`;
         if (retainedExercise) $("#sensor-exercise").replaceWith(retainedExercise);
+        assistant = $("#project-assistant") ? mountProjectAssistant($("#project-assistant"), {fetcher, onApplying(value) { assistantApplying = value; sync(); }, onApplied(next, saved) {
+            project = next; revision = saved; draft = structuredClone(saved.brief);
+            familyDrafts.clear(); sensorDrafts.clear(); memoryDrafts.clear();
+            onInvalidate(); render(); onOpen(draft.project_name); void refreshShelf();
+            $("#project-run")?.focus();
+        }}) : null;
         renderHistory(); sync();
     }
 
@@ -168,10 +178,11 @@ export function mountProjectWorkbench(root, {
     function sync() {
         if (!$("#project-form")) return;
         const dirty = !revision || !sameBrief(draft, revision.brief);
+        assistant?.setContext(project && revision ? {projectId:project.project_id,revision,dirty:dirty || busy || !!pendingProjectId} : null);
         $("#project-save-state").textContent = busy ? "Working…" : pendingProjectId ? "Saved project unavailable" : !options ? "Choices unavailable" : dirty ? "Unsaved changes" : `Revision ${revision.number} saved`;
         $("#project-save").textContent = busy ? "Working…" : project ? "Save new revision" : "Save first revision";
-        $("#project-save").disabled = busy || !options || !!pendingProjectId || !dirty;
-        $("#project-run").disabled = busy || !options || !!pendingProjectId || dirty || !revision;
+        $("#project-save").disabled = busy || assistantApplying || !options || !!pendingProjectId || !dirty;
+        $("#project-run").disabled = busy || assistantApplying || !options || !!pendingProjectId || dirty || !revision;
         $("#project-run").textContent = revision?.job_id ? "Open this revision's run" : "Generate my board";
         $("#project-action-note").textContent = pendingProjectId ? "Retry opening this saved project to recover its choices and revisions."
             : dirty ? "Save your choices first. Existing revisions keep their original design and files."
@@ -181,7 +192,7 @@ export function mountProjectWorkbench(root, {
                 : `Revision ${revision.number} is confirmed. Its engineering checks begin when you generate the board.`;
         $("#project-load-retry").hidden = !pendingProjectId || !options || busy;
         root.querySelectorAll("[data-load-options], [data-load-project]").forEach((button) => { button.disabled = busy; });
-        root.querySelectorAll("#project-form input, #project-form select, #project-form textarea, #project-revision").forEach((input) => { input.disabled = busy || !options || !!pendingProjectId; });
+        root.querySelectorAll("#project-form input, #project-form select, #project-form textarea, #project-revision").forEach((input) => { input.disabled = busy || assistantApplying || !options || !!pendingProjectId; });
     }
 
     function renderHistory() {
@@ -249,7 +260,7 @@ export function mountProjectWorkbench(root, {
     }
 
     async function save() {
-        if (busy || !options || pendingProjectId) return;
+        if (busy || assistantApplying || !options || pendingProjectId) return;
         if (!draft.project_name.trim() || draft.project_name.length > 120) return showError(new ProjectRequestError("Give your project a name before saving. Use between 1 and 120 characters."));
         if (!draft.description.length || draft.description.length > 1000) {
             const description = $("#project-description");
@@ -275,7 +286,7 @@ export function mountProjectWorkbench(root, {
     }
 
     async function run() {
-        if (busy || !options || !revision || !sameBrief(draft, revision.brief)) return;
+        if (busy || assistantApplying || !options || !revision || !sameBrief(draft, revision.brief)) return;
         const projectId = project.project_id;
         const revisionId = revision.revision_id;
         busy = true; sync(); $("#project-error").hidden = true;
@@ -357,7 +368,7 @@ export function mountProjectWorkbench(root, {
             exerciseVersion += 1;
             $("#sensor-result").innerHTML = "";
         }
-        if (!event.target.closest?.("#project-form") || busy || !options || pendingProjectId) return;
+        if (!event.target.closest?.("#project-form") || busy || assistantApplying || !options || pendingProjectId) return;
         const target = event.target;
         let next = structuredClone(draft);
         let redraw = false;
@@ -405,7 +416,7 @@ export function mountProjectWorkbench(root, {
     function change(event) {
         if (event.target.id === "project-revision") {
             const next = project?.revisions.find((item) => item.revision_id === event.target.value);
-            if (next && !busy) { resetExercise(); revision = next; draft = structuredClone(next.brief); familyDrafts.clear(); sensorDrafts.clear(); memoryDrafts.clear(); onInvalidate(); render(); onOpen(draft.project_name); }
+            if (next && !busy && !assistantApplying) { resetExercise(); revision = next; draft = structuredClone(next.brief); familyDrafts.clear(); sensorDrafts.clear(); memoryDrafts.clear(); onInvalidate(); render(); onOpen(draft.project_name); }
         }
     }
     function submit(event) {
@@ -428,6 +439,7 @@ export function mountProjectWorkbench(root, {
     shelf?.addEventListener("click", shelfClick);
     render(); void ensureOptions(); void refreshShelf();
     return { openNew, openProject, refreshShelf, dispose() {
+        assistant?.dispose();
         disposed = true; exerciseVersion += 1; shelfVersion += 1;
         root.removeEventListener("input", input); root.removeEventListener("change", change);
         root.removeEventListener("submit", submit); root.removeEventListener("click", click);
