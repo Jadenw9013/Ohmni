@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "active_task": null,
-  "last_known_commit": "b9f6b922",
-  "approval_record": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
+  "last_known_commit": "edf314423f4a5c546762aecdfe42312b46c66ba3",
+  "approval_record": ".ai/approvals/CONVERSATIONAL-UX-1.yaml",
   "previous_checkpoint": {
     "schema_version": 1,
     "active_task": null,
@@ -34,17 +34,19 @@
   },
   "modified_files": [],
   "completed_substeps": [
-    "Implemented a deterministic acceptance runner and a 14-case negative admission corpus.",
-    "Pinned and verified the held-out MCP1700 manufacturer PDF; the unadapted parser fails closed on its page-19 drawing.",
-    "Proved portable LM317 asset export and resolver reconstruction across a fresh process boundary.",
-    "Corroborated 23 source receipts and 37 asset checks with KiCad 10.0.5, plus connected ERC/DRC.",
-    "Passed corpus (110), full (2419), integration (33), slow integration (18), verify-all (14 fixtures), scoped Ruff and AI-state validation."
+    "Recorded explicit approval for CUX-T01..03.",
+    "Implemented natural-language entry, editable examples, disclosed guided fallback, and bounded project requests.",
+    "Frontend: 1063 passed; workflow: 12 passed; integration: 28 passed, 16 skipped.",
+    "Browser: desktop, 390px, 320px, keyboard, provider-free fallback, save/reopen checked.",
+    "Native-process tests: 21 passed through the underlying Python interpreter with project dependencies.",
+    "Full fast selection passes across direct runtime (2274) and optional MCP venv run (32); 12 protected baseline Ruff findings retained."
   ],
   "remaining_work": [
-    "A reviewer independent of the CS-T11 implementation must inspect commit b9f6b922 before CS-T11 may become COMPLETE.",
-    "Repository-wide Ruff remains blocked by 12 pre-existing findings in behavior-owned files; CS-T11 changed Python files are clean."
+    "Merge CUX-T01 PR, then branch CUX-T02 from latest origin/main.",
+    "Implement CUX-T02 conversational brief and CUX-T03 grounded revision-aware iteration in separate PRs.",
+    "Independent final scope review remains required."
   ],
-  "last_failure": "python -m ruff check . reports 12 findings only in behavior-owned paths that this task is forbidden to modify.",
-  "resume_action": "Independently review CS-T11 commit b9f6b922 and promote VERIFIED to COMPLETE only if the review passes without open BLOCKER/HIGH findings.",
-  "last_command": "python scripts/verify.py full: 2419 passed, 8 skipped in 570.30s."
+  "last_failure": null,
+  "resume_action": "After the CUX-T01 PR merges, fetch origin/main and begin CUX-T02 in a fresh feature branch. Do not merge or push main.",
+  "last_command": "Fast selection: 2274 passed + 32 optional MCP tests passed in the venv; frontend 1063; workflow 12; integration 28 passed/16 skipped."
 }

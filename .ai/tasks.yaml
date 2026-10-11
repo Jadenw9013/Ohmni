@@ -309,6 +309,15 @@
       "approval_evidence": ".ai/approvals/LANDING-PCB-CONTROLLER.yaml",
       "review_policy": "Independent electrical/geometry and visual review; owner appearance acceptance remains distinct.",
       "publication_approval": ".ai/approvals/LP-CONTROLLER-PUBLISH.yaml"
+    },
+    {
+      "id": "CONVERSATIONAL-UX-1",
+      "title": "Conversational project experience",
+      "type": "product_milestone",
+      "status": "APPROVED",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/CONVERSATIONAL-UX-1.yaml",
+      "review_policy": "Independent final review required for scope completion; task self-review recorded honestly."
     }
   ],
   "tasks": [
@@ -3131,6 +3140,120 @@
         "status": "PASSED",
         "independent": false,
         "record": ".ai/verification/LP-CONTROLLER-PUBLISH.yaml"
+      }
+    },
+    {
+      "id": "CUX-T01",
+      "title": "Simplify entry and recovery",
+      "scope": "CONVERSATIONAL-UX-1",
+      "milestone": null,
+      "goal": "Simplify entry and recovery",
+      "priority": 99,
+      "status": "COMPLETE",
+      "dependencies": [],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Natural language is primary when available; guided fallback remains usable.",
+        "Examples populate editable prompts without submitting.",
+        "Stalled project requests terminate with actionable recovery; late responses cannot change state.",
+        "Keyboard and responsive entry flow verified."
+      ],
+      "implementation": {
+        "started_at_commit": "9b95cef6",
+        "completed_at_commit": "edf314423f4a5c546762aecdfe42312b46c66ba3",
+        "approval_evidence": ".ai/approvals/CONVERSATIONAL-UX-1.yaml"
+      },
+      "review": {
+        "required": false,
+        "independent": false,
+        "status": "PASSED",
+        "record": ".ai/reviews.yaml#CUX-T01-SELF-REVIEW"
+      },
+      "verification": {
+        "record": ".ai/verification/CUX-T01.yaml",
+        "required": [
+          "workflow",
+          "fast",
+          "frontend",
+          "integration",
+          "ruff"
+        ]
+      }
+    },
+    {
+      "id": "CUX-T02",
+      "title": "Conversational brief",
+      "scope": "CONVERSATIONAL-UX-1",
+      "milestone": null,
+      "goal": "Conversational brief",
+      "priority": 98,
+      "status": "APPROVED",
+      "dependencies": [
+        "CUX-T01"
+      ],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Typed, validated interpretation with requested/assumed/unresolved fields.",
+        "Only necessary clarification, preserving explicit requirements.",
+        "Confirmation saves an immutable revision and starts its run."
+      ],
+      "implementation": {
+        "started_at_commit": null,
+        "completed_at_commit": null,
+        "approval_evidence": ".ai/approvals/CONVERSATIONAL-UX-1.yaml"
+      },
+      "review": {
+        "required": false,
+        "independent": false,
+        "status": "PENDING"
+      },
+      "verification": {
+        "record": ".ai/verification/CUX-T02.yaml",
+        "required": [
+          "workflow",
+          "fast",
+          "frontend",
+          "integration",
+          "ruff"
+        ]
+      }
+    },
+    {
+      "id": "CUX-T03",
+      "title": "Conversational iteration",
+      "scope": "CONVERSATIONAL-UX-1",
+      "milestone": null,
+      "goal": "Conversational iteration",
+      "priority": 97,
+      "status": "APPROVED",
+      "dependencies": [
+        "CUX-T02"
+      ],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Grounded questions use current server-owned project context.",
+        "Typed changes show diff and invalidation before application.",
+        "Stale proposals, unsupported parts and fabricated evidence fail closed."
+      ],
+      "implementation": {
+        "started_at_commit": null,
+        "completed_at_commit": null,
+        "approval_evidence": ".ai/approvals/CONVERSATIONAL-UX-1.yaml"
+      },
+      "review": {
+        "required": false,
+        "independent": false,
+        "status": "PENDING"
+      },
+      "verification": {
+        "record": ".ai/verification/CUX-T03.yaml",
+        "required": [
+          "workflow",
+          "fast",
+          "frontend",
+          "integration",
+          "ruff"
+        ]
       }
     }
   ]

@@ -86,30 +86,35 @@
         <section id="describe" class="stage welcome" aria-labelledby="describe-title">
           <div class="welcome-heading">
             <h1 id="describe-title">What would you like to make?</h1>
-            <p class="welcome-lede">Start a guided project or continue one you saved. You can explore an example before making your own.</p>
+            <p class="welcome-lede">Describe your idea, review the plan, then explore your checked board.</p>
           </div>
           <div class="welcome-grid">
             <div class="welcome-copy">
               <div class="project-starter">
-                <div class="starter-heading"><div class="climate-icon" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M17 9a4 4 0 0 1 8 0v14a7 7 0 1 1-8 0z"/><path d="M21 13v15m-4 0h8M30 9h4m-4 6h4"/></svg></div><div><span class="available-label">Start with something useful</span><h2>Choose your project.</h2></div></div>
+                <div class="free-text-starter" id="free-text-starter" hidden>
+                  <label class="free-text-label" for="free-text-request">Describe what your board should do</label>
+                  <textarea id="free-text-request" rows="3" maxlength="2000" spellcheck="true" placeholder="A USB-powered logger that reads temperature and humidity and shows a status light"></textarea>
+                  <div class="prompt-examples" role="group" aria-label="Example requests"><button type="button" class="ghost" data-prompt-example="A USB-powered board that measures temperature and humidity and has a status light">Measure my room</button><button type="button" class="ghost" data-prompt-example="A USB-powered ESP32 board with two buttons and a status light">Buttons and lights</button><button type="button" class="ghost" data-prompt-example="A USB-powered ESP32 board with SPI EEPROM to store data">Store readings</button></div>
+                  <div class="free-text-actions">
+                    <button type="button" id="start-free-text" class="primary">Plan my board <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+                    <span class="free-text-problem" id="free-text-problem" role="alert" hidden></span>
+                  </div>
+                  <p class="fineprint">Review the plan before starting. Ohmni checks the proposed circuit and explains anything it cannot support.</p>
+                </div>
+                <p id="ai-entry-status" role="status">Checking whether AI planning is available. You can use guided setup below.</p>
+                <details id="guided-entry" open><summary>Choose parts with guided setup</summary>
+                <div class="starter-heading"><div class="climate-icon" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M17 9a4 4 0 0 1 8 0v14a7 7 0 1 1-8 0z"/><path d="M21 13v15m-4 0h8M30 9h4m-4 6h4"/></svg></div><div><span class="available-label">Start with something useful</span><h2>Prefer to choose the details?</h2></div></div>
                 <ul class="starter-families"><li><strong>Measure your space</strong><span>Read the world with environmental sensors.</span></li><li><strong>Buttons &amp; lights</strong><span>Give your program physical inputs and indicators.</span></li><li><strong>Store data</strong><span>Add memory for information you want to keep.</span></li></ul>
                 <dl class="starter-specs">
                   <div><dt>The processor</dt><dd>ESP32</dd></div>
                   <div><dt>The board</dt><dd>2 layers</dd></div>
                   <div><dt>The power</dt><dd>USB-C</dd></div>
                 </dl>
-                <button type="button" id="create-project" class="primary start-button">Start a project <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+                <button type="button" id="create-project" class="primary start-button">Use guided setup <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
                 <p class="starter-footnote">Save project revisions on this server. No cloud sync.<br>Unsaved changes are lost if you reload the page.</p>
+                </details>
                 <button type="button" id="start-supported" class="ghost reference-demo-link" data-fixture="esp32-bme280-environmental-logger">Or run the fixed reference example</button>
-                <div class="free-text-starter" id="free-text-starter" hidden>
-                  <label class="free-text-label" for="free-text-request">Or describe a board in your own words</label>
-                  <textarea id="free-text-request" rows="3" maxlength="2000" spellcheck="true" placeholder="A USB-powered logger that reads temperature and humidity and shows a status light"></textarea>
-                  <div class="free-text-actions">
-                    <button type="button" id="start-free-text" class="secondary">Interpret my request <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
-                    <span class="free-text-problem" id="free-text-problem" role="alert" hidden></span>
-                  </div>
-                  <p class="fineprint">A model proposes the circuit from your words. Everything after that is the same deterministic checking, so a proposal that does not hold up is reported, not hidden. Requests outside the supported parts and layout policy are refused.</p>
-                </div>
+
               </div>
               <div class="prototype-note"><strong>Small choices. Real changes to the circuit.</strong><p class="scope-note" id="scope-note">Three supported USB-powered ESP32 families: sensors, buttons and lights, or SPI memory. Choose real parts and counts; the engine generates your configuration and runs actual checks. Assembly, programming, and hardware testing come next.</p></div>
             </div>
