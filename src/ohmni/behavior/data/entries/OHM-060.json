@@ -23,7 +23,8 @@
       "bench-results/BEH-DIO-PN--B7.json"
     ],
     "conflicts": [
-      "The spec names document 88548, which is a Schottky family. Standard recovery GL41 is document 88546; do not copy Schottky parameters."
+      "The spec names document 88548, which is a Schottky family. Standard recovery GL41 is document 88546; do not copy Schottky parameters.",
+      "D072: the spec cites Vishay doc 88548 for GL41; the archived document is 88546 (BYM10 and GL41)."
     ],
     "documents": [
       {
@@ -168,11 +169,38 @@
         ],
         "unit": null,
         "value": "two bands: white device-type band and violet voltage band for GL41M"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "x-axis 'Terminal Temperature (C)'; no ambient-referenced IF(AV) derating is published",
+        "field": "forward_current_derating_axis",
+        "page": 3,
+        "scope": "Vishay GL41 Fig. 1 Forward Current Derating Curve",
+        "sources": [
+          "https://www.vishay.com/doc?88546"
+        ],
+        "unit": null,
+        "value": "terminal temperature"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Typical thermal resistance RthJT (2) 30 C/W",
+        "field": "typical_thermal_resistance_junction_terminal",
+        "page": 2,
+        "scope": "Vishay GL41M, standard recovery MELF reference; 6.0 x 6.0 mm copper pads to each terminal",
+        "sources": [
+          "https://www.vishay.com/doc?88546"
+        ],
+        "unit": "K/W",
+        "value": 30
       }
     ],
     "remaining_open_items": [
       "Full current derating curve, reverse recovery, N/RS fit and thermal transient remain unimplemented.",
-      "Other GL41 reverse-voltage variants need explicit type selection."
+      "Other GL41 reverse-voltage variants need explicit type selection.",
+      "D072: the blocker is a rating-input limitation, not a missing document: the ratings context carries only an ambient temperature, while GL41 Fig. 1 derates against terminal temperature. Closing needs a terminal-temperature input or an owner decision; deriving terminal temperature from two typical thermal resistances is not proposed."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
@@ -181,7 +209,7 @@
     ],
     "source": {
       "document": "docs/behavior/gapfill/OHM-060.md",
-      "document_sha256": "154c8eb5622ed4962133650edaad1607e34e79e970d8679a3837d208dc5ddf39",
+      "document_sha256": "1b37bb5bdd6c67b7eeb6e6b67e0eade9e5a3ee98a3d9653008deaa3cead39fcf",
       "fragment_sha256": null,
       "line": 1
     }

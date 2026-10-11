@@ -1,0 +1,44 @@
+{
+  "analysis": "op",
+  "circuit_hash": "95ff4997b5b246860cb69feea1fbe0ff2a4d18e55ab03d4e70e2e634c66fbd60",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "analytical_source": "BEH-RES-SENSE/B1",
+    "derivation": "Same authored V_kelvin = I*Rs equation and relative tolerance, evaluated at the bound reference value and read across the sense terminals E1-E2.",
+    "expected": 0.001,
+    "kind": "absolute",
+    "observable": "kelvin_voltage",
+    "source_deck_sha256": "b25bde9e184f48fc4d20bd86358c2e094f446d0e029227a5348ef9d3fd8cdc73",
+    "source_fact": {
+      "basis": "MFR_DATASHEET",
+      "confidence": "H",
+      "detail": "Resistance value code L1000 = 0.000100 ohm",
+      "field": "ref_nominal_resistance",
+      "page": 1,
+      "scope": "Vishay WSBS8518...20 (doc 30341, two sense pins), WSBS8518L1000JT20",
+      "sources": [
+        "https://www.vishay.com/doc?30341"
+      ],
+      "unit": "ohm",
+      "value": 0.0001
+    },
+    "tolerance": 1e-06
+  },
+  "entry_id": "OHM-015",
+  "entry_research_sha256": "43f7b1150d110b8eebffd99778bf5e697d089b2fd0e5774ec930e29c17fa5d2f",
+  "limits": "Four-terminal isothermal DC Kelvin voltage only, sense terminals unloaded; no contact or bolt-joint resistance, temperature, thermal EMF or safe-current acceptance.",
+  "netlist_sha256": "819717a48ab1c0ad91426928f286175b3981b80eeec74c14d9d90e604d4d4621",
+  "observation_status": "ran",
+  "observed": 0.001,
+  "output_sha256": "c2f1a2407eb9c3d56dc21371eec9dddeed7c1c39e8d86cf3ab4f07735644330e",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T20:08:25Z",
+  "raw_output": "runtime-bench-output/OHM-015-op/output.txt",
+  "recipe_source_sha256": "e0b0e3e95da25117d09e2c6765f7d4461d2093e15148e89b70f8256c0ffe0eda",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "version_file": "runtime-bench-output/OHM-015-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sun Oct 11 20:06:07 UTC 2026\n******\n",
+  "version_sha256": "70418e8629dac31fc3bfc9ac91e68839e740ca6abcaa6a956e72729e6498fb9b"
+}

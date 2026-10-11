@@ -49,6 +49,8 @@ def generate(root=ROOT):
                                                or recipe.behavior_id == "BEH-FREQ-XO"):
                 case = ic_benches.ic_cases(recipe.behavior_id, recipe)[0]
                 compiled, identity = ic_benches.ic_definition(audit, key, case)
+            elif recipe.behavior_id in runtime_benches.XTAL_PROBES:
+                compiled, identity = runtime_benches.xtal_probe_definition(audit, key)
             elif recipe.behavior_id in runtime_benches.TRAN_PROBES:
                 compiled, identity = runtime_benches.tran_probe_definition(audit, key)
             else:
@@ -59,7 +61,8 @@ def generate(root=ROOT):
             captured.update(entry_id=key, package=recipe.package, reference_part=recipe.reference_part,
                             original_netlist_sha256=compiled.netlist_sha256,
                             entry_research_sha256=registry.entry(key).research.source.document_sha256,
-                            options={k: identity[k] for k in ("tstep", "tstop", "observe_nets") if identity.get(k)},
+                            options={k: identity[k] for k in ("tstep", "tstop", "observe_nets", "ac_points_hz")
+                                     if identity.get(k)},
                             scope="Authored reference test circuit; not your saved design or a physical component qualification.")
             examples[key] = captured
         finally:
