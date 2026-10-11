@@ -844,6 +844,9 @@ class NgspiceAdapter:
                 result["ac"] = {"points": parsed["points"], "sweep": sweep,
                                 "amplitude": "RMS phasors of the declared AC excitations",
                                 "limitations": AC_LIMITATIONS}
+                esr_zero = self._esr_zero_solve(compilation, work_dir, points, nodes, probes)
+                if esr_zero is not None:
+                    result["ac"]["esr_zero"] = esr_zero
         else:
             curve = parse_transient(observation["stdout"], analysis="tran")
             display = {f"v({name})" for name in shown}
@@ -869,6 +872,41 @@ class NgspiceAdapter:
                            limitation="Authored open-circuit substitution; not a physical damage prediction")
             result["failure_rerun"] = failure
         return result
+
+    def _esr_zero_solve(self, compilation, work_dir: Path, points: list[float], nodes: list[str],
+                        probes: list[str]) -> dict | None:
+        """Second AC solve at the tantalum ripple rating frequency with each bound series ESR shorted (D064).
+
+        Only an observation: the rating step decides what the two solves prove. A failed or incomplete
+        second solve is recorded as such and never replaced by values from the first.
+        """
+        from ..behavior.ratings import RIPPLE_RATING_HZ, esr_dual_solve_elements, short_elements
+
+        rated = [f for f in points if math.isclose(f, RIPPLE_RATING_HZ, rel_tol=1e-9)]
+        elements = esr_dual_solve_elements(compilation) if rated else []
+        if not elements:
+            return None
+        variant = {"status": "failed", "elements": elements, "points": [],
+                   "description": "Same AC solve with each listed series-ESR element replaced by a 0 V short"}
+        try:
+            netlist = short_elements(compilation.netlist, elements)
+            deck = ac_deck(netlist, nodes=nodes, currents=probes, points_hz=rated)
+        except ValueError as exc:
+            variant["problems"] = [str(exc)]
+            return variant
+        variant["netlist_sha256"] = hashlib.sha256(netlist.encode()).hexdigest()
+        observation = self.behavior_bench(deck, work_dir=work_dir / "esr_zero")
+        if observation["status"] != "ran":
+            variant["problems"] = [f"ngspice {observation['status']}"]
+            return variant
+        parsed = parse_ac(observation["stdout"], rated)
+        if len(parsed["points"]) != len(rated) or any(
+                q.lower() not in {**p["node_voltages"], **p["branch_currents"]}
+                for p in parsed["points"] for q in [*nodes, *probes]):
+            variant["problems"] = ["ngspice returned incomplete AC observations"]
+            return variant
+        variant.update(status="ran", points=parsed["points"])
+        return variant
 
     def operating_point(self, netlist: str, run_id: str, *,
                         work_dir: Path | None = None) -> SimulationRun:

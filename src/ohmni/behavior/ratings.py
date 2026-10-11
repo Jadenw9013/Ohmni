@@ -688,6 +688,7 @@ def evaluate_ratings(compilation, result, registry, context=None):
         ac_points = result["ac"]["points"]
         ran_op = True  # the AC run solves and prints the same operating point first
     linear = circuit_is_linear(compilation.netlist or "")
+    duals = _dual_solve_inputs(compilation, result) if ac_points is not None else {}
     ran = ran_op or curve is not None
     components = []
     all_faults = []
@@ -706,7 +707,7 @@ def evaluate_ratings(compilation, result, registry, context=None):
             reason = None
         elif ac_points is not None:
             b = _scoped_checks(component, result.get("operating_point"), context,
-                               ac=(_ac_window(component, ac_points), linear))
+                               ac=(_ac_window(component, ac_points), linear, duals.get(component.ref)))
             reason = None
         else:
             b = _scoped_checks(component, result.get("operating_point") if ran_op else None, context)
@@ -838,6 +839,18 @@ def apply_open_faults(compilation, faults):
 
 
 _NONLINEAR_ELEMENTS = set("BDQMJASWUNPZ")
+_CONTROLLED_ELEMENTS = set("EFGHB")
+
+
+def _logical_lines(netlist):
+    logical = []
+    for line in netlist.splitlines():
+        text = line.strip()
+        if text.startswith("+") and logical:
+            logical[-1] += " " + text[1:]
+        elif text and not text.startswith("*"):
+            logical.append(text)
+    return logical
 
 
 def circuit_is_linear(netlist):
@@ -846,14 +859,7 @@ def circuit_is_linear(netlist):
     Semiconductors, switches, behavioural and digital elements are nonlinear, and so is any element
     whose value reads a circuit voltage or current (the saturating inductor card does).
     """
-    logical = []
-    for line in netlist.splitlines():
-        text = line.strip()
-        if text.startswith("+") and logical:
-            logical[-1] += " " + text[1:]
-        elif text and not text.startswith("*"):
-            logical.append(text)
-    for text in logical:
+    for text in _logical_lines(netlist):
         if text.startswith("."):
             if re.match(r"\.(?:include|inc|lib)\b", text, re.IGNORECASE):
                 return False  # an unscanned file could hold anything
@@ -862,6 +868,71 @@ def circuit_is_linear(netlist):
                 or re.search(r"\bpoly\s*\(", text, re.IGNORECASE)):
             return False
     return bool(netlist.strip())
+
+
+def circuit_is_passive(netlist):
+    """Linear and built from R, L, C, coupled inductors, lines and independent sources only (D064).
+
+    Controlled (E, F, G, H) and behavioural (B) sources are refused, so every port impedance has a
+    non-negative real part.
+    """
+    return circuit_is_linear(netlist) and not any(
+        not text.startswith(".") and text[0].upper() in _CONTROLLED_ELEMENTS for text in _logical_lines(netlist))
+
+
+def esr_dual_solve_elements(compilation):
+    """Series-ESR elements the AC adapter shorts in its second solve (D064).
+
+    Only a bound T491 card exactly Resr -> (Cb || Rlk) qualifies: one capacitor, one leak resistor and
+    one series resistor named *_esr whose netlist value is the part's sourced 100 kHz maximum ESR.
+    Anything else is left out, and its ripple rows stay unknown.
+    """
+    lines = {}
+    for text in _logical_lines(compilation.netlist or ""):
+        if not text.startswith("."):
+            lines.setdefault(text.split()[0].lower(), []).append(text.split())
+    names = []
+    for component in compilation.components:
+        if not _tant_esr_bound(component):
+            continue
+        elements = [n.lower() for n in component.element_names]
+        esr = [n for n in elements if n.startswith("r") and n.endswith("_esr")]
+        if (len(elements) != 3 or len(esr) != 1 or len([n for n in elements if n.startswith("c")]) != 1
+                or len([n for n in elements if n.startswith("r") and n.endswith("_lk")]) != 1):
+            continue
+        evidence = component.parameter_evidence.get("esr_max", {})
+        esr_max = component.parameters.get("esr_max")
+        found = lines.get(esr[0], [])
+        if (esr_max is None or "100 kHz" not in evidence.get("scope", "") or len(found) != 1
+                or len(found[0]) != 4):
+            continue
+        try:
+            value = float(found[0][3])
+        except ValueError:
+            continue
+        if math.isclose(value, esr_max, rel_tol=1e-12):
+            names.append(next(n for n in component.element_names if n.lower() == esr[0]))
+    return names
+
+
+def short_elements(netlist, names):
+    """The same netlist with each named two-terminal element replaced by a 0 V source (an exact short)."""
+    wanted = {n.lower() for n in names}
+    out, seen = [], set()
+    existing = {text.split()[0].lower() for text in _logical_lines(netlist) if not text.startswith(".")}
+    for line in netlist.splitlines():
+        tokens = line.split()
+        if tokens and tokens[0].lower() in wanted:
+            short = f"Vohmni_short_{tokens[0]}"
+            if tokens[0].lower() in seen or len(tokens) != 4 or short.lower() in existing:
+                raise ValueError(f"Cannot short element {tokens[0]}")
+            seen.add(tokens[0].lower())
+            out.append(f"{short} {tokens[1]} {tokens[2]} 0")
+        else:
+            out.append(line)
+    if seen != wanted:
+        raise ValueError("Element to short not found: " + ", ".join(sorted(wanted - seen)))
+    return "\n".join(out) + ("\n" if netlist.endswith("\n") else "")
 
 
 def _ac_window(component, points):
@@ -887,7 +958,79 @@ def _ac_window(component, points):
 RIPPLE_RATING_HZ = 100e3
 
 
-def _ac_checks(component, values, b, thermal, upper_only, window, linear):
+def _dual_solve_inputs(compilation, result):
+    """Per bound tantalum: the ESR-shorted second AC solve of D064, or why it is unavailable."""
+    bound = [c for c in compilation.components if _tant_esr_bound(c)]
+    if not bound:
+        return {}
+    variant = (result.get("ac") or {}).get("esr_zero")
+    reason = None
+    if len(bound) != 1:
+        reason = ("the circuit has more than one tantalum card with a series ESR, and each one's unknown "
+                  "impedance changes the circuit the other sees")
+    elif not variant or variant.get("status") != "ran" or not variant.get("points"):
+        reason = "no ESR-shorted second solve is available for this run"
+    elif not circuit_is_passive(compilation.netlist or ""):
+        reason = "the circuit has a controlled or behavioural source or a nonlinear element"
+    out = {}
+    for component in bound:
+        shorted = {n.lower() for n in (variant or {}).get("elements", [])}
+        if reason is None and not shorted & {n.lower() for n in component.element_names}:
+            out[component.ref] = {"reason": "this card's series ESR was not shorted in the second solve"}
+        elif reason is None:
+            window = _ac_window(component, variant["points"])
+            out[component.ref] = ({"window": window} if window is not None else
+                                  {"reason": "the second solve did not print this part's terminal values"})
+        else:
+            out[component.ref] = {"reason": reason}
+    return out
+
+
+# Values are printed with 15 significant digits; these guards keep the port extraction far from rounding.
+_DUAL_MIN_SEPARATION = 1e-6
+_DUAL_MIN_RESISTIVE_FRACTION = 1e-3
+_DUAL_BOUND_INFLATION = 1e-6
+
+
+def _dual_solve_bound(frequency, v, i, dual, values, linear):
+    """Upper bound on the real tantalum's RMS current at the rating point, or (None, reason) (D064).
+
+    The two solves differ only in the part's series ESR, so they give two points of the linear port
+    relation V = Vth - Zth*I seen by the part. A real part is passive: whatever its ESR, capacitance or
+    ESL at 100 kHz, its impedance Z has Re(Z) >= 0, so |I| = |Vth| / |Zth + Z| <= |Vth| / Re(Zth). No
+    lower bound exists (the part's capacitance at 100 kHz and its ESL are unsourced), so this proves a
+    pass only.
+    """
+    if not linear:
+        return None, "the circuit is nonlinear"
+    if values.get("Tamb") != 25:
+        return None, "the ambient is not declared as exactly 25 C, the temperature of the rating and ESR"
+    if dual is None or dual.get("reason"):
+        return None, (dual or {}).get("reason", "no ESR-shorted second solve is available")
+    zero = next(((zv, zi) for f, zv, zi in dual["window"] if math.isclose(f, frequency, rel_tol=1e-9)), None)
+    if zero is None or "A" not in i or "A" not in zero[1] or not {"A", "K"} <= set(zero[0]):
+        return None, "the second solve has no value of this part at this frequency"
+    v1, i1 = v["A"] - v["K"], i["A"]
+    v0, i0 = zero[0]["A"] - zero[0]["K"], zero[1]["A"]
+    separation = abs(i1 - i0)
+    if i0 == 0 or i1 == 0 or separation < _DUAL_MIN_SEPARATION * max(abs(i0), abs(i1)):
+        return None, "shorting the ESR does not measurably change this part's current, so its port is not resolved"
+    # The two solves must differ by exactly the bound series resistance, seen from the part's own terminals.
+    if not math.isclose((v1 / i1 - v0 / i0).real, values["esr_max"], rel_tol=1e-6,
+                        abs_tol=1e-9 * max(abs(v1 / i1), values["esr_max"])):
+        return None, "the two solves do not differ by exactly the bound maximum ESR"
+    zth = -(v1 - v0) / (i1 - i0)
+    vth = v1 + zth * i1
+    if zth.real < _DUAL_MIN_RESISTIVE_FRACTION * abs(zth):
+        return None, ("the circuit seen by the part has almost no resistance, so the part's unsourced 100 kHz "
+                      "capacitance and ESL decide its current")
+    bound = abs(vth) / zth.real * (1 + _DUAL_BOUND_INFLATION)
+    if bound < abs(i1):
+        return None, "the extracted port does not reproduce the solved current"
+    return bound, None
+
+
+def _ac_checks(component, values, b, thermal, upper_only, window, linear, dual=None):
     """Sinusoidal steady state: DC operating values plus RMS phasors at each requested frequency.
 
     For a sine on a DC bias the peak is |DC| + sqrt(2)*|AC| and the RMS is sqrt(DC^2 + |AC|^2); both
@@ -953,12 +1096,31 @@ def _ac_checks(component, values, b, thermal, upper_only, window, linear):
                 stated = "100 kHz" in scope and "25 C" in scope and "RMS" in scope
                 exact = stated and math.isclose(frequency, RIPPLE_RATING_HZ, rel_tol=1e-9)
                 bound = _tant_esr_bound(component)
-                if bound:
+                limit, why = (_dual_solve_bound(frequency, v, i, dual, values, linear) if bound and exact
+                              and "esr_max" in values else (None, None))
+                if limit is not None:
+                    # D064: the dual solve bounds the real part's current from above; a pass is proven, a
+                    # violation never (the bound is not the current).
+                    stat(f"irip_bound_{key}", limit)
+                    heating = "esr_max" in values and "pd_max" in values
+                    for name, expression, parameters in (
+                            ("ripple current (rating frequency)", f"irip_bound_{key} <= irip_max", ("irip_max",)),
+                            *([("ESR heating with the maximum 100 kHz ESR",
+                                f"irip_bound_{key}**2*esr_max <= pd_max", ("esr_max", "pd_max"))]
+                              if heating else [])):
+                        row = add(name, expression, parameters, thermal)
+                        if row["status"] == "violation":
+                            row.update(status="unknown", reason=(
+                                f"Upper bound {limit:.6g} A on the real part's current (dual solve, D064) is above "
+                                "the limit; with the part's 100 kHz capacitance and ESL unsourced there is no "
+                                "lower bound, so no violation is proven"))
+                elif bound:
+                    reason = bound + (f"; the dual solve of D064 does not apply: {why}" if why else "")
                     add("ripple current" + (" (rating frequency)" if exact else ""), f"irip_{key} <= irip_max",
-                        ("irip_max",), bound)
+                        ("irip_max",), reason)
                     if exact and "esr_max" in values and "pd_max" in values:
                         add("ESR heating with the maximum 100 kHz ESR", f"irip_{key}**2*esr_max <= pd_max",
-                            ("esr_max", "pd_max"), bound)
+                            ("esr_max", "pd_max"), reason)
                 elif not stated:
                     add("ripple current", f"irip_{key} <= irip_max", ("irip_max",),
                         "The ripple rating's frequency, temperature or RMS basis is not stated in its source "

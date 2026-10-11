@@ -366,3 +366,29 @@ After three blocked rounds the rule is now the simplest sound one, and it fails 
 Consequence: the exact 100 kHz T491 ripple check no longer yields a verdict for the bound cards. A sound way to restore it is a dual solve: run with ESR = 0 and with ESR = maximum, and require both to pass, plus a capacitance-tolerance margin. Whether to build that, or to return the T491 cards to the ideal card for ripple purposes, is queued in MORNING_DECISIONS for the owner.
 
 D061's text about parallel parts being conservative is withdrawn. D062's violation proof is withdrawn.
+
+## D064 — 2026-10-11: A dual solve proves a T491 ripple pass at 25 C and 100 kHz, never a violation
+
+D063 queued a dual solve (ESR = 0 and ESR = maximum) as the sound way back to a ripple verdict for the bound T491 cards (OHM-033..036). It is built, but with a different conclusion than the one D063 sketched, because the capacitance-tolerance margin it assumed cannot be sourced:
+- **No tolerance is bound.** The reference parts leave the 10 % / 20 % tolerance option unselected, so no recipe carries a capacitance tolerance.
+- **A tolerance would not bound the 100 kHz capacitance.** The T491 nominal capacitance and its tolerance are stated at 120 Hz. A tantalum's effective capacitance at 100 kHz is not sourced, and neither is its ESL.
+- **A margin on the current is not monotonic.** With an inductive source impedance the part's current can peak inside any capacitance range (series resonance), so scaling the current by the tolerance is not a bound.
+
+The method used instead needs none of these values:
+- **Two solves.** At each requested 100 kHz point, the AC adapter repeats the solve with the card's series ESR element replaced by a 0 V source (an exact short). It runs as its own deck, with the same markers and frequency checks, and is recorded in `ac.esr_zero` with its status, the shorted elements and its own netlist hash. A failed or incomplete second solve stays failed and is never filled from the first. No recipe changes.
+- **The port.** The two solves differ only in the part's series resistance, so they give two points of the linear port relation V = Vth - Zth*I seen by the part, from its own terminal voltage and probe current. Both are extracted: Zth = -(V1 - V0)/(I1 - I0), Vth = V1 + Zth*I1. As a consistency check, the part impedances V/I of the two solves must differ by exactly the bound maximum ESR (1e-6 relative).
+- **The bound.** A real part is passive: whatever its ESR (0 to the maximum), its capacitance and its ESL at 100 kHz, its impedance Z has Re(Z) >= 0. So |I| = |Vth|/|Zth + Z| <= |Vth|/Re(Zth) whenever Re(Zth) > 0. This covers the monotonicity that D062 and D063 discussed (|I| falls as the series R rises when Re(Zth) >= 0) and also every reactance the card cannot bound. The simulated current lies under the bound by construction. The bound is inflated by 1e-6 against the 15-digit printing.
+- **Why no violation.** There is no lower bound: with the 100 kHz capacitance and ESL unsourced, the part's reactance, and so its current, can be anything below the bound. A bound above the limit is reported unknown with the bound in the reason.
+
+A pass is produced only when all of these hold; otherwise the row stays exactly as in D063 (unknown, with the reason the dual solve did not apply):
+- the frequency is the sourced 100 kHz (relative 1e-9), and the ripple scope states 100 kHz, 25 C and RMS;
+- the declared ambient is exactly 25 C, the temperature of both the ripple rating and the ESR;
+- the thermal scope is confirmed (as for the ideal card);
+- the circuit is linear and passive: no E, F, G, H or B element, no nonlinear element, no include;
+- the circuit has exactly one tantalum card with a series ESR (another one's unknown impedance would change the port the first one sees);
+- the card is exactly Resr -> (Cb || Rlk), with the netlist value of its `*_esr` element equal to the sourced `maximum_esr` from a 100 kHz scope;
+- the second solve ran and printed the part's values at that frequency; shorting the ESR changes its current by at least 1e-6 relative (otherwise the port is not resolved); and Re(Zth) is at least 1e-3 of |Zth| (otherwise the part's unsourced reactance decides the current and rounding would dominate).
+
+The ESR-heating row uses the same bound in the data sheet's rating method, Ibound^2 * ESRmax <= Pmax (equivalently Ibound <= sqrt(Pmax/ESRmax)), and proves a pass only. Transient runs, other frequencies and every other case keep the D063 rule. Parallel parts' rows are unchanged; their currents are still not bounded by this card (D063).
+
+In practice a verdict needs a source with real resistance behind the tantalum (for example a current injection into a resistive node: the live test injects 0.1 A RMS into 1 kohm || OHM-033 and proves the 158 mA rating with a 0.1 A bound). A tantalum driven from a low-impedance voltage source stays unknown, which is honest: its current there is set by the unsourced 100 kHz capacitance and ESL. The recipes' limitation text still says the rows are unknown in both directions (D063); the corrected wording ships with the next recipe change, because a recipe edit restamps every runtime receipt.
