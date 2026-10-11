@@ -1,4 +1,5 @@
 // Reviewable proposals. Only server-owned confirmation can create a revision.
+import { planSummaryHtml } from "./plan-summary.js";
 import { escapeHtml as e } from "./view-model.js";
 import { checkIdentity, projectRequest, parseProjectEnvelope, supportedBrief, sameBrief } from "./project-contract.js";
 
@@ -33,32 +34,32 @@ function value(field, item) {
     if (Array.isArray(item)) return item.length ? item.map(v => typeof v === "object" ? `${v.part_id}${v.address == null ? "" : ` (address ${v.address})`}` : v).join(", ") : "None";
     return String(item);
 }
-export function planHtml(plan) {
+export function planHtml(plan, {includeSummary = true} = {}) {
     const rows = fields => fields.map(field => `<div><dt>${e(labels[field])}</dt><dd>${e(value(field, plan.brief[field]))}</dd></div>`).join("");
-    const mainFields = new Set(["archetype", "input_power", "sensors", "button_count", "status_led_count", "spi_devices", "board_width_mm", "board_height_mm"]);
-    const secondary = plan.assumed_fields.filter(f => !mainFields.has(f));
-    return `<section><h2>${e(plan.brief.project_name)}</h2><p>Proposed choices for your review. Engineering checks have not run.</p>
-      <details><summary>Your conversation (${plan.messages.length} message${plan.messages.length === 1 ? "" : "s"})</summary>${plan.messages.map(m => `<p class="conversation-message">${e(m)}</p>`).join("")}</details></section>
-      <section><h3>From your words</h3><p>AI interpretations. Check that these match your intent.</p><dl class="plan-choices">${rows(plan.stated.map(s => s.field))}</dl>${plan.stated.map(s => `<p class="fineprint">${e(labels[s.field])}: “${e(s.quote)}”</p>`).join("")}${plan.stated.length ? "" : "<p>No specific choices were attributed to your wording.</p>"}</section>
-      <section><h3>Suggested choices</h3><p>Defaults or inferences you can change before confirming.</p><dl class="plan-choices">${rows(plan.assumed_fields.filter(f => mainFields.has(f)))}</dl>${secondary.length ? `<details><summary>Other suggested choices (${secondary.length})</summary><dl class="plan-choices">${rows(secondary)}</dl></details>` : ""}</section>
-      <p class="fineprint">USB-C provides power, not USB programming. Firmware and physical testing are still needed. Support checks on this plan do not verify electrical or manufacturing performance.</p>`;
+    return `${includeSummary ? planSummaryHtml(plan.brief, {requested:plan.stated.map(s=>s.field)}) : ""}
+      <details class="plan-details"><summary>Parts, assumptions and technical settings</summary><p>Engineering checks have not run. These are proposed choices.</p><h3>From your words</h3><dl class="plan-choices">${rows(plan.stated.map(s=>s.field))}</dl>${plan.stated.map(s=>`<p>${e(labels[s.field])}: “${e(s.quote)}”</p>`).join("")}<h3>Suggested choices</h3><dl class="plan-choices">${rows(plan.assumed_fields)}</dl></details>
+      <details><summary>Your conversation (${plan.messages.length})</summary>${plan.messages.map(m=>`<p class="conversation-message">${e(m)}</p>`).join("")}</details>`;
+
 }
 export function mountConversation(root, { fetcher = globalThis.fetch, onOpen, onSaved, onGuided } = {}) {
     let plan = null, identity = null, busy = false, version = 0, confirmed = null, initial = "";
     root.innerHTML = `<div id="conversation-status" role="status" aria-live="polite"></div><div id="conversation-error" role="alert" hidden></div>
-      <div id="conversation-questions"></div><form id="conversation-reply-form" hidden><label for="conversation-reply">Answer or change something</label>
+      <div id="conversation-questions"></div><div id="conversation-summary"></div>
+      <div class="conversation-actions"><button type="button" id="conversation-confirm" class="primary" hidden>Generate my board</button>
+      <button type="button" id="conversation-retry" class="secondary" hidden>Retry planning</button><button type="button" id="conversation-guided" class="ghost">Use guided setup</button></div>
+      <details id="conversation-edit" hidden><summary>Change something</summary><form id="conversation-reply-form" hidden><label for="conversation-reply">Answer or change something</label>
       <textarea id="conversation-reply" rows="3" maxlength="2000" placeholder="For example: use two buttons and one light"></textarea>
-      <button type="submit" class="secondary">Update my plan</button></form><div id="conversation-plan"></div>
-      <div class="conversation-actions"><button type="button" id="conversation-confirm" class="primary" hidden>Confirm &amp; generate my board</button>
-      <button type="button" id="conversation-retry" class="secondary" hidden>Retry planning</button><button type="button" id="conversation-guided" class="ghost">Use guided setup</button></div>`;
+      <button type="submit" class="secondary">Update my plan</button></form></details><div id="conversation-plan"></div>`;
     const $ = s => root.querySelector(s);
     const error = err => { $("#conversation-error").textContent = err.message || "This request could not be completed. Your text is still here."; $("#conversation-error").hidden = false; };
     function sync() {
         root.setAttribute("aria-busy", String(busy));
         $("#conversation-reply-form").hidden = !plan || !!confirmed;
+        $("#conversation-edit").hidden = !plan || !!confirmed;
+        if (plan && !plan.ready) $("#conversation-edit").open = true;
         $("#conversation-confirm").hidden = !plan;
         $("#conversation-confirm").disabled = busy || !plan?.ready;
-        $("#conversation-confirm").textContent = confirmed ? "Generate saved revision" : "Confirm & generate my board";
+        $("#conversation-confirm").textContent = confirmed ? "Generate saved revision" : "Generate my board";
         $("#conversation-reply").disabled = busy;
         $("#conversation-reply-form button").disabled = busy;
         $("#conversation-retry").hidden = !!plan || busy;
@@ -75,9 +76,10 @@ export function mountConversation(root, { fetcher = globalThis.fetch, onOpen, on
             const next = parsePlan(response.payload, response.identity);
             plan = next; identity = response.identity; confirmed = null;
             $("#conversation-questions").innerHTML = plan.questions.length ? `<h2>Before we build</h2><ul>${plan.questions.map(q => `<li>${e(q)}</li>`).join("")}</ul>` : "";
-            $("#conversation-plan").innerHTML = planHtml(plan);
+            $("#conversation-summary").innerHTML = planSummaryHtml(plan.brief, {requested:plan.stated.map(s=>s.field)});
+            $("#conversation-plan").innerHTML = planHtml(plan, {includeSummary:false});
             $("#conversation-reply").value = "";
-            $("#conversation-status").textContent = plan.ready ? "Review the choices, then confirm to save and generate." : "Your answer is needed. Nothing has been saved or generated.";
+            $("#conversation-status").textContent = plan.ready ? "Proposed plan. Engineering checks have not run." : "Your answer is needed. Nothing has been saved or generated.";
             if (!plan.ready) $("#conversation-reply").focus();
         } catch (err) { if (current === version) { error(err); $("#conversation-status").textContent = "Your request is preserved. Try again or use guided setup."; } }
         finally { if (current === version) { busy = false; sync(); if (plan && !plan.ready) $("#conversation-reply").focus(); } }
@@ -104,8 +106,8 @@ export function mountConversation(root, { fetcher = globalThis.fetch, onOpen, on
     $("#conversation-reply-form").addEventListener("submit", event => { event.preventDefault(); void propose($("#conversation-reply").value); });
     $("#conversation-confirm").addEventListener("click", () => void confirm());
     $("#conversation-retry").addEventListener("click", () => void propose(initial));
-    $("#conversation-guided").addEventListener("click", () => { version++; busy = false; onGuided(); });
+    $("#conversation-guided").addEventListener("click", () => { version++; busy = false; onGuided(plan?.brief); });
     return { begin(message) { version++; busy = false; plan = null; confirmed = null; identity = null; initial = message;
-        $("#conversation-plan").innerHTML = ""; $("#conversation-questions").innerHTML = ""; onOpen(); return propose(message); },
+        $("#conversation-summary").innerHTML = ""; $("#conversation-plan").innerHTML = ""; $("#conversation-questions").innerHTML = ""; onOpen(); return propose(message); },
         cancel() { version++; busy = false; }, propose, confirm };
 }

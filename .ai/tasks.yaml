@@ -3257,6 +3257,47 @@
           "ruff"
         ]
       }
+    },
+    {
+      "id": "CUX-T04",
+      "title": "Guided first-time project flow",
+      "scope": "CONVERSATIONAL-UX-1",
+      "milestone": null,
+      "goal": "Reduce first-use complexity across entry, review and result",
+      "priority": 96,
+      "status": "COMPLETE",
+      "dependencies": [
+        "CUX-T03"
+      ],
+      "blockers": [],
+      "acceptance_criteria": [
+        "One primary action per state; no mandatory technical vocabulary to begin.",
+        "Compact plan distinguishes defaults and user choices; detailed settings are disclosed on demand.",
+        "Generate saves the exact reviewed revision and starts it without a separate save step.",
+        "Generated board and contextual conversation share the result surface; history and checks remain accessible.",
+        "Responsive and keyboard flows plus save/run failures and stale contexts are tested."
+      ],
+      "implementation": {
+        "started_at_commit": "66ee2a07",
+        "completed_at_commit": "56325ba1514a6764f519ef3ed058c9fb4778a7ed",
+        "approval_evidence": ".ai/approvals/GUIDED-PROJECT-FLOW.yaml"
+      },
+      "review": {
+        "required": false,
+        "independent": false,
+        "status": "PASSED",
+        "record": ".ai/reviews.yaml#CUX-T04-SELF-REVIEW"
+      },
+      "verification": {
+        "record": ".ai/verification/CUX-T04.yaml",
+        "required": [
+          "workflow",
+          "fast",
+          "frontend",
+          "integration",
+          "ruff"
+        ]
+      }
     }
   ]
 }
