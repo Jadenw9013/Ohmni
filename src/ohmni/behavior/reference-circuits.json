@@ -4,22 +4,8 @@
     "OHM-017": "Confirm numbered pin-to-element map before simulating the physical array. Re-checked 2026-10-10 against the archive (D059): the only CRA06P drawing is a third-party mirror without terminal numbers; a Vishay-hosted CRA06P drawing is needed.",
     "OHM-019": "Maximum wiper current is unsourced; loaded-wiper simulation must be refused. Style-specific voltage and mechanical direction still need explicit binding. Re-checked 2026-10-10 against the archive (D059): in Bourns 3314 only the Z style names wiper and CW/CCW pins, and the Z style has no voltage rating; the rated J/G/H styles have no pin functions.",
     "OHM-020": "RV16AF power rating remains rating-critical and unsourced; refuse default simulation. Re-checked 2026-10-10 against the archive (D059): the archived Taiwan Alpha sheet (downloads?id=98) gives no RV16AF power rating; only a distributor lists one.",
-    "OHM-021": "The exact default part voltage rating is not re-established by these general application documents.",
-    "OHM-022": "The exact default part voltage rating is not re-established by these general application documents.",
-    "OHM-023": "The exact default part voltage rating is not re-established by these general application documents.",
-    "OHM-025": "The exact default part voltage rating is not re-established by these general application documents.",
-    "OHM-026": "The exact default part voltage rating is not re-established by these general application documents.",
-    "OHM-027": "The exact default part voltage rating is not re-established by these general application documents.",
-    "OHM-028": "Unbound generic disc voltage and safety class; no mains-use inference is permitted.",
-    "OHM-029": "Rating-critical part voltage and ripple/lifetime limits need an exact series binding. Re-checked 2026-10-10 against the archive (D059): the archive has no exact aluminium electrolytic series datasheet, only Nichicon's series-independent guides.",
-    "OHM-030": "Rating-critical part voltage and ripple/lifetime limits need an exact series binding. Re-checked 2026-10-10 against the archive (D059): the archive has no exact aluminium electrolytic series datasheet, only Nichicon's series-independent guides.",
-    "OHM-031": "Rating-critical part voltage and ripple/lifetime limits need an exact series binding.; Three-pin auxiliary-terminal connectivity unresolved; only the separately mapped two-pin variant may proceed after rating binding. Re-checked 2026-10-10 against the archive (D059): the archive has no exact snap-in series datasheet, and the auxiliary pin conflicts (Nichicon guide: isolate; spec: tie to negative).",
-    "OHM-032": "Rating-critical part voltage and ripple/lifetime limits need an exact series binding. Re-checked 2026-10-10 against the archive (D059): the archive has no exact aluminium-polymer series datasheet; the archived OS-CON reliability note has no part ratings.",
-    "OHM-038": "Unbound mains safety part; no claim of safe mains operation.",
     "OHM-042": "Unspecified default variant and incomplete rating conditions remain blocked. Re-checked 2026-10-10 against the archive (D059): the archived Coilcraft 0805CS-150X_R_ sheet supports an explicit-alternate binding (D059 research), but the record is research_required in the protected spec, so a binding would stay reference-only; not bound tonight.",
-    "OHM-053": "No safety or thermal acceptance for this transformer until working-voltage and loss limits are bound.",
-    "OHM-054": "Physical/reference and primary-conductor binding conflict; open-secondary operation is hazardous.",
-    "OHM-055": "Working-voltage and complete physical pin binding remain unestablished; no isolation-safety acceptance.",
+    "OHM-054": "Physical/reference and primary-conductor binding conflict; open-secondary operation is hazardous. Re-checked 2026-10-11 (D069): the centre-tapped AS-113 from the manufacturer-hosted Talema AS sheet matches the three-pin package and its facts are recorded, but the primary is a conductor through the aperture, not a pad; binding it needs non-pad primary terminals that every design must connect and a probe with one primary end on return and the centre tap isolated, which the framework cannot express without an owner decision.",
     "OHM-060": "The average-current derating curve must be implemented before claiming a complete thermal envelope. Re-checked 2026-10-10 against the archive (D059): the Vishay GL41 Fig. 1 derating (1.0 A to 75 C terminal temperature, linear to 0 at 175 C) is readable, but it is plotted against terminal temperature, which the rating inputs do not carry; binding needs that input or an owner decision to use case temperature, and the record is research_required.",
     "OHM-075": "Junction-temperature/thermal acceptance cannot use the unsourced 350 K/W placeholder. Re-checked 2026-10-10 against the archive (D059): the Kingbright WP813ED sheet gives no thermal resistance or Tj; a binding without thermal facts is possible but the record is research_required, so it would stay reference-only; not bound tonight.",
     "OHM-076": "The copied thermal parameters are unsourced for this rectangular lamp. Re-checked 2026-10-10 against the archive (D059): the Kingbright W113HDT sheet gives no thermal resistance or Tj; a binding without thermal facts is possible but the record is research_required, so it would stay reference-only; not bound tonight.",
@@ -63,14 +49,12 @@
     "OHM-147": "Unresolved rating-critical output/thermal data and physical mismatch. Re-checked 2026-10-10 against the archive (D059): the archived AST3TQ53 sheet still has no start-up time, output-current limit, Tj max or thermal resistance.",
     "OHM-148": "Missing rating-critical drive limit and primary terminal map; no sourced runtime binding. Re-checked 2026-10-10 against the archive (D059): the Murata JGC40-5039 sheet (archived 2026-10-09, before this run) sources the CSTLS8M00G53 ratings (6 V DC, 15 Vp-p) and pin map (1 input, 2 GND, 3 output), but no motional C1/C0; like the crystals, it stays blocked on unpublished motional values.",
     "OHM-149": "Input-power/DC rating interpretation and complete source-mask model validation unresolved. Re-checked 2026-10-10 against the archive (D059): the AFS869S3 10 V / 10 dBm row is not labelled as a maximum and no S-parameter model is archived.",
-    "OHM-151": "Rating-critical working voltage and full mating/thermal context unresolved. Re-checked 2026-10-10 against the archive (D059): Harwin publishes only a 500 V AC 1-minute proof voltage, no working voltage; no exact part or drawing for this variant. Re-checked 2026-10-11 (D068): the Wurth WR-PHD sheet 61301021121 (2x5 dual pin header) was located and gives a 250 V AC working voltage, 3 A, 20 mOhm max and -40..+105 C (ambient plus self-rise), which would close this blocker as for OHM-150, but we-online.com returns HTTP 403 to the audit fetcher (2026-10-11, two attempts; the ledger records them) and a WebFetch copy does not count as archived. A browser download of https://www.we-online.com/components/products/datasheet/61301021121.pdf ingested with ingest_manual closes it.",
-    "OHM-152": "Rating-critical working voltage and full mating/thermal context unresolved. Re-checked 2026-10-10 against the archive (D059): Harwin publishes only a 500 V AC 1-minute proof voltage, no working voltage; no socket drawing is archived. Re-checked 2026-10-11 (D068): the Wurth WR-PHD sheet 61300811821 (1x8 socket header) was located and gives a 250 V AC working voltage, 3 A, 20 mOhm max and -40..+105 C (ambient plus self-rise), which would close this blocker as for OHM-150, but we-online.com returns HTTP 403 to the audit fetcher (2026-10-11, two attempts; the ledger records them) and a WebFetch copy does not count as archived. A browser download of https://www.we-online.com/components/products/datasheet/61300811821.pdf ingested with ingest_manual closes it.",
-    "OHM-153": "Rating-critical working voltage and full mating/thermal context unresolved. Re-checked 2026-10-10 against the archive (D059): Harwin publishes only a 500 V AC 1-minute proof voltage, no working voltage; no socket drawing is archived. Re-checked 2026-10-11 (D068): the Wurth WR-PHD sheet 61301021821 (2x5 dual socket header) was located and gives a 250 V AC working voltage, 3 A, 20 mOhm max and -40..+105 C (ambient plus self-rise), which would close this blocker as for OHM-150, but we-online.com returns HTTP 403 to the audit fetcher (2026-10-11, two attempts; the ledger records them) and a WebFetch copy does not count as archived. A browser download of https://www.we-online.com/components/products/datasheet/61301021821.pdf ingested with ingest_manual closes it.",
-    "OHM-154": "Rating-critical working voltage and full mating/thermal context unresolved. Re-checked 2026-10-10 against the archive (D059): Harwin publishes only a 500 V AC 1-minute proof voltage, no working voltage; no right-angle drawing is archived. Re-checked 2026-10-11 (D068): the Wurth WR-PHD sheet 61300811021 (1x8 right-angle pin header) was located and gives a 250 V AC working voltage, 3 A, 20 mOhm max and -40..+105 C (ambient plus self-rise), which would close this blocker as for OHM-150, but we-online.com returns HTTP 403 to the audit fetcher (2026-10-11, two attempts; the ledger records them) and a WebFetch copy does not count as archived. A browser download of https://www.we-online.com/components/products/datasheet/61300811021.pdf ingested with ingest_manual closes it.",
-    "OHM-158": "Rating-critical exact-reference voltage,temperature and current conditions unresolved. Re-checked 2026-10-10 against the archive (D059): no archived drawing ties series 6373 to PS-99020-0088, and its voltage conflict (500 V AC/600 V DC vs CSA 250 V) remains. Re-checked 2026-10-11 (D068): no new evidence. Every Molex host (part pages, salesdrawingpdf, productspecificationpdf) fails from this environment (HTTP/2 INTERNAL_ERROR, WebFetch 503); KK is a Molex line, so no other maker can substitute. Still missing: an exact header+housing+terminal triple with a sourced mated resistance and a circuit-1 mark.",
+    "OHM-151": "Rating-critical working voltage and full mating/thermal context unresolved. Re-checked 2026-10-10 against the archive (D059): Harwin publishes only a 500 V AC 1-minute proof voltage, no working voltage; no exact part or drawing for this variant. Re-checked 2026-10-11 (D068): the Wurth WR-PHD sheet 61301021121 (2x5 dual pin header) was located; an unarchived WebFetch copy (not evidence) reads a 250 V AC working voltage, 3 A, 20 mOhm max and -40..+105 C (ambient plus self-rise), which would close this blocker as for OHM-150, but we-online.com returns HTTP 403 to the audit fetcher (2026-10-11, two attempts; the ledger records them) and a WebFetch copy does not count as archived. A browser download of https://www.we-online.com/components/products/datasheet/61301021121.pdf ingested with ingest_manual closes it.",
+    "OHM-152": "Rating-critical working voltage and full mating/thermal context unresolved. Re-checked 2026-10-10 against the archive (D059): Harwin publishes only a 500 V AC 1-minute proof voltage, no working voltage; no socket drawing is archived. Re-checked 2026-10-11 (D068): the Wurth WR-PHD sheet 61300811821 (1x8 socket header) was located; an unarchived WebFetch copy (not evidence) reads a 250 V AC working voltage, 3 A, 20 mOhm max and -40..+105 C (ambient plus self-rise), which would close this blocker as for OHM-150, but we-online.com returns HTTP 403 to the audit fetcher (2026-10-11, two attempts; the ledger records them) and a WebFetch copy does not count as archived. A browser download of https://www.we-online.com/components/products/datasheet/61300811821.pdf ingested with ingest_manual closes it.",
+    "OHM-153": "Rating-critical working voltage and full mating/thermal context unresolved. Re-checked 2026-10-10 against the archive (D059): Harwin publishes only a 500 V AC 1-minute proof voltage, no working voltage; no socket drawing is archived. Re-checked 2026-10-11 (D068): the Wurth WR-PHD sheet 61301021821 (2x5 dual socket header) was located; an unarchived WebFetch copy (not evidence) reads a 250 V AC working voltage, 3 A, 20 mOhm max and -40..+105 C (ambient plus self-rise), which would close this blocker as for OHM-150, but we-online.com returns HTTP 403 to the audit fetcher (2026-10-11, two attempts; the ledger records them) and a WebFetch copy does not count as archived. A browser download of https://www.we-online.com/components/products/datasheet/61301021821.pdf ingested with ingest_manual closes it.",
+    "OHM-154": "Rating-critical working voltage and full mating/thermal context unresolved. Re-checked 2026-10-10 against the archive (D059): Harwin publishes only a 500 V AC 1-minute proof voltage, no working voltage; no right-angle drawing is archived. Re-checked 2026-10-11 (D068): the Wurth WR-PHD sheet 61300811021 (1x8 right-angle pin header) was located; an unarchived WebFetch copy (not evidence) reads a 250 V AC working voltage, 3 A, 20 mOhm max and -40..+105 C (ambient plus self-rise), which would close this blocker as for OHM-150, but we-online.com returns HTTP 403 to the audit fetcher (2026-10-11, two attempts; the ledger records them) and a WebFetch copy does not count as archived. A browser download of https://www.we-online.com/components/products/datasheet/61300811021.pdf ingested with ingest_manual closes it.",
+    "OHM-158": "Rating-critical exact-reference voltage,temperature and current conditions unresolved. Re-checked 2026-10-10 against the archive (D059): no archived drawing ties series 6373 to PS-99020-0088, and its voltage conflict (500 V AC/600 V DC vs CSA 250 V) remains. Re-checked 2026-10-11 (D068): no new evidence. Every Molex host (part pages, salesdrawingpdf, productspecificationpdf) fails from this environment (the fetch ledger records timeouts; WebFetch also failed); KK is a Molex line, so no other maker can substitute. Still missing: an exact header+housing+terminal triple with a sourced mated resistance and a circuit-1 mark.",
     "OHM-168": "Missing Type C map/contact resistance; HDMI protocol is not simulable. Re-checked 2026-10-11 (D068): no archivable maker document with a Type C pin table and contact resistance was reachable (TE, Hirose, JAE, Molex, Amphenol hosts 403 or unreachable; Same Sky has no mini-HDMI part). A Kobiconn KC-301237 Type C drawing (10 mOhm, pins 1-19) exists only on mouser.com, which fails here and whose brand provenance would need confirmation. Do not reuse Type A numbering.",
-    "OHM-173": "Safety-critical polarity and thermal derating unresolved.",
-    "OHM-174": "Safety-critical variant, polarity and thermal scope unresolved.",
     "OHM-175": "Missing rating-critical current/voltage; RF transmission validity requires a sourced launch model. Re-checked 2026-10-10 against the archive (D059): the Hirose U.FL catalogue gives no current, working-voltage or RF power rating. Re-checked 2026-10-11 (D068): hirose.com returns HTTP 403; the reachable I-PEX MHF I catalogue and receptacle drawing give only 50 ohm / up to 9 GHz and mechanics, no current, working voltage or RF power. No SMA/U.FL maker found publishes a current or power rating, and BEH-CON-RF has no runtime probe.",
     "OHM-176": "Missing current/power rating and validated physical map. Re-checked 2026-10-10 against the archive (D059): the Cinch SMA specification gives no current rating; its 0.5 W figure is for dummy loads only. Re-checked 2026-10-11 (D068): no SMA/U.FL maker publishes a current or power rating for an uncabled straight PCB SMA jack (Cinch 142-0701-201 gives 335 Vrms and contact resistances only; Amphenol RF is 403 here; Samtec, Molex and Adam Tech listings show none). The named current/power rating cannot be sourced.",
     "OHM-177": "Rating-critical fields and exact physical binding unresolved. Re-checked 2026-10-10 against the archive (D059): PS-89675-346 (referenced by the archived SD-73251-212) is not archived; no current rating. Re-checked 2026-10-11 (D068): Molex PS-89675-346 still cannot be fetched (molex.com fails from this environment), and no reachable maker publishes a current rating for an edge-launch SMA.",
@@ -1889,6 +1873,225 @@
         }
       }
     },
+    "OHM-021": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "0201 (EIA) / Murata 0603M two-terminal chip",
+            "part_id": "OHM-021",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-021",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-021",
+      "entry_research_sha256": "835614228727772225466bf0d3ed1afe2f49d979d484d83196e704e414688cb3",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 1.26e-08
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "b44c9afdd1677b57b5c0d3447119384bc1057e0bca93c971781817f1bcd4689e",
+      "package": "0201 (EIA) / Murata 0603M two-terminal chip",
+      "reference_part": "Murata GRM033R60J104KE19 (0.1 uF +/-10%, 6.3 VDC, X5R, 0603M(0201)); exact match to the spec default 100 nF / 6.3 V / X5R / 0201",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-021"
+        }
+      }
+    },
+    "OHM-022": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "0402 (EIA) / Murata 1005M two-terminal chip",
+            "part_id": "OHM-022",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-022",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-022",
+      "entry_research_sha256": "3444ad8289dbcbbf142a0a39611b49b70f5c60adb21e7ce11a2cbcf8640a413d",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 3.2e-09
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "43faed986de777d6a7fc190a2266322104827322bc2ac655fd7cc1acc7d2a260",
+      "package": "0402 (EIA) / Murata 1005M two-terminal chip",
+      "reference_part": "Murata GRM155R71C104KA88 (0.1 uF +/-10%, 16 VDC, X7R, 1005M(0402)); exact match to the spec default 100 nF / 16 V / X7R / 0402",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-022"
+        }
+      }
+    },
+    "OHM-023": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "0603 (EIA) / Murata 1608M two-terminal chip",
+            "part_id": "OHM-023",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-023",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-023",
+      "entry_research_sha256": "328f8f82a7a63265c2287191d6b5a049fc64c8efda0d4771227569d045869e32",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 5e-07
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "f5fa622295b5a07a3daf5cc1e54b464cbe89617c45f3bedcf35f8cf6bff61cdb",
+      "package": "0603 (EIA) / Murata 1608M two-terminal chip",
+      "reference_part": "Murata GRT188R71E105KE13 (1 uF +/-10%, 25 VDC, X7R, 1608M(0603), GRT AEC-Q200 series); matches the spec default 1 uF / 25 V / X7R / 0603",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-023"
+        }
+      }
+    },
     "OHM-024": {
       "analysis": "op",
       "circuit": {
@@ -1959,6 +2162,590 @@
       "selections": {
         "U1": {
           "entry_id": "OHM-024"
+        }
+      }
+    },
+    "OHM-025": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "1206 (EIA) / Murata 3216M two-terminal chip",
+            "part_id": "OHM-025",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-025",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-025",
+      "entry_research_sha256": "f17f447ce4dca1aa15ca43227e87e916f83ad89bf61de3f65ea797cd7c8993c2",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 5e-06
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "79c91497e86db302ef9ee4891ef291fcda462ea66f91ae6360dafa63db2ad210",
+      "package": "1206 (EIA) / Murata 3216M two-terminal chip",
+      "reference_part": "Murata GRM31CR71E106KA12 (10 uF +/-10%, 25 VDC, X7R, 3216M(1206)); exact match to the spec default 10 uF / 25 V / X7R / 1206",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-025"
+        }
+      }
+    },
+    "OHM-026": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "1210 (EIA) / Murata 3225M two-terminal chip",
+            "part_id": "OHM-026",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-026",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-026",
+      "entry_research_sha256": "504b9c375e854bc53428fbf111de054e71720321f2b599a1be3884af11b71b3f",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 1.1e-05
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "107209d96b74a65e3d612369b335e79d3890c033370a88cc10fcba2dfcd4cc91",
+      "package": "1210 (EIA) / Murata 3225M two-terminal chip",
+      "reference_part": "Murata GRM32ER71E226KE15 (22 uF +/-10%, 25 VDC, X7R, 3225M(1210)); exact match to the spec default 22 uF / 25 V / X7R / 1210",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-026"
+        }
+      }
+    },
+    "OHM-027": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "1812 (EIA) / KEMET C1812 two-terminal chip, thickness code GG (1.55 mm)",
+            "part_id": "OHM-027",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-027",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-027",
+      "entry_research_sha256": "8e594318f10115c39497062a662b45129327a0feb6b1fa33d28a6865b0b3bce0",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 1e-07
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "16ce98706281417e27e164b02e460581a04efa960d42762c9b96c76e54010169",
+      "package": "1812 (EIA) / KEMET C1812 two-terminal chip, thickness code GG (1.55 mm)",
+      "reference_part": "KEMET C1812C105K1RACTU (1 uF +/-10%, 100 VDC, X7R, 1812, matte Sn, 7 in reel); exact match to the spec default 1 uF / 100 V / X7R / 1812",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-027"
+        }
+      }
+    },
+    "OHM-028": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "Radial single-layer ceramic disc, Vishay D series size 39 (10.0 mm diameter max, 3.5 mm thick max), 0.6 mm leads",
+            "part_id": "OHM-028",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-028",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-028",
+      "entry_research_sha256": "c9478edcaed56f0ded26b6f2c88ec54422c36cb4fdd12daafd8b8313ab5a1773",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 5e-09
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "13b4505a4fcfd277187425baa39750d152de244c6b7fb42daf46ce60e029d206",
+      "package": "Radial single-layer ceramic disc, Vishay D series size 39 (10.0 mm diameter max, 3.5 mm thick max), 0.6 mm leads",
+      "reference_part": "Vishay BCcomponents D473Z39Z5VF6###R (47 nF +80/-20%, 50 VDC, Z5V class 3 general-purpose DC disc); 47 nF, NOT the 100 nF spec default",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-028"
+        }
+      }
+    },
+    "OHM-029": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "Radial aluminium electrolytic, Nichicon UPW 8 x 11.5 mm, lead pitch 3.5 mm, 0.6 mm leads",
+            "part_id": "OHM-029",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-029",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-029",
+      "entry_research_sha256": "95338874bfd37a3faafe29b3c596d12a02c0768ed72d3ce729ed6130cfb1cf05",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 0.000165
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "bb975d15058e8b037dc8662f546378ddd9841a3603b3bce78f51f894574539a1",
+      "package": "Radial aluminium electrolytic, Nichicon UPW 8 x 11.5 mm, lead pitch 3.5 mm, 0.6 mm leads",
+      "reference_part": "Nichicon UPW1E221MPD (220 uF +/-20%, 25 V, 105 C low-impedance radial, 8 x 11.5 mm); matches the spec default 220 uF / 25 V, not the 10 x 16 3D member",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-029"
+        }
+      }
+    },
+    "OHM-030": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "SMD aluminium electrolytic V-chip, Nichicon UUX 6.3 x 7.7 mm (size code CL6)",
+            "part_id": "OHM-030",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-030",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-030",
+      "entry_research_sha256": "b7c94b0bac769663cf25638809163070c2c11822392817dc71d5c6f71ff1e802",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 3.5249999999999996e-05
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "828d7af016eb8dd524f1d5a8524f3ad30189d1aa9f6f9fdce89041be1bd77402",
+      "package": "SMD aluminium electrolytic V-chip, Nichicon UUX 6.3 x 7.7 mm (size code CL6)",
+      "reference_part": "Nichicon UUX1E470MCL6GS (47 uF +/-20%, 25 V, 105 C chip, 6.3 x 7.7 mm); exact match to the spec default 47 uF / 25 V / 6.3 x 7.7",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-030"
+        }
+      }
+    },
+    "OHM-031": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "Snap-in aluminium electrolytic, TWO-PIN, Nichicon LKG 22 x 20 mm, 10 mm terminal pitch",
+            "part_id": "OHM-031",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-031",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-031",
+      "entry_research_sha256": "aac1355f798592b1b7dba51a65fcdf54f4c5f48f481179e2cbc4ab1ef1f539c1",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 0.000832466
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "af23725631bdb4a841c325b3d5a7c213e92d3c6be465c4bacc46cafd7f145f10",
+      "package": "Snap-in aluminium electrolytic, TWO-PIN, Nichicon LKG 22 x 20 mm, 10 mm terminal pitch",
+      "reference_part": "Nichicon LKG1V222MESZAK (2200 uF +/-20%, 35 V, 85 C snap-in, 22 x 20 mm, two terminals, TYPE-1 audio grade); matches the spec default 2200 uF / 35 V two-pin variant only",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-031"
+        }
+      }
+    },
+    "OHM-032": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "Conductive-polymer aluminium SMD can (Style A), Nichicon PCJ 6.3 x 8 mm (size code CL4)",
+            "part_id": "OHM-032",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-032",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-032",
+      "entry_research_sha256": "02f0a5bc047feed2c716dafe75b11330307e08ad6641063058a7f3bd4c8949cd",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 0.00031999999999999997
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "34a26b619d5d86d032d847ffa0c2233d23c1ec2f80e5231fa065b179d81fa96f",
+      "package": "Conductive-polymer aluminium SMD can (Style A), Nichicon PCJ 6.3 x 8 mm (size code CL4)",
+      "reference_part": "Nichicon PCJ1C101MCL4GS (100 uF +/-20%, 16 V, conductive polymer aluminium solid chip, 6.3 x 8 mm); matches the spec default 100 uF / 16 V Style A",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-032"
         }
       }
     },
@@ -2358,6 +3145,113 @@
       "selections": {
         "U1": {
           "entry_id": "OHM-037"
+        }
+      }
+    },
+    "OHM-038": {
+      "analysis": "tran",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "WIMA MKP-X2 radial box, PCM 15 mm, 18 x 6 x 12.5 mm",
+            "part_id": "OHM-038",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-038-tran",
+        "name": "Source-scoped charge probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-038",
+      "entry_research_sha256": "966febd219c7abcf1fc8e6a4eef9e44b32e829ecfc30142598367eb461561d3d",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "points": [
+            {
+              "time": {
+                "unit": "s",
+                "value": 0.0
+              },
+              "value": {
+                "unit": "A",
+                "value": 0.0
+              }
+            },
+            {
+              "time": {
+                "unit": "s",
+                "value": 1e-09
+              },
+              "value": {
+                "unit": "A",
+                "value": 0.001
+              }
+            },
+            {
+              "time": {
+                "unit": "s",
+                "value": 0.0011
+              },
+              "value": {
+                "unit": "A",
+                "value": 0.001
+              }
+            }
+          ],
+          "positive_net": "return"
+        }
+      ],
+      "options": {
+        "observe_nets": [
+          "anode"
+        ],
+        "tstep": "1u",
+        "tstop": "0.0011"
+      },
+      "original_netlist_sha256": "0b841fa7ca999bc79a61198a26b53831eaaccd1ebc8666522f849a6259e28843",
+      "package": "WIMA MKP-X2 radial box, PCM 15 mm, 18 x 6 x 12.5 mm",
+      "reference_part": "WIMA MKX2AW31004C00 (MKP-X2, 0.1 uF, 305 VAC X2)",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-038"
         }
       }
     },
@@ -3423,6 +4317,264 @@
       "selections": {
         "U1": {
           "entry_id": "OHM-052"
+        }
+      }
+    },
+    "OHM-053": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "Würth WE-FB EFD25 12-pin SMD (750311595)",
+            "part_id": "OHM-053",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-053",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              },
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "10"
+              },
+              {
+                "component": "U1",
+                "pin": "11"
+              },
+              {
+                "component": "U1",
+                "pin": "12"
+              },
+              {
+                "component": "U1",
+                "pin": "3"
+              },
+              {
+                "component": "U1",
+                "pin": "4"
+              },
+              {
+                "component": "U1",
+                "pin": "5"
+              },
+              {
+                "component": "U1",
+                "pin": "6"
+              },
+              {
+                "component": "U1",
+                "pin": "7"
+              },
+              {
+                "component": "U1",
+                "pin": "8"
+              },
+              {
+                "component": "U1",
+                "pin": "9"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-053",
+      "entry_research_sha256": "17e1312a7e67daa3f01a0239b90bb478675efb9aae4edd3f26f529cfffe5bd11",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 16.0
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "2c12be1a89b44f447d8357695049fbb51d716dcfe61cf79995a956a3d06c98b9",
+      "package": "Würth WE-FB EFD25 12-pin SMD (750311595)",
+      "reference_part": "Würth Elektronik 750311595 (WE-FB, EFD25)",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-053"
+        }
+      }
+    },
+    "OHM-055": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "Bourns PT61017PEL 16-terminal SMD, 1.27 mm pitch, 12.80 x 9.30 mm",
+            "part_id": "OHM-055",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-055",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "7"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "iso_rd_ct",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "10"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "iso_rx_lct",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "iso_td_ct",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "15"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "iso_tx_lct",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "11"
+              },
+              {
+                "component": "U1",
+                "pin": "14"
+              },
+              {
+                "component": "U1",
+                "pin": "16"
+              },
+              {
+                "component": "U1",
+                "pin": "3"
+              },
+              {
+                "component": "U1",
+                "pin": "6"
+              },
+              {
+                "component": "U1",
+                "pin": "8"
+              },
+              {
+                "component": "U1",
+                "pin": "9"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-055",
+      "entry_research_sha256": "bccd32518b5238408760e09c33a002d4e62834043baf62ae57b9e9f1aef37fe6",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 0.008
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "5b0f6c2efb84b890cb09a1321a6fea15fca7726e0ad5a13ee100d94adfdf8855",
+      "package": "Bourns PT61017PEL 16-terminal SMD, 1.27 mm pitch, 12.80 x 9.30 mm",
+      "reference_part": "Bourns PT61017PEL (explicit alternative to Pulse H1102NL)",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-055"
         }
       }
     },
@@ -15960,6 +17112,168 @@
         }
       }
     },
+    "OHM-173": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "Amass XT30PW-M30 right-angle male PCB connector, 2 power pins, pitch 5.0 mm, mated with its female plug",
+            "part_id": "OHM-173",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-173",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              },
+              {
+                "component": "U1",
+                "pin": "M1"
+              },
+              {
+                "component": "U1",
+                "pin": "M2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-173",
+      "entry_research_sha256": "f34252dec6888e91a4a08ca43450f6ab2dbe65475a911d4d018588313438a927",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 20.0
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "b13e24eb26b74e07d2981cfe835084017ef6c825af6082292b1fafc8e28ed306",
+      "package": "Amass XT30PW-M30 right-angle male PCB connector, 2 power pins, pitch 5.0 mm, mated with its female plug",
+      "reference_part": "Amass XT30PW-M30.G.Y (yellow; 2025V0 product specification)",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-173"
+        }
+      }
+    },
+    "OHM-174": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "Amass XT60PW-M30 right-angle male PCB connector, 2 power pins, pitch 7.2 mm, mated with its female plug",
+            "part_id": "OHM-174",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-174",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              },
+              {
+                "component": "U1",
+                "pin": "M1"
+              },
+              {
+                "component": "U1",
+                "pin": "M2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-174",
+      "entry_research_sha256": "6fc2655716bc801e05ea515528f32da887b819e1a1c0c8d15ab8c988ef756c4b",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 35.0
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "bceb9814abf2cdb9b49aed9e1102450a0bd441a45585b34d07a56cd131febc29",
+      "package": "Amass XT60PW-M30 right-angle male PCB connector, 2 power pins, pitch 7.2 mm, mated with its female plug",
+      "reference_part": "Amass XT60PW-M30.G.Y (yellow; 2025V0 product specification)",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-174"
+        }
+      }
+    },
     "OHM-179": {
       "analysis": "op",
       "circuit": {
@@ -16260,6 +17574,6 @@
     }
   },
   "generator_sha256": "eb29b9a95c6872a10ecce1181a81d6af7705df5149dcb567796b624790d3f486",
-  "recipe_sha256": "f3ac2a355c901f236fadfd217e9b190caec9e8c4669b348f7a6e0b4b54a599b8",
+  "recipe_sha256": "fa7e64f9b974632f029494db5249dc8bbc37c5ca77360a93fe3dcb314d5de77d",
   "schema_version": 1
 }

@@ -693,6 +693,147 @@
         "0.5 W at 70 C derating to 0 W at 125 C and the 300 V maximum are enforced as source ratings; no self-heating, TCR or wear model."
       ]
     },
+    "OHM-021": {
+      "entry_id": "OHM-021",
+      "behavior_id": "BEH-CAP-CERAMIC",
+      "package": "0201 (EIA) / Murata 0603M two-terminal chip",
+      "reference_part": "Murata GRM033R60J104KE19 (0.1 uF +/-10%, 6.3 VDC, X5R, 0603M(0201)); exact match to the spec default 100 nF / 6.3 V / X5R / 0201",
+      "terminal_roles": {
+        "1": "T1",
+        "2": "T2"
+      },
+      "critical_facts": {
+        "value": {
+          "field": "nominal_capacitance",
+          "unit": "uF",
+          "output_unit": "F"
+        },
+        "vr": {
+          "field": "rated_voltage",
+          "unit": "V"
+        },
+        "rleak": {
+          "field": "minimum_insulation_resistance",
+          "unit": "ohm"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "C{ref} {T1} {T2} {value}\nR{ref}_lk {T1} {T2} {rleak}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 1199
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Explicit reference Murata GRM033R60J104KE19, an exact match to the spec default (100 nF, 6.3 V, X5R, 0201); the packaging suffix is unselected.",
+        "Nominal capacitance with no DC-bias derating: a Class 2 MLCC loses an unsourced fraction of capacitance under DC bias (the source gives no bias curve), so the card overstates capacitance at any non-zero bias.",
+        "Leak resistor = 5e8 ohm, the IR minimum 50 ohm*F (room temperature, rated voltage, 1 min) divided by the nominal 0.1 uF: a worst-case bound, not a typical value; IR falls when hot. It replaces the spec default RLK 1e10 ohm, which is 20x above this part's own minimum.",
+        "No ESR, ESL, SRF, aging or temperature drift; DF <= 0.1 (1 kHz, 0.5 Vrms) is recorded, not modeled.",
+        "Rated 6.3 VDC (-55 to 85 C) is a rating check outside the netlist (DC and peak, the class rule); no overvoltage flag is emitted.",
+        "Model scope: linear subset of ohm_mlcc (spec lines 1195-1201): Cb with V0 -> infinity and Rlk; Lesl/Resr omitted because ESR/ESL are unsourced for this part, and the atan bias law is omitted because V0 is unsourced."
+      ]
+    },
+    "OHM-022": {
+      "entry_id": "OHM-022",
+      "behavior_id": "BEH-CAP-CERAMIC",
+      "package": "0402 (EIA) / Murata 1005M two-terminal chip",
+      "reference_part": "Murata GRM155R71C104KA88 (0.1 uF +/-10%, 16 VDC, X7R, 1005M(0402)); exact match to the spec default 100 nF / 16 V / X7R / 0402",
+      "terminal_roles": {
+        "1": "T1",
+        "2": "T2"
+      },
+      "critical_facts": {
+        "value": {
+          "field": "nominal_capacitance",
+          "unit": "uF",
+          "output_unit": "F"
+        },
+        "vr": {
+          "field": "rated_voltage",
+          "unit": "V"
+        },
+        "rleak": {
+          "field": "minimum_insulation_resistance",
+          "unit": "ohm"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "C{ref} {T1} {T2} {value}\nR{ref}_lk {T1} {T2} {rleak}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 1199
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Explicit reference Murata GRM155R71C104KA88, an exact match to the spec default (100 nF, 16 V, X7R, 0402); the packaging suffix is unselected.",
+        "Nominal capacitance with no DC-bias derating: a Class 2 MLCC loses an unsourced fraction of capacitance under DC bias (the source gives no bias curve), so the card overstates capacitance at any non-zero bias.",
+        "Leak resistor = 5e9 ohm, the IR minimum 500 ohm*F (room temperature, rated voltage, 2 min charge) divided by the nominal 0.1 uF: a worst-case bound; IR falls when hot. It replaces the spec default RLK 1e10 ohm.",
+        "No ESR, ESL, SRF, aging or temperature drift; DF <= 0.035 (1 kHz, 1.0 Vrms) is recorded, not modeled.",
+        "Rated 16 VDC (-55 to 125 C) is a rating check outside the netlist (DC and peak, the class rule); no overvoltage flag is emitted.",
+        "Model scope: linear subset of ohm_mlcc (spec lines 1195-1201): Cb with V0 -> infinity and Rlk; Lesl/Resr omitted because ESR/ESL are unsourced for this part, and the atan bias law is omitted because V0 is unsourced."
+      ]
+    },
+    "OHM-023": {
+      "entry_id": "OHM-023",
+      "behavior_id": "BEH-CAP-CERAMIC",
+      "package": "0603 (EIA) / Murata 1608M two-terminal chip",
+      "reference_part": "Murata GRT188R71E105KE13 (1 uF +/-10%, 25 VDC, X7R, 1608M(0603), GRT AEC-Q200 series); matches the spec default 1 uF / 25 V / X7R / 0603",
+      "terminal_roles": {
+        "1": "T1",
+        "2": "T2"
+      },
+      "critical_facts": {
+        "value": {
+          "field": "nominal_capacitance",
+          "unit": "uF",
+          "output_unit": "F"
+        },
+        "vr": {
+          "field": "rated_voltage",
+          "unit": "V"
+        },
+        "rleak": {
+          "field": "minimum_insulation_resistance",
+          "unit": "ohm"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "C{ref} {T1} {T2} {value}\nR{ref}_lk {T1} {T2} {rleak}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 1199
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Explicit reference Murata GRT188R71E105KE13 (GRT series, AEC-Q200, for car multimedia/interior and general electronics): it matches the spec default value, voltage, dielectric and case. It is used because the GRM equivalent is listed as to be discontinued with no archived reference sheet.",
+        "Nominal capacitance with no DC-bias derating: a Class 2 MLCC loses an unsourced fraction of capacitance under DC bias (the source gives no bias curve), so the card overstates capacitance at any non-zero bias.",
+        "Leak resistor = 5e7 ohm, the 25 C IR minimum 50 ohm*F (rated voltage, 1 min) divided by the nominal 1 uF: a worst-case bound at 25 C only. The same sheet gives > 5 ohm*F at 125 C (10x lower), which the card does not represent. It replaces the spec default RLK 1e9 ohm.",
+        "No ESR, ESL, SRF, aging or temperature drift; DF <= 0.125 (1 kHz, 1.0 Vrms, 25 C) is recorded, not modeled.",
+        "Rated 25 VDC (-55 to 125 C) is a rating check outside the netlist (DC and peak, the class rule); no overvoltage flag is emitted.",
+        "Model scope: linear subset of ohm_mlcc (spec lines 1195-1201): Cb with V0 -> infinity and Rlk; Lesl/Resr omitted because ESR/ESL are unsourced for this part, and the atan bias law is omitted because V0 is unsourced."
+      ]
+    },
     "OHM-024": {
       "entry_id": "OHM-024",
       "behavior_id": "BEH-CAP-CERAMIC",
@@ -738,6 +879,518 @@
         "No ESR, ESL, SRF, aging, temperature drift or flex-crack behaviour; DF 10% max is an upper bound, not a fitted ESR.",
         "Rated 35 VDC is a rating check outside the netlist; no overvoltage flag is emitted.",
         "Model scope: Linear subset of ohm_mlcc (spec lines 1195-1201): Cb with V0 -> infinity and Rlk; Lesl/Resr omitted because ESR/ESL are ASSUMPTION for this part, and the atan bias law is omitted because V0 is unsourced."
+      ]
+    },
+    "OHM-025": {
+      "entry_id": "OHM-025",
+      "behavior_id": "BEH-CAP-CERAMIC",
+      "package": "1206 (EIA) / Murata 3216M two-terminal chip",
+      "reference_part": "Murata GRM31CR71E106KA12 (10 uF +/-10%, 25 VDC, X7R, 3216M(1206)); exact match to the spec default 10 uF / 25 V / X7R / 1206",
+      "terminal_roles": {
+        "1": "T1",
+        "2": "T2"
+      },
+      "critical_facts": {
+        "value": {
+          "field": "nominal_capacitance",
+          "unit": "uF",
+          "output_unit": "F"
+        },
+        "vr": {
+          "field": "rated_voltage",
+          "unit": "V"
+        },
+        "rleak": {
+          "field": "minimum_insulation_resistance",
+          "unit": "ohm"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "C{ref} {T1} {T2} {value}\nR{ref}_lk {T1} {T2} {rleak}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 1199
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Explicit reference Murata GRM31CR71E106KA12, an exact match to the spec default (10 uF, 25 V, X7R, 1206); the packaging suffix is unselected.",
+        "Nominal capacitance with no DC-bias derating: a Class 2 MLCC loses an unsourced fraction of capacitance under DC bias (the source gives no bias curve), so the card overstates capacitance at any non-zero bias.",
+        "Leak resistor = 5e6 ohm, the IR minimum 50 ohm*F (room temperature, rated voltage, 1 min) divided by the nominal 10 uF: a worst-case bound; IR falls when hot. It is below the class RLK floor (50e6 ohm) and replaces the spec default 1e8 ohm; the part's own sourced minimum wins for this binding.",
+        "No ESR, ESL, SRF, aging or temperature drift; DF <= 0.125 (1 kHz, 1.0 Vrms) is recorded, not modeled.",
+        "Rated 25 VDC (-55 to 125 C) is a rating check outside the netlist (DC and peak, the class rule); no overvoltage flag is emitted.",
+        "Model scope: linear subset of ohm_mlcc (spec lines 1195-1201): Cb with V0 -> infinity and Rlk; Lesl/Resr omitted because ESR/ESL are unsourced for this part, and the atan bias law is omitted because V0 is unsourced."
+      ]
+    },
+    "OHM-026": {
+      "entry_id": "OHM-026",
+      "behavior_id": "BEH-CAP-CERAMIC",
+      "package": "1210 (EIA) / Murata 3225M two-terminal chip",
+      "reference_part": "Murata GRM32ER71E226KE15 (22 uF +/-10%, 25 VDC, X7R, 3225M(1210)); exact match to the spec default 22 uF / 25 V / X7R / 1210",
+      "terminal_roles": {
+        "1": "T1",
+        "2": "T2"
+      },
+      "critical_facts": {
+        "value": {
+          "field": "nominal_capacitance",
+          "unit": "uF",
+          "output_unit": "F"
+        },
+        "vr": {
+          "field": "rated_voltage",
+          "unit": "V"
+        },
+        "rleak": {
+          "field": "minimum_insulation_resistance",
+          "unit": "ohm"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "C{ref} {T1} {T2} {value}\nR{ref}_lk {T1} {T2} {rleak}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 1199
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Explicit reference Murata GRM32ER71E226KE15, an exact match to the spec default (22 uF, 25 V, X7R, 1210); reflow soldering only; the packaging suffix is unselected.",
+        "Nominal capacitance with no DC-bias derating: a Class 2 MLCC loses an unsourced fraction of capacitance under DC bias (the source gives no bias curve), so the card overstates capacitance at any non-zero bias.",
+        "Leak resistor = 2.27e6 ohm, the IR minimum 50 ohm*F (room temperature, rated voltage, 1 min) divided by the nominal 22 uF: a worst-case bound; IR falls when hot. It is below the class RLK floor (50e6 ohm) and replaces the spec default 5e7 ohm; the part's own sourced minimum wins for this binding.",
+        "No ESR, ESL, SRF, aging or temperature drift; DF <= 0.1 (120 Hz, 0.5 Vrms; capacitance is also specified at 120 Hz) is recorded, not modeled.",
+        "Rated 25 VDC (-55 to 125 C) is a rating check outside the netlist (DC and peak, the class rule); no overvoltage flag is emitted.",
+        "Model scope: linear subset of ohm_mlcc (spec lines 1195-1201): Cb with V0 -> infinity and Rlk; Lesl/Resr omitted because ESR/ESL are unsourced for this part, and the atan bias law is omitted because V0 is unsourced."
+      ]
+    },
+    "OHM-027": {
+      "entry_id": "OHM-027",
+      "behavior_id": "BEH-CAP-CERAMIC",
+      "package": "1812 (EIA) / KEMET C1812 two-terminal chip, thickness code GG (1.55 mm)",
+      "reference_part": "KEMET C1812C105K1RACTU (1 uF +/-10%, 100 VDC, X7R, 1812, matte Sn, 7 in reel); exact match to the spec default 1 uF / 100 V / X7R / 1812",
+      "terminal_roles": {
+        "1": "T1",
+        "2": "T2"
+      },
+      "critical_facts": {
+        "value": {
+          "field": "nominal_capacitance",
+          "unit": "uF",
+          "output_unit": "F"
+        },
+        "vr": {
+          "field": "rated_voltage",
+          "unit": "V"
+        },
+        "rleak": {
+          "field": "minimum_insulation_resistance",
+          "unit": "ohm"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "C{ref} {T1} {T2} {value}\nR{ref}_lk {T1} {T2} {rleak}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 1199
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Explicit reference KEMET C1812C105K1RACTU, bound from the KEMET (YAGEO Group) C1002_X7R series datasheet: the ordering code (p2) and the Table 1B waterfall cell (1 uF, C1812C, 100 V, thickness GG, p7), not a per-part spec sheet (KEMET says some test voltages are on that sheet, which is not archived). The table's footnote 2 on the C1812C header (KONNEKT) is ambiguous; the cell shows the standard part available.",
+        "Nominal capacitance with no DC-bias derating: a Class 2 MLCC loses an unsourced fraction of capacitance under DC bias (the source gives no bias curve), so the card overstates capacitance at any non-zero bias.",
+        "Leak resistor = 1e9 ohm, the series IR minimum min(1000 Mohm*uF / C, 100 Gohm) at rated voltage, 120 s, 25 C, at the nominal 1 uF: a worst-case bound. It equals the spec default RLK.",
+        "No ESR, ESL, SRF, aging or temperature drift; DF <= 2.5% (1 kHz) is recorded, not modeled.",
+        "Rated 100 VDC (-55 to 125 C) is a rating check outside the netlist (DC and peak, the class rule); no overvoltage flag is emitted.",
+        "Creepage and arcing at 100 V-class voltages are not modeled.",
+        "Model scope: linear subset of ohm_mlcc (spec lines 1195-1201): Cb with V0 -> infinity and Rlk; Lesl/Resr omitted because ESR/ESL are unsourced for this part, and the atan bias law is omitted because V0 is unsourced."
+      ]
+    },
+    "OHM-028": {
+      "entry_id": "OHM-028",
+      "behavior_id": "BEH-CAP-CERAMIC",
+      "package": "Radial single-layer ceramic disc, Vishay D series size 39 (10.0 mm diameter max, 3.5 mm thick max), 0.6 mm leads",
+      "reference_part": "Vishay BCcomponents D473Z39Z5VF6###R (47 nF +80/-20%, 50 VDC, Z5V class 3 general-purpose DC disc); 47 nF, NOT the 100 nF spec default",
+      "terminal_roles": {
+        "1": "T1",
+        "2": "T2"
+      },
+      "critical_facts": {
+        "value": {
+          "field": "nominal_capacitance",
+          "unit": "nF",
+          "output_unit": "F"
+        },
+        "vr": {
+          "field": "rated_voltage",
+          "unit": "V"
+        },
+        "rleak": {
+          "field": "minimum_insulation_resistance",
+          "unit": "ohm"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "C{ref} {T1} {T2} {value}\nR{ref}_lk {T1} {T2} {rleak}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 1199
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "VALUE DIFFERS FROM THE SPEC DEFAULT: this binding is 47 nF, not the spec's 100 nF. The record is scoped to the one part Vishay D473Z39Z5VF6###R only. The archived Vishay D series (general-purpose single-layer DC disc) stops at 47 nF at 50 VDC (Z5V; 22 nF in Y5V), and no primary 100 nF single-layer disc datasheet was found, so a 100 nF disc stays unbound. Packaging, lead style and lead spacing (###) are unselected.",
+        "NO SAFETY RATING - NOT FOR MAINS: a general-purpose DC disc whose only approvals are EIA 198 and IEC 60384-8/-9 (no IEC 60384-14 X or Y class). It must never be placed across mains or used as an X/Y safety capacitor; this binding makes no safety, isolation or mains-use claim.",
+        "Ideal 47 nF with the 10 Gohm IR minimum at rated voltage (time and temperature not stated) as leakage. Class 3 Z5V capacitance moves strongly with temperature and bias (tolerance alone is +80/-20%); none of this is modeled.",
+        "No ESR or ESL (lead inductance unsourced); DF <= 5% (1 kHz, 1 V) is recorded, not modeled.",
+        "Rated 50 VDC is a rating check outside the netlist (DC and peak, the class rule). The source states -30 to +125 C operating for Z5V but climatic category 30/85/21 (upper +85 C) for Class 3; no temperature rule is applied.",
+        "Model scope: linear subset of ohm_mlcc (spec lines 1195-1201): Cb and Rlk only."
+      ]
+    },
+    "OHM-029": {
+      "entry_id": "OHM-029",
+      "behavior_id": "BEH-CAP-ALEL",
+      "package": "Radial aluminium electrolytic, Nichicon UPW 8 x 11.5 mm, lead pitch 3.5 mm, 0.6 mm leads",
+      "reference_part": "Nichicon UPW1E221MPD (220 uF +/-20%, 25 V, 105 C low-impedance radial, 8 x 11.5 mm); matches the spec default 220 uF / 25 V, not the 10 x 16 3D member",
+      "terminal_roles": {
+        "1": "A",
+        "2": "K"
+      },
+      "critical_facts": {
+        "value": {
+          "field": "nominal_capacitance",
+          "unit": "uF",
+          "output_unit": "F"
+        },
+        "vr": {
+          "field": "rated_voltage",
+          "unit": "V"
+        },
+        "ileak": {
+          "field": "maximum_leakage_current",
+          "unit": "uA",
+          "output_unit": "A"
+        },
+        "irip_max": {
+          "field": "maximum_ripple_current",
+          "unit": "mA",
+          "output_unit": "A"
+        },
+        "t_min": {
+          "field": "operating_temperature_range",
+          "unit": "C",
+          "value_path": [
+            0
+          ]
+        },
+        "t_max": {
+          "field": "operating_temperature_range",
+          "unit": "C",
+          "value_path": [
+            1
+          ]
+        }
+      },
+      "derived_parameters": {
+        "rleak": {
+          "expression": "vr/ileak",
+          "unit": "ohm",
+          "basis": "DERIVED",
+          "confidence": "M",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "line": 1358
+          },
+          "detail": "Leak resistor reproducing the sourced maximum leakage current at its sourced test voltage (rated voltage, 20 C); the class maps a leakage rule to RLK (spec line 1358), here with the part's own limit, as OHM-033."
+        }
+      },
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "C{ref} {A} {K} {value}\nR{ref}_lk {A} {K} {rleak}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 1348
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Explicit reference Nichicon UPW1E221MPD: value and voltage match the spec default; the case is 8 x 11.5 mm (pitch 3.5 mm), not the 10 x 16 3D member, whose footprint/3D geometry this binding does not re-source.",
+        "Leakage at the sourced 1-minute, 20 C maximum (165 uA = 0.03CV), i.e. worst case at 20 C; real leakage decays with time and rises with temperature. Rleak = 25 V / 165 uA = 1.52e5 ohm replaces the spec default 1e8/C_uF = 4.5e5 ohm.",
+        "Model scope: Cb and Rlk of ohm_alel (spec lines 1343-1353). Resr is dropped: the only loss figures are the tan d maximum at 120 Hz (0.14; bound 0.844 ohm at nominal C) and |Z| <= 0.117 ohm at 100 kHz, 20 C, and a 120 Hz bound held constant with frequency would contradict the part at high frequency. Lesl, Vsns, Drev, the ESR(T) law and the flag source are dropped (unsourced or rating-side).",
+        "Ratings checked outside the netlist (D067): peak forward voltage (DC plus ripple peak) against the rated voltage, which applies across the category temperature range, so with no declared ambient a pass is unknown and only a violation is proven; the ambient against that range; and any reverse voltage is a violation (Nichicon: reverse voltage is not permitted). The rated ripple current is recorded with its frequency and temperature, but the row is always unknown: the card's current is not the real part's (ESR, ESL and the 20% capacitance tolerance move it either way). Endurance life is recorded, never evaluated. UPW: 25 V; 555 mA rms at 105 C / 100 kHz (x0.65 at 120 Hz for 68-330 uF); 3000 h at 105 C with rated ripple; -55 to +105 C."
+      ]
+    },
+    "OHM-030": {
+      "entry_id": "OHM-030",
+      "behavior_id": "BEH-CAP-ALEL",
+      "package": "SMD aluminium electrolytic V-chip, Nichicon UUX 6.3 x 7.7 mm (size code CL6)",
+      "reference_part": "Nichicon UUX1E470MCL6GS (47 uF +/-20%, 25 V, 105 C chip, 6.3 x 7.7 mm); exact match to the spec default 47 uF / 25 V / 6.3 x 7.7",
+      "terminal_roles": {
+        "1": "A",
+        "2": "K"
+      },
+      "critical_facts": {
+        "value": {
+          "field": "nominal_capacitance",
+          "unit": "uF",
+          "output_unit": "F"
+        },
+        "vr": {
+          "field": "rated_voltage",
+          "unit": "V"
+        },
+        "ileak": {
+          "field": "maximum_leakage_current",
+          "unit": "uA",
+          "output_unit": "A"
+        },
+        "irip_max": {
+          "field": "maximum_ripple_current",
+          "unit": "mA",
+          "output_unit": "A"
+        },
+        "t_min": {
+          "field": "operating_temperature_range",
+          "unit": "C",
+          "value_path": [
+            0
+          ]
+        },
+        "t_max": {
+          "field": "operating_temperature_range",
+          "unit": "C",
+          "value_path": [
+            1
+          ]
+        }
+      },
+      "derived_parameters": {
+        "rleak": {
+          "expression": "vr/ileak",
+          "unit": "ohm",
+          "basis": "DERIVED",
+          "confidence": "M",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "line": 1358
+          },
+          "detail": "Leak resistor reproducing the sourced maximum leakage current at its sourced test voltage (rated voltage, 20 C); the class maps a leakage rule to RLK (spec line 1358), here with the part's own limit, as OHM-033."
+        }
+      },
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "C{ref} {A} {K} {value}\nR{ref}_lk {A} {K} {rleak}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 1348
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Explicit reference Nichicon UUX1E470MCL6GS; exact value, voltage and case match to the spec default.",
+        "Leakage at the sourced 1-minute, 20 C maximum (35.25 uA = 0.03CV), worst case at 20 C. Rleak = 25 V / 35.25 uA = 7.09e5 ohm replaces the spec default 1e8/C_uF = 2.1e6 ohm.",
+        "Model scope: Cb and Rlk of ohm_alel (spec lines 1343-1353). Resr is dropped: the only loss figures are the tan d maximum at 120 Hz (0.14; bound 3.95 ohm at nominal C); UUX publishes no high-frequency impedance, and a 120 Hz bound held constant with frequency would contradict the part at high frequency. Lesl, Vsns, Drev, the ESR(T) law and the flag source are dropped (unsourced or rating-side).",
+        "Ratings checked outside the netlist (D067): peak forward voltage (DC plus ripple peak) against the rated voltage, which applies across the category temperature range, so with no declared ambient a pass is unknown and only a violation is proven; the ambient against that range; and any reverse voltage is a violation (Nichicon: reverse voltage is not permitted). The rated ripple current is recorded with its frequency and temperature, but the row is always unknown: the card's current is not the real part's (ESR, ESL and the 20% capacitance tolerance move it either way). Endurance life is recorded, never evaluated. UUX: 25 V; 78 mA rms at 105 C / 120 Hz (x1.67 at 10 kHz and above for 1-47 uF); 2000 h at 105 C at rated voltage (the series states no life under ripple); -55 to +105 C. Vent clearance for this size is not sourced."
+      ]
+    },
+    "OHM-031": {
+      "entry_id": "OHM-031",
+      "behavior_id": "BEH-CAP-ALEL",
+      "package": "Snap-in aluminium electrolytic, TWO-PIN, Nichicon LKG 22 x 20 mm, 10 mm terminal pitch",
+      "reference_part": "Nichicon LKG1V222MESZAK (2200 uF +/-20%, 35 V, 85 C snap-in, 22 x 20 mm, two terminals, TYPE-1 audio grade); matches the spec default 2200 uF / 35 V two-pin variant only",
+      "terminal_roles": {
+        "1": "A",
+        "2": "K"
+      },
+      "critical_facts": {
+        "value": {
+          "field": "nominal_capacitance",
+          "unit": "uF",
+          "output_unit": "F"
+        },
+        "vr": {
+          "field": "rated_voltage",
+          "unit": "V"
+        },
+        "ileak": {
+          "field": "maximum_leakage_current",
+          "unit": "uA",
+          "output_unit": "A"
+        },
+        "irip_max": {
+          "field": "maximum_ripple_current",
+          "unit": "mA",
+          "output_unit": "A"
+        },
+        "t_min": {
+          "field": "operating_temperature_range",
+          "unit": "C",
+          "value_path": [
+            0
+          ]
+        },
+        "t_max": {
+          "field": "operating_temperature_range",
+          "unit": "C",
+          "value_path": [
+            1
+          ]
+        }
+      },
+      "derived_parameters": {
+        "rleak": {
+          "expression": "vr/ileak",
+          "unit": "ohm",
+          "basis": "DERIVED",
+          "confidence": "M",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "line": 1358
+          },
+          "detail": "Leak resistor reproducing the sourced maximum leakage current at its sourced test voltage (rated voltage, 20 C); the class maps a leakage rule to RLK (spec line 1358), here with the part's own limit, as OHM-033."
+        }
+      },
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "C{ref} {A} {K} {value}\nR{ref}_lk {A} {K} {rleak}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 1348
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "TWO-PIN VARIANT ONLY. The three-pin (auxiliary-terminal) variant stays unresolved: no three-pin drawing is archived, and Nichicon's guideline requires auxiliary terminals to be isolated, which conflicts with the spec's tie-to-minus rule. A three-pin footprint cannot use this card (its pins do not match the two bound terminals).",
+        "Explicit reference Nichicon LKG1V222MESZAK, an 85 C audio-grade snap-in, not a 105 C general-purpose part: exact 2200 uF / 35 V match; the checked general-purpose 105 C snap-in series (Nichicon LGU and others) start at 2700-3300 uF at 35 V. Case 22 x 20 mm, not the 25 x 40 3D member.",
+        "Leakage = 3*sqrt(CV) after 5 min at 20 C = 832.466 uA (DERIVED from the series rule), worst case at 20 C. Rleak = 35 V / 832.466 uA = 4.20e4 ohm replaces the spec default 1e8/C_uF = 4.5e4 ohm.",
+        "Model scope: Cb and Rlk of ohm_alel (spec lines 1343-1353). Resr is dropped: the only loss figures are the tan d maximum at 120 Hz (0.30; bound 0.181 ohm at nominal C), and a 120 Hz bound held constant with frequency would contradict the part at high frequency. Lesl, Vsns, Drev, the ESR(T) law and the flag source are dropped (unsourced or rating-side).",
+        "Ratings checked outside the netlist (D067): peak forward voltage (DC plus ripple peak) against the rated voltage, which applies across the category temperature range, so with no declared ambient a pass is unknown and only a violation is proven; the ambient against that range; and any reverse voltage is a violation (Nichicon: reverse voltage is not permitted). The rated ripple current is recorded with its frequency and temperature, but the row is always unknown: the card's current is not the real part's (ESR, ESL and the 20% capacitance tolerance move it either way). Endurance life is recorded, never evaluated. LKG: 35 V; 1.45 A rms at 85 C / 120 Hz; 1000 h at 85 C at rated voltage; -40 to +85 C (an 85 C part)."
+      ]
+    },
+    "OHM-032": {
+      "entry_id": "OHM-032",
+      "behavior_id": "BEH-CAP-ALPOLY",
+      "package": "Conductive-polymer aluminium SMD can (Style A), Nichicon PCJ 6.3 x 8 mm (size code CL4)",
+      "reference_part": "Nichicon PCJ1C101MCL4GS (100 uF +/-20%, 16 V, conductive polymer aluminium solid chip, 6.3 x 8 mm); matches the spec default 100 uF / 16 V Style A",
+      "terminal_roles": {
+        "1": "A",
+        "2": "K"
+      },
+      "critical_facts": {
+        "value": {
+          "field": "nominal_capacitance",
+          "unit": "uF",
+          "output_unit": "F"
+        },
+        "vr": {
+          "field": "rated_voltage",
+          "unit": "V"
+        },
+        "ileak": {
+          "field": "maximum_leakage_current",
+          "unit": "uA",
+          "output_unit": "A"
+        },
+        "esr_max": {
+          "field": "maximum_esr",
+          "unit": "mohm",
+          "output_unit": "ohm"
+        },
+        "irip_max": {
+          "field": "maximum_ripple_current",
+          "unit": "mA",
+          "output_unit": "A"
+        },
+        "vsurge": {
+          "field": "surge_voltage",
+          "unit": "V"
+        },
+        "t_min": {
+          "field": "operating_temperature_range",
+          "unit": "C",
+          "value_path": [
+            0
+          ]
+        },
+        "t_max": {
+          "field": "operating_temperature_range",
+          "unit": "C",
+          "value_path": [
+            1
+          ]
+        }
+      },
+      "derived_parameters": {
+        "rleak": {
+          "expression": "vr/ileak",
+          "unit": "ohm",
+          "basis": "DERIVED",
+          "confidence": "M",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "line": 1492
+          },
+          "detail": "Leak resistor reproducing the sourced maximum leakage (320 uA after 2 min at rated voltage, 20 C); same mapping as OHM-033."
+        }
+      },
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref}_esr {A} {ref}_cb {esr_max}\nC{ref} {ref}_cb {K} {value}\nR{ref}_lk {ref}_cb {K} {rleak}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 1491
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Explicit reference Nichicon PCJ1C101MCL4GS: value and voltage match the spec default; the case is 6.3 x 8 mm, not the 6.3 x 7.7 outline the spec reuses for Style A.",
+        "ESR at its sourced 100 kHz, 20 C maximum (24 mohm), constant with frequency (the D058 pattern); a declared worst-case bound, not a fitted nominal. No ESL. It replaces the spec default 20 mohm.",
+        "Leakage at the sourced 2-minute, 20 C maximum (320 uA), worst case. Rleak = 16 V / 320 uA = 5e4 ohm replaces the spec default 1e6 ohm (20x lower).",
+        "Ratings checked outside the netlist (D067): peak forward voltage (DC plus ripple peak) against the rated voltage, which applies across the category temperature range, so with no declared ambient a pass is unknown and only a violation is proven; the ambient against that range; and any reverse voltage is a violation (Nichicon: reverse voltage is not permitted). The rated ripple current is recorded with its frequency and temperature, but the row is always unknown: the card's current is not the real part's (ESR, ESL and the 20% capacitance tolerance move it either way). Endurance life is recorded, never evaluated. PCJ: 16 V; surge 18.4 V (recorded, not a continuous rating); 2.7 A rms at 105 C / 100 kHz (x0.05 at 120 Hz); 2000 h at 105 C at rated voltage; -55 to +105 C. The class DER 0.8 is not stated in the PCJ datasheet and is not applied; the 10 A rush guideline is general Nichicon guidance, not a part rating.",
+        "Model scope: Resr, Cb and Rlk of ohm_alpoly (spec lines 1487-1494); Lesl, Vsns and the DER/reverse/IPK flag are dropped (unsourced or rating-side)."
       ]
     },
     "OHM-033": {

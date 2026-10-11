@@ -319,6 +319,9 @@ PATH_PROBES = {
     "BEH-RES-POT": [(None, "A", ("B",), ("value",), "pot")],
     "BEH-CAP-CERAMIC": [(None, "T1", ("T2",), ("rleak",), "leak")],
     "BEH-CAP-TANT": [(None, "A", ("K",), (), "tant")],
+    # Aluminium electrolytic and polymer cards reuse the tantalum leakage rule: vr/ileak from sourced facts (D067).
+    "BEH-CAP-ALEL": [(None, "A", ("K",), (), "tant")],
+    "BEH-CAP-ALPOLY": [(None, "A", ("K",), (), "tant")],
     "BEH-MAG-CMC": [("A", "A1", ("A2",), ("rdc",), "rated"), ("B", "B1", ("B2",), ("rdc",), "rated")],
     "BEH-MAG-XFMR-SIGNAL": [("primary", "P_A", ("P_B",), ("rp",), "unbalance"),
                             ("secondary", "S_A", ("S_B",), ("rs",), "unbalance")],
@@ -879,6 +882,8 @@ def tran_probe_receipt_errors(audit, entry_id):
 # sourced facts. The circuit is linear, so the amplitude does not matter.
 AC_PROBES = {
     "BEH-CAP-TANT": {"frequency": 100e3, "current": 1e-3, "tolerance": 1e-4, "facts": ("esr_max", "value", "vr", "ileak")},
+    # Nichicon PCJ (OHM-032): ESR is sourced as a 100 kHz, 20 C maximum, so the same probe applies (D067).
+    "BEH-CAP-ALPOLY": {"frequency": 100e3, "current": 1e-3, "tolerance": 1e-4, "facts": ("esr_max", "value", "vr", "ileak")},
 }
 
 

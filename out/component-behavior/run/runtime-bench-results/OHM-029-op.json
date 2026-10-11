@@ -1,0 +1,61 @@
+{
+  "analysis": "op",
+  "circuit_hash": "fa5a2aa0db8e74a4986cb02110f4fb19d0db8afd74ab145fe002e3402c3a6376",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "current": 0.000165,
+    "drive_role": "A",
+    "expected": 151515.15151515152,
+    "kind": "absolute",
+    "observable": "path_resistance",
+    "return_role": "K",
+    "source_facts": {
+      "ileak": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "converted_unit": "A",
+        "converted_value": 0.000165,
+        "detail": "Leakage column '165' \u00b5A (= 0.03CV), 'After 1 minute's application of rated voltage at 20\u00b0C, leakage current is not more than 0.03CV(\u00b5A)'",
+        "field": "maximum_leakage_current",
+        "page": 3,
+        "scope": "Nichicon UPW1E221MPD (UPW series), 220 uF 25 V, 8 x 11.5 mm radial, P 3.5 mm, lead 0.6 mm; Nichicon catalog UPW",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-upw.pdf"
+        ],
+        "unit": "uA",
+        "value": 165
+      },
+      "vr": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Rated voltage group in the dimensions table",
+        "field": "rated_voltage",
+        "page": 3,
+        "scope": "Nichicon UPW1E221MPD (UPW series), 220 uF 25 V, 8 x 11.5 mm radial, P 3.5 mm, lead 0.6 mm; Nichicon catalog UPW; DC; peak (DC + ripple) must not exceed rated voltage",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-upw.pdf"
+        ],
+        "unit": "V",
+        "value": 25
+      }
+    },
+    "tolerance": 151.51515151515153
+  },
+  "entry_id": "OHM-029",
+  "entry_research_sha256": "95338874bfd37a3faafe29b3c596d12a02c0768ed72d3ce729ed6130cfb1cf05",
+  "limits": "Binding check of one bound DC path: the sourced current through the path must reproduce the sourced path resistance (0.1% numerical tolerance, or the sourced tolerance band). It does not validate frequency response, heating, contact wear, isolation, protocol behavior or any rating beyond the stated facts.",
+  "netlist_sha256": "bb975d15058e8b037dc8662f546378ddd9841a3603b3bce78f51f894574539a1",
+  "observation_status": "ran",
+  "observed": 151515.15151515152,
+  "output_sha256": "5dffd9cd32ef75b259764aa5519a7873f7c4ec2a80f0854ea7dc72e570e3e068",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T07:39:07Z",
+  "raw_output": "runtime-bench-output/OHM-029-op/output.txt",
+  "recipe_source_sha256": "fa7e64f9b974632f029494db5249dc8bbc37c5ca77360a93fe3dcb314d5de77d",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "version_file": "runtime-bench-output/OHM-029-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sat Oct 10 21:32:36 UTC 2026\n******\n",
+  "version_sha256": "7f444023b0e5851d50a26bf40338ca29665b10988154a0ff2d662d918ab83fc3"
+}
