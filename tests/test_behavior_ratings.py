@@ -321,7 +321,10 @@ def test_tantalum_ripple_and_transient_reverse_limits():
     ripple = lambda t: 0.25 * math.sin(2 * math.pi * 10e3 * t)
     comp, checks = _tran_checks("OHM-033", {"a": ["1"], "return": ["2"]},
                                 {("v", "A"): lambda t: 5.0, ("i", "A"): ripple, ("i", "K"): lambda t: -ripple(t)}, hot)
-    assert checks["ripple current"]["status"] == "violation"  # 0.177 A rms at 10 kHz > 0.158 A at 100 kHz
+    # The card carries the bound maximum ESR (D058), so a simulated waveform's current bounds the real one in
+    # neither direction: even 0.177 A rms at 10 kHz (> 0.158 A at 100 kHz) is unknown, never a pass (D061).
+    assert checks["ripple current"]["status"] == "unknown"
+    assert "D063" in checks["ripple current"]["reason"]
     assert comp["basis"].startswith("transient")
     small = lambda t: 0.05 * math.sin(2 * math.pi * 10e3 * t)
     _, checks = _tran_checks("OHM-033", {"a": ["1"], "return": ["2"]},

@@ -323,3 +323,46 @@ Design runs (from the #28 review):
 - A shared model name that is also a circuit or probe node is refused instead of renamed.
 - An oversized design is refused before any part is resolved.
 - A live test shows that a transient design beyond the rating-signal limit leaves every part unknown.
+
+## D061 — 2026-10-10: The maximum-ESR tantalum card cannot prove a ripple pass
+
+The owner merged #32 (D058) before its proxy review finished. The retroactive review blocked it. With the sourced maximum ESR as the card's series resistor, the simulated tantalum current is a lower bound wherever the part is voltage-driven: at the rating conditions (100 kHz, 25 C) a real part's ESR is at or below the maximum, so it carries at least the simulated current. The fixes:
+- **AC runs at the rating conditions:** the exact ripple row and the ESR heating row now prove a violation but never a pass.
+- **AC runs away from 100 kHz:** the real ESR can exceed the maximum there, so the ripple row is unknown in both directions.
+- **Transient runs:** the ripple row is unknown with the same reason, since a simulated waveform's current bounds the real one in neither direction.
+- **Correction to D058:** its limitation text had the parallel-part direction backwards. With the maximum ESR, parallel parts take more current than with a lower real ESR, so their current checks are conservative at the rating conditions; it is the tantalum's own current rows that are not.
+- **Recipe wording:** the corrected limitation text ships with the next recipe change (D059), because any recipe edit restamps every runtime receipt.
+
+The D054 test that expected a violation from 0.177 A at 10 kHz now expects unknown: with the bound ESR the simulated current does not bound the real one at 10 kHz.
+
+Other corrections to D058:
+- The impedance tolerance is |Z| x 1e-4, applied as an absolute tolerance to each of the real and imaginary parts (not 1e-4 relative to each part).
+- OHM-033's leakage path is 16 V / 1.6 uA = 10 Mohm, not 1.6 Mohm.
+- All 185 receipts were restamped, not only the four DC ones.
+
+## D062 — 2026-10-11: The maximum ESR proves a ripple violation only at 25 C in a passive circuit
+
+The owner merged #35 (D061) before its proxy review finished. The retroactive review blocked it: D061 still let the bound card prove ripple violations where its own reasoning says the bound does not hold.
+- **M1:** at 100 kHz with a warm or undeclared ambient, the row was still violation-only.
+- **M2:** any ambient at or below 25 C counted as "at the rating conditions", although the maximum ESR is a 25 C specification and tantalum ESR rises in the cold.
+
+The fixes:
+- **Where a violation can still be proven:** the ripple and ESR-heating rows prove a violation, never a pass, only when the ambient is declared as exactly 25 C, the frequency is the sourced 100 kHz, and the circuit is passive and linear. Passive means no E, F, G, H or B source, so Re(Zth) >= 0 and the part's current |Vth| / |Zth + ESR + Zc| falls as ESR rises. Everything else is unknown.
+- **Unbound ESR:** a T491 card without the ESR element keeps the ideal-card rules.
+- **Bound detection:** the bound is recognized by meaning, not only by element name. The card must bind `maximum_esr` from a 100 kHz scope and carry the series element.
+- **Reason texts:** the thermal-scope reason is kept alongside the bound reason. The ESR-heating reason says it is the data sheet's I(max) = sqrt(Pmax/ESR) rating method, not a computed real dissipation.
+- **Tests:** they cover cold, warm and fractional ambients, a controlled source, the meaning-based detector, and both reasons in the nonlinear case.
+
+## D063 — 2026-10-11: A bound-ESR tantalum card proves no ripple result; D061 and D062 superseded
+
+The proxy review of D062 blocked it again, on four points:
+- **Fail-open detector:** a card whose series ESR was not recognized as the maximum fell back to the ideal-card rules, which can pass.
+- **Capacitance tolerance and ESL:** the card uses nominal C, and a real part with lower C carries less current. So "a real part carries at least the simulated current" is not proven near the limit.
+- **Wrong correction:** D061's correction about parallel parts was itself wrong. With a current-driven parallel tank, a higher tantalum ESR lowers a parallel inductor's current. Parallel currents are not bounded in either direction.
+- **Test claims:** the stated test coverage did not match the tests.
+
+After three blocked rounds the rule is now the simplest sound one, and it fails closed. For any tantalum card with a series element beyond Cb and Rlk (the T491 cards carry the maximum ESR, D058), the ripple and ESR-heating rows are unknown in both directions, in AC and transient runs. A card that is only Cb || Rlk keeps the D057 rules. The passive-circuit test of D062 is removed, because nothing depends on it.
+
+Consequence: the exact 100 kHz T491 ripple check no longer yields a verdict for the bound cards. A sound way to restore it is a dual solve: run with ESR = 0 and with ESR = maximum, and require both to pass, plus a capacitance-tolerance margin. Whether to build that, or to return the T491 cards to the ideal card for ripple purposes, is queued in MORNING_DECISIONS for the owner.
+
+D061's text about parallel parts being conservative is withdrawn. D062's violation proof is withdrawn.

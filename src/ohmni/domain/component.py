@@ -103,6 +103,7 @@ class PinRole(StrEnum):
     UART_RX = "uart_rx"
     GPIO = "gpio"
     ANALOG_IN = "analog_in"
+    ADJUST = "adjust"
     ENABLE = "enable"
     RESET = "reset"
     BOOT_STRAP = "boot_strap"

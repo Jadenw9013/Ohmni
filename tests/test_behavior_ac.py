@@ -125,10 +125,18 @@ def rows(ratings, ref="C1"):
     return {r["name"]: r for c in ratings["components"] if c["ref"] == ref for r in c["reference_checks"]}
 
 
+def ideal_copy(compiled):
+    """The same compilation with the C1 card reduced to Cb || Rlk (no series ESR element)."""
+    return compiled.model_copy(update={"components": [
+        c.model_copy(update={"element_names": [n for n in c.element_names if not n.lower().endswith("_esr")]})
+        if c.ref == "C1" else c for c in compiled.components]})
+
+
 def test_tantalum_ripple_is_exact_only_at_the_rating_frequency_and_temperature(registry, recipes):
+    """Ideal-card rules (D057): exact at 100 kHz and 25 C or below, violation-only below, unknown above."""
     choice = {"C1": BehaviorSelection(entry_id="OHM-033")}
-    compiled = compile_circuit(tantalum(recipes), registry, recipes, choice, analysis="ac",
-                               excitations=[ripple(0.1)], measure_currents=True)
+    compiled = ideal_copy(compile_circuit(tantalum(recipes), registry, recipes, choice, analysis="ac",
+                                          excitations=[ripple(0.1)], measure_currents=True))
     cool = RatingContext(ambient_c=25, thermal_scope_confirmed=True)
     within = rows(evaluate_ratings(compiled, fake_result(compiled, 0.150), registry, cool))
     assert within["ripple current (rating frequency) at 100000 Hz"]["status"] == "within_limit"
@@ -148,16 +156,16 @@ def test_tantalum_ripple_is_exact_only_at_the_rating_frequency_and_temperature(r
     assert high["ripple current at 1e+06 Hz"]["status"] == "unknown"
 
 
-def test_nonlinear_circuit_never_proves_an_ac_result(registry, recipes, monkeypatch):
+def test_nonlinear_circuit_never_proves_an_ac_result(registry, recipes):
     choice = {"C1": BehaviorSelection(entry_id="OHM-033")}
-    compiled = compile_circuit(tantalum(recipes), registry, recipes, choice, analysis="ac",
-                               excitations=[ripple(0.1)], measure_currents=True)
+    compiled = ideal_copy(compile_circuit(tantalum(recipes), registry, recipes, choice, analysis="ac",
+                                          excitations=[ripple(0.1)], measure_currents=True))
     nonlinear = compiled.model_copy(update={"netlist": compiled.netlist.replace(".end", "D9 n1 0 DX\n.end")})
     cool = RatingContext(ambient_c=25, thermal_scope_confirmed=True)
-    for amps in (0.150, 0.170):
+    for amps, computed in ((0.150, "within_limit"), (0.170, "violation")):
         result = rows(evaluate_ratings(nonlinear, fake_result(nonlinear, amps), registry, cool))
         row = result["ripple current (rating frequency) at 100000 Hz"]
-        assert row["status"] == "unknown" and "linearization" in row["reason"]
+        assert row["status"] == "unknown" and "linearization" in row["reason"] and computed in row["reason"]
     # The operating-point rows of the same run are unaffected.
     assert result["rated voltage"]["status"] == "within_limit"
 
@@ -176,9 +184,11 @@ def test_design_ac_run_checks_ripple_against_the_sourced_rating(tmp_path):
 
     ok, hot = run(0.1), run(0.2)
     assert ok["status"] == hot["status"] == "ran"
-    assert rows(ok["ratings"])["ripple current (rating frequency) at 100000 Hz"]["status"] == "within_limit"
-    assert rows(hot["ratings"])["ripple current (rating frequency) at 100000 Hz"]["status"] == "violation"
-    assert hot["rating_status"] == "violation"
+    # The T491 card carries the maximum ESR, so its ripple rows prove neither direction (D063).
+    for run in (ok, hot):
+        row = rows(run["ratings"])["ripple current (rating frequency) at 100000 Hz"]
+        assert row["status"] == "unknown" and "D063" in row["reason"]
+    assert hot["rating_status"] == ok["rating_status"] == "unknown"
     names = {s["name"] for s in ok["ac"]["sweep"]["series"]}
     assert names == {"rail", "vin"} and len(ok["ac"]["sweep"]["frequency_hz"]) == 9
     # The bound card (D058) in parallel with the 1 kohm feed (the ideal DC source is an AC short):
@@ -248,8 +258,8 @@ def test_tantalum_ripple_needs_thermal_scope_and_an_ambient_for_its_rating(regis
     assert no_ambient["rated voltage"]["status"] == "unknown"
     assert no_ambient["peak forward voltage (DC plus AC peak) at 100000 Hz"]["status"] == "unknown"
     over = rows(evaluate_ratings(compiled, fake_result(compiled, 0.170), registry, RatingContext()))
-    assert over["ripple current (rating frequency) at 100000 Hz"]["status"] == "violation", \
-        "above the 25 C rating the ripple is over the limit at any ambient"
+    assert over["ripple current (rating frequency) at 100000 Hz"]["status"] == "unknown", \
+        "the bound-ESR card proves no ripple result (D063)"
 
 
 def test_ripple_conditions_come_from_the_record_scope(registry, recipes):
@@ -262,6 +272,11 @@ def test_ripple_conditions_come_from_the_record_scope(registry, recipes):
         c1.model_copy(update={"parameter_evidence": evidence}) if c.ref == "C1" else c for c in compiled.components]})
     cool = RatingContext(ambient_c=25, thermal_scope_confirmed=True)
     row = rows(evaluate_ratings(changed, fake_result(changed, 0.150), registry, cool))["ripple current at 100000 Hz"]
+    # The bound card makes it unknown before the scope test; without the ESR element the scope rule applies.
+    assert row["status"] == "unknown"
+    ideal = changed.model_copy(update={"components": [
+        c.model_copy(update={"element_names": ["Cc2", "Rc2_lk"]}) if c.ref == "C1" else c for c in changed.components]})
+    row = rows(evaluate_ratings(ideal, fake_result(ideal, 0.150), registry, cool))["ripple current at 100000 Hz"]
     assert row["status"] == "unknown" and "not stated in its source scope" in row["reason"]
 
 
@@ -283,3 +298,33 @@ def test_tantalum_cards_carry_the_sourced_maximum_esr_in_series(entry_id, regist
     assert any(line.startswith("Cc1 c1_cb 0 ") for line in lines)
     assert any(line.startswith("Rc1_lk c1_cb 0 ") for line in lines)
     assert circuit_is_linear(compiled.netlist)
+
+
+
+def test_esr_bound_card_proves_neither_a_ripple_pass_nor_a_violation(registry, recipes):
+    """D063: with the series maximum ESR the T491 ripple and ESR-heating rows stay unknown everywhere."""
+    choice = {"C1": BehaviorSelection(entry_id="OHM-033")}
+    compiled = compile_circuit(tantalum(recipes), registry, recipes, choice, analysis="ac",
+                               excitations=[ripple(0.1)], measure_currents=True)
+    for ambient in (-20, 25, 40):
+        for amps in (0.150, 0.170):
+            context = RatingContext(ambient_c=ambient, thermal_scope_confirmed=True)
+            result = rows(evaluate_ratings(compiled, fake_result(compiled, amps), registry, context))
+            for name in ("ripple current (rating frequency) at 100000 Hz",
+                         "ESR heating with the maximum 100 kHz ESR at 100000 Hz"):
+                assert result[name]["status"] == "unknown" and "D063" in result[name]["reason"], (ambient, amps)
+
+
+def test_any_series_element_beyond_cb_and_rlk_fails_closed(registry, recipes):
+    from ohmni.behavior.ratings import _tant_esr_bound
+
+    choice = {"C1": BehaviorSelection(entry_id="OHM-033")}
+    compiled = compile_circuit(tantalum(recipes), registry, recipes, choice, analysis="ac",
+                               excitations=[ripple(0.1)], measure_currents=True)
+    c1 = next(c for c in compiled.components if c.ref == "C1")
+    assert _tant_esr_bound(c1)
+    assert _tant_esr_bound(c1.model_copy(update={"element_names": ["Cc1", "Rc1_lk"]})) is None
+    assert _tant_esr_bound(c1.model_copy(update={"element_names": ["Cc1", "Rc1_lk", "Lc1_esl"]}))
+    assert _tant_esr_bound(c1.model_copy(update={"element_names": ["Cc1", "Rc1_lk", "Rseries"]}))
+    assert _tant_esr_bound(c1.model_copy(update={"element_names": ["Cc1", "Cc1b", "Rc1_lk"]}))
+    assert _tant_esr_bound(c1.model_copy(update={"element_names": []}))

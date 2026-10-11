@@ -52,6 +52,7 @@ FactValue = str | int | bool | tuple[str, ...]
 class ElectricalProfile(StrEnum):
     PASSIVE_TWO_TERMINAL = "passive_two_terminal"
     I2C_PERIPHERAL = "i2c_peripheral"
+    ADJUSTABLE_LINEAR_REGULATOR = "adjustable_linear_regulator"
     UNSUPPORTED = "unsupported"
 
 
@@ -208,6 +209,13 @@ _SUPPORTED_CAPABILITIES = {
         Capability.ELECTRICAL_PROFILE,
         Capability.ROUTING,
     }),
+    ElectricalProfile.ADJUSTABLE_LINEAR_REGULATOR: frozenset({
+        Capability.IDENTITY,
+        Capability.SYMBOL,
+        Capability.FOOTPRINT,
+        Capability.ELECTRICAL_PROFILE,
+        Capability.ROUTING,
+    }),
     ElectricalProfile.UNSUPPORTED: frozenset({Capability.IDENTITY}),
 }
 
@@ -254,6 +262,20 @@ def evaluate_admission(request: AdmissionRequest) -> AdmissionDecision:
                                            PinRole.I2C_SCL.value)
             ):
                 required.add(f"pin.{terminal.pin_number}.supply_rail")
+    elif profile is ElectricalProfile.ADJUSTABLE_LINEAR_REGULATOR:
+        required.update({
+            "regulator.reference_voltage",
+            "regulator.adjust_current_typical",
+            "regulator.output_minimum",
+            "regulator.output_maximum",
+            "regulator.differential_minimum",
+            "regulator.differential_maximum",
+            "regulator.load_minimum",
+            "regulator.load_maximum",
+            "package.tab_pin",
+            "package.tab_role",
+        })
+        required_rules.update({"electrical.adjustable_regulator", "package.tab_output"})
     else:
         reasons.append("electrical behaviour profile is unsupported")
 
@@ -386,6 +408,20 @@ def _build_component(request: AdmissionRequest) -> ComponentSpec:
         required_roles = {PinRole.POWER, PinRole.GROUND, PinRole.I2C_SDA, PinRole.I2C_SCL}
         if not required_roles.issubset(roles) or not rails or not addresses:
             raise ValueError("I2C profile requires power, ground, SDA, SCL, rails and address")
+    if claims.profile is ElectricalProfile.ADJUSTABLE_LINEAR_REGULATOR:
+        if category is not ComponentCategory.REGULATOR_LINEAR:
+            raise ValueError("adjustable-regulator profile requires a linear regulator")
+        by_number = {pin.number: pin for pin in pins}
+        if set(by_number) != {"1", "2", "3", "4"}:
+            raise ValueError("LM317 SOT-223 profile requires pins 1, 2, 3 and tab 4")
+        if PinRole.ADJUST not in by_number["1"].roles:
+            raise ValueError("pin 1 must carry the adjust role")
+        if any(PinRole.POWER not in by_number[number].roles for number in ("2", "3", "4")):
+            raise ValueError("input, output and tab require power roles")
+        if _string(claims, "package.tab_pin") != "4" or _string(
+            claims, "package.tab_role"
+        ) != "output":
+            raise ValueError("SOT-223 tab must be pin 4 OUTPUT")
 
     return ComponentSpec(
         part_id=f"SYNTH-{request.revision_id}",

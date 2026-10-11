@@ -483,7 +483,11 @@ def _transient_checks(component, values, b, thermal, upper_only, w):
                       ("vrev_25", "vrev_85", "vrev_125"),
                       None if "Tamb" in values or values["peak_rev"] > values.get("vrev_25", 0) else
                       "Ambient temperature selects the reverse limit")
-        if i is not None and "irip_max" in values:
+        if i is not None and "irip_max" in values and _tant_esr_bound(component):
+            stat("ripple_rms", w.ac_rms(i))
+            b.add("ripple current", "ripple_rms <= irip_max", ("irip_max",),
+                  _tant_esr_bound(component))
+        elif i is not None and "irip_max" in values:
             stat("ripple_rms", w.ac_rms(i))
             freq = stat("ripple_frequency", w.frequency(i))
             if freq is None or freq > 100e3:
@@ -948,7 +952,14 @@ def _ac_checks(component, values, b, thermal, upper_only, window, linear):
                 scope = component.parameter_evidence.get("irip_max", {}).get("scope", "")
                 stated = "100 kHz" in scope and "25 C" in scope and "RMS" in scope
                 exact = stated and math.isclose(frequency, RIPPLE_RATING_HZ, rel_tol=1e-9)
-                if not stated:
+                bound = _tant_esr_bound(component)
+                if bound:
+                    add("ripple current" + (" (rating frequency)" if exact else ""), f"irip_{key} <= irip_max",
+                        ("irip_max",), bound)
+                    if exact and "esr_max" in values and "pd_max" in values:
+                        add("ESR heating with the maximum 100 kHz ESR", f"irip_{key}**2*esr_max <= pd_max",
+                            ("esr_max", "pd_max"), bound)
+                elif not stated:
                     add("ripple current", f"irip_{key} <= irip_max", ("irip_max",),
                         "The ripple rating's frequency, temperature or RMS basis is not stated in its source "
                         "scope", violation_only=True)
@@ -1077,3 +1088,23 @@ def _tant_temperature_reason(values):
     if values["Tamb"] > 85:
         return "Rated voltage is stated at 85 C; higher-temperature category voltage is not bound"
     return None
+
+
+def _tant_esr_bound(component):
+    """Reason text when a tantalum card carries any series element beyond its capacitance and leakage (D063).
+
+    The T491 cards carry the sourced maximum ESR (D058). Real ESR, capacitance tolerance and the omitted
+    ESL each move the part's current in a direction the card cannot bound, so with any such element its
+    own ripple and ESR-heating rows prove neither a pass nor a violation. Fails closed: an element of
+    any other name counts too, so only the pure Cb || Rlk card keeps the ideal-card rules.
+    """
+    if component.behavior_id != "BEH-CAP-TANT":
+        return None
+    names = [name.lower() for name in component.element_names]
+    capacitors = [n for n in names if n.startswith("c")]
+    leaks = [n for n in names if n.startswith("r") and n.endswith("_lk")]
+    if names and len(capacitors) == 1 and len(leaks) == 1 and len(names) == 2:
+        return None
+    return ("The card carries a series ESR (the sourced 100 kHz maximum), and the real ESR, capacitance "
+            "tolerance and omitted ESL move the part's current in directions the card cannot bound, so this "
+            "row proves neither a pass nor a violation; parallel parts' currents are not bounded either (D063)")

@@ -41,6 +41,7 @@ class PackageFamily(StrEnum):
     DUAL_ROW = "dual_row"
     QFN = "qfn"
     QFP = "qfp"
+    SOT223 = "sot223"
 
 
 class PastePolicy(StrEnum):
@@ -103,6 +104,10 @@ class ReusableAssetRecord(BaseModel):
             raise ValueError("QFN record requires a source-defined exposed pad")
         if self.family is PackageFamily.QFP and len(self.pads) < 8:
             raise ValueError("QFP record needs at least two terminals per side")
+        if self.family is PackageFamily.SOT223 and (
+            len(self.pads) != 4 or set(numbers) != {"1", "2", "3", "4"}
+        ):
+            raise ValueError("SOT-223 record requires terminals 1, 2, 3 and tab 4")
         return self
 
     @property
