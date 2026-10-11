@@ -278,6 +278,7 @@ export const BEHAVIOR_LABELS = Object.freeze({
 });
 
 export function behaviorStatusText(entry) {
+    if (entry?.state === 'simulated' && entry.reason) return `Electrical behavior: ${entry.reason} Open the Behavior tab to run its reference circuit.`;
     if (entry?.state === 'simulated') return 'Electrical behavior: simulated from this part\'s sourced data. Open the Behavior tab to run its reference circuit.';
     if (entry?.state === 'reference_only') return `Electrical behavior: a reference circuit runs, but this entry is not verified yet. ${entry.reason ?? ''}`.trim();
     if (entry?.state === 'documented') return `Electrical behavior: documented only, not simulated. ${entry.reason ?? ''}`.trim();
@@ -538,7 +539,9 @@ export function initializeComponentStories() {
         if (!(state === 'simulated' || state === 'reference_only') || card.querySelector('.story-card-sim')) return;
         const chip = element('span', BEHAVIOR_LABELS[state], card.querySelector('.story-card-copy'));
         chip.className = state === 'simulated' ? 'story-card-sim' : 'story-card-sim story-card-sim-reference';
-        card.setAttribute('aria-label', `${card.getAttribute('aria-label')}, ${state === 'simulated' ? 'simulates' : 'reference circuit, not verified'}`);
+        const reason = behaviorStates[id]?.reason;
+        if (state === 'simulated' && reason) chip.title = reason;
+        card.setAttribute('aria-label', `${card.getAttribute('aria-label')}, ${state === 'simulated' ? (reason || 'simulates') : 'reference circuit, not verified'}`);
     }
 
     async function loadBehaviorStates(generation) {

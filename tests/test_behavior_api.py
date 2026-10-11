@@ -62,9 +62,12 @@ def test_behavior_summary_matches_the_audited_coverage_rule(server):
     code,body=request(base,'/api/behavior')
     assert code==200 and len(body['entries'])==180
     states=[value['state'] for value in body['entries'].values()]
-    assert states.count('simulated')==82
+    assert states.count('simulated')==98
     assert body['entries']['OHM-057']=={'state':'simulated','reason':None}
-    assert body['entries']['OHM-103']['state']=='reference_only' and body['entries']['OHM-103']['reason']
+    # D066: a package with a bound sourced reference part simulates as that named part.
+    assert body['entries']['OHM-110']['state']=='simulated'
+    assert body['entries']['OHM-110']['reason']=='Simulates as the sourced reference part bound to this package (NE555 / NE555 D SOIC-8).'
+    assert body['entries']['OHM-062']['state']=='reference_only' and body['entries']['OHM-062']['reason']
     assert body['entries']['OHM-083']['state']=='documented'
     code,body=request(base,'/api/behavior/OHM-057')
     assert body['component']['behavior_state']=='simulated'
