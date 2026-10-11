@@ -871,21 +871,40 @@ def circuit_is_linear(netlist):
 
 
 def circuit_is_passive(netlist):
-    """Linear and built from R, L, C, coupled inductors, lines and independent sources only (D064).
+    """Linear, with no controlled (E, F, G, H) or behavioural (B) source (D064).
 
-    Controlled (E, F, G, H) and behavioural (B) sources are refused, so every port impedance has a
-    non-negative real part.
+    A conservative filter only: element values are not inspected (a negative resistance would still
+    pass). The dual-solve bound itself needs no passivity of the network; it uses the extracted Re(Zth),
+    which it requires to be positive, and the real tantalum's own passivity.
     """
     return circuit_is_linear(netlist) and not any(
         not text.startswith(".") and text[0].upper() in _CONTROLLED_ELEMENTS for text in _logical_lines(netlist))
 
 
+def _terminal_node(component, role, lines):
+    """The netlist node a role's element side connects to: behind its 0 V current probe when it has one."""
+    probe = component.role_current_probes.get(role)
+    if probe is None:
+        return component.role_nodes.get(role, "").lower() or None
+    found = lines.get(probe.lower(), [])
+    if len(found) != 1 or len(found[0]) != 4 or found[0][1].lower() != component.role_nodes.get(role, "").lower():
+        return None
+    try:
+        if float(found[0][3]) != 0.0:
+            return None
+    except ValueError:
+        return None
+    return found[0][2].lower()
+
+
 def esr_dual_solve_elements(compilation):
     """Series-ESR elements the AC adapter shorts in its second solve (D064).
 
-    Only a bound T491 card exactly Resr -> (Cb || Rlk) qualifies: one capacitor, one leak resistor and
-    one series resistor named *_esr whose netlist value is the part's sourced 100 kHz maximum ESR.
-    Anything else is left out, and its ripple rows stay unknown.
+    A card qualifies only when its netlist is the T491 topology Resr -> (Cb || Rlk), checked by node:
+    the *_esr resistor runs from the anode terminal to an internal node that only the card's three
+    elements touch, and the capacitor and the *_lk resistor both run from that node to the cathode
+    terminal. The resistor's value must be the part's sourced 100 kHz maximum ESR. Anything else is
+    left out, and its ripple rows stay unknown.
     """
     lines = {}
     for text in _logical_lines(compilation.netlist or ""):
@@ -897,17 +916,30 @@ def esr_dual_solve_elements(compilation):
             continue
         elements = [n.lower() for n in component.element_names]
         esr = [n for n in elements if n.startswith("r") and n.endswith("_esr")]
-        if (len(elements) != 3 or len(esr) != 1 or len([n for n in elements if n.startswith("c")]) != 1
-                or len([n for n in elements if n.startswith("r") and n.endswith("_lk")]) != 1):
+        cap = [n for n in elements if n.startswith("c")]
+        leak = [n for n in elements if n.startswith("r") and n.endswith("_lk")]
+        if len(elements) != 3 or len(esr) != 1 or len(cap) != 1 or len(leak) != 1:
+            continue
+        found = [lines.get(n, []) for n in (esr[0], cap[0], leak[0])]
+        if any(len(f) != 1 or len(f[0]) != 4 for f in found):
+            continue
+        (r_line,), (c_line,), (l_line,) = found
+        anode, cathode = _terminal_node(component, "A", lines), _terminal_node(component, "K", lines)
+        mid = r_line[2].lower()
+        if (anode is None or cathode is None or r_line[1].lower() != anode or mid in {anode, cathode}
+                or {c_line[1].lower(), c_line[2].lower()} != {mid, cathode}
+                or {l_line[1].lower(), l_line[2].lower()} != {mid, cathode}):
+            continue
+        others = [t for key, group in lines.items() if key not in {esr[0], cap[0], leak[0]}
+                  for tokens in group for t in tokens[1:]]
+        if mid in {t.lower() for t in others}:
             continue
         evidence = component.parameter_evidence.get("esr_max", {})
         esr_max = component.parameters.get("esr_max")
-        found = lines.get(esr[0], [])
-        if (esr_max is None or "100 kHz" not in evidence.get("scope", "") or len(found) != 1
-                or len(found[0]) != 4):
+        if esr_max is None or "100 kHz" not in evidence.get("scope", ""):
             continue
         try:
-            value = float(found[0][3])
+            value = float(r_line[3])
         except ValueError:
             continue
         if math.isclose(value, esr_max, rel_tol=1e-12):
@@ -958,20 +990,45 @@ def _ac_window(component, points):
 RIPPLE_RATING_HZ = 100e3
 
 
+def _sha256(text):
+    import hashlib
+
+    return hashlib.sha256(text.encode()).hexdigest()
+
+
 def _dual_solve_inputs(compilation, result):
-    """Per bound tantalum: the ESR-shorted second AC solve of D064, or why it is unavailable."""
+    """Per bound tantalum: the ESR-shorted second AC solve of D064, or why it is unavailable.
+
+    The second solve is accepted only when it provably belongs to this compilation: the first solve's
+    netlist hash is this compilation's netlist, the shorted elements are exactly the ones this
+    compilation qualifies, and the second solve's netlist hash is this netlist with those elements shorted.
+    """
     bound = [c for c in compilation.components if _tant_esr_bound(c)]
     if not bound:
         return {}
     variant = (result.get("ac") or {}).get("esr_zero")
+    netlist = compilation.netlist or ""
     reason = None
-    if len(bound) != 1:
-        reason = ("the circuit has more than one tantalum card with a series ESR, and each one's unknown "
+    tantalums = [c for c in compilation.components if c.behavior_id == "BEH-CAP-TANT"]
+    if len(tantalums) != 1:
+        reason = ("the circuit has more than one tantalum capacitor, and each one's unsourced 100 kHz "
                   "impedance changes the circuit the other sees")
     elif not variant or variant.get("status") != "ran" or not variant.get("points"):
         reason = "no ESR-shorted second solve is available for this run"
-    elif not circuit_is_passive(compilation.netlist or ""):
+    elif not circuit_is_passive(netlist):
         reason = "the circuit has a controlled or behavioural source or a nonlinear element"
+    else:
+        elements = esr_dual_solve_elements(compilation)
+        try:
+            expected = _sha256(short_elements(netlist, elements)) if elements else None
+        except ValueError:
+            expected = None
+        if result.get("netlist_sha256") != _sha256(netlist) or variant.get("source_netlist_sha256") != _sha256(netlist):
+            reason = "the first solve's netlist hash does not match this compilation"
+        elif not elements or list(variant.get("elements") or []) != elements:
+            reason = "the second solve did not short exactly this compilation's qualifying ESR elements"
+        elif expected is None or variant.get("netlist_sha256") != expected:
+            reason = "the second solve's netlist hash is not this netlist with those ESR elements shorted"
     out = {}
     for component in bound:
         shorted = {n.lower() for n in (variant or {}).get("elements", [])}
@@ -986,10 +1043,36 @@ def _dual_solve_inputs(compilation, result):
     return out
 
 
-# Values are printed with 15 significant digits; these guards keep the port extraction far from rounding.
+# Guards on the port extraction (policy, not numerics): the ESR must move the current measurably, and the
+# circuit seen by the part must have real resistance.
 _DUAL_MIN_SEPARATION = 1e-6
 _DUAL_MIN_RESISTIVE_FRACTION = 1e-3
-_DUAL_BOUND_INFLATION = 1e-6
+# Error allowed on every solved phasor, relative to its magnitude. Printing with 15 significant digits
+# contributes at most 5e-15; the rest is an allowance for the solver's floating-point error. Every
+# derived quantity is carried as a complex disk (centre, radius) from these inputs, so the bound below
+# is an upper bound for every input within this error.
+_DUAL_PHASOR_ERROR = 1e-9
+
+
+def _disk_add(a, b):
+    return a[0] + b[0], a[1] + b[1]
+
+
+def _disk_neg(a):
+    return -a[0], a[1]
+
+
+def _disk_mul(a, b):
+    return a[0] * b[0], abs(a[0]) * b[1] + abs(b[0]) * a[1] + a[1] * b[1]
+
+
+def _disk_div(a, b):
+    """a / b as a disk containing every quotient; None when b's disk contains zero."""
+    centre, radius = b
+    gap = abs(centre) ** 2 - radius ** 2
+    if abs(centre) <= radius or gap <= 0:
+        return None
+    return _disk_mul(a, (centre.conjugate() / gap, radius / gap))
 
 
 def _dual_solve_bound(frequency, v, i, dual, values, linear):
@@ -1010,22 +1093,32 @@ def _dual_solve_bound(frequency, v, i, dual, values, linear):
     zero = next(((zv, zi) for f, zv, zi in dual["window"] if math.isclose(f, frequency, rel_tol=1e-9)), None)
     if zero is None or "A" not in i or "A" not in zero[1] or not {"A", "K"} <= set(zero[0]):
         return None, "the second solve has no value of this part at this frequency"
-    v1, i1 = v["A"] - v["K"], i["A"]
-    v0, i0 = zero[0]["A"] - zero[0]["K"], zero[1]["A"]
-    separation = abs(i1 - i0)
-    if i0 == 0 or i1 == 0 or separation < _DUAL_MIN_SEPARATION * max(abs(i0), abs(i1)):
+    eta = _DUAL_PHASOR_ERROR
+    v1 = (v["A"] - v["K"], eta * (abs(v["A"]) + abs(v["K"])))
+    i1 = (i["A"], eta * abs(i["A"]))
+    v0 = (zero[0]["A"] - zero[0]["K"], eta * (abs(zero[0]["A"]) + abs(zero[0]["K"])))
+    i0 = (zero[1]["A"], eta * abs(zero[1]["A"]))
+    if i0[0] == 0 or i1[0] == 0 or abs(i1[0] - i0[0]) < _DUAL_MIN_SEPARATION * max(abs(i0[0]), abs(i1[0])):
         return None, "shorting the ESR does not measurably change this part's current, so its port is not resolved"
-    # The two solves must differ by exactly the bound series resistance, seen from the part's own terminals.
-    if not math.isclose((v1 / i1 - v0 / i0).real, values["esr_max"], rel_tol=1e-6,
-                        abs_tol=1e-9 * max(abs(v1 / i1), values["esr_max"])):
+    # The two solves must differ by exactly the bound series resistance, seen from the part's own terminals:
+    # real part equal to the maximum ESR and no reactive difference.
+    step = v1[0] / i1[0] - v0[0] / i0[0]
+    scale = max(abs(v1[0] / i1[0]), abs(v0[0] / i0[0]), values["esr_max"])
+    if abs(step - values["esr_max"]) > 1e-6 * scale:
         return None, "the two solves do not differ by exactly the bound maximum ESR"
-    zth = -(v1 - v0) / (i1 - i0)
-    vth = v1 + zth * i1
-    if zth.real < _DUAL_MIN_RESISTIVE_FRACTION * abs(zth):
+    delta_i = _disk_add(i1, _disk_neg(i0))
+    zth = _disk_neg(_disk_div(_disk_add(v1, _disk_neg(v0)), delta_i) or (0j, math.inf))
+    if not math.isfinite(zth[1]):
+        return None, "the port is not resolved within the solver's numerical error"
+    vth = _disk_add(v1, _disk_mul(zth, i1))
+    if zth[0].real < _DUAL_MIN_RESISTIVE_FRACTION * abs(zth[0]):
         return None, ("the circuit seen by the part has almost no resistance, so the part's unsourced 100 kHz "
                       "capacitance and ESL decide its current")
-    bound = abs(vth) / zth.real * (1 + _DUAL_BOUND_INFLATION)
-    if bound < abs(i1):
+    resistance = zth[0].real - zth[1]
+    if resistance <= 0:
+        return None, "the port is not resolved within the solver's numerical error"
+    bound = (abs(vth[0]) + vth[1]) / resistance
+    if bound < abs(i1[0]):
         return None, "the extracted port does not reproduce the solved current"
     return bound, None
 

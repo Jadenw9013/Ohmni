@@ -371,6 +371,9 @@ AC_LIMITATIONS = [
     "voltages and current sharing between parts can be non-conservative."),
     ("Only classes with an AC rating translation are checked at each frequency; every other part reports "
     "its AC checks unknown, so an AC run never passes on operating-point rows alone."),
+    ("A KEMET T491 ripple or ESR-heating pass at 100 kHz and 25 C comes from a second solve with the card's "
+    "ESR shorted (esr_zero) and holds for any passive part impedance, so it does not rely on the omitted ESL "
+    "or the 100 kHz capacitance; no violation of those rows is proven for a card with a series ESR."),
 ]
 MAX_AC_POINTS = 8
 MAX_AC_SWEEP_POINTS = 401
@@ -886,7 +889,11 @@ class NgspiceAdapter:
         elements = esr_dual_solve_elements(compilation) if rated else []
         if not elements:
             return None
+        # Both hashes are of the netlist before the control block: the first solve's is the compilation's
+        # own netlist hash, and the second's is that netlist with the listed elements shorted. The rating
+        # step recomputes both and refuses a second solve that does not match.
         variant = {"status": "failed", "elements": elements, "points": [],
+                   "source_netlist_sha256": hashlib.sha256(compilation.netlist.encode()).hexdigest(),
                    "description": "Same AC solve with each listed series-ESR element replaced by a 0 V short"}
         try:
             netlist = short_elements(compilation.netlist, elements)
