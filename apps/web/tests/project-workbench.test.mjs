@@ -198,7 +198,8 @@ function workbenchDom() {
     const node = (selector) => {
         if (!nodes.has(selector)) nodes.set(selector, {
             innerHTML: "", textContent: "", hidden: false, disabled: false,
-            focus() {}, querySelectorAll: () => [],
+            focus() {}, querySelector: node, querySelectorAll: () => [], setAttribute() {},
+            addEventListener(name, handler) { handlers.set(`${selector}:${name}`, handler); },
             replaceWith(replacement) { nodes.set(selector, replacement); },
         });
         return nodes.get(selector);
@@ -209,6 +210,30 @@ function workbenchDom() {
     };
     return { root, node, handlers };
 }
+
+test("conversation application activates the new saved revision and its generation action", async () => {
+    const dom=workbenchDom();let invalidated=0,ran,applied=false;
+    const base={...revision,brief:{...brief,board_width_mm:100,board_height_mm:70}};
+    const next={...base,revision_id:"3".repeat(16),number:2,brief:{...base.brief,board_width_mm:80},brief_fingerprint:"c".repeat(64)};
+    const turn={turn_id:"4".repeat(16),project_id:project.project_id,revision_id:base.revision_id,revision_number:1,base_brief_fingerprint:base.brief_fingerprint,context_fingerprint:"d".repeat(64),kind:"change",messages:["80 mm wide"],facts:[],brief:next.brief,changes:[{field:"board_width_mm",before:100,after:80}],questions:[],ready:true,invalidation:"New checks required."};
+    const fetcher=async(path)=>{
+        if(path==="/api/health")return response(200,{...identity,status:"ready",fixture_id:"esp32-bme280-environmental-logger"});
+        if(path==="/api/project-options")return response(200,{...identity,options});
+        if(path.endsWith("/assistant"))return response(200,{...identity,turn});
+        if(path.endsWith("/apply"))applied=true;
+        return response(200,envelope({...project,revisions:applied?[base,next]:[base]}));
+    };
+    const c=mountProjectWorkbench(dom.root,{fetcher,onInvalidate:()=>{invalidated++;},onRun:request=>{ran=request;}});
+    await c.openProject(project.project_id);
+    dom.node("#assistant-message").value="80 mm wide";
+    dom.handlers.get("#assistant-form:submit")({preventDefault(){}});await new Promise(setImmediate);
+    assert.equal(dom.node("#assistant-apply").hidden,false);
+    dom.handlers.get("#assistant-apply:click")();await new Promise(setImmediate);
+    assert.equal(dom.node("#project-save-state").textContent,"Revision 2 saved");
+    assert.equal(dom.node("#project-run").disabled,false);assert.ok(invalidated>0);
+    workbenchClick(dom,"#project-run");await new Promise(setImmediate);
+    assert.equal(ran.revisionId,next.revision_id);c.dispose();
+});
 
 test("a first run refreshes authoritative revision metadata and keeps its reopen action after revision selection", async () => {
     const dom = workbenchDom();

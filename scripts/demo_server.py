@@ -85,7 +85,7 @@ STATIC_ASSETS=("index.html","app.js","view-model.js","board-model.js","board-vie
                "schematic-view.js","client-contract.js","reference-preview.js",
                "board-renderer-geometry.js","board-renderer-webgl.js","board-controls.js",
                "learning-model.js","circuit-lessons.js","circuit-lab.js",
-               "project-workbench.js","project-contract.js","conversation.js","scope-view.js",
+               "project-workbench.js","project-contract.js","conversation.js","project-assistant.js","scope-view.js",
                "reference-board.json","styles.css","visual-explorer.css",
                "component-visuals.json","component-stories.js","component-stories.css","component-behavior.js","design-behavior.js",
                "component-sandbox.js","sandbox-model.js","home.js","home.css","landing.css","landing-board.png","workbench-theme.css",
@@ -834,6 +834,9 @@ class DemoHTTPServer(ThreadingHTTPServer):
             from ohmni.application.conversation import ConversationPlanner
 
             self.planner=ConversationPlanner(self.store.provider,self.projects)
+            from ohmni.application.iteration import ProjectAssistant
+
+            self.assistant=ProjectAssistant(self.store.provider,self.projects,self.store)
         except ProjectWorkspaceInUseError:
             self.server_close()
             raise
@@ -958,6 +961,30 @@ class DemoHandler(SimpleHTTPRequestHandler):
             if type(actual) is not type(expected_value) or actual!=expected_value:
                 self._reject(code,HTTPStatus.CONFLICT);return None
         return payload
+
+    def _post_assistant(self,project_id,revision_id,turn_id=None):
+        from ohmni.application.conversation import PlanUnavailable
+        from ohmni.application.projects import ProjectRefusalError
+
+        payload=self._project_payload(set() if turn_id else {"message","parent_id"})
+        if payload is None:return
+        try:
+            if turn_id:
+                result=self.server.assistant.apply(project_id,revision_id,turn_id)
+                return self._json({"project":result,**self.server._identity()},HTTPStatus.CREATED)
+            parent=payload["parent_id"]
+            if parent is not None and (type(parent) is not str or not re.fullmatch(r"[0-9a-f]{16}",parent)):
+                raise ValueError("Invalid parent")
+            result=self.server.assistant.ask(project_id,revision_id,payload["message"],parent)
+            return self._json({"turn":result,**self.server._identity()})
+        except PlanUnavailable as error:
+            return self._json({"error":"proposal_unavailable","refusal":{"message":str(error)}},HTTPStatus.CONFLICT)
+        except ProjectRefusalError as error:
+            return self._json({"error":"project_refused","refusal":error.refusal.model_dump(mode="json")},HTTPStatus.UNPROCESSABLE_ENTITY)
+        except (ValueError,TypeError):
+            return self._json({"error":"invalid_proposal","refusal":{"message":"This response could not be grounded in your saved project. Ask again or use the detailed controls."}},HTTPStatus.BAD_REQUEST)
+        except Exception:  # noqa: BLE001 - do not expose provider credentials or storage paths
+            return self._json({"error":"assistant_unavailable","refusal":{"message":"Assistance is unavailable. Your saved revision is unchanged. Try again or use the detailed controls."}},HTTPStatus.SERVICE_UNAVAILABLE)
 
     def _post_plan(self,plan_id=None):
         from ohmni.application.conversation import PlanUnavailable
@@ -1095,6 +1122,8 @@ class DemoHandler(SimpleHTTPRequestHandler):
         return None
 
     def do_POST(self):
+        assistant_path=re.fullmatch(r"/api/projects/([0-9a-f]{16})/revisions/([0-9a-f]{16})/assistant(?:/([0-9a-f]{16})/apply)?",self.path)
+        if assistant_path:return self._post_assistant(*assistant_path.groups())
         if self.path=="/api/project-plans":return self._post_plan()
         plan_path=re.fullmatch(r"/api/project-plans/([0-9a-f]{16})/confirm",self.path)
         if plan_path:return self._post_plan(plan_path[1])
