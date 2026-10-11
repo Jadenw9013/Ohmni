@@ -11,7 +11,7 @@ from pydantic import TypeAdapter
 from ..domain.circuit import CircuitIR
 from .loader import BehaviorRegistryError
 from .netlist import compile_circuit
-from .runtime_models import BehaviorSelection, DCExcitation, PWLExcitation
+from .runtime_models import ACExcitation, BehaviorSelection, DCExcitation, PWLExcitation
 
 DATA_PATH = Path(__file__).with_name("reference-circuits.json")
 
@@ -43,7 +43,7 @@ def compile_reference(row, registry, recipes, *, measure_currents=True):
     selections = {
         ref: BehaviorSelection.model_validate(value) for ref, value in row["selections"].items()
     }
-    excitations = TypeAdapter(list[DCExcitation | PWLExcitation]).validate_python(
+    excitations = TypeAdapter(list[DCExcitation | PWLExcitation | ACExcitation]).validate_python(
         row["excitations"]
     )
     compiled = compile_circuit(
@@ -67,6 +67,7 @@ def compile_reference(row, registry, recipes, *, measure_currents=True):
             excitations=excitations,
             measure_currents=True,
         )
-    if set(row["options"]) - {"tstep", "tstop", "observe_nets"}:
+    # D073: the crystal reference runs as AC at its probe's explicit frequencies.
+    if set(row["options"]) - {"tstep", "tstop", "observe_nets", "ac_points_hz"}:
         raise BehaviorRegistryError("Unsupported reference run option")
     return compiled, dict(row["options"], analysis=row["analysis"])

@@ -38,7 +38,8 @@ def run_runtime_recipes(audit, entry_ids=None):
                   "BEH-IC-OPAMP", "BEH-IC-LDO-SOT235", "BEH-IC-OPTO-DIP6", "BEH-FREQ-XO"}
     for key in sorted(selected):
         behavior = recipes.entries[key].behavior_id
-        runner = (run_tran_probes if behavior in TRAN_PROBES else
+        runner = (run_xtal_probes if behavior in XTAL_PROBES else
+                  run_tran_probes if behavior in TRAN_PROBES else
                   run_resistor_recipes if behavior == "BEH-RES-FIXED" else
                   run_mosfet_recipes if behavior == "BEH-TRN-MOSFET" else
                   run_ic_recipes if behavior in ic_classes else run_dc_probes)
@@ -294,6 +295,8 @@ def runtime_receipt_errors(audit, entry_id):
         from .calibration import tvs_calibration_errors
 
         return tvs_calibration_errors(audit) + dc_probe_receipt_errors(audit, entry_id)
+    if behavior in XTAL_PROBES:
+        return xtal_probe_receipt_errors(audit, entry_id)
     if behavior in TRAN_PROBES:
         return tran_probe_receipt_errors(audit, entry_id)
     if behavior in AC_PROBES:
@@ -1067,6 +1070,167 @@ def ac_probe_receipt_errors(audit, entry_id):
         errors.append(f"{entry_id}: raw AC observation does not meet its sourced contract")
     if _sha_bytes(output_path.read_bytes()) != receipt["output_sha256"]:
         errors.append(f"{entry_id}: raw AC output changed")
+    version_path = audit._safe_run_path(receipt["version_file"])
+    version = version_path.read_text(encoding="utf-8")
+    if (_sha_bytes(version_path.read_bytes()) != receipt["version_sha256"] or version != receipt["version_output"]
+            or not re.search(r"\bngspice-42\b", version)):
+        errors.append(f"{entry_id}: ngspice 42 evidence invalid")
+    return errors
+
+
+# Crystal resonance checks from the locked BEH-FREQ-XTAL benches (D073). B1 drives the BVD crystal
+# with an AC current and finds the series resonance (|Z| minimum = R1); B2 adds the load CL in series
+# and finds fL where the total reactance is zero. Here the bound part is driven A -> B (lids on
+# return), and each observation comes from RMS phasors solved at explicit frequencies: the series
+# resonance is the Im(Z) zero crossing around fs, |Z| at fs must be the smallest of the three points
+# around it, and fL is the zero crossing of Im(Z) - 1/(2*pi*f*CL), i.e. B2's ideal series CL applied
+# to the solved crystal impedance. Expected values come from the part's sourced facts.
+XTAL_PROBES = {
+    "BEH-FREQ-XTAL": {"current": 1e-4, "step_hz": 50.0, "zmin_contract": "BEH-FREQ-XTAL/B1",
+                      "fl_contract": "BEH-FREQ-XTAL/B2"},
+}
+
+
+def _contract_row(audit, bench_id, measure_prefix):
+    contract = audit._bench_contracts(corrected=False)[bench_id]
+    path = audit.root / contract["file"]
+    if _sha_bytes(path.read_bytes()) != contract["netlist_sha256"]:
+        raise ValueError("locked analytical source deck changed")
+    rows = [r for r in contract["expected"] if r["measure"].startswith(measure_prefix)]
+    if len(rows) != 1:
+        raise ValueError(f"locked contract {bench_id} has no unique {measure_prefix} row")
+    return contract, numeric_contract(rows[0])["tolerance"]
+
+
+def xtal_expected(values):
+    """Sourced-fact expectations: fL is the nominal frequency at the sourced CL (spec line 9918)."""
+    fs = values["f_nom"] / math.sqrt(1 + values["C1"] / (values["C0"] + values["cl"]))
+    return {"series_resonance_hz": fs, "load_resonance_hz": values["f_nom"], "zmin_ohm": values["R1"]}
+
+
+def xtal_probe_definition(audit, entry_id):
+    registry = BehaviorRegistry(repo_root=audit.root)
+    recipes = load_recipes(registry, audit.root)
+    recipe = recipes.entries[entry_id]
+    spec = XTAL_PROBES[recipe.behavior_id]
+    b1, zmin_tol = _contract_row(audit, spec["zmin_contract"], "zmin")
+    b2, fl_tol = _contract_row(audit, spec["fl_contract"], "fL")
+    nets = [Net(name=name, kind="ground" if name == "return" else "signal",
+                connections=[PinRef(component="U1", pin=pin) for pin, role in recipe.terminal_roles.items()
+                             if (role == "A") == (name == "drive")])
+            for name in ("drive", "return")]
+    circuit = CircuitIR(ir_id=f"runtime-{entry_id}-ac", name="Crystal series and load resonance probe",
+                        components=[CircuitComponent(ref="U1", part_id=entry_id, package=recipe.package)], nets=nets)
+    excitation = ACExcitation(positive_net="return", negative_net="drive", ac_rms=Quantity(value=spec["current"], unit="A"))
+    compiled = compile_circuit(circuit, registry, recipes, {"U1": BehaviorSelection(entry_id=entry_id)},
+                               analysis="ac", excitations=[excitation])
+    if not compiled.components:
+        raise ValueError(f"{entry_id}: crystal probe did not compile: {compiled.problems}")
+    values = compiled.components[0].parameters
+    evidence = compiled.components[0].parameter_evidence
+    # The sourced L1 range is in mH; 1 mH = 1e-3 H. The derived L1 must fall inside it.
+    if not values["l1_min"] * 1e-3 <= values["L1"] <= values["l1_max"] * 1e-3:
+        raise ValueError(f"{entry_id}: derived L1 lies outside the sourced motional inductance range")
+    expected = xtal_expected(values)
+    step = spec["step_hz"]
+    fs, fl = expected["series_resonance_hz"], expected["load_resonance_hz"]
+    identity = {"run_id": audit._state()["run_id"], "entry_id": entry_id, "analysis": "ac",
+                "netlist_sha256": compiled.netlist_sha256, "circuit_hash": compiled.circuit_hash,
+                "recipe_source_sha256": recipes.source.document_sha256,
+                "entry_research_sha256": registry.entry(entry_id).research.source.document_sha256,
+                "class_source_sha256": registry.behavior_class(recipe.behavior_id).source.document_sha256,
+                "analytical_source": [spec["zmin_contract"], spec["fl_contract"]],
+                "source_deck_sha256": [b1["netlist_sha256"], b2["netlist_sha256"]],
+                "ac_points_hz": [fs - step, fs, fs + step, fl - step, fl + step],
+                "current": spec["current"], "load_capacitance_f": values["cl"],
+                "comparison": [
+                    {"kind": "absolute", "observable": "series_resonance_hz", "expected": fs, "tolerance": fl_tol},
+                    {"kind": "absolute", "observable": "zmin_ohm", "expected": expected["zmin_ohm"], "tolerance": zmin_tol},
+                    {"kind": "absolute", "observable": "load_resonance_hz", "expected": fl, "tolerance": fl_tol},
+                ],
+                "source_facts": {name: evidence[name] for name in ("f_nom", "cl", "R1", "c1_min", "c1_max",
+                                                                   "c0_min", "c0_max", "l1_min", "l1_max")},
+                "derived_parameters": {name: values[name] for name in ("C1", "C0", "L1")},
+                "limits": ("Small-signal BVD impedance of the bound crystal at explicit frequencies: the series resonance "
+                           "and its minimum |Z| against the sourced ESR (B1 tolerance), and the load resonance with the "
+                           "sourced CL as an ideal series capacitor against the sourced nominal frequency (B2 tolerance). "
+                           "C1 and C0 are range centres and L1 is derived from them, so this shows the binding carries "
+                           "the sourced values; it does not validate tolerance, temperature, aging, drive level, "
+                           "spurious modes or oscillator start-up.")}
+    return compiled, identity
+
+
+def _zero_crossing(f0, y0, f1, y1):
+    """Linear interpolation of a sign change between two solved points; None when there is none."""
+    if y0 == y1 or y0 * y1 > 0:
+        return None
+    return f0 - y0 * (f1 - f0) / (y1 - y0)
+
+
+def _xtal_observation(compiled, identity, output):
+    from ohmni.eda.simulation import parse_ac
+
+    points = identity["ac_points_hz"]
+    parsed = parse_ac(output, points)
+    if len(parsed["points"]) != len(points):
+        return [None, None, None]
+    node = compiled.node_names["drive"].lower()
+    z = []
+    for point in parsed["points"]:
+        phasor = point["node_voltages"].get(node)
+        if phasor is None:
+            return [None, None, None]
+        z.append(complex(*phasor) / identity["current"])
+    below, at, above = (abs(x) for x in z[:3])
+    zmin = at if at < below and at < above else None
+    series = _zero_crossing(points[0], z[0].imag, points[1], z[1].imag)
+    if series is None:
+        series = _zero_crossing(points[1], z[1].imag, points[2], z[2].imag)
+    cl = identity["load_capacitance_f"]
+    load = [x.imag - 1 / (2 * math.pi * f * cl) for f, x in zip(points[3:], z[3:], strict=True)]
+    return [series, zmin, _zero_crossing(points[3], load[0], points[4], load[1])]
+
+
+def run_xtal_probes(audit, entry_ids):
+    receipts = []
+    for entry_id in entry_ids:
+        compiled, identity = xtal_probe_definition(audit, entry_id)
+        relative = f"runtime-bench-output/{entry_id}-ac"
+        result = NgspiceAdapter().behavior_circuit(compiled, work_dir=audit.run_dir / relative, analysis="ac",
+                                                   ac_points_hz=identity["ac_points_hz"])
+        output = result.get("stdout", "") + result.get("stderr", "")
+        observed = _xtal_observation(compiled, identity, output) if result["status"] == "ran" else [None, None, None]
+        passed = result["status"] == "ran" and all(
+            _dc_matches(row, value) for row, value in zip(identity["comparison"], observed, strict=True))
+        _atomic_text(audit.run_dir / relative / "output.txt", output)
+        _atomic_text(audit.run_dir / relative / "version.txt", result["version_output"])
+        receipt = dict(identity, ran_at=_now(), run_status="passed" if passed else "failed",
+                       observation_status=result["status"], observed=observed,
+                       product_code_path=result.get("product_code_path"), problems=result["problems"],
+                       output_sha256=_sha_bytes(output.encode()), raw_output=relative + "/output.txt",
+                       version_output=result["version_output"], version_file=relative + "/version.txt",
+                       version_sha256=_sha_bytes(result["version_output"].encode()))
+        _atomic_json(audit.run_dir / f"runtime-bench-results/{entry_id}-ac.json", receipt)
+        receipts.append(receipt)
+    return receipts
+
+
+def xtal_probe_receipt_errors(audit, entry_id):
+    compiled, identity = xtal_probe_definition(audit, entry_id)
+    path = audit.run_dir / f"runtime-bench-results/{entry_id}-ac.json"
+    if not path.is_file():
+        return [f"{entry_id}: runtime crystal receipt missing"]
+    receipt = json.loads(path.read_text())
+    required = dict(identity, observation_status="ran", run_status="passed",
+                    product_code_path="ohmni.eda.simulation.NgspiceAdapter.behavior_circuit")
+    errors = [f"{entry_id}: stale or invalid runtime crystal {k}" for k, v in required.items() if receipt.get(k) != v]
+    output_path = audit._safe_run_path(receipt["raw_output"])
+    observed = _xtal_observation(compiled, identity, output_path.read_text(encoding="utf-8"))
+    if observed != receipt.get("observed") or not all(
+            _dc_matches(row, value) for row, value in zip(identity["comparison"], observed, strict=True)):
+        errors.append(f"{entry_id}: raw crystal observation does not meet its sourced contract")
+    if _sha_bytes(output_path.read_bytes()) != receipt["output_sha256"]:
+        errors.append(f"{entry_id}: raw crystal output changed")
     version_path = audit._safe_run_path(receipt["version_file"])
     version = version_path.read_text(encoding="utf-8")
     if (_sha_bytes(version_path.read_bytes()) != receipt["version_sha256"] or version != receipt["version_output"]
