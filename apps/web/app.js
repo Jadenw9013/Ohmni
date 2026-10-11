@@ -15,6 +15,7 @@ import { mountBoardControls } from "./board-controls.js";
 import { mountCircuitLessons } from "./circuit-lessons.js";
 import { mountProjectWorkbench } from "./project-workbench.js";
 import { scopeHtml } from "./scope-view.js";
+import { mountDesignBehaviorPanel } from "./design-behavior.js";
 import { projectRequest, parseProjectStart } from "./project-contract.js";
 
 import { errorKind, fetchHealth, identityBody, requestBody, freeTextProblem, pollHeaders, sameIdentity, fail, serverErrorKind, parseBrief, parseStart, parseJob, pollDisposition, API_BASE } from "./client-contract.js";
@@ -71,6 +72,7 @@ const state = {
     boardView: null,
     boardControls: null,
     boardLessons: null,
+    designBehavior: null,
     flowId: null,
     systemId: null,
     selected: null,
@@ -643,6 +645,7 @@ function renderResult(report, jobId) {
     renderFlows(exp.flows);
     renderRepair(exp.repair);
     renderScope(report.simulation);
+    renderDesignBehavior(report, jobId);
     renderTour(exp.tour);
     renderChecks(exp.check_sections);
     const requirements = requirementResultsHtml(report.requirements);
@@ -869,6 +872,15 @@ export function renderScope(simulation) {
 }
 
 
+function renderDesignBehavior(report, jobId) {
+    // Runs only the saved project's own circuit, identified by the hash its
+    // report names; other results show the run as unavailable, not skipped.
+    state.designBehavior?.();
+    state.designBehavior = mountDesignBehaviorPanel($("#design-behavior-panel"), {
+        jobId, identity: state.identity,
+        circuitHash: report.mode === "bounded_synthesis" ? report.project?.circuit_hash : null,
+    });
+}
 function renderRepair(repair) {
     const panel = $("#repair-panel");
     if (!repair.happened) {
