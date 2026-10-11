@@ -476,7 +476,7 @@ def _transient_checks(component, values, b, thermal, upper_only, w):
                       ("vrev_25", "vrev_85", "vrev_125"),
                       None if "Tamb" in values or values["peak_rev"] > values.get("vrev_25", 0) else
                       "Ambient temperature selects the reverse limit")
-        if i is not None and "irip_max" in values and _tant_esr_bound(component, values):
+        if i is not None and "irip_max" in values and _tant_esr_bound(component):
             stat("ripple_rms", w.ac_rms(i))
             b.add("ripple current", "ripple_rms <= irip_max", ("irip_max",),
                   "The card carries the bound maximum ESR, so a simulated waveform's current bounds the real "
@@ -682,7 +682,6 @@ def evaluate_ratings(compilation, result, registry, context=None):
         ac_points = result["ac"]["points"]
         ran_op = True  # the AC run solves and prints the same operating point first
     linear = circuit_is_linear(compilation.netlist or "")
-    passive = linear and circuit_is_passive(compilation.netlist or "")
     ran = ran_op or curve is not None
     components = []
     all_faults = []
@@ -701,7 +700,7 @@ def evaluate_ratings(compilation, result, registry, context=None):
             reason = None
         elif ac_points is not None:
             b = _scoped_checks(component, result.get("operating_point"), context,
-                               ac=(_ac_window(component, ac_points), linear, passive))
+                               ac=(_ac_window(component, ac_points), linear))
             reason = None
         else:
             b = _scoped_checks(component, result.get("operating_point") if ran_op else None, context)
@@ -835,15 +834,6 @@ def apply_open_faults(compilation, faults):
 _NONLINEAR_ELEMENTS = set("BDQMJASWUNPZ")
 
 
-def circuit_is_passive(netlist):
-    """No controlled (E, F, G, H) or behavioural (B) source: the network seen by a part has Re(Zth) >= 0."""
-    for line in netlist.splitlines():
-        text = line.strip()
-        if text and not text.startswith(("*", ".", "+")) and text[0].upper() in set("EFGHB"):
-            return False
-    return bool(netlist.strip())
-
-
 def circuit_is_linear(netlist):
     """True only when no element can make the response depend on amplitude.
 
@@ -891,7 +881,7 @@ def _ac_window(component, points):
 RIPPLE_RATING_HZ = 100e3
 
 
-def _ac_checks(component, values, b, thermal, upper_only, window, linear, passive=False):
+def _ac_checks(component, values, b, thermal, upper_only, window, linear):
     """Sinusoidal steady state: DC operating values plus RMS phasors at each requested frequency.
 
     For a sine on a DC bias the peak is |DC| + sqrt(2)*|AC| and the RMS is sqrt(DC^2 + |AC|^2); both
@@ -956,34 +946,17 @@ def _ac_checks(component, values, b, thermal, upper_only, window, linear, passiv
                 scope = component.parameter_evidence.get("irip_max", {}).get("scope", "")
                 stated = "100 kHz" in scope and "25 C" in scope and "RMS" in scope
                 exact = stated and math.isclose(frequency, RIPPLE_RATING_HZ, rel_tol=1e-9)
-                bound = _tant_esr_bound(component, values)
-                at_rating = (exact and values.get("Tamb") is not None
-                             and math.isclose(values["Tamb"], 25.0, abs_tol=1e-9))
-                if bound and not (at_rating and passive):
-                    # The maximum ESR is specified only at 100 kHz and 25 C; elsewhere (and with active or
-                    # nonlinear elements) the simulated current bounds the real one in neither direction.
+                bound = _tant_esr_bound(component)
+                if bound:
                     add("ripple current" + (" (rating frequency)" if exact else ""), f"irip_{key} <= irip_max",
-                        ("irip_max",), "The card carries the maximum ESR, which is specified only at 100 kHz and "
-                        "25 C in a passive linear circuit; here the simulated current bounds the real current in "
-                        "neither direction (D062)")
+                        ("irip_max",), bound)
+                    if exact and "esr_max" in values and "pd_max" in values:
+                        add("ESR heating with the maximum 100 kHz ESR", f"irip_{key}**2*esr_max <= pd_max",
+                            ("esr_max", "pd_max"), bound)
                 elif not stated:
                     add("ripple current", f"irip_{key} <= irip_max", ("irip_max",),
                         "The ripple rating's frequency, temperature or RMS basis is not stated in its source "
                         "scope", violation_only=True)
-                elif bound:
-                    # Exactly at the rating conditions in a passive linear network: the part's current is
-                    # |Vth| / |Zth + ESR + Zc|, which falls as ESR rises (Re Zth >= 0). A real part's ESR is at
-                    # or below the maximum here, so it carries at least the simulated current: a simulated
-                    # violation is real, a simulated pass is not proven (D061, D062).
-                    reason = bound + ("; " + thermal if thermal else "")
-                    add("ripple current (rating frequency)", f"irip_{key} <= irip_max", ("irip_max",),
-                        reason, violation_only=True)
-                    if ("esr_max" in values and "pd_max" in values
-                            and "100 kHz" in component.parameter_evidence.get("esr_max", {}).get("scope", "")):
-                        stat(f"pesr_{key}", values[f"irip_{key}"] ** 2 * values["esr_max"])
-                        add("ESR heating with the maximum 100 kHz ESR", f"pesr_{key} <= pd_max",
-                            ("esr_max", "pd_max"), reason + "; this is the data sheet's I(max) = sqrt(Pmax/ESR) "
-                            "rating method, not a computed real dissipation", violation_only=True)
                 elif exact and values.get("Tamb") is not None and values["Tamb"] <= 25:
                     add("ripple current (rating frequency)", f"irip_{key} <= irip_max", ("irip_max",), thermal)
                     if ("esr_max" in values and "pd_max" in values
@@ -1079,19 +1052,20 @@ def _tant_temperature_reason(values):
     return None
 
 
-def _tant_esr_bound(component, values=None):
-    """Reason text when the tantalum card's series resistor is the sourced maximum ESR (D058).
+def _tant_esr_bound(component):
+    """Reason text when a tantalum card carries any series element beyond its capacitance and leakage (D063).
 
-    Identified by meaning, not only by name: the card must bind maximum_esr from a 100 kHz scope and carry
-    a series element named for it, so a future card with a typical ESR or another element name is not
-    silently treated as a bound (and without the element the ideal-card rules apply).
+    The T491 cards carry the sourced maximum ESR (D058). Real ESR, capacitance tolerance and the omitted
+    ESL each move the part's current in a direction the card cannot bound, so with any such element its
+    own ripple and ESR-heating rows prove neither a pass nor a violation. Fails closed: an element of
+    any other name counts too, so only the pure Cb || Rlk card keeps the ideal-card rules.
     """
-    if component.behavior_id != "BEH-CAP-TANT" or "esr_max" not in component.parameters:
+    if component.behavior_id != "BEH-CAP-TANT":
         return None
-    evidence = component.parameter_evidence.get("esr_max", {})
-    if evidence.get("field") != "maximum_esr" or "100 kHz" not in evidence.get("scope", ""):
+    extra = [n for n in (name.lower() for name in component.element_names)
+             if not (n.startswith("c") or (n.startswith("r") and n.endswith("_lk")))]
+    if not extra:
         return None
-    if not any(name.lower().endswith("_esr") for name in component.element_names):
-        return None
-    return ("The card carries the maximum ESR, so in a passive linear circuit at 100 kHz and 25 C the simulated "
-            "current is a lower bound on the real current: this row can prove a violation but not a pass")
+    return ("The card carries a series ESR (the sourced 100 kHz maximum), and the real ESR, capacitance "
+            "tolerance and omitted ESL move the part's current in directions the card cannot bound, so this "
+            "row proves neither a pass nor a violation; parallel parts' currents are not bounded either (D063)")

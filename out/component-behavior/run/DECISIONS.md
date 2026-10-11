@@ -348,3 +348,17 @@ The fixes:
 - **Bound detection:** the bound is recognized by meaning, not only by element name. The card must bind `maximum_esr` from a 100 kHz scope and carry the series element.
 - **Reason texts:** the thermal-scope reason is kept alongside the bound reason. The ESR-heating reason says it is the data sheet's I(max) = sqrt(Pmax/ESR) rating method, not a computed real dissipation.
 - **Tests:** they cover cold, warm and fractional ambients, a controlled source, the meaning-based detector, and both reasons in the nonlinear case.
+
+## D063 — 2026-10-11: A bound-ESR tantalum card proves no ripple result; D061 and D062 superseded
+
+The proxy review of D062 blocked it again, on four points:
+- **Fail-open detector:** a card whose series ESR was not recognized as the maximum fell back to the ideal-card rules, which can pass.
+- **Capacitance tolerance and ESL:** the card uses nominal C, and a real part with lower C carries up to about 1% less current. So "a real part carries at least the simulated current" is not proven near the limit.
+- **Wrong correction:** D061's correction about parallel parts was itself wrong. With a current-driven parallel tank, a higher tantalum ESR lowers a parallel inductor's current. Parallel currents are not bounded in either direction.
+- **Test claims:** the stated test coverage did not match the tests.
+
+After three blocked rounds the rule is now the simplest sound one, and it fails closed. For any tantalum card with a series element beyond Cb and Rlk (the T491 cards carry the maximum ESR, D058), the ripple and ESR-heating rows are unknown in both directions, in AC and transient runs. A card that is only Cb || Rlk keeps the D057 rules. The passive-circuit test of D062 is removed, because nothing depends on it.
+
+Consequence: the exact 100 kHz T491 ripple check no longer yields a verdict for the bound cards. A sound way to restore it is a dual solve: run with ESR = 0 and with ESR = maximum, and require both to pass, plus a capacitance-tolerance margin. Whether to build that, or to return the T491 cards to the ideal card for ripple purposes, is queued in MORNING_DECISIONS for the owner.
+
+D061's text about parallel parts being conservative is withdrawn. D062's violation proof is withdrawn.
