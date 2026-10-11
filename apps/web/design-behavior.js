@@ -34,7 +34,8 @@ const statusBadge = status => `<span class="badge ${statusTone(status)}">${escap
 export function designRunModel(result) {
     const ran = result?.status === 'ran';
     const summary = ran && result?.design_summary && typeof result.design_summary === 'object' ? result.design_summary : null;
-    const violation = summary?.status === 'violation' || result?.rating_status === 'violation';
+    // A violation needs a run that happened; a design reads within limits only from its own summary.
+    const violation = ran && (summary?.status === 'violation' || result?.rating_status === 'violation');
     const within = !violation && summary?.status === 'within_model_limits';
     const problems = list(result?.problems);
     const refused = result?.status === 'not_run' && (problems.length > 0 || list(result?.bindings).some(row => row?.problem));
@@ -56,8 +57,8 @@ export function designRunModel(result) {
         rating: byRef.get(row?.ref) ?? null,
     }));
     return { ran, refused, violation, within, title, problems, parts, summary,
-        summaryStatus: violation ? 'violation' : within ? 'within_model_limits'
-            : ran ? (summary?.status && summary.status !== 'within_model_limits' ? summary.status : 'unknown') : 'not_run' };
+        // Clamped to four design-level states: no other server word can reach the pass-toned badge.
+        summaryStatus: violation ? 'violation' : within ? 'within_model_limits' : ran ? 'unknown' : 'not_run' };
 }
 
 function checksHtml(rating) {
@@ -133,16 +134,24 @@ export function mountDesignBehaviorPanel(container, { jobId, identity, circuitHa
             if (!run.ok) throw new Error('not_run');
             const payload = await run.json();
             // A result for another circuit or server is not this project's result.
-            if (!sameIdentity(payload, identity) || payload.result?.circuit_hash !== circuitHash) throw new Error('mismatch');
+            if (!sameIdentity(payload, identity) || payload.result?.circuit_hash !== circuitHash) throw new Error('unverified');
             result = payload.result;
         } catch (error) {
             result = notRun(error?.message === 'circuit' ? "This project's saved circuit is unavailable, so nothing was simulated."
                 : error?.message === 'busy' ? 'Another behavior run is active. Nothing was simulated; retry when it finishes.'
+                : error?.message === 'mismatch' ? 'The server session changed before the run. Reload the page and retry; nothing is shown.'
+                : error?.message === 'unverified' ? 'A result came back that could not be matched to this project and server, so it is not shown.'
                 : 'The design run is unavailable. Nothing was simulated; retry after checking the local simulator.');
         }
         if (disposed) return;
-        output.innerHTML = designResultHtml(result);
-        status.textContent = designRunModel(result).title + '.';
+        try {
+            output.innerHTML = designResultHtml(result);
+            status.textContent = designRunModel(result).title + '.';
+        } catch {
+            const fallback = notRun('The run returned a result this page could not read, so it is not shown.');
+            output.innerHTML = designResultHtml(fallback);
+            status.textContent = designRunModel(fallback).title + '.';
+        }
         button.disabled = false;
     };
     return () => { disposed = true; controller.abort(); };

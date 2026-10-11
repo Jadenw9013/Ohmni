@@ -129,3 +129,20 @@ test('the panel without a saved project circuit is unavailable and offers no run
     assert.match(html, /Unavailable for this result/); assert.doesNotMatch(html, /data-design-run/);
     assert.match(designPanelHtml(true), /data-design-run/);
 });
+
+test('the design badge is clamped: no summary word other than within_model_limits earns a pass', () => {
+    for (const word of ['within_limit', 'within', 'PASS', 'within_limits', 'ok', 'passed']) {
+        const result = ran(word, { C1: 'within_model_limits' });
+        const model = designRunModel(result);
+        assert.equal(model.summaryStatus, 'unknown', word);
+        assert.match(designResultHtml(result), /Design ratings: <span class="badge warn">/, word);
+    }
+});
+
+test('a violation is reported only for a run that happened', () => {
+    const unrun = { ...refused(), rating_status: 'violation', design_summary: { status: 'violation', counts: {} } };
+    const model = designRunModel(unrun);
+    assert.equal(model.violation, false);
+    assert.notEqual(model.summaryStatus, 'violation');
+    assert.doesNotMatch(designResultHtml(unrun), /Rating violation/);
+});
