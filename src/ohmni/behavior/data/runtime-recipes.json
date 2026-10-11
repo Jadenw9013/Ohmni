@@ -12473,6 +12473,424 @@
         "5": "OUT"
       }
     },
+    "OHM-143": {
+      "behavior_id": "BEH-FREQ-XTAL",
+      "catalog_identity_pin_map": {},
+      "catalog_parts": [],
+      "class_parameters": {},
+      "critical_facts": {
+        "R1": {
+          "field": "equivalent_series_resistance_max",
+          "output_unit": null,
+          "scope_contains": "CX3225FB16000D0FZZH1",
+          "unit": "ohm",
+          "value_path": []
+        },
+        "c0_max": {
+          "field": "shunt_capacitance_range",
+          "output_unit": "F",
+          "scope_contains": "CX3225FB16000D0FZZH1",
+          "unit": "pF",
+          "value_path": [
+            1
+          ]
+        },
+        "c0_min": {
+          "field": "shunt_capacitance_range",
+          "output_unit": "F",
+          "scope_contains": "CX3225FB16000D0FZZH1",
+          "unit": "pF",
+          "value_path": [
+            0
+          ]
+        },
+        "c1_max": {
+          "field": "motional_capacitance_range",
+          "output_unit": null,
+          "scope_contains": "CX3225FB16000D0FZZH1",
+          "unit": "fF",
+          "value_path": [
+            1
+          ]
+        },
+        "c1_min": {
+          "field": "motional_capacitance_range",
+          "output_unit": null,
+          "scope_contains": "CX3225FB16000D0FZZH1",
+          "unit": "fF",
+          "value_path": [
+            0
+          ]
+        },
+        "cl": {
+          "field": "load_capacitance_standard",
+          "output_unit": "F",
+          "scope_contains": "CX3225FB16000D0FZZH1",
+          "unit": "pF",
+          "value_path": []
+        },
+        "dl_max": {
+          "field": "drive_level_max",
+          "output_unit": null,
+          "scope_contains": "CX3225FB16000D0FZZH1",
+          "unit": "uW",
+          "value_path": []
+        },
+        "f_nom": {
+          "field": "nominal_frequency",
+          "output_unit": "Hz",
+          "scope_contains": "CX3225FB16000D0FZZH1",
+          "unit": "MHz",
+          "value_path": []
+        },
+        "l1_max": {
+          "field": "motional_inductance_range",
+          "output_unit": null,
+          "scope_contains": "CX3225FB16000D0FZZH1",
+          "unit": "mH",
+          "value_path": [
+            1
+          ]
+        },
+        "l1_min": {
+          "field": "motional_inductance_range",
+          "output_unit": null,
+          "scope_contains": "CX3225FB16000D0FZZH1",
+          "unit": "mH",
+          "value_path": [
+            0
+          ]
+        },
+        "top_max": {
+          "field": "operating_ambient_range",
+          "output_unit": null,
+          "scope_contains": "CX3225FB16000D0FZZH1",
+          "unit": "C",
+          "value_path": [
+            1
+          ]
+        },
+        "top_min": {
+          "field": "operating_ambient_range",
+          "output_unit": null,
+          "scope_contains": "CX3225FB16000D0FZZH1",
+          "unit": "C",
+          "value_path": [
+            0
+          ]
+        }
+      },
+      "derived_parameters": {
+        "C0": {
+          "basis": "DERIVED",
+          "confidence": "M",
+          "detail": "Centre of the sourced C0 range 0.67~0.99 pF (already converted pF -> F by the fact binding).",
+          "expression": "(c0_min+c0_max)/2",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 9918
+          },
+          "unit": "F"
+        },
+        "C1": {
+          "basis": "DERIVED",
+          "confidence": "M",
+          "detail": "Centre of the sourced C1 range 1.65~2.47 fF. The sourced unit fF is scaled to F explicitly here (1 fF = 1e-15 F), because netlist.convert_unit has no fF entry.",
+          "expression": "(c1_min+c1_max)/2*1e-15",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 9918
+          },
+          "unit": "F"
+        },
+        "L1": {
+          "basis": "DERIVED",
+          "confidence": "M",
+          "detail": "L1 chosen so that fL = fs*sqrt(1+C1/(C0+CL)) (spec line 9918) equals the sourced nominal 16 MHz at the sourced CL 8 pF: the datasheet frequency is stated at the specific load, so it is fL, not fs. Result 0.0480435 H, inside the sourced L1 range 38.52~57.76 mH (l1_min/l1_max, unit mH, scaled by 1e-3 in the runtime probe's range check).",
+          "expression": "(1+C1/(C0+cl))/((2*pi*f_nom)**2*C1)",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 9918
+          },
+          "unit": "H"
+        }
+      },
+      "entry_id": "OHM-143",
+      "fit_curves": {},
+      "ground_strays": {},
+      "inline_assets": [
+        {
+          "document": "docs/behavior/bench/xtal-bvd/ohm_xtal.lib",
+          "document_sha256": "ebb2d19e61906c1084be36df03e5faa944178dc31e7e9d27999488d810f5d6db",
+          "fragment_sha256": null,
+          "line": 1
+        }
+      ],
+      "instance_value_unit": null,
+      "limitations": [
+        "Bound to Kyocera CX3225FB16000D0FZZH1 only (8 pF CL variant); not a generic crystal of this size. Other frequencies and CL options of the series have different motional values (Note 1, p3).",
+        "C1 and C0 are the centres of the sourced ranges; L1 is derived to place fL at the sourced nominal frequency for CL = 8 pF. Initial tolerance (+/-10 ppm), temperature stability and aging are not modelled (static).",
+        "R1 = 50 ohm is the single Note-1 ESR value read as the limit (worst case), not a typical value; startup or negative-resistance margins computed with it are conservative.",
+        "No spurious or overtone modes and no drive-level dependence. Drive level (100 uW max) is a rating row evaluated from AC phasors only (R1*|I_motional|^2); an operating point or transient run leaves it unknown.",
+        "Manufacturer pad 1 is library terminal 2 (docs/behavior/KYOCERA-CXFB-PERMUTATION.md), so the crystal sits on library pads 2/4, not on the class rule's pads 1/3. The generic library pin-1 dot marks a Kyocera GND pad; library pad sizes and positions are not the Kyocera land pattern and must not be used as manufacturing evidence.",
+        "GND (cover) pads LID1/LID2 are not connected inside the model (floating in simulation, per the class pin rule)."
+      ],
+      "model_facts": {},
+      "open_mating_roles": [],
+      "package": "3225 Kyocera CX3225FB reference",
+      "pin_role_fact": {
+        "field": "manufacturer_pin_roles",
+        "manufacturer_to_package_terminal": {
+          "1": "2",
+          "2": "3",
+          "3": "4",
+          "4": "1"
+        },
+        "permutation_provenance": {
+          "document": "docs/behavior/KYOCERA-CXFB-PERMUTATION.md",
+          "document_sha256": "0dae12743645ef0881887f3ec8b628727b8d1f6d65cbf2a593512fc93ebd8713",
+          "fragment_sha256": null,
+          "line": 1
+        },
+        "scope_contains": "CX3225FB16000D0FZZH1",
+        "tied_features": []
+      },
+      "quoted_parameters": {},
+      "reference_function": null,
+      "reference_part": "Kyocera CX3225FB16000D0FZZH1 (16 MHz fundamental AT-cut, CL 8 pF, ESR 50 ohm, +/-10 ppm; CX3225FB 8 pF specification UKY1C-H1-25071-02[43])",
+      "required_ground_roles": [],
+      "required_isolated_roles": [],
+      "required_same_net_roles": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "template_key": "netlist_template",
+      "template_override": null,
+      "template_provenance": null,
+      "terminal_roles": {
+        "1": "LID2",
+        "2": "A",
+        "3": "LID1",
+        "4": "B"
+      }
+    },
+    "OHM-145": {
+      "behavior_id": "BEH-FREQ-XTAL",
+      "catalog_identity_pin_map": {},
+      "catalog_parts": [],
+      "class_parameters": {},
+      "critical_facts": {
+        "R1": {
+          "field": "equivalent_series_resistance_max",
+          "output_unit": null,
+          "scope_contains": "CX2016FB24000D0FZZH1",
+          "unit": "ohm",
+          "value_path": []
+        },
+        "c0_max": {
+          "field": "shunt_capacitance_range",
+          "output_unit": "F",
+          "scope_contains": "CX2016FB24000D0FZZH1",
+          "unit": "pF",
+          "value_path": [
+            1
+          ]
+        },
+        "c0_min": {
+          "field": "shunt_capacitance_range",
+          "output_unit": "F",
+          "scope_contains": "CX2016FB24000D0FZZH1",
+          "unit": "pF",
+          "value_path": [
+            0
+          ]
+        },
+        "c1_max": {
+          "field": "motional_capacitance_range",
+          "output_unit": null,
+          "scope_contains": "CX2016FB24000D0FZZH1",
+          "unit": "fF",
+          "value_path": [
+            1
+          ]
+        },
+        "c1_min": {
+          "field": "motional_capacitance_range",
+          "output_unit": null,
+          "scope_contains": "CX2016FB24000D0FZZH1",
+          "unit": "fF",
+          "value_path": [
+            0
+          ]
+        },
+        "cl": {
+          "field": "load_capacitance_standard",
+          "output_unit": "F",
+          "scope_contains": "CX2016FB24000D0FZZH1",
+          "unit": "pF",
+          "value_path": []
+        },
+        "dl_max": {
+          "field": "drive_level_max",
+          "output_unit": null,
+          "scope_contains": "CX2016FB24000D0FZZH1",
+          "unit": "uW",
+          "value_path": []
+        },
+        "f_nom": {
+          "field": "nominal_frequency",
+          "output_unit": "Hz",
+          "scope_contains": "CX2016FB24000D0FZZH1",
+          "unit": "MHz",
+          "value_path": []
+        },
+        "l1_max": {
+          "field": "motional_inductance_range",
+          "output_unit": null,
+          "scope_contains": "CX2016FB24000D0FZZH1",
+          "unit": "mH",
+          "value_path": [
+            1
+          ]
+        },
+        "l1_min": {
+          "field": "motional_inductance_range",
+          "output_unit": null,
+          "scope_contains": "CX2016FB24000D0FZZH1",
+          "unit": "mH",
+          "value_path": [
+            0
+          ]
+        },
+        "top_max": {
+          "field": "operating_ambient_range",
+          "output_unit": null,
+          "scope_contains": "CX2016FB24000D0FZZH1",
+          "unit": "C",
+          "value_path": [
+            1
+          ]
+        },
+        "top_min": {
+          "field": "operating_ambient_range",
+          "output_unit": null,
+          "scope_contains": "CX2016FB24000D0FZZH1",
+          "unit": "C",
+          "value_path": [
+            0
+          ]
+        }
+      },
+      "derived_parameters": {
+        "C0": {
+          "basis": "DERIVED",
+          "confidence": "M",
+          "detail": "Centre of the sourced C0 range 0.42~0.62 pF (already converted pF -> F by the fact binding).",
+          "expression": "(c0_min+c0_max)/2",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 9918
+          },
+          "unit": "F"
+        },
+        "C1": {
+          "basis": "DERIVED",
+          "confidence": "M",
+          "detail": "Centre of the sourced C1 range 1.32~1.98 fF. The sourced unit fF is scaled to F explicitly here (1 fF = 1e-15 F), because netlist.convert_unit has no fF entry.",
+          "expression": "(c1_min+c1_max)/2*1e-15",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 9918
+          },
+          "unit": "F"
+        },
+        "L1": {
+          "basis": "DERIVED",
+          "confidence": "M",
+          "detail": "L1 chosen so that fL = fs*sqrt(1+C1/(C0+CL)) (spec line 9918) equals the sourced nominal 24 MHz at the sourced CL 8 pF: the datasheet frequency is stated at the specific load, so it is fL, not fs. Result 0.0266574 H, inside the sourced L1 range 21.36~32.04 mH (l1_min/l1_max, unit mH, scaled by 1e-3 in the runtime probe's range check).",
+          "expression": "(1+C1/(C0+cl))/((2*pi*f_nom)**2*C1)",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "fragment_sha256": null,
+            "line": 9918
+          },
+          "unit": "H"
+        }
+      },
+      "entry_id": "OHM-145",
+      "fit_curves": {},
+      "ground_strays": {},
+      "inline_assets": [
+        {
+          "document": "docs/behavior/bench/xtal-bvd/ohm_xtal.lib",
+          "document_sha256": "ebb2d19e61906c1084be36df03e5faa944178dc31e7e9d27999488d810f5d6db",
+          "fragment_sha256": null,
+          "line": 1
+        }
+      ],
+      "instance_value_unit": null,
+      "limitations": [
+        "Bound to Kyocera CX2016FB24000D0FZZH1 only (8 pF CL variant); not a generic crystal of this size. Other frequencies and CL options of the series have different motional values (Note 1, p3).",
+        "C1 and C0 are the centres of the sourced ranges; L1 is derived to place fL at the sourced nominal frequency for CL = 8 pF. Initial tolerance (+/-10 ppm), temperature stability and aging are not modelled (static).",
+        "R1 = 50 ohm is the single Note-1 ESR value read as the limit (worst case), not a typical value; startup or negative-resistance margins computed with it are conservative.",
+        "No spurious or overtone modes and no drive-level dependence. Drive level (100 uW max) is a rating row evaluated from AC phasors only (R1*|I_motional|^2); an operating point or transient run leaves it unknown.",
+        "Manufacturer pad 1 is library terminal 2 (docs/behavior/KYOCERA-CXFB-PERMUTATION.md), so the crystal sits on library pads 2/4, not on the class rule's pads 1/3. The generic library pin-1 dot marks a Kyocera GND pad; library pad sizes and positions are not the Kyocera land pattern and must not be used as manufacturing evidence.",
+        "GND (cover) pads LID1/LID2 are not connected inside the model (floating in simulation, per the class pin rule).",
+        "24 MHz, not 16 MHz: the entry's recorded reference (Abracon ABM11) is 16 MHz, but the lowest CX2016FB frequency with published motional values is 24 MHz (p2 1.1). This binding is a 24 MHz crystal and must not stand in for a 16 MHz part.",
+        "The sourced C0 0.42~0.62 pF (centre 0.52 pF) is below the BEH-FREQ-XTAL class parameter minimum of 0.8 pF. The class range is not a compile gate; the sourced exact-part value is used for this binding, and the class minimum is recorded as a conflict (D073)."
+      ],
+      "model_facts": {},
+      "open_mating_roles": [],
+      "package": "2016 Kyocera CX2016FB reference",
+      "pin_role_fact": {
+        "field": "manufacturer_pin_roles",
+        "manufacturer_to_package_terminal": {
+          "1": "2",
+          "2": "3",
+          "3": "4",
+          "4": "1"
+        },
+        "permutation_provenance": {
+          "document": "docs/behavior/KYOCERA-CXFB-PERMUTATION.md",
+          "document_sha256": "0dae12743645ef0881887f3ec8b628727b8d1f6d65cbf2a593512fc93ebd8713",
+          "fragment_sha256": null,
+          "line": 1
+        },
+        "scope_contains": "CX2016FB24000D0FZZH1",
+        "tied_features": []
+      },
+      "quoted_parameters": {},
+      "reference_function": null,
+      "reference_part": "Kyocera CX2016FB24000D0FZZH1 (24 MHz fundamental AT-cut, CL 8 pF, ESR 50 ohm, +/-10 ppm; CX2016FB 8 pF specification UKY1C-H1-25067-02[37])",
+      "required_ground_roles": [],
+      "required_isolated_roles": [],
+      "required_same_net_roles": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "template_key": "netlist_template",
+      "template_override": null,
+      "template_provenance": null,
+      "terminal_roles": {
+        "1": "LID2",
+        "2": "A",
+        "3": "LID1",
+        "4": "B"
+      }
+    },
     "OHM-146": {
       "behavior_id": "BEH-FREQ-XO",
       "catalog_identity_pin_map": {},
@@ -14606,7 +15024,7 @@
   "schema_version": 1,
   "source": {
     "document": "docs/behavior/runtime-recipes.json",
-    "document_sha256": "32ede105bae37d23a244e76e69c019da5215799f6f4e220f67c20fbe25e67068",
+    "document_sha256": "bc488ab16855a57c6770fe3374176c0f7214015419616a52a05fe2eb9de00266",
     "fragment_sha256": null,
     "line": 1
   }
