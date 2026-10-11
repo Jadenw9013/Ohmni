@@ -26,21 +26,21 @@
       {
         "document_id": "murata-lqm18",
         "manufacturer": "Murata",
-        "note": "Primary manufacturer content read from archived PDF, including diagrams where pin maps are claimed.",
+        "note": "Manufacturer content read from the archived copy hosted at www.farnell.com, not a manufacturer domain, including diagrams where pin maps are claimed.",
         "page": null,
         "revision": "12/05/2020 as printed; manufacturer document hosted by Farnell",
-        "source_status": "primary_source_opened",
+        "source_status": "manufacturer_document_mirror",
         "title": "LQM18DN6R8M70 Product Search Data Sheet",
         "url": "https://www.farnell.com/datasheets/3170423.pdf"
       },
       {
         "document_id": "added-2",
-        "manufacturer": null,
-        "note": "Archived source added during the behavior-81 integration; read from archived bytes.",
+        "manufacturer": "Murata",
+        "note": "Archived source added during the behavior-81 integration; read from archived bytes. Murata reference specification for the LQM18DN_70 series (every page stamped 'Reference Only'); its section 13 says to use the approval sheet for product specifications before ordering.",
         "page": null,
-        "revision": null,
+        "revision": "Spec No. JELF243B-0086G-01; no issue date printed",
         "source_status": "primary_source_opened",
-        "title": "JELF243B-0086_PDF_INDUCTOR?lastModifiedDatetime=20260305091757",
+        "title": "CHIP COIL (CHIP INDUCTOR) for Consumer equipment & Industrial equipment LQM18DN_70 REFERENCE SPECIFICATION",
         "url": "https://pim.murata.com/asset/pim4/inductor/JELF243B-0086_PDF_INDUCTOR?lastModifiedDatetime=20260305091757"
       }
     ],
@@ -52,7 +52,7 @@
         "detail": null,
         "field": "nominal_inductance",
         "page": 2,
-        "scope": "LQM18DN6R8M70; manufacturer summary sheet, detailed approval specification still required for procurement",
+        "scope": "LQM18DN6R8M70; manufacturer summary sheet, detailed approval specification still required for procurement; inductance test frequency 1 MHz; tolerance +/-20%",
         "sources": [
           "https://www.farnell.com/datasheets/3170423.pdf"
         ],
@@ -88,10 +88,10 @@
       {
         "basis": "MFR_DATASHEET",
         "confidence": "H",
-        "detail": "Murata reference specification JELF243B-0086 p1 table: 'LQM18DN6R8M70L 6.8 ±20 0.74±0.22' (DC resistance 0.74 ± 0.22 ohm, so 0.96 ohm maximum); the product page lists DC Resistance(max.) 0.96 ohm.",
+        "detail": "Murata reference specification JELF243B-0086 p1 table: 'LQM18DN6R8M70L 6.8 ±20 0.74±0.22' (DC resistance 0.74 ± 0.22 ohm, so 0.96 ohm maximum); the Farnell-hosted Murata product search data sheet (3170423.pdf) p2 lists 'Max. of DC resistance' 0.96 ohm.",
         "field": "maximum_dcr",
         "page": 1,
-        "scope": "LQM18DN6R8M70#",
+        "scope": "LQM18DN6R8M70#; DC resistance tested at ordinary temperature 15 to 35 C unless otherwise specified (20 C +/-2 C in case of doubt), JELF243B-0086 section 4",
         "sources": [
           "https://pim.murata.com/asset/pim4/inductor/JELF243B-0086_PDF_INDUCTOR?lastModifiedDatetime=20260305091757",
           "https://www.farnell.com/datasheets/3170423.pdf"
@@ -131,7 +131,7 @@
         "detail": null,
         "field": "maximum_operating_temperature",
         "page": 2,
-        "scope": "LQM18DN6R8M70; manufacturer summary sheet, detailed approval specification still required for procurement",
+        "scope": "LQM18DN6R8M70; manufacturer summary sheet, detailed approval specification still required for procurement; upper limit of the Operating Temperature Range (-55 to 125 C)",
         "sources": [
           "https://www.farnell.com/datasheets/3170423.pdf"
         ],
@@ -141,10 +141,10 @@
       {
         "basis": "MFR_DATASHEET",
         "confidence": "H",
-        "detail": "p1 table 'LQM18DN6R8M70L 6.8 ±20 0.74±0.22': nominal DC resistance 0.74 ohm, tolerance ±0.22 ohm.",
+        "detail": "p1 table 'LQM18DN6R8M70L 6.8 ±20 0.74±0.22': DC resistance printed as 0.74 ohm, tolerance ±0.22 ohm; the specification labels it neither typical nor nominal.",
         "field": "typical_dcr",
         "page": 1,
-        "scope": "Murata LQM18DN6R8M70L (reference specification JELF243B-0086)",
+        "scope": "Murata LQM18DN6R8M70L (reference specification JELF243B-0086); tested at ordinary temperature 15 to 35 C unless otherwise specified (20 C +/-2 C in case of doubt), JELF243B-0086 section 4",
         "sources": [
           "https://pim.murata.com/asset/pim4/inductor/JELF243B-0086_PDF_INDUCTOR?lastModifiedDatetime=20260305091757"
         ],
@@ -165,7 +165,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-041.md",
-      "document_sha256": "b8ad949c199916e35dd44c47af9eefb0f272ccc9b45ca051eaa97541e6548eb4",
+      "document_sha256": "855761f7d3913d4149fa4ac4f8dca3b6774e9e932af3b1b78d83e047fd375149",
       "fragment_sha256": null,
       "line": 1
     }

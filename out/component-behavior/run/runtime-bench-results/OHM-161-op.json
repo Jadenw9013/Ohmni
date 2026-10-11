@@ -32,7 +32,7 @@
         "detail": "max(header R1 1.4, header R2 1.4, plug R1 1.3, plug R2 1.4) = 1.4 mohm. Phoenix does not say whether the value includes the screw clamp or only the plug/header interface, nor that it is a guaranteed maximum.",
         "field": "mated_path_resistance_stated",
         "page": 4,
-        "scope": "MSTBA 1757242 + MSTB 1757019, 2 positions, tin; one lumped wire-clamp-to-solder-pin path per position",
+        "scope": "MSTBA 1757242 + MSTB 1757019, 2 positions, tin; one lumped wire-clamp-to-solder-pin path per position; maximum of the four stated R1/R2 values (IEC 60512-9-1 durability test), not a guaranteed maximum; screw-clamp coverage not stated",
         "sources": [
           "https://www.phoenixcontact.com/us/products/1757242/pdf",
           "https://www.phoenixcontact.com/en-us/products/pcb-plug-mstb-25-2-st-508-1757019"
@@ -44,20 +44,20 @@
     "tolerance": 1.4e-06
   },
   "entry_id": "OHM-161",
-  "entry_research_sha256": "9ed5478484712cb2dc1fed64af50480a26dccfea40a6e23948384885033ea9f2",
+  "entry_research_sha256": "0fa8fc4567412d3a6933ffba7dfc37325dae3a52a4138a86c43eb52b954a0ce7",
   "limits": "Binding check of one bound DC path: the sourced current through the path must reproduce the sourced path resistance (0.1% numerical tolerance, or the sourced tolerance band). It does not validate frequency response, heating, contact wear, isolation, protocol behavior or any rating beyond the stated facts.",
   "netlist_sha256": "041e1e13afd0265f69e2bc910b1b8c254464249760452d016cdf57dd635f8246",
   "observation_status": "ran",
   "observed": 0.0014,
-  "output_sha256": "44ced8004b8f463711129371cb0b10d01dbe5d23461e20b0947e8eaaf26d0bef",
+  "output_sha256": "f56b8326ae9d448e52d9ebf3b7b9f2ccdeed23169553b75010d2abda4209c57e",
   "problems": [],
   "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
-  "ran_at": "2026-10-11T20:10:37Z",
+  "ran_at": "2026-10-11T22:04:58Z",
   "raw_output": "runtime-bench-output/OHM-161-op/output.txt",
   "recipe_source_sha256": "e0b0e3e95da25117d09e2c6765f7d4461d2093e15148e89b70f8256c0ffe0eda",
   "run_id": "behavior-20261005T065040Z",
   "run_status": "passed",
   "version_file": "runtime-bench-output/OHM-161-op/version.txt",
-  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sun Oct 11 20:06:07 UTC 2026\n******\n",
-  "version_sha256": "70418e8629dac31fc3bfc9ac91e68839e740ca6abcaa6a956e72729e6498fb9b"
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n",
+  "version_sha256": "2cdcb25fcf77dea87742b9ac629a0b5ba20169e01beb2b59fdd2e41ee348a45d"
 }

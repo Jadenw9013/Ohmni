@@ -70,7 +70,7 @@
         "detail": null,
         "field": "repetitive_peak_reverse_voltage",
         "page": 1,
-        "scope": "S1M SMA",
+        "scope": "S1M SMA; maximum rating, TA=25 C unless otherwise noted",
         "sources": [
           "https://www.vishay.com/doc?88711"
         ],
@@ -83,7 +83,7 @@
         "detail": null,
         "field": "average_forward_current",
         "page": 1,
-        "scope": "S1M SMA; derated per figure 1; not universal ambient rating",
+        "scope": "S1M SMA; derated per figure 1; not universal ambient rating; maximum rating, TA=25 C unless otherwise noted; fig. 1 curve: mount temperature, 5.0 mm x 5.0 mm copper pad areas",
         "sources": [
           "https://www.vishay.com/doc?88711"
         ],
@@ -96,7 +96,7 @@
         "detail": null,
         "field": "surge_forward_current",
         "page": 1,
-        "scope": "S1M SMA; 8.3 ms single half-sine superimposed on rated load",
+        "scope": "S1M SMA; 8.3 ms single half-sine superimposed on rated load; maximum rating, TA=25 C unless otherwise noted",
         "sources": [
           "https://www.vishay.com/doc?88711"
         ],
@@ -109,7 +109,7 @@
         "detail": null,
         "field": "maximum_junction_temperature",
         "page": 1,
-        "scope": "S1M SMA",
+        "scope": "S1M SMA; TA=25 C unless otherwise noted",
         "sources": [
           "https://www.vishay.com/doc?88711"
         ],
@@ -239,7 +239,7 @@
         "detail": "\"Typical reverse recovery time IF = 0.5 A, IR = 1.0 A, Irr = 0.25 A trr 1.8 us\" (S1A-S1M, typical) Method: Charge-control storage-time estimate used by the SPICE lumped-charge diode: ts = TT*ln(1+IF/IR). Treating the whole quoted trr as storage time gives TT = trr/ln(1+IF/IR). Ignores the recovery tail to the quoted Irr, junction capacitance and RS, so it over-estimates TT. TT = 1.8 us/ln(1.5) = 4.44 us (approximate, upper-leaning).",
         "field": "spice_TT_fit",
         "page": 2,
-        "scope": "Vishay S1M; TT for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "scope": "Vishay S1M; TT for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit; from typical trr at TA=25 C unless otherwise noted",
         "sources": [
           "https://www.vishay.com/doc?88711"
         ],
@@ -308,7 +308,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-064.md",
-      "document_sha256": "d610d9576d69d8e4d8c3e903dac125562f4d65e6ac0840ae44a6a59ad92bdeed",
+      "document_sha256": "67dc5a868514d4b518fd0f36e39d07f76bd2f3f3b08660b6a289e24869b546e2",
       "fragment_sha256": null,
       "line": 1
     }

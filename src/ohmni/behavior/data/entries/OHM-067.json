@@ -54,7 +54,7 @@
         "detail": null,
         "field": "dc_reverse_voltage",
         "page": 2,
-        "scope": "BAT42W SOD123; package-matched alternative to BAT54 SOT23",
+        "scope": "BAT42W SOD123; package-matched alternative to BAT54 SOT23; Maximum Ratings table (DC Blocking Voltage VR), TA=25 C unless otherwise specified",
         "sources": [
           "https://www.diodes.com/datasheet/download/BAT42W.pdf"
         ],
@@ -67,7 +67,7 @@
         "detail": null,
         "field": "continuous_forward_current",
         "page": 2,
-        "scope": "BAT42W SOD123; package-matched alternative to BAT54 SOT23; FR4 recommended pad layout",
+        "scope": "BAT42W SOD123; package-matched alternative to BAT54 SOT23; FR4 recommended pad layout; Maximum Ratings table (Forward Continuous Current IFM), TA=25 C unless otherwise specified",
         "sources": [
           "https://www.diodes.com/datasheet/download/BAT42W.pdf"
         ],
@@ -80,7 +80,7 @@
         "detail": null,
         "field": "maximum_power",
         "page": 2,
-        "scope": "BAT42W SOD123; package-matched alternative to BAT54 SOT23; TA25 C",
+        "scope": "BAT42W SOD123; package-matched alternative to BAT54 SOT23; Thermal Characteristics table, no TA default or Note 5 marker printed on the PD row",
         "sources": [
           "https://www.diodes.com/datasheet/download/BAT42W.pdf"
         ],
@@ -93,7 +93,7 @@
         "detail": null,
         "field": "maximum_junction_temperature",
         "page": 2,
-        "scope": "BAT42W SOD123; package-matched alternative to BAT54 SOT23",
+        "scope": "BAT42W SOD123; package-matched alternative to BAT54 SOT23; upper limit of the TJ, TSTG Operating and Storage Temperature Range (-55 to +125 C); no TA default printed in the Thermal Characteristics table",
         "sources": [
           "https://www.diodes.com/datasheet/download/BAT42W.pdf"
         ],
@@ -119,7 +119,7 @@
         "detail": null,
         "field": "maximum_forward_voltage",
         "page": 2,
-        "scope": "BAT42W SOD123; package-matched alternative to BAT54 SOT23; IF10 mA",
+        "scope": "BAT42W SOD123; package-matched alternative to BAT54 SOT23; IF10 mA; TA=25 C unless otherwise specified (Electrical Characteristics)",
         "sources": [
           "https://www.diodes.com/datasheet/download/BAT42W.pdf"
         ],
@@ -132,7 +132,7 @@
         "detail": null,
         "field": "maximum_reverse_current",
         "page": 2,
-        "scope": "BAT42W SOD123; package-matched alternative to BAT54 SOT23; VR25 V,25C",
+        "scope": "BAT42W SOD123; package-matched alternative to BAT54 SOT23; VR25 V,25C; Peak Reverse Current IRM row, Note 6 short duration pulse test",
         "sources": [
           "https://www.diodes.com/datasheet/download/BAT42W.pdf"
         ],
@@ -145,7 +145,7 @@
         "detail": null,
         "field": "maximum_reverse_current_100C",
         "page": 2,
-        "scope": "BAT42W SOD123; package-matched alternative to BAT54 SOT23; VR25V,Tj100C",
+        "scope": "BAT42W SOD123; package-matched alternative to BAT54 SOT23; VR25V,Tj100C; Peak Reverse Current IRM row, Note 6 short duration pulse test",
         "sources": [
           "https://www.diodes.com/datasheet/download/BAT42W.pdf"
         ],
@@ -158,7 +158,7 @@
         "detail": null,
         "field": "maximum_capacitance",
         "page": 2,
-        "scope": "BAT42W SOD123; package-matched alternative to BAT54 SOT23; VR1V,1MHz",
+        "scope": "BAT42W SOD123; package-matched alternative to BAT54 SOT23; VR1V,1MHz; TA=25 C unless otherwise specified (Electrical Characteristics)",
         "sources": [
           "https://www.diodes.com/datasheet/download/BAT42W.pdf"
         ],
@@ -210,7 +210,7 @@
         "detail": "\"Reverse Breakdown Voltage (Note 6) V(BR)R 30 ... IR = 100uA\" (Min) Method: Minimum breakdown at 100 uA. Template fixes IBV=1 mA, so model breakdown current differs from the test current.",
         "field": "spice_BV_minimum_breakdown",
         "page": 2,
-        "scope": "Diodes Incorporated BAT42W; BV for the OHMNI simulation model (datasheet value); not a guaranteed limit",
+        "scope": "Diodes Incorporated BAT42W; BV for the OHMNI simulation model (datasheet value); not a guaranteed limit; V(BR)R minimum at IR=100 uA, TA=25 C unless otherwise specified; Note 6 short duration pulse test",
         "sources": [
           "https://www.diodes.com/datasheet/download/BAT42W.pdf"
         ],
@@ -223,7 +223,7 @@
         "detail": "\"Peak Reverse Current (Note 6) IRM ... 500 nA VR = 25V\" (Max) Method: Max at 25 C; pair with VR_ref = 25 V. Fig. 2 typical at 25 V reads 0.136 uA.",
         "field": "spice_IR_ref_fit",
         "page": 2,
-        "scope": "Diodes Incorporated BAT42W; IR_ref for the OHMNI simulation model (datasheet value); not a guaranteed limit",
+        "scope": "Diodes Incorporated BAT42W; IR_ref for the OHMNI simulation model (datasheet value); not a guaranteed limit; IRM maximum at VR=25 V, TA=25 C unless otherwise specified; Note 6 short duration pulse test",
         "sources": [
           "https://www.diodes.com/datasheet/download/BAT42W.pdf"
         ],
@@ -236,7 +236,7 @@
         "detail": "\"500 nA VR = 25V\" Method: Test voltage of IR_ref.",
         "field": "spice_VR_ref_fit",
         "page": 2,
-        "scope": "Diodes Incorporated BAT42W; VR_ref for the OHMNI simulation model (datasheet value); not a guaranteed limit",
+        "scope": "Diodes Incorporated BAT42W; VR_ref for the OHMNI simulation model (datasheet value); not a guaranteed limit; test voltage of the IRM 500 nA row, TA=25 C unless otherwise specified",
         "sources": [
           "https://www.diodes.com/datasheet/download/BAT42W.pdf"
         ],
@@ -246,7 +246,7 @@
       {
         "basis": "DERIVED",
         "confidence": "M",
-        "detail": "Fig. 2 \"Typical Reverse Characteristics\" at VR = 25 V: 0.136 uA (25 C), 4.86 uA (75 C), 106.8 uA (125 C) Method: Least-squares slope of ln IR vs T at VR=25 V over 25-125 C (pairwise 0.0715 for 25-75 C, 0.0618 for 75-125 C). Cross-check from table maxima \"500 nA VR = 25V\" and \"100 uA VR = 25V, TJ = +100C\": ln(200)/75 = 0.0706 /K. Both are at/above the class aT range max 0.07. Leakage in Fig. 2 also rises ~3.4x from 5 V to 30 V at 25 C, which the linear-in-V template does not capture.",
+        "detail": "Fig. 2 \"Typical Reverse Characteristics\" at VR = 25 V: 0.136 uA (25 C), 4.86 uA (75 C), 106.8 uA (125 C) Method: Least-squares slope of ln IR vs T at VR=25 V over 25-125 C (pairwise 0.0715 for 25-75 C, 0.0618 for 75-125 C). Cross-check from table maxima \"500 nA VR = 25V\" and \"100 uA VR = 25V, TJ = +100C\": ln(200)/75 = 0.0706 /K. The cross-check (0.0706) is above, and the fitted 0.0667 is just below, the class aT range max 0.07. Leakage in Fig. 2 also rises ~3.4x from 5 V to 30 V at 25 C, which the linear-in-V template does not capture.",
         "field": "spice_aT_fit",
         "page": 3,
         "scope": "Diodes Incorporated BAT42W; aT for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
@@ -335,7 +335,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-067.md",
-      "document_sha256": "e7387a546bf6fd97a102fd1f42acb77d84a7564aa05b589e4bdba75bea9967a6",
+      "document_sha256": "40ff22688f068a4535ef50a5f935cb1d97e7cc23eba7dac7c676d6f80d051b18",
       "fragment_sha256": null,
       "line": 1
     }

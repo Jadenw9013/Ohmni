@@ -108,7 +108,7 @@
         "detail": null,
         "field": "recommended_supply_range",
         "page": 54,
-        "scope": "ESP32-C3 external-flash variant,QFN32; input power domains; eFuse programming CPU<=3.3V",
+        "scope": "ESP32-C3 external-flash variant,QFN32; input power domains; eFuse programming CPU<=3.3V; if VDD3P3_CPU powers VDD_SPI, allow for the RSPI voltage drop (Table 5-2 note 3); recommended ambient -40 to 105 C per Table 1-1 (Section 5.2 intro)",
         "sources": [
           "https://documentation.espressif.com/esp32-c3_datasheet_en.pdf"
         ],
@@ -124,7 +124,7 @@
         "detail": null,
         "field": "absolute_supply_max",
         "page": 54,
-        "scope": "ESP32-C3 external-flash variant,QFN32; input power pins",
+        "scope": "ESP32-C3 external-flash variant,QFN32; input power pins; stress rating only, operation at this level not implied",
         "sources": [
           "https://documentation.espressif.com/esp32-c3_datasheet_en.pdf"
         ],
@@ -137,7 +137,7 @@
         "detail": null,
         "field": "cumulative_io_current_stress",
         "page": 54,
-        "scope": "ESP32-C3 external-flash variant,QFN32; absolute stress; allIO high shortedtoGND24h atTA25C; not usable continuous design rating",
+        "scope": "ESP32-C3 external-flash variant,QFN32; absolute stress; allIO high shortedtoGND24h atTA25C; not usable continuous design rating; Max column of Table 5-1, cumulative IO output current",
         "sources": [
           "https://documentation.espressif.com/esp32-c3_datasheet_en.pdf"
         ],
@@ -150,7 +150,7 @@
         "detail": null,
         "field": "required_supply_current_capacity_min",
         "page": 54,
-        "scope": "ESP32-C3 external-flash variant,QFN32; cumulative input-current minimum supply capability,not maximum device consumption",
+        "scope": "ESP32-C3 external-flash variant,QFN32; cumulative input-current minimum supply capability,not maximum device consumption; recommended ambient -40 to 105 C per Table 1-1 (Section 5.2 intro)",
         "sources": [
           "https://documentation.espressif.com/esp32-c3_datasheet_en.pdf"
         ],
@@ -176,7 +176,7 @@
         "detail": null,
         "field": "io_leakage_max",
         "page": 55,
-        "scope": "ESP32-C3 external-flash variant,QFN32; high/low,VDD3.3V,TA25C",
+        "scope": "ESP32-C3 external-flash variant,QFN32; high/low,VDD3.3V,TA25C; printed as IIH/IIL, high-level/low-level input current",
         "sources": [
           "https://documentation.espressif.com/esp32-c3_datasheet_en.pdf"
         ],
@@ -209,7 +209,7 @@
     ],
     "source": {
       "document": "docs/behavior/gapfill/OHM-130.md",
-      "document_sha256": "faf48605b2d309e077cfe77f26e7306a816c8b75412ba9896b6dd56bf80859bf",
+      "document_sha256": "43c2c6111f0353835bf6e5e622ea41c6775cdd89d7d5d3704b4cbd4fcb1bdf35",
       "fragment_sha256": null,
       "line": 1
     }

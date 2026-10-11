@@ -54,7 +54,7 @@
         "detail": null,
         "field": "repetitive_peak_reverse_voltage",
         "page": 1,
-        "scope": "W10G WOG",
+        "scope": "W10G WOG; maximum rating; TA=25 C unless otherwise noted",
         "sources": [
           "https://www.vishay.com/doc?88769"
         ],
@@ -67,7 +67,7 @@
         "detail": null,
         "field": "average_output_current",
         "page": 1,
-        "scope": "W10G WOG; TA25C,9.5mm leadlength;notcapacitive-load rating",
+        "scope": "W10G WOG; TA25C,9.5mm leadlength;notcapacitive-load rating; maximum rating",
         "sources": [
           "https://www.vishay.com/doc?88769"
         ],
@@ -106,7 +106,7 @@
         "detail": null,
         "field": "thermal_resistance_junction_ambient",
         "page": 2,
-        "scope": "W10G WOG; typical;9.5mm leads,5.5x5.5mm PCBpads",
+        "scope": "W10G WOG; typical;9.5mm leads,5.5x5.5mm PCBpads; thermal footnote (1) calls it PCB size 5.5 x 5.5 mm; TA=25 C unless otherwise noted",
         "sources": [
           "https://www.vishay.com/doc?88769"
         ],
@@ -119,7 +119,7 @@
         "detail": null,
         "field": "drawing_role_relationship",
         "page": 3,
-        "scope": "W10G WOG; lead-end view; top-view conversion must mirror; numeric pins not assigned by manufacturer",
+        "scope": "W10G WOG; lead-end view; top-view conversion must mirror; numeric pins not assigned by manufacturer; view orientation is not labeled in the document (lead-end view is inferred from the drawing layout)",
         "sources": [
           "https://www.vishay.com/doc?88769"
         ],
@@ -150,7 +150,7 @@
         "detail": "Least-squares fit of VF = N*Vt*ln(I/IS+1)+I*RS (Vt at 298.15 K) to the five lowest vertices of the vector polyline of Fig. 3 'Typical Forward Characteristics Per Diode' (TJ 25 C, 300 us pulse): (0.6085 V, 10.5 mA), (0.7899 V, 0.1027 A), (0.9989 V, 1.937 A), (1.0793 V, 4.92 A), (1.1376 V, 7.15 A); axis calibrated on gridlines (133.25 pt/V, 32.555 pt/decade). RMS 7.8 mV, max 11.2 mV. IS and N trade off; use as a set. Above 7 A the curve bends (excluded).",
         "field": "spice_IS_fit",
         "page": 2,
-        "scope": "W10G WOG; per diode; TJ 25 C; typical; fit 0.01-7.2 A",
+        "scope": "W10G WOG; per diode; TJ 25 C; typical; fit 0.01-7.2 A; pulse width 300 us, 1% duty cycle",
         "sources": [
           "https://www.vishay.com/doc?88769"
         ],
@@ -163,7 +163,7 @@
         "detail": "Same fit as spice_IS_fit (curve slope ~170 mV/decade below 2 A).",
         "field": "spice_N_fit",
         "page": 2,
-        "scope": "W10G WOG; per diode; TJ 25 C; typical; fit 0.01-7.2 A",
+        "scope": "W10G WOG; per diode; TJ 25 C; typical; fit 0.01-7.2 A; pulse width 300 us, 1% duty cycle",
         "sources": [
           "https://www.vishay.com/doc?88769"
         ],
@@ -176,7 +176,7 @@
         "detail": "Same fit as spice_IS_fit. Fit VF(1 A) = 0.948 V (typical) vs 1.0 V maximum.",
         "field": "spice_RS_fit",
         "page": 2,
-        "scope": "W10G WOG; per diode; TJ 25 C; typical; fit 0.01-7.2 A",
+        "scope": "W10G WOG; per diode; TJ 25 C; typical; fit 0.01-7.2 A; pulse width 300 us, 1% duty cycle",
         "sources": [
           "https://www.vishay.com/doc?88769"
         ],
@@ -198,7 +198,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-072.md",
-      "document_sha256": "e05b6205eff4793a2769dcd6dafa76b5194bc26011d974cfaa1f59272355d22d",
+      "document_sha256": "459985b27d4a3fce8f6b5c81d8d74d85ebf88ba61eae6c94cfec2b9140ad8df9",
       "fragment_sha256": null,
       "line": 1
     }

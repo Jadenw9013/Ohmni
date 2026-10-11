@@ -57,7 +57,7 @@
         "detail": null,
         "field": "maximum_forward_current",
         "page": 1,
-        "scope": "TLDR4400 deep red; Tamb<=60 C",
+        "scope": "TLDR4400 deep red; Tamb<=60 C; DC",
         "sources": [
           "https://www.vishay.com/docs/83001/tldr4400.pdf"
         ],
@@ -83,7 +83,7 @@
         "detail": null,
         "field": "maximum_junction_temperature",
         "page": 1,
-        "scope": "TLDR4400 deep red",
+        "scope": "TLDR4400 deep red; Tamb=25 C unless otherwise specified",
         "sources": [
           "https://www.vishay.com/docs/83001/tldr4400.pdf"
         ],
@@ -96,7 +96,7 @@
         "detail": null,
         "field": "maximum_reverse_voltage",
         "page": 1,
-        "scope": "TLDR4400 deep red",
+        "scope": "TLDR4400 deep red; Tamb=25 C unless otherwise specified",
         "sources": [
           "https://www.vishay.com/docs/83001/tldr4400.pdf"
         ],
@@ -109,7 +109,7 @@
         "detail": null,
         "field": "thermal_resistance_junction_ambient",
         "page": 1,
-        "scope": "TLDR4400 deep red",
+        "scope": "TLDR4400 deep red; Tamb=25 C unless otherwise specified",
         "sources": [
           "https://www.vishay.com/docs/83001/tldr4400.pdf"
         ],
@@ -122,7 +122,7 @@
         "detail": null,
         "field": "typical_forward_voltage",
         "page": 2,
-        "scope": "TLDR4400 deep red; 20 mA",
+        "scope": "TLDR4400 deep red; 20 mA; Tamb=25 C unless otherwise specified",
         "sources": [
           "https://www.vishay.com/docs/83001/tldr4400.pdf"
         ],
@@ -135,7 +135,7 @@
         "detail": null,
         "field": "maximum_forward_voltage",
         "page": 2,
-        "scope": "TLDR4400 deep red; 20 mA",
+        "scope": "TLDR4400 deep red; 20 mA; Tamb=25 C unless otherwise specified",
         "sources": [
           "https://www.vishay.com/docs/83001/tldr4400.pdf"
         ],
@@ -148,7 +148,7 @@
         "detail": null,
         "field": "typical_capacitance",
         "page": 2,
-        "scope": "TLDR4400 deep red; VR=0,1 MHz",
+        "scope": "TLDR4400 deep red; VR=0,1 MHz; Tamb=25 C unless otherwise specified",
         "sources": [
           "https://www.vishay.com/docs/83001/tldr4400.pdf"
         ],
@@ -161,7 +161,7 @@
         "detail": "Fig. 4 - Forward Current vs. Forward Voltage (red; log 1-100 mA vs 1-3 V; page header \"TYPICAL CHARACTERISTICS (Tamb = 25 °C...)\"). Read points: 1.00 mA @ 1.627 V (resid +7.3 mV); 2.00 mA @ 1.646 V (resid -5.6 mV); 5.00 mA @ 1.697 V (resid -7.6 mV); 10.00 mA @ 1.764 V (resid -0.7 mV); 20.00 mA @ 1.865 V (resid +6.0 mV); 30.00 mA @ 1.948 V (resid +5.1 mV); 50.00 mA @ 2.097 V (resid -4.5 mV). Cross-check: model VF(20 mA)=1.859 V vs stated typ 1.80 V (+59 mV); \"Forward voltage IF = 20 mA VF - 1.8 2.2 V\" (p2). Method: Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 7 points 1.00-50.0 mA, rms 5.7 mV. Window sensitivity: windows 1-20/1-30/1-50/2-30/5-30 mA give N 0.95-2.03, RS 6.4-9.1 ohm, IS 1.8e-32..6.8e-17 A. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25.",
         "field": "spice_IS_fit",
         "page": 3,
-        "scope": "Vishay TLDR4400 (red); IS for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "scope": "Vishay TLDR4400 (red); IS for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit; Fig. 4 typical curve; Tamb=25 C unless otherwise specified",
         "sources": [
           "https://www.vishay.com/docs/83001/tldr4400.pdf"
         ],
@@ -174,7 +174,7 @@
         "detail": "Fig. 4 - Forward Current vs. Forward Voltage (red; log 1-100 mA vs 1-3 V; page header \"TYPICAL CHARACTERISTICS (Tamb = 25 °C...)\"). Read points: 1.00 mA @ 1.627 V (resid +7.3 mV); 2.00 mA @ 1.646 V (resid -5.6 mV); 5.00 mA @ 1.697 V (resid -7.6 mV); 10.00 mA @ 1.764 V (resid -0.7 mV); 20.00 mA @ 1.865 V (resid +6.0 mV); 30.00 mA @ 1.948 V (resid +5.1 mV); 50.00 mA @ 2.097 V (resid -4.5 mV). Cross-check: model VF(20 mA)=1.859 V vs stated typ 1.80 V (+59 mV); \"Forward voltage IF = 20 mA VF - 1.8 2.2 V\" (p2). Method: Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 7 points 1.00-50.0 mA, rms 5.7 mV. Window sensitivity: windows 1-20/1-30/1-50/2-30/5-30 mA give N 0.95-2.03, RS 6.4-9.1 ohm, IS 1.8e-32..6.8e-17 A. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25.",
         "field": "spice_N_fit",
         "page": 3,
-        "scope": "Vishay TLDR4400 (red); N for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "scope": "Vishay TLDR4400 (red); N for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit; Fig. 4 typical curve; Tamb=25 C unless otherwise specified",
         "sources": [
           "https://www.vishay.com/docs/83001/tldr4400.pdf"
         ],
@@ -187,7 +187,7 @@
         "detail": "Fig. 4 - Forward Current vs. Forward Voltage (red; log 1-100 mA vs 1-3 V; page header \"TYPICAL CHARACTERISTICS (Tamb = 25 °C...)\"). Read points: 1.00 mA @ 1.627 V (resid +7.3 mV); 2.00 mA @ 1.646 V (resid -5.6 mV); 5.00 mA @ 1.697 V (resid -7.6 mV); 10.00 mA @ 1.764 V (resid -0.7 mV); 20.00 mA @ 1.865 V (resid +6.0 mV); 30.00 mA @ 1.948 V (resid +5.1 mV); 50.00 mA @ 2.097 V (resid -4.5 mV). Cross-check: model VF(20 mA)=1.859 V vs stated typ 1.80 V (+59 mV); \"Forward voltage IF = 20 mA VF - 1.8 2.2 V\" (p2). Method: Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 7 points 1.00-50.0 mA, rms 5.7 mV. Window sensitivity: windows 1-20/1-30/1-50/2-30/5-30 mA give N 0.95-2.03, RS 6.4-9.1 ohm, IS 1.8e-32..6.8e-17 A. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25.",
         "field": "spice_RS_fit",
         "page": 3,
-        "scope": "Vishay TLDR4400 (red); RS for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "scope": "Vishay TLDR4400 (red); RS for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit; Fig. 4 typical curve; Tamb=25 C unless otherwise specified",
         "sources": [
           "https://www.vishay.com/docs/83001/tldr4400.pdf"
         ],
@@ -249,7 +249,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-073.md",
-      "document_sha256": "0fdbaae3dceceea9b8164ff594fa869dbf012f2b1a334b4003582ac37f7459ab",
+      "document_sha256": "87af270bee06636beaeebca8bdf2964f657491fe71d5a3ac6cbde201b71aab8f",
       "fragment_sha256": null,
       "line": 1
     }

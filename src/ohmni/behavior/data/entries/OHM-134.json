@@ -99,7 +99,7 @@
         "detail": null,
         "field": "absolute_supply_max",
         "page": 5,
-        "scope": "TPS62160 DSG WSON8; VIN",
+        "scope": "TPS62160 DSG WSON8; VIN; all voltages with respect to network ground terminal",
         "sources": [
           "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
         ],
@@ -112,7 +112,7 @@
         "detail": null,
         "field": "recommended_output_current_max",
         "page": 1,
-        "scope": "TPS62160 DSG WSON8; subjectto thermal/externalinductorlimits",
+        "scope": "TPS62160 DSG WSON8; subjectto thermal/externalinductorlimits; continuous output current at output voltages between 0.9 V and 6 V (with 100% duty cycle mode)",
         "sources": [
           "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
         ],
@@ -167,7 +167,7 @@
         "detail": null,
         "field": "feedback_voltage_typical",
         "page": 6,
-        "scope": "TPS62160 DSG WSON8; TJ25C",
+        "scope": "TPS62160 DSG WSON8; TJ25C; VIN=12V; internal reference voltage VREF regulated at FB pin",
         "sources": [
           "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
         ],
@@ -180,7 +180,7 @@
         "detail": null,
         "field": "quiescent_current_typical",
         "page": 6,
-        "scope": "TPS62160 DSG WSON8; nonswitching,no load,TJ25C",
+        "scope": "TPS62160 DSG WSON8; nonswitching,no load,TJ25C; EN=High,VIN=12V",
         "sources": [
           "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
         ],
@@ -219,7 +219,7 @@
         "detail": null,
         "field": "forward_peak_current_limit_range",
         "page": 6,
-        "scope": "TPS62160 DSG WSON8; VIN12V,TA25C;peaktrip,not continuous rating",
+        "scope": "TPS62160 DSG WSON8; VIN12V,TJ25C;peaktrip,not continuous rating; static current limit, can be temporarily higher due to internal propagation delay",
         "sources": [
           "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
         ],
@@ -239,7 +239,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-134.md",
-      "document_sha256": "0f0a16a9ee984e3d05a1623800ff1c85dc6f30e21858337d3d7f0f29d8da3008",
+      "document_sha256": "fea86296ff79857d2804e398dc2450795a88bd8704ff60222575e4d5c9df05e7",
       "fragment_sha256": null,
       "line": 1
     }

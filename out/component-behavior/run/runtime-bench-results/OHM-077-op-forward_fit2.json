@@ -11,7 +11,7 @@
     "source_fact": {
       "basis": "DERIVED",
       "confidence": "L",
-      "detail": "Same read points as spice_IS_fit: \"Forward Current vs. Structured copy so the runtime check can replay the fit at several currents.",
+      "detail": "Same read points as spice_IS_fit: graph \"Forward Current vs. Forward Voltage\" (Hyper Red, Ta = 25 C), page 3. Structured copy so the runtime check can replay the fit at several currents.",
       "field": "forward_curve_read_points",
       "page": 3,
       "scope": "Kingbright APHHS1005SURCK hyper red; 25 C typical forward curve read points (I in A, V in V) used for the IS/N/RS fit",
@@ -90,21 +90,21 @@
     "tolerance_rule": "max(0.08*V, 0.025 V) for a L-confidence datasheet read"
   },
   "entry_id": "OHM-077",
-  "entry_research_sha256": "80d10b5651d74d816ff42209581ea106a4bd1c48ace79f23964532917ae96039",
+  "entry_research_sha256": "7d7079ef48e3c065ac956412b71407d6618a9976a84228de7ac2477aacfaaaa0",
   "limits": "Replays the fitted forward model at one of the sourced curve read points and requires the read voltage within the read uncertainty. Together with the other fit points and the maximum-VF bound this validates the fit over the plotted range at 25 C; it does not validate temperature, reverse behavior, capacitance or ratings.",
   "netlist_sha256": "cd8fa09b58d93fb2c120bd8f0004022755f8d0c2571f53ee329c9f12dbfffa31",
   "observation_status": "ran",
   "observed": 1.866442,
-  "output_sha256": "3ef7bcb01e47c113bbcfa58909fd29f67cbaac00478d5ed6cd435e3032d21a01",
+  "output_sha256": "7b82f561b5b1bcf1ace2e345efe315e0920ea6eca5f51d1bed98cb4b5e073ef6",
   "problems": [],
   "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
-  "ran_at": "2026-10-11T20:09:38Z",
+  "ran_at": "2026-10-11T22:03:28Z",
   "raw_output": "runtime-bench-output/OHM-077-op-forward_fit2/output.txt",
   "recipe_source_sha256": "e0b0e3e95da25117d09e2c6765f7d4461d2093e15148e89b70f8256c0ffe0eda",
   "run_id": "behavior-20261005T065040Z",
   "run_status": "passed",
   "variant": "forward_fit2",
   "version_file": "runtime-bench-output/OHM-077-op-forward_fit2/version.txt",
-  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sun Oct 11 20:06:07 UTC 2026\n******\n",
-  "version_sha256": "70418e8629dac31fc3bfc9ac91e68839e740ca6abcaa6a956e72729e6498fb9b"
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n",
+  "version_sha256": "2cdcb25fcf77dea87742b9ac629a0b5ba20169e01beb2b59fdd2e41ee348a45d"
 }

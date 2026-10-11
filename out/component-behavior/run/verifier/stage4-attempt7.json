@@ -1,0 +1,267 @@
+{
+  "schema_version": 1,
+  "stage": "stage4",
+  "seed": 6683882861575425253,
+  "population": [
+    "OHM-103",
+    "OHM-104",
+    "OHM-105",
+    "OHM-106",
+    "OHM-107",
+    "OHM-108",
+    "OHM-109",
+    "OHM-110",
+    "OHM-111",
+    "OHM-112",
+    "OHM-113",
+    "OHM-114",
+    "OHM-115",
+    "OHM-116",
+    "OHM-117",
+    "OHM-118",
+    "OHM-119",
+    "OHM-120",
+    "OHM-121",
+    "OHM-122",
+    "OHM-123",
+    "OHM-124",
+    "OHM-125",
+    "OHM-126",
+    "OHM-127",
+    "OHM-128",
+    "OHM-129",
+    "OHM-130",
+    "OHM-131",
+    "OHM-132",
+    "OHM-133",
+    "OHM-134",
+    "OHM-135",
+    "OHM-136",
+    "OHM-137",
+    "OHM-138",
+    "OHM-139",
+    "OHM-140",
+    "OHM-141",
+    "OHM-142",
+    "OHM-143",
+    "OHM-144",
+    "OHM-145",
+    "OHM-146",
+    "OHM-147",
+    "OHM-148",
+    "OHM-149",
+    "OHM-150",
+    "OHM-151",
+    "OHM-152",
+    "OHM-153",
+    "OHM-154",
+    "OHM-155",
+    "OHM-156",
+    "OHM-157",
+    "OHM-158",
+    "OHM-159",
+    "OHM-160",
+    "OHM-161",
+    "OHM-162",
+    "OHM-163",
+    "OHM-164",
+    "OHM-165",
+    "OHM-166",
+    "OHM-167",
+    "OHM-168",
+    "OHM-169",
+    "OHM-170",
+    "OHM-171",
+    "OHM-172",
+    "OHM-173",
+    "OHM-174",
+    "OHM-175",
+    "OHM-176",
+    "OHM-177",
+    "OHM-178",
+    "OHM-179",
+    "OHM-180"
+  ],
+  "sample": [
+    "OHM-117",
+    "OHM-153",
+    "OHM-158",
+    "OHM-159",
+    "OHM-160",
+    "OHM-172",
+    "OHM-173",
+    "OHM-175"
+  ],
+  "reviewer_context": "fresh",
+  "plan_sha256": "f65a6a48679832582623efffa1a97f25c0231844fa16b0e1ebf212a612668b23",
+  "reviewed_at": "2026-10-11T19:29:32Z",
+  "method": "Human-authorized seventh verification round (Jaden, 2026-10-10: 'run a fresh independent verifier round for the behavior research stages'; re-sample after fixing mismatches; 2026-10-11: budget-friendly path approved). Before this round, both round-6 mismatches were fixed against the archived documents (OHM-053 saturation-current test condition; OHM-174 catalogue revision prose), a scan of all 180 gap-fills aligned ten 'Sources opened' revision lines with the verified document metadata, OHM-053's turns ratio took the page 1 default test conditions, and origin/main (#47-#56) was merged, keeping this branch's third-party-copy provenance labels. New integer seeds drawn once with secrets.randbits(63) before the samples were computed. One fresh-context reviewer agent per sampled entry (Claude Sonnet, chosen for cost) with instructions narrowed for cost: text extraction with word coordinates first, at most four cropped renders at 150 dpi or less, and spot checks of digitized curve points instead of full re-digitization. Reviewers read only the entry gapfill, its generated record, FETCH_LEDGER.jsonl (URL-to-SHA256 mapping only) and the archived primary-source bytes; no web access, no other repository files, no prior verifier reports. Values, units, conditions, min/typ/max qualifiers, document metadata and provenance claims were re-derived; page-citation drift with the value present elsewhere in the same document is recorded as a note.",
+  "results": [
+    {
+      "entry_id": "OHM-117",
+      "primary_sources": [
+        "https://www.ti.com/lit/ds/symlink/sn74hc245.pdf"
+      ],
+      "mismatches": [],
+      "notes": [
+        "Document identified from bytes: Texas Instruments 'SNx4HC245 Octal Bus Transceivers With 3-State Outputs' (covers SN54HC245 and SN74HC245), doc SCLS131F, December 1982 - revised August 2022, 35 pages, blob sha 31514d93...; pages read with word coordinates: 1, 3, 4, 5, plus text-search hits on p.2 (revision line) and p.15 (orderable addendum); no images rendered.",
+        "Ledger: FETCH_LEDGER.jsonl line 228 is the only row with the exact URL (http_status 200, error null, content_bytes 2942326); its content_sha256 equals the blob file name and the recomputed sha256 of the 2942326-byte blob.",
+        "documents[0]: manufacturer Texas Instruments OK, revision 'SCLS131F,August2022' OK (p.1 footer), source_status primary_source_opened OK (blob is TI's own datasheet from ti.com). Title 'SN74HC245 octal bus transceiver' is a shortened wording of the actual 'SNx4HC245 Octal Bus Transceivers With 3-State Outputs', so it is a wording difference, not a mismatch.",
+        "reference_part SN74HC245 / PW TSSOP-20: OK p.1 (Device Information lists SNx4HC245 in PW (TSSOP, 20), header names SN54HC245, SN74HC245); p.15 addendum lists SN74HC245PW (shown Obsolete there) and SN74HC245PWR (Active), TSSOP (PW) 20, -40 to 85 degC.",
+        "manufacturer_pin_roles: OK p.3, all 20 pin number/name pairs match the pin table by row coordinates (1 DIR, 2-9 A1-A8, 10 GND, 11-18 B8-B1, 19 OE, 20 VCC) and Figure 5-1 (DB, DGV, DW, N, J, W, or PW package).",
+        "recommended_supply_min 2 V and recommended_supply_max 6 V: OK p.4 Table 6.3, SN74HC245 group VCC MIN 2 / NOM 5 / MAX 6 V (SN54HC245 group identical).",
+        "absolute_supply_max 7 V, maximum_output_current_magnitude 35 mA (IO, VO = 0 to VCC), maximum_supply_current_magnitude 70 mA (continuous through VCC or GND), maximum_junction_temperature 150 degC (TJ): all OK p.4 Table 6.1, values sit in the MAX column under 'over operating free-air temperature range'.",
+        "operating_ambient_range [-40, 85] degC: OK p.4 Table 6.3 TA row, SN74HC245 group (SN54HC245 group is -55 to 125 degC, correctly not used).",
+        "thermal_resistance_junction_ambient 99.7 K/W: OK p.5 Table 6.4, PW (TSSOP) column of RthetaJA (DB 92.1, DW 77.0, N 57.0, NS 74.1, PW 99.7 degC/W; K/W equals degC/W); the table gives no board detail beyond footnote SPRA953, so the generic scope text 'TI thermal reference condition' is not contradicted.",
+        "input_capacitance_typical 3 pF: OK p.5 Table 6.5, Ci for DIR or OE, VCC 2 V to 6 V, value sits in the TA = 25 degC TYP column (MAX is 10 pF in all three MAX columns), so the typical-at-25C scope is correct.",
+        "input_leakage_max 1 uA: OK p.5 Table 6.5, II for DIR or OE, VI = VCC or 0, VCC 6 V, SN74HC245 MAX +/-1000 nA (25 degC typ +/-0.1 nA and 25 degC max +/-100 nA correctly not used). off_state_output_leakage_max 5 uA: OK p.5, IOZ for A or B, VO = VCC or 0, VCC 6 V, SN74HC245 MAX +/-5 uA (SN54HC245 is +/-10 uA, 25 degC max +/-0.5 uA).",
+        "conflicts is empty; remaining_open_items item 2 (per-output and total supply limits are separate) agrees with p.4 listing +/-35 mA and +/-70 mA as separate rows; the other open items are model-process statements, not document claims. All 13 fields are MFR_DATASHEET basis, so there was no DERIVED arithmetic or curve digitization to redo.",
+        "Record vs gap-fill: research.field_updates (13 items) is identical to the gap-fill audit-evidence field_updates by programmatic JSON comparison; documents, conflicts, remaining_open_items, simulation_blockers, bench_results, research_result and researched_at are also identical; the record only adds a 'source' block whose document_sha256 equals the gap-fill sha256.",
+        "Not assessed: the bench table values quoted in the gap-fill (for example B2 'None / None / None') because bench results are outside the allowed read set."
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "05f2e8f710e3d4ffbf0794919f4ad382620a5425c327882aa6c71c9e119b7615",
+        "generated_record_sha256": "3a8fb06380f83d9384602845d36d94cff7ffb3b8f8868056ba22479dfa158db2"
+      }
+    },
+    {
+      "entry_id": "OHM-153",
+      "primary_sources": [
+        "https://content.harwin.com/asset/92486137-0a45-4017-9b78-1edaa8709008/C001-C001XX-Component-Specification-M20-Series-2-54mm-pitch-PCB-connectors.pdf"
+      ],
+      "mismatches": [],
+      "notes": [
+        "Document: Harwin 'Component Specification - M20 Series Connectors', doc C00120, Issue 20, dated 28.11.2022 (cover: November 2022), 4 pages, PDF author Harwin, host content.harwin.com. Blob 886a13d7e7e8 (219467 bytes) equals its ledger content_sha256 and file name (single ledger row, line 422, http 200); pages 1-4 read as text, pp2-3 with word coordinates, nothing rendered.",
+        "Record documents entry OK: manufacturer Harwin and revision 'C00120 Issue20,28November2022' match the p1-p3 headers; title 'M20 series connector specification' is a paraphrase of the sheet title (wording only). The sheet is a series-level specification (p2 note: individual components may exceed the ratings, check customer information sheets) and the record scopes it that way, not as a part datasheet.",
+        "reference_family 'Harwin M20' OK (p2 header and description; Harwin identified on p1). Scope words 'double-row socket' and 'gold contact finish' are the entry's selection, not stated by the sheet (p2 mentions single/double row only for SMT pin headers, never says 'female', and gives contact finish as 'See individual drawing' / 'Contacts may be gold'); they only narrow the series claim and are hedged by 'actual mate must be selected'.",
+        "contact_current_max 3 A OK (p2: 'Current Rating (per contact) ... 3A max', same baseline). The sheet states no temperature or loaded-contact condition and the record claims none; 'individual drawing may specify more' paraphrases the p2 note (customer information sheets).",
+        "contact_resistance_initial_max 20 mohm and contact_resistance_conditioned_max 30 mohm OK (p2: '(initial) 20 mohm max', '(after conditioning) 30 mohm max'). The sheet gives no test current, does not define conditioning and never says 'mated', so 'mated contact' in the scope is an interpretation; no extra condition is claimed.",
+        "operating_temperature_range [-40,105] degC OK (p2: 'Other ... -40 degC to +105 degC'); M20-106/7 is -25 to +85 degC and is correctly excluded. The sheet never calls M20-106/7 'cable' (2.1 only says 'For Cable connectors: See individual drawing'), so that label is unsupported though the exclusion is right.",
+        "contact_durability_operations 300 OK (p3, page cited correctly: 'Gold finish on contact area ... 300 operations'); the scope's tin 50 operations is also on p3.",
+        "nominal_contact_pitch 2.54 mm and mating_pin_size 0.64 mm square OK (p2: 'A range of 2.54mm (0.1in) pitch connectors, having 0.64mm (0.025in) square pins and sockets').",
+        "conflicts / remaining_open_items / simulation_blockers OK: the sheet has only Dielectric Withstanding Voltage (Voltage Proof) 500/800/1000 V AC for 1 minute (p2) and, per keyword scan of pp1-4, no working voltage, typical contact resistance, thermal resistance, inductance or derating. The Samtec 1000-cycle and 25-cycle comparisons concern other sources and are not checkable here; the Harwin 300-operation statement is verified (p3).",
+        "Text integrity: cited spans are black 10 pt, with no annotations and no strike-through vector lines on pp2-3.",
+        "Record vs gap-fill consistent: field_updates identical (8 of 8, compared programmatically) apart from the record's added 'detail: null' key on each item; documents, conflicts, remaining_open_items, simulation_blockers, bench_results, research_result and researched_at also equal, and research.source.document_sha256 equals the gap-fill sha256."
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "53f8acfa6feb4bd1fc377c59585fa062e0941544752dce6b81ab2027f1fcc986",
+        "generated_record_sha256": "cde18c6a0217f1cb9a45eb39c8acd1a2e828b20d5263a86976adde33300d7170"
+      }
+    },
+    {
+      "entry_id": "OHM-158",
+      "primary_sources": [
+        "https://static.rapidonline.com/pdf/05-3771_v1.pdf"
+      ],
+      "mismatches": [],
+      "notes": [
+        "Document identification: Molex product-page printout (Molex logo in the page 1 header; no formal title or document number) for Part Number 0470541000, 'KK 254 Housing with Polarization Rib, 4 Pin', Series 47054, 'This document was generated on 08/17/2021' (PDF CreationDate 2021-08-17, Apache FOP 2.0). Blob 260d261a... (40139 bytes) equals its file name and the single ledger row (http 200, fetched 2026-10-05T17:02:40Z); 2 pages, all data on page 1, page 2 holds only the molex.com footer line; 1 crop rendered (header logo).",
+        "Record documents entry: manufacturer Molex confirmed by logo and molex.com text; revision 'Generated17August2021' matches the generation date 08/17/2021; the title is a descriptive label (the sheet has no formal title or document number); source_status manufacturer_document_mirror is honest (hosted at static.rapidonline.com) and the sheet is part-specific, not a family brochure.",
+        "researched_alternate_housing 0470541000, OK page 1: 'Part Number 0470541000', 'Circuits (maximum) 4' and '4 Pin' support the four-position housing scope.",
+        "compatible_header_series 47053, OK page 1: 'Mates With: 47053 2.54mm Pitch KK Vertical Header, with Friction Lock'.",
+        "compatible_terminal_series 2759 and applicable_wire_gauges [22, 30] AWG, OK page 1: 'Use With: 2759 KK Crimp Terminal, 22-30 AWG'; the range is the terminal's wire range and the record scope correctly says AWG range, not current derating.",
+        "contact_current_max 4 A, OK page 1: 'Current - Maximum per Contact 4.0A'; the sheet gives no wire-gauge or temperature conditions and defers temperature range to the product specification ('See Product Specification'), and the record scope carries the per-contact and derating caveats, so it is not stated too broadly.",
+        "nominal_contact_pitch 2.54 mm, OK page 1: both 'Pitch - Mating Interface 2.54mm' and 'Pitch - Termination Interface 2.54mm'.",
+        "Conflicts and open items: the sheet is a 4-position housing and never mentions 22232021, a voltage rating or contact resistance, so the 'unbound/unresolved' statements hold. The '250V/0..75C vs 500V/-40..80C' item concerns other sources (none of those numbers appear in this sheet) and is not used as a field value, so it is unverifiable here but not a mismatch; the PS-47053-001-001 fetch-failure sentence is process history (the sheet only lists that spec as a separate document on page 1).",
+        "Record vs gap-fill: research.field_updates is identical to the audit-evidence field_updates for all 6 fields (value, unit, scope, page, basis, confidence, sources) except that the record adds the default 'detail': null key to each; documents[0] likewise adds 'page': null; conflicts, remaining_open_items, simulation_blockers, bench lists, researched_at and research_result are equal, and record source.document_sha256 equals the gap-fill sha256."
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "2b2f8b573f41af9fac98c214b11ca38ee91290622658bbf13e18547329a5b812",
+        "generated_record_sha256": "8e8568a713c729d8de51361aec35c35f8831f35b7706965e4b486f82bf7ea3fc"
+      }
+    },
+    {
+      "entry_id": "OHM-172",
+      "primary_sources": [
+        "https://www.sameskydevices.com/product/resource/pj-102a.pdf"
+      ],
+      "mismatches": [
+        "remaining_open_items[0] (record research.remaining_open_items and gap-fill 'Remaining open items' bullet 1) says 'Maximum voltage/current and temperature derating are not qualified as max by this datasheet'; page 1 SPECIFICATIONS prints 'rated input current' 2.5 A in the max column (value x-centre 507.3 = max header 507.3; min and typ empty), so the current IS qualified as max and only 'rated input voltage' 24 Vdc is typ-only. The bullet is stale for current and contradicts the record's own current_rated_max field and remaining_open_items[2] ('2.5 A ... printed in the MAX column')."
+      ],
+      "notes": [
+        "Document: Same Sky (formerly CUI Devices) 'MODEL: PJ-102A | DESCRIPTION: DC POWER JACK' (PDF title 'PJ-102A Datasheet - Jacks | Dc Power Connectors | Same Sky'), 3 pages, no document number printed, dated 03/11/2025 which is rev 1.07 on p3 (changed terminal plating to silver); covers PJ-102A only. Matches the record documents entry (title, manufacturer, revision 03/11/2025) and is the manufacturer's own sameskydevices.com PDF, so primary provenance holds.",
+        "Archive: ledger has one usable row for the URL (HTTP 200, 241653 bytes, 2026-10-05T06:56:08Z); blob 70aa253d... sha256 equals its file name. Read text p1-p3, word coordinates p1-p2, and rendered 2 images at 150 dpi (p2 schematic and mating-plug crop; p2 mechanical drawing region).",
+        "voltage_rated_dc_typical 24 V: OK p1, 'rated input voltage' 24 Vdc sits in the typ column (x-centre 454.2 = typ header 454.2); no conditions printed.",
+        "current_rated_max 2.5 A and current_rated_typical 2.5 A: value OK p1, 'rated input current' 2.5 A sits in the max column (min/typ empty) and FEATURES says '2.5 A rating'. current_rated_typical keeps a legacy 'typical' key but its scope correctly says max column / no typ value printed, and current_rated_max carries the proper qualifier; the 'replaces ... typ column scope is wrong' wording in current_rated_max.scope is stale history.",
+        "contact_resistance_max 0.03 ohm: OK p1, 'contact resistance' 30 m-ohm (unit is lowercase m + ohm sign, not M-ohm) in the max column, no test condition printed.",
+        "temperature_operating [-25, 85] degC: OK p1, 'operating temperature' min -25 and max 85 degC (min and max columns), no other conditions.",
+        "manufacturer_pin_roles and unplugged_switch_pairs: OK p2 as a reading of the schematic vector geometry: terminal 1 on the pin-shaped center-pin symbol, terminal 2 on the lower sleeve line, terminal 3 via a spring wedge whose apex touches the terminal-2 line, no path between 3 and 1. The sheet has no text naming sleeve or switch or stating that the contact opens on insertion; the scopes disclose this. PCB layout labels 1#, 2#, 3# confirmed.",
+        "center_pin_diameter 2 mm: OK p2, table 'Center Pin O2.0 mm' and drawing label 'o2.00' (circle measured 14.78 pt against the 9.00 mm housing at 66.5 pt = 2.00 mm) with no specific tolerance, so the X.XX +/-0.20 mm general tolerance quoted applies; p1 FEATURES '2.0 mm center pin'; no 2.1 mm anywhere in the sheet.",
+        "conflicts: both OK (switch to sleeve rather than tip matches the p2 schematic; 24 V typ matches p1; the original 16 V is not in the sheet and is not claimed as sourced). remaining_open_items[1..5] OK (no absolute maximum voltage, derating or switch resistance in the sheet); item [2] 'only voltage rating' is loose because p1 also lists voltage withstand 500 Vac/1 min and an insulation test at 500 Vdc, but those are test specs, not working-voltage ratings.",
+        "Record vs gap-fill: research.field_updates is identical to the audit-evidence field_updates (8 entries, same order and values); the record only adds detail:null to the 7 entries where the gap-fill omits the key. conflicts, remaining_open_items, simulation_blockers, bench_results, research_result, documents (record adds page:null) and source.document_sha256 also agree.",
+        "Gap-fill prose sections 'Simulation blockers' and 'Remaining open items' are stale against its own JSON block (blockers [] and 6 items versus 1 and 2), which is not a record-versus-gap-fill disagreement. Bench B1 v_drop 0.075 V = 2.5 A x 0.030 ohm is consistent with the sourced inputs; dT and B2 depend on class assumptions not in the datasheet and were not checked."
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "96f69f43340ab808cd86471b8a2b83fa44237980e75d08a038b5c21be9a18fa7",
+        "generated_record_sha256": "afa43e951ce6582b163a7908654a20890f9e84b4d297965fb58478a12363b689"
+      }
+    },
+    {
+      "entry_id": "OHM-173",
+      "primary_sources": [
+        "https://store.comet.bg/download-file.php?id=30571",
+        "https://www.china-amass.net/uploads/32.XT30PW-M30-SPEC-2025V0.pdf",
+        "https://www.china-amass.net/xt30pw-m-product/"
+      ],
+      "mismatches": [],
+      "notes": [
+        "Hashes: gap-fill eab522ca... and record 1e7d323d... equal the expected values. Ledger rows are usable (http 200) for all 3 URLs (comet lines 27 and 434, 2025V0 line 640, product page line 641) and each blob sha256 equals its file name.",
+        "Doc1 c57b5a37 (store.comet.bg): Amass (Changzhou Amass Electronics Co., Ltd.) spec sheet, Item No XT30PW-M, version V1.2, no date printed, 1 page, PDF creator/producer PDFium; title, manufacturer and revision match the record. Its text layer is invisible (render mode 3) over a full-page raster, so every value was read from rendered crops (header, drawing, table), where it agrees with the text layer.",
+        "Doc2 475a4aa3 (china-amass.net): Amass logo, 'Product Specification', Version 2025V0, Product Model XT30PW-M30 with component types XT30PW-M30.G.Y (yellow) and XT30PW-M30.G.B (black), 1 page, no document number, real text layer (Ghostscript, 2025-05-24); title, manufacturer, revision and part coverage match the record.",
+        "Doc3 bff42e6a (product page): HTML titled 'AMASS XT30PW-M Manufacturer and Supplier | Amass' on china-amass.net, no revision date, links to the 2025V0 PDF, and no field cites it. Its Electrical SPEC rows equal the PDF (20A, 80V DC, >=2000Mohm, <=1.2mohm, -20 to 120 degC) except Plug Life 20 times vs 100 in the PDF, as the record states; minor caveat: the page also has a GWFI 850 degC row and a '(Body)' flame-level label that the PDF lacks.",
+        "Legacy V1.2 fields OK on p1 (single page): current_rated 15 A (RC 15A), current_instantaneous_stated 30 A (MC 30A), voltage_rated_dc 500 V (DC 500V), temperature_operating -20 to 120 degC, recommended_uses 1000 (USE TIMES 1000 TIMES), terminal_pitch 5.00 mm (hole-to-hole dimension in the mounting hole diagram and in the side view).",
+        "contact_resistance_stated 0.0008 ohm OK: V1.2 prints 0.80 mohm (CR) with no <=, typ or max mark, as scoped; Cable SPEC. = PCB supports the PCB-wire conflict note. Provenance is stated accurately: the record calls doc1 manufacturer_document_mirror and a PDFium re-print on a non-manufacturer domain, which the bytes confirm, so it is not presented as the manufacturer's primary document.",
+        "M30 electrical fields OK on p1 (text layer and rendered table agree): m30_contact_resistance_max <=1.2 mohm, m30_current_rated 20 A, m30_voltage_rated_dc 80 V DC, m30_insulation_resistance_min >=2000 Mohm (no test voltage printed, none claimed), m30_plug_life 100 times (confidence M; page says 20), m30_temperature_operating -20 to 120 degC. The G.Y/G.B scope matches the two listed component types.",
+        "m30_current_rated condition is printed as '16AWG<triangle>=<85K' with no 'T' or 'temperature rise' wording; the record's 'temperature rise delta T <= 85 K' is a reasonable reading (the product page mentions temperature-rise testing), not a printed phrase.",
+        "m30_pcb_layout OK from the rendered PCB LAYOUT figure: 2-dia1.80 +0.10/0.00 power holes, 5.00+-0.05 power-hole pitch, 2-dia1.10 +0.10/0.00 peg holes, 11.00+-0.05 peg spacing, 10.00+-0.05 peg row to pin row (an unrecorded 2.45 dimension is also drawn). None of the three drawings in either PDF carries pin numbers or +/- marks.",
+        "Conflicts, remaining_open_items and document notes check out: V1.2 (15 A, 30 A, 0.80 mohm, 500 V, 1000 uses, holes 1.0/1.7) vs 2025V0 (20 A at 16 AWG, <=1.2 mohm, 80 V, 100 times, holes 1.10/1.80), plug life 20 (page) vs 100 (PDF), no derating curve or polarity mark in either PDF, and the ledger dates and sha prefixes quoted in the document notes.",
+        "Record vs gap-fill: all 14 research.field_updates match the audit-evidence field_updates in order and content, except the record adds detail: null to the 7 legacy entries where the gap-fill omits the key (identical once normalized). documents differ only by page: null on documents[0]; conflicts, remaining_open_items, simulation_blockers, bench_results, research_result, researched_at are equal, and research.source.document_sha256 equals the gap-fill sha.",
+        "Pages read: doc1 p1 and doc2 p1 (both single-page) plus the product page text. Rendered 5 crops at 150 dpi (doc2 header, drawings column, spec table; doc1 header, drawing plus table), one over the target of four because doc1's invisible text layer meant its revision had to be read from the raster."
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "eab522ca33a4605c2788353bbb37d8cb77aa9c818b0378bfbb24a38fea6c94e0",
+        "generated_record_sha256": "1e7d323d190ff74bb5f644a5ed479392c20e6685c920af47df60cfe05d4abbcb"
+      }
+    },
+    {
+      "entry_id": "OHM-175",
+      "primary_sources": [
+        "https://www.hirose.com/product/download/?distributor=all&lang=en&series=U.FL&type=catalogue"
+      ],
+      "mismatches": [],
+      "notes": [
+        "Document identity: Hirose Electric 'U.FL Series / 1.9mm to 2.4mm Mated Height, Light Weight SMT Micro Coaxial Connector' (PDF metadata title 'U.FL Series Catalog'), 34 pages; cover p1 'Sep. 2024', every-page footer 'Oct.1.2026 Copyright 2026 HIROSE ELECTRIC CO., LTD.', p34 'current as of date of 9/ 2024' with Hirose Yokohama address. No document number, no revision/version word and no I-PEX/MHF text anywhere in the 34 pages, so the values are Hirose U.FL only.",
+        "Archive: ledger line 436 has http_status 200 and content_sha256 879faad5a24e...; blob 879faad5a24e....bin (1115209 bytes) re-hashed equal to its file name; exactly one ledger row matches the cited URL.",
+        "Pages read: p4 in full with word coordinates (all eight fields cite p4); first lines of p1-p34 for identification; full-text keyword scans; one crop of p4 (spec table, 130 dpi) rendered to confirm the '(U.FL(A))' label sits under the parenthesised contact-resistance values.",
+        "Document metadata: manufacturer Hirose OK; revision 'edition Sep. 2024 (download footer Oct.1.2026); engineering revision not stated' OK (p1, p34, page footers); title 'U.FL micro coaxial connector catalogue' paraphrases the cover title (wording only). Document note OK: p4 footnote 'Information contained in this catalog represents general requirements for this Series. Contact us for the drawings and specifications for a specific part number shown.'; p34 adds that specifications are reference values.",
+        "nominal_impedance 50 ohm: OK, p4 header table 'Nominal Impedance 50 ohm'; that row has no U.FL(A) exception, so the soldered-family scope is narrower than the document, not broader.",
+        "center_contact_resistance_max 0.02 ohm, outer_contact_resistance_max 0.01 ohm, resistance_test_current_max 0.01 A: OK, p4 'Contact Resistance' row 'Center: 20m ohm Max. (50m ohm Max.)', 'External: 10m ohm Max. (20 ohm Max.)', '(U.FL(A))' printed under the parenthesised values, Condition 'Measured at 10 mA Max.'. The unparenthesised conventional values were used and 10 mA is correctly scoped as a test condition; the U.FL(A) external figure prints '20 ohm' without an m prefix (unused).",
+        "temperature_operating [-40,105] degC: OK, p4 'Operating Temperature -40 to +105 degC (90% RH Max.)'; the storage row (-30 to +70 degC) was correctly not used.",
+        "insulation_resistance_min 5e8 ohm: OK, p4 '500M ohm Min.' with Condition 'Measured at 100V DC'. Caution only: the p4 Humidity Resistance row lists 10M min in a high-humidity environment and 500M min in a dry environment, so 500M is the baseline/dry limit.",
+        "proof_voltage_ac 200 V: OK, p4 Withstanding Voltage Standards 'No insulation break down', Condition '200V AC for 1 minute'. mating_durability 30 cycles: OK, p4 Mating Durability Standards 'Contact Resistance : Initial + 5 m ohm', Condition '30 times'.",
+        "Scope wording 'conventional soldered U.FL' versus 'U.FL(A) crimp' is supported by p3 (Soldered Products U.FL vs Solderless Products U.FL(A), Coa-Fit crimping system) and p9/p10 rather than p4; the values themselves are on p4, so the page citations stand.",
+        "conflicts and remaining_open_items: consistent with the bytes; p4 gives 10 mA only as a resistance measurement condition and 200 V AC 1 min only as a withstanding-voltage test, and a full-text scan of all 34 pages found no rated current, rated voltage or RF power/derating figure. basis MFR_DATASHEET with confidence H on a Series catalog is acceptable because every scope is explicitly family-level and the document note states the Series caveat.",
+        "Record vs gap-fill: research.field_updates equals the gap-fill audit-evidence field_updates (8 items, every common key identical); the only difference is that each record item carries detail: null, which the gap-fill omits (schema default). documents, conflicts, remaining_open_items, simulation_blockers, bench_results, research_result and researched_at are identical (record documents adds page: null), and research.source.document_sha256 equals the gap-fill sha256."
+      ],
+      "reviewed_content": {
+        "gapfill_sha256": "606f1d0482f24f543ca1d79a927f376d5a2f299fb0091e3e43ca241954a8647a",
+        "generated_record_sha256": "35bacf9960f00a636509b72a4a3dc2b238098918a3b466afb072e1145dba0220"
+      }
+    }
+  ],
+  "summary": {
+    "checked": 6,
+    "with_mismatches": 1,
+    "unreviewed": 2
+  },
+  "unreviewed": [
+    {
+      "entry_id": "OHM-159",
+      "reason": "Not reviewed: its only cited source (https://www.sameskydevices.com/product/resource/tb007-508.pdf, ledger sha256 65d13de28499...) has no archived copy on the verifying machine; a fresh download returned different bytes and was not kept. The reviewer was held, and was not run after OHM-172's mismatch had already failed this attempt."
+    },
+    {
+      "entry_id": "OHM-160",
+      "reason": "Not reviewed: its only cited source (https://www.sameskydevices.com/product/resource/tb007-508.pdf, ledger sha256 65d13de28499...) has no archived copy on the verifying machine; a fresh download returned different bytes and was not kept. The reviewer was held, and was not run after OHM-172's mismatch had already failed this attempt."
+    }
+  ]
+}
