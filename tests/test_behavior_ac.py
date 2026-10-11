@@ -158,8 +158,7 @@ def test_nonlinear_circuit_never_proves_an_ac_result(registry, recipes, monkeypa
     for amps in (0.150, 0.170):
         result = rows(evaluate_ratings(nonlinear, fake_result(nonlinear, amps), registry, cool))
         row = result["ripple current (rating frequency) at 100000 Hz"]
-        assert row["status"] == "unknown"
-    assert "linearization" in row["reason"]  # the computed violation at 0.170 A is downgraded
+        assert row["status"] == "unknown" and "passive linear" in row["reason"]
     # The operating-point rows of the same run are unaffected.
     assert result["rated voltage"]["status"] == "within_limit"
 
@@ -250,8 +249,8 @@ def test_tantalum_ripple_needs_thermal_scope_and_an_ambient_for_its_rating(regis
     assert no_ambient["rated voltage"]["status"] == "unknown"
     assert no_ambient["peak forward voltage (DC plus AC peak) at 100000 Hz"]["status"] == "unknown"
     over = rows(evaluate_ratings(compiled, fake_result(compiled, 0.170), registry, RatingContext()))
-    assert over["ripple current (rating frequency) at 100000 Hz"]["status"] == "violation", \
-        "above the 25 C rating the ripple is over the limit at any ambient"
+    assert over["ripple current (rating frequency) at 100000 Hz"]["status"] == "unknown", \
+        "the maximum ESR bounds the real current only at a declared 25 C (D062)"
 
 
 def test_ripple_conditions_come_from_the_record_scope(registry, recipes):
@@ -264,6 +263,11 @@ def test_ripple_conditions_come_from_the_record_scope(registry, recipes):
         c1.model_copy(update={"parameter_evidence": evidence}) if c.ref == "C1" else c for c in compiled.components]})
     cool = RatingContext(ambient_c=25, thermal_scope_confirmed=True)
     row = rows(evaluate_ratings(changed, fake_result(changed, 0.150), registry, cool))["ripple current at 100000 Hz"]
+    # The bound card makes it unknown before the scope test; without the ESR element the scope rule applies.
+    assert row["status"] == "unknown"
+    ideal = changed.model_copy(update={"components": [
+        c.model_copy(update={"element_names": ["Cc2", "Rc2_lk"]}) if c.ref == "C1" else c for c in changed.components]})
+    row = rows(evaluate_ratings(ideal, fake_result(ideal, 0.150), registry, cool))["ripple current at 100000 Hz"]
     assert row["status"] == "unknown" and "not stated in its source scope" in row["reason"]
 
 
@@ -285,3 +289,34 @@ def test_tantalum_cards_carry_the_sourced_maximum_esr_in_series(entry_id, regist
     assert any(line.startswith("Cc1 c1_cb 0 ") for line in lines)
     assert any(line.startswith("Rc1_lk c1_cb 0 ") for line in lines)
     assert circuit_is_linear(compiled.netlist)
+
+
+
+def test_maximum_esr_proves_a_violation_only_at_25c_in_a_passive_circuit(registry, recipes):
+    """D062: the T491 maximum ESR is specified at 100 kHz and 25 C; cold, warm, undeclared or active is unknown."""
+    choice = {"C1": BehaviorSelection(entry_id="OHM-033")}
+    compiled = compile_circuit(tantalum(recipes), registry, recipes, choice, analysis="ac",
+                               excitations=[ripple(0.1)], measure_currents=True)
+    name = "ripple current (rating frequency) at 100000 Hz"
+    at_rating = RatingContext(ambient_c=25, thermal_scope_confirmed=True)
+    assert rows(evaluate_ratings(compiled, fake_result(compiled, 0.170), registry, at_rating))[name]["status"] == "violation"
+    for ambient in (-20, 24.9, 40):
+        context = RatingContext(ambient_c=ambient, thermal_scope_confirmed=True)
+        row = rows(evaluate_ratings(compiled, fake_result(compiled, 0.170), registry, context))[name]
+        assert row["status"] == "unknown" and "D062" in row["reason"], ambient
+    active = compiled.model_copy(update={"netlist": compiled.netlist.replace(".end", "E9 n9 0 n1 0 2\n.end")})
+    row = rows(evaluate_ratings(active, fake_result(active, 0.170), registry, at_rating))[name]
+    assert row["status"] == "unknown"
+
+
+def test_esr_bound_is_recognized_by_meaning_not_only_by_name(registry, recipes):
+    from ohmni.behavior.ratings import _tant_esr_bound
+
+    choice = {"C1": BehaviorSelection(entry_id="OHM-033")}
+    compiled = compile_circuit(tantalum(recipes), registry, recipes, choice, analysis="ac",
+                               excitations=[ripple(0.1)], measure_currents=True)
+    c1 = next(c for c in compiled.components if c.ref == "C1")
+    assert _tant_esr_bound(c1)
+    assert _tant_esr_bound(c1.model_copy(update={"element_names": ["Cc1", "Rc1_lk"]})) is None
+    typical = dict(c1.parameter_evidence["esr_max"], field="typical_esr")
+    assert _tant_esr_bound(c1.model_copy(update={"parameter_evidence": {**c1.parameter_evidence, "esr_max": typical}})) is None

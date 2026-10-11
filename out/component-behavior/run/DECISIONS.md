@@ -335,3 +335,16 @@ Other corrections to D058:
 - The impedance tolerance is |Z| x 1e-4, applied as an absolute tolerance to each of the real and imaginary parts (not 1e-4 relative to each part).
 - OHM-033's leakage path is 16 V / 1.6 uA = 10 Mohm, not 1.6 Mohm.
 - All 185 receipts were restamped, not only the four DC ones.
+
+## D062 — 2026-10-11: The maximum ESR proves a ripple violation only at 25 C in a passive circuit
+
+The owner merged #35 (D061) before its proxy review finished. The retroactive review blocked it: D061 still let the bound card prove ripple violations where its own reasoning says the bound does not hold.
+- **M1:** at 100 kHz with a warm or undeclared ambient, the row was still violation-only.
+- **M2:** any ambient at or below 25 C counted as "at the rating conditions", although the maximum ESR is a 25 C specification and tantalum ESR rises in the cold.
+
+The fixes:
+- **Where a violation can still be proven:** the ripple and ESR-heating rows prove a violation, never a pass, only when the ambient is declared as exactly 25 C, the frequency is the sourced 100 kHz, and the circuit is passive and linear. Passive means no E, F, G, H or B source, so Re(Zth) >= 0 and the part's current |Vth| / |Zth + ESR + Zc| falls as ESR rises. Everything else is unknown.
+- **Unbound ESR:** a T491 card without the ESR element keeps the ideal-card rules.
+- **Bound detection:** the bound is recognized by meaning, not only by element name. The card must bind `maximum_esr` from a 100 kHz scope and carry the series element.
+- **Reason texts:** the thermal-scope reason is kept alongside the bound reason. The ESR-heating reason says it is the data sheet's I(max) = sqrt(Pmax/ESR) rating method, not a computed real dissipation.
+- **Tests:** they cover cold, warm and fractional ambients, a controlled source, the meaning-based detector, and both reasons in the nonlinear case.
