@@ -1144,6 +1144,11 @@
           "unit": "C",
           "scope_contains": "MKS4G031003F"
         },
+        "t_min": {
+          "field": "mks4_operating_temperature_min",
+          "unit": "C",
+          "scope_contains": "MKS4G031003F"
+        },
         "rleak": {
           "field": "minimum_insulation_resistance",
           "unit": "ohm",
@@ -1166,8 +1171,8 @@
       ],
       "limitations": [
         "Explicit reference WIMA MKS4G031003F, chosen because it is the only 0.1 uF row in the archived WIMA 2026 catalogue with the OHMNI default body (PCM 10, 13 x 5 x 11 mm); its 400 VDC rating replaces the spec's assumed 100 V peak (D059). Tolerance, packing and pin-length suffixes are unselected.",
-        "Ideal 0.1 uF with the 3 x 10^4 Mohm minimum insulation resistance as leakage (worst case, measured at 100 V, 1 min, 20 C); no ESR, ESL, dielectric absorption or capacitance drift. tan d <= 8e-3 at 1 kHz is recorded, not modeled.",
-        "Ratings checked outside the netlist: 400 VDC derated 1.25 %/K above 85 C (DC), 200 V rms at 50 Hz with 1.4 x Urms + UDC <= Ur (derated above 75 C), -55 to +125 C. Ripple current and pulse dV/dt are not bound.",
+        "Ideal 0.1 uF with the 3 x 10^4 Mohm minimum insulation resistance as leakage. That minimum is stated at 100 V, 1 min and 20 C; insulation resistance falls when hot, so the leak is not a worst case at other temperatures. No ESR, ESL, dielectric absorption or capacitance drift; tan d <= 8e-3 at 1 kHz is recorded, not modeled.",
+        "Ratings checked outside the netlist: 400 VDC derated 1.25 %/K above 85 C for DC (above 75 C when AC is present), and an ambient of -55 to +125 C (+125 C is permitted for 1000 hours in total over the life). The 200 V rms rule at 50 Hz (1.4 x Urms + UDC <= Ur) is checked only in an AC run at 50 Hz; transient runs report it unknown. Ripple current and pulse dV/dt are not bound.",
         "Model scope: Cb and Rlk of ohm_film (spec lines 1746-1752); Resr, Lesl and the VRPK flag are dropped because the X2 defaults they carry do not apply to this DC part."
       ]
     },
