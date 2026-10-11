@@ -19,7 +19,9 @@
     ],
     "conflicts": [
       "Legacy 45 A/500 V/1000 uses vs catalogue 35 A/500 V withstand/100 uses vs M30 page 35 A/80 V working/1.2 milliohm. Retain the lower original 30 A current assumption, 80 V working ceiling and 1.2 milliohm conservative resistance for review only; do not enable a model.",
-      "No 60 A continuous claim; PCB variant is not the 12 AWG cable connector. Battery short-circuit and hot-mating arc hazards remain."
+      "No 60 A continuous claim; PCB variant is not the 12 AWG cable connector. Battery short-circuit and hot-mating arc hazards remain.",
+      "D069: the earlier review note proposed a 30 A current; the sourced XT60PW-M30 2025V0 rating is 35 A (delta T <= 85 K), with 80 V DC and <= 1.2 milliohm. The bound part's 2025V0 values win for this binding; the class default 30 A / 60 A / 0.55 milliohm (cable XT60, S3) does not apply.",
+      "D069: 3D spec power hole 'dia 2.7' vs 2.90 mm in 2025V0; the '0.6 x 1.7' feature is drawn in 2025V0 as 0.80 x 1.90 mm locating slots 13.50 mm apart."
     ],
     "documents": [
       {
@@ -51,6 +53,16 @@
         "source_status": "primary_source_opened",
         "title": "XT60PW-M product page",
         "url": "https://www.china-amass.net/xt60pw-m-product/"
+      },
+      {
+        "document_id": "amass-xt60pw-m30-spec-2025v0",
+        "manufacturer": "Amass",
+        "note": "Archived 2026-10-11 (ledger sha256 1f4775ef...); single-page product specification read for the bound reference XT60PW-M30.G.Y (D069). The drawing numbers no pins and prints no polarity mark.",
+        "page": null,
+        "revision": "2025V0",
+        "source_status": "primary_source_opened",
+        "title": "Amass Product Specification XT60PW-M30",
+        "url": "https://www.china-amass.net/uploads/34.XT60PW-M30-SPEC-2025V0.pdf"
       }
     ],
     "entry_id": "OHM-174",
@@ -216,20 +228,134 @@
         ],
         "unit": "A",
         "value": 35
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'接触电阻 Contact Resistance ≤1.2mΩ'",
+        "field": "m30_contact_resistance_max",
+        "page": 1,
+        "scope": "Amass XT60PW-M30.G.Y, spec 2025V0; maximum, per contact or pair not stated",
+        "sources": [
+          "https://www.china-amass.net/uploads/34.XT60PW-M30-SPEC-2025V0.pdf"
+        ],
+        "unit": "mohm",
+        "value": 1.2
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'额定电流 Current rating 35A (△≤85K)'",
+        "field": "m30_current_rated",
+        "page": 1,
+        "scope": "Amass XT60PW-M30.G.Y, spec 2025V0; temperature rise delta T <= 85 K",
+        "sources": [
+          "https://www.china-amass.net/uploads/34.XT60PW-M30-SPEC-2025V0.pdf"
+        ],
+        "unit": "A",
+        "value": 35
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'额定电压 Rated voltage 80V DC'",
+        "field": "m30_voltage_rated_dc",
+        "page": 1,
+        "scope": "Amass XT60PW-M30.G.Y, spec 2025V0; rated voltage",
+        "sources": [
+          "https://www.china-amass.net/uploads/34.XT60PW-M30-SPEC-2025V0.pdf"
+        ],
+        "unit": "V",
+        "value": 80
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'绝缘电阻 Insulation Resistance ≥2000MΩ'",
+        "field": "m30_insulation_resistance_min",
+        "page": 1,
+        "scope": "Amass XT60PW-M30.G.Y, spec 2025V0",
+        "sources": [
+          "https://www.china-amass.net/uploads/34.XT60PW-M30-SPEC-2025V0.pdf"
+        ],
+        "unit": "Mohm",
+        "value": 2000
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'使用寿命 Plug Life. 100 次 100 times'",
+        "field": "m30_plug_life",
+        "page": 1,
+        "scope": "Amass XT60PW-M30.G.Y, spec 2025V0",
+        "sources": [
+          "https://www.china-amass.net/uploads/34.XT60PW-M30-SPEC-2025V0.pdf"
+        ],
+        "unit": "cycles",
+        "value": 100
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'工作温度 Work Temperature -20℃ to 120℃'",
+        "field": "m30_temperature_operating",
+        "page": 1,
+        "scope": "Amass XT60PW-M30.G.Y, spec 2025V0; work temperature",
+        "sources": [
+          "https://www.china-amass.net/uploads/34.XT60PW-M30-SPEC-2025V0.pdf"
+        ],
+        "unit": "degC",
+        "value": [
+          -20,
+          120
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'2×ø2.90 +0.10/0', '7.20±0.05', '2×0.80 +0.10' by '2×1.90 +0.10', '13.50±0.05'; no pin numbers or polarity marks",
+        "field": "m30_pcb_layout",
+        "page": 1,
+        "scope": "Amass XT60PW-M30, spec 2025V0 PCB LAYOUT",
+        "sources": [
+          "https://www.china-amass.net/uploads/34.XT60PW-M30-SPEC-2025V0.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "locating_slot_mm": [
+            0.8,
+            1.9
+          ],
+          "locating_slot_spacing_mm": 13.5,
+          "pitch_mm": 7.2,
+          "power_hole_dia_mm": 2.9
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "L",
+        "detail": "A '+' symbol is drawn on the housing side face in the XT60PW-M side view (read visually at 400 dpi); no pin numbers or '-' mark",
+        "field": "catalog_side_face_plus_mark",
+        "page": 15,
+        "scope": "Amass catalogue XT60PW-M drawing (side view); orientation to PCB holes not shown",
+        "sources": [
+          "https://www.china-amass.com/public/upload/20240723/c1ae9604bbe795ebfd366c9063019e3e.pdf"
+        ],
+        "unit": null,
+        "value": true
       }
     ],
     "remaining_open_items": [
-      "Resolve exact legacy versus M30 variant and its working-voltage/current scope; source values are not interchangeable.",
-      "Polarity-to-footprint permutation, thermal derating and inrush/arc limits remain unverified."
+      "Polarity-to-footprint permutation, thermal derating and inrush/arc limits remain unverified.",
+      "Bound reference (D069): Amass XT60PW-M30.G.Y per the 2025V0 product specification (7.20 mm pitch, 2 x 2.90 mm power holes); the legacy V1.2 values are not used.",
+      "Former simulation blocker closed only in the D066 sense (2026-10-11, D069): Safety-critical variant, polarity and thermal scope unresolved. The variant is closed (M30, 2025V0). Polarity and thermal scope are not: the 2025V0 drawing numbers no pin and prints no + / -; the catalogue side view shows one '+' on a housing face that nothing ties to a PCB hole. The recipe is a symmetric contact-resistance model with polarity explicitly unassigned; polarity must be checked on the physical part."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Safety-critical variant, polarity and thermal scope unresolved."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-174.md",
-      "document_sha256": "b6362d8f6210fd1c507b9b5c0a6cd1ce8fbbab95c6eaeda7ed357d8633ea6db1",
+      "document_sha256": "6fc2655716bc801e05ea515528f32da887b819e1a1c0c8d15ab8c988ef756c4b",
       "fragment_sha256": null,
       "line": 1
     }
