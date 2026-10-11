@@ -1,5 +1,6 @@
 import { escapeHtml } from "./view-model.js";
 import { errorKind, fetchHealth } from "./client-contract.js";
+import { planSummaryHtml } from "./plan-summary.js";
 import { mountProjectAssistant } from "./project-assistant.js";
 import { defaultProjectBrief, parseProjectEnvelope, parseProjectList, parseProjectOptions, projectRequest, sameBrief, supportedBrief, briefFitsOptions, checkIdentity, briefChanges, ProjectRequestError } from "./project-contract.js";
 
@@ -106,11 +107,11 @@ export function mountProjectWorkbench(root, {
         // Keep the actual form: an in-flight check must re-enable the same
         // controls after the surrounding feature editor is redrawn.
         const retainedExercise = $("#sensor-exercise");
+        const detailsOpen = $("#project-details")?.open || false;
         const family = options?.families.find((item) => item.id === draft.archetype);
-        root.innerHTML = `<div id="project-assistant"></div><form id="project-form" class="family-workbench">
+        root.innerHTML = `<details id="project-assistant-panel"><summary>Ask a question or request a change</summary><div id="project-assistant"></div></details><form id="project-form" class="family-workbench"><div id="project-summary"></div><div id="project-error" class="run-error" role="alert" hidden></div><details id="project-details"><summary>Parts and technical settings</summary>
           <div class="project-editor-heading"><div class="sr-only"><h2>Your board features</h2><p>Choose a project family, then adjust its parts.</p></div><span class="project-save-state" id="project-save-state" role="status"></span></div>
           <fieldset class="family-picker"><legend class="sr-only">Choose the kind of board</legend>${Object.entries(familyCopy).map(([id, copy]) => `<label class="family-option"><input type="radio" name="family" value="${id}" ${id === draft.archetype ? "checked" : ""}><svg viewBox="0 0 32 28" aria-hidden="true"><path d="${copy.icon}"/></svg><span><strong>${copy.title}</strong><small>${copy.outcome}</small></span></label>`).join("")}</fieldset>
-          <div id="project-error" class="run-error" role="alert" hidden></div>
           <div id="project-load-retry" hidden><button type="button" class="secondary" data-load-project>Retry opening saved project</button></div>
           ${!options ? `<div class="project-options-loading"><p>Loading the available parts and board choices from your server…</p><button type="button" class="secondary" data-load-options>Retry loading choices</button></div>` : ""}
           <div class="project-edit-layout">
@@ -131,11 +132,13 @@ export function mountProjectWorkbench(root, {
               </div></fieldset>
               <details class="saved-details"><summary>Additional saved requirements</summary><p>These stay with your revision when you edit the features above.</p><label for="project-description">What this project is for<textarea id="project-description" rows="3" maxlength="1000">${e(draft.description)}</textarea></label><dl><div><dt>Input supply</dt><dd>${e(draft.input_voltage_v)} V</dd></div><div><dt>Logic supply</dt><dd>${e(draft.logic_voltage_v)} V</dd></div><div><dt>Board layers</dt><dd>${e(draft.max_board_layers)}</dd></div><div><dt>Budget preference</dt><dd>${draft.budget_usd == null ? "Not specified" : `$${e(draft.budget_usd)} (total cost is unknown)`}</dd></div><div><dt>Hand soldering preferred</dt><dd>${draft.hand_solderable_preferred ? "Yes" : "No"}</dd></div></dl></details>
             </section>
-            <aside class="project-confirmation" aria-labelledby="confirmed-brief-title"><div class="confirmation-card"><div class="confirmation-heading"><span aria-hidden="true">↳</span><div><h2 id="confirmed-brief-title">Your confirmed brief</h2><p id="project-preview-note">Save your choices to see what the server will build.</p></div></div><div class="project-editor-actions"><button type="submit" id="project-save" class="secondary">Save first revision</button><button type="button" id="project-run" class="primary" disabled>Generate my board</button></div><p id="project-action-note" class="project-action-note" aria-live="polite"></p><div id="project-preview"></div></div><div class="project-build-boundary"><strong>A board is the beginning.</strong><p>Inspect the generated circuit and available files alongside recorded checks. Read the release limits before assembly, firmware and hardware testing.</p><details><summary>Know the limits before building</summary>${(options?.limitations || []).map((limit) => `<p>${e(limit)}</p>`).join("")}</details></div></aside>
-          </div>
+          </div><div id="project-preview-note" hidden></div><div id="project-preview" hidden></div>
+          <button type="submit" id="project-save" class="ghost">Save without generating</button></details>
+          <div class="project-editor-actions"><button type="button" id="project-run" class="primary">Generate my board</button></div><p id="project-action-note" class="fineprint" aria-live="polite"></p>
         </form>
-        <div class="project-secondary"><section class="project-history" aria-labelledby="project-history-title"><h2 id="project-history-title">Your saved revisions</h2><p>Every save keeps a separate version on this server. Reopen one to compare or build it.</p><div id="project-history-options"></div><div id="project-revision-changes"></div></section><aside class="project-learning"><div class="project-learning-intro"><span aria-hidden="true">↳</span><div><h2>Follow the power.</h2><p>Try a short sensor challenge while your own design takes shape.</p></div></div><div id="sensor-exercise" aria-live="polite">${exerciseStartHtml()}</div></aside></div>`;
+        <details class="project-secondary"><summary>History and learning tools</summary><section class="project-history" aria-labelledby="project-history-title"><h2 id="project-history-title">Your saved revisions</h2><p>Every save keeps a separate version on this server. Reopen one to compare or build it.</p><div id="project-history-options"></div><div id="project-revision-changes"></div></section><aside class="project-learning"><div class="project-learning-intro"><span aria-hidden="true">↳</span><div><h2>Follow the power.</h2><p>Try a short sensor challenge while your own design takes shape.</p></div></div><div id="sensor-exercise" aria-live="polite">${exerciseStartHtml()}</div></aside></details>`;
         if (retainedExercise) $("#sensor-exercise").replaceWith(retainedExercise);
+        $("#project-details").open = detailsOpen;
         assistant = $("#project-assistant") ? mountProjectAssistant($("#project-assistant"), {fetcher, onApplying(value) { assistantApplying = value; sync(); }, onApplied(next, saved) {
             project = next; revision = saved; draft = structuredClone(saved.brief);
             familyDrafts.clear(); sensorDrafts.clear(); memoryDrafts.clear();
@@ -178,15 +181,16 @@ export function mountProjectWorkbench(root, {
     function sync() {
         if (!$("#project-form")) return;
         const dirty = !revision || !sameBrief(draft, revision.brief);
+        if ($("#project-assistant")) $("#project-assistant").hidden = !revision;
+        if ($("#project-assistant-panel")) $("#project-assistant-panel").hidden = !revision;
         assistant?.setContext(project && revision ? {projectId:project.project_id,revision,dirty:dirty || busy || !!pendingProjectId} : null);
+        $("#project-summary").innerHTML = planSummaryHtml(draft, {saved:!dirty});
         $("#project-save-state").textContent = busy ? "Working…" : pendingProjectId ? "Saved project unavailable" : !options ? "Choices unavailable" : dirty ? "Unsaved changes" : `Revision ${revision.number} saved`;
-        $("#project-save").textContent = busy ? "Working…" : project ? "Save new revision" : "Save first revision";
+        $("#project-save").textContent = busy ? "Working…" : "Save without generating";
         $("#project-save").disabled = busy || assistantApplying || !options || !!pendingProjectId || !dirty;
-        $("#project-run").disabled = busy || assistantApplying || !options || !!pendingProjectId || dirty || !revision;
-        $("#project-run").textContent = revision?.job_id ? "Open this revision's run" : "Generate my board";
-        $("#project-action-note").textContent = pendingProjectId ? "Retry opening this saved project to recover its choices and revisions."
-            : dirty ? "Save your choices first. Existing revisions keep their original design and files."
-            : `Revision ${revision.number} is saved. ${revision.job_id ? "Reopen its engineering run." : "Generate its board and run the real checks. This usually takes a short wait; a difficult route can take up to three minutes."}`;
+        $("#project-run").disabled = busy || assistantApplying || !options || !!pendingProjectId ;
+        $("#project-run").textContent = !dirty && revision?.job_id ? "Open this revision's run" : "Generate my board";
+        $("#project-action-note").textContent = pendingProjectId ? "Reopen this saved project to recover it." : dirty ? "Generate saves this plan and starts its engineering checks." : "Your saved choices will be used. Assembly, firmware and physical testing come later.";
         $("#project-preview-note").textContent = !revision ? "Save your choices to see what the server will build."
             : dirty ? `These are revision ${revision.number}'s saved choices. Save your changes to confirm a new brief.`
                 : `Revision ${revision.number} is confirmed. Its engineering checks begin when you generate the board.`;
@@ -206,6 +210,7 @@ export function mountProjectWorkbench(root, {
     function showError(error) {
         $("#project-error").textContent = message(error);
         $("#project-error").hidden = false;
+        if (!options || pendingProjectId) $("#project-details").open = true;
     }
 
     async function openNew(seed = null) {
@@ -218,7 +223,7 @@ export function mountProjectWorkbench(root, {
         onInvalidate(); render(); onOpen(draft.project_name);
         if (options) applyNewDraft();
         await ensureOptions();
-        if (version === editorVersion && !disposed) $("#project-name")?.focus();
+        if (version === editorVersion && !disposed) $("#project-run")?.focus();
     }
 
     async function refreshShelf() {
@@ -266,6 +271,7 @@ export function mountProjectWorkbench(root, {
             const description = $("#project-description");
             const details = description?.closest?.("details");
             if (details) details.open = true;
+            if ($("#project-details")) $("#project-details").open = true;
             description?.focus();
             return showError(new ProjectRequestError("Add a short project purpose under Additional saved requirements. Use between 1 and 1,000 characters."));
         }
@@ -280,9 +286,15 @@ export function mountProjectWorkbench(root, {
             const saved = next.revisions.at(-1);
             if (!sameBrief(draft, saved.brief)) throw new Error("Saved brief differs from request");
             project = next; revision = saved; draft = structuredClone(saved.brief);
-            renderHistory(); onOpen(draft.project_name); void refreshShelf();
+            renderHistory(); onOpen(draft.project_name); void refreshShelf(); return true;
         } catch (error) { showError(error); }
         finally { busy = false; sync(); }
+    }
+
+    async function generate() {
+        if (busy || assistantApplying || !options || pendingProjectId) return;
+        if ((!revision || !sameBrief(draft, revision.brief)) && !await save()) return;
+        return run();
     }
 
     async function run() {
@@ -424,7 +436,7 @@ export function mountProjectWorkbench(root, {
         if (event.target.id === "sensor-choice-form") { event.preventDefault(); void checkRepair($("input[name=repair]:checked")?.value); }
     }
     function click(event) {
-        if (event.target.closest?.("#project-run")) void run();
+        if (event.target.closest?.("#project-run")) void generate();
         if (event.target.closest?.("[data-load-options]")) void (pendingProjectId ? openProject(pendingProjectId) : ensureOptions());
         if (event.target.closest?.("[data-load-project]") && pendingProjectId) void openProject(pendingProjectId);
         if (event.target.closest?.("[data-load-exercise]")) void loadExercise();

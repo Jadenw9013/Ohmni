@@ -62,7 +62,7 @@ test("customizing a reference seeds an unsaved editable project with its exact c
     };
     const controller = mountProjectWorkbench(dom.root, { fetcher });
     await controller.openNew(seed);
-    assert.equal(dom.node("#project-run").disabled, true, "the saved preview is never treated as this project's run");
+    assert.equal(dom.node("#project-run").disabled, false, "Generate first saves this new draft; it does not reuse reference results");
     formInput(dom, { id: "project-led", value: "2" });
     dom.handlers.get("submit")({ target: { id: "project-form" }, preventDefault() {} });
     await new Promise(setImmediate);
@@ -210,6 +210,33 @@ function workbenchDom() {
     };
     return { root, node, handlers };
 }
+
+test("Generate saves once and runs only the server-confirmed revision", async () => {
+    const dom=workbenchDom(),calls=[];let live;
+    const fetcher=async(path,request={})=>{
+        if(path==="/api/health")return response(200,{...identity,status:"ready",fixture_id:"esp32-bme280-environmental-logger"});
+        if(path==="/api/project-options")return response(200,{...identity,options});
+        if(request.method==="POST"){
+            calls.push("save");const saved=JSON.parse(request.body).brief;
+            live={...project,revisions:[{...revision,brief:saved}]};
+        }
+        return response(200,envelope(live));
+    };
+    const c=mountProjectWorkbench(dom.root,{fetcher,onRun:request=>{calls.push("run");assert.equal(request.revisionId,revision.revision_id);assert.equal(live.revisions[0].brief.board_width_mm,80);}});
+    await c.openNew();formInput(dom,{id:"project-board_width_mm",value:"80"});
+    workbenchClick(dom,"#project-run");workbenchClick(dom,"#project-run");await tick();
+    assert.deepEqual(calls,["save","run"]);c.dispose();
+});
+
+test("Generate never runs after a rejected or mismatched save",async()=>{
+    for(const refusal of [true,false]){
+        const dom=workbenchDom();let runs=0;
+        const fetcher=async(path)=>path==="/api/health"?response(200,{...identity,status:"ready",fixture_id:"esp32-bme280-environmental-logger"}):path==="/api/project-options"?response(200,{...identity,options}):refusal?response(422,{error:"project_refused",refusal:{message:"These choices cannot be built."}}):response(200,envelope());
+        const c=mountProjectWorkbench(dom.root,{fetcher,onRun:()=>{runs++;}});
+        await c.openNew();formInput(dom,{id:"project-board_width_mm",value:"80"});workbenchClick(dom,"#project-run");await tick();
+        assert.equal(runs,0);assert.equal(dom.node("#project-error").hidden,false);c.dispose();
+    }
+});
 
 test("conversation application activates the new saved revision and its generation action", async () => {
     const dom=workbenchDom();let invalidated=0,ran,applied=false;
@@ -452,7 +479,7 @@ test("editor transitions invalidate a prior run immediately and save all hidden 
     const before = invalidated;
     formInput(dom, { id: "project-sensor-count", value: "3" });
     assert.equal(invalidated, before + 1);
-    assert.equal(dom.node("#project-run").disabled, true);
+    assert.equal(dom.node("#project-run").disabled, false);
     formInput(dom, { id: "project-address-1", dataset: { sensorAddress: "1" }, value: "73" });
     formInput(dom, { id: "project-sensor-count", value: "1" });
     formInput(dom, { id: "project-sensor-count", value: "3" });
@@ -483,7 +510,7 @@ test("address conflicts reach the server and cannot become a saved result in the
     await tick();
     assert.equal(writes, 1, "the browser does not grade address compatibility");
     assert.match(dom.node("#project-error").textContent, /same address/);
-    assert.equal(dom.node("#project-run").disabled, true);
+    assert.equal(dom.node("#project-run").disabled, false, "retry still passes through server validation");
     assert.equal(dom.node("#project-save-state").textContent, "Unsaved changes");
     controller.dispose();
 });
@@ -520,8 +547,7 @@ test("retrying missing choices resumes the intended saved project instead of cre
     assert.equal(projectReads, 1);
     assert.equal(dom.node("#project-save-state").textContent, "Revision 1 saved");
     assert.equal(dom.node("#project-run").disabled, false);
-    assert.ok(dom.root.innerHTML.indexOf('id="project-run"') < dom.root.innerHTML.indexOf('id="project-preview"'),
-        "the next action stays above a saved brief of any length");
+    assert.match(dom.root.innerHTML, /id="project-preview" hidden/, "long technical preview is disclosed, not above the primary action");
     controller.dispose();
 });
 
@@ -565,7 +591,7 @@ test("an empty project purpose gets specific guidance without losing other saved
     await tick();
     assert.equal(writes, 0);
     assert.match(dom.node("#project-error").textContent, /project purpose under Additional saved requirements/);
-    assert.equal(dom.node("#project-run").disabled, true);
+    assert.equal(dom.node("#project-details").open, true);
     controller.dispose();
 });
 
@@ -627,4 +653,13 @@ test("a late health response cannot start a project write after timeout", async 
     deliver(response(200, { ...identity, status: "ready", fixture_id: "esp32-bme280-environmental-logger" }));
     await new Promise(setImmediate);
     assert.equal(writes, 0);
+});
+
+test("technical settings stay open when changing sensor count redraws the editor",async()=>{
+    const dom=workbenchDom();
+    const fetcher=async(path)=>path==="/api/health"?response(200,{...identity,status:"ready",fixture_id:"esp32-bme280-environmental-logger"}):response(200,{...identity,options});
+    const c=mountProjectWorkbench(dom.root,{fetcher});await c.openNew();
+    dom.node("#project-details").open=true;
+    formInput(dom,{id:"project-sensor-count",value:"2"});
+    assert.equal(dom.node("#project-details").open,true);c.dispose();
 });
