@@ -53,6 +53,7 @@ export function designRunModel(result) {
         : within ? 'Within the checked model limits'
         : ran ? 'Simulation ran; ratings not established for every part'
         : refused ? 'Design refused: nothing was simulated'
+        : result?.status === 'unavailable' ? 'No result shown: nothing was established'
         : result?.status && result.status !== 'not_run' ? 'Simulation did not complete: nothing was established'
         : 'Design not run: nothing was simulated';
     const ratings = ran ? list(result?.ratings?.components) : [];
@@ -64,7 +65,8 @@ export function designRunModel(result) {
         // "Simulated as" only for a part the run actually contains; otherwise there is no simulated reference.
         reference: ran ? (simulated.get(row?.ref)?.reference_part ?? null) : row?.reference_part,
         problem: row?.problem,
-        status: ran ? (byRef.get(row?.ref)?.status ?? 'unknown') : 'not_run',
+        // A part outside the simulated set has no established result, whatever a ratings row says.
+        status: ran ? (simulated.has(row?.ref) ? (byRef.get(row?.ref)?.status ?? 'unknown') : 'unknown') : 'not_run',
         rating: byRef.get(row?.ref) ?? null,
     }));
     return { ran, refused, violation, within, title, problems, parts, summary,
@@ -90,8 +92,8 @@ export function designResultHtml(result) {
         <h4>${escape(view.title)}</h4>
         <p>Design ratings: ${statusBadge(view.summaryStatus, 'design')}</p>
         ${result?.scope ? `<p class="panel-note">${escape(result.scope)}</p>` : ''}
-        ${view.problems.length ? `<div class="design-behavior-problems"><strong>${view.refused ? 'Why the run was refused' : 'Problems'} (${view.problems.length})</strong><ul>${view.problems.map(p => `<li>${escape(p)}</li>`).join('')}</ul></div>` : ''}
-        ${summary ? `<dl class="design-behavior-summary"><div><dt>Within limits</dt><dd>${escape(counts.within_model_limits ?? 0)}</dd></div><div><dt>Unknown</dt><dd>${escape(counts.unknown ?? 0)}</dd></div><div><dt>Violation</dt><dd>${escape(counts.violation ?? 0)}</dd></div></dl>
+        ${view.problems.length ? `<div class="design-behavior-problems"><strong>${view.refused ? 'Why the run was refused' : result?.status === 'unavailable' ? 'Why no result is shown' : 'Problems'} (${view.problems.length})</strong><ul>${view.problems.map(p => `<li>${escape(p)}</li>`).join('')}</ul></div>` : ''}
+        ${summary ? `<dl class="design-behavior-summary"><div><dt>Within limits</dt><dd>${escape(counts.within_model_limits ?? 'not reported')}</dd></div><div><dt>Unknown</dt><dd>${escape(counts.unknown ?? 'not reported')}</dd></div><div><dt>Violation</dt><dd>${escape(counts.violation ?? 'not reported')}</dd></div></dl>
             ${list(summary.violating_parts).length ? `<p>Violating parts: ${list(summary.violating_parts).map(escape).join(', ')}</p>` : ''}
             ${list(summary.unknown_parts).length ? `<p>Parts not established: ${list(summary.unknown_parts).map(escape).join(', ')}</p>` : ''}` : ''}
         ${view.parts.length ? `<table class="design-behavior-parts"><thead><tr><th>Part</th><th>Catalog part</th><th>${view.ran ? 'Simulated as' : 'Bound reference'}</th><th>Ratings</th></tr></thead><tbody>${view.parts.map(part => `<tr>
@@ -114,7 +116,8 @@ export function designPanelHtml(available) {
         <div data-design-results></div>`;
 }
 
-const notRun = message => ({ status: 'not_run', rating_status: 'not_run', problems: [message], bindings: [], limitations: [] });
+// A client-side failure is not a server refusal: the page shows no result and claims nothing about a run.
+const notRun = message => ({ status: 'unavailable', rating_status: 'not_run', problems: [message], bindings: [], limitations: [] });
 
 export function mountDesignBehaviorPanel(container, { jobId, identity, circuitHash, fetcher = globalThis.fetch } = {}) {
     if (!container) return () => {};

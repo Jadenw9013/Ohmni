@@ -159,3 +159,22 @@ test('part and check badges accept only their own level\'s pass word', () => {
     assert.match(html, /<li><span class="badge warn">Unknown, not established<\/span> [^<]*power/i);
     assert.match(html, /<li><span class="badge pass">Within limit<\/span> [^<]*voltage/i);
 });
+
+test('a client-side failure is not worded as a server refusal or as a run that did not happen', () => {
+    const failure = { status: 'unavailable', rating_status: 'not_run',
+        problems: ['A result came back that could not be matched to this project and server, so it is not shown.'],
+        bindings: [], limitations: [] };
+    const html = designResultHtml(failure);
+    assert.match(html, /No result shown: nothing was established/);
+    assert.match(html, /Why no result is shown \(1\)/);
+    assert.doesNotMatch(html, /refused|nothing was simulated/i);
+    assert.deepEqual(passTexts(html), []);
+});
+
+test('missing summary counts read as not reported, never as zero', () => {
+    const result = ran('unknown', { C1: 'unknown' });
+    result.design_summary.counts = {};
+    const html = designResultHtml(result);
+    assert.match(html, /<dt>Within limits<\/dt><dd>not reported<\/dd>/);
+    assert.doesNotMatch(html, /<dd>0<\/dd>/);
+});
