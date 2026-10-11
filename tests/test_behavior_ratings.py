@@ -265,6 +265,62 @@ def test_connector_checks_cover_every_contact_and_typical_column_voltages():
     assert _report("OHM-161", {}, {"P1": 13, "W1": -13})["contact current P1"]["status"] == "violation"
 
 
+def test_connector_per_contact_current_limits_follow_the_source_pin_groups():
+    # GCT USB3075 (OHM-164, D068): 1.8 A on power pins 1 and 5, 1.0 A on signal pins 2-4.
+    micro = _report("OHM-164", {"P1": 5}, {"P1": 1.5, "M1": -1.5, "P2": 1.5, "M2": -1.5})
+    assert micro["contact current P1"]["status"] == "within_limit"
+    assert micro["contact current M1"]["status"] == "within_limit"
+    assert micro["contact current P2"]["status"] == "violation"
+    assert micro["contact current M2"]["status"] == "violation"
+    assert micro["contact current P1"]["evidence"]["i_rated_P1"]["field"] == "ref_rated_current_power"
+    assert _report("OHM-164", {}, {"P5": 1.9, "M5": -1.9})["contact current P5"]["status"] == "violation"
+
+
+def _usb_c(volts, amps):
+    registry = BehaviorRegistry(repo_root=ROOT)
+    recipes = load_recipes(registry, ROOT)
+    nets = {"a": ["A6"], "return": ["A1", "B12"], "vbus1": ["A4", "B9"], "vbus2": ["A9", "B4"],
+            "gnd2": ["A12", "B1"], **{f"n_{p}": [p] for p in ("A5", "A7", "A8", "B5", "B6", "B7", "B8")}}
+    c = _single(registry, recipes, "OHM-165", nets)
+    comp = c.components[0]
+    point = _point(comp, {r: volts.get(r, 0.0) for r in comp.role_nodes}, amps)
+    return _checks(evaluate_ratings(c, point, registry, RatingContext(ambient_c=25, thermal_scope_confirmed=True)))
+
+
+def test_usb_c_collective_vbus_and_gnd_limits_and_cc_rating():
+    # GCT USB4110 (OHM-165, D068): VBUS 5.00 A and GND 6.25 A collectively, CC 1.25 A, others 0.25 A.
+    vbus = ("A4", "A9", "B4", "B9")
+    ok = _usb_c({"A4": 5, "B9": 5}, {**{p: 1.2 for p in vbus}, "A5": 1.0, "A6": 0.2})
+    name = "collective contact current A4+A9+B4+B9"
+    assert ok[name]["status"] == "within_limit"
+    assert ok[name]["evidence"]["i_sum__A4__A9__B4__B9"]["value"] == 5.0
+    assert "contact current A4" not in ok  # GCT states no individual VBUS-contact limit
+    assert ok["contact current A5"]["status"] == "within_limit"
+    assert ok["contact current A6"]["status"] == "within_limit"
+    hot = _usb_c({"A4": 5, "B9": 5}, {**{p: 1.3 for p in vbus}, "A5": 1.3, "A6": 0.3})
+    assert hot[name]["status"] == "violation"
+    assert hot["contact current A5"]["status"] == "violation"
+    assert hot["contact current A6"]["status"] == "violation"
+    # Magnitudes add: opposite signs cannot cancel a collective limit.
+    assert _usb_c({}, {"A4": 3, "A9": -3, "B4": 0, "B9": 0})[name]["status"] == "violation"
+    gnd = _usb_c({}, {"A1": 1.6, "A12": 1.6, "B1": 1.6, "B12": 1.6})
+    assert gnd["collective contact current A1+A12+B1+B12"]["status"] == "violation"
+    partial = _usb_c({}, {"A4": 1.0})[name]
+    assert partial["status"] == "unknown" and "Not every contact" in partial["reason"]
+    assert _usb_c({"A4": 49, "B9": 49}, {})["contact-to-contact voltage"]["status"] == "violation"
+
+
+def test_connector_header_and_terminal_temperature_rows_prove_violations_only():
+    # Wurth (OHM-150) and Same Sky (OHM-159) limits include, or may include, self-heating (D068).
+    for entry in ("OHM-150", "OHM-159"):
+        assert _report(entry, {"P1": 5})["contact temperature"]["status"] == "unknown"
+        hot = _report(entry, {"P1": 5}, context=RatingContext(ambient_c=110, thermal_scope_confirmed=True))
+        assert hot["contact temperature"]["status"] == "violation"
+    assert _report("OHM-150", {"P1": 251})["contact-to-contact voltage"]["status"] == "violation"
+    assert _report("OHM-159", {}, {"P1": 17, "W1": -17})["contact current P1"]["status"] == "violation"
+    assert _report("OHM-169", {}, {"P1": 1.4, "M1": -1.4})["contact current P1"]["status"] == "within_limit"
+
+
 def test_magnetics_and_pot_ratings():
     assert _report("OHM-050", {}, {"A1": 1.0, "A2": -1.0})["winding A current"]["status"] == "violation"
     assert _report("OHM-050", {"A1": 81})["line voltage"]["status"] == "violation"
@@ -316,6 +372,21 @@ def test_transient_window_statistics():
     assert abs(w.frequency(sine) - 10) < 0.2
 
 
+def test_usb_c_collective_limit_in_a_transient_uses_the_summed_magnitude():
+    nets = {"a": ["A6"], "return": ["A1", "B12"], "vbus1": ["A4", "B9"], "vbus2": ["A9", "B4"],
+            "gnd2": ["A12", "B1"], **{f"n_{p}": [p] for p in ("A5", "A7", "A8", "B5", "B6", "B7", "B8")}}
+    context = RatingContext(ambient_c=25, thermal_scope_confirmed=True)
+    name = "collective contact RMS current A4+A9+B4+B9 (time average)"
+    for amps, status in ((1.2, "within_limit"), (1.3, "violation")):
+        # Equal DC currents with a ripple whose sign alternates between contacts: the sum of magnitudes counts.
+        waves = {("i", p): (lambda t, s=(-1) ** k, a=amps: a + s * 0.1 * math.sin(2 * math.pi * 1e4 * t))
+                 for k, p in enumerate(("A4", "A9", "B4", "B9"))}
+        _, checks = _tran_checks("OHM-165", nets, waves, context)
+        assert checks[name]["status"] == status
+        assert not any(k.startswith("contact RMS current A4") for k in checks)
+        assert checks["contact RMS current A6"]["status"] == "within_limit"
+
+
 def test_tantalum_ripple_and_transient_reverse_limits():
     hot = RatingContext(ambient_c=25, thermal_scope_confirmed=True)
     ripple = lambda t: 0.25 * math.sin(2 * math.pi * 10e3 * t)
@@ -364,3 +435,29 @@ def test_schottky_surge_average_and_leakage_runaway():
     for ambient, expected in ((25, "within_limit"), (100, "violation")):
         assert _report("OHM-066", {"K": 40}, {}, RatingContext(ambient_c=ambient, thermal_scope_confirmed=True))[
             "leakage thermal stability"]["status"] == expected
+
+
+def test_usb_c_partly_observed_collective_group_is_unknown_in_an_ac_run():
+    # Same rule as DC and transient (#51 review): a group with only some members observed is never skipped.
+    registry = BehaviorRegistry(repo_root=ROOT)
+    recipes = load_recipes(registry, ROOT)
+    nets = {"a": ["A6"], "return": ["A1", "B12"], "vbus1": ["A4", "B9"], "vbus2": ["A9", "B4"],
+            "gnd2": ["A12", "B1"], **{f"n_{p}": [p] for p in ("A5", "A7", "A8", "B5", "B6", "B7", "B8")}}
+    c = _single(registry, recipes, "OHM-165", nets)
+    comp = c.components[0]
+    op = _point(comp, {r: 0.0 for r in comp.role_nodes}, {r: 0.0 for r in comp.role_current_probes})
+    probes = {r: p.lower() for r, p in comp.role_current_probes.items()}
+    point = {"frequency_hz": 1e3,
+             "node_voltages": {n.lower(): [0.0, 0.0] for n in comp.role_nodes.values()},
+             "branch_currents": {p: [0.1 if r == "A4" else 0.0, 0.0] for r, p in probes.items() if r != "B9"}}
+    result = {"status": "ran", "analysis": "ac", "operating_point": {
+        "node_voltages": {k.lower(): v for k, v in op["operating_point"]["node_voltages"].items()},
+        "branch_currents": {k.lower(): v for k, v in op["operating_point"]["branch_currents"].items()}},
+        "ac": {"points": [point]}}
+    report = evaluate_ratings(c, result, registry, RatingContext(ambient_c=25, thermal_scope_confirmed=True))
+    rows = {x["name"]: x for x in report["components"][0]["reference_checks"]}
+    # A missing member current fails the whole AC evaluation closed before any group row is formed; the
+    # group code also emits GROUP_UNOBSERVED itself, so neither path can skip a partly observed group.
+    assert rows["AC checks"]["status"] == "unknown" and "did not print" in rows["AC checks"]["reason"]
+    assert not any(k.startswith("collective contact RMS current") and v["status"] == "within_limit"
+                   for k, v in rows.items())
