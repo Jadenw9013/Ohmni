@@ -89,10 +89,24 @@ def _bound_reference_packages(root: Path) -> dict[str, str]:
     }
 
 
+def _pin_level_packages(root: Path) -> set[str]:
+    """Bound entries modeled as electrical pins frozen in the datasheet reset state (D075)."""
+    path = root / "docs/behavior/runtime-recipes.json"
+    if not path.exists():
+        return set()
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    return {key for key, recipe in payload.get("entries", {}).items() if recipe.get("pin_level")}
+
+
+PIN_LEVEL_REASON = "electrical pins in reset state only; firmware not modeled"
+
+
 def _master_entries(
-    text: str, spec_raw: bytes, bound_packages: dict[str, str] | None = None
+    text: str, spec_raw: bytes, bound_packages: dict[str, str] | None = None,
+    pin_level: set[str] | None = None,
 ) -> list[BehaviorEntryRecord]:
     bound_packages = bound_packages or {}
+    pin_level = pin_level or set()
     entries: list[BehaviorEntryRecord] = []
     spec_hash = _sha(spec_raw)
     for line_number, line in enumerate(text.splitlines(), 1):
@@ -129,6 +143,13 @@ def _master_entries(
                 f"Simulates as the bound reference part ({bound_packages[values['entry_id']]}); the package "
                 "alone has no electrical function, so results describe that part in this package."
             )
+            if values["entry_id"] in pin_level:
+                # D075 (owner decision): a programmable part simulates its electrical pins only, in reset state.
+                simulation_reason = (
+                    f"Simulates as the bound reference part ({bound_packages[values['entry_id']]}): "
+                    f"{PIN_LEVEL_REASON}. The package alone has no electrical function, so results describe "
+                    "that part in this package."
+                )
         elif 103 <= entry_number <= 140:
             disposition = "not_simulable"
             simulation_reason = "A package has no electrical function until a sourced reference part is bound."
@@ -319,7 +340,7 @@ def build_records(root: Path = ROOT) -> tuple[
     spec_raw = spec_file.read_bytes()
     text = spec_raw.decode("utf-8")
     classes = _behavior_classes(text, spec_raw)
-    entries = _master_entries(text, spec_raw, _bound_reference_packages(root))
+    entries = _master_entries(text, spec_raw, _bound_reference_packages(root), _pin_level_packages(root))
     bindings = _gapfill_bindings(root)
     resolutions = _gapfill_resolutions(root)
     research = {}

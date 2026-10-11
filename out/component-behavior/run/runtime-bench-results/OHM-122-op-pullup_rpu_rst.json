@@ -1,0 +1,96 @@
+{
+  "analysis": "op",
+  "circuit_hash": "60d622b0e6b5655c7a4136a410631fd8247b8071383385a48bcca87e0f2c4abb",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "derivation": "Pull-up current V/R into a grounded pad over the sourced resistance range.",
+    "kind": "interval",
+    "maximum": 0.00018333333333333334,
+    "minimum": 9.166666666666667e-05,
+    "observable": "pin_current",
+    "pad_model": "dio_pin_ft",
+    "pad_supply": "VCC",
+    "pin_role": "PC6_RESET",
+    "reset_state": "Factory fuses (internal 8 MHz RC with CKDIV8, RSTDISBL unprogrammed): every port pin tri-stated (DS40002061B p85), PB6/PB7 port pins with the internal RC (p13, p37), PC6 the RESET input with its pull-up RRST (p292, p323).",
+    "source_facts": {
+      "rrst_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "converted_unit": "ohm",
+        "converted_value": 60000.0,
+        "detail": "RRST Reset Pull-up Resistor 30 60 k",
+        "field": "reset_pullup_resistance_range",
+        "page": 323,
+        "scope": "ATmega328P-AU 32A TQFP-32; DS40002061B; Table 30-1 RRST [min, max]",
+        "selected_value": 60,
+        "selected_value_path": [
+          1
+        ],
+        "sources": [
+          "https://ww1.microchip.com/downloads/aemDocuments/documents/MCU08/ProductDocuments/DataSheets/ATmega48A-PA-88A-PA-168A-PA-328-P-DS-DS40002061B.pdf"
+        ],
+        "unit": "kohm",
+        "value": [
+          30,
+          60
+        ]
+      },
+      "rrst_min": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "converted_unit": "ohm",
+        "converted_value": 30000.0,
+        "detail": "RRST Reset Pull-up Resistor 30 60 k",
+        "field": "reset_pullup_resistance_range",
+        "page": 323,
+        "scope": "ATmega328P-AU 32A TQFP-32; DS40002061B; Table 30-1 RRST [min, max]",
+        "selected_value": 30,
+        "selected_value_path": [
+          0
+        ],
+        "sources": [
+          "https://ww1.microchip.com/downloads/aemDocuments/documents/MCU08/ProductDocuments/DataSheets/ATmega48A-PA-88A-PA-168A-PA-328-P-DS-DS40002061B.pdf"
+        ],
+        "unit": "kohm",
+        "value": [
+          30,
+          60
+        ]
+      },
+      "supply_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "recommended_supply_max",
+        "page": 2,
+        "scope": "ATmega328P-AU 32A TQFP-32",
+        "sources": [
+          "https://www.princeton.edu/~mae412/HANDOUTS/Datasheets/ATmega328abrev.pdf"
+        ],
+        "unit": "V",
+        "value": 5.5
+      }
+    },
+    "supply_voltages": {
+      "VCC": 5.5
+    }
+  },
+  "entry_id": "OHM-122",
+  "entry_research_sha256": "4ee43ae1697ef32e505748e2edb61c2d8582f2f38edf4bef544158fab5cf1c6d",
+  "limits": "Reset-state electrical check of one pin with every rail at its sourced recommended maximum: the pin, shorted to ground, must draw only its sourced leakage (floating input) or its sourced pull-up current. Firmware, clocks, peripherals and output drive are not modeled; the leakage term of the hashed pad is zero, so the leakage check bounds the model from above only.",
+  "netlist_sha256": "d751444fabcfb361d884c565f79fedbe8db0710d4a2ab7c017e88a8ae8135ebd",
+  "observation_status": "ran",
+  "observed": 0.0001222222,
+  "output_sha256": "bed75a383dcf28386f0bc9a713e4f1a38389bbef7a7024ed71145fa11aefb52c",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T21:58:23Z",
+  "raw_output": "runtime-bench-output/OHM-122-op-pullup_rpu_rst/output.txt",
+  "recipe_source_sha256": "e0b0e3e95da25117d09e2c6765f7d4461d2093e15148e89b70f8256c0ffe0eda",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "variant": "pullup_rpu_rst",
+  "version_file": "runtime-bench-output/OHM-122-op-pullup_rpu_rst/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n",
+  "version_sha256": "2cdcb25fcf77dea87742b9ac629a0b5ba20169e01beb2b59fdd2e41ee348a45d"
+}
