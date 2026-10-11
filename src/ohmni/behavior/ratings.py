@@ -1399,16 +1399,21 @@ def _alcap_voltage(values, b, observed, label, tag=""):
     return row
 
 
+ALCAP_REVERSE_NOISE_V = 1e-9
+
+
 def _alcap_reverse(values, b, observed, prefix, tag=""):
     """Reverse voltage is not permitted on these polarized parts (Nichicon application guidelines): any reverse
     bias is a violation. Only a reverse swing adds a row; forward bias is covered by the voltage row."""
     try:
-        reverse = evaluate(f"{observed} < 0", values)
+        # 1 nV is a solver-noise floor (engine tolerance, not a datasheet value): a -1e-15 V artefact of an
+        # unbiased node is not reverse bias, while any real reverse bias is far larger.
+        reverse = evaluate(f"{observed} < -{ALCAP_REVERSE_NOISE_V}", values)
     except ExpressionUnavailable:
         return None
     if not reverse:
         return None
-    row = b.add(prefix + "reverse voltage (not permitted)" + tag, f"{observed} >= 0", ())
+    row = b.add(prefix + "reverse voltage (not permitted)" + tag, f"{observed} >= -{ALCAP_REVERSE_NOISE_V}", ())
     row["reason"] = "Reverse voltage is not permitted on this polarized capacitor (Nichicon application guidelines)"
     return row
 

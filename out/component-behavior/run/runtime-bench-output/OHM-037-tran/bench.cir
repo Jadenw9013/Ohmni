@@ -1,0 +1,14 @@
+OHMNI sourced behavior circuit
+.options tnom=25
+.temp 25
+Iexcitation1 0 n1 PWL(0 0 1.0000000000000001e-09 0.001 0.0011000000000000001 0.001)
+Cc1 n1 0 9.9999999999999995e-08
+Rc1_lk n1 0 30000000000
+.tran 9.9999999999999995e-07 0.0011000000000000001
+.control
+set numdgt=15
+run
+print v(n1)
+quit
+.endc
+.end

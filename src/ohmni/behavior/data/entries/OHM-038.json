@@ -19,7 +19,9 @@
       "bench-results/BEH-CAP-FILM--B3.json"
     ],
     "conflicts": [
-      "New manufacturer revision rates this series 305 VAC; retain the conservative generic 275 VAC default until a specific revision and part are bound."
+      "New manufacturer revision rates this series 305 VAC; retain the conservative generic 275 VAC default until a specific revision and part are bound.",
+      "D069: the bound MKX2AW31004C00 is rated 305 VAC (rev 03.26); the class BEH-CAP-FILM default 275 VAC / 388.9 V peak (older revision, S20) does not apply to this binding and its VRPK flag is dropped. The bound part's sourced value wins for this binding; the spec is unchanged.",
+      "3D spec OHM-038 default body W 8 x H 14 x L 18 at PCM 15 is not an orderable 0.1 uF MKP-X2 row (B00 5 x 11 x 18, C00 6 x 12.5 x 18); C00 is bound. WIMA p2 gives lead d = 0.8 for PCM >= 15 against the 3D default 0.6."
     ],
     "documents": [
       {
@@ -125,21 +127,76 @@
         ],
         "unit": "C",
         "value": 105
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Table 'General Data 305 VAC*': '0.1 uF  6  12.5  18  15  MKX2AW31004C00_ _ _ _' (pdf page 3, catalogue page 74)",
+        "field": "nominal_capacitance",
+        "page": 3,
+        "scope": "WIMA MKX2AW31004C00; 305 VAC row, PCM 15, W 6 x H 12.5 x L 18 mm",
+        "sources": [
+          "https://wima.de/wp-content/uploads/media/e_WIMA_MKP-X2.pdf"
+        ],
+        "unit": "uF",
+        "value": 0.1
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Column header '305 VAC *' with footnote '* f = 50/60 Hz' (p3); p1 'Rated voltage: 305 VAC'",
+        "field": "rated_ac_voltage",
+        "page": 3,
+        "scope": "WIMA MKX2AW31004C00; f = 50/60 Hz",
+        "sources": [
+          "https://wima.de/wp-content/uploads/media/e_WIMA_MKP-X2.pdf"
+        ],
+        "unit": "V AC",
+        "value": 305
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "p1 'Continuous DC voltage* (general guide): 560 V'; footnote '* If safety-approved EMI suppression capacitors are operated with a DC voltage being above the specified AC voltage rating the given approvals are no longer valid (IEC 60384-14).'",
+        "field": "continuous_dc_voltage_guide",
+        "page": 1,
+        "scope": "WIMA MKP-X2 rev 03.26 series incl. MKX2AW31004C00; general guide only; approvals void if DC exceeds the AC rating",
+        "sources": [
+          "https://wima.de/wp-content/uploads/media/e_WIMA_MKP-X2.pdf"
+        ],
+        "unit": "V DC",
+        "value": 560
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "p1 'Operating temperature range: -55 C to +105 C'",
+        "field": "operating_temperature_range",
+        "page": 1,
+        "scope": "WIMA MKP-X2 rev 03.26 series incl. MKX2AW31004C00",
+        "sources": [
+          "https://wima.de/wp-content/uploads/media/e_WIMA_MKP-X2.pdf"
+        ],
+        "unit": "C",
+        "value": [
+          -55,
+          105
+        ]
       }
     ],
     "remaining_open_items": [
-      "Confirm exact orderable capacitance, case, pitch and approval marks before binding the illustrated part.",
       "Mains safety also requires application/clearance/protection design; a class model cannot certify safety.",
-      "ESL and long-term failure timing remain uncertain."
+      "ESL and long-term failure timing remain uncertain.",
+      "Bound reference (D069): WIMA MKX2AW31004C00 (MKP-X2, 0.1 uF, 305 VAC 50/60 Hz, PCM 15, W 6 x H 12.5 x L 18 mm, pdf p3); tolerance, packing and pin-length suffixes unselected.",
+      "Former simulation blocker resolved for the explicitly bound reference (2026-10-11, D069): Unbound mains safety part; no claim of safe mains operation. Resolution: the part is now bound to one exact orderable row; the safety half is not closed by evidence and is not claimed: under the owner's D066 decision it is the recipe's first limitation (no mains, isolation or safety acceptance; no discharge path, creepage/clearance, fusing or approval check).",
+      "No AC-rating (305 V rms) or pulse dV/dt rule is executed for this binding; the BEH-CAP-FILM rating branch needs a DC derating fact this X2 part does not publish, so its rating rows stay unknown."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Unbound mains safety part; no claim of safe mains operation."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-038.md",
-      "document_sha256": "c8324338a212f7685e2cd0e584ada73fe30672a82f43e3efc301350b72897c13",
+      "document_sha256": "966febd219c7abcf1fc8e6a4eef9e44b32e829ecfc30142598367eb461561d3d",
       "fragment_sha256": null,
       "line": 1
     }

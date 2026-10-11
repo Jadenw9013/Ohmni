@@ -1,0 +1,62 @@
+{
+  "analysis": "op",
+  "circuit_hash": "cf283bb211e2f3269006cb6fa8620e00be6994b33aa96ae65c05052235998507",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "current": 0.008,
+    "drive_role": "TX_LP",
+    "expected": 1.1,
+    "kind": "absolute",
+    "observable": "path_resistance",
+    "return_role": "TX_LN",
+    "source_facts": {
+      "idc_bias": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "converted_unit": "A",
+        "converted_value": 0.008,
+        "detail": "'... 0.2 Vrms, 8 mA DC Bias'",
+        "field": "pt61017_ocl_test_dc_bias",
+        "page": 1,
+        "scope": "Bourns PT61017PEL; DC bias at which 350 uH min OCL is specified",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/PT61017PEL.pdf"
+        ],
+        "unit": "mA",
+        "value": 8
+      },
+      "r_line": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Pin 9-11, 14-16 ........ 1.1 ohm max.'",
+        "field": "pt61017_line_side_dcr_max",
+        "page": 1,
+        "scope": "Bourns PT61017PEL; pins 9-11 and 14-16 (transformer + choke); 25 C",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/PT61017PEL.pdf"
+        ],
+        "unit": "ohm",
+        "value": 1.1
+      }
+    },
+    "tolerance": 0.0011
+  },
+  "entry_id": "OHM-055",
+  "entry_research_sha256": "bccd32518b5238408760e09c33a002d4e62834043baf62ae57b9e9f1aef37fe6",
+  "limits": "Binding check of one bound DC path: the sourced current through the path must reproduce the sourced path resistance (0.1% numerical tolerance, or the sourced tolerance band). It does not validate frequency response, heating, contact wear, isolation, protocol behavior or any rating beyond the stated facts.",
+  "netlist_sha256": "5975d1636573393372aa93d2686b5b3ce32fdd1e5fa9d5d99e2fb23f3c42c7ce",
+  "observation_status": "ran",
+  "observed": 1.1,
+  "output_sha256": "1d3f1672ea8ee828b870fb9be9a70e0eeb10caa0ab3aad16fb3ee406d2ad6f69",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T07:22:01Z",
+  "raw_output": "runtime-bench-output/OHM-055-op-tx/output.txt",
+  "recipe_source_sha256": "df15838a25783d36cca4fe23de6756cc53208d2ce19f03dc0751f6a494c1b4b5",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "variant": "tx",
+  "version_file": "runtime-bench-output/OHM-055-op-tx/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sat Oct 10 21:32:36 UTC 2026\n******\n",
+  "version_sha256": "7f444023b0e5851d50a26bf40338ca29665b10988154a0ff2d662d918ab83fc3"
+}

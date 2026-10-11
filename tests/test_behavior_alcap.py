@@ -133,6 +133,10 @@ def test_reverse_voltage_is_always_a_violation(registry, recipes):
     assert checks["reverse voltage (not permitted)"]["status"] == "violation"
     forward = rows(evaluate_ratings(compilation, result_at(compilation, 5), registry, RatingContext(ambient_c=25)))
     assert "reverse voltage (not permitted)" not in forward
+    noise = rows(evaluate_ratings(compilation, result_at(compilation, -1e-15), registry, RatingContext(ambient_c=25)))
+    assert "reverse voltage (not permitted)" not in noise   # solver noise at an unbiased node is not reverse bias
+    small = rows(evaluate_ratings(compilation, result_at(compilation, -1e-6), registry, RatingContext(ambient_c=25)))
+    assert small["reverse voltage (not permitted)"]["status"] == "violation"
 
 
 def test_ac_peak_reverse_swing_and_ripple_rows(registry, recipes):

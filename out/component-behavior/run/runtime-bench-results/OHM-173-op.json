@@ -1,0 +1,61 @@
+{
+  "analysis": "op",
+  "circuit_hash": "8180fac3609584284bfd3862e3815fba5722a094eb6fda79886c4303c97fdd03",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "current": 20.0,
+    "drive_role": "P1",
+    "expected": 0.0012,
+    "kind": "absolute",
+    "observable": "path_resistance",
+    "return_role": "M1",
+    "source_facts": {
+      "i_rated": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'\u989d\u5b9a\u7535\u6d41 Current rating 20A (16AWG\u25b3\u226485K)'",
+        "field": "m30_current_rated",
+        "page": 1,
+        "scope": "Amass XT30PW-M30.G.Y/.G.B, spec 2025V0; 16 AWG, temperature rise delta T <= 85 K",
+        "sources": [
+          "https://www.china-amass.net/uploads/32.XT30PW-M30-SPEC-2025V0.pdf"
+        ],
+        "unit": "A",
+        "value": 20
+      },
+      "rc": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "converted_unit": "ohm",
+        "converted_value": 0.0012,
+        "detail": "'\u63a5\u89e6\u7535\u963b Contact Resistance \u22641.2m\u03a9'",
+        "field": "m30_contact_resistance_max",
+        "page": 1,
+        "scope": "Amass XT30PW-M30.G.Y/.G.B, spec 2025V0; maximum, per contact or pair not stated",
+        "sources": [
+          "https://www.china-amass.net/uploads/32.XT30PW-M30-SPEC-2025V0.pdf"
+        ],
+        "unit": "mohm",
+        "value": 1.2
+      }
+    },
+    "tolerance": 1.2e-06
+  },
+  "entry_id": "OHM-173",
+  "entry_research_sha256": "f34252dec6888e91a4a08ca43450f6ab2dbe65475a911d4d018588313438a927",
+  "limits": "Binding check of one bound DC path: the sourced current through the path must reproduce the sourced path resistance (0.1% numerical tolerance, or the sourced tolerance band). It does not validate frequency response, heating, contact wear, isolation, protocol behavior or any rating beyond the stated facts.",
+  "netlist_sha256": "b13e24eb26b74e07d2981cfe835084017ef6c825af6082292b1fafc8e28ed306",
+  "observation_status": "ran",
+  "observed": 0.0012000000000000001,
+  "output_sha256": "c6acd95df504a27f57dfa5478bbfd87a2d28e06b3ad4d88f369ae83eb64691c1",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T07:24:56Z",
+  "raw_output": "runtime-bench-output/OHM-173-op/output.txt",
+  "recipe_source_sha256": "df15838a25783d36cca4fe23de6756cc53208d2ce19f03dc0751f6a494c1b4b5",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "version_file": "runtime-bench-output/OHM-173-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sat Oct 10 21:32:36 UTC 2026\n******\n",
+  "version_sha256": "7f444023b0e5851d50a26bf40338ca29665b10988154a0ff2d662d918ab83fc3"
+}

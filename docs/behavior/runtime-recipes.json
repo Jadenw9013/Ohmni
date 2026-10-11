@@ -1829,6 +1829,54 @@
         "Model scope: Cb and Rlk of ohm_film (spec lines 1746-1752); Resr, Lesl and the VRPK flag are dropped because the X2 defaults they carry do not apply to this DC part."
       ]
     },
+    "OHM-038": {
+      "entry_id": "OHM-038",
+      "behavior_id": "BEH-CAP-FILM",
+      "package": "WIMA MKP-X2 radial box, PCM 15 mm, 18 x 6 x 12.5 mm",
+      "reference_part": "WIMA MKX2AW31004C00 (MKP-X2, 0.1 uF, 305 VAC X2)",
+      "terminal_roles": {
+        "1": "T1",
+        "2": "T2"
+      },
+      "critical_facts": {
+        "value": {
+          "field": "nominal_capacitance",
+          "unit": "uF",
+          "output_unit": "F",
+          "scope_contains": "MKX2AW31004C00"
+        },
+        "vr": {
+          "field": "rated_ac_voltage",
+          "unit": "V AC",
+          "scope_contains": "MKX2AW31004C00"
+        },
+        "rleak": {
+          "field": "minimum_insulation_resistance",
+          "unit": "ohm"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "C{ref} {T1} {T2} {value}\nR{ref}_lk {T1} {T2} {rleak}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 1750
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "No mains, isolation or safety acceptance (D066): this binding is an electrical model only. It does not certify, check or imply X2 subclass suitability, safe mains operation, line-to-line or line-to-neutral use, a discharge/bleeder path, creepage/clearance, fusing or VDE/UL approval status. WIMA's X2 label and approval numbers are manufacturer statements, not a board-level certification.",
+        "Explicit reference WIMA MKX2AW31004C00 (0.1 uF, PCM 15, 6 x 12.5 x 18 mm). Matches the 100 nF / pitch 15 / L 18 default; the 3D default W 8 x H 14 is not an orderable 0.1 uF body. Tolerance, packing and pin-length suffixes are unselected.",
+        "Ideal 0.1 uF with the 1.5 x 10^4 Mohm minimum insulation resistance (C <= 0.33 uF, 100 V, 1 min, +20 C) as leakage; IR falls when hot. No ESR, ESL, self-healing, capacitance drift or ageing; tan d <= 18 x 10^-4 at 1 kHz is recorded, not modeled.",
+        "The 305 VAC (50/60 Hz) rating is bound as vr for reference only; no AC-rating or pulse-rise-time (100 V/us at 432 V) check runs, and the BEH-CAP-FILM ratings rule does not fire for this binding. 560 V DC is a WIMA 'general guide' and DC above 305 V voids the approvals; it is not used as a rating.",
+        "Model scope: Cb and Rlk of ohm_film (spec lines 1746-1752); Resr, Lesl and the VRPK flag are dropped because ESL is an ASSUMPTION and the 388.9 V class peak derives from the superseded 275 VAC default."
+      ]
+    },
     "OHM-039": {
       "entry_id": "OHM-039",
       "behavior_id": "BEH-CAP-MICA",
@@ -2713,6 +2761,214 @@
         "DC winding-resistance model only, using nominal (not maximum) DCR. No magnetising or leakage inductance, coupling, capacitance, core loss or frequency response; the assumed 1 H / 5 mH / 100 pF class defaults are not used.",
         "No galvanic-isolation or safety claim. The absence of an inter-winding element is not an insulation model; 1500 V is a dielectric-strength test value, not a working voltage.",
         "Centre taps 2 and 5 must stay unconnected because the half-winding resistance split is not published. 15 mA primary DC unbalance and 100 mW output are source limits; no saturation model."
+      ]
+    },
+    "OHM-053": {
+      "entry_id": "OHM-053",
+      "behavior_id": "BEH-MAG-XFMR-FLYBACK",
+      "package": "W\u00fcrth WE-FB EFD25 12-pin SMD (750311595)",
+      "reference_part": "W\u00fcrth Elektronik 750311595 (WE-FB, EFD25)",
+      "terminal_roles": {
+        "1": "N1_DOT",
+        "2": "N1_DOT",
+        "3": "N1_RET",
+        "4": "N1_RET",
+        "5": "N3_DOT",
+        "6": "N3_RET",
+        "7": "N2_RET",
+        "8": "N2_RET",
+        "9": "N2_RET",
+        "10": "N2_DOT",
+        "11": "N2_DOT",
+        "12": "N2_DOT"
+      },
+      "pin_role_fact": {
+        "field": "manufacturer_pin_roles",
+        "scope_contains": "750311595"
+      },
+      "critical_facts": {
+        "lp": {
+          "field": "primary_inductance",
+          "unit": "uH",
+          "output_unit": "H"
+        },
+        "llk": {
+          "field": "maximum_leakage_inductance",
+          "unit": "uH",
+          "output_unit": "H"
+        },
+        "n1": {
+          "field": "winding_turns_relative",
+          "unit": "1",
+          "value_path": [
+            "N1"
+          ]
+        },
+        "n2": {
+          "field": "winding_turns_relative",
+          "unit": "1",
+          "value_path": [
+            "N2"
+          ]
+        },
+        "n3": {
+          "field": "winding_turns_relative",
+          "unit": "1",
+          "value_path": [
+            "N3"
+          ]
+        },
+        "rp": {
+          "field": "maximum_winding_dcr",
+          "unit": "ohm",
+          "value_path": [
+            0
+          ]
+        },
+        "rs": {
+          "field": "maximum_winding_dcr",
+          "unit": "ohm",
+          "value_path": [
+            1
+          ]
+        },
+        "ra": {
+          "field": "maximum_winding_dcr",
+          "unit": "ohm",
+          "value_path": [
+            2
+          ]
+        },
+        "isat": {
+          "field": "typical_saturation_current",
+          "unit": "A"
+        }
+      },
+      "derived_parameters": {
+        "ls": {
+          "expression": "lp*(n2/n1)**2",
+          "unit": "H",
+          "basis": "DERIVED",
+          "confidence": "H",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "line": 2997
+          },
+          "detail": "Inductance scales with turns squared on a common core: L_N2 = L_N1 (N2/N1)^2 = 3 uH."
+        },
+        "la": {
+          "expression": "lp*(n3/n1)**2",
+          "unit": "H",
+          "basis": "DERIVED",
+          "confidence": "H",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "line": 2997
+          },
+          "detail": "L_N3 = L_N1 (N3/N1)^2 = 1.92 uH."
+        },
+        "k": {
+          "expression": "sqrt(1-llk/lp)",
+          "unit": "1",
+          "basis": "DERIVED",
+          "confidence": "M",
+          "source": {
+            "document": "COMPONENT_BEHAVIOR_SPEC.md",
+            "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+            "line": 2997
+          },
+          "detail": "Two-winding relation Llk = Lp (1 - k^2) with the 0.4 uH MAXIMUM leakage, so k = 0.9832 is the worst-case (lowest) coupling; one k is used for all three pairs (N2-N3 leakage is not published)."
+        }
+      },
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref}_p {N1_DOT} {ref}_p {rp}\nL{ref}_p {ref}_p {N1_RET} {lp}\nR{ref}_s {N2_DOT} {ref}_s {rs}\nL{ref}_s {ref}_s {N2_RET} {ls}\nR{ref}_a {N3_DOT} {ref}_a {ra}\nL{ref}_a {ref}_a {N3_RET} {la}\nK{ref}_ps L{ref}_p L{ref}_s {k}\nK{ref}_pa L{ref}_p L{ref}_a {k}\nK{ref}_sa L{ref}_s L{ref}_a {k}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 2997
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "No mains, isolation or safety acceptance (D066): this binding is an electrical model only. It does not certify, check or imply functional, basic or reinforced insulation, a working voltage, creepage/clearance or any isolation barrier. 1500 V AC (N1,3 => N2) is a manufacturer insulation TEST value with no duration printed; it is not a working voltage. The model has no element between windings, which is not an insulation model.",
+        "No thermal acceptance: core loss, thermal resistance and temperature rise are not published for 750311595 and are not modeled; winding DCR is the 20 C maximum with no copper tempco. Any loss or temperature estimate from this binding excludes core loss.",
+        "Linear coupled-inductor model: Lp = 12 uH nominal (+/-10% not applied), N2 and N3 inductances from the 2:1:0.8 turns ratio, one coupling k = sqrt(1 - 0.4 uH/12 uH) for all winding pairs (worst-case leakage, all referred to N1). No saturation: ISAT 16 A typ (|dL/L| < 20%) is a bound fact for checks only, and the class XFMR_SAT clamp is not used.",
+        "No interwinding or winding capacitance (CIW is an ASSUMPTION in the class), so ring-down after the leakage spike is not predicted.",
+        "Parallel pins 1/2, 3/4, 7/8/9 and 10/11/12 are each one winding terminal; the compiler refuses a design that puts them on different nets. Dot (phasing) pins: 1,2 (N1), 10,11,12 (N2), 5 (N3).",
+        "Model scope: replaces the class XFMR_SAT include (spec line 2997) with L/K primitives because xfmr.lib is not an inline-hashed asset; DROP/LR saturation terms and CIW are dropped."
+      ]
+    },
+    "OHM-055": {
+      "entry_id": "OHM-055",
+      "behavior_id": "BEH-MAG-ETHMAG",
+      "package": "Bourns PT61017PEL 16-terminal SMD, 1.27 mm pitch, 12.80 x 9.30 mm",
+      "reference_part": "Bourns PT61017PEL (explicit alternative to Pulse H1102NL)",
+      "terminal_roles": {
+        "1": "TD_P",
+        "2": "TD_CT",
+        "3": "TD_N",
+        "6": "RD_P",
+        "7": "RD_CT",
+        "8": "RD_N",
+        "9": "RX_LN",
+        "10": "RX_LCT",
+        "11": "RX_LP",
+        "14": "TX_LN",
+        "15": "TX_LCT",
+        "16": "TX_LP"
+      },
+      "pin_role_fact": {
+        "field": "manufacturer_pin_roles",
+        "scope_contains": "PT61017PEL"
+      },
+      "required_isolated_roles": [
+        "TD_CT",
+        "RD_CT",
+        "TX_LCT",
+        "RX_LCT"
+      ],
+      "critical_facts": {
+        "r_chip": {
+          "field": "pt61017_chip_side_dcr_max",
+          "unit": "ohm"
+        },
+        "r_line": {
+          "field": "pt61017_line_side_dcr_max",
+          "unit": "ohm"
+        },
+        "idc_bias": {
+          "field": "pt61017_ocl_test_dc_bias",
+          "unit": "mA",
+          "output_unit": "A"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref}_td {TD_P} {TD_N} {r_chip}\nR{ref}_rd {RD_P} {RD_N} {r_chip}\nR{ref}_tx {TX_LP} {TX_LN} {r_line}\nR{ref}_rx {RX_LP} {RX_LN} {r_line}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 3366
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "No mains, isolation or safety acceptance (D066): this binding is an electrical model only. It does not certify, check or imply the 802.3 isolation barrier, a working voltage, surge/ESD robustness or PoE use. 1500 VAC (PRI-SEC, 1 mA, 2 s) is a hipot test value, not a working voltage; the absence of an element between chip and line sides is not an insulation model.",
+        "DC winding-resistance model only, at the published maxima: 0.6 ohm for each chip-side winding (1-3, 6-8) and 1.1 ohm for each line-side path (9-11, 14-16) including the series common-mode choke. No magnetizing (350 uH min OCL is bound for reference), leakage, coupling, choke impedance, capacitance, return-loss or insertion-loss behavior; the class ETH_CH subcircuit is not used.",
+        "Centre taps 2, 7, 10 and 15 must stay unconnected: the half-winding split is not published, so any centre-tap bias (PHY supply, Bob Smith termination, PoE) is outside this binding.",
+        "Pins 4, 5, 12 and 13 are physically present but have no function in the Bourns schematic; they are not in the terminal map, so the compiler refuses a design that connects them. This is not an NC claim.",
+        "8 mA is the DC bias at which the 350 uH minimum OCL is specified; it is bound as a DC-current reference, not a rating.",
+        "Explicit Bourns alternative to the Pulse H1102NL spec representative (whose line-side choke resistance and pins 4/5/12/13 are unpublished). Operating 0..70 C.",
+        "Model scope: replaces the class ETH_CH include (spec line 3366) with four DC resistors."
       ]
     },
     "OHM-056": {
@@ -8331,6 +8587,134 @@
       "open_mating_roles": [
         "M_TIP",
         "M_SLEEVE"
+      ]
+    },
+    "OHM-173": {
+      "entry_id": "OHM-173",
+      "behavior_id": "BEH-CON-XT",
+      "package": "Amass XT30PW-M30 right-angle male PCB connector, 2 power pins, pitch 5.0 mm, mated with its female plug",
+      "reference_part": "Amass XT30PW-M30.G.Y (yellow; 2025V0 product specification)",
+      "terminal_roles": {
+        "1": "P1",
+        "2": "P2",
+        "M1": "M1",
+        "M2": "M2"
+      },
+      "open_mating_roles": [
+        "M1",
+        "M2"
+      ],
+      "critical_facts": {
+        "rc": {
+          "field": "m30_contact_resistance_max",
+          "unit": "mohm",
+          "output_unit": "ohm",
+          "scope_contains": "XT30PW-M30"
+        },
+        "i_rated": {
+          "field": "m30_current_rated",
+          "unit": "A",
+          "scope_contains": "XT30PW-M30"
+        },
+        "v_rated": {
+          "field": "m30_voltage_rated_dc",
+          "unit": "V",
+          "scope_contains": "XT30PW-M30"
+        },
+        "t_contact_max": {
+          "field": "m30_temperature_operating",
+          "unit": "degC",
+          "value_path": [
+            1
+          ],
+          "scope_contains": "XT30PW-M30"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref}_c1 {P1} {M1} {rc}\nR{ref}_c2 {P2} {M2} {rc}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 12214
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "No mains, isolation or safety acceptance (D066): this binding is an electrical model only. It does not certify, check or imply battery-connector safety: polarity, reverse connection, short-circuit or fault-current protection, hot-plug arcing/inrush, or fusing. The connector is not a protective device; a pack short far exceeds any rating.",
+        "POLARITY IS NOT ASSIGNED. The Amass 2025V0 drawing numbers neither pin and prints no + / - mark; the catalogue drawing shows a '+' moulded on one housing side face but does not tie it to a PCB hole. P1/P2 are the OHMNI pad names (pad 1 at -X, pad 2 at +X); the model is symmetric and cannot detect a reversed battery. Polarity is unassigned in this binding: it must be decided by the design and checked on the physical part before any battery is connected.",
+        "One resistor per contact path at the full <= 1.2 mohm maximum (Amass does not say per contact or per mated pair; the full value per path is the conservative bound). No self-heating: the class thermal node (Rth, Cth, alpha are ASSUMPTION) is not used.",
+        "Current rating 20 A is stated with a temperature-rise condition (delta T <= 85 K) and 16 AWG; no ambient, PCB copper or duration derating is published and none is modeled. -20..120 C is the part's work temperature (bound as a contact-temperature ceiling, checked only as an upper bound because self-heating is not computed). 80 V DC is the rated voltage; the catalogue's 500 V DC is a withstand value.",
+        "Mating contacts M1/M2 are in open_mating_roles (D052): an unmated plug side gets its own node; only pads 1 and 2 must match the footprint.",
+        "Explicit reference XT30PW-M30.G.Y per Amass 2025V0 spec; the legacy V1.2 sheet values are not interchangeable (see conflicts). Power holes 1.80 mm in 2025V0 vs 1.7 in V1.2.",
+        "Model scope: class lines 'R{ref}_a {A} {Aint} {rc/2}' and 'R{ref}_b ...' (spec line 12214) with each path at the full rc instead of rc/2; the B/R/C thermal lines are dropped because their parameters are ASSUMPTION."
+      ]
+    },
+    "OHM-174": {
+      "entry_id": "OHM-174",
+      "behavior_id": "BEH-CON-XT",
+      "package": "Amass XT60PW-M30 right-angle male PCB connector, 2 power pins, pitch 7.2 mm, mated with its female plug",
+      "reference_part": "Amass XT60PW-M30.G.Y (yellow; 2025V0 product specification)",
+      "terminal_roles": {
+        "1": "P1",
+        "2": "P2",
+        "M1": "M1",
+        "M2": "M2"
+      },
+      "open_mating_roles": [
+        "M1",
+        "M2"
+      ],
+      "critical_facts": {
+        "rc": {
+          "field": "m30_contact_resistance_max",
+          "unit": "mohm",
+          "output_unit": "ohm",
+          "scope_contains": "XT60PW-M30"
+        },
+        "i_rated": {
+          "field": "m30_current_rated",
+          "unit": "A",
+          "scope_contains": "XT60PW-M30"
+        },
+        "v_rated": {
+          "field": "m30_voltage_rated_dc",
+          "unit": "V",
+          "scope_contains": "XT60PW-M30"
+        },
+        "t_contact_max": {
+          "field": "m30_temperature_operating",
+          "unit": "degC",
+          "value_path": [
+            1
+          ],
+          "scope_contains": "XT60PW-M30"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref}_c1 {P1} {M1} {rc}\nR{ref}_c2 {P2} {M2} {rc}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 12214
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "No mains, isolation or safety acceptance (D066): this binding is an electrical model only. It does not certify, check or imply battery-connector safety: polarity, reverse connection, short-circuit or fault-current protection, hot-plug arcing/inrush, or fusing. The connector is not a protective device; a pack short far exceeds any rating.",
+        "POLARITY IS NOT ASSIGNED. The Amass 2025V0 drawing numbers neither pin and prints no + / - mark; the catalogue drawing shows a '+' moulded on one housing side face but does not tie it to a PCB hole. P1/P2 are the OHMNI pad names (pad 1 at -X, pad 2 at +X); the model is symmetric and cannot detect a reversed battery. Polarity is unassigned in this binding: it must be decided by the design and checked on the physical part before any battery is connected.",
+        "One resistor per contact path at the full <= 1.2 mohm maximum (Amass does not say per contact or per mated pair; the full value per path is the conservative bound). No self-heating: the class thermal node (Rth, Cth, alpha are ASSUMPTION) is not used.",
+        "Current rating 35 A is stated with a temperature-rise condition (delta T <= 85 K); no ambient, PCB copper or duration derating is published and none is modeled. -20..120 C is the part's work temperature (bound as a contact-temperature ceiling, checked only as an upper bound because self-heating is not computed). 80 V DC is the rated voltage; the catalogue's 500 V DC is a withstand value.",
+        "Mating contacts M1/M2 are in open_mating_roles (D052): an unmated plug side gets its own node; only pads 1 and 2 must match the footprint.",
+        "Explicit reference XT60PW-M30.G.Y per Amass 2025V0 spec; the legacy V1.2 sheet values are not interchangeable (see conflicts). Power holes 2.90 mm in 2025V0 vs the V1.2 'dia 2.7' callout.",
+        "Model scope: class lines 'R{ref}_a {A} {Aint} {rc/2}' and 'R{ref}_b ...' (spec line 12214) with each path at the full rc instead of rc/2; the B/R/C thermal lines are dropped because their parameters are ASSUMPTION."
       ]
     },
     "OHM-179": {
