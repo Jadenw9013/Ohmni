@@ -465,11 +465,27 @@ def _transient_checks(component, values, b, thermal, upper_only, w):
         v = w.diff("T1", "T2")
         if v is not None:
             stat("peak_v", peak([abs(x) for x in v]))
-            _film_checks(values, b, "peak_v", "peak voltage")
+            if "Tamb" in values:
+                # A waveform may carry AC, whose derating starts at +75 C: a pass needs the 75 C-derated limit,
+                # a violation only the 85 C-derated (DC) one; in between the waveform's content decides.
+                b.add("ambient within rated range", "t_min <= Tamb <= t_max", ("t_min", "t_max"))
+                row = b.add("peak voltage (derated above 75 C for AC)",
+                            "peak_v <= vr*(1 - derate_pct_per_k/100*max(Tamb-75,0))", ("vr", "derate_pct_per_k"))
+                if row["status"] == "violation":
+                    try:
+                        dc_violation = not evaluate("peak_v <= vr*(1 - derate_pct_per_k/100*max(Tamb-85,0))", values)
+                    except ExpressionUnavailable:
+                        dc_violation = False
+                    if not dc_violation:
+                        row.update(status="unknown", reason="Between the AC (+75 C) and DC (+85 C) derated limits; "
+                                   "whether the waveform carries AC decides")
+            else:
+                _film_checks(values, b, "peak_v", "peak voltage", ac=True)
             # The 200 V rms AC rating (50 Hz, 1.4 x Urms + UDC <= Ur), its +75 C derating and the pulse dV/dt
             # limit are not evaluated on a waveform, so a transient run can never pass on the peak alone.
-            b.add("AC voltage, AC derating and pulse dV/dt", "False", ("vac",),
-                  "The AC rating is evaluated only in an AC run at 50 Hz; pulse dV/dt is not bound")
+            b.checks.append({"name": "AC voltage, AC derating and pulse dV/dt", "expression": "", "spec_names": [],
+                             "evidence": {}, "status": "unknown",
+                             "reason": "The AC rating is evaluated only in an AC run at 50 Hz; pulse dV/dt is not bound"})
     elif cls == "BEH-CAP-TANT":
         v, i = w.diff("A", "K"), w.series("i", "A")
         if v is not None:
