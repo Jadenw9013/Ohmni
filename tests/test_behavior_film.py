@@ -69,8 +69,8 @@ def test_binding_uses_only_sourced_wima_mks4_facts(registry, recipes):
 
 
 @pytest.mark.parametrize(("volts", "ambient", "status"), [
-    (190, None, "within_limit"),     # below the 125 C derated 200 V: holds at any rated ambient
-    (300, None, "unknown"),          # above 200 V, within 400 V: ambient decides
+    (190, None, "unknown"),          # no declared ambient: only the full 400 V rating proves anything (D060)
+    (300, None, "unknown"),
     (300, 105, "within_limit"),      # 400*(1-0.0125*20) = 300 V at 105 C
     (301, 105, "violation"),
     (350, None, "unknown"),          # within 400 V, above the 125 C derated value: ambient decides

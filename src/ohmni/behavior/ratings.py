@@ -250,17 +250,19 @@ def _scoped_checks(component, point, context, overrides=None, transient=None, ac
             b.add("ambient within rated range", "Tamb <= 85", ())
             b.add("rated voltage at ambient", "v <= (vr if Tamb <= 65 else vr_85)", ("vr", "vr_85"))
         else:
-            row = b.add("rated voltage at ambient", "v <= vr_85 if v <= vr else False", ("vr", "vr_85"))
-            if row["status"] == "violation" and values.get("v", 0) <= values.get("vr", 0):
-                row.update(status="unknown", reason="Between the 85 C and 65 C voltage ratings; ambient temperature decides")
+            # Without an ambient even the 85 C rating may not apply; only the highest rating proves a violation.
+            upper_only("rated voltage at ambient", "v <= vr", ("vr", "vr_85"),
+                       "Ambient temperature is not declared; the ratings are stated at 65 C and 85 C")
         upper_only("polarity", "v >= 0", (), "No reverse-voltage rating is sourced; reverse bias is never accepted",
                    violation_only=False)
     elif cls == "BEH-CAP-TANT":
         derive("v", "v_A-v_K")
         derive("vrev_limit", "vrev_25 if Tamb <= 25 else vrev_85 if Tamb <= 85 else vrev_125")
-        b.add("rated voltage", "v <= vr", ("vr",),
-              "Rated voltage is stated at 85 C; higher-temperature category voltage is not bound"
-              if values.get("Tamb", 0) > 85 else None)
+        hot = _tant_temperature_reason(values)
+        if hot:
+            upper_only("rated voltage", "v <= vr", ("vr",), hot)
+        else:
+            b.add("rated voltage", "v <= vr", ("vr",))
         guidance = b.add("application voltage (manufacturer MnO2 derating recommendation)", "v <= vapp_85", ("vapp_85",))
         if guidance["status"] == "violation":
             # A recommendation for low-impedance circuits, not a rating: above it is a judgment call, not a failure.
@@ -469,9 +471,11 @@ def _transient_checks(component, values, b, thermal, upper_only, w):
         if v is not None:
             stat("peak_v", peak(v))
             stat("peak_rev", peak([-x for x in v]))
-            b.add("peak forward voltage", "peak_v <= vr", ("vr",),
-                  "Rated voltage is stated at 85 C; higher-temperature category voltage is not bound"
-                  if values.get("Tamb", 0) > 85 else None)
+            hot = _tant_temperature_reason(values)
+            if hot:
+                upper_only("peak forward voltage", "peak_v <= vr", ("vr",), hot)
+            else:
+                b.add("peak forward voltage", "peak_v <= vr", ("vr",))
             if values["peak_rev"] > 0:
                 limit = ("vrev_25 if Tamb <= 25 else vrev_85 if Tamb <= 85 else vrev_125"
                          if "Tamb" in values else "vrev_125")
@@ -495,9 +499,8 @@ def _transient_checks(component, values, b, thermal, upper_only, w):
             if "Tamb" in values:
                 b.add("peak voltage at ambient", "peak_v <= (vr if Tamb <= 65 else vr_85)", ("vr", "vr_85"))
             else:
-                row = b.add("peak voltage at ambient", "peak_v <= vr_85 if peak_v <= vr else False", ("vr", "vr_85"))
-                if row["status"] == "violation" and values["peak_v"] <= values.get("vr", 0):
-                    row.update(status="unknown", reason="Between the 85 C and 65 C ratings; ambient decides")
+                upper_only("peak voltage at ambient", "peak_v <= vr", ("vr", "vr_85"),
+                           "Ambient temperature is not declared; the ratings are stated at 65 C and 85 C")
         if i is not None and "ipk" in values:
             stat("peak_i", peak([abs(x) for x in i]))
             b.add("peak current", "peak_i <= ipk", ("ipk",))
@@ -839,11 +842,20 @@ def circuit_is_linear(netlist):
     Semiconductors, switches, behavioural and digital elements are nonlinear, and so is any element
     whose value reads a circuit voltage or current (the saturating inductor card does).
     """
+    logical = []
     for line in netlist.splitlines():
         text = line.strip()
-        if not text or text.startswith(("*", ".", "+")):
+        if text.startswith("+") and logical:
+            logical[-1] += " " + text[1:]
+        elif text and not text.startswith("*"):
+            logical.append(text)
+    for text in logical:
+        if text.startswith("."):
+            if re.match(r"\.(?:include|inc|lib)\b", text, re.IGNORECASE):
+                return False  # an unscanned file could hold anything
             continue
-        if text[0].upper() in _NONLINEAR_ELEMENTS or re.search(r"(?<![\w.])[iv]\s*\(", text, re.IGNORECASE):
+        if (text[0].upper() in _NONLINEAR_ELEMENTS or re.search(r"(?<![\w.])[iv]\s*\(", text, re.IGNORECASE)
+                or re.search(r"\bpoly\s*\(", text, re.IGNORECASE)):
             return False
     return bool(netlist.strip())
 
@@ -885,9 +897,16 @@ def _ac_checks(component, values, b, thermal, upper_only, window, linear):
                          "reason": "AC run did not print every terminal voltage and probe current of this component"})
         return
     root2 = math.sqrt(2.0)
+    needed = [f"v_{role}" for role in component.role_nodes] + [f"i_{role}" for role in component.role_current_probes]
+    if any(name not in values for name in needed):
+        b.checks.append({"name": "AC checks", "expression": "", "spec_names": [], "evidence": {},
+                         "status": "unknown",
+                         "reason": "The operating point did not print every terminal value of this component, so "
+                                   "the DC part of its AC swing is unknown"})
+        return
 
     def dc(kind, role):
-        return values.get(f"{kind}_{role}", 0.0)
+        return values[f"{kind}_{role}"]
 
     for frequency, v, i in window:
         tag = f" at {frequency:g} Hz"
@@ -915,26 +934,35 @@ def _ac_checks(component, values, b, thermal, upper_only, window, linear):
             vdc, vac = across("A", "K")
             stat(f"vpk_{key}", vdc + root2 * abs(vac))
             stat(f"vrev_{key}", -(vdc - root2 * abs(vac)))
-            add("peak forward voltage (DC plus AC peak)", f"vpk_{key} <= vr", ("vr",),
-                "Rated voltage is stated at 85 C; higher-temperature category voltage is not bound"
-                if values.get("Tamb", 0) > 85 else None)
+            hot = _tant_temperature_reason(values)
+            add("peak forward voltage (DC plus AC peak)", f"vpk_{key} <= vr", ("vr",), hot,
+                violation_only=bool(hot))
             if values[f"vrev_{key}"] > 0:
                 add("peak reverse voltage (transient limit)", f"vrev_{key} <= vrev_125", ("vrev_125",),
                     "A sine reverses every cycle; only transient reverse limits are sourced, so a repeated "
                     "reverse swing can prove a violation but not a pass", violation_only=True)
             if "A" in i and "irip_max" in values:
                 stat(f"irip_{key}", abs(i["A"]))
-                exact = math.isclose(frequency, RIPPLE_RATING_HZ, rel_tol=1e-9)
-                if exact and values.get("Tamb") is not None and values["Tamb"] <= 25:
-                    add("ripple current (rating frequency)", f"irip_{key} <= irip_max", ("irip_max",))
-                    if "esr_max" in values and "pd_max" in values:
+                # The rating's own conditions come from its sourced scope (KEMET T491: "100 kHz, 25 C;
+                # RMS current"), not from the class: a record that does not state them is never exact.
+                scope = component.parameter_evidence.get("irip_max", {}).get("scope", "")
+                stated = "100 kHz" in scope and "25 C" in scope and "RMS" in scope
+                exact = stated and math.isclose(frequency, RIPPLE_RATING_HZ, rel_tol=1e-9)
+                if not stated:
+                    add("ripple current", f"irip_{key} <= irip_max", ("irip_max",),
+                        "The ripple rating's frequency, temperature or RMS basis is not stated in its source "
+                        "scope", violation_only=True)
+                elif exact and values.get("Tamb") is not None and values["Tamb"] <= 25:
+                    add("ripple current (rating frequency)", f"irip_{key} <= irip_max", ("irip_max",), thermal)
+                    if ("esr_max" in values and "pd_max" in values
+                            and "100 kHz" in component.parameter_evidence.get("esr_max", {}).get("scope", "")):
                         stat(f"pesr_{key}", values[f"irip_{key}"] ** 2 * values["esr_max"])
                         add("ESR heating with the maximum 100 kHz ESR", f"pesr_{key} <= pd_max",
                             ("esr_max", "pd_max"), thermal)
                 elif exact:
                     add("ripple current (rating frequency)", f"irip_{key} <= irip_max", ("irip_max",),
                         "The ripple rating is stated at 25 C; a higher or undeclared ambient needs the "
-                        "temperature multiplier, which is not bound")
+                        "temperature multiplier, which is not bound", violation_only=True)
                 elif frequency < RIPPLE_RATING_HZ:
                     add("ripple current", f"irip_{key} <= irip_max", ("irip_max",),
                         "Below 100 kHz the allowed ripple is lower by an unbound frequency multiplier",
@@ -961,8 +989,14 @@ def _ac_checks(component, values, b, thermal, upper_only, window, linear):
         elif cls == "BEH-CAP-EDLC" and {"P", "N"} <= set(v):
             vdc, vac = across("P", "N")
             stat(f"vpk_{key}", vdc + root2 * abs(vac))
-            limit = "(vr if Tamb <= 65 else vr_85)" if "Tamb" in values else "vr_85"
-            add("peak voltage at ambient (DC plus AC peak)", f"vpk_{key} <= {limit}", ("vr", "vr_85"))
+            if "Tamb" in values and values["Tamb"] <= 85:
+                add("peak voltage at ambient (DC plus AC peak)", f"vpk_{key} <= (vr if Tamb <= 65 else vr_85)",
+                    ("vr", "vr_85"))
+            else:
+                # vr is the sourced 65 C rating and vr_85 the 85 C rating (KYOCERA AVX SCC); nothing is rated
+                # above 85 C, and without an ambient only the highest rating can prove a violation.
+                add("peak voltage at ambient (DC plus AC peak)", f"vpk_{key} <= vr", ("vr", "vr_85"),
+                    "Ambient temperature is undeclared or above the 85 C rated range", violation_only=True)
             if "P" in i and "ipk" in values:
                 stat(f"ipk_{key}", abs(dc("i", "P")) + root2 * abs(i["P"]))
                 add("peak current (DC plus AC peak)", f"ipk_{key} <= ipk", ("ipk",))
@@ -1003,6 +1037,13 @@ def _ac_checks(component, values, b, thermal, upper_only, window, linear):
                 else:
                     add(f"contact RMS current {role} (DC plus AC)", f"irms_{role}_{key} <= {current}",
                         (current,), thermal)
+        if not rows:
+            # No translated AC rating for this class (or none of its limits is bound): the AC swing is
+            # not checked, so the part cannot pass on its operating-point rows alone.
+            b.checks.append({"name": "AC swing" + tag, "expression": "", "spec_names": [], "evidence": {},
+                             "status": "unknown",
+                             "reason": "No sinusoidal steady-state rating check is defined for this part; its "
+                                       "operating-point rows do not cover the AC swing"})
         if not linear:
             for row in rows:
                 if row["status"] != "unknown" or not row["reason"]:
@@ -1015,22 +1056,24 @@ def _ac_checks(component, values, b, thermal, upper_only, window, linear):
 def _film_checks(values, b, observed, label, tag=""):
     """WIMA MKS 4 DC rating: Ur, derated by the sourced %/K above +85 C, within -55..+125 C (D059).
 
-    Below half the rating the result holds at any temperature up to +125 C; above it the ambient decides.
+    With no declared ambient only the full rating can prove a violation; the ambient decides a pass (D060).
     """
-    derated = "vr*(1 - derate_pct_per_k/100*max(Tamb-85,0))"
     if "Tamb" in values:
         b.add("ambient within rated range" + tag, "Tamb <= t_max", ("t_max",))
-        return b.add(label + " (derated above 85 C)" + tag, f"{observed} <= {derated}", ("vr", "derate_pct_per_k"))
-    row = b.add(label + " (derated above 85 C)" + tag,
-                f"{observed} <= vr*(1 - derate_pct_per_k/100*(t_max-85))", ("vr", "derate_pct_per_k", "t_max"))
-    if row["status"] == "violation":
-        try:
-            within_25c = evaluate(f"{observed} <= vr", values)
-        except ExpressionUnavailable:
-            within_25c = False
-        if within_25c:
-            row.update(status="unknown", reason="Above the +125 C derated rating but within the rating at or below "
-                       "+85 C; the ambient temperature decides")
-        else:
-            row.update(reason=None)
+        return b.add(label + " (derated above 85 C)" + tag,
+                     f"{observed} <= vr*(1 - derate_pct_per_k/100*max(Tamb-85,0))", ("vr", "derate_pct_per_k"))
+    row = b.add(label + " (derated above 85 C)" + tag, f"{observed} <= vr", ("vr", "derate_pct_per_k"))
+    if row["status"] == "within_limit":
+        row.update(status="unknown", reason="Ambient temperature is not declared; the rating is derated above "
+                   "+85 C and ends at +125 C")
     return row
+
+
+def _tant_temperature_reason(values):
+    """The T491 rated voltage is stated up to 85 C ("rated VDC at 85 C"); above it, or with no declared
+    ambient, the rating can only prove a violation."""
+    if "Tamb" not in values:
+        return "Ambient temperature is not declared; the rated voltage applies only up to 85 C"
+    if values["Tamb"] > 85:
+        return "Rated voltage is stated at 85 C; higher-temperature category voltage is not bound"
+    return None

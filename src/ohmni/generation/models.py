@@ -65,6 +65,25 @@ class ComponentRequest(StrictModel):
     hand_solderable_preferred: bool = False
 
 
+class ComponentResolutionRequest(StrictModel):
+    """Deterministic catalog gate evaluated before any architecture proposal."""
+
+    required_part_ids: tuple[str, ...]
+    catalog_part_ids: tuple[str, ...]
+
+    @model_validator(mode="after")
+    def _sets_are_canonical(self):
+        if self.required_part_ids != tuple(sorted(set(self.required_part_ids))):
+            raise ValueError("required part IDs must be sorted and unique")
+        if self.catalog_part_ids != tuple(sorted(set(self.catalog_part_ids))):
+            raise ValueError("catalog part IDs must be sorted and unique")
+        return self
+
+    @property
+    def missing_part_ids(self) -> tuple[str, ...]:
+        return tuple(part for part in self.required_part_ids if part not in self.catalog_part_ids)
+
+
 class ComponentCandidate(StrictModel):
     part_id: str
     display_name: str
@@ -225,6 +244,7 @@ class DesignReport(StrictModel):
     state: GenerationState
     requirements: CompiledRequirements | None = None
     architecture: ArchitectureProposal | None = None
+    component_resolution: ComponentResolutionRequest | None = None
     initial_circuit_hash: str | None = None
     final_circuit: CircuitIR | None = None
     semantic_attempts: list[VerificationReport] = Field(default_factory=list)

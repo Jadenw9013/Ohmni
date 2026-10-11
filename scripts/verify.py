@@ -42,7 +42,8 @@ def _writable_cache() -> Path:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "tier", choices=("workflow", "fast", "integration", "corpus", "slow", "full")
+        "tier",
+        choices=("workflow", "fast", "integration", "simulation", "corpus", "slow", "full"),
     )
     args = parser.parse_args(argv)
     basetemp = _writable_basetemp()
@@ -62,6 +63,7 @@ def main(argv: list[str] | None = None) -> int:
         + ["tests/test_ai_workflow.py", "-o", "addopts=-q --strict-markers"],
         "fast": pytest,
         "integration": pytest + ["-m", "integration"],
+        "simulation": pytest + ["-m", "simulation_integration"],
         # The corpus tier is a separate evidence gate on purpose. `fast` runs
         # offline and skips every source-dependent test when the pinned
         # manufacturer PDFs are absent, so a green `fast` run must never be able

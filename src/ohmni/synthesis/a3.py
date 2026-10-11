@@ -26,7 +26,7 @@ from .a1 import (
 )
 from .base import build_usb_esp32_base, common_preflight
 from .models import ArchetypeId, RefusalCode, SynthesisBrief, SynthesisResult
-from .peripherals import SUPPORTED_I2C_PARTS, add_i2c_bus, add_i2c_sensor, address_option
+from .peripherals import add_i2c_bus, add_i2c_sensor, address_option
 from .placement import PlacementIntentBuilder, rail_evidence
 
 SPI_MEMORY_PART_ID = "25LC256-I/SN"
@@ -55,7 +55,7 @@ def synthesize_a3(brief: SynthesisBrief, catalog=None) -> SynthesisResult:
                            f"A3 currently supports catalog-backed {SPI_MEMORY_PART_ID} EEPROMs.",
                            f"spi_devices.{index}.part_id")
     for slot in brief.sensors:
-        if slot.part_id not in SUPPORTED_I2C_PARTS or catalog.get(slot.part_id) is None:
+        if catalog.get(slot.part_id) is None:
             return _refuse(brief, RefusalCode.SENSOR_UNAVAILABLE, "Choose a supported I2C sensor.", "sensors")
         try:
             address_option(catalog.require(slot.part_id), slot.address)
