@@ -52,6 +52,16 @@
         "source_status": "primary_source_opened",
         "title": "Artix7 package device pinout files",
         "url": "https://download.amd.com/adaptive-socs-and-fpgas/developer/adaptive-socs-and-fpgas/package-pinout-files/a7packages/a7all.zip"
+      },
+      {
+        "document_id": "ug470",
+        "manufacturer": "AMD",
+        "note": "Archived 2026-10-11 (ledger sha256 52aa1f1943cd...); configuration mode pins and the high-Z state of unused configuration pins (D075).",
+        "page": null,
+        "revision": "UG470 v1.17 (December 5, 2023)",
+        "source_status": "primary_source_opened",
+        "title": "7 Series FPGAs Configuration User Guide UG470",
+        "url": "https://docs.amd.com/api/khub/documents/FOs3lXmlcWxBhTIFxVKyGA/content"
       }
     ],
     "entry_id": "OHM-138",
@@ -560,21 +570,128 @@
         ],
         "unit": "pF",
         "value": 8
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "FT/FTG256 17 x 17 XC7A35T 8.4 19.8 4.24 (thetaJB thetaJA thetaJC)",
+        "field": "thermal_resistance_junction_ambient",
+        "page": 310,
+        "scope": "XC7A35T-1FTG256C; commercial speed grade-1,not -1LI; UG475 Table 5-1 FT/FTG256 17x17 XC7A35T, still air",
+        "sources": [
+          "https://docs.amd.com/api/khub/documents/kHyYQ6XzXnQwR2O~gaV~MQ/content"
+        ],
+        "unit": "K/W",
+        "value": 19.8
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "A total of 200 mA per bank should not be exceeded.",
+        "field": "clamp_current_per_bank_max",
+        "page": 3,
+        "scope": "XC7A35T-1FTG256C; commercial speed grade-1,not -1LI; DS181 Table 2 note 8 (IIN clamp current)",
+        "sources": [
+          "https://docs.amd.com/api/khub/documents/iAkxxTOk96ANLJqYf2hgrQ/content"
+        ],
+        "unit": "mA",
+        "value": 200
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "I/O input voltage -0.4 VCCO + 0.55 V",
+        "field": "absolute_io_input_above_vcco_max",
+        "page": 1,
+        "scope": "XC7A35T-1FTG256C; commercial speed grade-1,not -1LI; DS181 Table 1 VIN I/O input voltage max = VCCO + 0.55",
+        "sources": [
+          "https://docs.amd.com/api/khub/documents/iAkxxTOk96ANLJqYf2hgrQ/content"
+        ],
+        "unit": "V",
+        "value": 0.55
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "I/O input voltage -0.4",
+        "field": "absolute_io_input_below_gnd_max",
+        "page": 1,
+        "scope": "XC7A35T-1FTG256C; commercial speed grade-1,not -1LI; DS181 Table 1 VIN min -0.4 V (magnitude)",
+        "sources": [
+          "https://docs.amd.com/api/khub/documents/iAkxxTOk96ANLJqYf2hgrQ/content"
+        ],
+        "unit": "V",
+        "value": 0.4
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "When PUDC_B is High, internal pull-up resistors are disabled on each SelectIO pin.",
+        "field": "preconfig_pullups_disabled_when_pudc_high",
+        "page": 22,
+        "scope": "XC7A35T-1FTG256C; commercial speed grade-1,not -1LI; UG475 Table 1-12 PUDC_B",
+        "sources": [
+          "https://docs.amd.com/api/khub/documents/kHyYQ6XzXnQwR2O~gaV~MQ/content"
+        ],
+        "unit": null,
+        "value": true
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "JTAG 101 x1 Not Applicable",
+        "field": "jtag_mode_pins",
+        "page": 17,
+        "scope": "7 series; UG470 v1.17 Table 2-1 configuration modes",
+        "sources": [
+          "https://docs.amd.com/api/khub/documents/FOs3lXmlcWxBhTIFxVKyGA/content"
+        ],
+        "unit": null,
+        "value": "M[2:0]=101"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Empty cells indicate that the pin is not used in the configuration mode and is ignored and is high-Z during configuration.",
+        "field": "unused_config_pins_state",
+        "page": 18,
+        "scope": "7 series; UG470 v1.17 Table 2-2 note 6 (also Table 2-3 p19)",
+        "sources": [
+          "https://docs.amd.com/api/khub/documents/FOs3lXmlcWxBhTIFxVKyGA/content"
+        ],
+        "unit": null,
+        "value": "high-Z during configuration"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "If the VCCO_0 supply for bank 0 is supplied with 2.5V or 3.3V, then the CFGBVS pin must be tied High",
+        "field": "cfgbvs_rule",
+        "page": 20,
+        "scope": "7 series; UG470 v1.17 Table 2-4 CFGBVS",
+        "sources": [
+          "https://docs.amd.com/api/khub/documents/FOs3lXmlcWxBhTIFxVKyGA/content"
+        ],
+        "unit": null,
+        "value": "tie to VCCO_0 when VCCO_0 is 2.5 V or 3.3 V"
       }
     ],
     "remaining_open_items": [
       "Configured FPGA logic/protocols are not simulable in ngspice.",
       "IO standard,bank voltage,configured drive and activity-dependent power must be supplied; no generic drive/current or thermal model.",
-      "Complete XC7A35T-1FTG256C ordering code has not been independently established; UG475 p64 only supports XC7A35T in FTG256."
+      "Complete XC7A35T-1FTG256C ordering code has not been independently established; UG475 p64 only supports XC7A35T in FTG256.",
+      "Former simulation blocker resolved for the bound reference (2026-10-11, D075): No validated interface recipe or configuration-specific ratings. Resolution: The unconfigured device has a manufacturer-defined pin state independent of any bitstream: with M[2:0] = 101 (JTAG mode, UG470 v1.17 Table 2-1 p17) configuration pins the mode does not use are high-Z (p18), and PUDC_B High disables the SelectIO pull-ups (UG475 Table 1-12 p22). The configuration-independent ratings are sourced (DS181 Tables 1-3; UG475 Table 5-1 thetaJA 19.8 C/W). Configuration-specific ratings stay out of scope: the part is bound as its electrical pins in that unconfigured state; firmware/bitstream is not modeled.",
+      "Configured behavior (I/O standards, drive, termination, logic) is not modeled.",
+      "VCCINT, VCCAUX, VCCBRAM and VCCO supply currents are not modeled.",
+      "INIT_B, DONE and CCLK activity before configuration is not modeled.",
+      "Only the -1 commercial (C) grade is bound."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "No validated interface recipe or configuration-specific ratings."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-138.md",
-      "document_sha256": "0b8191c061aba87d2f69410ebdceafc041c50689b8e56ba599b0df52c6e9a968",
+      "document_sha256": "c5a6bea0c1bf81f3eaf7ce7d7f081659b337628ce33e66b193291da0ec8c9211",
       "fragment_sha256": null,
       "line": 1
     }
@@ -584,8 +701,8 @@
     "REFERENCE-DIMENSION-COMPATIBILITY-POLICY"
   ],
   "schema_version": 1,
-  "simulation_disposition": "not_simulable",
-  "simulation_reason": "A package has no electrical function until a sourced reference part is bound.",
+  "simulation_disposition": "simulable",
+  "simulation_reason": "Simulates as the bound reference part (XC7A35T / XC7A35T FTG256, unconfigured (JTAG mode, PUDC_B high)): electrical pins in reset state only; firmware not modeled. The package alone has no electrical function, so results describe that part in this package.",
   "source": {
     "document": "COMPONENT_BEHAVIOR_SPEC.md",
     "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",

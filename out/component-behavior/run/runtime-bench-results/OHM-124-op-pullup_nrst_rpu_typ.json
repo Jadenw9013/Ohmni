@@ -1,0 +1,98 @@
+{
+  "analysis": "op",
+  "circuit_hash": "4ebba0fc60ec964e05020d634a4845e60ba5a51f3077e2f88f42b942aee7340d",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "derivation": "Pull-up current V/R into a grounded pad over the sourced resistance range.",
+    "kind": "interval",
+    "maximum": 0.00012,
+    "minimum": 7.2e-05,
+    "observable": "pin_current",
+    "pad_model": "dio_pin",
+    "pad_supply": "VDD",
+    "pin_role": "NRST",
+    "reset_state": "DS8626 Rev 12 Table 6: all I/Os are floating inputs during and after reset unless a note or a bracketed reset function says otherwise (p48); NRST has its permanent pull-up (p121).",
+    "source_facts": {
+      "nrst_rpu_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "converted_unit": "ohm",
+        "converted_value": 50000.0,
+        "detail": "RPU Weak pull-up equivalent resistor(2) VIN = VSS 30 40 50 kOhm",
+        "field": "nrst_pullup_resistance_range",
+        "page": 121,
+        "scope": "STM32F405RGT6 LQFP64; DS8626 Rev 12; Table 51 NRST RPU [min, typ, max]; 'connected to a permanent pull-up resistor'",
+        "selected_value": 50,
+        "selected_value_path": [
+          2
+        ],
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+        ],
+        "unit": "kohm",
+        "value": [
+          30,
+          40,
+          50
+        ]
+      },
+      "nrst_rpu_min": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "converted_unit": "ohm",
+        "converted_value": 30000.0,
+        "detail": "RPU Weak pull-up equivalent resistor(2) VIN = VSS 30 40 50 kOhm",
+        "field": "nrst_pullup_resistance_range",
+        "page": 121,
+        "scope": "STM32F405RGT6 LQFP64; DS8626 Rev 12; Table 51 NRST RPU [min, typ, max]; 'connected to a permanent pull-up resistor'",
+        "selected_value": 30,
+        "selected_value_path": [
+          0
+        ],
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+        ],
+        "unit": "kohm",
+        "value": [
+          30,
+          40,
+          50
+        ]
+      },
+      "supply_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "VDD Standard operating voltage - 1.8(2) - 3.6 V",
+        "field": "recommended_supply_max",
+        "page": 81,
+        "scope": "STM32F405RGT6 LQFP64; DS8626 Rev 12; Table 14 VDD",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+        ],
+        "unit": "V",
+        "value": 3.6
+      }
+    },
+    "supply_voltages": {
+      "VDD": 3.6
+    }
+  },
+  "entry_id": "OHM-124",
+  "entry_research_sha256": "60d614b78673cc2576d5105779cb8c4ed836f27ae55a060d5accaeef6fefb22a",
+  "limits": "Reset-state electrical check of one pin with every rail at its sourced recommended maximum: the pin, shorted to ground, must draw only its sourced leakage (floating input) or its sourced pull-up current. Firmware, clocks, peripherals and output drive are not modeled; the leakage term of the hashed pad is zero, so the leakage check bounds the model from above only.",
+  "netlist_sha256": "cf40d5dd1dbf1ca7f74529ebb4e892b371f931bfca1eb12ddd6a2f2510520962",
+  "observation_status": "ran",
+  "observed": 9e-05,
+  "output_sha256": "74ac75edc0d5cb6504261c03425ce437c919e44d12620977d3a29d0e55652273",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T22:04:40Z",
+  "raw_output": "runtime-bench-output/OHM-124-op-pullup_nrst_rpu_typ/output.txt",
+  "recipe_source_sha256": "e0b0e3e95da25117d09e2c6765f7d4461d2093e15148e89b70f8256c0ffe0eda",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "variant": "pullup_nrst_rpu_typ",
+  "version_file": "runtime-bench-output/OHM-124-op-pullup_nrst_rpu_typ/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n",
+  "version_sha256": "2cdcb25fcf77dea87742b9ac629a0b5ba20169e01beb2b59fdd2e41ee348a45d"
+}

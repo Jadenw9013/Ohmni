@@ -1,0 +1,74 @@
+{
+  "analysis": "op",
+  "circuit_hash": "40bdcfe4826ff4e9921b82ef4eeea09783dd2ed628c557c6bcd3666731de3e7a",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "derivation": "A floating reset-state input draws no more than the sourced maximum leakage.",
+    "kind": "interval",
+    "maximum": 1e-06,
+    "minimum": 0.0,
+    "observable": "pin_current",
+    "pad_model": "dio_pin_ft",
+    "pad_supply": "VDD1",
+    "pin_role": "PA10",
+    "reset_state": "RM0008 Rev 9 section 8.1.1 (p140): I/O ports in Input Floating mode during and just after reset, JTAG pins PA15/PA13/PB4 pull-up and PA14 pull-down; NRST has its pull-up (DS5319 Table 39).",
+    "source_facts": {
+      "io_leak_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "converted_unit": "A",
+        "converted_value": 1e-06,
+        "detail": "Input leakage current(6) VSS <= VIN <= VDD Standard I/Os +-1; VIN = 5 V I/O FT 3",
+        "field": "io_leakage_max",
+        "page": 61,
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 36 Ilkg standard I/Os, VSS <= VIN <= VDD (FT at VIN = 5 V: 3 uA)",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
+        ],
+        "unit": "uA",
+        "value": 1
+      },
+      "supply_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "VDD Standard operating voltage - 2 3.6",
+        "field": "recommended_supply_range",
+        "page": 38,
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 9 VDD standard operating voltage",
+        "selected_value": 3.6,
+        "selected_value_path": [
+          1
+        ],
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
+        ],
+        "unit": "V",
+        "value": [
+          2,
+          3.6
+        ]
+      }
+    },
+    "supply_voltages": {
+      "VDD1": 3.6
+    }
+  },
+  "entry_id": "OHM-131",
+  "entry_research_sha256": "e34c08eb71d9987eeaf81746fb407f7fe7eab7ce505a166a4c8d7ad7c5226e90",
+  "limits": "Reset-state electrical check of one pin with every rail at its sourced recommended maximum: the pin, shorted to ground, must draw only its sourced leakage (floating input) or its sourced pull-up current. Firmware, clocks, peripherals and output drive are not modeled; the leakage term of the hashed pad is zero, so the leakage check bounds the model from above only.",
+  "netlist_sha256": "7aa6bb4bc87711a53570fac58fdc42bf572341f14a21b98fc8fe01c0efa5619f",
+  "observation_status": "ran",
+  "observed": 8.87289e-43,
+  "output_sha256": "205afa514139998e7577632f787d2c0c5ba2f1425f12809c1cb31d9b6185b118",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T22:04:48Z",
+  "raw_output": "runtime-bench-output/OHM-131-op-hiz_dio_pin_ft/output.txt",
+  "recipe_source_sha256": "e0b0e3e95da25117d09e2c6765f7d4461d2093e15148e89b70f8256c0ffe0eda",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "variant": "hiz_dio_pin_ft",
+  "version_file": "runtime-bench-output/OHM-131-op-hiz_dio_pin_ft/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n",
+  "version_sha256": "2cdcb25fcf77dea87742b9ac629a0b5ba20169e01beb2b59fdd2e41ee348a45d"
+}

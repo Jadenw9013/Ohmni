@@ -19,7 +19,10 @@
       "bench-results/BEH-PKG-IC-BINDING--P3.json",
       "bench-results/BEH-PKG-IC-BINDING--P4.json"
     ],
-    "conflicts": [],
+    "conflicts": [
+      "D075: the EP open item 'do not copy a generic GND rule' is answered by the manufacturer for this package only (DS5319 Rev 20 p83); the VFQFPN36 note differs.",
+      "D075: the recorded UFQFPN48 pin map (32mcu.com mirror) is unchanged in DS5319 Rev 20 Figure 9 for pins 1-48; the bound map adds the exposed pad as role EP (p83 outline note 3), which the binding requires on the VSS net."
+    ],
     "documents": [
       {
         "document_id": "stm32f103",
@@ -30,6 +33,26 @@
         "source_status": "manufacturer_document_mirror",
         "title": "STM32F103x8/xB datasheet",
         "url": "https://www.32mcu.com/pdf/PDF_4/STM32F103C8.pdf"
+      },
+      {
+        "document_id": "stm32f103-ds5319-rev20",
+        "manufacturer": "STMicroelectronics",
+        "note": "ST-hosted, archived by a named manual browser download (ledger sha256 1e54ce18e6c3...); read 2026-10-11 for the pin-level binding (D075). Supersedes the 32mcu.com mirror for every fact it re-sources.",
+        "page": null,
+        "revision": "DS5319 Rev 20 (July 2025)",
+        "source_status": "primary_source_opened",
+        "title": "STM32F103x8/xB datasheet DS5319",
+        "url": "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
+      },
+      {
+        "document_id": "stm32f10x-rm0008-rev9",
+        "manufacturer": "STMicroelectronics",
+        "note": "ST-authored PDF hosted by Arm Keil (st.com refused the archiver); ledger sha256 781efe5cc8f6.... Used only for the GPIO reset state (section 8.1.1).",
+        "page": null,
+        "revision": "Doc ID 13902 Rev 9 (June 2009)",
+        "source_status": "primary_source_opened",
+        "title": "RM0008 STM32F10xxx reference manual",
+        "url": "https://www.keil.com/dd/docs/datashts/st/stm32f10xxx.pdf"
       }
     ],
     "entry_id": "OHM-131",
@@ -40,7 +63,7 @@
         "detail": null,
         "field": "reference_part",
         "page": 26,
-        "scope": "STM32F103CBU6 UFQFPN48,suffix6; ordering scheme p108; code decoded from Table 63: C=48 pins, B=128 Kbytes Flash, U=VFQFPN or UFQFPN, 6=-40 to 85 C; full code not printed in document",
+        "scope": "STM32F103CBU6 UFQFPN48,suffix6; ordering scheme p108",
         "sources": [
           "https://www.32mcu.com/pdf/PDF_4/STM32F103C8.pdf"
         ],
@@ -51,11 +74,40 @@
         "basis": "MFR_DATASHEET",
         "confidence": "H",
         "detail": null,
-        "field": "manufacturer_pin_roles",
-        "page": 26,
-        "scope": "STM32F103CBU6 UFQFPN48,suffix6; Figure9 inspected; no assumed EP electrical role; role names shortened to port/supply names (printed PC13-TAMPER-RTC, PC14-OSC32_IN, PC15-OSC32_OUT, PD0-OSC_IN, PD1-OSC_OUT, PA0-WKUP; VSS_1..VDD_3 written without underscore)",
+        "field": "operating_ambient_range",
+        "page": 39,
+        "scope": "STM32F103CBU6 UFQFPN48,suffix6; suffix6 atmaximum power",
         "sources": [
           "https://www.32mcu.com/pdf/PDF_4/STM32F103C8.pdf"
+        ],
+        "unit": "C",
+        "value": [
+          -40,
+          85
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_package_power_at85C",
+        "page": 38,
+        "scope": "STM32F103CBU6 UFQFPN48,suffix6; UFQFPN48,suffix6",
+        "sources": [
+          "https://www.32mcu.com/pdf/PDF_4/STM32F103C8.pdf"
+        ],
+        "unit": "mW",
+        "value": 624
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Figure 9: 1 VBAT, 2 PC13, ..., 44 BOOT0, 45 PB8, 46 PB9, 47 VSS_3, 48 VDD_3; p83 note 3: exposed die pad on the underside",
+        "field": "manufacturer_pin_roles",
+        "page": 26,
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Figure 9 UFQFPN48 pinout, cross-checked with Table 5; EP per p83 outline note 3",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
         ],
         "unit": null,
         "value": {
@@ -106,18 +158,19 @@
           "6": "PD1",
           "7": "NRST",
           "8": "VSSA",
-          "9": "VDDA"
+          "9": "VDDA",
+          "EP": "EP"
         }
       },
       {
         "basis": "MFR_DATASHEET",
         "confidence": "H",
-        "detail": null,
+        "detail": "VDD Standard operating voltage - 2 3.6",
         "field": "recommended_supply_range",
         "page": 38,
-        "scope": "STM32F103CBU6 UFQFPN48,suffix6; VDD; VDDA>=2.4V when ADC used",
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 9 VDD standard operating voltage",
         "sources": [
-          "https://www.32mcu.com/pdf/PDF_4/STM32F103C8.pdf"
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
         ],
         "unit": "V",
         "value": [
@@ -128,25 +181,25 @@
       {
         "basis": "MFR_DATASHEET",
         "confidence": "H",
-        "detail": null,
+        "detail": "VDD-VSS External main supply voltage (including VDDA and VDD) -0.3 4.0",
         "field": "absolute_supply_max",
         "page": 37,
-        "scope": "STM32F103CBU6 UFQFPN48,suffix6; VDD/VDDA; note 1: all main power (VDD, VDDA) and ground (VSS, VSSA) pins must always be connected to the external power supply, in the permitted range",
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 6 VDD-VSS including VDDA",
         "sources": [
-          "https://www.32mcu.com/pdf/PDF_4/STM32F103C8.pdf"
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
         ],
         "unit": "V",
-        "value": 4
+        "value": 4.0
       },
       {
         "basis": "MFR_DATASHEET",
         "confidence": "H",
-        "detail": null,
+        "detail": "Output current sunk by any I/O and control pin 25; Output current source by any I/Os and control pin -25 mA",
         "field": "maximum_io_pin_current",
         "page": 37,
-        "scope": "STM32F103CBU6 UFQFPN48,suffix6; absolute magnitude",
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 7 IIO, sunk or sourced by any I/O and control pin",
         "sources": [
-          "https://www.32mcu.com/pdf/PDF_4/STM32F103C8.pdf"
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
         ],
         "unit": "mA",
         "value": 25
@@ -154,12 +207,12 @@
       {
         "basis": "MFR_DATASHEET",
         "confidence": "H",
-        "detail": null,
+        "detail": "IVDD Total current into VDD/VDDA power lines (source)(1) 150",
         "field": "maximum_supply_current",
         "page": 37,
-        "scope": "STM32F103CBU6 UFQFPN48,suffix6; totalVDD/VDDA;totalVSS separately150; note 1: all main power (VDD, VDDA) and ground (VSS, VSSA) pins must always be connected to the external power supply, in the permitted range",
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 7 IVDD total current into VDD/VDDA power lines",
         "sources": [
-          "https://www.32mcu.com/pdf/PDF_4/STM32F103C8.pdf"
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
         ],
         "unit": "mA",
         "value": 150
@@ -167,12 +220,25 @@
       {
         "basis": "MFR_DATASHEET",
         "confidence": "H",
-        "detail": null,
-        "field": "maximum_junction_temperature",
-        "page": 38,
-        "scope": "STM32F103CBU6 UFQFPN48,suffix6; absolute",
+        "detail": "IVSS Total current out of VSS ground lines (sink)(1) 150",
+        "field": "maximum_ground_current",
+        "page": 37,
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 7 IVSS total current out of VSS ground lines",
         "sources": [
-          "https://www.32mcu.com/pdf/PDF_4/STM32F103C8.pdf"
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
+        ],
+        "unit": "mA",
+        "value": 150
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "TJ Maximum junction temperature 150",
+        "field": "maximum_junction_temperature",
+        "page": 37,
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 8 thermal characteristics (absolute)",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
         ],
         "unit": "C",
         "value": 150
@@ -180,12 +246,12 @@
       {
         "basis": "MFR_DATASHEET",
         "confidence": "H",
-        "detail": null,
+        "detail": "TJ Junction temperature range 6 suffix version -40 105",
         "field": "recommended_junction_temperature_max",
-        "page": 39,
-        "scope": "STM32F103CBU6 UFQFPN48,suffix6; suffix6",
+        "page": 38,
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 9 TJ, 6 suffix version",
         "sources": [
-          "https://www.32mcu.com/pdf/PDF_4/STM32F103C8.pdf"
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
         ],
         "unit": "C",
         "value": 105
@@ -193,28 +259,12 @@
       {
         "basis": "MFR_DATASHEET",
         "confidence": "H",
-        "detail": null,
-        "field": "operating_ambient_range",
-        "page": 39,
-        "scope": "STM32F103CBU6 UFQFPN48,suffix6; suffix6 atmaximum power",
-        "sources": [
-          "https://www.32mcu.com/pdf/PDF_4/STM32F103C8.pdf"
-        ],
-        "unit": "C",
-        "value": [
-          -40,
-          85
-        ]
-      },
-      {
-        "basis": "MFR_DATASHEET",
-        "confidence": "H",
-        "detail": null,
+        "detail": "Thermal resistance junction-ambient UFQFPN 48 - 7 x 7 mm / 0.5 mm pitch 32",
         "field": "thermal_resistance_junction_ambient",
-        "page": 105,
-        "scope": "STM32F103CBU6 UFQFPN48,suffix6; UFQFPN48,referenceJESD51-2stillair",
+        "page": 101,
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 63 UFQFPN 48 7 x 7 mm, JESD51-2 still air",
         "sources": [
-          "https://www.32mcu.com/pdf/PDF_4/STM32F103C8.pdf"
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
         ],
         "unit": "K/W",
         "value": 32
@@ -222,30 +272,295 @@
       {
         "basis": "MFR_DATASHEET",
         "confidence": "H",
-        "detail": null,
-        "field": "maximum_package_power_at85C",
-        "page": 38,
-        "scope": "STM32F103CBU6 UFQFPN48,suffix6; UFQFPN48,suffix6; TA=85 C for suffix 6; note 4: if TA is lower, higher PD values are allowed as long as TJ does not exceed TJmax",
+        "detail": "Input voltage on 5 V tolerant pin VSS -0.3 VDD +4.0 V",
+        "field": "absolute_ft_pin_voltage_above_vdd_max",
+        "page": 37,
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 6 VIN on 5 V tolerant pin, max = VDD + 4.0",
         "sources": [
-          "https://www.32mcu.com/pdf/PDF_4/STM32F103C8.pdf"
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
         ],
-        "unit": "mW",
-        "value": 624
+        "unit": "V",
+        "value": 4.0
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Input voltage on any other pin VSS - 0.3 4.0",
+        "field": "absolute_other_pin_voltage_max",
+        "page": 37,
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 6 VIN on any other pin (absolute)",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
+        ],
+        "unit": "V",
+        "value": 4.0
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "VSS -0.3",
+        "field": "absolute_pin_voltage_below_vss_max",
+        "page": 37,
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 6 VIN min = VSS - 0.3 (magnitude)",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
+        ],
+        "unit": "V",
+        "value": 0.3
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Injected current on any other pin(4) +-5",
+        "field": "maximum_injected_current_non_ft",
+        "page": 37,
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 7 IINJ(PIN) on any other pin (+/-)",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
+        ],
+        "unit": "mA",
+        "value": 5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Injected current on five volt tolerant pins(3) -5/+0",
+        "field": "maximum_injected_current_ft_negative",
+        "page": 37,
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 7 IINJ(PIN) on FT pins -5/+0 (positive injection not possible)",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
+        ],
+        "unit": "mA",
+        "value": 5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Total injected current (sum of all I/O and control pins)(5) +-25",
+        "field": "maximum_total_injected_current",
+        "page": 37,
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 7 sum IINJ(PIN), absolute sum of all I/O and control pins",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
+        ],
+        "unit": "mA",
+        "value": 25
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "All I/Os except BOOT0 - - 0.35 VDD(2)",
+        "field": "input_low_voltage_fraction_max",
+        "page": 61,
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 36 VIL all I/Os except BOOT0, tested in production",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
+        ],
+        "unit": "ratio",
+        "value": 0.35
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "All I/Os except BOOT0 0.65 VDD(2) - -",
+        "field": "input_high_voltage_fraction_min",
+        "page": 61,
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 36 VIH all I/Os except BOOT0, tested in production",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
+        ],
+        "unit": "ratio",
+        "value": 0.65
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Input leakage current(6) VSS <= VIN <= VDD Standard I/Os +-1; VIN = 5 V I/O FT 3",
+        "field": "io_leakage_max",
+        "page": 61,
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 36 Ilkg standard I/Os, VSS <= VIN <= VDD (FT at VIN = 5 V: 3 uA)",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
+        ],
+        "unit": "uA",
+        "value": 1
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "CIO I/O pin capacitance - 5 - pF",
+        "field": "io_pin_capacitance_typical",
+        "page": 61,
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 36 CIO typical",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
+        ],
+        "unit": "pF",
+        "value": 5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "RPU Weak pull-up equivalent resistor(7) VIN = VSS 30 40 50",
+        "field": "io_pullup_resistance_range",
+        "page": 61,
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 36 RPU [min, typ, max]",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
+        ],
+        "unit": "kohm",
+        "value": [
+          30,
+          40,
+          50
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "RPU Weak pull-up equivalent resistor(2) VIN = VSS 30 40 50 kOhm",
+        "field": "nrst_pullup_resistance_range",
+        "page": 66,
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 39 NRST RPU [min, typ, max]",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
+        ],
+        "unit": "kohm",
+        "value": [
+          30,
+          40,
+          50
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "To sustain a voltage higher than VDD + 0.3 V, the internal pull-up/pull-down resistors must be disabled.",
+        "field": "ft_pull_sustain_margin",
+        "page": 38,
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 9 note 3",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
+        ],
+        "unit": "V",
+        "value": 0.3
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Analog operating voltage (ADC not used) Must be the same potential as VDD(2)",
+        "field": "vdda_same_potential_as_vdd",
+        "page": 38,
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 9 VDDA (ADC not used)",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
+        ],
+        "unit": null,
+        "value": true
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "There is an exposed die pad on the underside of the UFQFPN48 package. It is recommended to connect and solder this back-side pad to PCB ground.",
+        "field": "exposed_pad_connection",
+        "page": 83,
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; UFQFPN48 outline note 3",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
+        ],
+        "unit": null,
+        "value": "PCB ground (VSS), recommended"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "e.g. 'PB10 I/O FT PB10'; PA0-PA7, PB0, PB1, PB5, PC13-PC15 carry no FT mark",
+        "field": "five_volt_tolerant_roles",
+        "page": 28,
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 5 I/O level column 'FT', LQFP48/UFQFPN48 column (pp. 28-33)",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
+        ],
+        "unit": null,
+        "value": [
+          "PA10",
+          "PA11",
+          "PA12",
+          "PA13",
+          "PA15",
+          "PA8",
+          "PA9",
+          "PB10",
+          "PB11",
+          "PB12",
+          "PB13",
+          "PB14",
+          "PB15",
+          "PB2",
+          "PB4",
+          "PB6",
+          "PB7",
+          "PB8",
+          "PB9"
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "6. Main function after the first backup domain power-up. Later on, it depends on the contents of the Backup registers even after reset",
+        "field": "backup_domain_reset_note",
+        "page": 33,
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 5 note 6",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
+        ],
+        "unit": null,
+        "value": "PC13, PC14, PC15: main function only after the first backup-domain power-up"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "The pins number ... 5 and 6 in the LQFP48, UFQFP48 and LQFP64 packages ... are configured as OSC_IN/OSC_OUT after reset",
+        "field": "osc_pins_reset_function",
+        "page": 33,
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 5 note 7",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
+        ],
+        "unit": null,
+        "value": "pins 5 and 6 are OSC_IN/OSC_OUT after reset"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "detail": "During and just after reset, the alternate functions are not active and the I/O ports are configured in Input Floating mode (CNFx[1:0]=01b, MODEx[1:0]=00b). The JTAG pins are in input PU/PD after reset: PA15: JTDI in PU PA14: JTCK in PD PA13: JTMS in PU PB4: JNTRST in PU",
+        "field": "gpio_reset_state",
+        "page": 140,
+        "scope": "STM32F103xx; RM0008 Doc ID 13902 Rev 9 section 8.1.1",
+        "sources": [
+          "https://www.keil.com/dd/docs/datashts/st/stm32f10xxx.pdf"
+        ],
+        "unit": null,
+        "value": "Input Floating; JTAG pins PA15 JTDI PU, PA14 JTCK PD, PA13 JTMS PU, PB4 JNTRST PU"
       }
     ],
     "remaining_open_items": [
       "Firmware and peripherals are not simulable.",
       "The read pinout does not establish the electrical connection of the central pad; do not copy a generic GND rule.",
-      "Pin-specific five-volt tolerance,adjacent injection effects and all dynamic pad behavior remain to bind."
+      "Pin-specific five-volt tolerance,adjacent injection effects and all dynamic pad behavior remain to bind.",
+      "Former simulation blocker resolved for the bound reference (2026-10-11, D075): Exposed-pad electrical role and interface-only model unresolved. Resolution: The exposed-pad role is sourced: DS5319 Rev 20 p83 (UFQFPN48 outline note 3) recommends soldering the exposed pad to PCB ground, so the binding requires it on the VSS net with no conductive model. The interface-only model is the part's electrical pins in the reset state stated by RM0008 Rev 9 section 8.1.1 (Input Floating; JTAG pull-ups), with DS5319 Rev 20 limits; firmware is not modeled.",
+      "PA14 (JTCK) has a reset pull-down the pad cannot express, and PB3 (JTDO) is a debug output; neither is modeled.",
+      "PC13-PC15 (backup domain, Table 5 note 6) and pins 5/6 (OSC_IN/OSC_OUT after reset, note 7) are not modeled.",
+      "RM0008 is the 2009 Rev 9 copy hosted by Arm Keil (st.com refused the archiver); a current ST-hosted copy needs an owner browser download.",
+      "Core and peripheral supply current is not modeled."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Exposed-pad electrical role and interface-only model unresolved."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-131.md",
-      "document_sha256": "4e2385e2a2dabbd60b5e6985d5f27038797c444c367eb77d057ee0c5c1df8a81",
+      "document_sha256": "e34c08eb71d9987eeaf81746fb407f7fe7eab7ce505a166a4c8d7ad7c5226e90",
       "fragment_sha256": null,
       "line": 1
     }
@@ -254,8 +569,8 @@
     "REFERENCE-DIMENSION-COMPATIBILITY-POLICY"
   ],
   "schema_version": 1,
-  "simulation_disposition": "not_simulable",
-  "simulation_reason": "A package has no electrical function until a sourced reference part is bound.",
+  "simulation_disposition": "simulable",
+  "simulation_reason": "Simulates as the bound reference part (STM32F103CBU6 / STM32F103CBU6 UFQFPN48): electrical pins in reset state only; firmware not modeled. The package alone has no electrical function, so results describe that part in this package.",
   "source": {
     "document": "COMPONENT_BEHAVIOR_SPEC.md",
     "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",

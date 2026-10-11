@@ -277,6 +277,14 @@ export const BEHAVIOR_LABELS = Object.freeze({
     documented: 'Documented only',
 });
 
+// D075: a programmable part bound as its electrical pins in the datasheet reset state says so on its badge.
+export function behaviorChipLabel(entry) {
+    if (entry?.state === 'simulated' && /electrical pins in reset state only/.test(entry.reason ?? '')) {
+        return 'Simulates pins only (reset state; firmware not modeled)';
+    }
+    return BEHAVIOR_LABELS[entry?.state];
+}
+
 export function behaviorStatusText(entry) {
     if (entry?.state === 'simulated' && entry.reason) return `Electrical behavior: ${entry.reason} Open the Behavior tab to run its reference circuit.`;
     if (entry?.state === 'simulated') return 'Electrical behavior: simulated from this part\'s sourced data. Open the Behavior tab to run its reference circuit.';
@@ -537,7 +545,7 @@ export function initializeComponentStories() {
     function addBehaviorChip(card, id) {
         const state = behaviorStates[id]?.state;
         if (!(state === 'simulated' || state === 'reference_only') || card.querySelector('.story-card-sim')) return;
-        const chip = element('span', BEHAVIOR_LABELS[state], card.querySelector('.story-card-copy'));
+        const chip = element('span', behaviorChipLabel(behaviorStates[id]), card.querySelector('.story-card-copy'));
         chip.className = state === 'simulated' ? 'story-card-sim' : 'story-card-sim story-card-sim-reference';
         const reason = behaviorStates[id]?.reason;
         if (state === 'simulated' && reason) chip.title = reason;

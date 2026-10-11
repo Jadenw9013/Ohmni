@@ -45,7 +45,8 @@ def generate(root=ROOT):
             elif recipe.behavior_id == "BEH-TRN-MOSFET":
                 compiled, _ = runtime_benches.mosfet_case(registry, recipes, key)
                 identity = {"analytical_source": "BEH-TRN-MOSFET/B1"}
-            elif recipe.behavior_id.startswith("BEH-IC-") or recipe.behavior_id == "BEH-FREQ-XO":
+            elif recipe.pin_level is None and (recipe.behavior_id.startswith("BEH-IC-")
+                                               or recipe.behavior_id == "BEH-FREQ-XO"):
                 case = ic_benches.ic_cases(recipe.behavior_id, recipe)[0]
                 compiled, identity = ic_benches.ic_definition(audit, key, case)
             elif recipe.behavior_id in runtime_benches.XTAL_PROBES:
