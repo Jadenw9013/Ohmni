@@ -33,8 +33,12 @@ def live(tmp_path_factory):
 def test_transient_display_cut_is_stated(live):
     result = live.run_design(DesignRunRequest(circuit=chain(), analysis="tran", tstep="1u", tstop="5u"))
     assert result["status"] == "ran", result["problems"]
-    assert len(result["transient"]["series"]) == 12
+    # compile_circuit numbers nodes over the nets sorted by name, so the first 12 non-ground nets are m01..m12.
+    assert [s["name"] for s in result["transient"]["series"]] == [f"m{i:02}" for i in range(1, 13)]
     assert any("Display shows 12 of 14 nets" in x for x in result["limitations"])
+    long = live.run_design(DesignRunRequest(circuit=chain(), analysis="tran", tstep="1u", tstop="5u",
+                                            observe_nets=[f"m{i:02}" for i in range(1, 14)]))
+    assert long["status"] == "not_run" and any("within the signal limit" in p for p in long["problems"])
 
 
 def test_ac_sweep_display_cut_is_stated_and_long_observe_lists_are_refused(live):
@@ -44,10 +48,14 @@ def test_ac_sweep_display_cut_is_stated_and_long_observe_lists_are_refused(live)
     result = live.run_design(DesignRunRequest(circuit=circuit, analysis="ac", excitations=[excitation],
                                               ac_points_hz=[100.0], ac_sweep=sweep))
     assert result["status"] == "ran", result["problems"]
-    assert len(result["ac"]["sweep"]["series"]) == 12
+    assert [s["name"] for s in result["ac"]["sweep"]["series"]] == [f"m{i:02}" for i in range(1, 13)]
     assert any("Display shows 12 of 14 nets" in x for x in result["limitations"])
     refused = live.run_design(DesignRunRequest(circuit=circuit, analysis="ac", excitations=[excitation],
                                                ac_points_hz=[100.0], ac_sweep=sweep,
                                                observe_nets=[f"m{i:02}" for i in range(1, 14)]))
     assert refused["status"] == "not_run"
     assert any("within the signal limit" in p for p in refused["problems"])
+    for bad in ([], ["m01", "m01"], ["gnd"]):
+        out = live.run_design(DesignRunRequest(circuit=circuit, analysis="ac", excitations=[excitation],
+                                               ac_points_hz=[100.0], ac_sweep=sweep, observe_nets=bad))
+        assert out["status"] == "not_run", bad
