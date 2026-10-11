@@ -236,6 +236,8 @@ def _scoped_checks(component, point, context, overrides=None, transient=None, ac
             )
     elif cls == "BEH-DISP-LEDARRAY" and "if_max_seg" in values:
         _display_checks(component, values, b, thermal, upper_only)
+    elif component.pin_level is not None:
+        _pin_level_checks(component, values, b, thermal, upper_only)
     elif cls == "BEH-RES-POT":
         derive("derate", "clamp((t_end-Tamb)/(t_end-t_knee),0,1)")
         b.add("track power", "power <= p_rated*derate", ("p_rated", "t_end", "t_knee"), thermal)
@@ -319,7 +321,7 @@ def _scoped_checks(component, point, context, overrides=None, transient=None, ac
         b.add("input power", "(v_A-v_K)*i_A <= pin_max", ("pin_max",), thermal)
         b.add("output power", "(v_C-v_E)*i_C <= pout_max", ("pout_max",), thermal)
 
-    supply = next(
+    supply = None if component.pin_level is not None else next(
         (
             pair
             for pair in [("VCC", "GND"), ("VDD", "GND"), ("Vplus", "Vminus"), ("IN", "GND")]
@@ -343,7 +345,7 @@ def _scoped_checks(component, point, context, overrides=None, transient=None, ac
             b.add(
                 "recommended output current", "abs(i_OUT)<=iout_recommended", ("iout_recommended",)
             )
-    if "rth_ja" in values and "tj_max" in values:
+    if "rth_ja" in values and "tj_max" in values and component.pin_level is None:
         b.add(
             "junction temperature",
             "power >= 0 and Tamb+rth_ja*power <= tj_max",
@@ -593,6 +595,15 @@ def _transient_checks(component, values, b, thermal, upper_only, w):
         if v is not None:
             stat("peak_v", peak([abs(x) for x in v]))
             b.add("peak track voltage", "peak_v <= v_max", ("v_max",))
+    if component.pin_level is not None:
+        model = component.pin_level
+        for rail in model.supplies:
+            series = w.diff(rail.role, model.ground)
+            if series is not None:
+                stat(f"peak_rail_{rail.role}", peak(series))
+                b.add(f"peak supply {rail.role} (absolute maximum)", f"peak_rail_{rail.role} <= {rail.absolute}",
+                      (rail.absolute,))
+        return
     supply = next((pair for pair in [("VCC", "GND"), ("VDD", "GND"), ("Vplus", "Vminus"), ("IN", "GND")]
                    if set(pair) <= roles), None)
     if supply and "supply_abs_max" in values:
@@ -657,6 +668,70 @@ def _display_checks(component, values, b, thermal, upper_only):
             upper_only(f"segment {segment} reverse voltage", f"v_{common}-v_{segment} <= vr_max", ("vr_max",),
                        "The source reverse voltage is a test condition, not an application rating; "
                        "reverse bias is never accepted as within limits")
+
+
+PIN_LEVEL_LOWER_BOUND = ("The model has no core or peripheral supply current (firmware is not modeled), so its pin "
+                         "currents are only a lower bound on the real total: this row can prove a violation, never a pass")
+
+
+def _pin_level_checks(component, values, b, thermal, upper_only):
+    """D075: a programmable part as its electrical pins only, frozen in the datasheet reset state.
+
+    Rails are checked against their sourced recommended window and absolute maximum. Each pad gets a
+    pin-voltage window, a per-pin current limit, and an injected-current limit where sourced (FT pins:
+    negative injection only, as their source states positive injection is impossible). Collective
+    limits are absolute sums over their stated pins. Supply current and junction temperature can only
+    prove a violation, because the core current is not modeled. Every row whose limit is unsourced or
+    whose observation is missing stays unknown.
+    """
+    model = component.pin_level
+    ground = model.ground
+    for rail in model.supplies:
+        rail_value = f"rail_{rail.role}"
+        if f"v_{rail.role}" in values and f"v_{ground}" in values:
+            values[rail_value] = values[f"v_{rail.role}"] - values[f"v_{ground}"]
+        b.add(f"recommended supply {rail.role}", f"{rail.minimum} <= {rail_value} <= {rail.maximum}",
+              (rail.minimum, rail.maximum))
+        b.add(f"absolute supply {rail.role}", f"{rail_value} <= {rail.absolute}", (rail.absolute,))
+        if rail.current:
+            upper_only(f"supply current {rail.role}", f"abs(i_{rail.role}) <= {rail.current}", (rail.current,),
+                       PIN_LEVEL_LOWER_BOUND)
+    if model.ground_current:
+        upper_only(f"ground current {ground}", f"abs(i_{ground}) <= {model.ground_current}", (model.ground_current,),
+                   PIN_LEVEL_LOWER_BOUND)
+    for role, pad in sorted(model.pads.items()):
+        pin, rail = f"v_{role}-v_{ground}", f"v_{pad.supply}-v_{ground}"
+        upper = f"{rail}+{pad.vmax}" if pad.vmax_relative else pad.vmax
+        b.add(f"pin {role} voltage", f"-{pad.vmin} <= {pin} <= {upper}", (pad.vmin, pad.vmax))
+        if pad.above_supply_unknown:
+            row = b.add(f"pin {role} reset-state condition", f"{pin} <= {rail}+{pad.above_supply_unknown}",
+                        (pad.above_supply_unknown,))
+            if row["status"] == "violation":
+                row.update(status="unknown", reason=pad.above_supply_reason
+                           or "Outside the source condition for this pin in its reset state")
+        if pad.current:
+            b.add(f"pin {role} current", f"abs(i_{role}) <= {pad.current}", (pad.current,))
+        if pad.injection and pad.injection_negative_only:
+            b.add(f"pin {role} injected current", f"i_{role} >= -{pad.injection}", (pad.injection,))
+        elif pad.injection:
+            b.add(f"pin {role} injected current", f"abs(i_{role}) <= {pad.injection}", (pad.injection,))
+    for group in model.groups:
+        observed = [values.get(f"i_{role}") for role in group.roles]
+        total = f"isum_{len(b.checks)}"
+        if all(x is not None for x in observed):
+            values[total] = sum(abs(x) for x in observed)
+        b.add(group.name, f"{total} <= {group.limit}", (group.limit,))
+    if model.rth_ja and thermal:
+        b.add("junction temperature", f"power >= 0 and Tamb+{model.rth_ja}*power <= {model.tj_max}",
+              (model.rth_ja, model.tj_max), thermal)
+    elif model.rth_ja:
+        upper_only("junction temperature", f"power >= 0 and Tamb+{model.rth_ja}*power <= {model.tj_max}",
+                   (model.rth_ja, model.tj_max), PIN_LEVEL_LOWER_BOUND)
+    else:
+        b.add("junction temperature", "power >= 0", (), model.thermal_reason)
+    if model.unmodeled:
+        b.add("unmodeled pins", "True", (), "No conductive model (metadata only), so nothing connected to these pins "
+              "is checked: " + ", ".join(sorted(model.unmodeled)))
 
 
 def _connector_checks(component, values, b, thermal, upper_only):

@@ -27,7 +27,8 @@
     ],
     "conflicts": [
       "Selected STM32F405/407 reference is explicit; other MCUs cannot inherit these pin numbers or ratings.",
-      "LQFP body height1.4mm is different from generic TQFP1.0mm for OHM-124/125; no automatic physical compatibility claim."
+      "LQFP body height1.4mm is different from generic TQFP1.0mm for OHM-124/125; no automatic physical compatibility claim.",
+      "D075: maximum_supply_current recorded as 150 (STM32F407VGT6 LQFP100; suffix6; sum of all supply lines; sep) is superseded by 240 from the bound source."
     ],
     "documents": [
       {
@@ -39,6 +40,16 @@
         "source_status": "primary_source_opened",
         "title": "STM32F405xx/407xx datasheet",
         "url": "https://www.keil.com/dd/docs/datashts/st/stm32f4xx/dm00037051.pdf"
+      },
+      {
+        "document_id": "stm32f4-ds8626-rev12",
+        "manufacturer": "STMicroelectronics",
+        "note": "ST-hosted, archived by a named manual browser download (ledger sha256 1f41b4fa49a9...); read 2026-10-11 for the pin-level binding (D075). Supersedes the 2012 Rev 3 Keil copy for every fact it re-sources.",
+        "page": null,
+        "revision": "DS8626 Rev 12",
+        "source_status": "primary_source_opened",
+        "title": "STM32F405xx/STM32F407xx datasheet DS8626",
+        "url": "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
       }
     ],
     "entry_id": "OHM-125",
@@ -174,97 +185,6 @@
         "basis": "MFR_DATASHEET",
         "confidence": "H",
         "detail": null,
-        "field": "recommended_supply_min",
-        "page": 71,
-        "scope": "STM32F407VGT6 LQFP100; suffix6; normal conditions; PDR_ON exception1.7V not applied",
-        "sources": [
-          "https://www.keil.com/dd/docs/datashts/st/stm32f4xx/dm00037051.pdf"
-        ],
-        "unit": "V",
-        "value": 1.8
-      },
-      {
-        "basis": "MFR_DATASHEET",
-        "confidence": "H",
-        "detail": null,
-        "field": "recommended_supply_max",
-        "page": 71,
-        "scope": "STM32F407VGT6 LQFP100; suffix6; VDD/VDDA",
-        "sources": [
-          "https://www.keil.com/dd/docs/datashts/st/stm32f4xx/dm00037051.pdf"
-        ],
-        "unit": "V",
-        "value": 3.6
-      },
-      {
-        "basis": "MFR_DATASHEET",
-        "confidence": "H",
-        "detail": null,
-        "field": "absolute_supply_max",
-        "page": 70,
-        "scope": "STM32F407VGT6 LQFP100; suffix6; VDD/VDDA stress limit",
-        "sources": [
-          "https://www.keil.com/dd/docs/datashts/st/stm32f4xx/dm00037051.pdf"
-        ],
-        "unit": "V",
-        "value": 4
-      },
-      {
-        "basis": "MFR_DATASHEET",
-        "confidence": "H",
-        "detail": null,
-        "field": "maximum_io_pin_current",
-        "page": 71,
-        "scope": "STM32F407VGT6 LQFP100; suffix6; absolute magnitude,each output",
-        "sources": [
-          "https://www.keil.com/dd/docs/datashts/st/stm32f4xx/dm00037051.pdf"
-        ],
-        "unit": "mA",
-        "value": 25
-      },
-      {
-        "basis": "MFR_DATASHEET",
-        "confidence": "H",
-        "detail": null,
-        "field": "maximum_supply_current",
-        "page": 71,
-        "scope": "STM32F407VGT6 LQFP100; suffix6; sum of all supply lines; separate150mA sum ground",
-        "sources": [
-          "https://www.keil.com/dd/docs/datashts/st/stm32f4xx/dm00037051.pdf"
-        ],
-        "unit": "mA",
-        "value": 150
-      },
-      {
-        "basis": "MFR_DATASHEET",
-        "confidence": "H",
-        "detail": null,
-        "field": "maximum_junction_temperature",
-        "page": 71,
-        "scope": "STM32F407VGT6 LQFP100; suffix6; absolute maximum",
-        "sources": [
-          "https://www.keil.com/dd/docs/datashts/st/stm32f4xx/dm00037051.pdf"
-        ],
-        "unit": "C",
-        "value": 125
-      },
-      {
-        "basis": "MFR_DATASHEET",
-        "confidence": "H",
-        "detail": null,
-        "field": "recommended_junction_temperature_max",
-        "page": 72,
-        "scope": "STM32F407VGT6 LQFP100; suffix6; suffix6",
-        "sources": [
-          "https://www.keil.com/dd/docs/datashts/st/stm32f4xx/dm00037051.pdf"
-        ],
-        "unit": "C",
-        "value": 105
-      },
-      {
-        "basis": "MFR_DATASHEET",
-        "confidence": "H",
-        "detail": null,
         "field": "operating_ambient_range",
         "page": 72,
         "scope": "STM32F407VGT6 LQFP100; suffix6; suffix6 at maximum power; low-power extension not assumed",
@@ -293,12 +213,194 @@
       {
         "basis": "MFR_DATASHEET",
         "confidence": "H",
-        "detail": null,
-        "field": "thermal_resistance_junction_ambient",
-        "page": 163,
-        "scope": "STM32F407VGT6 LQFP100; suffix6; package column; reference JESD51-2 still air",
+        "detail": "VDD Standard operating voltage - 1.8(2) - 3.6 V",
+        "field": "recommended_supply_min",
+        "page": 81,
+        "scope": "STM32F407VGT6 LQFP100; DS8626 Rev 12; Table 14 VDD standard operating voltage (PDR_ON exception 1.7 V not applied)",
         "sources": [
-          "https://www.keil.com/dd/docs/datashts/st/stm32f4xx/dm00037051.pdf"
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+        ],
+        "unit": "V",
+        "value": 1.8
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "VDD Standard operating voltage - 1.8(2) - 3.6 V",
+        "field": "recommended_supply_max",
+        "page": 81,
+        "scope": "STM32F407VGT6 LQFP100; DS8626 Rev 12; Table 14 VDD",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+        ],
+        "unit": "V",
+        "value": 3.6
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "VDD-VSS External main supply voltage (including VDDA, VDD)(1) -0.3 4.0",
+        "field": "absolute_supply_max",
+        "page": 80,
+        "scope": "STM32F407VGT6 LQFP100; DS8626 Rev 12; Table 11 VDD-VSS including VDDA",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+        ],
+        "unit": "V",
+        "value": 4.0
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Output current sunk by any I/O and control pin 25; Output current source by any I/Os and control pin 25 mA",
+        "field": "maximum_io_pin_current",
+        "page": 81,
+        "scope": "STM32F407VGT6 LQFP100; DS8626 Rev 12; Table 12 IIO, sunk or sourced by any I/O and control pin",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+        ],
+        "unit": "mA",
+        "value": 25
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "IVDD Total current into VDD power lines (source)(1) 240",
+        "field": "maximum_supply_current",
+        "page": 81,
+        "scope": "STM32F407VGT6 LQFP100; DS8626 Rev 12; Table 12 IVDD total current into VDD power lines",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+        ],
+        "unit": "mA",
+        "value": 240
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "IVSS Total current out of VSS ground lines (sink)(1) 240",
+        "field": "maximum_ground_current",
+        "page": 81,
+        "scope": "STM32F407VGT6 LQFP100; DS8626 Rev 12; Table 12 IVSS total current out of VSS ground lines",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+        ],
+        "unit": "mA",
+        "value": 240
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Input voltage on five-volt tolerant pin(2) VSS-0.3 VDD+4 V",
+        "field": "absolute_ft_pin_voltage_above_vdd_max",
+        "page": 80,
+        "scope": "STM32F407VGT6 LQFP100; DS8626 Rev 12; Table 11 VIN on five-volt tolerant pin, max = VDD + 4",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+        ],
+        "unit": "V",
+        "value": 4.0
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Input voltage on any other pin VSS-0.3 4.0",
+        "field": "absolute_other_pin_voltage_max",
+        "page": 80,
+        "scope": "STM32F407VGT6 LQFP100; DS8626 Rev 12; Table 11 VIN on any other pin (absolute)",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+        ],
+        "unit": "V",
+        "value": 4.0
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "VSS-0.3",
+        "field": "absolute_pin_voltage_below_vss_max",
+        "page": 80,
+        "scope": "STM32F407VGT6 LQFP100; DS8626 Rev 12; Table 11 VIN min = VSS - 0.3 (magnitude)",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+        ],
+        "unit": "V",
+        "value": 0.3
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Injected current on any other pin(4) +-5",
+        "field": "maximum_injected_current_non_ft",
+        "page": 81,
+        "scope": "STM32F407VGT6 LQFP100; DS8626 Rev 12; Table 12 IINJ(PIN) on any other pin (+/-)",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+        ],
+        "unit": "mA",
+        "value": 5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Injected current on five-volt tolerant I/O(3) -5/+0; 3. Positive injection is not possible on these I/Os.",
+        "field": "maximum_injected_current_ft_negative",
+        "page": 81,
+        "scope": "STM32F407VGT6 LQFP100; DS8626 Rev 12; Table 12 IINJ(PIN) on FT pins -5/+0; note 3 positive injection is not possible",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+        ],
+        "unit": "mA",
+        "value": 5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Total injected current (sum of all I/O and control pins)(5) +-25",
+        "field": "maximum_total_injected_current",
+        "page": 81,
+        "scope": "STM32F407VGT6 LQFP100; DS8626 Rev 12; Table 12 sum IINJ(PIN), absolute sum of all I/O and control pins",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+        ],
+        "unit": "mA",
+        "value": 25
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "TJ Maximum junction temperature 125",
+        "field": "maximum_junction_temperature",
+        "page": 81,
+        "scope": "STM32F407VGT6 LQFP100; DS8626 Rev 12; Table 13 absolute",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+        ],
+        "unit": "C",
+        "value": 125
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "TJ Junction temperature range 6 suffix version -40 105",
+        "field": "recommended_junction_temperature_max",
+        "page": 82,
+        "scope": "STM32F407VGT6 LQFP100; DS8626 Rev 12; Table 14 TJ, 6 suffix version",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+        ],
+        "unit": "C",
+        "value": 105
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Thermal resistance junction-ambient LQFP100 ... 43 C/W",
+        "field": "thermal_resistance_junction_ambient",
+        "page": 185,
+        "scope": "STM32F407VGT6 LQFP100; DS8626 Rev 12; Table 98 LQFP100, JESD51-2 still air",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
         ],
         "unit": "K/W",
         "value": 43
@@ -306,12 +408,51 @@
       {
         "basis": "MFR_DATASHEET",
         "confidence": "H",
-        "detail": null,
-        "field": "io_input_capacitance_typical",
-        "page": 105,
-        "scope": "STM32F407VGT6 LQFP100; suffix6; guaranteed by design,not production tested; Table46 Typ column, not a maximum; maximum is unestablished.",
+        "detail": "FT, TTa and NRST I/O input low level voltage ... 0.3VDD(2)",
+        "field": "input_low_voltage_fraction_max",
+        "page": 116,
+        "scope": "STM32F407VGT6 LQFP100; DS8626 Rev 12; Table 48 VIL FT, TTa and NRST, 1.75 V <= VDD <= 3.6 V, tested in production",
         "sources": [
-          "https://www.keil.com/dd/docs/datashts/st/stm32f4xx/dm00037051.pdf"
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+        ],
+        "unit": "ratio",
+        "value": 0.3
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "FT, TTa and NRST I/O input high level voltage 0.7VDD(2)",
+        "field": "input_high_voltage_fraction_min",
+        "page": 116,
+        "scope": "STM32F407VGT6 LQFP100; DS8626 Rev 12; Table 48 VIH FT, TTa and NRST, 1.75 V <= VDD <= 3.6 V, tested in production",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+        ],
+        "unit": "ratio",
+        "value": 0.7
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "I/O input leakage current(4) VSS <= VIN <= VDD +-1; I/O FT input leakage current(5) VIN = 5 V 3",
+        "field": "io_leakage_magnitude_max",
+        "page": 117,
+        "scope": "STM32F407VGT6 LQFP100; DS8626 Rev 12; Table 48 Ilkg, VSS <= VIN <= VDD (FT at VIN = 5 V: 3 uA)",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+        ],
+        "unit": "uA",
+        "value": 1
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "CIO(8) I/O pin capacitance - 5 - pF",
+        "field": "io_input_capacitance_typical",
+        "page": 117,
+        "scope": "STM32F407VGT6 LQFP100; DS8626 Rev 12; Table 48 CIO typical",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
         ],
         "unit": "pF",
         "value": 5
@@ -319,31 +460,212 @@
       {
         "basis": "MFR_DATASHEET",
         "confidence": "H",
-        "detail": null,
-        "field": "io_leakage_magnitude_max",
-        "page": 105,
-        "scope": "STM32F407VGT6 LQFP100; suffix6; VSS<=VIN<=VDD,no adjacent negative-current injection;FT5V limit differs",
+        "detail": "RPU Weak pull-up equivalent resistor ... VIN = VSS 30 40 50",
+        "field": "io_pullup_resistance_range",
+        "page": 117,
+        "scope": "STM32F407VGT6 LQFP100; DS8626 Rev 12; Table 48 RPU, all pins except PA10/PB12 [min, typ, max]",
         "sources": [
-          "https://www.keil.com/dd/docs/datashts/st/stm32f4xx/dm00037051.pdf"
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
         ],
-        "unit": "uA",
-        "value": 1
+        "unit": "kohm",
+        "value": [
+          30,
+          40,
+          50
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "RPU Weak pull-up equivalent resistor(2) VIN = VSS 30 40 50 kOhm",
+        "field": "nrst_pullup_resistance_range",
+        "page": 121,
+        "scope": "STM32F407VGT6 LQFP100; DS8626 Rev 12; Table 51 NRST RPU [min, typ, max]; 'connected to a permanent pull-up resistor'",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+        ],
+        "unit": "kohm",
+        "value": [
+          30,
+          40,
+          50
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Analog operating voltage ... Must be the same potential as VDD(5)",
+        "field": "vdda_same_potential_as_vdd",
+        "page": 81,
+        "scope": "STM32F407VGT6 LQFP100; DS8626 Rev 12; Table 14 VDDA",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+        ],
+        "unit": null,
+        "value": true
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Unless otherwise specified by a note, all I/Os are set as floating inputs during and after reset",
+        "field": "reset_io_state",
+        "page": 48,
+        "scope": "STM32F407VGT6 LQFP100; DS8626 Rev 12; Table 6 legend, Notes",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+        ],
+        "unit": null,
+        "value": "floating inputs during and after reset unless a note says otherwise"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Unless otherwise specified in brackets below the pin name, the pin function during and after reset is the same as the actual pin name",
+        "field": "reset_pin_function_rule",
+        "page": 48,
+        "scope": "STM32F407VGT6 LQFP100; DS8626 Rev 12; Table 6 legend, Pin name",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+        ],
+        "unit": null,
+        "value": "function during and after reset is the pin name unless a bracketed function is given"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "PA13 (JTMS-SWDIO); PA14 (JTCK/SWCLK); PA15 (JTDI); PB3 (JTDO/TRACESWO); PB4 (NJTRST)",
+        "field": "reset_debug_function_roles",
+        "page": 57,
+        "scope": "STM32F407VGT6 LQFP100; DS8626 Rev 12; Table 7 bracketed function after reset (pp. 57-60)",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "PA13": "JTMS-SWDIO",
+          "PA14": "JTCK/SWCLK",
+          "PA15": "JTDI",
+          "PB3": "JTDO/TRACESWO",
+          "PB4": "NJTRST"
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "4. Main function after the first backup domain power-up. Later on, it depends on the contents of the RTC registers even after reset (because these registers are not reset by the main reset).",
+        "field": "backup_domain_reset_note",
+        "page": 61,
+        "scope": "STM32F407VGT6 LQFP100; DS8626 Rev 12; Table 7 note 4",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+        ],
+        "unit": null,
+        "value": "PC13, PC14, PC15: main function only after the first backup-domain power-up"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Table 6: FT = 5 V tolerant I/O; TTa = 3.3 V tolerant I/O directly connected to ADC (PA4, PA5 are TTa)",
+        "field": "five_volt_tolerant_roles",
+        "page": 49,
+        "scope": "STM32F407VGT6 LQFP100; DS8626 Rev 12; Table 7 I/O structure column 'FT' (pp. 49-61), modeled pad roles only",
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f407vg.pdf"
+        ],
+        "unit": null,
+        "value": [
+          "PA0",
+          "PA1",
+          "PA10",
+          "PA11",
+          "PA12",
+          "PA2",
+          "PA3",
+          "PA6",
+          "PA7",
+          "PA8",
+          "PA9",
+          "PB0",
+          "PB1",
+          "PB10",
+          "PB11",
+          "PB12",
+          "PB13",
+          "PB14",
+          "PB15",
+          "PB2",
+          "PB5",
+          "PB6",
+          "PB7",
+          "PB8",
+          "PB9",
+          "PC0",
+          "PC1",
+          "PC10",
+          "PC11",
+          "PC12",
+          "PC2",
+          "PC3",
+          "PC4",
+          "PC5",
+          "PC6",
+          "PC7",
+          "PC8",
+          "PC9",
+          "PD0",
+          "PD1",
+          "PD10",
+          "PD11",
+          "PD12",
+          "PD13",
+          "PD14",
+          "PD15",
+          "PD2",
+          "PD3",
+          "PD4",
+          "PD5",
+          "PD6",
+          "PD7",
+          "PD8",
+          "PD9",
+          "PE0",
+          "PE1",
+          "PE10",
+          "PE11",
+          "PE12",
+          "PE13",
+          "PE14",
+          "PE15",
+          "PE2",
+          "PE3",
+          "PE4",
+          "PE5",
+          "PE6",
+          "PE7",
+          "PE8",
+          "PE9",
+          "PH0",
+          "PH1"
+        ]
       }
     ],
     "remaining_open_items": [
       "Firmware and peripheral protocols are not simulated.",
       "GPIO alternate-function/type mapping and power-sequence rules remain application-specific.",
       "Board thermal path and programmed I/O state require explicit circuit context.",
-      "CIO 5pF is typical, not a worst-case maximum; no maximum can be inferred from guaranteed-by-design footnote."
+      "CIO 5pF is typical, not a worst-case maximum; no maximum can be inferred from guaranteed-by-design footnote.",
+      "Former simulation blocker resolved for the bound reference (2026-10-11, D075): No validated interface-only recipe; firmware execution is not simulable. Resolution: ST DS8626 Rev 12 (ST-hosted, archived) gives the reset state (all I/Os floating inputs during and after reset unless bracketed or noted, p48), the five-volt-tolerant structure of every pin (Table 7), the absolute maxima including the FT input limit and injection limits (Tables 11-13, p80-81), the I/O static characteristics (Table 48, p116-117), the NRST pull-up (Table 51, p121) and thermal resistance (Table 98, p185). The part is bound as its electrical pins in that reset state; firmware is not modeled. The recorded LQFP100 pin map was cross-checked against the Table 7 LQFP100 column and agrees.",
+      "The debug pins PA13, PA14, PA15, PB3 and PB4 come out of reset in their JTAG/SWD function; DS8626 does not state their pulls, so they are not modeled.",
+      "PC13-PC15 depend on the backup domain after reset (Table 7 note 4) and are not modeled.",
+      "Core, regulator and peripheral supply current is not modeled (Table 20 values recorded only).",
+      "Output drive is reachable only through a future explicit pin-state declaration."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "No validated interface-only recipe; firmware execution is not simulable."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-125.md",
-      "document_sha256": "1d22c3f831ee01d9fb6857df5d75e40be78b076bffd31ed596211d5959cd1877",
+      "document_sha256": "49ff4bd29ae636523ab0c1fe03325ee59abfbbe6ae8d97c2900c9121a8f5ecd9",
       "fragment_sha256": null,
       "line": 1
     }
@@ -352,8 +674,8 @@
     "REFERENCE-DIMENSION-COMPATIBILITY-POLICY"
   ],
   "schema_version": 1,
-  "simulation_disposition": "not_simulable",
-  "simulation_reason": "A package has no electrical function until a sourced reference part is bound.",
+  "simulation_disposition": "simulable",
+  "simulation_reason": "Simulates as the bound reference part (STM32F407VGT6 / STM32F407VGT6 LQFP100): electrical pins in reset state only; firmware not modeled. The package alone has no electrical function, so results describe that part in this package.",
   "source": {
     "document": "COMPONENT_BEHAVIOR_SPEC.md",
     "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",

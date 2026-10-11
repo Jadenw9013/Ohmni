@@ -82,6 +82,105 @@ class FitCurve(BaseModel):
     cathode_role: str = "K"
 
 
+class PinLevelPull(BaseModel):
+    """A pull resistor the source states is active in the reset state, with its sourced range."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    resistance: str = Field(description="Value alias passed to the pad as rpu")
+    minimum: str
+    maximum: str
+
+
+class PinLevelPad(BaseModel):
+    """One I/O pin frozen in its datasheet reset state (output disabled; pull only when sourced).
+
+    Every limit is a value alias; a missing or unsourced alias leaves its rating row unknown.
+    """
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    supply: str = Field(description="Role of the rail the pad's clamp and pull-up return to")
+    subckt: Literal["dio_pin", "dio_pin_ft"] = "dio_pin"
+    pull_up: PinLevelPull | None = None
+    parameters: dict[str, str] = Field(default_factory=dict, description="dio_pin parameter -> value alias override")
+    vmax: str
+    vmax_relative: bool = Field(description="True: the limit is the pad supply plus vmax; False: vmax itself")
+    vmin: str = Field(description="Magnitude the pin may go below ground")
+    current: str | None = None
+    injection: str | None = None
+    injection_negative_only: bool = False
+    above_supply_unknown: str | None = Field(
+        default=None, description="Margin above the pad supply beyond which the source states no valid condition"
+        " for this pad in its reset state; the result there is unknown, never a pass")
+    above_supply_reason: str | None = None
+
+
+class PinLevelSupply(BaseModel):
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    role: str
+    minimum: str
+    maximum: str
+    absolute: str
+    current: str | None = Field(default=None, description="Total current limit into this rail's pins")
+
+
+class PinLevelGroup(BaseModel):
+    """A collective current limit the source states over several pins (absolute sum)."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    name: str
+    roles: list[str] = Field(min_length=1)
+    limit: str
+
+
+class PinLevelModel(BaseModel):
+    """D075: a programmable device bound as its electrical pins only, frozen in the datasheet reset state.
+
+    Each pad role becomes one instance of the hashed dio.lib pad (or its no-upper-clamp variant) with
+    dout, oe and pu tied to internal nodes, so no firmware state is invented. Every terminal role is
+    exactly one of: a pad, a supply rail, the ground, a role tied by a connection constraint, or an
+    unmodeled role (metadata only, no conductive model).
+    """
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    ground: str
+    ground_current: str | None = None
+    supplies: list[PinLevelSupply] = Field(min_length=1)
+    pads: dict[str, PinLevelPad] = Field(min_length=1)
+    parameters: dict[str, str] = Field(default_factory=dict, description="dio_pin parameter -> value alias for every pad")
+    tied: list[str] = Field(default_factory=list)
+    unmodeled: list[str] = Field(default_factory=list)
+    groups: list[PinLevelGroup] = Field(default_factory=list)
+    rth_ja: str | None = None
+    tj_max: str | None = None
+    thermal_reason: str | None = None
+    probe_leakage: str
+    reset_state: str
+
+    @model_validator(mode="after")
+    def consistent(self):
+        supplies = [s.role for s in self.supplies]
+        if len(set(supplies)) != len(supplies) or self.ground in supplies:
+            raise ValueError("pin-level supply roles must be distinct and differ from the ground")
+        buckets = [set(self.pads), set(supplies), {self.ground}, set(self.tied), set(self.unmodeled)]
+        if sum(len(b) for b in buckets) != len(set().union(*buckets)):
+            raise ValueError("a pin-level role belongs to exactly one of pads, supplies, ground, tied, unmodeled")
+        if any(p.supply not in supplies for p in self.pads.values()):
+            raise ValueError("a pad returns to an undeclared supply")
+        if any(set(g.roles) - set(self.pads) for g in self.groups):
+            raise ValueError("a pin-level group names a role that is not a pad")
+        if bool(self.rth_ja) != bool(self.tj_max) or (self.rth_ja is None) == (self.thermal_reason is None):
+            raise ValueError("thermal limits are bound together, or the reason they are unpublished is stated")
+        return self
+
+    def roles(self):
+        return {*self.pads, *(s.role for s in self.supplies), self.ground, *self.tied, *self.unmodeled}
+
+
 class RuntimeRecipe(BaseModel):
     """An authored mapping; numeric electrical facts stay in sourced records."""
 
@@ -124,11 +223,22 @@ class RuntimeRecipe(BaseModel):
     inline_assets: list[SourceAnchor] = Field(default_factory=list)
     ground_strays: dict[str, str] = Field(default_factory=dict, description="Pin role to sourced capacitance parameter; every stray returns to node 0")
     supported_analyses: list[Literal["op", "tran"]] = Field(default_factory=lambda: ["op"])
+    pin_level: PinLevelModel | None = None
     limitations: list[str]
 
     @model_validator(mode="after")
     def valid_connection_constraints(self):
         roles = set(self.terminal_roles.values())
+        if self.pin_level is not None:
+            if self.pin_level.roles() != roles:
+                raise ValueError("a pin-level model must classify exactly the bound terminal roles")
+            if self.template_override is not None or self.template_provenance is None:
+                raise ValueError("a pin-level model generates its template and needs template provenance")
+            if self.pin_level.ground not in self.required_ground_roles:
+                raise ValueError("the pin-level ground must be required on circuit ground")
+            constrained = set(self.required_ground_roles) | {r for g in self.required_same_net_roles for r in g}
+            if set(self.pin_level.tied) - constrained:
+                raise ValueError("a tied pin-level role needs a connection constraint")
         constrained = set(self.required_ground_roles) | set(self.required_isolated_roles)
         for group in self.required_same_net_roles:
             if len(set(group)) < 2:
@@ -259,6 +369,7 @@ class CompiledComponent(BaseModel):
     element_names: list[str]
     role_current_probes: dict[str, str] = Field(default_factory=dict)
     limitations: list[str]
+    pin_level: PinLevelModel | None = None
 
 
 class BehaviorCompilation(BaseModel):

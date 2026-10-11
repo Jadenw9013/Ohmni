@@ -1,0 +1,121 @@
+{
+  "analysis": "op",
+  "circuit_hash": "2f40cdd276c31607727c1f5f2afaf2e3662fcc3fb5dbe7eeeec3791259ed9dcf",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "derivation": "A floating reset-state input draws no more than the sourced maximum leakage.",
+    "kind": "interval",
+    "maximum": 1.4999999999999999e-05,
+    "minimum": 0.0,
+    "observable": "pin_current",
+    "pad_model": "dio_pin",
+    "pad_supply": "VCCO_14",
+    "pin_role": "IO_0_14",
+    "reset_state": "Unconfigured in JTAG mode: M[2:0] = 101 (UG470 Table 2-1, p17), so configuration pins not used by the mode are high-Z (p18); PUDC_B High disables the SelectIO pull-ups (UG475 Table 1-12, p22).",
+    "source_facts": {
+      "aux_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "recommended_aux_supply_range",
+        "page": 2,
+        "scope": "XC7A35T-1FTG256C; commercial speed grade-1,not -1LI; VCCAUX",
+        "selected_value": 1.89,
+        "selected_value_path": [
+          1
+        ],
+        "sources": [
+          "https://docs.amd.com/api/khub/documents/iAkxxTOk96ANLJqYf2hgrQ/content"
+        ],
+        "unit": "V",
+        "value": [
+          1.71,
+          1.89
+        ]
+      },
+      "core_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "recommended_core_supply_range",
+        "page": 2,
+        "scope": "XC7A35T-1FTG256C; commercial speed grade-1,not -1LI; VCCINT/VCCBRAM,non-LI",
+        "selected_value": 1.05,
+        "selected_value_path": [
+          1
+        ],
+        "sources": [
+          "https://docs.amd.com/api/khub/documents/iAkxxTOk96ANLJqYf2hgrQ/content"
+        ],
+        "unit": "V",
+        "value": [
+          0.95,
+          1.05
+        ]
+      },
+      "io_leak_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "converted_unit": "A",
+        "converted_value": 1.4999999999999999e-05,
+        "detail": null,
+        "field": "input_leakage_max",
+        "page": 3,
+        "scope": "XC7A35T-1FTG256C; commercial speed grade-1,not -1LI; sample tested;source Table3 conditions",
+        "sources": [
+          "https://docs.amd.com/api/khub/documents/iAkxxTOk96ANLJqYf2hgrQ/content"
+        ],
+        "unit": "uA",
+        "value": 15
+      },
+      "io_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "recommended_io_supply_range",
+        "page": 2,
+        "scope": "XC7A35T-1FTG256C; commercial speed grade-1,not -1LI; VCCO,selected IO standard has further restrictions",
+        "selected_value": 3.465,
+        "selected_value_path": [
+          1
+        ],
+        "sources": [
+          "https://docs.amd.com/api/khub/documents/iAkxxTOk96ANLJqYf2hgrQ/content"
+        ],
+        "unit": "V",
+        "value": [
+          1.14,
+          3.465
+        ]
+      }
+    },
+    "supply_voltages": {
+      "VCCAUX": 1.89,
+      "VCCBRAM": 1.05,
+      "VCCINT": 1.05,
+      "VCCO_0": 3.465,
+      "VCCO_14": 3.465,
+      "VCCO_15": 3.465,
+      "VCCO_34": 3.465,
+      "VCCO_35": 3.465
+    }
+  },
+  "entry_id": "OHM-138",
+  "entry_research_sha256": "85bd36f5d84122e02d9755f17239d610001d13ade23ad108e646ae02c4c92faa",
+  "limits": "Reset-state electrical check of one pin with every rail at its sourced recommended maximum: the pin, shorted to ground, must draw only its sourced leakage (floating input) or its sourced pull-up current. Firmware, clocks, peripherals and output drive are not modeled; the leakage term of the hashed pad is zero, so the leakage check bounds the model from above only.",
+  "netlist_sha256": "40fcf1a166e52936bd456486f42e127c8a988e73f6602e054066a026ef783af0",
+  "observation_status": "ran",
+  "observed": 3.475e-12,
+  "output_sha256": "5e30c9fc415d31b930e14acb55c19d77c8e2ec2aa2dc0480d82198cce60eb253",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T19:29:13Z",
+  "raw_output": "runtime-bench-output/OHM-138-op-hiz_dio_pin/output.txt",
+  "recipe_source_sha256": "8769b59be3186c133f57a471a4959684e1365928a3769a8dc5cd28efab4b5b72",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "variant": "hiz_dio_pin",
+  "version_file": "runtime-bench-output/OHM-138-op-hiz_dio_pin/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sat Oct 10 21:32:36 UTC 2026\n******\n",
+  "version_sha256": "7f444023b0e5851d50a26bf40338ca29665b10988154a0ff2d662d918ab83fc3"
+}

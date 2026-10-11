@@ -414,5 +414,6 @@ def test_stm32_capacitance_is_typical_not_a_rating_ceiling(number):
     facts = {f.field: f for f in registry.entry(f"OHM-{number:03}").research.field_updates}
     assert "io_input_capacitance_max" not in facts
     assert facts["io_input_capacitance_typical"].value == 5
-    assert facts["io_input_capacitance_typical"].page == 105
+    # D075 re-sources the typical CIO from the ST-hosted DS8626 Rev 12 (Table 48, p117).
+    assert facts["io_input_capacitance_typical"].page == 117 and "Rev 12" in facts["io_input_capacitance_typical"].scope
     assert facts["reference_part"].page == 164

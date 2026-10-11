@@ -1,0 +1,105 @@
+{
+  "analysis": "op",
+  "circuit_hash": "b7f5650f45a3d82420dbdaad45bdf8e7a31615fd71b2a6cb79e05d2b6aabd349",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "derivation": "Pull-up current V/R into a grounded pad over the sourced resistance range.",
+    "kind": "interval",
+    "maximum": 0.00012,
+    "minimum": 7.2e-05,
+    "observable": "pin_current",
+    "pad_model": "dio_pin",
+    "pad_supply": "VDD1",
+    "pin_role": "NRST",
+    "reset_state": "RM0008 Rev 9 section 8.1.1 (p140): I/O ports in Input Floating mode during and just after reset, JTAG pins PA15/PA13/PB4 pull-up and PA14 pull-down; NRST has its pull-up (DS5319 Table 39).",
+    "source_facts": {
+      "nrst_rpu_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "converted_unit": "ohm",
+        "converted_value": 50000.0,
+        "detail": "RPU Weak pull-up equivalent resistor(2) VIN = VSS 30 40 50 kOhm",
+        "field": "nrst_pullup_resistance_range",
+        "page": 66,
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 39 NRST RPU [min, typ, max]",
+        "selected_value": 50,
+        "selected_value_path": [
+          2
+        ],
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
+        ],
+        "unit": "kohm",
+        "value": [
+          30,
+          40,
+          50
+        ]
+      },
+      "nrst_rpu_min": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "converted_unit": "ohm",
+        "converted_value": 30000.0,
+        "detail": "RPU Weak pull-up equivalent resistor(2) VIN = VSS 30 40 50 kOhm",
+        "field": "nrst_pullup_resistance_range",
+        "page": 66,
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 39 NRST RPU [min, typ, max]",
+        "selected_value": 30,
+        "selected_value_path": [
+          0
+        ],
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
+        ],
+        "unit": "kohm",
+        "value": [
+          30,
+          40,
+          50
+        ]
+      },
+      "supply_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "VDD Standard operating voltage - 2 3.6",
+        "field": "recommended_supply_range",
+        "page": 38,
+        "scope": "STM32F103CBU6 UFQFPN48; DS5319 Rev 20; Table 9 VDD standard operating voltage",
+        "selected_value": 3.6,
+        "selected_value_path": [
+          1
+        ],
+        "sources": [
+          "https://www.st.com/resource/en/datasheet/stm32f103cb.pdf"
+        ],
+        "unit": "V",
+        "value": [
+          2,
+          3.6
+        ]
+      }
+    },
+    "supply_voltages": {
+      "VDD1": 3.6
+    }
+  },
+  "entry_id": "OHM-131",
+  "entry_research_sha256": "c6069100df42e3bd76f6f323b7d82a50d59c31d7238645d97bedc0a4bf63ccff",
+  "limits": "Reset-state electrical check of one pin with every rail at its sourced recommended maximum: the pin, shorted to ground, must draw only its sourced leakage (floating input) or its sourced pull-up current. Firmware, clocks, peripherals and output drive are not modeled; the leakage term of the hashed pad is zero, so the leakage check bounds the model from above only.",
+  "netlist_sha256": "469b4c688a3e0c086a0a55026e21747c9dfbd08e8f352e056157e479b1b8a446",
+  "observation_status": "ran",
+  "observed": 9e-05,
+  "output_sha256": "9b942041867da47cd507e8e090f1ba5be47b9db8731f69d5667a0289b23cfb42",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T19:29:12Z",
+  "raw_output": "runtime-bench-output/OHM-131-op-pullup_nrst_rpu_typ/output.txt",
+  "recipe_source_sha256": "8769b59be3186c133f57a471a4959684e1365928a3769a8dc5cd28efab4b5b72",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "variant": "pullup_nrst_rpu_typ",
+  "version_file": "runtime-bench-output/OHM-131-op-pullup_nrst_rpu_typ/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sat Oct 10 21:32:36 UTC 2026\n******\n",
+  "version_sha256": "7f444023b0e5851d50a26bf40338ca29665b10988154a0ff2d662d918ab83fc3"
+}

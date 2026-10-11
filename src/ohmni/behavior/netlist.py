@@ -52,6 +52,10 @@ def load_recipes(registry: BehaviorRegistry, root) -> RuntimeRecipes:
             _validate_anchor(root, recipe.template_provenance, key)
         if recipe.pin_role_fact and recipe.pin_role_fact.permutation_provenance:
             _validate_anchor(root, recipe.pin_role_fact.permutation_provenance, key)
+        if recipe.pin_level:
+            assets = {anchor.document.rsplit("/", 1)[-1] for anchor in recipe.inline_assets}
+            if {PIN_LEVEL_SUBCKTS[pad.subckt] for pad in recipe.pin_level.pads.values()} - assets:
+                raise BehaviorRegistryError(f"pin-level pad model asset is not bound: {key}")
     return recipes
 
 
@@ -94,6 +98,32 @@ def terminal_nodes(circuit, component, entry_id, terminal_roles, registry, nodes
         raise ValueError("connected pins must exactly match the bound package terminals")
     # An unconnected mating contact is an unmated plug/cable/card side: its own node, never ground.
     return {terminal: by_pin.get(pin, f"{component.ref}_open_{terminal}") for pin, terminal in mapping.items()}
+
+
+PIN_LEVEL_SUBCKTS = {"dio_pin": "dio.lib", "dio_pin_ft": "dio_ft.lib"}
+
+
+def pin_level_template(recipe: RuntimeRecipe) -> str:
+    """D075: one hashed dio.lib pad per I/O pin, frozen in the datasheet reset state.
+
+    dout and oe are tied to the ground role, so no output is ever driven; pu is tied to a 1 V internal
+    node only for a pad whose reset-state pull-up the source states. din and und stay private nodes
+    per pad. Supply and unmodeled roles get no element of their own: there is no core current model.
+    """
+    model = recipe.pin_level
+    ground = "{" + model.ground + "}"
+    lines = []
+    if any(pad.pull_up for pad in model.pads.values()):
+        lines.append(f"V{{ref}}_pu {{ref}}_pu {ground} DC 1")
+    for role, pad in sorted(model.pads.items()):
+        parameters = {**model.parameters, **pad.parameters}
+        if pad.pull_up:
+            parameters["rpu"] = pad.pull_up.resistance
+        pull = "{ref}_pu" if pad.pull_up else ground
+        values = " ".join(f"{name}={{{alias}}}" for name, alias in sorted(parameters.items()))
+        lines.append(f"X{{ref}}_{role} {{{role}}} {{ref}}_{role}_din {{ref}}_{role}_und {ground} {ground} "
+                     f"{pull} {{{pad.supply}}} {ground} {pad.subckt}" + (f" {values}" if values else ""))
+    return "\n".join(lines) + "\n"
 
 
 def entry_problems(entry, recipe: RuntimeRecipe | None) -> list[str]:
@@ -157,7 +187,7 @@ def convert_unit(value, source, target):
         return value
     units = {
         "V": ("V", 1), "mV": ("V", 1e-3), "A": ("A", 1), "mA": ("A", 1e-3),
-        "uA": ("A", 1e-6), "ohm": ("ohm", 1), "mohm": ("ohm", 1e-3),
+        "uA": ("A", 1e-6), "ohm": ("ohm", 1), "mohm": ("ohm", 1e-3), "kohm": ("ohm", 1e3),
         "W": ("W", 1), "mW": ("W", 1e-3), "F": ("F", 1), "uF": ("F", 1e-6),
         "nF": ("F", 1e-9), "pF": ("F", 1e-12), "H": ("H", 1), "uH": ("H", 1e-6),
         "nH": ("H", 1e-9), "s": ("s", 1), "ms": ("s", 1e-3), "us": ("s", 1e-6),
@@ -478,8 +508,9 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
                     raise ValueError("instance value differs from the fixed sourced reference")
             behavior = registry.behavior_class(recipe.behavior_id)
             _parameter_defaults(behavior, recipe, values, evidence, root)
-            template = recipe.template_override or behavior.canonical_payload["model"][recipe.template_key]
-            if recipe.template_override:
+            template = (pin_level_template(recipe) if recipe.pin_level else recipe.template_override
+                        or behavior.canonical_payload["model"][recipe.template_key])
+            if recipe.template_override or recipe.pin_level:
                 if recipe.template_provenance is None:
                     raise ValueError("template override lacks provenance")
                 _validate_anchor(root, recipe.template_provenance, entry_id)
@@ -533,6 +564,7 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
                 element_names=[line.split()[0] for line in fragment.splitlines()
                                if line.strip() and not line.lstrip().startswith(("*", ".", "+"))],
                 limitations=recipe.limitations + behavior.canonical_payload["model"].get("known_limitations", []),
+                pin_level=recipe.pin_level,
             ))
         except (ValueError, KeyError) as exc:
             problems.append(f"{component.ref} ({entry_id}): {exc}")

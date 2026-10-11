@@ -85,6 +85,11 @@ class ComponentBehaviorService:
         if recipe and entry.simulation_disposition.value == "simulable":
             if recipe.reference_part and 103 <= int(entry_id.split("-")[1]) <= 140:
                 # D066: a package simulates only as the exact part bound to it; say which.
+                if recipe.pin_level is not None:
+                    # D075: a programmable part is its electrical pins frozen in the datasheet reset state.
+                    return "simulated", (f"Simulates as the sourced reference part bound to this package "
+                                         f"({recipe.reference_part}): electrical pins in reset state only; "
+                                         "firmware not modeled.")
                 return "simulated", f"Simulates as the sourced reference part bound to this package ({recipe.reference_part})."
             if entry.layer.value == "L3":
                 # D066 item 3: say plainly that only the electrical pins are simulated.

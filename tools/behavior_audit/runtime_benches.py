@@ -305,7 +305,8 @@ def runtime_receipt_errors(audit, entry_id):
     if behavior in {"BEH-DIO-PN", "BEH-TRN-BJT", "BEH-MAG-INDUCTOR", "BEH-LED-INDICATOR",
                     "BEH-RES-SENSE", "BEH-RES-NETWORK", "BEH-DIO-BRIDGE", "BEH-LED-RGB",
                     "BEH-DIO-ZENER", "BEH-DIO-TVS", "BEH-DIO-SCHOTTKY", "BEH-LED-POWER",
-                    "BEH-DISP-LEDARRAY", "BEH-LED-ADDRESSABLE", "BEH-DISP-LCD1602"} or behavior in PATH_PROBES:
+                    "BEH-DISP-LEDARRAY", "BEH-LED-ADDRESSABLE", "BEH-DISP-LCD1602",
+                    "BEH-IC-DIGITAL-IO"} or behavior in PATH_PROBES:
         return dc_probe_receipt_errors(audit, entry_id)
     return [f"{entry_id}: no runtime analytical receipt validator for {behavior}"]
 
@@ -437,7 +438,74 @@ def fit_points(curve, field):
     return [points[i] for i in idx]
 
 
+def _pin_level_tied(recipe):
+    return {r for group in recipe.required_same_net_roles for r in group} | set(recipe.required_ground_roles)
+
+
+def pin_level_variants(recipe):
+    """D075: one reset-state input check per pad model in use, and one per sourced reset-state pull-up kind."""
+    tied, seen, variants = _pin_level_tied(recipe), set(), []
+    for role, pad in sorted(recipe.pin_level.pads.items()):
+        if not pad.pull_up and role not in tied and pad.subckt not in seen:
+            seen.add(pad.subckt)
+            variants.append(f"hiz_{pad.subckt}")
+    for role, pad in sorted(recipe.pin_level.pads.items()):
+        if pad.pull_up and role not in tied and f"pullup_{pad.pull_up.resistance}" not in variants:
+            variants.append(f"pullup_{pad.pull_up.resistance}")
+    return variants
+
+
+def _pin_level_probe(recipe, values, evidence, variant):
+    """Hold every rail at its sourced recommended maximum and short one reset-state pad to ground.
+
+    A floating input must draw no more than the sourced maximum leakage; a pad whose reset-state pull-up
+    the source states must draw V/R inside the sourced resistance range. Every other pad and unmodeled
+    pin shares one idle net; the connection constraints of the recipe are honored.
+    """
+    model, tied = recipe.pin_level, _pin_level_tied(recipe)
+    pads = sorted((role, pad) for role, pad in model.pads.items() if role not in tied)
+    if variant.startswith("pullup_"):
+        role, pad = next((r, p) for r, p in pads if p.pull_up and variant == f"pullup_{p.pull_up.resistance}")
+    else:
+        role, pad = next((r, p) for r, p in pads if not p.pull_up and variant == f"hiz_{p.subckt}")
+    net = {rail.role: f"rail_{rail.role.lower()}" for rail in model.supplies}
+    roles = {r: net.get(r, "idle") for r in recipe.terminal_roles.values()}
+    for r in recipe.required_ground_roles:
+        roles[r] = "return"
+    roles[model.ground] = "return"
+    for group in recipe.required_same_net_roles:
+        targets = {roles[r] for r in group} - {"idle"}
+        if len(targets) != 1:
+            raise ValueError(f"same-net group {group} has no single rail or ground")
+        target = targets.pop()
+        roles.update({r: target for r in group})
+    roles[role] = "pin"
+    supplies = {net[rail.role]: values[rail.maximum] for rail in model.supplies}
+    supplies["pin"] = 0.0
+    rail = values[next(r.maximum for r in model.supplies if r.role == pad.supply)]
+    names = [r.maximum for r in model.supplies]
+    if pad.pull_up:
+        low, high = values[pad.pull_up.maximum], values[pad.pull_up.minimum]
+        comparison = {"kind": "interval", "minimum": rail / low, "maximum": rail / high,
+                      "derivation": "Pull-up current V/R into a grounded pad over the sourced resistance range.",
+                      "source_facts": {n: evidence[n] for n in (pad.pull_up.minimum, pad.pull_up.maximum, *names)}}
+    else:
+        comparison = {"kind": "interval", "minimum": 0.0, "maximum": values[model.probe_leakage],
+                      "derivation": "A floating reset-state input draws no more than the sourced maximum leakage.",
+                      "source_facts": {n: evidence[n] for n in (model.probe_leakage, *names)}}
+    comparison.update(observable="pin_current", pin_role=role, pad_model=pad.subckt, pad_supply=pad.supply,
+                      supply_voltages={r.role: values[r.maximum] for r in model.supplies},
+                      reset_state=model.reset_state)
+    limits = ("Reset-state electrical check of one pin with every rail at its sourced recommended maximum: the pin, "
+              "shorted to ground, must draw only its sourced leakage (floating input) or its sourced pull-up current. "
+              "Firmware, clocks, peripherals and output drive are not modeled; the leakage term of the hashed pad is "
+              "zero, so the leakage check bounds the model from above only.")
+    return roles, supplies, comparison, limits
+
+
 def dc_probe_variants(behavior_id, recipe=None):
+    if recipe is not None and recipe.pin_level is not None:
+        return pin_level_variants(recipe)
     if behavior_id == "BEH-DIO-PN" and _dual_diode(recipe):
         return ["d1", "d2"]
     if behavior_id in PATH_PROBES:
@@ -482,7 +550,10 @@ def dc_probe_definition(audit, entry_id, variant=None):
     # that part's sourced maximum, not against the shared class card it no longer uses (D048).
     own_forward_fit = {"IS", "N", "RS"} <= set(recipe.model_facts)
     fit = _fit_variant(recipe, variant)
-    if fit is not None:
+    if recipe.pin_level is not None:
+        roles, supplies, comparison, limits = _pin_level_probe(recipe, values, evidence, variant)
+        excitations = []
+    elif fit is not None:
         name, curve, index = fit
         field = next((f for f in registry.entry(entry_id).research.field_updates if f.field == curve.field), None)
         if field is None or field.basis in {"ASSUMPTION", "RESEARCH_REQUIRED"}:
@@ -772,6 +843,9 @@ def _dc_observation(compiled, comparison, output):
     if comparison["observable"] == "supply_current":
         current = parsed.branch_currents.get(compiled.source_elements["supply"])
         return -current.value if current else None
+    if comparison["observable"] == "pin_current":
+        current = parsed.branch_currents.get(compiled.source_elements["pin"])
+        return abs(current.value) if current else None
     if comparison["observable"] == "bridge_drop":
         plus = parsed.node_voltages.get(compiled.node_names["plus"])
         minus = parsed.node_voltages.get(compiled.node_names["minus"])
