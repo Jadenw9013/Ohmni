@@ -14,10 +14,11 @@ import { initializeHome } from "./home.js";
 import { mountBoardControls } from "./board-controls.js";
 import { mountCircuitLessons } from "./circuit-lessons.js";
 import { mountConversation } from "./conversation.js";
+import { mountProjectAssistant } from "./project-assistant.js";
 import { mountProjectWorkbench } from "./project-workbench.js";
 import { scopeHtml } from "./scope-view.js";
 import { mountDesignBehaviorPanel } from "./design-behavior.js";
-import { projectRequest, parseProjectStart } from "./project-contract.js";
+import { projectRequest, parseProjectStart, parseProjectEnvelope } from "./project-contract.js";
 
 import { errorKind, fetchHealth, identityBody, requestBody, freeTextProblem, pollHeaders, sameIdentity, fail, serverErrorKind, parseBrief, parseStart, parseJob, pollDisposition, API_BASE } from "./client-contract.js";
 export { parseHealth, parseBrief, parseStart, parseJob, pollDisposition, requestBody, freeTextProblem } from "./client-contract.js";
@@ -109,6 +110,7 @@ export function canNavigate(stage) {
 }
 
 function updateShell() {
+    $(".app-layout")?.setAttribute("data-flow-stage", state.stage);
     const status = state.runStatus === "running" || state.runStatus === "starting" ? "Building your board"
         : state.runStatus === "paused" ? "Connection interrupted"
         : state.runStatus === "failed" ? "Run needs attention"
@@ -415,6 +417,9 @@ export async function startRun({ fetcher = globalThis.fetch, poller = poll, poll
 
 /** Editing or selecting another saved revision invalidates the current result view. */
 export function invalidateProjectResult() {
+    state.resultAssistant?.dispose();
+    state.resultAssistant = null;
+    setHidden("#result-assistant", true);
     state.pollVersion += 1;
     stopCompletionMonitor();
     stopLearningAnimations();
@@ -441,8 +446,8 @@ function openProjectWorkspace(name) {
     state.projectName = name;
     setHidden("#project-workbench", false);
     setHidden("#reference-brief", true);
-    setText("#agree-title", "Choose what your board does.");
-    setText("#agree-description", "Choose a purpose and the parts to match. Save a revision, then turn that exact design into a board.");
+    setText("#agree-title", "Your plan");
+    setText("#agree-description", "Review your choices. Change anything before generating.");
     show("agree", { focus: false });
     setText("#project-label", name);
 }
@@ -678,6 +683,32 @@ function renderResult(report, jobId) {
     show("review");
     setupBoard(exp.board);
     setConnection("connected");
+    void loadResultAssistant();
+}
+
+export async function loadResultAssistant({fetcher=globalThis.fetch}={}) {
+    const root = $("#result-assistant"), context = state.revisionContext, report = state.report;
+    state.resultAssistant?.dispose(); state.resultAssistant = null;
+    if (!root) return;
+    root.hidden = !context || !report;
+    if (root.hidden) return;
+    root.innerHTML = '<p role="status">Opening this board’s conversation…</p>';
+    try {
+        const response = await projectRequest(`/api/projects/${context.projectId}`, {fetcher, identity:state.identity});
+        if (state.report !== report || state.revisionContext !== context) return;
+        const project = parseProjectEnvelope(response.payload,response.identity);
+        const revision = project.revisions.find(r=>r.revision_id===context.revisionId);
+        if (project.project_id !== context.projectId || !revision) throw new Error("The board’s saved revision could not be found.");
+        state.resultAssistant = mountProjectAssistant(root,{fetcher,idPrefix:"result-",onApplied:async()=>{
+            invalidateProjectResult();
+            await state.workbench?.openProject(context.projectId);
+        }});
+        state.resultAssistant.setContext({projectId:project.project_id,revision,dirty:false});
+    } catch(error) {
+        if (state.report !== report || state.revisionContext !== context) return;
+        root.innerHTML = `<p role="alert">${escapeHtml(error.message || "Conversation unavailable.")}</p><button type="button" class="secondary" data-retry-assistant>Retry conversation</button>`;
+        root.querySelector("[data-retry-assistant]")?.addEventListener("click",()=>void loadResultAssistant({fetcher}));
+    }
 }
 
 function setupBoard(board) {
@@ -1191,6 +1222,11 @@ function renderBringUp(exp) {
 // ── wiring ──────────────────────────────────────────────────────────────
 
 function attach() {
+    $("#flow-projects")?.addEventListener("click",()=>{
+        navigate("describe");
+        const shelf=$("#project-shelf");
+        if (shelf) { shelf.open=true; shelf.scrollIntoView({block:"start"}); shelf.querySelector("summary")?.focus(); }
+    });
     let referencePromise = null;
     const loadReference = () => {
         if (!referencePromise) referencePromise = initializeReferencePreview({
@@ -1213,8 +1249,8 @@ function attach() {
             onOpen() {
                 invalidateProjectResult(); state.customProject = true;
                 setHidden("#conversation", false); setHidden("#project-workbench", true); setHidden("#reference-brief", true);
-                setText("#agree-title", "Let's shape your board.");
-                setText("#agree-description", "Describe, refine, then confirm. Your saved revision will contain these exact choices.");
+                setText("#agree-title", "Your plan");
+                setText("#agree-description", "Review your choices. Change anything before generating.");
                 show("agree");
             },
             async onSaved(project, identity, fetcher) {
@@ -1223,7 +1259,7 @@ function attach() {
                 void state.workbench?.refreshShelf();
                 await startProjectRun({projectId: project.project_id, revisionId: revision.revision_id, identity, preview: revision.preview, fetcher});
             },
-            onGuided() { state.workbench?.openNew(); },
+            onGuided(seed) { state.workbench?.openNew(seed); },
         });
     }
     $$('[data-navigate]').forEach((button) => button.addEventListener("click", () => navigate(button.dataset.navigate)));

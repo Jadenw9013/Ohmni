@@ -85,7 +85,7 @@ STATIC_ASSETS=("index.html","app.js","view-model.js","board-model.js","board-vie
                "schematic-view.js","client-contract.js","reference-preview.js",
                "board-renderer-geometry.js","board-renderer-webgl.js","board-controls.js",
                "learning-model.js","circuit-lessons.js","circuit-lab.js",
-               "project-workbench.js","project-contract.js","conversation.js","project-assistant.js","scope-view.js",
+               "project-workbench.js","project-contract.js","conversation.js","project-assistant.js","plan-summary.js","guided-flow.css","scope-view.js",
                "reference-board.json","styles.css","visual-explorer.css",
                "component-visuals.json","component-stories.js","component-stories.css","component-behavior.js","design-behavior.js",
                "component-sandbox.js","sandbox-model.js","home.js","home.css","landing.css","landing-board.png","workbench-theme.css",
@@ -126,6 +126,7 @@ STATIC_ASSETS=("index.html","app.js","view-model.js","board-model.js","board-vie
                "component-library/preview/index.html","component-library/preview/preview.css",
                "component-library/preview/preview.js","component-library/preview/model-preview.js")
 STATIC_CONTENT_TYPES={
+    "guided-flow.css":"text/css; charset=utf-8",
     "index.html":"text/html; charset=utf-8",
     "styles.css":"text/css; charset=utf-8",
     "visual-explorer.css":"text/css; charset=utf-8",
