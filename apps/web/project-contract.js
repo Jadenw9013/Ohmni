@@ -170,7 +170,27 @@ export class ProjectRequestError extends Error {
     constructor(message) { super(message); this.name = "ProjectRequestError"; }
 }
 
-export async function projectRequest(path, { fetcher = globalThis.fetch, identity, method = "GET", data } = {}) {
+export async function projectRequest(path, { fetcher = globalThis.fetch, timeoutMs = 20000, ...options } = {}) {
+    const controller = new AbortController();
+    let timer;
+    const timeout = new Promise((_, reject) => {
+        timer = setTimeout(() => {
+            reject(new ProjectRequestError("The server took too long to respond. Your edits are still here. Retry opening the project; if you were saving, check its saved revisions before trying again."));
+            controller.abort();
+        }, timeoutMs);
+    });
+    try {
+        return await Promise.race([
+            requestProject(path, { ...options, fetcher: (url, init) => {
+                controller.signal.throwIfAborted();
+                return fetcher(url, { ...init, signal: controller.signal });
+            } }),
+            timeout,
+        ]);
+    } finally { clearTimeout(timer); }
+}
+
+async function requestProject(path, { fetcher, identity, method = "GET", data } = {}) {
     const current = identity || await fetchHealth(fetcher);
     let response;
     try {

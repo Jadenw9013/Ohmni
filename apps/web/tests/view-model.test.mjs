@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { defaultProjectBrief } from "../project-contract.js";
 
 import { artifactCurrent, badge, money, releaseReadiness, tone } from "../view-model.js";
 
@@ -146,12 +147,13 @@ function createDom() {
 }
 
 let importSequence = 0;
-async function withApp(run) {
+async function withApp(run, setup = () => {}) {
     const originals = {
         document: globalThis.document, window: globalThis.window, fetch: globalThis.fetch,
         matchMedia: globalThis.matchMedia, CSS: globalThis.CSS,
     };
     const dom = createDom();
+    setup(dom);
     globalThis.document = dom.document;
     globalThis.window = dom.window;
     // Reduced motion is the deterministic path: no timers start under test.
@@ -620,6 +622,7 @@ test("the request box appears only where a request can be answered, and carries 
     };
     assert.equal(await app.revealFreeText({ fetcher }), true);
     assert.equal(dom.get("#free-text-starter").hidden, false);
+    assert.equal(dom.get("#guided-entry").open, false);
 
     const request = "Build a USB-powered CO2 logger with a status light";
     await app.openBrief({ fetcher, request });
@@ -644,9 +647,51 @@ test("a server without a provider offers no request box, and a short request nev
     };
     assert.equal(await app.revealFreeText({ fetcher }), false);
     assert.equal(dom.get("#free-text-starter").hidden, true);
+    assert.equal(dom.get("#guided-entry").open, true);
+    assert.match(dom.get("#ai-entry-status").textContent, /unavailable/);
 
     await app.openBrief({ fetcher, request: "too short" });
     assert.match(dom.get("#free-text-problem").textContent, /sentence or two/);
     assert.equal(dom.get("#free-text-problem").hidden, false);
     assert.deepEqual(calls, ["/api/health"]);
 }));
+
+
+test("a lost AI connection restores guided setup after it was collapsed", async () => withApp(async (app, dom) => {
+    await app.revealFreeText({ fetcher: async () => response(200, health({ free_text: true })) });
+    assert.equal(dom.get("#guided-entry").open, false);
+    const available = await app.revealFreeText({ fetcher: async () => { throw new Error("offline"); } });
+    assert.equal(available, false);
+    assert.equal(dom.get("#free-text-starter").hidden, true);
+    assert.equal(dom.get("#guided-entry").open, true);
+    assert.match(dom.get("#ai-entry-status").textContent, /Could not connect/);
+}));
+
+
+test("workspace refresh preserves the conversation identity across replies", async () => {
+    const messages = [];
+    const projectBrief = {...defaultProjectBrief(),button_count:0,spi_devices:[],board_width_mm:100,board_height_mm:70};
+    await withApp(async (_app, dom) => {
+        dom.get("#free-text-request").value = "A USB temperature board";
+        dom.get("#start-free-text").listeners.click();
+        await new Promise(setImmediate);
+        dom.get("#conversation-reply").value = "Yes";
+        dom.get("#conversation-reply-form").listeners.submit({preventDefault(){}});
+        await new Promise(setImmediate);
+        assert.equal(messages.length,2);
+        assert.equal(messages[0].parent_id,null);
+        assert.equal(messages[1].parent_id,"c".repeat(16));
+        assert.equal(messages[1].message,"Yes");
+    }, dom => {
+        dom.get("#conversation").dataset.conversation = "true";
+        dom.get("#conversation").querySelector = dom.get;
+        globalThis.fetch = async (path, options) => {
+            if (path === "/api/health") return response(200,health({free_text:true}));
+            const body=JSON.parse(options.body);messages.push(body);
+            return response(200,{...identity,plan:{plan_id:"c".repeat(16),brief_fingerprint:"d".repeat(64),
+                messages:messages.map(x=>x.message),brief:projectBrief,stated:[],
+                assumed_fields:Object.keys(projectBrief).filter(k=>k!=="schema_version"),
+                questions:messages.length===1?["Is USB power acceptable?"]:[],ready:messages.length>1,preview:{}}});
+        };
+    });
+});

@@ -83,6 +83,9 @@ class ComponentBehaviorService:
         entry = self.registry.entry(entry_id)
         recipe = self.recipes.entries.get(entry_id)
         if recipe and entry.simulation_disposition.value == "simulable":
+            if recipe.reference_part and 103 <= int(entry_id.split("-")[1]) <= 140:
+                # D066: a package simulates only as the exact part bound to it; say which.
+                return "simulated", f"Simulates as the sourced reference part bound to this package ({recipe.reference_part})."
             return "simulated", None
         blocker = self.data["blocked"].get(entry_id)
         if recipe:
