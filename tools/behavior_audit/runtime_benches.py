@@ -636,15 +636,26 @@ def dc_probe_definition(audit, entry_id, variant=None):
             raise ValueError("authored sense-resistor current stimulus changed")
         target = 10 * values["value"]
         locked = numeric_contract(contract["expected"][0])
+        # D072: a four-terminal (Kelvin) binding gives each sense terminal its own high-impedance
+        # signal net and is observed across E1-E2, the measurement the part exists for.
+        kelvin = {"E1", "E2"} <= set(recipe.terminal_roles.values())
         roles = {"I1": "anode", "I2": "return"}
+        if kelvin:
+            roles.update(E1="sense_high", E2="sense_low")
         supplies = {}
         excitations = [DCExcitation(positive_net="return", negative_net="anode", value=Quantity(value=10, unit="A"))]
         comparison = {"kind": "absolute", "expected": target,
-                      "tolerance": target * locked["tolerance"] / locked["expected"], "observable": "anode_voltage",
+                      "tolerance": target * locked["tolerance"] / locked["expected"],
+                      "observable": "kelvin_voltage" if kelvin else "anode_voltage",
                       "analytical_source": "BEH-RES-SENSE/B1", "source_deck_sha256": contract["netlist_sha256"],
-                      "derivation": "Same authored I*Rs equation and relative tolerance, evaluated at the bound 5 milliohm reference instead of the class bench's 1 milliohm example.",
+                      "derivation": ("Same authored V_kelvin = I*Rs equation and relative tolerance, evaluated at the bound "
+                                     "reference value and read across the sense terminals E1-E2."
+                                     if kelvin else
+                                     "Same authored I*Rs equation and relative tolerance, evaluated at the bound 5 milliohm reference instead of the class bench's 1 milliohm example."),
                       "source_fact": evidence["value"]}
-        limits = "Two-terminal isothermal DC Ohm's law only; no Kelvin, lead-drop, temperature or safe-current acceptance."
+        limits = ("Four-terminal isothermal DC Kelvin voltage only, sense terminals unloaded; no contact or bolt-joint "
+                  "resistance, temperature, thermal EMF or safe-current acceptance." if kelvin else
+                  "Two-terminal isothermal DC Ohm's law only; no Kelvin, lead-drop, temperature or safe-current acceptance.")
     elif recipe.behavior_id == "BEH-RES-NETWORK":
         contract, deck = _locked_probe_deck(audit, "BEH-RES-NETWORK/B2")
         if not re.search(r"(?im)^V\S*\s+\S+\s+\S+\s+(?:DC\s+)?5\s*$", deck):
@@ -769,6 +780,10 @@ def _dc_observation(compiled, comparison, output):
     if comparison["observable"] == "anode_voltage":
         voltage = parsed.node_voltages.get(compiled.node_names["anode"])
         return voltage.value if voltage else None
+    if comparison["observable"] == "kelvin_voltage":
+        high = parsed.node_voltages.get(compiled.node_names["sense_high"])
+        low = parsed.node_voltages.get(compiled.node_names["sense_low"])
+        return high.value - low.value if high and low else None
     if comparison["observable"] == "current_gain":
         current = parsed.branch_currents.get(compiled.source_elements["collector"])
         return abs(current.value) / comparison["base_current"] if current else None

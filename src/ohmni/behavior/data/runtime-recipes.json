@@ -986,6 +986,93 @@
         "2": "I2"
       }
     },
+    "OHM-015": {
+      "behavior_id": "BEH-RES-SENSE",
+      "catalog_identity_pin_map": {},
+      "catalog_parts": [],
+      "class_parameters": {},
+      "critical_facts": {
+        "p_rated": {
+          "field": "ref_p_rated",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "W",
+          "value_path": []
+        },
+        "t_end": {
+          "field": "ref_t_end",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "degC",
+          "value_path": []
+        },
+        "t_knee": {
+          "field": "ref_derating_knee",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "degC",
+          "value_path": []
+        },
+        "tcr": {
+          "field": "ref_tcr_magnitude",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "ppm/degC",
+          "value_path": []
+        },
+        "value": {
+          "field": "ref_nominal_resistance",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "ohm",
+          "value_path": []
+        }
+      },
+      "derived_parameters": {},
+      "entry_id": "OHM-015",
+      "fit_curves": {},
+      "ground_strays": {},
+      "inline_assets": [],
+      "instance_value_unit": null,
+      "limitations": [
+        "Four-terminal DC Kelvin topology of the spec RSENSE4 model with Rc = 0 (no contact resistance is sourced) and 1 uohm sense links; the sense pins see the element ends only. No bolt-joint resistance, inductance (< 5 nH bound only), thermal EMF or TCR drift is modelled.",
+        "36 W is Vishay's P70 C rating derated against ambient temperature (to 170 C); Vishay states no busbar, heatsink or mounting condition, so no installed or free-air safe current (sqrt(P/R) = 600 A) is accepted.",
+        "Terminal numbering 1-4 is the OHMNI 3D-spec convention (bolt holes 1 and 2, sense pins 3 and 4); Vishay does not number terminals. Three-sense-pin, low-TCR, tapped-hole and Sn-plated options are not bound."
+      ],
+      "model_facts": {},
+      "open_mating_roles": [],
+      "package": "WSBS8518 bolt-on shunt, two sense pins (85 x 18 mm, 60 mm hole spacing)",
+      "pin_role_fact": {
+        "field": "derived_package_pin_roles",
+        "manufacturer_to_package_terminal": {},
+        "permutation_provenance": null,
+        "scope_contains": null,
+        "tied_features": []
+      },
+      "quoted_parameters": {},
+      "reference_function": null,
+      "reference_part": "Vishay WSBS8518L1000JT20 (WSBS8518...20), 100 uohm, +/-5 %, two sense pins",
+      "required_ground_roles": [],
+      "required_isolated_roles": [],
+      "required_same_net_roles": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "template_key": "netlist_template",
+      "template_override": "R{ref} {I1} {I2} {value}\nR{ref}_e1 {E1} {I1} 1u\nR{ref}_e2 {E2} {I2} 1u\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "fragment_sha256": null,
+        "line": 582
+      },
+      "terminal_roles": {
+        "1": "I1",
+        "2": "I2",
+        "3": "E1",
+        "4": "E2"
+      }
+    },
     "OHM-016": {
       "behavior_id": "BEH-RES-NETWORK",
       "catalog_identity_pin_map": {},
@@ -1173,6 +1260,101 @@
         "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
         "fragment_sha256": null,
         "line": 1054
+      },
+      "terminal_roles": {
+        "1": "A",
+        "2": "W",
+        "3": "B"
+      }
+    },
+    "OHM-019": {
+      "behavior_id": "BEH-RES-POT",
+      "catalog_identity_pin_map": {},
+      "catalog_parts": [],
+      "class_parameters": {},
+      "critical_facts": {
+        "p_rated": {
+          "field": "ref_p_rated",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "W",
+          "value_path": []
+        },
+        "t_end": {
+          "field": "ref_t_end",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "degC",
+          "value_path": []
+        },
+        "t_knee": {
+          "field": "ref_derating_knee",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "degC",
+          "value_path": []
+        },
+        "tol": {
+          "field": "ref_resistance_tolerance_pct",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "%",
+          "value_path": []
+        },
+        "v_max": {
+          "field": "ref_v_max",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "V",
+          "value_path": []
+        },
+        "value": {
+          "field": "ref_nominal_resistance",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "ohm",
+          "value_path": []
+        }
+      },
+      "derived_parameters": {},
+      "entry_id": "OHM-019",
+      "fit_curves": {},
+      "ground_strays": {},
+      "inline_assets": [],
+      "instance_value_unit": null,
+      "limitations": [
+        "Explicit Bourns 3361 alternative, not the 3314G spec default: 3314 J/G/H styles publish no pin functions and the Z style that names them has no voltage rating. The 3361P body (6.7 mm) is larger than the 3314 (4.5 mm), so a catalog part must match the 3361P footprint.",
+        "End-to-end track resistance only. The wiper (pin 2) must stay unconnected: no maximum wiper current is published, so any loaded, driven or grounded wiper is refused rather than simulated.",
+        "No wiper position, wiper, end or contact-resistance variation is modelled (bounds only); 0.5 W at 70 C derating to 0 W at 125 C and the 300 V maximum are enforced as source ratings; no self-heating, TCR or wear model."
+      ],
+      "model_facts": {},
+      "open_mating_roles": [],
+      "package": "3361P 1/4 in square SMD single-turn trimmer (explicit alternate to 3314G)",
+      "pin_role_fact": {
+        "field": "ref_manufacturer_pin_roles",
+        "manufacturer_to_package_terminal": {},
+        "permutation_provenance": null,
+        "scope_contains": "3361",
+        "tied_features": []
+      },
+      "quoted_parameters": {},
+      "reference_function": null,
+      "reference_part": "Bourns 3361P-1-103GLF, 10 kohm, wiper open; explicit alternative to the spec's 3314G",
+      "required_ground_roles": [],
+      "required_isolated_roles": [
+        "W"
+      ],
+      "required_same_net_roles": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "template_key": "netlist_template",
+      "template_override": "R{ref} {A} {B} {value}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "fragment_sha256": null,
+        "line": 1057
       },
       "terminal_roles": {
         "1": "A",
@@ -3112,6 +3294,92 @@
         "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
         "fragment_sha256": null,
         "line": 3410
+      },
+      "terminal_roles": {
+        "1": "A",
+        "2": "B"
+      }
+    },
+    "OHM-042": {
+      "behavior_id": "BEH-MAG-INDUCTOR",
+      "catalog_identity_pin_map": {},
+      "catalog_parts": [],
+      "class_parameters": {},
+      "critical_facts": {
+        "irms": {
+          "field": "ref_rated_current_temperature_rise",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "A",
+          "value_path": []
+        },
+        "irms_tamb_max": {
+          "field": "ref_rated_current_ambient",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "C",
+          "value_path": []
+        },
+        "rdc": {
+          "field": "ref_maximum_dcr",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "ohm",
+          "value_path": []
+        },
+        "rdc_max": {
+          "field": "ref_maximum_dcr",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "ohm",
+          "value_path": []
+        },
+        "tmax_part": {
+          "field": "ref_maximum_part_temperature",
+          "output_unit": null,
+          "scope_contains": null,
+          "unit": "C",
+          "value_path": []
+        },
+        "value": {
+          "field": "ref_nominal_inductance",
+          "output_unit": "H",
+          "scope_contains": null,
+          "unit": "uH",
+          "value_path": []
+        }
+      },
+      "derived_parameters": {},
+      "entry_id": "OHM-042",
+      "fit_curves": {},
+      "ground_strays": {},
+      "inline_assets": [],
+      "instance_value_unit": null,
+      "limitations": [
+        "Named Murata LQM21PH2R2MGEL binding; the spec's generic LQM21F / TDK MLZ2012 placeholders and the record's LQM21PN2R2MGH list values are not used.",
+        "DC winding-resistance model only (R = 0.39 ohm maximum, worst case). Inductance (1 MHz, 1 mA), the 880 mA +/-30 % inductance-change current and the 90 MHz minimum SRF are recorded but no nonlinear L(i), core loss or resonance is simulated; no saturation limit is enforced.",
+        "0.8 A is Murata's temperature-rise rated current (40 C rise) up to 85 C ambient; it derates to 0.5 A at 125 C and 10 mA at 150 C. The heating-current rating can pass only with a declared ambient at or below 85 C; above it, or with no ambient, it can only prove a violation."
+      ],
+      "model_facts": {},
+      "open_mating_roles": [],
+      "package": "0805 (2012) multilayer chip inductor",
+      "pin_role_fact": null,
+      "quoted_parameters": {},
+      "reference_function": null,
+      "reference_part": "Murata LQM21PH2R2MGEL, 2.2 uH +/-20 %",
+      "required_ground_roles": [],
+      "required_isolated_roles": [],
+      "required_same_net_roles": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "template_key": "netlist_template",
+      "template_override": "R{ref} {A} {B} {rdc}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "fragment_sha256": null,
+        "line": 3418
       },
       "terminal_roles": {
         "1": "A",
@@ -14756,7 +15024,7 @@
   "schema_version": 1,
   "source": {
     "document": "docs/behavior/runtime-recipes.json",
-    "document_sha256": "7b85dc9134cd34fa209a48ada12810dafaeb9deb94fbeaaf6526fccfae61f58f",
+    "document_sha256": "bc488ab16855a57c6770fe3374176c0f7214015419616a52a05fe2eb9de00266",
     "fragment_sha256": null,
     "line": 1
   }

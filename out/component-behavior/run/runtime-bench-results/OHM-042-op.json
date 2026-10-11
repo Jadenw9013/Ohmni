@@ -1,0 +1,57 @@
+{
+  "analysis": "op",
+  "circuit_hash": "e28e3de978af1e6a00d313108972adb82bce354634a6f0181ea65e612669541a",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "current": 0.8,
+    "kind": "interval",
+    "maximum": 0.39,
+    "minimum": 0,
+    "observable": "dc_resistance",
+    "source_facts": {
+      "irms": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Rated current based on temperature rise: ambient 85 C 800 mA (125 C 500 mA, 150 C 10 mA)",
+        "field": "ref_rated_current_temperature_rise",
+        "page": 1,
+        "scope": "Murata LQM21PH2R2MGEL (reference specification JELF243B-9129B-01, LQM21PH_GE); ambient 85 C; 7.5: temperature rise by self-generated heat limited to 40 C max",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/inductor/JELF243B-9129_PDF_INDUCTOR"
+        ],
+        "unit": "A",
+        "value": 0.8
+      },
+      "rdc_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "DC resistance Max. 0.39 ohm",
+        "field": "ref_maximum_dcr",
+        "page": 1,
+        "scope": "Murata LQM21PH2R2MGEL (reference specification JELF243B-9129B-01, LQM21PH_GE)",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/inductor/JELF243B-9129_PDF_INDUCTOR"
+        ],
+        "unit": "ohm",
+        "value": 0.39
+      }
+    }
+  },
+  "entry_id": "OHM-042",
+  "entry_research_sha256": "ea291b61360f3caa98569115c3bd966ba1fa85ed0cb54e47a979b1e0de82e4f3",
+  "limits": "Cold isothermal DC winding resistance against the sourced upper bound. Does not validate nonlinear inductance, resonant response, core loss, self-heating or safe sustained operation at the stimulus current.",
+  "netlist_sha256": "3f181b45dd763ce58b6540881dda573448683daf6139907a96c30c371099a500",
+  "observation_status": "ran",
+  "observed": 0.38999999999999996,
+  "output_sha256": "9ad664c97efe3d4af9a1c7b025510eca5f8e95b9a003b6cb84f565ac4bc52083",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T19:25:50Z",
+  "raw_output": "runtime-bench-output/OHM-042-op/output.txt",
+  "recipe_source_sha256": "bc488ab16855a57c6770fe3374176c0f7214015419616a52a05fe2eb9de00266",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "version_file": "runtime-bench-output/OHM-042-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sat Oct 10 21:32:36 UTC 2026\n******\n",
+  "version_sha256": "7f444023b0e5851d50a26bf40338ca29665b10988154a0ff2d662d918ab83fc3"
+}

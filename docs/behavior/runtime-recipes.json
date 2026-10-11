@@ -571,6 +571,61 @@
         "2": "I2"
       }
     },
+    "OHM-015": {
+      "entry_id": "OHM-015",
+      "behavior_id": "BEH-RES-SENSE",
+      "package": "WSBS8518 bolt-on shunt, two sense pins (85 x 18 mm, 60 mm hole spacing)",
+      "reference_part": "Vishay WSBS8518L1000JT20 (WSBS8518...20), 100 uohm, +/-5 %, two sense pins",
+      "terminal_roles": {
+        "1": "I1",
+        "2": "I2",
+        "3": "E1",
+        "4": "E2"
+      },
+      "pin_role_fact": {
+        "field": "derived_package_pin_roles"
+      },
+      "critical_facts": {
+        "value": {
+          "field": "ref_nominal_resistance",
+          "unit": "ohm"
+        },
+        "p_rated": {
+          "field": "ref_p_rated",
+          "unit": "W"
+        },
+        "t_knee": {
+          "field": "ref_derating_knee",
+          "unit": "degC"
+        },
+        "t_end": {
+          "field": "ref_t_end",
+          "unit": "degC"
+        },
+        "tcr": {
+          "field": "ref_tcr_magnitude",
+          "unit": "ppm/degC"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref} {I1} {I2} {value}\nR{ref}_e1 {E1} {I1} 1u\nR{ref}_e2 {E2} {I2} 1u\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 582
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "Four-terminal DC Kelvin topology of the spec RSENSE4 model with Rc = 0 (no contact resistance is sourced) and 1 uohm sense links; the sense pins see the element ends only. No bolt-joint resistance, inductance (< 5 nH bound only), thermal EMF or TCR drift is modelled.",
+        "36 W is Vishay's P70 C rating derated against ambient temperature (to 170 C); Vishay states no busbar, heatsink or mounting condition, so no installed or free-air safe current (sqrt(P/R) = 600 A) is accepted.",
+        "Terminal numbering 1-4 is the OHMNI 3D-spec convention (bolt holes 1 and 2, sense pins 3 and 4); Vishay does not number terminals. Three-sense-pin, low-TCR, tapped-hole and Sn-plated options are not bound."
+      ]
+    },
     "OHM-016": {
       "behavior_id": "BEH-RES-NETWORK",
       "critical_facts": {
@@ -691,6 +746,68 @@
         "End-to-end track resistance only. The wiper (pin 2) must stay unconnected: no maximum wiper current is published, so any loaded, driven or grounded wiper is refused rather than simulated.",
         "No wiper position, wiper resistance, end resistance or contact-resistance variation is modelled; the datasheet gives only worst-case bounds for these.",
         "0.5 W at 70 C derating to 0 W at 125 C and the 300 V maximum are enforced as source ratings; no self-heating, TCR or wear model."
+      ]
+    },
+    "OHM-019": {
+      "entry_id": "OHM-019",
+      "behavior_id": "BEH-RES-POT",
+      "package": "3361P 1/4 in square SMD single-turn trimmer (explicit alternate to 3314G)",
+      "reference_part": "Bourns 3361P-1-103GLF, 10 kohm, wiper open; explicit alternative to the spec's 3314G",
+      "terminal_roles": {
+        "1": "A",
+        "2": "W",
+        "3": "B"
+      },
+      "pin_role_fact": {
+        "field": "ref_manufacturer_pin_roles",
+        "scope_contains": "3361"
+      },
+      "required_isolated_roles": [
+        "W"
+      ],
+      "critical_facts": {
+        "value": {
+          "field": "ref_nominal_resistance",
+          "unit": "ohm"
+        },
+        "tol": {
+          "field": "ref_resistance_tolerance_pct",
+          "unit": "%"
+        },
+        "p_rated": {
+          "field": "ref_p_rated",
+          "unit": "W"
+        },
+        "v_max": {
+          "field": "ref_v_max",
+          "unit": "V"
+        },
+        "t_knee": {
+          "field": "ref_derating_knee",
+          "unit": "degC"
+        },
+        "t_end": {
+          "field": "ref_t_end",
+          "unit": "degC"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref} {A} {B} {value}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 1057
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "Explicit Bourns 3361 alternative, not the 3314G spec default: 3314 J/G/H styles publish no pin functions and the Z style that names them has no voltage rating. The 3361P body (6.7 mm) is larger than the 3314 (4.5 mm), so a catalog part must match the 3361P footprint.",
+        "End-to-end track resistance only. The wiper (pin 2) must stay unconnected: no maximum wiper current is published, so any loaded, driven or grounded wiper is refused rather than simulated.",
+        "No wiper position, wiper, end or contact-resistance variation is modelled (bounds only); 0.5 W at 70 C derating to 0 W at 125 C and the 300 V maximum are enforced as source ratings; no self-heating, TCR or wear model."
       ]
     },
     "OHM-021": {
@@ -2044,6 +2161,61 @@
         "DC winding-resistance model only (R = 0.96 ohm maximum). No inductance, saturation, SRF or loss behaviour is simulated.",
         "The 330 mA 'Itemp (based on temperature rise)' rating is used only as the probe current; its rise is not stated, so no thermal limit or safe sustained current is claimed. The 120 mA 'Isat (based on inductance change)' rating has no stated drop and is not used.",
         "Binding valid only after the Murata-hosted sheet is archived; the Farnell-hosted copy is secondary."
+      ]
+    },
+    "OHM-042": {
+      "entry_id": "OHM-042",
+      "behavior_id": "BEH-MAG-INDUCTOR",
+      "package": "0805 (2012) multilayer chip inductor",
+      "reference_part": "Murata LQM21PH2R2MGEL, 2.2 uH +/-20 %",
+      "terminal_roles": {
+        "1": "A",
+        "2": "B"
+      },
+      "critical_facts": {
+        "value": {
+          "field": "ref_nominal_inductance",
+          "unit": "uH",
+          "output_unit": "H"
+        },
+        "rdc": {
+          "field": "ref_maximum_dcr",
+          "unit": "ohm"
+        },
+        "rdc_max": {
+          "field": "ref_maximum_dcr",
+          "unit": "ohm"
+        },
+        "irms": {
+          "field": "ref_rated_current_temperature_rise",
+          "unit": "A"
+        },
+        "irms_tamb_max": {
+          "field": "ref_rated_current_ambient",
+          "unit": "C"
+        },
+        "tmax_part": {
+          "field": "ref_maximum_part_temperature",
+          "unit": "C"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref} {A} {B} {rdc}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 3418
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "Named Murata LQM21PH2R2MGEL binding; the spec's generic LQM21F / TDK MLZ2012 placeholders and the record's LQM21PN2R2MGH list values are not used.",
+        "DC winding-resistance model only (R = 0.39 ohm maximum, worst case). Inductance (1 MHz, 1 mA), the 880 mA +/-30 % inductance-change current and the 90 MHz minimum SRF are recorded but no nonlinear L(i), core loss or resonance is simulated; no saturation limit is enforced.",
+        "0.8 A is Murata's temperature-rise rated current (40 C rise) up to 85 C ambient; it derates to 0.5 A at 125 C and 10 mA at 150 C. The heating-current rating can pass only with a declared ambient at or below 85 C; above it, or with no ambient, it can only prove a violation."
       ]
     },
     "OHM-043": {

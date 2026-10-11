@@ -22,7 +22,10 @@
     "conflicts": [
       "IRLR8721 power is65 W atTC25 C and33 W atTC100 C; the earlier33 W-at25 conflict was a table-condition extraction error.",
       "The IRLR3410 gate limit is +/-16 V, not a generic +/-20 V.",
-      "IRLR8721 headline65 A is calculated; the explicit50 A package limit further caps current. RDS(on) pulse-footnote linkage is ambiguous between page2 note4 and page12 pulse note3."
+      "IRLR8721 headline65 A is calculated; the explicit50 A package limit further caps current. RDS(on) pulse-footnote linkage is ambiguous between page2 note4 and page12 pulse note3.",
+      "D072: STATE/D059 said 'Infineon publishes no IRLR8721 model card'; Infineon's design resources list irlr_u8721pbf.spi (archived).",
+      "D072: the spec's 'RthJC 2.3 K/W with PD 33 W (150/2.3 = 65 W)' is not a conflict: PD is 65 W at TC = 25 C and 33 W at TC = 100 C (p1).",
+      "D072: vendor model threshold 2.59 V exceeds the datasheet VGS(th) maximum 2.35 V."
     ],
     "documents": [
       {
@@ -44,6 +47,26 @@
         "source_status": "primary_source_opened",
         "title": "IRLR/U3410PbF HEXFET Power MOSFET",
         "url": "https://www.infineon.com/dgdl/irlr3410pbf.pdf"
+      },
+      {
+        "document_id": "infineon-irlr8721-spice",
+        "manufacturer": "Infineon",
+        "note": "Archived (ledger sha256 be65904fe73d...); read 2026-10-11 to correct the D059 note that no IRLR8721 model is published (D072).",
+        "page": null,
+        "revision": "Model generated Aug 11, 15",
+        "source_status": "primary_source_opened",
+        "title": "Spice File - IRLR8721 (irlr_u8721pbf.spi, SPICE3 model with thermal RC network)",
+        "url": "https://www.infineon.com/assets/row/public/documents/24/50/irlr-u8721pbf.spi"
+      },
+      {
+        "document_id": "infineon-irlr8721-design-resources",
+        "manufacturer": "Infineon",
+        "note": "Archived (ledger sha256 273c967dad39...); read 2026-10-11 to confirm that irlr_u8721pbf.spi is Infineon's published IRLR8721 model (D072).",
+        "page": null,
+        "revision": "retrieved 2026-10-11",
+        "source_status": "primary_source_opened",
+        "title": "Infineon IRLR8721 design resources listing (JSON)",
+        "url": "https://www.infineon.com/dataApi/en/part.designresources.en.IRLR8721.json?path=/root/ifxcontainer_809656638/ifxcontainer_1270043983/designresources"
       }
     ],
     "entry_id": "OHM-100",
@@ -361,18 +384,162 @@
         ],
         "unit": "A",
         "value": 50
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": ".SUBCKT irlr_u8721pbf 1 2 3; SPICE3 MODEL WITH THERMAL RC NETWORK; Model generated on Aug 11, 15; .SUBCKT irlr_u8721pbft 3 0 (3-pole Foster network)",
+        "field": "vendor_spice_model",
+        "page": 1,
+        "scope": "IRLR/U8721PbF; header: Node 1 -> Drain, Node 2 -> Gate, Node 3 -> Source",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/24/50/irlr-u8721pbf.spi"
+        ],
+        "unit": null,
+        "value": "irlr_u8721pbf.spi (.SUBCKT irlr_u8721pbf D G S; thermal subckt irlr_u8721pbft)"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "documentDisplayName 'Spice File - IRLR8721', filenameNomenclature irlr_u8721pbf.spi",
+        "field": "vendor_model_listing",
+        "page": 1,
+        "scope": "Infineon design resources, Simulation Models",
+        "sources": [
+          "https://www.infineon.com/dataApi/en/part.designresources.en.IRLR8721.json?path=/root/ifxcontainer_809656638/ifxcontainer_1270043983/designresources"
+        ],
+        "unit": null,
+        "value": "Spice File - IRLR8721 (irlr_u8721pbf.spi)"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "LEAD ASSIGNMENTS HEXFET 1.- GATE 2.- DRAIN 3.- SOURCE 4.- DRAIN; a cropped lead 2 leaves the drain on the tab",
+        "field": "manufacturer_pin_roles",
+        "page": 10,
+        "scope": "IRLR8721PbF D-Pak (TO-252AA); 4 = tab; LEAD ASSIGNMENTS, HEXFET column (rendered page inspected)",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/non-assigned/49/infineon-irlr8721-datasheet-en.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "1": "G",
+          "2": "D",
+          "3": "S",
+          "4": "D"
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "RDS(on) typ 6.3 mohm (VGS 10 V, ID 25 A), 10.1 mohm (VGS 4.5 V, ID 20 A)",
+        "field": "typical_on_resistance",
+        "page": 2,
+        "scope": "IRLR8721PbF; TJ 25 C",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/non-assigned/49/infineon-irlr8721-datasheet-en.pdf"
+        ],
+        "unit": "mohm",
+        "value": {
+          "VGS10_ID25A": 6.3,
+          "VGS4.5_ID20A": 10.1
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "VGS(th) 1.35 / 1.9 / 2.35 V",
+        "field": "gate_threshold_voltage_range",
+        "page": 2,
+        "scope": "IRLR8721PbF; VDS = VGS, ID = 25 uA",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/non-assigned/49/infineon-irlr8721-datasheet-en.pdf"
+        ],
+        "unit": "V",
+        "value": {
+          "max": 2.35,
+          "min": 1.35,
+          "typ": 1.9
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "VSD max 1.0 V",
+        "field": "maximum_body_diode_forward_voltage",
+        "page": 2,
+        "scope": "IRLR8721PbF; TJ = 25 C, IS = 20 A, VGS = 0 V",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/non-assigned/49/infineon-irlr8721-datasheet-en.pdf"
+        ],
+        "unit": "V",
+        "value": 1.0
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "VDS / 25 A = 6.271 mohm (datasheet typ 6.3, max 8.4)",
+        "field": "vendor_model_rds_on_10V_25A",
+        "page": 1,
+        "scope": "irlr_u8721pbf unmodified under ngspice-42, 25 C, VGS 10 V, ID 25 A",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/24/50/irlr-u8721pbf.spi"
+        ],
+        "unit": "ohm",
+        "value": 0.006271
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "VDS / 20 A = 11.39 mohm (datasheet typ 10.1, max 11.8)",
+        "field": "vendor_model_rds_on_4V5_20A",
+        "page": 1,
+        "scope": "irlr_u8721pbf unmodified under ngspice-42, 25 C, VGS 4.5 V, ID 20 A",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/24/50/irlr-u8721pbf.spi"
+        ],
+        "unit": "ohm",
+        "value": 0.011394
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "Simulated 2.5919 V; above the datasheet VGS(th) maximum 2.35 V",
+        "field": "vendor_model_vgs_th_at_25uA",
+        "page": 1,
+        "scope": "irlr_u8721pbf unmodified under ngspice-42, 25 C, VDS = VGS, ID = 25 uA",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/24/50/irlr-u8721pbf.spi"
+        ],
+        "unit": "V",
+        "value": 2.592
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "Simulated 0.8580 V (datasheet max 1.0 V)",
+        "field": "vendor_model_body_diode_vsd_20A",
+        "page": 1,
+        "scope": "irlr_u8721pbf unmodified under ngspice-42, 25 C, IS = 20 A, VGS = 0 V",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/24/50/irlr-u8721pbf.spi"
+        ],
+        "unit": "V",
+        "value": 0.858
       }
     ],
     "remaining_open_items": [
       "SOA/transient thermal curves and exact cropped-middle-lead binding remain to validate.",
-      "Source status remains research_required; opening a datasheet alone does not complete the model."
+      "Source status remains research_required; opening a datasheet alone does not complete the model.",
+      "D072: Infineon publishes the exact IRLR/U8721PbF model (irlr_u8721pbf.spi, archived); the D059 note that no IRLR8721 model card is published was wrong. Binding it needs two owner decisions: (a) netlist.validate_mosfet_cards requires IS=0 while the vendor card sets IS=1e-32; (b) the MOSFET runtime probe compares against the maximum Rds(on) +/- 3 %, whereas a typical vendor model gives 6.27 mohm against 8.4 mohm max, so a typical-vs-maximum probe mode is needed.",
+      "Vendor model threshold (2.59 V at 25 uA) is above the datasheet VGS(th) range 1.35-2.35 V; its thermal network is not wired."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-100.md",
-      "document_sha256": "7ed587d82e431d1bf4ee17e9fa47ada36599657ac361815f94fad5be23cdf0eb",
+      "document_sha256": "3fd225ea72a2535008f02874f77bf3a37857564db9893c4031dd23acb508b5ce",
       "fragment_sha256": null,
       "line": 1
     }

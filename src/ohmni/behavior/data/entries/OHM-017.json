@@ -30,6 +30,16 @@
         "source_status": "manufacturer_document_mirror",
         "title": "CRA06P Thick Film Resistor Array",
         "url": "https://pccomponents.com/datasheets/vish-cra06p.pdf"
+      },
+      {
+        "document_id": "bourns-catcay16",
+        "manufacturer": "Bourns",
+        "note": "Archived (ledger sha256 db7e8f2080cb...); read 2026-10-11 as a candidate isolated-array topology source; it carries no terminal numbers (D072).",
+        "page": null,
+        "revision": "as fetched 2026-10-11",
+        "source_status": "primary_source_opened",
+        "title": "CAT/CAY 16 Series - Chip Resistor Arrays",
+        "url": "https://www.bourns.com/docs/Product-Datasheets/CATCAY.pdf"
       }
     ],
     "entry_id": "OHM-017",
@@ -72,12 +82,26 @@
         ],
         "unit": "ppm/degC",
         "value": 200
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "detail": "Schematics: R1..R4 each between an upper and the lower terminal of the same column (rendered page inspected)",
+        "field": "element_topology_alternate",
+        "page": 2,
+        "scope": "Bourns CAT16-F4,-J4 / CAY16-F4,-J4 schematic; NOT CRA06P; no terminal numbers (only a pin-1 mark)",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/CATCAY.pdf"
+        ],
+        "unit": null,
+        "value": "isolated; each element joins a terminal on one long side to the directly opposite terminal"
       }
     ],
     "remaining_open_items": [
       "No numbered terminal drawing independently binds the generic 3D numbering to this unmarked array.",
       "Document is an authentic-looking manufacturer datasheet hosted by a third party; primary-host relocation remains open.",
-      "Failure timing and aggregate thermal coupling are not established."
+      "Failure timing and aggregate thermal coupling are not established.",
+      "D072: Vishay no longer serves CRA06P (doc 31047) or CRA06E/S (doc 31002) - HTTP 404, ledger rows recorded; mirrors only. Bourns CAT/CAY16 shows the opposite-terminal topology but without terminal numbers. A numbered primary pin-to-element drawing, or an owner decision to bind CAY16-103J4LF from the unnumbered schematic, closes it."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
@@ -86,7 +110,7 @@
     ],
     "source": {
       "document": "docs/behavior/gapfill/OHM-017.md",
-      "document_sha256": "8fcdca48ed9fb024bcaf23e23f017ae79034af633a262435aaa94b4a6384f815",
+      "document_sha256": "9980e23a701ab733e2485ea7f611b975c6348d3bd9cff9fadc230d9371723a63",
       "fragment_sha256": null,
       "line": 1
     }
