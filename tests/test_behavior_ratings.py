@@ -435,3 +435,29 @@ def test_schottky_surge_average_and_leakage_runaway():
     for ambient, expected in ((25, "within_limit"), (100, "violation")):
         assert _report("OHM-066", {"K": 40}, {}, RatingContext(ambient_c=ambient, thermal_scope_confirmed=True))[
             "leakage thermal stability"]["status"] == expected
+
+
+def test_usb_c_partly_observed_collective_group_is_unknown_in_an_ac_run():
+    # Same rule as DC and transient (#51 review): a group with only some members observed is never skipped.
+    registry = BehaviorRegistry(repo_root=ROOT)
+    recipes = load_recipes(registry, ROOT)
+    nets = {"a": ["A6"], "return": ["A1", "B12"], "vbus1": ["A4", "B9"], "vbus2": ["A9", "B4"],
+            "gnd2": ["A12", "B1"], **{f"n_{p}": [p] for p in ("A5", "A7", "A8", "B5", "B6", "B7", "B8")}}
+    c = _single(registry, recipes, "OHM-165", nets)
+    comp = c.components[0]
+    op = _point(comp, {r: 0.0 for r in comp.role_nodes}, {r: 0.0 for r in comp.role_current_probes})
+    probes = {r: p.lower() for r, p in comp.role_current_probes.items()}
+    point = {"frequency_hz": 1e3,
+             "node_voltages": {n.lower(): [0.0, 0.0] for n in comp.role_nodes.values()},
+             "branch_currents": {p: [0.1 if r == "A4" else 0.0, 0.0] for r, p in probes.items() if r != "B9"}}
+    result = {"status": "ran", "analysis": "ac", "operating_point": {
+        "node_voltages": {k.lower(): v for k, v in op["operating_point"]["node_voltages"].items()},
+        "branch_currents": {k.lower(): v for k, v in op["operating_point"]["branch_currents"].items()}},
+        "ac": {"points": [point]}}
+    report = evaluate_ratings(c, result, registry, RatingContext(ambient_c=25, thermal_scope_confirmed=True))
+    rows = {x["name"]: x for x in report["components"][0]["reference_checks"]}
+    # A missing member current fails the whole AC evaluation closed before any group row is formed; the
+    # group code also emits GROUP_UNOBSERVED itself, so neither path can skip a partly observed group.
+    assert rows["AC checks"]["status"] == "unknown" and "did not print" in rows["AC checks"]["reason"]
+    assert not any(k.startswith("collective contact RMS current") and v["status"] == "within_limit"
+                   for k, v in rows.items())

@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "id": "CUX-T03",
+  "task": "CUX-T03",
+  "scope": "CONVERSATIONAL-UX-1",
+  "status": "PASSED_WITH_RECORDED_LIMITATIONS",
+  "commit": "f0c17495a185adeddf0fe482589d988a202ad0ee",
+  "verified_at": "2026-10-11",
+  "summary": "Saved-project questions select server-owned records; typed edits show complete before/after review and save a new revision with fresh check requirements.",
+  "commands": [
+    {
+      "command": "Project venv: python -m pytest --basetemp build/fast-iteration -o cache_dir=build/fast-cache",
+      "result": "PASS",
+      "tests": 2340,
+      "skipped": 86,
+      "deselected": 62,
+      "runtime_seconds": 464.92,
+      "detail": "An additional run-context invalidation regression was added after collection and passed in the final focused run. Final UI refinements were checked in the full frontend suite."
+    },
+    {
+      "command": "python -m pytest tests/test_project_assistant.py tests/test_project_assistant_api.py tests/test_project_api.py tests/test_conversation.py tests/test_conversation_api.py tests/test_ai_workflow.py -o addopts=\"-q --strict-markers\" --basetemp build/final-focused",
+      "result": "PASS",
+      "tests": 82,
+      "runtime_seconds": 35.34
+    },
+    {
+      "command": "node --test apps/web/tests/*.test.mjs",
+      "result": "PASS",
+      "tests": 1078
+    },
+    {
+      "command": "python -m pytest -m integration --basetemp build/integration-iteration -o cache_dir=build/integration-cache",
+      "result": "PASS",
+      "tests": 28,
+      "skipped": 16,
+      "deselected": 2444,
+      "runtime_seconds": 50.54
+    },
+    {
+      "command": "python -m ruff check changed Python implementation and tests",
+      "result": "PASS"
+    },
+    {
+      "command": "python -m ruff check .",
+      "result": "EXTERNAL_BASELINE_FAILURE",
+      "findings": 13,
+      "detail": "All findings are in unchanged behavior-owned files, including tests/test_behavior_registry.py. No protected paths modified."
+    },
+    {
+      "command": "python scripts/ai_state.py validate",
+      "result": "PASS"
+    }
+  ],
+  "browser_checks": [
+    "Scripted provider returned saved revision input voltage, programming limitation and actual not-run state with source labels.",
+    "Requested width change displayed 100 mm before and 80 mm after, with new-check requirements visible before confirmation.",
+    "Applying saved revision 2; revision 1 remained available, new revision had no job, and the generation action targeted revision 2.",
+    "Desktop, 390px and 320px layouts checked; no horizontal overflow or browser errors.",
+    "Frontend regression exercises real workbench assistant mounting, application callback, revision activation and exact new-revision generation dispatch."
+  ],
+  "review": {
+    "required": false,
+    "independent": false,
+    "status": "PASSED",
+    "record": ".ai/reviews.yaml#CUX-T03-SELF-REVIEW"
+  },
+  "limitations": [
+    "The model selects bounded project facts; this is not general datasheet retrieval or open-ended technical question answering. Unsupported answers return unavailable.",
+    "Source IDs must exist, but semantic relevance and interpretation quality still require live-model evaluation and human review. No live model call was used for this verification.",
+    "Unconfirmed conversations expire after 30 minutes and on server restart; applied receipts persist with revisions.",
+    "The existing local workspace boundary is not multi-user authentication.",
+    "No new successful native board generation is claimed. Saving changes requires a separate generation run and fresh engineering checks.",
+    "Independent final review of CONVERSATIONAL-UX-1 remains required; scope stays REVIEW."
+  ]
+}

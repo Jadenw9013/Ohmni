@@ -1369,7 +1369,12 @@ def _ac_checks(component, values, b, thermal, upper_only, window, linear, dual=N
                     add(f"contact RMS current {role} (DC plus AC)", f"irms_{role}_{key} <= {current}",
                         (current,), thermal)
             for limit, members in sorted(groups.items()):
+                if not any(r in i for r in members):
+                    continue
                 if not all(r in i for r in members):
+                    # Same rule as DC and transient: a partly observed group is unknown, never skipped.
+                    add(f"collective contact RMS current {'+'.join(members)} (DC plus AC)", "", (limit,),
+                        GROUP_UNOBSERVED)
                     continue
                 # The RMS of a sum of magnitudes is at most the sum of the members' RMS values, so this
                 # bound proves a pass; above the limit the phases decide, so it cannot prove a violation.

@@ -19,7 +19,9 @@
     ],
     "conflicts": [
       "PCB wire field literally says PCB; do not apply a cable AWG rating.",
-      "Battery short circuits, reversed polarity and hot-plug arcing remain hazards; 30 A is not a continuous current rating."
+      "Battery short circuits, reversed polarity and hot-plug arcing remain hazards; 30 A is not a continuous current rating.",
+      "D069: recorded V1.2 values (15 A rated, 30 A instantaneous, 0.8 milliohm, 500 V DC, 1000 uses) differ from the 2025V0 XT30PW-M30 specification (20 A at 16 AWG, delta T <= 85 K; <= 1.2 milliohm; 80 V DC; 100 cycles). The bound part's 2025V0 values win for this binding; the spec is unchanged.",
+      "D069: the product page says plug life 20 times; the 2025V0 PDF says 100 times. 3D spec power hole 1.7 mm (V1.2) vs 1.80 mm in 2025V0; peg holes 1.0 vs 1.10 mm."
     ],
     "documents": [
       {
@@ -31,6 +33,26 @@
         "source_status": "primary_source_opened",
         "title": "XT30PW-M specification",
         "url": "https://store.comet.bg/download-file.php?id=30571"
+      },
+      {
+        "document_id": "amass-xt30pw-m30-spec-2025v0",
+        "manufacturer": "Amass",
+        "note": "Archived 2026-10-11 (ledger sha256 475a4aa3...); single-page product specification read for the bound reference XT30PW-M30.G.Y (D069). The drawing numbers no pins and prints no polarity mark.",
+        "page": null,
+        "revision": "2025V0",
+        "source_status": "primary_source_opened",
+        "title": "Amass Product Specification XT30PW-M30",
+        "url": "https://www.china-amass.net/uploads/32.XT30PW-M30-SPEC-2025V0.pdf"
+      },
+      {
+        "document_id": "amass-xt30pw-m-product-page",
+        "manufacturer": "Amass",
+        "note": "Archived 2026-10-11 (ledger sha256 bff42e6a...); product page whose Electrical SPEC table matches the 2025V0 PDF except plug life (page 20 times, PDF 100 times). Not cited by a bound fact.",
+        "page": null,
+        "revision": "undated webpage",
+        "source_status": "primary_source_opened",
+        "title": "Amass XT30PW-M product page",
+        "url": "https://www.china-amass.net/xt30pw-m-product/"
       }
     ],
     "entry_id": "OHM-173",
@@ -128,20 +150,121 @@
         ],
         "unit": "mm",
         "value": 5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'接触电阻 Contact Resistance ≤1.2mΩ'",
+        "field": "m30_contact_resistance_max",
+        "page": 1,
+        "scope": "Amass XT30PW-M30.G.Y/.G.B, spec 2025V0; maximum, per contact or pair not stated",
+        "sources": [
+          "https://www.china-amass.net/uploads/32.XT30PW-M30-SPEC-2025V0.pdf"
+        ],
+        "unit": "mohm",
+        "value": 1.2
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'额定电流 Current rating 20A (16AWG△≤85K)'",
+        "field": "m30_current_rated",
+        "page": 1,
+        "scope": "Amass XT30PW-M30.G.Y/.G.B, spec 2025V0; 16 AWG, temperature rise delta T <= 85 K",
+        "sources": [
+          "https://www.china-amass.net/uploads/32.XT30PW-M30-SPEC-2025V0.pdf"
+        ],
+        "unit": "A",
+        "value": 20
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'额定电压 Rated voltage 80V DC'",
+        "field": "m30_voltage_rated_dc",
+        "page": 1,
+        "scope": "Amass XT30PW-M30.G.Y/.G.B, spec 2025V0; rated voltage",
+        "sources": [
+          "https://www.china-amass.net/uploads/32.XT30PW-M30-SPEC-2025V0.pdf"
+        ],
+        "unit": "V",
+        "value": 80
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'绝缘电阻 Insulation Resistance ≥2000MΩ'",
+        "field": "m30_insulation_resistance_min",
+        "page": 1,
+        "scope": "Amass XT30PW-M30.G.Y/.G.B, spec 2025V0",
+        "sources": [
+          "https://www.china-amass.net/uploads/32.XT30PW-M30-SPEC-2025V0.pdf"
+        ],
+        "unit": "Mohm",
+        "value": 2000
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "detail": "'使用寿命 Plug Life. 100 次 100 times'",
+        "field": "m30_plug_life",
+        "page": 1,
+        "scope": "Amass XT30PW-M30.G.Y/.G.B, spec 2025V0 (product page says 20 times; conflict)",
+        "sources": [
+          "https://www.china-amass.net/uploads/32.XT30PW-M30-SPEC-2025V0.pdf"
+        ],
+        "unit": "cycles",
+        "value": 100
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'工作温度 Work Temperature -20℃ to 120℃'",
+        "field": "m30_temperature_operating",
+        "page": 1,
+        "scope": "Amass XT30PW-M30.G.Y/.G.B, spec 2025V0; work temperature",
+        "sources": [
+          "https://www.china-amass.net/uploads/32.XT30PW-M30-SPEC-2025V0.pdf"
+        ],
+        "unit": "degC",
+        "value": [
+          -20,
+          120
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'2-ø1.80 +0.10/0', '5.00±0.05', '2-ø1.10 +0.10/0', '11.00±0.05', '10.00±0.05'; no pin numbers or polarity marks",
+        "field": "m30_pcb_layout",
+        "page": 1,
+        "scope": "Amass XT30PW-M30, spec 2025V0 PCB LAYOUT",
+        "sources": [
+          "https://www.china-amass.net/uploads/32.XT30PW-M30-SPEC-2025V0.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "peg_hole_dia_mm": 1.1,
+          "peg_spacing_mm": 11.0,
+          "peg_to_pin_row_mm": 10.0,
+          "pitch_mm": 5.0,
+          "power_hole_dia_mm": 1.8
+        }
       }
     ],
     "remaining_open_items": [
       "No unambiguous +/- pin labeling in the archived drawing; library terminal1 at -X and footprint pad1 at +X require verified polarity/permutation.",
-      "No thermal derating, PCB copper condition or peak-current duration."
+      "No thermal derating, PCB copper condition or peak-current duration.",
+      "Bound reference (D069): Amass XT30PW-M30.G.Y per the 2025V0 product specification (5.00 mm pitch, 2 x 1.80 mm power holes); the legacy V1.2 values are not used.",
+      "Former simulation blocker closed only in the D066 sense (2026-10-11, D069): Safety-critical polarity and thermal derating unresolved. Neither half is closed by evidence: Amass numbers no pin and prints no + / - mark, and publishes no derating beyond 20 A at 16 AWG with delta T <= 85 K. The recipe is a symmetric contact-resistance model with polarity explicitly unassigned; polarity must be checked on the physical part.",
+      "Polarity (+ / -) to pad mapping, thermal derating versus ambient/PCB copper, peak/inrush/arc limits, and whether 1.2 milliohm is per contact or per mated pair remain unsourced."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Safety-critical polarity and thermal derating unresolved."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-173.md",
-      "document_sha256": "8fe7542b83a9f901d4a1bcbb0e2ca8f3e3091f09b7509459e39b83cb9b9b0488",
+      "document_sha256": "f34252dec6888e91a4a08ca43450f6ab2dbe65475a911d4d018588313438a927",
       "fragment_sha256": null,
       "line": 1
     }

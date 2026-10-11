@@ -326,6 +326,15 @@ PATH_PROBES = {
     "BEH-CON-HDMI": _CONTACT, "BEH-CON-MODJACK": _CONTACT, "BEH-CON-SDSOCKET": _CONTACT,
     "BEH-CON-AUDIO": [(None, "TIP", ("M_TIP",), ("rc",), "rated")],
     "BEH-CON-DCJACK": [(None, "CENTER", ("M_TIP",), ("rc",), "rated")],
+    "BEH-CON-XT": _CONTACT,
+    # D069: each winding's maximum DCR; the linear model makes the amplitude irrelevant, so the stimulus is the
+    # part's own sourced typical ISAT (N1), labelled as a stimulus, never as a rating.
+    "BEH-MAG-XFMR-FLYBACK": [("n1", "N1_DOT", ("N1_RET",), ("rp",), "isat"),
+                             ("n2", "N2_DOT", ("N2_RET",), ("rs",), "isat"),
+                             ("n3", "N3_DOT", ("N3_RET",), ("ra",), "isat")],
+    # D069: chip-side windings and line-side paths (transformer plus choke) at the sourced 8 mA OCL test bias.
+    "BEH-MAG-ETHMAG": [("td", "TD_P", ("TD_N",), ("r_chip",), "bias"), ("rd", "RD_P", ("RD_N",), ("r_chip",), "bias"),
+                       ("tx", "TX_LP", ("TX_LN",), ("r_line",), "bias"), ("rx", "RX_LP", ("RX_LN",), ("r_line",), "bias")],
 }
 PATH_TOLERANCE = 1e-3
 
@@ -354,6 +363,10 @@ def _path_probe(recipe, values, evidence, variant):
             current, facts = values[current_alias], (alias, current_alias)
         elif rule == "unbalance":
             current, facts = values["idc_unbalance"], (alias, "idc_unbalance")
+        elif rule == "isat":
+            current, facts = values["isat"], (alias, "isat")
+        elif rule == "bias":
+            current, facts = values["idc_bias"], (alias, "idc_bias")
         elif rule == "leak":
             current, facts = values["vr"] / resistance, (alias, "vr")
         else:  # pot: the locked B1 deck's 10 V across the track
