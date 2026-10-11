@@ -7030,6 +7030,84 @@
         "4": "OUT"
       }
     },
+    "OHM-150": {
+      "entry_id": "OHM-150",
+      "behavior_id": "BEH-CON-HEADER",
+      "package": "1x8 straight male THT, 2.54 mm, gold (Wurth 61300811121), mated",
+      "reference_part": "Wurth Elektronik 61300811121 (WR-PHD pin header, 1x8, straight, THT, 2.54 mm)",
+      "terminal_roles": {
+        "1": "P1",
+        "2": "P2",
+        "3": "P3",
+        "4": "P4",
+        "5": "P5",
+        "6": "P6",
+        "7": "P7",
+        "8": "P8",
+        "M1": "M1",
+        "M2": "M2",
+        "M3": "M3",
+        "M4": "M4",
+        "M5": "M5",
+        "M6": "M6",
+        "M7": "M7",
+        "M8": "M8"
+      },
+      "critical_facts": {
+        "rc": {
+          "field": "ref_contact_resistance_max",
+          "unit": "mohm",
+          "output_unit": "ohm"
+        },
+        "i_rated": {
+          "field": "ref_rated_current",
+          "unit": "A"
+        },
+        "v_work": {
+          "field": "ref_working_voltage_ac",
+          "unit": "V"
+        },
+        "t_contact_max": {
+          "field": "ref_operating_temperature_range",
+          "unit": "C",
+          "value_path": [
+            1
+          ]
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref}_c1 {P1} {M1} {rc}\nR{ref}_c2 {P2} {M2} {rc}\nR{ref}_c3 {P3} {M3} {rc}\nR{ref}_c4 {P4} {M4} {rc}\nR{ref}_c5 {P5} {M5} {rc}\nR{ref}_c6 {P6} {M6} {rc}\nR{ref}_c7 {P7} {M7} {rc}\nR{ref}_c8 {P8} {M8} {rc}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 10696
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "Bound part: Wurth Elektronik 61300811121 (WR-PHD pin header, 1 row, 8 pins, straight, THT, 2.54 mm, gold), the spec default's 'Wurth WR-PHD style' at N = 8. The Harwin M20 facts already on this entry stay as recorded and are not used by this binding (its facts are the ref_* fields).",
+        "Each position is one resistor at Wurth's 20 mOhm MAXIMUM contact resistance (an upper bound, not a typical value); Wurth does not state the mating counterpart or test condition.",
+        "Ratings: 3 A per contact; 250 V AC working voltage (500 V AC is a 1-minute withstand only); -40..+105 C operating temperature, which Wurth's cautions define as ambient plus self-heating, so the temperature row can prove a violation but never a pass.",
+        "No thermal, all-positions-loaded derating or wear model; the class 0.7/0.8 factors, Rth, Rbulk and Lpin are not used.",
+        "Pin numbers follow the Wurth drawing's '1' and 'End' marks; the header is unkeyed, so a mated part can still be inserted reversed or offset. The connector assigns no electrical polarity.",
+        "Model scope: Spec line 10697 'R{ref}_c{k} {A_k} {B_k} {Rc}' with A_k = PCB pin k and B_k = mated contact M<k>; L/C options omitted.",
+        "Terminals named M<k> are mating-interface contacts of the inserted plug/mated part, not PCB pads. They are listed in open_mating_roles (D052): a design may leave them unconnected, each then gets its own private node as an unmated contact would, and only the numbered PCB pads must match a library footprint. Rating checks still read any current through a connected mating contact."
+      ],
+      "open_mating_roles": [
+        "M1",
+        "M2",
+        "M3",
+        "M4",
+        "M5",
+        "M6",
+        "M7",
+        "M8"
+      ]
+    },
     "OHM-155": {
       "entry_id": "OHM-155",
       "behavior_id": "BEH-CON-WTB",
@@ -7235,6 +7313,131 @@
         "W4"
       ]
     },
+    "OHM-159": {
+      "entry_id": "OHM-159",
+      "behavior_id": "BEH-CON-TERMINAL",
+      "package": "Screw terminal block 5.08 mm, 2 poles THT (Same Sky TB007-508-02BE)",
+      "reference_part": "Same Sky TB007-508-02BE (explicit alternate to the Phoenix MKDS 1,5/2-5,08 default)",
+      "terminal_roles": {
+        "1": "P1",
+        "2": "P2",
+        "W1": "W1",
+        "W2": "W2"
+      },
+      "critical_facts": {
+        "rpath": {
+          "field": "ref_contact_resistance_max",
+          "unit": "mohm",
+          "output_unit": "ohm"
+        },
+        "i_rated": {
+          "field": "ref_rated_current_ul",
+          "unit": "A"
+        },
+        "v_rated": {
+          "field": "ref_rated_voltage_iec",
+          "unit": "V"
+        },
+        "t_contact_max": {
+          "field": "ref_operating_temperature_range",
+          "unit": "C",
+          "value_path": [
+            1
+          ]
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref}_cl1 {W1} {P1} {rpath}\nR{ref}_cl2 {W2} {P2} {rpath}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 10901
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "Bound part: Same Sky TB007-508-02BE (2-pole, 5.08 mm pitch PCB screw terminal, slot screw, blue). It is an explicit alternate, not the spec default Phoenix MKDS 1,5/2-5,08: Phoenix publishes no clamp or contact resistance, so the Phoenix part, its footprint and its ratings stay unbound.",
+        "One resistor per position at Same Sky's 20 mOhm MAXIMUM contact resistance (max column of the p1 table); Same Sky does not say whether it includes the wire clamp joint, so wire to pin is lumped. The class 3 mOhm Rclamp ASSUMPTION is not used.",
+        "Ratings: current bound to the lower UL figure 16 A per contact (IEC 18 A not used); voltage bound to the lower IEC figure 250 V per contact (UL 300 V not used). 2500 V AC is a withstand value and 4000 V a surge value, neither a working rating.",
+        "Same Sky gives -40..+105 C without saying whether it is ambient or includes self-heating, and publishes no derating curve, so the temperature row can prove a violation but never a pass.",
+        "Wire ampacity (AWG 24-12 UL / 2.5 mm2 IEC) is a separate limit and is not part of this binding.",
+        "Position numbering is library convention (the drawing prints none); positions are electrically identical and unpolarised; P<k> and W<k> are colocated.",
+        "Model scope: Spec line 10902 'R{ref}_cl{k} {Wk} {Pk} {Rclamp}' with Rclamp replaced by the sourced 20 mOhm maximum.",
+        "Wire-side terminals W<k> are listed in open_mating_roles (D052): a design may leave them unconnected, each then gets its own private node as an unterminated wire would, and only the numbered PCB pads must match a library footprint."
+      ],
+      "open_mating_roles": [
+        "W1",
+        "W2"
+      ]
+    },
+    "OHM-160": {
+      "entry_id": "OHM-160",
+      "behavior_id": "BEH-CON-TERMINAL",
+      "package": "Screw terminal block 5.08 mm, 3 poles THT (Same Sky TB007-508-03BE)",
+      "reference_part": "Same Sky TB007-508-03BE (explicit alternate to the Phoenix MKDS 1,5/3-5,08 default)",
+      "terminal_roles": {
+        "1": "P1",
+        "2": "P2",
+        "3": "P3",
+        "W1": "W1",
+        "W2": "W2",
+        "W3": "W3"
+      },
+      "critical_facts": {
+        "rpath": {
+          "field": "ref_contact_resistance_max",
+          "unit": "mohm",
+          "output_unit": "ohm"
+        },
+        "i_rated": {
+          "field": "ref_rated_current_ul",
+          "unit": "A"
+        },
+        "v_rated": {
+          "field": "ref_rated_voltage_iec",
+          "unit": "V"
+        },
+        "t_contact_max": {
+          "field": "ref_operating_temperature_range",
+          "unit": "C",
+          "value_path": [
+            1
+          ]
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref}_cl1 {W1} {P1} {rpath}\nR{ref}_cl2 {W2} {P2} {rpath}\nR{ref}_cl3 {W3} {P3} {rpath}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 10901
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "Bound part: Same Sky TB007-508-03BE (3-pole, 5.08 mm pitch PCB screw terminal, slot screw, blue). It is an explicit alternate, not the spec default Phoenix MKDS 1,5/3-5,08: Phoenix publishes no clamp or contact resistance, so the Phoenix part, its footprint and its ratings stay unbound.",
+        "One resistor per position at Same Sky's 20 mOhm MAXIMUM contact resistance (max column of the p1 table); Same Sky does not say whether it includes the wire clamp joint, so wire to pin is lumped. The class 3 mOhm Rclamp ASSUMPTION is not used.",
+        "Ratings: current bound to the lower UL figure 16 A per contact (IEC 18 A not used); voltage bound to the lower IEC figure 250 V per contact (UL 300 V not used). 2500 V AC is a withstand value and 4000 V a surge value, neither a working rating.",
+        "Same Sky gives -40..+105 C without saying whether it is ambient or includes self-heating, and publishes no derating curve, so the temperature row can prove a violation but never a pass.",
+        "Wire ampacity (AWG 24-12 UL / 2.5 mm2 IEC) is a separate limit and is not part of this binding.",
+        "Position numbering is library convention (the drawing prints none); positions are electrically identical and unpolarised; P<k> and W<k> are colocated.",
+        "Model scope: Spec line 10902 'R{ref}_cl{k} {Wk} {Pk} {Rclamp}' with Rclamp replaced by the sourced 20 mOhm maximum.",
+        "Wire-side terminals W<k> are listed in open_mating_roles (D052): a design may leave them unconnected, each then gets its own private node as an unterminated wire would, and only the numbered PCB pads must match a library footprint."
+      ],
+      "open_mating_roles": [
+        "W1",
+        "W2",
+        "W3"
+      ]
+    },
     "OHM-161": {
       "entry_id": "OHM-161",
       "behavior_id": "BEH-CON-TERMINAL",
@@ -7296,6 +7499,65 @@
         "W2"
       ]
     },
+    "OHM-162": {
+      "entry_id": "OHM-162",
+      "behavior_id": "BEH-CON-USB",
+      "package": "USB-A right-angle THT, 4 contacts (Same Sky UJ2-AH-4-TH), mated",
+      "reference_part": "Same Sky UJ2-AH-4-TH (explicit alternate to the Molex 67643-3910 default)",
+      "terminal_roles": {
+        "1": "P1",
+        "2": "P2",
+        "3": "P3",
+        "4": "P4",
+        "M1": "M1",
+        "M2": "M2",
+        "M3": "M3",
+        "M4": "M4"
+      },
+      "critical_facts": {
+        "rc": {
+          "field": "ref_contact_resistance_max",
+          "unit": "mohm",
+          "output_unit": "ohm"
+        },
+        "i_rated": {
+          "field": "ref_rated_current",
+          "unit": "A"
+        },
+        "v_rated": {
+          "field": "ref_rated_voltage_ac",
+          "unit": "V"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref}_c1 {P1} {M1} {rc}\nR{ref}_c2 {P2} {M2} {rc}\nR{ref}_c3 {P3} {M3} {rc}\nR{ref}_c4 {P4} {M4} {rc}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 11266
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "Bound part: Same Sky UJ2-AH-4-TH (USB 2.0 Type-A receptacle, horizontal, THT, 4 contacts, 2 shell posts). It is an explicit alternate, not the spec default Molex 67643-3910, whose drawing and specification could not be archived; the Molex footprint stays unbound.",
+        "Each contact is a resistor at the sourced 30 mOhm maximum (terminal to mating plug, measured at 20 mV / 100 mA); no temperature, wear or derating.",
+        "Ratings: 1.0 A, applied per contact (Same Sky does not say per contact or total); 30 V AC. The -20..+85 C operating range is recorded but not checked.",
+        "Contact numbers 1..4 come from the front view of the Same Sky drawing; the recommended PCB layout does not number its holes, so the library footprint must keep contact k on pad k. USB signal names are not given by the drawing and are not assigned; shell posts are unmodeled and the shell is not an automatic GND.",
+        "USB protocol, enumeration and power negotiation are not simulated.",
+        "Model scope: Per-contact instance of the class 'R{ref}_c{k} {BOARD_k} {CABLE_k} {Rc}', k = 1..4; shell line omitted (no sourced shell resistance).",
+        "Terminals named M<k> are mating-interface contacts of the inserted plug/mated part, not PCB pads. They are listed in open_mating_roles (D052): a design may leave them unconnected, each then gets its own private node as an unmated contact would, and only the numbered PCB pads must match a library footprint. Rating checks still read any current through a connected mating contact."
+      ],
+      "open_mating_roles": [
+        "M1",
+        "M2",
+        "M3",
+        "M4"
+      ]
+    },
     "OHM-163": {
       "entry_id": "OHM-163",
       "behavior_id": "BEH-CON-USB",
@@ -7350,6 +7612,232 @@
         "M2",
         "M3",
         "M4"
+      ]
+    },
+    "OHM-164": {
+      "entry_id": "OHM-164",
+      "behavior_id": "BEH-CON-USB",
+      "package": "Micro-USB B SMT horizontal, 5 contacts (GCT USB3075-30-A), mated",
+      "reference_part": "GCT USB3075-30-A (explicit alternate to the Amphenol 10118194-0001LF default)",
+      "terminal_roles": {
+        "1": "P1",
+        "2": "P2",
+        "3": "P3",
+        "4": "P4",
+        "5": "P5",
+        "M1": "M1",
+        "M2": "M2",
+        "M3": "M3",
+        "M4": "M4",
+        "M5": "M5"
+      },
+      "critical_facts": {
+        "rc": {
+          "field": "ref_contact_resistance_max",
+          "unit": "mohm",
+          "output_unit": "ohm"
+        },
+        "i_rated": {
+          "field": "ref_rated_current_signal",
+          "unit": "A"
+        },
+        "i_rated_P1": {
+          "field": "ref_rated_current_power",
+          "unit": "A"
+        },
+        "i_rated_P5": {
+          "field": "ref_rated_current_power",
+          "unit": "A"
+        },
+        "i_rated_M1": {
+          "field": "ref_rated_current_power",
+          "unit": "A"
+        },
+        "i_rated_M5": {
+          "field": "ref_rated_current_power",
+          "unit": "A"
+        },
+        "v_rated": {
+          "field": "ref_rated_voltage_ac",
+          "unit": "V"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref}_c1 {P1} {M1} {rc}\nR{ref}_c2 {P2} {M2} {rc}\nR{ref}_c3 {P3} {M3} {rc}\nR{ref}_c4 {P4} {M4} {rc}\nR{ref}_c5 {P5} {M5} {rc}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 11266
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "Bound part: GCT USB3075-30-A (Micro-USB Type B receptacle, SMT, horizontal, bottom mount, 30u\" gold, shell stakes). It is an explicit alternate, not the spec default Amphenol 10118194-0001LF, whose drawing could not be archived; the Amphenol footprint stays unbound and the USB3075 pads differ from it.",
+        "Contact resistance at its 30 mOhm maximum; no temperature/wear dependence.",
+        "Current per contact (D068 per-contact limits): 1.8 A on the power pins 1 and 5 (P1/P5 and their mating contacts M1/M5), 1.0 A on the signal pins 2, 3 and 4, as GCT states them.",
+        "30 V AC voltage rating; a USB-PD 20 V VBUS is outside Micro-B design intent (the spec flag v(vbus) > 5.5 V is separate and not encoded). The -30..+85 C operating range is recorded but not checked.",
+        "GCT names only 'Power (Pins 1,5)' and 'Signal (Pins 2,3,4)'; individual signal names are not assigned. Four shell SMD pads and two shell stakes are unmodeled; the shell is not an automatic GND.",
+        "USB protocol, enumeration and power negotiation are not simulated.",
+        "Model scope: Per-contact instance of the class 'R{ref}_c{k} {BOARD_k} {CABLE_k} {Rc}', k = 1..5; shell line omitted.",
+        "Terminals named M<k> are mating-interface contacts of the inserted plug/mated part, not PCB pads. They are listed in open_mating_roles (D052): a design may leave them unconnected, each then gets its own private node as an unmated contact would, and only the numbered PCB pads must match a library footprint. Rating checks still read any current through a connected mating contact."
+      ],
+      "open_mating_roles": [
+        "M1",
+        "M2",
+        "M3",
+        "M4",
+        "M5"
+      ]
+    },
+    "OHM-165": {
+      "entry_id": "OHM-165",
+      "behavior_id": "BEH-CON-USB",
+      "package": "USB Type-C 16-contact USB 2.0 receptacle SMT top mount (GCT USB4110-GF-A), mated",
+      "reference_part": "GCT USB4110-GF-A (explicit alternate to the Amphenol 12401610E4#2A default)",
+      "terminal_roles": {
+        "A1": "A1",
+        "A4": "A4",
+        "A5": "A5",
+        "A6": "A6",
+        "A7": "A7",
+        "A8": "A8",
+        "A9": "A9",
+        "A12": "A12",
+        "B1": "B1",
+        "B4": "B4",
+        "B5": "B5",
+        "B6": "B6",
+        "B7": "B7",
+        "B8": "B8",
+        "B9": "B9",
+        "B12": "B12",
+        "M_A1": "M_A1",
+        "M_A4": "M_A4",
+        "M_A5": "M_A5",
+        "M_A6": "M_A6",
+        "M_A7": "M_A7",
+        "M_A8": "M_A8",
+        "M_A9": "M_A9",
+        "M_A12": "M_A12",
+        "M_B1": "M_B1",
+        "M_B4": "M_B4",
+        "M_B5": "M_B5",
+        "M_B6": "M_B6",
+        "M_B7": "M_B7",
+        "M_B8": "M_B8",
+        "M_B9": "M_B9",
+        "M_B12": "M_B12"
+      },
+      "required_same_net_roles": [
+        [
+          "A1",
+          "B12"
+        ],
+        [
+          "A4",
+          "B9"
+        ],
+        [
+          "A9",
+          "B4"
+        ],
+        [
+          "A12",
+          "B1"
+        ]
+      ],
+      "critical_facts": {
+        "rc": {
+          "field": "ref_contact_resistance_max",
+          "unit": "mohm",
+          "output_unit": "ohm"
+        },
+        "i_rated": {
+          "field": "ref_rated_current_other",
+          "unit": "A"
+        },
+        "i_rated_A5": {
+          "field": "ref_rated_current_cc",
+          "unit": "A"
+        },
+        "i_rated_B5": {
+          "field": "ref_rated_current_cc",
+          "unit": "A"
+        },
+        "i_rated_M_A5": {
+          "field": "ref_rated_current_cc",
+          "unit": "A"
+        },
+        "i_rated_M_B5": {
+          "field": "ref_rated_current_cc",
+          "unit": "A"
+        },
+        "i_sum__A4__A9__B4__B9": {
+          "field": "ref_rated_current_vbus_collective",
+          "unit": "A"
+        },
+        "i_sum__M_A4__M_A9__M_B4__M_B9": {
+          "field": "ref_rated_current_vbus_collective",
+          "unit": "A"
+        },
+        "i_sum__A1__A12__B1__B12": {
+          "field": "ref_rated_current_gnd_collective",
+          "unit": "A"
+        },
+        "i_sum__M_A1__M_A12__M_B1__M_B12": {
+          "field": "ref_rated_current_gnd_collective",
+          "unit": "A"
+        },
+        "v_rated": {
+          "field": "ref_rated_voltage_dc",
+          "unit": "V"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref}_cA1 {A1} {M_A1} {rc}\nR{ref}_cA4 {A4} {M_A4} {rc}\nR{ref}_cA5 {A5} {M_A5} {rc}\nR{ref}_cA6 {A6} {M_A6} {rc}\nR{ref}_cA7 {A7} {M_A7} {rc}\nR{ref}_cA8 {A8} {M_A8} {rc}\nR{ref}_cA9 {A9} {M_A9} {rc}\nR{ref}_cA12 {A12} {M_A12} {rc}\nR{ref}_cB1 {B1} {M_B1} {rc}\nR{ref}_cB4 {B4} {M_B4} {rc}\nR{ref}_cB5 {B5} {M_B5} {rc}\nR{ref}_cB6 {B6} {M_B6} {rc}\nR{ref}_cB7 {B7} {M_B7} {rc}\nR{ref}_cB8 {B8} {M_B8} {rc}\nR{ref}_cB9 {B9} {M_B9} {rc}\nR{ref}_cB12 {B12} {M_B12} {rc}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 11266
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "Bound part: GCT USB4110-GF-A (USB Type-C receptacle for USB 2.0, 16 contacts, SMT top mount, gold flash). It is an explicit alternate, not the spec default Amphenol 12401610E4#2A: that part has 24 contacts (SuperSpeed pins) and its drawing could not be archived, so it stays unbound. The bound part matches the 16-contact set of the catalog record USB_C_RECEPTACLE_16P.",
+        "Each of the 16 contacts is a resistor at the 40 mOhm maximum initial value (50 mOhm after test not used); no temperature or wear.",
+        "Current (D068 per-contact and collective limits), as GCT states them: VBUS A4+A9+B4+B9 5.00 A collectively and GND A1+A12+B1+B12 6.25 A collectively, each checked on the summed current magnitude of the four contacts (board side and mating side separately); 1.25 A on each CC contact A5 and B5; 0.25 A per contact for D+/D-/SBU. GCT gives no individual limit for a VBUS or GND contact, so none is checked.",
+        "48 V DC voltage rating (100 V AC is a 1-minute withstand). The -40..+85 C operating range is recorded but not checked.",
+        "Shared footprint pads: A1/B12, A4/B9, A9/B4 and A12/B1 each occupy one pad on the GCT layout, so they are required_same_net_roles.",
+        "SHELL (GND per the GCT table) and the four shell legs are unmodeled; no automatic GND.",
+        "USB and USB-PD protocol, enumeration, CC/Rp/Rd logic and VCONN are not simulated; Rd/Rp are separate parts.",
+        "Model scope: Per-contact instance of the class 'R{ref}_c{k} {BOARD_k} {CABLE_k} {Rc}' over the 16 GCT contacts; shell line omitted.",
+        "Terminals named M_<pin> are mating-interface contacts of the inserted plug/mated part, not PCB pads. They are listed in open_mating_roles (D052): a design may leave them unconnected, each then gets its own private node as an unmated contact would, and only the numbered PCB pads must match a library footprint. Rating checks still read any current through a connected mating contact."
+      ],
+      "open_mating_roles": [
+        "M_A1",
+        "M_A4",
+        "M_A5",
+        "M_A6",
+        "M_A7",
+        "M_A8",
+        "M_A9",
+        "M_A12",
+        "M_B1",
+        "M_B4",
+        "M_B5",
+        "M_B6",
+        "M_B7",
+        "M_B8",
+        "M_B9",
+        "M_B12"
       ]
     },
     "OHM-166": {
@@ -7510,6 +7998,78 @@
         "M17",
         "M18",
         "M19"
+      ]
+    },
+    "OHM-169": {
+      "entry_id": "OHM-169",
+      "behavior_id": "BEH-CON-MODJACK",
+      "package": "RJ45 8P8C right-angle THT unshielded (Adam Tech MTJ-880X1), mated",
+      "reference_part": "Adam Tech MTJ-880X1 (explicit alternate to the Amphenol 54602-908LF default)",
+      "terminal_roles": {
+        "1": "P1",
+        "2": "P2",
+        "3": "P3",
+        "4": "P4",
+        "5": "P5",
+        "6": "P6",
+        "7": "P7",
+        "8": "P8",
+        "M1": "M1",
+        "M2": "M2",
+        "M3": "M3",
+        "M4": "M4",
+        "M5": "M5",
+        "M6": "M6",
+        "M7": "M7",
+        "M8": "M8"
+      },
+      "critical_facts": {
+        "rc": {
+          "field": "ref_contact_resistance_max",
+          "unit": "mohm",
+          "output_unit": "ohm"
+        },
+        "i_rated": {
+          "field": "ref_rated_current",
+          "unit": "A"
+        },
+        "v_rated": {
+          "field": "ref_rated_voltage_ac",
+          "unit": "V"
+        }
+      },
+      "derived_parameters": {},
+      "class_parameters": {},
+      "quoted_parameters": {},
+      "template_override": "R{ref}_c1 {P1} {M1} {rc}\nR{ref}_c2 {P2} {M2} {rc}\nR{ref}_c3 {P3} {M3} {rc}\nR{ref}_c4 {P4} {M4} {rc}\nR{ref}_c5 {P5} {M5} {rc}\nR{ref}_c6 {P6} {M6} {rc}\nR{ref}_c7 {P7} {M7} {rc}\nR{ref}_c8 {P8} {M8} {rc}\n",
+      "template_provenance": {
+        "document": "COMPONENT_BEHAVIOR_SPEC.md",
+        "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+        "line": 11611
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op"
+      ],
+      "limitations": [
+        "Bound part: Adam Tech MTJ-880X1 rev E (8P8C right-angle PCB jack, unshielded, no LEDs or magnetics). It is an explicit alternate, not the spec default Amphenol 54602-908LF, whose drawing and specification could not be archived; the Amphenol footprint stays unbound.",
+        "Contact resistance at its 20 mOhm max; no crosstalk, impedance, PoE, ring transient or derating.",
+        "Ratings: 1.5 A per contact, 125 V AC RMS (1000 V AC RMS is a 1-minute withstand only). The -40..+85 C operating range is recorded but not checked.",
+        "Contact numbers 1..8 are the manufacturer's (PCB layout holes 1,3,5,7 and 2,4,6,8; front view 1..8); no TD/RD/PoE pair names are assigned (pair use is an application convention).",
+        "Plain jack: no magnetics or LEDs; place OHM-055 separately.",
+        "Ethernet PHY, link and PoE behavior are not simulated.",
+        "Model scope: Per-contact instance of the class 'R{ref}_c{n} {BOARD_n} {CABLE_n} {Rc}', n = 1..8; magjack line not applicable.",
+        "Terminals named M<k> are mating-interface contacts of the inserted plug/mated part, not PCB pads. They are listed in open_mating_roles (D052): a design may leave them unconnected, each then gets its own private node as an unmated contact would, and only the numbered PCB pads must match a library footprint. Rating checks still read any current through a connected mating contact."
+      ],
+      "open_mating_roles": [
+        "M1",
+        "M2",
+        "M3",
+        "M4",
+        "M5",
+        "M6",
+        "M7",
+        "M8"
       ]
     },
     "OHM-170": {

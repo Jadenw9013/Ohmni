@@ -310,8 +310,11 @@ def runtime_receipt_errors(audit, entry_id):
 
 
 # One DC current through one bound path, compared with that path's sourced resistance (D049).
-# Rows: variant, driven role, return role, resistance alias candidates, current rule.
+# Rows: variant, driven role, return role, resistance alias candidates, current rule. A recipe uses
+# the first row of its variant whose driven role it has (D068: the 16-contact USB-C receptacle has
+# no P1, so it drives A6, a D+ contact on its own pad).
 _CONTACT = [(None, "P1", ("W1", "M1", "C1"), ("rmate", "rpath", "rc"), "rated")]
+_USB = [*_CONTACT, (None, "A6", ("M_A6",), ("rc",), "rated")]
 PATH_PROBES = {
     "BEH-RES-POT": [(None, "A", ("B",), ("value",), "pot")],
     "BEH-CAP-CERAMIC": [(None, "T1", ("T2",), ("rleak",), "leak")],
@@ -319,7 +322,7 @@ PATH_PROBES = {
     "BEH-MAG-CMC": [("A", "A1", ("A2",), ("rdc",), "rated"), ("B", "B1", ("B2",), ("rdc",), "rated")],
     "BEH-MAG-XFMR-SIGNAL": [("primary", "P_A", ("P_B",), ("rp",), "unbalance"),
                             ("secondary", "S_A", ("S_B",), ("rs",), "unbalance")],
-    "BEH-CON-WTB": _CONTACT, "BEH-CON-TERMINAL": _CONTACT, "BEH-CON-USB": _CONTACT,
+    "BEH-CON-HEADER": _CONTACT, "BEH-CON-WTB": _CONTACT, "BEH-CON-TERMINAL": _CONTACT, "BEH-CON-USB": _USB,
     "BEH-CON-HDMI": _CONTACT, "BEH-CON-MODJACK": _CONTACT, "BEH-CON-SDSOCKET": _CONTACT,
     "BEH-CON-AUDIO": [(None, "TIP", ("M_TIP",), ("rc",), "rated")],
     "BEH-CON-DCJACK": [(None, "CENTER", ("M_TIP",), ("rc",), "rated")],
@@ -327,8 +330,13 @@ PATH_PROBES = {
 PATH_TOLERANCE = 1e-3
 
 
+def _path_rows(recipe):
+    roles = set(recipe.terminal_roles.values())
+    return [r for r in PATH_PROBES[recipe.behavior_id] if r[1] in roles] or PATH_PROBES[recipe.behavior_id][:1]
+
+
 def _path_probe(recipe, values, evidence, variant):
-    row = next(r for r in PATH_PROBES[recipe.behavior_id] if r[0] == variant)
+    row = next(r for r in _path_rows(recipe) if r[0] == variant)
     _, drive, returns, aliases, rule = row
     roles = set(recipe.terminal_roles.values())
     back = next((r for r in returns if r in roles), None)
@@ -401,7 +409,8 @@ def dc_probe_variants(behavior_id, recipe=None):
     if behavior_id == "BEH-DIO-PN" and _dual_diode(recipe):
         return ["d1", "d2"]
     if behavior_id in PATH_PROBES:
-        return [row[0] for row in PATH_PROBES[behavior_id]]
+        rows = _path_rows(recipe) if recipe is not None else PATH_PROBES[behavior_id]
+        return list(dict.fromkeys(row[0] for row in rows))
     if behavior_id == "BEH-DIO-BRIDGE":
         return ["positive", "negative"]
     if behavior_id == "BEH-LED-RGB":

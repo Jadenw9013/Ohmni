@@ -367,6 +367,23 @@ def test_rechecks_cannot_extend_the_repair_attempt_ceiling():
     assert state["failed_gate_observations"]["stage2/bench"] == 10
 
 
+def test_connector_path_probe_uses_a_row_whose_driven_role_the_recipe_has(audit):
+    """D068: headers get the contact probe; the 16-contact USB-C part has no P1 and drives A6."""
+    from ohmni.behavior.loader import BehaviorRegistry
+    from ohmni.behavior.netlist import load_recipes
+    from tools.behavior_audit.runtime_benches import dc_probe_definition, dc_probe_variants
+
+    recipes = load_recipes(BehaviorRegistry(repo_root=ROOT), ROOT)
+    expected = {"OHM-150": ("P1", "M1", 0.02, 3.0), "OHM-159": ("P1", "W1", 0.02, 16.0),
+                "OHM-163": ("P1", "M1", 0.03, 1.0), "OHM-165": ("A6", "M_A6", 0.04, 0.25)}
+    for entry_id, (drive, back, ohms, amps) in expected.items():
+        recipe = recipes.entries[entry_id]
+        assert dc_probe_variants(recipe.behavior_id, recipe) == [None]
+        comparison = dc_probe_definition(audit, entry_id)[1]["comparison"]
+        assert (comparison["drive_role"], comparison["return_role"]) == (drive, back)
+        assert comparison["expected"] == pytest.approx(ohms) and comparison["current"] == amps
+
+
 def test_fitted_model_that_outputs_nothing_fails_the_curve_replay(audit, monkeypatch):
     """CBH-R03: the 0..vf_max bound alone accepts a dead model; the replayed read points do not."""
     from ohmni.behavior.loader import BehaviorRegistry

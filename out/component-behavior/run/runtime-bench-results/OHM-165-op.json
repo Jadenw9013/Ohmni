@@ -1,0 +1,61 @@
+{
+  "analysis": "op",
+  "circuit_hash": "acaedd1742d881de61f29574c9337eebc4c3037da457cd77bab1579636d1e581",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "current": 0.25,
+    "drive_role": "A6",
+    "expected": 0.04,
+    "kind": "absolute",
+    "observable": "path_resistance",
+    "return_role": "M_A6",
+    "source_facts": {
+      "i_rated": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'0.25A per pin for all other pins'",
+        "field": "ref_rated_current_other",
+        "page": 1,
+        "scope": "USB4110, per pin, all other pins (D+/D-/SBU)",
+        "sources": [
+          "https://gct.co/files/drawings/usb4110.pdf"
+        ],
+        "unit": "A",
+        "value": 0.25
+      },
+      "rc": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "converted_unit": "ohm",
+        "converted_value": 0.04,
+        "detail": "'Contact Resistance: 40mOhm max initial.'",
+        "field": "ref_contact_resistance_max",
+        "page": 1,
+        "scope": "USB4110; initial",
+        "sources": [
+          "https://gct.co/files/drawings/usb4110.pdf"
+        ],
+        "unit": "mohm",
+        "value": 40
+      }
+    },
+    "tolerance": 4e-05
+  },
+  "entry_id": "OHM-165",
+  "entry_research_sha256": "d6b83a52ff07d9cefae7fd9ab60a1f868f5e09a71959614ae45481137cb850d4",
+  "limits": "Binding check of one bound DC path: the sourced current through the path must reproduce the sourced path resistance (0.1% numerical tolerance, or the sourced tolerance band). It does not validate frequency response, heating, contact wear, isolation, protocol behavior or any rating beyond the stated facts.",
+  "netlist_sha256": "e1da84369caaac113f093d50ecdd2f93dd169e34620cae13f5f766278c4bac67",
+  "observation_status": "ran",
+  "observed": 0.04,
+  "output_sha256": "fa30a8d31f20da6ed0110fbbde33433998ae92a5f21a932d759f7a260a7a087d",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T06:28:17Z",
+  "raw_output": "runtime-bench-output/OHM-165-op/output.txt",
+  "recipe_source_sha256": "f3ac2a355c901f236fadfd217e9b190caec9e8c4669b348f7a6e0b4b54a599b8",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "version_file": "runtime-bench-output/OHM-165-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sat Oct 10 21:32:36 UTC 2026\n******\n",
+  "version_sha256": "7f444023b0e5851d50a26bf40338ca29665b10988154a0ff2d662d918ab83fc3"
+}

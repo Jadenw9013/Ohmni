@@ -20,7 +20,10 @@
       "bench-results/BEH-CON-USB--B4.json",
       "bench-results/BEH-CON-USB--B5.json"
     ],
-    "conflicts": [],
+    "conflicts": [
+      "D068: Entry/spec ratings 1.5 A, 30 V, -40..85 C are Molex 67643-3910 listing values; the alternate is 1.0 A, 30 Vac, -20..85 C.",
+      "D068: Spec Rc 30 mOhm is an ASSUMPTION for the default; the 30 mOhm here is sourced only for UJ2-AH-4-TH."
+    ],
     "documents": [
       {
         "document_id": "molex676433910",
@@ -31,6 +34,16 @@
         "source_status": "primary_source_opened",
         "title": "676433910 USB-A receptacle product data",
         "url": "https://media.onzuu.com/static/datasheets/molex-0676433910.pdf"
+      },
+      {
+        "document_id": "samesky-uj2-ah-4-th",
+        "manufacturer": "Same Sky",
+        "note": "Archived (ledger sha256 cdbe4960...); read 2026-10-11 for the bound reference Same Sky UJ2-AH-4-TH (explicit alternate) (D068).",
+        "page": null,
+        "revision": "1.05, 09/12/2024",
+        "source_status": "primary_source_opened",
+        "title": "UJ2-AH-4-TH USB receptacle datasheet",
+        "url": "https://www.sameskydevices.com/product/resource/uj2-ah-4-th.pdf"
       }
     ],
     "entry_id": "OHM-162",
@@ -102,22 +115,144 @@
         ],
         "unit": null,
         "value": 4
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'MODEL: UJ2-AH-4-TH | DESCRIPTION: USB RECEPTACLE'; features 'USB type A jack', 'horizontal orientation', 'through hole mounting'",
+        "field": "ref_reference_part",
+        "page": 1,
+        "scope": "Same Sky UJ2-AH-4-TH USB 2.0 type A jack, horizontal, through hole",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/uj2-ah-4-th.pdf"
+        ],
+        "unit": null,
+        "value": "Same Sky UJ2-AH-4-TH"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'rated input voltage 30 Vac'",
+        "field": "ref_rated_voltage_ac",
+        "page": 1,
+        "scope": "UJ2-AH-4-TH; max column",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/uj2-ah-4-th.pdf"
+        ],
+        "unit": "V",
+        "value": 30
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'rated input current 1.0 A'",
+        "field": "ref_rated_current",
+        "page": 1,
+        "scope": "UJ2-AH-4-TH; per contact not stated; max column",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/uj2-ah-4-th.pdf"
+        ],
+        "unit": "A",
+        "value": 1.0
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'contact resistance(1) between terminals and mating plug 30 mOhm'; note 1 'When measured at 20 mV / 100 mA.'",
+        "field": "ref_contact_resistance_max",
+        "page": 1,
+        "scope": "UJ2-AH-4-TH; between terminals and mating plug; measured at 20 mV / 100 mA",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/uj2-ah-4-th.pdf"
+        ],
+        "unit": "mohm",
+        "value": 30
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'insulation resistance 1000 MOhm'",
+        "field": "ref_insulation_resistance_min",
+        "page": 1,
+        "scope": "UJ2-AH-4-TH",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/uj2-ah-4-th.pdf"
+        ],
+        "unit": "Mohm",
+        "value": 1000
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'voltage withstand for 1 minute 500 Vac'",
+        "field": "ref_withstanding_voltage_ac",
+        "page": 1,
+        "scope": "UJ2-AH-4-TH; 1 minute withstand, not working rating",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/uj2-ah-4-th.pdf"
+        ],
+        "unit": "V",
+        "value": 500
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'operating temperature -20 85 C'",
+        "field": "ref_operating_temperature_range",
+        "page": 1,
+        "scope": "UJ2-AH-4-TH",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/uj2-ah-4-th.pdf"
+        ],
+        "unit": "C",
+        "value": [
+          -20,
+          85
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'life 1,500 cycles'",
+        "field": "ref_durability_cycles",
+        "page": 1,
+        "scope": "UJ2-AH-4-TH",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/uj2-ah-4-th.pdf"
+        ],
+        "unit": "cycles",
+        "value": 1500
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "front view labels '1' and '4'; PCB layout '4-0.90' signal holes, '2-o2.30' shell holes",
+        "field": "ref_contact_numbering",
+        "page": 2,
+        "scope": "UJ2-AH-4-TH mechanical drawing",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/uj2-ah-4-th.pdf"
+        ],
+        "unit": null,
+        "value": "contacts 1..4 numbered on the front (mating-face) view, 1 at left, 4 at right; four signal tails on 2.00/3.00/2.00 mm spacing plus two shell posts"
       }
     ],
     "remaining_open_items": [
       "USB protocol,enumeration and power negotiation are not simulated.",
       "Pin-function/pin-coordinate map still requires archived manufacturer drawing;never treat shell as an automaticGNDshort.",
       "Primary PS-67643-002 text could be read through web search,but full content-hashed fetch timedout;its30mohm/contactcapacitance figures are not promoted here.",
-      "Current-temperature-rise and contact-resistance model validation remain open."
+      "Current-temperature-rise and contact-resistance model validation remain open.",
+      "Former simulation blocker resolved for the explicitly bound reference (2026-10-11, D068): Exact source-backed pin-function and physical map plus validated contact model unavailable. Resolution: Default Molex 67643-3910 drawing/spec stay unreachable (molex.com fails from this environment). Explicit alternate Same Sky UJ2-AH-4-TH (archived manufacturer datasheet) numbers its four contacts 1..4 on the drawing (p2) and gives a contact resistance with test condition (30 mOhm max, terminal to mating plug at 20 mV/100 mA), 1.0 A, 30 Vac, -20..85 C (p1). That closes the contact model and the physical contact map. Signal names (VBUS/D-/D+/GND) are not printed and are NOT assigned (same treatment as OHM-163/166).",
+      "Default Molex 67643-3910 drawing/PS-67643-002 still need a browser download",
+      "Signal-function names unsourced from the alternate's drawing",
+      "USB protocol, enumeration and power negotiation are not simulated."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Exact source-backed pin-function and physical map plus validated contact model unavailable."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-162.md",
-      "document_sha256": "e1d9f6abbf78835ef3ea59bea2110deb0ce325a1a9088be52a7a77bc048534e1",
+      "document_sha256": "6c5738439fc0f24003c65ea685a7ff73cc22d43f2011c957cc50f343a024db4a",
       "fragment_sha256": null,
       "line": 1
     }
