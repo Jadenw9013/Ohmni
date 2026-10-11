@@ -1364,7 +1364,7 @@ function attach() {
     clearError();
     selectResultPanel("board");
     show("describe", { focus: false });
-    initializeHome({ onStart: () => state.workbench?.openNew(), onDemo: () => {
+    initializeHome({ onStart: () => show("describe"), onDemo: () => {
         show('describe');
         const example = document.querySelector('#saved-example');
         if (example) { example.open = true; example.scrollIntoView({ block: 'start', behavior: 'instant' }); }
