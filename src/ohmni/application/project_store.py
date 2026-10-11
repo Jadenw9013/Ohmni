@@ -107,6 +107,7 @@ class ProjectStore:
             "brief_fingerprint": row["brief_fingerprint"],
             "preview": json.loads(row["preview"]),
             "job_id": row["job_id"],
+            **({"planning_receipt": json.loads(row["planning_receipt"])} if row["planning_receipt"] else {}),
         }
 
     def _project(self, db, project_id: str) -> dict | None:
@@ -145,7 +146,7 @@ class ProjectStore:
         ]
 
     def save_revision(self, brief: dict, fingerprint: str, preview: dict,
-                      project_id: str | None = None) -> dict | None:
+                      project_id: str | None = None, *, planning_receipt: dict | None = None) -> dict | None:
         """Create a project or append a revision without mutating older inputs."""
         if project_id is not None and not PROJECT_ID_PATTERN.fullmatch(project_id):
             return None
@@ -168,9 +169,10 @@ class ProjectStore:
                 db.execute("UPDATE projects SET updated_at=? WHERE project_id=?", (now, project_id))
             db.execute(
                 "INSERT INTO revisions (revision_id, project_id, number, created_at, brief, "
-                "brief_fingerprint, preview, job_id) VALUES (?, ?, ?, ?, ?, ?, ?, NULL)",
+                "brief_fingerprint, preview, job_id, planning_receipt) VALUES (?, ?, ?, ?, ?, ?, ?, NULL, ?)",
                 (uuid.uuid4().hex[:16], project_id, number, now,
-                 _json(brief), fingerprint, _json(preview)),
+                 _json(brief), fingerprint, _json(preview),
+                 _json(planning_receipt) if planning_receipt is not None else None),
             )
             return self._project(db, project_id)
 
