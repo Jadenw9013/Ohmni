@@ -1124,3 +1124,20 @@ main { max-width: 1800px; padding: 0 32px; }
 
 #guided-entry > summary { cursor: pointer; min-height: 44px; padding: .65rem 0; font-weight: 600; }
 #guided-entry[open] > summary { margin-bottom: 1rem; }
+
+/* The review keeps the user's words adjacent to proposed choices. */
+#conversation { max-width: 980px; margin: 0 auto; }
+#conversation-plan section { padding: 1.25rem; margin: 1rem 0; border: 1px solid var(--line, #29465d); border-radius: 12px; background: #0b1928; }
+.conversation-message { white-space: pre-wrap; overflow-wrap: anywhere; }
+.plan-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem 2rem; }
+.plan-choices dt { color: #9ab5c9; font-size: .9rem; }
+.plan-choices dd { margin: .25rem 0; overflow-wrap: anywhere; }
+#conversation-reply-form label { display: block; font-weight: 600; margin: 1rem 0 .5rem; }
+#conversation-reply { width: 100%; padding: .8rem; font: inherit; color: inherit; background: #091523; border: 1px solid #45617a; border-radius: 8px; }
+.conversation-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1.5rem 0; }
+#conversation-error { padding: 1rem; border: 1px solid #d79273; margin: 1rem 0; }
+@media (max-width: 600px) { .plan-choices { grid-template-columns: 1fr; } }
+
+.brief-stage:has(#conversation:not([hidden])) .workspace-art { display: none; }
+#conversation-questions { margin-top: 1rem; }
+#conversation details summary { cursor: pointer; padding: .5rem 0; }

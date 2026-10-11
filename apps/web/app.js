@@ -13,6 +13,7 @@ import { initializeReferencePreview } from "./reference-preview.js";
 import { initializeHome } from "./home.js";
 import { mountBoardControls } from "./board-controls.js";
 import { mountCircuitLessons } from "./circuit-lessons.js";
+import { mountConversation } from "./conversation.js";
 import { mountProjectWorkbench } from "./project-workbench.js";
 import { scopeHtml } from "./scope-view.js";
 import { mountDesignBehaviorPanel } from "./design-behavior.js";
@@ -266,6 +267,8 @@ export function showFreeTextProblem(message) {
 }
 
 export async function openBrief({ fetcher = globalThis.fetch, request = null } = {}) {
+    state.conversation?.cancel();
+    setHidden("#conversation", true);
     if (["running", "starting", "paused"].includes(state.runStatus)) { show("design"); return; }
     const problem = request === null ? null : freeTextProblem(request);
     if (problem) { showFreeTextProblem(problem); return; }
@@ -432,6 +435,8 @@ export function invalidateProjectResult() {
 }
 
 function openProjectWorkspace(name) {
+    state.conversation?.cancel();
+    setHidden("#conversation", true);
     state.customProject = true;
     state.projectName = name;
     setHidden("#project-workbench", false);
@@ -1203,6 +1208,24 @@ function attach() {
         });
         $("#create-project")?.addEventListener("click", () => state.workbench?.openNew());
     }
+    if ($("#conversation")?.dataset.conversation === "true") {
+        state.conversation = mountConversation($("#conversation"), {
+            onOpen() {
+                invalidateProjectResult(); state.customProject = true;
+                setHidden("#conversation", false); setHidden("#project-workbench", true); setHidden("#reference-brief", true);
+                setText("#agree-title", "Let's shape your board.");
+                setText("#agree-description", "Describe, refine, then confirm. Your saved revision will contain these exact choices.");
+                show("agree");
+            },
+            async onSaved(project, identity, fetcher) {
+                const revision = project.revisions.at(-1);
+                state.projectName = revision.brief.project_name;
+                void state.workbench?.refreshShelf();
+                await startProjectRun({projectId: project.project_id, revisionId: revision.revision_id, identity, preview: revision.preview, fetcher});
+            },
+            onGuided() { state.workbench?.openNew(); },
+        });
+    }
     $$('[data-navigate]').forEach((button) => button.addEventListener("click", () => navigate(button.dataset.navigate)));
     $$('[data-panel]').forEach((button) => {
         button.addEventListener("click", () => selectResultPanel(button.dataset.panel));
@@ -1243,7 +1266,8 @@ function attach() {
     $("#schematic-holder")?.addEventListener("keydown", activateSchematic);
     $("#start-supported")?.addEventListener("click", () => void openBrief());
     $("#start-free-text")?.addEventListener("click", () =>
-        void openBrief({ request: $("#free-text-request")?.value ?? "" }));
+        void (state.conversation ? state.conversation.begin($("#free-text-request")?.value ?? "")
+            : openBrief({ request: $("#free-text-request")?.value ?? "" })));
     document.querySelectorAll("[data-prompt-example]").forEach((button) => button.addEventListener("click", () => {
         const input = $("#free-text-request");
         input.value = button.dataset.promptExample;
