@@ -188,7 +188,7 @@ def test_design_ac_run_checks_ripple_against_the_sourced_rating(tmp_path):
     for run in (ok, hot):
         row = rows(run["ratings"])["ripple current (rating frequency) at 100000 Hz"]
         assert row["status"] == "unknown" and "D063" in row["reason"]
-    assert hot["rating_status"] != "within_model_limits"
+    assert hot["rating_status"] == ok["rating_status"] == "unknown"
     names = {s["name"] for s in ok["ac"]["sweep"]["series"]}
     assert names == {"rail", "vin"} and len(ok["ac"]["sweep"]["frequency_hz"]) == 9
     # The bound card (D058) in parallel with the 1 kohm feed (the ideal DC source is an AC short):
@@ -259,7 +259,7 @@ def test_tantalum_ripple_needs_thermal_scope_and_an_ambient_for_its_rating(regis
     assert no_ambient["peak forward voltage (DC plus AC peak) at 100000 Hz"]["status"] == "unknown"
     over = rows(evaluate_ratings(compiled, fake_result(compiled, 0.170), registry, RatingContext()))
     assert over["ripple current (rating frequency) at 100000 Hz"]["status"] == "unknown", \
-        "the maximum ESR bounds the real current only at a declared 25 C (D062)"
+        "the bound-ESR card proves no ripple result (D063)"
 
 
 def test_ripple_conditions_come_from_the_record_scope(registry, recipes):
@@ -326,3 +326,5 @@ def test_any_series_element_beyond_cb_and_rlk_fails_closed(registry, recipes):
     assert _tant_esr_bound(c1.model_copy(update={"element_names": ["Cc1", "Rc1_lk"]})) is None
     assert _tant_esr_bound(c1.model_copy(update={"element_names": ["Cc1", "Rc1_lk", "Lc1_esl"]}))
     assert _tant_esr_bound(c1.model_copy(update={"element_names": ["Cc1", "Rc1_lk", "Rseries"]}))
+    assert _tant_esr_bound(c1.model_copy(update={"element_names": ["Cc1", "Cc1b", "Rc1_lk"]}))
+    assert _tant_esr_bound(c1.model_copy(update={"element_names": []}))

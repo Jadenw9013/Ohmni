@@ -479,8 +479,7 @@ def _transient_checks(component, values, b, thermal, upper_only, w):
         if i is not None and "irip_max" in values and _tant_esr_bound(component):
             stat("ripple_rms", w.ac_rms(i))
             b.add("ripple current", "ripple_rms <= irip_max", ("irip_max",),
-                  "The card carries the bound maximum ESR, so a simulated waveform's current bounds the real "
-                  "current in neither direction; use an AC run at the rating conditions")
+                  _tant_esr_bound(component))
         elif i is not None and "irip_max" in values:
             stat("ripple_rms", w.ac_rms(i))
             freq = stat("ripple_frequency", w.frequency(i))
@@ -1062,9 +1061,10 @@ def _tant_esr_bound(component):
     """
     if component.behavior_id != "BEH-CAP-TANT":
         return None
-    extra = [n for n in (name.lower() for name in component.element_names)
-             if not (n.startswith("c") or (n.startswith("r") and n.endswith("_lk")))]
-    if not extra:
+    names = [name.lower() for name in component.element_names]
+    capacitors = [n for n in names if n.startswith("c")]
+    leaks = [n for n in names if n.startswith("r") and n.endswith("_lk")]
+    if names and len(capacitors) == 1 and len(leaks) == 1 and len(names) == 2:
         return None
     return ("The card carries a series ESR (the sourced 100 kHz maximum), and the real ESR, capacitance "
             "tolerance and omitted ESL move the part's current in directions the card cannot bound, so this "

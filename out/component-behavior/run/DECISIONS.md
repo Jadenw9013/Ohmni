@@ -353,7 +353,7 @@ The fixes:
 
 The proxy review of D062 blocked it again, on four points:
 - **Fail-open detector:** a card whose series ESR was not recognized as the maximum fell back to the ideal-card rules, which can pass.
-- **Capacitance tolerance and ESL:** the card uses nominal C, and a real part with lower C carries up to about 1% less current. So "a real part carries at least the simulated current" is not proven near the limit.
+- **Capacitance tolerance and ESL:** the card uses nominal C, and a real part with lower C carries less current. So "a real part carries at least the simulated current" is not proven near the limit.
 - **Wrong correction:** D061's correction about parallel parts was itself wrong. With a current-driven parallel tank, a higher tantalum ESR lowers a parallel inductor's current. Parallel currents are not bounded in either direction.
 - **Test claims:** the stated test coverage did not match the tests.
 
