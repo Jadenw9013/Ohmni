@@ -1,0 +1,98 @@
+
+Note: No compatibility mode selected!
+
+
+Circuit: ohmni sourced behavior circuit
+
+Doing analysis at TEMP = 25.000000 and TNOM = 25.000000
+
+
+No. of Data Rows : 1
+	Node                                  Voltage
+	----                                  -------
+	----	-------
+	n2                               0.000000e+00
+	n4                               5.000000e+00
+	n1                               5.000000e+00
+
+	Source	Current
+	------	-------
+
+	vsource1#branch                  -1.30000e-01
+	vsource4#branch                  -1.00000e-03
+
+ Resistor models (Simple linear resistor)
+      model                     R
+
+        rsh                     0
+     narrow                     0
+      short                     0
+        tc1                     0
+        tc2                     0
+        tce                     0
+       defw                 1e-05
+          l                 1e-05
+         kf                     0
+         af                     0
+          r                     0
+     bv_max                 1e+99
+         lf                     1
+         wf                     1
+         ef                     1
+
+ ASRC: Arbitrary Source 
+     device                bc1idd
+      dtemp                     0
+          i                 0.001
+          v                     5
+   pos_node                     2
+   neg_node                     0
+
+ Resistor: Simple linear resistor
+     device                 rc1bl                 rv0c1
+      model                     R                     R
+ resistance               38.4615                 1e+08
+         ac               38.4615                 1e+08
+      dtemp                     0                     0
+     bv_max                 1e+99                 1e+99
+      noisy                     1                     1
+          i                  0.13                     0
+          p                  0.65                     0
+
+ Vsource: Independent voltage source
+     device              vsource4              vsource1
+         dc                     5                     5
+      acmag                     0                     0
+      pulse         -         -
+        sin         -         -
+        exp         -         -
+        pwl         -         -
+       sffm         -         -
+         am         -         -
+    trnoise         -         -
+   trrandom         -         -
+    portnum                     0                     0
+         z0                     0                     0
+        pwr                     0                     0
+       freq                     0                     0
+      phase                     0                     0
+          i                -0.001                 -0.13
+          p                -0.005                 -0.65
+
+
+
+Total analysis time (seconds) = 0
+
+Total CPU time (seconds) = 0.006 
+
+Total DRAM available = 16093.188 MB.
+DRAM currently available = 12203.324 MB.
+Maximum ngspice program size =   14.723 MB.
+Current ngspice program size =    8.906 MB.
+
+Shared ngspice pages =    7.402 MB.
+Text (code) pages =    5.332 MB.
+Stack = 0 bytes.
+Library pages =    1.730 MB.
+
+Warning: no nodes given: .print op

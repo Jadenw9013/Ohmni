@@ -90,7 +90,17 @@ class ComponentBehaviorService:
         blocker = self.data["blocked"].get(entry_id)
         if recipe:
             part = recipe.reference_part or f"a scoped {recipe.package} reference"
-            if entry.simulation_disposition.value == "not_simulable":
+            if entry.simulation_disposition.value == "not_simulable" and entry.layer.value == "L3":
+                # D070: only the L1 electrical part of an L3 entry is bound; protocol stays unmodeled.
+                reason = (f"A sourced reference ({part}) runs as an electrical model only (supply and "
+                          "LED or backlight load); the record stays not simulable because its protocol, "
+                          "firmware or display-controller behavior (L3) is not modeled.")
+            elif (entry.simulation_disposition.value == "not_simulable"
+                  and not 103 <= int(entry_id.split("-")[1]) <= 140):
+                reason = (f"A sourced reference ({part}) runs, but the protected spec lists this entry as "
+                          "research_required, so its record stays not simulable until the owner changes "
+                          "that status.")
+            elif entry.simulation_disposition.value == "not_simulable":
                 reason = (f"A sourced reference ({part}) runs, but the catalog record for this package stays "
                           "not simulable: the package itself has no electrical function, and the spec counts "
                           "only the bound reference, not the package, as verified.")

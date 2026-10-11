@@ -1,0 +1,96 @@
+{
+  "analysis": "op",
+  "circuit_hash": "e25b59ce52280e33dd1df4dc740be89f20e9585813f151d17ad6365c229648c3",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "expected": 0.001,
+    "kind": "absolute",
+    "observable": "supply_current",
+    "rail": "logic",
+    "source_facts": {
+      "idd": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "converted_unit": "A",
+        "converted_value": 0.001,
+        "detail": "'Supply Current IDD VDD = 5.0V 0.5 1.0 3.0 mA'",
+        "field": "ref_logic_supply_current_min_typ_max",
+        "page": 6,
+        "scope": "Newhaven NHD-0216K1Z-FL-YBW; VDD=5.0V; logic supply pin (the backlight is the separate ILED row)",
+        "selected_value": 1.0,
+        "selected_value_path": [
+          1
+        ],
+        "sources": [
+          "https://newhavendisplay.com/content/specs/NHD-0216K1Z-FL-YBW.pdf"
+        ],
+        "unit": "mA",
+        "value": [
+          0.5,
+          1.0,
+          3.0
+        ]
+      },
+      "vdd_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Supply Voltage VDD - 4.5 5.0 5.5 V'",
+        "field": "ref_operating_supply_range",
+        "page": 6,
+        "scope": "Newhaven NHD-0216K1Z-FL-YBW",
+        "selected_value": 5.5,
+        "selected_value_path": [
+          1
+        ],
+        "sources": [
+          "https://newhavendisplay.com/content/specs/NHD-0216K1Z-FL-YBW.pdf"
+        ],
+        "unit": "V",
+        "value": [
+          4.5,
+          5.5
+        ]
+      },
+      "vdd_min": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Supply Voltage VDD - 4.5 5.0 5.5 V'",
+        "field": "ref_operating_supply_range",
+        "page": 6,
+        "scope": "Newhaven NHD-0216K1Z-FL-YBW",
+        "selected_value": 4.5,
+        "selected_value_path": [
+          0
+        ],
+        "sources": [
+          "https://newhavendisplay.com/content/specs/NHD-0216K1Z-FL-YBW.pdf"
+        ],
+        "unit": "V",
+        "value": [
+          4.5,
+          5.5
+        ]
+      }
+    },
+    "supply_voltage": 5.0,
+    "tolerance": 1e-06
+  },
+  "entry_id": "OHM-091",
+  "entry_research_sha256": "0ced9d1f6ca4b8615768c686439547e74b597df9feece320e161f7d4936940f3",
+  "limits": "Binding check of one L1 module rail at its source test voltage: logic IDD typical, or the backlight's single sourced operating point. It does not validate controller behavior, contrast, backlight current away from 5.0 V or thermal limits.",
+  "netlist_sha256": "2e4d802edcd3539f3f7641a7e15c0aedb8f76bdc2e95e97a76c73a3c07331d33",
+  "observation_status": "ran",
+  "observed": 0.001,
+  "output_sha256": "82a4afe77504956d1e6d8f719b242e53811e33f565d71757a8b028bfa90a2d6a",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T08:24:47Z",
+  "raw_output": "runtime-bench-output/OHM-091-op-logic/output.txt",
+  "recipe_source_sha256": "ce3727529f8fdcc2c29375232c80c5b18f35eb697e7e58e0b7a4c4cbff12387d",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "variant": "logic",
+  "version_file": "runtime-bench-output/OHM-091-op-logic/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sat Oct 10 21:32:36 UTC 2026\n******\n",
+  "version_sha256": "7f444023b0e5851d50a26bf40338ca29665b10988154a0ff2d662d918ab83fc3"
+}

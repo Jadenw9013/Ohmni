@@ -1,0 +1,106 @@
+{
+  "analysis": "op",
+  "circuit_hash": "ac9da024ed0d3ab0233d04fa47973db1a4cb5f7e0a7e183d931b5591dc5471d3",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "curve": "forward",
+    "expected": 2.001,
+    "kind": "absolute",
+    "observable": "anode_voltage",
+    "point_index": 2,
+    "source_fact": {
+      "basis": "DERIVED",
+      "confidence": "M",
+      "detail": "Structured copy of the vector read points so the runtime fit probe can replay them.",
+      "field": "forward_curve_read_points",
+      "page": 3,
+      "scope": "Kingbright WP113IDT high efficiency red; 25 C typical forward curve read points (I in A, V in V) used for the IS/N/RS fit",
+      "sources": [
+        "https://www.kingbrightusa.com/images/catalog/SPEC/WP113IDT.pdf"
+      ],
+      "unit": null,
+      "value": {
+        "points_a_v": [
+          [
+            0.001075,
+            1.648
+          ],
+          [
+            0.001396,
+            1.668
+          ],
+          [
+            0.002042,
+            1.698
+          ],
+          [
+            0.002566,
+            1.718
+          ],
+          [
+            0.00407,
+            1.778
+          ],
+          [
+            0.005037,
+            1.803
+          ],
+          [
+            0.006098,
+            1.827
+          ],
+          [
+            0.007388,
+            1.857
+          ],
+          [
+            0.008663,
+            1.882
+          ],
+          [
+            0.009953,
+            1.902
+          ],
+          [
+            0.011229,
+            1.917
+          ],
+          [
+            0.01241,
+            1.932
+          ],
+          [
+            0.014976,
+            1.951
+          ],
+          [
+            0.02,
+            2.001
+          ]
+        ],
+        "temperature_c": 25
+      }
+    },
+    "test_current": 0.02,
+    "tolerance": 0.10005,
+    "tolerance_rule": "max(0.05*V, 0.015 V) for a M-confidence datasheet read"
+  },
+  "entry_id": "OHM-076",
+  "entry_research_sha256": "dedae4189305f0fa2e80c257edb83560a24e9a0a29bd32a1a0b81e476fad84ea",
+  "limits": "Replays the fitted forward model at one of the sourced curve read points and requires the read voltage within the read uncertainty. Together with the other fit points and the maximum-VF bound this validates the fit over the plotted range at 25 C; it does not validate temperature, reverse behavior, capacitance or ratings.",
+  "netlist_sha256": "7822eddac26622ab0bb37cda1dfebe83928fe9e0f7d6eb094b815753fdabd8f0",
+  "observation_status": "ran",
+  "observed": 2.007206,
+  "output_sha256": "b3937146dfeb6d8891934229393591791992152f97f26a6ae8c1c8fe010d3f40",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T08:22:51Z",
+  "raw_output": "runtime-bench-output/OHM-076-op-forward_fit3/output.txt",
+  "recipe_source_sha256": "ce3727529f8fdcc2c29375232c80c5b18f35eb697e7e58e0b7a4c4cbff12387d",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "variant": "forward_fit3",
+  "version_file": "runtime-bench-output/OHM-076-op-forward_fit3/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sat Oct 10 21:32:36 UTC 2026\n******\n",
+  "version_sha256": "7f444023b0e5851d50a26bf40338ca29665b10988154a0ff2d662d918ab83fc3"
+}

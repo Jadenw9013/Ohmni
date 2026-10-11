@@ -234,6 +234,8 @@ def _scoped_checks(component, point, context, overrides=None, transient=None, ac
                 (f"rth_js_{color}", "tj_max"),
                 thermal,
             )
+    elif cls == "BEH-DISP-LEDARRAY" and "if_max_seg" in values:
+        _display_checks(component, values, b, thermal, upper_only)
     elif cls == "BEH-RES-POT":
         derive("derate", "clamp((t_end-Tamb)/(t_end-t_knee),0,1)")
         b.add("track power", "power <= p_rated*derate", ("p_rated", "t_end", "t_knee"), thermal)
@@ -625,6 +627,36 @@ def contact_current_limits(values, roles):
         elif role not in grouped and default:
             limits[role] = default
     return limits, groups
+
+
+def _display_checks(component, values, b, thermal, upper_only):
+    """Per-segment LED display limits (D070); the source rates each segment or DP, never the package.
+
+    The DC segment current applies up to the sourced derating knee ambient; above it, or with no
+    declared ambient, only a violation of the flat value is proven. No common-pin or package rating
+    is published, so the commons get no rating row of their own. Reverse bias is never accepted:
+    the source reverse voltage is a test condition, so it can only prove a violation.
+    """
+    roles = set(component.role_nodes)
+    segments = sorted(role for role in roles if not role.startswith("COM"))
+    knee = values.get("t_knee_seg")
+    ambient_ok = "Tamb" in values and knee is not None and values["Tamb"] <= knee
+    for segment in segments:
+        common = "COM" if "COM" in roles else "COM" + segment[-1]
+        if common not in roles:
+            continue
+        current = f"i_{segment} <= if_max_seg"
+        if ambient_ok:
+            b.add(f"segment {segment} current", current, ("if_max_seg", "t_knee_seg"))
+        else:
+            upper_only(f"segment {segment} current", current, ("if_max_seg", "t_knee_seg"),
+                       "The per-segment DC rating applies only up to the sourced derating-knee ambient; "
+                       "declare an ambient at or below it (the derating above it is not encoded)")
+        b.add(f"segment {segment} power", f"(v_{segment}-v_{common})*i_{segment} <= p_seg", ("p_seg",), thermal)
+        if values.get(f"v_{common}", 0) - values.get(f"v_{segment}", 0) > 0:
+            upper_only(f"segment {segment} reverse voltage", f"v_{common}-v_{segment} <= vr_max", ("vr_max",),
+                       "The source reverse voltage is a test condition, not an application rating; "
+                       "reverse bias is never accepted as within limits")
 
 
 def _connector_checks(component, values, b, thermal, upper_only):

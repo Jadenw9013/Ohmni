@@ -98,7 +98,10 @@ def terminal_nodes(circuit, component, entry_id, terminal_roles, registry, nodes
 
 def entry_problems(entry, recipe: RuntimeRecipe | None) -> list[str]:
     reasons = []
-    if entry.layer.value == "L3":
+    # D066/D070: an L3 entry may carry an owner-approved L1 electrical recipe (supply, LED or
+    # backlight load from the exact part's datasheet). Its protocol stays unmodeled and its record
+    # stays not simulable, so design runs still refuse it; only the bound electrical reference runs.
+    if entry.layer.value == "L3" and recipe is None:
         reasons.append("L3 protocol behavior is not simulable by ngspice")
     if entry.research is None:
         reasons.append("Primary-source gap research has not been completed")

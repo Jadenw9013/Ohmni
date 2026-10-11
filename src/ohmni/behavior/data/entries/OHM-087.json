@@ -18,7 +18,10 @@
       "bench-results/BEH-DISP-LEDARRAY--B2.json"
     ],
     "conflicts": [
-      "The primary source gives 75 mW per die; do not use the older 105 mW assumption."
+      "The primary source gives 75 mW per die; do not use the older 105 mW assumption.",
+      "D070: the class pd_seg 105 mW (labelled S14/SC56-11EWA) disagrees with the archived SC56-11EWA table (75 mW) and with HDSP-5503 (75 mW per segment); 105 mW is not used.",
+      "D070: Kingbright VR 5 V and peak 160 mA (1/10, 0.1 ms) vs Broadcom VR 3.0 V (test only) and peak 90 mA (10%, 1 kHz); the binding uses Broadcom values only.",
+      "D070: Kingbright VF 1.9/2.3 V at 10 mA vs Broadcom HDSP-55xx red 2.05/2.5 V at 20 mA."
     ],
     "documents": [
       {
@@ -30,6 +33,26 @@
         "source_status": "primary_source_opened",
         "title": "SC56-11EWA",
         "url": "https://www.kingbrightusa.com/images/catalog/SPEC/SC56-11EWA.pdf"
+      },
+      {
+        "document_id": "broadcom-av02-1107en",
+        "manufacturer": "Broadcom",
+        "note": "Archived (ledger sha256 8192a61370de...); read 2026-10-11 for the bound reference (D070).",
+        "page": null,
+        "revision": "AV02-1107EN, July 10, 2024",
+        "source_status": "primary_source_opened",
+        "title": "HDSP-550x/552x/560x/562x/570x/572x/H15x Series Data Sheet, 14.2-mm (0.56-in.) Seven-Segment Displays",
+        "url": "https://docs.broadcom.com/doc/AV02-1107EN"
+      },
+      {
+        "document_id": "vishay-tdsx51x0",
+        "manufacturer": "Vishay",
+        "note": "Archived (ledger sha256 bed31f8c1123...); read 2026-10-11 for the bound reference (D070). Alternative (13 mm, not the 0.56 in default); not cited by a bound fact.",
+        "page": null,
+        "revision": "Document 83126 Rev 2.5, 07-Jul-2022",
+        "source_status": "primary_source_opened",
+        "title": "TDSO5150, TDSO5160, TDSG5150, TDSG5160 Standard 7-Segment Display 13 mm",
+        "url": "https://www.vishay.com/docs/83126/tdsx51x0.pdf"
       }
     ],
     "entry_id": "OHM-087",
@@ -168,21 +191,331 @@
         ],
         "unit": "mA",
         "value": 160
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Device Selection Guide: AlInGaP Red 'HDSP-5503', 'Common Cathode Right-hand Decimal', Pkg Drawing B",
+        "field": "ref_reference_part",
+        "page": 3,
+        "scope": "Broadcom HDSP-5503",
+        "sources": [
+          "https://docs.broadcom.com/doc/AV02-1107EN"
+        ],
+        "unit": null,
+        "value": "Broadcom HDSP-5503"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Pin table column B: '1 Anode E, 2 Anode D, 3 Cathode(b), 4 Anode C, 5 Anode DP, 6 Anode B, 7 Anode A, 8 Cathode(b), 9 Anode F, 10 Anode G'; note b 'Redundant cathodes'. Diagram B (p3) joins pins 3 and 8 to one common cathode node, so both carry role COM.",
+        "field": "ref_manufacturer_pin_roles",
+        "page": 2,
+        "scope": "Broadcom HDSP-5503 (package drawing B); pin table and p3 internal circuit diagram B (rendered pages inspected)",
+        "sources": [
+          "https://docs.broadcom.com/doc/AV02-1107EN"
+        ],
+        "unit": null,
+        "value": {
+          "1": "E",
+          "10": "G",
+          "2": "D",
+          "3": "COM",
+          "4": "C",
+          "5": "DP",
+          "6": "B",
+          "7": "A",
+          "8": "COM",
+          "9": "F"
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Front view A, B prints '10 9 8 7 6' on top and '1 2 3 4 5' on the bottom; same orientation as the archived SC56-11EWA.",
+        "field": "ref_source_pin1_orientation",
+        "page": 2,
+        "scope": "Broadcom HDSP-5503; front view A, B",
+        "sources": [
+          "https://docs.broadcom.com/doc/AV02-1107EN"
+        ],
+        "unit": null,
+        "value": "Bottom-left in the upright front view; pins 1-5 bottom left to right, 6-10 top right to left"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Industry-standard pinout: 15.24-mm (0.6-in.) DIP leads on 2.54-mm (0.1-in.) centers'",
+        "field": "ref_package_row_spacing",
+        "page": 1,
+        "scope": "Broadcom HDSP-5503; HDSP-55xx",
+        "sources": [
+          "https://docs.broadcom.com/doc/AV02-1107EN"
+        ],
+        "unit": "mm",
+        "value": 15.24
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Power Dissipation per Segment or DP ... Red HDSP-5500 Series 75 mW'",
+        "field": "ref_maximum_power_per_segment",
+        "page": 4,
+        "scope": "Broadcom HDSP-5503; HDSP-55xx red AlInGaP series; per segment or DP",
+        "sources": [
+          "https://docs.broadcom.com/doc/AV02-1107EN"
+        ],
+        "unit": "mW",
+        "value": 75
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'DC Forward Current per Segment or DP(b) ... 30 mA'; note b 'Derate linearly as shown in ... Figure 8 (red)'",
+        "field": "ref_maximum_forward_current_per_segment",
+        "page": 4,
+        "scope": "Broadcom HDSP-5503; HDSP-55xx red AlInGaP series; DC, per segment or DP; derate linearly per Figure 8",
+        "sources": [
+          "https://docs.broadcom.com/doc/AV02-1107EN"
+        ],
+        "unit": "mA",
+        "value": 30
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "detail": "Polyline (0 C, 30 mA)-(55.0 C, 30.0 mA)-(100.0 C, 10.0 mA) on 0-110 C / 0-35 mA axes; rendered page checked",
+        "field": "ref_forward_current_derating_per_segment",
+        "page": 8,
+        "scope": "Broadcom HDSP-5503; HDSP-55xx red AlInGaP series; Figure 8 'Maximum Forward Current vs. Ambient Temperature', read from the vector path",
+        "sources": [
+          "https://docs.broadcom.com/doc/AV02-1107EN"
+        ],
+        "unit": null,
+        "value": {
+          "end_c": 100.0,
+          "end_ma": 10.0,
+          "flat_ma": 30,
+          "knee_c": 55.0
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "detail": "Knee of the Figure 8 polyline at (55.0 C, 30.0 mA), read from the vector path; rendered page checked",
+        "field": "ref_forward_current_derating_knee_ambient",
+        "page": 8,
+        "scope": "Broadcom HDSP-5503; HDSP-55xx red AlInGaP series; Figure 8 knee: the 30 mA DC limit holds up to this ambient",
+        "sources": [
+          "https://docs.broadcom.com/doc/AV02-1107EN"
+        ],
+        "unit": "C",
+        "value": 55.0
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Peak Forward Current per Segment or DP(a) ... 90 mA'; note a 'Duty factor = 10%, frequency = 1 kHz, TA = 25 C'",
+        "field": "ref_maximum_peak_current_per_segment",
+        "page": 4,
+        "scope": "Broadcom HDSP-5503; HDSP-55xx red AlInGaP series; per segment or DP; duty factor 10%, 1 kHz, TA=25 C",
+        "sources": [
+          "https://docs.broadcom.com/doc/AV02-1107EN"
+        ],
+        "unit": "mA",
+        "value": 90
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Reverse Voltage per Segment or DP(c) 3.0 V'; note c 'Reverse voltage is for LED testing purposes and is not recommended to be used as an application condition'",
+        "field": "ref_maximum_reverse_voltage_per_segment",
+        "page": 4,
+        "scope": "Broadcom HDSP-5503; HDSP-55xx red AlInGaP series; per segment or DP; for LED testing only, not an application condition",
+        "sources": [
+          "https://docs.broadcom.com/doc/AV02-1107EN"
+        ],
+        "unit": "V",
+        "value": 3.0
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Forward Voltage/Segment or DP VF - 2.05 2.5 V IF = 20 mA' (Red, Device Series HDSP-55XX)",
+        "field": "ref_forward_voltage_typical_max",
+        "page": 4,
+        "scope": "Broadcom HDSP-5503; HDSP-55xx red AlInGaP series; per segment or DP; IF = 20 mA, TA = 25 C",
+        "sources": [
+          "https://docs.broadcom.com/doc/AV02-1107EN"
+        ],
+        "unit": "V",
+        "value": [
+          2.05,
+          2.5
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Operating Temperature Range ... -40 to +100 C' (red, yellow and green columns)",
+        "field": "ref_operating_temperature_range",
+        "page": 4,
+        "scope": "Broadcom HDSP-5503; HDSP-55xx red AlInGaP series",
+        "sources": [
+          "https://docs.broadcom.com/doc/AV02-1107EN"
+        ],
+        "unit": "C",
+        "value": [
+          -40,
+          100
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Every power, current and reverse row of Absolute Maximum Ratings is titled '... per Segment or DP'; no package-total power or common-pin current rating is published.",
+        "field": "ref_rating_allocation_statement",
+        "page": 4,
+        "scope": "Broadcom HDSP-5503; HDSP-55xx red AlInGaP series",
+        "sources": [
+          "https://docs.broadcom.com/doc/AV02-1107EN"
+        ],
+        "unit": null,
+        "value": "per segment or DP"
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "Kirchhoff sum at the common. The source rates only segments, so a common carries at most n_segments x the per-segment limit when every segment is within its own limit. Not a manufacturer common-lead rating.",
+        "field": "ref_common_pin_current_bound",
+        "page": 4,
+        "scope": "Broadcom HDSP-5503; HDSP-55xx red AlInGaP series",
+        "sources": [
+          "https://docs.broadcom.com/doc/AV02-1107EN"
+        ],
+        "unit": null,
+        "value": "sum of the segment currents of that common; no separate common-pin rating is published"
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "detail": "Figure 6 'Forward Current vs. Forward Voltage' (red graphs, linear 0-90 mA vs 0.5-2.5 V); frame x 344.059->0.5 V, 505.738->2.5 V; y 274.512->0 mA, 125.859->90 mA. Curve read from the PDF vector polyline vertices (pdftocairo -svg), axes calibrated from the plot frame/gridlines; vertices with I >= 0.8 mA used. Least-squares fit of V = N*Vt*ln(I/IS) + I*RS, Vt = 0.025693 V (25 C). 12 points, rms 3.0 mV. Fit window 1.35-30.1 mA (DC rating); RS constrained to 0 because the unconstrained fit gives a non-physical RS = -0.94 ohm (the drawn trace sharpens above ~30 mA). 12 evenly spaced read points recorded of 65 used. Cross-check: model VF(20 mA)=2.077 V vs table typ 2.05 V (+-0.1 V tolerance); below 2.5 V max. IS, N and RS are correlated and must be used together as one set. Runtime uses .options tnom=25 / .temp 25 (netlist.py).",
+        "field": "spice_IS_fit",
+        "page": 8,
+        "scope": "HDSP-5503 (each segment, red HDSP-55xx); OHMNI simulation-model fit to the datasheet's own typical 25 C forward curve; not a guaranteed limit",
+        "sources": [
+          "https://docs.broadcom.com/doc/AV02-1107EN"
+        ],
+        "unit": "A",
+        "value": 4.238e-14
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "detail": "Figure 6 'Forward Current vs. Forward Voltage' (red graphs, linear 0-90 mA vs 0.5-2.5 V); frame x 344.059->0.5 V, 505.738->2.5 V; y 274.512->0 mA, 125.859->90 mA. Curve read from the PDF vector polyline vertices (pdftocairo -svg), axes calibrated from the plot frame/gridlines; vertices with I >= 0.8 mA used. Least-squares fit of V = N*Vt*ln(I/IS) + I*RS, Vt = 0.025693 V (25 C). 12 points, rms 3.0 mV. Fit window 1.35-30.1 mA (DC rating); RS constrained to 0 because the unconstrained fit gives a non-physical RS = -0.94 ohm (the drawn trace sharpens above ~30 mA). 12 evenly spaced read points recorded of 65 used. Cross-check: model VF(20 mA)=2.077 V vs table typ 2.05 V (+-0.1 V tolerance); below 2.5 V max. IS, N and RS are correlated and must be used together as one set. Runtime uses .options tnom=25 / .temp 25 (netlist.py).",
+        "field": "spice_N_fit",
+        "page": 8,
+        "scope": "HDSP-5503 (each segment, red HDSP-55xx); OHMNI simulation-model fit to the datasheet's own typical 25 C forward curve; not a guaranteed limit",
+        "sources": [
+          "https://docs.broadcom.com/doc/AV02-1107EN"
+        ],
+        "unit": "1",
+        "value": 3.007
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "L",
+        "detail": "Figure 6 'Forward Current vs. Forward Voltage' (red graphs, linear 0-90 mA vs 0.5-2.5 V); frame x 344.059->0.5 V, 505.738->2.5 V; y 274.512->0 mA, 125.859->90 mA. Curve read from the PDF vector polyline vertices (pdftocairo -svg), axes calibrated from the plot frame/gridlines; vertices with I >= 0.8 mA used. Least-squares fit of V = N*Vt*ln(I/IS) + I*RS, Vt = 0.025693 V (25 C). 12 points, rms 3.0 mV. Fit window 1.35-30.1 mA (DC rating); RS constrained to 0 because the unconstrained fit gives a non-physical RS = -0.94 ohm (the drawn trace sharpens above ~30 mA). 12 evenly spaced read points recorded of 65 used. Cross-check: model VF(20 mA)=2.077 V vs table typ 2.05 V (+-0.1 V tolerance); below 2.5 V max. IS, N and RS are correlated and must be used together as one set. Runtime uses .options tnom=25 / .temp 25 (netlist.py).",
+        "field": "spice_RS_fit",
+        "page": 8,
+        "scope": "HDSP-5503 (each segment, red HDSP-55xx); OHMNI simulation-model fit to the datasheet's own typical 25 C forward curve; not a guaranteed limit",
+        "sources": [
+          "https://docs.broadcom.com/doc/AV02-1107EN"
+        ],
+        "unit": "ohm",
+        "value": 0.0
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "Structured copy of the vector read points so the runtime fit probe can replay them.",
+        "field": "forward_curve_read_points",
+        "page": 8,
+        "scope": "HDSP-5503 (each segment, red HDSP-55xx); 25 C typical forward curve read points (I in A, V in V) used for the IS/N/RS fit",
+        "sources": [
+          "https://docs.broadcom.com/doc/AV02-1107EN"
+        ],
+        "unit": null,
+        "value": {
+          "points_a_v": [
+            [
+              0.001351,
+              1.865
+            ],
+            [
+              0.004049,
+              1.951
+            ],
+            [
+              0.00675,
+              1.994
+            ],
+            [
+              0.009001,
+              2.018
+            ],
+            [
+              0.011699,
+              2.039
+            ],
+            [
+              0.0144,
+              2.055
+            ],
+            [
+              0.017099,
+              2.067
+            ],
+            [
+              0.0198,
+              2.077
+            ],
+            [
+              0.0225,
+              2.086
+            ],
+            [
+              0.02475,
+              2.091
+            ],
+            [
+              0.027451,
+              2.097
+            ],
+            [
+              0.030149,
+              2.102
+            ]
+          ],
+          "temperature_c": 25
+        }
       }
     ],
     "remaining_open_items": [
       "Per-segment thermal coupling, aggregate common-lead current and exact fit across current/temperature remain open.",
       "Multiplex duty does not permit exceeding the specified peak-current pulse conditions.",
-      "Primary PD/IF table does not explicitly allocate the ratings per segment or as a package total. No such allocation is asserted."
+      "Primary PD/IF table does not explicitly allocate the ratings per segment or as a package total. No such allocation is asserted.",
+      "Former simulation blocker resolved for the bound reference Broadcom HDSP-5503 (2026-10-11, D070): Per-segment and common-lead aggregate power/current allocation is not established; do not use table PD/IF as a rated complete-display envelope. Resolution: Kingbright's current SC56-11EWA sheet still lists PD/IF/VR without saying per segment or per package. Broadcom's 14.2 mm (0.56 in) family sheet AV02-1107EN (2024) titles every rating row 'per Segment or DP' (75 mW, 30 mA DC derated per Figure 8, 90 mA peak at 10% / 1 kHz, VR 3.0 V test-only), and HDSP-5503 (single digit, common cathode, right-hand decimal) has the same pin map as the archived SC56-11EWA. The binding moves to HDSP-5503; the per-segment allocation closes from the source, and the common lead is only a derived sum (no common rating is published, stated as a limitation).",
+      "No package-total power, Tj or thermal resistance is published for HDSP-55xx; multi-segment self-heating acceptance stays unknown.",
+      "Derating above the 55 C knee is not encoded; peak and multiplexed operation are not checked.",
+      "The common-anode HDSP-5501 is not bound."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Per-segment and common-lead aggregate power/current allocation is not established; do not use table PD/IF as a rated complete-display envelope."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-087.md",
-      "document_sha256": "a625c07e5fce131e9f59069d75ad6307cd700dc2a41f231045635bb34e929b82",
+      "document_sha256": "01c9c972d1b57335e7a1b1291fad7c8621ed1968b839bd7e3e3163525877544a",
       "fragment_sha256": null,
       "line": 1
     }

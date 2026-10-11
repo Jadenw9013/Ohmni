@@ -1,0 +1,138 @@
+{
+  "analysis": "op",
+  "circuit_hash": "ce0d975a11e4446906d6923ac48b020e01b0a520be5f827acb2979ee4c2ac059",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "curve": "forward",
+    "expected": 1.624,
+    "kind": "absolute",
+    "observable": "anode_voltage",
+    "point_index": 0,
+    "source_fact": {
+      "basis": "DERIVED",
+      "confidence": "M",
+      "detail": "Structured copy of the vector read points so the runtime fit probe can replay them.",
+      "field": "forward_curve_read_points",
+      "page": 3,
+      "scope": "Kingbright WP813ID high efficiency red; 25 C typical forward curve read points (I in A, V in V) used for the IS/N/RS fit",
+      "sources": [
+        "https://www.kingbrightusa.com/images/catalog/SPEC/WP813ID.pdf"
+      ],
+      "unit": null,
+      "value": {
+        "points_a_v": [
+          [
+            0.000805,
+            1.624
+          ],
+          [
+            0.001073,
+            1.649
+          ],
+          [
+            0.001343,
+            1.669
+          ],
+          [
+            0.00188,
+            1.699
+          ],
+          [
+            0.002418,
+            1.719
+          ],
+          [
+            0.003223,
+            1.744
+          ],
+          [
+            0.005102,
+            1.799
+          ],
+          [
+            0.007488,
+            1.849
+          ],
+          [
+            0.008563,
+            1.873
+          ],
+          [
+            0.009905,
+            1.893
+          ],
+          [
+            0.011248,
+            1.908
+          ],
+          [
+            0.012324,
+            1.923
+          ],
+          [
+            0.014975,
+            1.948
+          ],
+          [
+            0.019004,
+            1.993
+          ],
+          [
+            0.02008,
+            2.003
+          ],
+          [
+            0.020583,
+            2.012
+          ],
+          [
+            0.02112,
+            2.017
+          ],
+          [
+            0.021927,
+            2.027
+          ],
+          [
+            0.024077,
+            2.047
+          ],
+          [
+            0.025956,
+            2.067
+          ],
+          [
+            0.028073,
+            2.092
+          ],
+          [
+            0.029953,
+            2.112
+          ]
+        ],
+        "temperature_c": 25
+      }
+    },
+    "test_current": 0.000805,
+    "tolerance": 0.08120000000000001,
+    "tolerance_rule": "max(0.05*V, 0.015 V) for a M-confidence datasheet read"
+  },
+  "entry_id": "OHM-075",
+  "entry_research_sha256": "ce3caf694584beacc66c57bcfd64262201f8b03283a803f4a69b1112dd532247",
+  "limits": "Replays the fitted forward model at one of the sourced curve read points and requires the read voltage within the read uncertainty. Together with the other fit points and the maximum-VF bound this validates the fit over the plotted range at 25 C; it does not validate temperature, reverse behavior, capacitance or ratings.",
+  "netlist_sha256": "109f7a8c0dbe328430237d0b3ac0058289c7b5cc34573abb7b8db620362ee393",
+  "observation_status": "ran",
+  "observed": 1.623198,
+  "output_sha256": "d332563c336fd5f8b62adf005efc2d6cdfa32ebb34b5378b2d62b4b9db380ee8",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T08:22:40Z",
+  "raw_output": "runtime-bench-output/OHM-075-op-forward_fit1/output.txt",
+  "recipe_source_sha256": "ce3727529f8fdcc2c29375232c80c5b18f35eb697e7e58e0b7a4c4cbff12387d",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "variant": "forward_fit1",
+  "version_file": "runtime-bench-output/OHM-075-op-forward_fit1/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sat Oct 10 21:32:36 UTC 2026\n******\n",
+  "version_sha256": "7f444023b0e5851d50a26bf40338ca29665b10988154a0ff2d662d918ab83fc3"
+}
