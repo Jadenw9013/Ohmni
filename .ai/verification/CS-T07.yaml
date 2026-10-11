@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "id": "CS-T07",
+  "task": "CS-T07",
+  "scope": "COMPONENT-SYNTHESIS-1",
+  "status": "PASSED",
+  "commit": "34329f24128e303ef10aa35e44cd663b43ac784c",
+  "verified_at": "2026-10-10",
+  "summary": "Checked electrical profiles, explicit required-fact and applicable-rule admission gates, typed ComponentSpec construction and exact-publication activation with persistent active discovery.",
+  "commands": [
+    {
+      "command": "python -m pytest tests/test_component_admission.py tests/test_component_store.py -q",
+      "result": "PASS",
+      "tests": 25
+    },
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "PASS",
+      "tests": 2220,
+      "skipped": 82,
+      "deselected": 52
+    },
+    {
+      "command": "python scripts/verify.py integration",
+      "result": "PASS",
+      "tests": 27,
+      "skipped": 7,
+      "deselected": 2320
+    },
+    {
+      "command": "node --test apps/web/tests/*.test.mjs",
+      "result": "PASS",
+      "tests": 1043
+    },
+    {
+      "command": "python -m ruff check src/ohmni/domain/component_admission.py src/ohmni/domain/__init__.py src/ohmni/catalog/component_store.py tests/test_component_admission.py tests/test_component_store.py",
+      "result": "PASS"
+    },
+    {
+      "command": "python scripts/ai_state.py validate",
+      "result": "PASS"
+    }
+  ],
+  "acceptance": {
+    "required_fact_matrix": "Every supported profile enumerates common, per-terminal and profile-specific facts; all-pass rules over incomplete facts remain blocked.",
+    "applicable_rules": "Every required rule must be present and PASS; required NOT_APPLICABLE and any applicable FAIL/UNKNOWN outcome block admission.",
+    "unsupported_behaviour": "The unsupported profile cannot support electrical or routing capabilities, and requested unsupported capabilities prevent a ComponentSpec from entering active discovery.",
+    "catalog_honesty": "Admission constructs a separate synthesized ComponentSpec from checked claims; existing JSON catalog fixtures and their evidence statuses are unchanged.",
+    "activation": "ComponentStore reruns the gate from a validated AdmissionRequest, requires its exact publication digest, persists the decision immutably and excludes revoked revisions from active discovery."
+  },
+  "limitations": [
+    "Supported electrical construction is bounded to two-terminal passive and I2C peripheral profiles; other behavior remains explicitly unsupported.",
+    "Simulation capability remains unsupported; this task does not create or validate a SPICE model.",
+    "Admission establishes checked source/profile/asset-rule coverage for the requested capabilities, not IPC compliance, soldering yield or bench operation."
+  ]
+}

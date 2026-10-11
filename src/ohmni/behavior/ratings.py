@@ -7,6 +7,7 @@ neither a generic class number nor a model fit establishes a reference rating.
 from __future__ import annotations
 
 import math
+import re
 from dataclasses import dataclass, field
 
 from pydantic import BaseModel, ConfigDict
@@ -78,7 +79,7 @@ def _observations(component, point):
     return values
 
 
-def _scoped_checks(component, point, context, overrides=None, transient=None):
+def _scoped_checks(component, point, context, overrides=None, transient=None, ac=None):
     values = _observations(component, point)
     values.update(overrides or {})
     if context.ambient_c is not None:
@@ -241,23 +242,27 @@ def _scoped_checks(component, point, context, overrides=None, transient=None):
             b.add("wiper voltage", "max(abs(v_W-v_A), abs(v_W-v_B)) <= v_max", ("v_max",))
     elif cls in {"BEH-CAP-CERAMIC", "BEH-CAP-MICA"}:
         b.add("rated DC voltage", "abs(v_T1-v_T2) <= vr", ("vr",))
+    elif cls == "BEH-CAP-FILM" and "derate_pct_per_k" in values:
+        _film_checks(values, b, "abs(v_T1-v_T2)", "DC voltage")
     elif cls == "BEH-CAP-EDLC":
         derive("v", "v_P-v_N")
         if "Tamb" in values:
             b.add("ambient within rated range", "Tamb <= 85", ())
             b.add("rated voltage at ambient", "v <= (vr if Tamb <= 65 else vr_85)", ("vr", "vr_85"))
         else:
-            row = b.add("rated voltage at ambient", "v <= vr_85 if v <= vr else False", ("vr", "vr_85"))
-            if row["status"] == "violation" and values.get("v", 0) <= values.get("vr", 0):
-                row.update(status="unknown", reason="Between the 85 C and 65 C voltage ratings; ambient temperature decides")
+            # Without an ambient even the 85 C rating may not apply; only the highest rating proves a violation.
+            upper_only("rated voltage at ambient", "v <= vr", ("vr", "vr_85"),
+                       "Ambient temperature is not declared; the ratings are stated at 65 C and 85 C")
         upper_only("polarity", "v >= 0", (), "No reverse-voltage rating is sourced; reverse bias is never accepted",
                    violation_only=False)
     elif cls == "BEH-CAP-TANT":
         derive("v", "v_A-v_K")
         derive("vrev_limit", "vrev_25 if Tamb <= 25 else vrev_85 if Tamb <= 85 else vrev_125")
-        b.add("rated voltage", "v <= vr", ("vr",),
-              "Rated voltage is stated at 85 C; higher-temperature category voltage is not bound"
-              if values.get("Tamb", 0) > 85 else None)
+        hot = _tant_temperature_reason(values)
+        if hot:
+            upper_only("rated voltage", "v <= vr", ("vr",), hot)
+        else:
+            b.add("rated voltage", "v <= vr", ("vr",))
         guidance = b.add("application voltage (manufacturer MnO2 derating recommendation)", "v <= vapp_85", ("vapp_85",))
         if guidance["status"] == "violation":
             # A recommendation for low-impedance circuits, not a rating: above it is a judgment call, not a failure.
@@ -343,6 +348,8 @@ def _scoped_checks(component, point, context, overrides=None, transient=None):
         _schottky_runaway(values, b, thermal)
     if transient is not None:
         _transient_checks(component, values, b, thermal, upper_only, transient)
+    if ac is not None:
+        _ac_checks(component, values, b, thermal, upper_only, *ac)
     return b
 
 
@@ -454,14 +461,41 @@ def _transient_checks(component, values, b, thermal, upper_only, w):
         if v is not None:
             stat("peak_v", peak([abs(x) for x in v]))
             b.add("peak voltage", "peak_v <= vr", ("vr",))
+    elif cls == "BEH-CAP-FILM" and "derate_pct_per_k" in values:
+        v = w.diff("T1", "T2")
+        if v is not None:
+            stat("peak_v", peak([abs(x) for x in v]))
+            if "Tamb" in values:
+                # A waveform may carry AC, whose derating starts at +75 C: a pass needs the 75 C-derated limit,
+                # a violation only the 85 C-derated (DC) one; in between the waveform's content decides.
+                b.add("ambient within rated range", "t_min <= Tamb <= t_max", ("t_min", "t_max"))
+                row = b.add("peak voltage (derated above 75 C for AC)",
+                            "peak_v <= vr*(1 - derate_pct_per_k/100*max(Tamb-75,0))", ("vr", "derate_pct_per_k"))
+                if row["status"] == "violation":
+                    try:
+                        dc_violation = not evaluate("peak_v <= vr*(1 - derate_pct_per_k/100*max(Tamb-85,0))", values)
+                    except ExpressionUnavailable:
+                        dc_violation = False
+                    if not dc_violation:
+                        row.update(status="unknown", reason="Between the AC (+75 C) and DC (+85 C) derated limits; "
+                                   "whether the waveform carries AC decides")
+            else:
+                _film_checks(values, b, "peak_v", "peak voltage", ac=True)
+            # The 200 V rms AC rating (50 Hz, 1.4 x Urms + UDC <= Ur), its +75 C derating and the pulse dV/dt
+            # limit are not evaluated on a waveform, so a transient run can never pass on the peak alone.
+            b.checks.append({"name": "AC voltage, AC derating and pulse dV/dt", "expression": "", "spec_names": [],
+                             "evidence": {}, "status": "unknown",
+                             "reason": "The AC rating is evaluated only in an AC run at 50 Hz; pulse dV/dt is not bound"})
     elif cls == "BEH-CAP-TANT":
         v, i = w.diff("A", "K"), w.series("i", "A")
         if v is not None:
             stat("peak_v", peak(v))
             stat("peak_rev", peak([-x for x in v]))
-            b.add("peak forward voltage", "peak_v <= vr", ("vr",),
-                  "Rated voltage is stated at 85 C; higher-temperature category voltage is not bound"
-                  if values.get("Tamb", 0) > 85 else None)
+            hot = _tant_temperature_reason(values)
+            if hot:
+                upper_only("peak forward voltage", "peak_v <= vr", ("vr",), hot)
+            else:
+                b.add("peak forward voltage", "peak_v <= vr", ("vr",))
             if values["peak_rev"] > 0:
                 limit = ("vrev_25 if Tamb <= 25 else vrev_85 if Tamb <= 85 else vrev_125"
                          if "Tamb" in values else "vrev_125")
@@ -469,7 +503,11 @@ def _transient_checks(component, values, b, thermal, upper_only, w):
                       ("vrev_25", "vrev_85", "vrev_125"),
                       None if "Tamb" in values or values["peak_rev"] > values.get("vrev_25", 0) else
                       "Ambient temperature selects the reverse limit")
-        if i is not None and "irip_max" in values:
+        if i is not None and "irip_max" in values and _tant_esr_bound(component):
+            stat("ripple_rms", w.ac_rms(i))
+            b.add("ripple current", "ripple_rms <= irip_max", ("irip_max",),
+                  _tant_esr_bound(component))
+        elif i is not None and "irip_max" in values:
             stat("ripple_rms", w.ac_rms(i))
             freq = stat("ripple_frequency", w.frequency(i))
             if freq is None or freq > 100e3:
@@ -485,9 +523,8 @@ def _transient_checks(component, values, b, thermal, upper_only, w):
             if "Tamb" in values:
                 b.add("peak voltage at ambient", "peak_v <= (vr if Tamb <= 65 else vr_85)", ("vr", "vr_85"))
             else:
-                row = b.add("peak voltage at ambient", "peak_v <= vr_85 if peak_v <= vr else False", ("vr", "vr_85"))
-                if row["status"] == "violation" and values["peak_v"] <= values.get("vr", 0):
-                    row.update(status="unknown", reason="Between the 85 C and 65 C ratings; ambient decides")
+                upper_only("peak voltage at ambient", "peak_v <= vr", ("vr", "vr_85"),
+                           "Ambient temperature is not declared; the ratings are stated at 65 C and 85 C")
         if i is not None and "ipk" in values:
             stat("peak_i", peak([abs(x) for x in i]))
             b.add("peak current", "peak_i <= ipk", ("ipk",))
@@ -665,6 +702,13 @@ def evaluate_ratings(compilation, result, registry, context=None):
         curve = parse_transient(result["stdout"], analysis="tran", limit=100000)
         if not curve.time_s or len(curve.time_s) < 2:
             curve = None
+    ac_points = None
+    if (result.get("status") == "ran" and result.get("analysis") == "ac" and result.get("operating_point")
+            and (result.get("ac") or {}).get("points")):
+        ac_points = result["ac"]["points"]
+        ran_op = True  # the AC run solves and prints the same operating point first
+    linear = circuit_is_linear(compilation.netlist or "")
+    duals = _dual_solve_inputs(compilation, result) if ac_points is not None else {}
     ran = ran_op or curve is not None
     components = []
     all_faults = []
@@ -680,6 +724,10 @@ def evaluate_ratings(compilation, result, registry, context=None):
             for row in b.checks:
                 if not row["name"].startswith(("peak", "average", "ripple", "RMS", "winding", "contact RMS")):
                     row["name"] += " (time average)"
+            reason = None
+        elif ac_points is not None:
+            b = _scoped_checks(component, result.get("operating_point"), context,
+                               ac=(_ac_window(component, ac_points), linear, duals.get(component.ref)))
             reason = None
         else:
             b = _scoped_checks(component, result.get("operating_point") if ran_op else None, context)
@@ -726,6 +774,9 @@ def evaluate_ratings(compilation, result, registry, context=None):
                 "context": context.model_dump(mode="json"),
                 "basis": ("transient: time-averaged operating values plus peak, RMS, ripple and pulse statistics "
                           f"over {curve.time_s[0]:g} to {curve.time_s[-1]:g} s") if window is not None
+                else ("operating point plus sinusoidal steady state at "
+                      + ", ".join(f"{p['frequency_hz']:g} Hz" for p in ac_points)
+                      + ("" if linear else " (small-signal linearization)")) if ac_points is not None
                 else "operating point" if ran_op else None,
             }
         )
@@ -805,3 +856,529 @@ def apply_open_faults(compilation, faults):
     return compilation.model_copy(
         update={"netlist": deck, "netlist_sha256": hashlib.sha256(deck.encode()).hexdigest()}
     )
+
+
+_NONLINEAR_ELEMENTS = set("BDQMJASWUNPZ")
+_CONTROLLED_ELEMENTS = set("EFGHB")
+
+
+def _logical_lines(netlist):
+    logical = []
+    for line in netlist.splitlines():
+        text = line.strip()
+        if text.startswith("+") and logical:
+            logical[-1] += " " + text[1:]
+        elif text and not text.startswith("*"):
+            logical.append(text)
+    return logical
+
+
+def circuit_is_linear(netlist):
+    """True only when no element can make the response depend on amplitude.
+
+    Semiconductors, switches, behavioural and digital elements are nonlinear, and so is any element
+    whose value reads a circuit voltage or current (the saturating inductor card does).
+    """
+    for text in _logical_lines(netlist):
+        if text.startswith("."):
+            if re.match(r"\.(?:include|inc|lib)\b", text, re.IGNORECASE):
+                return False  # an unscanned file could hold anything
+            continue
+        if (text[0].upper() in _NONLINEAR_ELEMENTS or re.search(r"(?<![\w.])[iv]\s*\(", text, re.IGNORECASE)
+                or re.search(r"\bpoly\s*\(", text, re.IGNORECASE)):
+            return False
+    return bool(netlist.strip())
+
+
+def circuit_is_passive(netlist):
+    """Linear, with no controlled (E, F, G, H) or behavioural (B) source (D064).
+
+    A conservative filter only: element values are not inspected (a negative resistance would still
+    pass). The dual-solve bound itself needs no passivity of the network; it uses the extracted Re(Zth),
+    which it requires to be positive, and the real tantalum's own passivity.
+    """
+    return circuit_is_linear(netlist) and not any(
+        not text.startswith(".") and text[0].upper() in _CONTROLLED_ELEMENTS for text in _logical_lines(netlist))
+
+
+def _terminal_node(component, role, lines):
+    """The netlist node a role's element side connects to: behind its 0 V current probe when it has one."""
+    probe = component.role_current_probes.get(role)
+    if probe is None:
+        return component.role_nodes.get(role, "").lower() or None
+    found = lines.get(probe.lower(), [])
+    if len(found) != 1 or len(found[0]) != 4 or found[0][1].lower() != component.role_nodes.get(role, "").lower():
+        return None
+    try:
+        if float(found[0][3]) != 0.0:
+            return None
+    except ValueError:
+        return None
+    return found[0][2].lower()
+
+
+def esr_dual_solve_elements(compilation):
+    """Series-ESR elements the AC adapter shorts in its second solve (D064).
+
+    A card qualifies only when its netlist is the T491 topology Resr -> (Cb || Rlk), checked by node:
+    the *_esr resistor runs from the anode terminal to an internal node that only the card's three
+    elements touch, and the capacitor and the *_lk resistor both run from that node to the cathode
+    terminal. The resistor's value must be the part's sourced 100 kHz maximum ESR. Anything else is
+    left out, and its ripple rows stay unknown.
+    """
+    lines = {}
+    for text in _logical_lines(compilation.netlist or ""):
+        if not text.startswith("."):
+            lines.setdefault(text.split()[0].lower(), []).append(text.split())
+    names = []
+    for component in compilation.components:
+        if not _tant_esr_bound(component):
+            continue
+        elements = [n.lower() for n in component.element_names]
+        esr = [n for n in elements if n.startswith("r") and n.endswith("_esr")]
+        cap = [n for n in elements if n.startswith("c")]
+        leak = [n for n in elements if n.startswith("r") and n.endswith("_lk")]
+        if len(elements) != 3 or len(esr) != 1 or len(cap) != 1 or len(leak) != 1:
+            continue
+        found = [lines.get(n, []) for n in (esr[0], cap[0], leak[0])]
+        if any(len(f) != 1 or len(f[0]) != 4 for f in found):
+            continue
+        (r_line,), (c_line,), (l_line,) = found
+        anode, cathode = _terminal_node(component, "A", lines), _terminal_node(component, "K", lines)
+        mid = r_line[2].lower()
+        if (anode is None or cathode is None or r_line[1].lower() != anode or mid in {anode, cathode}
+                or {c_line[1].lower(), c_line[2].lower()} != {mid, cathode}
+                or {l_line[1].lower(), l_line[2].lower()} != {mid, cathode}):
+            continue
+        others = [t for key, group in lines.items() if key not in {esr[0], cap[0], leak[0]}
+                  for tokens in group for t in tokens[1:]]
+        if mid in {t.lower() for t in others}:
+            continue
+        evidence = component.parameter_evidence.get("esr_max", {})
+        esr_max = component.parameters.get("esr_max")
+        if esr_max is None or "100 kHz" not in evidence.get("scope", ""):
+            continue
+        try:
+            value = float(r_line[3])
+        except ValueError:
+            continue
+        if math.isclose(value, esr_max, rel_tol=1e-12):
+            names.append(next(n for n in component.element_names if n.lower() == esr[0]))
+    return names
+
+
+def short_elements(netlist, names):
+    """The same netlist with each named two-terminal element replaced by a 0 V source (an exact short)."""
+    wanted = {n.lower() for n in names}
+    out, seen = [], set()
+    existing = {text.split()[0].lower() for text in _logical_lines(netlist) if not text.startswith(".")}
+    for line in netlist.splitlines():
+        tokens = line.split()
+        if tokens and tokens[0].lower() in wanted:
+            short = f"Vohmni_short_{tokens[0]}"
+            if tokens[0].lower() in seen or len(tokens) != 4 or short.lower() in existing:
+                raise ValueError(f"Cannot short element {tokens[0]}")
+            seen.add(tokens[0].lower())
+            out.append(f"{short} {tokens[1]} {tokens[2]} 0")
+        else:
+            out.append(line)
+    if seen != wanted:
+        raise ValueError("Element to short not found: " + ", ".join(sorted(wanted - seen)))
+    return "\n".join(out) + ("\n" if netlist.endswith("\n") else "")
+
+
+def _ac_window(component, points):
+    """RMS phasors per role at each solved frequency; None when any terminal is missing."""
+    window = []
+    for point in points:
+        voltages, currents = {}, {}
+        for role, node in component.role_nodes.items():
+            if node == "0":
+                voltages[role] = 0j
+            elif node.lower() in point["node_voltages"]:
+                voltages[role] = complex(*point["node_voltages"][node.lower()])
+            else:
+                return None
+        for role, probe in component.role_current_probes.items():
+            if probe.lower() not in point["branch_currents"]:
+                return None
+            currents[role] = complex(*point["branch_currents"][probe.lower()])
+        window.append((point["frequency_hz"], voltages, currents))
+    return window
+
+
+RIPPLE_RATING_HZ = 100e3
+
+
+def _sha256(text):
+    import hashlib
+
+    return hashlib.sha256(text.encode()).hexdigest()
+
+
+def _dual_solve_inputs(compilation, result):
+    """Per bound tantalum: the ESR-shorted second AC solve of D064, or why it is unavailable.
+
+    The second solve is accepted only when it provably belongs to this compilation: the first solve's
+    netlist hash is this compilation's netlist, the shorted elements are exactly the ones this
+    compilation qualifies, and the second solve's netlist hash is this netlist with those elements shorted.
+    """
+    bound = [c for c in compilation.components if _tant_esr_bound(c)]
+    if not bound:
+        return {}
+    variant = (result.get("ac") or {}).get("esr_zero")
+    netlist = compilation.netlist or ""
+    reason = None
+    tantalums = [c for c in compilation.components if c.behavior_id == "BEH-CAP-TANT"]
+    if len(tantalums) != 1:
+        reason = ("the circuit has more than one tantalum capacitor, and each one's unsourced 100 kHz "
+                  "impedance changes the circuit the other sees")
+    elif not variant or variant.get("status") != "ran" or not variant.get("points"):
+        reason = "no ESR-shorted second solve is available for this run"
+    elif not circuit_is_passive(netlist):
+        reason = "the circuit has a controlled or behavioural source or a nonlinear element"
+    else:
+        elements = esr_dual_solve_elements(compilation)
+        try:
+            expected = _sha256(short_elements(netlist, elements)) if elements else None
+        except ValueError:
+            expected = None
+        if result.get("netlist_sha256") != _sha256(netlist) or variant.get("source_netlist_sha256") != _sha256(netlist):
+            reason = "the first solve's netlist hash does not match this compilation"
+        elif not elements or list(variant.get("elements") or []) != elements:
+            reason = "the second solve did not short exactly this compilation's qualifying ESR elements"
+        elif expected is None or variant.get("netlist_sha256") != expected:
+            reason = "the second solve's netlist hash is not this netlist with those ESR elements shorted"
+    out = {}
+    for component in bound:
+        shorted = {n.lower() for n in (variant or {}).get("elements", [])}
+        if reason is None and not shorted & {n.lower() for n in component.element_names}:
+            out[component.ref] = {"reason": "this card's series ESR was not shorted in the second solve"}
+        elif reason is None:
+            window = _ac_window(component, variant["points"])
+            out[component.ref] = ({"window": window} if window is not None else
+                                  {"reason": "the second solve did not print this part's terminal values"})
+        else:
+            out[component.ref] = {"reason": reason}
+    return out
+
+
+# Guards on the port extraction (policy, not numerics): the ESR must move the current measurably, and the
+# circuit seen by the part must have real resistance.
+_DUAL_MIN_SEPARATION = 1e-6
+_DUAL_MIN_RESISTIVE_FRACTION = 1e-3
+# Error allowed on every solved phasor, relative to its magnitude. Printing with 15 significant digits
+# contributes at most 5e-15; the rest is an allowance for the solver's floating-point error. Every
+# derived quantity is carried as a complex disk (centre, radius) from these inputs, so the bound below
+# is an upper bound for every input within this error.
+_DUAL_PHASOR_ERROR = 1e-9
+
+
+def _disk_add(a, b):
+    return a[0] + b[0], a[1] + b[1]
+
+
+def _disk_neg(a):
+    return -a[0], a[1]
+
+
+def _disk_mul(a, b):
+    return a[0] * b[0], abs(a[0]) * b[1] + abs(b[0]) * a[1] + a[1] * b[1]
+
+
+def _disk_div(a, b):
+    """a / b as a disk containing every quotient; None when b's disk contains zero."""
+    centre, radius = b
+    gap = abs(centre) ** 2 - radius ** 2
+    if abs(centre) <= radius or gap <= 0:
+        return None
+    return _disk_mul(a, (centre.conjugate() / gap, radius / gap))
+
+
+def _dual_solve_bound(frequency, v, i, dual, values, linear):
+    """Upper bound on the real tantalum's RMS current at the rating point, or (None, reason) (D064).
+
+    The two solves differ only in the part's series ESR, so they give two points of the linear port
+    relation V = Vth - Zth*I seen by the part. A real part is passive: whatever its ESR, capacitance or
+    ESL at 100 kHz, its impedance Z has Re(Z) >= 0, so |I| = |Vth| / |Zth + Z| <= |Vth| / Re(Zth). No
+    lower bound exists (the part's capacitance at 100 kHz and its ESL are unsourced), so this proves a
+    pass only.
+    """
+    if not linear:
+        return None, "the circuit is nonlinear"
+    if values.get("Tamb") != 25:
+        return None, "the ambient is not declared as exactly 25 C, the temperature of the rating and ESR"
+    if dual is None or dual.get("reason"):
+        return None, (dual or {}).get("reason", "no ESR-shorted second solve is available")
+    zero = next(((zv, zi) for f, zv, zi in dual["window"] if math.isclose(f, frequency, rel_tol=1e-9)), None)
+    if zero is None or "A" not in i or "A" not in zero[1] or not {"A", "K"} <= set(zero[0]):
+        return None, "the second solve has no value of this part at this frequency"
+    eta = _DUAL_PHASOR_ERROR
+    v1 = (v["A"] - v["K"], eta * (abs(v["A"]) + abs(v["K"])))
+    i1 = (i["A"], eta * abs(i["A"]))
+    v0 = (zero[0]["A"] - zero[0]["K"], eta * (abs(zero[0]["A"]) + abs(zero[0]["K"])))
+    i0 = (zero[1]["A"], eta * abs(zero[1]["A"]))
+    if i0[0] == 0 or i1[0] == 0 or abs(i1[0] - i0[0]) < _DUAL_MIN_SEPARATION * max(abs(i0[0]), abs(i1[0])):
+        return None, "shorting the ESR does not measurably change this part's current, so its port is not resolved"
+    # The two solves must differ by exactly the bound series resistance, seen from the part's own terminals:
+    # real part equal to the maximum ESR and no reactive difference.
+    step = v1[0] / i1[0] - v0[0] / i0[0]
+    scale = max(abs(v1[0] / i1[0]), abs(v0[0] / i0[0]), values["esr_max"])
+    if abs(step - values["esr_max"]) > 1e-6 * scale:
+        return None, "the two solves do not differ by exactly the bound maximum ESR"
+    delta_i = _disk_add(i1, _disk_neg(i0))
+    zth = _disk_neg(_disk_div(_disk_add(v1, _disk_neg(v0)), delta_i) or (0j, math.inf))
+    if not math.isfinite(zth[1]):
+        return None, "the port is not resolved within the solver's numerical error"
+    vth = _disk_add(v1, _disk_mul(zth, i1))
+    if zth[0].real < _DUAL_MIN_RESISTIVE_FRACTION * abs(zth[0]):
+        return None, ("the circuit seen by the part has almost no resistance, so the part's unsourced 100 kHz "
+                      "capacitance and ESL decide its current")
+    resistance = zth[0].real - zth[1]
+    if resistance <= 0:
+        return None, "the port is not resolved within the solver's numerical error"
+    bound = (abs(vth[0]) + vth[1]) / resistance
+    if bound < abs(i1[0]):
+        return None, "the extracted port does not reproduce the solved current"
+    return bound, None
+
+
+def _ac_checks(component, values, b, thermal, upper_only, window, linear, dual=None):
+    """Sinusoidal steady state: DC operating values plus RMS phasors at each requested frequency.
+
+    For a sine on a DC bias the peak is |DC| + sqrt(2)*|AC| and the RMS is sqrt(DC^2 + |AC|^2); both
+    are exact for a linear circuit. With any nonlinear element they come from a small-signal
+    linearization, so no row computed from them can prove a pass or a violation.
+    """
+    cls = component.behavior_id
+    if window is None:
+        b.checks.append({"name": "AC checks", "expression": "", "spec_names": [], "evidence": {},
+                         "status": "unknown",
+                         "reason": "AC run did not print every terminal voltage and probe current of this component"})
+        return
+    root2 = math.sqrt(2.0)
+    needed = [f"v_{role}" for role in component.role_nodes] + [f"i_{role}" for role in component.role_current_probes]
+    if any(name not in values for name in needed):
+        b.checks.append({"name": "AC checks", "expression": "", "spec_names": [], "evidence": {},
+                         "status": "unknown",
+                         "reason": "The operating point did not print every terminal value of this component, so "
+                                   "the DC part of its AC swing is unknown"})
+        return
+
+    def dc(kind, role):
+        return values[f"{kind}_{role}"]
+
+    for frequency, v, i in window:
+        tag = f" at {frequency:g} Hz"
+        rows = []
+
+        def add(name, expression, parameters, reason=None, violation_only=False, _rows=rows, _tag=tag):
+            row = (upper_only(name + _tag, expression, parameters, reason) if violation_only
+                   else b.add(name + _tag, expression, parameters, reason))
+            _rows.append(row)
+            return row
+
+        def stat(name, value):
+            values[name] = value
+            return value
+
+        def across(a, z, _v=v):
+            return dc("v", a) - dc("v", z), _v[a] - _v[z]
+
+        key = f"{frequency:g}".replace(".", "p").replace("+", "")
+        if cls in {"BEH-CAP-CERAMIC", "BEH-CAP-MICA"} and {"T1", "T2"} <= set(v):
+            vdc, vac = across("T1", "T2")
+            stat(f"vpk_{key}", abs(vdc) + root2 * abs(vac))
+            add("peak voltage (DC plus AC peak)", f"vpk_{key} <= vr", ("vr",))
+        elif cls == "BEH-CAP-TANT" and {"A", "K"} <= set(v):
+            vdc, vac = across("A", "K")
+            stat(f"vpk_{key}", vdc + root2 * abs(vac))
+            stat(f"vrev_{key}", -(vdc - root2 * abs(vac)))
+            hot = _tant_temperature_reason(values)
+            add("peak forward voltage (DC plus AC peak)", f"vpk_{key} <= vr", ("vr",), hot,
+                violation_only=bool(hot))
+            if values[f"vrev_{key}"] > 0:
+                add("peak reverse voltage (transient limit)", f"vrev_{key} <= vrev_125", ("vrev_125",),
+                    "A sine reverses every cycle; only transient reverse limits are sourced, so a repeated "
+                    "reverse swing can prove a violation but not a pass", violation_only=True)
+            if "A" in i and "irip_max" in values:
+                stat(f"irip_{key}", abs(i["A"]))
+                # The rating's own conditions come from its sourced scope (KEMET T491: "100 kHz, 25 C;
+                # RMS current"), not from the class: a record that does not state them is never exact.
+                scope = component.parameter_evidence.get("irip_max", {}).get("scope", "")
+                stated = "100 kHz" in scope and "25 C" in scope and "RMS" in scope
+                exact = stated and math.isclose(frequency, RIPPLE_RATING_HZ, rel_tol=1e-9)
+                bound = _tant_esr_bound(component)
+                limit, why = (_dual_solve_bound(frequency, v, i, dual, values, linear) if bound and exact
+                              and "esr_max" in values else (None, None))
+                if limit is not None:
+                    # D064: the dual solve bounds the real part's current from above; a pass is proven, a
+                    # violation never (the bound is not the current).
+                    stat(f"irip_bound_{key}", limit)
+                    heating = "esr_max" in values and "pd_max" in values
+                    for name, expression, parameters in (
+                            ("ripple current (rating frequency)", f"irip_bound_{key} <= irip_max", ("irip_max",)),
+                            *([("ESR heating with the maximum 100 kHz ESR",
+                                f"irip_bound_{key}**2*esr_max <= pd_max", ("esr_max", "pd_max"))]
+                              if heating else [])):
+                        row = add(name, expression, parameters, thermal)
+                        if row["status"] == "violation":
+                            row.update(status="unknown", reason=(
+                                f"Upper bound {limit:.6g} A on the real part's current (dual solve, D064) is above "
+                                "the limit; with the part's 100 kHz capacitance and ESL unsourced there is no "
+                                "lower bound, so no violation is proven"))
+                elif bound:
+                    reason = bound + (f"; the dual solve of D064 does not apply: {why}" if why else "")
+                    add("ripple current" + (" (rating frequency)" if exact else ""), f"irip_{key} <= irip_max",
+                        ("irip_max",), reason)
+                    if exact and "esr_max" in values and "pd_max" in values:
+                        add("ESR heating with the maximum 100 kHz ESR", f"irip_{key}**2*esr_max <= pd_max",
+                            ("esr_max", "pd_max"), reason)
+                elif not stated:
+                    add("ripple current", f"irip_{key} <= irip_max", ("irip_max",),
+                        "The ripple rating's frequency, temperature or RMS basis is not stated in its source "
+                        "scope", violation_only=True)
+                elif exact and values.get("Tamb") is not None and values["Tamb"] <= 25:
+                    add("ripple current (rating frequency)", f"irip_{key} <= irip_max", ("irip_max",), thermal)
+                    if ("esr_max" in values and "pd_max" in values
+                            and "100 kHz" in component.parameter_evidence.get("esr_max", {}).get("scope", "")):
+                        stat(f"pesr_{key}", values[f"irip_{key}"] ** 2 * values["esr_max"])
+                        add("ESR heating with the maximum 100 kHz ESR", f"pesr_{key} <= pd_max",
+                            ("esr_max", "pd_max"), thermal)
+                elif exact:
+                    add("ripple current (rating frequency)", f"irip_{key} <= irip_max", ("irip_max",),
+                        "The ripple rating is stated at 25 C; a higher or undeclared ambient needs the "
+                        "temperature multiplier, which is not bound", violation_only=True)
+                elif frequency < RIPPLE_RATING_HZ:
+                    add("ripple current", f"irip_{key} <= irip_max", ("irip_max",),
+                        "Below 100 kHz the allowed ripple is lower by an unbound frequency multiplier",
+                        violation_only=True)
+                else:
+                    add("ripple current", f"irip_{key} <= irip_max", ("irip_max",),
+                        "Ripple rating is stated at 100 kHz; the frequency multiplier is not bound")
+        elif cls == "BEH-CAP-FILM" and "derate_pct_per_k" in values and {"T1", "T2"} <= set(v):
+            vdc, vac = across("T1", "T2")
+            stat(f"vpk_{key}", abs(vdc) + root2 * abs(vac))
+            stat(f"vac_{key}", abs(vac))
+            rows.append(_film_checks(values, b, f"vpk_{key}", "peak voltage (DC plus AC peak)", tag, ac=True))
+            if math.isclose(frequency, 50.0, rel_tol=1e-9):
+                # WIMA MKS 4 p42: AC rating at 50 Hz with 1.4 x Urms + UDC <= Ur, derated from +75 C.
+                stat(f"acdc_{key}", 1.4 * abs(vac) + abs(vdc))
+                derate = "(1 - derate_pct_per_k/100*max(Tamb-75,0))"
+                add("AC voltage rule (1.4 x Urms + UDC)", f"acdc_{key} <= vr*{derate} and vac_{key} <= vac*{derate}",
+                    ("vr", "vac", "derate_pct_per_k"),
+                    None if "Tamb" in values else "The AC rating derates above 75 C; ambient temperature is needed")
+            else:
+                add("AC voltage", f"vac_{key} <= vac", ("vac",),
+                    "The AC voltage rating is stated at 50 Hz; the permitted AC voltage at other frequencies is not bound",
+                    violation_only=True)
+        elif cls == "BEH-CAP-EDLC" and {"P", "N"} <= set(v):
+            vdc, vac = across("P", "N")
+            stat(f"vpk_{key}", vdc + root2 * abs(vac))
+            if "Tamb" in values and values["Tamb"] <= 85:
+                add("peak voltage at ambient (DC plus AC peak)", f"vpk_{key} <= (vr if Tamb <= 65 else vr_85)",
+                    ("vr", "vr_85"))
+            else:
+                # vr is the sourced 65 C rating and vr_85 the 85 C rating (KYOCERA AVX SCC); nothing is rated
+                # above 85 C, and without an ambient only the highest rating can prove a violation.
+                add("peak voltage at ambient (DC plus AC peak)", f"vpk_{key} <= vr", ("vr", "vr_85"),
+                    "Ambient temperature is undeclared or above the 85 C rated range", violation_only=True)
+            if "P" in i and "ipk" in values:
+                stat(f"ipk_{key}", abs(dc("i", "P")) + root2 * abs(i["P"]))
+                add("peak current (DC plus AC peak)", f"ipk_{key} <= ipk", ("ipk",))
+        elif cls == "BEH-MAG-INDUCTOR" and "A" in i:
+            stat(f"irms_{key}", math.hypot(dc("i", "A"), abs(i["A"])))
+            stat(f"ipk_{key}", abs(dc("i", "A")) + root2 * abs(i["A"]))
+            if "irms" in values:
+                add("RMS heating current (DC plus AC)", f"irms_{key} <= irms", ("irms",), thermal)
+            if "isat" in values:
+                add("peak current against saturation (DC plus AC peak)", f"ipk_{key} <= isat", ("isat",))
+        elif cls == "BEH-MAG-CMC":
+            for winding in ("A", "B"):
+                role = winding + "1"
+                if role in i:
+                    stat(f"irms_{winding}_{key}", math.hypot(dc("i", role), abs(i[role])))
+                    add(f"winding {winding} RMS current (DC plus AC)", f"irms_{winding}_{key} <= irated",
+                        ("irated",), thermal)
+        elif cls == "BEH-RES-FIXED" and {"A", "B"} <= set(v) and "A" in i:
+            vdc, vac = across("A", "B")
+            stat(f"vpk_{key}", abs(vdc) + root2 * abs(vac))
+            stat(f"p_{key}", vdc * dc("i", "A") + (vac * i["A"].conjugate()).real)
+            if "u_limit" in values:
+                add("peak working voltage (DC plus AC peak)", f"vpk_{key} <= u_limit", ("u_limit",))
+            if {"p_rated", "t_end", "t_knee"} <= set(values):
+                add("average power (DC plus AC)", f"p_{key} <= P_allowed", ("p_rated", "t_end", "t_knee"), thermal)
+        elif cls == "BEH-RES-POT" and {"A", "B"} <= set(v):
+            vdc, vac = across("A", "B")
+            stat(f"vpk_{key}", abs(vdc) + root2 * abs(vac))
+            add("peak track voltage (DC plus AC peak)", f"vpk_{key} <= v_max", ("v_max",))
+        elif cls.startswith("BEH-CON-"):
+            current = next((k for k in ("i_rated", "i_nom") if k in values), None)
+            for role in sorted(i) if current else ():
+                stat(f"irms_{role}_{key}", math.hypot(dc("i", role), abs(i[role])))
+                if current == "i_nom":
+                    add(f"contact RMS current {role} (DC plus AC)", f"irms_{role}_{key} <= i_nom", ("i_nom",),
+                        "Nominal current applies only up to the derating knee, which is not bound",
+                        violation_only=True)
+                else:
+                    add(f"contact RMS current {role} (DC plus AC)", f"irms_{role}_{key} <= {current}",
+                        (current,), thermal)
+        if not rows:
+            # No translated AC rating for this class (or none of its limits is bound): the AC swing is
+            # not checked, so the part cannot pass on its operating-point rows alone.
+            b.checks.append({"name": "AC swing" + tag, "expression": "", "spec_names": [], "evidence": {},
+                             "status": "unknown",
+                             "reason": "No sinusoidal steady-state rating check is defined for this part; its "
+                                       "operating-point rows do not cover the AC swing"})
+        if not linear:
+            for row in rows:
+                if row["status"] != "unknown" or not row["reason"]:
+                    row.update(status="unknown", reason=(
+                        "Small-signal linearization: the circuit has a nonlinear element, so the AC amplitude "
+                        "is exact only for small ripple" + (f" (computed result: {row['status']})"
+                                                           if row["status"] != "unknown" else "")))
+
+
+def _film_checks(values, b, observed, label, tag="", ac=False):
+    """WIMA MKS 4 rating: Ur derated 1.25 %/K from +85 C for DC and from +75 C for AC voltages, within
+    -55..+125 C (D059). With no declared ambient only the full rating can prove a violation (D060)."""
+    start = 75 if ac else 85
+    if "Tamb" in values:
+        b.add("ambient within rated range" + tag, "t_min <= Tamb <= t_max", ("t_min", "t_max"))
+        return b.add(label + f" (derated above {start} C)" + tag,
+                     f"{observed} <= vr*(1 - derate_pct_per_k/100*max(Tamb-{start},0))", ("vr", "derate_pct_per_k"))
+    row = b.add(label + f" (derated above {start} C)" + tag, f"{observed} <= vr", ("vr", "derate_pct_per_k"))
+    if row["status"] == "within_limit":
+        row.update(status="unknown", reason="Ambient temperature is not declared; the rating is derated above "
+                   f"+{start} C and ends at +125 C")
+    return row
+
+
+def _tant_temperature_reason(values):
+    """The T491 rated voltage is stated up to 85 C ("rated VDC at 85 C"); above it, or with no declared
+    ambient, the rating can only prove a violation."""
+    if "Tamb" not in values:
+        return "Ambient temperature is not declared; the rated voltage applies only up to 85 C"
+    if values["Tamb"] > 85:
+        return "Rated voltage is stated at 85 C; higher-temperature category voltage is not bound"
+    return None
+
+
+def _tant_esr_bound(component):
+    """Reason text when a tantalum card carries any series element beyond its capacitance and leakage (D063).
+
+    The T491 cards carry the sourced maximum ESR (D058). Real ESR, capacitance tolerance and the omitted
+    ESL each move the part's current in a direction the card cannot bound, so with any such element its
+    own ripple and ESR-heating rows prove neither a pass nor a violation. Fails closed: an element of
+    any other name counts too, so only the pure Cb || Rlk card keeps the ideal-card rules.
+    """
+    if component.behavior_id != "BEH-CAP-TANT":
+        return None
+    names = [name.lower() for name in component.element_names]
+    capacitors = [n for n in names if n.startswith("c")]
+    leaks = [n for n in names if n.startswith("r") and n.endswith("_lk")]
+    if names and len(capacitors) == 1 and len(leaks) == 1 and len(names) == 2:
+        return None
+    return ("The card carries a series ESR (the sourced 100 kHz maximum), and the real ESR, capacitance "
+            "tolerance and omitted ESL move the part's current in directions the card cannot bound, so this "
+            "row proves neither a pass nor a violation; parallel parts' currents are not bounded either (D063)")

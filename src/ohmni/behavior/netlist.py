@@ -23,6 +23,7 @@ from .loader import (
     _validate_anchor,
 )
 from .runtime_models import (
+    ACExcitation,
     BehaviorCompilation,
     BehaviorSelection,
     CompiledComponent,
@@ -201,6 +202,73 @@ def validate_mosfet_cards(text):
             raise ValueError("every MOSFET card must explicitly set IS=0")
 
 
+_DEFINITION = re.compile(r"^\s*\.(?:model|subckt)\s+([^\s(]+)", re.IGNORECASE)
+
+
+def _definitions(lines):
+    """Name -> normalized definition text (the whole .model card or .subckt body)."""
+    found, current, body = {}, None, []
+    logical = []
+    for line in lines:
+        if line.lstrip().startswith("+") and logical:
+            logical[-1] += " " + line.lstrip()[1:]
+        elif not line.lstrip().startswith("*"):
+            logical.append(line)
+    for line in logical:
+        match = _DEFINITION.match(line)
+        if current is not None:
+            body.append(line)
+            if re.match(r"\s*\.ends\b", line, re.IGNORECASE):
+                found[current] = " ".join(" ".join(body).lower().split())
+                current = None
+        elif match and line.lstrip().lower().startswith(".subckt"):
+            current, body = match[1].lower(), [line]
+        elif match:
+            found[match[1].lower()] = " ".join(line.lower().split())
+    return found
+
+
+def scope_shared_definitions(blocks, assets, problems, outer_nodes=()):
+    """Give each part its own copy of a model or subcircuit name that two parts define.
+
+    ngspice 42 silently keeps the first of two same-named ``.model`` cards, so a second part of the
+    same class would run on the first part's sourced parameters. Within one part's fragment every
+    use of a shared name is renamed with that part's netlist token; a single-part circuit and parts
+    whose names do not collide are emitted unchanged. Hash-locked inline assets are never rewritten:
+    two assets may share a name only with an identical definition, and a part may not redefine one.
+    Renaming inside one fragment is consistent, so it can only break a reference that leaves the
+    fragment: a shared name that is also a circuit or probe node is refused rather than renamed.
+    A ``.model`` card nested in a ``.subckt`` body is local to that subcircuit in ngspice and is
+    covered by scoping the subcircuit name itself.
+    """
+    owners = {}
+    for index, (_, _, fragment_lines, _) in enumerate(blocks):
+        for name in _definitions(fragment_lines):
+            owners.setdefault(name, set()).add(index)
+    asset_texts = {}
+    for _, text in sorted(assets.items()):
+        for name, definition in _definitions(text.splitlines()).items():
+            asset_texts.setdefault(name, set()).add(definition)
+    for name, texts in sorted(asset_texts.items()):
+        if len(texts) > 1 or name in owners:
+            problems.append(f"Model name {name} has more than one definition; ngspice would silently use one card")
+    shared = sorted(name for name, indices in owners.items() if len(indices) > 1)
+    outer = {node.lower() for node in outer_nodes}
+    outer |= {token.lower() for _, probes, _, _ in blocks for line in probes for token in line.split()[1:3]}
+    for name in shared:
+        if name in outer:
+            problems.append(f"Model name {name} is also a circuit node; renaming it per part is not safe")
+    scoped = []
+    for token, probes, fragment_lines, strays in blocks:
+        own = [name for name in shared if name in _definitions(fragment_lines)]
+        if own:
+            pattern = re.compile(r"(?<![\w.$])(" + "|".join(re.escape(n) for n in own) + r")(?![\w.$])", re.IGNORECASE)
+            fragment_lines = [line if line.lstrip().startswith("*")
+                              else pattern.sub(rf"\g<1>_{token}", line) for line in fragment_lines]
+        scoped.append((token, probes, fragment_lines, strays))
+    return scoped
+
+
 def pin_ground_strays(roles, parameters, parameter_evidence, mapping, reference):
     """Physical pin capacitance returns only to ground, never across pin pairs."""
     lines = []
@@ -256,7 +324,7 @@ def _parameter_defaults(behavior, recipe, values, evidence, root):
 
 def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: RuntimeRecipes,
                     selections: dict[str, BehaviorSelection] | None = None, *, analysis="op",
-                    excitations: list[DCExcitation | PWLExcitation] | None = None,
+                    excitations: list[DCExcitation | PWLExcitation | ACExcitation] | None = None,
                     measure_currents: bool = False):
     selections = selections or {}
     problems, components, limitations = [], [], []
@@ -272,6 +340,7 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
     root = registry.repo_root or _find_repo_root(registry.directory)
     source_count = 0
     source_elements = {}
+    blocks = []
     excitations = sorted(excitations or [], key=lambda x: x.model_dump_json())
     for i, net in enumerate(sorted(circuit.nets, key=lambda n: n.name), 1):
         if net.external_source:
@@ -290,20 +359,31 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
             problems.append("An excitation refers to a net outside the circuit")
             continue
         pair = frozenset((source.positive_net, source.negative_net))
-        value = source.points[0].value if isinstance(source, PWLExcitation) else source.value
+        if isinstance(source, ACExcitation) != (analysis == "ac"):
+            problems.append("AC excitations are used only by, and required for, AC analysis")
+            continue
+        value = (source.points[0].value if isinstance(source, PWLExcitation)
+                 else source.ac_rms if isinstance(source, ACExcitation) else source.value)
         if value.unit.value == "V" and pair in voltage_pairs:
             problems.append("Duplicate ideal voltage sources on the same nets are not allowed")
             continue
         if value.unit.value == "V":
             voltage_pairs.add(pair)
         prefix = "V" if value.unit.value == "V" else "I"
-        stimulus = ("PWL(" + " ".join(f"{_number(p.time.value)} {_number(p.value.value)}" for p in source.points) + ")"
-                    if isinstance(source, PWLExcitation) else f"DC {_number(value.value)}")
+        if isinstance(source, PWLExcitation):
+            stimulus = "PWL(" + " ".join(f"{_number(p.time.value)} {_number(p.value.value)}" for p in source.points) + ")"
+        elif isinstance(source, ACExcitation):
+            # The AC magnitude is the sine's RMS value, so every AC result is an RMS phasor.
+            stimulus = f"DC {_number(source.dc.value if source.dc else 0.0)} AC {_number(value.value)}"
+        else:
+            stimulus = f"DC {_number(value.value)}"
         lines.append(f"{prefix}excitation{i} {nodes[source.positive_net]} {nodes[source.negative_net]} {stimulus}")
         source_count += 1
         limitations.append("Explicit ideal test excitation; a stimulus is not physical source capability or evidence")
     if not source_count:
         problems.append("No explicit external DC source or test excitation is connected")
+    if analysis == "ac" and not any(isinstance(x, ACExcitation) for x in excitations):
+        problems.append("AC analysis needs at least one explicit AC excitation")
     for i, component in enumerate(sorted(circuit.components, key=lambda c: c.ref), 1):
         selected = selections.get(component.ref)
         candidates = [r for r in recipes.entries.values()
@@ -325,7 +405,9 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
                 raise ValueError("catalog part is not bound to this reference model")
             if component.package != recipe.package:
                 raise ValueError("selected package differs from the bound reference model")
-            if analysis not in recipe.supported_analyses:
+            # AC analysis linearizes the same model around its operating point, so a binding
+            # validated for the operating point is the scope it runs in (D057).
+            if (analysis if analysis != "ac" else "op") not in recipe.supported_analyses:
                 raise ValueError(f"analysis {analysis} is not supported by this binding")
             role_fact = None
             if recipe.pin_role_fact:
@@ -434,9 +516,7 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
                 raise ValueError("regulator binding must preserve its authored nodeset")
             validate_mosfet_cards(fragment)
             strays = pin_ground_strays(roles, values, evidence, recipe.ground_strays, f"c{i}")
-            lines.extend(probes)
-            lines.extend(fragment.splitlines())
-            lines.extend(strays)
+            blocks.append((f"c{i}", probes, fragment.splitlines(), strays))
             components.append(CompiledComponent(
                 ref=component.ref, entry_id=entry_id, behavior_id=recipe.behavior_id,
                 reference_part=recipe.reference_part,
@@ -453,6 +533,10 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
             ))
         except (ValueError, KeyError) as exc:
             problems.append(f"{component.ref} ({entry_id}): {exc}")
+    for _, probes, fragment_lines, strays in scope_shared_definitions(blocks, assets, problems, nodes.values()):
+        lines.extend(probes)
+        lines.extend(fragment_lines)
+        lines.extend(strays)
     lines.extend(text for _, text in sorted(assets.items()))
     lines.append(".end")
     netlist = None if problems else "\n".join(lines) + "\n"

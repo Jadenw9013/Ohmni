@@ -26,6 +26,7 @@ where = ["src"]
 [tool.setuptools.package-data]
 ohmni = [
     "catalog/data/parts/*.json",
+    "catalog/data/synthesis/*.json",
     "behavior/reference-circuits.json",
     "behavior/data/*.json",
     "behavior/data/classes/*.json",
@@ -39,6 +40,7 @@ addopts = "-q --strict-markers -m 'not integration and not slow_integration'"
 markers = [
     "kicad: tests requiring an installed KiCad CLI",
     "integration: bounded external-tool integration tests",
+    "simulation_integration: tests requiring the version-gated ngspice 42 executable",
     "slow_integration: full golden routing/fabrication integration tests",
     "corpus: tests needing the pinned manufacturer source corpus (scripts/acquire_corpus.py)",
 ]

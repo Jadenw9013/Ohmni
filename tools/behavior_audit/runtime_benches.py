@@ -3,11 +3,18 @@
 from __future__ import annotations
 
 import json
+import math
 import re
 
 from ohmni.behavior.loader import BehaviorRegistry
 from ohmni.behavior.netlist import _facts, compile_circuit, load_recipes
-from ohmni.behavior.runtime_models import BehaviorSelection, DCExcitation, PWLExcitation, PWLPoint
+from ohmni.behavior.runtime_models import (
+    ACExcitation,
+    BehaviorSelection,
+    DCExcitation,
+    PWLExcitation,
+    PWLPoint,
+)
 from ohmni.domain.circuit import CircuitComponent, CircuitIR, ExternalSource, Net, PinRef
 from ohmni.domain.units import Quantity, ValueRange
 from ohmni.eda.simulation import NgspiceAdapter, parse_operating_point, parse_transient
@@ -36,6 +43,8 @@ def run_runtime_recipes(audit, entry_ids=None):
                   run_mosfet_recipes if behavior == "BEH-TRN-MOSFET" else
                   run_ic_recipes if behavior in ic_classes else run_dc_probes)
         runners.setdefault(runner, []).append(key)
+        if behavior in AC_PROBES:
+            runners.setdefault(run_ac_probes, []).append(key)
     return [receipt for runner, keys in runners.items() for receipt in runner(audit, keys)]
 
 
@@ -287,6 +296,8 @@ def runtime_receipt_errors(audit, entry_id):
         return tvs_calibration_errors(audit) + dc_probe_receipt_errors(audit, entry_id)
     if behavior in TRAN_PROBES:
         return tran_probe_receipt_errors(audit, entry_id)
+    if behavior in AC_PROBES:
+        return dc_probe_receipt_errors(audit, entry_id) + ac_probe_receipt_errors(audit, entry_id)
     if behavior == "BEH-RES-FIXED":
         return resistor_receipt_errors(audit, entry_id)
     if behavior == "BEH-TRN-MOSFET":
@@ -312,6 +323,15 @@ PATH_PROBES = {
     "BEH-CON-HDMI": _CONTACT, "BEH-CON-MODJACK": _CONTACT, "BEH-CON-SDSOCKET": _CONTACT,
     "BEH-CON-AUDIO": [(None, "TIP", ("M_TIP",), ("rc",), "rated")],
     "BEH-CON-DCJACK": [(None, "CENTER", ("M_TIP",), ("rc",), "rated")],
+    "BEH-CON-XT": _CONTACT,
+    # D069: each winding's maximum DCR; the linear model makes the amplitude irrelevant, so the stimulus is the
+    # part's own sourced typical ISAT (N1), labelled as a stimulus, never as a rating.
+    "BEH-MAG-XFMR-FLYBACK": [("n1", "N1_DOT", ("N1_RET",), ("rp",), "isat"),
+                             ("n2", "N2_DOT", ("N2_RET",), ("rs",), "isat"),
+                             ("n3", "N3_DOT", ("N3_RET",), ("ra",), "isat")],
+    # D069: chip-side windings and line-side paths (transformer plus choke) at the sourced 8 mA OCL test bias.
+    "BEH-MAG-ETHMAG": [("td", "TD_P", ("TD_N",), ("r_chip",), "bias"), ("rd", "RD_P", ("RD_N",), ("r_chip",), "bias"),
+                       ("tx", "TX_LP", ("TX_LN",), ("r_line",), "bias"), ("rx", "RX_LP", ("RX_LN",), ("r_line",), "bias")],
 }
 PATH_TOLERANCE = 1e-3
 
@@ -335,6 +355,10 @@ def _path_probe(recipe, values, evidence, variant):
             current, facts = values[current_alias], (alias, current_alias)
         elif rule == "unbalance":
             current, facts = values["idc_unbalance"], (alias, "idc_unbalance")
+        elif rule == "isat":
+            current, facts = values["isat"], (alias, "isat")
+        elif rule == "bias":
+            current, facts = values["idc_bias"], (alias, "idc_bias")
         elif rule == "leak":
             current, facts = values["vr"] / resistance, (alias, "vr")
         else:  # pot: the locked B1 deck's 10 V across the track
@@ -733,6 +757,8 @@ def _dc_probe_receipt_errors(audit, entry_id, variant):
 TRAN_PROBES = {
     "BEH-CAP-MICA": {"current": 1e-5, "ramp": 1e-9, "time": 5e-6, "tstop": 6e-6, "tstep": "1n",
                      "tolerance": 1e-3, "contract": "BEH-CAP-MICA/B1"},
+    "BEH-CAP-FILM": {"current": 1e-3, "ramp": 1e-9, "time": 1e-3, "tstop": 1.1e-3, "tstep": "1u",
+                     "tolerance": 1e-3, "contract": "BEH-CAP-FILM/B1"},
     "BEH-CAP-EDLC": {"current": None, "ramp": 1e-3, "time": 10.0, "tstop": 10.5, "tstep": "0.01",
                      "tolerance": 1e-2, "contract": "BEH-CAP-EDLC/B3"},
 }
@@ -835,5 +861,113 @@ def tran_probe_receipt_errors(audit, entry_id):
     version_path = audit._safe_run_path(receipt["version_file"])
     version = version_path.read_text(encoding="utf-8")
     if _sha_bytes(version_path.read_bytes()) != receipt["version_sha256"] or version != receipt["version_output"] or not re.search(r"\bngspice-42\b", version):
+        errors.append(f"{entry_id}: ngspice 42 evidence invalid")
+    return errors
+
+
+# Impedance checks at the frequency a capacitor's ESR is sourced at (D058). A small AC current into
+# the bound part gives V = I*Z; Z must equal ESR + (Rleak || 1/(j*w*C)) computed from the part's own
+# sourced facts. The circuit is linear, so the amplitude does not matter.
+AC_PROBES = {
+    "BEH-CAP-TANT": {"frequency": 100e3, "current": 1e-3, "tolerance": 1e-4, "facts": ("esr_max", "value", "vr", "ileak")},
+}
+
+
+def ac_probe_definition(audit, entry_id):
+    registry = BehaviorRegistry(repo_root=audit.root)
+    recipes = load_recipes(registry, audit.root)
+    recipe = recipes.entries[entry_id]
+    values, evidence = _facts(registry.entry(entry_id), recipe)
+    spec = AC_PROBES[recipe.behavior_id]
+    if spec["frequency"] != 100e3 or "100 kHz" not in evidence["esr_max"]["scope"]:
+        raise ValueError("ESR probe frequency must be the frequency the ESR is sourced at")
+    omega = 2 * math.pi * spec["frequency"]
+    leak = values["vr"] / values["ileak"]
+    expected = values["esr_max"] + 1 / (1 / leak + 1j * omega * values["value"])
+    roles = {"A": "anode", "K": "return"}
+    nets = [Net(name=name, kind="ground" if name == "return" else "signal",
+                connections=[PinRef(component="U1", pin=pin) for pin, role in recipe.terminal_roles.items() if roles[role] == name])
+            for name in ("anode", "return")]
+    circuit = CircuitIR(ir_id=f"runtime-{entry_id}-ac", name="Source-scoped ESR impedance probe",
+                        components=[CircuitComponent(ref="U1", part_id=entry_id, package=recipe.package)], nets=nets)
+    excitation = ACExcitation(positive_net="return", negative_net="anode", ac_rms=Quantity(value=spec["current"], unit="A"))
+    compiled = compile_circuit(circuit, registry, recipes, {"U1": BehaviorSelection(entry_id=entry_id)},
+                               analysis="ac", excitations=[excitation])
+    tolerance = abs(expected) * spec["tolerance"]
+    identity = {"run_id": audit._state()["run_id"], "entry_id": entry_id, "analysis": "ac",
+                "netlist_sha256": compiled.netlist_sha256, "circuit_hash": compiled.circuit_hash,
+                "recipe_source_sha256": recipes.source.document_sha256,
+                "entry_research_sha256": registry.entry(entry_id).research.source.document_sha256,
+                "class_source_sha256": registry.behavior_class(recipe.behavior_id).source.document_sha256,
+                "ac_points_hz": [spec["frequency"]],
+                "comparison": [{"kind": "absolute", "observable": "impedance_real", "expected": expected.real,
+                                "tolerance": tolerance},
+                               {"kind": "absolute", "observable": "impedance_imag", "expected": expected.imag,
+                                "tolerance": tolerance}],
+                "current": spec["current"],
+                "source_facts": {name: evidence[name] for name in spec["facts"]},
+                "limits": ("Small-signal impedance at the 100 kHz frequency the maximum ESR is sourced at, against "
+                           "ESR + (Rleak || 1/(j*w*C)) from the part's own sourced facts. Shows the bound card carries "
+                           "the sourced ESR; does not validate ESR at other frequencies or temperatures, ESL, or any rating.")}
+    return compiled, identity
+
+
+def _ac_observation(compiled, identity, output):
+    from ohmni.eda.simulation import parse_ac
+
+    parsed = parse_ac(output, identity["ac_points_hz"])
+    if len(parsed["points"]) != 1:
+        return [None, None]
+    phasor = parsed["points"][0]["node_voltages"].get(compiled.node_names["anode"].lower())
+    if phasor is None:
+        return [None, None]
+    impedance = complex(*phasor) / identity["current"]
+    return [impedance.real, impedance.imag]
+
+
+def run_ac_probes(audit, entry_ids):
+    receipts = []
+    for entry_id in entry_ids:
+        compiled, identity = ac_probe_definition(audit, entry_id)
+        relative = f"runtime-bench-output/{entry_id}-ac"
+        result = NgspiceAdapter().behavior_circuit(compiled, work_dir=audit.run_dir / relative, analysis="ac",
+                                                   ac_points_hz=identity["ac_points_hz"])
+        output = result.get("stdout", "") + result.get("stderr", "")
+        observed = _ac_observation(compiled, identity, output) if result["status"] == "ran" else [None, None]
+        passed = result["status"] == "ran" and all(
+            _dc_matches(row, value) for row, value in zip(identity["comparison"], observed, strict=True))
+        _atomic_text(audit.run_dir / relative / "output.txt", output)
+        _atomic_text(audit.run_dir / relative / "version.txt", result["version_output"])
+        receipt = dict(identity, ran_at=_now(), run_status="passed" if passed else "failed",
+                       observation_status=result["status"], observed=observed,
+                       product_code_path=result.get("product_code_path"), problems=result["problems"],
+                       output_sha256=_sha_bytes(output.encode()), raw_output=relative + "/output.txt",
+                       version_output=result["version_output"], version_file=relative + "/version.txt",
+                       version_sha256=_sha_bytes(result["version_output"].encode()))
+        _atomic_json(audit.run_dir / f"runtime-bench-results/{entry_id}-ac.json", receipt)
+        receipts.append(receipt)
+    return receipts
+
+
+def ac_probe_receipt_errors(audit, entry_id):
+    compiled, identity = ac_probe_definition(audit, entry_id)
+    path = audit.run_dir / f"runtime-bench-results/{entry_id}-ac.json"
+    if not path.is_file():
+        return [f"{entry_id}: runtime AC receipt missing"]
+    receipt = json.loads(path.read_text())
+    required = dict(identity, observation_status="ran", run_status="passed",
+                    product_code_path="ohmni.eda.simulation.NgspiceAdapter.behavior_circuit")
+    errors = [f"{entry_id}: stale or invalid runtime AC {k}" for k, v in required.items() if receipt.get(k) != v]
+    output_path = audit._safe_run_path(receipt["raw_output"])
+    observed = _ac_observation(compiled, identity, output_path.read_text(encoding="utf-8"))
+    if observed != receipt.get("observed") or not all(
+            _dc_matches(row, value) for row, value in zip(identity["comparison"], observed, strict=True)):
+        errors.append(f"{entry_id}: raw AC observation does not meet its sourced contract")
+    if _sha_bytes(output_path.read_bytes()) != receipt["output_sha256"]:
+        errors.append(f"{entry_id}: raw AC output changed")
+    version_path = audit._safe_run_path(receipt["version_file"])
+    version = version_path.read_text(encoding="utf-8")
+    if (_sha_bytes(version_path.read_bytes()) != receipt["version_sha256"] or version != receipt["version_output"]
+            or not re.search(r"\bngspice-42\b", version)):
         errors.append(f"{entry_id}: ngspice 42 evidence invalid")
     return errors

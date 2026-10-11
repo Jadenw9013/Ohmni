@@ -1,0 +1,542 @@
+"""AC analysis: explicit RMS excitations, marker-attributed phasors, exact ripple checks, honest linearity."""
+
+import math
+import shutil
+from pathlib import Path
+
+import pytest
+
+from ohmni.application.component_behavior import ComponentBehaviorService, DesignRunRequest
+from ohmni.behavior.loader import BehaviorRegistry
+from ohmni.behavior.netlist import compile_circuit, load_recipes
+from ohmni.behavior.ratings import (
+    RatingContext,
+    circuit_is_linear,
+    evaluate_ratings,
+    short_elements,
+)
+from ohmni.behavior.runtime_models import ACExcitation, BehaviorSelection, DCExcitation
+from ohmni.domain.circuit import CircuitComponent, CircuitIR, ExternalSource, Net, PinRef
+from ohmni.domain.units import Quantity, ValueRange
+from ohmni.eda.simulation import NgspiceAdapter, ac_deck, parse_ac
+
+ROOT = Path(__file__).resolve().parents[1]
+live_only = pytest.mark.skipif(shutil.which("ngspice") is None, reason="ngspice 42 is not installed")
+
+
+@pytest.fixture(scope="module")
+def registry():
+    return BehaviorRegistry(repo_root=ROOT)
+
+
+@pytest.fixture(scope="module")
+def recipes(registry):
+    return load_recipes(registry, ROOT)
+
+
+def tantalum(recipes, extra=()):
+    package = recipes.entries["OHM-033"].package
+    return CircuitIR(ir_id="tant", name="Tantalum ripple", components=[
+        CircuitComponent(ref="R1", part_id="GENERIC_RESISTOR", package="0603", value=Quantity.ohms(1000)),
+        CircuitComponent(ref="C1", part_id="OHM-033", package=package), *extra,
+    ], nets=[
+        Net(name="vin", kind="power", connections=[PinRef(component="R1", pin="1")],
+            external_source=ExternalSource(kind="bench_supply", voltage=ValueRange.exact(Quantity.volts(5)))),
+        Net(name="rail", connections=[PinRef(component="R1", pin="2"), PinRef(component="C1", pin="1")]),
+        Net(name="gnd", kind="ground", connections=[PinRef(component="C1", pin="2")]),
+    ])
+
+
+def ripple(amps):
+    return ACExcitation(positive_net="gnd", negative_net="rail", ac_rms=Quantity.amps(amps))
+
+
+def test_ac_excitation_is_explicit_rms_and_only_for_ac(registry, recipes):
+    with pytest.raises(ValueError):
+        ACExcitation(positive_net="a", negative_net="b", ac_rms=Quantity.amps(0))
+    with pytest.raises(ValueError):
+        ACExcitation(positive_net="a", negative_net="b", ac_rms=Quantity.amps(1), dc=Quantity.volts(1))
+    choice = {"C1": BehaviorSelection(entry_id="OHM-033")}
+    ok = compile_circuit(tantalum(recipes), registry, recipes, choice, analysis="ac", excitations=[ripple(0.1)])
+    assert ok.runnable and "Iexcitation1 0 n2 DC 0 AC 0.10000000000000001" in ok.netlist
+    op = compile_circuit(tantalum(recipes), registry, recipes, choice, analysis="op", excitations=[ripple(0.1)])
+    assert not op.runnable and any("AC excitations" in p for p in op.problems)
+    bare = compile_circuit(tantalum(recipes), registry, recipes, choice, analysis="ac")
+    assert any("needs at least one explicit AC excitation" in p for p in bare.problems)
+    dc = DCExcitation(positive_net="gnd", negative_net="rail", value=Quantity.amps(0.01))
+    assert not compile_circuit(tantalum(recipes), registry, recipes, choice, analysis="ac",
+                               excitations=[ripple(0.1), dc]).runnable
+
+
+def test_ac_deck_marks_every_point_and_refuses_unsafe_requests():
+    deck = ac_deck("t\nR1 a 0 1k\n.end\n", nodes=["a"], currents=["vp"], points_hz=[100e3],
+                   sweep=(10.0, 1e6, 5), sweep_nodes=["a"])
+    assert ("echo OHMNI_AC_POINT 0\nac lin 1 100000 100000\n"
+            "print real(frequency) real(v(a)) imag(v(a)) real(i(vp)) imag(i(vp))") in deck
+    assert deck.rstrip().endswith(".endc\n.end".rstrip()) and "ac dec 5 10 1000000" in deck
+    for bad in ([], [0.0], [math.inf], [1.0] * 9):
+        with pytest.raises(ValueError):
+            ac_deck("t\n.end\n", nodes=[], currents=[], points_hz=bad)
+    with pytest.raises(ValueError):
+        ac_deck("t\n.ac lin 1 1 1\n.end\n", nodes=[], currents=[], points_hz=[1.0])
+    with pytest.raises(ValueError):
+        ac_deck("t\n.end\n", nodes=["a"], currents=[], points_hz=[1.0], sweep=(1.0, 1e9, 50), sweep_nodes=["a"])
+
+
+def test_parse_ac_attributes_values_by_marker_and_joins_column_groups():
+    lines = [
+        "OHMNI_AC_OP", "v(a) = 5.0", "i(vp) = -1e-3",
+        "OHMNI_AC_POINT 1", "real(frequency) = 1000.0", "real(v(a)) = 1.0", "imag(v(a)) = 2.0",
+        "OHMNI_AC_POINT 0", "real(frequency) = 100.0", "real(v(a)) = 3.0",  # no imaginary part: dropped
+        "OHMNI_AC_SWEEP",
+        "Index   frequency       vm(a)           vp(a)",
+        "0\t1.0e+01\t1.0\t0.0", "1\t1.0e+02\t0.5\t-1.0",
+        "Index   frequency       vm(b)           vp(b)",
+        "0\t1.0e+01\t2.0\t0.0", "1\t1.0e+02\t1.5\t0.5",
+    ]
+    out = "\n".join(lines)
+    parsed = parse_ac(out, [100.0, 1000.0])
+    assert parsed["operating_point"].node_voltages["a"].value == 5.0
+    assert [p["frequency_hz"] for p in parsed["points"]] == [1000.0]
+    assert parsed["points"][0]["node_voltages"] == {"a": [1.0, 2.0]}
+    series = {s["name"]: s for s in parsed["sweep"]["series"]}
+    assert series["v(b)"]["magnitude"] == [2.0, 1.5]
+    assert series["v(a)"]["phase_deg"][1] == pytest.approx(math.degrees(-1.0))
+
+
+def test_linearity_is_read_from_the_netlist_not_the_class():
+    assert circuit_is_linear("t\nR1 a b 1k\nC1 b 0 1u\nvprobe a x 0\n.model X D\n.end")
+    assert not circuit_is_linear("t\nR1 a b 1k\nD1 b 0 DX\n.end")
+    assert not circuit_is_linear("t\nLnl x b L='L0*(1/cosh(i(Lnl)/ia))'\n.end")
+    assert not circuit_is_linear("")
+
+
+def fake_result(compilation, i_rms, freq=100e3, v_ac=0.01):
+    c1 = next(c for c in compilation.components if c.ref == "C1")
+    r1 = next(c for c in compilation.components if c.ref == "R1")
+    probe_c, probe_r = c1.role_current_probes["A"].lower(), r1.role_current_probes["A"].lower()
+    rail, vin = c1.role_nodes["A"].lower(), r1.role_nodes["A"].lower()
+    k_probe = c1.role_current_probes["K"].lower()
+    a_probe_r = r1.role_current_probes["B"].lower()
+    op = {"node_voltages": {rail: {"value": 5.0, "unit": "V"}, vin: {"value": 5.0, "unit": "V"}},
+          "branch_currents": {p: {"value": 0.0, "unit": "A"} for p in (probe_c, probe_r, k_probe, a_probe_r)}}
+    point = {"frequency_hz": freq, "node_voltages": {rail: [v_ac, 0.0], vin: [0.0, 0.0]},
+             "branch_currents": {probe_c: [i_rms, 0.0], k_probe: [-i_rms, 0.0],
+                                 probe_r: [0.0, 0.0], a_probe_r: [0.0, 0.0]}}
+    return {"status": "ran", "analysis": "ac", "operating_point": op, "ac": {"points": [point]}}
+
+
+def rows(ratings, ref="C1"):
+    return {r["name"]: r for c in ratings["components"] if c["ref"] == ref for r in c["reference_checks"]}
+
+
+def ideal_copy(compiled):
+    """The same compilation with the C1 card reduced to Cb || Rlk (no series ESR element)."""
+    return compiled.model_copy(update={"components": [
+        c.model_copy(update={"element_names": [n for n in c.element_names if not n.lower().endswith("_esr")]})
+        if c.ref == "C1" else c for c in compiled.components]})
+
+
+def test_tantalum_ripple_is_exact_only_at_the_rating_frequency_and_temperature(registry, recipes):
+    """Ideal-card rules (D057): exact at 100 kHz and 25 C or below, violation-only below, unknown above."""
+    choice = {"C1": BehaviorSelection(entry_id="OHM-033")}
+    compiled = ideal_copy(compile_circuit(tantalum(recipes), registry, recipes, choice, analysis="ac",
+                                          excitations=[ripple(0.1)], measure_currents=True))
+    cool = RatingContext(ambient_c=25, thermal_scope_confirmed=True)
+    within = rows(evaluate_ratings(compiled, fake_result(compiled, 0.150), registry, cool))
+    assert within["ripple current (rating frequency) at 100000 Hz"]["status"] == "within_limit"
+    assert within["ESR heating with the maximum 100 kHz ESR at 100000 Hz"]["status"] == "within_limit"
+    over = rows(evaluate_ratings(compiled, fake_result(compiled, 0.170), registry, cool))
+    assert over["ripple current (rating frequency) at 100000 Hz"]["status"] == "violation"
+    # 0.170^2 * 3 ohm = 86.7 mW > 75 mW: the same sourced limit, seen as ESR heating.
+    assert over["ESR heating with the maximum 100 kHz ESR at 100000 Hz"]["status"] == "violation"
+    warm = rows(evaluate_ratings(compiled, fake_result(compiled, 0.150), registry,
+                                 RatingContext(ambient_c=60, thermal_scope_confirmed=True)))
+    assert warm["ripple current (rating frequency) at 100000 Hz"]["status"] == "unknown"
+    low = rows(evaluate_ratings(compiled, fake_result(compiled, 0.150, freq=10e3), registry, cool))
+    assert low["ripple current at 10000 Hz"]["status"] == "unknown"
+    low_over = rows(evaluate_ratings(compiled, fake_result(compiled, 0.170, freq=10e3), registry, cool))
+    assert low_over["ripple current at 10000 Hz"]["status"] == "violation"
+    high = rows(evaluate_ratings(compiled, fake_result(compiled, 0.010, freq=1e6), registry, cool))
+    assert high["ripple current at 1e+06 Hz"]["status"] == "unknown"
+
+
+def test_nonlinear_circuit_never_proves_an_ac_result(registry, recipes):
+    choice = {"C1": BehaviorSelection(entry_id="OHM-033")}
+    compiled = ideal_copy(compile_circuit(tantalum(recipes), registry, recipes, choice, analysis="ac",
+                                          excitations=[ripple(0.1)], measure_currents=True))
+    nonlinear = compiled.model_copy(update={"netlist": compiled.netlist.replace(".end", "D9 n1 0 DX\n.end")})
+    cool = RatingContext(ambient_c=25, thermal_scope_confirmed=True)
+    for amps, computed in ((0.150, "within_limit"), (0.170, "violation")):
+        result = rows(evaluate_ratings(nonlinear, fake_result(nonlinear, amps), registry, cool))
+        row = result["ripple current (rating frequency) at 100000 Hz"]
+        assert row["status"] == "unknown" and "linearization" in row["reason"] and computed in row["reason"]
+    # The operating-point rows of the same run are unaffected.
+    assert result["rated voltage"]["status"] == "within_limit"
+
+
+@pytest.mark.integration
+@live_only
+def test_design_ac_run_checks_ripple_against_the_sourced_rating(tmp_path):
+    service = ComponentBehaviorService(ROOT, tmp_path, adapter=NgspiceAdapter())
+    recipes = service.recipes
+
+    def run(amps):
+        return service.run_design(DesignRunRequest(
+            circuit=tantalum(recipes), selections={"C1": {"entry_id": "OHM-033"}}, analysis="ac",
+            excitations=[ripple(amps)], ac_points_hz=[1e5], rating_context={"ambient_c": 25, "thermal_scope_confirmed": True},
+            ac_sweep={"start_hz": 100, "stop_hz": 1e6, "points_per_decade": 2}))
+
+    ok, hot = run(0.1), run(0.2)
+    assert ok["status"] == hot["status"] == "ran"
+    # The dual solve (D064) bounds the bound-ESR card's current from above: a pass at 0.1 A, and at 0.2 A
+    # an upper bound above the limit, which proves nothing.
+    assert rows(ok["ratings"])["ripple current (rating frequency) at 100000 Hz"]["status"] == "within_limit"
+    row = rows(hot["ratings"])["ripple current (rating frequency) at 100000 Hz"]
+    assert row["status"] == "unknown" and "D064" in row["reason"]
+    assert hot["rating_status"] == "unknown"
+    names = {s["name"] for s in ok["ac"]["sweep"]["series"]}
+    assert names == {"rail", "vin"} and len(ok["ac"]["sweep"]["frequency_hz"]) == 9
+    # The bound card (D058) in parallel with the 1 kohm feed (the ideal DC source is an AC short):
+    # |V| = I * |Zc || 1k| with Zc = ESR + 1/(j w C) and ESR the sourced 3 ohm maximum.
+    c1 = next(c for c in ok["components"] if c["ref"] == "C1")
+    assert c1["entry_id"] == "OHM-033"
+    point = ok["ac"]["points"][0]
+    node = next(n for n, v in point["node_voltages"].items() if abs(complex(*v)) > 0)
+    zc = 3.0 + 1 / (1j * 2 * math.pi * 1e5 * 10e-6)
+    expected = 0.1 * abs(zc * 1000 / (zc + 1000))
+    assert abs(complex(*point["node_voltages"][node])) == pytest.approx(expected, rel=2e-3)
+
+
+
+def test_parse_ac_refuses_a_point_whose_solved_frequency_or_values_do_not_match():
+    lines = ["OHMNI_AC_OP", "v(a) = 5.0",
+             # A failed solve prints the previous plot: its frequency gives it away.
+             "OHMNI_AC_POINT 0", "real(frequency) = 1000.0", "real(v(a)) = 1.0", "imag(v(a)) = 2.0",
+             "OHMNI_AC_POINT 1", "real(frequency) = 1000.0", "real(v(a)) = 1.0", "imag(v(a)) = 2.0",
+             "real(v(a)) = 9.0",
+             "OHMNI_AC_POINT 2", "real(v(a)) = 1.0", "imag(v(a)) = 2.0"]
+    assert parse_ac("\n".join(lines), [100.0, 1000.0, 10.0])["points"] == []
+
+
+def test_linearity_reads_continuations_poly_and_refuses_unscanned_files():
+    assert not circuit_is_linear("t\nL1 a b\n+ L='1u*(1+i(L1))'\n.end")
+    assert not circuit_is_linear("t\nE1 a 0 POLY(1) b 0 0 1 0.5\n.end")
+    assert not circuit_is_linear("t\n.include models.lib\nR1 a 0 1k\n.end")
+    assert circuit_is_linear("t\nE1 a 0 b 0 2\nR1 a 0 1k\n.end")
+
+
+def test_missing_operating_value_never_becomes_zero(registry, recipes):
+    choice = {"C1": BehaviorSelection(entry_id="OHM-033")}
+    compiled = compile_circuit(tantalum(recipes), registry, recipes, choice, analysis="ac",
+                               excitations=[ripple(0.1)], measure_currents=True)
+    result = fake_result(compiled, 0.150)
+    rail = next(c for c in compiled.components if c.ref == "C1").role_nodes["A"].lower()
+    del result["operating_point"]["node_voltages"][rail]
+    ratings = evaluate_ratings(compiled, result, registry, RatingContext(ambient_c=25, thermal_scope_confirmed=True))
+    c1 = rows(ratings)
+    assert c1["AC checks"]["status"] == "unknown" and "DC part" in c1["AC checks"]["reason"]
+    assert not any(name.endswith("at 100000 Hz") for name in c1)
+
+
+def test_a_part_without_an_ac_translation_cannot_pass_an_ac_run(registry, recipes):
+    """A resistor without its bound limits gets no AC row: the explicit unknown row keeps it from passing."""
+    choice = {"C1": BehaviorSelection(entry_id="OHM-033")}
+    compiled = compile_circuit(tantalum(recipes), registry, recipes, choice, analysis="ac",
+                               excitations=[ripple(0.1)], measure_currents=True)
+    r1 = next(c for c in compiled.components if c.ref == "R1")
+    stripped = r1.model_copy(update={"behavior_id": "BEH-LED-INDICATOR"})
+    compiled = compiled.model_copy(update={"components": [stripped if c.ref == "R1" else c for c in compiled.components]})
+    ratings = evaluate_ratings(compiled, fake_result(compiled, 0.150), registry,
+                               RatingContext(ambient_c=25, thermal_scope_confirmed=True))
+    row = rows(ratings, "R1")["AC swing at 100000 Hz"]
+    assert row["status"] == "unknown"
+    assert next(c for c in ratings["components"] if c["ref"] == "R1")["status"] == "unknown"
+
+
+def test_tantalum_ripple_needs_thermal_scope_and_an_ambient_for_its_rating(registry, recipes):
+    choice = {"C1": BehaviorSelection(entry_id="OHM-033")}
+    compiled = compile_circuit(tantalum(recipes), registry, recipes, choice, analysis="ac",
+                               excitations=[ripple(0.1)], measure_currents=True)
+    unconfirmed = rows(evaluate_ratings(compiled, fake_result(compiled, 0.150), registry, RatingContext(ambient_c=25)))
+    assert unconfirmed["ripple current (rating frequency) at 100000 Hz"]["status"] == "unknown"
+    no_ambient = rows(evaluate_ratings(compiled, fake_result(compiled, 0.150), registry, RatingContext()))
+    assert no_ambient["rated voltage"]["status"] == "unknown"
+    assert no_ambient["peak forward voltage (DC plus AC peak) at 100000 Hz"]["status"] == "unknown"
+    over = rows(evaluate_ratings(compiled, fake_result(compiled, 0.170), registry, RatingContext()))
+    assert over["ripple current (rating frequency) at 100000 Hz"]["status"] == "unknown", \
+        "the bound-ESR card proves no ripple result (D063)"
+
+
+def test_ripple_conditions_come_from_the_record_scope(registry, recipes):
+    choice = {"C1": BehaviorSelection(entry_id="OHM-033")}
+    compiled = compile_circuit(tantalum(recipes), registry, recipes, choice, analysis="ac",
+                               excitations=[ripple(0.1)], measure_currents=True)
+    c1 = next(c for c in compiled.components if c.ref == "C1")
+    evidence = dict(c1.parameter_evidence, irip_max=dict(c1.parameter_evidence["irip_max"], scope="KEMET T491"))
+    changed = compiled.model_copy(update={"components": [
+        c1.model_copy(update={"parameter_evidence": evidence}) if c.ref == "C1" else c for c in compiled.components]})
+    cool = RatingContext(ambient_c=25, thermal_scope_confirmed=True)
+    row = rows(evaluate_ratings(changed, fake_result(changed, 0.150), registry, cool))["ripple current at 100000 Hz"]
+    # The bound card makes it unknown before the scope test; without the ESR element the scope rule applies.
+    assert row["status"] == "unknown"
+    ideal = changed.model_copy(update={"components": [
+        c.model_copy(update={"element_names": ["Cc2", "Rc2_lk"]}) if c.ref == "C1" else c for c in changed.components]})
+    row = rows(evaluate_ratings(ideal, fake_result(ideal, 0.150), registry, cool))["ripple current at 100000 Hz"]
+    assert row["status"] == "unknown" and "not stated in its source scope" in row["reason"]
+
+
+@pytest.mark.parametrize("entry_id", ["OHM-033", "OHM-034", "OHM-035", "OHM-036"])
+def test_tantalum_cards_carry_the_sourced_maximum_esr_in_series(entry_id, registry, recipes):
+    """D058: Resr -> (Cb || Rlk), the class card topology, with ESR = the sourced 100 kHz maximum."""
+    recipe = recipes.entries[entry_id]
+    circuit = CircuitIR(ir_id="t", name="t", components=[
+        CircuitComponent(ref="C1", part_id=entry_id, package=recipe.package)], nets=[
+        Net(name="a", kind="power", connections=[PinRef(component="C1", pin="1")],
+            external_source=ExternalSource(kind="bench_supply", voltage=ValueRange.exact(Quantity.volts(5)))),
+        Net(name="g", kind="ground", connections=[PinRef(component="C1", pin="2")])])
+    compiled = compile_circuit(circuit, registry, recipes, {"C1": BehaviorSelection(entry_id=entry_id)})
+    component = compiled.components[0]
+    esr = component.parameters["esr_max"]
+    assert "100 kHz" in component.parameter_evidence["esr_max"]["scope"]
+    lines = compiled.netlist.splitlines()
+    assert f"Rc1_esr n1 c1_cb {esr:.17g}" in lines
+    assert any(line.startswith("Cc1 c1_cb 0 ") for line in lines)
+    assert any(line.startswith("Rc1_lk c1_cb 0 ") for line in lines)
+    assert circuit_is_linear(compiled.netlist)
+
+
+
+def test_esr_bound_card_proves_neither_a_ripple_pass_nor_a_violation(registry, recipes):
+    """D063: with the series maximum ESR the T491 ripple and ESR-heating rows stay unknown everywhere."""
+    choice = {"C1": BehaviorSelection(entry_id="OHM-033")}
+    compiled = compile_circuit(tantalum(recipes), registry, recipes, choice, analysis="ac",
+                               excitations=[ripple(0.1)], measure_currents=True)
+    for ambient in (-20, 25, 40):
+        for amps in (0.150, 0.170):
+            context = RatingContext(ambient_c=ambient, thermal_scope_confirmed=True)
+            result = rows(evaluate_ratings(compiled, fake_result(compiled, amps), registry, context))
+            for name in ("ripple current (rating frequency) at 100000 Hz",
+                         "ESR heating with the maximum 100 kHz ESR at 100000 Hz"):
+                assert result[name]["status"] == "unknown" and "D063" in result[name]["reason"], (ambient, amps)
+
+
+def test_any_series_element_beyond_cb_and_rlk_fails_closed(registry, recipes):
+    from ohmni.behavior.ratings import _tant_esr_bound
+
+    choice = {"C1": BehaviorSelection(entry_id="OHM-033")}
+    compiled = compile_circuit(tantalum(recipes), registry, recipes, choice, analysis="ac",
+                               excitations=[ripple(0.1)], measure_currents=True)
+    c1 = next(c for c in compiled.components if c.ref == "C1")
+    assert _tant_esr_bound(c1)
+    assert _tant_esr_bound(c1.model_copy(update={"element_names": ["Cc1", "Rc1_lk"]})) is None
+    assert _tant_esr_bound(c1.model_copy(update={"element_names": ["Cc1", "Rc1_lk", "Lc1_esl"]}))
+    assert _tant_esr_bound(c1.model_copy(update={"element_names": ["Cc1", "Rc1_lk", "Rseries"]}))
+    assert _tant_esr_bound(c1.model_copy(update={"element_names": ["Cc1", "Cc1b", "Rc1_lk"]}))
+    assert _tant_esr_bound(c1.model_copy(update={"element_names": []}))
+
+# D064: the dual solve. Synthetic port data: the circuit seen by C1 is Vth behind Zth; the bound card is
+# 3 ohm + (Cb || Rlk), and the second solve shorts the 3 ohm.
+def sha(text):
+    import hashlib
+
+    return hashlib.sha256(text.encode()).hexdigest()
+
+
+def port_result(compilation, vth, zth, freq=100e3, esr=3.0, elements=("Rc1_esr",), variant=True, zero_freq=None):
+    c1 = next(c for c in compilation.components if c.ref == "C1")
+    r1 = next(c for c in compilation.components if c.ref == "R1")
+    zc = 1 / (1 / 10e6 + 1j * 2 * math.pi * freq * 10e-6)
+
+    def point(series, at=freq):
+        current = vth / (zth + series + zc)
+        voltage = (series + zc) * current
+        pair = (lambda z: [z.real, z.imag])
+        return {"frequency_hz": at,
+                "node_voltages": {c1.role_nodes["A"].lower(): pair(voltage), r1.role_nodes["A"].lower(): [0.0, 0.0]},
+                "branch_currents": {c1.role_current_probes["A"].lower(): pair(current),
+                                    c1.role_current_probes["K"].lower(): pair(-current),
+                                    r1.role_current_probes["A"].lower(): [0.0, 0.0],
+                                    r1.role_current_probes["B"].lower(): [0.0, 0.0]}}
+
+    result = fake_result(compilation, 0.0, freq=freq)
+    result["ac"] = {"points": [point(esr)]}
+    result["netlist_sha256"] = sha(compilation.netlist)
+    if variant:
+        try:
+            shorted = sha(short_elements(compilation.netlist, list(elements)))
+        except ValueError:
+            shorted = None
+        result["ac"]["esr_zero"] = {"status": "ran", "elements": list(elements),
+                                    "points": [point(0.0, zero_freq or freq)],
+                                    "source_netlist_sha256": sha(compilation.netlist), "netlist_sha256": shorted}
+    return result
+
+
+RIPPLE = "ripple current (rating frequency) at 100000 Hz"
+HEATING = "ESR heating with the maximum 100 kHz ESR at 100000 Hz"
+
+
+@pytest.fixture(scope="module")
+def bound_card(registry, recipes):
+    return compile_circuit(tantalum(recipes), registry, recipes, {"C1": BehaviorSelection(entry_id="OHM-033")},
+                           analysis="ac", excitations=[ripple(0.1)], measure_currents=True)
+
+
+def dual(compiled, registry, vth, zth, ambient=25, confirmed=True, **kwargs):
+    context = RatingContext(ambient_c=ambient, thermal_scope_confirmed=confirmed)
+    return rows(evaluate_ratings(compiled, port_result(compiled, vth, zth, **kwargs), registry, context))
+
+
+def test_dual_solve_proves_a_ripple_pass_from_the_port_bound(registry, bound_card):
+    """|I| <= |Vth| / Re(Zth) for any passive part impedance: 100 V behind 1 kohm bounds the current by 0.1 A."""
+    result = dual(bound_card, registry, 100.0, 1000.0)
+    assert result[RIPPLE]["status"] == result[HEATING]["status"] == "within_limit"
+    ratings = evaluate_ratings(bound_card, port_result(bound_card, 100.0, 1000.0), registry,
+                               RatingContext(ambient_c=25, thermal_scope_confirmed=True))
+    obs = next(c for c in ratings["components"] if c["ref"] == "C1")["observations"]
+    assert obs["irip_bound_100000"] == pytest.approx(0.1, rel=1e-5)
+    assert obs["irip_bound_100000"] >= obs["irip_100000"]
+    # A complex source impedance: the bound uses only its real part (any part reactance can cancel the rest).
+    zth = 600 + 800j
+    result = dual(bound_card, registry, 0.09 * 600, zth)
+    assert result[RIPPLE]["status"] == "within_limit"
+    result = dual(bound_card, registry, 0.2 * 600, zth)
+    assert result[RIPPLE]["status"] == "unknown" and "no violation is proven" in result[RIPPLE]["reason"]
+
+
+def test_dual_solve_never_proves_a_violation(registry, bound_card):
+    # Voltage-driven: the simulated current (about 1 A) is far above the limit, yet no lower bound exists.
+    for vth, zth in ((3.3, 0.05), (200.0, 1000.0)):
+        result = dual(bound_card, registry, vth, zth)
+        for name in (RIPPLE, HEATING):
+            assert result[name]["status"] == "unknown", (vth, zth, name)
+
+
+def test_dual_solve_needs_every_condition(registry, bound_card, recipes):
+    for ambient in (24, 25.5, 40, None):
+        result = dual(bound_card, registry, 100.0, 1000.0, ambient=ambient)
+        assert result[RIPPLE]["status"] == "unknown" and "exactly 25 C" in result[RIPPLE]["reason"], ambient
+    unconfirmed = dual(bound_card, registry, 100.0, 1000.0, confirmed=False)
+    assert unconfirmed[RIPPLE]["status"] == "unknown" and "thermal" in unconfirmed[RIPPLE]["reason"]
+    missing = dual(bound_card, registry, 100.0, 1000.0, variant=False)
+    assert missing[RIPPLE]["status"] == "unknown" and "second solve" in missing[RIPPLE]["reason"]
+    other = dual(bound_card, registry, 100.0, 1000.0, elements=("Rother_esr",))
+    assert other[RIPPLE]["status"] == "unknown" and "exactly this compilation" in other[RIPPLE]["reason"]
+    # The second solve must differ by exactly the bound maximum ESR.
+    wrong = dual(bound_card, registry, 100.0, 1000.0, esr=2.0)
+    assert wrong[RIPPLE]["status"] == "unknown" and "exactly the bound maximum ESR" in wrong[RIPPLE]["reason"]
+    # Almost lossless source impedance: the part's unsourced reactance decides the current.
+    reactive = dual(bound_card, registry, 1.0, 1e-5 + 50j)
+    assert reactive[RIPPLE]["status"] == "unknown" and "almost no resistance" in reactive[RIPPLE]["reason"]
+    # Away from the rating frequency the rows keep the D063 rule.
+    low = dual(bound_card, registry, 100.0, 1000.0, freq=10e3)
+    assert low["ripple current at 10000 Hz"]["status"] == "unknown"
+    assert "D063" in low["ripple current at 10000 Hz"]["reason"]
+
+
+def test_dual_solve_refuses_nonlinear_active_and_multi_tantalum_circuits(registry, bound_card, recipes):
+    context = RatingContext(ambient_c=25, thermal_scope_confirmed=True)
+    for extra, words in (("D9 n1 0 DX", "nonlinear"), ("E9 n9 0 n2 0 2", "controlled"),
+                         ("G9 n9 0 n2 0 1m", "controlled"), ("B9 n9 0 V=1", "nonlinear")):
+        changed = bound_card.model_copy(update={"netlist": bound_card.netlist.replace(".end", extra + "\n.end")})
+        row = rows(evaluate_ratings(changed, port_result(changed, 100.0, 1000.0), registry, context))[RIPPLE]
+        assert row["status"] == "unknown" and words in row["reason"], extra
+    c1 = next(c for c in bound_card.components if c.ref == "C1")
+    # Every tantalum counts, an ideal Cb || Rlk card too: its own 100 kHz impedance is unsourced as well.
+    for names in (["Rc9_esr", "Cc9", "Rc9_lk"], ["Cc9", "Rc9_lk"]):
+        twin = c1.model_copy(update={"ref": "C9", "element_names": names})
+        two = bound_card.model_copy(update={"components": [*bound_card.components, twin]})
+        row = rows(evaluate_ratings(two, port_result(two, 100.0, 1000.0), registry, context))[RIPPLE]
+        assert row["status"] == "unknown" and "more than one tantalum" in row["reason"], names
+
+
+def test_dual_solve_accepts_only_a_second_solve_of_this_compilation(registry, bound_card):
+    context = RatingContext(ambient_c=25, thermal_scope_confirmed=True)
+
+    def verdict(mutate):
+        result = port_result(bound_card, 100.0, 1000.0)
+        mutate(result)
+        return rows(evaluate_ratings(bound_card, result, registry, context))[RIPPLE]
+
+    assert verdict(lambda r: None)["status"] == "within_limit"
+    cases = {
+        "netlist hash is not this netlist": lambda r: r["ac"]["esr_zero"].update(netlist_sha256="0" * 64),
+        "first solve's netlist hash": lambda r: r.update(netlist_sha256="0" * 64),
+        "source": lambda r: r["ac"]["esr_zero"].update(source_netlist_sha256="0" * 64),
+        "exactly this compilation": lambda r: r["ac"]["esr_zero"].update(elements=["Rc1_esr", "Rc2"]),
+        "second solve is available": lambda r: r["ac"]["esr_zero"].update(status="failed"),
+    }
+    for words, mutate in cases.items():
+        row = verdict(mutate)
+        assert row["status"] == "unknown", words
+        assert (words if words != "source" else "first solve's netlist hash") in row["reason"], words
+    # A second solve at another frequency is never paired with the 100 kHz point.
+    shifted = port_result(bound_card, 100.0, 1000.0, zero_freq=99e3)
+    row = rows(evaluate_ratings(bound_card, shifted, registry, context))[RIPPLE]
+    assert row["status"] == "unknown" and "no value of this part at this frequency" in row["reason"]
+
+
+def test_dual_solve_rejects_a_reactive_difference_between_the_solves(registry, bound_card):
+    result = port_result(bound_card, 100.0, 1000.0)
+    # Same real ESR step, plus a reactive one: not the bound ESR element alone.
+    c1 = next(c for c in bound_card.components if c.ref == "C1")
+    zero = result["ac"]["esr_zero"]["points"][0]
+    node, probe = c1.role_nodes["A"].lower(), c1.role_current_probes["A"].lower()
+    v0, i0 = complex(*zero["node_voltages"][node]), complex(*zero["branch_currents"][probe])
+    v0 = v0 - 0.01j * i0
+    zero["node_voltages"][node] = [v0.real, v0.imag]
+    row = rows(evaluate_ratings(bound_card, result, registry,
+                                RatingContext(ambient_c=25, thermal_scope_confirmed=True)))[RIPPLE]
+    assert row["status"] == "unknown" and "exactly the bound maximum ESR" in row["reason"]
+
+
+def test_dual_solve_elements_and_the_shorted_variant(bound_card):
+    from ohmni.behavior.ratings import circuit_is_passive, esr_dual_solve_elements, short_elements
+
+    assert esr_dual_solve_elements(bound_card) == ["Rc1_esr"]
+    shorted = short_elements(bound_card.netlist, ["Rc1_esr"])
+    assert "Vohmni_short_Rc1_esr probe_c1_1 c1_cb 0" in shorted.splitlines()
+    assert "Rc1_esr" not in shorted.replace("Vohmni_short_Rc1_esr", "")
+    with pytest.raises(ValueError):
+        short_elements(bound_card.netlist, ["Rmissing"])
+    # The topology is checked by node: a capacitor not across the internal node and the cathode fails.
+    moved = bound_card.model_copy(update={"netlist": bound_card.netlist.replace("Cc1 c1_cb probe_c1_2",
+                                                                                "Cc1 c1_cb n3")})
+    assert esr_dual_solve_elements(moved) == []
+    tapped = bound_card.model_copy(update={"netlist": bound_card.netlist.replace(".end", "R9 c1_cb 0 1k\n.end")})
+    assert esr_dual_solve_elements(tapped) == []
+    # A card whose series value is not the sourced maximum is not dual-solved.
+    other = bound_card.model_copy(update={"netlist": bound_card.netlist.replace("Rc1_esr probe_c1_1 c1_cb 3",
+                                                                                "Rc1_esr probe_c1_1 c1_cb 2")})
+    assert esr_dual_solve_elements(other) == []
+    assert circuit_is_passive(bound_card.netlist)
+    assert not circuit_is_passive("t\nR1 a 0 1k\nH1 b 0 vx 10\n.end")
+    assert not circuit_is_passive("t\nR1 a 0 1k\nD1 a 0 DX\n.end")
+
+
+@pytest.mark.integration
+@live_only
+def test_live_dual_solve_gives_the_ohm033_ripple_verdict_at_25c_and_100khz(tmp_path):
+    service = ComponentBehaviorService(ROOT, tmp_path, adapter=NgspiceAdapter())
+
+    def run(amps, ambient=25):
+        return service.run_design(DesignRunRequest(
+            circuit=tantalum(service.recipes), selections={"C1": {"entry_id": "OHM-033"}}, analysis="ac",
+            excitations=[ripple(amps)], ac_points_hz=[1e5],
+            rating_context={"ambient_c": ambient, "thermal_scope_confirmed": True}))
+
+    ok, hot, warm = run(0.1), run(0.2), run(0.1, ambient=30)
+    for result in (ok, hot, warm):
+        assert result["status"] == "ran" and result["ac"]["esr_zero"]["status"] == "ran"
+        assert result["ac"]["esr_zero"]["elements"] == ["Rc1_esr"]
+    # 0.1 A RMS into 1 kohm || C1: the port is 100 V behind 1 kohm, so no passive part carries more than 0.1 A.
+    assert rows(ok["ratings"])[RIPPLE]["status"] == "within_limit"
+    assert rows(ok["ratings"])[HEATING]["status"] == "within_limit"
+    c1 = next(c for c in ok["ratings"]["components"] if c["ref"] == "C1")["observations"]
+    assert c1["irip_bound_100000"] == pytest.approx(0.1, rel=1e-5)
+    assert c1["irip_100000"] < c1["irip_bound_100000"]
+    # 0.2 A: bound 0.2 A > 158 mA, and no lower bound exists, so unknown (never a violation).
+    assert rows(hot["ratings"])[RIPPLE]["status"] == "unknown"
+    assert "D064" in rows(hot["ratings"])[RIPPLE]["reason"]
+    assert rows(warm["ratings"])[RIPPLE]["status"] == "unknown"

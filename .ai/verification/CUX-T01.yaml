@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "id": "CUX-T01",
+  "task": "CUX-T01",
+  "scope": "CONVERSATIONAL-UX-1",
+  "status": "PASSED_WITH_ENVIRONMENT_RERUN",
+  "commit": "edf314423f4a5c546762aecdfe42312b46c66ba3",
+  "verified_at": "2026-10-10",
+  "summary": "Conversational entry is primary when available; guided setup remains accessible and project requests have bounded recovery.",
+  "commands": [
+    {
+      "command": "Underlying Python 3.13 + project site-packages: python -m pytest --basetemp build/pytest-cux-direct -o cache_dir=build/pytest-cux-direct-cache",
+      "result": "PASS",
+      "tests": 2274,
+      "skipped": 87,
+      "deselected": 62,
+      "runtime_seconds": 404.02,
+      "detail": "Same fast selection. Optional MCP module collection skips in this environment; its 32 tests are checked separately in the project venv."
+    },
+    {
+      "command": "Project venv: python -m pytest tests/test_mcp_server.py --basetemp build/mcp-cux -o cache_dir=build/mcp-cux-cache -q",
+      "result": "PASS",
+      "tests": 32
+    },
+    {
+      "command": "python scripts/verify.py fast (project venv)",
+      "result": "ENVIRONMENT_FAILURE",
+      "tests_passed": 2304,
+      "tests_failed": 2,
+      "skipped": 86,
+      "deselected": 62,
+      "detail": "Harness fell back to an OS temporary directory; two unchanged synthesis acceptance tests assume their outputs are under the repository. Both pass in the direct-interpreter fast run using an explicit in-repository basetemp."
+    },
+    {
+      "command": "node --test apps/web/tests/*.test.mjs",
+      "result": "PASS",
+      "tests": 1063
+    },
+    {
+      "command": "python -m pytest tests/test_ai_workflow.py",
+      "result": "PASS",
+      "tests": 12
+    },
+    {
+      "command": "python scripts/verify.py integration",
+      "result": "PASS",
+      "tests": 28,
+      "skipped": 16,
+      "deselected": 2410
+    },
+    {
+      "command": "python -m ruff check tests/test_ai_workflow.py",
+      "result": "PASS"
+    },
+    {
+      "command": "python -m ruff check .",
+      "result": "EXTERNAL_BASELINE_FAILURE",
+      "findings": 12,
+      "detail": "All findings are in protected behavior-owned paths; none changed."
+    },
+    {
+      "command": "Underlying Python 3.13 interpreter with project site-packages: pytest tests/test_native_process.py",
+      "result": "PASS",
+      "tests": 21
+    },
+    {
+      "command": "python scripts/ai_state.py validate",
+      "result": "PASS"
+    }
+  ],
+  "browser_checks": [
+    "Natural-language entry visible with scripted provider; no paid/live model call made.",
+    "Editable example focuses input without submission or navigation.",
+    "Guided disclosure opens from Enter key; provider-free server expands guided setup and explains unavailability.",
+    "Desktop, 390px and 320px entry checked; no horizontal overflow at either narrow size.",
+    "Created a test project on an isolated local server, saved revision 1, reopened from home and retained its data.",
+    "Artificial 22-second saved-project response triggers the 20-second deadline and a Reload saved projects action; late response does not replace recovery state."
+  ],
+  "review": {
+    "independent": false,
+    "status": "PASSED",
+    "record": ".ai/reviews.yaml#CUX-T01-SELF-REVIEW"
+  },
+  "limitations": [
+    "CUX-T02 and CUX-T03 are still unimplemented; this task does not add conversational clarification or revision editing.",
+    "The scripted provider confirms presentation only, not live model quality.",
+    "A timed-out write may already have reached the server; no automatic write retry occurs, and the message asks users to inspect saved revisions.",
+    "Global Ruff retains 12 pre-existing findings in behavior-owned files.",
+    "Fast-suite coverage is recorded across the direct-runtime run and the optional MCP venv run, not represented as a single canonical green venv run."
+  ],
+  "tools": {
+    "python": "3.13.3",
+    "node": "22.16.0"
+  }
+}

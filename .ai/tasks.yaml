@@ -309,6 +309,15 @@
       "approval_evidence": ".ai/approvals/LANDING-PCB-CONTROLLER.yaml",
       "review_policy": "Independent electrical/geometry and visual review; owner appearance acceptance remains distinct.",
       "publication_approval": ".ai/approvals/LP-CONTROLLER-PUBLISH.yaml"
+    },
+    {
+      "id": "CONVERSATIONAL-UX-1",
+      "title": "Conversational project experience",
+      "type": "product_milestone",
+      "status": "REVIEW",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/CONVERSATIONAL-UX-1.yaml",
+      "review_policy": "Independent final review required for scope completion; task self-review recorded honestly."
     }
   ],
   "tasks": [
@@ -1534,18 +1543,18 @@
       "id": "CS-T06",
       "implementation": {
         "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
-        "completed_at_commit": null,
-        "started_at_commit": null
+        "completed_at_commit": "317f98e7b340c9ef423304acfa85f7eb91593417",
+        "started_at_commit": "11b28652"
       },
       "milestone": null,
       "priority": 105,
       "review": {
         "independent": false,
         "required": true,
-        "status": "PENDING"
+        "status": "PASSED"
       },
       "scope": "COMPONENT-SYNTHESIS-1",
-      "status": "APPROVED",
+      "status": "COMPLETE",
       "title": "Persistent admission infrastructure",
       "verification": {
         "record": ".ai/verification/CS-T06.yaml",
@@ -1572,18 +1581,18 @@
       "id": "CS-T07",
       "implementation": {
         "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
-        "completed_at_commit": null,
-        "started_at_commit": null
+        "completed_at_commit": "34329f24128e303ef10aa35e44cd663b43ac784c",
+        "started_at_commit": "4fa890a4"
       },
       "milestone": null,
       "priority": 104,
       "review": {
         "independent": false,
         "required": true,
-        "status": "PENDING"
+        "status": "PASSED"
       },
       "scope": "COMPONENT-SYNTHESIS-1",
-      "status": "APPROVED",
+      "status": "COMPLETE",
       "title": "Electrical profile and admission gates",
       "verification": {
         "record": ".ai/verification/CS-T07.yaml",
@@ -1609,18 +1618,18 @@
       "id": "CS-T08",
       "implementation": {
         "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
-        "completed_at_commit": null,
-        "started_at_commit": null
+        "completed_at_commit": "01370a706b27d276addced8d4aa7cc1f9ffcef9e",
+        "started_at_commit": "26243492"
       },
       "milestone": null,
       "priority": 103,
       "review": {
         "independent": false,
         "required": true,
-        "status": "PENDING"
+        "status": "PASSED"
       },
       "scope": "COMPONENT-SYNTHESIS-1",
-      "status": "APPROVED",
+      "status": "COMPLETE",
       "title": "Resume and real board integration",
       "verification": {
         "record": ".ai/verification/CS-T08.yaml",
@@ -1647,18 +1656,19 @@
       "id": "CS-T09",
       "implementation": {
         "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
-        "completed_at_commit": null,
-        "started_at_commit": null
+        "completed_at_commit": "d68497b003aed19639829745bca49f4eec0ba706",
+        "started_at_commit": "d3b2572a"
       },
       "milestone": null,
       "priority": 102,
       "review": {
         "independent": false,
         "required": true,
-        "status": "PENDING"
+        "status": "PASSED",
+        "record": ".ai/reviews.yaml#CS-T09-SELF-REVIEW-2026-10-10"
       },
       "scope": "COMPONENT-SYNTHESIS-1",
-      "status": "APPROVED",
+      "status": "COMPLETE",
       "title": "SPICE model boundary",
       "verification": {
         "record": ".ai/verification/CS-T09.yaml",
@@ -1685,18 +1695,19 @@
       "id": "CS-T10",
       "implementation": {
         "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
-        "completed_at_commit": null,
-        "started_at_commit": null
+        "completed_at_commit": "242d04a74c247813d9b2148f8547474426b37f6f",
+        "started_at_commit": "bb997d20"
       },
       "milestone": null,
       "priority": 101,
       "review": {
         "independent": false,
         "required": true,
-        "status": "PENDING"
+        "status": "PASSED",
+        "record": ".ai/reviews.yaml#CS-T10-SELF-REVIEW-2026-10-10"
       },
       "scope": "COMPONENT-SYNTHESIS-1",
-      "status": "APPROVED",
+      "status": "COMPLETE",
       "title": "LM317 end-to-end",
       "verification": {
         "record": ".ai/verification/CS-T10.yaml",
@@ -1723,18 +1734,19 @@
       "id": "CS-T11",
       "implementation": {
         "approval_evidence": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
-        "completed_at_commit": null,
-        "started_at_commit": null
+        "completed_at_commit": "b9f6b922",
+        "started_at_commit": "66efc6d4"
       },
       "milestone": null,
       "priority": 100,
       "review": {
         "independent": false,
+        "record": ".ai/reviews.yaml#CS-T11-SELF-REVIEW-2026-10-10",
         "required": true,
-        "status": "PENDING"
+        "status": "UNAVAILABLE"
       },
       "scope": "COMPONENT-SYNTHESIS-1",
-      "status": "APPROVED",
+      "status": "VERIFIED",
       "title": "Acceptance and documentation",
       "verification": {
         "record": ".ai/verification/CS-T11.yaml",
@@ -3128,6 +3140,122 @@
         "status": "PASSED",
         "independent": false,
         "record": ".ai/verification/LP-CONTROLLER-PUBLISH.yaml"
+      }
+    },
+    {
+      "id": "CUX-T01",
+      "title": "Simplify entry and recovery",
+      "scope": "CONVERSATIONAL-UX-1",
+      "milestone": null,
+      "goal": "Simplify entry and recovery",
+      "priority": 99,
+      "status": "COMPLETE",
+      "dependencies": [],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Natural language is primary when available; guided fallback remains usable.",
+        "Examples populate editable prompts without submitting.",
+        "Stalled project requests terminate with actionable recovery; late responses cannot change state.",
+        "Keyboard and responsive entry flow verified."
+      ],
+      "implementation": {
+        "started_at_commit": "9b95cef6",
+        "completed_at_commit": "edf314423f4a5c546762aecdfe42312b46c66ba3",
+        "approval_evidence": ".ai/approvals/CONVERSATIONAL-UX-1.yaml"
+      },
+      "review": {
+        "required": false,
+        "independent": false,
+        "status": "PASSED",
+        "record": ".ai/reviews.yaml#CUX-T01-SELF-REVIEW"
+      },
+      "verification": {
+        "record": ".ai/verification/CUX-T01.yaml",
+        "required": [
+          "workflow",
+          "fast",
+          "frontend",
+          "integration",
+          "ruff"
+        ]
+      }
+    },
+    {
+      "id": "CUX-T02",
+      "title": "Conversational brief",
+      "scope": "CONVERSATIONAL-UX-1",
+      "milestone": null,
+      "goal": "Conversational brief",
+      "priority": 98,
+      "status": "COMPLETE",
+      "dependencies": [
+        "CUX-T01"
+      ],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Typed, validated interpretation with requested/assumed/unresolved fields.",
+        "Only necessary clarification, preserving explicit requirements.",
+        "Confirmation saves an immutable revision and starts its run."
+      ],
+      "implementation": {
+        "started_at_commit": "3d4b9014",
+        "completed_at_commit": "e2545a3fa19af1c9916723da7adcdf503d481426",
+        "approval_evidence": ".ai/approvals/CONVERSATIONAL-UX-1.yaml"
+      },
+      "review": {
+        "required": false,
+        "independent": false,
+        "status": "PASSED",
+        "record": ".ai/reviews.yaml#CUX-T02-SELF-REVIEW"
+      },
+      "verification": {
+        "record": ".ai/verification/CUX-T02.yaml",
+        "required": [
+          "workflow",
+          "fast",
+          "frontend",
+          "integration",
+          "ruff"
+        ]
+      }
+    },
+    {
+      "id": "CUX-T03",
+      "title": "Conversational iteration",
+      "scope": "CONVERSATIONAL-UX-1",
+      "milestone": null,
+      "goal": "Conversational iteration",
+      "priority": 97,
+      "status": "COMPLETE",
+      "dependencies": [
+        "CUX-T02"
+      ],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Grounded questions use current server-owned project context.",
+        "Typed changes show diff and invalidation before application.",
+        "Stale proposals, unsupported parts and fabricated evidence fail closed."
+      ],
+      "implementation": {
+        "started_at_commit": "fd4eab79",
+        "completed_at_commit": "f0c17495a185adeddf0fe482589d988a202ad0ee",
+        "approval_evidence": ".ai/approvals/CONVERSATIONAL-UX-1.yaml"
+      },
+      "review": {
+        "required": false,
+        "independent": false,
+        "status": "PASSED",
+        "record": ".ai/reviews.yaml#CUX-T03-SELF-REVIEW"
+      },
+      "verification": {
+        "record": ".ai/verification/CUX-T03.yaml",
+        "required": [
+          "workflow",
+          "fast",
+          "frontend",
+          "integration",
+          "ruff"
+        ]
       }
     }
   ]

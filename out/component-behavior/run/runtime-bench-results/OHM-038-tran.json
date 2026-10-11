@@ -1,0 +1,71 @@
+{
+  "analysis": "tran",
+  "circuit_hash": "5e1a59a0e8e53b4836473f0340cf5301c0d5b97227e7ea43c59c4636ba57b627",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": [
+    {
+      "current": 0.001,
+      "expected": 9.999995,
+      "kind": "absolute",
+      "node": "anode",
+      "source_deck_sha256": "b98c113635abab21b6c6f464b09570ec152bdea1b5f90ac9e8288d89d8ed514d",
+      "source_facts": {
+        "value": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "converted_unit": "F",
+          "converted_value": 1e-07,
+          "detail": "Table 'General Data 305 VAC*': '0.1 uF  6  12.5  18  15  MKX2AW31004C00_ _ _ _' (pdf page 3, catalogue page 74)",
+          "field": "nominal_capacitance",
+          "page": 3,
+          "scope": "WIMA MKX2AW31004C00; 305 VAC row, PCM 15, W 6 x H 12.5 x L 18 mm",
+          "sources": [
+            "https://wima.de/wp-content/uploads/media/e_WIMA_MKP-X2.pdf"
+          ],
+          "unit": "uF",
+          "value": 0.1
+        },
+        "vr": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "detail": "Column header '305 VAC *' with footnote '* f = 50/60 Hz' (p3); p1 'Rated voltage: 305 VAC'",
+          "field": "rated_ac_voltage",
+          "page": 3,
+          "scope": "WIMA MKX2AW31004C00; f = 50/60 Hz",
+          "sources": [
+            "https://wima.de/wp-content/uploads/media/e_WIMA_MKP-X2.pdf"
+          ],
+          "unit": "V AC",
+          "value": 305
+        }
+      },
+      "time": 0.001,
+      "tolerance": 0.009999995000000001,
+      "tolerance_contract": "BEH-CAP-FILM/B1"
+    }
+  ],
+  "entry_id": "OHM-038",
+  "entry_research_sha256": "a5f85c165323d8617ac7717603ff5597297d2e84fc9de80965aae14bad847937",
+  "limits": "Constant-current charge from zero against I*ESR + I*t/C at one time point, using the relative tolerance of the class bench named in the comparison. Does not validate ESR frequency dependence, leakage, RF loss, self-heating or any rating.",
+  "netlist_sha256": "0b841fa7ca999bc79a61198a26b53831eaaccd1ebc8666522f849a6259e28843",
+  "observation_status": "ran",
+  "observe_nets": [
+    "anode"
+  ],
+  "observed": [
+    10.00048678733939
+  ],
+  "output_sha256": "b1f17c3ff67b76244f9dcd0d9bbabf6022b135d4ab7dc18059d99ebc85c64fd6",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T07:48:46Z",
+  "raw_output": "runtime-bench-output/OHM-038-tran/output.txt",
+  "recipe_source_sha256": "71f8bf51ed5f24f08f796d5c49933dd89c5fc9202b71c4c3d1acc62f6297bb7e",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "tstep": "1u",
+  "tstop": "0.0011",
+  "version_file": "runtime-bench-output/OHM-038-tran/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n",
+  "version_sha256": "2cdcb25fcf77dea87742b9ac629a0b5ba20169e01beb2b59fdd2e41ee348a45d"
+}

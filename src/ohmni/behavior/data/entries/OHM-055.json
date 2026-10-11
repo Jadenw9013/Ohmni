@@ -19,7 +19,9 @@
       "bench-results/BEH-MAG-ETHMAG--B3.json"
     ],
     "conflicts": [
-      "350 uH OCL is now sourced for H1102NL itself; previous reliance on another family is unnecessary."
+      "350 uH OCL is now sourced for H1102NL itself; previous reliance on another family is unnecessary.",
+      "D069: H1102NL specifies DCR per half winding (0.65 ohm) while PT61017PEL specifies it per full winding (0.6 ohm, pins 1-3); the values are not interchangeable. Bourns body 12.80 x 9.30 x 5.65 mm max and land rows 10.50 mm vs the 3D H1102NL default 12.70 x 9.53 x 6.80 and 10.16 mm.",
+      "D069: the class rwinding 0.5 ohm and CMC_RDC 0.1 ohm (ASSUMPTION) are supported by neither sheet; the bound part's sourced values are used."
     ],
     "documents": [
       {
@@ -31,6 +33,16 @@
         "source_status": "primary_source_opened",
         "title": "H1102NL Single Port 100BASE-T Magnetics",
         "url": "https://productfinder.pulseeng.com/doc_type/WEB301/doc_num/H1102NL/doc_part/H1102NL.pdf"
+      },
+      {
+        "document_id": "bourns-pt61017pel",
+        "manufacturer": "Bourns",
+        "note": "Archived 2026-10-11 (ledger sha256 3996e5e6...); p1 electrical specifications, DCR table and schematic read for the bound reference PT61017PEL (D069).",
+        "page": null,
+        "revision": "REV. 02/16",
+        "source_status": "primary_source_opened",
+        "title": "Bourns PT61017PEL LAN 10/100 Base-Tx Transformer",
+        "url": "https://www.bourns.com/docs/Product-Datasheets/PT61017PEL.pdf"
       }
     ],
     "entry_id": "OHM-055",
@@ -128,20 +140,154 @@
           0,
           70
         ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Schematic: 'TD+ 1, CT 2, TD- 3' / '16 TX+, 15 CT, 14 TX-'; 'RD+ 6, CT 7, RD- 8' / '11 RX+, 10 CT, 9 RX-'; line sides pass through a common-mode choke. Pins 4, 5, 12, 13 are not shown and are given no role.",
+        "field": "manufacturer_pin_roles",
+        "page": 1,
+        "scope": "Bourns PT61017PEL; Electrical Schematic p1",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/PT61017PEL.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "1": "TD_P",
+          "10": "RX_LCT",
+          "11": "RX_LP",
+          "14": "TX_LN",
+          "15": "TX_LCT",
+          "16": "TX_LP",
+          "2": "TD_CT",
+          "3": "TD_N",
+          "6": "RD_P",
+          "7": "RD_CT",
+          "8": "RD_N",
+          "9": "RX_LN"
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Electrical Specifications @ 25 C: 'DCR Pin 1-3, 6-8 ........ 0.6 ohm max.'",
+        "field": "pt61017_chip_side_dcr_max",
+        "page": 1,
+        "scope": "Bourns PT61017PEL; pins 1-3 and 6-8; 25 C",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/PT61017PEL.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.6
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Pin 9-11, 14-16 ........ 1.1 ohm max.'",
+        "field": "pt61017_line_side_dcr_max",
+        "page": 1,
+        "scope": "Bourns PT61017PEL; pins 9-11 and 14-16 (transformer + choke); 25 C",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/PT61017PEL.pdf"
+        ],
+        "unit": "ohm",
+        "value": 1.1
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Inductance Pin 1-3, 6-8 ..350 uH min. @ 100 KHz, 0.2 Vrms, 8 mA DC Bias'",
+        "field": "pt61017_ocl_min",
+        "page": 1,
+        "scope": "Bourns PT61017PEL; pins 1-3, 6-8; 100 kHz, 0.2 Vrms, 8 mA DC bias",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/PT61017PEL.pdf"
+        ],
+        "unit": "uH",
+        "value": 350
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'... 0.2 Vrms, 8 mA DC Bias'",
+        "field": "pt61017_ocl_test_dc_bias",
+        "page": 1,
+        "scope": "Bourns PT61017PEL; DC bias at which 350 uH min OCL is specified",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/PT61017PEL.pdf"
+        ],
+        "unit": "mA",
+        "value": 8
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Turns Ratio +/- 5% ....1CT*:1CT*'",
+        "field": "pt61017_turns_ratio",
+        "page": 1,
+        "scope": "Bourns PT61017PEL; 1CT:1CT +/-5%",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/PT61017PEL.pdf"
+        ],
+        "unit": "1",
+        "value": 1
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Hipot 1 mA, 2 sec. ......1500 VAC (PRI-SEC)'",
+        "field": "pt61017_hipot",
+        "page": 1,
+        "scope": "Bourns PT61017PEL; PRI-SEC, 1 mA, 2 s; test value, not working voltage",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/PT61017PEL.pdf"
+        ],
+        "unit": "V AC",
+        "value": 1500
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Insertion Loss 0.3-100 MHz ... -1.15 dB max.'",
+        "field": "pt61017_insertion_loss_max",
+        "page": 1,
+        "scope": "Bourns PT61017PEL; 0.3-100 MHz",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/PT61017PEL.pdf"
+        ],
+        "unit": "dB",
+        "value": -1.15
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Operating Temperature ....0 C to +70 C'",
+        "field": "pt61017_operating_temperature",
+        "page": 1,
+        "scope": "Bourns PT61017PEL",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/PT61017PEL.pdf"
+        ],
+        "unit": "C",
+        "value": [
+          0,
+          70
+        ]
       }
     ],
     "remaining_open_items": [
       "Pins absent from schematic need explicit NC/physical binding treatment, not a guessed ground.",
-      "Leakage, CMC values, parasitic capacitance, surge working limits and full CMR/return-loss model are unresolved."
+      "Leakage, CMC values, parasitic capacitance, surge working limits and full CMR/return-loss model are unresolved.",
+      "Bound reference (D069): Bourns PT61017PEL, an explicit alternative to the Pulse H1102NL representative (same 16-terminal 1.27 mm-pitch SMD form and TD/RD/TX/RX pin functions, 1CT:1CT, 350 uH min OCL). H1102NL itself stays unbindable: its line-side choke resistance and pins 4, 5, 12 and 13 are unpublished.",
+      "Former simulation blocker resolved for the explicitly bound reference (2026-10-11, D069): Working-voltage and complete physical pin binding remain unestablished; no isolation-safety acceptance. Resolution: the Bourns schematic and DCR table bind every functional pin; pins 4, 5, 12 and 13 have no function in the schematic and are left out of the terminal map, so the compiler refuses any connection to them. Working voltage is not published (1500 VAC, 1 mA, 2 s PRI-SEC is a hipot test); under D066 the recipe's first limitation states no isolation or safety acceptance.",
+      "Centre-tap half-winding resistance (blocks any centre-tap-biased design), function of pins 4/5/12/13, working voltage, leakage, common-mode choke, capacitance and return-loss model remain unsourced. The physical numbering direction of pins 2-16 follows the package convention; the Bourns drawing marks only pin 1."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Working-voltage and complete physical pin binding remain unestablished; no isolation-safety acceptance."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-055.md",
-      "document_sha256": "bede5647d358ad9e4d2c3d9cd9d6b2afdb2fcee1ccce081637f2f265250daa59",
+      "document_sha256": "7f7ab81df3e0165ffeb6c231a1191d9c5d355862cec70e4a24fe5ae99d4a1f3a",
       "fragment_sha256": null,
       "line": 1
     }

@@ -36,7 +36,7 @@ from .a1 import (
 )
 from .base import build_usb_esp32_base, common_preflight
 from .models import ArchetypeId, RefusalCode, SynthesisBrief, SynthesisResult
-from .peripherals import SUPPORTED_I2C_PARTS, add_i2c_bus, add_i2c_sensor, address_option
+from .peripherals import add_i2c_bus, add_i2c_sensor, address_option
 from .placement import PlacementIntentBuilder
 
 BUTTON_PART_ID = "GENERIC_MOMENTARY_BUTTON"
@@ -197,7 +197,7 @@ def synthesize_a2(brief: SynthesisBrief, catalog: PartCatalog | None = None) -> 
                        "The GPIO controller supports at most one I2C sensor.", "sensors")
     for slot in brief.sensors:
         spec = resolved.get(slot.part_id)
-        if slot.part_id not in SUPPORTED_I2C_PARTS or spec is None:
+        if spec is None:
             return _refuse(brief, RefusalCode.SENSOR_UNAVAILABLE,
                            "Choose a supported catalog I2C sensor.", "sensors.0.part_id")
         try:

@@ -744,6 +744,96 @@
       "status": "PASSED",
       "commit": "02d31417ab138913bf2a507c2a1c9fa7b3279142",
       "notes": "Acceptance-focused review traced per-part values to immutable records, checked that family code contains no MPN table, exercised geometry/orientation mutations, unsupported paste/thermal refusal, digest-bound resolver behavior and project-local export. Focused, fast, integration and frontend gates passed. No open BLOCKER/HIGH finding was found."
+    },
+    {
+      "id": "CS-T06-SELF-REVIEW-2026-10-10",
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "task": "CS-T06",
+      "reviewer": "implementing agent self-review",
+      "independent": false,
+      "status": "PASSED",
+      "commit": "317f98e7b340c9ef423304acfa85f7eb91593417",
+      "notes": "Acceptance-focused review verified transactional schema migrations and rollback, durable blob-before-reference publication with hash recheck, concurrent idempotency and explicit conflict handling, restart-visible orphan recovery, immutable revision/report/snapshot lineage, append-only revocation, diagnostic-only quarantine and disabled activation. The review caught and corrected revision identity so changed asset/report references produce a distinct revision. Focused, fast, integration and frontend gates passed. No open BLOCKER/HIGH finding was found."
+    },
+    {
+      "id": "CS-T07-SELF-REVIEW-2026-10-10",
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "task": "CS-T07",
+      "reviewer": "implementing agent self-review",
+      "independent": false,
+      "status": "PASSED",
+      "commit": "34329f24128e303ef10aa35e44cd663b43ac784c",
+      "notes": "Acceptance-focused review verified that every electrical fact is bound to a current supported CS-ELECTRICAL receipt, required facts and applicable rules are enumerated per supported profile, missing/failed/unknown outcomes block, unsupported behaviour cannot obtain electrical support, and activation reruns the gate against the exact publication digest. Passive and I2C profiles construct typed ComponentSpec records; seed catalog records remain byte-semantically unchanged. Active discovery persists across restart and excludes revoked revisions. Focused, fast, integration and frontend gates passed. No open BLOCKER/HIGH finding was found."
+    },
+    {
+      "id": "CS-T08-SELF-REVIEW-2026-10-10",
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "task": "CS-T08",
+      "reviewer": "implementing agent self-review",
+      "independent": false,
+      "status": "PASSED",
+      "commit": "01370a706b27d276addced8d4aa7cc1f9ffcef9e",
+      "notes": "Acceptance-focused review verified a typed pre-architecture resolution request, restart-safe WAITING_IMPORT/RESOLVED state, active admitted-revision snapshot binding, and refusal of missing or unknown resume tokens. Seed-ID sensor whitelists were replaced by the existing interface, pin-role, rail, address, decoupling and footprint capability checks. An admitted BME280-derived part completed semantic verification, real KiCad ERC, functional placement, deterministic routing, real KiCad DRC, fabrication export and current download lineage; MCP reported the identical catalog snapshot. Fast and integration gates passed. The slow gate has one unchanged baseline assertion mismatch (298 emitted route segments versus 297 expected), and global Ruff has only pre-existing protected behavior-path findings; scoped Ruff passed. No open CS-T08 BLOCKER/HIGH finding was found."
+    },
+    {
+      "id": "CS-T09-SELF-REVIEW-2026-10-10",
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "task": "CS-T09",
+      "reviewer": "implementing agent self-review",
+      "independent": false,
+      "status": "PASSED",
+      "commit": "d68497b0",
+      "notes": "Acceptance-focused review found no open BLOCKER/HIGH issue. Every model file is manifest-listed and hash-checked before recursive include expansion; active file directives and unlisted, unreachable or cyclic content fail closed. Exact catalog pins, subcircuit ports and CircuitIR nets must agree before a deck is emitted. CAD admission is separate from exact simulation eligibility. Assertions and their limits are fingerprinted before the run, while unsupported dialect, nonconvergence, missing observations and tool failure remain distinct outcomes. The focused boundary suite, 2252-test fast gate, scoped Ruff and a real ngspice-42 simulation integration passed."
+    },
+    {
+      "id": "CS-T10-SELF-REVIEW-2026-10-10",
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "task": "CS-T10",
+      "reviewer": "implementing agent self-review",
+      "independent": false,
+      "status": "PASSED",
+      "commit": "242d04a7",
+      "notes": "Acceptance-focused review found no open BLOCKER/HIGH issue. The exact TI LM317 Rev Z digest binds pin, tab, limit and land-pattern facts. The DCY tab remains electrical pin 4 and must share OUTPUT with pin 2. The deterministic divider check preserves the sourced adjust-current term and rejects wrong topology, tab mapping, headroom, load and output limits. The exact hash-bound TI PSpice model ran under isolated ngspice-42 psa compatibility mode and measured 5.005542 V. Focused, fast, integration, simulation integration and scoped Ruff gates passed."
+    },
+    {
+      "id": "CS-T11-SELF-REVIEW-2026-10-10",
+      "scope": "COMPONENT-SYNTHESIS-1",
+      "task": "CS-T11",
+      "reviewer": "implementing agent self-review",
+      "independent": false,
+      "status": "PASSED_WITH_INDEPENDENT_REVIEW_PENDING",
+      "commit": "b9f6b922",
+      "notes": "Self-review checked exact selector inventory, source-byte hashes, CAD-evidence freshness, negative fail-closed outcomes, portable export hashes, fresh resolver reconstruction, documentation truthfulness and limitations. Corpus, full, integration, slow-integration, verify-all, focused tests and scoped Ruff passed. Repository-wide Ruff reports only 12 pre-existing findings in behavior-owned files excluded by the task boundary. This review is not independent and cannot make CS-T11 COMPLETE."
+    },
+    {
+      "id": "CUX-T01-SELF-REVIEW",
+      "scope": "CONVERSATIONAL-UX-1",
+      "task": "CUX-T01",
+      "reviewer": "implementation-agent",
+      "independent": false,
+      "status": "PASSED",
+      "commit": "edf314423f4a5c546762aecdfe42312b46c66ba3",
+      "notes": "Self-review checked capability-gated entry, editable examples, accessible native disclosure, no horizontal overflow, request deadline/abort, late-response suppression, unchanged draft recovery, and no automatic write retry. Browser checked provider-free fallback and save/reopen. This is not independent scope review; full-suite evidence is recorded separately."
+    },
+    {
+      "id": "CUX-T02-SELF-REVIEW",
+      "scope": "CONVERSATIONAL-UX-1",
+      "task": "CUX-T02",
+      "reviewer": "implementation-agent",
+      "independent": false,
+      "status": "PASSED",
+      "commit": "e2545a3fa19af1c9916723da7adcdf503d481426",
+      "notes": "Self-review checked strict typed plans, exact quote attribution, deterministic support checks, bounded conversations, stale-plan refusal, server-owned idempotent confirmation, durable receipts and exact revision dispatch. Found and fixed controller remount on shell refresh and model-provider injection into the deterministic project pipeline; regression tests cover both. This is not independent scope review or a claim of live model semantic accuracy. Native browser generation reached EDA but failed with eda_tool_failed; saved input and recovery remained available."
+    },
+    {
+      "id": "CUX-T03-SELF-REVIEW",
+      "scope": "CONVERSATIONAL-UX-1",
+      "task": "CUX-T03",
+      "reviewer": "implementation-agent",
+      "independent": false,
+      "status": "PASSED",
+      "commit": "f0c17495a185adeddf0fe482589d988a202ad0ee",
+      "notes": "Checked server-owned revision context, model selection of existing fact IDs instead of authored evidence, strict typed changes, exact complete diffs, deterministic support policy, context fingerprint checks and atomic latest-revision compare-and-swap. Idempotent application saves immutable revisions with receipts and no reused run. Adversarial tests cover fabricated references, unsupported parts, invalid types, concurrent saves, outdated results, expiry, cross-project application and late UI responses. Browser found JSON property-order diff bug; canonical comparison and regression fix verified. No new BLOCKER/HIGH findings found in this self-review. Final independent scope review is still pending; live model quality is not established."
     }
   ],
   "findings": [

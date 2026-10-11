@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "id": "CS-T11",
+  "task": "CS-T11",
+  "scope": "COMPONENT-SYNTHESIS-1",
+  "status": "PASSED",
+  "commit": "b9f6b922",
+  "verified_at": "2026-10-10",
+  "summary": "A deterministic acceptance gate inventories positive evidence, exercises fourteen negative admission cases, binds real source and CAD proof, and verifies portable restart behavior without promoting unknown evidence.",
+  "commands": [
+    {"command": "python scripts/component_synthesis_acceptance.py --cad-evidence build/component-synthesis/cad/CS-T04_evidence.json --out build/component-synthesis/acceptance", "result": "PASS"},
+    {"command": "python scripts/verify.py corpus", "result": "PASS", "tests": 110, "deselected": 2317, "runtime_seconds": 9.78},
+    {"command": "python scripts/verify.py full with ngspice-42 and exact TI LM317 model", "result": "PASS", "tests": 2419, "skipped": 8, "runtime_seconds": 570.30},
+    {"command": "python scripts/verify.py integration", "result": "PASS", "tests": 33, "skipped": 8, "deselected": 2386},
+    {"command": "python scripts/verify.py slow", "result": "PASS", "tests": 18, "deselected": 2409},
+    {"command": "python -m ohmni verify-all", "result": "PASS", "fixtures": 14},
+    {"command": "python -m ruff check scripts/component_synthesis_acceptance.py tests/test_component_synthesis_acceptance.py tests/test_routing.py", "result": "PASS"},
+    {"command": "python -m ruff check .", "result": "EXTERNAL_BASELINE_FAILURE", "findings": 12, "detail": "All findings are in behavior-owned paths excluded by the user's task boundary."},
+    {"command": "python scripts/ai_state.py validate", "result": "PASS"}
+  ],
+  "acceptance": {
+    "negative_corpus": "Fourteen exact selectors cover evidence, source, geometry, orientation, pin binding, persistence, eligibility, CAD and simulation fail-closed boundaries.",
+    "held_out_source": "The official Microchip MCP1700 DS20001826F PDF is hash-pinned; page 19 exceeds the established vector-rule bound and is rejected without parser adaptation.",
+    "real_tools": "KiCad 10.0.5 loaded and rendered generated artifacts and independently corroborated connected ERC/DRC; ngspice-42 executed the exact hash-bound TI LM317 model.",
+    "portable_restart": "The exact LM317 portable library was exported, hashed, loaded by a newly reconstructed resolver and compared byte-for-byte after restart.",
+    "documentation": "docs/COMPONENT_SYNTHESIS.md defines the supported envelope, commands, result interpretation and operational limitations."
+  },
+  "review": {"status": "UNAVAILABLE", "independent": false, "record": ".ai/reviews.yaml#CS-T11-SELF-REVIEW-2026-10-10"},
+  "limitations": [
+    "CS-T11 is VERIFIED, not COMPLETE, until a separate reviewer inspects the implementation and evidence.",
+    "The held-out MCP1700 drawing proves fail-closed behavior for an unsupported page, not successful automatic synthesis of that package.",
+    "Portable output is verified for the admitted LM317 asset bundle and resolver contract; it is not a general promise for arbitrary third-party models.",
+    "Repository-wide Ruff is not green because 12 pre-existing findings remain in behavior-owned files outside this task's authorized paths; every CS-T11 changed Python file is clean."
+  ]
+}

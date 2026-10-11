@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "id": "CUX-T02",
+  "task": "CUX-T02",
+  "scope": "CONVERSATIONAL-UX-1",
+  "status": "PASSED_WITH_RECORDED_LIMITATIONS",
+  "commit": "e2545a3fa19af1c9916723da7adcdf503d481426",
+  "verified_at": "2026-10-10",
+  "summary": "Typed conversational planning, bounded clarification, reviewable choices and exact confirm-save-generate flow.",
+  "commands": [
+    {
+      "command": "Project venv: python -m pytest --basetemp build/fast-t02 -o cache_dir=build/fast-cache",
+      "result": "PASS",
+      "tests": 2322,
+      "skipped": 86,
+      "deselected": 62,
+      "runtime_seconds": 534.33,
+      "detail": "Fast suite started before the final provider dispatch fix; subsequent focused tests cover the final server implementation and new dispatch regression."
+    },
+    {
+      "command": "python -m pytest tests/test_conversation.py tests/test_conversation_api.py tests/test_project_api.py tests/test_ai_workflow.py -o addopts=\"-q --strict-markers\" --basetemp build/cux-final-focused",
+      "result": "PASS",
+      "tests": 64,
+      "runtime_seconds": 29.44
+    },
+    {
+      "command": "node --test apps/web/tests/*.test.mjs",
+      "result": "PASS",
+      "tests": 1070
+    },
+    {
+      "command": "python -m pytest -m integration --basetemp build/integration-final-t02 -o cache_dir=build/integration-final-cache",
+      "result": "PASS",
+      "tests": 28,
+      "skipped": 16,
+      "deselected": 2427,
+      "runtime_seconds": 66.95
+    },
+    {
+      "command": "python -m ruff check changed Python implementation and tests",
+      "result": "PASS"
+    },
+    {
+      "command": "python -m ruff check .",
+      "result": "EXTERNAL_BASELINE_FAILURE",
+      "findings": 13,
+      "detail": "All findings are in unchanged behavior-owned files, including tests/test_behavior_registry.py from merged package bindings. No behavior paths modified."
+    },
+    {
+      "command": "python scripts/ai_state.py validate",
+      "result": "PASS"
+    }
+  ],
+  "browser_checks": [
+    "Scripted provider: review shows requested interpretation, defaults and unresolved question; confirmation disabled until answered.",
+    "Short reply preserves transcript and changes width to 80 mm; confirmation saves exact revision and starts deterministic generation.",
+    "Unresolved reply receives keyboard focus; review fits 390px and 320px without horizontal overflow.",
+    "Native generation reached EDA then reported eda_tool_failed; UI preserved revision and showed Retry this revision / Back to project. No successful native board output is claimed."
+  ],
+  "review": {
+    "required": false,
+    "independent": false,
+    "status": "PASSED",
+    "record": ".ai/reviews.yaml#CUX-T02-SELF-REVIEW"
+  },
+  "limitations": [
+    "Live model quality was not evaluated; prompts request preservation of explicit requirements, but deterministic checks validate schema, source-quote presence and supported values, not full semantic correspondence. User review is required.",
+    "Unconfirmed plans expire after 30 minutes and do not survive server restart; confirmed conversation receipts persist with revisions.",
+    "The existing local workspace boundary is not multi-user authentication.",
+    "No successful native board generation is claimed from the browser check.",
+    "CUX-T03 contextual questions, revision diffs and iteration remain next; final independent scope review remains required."
+  ]
+}

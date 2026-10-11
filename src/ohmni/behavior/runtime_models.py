@@ -214,6 +214,32 @@ class PWLExcitation(BaseModel):
         return self
 
 
+class ACExcitation(BaseModel):
+    """Ideal small-signal sine source for AC analysis: an optional DC bias plus an RMS amplitude.
+
+    The amplitude is the RMS value of the sine, so every AC result is an RMS phasor. A stimulus is
+    never a component rating or evidence.
+    """
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    positive_net: str
+    negative_net: str
+    dc: Quantity | None = None
+    ac_rms: Quantity
+
+    @model_validator(mode="after")
+    def valid_ac(self):
+        if self.positive_net == self.negative_net:
+            raise ValueError("AC excitation requires distinct nets")
+        unit = self.ac_rms.unit.value
+        if unit not in {"V", "A"} or not math.isfinite(self.ac_rms.value) or self.ac_rms.value <= 0:
+            raise ValueError("AC excitation requires a positive finite RMS amplitude in volts or amperes")
+        if self.dc is not None and (self.dc.unit.value != unit or not math.isfinite(self.dc.value)):
+            raise ValueError("AC excitation bias must be finite and in the amplitude's unit")
+        return self
+
+
 class CompiledComponent(BaseModel):
     model_config = ConfigDict(frozen=True)
 
@@ -239,12 +265,12 @@ class BehaviorCompilation(BaseModel):
     model_config = ConfigDict(frozen=True)
 
     circuit_hash: str
-    analysis: Literal["op", "tran"] = "op"
+    analysis: Literal["op", "tran", "ac"] = "op"
     netlist: str | None = None
     netlist_sha256: str | None = None
     node_names: dict[str, str] = Field(default_factory=dict)
     source_elements: dict[str, str] = Field(default_factory=dict)
-    excitations: list[DCExcitation | PWLExcitation] = Field(default_factory=list)
+    excitations: list[DCExcitation | PWLExcitation | ACExcitation] = Field(default_factory=list)
     components: list[CompiledComponent] = Field(default_factory=list)
     problems: list[str] = Field(default_factory=list)
     limitations: list[str] = Field(default_factory=list)

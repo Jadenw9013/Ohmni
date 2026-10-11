@@ -85,9 +85,9 @@ STATIC_ASSETS=("index.html","app.js","view-model.js","board-model.js","board-vie
                "schematic-view.js","client-contract.js","reference-preview.js",
                "board-renderer-geometry.js","board-renderer-webgl.js","board-controls.js",
                "learning-model.js","circuit-lessons.js","circuit-lab.js",
-               "project-workbench.js","project-contract.js","scope-view.js",
+               "project-workbench.js","project-contract.js","conversation.js","project-assistant.js","scope-view.js",
                "reference-board.json","styles.css","visual-explorer.css",
-               "component-visuals.json","component-stories.js","component-stories.css","component-behavior.js",
+               "component-visuals.json","component-stories.js","component-stories.css","component-behavior.js","design-behavior.js",
                "component-sandbox.js","sandbox-model.js","home.js","home.css","landing.css","landing-board.png","workbench-theme.css",
                "favicon.svg","favicon.ico",
                "landing-pcb-presentation.js",
@@ -465,7 +465,7 @@ class JobStore:
             with self.lock:
                 if self._validated_job_locked(job_id)["status"] in TERMINAL_JOB_STATUSES:return
             factory=pipeline_factory or self.pipeline_factory
-            pipeline=factory(progress) if self.provider is None else factory(progress,provider=self.provider)
+            pipeline=factory(progress) if pipeline_factory is not None or self.provider is None else factory(progress,provider=self.provider)
             report=pipeline.run(self.output_root/job_id,request)
             with self.lock:
                 if self._validated_job_locked(job_id)["status"] in TERMINAL_JOB_STATUSES:return
@@ -548,6 +548,25 @@ class JobStore:
                 return "stale",None
             return self._read_artifact_snapshot(job_id,name,job)
         except BaseException:return "unavailable",None  # noqa: BLE001 - never expose artifact-boundary failures
+    def read_circuit(self,job_id):
+        """The saved project's own CircuitIR, only when it hashes to the circuit its report names.
+
+        Legacy demo and model-proposed runs record no circuit file, so they get
+        None and the page says a design behavior run is unavailable for them.
+        """
+        try:
+            from ohmni.domain.circuit import CircuitIR
+
+            job=self.get(job_id)
+            if not job or job.get("status")!="complete":return None
+            expected=job["report"]["project"].get("circuit_hash")
+            directory=self._job_directory(job_id)
+            if directory is None or not isinstance(expected,str) or not re.fullmatch(r"[0-9a-f]{64}",expected):return None
+            path=directory/"circuit.json"
+            if path.is_symlink() or path.resolve().parent!=directory:return None
+            circuit=CircuitIR.model_validate_json(path.read_text(encoding="utf-8"))
+            return circuit if circuit.content_hash==expected else None
+        except BaseException:return None  # noqa: BLE001 - never disclose disk or report failures
     def read_build_package(self,job_id):
         """Zip only captured, hash-matching bytes from one current release."""
         try:return self._build_package_snapshot(job_id)
@@ -812,6 +831,12 @@ class DemoHTTPServer(ThreadingHTTPServer):
             self.workspace_lock=ProjectWorkspaceLock(self.store.output_root)
             self.store.enable_persistence()
             self.projects=self.store.project_store
+            from ohmni.application.conversation import ConversationPlanner
+
+            self.planner=ConversationPlanner(self.store.provider,self.projects)
+            from ohmni.application.iteration import ProjectAssistant
+
+            self.assistant=ProjectAssistant(self.store.provider,self.projects,self.store)
         except ProjectWorkspaceInUseError:
             self.server_close()
             raise
@@ -937,6 +962,53 @@ class DemoHandler(SimpleHTTPRequestHandler):
                 self._reject(code,HTTPStatus.CONFLICT);return None
         return payload
 
+    def _post_assistant(self,project_id,revision_id,turn_id=None):
+        from ohmni.application.conversation import PlanUnavailable
+        from ohmni.application.projects import ProjectRefusalError
+
+        payload=self._project_payload(set() if turn_id else {"message","parent_id"})
+        if payload is None:return
+        try:
+            if turn_id:
+                result=self.server.assistant.apply(project_id,revision_id,turn_id)
+                return self._json({"project":result,**self.server._identity()},HTTPStatus.CREATED)
+            parent=payload["parent_id"]
+            if parent is not None and (type(parent) is not str or not re.fullmatch(r"[0-9a-f]{16}",parent)):
+                raise ValueError("Invalid parent")
+            result=self.server.assistant.ask(project_id,revision_id,payload["message"],parent)
+            return self._json({"turn":result,**self.server._identity()})
+        except PlanUnavailable as error:
+            return self._json({"error":"proposal_unavailable","refusal":{"message":str(error)}},HTTPStatus.CONFLICT)
+        except ProjectRefusalError as error:
+            return self._json({"error":"project_refused","refusal":error.refusal.model_dump(mode="json")},HTTPStatus.UNPROCESSABLE_ENTITY)
+        except (ValueError,TypeError):
+            return self._json({"error":"invalid_proposal","refusal":{"message":"This response could not be grounded in your saved project. Ask again or use the detailed controls."}},HTTPStatus.BAD_REQUEST)
+        except Exception:  # noqa: BLE001 - do not expose provider credentials or storage paths
+            return self._json({"error":"assistant_unavailable","refusal":{"message":"Assistance is unavailable. Your saved revision is unchanged. Try again or use the detailed controls."}},HTTPStatus.SERVICE_UNAVAILABLE)
+
+    def _post_plan(self,plan_id=None):
+        from ohmni.application.conversation import PlanUnavailable
+        from ohmni.application.projects import ProjectRefusalError
+
+        payload=self._project_payload(set() if plan_id else {"message","parent_id"})
+        if payload is None:return
+        try:
+            if plan_id:
+                return self._json({"project":self.server.planner.confirm(plan_id),**self.server._identity()},HTTPStatus.CREATED)
+            parent=payload["parent_id"]
+            if parent is not None and (type(parent) is not str or not re.fullmatch(r"[0-9a-f]{16}",parent)):
+                raise ValueError("The previous plan identifier is invalid.")
+            result=self.server.planner.propose(payload["message"],parent)
+            return self._json({"plan":result,**self.server._identity()})
+        except PlanUnavailable as error:
+            return self._json({"error":"plan_unavailable","refusal":{"message":str(error)}},HTTPStatus.CONFLICT)
+        except ProjectRefusalError as error:
+            return self._json({"error":"project_refused","refusal":error.refusal.model_dump(mode="json")},HTTPStatus.UNPROCESSABLE_ENTITY)
+        except (ValueError,TypeError):
+            return self._json({"error":"invalid_plan","refusal":{"message":"The plan could not be validated. Keep your requirements and try again or use guided setup."}},HTTPStatus.BAD_REQUEST)
+        except Exception:  # noqa: BLE001 - provider and storage failures never disclose credentials or paths
+            return self._json({"error":"plan_unavailable","refusal":{"message":"Planning is unavailable right now. Your request is still here. Try again or use guided setup."}},HTTPStatus.SERVICE_UNAVAILABLE)
+
     def _post_project(self,project_id=None):
         from ohmni.application.projects import ProjectRefusalError, preview_project
         from ohmni.synthesis import SynthesisBrief
@@ -1015,7 +1087,47 @@ class DemoHandler(SimpleHTTPRequestHandler):
         except Exception:  # noqa: BLE001 - failed service requests must not disclose local paths
             return self._json({"error":"behavior_run_unavailable"},HTTPStatus.SERVICE_UNAVAILABLE)
 
+    def _behavior_design(self):
+        """Run the caller's own multi-part circuit; refusals name each blocked part."""
+        payload=self._project_payload({"design"})
+        if payload is None:return
+        from pydantic import ValidationError
+
+        from ohmni.application.component_behavior import BehaviorRunBusy, DesignRunRequest
+        try:
+            if type(payload["design"]) is not dict:raise ValueError
+            request=DesignRunRequest.model_validate_json(json.dumps(payload["design"]))
+        except (ValueError,ValidationError):
+            return self._reject("invalid_design_request",HTTPStatus.BAD_REQUEST)
+        service=self._behavior_service()
+        if service is None:return
+        try:return self._json({"result":service.run_design(request),**self.server._identity()})
+        except BehaviorRunBusy:return self._json({"error":"behavior_run_busy"},HTTPStatus.CONFLICT)
+        except Exception:  # noqa: BLE001 - failed service requests must not disclose local paths
+            return self._json({"error":"behavior_run_unavailable"},HTTPStatus.SERVICE_UNAVAILABLE)
+
+    def _behavior_service(self):
+        from ohmni.application.component_behavior import ComponentBehaviorService
+        from ohmni.behavior.loader import BehaviorRegistryError, _find_repo_root
+        try:
+            with self.server.behavior_service_lock:
+                if self.server.behavior_service is None:
+                    self.server.behavior_service=ComponentBehaviorService(
+                        _find_repo_root(ROOT),self.server.store.output_root/"behavior-runs")
+                return self.server.behavior_service
+        except BehaviorRegistryError:
+            self._json({"error":"behavior_reference_unavailable"},HTTPStatus.SERVICE_UNAVAILABLE)
+        except Exception:  # noqa: BLE001 - failed service requests must not disclose local paths
+            self._json({"error":"behavior_run_unavailable"},HTTPStatus.SERVICE_UNAVAILABLE)
+        return None
+
     def do_POST(self):
+        assistant_path=re.fullmatch(r"/api/projects/([0-9a-f]{16})/revisions/([0-9a-f]{16})/assistant(?:/([0-9a-f]{16})/apply)?",self.path)
+        if assistant_path:return self._post_assistant(*assistant_path.groups())
+        if self.path=="/api/project-plans":return self._post_plan()
+        plan_path=re.fullmatch(r"/api/project-plans/([0-9a-f]{16})/confirm",self.path)
+        if plan_path:return self._post_plan(plan_path[1])
+        if self.path=="/api/behavior/design/run":return self._behavior_design()
         behavior_path=re.fullmatch(r"/api/behavior/(OHM-[0-9]{3})/run",self.path)
         if behavior_path:return self._behavior(behavior_path[1],run=True)
         if self.path=="/api/projects":return self._post_project()
@@ -1123,6 +1235,14 @@ class DemoHandler(SimpleHTTPRequestHandler):
             error=self._poll_contract_error()
             if error is not None:return self._reject(error,HTTPStatus.CONFLICT)
             return self._sensor_exercise()
+        circuit_path=re.fullmatch(r"/api/jobs/([0-9a-f]{12})/circuit",request_path)
+        if circuit_path:
+            error=self._poll_contract_error()
+            if error is not None:return self._reject(error,HTTPStatus.CONFLICT)
+            circuit=self.server.store.read_circuit(circuit_path[1])
+            if circuit is None:return self._json({"error":"circuit_unavailable"},HTTPStatus.NOT_FOUND)
+            return self._json({"circuit":circuit.model_dump(mode="json"),"circuit_hash":circuit.content_hash,
+                               **self.server._identity()})
         if request_path.startswith("/api/jobs/"):
             job_id=request_path.removeprefix("/api/jobs/")
             if "/" in job_id:return self._json({"error":"invalid job path"},HTTPStatus.BAD_REQUEST)

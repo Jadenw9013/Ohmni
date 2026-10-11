@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "id": "CS-T06",
+  "task": "CS-T06",
+  "scope": "COMPONENT-SYNTHESIS-1",
+  "status": "PASSED",
+  "commit": "317f98e7b340c9ef423304acfa85f7eb91593417",
+  "verified_at": "2026-10-10",
+  "summary": "Persistent component admission infrastructure with versioned atomic migrations, content-addressed blob commits, immutable quarantine publication, report/snapshot lineage, restart recovery, idempotency and revocation.",
+  "commands": [
+    {
+      "command": "python -m pytest tests/test_component_store.py -q",
+      "result": "PASS",
+      "tests": 10
+    },
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "PASS",
+      "tests": 2203,
+      "skipped": 82,
+      "deselected": 52
+    },
+    {
+      "command": "python scripts/verify.py integration",
+      "result": "PASS",
+      "tests": 27,
+      "skipped": 7,
+      "deselected": 2303
+    },
+    {
+      "command": "node --test apps/web/tests/*.test.mjs",
+      "result": "PASS",
+      "tests": 1043
+    },
+    {
+      "command": "python -m ruff check src/ohmni/catalog/component_store.py src/ohmni/catalog/__init__.py tests/test_component_store.py",
+      "result": "PASS"
+    },
+    {
+      "command": "python scripts/ai_state.py validate",
+      "result": "PASS"
+    }
+  ],
+  "acceptance": {
+    "migrations": "Two contiguous schema migrations advance user_version only after their statements commit; an injected failing migration proves schema and version rollback.",
+    "blob_ordering": "Content-addressed bytes are fsynced and registered in a separate commit before publication; every reference is rehashed inside the publication transaction.",
+    "concurrency_and_restart": "BEGIN IMMEDIATE plus idempotency fingerprints makes concurrent duplicates converge, conflicts explicit, and blob-first crash residue discoverable and retriable after restart.",
+    "lineage": "Revisions include record and publication identities, reports retain parent digests, snapshots pin exact revisions, and revocation is append-only without history rewriting.",
+    "quarantine": "Published revisions can only be QUARANTINED, active discovery is empty, and activation raises until CS-T07 implements electrical admission gates."
+  },
+  "limitations": [
+    "CS-T06 does not determine electrical eligibility or activate catalog revisions; CS-T07 owns those gates.",
+    "Snapshots are immutable audit/resume records and do not imply that their quarantined entries are selectable by a design.",
+    "Unreferenced content-addressed blobs are reported for explicit recovery or later garbage collection; they are never active catalog state."
+  ]
+}

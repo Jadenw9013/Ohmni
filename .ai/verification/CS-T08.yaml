@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "id": "CS-T08",
+  "task": "CS-T08",
+  "scope": "COMPONENT-SYNTHESIS-1",
+  "status": "PASSED_WITH_EXTERNAL_BASELINE_FAILURE",
+  "commit": "01370a706b27d276addced8d4aa7cc1f9ffcef9e",
+  "verified_at": "2026-10-10",
+  "summary": "Durable missing-part resolution and admitted-catalog resume feed functional placement and the real board/release pipeline with exact catalog, revision and artifact lineage.",
+  "commands": [
+    {
+      "command": "python -m pytest tests/test_component_resolution.py -m 'not integration' -q",
+      "result": "PASS",
+      "tests": 3
+    },
+    {
+      "command": "python -m pytest tests/test_component_resolution.py -m integration -q",
+      "result": "PASS",
+      "tests": 1
+    },
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "PASS",
+      "tests": 2231,
+      "skipped": 82,
+      "deselected": 57
+    },
+    {
+      "command": "python scripts/verify.py integration",
+      "result": "PASS",
+      "tests": 28,
+      "skipped": 11,
+      "deselected": 2331
+    },
+    {
+      "command": "python scripts/verify.py slow",
+      "result": "EXTERNAL_BASELINE_FAILURE",
+      "tests_passed": 17,
+      "tests_failed": 1,
+      "deselected": 2352,
+      "detail": "Unchanged tests/test_routing.py expects 297 track segments; unchanged router deterministically emits 298. CS-T08 modifies neither file."
+    },
+    {
+      "command": "python -m ruff check <CS-T08 changed Python files>",
+      "result": "PASS"
+    },
+    {
+      "command": "python -m ruff check .",
+      "result": "EXTERNAL_BASELINE_FAILURE",
+      "detail": "12 pre-existing findings are confined to protected docs/behavior/ and tools/behavior_audit/ files."
+    },
+    {
+      "command": "python scripts/ai_state.py validate",
+      "result": "PASS"
+    }
+  ],
+  "acceptance": {
+    "resolution_before_generation": "DesignOrchestrator records a typed resolution request before architecture; the dynamic path persists the same gate before synthesis.",
+    "functional_placement": "Dynamic I2C selection uses capability checks and emits PlacementGroup/DecouplingTarget intent rather than authored reference-designator coordinates.",
+    "end_to_end": "An admitted new part passed semantic verification, ERC, placement, routing, DRC, fabrication export and current download checks.",
+    "negative_gate": "Missing imports and nonexistent resolution IDs cannot resume, and formerly missing parts must bind to active admitted revision IDs.",
+    "snapshot_parity": "Project lineage and MCP capabilities expose the identical active catalog snapshot hash."
+  },
+  "limitations": [
+    "Dynamic functional integration is bounded to the existing I2C sensor topology and CS-T07-supported electrical profiles.",
+    "The global slow-suite track-count assertion fails on origin/main behavior unrelated to this diff; routing still closes and its independent report passes.",
+    "Global Ruff is blocked by protected behavior files owned by the concurrent behavior session; CS-T08 files pass."
+  ]
+}

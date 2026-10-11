@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import re
 from pathlib import Path
 
@@ -120,12 +121,19 @@ def test_fidelity_vocabulary_is_exact_and_source_contains_no_vendor_claim(regist
 
 def test_every_entry_has_an_honest_simulation_disposition(registry):
     assert all(record.simulation_reason for record in registry.entries.values())
+    recipes = json.loads((ROOT / "docs/behavior/runtime-recipes.json").read_text(encoding="utf-8"))["entries"]
     for entry in registry.entries.values():
         number = int(entry.entry_id.split("-")[1])
-        if entry.layer.value == "L3" or 103 <= number <= 140 or entry.status.value == "research_required":
+        # D066: a package simulates only as an exact sourced reference part bound by its recipe.
+        bound_package = 103 <= number <= 140 and bool(recipes.get(entry.entry_id, {}).get("reference_part"))
+        if entry.layer.value == "L3" or entry.status.value == "research_required":
+            assert entry.simulation_disposition is SimulationDisposition.NOT_SIMULABLE
+        elif 103 <= number <= 140 and not bound_package:
             assert entry.simulation_disposition is SimulationDisposition.NOT_SIMULABLE
         else:
             assert entry.simulation_disposition is SimulationDisposition.SIMULABLE
+            if bound_package:
+                assert entry.simulation_reason.startswith("Simulates as the bound reference part ")
 
 
 def test_generated_projection_is_current():
@@ -385,7 +393,12 @@ def test_xt60_source_variants_are_not_merged_into_one_rating(registry):
     assert facts["catalog_current_max"].value == 35
     assert facts["web_voltage_rated_dc"].value == 80
     assert facts["legacy_voltage_rated_dc"].value == 500
-    assert registry.entry("OHM-174").research.simulation_blockers
+    # D069 binds the 2025V0 M30 values under their own field names; the legacy rows stay distinct.
+    assert facts["m30_current_rated"].value == 35
+    assert "XT60PW-M30" in facts["m30_current_rated"].scope
+    assert not registry.entry("OHM-174").research.simulation_blockers
+
+
 @pytest.mark.parametrize("number", [124, 125, 126])
 def test_stm32_capacitance_is_typical_not_a_rating_ceiling(number):
     registry = BehaviorRegistry(repo_root=ROOT)

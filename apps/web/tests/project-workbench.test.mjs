@@ -198,7 +198,8 @@ function workbenchDom() {
     const node = (selector) => {
         if (!nodes.has(selector)) nodes.set(selector, {
             innerHTML: "", textContent: "", hidden: false, disabled: false,
-            focus() {}, querySelectorAll: () => [],
+            focus() {}, querySelector: node, querySelectorAll: () => [], setAttribute() {},
+            addEventListener(name, handler) { handlers.set(`${selector}:${name}`, handler); },
             replaceWith(replacement) { nodes.set(selector, replacement); },
         });
         return nodes.get(selector);
@@ -209,6 +210,30 @@ function workbenchDom() {
     };
     return { root, node, handlers };
 }
+
+test("conversation application activates the new saved revision and its generation action", async () => {
+    const dom=workbenchDom();let invalidated=0,ran,applied=false;
+    const base={...revision,brief:{...brief,board_width_mm:100,board_height_mm:70}};
+    const next={...base,revision_id:"3".repeat(16),number:2,brief:{...base.brief,board_width_mm:80},brief_fingerprint:"c".repeat(64)};
+    const turn={turn_id:"4".repeat(16),project_id:project.project_id,revision_id:base.revision_id,revision_number:1,base_brief_fingerprint:base.brief_fingerprint,context_fingerprint:"d".repeat(64),kind:"change",messages:["80 mm wide"],facts:[],brief:next.brief,changes:[{field:"board_width_mm",before:100,after:80}],questions:[],ready:true,invalidation:"New checks required."};
+    const fetcher=async(path)=>{
+        if(path==="/api/health")return response(200,{...identity,status:"ready",fixture_id:"esp32-bme280-environmental-logger"});
+        if(path==="/api/project-options")return response(200,{...identity,options});
+        if(path.endsWith("/assistant"))return response(200,{...identity,turn});
+        if(path.endsWith("/apply"))applied=true;
+        return response(200,envelope({...project,revisions:applied?[base,next]:[base]}));
+    };
+    const c=mountProjectWorkbench(dom.root,{fetcher,onInvalidate:()=>{invalidated++;},onRun:request=>{ran=request;}});
+    await c.openProject(project.project_id);
+    dom.node("#assistant-message").value="80 mm wide";
+    dom.handlers.get("#assistant-form:submit")({preventDefault(){}});await new Promise(setImmediate);
+    assert.equal(dom.node("#assistant-apply").hidden,false);
+    dom.handlers.get("#assistant-apply:click")();await new Promise(setImmediate);
+    assert.equal(dom.node("#project-save-state").textContent,"Revision 2 saved");
+    assert.equal(dom.node("#project-run").disabled,false);assert.ok(invalidated>0);
+    workbenchClick(dom,"#project-run");await new Promise(setImmediate);
+    assert.equal(ran.revisionId,next.revision_id);c.dispose();
+});
 
 test("a first run refreshes authoritative revision metadata and keeps its reopen action after revision selection", async () => {
     const dom = workbenchDom();
@@ -576,4 +601,30 @@ test("readable result values and authored assumptions retain their exact server 
     assert.match(html, /<details class="requirement-assumptions"><summary>Assumptions and limits \(1\)<\/summary>.*Firmware still needed.*Unknown/s);
     assert.ok(html.indexOf("Input supply: 5 V") < html.indexOf("Assumptions and limits"));
     assert.equal(requirementResultsHtml([{ ...rows[0], display_value: {} }]), null);
+});
+
+for (const phase of ["health", "response", "body"]) {
+    test(`project request bounds a stalled ${phase} and aborts its transport`, async () => {
+        let signal;
+        const never = new Promise(() => {});
+        const fetcher = async (path, init) => {
+            signal = init.signal;
+            if (path === "/api/health") return phase === "health" ? never
+                : response(200, { ...identity, status: "ready", fixture_id: "esp32-bme280-environmental-logger" });
+            return phase === "response" ? never : { ok: true, json: () => never };
+        };
+        await assert.rejects(projectRequest("/api/projects", { fetcher, timeoutMs: 5 }), /took too long/);
+        assert.equal(signal.aborted, true);
+    });
+}
+
+test("a late health response cannot start a project write after timeout", async () => {
+    let deliver;
+    let writes = 0;
+    const fetcher = (path) => path === "/api/health" ? new Promise(resolve => { deliver = resolve; })
+        : (++writes, Promise.resolve(response(201, envelope())));
+    await assert.rejects(projectRequest("/api/projects", { fetcher, method: "POST", data: { brief }, timeoutMs: 5 }), /took too long/);
+    deliver(response(200, { ...identity, status: "ready", fixture_id: "esp32-bme280-environmental-logger" }));
+    await new Promise(setImmediate);
+    assert.equal(writes, 0);
 });
