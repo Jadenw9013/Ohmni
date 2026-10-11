@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "id": "CUX-T05",
+  "task": "CUX-T05",
+  "scope": "CONVERSATIONAL-UX-1",
+  "commit": "ea3ecf5364e0a198f026a2a68e7e04d30482379d",
+  "verified_at": "2026-10-11",
+  "status": "PASSED_WITH_RECORDED_LIMITATIONS",
+  "commands": [
+    {
+      "command": "python -m pytest --basetemp build/fast-polish -o cache_dir=build/fast-cache",
+      "result": "PASS",
+      "tests": 2396,
+      "skipped": 86,
+      "deselected": 62,
+      "runtime_seconds": 413.36
+    },
+    {
+      "command": "node --test apps/web/tests/*.test.mjs",
+      "result": "PASS",
+      "tests": 1082
+    },
+    {
+      "command": "python -m pytest -m integration --basetemp build/integration-polish -o cache_dir=build/integration-cache",
+      "result": "PASS",
+      "tests": 28,
+      "skipped": 16,
+      "deselected": 2500
+    },
+    {
+      "command": "python scripts/ai_state.py validate",
+      "result": "PASS"
+    }
+  ],
+  "browser_checks": [
+    "Desktop landing displays the real interactive controller PCB with updated material treatment.",
+    "Start building opens the idea composer instead of a preset sensor plan.",
+    "Scripted planning produces a compact summary with requested/suggested distinctions unchanged.",
+    "390px composer and 320px plan and landing have no horizontal overflow.",
+    "At 320px, Explore this board link remains visible and inside its figure after caption-wrap fix.",
+    "No browser console errors observed. Existing Three.js environment-map sampling warnings remain."
+  ],
+  "contrast_checks": {
+    "secondary_text_on_panel": 9.45,
+    "placeholder_on_panel": 7.92,
+    "primary_button": 8.77,
+    "copper_on_canvas": 8.77
+  },
+  "review": {
+    "required": false,
+    "independent": false,
+    "status": "PASSED",
+    "record": ".ai/reviews.yaml#CUX-T05-SELF-REVIEW"
+  },
+  "limitations": [
+    "Self-review is not independent final scope review or uncoached user testing.",
+    "Scripted provider used for visual checks; no live-model quality or new native generation claim.",
+    "No behavior-owned files changed; no behavior receipt jobs or document downloads performed."
+  ]
+}
