@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "scope": "COMPONENT-SYNTHESIS-1",
+  "positive_evidence": [
+    {
+      "id": "real-source-and-cad",
+      "selectors": [
+        "tests/test_component_source_verification.py::TestAcceptedProposal::test_every_claim_is_supported_and_a_constraint_set_is_built",
+        "tests/test_component_assets.py::TestKicadCorroboration::test_kicad_loads_and_renders_both_generated_artifacts",
+        "tests/test_component_assets.py::TestConnectedDesignHarness::test_erc_and_drc_report_no_asset_defect"
+      ]
+    },
+    {
+      "id": "portable-and-restart",
+      "selectors": [
+        "tests/test_reusable_asset_library.py::test_portable_export_is_self_contained_and_does_not_touch_global_libraries",
+        "tests/test_component_admission.py::test_only_passing_decision_enables_active_discovery"
+      ]
+    },
+    {
+      "id": "real-board-lineage",
+      "selectors": [
+        "tests/test_component_resolution.py::test_admitted_part_traverses_real_project_release_with_exact_lineage"
+      ]
+    },
+    {
+      "id": "vendor-model",
+      "selectors": [
+        "tests/test_lm317_supported_component.py::test_exact_ti_vendor_model_runs_under_ngspice_42"
+      ]
+    }
+  ],
+  "negative_corpus": [
+    "tests/test_component_source_verification.py::TestRejectionCorpus::test_the_right_number_in_the_wrong_limit_column_fails",
+    "tests/test_component_source_verification.py::TestRejectionCorpus::test_a_value_from_a_different_row_fails",
+    "tests/test_component_source_verification.py::TestRejectionCorpus::test_a_pin_number_borrowed_from_the_other_package_column_fails",
+    "tests/test_component_source_verification.py::TestRejectionCorpus::test_a_mirrored_traversal_fails_the_printed_labels",
+    "tests/test_component_synthesis_audit_regressions.py::TestAudit001SourceMeaning::test_the_pad_width_row_cannot_be_accepted_as_the_pad_length",
+    "tests/test_component_synthesis_audit_regressions.py::TestAudit002ReceiptBinding::test_a_value_changed_after_verification_is_rejected_on_revalidation",
+    "tests/test_component_assets.py::TestMutationCorpus::test_a_wrong_pitch_is_rejected",
+    "tests/test_component_assets.py::TestMutationCorpus::test_a_mirrored_footprint_is_rejected",
+    "tests/test_reusable_asset_library.py::test_unsupported_paste_policy_blocks_the_affected_package",
+    "tests/test_component_admission.py::test_missing_required_fact_blocks_even_when_every_report_passes",
+    "tests/test_component_admission.py::test_every_applicable_rule_must_explicitly_pass",
+    "tests/test_component_resolution.py::test_resolution_pauses_persists_and_cannot_be_bypassed",
+    "tests/test_spice_model_boundary.py::test_unlisted_includes_and_active_directives_are_rejected",
+    "tests/test_lm317_supported_component.py::test_incorrect_divider_and_tab_mapping_fail_independently"
+  ],
+  "limitations": [
+    "The source-verifier corpus contains one admitted Microchip document and one held-out Microchip document that fails closed at the vector-rule bound; this is not an error-rate estimate for arbitrary datasheets.",
+    "Reusable dual-row, QFN and QFP compilers are mutation-tested infrastructure. LM317 DCY is the only additional production data row in this scope and does not imply arbitrary package support.",
+    "The recorded extraction proposal is reconstructed rather than a witnessed live-provider response; live extraction accuracy remains unevaluated.",
+    "KiCad checks establish loadability and configured ERC/DRC outcomes for exact artifacts, not manufacturability, assembly yield, thermal behavior or hardware operation.",
+    "The LM317 vendor-model result covers one DC operating-point harness under ngspice-42 psa mode, not startup, stability, thermal or protection behavior."
+  ]
+}

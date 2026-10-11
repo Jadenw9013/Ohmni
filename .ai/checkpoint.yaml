@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "active_task": null,
-  "last_known_commit": "242d04a74c247813d9b2148f8547474426b37f6f",
+  "last_known_commit": "b9f6b922",
   "approval_record": ".ai/approvals/COMPONENT-SYNTHESIS-1.yaml",
   "previous_checkpoint": {
     "schema_version": 1,
@@ -34,16 +34,17 @@
   },
   "modified_files": [],
   "completed_substeps": [
-    "CS-T10 implementation committed at 242d04a7.",
-    "Verified TI LM317 Rev Z DCY pin 4 tab mapping, land pattern, operating limits and adjustable feedback equation.",
-    "Exact hash-bound TI PSpice model passed ngspice-42 compatibility at the recorded operating point.",
-    "Fast, integration, simulation integration, focused architecture and scoped Ruff gates passed."
+    "Implemented a deterministic acceptance runner and a 14-case negative admission corpus.",
+    "Pinned and verified the held-out MCP1700 manufacturer PDF; the unadapted parser fails closed on its page-19 drawing.",
+    "Proved portable LM317 asset export and resolver reconstruction across a fresh process boundary.",
+    "Corroborated 23 source receipts and 37 asset checks with KiCad 10.0.5, plus connected ERC/DRC.",
+    "Passed corpus (110), full (2419), integration (33), slow integration (18), verify-all (14 fixtures), scoped Ruff and AI-state validation."
   ],
   "remaining_work": [
-    "Open and review the CS-T10 pull request.",
-    "CS-T11 becomes ready after CS-T10 merges."
+    "A reviewer independent of the CS-T11 implementation must inspect commit b9f6b922 before CS-T11 may become COMPLETE.",
+    "Repository-wide Ruff remains blocked by 12 pre-existing findings in behavior-owned files; CS-T11 changed Python files are clean."
   ],
-  "last_failure": null,
-  "resume_action": "Open and review the CS-T10 PR; start CS-T11 only after merge.",
-  "last_command": "CS-T10 implementation verification and self-review completed."
+  "last_failure": "python -m ruff check . reports 12 findings only in behavior-owned paths that this task is forbidden to modify.",
+  "resume_action": "Independently review CS-T11 commit b9f6b922 and promote VERIFIED to COMPLETE only if the review passes without open BLOCKER/HIGH findings.",
+  "last_command": "python scripts/verify.py full: 2419 passed, 8 skipped in 570.30s."
 }
