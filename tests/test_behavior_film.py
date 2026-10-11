@@ -97,3 +97,57 @@ def test_ac_rule_is_exact_only_at_50_hz(registry, recipes):
     assert over["AC voltage rule (1.4 x Urms + UDC) at 50 Hz"]["status"] == "violation"
     other = rows(evaluate_ratings(compilation, result_at(compilation, 0, ac=150.0, freq=1e3), registry, cool))
     assert other["AC voltage at 1000 Hz"]["status"] == "unknown"
+
+
+def test_ambient_range_has_both_sourced_limits(registry, recipes):
+    compilation = compiled(registry, recipes)
+    cold = rows(evaluate_ratings(compilation, result_at(compilation, 100), registry, RatingContext(ambient_c=-60)))
+    assert cold["ambient within rated range"]["status"] == "violation"
+    ok = rows(evaluate_ratings(compilation, result_at(compilation, 100), registry, RatingContext(ambient_c=-55)))
+    assert ok["ambient within rated range"]["status"] == "within_limit"
+
+
+def test_ac_peak_derates_from_75c_and_the_50hz_rule_needs_an_ambient(registry, recipes):
+    compilation = compiled(registry, recipes, analysis="ac",
+                           excitations=[ACExcitation(positive_net="gnd", negative_net="rail", ac_rms=Quantity.amps(1e-3))])
+    # 80 C: DC derating has not started (85 C) but AC derating has (75 C): 400*(1-0.0125*5) = 375 V.
+    warm = rows(evaluate_ratings(compilation, result_at(compilation, 300, ac=60.0, freq=1e3), registry,
+                                 RatingContext(ambient_c=80)))
+    # 300 + 1.414*60 = 384.9 V > 375 V
+    assert warm["peak voltage (DC plus AC peak) (derated above 75 C) at 1000 Hz"]["status"] == "violation"
+    blind = rows(evaluate_ratings(compilation, result_at(compilation, 100, ac=150.0), registry, RatingContext()))
+    assert blind["AC voltage rule (1.4 x Urms + UDC) at 50 Hz"]["status"] == "unknown"
+
+
+def test_transient_film_run_never_passes_on_peak_alone(registry, recipes):
+    from ohmni.behavior.ratings import TransientWindow, _scoped_checks
+
+    component = compiled(registry, recipes).components[0]
+    t = [k * 1e-4 for k in range(201)]
+    import math
+    wave = [250 * math.sqrt(2) * math.sin(2 * math.pi * 50 * x) for x in t]
+    window = TransientWindow(t, {"T1": wave, "T2": [0.0] * len(t)}, {r: [0.0] * len(t) for r in component.role_current_probes})
+    b = _scoped_checks(component, None, RatingContext(ambient_c=25), transient=window)
+    names = {c["name"]: c for c in b.checks}
+    assert names["peak voltage (derated above 75 C for AC)"]["status"] == "within_limit"  # 354 V < 400 V
+    assert names["AC voltage, AC derating and pulse dV/dt"]["status"] == "unknown"
+
+
+def test_transient_peak_between_ac_and_dc_derating_is_unknown(registry, recipes):
+    import math
+
+    from ohmni.behavior.ratings import TransientWindow, _scoped_checks
+
+    component = compiled(registry, recipes).components[0]
+    t = [k * 1e-4 for k in range(201)]
+
+    def run(peak_volts):
+        wave = [peak_volts * math.sin(2 * math.pi * 50 * x) for x in t]
+        window = TransientWindow(t, {"T1": wave, "T2": [0.0] * len(t)},
+                                 {r: [0.0] * len(t) for r in component.role_current_probes})
+        b = _scoped_checks(component, None, RatingContext(ambient_c=80), transient=window)
+        return {c["name"]: c for c in b.checks}["peak voltage (derated above 75 C for AC)"]["status"]
+
+    assert run(370) == "within_limit"   # under 400*(1-0.0125*5) = 375 V
+    assert run(390) == "unknown"        # over 375 V (AC) but under 400 V (DC at 80 C)
+    assert run(410) == "violation"      # over the DC limit too
