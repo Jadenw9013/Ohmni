@@ -46,7 +46,10 @@ export function designRunModel(result) {
     const summary = ran && result?.design_summary && typeof result.design_summary === 'object' ? result.design_summary : null;
     // A violation needs a run that happened; a design reads within limits only from its own summary.
     const violation = ran && (summary?.status === 'violation' || result?.rating_status === 'violation');
-    const within = !violation && summary?.status === 'within_model_limits';
+    // Within limits needs the server summary and every bound part inside the simulated set.
+    const simulatedRefs = new Set(list(result?.components).map(c => c?.ref));
+    const within = !violation && summary?.status === 'within_model_limits'
+        && list(result?.bindings).every(row => simulatedRefs.has(row?.ref));
     const problems = list(result?.problems);
     const refused = result?.status === 'not_run' && (problems.length > 0 || list(result?.bindings).some(row => row?.problem));
     const title = violation ? 'Rating violation'
@@ -67,11 +70,13 @@ export function designRunModel(result) {
         problem: row?.problem,
         // A part outside the simulated set has no established result, whatever a ratings row says.
         status: ran ? (simulated.has(row?.ref) ? (byRef.get(row?.ref)?.status ?? 'unknown') : 'unknown') : 'not_run',
-        rating: byRef.get(row?.ref) ?? null,
+        rating: ran && simulated.has(row?.ref) ? byRef.get(row?.ref) ?? null : null,
     }));
     return { ran, refused, violation, within, title, problems, parts, summary,
         // Clamped to four design-level states: no other server word can reach the pass-toned badge.
-        summaryStatus: violation ? 'violation' : within ? 'within_model_limits' : ran ? 'unknown' : 'not_run' };
+        // "Not run" only when the server says nothing ran; a failed or unread run is unknown.
+        summaryStatus: violation ? 'violation' : within ? 'within_model_limits'
+            : result?.status === 'not_run' ? 'not_run' : 'unknown' };
 }
 
 function checksHtml(rating) {
@@ -133,11 +138,13 @@ export function mountDesignBehaviorPanel(container, { jobId, identity, circuitHa
     button.onclick = async () => {
         button.disabled = true; output.replaceChildren(); status.textContent = 'Running your circuit…';
         let result;
+        let posted = false;
         try {
             const source = await request(`${API_BASE}/api/jobs/${encodeURIComponent(jobId)}/circuit`, { cache: 'no-store', headers: pollHeaders(identity) });
             if (!source.ok) throw new Error('circuit');
             const saved = await source.json();
             if (!sameIdentity(saved, identity) || saved.circuit_hash !== circuitHash) throw new Error('circuit');
+            posted = true;
             const run = await request(`${API_BASE}/api/behavior/design/run`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ api_version: identity.api_version, server_instance_id: identity.server_instance_id, ui_version: identity.ui_version,
                     design: { circuit: saved.circuit, analysis: 'op' } }) });
@@ -145,8 +152,8 @@ export function mountDesignBehaviorPanel(container, { jobId, identity, circuitHa
                 const body = await run.json().catch(() => ({}));
                 throw new Error(body?.error === 'behavior_run_busy' ? 'busy' : 'mismatch');
             }
-            if (!run.ok) throw new Error('not_run');
-            const payload = await run.json();
+            if (!run.ok) throw new Error('after_post');
+            const payload = await run.json().catch(() => { throw new Error('after_post'); });
             // A result for another circuit or server is not this project's result.
             if (!sameIdentity(payload, identity) || payload.result?.circuit_hash !== circuitHash) throw new Error('unverified');
             result = payload.result;
@@ -155,6 +162,8 @@ export function mountDesignBehaviorPanel(container, { jobId, identity, circuitHa
                 : error?.message === 'busy' ? 'Another behavior run is active. Nothing was simulated; retry when it finishes.'
                 : error?.message === 'mismatch' ? 'The server session changed before the run. Reload the page and retry; nothing is shown.'
                 : error?.message === 'unverified' ? 'A result came back that could not be matched to this project and server, so it is not shown.'
+                : error?.message === 'after_post' ? 'No result could be read from the run, so nothing is shown; retry after checking the local simulator.'
+                : posted ? 'The run request did not return a readable result, so nothing is shown.'
                 : 'The design run is unavailable. Nothing was simulated; retry after checking the local simulator.');
         }
         if (disposed) return;

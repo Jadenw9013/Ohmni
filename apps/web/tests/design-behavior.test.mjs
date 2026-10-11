@@ -178,3 +178,22 @@ test('missing summary counts read as not reported, never as zero', () => {
     assert.match(html, /<dt>Within limits<\/dt><dd>not reported<\/dd>/);
     assert.doesNotMatch(html, /<dd>0<\/dd>/);
 });
+
+test('a part outside the simulated set shows no checks and keeps the design from passing', () => {
+    const result = ran('within_model_limits', { C1: 'within_model_limits', R1: 'within_model_limits' });
+    result.components = result.components.filter(c => c.ref !== 'R1');
+    const r1 = result.ratings.components.find(c => c.ref === 'R1');
+    r1.reference_checks = [{ name: 'power', status: 'within_limit', reason: null }];
+    const model = designRunModel(result);
+    assert.equal(model.within, false);
+    assert.equal(model.parts.find(p => p.ref === 'R1').rating, null);
+    assert.doesNotMatch(designResultHtml(result), /R1 checks/);
+});
+
+test('only a server not_run reads "Not run"; unread or failed runs read unknown', () => {
+    const unavailable = { status: 'unavailable', rating_status: 'not_run', problems: ['x'], bindings: [], limitations: [] };
+    assert.match(designResultHtml(unavailable), /Design ratings: <span class="badge warn">Unknown, not established/);
+    const failed = { status: 'failed', rating_status: 'not_run', problems: ['ngspice failed'], bindings: [], limitations: [] };
+    assert.match(designResultHtml(failed), /Design ratings: <span class="badge warn">Unknown, not established/);
+    assert.match(designResultHtml(refused()), /Design ratings: <span class="badge warn">Not run, not checked/);
+});
