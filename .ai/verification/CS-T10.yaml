@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "id": "CS-T10",
+  "task": "CS-T10",
+  "scope": "COMPONENT-SYNTHESIS-1",
+  "status": "PASSED",
+  "commit": "242d04a7",
+  "verified_at": "2026-10-10",
+  "summary": "The source-bound LM317DCYR path verifies the DCY SOT-223 tab, deterministic adjustable divider and operating envelope, then measures the exact TI vendor model under ngspice-42.",
+  "commands": [
+    {
+      "command": "python -m pytest tests/test_architecture.py tests/test_lm317_supported_component.py -q",
+      "result": "PASS",
+      "tests": 85,
+      "skipped": 1
+    },
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "PASS",
+      "tests": 2269,
+      "skipped": 84,
+      "deselected": 58
+    },
+    {
+      "command": "python scripts/verify.py integration",
+      "result": "PASS",
+      "tests": 28,
+      "skipped": 12,
+      "deselected": 2371,
+      "note": "Run outside the restricted sandbox so KiCad could use its configured user directory and localhost browser checks could execute."
+    },
+    {
+      "command": "python scripts/verify.py simulation (OHMNI_NGSPICE=ngspice_con.exe, OHMNI_LM317_MODEL=exact TI model)",
+      "result": "PASS",
+      "tests": 2,
+      "deselected": 2409,
+      "version": "ngspice-42"
+    },
+    {
+      "command": "python -m ruff check <CS-T10 changed Python files>",
+      "result": "PASS"
+    },
+    {
+      "command": "python scripts/ai_state.py validate",
+      "result": "PASS"
+    }
+  ],
+  "acceptance": {
+    "package_and_tab": "TI LM317 Rev Z page 5 binds DCY pin 4/tab to OUTPUT; page 36 binds the four land coordinates and sizes.",
+    "adjustable_feedback": "The sourced output equation includes the 50 uA typical adjust-current term and explicit R1 OUTPUT-to-ADJUST/R2 ADJUST-to-ground topology.",
+    "negative_cases": "Wrong divider orientation, wrong tab net, output range, differential headroom and load range each produce typed failures; admission also requires the tab-output rule to pass.",
+    "vendor_model": "The exact hash-bound TI LM317_TRANS.LIB ran in isolated ngspice-42 psa mode and measured V(out)=5.005542 V and V(adj)=3.754157 V."
+  },
+  "limitations": [
+    "The vendor result establishes compatibility for this exact operating-point harness, model hash and ngspice-42 psa mode; it does not validate every transient, thermal or protection behavior.",
+    "The TI example land pattern is source-verified but remains subject to the board assembler's stencil and thermal requirements."
+  ]
+}
