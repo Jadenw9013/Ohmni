@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "id": "CUX-T04",
+  "task": "CUX-T04",
+  "scope": "CONVERSATIONAL-UX-1",
+  "status": "PASSED_WITH_RECORDED_LIMITATIONS",
+  "commit": "56325ba1514a6764f519ef3ed058c9fb4778a7ed",
+  "verified_at": "2026-10-11",
+  "summary": "First-time idea and plan flow, single-action save/generate, optional technical settings, board-context conversation.",
+  "commands": [
+    {
+      "command": "python -m pytest --basetemp build/fast-guided -o cache_dir=build/fast-cache",
+      "result": "ENVIRONMENT_FAILURE_RETRIED",
+      "tests_passed": 2367,
+      "skipped": 86,
+      "deselected": 62,
+      "failed": 1,
+      "runtime_seconds": 497.04,
+      "detail": "tests/test_synthesis_benchmark.py::test_incremental_results_retain_pipeline_failures_and_all_attempts hit WinError 5 during os.replace of results.json. No assertion failure. Entire benchmark test module passed on retry with fresh basetemp."
+    },
+    {
+      "command": "python -m pytest tests/test_synthesis_benchmark.py tests/test_ai_workflow.py --basetemp build/retry-guided -o cache_dir=build/retry-cache",
+      "result": "PASS",
+      "tests": 138
+    },
+    {
+      "command": "node --test apps/web/tests/*.test.mjs",
+      "result": "PASS",
+      "tests": 1082
+    },
+    {
+      "command": "python -m pytest -m integration --basetemp build/integration-guided -o cache_dir=build/integration-cache",
+      "result": "PASS",
+      "tests": 28,
+      "skipped": 16,
+      "deselected": 2472
+    },
+    {
+      "command": "python -m pytest tests/test_demo_application.py tests/test_project_api.py tests/test_conversation_api.py tests/test_project_assistant_api.py --basetemp build/final-api -o cache_dir=build/final-api-cache",
+      "result": "PASS",
+      "tests": 60
+    },
+    {
+      "command": "python -m ruff check scripts/demo_server.py",
+      "result": "PASS"
+    },
+    {
+      "command": "python scripts/ai_state.py validate",
+      "result": "PASS"
+    }
+  ],
+  "browser_checks": [
+    "Scripted planning provider produced compact requested/suggested feature summary; generation action appears before optional settings.",
+    "Guided fallback retained Room monitor proposal; keyboard Enter expanded settings; changing sensor count kept disclosure open.",
+    "Generate saved the edited two-sensor revision and started its actual engineering job. No completed native generation is claimed; preview server was restarted during UI verification.",
+    "390px entry and 320px plan had no horizontal overflow. Desktop primary action visible at 1280x720.",
+    "Automated result test selects the displayed revision even when a newer revision exists, and prevents late lookup from remounting invalidated context."
+  ],
+  "review": {
+    "required": false,
+    "independent": false,
+    "status": "PASSED",
+    "record": ".ai/reviews.yaml#CUX-T04-SELF-REVIEW"
+  },
+  "limitations": [
+    "Uncoached first-time user testing and independent final scope review have not been performed; scope remains REVIEW.",
+    "Scripted provider used for UI verification, not a live LLM quality evaluation.",
+    "No new successful native board-generation or manufacturing-readiness claim.",
+    "Integration skips and initial Windows filesystem test error retained explicitly; no behavior-owned files changed."
+  ]
+}
