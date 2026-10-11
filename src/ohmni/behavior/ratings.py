@@ -288,7 +288,10 @@ def _scoped_checks(component, point, context, overrides=None, transient=None, ac
     elif cls == "BEH-MAG-XFMR-SIGNAL":
         b.add("primary DC unbalance current", "abs(i_P_A) <= idc_unbalance", ("idc_unbalance",))
     elif cls == "BEH-MAG-INDUCTOR":
-        b.add("heating current", "abs(i_A) <= irms", ("irms",), thermal)
+        if _irms_ambient_ok(values):
+            b.add("heating current", "abs(i_A) <= irms", _irms_parameters(values), thermal)
+        else:
+            upper_only("heating current", "abs(i_A) <= irms", _irms_parameters(values), IRMS_AMBIENT_REASON)
         if "isat" in values:
             b.add("saturation current", "abs(i_A) <= isat", ("isat",))
         b.add(
@@ -552,7 +555,10 @@ def _transient_checks(component, values, b, thermal, upper_only, w):
                 b.add("peak current against saturation", "peak_i <= isat", ("isat",))
             if "irms" in values:
                 stat("rms_i", w.rms(i))
-                b.add("RMS heating current", "rms_i <= irms", ("irms",), thermal)
+                if _irms_ambient_ok(values):
+                    b.add("RMS heating current", "rms_i <= irms", _irms_parameters(values), thermal)
+                else:
+                    upper_only("RMS heating current", "rms_i <= irms", _irms_parameters(values), IRMS_AMBIENT_REASON)
     elif cls == "BEH-MAG-CMC":
         for winding in ("A", "B"):
             i = w.series("i", winding + "1")
@@ -605,6 +611,19 @@ def _transient_checks(component, values, b, thermal, upper_only, w):
 CONTACT_LIMIT_PREFIX = "i_rated_"
 CONTACT_GROUP_PREFIX = "i_sum__"
 NOMINAL_KNEE = "Nominal current applies only up to the derating knee, which is not bound"
+# D072: an inductor heating current rated at a stated maximum ambient (Murata LQM21PH: 800 mA at
+# 85 C, derating above it) can pass only when the declared ambient is at or below that ambient; the
+# derating curve is not encoded, so above it, or with no ambient, it can only prove a violation.
+IRMS_AMBIENT_REASON = ("The heating-current rating is stated up to a maximum ambient and derates above it; "
+                       "declare an ambient at or below it (the derating curve is not encoded)")
+
+
+def _irms_ambient_ok(values):
+    return "irms_tamb_max" not in values or ("Tamb" in values and values["Tamb"] <= values["irms_tamb_max"])
+
+
+def _irms_parameters(values):
+    return ("irms", "irms_tamb_max") if "irms_tamb_max" in values else ("irms",)
 GROUP_UNOBSERVED = "Not every contact of this collectively rated group has an observed current"
 
 
@@ -1391,8 +1410,11 @@ def _ac_checks(component, values, b, thermal, upper_only, window, linear, dual=N
         elif cls == "BEH-MAG-INDUCTOR" and "A" in i:
             stat(f"irms_{key}", math.hypot(dc("i", "A"), abs(i["A"])))
             stat(f"ipk_{key}", abs(dc("i", "A")) + root2 * abs(i["A"]))
-            if "irms" in values:
-                add("RMS heating current (DC plus AC)", f"irms_{key} <= irms", ("irms",), thermal)
+            if "irms" in values and _irms_ambient_ok(values):
+                add("RMS heating current (DC plus AC)", f"irms_{key} <= irms", _irms_parameters(values), thermal)
+            elif "irms" in values:
+                add("RMS heating current (DC plus AC)", f"irms_{key} <= irms", _irms_parameters(values),
+                    IRMS_AMBIENT_REASON, violation_only=True)
             if "isat" in values:
                 add("peak current against saturation (DC plus AC peak)", f"ipk_{key} <= isat", ("isat",))
         elif cls == "BEH-MAG-CMC":

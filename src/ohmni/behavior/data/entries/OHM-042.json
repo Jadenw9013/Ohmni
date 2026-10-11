@@ -20,7 +20,9 @@
       "bench-results/BEH-MAG-INDUCTOR--B4.json"
     ],
     "conflicts": [
-      "Original placeholder 0.2 ohm / 0.4 A / 0.5 A is not a rating table for either sourced variant."
+      "Original placeholder 0.2 ohm / 0.4 A / 0.5 A is not a rating table for either sourced variant.",
+      "D072: the record's LQM21PN2R2MGH fields (1.3 A temperature rise, 0.45 A inductance change, 0.125 typ / 0.156 max ohm, Murata dynamic-model list) belong to the LQM21PN series and are not used by the LQM21PH2R2MGEL binding, whose facts use ref_* names.",
+      "D072: spec placeholder DCR 0.2 ohm, Isat 0.4 A, Irms 0.5 A, Tmax 125 C (ASSUMPTION) vs LQM21PH2R2MGEL 0.39 ohm max, 0.88 A (+/-30 % L), 0.8 A at 85 C (40 C rise), -55 to +150 C."
     ],
     "documents": [
       {
@@ -42,6 +44,16 @@
         "source_status": "primary_source_opened",
         "title": "0805CS Chip Inductors, Document 100",
         "url": "https://www.coilcraft.com/getmedia/dd5f20e4-1ff7-43df-8317-b693eb2dce3e/0805cs.pdf"
+      },
+      {
+        "document_id": "murata-lqm21ph-ge",
+        "manufacturer": "Murata",
+        "note": "Archived (ledger sha256 f26b8632b569...); read 2026-10-11 for the bound reference LQM21PH2R2MGEL (D072).",
+        "page": null,
+        "revision": "JELF243B-9129B-01",
+        "source_status": "primary_source_opened",
+        "title": "Reference Specification JELF243B-9129B-01: Chip Coil LQM21PH_GE [AEC-Q200]",
+        "url": "https://pim.murata.com/asset/pim4/inductor/JELF243B-9129_PDF_INDUCTOR"
       }
     ],
     "entry_id": "OHM-042",
@@ -201,21 +213,191 @@
         ],
         "unit": "A",
         "value": 0.6
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "3. Part Number and Rating: LQM21PH2R2MGEL 2.2 uH M: +/-20 %",
+        "field": "ref_reference_part",
+        "page": 1,
+        "scope": "Murata LQM21PH2R2MGEL (reference specification JELF243B-9129B-01, LQM21PH_GE)",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/inductor/JELF243B-9129_PDF_INDUCTOR"
+        ],
+        "unit": null,
+        "value": "Murata LQM21PH2R2MGEL"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Nominal value 2.2 uH",
+        "field": "ref_nominal_inductance",
+        "page": 1,
+        "scope": "Murata LQM21PH2R2MGEL (reference specification JELF243B-9129B-01, LQM21PH_GE); measured at 1 MHz, 1 mA (7.1)",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/inductor/JELF243B-9129_PDF_INDUCTOR"
+        ],
+        "unit": "uH",
+        "value": 2.2
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Tolerance M: +/-20 %",
+        "field": "ref_inductance_tolerance_pct",
+        "page": 1,
+        "scope": "Murata LQM21PH2R2MGEL (reference specification JELF243B-9129B-01, LQM21PH_GE)",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/inductor/JELF243B-9129_PDF_INDUCTOR"
+        ],
+        "unit": "%",
+        "value": 20
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "DC resistance Typ. 0.32 ohm",
+        "field": "ref_typical_dcr",
+        "page": 1,
+        "scope": "Murata LQM21PH2R2MGEL (reference specification JELF243B-9129B-01, LQM21PH_GE)",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/inductor/JELF243B-9129_PDF_INDUCTOR"
+        ],
+        "unit": "ohm",
+        "value": 0.32
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "DC resistance Max. 0.39 ohm",
+        "field": "ref_maximum_dcr",
+        "page": 1,
+        "scope": "Murata LQM21PH2R2MGEL (reference specification JELF243B-9129B-01, LQM21PH_GE)",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/inductor/JELF243B-9129_PDF_INDUCTOR"
+        ],
+        "unit": "ohm",
+        "value": 0.39
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Self-resonant frequency (MHz min.) 90",
+        "field": "ref_minimum_srf",
+        "page": 1,
+        "scope": "Murata LQM21PH2R2MGEL (reference specification JELF243B-9129B-01, LQM21PH_GE)",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/inductor/JELF243B-9129_PDF_INDUCTOR"
+        ],
+        "unit": "MHz",
+        "value": 90
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Rated current based on inductance change Typ. 1100 mA, Max. 880 mA",
+        "field": "ref_rated_current_inductance_change",
+        "page": 1,
+        "scope": "Murata LQM21PH2R2MGEL (reference specification JELF243B-9129B-01, LQM21PH_GE); 'Max.' column; 7.4: inductance within +/-30 % of initial at rated current, ordinary temperature",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/inductor/JELF243B-9129_PDF_INDUCTOR"
+        ],
+        "unit": "A",
+        "value": 0.88
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Rated current based on temperature rise: ambient 85 C 800 mA (125 C 500 mA, 150 C 10 mA)",
+        "field": "ref_rated_current_temperature_rise",
+        "page": 1,
+        "scope": "Murata LQM21PH2R2MGEL (reference specification JELF243B-9129B-01, LQM21PH_GE); ambient 85 C; 7.5: temperature rise by self-generated heat limited to 40 C max",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/inductor/JELF243B-9129_PDF_INDUCTOR"
+        ],
+        "unit": "A",
+        "value": 0.8
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "p2 diagram: rated current flat up to 85 C, then derated through 125 C to 150 C (rendered page inspected)",
+        "field": "ref_rated_current_ambient",
+        "page": 2,
+        "scope": "Murata LQM21PH2R2MGEL (reference specification JELF243B-9129B-01, LQM21PH_GE); rated-current derating diagram",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/inductor/JELF243B-9129_PDF_INDUCTOR"
+        ],
+        "unit": "C",
+        "value": 85
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Ambient temperature 125 C: 500 mA",
+        "field": "ref_rated_current_temperature_rise_125C",
+        "page": 1,
+        "scope": "Murata LQM21PH2R2MGEL (reference specification JELF243B-9129B-01, LQM21PH_GE); ambient 125 C",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/inductor/JELF243B-9129_PDF_INDUCTOR"
+        ],
+        "unit": "A",
+        "value": 0.5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Ambient temperature 150 C: 10 mA",
+        "field": "ref_rated_current_temperature_rise_150C",
+        "page": 1,
+        "scope": "Murata LQM21PH2R2MGEL (reference specification JELF243B-9129B-01, LQM21PH_GE); ambient 150 C",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/inductor/JELF243B-9129_PDF_INDUCTOR"
+        ],
+        "unit": "A",
+        "value": 0.01
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Operating temperature range -55 C to +150 C",
+        "field": "ref_maximum_part_temperature",
+        "page": 1,
+        "scope": "Murata LQM21PH2R2MGEL (reference specification JELF243B-9129B-01, LQM21PH_GE); operating temperature range",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/inductor/JELF243B-9129_PDF_INDUCTOR"
+        ],
+        "unit": "C",
+        "value": 150
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Equivalent Circuit: no polarity (rendered page inspected)",
+        "field": "ref_polarity",
+        "page": 2,
+        "scope": "Murata LQM21PH2R2MGEL (reference specification JELF243B-9129B-01, LQM21PH_GE); two end electrodes, 2.0 x 1.25 x 0.9 mm, no marking",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/inductor/JELF243B-9129_PDF_INDUCTOR"
+        ],
+        "unit": null,
+        "value": "no polarity"
       }
     ],
     "remaining_open_items": [
-      "Select a named variant before simulation; the original LQM21F generic remains unbound.",
-      "Murata saturation-drop/rise definitions, temperature range and SRF are absent from this list.",
-      "Coilcraft current is a reference heating point, not an absolute maximum."
+      "The spec's LQM21F / TDK MLZ2012 placeholders remain unbound; D072 binds the named Murata LQM21PH2R2MGEL as the 0805 multilayer reference.",
+      "The Murata dynamic-model list (LQM21PN2R2MGH) lacks saturation-drop/rise definitions, temperature range and SRF; the LQM21PH reference specification bound by D072 states them.",
+      "Coilcraft current is a reference heating point, not an absolute maximum.",
+      "Former simulation blocker resolved for the bound reference Murata LQM21PH2R2MGEL (2026-10-11, D072): Unspecified default variant and incomplete rating conditions remain blocked. Resolution: Murata reference specification JELF243B-9129B-01 names the exact 2.2 uH 0805 part with tolerance, DCR, SRF, both rated currents with their definitions (+/-30 % inductance change; 40 C rise), a derating diagram and the -55 to +150 C range.",
+      "Nonlinear inductance versus current, core loss and resonance are not modelled; the rated-current derating above 85 C ambient is not encoded.",
+      "The wirewound 0805 row (Coilcraft 0805CS-150X_R_) remains a separate unbound alternative."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Unspecified default variant and incomplete rating conditions remain blocked."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-042.md",
-      "document_sha256": "b24df480ed77178d34dcdc59262e792c1198570f406266bffee52aa4e3861d82",
+      "document_sha256": "ea291b61360f3caa98569115c3bd966ba1fa85ed0cb54e47a979b1e0de82e4f3",
       "fragment_sha256": null,
       "line": 1
     }

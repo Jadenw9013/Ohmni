@@ -1,18 +1,15 @@
 {
   "blocked": {
-    "OHM-015": "Exact sense-pin variant and busbar thermal/current conditions are unbound; 36 W does not establish a safe free-air current. Re-checked 2026-10-10 against the archive (D059): no Vishay sense-pin option document (30341/30350) is archived and the 36 W rating has no mounting condition.",
-    "OHM-017": "Confirm numbered pin-to-element map before simulating the physical array. Re-checked 2026-10-10 against the archive (D059): the only CRA06P drawing is a third-party mirror without terminal numbers; a Vishay-hosted CRA06P drawing is needed.",
-    "OHM-019": "Maximum wiper current is unsourced; loaded-wiper simulation must be refused. Style-specific voltage and mechanical direction still need explicit binding. Re-checked 2026-10-10 against the archive (D059): in Bourns 3314 only the Z style names wiper and CW/CCW pins, and the Z style has no voltage rating; the rated J/G/H styles have no pin functions.",
-    "OHM-020": "RV16AF power rating remains rating-critical and unsourced; refuse default simulation. Re-checked 2026-10-10 against the archive (D059): the archived Taiwan Alpha sheet (downloads?id=98) gives no RV16AF power rating; only a distributor lists one.",
-    "OHM-042": "Unspecified default variant and incomplete rating conditions remain blocked. Re-checked 2026-10-10 against the archive (D059): the archived Coilcraft 0805CS-150X_R_ sheet supports an explicit-alternate binding (D059 research), but the record is research_required in the protected spec, so a binding would stay reference-only; not bound tonight.",
+    "OHM-017": "Confirm numbered pin-to-element map before simulating the physical array. Re-checked 2026-10-10 against the archive (D059): the only CRA06P drawing is a third-party mirror without terminal numbers; a Vishay-hosted CRA06P drawing is needed. Re-checked 2026-10-11 (D072): Vishay no longer serves CRA06P (doc 31047) or CRA06E/S (doc 31002, /docs/31002/cra06e.pdf): all HTTP 404 (ledger rows recorded); only distributor mirrors remain, one marking CRA06P end of life. Bourns CAT/CAY16 (archived, sha db7e8f2080cb) shows each isolated element joining a terminal to the directly opposite one, but with no terminal numbers; KOA CN (read by the research pass, not archived) carries no numbers either; Panasonic EXB and Yageo YC164 could not be fetched. Closing needs a numbered primary drawing, or an owner decision to bind Bourns CAY16-103J4LF from the unnumbered schematic (it would also need a per-element isolated-array runtime probe; the existing B2 probe assumes a bussed common).",
+    "OHM-020": "RV16AF power rating remains rating-critical and unsourced; refuse default simulation. Re-checked 2026-10-10 against the archive (D059): the archived Taiwan Alpha sheet (downloads?id=98) gives no RV16AF power rating; only a distributor lists one. Re-checked 2026-10-11 (D072): Taiwan Alpha's archived RV16AF metal-shaft sheet (id=98) gives rotation angle, 150 V AC, insulation, dielectric, torque and life, but no power rating; the research pass also read the RV16 (id=97) and RV16-with-switch (id=100) sheets (not archived) and found none either. No sheet gives a derating, DC voltage, wiper current or residual resistance; the 0.125 W figures appear only on distributor pages (Jameco, Rapid), which cannot be cited. Bourns PTV09A (archived, 0.05 W, 20 VDC) could be bound only as a separate explicit alternate by owner decision; it would not close the RV16AF blocker.",
     "OHM-054": "Physical/reference and primary-conductor binding conflict; open-secondary operation is hazardous. Re-checked 2026-10-11 (D069): the centre-tapped AS-113 from the manufacturer-hosted Talema AS sheet matches the three-pin package and its facts are recorded, but the primary is a conductor through the aperture, not a pad; binding it needs non-pad primary terminals that every design must connect and a probe with one primary end on return and the centre tap isolated, which the framework cannot express without an owner decision.",
-    "OHM-060": "The average-current derating curve must be implemented before claiming a complete thermal envelope. Re-checked 2026-10-10 against the archive (D059): the Vishay GL41 Fig. 1 derating (1.0 A to 75 C terminal temperature, linear to 0 at 175 C) is readable, but it is plotted against terminal temperature, which the rating inputs do not carry; binding needs that input or an owner decision to use case temperature, and the record is research_required.",
+    "OHM-060": "The average-current derating curve must be implemented before claiming a complete thermal envelope. Re-checked 2026-10-10 against the archive (D059): the Vishay GL41 Fig. 1 derating (1.0 A to 75 C terminal temperature, linear to 0 at 175 C) is readable, but it is plotted against terminal temperature, which the rating inputs do not carry; binding needs that input or an owner decision to use case temperature, and the record is research_required. Re-checked 2026-10-11 (D072): this is a rating-input limitation, not a missing document. Vishay 88546 (rev 18-May-2021) gives IF(AV) 1.0 A per Fig. 1 against terminal temperature, RthJA 75 C/W and RthJT 30 C/W both typical (6.0 x 6.0 mm pads), and no ambient-referenced derating. The ratings context carries only an ambient temperature. Closing needs a terminal-temperature input or an owner decision; deriving terminal temperature from two typical thermal resistances would be an unsupported assumption and is not proposed.",
     "OHM-083": "Do not simulate OHM-083 from a generic six-terminal RGB pin map or unsourced per-color ratings. Re-checked 2026-10-10 against the archive (D059): the ledger's Lite-On LTST-G563EGBW row holds a 269-byte 'Request Rejected' page, not the datasheet; no Lite-On datasheet is archived. Re-checked 2026-10-11 (D070): no manufacturer-hosted, archivable datasheet for a passive six-pin 5050 RGB with three independent dies was obtained. we-online.com returns HTTP 403 for Wurth 150505M173300 (ledger row recorded); Lite-On fails TLS verification through the proxy (not bypassed); Everlight 61-238/RSGCBKC-B02/ET and Cree CLV6A-FKB were found only on distributor mirrors; Kingbright AAAF5051-05 ties all three anodes to a common bus and the slug with a Zener per die, so it is not three independent pairs. A browser download of the Wurth 150505M173300 PDF ingested with ingest_manual is the closing path; Everlight publishes no Tj or Rth.",
     "OHM-086": "Module terminal map and module thermal limits are missing; keep the star model blocked. Re-checked 2026-10-10 against the archive (D059): no star/MCPCB module document from any maker is archived; emitter data cannot stand in for module thermal or pad data. Re-checked 2026-10-11 (D070): Cree LED publishes only the XP-E2 emitter sheet (bound under OHM-085) and does not make or document 20 mm stars; the assembler pages found (LEDSupply/LuxDrive, Cutter, Quadica) give no numbered pad map, MCPCB thermal resistance or dielectric rating. Note: the record's disposition is 'simulable' (class-level reason) while this blocker keeps the star model blocked; the owner should reconcile it.",
     "OHM-089": "Per-segment and common-lead aggregate power/current allocation is not established; do not use table PD/IF as a rated complete-display envelope. Re-checked 2026-10-10 against the archive (D059): the Kingbright absolute-maximum table does not say whether PD/IF are per segment or per package. Re-checked 2026-10-11 (D070): no manufacturer document for an exact 0.56 in 12-pin four-digit multiplexed display states the allocation. The current Kingbright CA56-12EWA sheet (same sha as archived) has no per-segment or per-package statement; Broadcom AV02-1107EN covers only one and two digits; HDSP-B0xx four-digit parts are discontinued and mirror-only; Lite-On LTC sheets are unreachable (TLS). The HDSP-55xx 'per segment' statement does not transfer to CA56-12EWA.",
     "OHM-090": "Exact part-to-library terminal map remains unverified. Re-checked 2026-10-10 against the archive (D059): the only matrix document is an RS-hosted copy for a 60.3 mm part; no maker document for the 32 mm library part. Re-checked 2026-10-11 (D070): no approved-maker datasheet for a 32 mm (1.2 in) 16-pin 8x8 matrix was found; Kingbright's 8x8 parts are 38 mm (TC15/TA15) or 58-60 mm (TC23/TA23), its 1.2 in parts are 5x7, and Everlight ELM-2881 is 2.3 in. The 32 mm parts seen (Luckylight KWM-R30881, LightKey LM12088) are on retailer pages only. Closing needs a manual download or an owner geometry change to a sourced part.",
     "OHM-092": "Unknown module terminal map and power/logic limits block module electrical simulation. Re-checked 2026-10-11 (D070): the generic four-pin SSD1306 128x64 breakout has no single manufacturer datasheet. Solomon Systech documents only the bare controller; Newhaven OLEDs are bare COG/FPC panels (30-pin tails, 7-15 V VCC), not a four-pin breakout with regulator, charge pump and pull-ups; retail breakouts publish no rated module supply-current or input-voltage table. Binding to a specific vendor module needs an owner decision.",
-    "OHM-100": "Default IRLR8721 compatible model card is unavailable; the IRLB8721 card is a different part and cannot be substituted. Re-checked 2026-10-10 against the archive (D059): Infineon publishes no IRLR8721 model card; a card fitted from the archived sheet is possible (D059 research) but needs a new hashed model asset and the record is research_required; not bound tonight.",
+    "OHM-100": "Default IRLR8721 model is not bound; the IRLB8721 card is a different part and cannot be substituted. Re-checked 2026-10-11 (D072), correcting D059: the earlier note 'Infineon publishes no IRLR8721 model card' was wrong. Infineon's IRLR8721 design resources (archived JSON, sha 273c967dad39) list 'Spice File - IRLR8721' = irlr_u8721pbf.spi, and the file is archived (sha be65904fe73d): .SUBCKT irlr_u8721pbf 1 2 3 (Drain, Gate, Source), Symmetry MODPEX SPICE3, generated Aug 11 2015, with a 3-pole thermal subckt irlr_u8721pbft. It is the exact IRLR/U8721PbF die model. Unmodified under ngspice-42 at 25 C: Rds(on) 6.27 mohm at VGS 10 V / 25 A (datasheet typ 6.3, max 8.4), 11.39 mohm at 4.5 V / 20 A (typ 10.1, max 11.8), body diode 0.858 V at 20 A (max 1.0 V), threshold 2.59 V at 25 uA (datasheet 1.35-2.35 V: above max). The cropped middle lead is closed: datasheet p10 LEAD ASSIGNMENTS (HEXFET) 1 GATE, 2 DRAIN, 3 SOURCE, 4 (tab) DRAIN, so a cropped pin 2 changes no electrical role. Binding needs two owner decisions: (a) netlist.validate_mosfet_cards requires every MOSFET card to set IS=0, and the vendor card sets IS=1e-32; (b) the MOSFET runtime probe compares Rds(on) against the datasheet maximum +/- 3 % (authored cards are fitted to the maximum), so a typical vendor model (6.27 vs 8.4 mohm) needs a typical-vs-maximum probe mode. The record is also research_required in the protected spec.",
     "OHM-108": "Physical package width mismatch prevents automatic binding.",
     "OHM-109": "Missing critical output-current/power/thermal ratings and no validated interface-only recipe.",
     "OHM-121": "No validated TPS3808 supervisor model; pin/rating data alone does not implement the function.",
@@ -1675,6 +1672,103 @@
         }
       }
     },
+    "OHM-015": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "WSBS8518 bolt-on shunt, two sense pins (85 x 18 mm, 60 mm hole spacing)",
+            "part_id": "OHM-015",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-015",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "3"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "sense_high",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "4"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "sense_low",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-015",
+      "entry_research_sha256": "43f7b1150d110b8eebffd99778bf5e697d089b2fd0e5774ec930e29c17fa5d2f",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 10.0
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "819717a48ab1c0ad91426928f286175b3981b80eeec74c14d9d90e604d4d4621",
+      "package": "WSBS8518 bolt-on shunt, two sense pins (85 x 18 mm, 60 mm hole spacing)",
+      "reference_part": "Vishay WSBS8518L1000JT20 (WSBS8518...20), 100 uohm, +/-5 %, two sense pins",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-015"
+        }
+      }
+    },
     "OHM-016": {
       "analysis": "op",
       "circuit": {
@@ -1864,6 +1958,91 @@
       "selections": {
         "U1": {
           "entry_id": "OHM-018"
+        }
+      }
+    },
+    "OHM-019": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "3361P 1/4 in square SMD single-turn trimmer (explicit alternate to 3314G)",
+            "part_id": "OHM-019",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-019",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "anode",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "iso_w",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "3"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-019",
+      "entry_research_sha256": "8988b1af7c653e28f04ea694ecdf0584a5a054fa1fbf0545810c1ce0d76dc791",
+      "excitations": [
+        {
+          "negative_net": "anode",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 0.001
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "b437420023092e8a4859870404affcfbad1c913ce91190b95e5ea92229bf01fa",
+      "package": "3361P 1/4 in square SMD single-turn trimmer (explicit alternate to 3314G)",
+      "reference_part": "Bourns 3361P-1-103GLF, 10 kohm, wiper open; explicit alternative to the spec's 3314G",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-019"
         }
       }
     },
@@ -3536,6 +3715,79 @@
         }
       }
     },
+    "OHM-042": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "0805 (2012) multilayer chip inductor",
+            "part_id": "OHM-042",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-042",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "winding",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-042",
+      "entry_research_sha256": "ea291b61360f3caa98569115c3bd966ba1fa85ed0cb54e47a979b1e0de82e4f3",
+      "excitations": [
+        {
+          "negative_net": "winding",
+          "positive_net": "return",
+          "value": {
+            "unit": "A",
+            "value": 0.8
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "3f181b45dd763ce58b6540881dda573448683daf6139907a96c30c371099a500",
+      "package": "0805 (2012) multilayer chip inductor",
+      "reference_part": "Murata LQM21PH2R2MGEL, 2.2 uH +/-20 %",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-042"
+        }
+      }
+    },
     "OHM-043": {
       "analysis": "op",
       "circuit": {
@@ -4988,7 +5240,7 @@
         "revision": 1
       },
       "entry_id": "OHM-062",
-      "entry_research_sha256": "abc50f7defe6e29d020d1d46be668f9d44cd4d7fc5ff3dab97adb743d802a11f",
+      "entry_research_sha256": "6d92f2e0f004e06927e8682eb4061a3a96d6da673b157130c33e003f66acbd80",
       "excitations": [
         {
           "negative_net": "anode",
@@ -5061,7 +5313,7 @@
         "revision": 1
       },
       "entry_id": "OHM-063",
-      "entry_research_sha256": "a8f349fe8a9890a736cf14fa7f8bb7f6dbb0c5e4a5c8ba403508cbee0171d569",
+      "entry_research_sha256": "9cda3828430bf7c96151ad88cbd1eff71f8ee6c59c974deea057de681fb1cd8c",
       "excitations": [
         {
           "negative_net": "anode",
@@ -5700,7 +5952,7 @@
         "revision": 1
       },
       "entry_id": "OHM-071",
-      "entry_research_sha256": "2b78823aad6f733c50e60f29213bf05f60b08e35ddbb7612399874401d9dabbb",
+      "entry_research_sha256": "031d494bc748f162d7717588ca6d1cf2a566d1873684e80b72ea32c87e540b8d",
       "excitations": [
         {
           "negative_net": "minus",
@@ -7931,7 +8183,7 @@
         "revision": 1
       },
       "entry_id": "OHM-099",
-      "entry_research_sha256": "edb7c0cd9284986f43fbe6e8806d959479261d61fec9bf126817bec2d1ce3afd",
+      "entry_research_sha256": "f900b79f80b185a97ce84d8ff62285df435a2dbed55fcc7d3bcd26c4e1a99a2b",
       "excitations": [],
       "options": {},
       "original_netlist_sha256": "6de18b227d3e1254132139a158f25461bcd440061d8ba08474b809f733e33845",
@@ -18245,6 +18497,6 @@
     }
   },
   "generator_sha256": "eb29b9a95c6872a10ecce1181a81d6af7705df5149dcb567796b624790d3f486",
-  "recipe_sha256": "cdcb7628556b1480e38114dd016841ea922c84230fa1bf6db4221f468e40710d",
+  "recipe_sha256": "32ede105bae37d23a244e76e69c019da5215799f6f4e220f67c20fbe25e67068",
   "schema_version": 1
 }
