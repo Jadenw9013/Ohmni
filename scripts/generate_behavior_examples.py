@@ -13,7 +13,7 @@ from pathlib import Path
 from ohmni.behavior.loader import BehaviorRegistry
 from ohmni.behavior.netlist import compile_circuit, load_recipes
 from ohmni.behavior.runtime_models import BehaviorSelection
-from tools.behavior_audit import ic_benches, runtime_benches
+from tools.behavior_audit import ic_benches, runtime_benches, vendor_benches
 from tools.behavior_audit.audit import BehaviorAudit
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -35,10 +35,15 @@ def generate(root=ROOT):
                             analysis=kwargs.get("analysis", "op"))
             return compile_circuit(circuit, registry, recipes, selections, **kwargs)
 
-        original = runtime_benches.compile_circuit, ic_benches.compile_circuit
-        runtime_benches.compile_circuit = ic_benches.compile_circuit = capture
+        original = runtime_benches.compile_circuit, ic_benches.compile_circuit, vendor_benches.compile_circuit
+        runtime_benches.compile_circuit = ic_benches.compile_circuit = vendor_benches.compile_circuit = capture
         try:
-            if recipe.behavior_id == "BEH-RES-FIXED":
+            if vendor_benches.is_vendor_ic(recipe):
+                compiled, identity = vendor_benches.vendor_ic_definition(audit, key)
+            elif recipe.behavior_id == "BEH-TRN-MOSFET" and recipe.vendor_model is not None:
+                variant = runtime_benches.mosfet_variants(recipe)[0]
+                compiled, identity = runtime_benches.vendor_mosfet_case(audit, key, variant)
+            elif recipe.behavior_id == "BEH-RES-FIXED":
                 circuit = runtime_benches.resistor_divider(key, recipe.package)
                 compiled = capture(circuit, registry, recipes, {c.ref: BehaviorSelection(entry_id=key) for c in circuit.components})
                 identity = {"analytical_source": "BEH-RES-FIXED/B1"}
@@ -62,7 +67,7 @@ def generate(root=ROOT):
                             scope="Authored reference test circuit; not your saved design or a physical component qualification.")
             examples[key] = captured
         finally:
-            runtime_benches.compile_circuit, ic_benches.compile_circuit = original
+            runtime_benches.compile_circuit, ic_benches.compile_circuit, vendor_benches.compile_circuit = original
     return {"schema_version": 1, "recipe_sha256": recipes.source.document_sha256,
             "generator_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
             "examples": examples, "blocked": audit._state()["model_blockers"]}

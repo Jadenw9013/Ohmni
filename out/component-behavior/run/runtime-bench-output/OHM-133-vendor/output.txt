@@ -1,0 +1,248 @@
+
+Note: Compatibility modes selected: ps a
+
+
+Circuit: ohmni sourced behavior circuit
+
+Doing analysis at TEMP = 25.000000 and TNOM = 25.000000
+
+
+No. of Data Rows : 1
+	Node                                  Voltage
+	----                                  -------
+	----	-------
+	n2                               0.000000e+00
+	xc4.x1.vzz                       3.300250e+00
+	xc4.x1.e04_int1                  3.300451e+00
+	xc4.x1.vyy                       3.300451e+00
+	xc4.x1.e03_int1                  3.300097e+00
+	xc4.x1.drv                       3.300097e+00
+	xc4.x1.des                       3.300097e+00
+	xc4.x1.e02_int1                  3.300097e+00
+	xc4.x1.v02                       3.300097e+00
+	xc4.x1.ref                       8.000000e-01
+	xc4.x1.e01_int1                  8.000000e-01
+	xc4.x1.v01                       8.000000e-01
+	xc4.x1.vgd                       1.000000e+00
+	xc4.x1.ex2_int1                  1.000000e+00
+	xc4.x1.vx2                       1.000000e+00
+	xc4.x1.egd                       1.000000e+00
+	xc4.x1.ex1_int1                  1.000000e+00
+	xc4.x1.vx1                       1.000000e+00
+	xc4.x1.vxx                       3.300451e+00
+	xc4.out                          3.300250e+00
+	xc4.in                           3.799900e+00
+	n1                               8.000364e-01
+	n3                               3.300150e+00
+	n5                               3.800000e+00
+
+	Source	Current
+	------	-------
+
+	vsource5#branch                  -1.00085e-01
+	e.xc4.x1.ex1#branch              0.000000e+00
+	e.xc4.x1.ex2#branch              0.000000e+00
+	e.xc4.x1.e01#branch              0.000000e+00
+	e.xc4.x1.e02#branch              0.000000e+00
+	e.xc4.x1.e03#branch              4.994494e-08
+	e.xc4.x1.e04#branch              4.181377e-14
+	v.xc4.x1.v04#branch              1.000846e-01
+	b.xc4.x1.bex1#branch             0.000000e+00
+	b.xc4.x1.bex2#branch             0.000000e+00
+	b.xc4.x1.be01#branch             0.000000e+00
+	b.xc4.x1.be02#branch             0.000000e+00
+	b.xc4.x1.be03#branch             0.000000e+00
+	b.xc4.x1.be04#branch             0.000000e+00
+
+ Capacitor models (Fixed capacitor)
+      model                     C
+
+        cap                     0
+         cj                     0
+       cjsw                     0
+       defw                 1e-05
+       defl                     0
+     narrow                     0
+      short                     0
+        del                     0
+        tc1                     0
+        tc2                     0
+         di                     0
+      thick                     0
+     bv_max                 1e+99
+
+ Resistor models (Simple linear resistor)
+      model                     R
+
+        rsh                     0
+     narrow                     0
+      short                     0
+        tc1                     0
+        tc2                     0
+        tce                     0
+       defw                 1e-05
+          l                 1e-05
+         kf                     0
+         af                     0
+          r                     0
+     bv_max                 1e+99
+         lf                     1
+         wf                     1
+         ef                     1
+
+ ASRC: Arbitrary Source 
+     device         b.xc4.x1.be04         b.xc4.x1.be03         b.xc4.x1.be02
+      dtemp                     0                     0                     0
+          i                     0                     0                     0
+          v               3.30045                3.3001                3.3001
+   pos_node                    22                    20                    17
+   neg_node                     0                     0                     0
+
+ ASRC: Arbitrary Source 
+     device         b.xc4.x1.be01         b.xc4.x1.bex2         b.xc4.x1.bex1
+      dtemp                     0                     0                     0
+          i                     0                     0                     0
+          v                   0.8                     1                     1
+   pos_node                    14                    11                     8
+   neg_node                     0                     0                     0
+
+ Capacitor: Fixed capacitor
+     device          c.xc4.x1.c03          c.xc4.x1.c02          c.xc4.x1.c01
+      model                     C                     C                     C
+capacitance           2.24941e-11                 1e-09           2.82843e-08
+      dtemp                     0                     0                     0
+     bv_max                 1e+99                 1e+99                 1e+99
+          i                     0                     0                     0
+          p                    -0                     0                     0
+
+ Capacitor: Fixed capacitor
+     device          c.xc4.x1.cx2          c.xc4.x1.cx1          c.xc4.x1.c00
+      model                     C                     C                     C
+capacitance                 1e-09                 1e-08           5.30786e-13
+      dtemp                     0                     0                     0
+     bv_max                 1e+99                 1e+99                 1e+99
+          i                     0                     0                     0
+          p                     0                     0                     0
+
+ CCCS: Current controlled current source
+     device          f.xc4.x1.f04
+          m                     0
+          i              0.100085
+          v              0.499449
+          p             0.0499872
+
+ Resistor: Simple linear resistor
+     device              r.xc4.r6          r.xc4.x1.r04          r.xc4.x1.r03
+      model                     R                     R                     R
+ resistance                 1e+07                 0.002                  7079
+         ac                 1e+07                 0.002                  7079
+      dtemp                     0                     0                     0
+     bv_max                 1e+99                 1e+99                 1e+99
+      noisy                     1                     1                     1
+          i                     0              0.100085          -4.99449e-08
+          p                     0           2.00338e-05           1.76585e-11
+
+ Resistor: Simple linear resistor
+     device          r.xc4.x1.r02          r.xc4.x1.r01          r.xc4.x1.rx2
+      model                     R                     R                     R
+ resistance                    10               9427.15                    10
+         ac                    10               9427.15                    10
+      dtemp                     0                     0                     0
+     bv_max                 1e+99                 1e+99                 1e+99
+      noisy                     1                     1                     1
+          i                     0                     0                     0
+          p                     0                     0                     0
+
+ Resistor: Simple linear resistor
+     device          r.xc4.x1.rx1          r.xc4.x1.r00          r.xc4.rout_1
+      model                     R                     R                     R
+ resistance                  1000                 1e+07                 0.001
+         ac                  1000                 1e+07                 0.001
+      dtemp                     0                     0                     0
+     bv_max                 1e+99                 1e+99                 1e+99
+      noisy                     1                     1                     1
+          i                     0           4.99449e-08                     0
+          p                     0            2.4945e-08                     0
+
+ Resistor: Simple linear resistor
+     device          r.xc4.rout_0           r.xc4.rin_1           r.xc4.rin_0
+      model                     R                     R                     R
+ resistance                 0.001                 0.001                 0.001
+         ac                 0.001                 0.001                 0.001
+      dtemp                     0                     0                     0
+     bv_max                 1e+99                 1e+99                 1e+99
+      noisy                     1                     1                     1
+          i             -0.100085                     0              0.100085
+          p           1.00169e-05                     0           1.00169e-05
+
+ Resistor: Simple linear resistor
+     device           r.xc4.rpwpd                   rc3                   rc2
+      model                     R                     R                     R
+ resistance                 1e+07                    33                 10000
+         ac                 1e+07                    33                 10000
+      dtemp                     0                     0                     0
+     bv_max                 1e+99                 1e+99                 1e+99
+      noisy                     1                     1                     1
+          i                     0              0.100005           8.00036e-05
+          p                     0               0.33003           6.40058e-05
+
+ Resistor: Simple linear resistor
+     device                   rc1
+      model                     R
+ resistance                 31250
+         ac                 31250
+      dtemp                     0
+     bv_max                 1e+99
+      noisy                     1
+          i           8.00036e-05
+          p           0.000200018
+
+ VCVS: Voltage controlled voltage source
+     device          e.xc4.x1.e04          e.xc4.x1.e03          e.xc4.x1.e02
+          i           4.18138e-14           4.99449e-08                     0
+          v               3.30045                3.3001                3.3001
+          p           1.38004e-13           1.64823e-07                     0
+
+ VCVS: Voltage controlled voltage source
+     device          e.xc4.x1.e01          e.xc4.x1.ex2          e.xc4.x1.ex1
+          i                     0                     0                     0
+          v                   0.8                     1                     1
+          p                     0                     0                     0
+
+ Vsource: Independent voltage source
+     device          v.xc4.x1.v04              vsource5
+         dc                     0                   3.8
+      acmag                     0                     0
+      pulse         -         -
+        sin         -         -
+        exp         -         -
+        pwl         -         -
+       sffm         -         -
+         am         -         -
+    trnoise         -         -
+   trrandom         -         -
+    portnum                     0                     0
+         z0                     0                     0
+        pwr                     0                     0
+       freq                     0                     0
+      phase                     0                     0
+          i              0.100085             -0.100085
+          p                     0             -0.380322
+
+
+
+Total analysis time (seconds) = 0.000159
+
+Total CPU time (seconds) = 0.004 
+
+Total DRAM available = 16093.188 MB.
+DRAM currently available = 13083.723 MB.
+Maximum ngspice program size =   14.832 MB.
+Current ngspice program size =    9.285 MB.
+
+Shared ngspice pages =    7.691 MB.
+Text (code) pages =    5.332 MB.
+Stack = 0 bytes.
+Library pages =    1.840 MB.
+
+Warning: no nodes given: .print op

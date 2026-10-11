@@ -12,7 +12,6 @@
     "OHM-089": "Per-segment and common-lead aggregate power/current allocation is not established; do not use table PD/IF as a rated complete-display envelope. Re-checked 2026-10-10 against the archive (D059): the Kingbright absolute-maximum table does not say whether PD/IF are per segment or per package. Re-checked 2026-10-11 (D070): no manufacturer document for an exact 0.56 in 12-pin four-digit multiplexed display states the allocation. The current Kingbright CA56-12EWA sheet (same sha as archived) has no per-segment or per-package statement; Broadcom AV02-1107EN covers only one and two digits; HDSP-B0xx four-digit parts are discontinued and mirror-only; Lite-On LTC sheets are unreachable (TLS). The HDSP-55xx 'per segment' statement does not transfer to CA56-12EWA.",
     "OHM-090": "Exact part-to-library terminal map remains unverified. Re-checked 2026-10-10 against the archive (D059): the only matrix document is an RS-hosted copy for a 60.3 mm part; no maker document for the 32 mm library part. Re-checked 2026-10-11 (D070): no approved-maker datasheet for a 32 mm (1.2 in) 16-pin 8x8 matrix was found; Kingbright's 8x8 parts are 38 mm (TC15/TA15) or 58-60 mm (TC23/TA23), its 1.2 in parts are 5x7, and Everlight ELM-2881 is 2.3 in. The 32 mm parts seen (Luckylight KWM-R30881, LightKey LM12088) are on retailer pages only. Closing needs a manual download or an owner geometry change to a sourced part.",
     "OHM-092": "Unknown module terminal map and power/logic limits block module electrical simulation. Re-checked 2026-10-11 (D070): the generic four-pin SSD1306 128x64 breakout has no single manufacturer datasheet. Solomon Systech documents only the bare controller; Newhaven OLEDs are bare COG/FPC panels (30-pin tails, 7-15 V VCC), not a four-pin breakout with regulator, charge pump and pull-ups; retail breakouts publish no rated module supply-current or input-voltage table. Binding to a specific vendor module needs an owner decision.",
-    "OHM-100": "Default IRLR8721 compatible model card is unavailable; the IRLB8721 card is a different part and cannot be substituted. Re-checked 2026-10-10 against the archive (D059): Infineon publishes no IRLR8721 model card; a card fitted from the archived sheet is possible (D059 research) but needs a new hashed model asset and the record is research_required; not bound tonight.",
     "OHM-108": "Physical package width mismatch prevents automatic binding.",
     "OHM-109": "Missing critical output-current/power/thermal ratings and no validated interface-only recipe.",
     "OHM-121": "No validated TPS3808 supervisor model; pin/rating data alone does not implement the function.",
@@ -26,9 +25,6 @@
     "OHM-129": "Missing thermal evidence and no validated interface recipe.",
     "OHM-130": "No validated interface recipe and missing rating-critical thermal/per-pin limits.",
     "OHM-131": "Exposed-pad electrical role and interface-only model unresolved.",
-    "OHM-132": "Unknown central-pad electrical connection prevents runtime binding.",
-    "OHM-133": "TPS7A8001 adjustable FB, NR and EN functions do not match the authored fixed AMS1117 model. A source-bound adjustable control/thermal model remains unimplemented.",
-    "OHM-134": "TPS62160 switch node SW is not the post-inductor OUT of the authored averaged buck. External L/C, feedback and loop validation remain unimplemented.",
     "OHM-135": "Missingthermal/supplystresslimits; no validated interface recipe.",
     "OHM-136": "No validated electrical-interface recipe and missing rating-critical current/thermal evidence.",
     "OHM-137": "No validated interface recipe or complete pin-specific rating evaluator.",
@@ -7944,6 +7940,110 @@
         }
       }
     },
+    "OHM-100": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "DPAK",
+            "part_id": "OHM-100",
+            "placeholder": false,
+            "ref": "M1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-100-10V",
+        "name": "Sourced on-resistance condition, vendor model",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "M1",
+                "pin": "tab"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "drain",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "M1",
+                "pin": "1"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 10.0
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 10.0
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 10.0
+                }
+              }
+            },
+            "kind": "power",
+            "name": "gate",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "M1",
+                "pin": "3"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "source",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-100",
+      "entry_research_sha256": "b3782ed2204e733e22ba20a76680b83911cf63041d0d29c1cb09a82bd3c5766d",
+      "excitations": [
+        {
+          "negative_net": "drain",
+          "positive_net": "source",
+          "value": {
+            "unit": "A",
+            "value": 25.0
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "1f27dfdb034ab077f1625b0d5a6ac576efbb15a250d820f7e14de80da178bcc0",
+      "package": "DPAK",
+      "reference_part": "Infineon IRLR8721PbF (D-Pak TO-252AA)",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "M1": {
+          "entry_id": "OHM-100"
+        }
+      }
+    },
     "OHM-101": {
       "analysis": "op",
       "circuit": {
@@ -15793,6 +15893,635 @@
         }
       }
     },
+    "OHM-132": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "DFN-6",
+            "part_id": "OHM-132",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-132-vendor",
+        "name": "Datasheet-condition vendor model check",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "3"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "ct",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "out",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "qod",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "4"
+              },
+              {
+                "component": "U1",
+                "pin": "EP"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "5"
+              },
+              {
+                "component": "U1",
+                "pin": "6"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 12.0
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 12.0
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 12.0
+                }
+              }
+            },
+            "kind": "power",
+            "name": "vin",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-132",
+      "entry_research_sha256": "3ef21c3ca2231ae1b021127d777761400edaae1a4df8c13b7f759fa4e6d3072e",
+      "excitations": [
+        {
+          "negative_net": "return",
+          "positive_net": "out",
+          "value": {
+            "unit": "A",
+            "value": 0.2
+          }
+        }
+      ],
+      "options": {},
+      "original_netlist_sha256": "e940c857ce0aaa3bf2a050a6f86e3888deec8e89a3e48da10529a0c46307349f",
+      "package": "DFN-6",
+      "reference_part": "TPS22810 / TPS22810DRV WSON-6 (TI)",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-132"
+        }
+      }
+    },
+    "OHM-133": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "DFN-8",
+            "part_id": "OHM-133",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          },
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "0603",
+            "part_id": "OHM-004",
+            "placeholder": false,
+            "ref": "R1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": {
+              "unit": "ohm",
+              "value": 31250.0
+            }
+          },
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "0603",
+            "part_id": "OHM-004",
+            "placeholder": false,
+            "ref": "R2",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": {
+              "unit": "ohm",
+              "value": 10000.0
+            }
+          },
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "Cement",
+            "part_id": "OHM-012",
+            "placeholder": false,
+            "ref": "RL",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": {
+              "unit": "ohm",
+              "value": 33.0
+            }
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-133-vendor",
+        "name": "Datasheet-condition vendor model check",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "3"
+              },
+              {
+                "component": "R1",
+                "pin": "2"
+              },
+              {
+                "component": "R2",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "fb",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "6"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "nr",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              },
+              {
+                "component": "U1",
+                "pin": "2"
+              },
+              {
+                "component": "R1",
+                "pin": "1"
+              },
+              {
+                "component": "RL",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "out",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "4"
+              },
+              {
+                "component": "U1",
+                "pin": "EP"
+              },
+              {
+                "component": "R2",
+                "pin": "2"
+              },
+              {
+                "component": "RL",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "5"
+              },
+              {
+                "component": "U1",
+                "pin": "7"
+              },
+              {
+                "component": "U1",
+                "pin": "8"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 3.8000000000000003
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 3.8000000000000003
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 3.8000000000000003
+                }
+              }
+            },
+            "kind": "power",
+            "name": "vin",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-133",
+      "entry_research_sha256": "81f0b17d132daa7dc2483a832ec82773cc037b9d1429b01e24c9d4ad5d278e17",
+      "excitations": [],
+      "options": {},
+      "original_netlist_sha256": "8a172ad7d964a50dd7cb13b0c7d2a5b49dfc32d1d0f0173d5b83a86ae56d4904",
+      "package": "DFN-8",
+      "reference_part": "TPS7A8001 / TPS7A8001DRB VSON-8 adjustable (TI)",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "R1": {
+          "entry_id": "OHM-004"
+        },
+        "R2": {
+          "entry_id": "OHM-004"
+        },
+        "RL": {
+          "entry_id": "OHM-012"
+        },
+        "U1": {
+          "entry_id": "OHM-133"
+        }
+      }
+    },
+    "OHM-134": {
+      "analysis": "tran",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "WSON-8",
+            "part_id": "OHM-134",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          },
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "1210 (EIA) / Murata 3225M two-terminal chip",
+            "part_id": "OHM-026",
+            "placeholder": false,
+            "ref": "C2",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          },
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "0603",
+            "part_id": "OHM-004",
+            "placeholder": false,
+            "ref": "R1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": {
+              "unit": "ohm",
+              "value": 312500.0
+            }
+          },
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "0603",
+            "part_id": "OHM-004",
+            "placeholder": false,
+            "ref": "R2",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": {
+              "unit": "ohm",
+              "value": 100000.0
+            }
+          },
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "0603",
+            "part_id": "OHM-004",
+            "placeholder": false,
+            "ref": "R3",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": {
+              "unit": "ohm",
+              "value": 100000.0
+            }
+          },
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "Cement",
+            "part_id": "OHM-012",
+            "placeholder": false,
+            "ref": "RL",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": {
+              "unit": "ohm",
+              "value": 6.6
+            }
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-134-vendor",
+        "name": "Datasheet-condition vendor model check",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "5"
+              },
+              {
+                "component": "R1",
+                "pin": "2"
+              },
+              {
+                "component": "R2",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "fb",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "6"
+              },
+              {
+                "component": "C2",
+                "pin": "1"
+              },
+              {
+                "component": "R1",
+                "pin": "1"
+              },
+              {
+                "component": "R3",
+                "pin": "1"
+              },
+              {
+                "component": "RL",
+                "pin": "1"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "out",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "8"
+              },
+              {
+                "component": "R3",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "pg",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              },
+              {
+                "component": "U1",
+                "pin": "4"
+              },
+              {
+                "component": "U1",
+                "pin": "EP"
+              },
+              {
+                "component": "C2",
+                "pin": "2"
+              },
+              {
+                "component": "R2",
+                "pin": "2"
+              },
+              {
+                "component": "RL",
+                "pin": "2"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "7"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "sw",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "2"
+              },
+              {
+                "component": "U1",
+                "pin": "3"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 12.0
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 12.0
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 12.0
+                }
+              }
+            },
+            "kind": "power",
+            "name": "vin",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-134",
+      "entry_research_sha256": "357106d9acb096886f52a20032f93a1c5fa56ea3dfd96d41240c1e87451a7951",
+      "excitations": [
+        {
+          "inductance": {
+            "unit": "H",
+            "value": 2.2e-06
+          },
+          "kind": "ideal_test_inductor",
+          "negative_net": "out",
+          "positive_net": "sw"
+        }
+      ],
+      "options": {
+        "observe_nets": [
+          "out",
+          "fb",
+          "pg"
+        ],
+        "tstep": "500n",
+        "tstop": "300u"
+      },
+      "original_netlist_sha256": "c0b480a1e0962d331ea1dcb4ffe512a25c57e8e40f88e55122536c36afd58dde",
+      "package": "WSON-8",
+      "reference_part": "TPS62160 / TPS62160DSG WSON-8 adjustable (TI)",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "C2": {
+          "entry_id": "OHM-026"
+        },
+        "R1": {
+          "entry_id": "OHM-004"
+        },
+        "R2": {
+          "entry_id": "OHM-004"
+        },
+        "R3": {
+          "entry_id": "OHM-004"
+        },
+        "RL": {
+          "entry_id": "OHM-012"
+        },
+        "U1": {
+          "entry_id": "OHM-134"
+        }
+      }
+    },
     "OHM-146": {
       "analysis": "tran",
       "circuit": {
@@ -18244,7 +18973,7 @@
       }
     }
   },
-  "generator_sha256": "eb29b9a95c6872a10ecce1181a81d6af7705df5149dcb567796b624790d3f486",
-  "recipe_sha256": "cdcb7628556b1480e38114dd016841ea922c84230fa1bf6db4221f468e40710d",
+  "generator_sha256": "6f3788870ec7ddae990ed0ddbe22f9fcb16411006f492e02dbd24db5350b3660",
+  "recipe_sha256": "a0a87f228e70d942b8437696c2504f298121f88a7b218ba4b72dc4071cc6a447",
   "schema_version": 1
 }

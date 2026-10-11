@@ -1,0 +1,115 @@
+***
+*$
+*  TPS7A8001 Model
+*****************************************************************************
+*  (C) Copyright 2013 Texas Instruments Incorporated. All rights reserved.
+*****************************************************************************
+** This model is designed as an aid for customers of Texas Instruments.
+** TI and its licensors and suppliers make no warrenties, either expressed
+** or implied, with respect to this model, including the warranties of 
+** merchantability or fitness for a particular purpose.  The model is
+** provided solely on an "as is" basis.  The entire risk as to its quality
+** and performance is with the customer
+*****************************************************************************
+*
+** Released by: WEBENCH(R) Design Center, Texas Instruments Inc.
+* Part: TPS7A8001
+* Date: 01/28/2013
+* Model Type: TRANSIENT
+* Simulator: PSPICE
+* Simulator Version: 16.2
+* EVM Order Number: TPS7A8001DRBEVM
+* EVM Users Guide: SLVU387 - July 2010
+* Datasheet: SBVS135H - JUNE 2010 - REVISED JANUARY 2013
+*
+* Model Version: Final 1.10
+*
+*****************************************************************************
+*
+* Updates:
+*
+* Final 1.00
+* Release to Web.
+*
+* Final 1.10
+* Updated EN function. Fixed startup with EN function.
+*
+*****************************************************************************
+*
+* Model Usage Notes:
+* 
+* 1. Input and quiescent current of the part have not been modeled.
+* 2. Temperature effects have not been modeled.
+* 3. Noise and the NR function have not been modeled.
+*
+*****************************************************************************
+* source LDO_Create.php - TPS7A8001
+
+.SUBCKT TPS7A8001 OUT_0 OUT_1 FB GND EN NR IN_0 IN_1 PWPD
+RPWPD PWPD GND 10MEG
+RIN_0 IN_0 IN 1m
+RIN_1 IN_1 IN_0 1m
+ROUT_0 OUT_0 OUT 1m
+ROUT_1 OUT_1 OUT_0 1m 
+X1  OUT GND IN IN EN FB  LDO_BASIC 
++ PARAMS: 
++ rinp = 1.000e+7
++ rout = 2.000e-3 
++ psrr = 7.079e-4 
++ pole = 3.000e+4 
++ zero = 1.000e+6 
++ venb = 1.200e+0 
++ ehys = 7.500e-2 
++ uvlo = 2.000e+0 
++ uhys = 7.500e-2 
++ vref = 8.000e-1 
++ drop = 3.500e-1 
++ ilim = 1.400e+0 
++ ttrn = 8.000e-4
+R6  NR GND 10MEG  
+.ENDS TPS7A8001 
+
+*$
+.SUBCKT ldo_basic out vgnd vin bias enb fbk 
++ PARAMS: 
++ rinp = 1e07 
++ rout = 0.1
++ psrr = 5e-4
++ pole = 100
++ zero = 10e3
++ venb = 1.0
++ ehys = 0.1
++ uvlo = 2.0
++ uhys = 0.1
++ vref = 1.20
++ drop = 0.25
++ ilim = 0.10
++ ttrn = 1e-4
+R00 vin vxx  { rinp } 
+C00 vin vxx  { 1/(6.28*rinp*pole) } 
+EX1 vx1   0 VALUE {IF(V(enb, vgnd) + V(egd)*ehys > venb, 1, 0)}
+RX1 vx1 egd 1000
+CX1 egd   0 10n
+EX2 vx2   0 VALUE {IF(V(bias, vgnd) + V(vgd)*uhys > uvlo, 1, 0)}
+RX2 vx2 vgd 10
+CX2 vgd   0 1n
+E01 v01 vgnd VALUE { 
++ IF(V(egd)>0.51&V(vgd)>0.51, { vref }, 0) }
+R01 v01 ref {3.333e5*SQRT(ttrn)}
+C01 ref vgnd {1e-6*SQRT(ttrn)}
+E02 v02   0  VALUE {
++ V(ref)*(ABS(V(out)) + 1E-6)/(ABS(V(fbk)) + 1E-6) }
+R02 v02 des 10
+C02 des   0 1n
+E03 drv   0 VALUE {
++ MIN(V(des), MAX(V(vin)-drop, 0))}
+R03 drv vxx { psrr*rinp } 
+C03 drv vxx { 1/(6.28*psrr*rinp*zero) } 
+E04 vyy   0  VALUE { 
++ MIN(V(vxx), V(vzz) + ilim*rout) }
+R04 vyy vzz { rout }
+F04 vin vyy V04 1
+V04 vzz out 0V
+.ENDS ldo_basic
+
+

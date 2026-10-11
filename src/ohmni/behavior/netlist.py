@@ -22,16 +22,23 @@ from .loader import (
     _safe_local_path,
     _validate_anchor,
 )
+from .models import BehaviorFidelity
 from .runtime_models import (
+    VENDOR_ASSET_PREFIX,
     ACExcitation,
     BehaviorCompilation,
     BehaviorSelection,
     CompiledComponent,
     DCExcitation,
+    IdealTestInductor,
     PWLExcitation,
     RuntimeRecipe,
     RuntimeRecipes,
 )
+
+PSA_LIMITATION = ("PSpice compatibility mode (ngspice ngbehavior=psa) is on for this whole deck because a "
+                  "bound manufacturer model is written in PSpice syntax; every other model in the deck is "
+                  "parsed in that mode too (D074).")
 
 
 def load_recipes(registry: BehaviorRegistry, root) -> RuntimeRecipes:
@@ -157,7 +164,7 @@ def convert_unit(value, source, target):
         return value
     units = {
         "V": ("V", 1), "mV": ("V", 1e-3), "A": ("A", 1), "mA": ("A", 1e-3),
-        "uA": ("A", 1e-6), "ohm": ("ohm", 1), "mohm": ("ohm", 1e-3),
+        "uA": ("A", 1e-6), "nA": ("A", 1e-9), "ohm": ("ohm", 1), "mohm": ("ohm", 1e-3),
         "W": ("W", 1), "mW": ("W", 1e-3), "F": ("F", 1), "uF": ("F", 1e-6),
         "nF": ("F", 1e-9), "pF": ("F", 1e-12), "H": ("H", 1), "uH": ("H", 1e-6),
         "nH": ("H", 1e-9), "s": ("s", 1), "ms": ("s", 1e-3), "us": ("s", 1e-6),
@@ -169,7 +176,10 @@ def convert_unit(value, source, target):
     return value * units[source][1] / units[target][1]
 
 
-def inline_asset(root, anchor):
+def inline_asset(root, anchor, vendor=False):
+    """A hash-locked model file, inlined. ``vendor`` marks a manufacturer's own model (D074): its
+    MOSFET cards keep the manufacturer's diode terms, so the authored-card IS=0 rule does not apply.
+    Only an asset under docs/behavior/vendor/ can carry that exemption."""
     path = _safe_local_path(root, anchor.document)
     raw = path.read_bytes()
     if hashlib.sha256(raw).hexdigest() != anchor.document_sha256:
@@ -177,7 +187,10 @@ def inline_asset(root, anchor):
     text = raw.decode("utf-8")
     if re.search(r"^\s*(?:\.(?:include|inc|lib|control|end)\b|(?:shell|source|write|wrdata)\b)", text, re.IGNORECASE | re.MULTILINE):
         raise ValueError("inline model asset contains file or analysis commands")
-    validate_mosfet_cards(text)
+    if vendor and not anchor.document.startswith(VENDOR_ASSET_PREFIX):
+        raise ValueError("only a docs/behavior/vendor/ asset is a vendor model")
+    if not vendor:
+        validate_mosfet_cards(text)
     return rename_gnd_ports(text)
 
 
@@ -327,7 +340,7 @@ def _parameter_defaults(behavior, recipe, values, evidence, root):
 
 def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: RuntimeRecipes,
                     selections: dict[str, BehaviorSelection] | None = None, *, analysis="op",
-                    excitations: list[DCExcitation | PWLExcitation | ACExcitation] | None = None,
+                    excitations: list[DCExcitation | PWLExcitation | ACExcitation | IdealTestInductor] | None = None,
                     measure_currents: bool = False):
     selections = selections or {}
     problems, components, limitations = [], [], []
@@ -344,6 +357,7 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
     source_count = 0
     source_elements = {}
     blocks = []
+    compatibility, max_steps = set(), []
     excitations = sorted(excitations or [], key=lambda x: x.model_dump_json())
     for i, net in enumerate(sorted(circuit.nets, key=lambda n: n.name), 1):
         if net.external_source:
@@ -360,6 +374,11 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
     for i, source in enumerate(excitations, 1):
         if source.positive_net not in nodes or source.negative_net not in nodes:
             problems.append("An excitation refers to a net outside the circuit")
+            continue
+        if isinstance(source, IdealTestInductor):
+            lines.append(f"Ltest{i} {nodes[source.positive_net]} {nodes[source.negative_net]} "
+                         f"{_number(source.inductance.value)}")
+            limitations.append("Ideal test inductor fixture (D074); not a part, and no DCR, saturation or loss")
             continue
         pair = frozenset((source.positive_net, source.negative_net))
         if isinstance(source, ACExcitation) != (analysis == "ac"):
@@ -486,9 +505,14 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
             for parameter in recipe.derived_parameters.values():
                 _validate_anchor(root, parameter.source, entry_id)
             asset_names = {}
+            vendor_document = recipe.vendor_model.document if recipe.vendor_model else None
             for anchor in recipe.inline_assets:
                 asset_names[anchor.document.rsplit("/", 1)[-1]] = anchor
-                assets[anchor.document] = inline_asset(root, anchor)
+                assets[anchor.document] = inline_asset(root, anchor, vendor=anchor.document == vendor_document)
+            if recipe.ngspice_compatibility:
+                compatibility.add(recipe.ngspice_compatibility)
+            if recipe.transient_max_step_s:
+                max_steps.append(recipe.transient_max_step_s)
             kept = []
             for line in template.splitlines():
                 include = re.match(r"\s*\.(?:include|inc)\s+(.+?)\s*$", line, re.IGNORECASE)
@@ -515,7 +539,8 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
             if re.search(r"^\s*\.(?:include|inc|lib|control|end)\b", fragment, re.IGNORECASE | re.MULTILINE):
                 raise ValueError("model must be self-contained without includes or analysis commands")
             original = behavior.canonical_payload["model"][recipe.template_key]
-            if ".nodeset" in original.lower() and ".nodeset" not in fragment.lower():
+            # A manufacturer's own model replaces the authored class model, so its nodeset does not apply (D074).
+            if ".nodeset" in original.lower() and ".nodeset" not in fragment.lower() and recipe.vendor_model is None:
                 raise ValueError("regulator binding must preserve its authored nodeset")
             validate_mosfet_cards(fragment)
             strays = pin_ground_strays(roles, values, evidence, recipe.ground_strays, f"c{i}")
@@ -523,7 +548,8 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
             components.append(CompiledComponent(
                 ref=component.ref, entry_id=entry_id, behavior_id=recipe.behavior_id,
                 reference_part=recipe.reference_part,
-                fidelity=behavior.fidelity, source_status=entry.status.value,
+                fidelity=BehaviorFidelity.VENDOR_MODEL if recipe.vendor_model else behavior.fidelity,
+                source_status=entry.status.value,
                 confidence=behavior.canonical_payload.get("confidence", {}).get("model", "L"),
                 source_confidence=behavior.canonical_payload.get("confidence", {}),
                 rating_confidence=min((evidence[k]["confidence"] for k in recipe.critical_facts),
@@ -542,10 +568,16 @@ def compile_circuit(circuit: CircuitIR, registry: BehaviorRegistry, recipes: Run
         lines.extend(strays)
     lines.extend(text for _, text in sorted(assets.items()))
     lines.append(".end")
+    if len(compatibility) > 1:
+        problems.append("Bound models need different ngspice compatibility modes")
+    if compatibility:
+        limitations.append(PSA_LIMITATION)
     netlist = None if problems else "\n".join(lines) + "\n"
     return BehaviorCompilation(
         circuit_hash=circuit.content_hash, analysis=analysis, netlist=netlist,
         netlist_sha256=hashlib.sha256(netlist.encode()).hexdigest() if netlist else None,
         node_names=nodes, source_elements=source_elements, excitations=excitations, components=components,
         problems=problems, limitations=limitations,
+        ngspice_compatibility=next(iter(compatibility), None) if len(compatibility) == 1 else None,
+        transient_max_step_s=min(max_steps) if max_steps else None,
     )

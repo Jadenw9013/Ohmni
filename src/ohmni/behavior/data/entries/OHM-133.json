@@ -25,7 +25,8 @@
       "bench-results/BEH-REG-LINEAR--B4.json"
     ],
     "conflicts": [
-      "Chosen3x3TPS7A80 is not the6x5W25Q flash alternative."
+      "Chosen3x3TPS7A80 is not the6x5W25Q flash alternative.",
+      "D074: the spec's 'reuse BEH-REG-LINEAR' (a three-terminal fixed LDO_R6) cannot represent FB/EN/NR; TI's own model is bound instead."
     ],
     "documents": [
       {
@@ -37,6 +38,26 @@
         "source_status": "primary_source_opened",
         "title": "TPS7A80 low-noise LDO",
         "url": "https://www.ti.com/lit/ds/symlink/tps7a80.pdf"
+      },
+      {
+        "document_id": "ti-sbvm880",
+        "manufacturer": "Texas Instruments",
+        "note": "Archived (ledger sha256 84ee4789c198...); member TPS7A8001_PSPICE_TRANS/TPS7A8001.LIB (sha256 7cadca7aa06f...) committed byte-for-byte as docs/behavior/vendor/ti/TPS7A8001.LIB (D074).",
+        "page": null,
+        "revision": "TPS7A8001 Final 1.10",
+        "source_status": "primary_source_opened",
+        "title": "TPS7A8001 PSpice transient model (ZIP)",
+        "url": "https://www.ti.com/lit/zip/SBVM880"
+      },
+      {
+        "document_id": "ti-sbvm298",
+        "manufacturer": "Texas Instruments",
+        "note": "Archived (ledger sha256 3323efa8d1c1...); its LIB is encrypted and cannot run in ngspice; provenance only, not bound (D074).",
+        "page": null,
+        "revision": "2013",
+        "source_status": "primary_source_opened",
+        "title": "TPS7A8001 PSpice transient design (ZIP, 2013)",
+        "url": "https://www.ti.com/lit/zip/SBVM298"
       }
     ],
     "entry_id": "OHM-133",
@@ -251,18 +272,143 @@
         ],
         "unit": "V",
         "value": 0.8
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": ".SUBCKT TPS7A8001 OUT_0 OUT_1 FB GND EN NR IN_0 IN_1 PWPD (LIB line 48); vref 0.8, drop 0.35, ilim 1.4; usage notes: IQ, temperature, noise and NR not modeled",
+        "field": "vendor_model",
+        "page": null,
+        "scope": "TPS7A8001 DRB VSON8,adjustable; TI PSpice transient model Final 1.10 (LDO_BASIC), ports OUT_0 OUT_1 FB GND EN NR IN_0 IN_1 PWPD",
+        "source_locator": "ZIP member TPS7A8001_PSPICE_TRANS/TPS7A8001.LIB, line 48",
+        "sources": [
+          "https://www.ti.com/lit/zip/SBVM880"
+        ],
+        "unit": null,
+        "value": "TPS7A8001"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Output accuracy -3% .. 3% (typ +/-0.3%); note 1: the adjustable version does not include external resistor tolerances",
+        "field": "output_accuracy_range",
+        "page": 6,
+        "scope": "TPS7A8001 DRB VSON8,adjustable; VOUT + 0.5 V <= VIN <= 6.5 V, VIN >= 2.2 V, 100 mA <= IOUT <= 1 A; external resistor tolerances excluded",
+        "sources": [
+          "https://www.ti.com/lit/ds/symlink/tps7a80.pdf"
+        ],
+        "unit": "percent",
+        "value": [
+          -3,
+          3
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "VOUT Output voltage Adjustable version only (TPS7A8001) 0.8 .. 6 V",
+        "field": "output_voltage_range",
+        "page": 6,
+        "scope": "TPS7A8001 DRB VSON8,adjustable; VOUT, adjustable version only",
+        "sources": [
+          "https://www.ti.com/lit/ds/symlink/tps7a80.pdf"
+        ],
+        "unit": "V",
+        "value": [
+          0.8,
+          6
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "OUT -0.3 .. 7 V",
+        "field": "absolute_output_max",
+        "page": 5,
+        "scope": "TPS7A8001 DRB VSON8,adjustable; OUT, absolute",
+        "sources": [
+          "https://www.ti.com/lit/ds/symlink/tps7a80.pdf"
+        ],
+        "unit": "V",
+        "value": 7
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "FB, NR -0.3 .. 3.6 V",
+        "field": "absolute_fb_nr_max",
+        "page": 5,
+        "scope": "TPS7A8001 DRB VSON8,adjustable; FB, NR, absolute",
+        "sources": [
+          "https://www.ti.com/lit/ds/symlink/tps7a80.pdf"
+        ],
+        "unit": "V",
+        "value": 3.6
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "EN -0.3 .. VIN + 0.3; note 2: VIN + 0.3 V or 7 V, whichever is smaller",
+        "field": "absolute_enable_limits",
+        "page": 5,
+        "scope": "TPS7A8001 DRB VSON8,adjustable; EN, absolute",
+        "sources": [
+          "https://www.ti.com/lit/ds/symlink/tps7a80.pdf"
+        ],
+        "unit": "V",
+        "value": {
+          "above_vin": 0.3,
+          "cap": 7
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "ICL Output current limit, adjustable 1100 1400 2000 mA; a trip characteristic, not a continuous rating",
+        "field": "current_limit_range",
+        "page": 6,
+        "scope": "TPS7A8001 DRB VSON8,adjustable; ICL VOUT = 0.85 x VOUT(NOM), VIN >= 3.3 V (min, typ, max)",
+        "sources": [
+          "https://www.ti.com/lit/ds/symlink/tps7a80.pdf"
+        ],
+        "unit": "A",
+        "value": [
+          1.1,
+          1.4,
+          2.0
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "VNR Internal reference Adjustable and Fixed VOUT = 1.2 V 0.79 0.8 0.81 V; measured at NR, which the TI model does not model",
+        "field": "feedback_reference_range",
+        "page": 6,
+        "scope": "TPS7A8001 DRB VSON8,adjustable; VNR internal reference, adjustable (min, typ, max)",
+        "sources": [
+          "https://www.ti.com/lit/ds/symlink/tps7a80.pdf"
+        ],
+        "unit": "V",
+        "value": [
+          0.79,
+          0.8,
+          0.81
+        ]
       }
     ],
     "remaining_open_items": [
       "External feedback/COUT,stability,noise and NR timing require circuit-level validation.",
-      "Current-limit1.1..2A is a trip characteristic,not safe continuous capacity."
+      "Current-limit1.1..2A is a trip characteristic,not safe continuous capacity.",
+      "Bound to TI's own TPS7A8001 PSpice model (2026-10-11, D074). Its usage notes say input/quiescent current, temperature effects, noise and the NR function are not modeled (NR is 10 Mohm to GND).",
+      "The model's dropout is a fixed 0.35 V and its current limit 1.4 A; the datasheet dropout is 0.25/0.35/0.5 V maximum at 0.5/0.75/1 A and the limit 1.1..2.0 A.",
+      "Stability against COUT and its ESR is not validated by the macro-model; the 4.7 uF minimum stays a design requirement."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-133.md",
-      "document_sha256": "e424f53c213033752b5d32f3d22837da854185938dbce8ba34f5a0800db67e8f",
+      "document_sha256": "81f0b17d132daa7dc2483a832ec82773cc037b9d1429b01e24c9d4ad5d278e17",
       "fragment_sha256": null,
       "line": 1
     }
@@ -271,8 +417,8 @@
     "REFERENCE-DIMENSION-COMPATIBILITY-POLICY"
   ],
   "schema_version": 1,
-  "simulation_disposition": "not_simulable",
-  "simulation_reason": "A package has no electrical function until a sourced reference part is bound.",
+  "simulation_disposition": "simulable",
+  "simulation_reason": "Simulates as the bound reference part (TPS7A8001 / TPS7A8001DRB VSON-8 adjustable (TI)); the package alone has no electrical function, so results describe that part in this package.",
   "source": {
     "document": "COMPONENT_BEHAVIOR_SPEC.md",
     "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",

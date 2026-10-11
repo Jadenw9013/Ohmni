@@ -332,7 +332,8 @@ def with_power_on_stimulus(netlist: str, net: str = STIMULUS_NET, *,
 
 
 def transient_deck(netlist: str, tstep: str, tstop: str, signals: list[str], *,
-                   precision: int | None = None, currents: list[str] = ()) -> str:
+                   precision: int | None = None, currents: list[str] = (),
+                   tmax: str | None = None) -> str:
     """Add the transient command and the signals to print, and nothing else.
 
     Built the same way as the operating-point deck: the caller's first line
@@ -343,7 +344,12 @@ def transient_deck(netlist: str, tstep: str, tstop: str, signals: list[str], *,
     stripped = [line.strip() for line in lines]
     additions = []
     if not any(re.match(r"\.tran\b", line, re.IGNORECASE) for line in stripped):
-        additions.append(f".tran {tstep} {tstop}")
+        if tmax is None:
+            additions.append(f".tran {tstep} {tstop}")
+        else:
+            # A switching model needs short internal steps; printing every internal point would be millions
+            # of rows, so the rows are interpolated to the print step (D074).
+            additions.extend([".options interp", f".tran {tstep} {tstop} 0 {tmax}"])
     if precision is not None:
         if type(precision) is not int or not 6 <= precision <= 17:
             raise ValueError("transient print precision must be an integer from6 to17")
@@ -708,7 +714,7 @@ class NgspiceAdapter:
             )
         return NgspiceCli(self.executable).availability()
 
-    def behavior_bench(self, deck: str, *, work_dir: Path) -> dict:
+    def behavior_bench(self, deck: str, *, work_dir: Path, compatibility: str | None = None) -> dict:
         """Execute an authored, fully inlined bench with version and raw output.
 
         A successful process is only an observation. Analytical comparisons are
@@ -733,7 +739,13 @@ class NgspiceAdapter:
             work_dir.mkdir(parents=True, exist_ok=True)
             path = work_dir / "bench.cir"
             path.write_text(deck, encoding="utf-8", newline="\n")
-            completed = run_tool([self.executable, "-b", str(path.resolve())], timeout=self.timeout_seconds)
+            # Only a deck holding a manufacturer model written in PSpice syntax runs in PSpice compatibility
+            # mode; every other deck keeps the plain command line (D074).
+            if compatibility not in (None, "psa"):
+                result["stderr"] = f"unsupported ngspice compatibility mode {compatibility}"
+                return result
+            mode = ["-D", f"ngbehavior={compatibility}"] if compatibility else []
+            completed = run_tool([self.executable, *mode, "-b", str(path.resolve())], timeout=self.timeout_seconds)
             result.update(stdout=completed.stdout, stderr=completed.stderr, returncode=completed.returncode)
             result["status"] = "ran" if completed.returncode == 0 and not _error_summary(completed.stdout, completed.stderr) else "failed"
         except ToolTimeoutError:
@@ -801,9 +813,10 @@ class NgspiceAdapter:
             probes = [probe for c in compilation.components for probe in c.role_current_probes.values()]
             if len(shown) + len(rating_nodes) + len(probes) > MAX_RATING_SIGNALS:
                 rating_nodes, probes = [], []
+            tmax = compilation.transient_max_step_s
             deck = transient_deck(compilation.netlist, format(step.value, ".17g"),
                                   format(stop.value, ".17g"), [*shown, *rating_nodes], precision=15,
-                                  currents=probes)
+                                  currents=probes, tmax=format(min(tmax, step.value), ".17g") if tmax else None)
         elif analysis == "ac":
             points = list(ac_points_hz or [])
             nodes = list(dict.fromkeys(node for c in compilation.components for node in c.role_nodes.values()
@@ -829,7 +842,7 @@ class NgspiceAdapter:
         else:
             result["problems"].append(f"Unsupported circuit analysis: {analysis}")
             return result
-        observation = self.behavior_bench(deck, work_dir=work_dir)
+        observation = self.behavior_bench(deck, work_dir=work_dir, compatibility=compilation.ngspice_compatibility)
         result.update(observation)
         result["product_code_path"] = "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit"
         if observation["status"] != "ran":
@@ -915,7 +928,8 @@ class NgspiceAdapter:
             variant["problems"] = [str(exc)]
             return variant
         variant["netlist_sha256"] = hashlib.sha256(netlist.encode()).hexdigest()
-        observation = self.behavior_bench(deck, work_dir=work_dir / "esr_zero")
+        observation = self.behavior_bench(deck, work_dir=work_dir / "esr_zero",
+                                          compatibility=compilation.ngspice_compatibility)
         if observation["status"] != "ran":
             variant["problems"] = [f"ngspice {observation['status']}"]
             return variant

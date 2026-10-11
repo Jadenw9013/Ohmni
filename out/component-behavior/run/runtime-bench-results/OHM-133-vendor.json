@@ -1,0 +1,169 @@
+{
+  "analysis": "op",
+  "circuit_hash": "063536e7a8d861b6572e7ba2b777fbd3e27969d089d8154e3a2e558b38c965f0",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": [
+    {
+      "derivation": "VOUT = 0.8 V x (1 + R1/R2) = 3.3 V (datasheet Equation 2) within the -3%..3% accuracy row at VIN = VOUT + 0.5 V and IOUT = 100 mA; ideal divider resistors (the row excludes their tolerance).",
+      "kind": "interval",
+      "load_ohm": 33.0,
+      "maximum": 3.3990000000000005,
+      "minimum": 3.201,
+      "node": "out",
+      "observable": "node_voltage",
+      "setpoint": 3.3000000000000003,
+      "source_facts": {
+        "acc_max": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "detail": "Output accuracy -3% .. 3% (typ +/-0.3%); note 1: the adjustable version does not include external resistor tolerances",
+          "field": "output_accuracy_range",
+          "page": 6,
+          "scope": "TPS7A8001 DRB VSON8,adjustable; VOUT + 0.5 V <= VIN <= 6.5 V, VIN >= 2.2 V, 100 mA <= IOUT <= 1 A; external resistor tolerances excluded",
+          "selected_value": 3,
+          "selected_value_path": [
+            1
+          ],
+          "sources": [
+            "https://www.ti.com/lit/ds/symlink/tps7a80.pdf"
+          ],
+          "unit": "percent",
+          "value": [
+            -3,
+            3
+          ]
+        },
+        "acc_min": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "detail": "Output accuracy -3% .. 3% (typ +/-0.3%); note 1: the adjustable version does not include external resistor tolerances",
+          "field": "output_accuracy_range",
+          "page": 6,
+          "scope": "TPS7A8001 DRB VSON8,adjustable; VOUT + 0.5 V <= VIN <= 6.5 V, VIN >= 2.2 V, 100 mA <= IOUT <= 1 A; external resistor tolerances excluded",
+          "selected_value": -3,
+          "selected_value_path": [
+            0
+          ],
+          "sources": [
+            "https://www.ti.com/lit/ds/symlink/tps7a80.pdf"
+          ],
+          "unit": "percent",
+          "value": [
+            -3,
+            3
+          ]
+        },
+        "vref": {
+          "basis": "DERIVED",
+          "confidence": "H",
+          "detail": null,
+          "field": "feedback_voltage_typical",
+          "page": 17,
+          "scope": "TPS7A8001 adjustable; Equation2 VOUT=0.800*(R1+R2)/R2 establishes nominal feedback voltage from the internal reference; TJ25C typical reference in p6.",
+          "sources": [
+            "https://www.ti.com/lit/ds/symlink/tps7a80.pdf"
+          ],
+          "unit": "V",
+          "value": 0.8
+        }
+      },
+      "supply_voltage": 3.8000000000000003
+    },
+    {
+      "derivation": "FB regulates to the 0.8 V reference; same accuracy band.",
+      "kind": "interval",
+      "maximum": 0.8240000000000001,
+      "minimum": 0.776,
+      "node": "fb",
+      "observable": "node_voltage",
+      "source_facts": {
+        "acc_max": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "detail": "Output accuracy -3% .. 3% (typ +/-0.3%); note 1: the adjustable version does not include external resistor tolerances",
+          "field": "output_accuracy_range",
+          "page": 6,
+          "scope": "TPS7A8001 DRB VSON8,adjustable; VOUT + 0.5 V <= VIN <= 6.5 V, VIN >= 2.2 V, 100 mA <= IOUT <= 1 A; external resistor tolerances excluded",
+          "selected_value": 3,
+          "selected_value_path": [
+            1
+          ],
+          "sources": [
+            "https://www.ti.com/lit/ds/symlink/tps7a80.pdf"
+          ],
+          "unit": "percent",
+          "value": [
+            -3,
+            3
+          ]
+        },
+        "acc_min": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "detail": "Output accuracy -3% .. 3% (typ +/-0.3%); note 1: the adjustable version does not include external resistor tolerances",
+          "field": "output_accuracy_range",
+          "page": 6,
+          "scope": "TPS7A8001 DRB VSON8,adjustable; VOUT + 0.5 V <= VIN <= 6.5 V, VIN >= 2.2 V, 100 mA <= IOUT <= 1 A; external resistor tolerances excluded",
+          "selected_value": -3,
+          "selected_value_path": [
+            0
+          ],
+          "sources": [
+            "https://www.ti.com/lit/ds/symlink/tps7a80.pdf"
+          ],
+          "unit": "percent",
+          "value": [
+            -3,
+            3
+          ]
+        },
+        "vref": {
+          "basis": "DERIVED",
+          "confidence": "H",
+          "detail": null,
+          "field": "feedback_voltage_typical",
+          "page": 17,
+          "scope": "TPS7A8001 adjustable; Equation2 VOUT=0.800*(R1+R2)/R2 establishes nominal feedback voltage from the internal reference; TJ25C typical reference in p6.",
+          "sources": [
+            "https://www.ti.com/lit/ds/symlink/tps7a80.pdf"
+          ],
+          "unit": "V",
+          "value": 0.8
+        }
+      }
+    }
+  ],
+  "entry_id": "OHM-133",
+  "entry_research_sha256": "81f0b17d132daa7dc2483a832ec82773cc037b9d1429b01e24c9d4ad5d278e17",
+  "limits": "Operating-point output and feedback of TI's model at the datasheet output-accuracy condition. The model omits quiescent current, NR and temperature; does not check dropout, current limit, start-up or stability.",
+  "netlist_sha256": "8a172ad7d964a50dd7cb13b0c7d2a5b49dfc32d1d0f0173d5b83a86ae56d4904",
+  "ngspice_compatibility": "psa",
+  "observation_status": "ran",
+  "observe_nets": [],
+  "observed": [
+    3.30015,
+    0.8000364
+  ],
+  "output_sha256": "d242337d4db61ec1bae04d32881a2f5df4ead8b4d1c90cbe9fc9afc9683999cc",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T19:21:53Z",
+  "raw_output": "runtime-bench-output/OHM-133-vendor/output.txt",
+  "recipe_source_sha256": "a0a87f228e70d942b8437696c2504f298121f88a7b218ba4b72dc4071cc6a447",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "tstep": null,
+  "tstop": null,
+  "vendor_model": {
+    "archive_member": "TPS7A8001_PSPICE_TRANS/TPS7A8001.LIB",
+    "archive_sha256": "84ee4789c198464ca3f475e46a6d0664fb67f6aee4fc4abe695ec2ef04f10b46",
+    "archive_url": "https://www.ti.com/lit/zip/SBVM880",
+    "document": "docs/behavior/vendor/ti/TPS7A8001.LIB",
+    "manufacturer": "Texas Instruments",
+    "model_name": "TPS7A8001",
+    "terms": "TI model header: \"This model is designed as an aid for customers of Texas Instruments. TI and its licensors and suppliers make no warranties, either expressed or implied, with respect to this model, including the warranties of merchantability or fitness for a particular purpose. The model is provided solely on an \"as is\" basis. The entire risk as to its quality and performance is with the customer.\""
+  },
+  "version_file": "runtime-bench-output/OHM-133-vendor/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sat Oct 10 21:32:36 UTC 2026\n******\n",
+  "version_sha256": "7f444023b0e5851d50a26bf40338ca29665b10988154a0ff2d662d918ab83fc3"
+}

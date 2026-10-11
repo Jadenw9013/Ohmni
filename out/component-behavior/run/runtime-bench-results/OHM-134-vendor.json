@@ -1,0 +1,314 @@
+{
+  "analysis": "tran",
+  "circuit_hash": "fb5b3c63434de884c640b773ab5e371f111105ef4c05e918a67f330f5a2429b2",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": [
+    {
+      "capacitor_f": 2.2e-05,
+      "derivation": "VOUT = 0.8 V x (1 + R1/R2) = 3.3 V (datasheet Equation 6) within the -3%..3% PWM accuracy row (VIN 12 V >= VOUT + 1 V; 0.5 A load exceeds half the ~0.6 A ripple, so PWM), averaged over 250-300 us after a start-up from 0 V, with the datasheet's standard 2.2 uH / 22 uF filter (ideal 2.2 uH test inductor, bound 22 uF capacitor).",
+      "ideal_test_inductor_h": 2.2e-06,
+      "kind": "interval",
+      "lc_fact": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Table 2: 2.2 uH with 22 uF is 'the standard value and recommended for most applications'; note 1: variations of typically +/-20% due to tolerance, saturation and DC bias are assumed",
+        "field": "recommended_lc_filter",
+        "page": 14,
+        "scope": "TPS62160 DSG WSON8; Table 2 standard LC combination; values nominal, variations of typically +/-20% assumed",
+        "sources": [
+          "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "capacitance_uF": 22,
+          "inductance_uH": 2.2,
+          "variation_pct": 20
+        }
+      },
+      "load_ohm": 6.6,
+      "maximum": 3.3990000000000005,
+      "minimum": 3.201,
+      "node": "out",
+      "observable": "window_mean",
+      "setpoint": 3.3000000000000003,
+      "source_facts": {
+        "acc_max": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "detail": "Initial output voltage accuracy, PWM mode operation, VIN >= VOUT + 1 V: -3% .. 3%",
+          "field": "output_accuracy_pwm_range",
+          "page": 6,
+          "scope": "TPS62160 DSG WSON8; initial output voltage accuracy, PWM mode operation, VIN >= VOUT + 1 V; device only, line and load regulation not included",
+          "selected_value": 3,
+          "selected_value_path": [
+            1
+          ],
+          "sources": [
+            "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
+          ],
+          "unit": "percent",
+          "value": [
+            -3,
+            3
+          ]
+        },
+        "acc_min": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "detail": "Initial output voltage accuracy, PWM mode operation, VIN >= VOUT + 1 V: -3% .. 3%",
+          "field": "output_accuracy_pwm_range",
+          "page": 6,
+          "scope": "TPS62160 DSG WSON8; initial output voltage accuracy, PWM mode operation, VIN >= VOUT + 1 V; device only, line and load regulation not included",
+          "selected_value": -3,
+          "selected_value_path": [
+            0
+          ],
+          "sources": [
+            "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
+          ],
+          "unit": "percent",
+          "value": [
+            -3,
+            3
+          ]
+        },
+        "pg_leak": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "converted_unit": "A",
+          "converted_value": 4.0000000000000003e-07,
+          "detail": "Input leakage current (PG) VPG = 1.8 V typ 1, max 400 nA",
+          "field": "power_good_leakage_max",
+          "page": 6,
+          "scope": "TPS62160 DSG WSON8; ILKG_PG, VPG = 1.8 V",
+          "sources": [
+            "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
+          ],
+          "unit": "nA",
+          "value": 400
+        },
+        "vref": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "detail": null,
+          "field": "feedback_voltage_typical",
+          "page": 6,
+          "scope": "TPS62160 DSG WSON8; TJ25C",
+          "sources": [
+            "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
+          ],
+          "unit": "V",
+          "value": 0.8
+        }
+      },
+      "supply_voltage": 12.0,
+      "window": [
+        0.00025,
+        0.0003
+      ]
+    },
+    {
+      "derivation": "FB regulates to the 0.8 V reference; same accuracy band.",
+      "kind": "interval",
+      "maximum": 0.8240000000000001,
+      "minimum": 0.776,
+      "node": "fb",
+      "observable": "window_mean",
+      "source_facts": {
+        "acc_max": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "detail": "Initial output voltage accuracy, PWM mode operation, VIN >= VOUT + 1 V: -3% .. 3%",
+          "field": "output_accuracy_pwm_range",
+          "page": 6,
+          "scope": "TPS62160 DSG WSON8; initial output voltage accuracy, PWM mode operation, VIN >= VOUT + 1 V; device only, line and load regulation not included",
+          "selected_value": 3,
+          "selected_value_path": [
+            1
+          ],
+          "sources": [
+            "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
+          ],
+          "unit": "percent",
+          "value": [
+            -3,
+            3
+          ]
+        },
+        "acc_min": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "detail": "Initial output voltage accuracy, PWM mode operation, VIN >= VOUT + 1 V: -3% .. 3%",
+          "field": "output_accuracy_pwm_range",
+          "page": 6,
+          "scope": "TPS62160 DSG WSON8; initial output voltage accuracy, PWM mode operation, VIN >= VOUT + 1 V; device only, line and load regulation not included",
+          "selected_value": -3,
+          "selected_value_path": [
+            0
+          ],
+          "sources": [
+            "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
+          ],
+          "unit": "percent",
+          "value": [
+            -3,
+            3
+          ]
+        },
+        "pg_leak": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "converted_unit": "A",
+          "converted_value": 4.0000000000000003e-07,
+          "detail": "Input leakage current (PG) VPG = 1.8 V typ 1, max 400 nA",
+          "field": "power_good_leakage_max",
+          "page": 6,
+          "scope": "TPS62160 DSG WSON8; ILKG_PG, VPG = 1.8 V",
+          "sources": [
+            "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
+          ],
+          "unit": "nA",
+          "value": 400
+        },
+        "vref": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "detail": null,
+          "field": "feedback_voltage_typical",
+          "page": 6,
+          "scope": "TPS62160 DSG WSON8; TJ25C",
+          "sources": [
+            "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
+          ],
+          "unit": "V",
+          "value": 0.8
+        }
+      },
+      "window": [
+        0.00025,
+        0.0003
+      ]
+    },
+    {
+      "derivation": "PG released (open drain off) once VOUT is above 95% of nominal: the 100 kohm pull-up to VOUT then holds PG within the VOUT band less the 400 nA maximum PG leakage drop.",
+      "kind": "interval",
+      "maximum": 3.3990000000000005,
+      "minimum": 3.161,
+      "node": "pg",
+      "observable": "window_mean",
+      "pull_up_ohm": 100000.0,
+      "source_facts": {
+        "acc_max": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "detail": "Initial output voltage accuracy, PWM mode operation, VIN >= VOUT + 1 V: -3% .. 3%",
+          "field": "output_accuracy_pwm_range",
+          "page": 6,
+          "scope": "TPS62160 DSG WSON8; initial output voltage accuracy, PWM mode operation, VIN >= VOUT + 1 V; device only, line and load regulation not included",
+          "selected_value": 3,
+          "selected_value_path": [
+            1
+          ],
+          "sources": [
+            "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
+          ],
+          "unit": "percent",
+          "value": [
+            -3,
+            3
+          ]
+        },
+        "acc_min": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "detail": "Initial output voltage accuracy, PWM mode operation, VIN >= VOUT + 1 V: -3% .. 3%",
+          "field": "output_accuracy_pwm_range",
+          "page": 6,
+          "scope": "TPS62160 DSG WSON8; initial output voltage accuracy, PWM mode operation, VIN >= VOUT + 1 V; device only, line and load regulation not included",
+          "selected_value": -3,
+          "selected_value_path": [
+            0
+          ],
+          "sources": [
+            "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
+          ],
+          "unit": "percent",
+          "value": [
+            -3,
+            3
+          ]
+        },
+        "pg_leak": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "converted_unit": "A",
+          "converted_value": 4.0000000000000003e-07,
+          "detail": "Input leakage current (PG) VPG = 1.8 V typ 1, max 400 nA",
+          "field": "power_good_leakage_max",
+          "page": 6,
+          "scope": "TPS62160 DSG WSON8; ILKG_PG, VPG = 1.8 V",
+          "sources": [
+            "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
+          ],
+          "unit": "nA",
+          "value": 400
+        },
+        "vref": {
+          "basis": "MFR_DATASHEET",
+          "confidence": "H",
+          "detail": null,
+          "field": "feedback_voltage_typical",
+          "page": 6,
+          "scope": "TPS62160 DSG WSON8; TJ25C",
+          "sources": [
+            "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
+          ],
+          "unit": "V",
+          "value": 0.8
+        }
+      },
+      "window": [
+        0.00025,
+        0.0003
+      ]
+    }
+  ],
+  "entry_id": "OHM-134",
+  "entry_research_sha256": "357106d9acb096886f52a20032f93a1c5fa56ea3dfd96d41240c1e87451a7951",
+  "limits": "Start-up of TI's switching model into the standard LC filter at VIN 12 V, 3.3 V, 0.5 A, with output, feedback and power-good averaged once settled. Uses a 20 ns maximum internal step. Does not check ripple, efficiency, current limit, load transients, PSM or thermal behavior.",
+  "netlist_sha256": "c0b480a1e0962d331ea1dcb4ffe512a25c57e8e40f88e55122536c36afd58dde",
+  "ngspice_compatibility": "psa",
+  "observation_status": "ran",
+  "observe_nets": [
+    "out",
+    "fb",
+    "pg"
+  ],
+  "observed": [
+    3.3068453626514382,
+    0.8013852018786087,
+    3.2958591654333267
+  ],
+  "output_sha256": "25e6912e02342ea3e30700d90449d58976d37eabc1edf907ad4cd345b6221043",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T19:24:02Z",
+  "raw_output": "runtime-bench-output/OHM-134-vendor/output.txt",
+  "recipe_source_sha256": "a0a87f228e70d942b8437696c2504f298121f88a7b218ba4b72dc4071cc6a447",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "tstep": "500n",
+  "tstop": "300u",
+  "vendor_model": {
+    "archive_member": "TPS62160_PSPICE_TRANS/TPS62160_TRANS.lib",
+    "archive_sha256": "362c3341b245ee2bd531c269c700a5c7989ba5ad6be3f927298ab554d37231f4",
+    "archive_url": "https://www.ti.com/lit/zip/SLVM428",
+    "document": "docs/behavior/vendor/ti/TPS62160_TRANS.lib",
+    "manufacturer": "Texas Instruments",
+    "model_name": "TPS62160_TRANS",
+    "terms": "TI model header: \"This model is designed as an aid for customers of Texas Instruments. TI and its licensors and suppliers make no warranties, either expressed or implied, with respect to this model, including the warranties of merchantability or fitness for a particular purpose. The model is provided solely on an \"as is\" basis. The entire risk as to its quality and performance is with the customer.\""
+  },
+  "version_file": "runtime-bench-output/OHM-134-vendor/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sat Oct 10 21:32:36 UTC 2026\n******\n",
+  "version_sha256": "7f444023b0e5851d50a26bf40338ca29665b10988154a0ff2d662d918ab83fc3"
+}

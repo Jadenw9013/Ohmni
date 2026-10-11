@@ -63,6 +63,9 @@ class DesignRunRequest(BaseModel):
     rating_context: RatingContext = Field(default_factory=RatingContext)
 
 
+SWITCHING_REFERENCE_TIMEOUT_SECONDS = 600
+
+
 class ComponentBehaviorService:
     def __init__(self, root, output_root, *, adapter=None):
         self.registry = BehaviorRegistry(repo_root=root)
@@ -184,7 +187,12 @@ class ComponentBehaviorService:
                 self.data["examples"][entry_id], self.registry, self.recipes
             )
             run_id = uuid.uuid4().hex
-            result = self.adapter.behavior_circuit(
+            adapter = self.adapter
+            if (compilation.transient_max_step_s and isinstance(adapter, NgspiceAdapter)
+                    and adapter.timeout_seconds < SWITCHING_REFERENCE_TIMEOUT_SECONDS):
+                # D074: a switching vendor model's start-up needs minutes of ngspice CPU at its short step.
+                adapter = NgspiceAdapter(adapter.executable, timeout_seconds=SWITCHING_REFERENCE_TIMEOUT_SECONDS)
+            result = adapter.behavior_circuit(
                 compilation,
                 work_dir=self.output_root / run_id,
                 rating_registry=self.registry,
@@ -319,7 +327,12 @@ class ComponentBehaviorService:
             raise BehaviorRunBusy("A behavior run is already active")
         try:
             run_id = uuid.uuid4().hex
-            result = self.adapter.behavior_circuit(
+            adapter = self.adapter
+            if (compilation.transient_max_step_s and isinstance(adapter, NgspiceAdapter)
+                    and adapter.timeout_seconds < SWITCHING_REFERENCE_TIMEOUT_SECONDS):
+                # D074: a switching vendor model's start-up needs minutes of ngspice CPU at its short step.
+                adapter = NgspiceAdapter(adapter.executable, timeout_seconds=SWITCHING_REFERENCE_TIMEOUT_SECONDS)
+            result = adapter.behavior_circuit(
                 compilation,
                 work_dir=self.output_root / run_id,
                 analysis=request.analysis,

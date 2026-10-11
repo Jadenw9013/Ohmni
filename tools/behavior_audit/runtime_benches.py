@@ -7,7 +7,7 @@ import math
 import re
 
 from ohmni.behavior.loader import BehaviorRegistry
-from ohmni.behavior.netlist import _facts, compile_circuit, load_recipes
+from ohmni.behavior.netlist import _facts, compile_circuit, convert_unit, load_recipes
 from ohmni.behavior.runtime_models import (
     ACExcitation,
     BehaviorSelection,
@@ -26,6 +26,7 @@ from .benches import numeric_contract
 def run_runtime_recipes(audit, entry_ids=None):
     """Run every selected binding through its authored product-path probe."""
     from .ic_benches import run_ic_recipes
+    from .vendor_benches import is_vendor_ic, run_vendor_ic_recipes
 
     registry = BehaviorRegistry(repo_root=audit.root)
     recipes = load_recipes(registry, audit.root)
@@ -38,7 +39,8 @@ def run_runtime_recipes(audit, entry_ids=None):
                   "BEH-IC-OPAMP", "BEH-IC-LDO-SOT235", "BEH-IC-OPTO-DIP6", "BEH-FREQ-XO"}
     for key in sorted(selected):
         behavior = recipes.entries[key].behavior_id
-        runner = (run_tran_probes if behavior in TRAN_PROBES else
+        runner = (run_vendor_ic_recipes if is_vendor_ic(recipes.entries[key]) else
+                  run_tran_probes if behavior in TRAN_PROBES else
                   run_resistor_recipes if behavior == "BEH-RES-FIXED" else
                   run_mosfet_recipes if behavior == "BEH-TRN-MOSFET" else
                   run_ic_recipes if behavior in ic_classes else run_dc_probes)
@@ -197,9 +199,132 @@ def mosfet_case(registry, recipes, entry_id):
                       "source_fact": fact}
 
 
+# D074: a manufacturer's own MOSFET model is a typical model, so it is checked at each sourced on-resistance
+# condition against the datasheet's typical-to-maximum interval (the typical edge less half its last printed
+# digit), driving the datasheet test current and reading VDS. Ratings still use datasheet maximums.
+VENDOR_MOSFET_VARIANTS = {"10V": ("rds_on_typ_10V", "rds_on_max_10V"), "4V5": ("rds_on_typ_4V5", "rds_on_max_4V5")}
+
+
+def mosfet_variants(recipe):
+    if recipe.vendor_model is None:
+        return [None]
+    return [v for v, (typ, high) in VENDOR_MOSFET_VARIANTS.items()
+            if typ in {**recipe.critical_facts, **recipe.model_facts} and high in {**recipe.critical_facts, **recipe.model_facts}]
+
+
+def vendor_mosfet_case(audit, entry_id, variant):
+    from .vendor_benches import printed_lower_edge
+
+    registry = BehaviorRegistry(repo_root=audit.root)
+    recipes = load_recipes(registry, audit.root)
+    recipe = recipes.entries[entry_id]
+    if recipe.vendor_model is None or variant not in mosfet_variants(recipe):
+        raise ValueError("vendor typical-interval mode applies only to a bound manufacturer MOSFET model")
+    values, evidence = _facts(registry.entry(entry_id), recipe)
+    typ_name, max_name = VENDOR_MOSFET_VARIANTS[variant]
+    conditions = []
+    for name in (typ_name, max_name):
+        fact = evidence[name]
+        text = fact["scope"] + " " + " ".join(str(p) for p in fact.get("selected_value_path", []))
+        match = re.search(r"\bVGS(\d+(?:\.\d+)?)[_\sV,]+ID(\d+(?:\.\d+)?)\s*A", text)
+        if not match:
+            raise ValueError("on-resistance test bias is not explicit in the source field")
+        conditions.append((float(match[1]), float(match[2])))
+    if conditions[0] != conditions[1]:
+        raise ValueError("typical and maximum on-resistance are stated at different conditions")
+    gate, current = conditions[0]
+    nets = []
+    for role, name, voltage in [("D", "drain", None), ("G", "gate", gate), ("S", "source", None)]:
+        pins = [PinRef(component="M1", pin=pin) for pin, value in recipe.terminal_roles.items() if value == role]
+        source = ExternalSource(kind="bench_supply", voltage=ValueRange.exact(Quantity.volts(voltage))) if voltage is not None else None
+        nets.append(Net(name=name, kind="ground" if name == "source" else "power" if source else "signal",
+                        connections=pins, external_source=source))
+    circuit = CircuitIR(ir_id=f"runtime-{entry_id}-{variant}", name="Sourced on-resistance condition, vendor model",
+                        components=[CircuitComponent(ref="M1", part_id=entry_id, package=recipe.package)], nets=nets)
+    excitation = DCExcitation(positive_net="source", negative_net="drain", value=Quantity(value=current, unit="A"))
+    compiled = compile_circuit(circuit, registry, recipes, {"M1": BehaviorSelection(entry_id=entry_id)},
+                               excitations=[excitation])
+    typ_source = evidence[typ_name]["selected_value"]
+    comparison = {"kind": "interval", "observable": "on_resistance", "gate_voltage": gate, "test_current": current,
+                  "minimum": convert_unit(printed_lower_edge(typ_source), evidence[typ_name]["unit"], "ohm"),
+                  "maximum": values[max_name], "typical": values[typ_name],
+                  "source_facts": {typ_name: evidence[typ_name], max_name: evidence[max_name]},
+                  "derivation": "VDS / ID at the datasheet test condition, against the typical (less half its last "
+                                "printed digit) to maximum on-resistance interval (D074)."}
+    identity = {"run_id": audit._state()["run_id"], "entry_id": entry_id, "analysis": "op", "variant": variant,
+                "netlist_sha256": compiled.netlist_sha256, "circuit_hash": compiled.circuit_hash,
+                "recipe_source_sha256": recipes.source.document_sha256,
+                "entry_research_sha256": registry.entry(entry_id).research.source.document_sha256,
+                "class_source_sha256": registry.behavior_class(recipe.behavior_id).source.document_sha256,
+                "vendor_model": recipe.vendor_model.model_dump(mode="json"), "comparison": comparison,
+                "limits": "Isothermal 25 C operating point of the manufacturer's typical model at one sourced "
+                          "on-resistance condition. Does not check threshold, capacitances, body diode, SOA, avalanche "
+                          "or thermal behavior; ratings use datasheet maximums separately."}
+    return compiled, identity
+
+
+def _vendor_mosfet_observation(compiled, identity, output):
+    voltage = parse_operating_point(output).node_voltages.get(compiled.node_names["drain"])
+    return voltage.value / identity["comparison"]["test_current"] if voltage else None
+
+
+def _run_vendor_mosfet(audit, entry_id):
+    receipts = []
+    registry = BehaviorRegistry(repo_root=audit.root)
+    recipe = load_recipes(registry, audit.root).entries[entry_id]
+    for variant in mosfet_variants(recipe):
+        compiled, identity = vendor_mosfet_case(audit, entry_id, variant)
+        relative = f"runtime-bench-output/{entry_id}-op-{variant}"
+        result = NgspiceAdapter().behavior_circuit(compiled, work_dir=audit.run_dir / relative)
+        output = result.get("stdout", "") + result.get("stderr", "")
+        observed = _vendor_mosfet_observation(compiled, identity, output) if result["status"] == "ran" else None
+        passed = result["status"] == "ran" and _dc_matches(identity["comparison"], observed)
+        _atomic_text(audit.run_dir / relative / "output.txt", output)
+        _atomic_text(audit.run_dir / relative / "version.txt", result["version_output"])
+        receipt = dict(identity, ran_at=_now(), run_status="passed" if passed else "failed",
+                       observation_status=result["status"], observed=observed,
+                       product_code_path=result.get("product_code_path"), problems=result["problems"],
+                       output_sha256=_sha_bytes(output.encode()), raw_output=relative + "/output.txt",
+                       version_output=result["version_output"], version_file=relative + "/version.txt",
+                       version_sha256=_sha_bytes(result["version_output"].encode()))
+        _atomic_json(audit.run_dir / f"runtime-bench-results/{entry_id}-op-{variant}.json", receipt)
+        receipts.append(receipt)
+    return receipts
+
+
+def vendor_mosfet_receipt_errors(audit, entry_id):
+    registry = BehaviorRegistry(repo_root=audit.root)
+    recipe = load_recipes(registry, audit.root).entries[entry_id]
+    errors = []
+    for variant in mosfet_variants(recipe):
+        compiled, identity = vendor_mosfet_case(audit, entry_id, variant)
+        path = audit.run_dir / f"runtime-bench-results/{entry_id}-op-{variant}.json"
+        if not path.is_file():
+            errors.append(f"{entry_id}/{variant}: runtime receipt missing")
+            continue
+        receipt = json.loads(path.read_text(encoding="utf-8"))
+        required = dict(identity, observation_status="ran", run_status="passed",
+                        product_code_path="ohmni.eda.simulation.NgspiceAdapter.behavior_circuit")
+        errors.extend(f"{entry_id}/{variant}: stale or invalid runtime {k}" for k, v in required.items() if receipt.get(k) != v)
+        output_path = audit._safe_run_path(receipt["raw_output"])
+        observed = _vendor_mosfet_observation(compiled, identity, output_path.read_text(encoding="utf-8"))
+        if observed != receipt.get("observed") or not _dc_matches(identity["comparison"], observed):
+            errors.append(f"{entry_id}/{variant}: on-resistance does not meet the sourced typical-to-maximum interval")
+        if _sha_bytes(output_path.read_bytes()) != receipt["output_sha256"]:
+            errors.append(f"{entry_id}/{variant}: raw output changed")
+        version_path = audit._safe_run_path(receipt["version_file"])
+        version = version_path.read_text(encoding="utf-8")
+        if (_sha_bytes(version_path.read_bytes()) != receipt["version_sha256"] or version != receipt["version_output"]
+                or not re.search(r"\bngspice-42\b", version)):
+            errors.append(f"{entry_id}/{variant}: ngspice 42 version evidence invalid")
+    return errors
+
+
 def run_mosfet_recipes(audit, entry_ids):
     registry = BehaviorRegistry(repo_root=audit.root)
     recipes = load_recipes(registry, audit.root)
+    vendor = [e for e in entry_ids if recipes.entries[e].vendor_model is not None]
+    entry_ids = [e for e in entry_ids if e not in vendor]
     adapter = NgspiceAdapter()
     contract = audit._bench_contracts(corrected=False)["BEH-TRN-MOSFET/B1"]
     source_expectation = numeric_contract(contract["expected"][0])
@@ -239,12 +364,16 @@ def run_mosfet_recipes(audit, entry_ids):
         }
         _atomic_json(audit.run_dir / f"runtime-bench-results/{entry_id}-op.json", receipt)
         receipts.append(receipt)
+    for entry_id in vendor:
+        receipts.extend(_run_vendor_mosfet(audit, entry_id))
     return receipts
 
 
 def mosfet_receipt_errors(audit, entry_id):
     registry = BehaviorRegistry(repo_root=audit.root)
     recipes = load_recipes(registry, audit.root)
+    if recipes.entries[entry_id].vendor_model is not None:
+        return vendor_mosfet_receipt_errors(audit, entry_id)
     compiled, point = mosfet_case(registry, recipes, entry_id)
     path = audit.run_dir / f"runtime-bench-results/{entry_id}-op.json"
     if not path.is_file():
@@ -285,6 +414,10 @@ def runtime_receipt_errors(audit, entry_id):
     registry = BehaviorRegistry(repo_root=audit.root)
     recipes = load_recipes(registry, audit.root)
     behavior = recipes.entries[entry_id].behavior_id
+    from .vendor_benches import is_vendor_ic, vendor_ic_receipt_errors
+
+    if is_vendor_ic(recipes.entries[entry_id]):
+        return vendor_ic_receipt_errors(audit, entry_id)
     if behavior in {"BEH-IC-TIMER555", "BEH-IC-LOGIC-HC", "BEH-IC-LOGIC-SEQ",
                     "BEH-IC-OPAMP", "BEH-IC-LDO-SOT235", "BEH-IC-OPTO-DIP6", "BEH-FREQ-XO"}:
         from .ic_benches import ic_receipt_errors

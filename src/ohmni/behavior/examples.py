@@ -11,7 +11,7 @@ from pydantic import TypeAdapter
 from ..domain.circuit import CircuitIR
 from .loader import BehaviorRegistryError
 from .netlist import compile_circuit
-from .runtime_models import BehaviorSelection, DCExcitation, PWLExcitation
+from .runtime_models import BehaviorSelection, DCExcitation, IdealTestInductor, PWLExcitation
 
 DATA_PATH = Path(__file__).with_name("reference-circuits.json")
 
@@ -43,7 +43,7 @@ def compile_reference(row, registry, recipes, *, measure_currents=True):
     selections = {
         ref: BehaviorSelection.model_validate(value) for ref, value in row["selections"].items()
     }
-    excitations = TypeAdapter(list[DCExcitation | PWLExcitation]).validate_python(
+    excitations = TypeAdapter(list[DCExcitation | PWLExcitation | IdealTestInductor]).validate_python(
         row["excitations"]
     )
     compiled = compile_circuit(

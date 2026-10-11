@@ -25,7 +25,9 @@
       "bench-results/BEH-PWR-LOADSWITCH--L3.json"
     ],
     "conflicts": [
-      "SOT23 current2A andtheta182K/W must not replace WSON3A@65C/theta74.6."
+      "SOT23 current2A andtheta182K/W must not replace WSON3A@65C/theta74.6.",
+      "D074: the class LOADSW model (VUV 2.54 V as UVLO, 1.0 V fixed EN threshold, no CT/QOD ports) is not this part; the binding uses TI's own model instead.",
+      "D074: TI's model gives 80 mohm at VIN 12 V and 200 mA, inside the 25 C typ 79 / max 86 mohm row."
     ],
     "documents": [
       {
@@ -37,6 +39,26 @@
         "source_status": "primary_source_opened",
         "title": "TPS22810 load switch",
         "url": "https://www.ti.com/lit/ds/symlink/tps22810.pdf"
+      },
+      {
+        "document_id": "ti-slvuay7",
+        "manufacturer": "Texas Instruments",
+        "note": "Archived (ledger sha256 f3dd6581db0a...); p2 Figure 1 schematic rendered and inspected for the U2 TPS22810DRV pad connection (D074).",
+        "page": null,
+        "revision": "SLVUAY7B (Nov 2016, rev. Jan 2018)",
+        "source_status": "primary_source_opened",
+        "title": "TPS22810 Load Switch Evaluation Module user's guide",
+        "url": "https://www.ti.com/lit/ug/slvuay7/slvuay7.pdf"
+      },
+      {
+        "document_id": "ti-slvmbv7",
+        "manufacturer": "Texas Instruments",
+        "note": "Archived (ledger sha256 4629d334d1c8...); member SLVMBV7/TPS22810_PSPICE_TRANS/TPS22810_TRANS.LIB (sha256 a4d40a9ae0c1...) committed byte-for-byte as docs/behavior/vendor/ti/TPS22810_TRANS.LIB (D074).",
+        "page": null,
+        "revision": "TPS22810_TRANS Final 1.00, 25NOV2016",
+        "source_status": "primary_source_opened",
+        "title": "TPS22810 PSpice transient model (ZIP)",
+        "url": "https://www.ti.com/lit/zip/SLVMBV7"
       }
     ],
     "entry_id": "OHM-132",
@@ -222,20 +244,155 @@
         ],
         "unit": null,
         "value": true
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "detail": "Schematic: U2 'PAD 7' joined to 'GND 4' and to GND (rendered page inspected); the datasheet states only that the pad is soldered",
+        "field": "exposed_pad_reference_connection",
+        "page": 2,
+        "scope": "TPS22810 DRV WSON6; TI EVM SLVUAY7B Figure 1, U2 TPS22810DRV",
+        "sources": [
+          "https://www.ti.com/lit/ug/slvuay7/slvuay7.pdf"
+        ],
+        "unit": null,
+        "value": "GND"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": ".SUBCKT TPS22810_TRANS CT EN_UVLO GND QOD VIN VOUT (LIB line 53); header: 'provided solely on an \"as is\" basis'",
+        "field": "vendor_model",
+        "page": null,
+        "scope": "TPS22810 DRV WSON6; TI PSpice transient model Final 1.00, ports CT EN_UVLO GND QOD VIN VOUT",
+        "source_locator": "ZIP member SLVMBV7/TPS22810_PSPICE_TRANS/TPS22810_TRANS.LIB, line 53",
+        "sources": [
+          "https://www.ti.com/lit/zip/SLVMBV7"
+        ],
+        "unit": null,
+        "value": "TPS22810_TRANS"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "RON On-resistance VIN = 12 V, IOUT = -200 mA, 25 C: typ 79, max 86 mohm (105 at -40..85 C, 115 at -40..105 C)",
+        "field": "on_resistance_25C",
+        "page": 6,
+        "scope": "TPS22810 DRV WSON6; VIN = 12 V, IOUT = -200 mA, TA = 25 C",
+        "sources": [
+          "https://www.ti.com/lit/ds/symlink/tps22810.pdf"
+        ],
+        "unit": "mohm",
+        "value": {
+          "max": 86,
+          "typ": 79
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "VEN/UVLO EN/UVLO voltage 0 .. 18 V",
+        "field": "recommended_enable_range",
+        "page": 4,
+        "scope": "TPS22810 DRV WSON6; EN/UVLO, recommended",
+        "sources": [
+          "https://www.ti.com/lit/ds/symlink/tps22810.pdf"
+        ],
+        "unit": "V",
+        "value": [
+          0,
+          18
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "VEN/UVLO EN/UVLO voltage -0.3 .. 20 V",
+        "field": "absolute_enable_max",
+        "page": 4,
+        "scope": "TPS22810 DRV WSON6; EN/UVLO, absolute",
+        "sources": [
+          "https://www.ti.com/lit/ds/symlink/tps22810.pdf"
+        ],
+        "unit": "V",
+        "value": 20
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "VOUT Output voltage -0.3 .. min(VIN + 0.3, 20) V",
+        "field": "absolute_output_limits",
+        "page": 4,
+        "scope": "TPS22810 DRV WSON6; VOUT, absolute",
+        "sources": [
+          "https://www.ti.com/lit/ds/symlink/tps22810.pdf"
+        ],
+        "unit": "V",
+        "value": {
+          "above_vin": 0.3,
+          "cap": 20
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "VOUT Output voltage MAX = VIN (VOUT - VIN <= 0)",
+        "field": "recommended_output_above_input_max",
+        "page": 4,
+        "scope": "TPS22810 DRV WSON6; VOUT, recommended",
+        "sources": [
+          "https://www.ti.com/lit/ds/symlink/tps22810.pdf"
+        ],
+        "unit": "V",
+        "value": 0
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Maximum continuous switch current, TA = 65 C (DRV) 3 A",
+        "field": "continuous_current_rated_ambient",
+        "page": 4,
+        "scope": "TPS22810 DRV WSON6; IMAX DRV",
+        "sources": [
+          "https://www.ti.com/lit/ds/symlink/tps22810.pdf"
+        ],
+        "unit": "C",
+        "value": 65
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "detail": "U2 TPS22810DRV: VIN 6, EN/UVLO 5, CT 3, VOUT 1, QOD 2, GND 4, PAD 7; PAD 7 and GND 4 joined to GND2 (rendered page inspected); pins agree with SLVSDH0C p3",
+        "field": "manufacturer_pin_roles",
+        "page": 2,
+        "scope": "TPS22810DRV EVM U2; SLVUAY7B Figure 1 pin numbers, PAD 7 = EP",
+        "sources": [
+          "https://www.ti.com/lit/ug/slvuay7/slvuay7.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "1": "VOUT",
+          "2": "QOD",
+          "3": "CT",
+          "4": "GND",
+          "5": "EN_UVLO",
+          "6": "VIN",
+          "EP": "GND"
+        }
       }
     ],
     "remaining_open_items": [
-      "EP electrical role still unestablished;package outline only says solder to PCB.",
-      "Enable slew,CT and QOD behavior require their own circuits/validation."
+      "Enable slew,CT and QOD behavior require their own circuits/validation.",
+      "Former simulation blocker resolved for the bound reference TPS22810DRV (2026-10-11, D074): Unknown central-pad electrical connection prevents runtime binding. Resolution: TI's own EVM schematic (SLVUAY7B Figure 1) wires the TPS22810DRV PAD (7) to GND (4); the recipe requires EP on the GND net. TI does not state the pad's internal connection, so no current is modeled through it.",
+      "The TI model does not model temperature, thermal shutdown or Tj (its usage note 2); ratings come from datasheet facts.",
+      "CT slew and QOD discharge are in the TI model but are not checked by the runtime probe (an operating-point RON check)."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Unknown central-pad electrical connection prevents runtime binding."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-132.md",
-      "document_sha256": "62a1fb06505b337e57063c41c6042614007d8910cbc60d95bd4307e3cc8c8dec",
+      "document_sha256": "3ef21c3ca2231ae1b021127d777761400edaae1a4df8c13b7f759fa4e6d3072e",
       "fragment_sha256": null,
       "line": 1
     }
@@ -244,8 +401,8 @@
     "REFERENCE-DIMENSION-COMPATIBILITY-POLICY"
   ],
   "schema_version": 1,
-  "simulation_disposition": "not_simulable",
-  "simulation_reason": "A package has no electrical function until a sourced reference part is bound.",
+  "simulation_disposition": "simulable",
+  "simulation_reason": "Simulates as the bound reference part (TPS22810 / TPS22810DRV WSON-6 (TI)); the package alone has no electrical function, so results describe that part in this package.",
   "source": {
     "document": "COMPONENT_BEHAVIOR_SPEC.md",
     "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",

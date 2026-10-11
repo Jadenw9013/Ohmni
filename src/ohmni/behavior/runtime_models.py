@@ -71,6 +71,28 @@ class ReferenceFunction(BaseModel):
     scope_contains: str
 
 
+VENDOR_ASSET_PREFIX = "docs/behavior/vendor/"
+
+
+class VendorModel(BaseModel):
+    """A manufacturer's own simulation model, committed byte-for-byte as a hashed inline asset (D074).
+
+    The asset is exempt from the authored-card IS=0 rule because its bytes are the manufacturer's, not
+    ours; the hash in the recipe's inline asset anchor and the archived download it was extracted from
+    are the provenance. The manufacturer's terms of use are quoted so every reader sees them.
+    """
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    manufacturer: str
+    model_name: str
+    document: str = Field(description="Repository path of the hashed asset; must also be an inline asset")
+    archive_url: str
+    archive_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    archive_member: str | None = Field(default=None, description="Path inside the archived ZIP, if any")
+    terms: str = Field(description="The manufacturer's own usage notice, quoted from the model header")
+
+
 class FitCurve(BaseModel):
     """A sourced curve the fitted model must replay at several currents, not only at one bound."""
 
@@ -124,7 +146,30 @@ class RuntimeRecipe(BaseModel):
     inline_assets: list[SourceAnchor] = Field(default_factory=list)
     ground_strays: dict[str, str] = Field(default_factory=dict, description="Pin role to sourced capacitance parameter; every stray returns to node 0")
     supported_analyses: list[Literal["op", "tran"]] = Field(default_factory=lambda: ["op"])
+    vendor_model: VendorModel | None = None
+    ngspice_compatibility: Literal["psa"] | None = Field(
+        default=None,
+        description="ngspice compatibility mode this model needs (D074: 'psa' for PSpice syntax such as IF()"
+        " in E sources). A deck runs in that mode only when one of its parts declares it.",
+    )
+    transient_max_step_s: float | None = Field(
+        default=None, gt=0,
+        description="Largest internal transient step the model is valid at (a switching vendor model); a"
+        " transient run then passes it as TMAX and interpolates printed rows to the print step.",
+    )
     limitations: list[str]
+
+    @model_validator(mode="after")
+    def valid_vendor_model(self):
+        if self.vendor_model is not None:
+            document = self.vendor_model.document
+            if not document.startswith(VENDOR_ASSET_PREFIX) or ".." in document:
+                raise ValueError("a vendor model asset must live under docs/behavior/vendor/")
+            if document not in {a.document for a in self.inline_assets}:
+                raise ValueError("a vendor model must be one of the recipe's hashed inline assets")
+        elif any(a.document.startswith(VENDOR_ASSET_PREFIX) for a in self.inline_assets):
+            raise ValueError("a docs/behavior/vendor/ asset needs its vendor model provenance")
+        return self
 
     @model_validator(mode="after")
     def valid_connection_constraints(self):
@@ -214,6 +259,29 @@ class PWLExcitation(BaseModel):
         return self
 
 
+class IdealTestInductor(BaseModel):
+    """An ideal inductor a reference test circuit needs around a switching IC (D074).
+
+    Like a test source it is an explicit fixture, never a part, a rating or evidence: no DCR,
+    saturation, loss or self-resonance. Only authored reference and probe circuits use it.
+    """
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    kind: Literal["ideal_test_inductor"] = "ideal_test_inductor"
+    positive_net: str
+    negative_net: str
+    inductance: Quantity
+
+    @model_validator(mode="after")
+    def valid_inductor(self):
+        if self.positive_net == self.negative_net:
+            raise ValueError("a test inductor requires distinct nets")
+        if self.inductance.unit.value != "H" or not math.isfinite(self.inductance.value) or self.inductance.value <= 0:
+            raise ValueError("a test inductor requires a positive finite inductance in henries")
+        return self
+
+
 class ACExcitation(BaseModel):
     """Ideal small-signal sine source for AC analysis: an optional DC bias plus an RMS amplitude.
 
@@ -270,10 +338,12 @@ class BehaviorCompilation(BaseModel):
     netlist_sha256: str | None = None
     node_names: dict[str, str] = Field(default_factory=dict)
     source_elements: dict[str, str] = Field(default_factory=dict)
-    excitations: list[DCExcitation | PWLExcitation | ACExcitation] = Field(default_factory=list)
+    excitations: list[DCExcitation | PWLExcitation | ACExcitation | IdealTestInductor] = Field(default_factory=list)
     components: list[CompiledComponent] = Field(default_factory=list)
     problems: list[str] = Field(default_factory=list)
     limitations: list[str] = Field(default_factory=list)
+    ngspice_compatibility: Literal["psa"] | None = None
+    transient_max_step_s: float | None = None
 
     @property
     def runnable(self) -> bool:

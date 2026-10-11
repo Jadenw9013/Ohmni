@@ -1,0 +1,72 @@
+{
+  "analysis": "op",
+  "circuit_hash": "696318021015e0b3c284009de8ed876ef488d6962bea6af2ec1b899f50c0bc65",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": [
+    {
+      "derivation": "(VIN - VOUT) / IOUT at the datasheet RON test condition, against the 25 C typical (less half its last printed digit) to maximum interval.",
+      "kind": "interval",
+      "load_current": 0.2,
+      "maximum": 0.08600000000000001,
+      "minimum": 0.0785,
+      "node": "out",
+      "observable": "on_resistance",
+      "source_fact": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "converted_unit": "ohm",
+        "converted_value": 0.08600000000000001,
+        "detail": "RON On-resistance VIN = 12 V, IOUT = -200 mA, 25 C: typ 79, max 86 mohm (105 at -40..85 C, 115 at -40..105 C)",
+        "field": "on_resistance_25C",
+        "page": 6,
+        "scope": "TPS22810 DRV WSON6; VIN = 12 V, IOUT = -200 mA, TA = 25 C",
+        "selected_value": 86,
+        "selected_value_path": [
+          "max"
+        ],
+        "sources": [
+          "https://www.ti.com/lit/ds/symlink/tps22810.pdf"
+        ],
+        "unit": "mohm",
+        "value": {
+          "max": 86,
+          "typ": 79
+        }
+      },
+      "supply": "vin",
+      "supply_voltage": 12.0
+    }
+  ],
+  "entry_id": "OHM-132",
+  "entry_research_sha256": "3ef21c3ca2231ae1b021127d777761400edaae1a4df8c13b7f759fa4e6d3072e",
+  "limits": "Operating-point RON of TI's model at the datasheet's VIN 12 V / IOUT 200 mA / 25 C row. Does not check CT rise time, QOD discharge, UVLO or thermal behavior.",
+  "netlist_sha256": "e940c857ce0aaa3bf2a050a6f86e3888deec8e89a3e48da10529a0c46307349f",
+  "ngspice_compatibility": "psa",
+  "observation_status": "ran",
+  "observe_nets": [],
+  "observed": [
+    0.08000000000000007
+  ],
+  "output_sha256": "6bb2b4d4103d45016205ab51e486451d2645fdb61e9e3a98caf2bb6e364b827e",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T19:21:53Z",
+  "raw_output": "runtime-bench-output/OHM-132-vendor/output.txt",
+  "recipe_source_sha256": "a0a87f228e70d942b8437696c2504f298121f88a7b218ba4b72dc4071cc6a447",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "tstep": null,
+  "tstop": null,
+  "vendor_model": {
+    "archive_member": "SLVMBV7/TPS22810_PSPICE_TRANS/TPS22810_TRANS.LIB",
+    "archive_sha256": "4629d334d1c8db74fee488b7861d7529ef31964a5ee4eb9ae8d9b986400a302e",
+    "archive_url": "https://www.ti.com/lit/zip/SLVMBV7",
+    "document": "docs/behavior/vendor/ti/TPS22810_TRANS.LIB",
+    "manufacturer": "Texas Instruments",
+    "model_name": "TPS22810_TRANS",
+    "terms": "TI model header: \"This model is designed as an aid for customers of Texas Instruments. TI and its licensors and suppliers make no warranties, either expressed or implied, with respect to this model, including the warranties of merchantability or fitness for a particular purpose. The model is provided solely on an \"as is\" basis. The entire risk as to its quality and performance is with the customer.\""
+  },
+  "version_file": "runtime-bench-output/OHM-132-vendor/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sat Oct 10 21:32:36 UTC 2026\n******\n",
+  "version_sha256": "7f444023b0e5851d50a26bf40338ca29665b10988154a0ff2d662d918ab83fc3"
+}

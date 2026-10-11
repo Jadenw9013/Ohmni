@@ -26,7 +26,9 @@
       "bench-results/BEH-REG-BUCK-DCS--B4.json",
       "bench-results/BEH-REG-BUCK-DCS--B5.json"
     ],
-    "conflicts": [],
+    "conflicts": [
+      "D074: the class BUCKCORE (inductor inside, VOS regulated to an internal VSET) cannot be bound to the real SW/FB/VOS/PG pinout; TI's own model is bound instead."
+    ],
     "documents": [
       {
         "document_id": "tps62160",
@@ -37,6 +39,16 @@
         "source_status": "primary_source_opened",
         "title": "TPS62160 step-down converter",
         "url": "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
+      },
+      {
+        "document_id": "ti-slvm428",
+        "manufacturer": "Texas Instruments",
+        "note": "Archived (ledger sha256 362c3341b245...); member TPS62160_PSPICE_TRANS/TPS62160_TRANS.lib (sha256 1b8d8b1883d4...) committed byte-for-byte as docs/behavior/vendor/ti/TPS62160_TRANS.lib (D074).",
+        "page": null,
+        "revision": "TPS62160_TRANS Final 1.10, 10/17/2013",
+        "source_status": "primary_source_opened",
+        "title": "TPS62160 PSpice transient model (ZIP)",
+        "url": "https://www.ti.com/lit/zip/SLVM428"
       }
     ],
     "entry_id": "OHM-134",
@@ -228,18 +240,166 @@
           1.45,
           2.45
         ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": ".SUBCKT TPS62160_TRANS VIN EN AGND PGND / + ETPAD PG FB VOS SW (lib lines 37-38); header: 'provided solely on an \"as is\" basis'",
+        "field": "vendor_model",
+        "page": null,
+        "scope": "TPS62160 DSG WSON8; TI PSpice transient switching model Final 1.10, ports VIN EN AGND PGND ETPAD PG FB VOS SW",
+        "source_locator": "ZIP member TPS62160_PSPICE_TRANS/TPS62160_TRANS.lib, lines 37-38",
+        "sources": [
+          "https://www.ti.com/lit/zip/SLVM428"
+        ],
+        "unit": null,
+        "value": "TPS62160_TRANS"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Exposed Thermal Pad: Must be connected to AGND.",
+        "field": "exposed_pad_connection",
+        "page": 4,
+        "scope": "TPS62160 DSG WSON8; Pin Functions, exposed thermal pad",
+        "sources": [
+          "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
+        ],
+        "unit": null,
+        "value": "AGND"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Initial output voltage accuracy, PWM mode operation, VIN >= VOUT + 1 V: -3% .. 3%",
+        "field": "output_accuracy_pwm_range",
+        "page": 6,
+        "scope": "TPS62160 DSG WSON8; initial output voltage accuracy, PWM mode operation, VIN >= VOUT + 1 V; device only, line and load regulation not included",
+        "sources": [
+          "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
+        ],
+        "unit": "percent",
+        "value": [
+          -3,
+          3
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Power good threshold Rising (%VOUT) 92% 95% 98%",
+        "field": "power_good_rising_threshold_range",
+        "page": 6,
+        "scope": "TPS62160 DSG WSON8; VTH_PG rising (%VOUT) (min, typ, max)",
+        "sources": [
+          "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
+        ],
+        "unit": "percent",
+        "value": [
+          92,
+          95,
+          98
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Input leakage current (PG) VPG = 1.8 V typ 1, max 400 nA",
+        "field": "power_good_leakage_max",
+        "page": 6,
+        "scope": "TPS62160 DSG WSON8; ILKG_PG, VPG = 1.8 V",
+        "sources": [
+          "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
+        ],
+        "unit": "nA",
+        "value": 400
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Output Voltage, VOUT 0.9 .. 6 V",
+        "field": "recommended_output_range",
+        "page": 5,
+        "scope": "TPS62160 DSG WSON8; VOUT, recommended",
+        "sources": [
+          "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
+        ],
+        "unit": "V",
+        "value": [
+          0.9,
+          6
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "FB, PG, VOS -0.3 .. 7 V",
+        "field": "absolute_fb_pg_vos_max",
+        "page": 5,
+        "scope": "TPS62160 DSG WSON8; FB, PG, VOS, absolute",
+        "sources": [
+          "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
+        ],
+        "unit": "V",
+        "value": 7
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "EN, SW (DC) -0.3 .. VIN + 0.3 V",
+        "field": "absolute_en_sw_above_vin",
+        "page": 5,
+        "scope": "TPS62160 DSG WSON8; EN, SW (DC), absolute",
+        "sources": [
+          "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
+        ],
+        "unit": "V",
+        "value": 0.3
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Power good sink current PG 10 mA",
+        "field": "power_good_sink_current_max",
+        "page": 5,
+        "scope": "TPS62160 DSG WSON8; PG, absolute",
+        "sources": [
+          "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
+        ],
+        "unit": "mA",
+        "value": 10
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Table 2: 2.2 uH with 22 uF is 'the standard value and recommended for most applications'; note 1: variations of typically +/-20% due to tolerance, saturation and DC bias are assumed",
+        "field": "recommended_lc_filter",
+        "page": 14,
+        "scope": "TPS62160 DSG WSON8; Table 2 standard LC combination; values nominal, variations of typically +/-20% assumed",
+        "sources": [
+          "https://www.ti.com/lit/ds/symlink/tps62160.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "capacitance_uF": 22,
+          "inductance_uH": 2.2,
+          "variation_pct": 20
+        }
       }
     ],
     "remaining_open_items": [
       "ExternalL/C,feedback,loopbehavior and switch-node waveform require explicit circuit validation.",
-      "DGK VSSOP thermal184.3K/W is not this DSG package."
+      "DGK VSSOP thermal184.3K/W is not this DSG package.",
+      "Bound to TI's own TPS62160 PSpice switching model (2026-10-11, D074); it needs PSpice compatibility mode and a 20 ns internal step, so a 300 us start-up costs about 2.5 min of ngspice CPU.",
+      "Thermal, temperature drift and Tj are not modeled by the TI deck; ratings come from datasheet facts.",
+      "The runtime probe uses an ideal 2.2 uH test inductor (the datasheet's standard value) with the bound Murata 22 uF capacitor (OHM-026); the bound Bourns 1.8 uH inductor (OHM-045) stops ngspice at TI's first switching edges (nonlinear-inductance card)."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-134.md",
-      "document_sha256": "0f0a16a9ee984e3d05a1623800ff1c85dc6f30e21858337d3d7f0f29d8da3008",
+      "document_sha256": "357106d9acb096886f52a20032f93a1c5fa56ea3dfd96d41240c1e87451a7951",
       "fragment_sha256": null,
       "line": 1
     }
@@ -248,8 +408,8 @@
     "REFERENCE-DIMENSION-COMPATIBILITY-POLICY"
   ],
   "schema_version": 1,
-  "simulation_disposition": "not_simulable",
-  "simulation_reason": "A package has no electrical function until a sourced reference part is bound.",
+  "simulation_disposition": "simulable",
+  "simulation_reason": "Simulates as the bound reference part (TPS62160 / TPS62160DSG WSON-8 adjustable (TI)); the package alone has no electrical function, so results describe that part in this package.",
   "source": {
     "document": "COMPONENT_BEHAVIOR_SPEC.md",
     "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",

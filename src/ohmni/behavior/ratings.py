@@ -311,6 +311,12 @@ def _scoped_checks(component, point, context, overrides=None, transient=None, ac
             ("p_rated", "tj_max", "rth_jc"),
             thermal,
         )
+    elif cls == "BEH-PWR-LOADSWITCH" and {"VIN", "VOUT", "GND", "EN_UVLO"} <= set(component.role_nodes):
+        _loadswitch_checks(values, b, thermal, derive)
+    elif cls == "BEH-REG-LINEAR" and {"IN", "OUT", "GND", "EN", "FB", "NR"} <= set(component.role_nodes):
+        _adjustable_ldo_checks(values, b, derive)
+    elif cls == "BEH-REG-BUCK-DCS" and {"VIN", "AGND", "EN", "FB", "VOS", "PG", "SW"} <= set(component.role_nodes):
+        _buck_checks(values, b, thermal, derive)
     elif cls == "BEH-IC-OPTO-DIP6":
         b.add("LED current", "i_A <= if_max", ("if_max",))
         b.add("LED reverse voltage", "v_K-v_A <= vr_max", ("vr_max",))
@@ -600,6 +606,50 @@ def _transient_checks(component, values, b, thermal, upper_only, w):
         if rail is not None:
             stat("peak_rail", peak(rail))
             b.add("peak supply (absolute maximum)", "peak_rail <= supply_abs_max", ("supply_abs_max",))
+
+
+def _loadswitch_checks(values, b, thermal, derive):
+    """TPS22810-type load switch (D074): datasheet windows, failing closed when a condition is missing."""
+    derive("rail", "v_VIN-v_GND")
+    b.add("recommended supply", "supply_min <= rail <= supply_max", ("supply_min", "supply_max"))
+    b.add("absolute supply", "rail <= supply_abs_max", ("supply_abs_max",))
+    b.add("recommended enable voltage", "0 <= v_EN_UVLO-v_GND <= en_max", ("en_max",))
+    b.add("absolute enable voltage", "v_EN_UVLO-v_GND <= en_abs_max", ("en_abs_max",))
+    b.add("recommended output voltage", "v_VOUT-v_VIN <= vout_rec_margin", ("vout_rec_margin",))
+    b.add("absolute output voltage", "v_VOUT-v_GND <= min(rail+vout_abs_margin, vout_abs_cap)",
+          ("vout_abs_margin", "vout_abs_cap"))
+    # The continuous current is rated at one ambient only; without a declared ambient at or below it, unknown.
+    if "Tamb" in values and "imax_ta" in values and values["Tamb"] <= values["imax_ta"]:
+        b.add("continuous switch current", "abs(i_VOUT) <= imax", ("imax", "imax_ta"), thermal)
+    else:
+        b.add("continuous switch current", "abs(i_VOUT) <= imax", ("imax", "imax_ta"),
+              "The continuous current is rated at TA = 65 C; declare an ambient at or below it")
+
+
+def _adjustable_ldo_checks(values, b, derive):
+    """TPS7A8001-type adjustable LDO (D074); the generic IN/GND rows add supply, output current and Tj."""
+    derive("vout", "v_OUT-v_GND")
+    b.add("output voltage range", "vout_min <= vout <= vout_max", ("vout_min", "vout_max"))
+    b.add("absolute output voltage", "vout <= out_abs_max", ("out_abs_max",))
+    b.add("absolute FB and NR voltage", "max(v_FB, v_NR)-v_GND <= fb_abs_max", ("fb_abs_max",))
+    b.add("absolute enable voltage", "v_EN-v_GND <= min(v_IN-v_GND+en_abs_margin, en_abs_cap)",
+          ("en_abs_margin", "en_abs_cap"))
+    # Only the 1 A dropout maximum can prove headroom; below it the dropout at the actual current is not bound.
+    row = b.add("dropout headroom", "v_IN-v_OUT >= vdo_max", ("vdo_max",))
+    if row["status"] == "violation":
+        row.update(status="unknown", reason="Below the 1 A dropout maximum; the dropout at this current is not bound")
+
+
+def _buck_checks(values, b, thermal, derive):
+    """TPS62160-type buck (D074): datasheet windows; currents are time averages in a transient run."""
+    derive("rail", "v_VIN-v_AGND")
+    b.add("recommended supply", "supply_min <= rail <= supply_max", ("supply_min", "supply_max"))
+    b.add("absolute supply", "rail <= supply_abs_max", ("supply_abs_max",))
+    b.add("recommended output voltage", "vout_min <= v_VOS-v_AGND <= vout_max", ("vout_min", "vout_max"))
+    b.add("absolute FB, PG and VOS voltage", "max(v_FB, v_PG, v_VOS)-v_AGND <= pin_abs_max", ("pin_abs_max",))
+    b.add("absolute EN voltage", "v_EN-v_AGND <= rail+en_sw_margin", ("en_sw_margin",))
+    b.add("power-good sink current", "abs(i_PG) <= pg_sink_max", ("pg_sink_max",))
+    b.add("recommended output current", "abs(i_SW) <= iout_recommended", ("iout_recommended",), thermal)
 
 
 CONTACT_LIMIT_PREFIX = "i_rated_"
