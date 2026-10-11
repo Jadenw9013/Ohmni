@@ -1,7 +1,7 @@
-# Overnight component-behavior report (2026-10-10 21:30 → 2026-10-11 ~04:00 UTC)
+# Overnight component-behavior report (2026-10-10 21:30 → 2026-10-11 ~05:00 UTC)
 
 Unattended run under the owner's standing authorization. Owner-only decisions are in
-[MORNING_DECISIONS.md](MORNING_DECISIONS.md); none were decided overnight.
+[MORNING_DECISIONS.md](MORNING_DECISIONS.md). No owner-only item was decided. Two queued questions were acted on under the engineering authorization, after approving proxy reviews, and each can be reverted with a new PR: item 12, where option (a), the tantalum dual solve, was merged in #43 and #45; and item 13, where the design-run panel and endpoint were merged in #42. Item 13 adds a user-facing product surface; please confirm or revert it.
 
 ## Setup
 
@@ -22,7 +22,7 @@ Unattended run under the owner's standing authorization. Owner-only decisions ar
 | 2. AC analysis and exact ripple | `ACExcitation` (RMS), marker- and frequency-checked AC points and sweep, DC-plus-AC peak/RMS rows, linearity read from the netlist | #30 (D057); fixes #34 (D060), #36 (receipts), #41 (display limits) | #30 BLOCK (after merge) → fixed in #34; #36 APPROVE; #41 APPROVE (round 2) |
 | 3. Capacitor ESR | T491 cards carry the sourced 100 kHz maximum ESR with a 100 kHz impedance receipt per part. Their ripple rows are unknown (D063) unless the dual solve proves a pass | #32 (D058); fixes #35 (D061), #37 (D062/D063); dual solve #43 (D064); recipe wording #45 (D065) | #32 BLOCK → #35 BLOCK → #37 APPROVE (round 2); #43 BLOCK → APPROVE (round 2); #45 BLOCK → APPROVE (round 2) |
 | 4. Blocked entries | 41 researched against the archive; OHM-037 bound to WIMA MKS4G031003F; 40 reasons updated with what is missing | #39 (D059); fixes #44 | #39 BLOCK (after merge) → #44 APPROVE (round 2) |
-| 5. Reviewer follow-ups | everything flagged as must-fix; most follow-ups | #34, #35, #36, #37, #41, #43, #44, #45 | see above |
+| 5. Reviewer follow-ups | everything flagged as must-fix; most follow-ups | #34, #35, #36, #37, #41, #43, #44, #45 | see above. #34 was merged before any review ran; a post-hoc review at the end of the run gave **APPROVE**. As merged it let the T491 ripple and ESR-heating rows pass at ambients ≤ 25 C, which #35–#37 already fixed (D061–D063), and it found nothing open on current main (MORNING_DECISIONS item 11) |
 
 **Scope notes**
 - Ceramic: the one simulable part has a dissipation factor with no stated frequency, so no ESR can be derived.
@@ -33,7 +33,7 @@ Unattended run under the owner's standing authorization. Owner-only decisions ar
 
 - **Audited simulable:** 77 → **78** (OHM-037). Bound entries: 97 → 98.
 - **Runtime receipts:** 181 → **186** (all restamped by the #44 and #45 recipe edits). The new ones are four T491 AC impedance receipts and one film charge receipt. All pass, and all 98 bound entries validate.
-- **Audit:** **11/13 on main at every checkpoint**, the same two rules as the baseline (PROTECT: owner checkout; VERIFY: pending verifier round). One mid-run artifact: between #34 and #36, main failed AUD-BENCH-001 on the four stale tantalum AC receipts (fixed by #36).
+- **Audit:** **11/13 on main at every recorded checkpoint except between #34 and #36**, the same two rules as the baseline (PROTECT: owner checkout; VERIFY: pending verifier round). One mid-run artifact: between #34 and #36, main failed AUD-BENCH-001 on the four stale tantalum AC receipts (fixed by #36).
 - **Full pytest (`verify.py full`):** 2283 passed, 129 skipped, 3 failed on #45's final head, the last behavior PR (2259 passed on #37's head earlier in the night). The 3 failures need KiCad 10 (`kicad-cli` is absent here; apt offers 7.0.11): `test_personal_project_reaches_real_kicad_release…` ×2 and `test_admitted_part_traverses_real_project_release…`. All three fail identically on unchanged main.
 - **Node:** 1058/1058 on #42's and #45's heads.
 
@@ -47,12 +47,22 @@ Unattended run under the owner's standing authorization. Owner-only decisions ar
 
 ## Process notes
 
-- Seven PRs were merged before their proxy review finished (MORNING_DECISIONS item 11). Every block was fixed forward; main was never reverted.
+- Seven PRs were merged before their proxy review finished (MORNING_DECISIONS item 11). Every block that a review found was fixed forward, and main was never reverted. #34 was reviewed only post hoc, at the end of the run (APPROVE; its one leak was already fixed by D063).
 - One audit run was contaminated by concurrent git operations in its worktree. It was rerun cleanly, and only clean runs are reported.
+
+## Open engineering follow-ups (not owner decisions)
+
+From the post-hoc review of #34; not fixed tonight:
+- In the EDLC **transient** branch, a declared ambient above 85 C still lets the "peak voltage at ambient" row pass against the 85 C rating (`ratings.py` around line 523). The part as a whole still reports a violation through the operating-point row "ambient within rated range". The AC branch has had this guard since #34.
+- No test covers the AC EDLC branch with an undeclared ambient or one above 85 C, or the T491 transient path with no ambient.
+- The "AC swing" unknown row is added only when a class has no AC rows at all, so a class with partial AC coverage is not flagged for each missing limit.
 
 ## PRs opened by this run
 
-All merged by squash after green CI (fast and corpus), a full pytest run, node, `ai_state.py validate`, an 11/13 audit and an approving proxy verdict recorded in the PR body. Exceptions: the merges listed in MORNING_DECISIONS item 11 (merged before their review finished), and #28, which GitHub merged with a merge commit (item 10).
+All merged by squash after green CI (fast and corpus), a full pytest run, node, `ai_state.py validate`, an 11/13 audit and an approving proxy verdict recorded in the PR body. Exceptions:
+- The seven merges listed in MORNING_DECISIONS item 11 were merged before their review finished, and #34 was reviewed only post hoc (APPROVE, recorded in its body). #28–#39 landed as merge commits, not squashes (item 10).
+- #41's body records neither the node suite nor `ai_state.py validate`.
+- #43 did not run the node suite (no `apps/web` change); node passed on #42 and #45 around it.
 
 | PR | Title (short) | Decision |
 |---|---|---|

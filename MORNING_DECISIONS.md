@@ -1,11 +1,12 @@
 # Morning decisions (owner only)
 
-Items 1-12 are questions for you. Each has the evidence and a recommendation. Nothing in this list was
-decided overnight.
+Items 1-13 are questions for you. Each has the evidence and a recommendation. No owner-only item was decided.
+Two were acted on under the engineering authorization after approving proxy reviews, and each can be reverted
+with a new PR: item 12 (option (a) merged in #43 and #45) and item 13 (the panel merged in #42).
 
 Written by the overnight component-behavior run (2026-10-10/11). Each item is a decision that the
-standing authorization reserves for the owner. None of them was decided overnight; the work routed
-around them. Evidence paths are in this repository unless marked otherwise.
+standing authorization reserves for the owner, or a choice the owner should confirm. No owner-only item was
+decided; the work routed around them, except for items 12 and 13 as stated above. Evidence paths are in this repository unless marked otherwise.
 
 ## 1. GENERIC_LED_GREEN is bound to a red reference LED
 
@@ -97,10 +98,11 @@ around them. Evidence paths are in this repository unless marked otherwise.
   total under the limit passes either way, and anything in between reports unknown.
 - **Recommendation:** acceptable. It is your call because it reinterprets a recorded blocker.
 
-## 10. GitHub merged #28 with a merge commit, not a squash
+## 10. #28–#39 landed as merge commits, not squashes
 
-- The merge call asked for `squash`, but main has "Merge pull request #28" with the branch commit as its
-  second parent. The content is identical. Check the repository's allowed merge methods if squash is wanted.
+- My merge call for #28 asked for `squash`, but main has "Merge pull request #28" with the branch commit as its
+  second parent. #30, #32, #34, #35, #36, #37 and #39 (merged from your side), and Codex's #29, #31, #33 and #38,
+  also landed as "Merge pull request" commits. #41 onwards are squashes. The content is identical. Check the repository's allowed merge methods if squash is wanted.
 
 ## 11. PRs merged before their proxy review finished
 
@@ -109,7 +111,10 @@ around them. Evidence paths are in this repository unless marked otherwise.
 - **What the reviews found:**
   - #30, #32, #35 and #39 came back BLOCK after merge.
   - #36 and #37 (final state) came back APPROVE.
-  - #34 was merged one commit before the fix for #32's block landed.
+  - #34 was merged one commit before the fix for #32's block landed. **#34 was never reviewed before merge.** A post-hoc
+    review at the end of the run gave APPROVE, recorded in #34's body. As merged, #34 let the T491 ripple and
+    ESR-heating rows pass at ambients ≤ 25 C; #35–#37 (D061–D063) had already fixed that, and the review found
+    nothing open on current main. Its nits are listed in the report.
 - **How it was fixed:** every block was fixed in a follow-up PR, never by reverting main: #34 (D060), #35 (D061),
   #36 (receipts), #37 (D062/D063) and #44 (film). Main was audit-red for a short time between #34 and #36. The
   stale tantalum AC receipts no longer validated after #34's parser change.
