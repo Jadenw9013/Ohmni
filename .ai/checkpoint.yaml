@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "active_task": "CUX-T01",
-  "last_known_commit": "9b95cef6",
+  "active_task": null,
+  "last_known_commit": "edf314423f4a5c546762aecdfe42312b46c66ba3",
   "approval_record": ".ai/approvals/CONVERSATIONAL-UX-1.yaml",
   "previous_checkpoint": {
     "schema_version": 1,
@@ -34,12 +34,19 @@
   },
   "modified_files": [],
   "completed_substeps": [
-    "Recorded explicit approval for three conversational UX tasks."
+    "Recorded explicit approval for CUX-T01..03.",
+    "Implemented natural-language entry, editable examples, disclosed guided fallback, and bounded project requests.",
+    "Frontend: 1063 passed; workflow: 12 passed; integration: 28 passed, 16 skipped.",
+    "Browser: desktop, 390px, 320px, keyboard, provider-free fallback, save/reopen checked.",
+    "Native-process tests: 21 passed through the underlying Python interpreter with project dependencies.",
+    "Full fast selection passes across direct runtime (2274) and optional MCP venv run (32); 12 protected baseline Ruff findings retained."
   ],
   "remaining_work": [
-    "Implement entry and bounded request recovery, test, and open first PR."
+    "Merge CUX-T01 PR, then branch CUX-T02 from latest origin/main.",
+    "Implement CUX-T02 conversational brief and CUX-T03 grounded revision-aware iteration in separate PRs.",
+    "Independent final scope review remains required."
   ],
   "last_failure": null,
-  "resume_action": "Continue CUX-T01 in .worktrees/conversational-entry.",
-  "last_command": "python scripts/verify.py full: 2419 passed, 8 skipped in 570.30s."
+  "resume_action": "After the CUX-T01 PR merges, fetch origin/main and begin CUX-T02 in a fresh feature branch. Do not merge or push main.",
+  "last_command": "Fast selection: 2274 passed + 32 optional MCP tests passed in the venv; frontend 1063; workflow 12; integration 28 passed/16 skipped."
 }
