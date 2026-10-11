@@ -100,7 +100,7 @@ def entry_problems(entry, recipe: RuntimeRecipe | None) -> list[str]:
     reasons = []
     # D066/D070: an L3 entry may carry an owner-approved L1 electrical recipe (supply, LED or
     # backlight load from the exact part's datasheet). Its protocol stays unmodeled and its record
-    # stays not simulable, so design runs still refuse it; only the bound electrical reference runs.
+    # is simulable for its electrical pins only (D071); design runs bind it only through a catalog binding.
     if entry.layer.value == "L3" and recipe is None:
         reasons.append("L3 protocol behavior is not simulable by ngspice")
     if entry.research is None:
