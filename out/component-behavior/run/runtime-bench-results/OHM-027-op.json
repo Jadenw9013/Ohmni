@@ -1,0 +1,59 @@
+{
+  "analysis": "op",
+  "circuit_hash": "7799bf1c66bf27e0a7ef0837033bc4cf37d6509e6fedfe5bdaf9298869dea417",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "current": 1e-07,
+    "drive_role": "T1",
+    "expected": 1000000000.0,
+    "kind": "absolute",
+    "observable": "path_resistance",
+    "return_role": "T2",
+    "source_facts": {
+      "rleak": {
+        "basis": "DERIVED",
+        "confidence": "H",
+        "detail": "min(1000 Mohm*uF / 1 uF = 1e9 ohm, 100 Gohm) = 1e9 ohm",
+        "field": "minimum_insulation_resistance",
+        "page": 15,
+        "scope": "KEMET (YAGEO Group) C1812C105K1RACTU, EIA 1812 X7R commercial; series datasheet C1002_X7R (2026-09-01); derived at nominal 1 uF; rated voltage, 120 s, 25 C",
+        "sources": [
+          "https://content.kemet.com/datasheets/KEM_C1002_X7R_SMD.pdf"
+        ],
+        "unit": "ohm",
+        "value": 1000000000.0
+      },
+      "vr": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Rated Voltage (VDC) ... 1 = 100'",
+        "field": "rated_voltage",
+        "page": 2,
+        "scope": "KEMET (YAGEO Group) C1812C105K1RACTU, EIA 1812 X7R commercial; series datasheet C1002_X7R (2026-09-01); DC",
+        "sources": [
+          "https://content.kemet.com/datasheets/KEM_C1002_X7R_SMD.pdf"
+        ],
+        "unit": "V",
+        "value": 100
+      }
+    },
+    "tolerance": 1000000.0
+  },
+  "entry_id": "OHM-027",
+  "entry_research_sha256": "8e594318f10115c39497062a662b45129327a0feb6b1fa33d28a6865b0b3bce0",
+  "limits": "Binding check of one bound DC path: the sourced current through the path must reproduce the sourced path resistance (0.1% numerical tolerance, or the sourced tolerance band). It does not validate frequency response, heating, contact wear, isolation, protocol behavior or any rating beyond the stated facts.",
+  "netlist_sha256": "16ce98706281417e27e164b02e460581a04efa960d42762c9b96c76e54010169",
+  "observation_status": "ran",
+  "observed": 1000000000.0,
+  "output_sha256": "dc2b80bd48edf69eda79fa70ddbd983ba5fba8d11bf53ef138f2a6b757bdfea0",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T06:14:09Z",
+  "raw_output": "runtime-bench-output/OHM-027-op/output.txt",
+  "recipe_source_sha256": "a34238153600831e2bf05d50aa94ff53215ccd7526121d4a2f6fa9deea94ea15",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "version_file": "runtime-bench-output/OHM-027-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sat Oct 10 21:32:36 UTC 2026\n******\n",
+  "version_sha256": "7f444023b0e5851d50a26bf40338ca29665b10988154a0ff2d662d918ab83fc3"
+}

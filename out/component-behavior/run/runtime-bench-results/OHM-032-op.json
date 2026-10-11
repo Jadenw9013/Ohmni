@@ -1,0 +1,61 @@
+{
+  "analysis": "op",
+  "circuit_hash": "80e7c3f14af967230edd6c01028b350fb7df1d7276cc0597f08a7c0ca6b6d824",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "current": 0.00031999999999999997,
+    "drive_role": "A",
+    "expected": 50000.00000000001,
+    "kind": "absolute",
+    "observable": "path_resistance",
+    "return_role": "K",
+    "source_facts": {
+      "ileak": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "converted_unit": "A",
+        "converted_value": 0.00031999999999999997,
+        "detail": "Leakage column '320' \u00b5A, 'at 20\u00b0 after 2 minutes' ('After 2 minutes' application of rated voltage at 20\u00b0C')",
+        "field": "maximum_leakage_current",
+        "page": 2,
+        "scope": "Nichicon PCJ1C101MCL4GS (PCJ series), 100 uF 16 V, 6.3 x 8 mm chip; Nichicon catalog PCJ",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-pcj.pdf"
+        ],
+        "unit": "uA",
+        "value": 320
+      },
+      "vr": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Rated voltage group in the dimensions table",
+        "field": "rated_voltage",
+        "page": 2,
+        "scope": "Nichicon PCJ1C101MCL4GS (PCJ series), 100 uF 16 V, 6.3 x 8 mm chip; Nichicon catalog PCJ; DC; peak (DC + ripple) must not exceed rated voltage",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-pcj.pdf"
+        ],
+        "unit": "V",
+        "value": 16
+      }
+    },
+    "tolerance": 50.00000000000001
+  },
+  "entry_id": "OHM-032",
+  "entry_research_sha256": "02f0a5bc047feed2c716dafe75b11330307e08ad6641063058a7f3bd4c8949cd",
+  "limits": "Binding check of one bound DC path: the sourced current through the path must reproduce the sourced path resistance (0.1% numerical tolerance, or the sourced tolerance band). It does not validate frequency response, heating, contact wear, isolation, protocol behavior or any rating beyond the stated facts.",
+  "netlist_sha256": "34a26b619d5d86d032d847ffa0c2233d23c1ec2f80e5231fa065b179d81fa96f",
+  "observation_status": "ran",
+  "observed": 50000.03125,
+  "output_sha256": "4dcb588f8b6b8b068ff683a05a3d6b81d13418e08f2db5746165b24a81d18b0c",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T06:14:18Z",
+  "raw_output": "runtime-bench-output/OHM-032-op/output.txt",
+  "recipe_source_sha256": "a34238153600831e2bf05d50aa94ff53215ccd7526121d4a2f6fa9deea94ea15",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "version_file": "runtime-bench-output/OHM-032-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sat Oct 10 21:32:36 UTC 2026\n******\n",
+  "version_sha256": "7f444023b0e5851d50a26bf40338ca29665b10988154a0ff2d662d918ab83fc3"
+}

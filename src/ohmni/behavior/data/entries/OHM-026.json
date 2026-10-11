@@ -20,7 +20,9 @@
       "bench-results/BEH-CAP-CERAMIC--B4.json"
     ],
     "conflicts": [
-      "Do not transfer a curve or rating between different capacitance, voltage, case or dielectric variants."
+      "Do not transfer a curve or rating between different capacitance, voltage, case or dielectric variants.",
+      "Spec default RLK 5e7 ohm is 22x the sourced IR minimum 50 ohm*F / 22 uF = 2.27e6 ohm, also below the class RLK floor 50e6 ohm; the binding uses 2.27e6 ohm (D067).",
+      "Capacitance and DF for this part are specified at 120 Hz / 0.5 Vrms, not 1 kHz."
     ],
     "documents": [
       {
@@ -42,6 +44,16 @@
         "source_status": "primary_source_opened",
         "title": "Ceramic Capacitor Aging Made Simple",
         "url": "https://johansondielectrics.com/docs/3945/ceramic-capacitor-aging-made-simple.pdf"
+      },
+      {
+        "document_id": "murata-grm32er71e226ke15",
+        "manufacturer": "Murata",
+        "note": "Archived 2026-10-11 (ledger sha256 31eff98e0e21...); rated value p2; IR, DF (120 Hz) and voltage proof p3 read for the bound reference Murata GRM32ER71E226KE15 (D067).",
+        "page": null,
+        "revision": "specs as of Jun.26,2026",
+        "source_status": "primary_source_opened",
+        "title": "Murata reference sheet GRM32ER71E226KE15-04CA",
+        "url": "https://pim.murata.com/asset/pim4/ceramicCapacitorSMD/GRM32ER71E226KE15-04CA-EN_PDF_CERAMICCAPACITORSMD"
       }
     ],
     "entry_id": "OHM-026",
@@ -71,21 +83,155 @@
         ],
         "unit": "percent per decade-hour",
         "value": -2.5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'GRM32ER71E226KE15_(3225M(1210), X7R(EIA), 22μF, DC 25V)'",
+        "field": "reference_part",
+        "page": 2,
+        "scope": "Murata GRM32ER71E226KE15, 3225M(1210); Murata reference sheet GRM32ER71E226KE15-04CA (Jun.26,2026)",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/ceramicCapacitorSMD/GRM32ER71E226KE15-04CA-EN_PDF_CERAMICCAPACITORSMD"
+        ],
+        "unit": null,
+        "value": "Murata GRM32ER71E226KE15"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Rated Value table: 'DC 25V  22μF  +/-10%'",
+        "field": "nominal_capacitance",
+        "page": 2,
+        "scope": "Murata GRM32ER71E226KE15, 3225M(1210); Murata reference sheet GRM32ER71E226KE15-04CA (Jun.26,2026); tolerance +/-10%",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/ceramicCapacitorSMD/GRM32ER71E226KE15-04CA-EN_PDF_CERAMICCAPACITORSMD"
+        ],
+        "unit": "uF",
+        "value": 22
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'+/-10%'",
+        "field": "capacitance_tolerance",
+        "page": 2,
+        "scope": "Murata GRM32ER71E226KE15, 3225M(1210); Murata reference sheet GRM32ER71E226KE15-04CA (Jun.26,2026)",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/ceramicCapacitorSMD/GRM32ER71E226KE15-04CA-EN_PDF_CERAMICCAPACITORSMD"
+        ],
+        "unit": "percent",
+        "value": 10
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Rated Value table: 'DC 25V'",
+        "field": "rated_voltage",
+        "page": 2,
+        "scope": "Murata GRM32ER71E226KE15, 3225M(1210); Murata reference sheet GRM32ER71E226KE15-04CA (Jun.26,2026); DC; 'maximum voltage which may be applied continuously' incl. AC peak",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/ceramicCapacitorSMD/GRM32ER71E226KE15-04CA-EN_PDF_CERAMICCAPACITORSMD"
+        ],
+        "unit": "V",
+        "value": 25
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Temperature Characteristics [..] Public STD Code [X7R(EIA)] -15 to 15 % -55 to 125℃'",
+        "field": "temperature_characteristic",
+        "page": 2,
+        "scope": "Murata GRM32ER71E226KE15, 3225M(1210); Murata reference sheet GRM32ER71E226KE15-04CA (Jun.26,2026)",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/ceramicCapacitorSMD/GRM32ER71E226KE15-04CA-EN_PDF_CERAMICCAPACITORSMD"
+        ],
+        "unit": null,
+        "value": "X7R (-15 to 15 %, -55 to 125 C)"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Operating Temp. Range -55 to 125℃'",
+        "field": "operating_temperature_range",
+        "page": 2,
+        "scope": "Murata GRM32ER71E226KE15, 3225M(1210); Murata reference sheet GRM32ER71E226KE15-04CA (Jun.26,2026)",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/ceramicCapacitorSMD/GRM32ER71E226KE15-04CA-EN_PDF_CERAMICCAPACITORSMD"
+        ],
+        "unit": "C",
+        "value": [
+          -55,
+          125
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Insulation Resistance (IR) More than 50Ω・F' (Measurement Voltage Rated Voltage, Charging Time 1min)",
+        "field": "insulation_resistance_capacitance_product",
+        "page": 3,
+        "scope": "Murata GRM32ER71E226KE15, 3225M(1210); Murata reference sheet GRM32ER71E226KE15-04CA (Jun.26,2026); room temperature, rated voltage, 1 min charge, 50 mA max",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/ceramicCapacitorSMD/GRM32ER71E226KE15-04CA-EN_PDF_CERAMICCAPACITORSMD"
+        ],
+        "unit": "ohm*F",
+        "value": 50
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "H",
+        "detail": "50 ohm*F / 22e-6 F = 2.273e+06 ohm (IR spec is 'more than 50 Ω・F'; real C within +/-10% moves the bound by the same fraction)",
+        "field": "minimum_insulation_resistance",
+        "page": 3,
+        "scope": "Murata GRM32ER71E226KE15, 3225M(1210); Murata reference sheet GRM32ER71E226KE15-04CA (Jun.26,2026); derived at nominal C = 22 uF; room temperature, rated voltage, 1 min",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/ceramicCapacitorSMD/GRM32ER71E226KE15-04CA-EN_PDF_CERAMICCAPACITORSMD"
+        ],
+        "unit": "ohm",
+        "value": 2272727.272727273
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Q or Dissipation Factor (DF) DF≦0.1' (120+/-24 Hz, 0.5+/-0.1 Vrms, room temperature)",
+        "field": "maximum_dissipation_factor",
+        "page": 3,
+        "scope": "Murata GRM32ER71E226KE15, 3225M(1210); Murata reference sheet GRM32ER71E226KE15-04CA (Jun.26,2026); 120+/-24 Hz, 0.5+/-0.1 Vrms, room temperature",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/ceramicCapacitorSMD/GRM32ER71E226KE15-04CA-EN_PDF_CERAMICCAPACITORSMD"
+        ],
+        "unit": "1",
+        "value": 0.1
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Voltage proof ... Test Voltage 250% of the rated voltage, Applied Time 1s to 5s'",
+        "field": "voltage_proof_test_level",
+        "page": 3,
+        "scope": "Murata GRM32ER71E226KE15, 3225M(1210); Murata reference sheet GRM32ER71E226KE15-04CA (Jun.26,2026); 1 s to 5 s, 50 mA max; a test level, not a breakdown rating",
+        "sources": [
+          "https://pim.murata.com/asset/pim4/ceramicCapacitorSMD/GRM32ER71E226KE15-04CA-EN_PDF_CERAMICCAPACITORSMD"
+        ],
+        "unit": "x rated voltage",
+        "value": 2.5
       }
     ],
     "remaining_open_items": [
-      "Exact manufacturer orderable part, voltage rating and dielectric binding remain unestablished for the package default.",
       "ESR/ESL versus frequency, leakage, bias-fit coefficients and effective capacitance at operating bias remain part-specific.",
-      "A class bench using the supplied V0 law cannot establish a real MLCC DC-bias curve."
+      "A class bench using the supplied V0 law cannot establish a real MLCC DC-bias curve.",
+      "DC-bias capacitance curve (not in the reference sheet; SimSurfing data not archived).",
+      "ESR/ESL versus frequency and SRF remain unsourced for the bound part.",
+      "Capacitance aging and the temperature curve shape inside the +/-15% X7R envelope.",
+      "Former simulation blocker resolved for the explicitly bound reference (2026-10-11, D067): The exact default part voltage rating is not re-established by these general application documents. Resolution: Murata's per-part reference sheet for GRM32ER71E226KE15 (archived, sha 31eff98e0e21...) states the rated voltage (DC 25 V), capacitance and tolerance, X7R characteristic, operating range and an IR minimum for this exact part, closing the voltage-rating blocker for this explicitly bound reference. Bind it like OHM-024 (C + leak resistor card)."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "The exact default part voltage rating is not re-established by these general application documents."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-026.md",
-      "document_sha256": "4194848f7cc077bbd36e70c419ed89d451f67c8b96f26c15ba52672a46cb0748",
+      "document_sha256": "504b9c375e854bc53428fbf111de054e71720321f2b599a1be3884af11b71b3f",
       "fragment_sha256": null,
       "line": 1
     }

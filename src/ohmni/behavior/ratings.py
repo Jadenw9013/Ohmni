@@ -272,6 +272,10 @@ def _scoped_checks(component, point, context, overrides=None, transient=None, ac
             reverse = "-v <= vrev_limit" if "Tamb" in values else "-v <= vrev_25"
             upper_only("reverse voltage", reverse, ("vrev_25", "vrev_85", "vrev_125"),
                        "The reverse limits are transient-only; a DC operating point is continuous reverse bias")
+    elif cls in ALUMINIUM_CAPS:
+        derive("v", "v_A-v_K")
+        _alcap_voltage(values, b, "v", "rated voltage")
+        _alcap_reverse(values, b, "v", "")
     elif cls.startswith("BEH-CON-"):
         _connector_checks(component, values, b, thermal, upper_only)
     elif cls == "BEH-MAG-CMC":
@@ -516,6 +520,16 @@ def _transient_checks(component, values, b, thermal, upper_only, w):
             else:
                 upper_only("ripple current", "ripple_rms <= irip_max", ("irip_max",),
                            "Below 100 kHz the allowed ripple is lower by an unbound frequency multiplier")
+    elif cls in ALUMINIUM_CAPS:
+        v, i = w.diff("A", "K"), w.series("i", "A")
+        if v is not None:
+            stat("peak_v", peak(v))
+            stat("min_v", min(v) if v else None)
+            _alcap_voltage(values, b, "peak_v", "peak voltage (DC plus ripple peak)")
+            _alcap_reverse(values, b, "min_v", "peak ")
+        if i is not None and "irip_max" in values:
+            stat("ripple_rms", w.ac_rms(i))
+            b.add("ripple current", "ripple_rms <= irip_max", ("irip_max",), ALCAP_RIPPLE_REASON)
     elif cls == "BEH-CAP-EDLC":
         v, i = w.diff("P", "N"), w.series("i", "P")
         if v is not None:
@@ -1272,6 +1286,17 @@ def _ac_checks(component, values, b, thermal, upper_only, window, linear, dual=N
                 add("AC voltage", f"vac_{key} <= vac", ("vac",),
                     "The AC voltage rating is stated at 50 Hz; the permitted AC voltage at other frequencies is not bound",
                     violation_only=True)
+        elif cls in ALUMINIUM_CAPS and {"A", "K"} <= set(v):
+            vdc, vac = across("A", "K")
+            stat(f"vpk_{key}", vdc + root2 * abs(vac))
+            stat(f"vmin_{key}", vdc - root2 * abs(vac))
+            rows.append(_alcap_voltage(values, b, f"vpk_{key}", "peak voltage (DC plus AC peak)", tag))
+            reverse = _alcap_reverse(values, b, f"vmin_{key}", "", tag)
+            if reverse is not None:
+                rows.append(reverse)
+            if "A" in i and "irip_max" in values:
+                stat(f"irip_{key}", abs(i["A"]))
+                add("ripple current", f"irip_{key} <= irip_max", ("irip_max",), ALCAP_RIPPLE_REASON)
         elif cls == "BEH-CAP-EDLC" and {"P", "N"} <= set(v):
             vdc, vac = across("P", "N")
             stat(f"vpk_{key}", vdc + root2 * abs(vac))
@@ -1351,6 +1376,40 @@ def _film_checks(values, b, observed, label, tag="", ac=False):
     if row["status"] == "within_limit":
         row.update(status="unknown", reason="Ambient temperature is not declared; the rating is derated above "
                    f"+{start} C and ends at +125 C")
+    return row
+
+
+ALUMINIUM_CAPS = {"BEH-CAP-ALEL", "BEH-CAP-ALPOLY"}
+ALCAP_RIPPLE_REASON = (
+    "The rated ripple current is stated at one frequency and temperature (see its scope), and the card's current is not "
+    "the real part's: ESR, ESL and the 20% capacitance tolerance move it in directions the card cannot bound, so this "
+    "row proves neither a pass nor a violation (D067)")
+
+
+def _alcap_voltage(values, b, observed, label, tag=""):
+    """Nichicon aluminium electrolytic and polymer cards (D067): DC plus ripple peak must not exceed the rated voltage,
+    which applies across the category temperature range. With no declared ambient only a violation is proven."""
+    if "Tamb" in values:
+        b.add("ambient within category range" + tag, "t_min <= Tamb <= t_max", ("t_min", "t_max"))
+        return b.add(label + tag, f"{observed} <= vr", ("vr",))
+    row = b.add(label + tag, f"{observed} <= vr", ("vr",))
+    if row["status"] == "within_limit":
+        row.update(status="unknown", reason="Ambient temperature is not declared; the rated voltage applies only "
+                   "within the category temperature range")
+    return row
+
+
+def _alcap_reverse(values, b, observed, prefix, tag=""):
+    """Reverse voltage is not permitted on these polarized parts (Nichicon application guidelines): any reverse
+    bias is a violation. Only a reverse swing adds a row; forward bias is covered by the voltage row."""
+    try:
+        reverse = evaluate(f"{observed} < 0", values)
+    except ExpressionUnavailable:
+        return None
+    if not reverse:
+        return None
+    row = b.add(prefix + "reverse voltage (not permitted)" + tag, f"{observed} >= 0", ())
+    row["reason"] = "Reverse voltage is not permitted on this polarized capacitor (Nichicon application guidelines)"
     return row
 
 
