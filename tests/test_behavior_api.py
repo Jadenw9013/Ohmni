@@ -66,7 +66,7 @@ def test_behavior_summary_matches_the_audited_coverage_rule(server):
     assert body['entries']['OHM-057']=={'state':'simulated','reason':None}
     # D066: a package with a bound sourced reference part simulates as that named part.
     assert body['entries']['OHM-110']['state']=='simulated'
-    assert body['entries']['OHM-110']['reason'].startswith('Simulates as NE555')
+    assert body['entries']['OHM-110']['reason']=='Simulates as the sourced reference part bound to this package (NE555 / NE555 D SOIC-8).'
     assert body['entries']['OHM-062']['state']=='reference_only' and body['entries']['OHM-062']['reason']
     assert body['entries']['OHM-083']['state']=='documented'
     code,body=request(base,'/api/behavior/OHM-057')

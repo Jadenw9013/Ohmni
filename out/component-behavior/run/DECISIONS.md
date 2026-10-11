@@ -405,7 +405,7 @@ The four T491 recipes' limitation text said the ripple and ESR-heating rows repo
 The owner asked, in the session chat on 2026-10-11, for every library component to be fully sourced and simulable, checked one by one, with external research on each specific component. Asked four questions, the owner chose:
 
 1. **New sources:** fetch new manufacturer datasheets from the web into the fetch ledger. The documents are hashed and archived, never committed. Archive-only research is no longer the limit.
-2. **Package entries:** a generic package entry (OHM-103..140) with a runtime recipe naming an exact sourced reference part shows "Simulates", labelled as that part ("Simulates as NE555 / NE555 D SOIC-8, …"). This was the owner-only "class-default models for generic-package entries" item.
+2. **Package entries:** a generic package entry (OHM-103..140) with a runtime recipe naming an exact sourced reference part shows "Simulates", labelled as that part ("Simulates as the sourced reference part bound to this package (NE555 / NE555 D SOIC-8)"). This was the owner-only "class-default models for generic-package entries" item.
 3. **Programmable and protocol ICs:** build pin-level electrical models (supply, I/O drive, thresholds, absolute maximums, thermal) from the exact datasheet where it is sourced. Firmware and protocol behavior stay a stated limitation.
 4. **Mains and safety parts:** electrical models from sourced data, with explicit "no mains, isolation or safety acceptance" limitations.
 

@@ -113,7 +113,7 @@ def _master_entries(
             # D066 (owner decision): a package simulates as the exact sourced part bound to it.
             disposition = "simulable"
             simulation_reason = (
-                f"Simulates as the bound reference part {bound_packages[values['entry_id']]}; the package "
+                f"Simulates as the bound reference part ({bound_packages[values['entry_id']]}); the package "
                 "alone has no electrical function, so results describe that part in this package."
             )
         elif 103 <= entry_number <= 140:
