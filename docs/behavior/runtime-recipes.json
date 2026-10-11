@@ -829,7 +829,7 @@
         "Recommended application voltage 8 V at <= 85 C, derating to 33% of VR at 125 C; ripple and power limits are rating facts, not netlist behaviour.",
         "Stripe marks the ANODE (opposite of aluminium/supercap convention); footprint polarity must be checked.",
         "Model scope: Resr, Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr is the sourced 100 kHz maximum ESR (a worst-case bound, not a fitted nominal; D058); Lesl dropped because ESL is unsourced.",
-        "ESR is bound as the sourced 100 kHz, 25 C maximum, constant with frequency (D058, D061). At 100 kHz and 25 C a real part has ESR at or below it; at lower frequency or temperature real ESR can be higher. Where the part is current-driven, impedance, ripple voltage and ESR loss are upper bounds at those conditions; where it is voltage-driven, its own simulated current is a lower bound, so its ripple and ESR-heating rows can only prove a violation, while parallel parts take more current than with a lower real ESR (conservative for their checks). ESL is unsourced and not modeled."
+        "ESR is bound as the sourced 100 kHz, 25 C maximum, constant with frequency (D058). Real ESR, capacitance tolerance and the omitted ESL move the part's current, and parallel parts' currents, in directions this card cannot bound, so its ripple and ESR-heating rows report unknown in both directions (D063). ESL is unsourced and not modeled."
       ]
     },
     "OHM-034": {
@@ -921,7 +921,7 @@
         "Recommended application voltage 8 V at <= 85 C, derating to 33% of VR at 125 C; ripple and power limits are rating facts, not netlist behaviour.",
         "Stripe marks the ANODE (opposite of aluminium/supercap convention); footprint polarity must be checked.",
         "Model scope: Resr, Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr is the sourced 100 kHz maximum ESR (a worst-case bound, not a fitted nominal; D058); Lesl dropped because ESL is unsourced.",
-        "ESR is bound as the sourced 100 kHz, 25 C maximum, constant with frequency (D058, D061). At 100 kHz and 25 C a real part has ESR at or below it; at lower frequency or temperature real ESR can be higher. Where the part is current-driven, impedance, ripple voltage and ESR loss are upper bounds at those conditions; where it is voltage-driven, its own simulated current is a lower bound, so its ripple and ESR-heating rows can only prove a violation, while parallel parts take more current than with a lower real ESR (conservative for their checks). ESL is unsourced and not modeled."
+        "ESR is bound as the sourced 100 kHz, 25 C maximum, constant with frequency (D058). Real ESR, capacitance tolerance and the omitted ESL move the part's current, and parallel parts' currents, in directions this card cannot bound, so its ripple and ESR-heating rows report unknown in both directions (D063). ESL is unsourced and not modeled."
       ]
     },
     "OHM-035": {
@@ -1013,7 +1013,7 @@
         "Recommended application voltage 8 V at <= 85 C, derating to 33% of VR at 125 C; ripple and power limits are rating facts, not netlist behaviour.",
         "Stripe marks the ANODE (opposite of aluminium/supercap convention); footprint polarity must be checked.",
         "Model scope: Resr, Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr is the sourced 100 kHz maximum ESR (a worst-case bound, not a fitted nominal; D058); Lesl dropped because ESL is unsourced.",
-        "ESR is bound as the sourced 100 kHz, 25 C maximum, constant with frequency (D058, D061). At 100 kHz and 25 C a real part has ESR at or below it; at lower frequency or temperature real ESR can be higher. Where the part is current-driven, impedance, ripple voltage and ESR loss are upper bounds at those conditions; where it is voltage-driven, its own simulated current is a lower bound, so its ripple and ESR-heating rows can only prove a violation, while parallel parts take more current than with a lower real ESR (conservative for their checks). ESL is unsourced and not modeled."
+        "ESR is bound as the sourced 100 kHz, 25 C maximum, constant with frequency (D058). Real ESR, capacitance tolerance and the omitted ESL move the part's current, and parallel parts' currents, in directions this card cannot bound, so its ripple and ESR-heating rows report unknown in both directions (D063). ESL is unsourced and not modeled."
       ]
     },
     "OHM-036": {
@@ -1105,7 +1105,7 @@
         "Recommended application voltage 8 V at <= 85 C, derating to 33% of VR at 125 C; ripple and power limits are rating facts, not netlist behaviour.",
         "Stripe marks the ANODE (opposite of aluminium/supercap convention); footprint polarity must be checked.",
         "Model scope: Resr, Cb and Rlk of ohm_tant (spec lines 1611-1618). The fixed VREVFR=0.03 flag, DER and 1.32*VR surge bits of the class template are deliberately dropped: reverse and derating limits are carried as the part's own sourced critical facts (15/5/1% transient reverse at 25/85/125 C, 50% application voltage) for the rating checker. Resr is the sourced 100 kHz maximum ESR (a worst-case bound, not a fitted nominal; D058); Lesl dropped because ESL is unsourced.",
-        "ESR is bound as the sourced 100 kHz, 25 C maximum, constant with frequency (D058, D061). At 100 kHz and 25 C a real part has ESR at or below it; at lower frequency or temperature real ESR can be higher. Where the part is current-driven, impedance, ripple voltage and ESR loss are upper bounds at those conditions; where it is voltage-driven, its own simulated current is a lower bound, so its ripple and ESR-heating rows can only prove a violation, while parallel parts take more current than with a lower real ESR (conservative for their checks). ESL is unsourced and not modeled."
+        "ESR is bound as the sourced 100 kHz, 25 C maximum, constant with frequency (D058). Real ESR, capacitance tolerance and the omitted ESL move the part's current, and parallel parts' currents, in directions this card cannot bound, so its ripple and ESR-heating rows report unknown in both directions (D063). ESL is unsourced and not modeled."
       ]
     },
     "OHM-037": {
