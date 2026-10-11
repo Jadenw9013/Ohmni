@@ -445,22 +445,22 @@
       "The control IC's active supply current while receiving data is unpublished.",
       "The VDD headroom each color needs for regulation is unpublished; the class 3.0 V / 0.5 V dropout knee stays an authored assumption.",
       "No power-dissipation or thermal limit is published for V7.",
-      "The single-wire protocol, gray levels, DOUT drive and reset timing are L3 and not simulated; the record stays not simulable (spec layer L3)."
+      "The single-wire protocol, gray levels, DOUT drive and reset timing are L3 and not simulated; the record simulates the electrical pins only (D066 item 3)."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-084.md",
-      "document_sha256": "83e9e6333539c1dff1da8dfcb29c06250c6df1c2f53184bc41c5767d9c420c44",
+      "document_sha256": "765dd65f6651fe402744c32094566667348504aa1a1060b7efeeb5bc29ca46d8",
       "fragment_sha256": null,
       "line": 1
     }
   },
   "resolution_ids": [],
   "schema_version": 1,
-  "simulation_disposition": "not_simulable",
-  "simulation_reason": "L3 protocol or firmware behavior requires a higher-layer model.",
+  "simulation_disposition": "simulable",
+  "simulation_reason": "Simulates the electrical pins only, as the bound reference part (Worldsemi WS2812B-V7 (datasheet V1.3), full-white static supply load); protocol, firmware and controller behavior (L3) are not modeled.",
   "source": {
     "document": "COMPONENT_BEHAVIOR_SPEC.md",
     "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",

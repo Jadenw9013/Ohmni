@@ -126,10 +126,10 @@ def test_segment_reverse_bias_is_never_accepted(registry, recipes):
     assert rows["segment E reverse voltage"]["status"] == "violation"
 
 
-def test_l3_entries_run_only_their_bound_electrical_reference(registry, recipes):
+def test_l3_entries_simulate_only_their_bound_electrical_reference(registry, recipes):
     for entry_id in ("OHM-084", "OHM-091"):
         entry = registry.entry(entry_id)
-        assert entry.layer.value == "L3" and entry.simulation_disposition.value == "not_simulable"
+        assert entry.layer.value == "L3" and entry.simulation_disposition.value == "simulable"  # D066 item 3
         assert entry_problems(entry, recipes.entries[entry_id]) == []
         assert "L3 protocol behavior is not simulable by ngspice" in entry_problems(entry, None)
         assert recipes.entries[entry_id].limitations[0].startswith("L1 ")
@@ -163,7 +163,9 @@ def test_lcd_backlight_is_the_sourced_operating_point_not_the_assumed_diode(audi
 
 def test_reference_only_reasons_name_why_the_record_is_not_simulable(tmp_path):
     service = ComponentBehaviorService(ROOT, tmp_path)
+    # D066 item 3: the L3 addressable LED simulates its electrical pins only, and says so.
     state, reason = service.behavior_state("OHM-084")
-    assert state == "reference_only" and "WS2812B-V7" in reason and "(L3)" in reason
+    assert state == "simulated" and "WS2812B-V7" in reason and "electrical pins only" in reason
+    assert "(L3) are not modeled" in reason
     state, reason = service.behavior_state("OHM-087")
     assert state == "reference_only" and "research_required" in reason and "package" not in reason

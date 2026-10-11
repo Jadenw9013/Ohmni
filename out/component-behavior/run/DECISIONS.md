@@ -531,3 +531,16 @@ Conflicts with previously recorded values (spec unchanged; the bound part's valu
 - OHM-091: class backlight 100 mA / 4.1 V (ASSUMPTION) vs 130 mA typical (65-156) at 5.0 V through an on-board resistor. Class vlcd 3.2-5.2 V vs NHD 3.5-3.9 V (WH1602B 3.6-3.8 V). Class idd max 1.5 mA vs NHD 3.0 mA. The WH1602B values belong to a different module.
 
 Result: the recipe edit restamps every runtime receipt, so all 256 were rerun and pass: 215 earlier plus 41 new. The new ones are OHM-075 and OHM-076 at 4 each, OHM-084 at 1, OHM-087 at 11 (8 segments plus 3 fit points), OHM-088 at 19 (16 plus 3) and OHM-091 at 2. All 127 bound entries validate. Audited simulable stays at 116 (simulated 116 of 127 bound): none of the six becomes simulable, because four are research_required and two are L3 in the protected spec. Tests: tests/test_behavior_leds.py, with the bound/example counts updated from 121 to 127.
+
+## D071 — 2026-10-11: L3 entries with a bound pin-level model simulate their electrical pins only; four research_required statuses await the owner's spec edit
+
+**L3 rule (D066 item 3).** The owner chose pin-level electrical models for programmable and protocol parts, with firmware and protocol stated as out of scope. `scripts/generate_behavior_records.py` now marks an L3 entry simulable when its runtime recipe names an exact reference part and its spec status is not research_required. The record reason reads "Simulates the electrical pins only, as the bound reference part (...); protocol, firmware and controller behavior (L3) are not modeled.", and `ComponentBehaviorService.behavior_state` returns it with the simulated state. Affected entries: OHM-084 (Worldsemi WS2812B-V7, full-white supply load) and OHM-091 (Newhaven NHD-0216K1Z-FL-YBW, logic and backlight). Their recipe limitations and gapfill notes no longer say the record stays not simulable. Design runs are unchanged: neither recipe lists catalog parts, so no catalog part binds to them. Audited simulable: 116 -> 118.
+
+**Spec status (owner approval 2026-10-11, not yet applied).** The owner approved, in the session chat, changing an entry's COMPONENT_BEHAVIOR_SPEC.md status from research_required to partial when new evidence closes its recorded blocker and a proxy review approves. D070's evidence closes the recorded blockers of four entries:
+- OHM-075: thermal data (WP813ID RthJA 500 C/W, Tj 125 C);
+- OHM-076: thermal data (WP113IDT RthJA 580 C/W);
+- OHM-087 and OHM-088: per-segment allocation (HDSP-5503/5523 "per Segment or DP").
+
+The session's permission policy refused the agent's edit to the protected spec file, so the change is left for the owner to make: the status cell of these four master-table rows, from `research_required` to `partial`. After that edit, regenerate the records; the four become simulable (118 -> 122). Because the protected baseline cannot absorb a spec change, only the owner can re-record it.
+
+OHM-053 (Würth 750311595 flyback) is not on the list: its recorded blocker (working-voltage and loss limits) is still unsourced.

@@ -8185,7 +8185,7 @@
       "inline_assets": [],
       "instance_value_unit": null,
       "limitations": [
-        "L1 supply load only (D066 item 3): the single-wire protocol, gray-level PWM, DOUT drive and reset timing are L3 and not simulated, so this entry's record stays not simulable. DOUT is not modeled.",
+        "L1 supply load only (D066 item 3): the single-wire protocol, gray-level PWM, DOUT drive and reset timing are L3 and not simulated; the entry simulates its electrical pins only (D066 item 3). DOUT is not modeled.",
         "The load is full white: all three channels at the typical regulated 16.12 mA (the 'VF constant current curve' plateau, which needs >= 0.6 V across each output). The data that sets real gray levels is not simulated, so a dimmer pixel draws less. 16.12 mA is typical, not a maximum.",
         "iq = 1 uA is the published maximum with no signal and RGB off; the active control-IC current while receiving data is NOT published.",
         "The 3.0 V / 0.5 V supply dropout knee is the class's authored ASSUMPTION; the sheet gives only the output-pin headroom curve.",
@@ -8739,7 +8739,7 @@
       "inline_assets": [],
       "instance_value_unit": null,
       "limitations": [
-        "L1 supply and backlight only (D066 item 3): controller instructions, display content and timing are L3 and not simulated, so this entry's record stays not simulable. RS, RW, E and DB0-DB7 are not modeled.",
+        "L1 supply and backlight only (D066 item 3): controller instructions, display content and timing are L3 and not simulated; the entry simulates its supply and backlight pins only (D066 item 3). RS, RW, E and DB0-DB7 are not modeled.",
         "The backlight is one equivalent resistance (LEDs plus the on-board resistor) from the single typical point 5.0 V / 130 mA (38.46 ohm). The source allows 65-156 mA at 5.0 V and only a 4.9-5.1 V supply; outside that the linear model is not valid.",
         "The logic supply is a constant typical 1.0 mA (maximum 3.0 mA). V0 is a 100 Mohm placeholder load from the class template, not a sourced contrast input current.",
         "No absolute-maximum VDD is published in this Newhaven sheet; overvoltage acceptance beyond 5.5 V is unknown, not a pass.",
@@ -14338,7 +14338,7 @@
   "schema_version": 1,
   "source": {
     "document": "docs/behavior/runtime-recipes.json",
-    "document_sha256": "ce3727529f8fdcc2c29375232c80c5b18f35eb697e7e58e0b7a4c4cbff12387d",
+    "document_sha256": "cdcb7628556b1480e38114dd016841ea922c84230fa1bf6db4221f468e40710d",
     "fragment_sha256": null,
     "line": 1
   }

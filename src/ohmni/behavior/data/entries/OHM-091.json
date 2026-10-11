@@ -401,22 +401,22 @@
       "Former simulation blocker resolved for the bound reference Newhaven Display NHD-0216K1Z-FL-YBW (2026-10-11, D070): Do not simulate the assumed 100 mA/4.1 V backlight as a rated module load. Resolution: The archived WH1602B sheet states only 'Backlight Type LED'. Newhaven's own NHD-0216K1Z-FL-YBW specification gives the backlight as a supply load through an on-board resistor ('LED+ ... +5.0V via on-board resistor'): VLED 4.9/5.0/5.1 V and ILED 65/130/156 mA at VLED = 5.0 V, with VDD 4.5-5.5 V, IDD 0.5/1.0/3.0 mA at 5.0 V and the 16-pin map. The binding moves to this module, and the backlight is one resistance from the sourced 5.0 V / 130 mA point; the assumed 100 mA / 4.1 V diode is not used.",
       "Backlight I-V away from 5.0 V +/- 0.1 V and backlight thermal or derating data are unpublished.",
       "No absolute-maximum VDD is published in this sheet (only the 4.5-5.5 V operating range).",
-      "Controller instruction execution, text state and timing are L3 and not simulated; the record stays not simulable (spec layer L3)."
+      "Controller instruction execution, text state and timing are L3 and not simulated; the record simulates the supply and backlight pins only (D066 item 3)."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-091.md",
-      "document_sha256": "0ced9d1f6ca4b8615768c686439547e74b597df9feece320e161f7d4936940f3",
+      "document_sha256": "b2b1627e2b4f145b4782a46aa2df8f9a443bf9436db4d866e106785c8b811e3c",
       "fragment_sha256": null,
       "line": 1
     }
   },
   "resolution_ids": [],
   "schema_version": 1,
-  "simulation_disposition": "not_simulable",
-  "simulation_reason": "L3 protocol or firmware behavior requires a higher-layer model.",
+  "simulation_disposition": "simulable",
+  "simulation_reason": "Simulates the electrical pins only, as the bound reference part (Newhaven Display NHD-0216K1Z-FL-YBW (logic supply and backlight only)); protocol, firmware and controller behavior (L3) are not modeled.",
   "source": {
     "document": "COMPONENT_BEHAVIOR_SPEC.md",
     "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
