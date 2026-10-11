@@ -23,7 +23,8 @@
       "bench-results/BEH-DIO-PN--B7.json"
     ],
     "conflicts": [
-      "BAS516 is an explicit package-matched alternative to the generic BAS16/1N4148WS placeholder. The source limit is 250 mA, while the original conservative 150 mA assumption is retained until binding."
+      "BAS516 is an explicit package-matched alternative to the generic BAS16/1N4148WS placeholder. The source limit is 250 mA, while the original conservative 150 mA assumption is retained until binding.",
+      "D072: spec placeholder IF 150 mA (assumed) vs sourced BAS516 IF 250 mA (FR4 standard footprint)."
     ],
     "documents": [
       {
@@ -35,6 +36,16 @@
         "source_status": "primary_source_opened",
         "title": "BAS16 series High-speed switching diodes",
         "url": "https://assets.nexperia.com/documents/data-sheet/BAS16_SER.pdf"
+      },
+      {
+        "document_id": "nexperia-bas516",
+        "manufacturer": "Nexperia",
+        "note": "Archived (ledger sha256 8647f8de7ce2...); read 2026-10-11 to confirm the BAS16_SER ratings and close the spec's assumed 150 mA forward current (D072).",
+        "page": null,
+        "revision": "BAS516 v.8, 20260806 (single-type data sheet)",
+        "source_status": "primary_source_opened",
+        "title": "BAS516 High-speed switching diode, Product data sheet",
+        "url": "https://assets.nexperia.com/documents/data-sheet/BAS516.pdf"
       }
     ],
     "entry_id": "OHM-063",
@@ -158,18 +169,140 @@
         ],
         "unit": "V",
         "value": 0.855
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "VRRM 100 V; VR 100 V",
+        "field": "single_type_sheet_reverse_voltage",
+        "page": 2,
+        "scope": "Nexperia BAS516 single-type product data sheet (6 August 2026), SOD523 (SC-79)",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAS516.pdf"
+        ],
+        "unit": "V",
+        "value": 100
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "IF forward current [1] max 250 mA",
+        "field": "single_type_sheet_forward_current",
+        "page": 2,
+        "scope": "Nexperia BAS516 single-type product data sheet (6 August 2026), SOD523 (SC-79); [1] device mounted on an FR4 PCB, single-side copper, tin-plated and standard footprint",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAS516.pdf"
+        ],
+        "unit": "A",
+        "value": 0.25
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Ptot total power dissipation Tsp <= 90 C [1][2] 500 mW",
+        "field": "single_type_sheet_total_power",
+        "page": 2,
+        "scope": "Nexperia BAS516 single-type product data sheet (6 August 2026), SOD523 (SC-79); Tsp <= 90 C, soldering point of cathode tab, FR4 standard footprint",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAS516.pdf"
+        ],
+        "unit": "W",
+        "value": 0.5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Tj junction temperature max 150 C",
+        "field": "single_type_sheet_junction_temperature",
+        "page": 2,
+        "scope": "Nexperia BAS516 single-type product data sheet (6 August 2026), SOD523 (SC-79)",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAS516.pdf"
+        ],
+        "unit": "C",
+        "value": 150
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Rth(j-sp) max 120 K/W",
+        "field": "single_type_sheet_rth_junction_solderpoint",
+        "page": 2,
+        "scope": "Nexperia BAS516 single-type product data sheet (6 August 2026), SOD523 (SC-79); soldering point of cathode tab",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAS516.pdf"
+        ],
+        "unit": "K/W",
+        "value": 120
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "VF at IF = 10 mA max 855 mV",
+        "field": "single_type_sheet_forward_voltage_10mA",
+        "page": 3,
+        "scope": "Nexperia BAS516 single-type product data sheet (6 August 2026), SOD523 (SC-79); IF = 10 mA",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAS516.pdf"
+        ],
+        "unit": "V",
+        "value": 0.855
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Cd diode capacitance max 1 pF",
+        "field": "single_type_sheet_capacitance",
+        "page": 3,
+        "scope": "Nexperia BAS516 single-type product data sheet (6 August 2026), SOD523 (SC-79); VR = 0 V, f = 1 MHz",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAS516.pdf"
+        ],
+        "unit": "pF",
+        "value": 1.0
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "trr reverse recovery time max 4 ns",
+        "field": "single_type_sheet_reverse_recovery",
+        "page": 3,
+        "scope": "Nexperia BAS516 single-type product data sheet (6 August 2026), SOD523 (SC-79); IF = IR = 10 mA, RL = 100 ohm, IR(meas) = 1 mA",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAS516.pdf"
+        ],
+        "unit": "s",
+        "value": 4e-09
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Pin 1 K cathode; pin 2 A anode",
+        "field": "single_type_sheet_pin_roles",
+        "page": 1,
+        "scope": "Nexperia BAS516 single-type product data sheet (6 August 2026), SOD523 (SC-79); Table 2 Pinning information",
+        "sources": [
+          "https://assets.nexperia.com/documents/data-sheet/BAS516.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "1": "K",
+          "2": "A"
+        }
       }
     ],
     "remaining_open_items": [
       "Solder-point temperature and actual board thermal path must be provided for thermal acceptance; no junction-to-ambient value is supplied for this variant.",
-      "Nominal I-V/recovery parameters remain proxy assumptions."
+      "Nominal I-V/recovery parameters remain proxy assumptions.",
+      "D072: the spec's research_required reason (ratings 'from the 1N4148 family scaled down: IF 150 mA assumed') is closed by Nexperia's current BAS516 single-type data sheet, which confirms the recorded BAS16_SER values (IF 250 mA, VR 100 V, Tj 150 C, pin 1 K / pin 2 A). The spec status cell is left for the owner to change to partial.",
+      "No Rth(j-a) is published for this type (only Rth(j-sp)); ambient thermal acceptance needs the solder-point temperature."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-063.md",
-      "document_sha256": "4dc6c992dd5ef7fd8045e05c49d0b9d7164ed104a4336b05ead80da86b39b5d1",
+      "document_sha256": "197ad87264d6c4c30621486a8daf81ea0af314b5196acf8d54697de4efde7907",
       "fragment_sha256": null,
       "line": 1
     }

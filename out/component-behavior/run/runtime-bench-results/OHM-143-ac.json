@@ -1,0 +1,237 @@
+{
+  "ac_points_hz": [
+    15998083.961831586,
+    15998133.961831586,
+    15998183.961831586,
+    15999950.0,
+    16000050.0
+  ],
+  "analysis": "ac",
+  "analytical_source": [
+    "BEH-FREQ-XTAL/B1",
+    "BEH-FREQ-XTAL/B2"
+  ],
+  "circuit_hash": "fc2b9a756b951007b3f7c3f0f98ca40a3ef72a3f02a07fb947aa56d3b8316f1b",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": [
+    {
+      "expected": 15998133.961831586,
+      "kind": "absolute",
+      "observable": "series_resonance_hz",
+      "tolerance": 10.0
+    },
+    {
+      "expected": 50.0,
+      "kind": "absolute",
+      "observable": "zmin_ohm",
+      "tolerance": 0.5
+    },
+    {
+      "expected": 16000000.0,
+      "kind": "absolute",
+      "observable": "load_resonance_hz",
+      "tolerance": 10.0
+    }
+  ],
+  "current": 0.0001,
+  "derived_parameters": {
+    "C0": 8.300000000000001e-13,
+    "C1": 2.0600000000000003e-15,
+    "L1": 0.048043471929502646
+  },
+  "entry_id": "OHM-143",
+  "entry_research_sha256": "15b8526f88ff48bb3223b5647c208cccf50622945a82135737342981ebdbe1b8",
+  "limits": "Small-signal BVD impedance of the bound crystal at explicit frequencies: the series resonance and its minimum |Z| against the sourced ESR (B1 tolerance), and the load resonance with the sourced CL as an ideal series capacitor against the sourced nominal frequency (B2 tolerance). C1 and C0 are range centres and L1 is derived from them, so this shows the binding carries the sourced values; it does not validate tolerance, temperature, aging, drive level, spurious modes or oscillator start-up.",
+  "load_capacitance_f": 8e-12,
+  "netlist_sha256": "db38b9404102d19f048df3a61598ec3283641bc7d339e3bb4d8f6eca8d184466",
+  "observation_status": "ran",
+  "observed": [
+    15998134.306454191,
+    49.99956496025954,
+    16000000.242462568
+  ],
+  "output_sha256": "65566b84eda73b72e6d2cc3e65f5fe2f9941694bfe2e75d42beb8c5417474814",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T19:28:11Z",
+  "raw_output": "runtime-bench-output/OHM-143-ac/output.txt",
+  "recipe_source_sha256": "bc488ab16855a57c6770fe3374176c0f7214015419616a52a05fe2eb9de00266",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "source_deck_sha256": [
+    "8a6e78dfed348a1de9c2faf8790ccfa36bd63f128fe9f379a2ed64d4cf281cc6",
+    "91ab42887babf28936bb740f847e44b66f446889040b0bf37ae01de98a8e4969"
+  ],
+  "source_facts": {
+    "R1": {
+      "basis": "MFR_DATASHEET",
+      "confidence": "M",
+      "detail": "1.3 #9 ESR refers to Note 1 (min/typ/max columns blank); Note 1 row ESR(ohms) 50. Single value read as the limit (maximum), as is usual for ESR; column header carries no min/typ/max label",
+      "field": "equivalent_series_resistance_max",
+      "page": 3,
+      "scope": "Kyocera CX3225FB16000D0FZZH1 (CX3225FB 8 pF specification UKY1C-H1-25071-02[43], issued Jan.9,2026); S&A 250B or equivalent",
+      "sources": [
+        "https://ele.kyocera.com/assets/products/crystal-device/specification/CX3225FB_8pF.pdf"
+      ],
+      "unit": "ohm",
+      "value": 50
+    },
+    "c0_max": {
+      "basis": "MFR_DATASHEET",
+      "confidence": "H",
+      "converted_unit": "F",
+      "converted_value": 9.9e-13,
+      "detail": "Note 1 row C0(pF) '0.67~0.99'",
+      "field": "shunt_capacitance_range",
+      "page": 3,
+      "scope": "Kyocera CX3225FB16000D0FZZH1 (CX3225FB 8 pF specification UKY1C-H1-25071-02[43], issued Jan.9,2026)",
+      "selected_value": 0.99,
+      "selected_value_path": [
+        1
+      ],
+      "sources": [
+        "https://ele.kyocera.com/assets/products/crystal-device/specification/CX3225FB_8pF.pdf"
+      ],
+      "unit": "pF",
+      "value": [
+        0.67,
+        0.99
+      ]
+    },
+    "c0_min": {
+      "basis": "MFR_DATASHEET",
+      "confidence": "H",
+      "converted_unit": "F",
+      "converted_value": 6.700000000000001e-13,
+      "detail": "Note 1 row C0(pF) '0.67~0.99'",
+      "field": "shunt_capacitance_range",
+      "page": 3,
+      "scope": "Kyocera CX3225FB16000D0FZZH1 (CX3225FB 8 pF specification UKY1C-H1-25071-02[43], issued Jan.9,2026)",
+      "selected_value": 0.67,
+      "selected_value_path": [
+        0
+      ],
+      "sources": [
+        "https://ele.kyocera.com/assets/products/crystal-device/specification/CX3225FB_8pF.pdf"
+      ],
+      "unit": "pF",
+      "value": [
+        0.67,
+        0.99
+      ]
+    },
+    "c1_max": {
+      "basis": "MFR_DATASHEET",
+      "confidence": "H",
+      "detail": "Note 1 row C1(fF) '1.65~2.47'",
+      "field": "motional_capacitance_range",
+      "page": 3,
+      "scope": "Kyocera CX3225FB16000D0FZZH1 (CX3225FB 8 pF specification UKY1C-H1-25071-02[43], issued Jan.9,2026)",
+      "selected_value": 2.47,
+      "selected_value_path": [
+        1
+      ],
+      "sources": [
+        "https://ele.kyocera.com/assets/products/crystal-device/specification/CX3225FB_8pF.pdf"
+      ],
+      "unit": "fF",
+      "value": [
+        1.65,
+        2.47
+      ]
+    },
+    "c1_min": {
+      "basis": "MFR_DATASHEET",
+      "confidence": "H",
+      "detail": "Note 1 row C1(fF) '1.65~2.47'",
+      "field": "motional_capacitance_range",
+      "page": 3,
+      "scope": "Kyocera CX3225FB16000D0FZZH1 (CX3225FB 8 pF specification UKY1C-H1-25071-02[43], issued Jan.9,2026)",
+      "selected_value": 1.65,
+      "selected_value_path": [
+        0
+      ],
+      "sources": [
+        "https://ele.kyocera.com/assets/products/crystal-device/specification/CX3225FB_8pF.pdf"
+      ],
+      "unit": "fF",
+      "value": [
+        1.65,
+        2.47
+      ]
+    },
+    "cl": {
+      "basis": "MFR_DATASHEET",
+      "confidence": "H",
+      "converted_unit": "F",
+      "converted_value": 8e-12,
+      "detail": "1.2 #3 'Load capacitance (CL)  -  8.0  -  pF'",
+      "field": "load_capacitance_standard",
+      "page": 2,
+      "scope": "Kyocera CX3225FB16000D0FZZH1 (CX3225FB 8 pF specification UKY1C-H1-25071-02[43], issued Jan.9,2026)",
+      "sources": [
+        "https://ele.kyocera.com/assets/products/crystal-device/specification/CX3225FB_8pF.pdf"
+      ],
+      "unit": "pF",
+      "value": 8.0
+    },
+    "f_nom": {
+      "basis": "MFR_DATASHEET",
+      "confidence": "H",
+      "converted_unit": "Hz",
+      "converted_value": 16000000.0,
+      "detail": "Part description 16000 = 16 MHz; p2 1.1 'Nominal frequency ... MHz'; p2 1.3 #1 tolerance is 'At 25\u00b13\u00b0C and specific load, refer to nominal frequency'",
+      "field": "nominal_frequency",
+      "page": 3,
+      "scope": "Kyocera CX3225FB16000D0FZZH1 (CX3225FB 8 pF specification UKY1C-H1-25071-02[43], issued Jan.9,2026); at CL 8 pF",
+      "sources": [
+        "https://ele.kyocera.com/assets/products/crystal-device/specification/CX3225FB_8pF.pdf"
+      ],
+      "unit": "MHz",
+      "value": 16
+    },
+    "l1_max": {
+      "basis": "MFR_DATASHEET",
+      "confidence": "H",
+      "detail": "Note 1 row L1(mH) '38.52~57.76'",
+      "field": "motional_inductance_range",
+      "page": 3,
+      "scope": "Kyocera CX3225FB16000D0FZZH1 (CX3225FB 8 pF specification UKY1C-H1-25071-02[43], issued Jan.9,2026)",
+      "selected_value": 57.76,
+      "selected_value_path": [
+        1
+      ],
+      "sources": [
+        "https://ele.kyocera.com/assets/products/crystal-device/specification/CX3225FB_8pF.pdf"
+      ],
+      "unit": "mH",
+      "value": [
+        38.52,
+        57.76
+      ]
+    },
+    "l1_min": {
+      "basis": "MFR_DATASHEET",
+      "confidence": "H",
+      "detail": "Note 1 row L1(mH) '38.52~57.76'",
+      "field": "motional_inductance_range",
+      "page": 3,
+      "scope": "Kyocera CX3225FB16000D0FZZH1 (CX3225FB 8 pF specification UKY1C-H1-25071-02[43], issued Jan.9,2026)",
+      "selected_value": 38.52,
+      "selected_value_path": [
+        0
+      ],
+      "sources": [
+        "https://ele.kyocera.com/assets/products/crystal-device/specification/CX3225FB_8pF.pdf"
+      ],
+      "unit": "mH",
+      "value": [
+        38.52,
+        57.76
+      ]
+    }
+  },
+  "version_file": "runtime-bench-output/OHM-143-ac/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sat Oct 10 21:32:36 UTC 2026\n******\n",
+  "version_sha256": "7f444023b0e5851d50a26bf40338ca29665b10988154a0ff2d662d918ab83fc3"
+}

@@ -288,7 +288,10 @@ def _scoped_checks(component, point, context, overrides=None, transient=None, ac
     elif cls == "BEH-MAG-XFMR-SIGNAL":
         b.add("primary DC unbalance current", "abs(i_P_A) <= idc_unbalance", ("idc_unbalance",))
     elif cls == "BEH-MAG-INDUCTOR":
-        b.add("heating current", "abs(i_A) <= irms", ("irms",), thermal)
+        if _irms_ambient_ok(values):
+            b.add("heating current", "abs(i_A) <= irms", _irms_parameters(values), thermal)
+        else:
+            upper_only("heating current", "abs(i_A) <= irms", _irms_parameters(values), IRMS_AMBIENT_REASON)
         if "isat" in values:
             b.add("saturation current", "abs(i_A) <= isat", ("isat",))
         b.add(
@@ -311,6 +314,15 @@ def _scoped_checks(component, point, context, overrides=None, transient=None, ac
             ("p_rated", "tj_max", "rth_jc"),
             thermal,
         )
+    elif cls == "BEH-FREQ-XTAL" and "dl_max" in values:
+        # D073 (bound Kyocera crystals): the sourced operating range, and the drive level, which needs the
+        # motional-arm current. Only an AC run gives it (see _ac_checks); an operating point carries no drive.
+        b.add("operating temperature", "top_min <= Tamb <= top_max", ("top_min", "top_max"),
+              None if "Tamb" in values else "Ambient temperature is not declared",
+              ("operating_temperature",))
+        if ac is None:
+            b.add("drive level", "", ("dl_max",),
+                  "Drive level R1*|I_motional|^2 needs the motional-arm current, which only an AC run evaluates")
     elif cls == "BEH-IC-OPTO-DIP6":
         b.add("LED current", "i_A <= if_max", ("if_max",))
         b.add("LED reverse voltage", "v_K-v_A <= vr_max", ("vr_max",))
@@ -552,7 +564,10 @@ def _transient_checks(component, values, b, thermal, upper_only, w):
                 b.add("peak current against saturation", "peak_i <= isat", ("isat",))
             if "irms" in values:
                 stat("rms_i", w.rms(i))
-                b.add("RMS heating current", "rms_i <= irms", ("irms",), thermal)
+                if _irms_ambient_ok(values):
+                    b.add("RMS heating current", "rms_i <= irms", _irms_parameters(values), thermal)
+                else:
+                    upper_only("RMS heating current", "rms_i <= irms", _irms_parameters(values), IRMS_AMBIENT_REASON)
     elif cls == "BEH-MAG-CMC":
         for winding in ("A", "B"):
             i = w.series("i", winding + "1")
@@ -605,6 +620,19 @@ def _transient_checks(component, values, b, thermal, upper_only, w):
 CONTACT_LIMIT_PREFIX = "i_rated_"
 CONTACT_GROUP_PREFIX = "i_sum__"
 NOMINAL_KNEE = "Nominal current applies only up to the derating knee, which is not bound"
+# D072: an inductor heating current rated at a stated maximum ambient (Murata LQM21PH: 800 mA at
+# 85 C, derating above it) can pass only when the declared ambient is at or below that ambient; the
+# derating curve is not encoded, so above it, or with no ambient, it can only prove a violation.
+IRMS_AMBIENT_REASON = ("The heating-current rating is stated up to a maximum ambient and derates above it; "
+                       "declare an ambient at or below it (the derating curve is not encoded)")
+
+
+def _irms_ambient_ok(values):
+    return "irms_tamb_max" not in values or ("Tamb" in values and values["Tamb"] <= values["irms_tamb_max"])
+
+
+def _irms_parameters(values):
+    return ("irms", "irms_tamb_max") if "irms_tamb_max" in values else ("irms",)
 GROUP_UNOBSERVED = "Not every contact of this collectively rated group has an observed current"
 
 
@@ -1347,6 +1375,18 @@ def _ac_checks(component, values, b, thermal, upper_only, window, linear, dual=N
                 else:
                     add("ripple current", f"irip_{key} <= irip_max", ("irip_max",),
                         "Ripple rating is stated at 100 kHz; the frequency multiplier is not bound")
+        elif cls == "BEH-FREQ-XTAL" and "dl_max" in values and {"A", "B"} <= set(v):
+            # The motional arm (L1, C1, R1) carries no DC, so its RMS current is the AC phasor of
+            # V(A,B) / (R1 + j*(w*L1 - 1/(w*C1))), exact for this linear model. dl_max is sourced in uW,
+            # so the power in W is scaled by 1e6 explicitly (convert_unit has no uW entry).
+            _, vac = across("A", "B")
+            omega = 2 * math.pi * frequency
+            motional = complex(values["R1"], omega * values["L1"] - 1 / (omega * values["C1"]))
+            # Crystal probe points sit a few Hz apart, so the row name and key keep 12 significant digits.
+            fkey = f"{frequency:.12g}".replace(".", "p").replace("+", "")
+            stat(f"dl_uw_{fkey}", values["R1"] * abs(vac / motional) ** 2 * 1e6)
+            rows.append(b.add(f"drive level (R1*|I_motional|^2) at {frequency:.12g} Hz", f"dl_uw_{fkey} <= dl_max",
+                              ("dl_max", "R1")))
         elif cls == "BEH-CAP-FILM" and "derate_pct_per_k" in values and {"T1", "T2"} <= set(v):
             vdc, vac = across("T1", "T2")
             stat(f"vpk_{key}", abs(vdc) + root2 * abs(vac))
@@ -1391,8 +1431,11 @@ def _ac_checks(component, values, b, thermal, upper_only, window, linear, dual=N
         elif cls == "BEH-MAG-INDUCTOR" and "A" in i:
             stat(f"irms_{key}", math.hypot(dc("i", "A"), abs(i["A"])))
             stat(f"ipk_{key}", abs(dc("i", "A")) + root2 * abs(i["A"]))
-            if "irms" in values:
-                add("RMS heating current (DC plus AC)", f"irms_{key} <= irms", ("irms",), thermal)
+            if "irms" in values and _irms_ambient_ok(values):
+                add("RMS heating current (DC plus AC)", f"irms_{key} <= irms", _irms_parameters(values), thermal)
+            elif "irms" in values:
+                add("RMS heating current (DC plus AC)", f"irms_{key} <= irms", _irms_parameters(values),
+                    IRMS_AMBIENT_REASON, violation_only=True)
             if "isat" in values:
                 add("peak current against saturation (DC plus AC peak)", f"ipk_{key} <= isat", ("isat",))
         elif cls == "BEH-MAG-CMC":

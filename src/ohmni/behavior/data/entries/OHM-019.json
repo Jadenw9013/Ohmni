@@ -20,7 +20,8 @@
       "bench-results/BEH-RES-POT--B4.json"
     ],
     "conflicts": [
-      "The source does specify end resistance: max(1% of R, 2 ohm). The spec calls it unspecified and proposes a 2 ohm placeholder. Style R is limited to 50 V, not 300 V."
+      "The source does specify end resistance: max(1% of R, 2 ohm). The spec calls it unspecified and proposes a 2 ohm placeholder. Style R is limited to 50 V, not 300 V.",
+      "D072: the record's 3314 v_max 300 V applies to styles G, J and H, while only the Z style names the wiper and CW/CCW pins; the 300 V cannot be paired with a 3314 style that has named pins. Bourns 3361 gives one schematic and one 300 V rating for all styles, so the binding uses 3361."
     ],
     "documents": [
       {
@@ -32,6 +33,16 @@
         "source_status": "primary_source_opened",
         "title": "3314 Trimpot",
         "url": "https://www.bourns.com/docs/Product-Datasheets/3314.pdf"
+      },
+      {
+        "document_id": "bourns-3361",
+        "manufacturer": "Bourns",
+        "note": "Archived (ledger sha256 4bb53adfb716...); read 2026-10-11 for the bound explicit alternate 3361P-1-103GLF (D072).",
+        "page": null,
+        "revision": "REV. 06/24",
+        "source_status": "primary_source_opened",
+        "title": "3361 - 1/4 in Square SMD Trimpot Trimming Potentiometer",
+        "url": "https://www.bourns.com/docs/Product-Datasheets/3361.pdf"
       }
     ],
     "entry_id": "OHM-019",
@@ -100,19 +111,196 @@
         ],
         "unit": "ohm",
         "value": "max(0.01*R, 2)"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "How To Order example 3361 P - 1 - 502 G LF (P style, -1 standard, G embossed tape, LF 100 % tin); resistance code 103 = 10,000 ohms",
+        "field": "ref_reference_part",
+        "page": 2,
+        "scope": "Bourns 3361 (REV. 06/24), 3361P-1-103GLF; explicit alternative to the 3314G spec default; How To Order and Standard Resistance Table",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/3361.pdf"
+        ],
+        "unit": null,
+        "value": "Bourns 3361P-1-103GLF"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Standard Resistance Table: 10,000 ohms = code 103",
+        "field": "ref_nominal_resistance",
+        "page": 2,
+        "scope": "Bourns 3361 (REV. 06/24), 3361P-1-103GLF; explicit alternative to the 3314G spec default",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/3361.pdf"
+        ],
+        "unit": "ohm",
+        "value": 10000
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Resistance Tolerance +/-10 % std.",
+        "field": "ref_resistance_tolerance_pct",
+        "page": 1,
+        "scope": "Bourns 3361 (REV. 06/24), 3361P-1-103GLF; explicit alternative to the 3314G spec default",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/3361.pdf"
+        ],
+        "unit": "%",
+        "value": 10
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Power Rating (300 volts max.) 70 C 0.50 watt",
+        "field": "ref_p_rated",
+        "page": 1,
+        "scope": "Bourns 3361 (REV. 06/24), 3361P-1-103GLF; explicit alternative to the 3314G spec default; all styles; 70 C",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/3361.pdf"
+        ],
+        "unit": "W",
+        "value": 0.5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Power Rating 70 C 0.50 watt, 125 C 0 watt",
+        "field": "ref_derating_knee",
+        "page": 1,
+        "scope": "Bourns 3361 (REV. 06/24), 3361P-1-103GLF; explicit alternative to the 3314G spec default",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/3361.pdf"
+        ],
+        "unit": "degC",
+        "value": 70
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Power Rating 125 C 0 watt; Temperature Range -55 C to +125 C",
+        "field": "ref_t_end",
+        "page": 1,
+        "scope": "Bourns 3361 (REV. 06/24), 3361P-1-103GLF; explicit alternative to the 3314G spec default",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/3361.pdf"
+        ],
+        "unit": "degC",
+        "value": 125
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Power Rating (300 volts max.)",
+        "field": "ref_v_max",
+        "page": 1,
+        "scope": "Bourns 3361 (REV. 06/24), 3361P-1-103GLF; explicit alternative to the 3314G spec default; all styles (no style restriction)",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/3361.pdf"
+        ],
+        "unit": "V",
+        "value": 300
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Temperature Coefficient +/-100 PPM/C",
+        "field": "ref_tcr_max",
+        "page": 1,
+        "scope": "Bourns 3361 (REV. 06/24), 3361P-1-103GLF; explicit alternative to the 3314G spec default",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/3361.pdf"
+        ],
+        "unit": "ppm/degC",
+        "value": 100
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Absolute Minimum Resistance 1 % or 2 ohms (whichever is greater)",
+        "field": "ref_end_resistance_max_expression",
+        "page": 1,
+        "scope": "Bourns 3361 (REV. 06/24), 3361P-1-103GLF; explicit alternative to the 3314G spec default",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/3361.pdf"
+        ],
+        "unit": "ohm",
+        "value": "max(0.01*R, 2)"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Contact Resistance Variation 3 % or 3 ohms max. (whichever is greater)",
+        "field": "ref_contact_resistance_variation_expression",
+        "page": 1,
+        "scope": "Bourns 3361 (REV. 06/24), 3361P-1-103GLF; explicit alternative to the 3314G spec default",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/3361.pdf"
+        ],
+        "unit": "ohm",
+        "value": "max(0.03*R, 3)"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Physical characteristics schematic: CCW 1 - 3 CW, 2 WIPER, CLOCKWISE; p1 drawings number terminals 1, 2, 3 for 3361P and 3361S; marking includes terminal numbers",
+        "field": "ref_manufacturer_pin_roles",
+        "page": 2,
+        "scope": "Bourns 3361 (REV. 06/24), 3361P-1-103GLF; explicit alternative to the 3314G spec default; all styles; A = CCW end (1), B = CW end (3)",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/3361.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "1": "A",
+          "2": "W",
+          "3": "B"
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Adjustment Angle 240 nom. (Mechanical Angle 270 nom., p2)",
+        "field": "ref_adjustment_angle",
+        "page": 1,
+        "scope": "Bourns 3361 (REV. 06/24), 3361P-1-103GLF; explicit alternative to the 3314G spec default",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/3361.pdf"
+        ],
+        "unit": "deg",
+        "value": 240
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Wiper 50 % (Actual TR) +/-10 %",
+        "field": "ref_wiper_position_factory",
+        "page": 2,
+        "scope": "Bourns 3361 (REV. 06/24), 3361P-1-103GLF; explicit alternative to the 3314G spec default; +/-10 % of actual TR",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/3361.pdf"
+        ],
+        "unit": "fraction",
+        "value": 0.5
       }
     ],
     "remaining_open_items": [
       "Actual end resistance and wiper resistance are not fixed by worst-case bounds.",
       "Maximum permissible wiper current is not established.",
-      "A failure transient or wear model is not established."
+      "A failure transient or wear model is not established.",
+      "D072: the bound reference is the explicit alternate Bourns 3361P-1-103GLF (6.7 mm body, 0.5 W), not the 3314G spec default (4.5 mm, 0.25 W); a catalog part must match the 3361P footprint for the binding to apply.",
+      "Maximum wiper current is published for neither 3314 nor 3361; the wiper stays unconnected and loaded-wiper simulation is refused.",
+      "Wiper position, end resistance and contact-resistance variation are bounds only and are not modelled.",
+      "3314G itself remains unbound for pin functions (only its Z style names the wiper and CW/CCW pins)."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-019.md",
-      "document_sha256": "9d724807f435fa58edb4979fd582eae3fffc2c884a0bdf9f99e85560e2186a4a",
+      "document_sha256": "86b644369fee28fcfb26e45a3cd268b23d06e441cc3eb132ded5bd4b3c88e1db",
       "fragment_sha256": null,
       "line": 1
     }

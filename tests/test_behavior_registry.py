@@ -356,7 +356,9 @@ def test_non_paginated_manufacturer_pinout_has_exact_locator(registry):
 @pytest.mark.parametrize("entry", ["OHM-143", "OHM-144", "OHM-145"])
 def test_abracon_case_pads_are_not_bound_as_crystal_pads(registry, entry):
     # ABM8/10/11 p2 top views, same drawing axes; library Section6 top-left pin1.
-    facts = {fact.field: fact for fact in registry.entry(entry).research.field_updates}
+    # D073: OHM-143/145 also carry Kyocera facts with the same field names; each set keeps its own scope.
+    research = registry.entry(entry).research
+    facts = {fact.field: fact for fact in research.field_updates if "Kyocera" not in fact.scope}
     permutation = facts["manufacturer_to_library_terminal"].value
     source_roles = facts["manufacturer_pin_roles"].value
     mapped = {permutation[pin]: role for pin, role in source_roles.items()}
@@ -364,7 +366,15 @@ def test_abracon_case_pads_are_not_bound_as_crystal_pads(registry, entry):
     source_corners = {"1": (-1, -1), "2": (1, -1), "3": (1, 1), "4": (-1, 1)}
     library_corners = {"1": (-1, 1), "2": (-1, -1), "3": (1, -1), "4": (1, 1)}
     assert all(source_corners[p] == library_corners[q] for p, q in permutation.items())
-    assert registry.entry(entry).research.simulation_blockers
+    kyocera = {fact.field: fact for fact in research.field_updates if "Kyocera" in fact.scope}
+    if entry == "OHM-144":
+        assert research.simulation_blockers and not kyocera
+    else:
+        # Same lid-side corners as the Abracon drawing, so the same permutation; the bound part's roles.
+        assert kyocera["manufacturer_to_library_terminal"].value == permutation
+        roles = {permutation[pin]: role for pin, role in kyocera["manufacturer_pin_roles"].value.items()}
+        assert roles == {"1": "LID2", "2": "A", "3": "LID1", "4": "B"}
+        assert not research.simulation_blockers
 
 
 def test_pj102a_switch_connects_to_sleeve_when_unplugged(registry):

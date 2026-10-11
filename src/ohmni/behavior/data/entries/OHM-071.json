@@ -19,7 +19,8 @@
       "bench-results/BEH-DIO-BRIDGE--B3.json"
     ],
     "conflicts": [
-      "The spec assumed diagonal AC pins2/4. The DFM drawing has adjacent AC pins; with PLUS atpin1 the correct derived functions are1PLUS,2MINUS,3AC,4AC."
+      "The spec assumed diagonal AC pins2/4. The DFM drawing has adjacent AC pins; with PLUS atpin1 the correct derived functions are1PLUS,2MINUS,3AC,4AC.",
+      "D072: the spec pin map 'AC1 to pin 2, MINUS to pin 3, AC2 to pin 4' (diagonal AC) contradicts the Vishay DFM outline (AC leads adjacent); the record already holds the corrected map."
     ],
     "documents": [
       {
@@ -148,18 +149,81 @@
           "3": "AC1",
           "4": "AC2"
         }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "PACKAGE OUTLINE DIMENSIONS Case Style DFM: one long-side row marked '-' (left) and '+' (right), the opposite row '~' '~'. The AC leads are adjacent on one side, not diagonal.",
+        "field": "lead_functions_by_position",
+        "page": 4,
+        "scope": "DF10M DFM; package outline top view (rendered page inspected); p1 'Polarity: as marked on body'",
+        "sources": [
+          "https://www.vishay.com/doc?88571"
+        ],
+        "unit": null,
+        "value": {
+          "long_side_1": [
+            "MINUS",
+            "PLUS"
+          ],
+          "long_side_2": [
+            "AC",
+            "AC"
+          ]
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "M",
+        "detail": "Fig. 1 Derating Curve Output Rectified Current, ambient temperature axis (rendered page inspected)",
+        "field": "average_output_current_derating",
+        "page": 3,
+        "scope": "DF10M; Fig. 1; 60 Hz resistive or inductive load; P.C.B. mounted on 0.51 x 0.51 in (13 x 13 mm) copper pads with 0.06 in (1.5 mm) lead length",
+        "sources": [
+          "https://www.vishay.com/doc?88571"
+        ],
+        "unit": null,
+        "value": "1.0 A up to TA 40 C, linear to 0 A at 150 C"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "IFSM 50 A",
+        "field": "peak_forward_surge_current",
+        "page": 1,
+        "scope": "DF10M; single sine-wave superimposed on rated load",
+        "sources": [
+          "https://www.vishay.com/doc?88571"
+        ],
+        "unit": "A",
+        "value": 50
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "I2t 10 A2s",
+        "field": "rating_for_fusing",
+        "page": 1,
+        "scope": "DF10M; t < 8.3 ms",
+        "sources": [
+          "https://www.vishay.com/doc?88571"
+        ],
+        "unit": "A2s",
+        "value": 10
       }
     ],
     "remaining_open_items": [
       "Runtime permutation tested for the named DF10M; legacy generic geometry labels are not manufacturing evidence.",
-      "DB101/DB107 remain separate, unbound references."
+      "DB101/DB107 remain separate, unbound references.",
+      "D072: the spec's research_required reason (pin functions 'NOT confirmed from a dimension drawing', BRIDGE-PIN-FUNCTIONS-UNRESOLVED) is closed for DF10M by the archived Vishay 88571 p4 outline: every lead's function is marked by position and the AC leads are adjacent. The library numbering 1 PLUS, 2 MINUS, 3 AC1, 4 AC2 remains a DERIVED convention. The spec status cell is left for the owner to change to partial.",
+      "The Fig. 1 ambient derating (1.0 A to 40 C, 0 A at 150 C, 13 x 13 mm pads) is recorded but not encoded in the ratings."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-071.md",
-      "document_sha256": "9605d0abf26a97338f5abba5202df825f2ed14c0bc03af60bc5495dd59e5d80b",
+      "document_sha256": "60bdd680ba95ed1c0b129596ddbcf25558dbc2cfaede41f152e1c78ff8a761e4",
       "fragment_sha256": null,
       "line": 1
     }
