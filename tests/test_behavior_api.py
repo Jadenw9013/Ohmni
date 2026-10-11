@@ -62,7 +62,7 @@ def test_behavior_summary_matches_the_audited_coverage_rule(server):
     code,body=request(base,'/api/behavior')
     assert code==200 and len(body['entries'])==180
     states=[value['state'] for value in body['entries'].values()]
-    assert states.count('simulated')==116
+    assert states.count('simulated')==118
     assert body['entries']['OHM-057']=={'state':'simulated','reason':None}
     # D066: a package with a bound sourced reference part simulates as that named part.
     assert body['entries']['OHM-110']['state']=='simulated'

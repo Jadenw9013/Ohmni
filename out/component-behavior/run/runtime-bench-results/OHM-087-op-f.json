@@ -1,0 +1,52 @@
+{
+  "analysis": "op",
+  "circuit_hash": "eab4935d0a1ad875ce1b0f8fcb02954464dd60623633f432ab4f229cc1a27e05",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "common": "COM",
+    "kind": "interval",
+    "maximum": 2.5,
+    "minimum": 0,
+    "observable": "anode_voltage",
+    "segment": "F",
+    "source_fact": {
+      "basis": "MFR_DATASHEET",
+      "confidence": "H",
+      "detail": "'Forward Voltage/Segment or DP VF - 2.05 2.5 V IF = 20 mA' (Red, Device Series HDSP-55XX)",
+      "field": "ref_forward_voltage_typical_max",
+      "page": 4,
+      "scope": "Broadcom HDSP-5503; HDSP-55xx red AlInGaP series; per segment or DP; IF = 20 mA, TA = 25 C",
+      "selected_value": 2.5,
+      "selected_value_path": [
+        1
+      ],
+      "sources": [
+        "https://docs.broadcom.com/doc/AV02-1107EN"
+      ],
+      "unit": "V",
+      "value": [
+        2.05,
+        2.5
+      ]
+    },
+    "test_current": 0.02
+  },
+  "entry_id": "OHM-087",
+  "entry_research_sha256": "01c9c972d1b57335e7a1b1291fad7c8621ed1968b839bd7e3e3163525877544a",
+  "limits": "One segment at the source per-segment forward test current through its own common, other segments idle, against the sourced per-segment maximum VF at 25 C. It does not validate multiplexing, several lit segments, common-pin heating, optics or reverse operation.",
+  "netlist_sha256": "4bfdb2cc14529428b59cb51e9f17fcee904ed7251ba49e5f9f8bd1e928b945e1",
+  "observation_status": "ran",
+  "observed": 2.076689,
+  "output_sha256": "9a8a9743f13d48af2ff6b06ec126131aef7d3d9b56e20d37e907a2deccb66f06",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T18:13:24Z",
+  "raw_output": "runtime-bench-output/OHM-087-op-f/output.txt",
+  "recipe_source_sha256": "cdcb7628556b1480e38114dd016841ea922c84230fa1bf6db4221f468e40710d",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "variant": "f",
+  "version_file": "runtime-bench-output/OHM-087-op-f/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sat Oct 10 21:32:36 UTC 2026\n******\n",
+  "version_sha256": "7f444023b0e5851d50a26bf40338ca29665b10988154a0ff2d662d918ab83fc3"
+}

@@ -304,7 +304,8 @@ def runtime_receipt_errors(audit, entry_id):
         return mosfet_receipt_errors(audit, entry_id)
     if behavior in {"BEH-DIO-PN", "BEH-TRN-BJT", "BEH-MAG-INDUCTOR", "BEH-LED-INDICATOR",
                     "BEH-RES-SENSE", "BEH-RES-NETWORK", "BEH-DIO-BRIDGE", "BEH-LED-RGB",
-                    "BEH-DIO-ZENER", "BEH-DIO-TVS", "BEH-DIO-SCHOTTKY", "BEH-LED-POWER"} or behavior in PATH_PROBES:
+                    "BEH-DIO-ZENER", "BEH-DIO-TVS", "BEH-DIO-SCHOTTKY", "BEH-LED-POWER",
+                    "BEH-DISP-LEDARRAY", "BEH-LED-ADDRESSABLE", "BEH-DISP-LCD1602"} or behavior in PATH_PROBES:
         return dc_probe_receipt_errors(audit, entry_id)
     return [f"{entry_id}: no runtime analytical receipt validator for {behavior}"]
 
@@ -387,6 +388,21 @@ def _path_probe(recipe, values, evidence, variant):
     return node_of, comparison
 
 
+def _display_segments(recipe):
+    """Segment anode roles of a bound LED display; commons are named COM or COM<digit> (D070)."""
+    return [role for role in recipe.terminal_roles.values() if not role.startswith("COM")]
+
+
+def display_segment_common(roles, segment):
+    """The common a segment returns through: the single COM, or COM<digit> for a multi-digit part."""
+    if "COM" in roles:
+        return "COM"
+    common = "COM" + segment[-1]
+    if common not in roles:
+        raise ValueError(f"segment {segment} has no bound digit common")
+    return common
+
+
 def _dual_diode(recipe):
     return recipe is not None and {"A1", "K2", "K1A2"} <= set(recipe.terminal_roles.values())
 
@@ -431,6 +447,12 @@ def dc_probe_variants(behavior_id, recipe=None):
         return ["positive", "negative"]
     if behavior_id == "BEH-LED-RGB":
         return ["red", "green", "blue", *fit_variants(recipe)]
+    if behavior_id == "BEH-DISP-LEDARRAY":
+        # D070: every bound segment at its own source VF test current, then the fit read points.
+        segments = list(dict.fromkeys(_display_segments(recipe))) if recipe is not None else ["a"]
+        return [*(s.lower() for s in segments), *fit_variants(recipe)]
+    if behavior_id == "BEH-DISP-LCD1602":
+        return ["logic", "backlight"]
     if behavior_id in {"BEH-DIO-ZENER", "BEH-DIO-TVS"}:
         return ["legacy", "source_bound"]
     if recipe is not None and recipe.fit_curves:
@@ -539,6 +561,72 @@ def dc_probe_definition(audit, entry_id, variant=None):
                       "observable": "anode_voltage", "source_fact": fact, "test_current": current}
         limits = (("Per-part forward fit" if own_forward_fit else "Explicit color-family proxy")
                   + " at the source test current, checked against its maximum forward voltage. This does not validate the typical curve, thermal/optical model, reverse operation or physical package equivalence.")
+    elif recipe.behavior_id == "BEH-DISP-LEDARRAY":
+        # D070: one segment driven at the source per-segment VF test current, through its own common,
+        # every other terminal idle; checked against the sourced per-segment maximum VF.
+        fact = evidence["vf_max"]
+        condition = re.search(r"\bIF\s*=?\s*(\d+(?:\.\d+)?)\s*mA", fact["scope"])
+        if condition is None:
+            raise ValueError("segment forward-voltage source test current is missing")
+        current = float(condition[1]) / 1000
+        all_roles = set(recipe.terminal_roles.values())
+        segment = next((s for s in _display_segments(recipe) if s.lower() == variant), None)
+        if segment is None:
+            raise ValueError("unknown display segment variant")
+        common = display_segment_common(all_roles, segment)
+        roles = {role: "idle" for role in all_roles}
+        roles[segment], roles[common] = "anode", "return"
+        supplies = {}
+        excitations = [DCExcitation(positive_net="return", negative_net="anode", value=Quantity(value=current, unit="A"))]
+        comparison = {"kind": "interval", "minimum": 0, "maximum": values["vf_max"], "observable": "anode_voltage",
+                      "source_fact": fact, "test_current": current, "segment": segment, "common": common}
+        limits = ("One segment at the source per-segment forward test current through its own common, other "
+                  "segments idle, against the sourced per-segment maximum VF at 25 C. It does not validate "
+                  "multiplexing, several lit segments, common-pin heating, optics or reverse operation.")
+    elif recipe.behavior_id == "BEH-LED-ADDRESSABLE":
+        # D070: the L1 static supply load at the datasheet's electrical-characteristics supply (VDD=5V).
+        fact = evidence["iq"]
+        condition = re.search(r"VDD\s*=?\s*(\d+(?:\.\d+)?)\s*V", fact["scope"])
+        if condition is None:
+            raise ValueError("source electrical-characteristics supply voltage is missing")
+        vdd = float(condition[1])
+        if not values["vdd_min"] <= vdd <= values["vdd_max"]:
+            raise ValueError("source test supply lies outside the sourced supply range")
+        roles = {"VDD": "supply", "VSS": "return", "DIN": "return", "DOUT": "idle"}
+        supplies = {"supply": vdd}
+        excitations = []
+        expected = values["iq"] + 3 * values["ich"]
+        comparison = {"kind": "absolute", "expected": expected, "tolerance": expected * PATH_TOLERANCE,
+                      "observable": "supply_current", "supply_voltage": vdd,
+                      "source_facts": {name: evidence[name] for name in ("iq", "ich", "vdd_min", "vdd_max")},
+                      "derivation": "Full-white static load: quiescent bound plus three regulated channel currents."}
+        limits = ("Binding check of the L1 full-white supply load at the source test supply: it must reproduce "
+                  "iq + 3*ich. It does not validate the data protocol, gray levels, DOUT, the active IC current "
+                  "or the authored dropout knee below 3.5 V.")
+    elif recipe.behavior_id == "BEH-DISP-LCD1602":
+        # D070: logic rail and backlight rail each at their source test voltage; the other rail is held
+        # at its own source voltage so no model node floats.
+        logic_fact = evidence["idd"]
+        condition = re.search(r"VDD\s*=?\s*(\d+(?:\.\d+)?)\s*V", logic_fact["scope"])
+        if condition is None:
+            raise ValueError("source logic supply-current test voltage is missing")
+        vdd = float(condition[1])
+        if not values["vdd_min"] <= vdd <= values["vdd_max"]:
+            raise ValueError("source test supply lies outside the sourced supply range")
+        vled = values["vled_typ"]
+        driven, held = ("VDD", "A") if variant == "logic" else ("A", "VDD")
+        roles = {role: "idle" for role in recipe.terminal_roles.values()}
+        roles.update({"VSS": "return", "K": "return", driven: "supply", held: "aux"})
+        supplies = {"supply": vdd if driven == "VDD" else vled, "aux": vled if held == "A" else vdd}
+        excitations = []
+        expected = values["idd"] if variant == "logic" else values["iled_typ"]
+        names = ("idd", "vdd_min", "vdd_max") if variant == "logic" else ("iled_typ", "vled_typ")
+        comparison = {"kind": "absolute", "expected": expected, "tolerance": expected * PATH_TOLERANCE,
+                      "observable": "supply_current", "supply_voltage": supplies["supply"], "rail": variant,
+                      "source_facts": {name: evidence[name] for name in names}}
+        limits = ("Binding check of one L1 module rail at its source test voltage: logic IDD typical, or the "
+                  "backlight's single sourced operating point. It does not validate controller behavior, "
+                  "contrast, backlight current away from 5.0 V or thermal limits.")
     elif recipe.behavior_id == "BEH-RES-SENSE":
         contract, deck = _locked_probe_deck(audit, "BEH-RES-SENSE/B1")
         if not re.search(r"(?im)^I\S*\s+\S+\s+\S+\s+(?:DC\s+)?10\s*$", deck):

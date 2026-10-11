@@ -102,7 +102,20 @@ def _master_entries(
         values = match.groupdict()
         behavior_ids = [item.strip() for item in values["behaviors"].split(" + ")]
         entry_number = int(values["entry_id"].split("-")[1])
-        if values["layer"] == "L3":
+        if (
+            values["layer"] == "L3"
+            and values["entry_id"] in bound_packages
+            and values["status"] != "research_required"
+        ):
+            # D066 item 3 (owner decision): a pin-level electrical model of a sourced part; the
+            # protocol, firmware or controller layer stays unmodeled and is named as such.
+            disposition = "simulable"
+            simulation_reason = (
+                f"Simulates the electrical pins only, as the bound reference part "
+                f"({bound_packages[values['entry_id']]}); protocol, firmware and controller behavior "
+                "(L3) are not modeled."
+            )
+        elif values["layer"] == "L3":
             disposition = "not_simulable"
             simulation_reason = "L3 protocol or firmware behavior requires a higher-layer model."
         elif (

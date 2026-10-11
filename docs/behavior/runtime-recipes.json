@@ -4630,7 +4630,7 @@
       "template_override": "D{ref} {A} {K} LEDP_{ref}\n.model LEDP_{ref} D (IS={IS} N={N} RS={RS} CJO=30p VJ=1.0 M=0.33 TT=0 BV=15 IBV=10u EG=2.2 XTI=3)\n",
       "template_provenance": {
         "document": "docs/behavior/PER_PART_MODELS.md",
-        "document_sha256": "5fced96702475ad8dc36e327540a4ede9bc0f804b74be6a80b66804d66f8f590",
+        "document_sha256": "d6b36b2d3a8eedf0cdd128041ceb77a9709763ea58ba233a64d5ca352455c18a",
         "line": 14
       },
       "terminal_roles": {
@@ -4715,7 +4715,7 @@
       "template_override": "D{ref} {A} {K} LEDP_{ref}\n.model LEDP_{ref} D (IS={IS} N={N} RS={RS} CJO=30p VJ=1.0 M=0.33 TT=0 BV=15 IBV=10u EG=2.2 XTI=3)\n",
       "template_provenance": {
         "document": "docs/behavior/PER_PART_MODELS.md",
-        "document_sha256": "5fced96702475ad8dc36e327540a4ede9bc0f804b74be6a80b66804d66f8f590",
+        "document_sha256": "d6b36b2d3a8eedf0cdd128041ceb77a9709763ea58ba233a64d5ca352455c18a",
         "line": 9
       },
       "terminal_roles": {
@@ -4742,6 +4742,184 @@
           "points": 3
         }
       }
+    },
+    "OHM-075": {
+      "entry_id": "OHM-075",
+      "behavior_id": "BEH-LED-INDICATOR",
+      "package": "10 mm THT LED",
+      "reference_part": "Kingbright WP813ID high efficiency red",
+      "terminal_roles": {
+        "1": "K",
+        "2": "A"
+      },
+      "pin_role_fact": {
+        "field": "ref_manufacturer_pin_roles"
+      },
+      "critical_facts": {
+        "if_max": {
+          "field": "ref_maximum_forward_current",
+          "unit": "mA",
+          "output_unit": "A"
+        },
+        "p_rated": {
+          "field": "ref_maximum_power",
+          "unit": "mW",
+          "output_unit": "W"
+        },
+        "rth_ja": {
+          "field": "ref_thermal_resistance_junction_ambient",
+          "unit": "K/W"
+        },
+        "tj_max": {
+          "field": "ref_maximum_junction_temperature",
+          "unit": "C"
+        },
+        "vf_max": {
+          "field": "ref_forward_voltage_typical_max",
+          "unit": "V",
+          "value_path": [
+            1
+          ]
+        },
+        "vf_typical": {
+          "field": "ref_forward_voltage_typical_max",
+          "unit": "V",
+          "value_path": [
+            0
+          ]
+        },
+        "vr_max": {
+          "field": "ref_maximum_reverse_voltage",
+          "unit": "V"
+        }
+      },
+      "model_facts": {
+        "IS": {
+          "field": "spice_IS_fit",
+          "unit": "A"
+        },
+        "N": {
+          "field": "spice_N_fit",
+          "unit": "1"
+        },
+        "RS": {
+          "field": "spice_RS_fit",
+          "unit": "ohm"
+        }
+      },
+      "fit_curves": {
+        "forward": {
+          "field": "forward_curve_read_points",
+          "points": 3
+        }
+      },
+      "template_override": "D{ref} {A} {K} LEDP_{ref}\n.model LEDP_{ref} D (IS={IS} N={N} RS={RS} CJO=30p VJ=1.0 M=0.33 TT=0 BV=15 IBV=10u EG=2.2 XTI=3)\n",
+      "template_provenance": {
+        "document": "docs/behavior/PER_PART_MODELS.md",
+        "document_sha256": "d6b36b2d3a8eedf0cdd128041ceb77a9709763ea58ba233a64d5ca352455c18a",
+        "line": 16
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Only Kingbright WP813ID (red, GaAsP/GaP, 10 mm) is bound; the earlier orange WP813ED and other colors or multi-die 10 mm lamps are not certified by this binding.",
+        "The fit covers 0.8-30 mA of the sheet's typical curve (rms about 4 mV).",
+        "IS, N and RS are a least-squares fit to this part's own typical 25 C forward curve (low confidence; IS, N and RS are used as one set).",
+        "Current, reverse voltage, power and thermal ratings come from the same sheet at TA=25 C; RthJA/RthJS apply to FR4 with >= 16 mm2 pads per pad, and the sheet's forward-current derating curve is not encoded.",
+        "The model's BV 15 V is a numerical knee carried from the authored LED_RED card, not the 5 V reverse rating. No optics, self-heating or destructive-failure timing."
+      ]
+    },
+    "OHM-076": {
+      "entry_id": "OHM-076",
+      "behavior_id": "BEH-LED-INDICATOR",
+      "package": "Rectangular 2x5 mm THT LED",
+      "reference_part": "Kingbright WP113IDT high efficiency red",
+      "terminal_roles": {
+        "1": "K",
+        "2": "A"
+      },
+      "pin_role_fact": {
+        "field": "ref_manufacturer_pin_roles"
+      },
+      "critical_facts": {
+        "if_max": {
+          "field": "ref_maximum_forward_current",
+          "unit": "mA",
+          "output_unit": "A"
+        },
+        "p_rated": {
+          "field": "ref_maximum_power",
+          "unit": "mW",
+          "output_unit": "W"
+        },
+        "rth_ja": {
+          "field": "ref_thermal_resistance_junction_ambient",
+          "unit": "K/W"
+        },
+        "tj_max": {
+          "field": "ref_maximum_junction_temperature",
+          "unit": "C"
+        },
+        "vf_max": {
+          "field": "ref_forward_voltage_typical_max",
+          "unit": "V",
+          "value_path": [
+            1
+          ]
+        },
+        "vf_typical": {
+          "field": "ref_forward_voltage_typical_max",
+          "unit": "V",
+          "value_path": [
+            0
+          ]
+        },
+        "vr_max": {
+          "field": "ref_maximum_reverse_voltage",
+          "unit": "V"
+        }
+      },
+      "model_facts": {
+        "IS": {
+          "field": "spice_IS_fit",
+          "unit": "A"
+        },
+        "N": {
+          "field": "spice_N_fit",
+          "unit": "1"
+        },
+        "RS": {
+          "field": "spice_RS_fit",
+          "unit": "ohm"
+        }
+      },
+      "fit_curves": {
+        "forward": {
+          "field": "forward_curve_read_points",
+          "points": 3
+        }
+      },
+      "template_override": "D{ref} {A} {K} LEDP_{ref}\n.model LEDP_{ref} D (IS={IS} N={N} RS={RS} CJO=30p VJ=1.0 M=0.33 TT=0 BV=15 IBV=10u EG=2.2 XTI=3)\n",
+      "template_provenance": {
+        "document": "docs/behavior/PER_PART_MODELS.md",
+        "document_sha256": "d6b36b2d3a8eedf0cdd128041ceb77a9709763ea58ba233a64d5ca352455c18a",
+        "line": 17
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Only Kingbright WP113IDT (single red die, 2 x 5 mm) is bound; bicolor or stackable bar LEDs are different circuits and are not covered.",
+        "The fit covers 1-20 mA of the sheet's typical curve (rms about 6 mV); above 20 mA it is an extrapolation to the 30 mA rating.",
+        "IS, N and RS are a least-squares fit to this part's own typical 25 C forward curve (low confidence; IS, N and RS are used as one set).",
+        "Current, reverse voltage, power and thermal ratings come from the same sheet at TA=25 C; RthJA/RthJS apply to FR4 with >= 16 mm2 pads per pad, and the sheet's forward-current derating curve is not encoded.",
+        "The model's BV 15 V is a numerical knee carried from the authored LED_RED card, not the 5 V reverse rating. No optics, self-heating or destructive-failure timing."
+      ]
     },
     "OHM-077": {
       "behavior_id": "BEH-LED-INDICATOR",
@@ -4801,7 +4979,7 @@
       "template_override": "D{ref} {A} {K} LEDP_{ref}\n.model LEDP_{ref} D (IS={IS} N={N} RS={RS} CJO=30p VJ=1.0 M=0.33 TT=0 BV=15 IBV=10u EG=2.2 XTI=3)\n",
       "template_provenance": {
         "document": "docs/behavior/PER_PART_MODELS.md",
-        "document_sha256": "5fced96702475ad8dc36e327540a4ede9bc0f804b74be6a80b66804d66f8f590",
+        "document_sha256": "d6b36b2d3a8eedf0cdd128041ceb77a9709763ea58ba233a64d5ca352455c18a",
         "line": 10
       },
       "terminal_roles": {
@@ -4966,7 +5144,7 @@
       "template_override": "D{ref} {A} {K} LEDP_{ref}\n.model LEDP_{ref} D (IS={IS} N={N} RS={RS} CJO=30p VJ=1.0 M=0.33 TT=0 BV=15 IBV=10u EG=2.2 XTI=3)\n",
       "template_provenance": {
         "document": "docs/behavior/PER_PART_MODELS.md",
-        "document_sha256": "5fced96702475ad8dc36e327540a4ede9bc0f804b74be6a80b66804d66f8f590",
+        "document_sha256": "d6b36b2d3a8eedf0cdd128041ceb77a9709763ea58ba233a64d5ca352455c18a",
         "line": 11
       },
       "terminal_roles": {
@@ -5052,7 +5230,7 @@
       "template_override": "D{ref} {A} {K} LEDP_{ref}\n.model LEDP_{ref} D (IS={IS} N={N} RS={RS} CJO=30p VJ=1.0 M=0.33 TT=0 BV=15 IBV=10u EG=2.2 XTI=3)\n",
       "template_provenance": {
         "document": "docs/behavior/PER_PART_MODELS.md",
-        "document_sha256": "5fced96702475ad8dc36e327540a4ede9bc0f804b74be6a80b66804d66f8f590",
+        "document_sha256": "d6b36b2d3a8eedf0cdd128041ceb77a9709763ea58ba233a64d5ca352455c18a",
         "line": 12
       },
       "terminal_roles": {
@@ -5137,7 +5315,7 @@
       "template_override": "D{ref} {A} {K} LEDP_{ref}\n.model LEDP_{ref} D (IS={IS} N={N} RS={RS} CJO=60p VJ=1.0 M=0.33 TT=0 BV=5.5 IBV=10u EG=3.9 XTI=3)\n",
       "template_provenance": {
         "document": "docs/behavior/PER_PART_MODELS.md",
-        "document_sha256": "5fced96702475ad8dc36e327540a4ede9bc0f804b74be6a80b66804d66f8f590",
+        "document_sha256": "d6b36b2d3a8eedf0cdd128041ceb77a9709763ea58ba233a64d5ca352455c18a",
         "line": 13
       },
       "terminal_roles": {
@@ -5265,7 +5443,7 @@
       "template_override": "D{ref}R {common_anode} {red_cathode} LEDR_{ref}\nD{ref}G {common_anode} {green_cathode} LEDGB_{ref}\nD{ref}B {common_anode} {blue_cathode} LEDGB_{ref}\n.model LEDR_{ref} D (IS={red_IS} N={red_N} RS={red_RS} CJO=30p VJ=1.0 M=0.33 BV=5.5 IBV=10u EG=2.2 XTI=3)\n.model LEDGB_{ref} D (IS={gb_IS} N={gb_N} RS={gb_RS} CJO=60p VJ=1.0 M=0.33 BV=5.5 IBV=10u EG=4.0 XTI=3)\n",
       "template_provenance": {
         "document": "docs/behavior/PER_PART_MODELS.md",
-        "document_sha256": "5fced96702475ad8dc36e327540a4ede9bc0f804b74be6a80b66804d66f8f590",
+        "document_sha256": "d6b36b2d3a8eedf0cdd128041ceb77a9709763ea58ba233a64d5ca352455c18a",
         "line": 15
       },
       "terminal_roles": {
@@ -5314,6 +5492,65 @@
           "cathode_role": "green_cathode"
         }
       }
+    },
+    "OHM-084": {
+      "entry_id": "OHM-084",
+      "behavior_id": "BEH-LED-ADDRESSABLE",
+      "package": "5050 4-pin addressable RGB LED",
+      "reference_part": "Worldsemi WS2812B-V7 (datasheet V1.3), full-white static supply load",
+      "terminal_roles": {
+        "1": "VDD",
+        "2": "DOUT",
+        "3": "VSS",
+        "4": "DIN"
+      },
+      "pin_role_fact": {
+        "field": "ref_manufacturer_pin_roles"
+      },
+      "critical_facts": {
+        "ich": {
+          "field": "ref_channel_current_regulated_typical",
+          "unit": "mA",
+          "output_unit": "A"
+        },
+        "iq": {
+          "field": "ref_quiescent_current_max",
+          "unit": "uA",
+          "output_unit": "A"
+        },
+        "vdd_min": {
+          "field": "ref_supply_voltage_range",
+          "unit": "V",
+          "value_path": [
+            0
+          ]
+        },
+        "vdd_max": {
+          "field": "ref_supply_voltage_range",
+          "unit": "V",
+          "value_path": [
+            1
+          ]
+        }
+      },
+      "template_override": "B{ref}load {VDD} {VSS} I = {iq} + 3*{ich}*min(max((v({VDD},{VSS})-3.0)/0.5,0),1)\nRIN{ref} {DIN} {VSS} 100Meg\n",
+      "template_provenance": {
+        "document": "docs/behavior/PER_PART_MODELS.md",
+        "document_sha256": "d6b36b2d3a8eedf0cdd128041ceb77a9709763ea58ba233a64d5ca352455c18a",
+        "line": 18
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "L1 supply load only (D066 item 3): the single-wire protocol, gray-level PWM, DOUT drive and reset timing are L3 and not simulated; the entry simulates its electrical pins only (D066 item 3). DOUT is not modeled.",
+        "The load is full white: all three channels at the typical regulated 16.12 mA (the 'VF constant current curve' plateau, which needs >= 0.6 V across each output). The data that sets real gray levels is not simulated, so a dimmer pixel draws less. 16.12 mA is typical, not a maximum.",
+        "iq = 1 uA is the published maximum with no signal and RGB off; the active control-IC current while receiving data is NOT published.",
+        "The 3.0 V / 0.5 V supply dropout knee is the class's authored ASSUMPTION; the sheet gives only the output-pin headroom curve.",
+        "Only WS2812B-V7 is bound; the older Adafruit-hosted WS2812B and WS2812B-V6 have different ranges and currents and are not covered. No thermal limit is published."
+      ]
     },
     "OHM-085": {
       "entry_id": "OHM-085",
@@ -5387,6 +5624,344 @@
         "Thermal acceptance is solder-point referenced (RthJS 5.8 C/W typical, JESD51-14); no board, MCPCB or heatsink path to ambient is assumed or modelled; RthJS is a typical value.",
         "Reverse rating is 1 V for white Rev 25B; no destructive-failure or dielectric isolation rating for the center pad is established (electrically isolated only).",
         "Model scope: Class LED_XPE2 card (spec line 4902-4903) unchanged except a per-reference model name and the ngspice diode instance parameter temp= bound to the sourced 85 C test junction temperature. TH has no electrical element (isolated pad)."
+      ]
+    },
+    "OHM-087": {
+      "entry_id": "OHM-087",
+      "behavior_id": "BEH-DISP-LEDARRAY",
+      "package": "0.56 in single 7-segment, 10-pin DIP",
+      "reference_part": "Broadcom HDSP-5503 (red, common cathode, right-hand decimal)",
+      "terminal_roles": {
+        "1": "E",
+        "2": "D",
+        "3": "COM",
+        "4": "C",
+        "5": "DP",
+        "6": "B",
+        "7": "A",
+        "8": "COM",
+        "9": "F",
+        "10": "G"
+      },
+      "pin_role_fact": {
+        "field": "ref_manufacturer_pin_roles"
+      },
+      "critical_facts": {
+        "if_max_seg": {
+          "field": "ref_maximum_forward_current_per_segment",
+          "unit": "mA",
+          "output_unit": "A"
+        },
+        "p_seg": {
+          "field": "ref_maximum_power_per_segment",
+          "unit": "mW",
+          "output_unit": "W"
+        },
+        "ipk_seg": {
+          "field": "ref_maximum_peak_current_per_segment",
+          "unit": "mA",
+          "output_unit": "A"
+        },
+        "vr_max": {
+          "field": "ref_maximum_reverse_voltage_per_segment",
+          "unit": "V"
+        },
+        "vf_max": {
+          "field": "ref_forward_voltage_typical_max",
+          "unit": "V",
+          "value_path": [
+            1
+          ]
+        },
+        "vf_typical": {
+          "field": "ref_forward_voltage_typical_max",
+          "unit": "V",
+          "value_path": [
+            0
+          ]
+        },
+        "t_knee_seg": {
+          "field": "ref_forward_current_derating_knee_ambient",
+          "unit": "C"
+        }
+      },
+      "model_facts": {
+        "IS": {
+          "field": "spice_IS_fit",
+          "unit": "A"
+        },
+        "N": {
+          "field": "spice_N_fit",
+          "unit": "1"
+        },
+        "RS": {
+          "field": "spice_RS_fit",
+          "unit": "ohm"
+        }
+      },
+      "fit_curves": {
+        "segment_a": {
+          "field": "forward_curve_read_points",
+          "points": 3,
+          "anode_role": "A",
+          "cathode_role": "COM"
+        }
+      },
+      "template_override": "D{ref}A {A} {COM} SEG_{ref}\nD{ref}B {B} {COM} SEG_{ref}\nD{ref}C {C} {COM} SEG_{ref}\nD{ref}D {D} {COM} SEG_{ref}\nD{ref}E {E} {COM} SEG_{ref}\nD{ref}F {F} {COM} SEG_{ref}\nD{ref}G {G} {COM} SEG_{ref}\nD{ref}DP {DP} {COM} SEG_{ref}\n.model SEG_{ref} D (IS={IS} N={N} RS={RS} CJO=30p VJ=1.0 M=0.33 TT=0 BV=15 IBV=10u EG=2.2 XTI=3)\n",
+      "template_provenance": {
+        "document": "docs/behavior/PER_PART_MODELS.md",
+        "document_sha256": "d6b36b2d3a8eedf0cdd128041ceb77a9709763ea58ba233a64d5ca352455c18a",
+        "line": 19
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Only Broadcom HDSP-5503 (0.56 in single digit, red AlInGaP, common cathode) is bound; pins 3 and 8 are one internal common cathode (role COM) and must share a net.",
+        "Ratings are per segment or DP, as the source states. No package-total power, common-pin current, junction temperature or thermal resistance is published, so a common pin gets no rating row and multi-segment self-heating stays unknown.",
+        "All segments share one forward fit to the HDSP-55xx red typical curve (RS fixed at 0; low confidence) with non-fitted terms from the authored LED_RED card. No cross-talk, ghosting, segment-to-segment thermal coupling or optical model.",
+        "The 3.0 V reverse value is a test condition, not an application rating: any reverse bias is never accepted as within limits.",
+        "The 30 mA DC segment current applies up to the 55 C derating knee read from Figure 8; above it, or without a declared ambient, only a violation is proven. Peak 90 mA (10% duty, 1 kHz) is recorded, not checked.",
+        "Multiplexing and driver ICs are not modeled; drive each segment and common from the circuit."
+      ]
+    },
+    "OHM-088": {
+      "entry_id": "OHM-088",
+      "behavior_id": "BEH-DISP-LEDARRAY",
+      "package": "0.56 in dual 7-segment, 18-pin DIP",
+      "reference_part": "Broadcom HDSP-5523 (red, two digits, common cathode per digit, right-hand decimals)",
+      "terminal_roles": {
+        "1": "E1",
+        "2": "D1",
+        "3": "C1",
+        "4": "DP1",
+        "5": "E2",
+        "6": "D2",
+        "7": "G2",
+        "8": "C2",
+        "9": "DP2",
+        "10": "B2",
+        "11": "A2",
+        "12": "F2",
+        "13": "COM2",
+        "14": "COM1",
+        "15": "B1",
+        "16": "A1",
+        "17": "G1",
+        "18": "F1"
+      },
+      "pin_role_fact": {
+        "field": "ref_manufacturer_pin_roles"
+      },
+      "critical_facts": {
+        "if_max_seg": {
+          "field": "ref_maximum_forward_current_per_segment",
+          "unit": "mA",
+          "output_unit": "A"
+        },
+        "p_seg": {
+          "field": "ref_maximum_power_per_segment",
+          "unit": "mW",
+          "output_unit": "W"
+        },
+        "ipk_seg": {
+          "field": "ref_maximum_peak_current_per_segment",
+          "unit": "mA",
+          "output_unit": "A"
+        },
+        "vr_max": {
+          "field": "ref_maximum_reverse_voltage_per_segment",
+          "unit": "V"
+        },
+        "vf_max": {
+          "field": "ref_forward_voltage_typical_max",
+          "unit": "V",
+          "value_path": [
+            1
+          ]
+        },
+        "vf_typical": {
+          "field": "ref_forward_voltage_typical_max",
+          "unit": "V",
+          "value_path": [
+            0
+          ]
+        },
+        "t_knee_seg": {
+          "field": "ref_forward_current_derating_knee_ambient",
+          "unit": "C"
+        }
+      },
+      "model_facts": {
+        "IS": {
+          "field": "spice_IS_fit",
+          "unit": "A"
+        },
+        "N": {
+          "field": "spice_N_fit",
+          "unit": "1"
+        },
+        "RS": {
+          "field": "spice_RS_fit",
+          "unit": "ohm"
+        }
+      },
+      "fit_curves": {
+        "segment_a1": {
+          "field": "forward_curve_read_points",
+          "points": 3,
+          "anode_role": "A1",
+          "cathode_role": "COM1"
+        }
+      },
+      "template_override": "D{ref}A1 {A1} {COM1} SEG_{ref}\nD{ref}B1 {B1} {COM1} SEG_{ref}\nD{ref}C1 {C1} {COM1} SEG_{ref}\nD{ref}D1 {D1} {COM1} SEG_{ref}\nD{ref}E1 {E1} {COM1} SEG_{ref}\nD{ref}F1 {F1} {COM1} SEG_{ref}\nD{ref}G1 {G1} {COM1} SEG_{ref}\nD{ref}DP1 {DP1} {COM1} SEG_{ref}\nD{ref}A2 {A2} {COM2} SEG_{ref}\nD{ref}B2 {B2} {COM2} SEG_{ref}\nD{ref}C2 {C2} {COM2} SEG_{ref}\nD{ref}D2 {D2} {COM2} SEG_{ref}\nD{ref}E2 {E2} {COM2} SEG_{ref}\nD{ref}F2 {F2} {COM2} SEG_{ref}\nD{ref}G2 {G2} {COM2} SEG_{ref}\nD{ref}DP2 {DP2} {COM2} SEG_{ref}\n.model SEG_{ref} D (IS={IS} N={N} RS={RS} CJO=30p VJ=1.0 M=0.33 TT=0 BV=15 IBV=10u EG=2.2 XTI=3)\n",
+      "template_provenance": {
+        "document": "docs/behavior/PER_PART_MODELS.md",
+        "document_sha256": "d6b36b2d3a8eedf0cdd128041ceb77a9709763ea58ba233a64d5ca352455c18a",
+        "line": 20
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "Only Broadcom HDSP-5523 (0.56 in two digits, red AlInGaP, one common cathode per digit, separate segment pins per digit) is bound.",
+        "Ratings are per segment or DP, as the source states. No package-total power, common-pin current, junction temperature or thermal resistance is published, so a common pin gets no rating row and multi-segment self-heating stays unknown.",
+        "All segments share one forward fit to the HDSP-55xx red typical curve (RS fixed at 0; low confidence) with non-fitted terms from the authored LED_RED card. No cross-talk, ghosting, segment-to-segment thermal coupling or optical model.",
+        "The 3.0 V reverse value is a test condition, not an application rating: any reverse bias is never accepted as within limits.",
+        "The 30 mA DC segment current applies up to the 55 C derating knee read from Figure 8; above it, or without a declared ambient, only a violation is proven. Peak 90 mA (10% duty, 1 kHz) is recorded, not checked.",
+        "Multiplexing and driver ICs are not modeled; drive each segment and common from the circuit."
+      ]
+    },
+    "OHM-091": {
+      "entry_id": "OHM-091",
+      "behavior_id": "BEH-DISP-LCD1602",
+      "package": "16x2 LCD module 80x36 mm, 1x16 header",
+      "reference_part": "Newhaven Display NHD-0216K1Z-FL-YBW (logic supply and backlight only)",
+      "terminal_roles": {
+        "1": "VSS",
+        "2": "VDD",
+        "3": "V0",
+        "4": "RS",
+        "5": "RW",
+        "6": "E",
+        "7": "DB0",
+        "8": "DB1",
+        "9": "DB2",
+        "10": "DB3",
+        "11": "DB4",
+        "12": "DB5",
+        "13": "DB6",
+        "14": "DB7",
+        "15": "A",
+        "16": "K"
+      },
+      "pin_role_fact": {
+        "field": "ref_manufacturer_pin_roles"
+      },
+      "critical_facts": {
+        "idd": {
+          "field": "ref_logic_supply_current_min_typ_max",
+          "unit": "mA",
+          "output_unit": "A",
+          "value_path": [
+            1
+          ]
+        },
+        "idd_max": {
+          "field": "ref_logic_supply_current_min_typ_max",
+          "unit": "mA",
+          "output_unit": "A",
+          "value_path": [
+            2
+          ]
+        },
+        "vdd_min": {
+          "field": "ref_operating_supply_range",
+          "unit": "V",
+          "value_path": [
+            0
+          ]
+        },
+        "vdd_max": {
+          "field": "ref_operating_supply_range",
+          "unit": "V",
+          "value_path": [
+            1
+          ]
+        },
+        "iled_typ": {
+          "field": "ref_backlight_supply_current_min_typ_max",
+          "unit": "mA",
+          "output_unit": "A",
+          "value_path": [
+            1
+          ]
+        },
+        "iled_max": {
+          "field": "ref_backlight_supply_current_min_typ_max",
+          "unit": "mA",
+          "output_unit": "A",
+          "value_path": [
+            2
+          ]
+        },
+        "vled_min": {
+          "field": "ref_backlight_supply_voltage_min_typ_max",
+          "unit": "V",
+          "value_path": [
+            0
+          ]
+        },
+        "vled_typ": {
+          "field": "ref_backlight_supply_voltage_min_typ_max",
+          "unit": "V",
+          "value_path": [
+            1
+          ]
+        },
+        "vled_max": {
+          "field": "ref_backlight_supply_voltage_min_typ_max",
+          "unit": "V",
+          "value_path": [
+            2
+          ]
+        }
+      },
+      "derived_parameters": {
+        "rbl": {
+          "expression": "vled_typ/iled_typ",
+          "unit": "ohm",
+          "basis": "DERIVED",
+          "confidence": "M",
+          "source": {
+            "document": "docs/behavior/PER_PART_MODELS.md",
+            "document_sha256": "d6b36b2d3a8eedf0cdd128041ceb77a9709763ea58ba233a64d5ca352455c18a",
+            "line": 21
+          },
+          "detail": "Equivalent static resistance of the backlight path (LEDs plus the on-board resistor) at the single sourced point 5.0 V / 130 mA = 38.46 ohm; valid only at that point."
+        }
+      },
+      "template_override": "B{ref}idd {VDD} {VSS} I = {idd}\nRV0{ref} {V0} {VSS} 100Meg\nR{ref}bl {A} {K} {rbl}\n",
+      "template_provenance": {
+        "document": "docs/behavior/PER_PART_MODELS.md",
+        "document_sha256": "d6b36b2d3a8eedf0cdd128041ceb77a9709763ea58ba233a64d5ca352455c18a",
+        "line": 21
+      },
+      "inline_assets": [],
+      "supported_analyses": [
+        "op",
+        "tran"
+      ],
+      "limitations": [
+        "L1 supply and backlight only (D066 item 3): controller instructions, display content and timing are L3 and not simulated; the entry simulates its supply and backlight pins only (D066 item 3). RS, RW, E and DB0-DB7 are not modeled.",
+        "The backlight is one equivalent resistance (LEDs plus the on-board resistor) from the single typical point 5.0 V / 130 mA (38.46 ohm). The source allows 65-156 mA at 5.0 V and only a 4.9-5.1 V supply; outside that the linear model is not valid.",
+        "The logic supply is a constant typical 1.0 mA (maximum 3.0 mA). V0 is a 100 Mohm placeholder load from the class template, not a sourced contrast input current.",
+        "No absolute-maximum VDD is published in this Newhaven sheet; overvoltage acceptance beyond 5.5 V is unknown, not a pass.",
+        "Only NHD-0216K1Z-FL-YBW is bound; the earlier Winstar WH1602B values are a different module and are not mixed in."
       ]
     },
     "OHM-093": {

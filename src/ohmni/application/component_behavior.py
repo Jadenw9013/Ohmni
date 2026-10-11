@@ -86,11 +86,25 @@ class ComponentBehaviorService:
             if recipe.reference_part and 103 <= int(entry_id.split("-")[1]) <= 140:
                 # D066: a package simulates only as the exact part bound to it; say which.
                 return "simulated", f"Simulates as the sourced reference part bound to this package ({recipe.reference_part})."
+            if entry.layer.value == "L3":
+                # D066 item 3: say plainly that only the electrical pins are simulated.
+                return "simulated", entry.simulation_reason
             return "simulated", None
         blocker = self.data["blocked"].get(entry_id)
         if recipe:
             part = recipe.reference_part or f"a scoped {recipe.package} reference"
-            if entry.simulation_disposition.value == "not_simulable":
+            if entry.simulation_disposition.value == "not_simulable" and entry.layer.value == "L3":
+                # D071: a bound L3 entry is not simulable only while the spec lists it as research_required.
+                reason = (f"A sourced reference ({part}) runs as an electrical model only, but the protected "
+                          "spec lists this entry as research_required, so its record stays not simulable "
+                          "until the owner changes that status; protocol, firmware or controller behavior "
+                          "(L3) is not modeled either way.")
+            elif (entry.simulation_disposition.value == "not_simulable"
+                  and not 103 <= int(entry_id.split("-")[1]) <= 140):
+                reason = (f"A sourced reference ({part}) runs, but the protected spec lists this entry as "
+                          "research_required, so its record stays not simulable until the owner changes "
+                          "that status.")
+            elif entry.simulation_disposition.value == "not_simulable":
                 reason = (f"A sourced reference ({part}) runs, but the catalog record for this package stays "
                           "not simulable: the package itself has no electrical function, and the spec counts "
                           "only the bound reference, not the package, as verified.")

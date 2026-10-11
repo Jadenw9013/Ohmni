@@ -1,0 +1,77 @@
+{
+  "analysis": "op",
+  "circuit_hash": "b237b74dd5b7ab2baed50759d7341a222a8076ad41e810518abb42d97701cace",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "expected": 0.13,
+    "kind": "absolute",
+    "observable": "supply_current",
+    "rail": "backlight",
+    "source_facts": {
+      "iled_typ": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "converted_unit": "A",
+        "converted_value": 0.13,
+        "detail": "'Backlight Supply Current ILED VLED = 5.0 V 65 130 156 mA'; p4 'Power Requirement: 5.0V LCD, 5.0V/130mA Backlight'",
+        "field": "ref_backlight_supply_current_min_typ_max",
+        "page": 6,
+        "scope": "Newhaven NHD-0216K1Z-FL-YBW; VLED = 5.0 V; LED+ (pin 15) to LED- (pin 16) through the on-board resistor",
+        "selected_value": 130,
+        "selected_value_path": [
+          1
+        ],
+        "sources": [
+          "https://newhavendisplay.com/content/specs/NHD-0216K1Z-FL-YBW.pdf"
+        ],
+        "unit": "mA",
+        "value": [
+          65,
+          130,
+          156
+        ]
+      },
+      "vled_typ": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Backlight Supply Voltage VLED - 4.9 5.0 5.1 V'",
+        "field": "ref_backlight_supply_voltage_min_typ_max",
+        "page": 6,
+        "scope": "Newhaven NHD-0216K1Z-FL-YBW; LED+ to LED-, including the on-board resistor",
+        "selected_value": 5.0,
+        "selected_value_path": [
+          1
+        ],
+        "sources": [
+          "https://newhavendisplay.com/content/specs/NHD-0216K1Z-FL-YBW.pdf"
+        ],
+        "unit": "V",
+        "value": [
+          4.9,
+          5.0,
+          5.1
+        ]
+      }
+    },
+    "supply_voltage": 5.0,
+    "tolerance": 0.00013000000000000002
+  },
+  "entry_id": "OHM-091",
+  "entry_research_sha256": "b2b1627e2b4f145b4782a46aa2df8f9a443bf9436db4d866e106785c8b811e3c",
+  "limits": "Binding check of one L1 module rail at its source test voltage: logic IDD typical, or the backlight's single sourced operating point. It does not validate controller behavior, contrast, backlight current away from 5.0 V or thermal limits.",
+  "netlist_sha256": "9591e7c7383e2d72f9cdc2d4d6a0b6e1f08927090b00f330441c725fdb352d03",
+  "observation_status": "ran",
+  "observed": 0.13,
+  "output_sha256": "42cf1b6ff34f2b5373df7d58555f1e0b413c698d94f628e88cf9f021afd4ab4f",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T18:13:40Z",
+  "raw_output": "runtime-bench-output/OHM-091-op-backlight/output.txt",
+  "recipe_source_sha256": "cdcb7628556b1480e38114dd016841ea922c84230fa1bf6db4221f468e40710d",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "variant": "backlight",
+  "version_file": "runtime-bench-output/OHM-091-op-backlight/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sat Oct 10 21:32:36 UTC 2026\n******\n",
+  "version_sha256": "7f444023b0e5851d50a26bf40338ca29665b10988154a0ff2d662d918ab83fc3"
+}
