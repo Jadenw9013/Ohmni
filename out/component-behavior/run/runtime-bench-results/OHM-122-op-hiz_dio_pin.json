@@ -1,0 +1,67 @@
+{
+  "analysis": "op",
+  "circuit_hash": "dfd493d0f02b686db91747ec32f2607b250f7947750d6bd000415706da778c67",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "derivation": "A floating reset-state input draws no more than the sourced maximum leakage.",
+    "kind": "interval",
+    "maximum": 1e-06,
+    "minimum": 0.0,
+    "observable": "pin_current",
+    "pad_model": "dio_pin",
+    "pad_supply": "VCC",
+    "pin_role": "PB0",
+    "reset_state": "Factory fuses (internal 8 MHz RC with CKDIV8, RSTDISBL unprogrammed): every port pin tri-stated (DS40002061B p85), PB6/PB7 port pins with the internal RC (p13, p37), PC6 the RESET input with its pull-up RRST (p292, p323).",
+    "source_facts": {
+      "io_leak_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "converted_unit": "A",
+        "converted_value": 1e-06,
+        "detail": "Input Leakage Current I/O Pin VCC = 5.5V, pin low (absolute value) 1 uA; pin high 1 uA",
+        "field": "maximum_io_leakage",
+        "page": 323,
+        "scope": "ATmega328P-AU 32A TQFP-32; DS40002061B; Table 30-1 IIL/IIH, VCC = 5.5V, absolute value",
+        "sources": [
+          "https://ww1.microchip.com/downloads/aemDocuments/documents/MCU08/ProductDocuments/DataSheets/ATmega48A-PA-88A-PA-168A-PA-328-P-DS-DS40002061B.pdf"
+        ],
+        "unit": "uA",
+        "value": 1
+      },
+      "supply_max": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "recommended_supply_max",
+        "page": 2,
+        "scope": "ATmega328P-AU 32A TQFP-32",
+        "sources": [
+          "https://www.princeton.edu/~mae412/HANDOUTS/Datasheets/ATmega328abrev.pdf"
+        ],
+        "unit": "V",
+        "value": 5.5
+      }
+    },
+    "supply_voltages": {
+      "VCC": 5.5
+    }
+  },
+  "entry_id": "OHM-122",
+  "entry_research_sha256": "be4087fdc8594df05164baa0726cc5f450e1f529793d440e12610d61f1217265",
+  "limits": "Reset-state electrical check of one pin with every rail at its sourced recommended maximum: the pin, shorted to ground, must draw only its sourced leakage (floating input) or its sourced pull-up current. Firmware, clocks, peripherals and output drive are not modeled; the leakage term of the hashed pad is zero, so the leakage check bounds the model from above only.",
+  "netlist_sha256": "cf4295745276bef8c684a48472e7378c9468cd9f601166e12eca55ca2c012ef5",
+  "observation_status": "ran",
+  "observed": 5.51e-12,
+  "output_sha256": "c7a37787255f16a81be5d50223b514fa9d84bc7d741ffce747f6ac9ba42611ff",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T20:10:19Z",
+  "raw_output": "runtime-bench-output/OHM-122-op-hiz_dio_pin/output.txt",
+  "recipe_source_sha256": "e0b0e3e95da25117d09e2c6765f7d4461d2093e15148e89b70f8256c0ffe0eda",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "variant": "hiz_dio_pin",
+  "version_file": "runtime-bench-output/OHM-122-op-hiz_dio_pin/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sun Oct 11 20:06:07 UTC 2026\n******\n",
+  "version_sha256": "70418e8629dac31fc3bfc9ac91e68839e740ca6abcaa6a956e72729e6498fb9b"
+}

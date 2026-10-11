@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import { behaviorStatusText, BEHAVIOR_LABELS, componentSearchText, filterComponentRecords, parseLibraryPage, readComponentLibrary,
+import { behaviorChipLabel, behaviorStatusText, BEHAVIOR_LABELS, componentSearchText, filterComponentRecords, parseLibraryPage, readComponentLibrary,
     storyManifest, storyQueue, storySwipe } from '../component-stories.js';
 
 const identity = { api_version: 2, server_instance_id: 'a'.repeat(16), ui_version: 'b'.repeat(64) };
@@ -114,6 +114,11 @@ test('behavior status says what each part can do instead of one blanket caveat',
     assert.match(behaviorStatusText({ state: 'reference_only', reason: 'A package has no electrical function.' }), /not verified yet\. A package/);
     assert.match(behaviorStatusText(undefined), /see the Behavior tab/);
     assert.equal(BEHAVIOR_LABELS.simulated, 'Simulates');
+    const pins = { state: 'simulated', reason: 'Simulates as the sourced reference part bound to this package (ATmega328P-AU / ATmega328P-AU 32A TQFP-32): electrical pins in reset state only; firmware not modeled.' };
+    assert.equal(behaviorChipLabel(pins), 'Simulates pins only (reset state; firmware not modeled)');
+    assert.match(behaviorStatusText(pins), /electrical pins in reset state only; firmware not modeled/);
+    assert.equal(behaviorChipLabel({ state: 'simulated', reason: null }), 'Simulates');
+    assert.equal(behaviorChipLabel({ state: 'reference_only', reason: 'x' }), 'Reference circuit, not verified');
     const records = [{ id:'OHM-057', slug:'a', canonical_name:'A', category:'c', subcategory:'s', package_family:'P', package_member:'m', generator:'g', mounting:'tht', status:'partial' },
                      { id:'OHM-083', slug:'b', canonical_name:'B', category:'c', subcategory:'s', package_family:'P', package_member:'m', generator:'g', mounting:'tht', status:'partial' }];
     const behaviorStates = { 'OHM-057': { state:'simulated', reason:null }, 'OHM-083': { state:'documented', reason:'x' } };

@@ -20,7 +20,8 @@ from .runtime_benches import (
 
 def compare(audit, key, compiled, output, registry, recipes):
     behavior = recipes.entries[key].behavior_id
-    if behavior.startswith("BEH-IC-") or behavior == "BEH-FREQ-XO":
+    # D075: a pin-level part runs the DC reset-state probe, not an IC function bench.
+    if recipes.entries[key].pin_level is None and (behavior.startswith("BEH-IC-") or behavior == "BEH-FREQ-XO"):
         _, identity = ic_definition(audit, key, ic_cases(behavior, recipes.entries[key])[0])
         observed = _observations(compiled, identity, output)
         passed = all(

@@ -13,23 +13,16 @@
     "OHM-108": "Physical package width mismatch prevents automatic binding.",
     "OHM-109": "Missing critical output-current/power/thermal ratings and no validated interface-only recipe.",
     "OHM-121": "No validated TPS3808 supervisor model; pin/rating data alone does not implement the function.",
-    "OHM-122": "No validated interface-only recipe; firmware/protocol behavior is not simulable.",
-    "OHM-123": "Physical body mismatch and unresolved rating-critical DC footnotes prevent automatic runtime binding.",
-    "OHM-124": "No validated interface-only recipe; firmware execution is not simulable.",
-    "OHM-125": "No validated interface-only recipe; firmware execution is not simulable.",
-    "OHM-126": "No validated interface-only recipe; firmware execution is not simulable.",
     "OHM-127": "The authored averaged buck exports regulated OUT after an internal inductor; TPS62130 exposes SW, VOS and FB separately. Binding SW to OUT would change electrical truth. External L/C and loop validation remain unimplemented.",
     "OHM-128": "Missing rating-critical thermal/total-current data and no validated interface recipe.",
     "OHM-129": "Missing thermal evidence and no validated interface recipe.",
     "OHM-130": "No validated interface recipe and missing rating-critical thermal/per-pin limits.",
-    "OHM-131": "Exposed-pad electrical role and interface-only model unresolved.",
     "OHM-132": "Unknown central-pad electrical connection prevents runtime binding.",
     "OHM-133": "TPS7A8001 adjustable FB, NR and EN functions do not match the authored fixed AMS1117 model. A source-bound adjustable control/thermal model remains unimplemented.",
     "OHM-134": "TPS62160 switch node SW is not the post-inductor OUT of the authored averaged buck. External L/C, feedback and loop validation remain unimplemented.",
     "OHM-135": "Missingthermal/supplystresslimits; no validated interface recipe.",
     "OHM-136": "No validated electrical-interface recipe and missing rating-critical current/thermal evidence.",
     "OHM-137": "No validated interface recipe or complete pin-specific rating evaluator.",
-    "OHM-138": "No validated interface recipe or configuration-specific ratings.",
     "OHM-139": "Physical mismatch and no validated interface model.",
     "OHM-140": "No validated power-switch recipe including programmed limit and RCP behavior.",
     "OHM-141": "Missing reference-specific motional parameters and physical-envelope mismatch prevent a sourced runtime binding. Re-checked 2026-10-10 against the archive (D059): no archived Abracon document gives motional C1/L1, Q or pullability. Re-checked 2026-10-11 (D073): no manufacturer document gives C1/L1 for an exact HC-49 leaded crystal. Abracon AB/ABL (archived) give ESR/C0/CL only and abracon.com now returns 403; IQD HC49 issues 15/16 and the ECS HC-49U sheet give C0 or ESR only; Kyocera publishes motional values only for its ceramic SMD FB series (3225/2016, used for OHM-143/145) and makes no HC-49; the Epson HC-49/U-S download returns a redirect page. The Murata P17E manual (archived a7448312, DigiKey-hosted) has an 8 MHz 'Crystal Unit (Reference)' comparison column (C1 0.002 pF, C0 4.48 pF, R1 154.7 ohm) that names no part, so it cannot bind.",
@@ -16043,6 +16036,3721 @@
         }
       }
     },
+    "OHM-122": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "QFP-32",
+            "part_id": "OHM-122",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-122",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              },
+              {
+                "component": "U1",
+                "pin": "10"
+              },
+              {
+                "component": "U1",
+                "pin": "11"
+              },
+              {
+                "component": "U1",
+                "pin": "13"
+              },
+              {
+                "component": "U1",
+                "pin": "14"
+              },
+              {
+                "component": "U1",
+                "pin": "15"
+              },
+              {
+                "component": "U1",
+                "pin": "16"
+              },
+              {
+                "component": "U1",
+                "pin": "17"
+              },
+              {
+                "component": "U1",
+                "pin": "19"
+              },
+              {
+                "component": "U1",
+                "pin": "2"
+              },
+              {
+                "component": "U1",
+                "pin": "20"
+              },
+              {
+                "component": "U1",
+                "pin": "22"
+              },
+              {
+                "component": "U1",
+                "pin": "23"
+              },
+              {
+                "component": "U1",
+                "pin": "24"
+              },
+              {
+                "component": "U1",
+                "pin": "25"
+              },
+              {
+                "component": "U1",
+                "pin": "26"
+              },
+              {
+                "component": "U1",
+                "pin": "27"
+              },
+              {
+                "component": "U1",
+                "pin": "28"
+              },
+              {
+                "component": "U1",
+                "pin": "29"
+              },
+              {
+                "component": "U1",
+                "pin": "30"
+              },
+              {
+                "component": "U1",
+                "pin": "31"
+              },
+              {
+                "component": "U1",
+                "pin": "32"
+              },
+              {
+                "component": "U1",
+                "pin": "7"
+              },
+              {
+                "component": "U1",
+                "pin": "8"
+              },
+              {
+                "component": "U1",
+                "pin": "9"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "idle",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "12"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 0.0
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 0.0
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 0.0
+                }
+              }
+            },
+            "kind": "power",
+            "name": "pin",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "18"
+              },
+              {
+                "component": "U1",
+                "pin": "4"
+              },
+              {
+                "component": "U1",
+                "pin": "6"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 5.5
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 5.5
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 5.5
+                }
+              }
+            },
+            "kind": "power",
+            "name": "rail_vcc",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "21"
+              },
+              {
+                "component": "U1",
+                "pin": "3"
+              },
+              {
+                "component": "U1",
+                "pin": "5"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-122",
+      "entry_research_sha256": "be4087fdc8594df05164baa0726cc5f450e1f529793d440e12610d61f1217265",
+      "excitations": [],
+      "options": {},
+      "original_netlist_sha256": "cf4295745276bef8c684a48472e7378c9468cd9f601166e12eca55ca2c012ef5",
+      "package": "QFP-32",
+      "reference_part": "ATmega328P-AU / ATmega328P-AU 32A TQFP-32",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-122"
+        }
+      }
+    },
+    "OHM-123": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "TQFP-44",
+            "part_id": "OHM-123",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-123",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              },
+              {
+                "component": "U1",
+                "pin": "10"
+              },
+              {
+                "component": "U1",
+                "pin": "11"
+              },
+              {
+                "component": "U1",
+                "pin": "12"
+              },
+              {
+                "component": "U1",
+                "pin": "13"
+              },
+              {
+                "component": "U1",
+                "pin": "16"
+              },
+              {
+                "component": "U1",
+                "pin": "17"
+              },
+              {
+                "component": "U1",
+                "pin": "18"
+              },
+              {
+                "component": "U1",
+                "pin": "19"
+              },
+              {
+                "component": "U1",
+                "pin": "2"
+              },
+              {
+                "component": "U1",
+                "pin": "20"
+              },
+              {
+                "component": "U1",
+                "pin": "21"
+              },
+              {
+                "component": "U1",
+                "pin": "22"
+              },
+              {
+                "component": "U1",
+                "pin": "25"
+              },
+              {
+                "component": "U1",
+                "pin": "26"
+              },
+              {
+                "component": "U1",
+                "pin": "27"
+              },
+              {
+                "component": "U1",
+                "pin": "28"
+              },
+              {
+                "component": "U1",
+                "pin": "29"
+              },
+              {
+                "component": "U1",
+                "pin": "3"
+              },
+              {
+                "component": "U1",
+                "pin": "30"
+              },
+              {
+                "component": "U1",
+                "pin": "31"
+              },
+              {
+                "component": "U1",
+                "pin": "32"
+              },
+              {
+                "component": "U1",
+                "pin": "33"
+              },
+              {
+                "component": "U1",
+                "pin": "36"
+              },
+              {
+                "component": "U1",
+                "pin": "37"
+              },
+              {
+                "component": "U1",
+                "pin": "38"
+              },
+              {
+                "component": "U1",
+                "pin": "39"
+              },
+              {
+                "component": "U1",
+                "pin": "4"
+              },
+              {
+                "component": "U1",
+                "pin": "40"
+              },
+              {
+                "component": "U1",
+                "pin": "41"
+              },
+              {
+                "component": "U1",
+                "pin": "42"
+              },
+              {
+                "component": "U1",
+                "pin": "5"
+              },
+              {
+                "component": "U1",
+                "pin": "6"
+              },
+              {
+                "component": "U1",
+                "pin": "7"
+              },
+              {
+                "component": "U1",
+                "pin": "9"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "idle",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "8"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 0.0
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 0.0
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 0.0
+                }
+              }
+            },
+            "kind": "power",
+            "name": "pin",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "14"
+              },
+              {
+                "component": "U1",
+                "pin": "24"
+              },
+              {
+                "component": "U1",
+                "pin": "34"
+              },
+              {
+                "component": "U1",
+                "pin": "44"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 5.5
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 5.5
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 5.5
+                }
+              }
+            },
+            "kind": "power",
+            "name": "rail_vcc",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "15"
+              },
+              {
+                "component": "U1",
+                "pin": "23"
+              },
+              {
+                "component": "U1",
+                "pin": "35"
+              },
+              {
+                "component": "U1",
+                "pin": "43"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-123",
+      "entry_research_sha256": "6284df9ca4e2ba30b150df507350d30897ac68d72470ff463d43ad4fa28c4489",
+      "excitations": [],
+      "options": {},
+      "original_netlist_sha256": "23cd1363bbd3c1f9c69ba140fbcf0c4622ceca4bb1218732b09d3393ad09476e",
+      "package": "TQFP-44",
+      "reference_part": "ATmega32U4-AU / ATmega32U4 TQFP-44",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-123"
+        }
+      }
+    },
+    "OHM-124": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "TQFP-64",
+            "part_id": "OHM-124",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-124",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              },
+              {
+                "component": "U1",
+                "pin": "10"
+              },
+              {
+                "component": "U1",
+                "pin": "11"
+              },
+              {
+                "component": "U1",
+                "pin": "15"
+              },
+              {
+                "component": "U1",
+                "pin": "16"
+              },
+              {
+                "component": "U1",
+                "pin": "17"
+              },
+              {
+                "component": "U1",
+                "pin": "2"
+              },
+              {
+                "component": "U1",
+                "pin": "20"
+              },
+              {
+                "component": "U1",
+                "pin": "21"
+              },
+              {
+                "component": "U1",
+                "pin": "22"
+              },
+              {
+                "component": "U1",
+                "pin": "23"
+              },
+              {
+                "component": "U1",
+                "pin": "24"
+              },
+              {
+                "component": "U1",
+                "pin": "25"
+              },
+              {
+                "component": "U1",
+                "pin": "26"
+              },
+              {
+                "component": "U1",
+                "pin": "27"
+              },
+              {
+                "component": "U1",
+                "pin": "28"
+              },
+              {
+                "component": "U1",
+                "pin": "29"
+              },
+              {
+                "component": "U1",
+                "pin": "3"
+              },
+              {
+                "component": "U1",
+                "pin": "30"
+              },
+              {
+                "component": "U1",
+                "pin": "31"
+              },
+              {
+                "component": "U1",
+                "pin": "33"
+              },
+              {
+                "component": "U1",
+                "pin": "34"
+              },
+              {
+                "component": "U1",
+                "pin": "35"
+              },
+              {
+                "component": "U1",
+                "pin": "36"
+              },
+              {
+                "component": "U1",
+                "pin": "37"
+              },
+              {
+                "component": "U1",
+                "pin": "38"
+              },
+              {
+                "component": "U1",
+                "pin": "39"
+              },
+              {
+                "component": "U1",
+                "pin": "4"
+              },
+              {
+                "component": "U1",
+                "pin": "40"
+              },
+              {
+                "component": "U1",
+                "pin": "41"
+              },
+              {
+                "component": "U1",
+                "pin": "42"
+              },
+              {
+                "component": "U1",
+                "pin": "43"
+              },
+              {
+                "component": "U1",
+                "pin": "44"
+              },
+              {
+                "component": "U1",
+                "pin": "45"
+              },
+              {
+                "component": "U1",
+                "pin": "46"
+              },
+              {
+                "component": "U1",
+                "pin": "47"
+              },
+              {
+                "component": "U1",
+                "pin": "49"
+              },
+              {
+                "component": "U1",
+                "pin": "5"
+              },
+              {
+                "component": "U1",
+                "pin": "50"
+              },
+              {
+                "component": "U1",
+                "pin": "51"
+              },
+              {
+                "component": "U1",
+                "pin": "52"
+              },
+              {
+                "component": "U1",
+                "pin": "53"
+              },
+              {
+                "component": "U1",
+                "pin": "54"
+              },
+              {
+                "component": "U1",
+                "pin": "55"
+              },
+              {
+                "component": "U1",
+                "pin": "56"
+              },
+              {
+                "component": "U1",
+                "pin": "57"
+              },
+              {
+                "component": "U1",
+                "pin": "58"
+              },
+              {
+                "component": "U1",
+                "pin": "59"
+              },
+              {
+                "component": "U1",
+                "pin": "6"
+              },
+              {
+                "component": "U1",
+                "pin": "60"
+              },
+              {
+                "component": "U1",
+                "pin": "61"
+              },
+              {
+                "component": "U1",
+                "pin": "62"
+              },
+              {
+                "component": "U1",
+                "pin": "7"
+              },
+              {
+                "component": "U1",
+                "pin": "8"
+              },
+              {
+                "component": "U1",
+                "pin": "9"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "idle",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "14"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 0.0
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 0.0
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 0.0
+                }
+              }
+            },
+            "kind": "power",
+            "name": "pin",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "13"
+              },
+              {
+                "component": "U1",
+                "pin": "19"
+              },
+              {
+                "component": "U1",
+                "pin": "32"
+              },
+              {
+                "component": "U1",
+                "pin": "48"
+              },
+              {
+                "component": "U1",
+                "pin": "64"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 3.6
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 3.6
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 3.6
+                }
+              }
+            },
+            "kind": "power",
+            "name": "rail_vdd",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "12"
+              },
+              {
+                "component": "U1",
+                "pin": "18"
+              },
+              {
+                "component": "U1",
+                "pin": "63"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-124",
+      "entry_research_sha256": "b2a9936872438052321b19507a72f7c82b9cc59d44476dd2712422aa415da5fd",
+      "excitations": [],
+      "options": {},
+      "original_netlist_sha256": "881cf12894300c11b475625d99614212798356741368c7d90538b3715f8e1091",
+      "package": "TQFP-64",
+      "reference_part": "STM32F405RGT6 / STM32F405RGT6 LQFP64",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-124"
+        }
+      }
+    },
+    "OHM-125": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "TQFP-100",
+            "part_id": "OHM-125",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-125",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              },
+              {
+                "component": "U1",
+                "pin": "12"
+              },
+              {
+                "component": "U1",
+                "pin": "13"
+              },
+              {
+                "component": "U1",
+                "pin": "14"
+              },
+              {
+                "component": "U1",
+                "pin": "15"
+              },
+              {
+                "component": "U1",
+                "pin": "16"
+              },
+              {
+                "component": "U1",
+                "pin": "17"
+              },
+              {
+                "component": "U1",
+                "pin": "18"
+              },
+              {
+                "component": "U1",
+                "pin": "2"
+              },
+              {
+                "component": "U1",
+                "pin": "21"
+              },
+              {
+                "component": "U1",
+                "pin": "24"
+              },
+              {
+                "component": "U1",
+                "pin": "25"
+              },
+              {
+                "component": "U1",
+                "pin": "26"
+              },
+              {
+                "component": "U1",
+                "pin": "29"
+              },
+              {
+                "component": "U1",
+                "pin": "3"
+              },
+              {
+                "component": "U1",
+                "pin": "30"
+              },
+              {
+                "component": "U1",
+                "pin": "31"
+              },
+              {
+                "component": "U1",
+                "pin": "32"
+              },
+              {
+                "component": "U1",
+                "pin": "33"
+              },
+              {
+                "component": "U1",
+                "pin": "34"
+              },
+              {
+                "component": "U1",
+                "pin": "35"
+              },
+              {
+                "component": "U1",
+                "pin": "36"
+              },
+              {
+                "component": "U1",
+                "pin": "37"
+              },
+              {
+                "component": "U1",
+                "pin": "38"
+              },
+              {
+                "component": "U1",
+                "pin": "39"
+              },
+              {
+                "component": "U1",
+                "pin": "4"
+              },
+              {
+                "component": "U1",
+                "pin": "40"
+              },
+              {
+                "component": "U1",
+                "pin": "41"
+              },
+              {
+                "component": "U1",
+                "pin": "42"
+              },
+              {
+                "component": "U1",
+                "pin": "43"
+              },
+              {
+                "component": "U1",
+                "pin": "44"
+              },
+              {
+                "component": "U1",
+                "pin": "45"
+              },
+              {
+                "component": "U1",
+                "pin": "46"
+              },
+              {
+                "component": "U1",
+                "pin": "47"
+              },
+              {
+                "component": "U1",
+                "pin": "48"
+              },
+              {
+                "component": "U1",
+                "pin": "49"
+              },
+              {
+                "component": "U1",
+                "pin": "5"
+              },
+              {
+                "component": "U1",
+                "pin": "51"
+              },
+              {
+                "component": "U1",
+                "pin": "52"
+              },
+              {
+                "component": "U1",
+                "pin": "53"
+              },
+              {
+                "component": "U1",
+                "pin": "54"
+              },
+              {
+                "component": "U1",
+                "pin": "55"
+              },
+              {
+                "component": "U1",
+                "pin": "56"
+              },
+              {
+                "component": "U1",
+                "pin": "57"
+              },
+              {
+                "component": "U1",
+                "pin": "58"
+              },
+              {
+                "component": "U1",
+                "pin": "59"
+              },
+              {
+                "component": "U1",
+                "pin": "6"
+              },
+              {
+                "component": "U1",
+                "pin": "60"
+              },
+              {
+                "component": "U1",
+                "pin": "61"
+              },
+              {
+                "component": "U1",
+                "pin": "62"
+              },
+              {
+                "component": "U1",
+                "pin": "63"
+              },
+              {
+                "component": "U1",
+                "pin": "64"
+              },
+              {
+                "component": "U1",
+                "pin": "65"
+              },
+              {
+                "component": "U1",
+                "pin": "66"
+              },
+              {
+                "component": "U1",
+                "pin": "67"
+              },
+              {
+                "component": "U1",
+                "pin": "68"
+              },
+              {
+                "component": "U1",
+                "pin": "69"
+              },
+              {
+                "component": "U1",
+                "pin": "7"
+              },
+              {
+                "component": "U1",
+                "pin": "70"
+              },
+              {
+                "component": "U1",
+                "pin": "71"
+              },
+              {
+                "component": "U1",
+                "pin": "72"
+              },
+              {
+                "component": "U1",
+                "pin": "73"
+              },
+              {
+                "component": "U1",
+                "pin": "76"
+              },
+              {
+                "component": "U1",
+                "pin": "77"
+              },
+              {
+                "component": "U1",
+                "pin": "78"
+              },
+              {
+                "component": "U1",
+                "pin": "79"
+              },
+              {
+                "component": "U1",
+                "pin": "8"
+              },
+              {
+                "component": "U1",
+                "pin": "80"
+              },
+              {
+                "component": "U1",
+                "pin": "81"
+              },
+              {
+                "component": "U1",
+                "pin": "82"
+              },
+              {
+                "component": "U1",
+                "pin": "83"
+              },
+              {
+                "component": "U1",
+                "pin": "84"
+              },
+              {
+                "component": "U1",
+                "pin": "85"
+              },
+              {
+                "component": "U1",
+                "pin": "86"
+              },
+              {
+                "component": "U1",
+                "pin": "87"
+              },
+              {
+                "component": "U1",
+                "pin": "88"
+              },
+              {
+                "component": "U1",
+                "pin": "89"
+              },
+              {
+                "component": "U1",
+                "pin": "9"
+              },
+              {
+                "component": "U1",
+                "pin": "90"
+              },
+              {
+                "component": "U1",
+                "pin": "91"
+              },
+              {
+                "component": "U1",
+                "pin": "92"
+              },
+              {
+                "component": "U1",
+                "pin": "93"
+              },
+              {
+                "component": "U1",
+                "pin": "94"
+              },
+              {
+                "component": "U1",
+                "pin": "95"
+              },
+              {
+                "component": "U1",
+                "pin": "96"
+              },
+              {
+                "component": "U1",
+                "pin": "97"
+              },
+              {
+                "component": "U1",
+                "pin": "98"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "idle",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "23"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 0.0
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 0.0
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 0.0
+                }
+              }
+            },
+            "kind": "power",
+            "name": "pin",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "100"
+              },
+              {
+                "component": "U1",
+                "pin": "11"
+              },
+              {
+                "component": "U1",
+                "pin": "19"
+              },
+              {
+                "component": "U1",
+                "pin": "22"
+              },
+              {
+                "component": "U1",
+                "pin": "28"
+              },
+              {
+                "component": "U1",
+                "pin": "50"
+              },
+              {
+                "component": "U1",
+                "pin": "75"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 3.6
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 3.6
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 3.6
+                }
+              }
+            },
+            "kind": "power",
+            "name": "rail_vdd",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "10"
+              },
+              {
+                "component": "U1",
+                "pin": "20"
+              },
+              {
+                "component": "U1",
+                "pin": "27"
+              },
+              {
+                "component": "U1",
+                "pin": "74"
+              },
+              {
+                "component": "U1",
+                "pin": "99"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-125",
+      "entry_research_sha256": "49ff4bd29ae636523ab0c1fe03325ee59abfbbe6ae8d97c2900c9121a8f5ecd9",
+      "excitations": [],
+      "options": {},
+      "original_netlist_sha256": "ad0044c68ab8c87c3ef0fa3c24b785be5354cd197364e0890dc4f1db04cc2951",
+      "package": "TQFP-100",
+      "reference_part": "STM32F407VGT6 / STM32F407VGT6 LQFP100",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-125"
+        }
+      }
+    },
+    "OHM-126": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "LQFP-144",
+            "part_id": "OHM-126",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-126",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              },
+              {
+                "component": "U1",
+                "pin": "10"
+              },
+              {
+                "component": "U1",
+                "pin": "100"
+              },
+              {
+                "component": "U1",
+                "pin": "101"
+              },
+              {
+                "component": "U1",
+                "pin": "102"
+              },
+              {
+                "component": "U1",
+                "pin": "103"
+              },
+              {
+                "component": "U1",
+                "pin": "104"
+              },
+              {
+                "component": "U1",
+                "pin": "105"
+              },
+              {
+                "component": "U1",
+                "pin": "106"
+              },
+              {
+                "component": "U1",
+                "pin": "109"
+              },
+              {
+                "component": "U1",
+                "pin": "11"
+              },
+              {
+                "component": "U1",
+                "pin": "110"
+              },
+              {
+                "component": "U1",
+                "pin": "111"
+              },
+              {
+                "component": "U1",
+                "pin": "112"
+              },
+              {
+                "component": "U1",
+                "pin": "113"
+              },
+              {
+                "component": "U1",
+                "pin": "114"
+              },
+              {
+                "component": "U1",
+                "pin": "115"
+              },
+              {
+                "component": "U1",
+                "pin": "116"
+              },
+              {
+                "component": "U1",
+                "pin": "117"
+              },
+              {
+                "component": "U1",
+                "pin": "118"
+              },
+              {
+                "component": "U1",
+                "pin": "119"
+              },
+              {
+                "component": "U1",
+                "pin": "12"
+              },
+              {
+                "component": "U1",
+                "pin": "122"
+              },
+              {
+                "component": "U1",
+                "pin": "123"
+              },
+              {
+                "component": "U1",
+                "pin": "124"
+              },
+              {
+                "component": "U1",
+                "pin": "125"
+              },
+              {
+                "component": "U1",
+                "pin": "126"
+              },
+              {
+                "component": "U1",
+                "pin": "127"
+              },
+              {
+                "component": "U1",
+                "pin": "128"
+              },
+              {
+                "component": "U1",
+                "pin": "129"
+              },
+              {
+                "component": "U1",
+                "pin": "13"
+              },
+              {
+                "component": "U1",
+                "pin": "132"
+              },
+              {
+                "component": "U1",
+                "pin": "133"
+              },
+              {
+                "component": "U1",
+                "pin": "134"
+              },
+              {
+                "component": "U1",
+                "pin": "135"
+              },
+              {
+                "component": "U1",
+                "pin": "136"
+              },
+              {
+                "component": "U1",
+                "pin": "137"
+              },
+              {
+                "component": "U1",
+                "pin": "138"
+              },
+              {
+                "component": "U1",
+                "pin": "139"
+              },
+              {
+                "component": "U1",
+                "pin": "14"
+              },
+              {
+                "component": "U1",
+                "pin": "140"
+              },
+              {
+                "component": "U1",
+                "pin": "141"
+              },
+              {
+                "component": "U1",
+                "pin": "142"
+              },
+              {
+                "component": "U1",
+                "pin": "143"
+              },
+              {
+                "component": "U1",
+                "pin": "15"
+              },
+              {
+                "component": "U1",
+                "pin": "18"
+              },
+              {
+                "component": "U1",
+                "pin": "19"
+              },
+              {
+                "component": "U1",
+                "pin": "2"
+              },
+              {
+                "component": "U1",
+                "pin": "20"
+              },
+              {
+                "component": "U1",
+                "pin": "21"
+              },
+              {
+                "component": "U1",
+                "pin": "22"
+              },
+              {
+                "component": "U1",
+                "pin": "23"
+              },
+              {
+                "component": "U1",
+                "pin": "24"
+              },
+              {
+                "component": "U1",
+                "pin": "25"
+              },
+              {
+                "component": "U1",
+                "pin": "26"
+              },
+              {
+                "component": "U1",
+                "pin": "27"
+              },
+              {
+                "component": "U1",
+                "pin": "28"
+              },
+              {
+                "component": "U1",
+                "pin": "29"
+              },
+              {
+                "component": "U1",
+                "pin": "3"
+              },
+              {
+                "component": "U1",
+                "pin": "32"
+              },
+              {
+                "component": "U1",
+                "pin": "35"
+              },
+              {
+                "component": "U1",
+                "pin": "36"
+              },
+              {
+                "component": "U1",
+                "pin": "37"
+              },
+              {
+                "component": "U1",
+                "pin": "4"
+              },
+              {
+                "component": "U1",
+                "pin": "40"
+              },
+              {
+                "component": "U1",
+                "pin": "41"
+              },
+              {
+                "component": "U1",
+                "pin": "42"
+              },
+              {
+                "component": "U1",
+                "pin": "43"
+              },
+              {
+                "component": "U1",
+                "pin": "44"
+              },
+              {
+                "component": "U1",
+                "pin": "45"
+              },
+              {
+                "component": "U1",
+                "pin": "46"
+              },
+              {
+                "component": "U1",
+                "pin": "47"
+              },
+              {
+                "component": "U1",
+                "pin": "48"
+              },
+              {
+                "component": "U1",
+                "pin": "49"
+              },
+              {
+                "component": "U1",
+                "pin": "5"
+              },
+              {
+                "component": "U1",
+                "pin": "50"
+              },
+              {
+                "component": "U1",
+                "pin": "53"
+              },
+              {
+                "component": "U1",
+                "pin": "54"
+              },
+              {
+                "component": "U1",
+                "pin": "55"
+              },
+              {
+                "component": "U1",
+                "pin": "56"
+              },
+              {
+                "component": "U1",
+                "pin": "57"
+              },
+              {
+                "component": "U1",
+                "pin": "58"
+              },
+              {
+                "component": "U1",
+                "pin": "59"
+              },
+              {
+                "component": "U1",
+                "pin": "6"
+              },
+              {
+                "component": "U1",
+                "pin": "60"
+              },
+              {
+                "component": "U1",
+                "pin": "63"
+              },
+              {
+                "component": "U1",
+                "pin": "64"
+              },
+              {
+                "component": "U1",
+                "pin": "65"
+              },
+              {
+                "component": "U1",
+                "pin": "66"
+              },
+              {
+                "component": "U1",
+                "pin": "67"
+              },
+              {
+                "component": "U1",
+                "pin": "68"
+              },
+              {
+                "component": "U1",
+                "pin": "69"
+              },
+              {
+                "component": "U1",
+                "pin": "7"
+              },
+              {
+                "component": "U1",
+                "pin": "70"
+              },
+              {
+                "component": "U1",
+                "pin": "71"
+              },
+              {
+                "component": "U1",
+                "pin": "73"
+              },
+              {
+                "component": "U1",
+                "pin": "74"
+              },
+              {
+                "component": "U1",
+                "pin": "75"
+              },
+              {
+                "component": "U1",
+                "pin": "76"
+              },
+              {
+                "component": "U1",
+                "pin": "77"
+              },
+              {
+                "component": "U1",
+                "pin": "78"
+              },
+              {
+                "component": "U1",
+                "pin": "79"
+              },
+              {
+                "component": "U1",
+                "pin": "8"
+              },
+              {
+                "component": "U1",
+                "pin": "80"
+              },
+              {
+                "component": "U1",
+                "pin": "81"
+              },
+              {
+                "component": "U1",
+                "pin": "82"
+              },
+              {
+                "component": "U1",
+                "pin": "85"
+              },
+              {
+                "component": "U1",
+                "pin": "86"
+              },
+              {
+                "component": "U1",
+                "pin": "87"
+              },
+              {
+                "component": "U1",
+                "pin": "88"
+              },
+              {
+                "component": "U1",
+                "pin": "89"
+              },
+              {
+                "component": "U1",
+                "pin": "9"
+              },
+              {
+                "component": "U1",
+                "pin": "90"
+              },
+              {
+                "component": "U1",
+                "pin": "91"
+              },
+              {
+                "component": "U1",
+                "pin": "92"
+              },
+              {
+                "component": "U1",
+                "pin": "93"
+              },
+              {
+                "component": "U1",
+                "pin": "96"
+              },
+              {
+                "component": "U1",
+                "pin": "97"
+              },
+              {
+                "component": "U1",
+                "pin": "98"
+              },
+              {
+                "component": "U1",
+                "pin": "99"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "idle",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "34"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 0.0
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 0.0
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 0.0
+                }
+              }
+            },
+            "kind": "power",
+            "name": "pin",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "108"
+              },
+              {
+                "component": "U1",
+                "pin": "121"
+              },
+              {
+                "component": "U1",
+                "pin": "131"
+              },
+              {
+                "component": "U1",
+                "pin": "144"
+              },
+              {
+                "component": "U1",
+                "pin": "17"
+              },
+              {
+                "component": "U1",
+                "pin": "30"
+              },
+              {
+                "component": "U1",
+                "pin": "33"
+              },
+              {
+                "component": "U1",
+                "pin": "39"
+              },
+              {
+                "component": "U1",
+                "pin": "52"
+              },
+              {
+                "component": "U1",
+                "pin": "62"
+              },
+              {
+                "component": "U1",
+                "pin": "72"
+              },
+              {
+                "component": "U1",
+                "pin": "84"
+              },
+              {
+                "component": "U1",
+                "pin": "95"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 3.6
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 3.6
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 3.6
+                }
+              }
+            },
+            "kind": "power",
+            "name": "rail_vdd",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "107"
+              },
+              {
+                "component": "U1",
+                "pin": "120"
+              },
+              {
+                "component": "U1",
+                "pin": "130"
+              },
+              {
+                "component": "U1",
+                "pin": "16"
+              },
+              {
+                "component": "U1",
+                "pin": "31"
+              },
+              {
+                "component": "U1",
+                "pin": "38"
+              },
+              {
+                "component": "U1",
+                "pin": "51"
+              },
+              {
+                "component": "U1",
+                "pin": "61"
+              },
+              {
+                "component": "U1",
+                "pin": "83"
+              },
+              {
+                "component": "U1",
+                "pin": "94"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-126",
+      "entry_research_sha256": "310c0f3ec0c811c0b8061e67cad7e51e3ae574358b0af0d8f85d2930f893b8be",
+      "excitations": [],
+      "options": {},
+      "original_netlist_sha256": "c41f6d9e95f36f3095319353f0d0c96709f58236e76da5b284a785fd49123547",
+      "package": "LQFP-144",
+      "reference_part": "STM32F407ZGT6 / STM32F407ZGT6 LQFP144",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-126"
+        }
+      }
+    },
+    "OHM-131": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "QFN-48",
+            "part_id": "OHM-131",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-131",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "1"
+              },
+              {
+                "component": "U1",
+                "pin": "11"
+              },
+              {
+                "component": "U1",
+                "pin": "12"
+              },
+              {
+                "component": "U1",
+                "pin": "13"
+              },
+              {
+                "component": "U1",
+                "pin": "14"
+              },
+              {
+                "component": "U1",
+                "pin": "15"
+              },
+              {
+                "component": "U1",
+                "pin": "16"
+              },
+              {
+                "component": "U1",
+                "pin": "17"
+              },
+              {
+                "component": "U1",
+                "pin": "18"
+              },
+              {
+                "component": "U1",
+                "pin": "19"
+              },
+              {
+                "component": "U1",
+                "pin": "2"
+              },
+              {
+                "component": "U1",
+                "pin": "20"
+              },
+              {
+                "component": "U1",
+                "pin": "21"
+              },
+              {
+                "component": "U1",
+                "pin": "22"
+              },
+              {
+                "component": "U1",
+                "pin": "25"
+              },
+              {
+                "component": "U1",
+                "pin": "26"
+              },
+              {
+                "component": "U1",
+                "pin": "27"
+              },
+              {
+                "component": "U1",
+                "pin": "28"
+              },
+              {
+                "component": "U1",
+                "pin": "29"
+              },
+              {
+                "component": "U1",
+                "pin": "3"
+              },
+              {
+                "component": "U1",
+                "pin": "30"
+              },
+              {
+                "component": "U1",
+                "pin": "31"
+              },
+              {
+                "component": "U1",
+                "pin": "32"
+              },
+              {
+                "component": "U1",
+                "pin": "33"
+              },
+              {
+                "component": "U1",
+                "pin": "34"
+              },
+              {
+                "component": "U1",
+                "pin": "37"
+              },
+              {
+                "component": "U1",
+                "pin": "38"
+              },
+              {
+                "component": "U1",
+                "pin": "39"
+              },
+              {
+                "component": "U1",
+                "pin": "4"
+              },
+              {
+                "component": "U1",
+                "pin": "40"
+              },
+              {
+                "component": "U1",
+                "pin": "41"
+              },
+              {
+                "component": "U1",
+                "pin": "42"
+              },
+              {
+                "component": "U1",
+                "pin": "43"
+              },
+              {
+                "component": "U1",
+                "pin": "44"
+              },
+              {
+                "component": "U1",
+                "pin": "45"
+              },
+              {
+                "component": "U1",
+                "pin": "46"
+              },
+              {
+                "component": "U1",
+                "pin": "5"
+              },
+              {
+                "component": "U1",
+                "pin": "6"
+              },
+              {
+                "component": "U1",
+                "pin": "7"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "idle",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "10"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 0.0
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 0.0
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 0.0
+                }
+              }
+            },
+            "kind": "power",
+            "name": "pin",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "24"
+              },
+              {
+                "component": "U1",
+                "pin": "36"
+              },
+              {
+                "component": "U1",
+                "pin": "48"
+              },
+              {
+                "component": "U1",
+                "pin": "9"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 3.6
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 3.6
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 3.6
+                }
+              }
+            },
+            "kind": "power",
+            "name": "rail_vdd1",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "23"
+              },
+              {
+                "component": "U1",
+                "pin": "35"
+              },
+              {
+                "component": "U1",
+                "pin": "47"
+              },
+              {
+                "component": "U1",
+                "pin": "8"
+              },
+              {
+                "component": "U1",
+                "pin": "EP"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-131",
+      "entry_research_sha256": "c6069100df42e3bd76f6f323b7d82a50d59c31d7238645d97bedc0a4bf63ccff",
+      "excitations": [],
+      "options": {},
+      "original_netlist_sha256": "f68377360c91101fa90ac2a3911604228cc1e89c42059d7182923a15dcac50e2",
+      "package": "QFN-48",
+      "reference_part": "STM32F103CBU6 / STM32F103CBU6 UFQFPN48",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-131"
+        }
+      }
+    },
+    "OHM-138": {
+      "analysis": "op",
+      "circuit": {
+        "components": [
+          {
+            "evidence": [],
+            "notes": null,
+            "package": "BGA-256",
+            "part_id": "OHM-138",
+            "placeholder": false,
+            "ref": "U1",
+            "selected_i2c_address": null,
+            "selected_interfaces": [],
+            "value": null
+          }
+        ],
+        "constraints": [],
+        "design_assumptions": [],
+        "ir_id": "runtime-OHM-138",
+        "name": "Source-scoped DC probe",
+        "nets": [
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "A10"
+              },
+              {
+                "component": "U1",
+                "pin": "A12"
+              },
+              {
+                "component": "U1",
+                "pin": "A13"
+              },
+              {
+                "component": "U1",
+                "pin": "A14"
+              },
+              {
+                "component": "U1",
+                "pin": "A15"
+              },
+              {
+                "component": "U1",
+                "pin": "A2"
+              },
+              {
+                "component": "U1",
+                "pin": "A3"
+              },
+              {
+                "component": "U1",
+                "pin": "A4"
+              },
+              {
+                "component": "U1",
+                "pin": "A5"
+              },
+              {
+                "component": "U1",
+                "pin": "A7"
+              },
+              {
+                "component": "U1",
+                "pin": "A8"
+              },
+              {
+                "component": "U1",
+                "pin": "A9"
+              },
+              {
+                "component": "U1",
+                "pin": "B1"
+              },
+              {
+                "component": "U1",
+                "pin": "B10"
+              },
+              {
+                "component": "U1",
+                "pin": "B11"
+              },
+              {
+                "component": "U1",
+                "pin": "B12"
+              },
+              {
+                "component": "U1",
+                "pin": "B14"
+              },
+              {
+                "component": "U1",
+                "pin": "B15"
+              },
+              {
+                "component": "U1",
+                "pin": "B16"
+              },
+              {
+                "component": "U1",
+                "pin": "B2"
+              },
+              {
+                "component": "U1",
+                "pin": "B4"
+              },
+              {
+                "component": "U1",
+                "pin": "B5"
+              },
+              {
+                "component": "U1",
+                "pin": "B6"
+              },
+              {
+                "component": "U1",
+                "pin": "B7"
+              },
+              {
+                "component": "U1",
+                "pin": "B9"
+              },
+              {
+                "component": "U1",
+                "pin": "C1"
+              },
+              {
+                "component": "U1",
+                "pin": "C11"
+              },
+              {
+                "component": "U1",
+                "pin": "C12"
+              },
+              {
+                "component": "U1",
+                "pin": "C13"
+              },
+              {
+                "component": "U1",
+                "pin": "C14"
+              },
+              {
+                "component": "U1",
+                "pin": "C16"
+              },
+              {
+                "component": "U1",
+                "pin": "C2"
+              },
+              {
+                "component": "U1",
+                "pin": "C3"
+              },
+              {
+                "component": "U1",
+                "pin": "C4"
+              },
+              {
+                "component": "U1",
+                "pin": "C6"
+              },
+              {
+                "component": "U1",
+                "pin": "C7"
+              },
+              {
+                "component": "U1",
+                "pin": "C8"
+              },
+              {
+                "component": "U1",
+                "pin": "C9"
+              },
+              {
+                "component": "U1",
+                "pin": "D1"
+              },
+              {
+                "component": "U1",
+                "pin": "D10"
+              },
+              {
+                "component": "U1",
+                "pin": "D11"
+              },
+              {
+                "component": "U1",
+                "pin": "D13"
+              },
+              {
+                "component": "U1",
+                "pin": "D14"
+              },
+              {
+                "component": "U1",
+                "pin": "D15"
+              },
+              {
+                "component": "U1",
+                "pin": "D16"
+              },
+              {
+                "component": "U1",
+                "pin": "D3"
+              },
+              {
+                "component": "U1",
+                "pin": "D4"
+              },
+              {
+                "component": "U1",
+                "pin": "D5"
+              },
+              {
+                "component": "U1",
+                "pin": "D6"
+              },
+              {
+                "component": "U1",
+                "pin": "D8"
+              },
+              {
+                "component": "U1",
+                "pin": "D9"
+              },
+              {
+                "component": "U1",
+                "pin": "E1"
+              },
+              {
+                "component": "U1",
+                "pin": "E11"
+              },
+              {
+                "component": "U1",
+                "pin": "E12"
+              },
+              {
+                "component": "U1",
+                "pin": "E13"
+              },
+              {
+                "component": "U1",
+                "pin": "E15"
+              },
+              {
+                "component": "U1",
+                "pin": "E16"
+              },
+              {
+                "component": "U1",
+                "pin": "E2"
+              },
+              {
+                "component": "U1",
+                "pin": "E3"
+              },
+              {
+                "component": "U1",
+                "pin": "E5"
+              },
+              {
+                "component": "U1",
+                "pin": "E6"
+              },
+              {
+                "component": "U1",
+                "pin": "E8"
+              },
+              {
+                "component": "U1",
+                "pin": "F12"
+              },
+              {
+                "component": "U1",
+                "pin": "F13"
+              },
+              {
+                "component": "U1",
+                "pin": "F14"
+              },
+              {
+                "component": "U1",
+                "pin": "F15"
+              },
+              {
+                "component": "U1",
+                "pin": "F2"
+              },
+              {
+                "component": "U1",
+                "pin": "F3"
+              },
+              {
+                "component": "U1",
+                "pin": "F4"
+              },
+              {
+                "component": "U1",
+                "pin": "F5"
+              },
+              {
+                "component": "U1",
+                "pin": "F8"
+              },
+              {
+                "component": "U1",
+                "pin": "G1"
+              },
+              {
+                "component": "U1",
+                "pin": "G11"
+              },
+              {
+                "component": "U1",
+                "pin": "G12"
+              },
+              {
+                "component": "U1",
+                "pin": "G14"
+              },
+              {
+                "component": "U1",
+                "pin": "G15"
+              },
+              {
+                "component": "U1",
+                "pin": "G16"
+              },
+              {
+                "component": "U1",
+                "pin": "G2"
+              },
+              {
+                "component": "U1",
+                "pin": "G4"
+              },
+              {
+                "component": "U1",
+                "pin": "G5"
+              },
+              {
+                "component": "U1",
+                "pin": "G7"
+              },
+              {
+                "component": "U1",
+                "pin": "G8"
+              },
+              {
+                "component": "U1",
+                "pin": "H1"
+              },
+              {
+                "component": "U1",
+                "pin": "H10"
+              },
+              {
+                "component": "U1",
+                "pin": "H11"
+              },
+              {
+                "component": "U1",
+                "pin": "H12"
+              },
+              {
+                "component": "U1",
+                "pin": "H13"
+              },
+              {
+                "component": "U1",
+                "pin": "H14"
+              },
+              {
+                "component": "U1",
+                "pin": "H16"
+              },
+              {
+                "component": "U1",
+                "pin": "H2"
+              },
+              {
+                "component": "U1",
+                "pin": "H3"
+              },
+              {
+                "component": "U1",
+                "pin": "H4"
+              },
+              {
+                "component": "U1",
+                "pin": "H5"
+              },
+              {
+                "component": "U1",
+                "pin": "H7"
+              },
+              {
+                "component": "U1",
+                "pin": "H8"
+              },
+              {
+                "component": "U1",
+                "pin": "J1"
+              },
+              {
+                "component": "U1",
+                "pin": "J13"
+              },
+              {
+                "component": "U1",
+                "pin": "J14"
+              },
+              {
+                "component": "U1",
+                "pin": "J15"
+              },
+              {
+                "component": "U1",
+                "pin": "J16"
+              },
+              {
+                "component": "U1",
+                "pin": "J3"
+              },
+              {
+                "component": "U1",
+                "pin": "J4"
+              },
+              {
+                "component": "U1",
+                "pin": "J5"
+              },
+              {
+                "component": "U1",
+                "pin": "J7"
+              },
+              {
+                "component": "U1",
+                "pin": "J8"
+              },
+              {
+                "component": "U1",
+                "pin": "K1"
+              },
+              {
+                "component": "U1",
+                "pin": "K10"
+              },
+              {
+                "component": "U1",
+                "pin": "K13"
+              },
+              {
+                "component": "U1",
+                "pin": "K15"
+              },
+              {
+                "component": "U1",
+                "pin": "K16"
+              },
+              {
+                "component": "U1",
+                "pin": "K2"
+              },
+              {
+                "component": "U1",
+                "pin": "K3"
+              },
+              {
+                "component": "U1",
+                "pin": "K5"
+              },
+              {
+                "component": "U1",
+                "pin": "K7"
+              },
+              {
+                "component": "U1",
+                "pin": "K8"
+              },
+              {
+                "component": "U1",
+                "pin": "L12"
+              },
+              {
+                "component": "U1",
+                "pin": "L13"
+              },
+              {
+                "component": "U1",
+                "pin": "L14"
+              },
+              {
+                "component": "U1",
+                "pin": "L2"
+              },
+              {
+                "component": "U1",
+                "pin": "L3"
+              },
+              {
+                "component": "U1",
+                "pin": "L4"
+              },
+              {
+                "component": "U1",
+                "pin": "L5"
+              },
+              {
+                "component": "U1",
+                "pin": "L7"
+              },
+              {
+                "component": "U1",
+                "pin": "L9"
+              },
+              {
+                "component": "U1",
+                "pin": "M1"
+              },
+              {
+                "component": "U1",
+                "pin": "M12"
+              },
+              {
+                "component": "U1",
+                "pin": "M14"
+              },
+              {
+                "component": "U1",
+                "pin": "M15"
+              },
+              {
+                "component": "U1",
+                "pin": "M16"
+              },
+              {
+                "component": "U1",
+                "pin": "M2"
+              },
+              {
+                "component": "U1",
+                "pin": "M4"
+              },
+              {
+                "component": "U1",
+                "pin": "M5"
+              },
+              {
+                "component": "U1",
+                "pin": "M6"
+              },
+              {
+                "component": "U1",
+                "pin": "M7"
+              },
+              {
+                "component": "U1",
+                "pin": "N1"
+              },
+              {
+                "component": "U1",
+                "pin": "N11"
+              },
+              {
+                "component": "U1",
+                "pin": "N12"
+              },
+              {
+                "component": "U1",
+                "pin": "N13"
+              },
+              {
+                "component": "U1",
+                "pin": "N14"
+              },
+              {
+                "component": "U1",
+                "pin": "N16"
+              },
+              {
+                "component": "U1",
+                "pin": "N2"
+              },
+              {
+                "component": "U1",
+                "pin": "N3"
+              },
+              {
+                "component": "U1",
+                "pin": "N4"
+              },
+              {
+                "component": "U1",
+                "pin": "N6"
+              },
+              {
+                "component": "U1",
+                "pin": "N7"
+              },
+              {
+                "component": "U1",
+                "pin": "N8"
+              },
+              {
+                "component": "U1",
+                "pin": "N9"
+              },
+              {
+                "component": "U1",
+                "pin": "P1"
+              },
+              {
+                "component": "U1",
+                "pin": "P10"
+              },
+              {
+                "component": "U1",
+                "pin": "P11"
+              },
+              {
+                "component": "U1",
+                "pin": "P13"
+              },
+              {
+                "component": "U1",
+                "pin": "P14"
+              },
+              {
+                "component": "U1",
+                "pin": "P15"
+              },
+              {
+                "component": "U1",
+                "pin": "P16"
+              },
+              {
+                "component": "U1",
+                "pin": "P3"
+              },
+              {
+                "component": "U1",
+                "pin": "P4"
+              },
+              {
+                "component": "U1",
+                "pin": "P5"
+              },
+              {
+                "component": "U1",
+                "pin": "P6"
+              },
+              {
+                "component": "U1",
+                "pin": "P8"
+              },
+              {
+                "component": "U1",
+                "pin": "P9"
+              },
+              {
+                "component": "U1",
+                "pin": "R1"
+              },
+              {
+                "component": "U1",
+                "pin": "R10"
+              },
+              {
+                "component": "U1",
+                "pin": "R11"
+              },
+              {
+                "component": "U1",
+                "pin": "R12"
+              },
+              {
+                "component": "U1",
+                "pin": "R13"
+              },
+              {
+                "component": "U1",
+                "pin": "R15"
+              },
+              {
+                "component": "U1",
+                "pin": "R16"
+              },
+              {
+                "component": "U1",
+                "pin": "R2"
+              },
+              {
+                "component": "U1",
+                "pin": "R3"
+              },
+              {
+                "component": "U1",
+                "pin": "R5"
+              },
+              {
+                "component": "U1",
+                "pin": "R6"
+              },
+              {
+                "component": "U1",
+                "pin": "R7"
+              },
+              {
+                "component": "U1",
+                "pin": "R8"
+              },
+              {
+                "component": "U1",
+                "pin": "T10"
+              },
+              {
+                "component": "U1",
+                "pin": "T12"
+              },
+              {
+                "component": "U1",
+                "pin": "T13"
+              },
+              {
+                "component": "U1",
+                "pin": "T14"
+              },
+              {
+                "component": "U1",
+                "pin": "T15"
+              },
+              {
+                "component": "U1",
+                "pin": "T2"
+              },
+              {
+                "component": "U1",
+                "pin": "T3"
+              },
+              {
+                "component": "U1",
+                "pin": "T4"
+              },
+              {
+                "component": "U1",
+                "pin": "T5"
+              },
+              {
+                "component": "U1",
+                "pin": "T7"
+              },
+              {
+                "component": "U1",
+                "pin": "T8"
+              },
+              {
+                "component": "U1",
+                "pin": "T9"
+              }
+            ],
+            "external_source": null,
+            "kind": "signal",
+            "name": "idle",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "K12"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 0.0
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 0.0
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 0.0
+                }
+              }
+            },
+            "kind": "power",
+            "name": "pin",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "G10"
+              },
+              {
+                "component": "U1",
+                "pin": "J10"
+              },
+              {
+                "component": "U1",
+                "pin": "K11"
+              },
+              {
+                "component": "U1",
+                "pin": "L10"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 1.89
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 1.89
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 1.89
+                }
+              }
+            },
+            "kind": "power",
+            "name": "rail_vccaux",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "E10"
+              },
+              {
+                "component": "U1",
+                "pin": "F11"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 1.05
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 1.05
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 1.05
+                }
+              }
+            },
+            "kind": "power",
+            "name": "rail_vccbram",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "F7"
+              },
+              {
+                "component": "U1",
+                "pin": "F9"
+              },
+              {
+                "component": "U1",
+                "pin": "G6"
+              },
+              {
+                "component": "U1",
+                "pin": "H9"
+              },
+              {
+                "component": "U1",
+                "pin": "J6"
+              },
+              {
+                "component": "U1",
+                "pin": "K9"
+              },
+              {
+                "component": "U1",
+                "pin": "L8"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 1.05
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 1.05
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 1.05
+                }
+              }
+            },
+            "kind": "power",
+            "name": "rail_vccint",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "E7"
+              },
+              {
+                "component": "U1",
+                "pin": "L6"
+              },
+              {
+                "component": "U1",
+                "pin": "M11"
+              },
+              {
+                "component": "U1",
+                "pin": "M9"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 3.465
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 3.465
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 3.465
+                }
+              }
+            },
+            "kind": "power",
+            "name": "rail_vcco_0",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "L15"
+              },
+              {
+                "component": "U1",
+                "pin": "L16"
+              },
+              {
+                "component": "U1",
+                "pin": "M13"
+              },
+              {
+                "component": "U1",
+                "pin": "N10"
+              },
+              {
+                "component": "U1",
+                "pin": "P7"
+              },
+              {
+                "component": "U1",
+                "pin": "R14"
+              },
+              {
+                "component": "U1",
+                "pin": "T11"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 3.465
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 3.465
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 3.465
+                }
+              }
+            },
+            "kind": "power",
+            "name": "rail_vcco_14",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "A16"
+              },
+              {
+                "component": "U1",
+                "pin": "B13"
+              },
+              {
+                "component": "U1",
+                "pin": "C10"
+              },
+              {
+                "component": "U1",
+                "pin": "E14"
+              },
+              {
+                "component": "U1",
+                "pin": "H15"
+              },
+              {
+                "component": "U1",
+                "pin": "J12"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 3.465
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 3.465
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 3.465
+                }
+              }
+            },
+            "kind": "power",
+            "name": "rail_vcco_15",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "M3"
+              },
+              {
+                "component": "U1",
+                "pin": "R4"
+              },
+              {
+                "component": "U1",
+                "pin": "T1"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 3.465
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 3.465
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 3.465
+                }
+              }
+            },
+            "kind": "power",
+            "name": "rail_vcco_34",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "A6"
+              },
+              {
+                "component": "U1",
+                "pin": "B3"
+              },
+              {
+                "component": "U1",
+                "pin": "D7"
+              },
+              {
+                "component": "U1",
+                "pin": "E4"
+              },
+              {
+                "component": "U1",
+                "pin": "F1"
+              },
+              {
+                "component": "U1",
+                "pin": "J2"
+              }
+            ],
+            "external_source": {
+              "current_limit": null,
+              "description": null,
+              "evidence": [],
+              "kind": "bench_supply",
+              "voltage": {
+                "maximum": {
+                  "unit": "V",
+                  "value": 3.465
+                },
+                "minimum": {
+                  "unit": "V",
+                  "value": 3.465
+                },
+                "typical": {
+                  "unit": "V",
+                  "value": 3.465
+                }
+              }
+            },
+            "kind": "power",
+            "name": "rail_vcco_35",
+            "notes": null
+          },
+          {
+            "connections": [
+              {
+                "component": "U1",
+                "pin": "A1"
+              },
+              {
+                "component": "U1",
+                "pin": "A11"
+              },
+              {
+                "component": "U1",
+                "pin": "B8"
+              },
+              {
+                "component": "U1",
+                "pin": "C15"
+              },
+              {
+                "component": "U1",
+                "pin": "C5"
+              },
+              {
+                "component": "U1",
+                "pin": "D12"
+              },
+              {
+                "component": "U1",
+                "pin": "D2"
+              },
+              {
+                "component": "U1",
+                "pin": "E9"
+              },
+              {
+                "component": "U1",
+                "pin": "F10"
+              },
+              {
+                "component": "U1",
+                "pin": "F16"
+              },
+              {
+                "component": "U1",
+                "pin": "F6"
+              },
+              {
+                "component": "U1",
+                "pin": "G13"
+              },
+              {
+                "component": "U1",
+                "pin": "G3"
+              },
+              {
+                "component": "U1",
+                "pin": "G9"
+              },
+              {
+                "component": "U1",
+                "pin": "H6"
+              },
+              {
+                "component": "U1",
+                "pin": "J11"
+              },
+              {
+                "component": "U1",
+                "pin": "J9"
+              },
+              {
+                "component": "U1",
+                "pin": "K14"
+              },
+              {
+                "component": "U1",
+                "pin": "K4"
+              },
+              {
+                "component": "U1",
+                "pin": "K6"
+              },
+              {
+                "component": "U1",
+                "pin": "L1"
+              },
+              {
+                "component": "U1",
+                "pin": "L11"
+              },
+              {
+                "component": "U1",
+                "pin": "M10"
+              },
+              {
+                "component": "U1",
+                "pin": "M8"
+              },
+              {
+                "component": "U1",
+                "pin": "N15"
+              },
+              {
+                "component": "U1",
+                "pin": "N5"
+              },
+              {
+                "component": "U1",
+                "pin": "P12"
+              },
+              {
+                "component": "U1",
+                "pin": "P2"
+              },
+              {
+                "component": "U1",
+                "pin": "R9"
+              },
+              {
+                "component": "U1",
+                "pin": "T16"
+              },
+              {
+                "component": "U1",
+                "pin": "T6"
+              }
+            ],
+            "external_source": null,
+            "kind": "ground",
+            "name": "return",
+            "notes": null
+          }
+        ],
+        "notes": null,
+        "parent_hash": null,
+        "revision": 1
+      },
+      "entry_id": "OHM-138",
+      "entry_research_sha256": "85bd36f5d84122e02d9755f17239d610001d13ade23ad108e646ae02c4c92faa",
+      "excitations": [],
+      "options": {},
+      "original_netlist_sha256": "40fcf1a166e52936bd456486f42e127c8a988e73f6602e054066a026ef783af0",
+      "package": "BGA-256",
+      "reference_part": "XC7A35T / XC7A35T FTG256, unconfigured (JTAG mode, PUDC_B high)",
+      "scope": "Authored reference test circuit; not your saved design or a physical component qualification.",
+      "selections": {
+        "U1": {
+          "entry_id": "OHM-138"
+        }
+      }
+    },
     "OHM-143": {
       "analysis": "ac",
       "circuit": {
@@ -18674,7 +22382,7 @@
       }
     }
   },
-  "generator_sha256": "107cee9412a4e274fd9018d1515bf8c86fa3e58d27f20647abcef66cfdcc3cd8",
-  "recipe_sha256": "bc488ab16855a57c6770fe3374176c0f7214015419616a52a05fe2eb9de00266",
+  "generator_sha256": "6d6856e35af36a2041b792f6e03f576096393b8253fca3d23c49fddd90a75649",
+  "recipe_sha256": "e0b0e3e95da25117d09e2c6765f7d4461d2093e15148e89b70f8256c0ffe0eda",
   "schema_version": 1
 }
