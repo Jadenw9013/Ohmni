@@ -319,3 +319,19 @@ Design runs (from the #28 review):
 - A shared model name that is also a circuit or probe node is refused instead of renamed.
 - An oversized design is refused before any part is resolved.
 - A live test shows that a transient design beyond the rating-signal limit leaves every part unknown.
+
+## D061 — 2026-10-10: The maximum-ESR tantalum card cannot prove a ripple pass
+
+The owner merged #32 (D058) before its proxy review finished. The retroactive review blocked it. With the sourced maximum ESR as the card's series resistor, the simulated tantalum current is a lower bound wherever the part is voltage-driven: at the rating conditions (100 kHz, 25 C) a real part's ESR is at or below the maximum, so it carries at least the simulated current. The fixes:
+- **AC runs at the rating conditions:** the exact ripple row and the ESR heating row now prove a violation but never a pass.
+- **AC runs away from 100 kHz:** the real ESR can exceed the maximum there, so the ripple row is unknown in both directions.
+- **Transient runs:** the ripple row is unknown with the same reason, since a simulated waveform's current bounds the real one in neither direction.
+- **Correction to D058:** its limitation text had the parallel-part direction backwards. With the maximum ESR, parallel parts take more current than with a lower real ESR, so their current checks are conservative at the rating conditions; it is the tantalum's own current rows that are not.
+- **Recipe wording:** the corrected limitation text ships with the next recipe change (D059), because any recipe edit restamps every runtime receipt.
+
+The D054 test that expected a violation from 0.177 A at 10 kHz now expects unknown: with the bound ESR the simulated current does not bound the real one at 10 kHz.
+
+Other corrections to D058:
+- The impedance tolerance is |Z| x 1e-4, applied as an absolute tolerance to each of the real and imaginary parts (not 1e-4 relative to each part).
+- OHM-033's leakage path is 16 V / 1.6 uA = 10 Mohm, not 1.6 Mohm.
+- All 185 receipts were restamped, not only the four DC ones.
