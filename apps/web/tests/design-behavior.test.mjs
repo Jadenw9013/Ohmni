@@ -197,3 +197,11 @@ test('only a server not_run reads "Not run"; unread or failed runs read unknown'
     assert.match(designResultHtml(failed), /Design ratings: <span class="badge warn">Unknown, not established/);
     assert.match(designResultHtml(refused()), /Design ratings: <span class="badge warn">Not run, not checked/);
 });
+
+test('part rows read "Not run" only for a server not_run', () => {
+    const failed = { ...refused(), status: 'failed', problems: ['ngspice failed'] };
+    const html = designResultHtml(failed);
+    assert.doesNotMatch(html, /<td><span class="badge warn">Not run, not checked<\/span>/);
+    assert.match(html, /<td><span class="badge warn">Unknown, not established<\/span>/);
+    assert.match(designResultHtml(refused()), /<td><span class="badge warn">Not run, not checked<\/span>/);
+});

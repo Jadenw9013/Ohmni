@@ -47,9 +47,9 @@ export function designRunModel(result) {
     // A violation needs a run that happened; a design reads within limits only from its own summary.
     const violation = ran && (summary?.status === 'violation' || result?.rating_status === 'violation');
     // Within limits needs the server summary and every bound part inside the simulated set.
-    const simulatedRefs = new Set(list(result?.components).map(c => c?.ref));
+    const simulatedRefs = new Set(list(result?.components).map(c => c?.ref).filter(ref => typeof ref === 'string'));
     const within = !violation && summary?.status === 'within_model_limits'
-        && list(result?.bindings).every(row => simulatedRefs.has(row?.ref));
+        && list(result?.bindings).every(row => typeof row?.ref === 'string' && simulatedRefs.has(row.ref));
     const problems = list(result?.problems);
     const refused = result?.status === 'not_run' && (problems.length > 0 || list(result?.bindings).some(row => row?.problem));
     const title = violation ? 'Rating violation'
@@ -69,7 +69,8 @@ export function designRunModel(result) {
         reference: ran ? (simulated.get(row?.ref)?.reference_part ?? null) : row?.reference_part,
         problem: row?.problem,
         // A part outside the simulated set has no established result, whatever a ratings row says.
-        status: ran ? (simulated.has(row?.ref) ? (byRef.get(row?.ref)?.status ?? 'unknown') : 'unknown') : 'not_run',
+        status: ran ? (simulated.has(row?.ref) ? (byRef.get(row?.ref)?.status ?? 'unknown') : 'unknown')
+            : result?.status === 'not_run' ? 'not_run' : 'unknown',
         rating: ran && simulated.has(row?.ref) ? byRef.get(row?.ref) ?? null : null,
     }));
     return { ran, refused, violation, within, title, problems, parts, summary,
