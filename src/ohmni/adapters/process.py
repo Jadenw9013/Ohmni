@@ -113,7 +113,12 @@ def _captured_text(stream) -> str:
         "\r\n", "\n").replace("\r", "\n")
 
 
-def run_tool(command: list[str], *, timeout: float) -> subprocess.CompletedProcess[str]:
+def run_tool(
+    command: list[str],
+    *,
+    timeout: float,
+    environment: dict[str, str] | None = None,
+) -> subprocess.CompletedProcess[str]:
     """Run fixed argv without a shell, with bounded waiting and cleanup.
 
     Native failures keep their actual exit code. The caller must reject failed
@@ -130,7 +135,7 @@ def run_tool(command: list[str], *, timeout: float) -> subprocess.CompletedProce
         with _noninteractive_errors():
             child = subprocess.Popen(
                 command, stdout=output, stderr=errors,
-                shell=False, **options,
+                shell=False, env=environment, **options,
             )
         try:
             child.wait(timeout=timeout)
