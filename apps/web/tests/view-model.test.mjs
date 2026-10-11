@@ -620,6 +620,7 @@ test("the request box appears only where a request can be answered, and carries 
     };
     assert.equal(await app.revealFreeText({ fetcher }), true);
     assert.equal(dom.get("#free-text-starter").hidden, false);
+    assert.equal(dom.get("#guided-entry").open, false);
 
     const request = "Build a USB-powered CO2 logger with a status light";
     await app.openBrief({ fetcher, request });
@@ -644,9 +645,22 @@ test("a server without a provider offers no request box, and a short request nev
     };
     assert.equal(await app.revealFreeText({ fetcher }), false);
     assert.equal(dom.get("#free-text-starter").hidden, true);
+    assert.equal(dom.get("#guided-entry").open, true);
+    assert.match(dom.get("#ai-entry-status").textContent, /unavailable/);
 
     await app.openBrief({ fetcher, request: "too short" });
     assert.match(dom.get("#free-text-problem").textContent, /sentence or two/);
     assert.equal(dom.get("#free-text-problem").hidden, false);
     assert.deepEqual(calls, ["/api/health"]);
+}));
+
+
+test("a lost AI connection restores guided setup after it was collapsed", async () => withApp(async (app, dom) => {
+    await app.revealFreeText({ fetcher: async () => response(200, health({ free_text: true })) });
+    assert.equal(dom.get("#guided-entry").open, false);
+    const available = await app.revealFreeText({ fetcher: async () => { throw new Error("offline"); } });
+    assert.equal(available, false);
+    assert.equal(dom.get("#free-text-starter").hidden, true);
+    assert.equal(dom.get("#guided-entry").open, true);
+    assert.match(dom.get("#ai-entry-status").textContent, /Could not connect/);
 }));

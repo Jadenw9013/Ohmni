@@ -241,11 +241,19 @@ export async function revealFreeText({ fetcher = globalThis.fetch } = {}) {
         const identity = await fetchHealth(fetcher);
         state.identity = identity;
         setHidden("#free-text-starter", !identity.free_text);
+        const guided = $("#guided-entry");
+        if (guided) guided.open = !identity.free_text;
+        const status = $("#ai-entry-status");
+        if (status) status.textContent = identity.free_text ? "Describe your goal above, or choose the details below." : "AI planning is unavailable on this server. Guided setup is ready to use.";
         return identity.free_text;
     } catch {
         // A health check that fails tells us nothing about the capability, and
-        // the describe stage still works: leave the input hidden and stay quiet.
+        // guided setup remains available while the request input is hidden.
         setHidden("#free-text-starter", true);
+        const guided = $("#guided-entry");
+        if (guided) guided.open = true;
+        const status = $("#ai-entry-status");
+        if (status) status.textContent = "Could not connect to AI planning. Use guided setup below.";
         return false;
     }
 }
@@ -1236,6 +1244,12 @@ function attach() {
     $("#start-supported")?.addEventListener("click", () => void openBrief());
     $("#start-free-text")?.addEventListener("click", () =>
         void openBrief({ request: $("#free-text-request")?.value ?? "" }));
+    document.querySelectorAll("[data-prompt-example]").forEach((button) => button.addEventListener("click", () => {
+        const input = $("#free-text-request");
+        input.value = button.dataset.promptExample;
+        showFreeTextProblem(null);
+        input.focus();
+    }));
     $("#free-text-request")?.addEventListener("input", () => showFreeTextProblem(null));
     void revealFreeText();
     $("#confirm-brief")?.addEventListener("click", () => void startRun());
