@@ -20,7 +20,9 @@
       "bench-results/BEH-TRN-MOSFET--B8.json"
     ],
     "conflicts": [
-      "The source explicitly establishes gate1,drain2,source3; prior drain-gate-source extraction was wrong."
+      "The source explicitly establishes gate1,drain2,source3; prior drain-gate-source extraction was wrong.",
+      "D072: Infineon vendor model threshold 4.36 V at 250 uA exceeds the datasheet VGS(th) maximum 4.0 V.",
+      "D072: the authored IRFP260N_R6 card uses VTO = 3.0 (ASSUMPTION); the vendor card has VTO = 4.363."
     ],
     "documents": [
       {
@@ -32,6 +34,26 @@
         "source_status": "primary_source_opened",
         "title": "IRFP260NPbF HEXFET Power MOSFET",
         "url": "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irfp260n-datasheet-en.pdf?fileId=5546d462533600a401535628a2ef1fe4"
+      },
+      {
+        "document_id": "infineon-irfp260n-spice",
+        "manufacturer": "Infineon",
+        "note": "Archived (ledger sha256 024ef1780b87...); read 2026-10-11 to close the spec's 'no vendor model' note (D072).",
+        "page": null,
+        "revision": "Model generated Dec 1, 00; released 2001-06-18 per Infineon listing",
+        "source_status": "primary_source_opened",
+        "title": "Spice Model - IRFP260N (irfp260n.spi, Symmetry MODPEX SPICE3)",
+        "url": "https://www.infineon.com/assets/row/public/documents/24/50/irfp260n.spi"
+      },
+      {
+        "document_id": "infineon-irfp260n-design-resources",
+        "manufacturer": "Infineon",
+        "note": "Archived (ledger sha256 036d54a6ca00...); read 2026-10-11 to confirm that irfp260n.spi is Infineon's published IRFP260N model (D072).",
+        "page": null,
+        "revision": "retrieved 2026-10-11",
+        "source_status": "primary_source_opened",
+        "title": "Infineon IRFP260N design resources listing (JSON)",
+        "url": "https://www.infineon.com/dataApi/en/part.designresources.en.IRFP260N.json?path=/root/ifxcontainer_809656638/ifxcontainer_1270043983/designresources"
       }
     ],
     "entry_id": "OHM-099",
@@ -176,18 +198,114 @@
         ],
         "unit": "nC",
         "value": 234
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": ".SUBCKT irfp260n 1 2 3; Model generated on Dec 1, 00; MODEL FORMAT: SPICE3; Symmetry POWER MOS Model (Version 1.0)",
+        "field": "vendor_spice_model",
+        "page": 1,
+        "scope": "IRFP260N; header: Node 1 -> Drain, Node 2 -> Gate, Node 3 -> Source",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/24/50/irfp260n.spi"
+        ],
+        "unit": null,
+        "value": "irfp260n.spi (.SUBCKT irfp260n D G S)"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "documentDisplayName 'Spice Model -  IRFP260N', filenameNomenclature irfp260n.spi, releasedDate 2001-06-18",
+        "field": "vendor_model_listing",
+        "page": 1,
+        "scope": "Infineon design resources, Simulation Models",
+        "sources": [
+          "https://www.infineon.com/dataApi/en/part.designresources.en.IRFP260N.json?path=/root/ifxcontainer_809656638/ifxcontainer_1270043983/designresources"
+        ],
+        "unit": null,
+        "value": "Spice Model - IRFP260N (irfp260n.spi)"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "VGS(th) 2.0 - 4.0 V",
+        "field": "gate_threshold_voltage_range",
+        "page": 2,
+        "scope": "IRFP260NPbF; VDS = VGS, ID = 250 uA",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irfp260n-datasheet-en.pdf?fileId=5546d462533600a401535628a2ef1fe4"
+        ],
+        "unit": "V",
+        "value": {
+          "max": 4.0,
+          "min": 2.0
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "VSD max 1.3 V",
+        "field": "maximum_body_diode_forward_voltage",
+        "page": 2,
+        "scope": "IRFP260NPbF; TJ = 25 C, IS = 28 A, VGS = 0 V",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/24/49/infineon-irfp260n-datasheet-en.pdf?fileId=5546d462533600a401535628a2ef1fe4"
+        ],
+        "unit": "V",
+        "value": 1.3
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "VDS 0.8647619 V / 28 A = 30.88 mohm (datasheet max 40 mohm)",
+        "field": "vendor_model_rds_on_10V_28A",
+        "page": 1,
+        "scope": "irfp260n.spi unmodified under ngspice-42, 25 C, VGS 10 V, ID 28 A",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/24/50/irfp260n.spi"
+        ],
+        "unit": "ohm",
+        "value": 0.03088
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "Simulated 4.363772 V; above the datasheet VGS(th) maximum 4.0 V",
+        "field": "vendor_model_vgs_th_at_250uA",
+        "page": 1,
+        "scope": "irfp260n.spi unmodified under ngspice-42, 25 C, VDS = VGS, ID = 250 uA",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/24/50/irfp260n.spi"
+        ],
+        "unit": "V",
+        "value": 4.364
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "Simulated 0.8981 V (datasheet max 1.3 V)",
+        "field": "vendor_model_body_diode_vsd_28A",
+        "page": 1,
+        "scope": "irfp260n.spi unmodified under ngspice-42, 25 C, IS = 28 A, VGS = 0 V",
+        "sources": [
+          "https://www.infineon.com/assets/row/public/documents/24/50/irfp260n.spi"
+        ],
+        "unit": "V",
+        "value": 0.898
       }
     ],
     "remaining_open_items": [
       "Fit/SOA/transient thermal validation remains open; package-level status remains research_required.",
-      "The reference specifies TO-247AC; AD and IGBT variants need separate physical/electrical bindings."
+      "The reference specifies TO-247AC; AD and IGBT variants need separate physical/electrical bindings.",
+      "D072: the spec's research_required reasons (pin order 'UNRESOLVED', 'no vendor model') are closed: the pin order G 1, D 2 and tab, S 3 is sourced from the archived IRFP260NPbF datasheet, and Infineon publishes irfp260n.spi (archived). The spec status cell is left for the owner to change to partial.",
+      "The vendor card is not used by the binding: its threshold (4.36 V at 250 uA) exceeds the datasheet maximum 4.0 V, it is a typical-device model, and netlist.validate_mosfet_cards requires IS=0 while the card sets IS=1e-32. The authored IRFP260N_R6 recipe stays bound."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-099.md",
-      "document_sha256": "edb7c0cd9284986f43fbe6e8806d959479261d61fec9bf126817bec2d1ce3afd",
+      "document_sha256": "f900b79f80b185a97ce84d8ff62285df435a2dbed55fcc7d3bcd26c4e1a99a2b",
       "fragment_sha256": null,
       "line": 1
     }

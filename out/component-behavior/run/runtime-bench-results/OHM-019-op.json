@@ -1,0 +1,59 @@
+{
+  "analysis": "op",
+  "circuit_hash": "dd45e8eb4c5a0803d8ca4bf24236f64b36f2de301db2b5cf26cf08dd1b503543",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "current": 0.001,
+    "drive_role": "A",
+    "kind": "interval",
+    "maximum": 11000.0,
+    "minimum": 9000.0,
+    "observable": "path_resistance",
+    "return_role": "B",
+    "source_facts": {
+      "tol": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Resistance Tolerance +/-10 % std.",
+        "field": "ref_resistance_tolerance_pct",
+        "page": 1,
+        "scope": "Bourns 3361 (REV. 06/24), 3361P-1-103GLF; explicit alternative to the 3314G spec default",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/3361.pdf"
+        ],
+        "unit": "%",
+        "value": 10
+      },
+      "value": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Standard Resistance Table: 10,000 ohms = code 103",
+        "field": "ref_nominal_resistance",
+        "page": 2,
+        "scope": "Bourns 3361 (REV. 06/24), 3361P-1-103GLF; explicit alternative to the 3314G spec default",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/3361.pdf"
+        ],
+        "unit": "ohm",
+        "value": 10000
+      }
+    }
+  },
+  "entry_id": "OHM-019",
+  "entry_research_sha256": "8988b1af7c653e28f04ea694ecdf0584a5a054fa1fbf0545810c1ce0d76dc791",
+  "limits": "Binding check of one bound DC path: the sourced current through the path must reproduce the sourced path resistance (0.1% numerical tolerance, or the sourced tolerance band). It does not validate frequency response, heating, contact wear, isolation, protocol behavior or any rating beyond the stated facts.",
+  "netlist_sha256": "b437420023092e8a4859870404affcfbad1c913ce91190b95e5ea92229bf01fa",
+  "observation_status": "ran",
+  "observed": 10000.0,
+  "output_sha256": "93a8e0d2b2de30de3a049ddd508ddacd001e7e999315ddcc80d0af61bf83abeb",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T18:37:29Z",
+  "raw_output": "runtime-bench-output/OHM-019-op/output.txt",
+  "recipe_source_sha256": "32ede105bae37d23a244e76e69c019da5215799f6f4e220f67c20fbe25e67068",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "version_file": "runtime-bench-output/OHM-019-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sat Oct 10 21:32:36 UTC 2026\n******\n",
+  "version_sha256": "7f444023b0e5851d50a26bf40338ca29665b10988154a0ff2d662d918ab83fc3"
+}
