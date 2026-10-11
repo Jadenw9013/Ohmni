@@ -109,6 +109,7 @@ test('touch story gestures separate horizontal swipes from scroll, mouse orbit a
 
 test('behavior status says what each part can do instead of one blanket caveat', () => {
     assert.match(behaviorStatusText({ state: 'simulated', reason: null }), /simulated from this part's sourced data/);
+    assert.match(behaviorStatusText({ state: 'simulated', reason: 'Simulates as NE555 / NE555 D SOIC-8, the sourced reference part bound to this package.' }), /Electrical behavior: Simulates as NE555/);
     assert.match(behaviorStatusText({ state: 'documented', reason: 'Required electrical evidence remains unresolved.' }), /documented only, not simulated\. Required electrical/);
     assert.match(behaviorStatusText({ state: 'reference_only', reason: 'A package has no electrical function.' }), /not verified yet\. A package/);
     assert.match(behaviorStatusText(undefined), /see the Behavior tab/);

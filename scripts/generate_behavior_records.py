@@ -76,7 +76,23 @@ def _basis_values(value: Any) -> list[str]:
     return sorted(found)
 
 
-def _master_entries(text: str, spec_raw: bytes) -> list[BehaviorEntryRecord]:
+def _bound_reference_packages(root: Path) -> dict[str, str]:
+    """Package entries whose runtime recipe names an exact sourced reference part (D066)."""
+    path = root / "docs/behavior/runtime-recipes.json"
+    if not path.exists():
+        return {}
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    return {
+        key: str(recipe["reference_part"])
+        for key, recipe in payload.get("entries", {}).items()
+        if recipe.get("reference_part")
+    }
+
+
+def _master_entries(
+    text: str, spec_raw: bytes, bound_packages: dict[str, str] | None = None
+) -> list[BehaviorEntryRecord]:
+    bound_packages = bound_packages or {}
     entries: list[BehaviorEntryRecord] = []
     spec_hash = _sha(spec_raw)
     for line_number, line in enumerate(text.splitlines(), 1):
@@ -89,6 +105,17 @@ def _master_entries(text: str, spec_raw: bytes) -> list[BehaviorEntryRecord]:
         if values["layer"] == "L3":
             disposition = "not_simulable"
             simulation_reason = "L3 protocol or firmware behavior requires a higher-layer model."
+        elif (
+            103 <= entry_number <= 140
+            and values["entry_id"] in bound_packages
+            and values["status"] != "research_required"
+        ):
+            # D066 (owner decision): a package simulates as the exact sourced part bound to it.
+            disposition = "simulable"
+            simulation_reason = (
+                f"Simulates as the bound reference part {bound_packages[values['entry_id']]}; the package "
+                "alone has no electrical function, so results describe that part in this package."
+            )
         elif 103 <= entry_number <= 140:
             disposition = "not_simulable"
             simulation_reason = "A package has no electrical function until a sourced reference part is bound."
@@ -279,7 +306,7 @@ def build_records(root: Path = ROOT) -> tuple[
     spec_raw = spec_file.read_bytes()
     text = spec_raw.decode("utf-8")
     classes = _behavior_classes(text, spec_raw)
-    entries = _master_entries(text, spec_raw)
+    entries = _master_entries(text, spec_raw, _bound_reference_packages(root))
     bindings = _gapfill_bindings(root)
     resolutions = _gapfill_resolutions(root)
     research = {}
