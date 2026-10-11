@@ -153,7 +153,7 @@
       }
     ],
     "remaining_open_items": [
-      "Maximum voltage/current and temperature derating are not qualified as max by this datasheet; conservative original 16 V envelope remains pending scope resolution.",
+      "Maximum voltage and temperature derating are not given by this datasheet: rated input voltage 24 Vdc is printed in the typ column only (rated input current 2.5 A is printed in the max column) and no derating is printed; conservative original 16 V envelope remains pending scope resolution.",
       "Physical terminal permutation must be validated before executable binding.",
       "Former simulation blocker resolved for the explicitly bound reference (2026-10-08): Rating-critical limits and physical binding remain unresolved. Resolution: The archived PJ-102A sheet (03/11/2025) has the exact physical binding: p2 schematic 1 = center pin, 2 = sleeve, 3 = spring contact normally closed to 2 (opens on insertion), and the Recommended PCB Layout top view labels 1#, 2#, 3#. Correction: on p1 the 2.5 A 'rated input current' is printed in the MAX column, not typ (the existing current_rated_typical row mislabels it); 24 Vdc 'rated input voltage' is in the typ column and is the only voltage rating; contact resistance 30 mOhm max. A plug-inserted contact model (center and sleeve paths, pin 3 open) closes the binding. Voltage closure requires accepting the rated 24 Vdc as the working ceiling (never relabelled an absolute max); reviewer decision required, and the original conservative 16 V envelope can stay as the checker limit if preferred.",
       "Absolute maximum voltage (not published)",
@@ -165,7 +165,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-172.md",
-      "document_sha256": "96f69f43340ab808cd86471b8a2b83fa44237980e75d08a038b5c21be9a18fa7",
+      "document_sha256": "ebe23173694e78b4ca61c95943ecec225cd0856f74d6617e32bfaf24b9c0bf0a",
       "fragment_sha256": null,
       "line": 1
     }
