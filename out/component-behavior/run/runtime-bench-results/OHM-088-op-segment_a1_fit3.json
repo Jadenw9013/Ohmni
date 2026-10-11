@@ -1,0 +1,98 @@
+{
+  "analysis": "op",
+  "circuit_hash": "1c9261721b5e6e77fea6c0d276042720be00a737e7179dc4286660e0d5430803",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "curve": "segment_a1",
+    "expected": 2.102,
+    "kind": "absolute",
+    "observable": "anode_voltage",
+    "point_index": 2,
+    "source_fact": {
+      "basis": "DERIVED",
+      "confidence": "M",
+      "detail": "Structured copy of the vector read points so the runtime fit probe can replay them.",
+      "field": "forward_curve_read_points",
+      "page": 8,
+      "scope": "HDSP-5523 (each segment, red HDSP-55xx); 25 C typical forward curve read points (I in A, V in V) used for the IS/N/RS fit",
+      "sources": [
+        "https://docs.broadcom.com/doc/AV02-1107EN"
+      ],
+      "unit": null,
+      "value": {
+        "points_a_v": [
+          [
+            0.001351,
+            1.865
+          ],
+          [
+            0.004049,
+            1.951
+          ],
+          [
+            0.00675,
+            1.994
+          ],
+          [
+            0.009001,
+            2.018
+          ],
+          [
+            0.011699,
+            2.039
+          ],
+          [
+            0.0144,
+            2.055
+          ],
+          [
+            0.017099,
+            2.067
+          ],
+          [
+            0.0198,
+            2.077
+          ],
+          [
+            0.0225,
+            2.086
+          ],
+          [
+            0.02475,
+            2.091
+          ],
+          [
+            0.027451,
+            2.097
+          ],
+          [
+            0.030149,
+            2.102
+          ]
+        ],
+        "temperature_c": 25
+      }
+    },
+    "test_current": 0.030149,
+    "tolerance": 0.1051,
+    "tolerance_rule": "max(0.05*V, 0.015 V) for a M-confidence datasheet read"
+  },
+  "entry_id": "OHM-088",
+  "entry_research_sha256": "0db71e5d66d3ee33038b0f6bd0de7025b090530dfe30b52ee42548c731831c64",
+  "limits": "Replays the fitted forward model at one of the sourced curve read points and requires the read voltage within the read uncertainty. Together with the other fit points and the maximum-VF bound this validates the fit over the plotted range at 25 C; it does not validate temperature, reverse behavior, capacitance or ratings.",
+  "netlist_sha256": "099367154d72fe2b81bce03b1ea2e7c80ac2ccb9557c7ae3928f6b030bf35d15",
+  "observation_status": "ran",
+  "observed": 2.108397,
+  "output_sha256": "a691d6492292f45dbffb493b6621e9ca193da1acb20df8c61e153594cc739102",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T19:08:53Z",
+  "raw_output": "runtime-bench-output/OHM-088-op-segment_a1_fit3/output.txt",
+  "recipe_source_sha256": "cdcb7628556b1480e38114dd016841ea922c84230fa1bf6db4221f468e40710d",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "variant": "segment_a1_fit3",
+  "version_file": "runtime-bench-output/OHM-088-op-segment_a1_fit3/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n",
+  "version_sha256": "2cdcb25fcf77dea87742b9ac629a0b5ba20169e01beb2b59fdd2e41ee348a45d"
+}

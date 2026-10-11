@@ -19,7 +19,10 @@
     ],
     "conflicts": [
       "Logic low is 0.6 V maximum, not a generic 0.3*VDD threshold.",
-      "At25 C recommended VDD-VO is 3.6..3.8 V, not the prior 4.0 V assumption."
+      "At25 C recommended VDD-VO is 3.6..3.8 V, not the prior 4.0 V assumption.",
+      "D070: class backlight_if 100 mA / backlight_vf 4.1 V (ASSUMPTION) vs Newhaven 130 mA typical (65-156 mA) at 5.0 V through an on-board resistor.",
+      "D070: class vlcd 3.2-5.2 V (S13) vs Newhaven VLCD 3.5-3.9 V and the archived WH1602B 3.6-3.8 V; class idd max 1.5 mA vs Newhaven 3.0 mA max.",
+      "D070: the archived WH1602B values (IDD 1/1.2/1.5 mA, contrast 3.6-3.8 V, absolute VDD -0.3..7 V) belong to a different module and are not used."
     ],
     "documents": [
       {
@@ -31,6 +34,16 @@
         "source_status": "manufacturer_document_mirror",
         "title": "WH1602B LCD module",
         "url": "https://static.rapidonline.com/pdf/61-6235_v1.pdf"
+      },
+      {
+        "document_id": "newhaven-nhd-0216k1z-fl-ybw",
+        "manufacturer": "Newhaven Display",
+        "note": "Archived (ledger sha256 8b8133b4343e...); read 2026-10-11 for the bound reference (D070).",
+        "page": null,
+        "revision": "document revision 13 (11/09/2022); drawing Rev 1A",
+        "source_status": "primary_source_opened",
+        "title": "NHD-0216K1Z-FL-YBW Product Specification",
+        "url": "https://newhavendisplay.com/content/specs/NHD-0216K1Z-FL-YBW.pdf"
       }
     ],
     "entry_id": "OHM-091",
@@ -173,28 +186,237 @@
           36,
           13.2
         ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Title page 'Product Specification NHD-0216K1Z-FL-YBW'",
+        "field": "ref_reference_part",
+        "page": 1,
+        "scope": "Newhaven NHD-0216K1Z-FL-YBW",
+        "sources": [
+          "https://newhavendisplay.com/content/specs/NHD-0216K1Z-FL-YBW.pdf"
+        ],
+        "unit": null,
+        "value": "Newhaven Display NHD-0216K1Z-FL-YBW"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'1 VSS Ground; 2 VDD Supply Voltage for logic (+5.0V); 3 V0 ...; 4 RS; 5 R/W; 6 E; 7-10 DB0-DB3; 11-14 DB4-DB7; 15 LED+ Backlight Anode (+5.0V via on-board resistor); 16 LED- Backlight Cathode (Ground)'. Roles A and K name LED+ and LED-.",
+        "field": "ref_manufacturer_pin_roles",
+        "page": 5,
+        "scope": "Newhaven NHD-0216K1Z-FL-YBW; Pin Description (and drawing Pin Assignment, p4)",
+        "sources": [
+          "https://newhavendisplay.com/content/specs/NHD-0216K1Z-FL-YBW.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "1": "VSS",
+          "10": "DB3",
+          "11": "DB4",
+          "12": "DB5",
+          "13": "DB6",
+          "14": "DB7",
+          "15": "A",
+          "16": "K",
+          "2": "VDD",
+          "3": "V0",
+          "4": "RS",
+          "5": "RW",
+          "6": "E",
+          "7": "DB0",
+          "8": "DB1",
+          "9": "DB2"
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Supply Voltage VDD - 4.5 5.0 5.5 V'",
+        "field": "ref_operating_supply_range",
+        "page": 6,
+        "scope": "Newhaven NHD-0216K1Z-FL-YBW",
+        "sources": [
+          "https://newhavendisplay.com/content/specs/NHD-0216K1Z-FL-YBW.pdf"
+        ],
+        "unit": "V",
+        "value": [
+          4.5,
+          5.5
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Supply Current IDD VDD = 5.0V 0.5 1.0 3.0 mA'",
+        "field": "ref_logic_supply_current_min_typ_max",
+        "page": 6,
+        "scope": "Newhaven NHD-0216K1Z-FL-YBW; VDD=5.0V; logic supply pin (the backlight is the separate ILED row)",
+        "sources": [
+          "https://newhavendisplay.com/content/specs/NHD-0216K1Z-FL-YBW.pdf"
+        ],
+        "unit": "mA",
+        "value": [
+          0.5,
+          1.0,
+          3.0
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Supply for LCD (contrast) VLCD TOP = 25C 3.5 3.7 3.9 V'",
+        "field": "ref_contrast_voltage_min_typ_max",
+        "page": 6,
+        "scope": "Newhaven NHD-0216K1Z-FL-YBW; TOP=25 C",
+        "sources": [
+          "https://newhavendisplay.com/content/specs/NHD-0216K1Z-FL-YBW.pdf"
+        ],
+        "unit": "V",
+        "value": [
+          3.5,
+          3.7,
+          3.9
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'\"H\" Level input VIH 0.7 * VDD - VDD V'; '\"L\" Level input VIL -0.3 - 0.6 V'",
+        "field": "ref_logic_input_thresholds",
+        "page": 6,
+        "scope": "Newhaven NHD-0216K1Z-FL-YBW",
+        "sources": [
+          "https://newhavendisplay.com/content/specs/NHD-0216K1Z-FL-YBW.pdf"
+        ],
+        "unit": "V",
+        "value": {
+          "VIH_max": "VDD",
+          "VIH_min": "0.7*VDD",
+          "VIL_max": 0.6,
+          "VIL_min": -0.3
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'\"H\" Level output VOH 3.9 - VDD V'; '\"L\" Level output VOL VSS - 0.4 V'",
+        "field": "ref_logic_output_levels",
+        "page": 6,
+        "scope": "Newhaven NHD-0216K1Z-FL-YBW",
+        "sources": [
+          "https://newhavendisplay.com/content/specs/NHD-0216K1Z-FL-YBW.pdf"
+        ],
+        "unit": "V",
+        "value": {
+          "VOH_min": 3.9,
+          "VOL_max": 0.4
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Backlight Supply Voltage VLED - 4.9 5.0 5.1 V'",
+        "field": "ref_backlight_supply_voltage_min_typ_max",
+        "page": 6,
+        "scope": "Newhaven NHD-0216K1Z-FL-YBW; LED+ to LED-, including the on-board resistor",
+        "sources": [
+          "https://newhavendisplay.com/content/specs/NHD-0216K1Z-FL-YBW.pdf"
+        ],
+        "unit": "V",
+        "value": [
+          4.9,
+          5.0,
+          5.1
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Backlight Supply Current ILED VLED = 5.0 V 65 130 156 mA'; p4 'Power Requirement: 5.0V LCD, 5.0V/130mA Backlight'",
+        "field": "ref_backlight_supply_current_min_typ_max",
+        "page": 6,
+        "scope": "Newhaven NHD-0216K1Z-FL-YBW; VLED = 5.0 V; LED+ (pin 15) to LED- (pin 16) through the on-board resistor",
+        "sources": [
+          "https://newhavendisplay.com/content/specs/NHD-0216K1Z-FL-YBW.pdf"
+        ],
+        "unit": "mA",
+        "value": [
+          65,
+          130,
+          156
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Operating Temperature Range TOP Absolute Max -20 - +70'",
+        "field": "ref_operating_temperature_range",
+        "page": 6,
+        "scope": "Newhaven NHD-0216K1Z-FL-YBW; absolute max",
+        "sources": [
+          "https://newhavendisplay.com/content/specs/NHD-0216K1Z-FL-YBW.pdf"
+        ],
+        "unit": "C",
+        "value": [
+          -20,
+          70
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'80.00+-0.5' and '36.00+-0.5' PCB, '13.20(MAX)'; 1x16 pin header, 2.54 mm pitch",
+        "field": "ref_module_dimensions",
+        "page": 4,
+        "scope": "Newhaven NHD-0216K1Z-FL-YBW; mechanical drawing",
+        "sources": [
+          "https://newhavendisplay.com/content/specs/NHD-0216K1Z-FL-YBW.pdf"
+        ],
+        "unit": "mm",
+        "value": [
+          80.0,
+          36.0,
+          13.2
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'1. Driver IC: ST7066U'",
+        "field": "ref_controller",
+        "page": 4,
+        "scope": "Newhaven NHD-0216K1Z-FL-YBW",
+        "sources": [
+          "https://newhavendisplay.com/content/specs/NHD-0216K1Z-FL-YBW.pdf"
+        ],
+        "unit": null,
+        "value": "ST7066U"
       }
     ],
     "remaining_open_items": [
       "Backlight voltage/current and thermal rating are not given in this opened document.",
-      "Controller instruction execution and text state belong to L3."
+      "Controller instruction execution and text state belong to L3.",
+      "Former simulation blocker resolved for the bound reference Newhaven Display NHD-0216K1Z-FL-YBW (2026-10-11, D070): Do not simulate the assumed 100 mA/4.1 V backlight as a rated module load. Resolution: The archived WH1602B sheet states only 'Backlight Type LED'. Newhaven's own NHD-0216K1Z-FL-YBW specification gives the backlight as a supply load through an on-board resistor ('LED+ ... +5.0V via on-board resistor'): VLED 4.9/5.0/5.1 V and ILED 65/130/156 mA at VLED = 5.0 V, with VDD 4.5-5.5 V, IDD 0.5/1.0/3.0 mA at 5.0 V and the 16-pin map. The binding moves to this module, and the backlight is one resistance from the sourced 5.0 V / 130 mA point; the assumed 100 mA / 4.1 V diode is not used.",
+      "Backlight I-V away from 5.0 V +/- 0.1 V and backlight thermal or derating data are unpublished.",
+      "No absolute-maximum VDD is published in this sheet (only the 4.5-5.5 V operating range).",
+      "Controller instruction execution, text state and timing are L3 and not simulated; the record simulates the supply and backlight pins only (D066 item 3)."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Do not simulate the assumed 100 mA/4.1 V backlight as a rated module load."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-091.md",
-      "document_sha256": "d5b0dfd2a7636e3731bb5f319dd2d482be1de194ba20d27a31af3600fd1015cb",
+      "document_sha256": "1252faa8a779db2692fbadc184785d96b88558d49977949ca1690e3c084b6003",
       "fragment_sha256": null,
       "line": 1
     }
   },
   "resolution_ids": [],
   "schema_version": 1,
-  "simulation_disposition": "not_simulable",
-  "simulation_reason": "L3 protocol or firmware behavior requires a higher-layer model.",
+  "simulation_disposition": "simulable",
+  "simulation_reason": "Simulates the electrical pins only, as the bound reference part (Newhaven Display NHD-0216K1Z-FL-YBW (logic supply and backlight only)); protocol, firmware and controller behavior (L3) are not modeled.",
   "source": {
     "document": "COMPONENT_BEHAVIOR_SPEC.md",
     "document_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",

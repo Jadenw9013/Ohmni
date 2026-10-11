@@ -20,7 +20,11 @@
       "bench-results/BEH-CAP-ALEL--B4.json"
     ],
     "conflicts": [
-      "The default three-pin snap-in variant cannot tie an auxiliary terminal to minus without an exact-part pin diagram; general manufacturer guidance requires isolation."
+      "The default three-pin snap-in variant cannot tie an auxiliary terminal to minus without an exact-part pin diagram; general manufacturer guidance requires isolation.",
+      "Spec default ESR 0.03 ohm (ASSUMPTION) vs the tan d bound 0.181 ohm at 120 Hz; the card models no ESR (D067).",
+      "Spec RLK default 1e8/2200 = 4.5e4 ohm vs sourced 35 V / 832.466 uA = 4.20e4 ohm; the binding uses the sourced value (D067).",
+      "Spec 3D default 25 x 40 mm vs bound 22 x 20 mm; LKG is an 85 C series.",
+      "Spec three-pin rule 'tie the extra pin to -' conflicts with the Nichicon guideline (auxiliary terminals isolated); unchanged, three-pin stays unresolved."
     ],
     "documents": [
       {
@@ -32,6 +36,16 @@
         "source_status": "primary_source_opened",
         "title": "Application Guidelines for Aluminum Electrolytic Capacitors",
         "url": "https://www.nichicon.com/getmedia/d6d540b9-2d08-42e7-8d62-a4085f6e1fbd/applicationguidelines.pdf"
+      },
+      {
+        "document_id": "nichicon-lkg",
+        "manufacturer": "Nichicon",
+        "note": "Archived 2026-10-11 (ledger sha256 4acf7c66aad0...); specifications, leakage rule and snap-in drawing p1; 35 V dimension table p2 read for the bound reference Nichicon LKG1V222MESZAK (D067).",
+        "page": null,
+        "revision": "CAT.8100L",
+        "source_status": "primary_source_opened",
+        "title": "Nichicon LKG series catalog (aluminum electrolytic, snap-in/lug, audio)",
+        "url": "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-lkg.pdf"
       }
     ],
     "entry_id": "OHM-031",
@@ -87,22 +101,181 @@
         ],
         "unit": "mm",
         "value": 3
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Dimensions table row: '35V(1V) 2200 22 × 20 1.45 0.30 LKG1V222MESZAK' (Snap-in Terminal Type: Grade TYPE-1, code AK)",
+        "field": "reference_part",
+        "page": 2,
+        "scope": "Nichicon LKG1V222MESZAK (LKG series), 2200 uF 35 V, 22 x 20 mm snap-in, 2 pins at 10 mm; Nichicon catalog LKG",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-lkg.pdf"
+        ],
+        "unit": null,
+        "value": "Nichicon LKG1V222MESZAK"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Rated capacitance column",
+        "field": "nominal_capacitance",
+        "page": 2,
+        "scope": "Nichicon LKG1V222MESZAK (LKG series), 2200 uF 35 V, 22 x 20 mm snap-in, 2 pins at 10 mm; Nichicon catalog LKG; +/-20% at 120 Hz, 20 C",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-lkg.pdf"
+        ],
+        "unit": "uF",
+        "value": 2200
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Capacitance Tolerance ±20% at 120Hz, 20°C'",
+        "field": "capacitance_tolerance",
+        "page": 1,
+        "scope": "Nichicon LKG1V222MESZAK (LKG series), 2200 uF 35 V, 22 x 20 mm snap-in, 2 pins at 10 mm; Nichicon catalog LKG",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-lkg.pdf"
+        ],
+        "unit": "percent",
+        "value": 20
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Rated voltage group in the dimensions table",
+        "field": "rated_voltage",
+        "page": 2,
+        "scope": "Nichicon LKG1V222MESZAK (LKG series), 2200 uF 35 V, 22 x 20 mm snap-in, 2 pins at 10 mm; Nichicon catalog LKG; DC; peak (DC + ripple) must not exceed rated voltage",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-lkg.pdf"
+        ],
+        "unit": "V",
+        "value": 35
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "tan δ column",
+        "field": "maximum_tan_delta",
+        "page": 2,
+        "scope": "Nichicon LKG1V222MESZAK (LKG series), 2200 uF 35 V, 22 x 20 mm snap-in, 2 pins at 10 mm; Nichicon catalog LKG; 120 Hz, 20 C",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-lkg.pdf"
+        ],
+        "unit": "1",
+        "value": 0.3
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "H",
+        "detail": "3*sqrt(C*V) uA = 3*sqrt(2200*35) = 832.466 uA; p1: 'After 5 minutes' application of rated voltage at 20 C, leakage current is not more than 3 sqrt(CV) (uA)' (square root confirmed on the rendered page; pdftotext drops it)",
+        "field": "maximum_leakage_current",
+        "page": 1,
+        "scope": "Nichicon LKG1V222MESZAK (LKG series), 2200 uF 35 V, 22 x 20 mm snap-in, 2 pins at 10 mm; Nichicon catalog LKG",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-lkg.pdf"
+        ],
+        "unit": "uA",
+        "value": 832.466
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'2200 22 × 20 1.45 0.30 LKG1V222MESZAK'; 'Rated ripple current (Arms) at 85°C 120Hz' (1.45 A = 1450 mA)",
+        "field": "maximum_ripple_current",
+        "page": 2,
+        "scope": "Nichicon LKG1V222MESZAK (LKG series), 2200 uF 35 V, 22 x 20 mm snap-in, 2 pins at 10 mm; Nichicon catalog LKG; 85 C, 120 Hz ('Rated ripple current (Arms) at 85°C 120Hz'); value printed 1.45 Arms",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-lkg.pdf"
+        ],
+        "unit": "mA",
+        "value": 1450
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Endurance row",
+        "field": "endurance_life",
+        "page": 1,
+        "scope": "Nichicon LKG1V222MESZAK (LKG series), 2200 uF 35 V, 22 x 20 mm snap-in, 2 pins at 10 mm; Nichicon catalog LKG; rated voltage applied 1000 h at 85 C (no ripple in the test statement); then dC within +/-20%, tan d <= 200%, leakage <= initial",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-lkg.pdf"
+        ],
+        "unit": "h",
+        "value": 1000
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Category Temperature Range' (category temperature range; the rated voltage applies across it)",
+        "field": "operating_temperature_range",
+        "page": 1,
+        "scope": "Nichicon LKG1V222MESZAK (LKG series), 2200 uF 35 V, 22 x 20 mm snap-in, 2 pins at 10 mm; Nichicon catalog LKG",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-lkg.pdf"
+        ],
+        "unit": "C",
+        "value": [
+          -40,
+          85
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Snap-in drawing: two terminals, PC board holes '2-φ2±0.1' at '10±0.1' pitch, ⊖ at the polarity-bar side",
+        "field": "terminal_count",
+        "page": 1,
+        "scope": "Nichicon LKG snap-in terminal type",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-lkg.pdf"
+        ],
+        "unit": null,
+        "value": 2
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'10±0.1' (PC board hole dimensions)",
+        "field": "terminal_pitch",
+        "page": 1,
+        "scope": "Nichicon LKG snap-in",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-lkg.pdf"
+        ],
+        "unit": "mm",
+        "value": 10
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "tan d 0.30 / (2*pi*120 Hz*2200 uF) = 0.1809 ohm",
+        "field": "esr_bound_120Hz",
+        "page": 2,
+        "scope": "Nichicon LKG1V222MESZAK; 120 Hz, 20 C, nominal C",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-lkg.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.1809
       }
     ],
     "remaining_open_items": [
-      "Exact series/orderable part and its ripple-current, lifetime, voltage and temperature ratings remain unbound.",
       "ESR at frequency/temperature, ESL and failure timing are still model assumptions.",
-      "The sleeve is not a guaranteed electrical insulation system."
+      "The sleeve is not a guaranteed electrical insulation system.",
+      "Three-pin (auxiliary-terminal) variant: no pin diagram or function archived; it remains unresolved and must not use the two-pin card.",
+      "ESR versus frequency and ESL remain unsourced.",
+      "Life under ripple and a 105 C rating (LKG is an 85 C series).",
+      "Former simulation blocker resolved for the explicitly bound reference (2026-10-11, D067): Rating-critical part voltage and ripple/lifetime limits need an exact series binding. Three-pin auxiliary-terminal connectivity unresolved; only the separately mapped two-pin variant may proceed after rating binding. Resolution: Nichicon LKG catalog (archived) row LKG1V222MESZAK: 2200 uF, 35 V, tan d 0.30, rated ripple 1.45 A rms at 85 C/120 Hz, endurance 1000 h at 85 C, leakage rule 3√CV after 5 min; its snap-in drawing shows exactly two terminals at 10 mm pitch with ⊖ at the polarity bar. This binds voltage, ripple and life for the two-pin variant. The three-pin variant remains blocked (no 3-pin drawing archived; Nichicon guideline requires auxiliary terminals isolated, conflicting with the spec's tie-to-minus rule). Alternative 105 C general-purpose choice if preferred: Nichicon LGU1V332MELZ (3300 uF 35 V 22 x 25, 1450 mA at 105 C/120 Hz, leakage 1.01 mA listed, 3000 h at 105 C with ripple), also archived."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Rating-critical part voltage and ripple/lifetime limits need an exact series binding.",
-      "Three-pin auxiliary-terminal connectivity unresolved; only the separately mapped two-pin variant may proceed after rating binding."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-031.md",
-      "document_sha256": "eefe16e4bb6226bb6d561efd869520eabb8992fd4dc77ffc78ce8ec838f9e3a4",
+      "document_sha256": "cb079f0644850bb634cb5b509b1b5232c36fb9732df4bc22a744f0640c664a8e",
       "fragment_sha256": null,
       "line": 1
     }

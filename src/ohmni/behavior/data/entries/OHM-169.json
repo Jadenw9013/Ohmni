@@ -19,7 +19,9 @@
       "bench-results/BEH-CON-MODJACK--B3.json"
     ],
     "conflicts": [
-      "54602-910LF in the same source is ten-position; cannot substitute it for the eight-position 54602-908LF."
+      "54602-910LF in the same source is ten-position; cannot substitute it for the eight-position 54602-908LF.",
+      "D068: Entry family values (Amphenol brochure: 3 A continuous, 500 MOhm, 1500 V withstand, -65..125 C) do not apply to the alternate (1.5 A, 1000 MOhm, 1000 VAC, -40..85 C).",
+      "D068: Spec S15 figures (1.5 A, 20 mOhm, 125 V AC) agree with MTJ-880X1 numerically."
     ],
     "documents": [
       {
@@ -41,6 +43,16 @@
         "source_status": "primary_source_opened_via_webfetch_not_yet_archived",
         "title": "Modular Jack Connectors (datasheet / eBrochure)",
         "url": "https://cdn.amphenol-cs.com/media/wysiwyg/files/documentation/datasheet/inputoutput/io_modularjack.pdf"
+      },
+      {
+        "document_id": "adamtech-mtj-880x1",
+        "manufacturer": "Adam Tech",
+        "note": "Archived (ledger sha256 e292d7c0...); read 2026-10-11 for the bound reference Adam Tech MTJ-880X1 (explicit alternate) (D068).",
+        "page": null,
+        "revision": "E, 2/7/20",
+        "source_status": "primary_source_opened",
+        "title": "MTJ-880X1 modular jack 8P8C right angle drawing",
+        "url": "https://app.adam-tech.com/products/download/data_sheet/203795/mtj-880x1-data-sheet.pdf"
       }
     ],
     "entry_id": "OHM-169",
@@ -117,20 +129,116 @@
         ],
         "unit": "V",
         "value": 1500
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Title 'MODULAR TELEPHONE JACK, 8P8C RIGHT ANGLE, PCB', 'PART NO. MTJ-880X1', REV E",
+        "field": "ref_reference_part",
+        "page": 1,
+        "scope": "Adam Tech MTJ-880X1 rev E (2/7/20)",
+        "sources": [
+          "https://app.adam-tech.com/products/download/data_sheet/203795/mtj-880x1-data-sheet.pdf"
+        ],
+        "unit": null,
+        "value": "Adam Tech MTJ-880X1"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Voltage rating: 125 VAC RMS'",
+        "field": "ref_rated_voltage_ac",
+        "page": 1,
+        "scope": "MTJ-880X1; RMS",
+        "sources": [
+          "https://app.adam-tech.com/products/download/data_sheet/203795/mtj-880x1-data-sheet.pdf"
+        ],
+        "unit": "V",
+        "value": 125
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Current rating: 1.5 Amp'",
+        "field": "ref_rated_current",
+        "page": 1,
+        "scope": "MTJ-880X1",
+        "sources": [
+          "https://app.adam-tech.com/products/download/data_sheet/203795/mtj-880x1-data-sheet.pdf"
+        ],
+        "unit": "A",
+        "value": 1.5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Contact resistance: 20 mohms max'",
+        "field": "ref_contact_resistance_max",
+        "page": 1,
+        "scope": "MTJ-880X1",
+        "sources": [
+          "https://app.adam-tech.com/products/download/data_sheet/203795/mtj-880x1-data-sheet.pdf"
+        ],
+        "unit": "mohm",
+        "value": 20
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Insulation resistance: 1000 Mohms min @ 500 VDC'",
+        "field": "ref_insulation_resistance_min",
+        "page": 1,
+        "scope": "MTJ-880X1",
+        "sources": [
+          "https://app.adam-tech.com/products/download/data_sheet/203795/mtj-880x1-data-sheet.pdf"
+        ],
+        "unit": "Mohm",
+        "value": 1000
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Dielectric withstanding voltage: 1,000 VAC RMS 60HZ for 1 minute'",
+        "field": "ref_withstanding_voltage_ac",
+        "page": 1,
+        "scope": "MTJ-880X1; 1 minute withstand",
+        "sources": [
+          "https://app.adam-tech.com/products/download/data_sheet/203795/mtj-880x1-data-sheet.pdf"
+        ],
+        "unit": "V",
+        "value": 1000
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Operating temperature: -40C to +85C'",
+        "field": "ref_operating_temperature_range",
+        "page": 1,
+        "scope": "MTJ-880X1",
+        "sources": [
+          "https://app.adam-tech.com/products/download/data_sheet/203795/mtj-880x1-data-sheet.pdf"
+        ],
+        "unit": "C",
+        "value": [
+          -40,
+          85
+        ]
       }
     ],
     "remaining_open_items": [
       "Exact c-bmj-0102 drawing and GS-12-083 specification URLs returned 403; pin numbering, contact resistance, working voltage and exact family applicability remain open.",
-      "Cat3 passive connector does not establish Ethernet PHY or PoE compliance."
+      "Cat3 passive connector does not establish Ethernet PHY or PoE compliance.",
+      "Former simulation blocker resolved for the explicitly bound reference (2026-10-11, D068): Missing exact terminal map/contact ratings; no PHY/protocol simulation. Resolution: Default Amphenol 54602-908LF drawing/spec (c-bmj-0102, GS-12-083) remain HTTP 403. Explicit alternate Adam Tech MTJ-880X1 (archived manufacturer drawing; same maker family as the bound OHM-170 MTJ-645X1) numbers all eight contacts on the recommended PCB layout (odd 1,3,5,7 one row, even 2,4,6,8 the other) and the front view (1..8), and gives 125 VAC RMS, 1.5 A, 20 mOhm max, -40..+85 C. Terminal map and contact ratings close; Ethernet PHY/PoE stay out of scope.",
+      "Default Amphenol 54602-908LF drawing (browser download)",
+      "Library footprint for MTJ-880X1 (hole sizes per drawing)",
+      "No PHY/PoE model"
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Missing exact terminal map/contact ratings; no PHY/protocol simulation."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-169.md",
-      "document_sha256": "335621c91fb43dd34c472118a307a393d3612431e59f497511a34d54e59477e1",
+      "document_sha256": "406c2bba9173e05ad7d0caab9221cc04c1492e17acc4cf87b4780679119b9464",
       "fragment_sha256": null,
       "line": 1
     }

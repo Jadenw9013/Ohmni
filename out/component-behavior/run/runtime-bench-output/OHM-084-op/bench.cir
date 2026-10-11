@@ -1,0 +1,9 @@
+OHMNI sourced behavior circuit
+.options tnom=25
+.temp 25
+Vsource3 n3 0 DC 5
+Bc1load n3 0 I = 9.9999999999999995e-07 + 3*0.016120000000000002*min(max((v(n3,0)-3.0)/0.5,0),1)
+RINc1 0 0 100Meg
+.op
+.print op
+.end

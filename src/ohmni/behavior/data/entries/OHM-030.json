@@ -20,7 +20,9 @@
       "bench-results/BEH-CAP-ALEL--B4.json"
     ],
     "conflicts": [
-      "The vent-clearance table starts at 8 mm diameter and does not establish a clearance for the 6.3 mm default."
+      "The vent-clearance table starts at 8 mm diameter and does not establish a clearance for the 6.3 mm default.",
+      "Spec default ESR 0.8 ohm (ASSUMPTION) vs the tan d bound 3.95 ohm at 120 Hz; the card models no ESR (D067).",
+      "Spec RLK default 1e8/47 = 2.1e6 ohm vs sourced 25 V / 35.25 uA = 7.09e5 ohm; the binding uses the sourced value (D067)."
     ],
     "documents": [
       {
@@ -32,6 +34,16 @@
         "source_status": "primary_source_opened",
         "title": "Application Guidelines for Aluminum Electrolytic Capacitors",
         "url": "https://www.nichicon.com/getmedia/d6d540b9-2d08-42e7-8d62-a4085f6e1fbd/applicationguidelines.pdf"
+      },
+      {
+        "document_id": "nichicon-uux",
+        "manufacturer": "Nichicon",
+        "note": "Archived 2026-10-11 (ledger sha256 85876ffc55db...); specifications, chip drawing and ripple multipliers p1; dimension table p2 read for the bound reference Nichicon UUX1E470MCL6GS (D067).",
+        "page": null,
+        "revision": "CAT.8100N",
+        "source_status": "primary_source_opened",
+        "title": "Nichicon UUX series catalog (aluminum electrolytic, chip type)",
+        "url": "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-uux.pdf"
       }
     ],
     "entry_id": "OHM-030",
@@ -74,21 +86,187 @@
         ],
         "unit": null,
         "value": "isolate from positive, negative and other circuit connections"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Dimensions table row: '47 6.3× 7.7 0.14 35.25 78 UUX1E470MCL6GS' (25 V (1E) group; leakage at 20℃ after 1 minute; ripple 105℃/120Hz)",
+        "field": "reference_part",
+        "page": 2,
+        "scope": "Nichicon UUX1E470MCL6GS (UUX series), 47 uF 25 V, 6.3 x 7.7 mm chip (V-chip); Nichicon catalog UUX",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-uux.pdf"
+        ],
+        "unit": null,
+        "value": "Nichicon UUX1E470MCL6GS"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Rated capacitance column",
+        "field": "nominal_capacitance",
+        "page": 2,
+        "scope": "Nichicon UUX1E470MCL6GS (UUX series), 47 uF 25 V, 6.3 x 7.7 mm chip (V-chip); Nichicon catalog UUX; +/-20% at 120 Hz, 20 C",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-uux.pdf"
+        ],
+        "unit": "uF",
+        "value": 47
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Capacitance Tolerance ±20% at 120Hz, 20°C'",
+        "field": "capacitance_tolerance",
+        "page": 1,
+        "scope": "Nichicon UUX1E470MCL6GS (UUX series), 47 uF 25 V, 6.3 x 7.7 mm chip (V-chip); Nichicon catalog UUX",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-uux.pdf"
+        ],
+        "unit": "percent",
+        "value": 20
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Rated voltage group in the dimensions table",
+        "field": "rated_voltage",
+        "page": 2,
+        "scope": "Nichicon UUX1E470MCL6GS (UUX series), 47 uF 25 V, 6.3 x 7.7 mm chip (V-chip); Nichicon catalog UUX; DC; peak (DC + ripple) must not exceed rated voltage",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-uux.pdf"
+        ],
+        "unit": "V",
+        "value": 25
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "tan δ column",
+        "field": "maximum_tan_delta",
+        "page": 2,
+        "scope": "Nichicon UUX1E470MCL6GS (UUX series), 47 uF 25 V, 6.3 x 7.7 mm chip (V-chip); Nichicon catalog UUX; 120 Hz, 20 C",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-uux.pdf"
+        ],
+        "unit": "1",
+        "value": 0.14
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Leakage column '35.25' µA (= 0.03CV), 'After 1 minute's application of rated voltage at 20°C'",
+        "field": "maximum_leakage_current",
+        "page": 2,
+        "scope": "Nichicon UUX1E470MCL6GS (UUX series), 47 uF 25 V, 6.3 x 7.7 mm chip (V-chip); Nichicon catalog UUX",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-uux.pdf"
+        ],
+        "unit": "uA",
+        "value": 35.25
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Rated ripple column",
+        "field": "maximum_ripple_current",
+        "page": 2,
+        "scope": "Nichicon UUX1E470MCL6GS (UUX series), 47 uF 25 V, 6.3 x 7.7 mm chip (V-chip); Nichicon catalog UUX; 105 C, 120 Hz; frequency multiplier for 1-47 uF: 0.80 at 50 Hz, 1.15 at 300 Hz, 1.40 at 1 kHz, 1.67 at >=10 kHz (p1)",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-uux.pdf"
+        ],
+        "unit": "mA",
+        "value": 78
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Endurance row",
+        "field": "endurance_life",
+        "page": 1,
+        "scope": "Nichicon UUX1E470MCL6GS (UUX series), 47 uF 25 V, 6.3 x 7.7 mm chip (V-chip); Nichicon catalog UUX; rated voltage applied 2000 h at 105 C (no ripple in the test statement); then dC within +/-20%, tan d <= 200%, leakage <= initial",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-uux.pdf"
+        ],
+        "unit": "h",
+        "value": 2000
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Category Temperature Range' (category temperature range; the rated voltage applies across it)",
+        "field": "operating_temperature_range",
+        "page": 1,
+        "scope": "Nichicon UUX1E470MCL6GS (UUX series), 47 uF 25 V, 6.3 x 7.7 mm chip (V-chip); Nichicon catalog UUX",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-uux.pdf"
+        ],
+        "unit": "C",
+        "value": [
+          -55,
+          105
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Dimension table '6.3×7.7 A 2.4 B 6.6 C 6.6 E 2.2 L 7.7 H 0.5 to 0.8'",
+        "field": "chip_dimensions",
+        "page": 1,
+        "scope": "Nichicon UUX, phi 6.3 x 7.7 (size code CL6)",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-uux.pdf"
+        ],
+        "unit": "mm",
+        "value": {
+          "A": 2.4,
+          "B": 6.6,
+          "C": 6.6,
+          "E": 2.2,
+          "H": "0.5 to 0.8",
+          "L": 7.7
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'1 to 47 0.80 1.00 1.15 1.40 1.67' (50/120/300/1k/>=10k Hz)",
+        "field": "ripple_frequency_multiplier_120Hz",
+        "page": 1,
+        "scope": "Nichicon UUX, 1 to 47 uF",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-uux.pdf"
+        ],
+        "unit": "1",
+        "value": 1.0
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "tan d 0.14 / (2*pi*120 Hz*47 uF) = 3.9507 ohm",
+        "field": "esr_bound_120Hz",
+        "page": 2,
+        "scope": "Nichicon UUX1E470MCL6GS; 120 Hz, 20 C, nominal C",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-uux.pdf"
+        ],
+        "unit": "ohm",
+        "value": 3.9507
       }
     ],
     "remaining_open_items": [
-      "Exact series/orderable part and its ripple-current, lifetime, voltage and temperature ratings remain unbound.",
       "ESR at frequency/temperature, ESL and failure timing are still model assumptions.",
-      "The sleeve is not a guaranteed electrical insulation system."
+      "The sleeve is not a guaranteed electrical insulation system.",
+      "ESR/impedance at high frequency and ESL remain unsourced.",
+      "Life under ripple (the series states rated-voltage endurance only); vent clearance for 6.3 mm.",
+      "Former simulation blocker resolved for the explicitly bound reference (2026-10-11, D067): Rating-critical part voltage and ripple/lifetime limits need an exact series binding. Resolution: Nichicon UUX series catalog (archived) row UUX1E470MCL6GS: 47 uF, 25 V, 6.3 x 7.7, tan d 0.14, leakage 35.25 uA, rated ripple 78 mA rms (105 C/120 Hz) with multipliers, endurance 2000 h at 105 C. Exact value/voltage/case match to the spec default."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Rating-critical part voltage and ripple/lifetime limits need an exact series binding."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-030.md",
-      "document_sha256": "5e56ac56af5489885ff2e4b4d2a95199d0be679788fd9a00979d99e883d5a309",
+      "document_sha256": "c3fce91c095d795758fd46c9a0a0ca76ba2db400eb4407778bc4e67c32913c31",
       "fragment_sha256": null,
       "line": 1
     }

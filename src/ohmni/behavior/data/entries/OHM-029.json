@@ -19,7 +19,11 @@
       "bench-results/BEH-CAP-ALEL--B3.json",
       "bench-results/BEH-CAP-ALEL--B4.json"
     ],
-    "conflicts": [],
+    "conflicts": [
+      "Spec default ESR 0.15 ohm and ESL 15 nH are ASSUMPTION; the part gives tan d 0.14 at 120 Hz (bound 0.844 ohm) and |Z| <= 0.117 ohm at 100 kHz; the card models no ESR (D067).",
+      "Spec RLK default 1e8/220 = 4.5e5 ohm vs sourced 25 V / 165 uA = 1.52e5 ohm; the binding uses the sourced value (D067).",
+      "Spec 3D default member 10 x 16 mm vs bound part 8 x 11.5 mm."
+    ],
     "documents": [
       {
         "document_id": "nichicon-guidelines",
@@ -30,6 +34,16 @@
         "source_status": "primary_source_opened",
         "title": "Application Guidelines for Aluminum Electrolytic Capacitors",
         "url": "https://www.nichicon.com/getmedia/d6d540b9-2d08-42e7-8d62-a4085f6e1fbd/applicationguidelines.pdf"
+      },
+      {
+        "document_id": "nichicon-upw",
+        "manufacturer": "Nichicon",
+        "note": "Archived 2026-10-11 (ledger sha256 8be66d99933e...); specifications, radial drawing and ripple multipliers p1; dimension table p3 read for the bound reference Nichicon UPW1E221MPD (D067).",
+        "page": null,
+        "revision": "CAT.8100N",
+        "source_status": "primary_source_opened",
+        "title": "Nichicon UPW series catalog (aluminum electrolytic, radial)",
+        "url": "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-upw.pdf"
       }
     ],
     "entry_id": "OHM-029",
@@ -85,21 +99,193 @@
         ],
         "unit": "mm",
         "value": 2
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Dimensions table row: '25 (1E) 220 8× 11.5 0.14 165 0.117 0.234 555 UPW1E221MPD'",
+        "field": "reference_part",
+        "page": 3,
+        "scope": "Nichicon UPW1E221MPD (UPW series), 220 uF 25 V, 8 x 11.5 mm radial, P 3.5 mm, lead 0.6 mm; Nichicon catalog UPW",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-upw.pdf"
+        ],
+        "unit": null,
+        "value": "Nichicon UPW1E221MPD"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Rated capacitance column",
+        "field": "nominal_capacitance",
+        "page": 3,
+        "scope": "Nichicon UPW1E221MPD (UPW series), 220 uF 25 V, 8 x 11.5 mm radial, P 3.5 mm, lead 0.6 mm; Nichicon catalog UPW; +/-20% at 120 Hz, 20 C",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-upw.pdf"
+        ],
+        "unit": "uF",
+        "value": 220
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Capacitance Tolerance ±20% at 120Hz, 20°C'",
+        "field": "capacitance_tolerance",
+        "page": 1,
+        "scope": "Nichicon UPW1E221MPD (UPW series), 220 uF 25 V, 8 x 11.5 mm radial, P 3.5 mm, lead 0.6 mm; Nichicon catalog UPW",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-upw.pdf"
+        ],
+        "unit": "percent",
+        "value": 20
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Rated voltage group in the dimensions table",
+        "field": "rated_voltage",
+        "page": 3,
+        "scope": "Nichicon UPW1E221MPD (UPW series), 220 uF 25 V, 8 x 11.5 mm radial, P 3.5 mm, lead 0.6 mm; Nichicon catalog UPW; DC; peak (DC + ripple) must not exceed rated voltage",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-upw.pdf"
+        ],
+        "unit": "V",
+        "value": 25
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "tan δ column",
+        "field": "maximum_tan_delta",
+        "page": 3,
+        "scope": "Nichicon UPW1E221MPD (UPW series), 220 uF 25 V, 8 x 11.5 mm radial, P 3.5 mm, lead 0.6 mm; Nichicon catalog UPW; 120 Hz, 20 C",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-upw.pdf"
+        ],
+        "unit": "1",
+        "value": 0.14
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Leakage column '165' µA (= 0.03CV), 'After 1 minute's application of rated voltage at 20°C, leakage current is not more than 0.03CV(µA)'",
+        "field": "maximum_leakage_current",
+        "page": 3,
+        "scope": "Nichicon UPW1E221MPD (UPW series), 220 uF 25 V, 8 x 11.5 mm radial, P 3.5 mm, lead 0.6 mm; Nichicon catalog UPW",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-upw.pdf"
+        ],
+        "unit": "uA",
+        "value": 165
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Rated ripple column",
+        "field": "maximum_ripple_current",
+        "page": 3,
+        "scope": "Nichicon UPW1E221MPD (UPW series), 220 uF 25 V, 8 x 11.5 mm radial, P 3.5 mm, lead 0.6 mm; Nichicon catalog UPW; 105 C, 100 kHz; frequency multiplier for 68-330 uF: 0.65 at 120 Hz, 0.85 at 1 kHz, 1.00 at >=10 kHz (p1)",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-upw.pdf"
+        ],
+        "unit": "mA",
+        "value": 555
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Endurance row",
+        "field": "endurance_life",
+        "page": 1,
+        "scope": "Nichicon UPW1E221MPD (UPW series), 220 uF 25 V, 8 x 11.5 mm radial, P 3.5 mm, lead 0.6 mm; Nichicon catalog UPW; 105 C with DC bias plus rated ripple, phi 8 case, peak not exceeding rated voltage; then dC within +/-20%, tan d <= 200%, leakage <= initial",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-upw.pdf"
+        ],
+        "unit": "h",
+        "value": 3000
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Category Temperature Range' (category temperature range; the rated voltage applies across it)",
+        "field": "operating_temperature_range",
+        "page": 1,
+        "scope": "Nichicon UPW1E221MPD (UPW series), 220 uF 25 V, 8 x 11.5 mm radial, P 3.5 mm, lead 0.6 mm; Nichicon catalog UPW",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-upw.pdf"
+        ],
+        "unit": "C",
+        "value": [
+          -55,
+          105
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Impedance (Ω) max 20℃/100kHz column '0.117'; -10℃/100kHz '0.234'",
+        "field": "maximum_impedance_100kHz",
+        "page": 3,
+        "scope": "Nichicon UPW1E221MPD; 20 C, 100 kHz (impedance, not ESR)",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-upw.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.117
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Frequency coefficient of rated ripple current ... 68 to 330 0.55 0.65 0.75 0.85 1.00' (50/120/300/1k/>=10k Hz)",
+        "field": "ripple_frequency_multiplier_120Hz",
+        "page": 1,
+        "scope": "Nichicon UPW, 68 to 330 uF",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-upw.pdf"
+        ],
+        "unit": "1",
+        "value": 0.65
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Radial lead table 'φD 8 ... P 3.5 ... φd 0.6'",
+        "field": "lead_spacing",
+        "page": 1,
+        "scope": "Nichicon UPW, phi D = 8 mm",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-upw.pdf"
+        ],
+        "unit": "mm",
+        "value": 3.5
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "tan d 0.14 / (2*pi*120 Hz*220 uF) = 0.8440 ohm (upper bound at 120 Hz)",
+        "field": "esr_bound_120Hz",
+        "page": 3,
+        "scope": "Nichicon UPW1E221MPD; 120 Hz, 20 C, nominal C",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-upw.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.844
       }
     ],
     "remaining_open_items": [
-      "Exact series/orderable part and its ripple-current, lifetime, voltage and temperature ratings remain unbound.",
       "ESR at frequency/temperature, ESL and failure timing are still model assumptions.",
-      "The sleeve is not a guaranteed electrical insulation system."
+      "The sleeve is not a guaranteed electrical insulation system.",
+      "ESR versus frequency/temperature and ESL remain unsourced (tan d at 120 Hz and |Z| at 100 kHz are maxima only).",
+      "Rated ripple at temperatures other than 105 C; reverse-voltage tolerance (none permitted).",
+      "Former simulation blocker resolved for the explicitly bound reference (2026-10-11, D067): Rating-critical part voltage and ripple/lifetime limits need an exact series binding. Resolution: Nichicon UPW series catalog (archived) gives, for the exact part UPW1E221MPD: 25 V, 220 uF, tan d 0.14, leakage 165 uA, impedance 0.117 ohm (20 C/100 kHz), rated ripple 555 mA rms (105 C/100 kHz) with frequency multipliers, and endurance 3000 h at 105 C with rated ripple for phi 8. Voltage, ripple and lifetime are therefore bound to an exact series row."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Rating-critical part voltage and ripple/lifetime limits need an exact series binding."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-029.md",
-      "document_sha256": "ea7e27e2be5899fe2d961b2b22760d2408e141f570694ed4d164e102e48c3da5",
+      "document_sha256": "070405119c717462e81dd65bee0849069891ebaaf705864804a8af72d3ed4b2a",
       "fragment_sha256": null,
       "line": 1
     }

@@ -20,7 +20,9 @@
       "bench-results/BEH-CAP-CERAMIC--B4.json"
     ],
     "conflicts": [
-      "Do not transfer a curve or rating between different capacitance, voltage, case or dielectric variants."
+      "Do not transfer a curve or rating between different capacitance, voltage, case or dielectric variants.",
+      "Spec RLK default 1e9 ohm agrees with the derived series IR minimum (1e9 ohm).",
+      "Footnote 2 on the C1812C column header (KONNEKT) is ambiguous; the waterfall cell itself shows the standard part available."
     ],
     "documents": [
       {
@@ -42,6 +44,16 @@
         "source_status": "primary_source_opened",
         "title": "Ceramic Capacitor Aging Made Simple",
         "url": "https://johansondielectrics.com/docs/3945/ceramic-capacitor-aging-made-simple.pdf"
+      },
+      {
+        "document_id": "kemet-c1002-x7r",
+        "manufacturer": "KEMET (YAGEO Group)",
+        "note": "Archived 2026-10-11 (ledger sha256 d8e6ca663186...); ordering code p2; Table 1B 1812 waterfall p7; thickness code p10; DF p14; IR p15 read for the bound reference KEMET C1812C105K1RACTU (D067).",
+        "page": null,
+        "revision": "C1002_X7R (2026-09-01)",
+        "source_status": "primary_source_opened",
+        "title": "KEMET (YAGEO Group) Surface Mount MLCC X7R Dielectric, 6.3-250 VDC (Commercial Grade)",
+        "url": "https://content.kemet.com/datasheets/KEM_C1002_X7R_SMD.pdf"
       }
     ],
     "entry_id": "OHM-027",
@@ -71,21 +83,153 @@
         ],
         "unit": "percent per decade-hour",
         "value": -2.5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Ordering Information: 'C 1206 C 106 M 4 R A C TU' -> Case 1812, C=Standard, 105 (1 uF), K=±10%, 1=100 VDC, R=X7R, A=N/A, C=100% Matte Sn, TU=7\" reel unmarked; Table 1B (p7) C1812C row 1 µF/105 has thickness code 'GG' in the 100 V (code 1) column",
+        "field": "reference_part",
+        "page": 2,
+        "scope": "KEMET (YAGEO Group) C1812C105K1RACTU, EIA 1812 X7R commercial; series datasheet C1002_X7R (2026-09-01)",
+        "sources": [
+          "https://content.kemet.com/datasheets/KEM_C1002_X7R_SMD.pdf"
+        ],
+        "unit": null,
+        "value": "KEMET C1812C105K1RACTU"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Table 1B cont.: '1 µF 105 J K M ... C1812C [3 5 1] GE GE GG' (100 V column available, thickness GG)",
+        "field": "nominal_capacitance",
+        "page": 7,
+        "scope": "KEMET (YAGEO Group) C1812C105K1RACTU, EIA 1812 X7R commercial; series datasheet C1002_X7R (2026-09-01)",
+        "sources": [
+          "https://content.kemet.com/datasheets/KEM_C1002_X7R_SMD.pdf"
+        ],
+        "unit": "uF",
+        "value": 1
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'K = ±10%' (ordering code position 5); J/K/M offered for 105 in Table 1B",
+        "field": "capacitance_tolerance",
+        "page": 2,
+        "scope": "KEMET (YAGEO Group) C1812C105K1RACTU, EIA 1812 X7R commercial; series datasheet C1002_X7R (2026-09-01)",
+        "sources": [
+          "https://content.kemet.com/datasheets/KEM_C1002_X7R_SMD.pdf"
+        ],
+        "unit": "percent",
+        "value": 10
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Rated Voltage (VDC) ... 1 = 100'",
+        "field": "rated_voltage",
+        "page": 2,
+        "scope": "KEMET (YAGEO Group) C1812C105K1RACTU, EIA 1812 X7R commercial; series datasheet C1002_X7R (2026-09-01); DC",
+        "sources": [
+          "https://content.kemet.com/datasheets/KEM_C1002_X7R_SMD.pdf"
+        ],
+        "unit": "V",
+        "value": 100
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Capacitance ±15% over −55°C to +125°C' (TCC)",
+        "field": "temperature_characteristic",
+        "page": 15,
+        "scope": "KEMET (YAGEO Group) C1812C105K1RACTU, EIA 1812 X7R commercial; series datasheet C1002_X7R (2026-09-01)",
+        "sources": [
+          "https://content.kemet.com/datasheets/KEM_C1002_X7R_SMD.pdf"
+        ],
+        "unit": null,
+        "value": "X7R (+/-15%, -55 to +125 C)"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'−55°C to +125°C operating temperature range'",
+        "field": "operating_temperature_range",
+        "page": 1,
+        "scope": "KEMET (YAGEO Group) C1812C105K1RACTU, EIA 1812 X7R commercial; series datasheet C1002_X7R (2026-09-01)",
+        "sources": [
+          "https://content.kemet.com/datasheets/KEM_C1002_X7R_SMD.pdf"
+        ],
+        "unit": "C",
+        "value": [
+          -55,
+          125
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "IR Limits Table: '1812 ALL < 2.2 µF' in the '1,000 megohm microfarads or 100 GΩ' column; 'Select the lower of the two limits.'",
+        "field": "insulation_resistance_rule",
+        "page": 15,
+        "scope": "KEMET (YAGEO Group) C1812C105K1RACTU, EIA 1812 X7R commercial; series datasheet C1002_X7R (2026-09-01); rated voltage applied 120 s at 25 C",
+        "sources": [
+          "https://content.kemet.com/datasheets/KEM_C1002_X7R_SMD.pdf"
+        ],
+        "unit": null,
+        "value": "1,000 megohm microfarads or 100 GOhm, whichever is lower"
+      },
+      {
+        "basis": "DERIVED",
+        "confidence": "H",
+        "detail": "min(1000 Mohm*uF / 1 uF = 1e9 ohm, 100 Gohm) = 1e9 ohm",
+        "field": "minimum_insulation_resistance",
+        "page": 15,
+        "scope": "KEMET (YAGEO Group) C1812C105K1RACTU, EIA 1812 X7R commercial; series datasheet C1002_X7R (2026-09-01); derived at nominal 1 uF; rated voltage, 120 s, 25 C",
+        "sources": [
+          "https://content.kemet.com/datasheets/KEM_C1002_X7R_SMD.pdf"
+        ],
+        "unit": "ohm",
+        "value": 1000000000.0
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "DF table: '1805 – 2225 ... > 25 [V] All 2.5' (% max)",
+        "field": "maximum_dissipation_factor",
+        "page": 14,
+        "scope": "KEMET (YAGEO Group) C1812C105K1RACTU, EIA 1812 X7R commercial; series datasheet C1002_X7R (2026-09-01); 1 kHz, 1.0 or 0.5 Vrms (see part spec sheet)",
+        "sources": [
+          "https://content.kemet.com/datasheets/KEM_C1002_X7R_SMD.pdf"
+        ],
+        "unit": "1",
+        "value": 0.025
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Table 2: 'GG 1812 1.55 ± 0.10'",
+        "field": "chip_thickness_code_GG",
+        "page": 10,
+        "scope": "KEMET (YAGEO Group) C1812C105K1RACTU, EIA 1812 X7R commercial; series datasheet C1002_X7R (2026-09-01); +/-0.10 mm",
+        "sources": [
+          "https://content.kemet.com/datasheets/KEM_C1002_X7R_SMD.pdf"
+        ],
+        "unit": "mm",
+        "value": 1.55
       }
     ],
     "remaining_open_items": [
-      "Exact manufacturer orderable part, voltage rating and dielectric binding remain unestablished for the package default.",
       "ESR/ESL versus frequency, leakage, bias-fit coefficients and effective capacitance at operating bias remain part-specific.",
-      "A class bench using the supplied V0 law cannot establish a real MLCC DC-bias curve."
+      "A class bench using the supplied V0 law cannot establish a real MLCC DC-bias curve.",
+      "Per-part spec sheet (test voltage for C/DF), DC-bias curve, ESR/ESL and ripple power limit (KEMET K-SIM data not archived).",
+      "Former simulation blocker resolved for the explicitly bound reference (2026-10-11, D067): The exact default part voltage rating is not re-established by these general application documents. Resolution: The archived KEMET (YAGEO Group) X7R commercial-grade SMD datasheet C1002_X7R (2026-09-01) defines the exact ordering code (p2), shows C1812C 1 uF (105) available at 100 V (code 1) with thickness GG (Table 1B, p7), and gives series DF (p14) and IR (p15) limits and the -55..125 C range (p1). That establishes the 100 VDC rating for the exact orderable C1812C105K1RACTU. Murata's PIM database lists no 1 uF 100 V X7R 1812 part."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "The exact default part voltage rating is not re-established by these general application documents."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-027.md",
-      "document_sha256": "0362d686074f789665b990320ce028730099440f0761b32f8c614569335891a9",
+      "document_sha256": "7252cb15554981641908f2fcad0acf0e5ea356ef05d5ce5257e2c88b4747a49d",
       "fragment_sha256": null,
       "line": 1
     }

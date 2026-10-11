@@ -22,7 +22,9 @@
     ],
     "conflicts": [
       "Brochure gives 30 milliohm initial plus 10 milliohm change; presentation says 10 milliohm maximum. Retain 30 milliohm conservative initial resistance.",
-      "Brochure defines 100 VAC as one-minute proof; presentation calls 100 VAC rated. Working-voltage scope remains unresolved."
+      "Brochure defines 100 VAC as one-minute proof; presentation calls 100 VAC rated. Working-voltage scope remains unresolved.",
+      "D068: Entry facts are Amphenol family brochure values (30 mOhm + 10 mOhm change, 100 VAC proof, 1 A presentation); not used.",
+      "D068: Spec ratings cite Molex 105017 (1.8 A / 1 A, 30 V AC, -30..85 C); GCT USB3075 independently states the same pattern for this exact part."
     ],
     "documents": [
       {
@@ -64,6 +66,16 @@
         "source_status": "primary_source_opened_via_webfetch_not_yet_archived",
         "title": "Micro USB 2.0 Connectors",
         "url": "https://cdn.amphenol-cs.com/media/wysiwyg/files/documentation/datasheet/inputoutput/io_usb_micro.pdf"
+      },
+      {
+        "document_id": "gct-usb3075",
+        "manufacturer": "GCT",
+        "note": "Archived (ledger sha256 2fb192e5...); read 2026-10-11 for the bound reference GCT USB3075-30-A (explicit alternate) (D068).",
+        "page": null,
+        "revision": "D4, 17/07/23",
+        "source_status": "primary_source_opened",
+        "title": "USB3075 Micro USB receptacle drawing",
+        "url": "https://gct.co/files/drawings/usb3075.pdf"
       }
     ],
     "entry_id": "OHM-164",
@@ -182,19 +194,142 @@
         ],
         "unit": "V",
         "value": 100
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Ordering grid 'USB3075 - 30 - A'; 'Micro USB Receptacle, Type B, SMT, Horizontal, Bottom Mount (Standard), without Peg, with Outer Shell Stakes'",
+        "field": "ref_reference_part",
+        "page": 1,
+        "scope": "GCT USB3075, Micro USB Receptacle Type B, SMT, horizontal, bottom mount, 30u\" gold, tape & reel",
+        "sources": [
+          "https://gct.co/files/drawings/usb3075.pdf"
+        ],
+        "unit": null,
+        "value": "GCT USB3075-30-A"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Voltage Rating: 30V AC'",
+        "field": "ref_rated_voltage_ac",
+        "page": 1,
+        "scope": "USB3075",
+        "sources": [
+          "https://gct.co/files/drawings/usb3075.pdf"
+        ],
+        "unit": "V",
+        "value": 30
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Current Rating: Signal(Pins 2,3,4):1.0 A.'",
+        "field": "ref_rated_current_signal",
+        "page": 1,
+        "scope": "USB3075 pins 2,3,4",
+        "sources": [
+          "https://gct.co/files/drawings/usb3075.pdf"
+        ],
+        "unit": "A",
+        "value": 1.0
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Power (Pins1,5):1.8A.'",
+        "field": "ref_rated_current_power",
+        "page": 1,
+        "scope": "USB3075 pins 1,5",
+        "sources": [
+          "https://gct.co/files/drawings/usb3075.pdf"
+        ],
+        "unit": "A",
+        "value": 1.8
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Contact Resistance: 30 mOhm max.'",
+        "field": "ref_contact_resistance_max",
+        "page": 1,
+        "scope": "USB3075",
+        "sources": [
+          "https://gct.co/files/drawings/usb3075.pdf"
+        ],
+        "unit": "mohm",
+        "value": 30
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Insulating Resistance: 1000 MOhm min.'",
+        "field": "ref_insulation_resistance_min",
+        "page": 1,
+        "scope": "USB3075",
+        "sources": [
+          "https://gct.co/files/drawings/usb3075.pdf"
+        ],
+        "unit": "Mohm",
+        "value": 1000
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Dielectric Withstand Voltage: 500V AC/minute'",
+        "field": "ref_withstanding_voltage_ac",
+        "page": 1,
+        "scope": "USB3075; withstand, not working rating",
+        "sources": [
+          "https://gct.co/files/drawings/usb3075.pdf"
+        ],
+        "unit": "V",
+        "value": 500
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Operating Temperature: -30C to +85C'",
+        "field": "ref_operating_temperature_range",
+        "page": 1,
+        "scope": "USB3075",
+        "sources": [
+          "https://gct.co/files/drawings/usb3075.pdf"
+        ],
+        "unit": "C",
+        "value": [
+          -30,
+          85
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Durability: 10,000 Cycles'",
+        "field": "ref_durability_cycles",
+        "page": 1,
+        "scope": "USB3075",
+        "sources": [
+          "https://gct.co/files/drawings/usb3075.pdf"
+        ],
+        "unit": "cycles",
+        "value": 10000
       }
     ],
     "remaining_open_items": [
-      "Exact pin mapping and current/temperature derating not archived; manufacturer product page and drawing returned HTTP 403."
+      "Exact pin mapping and current/temperature derating not archived; manufacturer product page and drawing returned HTTP 403.",
+      "Former simulation blocker resolved for the explicitly bound reference (2026-10-11, D068): Rating-critical scope and terminal binding unresolved; no USB protocol simulation. Resolution: Default Amphenol 10118194-0001LF drawing remains HTTP 403. Explicit alternate GCT USB3075-30-A (archived GCT drawing) labels 'Pin 1' and 'Pin 5' on both the recommended PCB layout and the front view, and states part-level ratings: 30 V AC, 1.0 A signal pins 2-4 / 1.8 A power pins 1,5, 30 mOhm max, -30..+85 C. Rating scope and terminal binding close for this exact part; USB protocol stays out of scope.",
+      "Default Amphenol 10118194-0001LF drawing (browser download)",
+      "Library footprint for USB3075 (pads differ from the Amphenol default)",
+      "USB protocol, enumeration and power negotiation are not simulated.",
+      "Per-contact current limits are now bound (D068): 1.8 A on pins 1/5, 1.0 A on pins 2-4."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Rating-critical scope and terminal binding unresolved; no USB protocol simulation."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-164.md",
-      "document_sha256": "a32daef12e446332a88418384e2b7f797d11781abb86154425bf5abcfe89cc3f",
+      "document_sha256": "b699b8cc9247c6a3d56bfe5c8e6f7c9d4f6d81ca4398dff172afbb53d200f4a8",
       "fragment_sha256": null,
       "line": 1
     }

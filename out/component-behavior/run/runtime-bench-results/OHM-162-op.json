@@ -1,0 +1,61 @@
+{
+  "analysis": "op",
+  "circuit_hash": "7a0e6c279e40f84fc4454a47564bd39c625b55f94aa63d1c1a1e729db5528e48",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "current": 1.0,
+    "drive_role": "P1",
+    "expected": 0.03,
+    "kind": "absolute",
+    "observable": "path_resistance",
+    "return_role": "M1",
+    "source_facts": {
+      "i_rated": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'rated input current 1.0 A'",
+        "field": "ref_rated_current",
+        "page": 1,
+        "scope": "UJ2-AH-4-TH; per contact not stated; max column",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/uj2-ah-4-th.pdf"
+        ],
+        "unit": "A",
+        "value": 1.0
+      },
+      "rc": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "converted_unit": "ohm",
+        "converted_value": 0.03,
+        "detail": "'contact resistance(1) between terminals and mating plug 30 mOhm'; note 1 'When measured at 20 mV / 100 mA.'",
+        "field": "ref_contact_resistance_max",
+        "page": 1,
+        "scope": "UJ2-AH-4-TH; between terminals and mating plug; measured at 20 mV / 100 mA",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/uj2-ah-4-th.pdf"
+        ],
+        "unit": "mohm",
+        "value": 30
+      }
+    },
+    "tolerance": 3e-05
+  },
+  "entry_id": "OHM-162",
+  "entry_research_sha256": "38fe94e2bf755e3b4788a6014f3f683447cd533f908af7110e20a08b9e6ed9f1",
+  "limits": "Binding check of one bound DC path: the sourced current through the path must reproduce the sourced path resistance (0.1% numerical tolerance, or the sourced tolerance band). It does not validate frequency response, heating, contact wear, isolation, protocol behavior or any rating beyond the stated facts.",
+  "netlist_sha256": "ad420bb0c702d495b03454c0e41e272f97cad3415f0ff59aaccfdb56e7ab7508",
+  "observation_status": "ran",
+  "observed": 0.03,
+  "output_sha256": "88b64064fc13e2d966059c293f0feed91a247098a5794682f2c90e3dfe15d977",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T19:13:57Z",
+  "raw_output": "runtime-bench-output/OHM-162-op/output.txt",
+  "recipe_source_sha256": "cdcb7628556b1480e38114dd016841ea922c84230fa1bf6db4221f468e40710d",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "version_file": "runtime-bench-output/OHM-162-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n",
+  "version_sha256": "2cdcb25fcf77dea87742b9ac629a0b5ba20169e01beb2b59fdd2e41ee348a45d"
+}

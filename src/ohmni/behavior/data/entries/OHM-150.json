@@ -20,7 +20,10 @@
       "bench-results/BEH-CON-HEADER--B4.json"
     ],
     "conflicts": [
-      "This explicit Harwin reference has300gold operations,not Samtec1000or unrelated25-cycle defaults. Proof voltage cannot replace a continuous working-voltage rating."
+      "This explicit Harwin reference has300gold operations,not Samtec1000or unrelated25-cycle defaults. Proof voltage cannot replace a continuous working-voltage rating.",
+      "D068: Spec Rc default 10 mOhm (ASSUMPTION) vs Wurth 20 mOhm max: the binding uses 20 mOhm as an upper bound.",
+      "D068: Existing entry facts (contact_current_max, contact_resistance_initial_max, operating_temperature_range) are Harwin M20 scoped; new Wurth facts use ref_* names to avoid silently re-scoping them.",
+      "D068: Spec Vwork 250 V cites Samtec S1; Wurth independently gives 250 V AC working voltage for this part (agreement, now exact-part sourced)."
     ],
     "documents": [
       {
@@ -42,6 +45,16 @@
         "source_status": "primary_source_opened",
         "title": "M20-9990845 product data",
         "url": "https://www.harwin.com/products/M20-9990845"
+      },
+      {
+        "document_id": "wurth-61300811121",
+        "manufacturer": "Wurth Elektronik",
+        "note": "Archived (ledger sha256 ac2b7013...); read 2026-10-11 for the bound reference Wurth Elektronik 61300811121 (D068).",
+        "page": null,
+        "revision": "003.000, 2023-01-08",
+        "source_status": "primary_source_opened",
+        "title": "WR-PHD Pin Header 61300811121 datasheet",
+        "url": "https://www.we-online.com/components/products/datasheet/61300811121.pdf"
       }
     ],
     "entry_id": "OHM-150",
@@ -206,22 +219,131 @@
         ],
         "unit": null,
         "value": 8
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Title block 'ORDER CODE 61300811121', DESCRIPTION 'WR-PHD Pin Header'",
+        "field": "ref_reference_part",
+        "page": 1,
+        "scope": "Wurth 61300811121 (WR-PHD Pin Header); per contact; Article/Electrical Properties table",
+        "sources": [
+          "https://www.we-online.com/components/products/datasheet/61300811121.pdf"
+        ],
+        "unit": null,
+        "value": "Wurth Elektronik 61300811121"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Rated Current IR 3 A'",
+        "field": "ref_rated_current",
+        "page": 2,
+        "scope": "Wurth 61300811121 (WR-PHD Pin Header); per contact; Article/Electrical Properties table",
+        "sources": [
+          "https://www.we-online.com/components/products/datasheet/61300811121.pdf"
+        ],
+        "unit": "A",
+        "value": 3
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Working Voltage 250 V (AC)'",
+        "field": "ref_working_voltage_ac",
+        "page": 2,
+        "scope": "Wurth 61300811121 (WR-PHD Pin Header); per contact; Article/Electrical Properties table; AC working voltage, not a withstand value",
+        "sources": [
+          "https://www.we-online.com/components/products/datasheet/61300811121.pdf"
+        ],
+        "unit": "V",
+        "value": 250
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Withstanding Voltage 1 min 500 V (AC)'",
+        "field": "ref_withstanding_voltage_ac",
+        "page": 2,
+        "scope": "Wurth 61300811121 (WR-PHD Pin Header); per contact; Article/Electrical Properties table; 1 min proof test, not a working rating",
+        "sources": [
+          "https://www.we-online.com/components/products/datasheet/61300811121.pdf"
+        ],
+        "unit": "V",
+        "value": 500
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Contact Resistance R 20 mOhm max.'",
+        "field": "ref_contact_resistance_max",
+        "page": 2,
+        "scope": "Wurth 61300811121 (WR-PHD Pin Header); per contact; Article/Electrical Properties table; maximum, mating counterpart/test condition not stated",
+        "sources": [
+          "https://www.we-online.com/components/products/datasheet/61300811121.pdf"
+        ],
+        "unit": "mohm",
+        "value": 20
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Insulation Resistance RISO 1000 MOhm min.'",
+        "field": "ref_insulation_resistance_min",
+        "page": 2,
+        "scope": "Wurth 61300811121 (WR-PHD Pin Header); per contact; Article/Electrical Properties table",
+        "sources": [
+          "https://www.we-online.com/components/products/datasheet/61300811121.pdf"
+        ],
+        "unit": "Mohm",
+        "value": 1000
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Operating Temperature -40 up to +105 C'; p5: 'The operating temperature is comprised of ambient temperature and temperature rise of the component.'",
+        "field": "ref_operating_temperature_range",
+        "page": 2,
+        "scope": "Wurth 61300811121 (WR-PHD Pin Header); per contact; Article/Electrical Properties table; per the same document's cautions (p5) operating temperature = ambient + temperature rise",
+        "sources": [
+          "https://www.we-online.com/components/products/datasheet/61300811121.pdf"
+        ],
+        "unit": "C",
+        "value": [
+          -40,
+          105
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Durability 25 Mating cycles'",
+        "field": "ref_durability_cycles",
+        "page": 2,
+        "scope": "Wurth 61300811121 (WR-PHD Pin Header); per contact; Article/Electrical Properties table",
+        "sources": [
+          "https://www.we-online.com/components/products/datasheet/61300811121.pdf"
+        ],
+        "unit": "cycles",
+        "value": 25
       }
     ],
     "remaining_open_items": [
       "The initial20mohm maximum is not a sourced10mohm typical;model choice must say upper-bound or assumption.",
       "Working voltage,actual mated variant and all-contacts-loaded temperature derating are not established by the series sheet.",
       "Numerical terminal order remains the library convention;the connector assigns no electrical polarity.",
-      "The spec thermal resistance,bulk resistance,inductance and blanket0.7/0.8derating factors remain assumptions."
+      "The spec thermal resistance,bulk resistance,inductance and blanket0.7/0.8derating factors remain assumptions.",
+      "Former simulation blocker resolved for the explicitly bound reference (2026-10-11, D068): Rating-critical working voltage and full mating/thermal context unresolved. Resolution: Wurth 61300811121 publishes a continuous 'Working Voltage 250 V (AC)' (distinct from the 500 V AC 1-min withstand), 3 A rated current, 20 mOhm max contact resistance and -40..+105 C operating temperature that the same document defines as ambient plus self-rise, so the working-voltage and thermal-context blocker closes for this exact part. Mating context: modeled as numbered PCB pins P<k> to open mating contacts M<k> with Wurth's max contact resistance (same pattern as OHM-163/166). Harwin M20 (current reference) publishes no working voltage (prior round).",
+      "Mating counterpart/test condition behind the 20 mOhm max is not stated by Wurth.",
+      "No all-positions-loaded derating, Rth, bulk resistance or inductance sourced.",
+      "Library footprint must match the Wurth hole pattern (2.54 mm, drill per datasheet) for the binding to apply."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Rating-critical working voltage and full mating/thermal context unresolved."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-150.md",
-      "document_sha256": "542c62358811a436d681718bd10c4e72c5d5c8fb7f31864b0d27d2482d1fee59",
+      "document_sha256": "3f4e0f80a2ef32f588b96326b645861a0578a99a7ba58bcfba5660a9c38b6a7c",
       "fragment_sha256": null,
       "line": 1
     }

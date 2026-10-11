@@ -1,0 +1,61 @@
+{
+  "analysis": "op",
+  "circuit_hash": "6d3f17cfb9400551bbff700fc5dc306c0c5a194274eff939e011b410fbea4fc1",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "current": 3.5249999999999996e-05,
+    "drive_role": "A",
+    "expected": 709219.8581560284,
+    "kind": "absolute",
+    "observable": "path_resistance",
+    "return_role": "K",
+    "source_facts": {
+      "ileak": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "converted_unit": "A",
+        "converted_value": 3.5249999999999996e-05,
+        "detail": "Leakage column '35.25' \u00b5A (= 0.03CV), 'After 1 minute's application of rated voltage at 20\u00b0C'",
+        "field": "maximum_leakage_current",
+        "page": 2,
+        "scope": "Nichicon UUX1E470MCL6GS (UUX series), 47 uF 25 V, 6.3 x 7.7 mm chip (V-chip); Nichicon catalog UUX",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-uux.pdf"
+        ],
+        "unit": "uA",
+        "value": 35.25
+      },
+      "vr": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Rated voltage group in the dimensions table",
+        "field": "rated_voltage",
+        "page": 2,
+        "scope": "Nichicon UUX1E470MCL6GS (UUX series), 47 uF 25 V, 6.3 x 7.7 mm chip (V-chip); Nichicon catalog UUX; DC; peak (DC + ripple) must not exceed rated voltage",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-uux.pdf"
+        ],
+        "unit": "V",
+        "value": 25
+      }
+    },
+    "tolerance": 709.2198581560284
+  },
+  "entry_id": "OHM-030",
+  "entry_research_sha256": "c3fce91c095d795758fd46c9a0a0ca76ba2db400eb4407778bc4e67c32913c31",
+  "limits": "Binding check of one bound DC path: the sourced current through the path must reproduce the sourced path resistance (0.1% numerical tolerance, or the sourced tolerance band). It does not validate frequency response, heating, contact wear, isolation, protocol behavior or any rating beyond the stated facts.",
+  "netlist_sha256": "828d7af016eb8dd524f1d5a8524f3ad30189d1aa9f6f9fdce89041be1bd77402",
+  "observation_status": "ran",
+  "observed": 709219.8581560284,
+  "output_sha256": "9d8ad57d0d4a4d25a71c49765f7cb9840d43275d365baadfa022213f1ef00099",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T19:01:42Z",
+  "raw_output": "runtime-bench-output/OHM-030-op/output.txt",
+  "recipe_source_sha256": "cdcb7628556b1480e38114dd016841ea922c84230fa1bf6db4221f468e40710d",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "version_file": "runtime-bench-output/OHM-030-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n",
+  "version_sha256": "2cdcb25fcf77dea87742b9ac629a0b5ba20169e01beb2b59fdd2e41ee348a45d"
+}

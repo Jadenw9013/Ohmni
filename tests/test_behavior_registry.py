@@ -125,9 +125,18 @@ def test_every_entry_has_an_honest_simulation_disposition(registry):
     for entry in registry.entries.values():
         number = int(entry.entry_id.split("-")[1])
         # D066: a package simulates only as an exact sourced reference part bound by its recipe.
-        bound_package = 103 <= number <= 140 and bool(recipes.get(entry.entry_id, {}).get("reference_part"))
-        if entry.layer.value == "L3" or entry.status.value == "research_required":
+        bound = bool(recipes.get(entry.entry_id, {}).get("reference_part"))
+        bound_package = 103 <= number <= 140 and bound
+        # D066 item 3: an L3 entry simulates its electrical pins only, as an exact bound part.
+        bound_l3 = entry.layer.value == "L3" and bound
+        if entry.status.value == "research_required":
             assert entry.simulation_disposition is SimulationDisposition.NOT_SIMULABLE
+        elif entry.layer.value == "L3" and not bound_l3:
+            assert entry.simulation_disposition is SimulationDisposition.NOT_SIMULABLE
+        elif bound_l3:
+            assert entry.simulation_disposition is SimulationDisposition.SIMULABLE
+            assert entry.simulation_reason.startswith("Simulates the electrical pins only")
+            assert "(L3) are not modeled" in entry.simulation_reason
         elif 103 <= number <= 140 and not bound_package:
             assert entry.simulation_disposition is SimulationDisposition.NOT_SIMULABLE
         else:

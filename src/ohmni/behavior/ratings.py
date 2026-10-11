@@ -234,6 +234,8 @@ def _scoped_checks(component, point, context, overrides=None, transient=None, ac
                 (f"rth_js_{color}", "tj_max"),
                 thermal,
             )
+    elif cls == "BEH-DISP-LEDARRAY" and "if_max_seg" in values:
+        _display_checks(component, values, b, thermal, upper_only)
     elif cls == "BEH-RES-POT":
         derive("derate", "clamp((t_end-Tamb)/(t_end-t_knee),0,1)")
         b.add("track power", "power <= p_rated*derate", ("p_rated", "t_end", "t_knee"), thermal)
@@ -272,6 +274,10 @@ def _scoped_checks(component, point, context, overrides=None, transient=None, ac
             reverse = "-v <= vrev_limit" if "Tamb" in values else "-v <= vrev_25"
             upper_only("reverse voltage", reverse, ("vrev_25", "vrev_85", "vrev_125"),
                        "The reverse limits are transient-only; a DC operating point is continuous reverse bias")
+    elif cls in ALUMINIUM_CAPS:
+        derive("v", "v_A-v_K")
+        _alcap_voltage(values, b, "v", "rated voltage")
+        _alcap_reverse(values, b, "v", "")
     elif cls.startswith("BEH-CON-"):
         _connector_checks(component, values, b, thermal, upper_only)
     elif cls == "BEH-MAG-CMC":
@@ -516,6 +522,16 @@ def _transient_checks(component, values, b, thermal, upper_only, w):
             else:
                 upper_only("ripple current", "ripple_rms <= irip_max", ("irip_max",),
                            "Below 100 kHz the allowed ripple is lower by an unbound frequency multiplier")
+    elif cls in ALUMINIUM_CAPS:
+        v, i = w.diff("A", "K"), w.series("i", "A")
+        if v is not None:
+            stat("peak_v", peak(v))
+            stat("min_v", min(v) if v else None)
+            _alcap_voltage(values, b, "peak_v", "peak voltage (DC plus ripple peak)")
+            _alcap_reverse(values, b, "min_v", "peak ")
+        if i is not None and "irip_max" in values:
+            stat("ripple_rms", w.ac_rms(i))
+            b.add("ripple current", "ripple_rms <= irip_max", ("irip_max",), ALCAP_RIPPLE_REASON)
     elif cls == "BEH-CAP-EDLC":
         v, i = w.diff("P", "N"), w.series("i", "P")
         if v is not None:
@@ -544,17 +560,29 @@ def _transient_checks(component, values, b, thermal, upper_only, w):
                 stat(f"rms_{winding}", w.rms(i))
                 b.add(f"winding {winding} RMS current", f"rms_{winding} <= irated", ("irated",), thermal)
     elif cls.startswith("BEH-CON-"):
-        current = next((k for k in ("i_rated", "i_nom") if k in values), None)
-        for role in sorted(roles):
+        limits, groups = contact_current_limits(values, roles)
+        for role in sorted(limits):
             i = w.series("i", role)
-            if i is None or current is None:
+            if i is None:
                 continue
+            current = limits[role]
             stat(f"rms_{role}", w.rms(i))
             if current == "i_nom":
-                upper_only(f"contact RMS current {role}", f"rms_{role} <= i_nom", ("i_nom",),
-                           "Nominal current applies only up to the derating knee, which is not bound")
+                upper_only(f"contact RMS current {role}", f"rms_{role} <= i_nom", ("i_nom",), NOMINAL_KNEE)
             else:
                 b.add(f"contact RMS current {role}", f"rms_{role} <= {current}", (current,), thermal)
+        for limit, members in sorted(groups.items()):
+            series = [w.series("i", r) for r in members]
+            if all(x is None for x in series):
+                continue
+            name = f"collective contact RMS current {'+'.join(members)}"
+            if any(x is None for x in series):
+                b.add(name, "", (limit,), GROUP_UNOBSERVED)
+                continue
+            # The summed magnitude, sample by sample, then its RMS over the window.
+            key = "rms_sum_" + "_".join(members)
+            stat(key, w.rms([sum(abs(x) for x in sample) for sample in zip(*series)]))
+            b.add(name, f"{key} <= {limit}", (limit,), thermal)
     elif cls == "BEH-RES-FIXED" and "u_limit" in values:
         v = w.diff("A", "B")
         if v is not None:
@@ -574,21 +602,83 @@ def _transient_checks(component, values, b, thermal, upper_only, w):
             b.add("peak supply (absolute maximum)", "peak_rail <= supply_abs_max", ("supply_abs_max",))
 
 
+CONTACT_LIMIT_PREFIX = "i_rated_"
+CONTACT_GROUP_PREFIX = "i_sum__"
+NOMINAL_KNEE = "Nominal current applies only up to the derating knee, which is not bound"
+GROUP_UNOBSERVED = "Not every contact of this collectively rated group has an observed current"
+
+
+def contact_current_limits(values, roles):
+    """Which sourced current limit applies to each connector contact (D068).
+
+    The part-wide limit is ``i_rated`` (or ``i_nom``). A recipe binds a different per-contact limit for
+    one role as ``i_rated_<ROLE>``. A limit the source states only collectively, over several contacts
+    together, is bound as ``i_sum__<ROLE>__<ROLE>...``: it bounds the summed current magnitude of the
+    listed contacts, and those contacts get no individual limit unless one is bound for them, because
+    the source states none. Returns ({role: alias}, {alias: [roles]}).
+    """
+    groups = {k: k[len(CONTACT_GROUP_PREFIX):].split("__") for k in values if k.startswith(CONTACT_GROUP_PREFIX)}
+    grouped = {role for members in groups.values() for role in members}
+    default = next((k for k in ("i_rated", "i_nom") if k in values), None)
+    limits = {}
+    for role in roles:
+        if CONTACT_LIMIT_PREFIX + role in values:
+            limits[role] = CONTACT_LIMIT_PREFIX + role
+        elif role not in grouped and default:
+            limits[role] = default
+    return limits, groups
+
+
+def _display_checks(component, values, b, thermal, upper_only):
+    """Per-segment LED display limits (D070); the source rates each segment or DP, never the package.
+
+    The DC segment current applies up to the sourced derating knee ambient; above it, or with no
+    declared ambient, only a violation of the flat value is proven. No common-pin or package rating
+    is published, so the commons get no rating row of their own. Reverse bias is never accepted:
+    the source reverse voltage is a test condition, so it can only prove a violation.
+    """
+    roles = set(component.role_nodes)
+    segments = sorted(role for role in roles if not role.startswith("COM"))
+    knee = values.get("t_knee_seg")
+    ambient_ok = "Tamb" in values and knee is not None and values["Tamb"] <= knee
+    for segment in segments:
+        common = "COM" if "COM" in roles else "COM" + segment[-1]
+        if common not in roles:
+            continue
+        current = f"i_{segment} <= if_max_seg"
+        if ambient_ok:
+            b.add(f"segment {segment} current", current, ("if_max_seg", "t_knee_seg"))
+        else:
+            upper_only(f"segment {segment} current", current, ("if_max_seg", "t_knee_seg"),
+                       "The per-segment DC rating applies only up to the sourced derating-knee ambient; "
+                       "declare an ambient at or below it (the derating above it is not encoded)")
+        b.add(f"segment {segment} power", f"(v_{segment}-v_{common})*i_{segment} <= p_seg", ("p_seg",), thermal)
+        if values.get(f"v_{common}", 0) - values.get(f"v_{segment}", 0) > 0:
+            upper_only(f"segment {segment} reverse voltage", f"v_{common}-v_{segment} <= vr_max", ("vr_max",),
+                       "The source reverse voltage is a test condition, not an application rating; "
+                       "reverse bias is never accepted as within limits")
+
+
 def _connector_checks(component, values, b, thermal, upper_only):
     """Every terminal carries one contact's current; insulation is rated between any two contacts."""
-    current = next((k for k in ("i_rated", "i_nom") if k in values), None)
     voltage = next((k for k in ("v_rated", "v_work", "v_III_2") if k in values), None)
     roles = [r for r in component.role_nodes if "v_" + r in values]
-    if current:
-        derating = ("Nominal current applies only up to the derating knee, which is not bound"
-                    if current == "i_nom" else thermal)
-        for role in component.role_nodes:
-            if "i_" + role not in values:
-                continue
-            if current == "i_nom":
-                upper_only(f"contact current {role}", f"abs(i_{role}) <= i_nom", ("i_nom",), derating)
-            else:
-                b.add(f"contact current {role}", f"abs(i_{role}) <= {current}", (current,), derating)
+    limits, groups = contact_current_limits(values, component.role_nodes)
+    for role, limit in limits.items():
+        if "i_" + role not in values:
+            continue
+        if limit == "i_nom":
+            upper_only(f"contact current {role}", f"abs(i_{role}) <= i_nom", ("i_nom",), NOMINAL_KNEE)
+        else:
+            b.add(f"contact current {role}", f"abs(i_{role}) <= {limit}", (limit,), thermal)
+    for limit, members in sorted(groups.items()):
+        observed = [r for r in members if "i_" + r in values]
+        if not observed:
+            continue
+        name = f"collective contact current {'+'.join(members)}"
+        total = "+".join(f"abs(i_{r})" for r in members)
+        b.add(name, f"{total} <= {limit}", (limit,),
+              thermal if len(observed) == len(members) else GROUP_UNOBSERVED)
     if voltage and len(roles) > 1:
         spread = f"max({','.join('v_' + r for r in roles)})-min({','.join('v_' + r for r in roles)})"
         # OHM-171/172 print their rated voltage in a "typ" column; Jaden approved using it as the rating (D053).
@@ -597,7 +687,8 @@ def _connector_checks(component, values, b, thermal, upper_only):
         b.add("ambient temperature", "Tamb <= t_amb_max", ("t_amb_max",))
     if "t_contact_max" in values:
         upper_only("contact temperature", "Tamb <= t_contact_max", ("t_contact_max",),
-                   "The contact limit includes self-heating under current, which this model does not compute")
+                   "The contact limit includes, or may include, self-heating under current, which this model "
+                   "does not compute")
 
 
 def _failure_modes(component, behavior, builder, ran):
@@ -1272,6 +1363,17 @@ def _ac_checks(component, values, b, thermal, upper_only, window, linear, dual=N
                 add("AC voltage", f"vac_{key} <= vac", ("vac",),
                     "The AC voltage rating is stated at 50 Hz; the permitted AC voltage at other frequencies is not bound",
                     violation_only=True)
+        elif cls in ALUMINIUM_CAPS and {"A", "K"} <= set(v):
+            vdc, vac = across("A", "K")
+            stat(f"vpk_{key}", vdc + root2 * abs(vac))
+            stat(f"vmin_{key}", vdc - root2 * abs(vac))
+            rows.append(_alcap_voltage(values, b, f"vpk_{key}", "peak voltage (DC plus AC peak)", tag))
+            reverse = _alcap_reverse(values, b, f"vmin_{key}", "", tag)
+            if reverse is not None:
+                rows.append(reverse)
+            if "A" in i and "irip_max" in values:
+                stat(f"irip_{key}", abs(i["A"]))
+                add("ripple current", f"irip_{key} <= irip_max", ("irip_max",), ALCAP_RIPPLE_REASON)
         elif cls == "BEH-CAP-EDLC" and {"P", "N"} <= set(v):
             vdc, vac = across("P", "N")
             stat(f"vpk_{key}", vdc + root2 * abs(vac))
@@ -1313,16 +1415,33 @@ def _ac_checks(component, values, b, thermal, upper_only, window, linear, dual=N
             stat(f"vpk_{key}", abs(vdc) + root2 * abs(vac))
             add("peak track voltage (DC plus AC peak)", f"vpk_{key} <= v_max", ("v_max",))
         elif cls.startswith("BEH-CON-"):
-            current = next((k for k in ("i_rated", "i_nom") if k in values), None)
-            for role in sorted(i) if current else ():
+            limits, groups = contact_current_limits(values, i)
+            for role in sorted(limits):
+                current = limits[role]
                 stat(f"irms_{role}_{key}", math.hypot(dc("i", role), abs(i[role])))
                 if current == "i_nom":
                     add(f"contact RMS current {role} (DC plus AC)", f"irms_{role}_{key} <= i_nom", ("i_nom",),
-                        "Nominal current applies only up to the derating knee, which is not bound",
-                        violation_only=True)
+                        NOMINAL_KNEE, violation_only=True)
                 else:
                     add(f"contact RMS current {role} (DC plus AC)", f"irms_{role}_{key} <= {current}",
                         (current,), thermal)
+            for limit, members in sorted(groups.items()):
+                if not any(r in i for r in members):
+                    continue
+                if not all(r in i for r in members):
+                    # Same rule as DC and transient: a partly observed group is unknown, never skipped.
+                    add(f"collective contact RMS current {'+'.join(members)} (DC plus AC)", "", (limit,),
+                        GROUP_UNOBSERVED)
+                    continue
+                # The RMS of a sum of magnitudes is at most the sum of the members' RMS values, so this
+                # bound proves a pass; above the limit the phases decide, so it cannot prove a violation.
+                bound = f"irms_sum_{'_'.join(members)}_{key}"
+                stat(bound, sum(math.hypot(dc("i", r), abs(i[r])) for r in members))
+                row = add(f"collective contact RMS current {'+'.join(members)} (DC plus AC)",
+                          f"{bound} <= {limit}", (limit,), thermal)
+                if row["status"] == "violation":
+                    row.update(status="unknown", reason="The summed member RMS currents exceed the collective "
+                               "limit; this sum is only an upper bound, so the phases decide")
         if not rows:
             # No translated AC rating for this class (or none of its limits is bound): the AC swing is
             # not checked, so the part cannot pass on its operating-point rows alone.
@@ -1351,6 +1470,45 @@ def _film_checks(values, b, observed, label, tag="", ac=False):
     if row["status"] == "within_limit":
         row.update(status="unknown", reason="Ambient temperature is not declared; the rating is derated above "
                    f"+{start} C and ends at +125 C")
+    return row
+
+
+ALUMINIUM_CAPS = {"BEH-CAP-ALEL", "BEH-CAP-ALPOLY"}
+ALCAP_RIPPLE_REASON = (
+    "The rated ripple current is stated at one frequency and temperature (see its scope), and the card's current is not "
+    "the real part's: ESR, ESL and the 20% capacitance tolerance move it in directions the card cannot bound, so this "
+    "row proves neither a pass nor a violation (D067)")
+
+
+def _alcap_voltage(values, b, observed, label, tag=""):
+    """Nichicon aluminium electrolytic and polymer cards (D067): DC plus ripple peak must not exceed the rated voltage,
+    which applies across the category temperature range. With no declared ambient only a violation is proven."""
+    if "Tamb" in values:
+        b.add("ambient within category range" + tag, "t_min <= Tamb <= t_max", ("t_min", "t_max"))
+        return b.add(label + tag, f"{observed} <= vr", ("vr",))
+    row = b.add(label + tag, f"{observed} <= vr", ("vr",))
+    if row["status"] == "within_limit":
+        row.update(status="unknown", reason="Ambient temperature is not declared; the rated voltage applies only "
+                   "within the category temperature range")
+    return row
+
+
+ALCAP_REVERSE_NOISE_V = 1e-9
+
+
+def _alcap_reverse(values, b, observed, prefix, tag=""):
+    """Reverse voltage is not permitted on these polarized parts (Nichicon application guidelines): any reverse
+    bias is a violation. Only a reverse swing adds a row; forward bias is covered by the voltage row."""
+    try:
+        # 1 nV is a solver-noise floor (engine tolerance, not a datasheet value): a -1e-15 V artefact of an
+        # unbiased node is not reverse bias, while any real reverse bias is far larger.
+        reverse = evaluate(f"{observed} < -{ALCAP_REVERSE_NOISE_V}", values)
+    except ExpressionUnavailable:
+        return None
+    if not reverse:
+        return None
+    row = b.add(prefix + "reverse voltage (not permitted)" + tag, f"{observed} >= -{ALCAP_REVERSE_NOISE_V}", ())
+    row["reason"] = "Reverse voltage is not permitted on this polarized capacitor (Nichicon application guidelines)"
     return row
 
 

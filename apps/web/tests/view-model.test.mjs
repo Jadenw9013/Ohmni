@@ -695,3 +695,24 @@ test("workspace refresh preserves the conversation identity across replies", asy
         };
     });
 });
+
+test("result conversation binds the displayed revision, not the latest project revision", async () => withApp(async (app, dom) => {
+    const projectId="1".repeat(16), revisionId="2".repeat(16), stamp="2026-10-11T00:00:00+00:00";
+    const saved={revision_id:revisionId,number:1,created_at:stamp,brief:defaultProjectBrief(),brief_fingerprint:"b".repeat(64),preview:brief(),job_id:JOB_ID};
+    const project={project_id:projectId,created_at:stamp,updated_at:stamp,revisions:[saved,{...saved,revision_id:"3".repeat(16),number:2,job_id:null}]};
+    dom.get("#result-assistant").querySelector=dom.get;
+    globalThis.fetch=async()=>response(200,{...identity,project});
+    await app.startProjectRun({projectId,revisionId,identity,preview:brief(),fetcher:async()=>response(202,startEnvelope()),poller:()=>{}});
+    await app.poll(JOB_ID,identity,{fetcher:async()=>response(200,jobEnvelope({status:"complete",report:completedReport()})),monitorer:()=>{}});
+    await app.loadResultAssistant();
+    assert.equal(dom.get("#result-assistant").hidden,false);
+    assert.equal(dom.get("#result-assistant-context").textContent,"Working with saved revision 1.");
+    assert.match(dom.get("#result-assistant").innerHTML,/for="result-assistant-message"/);
+    let deliver;
+    const pending=app.loadResultAssistant({fetcher:()=>new Promise(resolve=>{deliver=resolve;})});
+    app.invalidateProjectResult();
+    const before=dom.get("#result-assistant").innerHTML;
+    deliver(response(200,{...identity,project}));await pending;
+    assert.equal(dom.get("#result-assistant").hidden,true);
+    assert.equal(dom.get("#result-assistant").innerHTML,before,"late project lookup cannot remount stale board conversation");
+}));

@@ -21,7 +21,10 @@
       "bench-results/BEH-CON-USB--B5.json"
     ],
     "conflicts": [
-      "Family 5 A capability cannot be applied to a single VBUS contact or treated as USB-PD negotiation."
+      "Family 5 A capability cannot be applied to a single VBUS contact or treated as USB-PD negotiation.",
+      "D068: Spec OHM-165 states '1.25 A on B5' and that 'the A5/B5 rating asymmetry is real'; GCT USB4110 states '1.25A for A5/B5 pin' (both CC pins). Different part, but the spec's asymmetry claim should not be generalised.",
+      "D068: Entry's family_extended_current_claim 5 A is Amphenol family; GCT's 5.00 A is collective over VBUS pins, not per contact.",
+      "D068: The spec 3D model has 24 contacts; this binding is 16 contacts (catalog record HRO TYPE-C-31-M-12 is also 16)."
     ],
     "documents": [
       {
@@ -43,6 +46,16 @@
         "source_status": "primary_source_opened_via_webfetch_not_yet_archived",
         "title": "USB Type C Connector System",
         "url": "https://cdn.amphenol-cs.com/media/wysiwyg/files/documentation/datasheet/inputoutput/io_usb_type_c.pdf"
+      },
+      {
+        "document_id": "gct-usb4110",
+        "manufacturer": "GCT",
+        "note": "Archived (ledger sha256 b083cd78...); read 2026-10-11 for the bound reference GCT USB4110-GF-A (explicit alternate) (D068).",
+        "page": null,
+        "revision": "B4, 22/05/24",
+        "source_status": "primary_source_opened",
+        "title": "USB4110 USB Type C receptacle for USB 2.0 drawing",
+        "url": "https://gct.co/files/drawings/usb4110.pdf"
       }
     ],
     "entry_id": "OHM-165",
@@ -74,20 +87,213 @@
         ],
         "unit": "A",
         "value": 5
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Ordering grid 'USB4110 - GF - A'; 'USB Type C Receptacle for USB 2.0, SMT Type, PCB Top Mount'",
+        "field": "ref_reference_part",
+        "page": 1,
+        "scope": "GCT USB4110, USB Type C receptacle for USB 2.0, SMT top mount, gold flash, tape & reel",
+        "sources": [
+          "https://gct.co/files/drawings/usb4110.pdf"
+        ],
+        "unit": null,
+        "value": "GCT USB4110-GF-A"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Table 'Pin | Signal | Mating Sequence': A1 GND First ... B1 GND First; 'SHELL GND'",
+        "field": "ref_pin_signal_table",
+        "page": 1,
+        "scope": "USB4110 pin/signal/mating-sequence table",
+        "sources": [
+          "https://gct.co/files/drawings/usb4110.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "A1": "GND",
+          "A12": "GND",
+          "A4": "VBUS",
+          "A5": "CC1",
+          "A6": "Dp1",
+          "A7": "Dn1",
+          "A8": "SBU1",
+          "A9": "VBUS",
+          "B1": "GND",
+          "B12": "GND",
+          "B4": "VBUS",
+          "B5": "CC2",
+          "B6": "Dp2",
+          "B7": "Dn2",
+          "B8": "SBU2",
+          "B9": "VBUS",
+          "SHELL": "GND"
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Current Rating: 5.00A collectively for VBUS pins'",
+        "field": "ref_rated_current_vbus_collective",
+        "page": 1,
+        "scope": "USB4110, all VBUS pins together",
+        "sources": [
+          "https://gct.co/files/drawings/usb4110.pdf"
+        ],
+        "unit": "A",
+        "value": 5.0
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'6.25A collectively for GND pins'",
+        "field": "ref_rated_current_gnd_collective",
+        "page": 1,
+        "scope": "USB4110, all GND pins together",
+        "sources": [
+          "https://gct.co/files/drawings/usb4110.pdf"
+        ],
+        "unit": "A",
+        "value": 6.25
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'1.25A for A5/B5 pin'",
+        "field": "ref_rated_current_cc",
+        "page": 1,
+        "scope": "USB4110 pins A5/B5",
+        "sources": [
+          "https://gct.co/files/drawings/usb4110.pdf"
+        ],
+        "unit": "A",
+        "value": 1.25
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'0.25A per pin for all other pins'",
+        "field": "ref_rated_current_other",
+        "page": 1,
+        "scope": "USB4110, per pin, all other pins (D+/D-/SBU)",
+        "sources": [
+          "https://gct.co/files/drawings/usb4110.pdf"
+        ],
+        "unit": "A",
+        "value": 0.25
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Voltage Rating: 48V DC'",
+        "field": "ref_rated_voltage_dc",
+        "page": 1,
+        "scope": "USB4110",
+        "sources": [
+          "https://gct.co/files/drawings/usb4110.pdf"
+        ],
+        "unit": "V",
+        "value": 48
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Contact Resistance: 40mOhm max initial.'",
+        "field": "ref_contact_resistance_max",
+        "page": 1,
+        "scope": "USB4110; initial",
+        "sources": [
+          "https://gct.co/files/drawings/usb4110.pdf"
+        ],
+        "unit": "mohm",
+        "value": 40
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'50mOhm max after test'",
+        "field": "ref_contact_resistance_after_test_max",
+        "page": 1,
+        "scope": "USB4110; after test",
+        "sources": [
+          "https://gct.co/files/drawings/usb4110.pdf"
+        ],
+        "unit": "mohm",
+        "value": 50
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Dielectric Withstanding Voltage: 100V AC,1 minute'",
+        "field": "ref_withstanding_voltage_ac",
+        "page": 1,
+        "scope": "USB4110; 1 minute withstand",
+        "sources": [
+          "https://gct.co/files/drawings/usb4110.pdf"
+        ],
+        "unit": "V",
+        "value": 100
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Insulation Resistance: 100MOhm min'",
+        "field": "ref_insulation_resistance_min",
+        "page": 1,
+        "scope": "USB4110",
+        "sources": [
+          "https://gct.co/files/drawings/usb4110.pdf"
+        ],
+        "unit": "Mohm",
+        "value": 100
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Operating Temperature: -40C to +85C'",
+        "field": "ref_operating_temperature_range",
+        "page": 1,
+        "scope": "USB4110",
+        "sources": [
+          "https://gct.co/files/drawings/usb4110.pdf"
+        ],
+        "unit": "C",
+        "value": [
+          -40,
+          85
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Durability: 20,000 cycles'",
+        "field": "ref_durability_cycles",
+        "page": 1,
+        "scope": "USB4110",
+        "sources": [
+          "https://gct.co/files/drawings/usb4110.pdf"
+        ],
+        "unit": "cycles",
+        "value": 20000
       }
     ],
     "remaining_open_items": [
       "Exact 24-pin drawing and series rating specification are blocked at manufacturer URLs; the archived brochure lacks a complete signal table, voltage rating and derating.",
-      "The 16-contact catalog subset is not the full 24-contact reference footprint."
+      "The 16-contact catalog subset is not the full 24-contact reference footprint.",
+      "Former simulation blocker resolved for the explicitly bound reference (2026-10-11, D068): Missing exact contact rating and physical map; USB/PD protocols not simulable. Resolution: Default Amphenol 12401610E4#2A drawing (c12401610) remains HTTP 403. Explicit alternate GCT USB4110-GF-A (archived GCT drawing) gives a complete 16-contact pin/signal table, the footprint pad lettering, and per-group contact ratings (5.00 A VBUS collective, 6.25 A GND collective, 1.25 A A5/B5, 0.25 A per other pin), 48 V DC, 40 mOhm max initial. Contact rating and physical map close for this exact 16-contact USB 2.0 part; USB/PD protocol and CC logic stay out of scope (Rd/Rp are separate parts).",
+      "24-contact default (Amphenol 12401610) drawing still blocked",
+      "Library footprint for USB4110",
+      "USB protocol, enumeration and power negotiation are not simulated.",
+      "Per-contact and collective current limits are now bound (D068): VBUS 5.00 A and GND 6.25 A collectively, CC 1.25 A, others 0.25 A per contact."
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Missing exact contact rating and physical map; USB/PD protocols not simulable."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-165.md",
-      "document_sha256": "097c93f35561d361e4ad3ebf970a6b0e91ba96fb2c975e2a47fd25824559d31c",
+      "document_sha256": "4edd495ab69815bdcf6f07f7540cbd3c42b8cbddc53b290b0417d6d10e31162b",
       "fragment_sha256": null,
       "line": 1
     }

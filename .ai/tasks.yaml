@@ -3257,6 +3257,85 @@
           "ruff"
         ]
       }
+    },
+    {
+      "id": "CUX-T04",
+      "title": "Guided first-time project flow",
+      "scope": "CONVERSATIONAL-UX-1",
+      "milestone": null,
+      "goal": "Reduce first-use complexity across entry, review and result",
+      "priority": 96,
+      "status": "COMPLETE",
+      "dependencies": [
+        "CUX-T03"
+      ],
+      "blockers": [],
+      "acceptance_criteria": [
+        "One primary action per state; no mandatory technical vocabulary to begin.",
+        "Compact plan distinguishes defaults and user choices; detailed settings are disclosed on demand.",
+        "Generate saves the exact reviewed revision and starts it without a separate save step.",
+        "Generated board and contextual conversation share the result surface; history and checks remain accessible.",
+        "Responsive and keyboard flows plus save/run failures and stale contexts are tested."
+      ],
+      "implementation": {
+        "started_at_commit": "66ee2a07",
+        "completed_at_commit": "56325ba1514a6764f519ef3ed058c9fb4778a7ed",
+        "approval_evidence": ".ai/approvals/GUIDED-PROJECT-FLOW.yaml"
+      },
+      "review": {
+        "required": false,
+        "independent": false,
+        "status": "PASSED",
+        "record": ".ai/reviews.yaml#CUX-T04-SELF-REVIEW"
+      },
+      "verification": {
+        "record": ".ai/verification/CUX-T04.yaml",
+        "required": [
+          "workflow",
+          "fast",
+          "frontend",
+          "integration",
+          "ruff"
+        ]
+      }
+    },
+    {
+      "id": "CUX-T05",
+      "title": "Electronics studio visual polish",
+      "scope": "CONVERSATIONAL-UX-1",
+      "milestone": null,
+      "goal": "Give the simplified product a cohesive visual treatment",
+      "priority": 95,
+      "status": "COMPLETE",
+      "dependencies": [
+        "CUX-T04"
+      ],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Cohesive landing and workspace typography, color and surface hierarchy.",
+        "Idea composer and plan are visually clear without adding mandatory steps.",
+        "Responsive layouts, visible focus and reduced motion remain usable; engineering statuses unchanged."
+      ],
+      "implementation": {
+        "started_at_commit": "c05cf854",
+        "completed_at_commit": "ea3ecf5364e0a198f026a2a68e7e04d30482379d",
+        "approval_evidence": ".ai/approvals/VISUAL-POLISH.yaml"
+      },
+      "review": {
+        "required": false,
+        "independent": false,
+        "status": "PASSED",
+        "record": ".ai/reviews.yaml#CUX-T05-SELF-REVIEW"
+      },
+      "verification": {
+        "record": ".ai/verification/CUX-T05.yaml",
+        "required": [
+          "workflow",
+          "frontend",
+          "fast",
+          "integration"
+        ]
+      }
     }
   ]
 }

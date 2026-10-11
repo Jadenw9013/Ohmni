@@ -1,0 +1,61 @@
+{
+  "analysis": "op",
+  "circuit_hash": "853d7dd5569f6624af12fc87155c47f25a4652e47762e1b3538cc0b4c5238151",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "current": 16.0,
+    "drive_role": "P1",
+    "expected": 0.02,
+    "kind": "absolute",
+    "observable": "path_resistance",
+    "return_role": "W1",
+    "source_facts": {
+      "i_rated": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'rated current (per contact) UL 16 A' (max column)",
+        "field": "ref_rated_current_ul",
+        "page": 1,
+        "scope": "Same Sky TB007-508 series, ordering code TB007-508-03BE (3 poles, slot screw, blue); per contact",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/tb007-508.pdf"
+        ],
+        "unit": "A",
+        "value": 16
+      },
+      "rpath": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "converted_unit": "ohm",
+        "converted_value": 0.02,
+        "detail": "'contact resistance ... 20 mOhm' (max column)",
+        "field": "ref_contact_resistance_max",
+        "page": 1,
+        "scope": "Same Sky TB007-508 series, ordering code TB007-508-03BE (3 poles, slot screw, blue); per contact",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/tb007-508.pdf"
+        ],
+        "unit": "mohm",
+        "value": 20
+      }
+    },
+    "tolerance": 2e-05
+  },
+  "entry_id": "OHM-160",
+  "entry_research_sha256": "8a26c7d0ed037909afa5a9dc47066a4a7a8e3f37b69e5bd91416dc078ad507e3",
+  "limits": "Binding check of one bound DC path: the sourced current through the path must reproduce the sourced path resistance (0.1% numerical tolerance, or the sourced tolerance band). It does not validate frequency response, heating, contact wear, isolation, protocol behavior or any rating beyond the stated facts.",
+  "netlist_sha256": "e1afe03d8736152368166e9157c75724a7b92a734ba7bb2d0a4ea214baf44315",
+  "observation_status": "ran",
+  "observed": 0.02,
+  "output_sha256": "acc7c469316b605d786b105fdbe97e3f273d5c88a2254cc9a93cc3b6d37b62e5",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T19:13:54Z",
+  "raw_output": "runtime-bench-output/OHM-160-op/output.txt",
+  "recipe_source_sha256": "cdcb7628556b1480e38114dd016841ea922c84230fa1bf6db4221f468e40710d",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "version_file": "runtime-bench-output/OHM-160-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n",
+  "version_sha256": "2cdcb25fcf77dea87742b9ac629a0b5ba20169e01beb2b59fdd2e41ee348a45d"
+}

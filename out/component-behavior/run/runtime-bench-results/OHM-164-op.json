@@ -1,0 +1,61 @@
+{
+  "analysis": "op",
+  "circuit_hash": "bcd8fe16c77f3095c95183a6780345d39c1a8017f7642cd308babbb0d7048ea6",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "current": 1.0,
+    "drive_role": "P1",
+    "expected": 0.03,
+    "kind": "absolute",
+    "observable": "path_resistance",
+    "return_role": "M1",
+    "source_facts": {
+      "i_rated": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'Current Rating: Signal(Pins 2,3,4):1.0 A.'",
+        "field": "ref_rated_current_signal",
+        "page": 1,
+        "scope": "USB3075 pins 2,3,4",
+        "sources": [
+          "https://gct.co/files/drawings/usb3075.pdf"
+        ],
+        "unit": "A",
+        "value": 1.0
+      },
+      "rc": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "converted_unit": "ohm",
+        "converted_value": 0.03,
+        "detail": "'Contact Resistance: 30 mOhm max.'",
+        "field": "ref_contact_resistance_max",
+        "page": 1,
+        "scope": "USB3075",
+        "sources": [
+          "https://gct.co/files/drawings/usb3075.pdf"
+        ],
+        "unit": "mohm",
+        "value": 30
+      }
+    },
+    "tolerance": 3e-05
+  },
+  "entry_id": "OHM-164",
+  "entry_research_sha256": "b699b8cc9247c6a3d56bfe5c8e6f7c9d4f6d81ca4398dff172afbb53d200f4a8",
+  "limits": "Binding check of one bound DC path: the sourced current through the path must reproduce the sourced path resistance (0.1% numerical tolerance, or the sourced tolerance band). It does not validate frequency response, heating, contact wear, isolation, protocol behavior or any rating beyond the stated facts.",
+  "netlist_sha256": "acbb22ba505787b4a4fac883a46790d53be79bea866bb24fb3cc94574aecd086",
+  "observation_status": "ran",
+  "observed": 0.03,
+  "output_sha256": "f1a36247c010e78d24eaa1236d11621822d604e506a59c7c9e5a240295bbd267",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T19:14:00Z",
+  "raw_output": "runtime-bench-output/OHM-164-op/output.txt",
+  "recipe_source_sha256": "cdcb7628556b1480e38114dd016841ea922c84230fa1bf6db4221f468e40710d",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "version_file": "runtime-bench-output/OHM-164-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n",
+  "version_sha256": "2cdcb25fcf77dea87742b9ac629a0b5ba20169e01beb2b59fdd2e41ee348a45d"
+}

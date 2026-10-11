@@ -1,0 +1,61 @@
+{
+  "analysis": "op",
+  "circuit_hash": "d7edfb9de9873a42f4b96d656189c3cc97132d443cff481a7516e30ab33540f5",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "current": 0.000832466,
+    "drive_role": "A",
+    "expected": 42043.759144517615,
+    "kind": "absolute",
+    "observable": "path_resistance",
+    "return_role": "K",
+    "source_facts": {
+      "ileak": {
+        "basis": "DERIVED",
+        "confidence": "H",
+        "converted_unit": "A",
+        "converted_value": 0.000832466,
+        "detail": "3*sqrt(C*V) uA = 3*sqrt(2200*35) = 832.466 uA; p1: 'After 5 minutes' application of rated voltage at 20 C, leakage current is not more than 3 sqrt(CV) (uA)' (square root confirmed on the rendered page; pdftotext drops it)",
+        "field": "maximum_leakage_current",
+        "page": 1,
+        "scope": "Nichicon LKG1V222MESZAK (LKG series), 2200 uF 35 V, 22 x 20 mm snap-in, 2 pins at 10 mm; Nichicon catalog LKG",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-lkg.pdf"
+        ],
+        "unit": "uA",
+        "value": 832.466
+      },
+      "vr": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Rated voltage group in the dimensions table",
+        "field": "rated_voltage",
+        "page": 2,
+        "scope": "Nichicon LKG1V222MESZAK (LKG series), 2200 uF 35 V, 22 x 20 mm snap-in, 2 pins at 10 mm; Nichicon catalog LKG; DC; peak (DC + ripple) must not exceed rated voltage",
+        "sources": [
+          "https://www.nichicon.co.jp/english/series_items/catalog_pdf/e-lkg.pdf"
+        ],
+        "unit": "V",
+        "value": 35
+      }
+    },
+    "tolerance": 42.043759144517615
+  },
+  "entry_id": "OHM-031",
+  "entry_research_sha256": "cb079f0644850bb634cb5b509b1b5232c36fb9732df4bc22a744f0640c664a8e",
+  "limits": "Binding check of one bound DC path: the sourced current through the path must reproduce the sourced path resistance (0.1% numerical tolerance, or the sourced tolerance band). It does not validate frequency response, heating, contact wear, isolation, protocol behavior or any rating beyond the stated facts.",
+  "netlist_sha256": "af23725631bdb4a841c325b3d5a7c213e92d3c6be465c4bacc46cafd7f145f10",
+  "observation_status": "ran",
+  "observed": 42043.759144517615,
+  "output_sha256": "abbf1f4a822eb957098b678e2cf2dde2954087b42986f0e914d2b0788114f56d",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T19:01:43Z",
+  "raw_output": "runtime-bench-output/OHM-031-op/output.txt",
+  "recipe_source_sha256": "cdcb7628556b1480e38114dd016841ea922c84230fa1bf6db4221f468e40710d",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "version_file": "runtime-bench-output/OHM-031-op/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n",
+  "version_sha256": "2cdcb25fcf77dea87742b9ac629a0b5ba20169e01beb2b59fdd2e41ee348a45d"
+}

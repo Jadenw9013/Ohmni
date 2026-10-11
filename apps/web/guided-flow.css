@@ -1,0 +1,164 @@
+/* A single reading column for setup; the actual board owns the result canvas. */
+.app-layout { grid-template-columns: minmax(0,1fr); background: #060e1b; }
+.app-layout > .sidebar { display: none; }
+.workspace-header { padding: 18px clamp(20px,4vw,64px); min-height: 72px; }
+.flow-brand { font-size: 1.8rem; font-weight: 750; letter-spacing: -.06em; text-decoration: none; color: #eaf1fc; }
+.flow-projects { margin-left: auto; }
+.workspace-header > [data-open-components], .workspace-crumb, .workspace-status { display: none; }
+.app-layout[data-flow-stage="describe"] .flow-plan { display: none; }
+.app-layout .stage { padding: 48px clamp(20px,4vw,64px); }
+.app-layout #describe, .app-layout #agree { max-width: 820px; width: 100%; margin: 0 auto; box-sizing: border-box; }
+.app-layout .welcome-heading h1, .app-layout .brief-masthead h1 { font-size: clamp(1.8rem,4vw,2.6rem); line-height: 1.2; letter-spacing: -.035em; }
+.app-layout .welcome-heading, .app-layout .brief-masthead { margin-bottom: 28px; display: block; }
+.app-layout .welcome .welcome-grid { display: block; }
+.app-layout .welcome-copy, .app-layout .project-starter { max-width: none; width: 100%; padding: 0; border: 0; background: none; box-shadow: none; }
+.app-layout .welcome-lede, .app-layout .lede { max-width: 60ch; font-size: 1rem; }
+.app-layout .welcome-bottom, .app-layout .studio-kicker, .app-layout .workspace-art { display: none; }
+.app-layout .free-text-starter { margin: 0 0 24px; }
+.app-layout #free-text-request { min-height: 130px; background: #0b1928; font-size: 1.1rem; }
+.app-layout .free-text-actions { justify-content: flex-end; }
+.app-layout .prompt-examples { gap: 8px; margin: 12px 0 20px; }
+.app-layout #guided-entry, .app-layout #project-shelf, .app-layout .prototype-note, .app-layout .workspace-examples { border: 0; margin: 16px 0; padding: 0; background: none; }
+.app-layout summary { cursor: pointer; min-height: 44px; padding: 12px 0; box-sizing: border-box; }
+.app-layout .saved-project-shelf { margin-top: 12px; }
+.app-layout .compact-plan { padding: 0; background: none; border: 0; margin: 0 0 20px; }
+.compact-plan h2 { font-size: 1.5rem; margin: 0 0 8px; }
+.compact-plan > p:first-of-type { color: #9ab5c9; font-size: .9rem; }
+.compact-plan ul { padding: 0; list-style: none; margin: 20px 0; }
+.compact-plan li { padding: 9px 0; font-size: 1.1rem; }
+.compact-plan li::before { content: '•'; color: #7ed9ea; margin-right: 12px; }
+.compact-plan li small { font-size: .8rem; color: #9ab5c9; margin-left: 8px; }
+.compact-plan .plan-power-note { color: #a9bdce; font-size: .9rem; max-width: 60ch; padding: 12px 0; }
+.app-layout #project-details, .app-layout .plan-details { border-top: 1px solid #29465d; border-bottom: 1px solid #29465d; margin: 20px 0; }
+.app-layout .project-edit-layout { display: block; }
+.app-layout .project-editor { border: 0; padding: 0; }
+.app-layout .family-picker { margin: 16px 0; }
+.app-layout .family-option { padding: 12px; }
+.app-layout .family-option svg, .app-layout .family-option small { display: none; }
+.app-layout .project-editor-actions { display: flex; justify-content: flex-end; margin: 24px 0 8px; }
+.app-layout .project-secondary { display: block; border: 0; padding: 0; margin-top: 28px; }
+.app-layout #project-assistant .project-assistant { padding: 0 0 20px; border: 0; background: none; }
+.app-layout #project-assistant .project-assistant h2 { font-size: 1.15rem; }
+.app-layout #conversation-plan section { padding: 0; margin: 0; border: 0; background: none; }
+.app-layout #conversation-reply-form { margin: 20px 0; }
+.app-layout .conversation-actions { justify-content: flex-end; }
+.app-layout .result-workspace { display: grid; grid-template-columns: minmax(0,1fr) minmax(290px,360px); gap: 24px; align-items: start; }
+.app-layout .result-workspace:has(#result-assistant[hidden]) { grid-template-columns: minmax(0,1fr); }
+.app-layout .result-workspace .board-shell { grid-template-columns: minmax(0,1fr); }
+.app-layout .result-workspace .board-panel { margin-top: 12px; }
+.app-layout #result-assistant { min-width: 0; }
+.app-layout #result-assistant .project-assistant { margin: 0; }
+.app-layout #result-assistant .project-assistant h2 { font-size: 1.2rem; }
+@media (max-width:900px) {
+  .app-layout .result-workspace { grid-template-columns: minmax(0,1fr); }
+  .app-layout .workspace-header { gap: 12px; flex-wrap: wrap; }
+}
+@media (max-width:480px) {
+  .app-layout .stage { padding: 28px 20px; }
+  .workspace-header .header-help { display: none; }
+  .app-layout .family-picker { grid-template-columns: 1fr; }
+  .app-layout .primary { width: 100%; }
+}
+.app-layout #agree { padding-top: 28px; }
+.app-layout #agree .brief-masthead { margin-bottom: 16px; }
+.app-layout #agree .brief-masthead h1 { margin: 0 0 8px; font-size: 2rem; }
+.app-layout #agree .lede { margin: 0; }
+.app-layout #conversation-status { margin: 12px 0 20px; color: #a9bdce; font-size: .9rem; }
+.app-layout .compact-plan { margin-bottom: 12px; }
+.app-layout .compact-plan ul { margin: 12px 0; }
+.app-layout .compact-plan li { padding: 6px 0; }
+.app-layout .compact-plan .plan-power-note { padding: 0; margin: 12px 0; }
+.app-layout .plan-details { margin: 12px 0 0; }
+
+/* CUX-T05: quiet electronics studio. These rules style existing states only. */
+.app-layout {
+  --flow-surface: #111e30;
+  --flow-blue: #83b8ff;
+  --flow-copper: #cda983;
+  background: #080f1b;
+}
+.app-layout .workspace-header {
+  background: #0b1422; border-bottom: 1px solid #253248;
+  padding-block: 14px; min-height: 78px;
+}
+.flow-brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 650; }
+.flow-brand svg { width: 32px; height: 32px; }
+.flow-brand svg circle { fill: none; stroke: #83b8ff; stroke-width: 7px; }
+.flow-brand svg path { stroke: #0b1422; stroke-width: 4px; }
+.flow-brand svg .brand-center { fill: #cda983; stroke: none; }
+.app-layout .workspace-header .ghost { font-size: .87rem; padding: 9px 15px; border-radius: 8px; }
+.app-layout .flow-plan { color: #c7d7ec; }
+.app-layout .flow-projects { border: 1px solid #35465d; background: #111e30; }
+.app-layout .header-help summary { font-size: .87rem; color: #b5c4d6; }
+.app-layout #describe { max-width: 920px; padding-top: clamp(32px,6vh,68px); }
+.app-layout #agree { max-width: 860px; }
+.app-layout .welcome-heading { margin-bottom: 28px; }
+.idea-emblem { display: block; width: 46px; height: 46px; margin-bottom: 20px; fill: none; stroke: #cda983; stroke-width: 1.7; stroke-linecap: round; }
+.app-layout .welcome-heading h1 { font-family: var(--display); font-weight: 580; font-size: clamp(1.9rem,3.5vw,2.8rem); letter-spacing: -.04em; line-height: 1.15; max-width: 21ch; }
+.app-layout .welcome-lede { margin: 16px 0 0; color: #b5c4d6; line-height: 1.6; }
+.app-layout .brief-masthead h1 { background: none; color: #eef3fa; -webkit-text-fill-color: currentColor; }
+.app-layout .free-text-starter {
+  padding: 24px; border: 1px solid #3c526d; border-radius: 20px;
+  background: #111e30; box-shadow: 0 18px 48px #0003, inset 0 1px #ffffff09;
+  gap: 14px; margin: 0 0 24px;
+}
+.app-layout .free-text-starter:focus-within { border-color: #83b8ff; }
+.app-layout .free-text-label { color: #cad7e7; font-size: .85rem; font-weight: 500; }
+.app-layout #free-text-request {
+  background: transparent; border: 0; border-radius: 6px; padding: 8px 0;
+  min-height: 116px; font: 400 1.2rem/1.6 var(--sans); box-shadow: none;
+}
+.app-layout #free-text-request::placeholder { color: #a2b4ca; }
+.app-layout .prompt-examples { gap: 8px; margin: 0; }
+.app-layout .prompt-examples button { padding: 7px 13px; min-height: 40px; font-size: .8rem; border: 1px solid #3b506b; border-radius: 8px; color: #d2deed; background: #16253a; }
+.app-layout .prompt-examples button:hover { border-color: #83b8ff; background: #20344d; }
+.app-layout .free-text-actions { padding-top: 14px; border-top: 1px solid #30435b; margin-top: 2px; }
+.app-layout .free-text-starter > .fineprint { margin: 0; font-size: .78rem; line-height: 1.55; color: #b5c4d6; }
+.app-layout .primary, .app-layout .download-row a, .app-layout .lab-start-tour {
+  background: #83b8ff; color: #09172c; border: 1px solid #a8ceff;
+  border-radius: 10px; box-shadow: inset 0 1px #ffffff33, 0 3px 8px #0002; font-weight: 650;
+}
+.app-layout .primary:hover:not(:disabled), .app-layout .download-row a:hover { background: #a8ceff; color: #09172c; }
+.app-layout .primary:disabled, .app-layout .download-row a[aria-disabled=true] { background: #1b293e; color: #a4b1c6; border-color: #34445c; box-shadow: none; }
+.app-layout :focus-visible { outline: 3px solid #acd1ff; outline-offset: 4px; }
+.app-layout #ai-entry-status { font-size: .83rem; color: #b5c4d6; margin: 16px 0; }
+.app-layout #describe details > summary { font-size: .87rem; color: #b5c4d6; }
+.app-layout #describe details > summary:hover { color: #eef3fa; }
+.app-layout #describe details[open] { padding-bottom: 14px; }
+.app-layout .compact-plan {
+  background: #111e30; border: 1px solid #34465e; border-radius: 16px;
+  padding: 24px 28px; margin-block: 18px; position: relative;
+}
+.app-layout .compact-plan::before { content: ''; position: absolute; top: 26px; bottom: 26px; left: 0; width: 3px; background: #cda983; border-radius: 2px; }
+.app-layout .compact-plan h2 { font-weight: 600; letter-spacing: -.025em; }
+.app-layout .compact-plan li { padding: 9px 0; font-size: 1rem; }
+.app-layout .compact-plan li::before { display: inline-block; width: 5px; height: 5px; content: ''; vertical-align: middle; border: 1px solid #cda983; border-radius: 50%; margin-right: 12px; }
+.app-layout .compact-plan li small { display: inline-block; padding: 1px 7px; background: #21324a; color: #bfcfe1; border-radius: 4px; font-size: .73rem; }
+.app-layout .compact-plan .plan-power-note { border-top: 1px solid #30435b; padding-top: 14px; margin-bottom: 0; font-size: .82rem; line-height: 1.6; color: #b5c4d6; }
+.app-layout .conversation-actions { margin-block: 18px; gap: 12px; }
+.app-layout #project-details, .app-layout .plan-details { border-color: #30435b; }
+.app-layout #agree summary { color: #bfcfe1; font-size: .88rem; }
+.app-layout #agree details[open] > summary { color: #eef3fa; margin-bottom: 12px; }
+.app-layout input, .app-layout select, .app-layout textarea { border-radius: 8px; }
+.app-layout .panel, .app-layout .activity-main, .app-layout .part-card { background: #111e30; border-color: #34465e; box-shadow: none; }
+.app-layout .result-tabs { border: 1px solid #34465e; border-radius: 10px; background: #111e30; padding: 4px; }
+.app-layout .result-tabs button { border-radius: 7px; }
+.app-layout .result-tabs button[aria-selected=true] { background: #263e5c; color: #eef3fa; box-shadow: none; }
+.app-layout .pcb-stage { border-color: #34465e; border-radius: 16px; overflow: hidden; }
+.app-layout #result-assistant .project-assistant { background: #111e30; border: 1px solid #34465e; border-radius: 16px; padding: 22px; }
+.app-layout .footer { color: #a6b9cf; border-color: #253248; }
+@media (max-width:600px) {
+  .app-layout .workspace-header { gap: 8px; padding: 12px 20px; }
+  .flow-brand { font-size: 1.45rem; gap: 7px; }
+  .flow-brand svg { width: 27px; height: 27px; }
+  .app-layout .workspace-header .ghost { font-size: .78rem; padding: 8px 10px; }
+  .app-layout .free-text-starter { padding: 18px; border-radius: 14px; }
+  .app-layout #free-text-request { font-size: 1.05rem; min-height: 145px; }
+  .app-layout .prompt-examples button { flex: 1 1 auto; }
+  .app-layout .compact-plan { padding: 20px; }
+}
+@media (prefers-reduced-motion:no-preference) {
+  .app-layout button { transition: background-color 140ms ease, border-color 140ms ease; }
+}
+.app-layout #project-run { width: auto; display: block; margin-left: auto; min-width: 210px; }
+@media (max-width:480px) { .app-layout #project-run { width: 100%; min-width: 0; } }

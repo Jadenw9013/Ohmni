@@ -18,7 +18,9 @@
       "bench-results/BEH-CON-TERMINAL--B2.json"
     ],
     "conflicts": [
-      "400V is specificallyIII/2,not universal:III/3is250V;22Amaximumloadentry does not replace17.5Anominalrating."
+      "400V is specificallyIII/2,not universal:III/3is250V;22Amaximumloadentry does not replace17.5Anominalrating.",
+      "D068: Spec default ratings (17.5 A, 400 V III/2, Rclamp 3 mOhm assumed) are Phoenix MKDS; the alternate is 16 A UL / 18 A IEC, 300 V UL / 250 V IEC, 20 mOhm max. Not interchangeable values.",
+      "D068: Several existing OHM-159 field_updates cite only a Conrad mirror (prior round finding); unchanged by this alternate."
     ],
     "documents": [
       {
@@ -30,6 +32,16 @@
         "source_status": "manufacturer_document_mirror",
         "title": "MKDS 1,5/3-5,08 1715734 product datasheet",
         "url": "https://pdf.datasheet.live/e139446d/phoenixcon.com/MKDS1.5/3-5.08.pdf"
+      },
+      {
+        "document_id": "samesky-tb007-508",
+        "manufacturer": "Same Sky",
+        "note": "Archived (ledger sha256 65d13de2...); read 2026-10-11 for the bound reference Same Sky TB007-508-03BE (explicit alternate) (D068).",
+        "page": null,
+        "revision": "1.04, 09/12/2024",
+        "source_status": "primary_source_opened",
+        "title": "TB007-508 terminal block datasheet",
+        "url": "https://www.sameskydevices.com/product/resource/tb007-508.pdf"
       }
     ],
     "entry_id": "OHM-160",
@@ -185,22 +197,187 @@
           0.14,
           1.5
         ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "PART NUMBER KEY 'TB007-508 - X XX XX' with No. of Poles '03', Color '*BE = blue', Screw Type '\"blank\" = Slot'; features '2~24 poles', '5.08 mm pitch'",
+        "field": "ref_reference_part",
+        "page": 1,
+        "scope": "Same Sky TB007-508 series, ordering code TB007-508-03BE (3 poles, slot screw, blue); per contact",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/tb007-508.pdf"
+        ],
+        "unit": null,
+        "value": "Same Sky TB007-508-03BE"
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'contact resistance ... 20 mOhm' (max column)",
+        "field": "ref_contact_resistance_max",
+        "page": 1,
+        "scope": "Same Sky TB007-508 series, ordering code TB007-508-03BE (3 poles, slot screw, blue); per contact",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/tb007-508.pdf"
+        ],
+        "unit": "mohm",
+        "value": 20
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'rated current (per contact) UL 16 A' (max column)",
+        "field": "ref_rated_current_ul",
+        "page": 1,
+        "scope": "Same Sky TB007-508 series, ordering code TB007-508-03BE (3 poles, slot screw, blue); per contact",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/tb007-508.pdf"
+        ],
+        "unit": "A",
+        "value": 16
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'rated current (per contact) IEC 18 A' (max column)",
+        "field": "ref_rated_current_iec",
+        "page": 1,
+        "scope": "Same Sky TB007-508 series, ordering code TB007-508-03BE (3 poles, slot screw, blue); per contact",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/tb007-508.pdf"
+        ],
+        "unit": "A",
+        "value": 18
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'rated voltage (per contact) UL 300 V'",
+        "field": "ref_rated_voltage_ul",
+        "page": 1,
+        "scope": "Same Sky TB007-508 series, ordering code TB007-508-03BE (3 poles, slot screw, blue); per contact",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/tb007-508.pdf"
+        ],
+        "unit": "V",
+        "value": 300
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'rated voltage (per contact) IEC 250 V'",
+        "field": "ref_rated_voltage_iec",
+        "page": 1,
+        "scope": "Same Sky TB007-508 series, ordering code TB007-508-03BE (3 poles, slot screw, blue); per contact",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/tb007-508.pdf"
+        ],
+        "unit": "V",
+        "value": 250
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'withstanding voltage 2500 Vac'",
+        "field": "ref_withstanding_voltage_ac",
+        "page": 1,
+        "scope": "Same Sky TB007-508 series, ordering code TB007-508-03BE (3 poles, slot screw, blue); per contact; withstand, not a working rating",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/tb007-508.pdf"
+        ],
+        "unit": "V",
+        "value": 2500
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'surge voltage 4000 V'",
+        "field": "ref_surge_voltage",
+        "page": 1,
+        "scope": "Same Sky TB007-508 series, ordering code TB007-508-03BE (3 poles, slot screw, blue); per contact",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/tb007-508.pdf"
+        ],
+        "unit": "V",
+        "value": 4000
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'insulation resistance at 500 Vdc 500 MOhm'",
+        "field": "ref_insulation_resistance_min",
+        "page": 1,
+        "scope": "Same Sky TB007-508 series, ordering code TB007-508-03BE (3 poles, slot screw, blue); per contact",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/tb007-508.pdf"
+        ],
+        "unit": "Mohm",
+        "value": 500
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'operating temperature -40 105 C' (min/max columns)",
+        "field": "ref_operating_temperature_range",
+        "page": 1,
+        "scope": "Same Sky TB007-508 series, ordering code TB007-508-03BE (3 poles, slot screw, blue); per contact; ambient vs incl. rise not stated",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/tb007-508.pdf"
+        ],
+        "unit": "C",
+        "value": [
+          -40,
+          105
+        ]
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "WIRE ASSEMBLY table: 'Wire Range 24-12 AWG (UL) 2.5 mm2 (IEC)', 'Strip Length 7 mm', 'Screw Torque 0.5 N.m'",
+        "field": "ref_wire_range",
+        "page": 2,
+        "scope": "Same Sky TB007-508 series, ordering code TB007-508-03BE (3 poles, slot screw, blue); per contact",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/tb007-508.pdf"
+        ],
+        "unit": null,
+        "value": {
+          "IEC": "2.5 mm2",
+          "UL": "24-12 AWG"
+        }
+      },
+      {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "'P=5.08', 'L=PxN' drawing",
+        "field": "ref_pitch",
+        "page": 2,
+        "scope": "Same Sky TB007-508 series, ordering code TB007-508-03BE (3 poles, slot screw, blue); per contact",
+        "sources": [
+          "https://www.sameskydevices.com/product/resource/tb007-508.pdf"
+        ],
+        "unit": "mm",
+        "value": 5.08
       }
     ],
     "remaining_open_items": [
       "No actual clamp resistance,thermal resistance or full load-temperature derating established by this opened sheet.",
       "Forbid treating the3mohm assumedclamp as measured or the0.8factor as manufacturer derating.",
       "Small wire ampacity,installation category and creepage context must be checked separately.",
-      "Connector has no built-in polarity;terminalnumbers follow library convention."
+      "Connector has no built-in polarity;terminalnumbers follow library convention.",
+      "Former simulation blocker resolved for the explicitly bound reference (2026-10-11, D068): Rating-critical operating-temperature/derating and validated resistance model unresolved. Resolution: Phoenix publishes no clamp/contact resistance for MKDS 1,5 (prior round; phoenixcontact.com still HTTP 403 here), so the default stays unbound. Explicit alternate Same Sky TB007-508 (archived manufacturer datasheet) publishes a per-contact 20 mOhm max contact resistance, rated current/voltage and -40..+105 C operating temperature for the same form factor (5.08 mm pitch screw terminal, horizontal wire entry, 1 solder pin per pole), so the resistance model is sourced and the temperature limit is bound. Derating remains unpublished and is stated as a limitation, as accepted for OHM-161.",
+      "Derating curve (current vs ambient) not published by Same Sky",
+      "Whether 105 C includes self-heating is not stated",
+      "Default Phoenix MKDS 1,5 remains unbound (no published clamp resistance; Phoenix site 403)",
+      "Library footprint must be the TB007-508 layout (1.6 mm holes, 4.90 mm row offset) for the alternate to apply"
     ],
     "research_result": "sources_reviewed",
     "researched_at": "2026-10-05",
-    "simulation_blockers": [
-      "Rating-critical operating-temperature/derating and validated resistance model unresolved."
-    ],
+    "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-160.md",
-      "document_sha256": "974bb7791139343169b6c05a14a9b5e976c725c0cb497de1ec03c6b37883739e",
+      "document_sha256": "8a26c7d0ed037909afa5a9dc47066a4a7a8e3f37b69e5bd91416dc078ad507e3",
       "fragment_sha256": null,
       "line": 1
     }
