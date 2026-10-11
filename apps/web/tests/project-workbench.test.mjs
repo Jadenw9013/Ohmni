@@ -577,3 +577,29 @@ test("readable result values and authored assumptions retain their exact server 
     assert.ok(html.indexOf("Input supply: 5 V") < html.indexOf("Assumptions and limits"));
     assert.equal(requirementResultsHtml([{ ...rows[0], display_value: {} }]), null);
 });
+
+for (const phase of ["health", "response", "body"]) {
+    test(`project request bounds a stalled ${phase} and aborts its transport`, async () => {
+        let signal;
+        const never = new Promise(() => {});
+        const fetcher = async (path, init) => {
+            signal = init.signal;
+            if (path === "/api/health") return phase === "health" ? never
+                : response(200, { ...identity, status: "ready", fixture_id: "esp32-bme280-environmental-logger" });
+            return phase === "response" ? never : { ok: true, json: () => never };
+        };
+        await assert.rejects(projectRequest("/api/projects", { fetcher, timeoutMs: 5 }), /took too long/);
+        assert.equal(signal.aborted, true);
+    });
+}
+
+test("a late health response cannot start a project write after timeout", async () => {
+    let deliver;
+    let writes = 0;
+    const fetcher = (path) => path === "/api/health" ? new Promise(resolve => { deliver = resolve; })
+        : (++writes, Promise.resolve(response(201, envelope())));
+    await assert.rejects(projectRequest("/api/projects", { fetcher, method: "POST", data: { brief }, timeoutMs: 5 }), /took too long/);
+    deliver(response(200, { ...identity, status: "ready", fixture_id: "esp32-bme280-environmental-logger" }));
+    await new Promise(setImmediate);
+    assert.equal(writes, 0);
+});

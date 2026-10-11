@@ -400,6 +400,24 @@ In practice a verdict needs a source with real resistance behind the tantalum (f
 
 The four T491 recipes' limitation text said the ripple and ESR-heating rows report unknown in both directions (D063). Since D064 that understated the engine. The rows stay unknown except in one case, which may report a pass: an AC run exactly at 100 kHz, with a declared 25 C ambient and confirmed thermal scope, in a linear passive circuit where this part is the only tantalum capacitor of any card (an ideal-card tantalum also counts) and the circuit it sees has real resistance. The text now says this and that a violation is never proven. No rule, value or check changed; this is the "next recipe change" D064 deferred. The recipe edit restamps every runtime receipt: all 186 were rerun and pass, all 98 bound entries validate, and audited simulable stays 78.
 
+## D066 — 2026-10-11: Owner decisions for the full-library pass; package entries simulate as their bound reference part
+
+The owner asked, in the session chat on 2026-10-11, for every library component to be fully sourced and simulable, checked one by one, with external research on each specific component. Asked four questions, the owner chose:
+
+1. **New sources:** fetch new manufacturer datasheets from the web into the fetch ledger. The documents are hashed and archived, never committed. Archive-only research is no longer the limit.
+2. **Package entries:** a generic package entry (OHM-103..140) with a runtime recipe naming an exact sourced reference part shows "Simulates", labelled as that part ("Simulates as the sourced reference part bound to this package (NE555 / NE555 D SOIC-8)"). This was the owner-only "class-default models for generic-package entries" item.
+3. **Programmable and protocol ICs:** build pin-level electrical models (supply, I/O drive, thresholds, absolute maximums, thermal) from the exact datasheet where it is sourced. Firmware and protocol behavior stay a stated limitation.
+4. **Mains and safety parts:** electrical models from sourced data, with explicit "no mains, isolation or safety acceptance" limitations.
+
+**First implementation (packages).** `scripts/generate_behavior_records.py` marks a package entry simulable when all of these hold:
+- the entry is in OHM-103..140;
+- its runtime recipe names a `reference_part`;
+- its spec status is not research_required.
+
+Its reason names the part, and `ComponentBehaviorService.behavior_state` returns that sentence with the simulated state so the UI shows it. COMPONENT_BEHAVIOR_SPEC.md is not edited: the record generator applies the spec's own rule ("A package has no electrical function until a sourced reference part is bound") now that the parts are bound. Research_required packages (OHM-108, OHM-136) and the research_required diode and transistor packages (OHM-062, 063, 071, 099) are unchanged, pending this pass's research. Design runs are unaffected: a catalog part still binds to an entry only through its recipe's catalog parts or an explicit binding, so a generic SOIC-8 part is never simulated as an NE555.
+
+Effect: 16 packages move from reference-only to simulated (OHM-103..107, OHM-110..120), so audited simulable goes from 78 to 94. No recipe, receipt or bench changed.
+
 ## D067 — 2026-10-11: Eleven capacitor entries bound to exact parts (D066 full-library pass)
 
 This is the capacitor research group of the owner-approved full-library pass (D066). The new manufacturer documents were fetched into the ledger by that round. Before binding, each bound value was re-read from the archived bytes (pdftotext, plus rendered pages where the text layer is lossy). Two research values were corrected in that re-read. (a) The GRM155R71C104KA88 IR minimum is measured after a 2 min charge, not 1 min. (b) The LKG leakage rule is 3*sqrt(CV): the root sign was confirmed on the rendered p1, because pdftotext prints "3 CV". This gives 832.466 uA, not the rounded 832.5. The protected spec was not edited. Where a spec default (leakage resistance, DF, class RLK floor, ESR) conflicts with the bound part's datasheet, the bound part's sourced value is used for that binding only. Each conflict is listed below and in the entry's gapfill `conflicts`.

@@ -109,6 +109,7 @@ CREATE TABLE IF NOT EXISTS component_resolutions (
 #: rather than NOT NULL: a workspace that predates this has rows with no owner,
 #: and inventing one for them would be a fact nobody recorded.
 ADDED_COLUMNS = (
+    ("revisions", "planning_receipt", "TEXT"),
     ("projects", "owner_user_id", "TEXT REFERENCES users(user_id)"),
     ("jobs", "owner_user_id", "TEXT REFERENCES users(user_id)"),
     ("jobs", "project_id", "TEXT REFERENCES projects(project_id)"),
