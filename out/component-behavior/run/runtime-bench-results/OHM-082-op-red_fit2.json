@@ -14,7 +14,7 @@
       "detail": "Same read points as spice_red_IS_fit: Figure 2. Structured copy so the runtime check can replay the fit at several currents.",
       "field": "forward_curve_read_points_red",
       "page": 5,
-      "scope": "Avago/Broadcom ASMB-MTB0-0A3A2 RGB; 25 C typical forward curve read points (I in A, V in V) used for the red IS/N/RS fit",
+      "scope": "Avago/Broadcom ASMB-MTB0-0A3A2 RGB; 25 C typical forward curve read points (I in A, V in V) used for the red IS/N/RS fit; Figure 2 prints no temperature or typ/min/max label, 25 C assumed from Table 3 TJ=25 C",
       "sources": [
         "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf"
       ],
@@ -58,21 +58,21 @@
     "tolerance_rule": "max(0.08*V, 0.025 V) for a L-confidence datasheet read"
   },
   "entry_id": "OHM-082",
-  "entry_research_sha256": "5feff74e967101869b2f03d085b78047170a640837c3bdb294bd9bce1c64d2ce",
+  "entry_research_sha256": "9ab755403e6a13c79dc2f901df3a151eb62ce8d69d771e96ac71c62bad18686b",
   "limits": "Replays the fitted forward model at one of the sourced curve read points and requires the read voltage within the read uncertainty. Together with the other fit points and the maximum-VF bound this validates the fit over the plotted range at 25 C; it does not validate temperature, reverse behavior, capacitance or ratings.",
   "netlist_sha256": "7f5afa77a0ab7dd7d6d1b19823ab5c55faa4359a7a2d819dd767b445142d2f00",
   "observation_status": "ran",
   "observed": 2.005203,
-  "output_sha256": "c2953537963e42a6874cf0ec6012320768cbdc64e40519cdb9ea5f4b7ee0f30c",
+  "output_sha256": "831bfe9828e70fe0e841fcf469047c90ae2aa0eeae8af3bbc031fce99e021269",
   "problems": [],
   "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
-  "ran_at": "2026-10-10T06:26:14Z",
+  "ran_at": "2026-10-11T02:44:16Z",
   "raw_output": "runtime-bench-output/OHM-082-op-red_fit2/output.txt",
   "recipe_source_sha256": "2be790ee47f30e5ab4a14bb52fbc16bfe3fbd0d94c9b78cf2d2a87721b96d38f",
   "run_id": "behavior-20261005T065040Z",
   "run_status": "passed",
   "variant": "red_fit2",
   "version_file": "runtime-bench-output/OHM-082-op-red_fit2/version.txt",
-  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sun Mar 31 20:15:14 UTC 2024\n******\n",
-  "version_sha256": "d18ced87a01768ec53b4682c549f1182be38030c71159f071a008b747a8f04be"
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at https://ngspice.sourceforge.io/bugrep.html\n** Creation Date: Dec 27 2023   21:02:30\n******\n",
+  "version_sha256": "2cdcb25fcf77dea87742b9ac629a0b5ba20169e01beb2b59fdd2e41ee348a45d"
 }

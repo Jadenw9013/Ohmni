@@ -28,10 +28,10 @@
       {
         "document_id": "vishaytlhr5200",
         "manufacturer": "Vishay",
-        "note": "Primary PDF read directly from hashed fetch archive.",
+        "note": "Manufacturer PDF read directly from the hashed fetch archive of a copy hosted at www.farnell.com, not a manufacturer domain.",
         "page": null,
         "revision": "Rev1.4,31-Aug-2004",
-        "source_status": "primary_source_opened",
+        "source_status": "manufacturer_document_mirror",
         "title": "TLHG/R/Y520. 5 mm Tinted Non-Diffused LEDs",
         "url": "https://www.farnell.com/datasheets/6603.pdf"
       },
@@ -78,7 +78,7 @@
         "detail": null,
         "field": "red_maximum_forward_current",
         "page": 2,
-        "scope": "TLHR5200 red; Tamb<=65 C",
+        "scope": "TLHR5200 red; Tamb<=65 C; DC",
         "sources": [
           "https://www.vishay.com/docs/83011/tlhr5200.pdf",
           "https://www.farnell.com/datasheets/6603.pdf"
@@ -106,7 +106,7 @@
         "detail": null,
         "field": "red_maximum_reverse_voltage",
         "page": 2,
-        "scope": "TLHR5200 red",
+        "scope": "TLHR5200 red; Tamb=25 C unless otherwise specified",
         "sources": [
           "https://www.vishay.com/docs/83011/tlhr5200.pdf",
           "https://www.farnell.com/datasheets/6603.pdf"
@@ -120,7 +120,7 @@
         "detail": null,
         "field": "red_maximum_junction_temperature",
         "page": 2,
-        "scope": "TLHR5200 red",
+        "scope": "TLHR5200 red; Tamb=25 C unless otherwise specified",
         "sources": [
           "https://www.vishay.com/docs/83011/tlhr5200.pdf",
           "https://www.farnell.com/datasheets/6603.pdf"
@@ -134,7 +134,7 @@
         "detail": null,
         "field": "red_thermal_resistance_junction_ambient",
         "page": 2,
-        "scope": "TLHR5200 red",
+        "scope": "TLHR5200 red; Tamb=25 C unless otherwise specified",
         "sources": [
           "https://www.vishay.com/docs/83011/tlhr5200.pdf",
           "https://www.farnell.com/datasheets/6603.pdf"
@@ -148,7 +148,7 @@
         "detail": null,
         "field": "red_forward_voltage_typical_max",
         "page": 2,
-        "scope": "TLHR5200 red; 20 mA",
+        "scope": "TLHR5200 red; 20 mA; Tamb=25 C unless otherwise specified",
         "sources": [
           "https://www.vishay.com/docs/83011/tlhr5200.pdf",
           "https://www.farnell.com/datasheets/6603.pdf"
@@ -165,7 +165,7 @@
         "detail": null,
         "field": "white_maximum_forward_current",
         "page": 1,
-        "scope": "VLHW5100 white; 25C",
+        "scope": "VLHW5100 white; 25C; DC",
         "sources": [
           "https://www.vishay.com/docs/81159/vlhw5100.pdf"
         ],
@@ -178,7 +178,7 @@
         "detail": null,
         "field": "white_maximum_reverse_voltage",
         "page": 1,
-        "scope": "VLHW5100 white",
+        "scope": "VLHW5100 white; Tamb=25 C unless otherwise specified",
         "sources": [
           "https://www.vishay.com/docs/81159/vlhw5100.pdf"
         ],
@@ -191,7 +191,7 @@
         "detail": null,
         "field": "white_forward_voltage_min_max",
         "page": 2,
-        "scope": "VLHW5100 white; 20mA; no typical is tabulated",
+        "scope": "VLHW5100 white; 20mA; no typical is tabulated; Tamb=25 C unless otherwise specified",
         "sources": [
           "https://www.vishay.com/docs/81159/vlhw5100.pdf"
         ],
@@ -207,7 +207,7 @@
         "detail": null,
         "field": "white_forward_voltage_temperature_coefficient",
         "page": 2,
-        "scope": "VLHW5100 white; typical at20mA",
+        "scope": "VLHW5100 white; typical at20mA; Tamb=25 C unless otherwise specified",
         "sources": [
           "https://www.vishay.com/docs/81159/vlhw5100.pdf"
         ],
@@ -220,7 +220,7 @@
         "detail": null,
         "field": "white_intensity_temperature_coefficient",
         "page": 2,
-        "scope": "VLHW5100 white; typical at20mA",
+        "scope": "VLHW5100 white; typical at20mA; Tamb=25 C unless otherwise specified",
         "sources": [
           "https://www.vishay.com/docs/81159/vlhw5100.pdf"
         ],
@@ -233,7 +233,7 @@
         "detail": null,
         "field": "white_internal_protection",
         "page": 1,
-        "scope": "VLHW5100 white; Zener reverse current limit100mA",
+        "scope": "VLHW5100 white; Zener reverse current limit100mA; Tamb=25 C unless otherwise specified",
         "sources": [
           "https://www.vishay.com/docs/81159/vlhw5100.pdf"
         ],
@@ -246,7 +246,7 @@
         "detail": "Fig. 5 - Forward Current vs. Forward Voltage (red; log 0.1-1000 mA vs linear 0-10 V; \"tp/T = 0.001, tp = 10 us\"). Read points: 1.00 mA @ 1.511 V (resid +3.4 mV); 2.00 mA @ 1.562 V (resid -4.8 mV); 5.00 mA @ 1.661 V (resid -1.4 mV); 10.00 mA @ 1.765 V (resid +3.5 mV); 20.00 mA @ 1.910 V (resid -0.1 mV); 30.00 mA @ 2.037 V (resid -0.7 mV). Cross-check: model VF(20 mA)=1.910 V vs stated typ 2.00 V (-90 mV); \"Forward voltage IF = 20 mA VF - 2 3 V\" (p2). Method: Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 6 points 1.00-30.0 mA, rms 2.9 mV. Window sensitivity: windows 1-20/1-30/1-50/2-30/5-30 mA give N 2.35-3.16, RS 9.2-11.7 ohm; including 0.1-0.3 mA (curve drawn non-monotonic there) gives N 1.19. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25.",
         "field": "spice_IS_fit",
         "page": 3,
-        "scope": "Vishay TLHR5200 red (+VLHW5100 white variant); IS for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "scope": "Vishay TLHR5200 red (+VLHW5100 white variant); IS for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit; Fig. 5 typical curve, pulsed tp/T=0.001, tp=10 us; Tamb=25 C unless otherwise specified",
         "sources": [
           "https://www.vishay.com/docs/83011/tlhr5200.pdf"
         ],
@@ -259,7 +259,7 @@
         "detail": "Fig. 5 - Forward Current vs. Forward Voltage (red; log 0.1-1000 mA vs linear 0-10 V; \"tp/T = 0.001, tp = 10 us\"). Read points: 1.00 mA @ 1.511 V (resid +3.4 mV); 2.00 mA @ 1.562 V (resid -4.8 mV); 5.00 mA @ 1.661 V (resid -1.4 mV); 10.00 mA @ 1.765 V (resid +3.5 mV); 20.00 mA @ 1.910 V (resid -0.1 mV); 30.00 mA @ 2.037 V (resid -0.7 mV). Cross-check: model VF(20 mA)=1.910 V vs stated typ 2.00 V (-90 mV); \"Forward voltage IF = 20 mA VF - 2 3 V\" (p2). Method: Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 6 points 1.00-30.0 mA, rms 2.9 mV. Window sensitivity: windows 1-20/1-30/1-50/2-30/5-30 mA give N 2.35-3.16, RS 9.2-11.7 ohm; including 0.1-0.3 mA (curve drawn non-monotonic there) gives N 1.19. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25.",
         "field": "spice_N_fit",
         "page": 3,
-        "scope": "Vishay TLHR5200 red (+VLHW5100 white variant); N for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "scope": "Vishay TLHR5200 red (+VLHW5100 white variant); N for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit; Fig. 5 typical curve, pulsed tp/T=0.001, tp=10 us; Tamb=25 C unless otherwise specified",
         "sources": [
           "https://www.vishay.com/docs/83011/tlhr5200.pdf"
         ],
@@ -272,7 +272,7 @@
         "detail": "Fig. 5 - Forward Current vs. Forward Voltage (red; log 0.1-1000 mA vs linear 0-10 V; \"tp/T = 0.001, tp = 10 us\"). Read points: 1.00 mA @ 1.511 V (resid +3.4 mV); 2.00 mA @ 1.562 V (resid -4.8 mV); 5.00 mA @ 1.661 V (resid -1.4 mV); 10.00 mA @ 1.765 V (resid +3.5 mV); 20.00 mA @ 1.910 V (resid -0.1 mV); 30.00 mA @ 2.037 V (resid -0.7 mV). Cross-check: model VF(20 mA)=1.910 V vs stated typ 2.00 V (-90 mV); \"Forward voltage IF = 20 mA VF - 2 3 V\" (p2). Method: Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 6 points 1.00-30.0 mA, rms 2.9 mV. Window sensitivity: windows 1-20/1-30/1-50/2-30/5-30 mA give N 2.35-3.16, RS 9.2-11.7 ohm; including 0.1-0.3 mA (curve drawn non-monotonic there) gives N 1.19. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25.",
         "field": "spice_RS_fit",
         "page": 3,
-        "scope": "Vishay TLHR5200 red (+VLHW5100 white variant); RS for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "scope": "Vishay TLHR5200 red (+VLHW5100 white variant); RS for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit; Fig. 5 typical curve, pulsed tp/T=0.001, tp=10 us; Tamb=25 C unless otherwise specified",
         "sources": [
           "https://www.vishay.com/docs/83011/tlhr5200.pdf"
         ],
@@ -285,7 +285,7 @@
         "detail": "Fig. 4 - Forward Current vs. Forward Voltage (white; log 1-100 mA vs 2-5 V; Tamb = 25 °C). Read points: 2.00 mA @ 2.702 V (resid -0.3 mV); 5.00 mA @ 2.927 V (resid +1.9 mV); 10.00 mA @ 3.153 V (resid -3.6 mV); 20.00 mA @ 3.506 V (resid +3.2 mV); 30.00 mA @ 3.800 V (resid -1.2 mV). Cross-check: model VF(20 mA)=3.503 V, inside stated \"Forward voltage IF = 20 mA VF 2.8 - 3.6 V\" (p2; no typical given). Method: Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 5 points 2.00-30.0 mA, rms 2.4 mV. Window sensitivity: windows 1-20..5-30 mA give N 6.0-7.1, RS 20.8-24.7 ohm. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25.",
         "field": "spice_white_IS_fit",
         "page": 3,
-        "scope": "Vishay TLHR5200 red (+VLHW5100 white variant); white_IS for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "scope": "Vishay TLHR5200 red (+VLHW5100 white variant); white_IS for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit; VLHW5100 white Fig. 4 typical curve; Tamb=25 C unless otherwise specified",
         "sources": [
           "https://www.vishay.com/docs/81159/vlhw5100.pdf"
         ],
@@ -298,7 +298,7 @@
         "detail": "Fig. 4 - Forward Current vs. Forward Voltage (white; log 1-100 mA vs 2-5 V; Tamb = 25 °C). Read points: 2.00 mA @ 2.702 V (resid -0.3 mV); 5.00 mA @ 2.927 V (resid +1.9 mV); 10.00 mA @ 3.153 V (resid -3.6 mV); 20.00 mA @ 3.506 V (resid +3.2 mV); 30.00 mA @ 3.800 V (resid -1.2 mV). Cross-check: model VF(20 mA)=3.503 V, inside stated \"Forward voltage IF = 20 mA VF 2.8 - 3.6 V\" (p2; no typical given). Method: Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 5 points 2.00-30.0 mA, rms 2.4 mV. Window sensitivity: windows 1-20..5-30 mA give N 6.0-7.1, RS 20.8-24.7 ohm. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25.",
         "field": "spice_white_N_fit",
         "page": 3,
-        "scope": "Vishay TLHR5200 red (+VLHW5100 white variant); white_N for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "scope": "Vishay TLHR5200 red (+VLHW5100 white variant); white_N for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit; VLHW5100 white Fig. 4 typical curve; Tamb=25 C unless otherwise specified",
         "sources": [
           "https://www.vishay.com/docs/81159/vlhw5100.pdf"
         ],
@@ -311,7 +311,7 @@
         "detail": "Fig. 4 - Forward Current vs. Forward Voltage (white; log 1-100 mA vs 2-5 V; Tamb = 25 °C). Read points: 2.00 mA @ 2.702 V (resid -0.3 mV); 5.00 mA @ 2.927 V (resid +1.9 mV); 10.00 mA @ 3.153 V (resid -3.6 mV); 20.00 mA @ 3.506 V (resid +3.2 mV); 30.00 mA @ 3.800 V (resid -1.2 mV). Cross-check: model VF(20 mA)=3.503 V, inside stated \"Forward voltage IF = 20 mA VF 2.8 - 3.6 V\" (p2; no typical given). Method: Curve read from the PDF vector path itself (pdftocairo -svg), axes calibrated from the drawn gridline coordinates; read points interpolated on the drawn centreline (log I). Least-squares fit of V = N*Vt*ln(I/IS) + I*RS (linear in N*Vt, N*Vt*ln IS, RS), Vt = kT/q at 25 C = 0.02569 V. Fit 5 points 2.00-30.0 mA, rms 2.4 mV. Window sensitivity: windows 1-20..5-30 mA give N 6.0-7.1, RS 20.8-24.7 ohm. IS, N and RS are strongly correlated and must be used together as one set; individually they are not identified by this curve. If used in a .model with TNOM=27 C, re-reference IS or set TNOM=25.",
         "field": "spice_white_RS_fit",
         "page": 3,
-        "scope": "Vishay TLHR5200 red (+VLHW5100 white variant); white_RS for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "scope": "Vishay TLHR5200 red (+VLHW5100 white variant); white_RS for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit; VLHW5100 white Fig. 4 typical curve; Tamb=25 C unless otherwise specified",
         "sources": [
           "https://www.vishay.com/docs/81159/vlhw5100.pdf"
         ],
@@ -324,7 +324,7 @@
         "detail": "Same read points as spice_IS_fit: Fig. Structured copy so the runtime check can replay the fit at several currents.",
         "field": "forward_curve_read_points",
         "page": 3,
-        "scope": "Vishay TLHR5200 red (+VLHW5100 white variant); 25 C typical forward curve read points (I in A, V in V) used for the IS/N/RS fit",
+        "scope": "Vishay TLHR5200 red (+VLHW5100 white variant); 25 C typical forward curve read points (I in A, V in V) used for the IS/N/RS fit; pulsed tp/T=0.001, tp=10 us (Fig. 5)",
         "sources": [
           "https://www.vishay.com/docs/83011/tlhr5200.pdf"
         ],
@@ -369,7 +369,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-074.md",
-      "document_sha256": "e9c8b15bed43446c43716a8daeaf92b8f51ff5de23367b881c18c23976c4d88a",
+      "document_sha256": "51d2bd06df6087d368a595d84f2a7bf94897cbb6c762a75657ade7d38084380d",
       "fragment_sha256": null,
       "line": 1
     }

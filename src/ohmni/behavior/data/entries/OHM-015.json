@@ -39,7 +39,7 @@
         "detail": null,
         "field": "p_rated",
         "page": 1,
-        "scope": "Vishay WSBS8518, 100 microohm option",
+        "scope": "Vishay WSBS8518, 100 microohm option; at 70 C (P70 C)",
         "sources": [
           "https://www.vishay.com/docs/30134/wsbs8518.pdf"
         ],
@@ -65,7 +65,7 @@
         "detail": null,
         "field": "tcr_max",
         "page": 1,
-        "scope": "Vishay WSBS8518, 100 microohm option",
+        "scope": "Vishay WSBS8518, 100 microohm option; resistor temperature coefficient (not the +/-20 element-material TCR); +/-175 ppm/C limit for 100 and 125 microohm",
         "sources": [
           "https://www.vishay.com/docs/30134/wsbs8518.pdf"
         ],
@@ -78,7 +78,7 @@
         "detail": null,
         "field": "thermal_emf_max",
         "page": 1,
-        "scope": "Vishay WSBS8518, 100 microohm option",
+        "scope": "Vishay WSBS8518, 100 microohm option; datasheet bound '< 3' uV/C for 100, 125 and 250 microohm (upper bound)",
         "sources": [
           "https://www.vishay.com/docs/30134/wsbs8518.pdf"
         ],
@@ -88,7 +88,7 @@
       {
         "basis": "MFR_DATASHEET",
         "confidence": "H",
-        "detail": "Datasheet maximum current equation; apply derating, not nominal power at every temperature.",
+        "detail": "Datasheet 'Maximum current rating' row prints (P/R)1/2 (square root of P/R) without defining P or R (the only power rating given is P70 C = 36 W at 70 C). Using derated power instead of nominal power at every temperature is an Ohmni inference from the derating figure, not a datasheet statement.",
         "field": "current_limit_equation",
         "page": 1,
         "scope": "Vishay WSBS8518, 100 microohm option",
@@ -109,7 +109,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-015.md",
-      "document_sha256": "29c6eda978cb99ecca1ca217e36e2cd31659e6b84a2ab2cbf30b7ff16b553305",
+      "document_sha256": "278e4a1962086c2455aecb960cb9dc9402fbec9eab902355eafac2a690d1ed8b",
       "fragment_sha256": null,
       "line": 1
     }

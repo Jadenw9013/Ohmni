@@ -131,7 +131,7 @@
         "detail": null,
         "field": "quiescent_current_typical",
         "page": 1,
-        "scope": "SiT8008 7050,3.3V,industrial,OE option; 20MHz,no load,3.3V option;not an arbitrary-frequency bound",
+        "scope": "SiT8008 7050,3.3V,industrial,OE option; 20MHz,no load,3.3V option;not an arbitrary-frequency bound; Note 1: default drive strength unless otherwise stated (row's no-load condition replaces the 15 pF load)",
         "sources": [
           "https://www.sitime.com/sites/default/files/mature-datasheets/SiT8008-datasheet.pdf"
         ],
@@ -144,7 +144,7 @@
         "detail": null,
         "field": "quiescent_current_max",
         "page": 1,
-        "scope": "SiT8008 7050,3.3V,industrial,OE option; 20MHz,no load,3.3V option",
+        "scope": "SiT8008 7050,3.3V,industrial,OE option; 20MHz,no load,3.3V option; Note 1: default drive strength unless otherwise stated (row's no-load condition replaces the 15 pF load)",
         "sources": [
           "https://www.sitime.com/sites/default/files/mature-datasheets/SiT8008-datasheet.pdf"
         ],
@@ -157,7 +157,7 @@
         "detail": null,
         "field": "standby_current_max",
         "page": 1,
-        "scope": "SiT8008 7050,3.3V,industrial,OE option; ST option only,VDD2.8..3.3,STground;not OE current",
+        "scope": "SiT8008 7050,3.3V,industrial,OE option; ST option only,VDD2.8..3.3,STground;not OE current; Output is Weakly Pulled Down; Note 1: 15 pF load at default drive strength unless otherwise stated",
         "sources": [
           "https://www.sitime.com/sites/default/files/mature-datasheets/SiT8008-datasheet.pdf"
         ],
@@ -170,7 +170,7 @@
         "detail": null,
         "field": "oe_input_pullup_typical",
         "page": 1,
-        "scope": "SiT8008 7050,3.3V,industrial,OE option; OE high or low,or ST high",
+        "scope": "SiT8008 7050,3.3V,industrial,OE option; OE high or low,or ST high; Note 1: 15 pF load at default drive strength, all Vdd, unless otherwise stated",
         "sources": [
           "https://www.sitime.com/sites/default/files/mature-datasheets/SiT8008-datasheet.pdf"
         ],
@@ -183,7 +183,7 @@
         "detail": null,
         "field": "oe_input_pullup_max",
         "page": 1,
-        "scope": "SiT8008 7050,3.3V,industrial,OE option; OE high or low,or ST high",
+        "scope": "SiT8008 7050,3.3V,industrial,OE option; OE high or low,or ST high; Note 1: 15 pF load at default drive strength, all Vdd, unless otherwise stated",
         "sources": [
           "https://www.sitime.com/sites/default/files/mature-datasheets/SiT8008-datasheet.pdf"
         ],
@@ -196,7 +196,7 @@
         "detail": null,
         "field": "enable_high_fraction_min",
         "page": 1,
-        "scope": "SiT8008 7050,3.3V,industrial,OE option; fractionofVDD,pin1",
+        "scope": "SiT8008 7050,3.3V,industrial,OE option; fractionofVDD,pin1; Note 1: 15 pF load at default drive strength, all Vdd, unless otherwise stated",
         "sources": [
           "https://www.sitime.com/sites/default/files/mature-datasheets/SiT8008-datasheet.pdf"
         ],
@@ -209,7 +209,7 @@
         "detail": null,
         "field": "enable_low_fraction_max",
         "page": 1,
-        "scope": "SiT8008 7050,3.3V,industrial,OE option; fractionofVDD,pin1",
+        "scope": "SiT8008 7050,3.3V,industrial,OE option; fractionofVDD,pin1; Note 1: 15 pF load at default drive strength, all Vdd, unless otherwise stated",
         "sources": [
           "https://www.sitime.com/sites/default/files/mature-datasheets/SiT8008-datasheet.pdf"
         ],
@@ -222,7 +222,7 @@
         "detail": null,
         "field": "startup_time_max",
         "page": 2,
-        "scope": "SiT8008 7050,3.3V,industrial,OE option; fromVDDreachingratedminimum",
+        "scope": "SiT8008 7050,3.3V,industrial,OE option; fromVDDreachingratedminimum; Note 1: 15 pF load, all Vdd, unless otherwise stated",
         "sources": [
           "https://www.sitime.com/sites/default/files/mature-datasheets/SiT8008-datasheet.pdf"
         ],
@@ -274,7 +274,7 @@
         "detail": null,
         "field": "oe_disabled_state",
         "page": 2,
-        "scope": "SiT8008 7050,3.3V,industrial,OE option; only output driver disabled",
+        "scope": "SiT8008 7050,3.3V,industrial,OE option; only output driver disabled; page 2 says high impedance but page 1 I_OD rows say 'output is Weakly Pulled Down' with OE = GND (datasheet conflict, unresolved)",
         "sources": [
           "https://www.sitime.com/sites/default/files/mature-datasheets/SiT8008-datasheet.pdf"
         ],
@@ -349,7 +349,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-146.md",
-      "document_sha256": "4b9adf39fe117a43ca326f6403867901c74274ba7d3dfbf669755482ca631cbd",
+      "document_sha256": "35ef91b485463203e30975617ad7525af2bca72052d78259cd0575ddf466409f",
       "fragment_sha256": null,
       "line": 1
     }

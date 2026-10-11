@@ -23,17 +23,17 @@
       {
         "document_id": "asmbmtb0",
         "manufacturer": "Avago",
-        "note": "Manufacturer PDF read from the hashed fetch archive; distributor-hosted copies retain manufacturer identity.",
+        "note": "Manufacturer PDF read from the hashed fetch archive of a distributor-hosted copy at docs.rs-online.com, not a manufacturer domain.",
         "page": null,
-        "revision": null,
-        "source_status": "primary_source_opened",
+        "revision": "AV02-4186EN, September 10, 2014",
+        "source_status": "manufacturer_document_mirror",
         "title": "ASMB-MTB0-0A3A2 PLCC-4 Tricolor Black Surface LED",
         "url": "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf"
       },
       {
         "document_id": "primary-7727179f",
         "manufacturer": "Broadcom (formerly Avago)",
-        "note": "Added by the 2026-10-06 primary-source sweep; claims checked via WebFetch extract. Needs an archived fetch before the source audit can pass.",
+        "note": "Added by the 2026-10-06 primary-source sweep; claims checked via WebFetch extract. Needs an archived fetch before the source audit can pass. Covers only the sibling part ASMB-MTB0-0B3A2 (minimum-intensity-bin option B) and does not print ASMB-MTB0-0A3A2; where cited, its electrical values match the Avago sheet.",
         "page": null,
         "revision": "ASMB-MTB0-0B3A2-DS100, November 14, 2022",
         "source_status": "primary_source_opened_via_webfetch_not_yet_archived",
@@ -46,7 +46,7 @@
       {
         "basis": "MFR_DATASHEET",
         "confidence": "H",
-        "detail": null,
+        "detail": "Part number ASMB-MTB0-0A3A2 is printed on the cover of the Avago sheet (p1). The Broadcom sheet in sources is for the sibling ASMB-MTB0-0B3A2 (minimum-intensity-bin option B) and does not print ASMB-MTB0-0A3A2.",
         "field": "reference_part",
         "page": 1,
         "scope": "ASMB-MTB0-0A3A2",
@@ -60,7 +60,7 @@
       {
         "basis": "MFR_DATASHEET",
         "confidence": "H",
-        "detail": null,
+        "detail": "Broadcom ASMB-MTB0-0B3A2-DS100 (sibling part, minimum-intensity-bin option B) prints the same pin configuration on p2.",
         "field": "manufacturer_pin_roles",
         "page": 2,
         "scope": "ASMB-MTB0-0A3A2",
@@ -92,10 +92,10 @@
       {
         "basis": "MFR_DATASHEET",
         "confidence": "H",
-        "detail": null,
+        "detail": "Broadcom ASMB-MTB0-0B3A2-DS100 (sibling part, minimum-intensity-bin option B) prints the same 25 mA per color on p3; its Absolute Maximum Ratings header carries no TJ condition.",
         "field": "maximum_forward_current_per_die",
         "page": 3,
-        "scope": "ASMB-MTB0-0A3A2; TJ25 C, derate per source figures",
+        "scope": "ASMB-MTB0-0A3A2; TJ25 C, derate per source figures; DC forward current",
         "sources": [
           "https://docs.broadcom.com/doc/ASMB-MTB0-0B3A2-PLCC-4-Tricolor-Black-Surface-LED-DS",
           "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf"
@@ -106,7 +106,7 @@
       {
         "basis": "MFR_DATASHEET",
         "confidence": "H",
-        "detail": null,
+        "detail": "Broadcom ASMB-MTB0-0B3A2-DS100 (sibling part, minimum-intensity-bin option B) prints the same 65/90/90 mW (red/green/blue) on p3; its Absolute Maximum Ratings header carries no TJ condition.",
         "field": "maximum_power_by_color",
         "page": 3,
         "scope": "ASMB-MTB0-0A3A2; TJ25 C",
@@ -124,10 +124,10 @@
       {
         "basis": "MFR_DATASHEET",
         "confidence": "H",
-        "detail": null,
+        "detail": "Broadcom ASMB-MTB0-0B3A2-DS100 (sibling part, minimum-intensity-bin option B) prints the same 110 C on p3; its Absolute Maximum Ratings header carries no TJ condition.",
         "field": "maximum_junction_temperature",
         "page": 3,
-        "scope": "ASMB-MTB0-0A3A2",
+        "scope": "ASMB-MTB0-0A3A2; Table 1 header TJ=25 C",
         "sources": [
           "https://docs.broadcom.com/doc/ASMB-MTB0-0B3A2-PLCC-4-Tricolor-Black-Surface-LED-DS",
           "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf"
@@ -138,10 +138,10 @@
       {
         "basis": "MFR_DATASHEET",
         "confidence": "H",
-        "detail": null,
+        "detail": "Broadcom ASMB-MTB0-0B3A2-DS100 (sibling part, minimum-intensity-bin option B) prints 'Not recommended for reverse bias operation' (Absolute Maximum Ratings) and the same 4.0 V final-test minimums at IR = 100 uA (red) and IR = 10 uA (green, blue) on p3, under the header Electrical Characteristics (TJ = 25 C, IF = 20 mA).",
         "field": "reverse_operation",
         "page": 3,
-        "scope": "ASMB-MTB0-0A3A2",
+        "scope": "ASMB-MTB0-0A3A2; 4 V is VR min at IR=100 uA (red) or IR=10 uA (green, blue), TJ=25 C; final test condition, long-term reverse bias not recommended",
         "sources": [
           "https://docs.broadcom.com/doc/ASMB-MTB0-0B3A2-PLCC-4-Tricolor-Black-Surface-LED-DS",
           "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf"
@@ -152,10 +152,10 @@
       {
         "basis": "MFR_DATASHEET",
         "confidence": "H",
-        "detail": null,
+        "detail": "Broadcom ASMB-MTB0-0B3A2-DS100 (sibling part, minimum-intensity-bin option B) prints the same values on p3 under 1 Chip On, labelled Typ., within the header Electrical Characteristics (TJ = 25 C, IF = 20 mA).",
         "field": "thermal_resistance_junction_solderpoint_single_chip",
         "page": 3,
-        "scope": "ASMB-MTB0-0A3A2",
+        "scope": "ASMB-MTB0-0A3A2; single chip on; TJ=25 C; Typ. in Broadcom sheet, unlabelled in Avago sheet",
         "sources": [
           "https://docs.broadcom.com/doc/ASMB-MTB0-0B3A2-PLCC-4-Tricolor-Black-Surface-LED-DS",
           "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf"
@@ -170,10 +170,10 @@
       {
         "basis": "MFR_DATASHEET",
         "confidence": "H",
-        "detail": null,
+        "detail": "Broadcom ASMB-MTB0-0B3A2-DS100 (sibling part, minimum-intensity-bin option B) prints the same values on p3 under 3 Chips On, labelled Typ., within the header Electrical Characteristics (TJ = 25 C, IF = 20 mA).",
         "field": "thermal_resistance_junction_solderpoint_three_chips",
         "page": 3,
-        "scope": "ASMB-MTB0-0A3A2",
+        "scope": "ASMB-MTB0-0A3A2; three chips on; TJ=25 C; Typ. in Broadcom sheet, unlabelled in Avago sheet",
         "sources": [
           "https://docs.broadcom.com/doc/ASMB-MTB0-0B3A2-PLCC-4-Tricolor-Black-Surface-LED-DS",
           "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf"
@@ -188,10 +188,10 @@
       {
         "basis": "MFR_DATASHEET",
         "confidence": "H",
-        "detail": null,
+        "detail": "Broadcom ASMB-MTB0-0B3A2-DS100 (sibling part, minimum-intensity-bin option B) prints the same values on p3 under the header Electrical Characteristics (TJ = 25 C, IF = 20 mA), tolerance +/-0.1 V.",
         "field": "forward_voltage_typical_max",
         "page": 3,
-        "scope": "ASMB-MTB0-0A3A2; IF20 mA,TJ25 C",
+        "scope": "ASMB-MTB0-0A3A2; IF20 mA,TJ25 C; VF tolerance +/-0.1 V",
         "sources": [
           "https://docs.broadcom.com/doc/ASMB-MTB0-0B3A2-PLCC-4-Tricolor-Black-Surface-LED-DS",
           "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf"
@@ -296,7 +296,7 @@
         "detail": "Same read points as spice_red_IS_fit: Figure 2. Structured copy so the runtime check can replay the fit at several currents.",
         "field": "forward_curve_read_points_red",
         "page": 5,
-        "scope": "Avago/Broadcom ASMB-MTB0-0A3A2 RGB; 25 C typical forward curve read points (I in A, V in V) used for the red IS/N/RS fit",
+        "scope": "Avago/Broadcom ASMB-MTB0-0A3A2 RGB; 25 C typical forward curve read points (I in A, V in V) used for the red IS/N/RS fit; Figure 2 prints no temperature or typ/min/max label, 25 C assumed from Table 3 TJ=25 C",
         "sources": [
           "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf"
         ],
@@ -341,7 +341,7 @@
         "detail": "Same read points as spice_green_blue_IS_fit: Figure 2. Structured copy so the runtime check can replay the fit at several currents.",
         "field": "forward_curve_read_points_green_blue",
         "page": 5,
-        "scope": "Avago/Broadcom ASMB-MTB0-0A3A2 RGB; 25 C typical forward curve read points (I in A, V in V) used for the green_blue IS/N/RS fit",
+        "scope": "Avago/Broadcom ASMB-MTB0-0A3A2 RGB; 25 C typical forward curve read points (I in A, V in V) used for the green_blue IS/N/RS fit; Figure 2 prints no temperature or typ/min/max label, 25 C assumed from Table 3 TJ=25 C",
         "sources": [
           "https://docs.rs-online.com/f6e8/0900766b814caf0e.pdf"
         ],
@@ -390,7 +390,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-082.md",
-      "document_sha256": "5feff74e967101869b2f03d085b78047170a640837c3bdb294bd9bce1c64d2ce",
+      "document_sha256": "9ab755403e6a13c79dc2f901df3a151eb62ce8d69d771e96ac71c62bad18686b",
       "fragment_sha256": null,
       "line": 1
     }

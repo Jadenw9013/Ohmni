@@ -56,7 +56,7 @@
         "detail": null,
         "field": "manufacturer_pin_roles",
         "page": 1,
-        "scope": "4N35 DIP-6; Rev1.2 only; pin diagram visually inspected",
+        "scope": "4N35 DIP-6; Rev1.2 only; pin diagram visually inspected; the diagram labels pin 2 as C (LED cathode), recorded here as K to distinguish it from collector pin 5",
         "sources": [
           "https://www.vishay.com/docs/81181/4n35.pdf"
         ],
@@ -128,7 +128,7 @@
         "detail": null,
         "field": "maximum_collector_current",
         "page": 1,
-        "scope": "4N35 DIP-6; Rev1.2 only; continuous,TA25C",
+        "scope": "4N35 DIP-6; Rev1.2 only; continuous,TA25C; continuous = the Collector current row with no test condition (the separate pulsed row is t<=1 ms, 100 mA)",
         "sources": [
           "https://www.vishay.com/docs/81181/4n35.pdf"
         ],
@@ -141,7 +141,7 @@
         "detail": null,
         "field": "collector_emitter_absolute_voltage",
         "page": 1,
-        "scope": "4N35 DIP-6; Rev1.2 only; printed absolute maximum",
+        "scope": "4N35 DIP-6; Rev1.2 only; printed absolute maximum; Tamb=25 C unless otherwise specified",
         "sources": [
           "https://www.vishay.com/docs/81181/4n35.pdf"
         ],
@@ -167,7 +167,7 @@
         "detail": null,
         "field": "conservative_collector_emitter_ceiling",
         "page": 2,
-        "scope": "4N35 DIP-6; Rev1.2 only; lower of published70V absolute and30V guaranteed breakdown; not an operating guarantee",
+        "scope": "4N35 DIP-6; Rev1.2 only; lower of published70V absolute and30V guaranteed breakdown; not an operating guarantee; 30 V is the minimum (worst-case) BVCEO at IC=1 mA, Tamb=25 C",
         "sources": [
           "https://www.vishay.com/docs/81181/4n35.pdf"
         ],
@@ -180,7 +180,7 @@
         "detail": null,
         "field": "maximum_junction_temperature",
         "page": 2,
-        "scope": "4N35 DIP-6; Rev1.2 only",
+        "scope": "4N35 DIP-6; Rev1.2 only; Tamb=25 C unless otherwise specified",
         "sources": [
           "https://www.vishay.com/docs/81181/4n35.pdf"
         ],
@@ -193,7 +193,7 @@
         "detail": null,
         "field": "minimum_current_transfer_ratio",
         "page": 3,
-        "scope": "4N35 DIP-6; Rev1.2 only; IF10mA,VCE10V,TA25C",
+        "scope": "4N35 DIP-6; Rev1.2 only; IF10mA,VCE10V; no ambient temperature is stated for this CTR row (a separate row gives 40 % min at TA=-55 to +100 C)",
         "sources": [
           "https://www.vishay.com/docs/81181/4n35.pdf"
         ],
@@ -224,7 +224,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-103.md",
-      "document_sha256": "0ac0635c067a7954f4db42b857857ecc73f44052330ce648f780c6eee05f6a6a",
+      "document_sha256": "e3ffa50c73d83e78243626647683ced793b2ad86821d6140972653e9f80465cf",
       "fragment_sha256": null,
       "line": 1
     }

@@ -45,24 +45,24 @@
       },
       {
         "document_id": "added-3",
-        "manufacturer": null,
+        "manufacturer": "TDK Corporation",
         "note": "Archived source added during the behavior-81 integration; read from archived bytes.",
         "page": null,
         "revision": null,
         "source_status": "primary_source_opened",
-        "title": "info?part_no=C2012X5R1V106M085AC",
+        "title": "C2012X5R1V106M085AC : Detailed Information | Capacitors - Multilayer Ceramic Chip Capacitors | TDK Product Center",
         "url": "https://product.tdk.com/en/search/capacitor/ceramic/mlcc/info?part_no=C2012X5R1V106M085AC"
       }
     ],
     "entry_id": "OHM-024",
     "field_updates": [
       {
-        "basis": "MFR_DATASHEET",
-        "confidence": "H",
-        "detail": null,
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "p7: the high dielectric constant type (X5R type etc.) changes capacitance under DC bias while C0G hardly changes; Fig. 3 is labelled an example. p8: Measure Settings (3) DC bias voltage from 0 Vdc to rated voltage, (5) measure temperature 25+/-3 C; the document does not say per part. A part-specific measured curve is therefore required (inference); the document states no rating.",
         "field": "dc_bias_curve_scope",
         "page": 7,
-        "scope": "Murata high-K X5R/X7R MLCC; not a universal package curve",
+        "scope": "Murata high-K X5R/X7R MLCC; inferred from the SimSurfing measurement-conditions presentation, not a part datasheet; not a universal package curve; the DC-bias text on p7 names 'X5R type etc.' only; X7R is named only in the p9 temperature section",
         "sources": [
           "https://ds.murata.com/simsurfing_data/pdf/en-us/mlcc/sim_mlcc_measuringcond_e.pdf"
         ],
@@ -75,7 +75,7 @@
         "detail": null,
         "field": "aging_rate_reference",
         "page": 1,
-        "scope": "Johanson typical X7R/X5R example; not a rated value for an unspecified Murata/TDK part",
+        "scope": "Johanson typical X7R/X5R example; not a rated value for an unspecified Murata/TDK part; per decade hour after manufacturing",
         "sources": [
           "https://johansondielectrics.com/docs/3945/ceramic-capacitor-aging-made-simple.pdf"
         ],
@@ -231,7 +231,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-024.md",
-      "document_sha256": "cf3713d725b0bff5577c11add75bc727ca5a28b8290e5e76c2953f5c4ac73b73",
+      "document_sha256": "4188f785969289e87af7bde43550ed5c808eba8ffd936f68810548170167c1d2",
       "fragment_sha256": null,
       "line": 1
     }

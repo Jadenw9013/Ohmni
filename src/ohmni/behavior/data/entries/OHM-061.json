@@ -56,7 +56,7 @@
         "detail": null,
         "field": "dc_reverse_voltage",
         "page": 2,
-        "scope": "1N4148W SOD123",
+        "scope": "1N4148W SOD123; TA=25 C unless otherwise specified",
         "sources": [
           "https://www.diodes.com/datasheet/download/1N4148W.pdf"
         ],
@@ -69,7 +69,7 @@
         "detail": null,
         "field": "continuous_forward_current",
         "page": 2,
-        "scope": "1N4148W SOD123",
+        "scope": "1N4148W SOD123; TA=25 C unless otherwise specified",
         "sources": [
           "https://www.diodes.com/datasheet/download/1N4148W.pdf"
         ],
@@ -121,7 +121,7 @@
         "detail": null,
         "field": "maximum_forward_voltage",
         "page": 2,
-        "scope": "1N4148W SOD123; IF=10 mA",
+        "scope": "1N4148W SOD123; IF=10 mA; TA=25 C unless otherwise specified",
         "sources": [
           "https://www.diodes.com/datasheet/download/1N4148W.pdf"
         ],
@@ -134,7 +134,7 @@
         "detail": null,
         "field": "maximum_capacitance",
         "page": 2,
-        "scope": "1N4148W SOD123; VR=0, 1 MHz",
+        "scope": "1N4148W SOD123; VR=0, 1 MHz; TA=25 C unless otherwise specified",
         "sources": [
           "https://www.diodes.com/datasheet/download/1N4148W.pdf"
         ],
@@ -147,7 +147,7 @@
         "detail": null,
         "field": "maximum_reverse_recovery_time",
         "page": 2,
-        "scope": "1N4148W SOD123; IF=IR=10 mA; measured at 0.1 IR; RL=100 ohm",
+        "scope": "1N4148W SOD123; IF=IR=10 mA; measured at 0.1 IR; RL=100 ohm; TA=25 C unless otherwise specified",
         "sources": [
           "https://www.diodes.com/datasheet/download/1N4148W.pdf"
         ],
@@ -238,7 +238,7 @@
         "detail": "\"Reverse Recovery Time tRR ... 4.0 ns IF = IR = 10mA, IRR = 0.1 x IR, RL = 100 ohm\" (Max column) Method: Charge-control storage-time estimate used by the SPICE lumped-charge diode: ts = TT*ln(1+IF/IR). Treating the whole quoted trr as storage time gives TT = trr/ln(1+IF/IR). Ignores the recovery tail to the quoted Irr, junction capacitance and RS, so it over-estimates TT. TT <= 4 ns/ln 2 = 5.8 ns; upper bound from a maximum. Class default 23 ns would give ~16 ns, 4x the guaranteed maximum.",
         "field": "spice_TT_upper_bound",
         "page": 2,
-        "scope": "Diodes Incorporated 1N4148W (identified from doc BAV16W/1N4148W + entry field reference_part=1N4148W; input reference_part was None); TT for the OHMNI simulation model (upper bound from a maximum rating); not a guaranteed limit",
+        "scope": "Diodes Incorporated 1N4148W (identified from doc BAV16W/1N4148W + entry field reference_part=1N4148W; input reference_part was None); TT for the OHMNI simulation model (upper bound from a maximum rating); not a guaranteed limit; TA=25 C unless otherwise specified",
         "sources": [
           "https://www.diodes.com/datasheet/download/1N4148W.pdf"
         ],
@@ -251,7 +251,7 @@
         "detail": "\"Reverse Breakdown Voltage (Note 6) V(BR)R 100 ... IR = 1.0uA\" (Min) Method: Minimum breakdown at IR = 1.0 uA (so IBV=1 uA, not the class 100 uA).",
         "field": "spice_BV_minimum_breakdown",
         "page": 2,
-        "scope": "Diodes Incorporated 1N4148W (identified from doc BAV16W/1N4148W + entry field reference_part=1N4148W; input reference_part was None); BV for the OHMNI simulation model (datasheet value); not a guaranteed limit",
+        "scope": "Diodes Incorporated 1N4148W (identified from doc BAV16W/1N4148W + entry field reference_part=1N4148W; input reference_part was None); BV for the OHMNI simulation model (datasheet value); not a guaranteed limit; TA=25 C unless otherwise specified; Note 6 short duration pulse test used to minimize self-heating effect",
         "sources": [
           "https://www.diodes.com/datasheet/download/1N4148W.pdf"
         ],
@@ -313,7 +313,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-061.md",
-      "document_sha256": "270ef7ac09c25a88154bffa13b86fce5d3fa2dedb95044e24ff36df700606ac6",
+      "document_sha256": "5002e5bf980fd42c32c3a497dbe591e210ff577d139bf62bdaa402ad88e0f6d0",
       "fragment_sha256": null,
       "line": 1
     }

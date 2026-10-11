@@ -27,7 +27,7 @@
         "note": "Manufacturer-authored mirror.",
         "page": null,
         "revision": "13November2013",
-        "source_status": "primary_source_opened",
+        "source_status": "manufacturer_document_mirror",
         "title": "MSTBA2,5/2-G-5,08 header1757242",
         "url": "https://asset.conrad.com/media10/add/160267/c1/-/en/000569017DS03/datenblatt-569017-phoenix-contact-stiftgehaeuse-platine-mstba-polzahl-gesamt-2-rastermass-508-mm-1757242-250-st.pdf"
       },
@@ -37,7 +37,7 @@
         "note": "Manufacturer-authored mirror; mating derating charts require actual position count.",
         "page": null,
         "revision": "14March2025",
-        "source_status": "primary_source_opened",
+        "source_status": "manufacturer_document_mirror",
         "title": "MSTB2,5/2-ST-5,08 plug1757019",
         "url": "https://docs.rs-online.com/7dc2/0900766b816e4903.pdf"
       },
@@ -63,12 +63,12 @@
       },
       {
         "document_id": "added-5",
-        "manufacturer": null,
+        "manufacturer": "Phoenix Contact",
         "note": "Archived source added during the behavior-81 integration; read from archived bytes.",
         "page": null,
-        "revision": null,
+        "revision": "Oct 6, 2026",
         "source_status": "primary_source_opened",
-        "title": "pdf",
+        "title": "MSTBA 2,5/ 2-G-5,08 - PCB header",
         "url": "https://www.phoenixcontact.com/us/products/1757242/pdf"
       }
     ],
@@ -203,7 +203,7 @@
         "detail": null,
         "field": "plug_contact_resistance_after_durability_test",
         "page": 5,
-        "scope": "MSTBA1757242 header plus MSTB1757019 plug,tin,2positions; R2,25cycles;not universal aged maximum",
+        "scope": "MSTBA1757242 header plus MSTB1757019 plug,tin,2positions; R2,25cycles;not universal aged maximum; durability test IEC 60512-9-1 (timing of R2 relative to the cycles not labelled)",
         "sources": [
           "https://docs.rs-online.com/7dc2/0900766b816e4903.pdf"
         ],
@@ -229,7 +229,7 @@
         "detail": null,
         "field": "operating_ambient_range",
         "page": 5,
-        "scope": "MSTBA1757242 header plus MSTB1757019 plug,tin,2positions; dependent on derating curve;MSTBA mate curve p9",
+        "scope": "MSTBA1757242 header plus MSTB1757019 plug,tin,2positions; dependent on derating curve;MSTBA mate curve p16",
         "sources": [
           "https://docs.rs-online.com/7dc2/0900766b816e4903.pdf"
         ],
@@ -274,7 +274,7 @@
         "detail": "'Contact resistance R1 1.4 mΩ' (also p2 'Contact resistance 1.4 mΩ')",
         "field": "header_contact_resistance_R1",
         "page": 4,
-        "scope": "MSTBA 2,5/ 2-G-5,08 1757242; durability test IEC 60512-9-1, before cycling; not labelled max or typical",
+        "scope": "MSTBA 2,5/ 2-G-5,08 1757242; durability test IEC 60512-9-1, R1 (timing relative to the 25 cycles not labelled); not labelled max or typical",
         "sources": [
           "https://www.phoenixcontact.com/us/products/1757242/pdf",
           "https://www.phoenixcontact.com/en-us/products/pcb-header-mstba-25-2-g-508-1757242"
@@ -288,7 +288,7 @@
         "detail": "'Contact resistance R2 1.4 mΩ'; 'Insertion/withdrawal cycles 25'",
         "field": "header_contact_resistance_R2",
         "page": 4,
-        "scope": "MSTBA 1757242; after 25 insertion/withdrawal cycles, IEC 60512-9-1",
+        "scope": "MSTBA 1757242; durability test IEC 60512-9-1, R2 listed with 'Insertion/withdrawal cycles 25' (timing relative to the cycles not labelled)",
         "sources": [
           "https://www.phoenixcontact.com/us/products/1757242/pdf",
           "https://www.phoenixcontact.com/en-us/products/pcb-header-mstba-25-2-g-508-1757242"
@@ -302,7 +302,7 @@
         "detail": "'Contact resistance R1 1.3 mΩ', 'Contact resistance R2 1.4 mΩ'",
         "field": "plug_contact_resistance_R1_primary",
         "page": null,
-        "scope": "MSTB 2,5/ 2-ST-5,08 1757019 product page (primary; replaces RS mirror source of plug_contact_resistance_stated)",
+        "scope": "MSTB 2,5/ 2-ST-5,08 1757019 product page (primary; replaces RS mirror source of plug_contact_resistance_stated); durability test IEC 60512-9-1, R1 (timing relative to the 25 cycles not labelled)",
         "source_locator": "Manufacturer product web page (HTML, non-paginated); value read from the archived page bytes",
         "sources": [
           "https://www.phoenixcontact.com/en-us/products/pcb-plug-mstb-25-2-st-508-1757019"
@@ -316,7 +316,7 @@
         "detail": "max(header R1 1.4, header R2 1.4, plug R1 1.3, plug R2 1.4) = 1.4 mohm. Phoenix does not say whether the value includes the screw clamp or only the plug/header interface, nor that it is a guaranteed maximum.",
         "field": "mated_path_resistance_stated",
         "page": 4,
-        "scope": "MSTBA 1757242 + MSTB 1757019, 2 positions, tin; one lumped wire-clamp-to-solder-pin path per position",
+        "scope": "MSTBA 1757242 + MSTB 1757019, 2 positions, tin; one lumped wire-clamp-to-solder-pin path per position; maximum of the four stated R1/R2 values (IEC 60512-9-1 durability test), not a guaranteed maximum; screw-clamp coverage not stated",
         "sources": [
           "https://www.phoenixcontact.com/us/products/1757242/pdf",
           "https://www.phoenixcontact.com/en-us/products/pcb-plug-mstb-25-2-st-508-1757019"
@@ -399,7 +399,7 @@
         "detail": "'Ambient temperature (operation) -40 °C ... 100 °C (dependent on the derating curve)'",
         "field": "operating_ambient_range_header",
         "page": 5,
-        "scope": "MSTBA 1757242",
+        "scope": "MSTBA 1757242; dependent on the derating curve",
         "sources": [
           "https://www.phoenixcontact.com/us/products/1757242/pdf"
         ],
@@ -437,7 +437,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-161.md",
-      "document_sha256": "9ed5478484712cb2dc1fed64af50480a26dccfea40a6e23948384885033ea9f2",
+      "document_sha256": "0fa8fc4567412d3a6933ffba7dfc37325dae3a52a4138a86c43eb52b954a0ce7",
       "fragment_sha256": null,
       "line": 1
     }

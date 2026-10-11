@@ -228,7 +228,7 @@
         "detail": "p6 'I – Discharge Current, 4 × C × VR (mA)'",
         "field": "capacitance_test_current_rule",
         "page": 6,
-        "scope": "SCC series capacitance method",
+        "scope": "SCC series IEC capacitance/ESR test method (10 ms method) only; the p2 rated capacitance is the 5 s method discharge capacitance (I1 = I2 = 75 mA/F)",
         "sources": [
           "https://datasheets.kyocera-avx.com/AVX-SCC.pdf"
         ],
@@ -238,10 +238,10 @@
       {
         "basis": "DERIVED",
         "confidence": "L",
-        "detail": "2.7 V / 15 uA (p2 row); spec line 1992 rule RLK = VR/I_leak",
+        "detail": "2.7 V / 15 uA maximum DCL after 72 h (p2 row) gives at least 180 kohm; spec line 1992 rule RLK = VR/I_leak",
         "field": "leakage_equivalent_resistance",
         "page": 2,
-        "scope": "KYOCERA AVX SCCS20B505SRB; D10 x L20 radial; assumes the 72 h DCL is at rated 2.7 V (table header does not state the voltage)",
+        "scope": "KYOCERA AVX SCCS20B505SRB; D10 x L20 radial; minimum (worst-case) equivalent leakage resistance, because the 72 h DCL input is a maximum; assumes the 72 h DCL is at rated 2.7 V (table header does not state the voltage); valid only at the p2 table condition, leakage rises steeply with temperature (p3 curve)",
         "sources": [
           "https://datasheets.kyocera-avx.com/AVX-SCC.pdf"
         ],
@@ -278,7 +278,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-040.md",
-      "document_sha256": "bfd7179303595f08ae6b67df83b370e5dafcd0ef19ead225ccee3f1aee9844e6",
+      "document_sha256": "242c718bef450fdf152db122b8fd52b8ab5cebc9e9172e8e21b0e211ff627ef3",
       "fragment_sha256": null,
       "line": 1
     }

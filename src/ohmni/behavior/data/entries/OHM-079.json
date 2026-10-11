@@ -30,7 +30,7 @@
         "manufacturer": "Kingbright",
         "note": "Primary PDF read directly from hashed fetch archive.",
         "page": null,
-        "revision": "DSAA4049,V11A,08-Sep-2021",
+        "revision": "DSAA4049,V11A,09/08/2021 as printed (read as 08-Sep-2021)",
         "source_status": "primary_source_opened",
         "title": "AP2012EC SMD Chip LED Lamp",
         "url": "https://www.kingbrightusa.com/images/catalog/SPEC/AP2012EC.pdf"
@@ -86,7 +86,7 @@
         "detail": null,
         "field": "maximum_forward_current",
         "page": 2,
-        "scope": "AP2012EC; TA25C",
+        "scope": "AP2012EC; TA25C; DC forward current (IF)",
         "sources": [
           "https://www.kingbrightusa.com/images/catalog/SPEC/AP2012EC.pdf"
         ],
@@ -99,7 +99,7 @@
         "detail": null,
         "field": "maximum_reverse_voltage",
         "page": 2,
-        "scope": "AP2012EC",
+        "scope": "AP2012EC; TA=25 C",
         "sources": [
           "https://www.kingbrightusa.com/images/catalog/SPEC/AP2012EC.pdf"
         ],
@@ -125,7 +125,7 @@
         "detail": null,
         "field": "maximum_junction_temperature",
         "page": 2,
-        "scope": "AP2012EC",
+        "scope": "AP2012EC; TA=25 C",
         "sources": [
           "https://www.kingbrightusa.com/images/catalog/SPEC/AP2012EC.pdf"
         ],
@@ -138,7 +138,7 @@
         "detail": null,
         "field": "thermal_resistance_junction_ambient",
         "page": 2,
-        "scope": "AP2012EC; FR4, pad area>=16mm2 per pad",
+        "scope": "AP2012EC; FR4, pad area>=16mm2 per pad; TA=25 C",
         "sources": [
           "https://www.kingbrightusa.com/images/catalog/SPEC/AP2012EC.pdf"
         ],
@@ -151,7 +151,7 @@
         "detail": null,
         "field": "thermal_resistance_junction_solderpoint",
         "page": 2,
-        "scope": "AP2012EC; same mounting",
+        "scope": "AP2012EC; same mounting; FR4, pad area>=16mm2 per pad; TA=25 C",
         "sources": [
           "https://www.kingbrightusa.com/images/catalog/SPEC/AP2012EC.pdf"
         ],
@@ -164,7 +164,7 @@
         "detail": null,
         "field": "forward_voltage_typical_max",
         "page": 2,
-        "scope": "AP2012EC; IF20mA",
+        "scope": "AP2012EC; IF20mA; TA=25 C; VF tolerance +/-0.1 V (note 2)",
         "sources": [
           "https://www.kingbrightusa.com/images/catalog/SPEC/AP2012EC.pdf"
         ],
@@ -193,7 +193,7 @@
         "detail": null,
         "field": "typical_capacitance",
         "page": 2,
-        "scope": "AP2012EC; conditions not specified in this revision; do not call it CJO",
+        "scope": "AP2012EC; conditions not specified in this revision; do not call it CJO; TA=25 C per table header; no bias voltage or frequency stated",
         "sources": [
           "https://www.kingbrightusa.com/images/catalog/SPEC/AP2012EC.pdf"
         ],
@@ -242,7 +242,7 @@
       {
         "basis": "DERIVED",
         "confidence": "L",
-        "detail": "Same read points as spice_IS_fit: \"Forward Current vs. Structured copy so the runtime check can replay the fit at several currents.",
+        "detail": "Same read points as spice_IS_fit (chart \"Forward Current vs. Forward Voltage\", High Efficiency Red, Ta = 25 C). Structured copy so the runtime check can replay the fit at several currents.",
         "field": "forward_curve_read_points",
         "page": 3,
         "scope": "Kingbright AP2012EC high-efficiency red; 25 C typical forward curve read points (I in A, V in V) used for the IS/N/RS fit",
@@ -366,7 +366,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-079.md",
-      "document_sha256": "06a72c269c0f25db781fa249bbf6cac5c404b78916e9b7427107d7f22ecc4244",
+      "document_sha256": "379109b8e72f39c8aeac527a19e402568c299db51c319166b2658dc88569bf12",
       "fragment_sha256": null,
       "line": 1
     }

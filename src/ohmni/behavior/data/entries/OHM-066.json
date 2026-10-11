@@ -60,7 +60,7 @@
         "detail": null,
         "field": "repetitive_peak_reverse_voltage",
         "page": 1,
-        "scope": "SS34 SMC",
+        "scope": "SS34 SMC; maximum rating; TA=25 C unless otherwise noted",
         "sources": [
           "https://www.vishay.com/docs/88751/ss32.pdf"
         ],
@@ -73,7 +73,7 @@
         "detail": null,
         "field": "average_forward_current",
         "page": 1,
-        "scope": "SS34 SMC; lead-temperature derating figure1",
+        "scope": "SS34 SMC; lead-temperature derating figure1; maximum rating; TA=25 C unless otherwise noted; at TL per fig. 1, PCB mounted on 14 mm x 14 mm copper pad area",
         "sources": [
           "https://www.vishay.com/docs/88751/ss32.pdf"
         ],
@@ -86,7 +86,7 @@
         "detail": null,
         "field": "surge_forward_current",
         "page": 1,
-        "scope": "SS34 SMC; 8.3 ms single half-sine superimposed on rated load",
+        "scope": "SS34 SMC; 8.3 ms single half-sine superimposed on rated load; maximum rating; TA=25 C unless otherwise noted",
         "sources": [
           "https://www.vishay.com/docs/88751/ss32.pdf"
         ],
@@ -99,7 +99,7 @@
         "detail": null,
         "field": "avalanche_energy",
         "page": 1,
-        "scope": "SS34 SMC; non-repetitive TA25 C, IAS2 A, L10 mH",
+        "scope": "SS34 SMC; non-repetitive TA25 C, IAS2 A, L10 mH; maximum rating",
         "sources": [
           "https://www.vishay.com/docs/88751/ss32.pdf"
         ],
@@ -112,7 +112,7 @@
         "detail": null,
         "field": "maximum_junction_temperature",
         "page": 1,
-        "scope": "SS34 SMC",
+        "scope": "SS34 SMC; TA=25 C unless otherwise noted",
         "sources": [
           "https://www.vishay.com/docs/88751/ss32.pdf"
         ],
@@ -125,7 +125,7 @@
         "detail": null,
         "field": "maximum_forward_voltage",
         "page": 2,
-        "scope": "SS34 SMC; IF = 3.0 A, pulse 300 us, 1% duty",
+        "scope": "SS34 SMC; IF = 3.0 A, pulse 300 us, 1% duty; TA=25 C unless otherwise noted",
         "sources": [
           "https://www.vishay.com/docs/88751/ss32.pdf"
         ],
@@ -138,7 +138,7 @@
         "detail": null,
         "field": "maximum_reverse_current_100C",
         "page": 2,
-        "scope": "SS34 SMC; rated DC voltage40 V",
+        "scope": "SS34 SMC; rated DC voltage40 V; TA=100 C; pulse test 300 us pulse width, 1 % duty cycle",
         "sources": [
           "https://www.vishay.com/docs/88751/ss32.pdf"
         ],
@@ -151,7 +151,7 @@
         "detail": null,
         "field": "thermal_resistance_junction_ambient",
         "page": 2,
-        "scope": "SS34 SMC; typical;14x14mm copper pads",
+        "scope": "SS34 SMC; typical;14x14mm copper pads; TA=25 C unless otherwise noted",
         "sources": [
           "https://www.vishay.com/docs/88751/ss32.pdf"
         ],
@@ -216,7 +216,7 @@
         "detail": "SS34 maximum DC blocking voltage 40 V (p.1) used as the model breakdown; the datasheet gives no breakdown minimum, so actual breakdown is at or above this. Not a safe operating limit.",
         "field": "spice_BV_rated_blocking",
         "page": 1,
-        "scope": "SS34 SMC; BV for the OHMNI Schottky model (fit to the datasheet's own typical data); not a guaranteed limit",
+        "scope": "SS34 SMC; BV for the OHMNI Schottky model (fit to the datasheet's own typical data); not a guaranteed limit; minimum (worst-case) bound taken from maximum DC blocking voltage VDC, not a fit; TA=25 C unless otherwise noted",
         "sources": [
           "https://www.vishay.com/docs/88751/ss32.pdf"
         ],
@@ -229,7 +229,7 @@
         "detail": "Electrical characteristics: maximum DC reverse current at rated DC blocking voltage, TA = 25 C: 0.5 mA (SS32-SS36).",
         "field": "maximum_reverse_current_25C",
         "page": 2,
-        "scope": "SS34 SMC; at rated DC blocking voltage, TA = 25 C, pulse test",
+        "scope": "SS34 SMC; at rated DC blocking voltage, TA = 25 C, pulse test; 300 us pulse width, 1 % duty cycle",
         "sources": [
           "https://www.vishay.com/docs/88751/ss32.pdf"
         ],
@@ -305,7 +305,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-066.md",
-      "document_sha256": "bef97281911bdc32ca6a16f7e11b33b931209bb0949bc70b0b3464b62f5feeb8",
+      "document_sha256": "1b9d088e5ecb2cb9e8c2690b4234fe4c22416fab176c64c08b825d0cc2099602",
       "fragment_sha256": null,
       "line": 1
     }

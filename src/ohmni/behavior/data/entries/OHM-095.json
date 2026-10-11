@@ -70,7 +70,7 @@
         "detail": null,
         "field": "maximum_collector_emitter_voltage",
         "page": 3,
-        "scope": "Nexperia BCX56",
+        "scope": "Nexperia BCX56; open base; table header Tamb=25 C unless otherwise specified",
         "sources": [
           "https://assets.nexperia.com/documents/data-sheet/BCX56_SER.pdf"
         ],
@@ -83,7 +83,7 @@
         "detail": null,
         "field": "maximum_collector_base_voltage",
         "page": 3,
-        "scope": "Nexperia BCX56",
+        "scope": "Nexperia BCX56; open emitter; table header Tamb=25 C unless otherwise specified",
         "sources": [
           "https://assets.nexperia.com/documents/data-sheet/BCX56_SER.pdf"
         ],
@@ -96,7 +96,7 @@
         "detail": null,
         "field": "maximum_emitter_base_voltage",
         "page": 3,
-        "scope": "Nexperia BCX56",
+        "scope": "Nexperia BCX56; open collector; table header Tamb=25 C unless otherwise specified",
         "sources": [
           "https://assets.nexperia.com/documents/data-sheet/BCX56_SER.pdf"
         ],
@@ -109,7 +109,7 @@
         "detail": null,
         "field": "maximum_collector_current",
         "page": 3,
-        "scope": "Nexperia BCX56",
+        "scope": "Nexperia BCX56; table header Tamb=25 C unless otherwise specified",
         "sources": [
           "https://assets.nexperia.com/documents/data-sheet/BCX56_SER.pdf"
         ],
@@ -122,7 +122,7 @@
         "detail": null,
         "field": "maximum_peak_collector_current",
         "page": 3,
-        "scope": "Nexperia BCX56; single pulse<=1 ms",
+        "scope": "Nexperia BCX56; single pulse<=1 ms; table header Tamb=25 C unless otherwise specified",
         "sources": [
           "https://assets.nexperia.com/documents/data-sheet/BCX56_SER.pdf"
         ],
@@ -135,7 +135,7 @@
         "detail": null,
         "field": "maximum_junction_temperature",
         "page": 3,
-        "scope": "Nexperia BCX56",
+        "scope": "Nexperia BCX56; table header Tamb=25 C unless otherwise specified",
         "sources": [
           "https://assets.nexperia.com/documents/data-sheet/BCX56_SER.pdf"
         ],
@@ -165,7 +165,7 @@
         "detail": null,
         "field": "maximum_thermal_resistance_junction_ambient_by_collector_pad",
         "page": 4,
-        "scope": "Nexperia BCX56; same board conditions",
+        "scope": "Nexperia BCX56; same board conditions; in free air; table header Tamb=25 C unless otherwise specified; FR4 PCB, single-sided copper, tin-plated (standard footprint; 1 cm2 and 6 cm2 collector pads)",
         "sources": [
           "https://assets.nexperia.com/documents/data-sheet/BCX56_SER.pdf"
         ],
@@ -182,7 +182,7 @@
         "detail": null,
         "field": "dc_gain_minimum_16_bin",
         "page": 6,
-        "scope": "BCX56-16 only; VCE2 V, IC150 mA, Tamb25 C; no pulse footnote on this row",
+        "scope": "BCX56-16 only; VCE2 V, IC150 mA, Tamb25 C; pulsed, footnote [1] marker cell spans all three BCX56-16 rows; tp<=300 us, duty<=0.02",
         "sources": [
           "https://assets.nexperia.com/documents/data-sheet/BCX56_SER.pdf"
         ],
@@ -195,7 +195,7 @@
         "detail": null,
         "field": "dc_gain_maximum_16_bin",
         "page": 6,
-        "scope": "BCX56-16 only; VCE2 V, IC150 mA, Tamb25 C; no pulse footnote on this row",
+        "scope": "BCX56-16 only; VCE2 V, IC150 mA, Tamb25 C; pulsed, footnote [1] marker cell spans all three BCX56-16 rows; tp<=300 us, duty<=0.02",
         "sources": [
           "https://assets.nexperia.com/documents/data-sheet/BCX56_SER.pdf"
         ],
@@ -208,7 +208,7 @@
         "detail": null,
         "field": "dc_gain_test_collector_voltage",
         "page": 6,
-        "scope": "BCX56-16 only; hFE test condition at Tamb25 C; no pulse footnote on this row",
+        "scope": "BCX56-16 only; hFE test condition at Tamb25 C; pulsed, footnote [1] marker cell spans all three BCX56-16 rows; tp<=300 us, duty<=0.02",
         "sources": [
           "https://assets.nexperia.com/documents/data-sheet/BCX56_SER.pdf"
         ],
@@ -221,7 +221,7 @@
         "detail": null,
         "field": "dc_gain_test_collector_current",
         "page": 6,
-        "scope": "BCX56-16 only; hFE test condition at Tamb25 C; no pulse footnote on this row",
+        "scope": "BCX56-16 only; hFE test condition at Tamb25 C; pulsed, footnote [1] marker cell spans all three BCX56-16 rows; tp<=300 us, duty<=0.02",
         "sources": [
           "https://assets.nexperia.com/documents/data-sheet/BCX56_SER.pdf"
         ],
@@ -231,15 +231,15 @@
       {
         "basis": "DERIVED",
         "confidence": "M",
-        "detail": "Fig. 7 \"Base-emitter voltage as a function of collector current; typical values\", VCE = 2 V, curve (2) Tamb = 25 C Method: Pixel-digitized curve (2): IC=0.105 mA VBE=0.5405 V; 0.217 mA 0.5595; 0.472 mA 0.5811; 1.05 mA 0.6014; 2.23 mA 0.6203; 10.5 mA 0.6595; 22.9 mA 0.6811 V. Log fit over 0.1-23 mA gives 59.5 mV/decade, i.e. N = 1.005, so N=1 is consistent. IS = IC/exp(VBE/Vt) with Vt = kT/q at 298.15 K (25.69 mV) gives 7.0e-14..7.7e-14 per point, mean 7.4e-14 (free-N fit 8.3e-14). Above ~0.1 A the curve bends up (high injection/RB), so those points are excluded. Assumes Tj = Tamb = 25 C. A +/-3 mV read error moves IS about +/-12%. Consistency: read VBE 0.815 V at 0.51 A is below the Table 7 max \"VBE ... VCE = 2 V; IC = 500 mA ... 1 V\". Replaces the 1e-14 assumption (factor ~7).",
+        "detail": "Fig. 7 \"Base-emitter voltage as a function of collector current; typical values\", VCE = 2 V, curve (2) Tamb = 25 C Method: Pixel-digitized curve (2): IC=0.105 mA VBE=0.5405 V; 0.217 mA 0.5595; 0.472 mA 0.5811; 1.05 mA 0.6014; 2.23 mA 0.6203; 10.5 mA 0.6595; 22.9 mA 0.6811 V. Log fit of these points over 0.1-23 mA gives 59.7 mV/decade, i.e. N = 1.009, so N=1 is consistent. IS = IC/exp(VBE/Vt) with Vt = kT/q at 298.15 K (25.69 mV) gives 7.0e-14..7.7e-14 per point, mean 7.3e-14 (free-N fit 9.1e-14). Above ~0.1 A the curve bends up (high injection/RB), so those points are excluded. Assumes Tj = Tamb = 25 C. A +/-3 mV read error moves IS about +/-12%. Consistency: read VBE 0.815 V at 0.51 A is below the Table 7 max \"VBE ... VCE = 2 V; IC = 500 mA ... 1 V\". Replaces the 1e-14 assumption (factor ~7).",
         "field": "spice_IS_fit",
         "page": 7,
-        "scope": "BCX56-16; IS for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "scope": "BCX56-16; IS for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit; Fig. 7 is for the BCX56 series and is not tied to the -16 gain group",
         "sources": [
           "https://assets.nexperia.com/documents/data-sheet/BCX56_SER.pdf"
         ],
         "unit": "A",
-        "value": 7.4e-14
+        "value": 7.3e-14
       }
     ],
     "remaining_open_items": [
@@ -252,7 +252,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-095.md",
-      "document_sha256": "bc11b9da5a2c1b351c9bdf6aeeb26f1d9e05772fc2f970167c19b4e7cdc44ada",
+      "document_sha256": "094f2cd3c78e32aa150201f073152714b16cbe60b3d4ed8a71a0ca7811c0e556",
       "fragment_sha256": null,
       "line": 1
     }

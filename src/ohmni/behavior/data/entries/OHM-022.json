@@ -47,12 +47,12 @@
     "entry_id": "OHM-022",
     "field_updates": [
       {
-        "basis": "MFR_DATASHEET",
-        "confidence": "H",
-        "detail": null,
+        "basis": "DERIVED",
+        "confidence": "M",
+        "detail": "p7: the high dielectric constant type (X5R type etc.) changes capacitance under DC bias while C0G hardly changes; Fig. 3 is labelled an example. p8: DC bias characteristics are measured per part from 0 Vdc to rated voltage. A part-specific measured curve is therefore required; the document states no rating. Note: per part is inferred; p8 gives measure settings keyed to each part's nominal capacitance C and rated voltage (1 kHz for C<=10 uF, 120 Hz for C>10 uF; 0.5 or 1 Vrms; 60 s bias; 25+/-3 C) and does not itself say per part.",
         "field": "dc_bias_curve_scope",
         "page": 7,
-        "scope": "Murata high-K X5R/X7R MLCC; not a universal package curve",
+        "scope": "Murata high-K X5R/X7R MLCC; inferred from the SimSurfing measurement-conditions presentation, not a part datasheet; not a universal package curve; p7 names the X5R type etc. only; X7R is named as a high dielectric constant type on p9",
         "sources": [
           "https://ds.murata.com/simsurfing_data/pdf/en-us/mlcc/sim_mlcc_measuringcond_e.pdf"
         ],
@@ -62,10 +62,10 @@
       {
         "basis": "MFR_DATASHEET",
         "confidence": "M",
-        "detail": null,
+        "detail": "p2: the aging process is reversible by de-aging (heating over the Curie point, approx 125c, returns the capacitance to its value after manufacturing); after soldering the capacitors have essentially been de-aged. p1: aging is affected by time, temperature, voltage (voltage has a minute effect); no temperature or voltage is stated with the -2.5% figure.",
         "field": "aging_rate_reference",
         "page": 1,
-        "scope": "Johanson typical X7R/X5R example; not a rated value for an unspecified Murata/TDK part",
+        "scope": "Johanson typical X7R/X5R example; not a rated value for an unspecified Murata/TDK part; decade hours counted after manufacturing",
         "sources": [
           "https://johansondielectrics.com/docs/3945/ceramic-capacitor-aging-made-simple.pdf"
         ],
@@ -85,7 +85,7 @@
     ],
     "source": {
       "document": "docs/behavior/gapfill/OHM-022.md",
-      "document_sha256": "1394e00df28fa2ca9a73f5f0f846aa824c7445286db91171696a3554e7945698",
+      "document_sha256": "788e9da5767c36dac1405546b5464952826310d47a092a35682d9575528cbe66",
       "fragment_sha256": null,
       "line": 1
     }

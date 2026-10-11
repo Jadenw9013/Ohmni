@@ -26,10 +26,10 @@
       {
         "document_id": "bd139fairchild",
         "manufacturer": "Fairchild",
-        "note": "Manufacturer PDF read from the hashed fetch archive; distributor-hosted copies retain manufacturer identity.",
+        "note": "Manufacturer PDF read from the hashed fetch archive of a distributor-hosted copy at www.farnell.com, not a manufacturer domain.",
         "page": null,
         "revision": "RevA,Feb2000",
-        "source_status": "primary_source_opened",
+        "source_status": "manufacturer_document_mirror",
         "title": "BD135/137/139 Medium Power Linear and Switching Applications",
         "url": "https://www.farnell.com/datasheets/79944.pdf"
       },
@@ -126,7 +126,7 @@
         "detail": null,
         "field": "maximum_power_case25",
         "page": 1,
-        "scope": "Fairchild BD139 TO-126; alternate manufacturer reference, not proof of ST revision",
+        "scope": "Fairchild BD139 TO-126; alternate manufacturer reference, not proof of ST revision; PC Collector Dissipation (TC=25 C) row; absolute-maximum table header TC=25 C unless otherwise noted",
         "sources": [
           "https://www.onsemi.com/pdf/datasheet/bd139-d.pdf",
           "https://www.farnell.com/datasheets/79944.pdf"
@@ -140,7 +140,7 @@
         "detail": null,
         "field": "maximum_power_ambient25",
         "page": 1,
-        "scope": "Fairchild BD139 TO-126; alternate manufacturer reference, not proof of ST revision",
+        "scope": "Fairchild BD139 TO-126; alternate manufacturer reference, not proof of ST revision; PC Collector Dissipation (Ta=25 C) row, ambient rather than case temperature; absolute-maximum table header TC=25 C unless otherwise noted",
         "sources": [
           "https://www.onsemi.com/pdf/datasheet/bd139-d.pdf",
           "https://www.farnell.com/datasheets/79944.pdf"
@@ -154,7 +154,7 @@
         "detail": null,
         "field": "maximum_junction_temperature",
         "page": 1,
-        "scope": "Fairchild BD139 TO-126; alternate manufacturer reference, not proof of ST revision",
+        "scope": "Fairchild BD139 TO-126; alternate manufacturer reference, not proof of ST revision; TJ Junction Temperature row; absolute-maximum table header TC=25 C unless otherwise noted",
         "sources": [
           "https://www.onsemi.com/pdf/datasheet/bd139-d.pdf",
           "https://www.farnell.com/datasheets/79944.pdf"
@@ -209,8 +209,8 @@
         "confidence": "H",
         "detail": null,
         "field": "dc_gain_maximum_ungraded",
-        "page": 1,
-        "scope": "onsemi BD139 (ex-Fairchild) current data sheet Rev 3; ungraded hFE at VCE 2 V, IC 150 mA; the Fairchild RevA (2000) sheet listed 160",
+        "page": 2,
+        "scope": "onsemi BD139 (ex-Fairchild) current data sheet Rev 3; ungraded hFE at VCE 2 V, IC 150 mA; the Fairchild RevA (2000) sheet listed 160; TC=25 C unless otherwise noted (onsemi Rev 3 p2 Electrical Characteristics); onsemi hFE3 row is shared by BD135, BD137 and BD139, with no per-type or grade split",
         "sources": [
           "https://www.onsemi.com/pdf/datasheet/bd139-d.pdf",
           "https://www.farnell.com/datasheets/79944.pdf"
@@ -249,7 +249,7 @@
       {
         "basis": "DERIVED",
         "confidence": "L",
-        "detail": "Figure 3 \"Base-Emitter Voltage\", curve \"VBE(on) VCE = 5V\" (typical characteristics, BD135/137/139 shared) Method: Pixel-digitized (102 px/decade, 333.5 px/V): IC=1.72 mA VBE=0.599 V; 2.70 mA 0.608; 5.3 mA 0.626; 13.1 mA 0.653; 25.8 mA 0.671; 125 mA 0.731 V. IS = IC/exp(VBE/Vt), Vt = 25.69 mV: 1.28e-13, 1.41e-13, 1.38e-13, 1.19e-13, 1.16e-13 over 1.7-26 mA -> 1.3e-13. Confidence L because the curve starts at 1.7 mA and its slope is ~70.5 mV/decade (N ~1.19), so an N=1 IS depends on the anchor current (5.5e-14 if anchored at 125 mA). Temperature not stated on the figure (assumed 25 C). The onsemi Rev 3 Fig. 3 p3 shows the same VBE(on) VCE = 5 V curve. Stated table point only gives a ceiling: \"VBE(on) ... VCE = 2V, IC = 0.5A ... 1 V\" (p1).",
+        "detail": "Figure 3 \"Base-Emitter Voltage\", curve \"VBE(on) VCE = 5V\" (typical characteristics, BD135/137/139 shared) Method: Pixel-digitized (102 px/decade, 333.5 px/V): IC=1.72 mA VBE=0.599 V; 2.70 mA 0.608; 5.3 mA 0.626; 13.1 mA 0.653; 25.8 mA 0.671; 125 mA 0.731 V. IS = IC/exp(VBE/Vt), Vt = 25.69 mV: 1.28e-13, 1.41e-13, 1.38e-13, 1.19e-13, 1.16e-13 over 1.7-26 mA -> 1.3e-13. Confidence L because the curve starts at about 1.5 mA (first read point 1.72 mA) and its slope is ~70.5 mV/decade (N ~1.19), so an N=1 IS depends on the anchor current (5.5e-14 if anchored at 125 mA). Temperature not stated on the figure (assumed 25 C). The onsemi Rev 3 Fig. 3 p3 shows the same VBE(on) VCE = 5 V curve. Stated table point only gives a ceiling: \"VBE(on) ... VCE = 2V, IC = 0.5A ... 1 V\" (p1).",
         "field": "spice_IS_fit",
         "page": 2,
         "scope": "BD139 (Fairchild, ungraded), RevA February 2000; IS for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
@@ -270,7 +270,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-097.md",
-      "document_sha256": "cb43fba1532552c405d0e164e41070cb31366eb93a0f920b4eeaba4d73c5ef36",
+      "document_sha256": "7c2ed792bb511d6266cfae82782f7e04d9ab2bea41d3cdf6f83681bd33dbbcef",
       "fragment_sha256": null,
       "line": 1
     }

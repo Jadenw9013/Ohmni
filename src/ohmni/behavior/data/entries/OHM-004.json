@@ -43,7 +43,7 @@
         "detail": null,
         "field": "reference.p_rated",
         "page": 2,
-        "scope": "Vishay CRCW0603 e3; standard operation where listed",
+        "scope": "Vishay CRCW0603 e3; standard operation where listed; P70: rated power at 70 C; film temp <= 155 C",
         "sources": [
           "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
         ],
@@ -56,7 +56,7 @@
         "detail": null,
         "field": "reference.v_max",
         "page": 2,
-        "scope": "Vishay CRCW0603 e3; standard operation where listed",
+        "scope": "Vishay CRCW0603 e3; standard operation where listed; Umax AC rms/DC",
         "sources": [
           "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
         ],
@@ -69,7 +69,7 @@
         "detail": null,
         "field": "t_end",
         "page": 1,
-        "scope": "Vishay CRCW0603 e3; standard operation where listed",
+        "scope": "Vishay CRCW0603 e3; standard operation where listed; maximum permissible film temperature (thetaF max)",
         "sources": [
           "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
         ],
@@ -81,8 +81,8 @@
         "confidence": "H",
         "detail": null,
         "field": "derating_knee",
-        "page": 2,
-        "scope": "Vishay CRCW0603 e3; standard operation where listed",
+        "page": 6,
+        "scope": "Vishay CRCW0603 e3; standard operation where listed; ambient temperature (derating figure)",
         "sources": [
           "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
         ],
@@ -95,7 +95,7 @@
         "detail": "p1 'Permissible film temperature, ϑF max. 155 °C'; p1 'The rated dissipation applies only if the permitted film temperature is not exceeded'; P70 (standard) for CRCW0603 = 0.1 W (p2); p6 Derating figure: CRCW0603 line flat at 0.1 W to 70 °C, reaching 0 W at 155 °C (visually read). Method: Rth = (155 - 70) K / 0.1 W = 850.0 K/W. Linear derating means film/element temperature = T_amb + Rth*P reaches the endpoint on the derating line, so Rth_implied = (T_end - T_knee)/P_rated. This is the derating-implied thermal resistance on the manufacturer's (unstated) reference mounting, not a measured or board-specific value. Caveat: the same part's extended-operation rating (p2: 0.125 W at 70 °C, p6 extended derating also to 0 at 155 °C) implies 680.0 K/W, so the derating-implied Rth is a rating construct that depends on the operation mode, not a physical package constant.",
         "field": "thermal_resistance_from_rating_derivation",
         "page": 6,
-        "scope": "OHM-004; rth for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit",
+        "scope": "OHM-004; rth for the OHMNI simulation model (fit to the datasheet's own data); not a guaranteed limit; maximum (worst-case) Rth: upper bound from P70 at 70 C and 155 C film temp limit",
         "sources": [
           "https://www.vishay.com/docs/20035/dcrcwe3.pdf"
         ],
@@ -113,7 +113,7 @@
     "simulation_blockers": [],
     "source": {
       "document": "docs/behavior/gapfill/OHM-004.md",
-      "document_sha256": "cc8abfe0164a8f0c2bf4674b4005f53ce623fe188f0305997eadc22b5c0cd1e8",
+      "document_sha256": "2f2d2bd026549b8b5c37c53cccd5fdd666a2bd0000aef54dfcd76cd129a0e3c4",
       "fragment_sha256": null,
       "line": 1
     }
