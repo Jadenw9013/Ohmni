@@ -381,6 +381,12 @@ _AC_FREQUENCY = re.compile(rf"^real\(frequency\)\s*=\s*(?P<value>{_NUMBER})$", r
 _AC_SWEEP_HEADER = re.compile(r"^index\s+frequency\b", re.IGNORECASE)
 
 
+def _display_cut(total):
+    """The returned curves show at most MAX_TRANSIENT_SIGNALS nets; ratings still read every terminal."""
+    return (f"Display shows {MAX_TRANSIENT_SIGNALS} of {total} nets (in net-name order); pass observe_nets to "
+            "choose them. Rating checks still use every part terminal.")
+
+
 def ac_deck(netlist: str, *, nodes: list[str], currents: list[str], points_hz: list[float],
             sweep: tuple[float, float, int] | None = None, sweep_nodes: list[str] = ()) -> str:
     """Operating point, then one single-frequency AC solve per requested point, then an optional sweep.
@@ -782,6 +788,8 @@ class NgspiceAdapter:
             else:
                 signals = [node for node in compilation.node_names.values() if node != "0"]
             shown = signals[:MAX_TRANSIENT_SIGNALS]
+            if len(signals) > len(shown):
+                result["limitations"] = [*result["limitations"], _display_cut(len(signals))]
             # Ratings need every terminal voltage and probe current of each part; they are printed after the
             # requested signals and kept out of the returned display curve.
             rating_nodes = [node for c in compilation.components for node in c.role_nodes.values()
@@ -798,12 +806,17 @@ class NgspiceAdapter:
             nodes = list(dict.fromkeys(node for c in compilation.components for node in c.role_nodes.values()
                                        if node != "0"))
             probes = [probe for c in compilation.components for probe in c.role_current_probes.values()]
-            if observe_nets is not None and any(
-                    n not in compilation.node_names or compilation.node_names[n] == "0" for n in observe_nets):
-                result["problems"].append("Observed nets must be known non-ground nets")
+            if observe_nets is not None and (
+                    not observe_nets or len(observe_nets) > MAX_TRANSIENT_SIGNALS
+                    or len(set(observe_nets)) != len(observe_nets)
+                    or any(n not in compilation.node_names or compilation.node_names[n] == "0" for n in observe_nets)):
+                result["problems"].append("Observed nets must be distinct known non-ground nets within the signal limit")
                 return result
-            sweep_nodes = ([compilation.node_names[n] for n in observe_nets] if observe_nets is not None
-                           else [n for n in compilation.node_names.values() if n != "0"])[:MAX_TRANSIENT_SIGNALS]
+            candidates = ([compilation.node_names[n] for n in observe_nets] if observe_nets is not None
+                          else [n for n in compilation.node_names.values() if n != "0"])
+            sweep_nodes = candidates[:MAX_TRANSIENT_SIGNALS]
+            if ac_sweep is not None and len(candidates) > len(sweep_nodes):
+                result["limitations"] = [*result["limitations"], _display_cut(len(candidates))]
             try:
                 deck = ac_deck(compilation.netlist, nodes=nodes, currents=probes, points_hz=points,
                                sweep=ac_sweep, sweep_nodes=sweep_nodes)
