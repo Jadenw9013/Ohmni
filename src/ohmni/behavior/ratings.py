@@ -479,8 +479,7 @@ def _transient_checks(component, values, b, thermal, upper_only, w):
         if i is not None and "irip_max" in values and _tant_esr_bound(component):
             stat("ripple_rms", w.ac_rms(i))
             b.add("ripple current", "ripple_rms <= irip_max", ("irip_max",),
-                  "The card carries the bound maximum ESR, so a simulated waveform's current bounds the real "
-                  "current in neither direction; use an AC run at the rating conditions")
+                  _tant_esr_bound(component))
         elif i is not None and "irip_max" in values:
             stat("ripple_rms", w.ac_rms(i))
             freq = stat("ripple_frequency", w.frequency(i))
@@ -946,35 +945,32 @@ def _ac_checks(component, values, b, thermal, upper_only, window, linear):
                 scope = component.parameter_evidence.get("irip_max", {}).get("scope", "")
                 stated = "100 kHz" in scope and "25 C" in scope and "RMS" in scope
                 exact = stated and math.isclose(frequency, RIPPLE_RATING_HZ, rel_tol=1e-9)
-                if not stated:
+                bound = _tant_esr_bound(component)
+                if bound:
+                    add("ripple current" + (" (rating frequency)" if exact else ""), f"irip_{key} <= irip_max",
+                        ("irip_max",), bound)
+                    if exact and "esr_max" in values and "pd_max" in values:
+                        add("ESR heating with the maximum 100 kHz ESR", f"irip_{key}**2*esr_max <= pd_max",
+                            ("esr_max", "pd_max"), bound)
+                elif not stated:
                     add("ripple current", f"irip_{key} <= irip_max", ("irip_max",),
                         "The ripple rating's frequency, temperature or RMS basis is not stated in its source "
                         "scope", violation_only=True)
                 elif exact and values.get("Tamb") is not None and values["Tamb"] <= 25:
-                    # With the maximum ESR in the card the simulated current is a lower bound wherever the part
-                    # is voltage-driven (a real part has ESR at or below the maximum at these conditions), so
-                    # the rows can prove a violation but not a pass (D061).
-                    bound = _tant_esr_bound(component)
-                    add("ripple current (rating frequency)", f"irip_{key} <= irip_max", ("irip_max",),
-                        bound or thermal, violation_only=bool(bound))
+                    add("ripple current (rating frequency)", f"irip_{key} <= irip_max", ("irip_max",), thermal)
                     if ("esr_max" in values and "pd_max" in values
                             and "100 kHz" in component.parameter_evidence.get("esr_max", {}).get("scope", "")):
                         stat(f"pesr_{key}", values[f"irip_{key}"] ** 2 * values["esr_max"])
                         add("ESR heating with the maximum 100 kHz ESR", f"pesr_{key} <= pd_max",
-                            ("esr_max", "pd_max"), bound or thermal, violation_only=bool(bound))
+                            ("esr_max", "pd_max"), thermal)
                 elif exact:
                     add("ripple current (rating frequency)", f"irip_{key} <= irip_max", ("irip_max",),
                         "The ripple rating is stated at 25 C; a higher or undeclared ambient needs the "
                         "temperature multiplier, which is not bound", violation_only=True)
                 elif frequency < RIPPLE_RATING_HZ:
-                    if _tant_esr_bound(component):
-                        add("ripple current", f"irip_{key} <= irip_max", ("irip_max",),
-                            "Away from 100 kHz and 25 C the real ESR can exceed the bound maximum in the card, "
-                            "so the simulated current bounds the real one in neither direction")
-                    else:
-                        add("ripple current", f"irip_{key} <= irip_max", ("irip_max",),
-                            "Below 100 kHz the allowed ripple is lower by an unbound frequency multiplier",
-                            violation_only=True)
+                    add("ripple current", f"irip_{key} <= irip_max", ("irip_max",),
+                        "Below 100 kHz the allowed ripple is lower by an unbound frequency multiplier",
+                        violation_only=True)
                 else:
                     add("ripple current", f"irip_{key} <= irip_max", ("irip_max",),
                         "Ripple rating is stated at 100 kHz; the frequency multiplier is not bound")
@@ -1056,8 +1052,20 @@ def _tant_temperature_reason(values):
 
 
 def _tant_esr_bound(component):
-    """Reason text when the tantalum card carries the sourced maximum ESR as its series resistor (D058)."""
-    if component.behavior_id == "BEH-CAP-TANT" and any(name.lower().endswith("_esr") for name in component.element_names):
-        return ("The card carries the maximum ESR, so where the part is voltage-driven the simulated current is a "
-                "lower bound on the real current: this row can prove a violation but not a pass")
-    return None
+    """Reason text when a tantalum card carries any series element beyond its capacitance and leakage (D063).
+
+    The T491 cards carry the sourced maximum ESR (D058). Real ESR, capacitance tolerance and the omitted
+    ESL each move the part's current in a direction the card cannot bound, so with any such element its
+    own ripple and ESR-heating rows prove neither a pass nor a violation. Fails closed: an element of
+    any other name counts too, so only the pure Cb || Rlk card keeps the ideal-card rules.
+    """
+    if component.behavior_id != "BEH-CAP-TANT":
+        return None
+    names = [name.lower() for name in component.element_names]
+    capacitors = [n for n in names if n.startswith("c")]
+    leaks = [n for n in names if n.startswith("r") and n.endswith("_lk")]
+    if names and len(capacitors) == 1 and len(leaks) == 1 and len(names) == 2:
+        return None
+    return ("The card carries a series ESR (the sourced 100 kHz maximum), and the real ESR, capacitance "
+            "tolerance and omitted ESL move the part's current in directions the card cannot bound, so this "
+            "row proves neither a pass nor a violation; parallel parts' currents are not bounded either (D063)")
