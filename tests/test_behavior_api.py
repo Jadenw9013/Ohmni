@@ -104,3 +104,37 @@ def test_design_api_reaches_the_service_and_hides_failures(server):
     broken=_design();broken['circuit']['name']='boom'
     code,body=request(base,'/api/behavior/design/run',dict(identity,design=broken))
     assert code==503 and body=={'error':'behavior_run_unavailable'}
+
+
+def _get(base,path,headers=None):
+    req=Request(base+path,headers=headers or {})
+    try:
+        with OPENER.open(req,timeout=10) as response:return response.status,json.loads(response.read())
+    except HTTPError as error:return error.code,json.loads(error.read())
+
+
+def test_saved_project_circuit_is_served_only_when_it_matches_its_report(server,tmp_path,monkeypatch):
+    from ohmni.application.component_behavior import DesignRunRequest
+    from ohmni.domain.circuit import CircuitIR
+
+    service,base=server;store=service.store;job_id='0123456789ab'
+    circuit=CircuitIR.model_validate(_design()['circuit'])
+    (tmp_path/job_id).mkdir();(tmp_path/job_id/'circuit.json').write_text(circuit.model_dump_json(),encoding='utf-8')
+    report={'mode':'bounded_synthesis','project':{'circuit_hash':circuit.content_hash}}
+    jobs={job_id:{'job_id':job_id,'status':'complete','report':report}}
+    monkeypatch.setattr(store,'get',lambda key:jobs.get(key))
+    code,body=_get(base,f'/api/jobs/{job_id}/circuit')
+    assert code==200 and body['circuit_hash']==circuit.content_hash
+    assert {k:body[k] for k in ('api_version','server_instance_id','ui_version')}==service._identity()
+    # The served circuit is exactly what a design run validates and hashes.
+    assert DesignRunRequest.model_validate({'circuit':body['circuit']}).circuit.content_hash==circuit.content_hash
+    assert _get(base,f'/api/jobs/{job_id}/circuit',{'x-ohmni-server-instance':'f'*16})[0]==409
+    report['project']['circuit_hash']='0'*64
+    assert _get(base,f'/api/jobs/{job_id}/circuit')==(404,{'error':'circuit_unavailable'})
+    report['project'].pop('circuit_hash')
+    assert _get(base,f'/api/jobs/{job_id}/circuit')==(404,{'error':'circuit_unavailable'})
+    report['project']['circuit_hash']=circuit.content_hash;jobs[job_id]['status']='running'
+    assert _get(base,f'/api/jobs/{job_id}/circuit')[0]==404
+    jobs[job_id]['status']='complete';(tmp_path/job_id/'circuit.json').write_text('{"ir_id":',encoding='utf-8')
+    assert _get(base,f'/api/jobs/{job_id}/circuit')[0]==404
+    assert _get(base,'/api/jobs/ffffffffffff/circuit')[0]==404

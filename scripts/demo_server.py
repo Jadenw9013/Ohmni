@@ -87,7 +87,7 @@ STATIC_ASSETS=("index.html","app.js","view-model.js","board-model.js","board-vie
                "learning-model.js","circuit-lessons.js","circuit-lab.js",
                "project-workbench.js","project-contract.js","scope-view.js",
                "reference-board.json","styles.css","visual-explorer.css",
-               "component-visuals.json","component-stories.js","component-stories.css","component-behavior.js",
+               "component-visuals.json","component-stories.js","component-stories.css","component-behavior.js","design-behavior.js",
                "component-sandbox.js","sandbox-model.js","home.js","home.css","landing.css","landing-board.png","workbench-theme.css",
                "favicon.svg","favicon.ico",
                "landing-pcb-presentation.js",
@@ -548,6 +548,25 @@ class JobStore:
                 return "stale",None
             return self._read_artifact_snapshot(job_id,name,job)
         except BaseException:return "unavailable",None  # noqa: BLE001 - never expose artifact-boundary failures
+    def read_circuit(self,job_id):
+        """The saved project's own CircuitIR, only when it hashes to the circuit its report names.
+
+        Legacy demo and model-proposed runs record no circuit file, so they get
+        None and the page says a design behavior run is unavailable for them.
+        """
+        try:
+            from ohmni.domain.circuit import CircuitIR
+
+            job=self.get(job_id)
+            if not job or job.get("status")!="complete":return None
+            expected=job["report"]["project"].get("circuit_hash")
+            directory=self._job_directory(job_id)
+            if directory is None or not isinstance(expected,str) or not re.fullmatch(r"[0-9a-f]{64}",expected):return None
+            path=directory/"circuit.json"
+            if path.is_symlink() or path.resolve().parent!=directory:return None
+            circuit=CircuitIR.model_validate_json(path.read_text(encoding="utf-8"))
+            return circuit if circuit.content_hash==expected else None
+        except BaseException:return None  # noqa: BLE001 - never disclose disk or report failures
     def read_build_package(self,job_id):
         """Zip only captured, hash-matching bytes from one current release."""
         try:return self._build_package_snapshot(job_id)
@@ -1158,6 +1177,14 @@ class DemoHandler(SimpleHTTPRequestHandler):
             error=self._poll_contract_error()
             if error is not None:return self._reject(error,HTTPStatus.CONFLICT)
             return self._sensor_exercise()
+        circuit_path=re.fullmatch(r"/api/jobs/([0-9a-f]{12})/circuit",request_path)
+        if circuit_path:
+            error=self._poll_contract_error()
+            if error is not None:return self._reject(error,HTTPStatus.CONFLICT)
+            circuit=self.server.store.read_circuit(circuit_path[1])
+            if circuit is None:return self._json({"error":"circuit_unavailable"},HTTPStatus.NOT_FOUND)
+            return self._json({"circuit":circuit.model_dump(mode="json"),"circuit_hash":circuit.content_hash,
+                               **self.server._identity()})
         if request_path.startswith("/api/jobs/"):
             job_id=request_path.removeprefix("/api/jobs/")
             if "/" in job_id:return self._json({"error":"invalid job path"},HTTPStatus.BAD_REQUEST)
