@@ -62,6 +62,8 @@ Every original class rating and failure declaration remains in the result. Unrel
 
 `scripts/generate_behavior_examples.py` exports the existing authored probes as typed CircuitIR data. Loading validates recipe/research/generator identity, and compilation reproduces the original netlist before adding optional current probes. These are reference test circuits, not a user's saved design. The62 bindings and118 unbound-entry reasons remain distinct.
 
+D069 binds five mains, isolation or battery-connector parts under the owner's D066 decision as electrical models only; each recipe's first limitation begins "No mains, isolation or safety acceptance (D066)". OHM-038 (WIMA MKX2AW31004C00, X2) uses the film charge probe and has no executable rating rule, so its rating status stays unknown. OHM-053 (Wurth 750311595 flyback; reference-only, because the protected record is research_required) and OHM-055 (Bourns PT61017PEL Ethernet magnetics) are checked per winding path against the sourced maximum DCR. OHM-173 and OHM-174 (Amass XT30PW-M30 and XT60PW-M30) use the contact path probe and the connector rating rows; they are symmetric, and their polarity is unassigned. OHM-054 (current transformer) stays blocked: its primary is a conductor through the core, not a pad.
+
 ## Reference behavior UI
 
 The Components dialog has a Behavior tab with source status, fidelity, confidence, limitations, and a Run reference circuit control. The62 authored reference circuits run through NgspiceAdapter in a separate output directory; the118 unbound entries show specific blockers. This is a learning reference, not a saved-project simulation or a manufacturing approval. Unknown ratings are explicit. Failed or canceled requests cannot reuse prior measurements.

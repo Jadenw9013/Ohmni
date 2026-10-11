@@ -1,0 +1,62 @@
+{
+  "analysis": "op",
+  "circuit_hash": "e12e2963c30dace6d41ac8d49e1851ea03d824ff12007304424ed6ce0b80ce74",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "current": 0.008,
+    "drive_role": "RD_P",
+    "expected": 0.6,
+    "kind": "absolute",
+    "observable": "path_resistance",
+    "return_role": "RD_N",
+    "source_facts": {
+      "idc_bias": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "converted_unit": "A",
+        "converted_value": 0.008,
+        "detail": "'... 0.2 Vrms, 8 mA DC Bias'",
+        "field": "pt61017_ocl_test_dc_bias",
+        "page": 1,
+        "scope": "Bourns PT61017PEL; DC bias at which 350 uH min OCL is specified",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/PT61017PEL.pdf"
+        ],
+        "unit": "mA",
+        "value": 8
+      },
+      "r_chip": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": "Electrical Specifications @ 25 C: 'DCR Pin 1-3, 6-8 ........ 0.6 ohm max.'",
+        "field": "pt61017_chip_side_dcr_max",
+        "page": 1,
+        "scope": "Bourns PT61017PEL; pins 1-3 and 6-8; 25 C",
+        "sources": [
+          "https://www.bourns.com/docs/Product-Datasheets/PT61017PEL.pdf"
+        ],
+        "unit": "ohm",
+        "value": 0.6
+      }
+    },
+    "tolerance": 0.0006
+  },
+  "entry_id": "OHM-055",
+  "entry_research_sha256": "bccd32518b5238408760e09c33a002d4e62834043baf62ae57b9e9f1aef37fe6",
+  "limits": "Binding check of one bound DC path: the sourced current through the path must reproduce the sourced path resistance (0.1% numerical tolerance, or the sourced tolerance band). It does not validate frequency response, heating, contact wear, isolation, protocol behavior or any rating beyond the stated facts.",
+  "netlist_sha256": "3f3ebe3665d607d69a1fdb7e069c74a0e35a1b6e373d1138848b4b0526fc117d",
+  "observation_status": "ran",
+  "observed": 0.6,
+  "output_sha256": "70476d68a527e0d32fc5824aaa01e0db23b09fac7b5bfb3d772d0ed6e762e9d0",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T06:13:17Z",
+  "raw_output": "runtime-bench-output/OHM-055-op-rd/output.txt",
+  "recipe_source_sha256": "71f8bf51ed5f24f08f796d5c49933dd89c5fc9202b71c4c3d1acc62f6297bb7e",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "variant": "rd",
+  "version_file": "runtime-bench-output/OHM-055-op-rd/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sat Oct 10 21:32:36 UTC 2026\n******\n",
+  "version_sha256": "7f444023b0e5851d50a26bf40338ca29665b10988154a0ff2d662d918ab83fc3"
+}

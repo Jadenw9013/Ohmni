@@ -1,0 +1,68 @@
+{
+  "analysis": "op",
+  "circuit_hash": "94d26b254b5cb3baf6254678869e828406b80741636cc02903bec166ebd3c06e",
+  "class_source_sha256": "d747d582a4c18b2f8b10396671f239ed5bbbbf384e8fc35a2297c8c7a17ebfef",
+  "comparison": {
+    "current": 16.0,
+    "drive_role": "N3_DOT",
+    "expected": 0.018,
+    "kind": "absolute",
+    "observable": "path_resistance",
+    "return_role": "N3_RET",
+    "source_facts": {
+      "isat": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "typical_saturation_current",
+        "page": 1,
+        "scope": "750311595 EFD25; manufacturer intrinsic pin numbers; N1, |delta L/L| <20%",
+        "sources": [
+          "https://www.we-online.com/katalog/datasheet/750311595.pdf"
+        ],
+        "unit": "A",
+        "value": 16
+      },
+      "ra": {
+        "basis": "MFR_DATASHEET",
+        "confidence": "H",
+        "detail": null,
+        "field": "maximum_winding_dcr",
+        "page": 1,
+        "scope": "750311595 EFD25; manufacturer intrinsic pin numbers; N1/N2/N3 at 20 C",
+        "selected_value": 0.018,
+        "selected_value_path": [
+          2
+        ],
+        "sources": [
+          "https://www.we-online.com/katalog/datasheet/750311595.pdf"
+        ],
+        "unit": "ohm",
+        "value": [
+          0.015,
+          0.012,
+          0.018
+        ]
+      }
+    },
+    "tolerance": 1.8e-05
+  },
+  "entry_id": "OHM-053",
+  "entry_research_sha256": "17e1312a7e67daa3f01a0239b90bb478675efb9aae4edd3f26f529cfffe5bd11",
+  "limits": "Binding check of one bound DC path: the sourced current through the path must reproduce the sourced path resistance (0.1% numerical tolerance, or the sourced tolerance band). It does not validate frequency response, heating, contact wear, isolation, protocol behavior or any rating beyond the stated facts.",
+  "netlist_sha256": "7ebc90340110f86064f42d1653ffeb6c726b26f8c6c83646d53e2644c93e67e0",
+  "observation_status": "ran",
+  "observed": 0.018,
+  "output_sha256": "1423539b5451dca5596dcf120b04e8f7ef9c252cb6ab5c81b6c0f512e26fefc4",
+  "problems": [],
+  "product_code_path": "ohmni.eda.simulation.NgspiceAdapter.behavior_circuit",
+  "ran_at": "2026-10-11T06:13:13Z",
+  "raw_output": "runtime-bench-output/OHM-053-op-n3/output.txt",
+  "recipe_source_sha256": "71f8bf51ed5f24f08f796d5c49933dd89c5fc9202b71c4c3d1acc62f6297bb7e",
+  "run_id": "behavior-20261005T065040Z",
+  "run_status": "passed",
+  "variant": "n3",
+  "version_file": "runtime-bench-output/OHM-053-op-n3/version.txt",
+  "version_output": "******\n** ngspice-42 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2023, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sat Oct 10 21:32:36 UTC 2026\n******\n",
+  "version_sha256": "7f444023b0e5851d50a26bf40338ca29665b10988154a0ff2d662d918ab83fc3"
+}

@@ -385,7 +385,12 @@ def test_xt60_source_variants_are_not_merged_into_one_rating(registry):
     assert facts["catalog_current_max"].value == 35
     assert facts["web_voltage_rated_dc"].value == 80
     assert facts["legacy_voltage_rated_dc"].value == 500
-    assert registry.entry("OHM-174").research.simulation_blockers
+    # D069 binds the 2025V0 M30 values under their own field names; the legacy rows stay distinct.
+    assert facts["m30_current_rated"].value == 35
+    assert "XT60PW-M30" in facts["m30_current_rated"].scope
+    assert not registry.entry("OHM-174").research.simulation_blockers
+
+
 @pytest.mark.parametrize("number", [124, 125, 126])
 def test_stm32_capacitance_is_typical_not_a_rating_ceiling(number):
     registry = BehaviorRegistry(repo_root=ROOT)
