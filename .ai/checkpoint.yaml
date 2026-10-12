@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "active_task": "BM-T01",
-  "last_known_commit": "99ea62c81facf5d256bf47f1ef6f7e7d0f3402f6",
+  "active_task": null,
+  "last_known_commit": "8252a27ddb5f0df4df0d873a9506b265a2c6a736",
   "approval_record": ".ai/approvals/BATTERY-MOTION-1.yaml",
   "previous_checkpoint": {
     "schema_version": 1,
@@ -32,24 +32,18 @@
       "candidate_commit": "7310be49a0d8dacf8e8fe2bef11e867bbcabd651"
     }
   },
-  "modified_files": [
-    ".ai/approvals/BATTERY-MOTION-1.yaml",
-    ".ai/tasks.yaml",
-    ".ai/state.yaml",
-    ".ai/checkpoint.yaml",
-    "docs/product/BATTERY_MOTION_BOARD_PLAN.md",
-    "tests/test_ai_workflow.py"
-  ],
+  "modified_files": [],
   "completed_substeps": [
     "Researched the source-backed battery, regulator, PIR, processor and hardware LED-driver architecture.",
     "Received human approval for the bounded battery-motion plan.",
-    "Created the durable product contract and ordered BM-T01 through BM-T07."
+    "Created the durable product contract and ordered BM-T01 through BM-T07.",
+    "Workflow tests passed 12; fast verification passed 2439 with 86 skipped and 62 deselected."
   ],
   "remaining_work": [
-    "Validate and verify the contract unit, then record its commit-bound completion.",
-    "Open the contract PR; implementation begins with BM-T02 only after this unit merges."
+    "Human PR review and merge.",
+    "After merge, start BM-T02 component evidence and admission from the latest origin/main."
   ],
   "last_failure": null,
-  "resume_action": "Finish BM-T01 workflow and fast gates, commit the contract unit, record verification and open its PR.",
-  "last_command": "Created codex/battery-motion-contract from origin/main at 99ea62c8."
+  "resume_action": "Review and merge the BM-T01 contract PR; then begin BM-T02 on a fresh branch from origin/main.",
+  "last_command": "Workflow 12 passed; fast 2439 passed, 86 skipped, 62 deselected."
 }

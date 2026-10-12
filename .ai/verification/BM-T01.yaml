@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "id": "BM-T01",
+  "task": "BM-T01",
+  "scope": "BATTERY-MOTION-1",
+  "commit": "8252a27ddb5f0df4df0d873a9506b265a2c6a736",
+  "verified_at": "2026-10-12",
+  "status": "PASSED",
+  "commands": [
+    {
+      "command": "python scripts/ai_state.py validate",
+      "result": "PASS"
+    },
+    {
+      "command": "python -m pytest tests/test_ai_workflow.py -q --basetemp build/pytest-ai-state -o cache_dir=build/pytest-cache",
+      "result": "PASS",
+      "tests": 12
+    },
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "PASS",
+      "tests": 2439,
+      "skipped": 86,
+      "deselected": 62,
+      "runtime_seconds": 544.65
+    }
+  ],
+  "review": {
+    "required": false,
+    "independent": false,
+    "status": "PASSED",
+    "notes": "Self-review confirmed the approved architecture, exclusions, evidence-first admission boundary, ordered tasks, stable USB-family requirement and independent final review gate are represented consistently."
+  },
+  "limitations": [
+    "This unit records the approved contract; it does not admit components or generate a circuit.",
+    "Part-level source bytes and engineering claims remain work for BM-T02.",
+    "Physical validation remains outside the contract unit and cannot be claimed before bench testing."
+  ]
+}
