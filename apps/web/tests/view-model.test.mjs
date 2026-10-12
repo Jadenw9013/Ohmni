@@ -696,6 +696,21 @@ test("workspace refresh preserves the conversation identity across replies", asy
     });
 });
 
+test("every later stage exposes one plain-language way back", async () => withApp(async (app, dom) => {
+    assert.equal(dom.get("#flow-back").hidden, true);
+    await app.startProjectRun({
+        projectId:"1".repeat(16), revisionId:"2".repeat(16), identity, preview:brief(),
+        fetcher:async()=>response(202,startEnvelope()), poller:()=>{},
+    });
+    assert.equal(dom.get("#flow-back").hidden, false);
+    assert.equal(dom.get("#flow-back-label").textContent, "Back to your plan");
+    assert.equal(dom.get("#flow-back").dataset.backTarget, "agree");
+    dom.get("#flow-back").listeners.click();
+    assert.equal(dom.get("#agree").hidden, false);
+    assert.equal(dom.get("#design").hidden, true);
+    assert.equal(dom.get("#flow-back-label").textContent, "Back to your idea");
+}));
+
 test("result conversation binds the displayed revision, not the latest project revision", async () => withApp(async (app, dom) => {
     const projectId="1".repeat(16), revisionId="2".repeat(16), stamp="2026-10-11T00:00:00+00:00";
     const saved={revision_id:revisionId,number:1,created_at:stamp,brief:defaultProjectBrief(),brief_fingerprint:"b".repeat(64),preview:brief(),job_id:JOB_ID};

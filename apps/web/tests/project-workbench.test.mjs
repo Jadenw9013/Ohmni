@@ -228,6 +228,29 @@ test("Generate saves once and runs only the server-confirmed revision", async ()
     assert.deepEqual(calls,["save","run"]);c.dispose();
 });
 
+test("a quick starter opens the matching deterministic family and counts", async () => {
+    const dom = workbenchDom(); let saved; let live;
+    const fetcher = async (path, request = {}) => {
+        if (path === "/api/health") return response(200, {...identity,status:"ready",fixture_id:"esp32-bme280-environmental-logger"});
+        if (path === "/api/project-options") return response(200, {...identity,options});
+        if (request.method === "POST") {
+            saved = JSON.parse(request.body).brief;
+            live = {...project,revisions:[{...revision,brief:saved}]};
+        }
+        return response(200,envelope(live));
+    };
+    const controller = mountProjectWorkbench(dom.root,{fetcher,onRun:()=>{}});
+    await controller.openStarter("a2_usb_gpio_controller", {
+        project_name:"Button and light controller", description:"Use two buttons to control a status light.",
+        button_count:2, status_led_count:1,
+    });
+    workbenchClick(dom,"#project-run"); await tick();
+    assert.equal(saved.archetype,"a2_usb_gpio_controller");
+    assert.equal(saved.button_count,2);
+    assert.equal(saved.status_led_count,1);
+    controller.dispose();
+});
+
 test("Generate never runs after a rejected or mismatched save",async()=>{
     for(const refusal of [true,false]){
         const dom=workbenchDom();let runs=0;

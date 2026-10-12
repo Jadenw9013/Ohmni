@@ -97,6 +97,17 @@ const STAGE_TITLES = Object.freeze({
     review: "Explore your board",
     build: "From design to device",
 });
+const BACK_STEPS = Object.freeze({
+    agree: { target: "describe", label: "Back to your idea" },
+    design: { target: "agree", label: "Back to your plan" },
+    review: { target: "design", label: "Back to build progress" },
+    build: { target: "review", label: "Back to your board" },
+});
+const QUICK_STARTS = Object.freeze({
+    a1_usb_i2c_sensor: { project_name: "Room monitor", description: "Measure temperature and humidity and show a status light.", status_led_count: 1 },
+    a2_usb_gpio_controller: { project_name: "Button and light controller", description: "Use two buttons to control a status light.", button_count: 2, status_led_count: 1 },
+    a3_usb_spi_peripheral: { project_name: "Data memory board", description: "Store readings in SPI memory.", status_led_count: 1 },
+});
 
 const setText = (selector, value) => { const node = $(selector); if (node) node.textContent = value; };
 const setHidden = (selector, hidden) => { const node = $(selector); if (node) node.hidden = hidden; };
@@ -120,6 +131,13 @@ function updateShell() {
     setText("#workspace-title", STAGE_TITLES[state.stage]);
     setText("#workspace-status", status);
     setText("#project-label", state.brief?.project_name || state.experience?.headline || (state.customProject && state.projectName) || "Your first circuit");
+    const back = $("#flow-back");
+    const backStep = BACK_STEPS[state.stage];
+    if (back) {
+        back.hidden = !backStep;
+        back.dataset.backTarget = backStep?.target || "";
+        setText("#flow-back-label", backStep?.label || "Go back");
+    }
     $$('[data-navigate]').forEach((button) => {
         const active = button.dataset.navigate === state.stage;
         button.disabled = !canNavigate(button.dataset.navigate);
@@ -247,7 +265,7 @@ export async function revealFreeText({ fetcher = globalThis.fetch } = {}) {
         const guided = $("#guided-entry");
         if (guided) guided.open = !identity.free_text;
         const status = $("#ai-entry-status");
-        if (status) status.textContent = identity.free_text ? "Describe your goal above, or choose the details below." : "AI planning is unavailable on this server. Guided setup is ready to use.";
+        if (status) status.textContent = identity.free_text ? "Describe your goal above, or choose the details below." : "Custom AI planning is unavailable on this server. Quick starts and guided setup are ready.";
         return identity.free_text;
     } catch {
         // A health check that fails tells us nothing about the capability, and
@@ -256,7 +274,7 @@ export async function revealFreeText({ fetcher = globalThis.fetch } = {}) {
         const guided = $("#guided-entry");
         if (guided) guided.open = true;
         const status = $("#ai-entry-status");
-        if (status) status.textContent = "Could not connect to AI planning. Use guided setup below.";
+        if (status) status.textContent = "Could not connect to custom AI planning. Quick starts and guided setup are ready.";
         return false;
     }
 }
@@ -1222,6 +1240,10 @@ function renderBringUp(exp) {
 // ── wiring ──────────────────────────────────────────────────────────────
 
 function attach() {
+    $("#flow-back")?.addEventListener("click", () => {
+        const target = $("#flow-back")?.dataset.backTarget;
+        if (target) navigate(target);
+    });
     $("#flow-projects")?.addEventListener("click",()=>{
         navigate("describe");
         const shelf=$("#project-shelf");
@@ -1301,14 +1323,13 @@ function attach() {
     $("#schematic-holder")?.addEventListener("click", activateSchematic);
     $("#schematic-holder")?.addEventListener("keydown", activateSchematic);
     $("#start-supported")?.addEventListener("click", () => void openBrief());
-    $("#start-free-text")?.addEventListener("click", () =>
-        void (state.conversation ? state.conversation.begin($("#free-text-request")?.value ?? "")
-            : openBrief({ request: $("#free-text-request")?.value ?? "" })));
-    document.querySelectorAll("[data-prompt-example]").forEach((button) => button.addEventListener("click", () => {
-        const input = $("#free-text-request");
-        input.value = button.dataset.promptExample;
-        showFreeTextProblem(null);
-        input.focus();
+    $("#start-free-text")?.addEventListener("click", () => {
+        const request = $("#free-text-request")?.value ?? "";
+        void (state.conversation ? state.conversation.begin(request) : openBrief({ request }));
+    });
+    document.querySelectorAll("[data-starter-family]").forEach((button) => button.addEventListener("click", () => {
+        const family = button.dataset.starterFamily;
+        if (family && QUICK_STARTS[family]) void state.workbench?.openStarter(family, QUICK_STARTS[family]);
     }));
     $("#free-text-request")?.addEventListener("input", () => showFreeTextProblem(null));
     void revealFreeText();
