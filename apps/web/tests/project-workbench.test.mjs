@@ -156,6 +156,7 @@ test("project writes fetch fresh identity and transmit the brief without inventi
 
 test("refusal and malformed server replies cannot turn into saved success", async () => {
     await assert.rejects(projectRequest("/api/projects", { identity, method: "POST", fetcher: async () => response(422, { error: "project_refused", refusal: { message: "Sensor is unsupported." } }) }), /Sensor is unsupported/);
+    await assert.rejects(projectRequest("/api/project-plans", { identity, method: "POST", fetcher: async () => response(503, { error: "plan_unavailable" }) }), /AI planner is unavailable/);
     await assert.rejects(projectRequest("/api/projects", { identity, fetcher: async () => response(200, {}) }));
     await assert.rejects(projectRequest("/api/projects", { identity, fetcher: async () => response(200, { ...identity, server_instance_id: "f".repeat(16) }) }));
 });

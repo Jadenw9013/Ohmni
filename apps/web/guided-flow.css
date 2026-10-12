@@ -141,6 +141,27 @@
 .app-layout .compact-plan li small { display: inline-block; padding: 1px 7px; background: #21324a; color: #bfcfe1; border-radius: 4px; font-size: .73rem; }
 .app-layout .compact-plan .plan-power-note { border-top: 1px solid #30435b; padding-top: 14px; margin-bottom: 0; font-size: .82rem; line-height: 1.6; color: #b5c4d6; }
 .app-layout .conversation-actions { margin-block: 18px; gap: 12px; }
+.app-layout #conversation-error { border-radius: 10px; }
+.app-layout .conversation-recovery {
+  display: grid; grid-template-columns: auto minmax(0,1fr); gap: 18px;
+  margin: 24px 0; padding: clamp(22px,4vw,34px); border: 1px solid #49627f;
+  border-radius: 18px; background: #111e30; box-shadow: 0 18px 48px #0003;
+}
+.app-layout .conversation-recovery[hidden] { display: none; }
+.app-layout .recovery-mark {
+  display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%;
+  border: 1px solid #cda983; color: #f0c99f; font-weight: 700; font-size: 1.1rem;
+}
+.app-layout .recovery-copy .eyebrow { margin: 0 0 6px; color: #9fb4cf; font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; }
+.app-layout .recovery-copy h2 { margin: 0 0 10px; font-size: clamp(1.35rem,3vw,1.75rem); letter-spacing: -.025em; }
+.app-layout .recovery-copy > p { max-width: 58ch; margin: 0; color: #bdcce0; line-height: 1.6; }
+.app-layout .preserved-request { margin: 22px 0; padding: 15px 18px; border-left: 3px solid #66d9ef; border-radius: 0 9px 9px 0; background: #0b1727; }
+.app-layout .preserved-request span { display: block; margin-bottom: 6px; color: #93a8c2; font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; }
+.app-layout .preserved-request blockquote { margin: 0; color: #eef3fa; line-height: 1.55; overflow-wrap: anywhere; }
+.app-layout .recovery-details { margin: 0 0 20px; border: 0; }
+.app-layout .recovery-details summary { color: #9fb4cf; font-size: .82rem; }
+.app-layout .recovery-details p { margin: 4px 0 0; color: #aebed1; font-size: .82rem; }
+.app-layout .recovery-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .app-layout #project-details, .app-layout .plan-details { border-color: #30435b; }
 .app-layout #agree summary { color: #bfcfe1; font-size: .88rem; }
 .app-layout #agree details[open] > summary { color: #eef3fa; margin-bottom: 12px; }
@@ -161,6 +182,8 @@
   .app-layout #free-text-request { font-size: 1.05rem; min-height: 145px; }
   .app-layout .prompt-examples button { flex: 1 1 auto; }
   .app-layout .compact-plan { padding: 20px; }
+  .app-layout .conversation-recovery { grid-template-columns: 1fr; }
+  .app-layout .recovery-actions > button { width: 100%; }
 }
 @media (prefers-reduced-motion:no-preference) {
   .app-layout button { transition: background-color 140ms ease, border-color 140ms ease; }

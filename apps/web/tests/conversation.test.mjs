@@ -11,7 +11,8 @@ const project = p => ({project_id:"e".repeat(16),created_at:"now",updated_at:"no
 function dom() {
     const nodes = new Map();
     const root = {innerHTML:"",setAttribute(){},querySelector(s){
-        if (!nodes.has(s)) nodes.set(s,{innerHTML:"",textContent:"",value:"",hidden:false,disabled:false,focus(){this.focused=true;},addEventListener(){}});
+        if (!nodes.has(s)) nodes.set(s,{innerHTML:"",textContent:"",value:"",hidden:false,disabled:false,
+            focus(){this.focused=true;},addEventListener(type,handler){this.listeners ||= {};this.listeners[type]=handler;},click(){this.listeners?.click?.({preventDefault(){}});}});
         return nodes.get(s);
     }};
     return {root,node:s=>root.querySelector(s)};
@@ -61,6 +62,21 @@ test("cancelled planning cannot replace the visible conversation",async()=>{
     const pending=controller.begin(p.messages[0]);
     await new Promise(setImmediate);controller.cancel();resolve(response({plan:p}));await pending;
     assert.equal(ui.node("#conversation-plan").innerHTML,"");
+});
+test("failed planning preserves the request and offers an accessible guided escape",async()=>{
+    const idea="A USB-powered plant monitor with two lights";const ui=dom(),guided=[];
+    const fetcher=async url=>url==="/api/health"
+        ? response({status:"ready",fixture_id:"esp32-bme280-environmental-logger",free_text:true})
+        : response({error:"plan_unavailable"},503);
+    const controller=mountConversation(ui.root,{fetcher,onOpen(){},onSaved(){assert.fail("must not run");},onGuided:brief=>guided.push(brief)});
+    await controller.begin(idea);
+    assert.equal(ui.node("#conversation-preserved").textContent,idea);
+    assert.equal(ui.node("#conversation-recovery").hidden,false);
+    assert.equal(ui.node("#conversation-error").hidden,true);
+    assert.match(ui.node("#conversation-error-detail").textContent,/AI planner is unavailable/);
+    assert.equal(ui.node("#conversation-recovery").focused,true);
+    ui.node("#conversation-guided-recovery").click();
+    assert.deepEqual(guided,[undefined]);
 });
 test("model text is escaped and suggested choices do not become verified facts",()=>{
     const p=plan({messages:["<img src=x onerror=alert(1)>"]});p.brief.project_name="<script>bad</script>";

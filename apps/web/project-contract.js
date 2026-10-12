@@ -213,6 +213,10 @@ async function requestProject(path, { fetcher, identity, method = "GET", data } 
         if (["server_instance_mismatch", "ui_version_mismatch"].includes(payload?.error)) fail("generation_mismatch");
         const refusal = payload?.refusal?.message;
         const messages = {
+            plan_unavailable: "The AI planner is unavailable right now. Your idea is still here.",
+            invalid_plan: "The AI response could not be turned into a safe plan. Your idea is still here.",
+            proposal_unavailable: "The AI assistant is unavailable right now. Your saved project is unchanged.",
+            assistant_unavailable: "The AI assistant is unavailable right now. Your saved project is unchanged.",
             project_not_found: "This saved project is unavailable. Refresh the project list and try again.",
             revision_not_found: "This revision is unavailable. Reopen the saved project.",
             invalid_project_request: "These choices are not supported. Check the project settings before saving.",
