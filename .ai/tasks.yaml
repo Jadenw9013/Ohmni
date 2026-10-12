@@ -318,6 +318,16 @@
       "approved_by": "human",
       "approval_evidence": ".ai/approvals/CONVERSATIONAL-UX-1.yaml",
       "review_policy": "Independent final review required for scope completion; task self-review recorded honestly."
+    },
+    {
+      "id": "BATTERY-MOTION-1",
+      "title": "Battery-powered motion warning board",
+      "type": "product_family",
+      "status": "APPROVED",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/BATTERY-MOTION-1.yaml",
+      "plan_document": "docs/product/BATTERY_MOTION_BOARD_PLAN.md",
+      "review_policy": "Each implementation unit receives focused self-review; independent engineering and UX review with no open BLOCKER or HIGH findings is required before scope completion."
     }
   ],
   "tasks": [
@@ -3336,6 +3346,161 @@
           "integration"
         ]
       }
+    },
+    {
+      "id": "BM-T01",
+      "title": "Record the approved battery-motion contract",
+      "scope": "BATTERY-MOTION-1",
+      "milestone": null,
+      "goal": "Create a durable, bounded product contract and execution sequence before implementation begins.",
+      "priority": 100,
+      "status": "IN_PROGRESS",
+      "dependencies": [],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Human approval and its preceding researched architecture are recorded without expanding the approved scope.",
+        "The product contract names the supported battery, power, sensor, indicator and processor architecture plus explicit non-goals.",
+        "Implementation tasks are ordered from evidence admission through deterministic generation, physical output, UX and final integration.",
+        "Completion gates preserve UNKNOWN states, source provenance, existing USB-family behavior and independent final review."
+      ],
+      "implementation": {
+        "started_at_commit": "99ea62c81facf5d256bf47f1ef6f7e7d0f3402f6",
+        "completed_at_commit": null,
+        "approval_evidence": ".ai/approvals/BATTERY-MOTION-1.yaml"
+      },
+      "review": {
+        "required": false,
+        "independent": false,
+        "status": "PENDING",
+        "record": null
+      },
+      "verification": {
+        "record": null,
+        "required": [
+          "workflow",
+          "fast"
+        ]
+      }
+    },
+    {
+      "id": "BM-T02",
+      "title": "Admit the battery-motion component set",
+      "scope": "BATTERY-MOTION-1",
+      "milestone": null,
+      "goal": "Create source-traceable, design-eligible assets for every new electrical component.",
+      "priority": 99,
+      "status": "APPROVED",
+      "dependencies": ["BM-T01"],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Exact manufacturer evidence is archived and fingerprinted for the PIR sensor, buck-boost converter, protection and LED-drive MOSFETs, connector, inductor and required passives.",
+        "Every new component has validated electrical constraints, pin roles, symbol, footprint and visual binding before becoming DESIGN_ELIGIBLE.",
+        "A pre-existing 3D model or package match cannot independently grant electrical admission.",
+        "Negative and mutation tests fail closed for missing, stale or contradictory evidence."
+      ],
+      "implementation": {"started_at_commit": null, "completed_at_commit": null, "approval_evidence": ".ai/approvals/BATTERY-MOTION-1.yaml"},
+      "review": {"required": false, "independent": false, "status": "PENDING", "record": null},
+      "verification": {"record": null, "required": ["workflow", "fast", "component_admission"]}
+    },
+    {
+      "id": "BM-T03",
+      "title": "Add typed battery-motion synthesis",
+      "scope": "BATTERY-MOTION-1",
+      "milestone": null,
+      "goal": "Generate the approved circuit from a typed family contract without weakening existing USB archetypes.",
+      "priority": 98,
+      "status": "APPROVED",
+      "dependencies": ["BM-T02"],
+      "blockers": [],
+      "acceptance_criteria": [
+        "A discriminated three-cell alkaline power contract and A4 battery-motion archetype are represented in typed domain and provider schemas.",
+        "Shared ESP32 construction is separated from USB and battery power-input builders while existing family fingerprints remain stable.",
+        "The generated topology contains keyed battery input, reverse-polarity protection, TPS63021 power, PIR input, ESP32 observation and a hardware LED-driver path.",
+        "Rechargeable chemistry, onboard charging and unsupported voltages are rejected explicitly."
+      ],
+      "implementation": {"started_at_commit": null, "completed_at_commit": null, "approval_evidence": ".ai/approvals/BATTERY-MOTION-1.yaml"},
+      "review": {"required": false, "independent": false, "status": "PENDING", "record": null},
+      "verification": {"record": null, "required": ["workflow", "fast", "integration", "fingerprint_regression"]}
+    },
+    {
+      "id": "BM-T04",
+      "title": "Verify the battery-motion electrical contract",
+      "scope": "BATTERY-MOTION-1",
+      "milestone": null,
+      "goal": "Turn the new power, sensor and warning-light limits into deterministic checks.",
+      "priority": 97,
+      "status": "APPROVED",
+      "dependencies": ["BM-T03"],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Deterministic checks cover battery envelope, polarity protection, converter network and current margin, PIR logic compatibility, LED current and ESP32 pin safety.",
+        "PIR warm-up, runtime estimation and unsupported low-battery behavior remain explicit limitations rather than PASS claims.",
+        "Mutations of polarity, regulator parts, thresholds, values and pin assignments are rejected with actionable findings.",
+        "No model or network path can author verification outcomes."
+      ],
+      "implementation": {"started_at_commit": null, "completed_at_commit": null, "approval_evidence": ".ai/approvals/BATTERY-MOTION-1.yaml"},
+      "review": {"required": false, "independent": false, "status": "PENDING", "record": null},
+      "verification": {"record": null, "required": ["workflow", "fast", "integration", "mutation_tests"]}
+    },
+    {
+      "id": "BM-T05",
+      "title": "Compile and route the battery-motion board",
+      "scope": "BATTERY-MOTION-1",
+      "milestone": null,
+      "goal": "Produce deterministic schematic, placement, routing and manufacturing candidates for the admitted circuit.",
+      "priority": 96,
+      "status": "APPROVED",
+      "dependencies": ["BM-T04"],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Placement encodes the converter switching loop, PIR viewing edge and optical keepout, ESP32 antenna keepout, visible LED and accessible battery connector.",
+        "Generated KiCad schematic and PCB preserve lineage and pass the available ERC, DRC, round-trip and connectivity gates.",
+        "Physical and manufacturing outputs retain unresolved enclosure, lens, assembly and bench limitations.",
+        "Existing USB-family schematic and board fixtures remain unchanged."
+      ],
+      "implementation": {"started_at_commit": null, "completed_at_commit": null, "approval_evidence": ".ai/approvals/BATTERY-MOTION-1.yaml"},
+      "review": {"required": false, "independent": false, "status": "PENDING", "record": null},
+      "verification": {"record": null, "required": ["workflow", "fast", "integration", "slow", "native_erc_drc"]}
+    },
+    {
+      "id": "BM-T06",
+      "title": "Expose the battery-motion conversational flow",
+      "scope": "BATTERY-MOTION-1",
+      "milestone": null,
+      "goal": "Let a first-time user request, review, generate and understand the supported battery-motion board.",
+      "priority": 95,
+      "status": "APPROVED",
+      "dependencies": ["BM-T05"],
+      "blockers": [],
+      "acceptance_criteria": [
+        "The canonical battery-motion prompt resolves to A4 and presents the three-AA alkaline, no-charging assumption before generation.",
+        "The UI explains the power path, PIR warm-up and viewing limitation, direct hardware warning light, estimated runtime and unbench-tested status in plain language.",
+        "Unsupported lithium charging, nine-volt, mains and high-current alarm requests receive specific safe refusals or clarification.",
+        "Conversation failure has a verified fixture fallback and never fabricates a successful engineering result."
+      ],
+      "implementation": {"started_at_commit": null, "completed_at_commit": null, "approval_evidence": ".ai/approvals/BATTERY-MOTION-1.yaml"},
+      "review": {"required": false, "independent": false, "status": "PENDING", "record": null},
+      "verification": {"record": null, "required": ["workflow", "fast", "frontend", "integration", "browser_review"]}
+    },
+    {
+      "id": "BM-T07",
+      "title": "Integrate and independently review the battery-motion family",
+      "scope": "BATTERY-MOTION-1",
+      "milestone": null,
+      "goal": "Prove the complete prompt-to-download path and state every remaining release limitation.",
+      "priority": 94,
+      "status": "APPROVED",
+      "dependencies": ["BM-T06"],
+      "blockers": [],
+      "acceptance_criteria": [
+        "The canonical prompt traverses reviewed brief, CircuitIR, verification, KiCad, placement, routing, manufacturing, 3D preview, restart recovery and download.",
+        "Full regression, negative prompts, provenance replay, native gates and public-demo fallback pass at a commit-bound revision.",
+        "Independent engineering and UX review leaves no open BLOCKER or HIGH findings.",
+        "Physical reverse-polarity, brownout, PIR and transient measurements remain explicitly unverified until a real board is bench-tested."
+      ],
+      "implementation": {"started_at_commit": null, "completed_at_commit": null, "approval_evidence": ".ai/approvals/BATTERY-MOTION-1.yaml"},
+      "review": {"required": true, "independent": true, "status": "PENDING", "record": null},
+      "verification": {"record": null, "required": ["workflow", "fast", "integration", "slow", "full", "browser_review", "independent_review"]}
     }
   ]
 }

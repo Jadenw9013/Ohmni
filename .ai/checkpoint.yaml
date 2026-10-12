@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "active_task": null,
-  "last_known_commit": "ea3ecf5364e0a198f026a2a68e7e04d30482379d",
-  "approval_record": ".ai/approvals/VISUAL-POLISH.yaml",
+  "active_task": "BM-T01",
+  "last_known_commit": "99ea62c81facf5d256bf47f1ef6f7e7d0f3402f6",
+  "approval_record": ".ai/approvals/BATTERY-MOTION-1.yaml",
   "previous_checkpoint": {
     "schema_version": 1,
     "active_task": null,
@@ -32,17 +32,24 @@
       "candidate_commit": "7310be49a0d8dacf8e8fe2bef11e867bbcabd651"
     }
   },
-  "modified_files": [],
+  "modified_files": [
+    ".ai/approvals/BATTERY-MOTION-1.yaml",
+    ".ai/tasks.yaml",
+    ".ai/state.yaml",
+    ".ai/checkpoint.yaml",
+    "docs/product/BATTERY_MOTION_BOARD_PLAN.md",
+    "tests/test_ai_workflow.py"
+  ],
   "completed_substeps": [
-    "Polished landing, idea composer, plan, result surfaces and local typography.",
-    "Corrected landing Start building to enter idea screen; fixed mobile caption clipping.",
-    "Fast 2396 passed; frontend 1082 passed; integration 28 passed / 16 skipped; workflow validates."
+    "Researched the source-backed battery, regulator, PIR, processor and hardware LED-driver architecture.",
+    "Received human approval for the bounded battery-motion plan.",
+    "Created the durable product contract and ordered BM-T01 through BM-T07."
   ],
   "remaining_work": [
-    "Human PR review and merge.",
-    "Independent conversational UX scope review and uncoached usability testing remain pending."
+    "Validate and verify the contract unit, then record its commit-bound completion.",
+    "Open the contract PR; implementation begins with BM-T02 only after this unit merges."
   ],
   "last_failure": null,
-  "resume_action": "Review codex/visual-polish PR; do not merge main automatically.",
-  "last_command": "Visual-polish suites and browser checks complete."
+  "resume_action": "Finish BM-T01 workflow and fast gates, commit the contract unit, record verification and open its PR.",
+  "last_command": "Created codex/battery-motion-contract from origin/main at 99ea62c8."
 }
