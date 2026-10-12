@@ -91,7 +91,7 @@ const state = {
 // ── journey ─────────────────────────────────────────────────────────────
 
 const STAGE_TITLES = Object.freeze({
-    describe: "Your projects",
+    describe: "New project",
     agree: "Meet your project",
     design: "Inside the workshop",
     review: "Explore your board",
@@ -265,7 +265,10 @@ export async function revealFreeText({ fetcher = globalThis.fetch } = {}) {
         const guided = $("#guided-entry");
         if (guided) guided.open = !identity.free_text;
         const status = $("#ai-entry-status");
-        if (status) status.textContent = identity.free_text ? "Describe your goal above, or choose the details below." : "Custom AI planning is unavailable on this server. Quick starts and guided setup are ready.";
+        if (status) {
+            status.hidden = identity.free_text;
+            status.textContent = identity.free_text ? "" : "Custom AI planning is unavailable on this server. Quick starts and guided setup are ready.";
+        }
         return identity.free_text;
     } catch {
         // A health check that fails tells us nothing about the capability, and
@@ -274,7 +277,7 @@ export async function revealFreeText({ fetcher = globalThis.fetch } = {}) {
         const guided = $("#guided-entry");
         if (guided) guided.open = true;
         const status = $("#ai-entry-status");
-        if (status) status.textContent = "Could not connect to custom AI planning. Quick starts and guided setup are ready.";
+        if (status) { status.hidden = false; status.textContent = "Could not connect to custom AI planning. Quick starts and guided setup are ready."; }
         return false;
     }
 }
@@ -1240,6 +1243,32 @@ function renderBringUp(exp) {
 // ── wiring ──────────────────────────────────────────────────────────────
 
 function attach() {
+    const shell = $(".app-layout");
+    const closeSidebar = () => {
+        shell?.setAttribute("data-sidebar-open", "false");
+        $("#sidebar-toggle")?.setAttribute("aria-expanded", "false");
+        if ($("#sidebar-scrim")) $("#sidebar-scrim").hidden = true;
+    };
+    const openSidebar = () => {
+        shell?.setAttribute("data-sidebar-open", "true");
+        $("#sidebar-toggle")?.setAttribute("aria-expanded", "true");
+        if ($("#sidebar-scrim")) $("#sidebar-scrim").hidden = false;
+        $("#sidebar-new-project")?.focus();
+    };
+    $("#sidebar-toggle")?.addEventListener("click", () =>
+        shell?.getAttribute("data-sidebar-open") === "true" ? closeSidebar() : openSidebar());
+    $("#sidebar-close")?.addEventListener("click", closeSidebar);
+    $("#sidebar-scrim")?.addEventListener("click", closeSidebar);
+    shell?.addEventListener("keydown", (event) => { if (event.key === "Escape") closeSidebar(); });
+    $("#sidebar-new-project")?.addEventListener("click", () => {
+        state.conversation?.cancel();
+        navigate("describe"); closeSidebar();
+        const request = $("#free-text-request");
+        if (request) { request.value = ""; request.focus(); }
+    });
+    $("#saved-projects")?.addEventListener("click", (event) => {
+        if (event.target.closest?.("[data-project-open]")) closeSidebar();
+    });
     $("#flow-back")?.addEventListener("click", () => {
         const target = $("#flow-back")?.dataset.backTarget;
         if (target) navigate(target);
@@ -1285,6 +1314,7 @@ function attach() {
         });
     }
     $$('[data-navigate]').forEach((button) => button.addEventListener("click", () => navigate(button.dataset.navigate)));
+    $$('[data-navigate]').forEach((button) => button.addEventListener("click", closeSidebar));
     $$('[data-panel]').forEach((button) => {
         button.addEventListener("click", () => selectResultPanel(button.dataset.panel));
         button.addEventListener("keydown", (event) => {
