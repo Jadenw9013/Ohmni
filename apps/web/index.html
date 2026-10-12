@@ -85,28 +85,40 @@
 
       <main id="main-content" tabindex="-1">
         <section id="describe" class="stage welcome" aria-labelledby="describe-title">
-          <div class="welcome-heading"><svg class="idea-emblem" viewBox="0 0 64 64" aria-hidden="true"><rect x="19" y="19" width="26" height="26" rx="7"/><path d="M27 27h10v10H27zM26 10v9m12-9v9M26 45v9m12-9v9M10 26h9m-9 12h9m26-12h9m-9 12h9"/><circle cx="10" cy="26" r="2"/><circle cx="54" cy="38" r="2"/></svg>
-            <h1 id="describe-title">What would you like to make?</h1>
-            <p class="welcome-lede">Describe your idea, review the plan, then explore your checked board.</p>
+          <div class="welcome-heading">
+            <span class="workspace-eyebrow"><span aria-hidden="true"></span> Ohmni board studio</span>
+            <svg class="idea-emblem" viewBox="0 0 64 64" aria-hidden="true"><rect x="19" y="19" width="26" height="26" rx="7"/><path d="M27 27h10v10H27zM26 10v9m12-9v9M26 45v9m12-9v9M10 26h9m-9 12h9m26-12h9m-9 12h9"/><circle cx="10" cy="26" r="2"/><circle cx="54" cy="38" r="2"/></svg>
+            <h1 id="describe-title">What should your board do?</h1>
+            <p class="welcome-lede">Describe the result you want. Ohmni will turn it into a plan you can review before anything is generated.</p>
           </div>
           <div class="welcome-grid">
-              <div class="welcome-copy">
-                <div class="project-starter">
-                <div class="quick-starts" aria-labelledby="quick-starts-title">
-                  <p id="quick-starts-title"><strong>Start with a simple project</strong><span>Pick one to see an editable plan.</span></p>
-                  <div class="prompt-examples" role="group" aria-label="Quick-start projects"><button type="button" class="ghost" data-starter-family="a1_usb_i2c_sensor">Measure my room</button><button type="button" class="ghost" data-starter-family="a2_usb_gpio_controller">Buttons and lights</button><button type="button" class="ghost" data-starter-family="a3_usb_spi_peripheral">Store readings</button></div>
-                </div>
+            <div class="welcome-copy">
+              <div class="project-starter">
                 <div class="free-text-starter" id="free-text-starter" hidden>
-                  <label class="free-text-label" for="free-text-request">Or describe your own board</label>
-                  <textarea id="free-text-request" rows="3" maxlength="2000" spellcheck="true" placeholder="A USB-powered logger that reads temperature and humidity and shows a status light"></textarea>
-                  <div class="free-text-actions">
-                    <button type="button" id="start-free-text" class="primary"><span id="start-free-text-label">Plan my board</span> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
-                    <span class="free-text-problem" id="free-text-problem" role="alert" hidden></span>
+                  <label class="free-text-label" for="free-text-request"><span>Describe your circuit</span><small>Plain language is perfect</small></label>
+                  <div class="prompt-field-shell">
+                    <textarea id="free-text-request" rows="4" maxlength="2000" spellcheck="true" placeholder="For example: A USB-powered board that measures temperature and humidity and shows a status light"></textarea>
+                    <span class="prompt-field-hint">Include what it senses, controls, powers, or connects to.</span>
                   </div>
-                  <p class="fineprint">Review the plan before starting. Ohmni checks the proposed circuit and explains anything it cannot support.</p>
+                  <div class="free-text-actions">
+                    <span class="free-text-problem" id="free-text-problem" role="alert" hidden></span>
+                    <button type="button" id="start-free-text" class="primary"><span id="start-free-text-label">Plan my board</span> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+                  </div>
+                  <p class="fineprint"><span aria-hidden="true">✓</span> You will review and edit the plan before Ohmni builds or checks anything.</p>
                 </div>
-                <p id="ai-entry-status" role="status">Checking whether you can describe a custom idea. Quick starts and guided setup are ready now.</p>
-                <details id="guided-entry" open><summary>Choose parts with guided setup</summary>
+
+                <div class="quick-starts" aria-labelledby="quick-starts-title">
+                  <div class="quick-starts-heading"><span class="section-rule" aria-hidden="true"></span><div><h2 id="quick-starts-title">Or start with a proven setup</h2><p>Open an editable plan in one click.</p></div><span class="section-rule" aria-hidden="true"></span></div>
+                  <div class="prompt-examples" role="group" aria-label="Quick-start projects">
+                    <button type="button" class="quick-start-card" data-starter-family="a1_usb_i2c_sensor"><span class="quick-start-icon" aria-hidden="true">⌁</span><span><strong>Measure my room</strong><small>Temperature and humidity</small></span><span aria-hidden="true">→</span></button>
+                    <button type="button" class="quick-start-card" data-starter-family="a2_usb_gpio_controller"><span class="quick-start-icon" aria-hidden="true">⌘</span><span><strong>Buttons and lights</strong><small>Two inputs and a status LED</small></span><span aria-hidden="true">→</span></button>
+                    <button type="button" class="quick-start-card" data-starter-family="a3_usb_spi_peripheral"><span class="quick-start-icon" aria-hidden="true">▤</span><span><strong>Store readings</strong><small>SPI memory for saved data</small></span><span aria-hidden="true">→</span></button>
+                  </div>
+                </div>
+
+                <p id="ai-entry-status" class="capability-status" role="status">Checking whether custom planning is available. Quick starts are ready now.</p>
+                <div class="start-options" aria-label="More ways to start">
+                <details id="guided-entry"><summary><span><strong>Choose details yourself</strong><small>Use a guided form for parts and quantities</small></span><span aria-hidden="true">+</span></summary>
                 <div class="starter-heading"><div class="climate-icon" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M17 9a4 4 0 0 1 8 0v14a7 7 0 1 1-8 0z"/><path d="M21 13v15m-4 0h8M30 9h4m-4 6h4"/></svg></div><div><span class="available-label">Start with something useful</span><h2>Prefer to choose the details?</h2></div></div>
                 <ul class="starter-families"><li><strong>Measure your space</strong><span>Read the world with environmental sensors.</span></li><li><strong>Buttons &amp; lights</strong><span>Give your program physical inputs and indicators.</span></li><li><strong>Store data</strong><span>Add memory for information you want to keep.</span></li></ul>
                 <dl class="starter-specs">
@@ -117,10 +129,10 @@
                 <button type="button" id="create-project" class="primary start-button">Use guided setup <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
                 <p class="starter-footnote">Save project revisions on this server. No cloud sync.<br>Unsaved changes are lost if you reload the page.</p>
                 </details>
-                <details><summary>Run an example instead</summary><button type="button" id="start-supported" class="ghost reference-demo-link" data-fixture="esp32-bme280-environmental-logger">Or run the fixed reference example</button></details>
-
+                <details><summary><span><strong>Explore a finished example</strong><small>See the product without creating a project</small></span><span aria-hidden="true">+</span></summary><button type="button" id="start-supported" class="ghost reference-demo-link" data-fixture="esp32-bme280-environmental-logger">Or run the fixed reference example</button></details>
+                <details class="prototype-note"><summary><span><strong>Supported projects and limits</strong><small>See what this prototype can build</small></span><span aria-hidden="true">+</span></summary><strong>Small choices. Real changes to the circuit.</strong><p class="scope-note" id="scope-note">Three supported USB-powered ESP32 families: sensors, buttons and lights, or SPI memory. Choose real parts and counts; the engine generates your configuration and runs actual checks. Assembly, programming, and hardware testing come next.</p></details>
+                </div>
               </div>
-              <details class="prototype-note"><summary>Supported projects and limits</summary><strong>Small choices. Real changes to the circuit.</strong><p class="scope-note" id="scope-note">Three supported USB-powered ESP32 families: sensors, buttons and lights, or SPI memory. Choose real parts and counts; the engine generates your configuration and runs actual checks. Assembly, programming, and hardware testing come next.</p></details>
             </div>
           </div>
 
