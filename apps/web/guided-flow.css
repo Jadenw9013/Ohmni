@@ -167,3 +167,289 @@
 }
 .app-layout #project-run { width: auto; display: block; margin-left: auto; min-width: 210px; }
 @media (max-width:480px) { .app-layout #project-run { width: 100%; min-width: 0; } }
+
+/* CUX-T07: one obvious, accessible starting point. */
+.app-layout[data-flow-stage="describe"] .main-shell {
+  background:
+    radial-gradient(circle at 50% 4%, #193055 0, #0d1a31 23%, transparent 48%),
+    linear-gradient(180deg, #080f1b 0%, #070d17 100%);
+}
+.app-layout[data-flow-stage="describe"] #describe {
+  max-width: 1040px;
+  padding-top: clamp(28px, 4vh, 48px);
+  padding-bottom: 80px;
+}
+.app-layout[data-flow-stage="describe"] .welcome-heading {
+  position: relative;
+  max-width: 760px;
+  margin: 0 auto 24px;
+  text-align: center;
+}
+.app-layout .workspace-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  color: #a9c7ec;
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+.app-layout .workspace-eyebrow > span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #72ddef;
+  box-shadow: 0 0 16px #72ddefaa;
+}
+.app-layout[data-flow-stage="describe"] .idea-emblem {
+  width: 46px;
+  height: 46px;
+  margin: 0 auto 12px;
+  padding: 8px;
+  border: 1px solid #415d82;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #182b46, #0d192a);
+  stroke: #83b8ff;
+  box-shadow: 0 14px 34px #0007, inset 0 1px #ffffff12, 0 0 30px #4779b52e;
+}
+.app-layout[data-flow-stage="describe"] .welcome-heading h1 {
+  max-width: none;
+  margin: 0;
+  font-size: clamp(2.15rem, 4.2vw, 3.35rem);
+  font-weight: 590;
+  line-height: 1.05;
+  letter-spacing: -.055em;
+}
+.app-layout[data-flow-stage="describe"] .welcome-lede {
+  max-width: 650px;
+  margin: 12px auto 0;
+  color: #b9c8dc;
+  font-size: clamp(1rem, 2vw, 1.12rem);
+  line-height: 1.55;
+}
+.app-layout[data-flow-stage="describe"] .welcome-grid,
+.app-layout[data-flow-stage="describe"] .welcome-copy,
+.app-layout[data-flow-stage="describe"] .project-starter {
+  width: 100%;
+}
+.app-layout[data-flow-stage="describe"] .project-starter {
+  max-width: 900px;
+  margin: 0 auto;
+}
+.app-layout[data-flow-stage="describe"] .free-text-starter {
+  position: relative;
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: clamp(20px, 3vw, 28px);
+  border: 1px solid #47658a;
+  border-radius: 22px;
+  background: linear-gradient(145deg, #122239, #0e1b2e);
+  box-shadow: 0 28px 70px #0007, inset 0 1px #ffffff10;
+}
+.app-layout[data-flow-stage="describe"] .free-text-starter[hidden] { display: none; }
+.app-layout[data-flow-stage="describe"] .free-text-starter:focus-within {
+  border-color: #83b8ff;
+  box-shadow: 0 28px 70px #0007, 0 0 0 3px #83b8ff20, inset 0 1px #ffffff10;
+}
+.app-layout[data-flow-stage="describe"] .free-text-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  color: #eef5ff;
+  font-size: .94rem;
+  font-weight: 650;
+}
+.app-layout[data-flow-stage="describe"] .free-text-label small {
+  color: #96acc7;
+  font-size: .76rem;
+  font-weight: 500;
+}
+.app-layout .prompt-field-shell {
+  display: grid;
+  gap: 8px;
+  padding: 16px 18px 12px;
+  border: 2px solid #526f93;
+  border-radius: 13px;
+  background: #081322;
+  box-shadow: inset 0 2px 8px #0005;
+}
+.app-layout .prompt-field-shell:focus-within {
+  border-color: #8fc1ff;
+  box-shadow: 0 0 0 3px #8fc1ff22, inset 0 2px 8px #0005;
+}
+.app-layout[data-flow-stage="describe"] #free-text-request {
+  width: 100%;
+  min-height: 96px;
+  margin: 0;
+  padding: 0;
+  resize: vertical;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #f2f7ff;
+  font: 400 1.08rem/1.6 var(--sans);
+  box-shadow: none;
+}
+.app-layout[data-flow-stage="describe"] #free-text-request::placeholder { color: #7f96b3; opacity: 1; }
+.app-layout .prompt-field-hint { color: #859bb7; font-size: .75rem; line-height: 1.45; }
+.app-layout[data-flow-stage="describe"] .free-text-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.app-layout[data-flow-stage="describe"] #start-free-text {
+  flex: 0 0 auto;
+  min-width: 190px;
+  min-height: 50px;
+  justify-content: center;
+  font-size: .95rem;
+}
+.app-layout[data-flow-stage="describe"] .free-text-problem { color: #ff9db3; font-size: .84rem; }
+.app-layout[data-flow-stage="describe"] .free-text-starter > .fineprint {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  color: #9eb3cc;
+  font-size: .78rem;
+}
+.app-layout[data-flow-stage="describe"] .free-text-starter > .fineprint span { color: #62d6bd; }
+
+.app-layout[data-flow-stage="describe"] .quick-starts {
+  margin: 28px 0 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.app-layout .quick-starts-heading {
+  display: grid;
+  grid-template-columns: minmax(24px, 1fr) auto minmax(24px, 1fr);
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+.app-layout .quick-starts-heading h2 { margin: 0; color: #dce8f8; font-size: .84rem; font-weight: 650; }
+.app-layout .quick-starts-heading p { margin: 3px 0 0; color: #8298b4; font-size: .74rem; }
+.app-layout .section-rule { height: 1px; background: linear-gradient(90deg, transparent, #334962); }
+.app-layout .section-rule:last-child { background: linear-gradient(90deg, #334962, transparent); }
+.app-layout[data-flow-stage="describe"] .prompt-examples {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+}
+.app-layout[data-flow-stage="describe"] .quick-start-card {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 11px;
+  min-height: 78px;
+  padding: 14px;
+  border: 1px solid #314862;
+  border-radius: 13px;
+  background: #0c1829;
+  color: #dce8f7;
+  text-align: left;
+  box-shadow: inset 0 1px #ffffff08;
+}
+.app-layout[data-flow-stage="describe"] .quick-start-card:hover {
+  transform: translateY(-2px);
+  border-color: #668bb7;
+  background: #12243a;
+}
+.app-layout .quick-start-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid #3a6188;
+  border-radius: 9px;
+  background: #142a43;
+  color: #75dced;
+  font-size: 1rem;
+}
+.app-layout .quick-start-card strong,
+.app-layout .quick-start-card small { display: block; }
+.app-layout .quick-start-card strong { margin-bottom: 4px; color: #eef5ff; font-size: .84rem; }
+.app-layout .quick-start-card small { color: #8fa5c0; font-size: .7rem; line-height: 1.35; }
+.app-layout .quick-start-card > span:last-child { color: #7291b4; }
+.app-layout .capability-status {
+  min-height: 1.4em;
+  margin: 16px 0 0 !important;
+  color: #8298b4 !important;
+  font-size: .74rem !important;
+  text-align: center;
+}
+.app-layout .start-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 28px 0 0;
+  padding-top: 20px;
+  border-top: 1px solid #263a51;
+}
+.app-layout[data-flow-stage="describe"] .start-options > details {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #2d425b;
+  border-radius: 12px;
+  background: #0b1625;
+}
+.app-layout[data-flow-stage="describe"] .start-options > details > summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-height: 70px;
+  padding: 12px 14px;
+  list-style: none;
+  color: #c8d6e8;
+}
+.app-layout[data-flow-stage="describe"] .start-options > details > summary::-webkit-details-marker { display: none; }
+.app-layout[data-flow-stage="describe"] .start-options > details > summary strong,
+.app-layout[data-flow-stage="describe"] .start-options > details > summary small { display: block; }
+.app-layout[data-flow-stage="describe"] .start-options > details > summary strong { margin-bottom: 4px; font-size: .8rem; }
+.app-layout[data-flow-stage="describe"] .start-options > details > summary small { color: #8298b4; font-size: .68rem; font-weight: 400; line-height: 1.35; }
+.app-layout[data-flow-stage="describe"] .start-options > details > summary > span:last-child { color: #72ddef; font-size: 1rem; }
+.app-layout[data-flow-stage="describe"] .start-options > details[open] {
+  grid-column: 1 / -1;
+  padding: 0 20px 20px;
+}
+.app-layout[data-flow-stage="describe"] .start-options > details[open] > summary { margin: 0 -20px 14px; padding-inline: 34px; border-bottom: 1px solid #2d425b; }
+.app-layout[data-flow-stage="describe"] .start-options > details[open] > summary > span:last-child { transform: rotate(45deg); }
+.app-layout[data-flow-stage="describe"] .reference-demo-link { margin-top: 6px; }
+.app-layout[data-flow-stage="describe"] #project-shelf,
+.app-layout[data-flow-stage="describe"] > .workspace-examples {
+  max-width: 900px;
+  margin: 14px auto;
+}
+
+@media (max-width: 760px) {
+  .app-layout[data-flow-stage="describe"] #describe { padding-top: 34px; }
+  .app-layout[data-flow-stage="describe"] .welcome-heading h1 { font-size: clamp(2.1rem, 11vw, 3.2rem); }
+  .app-layout[data-flow-stage="describe"] .prompt-examples,
+  .app-layout .start-options { grid-template-columns: 1fr; }
+  .app-layout[data-flow-stage="describe"] .start-options > details[open] { grid-column: auto; }
+  .app-layout[data-flow-stage="describe"] .free-text-actions { align-items: stretch; flex-direction: column; }
+  .app-layout[data-flow-stage="describe"] #start-free-text { width: 100%; }
+  .app-layout[data-flow-stage="describe"] .free-text-label { align-items: flex-start; flex-direction: column; gap: 4px; }
+}
+@media (max-width: 480px) {
+  .app-layout[data-flow-stage="describe"] #describe { padding-inline: 16px; }
+  .app-layout[data-flow-stage="describe"] .free-text-starter { padding: 18px; border-radius: 16px; }
+  .app-layout .prompt-field-shell { padding: 14px; }
+  .app-layout[data-flow-stage="describe"] #free-text-request { min-height: 140px; font-size: 1rem; }
+  .app-layout .quick-starts-heading { grid-template-columns: 18px auto 18px; gap: 10px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .app-layout[data-flow-stage="describe"] .quick-start-card { transition: transform 150ms ease, background-color 150ms ease, border-color 150ms ease; }
+}
