@@ -700,6 +700,18 @@ def test_a_missing_or_blank_key_configures_no_provider(monkeypatch):
     assert demo_server_module._configured_provider() is None
 
 
+def test_local_env_loads_only_supported_nonempty_values_without_overriding_shell(tmp_path, monkeypatch):
+    path=tmp_path/".env"
+    path.write_text("ANTHROPIC_API_KEY=file-key\nOHMNI_ANTHROPIC_MODEL=\nUNRELATED_SETTING=ignored\n",encoding="utf-8")
+    monkeypatch.setenv("ANTHROPIC_API_KEY","shell-key")
+    monkeypatch.delenv("OHMNI_ANTHROPIC_MODEL",raising=False)
+    monkeypatch.delenv("UNRELATED_SETTING",raising=False)
+    demo_server_module._load_local_env(path)
+    assert os.environ["ANTHROPIC_API_KEY"]=="shell-key"
+    assert "OHMNI_ANTHROPIC_MODEL" not in os.environ
+    assert "UNRELATED_SETTING" not in os.environ
+
+
 def test_the_brief_endpoint_accepts_free_text_on_the_same_terms_as_a_run(tmp_path):
     """Same gate as /api/demo: a provider, or the fixture contract unchanged."""
     from ohmni.adapters.fakes import RecordingLlmProvider

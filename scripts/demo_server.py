@@ -34,6 +34,7 @@ from ohmni.application.project_store import (
 )
 
 ROOT=Path(__file__).resolve().parents[1];WEB_ROOT=ROOT/"apps"/"web"
+LOCAL_ENV_KEYS={"ANTHROPIC_API_KEY","OHMNI_ANTHROPIC_MODEL","OHMNI_KICAD_CLI","OHMNI_NGSPICE","OHMNI_OUTPUT_DIR"}
 
 
 def _load_local_env(path):
@@ -49,8 +50,8 @@ def _load_local_env(path):
         for line in path.read_text(encoding="utf-8").splitlines():
             entry=line.strip()
             if not entry or entry.startswith("#") or "=" not in entry:continue
-            name,value=entry.split("=",1)
-            os.environ.setdefault(name.strip(),value.strip())
+            name,value=entry.split("=",1);name=name.strip()
+            if name in LOCAL_ENV_KEYS and value.strip():os.environ.setdefault(name,value.strip())
     except OSError:return  # an unreadable .env is simply no .env
 
 

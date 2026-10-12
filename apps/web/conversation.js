@@ -42,18 +42,35 @@ export function planHtml(plan, {includeSummary = true} = {}) {
 
 }
 export function mountConversation(root, { fetcher = globalThis.fetch, onOpen, onSaved, onGuided } = {}) {
-    let plan = null, identity = null, busy = false, version = 0, confirmed = null, initial = "";
+    let plan = null, identity = null, busy = false, failed = false, version = 0, confirmed = null, initial = "";
     root.innerHTML = `<div id="conversation-status" role="status" aria-live="polite"></div><div id="conversation-error" role="alert" hidden></div>
+      <section id="conversation-recovery" class="conversation-recovery" aria-labelledby="conversation-recovery-title" tabindex="-1" hidden>
+        <span class="recovery-mark" aria-hidden="true">!</span><div class="recovery-copy"><p class="eyebrow">Your idea is safe</p>
+        <h2 id="conversation-recovery-title">We couldn’t create the plan</h2>
+        <p>The AI planner is unavailable right now. Continue with the step-by-step setup, or retry without typing your idea again.</p>
+        <div class="preserved-request"><span>Your request</span><blockquote id="conversation-preserved"></blockquote></div>
+        <details class="recovery-details"><summary>Technical details</summary><p id="conversation-error-detail"></p></details>
+        <div class="recovery-actions"><button type="button" id="conversation-guided-recovery" class="primary">Continue with guided setup</button>
+        <button type="button" id="conversation-retry" class="secondary">Retry AI planning</button></div></div>
+      </section>
       <div id="conversation-questions"></div><div id="conversation-summary"></div>
-      <div class="conversation-actions"><button type="button" id="conversation-confirm" class="primary" hidden>Generate my board</button>
-      <button type="button" id="conversation-retry" class="secondary" hidden>Retry planning</button><button type="button" id="conversation-guided" class="ghost">Use guided setup</button></div>
+      <div class="conversation-actions" id="conversation-actions"><button type="button" id="conversation-confirm" class="primary" hidden>Generate my board</button>
+      <button type="button" id="conversation-guided" class="ghost">Use guided setup</button></div>
       <details id="conversation-edit" hidden><summary>Change something</summary><form id="conversation-reply-form" hidden><label for="conversation-reply">Answer or change something</label>
       <textarea id="conversation-reply" rows="3" maxlength="2000" placeholder="For example: use two buttons and one light"></textarea>
       <button type="submit" class="secondary">Update my plan</button></form></details><div id="conversation-plan"></div>`;
     const $ = s => root.querySelector(s);
-    const error = err => { $("#conversation-error").textContent = err.message || "This request could not be completed. Your text is still here."; $("#conversation-error").hidden = false; };
+    const error = (err, recoverable = false) => {
+        const message = err.message || "This request could not be completed. Your text is still here.";
+        $("#conversation-error").textContent = message;
+        $("#conversation-error").hidden = recoverable;
+        $("#conversation-error-detail").textContent = message;
+        failed = recoverable;
+    };
     function sync() {
         root.setAttribute("aria-busy", String(busy));
+        $("#conversation-recovery").hidden = !failed || busy;
+        $("#conversation-actions").hidden = failed;
         $("#conversation-reply-form").hidden = !plan || !!confirmed;
         $("#conversation-edit").hidden = !plan || !!confirmed;
         if (plan && !plan.ready) $("#conversation-edit").open = true;
@@ -62,13 +79,13 @@ export function mountConversation(root, { fetcher = globalThis.fetch, onOpen, on
         $("#conversation-confirm").textContent = confirmed ? "Generate saved revision" : "Generate my board";
         $("#conversation-reply").disabled = busy;
         $("#conversation-reply-form button").disabled = busy;
-        $("#conversation-retry").hidden = !!plan || busy;
+        $("#conversation-retry").disabled = busy;
     }
     async function propose(message) {
         if (busy) return;
         if (message.trim().length < (plan ? 1 : 10) || message.length > 2000) { error(new Error("Describe your idea in 10 to 2000 characters, or enter a nonempty reply.")); return; }
         const current = ++version;
-        busy = true; $("#conversation-error").hidden = true;
+        busy = true; failed = false; $("#conversation-error").hidden = true;
         $("#conversation-status").textContent = "Preparing your plan… Your project will only be saved when you confirm."; sync();
         try {
             const response = await projectRequest("/api/project-plans", {fetcher, timeoutMs: 90000, method: "POST", data: {message, parent_id: plan?.plan_id || null}});
@@ -81,8 +98,8 @@ export function mountConversation(root, { fetcher = globalThis.fetch, onOpen, on
             $("#conversation-reply").value = "";
             $("#conversation-status").textContent = plan.ready ? "Proposed plan. Engineering checks have not run." : "Your answer is needed. Nothing has been saved or generated.";
             if (!plan.ready) $("#conversation-reply").focus();
-        } catch (err) { if (current === version) { error(err); $("#conversation-status").textContent = "Your request is preserved. Try again or use guided setup."; } }
-        finally { if (current === version) { busy = false; sync(); if (plan && !plan.ready) $("#conversation-reply").focus(); } }
+        } catch (err) { if (current === version) { error(err, true); $("#conversation-status").textContent = "Planning paused. Your request has not been lost."; } }
+        finally { if (current === version) { busy = false; sync(); if (failed) $("#conversation-recovery").focus(); else if (plan && !plan.ready) $("#conversation-reply").focus(); } }
     }
     async function confirm() {
         if (busy || !plan?.ready) return;
@@ -106,8 +123,11 @@ export function mountConversation(root, { fetcher = globalThis.fetch, onOpen, on
     $("#conversation-reply-form").addEventListener("submit", event => { event.preventDefault(); void propose($("#conversation-reply").value); });
     $("#conversation-confirm").addEventListener("click", () => void confirm());
     $("#conversation-retry").addEventListener("click", () => void propose(initial));
-    $("#conversation-guided").addEventListener("click", () => { version++; busy = false; onGuided(plan?.brief); });
+    const useGuided = () => { version++; busy = false; onGuided(plan?.brief); };
+    $("#conversation-guided").addEventListener("click", useGuided);
+    $("#conversation-guided-recovery").addEventListener("click", useGuided);
     return { begin(message) { version++; busy = false; plan = null; confirmed = null; identity = null; initial = message;
+        failed = false; $("#conversation-preserved").textContent = message;
         $("#conversation-summary").innerHTML = ""; $("#conversation-plan").innerHTML = ""; $("#conversation-questions").innerHTML = ""; onOpen(); return propose(message); },
         cancel() { version++; busy = false; }, propose, confirm };
 }
