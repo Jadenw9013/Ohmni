@@ -17,3 +17,12 @@ test("starter projects are named buttons inside an accessible group", () => {
         assert.match(html, new RegExp(`<strong>${label}<\\/strong>`));
     }
 });
+
+test("the complete workspace uses a persistent project rail and mobile drawer controls", () => {
+    assert.match(html, /<aside class="sidebar" id="workspace-sidebar" aria-label="Workspace navigation">/);
+    assert.match(html, /id="sidebar-new-project"[^>]*>.*New project/s);
+    assert.match(html, /id="project-shelf" class="sidebar-history"/);
+    assert.match(html, /id="saved-projects" class="saved-projects"/);
+    assert.match(html, /id="sidebar-toggle" aria-controls="workspace-sidebar" aria-expanded="false"/);
+    assert.match(html, /id="sidebar-scrim" aria-label="Close navigation" hidden/);
+});

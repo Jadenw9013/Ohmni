@@ -49,16 +49,25 @@
     <dialog id="home-info" class="home-info" aria-labelledby="home-info-title"><header><h2 id="home-info-title">How Ohmni works</h2><button type="button" data-home-info-close>Close</button></header><div id="home-info-content"></div></dialog>
   </section>
   <div class="app-layout" hidden>
-    <aside class="sidebar" aria-label="Project navigation">
-      <a class="brand" href="#home" aria-label="Ohmni home">
+    <aside class="sidebar" id="workspace-sidebar" aria-label="Workspace navigation">
+      <div class="sidebar-heading"><a class="brand" href="#home" aria-label="Ohmni home">
         <svg class="studio-brand-mark" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="studio-brand-glow" x2="1" y2="1"><stop stop-color="#39c8fa"/><stop offset="1" stop-color="#ad80ff"/></linearGradient></defs><circle cx="20" cy="20" r="13" fill="none" stroke="url(#studio-brand-glow)" stroke-width="8"/><path d="M20 2v14M4 20h12" stroke="#030810" stroke-width="4"/><circle cx="20" cy="20" r="3" fill="#98a9ff"/></svg><span>ohmni</span>
-      </a>
+      </a><button type="button" class="sidebar-close" id="sidebar-close" aria-label="Close navigation">×</button></div>
+      <button type="button" class="sidebar-new" id="sidebar-new-project"><span aria-hidden="true">＋</span> New project</button>
+      <nav class="sidebar-tools" aria-label="Workspace tools">
+        <button type="button" data-open-components><span aria-hidden="true">▦</span> Components</button>
+        <a href="#home"><span aria-hidden="true">⌂</span> Home</a>
+      </nav>
+      <section id="project-shelf" class="sidebar-history" aria-labelledby="saved-projects-title">
+        <div class="sidebar-section-title"><h2 id="saved-projects-title">Recent projects</h2><span>Local</span></div>
+        <div id="saved-projects" class="saved-projects"></div>
+      </section>
       <div class="sidebar-project">
         <span class="project-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="4"/><path d="M9 9h6v6H9zM9 2v3m6-3v3M9 19v3m6-3v3M2 9h3m-3 6h3m14-6h3m-3 6h3"/></svg></span>
         <div><strong id="project-label">Your first circuit</strong><span>A guided project</span></div>
       </div>
       <nav class="journey" aria-label="Where you are">
-        <p class="nav-label">Your workbench</p>
+        <p class="nav-label">Current build</p>
         <ol id="journey">
           <li data-stage="describe" class="here"><button type="button" data-navigate="describe" aria-label="Start a project" aria-current="step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10H3zM9 20v-7h6v7"/></svg><span>Start a project</span><span class="nav-check" aria-hidden="true">✓</span></button></li>
           <li data-stage="agree"><button type="button" data-navigate="agree" aria-label="Project brief" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V2h6v2M9 9h6m-6 4h6m-6 4h3"/></svg><span>Project brief</span><span class="nav-check" aria-hidden="true">✓</span></button></li>
@@ -68,17 +77,16 @@
         </ol>
       </nav>
       <div class="sidebar-bottom">
-        <div class="mentor-note"><span class="mentor-symbol" aria-hidden="true">✳</span><p>You don't have to know it all.<br><strong>Just bring your curiosity.</strong></p></div>
-        <details class="sidebar-help"><summary><span aria-hidden="true">?</span> First time here?</summary><p>A schematic is a map of connections. A circuit board makes those connections physical. Ohmni helps you explore both, one part at a time.</p></details>
+        <details class="sidebar-help"><summary><span aria-hidden="true">?</span> How Ohmni works</summary><p>Describe a circuit, review the plan, then explore the board and the checks that actually ran.</p></details>
         <div class="local-status"><span class="status-dot" aria-hidden="true"></span><span id="connection-status">Local workbench</span><span class="version">Prototype</span></div>
       </div>
     </aside>
+    <button type="button" class="sidebar-scrim" id="sidebar-scrim" aria-label="Close navigation" hidden></button>
 
     <div class="main-shell" id="top">
-      <header class="workspace-header"><a class="flow-brand" href="#home" aria-label="Ohmni home"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="13"/><path d="M20 3v13M3 20h13"/><circle class="brand-center" cx="20" cy="20" r="3"/></svg>ohmni</a><button type="button" class="ghost flow-back" id="flow-back" hidden><span aria-hidden="true">←</span> <span id="flow-back-label">Go back</span></button><button type="button" class="ghost flow-projects" id="flow-projects">My projects</button>
-        <button type="button" class="secondary" data-open-components>Components</button>
+      <header class="workspace-header"><button type="button" class="sidebar-toggle" id="sidebar-toggle" aria-controls="workspace-sidebar" aria-expanded="false"><span aria-hidden="true">☰</span><span class="sr-only">Open navigation</span></button><button type="button" class="ghost flow-back" id="flow-back" hidden><span aria-hidden="true">←</span> <span id="flow-back-label">Go back</span></button>
         <div class="workspace-crumb"><span class="crumb-mark" aria-hidden="true">⌘</span><span id="workspace-title">Let's build something</span></div>
-        <div class="header-actions"><span id="workspace-status" class="workspace-status">A guided electronics workspace</span><details class="header-help"><summary aria-label="How Ohmni works">How it works <span aria-hidden="true">↗</span></summary><div><strong>An idea, made understandable.</strong><p>Choose a sensor station, buttons and lights, or a memory board. Pick its features, save a revision, then generate and explore your checked design.</p><p>Making a working device also takes assembly, programming, and testing. We'll show you what remains.</p></div></details></div>
+        <div class="header-actions"><span id="workspace-status" class="workspace-status">A guided electronics workspace</span></div>
       </header>
 
       <div id="connection-banner" class="connection-banner" hidden role="status"><span id="connection-message"></span><button type="button" data-reconnect hidden>Reconnect</button><button type="button" data-restart hidden>Start a new example</button></div>
@@ -136,7 +144,6 @@
             </div>
           </div>
 
-          <details id="project-shelf"><summary>Your saved projects</summary><section class="saved-project-shelf" aria-labelledby="saved-projects-title"><div><h2 id="saved-projects-title">Pick up where you left off.</h2><p>Projects saved on this local server, ready for your next idea.</p></div><div id="saved-projects" class="saved-projects"></div></section></details>
 <details class="workspace-examples" id="saved-example"><summary>Explore a saved example</summary><p class="reading-note">A previously generated circuit, separate from your project. Its recorded checks are not a verdict on your current design.</p>            <div class="reference-column">
               <div class="reference-stage pcb-stage">
                 <div class="reference-topline"><span><span class="reference-dot" aria-hidden="true"></span><span id="reference-title">Explore this circuit</span></span><span class="reference-provenance">Saved design</span></div>
