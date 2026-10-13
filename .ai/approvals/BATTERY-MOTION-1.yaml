@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "id": "BATTERY-MOTION-1-APPROVAL",
+  "scope": "BATTERY-MOTION-1",
+  "approved_by": "human",
+  "approved_at": "2026-10-12",
+  "instruction": "approved",
+  "instruction_context": {
+    "kind": "approval_of_preceding_researched_plan",
+    "summary": "Implement a source-first three-AA alkaline motion-warning board as a fourth supported family, with reverse-polarity protection, regulated 3.3 V power, an ESP32 observer, Panasonic digital PIR and firmware-independent warning LED."
+  },
+  "plan_document": "docs/product/BATTERY_MOTION_BOARD_PLAN.md",
+  "authorized_tasks": ["BM-T01", "BM-T02", "BM-T03", "BM-T04", "BM-T05", "BM-T06", "BM-T07"],
+  "architecture": [
+    "External three-cell AA alkaline holder through a keyed two-pin JST-PH board connection with explicit application polarity.",
+    "P-channel MOSFET reverse-polarity protection followed by a TPS63021 fixed 3.3 V buck-boost supply.",
+    "ESP32-WROOM-32E observes the digital PIR signal; a separately verified logic-level N-channel MOSFET makes the warning LED operate without firmware.",
+    "PIR viewing direction, converter loop, ESP32 antenna, visible LED and battery access are physical placement constraints."
+  ],
+  "binding_constraints": [
+    "Manufacturer evidence is archived, fingerprinted and semantically verified before any new component becomes DESIGN_ELIGIBLE.",
+    "Existing visual-library records do not grant electrical admission.",
+    "Existing USB families and their deterministic fingerprints remain stable.",
+    "UNKNOWN never becomes PASS, an exact runtime claim or a physical bench claim.",
+    "The model may propose a supported typed brief but cannot create evidence or engineering verdicts."
+  ],
+  "non_goals": [
+    "Lithium or rechargeable cells, onboard charging, USB power sharing or automatic source switchover.",
+    "Nine-volt batteries, mains input, motors, sirens or other high-current alarms.",
+    "Firmware generation, enclosure or PIR lens design, security certification and production release.",
+    "Claims of exact battery runtime or physical validation before bench testing."
+  ]
+}
