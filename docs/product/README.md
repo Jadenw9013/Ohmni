@@ -7,6 +7,11 @@
 - [Reference-led landing rebuild](UX_REFERENCE_LANDING_CHECKPOINT.md): current dark
   PCB landing, matching the user's supplied reference; supersedes the light landing.
 
+- [Proposed Paper frontend implementation plan](../../PAPER_FRONTEND_IMPLEMENTATION_PLAN.md):
+  audited design-tool capabilities, current-code corrections, complete journey
+  design and incremental implementation gates. Research only; not authorization
+  to rebuild the frontend or activate Paper services.
+
 - [UX audit and implementation direction](UX_CLARITY_AUDIT.md): six reported concerns
   and eight additional findings, with evidence, solutions and acceptance criteria.
 - [UX implementation checkpoint](UX_CLARITY_CHECKPOINT.md): implemented changes,
