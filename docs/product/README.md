@@ -1,5 +1,12 @@
 # Ohmni product definition
 
+## Proposed observability work
+
+- [Sentry implementation and AI handoff plan](../../SENTRY_IMPLEMENTATION_PLAN.md):
+  researched architecture, repository integration points, privacy requirements,
+  staged implementation and acceptance tests. Documentation only; runtime
+  implementation and live telemetry are not authorized by the document.
+
 ## Current UI/UX work
 
 - [Unified studio design](UX_WORKBENCH_THEME_CHECKPOINT.md): matching workbench,
