@@ -149,13 +149,37 @@ class RequestBudget:
         if self.path is None:
             raise BudgetUnavailable("no budget storage")
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        connection = sqlite3.connect(self.path, timeout=5, isolation_level=None)
-        connection.execute("PRAGMA journal_mode=WAL")
-        connection.execute("PRAGMA synchronous=FULL")
-        connection.execute(
-            "CREATE TABLE IF NOT EXISTS ai_daily_requests ("
-            " day TEXT PRIMARY KEY, admitted INTEGER NOT NULL CHECK (admitted >= 0))")
-        return connection
+        # Concurrent first connections can return SQLITE_BUSY while switching
+        # to WAL without waiting for SQLite's busy timeout. Retry only this
+        # idempotent setup, never an admission whose COMMIT might have succeeded.
+        # Use real elapsed time: the admission clock may be frozen in tests.
+        deadline = time.monotonic() + 5
+        while True:
+            connection = None
+            try:
+                connection = sqlite3.connect(
+                    self.path, timeout=max(0, deadline - time.monotonic()), isolation_level=None)
+                for sql in (
+                    "PRAGMA journal_mode=WAL",
+                    "PRAGMA synchronous=FULL",
+                    ("CREATE TABLE IF NOT EXISTS ai_daily_requests ("
+                     " day TEXT PRIMARY KEY, admitted INTEGER NOT NULL CHECK (admitted >= 0))"),
+                ):
+                    remaining_ms = max(0, int((deadline - time.monotonic()) * 1000))
+                    connection.execute(f"PRAGMA busy_timeout={remaining_ms}")
+                    connection.execute(sql)
+                # The counter transaction keeps its original five-second wait.
+                connection.execute("PRAGMA busy_timeout=5000")
+                return connection
+            except BaseException as error:
+                if connection is not None:
+                    connection.close()
+                remaining = deadline - time.monotonic()
+                if (not isinstance(error, sqlite3.OperationalError)
+                        or getattr(error, "sqlite_errorcode", 0) & 0xff != sqlite3.SQLITE_BUSY
+                        or remaining <= 0):
+                    raise
+                time.sleep(min(0.01, remaining))
 
     def _increment(self, day: str, limit: int) -> bool:
         """Atomically admit one request for ``day``; False when the limit is reached."""
