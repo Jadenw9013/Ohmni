@@ -41,7 +41,41 @@ raw envelopes) is committed in [.ai/evidence/HACK-SENTRY-01/](../../.ai/evidence
 
 ## 3. Test and review results
 
-GATES_PLACEHOLDER
+Recorded against code commit `b0194514` (Python 3.13.16, Node 22.22.0, Playwright
+1.56.0, Chromium 141.0.7390.37). Commit-bound record:
+[.ai/verification/HACK-SENTRY-01.yaml](../../.ai/verification/HACK-SENTRY-01.yaml).
+
+| Gate | Result |
+|---|---|
+| `python scripts/ai_state.py validate` | PASS |
+| `python scripts/verify.py workflow` | PASS, 12 tests |
+| `python scripts/verify.py fast` | PASS, 2540 passed, 91 skipped, 63 deselected (main baseline: 2451 passed, 91 skipped) |
+| Node suite, all `apps/web/tests/*.test.mjs` | PASS, 1115 tests, 0 failed (10 new in `telemetry.test.mjs`) |
+| Telemetry and architecture tests | PASS, 163 tests (87 telemetry, real SDK with recording transport; the suite fails rather than skips if the SDK is missing) |
+| `python scripts/telemetry_fault_harness.py` | PASS, 8/8 checks over 5 scenarios |
+| `python scripts/smoke_browser_telemetry.py` | PASS, 6/6 scenarios (local and static hosting x disabled, enabled, missing bundle), 0 uncaught page errors, 0 external requests |
+| `node scripts/telemetry-browser/build.mjs --check` | PASS, byte-for-byte rebuild |
+| `python -m ruff check .` | 21 errors, identical to the `main` baseline; none in changed files |
+| `python scripts/verify.py integration` | **BLOCKED (1 failed, 44 skipped)**: `test_component_resolution.py::test_admitted_part_traverses_real_project_release_with_exact_lineage` needs a real `kicad-cli`, which this environment lacks. It fails identically on `main` (`00016f5f`). |
+| Real KiCad gate (`kicad-gate` CI job) | **NOT_RUN locally**; it runs in CI on the PR, and `run_tool` now carries a span whose behavior the telemetry tests cover with fake executables. |
+| Corpus and ngspice-42 gates | NOT_RUN (unchanged code paths; no pinned tools here). |
+| Live Sentry ingestion and dashboard | NOT_RUN by design (no account or DSN). |
+
+Independent review (a separate agent with no write access) found no BLOCKER or
+HIGH issue. It reported two MEDIUM and four LOW findings. Fixed in `b0194514`
+with regression tests:
+
+- MEDIUM: persistence failures noted in progress callbacks, early worker returns
+  and polls were never emitted.
+- MEDIUM: a stage-level reject hid a later infrastructure failure; rejections are
+  now marked only at the check's own raise.
+- LOW: the provider read vendor usage attributes even with telemetry off.
+
+Accepted and documented in section 6: the local server needs the bundle in its
+snapshot, CORS always lists `sentry-trace,baggage`, and the Python SDK is pinned by
+version rather than hash. The reviewer's own run of the Chromium smoke timed out once
+waiting for the brief button while the fast suite was using the CPU; it did not
+confirm the smoke. The runs recorded here passed 6/6, including one on `b0194514`. REREVIEW_PLACEHOLDER
 
 ## 4. Owner checklist to activate later (two projects)
 
