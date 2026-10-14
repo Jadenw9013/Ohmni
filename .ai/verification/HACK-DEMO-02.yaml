@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "id": "HACK-DEMO-02",
+  "task": "HACK-DEMO-02",
+  "scope": "HACK-DEMO-INTEGRATION-1",
+  "commit": "86ad043e541004368d4a51aec24f9d0c0b4fb870",
+  "verified_at": "2026-10-14",
+  "status": "PASSED",
+  "commands": [
+    {
+      "command": "python scripts/ai_state.py validate",
+      "result": "PASS"
+    },
+    {
+      "command": "python scripts/verify.py workflow",
+      "result": "PASS",
+      "tests": 12
+    },
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "PASS",
+      "tests": 2487,
+      "skipped": 86,
+      "deselected": 63,
+      "runtime_seconds": 577.1
+    },
+    {
+      "command": "node --test apps/web/tests/*.test.mjs (files enumerated)",
+      "result": "PASS",
+      "tests": 1105,
+      "failed": 0
+    },
+    {
+      "command": "pytest tests/test_hackathon_demo.py tests/test_visual_assets_server.py (fast selection)",
+      "result": "PASS",
+      "tests": 55,
+      "deselected": 1
+    },
+    {
+      "command": "node scripts/sync_hackathon_demo.mjs --check",
+      "result": "PASS",
+      "files": 4,
+      "bytes": 321808
+    },
+    {
+      "command": "python scripts/browser_check_offline_demo.py --host-mode offline",
+      "result": "PASS",
+      "checks": 18
+    },
+    {
+      "command": "python scripts/browser_check_offline_demo.py --host-mode site",
+      "result": "PASS",
+      "checks": 22
+    },
+    {
+      "command": "python scripts/browser_check_offline_demo.py --host-mode static",
+      "result": "PASS",
+      "checks": 22
+    },
+    {
+      "command": "python -m ruff check (changed Python files)",
+      "result": "PASS"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    }
+  ],
+  "tools": {
+    "python": "3.13.3",
+    "pydantic": "2.13.5",
+    "node": "22.16.0",
+    "playwright": "1.58.0",
+    "chromium": "145.0.7632.6"
+  },
+  "browser_evidence": ".ai/evidence/HACK-DEMO-02/browser-checks.json",
+  "review": {
+    "independent": true,
+    "status": "PASSED",
+    "record": ".ai/reviews.yaml#HACK-DEMO-02-INDEPENDENT-REVIEW"
+  },
+  "resolved_test_failure": "The first fast run had four existing Windows capture replay failures. Preserving the original JSON provenance-path spelling fixed replay without changing routing hashes or receipts; the final full run passed.",
+  "limitations": [
+    "Saved receipts were replayed; no fresh KiCad or SPICE run is claimed.",
+    "No paid provider calls, main merge, or production deployment.",
+    "Static-host browser tests have no API; expected API 404s are recorded separately. Draft-preservation checks seed the input without submitting to a provider.",
+    "Existing engineering warnings, synthetic fabrication profile and unverified bench status remain."
+  ]
+}

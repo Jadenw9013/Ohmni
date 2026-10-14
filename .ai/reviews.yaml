@@ -864,6 +864,19 @@
       "status": "PASSED",
       "commit": "77e7be75",
       "notes": "Separate subagent reviewed db985333..77e7be75 read-only for false passes, artifact confusion, unbounded provider calls and broken recovery. No BLOCKER or HIGH findings. Two MEDIUM and four LOW findings were fixed in 7ab7c26d and the capture was regenerated from a clean harness run (75ddcf7d); those fixes were not re-reviewed independently. Two LOW findings remain open."
+    },
+    {
+      "id": "HACK-DEMO-02-INDEPENDENT-REVIEW",
+      "scope": "HACK-DEMO-INTEGRATION-1",
+      "task": "HACK-DEMO-02",
+      "reviewer": "independent Codex subagent integration_release_review",
+      "independent": true,
+      "status": "PASSED",
+      "commit": "86ad043e541004368d4a51aec24f9d0c0b4fb870",
+      "notes": "Final independent review found no open BLOCKER/HIGH/MEDIUM findings. Reviewed fixed publication allowlist and canonical hashes, new-tab draft preservation, accessible contained mobile table, recovery, offline/site/static browser harness, and typed provenance-path replay. Reviewer independently ran 6 Python replay/tamper tests and 15 Node publication/home tests, inspected all 62 passing browser checks and ZIP contents. No fresh engineering run or deployment is certified.",
+      "finding_ids": [
+        "HACK-DEMO-02-R01"
+      ]
     }
   ],
   "findings": [
@@ -2043,6 +2056,24 @@
         "apps/web/app.js"
       ],
       "found_at_commit": "77e7be75"
+    },
+    {
+      "id": "HACK-DEMO-02-R01",
+      "scope": "HACK-DEMO-INTEGRATION-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "Landing demo navigation could discard an unsaved workspace draft",
+      "description": "Workspace to Home preserved the in-memory draft, but the initial same-tab demo anchors unloaded it.",
+      "affected_files": [
+        "apps/web/index.html",
+        "apps/web/tests/home.test.mjs",
+        "scripts/browser_check_offline_demo.py"
+      ],
+      "found_at_commit": null,
+      "found_in": "Uncommitted implementation before 86ad043e; fixed before the implementation commit.",
+      "resolution_commit": "86ad043e541004368d4a51aec24f9d0c0b4fb870",
+      "resolution": "Both landing links and the direct workspace entry open explicitly labeled new tabs with rel=noopener. Original draft remains in its tab.",
+      "verification": "Independent re-review passed. Node assertions and site/static browser navigation exercise both routes and verify draft preservation."
     }
   ]
 }
