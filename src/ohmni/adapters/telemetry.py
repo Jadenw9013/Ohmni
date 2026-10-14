@@ -104,7 +104,14 @@ _SERVER_NAME = "ohmni-backend"
 _HEX32 = re.compile(r"^[0-9a-f]{32}$")
 _HEX16 = re.compile(r"^[0-9a-f]{16}$")
 _JOB_ID = re.compile(r"^[0-9a-f]{12}$")
-_MODEL = re.compile(r"^claude-[a-z0-9][a-z0-9.\-]{0,62}$")
+# Only the canonical Claude model-identifier grammar: a known family, numeric
+# version parts and an optional date or -latest suffix. Any other value, even
+# one with a claude- prefix, is free text and never exported.
+_MODEL = re.compile(
+    r"^claude-(?:(?:opus|sonnet|haiku|fable)-[0-9]{1,2}(?:-[0-9]{1,2})?"
+    r"|[0-9]{1,2}(?:-[0-9]{1,2})?-(?:opus|sonnet|haiku))"
+    r"(?:-[0-9]{8}|-latest)?$"
+)
 _RELEASE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._@+\-]{0,79}$")
 _ISO_TIME = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9:.]{8,20}(?:Z|[+\-][0-9:]{4,5})?$")
 _SENTRY_TRACE = re.compile(r"^([0-9a-f]{32})-([0-9a-f]{16})(?:-[01])?$")
@@ -255,8 +262,16 @@ def _timestamp(value: Any) -> str | float | None:
     return _finite(value)
 
 
+#: What a requested model outside the canonical grammar is coarsened to.
+UNKNOWN_MODEL = "claude-unknown"
+
+
 def _model(value: Any) -> str | None:
     return value if type(value) is str and _MODEL.fullmatch(value) else None
+
+
+def _request_model(value: Any) -> str | None:
+    return UNKNOWN_MODEL if type(value) is str and value == UNKNOWN_MODEL else _model(value)
 
 
 _FAILURE_VALUES = frozenset(f"{site}.{code}" for site, codes in FAILURE_CODES.items() for code in codes)
@@ -279,7 +294,7 @@ _DATA_RULES: Mapping[str, Any] = {
     "ohmni.provider.attempt": lambda v: _bounded_int(v, 1, 64),
     "gen_ai.operation.name": lambda v: v if v == "chat" else None,
     "gen_ai.provider.name": lambda v: v if v == "anthropic" else None,
-    "gen_ai.request.model": _model,
+    "gen_ai.request.model": _request_model,
     "gen_ai.response.model": _model,
     "gen_ai.usage.input_tokens": _bounded_int,
     "gen_ai.usage.input_tokens.cached": _bounded_int,
@@ -338,7 +353,7 @@ def _span_description(op: Any, description: Any) -> str | None:
         return _owned_str(description, TOOLS)
     if op == "gen_ai.chat":
         model = description.removeprefix("chat ")
-        return description if description.startswith("chat ") and _model(model) else None
+        return description if description.startswith("chat ") and _request_model(model) else None
     return None
 
 
@@ -1154,7 +1169,7 @@ def tool_call(tool: str) -> Any:
 
 class _ProviderAttempt(_Child):
     def __init__(self, model: str | None, attempt: int, synthetic: bool) -> None:
-        model = _model(model) or "claude-unknown"
+        model = _model(model) or UNKNOWN_MODEL
         data: dict[str, Any] = {
             "gen_ai.operation.name": "chat", "gen_ai.provider.name": "anthropic",
             "gen_ai.request.model": model, "ohmni.synthetic": bool(synthetic),

@@ -720,3 +720,24 @@ def test_a_failed_sdk_span_cleanup_never_reparents_the_next_sibling(monkeypatch,
     spans = {span["description"]: span for span in transaction["spans"]}
     assert spans["erc"]["parent_span_id"] == root
     assert spans["drc"]["parent_span_id"] == spans["erc"]["span_id"]
+
+
+def test_only_canonical_model_identifiers_reach_an_envelope(monkeypatch):
+    canary = "claude-private-design-canary"
+    accepted = ["claude-sonnet-5", "claude-opus-5-5", "claude-fable-5-1", "claude-haiku-4-5-20251001",
+                "claude-3-5-sonnet-20241022", "claude-sonnet-4-latest"]
+    rejected = [canary, "claude-sonnet-5-secret", "claude-opus", "claude-sonnet-5.5", "claude-sonnet-5-2026",
+                "Claude-sonnet-5", "claude-sonnet-5\n", "gpt-5"]
+    with offline_telemetry(monkeypatch) as recorder:
+        with telemetry.http_operation("POST /api/project-plans"):
+            for model in accepted + rejected:
+                with telemetry.provider_attempt(model) as attempt:
+                    attempt.usage(input_tokens=1, output_tokens=1, response_model=model)
+                    attempt.result("ok")
+        [transaction] = recorder.transactions()
+        raw = recorder.raw()
+    requested = [span["data"]["gen_ai.request.model"] for span in transaction["spans"]]
+    responded = [span["data"].get("gen_ai.response.model") for span in transaction["spans"]]
+    assert requested == accepted + ["claude-unknown"] * len(rejected)
+    assert responded == accepted + [None] * len(rejected)
+    assert canary.encode() not in raw and b"secret" not in raw
