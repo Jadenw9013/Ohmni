@@ -620,6 +620,14 @@ def test_telemetry_never_invokes_vendor_getters_even_for_base_exceptions(monkeyp
             touched.append("model")
             raise _Signal
 
+    class UsageProperty(SimpleNamespace):
+        reads: ClassVar[list[str]] = []
+
+        @property
+        def usage(self):
+            UsageProperty.reads.append("usage")
+            return Usage()
+
     def message():
         return Hostile(stop_reason="tool_use", usage=Usage(),
                        content=[SimpleNamespace(type="tool_use", name="emit_board", input={"name": "x"})])
@@ -642,6 +650,18 @@ def test_telemetry_never_invokes_vendor_getters_even_for_base_exceptions(monkeyp
     assert result.name == "x"
     usage = provider.last_call_usage()
     assert (usage.attempts, usage.input_tokens, usage.output_tokens) == (1, 5, 3)
+    assert touched == []
+
+    # A usage *property* is read exactly once, by the cost record, in both modes.
+    UsageProperty.reads.clear()
+    with_property = UsageProperty(stop_reason="tool_use",
+                                  content=[SimpleNamespace(type="tool_use", name="emit_board", input={"name": "y"})])
+    if enabled:
+        with offline_telemetry(monkeypatch), telemetry.http_operation("POST /api/project-plans"):
+            assert _provider(with_property).complete_structured(instructions="i", data="d", schema=Board).name == "y"
+    else:
+        assert _provider(with_property).complete_structured(instructions="i", data="d", schema=Board).name == "y"
+    assert UsageProperty.reads == ["usage"]
     assert touched == []
 
 

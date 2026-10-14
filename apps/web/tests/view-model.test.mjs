@@ -752,6 +752,7 @@ async function recordingTelemetry() {
 }
 
 const BAD_RESPONSES = {
+    status: (_status, envelope) => response(200, envelope()),  // demo start must be 202
     identity: (status, envelope) => response(status, envelope({ server_instance_id: OTHER_INSTANCE })),
     body: (status) => response(status, { unexpected: true }),
     json: (status) => ({ ok: true, status, json: async () => { throw new SyntaxError("not json"); } }),
@@ -765,6 +766,7 @@ test("a brief or demo response is a telemetry success only after it passes its c
             ["/api/demo", 202, startEnvelope, "POST /api/demo", "browser.demo_start"],
         ]) {
             for (const [kind, bad] of Object.entries(BAD_RESPONSES)) {
+                if (kind === "status" && path !== "/api/demo") continue;
                 log.ended.length = 0; log.failed.length = 0;
                 await withApp(async (app) => {
                     let served = false;

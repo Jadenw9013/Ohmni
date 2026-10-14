@@ -442,7 +442,8 @@ export async function startRun({ fetcher = globalThis.fetch, poller = poll, poll
             fail("backend_unavailable");
         }
         if (!response.ok || response.status !== 202) {
-            trace.end(response.status);
+            // A success status other than 202 is a contract mismatch, not a success.
+            if (response.ok) trace.fail("contract_mismatch"); else trace.end(response.status);
             fail(await serverErrorKind(response, response.status >= 500 ? "backend_unavailable" : "api_ui_mismatch"));
         }
         let payload;
@@ -520,11 +521,10 @@ export async function startProjectRun({ projectId, revisionId, identity, preview
     show("design");
     const version = state.pollVersion;
     try {
-        const { payload } = await projectRequest(`/api/projects/${encodeURIComponent(projectId)}/revisions/${encodeURIComponent(revisionId)}/run`, {
-            fetcher, identity, method: "POST",
+        const { parsed: jobId } = await projectRequest(`/api/projects/${encodeURIComponent(projectId)}/revisions/${encodeURIComponent(revisionId)}/run`, {
+            fetcher, identity, method: "POST", parse: (payload) => parseProjectStart(payload, identity),
         });
         if (version !== state.pollVersion) return;
-        const jobId = parseProjectStart(payload, identity);
         state.jobId = jobId;
         state.runStatus = "running";
         setConnection("connected");

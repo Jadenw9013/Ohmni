@@ -171,6 +171,8 @@ def use_kicad(monkeypatch, executable):
     for module in (tools, erc):
         monkeypatch.setattr(module, "find_kicad_cli", lambda: executable)
     monkeypatch.setenv("PATH", os.pathsep.join([str(Path(executable).parent)] if executable else []))
+    from ohmni.eda.kicad import KiCadCliAdapter
+    assert KiCadCliAdapter().executable == executable, "an installed KiCad is still discoverable"
 
 
 def fake_kicad(directory, body):
@@ -224,6 +226,9 @@ def test_confirmed_project_worker_trace_connects_to_the_request(tmp_path, monkey
                    for s in worker["spans"])
     erc = next(s for s in worker["spans"] if s["description"] == "erc")
     assert erc["data"]["ohmni.engineering_outcome"] == "unknown"
+    # The real pipeline call site: a tool that never completed is not an ok stage.
+    assert erc["data"]["ohmni.execution_outcome"] == "error"
+    assert erc["status"] == "internal_error"
     tools = [(s["description"], s["data"]["ohmni.execution_outcome"]) for s in worker["spans"] if s["op"] == "ohmni.tool"]
     assert tools == ([] if kicad == "missing" else [("kicad", "nonzero_exit")])
     assert values == ["worker.eda_tool_failed"]

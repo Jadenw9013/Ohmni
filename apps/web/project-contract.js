@@ -196,7 +196,7 @@ export async function projectRequest(path, { fetcher = globalThis.fetch, timeout
     }
 }
 
-async function requestProject(path, { fetcher, identity, method = "GET", data, trace } = {}) {
+async function requestProject(path, { fetcher, identity, method = "GET", data, trace, parse } = {}) {
     const current = identity || await fetchHealth(fetcher);
     let response;
     try {
@@ -241,11 +241,16 @@ async function requestProject(path, { fetcher, identity, method = "GET", data, t
         throw new ProjectRequestError(typeof refusal === "string" ? refusal : messages[payload?.error]
             || "The server could not complete this action. Your edits are still here. Try again.");
     }
-    // Success is recorded only once the response has passed its contract.
-    try { checkIdentity(payload, current); } catch (error) {
+    // Success is recorded only once the response has passed its contract: the
+    // generation identity and, when the caller names one, its schema parser.
+    let parsed;
+    try {
+        checkIdentity(payload, current);
+        if (parse) parsed = parse(payload, current);
+    } catch (error) {
         trace.fail("contract_mismatch");
         throw error;
     }
     trace.end(response.status);
-    return { payload, identity: current };
+    return { payload, identity: current, parsed };
 }

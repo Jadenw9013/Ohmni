@@ -222,9 +222,19 @@ test("a project response is a telemetry success only after its identity check", 
         assert.deepEqual(adapter.log.failed.map((entry) => entry[2]), ["contract_mismatch"], kind);
         assert.deepEqual(adapter.log.ended, [], `${kind} is never also a success`);
     }
+    // The caller's schema parser is part of the contract: a body with the
+    // right identity but the wrong shape is a mismatch, never a success.
+    const schema = fakeAdapter();
+    await enable(schema);
+    const parse = (payload) => { if (!payload.plan) throw new Error("api_ui_mismatch"); return payload.plan; };
+    await assert.rejects(projectRequest(PLAN_PATH, { identity, method: "POST", data: {}, parse, fetcher: async () => ok({}) }));
+    assert.deepEqual(schema.log.failed.map((entry) => entry[2]), ["contract_mismatch"]);
+    assert.deepEqual(schema.log.ended, []);
     const adapter = fakeAdapter();
     await enable(adapter);
-    await projectRequest(PLAN_PATH, { identity, method: "POST", data: {}, fetcher: async () => ok({}) });
+    const result = await projectRequest(PLAN_PATH, { identity, method: "POST", data: {}, parse,
+        fetcher: async () => ok({ plan: "parsed" }) });
+    assert.equal(result.parsed, "parsed");
     assert.deepEqual(adapter.log.ended, [["POST /api/project-plans", 200]]);
     assert.deepEqual(adapter.log.failed, []);
 });
