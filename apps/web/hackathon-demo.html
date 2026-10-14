@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ohmni saved demonstration</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+  :root { color-scheme: light dark; --bg: #f6f7f9; --panel: #ffffff; --text: #18202b; --muted: #556070; --line: #d9dee6;
+          --pass: #146c43; --fail: #b42318; --warn: #8a5a00; --unknown: #4b5563; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0d1218; --panel: #151c24; --text: #e8edf3; --muted: #9aa6b4; --line: #2a3441;
+          --pass: #5cd38f; --fail: #ff8a80; --warn: #f0c060; --unknown: #a7b0bc; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); }
+  header, main { max-width: 1200px; margin: 0 auto; padding: 16px; }
+  .banner { border: 1px solid var(--line); background: var(--panel); border-radius: 10px; padding: 12px 16px; }
+  .banner strong { display: inline-block; margin-right: 8px; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--line); }
+  #capture { color: var(--muted); font-size: 13px; margin: 4px 0 0; }
+  .layout { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 16px; }
+  @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
+  .stage { position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; min-height: 420px; }
+  #board { width: 100%; height: 420px; display: block; }
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+  button, .download { font: inherit; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--text); cursor: pointer; text-decoration: none; }
+  button[aria-pressed="true"] { border-color: currentColor; font-weight: 600; }
+  button:focus-visible, .download:focus-visible { outline: 3px solid #3b82f6; outline-offset: 2px; }
+  button:disabled { opacity: .6; cursor: progress; }
+  #status { min-height: 1.5em; color: var(--muted); }
+  #status[data-tone="error"] { color: var(--fail); }
+  #report { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; overflow-wrap: anywhere; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 6px 4px; border-top: 1px solid var(--line); vertical-align: top; }
+  .outcome { font-weight: 600; white-space: nowrap; }
+  .outcome[data-outcome^="PASS"] { color: var(--pass); }
+  .outcome[data-outcome="FAIL"] { color: var(--fail); }
+  .outcome[data-outcome="NOT_CHECKED"], .outcome[data-outcome="UNKNOWN"], .outcome[data-outcome="NOT RUN"], .outcome[data-outcome="NOT VERIFIED"] { color: var(--unknown); }
+  code { font-size: 12px; }
+</style>
+</head>
+<body data-showing="none">
+<header>
+  <div class="banner" role="note">
+    <strong>Saved successful run</strong><span id="notice">Loading the saved demonstration...</span>
+    <p id="capture"></p>
+  </div>
+</header>
+<main>
+  <div class="layout">
+    <section aria-label="Board">
+      <div class="stage"><canvas id="board" tabindex="0" aria-label="Saved circuit board. Drag to rotate."></canvas></div>
+      <div class="controls" role="group" aria-label="Choose which board to show">
+        <button type="button" id="show-good" aria-pressed="false">Original board</button>
+        <button type="button" id="show-fault" aria-pressed="false">Show fault</button>
+        <button type="button" id="restore">Restore original</button>
+        <a class="download" id="download" href="#" hidden>Download saved Gerber/drill package</a>
+      </div>
+      <p id="status" role="status" aria-live="polite"></p>
+    </section>
+    <section id="report" aria-live="polite" aria-labelledby="report-title"></section>
+  </div>
+</main>
+<script type="module" src="/hackathon-demo.js"></script>
+</body>
+</html>

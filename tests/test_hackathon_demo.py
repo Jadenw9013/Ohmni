@@ -221,3 +221,39 @@ def test_fresh_attempt_qualifies_and_its_fault_fails_real_drc(tmp_path):
     names = {check.name for check in attempt.qualification.checks}
     assert {"fault_detected_by_real_drc", "original_unchanged_after_fault", "release_current"} <= names
     assert attempt.fault["drc"]["unconnected_count"] >= 1 and attempt.fault["releasable"] is False
+
+
+def test_offline_server_serves_only_contained_allowlisted_files():
+    from scripts.serve_offline_demo import CAPTURE as served
+    from scripts.serve_offline_demo import WEB, resolve
+    assert resolve("/") == WEB / "hackathon-demo.html"
+    assert resolve("/board-view.js") == WEB / "board-view.js"
+    assert resolve("/hackathon-demo/demo.json") == served / "demo.json"
+    assert resolve("/hackathon-demo/saved-run/fault/diagnostic-fault.kicad_pcb") is not None
+    for path in ("/../pyproject.toml", "/hackathon-demo/../../pyproject.toml", "/%2e%2e/pyproject.toml",
+                 "/tests/hackathon-demo.test.mjs", "/.git/config", "/hackathon-demo/missing.json",
+                 "/package-lock.json/x", "/hackathon-demo/..%2f..%2fpyproject.toml", "/a\\b"):
+        assert resolve(path) is None, path
+
+
+def test_offline_server_answers_without_any_api(tmp_path):
+    import threading
+    from urllib.error import HTTPError
+    from urllib.request import ProxyHandler, build_opener
+
+    from scripts.serve_offline_demo import make_server
+    server = make_server(0)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    opener = build_opener(ProxyHandler({}))
+    base = f"http://127.0.0.1:{server.server_address[1]}"
+    try:
+        with opener.open(base + "/hackathon-demo/demo.json", timeout=10) as response:
+            assert response.headers["Cache-Control"] == "no-store"
+            assert json.loads(response.read())["kind"] == "saved_hackathon_demonstration"
+        for path in ("/api/projects", "/health", "/api/assistant"):
+            with pytest.raises(HTTPError) as error:
+                opener.open(base + path, timeout=10)
+            assert error.value.code == 404
+    finally:
+        server.shutdown()
+        server.server_close()
