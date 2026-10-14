@@ -1,5 +1,14 @@
 # Ohmni product definition
 
+## Hackathon preparation
+
+- [Overnight demo development brief](../hackathon/OVERNIGHT_DEVELOPMENT_BRIEF.md):
+  bounded work, acceptance checks, tool fallbacks and morning handoff for a reliable
+  three-minute demonstration.
+- [Claude Cloud prompt](../hackathon/CLAUDE_CLOUD_PROMPT.md): copy-ready assignment.
+  The owner must send or explicitly adopt it before its product work is authorized;
+  storing the template does not activate a task or approve unrelated milestones.
+
 ## Proposed observability work
 
 - [Sentry implementation and AI handoff plan](../../SENTRY_IMPLEMENTATION_PLAN.md):
