@@ -27,7 +27,7 @@ from test_conversation import output
 
 from ohmni.adapters import telemetry
 from ohmni.adapters.anthropic_provider import AnthropicProvider
-from ohmni.application.demo import current_pcb_policy
+from ohmni.application.demo import DemoProgress, current_pcb_policy
 from ohmni.application.request_budget import BudgetConfig, RequestBudget
 from ohmni.synthesis import SynthesisBrief
 from scripts.demo_server import DEMO_REQUEST, DemoHandler, DemoHTTPServer, JobStore
@@ -292,6 +292,57 @@ def test_successful_publication_counts_once_and_reuse_never_recounts(tmp_path, m
         assert recorder.metric_count("ohmni.jobs.accepted", flow="scripted_fixture") == 1
         assert recorder.metric_count("ohmni.jobs.terminal", terminal="complete") == 1
         assert recorder.failure_values() == []
+
+
+def test_progress_persistence_failure_is_reported_once_after_the_lock(tmp_path, monkeypatch):
+    class Progressing(Pipeline):
+        def run(self, destination, request):
+            self.progress(DemoProgress(stage="requirements", label="x", status="RUNNING", percent=5))
+            return Report()
+    with offline_telemetry(monkeypatch) as recorder:
+        store = JobStore(tmp_path, Progressing)
+        store.enable_persistence()
+        real = store.project_store.save_job
+        def save(record):
+            if record["status"] == "running":
+                raise OSError(CANARY)
+            return real(record)
+        monkeypatch.setattr(store.project_store, "save_job", save)
+        with telemetry.http_operation("POST /api/demo"):
+            job_id = store.start(DEMO_REQUEST)
+        job = wait(store, job_id)
+        wait_for_transactions(recorder, 2)
+        assert (job["status"], job["error_code"]) == ("failed", "job_state_invalid")
+        assert recorder.failure_values() == ["persistence.job_persist_failed"]
+        assert recorder.metric_count("ohmni.jobs.terminal", terminal="failed", reason="job_state_invalid") == 1
+        assert recorder.metric_count("ohmni.jobs.terminal", terminal="complete") == 0
+        assert CANARY.encode() not in recorder.raw()
+
+
+@pytest.mark.parametrize("marked", [True, False])
+def test_only_a_marked_check_failure_is_an_engineering_rejection(tmp_path, monkeypatch, marked):
+    class Rejecting(Pipeline):
+        def run(self, destination, request):
+            with telemetry.stage("routing") as span:
+                span.outcome("ok", "reject")
+            if marked:
+                telemetry.engineering_rejection()
+                raise RuntimeError(CANARY)
+            raise OSError(CANARY)  # infrastructure failure after an earlier reject outcome
+    with offline_telemetry(monkeypatch) as recorder:
+        store = JobStore(tmp_path, Rejecting)
+        with telemetry.http_operation("POST /api/demo"):
+            job_id = store.start(DEMO_REQUEST)
+        assert wait(store, job_id)["error_code"] == "pipeline_failed"
+        transactions = wait_for_transactions(recorder, 2)
+        worker = next(t for t in transactions if t["contexts"]["trace"]["op"] == "ohmni.worker")
+        data = worker["contexts"]["trace"]["data"]
+        if marked:
+            assert recorder.failure_values() == []
+            assert data["ohmni.engineering_outcome"] == "reject"
+        else:
+            assert recorder.failure_values() == ["worker.pipeline_failed"]
+            assert data.get("ohmni.engineering_outcome") != "reject"
 
 
 def test_interrupted_job_is_not_a_successful_trace(tmp_path, monkeypatch):

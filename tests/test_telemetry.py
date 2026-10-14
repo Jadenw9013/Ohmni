@@ -535,6 +535,29 @@ def test_provider_usage_reports_only_observed_counts(monkeypatch):
     assert recorder.metric_count("ohmni.provider.calls") == 5
 
 
+@pytest.mark.parametrize("enabled", [False, True])
+def test_telemetry_only_vendor_reads_never_fail_a_successful_call(monkeypatch, enabled):
+    class Usage:
+        input_tokens, output_tokens = 5, 3
+        @property
+        def cache_read_input_tokens(self):
+            raise RuntimeError("telemetry read a vendor attribute")
+    class Hostile(SimpleNamespace):
+        @property
+        def model(self):
+            raise RuntimeError("telemetry read a vendor attribute")
+    message = Hostile(stop_reason="tool_use", usage=Usage(),
+                      content=[SimpleNamespace(type="tool_use", name="emit_board", input={"name": "x"})])
+    if enabled:
+        with offline_telemetry(monkeypatch), telemetry.http_operation("POST /api/project-plans"):
+            result = _provider(message).complete_structured(instructions="i", data="d", schema=Board)
+    else:
+        isolate_environment(monkeypatch)
+        telemetry.shutdown(0)
+        result = _provider(message).complete_structured(instructions="i", data="d", schema=Board)
+    assert result.name == "x"
+
+
 def test_native_tool_outcomes_are_distinct_and_carry_no_command_details(monkeypatch, tmp_path):
     script = tmp_path / CANARIES[8]
     script.mkdir()

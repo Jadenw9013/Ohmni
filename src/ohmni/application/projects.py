@@ -184,6 +184,8 @@ class ProjectPipeline(DemoPipeline):
             span.outcome("ok", outcome)
             telemetry.record_verifier_attempt("confirmed_project", outcome)
         if semantic.export_blocked or semantic.coverage < 1:
+            if semantic.export_blocked:
+                telemetry.engineering_rejection()
             raise ValueError("The derived circuit did not pass complete semantic verification")
         self._progress("check", "Checked your parts and connections", "PASS", 15,
                        "Deterministic checks ran on this revision; no repair was needed.")

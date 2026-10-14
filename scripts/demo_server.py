@@ -526,15 +526,15 @@ class JobStore:
         self.jobs[job_id]=job
         return job
     def _fail(self,job_id,error_code="job_state_invalid"):
-        changed=False
-        with self.lock:
-            job=self._validated_job_locked(job_id)
-            if job["status"] in TERMINAL_JOB_STATUSES:return
-            self.jobs[job_id]=self._failure_record(job_id,error_code);changed=True
-            persisted=self._persist_locked(job_id)
-        if changed:self._emit("job_failed",job_id,error_code)
-        if changed and persisted:telemetry.record_job_terminal(self._job_flows.get(job_id,"other"),"failed",error_code)
-        self._flush_telemetry()
+        try:
+            with self.lock:
+                job=self._validated_job_locked(job_id)
+                if job["status"] in TERMINAL_JOB_STATUSES:return
+                self.jobs[job_id]=self._failure_record(job_id,error_code)
+                persisted=self._persist_locked(job_id)
+            self._emit("job_failed",job_id,error_code)
+            if persisted:telemetry.record_job_terminal(self._job_flows.get(job_id,"other"),"failed",error_code)
+        finally:self._flush_telemetry()
     def _run(self,job_id,request,pipeline_factory=None,lease=None,telemetry_handoff=None):
         # The billed lease lives exactly as long as this worker's provider work.
         # The worker transaction spans the whole worker, publication included.
@@ -542,6 +542,8 @@ class JobStore:
             try:self._run_pipeline(job_id,request,pipeline_factory,operation)
             finally:
                 if lease is not None:lease.release()
+                # Persistence failures noted on any path, early returns included.
+                self._flush_telemetry()
     def _run_pipeline(self,job_id,request,pipeline_factory=None,operation=None):
         if operation is None:operation=telemetry.INERT_HANDLE
         self._emit("worker_started",job_id)
@@ -818,6 +820,11 @@ class JobStore:
         if not isinstance(expected,str) or not re.fullmatch(r"[0-9a-f]{64}",expected):return False
         return self._read_matching(parent/relative,expected,parent)[0]=="current"
     def get(self,job_id):
+        # A poll can retire a record and fail to persist it; report that once
+        # this thread holds no store lock.
+        try:return self._get(job_id)
+        finally:self._flush_telemetry()
+    def _get(self,job_id):
         try:
             job=self._snapshot(job_id)
             if not job or job.get("status")!="complete":return job

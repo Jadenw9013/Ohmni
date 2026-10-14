@@ -1061,9 +1061,6 @@ class _Stage(_Child):
         self._set("ohmni.execution_outcome", self._execution)
         if engineering in ENGINEERING_OUTCOMES:
             self._set("ohmni.engineering_outcome", engineering)
-            operation = _OPERATION.get()
-            if engineering == "reject" and operation is not None:
-                operation.engineering_rejected = True
         self._explicit_status = "ok" if self._execution == "ok" else "internal_error"
         self._status(self._explicit_status)
 
@@ -1269,8 +1266,23 @@ def _capture_failure(site: str, code: str, level: str, *, separate: bool) -> Non
         pass
 
 
+def engineering_rejection() -> None:
+    """Mark the exception about to be raised as a deterministic engineering verdict.
+
+    Called immediately before a check's own ``raise``, never from a stage
+    outcome: a later infrastructure failure in the same operation must still
+    be reported as a failure rather than hidden behind an earlier rejection.
+    """
+    try:
+        operation = _OPERATION.get()
+        if operation is not None:
+            operation.engineering_rejected = True
+    except BaseException:  # noqa: BLE001, S110 - bookkeeping never affects the pipeline
+        pass
+
+
 def engineering_rejected() -> bool:
-    """Whether a stage in the current operation recorded an engineering rejection."""
+    """Whether the current operation's failure was marked as an engineering rejection."""
     operation = _OPERATION.get()
     return bool(operation is not None and _RUNTIME.active and operation.engineering_rejected)
 
@@ -1349,6 +1361,7 @@ __all__ = [
     "current_flow",
     "enabled",
     "engineering_rejected",
+    "engineering_rejection",
     "failure_already_reported",
     "flush",
     "gate_envelope_items",

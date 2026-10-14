@@ -377,15 +377,20 @@ class AnthropicProvider:
                 telemetry.record_boundary_failure("provider", outcome)
             raise StructuredGenerationError(_describe_vendor_failure(exc)) from None
         usage.record(message)
-        if span is not None:
-            reported = getattr(message, "usage", None)
-            span.usage(
-                input_tokens=getattr(reported, "input_tokens", None),
-                output_tokens=getattr(reported, "output_tokens", None),
-                cache_read=getattr(reported, "cache_read_input_tokens", None),
-                cache_write=getattr(reported, "cache_creation_input_tokens", None),
-                response_model=getattr(message, "model", None),
-            )
+        if span is not None and telemetry.enabled():
+            # Read only with telemetry on, and never let a vendor getter turn a
+            # successful (possibly billed) call into a failure.
+            try:
+                reported = getattr(message, "usage", None)
+                span.usage(
+                    input_tokens=getattr(reported, "input_tokens", None),
+                    output_tokens=getattr(reported, "output_tokens", None),
+                    cache_read=getattr(reported, "cache_read_input_tokens", None),
+                    cache_write=getattr(reported, "cache_creation_input_tokens", None),
+                    response_model=getattr(message, "model", None),
+                )
+            except Exception:  # noqa: BLE001, S110 - usage metadata is optional telemetry
+                pass
         return message
 
     @staticmethod

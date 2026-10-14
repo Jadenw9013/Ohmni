@@ -113,6 +113,7 @@ def require_eda_check(report,label):
     ):
         raise EdaToolFailedError(f"KiCad {label} could not complete; local diagnostics were retained")
     if report.status.value not in {"pass","pass_with_warnings"}:
+        telemetry.engineering_rejection()
         raise RuntimeError(f"KiCad {label} checks did not pass")
 
 
@@ -409,6 +410,7 @@ class DemoPipeline:
         if not route_report.passed:
             self._progress("routing", "The copper checks found a problem", "FAIL", 40,
                            "Independent routing verification did not pass; diagnostics were retained.")
+            telemetry.engineering_rejection()
             raise RuntimeError("independent routing verification failed")
         with telemetry.stage("pcb_compile"):
             routed = compiler.compile(circuit, design.artifact, board, destination / "golden.kicad_pcb", plan)
@@ -425,6 +427,7 @@ class DemoPipeline:
             span.outcome("ok", eda_engineering_outcome(drc))
             require_eda_check(drc,"DRC")
         if drc.findings or drc.unconnected_items or drc.status.value not in {"pass", "pass_with_warnings"}:
+            telemetry.engineering_rejection()
             raise RuntimeError("KiCad DRC did not close cleanly")
         self._progress("drc", "KiCad checked the finished board", "PASS", 82,
                        f"{len(drc.findings)} problems, {len(drc.unconnected_items)} missing connections.")
@@ -434,6 +437,7 @@ class DemoPipeline:
             manufacturing = verify_manufacturing(routed, board, plan, profile)
             span.outcome("ok", "pass" if manufacturing.passed else "reject")
         if not manufacturing.passed:
+            telemetry.engineering_rejection()
             raise RuntimeError("manufacturing profile verification failed")
         self._progress("manufacturing", "Checked the example manufacturing limits", "PASS", 87,
                        "This profile is synthetic; a fabricator must confirm its actual capabilities.")
