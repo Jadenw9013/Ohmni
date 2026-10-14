@@ -19,7 +19,7 @@ export const HOME_GUIDES = Object.freeze({
     ] }
 });
 
-export function initializeHome({ onStart = () => {}, onDemo = () => {} } = {}) {
+export function initializeHome({ onStart = () => {} } = {}) {
     const home = document.querySelector('#home'), workspace = document.querySelector('.app-layout');
     if (!home || !workspace) return;
     const info = document.querySelector('#home-info');
@@ -52,7 +52,6 @@ export function initializeHome({ onStart = () => {}, onDemo = () => {} } = {}) {
         history.pushState(null, '', '#workspace'); route({ focus: false }); action();
     }
     home.querySelectorAll('[data-home-start]').forEach(button => button.addEventListener('click', event => enterWorkspace(event, onStart)));
-    home.querySelectorAll('[data-home-demo]').forEach(button => button.addEventListener('click', event => enterWorkspace(event, onDemo)));
     home.querySelectorAll('[data-home-info]').forEach(button => button.addEventListener('click', () => guide(button.dataset.homeInfo, button)));
     home.querySelector('[data-home-info-close]').addEventListener('click', () => info.close());
     info.addEventListener('close', () => opener?.focus());

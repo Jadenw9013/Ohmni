@@ -48,6 +48,36 @@ def test_saved_capture_qualifies_from_its_own_receipts():
     assert any("lib_symbol_issues" in warning for warning in result.warnings)
 
 
+@pytest.mark.parametrize("recorded_path,recorded_hash", [
+    ("/repo/build/hackathon-demo/20261014T070148Z/attempt-1/golden.placed.kicad_pcb",
+     "2413c57d0697a419d6f7bde103ca9d4f8d1f639fa38873b13cba6beeead66e5e"),
+    (r"C:\demo\golden.placed.kicad_pcb",
+     "3a667203f7b06495674bb5caefda9d1ffa63af94145d9c8497e1e642f5bd6ca4"),
+])
+def test_routing_receipt_replay_preserves_recorded_path_spelling(run, recorded_path, recorded_hash):
+    # Fixed vectors use the existing RoutingPlan JSON/hash format. The first
+    # digest is the committed Linux receipt; the second changes only its path
+    # to the spelling a Windows producer would write. Neither depends on this
+    # test runner's Path implementation, and no canonical evidence is modified.
+    _edit(run / "routing-plan.json", lambda plan: plan.update(source_pcb_path=recorded_path))
+    _edit(run / "routing-verification.json", lambda receipt: receipt.update(plan_fingerprint=recorded_hash))
+    plan = json.loads((run / "routing-plan.json").read_text(encoding="utf-8"))
+    assert demo._recorded_routing_plan_hash(plan) == recorded_hash
+    assert demo.qualify_run(run).passed
+
+
+@pytest.mark.parametrize("change", [
+    lambda plan: plan.update(source_pcb_path=plan["source_pcb_path"] + ".changed"),
+    lambda plan: plan["routed_nets"][0]["paths"][0]["tracks"][0].update(width_mm=0.5),
+    lambda plan: plan["routed_nets"][0]["paths"][0]["tracks"][0].update(width_mm="invalid"),
+], ids=["path-only-change", "track-change", "invalid-typed-track"])
+def test_routing_receipt_replay_rejects_changed_or_malformed_plan(run, change):
+    _edit(run / "routing-plan.json", change)
+    result = demo.qualify_run(run)
+    assert not result.passed
+    assert "routing_independently_verified" in {check.name for check in result.checks if not check.passed}
+
+
 def test_empty_directory_never_qualifies(tmp_path):
     result = demo.qualify_run(tmp_path)
     assert not result.passed
@@ -292,6 +322,9 @@ def test_offline_server_answers_without_any_api(tmp_path):
     opener = build_opener(ProxyHandler({}))
     base = f"http://127.0.0.1:{server.server_address[1]}"
     try:
+        with opener.open(base + "/", timeout=10) as response:
+            html = response.read().decode("utf-8")
+            assert 'data-host="offline"' in html and 'data-host="site"' not in html
         with opener.open(base + "/hackathon-demo/demo.json", timeout=10) as response:
             assert response.headers["Cache-Control"] == "no-store"
             assert json.loads(response.read())["kind"] == "saved_hackathon_demonstration"

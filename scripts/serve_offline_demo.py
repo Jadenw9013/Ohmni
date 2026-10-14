@@ -71,6 +71,10 @@ class OfflineDemoHandler(BaseHTTPRequestHandler):
             content_type = "text/plain; charset=utf-8"
         else:
             body = target.read_bytes()
+            if target == (self.web / "hackathon-demo.html").resolve():
+                # This standalone server has no project/API routes. Keep the
+                # same page, but do not advertise navigation into that workflow.
+                body = body.replace(b'data-host="site"', b'data-host="offline"')
             self.send_response(HTTPStatus.OK)
             suffix = ".kicad_pcb" if target.name.endswith(".kicad_pcb") else target.suffix.lower()
             content_type = TYPES.get(suffix) or mimetypes.guess_type(target.name)[0] or "application/octet-stream"

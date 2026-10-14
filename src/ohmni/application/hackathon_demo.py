@@ -20,6 +20,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from time import monotonic
 
+from pydantic import PrivateAttr, field_serializer
+
 from ..routing.models import RoutingPlan
 from ..synthesis import ArchetypeId, SynthesisBrief
 
@@ -69,6 +71,31 @@ REQUIRED_CHECKS = frozenset({
 
 def sha256_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+class _RecordedRoutingPlan(RoutingPlan):
+    """Replay a receipt without translating its provenance path to this OS.
+
+    RoutingPlan still validates every field and computes the existing content
+    hash. Only the JSON spelling of its recorded path is retained: the path is
+    provenance in this check, not a local file to open. Reinterpreting a Linux
+    capture with Windows Path would otherwise change its hash on read.
+    """
+
+    _recorded_path: str | None = PrivateAttr(default=None)
+
+    @field_serializer("source_pcb_path", when_used="json")
+    def _serialize_recorded_path(self, value: Path) -> str:
+        return self._recorded_path if self._recorded_path is not None else str(value)
+
+
+def _recorded_routing_plan_hash(plan: dict) -> str:
+    validated = _RecordedRoutingPlan.model_validate(plan)
+    recorded_path = plan.get("source_pcb_path")
+    if not isinstance(recorded_path, str):
+        raise TypeError("A recorded routing plan requires a JSON path string")
+    validated._recorded_path = recorded_path
+    return validated.content_hash
 
 
 @dataclass
@@ -173,8 +200,8 @@ def qualify_run(directory: Path) -> Qualification:
                plan.get("failures") == [] and statistics.get("unresolved_net_count") == 0,
                f"failures={len(plan.get('failures') or [])} unresolved={statistics.get('unresolved_net_count')}")
     try:
-        plan_hash = RoutingPlan.model_validate(plan).content_hash
-    except ValueError:
+        plan_hash = _recorded_routing_plan_hash(plan)
+    except (TypeError, ValueError):
         plan_hash = None
     routing_findings = routing.get("findings") or []
     failing = [item.get("rule_id") for item in routing_findings if item.get("status") != "pass"]

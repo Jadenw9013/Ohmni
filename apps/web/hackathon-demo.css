@@ -1,0 +1,47 @@
+/* Saved engineering example: use the studio palette, keep the board primary. */
+:root { color-scheme: dark; --bg: #030810; --panel: #091424; --text: #f4f6fc;
+  --muted: #a4b7d0; --line: #263d58; --pass: #5ee3c0; --fail: #ff9dba;
+  --warn: #ffd184; --unknown: #b6bfd4; }
+[hidden] { display: none !important; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); }
+  header, main { max-width: 1200px; margin: 0 auto; padding: 16px; }
+  .banner { border: 1px solid var(--line); background: var(--panel); border-radius: 10px; padding: 12px 16px; }
+  .banner strong { display: inline-block; margin-right: 8px; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--line); }
+  #capture { color: var(--muted); font-size: 13px; margin: 4px 0 0; }
+  .layout { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 16px; }
+  .layout > section { min-width: 0; }
+  @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
+  .stage { position: relative; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; min-height: 420px; }
+  #board { width: 100%; height: 420px; display: block; }
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+  button, .download { font: inherit; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--text); cursor: pointer; text-decoration: none; }
+  button[aria-pressed="true"] { border-color: currentColor; font-weight: 600; }
+  button:focus-visible, .download:focus-visible { outline: 3px solid #3b82f6; outline-offset: 2px; }
+  button:disabled { opacity: .6; cursor: progress; }
+  #status { min-height: 1.5em; color: var(--muted); }
+  #status[data-tone="error"] { color: var(--fail); }
+  #report { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; overflow-wrap: anywhere; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 6px 4px; border-top: 1px solid var(--line); vertical-align: top; }
+  .outcome { font-weight: 600; white-space: nowrap; }
+  .outcome[data-outcome^="PASS"] { color: var(--pass); }
+  .outcome[data-outcome="FAIL"] { color: var(--fail); }
+  .outcome[data-outcome="NOT_CHECKED"], .outcome[data-outcome="UNKNOWN"], .outcome[data-outcome="NOT RUN"], .outcome[data-outcome="NOT VERIFIED"] { color: var(--unknown); }
+  code { font-size: 12px; }
+
+a { color: #a8d5ff; }
+.download { display: inline-block; }
+.site-navigation { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 32px; }
+.site-navigation a { padding: 10px 0; text-underline-offset: 4px; }
+h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); line-height: 1.15; margin: 0 0 12px; letter-spacing: -.03em; }
+.introduction { max-width: 66ch; margin: 0 0 24px; color: var(--muted); }
+.banner { line-height: 1.6; }
+.skip-link { position: absolute; top: -100px; left: 16px; z-index: 10; padding: 12px; background: var(--panel); }
+.skip-link:focus { top: 8px; }
+a:focus-visible, canvas:focus-visible, summary:focus-visible, .table-scroll:focus-visible { outline: 3px solid #55d9ff; outline-offset: 4px; }
+.table-scroll { overflow-x: auto; }
+.table-scroll table { min-width: 480px; }
+.table-hint { display: none; color: var(--muted); font-size: 13px; }
+@media (max-width: 540px) { .table-hint { display: block; } }
+@media (max-width: 540px) { header, main { padding: 16px 12px; } #board { height: 320px; } .stage { min-height: 320px; } .controls button, .download { min-height: 44px; } }

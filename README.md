@@ -59,6 +59,10 @@ python scripts/demo_server.py
 ```
 Open **[http://127.0.0.1:8765](http://127.0.0.1:8765)** in your browser to start designing! 
 
+For the saved original/fault/restore demonstration, choose **Explore demo**.
+See [saved demo hosting and rehearsal](docs/hackathon/DEMO_SITE_INTEGRATION.md)
+for the standalone offline option and publication checks.
+
 To verify your system has all the required EDA tools installed, you can run:
 `python -m ohmni doctor`
 
