@@ -20,6 +20,8 @@ export function validateDemo(demo) {
     require(fault.snapshot_sha256 !== good.board.artifact_fingerprint, "Damaged copy must differ from the original");
     require(fault.releasable === false && fault.kind === "diagnostic_fault_only", "Damaged copy must be diagnostic-only");
     require(!("checks" in fault), "Damaged copy cannot carry the original board's checks");
+    require(!("routing_plan_fingerprint" in fault.board) && !("constraints_hash" in fault.board),
+        "Damaged copy cannot carry the original board's routing or constraint lineage");
     return demo;
 }
 

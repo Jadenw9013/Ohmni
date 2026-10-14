@@ -1,6 +1,6 @@
 {
   "capture": {
-    "attempt_seconds": 18.672,
+    "attempt_seconds": 17.367,
     "attempts_qualified": "3/3",
     "brief_fingerprint": "3d1198b29e94303a6d125e010c5e6a7dd020f044ed8f07f0646ddc5a7da77dba",
     "captured_on": "2026-10-14",
@@ -96,8 +96,8 @@
         "status": "PASS"
       }
     ],
-    "git_commit": "24823fa6a88ceb2ddf44fb2a9b839db869e45521",
-    "harness_run_id": "20261014T063901Z",
+    "git_commit": "7ab7c26d3d2f67beedebcea21f2e017bc638df8f",
+    "harness_run_id": "20261014T070148Z",
     "harness_status": "PASS",
     "kicad_cli": "10.0.5",
     "warnings": [
@@ -107,8 +107,8 @@
   "download": {
     "board": "original only; the damaged copy is never releasable",
     "href": "ohmni-demo-fabrication.zip",
-    "package_fingerprint": "f1b1848c94723ad2ff162c909b6b2c84e6913ea955f2270edec3109c68c7fe7c",
-    "sha256": "4ebbb74369859ec4fe7fa995dd4a0caf2b53751fdcf0591c8375e6a5ff2734f6"
+    "package_fingerprint": "157625d3d6b4fcc565022fea236c7889242476f1dce25da061c464019bfa1941",
+    "sha256": "5855af1640918185f90d6efc8c51f20fe4046060f32982a098ef5e6b69617748"
   },
   "fault": {
     "board": {
@@ -1548,7 +1548,6 @@
           "y_mm": 56.0
         }
       ],
-      "constraints_hash": "d8cc56a8248162ac448844315469acbe80c382041672f90a564deb82a17e5fc7",
       "display_thickness_mm": 1.6,
       "height_mm": 70.0,
       "layer_count": 2,
@@ -1567,7 +1566,6 @@
         "LED1_DRIVE",
         "VBUS"
       ],
-      "routing_plan_fingerprint": "d04646063f8ebf874d456c9791677cc6f88efae574212683cba6f0fe052ad543",
       "thickness_is_display_only": true,
       "thickness_note": "Board thickness is a display value. Ohmni does not model the layer stack-up.",
       "tracks": [
@@ -3377,6 +3375,7 @@
         {
           "classification": "track",
           "description": "Track has unconnected end",
+          "excluded": false,
           "items": [
             {
               "description": "Track [LED1_A] on F.Cu, length 3.0000 mm",
@@ -3395,6 +3394,7 @@
         {
           "classification": "unrouted",
           "description": "Missing connection between items",
+          "excluded": false,
           "items": [
             {
               "description": "Pad 2 [LED1_A] of D1 on F.Cu",
@@ -3429,7 +3429,7 @@
       "simulation",
       "bench"
     ],
-    "raw_drc_sha256": "92e87809a46cec54743b6591015b7549e24f81066eeb1f9ad61f99dabc667e2b",
+    "raw_drc_sha256": "060ad8add860cb97c7349d72c3d0fb60dcc688e9b8f998ecc3edba5cac6de24f",
     "releasable": false,
     "removed_segment": {
       "end_mm": [
@@ -4905,7 +4905,7 @@
         "LED1_DRIVE",
         "VBUS"
       ],
-      "routing_plan_fingerprint": "d04646063f8ebf874d456c9791677cc6f88efae574212683cba6f0fe052ad543",
+      "routing_plan_fingerprint": "2413c57d0697a419d6f7bde103ca9d4f8d1f639fa38873b13cba6beeead66e5e",
       "thickness_is_display_only": true,
       "thickness_note": "Board thickness is a display value. Ohmni does not model the layer stack-up.",
       "tracks": [
@@ -6969,7 +6969,7 @@
       "routing": {
         "finding_count": 10,
         "passed": true,
-        "plan_fingerprint": "d04646063f8ebf874d456c9791677cc6f88efae574212683cba6f0fe052ad543"
+        "plan_fingerprint": "2413c57d0697a419d6f7bde103ca9d4f8d1f639fa38873b13cba6beeead66e5e"
       },
       "semantic": {
         "coverage": 1.0,
@@ -7459,26 +7459,26 @@
       "files": {
         "circuit.json": "84205c9b2038f80d29e76dee172f4a36343054f5142561dafbf84e5c4a25cb00",
         "confirmed-brief.json": "e4f000fbe1da8b1c1668c79f78b7de0bbd4424be5aeda980f20c057fdc85d765",
-        "drc-report.json": "d979792c3217e9a970db8d169c1b76f42a48b5040ef194fbdc136ccd64323581",
-        "erc-report.json": "50da69fe2b0b327a2cceb2416cb43fe438699e224bfe107383637fd30e531a22",
-        "fabrication/golden-B_Cu.gbl": "771ca651827a0c3d7a3065a3c57b5c8d888d65fc7820724378153e1fafa29369",
-        "fabrication/golden-B_Mask.gbs": "20079abbad47e06b09f81b73dad1dbc76d8981522c52abe3315a0d8c312350cd",
-        "fabrication/golden-Edge_Cuts.gm1": "b35050c8e89b0ae4179ca2a6ec51185ff59d461318a260543aea5c1374b2b82d",
-        "fabrication/golden-F_Cu.gtl": "2ab6c5bb025d548758f0edf4721d697ec2da298f78f77046b0831831798c2b72",
-        "fabrication/golden-F_Mask.gts": "dda09ffe4ed10ea8298aa8ceac51ea85ae8401373b6e4ddb80ecdfef14a7ec10",
-        "fabrication/golden-b_silkscreen.gbo": "38ccd64351b8f49df2e82d0cf8dd995832abd30a35282a0b481d906fc9ad9f1d",
-        "fabrication/golden-f_silkscreen.gto": "5b615bcb224b62be1f4715be13b26387281abc2a8558049830b23dfa27c5292f",
-        "fabrication/golden-job.gbrjob": "0c4a4cd30430c84708ba7e789ddac49a3b9428444824cb2f1fab27e5710f0d2c",
-        "fabrication/golden.drl": "d9f12b7a7be6006bd24b7fb572ffb84363d2982f84dca3f9cf33d0c18e200000",
-        "fabrication/ohmni-fabrication-manifest.json": "efe579381dc6b725a57037849412a5ec15a326358e349b25ee9469d626162cba",
+        "drc-report.json": "a20dd3212c2068d2648d7edea784c28a3505eecaf6d5a99be448645fbe334723",
+        "erc-report.json": "5e5a697afd0c7cab66cfd7016a131d20e5a54efdaffa5f3b5dce7d42f7545dec",
+        "fabrication/golden-B_Cu.gbl": "102a5662d767d92f8b3e9ed87f726126bccc3054366444fb645a35e27aff5f72",
+        "fabrication/golden-B_Mask.gbs": "b84317d5e8b1240f46dcf82ef5b4620a307e32fc2c00f7fc324c20e360dde84c",
+        "fabrication/golden-Edge_Cuts.gm1": "237bb17f44405dd9f2f68dd9d71b41c786376514457cda38afc5875b5b68f428",
+        "fabrication/golden-F_Cu.gtl": "d53f0220da6789d6276b70110068309341d592ab914a4e1e14538c84b4cfa77d",
+        "fabrication/golden-F_Mask.gts": "a38fe8c6ab423df399fb4ee1ccefdadf8af96713658f52756818c6df7ae04d42",
+        "fabrication/golden-b_silkscreen.gbo": "485bcf42f43b165e4b331710416d09124133ace6cc3c4c0f468982387ec5c5cd",
+        "fabrication/golden-f_silkscreen.gto": "fa9a325f26673187676dad190abb7b14bc8443541a1f8f25d9d0baa198bfe7ef",
+        "fabrication/golden-job.gbrjob": "0a2b3317fec41533e963abb9ae0acbde4f142a8a64838eac4fc30a7a6e90e17c",
+        "fabrication/golden.drl": "99ff8ddab5bd6f3e47c54ac5de9a5e3ccc31e794a18dfdeb0f9067a0e2b7194a",
+        "fabrication/ohmni-fabrication-manifest.json": "8bc0777497201c988ef8263c114853163efaa8744ae7efea466e2f91f6817fe5",
         "golden.kicad_pcb": "378e0ab5838dd253a4f45d4f696a422111ab8e640bd1cddc11076820571a7c92",
         "golden.kicad_sch": "3b8bc6fc5f8d0992363cc6d3bc68c2375cd704e9235c3a879adb8a2596078d54",
         "golden.placed.kicad_pcb": "cdacf32c735edc9030f156cf8722f86b8271d50f5649106ebb7e8ee6d12b9985",
         "placement-request.json": "319beb8beb6eae7e6575a03ae9432efe59369c0fd98e9e51b784603799fd309a",
         "placement.json": "18d11b44abb565f9e2a8c41998fde894f1ca2dcf5b8b3d701b861cc7c0b2e526",
-        "report.json": "77af8dd3f974b1b08499b162dd64629e13092157a8576fad828347843eff9e87",
-        "routing-plan.json": "768ae3fa12fcf35a3aaa8a9e0b41f89c38f96235166747cc36da1d506c03f906",
-        "routing-verification.json": "d845db1e3dfe15290d1468be9ca616f0c3d66a9faecbc9e9d3b922d2c386cec0"
+        "report.json": "01a05bead614f7da6e97ff61f578a90ebe3c76dedc504c5fe3d57e9b12328cda",
+        "routing-plan.json": "7c856afa64e191dadf29282ff4c764d014fdd3723909dc91168415f242cc4a1e",
+        "routing-verification.json": "8c59a42d4355497693f31ac22d9dedf66653c701ec2c774338d427c10e165337"
       },
       "footprint_geometry_fingerprint": "5c5aedda8119ae5dcac36b52ab0abbcb3684488ba9f210ec6d7ecf55987659f4",
       "footprint_geometry_scope": "local_registry",
@@ -7486,8 +7486,8 @@
       "kind": "previously_generated_reference_preview",
       "label": "ESP32 button and LED board",
       "note": "A saved geometry preview reproduced from a completed local engineering run. Checks describe these exact source artifacts at export time, not current validation or physical performance. Colors and component bodies are illustrative; component height and the board stack-up are not modeled.",
-      "package_fingerprint": "f1b1848c94723ad2ff162c909b6b2c84e6913ea955f2270edec3109c68c7fe7c",
-      "routing_plan_fingerprint": "d04646063f8ebf874d456c9791677cc6f88efae574212683cba6f0fe052ad543",
+      "package_fingerprint": "157625d3d6b4fcc565022fea236c7889242476f1dce25da061c464019bfa1941",
+      "routing_plan_fingerprint": "2413c57d0697a419d6f7bde103ca9d4f8d1f639fa38873b13cba6beeead66e5e",
       "schematic_fingerprint": "3b8bc6fc5f8d0992363cc6d3bc68c2375cd704e9235c3a879adb8a2596078d54"
     },
     "systems": [
