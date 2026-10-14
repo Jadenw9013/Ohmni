@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "id": "HACK-DEMO-01",
+  "task": "HACK-DEMO-01",
+  "scope": "HACK-DEMO-1",
+  "commit": "75ddcf7d5984dc9390c37b1c2f72fe5c4014331e",
+  "verified_at": "2026-10-14",
+  "status": "PASSED",
+  "commands": [
+    {
+      "command": "python scripts/ai_state.py validate",
+      "result": "PASS"
+    },
+    {
+      "command": "python scripts/verify.py workflow",
+      "result": "PASS",
+      "tests": 12
+    },
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "PASS",
+      "tests": 2445,
+      "skipped": 91,
+      "deselected": 63,
+      "runtime_seconds": 451.8
+    },
+    {
+      "command": "node --test apps/web/tests/*.test.mjs (files enumerated)",
+      "result": "PASS",
+      "tests": 1096,
+      "failed": 0
+    },
+    {
+      "command": "scripts/run_in_kicad_image.sh python3 scripts/verify_hackathon_demo.py --attempts 3",
+      "result": "PASS",
+      "attempts": "3/3",
+      "checks_per_attempt": 18,
+      "kicad_cli": "10.0.5",
+      "run_id": "20261014T070148Z",
+      "harness_commit": "7ab7c26d3d2f67beedebcea21f2e017bc638df8f",
+      "tree": "clean"
+    },
+    {
+      "command": "scripts/run_in_kicad_image.sh python3 -m pytest -m slow_integration tests/test_hackathon_demo.py",
+      "result": "PASS",
+      "tests": 1
+    },
+    {
+      "command": "python scripts/browser_check_offline_demo.py",
+      "result": "PASS",
+      "steps": "11/11",
+      "browser": "Chromium via Playwright 1.64, all non-local requests aborted"
+    },
+    {
+      "command": "scripts/run_in_kicad_image.sh python3 -m pytest -m integration",
+      "result": "FAIL_UNRELATED",
+      "passed": 16,
+      "skipped": 19,
+      "failed": 9,
+      "note": "All 9 failures are behavior ngspice tests (test_behavior_ac, test_behavior_design, test_behavior_display_limits) that require ngspice 42; the plain kicad/kicad:10.0.5 image ships ngspice 44.2 and the production Dockerfile builds 42 separately. This diff changes no behavior source or test."
+    },
+    {
+      "command": "python -m ruff check .",
+      "result": "PRE_EXISTING_ONLY",
+      "note": "21 findings, all in files this diff does not touch; the same count on db985333."
+    },
+    {
+      "command": "GitHub Actions CI on PR #73",
+      "result": "PASS",
+      "run": "https://github.com/Jadenw9013/Ohmni/actions/runs/38524406695",
+      "note": "All four jobs including kicad-gate at 4eb9fde7; later heads reported by the PR."
+    }
+  ],
+  "review": {
+    "required": true,
+    "independent": true,
+    "status": "PASSED",
+    "record": ".ai/reviews.yaml#HACK-DEMO-01-INDEPENDENT-REVIEW",
+    "notes": "No BLOCKER or HIGH. Seven findings fixed; HACK-R08 and HACK-R09 (LOW) remain open. Fixes were not re-reviewed independently."
+  },
+  "limitations": [
+    "The live conversational prompt was not rehearsed; no paid model call was made.",
+    "Phase 6 optional explanation was not started.",
+    "AI request limits were tested with fake providers only; production was not deployed or configured.",
+    "No board was fabricated or bench tested; manufacturing profile and prices are synthetic.",
+    "COMPLETE requires human acceptance."
+  ]
+}

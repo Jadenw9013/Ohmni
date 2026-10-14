@@ -51,6 +51,8 @@ const MESSAGES = Object.freeze({
     lost_job: "This run is no longer available from the server that created it. Start a new example to continue.",
     pipeline_failed: "The engineering pipeline failed before a completed result was available. Start a fresh run after checking the local server setup.",
     routing_incomplete: "Ohmni could not finish all copper connections. No build package was released. Routing has a three-minute time limit and bounded search. Retry with fewer builds running, or simplify your project and try again.",
+    ai_request_limited: "AI requests are paused for a moment to keep demo usage bounded. Nothing was built and your request text is still here. Retry in a few minutes, or explore the saved example.",
+    ai_budget_unavailable: "AI requests are unavailable right now. Nothing was built and your request text is still here. Explore the saved example or use guided setup.",
     eda_tool_failed: "KiCad could not complete the hardware checks. No build package was released. Check that KiCad can run on this computer, then retry this revision. Your saved choices are safe.",
 });
 const STAGES = ["describe", "agree", "design", "review", "build"];

@@ -1,0 +1,108 @@
+{
+  "status": "pass",
+  "tool_status": "ok",
+  "run_id": "4b95c11f82e7ff70",
+  "kicad_version": "10.0.5",
+  "pcb_fingerprint": {
+    "algorithm": "sha256",
+    "digest": "378e0ab5838dd253a4f45d4f696a422111ab8e640bd1cddc11076820571a7c92"
+  },
+  "source_schematic_fingerprint": {
+    "algorithm": "sha256",
+    "digest": "3b8bc6fc5f8d0992363cc6d3bc68c2375cd704e9235c3a879adb8a2596078d54"
+  },
+  "report_path": "/repo/build/hackathon-demo/20261014T070148Z/attempt-1/golden.drc.json",
+  "command": [
+    "/usr/bin/kicad-cli",
+    "pcb",
+    "drc",
+    "--format",
+    "json",
+    "--severity-all",
+    "--exit-code-violations",
+    "--output",
+    "/repo/build/hackathon-demo/20261014T070148Z/attempt-1/golden.drc.json",
+    "/repo/build/hackathon-demo/20261014T070148Z/attempt-1/golden.kicad_pcb"
+  ],
+  "return_code": 0,
+  "stdout": "Found 0 violations\nFound 0 unconnected items\nSaved DRC Report to /repo/build/hackathon-demo/20261014T070148Z/attempt-1/golden.drc.json\n",
+  "stderr": "",
+  "findings": [],
+  "unconnected_items": [],
+  "ignored_checks": [
+    {
+      "description": "Footprint has no courtyard defined",
+      "key": "missing_courtyard"
+    },
+    {
+      "description": "Track endpoint not centered on via",
+      "key": "track_not_centered_on_via"
+    },
+    {
+      "description": "Tuning profile track geometries",
+      "key": "tuning_profile_track_geometries"
+    },
+    {
+      "description": "Footprint doesn't match symbol's footprint filters",
+      "key": "footprint_filters_mismatch"
+    },
+    {
+      "description": "Footprint component type doesn't match footprint pads",
+      "key": "footprint_type_mismatch"
+    }
+  ],
+  "evidence": [
+    {
+      "kind": "drc",
+      "label": "KiCad PCB DRC",
+      "source_id": "4b95c11f82e7ff70",
+      "document": null,
+      "page": null,
+      "snippet": null,
+      "snippet_verified": null,
+      "source_start": null,
+      "source_end": null,
+      "source_region": null,
+      "quantity": null,
+      "text_value": "pass",
+      "detail": "KiCad 10.0.5; PCB sha256=378e0ab5838dd253a4f45d4f696a422111ab8e640bd1cddc11076820571a7c92",
+      "recorded_at": "2026-10-14T07:02:04.746096Z"
+    }
+  ],
+  "events": [
+    {
+      "event_id": "3383b03230fa2df0",
+      "kind": "drc_started",
+      "summary": "KiCad DRC started",
+      "occurred_at": "2026-10-14T07:01:57.745276Z",
+      "circuit_content_hash": "00be27a464f1d3a226cd4503abc374ddd1abf880b47434d65b8e8a9aaa5698f9",
+      "related_components": [],
+      "related_nets": [],
+      "related_finding_ids": [],
+      "payload": {
+        "run_id": "4b95c11f82e7ff70",
+        "pcb_sha256": "378e0ab5838dd253a4f45d4f696a422111ab8e640bd1cddc11076820571a7c92"
+      },
+      "evidence": []
+    },
+    {
+      "event_id": "437cdf0ddc6ad389",
+      "kind": "drc_completed",
+      "summary": "KiCad DRC completed",
+      "occurred_at": "2026-10-14T07:02:04.746208Z",
+      "circuit_content_hash": "00be27a464f1d3a226cd4503abc374ddd1abf880b47434d65b8e8a9aaa5698f9",
+      "related_components": [],
+      "related_nets": [],
+      "related_finding_ids": [],
+      "payload": {
+        "run_id": "4b95c11f82e7ff70",
+        "pcb_sha256": "378e0ab5838dd253a4f45d4f696a422111ab8e640bd1cddc11076820571a7c92"
+      },
+      "evidence": []
+    }
+  ],
+  "limitations": [
+    "DRC proves only that this exact PCB passed the configured KiCad physical design rules.",
+    "DRC does not prove functional correctness, signal integrity, thermal or EMC performance, RF behavior, universal manufacturability, firmware behavior, or hardware operation."
+  ]
+}

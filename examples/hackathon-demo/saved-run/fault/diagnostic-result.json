@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "kind": "diagnostic_fault_only",
+  "releasable": false,
+  "fault_id": "cut-led1-anode-track",
+  "source_pcb_sha256": "378e0ab5838dd253a4f45d4f696a422111ab8e640bd1cddc11076820571a7c92",
+  "snapshot_sha256": "49b74d6c59a8ea6b7dfc92c8af96bfff9579b1e159e48c06761434bd60e3c852",
+  "removed_segment": {
+    "net_name": "LED1_A",
+    "uuid": "3634dcd3-7281-5406-a13c-d20a16e8577d",
+    "layer": "F.Cu",
+    "start_mm": [
+      12.938,
+      18.9
+    ],
+    "end_mm": [
+      13.75,
+      19.0
+    ],
+    "line_number": 362
+  },
+  "checker": {
+    "name": "KiCad PCB DRC",
+    "kicad_version": "10.0.5",
+    "command_template": [
+      "kicad-cli",
+      "pcb",
+      "drc",
+      "--format",
+      "json",
+      "--severity-all",
+      "--exit-code-violations",
+      "--output",
+      "<report>",
+      "<snapshot>"
+    ],
+    "return_code": 5,
+    "run_id": "19ff70750e06c861"
+  },
+  "raw_drc_sha256": "060ad8add860cb97c7349d72c3d0fb60dcc688e9b8f998ecc3edba5cac6de24f",
+  "drc": {
+    "status": "fail",
+    "tool_status": "ok",
+    "finding_count": 1,
+    "unconnected_count": 1,
+    "findings": [
+      {
+        "type": "track_dangling",
+        "severity": "warning",
+        "classification": "track",
+        "description": "Track has unconnected end",
+        "excluded": false,
+        "items": [
+          {
+            "description": "Track [LED1_A] on F.Cu, length 3.0000 mm",
+            "x_mm": 13.75,
+            "y_mm": 19.0
+          }
+        ]
+      }
+    ],
+    "unconnected_items": [
+      {
+        "type": "unconnected_items",
+        "severity": "error",
+        "classification": "unrouted",
+        "description": "Missing connection between items",
+        "excluded": false,
+        "items": [
+          {
+            "description": "Pad 2 [LED1_A] of D1 on F.Cu",
+            "x_mm": 12.938,
+            "y_mm": 18.9
+          },
+          {
+            "description": "Track [LED1_A] on F.Cu, length 3.0000 mm",
+            "x_mm": 13.75,
+            "y_mm": 19.0
+          }
+        ]
+      }
+    ]
+  },
+  "fault_detected": true,
+  "not_checked": [
+    "schematic_erc",
+    "independent_routing_verification",
+    "physical_placement_rules",
+    "manufacturing_profile",
+    "fabrication_export",
+    "simulation",
+    "bench"
+  ],
+  "copper": {
+    "track_count": 178,
+    "via_count": 25
+  }
+}

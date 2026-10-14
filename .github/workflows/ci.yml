@@ -34,3 +34,73 @@ jobs:
       - run: python scripts/acquire_corpus.py
       - run: python scripts/record_component_extraction.py --check
       - run: python scripts/verify.py corpus
+
+  # The browser modules' own Node test suite. The file list is enumerated and
+  # must be non-empty, so a glob that matches nothing cannot pass as "0 failed".
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: node --test apps/web/tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t files < <(find apps/web/tests -maxdepth 1 -name '*.test.mjs' | sort)
+          test "${#files[@]}" -gt 0
+          echo "running ${#files[@]} test files"
+          node --test "${files[@]}" 2>&1 | tee build-node-tests.log
+          grep -Eq '^# fail 0$' build-node-tests.log
+          grep -Eq '^# pass [1-9][0-9]*$' build-node-tests.log
+
+  # A bounded real-tool gate for the hackathon board. It runs inside the pinned
+  # production KiCad image: real ERC, routing, DRC, Gerber/drill export and the
+  # known-bad diagnostic copy, which must produce a real DRC unconnected item.
+  # The harness exits 2 (BLOCKED) without the pinned kicad-cli, and the first
+  # step proves that on this runner, which has no KiCad, it cannot report green.
+  kicad-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python -m pip install -e ".[dev]"
+      - name: missing kicad-cli must block, not pass
+        shell: bash
+        run: |
+          set +e
+          python scripts/verify_hackathon_demo.py --attempts 1 --output-root build/ci-no-kicad
+          code=$?
+          set -e
+          test "$code" -eq 2
+          grep -q '"status": "BLOCKED"' build/ci-no-kicad/*/summary.json
+      - name: real KiCad 10.0.5 harness with fault
+        run: scripts/run_in_kicad_image.sh python3 scripts/verify_hackathon_demo.py --attempts 1 --output-root build/ci-hackathon
+      - name: require the expected checks in the summary
+        shell: bash
+        run: |
+          python - <<'PY'
+          import glob, json
+          [path] = glob.glob("build/ci-hackathon/*/summary.json")
+          summary = json.load(open(path))
+          assert summary["status"] == "PASS", summary["status"]
+          assert summary["tools"]["kicad_cli"] == "10.0.5", summary["tools"]
+          [attempt] = summary["attempts"]
+          assert attempt["status"] == "PASS" and not attempt["missing_required_checks"]
+          assert attempt["fault"]["fault_detected"] is True
+          assert attempt["fault"]["drc"]["unconnected_count"] >= 1
+          print("kicad-gate:", len(attempt["checks"]), "checks passed in", attempt["total_seconds"], "s")
+          PY
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hackathon-kicad-gate-summary
+          path: |
+            build/ci-hackathon/*/summary.json
+            build/ci-hackathon/*/attempt-1/fault/diagnostic-result.json
+            build/ci-no-kicad/*/summary.json
+          if-no-files-found: warn

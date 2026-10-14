@@ -854,6 +854,16 @@
       "status": "PASSED",
       "commit": "ea3ecf5364e0a198f026a2a68e7e04d30482379d",
       "notes": "Reviewed visual hierarchy, preserved real PCB, semantic status and disabled controls, readable contrast, mobile overflow, focus outlines and no added unsolicited motion. Browser found landing CTA bypassed idea entry; corrected to show describe stage. Narrow caption clipping corrected with intrinsic grid row. No new blocking findings in self-review. Independent scope review and user usability study remain pending."
+    },
+    {
+      "id": "HACK-DEMO-01-INDEPENDENT-REVIEW",
+      "scope": "HACK-DEMO-1",
+      "task": "HACK-DEMO-01",
+      "reviewer": "independent-subagent",
+      "independent": true,
+      "status": "PASSED",
+      "commit": "77e7be75",
+      "notes": "Separate subagent reviewed db985333..77e7be75 read-only for false passes, artifact confusion, unbounded provider calls and broken recovery. No BLOCKER or HIGH findings. Two MEDIUM and four LOW findings were fixed in 7ab7c26d and the capture was regenerated from a clean harness run (75ddcf7d); those fixes were not re-reviewed independently. Two LOW findings remain open."
     }
   ],
   "findings": [
@@ -1903,6 +1913,136 @@
       "resolution": "PR #17 regenerated the four remaining connector limitations so every recipe with open_mating_roles describes that field explicitly.",
       "verification": "Independent ledger review inspected commit c7b7869b and its connector-recipe consistency change. The resolution is merged at origin/main through PR #17; no behavior files were modified by this review.",
       "recommended_correction": "Regenerate the four remaining connector limitations to describe open_mating_roles explicitly, then make test_every_open_mating_connector_recipe_describes_the_field pass for every recipe."
+    },
+    {
+      "id": "HACK-R01",
+      "scope": "HACK-DEMO-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "Capture matched the harness summary to a run by directory name only",
+      "description": "A different passing summary could label an unrelated run as the saved successful run.",
+      "affected_files": [
+        "scripts/capture_hackathon_demo.py"
+      ],
+      "found_at_commit": "77e7be75",
+      "resolution_commit": "7ab7c26d3d2f67beedebcea21f2e017bc638df8f",
+      "resolution": "Capture requires the attempt directory beside the summary, every recorded output hash, and the package fingerprint to match.",
+      "verification": "tests/test_hackathon_demo.py and the Node demo tests pass; harness 3/3 PASS and browser check 11/11 PASS on the recaptured run."
+    },
+    {
+      "id": "HACK-R02",
+      "scope": "HACK-DEMO-1",
+      "severity": "MEDIUM",
+      "status": "FIXED",
+      "title": "Saved demonstration could be CRLF-converted on Windows checkouts",
+      "description": "Browser hash verification would refuse both boards on the presenter's machine.",
+      "affected_files": [
+        ".gitattributes"
+      ],
+      "found_at_commit": "77e7be75",
+      "resolution_commit": "7ab7c26d3d2f67beedebcea21f2e017bc638df8f",
+      "resolution": "examples/hackathon-demo/** is checked out with -text.",
+      "verification": "tests/test_hackathon_demo.py and the Node demo tests pass; harness 3/3 PASS and browser check 11/11 PASS on the recaptured run."
+    },
+    {
+      "id": "HACK-R03",
+      "scope": "HACK-DEMO-1",
+      "severity": "LOW",
+      "status": "FIXED",
+      "title": "Fault gate did not require the finding to be on the cut net",
+      "description": "The fixed explanation names LED1_A and D1 pad 2 even if DRC reported something else.",
+      "affected_files": [
+        "src/ohmni/application/hackathon_demo.py"
+      ],
+      "found_at_commit": "77e7be75",
+      "resolution_commit": "7ab7c26d3d2f67beedebcea21f2e017bc638df8f",
+      "resolution": "The gate requires an active error-severity unconnected item naming [LED1_A]; tests cover wrong net and excluded items.",
+      "verification": "tests/test_hackathon_demo.py and the Node demo tests pass; harness 3/3 PASS and browser check 11/11 PASS on the recaptured run."
+    },
+    {
+      "id": "HACK-R04",
+      "scope": "HACK-DEMO-1",
+      "severity": "LOW",
+      "status": "FIXED",
+      "title": "KiCad timeout on the fault copy crashed the harness",
+      "description": "subprocess.TimeoutExpired was not caught, losing the summary.",
+      "affected_files": [
+        "src/ohmni/application/hackathon_demo.py"
+      ],
+      "found_at_commit": "77e7be75",
+      "resolution_commit": "7ab7c26d3d2f67beedebcea21f2e017bc638df8f",
+      "resolution": "SubprocessError fails the fault gate; a test covers it.",
+      "verification": "tests/test_hackathon_demo.py and the Node demo tests pass; harness 3/3 PASS and browser check 11/11 PASS on the recaptured run."
+    },
+    {
+      "id": "HACK-R05",
+      "scope": "HACK-DEMO-1",
+      "severity": "LOW",
+      "status": "FIXED",
+      "title": "Damaged copy carried the original's routing and constraint lineage fields",
+      "description": "Wrong lineage in demo.json, not displayed.",
+      "affected_files": [
+        "scripts/capture_hackathon_demo.py",
+        "apps/web/hackathon-demo-model.js"
+      ],
+      "found_at_commit": "77e7be75",
+      "resolution_commit": "75ddcf7d",
+      "resolution": "Fields removed at capture; validateDemo refuses a damaged copy that carries them.",
+      "verification": "tests/test_hackathon_demo.py and the Node demo tests pass; harness 3/3 PASS and browser check 11/11 PASS on the recaptured run."
+    },
+    {
+      "id": "HACK-R06",
+      "scope": "HACK-DEMO-1",
+      "severity": "LOW",
+      "status": "FIXED",
+      "title": "Capture zipped every file in the fabrication folder",
+      "description": "Unlisted files could reach the download.",
+      "affected_files": [
+        "scripts/capture_hackathon_demo.py"
+      ],
+      "found_at_commit": "77e7be75",
+      "resolution_commit": "7ab7c26d3d2f67beedebcea21f2e017bc638df8f",
+      "resolution": "Capture refuses a folder whose files differ from the manifest and its hashes.",
+      "verification": "tests/test_hackathon_demo.py and the Node demo tests pass; harness 3/3 PASS and browser check 11/11 PASS on the recaptured run."
+    },
+    {
+      "id": "HACK-R07",
+      "scope": "HACK-DEMO-1",
+      "severity": "LOW",
+      "status": "FIXED",
+      "title": "Browser race step slept inside the route handler",
+      "description": "The late response probably arrived before the switch back, so the stale-token path was not exercised.",
+      "affected_files": [
+        "scripts/browser_check_offline_demo.py"
+      ],
+      "found_at_commit": "77e7be75",
+      "resolution_commit": "7ab7c26d3d2f67beedebcea21f2e017bc638df8f",
+      "resolution": "The damaged board's response is held and released only after the original is showing.",
+      "verification": "Browser check step reports the fault response was delivered after the original was shown."
+    },
+    {
+      "id": "HACK-R08",
+      "scope": "HACK-DEMO-1",
+      "severity": "LOW",
+      "status": "OPEN",
+      "title": "Invalid or busy AI requests consume the daily count",
+      "description": "Admission precedes message validation and the busy lock, so junk requests at the burst rate can exhaust the default 200 in about 34 minutes without any provider call. Cost stays bounded.",
+      "affected_files": [
+        "scripts/demo_server.py"
+      ],
+      "found_at_commit": "77e7be75"
+    },
+    {
+      "id": "HACK-R09",
+      "scope": "HACK-DEMO-1",
+      "severity": "LOW",
+      "status": "OPEN",
+      "title": "Retry after a 429 on /api/demo costs a second admission via /api/brief",
+      "description": "User-initiated, bounded, but counts twice.",
+      "affected_files": [
+        "apps/web/app.js"
+      ],
+      "found_at_commit": "77e7be75"
     }
   ]
 }

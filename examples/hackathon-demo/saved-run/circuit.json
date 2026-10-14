@@ -1,0 +1,645 @@
+{
+  "ir_id": "a2-3d1198b29e94303a",
+  "name": "ESP32 button and LED board",
+  "revision": 1,
+  "parent_hash": null,
+  "components": [
+    {
+      "ref": "J1",
+      "part_id": "USB_C_RECEPTACLE_16P",
+      "package": "USB-C-16P-SMD",
+      "value": null,
+      "selected_i2c_address": null,
+      "selected_interfaces": [],
+      "placeholder": false,
+      "notes": null,
+      "evidence": []
+    },
+    {
+      "ref": "R1",
+      "part_id": "GENERIC_RESISTOR",
+      "package": "0805",
+      "value": {
+        "value": 5100.0,
+        "unit": "ohm"
+      },
+      "selected_i2c_address": null,
+      "selected_interfaces": [],
+      "placeholder": false,
+      "notes": "USB-C sink policy: CC1 Rd.",
+      "evidence": []
+    },
+    {
+      "ref": "R2",
+      "part_id": "GENERIC_RESISTOR",
+      "package": "0805",
+      "value": {
+        "value": 5100.0,
+        "unit": "ohm"
+      },
+      "selected_i2c_address": null,
+      "selected_interfaces": [],
+      "placeholder": false,
+      "notes": "USB-C sink policy: CC2 Rd.",
+      "evidence": []
+    },
+    {
+      "ref": "U2",
+      "part_id": "AP2112K-3.3TRG1",
+      "package": "SOT-23-5",
+      "value": null,
+      "selected_i2c_address": null,
+      "selected_interfaces": [],
+      "placeholder": false,
+      "notes": null,
+      "evidence": []
+    },
+    {
+      "ref": "C1",
+      "part_id": "GENERIC_CAPACITOR",
+      "package": "0805",
+      "value": {
+        "value": 1e-6,
+        "unit": "F"
+      },
+      "selected_i2c_address": null,
+      "selected_interfaces": [],
+      "placeholder": false,
+      "notes": "Catalog-derived regulator input decoupling.",
+      "evidence": []
+    },
+    {
+      "ref": "C2",
+      "part_id": "GENERIC_CAPACITOR",
+      "package": "0805",
+      "value": {
+        "value": 1e-6,
+        "unit": "F"
+      },
+      "selected_i2c_address": null,
+      "selected_interfaces": [],
+      "placeholder": false,
+      "notes": "Base policy: regulator output capacitance.",
+      "evidence": []
+    },
+    {
+      "ref": "U1",
+      "part_id": "ESP32-WROOM-32E",
+      "package": "Module-SMD-38",
+      "value": null,
+      "selected_i2c_address": null,
+      "selected_interfaces": [],
+      "placeholder": false,
+      "notes": null,
+      "evidence": []
+    },
+    {
+      "ref": "C3",
+      "part_id": "GENERIC_CAPACITOR",
+      "package": "0805",
+      "value": {
+        "value": 1e-7,
+        "unit": "F"
+      },
+      "selected_i2c_address": null,
+      "selected_interfaces": [],
+      "placeholder": false,
+      "notes": "Catalog-derived MCU local decoupling.",
+      "evidence": []
+    },
+    {
+      "ref": "C4",
+      "part_id": "GENERIC_CAPACITOR",
+      "package": "0805",
+      "value": {
+        "value": 0.000022,
+        "unit": "F"
+      },
+      "selected_i2c_address": null,
+      "selected_interfaces": [],
+      "placeholder": false,
+      "notes": "Catalog-derived MCU bulk capacitance.",
+      "evidence": []
+    },
+    {
+      "ref": "R3",
+      "part_id": "GENERIC_RESISTOR",
+      "package": "0805",
+      "value": {
+        "value": 10000.0,
+        "unit": "ohm"
+      },
+      "selected_i2c_address": null,
+      "selected_interfaces": [],
+      "placeholder": false,
+      "notes": "Base policy: MCU enable pull-up.",
+      "evidence": []
+    },
+    {
+      "ref": "C5",
+      "part_id": "GENERIC_CAPACITOR",
+      "package": "0805",
+      "value": {
+        "value": 1e-7,
+        "unit": "F"
+      },
+      "selected_i2c_address": null,
+      "selected_interfaces": [],
+      "placeholder": false,
+      "notes": "Base policy: MCU enable delay.",
+      "evidence": []
+    },
+    {
+      "ref": "D1",
+      "part_id": "GENERIC_LED_GREEN",
+      "package": "0805",
+      "value": null,
+      "selected_i2c_address": null,
+      "selected_interfaces": [],
+      "placeholder": false,
+      "notes": "Active-high indicator driven by IO25; firmware is required.",
+      "evidence": []
+    },
+    {
+      "ref": "R10",
+      "part_id": "GENERIC_RESISTOR",
+      "package": "0805",
+      "value": {
+        "value": 330.0,
+        "unit": "ohm"
+      },
+      "selected_i2c_address": null,
+      "selected_interfaces": [],
+      "placeholder": false,
+      "notes": "R rounded up to E12 from catalog voltage and LED test-current bounds. I(max) = (3.35 V - 1.8 V) / 330 ohm = 0.00469697 A. Generic LED limits are assumptions; GPIO current capacity is not established.",
+      "evidence": [
+        {
+          "kind": "assumption",
+          "label": "Generic green LED forward voltage",
+          "source_id": null,
+          "document": null,
+          "page": null,
+          "snippet": null,
+          "snippet_verified": null,
+          "source_start": null,
+          "source_end": null,
+          "source_region": null,
+          "quantity": {
+            "value": 2.1,
+            "unit": "V"
+          },
+          "text_value": null,
+          "detail": "Class-typical figures for a green indicator LED, not a specific part. Marked ASSUMED. Selecting a real MPN replaces these with catalog or datasheet evidence, and the LED current calculation inherits the stronger status automatically.",
+          "recorded_at": "2026-08-29T16:03:35.823430Z"
+        },
+        {
+          "kind": "catalog",
+          "label": "AP2112K-3.3 output voltage and current capability",
+          "source_id": "ap2112-datasheet",
+          "document": {
+            "document_id": "ap2112-datasheet",
+            "title": "AP2112 600mA CMOS LDO Regulator With Enable",
+            "manufacturer": "Diodes Incorporated",
+            "part_number": "AP2112K-3.3TRG1",
+            "revision": null,
+            "url": null,
+            "sha256": null
+          },
+          "page": 4,
+          "snippet": null,
+          "snippet_verified": null,
+          "source_start": null,
+          "source_end": null,
+          "source_region": null,
+          "quantity": null,
+          "text_value": "3.3 V fixed output, +/-1.5% accuracy, 600 mA maximum output current",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-08-29T16:03:35.821460Z"
+        },
+        {
+          "kind": "catalog",
+          "label": "AP2112 dropout voltage",
+          "source_id": "ap2112-datasheet",
+          "document": {
+            "document_id": "ap2112-datasheet",
+            "title": "AP2112 600mA CMOS LDO Regulator With Enable",
+            "manufacturer": "Diodes Incorporated",
+            "part_number": "AP2112K-3.3TRG1",
+            "revision": null,
+            "url": null,
+            "sha256": null
+          },
+          "page": 4,
+          "snippet": null,
+          "snippet_verified": null,
+          "source_start": null,
+          "source_end": null,
+          "source_region": null,
+          "quantity": {
+            "value": 0.25,
+            "unit": "V"
+          },
+          "text_value": "Typical dropout 250 mV at 600 mA",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-08-29T16:03:35.821464Z"
+        }
+      ]
+    },
+    {
+      "ref": "SW1",
+      "part_id": "GENERIC_MOMENTARY_BUTTON",
+      "package": "6mm-THT",
+      "value": null,
+      "selected_i2c_address": null,
+      "selected_interfaces": [],
+      "placeholder": false,
+      "notes": "Normally-open button: pressing grounds IO33. Firmware must keep this pin an input.",
+      "evidence": []
+    },
+    {
+      "ref": "R20",
+      "part_id": "GENERIC_RESISTOR",
+      "package": "0805",
+      "value": {
+        "value": 10000.0,
+        "unit": "ohm"
+      },
+      "selected_i2c_address": null,
+      "selected_interfaces": [],
+      "placeholder": false,
+      "notes": "Authored 10 kohm pull-up policy. Pressed current(max) = 3.35 V / 10000 ohm = 0.000335 A. Switch timing and debounce are not modeled.",
+      "evidence": [
+        {
+          "kind": "catalog",
+          "label": "AP2112K-3.3 output voltage and current capability",
+          "source_id": "ap2112-datasheet",
+          "document": {
+            "document_id": "ap2112-datasheet",
+            "title": "AP2112 600mA CMOS LDO Regulator With Enable",
+            "manufacturer": "Diodes Incorporated",
+            "part_number": "AP2112K-3.3TRG1",
+            "revision": null,
+            "url": null,
+            "sha256": null
+          },
+          "page": 4,
+          "snippet": null,
+          "snippet_verified": null,
+          "source_start": null,
+          "source_end": null,
+          "source_region": null,
+          "quantity": null,
+          "text_value": "3.3 V fixed output, +/-1.5% accuracy, 600 mA maximum output current",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-08-29T16:03:35.821460Z"
+        },
+        {
+          "kind": "catalog",
+          "label": "AP2112 dropout voltage",
+          "source_id": "ap2112-datasheet",
+          "document": {
+            "document_id": "ap2112-datasheet",
+            "title": "AP2112 600mA CMOS LDO Regulator With Enable",
+            "manufacturer": "Diodes Incorporated",
+            "part_number": "AP2112K-3.3TRG1",
+            "revision": null,
+            "url": null,
+            "sha256": null
+          },
+          "page": 4,
+          "snippet": null,
+          "snippet_verified": null,
+          "source_start": null,
+          "source_end": null,
+          "source_region": null,
+          "quantity": {
+            "value": 0.25,
+            "unit": "V"
+          },
+          "text_value": "Typical dropout 250 mV at 600 mA",
+          "detail": "Hand-entered from the manufacturer datasheet; page recorded for review. The verbatim snippet has not been captured and the citation has not been machine-verified.",
+          "recorded_at": "2026-08-29T16:03:35.821464Z"
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "VBUS",
+      "kind": "power",
+      "connections": [
+        {
+          "component": "J1",
+          "pin": "A4"
+        },
+        {
+          "component": "J1",
+          "pin": "A9"
+        },
+        {
+          "component": "J1",
+          "pin": "B4"
+        },
+        {
+          "component": "J1",
+          "pin": "B9"
+        },
+        {
+          "component": "U2",
+          "pin": "1"
+        },
+        {
+          "component": "U2",
+          "pin": "3"
+        },
+        {
+          "component": "C1",
+          "pin": "1"
+        }
+      ],
+      "external_source": {
+        "kind": "usb_vbus",
+        "voltage": {
+          "minimum": {
+            "value": 4.75,
+            "unit": "V"
+          },
+          "typical": {
+            "value": 5.0,
+            "unit": "V"
+          },
+          "maximum": {
+            "value": 5.25,
+            "unit": "V"
+          }
+        },
+        "current_limit": {
+          "value": 0.5,
+          "unit": "A"
+        },
+        "description": "USB-C bus power without PD negotiation.",
+        "evidence": []
+      },
+      "notes": null
+    },
+    {
+      "name": "GND",
+      "kind": "ground",
+      "connections": [
+        {
+          "component": "J1",
+          "pin": "A1"
+        },
+        {
+          "component": "J1",
+          "pin": "A12"
+        },
+        {
+          "component": "J1",
+          "pin": "B1"
+        },
+        {
+          "component": "J1",
+          "pin": "B12"
+        },
+        {
+          "component": "R1",
+          "pin": "2"
+        },
+        {
+          "component": "R2",
+          "pin": "2"
+        },
+        {
+          "component": "U2",
+          "pin": "2"
+        },
+        {
+          "component": "C1",
+          "pin": "2"
+        },
+        {
+          "component": "C2",
+          "pin": "2"
+        },
+        {
+          "component": "U1",
+          "pin": "1"
+        },
+        {
+          "component": "U1",
+          "pin": "15"
+        },
+        {
+          "component": "U1",
+          "pin": "38"
+        },
+        {
+          "component": "U1",
+          "pin": "39"
+        },
+        {
+          "component": "C3",
+          "pin": "2"
+        },
+        {
+          "component": "C4",
+          "pin": "2"
+        },
+        {
+          "component": "C5",
+          "pin": "2"
+        },
+        {
+          "component": "D1",
+          "pin": "2"
+        },
+        {
+          "component": "SW1",
+          "pin": "2"
+        }
+      ],
+      "external_source": null,
+      "notes": null
+    },
+    {
+      "name": "CC1",
+      "kind": "signal",
+      "connections": [
+        {
+          "component": "J1",
+          "pin": "A5"
+        },
+        {
+          "component": "R1",
+          "pin": "1"
+        }
+      ],
+      "external_source": null,
+      "notes": null
+    },
+    {
+      "name": "CC2",
+      "kind": "signal",
+      "connections": [
+        {
+          "component": "J1",
+          "pin": "B5"
+        },
+        {
+          "component": "R2",
+          "pin": "1"
+        }
+      ],
+      "external_source": null,
+      "notes": null
+    },
+    {
+      "name": "3V3",
+      "kind": "power",
+      "connections": [
+        {
+          "component": "U2",
+          "pin": "5"
+        },
+        {
+          "component": "C2",
+          "pin": "1"
+        },
+        {
+          "component": "U1",
+          "pin": "2"
+        },
+        {
+          "component": "C3",
+          "pin": "1"
+        },
+        {
+          "component": "C4",
+          "pin": "1"
+        },
+        {
+          "component": "R3",
+          "pin": "2"
+        },
+        {
+          "component": "R20",
+          "pin": "2"
+        }
+      ],
+      "external_source": null,
+      "notes": null
+    },
+    {
+      "name": "EN",
+      "kind": "signal",
+      "connections": [
+        {
+          "component": "U1",
+          "pin": "3"
+        },
+        {
+          "component": "R3",
+          "pin": "1"
+        },
+        {
+          "component": "C5",
+          "pin": "1"
+        }
+      ],
+      "external_source": null,
+      "notes": null
+    },
+    {
+      "name": "LED1_DRIVE",
+      "kind": "signal",
+      "connections": [
+        {
+          "component": "U1",
+          "pin": "10"
+        },
+        {
+          "component": "R10",
+          "pin": "1"
+        }
+      ],
+      "external_source": null,
+      "notes": null
+    },
+    {
+      "name": "LED1_A",
+      "kind": "signal",
+      "connections": [
+        {
+          "component": "R10",
+          "pin": "2"
+        },
+        {
+          "component": "D1",
+          "pin": "1"
+        }
+      ],
+      "external_source": null,
+      "notes": null
+    },
+    {
+      "name": "BUTTON1",
+      "kind": "signal",
+      "connections": [
+        {
+          "component": "U1",
+          "pin": "9"
+        },
+        {
+          "component": "SW1",
+          "pin": "1"
+        },
+        {
+          "component": "R20",
+          "pin": "1"
+        }
+      ],
+      "external_source": null,
+      "notes": "External pull-up defines idle high; the normally-open switch grounds it when pressed."
+    }
+  ],
+  "constraints": [
+    {
+      "constraint_id": "C-1",
+      "kind": "voltage",
+      "description": "All logic runs from a single 3.3 V rail.",
+      "hard": true,
+      "applies_to": [
+        "3V3"
+      ],
+      "source_requirement_id": "FR-2",
+      "evidence": []
+    },
+    {
+      "constraint_id": "C-2",
+      "kind": "assembly",
+      "description": "Prefer packages that a hobbyist can hand solder.",
+      "hard": false,
+      "applies_to": [],
+      "source_requirement_id": null,
+      "evidence": []
+    },
+    {
+      "constraint_id": "C-3",
+      "kind": "cost",
+      "description": "Target a component budget of $20.00.",
+      "hard": false,
+      "applies_to": [],
+      "source_requirement_id": null,
+      "evidence": []
+    }
+  ],
+  "design_assumptions": [
+    "USB-C is a 5 V power sink; USB data pins are unused.",
+    "USB-C is a power sink only; programming needs the separate serial connections.",
+    "Buttons are normally open and connect their GPIO input to ground when pressed.",
+    "Firmware must configure button pins as inputs and handle switch bounce; neither is simulated.",
+    "GPIO source/sink and aggregate current ratings are absent from the seed catalog and are not verified."
+  ],
+  "notes": "Deterministic A2 GPIO topology from typed slots and catalog-backed pin identities."
+}

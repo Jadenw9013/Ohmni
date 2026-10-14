@@ -328,6 +328,16 @@
       "approval_evidence": ".ai/approvals/BATTERY-MOTION-1.yaml",
       "plan_document": "docs/product/BATTERY_MOTION_BOARD_PLAN.md",
       "review_policy": "Each implementation unit receives focused self-review; independent engineering and UX review with no open BLOCKER or HIGH findings is required before scope completion."
+    },
+    {
+      "id": "HACK-DEMO-1",
+      "title": "Hackathon demo readiness (bounded overnight scope)",
+      "type": "bounded_demo_readiness",
+      "status": "VERIFIED",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/HACK-DEMO-1.yaml",
+      "plan_document": "docs/hackathon/OVERNIGHT_DEVELOPMENT_BRIEF.md",
+      "review_policy": "Independent subagent review of the final diff for false passes, artifact confusion, unbounded provider calls and broken recovery; COMPLETE requires human acceptance."
     }
   ],
   "tasks": [
@@ -3501,6 +3511,27 @@
       "implementation": {"started_at_commit": null, "completed_at_commit": null, "approval_evidence": ".ai/approvals/BATTERY-MOTION-1.yaml"},
       "review": {"required": true, "independent": true, "status": "PENDING", "record": null},
       "verification": {"record": null, "required": ["workflow", "fast", "integration", "slow", "full", "browser_review", "independent_review"]}
+    },
+    {
+      "id": "HACK-DEMO-01",
+      "title": "Make the three-minute hackathon demo dependable",
+      "scope": "HACK-DEMO-1",
+      "milestone": null,
+      "goal": "One reproducible supported board with real KiCad receipts, CI protection, an offline saved demo, one real DRC fault with restore, and bounded AI request controls.",
+      "priority": 100,
+      "status": "VERIFIED",
+      "dependencies": [],
+      "blockers": [],
+      "acceptance_criteria": [
+        "Phase 1: a CLI harness runs the production ProjectPipeline for the fixed A2 minimum brief through real ERC/DRC/export and records hashes, versions and timings across three fresh runs.",
+        "Phase 2: CI runs the frontend Node suite and a real-KiCad smoke gate that fails rather than skips when tools or checks are missing.",
+        "Phase 3: a one-command offline preview serves a labeled saved run with all assets and downloads and passes a network-disabled browser test.",
+        "Phase 4: one isolated damaged copy produces a real KiCad DRC finding with its own snapshot hash; restore returns the original artifacts.",
+        "Phase 5: every billed provider route has durable atomic daily admission, bounded concurrency and burst control, tested with fake providers, returning 429 with Retry-After."
+      ],
+      "implementation": {"started_at_commit": "db985333dff91cdab20fd50fca42e693347cf5e0", "completed_at_commit": "75ddcf7d5984dc9390c37b1c2f72fe5c4014331e", "approval_evidence": ".ai/approvals/HACK-DEMO-1.yaml"},
+      "review": {"required": true, "independent": true, "status": "PASSED", "record": ".ai/reviews.yaml#HACK-DEMO-01-INDEPENDENT-REVIEW"},
+      "verification": {"record": ".ai/verification/HACK-DEMO-01.yaml", "required": ["workflow", "fast", "node", "hackathon_harness"]}
     }
   ]
 }
