@@ -99,4 +99,34 @@ Live dashboard (only after the owner checklist; still unverified):
 
 ## 6. Scope omissions and known limitations
 
-LIMITATIONS_PLACEHOLDER
+Deliberately omitted, per the plan's timebox and the owner's limits:
+
+- **No live activation.** No account, DSN, deployment, Replay, Seer, source-map
+  upload, logs channel or tunnel. The live dashboard, real ingestion and quota
+  behavior are unverified.
+- **Coarse legacy orchestrator span.** The scripted demo's
+  `DesignOrchestrator` runs as one `design_orchestrate` span; its internal
+  proposal/check/repair/schematic/ERC steps are not separate spans (plan section 10
+  defers detailed legacy observer spans first).
+- **Polls are not traced.** `GET /api/jobs/{id}` and other reads create no
+  transaction. A persistence failure found during a poll is still reported as an
+  issue, but without a trace.
+- **Revision reuse** returns the existing job without a separate "reused" marker;
+  it never recounts acceptance or completion.
+- **Browser coverage** is the seven traced POST routes. Health checks, polls,
+  component/behavior pages and the saved hackathon demo page load nothing and are
+  not instrumented. The browser emits no metrics.
+- **Local server needs the bundle.** The demo server's immutable snapshot
+  includes `vendor/sentry-telemetry.js`, so deleting it stops local startup
+  (fail closed, like any other snapshot asset). Static hosting without it stays
+  usable; the local-server smoke simulates a failed load with a 404 instead.
+- **CORS** now always lists `sentry-trace,baggage` as allowed request headers, as
+  the plan specifies; `baggage` is accepted and ignored.
+- **Supply chain.** `sentry-sdk==2.72.0` is pinned by version, not hash, and its
+  transitive dependencies (urllib3, certifi) follow the existing unpinned
+  convention. The npm lockfile carries integrity hashes from registry.npmjs.org.
+- **Real-browser smoke is local evidence, not a CI job.** CI runs the Node
+  facade tests, the bundle reproducibility check and the fault harness; the
+  Chromium smoke needs a local Playwright browser.
+- **Conflict with the prompt document:** none found. The handoff branch it
+  names had already merged as PR #76, so the document was read from `main`.
