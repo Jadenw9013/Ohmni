@@ -1,0 +1,795 @@
+{
+  "schema_version": 1,
+  "harness": "scripts/verify_hackathon_demo.py",
+  "run_id": "20261014T063901Z",
+  "started_at": "2026-10-14T06:39:01.717664+00:00",
+  "git": {
+    "commit": "24823fa6a88ceb2ddf44fb2a9b839db869e45521",
+    "dirty": false
+  },
+  "brief": {
+    "fingerprint": "3d1198b29e94303a6d125e010c5e6a7dd020f044ed8f07f0646ddc5a7da77dba",
+    "normalized": {
+      "schema_version": 1,
+      "project_name": "ESP32 button and LED board",
+      "description": "USB-C powered ESP32 with one momentary input button and one indicator LED, no sensors, default board size.",
+      "archetype": "a2_usb_gpio_controller",
+      "input_power": "usb_c_5v",
+      "input_voltage_v": 5.0,
+      "logic_voltage_v": 3.3,
+      "mcu_part_id": "ESP32-WROOM-32E",
+      "sensors": [],
+      "status_led_count": 1,
+      "button_count": 1,
+      "spi_devices": [],
+      "include_programming_header": false,
+      "max_board_layers": 2,
+      "board_width_mm": 100.0,
+      "board_height_mm": 70.0,
+      "hand_solderable_preferred": true,
+      "budget_usd": 20.0,
+      "safety_domains": []
+    },
+    "conversational_wording_for_rehearsal": "A USB-C powered ESP32 board with one momentary input button and one indicator LED, no sensors, using the default board size.",
+    "live_prompt_rehearsal": "PENDING (no model call is made by this harness)"
+  },
+  "tools": {
+    "kicad_cli": "10.0.5",
+    "kicad_cli_required": "10.0.5",
+    "python": "3.13.5",
+    "platform": "Linux-6.18.44-fc-v114-x86_64-with-glibc2.41"
+  },
+  "inputs": {
+    "catalog_snapshot_sha256": null
+  },
+  "attempts_requested": 3,
+  "attempts": [
+    {
+      "attempt": 1,
+      "directory": "build/hackathon-demo/20261014T063901Z/attempt-1",
+      "status": "PASS",
+      "total_seconds": 18.672,
+      "stage_seconds": {
+        "requirements": 0.005,
+        "check": 0.004,
+        "schematic": 7.092,
+        "placement": 0.807,
+        "routing": 1.941,
+        "drc": 7.911,
+        "manufacturing": 0.005,
+        "release": 0.885
+      },
+      "checks": [
+        {
+          "name": "required_outputs_present",
+          "status": "PASS",
+          "detail": "all required outputs present and non-empty"
+        },
+        {
+          "name": "reports_parse",
+          "status": "PASS",
+          "detail": "all receipts are JSON objects"
+        },
+        {
+          "name": "erc_completed",
+          "status": "PASS",
+          "detail": "status=pass_with_warnings tool_status=ok"
+        },
+        {
+          "name": "erc_bound_to_schematic",
+          "status": "PASS",
+          "detail": "report=3b8bc6fc5f8d0992363cc6d3bc68c2375cd704e9235c3a879adb8a2596078d54 file=3b8bc6fc5f8d0992363cc6d3bc68c2375cd704e9235c3a879adb8a2596078d54"
+        },
+        {
+          "name": "erc_no_errors",
+          "status": "PASS",
+          "detail": "0 error-severity ERC findings"
+        },
+        {
+          "name": "erc_raw_kicad_receipt",
+          "status": "PASS",
+          "detail": "kicad_version=10.0.5"
+        },
+        {
+          "name": "drc_completed",
+          "status": "PASS",
+          "detail": "status=pass tool_status=ok"
+        },
+        {
+          "name": "drc_bound_to_pcb",
+          "status": "PASS",
+          "detail": "report=378e0ab5838dd253a4f45d4f696a422111ab8e640bd1cddc11076820571a7c92 file=378e0ab5838dd253a4f45d4f696a422111ab8e640bd1cddc11076820571a7c92"
+        },
+        {
+          "name": "drc_zero_findings",
+          "status": "PASS",
+          "detail": "typed=0/0 raw=0/0"
+        },
+        {
+          "name": "drc_raw_kicad_receipt",
+          "status": "PASS",
+          "detail": "kicad_version=10.0.5"
+        },
+        {
+          "name": "routing_complete",
+          "status": "PASS",
+          "detail": "failures=0 unresolved=0"
+        },
+        {
+          "name": "routing_independently_verified",
+          "status": "PASS",
+          "detail": "10 findings; non-pass=[]; plan_bound=True"
+        },
+        {
+          "name": "fabrication_package_intact",
+          "status": "PASS",
+          "detail": "9 files; problems=[] missing_kinds=[] drill=True"
+        },
+        {
+          "name": "fabrication_bound_to_pcb",
+          "status": "PASS",
+          "detail": "manifest=378e0ab5838dd253a4f45d4f696a422111ab8e640bd1cddc11076820571a7c92 file=378e0ab5838dd253a4f45d4f696a422111ab8e640bd1cddc11076820571a7c92"
+        },
+        {
+          "name": "pipeline_completed",
+          "status": "PASS",
+          "detail": "ProjectPipeline.run returned a report"
+        },
+        {
+          "name": "release_current",
+          "status": "PASS",
+          "detail": "release=READY_FOR_MANUFACTURING_REVIEW current=True"
+        },
+        {
+          "name": "fault_detected_by_real_drc",
+          "status": "PASS",
+          "detail": "cut-led1-anode-track: status=fail unconnected=1 findings=1"
+        },
+        {
+          "name": "original_unchanged_after_fault",
+          "status": "PASS",
+          "detail": "original board, receipts and package are byte-identical after the fault check"
+        }
+      ],
+      "warnings": [
+        "KiCad ERC warnings retained: lib_symbol_issues x17"
+      ],
+      "output_sha256": {
+        "confirmed-brief.json": "e4f000fbe1da8b1c1668c79f78b7de0bbd4424be5aeda980f20c057fdc85d765",
+        "circuit.json": "84205c9b2038f80d29e76dee172f4a36343054f5142561dafbf84e5c4a25cb00",
+        "golden.kicad_sch": "3b8bc6fc5f8d0992363cc6d3bc68c2375cd704e9235c3a879adb8a2596078d54",
+        "golden.kicad_pcb": "378e0ab5838dd253a4f45d4f696a422111ab8e640bd1cddc11076820571a7c92",
+        "erc-report.json": "50da69fe2b0b327a2cceb2416cb43fe438699e224bfe107383637fd30e531a22",
+        "drc-report.json": "d979792c3217e9a970db8d169c1b76f42a48b5040ef194fbdc136ccd64323581",
+        "routing-plan.json": "768ae3fa12fcf35a3aaa8a9e0b41f89c38f96235166747cc36da1d506c03f906",
+        "fabrication/ohmni-fabrication-manifest.json": "efe579381dc6b725a57037849412a5ec15a326358e349b25ee9469d626162cba"
+      },
+      "fault": {
+        "schema_version": 1,
+        "kind": "diagnostic_fault_only",
+        "releasable": false,
+        "fault_id": "cut-led1-anode-track",
+        "source_pcb_sha256": "378e0ab5838dd253a4f45d4f696a422111ab8e640bd1cddc11076820571a7c92",
+        "snapshot_sha256": "49b74d6c59a8ea6b7dfc92c8af96bfff9579b1e159e48c06761434bd60e3c852",
+        "removed_segment": {
+          "net_name": "LED1_A",
+          "uuid": "3634dcd3-7281-5406-a13c-d20a16e8577d",
+          "layer": "F.Cu",
+          "start_mm": [
+            12.938,
+            18.9
+          ],
+          "end_mm": [
+            13.75,
+            19.0
+          ],
+          "line_number": 362
+        },
+        "checker": {
+          "name": "KiCad PCB DRC",
+          "kicad_version": "10.0.5",
+          "command_template": [
+            "kicad-cli",
+            "pcb",
+            "drc",
+            "--format",
+            "json",
+            "--severity-all",
+            "--exit-code-violations",
+            "--output",
+            "<report>",
+            "<snapshot>"
+          ],
+          "return_code": 5,
+          "run_id": "19ff70750e06c861"
+        },
+        "raw_drc_sha256": "92e87809a46cec54743b6591015b7549e24f81066eeb1f9ad61f99dabc667e2b",
+        "drc": {
+          "status": "fail",
+          "tool_status": "ok",
+          "finding_count": 1,
+          "unconnected_count": 1,
+          "findings": [
+            {
+              "type": "track_dangling",
+              "severity": "warning",
+              "classification": "track",
+              "description": "Track has unconnected end",
+              "items": [
+                {
+                  "description": "Track [LED1_A] on F.Cu, length 3.0000 mm",
+                  "x_mm": 13.75,
+                  "y_mm": 19.0
+                }
+              ]
+            }
+          ],
+          "unconnected_items": [
+            {
+              "type": "unconnected_items",
+              "severity": "error",
+              "classification": "unrouted",
+              "description": "Missing connection between items",
+              "items": [
+                {
+                  "description": "Pad 2 [LED1_A] of D1 on F.Cu",
+                  "x_mm": 12.938,
+                  "y_mm": 18.9
+                },
+                {
+                  "description": "Track [LED1_A] on F.Cu, length 3.0000 mm",
+                  "x_mm": 13.75,
+                  "y_mm": 19.0
+                }
+              ]
+            }
+          ]
+        },
+        "fault_detected": true,
+        "not_checked": [
+          "schematic_erc",
+          "independent_routing_verification",
+          "physical_placement_rules",
+          "manufacturing_profile",
+          "fabrication_export",
+          "simulation",
+          "bench"
+        ],
+        "copper": {
+          "track_count": 178,
+          "via_count": 25
+        },
+        "seconds": 8.029
+      },
+      "release": {
+        "status": "READY_FOR_MANUFACTURING_REVIEW",
+        "package_fingerprint": "f1b1848c94723ad2ff162c909b6b2c84e6913ea955f2270edec3109c68c7fe7c",
+        "pcb_fingerprint": "378e0ab5838dd253a4f45d4f696a422111ab8e640bd1cddc11076820571a7c92",
+        "current": true
+      },
+      "part_count": 15,
+      "board_mm": [
+        100.0,
+        70.0
+      ],
+      "routing": {
+        "modeled_track_segment_count": 179,
+        "modeled_layer_transition_count": 42,
+        "track_segment_count": 179,
+        "via_count": 25,
+        "coalesced_layer_transition_count": 15,
+        "plated_through_hole_transition_count": 2,
+        "total_track_length_mm": 458.495759
+      },
+      "limitations": [
+        "Bounded USB ESP32 synthesis for the confirmed sensor, GPIO, or SPI family. Placement is generated from authored blocks and geometric constraints, not guaranteed globally optimal.",
+        "Firmware is not included; static wiring does not prove runtime behavior.",
+        "Not simulation verified.",
+        "Not thermal, EMC, RF, or signal-integrity verified.",
+        "Not bench verified.",
+        "Manufacturing profile and prices are synthetic and require human review.",
+        "No guarantee of successful fabrication or assembly."
+      ]
+    },
+    {
+      "attempt": 2,
+      "directory": "build/hackathon-demo/20261014T063901Z/attempt-2",
+      "status": "PASS",
+      "total_seconds": 17.999,
+      "stage_seconds": {
+        "requirements": 0.002,
+        "check": 0.003,
+        "schematic": 6.538,
+        "placement": 0.817,
+        "routing": 2.156,
+        "drc": 7.413,
+        "manufacturing": 0.005,
+        "release": 1.037
+      },
+      "checks": [
+        {
+          "name": "required_outputs_present",
+          "status": "PASS",
+          "detail": "all required outputs present and non-empty"
+        },
+        {
+          "name": "reports_parse",
+          "status": "PASS",
+          "detail": "all receipts are JSON objects"
+        },
+        {
+          "name": "erc_completed",
+          "status": "PASS",
+          "detail": "status=pass_with_warnings tool_status=ok"
+        },
+        {
+          "name": "erc_bound_to_schematic",
+          "status": "PASS",
+          "detail": "report=3b8bc6fc5f8d0992363cc6d3bc68c2375cd704e9235c3a879adb8a2596078d54 file=3b8bc6fc5f8d0992363cc6d3bc68c2375cd704e9235c3a879adb8a2596078d54"
+        },
+        {
+          "name": "erc_no_errors",
+          "status": "PASS",
+          "detail": "0 error-severity ERC findings"
+        },
+        {
+          "name": "erc_raw_kicad_receipt",
+          "status": "PASS",
+          "detail": "kicad_version=10.0.5"
+        },
+        {
+          "name": "drc_completed",
+          "status": "PASS",
+          "detail": "status=pass tool_status=ok"
+        },
+        {
+          "name": "drc_bound_to_pcb",
+          "status": "PASS",
+          "detail": "report=378e0ab5838dd253a4f45d4f696a422111ab8e640bd1cddc11076820571a7c92 file=378e0ab5838dd253a4f45d4f696a422111ab8e640bd1cddc11076820571a7c92"
+        },
+        {
+          "name": "drc_zero_findings",
+          "status": "PASS",
+          "detail": "typed=0/0 raw=0/0"
+        },
+        {
+          "name": "drc_raw_kicad_receipt",
+          "status": "PASS",
+          "detail": "kicad_version=10.0.5"
+        },
+        {
+          "name": "routing_complete",
+          "status": "PASS",
+          "detail": "failures=0 unresolved=0"
+        },
+        {
+          "name": "routing_independently_verified",
+          "status": "PASS",
+          "detail": "10 findings; non-pass=[]; plan_bound=True"
+        },
+        {
+          "name": "fabrication_package_intact",
+          "status": "PASS",
+          "detail": "9 files; problems=[] missing_kinds=[] drill=True"
+        },
+        {
+          "name": "fabrication_bound_to_pcb",
+          "status": "PASS",
+          "detail": "manifest=378e0ab5838dd253a4f45d4f696a422111ab8e640bd1cddc11076820571a7c92 file=378e0ab5838dd253a4f45d4f696a422111ab8e640bd1cddc11076820571a7c92"
+        },
+        {
+          "name": "pipeline_completed",
+          "status": "PASS",
+          "detail": "ProjectPipeline.run returned a report"
+        },
+        {
+          "name": "release_current",
+          "status": "PASS",
+          "detail": "release=READY_FOR_MANUFACTURING_REVIEW current=True"
+        },
+        {
+          "name": "fault_detected_by_real_drc",
+          "status": "PASS",
+          "detail": "cut-led1-anode-track: status=fail unconnected=1 findings=1"
+        },
+        {
+          "name": "original_unchanged_after_fault",
+          "status": "PASS",
+          "detail": "original board, receipts and package are byte-identical after the fault check"
+        }
+      ],
+      "warnings": [
+        "KiCad ERC warnings retained: lib_symbol_issues x17"
+      ],
+      "output_sha256": {
+        "confirmed-brief.json": "e4f000fbe1da8b1c1668c79f78b7de0bbd4424be5aeda980f20c057fdc85d765",
+        "circuit.json": "84205c9b2038f80d29e76dee172f4a36343054f5142561dafbf84e5c4a25cb00",
+        "golden.kicad_sch": "3b8bc6fc5f8d0992363cc6d3bc68c2375cd704e9235c3a879adb8a2596078d54",
+        "golden.kicad_pcb": "378e0ab5838dd253a4f45d4f696a422111ab8e640bd1cddc11076820571a7c92",
+        "erc-report.json": "1aa88b2fb6d316a9068923b2c34f949c4385bace970498073d7f6f110ccd6920",
+        "drc-report.json": "45950dfa33d770f3f29a274d15550b1e281af915e2ec5cd9ef9495caccb24baa",
+        "routing-plan.json": "9ef723a33d96a7e2007ffe276c462251241936a097f461b09fabed58b0658f47",
+        "fabrication/ohmni-fabrication-manifest.json": "41d78b79e925faffff0aff7e4296bd51359856c0c6ac745430b687094eba609a"
+      },
+      "fault": {
+        "schema_version": 1,
+        "kind": "diagnostic_fault_only",
+        "releasable": false,
+        "fault_id": "cut-led1-anode-track",
+        "source_pcb_sha256": "378e0ab5838dd253a4f45d4f696a422111ab8e640bd1cddc11076820571a7c92",
+        "snapshot_sha256": "49b74d6c59a8ea6b7dfc92c8af96bfff9579b1e159e48c06761434bd60e3c852",
+        "removed_segment": {
+          "net_name": "LED1_A",
+          "uuid": "3634dcd3-7281-5406-a13c-d20a16e8577d",
+          "layer": "F.Cu",
+          "start_mm": [
+            12.938,
+            18.9
+          ],
+          "end_mm": [
+            13.75,
+            19.0
+          ],
+          "line_number": 362
+        },
+        "checker": {
+          "name": "KiCad PCB DRC",
+          "kicad_version": "10.0.5",
+          "command_template": [
+            "kicad-cli",
+            "pcb",
+            "drc",
+            "--format",
+            "json",
+            "--severity-all",
+            "--exit-code-violations",
+            "--output",
+            "<report>",
+            "<snapshot>"
+          ],
+          "return_code": 5,
+          "run_id": "19ff70750e06c861"
+        },
+        "raw_drc_sha256": "76a6031994bdc314e53ae774d62754500c9b8badf2422f7f87d07a2f485cc3b7",
+        "drc": {
+          "status": "fail",
+          "tool_status": "ok",
+          "finding_count": 1,
+          "unconnected_count": 1,
+          "findings": [
+            {
+              "type": "track_dangling",
+              "severity": "warning",
+              "classification": "track",
+              "description": "Track has unconnected end",
+              "items": [
+                {
+                  "description": "Track [LED1_A] on F.Cu, length 3.0000 mm",
+                  "x_mm": 13.75,
+                  "y_mm": 19.0
+                }
+              ]
+            }
+          ],
+          "unconnected_items": [
+            {
+              "type": "unconnected_items",
+              "severity": "error",
+              "classification": "unrouted",
+              "description": "Missing connection between items",
+              "items": [
+                {
+                  "description": "Pad 2 [LED1_A] of D1 on F.Cu",
+                  "x_mm": 12.938,
+                  "y_mm": 18.9
+                },
+                {
+                  "description": "Track [LED1_A] on F.Cu, length 3.0000 mm",
+                  "x_mm": 13.75,
+                  "y_mm": 19.0
+                }
+              ]
+            }
+          ]
+        },
+        "fault_detected": true,
+        "not_checked": [
+          "schematic_erc",
+          "independent_routing_verification",
+          "physical_placement_rules",
+          "manufacturing_profile",
+          "fabrication_export",
+          "simulation",
+          "bench"
+        ],
+        "copper": {
+          "track_count": 178,
+          "via_count": 25
+        },
+        "seconds": 7.053
+      },
+      "release": {
+        "status": "READY_FOR_MANUFACTURING_REVIEW",
+        "package_fingerprint": "defc788aab2f92aa89fd3bde2fd58720047ff07162c58eecb98be6c9148ae700",
+        "pcb_fingerprint": "378e0ab5838dd253a4f45d4f696a422111ab8e640bd1cddc11076820571a7c92",
+        "current": true
+      },
+      "part_count": 15,
+      "board_mm": [
+        100.0,
+        70.0
+      ],
+      "routing": {
+        "modeled_track_segment_count": 179,
+        "modeled_layer_transition_count": 42,
+        "track_segment_count": 179,
+        "via_count": 25,
+        "coalesced_layer_transition_count": 15,
+        "plated_through_hole_transition_count": 2,
+        "total_track_length_mm": 458.495759
+      },
+      "limitations": [
+        "Bounded USB ESP32 synthesis for the confirmed sensor, GPIO, or SPI family. Placement is generated from authored blocks and geometric constraints, not guaranteed globally optimal.",
+        "Firmware is not included; static wiring does not prove runtime behavior.",
+        "Not simulation verified.",
+        "Not thermal, EMC, RF, or signal-integrity verified.",
+        "Not bench verified.",
+        "Manufacturing profile and prices are synthetic and require human review.",
+        "No guarantee of successful fabrication or assembly."
+      ]
+    },
+    {
+      "attempt": 3,
+      "directory": "build/hackathon-demo/20261014T063901Z/attempt-3",
+      "status": "PASS",
+      "total_seconds": 17.443,
+      "stage_seconds": {
+        "requirements": 0.002,
+        "check": 0.005,
+        "schematic": 6.482,
+        "placement": 0.679,
+        "routing": 1.806,
+        "drc": 7.552,
+        "manufacturing": 0.004,
+        "release": 0.885
+      },
+      "checks": [
+        {
+          "name": "required_outputs_present",
+          "status": "PASS",
+          "detail": "all required outputs present and non-empty"
+        },
+        {
+          "name": "reports_parse",
+          "status": "PASS",
+          "detail": "all receipts are JSON objects"
+        },
+        {
+          "name": "erc_completed",
+          "status": "PASS",
+          "detail": "status=pass_with_warnings tool_status=ok"
+        },
+        {
+          "name": "erc_bound_to_schematic",
+          "status": "PASS",
+          "detail": "report=3b8bc6fc5f8d0992363cc6d3bc68c2375cd704e9235c3a879adb8a2596078d54 file=3b8bc6fc5f8d0992363cc6d3bc68c2375cd704e9235c3a879adb8a2596078d54"
+        },
+        {
+          "name": "erc_no_errors",
+          "status": "PASS",
+          "detail": "0 error-severity ERC findings"
+        },
+        {
+          "name": "erc_raw_kicad_receipt",
+          "status": "PASS",
+          "detail": "kicad_version=10.0.5"
+        },
+        {
+          "name": "drc_completed",
+          "status": "PASS",
+          "detail": "status=pass tool_status=ok"
+        },
+        {
+          "name": "drc_bound_to_pcb",
+          "status": "PASS",
+          "detail": "report=378e0ab5838dd253a4f45d4f696a422111ab8e640bd1cddc11076820571a7c92 file=378e0ab5838dd253a4f45d4f696a422111ab8e640bd1cddc11076820571a7c92"
+        },
+        {
+          "name": "drc_zero_findings",
+          "status": "PASS",
+          "detail": "typed=0/0 raw=0/0"
+        },
+        {
+          "name": "drc_raw_kicad_receipt",
+          "status": "PASS",
+          "detail": "kicad_version=10.0.5"
+        },
+        {
+          "name": "routing_complete",
+          "status": "PASS",
+          "detail": "failures=0 unresolved=0"
+        },
+        {
+          "name": "routing_independently_verified",
+          "status": "PASS",
+          "detail": "10 findings; non-pass=[]; plan_bound=True"
+        },
+        {
+          "name": "fabrication_package_intact",
+          "status": "PASS",
+          "detail": "9 files; problems=[] missing_kinds=[] drill=True"
+        },
+        {
+          "name": "fabrication_bound_to_pcb",
+          "status": "PASS",
+          "detail": "manifest=378e0ab5838dd253a4f45d4f696a422111ab8e640bd1cddc11076820571a7c92 file=378e0ab5838dd253a4f45d4f696a422111ab8e640bd1cddc11076820571a7c92"
+        },
+        {
+          "name": "pipeline_completed",
+          "status": "PASS",
+          "detail": "ProjectPipeline.run returned a report"
+        },
+        {
+          "name": "release_current",
+          "status": "PASS",
+          "detail": "release=READY_FOR_MANUFACTURING_REVIEW current=True"
+        },
+        {
+          "name": "fault_detected_by_real_drc",
+          "status": "PASS",
+          "detail": "cut-led1-anode-track: status=fail unconnected=1 findings=1"
+        },
+        {
+          "name": "original_unchanged_after_fault",
+          "status": "PASS",
+          "detail": "original board, receipts and package are byte-identical after the fault check"
+        }
+      ],
+      "warnings": [
+        "KiCad ERC warnings retained: lib_symbol_issues x17"
+      ],
+      "output_sha256": {
+        "confirmed-brief.json": "e4f000fbe1da8b1c1668c79f78b7de0bbd4424be5aeda980f20c057fdc85d765",
+        "circuit.json": "84205c9b2038f80d29e76dee172f4a36343054f5142561dafbf84e5c4a25cb00",
+        "golden.kicad_sch": "3b8bc6fc5f8d0992363cc6d3bc68c2375cd704e9235c3a879adb8a2596078d54",
+        "golden.kicad_pcb": "378e0ab5838dd253a4f45d4f696a422111ab8e640bd1cddc11076820571a7c92",
+        "erc-report.json": "a331b5fba4783149ee60129baae40113bbc19bbff48b8710f317438bc824ac11",
+        "drc-report.json": "5fbe5b4d5b74118f8b16051265d5c4594e5c80da96717b9a2076ae4d54ef9724",
+        "routing-plan.json": "be97aaf3f04f802814d6924c93a744ca88ed69a47ec49e19c7269a8f20cd062d",
+        "fabrication/ohmni-fabrication-manifest.json": "7b7ceabbd3b4c98ef3cb29b5d2396f6b68fad2c4beab52e2a8cc590389800f21"
+      },
+      "fault": {
+        "schema_version": 1,
+        "kind": "diagnostic_fault_only",
+        "releasable": false,
+        "fault_id": "cut-led1-anode-track",
+        "source_pcb_sha256": "378e0ab5838dd253a4f45d4f696a422111ab8e640bd1cddc11076820571a7c92",
+        "snapshot_sha256": "49b74d6c59a8ea6b7dfc92c8af96bfff9579b1e159e48c06761434bd60e3c852",
+        "removed_segment": {
+          "net_name": "LED1_A",
+          "uuid": "3634dcd3-7281-5406-a13c-d20a16e8577d",
+          "layer": "F.Cu",
+          "start_mm": [
+            12.938,
+            18.9
+          ],
+          "end_mm": [
+            13.75,
+            19.0
+          ],
+          "line_number": 362
+        },
+        "checker": {
+          "name": "KiCad PCB DRC",
+          "kicad_version": "10.0.5",
+          "command_template": [
+            "kicad-cli",
+            "pcb",
+            "drc",
+            "--format",
+            "json",
+            "--severity-all",
+            "--exit-code-violations",
+            "--output",
+            "<report>",
+            "<snapshot>"
+          ],
+          "return_code": 5,
+          "run_id": "19ff70750e06c861"
+        },
+        "raw_drc_sha256": "7b7f17523e7654dde60cc6e92e43f23438eed7a1a422497cbd7d3dc17f703dd6",
+        "drc": {
+          "status": "fail",
+          "tool_status": "ok",
+          "finding_count": 1,
+          "unconnected_count": 1,
+          "findings": [
+            {
+              "type": "track_dangling",
+              "severity": "warning",
+              "classification": "track",
+              "description": "Track has unconnected end",
+              "items": [
+                {
+                  "description": "Track [LED1_A] on F.Cu, length 3.0000 mm",
+                  "x_mm": 13.75,
+                  "y_mm": 19.0
+                }
+              ]
+            }
+          ],
+          "unconnected_items": [
+            {
+              "type": "unconnected_items",
+              "severity": "error",
+              "classification": "unrouted",
+              "description": "Missing connection between items",
+              "items": [
+                {
+                  "description": "Pad 2 [LED1_A] of D1 on F.Cu",
+                  "x_mm": 12.938,
+                  "y_mm": 18.9
+                },
+                {
+                  "description": "Track [LED1_A] on F.Cu, length 3.0000 mm",
+                  "x_mm": 13.75,
+                  "y_mm": 19.0
+                }
+              ]
+            }
+          ]
+        },
+        "fault_detected": true,
+        "not_checked": [
+          "schematic_erc",
+          "independent_routing_verification",
+          "physical_placement_rules",
+          "manufacturing_profile",
+          "fabrication_export",
+          "simulation",
+          "bench"
+        ],
+        "copper": {
+          "track_count": 178,
+          "via_count": 25
+        },
+        "seconds": 6.654
+      },
+      "release": {
+        "status": "READY_FOR_MANUFACTURING_REVIEW",
+        "package_fingerprint": "cd9f3c18caaa9c76d71b5d19ade4bfccdb459b14808387091e18acf35c31c2b8",
+        "pcb_fingerprint": "378e0ab5838dd253a4f45d4f696a422111ab8e640bd1cddc11076820571a7c92",
+        "current": true
+      },
+      "part_count": 15,
+      "board_mm": [
+        100.0,
+        70.0
+      ],
+      "routing": {
+        "modeled_track_segment_count": 179,
+        "modeled_layer_transition_count": 42,
+        "track_segment_count": 179,
+        "via_count": 25,
+        "coalesced_layer_transition_count": 15,
+        "plated_through_hole_transition_count": 2,
+        "total_track_length_mm": 458.495759
+      },
+      "limitations": [
+        "Bounded USB ESP32 synthesis for the confirmed sensor, GPIO, or SPI family. Placement is generated from authored blocks and geometric constraints, not guaranteed globally optimal.",
+        "Firmware is not included; static wiring does not prove runtime behavior.",
+        "Not simulation verified.",
+        "Not thermal, EMC, RF, or signal-integrity verified.",
+        "Not bench verified.",
+        "Manufacturing profile and prices are synthetic and require human review.",
+        "No guarantee of successful fabrication or assembly."
+      ]
+    }
+  ],
+  "cross_attempt": {
+    "identical_routed_pcb_bytes": true,
+    "note": "Recorded, not required: KiCad logs and timestamps are not promised byte-identical."
+  },
+  "status": "PASS",
+  "finished_at": "2026-10-14T06:40:17.783267+00:00"
+}
