@@ -5,6 +5,8 @@ Status: **PROPOSED. Research and documentation only; implementation is not autho
 Audited: 2026-10-13. Repository: fetched `origin/main` at
 `7f91881d65a4823c1f77b664e6b37bf97e36c8f4` (PR #68).
 Research branch: `codex/paper-frontend-plan`.
+Design-expansion revision: 2026-10-13, based on fetched `origin/main` at
+`df69976e` after PRs #69 and #70 merged; branch `codex/paper-experience-design`.
 Input: owner's `Paper_Frontend_Rebuild_Proposal_Ohmni.md`, dated October 12.
 Input SHA-256: `441c2255e9954eb4b4bb3995338511a3d5ee675f090fb5f4a688ecc0aa69f68c`.
 
@@ -23,8 +25,11 @@ and board renderer. A framework rewrite is not a prerequisite for good design.
 The defining experience is: **describe an idea, review the proposed choices,
 watch actual checks, inspect the resulting board, understand the limits.**
 The board and its explanation should be the memorable visual feature. Paper's
-value is a shared, reviewable design system and complete state designs; decorative
-shaders are optional and outside the initial implementation.
+value includes competing art directions, a shared design system, transition
+storyboards, complete state designs and comparison with the implemented interface.
+The signature experience is **the explained circuit**: a real board paired with
+clear, grounded explanations of the selected part. Decorative shaders remain
+an optional experiment outside the initial implementation.
 
 Design the entire journey so it remains coherent. Ship it as successive vertical
 slices, not a replacement application assembled from static canvas exports.
@@ -34,6 +39,8 @@ all CSS at the same time as changing the experience.
 ## 2. Authority and first actions for the next AI
 
 The owner explicitly said **not to implement yet**. This file is preparation.
+The later instruction to update the plan accepts the richer design exploration
+as planning content; it does not authorize Paper setup, canvas work or runtime changes.
 Only after a later explicit implementation instruction:
 
 1. Inspect Git status/worktrees; fetch latest `origin/main`; start an isolated
@@ -114,13 +121,74 @@ Do not import live project histories, private boards, provider responses, secret
 or copyrighted private datasheet bundles. Never expose an API publicly or loosen
 production CORS to make a design import work. [P3, P8]
 
-## 5. Design direction: a clear electronics workbench
+## 5. Art direction and the signature experience
 
-The proposed visual direction is **a precise instrument workspace with a patient
-mentor beside it**. Retain Ohmni's dark blue identity and readable scale; reduce
-repeated gradients, oversized explanatory panels, and equal-weight controls.
-Use the real board as the main visual. This is a design recommendation requiring
-review of actual Paper frames, not an approved final appearance.
+The experience to design is **the explained circuit**. A newcomer should see a
+beautiful board, select a part using its readable name, and understand what it
+does, what the saved records establish and what remains unknown. The existing
+dark-blue identity is a starting point, not a requirement to reproduce the current
+layout. The working application constrains behavior, not the quality of art direction.
+
+### Compare three visual directions in Paper
+
+| Direction | Composition and character | Question the comparison should answer |
+|---|---|---|
+| Precision instrument | Calm dark workspace, carefully aligned controls, strong typographic hierarchy, restrained technical detail | Does precision feel approachable to a beginner? |
+| Engineering notebook | Annotated board, explanations near the relevant object, clear source/evidence hierarchy | Can a person understand why a part is there without opening many panels? |
+| Conversational studio | Spacious entry and plan review that opens into a board-focused workspace, with the mentor beside it | Does the transition from conversation to hardware feel continuous? |
+
+Design the same two scenes in each direction: a ready-to-review plan and a result
+with a selected component. Use identical bounded fixture content and engineering
+statuses so visual differences can be compared fairly. Choose one of those scenes
+and adapt that same scene to mobile in all three directions: six desktop concepts
+and three mobile concepts, not three full apps.
+
+Compare primary-action clarity, reading hierarchy, technical credibility, distinctive
+identity and mobile legibility. Record reviewer observations and choose one coherent
+direction with a rationale. Do not average all three into a generic mixture. The
+choice must remain inside subsequently approved scope; no runtime authority follows
+from a favourable visual review. No final frames or visual direction are approved yet.
+
+### Storyboard idea -> plan -> actual activity -> board
+
+The memorable transition should help the person follow their project:
+
+1. Their typed idea remains visible while planning is pending.
+2. A returned structured plan becomes a readable summary with assumptions and a
+   clear confirmation action. It is still a proposal, not a checked circuit.
+3. After explicit confirmation and successful saving, the summary can settle into
+   a compact project header while actual generation activity occupies the workspace.
+4. When a valid result and its board projection are available, reveal the board
+   alongside the check summary. A completed job alone does not authorize exports.
+5. Selecting a part highlights it and updates its explanation without replacing
+   the board renderer or losing the selected project/revision.
+
+Paper defines these as storyboard frames and annotations. Application code and
+the retained renderer implement any motion; native executable Paper app animation
+is not assumed. Design one principal reveal plus short control feedback. Do not
+morph a fictional circuit into the result, simulate progress, or imply a trace
+animation proves actual current flow.
+
+For each transition record: actual controller event/data predicate, start/end
+layout, proposed duration/easing, focus destination, mobile layout, interrupted
+or failed state, Back behavior and instant reduced-motion alternative. Animation
+must not delay access to completed information or steal focus during polling.
+The full journey must remain usable with all decorative motion disabled.
+
+### Connect the selected part to its explanation
+
+Design an inspector with a readable part name, role, recorded facts and sources,
+and an explicit unknown/unavailable state. Map each proposed field to a real
+existing payload field before implementation; unsupported facts are omitted or
+labelled unknown. Use selection and existing camera controls to connect the board
+to the explanation. Preserve a keyboard-operable textual parts list.
+
+An “Ask about this part” affordance is conditional on actual assistant support.
+Audit the existing request contract and returned scope first. Selection alone
+does not transmit context to the model. If a supported path exists, expose the
+named part in an editable question and send only on the user's action; do not
+silently make a paid call. New context fields, backend reasoning or unsupported
+answers are separately scoped work. The grounded inspector stands on its own.
 
 ### Layout and content hierarchy
 
@@ -156,13 +224,16 @@ remain reachable in normal reading order. No permanently squeezed inspector.
 
 ### Tokens and components
 
-Begin with existing `styles.css` tokens instead of replacing the palette blindly:
+Use existing `styles.css` tokens as the baseline for visual comparisons:
 canvas `#030810`, surface `#091424`, raised surface `#101f34`, text `#f4f6fc`,
 secondary text `#bfcee2`, action `#55d9ff`. Preserve separate pass/warn/fail/unknown
 tokens and status text; brand color must not imply an engineering verdict.
-These are current values, not newly certified final combinations.
+These are current values, not newly certified final combinations or a limit on
+exploration. A selected direction may propose new semantic values, with explicit
+mapping, contrast checks and no change to status meaning.
 
-Keep the existing system font stack for the initial slice. Define a deliberate
+Compare typography deliberately in Paper; retain the existing system font stack
+as the implementation baseline. Define a deliberate
 relative type scale around the current 18px reading size, body line-height around
 1.5–1.6, and a 65–75-character reading measure. System fonts are not inherently
 unprofessional. A custom font is optional later, with a license, self-hosted
@@ -241,12 +312,25 @@ approved, with honest provenance.
 
 ### PFR-T01: design complete states and review the direction
 
-Create a design-system/pattern page and desktop/mobile boards for: entry, pending,
+First complete the three-direction comparison and select one direction using
+Section 5. Then create its design-system/pattern page and desktop/mobile boards for: entry, pending,
 clarification, plan-ready, recoverable failure, build-running/failed, result with
 selected component, and qualified export. Include guided setup and dialogs as
 variants in the same system. Use actual bounded copy and labelled test data.
 Add 1440px desktop and 390px mobile frames; validate the implementation at 320px
 and intermediate widths too. Fixed frames alone do not prove responsiveness.
+
+Place the signature storyboard beside those frames. Beside each pattern, show its
+relevant focus, selected, pending, error, unknown, stale and disabled variants.
+Record actual HTML semantics and controller events. This pattern/state atlas is
+the reusable design reference; it does not depend on native Paper component instances.
+
+**Required design deliverable before production UI edits:** the comparable concept
+frames, one selected direction and rationale, token mapping, complete state map,
+and annotated signature storyboard. Design and engineering reviewers must find
+no blocking conflict with semantics, current behavior or accessibility. Resolve
+material scope choices before production edits; routine styling choices within
+approved scope do not need repeated permission.
 
 Have one person/agent own each artboard while editing. Other reviewers comment
 or work on separate frames. Paper supports collaboration; this is a collision
@@ -265,10 +349,32 @@ Future handoff location: `docs/design/paper/` (not created by this audit). Recor
 - Token mapping from Paper name to existing CSS variable, including unmapped values.
 - Small approved screenshots/exports with hashes and asset/license provenance.
 - Review findings, accepted direction, implementation PR and matched screenshots.
+- Concept comparison and selection rationale; storyboard triggers, motion and
+  reduced-motion alternatives; field-to-payload mappings for the inspector.
 
 Keep only small review artifacts in Git. Use approved storage for long recordings;
 do not put private design/user content or megabytes of redundant exports in the repo.
 Do not rely on a Paper URL alone as the future AI's specification.
+
+### Close the implementation-to-design review loop
+
+After each implemented slice, use a labelled local fixture to capture the same
+state and viewport as the selected frame. Where setup is approved and the pilot
+confirms fidelity, Paper Snapshot can bring the page into editable design layers.
+Otherwise use screenshots and record that Snapshot was not used. [P9]
+
+Compare intended and actual typography, spacing, wrapping, hierarchy, focus styles
+and mobile composition. Use Paper comments to attach a concrete finding to its
+frame, assign it, resolve the implementation change and recapture. Keep the app
+commit, frame ID, viewport, state, capture method and unresolved differences in
+the repository handoff. Approve intentional deviations explicitly; do not chase
+pixel matching that would harm semantics or responsive behavior.
+
+Snapshot is not a WebGL/state/event export or an accessibility verifier. Use an
+approved screenshot of the actual fixture board for the design reference where
+needed; retain the real renderer in production. Imported imagery follows the
+privacy boundary in Section 4. This loop adds visual review, not a replacement
+for the browser interaction and accessibility gates.
 
 ## 8. Implementation seams and boundaries
 
@@ -345,8 +451,17 @@ not establish field INP or real-user performance. [W2] The baseline comparison
 must show no material regression before optional visual effects ship.
 
 Avoid extra WebGL shaders in the initial workbench. The board already uses GPU
-resources. Any later shader must have a static fallback, motion preference and
+resources. An optional later Paper experiment may compare a single subtle shader
+in one decorative landing-page region with an equally usable static version.
+The Paper Shaders project supplies a vanilla-JavaScript package; it requires
+version pinning and compatibility work with this app's static serving. [P10]
+Do not introduce a bundler or a bare npm import merely to include it.
+
+Any later shader must have a static fallback, motion preference and
 visibility handling, bounded pixel density, proper disposal and separate profiling.
+Disable it for reduced motion and hidden views, and retain the static design if
+it regresses interaction, readability or the agreed performance budget. This
+experiment is not on the critical path and its shipping is separately approved.
 No animation may represent actual current flow or engineering checks unless the
 underlying projection supports that meaning.
 
@@ -414,16 +529,21 @@ these engineering estimates. Waiting for review/merges and provisioning is addit
 | Proposed unit | Scope and gate | Estimate |
 |---|---|---|
 | PFR-T00 | Tool/quota/semantic handoff pilot; no upgrade without owner | 30–45 min |
-| PFR-T01 | Tokens, pattern sheet, complete state map; review representative desktop/mobile direction | 1.5–2.5 h |
+| PFR-T01 | Three comparable directions, choose one, tokens/state atlas and annotated signature storyboard | 3–4.5 h |
 | PFR-T02 | PR: existing shell + composer + clarification + plan + recovery + guided visual continuity | 2–3 h |
-| PFR-T03 | PR: activity, result/inspector, assistant and export consistency, retaining renderer and gates | 2–3 h |
+| PFR-T03 | PR: actual activity, board reveal, grounded inspector, existing assistant and export; retain renderer/gates | 2.5–4 h |
 | PFR-T04 | Mandatory browser/newcomer QA and evidence; separate fixes PR if findings remain; optional further dialogs/landing polish | 1.5–2.5 h |
 
-Total planning estimate: **7.5–12 hours of focused work**, plus reviews and any
-required environment repair. A smaller first slice can fit roughly 4–6 hours;
+Revised planning estimate with the richer design exploration: **9.5–15 hours of
+focused work**, plus reviews and any required environment repair. This supersedes
+the earlier 7.5–12-hour estimate. A smaller first slice including the design
+exploration and mandatory QA can fit roughly **7–11 hours**, plus review time;
 do not call that a complete frontend redesign. Finishing T02 must leave the old
 downstream flow fully working. Cut optional shaders, custom fonts, light mode,
 prototype cleanup and framework migration before cutting recovery or test coverage.
+Paper call consumption is measured in T00 and revisited before T01; do not assume
+nine concept frames plus state designs fit the free allowance. Stop before an
+unapproved upgrade. Optional shader/custom-font work is excluded from this estimate.
 
 The preferred hackathon story is a demonstrably clearer end-to-end experience.
 Schedule feature freeze with time for one real demo rehearsal and recovery test.
@@ -445,7 +565,11 @@ with the proposed Sentry plan without implementing or approving it implicitly.
 | Result truth | Checks/unknowns/source status remain explicit; sample board cannot masquerade as generated result; stale exports stay unavailable |
 | Conversation | Questions remain scoped to the revision; applying a proposal requires confirmation and new checks |
 | Renderer | Selection/camera survives UI updates; keyboard/touch alternatives, fallback, reduced motion and disposal tested |
+| Design selection | Same-content concept comparison, one recorded direction and token mapping; no unsupported controls in the chosen frames |
+| Signature interaction | Actual data/event triggers, no premature result, correct focus and Back behavior; instant reduced-motion path |
+| Inspector grounding | Every displayed fact has a payload basis or unknown state; no inferred assistant context or automatic model request |
 | Visual system | Compared desktop/mobile states, long copy, contrast/focus and intermediate widths; no missing stylesheet/module |
+| Design-to-code review | Matched frame/app-state captures with commit, viewport and resolved differences; semantic tests remain separate |
 | Real browser | Actual focus/layout/navigation assertions; fake-DOM Node tests alone are insufficient |
 | Release | Same intended asset revision on static/backend serving, old-tab recovery, no bad MIME or unresolved imports |
 | Demo | Clearly labelled fixture versus live engineering run; no paid call without approval |
@@ -495,7 +619,10 @@ pre-existing Ohmni features and preparation separately from event work.
 Proposed judging evidence: same-task before/after journey, Paper frames/tokens,
 one actual agent design edit, the corresponding application screen, keyboard
 recovery, and an honest real-or-fixture-labelled board inspection. Record design
-decisions and what improved. No unsupported claim that shaders are required to win.
+decisions and what improved. Include the three-direction comparison, why one won,
+its storyboard and one resolved design-to-code discrepancy. Distinguish recorded
+design exploration from functioning product behavior. No unsupported claim that
+shaders are required to win.
 
 ## 13. Sources and independent review
 
@@ -510,6 +637,8 @@ marketing shorthand. Features/pricing are dated observations, not permanent fact
 - [P6: Pricing and MCP allowances](https://paper.design/pricing), [subscription terms](https://paper.design/legal/tos).
 - [P7: Tokens and roadmap limitations](https://paper.design/docs/tokens).
 - [P8: Privacy policy](https://paper.design/legal/privacy).
+- [P9: Paper Snapshot](https://paper.design/snapshot).
+- [P10: Official Paper Shaders repository and vanilla package](https://github.com/paper-design/shaders).
 - [W1: CSS cascade layers](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@layer).
 - [W2: Core Web Vitals thresholds and measurement basis](https://web.dev/articles/defining-core-web-vitals-thresholds).
 - [W3: Text contrast](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html), [non-text contrast](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html).
@@ -520,16 +649,22 @@ marketing shorthand. Features/pricing are dated observations, not permanent fact
 - [E1: Event rules](https://la-ai-hackathon-2026.devpost.com/rules), [organizer site](https://ai.lahacks.com/).
 
 Review status: independent repository, primary-source and UX/accessibility audits
-identified the corrections incorporated above. All three final document reviews
+identified the corrections incorporated in the original PR #70 plan. All three original final document reviews
 passed with no remaining BLOCKER/HIGH findings. Their clarifications about actual
 transcript data, focused controls and visual-manifest regeneration are incorporated.
 An additional adversarial review using `gpt-6-astra` at `ultra` reasoning also
 passed with no BLOCKER/HIGH findings; its clarification that QA is mandatory
 even when a separate fixes PR is unnecessary is incorporated.
+The richer design-expansion revision received separate independent UX and
+adversarial reviews, both with no BLOCKER/HIGH findings; the adversarial review
+used `gpt-6-astra` at `ultra` reasoning. Their clarifications are incorporated:
+the smaller slice includes mandatory QA, mobile concepts compare the same scene,
+and historical validation has an explicit baseline. The original reviews are not
+automatically evidence for newly added design scope.
 These reviews assess this plan only; they do not approve implementation or certify
 future accessibility, performance, Paper connectivity or sponsor eligibility.
 
-Documentation audit validation at the baseline above:
+Original PR #70 documentation audit validation at baseline `7f91881d`:
 
 | Check | Actual result |
 |---|---|
@@ -539,8 +674,15 @@ Documentation audit validation at the baseline above:
 | Frontend Node suite | 1,088 passed, no failures or skips |
 | Local Markdown links, source labels, code fences, diff whitespace | Passed |
 
-Only this plan and its documentation-index link changed. These results establish
-the existing code baseline; no Paper-based UI has been implemented or tested.
+In PR #70, only this plan and its documentation-index link changed. These results
+establish that original code baseline; no Paper-based UI was implemented or tested.
+
+The design-expansion revision based on `df69976e` changes only this plan. Fresh
+validation passed: `ai_state.py validate`, workflow (12 passed), fast (2,439 passed,
+86 skipped, 62 deselected), frontend Node (1,088 passed, no failures or skips),
+and local Markdown links, source labels, code fences and diff whitespace. Skipped
+checks are not evidence that their underlying behavior was exercised. No runtime
+implementation, Paper setup or paid service activation occurred in this revision.
 
 ## 14. Copyable next-agent handoff
 
@@ -550,9 +692,14 @@ the existing code baseline; no Paper-based UI has been implemented or tested.
 > protected behavior paths; fetch latest origin/main and branch independently.
 > Revalidate the actual chat/project controllers and static asset registration.
 > Run the small Paper feasibility gate before committing to its design workflow.
+> Compare three directions using the same two scenes and mobile adaptations,
+> select one, and finish its state atlas and annotated signature storyboard before
+> production edits. Tie the selected-part explanation to actual payload fields.
 > Use public/synthetic content only. Keep existing vanilla JS controllers,
 > validators, confirmation/fingerprint rules, renderer and release gates.
 > Design complete states; migrate presentation one tested vertical slice at a time.
+> Compare each implemented slice back to its Paper frames with approved Snapshot
+> captures or screenshots. Keep the optional shader experiment off the critical path.
 > Do not delete prototype assets, rewrite fetch/state logic, add a framework,
 > activate paid services or assume exported canvas inputs remain accessible forms.
 > Verify keyboard, touch, mobile, failures, stale state and browser behavior in
