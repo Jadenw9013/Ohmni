@@ -12,7 +12,7 @@ from pathlib import Path
 
 from pydantic import BaseModel, Field
 
-from ..adapters import LlmProvider, StructuredGenerationRequest
+from ..adapters import LlmProvider, StructuredGenerationRequest, telemetry
 from ..bom import calculate_cost, classify_assembly, generate_bom, synthetic_fixture_supplier
 from ..catalog import default_catalog
 from ..domain import VerificationReport
@@ -114,6 +114,16 @@ def require_eda_check(report,label):
         raise EdaToolFailedError(f"KiCad {label} could not complete; local diagnostics were retained")
     if report.status.value not in {"pass","pass_with_warnings"}:
         raise RuntimeError(f"KiCad {label} checks did not pass")
+
+
+def eda_engineering_outcome(report) -> str:
+    """Owned telemetry outcome of a completed KiCad check; never a new verdict."""
+    status = getattr(getattr(report, "status", None), "value", None)
+    if status in {"pass", "pass_with_warnings"}:
+        return "pass"
+    if status == "fail":
+        return "reject"
+    return "unknown"
 
 
 def require_demo_request(value: object) -> str:
@@ -302,12 +312,16 @@ class DemoPipeline:
         catalog = default_catalog()
         self._progress("requirements", "Reading what you asked for", "RUNNING", 5,
                        "Turning your description into a specification.")
-        design = DesignOrchestrator(flawed_logger_provider(), catalog).design(
-            request, output=destination / "golden.kicad_sch", run_eda=True,
-        )
-        if design.erc is not None:
-            (destination / "erc-report.json").write_text(design.erc.model_dump_json(indent=2),encoding="utf-8")
-            require_eda_check(design.erc,"ERC")
+        # One honest coarse span: the scripted orchestrator runs its own
+        # proposal/check/repair/schematic/ERC steps inside this call.
+        with telemetry.stage("design_orchestrate") as span:
+            design = DesignOrchestrator(flawed_logger_provider(), catalog).design(
+                request, output=destination / "golden.kicad_sch", run_eda=True,
+            )
+            if design.erc is not None:
+                (destination / "erc-report.json").write_text(design.erc.model_dump_json(indent=2),encoding="utf-8")
+                span.outcome("ok", eda_engineering_outcome(design.erc))
+                require_eda_check(design.erc,"ERC")
         if not design.final_circuit or not design.artifact or not design.erc:
             raise RuntimeError(f"design pipeline failed: {[issue.message for issue in design.issues]}")
         self._progress("repair", "Found an electrical problem and fixed it", "PASS", 25,
@@ -335,12 +349,14 @@ class DemoPipeline:
         catalog = default_catalog()
         self._progress("requirements", "Reading what you asked for", "RUNNING", 5,
                        "Turning your description into a specification.")
-        design = DesignOrchestrator(self.provider, catalog).design(
-            request, output=destination / "golden.kicad_sch", run_eda=True,
-        )
-        if design.erc is not None:
-            (destination / "erc-report.json").write_text(design.erc.model_dump_json(indent=2),encoding="utf-8")
-            require_eda_check(design.erc,"ERC")
+        with telemetry.stage("design_orchestrate") as span:
+            design = DesignOrchestrator(self.provider, catalog).design(
+                request, output=destination / "golden.kicad_sch", run_eda=True,
+            )
+            if design.erc is not None:
+                (destination / "erc-report.json").write_text(design.erc.model_dump_json(indent=2),encoding="utf-8")
+                span.outcome("ok", eda_engineering_outcome(design.erc))
+                require_eda_check(design.erc,"ERC")
         if not design.final_circuit or not design.artifact or not design.erc:
             raise RuntimeError(f"design pipeline failed: {[issue.message for issue in design.issues]}")
         self._progress("repair", "Checked the proposed circuit", "PASS", 25,
@@ -361,7 +377,8 @@ class DemoPipeline:
             raise ValueError("Product routing requires a finite, nonnegative time budget")
         circuit = design.final_circuit
         compiler = KiCadPcbCompiler(catalog)
-        placed = compiler.compile(circuit, design.artifact, board, destination / "golden.placed.kicad_pcb")
+        with telemetry.stage("pcb_compile"):
+            placed = compiler.compile(circuit, design.artifact, board, destination / "golden.placed.kicad_pcb")
         if not placed.compilation.physical_verification.passed or any(
             finding.status.value != "pass" for finding in placed.compilation.physical_verification.findings
         ):
@@ -372,10 +389,14 @@ class DemoPipeline:
                        "This is the slow part. Copper paths on the board replace what would "
                        "be wires on a breadboard, and every one has to reach its destination "
                        "without crossing another.")
-        plan = DeterministicRouter().route(circuit, placed, board,
-                                           time_budget_seconds=routing_time_budget_seconds)
+        with telemetry.stage("routing") as span:
+            plan = DeterministicRouter().route(circuit, placed, board,
+                                               time_budget_seconds=routing_time_budget_seconds)
+            span.outcome("ok", "reject" if plan.failures else "pass")
         (destination / "routing-plan.json").write_text(plan.model_dump_json(indent=2), encoding="utf-8")
-        route_report = verify_routing(circuit, placed, board, plan)
+        with telemetry.stage("routing_verification") as span:
+            route_report = verify_routing(circuit, placed, board, plan)
+            span.outcome("ok", "pass" if route_report.passed else "reject")
         (destination / "routing-verification.json").write_text(
             route_report.model_dump_json(indent=2), encoding="utf-8",
         )
@@ -389,7 +410,8 @@ class DemoPipeline:
             self._progress("routing", "The copper checks found a problem", "FAIL", 40,
                            "Independent routing verification did not pass; diagnostics were retained.")
             raise RuntimeError("independent routing verification failed")
-        routed = compiler.compile(circuit, design.artifact, board, destination / "golden.kicad_pcb", plan)
+        with telemetry.stage("pcb_compile"):
+            routed = compiler.compile(circuit, design.artifact, board, destination / "golden.kicad_pcb", plan)
         if not routed.compilation.physical_verification.passed or any(
             finding.status.value != "pass" for finding in routed.compilation.physical_verification.findings
         ):
@@ -397,26 +419,31 @@ class DemoPipeline:
         self._progress("routing", "Checked every copper path separately", "PASS", 75,
                        f"A different checker confirmed all {plan.statistics.required_connections} "
                        "connections actually join up.")
-        drc = KiCadCliAdapter().run_drc(routed)
-        (destination / "drc-report.json").write_text(drc.model_dump_json(indent=2),encoding="utf-8")
-        require_eda_check(drc,"DRC")
+        with telemetry.stage("drc") as span:
+            drc = KiCadCliAdapter().run_drc(routed)
+            (destination / "drc-report.json").write_text(drc.model_dump_json(indent=2),encoding="utf-8")
+            span.outcome("ok", eda_engineering_outcome(drc))
+            require_eda_check(drc,"DRC")
         if drc.findings or drc.unconnected_items or drc.status.value not in {"pass", "pass_with_warnings"}:
             raise RuntimeError("KiCad DRC did not close cleanly")
         self._progress("drc", "KiCad checked the finished board", "PASS", 82,
                        f"{len(drc.findings)} problems, {len(drc.unconnected_items)} missing connections.")
 
         profile = prototype_profile()
-        manufacturing = verify_manufacturing(routed, board, plan, profile)
+        with telemetry.stage("manufacturing") as span:
+            manufacturing = verify_manufacturing(routed, board, plan, profile)
+            span.outcome("ok", "pass" if manufacturing.passed else "reject")
         if not manufacturing.passed:
             raise RuntimeError("manufacturing profile verification failed")
         self._progress("manufacturing", "Checked the example manufacturing limits", "PASS", 87,
                        "This profile is synthetic; a fabricator must confirm its actual capabilities.")
-        bom = generate_bom(circuit, catalog)
-        costs = calculate_cost(bom, synthetic_fixture_supplier(bom), 1)
-        assembly = classify_assembly(bom,catalog=catalog)
-        package = KiCadFabricationExporter().export(
-            routed, drc, manufacturing, profile, destination / "fabrication",
-        )
+        with telemetry.stage("packaging"):
+            bom = generate_bom(circuit, catalog)
+            costs = calculate_cost(bom, synthetic_fixture_supplier(bom), 1)
+            assembly = classify_assembly(bom,catalog=catalog)
+            package = KiCadFabricationExporter().export(
+                routed, drc, manufacturing, profile, destination / "fabrication",
+            )
         self._progress("release", "Your board is ready to review", "PASS_WITH_WARNINGS", 100,
                        "Files packaged. Nothing has been built or measured yet.")
         return project_demo_report(

@@ -24,6 +24,7 @@ from types import MappingProxyType
 from typing import Any, NamedTuple
 from urllib.parse import unquote, urlsplit
 
+from ohmni.adapters import telemetry
 from ohmni.application import DEMO_REQUEST, DemoPipeline, preview_brief
 from ohmni.application.demo import EdaToolFailedError, RoutingIncompleteError, current_pcb_policy
 from ohmni.application.project_store import (
@@ -174,12 +175,34 @@ DIAGNOSTIC_EVENTS={
     "server_ready","server_bind_failed","server_init_failed","server_runtime_failed",
     "request_runtime_failed","request_rejected","job_queued","worker_started","job_running",
     "job_completed","job_failed","job_start_unavailable","brief_unavailable",
+    "telemetry_enabled","telemetry_disabled",
 }
+#: Constant reasons a local diagnostic may give for telemetry being inactive.
+TELEMETRY_STATES={"enabled","disabled","invalid","unsafe_environment","sdk_version_mismatch","init_failed","shutdown"}
 REJECTION_CODES={
     "fixture_rejected","api_version_mismatch","server_instance_mismatch",
     "ui_version_mismatch","job_not_found",
 }
 MAX_JSON_DEPTH=64
+
+
+_TELEMETRY_ROUTES=(
+    (re.compile(r"/api/project-plans"),"POST /api/project-plans"),
+    (re.compile(r"/api/project-plans/[0-9a-f]{16}/confirm"),"POST /api/project-plans/{plan}/confirm"),
+    (re.compile(r"/api/projects/[0-9a-f]{16}/revisions/[0-9a-f]{16}/assistant"),"POST /api/projects/{project}/revisions/{revision}/assistant"),
+    (re.compile(r"/api/projects/[0-9a-f]{16}/revisions/[0-9a-f]{16}/assistant/[0-9a-f]{16}/apply"),"POST /api/projects/{project}/revisions/{revision}/assistant/{turn}/apply"),
+    (re.compile(r"/api/projects/[0-9a-f]{16}/revisions/[0-9a-f]{16}/run"),"POST /api/projects/{project}/revisions/{revision}/run"),
+    (re.compile(r"/api/demo"),"POST /api/demo"),
+    (re.compile(r"/api/brief"),"POST /api/brief"),
+)
+
+
+def _telemetry_route(path):
+    """The normalized template for a traced POST target, or None (never the raw path)."""
+    if not telemetry.enabled() or type(path) is not str:return None
+    for pattern,route in _TELEMETRY_ROUTES:
+        if pattern.fullmatch(path):return route
+    return None
 
 
 class DemoInitializationError(RuntimeError):
@@ -229,6 +252,9 @@ def _diagnostic(event,**values):
         rejection_code=values.get("rejection_code")
         if type(rejection_code) is str and rejection_code in REJECTION_CODES:
             record["rejection_code"]=rejection_code
+        telemetry_state=values.get("telemetry_state")
+        if type(telemetry_state) is str and telemetry_state in TELEMETRY_STATES:
+            record["telemetry_state"]=telemetry_state
         sys.stderr.write(json.dumps(record,separators=(",",":"),sort_keys=True)+"\n")
         sys.stderr.flush()
     except BaseException:  # noqa: BLE001 - diagnostics must never affect server state
@@ -345,6 +371,10 @@ class JobStore:
         # None keeps every existing path scripted-only; a provider adds the
         # free-text branch inside the pipeline and nothing else here.
         self.provider=provider
+        # Telemetry bookkeeping only: the flow of each job this process launched,
+        # and persistence failures noted under the lock by the failing thread,
+        # emitted by that same thread after the lock is released.
+        self._job_flows={};self._pending_telemetry=threading.local()
         # A server/store restart gets a fresh cache. Cached values are immutable
         # hashes and bytes, so callers cannot rewrite another job's expectation.
         self._expected_project_geometry=lru_cache(maxsize=128)(_derive_project_geometry)
@@ -368,9 +398,29 @@ class JobStore:
         try:self.project_store.save_job(_owned_job_record(self.jobs[job_id],job_id));return True
         except BaseException:  # noqa: BLE001 - disk failures cannot leave a false completed job
             self.jobs[job_id]=self._failure_record(job_id)
+            recovered=True
             try:self.project_store.save_job(self.jobs[job_id])
-            except BaseException:self._emit("job_failed",job_id,"job_state_invalid")  # noqa: BLE001
+            except BaseException:recovered=False;self._emit("job_failed",job_id,"job_state_invalid")  # noqa: BLE001
+            self._note_telemetry(("persist_failed",job_id,recovered))
             return False
+    def _note_telemetry(self,entry):
+        """Record an owned tuple for this thread to emit once it holds no lock."""
+        try:
+            pending=getattr(self._pending_telemetry,"entries",None)
+            if pending is None:pending=self._pending_telemetry.entries=[]
+            if len(pending)<64:pending.append(entry)
+        except BaseException:return  # noqa: BLE001 - bookkeeping never affects job state
+    def _flush_telemetry(self):
+        """Emit this thread's noted persistence failures, outside every store lock."""
+        try:
+            pending=getattr(self._pending_telemetry,"entries",None)
+            if not pending:return
+            self._pending_telemetry.entries=[]
+            for _kind,job_id,recovered in pending:
+                telemetry.record_separate_failure("persistence","job_persist_failed")
+                if recovered:
+                    telemetry.record_job_terminal(self._job_flows.get(job_id,"other"),"failed","job_state_invalid")
+        except BaseException:return  # noqa: BLE001 - telemetry never affects job state
     def _admit_locked(self):
         active=sum(self._validated_job_locked(key)["status"] not in TERMINAL_JOB_STATUSES for key in self.jobs)
         if active>=self.max_active_jobs:raise RuntimeError("local job capacity reached")
@@ -382,6 +432,7 @@ class JobStore:
         """Terminalize active attempts before releasing the workspace lease."""
         with self.lock:active=[key for key in self.jobs if self._validated_job_locked(key)["status"] not in TERMINAL_JOB_STATUSES]
         for job_id in active:self._fail(job_id,"server_restarted")
+        self._flush_telemetry()
     def _emit(self,event,job_id,error_code=None):
         try:
             if self._diagnostic is not None:self._diagnostic(event,job_id=job_id,error_code=error_code)
@@ -390,14 +441,18 @@ class JobStore:
         """Launch a demo job. A billed request's ``lease`` is owned by the job
         from here: released when its worker ends, or now if it never launches."""
         job_id=uuid.uuid4().hex[:12]
+        flow="scripted_fixture" if self.provider is None or request==DEMO_REQUEST else "model_proposed"
         try:
             with self.lock:
                 self._admit_locked()
                 self.jobs[job_id]=self._queued_record(job_id)
+                self._job_flows[job_id]=flow
                 if not self._claim_locked(job_id):raise RuntimeError("local job persistence unavailable")
         except BaseException:
             if lease is not None:lease.release()
+            self._flush_telemetry()
             raise
+        telemetry.record_job_accepted(flow)
         if lease is None:self._launch(job_id,request)
         else:self._launch(job_id,request,lease=lease)
         return job_id
@@ -420,6 +475,9 @@ class JobStore:
         from ohmni.synthesis import SynthesisBrief
 
         if self.project_store is None:raise RuntimeError("local project persistence unavailable")
+        try:return self._start_revision(project_id,revision_id,ProjectPipeline,SynthesisBrief)
+        finally:self._flush_telemetry()
+    def _start_revision(self,project_id,revision_id,ProjectPipeline,SynthesisBrief):
         with self.lock:
             revision=self.project_store.revision(project_id,revision_id)
             if revision is None:return None
@@ -440,7 +498,8 @@ class JobStore:
             job_id=uuid.uuid4().hex[:12];record=self._queued_record(job_id)
             claimed=self.project_store.claim_job(project_id,revision_id,record,previous_job_id)
             if claimed!=job_id:return claimed
-            self.jobs[job_id]=record
+            self.jobs[job_id]=record;self._job_flows[job_id]="confirmed_project"
+        telemetry.record_job_accepted("confirmed_project")
         self._launch(job_id,brief,ProjectPipeline)
         return job_id
     def _launch(self,job_id,request,pipeline_factory=None,lease=None):
@@ -448,10 +507,15 @@ class JobStore:
         try:
             args=(job_id,request) if pipeline_factory is None else (job_id,request,pipeline_factory)
             kwargs={} if lease is None else {"lease":lease}
+            # Only bounded trace identifiers cross into the worker thread; never
+            # the request, its headers or the request's telemetry scope.
+            handoff=telemetry.capture_handoff()
+            if handoff is not None:kwargs["telemetry_handoff"]=handoff
             threading.Thread(target=self._run,args=args,kwargs=kwargs,daemon=True).start()
         except BaseException:  # noqa: BLE001 - the launch boundary must always terminalize the job
             if lease is not None:lease.release()
             self._fail(job_id,"worker_start_failed")
+            telemetry.record_boundary_failure("worker","worker_start_failed")
     @staticmethod
     def _failure_record(job_id,error_code="job_state_invalid"):
         return {"job_id":job_id,"status":"failed","progress":[],"report":None,"error":DEMO_FAILURE_MESSAGE,"error_code":error_code}
@@ -466,14 +530,19 @@ class JobStore:
             job=self._validated_job_locked(job_id)
             if job["status"] in TERMINAL_JOB_STATUSES:return
             self.jobs[job_id]=self._failure_record(job_id,error_code);changed=True
-            self._persist_locked(job_id)
+            persisted=self._persist_locked(job_id)
         if changed:self._emit("job_failed",job_id,error_code)
-    def _run(self,job_id,request,pipeline_factory=None,lease=None):
+        if changed and persisted:telemetry.record_job_terminal(self._job_flows.get(job_id,"other"),"failed",error_code)
+        self._flush_telemetry()
+    def _run(self,job_id,request,pipeline_factory=None,lease=None,telemetry_handoff=None):
         # The billed lease lives exactly as long as this worker's provider work.
-        try:self._run_pipeline(job_id,request,pipeline_factory)
-        finally:
-            if lease is not None:lease.release()
-    def _run_pipeline(self,job_id,request,pipeline_factory=None):
+        # The worker transaction spans the whole worker, publication included.
+        with telemetry.worker_operation(telemetry_handoff,self._job_flows.get(job_id,"other"),job_id) as operation:
+            try:self._run_pipeline(job_id,request,pipeline_factory,operation)
+            finally:
+                if lease is not None:lease.release()
+    def _run_pipeline(self,job_id,request,pipeline_factory=None,operation=None):
+        if operation is None:operation=telemetry.INERT_HANDLE
         self._emit("worker_started",job_id)
         def progress(event):
             try:
@@ -488,34 +557,54 @@ class JobStore:
                 if became_running:self._emit("job_running",job_id)
             except BaseException:  # noqa: BLE001 - progress is an untrusted publication boundary
                 self._fail(job_id,"progress_publication_failed")
+                telemetry.record_boundary_failure("worker","progress_publication_failed")
         try:
             with self.lock:
-                if self._validated_job_locked(job_id)["status"] in TERMINAL_JOB_STATUSES:return
+                if self._validated_job_locked(job_id)["status"] in TERMINAL_JOB_STATUSES:
+                    operation.outcome("ok","not_attempted");return
             factory=pipeline_factory or self.pipeline_factory
             pipeline=factory(progress) if pipeline_factory is not None or self.provider is None else factory(progress,provider=self.provider)
             report=pipeline.run(self.output_root/job_id,request)
             with self.lock:
-                if self._validated_job_locked(job_id)["status"] in TERMINAL_JOB_STATUSES:return
-            value=_owned_json_object(report.model_dump(mode="json"))
-            self._pcb_policy(value)
-            if pipeline_factory is not None:
-                # Project workers cannot publish a report for another input,
-                # even if the returned envelope otherwise looks well-formed.
-                lineage=self._project_lineage(job_id,value)
-                if lineage is None or lineage["brief_fingerprint"]!=request.fingerprint:raise ValueError
-            with self.lock:
-                job=self._validated_job_locked(job_id)
-                if job["status"] not in TERMINAL_JOB_STATUSES:
-                    job.update(status="complete",report=value);completed=self._persist_locked(job_id)
-                else:completed=False
-            if completed:self._emit("job_completed",job_id)
+                if self._validated_job_locked(job_id)["status"] in TERMINAL_JOB_STATUSES:
+                    operation.outcome("error");return
+            with telemetry.stage("report_validation"):
+                value=_owned_json_object(report.model_dump(mode="json"))
+                self._pcb_policy(value)
+                if pipeline_factory is not None:
+                    # Project workers cannot publish a report for another input,
+                    # even if the returned envelope otherwise looks well-formed.
+                    lineage=self._project_lineage(job_id,value)
+                    if lineage is None or lineage["brief_fingerprint"]!=request.fingerprint:raise ValueError
+            with telemetry.stage("publication") as publication:
+                with self.lock:
+                    job=self._validated_job_locked(job_id)
+                    if job["status"] not in TERMINAL_JOB_STATUSES:
+                        job.update(status="complete",report=value);completed=self._persist_locked(job_id)
+                    else:completed=False
+                publication.outcome("ok" if completed else "error")
+            if completed:
+                self._emit("job_completed",job_id)
+                telemetry.record_job_terminal(self._job_flows.get(job_id,"other"),"complete")
+                operation.outcome("ok","pass")
+            else:operation.outcome("error")
+            self._flush_telemetry()
         except RoutingIncompleteError:
             # Preserve one owned actionable code, never exception text or paths.
             self._fail(job_id,"routing_incomplete")
+            operation.outcome("ok","reject")
         except EdaToolFailedError:
             self._fail(job_id,"eda_tool_failed")
+            telemetry.record_boundary_failure("worker","eda_tool_failed")
+            operation.outcome("error","unknown")
         except BaseException:  # noqa: BLE001 - the worker boundary must always terminalize the job
             self._fail(job_id,"pipeline_failed")
+            # A failure after a recorded engineering rejection is that rejection,
+            # not an infrastructure issue; nested reports are owned once.
+            if telemetry.engineering_rejected():operation.outcome("ok","reject")
+            else:
+                telemetry.record_boundary_failure("worker","pipeline_failed")
+                operation.outcome("error")
     def _snapshot(self,job_id):
         """Serve the record the database holds, and require it to match memory.
 
@@ -904,6 +993,7 @@ class DemoHTTPServer(ThreadingHTTPServer):
 
 class DemoHandler(SimpleHTTPRequestHandler):
     _ALLOWED_ORIGINS=frozenset(filter(None,(o.strip() for o in os.environ.get("ALLOWED_ORIGINS","").split(","))))
+    _telemetry=telemetry.INERT_HANDLE
     def __init__(self,*args,**kwargs):super().__init__(*args,directory=str(WEB_ROOT),**kwargs)
     def log_message(self,_format,*_args):return
     def end_headers(self):
@@ -915,7 +1005,9 @@ class DemoHandler(SimpleHTTPRequestHandler):
         if origin and (not self._ALLOWED_ORIGINS or origin in self._ALLOWED_ORIGINS):
             self.send_header("access-control-allow-origin",origin)
             self.send_header("access-control-allow-methods","GET,POST,OPTIONS")
-            self.send_header("access-control-allow-headers","content-type,x-ohmni-api-version,x-ohmni-server-instance,x-ohmni-ui-version")
+            # sentry-trace/baggage are accepted only from already-allowed origins;
+            # the origin policy itself is unchanged.
+            self.send_header("access-control-allow-headers","content-type,x-ohmni-api-version,x-ohmni-server-instance,x-ohmni-ui-version,sentry-trace,baggage")
             self.send_header("vary","origin")
         super().end_headers()
     def do_OPTIONS(self):
@@ -925,6 +1017,7 @@ class DemoHandler(SimpleHTTPRequestHandler):
         except BaseException:  # noqa: BLE001 - response values are another untrusted serialization boundary
             self.server._job_diagnostic("request_runtime_failed")
             body=b'{"error":"response_unavailable"}';status=HTTPStatus.INTERNAL_SERVER_ERROR
+        self._telemetry.set_status(int(status))
         self.send_response(status);self.send_header("content-type","application/json");self.send_header("content-length",str(len(body)));self.end_headers();self.wfile.write(body)
     def _admit_billed(self,route,*,refusal=True):
         """Admit one billed provider request, or answer 429/503 and return None.
@@ -947,6 +1040,7 @@ class DemoHandler(SimpleHTTPRequestHandler):
         return None
     def _send_limited(self,value,status,retry_after):
         body=json.dumps(value).encode()
+        self._telemetry.set_status(int(status))
         self.send_response(status);self.send_header("content-type","application/json")
         if retry_after is not None:self.send_header("retry-after",str(int(retry_after)))
         self.send_header("content-length",str(len(body)));self.end_headers();self.wfile.write(body)
@@ -1036,7 +1130,11 @@ class DemoHandler(SimpleHTTPRequestHandler):
             if self.server.store.provider is not None:
                 lease=self._admit_billed("assistant")
                 if lease is None:return
-            try:result=self.server.assistant.ask(project_id,revision_id,payload["message"],parent)
+            try:
+                with telemetry.stage("assistant_proposal") as span:
+                    try:result=self.server.assistant.ask(project_id,revision_id,payload["message"],parent)
+                    except ProjectRefusalError:span.outcome("ok","reject");raise
+                    except PlanUnavailable:span.outcome("ok","not_attempted");raise
             finally:
                 if lease is not None:lease.release()
             return self._json({"turn":result,**self.server._identity()})
@@ -1045,8 +1143,13 @@ class DemoHandler(SimpleHTTPRequestHandler):
         except ProjectRefusalError as error:
             return self._json({"error":"project_refused","refusal":error.refusal.model_dump(mode="json")},HTTPStatus.UNPROCESSABLE_ENTITY)
         except (ValueError,TypeError):
+            # Before any model call this is the caller's input; after one, the
+            # model's answer failed validation (a provider failure owns itself).
+            if telemetry.provider_calls_in_operation():
+                telemetry.record_boundary_failure("assistant","assistant_output_rejected",level="warning")
             return self._json({"error":"invalid_proposal","refusal":{"message":"This response could not be grounded in your saved project. Ask again or use the detailed controls."}},HTTPStatus.BAD_REQUEST)
         except Exception:  # noqa: BLE001 - do not expose provider credentials or storage paths
+            telemetry.record_boundary_failure("assistant","assistant_unavailable")
             return self._json({"error":"assistant_unavailable","refusal":{"message":"Assistance is unavailable. Your saved revision is unchanged. Try again or use the detailed controls."}},HTTPStatus.SERVICE_UNAVAILABLE)
 
     def _post_plan(self,plan_id=None):
@@ -1065,7 +1168,11 @@ class DemoHandler(SimpleHTTPRequestHandler):
             if self.server.store.provider is not None:
                 lease=self._admit_billed("planner")
                 if lease is None:return
-            try:result=self.server.planner.propose(payload["message"],parent)
+            try:
+                with telemetry.stage("plan_proposal") as span:
+                    try:result=self.server.planner.propose(payload["message"],parent)
+                    except ProjectRefusalError:span.outcome("ok","reject");raise
+                    except PlanUnavailable:span.outcome("ok","not_attempted");raise
             finally:
                 if lease is not None:lease.release()
             return self._json({"plan":result,**self.server._identity()})
@@ -1074,8 +1181,13 @@ class DemoHandler(SimpleHTTPRequestHandler):
         except ProjectRefusalError as error:
             return self._json({"error":"project_refused","refusal":error.refusal.model_dump(mode="json")},HTTPStatus.UNPROCESSABLE_ENTITY)
         except (ValueError,TypeError):
+            # A provider outage arrives here too (StructuredGenerationError is a
+            # ValueError); the provider boundary has already reported it once.
+            if telemetry.provider_calls_in_operation():
+                telemetry.record_boundary_failure("planner","plan_output_rejected",level="warning")
             return self._json({"error":"invalid_plan","refusal":{"message":"The plan could not be validated. Keep your requirements and try again or use guided setup."}},HTTPStatus.BAD_REQUEST)
         except Exception:  # noqa: BLE001 - provider and storage failures never disclose credentials or paths
+            telemetry.record_boundary_failure("planner","planner_unavailable")
             return self._json({"error":"plan_unavailable","refusal":{"message":"Planning is unavailable right now. Your request is still here. Try again or use guided setup."}},HTTPStatus.SERVICE_UNAVAILABLE)
 
     def _post_project(self,project_id=None):
@@ -1111,6 +1223,7 @@ class DemoHandler(SimpleHTTPRequestHandler):
             if job_id is None:return self._json({"error":"revision_not_found"},HTTPStatus.NOT_FOUND)
             job=self.server.store.get(job_id)
             if job is None:raise ValueError
+            self._telemetry.set_job(job_id)
             return self._json({"job_id":job_id,"status":job["status"],**self.server._identity()},HTTPStatus.ACCEPTED)
         except BaseException:  # noqa: BLE001 - bounded admission and persistence can refuse a launch
             return self._json({"error":"job_start_unavailable"},HTTPStatus.SERVICE_UNAVAILABLE)
@@ -1191,6 +1304,14 @@ class DemoHandler(SimpleHTTPRequestHandler):
         return None
 
     def do_POST(self):
+        """Dispatch one POST, inside a server transaction for traced routes only."""
+        route=_telemetry_route(self.path)
+        if route is None:return self._dispatch_post()
+        with telemetry.http_operation(route,self.headers.get("sentry-trace"),self.headers.get("baggage")) as operation:
+            self._telemetry=operation
+            try:return self._dispatch_post()
+            finally:self._telemetry=telemetry.INERT_HANDLE
+    def _dispatch_post(self):
         assistant_path=re.fullmatch(r"/api/projects/([0-9a-f]{16})/revisions/([0-9a-f]{16})/assistant(?:/([0-9a-f]{16})/apply)?",self.path)
         if assistant_path:return self._post_assistant(*assistant_path.groups())
         if self.path=="/api/project-plans":return self._post_plan()
@@ -1225,6 +1346,7 @@ class DemoHandler(SimpleHTTPRequestHandler):
         except BaseException:  # noqa: BLE001 - request threads must not leak failures
             self.server._job_diagnostic("job_start_unavailable")
             return self._json({"error":"job_start_unavailable"},HTTPStatus.SERVICE_UNAVAILABLE)
+        self._telemetry.set_job(job_id,reused=False)
         self._json({"job_id":job_id,"status":"queued",**self.server._identity()},HTTPStatus.ACCEPTED)
     def _post_brief(self):
         """Interpret the supported request into a brief, before any engineering.
@@ -1244,10 +1366,13 @@ class DemoHandler(SimpleHTTPRequestHandler):
         if request!=DEMO_REQUEST and self.server.store.provider is not None:
             lease=self._admit_billed("brief",refusal=False)
             if lease is None:return
-        try:brief=_owned_json_object(
-            preview_brief(request,provider=self.server.store.provider).model_dump(mode="json"))
+        try:
+            with telemetry.stage("brief_interpretation"):
+                brief=_owned_json_object(
+                    preview_brief(request,provider=self.server.store.provider).model_dump(mode="json"))
         except BaseException:  # noqa: BLE001 - request threads must not leak failures
             self.server._job_diagnostic("brief_unavailable")
+            telemetry.record_boundary_failure("brief","brief_unavailable")
             return self._json({"error":BRIEF_UNAVAILABLE_MESSAGE},HTTPStatus.SERVICE_UNAVAILABLE)
         finally:
             if lease is not None:lease.release()
@@ -1363,6 +1488,14 @@ def main(argv=None):
                         help="Local project database and artifacts; one active server per directory.")
     args=parser.parse_args(argv)
     server=None
+    # Before provider/server construction. Disabled (the default), missing SDK
+    # or invalid settings leave the demo exactly as it was; the diagnostic
+    # carries a constant state, never a DSN or exception text.
+    # Default-off emits nothing, so local output is unchanged until requested.
+    telemetry.initialize(telemetry.configure_from_environment())
+    if telemetry.state()!="disabled":
+        _diagnostic("telemetry_enabled" if telemetry.enabled() else "telemetry_disabled",
+                    api_version=API_VERSION,telemetry_state=telemetry.state())
     try:
         args.output_root.mkdir(parents=True,exist_ok=True)
     except BaseException:  # noqa: BLE001 - initialization diagnostics cannot inspect failures
@@ -1405,5 +1538,6 @@ def main(argv=None):
         if server is not None:
             try:server.server_close()
             except OSError:pass
+        telemetry.shutdown(2.0)
     return 0
 if __name__=="__main__":raise SystemExit(main())

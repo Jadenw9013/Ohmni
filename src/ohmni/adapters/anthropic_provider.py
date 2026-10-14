@@ -33,6 +33,8 @@ from typing import TYPE_CHECKING, Any
 
 from pydantic import BaseModel, ValidationError
 
+from . import telemetry
+
 if TYPE_CHECKING:  # pragma: no cover - imported for annotations only
     from . import StructuredGenerationRequest, TStructured
 
@@ -164,6 +166,15 @@ def _describe_validation(error: ValidationError, schema: type[BaseModel]) -> str
     )
 
 
+def _unusable_outcome(stop_reason: object) -> str:
+    """Owned outcome for a response that carried no usable tool call."""
+    if stop_reason == "max_tokens":
+        return "truncated"
+    if stop_reason == "refusal":
+        return "refused"
+    return "no_tool_call"
+
+
 def _describe_vendor_failure(exc: BaseException) -> str:
     """Name a vendor failure by type and status only -- never by response body."""
     status = getattr(exc, "status_code", None)
@@ -207,6 +218,8 @@ class AnthropicProvider:
         # concurrent design jobs. A plain attribute would let two runs report
         # each other's token counts, which is a worse answer than none.
         self._usage = threading.local()
+        # An injected client is a test double; its spans are labelled synthetic.
+        self._synthetic = client is not None
         if client is not None:
             self._client = client
             return
@@ -289,25 +302,47 @@ class AnthropicProvider:
         self._usage.last = usage
         rejection: str | None = None
         for attempt in range(1, self.max_attempts + 1):
-            message = self._create(
-                tool=tool, tool_name=tool_name, instructions=instructions,
-                data=data, rejection=rejection, max_tokens=max_tokens, usage=usage,
-            )
-            payload = self._tool_input(message, tool_name, schema)
-            try:
-                return schema.model_validate(payload)
-            except ValidationError as exc:
-                # Described, never chained: a chained ValidationError repeats the
-                # rejected payload in the traceback, which is exactly the raw
-                # model output this boundary must not publish.
-                rejection = _describe_validation(exc, schema)
-                if attempt == self.max_attempts:
-                    raise StructuredGenerationError(
-                        f"after {attempt} attempt(s), {rejection}"
-                    ) from None
+            # One manual gen_ai span per actual SDK call. It carries the model
+            # identifiers, owned outcome and reported token counts only.
+            with telemetry.provider_attempt(self.model, attempt, synthetic=self._synthetic) as span:
+                message = self._create(
+                    tool=tool, tool_name=tool_name, instructions=instructions,
+                    data=data, rejection=rejection, max_tokens=max_tokens, usage=usage,
+                    span=span,
+                )
+                try:
+                    payload = self._tool_input(message, tool_name, schema)
+                except StructuredGenerationError:
+                    outcome = _unusable_outcome(getattr(message, "stop_reason", None))
+                    span.result(outcome)
+                    telemetry.record_boundary_failure(
+                        "provider",
+                        "provider_refused" if outcome == "refused" else "provider_output_rejected",
+                        level="warning",
+                    )
+                    raise
+                try:
+                    result = schema.model_validate(payload)
+                except ValidationError as exc:
+                    span.result("schema_rejected")
+                    # Described, never chained: a chained ValidationError repeats the
+                    # rejected payload in the traceback, which is exactly the raw
+                    # model output this boundary must not publish.
+                    rejection = _describe_validation(exc, schema)
+                    if attempt == self.max_attempts:
+                        telemetry.record_boundary_failure(
+                            "provider", "provider_output_rejected", level="warning",
+                        )
+                        raise StructuredGenerationError(
+                            f"after {attempt} attempt(s), {rejection}"
+                        ) from None
+                    continue
+                span.result("ok")
+                return result
         raise AssertionError("unreachable: the loop returns or raises on its last attempt")
 
-    def _create(self, *, tool, tool_name, instructions, data, rejection, max_tokens, usage):
+    def _create(self, *, tool, tool_name, instructions, data, rejection, max_tokens, usage,
+                span=None):
         """Make one API call, converting every vendor failure at the seam.
 
         A re-ask carries the rejection instead of a transcript of the rejected
@@ -334,8 +369,23 @@ class AnthropicProvider:
             # may well have been billed, and an unbilled one costs nothing to
             # count. Undercounting spend is the error that matters here.
             usage.attempts += 1
+            if span is not None:
+                # Classified by exception class name only; the instance is never
+                # handed to telemetry, so its text cannot reach an envelope.
+                outcome = telemetry.classify_provider_failure(type(exc))
+                span.result(outcome)
+                telemetry.record_boundary_failure("provider", outcome)
             raise StructuredGenerationError(_describe_vendor_failure(exc)) from None
         usage.record(message)
+        if span is not None:
+            reported = getattr(message, "usage", None)
+            span.usage(
+                input_tokens=getattr(reported, "input_tokens", None),
+                output_tokens=getattr(reported, "output_tokens", None),
+                cache_read=getattr(reported, "cache_read_input_tokens", None),
+                cache_write=getattr(reported, "cache_creation_input_tokens", None),
+                response_model=getattr(message, "model", None),
+            )
         return message
 
     @staticmethod
