@@ -1,6 +1,7 @@
 # Claude Cloud Sentry implementation assignment
 
 Prepared against fetched `origin/main` at `6f2a7827` on 2026-10-14, after PR #75.
+Final status refresh: `7698cea8`, after the judge Q&A in PR #74 also merged.
 This is a handoff template. Saving it does not approve or start implementation.
 The owner sending the prompt below authorizes its bounded offline scope.
 
@@ -11,7 +12,7 @@ The owner sending the prompt below authorizes its bounded offline scope.
 | Saved board, fault and restore demo | PRs #73 and #75 are merged; HACK-DEMO-01/02 are VERIFIED. | Independently rehearse the deployed version and local fallback. A merge alone does not prove deployment. |
 | Sentry | [Researched plan](../../SENTRY_IMPLEMENTATION_PLAN.md) is merged; SDK integration is not implemented in main. | Claude builds the disabled-by-default core below. Live activation follows account setup and owner approval. |
 | Live conversational demo | [Overnight results](OVERNIGHT_RESULTS.md) record no paid-provider rehearsal or production budget configuration. | Verify deployment/readiness without paid requests first; a live model test remains separately authorized. |
-| Judge Q&A | [PR #74](https://github.com/Jadenw9013/Ohmni/pull/74) remains open at this snapshot. | Codex reconciles its documentation with the now-merged demo while preparing the rehearsal handoff. |
+| Judge Q&A | [PR #74](https://github.com/Jadenw9013/Ohmni/pull/74) is now merged. | Codex uses and updates its acceptance checklist against the now-merged demo while preparing the rehearsal handoff. |
 | Grounded finding explanations | Optional Phase 6 in the overnight results was not started. | Follow-up after demo reliability and Sentry core; keep verdicts deterministic. |
 | Paper visual redesign | [Paper plan](../../PAPER_FRONTEND_IMPLEMENTATION_PLAN.md) remains proposed. | Separate design/implementation approval; not part of this cloud assignment. |
 | Battery motion and component addition | `ai_state.py next` offers BM-T02. BM-T03 through BM-T07 depend on that work; the state also identifies CAB-T07 as dependency-ready but unstarted. | Keep the existing approved backlog intact. Do not add a new board family for this demo task. |
