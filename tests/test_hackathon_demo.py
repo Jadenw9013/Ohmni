@@ -102,6 +102,19 @@ def test_harness_blocks_on_unpinned_kicad(tmp_path, monkeypatch):
     assert harness.main(["--attempts", "1", "--output-root", str(tmp_path)]) == 2
 
 
+def test_attempt_without_every_required_check_is_not_a_pass(run):
+    qualification = demo.qualify_run(run)
+    assert qualification.passed
+    attempt = demo.Attempt(run, qualification, {}, 0.0)
+    assert not attempt.passed
+    qualification.add("pipeline_completed", True, "")
+    qualification.add("release_current", True, "")
+    assert not attempt.passed
+    for name in ("fault_detected_by_real_drc", "original_unchanged_after_fault"):
+        qualification.add(name, True, "")
+    assert attempt.passed
+
+
 def test_pipeline_error_is_a_failed_attempt_not_a_pass(tmp_path):
     class Broken:
         def __init__(self, progress):
@@ -204,6 +217,7 @@ def test_fresh_attempt_qualifies_and_its_fault_fails_real_drc(tmp_path):
     attempt = demo.run_attempt(tmp_path / "attempt", ProjectPipeline)
     failed = [check.as_dict() for check in attempt.qualification.checks if not check.passed]
     assert attempt.qualification.passed, failed
+    assert attempt.passed and demo.REQUIRED_CHECKS <= {c.name for c in attempt.qualification.checks}
     names = {check.name for check in attempt.qualification.checks}
     assert {"fault_detected_by_real_drc", "original_unchanged_after_fault", "release_current"} <= names
     assert attempt.fault["drc"]["unconnected_count"] >= 1 and attempt.fault["releasable"] is False

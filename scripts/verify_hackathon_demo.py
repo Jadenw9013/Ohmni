@@ -30,6 +30,7 @@ from ohmni.adapters.tools import find_kicad_cli
 from ohmni.application.hackathon_demo import (
     CONVERSATIONAL_WORDING,
     DEMO_BRIEF,
+    REQUIRED_CHECKS,
     run_attempt,
     sha256_file,
 )
@@ -127,7 +128,8 @@ def main(argv: list[str] | None = None) -> int:
             "attempt": index,
             "directory": str(attempt.directory.relative_to(ROOT) if attempt.directory.is_relative_to(ROOT)
                              else attempt.directory),
-            "status": "PASS" if attempt.qualification.passed else "FAIL",
+            "status": "PASS" if attempt.passed else "FAIL",
+            "missing_required_checks": sorted(REQUIRED_CHECKS - {c.name for c in attempt.qualification.checks}),
             "total_seconds": attempt.total_seconds,
             "stage_seconds": attempt.stage_seconds,
             "checks": [check.as_dict() for check in attempt.qualification.checks],

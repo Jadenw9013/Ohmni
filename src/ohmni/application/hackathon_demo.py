@@ -54,6 +54,17 @@ REQUIRED_OUTPUTS = (
     "fabrication/ohmni-fabrication-manifest.json",
 )
 
+#: Every check a qualified attempt must actually have run. An attempt whose
+#: checks all passed but which skipped one of these is not a pass.
+REQUIRED_CHECKS = frozenset({
+    "required_outputs_present", "reports_parse", "erc_completed", "erc_bound_to_schematic",
+    "erc_no_errors", "erc_raw_kicad_receipt", "drc_completed", "drc_bound_to_pcb",
+    "drc_zero_findings", "drc_raw_kicad_receipt", "routing_complete",
+    "routing_independently_verified", "fabrication_package_intact", "fabrication_bound_to_pcb",
+    "pipeline_completed", "release_current", "fault_detected_by_real_drc",
+    "original_unchanged_after_fault",
+})
+
 
 def sha256_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -204,6 +215,11 @@ class Attempt:
     total_seconds: float
     error: str | None = None
     fault: dict[str, object] | None = None
+
+    @property
+    def passed(self) -> bool:
+        ran = {check.name for check in self.qualification.checks}
+        return self.qualification.passed and REQUIRED_CHECKS <= ran
 
 
 def run_attempt(directory: Path, pipeline_factory: Callable, brief: SynthesisBrief = DEMO_BRIEF,
