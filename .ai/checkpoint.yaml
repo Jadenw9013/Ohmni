@@ -1,8 +1,7 @@
 {
   "schema_version": 1,
-  "active_task": "HACK-DEMO-01",
-  "last_known_commit": "db985333dff91cdab20fd50fca42e693347cf5e0",
-  "approval_record": ".ai/approvals/HACK-DEMO-1.yaml",
+  "active_task": null,
+  "last_known_commit": "75ddcf7d5984dc9390c37b1c2f72fe5c4014331e",
   "previous_checkpoint": {
     "schema_version": 1,
     "active_task": null,
@@ -52,25 +51,26 @@
     "resume_action": "Review and merge the BM-T01 contract PR; then begin BM-T02 on a fresh branch from origin/main.",
     "last_command": "Workflow 12 passed; fast 2439 passed, 86 skipped, 62 deselected."
   },
-  "modified_files": [
-    ".ai/approvals/HACK-DEMO-1.yaml",
-    ".ai/tasks.yaml",
-    ".ai/state.yaml",
-    ".ai/checkpoint.yaml"
-  ],
+  "modified_files": [],
   "completed_substeps": [
     "Recorded the human approval and activated HACK-DEMO-01.",
-    "Started dockerd and pulled kicad/kicad:10.0.5; the A2 minimum generated-routing test passed inside it."
+    "Phase 1: fail-closed harness, 3/3 real KiCad 10.0.5 passes with 18/18 checks and identical routed PCB bytes.",
+    "Phase 2: CI frontend and kicad-gate jobs passed on GitHub.",
+    "Phase 3: offline saved demonstration; network-disabled browser check 11/11.",
+    "Phase 4: real DRC fault on an isolated copy with restore; original unchanged.",
+    "Phase 5: durable daily, in-flight and burst admission on every billed route.",
+    "Independent review: no BLOCKER/HIGH; seven findings fixed and the capture regenerated from a clean run.",
+    "fast 2445 passed, 91 skipped, 63 deselected; workflow 12; Node 1096 passed."
   ],
   "remaining_work": [
-    "Phase 1 harness",
-    "Phase 2 CI",
-    "Phase 3 offline preview",
-    "Phase 4 fault/reset",
-    "Phase 5 request controls",
-    "OVERNIGHT_RESULTS.md and PR"
+    "Human review and merge of PR #73.",
+    "Live conversational prompt rehearsal with a permitted provider.",
+    "Production deployment decision and OHMNI_AI_* configuration.",
+    "Human acceptance before HACK-DEMO-01 becomes COMPLETE.",
+    "Then resume BATTERY-MOTION-1 at BM-T02."
   ],
-  "last_command": "pytest tests/test_generated_routing.py[a2-minimum] in kicad/kicad:10.0.5 (1 passed)",
+  "last_command": "verify.py fast: 2445 passed, 91 skipped, 63 deselected; workflow 12 passed.",
   "last_failure": null,
-  "resume_action": "Continue HACK-DEMO-01 on branch claude/hackathon-overnight-9assxm from the first unfinished phase."
+  "resume_action": "Await human review of PR #73; then resume BM-T02 on a fresh branch from origin/main.",
+  "approval_record": ".ai/approvals/HACK-DEMO-1.yaml"
 }
