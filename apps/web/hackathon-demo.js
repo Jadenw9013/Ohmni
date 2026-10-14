@@ -29,7 +29,8 @@ function renderReport(report, verifiedHash) {
         <p class="report-outcome"><span class="outcome" data-outcome="${esc(report.outcome)}">${esc(report.outcome.replaceAll("_", " "))}</span> ${esc(report.summary)}</p>
         ${findings ? `<h3>Recorded KiCad findings</h3><ul class="findings">${findings}</ul>` : ""}
         ${explanation ? `<h3>What this means</h3>${explanation}${removed}` : ""}
-        <table><thead><tr><th>Check</th><th>Outcome</th><th>Checker</th><th>Detail</th></tr></thead><tbody>${rows}</tbody></table>
+        <p class="table-hint">Scroll across to see all check details.</p>
+        <div class="table-scroll" tabindex="0" role="region" aria-label="Recorded engineering checks; scroll horizontally if needed"><table><thead><tr><th>Check</th><th>Outcome</th><th>Checker</th><th>Detail</th></tr></thead><tbody>${rows}</tbody></table></div>
         ${warnings ? `<h3>Warnings kept</h3><ul>${warnings}</ul>` : ""}
         ${limitations ? `<h3>Limitations</h3><ul>${limitations}</ul>` : ""}
         <details><summary>Source artifact and recorded status</summary>
@@ -41,6 +42,9 @@ function renderReport(report, verifiedHash) {
 
 export async function initializeHackathonDemo({ fetcher = globalThis.fetch } = {}) {
     const canvas = $("#board");
+    $("#site-navigation").hidden = document.body.dataset.host === "offline";
+    const retry = $("#retry-demo");
+    retry.addEventListener("click", () => globalThis.location.reload());
     const status = (message, tone = "info") => {
         const node = $("#status");
         node.textContent = message;
@@ -50,7 +54,9 @@ export async function initializeHackathonDemo({ fetcher = globalThis.fetch } = {
     try {
         demo = validateDemo(await (await fetchOk("demo.json", fetcher)).json());
     } catch {
-        status("The saved demonstration could not load. Check that the offline server is running, then reload.", "error");
+        $("#notice").textContent = "The saved demonstration is unavailable.";
+        status("The saved files could not load. Reload to try again. Your projects have not changed.", "error");
+        retry.hidden = false;
         return null;
     }
     $("#notice").textContent = demo.notice;
@@ -83,6 +89,7 @@ export async function initializeHackathonDemo({ fetcher = globalThis.fetch } = {
                 view.render();
             }
             renderReport(which === "fault" ? faultReport(demo) : goodReport(demo), actual);
+            retry.hidden = true;
             document.body.dataset.showing = which;
             buttons.good.setAttribute("aria-pressed", String(which === "good"));
             buttons.fault.setAttribute("aria-pressed", String(which === "fault"));
@@ -92,6 +99,7 @@ export async function initializeHackathonDemo({ fetcher = globalThis.fetch } = {
         } catch {
             if (!selection.isCurrent(token)) return;
             status("That board could not be verified, so it is not shown. Restore the original to try again.", "error");
+            retry.hidden = false;
         } finally {
             if (selection.isCurrent(token)) {
                 Object.values(buttons).forEach((button) => { button.disabled = false; });

@@ -1417,14 +1417,7 @@ function attach() {
     clearError();
     selectResultPanel("board");
     show("describe", { focus: false });
-    initializeHome({ onStart: () => show("describe"), onDemo: () => {
-        show('describe');
-        const example = document.querySelector('#saved-example');
-        if (example) { example.open = true; example.scrollIntoView({ block: 'start', behavior: 'instant' }); }
-        void loadReference().then(view => {
-            if (view && !document.querySelector('.app-layout').hidden) document.querySelector('#open-reference-lab')?.click();
-        });
-    } });
+    initializeHome({ onStart: () => show("describe") });
 }
 
 if (typeof document !== "undefined" && document.getElementById("start-supported")) attach();

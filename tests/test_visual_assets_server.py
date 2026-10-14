@@ -79,7 +79,7 @@ def test_nested_visual_runtime_dependency_graph_is_in_the_fixed_snapshot():
     """Follow nested ES imports, stylesheets, and local JSON references."""
     # The model adapter is a public module; the preview is a separate entrypoint.
     pending = {"component-library/transforms.js"}
-    for entry in ("index.html", "component-library/preview/index.html", "landing-pcb-controller/index.html"):
+    for entry in ("index.html", "component-library/preview/index.html", "landing-pcb-controller/index.html", "hackathon-demo.html"):
         html = (server_module.WEB_ROOT / entry).read_text(encoding="utf-8")
         scripts = re.findall(r'<script\b[^>]*\bsrc=[\'"]([^\'"]+)[\'"]', html)
         for inline in re.findall(r'<script\b[^>]*>(.*?)</script>', html, flags=re.DOTALL):
@@ -153,7 +153,7 @@ def test_visual_model_and_vendor_edits_change_only_a_new_server_snapshot(tmp_pat
                 assert headers["x-ohmni-ui-version"] == second.ui_version
 
 
-@pytest.mark.parametrize("name", ["visual-assets.js", "vendor/three.core.min.js"])
+@pytest.mark.parametrize("name", ["visual-assets.js", "vendor/three.core.min.js", "hackathon-demo/demo.json"])
 def test_missing_visual_runtime_asset_fails_snapshot_initialization(tmp_path, name):
     web_root = _copy_web_root(tmp_path / "web")
     (web_root / name).unlink()
@@ -181,6 +181,8 @@ def test_unlisted_and_private_reference_inputs_are_never_served(tmp_path):
     private = [
         "assets/reference.png", "assets/current_ohmni.png", "REFERENCE_INVENTORY.json",
         "OHMNI_REFERENCE_IMPLEMENTATION_PLAN.md", "vendor/private-key.txt", ".env",
+        "hackathon-demo/saved-run/golden.drc.json", "hackathon-demo/harness-summary.json",
+        "hackathon-demo/saved-run/fault/diagnostic-fault.drc.json",
     ]
     secret = b"private-reference-input-sentinel"
     for name in private:

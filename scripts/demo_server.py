@@ -85,6 +85,9 @@ JOB_STATUSES={"queued","running","complete","failed"}
 TERMINAL_JOB_STATUSES={"complete","failed"}
 JOB_FAILURE_CODES={"worker_start_failed","pipeline_failed","progress_publication_failed","job_state_invalid","server_restarted","routing_incomplete","eda_tool_failed"}
 STATIC_ASSETS=("index.html","app.js","view-model.js","board-model.js","board-view.js",
+               "hackathon-demo.html","hackathon-demo.js","hackathon-demo-model.js","hackathon-demo.css",
+               "hackathon-demo/demo.json","hackathon-demo/saved-run/golden.kicad_pcb",
+               "hackathon-demo/saved-run/fault/diagnostic-fault.kicad_pcb","hackathon-demo/ohmni-demo-fabrication.zip",
                "schematic-view.js","client-contract.js","reference-preview.js",
                "board-renderer-geometry.js","board-renderer-webgl.js","board-controls.js",
                "learning-model.js","circuit-lessons.js","circuit-lab.js",
@@ -129,6 +132,12 @@ STATIC_ASSETS=("index.html","app.js","view-model.js","board-model.js","board-vie
                "component-library/preview/index.html","component-library/preview/preview.css",
                "component-library/preview/preview.js","component-library/preview/model-preview.js")
 STATIC_CONTENT_TYPES={
+    "hackathon-demo.html":"text/html; charset=utf-8",
+    "hackathon-demo.css":"text/css; charset=utf-8",
+    "hackathon-demo/demo.json":"application/json; charset=utf-8",
+    "hackathon-demo/saved-run/golden.kicad_pcb":"text/plain; charset=utf-8",
+    "hackathon-demo/saved-run/fault/diagnostic-fault.kicad_pcb":"text/plain; charset=utf-8",
+    "hackathon-demo/ohmni-demo-fabrication.zip":"application/zip",
     "guided-flow.css":"text/css; charset=utf-8",
     "index.html":"text/html; charset=utf-8",
     "styles.css":"text/css; charset=utf-8",

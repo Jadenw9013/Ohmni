@@ -338,6 +338,15 @@
       "approval_evidence": ".ai/approvals/HACK-DEMO-1.yaml",
       "plan_document": "docs/hackathon/OVERNIGHT_DEVELOPMENT_BRIEF.md",
       "review_policy": "Independent subagent review of the final diff for false passes, artifact confusion, unbounded provider calls and broken recovery; COMPLETE requires human acceptance."
+    },
+    {
+      "id": "HACK-DEMO-INTEGRATION-1",
+      "title": "Saved demo public-site integration",
+      "type": "bounded_demo_integration",
+      "status": "IN_PROGRESS",
+      "approved_by": "human",
+      "approval_evidence": ".ai/approvals/HACK-DEMO-INTEGRATION-1.yaml",
+      "review_policy": "Focused independent integration review; no changes to previous task acceptance."
     }
   ],
   "tasks": [
@@ -3532,6 +3541,46 @@
       "implementation": {"started_at_commit": "db985333dff91cdab20fd50fca42e693347cf5e0", "completed_at_commit": "75ddcf7d5984dc9390c37b1c2f72fe5c4014331e", "approval_evidence": ".ai/approvals/HACK-DEMO-1.yaml"},
       "review": {"required": true, "independent": true, "status": "PASSED", "record": ".ai/reviews.yaml#HACK-DEMO-01-INDEPENDENT-REVIEW"},
       "verification": {"record": ".ai/verification/HACK-DEMO-01.yaml", "required": ["workflow", "fast", "node", "hackathon_harness"]}
+    },
+    {
+      "id": "HACK-DEMO-02",
+      "title": "Make the saved engineering demo accessible from the website",
+      "scope": "HACK-DEMO-INTEGRATION-1",
+      "milestone": null,
+      "goal": "Reach the merged saved board/fault demonstration from the landing and workspace, serve its allowlisted artifacts consistently, and return or recover clearly.",
+      "priority": 100,
+      "status": "IN_PROGRESS",
+      "dependencies": [],
+      "input_commit": "54c66795",
+      "blockers": [],
+      "acceptance_criteria": [
+        "Landing and workspace expose a labeled saved demo without starting AI or engineering jobs; existing unsaved workspace choices are preserved.",
+        "Both configured static hosting roots and the normal app server serve only the four public capture files with original bytes; checks reject missing, stale or extra mirrored files.",
+        "Demo has accessible home/start navigation on the main site, preserves standalone offline operation, and provides clear load-failure recovery.",
+        "Normal-server and static-output browser smoke verifies entry, original, fault, restore, download hashes and return; offline checker remains passing.",
+        "Saved receipt replay preserves recorded path spelling across platforms while retaining typed validation and rejecting altered plans; no canonical evidence is regenerated.",
+        "Ledger validation, workflow, fast and Node suites pass; independent review findings are resolved or honestly retained."
+      ],
+      "implementation": {
+        "started_at_commit": "54c66795",
+        "completed_at_commit": null,
+        "approval_evidence": ".ai/approvals/HACK-DEMO-INTEGRATION-1.yaml"
+      },
+      "review": {
+        "required": true,
+        "independent": false,
+        "status": "PENDING",
+        "record": null
+      },
+      "verification": {
+        "record": null,
+        "required": [
+          "workflow",
+          "fast",
+          "node",
+          "saved_demo_browser"
+        ]
+      }
     }
   ]
 }

@@ -38,12 +38,22 @@ test('loading a landing or workspace URL never creates a project or starts a dem
     }
 });
 
-test('both build entries invoke the project flow while demo invokes only its own callback',()=>{
+test('build entries invoke the project flow; saved demo links are not intercepted into a workspace run',()=>{
     const h=harness();let starts=0,demos=0;
     try{initializeHome({onStart:()=>starts++,onDemo:()=>demos++});
         for(const n of h.groups['[data-home-start]'])n.handlers.click({preventDefault(){}});
         assert.equal(starts,2);assert.equal(demos,0);assert.equal(location.hash,'#workspace');
-        h.node('demo').handlers.click({preventDefault(){}});assert.equal(starts,2);assert.equal(demos,1);
+        assert.equal(h.node('demo').handlers.click,undefined);
+        assert.equal(starts,2);assert.equal(demos,0);
+        const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+        const links=html.match(/<a\b[^>]*data-home-demo[^>]*>/g)||[];
+        assert.equal(links.length,2);
+        for(const link of links){
+            assert.match(link,/href="\/hackathon-demo.html"/);
+            assert.match(link,/target="_blank"/);
+            assert.match(link,/rel="noopener"/);
+        }
+        assert.match(html,/<a[^>]+href="\/hackathon-demo.html"[^>]+target="_blank"[^>]+rel="noopener">Open saved demo \(new tab\)<\/a>/);
     }finally{h.restore();}
 });
 
