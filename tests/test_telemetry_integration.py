@@ -417,3 +417,13 @@ def test_schematic_bytes_and_job_codes_match_with_telemetry_on_and_off(tmp_path,
             schematic = (tmp_path / mode / body["job_id"] / "golden.kicad_sch").read_bytes()
             outcomes[mode] = (status, job["status"], job["error_code"], hashlib.sha256(schematic).hexdigest())
     assert outcomes["off"] == outcomes["on"]
+
+
+@pytest.mark.parametrize(("status", "rejected"), [("fail", True), ("stale_artifact", False)])
+def test_only_a_completed_failing_eda_check_marks_a_rejection(monkeypatch, status, rejected):
+    from ohmni.application.demo import require_eda_check
+    report = SimpleNamespace(status=SimpleNamespace(value=status), tool_status=None)
+    with offline_telemetry(monkeypatch), telemetry.http_operation("POST /api/demo"):
+        with pytest.raises(RuntimeError):
+            require_eda_check(report, "ERC")
+        assert telemetry.engineering_rejected() is rejected

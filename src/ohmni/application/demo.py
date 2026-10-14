@@ -113,7 +113,9 @@ def require_eda_check(report,label):
     ):
         raise EdaToolFailedError(f"KiCad {label} could not complete; local diagnostics were retained")
     if report.status.value not in {"pass","pass_with_warnings"}:
-        telemetry.engineering_rejection()
+        # Only a completed check that found violations is a verdict; a stale
+        # artifact or other non-pass status stays a pipeline failure.
+        if report.status.value=="fail":telemetry.engineering_rejection()
         raise RuntimeError(f"KiCad {label} checks did not pass")
 
 
@@ -427,7 +429,6 @@ class DemoPipeline:
             span.outcome("ok", eda_engineering_outcome(drc))
             require_eda_check(drc,"DRC")
         if drc.findings or drc.unconnected_items or drc.status.value not in {"pass", "pass_with_warnings"}:
-            telemetry.engineering_rejection()
             raise RuntimeError("KiCad DRC did not close cleanly")
         self._progress("drc", "KiCad checked the finished board", "PASS", 82,
                        f"{len(drc.findings)} problems, {len(drc.unconnected_items)} missing connections.")
