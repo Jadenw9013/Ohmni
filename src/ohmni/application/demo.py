@@ -119,14 +119,21 @@ def require_eda_check(report,label):
         raise RuntimeError(f"KiCad {label} checks did not pass")
 
 
-def eda_engineering_outcome(report) -> str:
-    """Owned telemetry outcome of a completed KiCad check; never a new verdict."""
+def eda_check_outcomes(report) -> tuple[str, str]:
+    """Owned (execution, engineering) telemetry outcomes of a KiCad check.
+
+    Derived from the same report fields require_eda_check reads, never a new
+    verdict: only a check that actually completed is a successful execution,
+    and a missing, failed, errored or stale result has an unknown engineering
+    outcome.
+    """
     status = getattr(getattr(report, "status", None), "value", None)
-    if status in {"pass", "pass_with_warnings"}:
-        return "pass"
+    tool_failed = getattr(getattr(report, "tool_status", None), "value", None) == "failed"
+    if status in {"pass", "pass_with_warnings"} and not tool_failed:
+        return "ok", "pass"
     if status == "fail":
-        return "reject"
-    return "unknown"
+        return "ok", "reject"
+    return "error", "unknown"
 
 
 def require_demo_request(value: object) -> str:
@@ -323,7 +330,7 @@ class DemoPipeline:
             )
             if design.erc is not None:
                 (destination / "erc-report.json").write_text(design.erc.model_dump_json(indent=2),encoding="utf-8")
-                span.outcome("ok", eda_engineering_outcome(design.erc))
+                span.outcome(*eda_check_outcomes(design.erc))
                 require_eda_check(design.erc,"ERC")
         if not design.final_circuit or not design.artifact or not design.erc:
             raise RuntimeError(f"design pipeline failed: {[issue.message for issue in design.issues]}")
@@ -358,7 +365,7 @@ class DemoPipeline:
             )
             if design.erc is not None:
                 (destination / "erc-report.json").write_text(design.erc.model_dump_json(indent=2),encoding="utf-8")
-                span.outcome("ok", eda_engineering_outcome(design.erc))
+                span.outcome(*eda_check_outcomes(design.erc))
                 require_eda_check(design.erc,"ERC")
         if not design.final_circuit or not design.artifact or not design.erc:
             raise RuntimeError(f"design pipeline failed: {[issue.message for issue in design.issues]}")
@@ -426,7 +433,7 @@ class DemoPipeline:
         with telemetry.stage("drc") as span:
             drc = KiCadCliAdapter().run_drc(routed)
             (destination / "drc-report.json").write_text(drc.model_dump_json(indent=2),encoding="utf-8")
-            span.outcome("ok", eda_engineering_outcome(drc))
+            span.outcome(*eda_check_outcomes(drc))
             require_eda_check(drc,"DRC")
         if drc.findings or drc.unconnected_items or drc.status.value not in {"pass", "pass_with_warnings"}:
             raise RuntimeError("KiCad DRC did not close cleanly")

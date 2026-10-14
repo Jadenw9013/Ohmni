@@ -23,7 +23,7 @@ from ..physical.placement import generate_placement
 from ..synthesis import ArchetypeId, SpiPeripheralSlot, SynthesisBrief, synthesize
 from ..synthesis.peripherals import SUPPORTED_I2C_PARTS
 from ..verifier import verify
-from .demo import DemoPipeline, DemoReport, eda_engineering_outcome, require_eda_check
+from .demo import DemoPipeline, DemoReport, eda_check_outcomes, require_eda_check
 from .product import Brief, build_brief
 
 
@@ -194,7 +194,7 @@ class ProjectPipeline(DemoPipeline):
         with telemetry.stage("erc") as span:
             erc = KiCadCliAdapter().run_erc(artifact)
             (destination / "erc-report.json").write_text(erc.model_dump_json(indent=2),encoding="utf-8")
-            span.outcome("ok", eda_engineering_outcome(erc))
+            span.outcome(*eda_check_outcomes(erc))
             require_eda_check(erc,"ERC")
         events = [
             EngineeringEvent(event_id=f"{brief.fingerprint[:12]}-brief",

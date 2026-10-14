@@ -427,3 +427,36 @@ def test_only_a_completed_failing_eda_check_marks_a_rejection(monkeypatch, statu
         with pytest.raises(RuntimeError):
             require_eda_check(report, "ERC")
         assert telemetry.engineering_rejected() is rejected
+
+
+@pytest.mark.parametrize(("status", "tool_status", "execution", "engineering", "span_status"), [
+    ("pass", None, "ok", "pass", "ok"),
+    ("fail", None, "ok", "reject", "ok"),
+    ("pass", "failed", "error", "unknown", "internal_error"),
+    ("error", None, "error", "unknown", "internal_error"),
+    ("unavailable", None, "error", "unknown", "internal_error"),
+    ("stale_artifact", None, "error", "unknown", "internal_error"),
+])
+def test_eda_stage_outcome_follows_the_report(monkeypatch, status, tool_status, execution, engineering, span_status):
+    from ohmni.application.demo import eda_check_outcomes, require_eda_check
+    report = SimpleNamespace(status=SimpleNamespace(value=status),
+                             tool_status=None if tool_status is None else SimpleNamespace(value=tool_status))
+    passes = status == "pass" and tool_status is None
+    with offline_telemetry(monkeypatch) as recorder:
+        with telemetry.http_operation("POST /api/demo"):
+            try:
+                with telemetry.stage("erc") as span:
+                    span.outcome(*eda_check_outcomes(report))
+                    require_eda_check(report, "ERC")
+            except RuntimeError:
+                assert not passes
+            else:
+                assert passes
+        [transaction] = recorder.transactions()
+        [stage] = [span for span in transaction["spans"] if span["op"] == "ohmni.stage"]
+        assert stage["status"] == span_status
+        assert stage["data"]["ohmni.execution_outcome"] == execution
+        assert stage["data"]["ohmni.engineering_outcome"] == engineering
+        durations = [{key: entry["value"] for key, entry in metric["attributes"].items()}
+                     for metric in recorder.metrics() if metric["name"] == "ohmni.stage.duration"]
+        assert [d["outcome"] for d in durations if d.get("stage") == "erc"] == [execution]
