@@ -41,7 +41,7 @@ raw envelopes) is committed in [.ai/evidence/HACK-SENTRY-01/](../../.ai/evidence
 
 ## 3. Test and review results
 
-Recorded against code commit `b0194514` (Python 3.13.16, Node 22.22.0, Playwright
+Recorded against code commit `a484f838` (Python 3.13.16, Node 22.22.0, Playwright
 1.56.0, Chromium 141.0.7390.37). Commit-bound record:
 [.ai/verification/HACK-SENTRY-01.yaml](../../.ai/verification/HACK-SENTRY-01.yaml).
 
@@ -49,16 +49,18 @@ Recorded against code commit `b0194514` (Python 3.13.16, Node 22.22.0, Playwrigh
 |---|---|
 | `python scripts/ai_state.py validate` | PASS |
 | `python scripts/verify.py workflow` | PASS, 12 tests |
-| `python scripts/verify.py fast` | PASS, 2540 passed, 91 skipped, 63 deselected (main baseline: 2451 passed, 91 skipped) |
+| `python scripts/verify.py fast` | PASS, 2542 passed, 91 skipped, 63 deselected (main baseline: 2451 passed, 91 skipped) |
 | Node suite, all `apps/web/tests/*.test.mjs` | PASS, 1115 tests, 0 failed (10 new in `telemetry.test.mjs`) |
-| Telemetry and architecture tests | PASS, 163 tests (87 telemetry, real SDK with recording transport; the suite fails rather than skips if the SDK is missing) |
+| Telemetry and architecture tests | PASS, 165 tests (89 telemetry, real SDK with recording transport; the suite fails rather than skips if the SDK is missing) |
 | `python scripts/telemetry_fault_harness.py` | PASS, 8/8 checks over 5 scenarios |
 | `python scripts/smoke_browser_telemetry.py` | PASS, 6/6 scenarios (local and static hosting x disabled, enabled, missing bundle), 0 uncaught page errors, 0 external requests |
 | `node scripts/telemetry-browser/build.mjs --check` | PASS, byte-for-byte rebuild |
 | `python -m ruff check .` | 21 errors, identical to the `main` baseline; none in changed files |
 | `python scripts/verify.py integration` | **BLOCKED (1 failed, 44 skipped)**: `test_component_resolution.py::test_admitted_part_traverses_real_project_release_with_exact_lineage` needs a real `kicad-cli`, which this environment lacks. It fails identically on `main` (`00016f5f`). |
-| Real KiCad gate (`kicad-gate` CI job) | **NOT_RUN locally**; it runs in CI on the PR, and `run_tool` now carries a span whose behavior the telemetry tests cover with fake executables. |
-| Corpus and ngspice-42 gates | NOT_RUN (unchanged code paths; no pinned tools here). |
+| Real KiCad gate (`kicad-gate` CI job, KiCad 10.0.5 image) | PASS in CI on this PR (`a484f838`); NOT_RUN locally (no `kicad-cli` here). |
+| Corpus gate (CI) | PASS in CI on this PR. |
+| ngspice-42 simulation gate | NOT_RUN (no pinned ngspice here; simulation code unchanged). |
+| Codex rehearsal tests after merging `main` | PASS, 63 tests (`tests/test_hackathon_release_rehearsal.py`; files untouched). |
 | Live Sentry ingestion and dashboard | NOT_RUN by design (no account or DSN). |
 
 Independent review (a separate agent with no write access) found no BLOCKER or
@@ -75,7 +77,13 @@ Accepted and documented in section 6: the local server needs the bundle in its
 snapshot, CORS always lists `sentry-trace,baggage`, and the Python SDK is pinned by
 version rather than hash. The reviewer's own run of the Chromium smoke timed out once
 waiting for the brief button while the fast suite was using the CPU; it did not
-confirm the smoke. The runs recorded here passed 6/6, including one on `b0194514`. REREVIEW_PLACEHOLDER
+confirm the smoke. The runs recorded here passed 6/6, including the final run on `a484f838`.
+
+A second independent agent re-reviewed `b0194514`: all three fixes confirmed, no
+deadlock or in-lock telemetry, no double reporting. It found one new LOW issue
+(a stale KiCad artifact was marked as an engineering rejection), which was fixed
+in `a484f838` with a regression test. Open BLOCKER/HIGH findings: none.
+Findings are recorded in `.ai/reviews.yaml` as HACK-SENTRY-01-R01 through R07.
 
 ## 4. Owner checklist to activate later (two projects)
 

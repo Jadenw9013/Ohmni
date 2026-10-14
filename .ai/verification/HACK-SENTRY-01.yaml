@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "id": "HACK-SENTRY-01",
+  "task": "HACK-SENTRY-01",
+  "scope": "HACK-SENTRY-1",
+  "commit": "a484f8381d947180d59717a889f040066321d9a7",
+  "verified_at": "2026-10-14",
+  "status": "PASSED",
+  "commands": [
+    {
+      "command": "python scripts/ai_state.py validate",
+      "result": "PASS"
+    },
+    {
+      "command": "python scripts/verify.py workflow",
+      "result": "PASS",
+      "tests": 12
+    },
+    {
+      "command": "python scripts/verify.py fast",
+      "result": "PASS",
+      "tests": 2542,
+      "skipped": 91,
+      "deselected": 63,
+      "runtime_seconds": 411.3
+    },
+    {
+      "command": "node --test apps/web/tests/*.test.mjs",
+      "result": "PASS",
+      "tests": 1115,
+      "failed": 0
+    },
+    {
+      "command": "pytest tests/test_telemetry.py tests/test_telemetry_integration.py tests/test_architecture.py",
+      "result": "PASS",
+      "tests": 165
+    },
+    {
+      "command": "python scripts/telemetry_fault_harness.py",
+      "result": "PASS",
+      "checks": 8,
+      "scenarios": 5
+    },
+    {
+      "command": "python scripts/smoke_browser_telemetry.py",
+      "result": "PASS",
+      "scenarios": 6,
+      "uncaught_page_errors": 0,
+      "external_requests": 0
+    },
+    {
+      "command": "node scripts/telemetry-browser/build.mjs --check",
+      "result": "PASS"
+    },
+    {
+      "command": "python -m ruff check .",
+      "result": "BASELINE",
+      "errors": 21,
+      "note": "identical to main; none in changed files"
+    },
+    {
+      "command": "python scripts/verify.py integration",
+      "result": "BLOCKED",
+      "failed": 1,
+      "skipped": 44,
+      "note": "test_component_resolution.py::test_admitted_part_traverses_real_project_release_with_exact_lineage needs kicad-cli; fails identically on main 00016f5f"
+    },
+    {
+      "command": "pytest tests/test_hackathon_release_rehearsal.py (after merging origin/main)",
+      "result": "PASS",
+      "tests": 63
+    },
+    {
+      "command": "CI kicad-gate (real KiCad 10.0.5 image) on a484f838",
+      "result": "PASS"
+    },
+    {
+      "command": "CI corpus on a484f838",
+      "result": "PASS"
+    }
+  ],
+  "tools": {
+    "python": "3.13.16",
+    "pydantic": "2.14.1",
+    "sentry_sdk": "2.72.0",
+    "node": "22.22.0",
+    "sentry_browser": "11.7.0",
+    "esbuild": "0.28.2",
+    "playwright": "1.56.0",
+    "chromium": "141.0.7390.37"
+  },
+  "evidence": {
+    "fault_harness": ".ai/evidence/HACK-SENTRY-01/fault-harness.json",
+    "browser_smoke": ".ai/evidence/HACK-SENTRY-01/browser-smoke.json",
+    "results": "docs/hackathon/SENTRY_CORE_RESULTS.md"
+  },
+  "not_run": [
+    "Real KiCad gate locally (kicad-cli absent; CI kicad-gate runs on the PR)",
+    "Corpus and ngspice-42 gates (tools not present; code paths unchanged)",
+    "Live Sentry ingestion and dashboard (no account or DSN by design)"
+  ],
+  "review": {
+    "independent": true,
+    "status": "PASSED",
+    "record": ".ai/reviews.yaml#HACK-SENTRY-01-INDEPENDENT-REVIEW"
+  }
+}
