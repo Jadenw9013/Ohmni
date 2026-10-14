@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import json
+import multiprocessing
 import sqlite3
 import threading
+from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from datetime import UTC, datetime
 from types import SimpleNamespace
@@ -109,26 +111,175 @@ def test_burst_limit_uses_a_sliding_window(tmp_path):
     limited.admit("planner").release()
 
 
-def test_concurrent_admissions_across_processes_never_exceed_the_daily_limit(tmp_path):
+def test_concurrent_admissions_across_instances_never_exceed_the_daily_limit(tmp_path):
     clock = Clock()
     instances = [budget(tmp_path, clock, daily_limit=40, max_in_flight=1000, burst_limit=1000)
                  for _ in range(3)]
-    admitted, refused = [], []
+    start = threading.Barrier(6)
 
     def worker(instance):
+        start.wait(timeout=10)
+        admitted, refused = 0, 0
         for _ in range(20):
             try:
-                admitted.append(instance.admit("planner"))
+                instance.admit("planner").release()
+                admitted += 1
             except BudgetExceeded:
-                refused.append(1)
+                refused += 1
+        return admitted, refused
 
-    threads = [threading.Thread(target=worker, args=(instances[i % 3],)) for i in range(6)]
-    for thread in threads:
-        thread.start()
-    for thread in threads:
-        thread.join()
-    assert len(admitted) == 40 and len(refused) == 80
+    with ThreadPoolExecutor(max_workers=6) as workers:
+        results = list(workers.map(worker, [instances[i % 3] for i in range(6)]))
+    assert sum(result[0] for result in results) == 40
+    assert sum(result[1] for result in results) == 80
     assert instances[0].admitted_today() == 40
+
+
+def _admit_in_process(path, start, results):
+    """Spawn-safe worker: report failures explicitly instead of losing threads."""
+    try:
+        instance = RequestBudget(path, BudgetConfig(daily_limit=17, burst_limit=100),
+                                 clock=lambda: NOON)
+        start.wait(timeout=20)
+        admitted, refused = 0, 0
+        for _ in range(20):
+            try:
+                instance.admit("planner").release()
+                admitted += 1
+            except BudgetExceeded as error:
+                assert error.reason == "daily"
+                refused += 1
+        results.put((admitted, refused, None))
+    except Exception as error:  # noqa: BLE001 - return every worker failure to the parent assertion
+        results.put((0, 0, repr(error)))
+
+
+@pytest.mark.parametrize("existing_wal", [False, True])
+def test_concurrent_processes_share_the_durable_limit(tmp_path, existing_wal):
+    path = tmp_path / "budget.sqlite3"
+    if existing_wal:
+        budget(tmp_path).admit("planner").release()
+    context = multiprocessing.get_context("spawn")
+    start, results = context.Barrier(3), context.Queue()
+    processes = [context.Process(target=_admit_in_process, args=(path, start, results))
+                 for _ in range(3)]
+    try:
+        for process in processes:
+            process.start()
+        outcomes = [results.get(timeout=30) for _ in processes]
+        for process in processes:
+            process.join(timeout=5)
+        assert [process.exitcode for process in processes] == [0, 0, 0]
+        assert [outcome[2] for outcome in outcomes] == [None, None, None]
+        assert sum(outcome[0] for outcome in outcomes) == 17 - int(existing_wal)
+        assert sum(outcome[1] for outcome in outcomes) == 43 + int(existing_wal)
+        assert budget(tmp_path).admitted_today() == 17
+    finally:
+        for process in processes:
+            if process.is_alive():
+                process.terminate()
+                process.join(timeout=5)
+        results.close()
+        results.join_thread()
+
+
+def _setup_fault(monkeypatch, *, code, failures):
+    """Inject real sqlite error codes at WAL setup; keep the remaining DB real."""
+    original_connect = sqlite3.connect
+    failed_connections = []
+    attempts = []
+
+    class Connection(sqlite3.Connection):
+        def execute(self, sql, *args):
+            if sql == "PRAGMA journal_mode=WAL" and len(failed_connections) < failures:
+                failed_connections.append(self)
+                error = sqlite3.OperationalError("injected setup failure")
+                error.sqlite_errorcode = code
+                raise error
+            return super().execute(sql, *args)
+
+    def connect(*args, **kwargs):
+        attempts.append(kwargs["timeout"])
+        return original_connect(*args, **kwargs, factory=Connection)
+
+    monkeypatch.setattr(sqlite3, "connect", connect)
+    return attempts, failed_connections
+
+
+def _assert_closed(connections):
+    for connection in connections:
+        with pytest.raises(sqlite3.ProgrammingError, match="closed"):
+            connection.execute("SELECT 1")
+
+
+@pytest.mark.parametrize("code", [sqlite3.SQLITE_BUSY, sqlite3.SQLITE_BUSY_RECOVERY])
+def test_busy_setup_retries_without_double_counting(tmp_path, monkeypatch, code):
+    attempts, failed = _setup_fault(monkeypatch, code=code, failures=2)
+    instance = budget(tmp_path, daily_limit=1)
+    instance.admit("planner").release()
+    assert len(attempts) == 3
+    assert all(0 < timeout <= 5 for timeout in attempts)
+    _assert_closed(failed)
+    assert instance.admitted_today() == 1 and instance.in_flight == 0
+    with pytest.raises(BudgetExceeded):
+        instance.admit("planner")
+
+
+def test_commit_error_is_never_retried_or_admitted(tmp_path, monkeypatch):
+    original_connect = sqlite3.connect
+    commits = []
+
+    class Connection(sqlite3.Connection):
+        def execute(self, sql, *args):
+            result = super().execute(sql, *args)
+            if sql == "COMMIT":
+                commits.append(sql)
+                error = sqlite3.OperationalError("unknown commit outcome")
+                error.sqlite_errorcode = sqlite3.SQLITE_BUSY
+                raise error
+            return result
+
+    monkeypatch.setattr(sqlite3, "connect", lambda *args, **kwargs:
+                        original_connect(*args, **kwargs, factory=Connection))
+    instance = budget(tmp_path)
+    with pytest.raises(BudgetUnavailable):
+        instance.admit("planner")
+    assert commits == ["COMMIT"]
+    assert instance.admitted_today() == 1 and instance.in_flight == 0
+
+
+def test_persistent_busy_setup_is_bounded_and_refuses(tmp_path, monkeypatch):
+    from ohmni.application import request_budget
+
+    attempts, failed = _setup_fault(monkeypatch, code=sqlite3.SQLITE_BUSY, failures=1000)
+    elapsed = [0.0]
+
+    def sleep(seconds):
+        elapsed[0] += seconds
+
+    monkeypatch.setattr(request_budget, "time", SimpleNamespace(
+        monotonic=lambda: elapsed[0], sleep=sleep))
+    instance = budget(tmp_path)
+    with pytest.raises(BudgetUnavailable):
+        instance.admit("planner")
+    assert elapsed[0] == pytest.approx(5)
+    assert 1 < len(attempts) <= 502
+    assert instance.in_flight == 0
+    _assert_closed(failed)
+    # Recovery starts at zero: a failed setup never consumed an admission.
+    monkeypatch.undo()
+    assert instance.admitted_today() == 0
+
+
+@pytest.mark.parametrize("code", [sqlite3.SQLITE_IOERR, sqlite3.SQLITE_CORRUPT,
+                                 sqlite3.SQLITE_READONLY])
+def test_non_busy_setup_error_refuses_without_retry(tmp_path, monkeypatch, code):
+    attempts, failed = _setup_fault(monkeypatch, code=code, failures=1000)
+    instance = budget(tmp_path)
+    with pytest.raises(BudgetUnavailable):
+        instance.admit("planner")
+    assert len(attempts) == 1 and instance.in_flight == 0
+    _assert_closed(failed)
 
 
 def test_untrusted_storage_or_configuration_refuses(tmp_path):
