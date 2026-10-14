@@ -29,6 +29,7 @@ import json
 import os
 import re
 import threading
+from types import SimpleNamespace
 from typing import TYPE_CHECKING, Any
 
 from pydantic import BaseModel, ValidationError
@@ -173,6 +174,41 @@ def _unusable_outcome(stop_reason: object) -> str:
     if stop_reason == "refusal":
         return "refused"
     return "no_tool_call"
+
+
+_TYPE_DICT = type.__dict__["__dict__"]
+_TYPE_MRO = type.__dict__["__mro__"]
+# The interpreter's own instance-dict descriptors (Python classes, C types).
+_DICT_DESCRIPTORS = (type(_TYPE_DICT), type(SimpleNamespace.__dict__["__dict__"]))
+
+
+def _plain_attribute(owner: object, name: str) -> Any:
+    """``owner.name`` if it is plain instance data, else None. Runs no vendor code.
+
+    For telemetry only. No property, getter, ``__getattr__`` or metaclass hook
+    is invoked: the value must sit in the instance ``__dict__``, reached through
+    the interpreter's own descriptor, with no class attribute of that name. An
+    int or str comes back as is; another builtin type comes back as None; any
+    other object (such as the usage record) comes back for the caller to read
+    with this same helper.
+    """
+    if owner is None:
+        return None
+    try:
+        mro = _TYPE_MRO.__get__(type(owner))
+        classes = [_TYPE_DICT.__get__(klass) for klass in mro]
+        if any(name in namespace for namespace in classes):
+            return None
+        slot = next((namespace["__dict__"] for namespace in classes if "__dict__" in namespace), None)
+        if type(slot) not in _DICT_DESCRIPTORS:
+            return None
+        data = slot.__get__(owner, type(owner))
+        value = dict.get(data, name) if type(data) is dict else None
+    except Exception:  # noqa: BLE001 - telemetry reads never affect the call
+        return None
+    if value is None or type(value) in (int, str):
+        return value
+    return None if type(value).__module__ == "builtins" else value
 
 
 def _describe_vendor_failure(exc: BaseException) -> str:
@@ -378,19 +414,16 @@ class AnthropicProvider:
             raise StructuredGenerationError(_describe_vendor_failure(exc)) from None
         usage.record(message)
         if span is not None and telemetry.enabled():
-            # Read only with telemetry on, and never let a vendor getter turn a
-            # successful (possibly billed) call into a failure.
-            try:
-                reported = getattr(message, "usage", None)
-                span.usage(
-                    input_tokens=getattr(reported, "input_tokens", None),
-                    output_tokens=getattr(reported, "output_tokens", None),
-                    cache_read=getattr(reported, "cache_read_input_tokens", None),
-                    cache_write=getattr(reported, "cache_creation_input_tokens", None),
-                    response_model=getattr(message, "model", None),
-                )
-            except Exception:  # noqa: BLE001, S110 - usage metadata is optional telemetry
-                pass
+            # Telemetry-only reads run no vendor code: plain instance data or
+            # nothing, so the call behaves the same with telemetry on or off.
+            reported = _plain_attribute(message, "usage")
+            span.usage(
+                input_tokens=_plain_attribute(reported, "input_tokens"),
+                output_tokens=_plain_attribute(reported, "output_tokens"),
+                cache_read=_plain_attribute(reported, "cache_read_input_tokens"),
+                cache_write=_plain_attribute(reported, "cache_creation_input_tokens"),
+                response_model=_plain_attribute(message, "model"),
+            )
         return message
 
     @staticmethod

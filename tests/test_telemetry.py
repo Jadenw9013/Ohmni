@@ -587,3 +587,98 @@ def test_tool_classification_is_a_whitelist():
     assert telemetry.classify_tool(["java", "-jar", "freerouting.jar"]) == "freerouting"
     assert telemetry.classify_tool([CANARIES[5]]) == "other"
     assert telemetry.classify_tool("kicad-cli") == "other"
+
+
+class _Signal(BaseException):
+    """A BaseException-derived getter signal: escapes ``except Exception``."""
+
+
+@pytest.mark.parametrize("enabled", [False, True])
+def test_telemetry_never_invokes_vendor_getters_even_for_base_exceptions(monkeypatch, enabled):
+    touched = []
+
+    class Usage:
+        def __init__(self):
+            self.input_tokens, self.output_tokens = 5, 3
+
+        @property
+        def cache_read_input_tokens(self):
+            touched.append("cache_read")
+            raise _Signal
+
+        def __getattr__(self, name):
+            touched.append(name)
+            raise _Signal
+
+    class Hostile(SimpleNamespace):
+        @property
+        def model(self):
+            touched.append("model")
+            raise _Signal
+
+    def message():
+        return Hostile(stop_reason="tool_use", usage=Usage(),
+                       content=[SimpleNamespace(type="tool_use", name="emit_board", input={"name": "x"})])
+
+    if enabled:
+        with offline_telemetry(monkeypatch) as recorder, telemetry.http_operation("POST /api/project-plans"):
+            provider = _provider(message())
+            result = provider.complete_structured(instructions="i", data="d", schema=Board)
+        [transaction] = recorder.transactions()
+        [span] = transaction["spans"]
+        assert span["data"]["gen_ai.usage.input_tokens"] == 5
+        assert "gen_ai.response.model" not in span["data"]
+        assert "gen_ai.usage.input_tokens.cached" not in span["data"]
+    else:
+        isolate_environment(monkeypatch)
+        telemetry.shutdown(0)
+        provider = _provider(message())
+        result = provider.complete_structured(instructions="i", data="d", schema=Board)
+    # Identical outcome either way; only the pre-existing cost record reads usage.
+    assert result.name == "x"
+    usage = provider.last_call_usage()
+    assert (usage.attempts, usage.input_tokens, usage.output_tokens) == (1, 5, 3)
+    assert touched == []
+
+
+def test_plain_attribute_reads_only_instance_data():
+    from ohmni.adapters.anthropic_provider import _plain_attribute
+
+    class Meta(type):
+        def __getattribute__(cls, name):
+            raise _Signal
+
+    class Odd(metaclass=Meta):
+        pass
+
+    class Slotted:
+        __slots__ = ("model",)
+
+    slotted = Slotted()
+    slotted.model = "claude-x"
+    plain = SimpleNamespace(model="claude-x", count=4, flag=True, ratio=1.5, items=[1], nested=SimpleNamespace(a=1))
+    assert _plain_attribute(plain, "model") == "claude-x"
+    assert _plain_attribute(plain, "count") == 4
+    assert _plain_attribute(plain, "flag") is None
+    assert _plain_attribute(plain, "ratio") is None
+    assert _plain_attribute(plain, "items") is None
+    assert _plain_attribute(_plain_attribute(plain, "nested"), "a") == 1
+    assert _plain_attribute(plain, "missing") is None
+    assert _plain_attribute(None, "model") is None
+    assert _plain_attribute(slotted, "model") is None
+    assert _plain_attribute(Odd(), "model") is None
+
+
+def test_plain_attribute_reads_a_real_vendor_message():
+    types = pytest.importorskip("anthropic.types")
+    from ohmni.adapters.anthropic_provider import _plain_attribute
+
+    message = types.Message.model_validate({
+        "id": "msg_test", "type": "message", "role": "assistant", "model": "claude-sonnet-5-5", "content": [],
+        "stop_reason": "end_turn", "stop_sequence": None,
+        "usage": {"input_tokens": 11, "output_tokens": 2, "cache_read_input_tokens": 4},
+    })
+    usage = _plain_attribute(message, "usage")
+    assert _plain_attribute(message, "model") == "claude-sonnet-5-5"
+    assert (_plain_attribute(usage, "input_tokens"), _plain_attribute(usage, "output_tokens")) == (11, 2)
+    assert _plain_attribute(usage, "cache_read_input_tokens") == 4
