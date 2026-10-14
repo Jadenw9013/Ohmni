@@ -221,8 +221,8 @@ async function requestProject(path, { fetcher, identity, method = "GET", data, t
         trace.fail("contract_mismatch");
         fail("api_ui_mismatch");
     }
-    trace.end(response.status);
     if (!response.ok) {
+        trace.end(response.status);
         if (["server_instance_mismatch", "ui_version_mismatch"].includes(payload?.error)) fail("generation_mismatch");
         const refusal = payload?.refusal?.message;
         const messages = {
@@ -241,6 +241,11 @@ async function requestProject(path, { fetcher, identity, method = "GET", data, t
         throw new ProjectRequestError(typeof refusal === "string" ? refusal : messages[payload?.error]
             || "The server could not complete this action. Your edits are still here. Try again.");
     }
-    checkIdentity(payload, current);
+    // Success is recorded only once the response has passed its contract.
+    try { checkIdentity(payload, current); } catch (error) {
+        trace.fail("contract_mismatch");
+        throw error;
+    }
+    trace.end(response.status);
     return { payload, identity: current };
 }

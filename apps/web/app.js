@@ -335,8 +335,13 @@ export async function openBrief({ fetcher = globalThis.fetch, request = null } =
             trace.fail("contract_mismatch");
             fail("api_ui_mismatch");
         }
+        let brief;
+        try { brief = parseBrief(payload, state.identity); } catch (error) {
+            trace.fail("contract_mismatch");
+            throw error;
+        }
         trace.end(response.status);
-        state.brief = parseBrief(payload, state.identity);
+        state.brief = brief;
         renderBrief(state.brief);
         setConnection("connected");
         show("agree");
@@ -445,8 +450,13 @@ export async function startRun({ fetcher = globalThis.fetch, poller = poll, poll
             trace.fail("contract_mismatch");
             fail("api_ui_mismatch");
         }
+        let started;
+        try { started = parseStart(payload, identity); } catch (error) {
+            trace.fail("contract_mismatch");
+            throw error;
+        }
         trace.end(response.status);
-        jobId = parseStart(payload, identity);
+        jobId = started;
         state.jobId = jobId;
         state.runStatus = "running";
         setConnection("connected");

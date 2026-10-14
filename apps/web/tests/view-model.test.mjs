@@ -731,3 +731,70 @@ test("result conversation binds the displayed revision, not the latest project r
     assert.equal(dom.get("#result-assistant").hidden,true);
     assert.equal(dom.get("#result-assistant").innerHTML,before,"late project lookup cannot remount stale board conversation");
 }));
+
+// ── telemetry outcomes (recording adapter, never the network) ──────────
+
+async function recordingTelemetry() {
+    const telemetry = await import("../telemetry.js");
+    const log = { ended: [], failed: [] };
+    telemetry.resetTelemetryForTests();
+    const origin = "http://127.0.0.1:8000";
+    const config = { enabled: true, dsn: `https://${"0123456789abcdef".repeat(2)}@o0.ingest.sentry.io/42`,
+        environment: "local", release: "ohmni@0000000", apiOrigin: "", traceSampleRate: 1 };
+    await telemetry.startTelemetry({ config, origin, load: async () => ({
+        start() {},
+        request(route) {
+            return { traceHeader: null, end(status) { log.ended.push([route, status]); }, fail(site, code) { log.failed.push([route, site, code]); } };
+        },
+    }) });
+    assert.equal(telemetry.telemetryState(), "enabled");
+    return { log, reset: telemetry.resetTelemetryForTests };
+}
+
+const BAD_RESPONSES = {
+    identity: (status, envelope) => response(status, envelope({ server_instance_id: OTHER_INSTANCE })),
+    body: (status) => response(status, { unexpected: true }),
+    json: (status) => ({ ok: true, status, json: async () => { throw new SyntaxError("not json"); } }),
+};
+
+test("a brief or demo response is a telemetry success only after it passes its contract", async () => {
+    const { log, reset } = await recordingTelemetry();
+    try {
+        for (const [path, status, envelope, route, site] of [
+            ["/api/brief", 200, briefEnvelope, "POST /api/brief", "browser.brief"],
+            ["/api/demo", 202, startEnvelope, "POST /api/demo", "browser.demo_start"],
+        ]) {
+            for (const [kind, bad] of Object.entries(BAD_RESPONSES)) {
+                log.ended.length = 0; log.failed.length = 0;
+                await withApp(async (app) => {
+                    let served = false;
+                    const fetcher = async (url) => {
+                        if (url === "/api/health") return response(200, health());
+                        if (url === "/api/brief" && path !== url) return response(200, briefEnvelope());
+                        if (url === path) { served = true; return bad(status, envelope); }
+                        throw new Error(`unexpected ${url}`);
+                    };
+                    await app.openBrief({ fetcher });
+                    if (path === "/api/demo") await app.startRun({ fetcher, poller: async () => {} });
+                    assert.ok(served, `${path} ${kind}`);
+                });
+                const mine = (entry) => entry[0] === route;
+                assert.deepEqual(log.failed.filter(mine), [[route, site, "contract_mismatch"]], `${path} ${kind}`);
+                assert.deepEqual(log.ended.filter(mine), [], `${path} ${kind} is never also a success`);
+            }
+            log.ended.length = 0; log.failed.length = 0;
+            await withApp(async (app) => {
+                const fetcher = async (url) => {
+                    if (url === "/api/health") return response(200, health());
+                    if (url === "/api/brief") return response(200, briefEnvelope());
+                    if (url === "/api/demo") return response(202, startEnvelope());
+                    throw new Error(`unexpected ${url}`);
+                };
+                await app.openBrief({ fetcher });
+                if (path === "/api/demo") await app.startRun({ fetcher, poller: async () => {} });
+            });
+            assert.deepEqual(log.ended.filter((entry) => entry[0] === route), [[route, status]], `${path} valid`);
+            assert.deepEqual(log.failed, [], `${path} valid`);
+        }
+    } finally { reset(); }
+});

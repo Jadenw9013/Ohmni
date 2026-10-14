@@ -208,3 +208,34 @@ test("the bundled adapter matches its metadata and rebuilds only allowlisted pay
     assert.equal(bundle.filterTransaction({ type: "transaction", transaction: "GET /secret-canary", contexts: { trace } }), null);
     assert.equal(bundle.filterTransaction({ type: "transaction", transaction: "POST /api/demo", contexts: { trace: { ...trace, op: "pageload" } } }), null);
 });
+
+test("a project response is a telemetry success only after its identity check", async () => {
+    const cases = {
+        identity: async () => ok({ server_instance_id: "c".repeat(16) }),
+        body: async () => ({ ok: true, status: 200, json: async () => ["not", "an", "envelope"] }),
+        json: async () => ({ ok: true, status: 200, json: async () => { throw new SyntaxError("x"); } }),
+    };
+    for (const [kind, fetcher] of Object.entries(cases)) {
+        const adapter = fakeAdapter();
+        await enable(adapter);
+        await assert.rejects(projectRequest(PLAN_PATH, { identity, method: "POST", data: {}, fetcher }), undefined, kind);
+        assert.deepEqual(adapter.log.failed.map((entry) => entry[2]), ["contract_mismatch"], kind);
+        assert.deepEqual(adapter.log.ended, [], `${kind} is never also a success`);
+    }
+    const adapter = fakeAdapter();
+    await enable(adapter);
+    await projectRequest(PLAN_PATH, { identity, method: "POST", data: {}, fetcher: async () => ok({}) });
+    assert.deepEqual(adapter.log.ended, [["POST /api/project-plans", 200]]);
+    assert.deepEqual(adapter.log.failed, []);
+});
+
+test("an enabled config whose bundle file is really absent stays inert and changes no request", async () => {
+    resetTelemetryForTests();
+    const absent = new URL("../vendor/ohmni-absent-telemetry-bundle.js", import.meta.url).href;
+    const state = await startTelemetry({ config: enabled(), origin: ORIGIN, load: () => import(absent) });
+    assert.equal(state, "unavailable");
+    const calls = [];
+    await projectRequest(PLAN_PATH, { identity, method: "POST", data: { message: "x", parent_id: null },
+        fetcher: async (url, init) => { calls.push([url, init.headers]); return ok({}); } });
+    assert.deepEqual(calls, [[PLAN_PATH, { ...pollHeaders(identity), "content-type": "application/json" }]]);
+});
