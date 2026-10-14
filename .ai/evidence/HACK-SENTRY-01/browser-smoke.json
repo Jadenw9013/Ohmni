@@ -25,7 +25,7 @@
       "brief_status": 200,
       "demo_status": 202,
       "plan_request": "ProjectRequestError",
-      "seconds": 11.74,
+      "seconds": 11.48,
       "blocked": [],
       "api_requests": [
         {
@@ -99,7 +99,11 @@
       "console_error_count": 1,
       "bundle_requests": 0,
       "envelope_items": [],
-      "passed": true
+      "passed": true,
+      "concurrent_headers": {
+        "present": 0,
+        "distinct_traces": 0
+      }
     },
     {
       "hosting": "local",
@@ -112,6 +116,7 @@
         "canary_absent_from_envelopes": true,
         "state": true,
         "browser_request_transactions": true,
+        "independent_actions_have_distinct_traces": true,
         "one_owned_transport_issue": true,
         "trace_headers_only_on_traced_posts": true,
         "headers_match_browser_spans": true,
@@ -121,7 +126,7 @@
       "brief_status": 200,
       "demo_status": 202,
       "plan_request": "ProjectRequestError",
-      "seconds": 11.97,
+      "seconds": 11.91,
       "blocked": [],
       "api_requests": [
         {
@@ -144,13 +149,13 @@
         },
         {
           "method": "GET",
-          "path": "/api/project-options",
+          "path": "/api/projects",
           "aborted": false,
           "sentry_trace": false
         },
         {
           "method": "GET",
-          "path": "/api/projects",
+          "path": "/api/project-options",
           "aborted": false,
           "sentry_trace": false
         },
@@ -246,9 +251,39 @@
             "sentry.source": "custom"
           },
           "spans": 0
+        },
+        {
+          "type": "transaction",
+          "name": "POST /api/demo",
+          "op": "http.client",
+          "status": "ok",
+          "data": {
+            "sentry.op": "http.client",
+            "sentry.origin": "manual",
+            "sentry.source": "custom",
+            "http.response.status_code": 204
+          },
+          "spans": 0
+        },
+        {
+          "type": "transaction",
+          "name": "POST /api/brief",
+          "op": "http.client",
+          "status": "ok",
+          "data": {
+            "sentry.op": "http.client",
+            "sentry.origin": "manual",
+            "sentry.source": "custom",
+            "http.response.status_code": 204
+          },
+          "spans": 0
         }
       ],
-      "passed": true
+      "passed": true,
+      "concurrent_headers": {
+        "present": 2,
+        "distinct_traces": 2
+      }
     },
     {
       "hosting": "local",
@@ -267,7 +302,7 @@
       "brief_status": 200,
       "demo_status": 202,
       "plan_request": "ProjectRequestError",
-      "seconds": 12.13,
+      "seconds": 11.05,
       "blocked": [],
       "api_requests": [
         {
@@ -341,7 +376,11 @@
       "console_error_count": 2,
       "bundle_requests": 1,
       "envelope_items": [],
-      "passed": true
+      "passed": true,
+      "concurrent_headers": {
+        "present": 0,
+        "distinct_traces": 0
+      }
     },
     {
       "hosting": "static",
@@ -361,7 +400,7 @@
       "brief_status": 200,
       "demo_status": 202,
       "plan_request": "ProjectRequestError",
-      "seconds": 12.42,
+      "seconds": 11.39,
       "blocked": [],
       "api_requests": [
         {
@@ -435,7 +474,11 @@
       "console_error_count": 1,
       "bundle_requests": 0,
       "envelope_items": [],
-      "passed": true
+      "passed": true,
+      "concurrent_headers": {
+        "present": 0,
+        "distinct_traces": 0
+      }
     },
     {
       "hosting": "static",
@@ -448,6 +491,7 @@
         "canary_absent_from_envelopes": true,
         "state": true,
         "browser_request_transactions": true,
+        "independent_actions_have_distinct_traces": true,
         "one_owned_transport_issue": true,
         "trace_headers_only_on_traced_posts": true,
         "headers_match_browser_spans": true,
@@ -457,7 +501,7 @@
       "brief_status": 200,
       "demo_status": 202,
       "plan_request": "ProjectRequestError",
-      "seconds": 11.6,
+      "seconds": 11.11,
       "blocked": [],
       "api_requests": [
         {
@@ -582,9 +626,39 @@
             "sentry.source": "custom"
           },
           "spans": 0
+        },
+        {
+          "type": "transaction",
+          "name": "POST /api/demo",
+          "op": "http.client",
+          "status": "ok",
+          "data": {
+            "sentry.op": "http.client",
+            "sentry.origin": "manual",
+            "sentry.source": "custom",
+            "http.response.status_code": 204
+          },
+          "spans": 0
+        },
+        {
+          "type": "transaction",
+          "name": "POST /api/brief",
+          "op": "http.client",
+          "status": "ok",
+          "data": {
+            "sentry.op": "http.client",
+            "sentry.origin": "manual",
+            "sentry.source": "custom",
+            "http.response.status_code": 204
+          },
+          "spans": 0
         }
       ],
-      "passed": true
+      "passed": true,
+      "concurrent_headers": {
+        "present": 2,
+        "distinct_traces": 2
+      }
     },
     {
       "hosting": "static",
@@ -603,7 +677,7 @@
       "brief_status": 200,
       "demo_status": 202,
       "plan_request": "ProjectRequestError",
-      "seconds": 13.03,
+      "seconds": 11.24,
       "blocked": [],
       "api_requests": [
         {
@@ -656,13 +730,13 @@
         },
         {
           "method": "GET",
-          "path": "/api/jobs/{job}",
+          "path": "/api/health",
           "aborted": false,
           "sentry_trace": false
         },
         {
           "method": "GET",
-          "path": "/api/health",
+          "path": "/api/jobs/{job}",
           "aborted": false,
           "sentry_trace": false
         },
@@ -677,7 +751,11 @@
       "console_error_count": 2,
       "bundle_requests": 1,
       "envelope_items": [],
-      "passed": true
+      "passed": true,
+      "concurrent_headers": {
+        "present": 0,
+        "distinct_traces": 0
+      }
     }
   ]
 }

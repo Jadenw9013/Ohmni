@@ -41,7 +41,7 @@ raw envelopes) is committed in [.ai/evidence/HACK-SENTRY-01/](../../.ai/evidence
 
 ## 3. Test and review results
 
-Recorded against code commit `a484f838` (Python 3.13.16, Node 22.22.0, Playwright
+Recorded against code commit `2d5e50c3` (Python 3.13.16, Node 22.22.0, Playwright
 1.56.0, Chromium 141.0.7390.37). Commit-bound record:
 [.ai/verification/HACK-SENTRY-01.yaml](../../.ai/verification/HACK-SENTRY-01.yaml).
 
@@ -49,41 +49,47 @@ Recorded against code commit `a484f838` (Python 3.13.16, Node 22.22.0, Playwrigh
 |---|---|
 | `python scripts/ai_state.py validate` | PASS |
 | `python scripts/verify.py workflow` | PASS, 12 tests |
-| `python scripts/verify.py fast` | PASS, 2542 passed, 91 skipped, 63 deselected (main baseline: 2451 passed, 91 skipped) |
-| Node suite, all `apps/web/tests/*.test.mjs` | PASS, 1115 tests, 0 failed (10 new in `telemetry.test.mjs`) |
-| Telemetry and architecture tests | PASS, 165 tests (89 telemetry, real SDK with recording transport; the suite fails rather than skips if the SDK is missing) |
+| `python scripts/verify.py fast` | PASS, 2622 passed, 91 skipped, 63 deselected |
+| Node suite, all `apps/web/tests/*.test.mjs` | PASS, 1119 tests, 0 failed |
+| Telemetry and architecture tests | PASS, 178 tests (telemetry tests use the real SDK with recording transport; the suite fails rather than skips if the SDK is missing) |
 | `python scripts/telemetry_fault_harness.py` | PASS, 8/8 checks over 5 scenarios |
-| `python scripts/smoke_browser_telemetry.py` | PASS, 6/6 scenarios (local and static hosting x disabled, enabled, missing bundle), 0 uncaught page errors, 0 external requests |
+| `python scripts/smoke_browser_telemetry.py` | PASS, 6/6 scenarios (local and static hosting x disabled, enabled, missing bundle; the bundle file is really deleted), distinct traces for sequential and overlapping actions, 0 uncaught page errors, 0 external requests |
 | `node scripts/telemetry-browser/build.mjs --check` | PASS, byte-for-byte rebuild |
-| `python -m ruff check .` | 21 errors, identical to the `main` baseline; none in changed files |
-| `python scripts/verify.py integration` | **BLOCKED (1 failed, 44 skipped)**: `test_component_resolution.py::test_admitted_part_traverses_real_project_release_with_exact_lineage` needs a real `kicad-cli`, which this environment lacks. It fails identically on `main` (`00016f5f`). |
-| Real KiCad gate (`kicad-gate` CI job, KiCad 10.0.5 image) | PASS in CI on this PR (`a484f838`); NOT_RUN locally (no `kicad-cli` here). |
+| `python -m ruff check .` | 22 errors, the identical set to current `main`; none introduced |
+| `python scripts/verify.py integration` | **BLOCKED (1 failed, 44 skipped)**: `test_component_resolution.py::test_admitted_part_traverses_real_project_release_with_exact_lineage` needs a real `kicad-cli`, which this environment lacks. It fails identically on `main`. |
+| Real KiCad gate (`kicad-gate` CI job, KiCad 10.0.5 image) | PASS in CI on this PR (`2d5e50c3`); NOT_RUN locally (no `kicad-cli` here). |
 | Corpus gate (CI) | PASS in CI on this PR. |
 | ngspice-42 simulation gate | NOT_RUN (no pinned ngspice here; simulation code unchanged). |
-| Codex rehearsal tests after merging `main` | PASS, 63 tests (`tests/test_hackathon_release_rehearsal.py`; files untouched). |
+| Codex rehearsal tests | PASS, 63 tests (`tests/test_hackathon_release_rehearsal.py`; files untouched). |
 | Live Sentry ingestion and dashboard | NOT_RUN by design (no account or DSN). |
 
-Independent review (a separate agent with no write access) found no BLOCKER or
-HIGH issue. It reported two MEDIUM and four LOW findings. Fixed in `b0194514`
-with regression tests:
+Reviews, in order:
 
-- MEDIUM: persistence failures noted in progress callbacks, early worker returns
-  and polls were never emitted.
-- MEDIUM: a stage-level reject hid a later infrastructure failure; rejections are
-  now marked only at the check's own raise.
-- LOW: the provider read vendor usage attributes even with telemetry off.
+1. My first independent review (a separate read-only agent) found 2 MEDIUM and 4
+   LOW, fixed in `b0194514`; its re-review found 1 LOW, fixed in `a484f838`. It
+   rated the "local server needs the bundle" issue LOW and accepted it. That was
+   wrong.
+2. **Codex's independent review** ([PR #78](https://github.com/Jadenw9013/Ohmni/pull/78),
+   `docs/hackathon/SENTRY_INDEPENDENT_REVIEW.md`, through `1e143537`) returned
+   CHANGES REQUIRED: one HIGH and seven MEDIUM. Each is fixed in its own commit
+   with a regression test that fails on the previous code:
 
-Accepted and documented in section 6: the local server needs the bundle in its
-snapshot, CORS always lists `sentry-trace,baggage`, and the Python SDK is pinned by
-version rather than hash. The reviewer's own run of the Chromium smoke timed out once
-waiting for the brief button while the fast suite was using the CPU; it did not
-confirm the smoke. The runs recorded here passed 6/6, including the final run on `a484f838`.
+   | Finding | Fix |
+   |---|---|
+   | IR02 HIGH: a missing optional bundle stopped server startup | `0a0b5f3e`: the bundle is the one optional snapshot asset (absent means 404; a dangling link or directory still fails) |
+   | IR01: telemetry-only reads ran vendor getters | `5b1e95c2`: plain instance data only, no getter or hook runs |
+   | IR03: a contract mismatch was recorded as success | `c62d06a3`, completed in `2d5e50c3`: success only after identity and schema checks, including each project caller's parser |
+   | IR04: browser actions shared one trace | `856fb6e2`: each request starts a new trace |
+   | IR05 | already fixed in `b0194514` |
+   | IR06: ERC/DRC stage stayed ok when the tool failed | `569770dd`: outcomes derived from the report |
+   | IR07: failed span cleanup reparented the next sibling | `21c6aa26`: the previous span is restored by the adapter |
+   | IR08: any `claude-` text passed as a model name | `2370ec4d`: canonical identifiers only |
+   | IR09: Windows path separator, installed KiCad discoverable in tests | `f54b6f3f`: `os.pathsep`, module-origin and stubbed-discovery assertions |
 
-A second independent agent re-reviewed `b0194514`: all three fixes confirmed, no
-deadlock or in-lock telemetry, no double reporting. It found one new LOW issue
-(a stale KiCad artifact was marked as an engineering rejection), which was fixed
-in `a484f838` with a regression test. Open BLOCKER/HIGH findings: none.
-Findings are recorded in `.ai/reviews.yaml` as HACK-SENTRY-01-R01 through R07.
+3. A final independent re-review of `f54b6f3f` found IR03 and IR09 only partly
+   fixed; `2d5e50c3` closed them. Its re-review of `2d5e50c3`: all findings
+   resolved, no BLOCKER, HIGH or MEDIUM open. Two LOW are accepted (section 6).
+   Records: `.ai/reviews.yaml` (HACK-SENTRY-01-R01..R07, IR01..IR11).
 
 ## 4. Owner checklist to activate later (two projects)
 
@@ -158,10 +164,13 @@ Deliberately omitted, per the plan's timebox and the owner's limits:
 - **Browser coverage** is the seven traced POST routes. Health checks, polls,
   component/behavior pages and the saved hackathon demo page load nothing and are
   not instrumented. The browser emits no metrics.
-- **Local server needs the bundle.** The demo server's immutable snapshot
-  includes `vendor/sentry-telemetry.js`, so deleting it stops local startup
-  (fail closed, like any other snapshot asset). Static hosting without it stays
-  usable; the local-server smoke simulates a failed load with a 404 instead.
+- **Windows is not verified.** The telemetry tests are written to be portable,
+  but they ran only on Linux here, and the native-tool "nonzero exit" test is
+  skipped on Windows because a script cannot stand in for `kicad-cli.exe`.
+- **Post-success consistency checks.** After a project request records success,
+  the caller may still reject a saved revision that differs from the reviewed
+  plan or proposal. The user sees that error, but telemetry records it as a
+  success. These are application checks, not response-contract checks.
 - **CORS** now always lists `sentry-trace,baggage` as allowed request headers, as
   the plan specifies; `baggage` is accepted and ignored.
 - **Supply chain.** `sentry-sdk==2.72.0` is pinned by version, not hash, and its
