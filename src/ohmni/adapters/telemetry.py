@@ -1016,13 +1016,23 @@ class _Child(_Guarded):
         self._explicit_status: str | None = None
         self._started = 0.0
         self._execution: str | None = None
+        self._restore: tuple[Any, Any, Any] | None = None
 
     def __enter__(self) -> Any:
         operation = _OPERATION.get()
         if not _RUNTIME.active or operation is None:
             return _NOOP
         try:
+            # The owned record of what was current, so a sibling never inherits
+            # this span as its parent, whatever the SDK's own cleanup does.
+            scope = _RUNTIME.sdk.get_current_scope()
+            previous = scope.span
+        except BaseException:  # noqa: BLE001
+            return _NOOP
+        span = None
+        try:
             span = _RUNTIME.sdk.start_span(op=self._op, name=self._description)
+            self._restore = (scope, previous, span)
             span.__enter__()
             self._span = span
             for key, value in self._data.items():
@@ -1030,6 +1040,7 @@ class _Child(_Guarded):
             self._started = time.monotonic()
         except BaseException:  # noqa: BLE001
             self._span = None
+            self._restore_previous()
             return _NOOP
         return self
 
@@ -1045,7 +1056,21 @@ class _Child(_Guarded):
             self._close_span(exc_type is not None)
         except BaseException:  # noqa: BLE001, S110
             pass
+        finally:
+            self._restore_previous()
         return False
+
+    def _restore_previous(self) -> None:
+        """Make the span current before this one current again, if it is not."""
+        restore, self._restore = self._restore, None
+        if restore is None:
+            return
+        scope, previous, span = restore
+        try:
+            if scope.span is span:
+                scope.span = previous
+        except BaseException:  # noqa: BLE001, S110
+            pass
 
     def _on_close(self, failed: bool) -> None:
         return None

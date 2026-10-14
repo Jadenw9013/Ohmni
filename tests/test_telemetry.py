@@ -682,3 +682,41 @@ def test_plain_attribute_reads_a_real_vendor_message():
     assert _plain_attribute(message, "model") == "claude-sonnet-5-5"
     assert (_plain_attribute(usage, "input_tokens"), _plain_attribute(usage, "output_tokens")) == (11, 2)
     assert _plain_attribute(usage, "cache_read_input_tokens") == 4
+
+
+@pytest.mark.parametrize("failure", ["exit", "enter"])
+def test_a_failed_sdk_span_cleanup_never_reparents_the_next_sibling(monkeypatch, failure):
+    from sentry_sdk import tracing
+
+    original_enter, original_exit = tracing.Span.__enter__, tracing.Span.__exit__
+    armed = {"on": False}
+
+    def enter(self):
+        result = original_enter(self)
+        if failure == "enter" and armed["on"]:
+            armed["on"] = False
+            raise _Signal  # after the SDK already made this span current
+        return result
+
+    def exit_(self, *args):
+        if failure == "exit" and armed["on"]:
+            armed["on"] = False
+            raise _Signal  # before the SDK restores the previous span
+        return original_exit(self, *args)
+
+    with offline_telemetry(monkeypatch) as recorder:
+        monkeypatch.setattr(tracing.Span, "__enter__", enter)
+        monkeypatch.setattr(tracing.Span, "__exit__", exit_)
+        with telemetry.http_operation("POST /api/demo"):
+            armed["on"] = True
+            with telemetry.stage("schematic"):
+                pass
+            with telemetry.stage("erc"), telemetry.stage("drc"):
+                pass
+        monkeypatch.setattr(tracing.Span, "__enter__", original_enter)
+        monkeypatch.setattr(tracing.Span, "__exit__", original_exit)
+        [transaction] = recorder.transactions()
+    root = transaction["contexts"]["trace"]["span_id"]
+    spans = {span["description"]: span for span in transaction["spans"]}
+    assert spans["erc"]["parent_span_id"] == root
+    assert spans["drc"]["parent_span_id"] == spans["erc"]["span_id"]
