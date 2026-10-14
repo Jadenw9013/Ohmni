@@ -221,6 +221,8 @@ async function requestProject(path, { fetcher, identity, method = "GET", data } 
             revision_not_found: "This revision is unavailable. Reopen the saved project.",
             invalid_project_request: "These choices are not supported. Check the project settings before saving.",
             invalid_exercise_choice: "Choose one of the available repairs, then try again.",
+            ai_request_limited: "AI requests are paused for a moment to keep demo usage bounded. Your text is still here. Try again later, or continue with guided setup.",
+            ai_budget_unavailable: "AI requests are unavailable right now. Your text is still here. Continue with guided setup.",
             job_start_unavailable: "The server cannot start another run right now. Wait for an active run to finish, then try again.",
         };
         throw new ProjectRequestError(typeof refusal === "string" ? refusal : messages[payload?.error]

@@ -19,6 +19,8 @@ const SERVER_ERROR_KINDS = Object.freeze({
     job_start_unavailable: "job_initialization_failed",
     brief_unavailable: "brief_unavailable",
     job_not_found: "lost_job",
+    ai_request_limited: "ai_request_limited",
+    ai_budget_unavailable: "ai_budget_unavailable",
 });
 const FAILED_JOB_CODES = new Set([
     "worker_start_failed", "pipeline_failed", "progress_publication_failed", "job_state_invalid", "server_restarted", "routing_incomplete", "eda_tool_failed",

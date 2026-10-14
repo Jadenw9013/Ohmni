@@ -73,6 +73,8 @@ INITIALIZATION_FAILURE_MESSAGE="Ohmni demo could not initialize its fixed local 
 RUNTIME_FAILURE_MESSAGE="Ohmni demo stopped unexpectedly. Restart the server and reload the browser."
 WORKSPACE_IN_USE_MESSAGE="Ohmni workspace is already in use. Stop its local server before opening the same workspace again."
 PROVIDER_READY_MESSAGE="Ohmni demo: model-proposed designs are enabled for free-text requests."
+AI_LIMITED_MESSAGE="AI requests are paused for a moment to keep demo usage bounded. Your text is still here. Try again later, or continue with guided setup."
+AI_BUDGET_UNAVAILABLE_MESSAGE="AI requests are unavailable right now. Your text is still here. Continue with guided setup."
 PROVIDER_UNAVAILABLE_MESSAGE="Ohmni demo could not configure a model provider; only the deterministic fixture is available."
 #: Bounds on free design text. Long enough to describe a board, short enough
 #: that nothing resembling a pasted document reaches a proposal prompt.
@@ -375,13 +377,20 @@ class JobStore:
         try:
             if self._diagnostic is not None:self._diagnostic(event,job_id=job_id,error_code=error_code)
         except BaseException:return  # noqa: BLE001 - diagnostics must never affect job state
-    def start(self,request:str)->str:
+    def start(self,request:str,lease=None)->str:
+        """Launch a demo job. A billed request's ``lease`` is owned by the job
+        from here: released when its worker ends, or now if it never launches."""
         job_id=uuid.uuid4().hex[:12]
-        with self.lock:
-            self._admit_locked()
-            self.jobs[job_id]=self._queued_record(job_id)
-            if not self._claim_locked(job_id):raise RuntimeError("local job persistence unavailable")
-        self._launch(job_id,request)
+        try:
+            with self.lock:
+                self._admit_locked()
+                self.jobs[job_id]=self._queued_record(job_id)
+                if not self._claim_locked(job_id):raise RuntimeError("local job persistence unavailable")
+        except BaseException:
+            if lease is not None:lease.release()
+            raise
+        if lease is None:self._launch(job_id,request)
+        else:self._launch(job_id,request,lease=lease)
         return job_id
     def _claim_locked(self,job_id):
         """Insert a demo job owned by this workspace and its demo project.
@@ -425,12 +434,14 @@ class JobStore:
             self.jobs[job_id]=record
         self._launch(job_id,brief,ProjectPipeline)
         return job_id
-    def _launch(self,job_id,request,pipeline_factory=None):
+    def _launch(self,job_id,request,pipeline_factory=None,lease=None):
         self._emit("job_queued",job_id)
         try:
             args=(job_id,request) if pipeline_factory is None else (job_id,request,pipeline_factory)
-            threading.Thread(target=self._run,args=args,daemon=True).start()
+            kwargs={} if lease is None else {"lease":lease}
+            threading.Thread(target=self._run,args=args,kwargs=kwargs,daemon=True).start()
         except BaseException:  # noqa: BLE001 - the launch boundary must always terminalize the job
+            if lease is not None:lease.release()
             self._fail(job_id,"worker_start_failed")
     @staticmethod
     def _failure_record(job_id,error_code="job_state_invalid"):
@@ -448,7 +459,12 @@ class JobStore:
             self.jobs[job_id]=self._failure_record(job_id,error_code);changed=True
             self._persist_locked(job_id)
         if changed:self._emit("job_failed",job_id,error_code)
-    def _run(self,job_id,request,pipeline_factory=None):
+    def _run(self,job_id,request,pipeline_factory=None,lease=None):
+        # The billed lease lives exactly as long as this worker's provider work.
+        try:self._run_pipeline(job_id,request,pipeline_factory)
+        finally:
+            if lease is not None:lease.release()
+    def _run_pipeline(self,job_id,request,pipeline_factory=None):
         self._emit("worker_started",job_id)
         def progress(event):
             try:
@@ -808,7 +824,7 @@ def _build_guide(report):
 
 
 class DemoHTTPServer(ThreadingHTTPServer):
-    def __init__(self,server_address,handler_class,*,store=None,web_root=WEB_ROOT):
+    def __init__(self,server_address,handler_class,*,store=None,web_root=WEB_ROOT,ai_budget=None):
         self.workspace_lock=None
         self.behavior_service=None
         self.behavior_service_lock=threading.Lock()
@@ -824,6 +840,12 @@ class DemoHTTPServer(ThreadingHTTPServer):
             })
             self.store=store if store is not None else JobStore()
             self.store.set_diagnostic(self._job_diagnostic)
+            from ohmni.application.request_budget import RequestBudget
+
+            # Every billed provider path is admitted here. Invalid limits refuse
+            # billed calls; they never fall back to unlimited.
+            self.ai_budget=ai_budget if ai_budget is not None else RequestBudget.from_environment(
+                Path(self.store.output_root)/"ai-request-budget.sqlite3")
         except DemoInitializationError:raise
         except BaseException:raise DemoInitializationError from None  # noqa: BLE001 - never inspect initialization failures
         # Claim the endpoint before touching durable state. A failed bind must
@@ -895,6 +917,30 @@ class DemoHandler(SimpleHTTPRequestHandler):
             self.server._job_diagnostic("request_runtime_failed")
             body=b'{"error":"response_unavailable"}';status=HTTPStatus.INTERNAL_SERVER_ERROR
         self.send_response(status);self.send_header("content-type","application/json");self.send_header("content-length",str(len(body)));self.end_headers();self.wfile.write(body)
+    def _admit_billed(self,route,*,refusal=True):
+        """Admit one billed provider request, or answer 429/503 and return None.
+
+        Only called when a provider is configured and this exact request would
+        reach it. The body never names limits, counts or storage paths.
+        """
+        from ohmni.application.request_budget import BudgetExceeded
+        try:return self.server.ai_budget.admit(route)
+        except BudgetExceeded as limited:
+            self.server._job_diagnostic("request_rejected",rejection_code="ai_request_limited")
+            body={"error":"ai_request_limited"}
+            if refusal:body["refusal"]={"message":AI_LIMITED_MESSAGE}
+            self._send_limited(body,HTTPStatus.TOO_MANY_REQUESTS,limited.retry_after_seconds)
+        except BaseException:  # noqa: BLE001 - an untrusted budget refuses the billed call
+            self.server._job_diagnostic("request_rejected",rejection_code="ai_budget_unavailable")
+            body={"error":"ai_budget_unavailable"}
+            if refusal:body["refusal"]={"message":AI_BUDGET_UNAVAILABLE_MESSAGE}
+            self._send_limited(body,HTTPStatus.SERVICE_UNAVAILABLE,None)
+        return None
+    def _send_limited(self,value,status,retry_after):
+        body=json.dumps(value).encode()
+        self.send_response(status);self.send_header("content-type","application/json")
+        if retry_after is not None:self.send_header("retry-after",str(int(retry_after)))
+        self.send_header("content-length",str(len(body)));self.end_headers();self.wfile.write(body)
     def _reject(self,error,status):
         self.server._job_diagnostic("request_rejected",rejection_code=error)
         return self._json({"error":error},status)
@@ -977,7 +1023,13 @@ class DemoHandler(SimpleHTTPRequestHandler):
             parent=payload["parent_id"]
             if parent is not None and (type(parent) is not str or not re.fullmatch(r"[0-9a-f]{16}",parent)):
                 raise ValueError("Invalid parent")
-            result=self.server.assistant.ask(project_id,revision_id,payload["message"],parent)
+            lease=None
+            if self.server.store.provider is not None:
+                lease=self._admit_billed("assistant")
+                if lease is None:return
+            try:result=self.server.assistant.ask(project_id,revision_id,payload["message"],parent)
+            finally:
+                if lease is not None:lease.release()
             return self._json({"turn":result,**self.server._identity()})
         except PlanUnavailable as error:
             return self._json({"error":"proposal_unavailable","refusal":{"message":str(error)}},HTTPStatus.CONFLICT)
@@ -1000,7 +1052,13 @@ class DemoHandler(SimpleHTTPRequestHandler):
             parent=payload["parent_id"]
             if parent is not None and (type(parent) is not str or not re.fullmatch(r"[0-9a-f]{16}",parent)):
                 raise ValueError("The previous plan identifier is invalid.")
-            result=self.server.planner.propose(payload["message"],parent)
+            lease=None
+            if self.server.store.provider is not None:
+                lease=self._admit_billed("planner")
+                if lease is None:return
+            try:result=self.server.planner.propose(payload["message"],parent)
+            finally:
+                if lease is not None:lease.release()
             return self._json({"plan":result,**self.server._identity()})
         except PlanUnavailable as error:
             return self._json({"error":"plan_unavailable","refusal":{"message":str(error)}},HTTPStatus.CONFLICT)
@@ -1146,8 +1204,14 @@ class DemoHandler(SimpleHTTPRequestHandler):
         request=DEMO_REQUEST
         if error is not None:request,error=self._model_request(payload,error)
         if error is not None:return self._reject(error,HTTPStatus.BAD_REQUEST if error=="fixture_rejected" else HTTPStatus.CONFLICT)
+        lease=None
+        if request!=DEMO_REQUEST and self.server.store.provider is not None:
+            # Free text launches billed background work: admit before launch,
+            # and hand the lease to the job, which releases it when it ends.
+            lease=self._admit_billed("generation",refusal=False)
+            if lease is None:return
         try:
-            job_id=self.server.store.start(request)
+            job_id=self.server.store.start(request,lease=lease) if lease is not None else self.server.store.start(request)
             if type(job_id) is not str or not JOB_ID_PATTERN.fullmatch(job_id):raise ValueError
         except BaseException:  # noqa: BLE001 - request threads must not leak failures
             self.server._job_diagnostic("job_start_unavailable")
@@ -1167,11 +1231,17 @@ class DemoHandler(SimpleHTTPRequestHandler):
         request=DEMO_REQUEST
         if error is not None:request,error=self._model_request(payload,error)
         if error is not None:return self._reject(error,HTTPStatus.BAD_REQUEST if error=="fixture_rejected" else HTTPStatus.CONFLICT)
+        lease=None
+        if request!=DEMO_REQUEST and self.server.store.provider is not None:
+            lease=self._admit_billed("brief",refusal=False)
+            if lease is None:return
         try:brief=_owned_json_object(
             preview_brief(request,provider=self.server.store.provider).model_dump(mode="json"))
         except BaseException:  # noqa: BLE001 - request threads must not leak failures
             self.server._job_diagnostic("brief_unavailable")
             return self._json({"error":BRIEF_UNAVAILABLE_MESSAGE},HTTPStatus.SERVICE_UNAVAILABLE)
+        finally:
+            if lease is not None:lease.release()
         return self._json({"brief":brief,**self.server._identity()})
 
     def do_HEAD(self):

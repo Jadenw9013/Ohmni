@@ -56,6 +56,7 @@ Use argument arrays, not shell strings.
 - current clients bind job creation to the exact API, server instance, and UI snapshot; exact fixed-fixture and canonical-request payloads remain narrowly supported for pre-versioned local clients
 - local API errors and job failures expose only allowlisted fixed codes; stderr diagnostics are flushed structured events containing no request bodies, exception strings, tracebacks, or filesystem paths
 - demo initialization, endpoint binding, worker launch, pipeline execution, and server runtime failures remain distinct fixed diagnostic boundaries
+- every billed provider path (planner, assistant, free-text brief, free-text generation) passes global AI request admission first: a durable SQLite daily count (failed calls count, restarts do not reset it), a bounded in-flight lease held until provider work ends, and a burst window; refusals are 429 with Retry-After, untrusted budget storage or invalid limits refuse with 503, and no HTTP route resets or bypasses it (`scripts/ai_budget.py` is local operator tooling). A request count is not a dollar cap
 
 ## Electrical safety policy for MVP
 
