@@ -17,6 +17,7 @@ import sys
 import threading
 import time
 from contextlib import contextmanager
+from pathlib import Path
 from types import SimpleNamespace
 from urllib.error import HTTPError
 from urllib.request import ProxyHandler, Request, build_opener
@@ -158,6 +159,20 @@ def test_rejected_model_output_after_a_successful_call_is_a_planner_warning(tmp_
         assert recorder.events()[0]["level"] == "warning"
 
 
+def use_kicad(monkeypatch, executable):
+    """Make tool discovery explicit: this executable or none, never an installed KiCad.
+
+    PATH alone is not enough: discovery also checks platform install folders
+    (Program Files, /usr/bin), so a developer machine or CI image with KiCad
+    would otherwise run the real tool.
+    """
+    from ohmni.adapters import tools
+    from ohmni.eda.kicad import erc
+    for module in (tools, erc):
+        monkeypatch.setattr(module, "find_kicad_cli", lambda: executable)
+    monkeypatch.setenv("PATH", os.pathsep.join([str(Path(executable).parent)] if executable else []))
+
+
 def fake_kicad(directory, body):
     directory.mkdir(parents=True, exist_ok=True)
     executable = directory / "kicad-cli"
@@ -177,10 +192,11 @@ def saved_revision(server, base):
 @pytest.mark.parametrize("kicad", ["missing", "nonzero"])
 def test_confirmed_project_worker_trace_connects_to_the_request(tmp_path, monkeypatch, kicad):
     if kicad == "missing":
-        monkeypatch.setenv("PATH", str(tmp_path / "empty-bin"))
+        use_kicad(monkeypatch, None)
     else:
-        bin_dir = fake_kicad(tmp_path / "bin", "sys.exit(9)")
-        monkeypatch.setenv("PATH", f"{bin_dir}{os.pathsep}{os.environ.get('PATH', '')}")
+        if os.name == "nt":
+            pytest.skip("a shebang script cannot stand in for kicad-cli.exe on Windows")
+        use_kicad(monkeypatch, str(fake_kicad(tmp_path / "bin", "sys.exit(9)") / "kicad-cli"))
     with offline_telemetry(monkeypatch) as recorder:
         with served(tmp_path / "work") as (server, base):
             project_id, revision_id = saved_revision(server, base)
@@ -215,7 +231,7 @@ def test_confirmed_project_worker_trace_connects_to_the_request(tmp_path, monkey
 
 
 def test_concurrent_jobs_keep_their_own_traces(tmp_path, monkeypatch):
-    monkeypatch.setenv("PATH", str(tmp_path / "empty-bin"))
+    use_kicad(monkeypatch, None)
     traces = ["a" * 31 + "1", "b" * 31 + "2"]
     with offline_telemetry(monkeypatch) as recorder, served(tmp_path / "work") as (server, base):
         revisions = [saved_revision(server, base) for _ in traces]
@@ -406,7 +422,7 @@ def test_cors_allows_trace_headers_only_for_already_allowed_origins(tmp_path, mo
 
 
 def test_schematic_bytes_and_job_codes_match_with_telemetry_on_and_off(tmp_path, monkeypatch):
-    monkeypatch.setenv("PATH", str(tmp_path / "empty-bin"))
+    use_kicad(monkeypatch, None)
     outcomes = {}
     for mode in ("off", "on"):
         manager = offline_telemetry(monkeypatch) if mode == "on" else _null()

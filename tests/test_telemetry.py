@@ -9,6 +9,7 @@ result or exception.
 
 from __future__ import annotations
 
+import os
 import subprocess
 import sys
 import threading
@@ -61,11 +62,14 @@ def test_disabled_and_invalid_configuration_import_nothing_and_create_no_transpo
         "    op.set_status(500); s.outcome('error')\n"
         "telemetry.record_boundary_failure('worker', 'pipeline_failed')\n"
         "assert 'sentry_sdk' not in sys.modules, 'disabled mode imported the SDK'\n"
+        "import pathlib\n"
+        f"assert pathlib.Path(telemetry.__file__).resolve().is_relative_to(pathlib.Path({str(ROOT / 'src')!r}).resolve())\n"
+        f"assert pathlib.Path(scripts.demo_server.__file__).resolve().is_relative_to(pathlib.Path({str(ROOT)!r}).resolve())\n"
         "print('ok')\n"
     )
-    env = {key: value for key, value in __import__("os").environ.items()
+    env = {key: value for key, value in os.environ.items()
            if not key.startswith(("SENTRY", "OHMNI_TELEMETRY"))}
-    env["PYTHONPATH"] = f"{ROOT / 'src'}:{ROOT}"
+    env["PYTHONPATH"] = os.pathsep.join([str(ROOT / "src"), str(ROOT)])
     result = subprocess.run([sys.executable, "-c", code], cwd=ROOT, env=env, capture_output=True,
                             text=True, timeout=60, check=False)
     assert result.returncode == 0 and result.stdout.strip() == "ok", result.stderr[-400:]
