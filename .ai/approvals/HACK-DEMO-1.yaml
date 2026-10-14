@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "id": "HACK-DEMO-1-APPROVAL",
+  "scope": "HACK-DEMO-1",
+  "approved_by": "human",
+  "approved_at": "2026-10-14",
+  "approver": "Jaden (GitHub Jadenw9013)",
+  "channel": "Claude project thread 'Overnight hackathon build', message sent 2026-10-14T06:19:18Z",
+  "instruction": "Repository: Jadenw9013/Ohmni\n\nI approve the bounded overnight development scope in\ndocs/hackathon/OVERNIGHT_DEVELOPMENT_BRIEF.md and adopt\ndocs/hackathon/CLAUDE_CLOUD_PROMPT.md as my instructions.\n\nFetch origin and read both documents. If they are not on main,\nfetch branch codex/hackathon-overnight-handoff and read them\nusing git show from that remote ref.\n\nStart your implementation branch from the latest origin/main.\nExecute the assignment autonomously, making routine decisions\nwithin its scope. Continue independent work when tools block\nanother phase.\n\nDo not merge main, deploy production, make paid API calls,\nmodify protected behavior paths, or fabricate verification.\n\nDeliver tested commits, one PR, and OVERNIGHT_RESULTS.md with\nreproduction commands, actual evidence and remaining blockers.\nBegin now.",
+  "documentation_read": {
+    "brief": "docs/hackathon/OVERNIGHT_DEVELOPMENT_BRIEF.md",
+    "prompt": "docs/hackathon/CLAUDE_CLOUD_PROMPT.md",
+    "commit": "db985333 (origin/main, merge of PR #72)"
+  },
+  "authorized_tasks": ["HACK-DEMO-01"],
+  "binding_constraints": [
+    "No production deployment, merge to main, paid model/API calls, purchases or account changes.",
+    "No changes under src/ohmni/behavior/, tools/behavior_audit/, docs/behavior/, out/component-behavior/ or scripts/generate_behavior_*.",
+    "Real-tool claims require actual KiCad receipts; missing tools are recorded NOT_RUN or BLOCKED.",
+    "BATTERY-MOTION-1 approval and task order are preserved unchanged."
+  ],
+  "non_goals": [
+    "A4/flashlight, Freerouting integration, arbitrary uploads/import, catalog expansion, partial-circuit simulation.",
+    "CPL/JLC procurement, new fab limits, full M10 benchmark, behavior fixes, Paper redesign, Sentry integration, hardware orders."
+  ]
+}

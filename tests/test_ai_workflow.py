@@ -124,17 +124,25 @@ def test_repository_product_scope_matches_human_approval():
     # Visual and release approval preserve the real board and parked M10 benchmark.
     for scope in tasks["scopes"]:
         assert scope["approved_by"]=="human" and scope["approval_evidence"]
-        if scope["id"] in {"VIS-REF-001", "DEPLOY-1", "COMPONENT-SYNTHESIS-1", "COMPONENT-ATLAS-BUILDER-1", "UX-CLARITY-1", "REPO-READY-1", "COMPONENT-3D-STAGE1", "COMPONENT-3D-STAGE2", "COMPONENT-3D-STAGE3", "COMPONENT-3D-STAGE4", "COMPONENT-3D-STAGE5", "COMPONENT-3D-COMPLETION", "COMPONENT-BEHAVIOR-STAGE1", "COMPONENT-BEHAVIOR-COMPLETION", "LANDING-PCB-P1", "LANDING-PCB-CIRCUIT", "LANDING-PCB-CONTROLLER", "CONVERSATIONAL-UX-1", "BATTERY-MOTION-1"}:
+        if scope["id"] in {"VIS-REF-001", "DEPLOY-1", "COMPONENT-SYNTHESIS-1", "COMPONENT-ATLAS-BUILDER-1", "UX-CLARITY-1", "REPO-READY-1", "COMPONENT-3D-STAGE1", "COMPONENT-3D-STAGE2", "COMPONENT-3D-STAGE3", "COMPONENT-3D-STAGE4", "COMPONENT-3D-STAGE5", "COMPONENT-3D-COMPLETION", "COMPONENT-BEHAVIOR-STAGE1", "COMPONENT-BEHAVIOR-COMPLETION", "LANDING-PCB-P1", "LANDING-PCB-CIRCUIT", "LANDING-PCB-CONTROLLER", "CONVERSATIONAL-UX-1", "BATTERY-MOTION-1", "HACK-DEMO-1"}:
             assert scope["status"] in {"APPROVED", "IN_PROGRESS", "REVIEW", "VERIFIED", "COMPLETE"}
         else:
             expected="IN_PROGRESS" if scope["id"]=="M10" else "COMPLETE"
             assert scope["status"]==expected, scope["id"]
-    assert state["approved_product_scope"]=="BATTERY-MOTION-1"
+    # The bounded hackathon scope is the session focus only while its one task is
+    # active; BATTERY-MOTION-1 remains approved and is restored afterwards.
+    assert state["approved_product_scope"] in {"BATTERY-MOTION-1", "HACK-DEMO-1"}
+    if state["approved_product_scope"]=="HACK-DEMO-1":
+        assert state["active_task"]=="HACK-DEMO-01"
     battery_motion=json.loads((root/".ai"/"approvals"/"BATTERY-MOTION-1.yaml").read_text())
     assert battery_motion["approved_by"]=="human"
     assert battery_motion["instruction"]=="approved"
     assert battery_motion["authorized_tasks"]==[f"BM-T0{n}" for n in range(1,8)]
     assert "Lithium" in battery_motion["non_goals"][0]
+    hack_demo=json.loads((root/".ai"/"approvals"/"HACK-DEMO-1.yaml").read_text())
+    assert hack_demo["approved_by"]=="human"
+    assert "I approve the bounded overnight development scope" in hack_demo["instruction"]
+    assert hack_demo["authorized_tasks"]==["HACK-DEMO-01"]
     conversational_approval=json.loads((root/".ai/approvals/CONVERSATIONAL-UX-1.yaml").read_text())
     assert conversational_approval["approved_by"]=="human"
     assert conversational_approval["instruction"]=="approved. begin"
