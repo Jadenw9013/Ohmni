@@ -13,6 +13,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import subprocess
 from collections import Counter
 from collections.abc import Callable
 from dataclasses import dataclass, field
@@ -276,11 +277,15 @@ def check_fault(directory: Path, qualification: Qualification) -> dict[str, obje
     started = monotonic()
     try:
         fault = run_fault_diagnostic(directory)
-    except (FaultDiagnosticError, OSError, ValueError) as exc:
+    except (FaultDiagnosticError, OSError, ValueError, subprocess.SubprocessError) as exc:
         qualification.add("fault_detected_by_real_drc", False, f"{type(exc).__name__}: {exc}"[:500])
         return None
     fault["seconds"] = round(monotonic() - started, 3)
-    unconnected = [item for item in fault["drc"]["unconnected_items"]]
+    # The fixed explanation names the cut net, so the receipt must name it too:
+    # an unconnected error elsewhere on the board is not this fault.
+    unconnected = [item for item in fault["drc"]["unconnected_items"]
+                   if item.get("severity") == "error" and item.get("excluded") is not True
+                   and any(f"[{FAULT_NET}]" in str(part.get("description", "")) for part in item.get("items", []))]
     qualification.add(
         "fault_detected_by_real_drc",
         fault["fault_detected"] is True and fault["drc"]["status"] == "fail" and bool(unconnected)
@@ -472,6 +477,6 @@ def run_fault_diagnostic(good_run: Path, *, executable: str | None = None) -> di
 def _finding_summary(finding) -> dict[str, object]:
     return {"type": finding.type, "severity": finding.severity,
             "classification": finding.classification.value,
-            "description": finding.description[:300],
+            "description": finding.description[:300], "excluded": bool(finding.excluded),
             "items": [{"description": item.description[:200], "x_mm": item.x, "y_mm": item.y}
                       for item in finding.items[:4]]}

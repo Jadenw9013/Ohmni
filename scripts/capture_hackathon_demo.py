@@ -44,6 +44,7 @@ from ohmni.application.reference_preview import build_reference_preview
 
 SAVED_FILES = (*REQUIRED_OUTPUTS, "confirmed-brief.json", "circuit.json")
 ZIP_NAME = "ohmni-demo-fabrication.zip"
+MANIFEST = "fabrication/ohmni-fabrication-manifest.json"
 ZIP_TIME = (2026, 1, 1, 0, 0, 0)
 
 
@@ -69,10 +70,26 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     run = args.run_dir.resolve()
     summary = json.loads(args.summary.read_text(encoding="utf-8"))
+    # The summary must be this run's own: the attempt directory sits next to the
+    # summary, and every output hash it recorded matches the bytes captured now.
     attempt = next((item for item in summary["attempts"]
-                    if Path(item["directory"]).name == run.name), None)
+                    if args.summary.resolve().parent / Path(item["directory"]).name == run), None)
     if summary.get("status") != "PASS" or attempt is None or attempt["status"] != "PASS":
         parser.exit(1, "The run is not a passing attempt of a passing harness summary.\n")
+    recorded = attempt.get("output_sha256") or {}
+    if not recorded or any(not (run / name).is_file() or sha256_file(run / name) != digest
+                           for name, digest in recorded.items()):
+        parser.exit(1, "The run's files do not match the hashes its summary recorded.\n")
+    manifest = json.loads((run / MANIFEST).read_text(encoding="utf-8"))
+    if manifest.get("package_fingerprint") != attempt["release"]["package_fingerprint"]:
+        parser.exit(1, "The fabrication package is not the one the summary released.\n")
+    # Only the files the verified manifest lists (and the manifest itself) are
+    # saved or offered for download; anything else in the folder is refused.
+    listed = {item["relative_path"]: item["sha256"] for item in manifest["files"]}
+    present = {path.name for path in (run / "fabrication").iterdir() if path.is_file()}
+    if present != set(listed) | {Path(MANIFEST).name} or any(
+            sha256_file(run / "fabrication" / name) != digest for name, digest in listed.items()):
+        parser.exit(1, "The fabrication folder does not match its manifest.\n")
 
     qualification = qualify_run(run)
     if not qualification.passed:
@@ -100,19 +117,22 @@ def main(argv: list[str] | None = None) -> int:
     fault_board = copy.deepcopy(good["board"])
     fault_copper = _strip(snapshot_copper(snapshot_text))
     fault_board.update(fault_copper, artifact_fingerprint=fault["snapshot_sha256"])
+    # The damaged copy has no routing plan or constraint receipt of its own.
+    for field in ("routing_plan_fingerprint", "constraints_hash"):
+        fault_board.pop(field, None)
 
     output = args.output.resolve()
     if output.exists():
         shutil.rmtree(output)
     saved = output / "saved-run"
-    for name in (*SAVED_FILES, *(f"fabrication/{path.name}" for path in sorted((run / "fabrication").iterdir())),
+    for name in (*SAVED_FILES, *(f"fabrication/{path.name}" for path in sorted((run / "fabrication").iterdir()) if path.is_file()),
                  f"{FAULT_DIRECTORY}/{FAULT_PCB}", f"{FAULT_DIRECTORY}/{FAULT_RAW_DRC}",
                  f"{FAULT_DIRECTORY}/{FAULT_RESULT}"):
         target = saved / name
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(run / name, target)
     with zipfile.ZipFile(output / ZIP_NAME, "w", zipfile.ZIP_DEFLATED) as archive:
-        for path in sorted((run / "fabrication").iterdir()):
+        for path in sorted(path for path in (run / "fabrication").iterdir() if path.is_file()):
             info = zipfile.ZipInfo(f"fabrication/{path.name}", ZIP_TIME)
             info.compress_type = zipfile.ZIP_DEFLATED
             archive.writestr(info, path.read_bytes())

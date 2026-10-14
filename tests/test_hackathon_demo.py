@@ -170,6 +170,51 @@ def test_missing_checker_fails_the_fault_gate(run, monkeypatch):
     assert "fault_detected_by_real_drc" in {c.name for c in qualification.checks if not c.passed}
 
 
+def _saved_fault_with(change):
+    fault = json.loads((SAVED / "fault" / demo.FAULT_RESULT).read_text(encoding="utf-8"))
+    change(fault)
+    return fault
+
+
+def test_fault_gate_requires_the_cut_net_in_the_drc_receipt(run, monkeypatch):
+    def elsewhere(fault):
+        for finding in fault["drc"]["unconnected_items"]:
+            for item in finding["items"]:
+                item["description"] = item["description"].replace("[LED1_A]", "[GND]")
+    monkeypatch.setattr(demo, "run_fault_diagnostic", lambda _run: _saved_fault_with(elsewhere))
+    qualification = demo.qualify_run(run)
+    demo.check_fault(run, qualification)
+    assert "fault_detected_by_real_drc" in {c.name for c in qualification.checks if not c.passed}
+
+
+def test_fault_gate_ignores_excluded_or_warning_items(run, monkeypatch):
+    def excluded(fault):
+        for finding in fault["drc"]["unconnected_items"]:
+            finding["excluded"] = True
+    monkeypatch.setattr(demo, "run_fault_diagnostic", lambda _run: _saved_fault_with(excluded))
+    qualification = demo.qualify_run(run)
+    demo.check_fault(run, qualification)
+    assert "fault_detected_by_real_drc" in {c.name for c in qualification.checks if not c.passed}
+
+
+def test_fault_checker_timeout_fails_without_crashing(run, monkeypatch):
+    import subprocess
+
+    def hang(_run):
+        raise subprocess.TimeoutExpired(["kicad-cli"], 1)
+    monkeypatch.setattr(demo, "run_fault_diagnostic", hang)
+    qualification = demo.qualify_run(run)
+    assert demo.check_fault(run, qualification) is None
+    assert "fault_detected_by_real_drc" in {c.name for c in qualification.checks if not c.passed}
+
+
+def test_saved_fault_passes_the_net_bound_gate(run, monkeypatch):
+    monkeypatch.setattr(demo, "run_fault_diagnostic", lambda _run: _saved_fault_with(lambda _f: None))
+    qualification = demo.qualify_run(run)
+    demo.check_fault(run, qualification)
+    assert qualification.passed
+
+
 def test_saved_fault_receipt_is_a_real_unconnected_finding():
     fault = json.loads((SAVED / "fault" / demo.FAULT_RESULT).read_text(encoding="utf-8"))
     raw = SAVED / "fault" / demo.FAULT_RAW_DRC

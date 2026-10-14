@@ -51,7 +51,8 @@ def main(argv: list[str] | None = None) -> int:
         browser = playwright.chromium.launch(executable_path=args.chromium) if args.chromium \
             else playwright.chromium.launch()
         context = browser.new_context(accept_downloads=True, service_workers="block")
-        delay = {"fault": 0.0}
+        hold = {"fault": False}
+        held: list = []
 
         def route(route, request):
             parts = urlsplit(request.url)
@@ -59,8 +60,9 @@ def main(argv: list[str] | None = None) -> int:
                 if parts.scheme not in {"data", "blob"}:
                     external.append(request.url)
                 return route.abort("internetdisconnected")
-            if parts.path.endswith("diagnostic-fault.kicad_pcb") and delay["fault"]:
-                time.sleep(delay["fault"])
+            if parts.path.endswith("diagnostic-fault.kicad_pcb") and hold["fault"]:
+                held.append(route)  # answered later, after the original is showing again
+                return None
             return route.continue_()
 
         context.route("**/*", route)
@@ -104,16 +106,28 @@ def main(argv: list[str] | None = None) -> int:
                  "Original board" in report and demo["good"]["board"]["artifact_fingerprint"] in report
                  and page.locator("#download").is_visible() and focused == "show-good", f"focus={focused}")
 
-        delay["fault"] = 2.0
+        # Hold the damaged board's file, switch back to the original, then
+        # release the held response so it really arrives after the original.
+        page.reload(wait_until="networkidle")
+        status.filter(has_text="Showing the original board").wait_for(timeout=15000)
+        hold["fault"] = True
         page.locator("#show-fault").click()
-        page.wait_for_timeout(200)
+        deadline = time.monotonic() + 10
+        while not held and time.monotonic() < deadline:
+            page.wait_for_timeout(50)
         page.evaluate("document.querySelector('#show-good').disabled = false")
         page.locator("#show-good").click()
-        page.wait_for_timeout(3000)
+        status.filter(has_text="Showing the original board").wait_for(timeout=15000)
+        released = bool(held)
+        if released:
+            with page.expect_response(lambda response: response.url.endswith("diagnostic-fault.kicad_pcb")):
+                held.pop().continue_()
+        page.wait_for_timeout(1000)
+        hold["fault"] = False
         report = page.locator("#report").text_content()
-        step("late fault response cannot replace the original", "Original board" in report
-             and page.evaluate("document.body.dataset.showing") == "good")
-        delay["fault"] = 0.0
+        step("late fault response cannot replace the original", released and "Original board" in report
+             and page.evaluate("document.body.dataset.showing") == "good",
+             "fault response delivered after the original was shown" if released else "fault request never held")
         page.screenshot(path=str(args.evidence / "3-restored.png"), full_page=True)
         browser.close()
     server.shutdown()
