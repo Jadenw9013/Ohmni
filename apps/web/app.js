@@ -21,6 +21,7 @@ import { mountDesignBehaviorPanel } from "./design-behavior.js";
 import { projectRequest, parseProjectStart, parseProjectEnvelope } from "./project-contract.js";
 
 import { errorKind, fetchHealth, identityBody, requestBody, freeTextProblem, pollHeaders, sameIdentity, fail, serverErrorKind, parseBrief, parseStart, parseJob, pollDisposition, API_BASE } from "./client-contract.js";
+import { startTelemetry, traceRequest } from "./telemetry.js";
 export { parseHealth, parseBrief, parseStart, parseJob, pollDisposition, requestBody, freeTextProblem } from "./client-contract.js";
 
 const $ = (selector) => document.querySelector(selector);
@@ -314,16 +315,27 @@ export async function openBrief({ fetcher = globalThis.fetch, request = null } =
     try {
         state.identity = await fetchHealth(fetcher);
         let response;
+        const trace = traceRequest("POST", "/api/brief", API_BASE + "/api/brief");
         try {
             response = await fetcher(API_BASE + "/api/brief", {
                 method: "POST", cache: "no-store",
-                headers: { "content-type": "application/json" },
+                headers: { "content-type": "application/json", ...trace.headers },
                 body: state.request ? requestBody(state.identity, state.request) : identityBody(state.identity),
             });
-        } catch { fail("backend_unavailable"); }
-        if (!response.ok) fail(await serverErrorKind(response, response.status >= 500 ? "backend_unavailable" : "api_ui_mismatch"));
+        } catch {
+            trace.fail("transport_unreachable");
+            fail("backend_unavailable");
+        }
+        if (!response.ok) {
+            trace.end(response.status);
+            fail(await serverErrorKind(response, response.status >= 500 ? "backend_unavailable" : "api_ui_mismatch"));
+        }
         let payload;
-        try { payload = await response.json(); } catch { fail("api_ui_mismatch"); }
+        try { payload = await response.json(); } catch {
+            trace.fail("contract_mismatch");
+            fail("api_ui_mismatch");
+        }
+        trace.end(response.status);
         state.brief = parseBrief(payload, state.identity);
         renderBrief(state.brief);
         setConnection("connected");
@@ -413,18 +425,27 @@ export async function startRun({ fetcher = globalThis.fetch, poller = poll, poll
         const identity = state.identity || await fetchHealth(fetcher);
         state.identity = identity;
         let response;
+        const trace = traceRequest("POST", "/api/demo", API_BASE + "/api/demo");
         try {
             response = await fetcher(API_BASE + "/api/demo", {
                 method: "POST", cache: "no-store",
-                headers: { "content-type": "application/json" },
+                headers: { "content-type": "application/json", ...trace.headers },
                 body: state.request ? requestBody(identity, state.request) : identityBody(identity),
             });
-        } catch { fail("backend_unavailable"); }
+        } catch {
+            trace.fail("transport_unreachable");
+            fail("backend_unavailable");
+        }
         if (!response.ok || response.status !== 202) {
+            trace.end(response.status);
             fail(await serverErrorKind(response, response.status >= 500 ? "backend_unavailable" : "api_ui_mismatch"));
         }
         let payload;
-        try { payload = await response.json(); } catch { fail("api_ui_mismatch"); }
+        try { payload = await response.json(); } catch {
+            trace.fail("contract_mismatch");
+            fail("api_ui_mismatch");
+        }
+        trace.end(response.status);
         jobId = parseStart(payload, identity);
         state.jobId = jobId;
         state.runStatus = "running";
@@ -1420,4 +1441,9 @@ function attach() {
     initializeHome({ onStart: () => show("describe") });
 }
 
-if (typeof document !== "undefined" && document.getElementById("start-supported")) attach();
+if (typeof document !== "undefined" && document.getElementById("start-supported")) {
+    // Never awaited: with telemetry disabled (the default) this resolves at once
+    // and loads nothing; enabled, the app starts without waiting for the bundle.
+    startTelemetry();
+    attach();
+}

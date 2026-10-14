@@ -105,6 +105,7 @@ STATIC_ASSETS=("index.html","app.js","view-model.js","board-model.js","board-vie
                "landing-pcb-controller/poster-desktop.webp","landing-pcb-controller/poster-mobile.webp",
                "visual-assets.js","visual-renderer.js","visual-explorer.js","visual-layers.js","visual-board-scene.js","visual-inventory.js","visual-version.js",
                "vendor/three.module.js","vendor/three.core.min.js",
+               "telemetry.js","telemetry-config.js","vendor/sentry-telemetry.js",
                "component-library/data/completion-a.json","component-library/data/completion-b.json","component-library/data/completion-c.json",
                "component-library/generators/io-connectors.js","component-library/generators/bent-sheet-shell.js",
                "component-library/generators/magnetics.js","component-library/data/completion-d.json",

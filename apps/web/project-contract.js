@@ -1,5 +1,6 @@
 // Transport validation for saved projects. No engineering verdicts are computed here.
 import { fail, sameIdentity, pollHeaders, fetchHealth, API_BASE } from "./client-contract.js";
+import { traceRequest } from "./telemetry.js";
 
 const object = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
 const text = (value) => typeof value === "string" && value.length > 0;
@@ -173,29 +174,34 @@ export class ProjectRequestError extends Error {
 export async function projectRequest(path, { fetcher = globalThis.fetch, timeoutMs = 20000, ...options } = {}) {
     const controller = new AbortController();
     let timer;
+    const trace = traceRequest(options.method || "GET", path, API_BASE + path);
     const timeout = new Promise((_, reject) => {
         timer = setTimeout(() => {
+            trace.fail("timeout");
             reject(new ProjectRequestError("The server took too long to respond. Your edits are still here. Retry opening the project; if you were saving, check its saved revisions before trying again."));
             controller.abort();
         }, timeoutMs);
     });
     try {
         return await Promise.race([
-            requestProject(path, { ...options, fetcher: (url, init) => {
+            requestProject(path, { ...options, trace, fetcher: (url, init) => {
                 controller.signal.throwIfAborted();
                 return fetcher(url, { ...init, signal: controller.signal });
             } }),
             timeout,
         ]);
-    } finally { clearTimeout(timer); }
+    } finally {
+        clearTimeout(timer);
+        trace.end();
+    }
 }
 
-async function requestProject(path, { fetcher, identity, method = "GET", data } = {}) {
+async function requestProject(path, { fetcher, identity, method = "GET", data, trace } = {}) {
     const current = identity || await fetchHealth(fetcher);
     let response;
     try {
         response = await fetcher(API_BASE + path, { method, cache: "no-store", headers: {
-            ...pollHeaders(current), ...(method === "GET" ? {} : { "content-type": "application/json" }),
+            ...pollHeaders(current), ...(method === "GET" ? {} : { "content-type": "application/json" }), ...trace.headers,
         // Identity fields are named, never spread. The parsed health object also
         // carries capabilities, and the server checks request bodies for an exact
         // key set -- so spreading it would turn a new capability into a rejected
@@ -206,9 +212,16 @@ async function requestProject(path, { fetcher, identity, method = "GET", data } 
             ui_version: current.ui_version,
             ...data,
         }) }) });
-    } catch { throw new ProjectRequestError("The server is unreachable. Check the local Ohmni server, then try again. Your edits are still here."); }
+    } catch {
+        trace.fail("transport_unreachable");
+        throw new ProjectRequestError("The server is unreachable. Check the local Ohmni server, then try again. Your edits are still here.");
+    }
     let payload;
-    try { payload = await response.json(); } catch { fail("api_ui_mismatch"); }
+    try { payload = await response.json(); } catch {
+        trace.fail("contract_mismatch");
+        fail("api_ui_mismatch");
+    }
+    trace.end(response.status);
     if (!response.ok) {
         if (["server_instance_mismatch", "ui_version_mismatch"].includes(payload?.error)) fail("generation_mismatch");
         const refusal = payload?.refusal?.message;
