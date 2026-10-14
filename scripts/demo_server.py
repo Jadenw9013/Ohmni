@@ -82,6 +82,10 @@ PROVIDER_UNAVAILABLE_MESSAGE="Ohmni demo could not configure a model provider; o
 MIN_MODEL_REQUEST_CHARS=10
 MAX_MODEL_REQUEST_CHARS=2000
 JOB_RECORD_FIELDS={"job_id","status","progress","report","error","error_code"}
+#: Assets the server may start without. The opt-in telemetry bundle is only
+#: fetched when telemetry is enabled, and the browser facade treats a failed
+#: load as "unavailable", so its absence must not block the demo.
+OPTIONAL_STATIC_ASSETS=frozenset({"vendor/sentry-telemetry.js"})
 JOB_STATUSES={"queued","running","complete","failed"}
 TERMINAL_JOB_STATUSES={"complete","failed"}
 JOB_FAILURE_CODES={"worker_start_failed","pipeline_failed","progress_publication_failed","job_state_invalid","server_restarted","routing_incomplete","eda_tool_failed"}
@@ -269,6 +273,9 @@ def _load_web_snapshot(web_root):
         digest=hashlib.sha256()
         for name in STATIC_ASSETS:
             path=root/name
+            # An optional asset may be wholly absent (served as 404); a
+            # dangling link or non-file at its path is still a failure.
+            if name in OPTIONAL_STATIC_ASSETS and not os.path.lexists(path):continue
             if path.is_symlink():raise OSError
             resolved=path.resolve()
             if not resolved.is_relative_to(root) or not resolved.is_file():raise OSError
