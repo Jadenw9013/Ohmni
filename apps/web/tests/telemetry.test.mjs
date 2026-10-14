@@ -239,3 +239,20 @@ test("an enabled config whose bundle file is really absent stays inert and chang
         fetcher: async (url, init) => { calls.push([url, init.headers]); return ok({}); } });
     assert.deepEqual(calls, [[PLAN_PATH, { ...pollHeaders(identity), "content-type": "application/json" }]]);
 });
+
+test("the real bundle starts every request in a new trace", () => {
+    const realFetch = globalThis.fetch;
+    globalThis.fetch = async () => { throw new Error("network is forbidden in this test"); };
+    try {
+        // Uninitialized (no DSN, so no client and nothing can be sent), the
+        // SDK still assigns trace IDs: sequential and overlapping handles alike.
+        const first = bundle.request("POST /api/demo");
+        const second = bundle.request("POST /api/brief");
+        const third = bundle.request("POST /api/demo");
+        const ids = [first, second, third].map((handle) => handle.traceHeader.split("-")[0]);
+        assert.ok(ids.every((id) => /^[0-9a-f]{32}$/.test(id)));
+        assert.equal(new Set(ids).size, 3);
+        for (const handle of [first, second, third]) handle.end(200);
+        assert.equal(bundle.request("GET /secret-canary"), null);
+    } finally { globalThis.fetch = realFetch; }
+});

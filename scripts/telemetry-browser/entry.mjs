@@ -7,7 +7,7 @@
 // raw thrown values, and every outgoing event or transaction is rebuilt from a
 // fixed set of bounded fields before the SDK may send it.
 import {
-    SDK_VERSION, captureEvent, init, spanToTraceHeader, startInactiveSpan, withActiveSpan,
+    SDK_VERSION, captureEvent, init, spanToTraceHeader, startInactiveSpan, startNewTrace, withActiveSpan,
 } from "@sentry/browser";
 
 export const VERSION = SDK_VERSION;
@@ -124,10 +124,13 @@ export function start(config) {
 
 const statusFor = (httpStatus) => (httpStatus >= 200 && httpStatus < 400 ? "ok" : "internal_error");
 
-/** One manual request transaction. Its trace header is offered, not applied. */
+/**
+ * One manual request transaction, in its own new trace: independent user
+ * actions never share a trace ID. Its trace header is offered, not applied.
+ */
 export function request(route) {
     if (!ROUTE_SET.has(route)) return null;
-    const span = startInactiveSpan({ name: route, op: "http.client", forceTransaction: true });
+    const span = startNewTrace(() => startInactiveSpan({ name: route, op: "http.client", forceTransaction: true }));
     let open = true;
     const close = (status) => {
         if (!open) return;

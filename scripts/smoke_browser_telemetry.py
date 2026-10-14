@@ -101,10 +101,11 @@ def run_scenario(browser, hosting: str, mode: str, work: Path) -> dict:
     enabled = mode != "disabled"
     result: dict = {"hosting": hosting, "mode": mode, "checks": {}}
     if hosting == "local":
-        # Same origin: the demo server serves its own snapshot of the copy. Its
-        # snapshot requires every asset, so a missing bundle is simulated by
-        # answering the bundle request with 404 in the browser.
-        root = web_copy(work, f"{hosting}-{mode}", enabled=enabled, api_origin="", drop_bundle=False)
+        # Same origin: the demo server serves its own snapshot of the copy. The
+        # bundle is an optional asset, so with it deleted the server still
+        # starts and answers the bundle request with its own 404.
+        root = web_copy(work, f"{hosting}-{mode}", enabled=enabled, api_origin="",
+                        drop_bundle=mode == "missing_bundle")
         api = DemoHTTPServer(("127.0.0.1", 0), DemoHandler, store=store, web_root=root)
         with thread_server(api):
             origin = f"http://127.0.0.1:{api.server_port}"
@@ -141,8 +142,6 @@ def drive_page(browser, hosting, mode, page_origin, api_origin) -> dict:
             return request_route.abort()
         if parts.path.endswith("/vendor/sentry-telemetry.js"):
             bundle_requests.append(parts.path)
-            if mode == "missing_bundle" and hosting == "local":
-                return request_route.fulfill(status=404, body="")
         if parts.path.startswith("/api/") and request.method in {"POST", "GET"}:
             entry = {"method": request.method, "path": parts.path,
                      "sentry_trace": request.headers.get("sentry-trace"), "aborted": False}
@@ -178,7 +177,15 @@ def drive_page(browser, hosting, mode, page_origin, api_origin) -> dict:
         "(message) => import('/project-contract.js').then((m) => m.projectRequest('/api/project-plans',"
         " { method: 'POST', data: { message, parent_id: null } })).then(() => 'resolved', (e) => e.name)",
         f"A small board {CANARY}")
-    expected_ingest = 3 if mode == "enabled" else 0
+    # Two independent actions in flight at once must still get distinct traces.
+    outcome["concurrent_headers"] = page.evaluate(
+        "() => import('/telemetry.js').then((m) => {"
+        " const base = window.OHMNI_API_BASE || '';"
+        " const a = m.traceRequest('POST', '/api/demo', base + '/api/demo');"
+        " const b = m.traceRequest('POST', '/api/brief', base + '/api/brief');"
+        " const headers = [a.headers['sentry-trace'] || null, b.headers['sentry-trace'] || null];"
+        " a.end(204); b.end(204); return headers; })")
+    expected_ingest = 5 if mode == "enabled" else 0
     deadline = time.monotonic() + 8
     while len(ingest) < expected_ingest and time.monotonic() < deadline:
         page.wait_for_timeout(100)
@@ -209,15 +216,21 @@ def evaluate(result: dict, server_transactions: list[dict]) -> dict:
         checks["state"] = result["telemetry_state"] == "disabled"
         checks["bundle_not_requested"] = result["bundle_requests"] == 0
         checks["no_envelopes"] = items == []
-        checks["no_trace_headers"] = traced == []
+        checks["no_trace_headers"] = traced == [] and result["concurrent_headers"] == [None, None]
     elif mode == "missing_bundle":
         checks["state"] = result["telemetry_state"] == "unavailable"
         checks["no_envelopes"] = items == []
-        checks["no_trace_headers"] = traced == []
+        checks["no_trace_headers"] = traced == [] and result["concurrent_headers"] == [None, None]
     else:
         checks["state"] = result["telemetry_state"] == "enabled"
         routes = sorted(t["transaction"] for t in transactions)
-        checks["browser_request_transactions"] = routes == ["POST /api/brief", "POST /api/demo", "POST /api/project-plans"]
+        checks["browser_request_transactions"] = routes == [
+            "POST /api/brief", "POST /api/brief", "POST /api/demo", "POST /api/demo", "POST /api/project-plans"]
+        trace_ids = [t["contexts"]["trace"]["trace_id"] for t in transactions]
+        concurrent = result["concurrent_headers"]
+        checks["independent_actions_have_distinct_traces"] = (
+            len(set(trace_ids)) == len(trace_ids) == 5 and all(concurrent)
+            and len({header.split("-")[0] for header in concurrent}) == 2)
         checks["one_owned_transport_issue"] = [
             e["exception"]["values"][0]["value"] for e in events] == ["browser.project_request.transport_unreachable"]
         checks["trace_headers_only_on_traced_posts"] = (
